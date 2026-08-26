@@ -82,6 +82,7 @@ loads every session. (README.md is just a short pointer here — this file is th
 - **§114** ★★★ THE HTML-ESCAPED PHANTOM SYMBOLS WERE NOT INVISIBLE — `M&AMP;M` was RENDERING in docs/discovery.json (47 rows / 21 buckets), and the fundamentals rows were NOT all duplicates (4 unique, 46 contested, both sides filing-sourced). Fundamentals stores retracted to zero + guarded; the Trendlyne sitemap escape was writing off all 10 ampersand tickers (**read before trusting any recorded coverage/absence claim, and before deleting a phantom key**)
 - **§115** ★★★ THE PHANTOM CLASS IS CLOSED — root cause was `build_revop.py` upper-casing a RAW XML capture (XBRL escapes `&`), still firing in a 2026 filing; closing sf_revop ADDED +784 values / +63 quarters. FOUR gate defects: a retraction that RAISED a score, a derived flag voting, "target has no row" read as nothing-to-do, and the resume-cache treated as a mirror. A filing's own ScripCode OUTRANKS the overlap proxy (**read before trusting any agreement gate, and before retracting anything a gate could still harvest**)
 - **§116** ★★★ THE 46 CONTESTED con CELLS ADJUDICATED — the phantom read the OWNERS tag and WE had stored the TOTAL, so the phantom was RIGHT on 16 of 23; the other 7 are the filer's owners=0 mis-tag where the store was right. Swept the rest of each series: **53 cells healed** total→owners, 2018-2026. sf_revop's un-rendered mirror already held the owners figure on 45 of 53. **1,417 symbols / 18,175 con cells share the exposure — sized, not swept** (**read before trusting a con-PAT value for any symbol absent from _reattr_owners.json**)
+- **§116d** ★★★ THE SCREEN RUN OVER ALL 60,768 con CELLS — 52 more healed, **762 REFUSED because `owners+NCI==total` does NOT close** (302 have NCI=0 so the TAG is wrong not the store; 24 sign flips; 13 filer power-of-ten; 460 unreconciled → `owners_basis_unreconciled.json`). `_reattr_owners` coverage is per-CELL not per-SYMBOL. A hand-rolled context regex silently dropped every pre-2021 filing — use `build_revop.ctx_period`. **29,998 cells are older than the cache and remain UNSCREENED**
 - **★★★ NO ASSUMPTIONS. NO GUESSWORK. EVER.** User-mandated 2026-08-10; standing rule across
   this runbook AND every campaign/playbook doc (each carries the same line). Every value written
   and every claim made ("exists", "absent", "fixed", "live", "matches") must trace to something
@@ -12817,4 +12818,45 @@ cheap and exact, and it is the one to run next:
 
 These four were found only because a retracted phantom happened to disagree. **That is not a
 detection strategy** — nothing else was looking.
+
+
+### 116d. THE SCREEN, RUN — 60,768 cells checked, 52 healed, 762 REFUSED, and the sizing in §116c was wrong
+
+§116c sized the exposure as "1,417 symbols / 18,175 con cells absent from `_reattr_owners`". **That
+framing was wrong, and the screen is what showed it.** Coverage in that cache is per-CELL, not
+per-SYMBOL: of the 869 defect cells found, **864 sit in symbols the cache covers but quarters it
+does not**. A symbol being "in `_reattr_owners`" protects nothing.
+
+**Method.** Pre-filter the 104,538-file XBRL cache to the 38,783 filings carrying an owners tag
+(`grep -rl`, ~5 s), index them with **`build_revop.ctx_period`** and `scale_fix.factor`, then join
+against every con cell in `sf_fundamentals`. ⚠️ The first index used a hand-rolled context regex and
+silently dropped every pre-2021 filing — those carry the period in `DateOf{Start,End}OfReportingPeriod`,
+not inside `<xbrli:context>`, which is precisely the era holding the defect. **Use the shared parser;
+a private regex over a format you have not enumerated is a silent filter.** The tell was that three
+cells verified by hand an hour earlier did not appear in the index at all.
+
+    29,998  no cached consolidated filing (cache starts ~2018 — this era is UNSCREENED)
+    14,028  stored == OWNERS, correct
+     7,975  owners=0 AND NCI=0 filer mis-tag — stored total is right
+     7,333  owners == total (no NCI) — nothing to distinguish
+       762  stored == total, owners differs, BUT the identity FAILS  -> REFUSED, not healed
+       533  no NCI tag
+        52  stored == total, owners differs, identity CLOSES          -> HEALED
+        44  stored is a THIRD value      41  filings disagree with each other
+
+★★★ **THE GATE IS THE IDENTITY, NOT THE COMPARISON.** 872 cells store the total while the owners tag
+differs — a naive screen would have "healed" all of them. Only 52 reconcile as `owners + NCI == total`.
+The other 762 are the owners TAG being wrong, and the screen names how: **302 have NCI = 0** (so owners
+MUST equal total — a differing tag convicts the tag, and the stored total is RIGHT), **24 are sign
+flips** (LEMONTREE Jun-2020 owners +41.87 against a total of −60.56), **13 are filer power-of-ten scale
+errors** (KAYNES Mar-2023 tags owners as ₹58 lakh crore against a total of ₹63.51 cr), and **460 have a
+real NCI that still does not reconcile** (CHOLAHLDNG Mar-2020: 14.71 + 9.70 = 24.41 against a total of
+79.57). Healing on the comparison alone would have written 762 wrong values to fix 52 right ones.
+
+The 460 are journalled with their evidence in **`scripts/owners_basis_unreconciled.json`** (216
+symbols; GOLDIAM 19, PATELENG 16, 63MOONS 13, MANINFRA 11...). They need the DOCUMENT, not arithmetic.
+
+**Honest limit: 29,998 con cells could not be screened at all** because the XBRL cache starts ~2018 and
+they are older. That is half the store. Nothing here says those are clean — only that this method
+cannot see them.
 

@@ -8,15 +8,296 @@
   "standalone of 8.18, wildly out of family -- no P&L page located in that filing).",
   "2026-08-09 second pass: ATUL FY21+FY22 closed out (Jun-20, Mar-21, Jun-21, Sep-21, Dec-21). SADBHAV 2020-03-31 was RE-CHECKED and is CORRECT as stored: the Jun-2020 filing prints Mar-20 period 1280.78 and NCI 394.14 -> owners 886.64, and FY20 owners -8.07 + -15.94 + -69.79 + 886.63 = 792.83 exactly as printed. The value only looked wrong because it is a very large genuine one-off -- the RENUKA lesson (runbook \u00a769c).",
   "2026-08-09 third pass: the named fund-vs-revop cells (ATUL Sep-25, SADBHAV Dec-20, RENUKA Dec-20 +Mar-21). Measuring them found sf_fundamentals and sf_revop disagree on 1,372 of 43,731 populated con-PAT cells (3.14%); the 603 where revop is exactly 0.0 against a real fundamentals value were resynced, the 716 genuine disagreements and 15 fundamentals==0 cells are NOT touched. build_discovery's TTM P/E was reading the divergent mirror. \u00a770.",
-  "2026-08-26 (runbook \u00a7116): 53 cells across COX&KINGS / S&SPOWER / SURANAT&P whose con slot held the TOTAL. Read from each quarter's OWN consolidated XBRL: owners + NCI == total closes on 59 of 61 filings (the 2 misses are the filer's own arithmetic, Rs51k and Rs91k). 16 were exposed by the HTML-escaped phantom keys retracted in \u00a7114 -- the phantom's reader had taken the owners tag and OURS had taken the total, so the phantom was RIGHT on those and the live store was wrong. The other 37 are the rest of the same series: healing only the disagreeing cells would leave a MIXED-basis series, which breaks YoY/TTM worse than a uniformly wrong one. NOT healed: 24 cells (IL&FSENGG x23, S&SPOWER Mar-2019) where the filer tags owners=0 AND NCI=0 with the real number only in the total -- there the stored total IS correct and the phantom's 0.0 was the defect. None of these symbols is in _reattr_owners.json, which is why apply_owners_full never re-attributed them; 1,417 symbols / 18,175 con cells share that exposure and are NOT swept here."
+  "2026-08-26 (runbook \u00a7116): 53 cells across COX&KINGS / S&SPOWER / SURANAT&P whose con slot held the TOTAL. Read from each quarter's OWN consolidated XBRL: owners + NCI == total closes on 59 of 61 filings (the 2 misses are the filer's own arithmetic, Rs51k and Rs91k). 16 were exposed by the HTML-escaped phantom keys retracted in \u00a7114 -- the phantom's reader had taken the owners tag and OURS had taken the total, so the phantom was RIGHT on those and the live store was wrong. The other 37 are the rest of the same series: healing only the disagreeing cells would leave a MIXED-basis series, which breaks YoY/TTM worse than a uniformly wrong one. NOT healed: 24 cells (IL&FSENGG x23, S&SPOWER Mar-2019) where the filer tags owners=0 AND NCI=0 with the real number only in the total -- there the stored total IS correct and the phantom's 0.0 was the defect. None of these symbols is in _reattr_owners.json, which is why apply_owners_full never re-attributed them; 1,417 symbols / 18,175 con cells share that exposure and are NOT swept here.",
+  "2026-08-26 \u00a7116c SCREEN: ran the owners-vs-total check over ALL 60,768 con cells in sf_fundamentals against their own cached consolidated XBRL (38,668 filings indexed). 52 further cells healed total->owners, on top of the 53 from \u00a7116. THE GATE IS THE IDENTITY, not the comparison: 872 cells store the total while the owners tag differs, but only these reconcile as owners+NCI==total. The other 762 are REFUSED and NOT healed -- 302 have NCI=0 (so owners MUST equal total; the owners TAG is wrong and the store is right), 24 are sign flips, 13 are filer power-of-ten scale errors, and 460 have a real NCI that still does not reconcile and need per-cell documents. Also measured: coverage in _reattr_owners.json is per-CELL not per-SYMBOL -- 864 of 869 defect cells sit in symbols the cache covers but quarters it does not."
  ],
  "cells": {
+  "20MICRONS|20190630|patC": {
+   "found_by": "\u00a7116c screen over all 60,768 con cells, 2026-08-26",
+   "nci": -0.03,
+   "note": "owners=8.49 + NCI=-0.03 = 8.46 == ProfitLossForPeriod; the con slot held the TOTAL. Identity closes, which is the gate: 762 other stored==total cells were REFUSED because their owners/NCI/total do not reconcile (filer scale errors, sign flips, wrong concept) and cannot be healed by arithmetic.",
+   "owners": 8.49,
+   "src": "own consolidated XBRL INDAS_47633_131288_13082019054724_WEB_xml ctx OneD",
+   "total_was": 8.46
+  },
+  "20MICRONS|20190930|patC": {
+   "found_by": "\u00a7116c screen over all 60,768 con cells, 2026-08-26",
+   "nci": -0.04,
+   "note": "owners=7.09 + NCI=-0.04 = 7.05 == ProfitLossForPeriod; the con slot held the TOTAL. Identity closes, which is the gate: 762 other stored==total cells were REFUSED because their owners/NCI/total do not reconcile (filer scale errors, sign flips, wrong concept) and cannot be healed by arithmetic.",
+   "owners": 7.09,
+   "src": "own consolidated XBRL INDAS_49420_161706_08112019105706_WEB_xml ctx OneD",
+   "total_was": 7.05
+  },
+  "20MICRONS|20191231|patC": {
+   "found_by": "\u00a7116c screen over all 60,768 con cells, 2026-08-26",
+   "nci": -0.07,
+   "note": "owners=5.41 + NCI=-0.07 = 5.34 == ProfitLossForPeriod; the con slot held the TOTAL. Identity closes, which is the gate: 762 other stored==total cells were REFUSED because their owners/NCI/total do not reconcile (filer scale errors, sign flips, wrong concept) and cannot be healed by arithmetic.",
+   "owners": 5.41,
+   "src": "own consolidated XBRL INDAS_53479_218996_12022020031106_WEB_xml ctx OneD",
+   "total_was": 5.34
+  },
+  "20MICRONS|20200331|patC": {
+   "found_by": "\u00a7116c screen over all 60,768 con cells, 2026-08-26",
+   "nci": 0.2,
+   "note": "owners=3.13 + NCI=0.20 = 3.33 == ProfitLossForPeriod; the con slot held the TOTAL. Identity closes, which is the gate: 762 other stored==total cells were REFUSED because their owners/NCI/total do not reconcile (filer scale errors, sign flips, wrong concept) and cannot be healed by arithmetic.",
+   "owners": 3.13,
+   "src": "own consolidated XBRL INDAS_55698_264128_08062020062243_WEB_xml ctx OneD",
+   "total_was": 3.33
+  },
+  "20MICRONS|20201231|patC": {
+   "found_by": "\u00a7116c screen over all 60,768 con cells, 2026-08-26",
+   "nci": 0.02,
+   "note": "owners=5.65 + NCI=0.02 = 5.67 == ProfitLossForPeriod; the con slot held the TOTAL. Identity closes, which is the gate: 762 other stored==total cells were REFUSED because their owners/NCI/total do not reconcile (filer scale errors, sign flips, wrong concept) and cannot be healed by arithmetic.",
+   "owners": 5.65,
+   "src": "own consolidated XBRL INDAS_68333_407369_12022021035826_WEB_xml ctx OneD",
+   "total_was": 5.67
+  },
+  "20MICRONS|20210930|patC": {
+   "found_by": "\u00a7116c screen over all 60,768 con cells, 2026-08-26",
+   "nci": 0.05,
+   "note": "owners=6.53 + NCI=0.05 = 6.58 == ProfitLossForPeriod; the con slot held the TOTAL. Identity closes, which is the gate: 762 other stored==total cells were REFUSED because their owners/NCI/total do not reconcile (filer scale errors, sign flips, wrong concept) and cannot be healed by arithmetic.",
+   "owners": 6.53,
+   "src": "own consolidated XBRL INDAS_76522_543035_21102021032811_WEB_xml ctx OneD",
+   "total_was": 6.58
+  },
+  "20MICRONS|20211231|patC": {
+   "found_by": "\u00a7116c screen over all 60,768 con cells, 2026-08-26",
+   "nci": 0.06,
+   "note": "owners=11.64 + NCI=0.06 = 11.69 == ProfitLossForPeriod; the con slot held the TOTAL. Identity closes, which is the gate: 762 other stored==total cells were REFUSED because their owners/NCI/total do not reconcile (filer scale errors, sign flips, wrong concept) and cannot be healed by arithmetic.",
+   "owners": 11.64,
+   "src": "own consolidated XBRL INDAS_80293_597034_21012022042716_WEB_xml ctx OneD",
+   "total_was": 11.69
+  },
+  "20MICRONS|20220331|patC": {
+   "found_by": "\u00a7116c screen over all 60,768 con cells, 2026-08-26",
+   "nci": 0.04,
+   "note": "owners=10.63 + NCI=0.04 = 10.67 == ProfitLossForPeriod; the con slot held the TOTAL. Identity closes, which is the gate: 762 other stored==total cells were REFUSED because their owners/NCI/total do not reconcile (filer scale errors, sign flips, wrong concept) and cannot be healed by arithmetic.",
+   "owners": 10.63,
+   "src": "own consolidated XBRL INDAS_83879_650643_03052022041504_WEB_xml ctx OneD",
+   "total_was": 10.67
+  },
+  "20MICRONS|20220630|patC": {
+   "found_by": "\u00a7116c screen over all 60,768 con cells, 2026-08-26",
+   "nci": 0.04,
+   "note": "owners=13.26 + NCI=0.04 = 13.30 == ProfitLossForPeriod; the con slot held the TOTAL. Identity closes, which is the gate: 762 other stored==total cells were REFUSED because their owners/NCI/total do not reconcile (filer scale errors, sign flips, wrong concept) and cannot be healed by arithmetic.",
+   "owners": 13.26,
+   "src": "own consolidated XBRL INDAS_598654_3267_22072022155355_WEB_xml ctx OneD",
+   "total_was": 13.3
+  },
+  "20MICRONS|20220930|patC": {
+   "found_by": "\u00a7116c screen over all 60,768 con cells, 2026-08-26",
+   "nci": 0.08,
+   "note": "owners=11.87 + NCI=0.08 = 11.96 == ProfitLossForPeriod; the con slot held the TOTAL. Identity closes, which is the gate: 762 other stored==total cells were REFUSED because their owners/NCI/total do not reconcile (filer scale errors, sign flips, wrong concept) and cannot be healed by arithmetic.",
+   "owners": 11.87,
+   "src": "own consolidated XBRL INDAS_863532_5606_12112022112001_WEB_xml ctx OneD",
+   "total_was": 11.96
+  },
+  "20MICRONS|20230331|patC": {
+   "found_by": "\u00a7116c screen over all 60,768 con cells, 2026-08-26",
+   "nci": 0.02,
+   "note": "owners=9.30 + NCI=0.02 = 9.32 == ProfitLossForPeriod; the con slot held the TOTAL. Identity closes, which is the gate: 762 other stored==total cells were REFUSED because their owners/NCI/total do not reconcile (filer scale errors, sign flips, wrong concept) and cannot be healed by arithmetic.",
+   "owners": 9.3,
+   "src": "own consolidated XBRL INDAS_91878_844591_17052023040129_xml ctx OneD",
+   "total_was": 9.32
+  },
+  "20MICRONS|20230630|patC": {
+   "found_by": "\u00a7116c screen over all 60,768 con cells, 2026-08-26",
+   "nci": 0.02,
+   "note": "owners=14.91 + NCI=0.02 = 14.93 == ProfitLossForPeriod; the con slot held the TOTAL. Identity closes, which is the gate: 762 other stored==total cells were REFUSED because their owners/NCI/total do not reconcile (filer scale errors, sign flips, wrong concept) and cannot be healed by arithmetic.",
+   "owners": 14.91,
+   "src": "own consolidated XBRL INDAS_94360_897605_21072023050618_xml ctx OneD",
+   "total_was": 14.93
+  },
+  "20MICRONS|20230930|patC": {
+   "found_by": "\u00a7116c screen over all 60,768 con cells, 2026-08-26",
+   "nci": 0.02,
+   "note": "owners=16.03 + NCI=0.02 = 16.05 == ProfitLossForPeriod; the con slot held the TOTAL. Identity closes, which is the gate: 762 other stored==total cells were REFUSED because their owners/NCI/total do not reconcile (filer scale errors, sign flips, wrong concept) and cannot be healed by arithmetic.",
+   "owners": 16.03,
+   "src": "own consolidated XBRL INDAS_97911_967574_26102023120722_xml ctx OneD",
+   "total_was": 16.05
+  },
+  "20MICRONS|20231231|patC": {
+   "found_by": "\u00a7116c screen over all 60,768 con cells, 2026-08-26",
+   "nci": 0.02,
+   "note": "owners=11.48 + NCI=0.02 = 11.51 == ProfitLossForPeriod; the con slot held the TOTAL. Identity closes, which is the gate: 762 other stored==total cells were REFUSED because their owners/NCI/total do not reconcile (filer scale errors, sign flips, wrong concept) and cannot be healed by arithmetic.",
+   "owners": 11.48,
+   "src": "own consolidated XBRL INDAS_101554_1036443_25012024062018_xml ctx OneD",
+   "total_was": 11.51
+  },
+  "20MICRONS|20240331|patC": {
+   "found_by": "\u00a7116c screen over all 60,768 con cells, 2026-08-26",
+   "nci": 0.02,
+   "note": "owners=13.64 + NCI=0.02 = 13.67 == ProfitLossForPeriod; the con slot held the TOTAL. Identity closes, which is the gate: 762 other stored==total cells were REFUSED because their owners/NCI/total do not reconcile (filer scale errors, sign flips, wrong concept) and cannot be healed by arithmetic.",
+   "owners": 13.64,
+   "src": "own consolidated XBRL INDAS_106253_1128513_17052024055758_xml ctx OneD",
+   "total_was": 13.67
+  },
+  "20MICRONS|20240630|patC": {
+   "found_by": "\u00a7116c screen over all 60,768 con cells, 2026-08-26",
+   "nci": 0.05,
+   "note": "owners=17.86 + NCI=0.05 = 17.90 == ProfitLossForPeriod; the con slot held the TOTAL. Identity closes, which is the gate: 762 other stored==total cells were REFUSED because their owners/NCI/total do not reconcile (filer scale errors, sign flips, wrong concept) and cannot be healed by arithmetic.",
+   "owners": 17.86,
+   "src": "own consolidated XBRL INDAS_109555_1203315_26072024031935_xml ctx OneD",
+   "total_was": 17.9
+  },
+  "20MICRONS|20240930|patC": {
+   "found_by": "\u00a7116c screen over all 60,768 con cells, 2026-08-26",
+   "nci": 0.04,
+   "note": "owners=16.41 + NCI=0.04 = 16.45 == ProfitLossForPeriod; the con slot held the TOTAL. Identity closes, which is the gate: 762 other stored==total cells were REFUSED because their owners/NCI/total do not reconcile (filer scale errors, sign flips, wrong concept) and cannot be healed by arithmetic.",
+   "owners": 16.41,
+   "src": "own consolidated XBRL INDAS_113367_1288734_25102024053929_xml ctx OneD",
+   "total_was": 16.45
+  },
+  "20MICRONS|20241231|patC": {
+   "found_by": "\u00a7116c screen over all 60,768 con cells, 2026-08-26",
+   "nci": 0.03,
+   "note": "owners=12.89 + NCI=0.03 = 12.92 == ProfitLossForPeriod; the con slot held the TOTAL. Identity closes, which is the gate: 762 other stored==total cells were REFUSED because their owners/NCI/total do not reconcile (filer scale errors, sign flips, wrong concept) and cannot be healed by arithmetic.",
+   "owners": 12.89,
+   "src": "own consolidated XBRL INDAS_117527_1359067_23012025011312_xml ctx OneD",
+   "total_was": 12.92
+  },
+  "20MICRONS|20250930|patC": {
+   "found_by": "\u00a7116c screen over all 60,768 con cells, 2026-08-26",
+   "nci": -0.04,
+   "note": "owners=17.39 + NCI=-0.04 = 17.35 == ProfitLossForPeriod; the con slot held the TOTAL. Identity closes, which is the gate: 762 other stored==total cells were REFUSED because their owners/NCI/total do not reconcile (filer scale errors, sign flips, wrong concept) and cannot be healed by arithmetic.",
+   "owners": 17.39,
+   "src": "own consolidated XBRL INTEGRATED_FILING_INDAS_1568130_07112025053455_WEB_xml ctx OneD",
+   "total_was": 17.35
+  },
+  "20MICRONS|20251231|patC": {
+   "found_by": "\u00a7116c screen over all 60,768 con cells, 2026-08-26",
+   "nci": -0.09,
+   "note": "owners=14.96 + NCI=-0.09 = 14.87 == ProfitLossForPeriod; the con slot held the TOTAL. Identity closes, which is the gate: 762 other stored==total cells were REFUSED because their owners/NCI/total do not reconcile (filer scale errors, sign flips, wrong concept) and cannot be healed by arithmetic.",
+   "owners": 14.96,
+   "src": "own consolidated XBRL INTEGRATED_FILING_INDAS_1609943_24012026053913_WEB_xml ctx OneD",
+   "total_was": 14.87
+  },
+  "20MICRONS|20260331|patC": {
+   "found_by": "\u00a7116c screen over all 60,768 con cells, 2026-08-26",
+   "nci": -0.03,
+   "note": "owners=17.62 + NCI=-0.03 = 17.59 == ProfitLossForPeriod; the con slot held the TOTAL. Identity closes, which is the gate: 762 other stored==total cells were REFUSED because their owners/NCI/total do not reconcile (filer scale errors, sign flips, wrong concept) and cannot be healed by arithmetic.",
+   "owners": 17.62,
+   "src": "own consolidated XBRL INTEGRATED_FILING_INDAS_1671423_22052026054748_WEB_xml ctx OneD",
+   "total_was": 17.59
+  },
+  "360ONE|20230331|patC": {
+   "found_by": "\u00a7116c screen over all 60,768 con cells, 2026-08-26",
+   "nci": -0.04,
+   "note": "owners=155.45 + NCI=-0.04 = 155.41 == ProfitLossForPeriod; the con slot held the TOTAL. Identity closes, which is the gate: 762 other stored==total cells were REFUSED because their owners/NCI/total do not reconcile (filer scale errors, sign flips, wrong concept) and cannot be healed by arithmetic.",
+   "owners": 155.45,
+   "src": "own consolidated XBRL NBFC_INDAS_91245_837948_05052023052308_xml ctx OneD",
+   "total_was": 155.41
+  },
+  "360ONE|20230630|patC": {
+   "found_by": "\u00a7116c screen over all 60,768 con cells, 2026-08-26",
+   "nci": -0.18,
+   "note": "owners=183.76 + NCI=-0.18 = 183.58 == ProfitLossForPeriod; the con slot held the TOTAL. Identity closes, which is the gate: 762 other stored==total cells were REFUSED because their owners/NCI/total do not reconcile (filer scale errors, sign flips, wrong concept) and cannot be healed by arithmetic.",
+   "owners": 183.76,
+   "src": "own consolidated XBRL NBFC_INDAS_94337_896986_21072023023905_xml ctx OneD",
+   "total_was": 183.58
+  },
+  "360ONE|20230930|patC": {
+   "found_by": "\u00a7116c screen over all 60,768 con cells, 2026-08-26",
+   "nci": -0.11,
+   "note": "owners=186.02 + NCI=-0.11 = 185.91 == ProfitLossForPeriod; the con slot held the TOTAL. Identity closes, which is the gate: 762 other stored==total cells were REFUSED because their owners/NCI/total do not reconcile (filer scale errors, sign flips, wrong concept) and cannot be healed by arithmetic.",
+   "owners": 186.02,
+   "src": "own consolidated XBRL NBFC_INDAS_98667_975571_03112023032502_xml ctx OneD",
+   "total_was": 185.91
+  },
+  "3IINFOLTD|20250630|patC": {
+   "found_by": "\u00a7116c screen over all 60,768 con cells, 2026-08-26",
+   "nci": -0.07,
+   "note": "owners=7.62 + NCI=-0.07 = 7.55 == ProfitLossForPeriod; the con slot held the TOTAL. Identity closes, which is the gate: 762 other stored==total cells were REFUSED because their owners/NCI/total do not reconcile (filer scale errors, sign flips, wrong concept) and cannot be healed by arithmetic.",
+   "owners": 7.62,
+   "src": "own consolidated XBRL INTEGRATED_FILING_INDAS_1503719_06082025125743_WEB_xml ctx OneD",
+   "total_was": 7.55
+  },
+  "3IINFOLTD|20250930|patC": {
+   "found_by": "\u00a7116c screen over all 60,768 con cells, 2026-08-26",
+   "nci": -0.23,
+   "note": "owners=18.43 + NCI=-0.23 = 18.20 == ProfitLossForPeriod; the con slot held the TOTAL. Identity closes, which is the gate: 762 other stored==total cells were REFUSED because their owners/NCI/total do not reconcile (filer scale errors, sign flips, wrong concept) and cannot be healed by arithmetic.",
+   "owners": 18.43,
+   "src": "own consolidated XBRL INTEGRATED_FILING_INDAS_1573075_12112025102247_WEB_xml ctx OneD",
+   "total_was": 18.2
+  },
   "3IINFOLTD|20251231|patC": {
    "nci": -0.05,
    "note": "own Dec-2025 filing p7 (lakhs): period 208, NCI -5 => owners 213; XBRL identity closes at owners 2.14 + NCI -0.05 = total 2.09. The \u00a771g resync had written the total.",
    "owners": 2.14,
    "period": 2.09,
    "stored_before": 2.09
+  },
+  "3IINFOTECH|20181231|patC": {
+   "found_by": "\u00a7116c screen over all 60,768 con cells, 2026-08-26",
+   "nci": 0.5,
+   "note": "owners=17.52 + NCI=0.50 = 18.02 == ProfitLossForPeriod; the con slot held the TOTAL. Identity closes, which is the gate: 762 other stored==total cells were REFUSED because their owners/NCI/total do not reconcile (filer scale errors, sign flips, wrong concept) and cannot be healed by arithmetic.",
+   "owners": 17.52,
+   "src": "own consolidated XBRL INDAS_41580_74843_18012019045429_WEB_xml ctx OneD",
+   "total_was": 18.02
+  },
+  "3IINFOTECH|20190331|patC": {
+   "found_by": "\u00a7116c screen over all 60,768 con cells, 2026-08-26",
+   "nci": 0.31,
+   "note": "owners=34.89 + NCI=0.31 = 35.20 == ProfitLossForPeriod; the con slot held the TOTAL. Identity closes, which is the gate: 762 other stored==total cells were REFUSED because their owners/NCI/total do not reconcile (filer scale errors, sign flips, wrong concept) and cannot be healed by arithmetic.",
+   "owners": 34.89,
+   "src": "own consolidated XBRL INDAS_43892_100813_08052019025316_WEB_xml ctx OneD",
+   "total_was": 35.2
+  },
+  "3IINFOTECH|20190630|patC": {
+   "found_by": "\u00a7116c screen over all 60,768 con cells, 2026-08-26",
+   "nci": -0.61,
+   "note": "owners=1.98 + NCI=-0.61 = 1.37 == ProfitLossForPeriod; the con slot held the TOTAL. Identity closes, which is the gate: 762 other stored==total cells were REFUSED because their owners/NCI/total do not reconcile (filer scale errors, sign flips, wrong concept) and cannot be healed by arithmetic.",
+   "owners": 1.98,
+   "src": "own consolidated XBRL INDAS_45976_115702_12072019053113_WEB_xml ctx OneD",
+   "total_was": 1.37
+  },
+  "3IINFOTECH|20190930|patC": {
+   "found_by": "\u00a7116c screen over all 60,768 con cells, 2026-08-26",
+   "nci": 1.29,
+   "note": "owners=13.35 + NCI=1.29 = 14.63 == ProfitLossForPeriod; the con slot held the TOTAL. Identity closes, which is the gate: 762 other stored==total cells were REFUSED because their owners/NCI/total do not reconcile (filer scale errors, sign flips, wrong concept) and cannot be healed by arithmetic.",
+   "owners": 13.35,
+   "src": "own consolidated XBRL INDAS_48623_152471_17102019061543_WEB_xml ctx OneD",
+   "total_was": 14.63
+  },
+  "3IINFOTECH|20191231|patC": {
+   "found_by": "\u00a7116c screen over all 60,768 con cells, 2026-08-26",
+   "nci": -0.26,
+   "note": "owners=27.46 + NCI=-0.26 = 27.20 == ProfitLossForPeriod; the con slot held the TOTAL. Identity closes, which is the gate: 762 other stored==total cells were REFUSED because their owners/NCI/total do not reconcile (filer scale errors, sign flips, wrong concept) and cannot be healed by arithmetic.",
+   "owners": 27.46,
+   "src": "own consolidated XBRL INDAS_52797_216326_07022020042310_WEB_xml ctx OneD",
+   "total_was": 27.2
+  },
+  "63MOONS|20191231|patC": {
+   "found_by": "\u00a7116c screen over all 60,768 con cells, 2026-08-26",
+   "nci": 0.02,
+   "note": "owners=-14.82 + NCI=0.02 = -14.80 == ProfitLossForPeriod; the con slot held the TOTAL. Identity closes, which is the gate: 762 other stored==total cells were REFUSED because their owners/NCI/total do not reconcile (filer scale errors, sign flips, wrong concept) and cannot be healed by arithmetic.",
+   "owners": -14.82,
+   "src": "own consolidated XBRL INDAS_52856_216621_07022020062550_WEB_xml ctx OneD",
+   "total_was": -14.8
+  },
+  "63MOONS|20250630|patC": {
+   "found_by": "\u00a7116c screen over all 60,768 con cells, 2026-08-26",
+   "nci": -5.68,
+   "note": "owners=3.08 + NCI=-5.68 = -2.60 == ProfitLossForPeriod; the con slot held the TOTAL. Identity closes, which is the gate: 762 other stored==total cells were REFUSED because their owners/NCI/total do not reconcile (filer scale errors, sign flips, wrong concept) and cannot be healed by arithmetic.",
+   "owners": 3.08,
+   "src": "own consolidated XBRL INTEGRATED_FILING_INDAS_1510160_12082025070614_WEB_xml ctx OneD",
+   "total_was": -2.6
+  },
+  "63MOONS|20251231|patC": {
+   "found_by": "\u00a7116c screen over all 60,768 con cells, 2026-08-26",
+   "nci": -11.98,
+   "note": "owners=-19.75 + NCI=-11.98 = -31.73 == ProfitLossForPeriod; the con slot held the TOTAL. Identity closes, which is the gate: 762 other stored==total cells were REFUSED because their owners/NCI/total do not reconcile (filer scale errors, sign flips, wrong concept) and cannot be healed by arithmetic.",
+   "owners": -19.75,
+   "src": "own consolidated XBRL INTEGRATED_FILING_INDAS_1622670_10022026061313_WEB_xml ctx OneD",
+   "total_was": -31.73
+  },
+  "63MOONS|20260331|patC": {
+   "found_by": "\u00a7116c screen over all 60,768 con cells, 2026-08-26",
+   "nci": 2.64,
+   "note": "owners=22.50 + NCI=2.64 = 25.14 == ProfitLossForPeriod; the con slot held the TOTAL. Identity closes, which is the gate: 762 other stored==total cells were REFUSED because their owners/NCI/total do not reconcile (filer scale errors, sign flips, wrong concept) and cannot be healed by arithmetic.",
+   "owners": 22.5,
+   "src": "own consolidated XBRL INTEGRATED_FILING_INDAS_1668939_18052026075808_WEB_xml ctx OneD",
+   "total_was": 25.14
   },
   "AADHARHFC|20250630|patC": {
    "identity": "FY25 consolidated annual = 91,183 lakhs = 911.83 crore. 20,014 (Jun-24, printed) + 22,751 (Sep-24, stored con 227.51) + 23,934 (Dec-24, stored con 239.34) + 24,484 (Mar-25, printed) = 91,183 EXACT, in lakhs, no residue. Column arithmetic also checks: PBT 30,515 - tax 6,787 = 23,728; 31,591 - 7,107 = 24,484; 25,724 - 5,710 = 20,014; 1,17,326 - 26,143 = 91,183.",
@@ -834,6 +1115,142 @@
    "source": "Federal-Mogul Goetze Q3FY20 results (filed 2020-02-07) p7, consolidated block, comparative column 31 December 2018",
    "stored_before": null,
    "when": "2026-08-17 20:19 IST"
+  },
+  "GMRP&UI|20220331|patC": {
+   "found_by": "\u00a7116c screen over all 60,768 con cells, 2026-08-26",
+   "nci": -58.43,
+   "note": "owners=-214.05 + NCI=-58.43 = -272.48 == ProfitLossForPeriod; the con slot held the TOTAL. Identity closes, which is the gate: 762 other stored==total cells were REFUSED because their owners/NCI/total do not reconcile (filer scale errors, sign flips, wrong concept) and cannot be healed by arithmetic.",
+   "owners": -214.05,
+   "src": "own consolidated XBRL INDAS_84776_656673_19052022022949_WEB_xml ctx OneD",
+   "total_was": -272.48
+  },
+  "GMRP&UI|20220630|patC": {
+   "found_by": "\u00a7116c screen over all 60,768 con cells, 2026-08-26",
+   "nci": -10.98,
+   "note": "owners=212.65 + NCI=-10.98 = 201.67 == ProfitLossForPeriod; the con slot held the TOTAL. Identity closes, which is the gate: 762 other stored==total cells were REFUSED because their owners/NCI/total do not reconcile (filer scale errors, sign flips, wrong concept) and cannot be healed by arithmetic.",
+   "owners": 212.65,
+   "src": "own consolidated XBRL INDAS_640301_4141_09082022125659_WEB_xml ctx OneD",
+   "total_was": 201.67
+  },
+  "GMRP&UI|20220930|patC": {
+   "found_by": "\u00a7116c screen over all 60,768 con cells, 2026-08-26",
+   "nci": -13.39,
+   "note": "owners=1082.70 + NCI=-13.39 = 1069.31 == ProfitLossForPeriod; the con slot held the TOTAL. Identity closes, which is the gate: 762 other stored==total cells were REFUSED because their owners/NCI/total do not reconcile (filer scale errors, sign flips, wrong concept) and cannot be healed by arithmetic.",
+   "owners": 1082.7,
+   "src": "own consolidated XBRL INDAS_861342_6665_11112022175804_WEB_xml ctx OneD",
+   "total_was": 1069.31
+  },
+  "GMRP&UI|20221231|patC": {
+   "found_by": "\u00a7116c screen over all 60,768 con cells, 2026-08-26",
+   "nci": -21.36,
+   "note": "owners=360.53 + NCI=-21.36 = 339.17 == ProfitLossForPeriod; the con slot held the TOTAL. Identity closes, which is the gate: 762 other stored==total cells were REFUSED because their owners/NCI/total do not reconcile (filer scale errors, sign flips, wrong concept) and cannot be healed by arithmetic.",
+   "owners": 360.53,
+   "src": "own consolidated XBRL INDAS_90101_794055_14022023022434_xml ctx OneD",
+   "total_was": 339.17
+  },
+  "GMRP&UI|20230331|patC": {
+   "found_by": "\u00a7116c screen over all 60,768 con cells, 2026-08-26",
+   "nci": 2.18,
+   "note": "owners=-473.09 + NCI=2.18 = -470.91 == ProfitLossForPeriod; the con slot held the TOTAL. Identity closes, which is the gate: 762 other stored==total cells were REFUSED because their owners/NCI/total do not reconcile (filer scale errors, sign flips, wrong concept) and cannot be healed by arithmetic.",
+   "owners": -473.09,
+   "src": "own consolidated XBRL INDAS_92506_850997_24052023053246_xml ctx OneD",
+   "total_was": -470.91
+  },
+  "GMRP&UI|20230630|patC": {
+   "found_by": "\u00a7116c screen over all 60,768 con cells, 2026-08-26",
+   "nci": -12.45,
+   "note": "owners=-205.30 + NCI=-12.45 = -217.75 == ProfitLossForPeriod; the con slot held the TOTAL. Identity closes, which is the gate: 762 other stored==total cells were REFUSED because their owners/NCI/total do not reconcile (filer scale errors, sign flips, wrong concept) and cannot be healed by arithmetic.",
+   "owners": -205.3,
+   "src": "own consolidated XBRL INDAS_96046_912931_10082023025549_xml ctx OneD",
+   "total_was": -217.75
+  },
+  "GMRP&UI|20230930|patC": {
+   "found_by": "\u00a7116c screen over all 60,768 con cells, 2026-08-26",
+   "nci": -17.98,
+   "note": "owners=-105.29 + NCI=-17.98 = -123.27 == ProfitLossForPeriod; the con slot held the TOTAL. Identity closes, which is the gate: 762 other stored==total cells were REFUSED because their owners/NCI/total do not reconcile (filer scale errors, sign flips, wrong concept) and cannot be healed by arithmetic.",
+   "owners": -105.29,
+   "src": "own consolidated XBRL INDAS_98786_976469_04112023112141_xml ctx OneD",
+   "total_was": -123.27
+  },
+  "GMRP&UI|20231231|patC": {
+   "found_by": "\u00a7116c screen over all 60,768 con cells, 2026-08-26",
+   "nci": -2.22,
+   "note": "owners=45.38 + NCI=-2.22 = 43.17 == ProfitLossForPeriod; the con slot held the TOTAL. Identity closes, which is the gate: 762 other stored==total cells were REFUSED because their owners/NCI/total do not reconcile (filer scale errors, sign flips, wrong concept) and cannot be healed by arithmetic.",
+   "owners": 45.38,
+   "src": "own consolidated XBRL INDAS_102775_1048222_08022024043610_xml ctx OneD",
+   "total_was": 43.17
+  },
+  "GMRP&UI|20240331|patC": {
+   "found_by": "\u00a7116c screen over all 60,768 con cells, 2026-08-26",
+   "nci": 8.21,
+   "note": "owners=162.18 + NCI=8.21 = 170.39 == ProfitLossForPeriod; the con slot held the TOTAL. Identity closes, which is the gate: 762 other stored==total cells were REFUSED because their owners/NCI/total do not reconcile (filer scale errors, sign flips, wrong concept) and cannot be healed by arithmetic.",
+   "owners": 162.18,
+   "src": "own consolidated XBRL INDAS_106370_1129684_18052024052213_xml ctx OneD",
+   "total_was": 170.39
+  },
+  "GMRP&UI|20240630|patC": {
+   "found_by": "\u00a7116c screen over all 60,768 con cells, 2026-08-26",
+   "nci": 136.95,
+   "note": "owners=1225.15 + NCI=136.95 = 1362.10 == ProfitLossForPeriod; the con slot held the TOTAL. Identity closes, which is the gate: 762 other stored==total cells were REFUSED because their owners/NCI/total do not reconcile (filer scale errors, sign flips, wrong concept) and cannot be healed by arithmetic.",
+   "owners": 1225.15,
+   "src": "own consolidated XBRL INDAS_112526_1227829_15082024060049_xml ctx OneD",
+   "total_was": 1362.1
+  },
+  "GMRP&UI|20240930|patC": {
+   "found_by": "\u00a7116c screen over all 60,768 con cells, 2026-08-26",
+   "nci": -5.55,
+   "note": "owners=255.11 + NCI=-5.55 = 249.56 == ProfitLossForPeriod; the con slot held the TOTAL. Identity closes, which is the gate: 762 other stored==total cells were REFUSED because their owners/NCI/total do not reconcile (filer scale errors, sign flips, wrong concept) and cannot be healed by arithmetic.",
+   "owners": 255.11,
+   "src": "own consolidated XBRL INDAS_113555_1290048_26102024072533_xml ctx OneD",
+   "total_was": 249.56
+  },
+  "GMRP&UI|20241231|patC": {
+   "found_by": "\u00a7116c screen over all 60,768 con cells, 2026-08-26",
+   "nci": -2.0,
+   "note": "owners=-106.45 + NCI=-2.00 = -108.45 == ProfitLossForPeriod; the con slot held the TOTAL. Identity closes, which is the gate: 762 other stored==total cells were REFUSED because their owners/NCI/total do not reconcile (filer scale errors, sign flips, wrong concept) and cannot be healed by arithmetic.",
+   "owners": -106.45,
+   "src": "own consolidated XBRL INDAS_118143_1365883_30012025040939_xml ctx OneD",
+   "total_was": -108.45
+  },
+  "GMRP&UI|20250331|patC": {
+   "found_by": "\u00a7116c screen over all 60,768 con cells, 2026-08-26",
+   "nci": 5.32,
+   "note": "owners=43.72 + NCI=5.32 = 49.04 == ProfitLossForPeriod; the con slot held the TOTAL. Identity closes, which is the gate: 762 other stored==total cells were REFUSED because their owners/NCI/total do not reconcile (filer scale errors, sign flips, wrong concept) and cannot be healed by arithmetic.",
+   "owners": 43.72,
+   "src": "own consolidated XBRL INTEGRATED_FILING_INDAS_1443749_19052025114819_WEB_xml ctx OneD",
+   "total_was": 49.04
+  },
+  "GMRP&UI|20250630|patC": {
+   "found_by": "\u00a7116c screen over all 60,768 con cells, 2026-08-26",
+   "nci": 0.62,
+   "note": "owners=-7.80 + NCI=0.62 = -7.16 == ProfitLossForPeriod; the con slot held the TOTAL. Identity closes, which is the gate: 762 other stored==total cells were REFUSED because their owners/NCI/total do not reconcile (filer scale errors, sign flips, wrong concept) and cannot be healed by arithmetic.",
+   "owners": -7.8,
+   "src": "own consolidated XBRL INTEGRATED_FILING_INDAS_1498607_30072025090520_WEB_xml ctx OneD",
+   "total_was": -7.16
+  },
+  "GMRP&UI|20250930|patC": {
+   "found_by": "\u00a7116c screen over all 60,768 con cells, 2026-08-26",
+   "nci": 6.31,
+   "note": "owners=888.39 + NCI=6.31 = 894.70 == ProfitLossForPeriod; the con slot held the TOTAL. Identity closes, which is the gate: 762 other stored==total cells were REFUSED because their owners/NCI/total do not reconcile (filer scale errors, sign flips, wrong concept) and cannot be healed by arithmetic.",
+   "owners": 888.39,
+   "src": "own consolidated XBRL INTEGRATED_FILING_INDAS_1575567_14112025070500_WEB_xml ctx OneD",
+   "total_was": 894.7
+  },
+  "GMRP&UI|20251231|patC": {
+   "found_by": "\u00a7116c screen over all 60,768 con cells, 2026-08-26",
+   "nci": 8.26,
+   "note": "owners=-168.53 + NCI=8.26 = -160.27 == ProfitLossForPeriod; the con slot held the TOTAL. Identity closes, which is the gate: 762 other stored==total cells were REFUSED because their owners/NCI/total do not reconcile (filer scale errors, sign flips, wrong concept) and cannot be healed by arithmetic.",
+   "owners": -168.53,
+   "src": "own consolidated XBRL INTEGRATED_FILING_INDAS_1620710_06022026083048_WEB_xml ctx OneD",
+   "total_was": -160.27
+  },
+  "GMRP&UI|20260331|patC": {
+   "found_by": "\u00a7116c screen over all 60,768 con cells, 2026-08-26",
+   "nci": -1.84,
+   "note": "owners=-111.72 + NCI=-1.84 = -113.56 == ProfitLossForPeriod; the con slot held the TOTAL. Identity closes, which is the gate: 762 other stored==total cells were REFUSED because their owners/NCI/total do not reconcile (filer scale errors, sign flips, wrong concept) and cannot be healed by arithmetic.",
+   "owners": -111.72,
+   "src": "own consolidated XBRL INTEGRATED_FILING_INDAS_1671087_21052026112958_WEB_xml ctx OneD",
+   "total_was": -113.56
   },
   "GRINDWELL|20170331|patC": {
    "identity": "Jun-17: owners 3,003 lakhs and total 3,032 are printed IDENTICALLY in both the quarter's own Q1FY18 filing (2017-08-02 p4) and the Q1FY19 comparative \u2014 so 30.32 is the total row, not a restatement. Mar-17: owners 3,373 printed in the Q1FY18 filing's audited Mar-17 column against the stored total 3,418.",
@@ -2159,5 +2576,5 @@
    }
   }
  },
- "generated": "2026-08-26 14:39 IST"
+ "generated": "2026-08-26 15:21 IST"
 }
