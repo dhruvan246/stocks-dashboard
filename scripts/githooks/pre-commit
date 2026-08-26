@@ -45,6 +45,30 @@ def main():
                 if p in PAYLOADS
                 or (p.startswith("scripts/") and p.endswith(".json")
                     and any(h in os.path.basename(p) for h in LEDGER_HINTS))]
+    # ★ HTML-ESCAPED PHANTOM SYMBOL KEYS (2026-08-26, runbook §114). Its own trigger, because the
+    # files that grow one are not all ledger-shaped — `_agg_ids_tl.json` is an id map, and
+    # `docs/discovery.json` is a rendered payload. Unlike MISSING this is NOT staleness-prone: a
+    # phantom key is a defect at any payload age, so it blocks. The escape is `git commit --no-verify`.
+    try:
+        sys.path.insert(0, os.path.join(root, "scripts"))
+        import phantom_key_guard as _pg
+        if any(f in _pg.SCANNED for f in staged):
+            ok, lines = _pg.check()
+            if not ok:
+                print("=" * 78)
+                print("COMMIT REFUSED — this tree adds an HTML-ESCAPED PHANTOM SYMBOL key.")
+                print("An `&` was escaped before the symbol was used as a key, so `M&M` becomes")
+                print("`M&AMP;M` — a duplicate row every coverage scan reads as already-filled, and")
+                print("one that RENDERS (discovery.json shipped 47 such rows before 2026-08-26).")
+                print("=" * 78)
+                for _l in lines:
+                    print("   " + _l)
+                print("\nUnescape at the SOURCE (html.unescape) in the write path, then re-commit.")
+                return 1
+    except Exception as e:
+        print("[pre-commit] phantom-key check errored (%s: %s) — allowing; run"
+              " scripts/phantom_key_guard.py by hand." % (type(e).__name__, e))
+
     if not relevant:
         return 0                                    # fast path: nothing ledger-shaped in this commit
 

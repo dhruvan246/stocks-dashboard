@@ -79,6 +79,7 @@ loads every session. (README.md is just a short pointer here — this file is th
 ---
 
 ## 0. GOLDEN RULES (the things that bite if forgotten)
+- **§114** ★★★ THE HTML-ESCAPED PHANTOM SYMBOLS WERE NOT INVISIBLE — `M&AMP;M` was RENDERING in docs/discovery.json (47 rows / 21 buckets), and the fundamentals rows were NOT all duplicates (4 unique, 46 contested, both sides filing-sourced). Fundamentals stores retracted to zero + guarded; the Trendlyne sitemap escape was writing off all 10 ampersand tickers (**read before trusting any recorded coverage/absence claim, and before deleting a phantom key**)
 - **★★★ NO ASSUMPTIONS. NO GUESSWORK. EVER.** User-mandated 2026-08-10; standing rule across
   this runbook AND every campaign/playbook doc (each carries the same line). Every value written
   and every claim made ("exists", "absent", "fixed", "live", "matches") must trace to something
@@ -12484,3 +12485,122 @@ and to `diiChgPp` (needs the PRIOR quarter's SHP filing).
   cell; never re-derive evidence from a post-fill run.
 
 Full campaign record, routes, residue and per-class owners: **`scripts/PLAN_FAV14_PRE2009.md`**.
+
+---
+
+## 114. ★★★ THE HTML-ESCAPED PHANTOM SYMBOLS WERE NOT INVISIBLE — they were rendering, and the escape is still live  (2026-08-26)
+
+**The class.** An `&` HTML-escaped during ingestion and then upper-cased with the ticker produces a
+symbol no exchange ever listed: `M&M` → `M&AMP;M`, `SURANAT&P` → `SURANAT&AMP;P`. Thirteen of them
+exist. `scripts/fill2020_tools/merge_escaped_phantom_symbols.py` (2026-08-11, commit b1b07ef0) moved what it could into the readable keys
+and deliberately left the keys themselves — "a separate decision with its own blast radius". This is
+that decision, plus the two things the 2026-08-11 pass did not find.
+
+### 114a. Two recorded facts were wrong, and measuring beat re-reading
+
+Both memories on this class said the phantoms were **"invisible to the site"** and that the
+fundamentals rows were **"all duplicates carrying nothing unique"**. Measured against `origin/main`
+on 2026-08-26 — not against the local checkout, which was **1,360 commits behind** and whose
+`sf_fundamentals.json` was 145 KB smaller — neither holds:
+
+- **They render.** `docs/discovery.json` — a served payload — carried **94 phantom strings = 47 rows
+  across 21 result buckets**, each labelled `M&AMP;M` / `J&AMP;KBANK` / `GVT&AMP;D`, sitting next to
+  the real company in the same bucket with a ticker that links nowhere. `build_discovery.py` reads
+  `sf_revop.json` (which still has all 13 keys) and treated them as ordinary symbols. The prior note
+  had checked `quarterly_results.json` and the search index, found them absent, and generalised.
+- **The rows are not all duplicates.** Of 74 phantom rows in `docs/sf_fundamentals.json`:
+  **182 cells DUP, 7 SUBSET, 4 UNIQUE, 46 CONTESTED** (both stores; the twin has no unique cells).
+  Every contested cell is in the **con** slot; `std` never disagrees once.
+
+### 114b. CONTESTED is a two-reader dispute, not stale aggregator junk
+
+The tempting read is "phantom = old scrape, real = filing, delete it". `xbrl_comparative_fills.json`
+refutes that: the phantom's con cells trace to **per-filing BSE XBRL** —
+`INDAS_36674_14158_31052018073529_WEB_2_x` is the CONSOLIDATED xbrl of the same filing whose
+`..._xml` produced the standalone we agree on. Both sides are filing-sourced, so this is the §108/§109
+restated-vintage family and **adjudicating it is a separate campaign.** Six of the 46 (IL&FSENGG) are
+the known XBRL `owners=0` mis-tag `apply_owners_full.py` already guards, so their phantom `0.0` is a
+filer artefact rather than a read.
+
+**So the retraction preserves rather than decides.** `scripts/phantom_symbol_retract.json` journals
+all 239 cells with phantom value, real value, verdict, rename chain and XBRL provenance BEFORE the
+key is dropped. Nothing is destroyed; the contested values move from an unreadable-but-live key into
+an explicit quarantine that names them as open.
+
+### 114c. The merge used the EXISTING gate, and the ann convention was measured
+
+Four cells (`SURANAT&P` con, Jun-18…Mar-19) existed **only** in the phantom. They were merged
+fill-only. Three things made that defensible and none of them was invented here:
+
+1. **The gate is imported, not re-implemented.** `retract_phantom_symbols.py` imports
+   `merge_escaped_phantom_symbols` and uses its rule (≥3 agreeing overlaps AND <15% disagreement,
+   scored over every revop slot plus both PAT slots). Re-run on current data it says
+   `SURANAT&AMP;P` **10.3% PASS**, and still **REFUSES** `S&AMP;SPOWER` (18.3%) and `COX&AMP;KINGS`
+   (36.4%) — whose unique values therefore stay unmerged, exactly as in August. Two verdicts MOVED
+   since then (`IL&AMP;FSENGG` 15.4% REFUSED → 6.5% PASS) because the real symbol's data improved;
+   a gate scored once and cached would have missed that.
+2. **A held cell asserts absence.** The tool scans every ledger for a `held` entry on the target
+   (sym, qe, basis) and refuses to merge there. None of the four was held.
+3. **The ann date is a measured convention.** `con` is never stored without `annCon` (60,810 con
+   cells, **zero** with `annCon` null), and **1,954 of the 1,978** already-applied `mc_pat_fills`
+   con cells carry `annCon == annStd` — the same filing. So a merged con takes the row's own
+   `annStd`; no `annStd`, no merge. Writing the `ann=0` sentinel instead would have added four fresh
+   look-ahead cells (§91).
+
+### 114d. ⚠️ THE LEDGER MUST MOVE WITH THE DATA OR CI GOES RED
+
+`mc_pat_fills.json` is registered in the **blocking** `verify_fills_live.py`, and **19 phantom-keyed
+entries live inside CI-registered ledgers** (13 in `mc_history_fills`, 6 in `mc_pat_fills`). Drop a
+payload key while a registered ledger still claims those cells and the next run reports MISSING and
+freezes the whole fundamentals publish. The six `mc_pat_fills` entries are re-keyed to the real
+symbol here — **and only where the real symbol demonstrably holds the value**: `M&M`'s two already
+matched to the paisa, `SURANAT&P`'s four hold because they were merged first. A re-key onto an empty
+slot reds CI just as surely as no re-key at all. (The 13 `mc_history_fills` entries point at
+`sf_revop`, which this pass does NOT retract, so they stay valid.)
+
+### 114e. The cause is LIVE, and it was costing a whole route
+
+`tl_ids()` in `scripts/agg_tools/agg_sources.py` regex-parses **Trendlyne's sitemap XML**, where `&`
+arrives as `&amp;`, and keyed the map on the raw match. Every caller passes our clean `M&M`, so all
+**ten** ampersand tickers fell through to `"tl: symbol absent from trendlyne fundamental sitemap"` —
+a refusal that blamed the SOURCE for a lookup we had never performed (memory:
+feedback-refusal-is-only-as-good-as-its-flag). Fixed by unescaping at the parse, plus `_tl_unescape()`
+healing the committed `_agg_ids_tl.json` on load because that cache has a 14-day TTL. **Measured
+after: 10/10 resolve, including `M&M` [807] and `J&KBANK` [653].** A second reader came back for ten
+symbols that had silently had none.
+
+The `.upper()` half (which turns `&amp;` into `&AMP;`) is the *older* half of the same escape and is
+what seeded the 13 store keys; `_mc_codes.json` and `_mc_reresolved.json` still hold **both** `M&M`
+and `M&AMP;M` mapped to the same sc_id, which is exactly why an ann=0 sweep can resolve a phantom and
+"improve" it. That is the near-miss that opened this section.
+
+### 114f. The guard — three layers, each proven to FAIL, not just to pass
+
+`scripts/phantom_key_guard.py`. Detection is `html.unescape(s) != s`, **never** a grep for `&AMP;` —
+`&amp;`, `&AMP;`, `&#38;` and `&#x26;` are one defect and only one form was ever searched for. It
+scans **keys and values** (discovery.json holds them as values; a key-only scan called that file
+clean while it was serving them). `_phantom_key_baseline.json` is a **ratchet**: both fundamentals
+stores are zero-tolerance, everything else may not GROW, and a shrink prints the re-bless command.
+
+Wired at three points and each one was tested by injecting `M&AMP;M` and confirming a non-zero exit:
+- `scripts/githooks/pre-commit` — blocks at the keyboard (this class is authored on this machine).
+- `scripts/verify_fills_live.py` — called from the existing blocking CI step, so it inherits that
+  wiring **without editing `refresh-fundamentals.yml`** (another session had it dirty; CLAUDE.md rule 1).
+- standalone `python3 scripts/phantom_key_guard.py`.
+
+### 114g. What is CLOSED and what is OPEN
+
+| | state |
+|---|---|
+| `docs/sf_fundamentals.json`, `scripts/fundamentals.json` | **CLOSED** — 9 keys / 74 rows retracted, 0 remain, guarded at zero |
+| `docs/discovery.json` rendering phantoms | **CLOSED** — builder drops them; rebuilt payload has 0 (was 94) |
+| Trendlyne route write-off | **CLOSED** — 10/10 ampersand symbols resolve |
+| `docs/sf_revop.json` (13 keys) | **OPEN** — the blessed gate says **232 values are still recoverable** from them. Run `merge_escaped_phantom_symbols.py --apply` FIRST, then retract; deleting the keys before that destroys 232 values |
+| `docs/fin/*_AMP_*.json` (13 slices) | **OPEN** — regenerate from sf_revop; they go when the row above does |
+| 46 CONTESTED con cells | **OPEN** — journalled in `phantom_symbol_retract.json`, §108/§109 vintage family |
+| the `.upper()` write path that seeded the 13 | **NOT FOUND** — the guard is the backstop; if a new key ever appears, the guard names the file and the symbol, which is the evidence that pass never had |
+
+**Golden rule this section is really about:** the 2026-08-11 note recorded a *conclusion* ("invisible",
+"all duplicates") rather than the *measurement* that produced it, and both halves rotted. Re-measure
+against `origin/main` before acting on any recorded coverage claim — and check the SERVED payload, not
+the store you happen to have open.

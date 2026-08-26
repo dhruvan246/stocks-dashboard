@@ -17,7 +17,7 @@ Output schema (compact):
 
 Run: python -X utf8 scripts/build_discovery.py   (CI: refresh-announcements.yml, after the fetch)
 """
-import os, sys, json, gzip, re, datetime
+import os, sys, json, gzip, re, html, datetime
 
 HERE = os.path.dirname(os.path.abspath(__file__))
 DOCS = os.path.join(HERE, "..", "docs")
@@ -41,6 +41,16 @@ try:
 except Exception:
     ORDSHARES = {}
 revop = json.load(open(dp("sf_revop.json"), encoding="utf-8"))
+# ★ HTML-ESCAPED PHANTOM KEYS ARE NOT INERT — THEY WERE RENDERING (2026-08-26, runbook §114).
+# sf_revop still carries 13 keys an ingestion path HTML-escaped (`M&M` -> `M&AMP;M`); this page read
+# them as ordinary symbols and shipped 46 rows across 21 result buckets labelled `M&AMP;M`,
+# `J&AMP;KBANK`, `GVT&AMP;D` — duplicates of names already in the same bucket, with a ticker that
+# links nowhere. Two memories had recorded these keys as "invisible to the site"; measuring the
+# SERVED payload is what showed they were not. Dropped here rather than folded into the real symbol:
+# every one of the 13 resolves to a key sf_revop already holds, so folding could only double-count.
+# The keys themselves are retracted store by store (fundamentals: done; sf_revop: open).
+for _s in [_k for _k in revop if html.unescape(_k) != _k]:
+    revop.pop(_s)
 # OWNERS-attributable PAT lives in sf_revop's mirror slots too, but the two files DISAGREE on 1,372
 # of 43,731 populated con-PAT cells (measured 2026-08-09, runbook §70) and sf_fundamentals is the
 # authoritative one -- stock.html: "never swap in sf_revop's PAT mirror slots". ttm_pat() below was

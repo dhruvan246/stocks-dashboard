@@ -442,7 +442,23 @@ def main():
         json.dump(fund, open(FUND, "w"), separators=(",", ":"))
         print("re-retracted %d resurrected cells (commit + push, then re-run)" % len(resurrected))
 
-    sys.exit(1 if (missing or resurrected) else 0)
+    # ★ HTML-ESCAPED PHANTOM SYMBOL KEYS (2026-08-26, runbook §114). Called from here rather than
+    # added as a new workflow step: this is already THE blocking gate over these two payloads, so the
+    # guard inherits its CI wiring for free. A phantom key (`M&M` -> `M&AMP;M`) is a duplicate row
+    # every coverage scan reads as already-filled, and it was rendering in docs/discovery.json.
+    phantom_ok = True
+    try:
+        sys.path.insert(0, HERE)
+        import phantom_key_guard
+        phantom_ok, lines = phantom_key_guard.check()
+        if not phantom_ok or not quiet:
+            for _l in lines:
+                print(_l)
+    except Exception as e:                       # never let the guard wedge the detector it rides on
+        print("  (phantom-key guard errored: %s: %s — run scripts/phantom_key_guard.py by hand)"
+              % (type(e).__name__, e))
+
+    sys.exit(1 if (missing or resurrected or not phantom_ok) else 0)
 
 
 if __name__ == "__main__":

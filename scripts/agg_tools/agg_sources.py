@@ -39,6 +39,7 @@ Nothing here writes anything. Values are returned as the site prints them; the c
 agg_gate before a single number reaches a ledger.
 """
 import gzip
+import html as html_lib
 import json
 import os
 import re
@@ -301,20 +302,34 @@ _TL_IDS_PATH = os.path.join(os.path.dirname(os.path.abspath(__file__)), "_agg_id
 TL_SITEMAP = "https://trendlyne.com/fundamental-sitemap-quarter-result.xml"
 
 
+def _tl_unescape(m):
+    """Heal a cached id map written before the unescape fix -- `_agg_ids_tl.json` is committed and
+    has a 14-day TTL, so without this the stale escaped keys would keep answering for two weeks."""
+    return {html_lib.unescape(k): v for k, v in (m or {}).items()}
+
+
 def tl_ids(refresh=False):
     """{SYMBOL: [tid, slug]} straight off Trendlyne's own sitemap -- the URLs key on NSE symbol."""
     global _TL_IDS
     if _TL_IDS is not None and not refresh:
         return _TL_IDS
     if os.path.exists(_TL_IDS_PATH) and not refresh:
-        _TL_IDS = json.load(open(_TL_IDS_PATH))
+        _TL_IDS = _tl_unescape(json.load(open(_TL_IDS_PATH)))
         return _TL_IDS
     txt = _get("trendlyne.com", TL_SITEMAP, TL_PACE, "tl", "sitemap_qr", ttl=86400 * 14)
     m = {}
     for tid, s, slug in re.findall(
             r"<loc>https://trendlyne\.com/fundamentals/financials/(\d+)/([^/]+)/([^/]*)/</loc>",
             txt or ""):
-        m.setdefault(s, [int(tid), slug])
+        # ★ THE SITEMAP IS XML, SO `&` ARRIVES AS `&amp;` (2026-08-26). Keying the map on the raw
+        # match stored `M&amp;M`, and every caller passes our clean `M&M` -- so all ten ampersand
+        # tickers (M&M, M&MFIN, J&KBANK, GVT&D, ARE&M, IL&FSENGG, IL&FSTRANS, S&SPOWER, SURANAT&P,
+        # GMRP&UI) fell straight through to "symbol absent from trendlyne fundamental sitemap".
+        # A refusal is only as good as its flag: that one claimed the SOURCE had no row when in
+        # fact we had never looked it up. This is the same escape that produced the `M&AMP;M`
+        # phantom keys retracted in runbook §114 -- there the escaped string became a store key,
+        # here it became a lookup key; unescape at the source in both cases.
+        m.setdefault(html_lib.unescape(s), [int(tid), slug])
     if m:
         _TL_IDS = m
         json.dump(m, open(_TL_IDS_PATH, "w"), indent=0, sort_keys=True)

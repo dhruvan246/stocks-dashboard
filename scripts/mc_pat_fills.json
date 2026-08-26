@@ -10985,24 +10985,6 @@
   "sc_id": "LL02",
   "src": "moneycontrol appfeeds quarterly_results_responsive limit=400"
  },
- "M&AMP;M|20181231|con": {
-  "basis": "con",
-  "gate": "6 anchors, 0 distant disagreements, none within \u00b16 quarters",
-  "neighbour_ratio": 4.782,
-  "pat": 1310.51,
-  "row_label": "Net P/L After M.I & Associates",
-  "sc_id": "MM",
-  "src": "moneycontrol appfeeds quarterly_results_responsive limit=400"
- },
- "M&AMP;M|20190331|con": {
-  "basis": "con",
-  "gate": "6 anchors, 0 distant disagreements, none within \u00b16 quarters",
-  "neighbour_ratio": 2.53,
-  "pat": 693.4,
-  "row_label": "Net P/L After M.I & Associates",
-  "sc_id": "MM",
-  "src": "moneycontrol appfeeds quarterly_results_responsive limit=400"
- },
  "M&MFIN|20181231|con": {
   "basis": "con",
   "gate": "26 anchors, 1 distant disagreements, none within \u00b16 quarters",
@@ -11050,18 +11032,22 @@
  },
  "M&M|20181231|con": {
   "basis": "con",
-  "gate": "28 anchors, 1 distant disagreements, none within \u00b16 quarters",
-  "neighbour_ratio": 2.162,
+  "gate": "6 anchors, 0 distant disagreements, none within \u00b16 quarters",
+  "neighbour_ratio": 4.782,
   "pat": 1310.51,
+  "rekeyed_from": "M&AMP;M|20181231|con",
+  "rekeyed_why": "phantom key retracted from the fundamentals stores 2026-08-26",
   "row_label": "Net P/L After M.I & Associates",
   "sc_id": "MM",
   "src": "moneycontrol appfeeds quarterly_results_responsive limit=400"
  },
  "M&M|20190331|con": {
   "basis": "con",
-  "gate": "28 anchors, 1 distant disagreements, none within \u00b16 quarters",
+  "gate": "6 anchors, 0 distant disagreements, none within \u00b16 quarters",
   "neighbour_ratio": 2.53,
   "pat": 693.4,
+  "rekeyed_from": "M&AMP;M|20190331|con",
+  "rekeyed_why": "phantom key retracted from the fundamentals stores 2026-08-26",
   "row_label": "Net P/L After M.I & Associates",
   "sc_id": "MM",
   "src": "moneycontrol appfeeds quarterly_results_responsive limit=400"
@@ -17493,38 +17479,46 @@
   "sc_id": "SII03",
   "src": "moneycontrol appfeeds quarterly_results_responsive limit=400"
  },
- "SURANAT&AMP;P|20180630|con": {
+ "SURANAT&P|20180630|con": {
   "basis": "con",
   "gate": "6 anchors, 0 distant disagreements, none within \u00b16 quarters",
   "neighbour_ratio": null,
   "pat": 0.79,
+  "rekeyed_from": "SURANAT&AMP;P|20180630|con",
+  "rekeyed_why": "phantom key retracted from the fundamentals stores 2026-08-26",
   "row_label": "Net P/L After M.I & Associates",
   "sc_id": "ST12",
   "src": "moneycontrol appfeeds quarterly_results_responsive limit=400"
  },
- "SURANAT&AMP;P|20180930|con": {
+ "SURANAT&P|20180930|con": {
   "basis": "con",
   "gate": "6 anchors, 0 distant disagreements, none within \u00b16 quarters",
   "neighbour_ratio": null,
   "pat": 0.57,
+  "rekeyed_from": "SURANAT&AMP;P|20180930|con",
+  "rekeyed_why": "phantom key retracted from the fundamentals stores 2026-08-26",
   "row_label": "Net P/L After M.I & Associates",
   "sc_id": "ST12",
   "src": "moneycontrol appfeeds quarterly_results_responsive limit=400"
  },
- "SURANAT&AMP;P|20181231|con": {
+ "SURANAT&P|20181231|con": {
   "basis": "con",
   "gate": "6 anchors, 0 distant disagreements, none within \u00b16 quarters",
   "neighbour_ratio": null,
   "pat": 2.83,
+  "rekeyed_from": "SURANAT&AMP;P|20181231|con",
+  "rekeyed_why": "phantom key retracted from the fundamentals stores 2026-08-26",
   "row_label": "Net P/L After M.I & Associates",
   "sc_id": "ST12",
   "src": "moneycontrol appfeeds quarterly_results_responsive limit=400"
  },
- "SURANAT&AMP;P|20190331|con": {
+ "SURANAT&P|20190331|con": {
   "basis": "con",
   "gate": "6 anchors, 0 distant disagreements, none within \u00b16 quarters",
   "neighbour_ratio": null,
   "pat": 1.08,
+  "rekeyed_from": "SURANAT&AMP;P|20190331|con",
+  "rekeyed_why": "phantom key retracted from the fundamentals stores 2026-08-26",
   "row_label": "Net P/L After M.I & Associates",
   "sc_id": "ST12",
   "src": "moneycontrol appfeeds quarterly_results_responsive limit=400"
@@ -19682,6 +19676,7 @@
   "src": "moneycontrol appfeeds quarterly_results_responsive limit=400"
  },
  "_RETRACTED_AAKASH_20230331_con": {
+  "RETRACTED": "2026-08-18 12:32 IST: cell retracted by the con-copy campaign (scripts/con_copy_retractions.json) - no consolidated filing exists for that quarter. Kept for audit; must not be re-applied.",
   "basis": "con",
   "fallback_check": "equals our standalone, but this company never shows con != std across 10 overlapping stored quarters \u2014 genuine no-consolidation-difference, kept",
   "gate": "4 anchors, 0 distant disagreements, none within \u00b16 quarters",
@@ -19689,10 +19684,10 @@
   "pat": 1.06,
   "row_label": "Net P/L After M.I & Associates",
   "sc_id": "AES01",
-  "src": "moneycontrol appfeeds quarterly_results_responsive limit=400",
-  "RETRACTED": "2026-08-18 12:32 IST: cell retracted by the con-copy campaign (scripts/con_copy_retractions.json) - no consolidated filing exists for that quarter. Kept for audit; must not be re-applied."
+  "src": "moneycontrol appfeeds quarterly_results_responsive limit=400"
  },
  "_RETRACTED_AAKASH_20230630_con": {
+  "RETRACTED": "2026-08-18 12:32 IST: cell retracted by the con-copy campaign (scripts/con_copy_retractions.json) - no consolidated filing exists for that quarter. Kept for audit; must not be re-applied.",
   "basis": "con",
   "fallback_check": "equals our standalone, but this company never shows con != std across 10 overlapping stored quarters \u2014 genuine no-consolidation-difference, kept",
   "gate": "4 anchors, 0 distant disagreements, none within \u00b16 quarters",
@@ -19700,10 +19695,10 @@
   "pat": 1.04,
   "row_label": "Net P/L After M.I & Associates",
   "sc_id": "AES01",
-  "src": "moneycontrol appfeeds quarterly_results_responsive limit=400",
-  "RETRACTED": "2026-08-18 12:32 IST: cell retracted by the con-copy campaign (scripts/con_copy_retractions.json) - no consolidated filing exists for that quarter. Kept for audit; must not be re-applied."
+  "src": "moneycontrol appfeeds quarterly_results_responsive limit=400"
  },
  "_RETRACTED_AAKASH_20230930_con": {
+  "RETRACTED": "2026-08-18 12:32 IST: cell retracted by the con-copy campaign (scripts/con_copy_retractions.json) - no consolidated filing exists for that quarter. Kept for audit; must not be re-applied.",
   "basis": "con",
   "fallback_check": "equals our standalone, but this company never shows con != std across 10 overlapping stored quarters \u2014 genuine no-consolidation-difference, kept",
   "gate": "4 anchors, 0 distant disagreements, none within \u00b16 quarters",
@@ -19711,10 +19706,10 @@
   "pat": 1.26,
   "row_label": "Net P/L After M.I & Associates",
   "sc_id": "AES01",
-  "src": "moneycontrol appfeeds quarterly_results_responsive limit=400",
-  "RETRACTED": "2026-08-18 12:32 IST: cell retracted by the con-copy campaign (scripts/con_copy_retractions.json) - no consolidated filing exists for that quarter. Kept for audit; must not be re-applied."
+  "src": "moneycontrol appfeeds quarterly_results_responsive limit=400"
  },
  "_RETRACTED_AGI_20240630_con": {
+  "RETRACTED": "2026-08-18 12:32 IST: cell retracted by the con-copy campaign (scripts/con_copy_retractions.json) - no consolidated filing exists for that quarter. Kept for audit; must not be re-applied.",
   "basis": "con",
   "gate": "8 anchors, 0 distant disagreements, none within \u00b16 quarters",
   "held": "MC consolidated == our standalone for this quarter, and this company's own history shows con != std elsewhere \u2014 Moneycontrol's consolidated table falls back to standalone where no consolidated result was filed. Writing it would manufacture a consolidated figure (\u00a767 class).",
@@ -19722,10 +19717,10 @@
   "pat": 63.23,
   "row_label": "Net P/L After M.I & Associates",
   "sc_id": "HSI",
-  "src": "moneycontrol appfeeds quarterly_results_responsive limit=400",
-  "RETRACTED": "2026-08-18 12:32 IST: cell retracted by the con-copy campaign (scripts/con_copy_retractions.json) - no consolidated filing exists for that quarter. Kept for audit; must not be re-applied."
+  "src": "moneycontrol appfeeds quarterly_results_responsive limit=400"
  },
  "_RETRACTED_AGROPHOS_20230630_con": {
+  "RETRACTED": "2026-08-18 12:32 IST: cell retracted by the con-copy campaign (scripts/con_copy_retractions.json) - no consolidated filing exists for that quarter. Kept for audit; must not be re-applied.",
   "basis": "con",
   "gate": "10 anchors, 0 distant disagreements, none within \u00b16 quarters",
   "held": "MC consolidated == our standalone for this quarter, and this company's own history shows con != std elsewhere \u2014 Moneycontrol's consolidated table falls back to standalone where no consolidated result was filed. Writing it would manufacture a consolidated figure (\u00a767 class).",
@@ -19733,10 +19728,10 @@
   "pat": -1.15,
   "row_label": "Net P/L After M.I & Associates",
   "sc_id": "API07",
-  "src": "moneycontrol appfeeds quarterly_results_responsive limit=400",
-  "RETRACTED": "2026-08-18 12:32 IST: cell retracted by the con-copy campaign (scripts/con_copy_retractions.json) - no consolidated filing exists for that quarter. Kept for audit; must not be re-applied."
+  "src": "moneycontrol appfeeds quarterly_results_responsive limit=400"
  },
  "_RETRACTED_AGROPHOS_20230930_con": {
+  "RETRACTED": "2026-08-18 12:32 IST: cell retracted by the con-copy campaign (scripts/con_copy_retractions.json) - no consolidated filing exists for that quarter. Kept for audit; must not be re-applied.",
   "basis": "con",
   "gate": "10 anchors, 0 distant disagreements, none within \u00b16 quarters",
   "held": "MC consolidated == our standalone for this quarter, and this company's own history shows con != std elsewhere \u2014 Moneycontrol's consolidated table falls back to standalone where no consolidated result was filed. Writing it would manufacture a consolidated figure (\u00a767 class).",
@@ -19744,10 +19739,10 @@
   "pat": 4.39,
   "row_label": "Net P/L After M.I & Associates",
   "sc_id": "API07",
-  "src": "moneycontrol appfeeds quarterly_results_responsive limit=400",
-  "RETRACTED": "2026-08-18 12:32 IST: cell retracted by the con-copy campaign (scripts/con_copy_retractions.json) - no consolidated filing exists for that quarter. Kept for audit; must not be re-applied."
+  "src": "moneycontrol appfeeds quarterly_results_responsive limit=400"
  },
  "_RETRACTED_BAJEL_20240331_con": {
+  "RETRACTED": "2026-08-18 12:32 IST: cell retracted by the con-copy campaign (scripts/con_copy_retractions.json) - no consolidated filing exists for that quarter. Kept for audit; must not be re-applied.",
   "basis": "con",
   "gate": "6 anchors, 0 distant disagreements, none within \u00b16 quarters",
   "held": "MC consolidated == our standalone for this quarter, and this company's own history shows con != std elsewhere \u2014 Moneycontrol's consolidated table falls back to standalone where no consolidated result was filed. Writing it would manufacture a consolidated figure (\u00a767 class).",
@@ -19755,10 +19750,10 @@
   "pat": 7.07,
   "row_label": "Net P/L After M.I & Associates",
   "sc_id": "BP06",
-  "src": "moneycontrol appfeeds quarterly_results_responsive limit=400",
-  "RETRACTED": "2026-08-18 12:32 IST: cell retracted by the con-copy campaign (scripts/con_copy_retractions.json) - no consolidated filing exists for that quarter. Kept for audit; must not be re-applied."
+  "src": "moneycontrol appfeeds quarterly_results_responsive limit=400"
  },
  "_RETRACTED_BAJEL_20240630_con": {
+  "RETRACTED": "2026-08-18 12:32 IST: cell retracted by the con-copy campaign (scripts/con_copy_retractions.json) - no consolidated filing exists for that quarter. Kept for audit; must not be re-applied.",
   "basis": "con",
   "gate": "6 anchors, 0 distant disagreements, none within \u00b16 quarters",
   "held": "MC consolidated == our standalone for this quarter, and this company's own history shows con != std elsewhere \u2014 Moneycontrol's consolidated table falls back to standalone where no consolidated result was filed. Writing it would manufacture a consolidated figure (\u00a767 class).",
@@ -19766,10 +19761,10 @@
   "pat": 5.52,
   "row_label": "Net P/L After M.I & Associates",
   "sc_id": "BP06",
-  "src": "moneycontrol appfeeds quarterly_results_responsive limit=400",
-  "RETRACTED": "2026-08-18 12:32 IST: cell retracted by the con-copy campaign (scripts/con_copy_retractions.json) - no consolidated filing exists for that quarter. Kept for audit; must not be re-applied."
+  "src": "moneycontrol appfeeds quarterly_results_responsive limit=400"
  },
  "_RETRACTED_BAJEL_20240930_con": {
+  "RETRACTED": "2026-08-18 12:32 IST: cell retracted by the con-copy campaign (scripts/con_copy_retractions.json) - no consolidated filing exists for that quarter. Kept for audit; must not be re-applied.",
   "basis": "con",
   "gate": "6 anchors, 0 distant disagreements, none within \u00b16 quarters",
   "held": "MC consolidated == our standalone for this quarter, and this company's own history shows con != std elsewhere \u2014 Moneycontrol's consolidated table falls back to standalone where no consolidated result was filed. Writing it would manufacture a consolidated figure (\u00a767 class).",
@@ -19777,10 +19772,10 @@
   "pat": 3.66,
   "row_label": "Net P/L After M.I & Associates",
   "sc_id": "BP06",
-  "src": "moneycontrol appfeeds quarterly_results_responsive limit=400",
-  "RETRACTED": "2026-08-18 12:32 IST: cell retracted by the con-copy campaign (scripts/con_copy_retractions.json) - no consolidated filing exists for that quarter. Kept for audit; must not be re-applied."
+  "src": "moneycontrol appfeeds quarterly_results_responsive limit=400"
  },
  "_RETRACTED_BAJEL_20241231_con": {
+  "RETRACTED": "2026-08-18 12:32 IST: cell retracted by the con-copy campaign (scripts/con_copy_retractions.json) - no consolidated filing exists for that quarter. Kept for audit; must not be re-applied.",
   "basis": "con",
   "gate": "6 anchors, 0 distant disagreements, none within \u00b16 quarters",
   "held": "MC consolidated == our standalone for this quarter, and this company's own history shows con != std elsewhere \u2014 Moneycontrol's consolidated table falls back to standalone where no consolidated result was filed. Writing it would manufacture a consolidated figure (\u00a767 class).",
@@ -19788,10 +19783,10 @@
   "pat": 1.46,
   "row_label": "Net P/L After M.I & Associates",
   "sc_id": "BP06",
-  "src": "moneycontrol appfeeds quarterly_results_responsive limit=400",
-  "RETRACTED": "2026-08-18 12:32 IST: cell retracted by the con-copy campaign (scripts/con_copy_retractions.json) - no consolidated filing exists for that quarter. Kept for audit; must not be re-applied."
+  "src": "moneycontrol appfeeds quarterly_results_responsive limit=400"
  },
  "_RETRACTED_BATAINDIA_20180930_con": {
+  "RETRACTED": "2026-08-18 12:32 IST: cell retracted by the con-copy campaign (scripts/con_copy_retractions.json) - no consolidated filing exists for that quarter. Kept for audit; must not be re-applied.",
   "basis": "con",
   "fallback_check": "SOURCE-INTERNAL test 2026-08-11: Moneycontrol's consolidated row DIFFERS from Moneycontrol's OWN standalone row for this quarter, same label (con 54.86 vs std 55.66). It DIFFERS by 0.80, and a copy is not off by that, so MC is serving a real consolidated table for this field. The earlier hold rested on 'con equals OUR stored standalone', which is a different comparison and cannot tell the aggregator repeating standalone from a genuine equal-value consolidation. Hold LIFTED; value stands.",
   "gate": "28 anchors, 0 distant disagreements, none within \u00b16 quarters",
@@ -19799,40 +19794,40 @@
   "pat": 54.86,
   "row_label": "Net P/L After M.I & Associates",
   "sc_id": "BI01",
-  "src": "moneycontrol appfeeds quarterly_results_responsive limit=400",
-  "RETRACTED": "2026-08-18 12:32 IST: cell retracted by the con-copy campaign (scripts/con_copy_retractions.json) - no consolidated filing exists for that quarter. Kept for audit; must not be re-applied."
+  "src": "moneycontrol appfeeds quarterly_results_responsive limit=400"
  },
  "_RETRACTED_BOMDYEING_20180630_con": {
+  "RETRACTED": "2026-08-18 12:32 IST: cell retracted by the con-copy campaign (scripts/con_copy_retractions.json) - no consolidated filing exists for that quarter. Kept for audit; must not be re-applied.",
   "basis": "con",
   "gate": "28 anchors, 0 distant disagreements, none within \u00b16 quarters",
   "neighbour_ratio": 1.042,
   "pat": -93.7,
   "row_label": "Net P/L After M.I & Associates",
   "sc_id": "BDM",
-  "src": "moneycontrol appfeeds quarterly_results_responsive limit=400",
-  "RETRACTED": "2026-08-18 12:32 IST: cell retracted by the con-copy campaign (scripts/con_copy_retractions.json) - no consolidated filing exists for that quarter. Kept for audit; must not be re-applied."
+  "src": "moneycontrol appfeeds quarterly_results_responsive limit=400"
  },
  "_RETRACTED_BOMDYEING_20180930_con": {
+  "RETRACTED": "2026-08-18 12:32 IST: cell retracted by the con-copy campaign (scripts/con_copy_retractions.json) - no consolidated filing exists for that quarter. Kept for audit; must not be re-applied.",
   "basis": "con",
   "gate": "28 anchors, 0 distant disagreements, none within \u00b16 quarters",
   "neighbour_ratio": 3.608,
   "pat": 324.51,
   "row_label": "Net P/L After M.I & Associates",
   "sc_id": "BDM",
-  "src": "moneycontrol appfeeds quarterly_results_responsive limit=400",
-  "RETRACTED": "2026-08-18 12:32 IST: cell retracted by the con-copy campaign (scripts/con_copy_retractions.json) - no consolidated filing exists for that quarter. Kept for audit; must not be re-applied."
+  "src": "moneycontrol appfeeds quarterly_results_responsive limit=400"
  },
  "_RETRACTED_BOMDYEING_20181231_con": {
+  "RETRACTED": "2026-08-18 12:32 IST: cell retracted by the con-copy campaign (scripts/con_copy_retractions.json) - no consolidated filing exists for that quarter. Kept for audit; must not be re-applied.",
   "basis": "con",
   "gate": "28 anchors, 0 distant disagreements, none within \u00b16 quarters",
   "neighbour_ratio": 2.114,
   "pat": -190.15,
   "row_label": "Net P/L After M.I & Associates",
   "sc_id": "BDM",
-  "src": "moneycontrol appfeeds quarterly_results_responsive limit=400",
-  "RETRACTED": "2026-08-18 12:32 IST: cell retracted by the con-copy campaign (scripts/con_copy_retractions.json) - no consolidated filing exists for that quarter. Kept for audit; must not be re-applied."
+  "src": "moneycontrol appfeeds quarterly_results_responsive limit=400"
  },
  "_RETRACTED_CUPID_20200630_con": {
+  "RETRACTED": "2026-08-18 12:32 IST: cell retracted by the con-copy campaign (scripts/con_copy_retractions.json) - no consolidated filing exists for that quarter. Kept for audit; must not be re-applied.",
   "basis": "con",
   "gate": "9 anchors, 1 distant disagreements, none within \u00b16 quarters",
   "held": "MC consolidated == our standalone for this quarter, and this company's own history shows con != std elsewhere \u2014 Moneycontrol's consolidated table falls back to standalone where no consolidated result was filed. Writing it would manufacture a consolidated figure (\u00a767 class).",
@@ -19840,10 +19835,10 @@
   "pat": 5.92,
   "row_label": "Net P/L After M.I & Associates",
   "sc_id": "CR02",
-  "src": "moneycontrol appfeeds quarterly_results_responsive limit=400",
-  "RETRACTED": "2026-08-18 12:32 IST: cell retracted by the con-copy campaign (scripts/con_copy_retractions.json) - no consolidated filing exists for that quarter. Kept for audit; must not be re-applied."
+  "src": "moneycontrol appfeeds quarterly_results_responsive limit=400"
  },
  "_RETRACTED_CUPID_20210331_con": {
+  "RETRACTED": "2026-08-18 12:32 IST: cell retracted by the con-copy campaign (scripts/con_copy_retractions.json) - no consolidated filing exists for that quarter. Kept for audit; must not be re-applied.",
   "basis": "con",
   "gate": "9 anchors, 1 distant disagreements, none within \u00b16 quarters",
   "held": "MC consolidated == our standalone for this quarter, and this company's own history shows con != std elsewhere \u2014 Moneycontrol's consolidated table falls back to standalone where no consolidated result was filed. Writing it would manufacture a consolidated figure (\u00a767 class).",
@@ -19851,10 +19846,10 @@
   "pat": 6.47,
   "row_label": "Net P/L After M.I & Associates",
   "sc_id": "CR02",
-  "src": "moneycontrol appfeeds quarterly_results_responsive limit=400",
-  "RETRACTED": "2026-08-18 12:32 IST: cell retracted by the con-copy campaign (scripts/con_copy_retractions.json) - no consolidated filing exists for that quarter. Kept for audit; must not be re-applied."
+  "src": "moneycontrol appfeeds quarterly_results_responsive limit=400"
  },
  "_RETRACTED_GSCLCEMENT_20180630_con": {
+  "RETRACTED": "2026-08-18 12:32 IST: cell retracted by the con-copy campaign (scripts/con_copy_retractions.json) - no consolidated filing exists for that quarter. Kept for audit; must not be re-applied.",
   "basis": "con",
   "gate": "8 anchors, 0 distant disagreements, none within \u00b16 quarters",
   "held": "MC consolidated == our standalone for this quarter, and this company's own history shows con != std elsewhere \u2014 Moneycontrol's consolidated table falls back to standalone where no consolidated result was filed. Writing it would manufacture a consolidated figure (\u00a767 class).",
@@ -19862,120 +19857,120 @@
   "pat": 3.51,
   "row_label": "Net P/L After M.I & Associates",
   "sc_id": "GSC02",
-  "src": "moneycontrol appfeeds quarterly_results_responsive limit=400",
-  "RETRACTED": "2026-08-18 12:32 IST: cell retracted by the con-copy campaign (scripts/con_copy_retractions.json) - no consolidated filing exists for that quarter. Kept for audit; must not be re-applied."
+  "src": "moneycontrol appfeeds quarterly_results_responsive limit=400"
  },
  "_RETRACTED_GSCLCEMENT_20180930_con": {
+  "RETRACTED": "2026-08-18 12:32 IST: cell retracted by the con-copy campaign (scripts/con_copy_retractions.json) - no consolidated filing exists for that quarter. Kept for audit; must not be re-applied.",
   "basis": "con",
   "gate": "8 anchors, 0 distant disagreements, none within \u00b16 quarters",
   "neighbour_ratio": 0.229,
   "pat": -1.71,
   "row_label": "Net P/L After M.I & Associates",
   "sc_id": "GSC02",
-  "src": "moneycontrol appfeeds quarterly_results_responsive limit=400",
-  "RETRACTED": "2026-08-18 12:32 IST: cell retracted by the con-copy campaign (scripts/con_copy_retractions.json) - no consolidated filing exists for that quarter. Kept for audit; must not be re-applied."
+  "src": "moneycontrol appfeeds quarterly_results_responsive limit=400"
  },
  "_RETRACTED_GSCLCEMENT_20181231_con": {
+  "RETRACTED": "2026-08-18 12:32 IST: cell retracted by the con-copy campaign (scripts/con_copy_retractions.json) - no consolidated filing exists for that quarter. Kept for audit; must not be re-applied.",
   "basis": "con",
   "gate": "8 anchors, 0 distant disagreements, none within \u00b16 quarters",
   "neighbour_ratio": 1.668,
   "pat": -12.47,
   "row_label": "Net P/L After M.I & Associates",
   "sc_id": "GSC02",
-  "src": "moneycontrol appfeeds quarterly_results_responsive limit=400",
-  "RETRACTED": "2026-08-18 12:32 IST: cell retracted by the con-copy campaign (scripts/con_copy_retractions.json) - no consolidated filing exists for that quarter. Kept for audit; must not be re-applied."
+  "src": "moneycontrol appfeeds quarterly_results_responsive limit=400"
  },
  "_RETRACTED_HINDCOMPOS_20180630_con": {
+  "RETRACTED": "2026-08-18 12:32 IST: cell retracted by the con-copy campaign (scripts/con_copy_retractions.json) - no consolidated filing exists for that quarter. Kept for audit; must not be re-applied.",
   "basis": "con",
   "gate": "10 anchors, 0 distant disagreements, none within \u00b16 quarters",
   "neighbour_ratio": null,
   "pat": 4.15,
   "row_label": "Net P/L After M.I & Associates",
   "sc_id": "HC06",
-  "src": "moneycontrol appfeeds quarterly_results_responsive limit=400",
-  "RETRACTED": "2026-08-18 12:32 IST: cell retracted by the con-copy campaign (scripts/con_copy_retractions.json) - no consolidated filing exists for that quarter. Kept for audit; must not be re-applied."
+  "src": "moneycontrol appfeeds quarterly_results_responsive limit=400"
  },
  "_RETRACTED_HINDCOMPOS_20180930_con": {
+  "RETRACTED": "2026-08-18 12:32 IST: cell retracted by the con-copy campaign (scripts/con_copy_retractions.json) - no consolidated filing exists for that quarter. Kept for audit; must not be re-applied.",
   "basis": "con",
   "gate": "10 anchors, 0 distant disagreements, none within \u00b16 quarters",
   "neighbour_ratio": null,
   "pat": 3.4,
   "row_label": "Net P/L After M.I & Associates",
   "sc_id": "HC06",
-  "src": "moneycontrol appfeeds quarterly_results_responsive limit=400",
-  "RETRACTED": "2026-08-18 12:32 IST: cell retracted by the con-copy campaign (scripts/con_copy_retractions.json) - no consolidated filing exists for that quarter. Kept for audit; must not be re-applied."
+  "src": "moneycontrol appfeeds quarterly_results_responsive limit=400"
  },
  "_RETRACTED_HINDCOMPOS_20181231_con": {
+  "RETRACTED": "2026-08-18 12:32 IST: cell retracted by the con-copy campaign (scripts/con_copy_retractions.json) - no consolidated filing exists for that quarter. Kept for audit; must not be re-applied.",
   "basis": "con",
   "gate": "10 anchors, 0 distant disagreements, none within \u00b16 quarters",
   "neighbour_ratio": null,
   "pat": 3.21,
   "row_label": "Net P/L After M.I & Associates",
   "sc_id": "HC06",
-  "src": "moneycontrol appfeeds quarterly_results_responsive limit=400",
-  "RETRACTED": "2026-08-18 12:32 IST: cell retracted by the con-copy campaign (scripts/con_copy_retractions.json) - no consolidated filing exists for that quarter. Kept for audit; must not be re-applied."
+  "src": "moneycontrol appfeeds quarterly_results_responsive limit=400"
  },
  "_RETRACTED_HINDCOMPOS_20190331_con": {
+  "RETRACTED": "2026-08-18 12:32 IST: cell retracted by the con-copy campaign (scripts/con_copy_retractions.json) - no consolidated filing exists for that quarter. Kept for audit; must not be re-applied.",
   "basis": "con",
   "gate": "10 anchors, 0 distant disagreements, none within \u00b16 quarters",
   "neighbour_ratio": null,
   "pat": 6.79,
   "row_label": "Net P/L After M.I & Associates",
   "sc_id": "HC06",
-  "src": "moneycontrol appfeeds quarterly_results_responsive limit=400",
-  "RETRACTED": "2026-08-18 12:32 IST: cell retracted by the con-copy campaign (scripts/con_copy_retractions.json) - no consolidated filing exists for that quarter. Kept for audit; must not be re-applied."
+  "src": "moneycontrol appfeeds quarterly_results_responsive limit=400"
  },
  "_RETRACTED_INDNIPPON_20180630_con": {
+  "RETRACTED": "2026-08-18 12:32 IST: cell retracted by the con-copy campaign (scripts/con_copy_retractions.json) - no consolidated filing exists for that quarter. Kept for audit; must not be re-applied.",
   "basis": "con",
   "gate": "28 anchors, 0 distant disagreements, none within \u00b16 quarters",
   "neighbour_ratio": 0.97,
   "pat": 12.38,
   "row_label": "Net P/L After M.I & Associates",
   "sc_id": "INE",
-  "src": "moneycontrol appfeeds quarterly_results_responsive limit=400",
-  "RETRACTED": "2026-08-18 12:32 IST: cell retracted by the con-copy campaign (scripts/con_copy_retractions.json) - no consolidated filing exists for that quarter. Kept for audit; must not be re-applied."
+  "src": "moneycontrol appfeeds quarterly_results_responsive limit=400"
  },
  "_RETRACTED_JINDRILL_20180630_con": {
+  "RETRACTED": "2026-08-18 12:32 IST: cell retracted by the con-copy campaign (scripts/con_copy_retractions.json) - no consolidated filing exists for that quarter. Kept for audit; must not be re-applied.",
   "basis": "con",
   "gate": "28 anchors, 0 distant disagreements, none within \u00b16 quarters",
   "neighbour_ratio": 0.686,
   "pat": 11.95,
   "row_label": "Net P/L After M.I & Associates",
   "sc_id": "JDI",
-  "src": "moneycontrol appfeeds quarterly_results_responsive limit=400",
-  "RETRACTED": "2026-08-18 12:32 IST: cell retracted by the con-copy campaign (scripts/con_copy_retractions.json) - no consolidated filing exists for that quarter. Kept for audit; must not be re-applied."
+  "src": "moneycontrol appfeeds quarterly_results_responsive limit=400"
  },
  "_RETRACTED_JINDRILL_20180930_con": {
+  "RETRACTED": "2026-08-18 12:32 IST: cell retracted by the con-copy campaign (scripts/con_copy_retractions.json) - no consolidated filing exists for that quarter. Kept for audit; must not be re-applied.",
   "basis": "con",
   "gate": "28 anchors, 0 distant disagreements, none within \u00b16 quarters",
   "neighbour_ratio": 0.861,
   "pat": 14.99,
   "row_label": "Net P/L After M.I & Associates",
   "sc_id": "JDI",
-  "src": "moneycontrol appfeeds quarterly_results_responsive limit=400",
-  "RETRACTED": "2026-08-18 12:32 IST: cell retracted by the con-copy campaign (scripts/con_copy_retractions.json) - no consolidated filing exists for that quarter. Kept for audit; must not be re-applied."
+  "src": "moneycontrol appfeeds quarterly_results_responsive limit=400"
  },
  "_RETRACTED_JINDRILL_20181231_con": {
+  "RETRACTED": "2026-08-18 12:32 IST: cell retracted by the con-copy campaign (scripts/con_copy_retractions.json) - no consolidated filing exists for that quarter. Kept for audit; must not be re-applied.",
   "basis": "con",
   "gate": "28 anchors, 0 distant disagreements, none within \u00b16 quarters",
   "neighbour_ratio": 0.772,
   "pat": 13.44,
   "row_label": "Net P/L After M.I & Associates",
   "sc_id": "JDI",
-  "src": "moneycontrol appfeeds quarterly_results_responsive limit=400",
-  "RETRACTED": "2026-08-18 12:32 IST: cell retracted by the con-copy campaign (scripts/con_copy_retractions.json) - no consolidated filing exists for that quarter. Kept for audit; must not be re-applied."
+  "src": "moneycontrol appfeeds quarterly_results_responsive limit=400"
  },
  "_RETRACTED_JINDRILL_20190331_con": {
+  "RETRACTED": "2026-08-18 12:32 IST: cell retracted by the con-copy campaign (scripts/con_copy_retractions.json) - no consolidated filing exists for that quarter. Kept for audit; must not be re-applied.",
   "basis": "con",
   "gate": "28 anchors, 0 distant disagreements, none within \u00b16 quarters",
   "neighbour_ratio": 1.597,
   "pat": 27.82,
   "row_label": "Net P/L After M.I & Associates",
   "sc_id": "JDI",
-  "src": "moneycontrol appfeeds quarterly_results_responsive limit=400",
-  "RETRACTED": "2026-08-18 12:32 IST: cell retracted by the con-copy campaign (scripts/con_copy_retractions.json) - no consolidated filing exists for that quarter. Kept for audit; must not be re-applied."
+  "src": "moneycontrol appfeeds quarterly_results_responsive limit=400"
  },
  "_RETRACTED_KHADIM_20180930_con": {
+  "RETRACTED": "2026-08-18 12:32 IST: cell retracted by the con-copy campaign (scripts/con_copy_retractions.json) - no consolidated filing exists for that quarter. Kept for audit; must not be re-applied.",
   "basis": "con",
   "gate": "28 anchors, 0 distant disagreements, none within \u00b16 quarters",
   "held": "MC consolidated == our standalone for this quarter, and this company's own history shows con != std elsewhere \u2014 Moneycontrol's consolidated table falls back to standalone where no consolidated result was filed. Writing it would manufacture a consolidated figure (\u00a767 class).",
@@ -19983,10 +19978,10 @@
   "pat": 8.59,
   "row_label": "Net P/L After M.I & Associates",
   "sc_id": "KIL06",
-  "src": "moneycontrol appfeeds quarterly_results_responsive limit=400",
-  "RETRACTED": "2026-08-18 12:32 IST: cell retracted by the con-copy campaign (scripts/con_copy_retractions.json) - no consolidated filing exists for that quarter. Kept for audit; must not be re-applied."
+  "src": "moneycontrol appfeeds quarterly_results_responsive limit=400"
  },
  "_RETRACTED_KHADIM_20190630_con": {
+  "RETRACTED": "2026-08-18 12:32 IST: cell retracted by the con-copy campaign (scripts/con_copy_retractions.json) - no consolidated filing exists for that quarter. Kept for audit; must not be re-applied.",
   "basis": "con",
   "gate": "28 anchors, 0 distant disagreements, none within \u00b16 quarters",
   "held": "MC consolidated == our standalone for this quarter, and this company's own history shows con != std elsewhere \u2014 Moneycontrol's consolidated table falls back to standalone where no consolidated result was filed. Writing it would manufacture a consolidated figure (\u00a767 class).",
@@ -19994,150 +19989,150 @@
   "pat": 3.35,
   "row_label": "Net P/L After M.I & Associates",
   "sc_id": "KIL06",
-  "src": "moneycontrol appfeeds quarterly_results_responsive limit=400",
-  "RETRACTED": "2026-08-18 12:32 IST: cell retracted by the con-copy campaign (scripts/con_copy_retractions.json) - no consolidated filing exists for that quarter. Kept for audit; must not be re-applied."
+  "src": "moneycontrol appfeeds quarterly_results_responsive limit=400"
  },
  "_RETRACTED_KSL_20180630_con": {
+  "RETRACTED": "2026-08-18 12:32 IST: cell retracted by the con-copy campaign (scripts/con_copy_retractions.json) - no consolidated filing exists for that quarter. Kept for audit; must not be re-applied.",
   "basis": "con",
   "gate": "21 anchors, 0 distant disagreements, none within \u00b16 quarters",
   "neighbour_ratio": 0.813,
   "pat": 27.98,
   "row_label": "Net P/L After M.I & Associates",
   "sc_id": "KS01",
-  "src": "moneycontrol appfeeds quarterly_results_responsive limit=400",
-  "RETRACTED": "2026-08-18 12:32 IST: cell retracted by the con-copy campaign (scripts/con_copy_retractions.json) - no consolidated filing exists for that quarter. Kept for audit; must not be re-applied."
+  "src": "moneycontrol appfeeds quarterly_results_responsive limit=400"
  },
  "_RETRACTED_KSL_20180930_con": {
+  "RETRACTED": "2026-08-18 12:32 IST: cell retracted by the con-copy campaign (scripts/con_copy_retractions.json) - no consolidated filing exists for that quarter. Kept for audit; must not be re-applied.",
   "basis": "con",
   "gate": "21 anchors, 0 distant disagreements, none within \u00b16 quarters",
   "neighbour_ratio": 0.827,
   "pat": 28.46,
   "row_label": "Net P/L After M.I & Associates",
   "sc_id": "KS01",
-  "src": "moneycontrol appfeeds quarterly_results_responsive limit=400",
-  "RETRACTED": "2026-08-18 12:32 IST: cell retracted by the con-copy campaign (scripts/con_copy_retractions.json) - no consolidated filing exists for that quarter. Kept for audit; must not be re-applied."
+  "src": "moneycontrol appfeeds quarterly_results_responsive limit=400"
  },
  "_RETRACTED_KSL_20181231_con": {
+  "RETRACTED": "2026-08-18 12:32 IST: cell retracted by the con-copy campaign (scripts/con_copy_retractions.json) - no consolidated filing exists for that quarter. Kept for audit; must not be re-applied.",
   "basis": "con",
   "gate": "21 anchors, 0 distant disagreements, none within \u00b16 quarters",
   "neighbour_ratio": 1.003,
   "pat": 34.51,
   "row_label": "Net P/L After M.I & Associates",
   "sc_id": "KS01",
-  "src": "moneycontrol appfeeds quarterly_results_responsive limit=400",
-  "RETRACTED": "2026-08-18 12:32 IST: cell retracted by the con-copy campaign (scripts/con_copy_retractions.json) - no consolidated filing exists for that quarter. Kept for audit; must not be re-applied."
+  "src": "moneycontrol appfeeds quarterly_results_responsive limit=400"
  },
  "_RETRACTED_KSL_20190331_con": {
+  "RETRACTED": "2026-08-18 12:32 IST: cell retracted by the con-copy campaign (scripts/con_copy_retractions.json) - no consolidated filing exists for that quarter. Kept for audit; must not be re-applied.",
   "basis": "con",
   "gate": "21 anchors, 0 distant disagreements, none within \u00b16 quarters",
   "neighbour_ratio": 1.185,
   "pat": 40.77,
   "row_label": "Net P/L After M.I & Associates",
   "sc_id": "KS01",
-  "src": "moneycontrol appfeeds quarterly_results_responsive limit=400",
-  "RETRACTED": "2026-08-18 12:32 IST: cell retracted by the con-copy campaign (scripts/con_copy_retractions.json) - no consolidated filing exists for that quarter. Kept for audit; must not be re-applied."
+  "src": "moneycontrol appfeeds quarterly_results_responsive limit=400"
  },
  "_RETRACTED_MANUGRAPH_20180930_con": {
+  "RETRACTED": "2026-08-18 12:32 IST: cell retracted by the con-copy campaign (scripts/con_copy_retractions.json) - no consolidated filing exists for that quarter. Kept for audit; must not be re-applied.",
   "basis": "con",
   "gate": "15 anchors, 0 distant disagreements, none within \u00b16 quarters",
   "neighbour_ratio": 0.511,
   "pat": -4.26,
   "row_label": "Net P/L After M.I & Associates",
   "sc_id": "MI08",
-  "src": "moneycontrol appfeeds quarterly_results_responsive limit=400",
-  "RETRACTED": "2026-08-18 12:32 IST: cell retracted by the con-copy campaign (scripts/con_copy_retractions.json) - no consolidated filing exists for that quarter. Kept for audit; must not be re-applied."
+  "src": "moneycontrol appfeeds quarterly_results_responsive limit=400"
  },
  "_RETRACTED_MANUGRAPH_20190331_con": {
+  "RETRACTED": "2026-08-18 12:32 IST: cell retracted by the con-copy campaign (scripts/con_copy_retractions.json) - no consolidated filing exists for that quarter. Kept for audit; must not be re-applied.",
   "basis": "con",
   "gate": "15 anchors, 0 distant disagreements, none within \u00b16 quarters",
   "neighbour_ratio": 1.411,
   "pat": -11.76,
   "row_label": "Net P/L After M.I & Associates",
   "sc_id": "MI08",
-  "src": "moneycontrol appfeeds quarterly_results_responsive limit=400",
-  "RETRACTED": "2026-08-18 12:32 IST: cell retracted by the con-copy campaign (scripts/con_copy_retractions.json) - no consolidated filing exists for that quarter. Kept for audit; must not be re-applied."
+  "src": "moneycontrol appfeeds quarterly_results_responsive limit=400"
  },
  "_RETRACTED_NAHARPOLY_20180930_con": {
+  "RETRACTED": "2026-08-18 12:32 IST: cell retracted by the con-copy campaign (scripts/con_copy_retractions.json) - no consolidated filing exists for that quarter. Kept for audit; must not be re-applied.",
   "basis": "con",
   "gate": "27 anchors, 0 distant disagreements, none within \u00b16 quarters",
   "neighbour_ratio": 0.22,
   "pat": 2.53,
   "row_label": "Net P/L After M.I & Associates",
   "sc_id": "NE01",
-  "src": "moneycontrol appfeeds quarterly_results_responsive limit=400",
-  "RETRACTED": "2026-08-18 12:32 IST: cell retracted by the con-copy campaign (scripts/con_copy_retractions.json) - no consolidated filing exists for that quarter. Kept for audit; must not be re-applied."
+  "src": "moneycontrol appfeeds quarterly_results_responsive limit=400"
  },
  "_RETRACTED_NAHARPOLY_20190630_con": {
+  "RETRACTED": "2026-08-18 12:32 IST: cell retracted by the con-copy campaign (scripts/con_copy_retractions.json) - no consolidated filing exists for that quarter. Kept for audit; must not be re-applied.",
   "basis": "con",
   "gate": "27 anchors, 0 distant disagreements, none within \u00b16 quarters",
   "neighbour_ratio": 0.684,
   "pat": 7.87,
   "row_label": "Net P/L After M.I & Associates",
   "sc_id": "NE01",
-  "src": "moneycontrol appfeeds quarterly_results_responsive limit=400",
-  "RETRACTED": "2026-08-18 12:32 IST: cell retracted by the con-copy campaign (scripts/con_copy_retractions.json) - no consolidated filing exists for that quarter. Kept for audit; must not be re-applied."
+  "src": "moneycontrol appfeeds quarterly_results_responsive limit=400"
  },
  "_RETRACTED_NIBL_20180930_con": {
+  "RETRACTED": "2026-08-18 12:32 IST: cell retracted by the con-copy campaign (scripts/con_copy_retractions.json) - no consolidated filing exists for that quarter. Kept for audit; must not be re-applied.",
   "basis": "con",
   "gate": "27 anchors, 0 distant disagreements, none within \u00b16 quarters",
   "neighbour_ratio": null,
   "pat": -3.88,
   "row_label": "Net P/L After M.I & Associates",
   "sc_id": "NRB01",
-  "src": "moneycontrol appfeeds quarterly_results_responsive limit=400",
-  "RETRACTED": "2026-08-18 12:32 IST: cell retracted by the con-copy campaign (scripts/con_copy_retractions.json) - no consolidated filing exists for that quarter. Kept for audit; must not be re-applied."
+  "src": "moneycontrol appfeeds quarterly_results_responsive limit=400"
  },
  "_RETRACTED_NIBL_20190331_con": {
+  "RETRACTED": "2026-08-18 12:32 IST: cell retracted by the con-copy campaign (scripts/con_copy_retractions.json) - no consolidated filing exists for that quarter. Kept for audit; must not be re-applied.",
   "basis": "con",
   "gate": "27 anchors, 0 distant disagreements, none within \u00b16 quarters",
   "neighbour_ratio": null,
   "pat": -3.47,
   "row_label": "Net P/L After M.I & Associates",
   "sc_id": "NRB01",
-  "src": "moneycontrol appfeeds quarterly_results_responsive limit=400",
-  "RETRACTED": "2026-08-18 12:32 IST: cell retracted by the con-copy campaign (scripts/con_copy_retractions.json) - no consolidated filing exists for that quarter. Kept for audit; must not be re-applied."
+  "src": "moneycontrol appfeeds quarterly_results_responsive limit=400"
  },
  "_RETRACTED_NOCIL_20180630_con": {
+  "RETRACTED": "2026-08-18 12:32 IST: cell retracted by the con-copy campaign (scripts/con_copy_retractions.json) - no consolidated filing exists for that quarter. Kept for audit; must not be re-applied.",
   "basis": "con",
   "gate": "30 anchors, 0 distant disagreements, none within \u00b16 quarters",
   "neighbour_ratio": 1.86,
   "pat": 50.91,
   "row_label": "Net P/L After M.I & Associates",
   "sc_id": "NOC",
-  "src": "moneycontrol appfeeds quarterly_results_responsive limit=400",
-  "RETRACTED": "2026-08-18 12:32 IST: cell retracted by the con-copy campaign (scripts/con_copy_retractions.json) - no consolidated filing exists for that quarter. Kept for audit; must not be re-applied."
+  "src": "moneycontrol appfeeds quarterly_results_responsive limit=400"
  },
  "_RETRACTED_NOCIL_20180930_con": {
+  "RETRACTED": "2026-08-18 12:32 IST: cell retracted by the con-copy campaign (scripts/con_copy_retractions.json) - no consolidated filing exists for that quarter. Kept for audit; must not be re-applied.",
   "basis": "con",
   "gate": "30 anchors, 0 distant disagreements, none within \u00b16 quarters",
   "neighbour_ratio": 1.931,
   "pat": 52.85,
   "row_label": "Net P/L After M.I & Associates",
   "sc_id": "NOC",
-  "src": "moneycontrol appfeeds quarterly_results_responsive limit=400",
-  "RETRACTED": "2026-08-18 12:32 IST: cell retracted by the con-copy campaign (scripts/con_copy_retractions.json) - no consolidated filing exists for that quarter. Kept for audit; must not be re-applied."
+  "src": "moneycontrol appfeeds quarterly_results_responsive limit=400"
  },
  "_RETRACTED_NOCIL_20181231_con": {
+  "RETRACTED": "2026-08-18 12:32 IST: cell retracted by the con-copy campaign (scripts/con_copy_retractions.json) - no consolidated filing exists for that quarter. Kept for audit; must not be re-applied.",
   "basis": "con",
   "gate": "30 anchors, 0 distant disagreements, none within \u00b16 quarters",
   "neighbour_ratio": 1.639,
   "pat": 44.87,
   "row_label": "Net P/L After M.I & Associates",
   "sc_id": "NOC",
-  "src": "moneycontrol appfeeds quarterly_results_responsive limit=400",
-  "RETRACTED": "2026-08-18 12:32 IST: cell retracted by the con-copy campaign (scripts/con_copy_retractions.json) - no consolidated filing exists for that quarter. Kept for audit; must not be re-applied."
+  "src": "moneycontrol appfeeds quarterly_results_responsive limit=400"
  },
  "_RETRACTED_RPPL_20211231_con": {
+  "RETRACTED": "2026-08-18 12:32 IST: cell retracted by the con-copy campaign (scripts/con_copy_retractions.json) - no consolidated filing exists for that quarter. Kept for audit; must not be re-applied.",
   "basis": "con",
   "gate": "12 anchors, 1 distant disagreements, none within \u00b16 quarters",
   "neighbour_ratio": null,
   "pat": 2.51,
   "row_label": "Net P/L After M.I & Associates",
   "sc_id": "RP26",
-  "src": "moneycontrol appfeeds quarterly_results_responsive limit=400",
-  "RETRACTED": "2026-08-18 12:32 IST: cell retracted by the con-copy campaign (scripts/con_copy_retractions.json) - no consolidated filing exists for that quarter. Kept for audit; must not be re-applied."
+  "src": "moneycontrol appfeeds quarterly_results_responsive limit=400"
  },
  "_RETRACTED_RPPL_20220331_con": {
+  "RETRACTED": "2026-08-18 12:32 IST: cell retracted by the con-copy campaign (scripts/con_copy_retractions.json) - no consolidated filing exists for that quarter. Kept for audit; must not be re-applied.",
   "basis": "con",
   "gate": "12 anchors, 1 distant disagreements, none within \u00b16 quarters",
   "held": "MC consolidated == our standalone for this quarter, and this company's own history shows con != std elsewhere \u2014 Moneycontrol's consolidated table falls back to standalone where no consolidated result was filed. Writing it would manufacture a consolidated figure (\u00a767 class).",
@@ -20145,40 +20140,40 @@
   "pat": 2.2,
   "row_label": "Net P/L After M.I & Associates",
   "sc_id": "RP26",
-  "src": "moneycontrol appfeeds quarterly_results_responsive limit=400",
-  "RETRACTED": "2026-08-18 12:32 IST: cell retracted by the con-copy campaign (scripts/con_copy_retractions.json) - no consolidated filing exists for that quarter. Kept for audit; must not be re-applied."
+  "src": "moneycontrol appfeeds quarterly_results_responsive limit=400"
  },
  "_RETRACTED_SHARDAMOTR_20180630_con": {
+  "RETRACTED": "2026-08-18 12:32 IST: cell retracted by the con-copy campaign (scripts/con_copy_retractions.json) - no consolidated filing exists for that quarter. Kept for audit; must not be re-applied.",
   "basis": "con",
   "gate": "27 anchors, 2 distant disagreements, none within \u00b16 quarters",
   "neighbour_ratio": 1.428,
   "pat": 22.82,
   "row_label": "Net P/L After M.I & Associates",
   "sc_id": "SMI04",
-  "src": "moneycontrol appfeeds quarterly_results_responsive limit=400",
-  "RETRACTED": "2026-08-18 12:32 IST: cell retracted by the con-copy campaign (scripts/con_copy_retractions.json) - no consolidated filing exists for that quarter. Kept for audit; must not be re-applied."
+  "src": "moneycontrol appfeeds quarterly_results_responsive limit=400"
  },
  "_RETRACTED_SHARDAMOTR_20180930_con": {
+  "RETRACTED": "2026-08-18 12:32 IST: cell retracted by the con-copy campaign (scripts/con_copy_retractions.json) - no consolidated filing exists for that quarter. Kept for audit; must not be re-applied.",
   "basis": "con",
   "gate": "27 anchors, 2 distant disagreements, none within \u00b16 quarters",
   "neighbour_ratio": 1.48,
   "pat": 23.66,
   "row_label": "Net P/L After M.I & Associates",
   "sc_id": "SMI04",
-  "src": "moneycontrol appfeeds quarterly_results_responsive limit=400",
-  "RETRACTED": "2026-08-18 12:32 IST: cell retracted by the con-copy campaign (scripts/con_copy_retractions.json) - no consolidated filing exists for that quarter. Kept for audit; must not be re-applied."
+  "src": "moneycontrol appfeeds quarterly_results_responsive limit=400"
  },
  "_RETRACTED_SHIVATEX_20230630_con": {
+  "RETRACTED": "2026-08-18 12:32 IST: cell retracted by the con-copy campaign (scripts/con_copy_retractions.json) - no consolidated filing exists for that quarter. Kept for audit; must not be re-applied.",
   "basis": "con",
   "gate": "12 anchors, 0 distant disagreements, none within \u00b16 quarters",
   "neighbour_ratio": null,
   "pat": -5.9,
   "row_label": "Net P/L After M.I & Associates",
   "sc_id": "AF10",
-  "src": "moneycontrol appfeeds quarterly_results_responsive limit=400",
-  "RETRACTED": "2026-08-18 12:32 IST: cell retracted by the con-copy campaign (scripts/con_copy_retractions.json) - no consolidated filing exists for that quarter. Kept for audit; must not be re-applied."
+  "src": "moneycontrol appfeeds quarterly_results_responsive limit=400"
  },
  "_RETRACTED_SIRCA_20190930_con": {
+  "RETRACTED": "2026-08-18 12:32 IST: cell retracted by the con-copy campaign (scripts/con_copy_retractions.json) - no consolidated filing exists for that quarter. Kept for audit; must not be re-applied.",
   "basis": "con",
   "fallback_check": "equals our standalone, but this company never shows con != std across 23 overlapping stored quarters \u2014 genuine no-consolidation-difference, kept",
   "gate": "24 anchors, 0 distant disagreements, none within \u00b16 quarters",
@@ -20187,10 +20182,10 @@
   "review_unresolved": "WAS applied in an earlier push, and the corrected source-internal test now finds MC consolidated equal to MC OWN standalone here \u2014 UNRESOLVED rather than proven wrong. Flagged for a deliberate retract-or-keep decision; NOT held, because a held flag on a live value arms --repair-held to delete it. || MC consolidated == our standalone for this quarter, and this company's own history shows con != std elsewhere \u2014 Moneycontrol's consolidated table fall",
   "row_label": "Net P/L After M.I & Associates",
   "sc_id": "SPI12",
-  "src": "moneycontrol appfeeds quarterly_results_responsive limit=400",
-  "RETRACTED": "2026-08-18 12:32 IST: cell retracted by the con-copy campaign (scripts/con_copy_retractions.json) - no consolidated filing exists for that quarter. Kept for audit; must not be re-applied."
+  "src": "moneycontrol appfeeds quarterly_results_responsive limit=400"
  },
  "_RETRACTED_SIRCA_20191231_con": {
+  "RETRACTED": "2026-08-18 12:32 IST: cell retracted by the con-copy campaign (scripts/con_copy_retractions.json) - no consolidated filing exists for that quarter. Kept for audit; must not be re-applied.",
   "basis": "con",
   "fallback_check": "equals our standalone, but this company never shows con != std across 23 overlapping stored quarters \u2014 genuine no-consolidation-difference, kept",
   "gate": "24 anchors, 0 distant disagreements, none within \u00b16 quarters",
@@ -20199,10 +20194,10 @@
   "review_unresolved": "WAS applied in an earlier push, and the corrected source-internal test now finds MC consolidated equal to MC OWN standalone here \u2014 UNRESOLVED rather than proven wrong. Flagged for a deliberate retract-or-keep decision; NOT held, because a held flag on a live value arms --repair-held to delete it. || MC consolidated == our standalone for this quarter, and this company's own history shows con != std elsewhere \u2014 Moneycontrol's consolidated table fall",
   "row_label": "Net P/L After M.I & Associates",
   "sc_id": "SPI12",
-  "src": "moneycontrol appfeeds quarterly_results_responsive limit=400",
-  "RETRACTED": "2026-08-18 12:32 IST: cell retracted by the con-copy campaign (scripts/con_copy_retractions.json) - no consolidated filing exists for that quarter. Kept for audit; must not be re-applied."
+  "src": "moneycontrol appfeeds quarterly_results_responsive limit=400"
  },
  "_RETRACTED_SIRCA_20200331_con": {
+  "RETRACTED": "2026-08-18 12:32 IST: cell retracted by the con-copy campaign (scripts/con_copy_retractions.json) - no consolidated filing exists for that quarter. Kept for audit; must not be re-applied.",
   "basis": "con",
   "fallback_check": "equals our standalone, but this company never shows con != std across 23 overlapping stored quarters \u2014 genuine no-consolidation-difference, kept",
   "gate": "24 anchors, 0 distant disagreements, none within \u00b16 quarters",
@@ -20211,10 +20206,10 @@
   "review_unresolved": "WAS applied in an earlier push, and the corrected source-internal test now finds MC consolidated equal to MC OWN standalone here \u2014 UNRESOLVED rather than proven wrong. Flagged for a deliberate retract-or-keep decision; NOT held, because a held flag on a live value arms --repair-held to delete it. || MC consolidated == our standalone for this quarter, and this company's own history shows con != std elsewhere \u2014 Moneycontrol's consolidated table fall",
   "row_label": "Net P/L After M.I & Associates",
   "sc_id": "SPI12",
-  "src": "moneycontrol appfeeds quarterly_results_responsive limit=400",
-  "RETRACTED": "2026-08-18 12:32 IST: cell retracted by the con-copy campaign (scripts/con_copy_retractions.json) - no consolidated filing exists for that quarter. Kept for audit; must not be re-applied."
+  "src": "moneycontrol appfeeds quarterly_results_responsive limit=400"
  },
  "_RETRACTED_SSWL_20220331_con": {
+  "RETRACTED": "2026-08-18 12:32 IST: cell retracted by the con-copy campaign (scripts/con_copy_retractions.json) - no consolidated filing exists for that quarter. Kept for audit; must not be re-applied.",
   "basis": "con",
   "gate": "14 anchors, 0 distant disagreements, none within \u00b16 quarters",
   "held": "MC consolidated == our standalone for this quarter, and this company's own history shows con != std elsewhere \u2014 Moneycontrol's consolidated table falls back to standalone where no consolidated result was filed. Writing it would manufacture a consolidated figure (\u00a767 class).",
@@ -20222,10 +20217,10 @@
   "pat": 48.89,
   "row_label": "Net P/L After M.I & Associates",
   "sc_id": "SSW01",
-  "src": "moneycontrol appfeeds quarterly_results_responsive limit=400",
-  "RETRACTED": "2026-08-18 12:32 IST: cell retracted by the con-copy campaign (scripts/con_copy_retractions.json) - no consolidated filing exists for that quarter. Kept for audit; must not be re-applied."
+  "src": "moneycontrol appfeeds quarterly_results_responsive limit=400"
  },
  "_RETRACTED_SSWL_20221231_con": {
+  "RETRACTED": "2026-08-18 12:32 IST: cell retracted by the con-copy campaign (scripts/con_copy_retractions.json) - no consolidated filing exists for that quarter. Kept for audit; must not be re-applied.",
   "basis": "con",
   "gate": "14 anchors, 0 distant disagreements, none within \u00b16 quarters",
   "held": "MC consolidated == our standalone for this quarter, and this company's own history shows con != std elsewhere \u2014 Moneycontrol's consolidated table falls back to standalone where no consolidated result was filed. Writing it would manufacture a consolidated figure (\u00a767 class).",
@@ -20233,120 +20228,120 @@
   "pat": 43.77,
   "row_label": "Net P/L After M.I & Associates",
   "sc_id": "SSW01",
-  "src": "moneycontrol appfeeds quarterly_results_responsive limit=400",
-  "RETRACTED": "2026-08-18 12:32 IST: cell retracted by the con-copy campaign (scripts/con_copy_retractions.json) - no consolidated filing exists for that quarter. Kept for audit; must not be re-applied."
+  "src": "moneycontrol appfeeds quarterly_results_responsive limit=400"
  },
  "_RETRACTED_SUBROS_20180630_con": {
+  "RETRACTED": "2026-08-18 12:32 IST: cell retracted by the con-copy campaign (scripts/con_copy_retractions.json) - no consolidated filing exists for that quarter. Kept for audit; must not be re-applied.",
   "basis": "con",
   "gate": "29 anchors, 0 distant disagreements, none within \u00b16 quarters",
   "neighbour_ratio": 1.112,
   "pat": 19.11,
   "row_label": "Net P/L After M.I & Associates",
   "sc_id": "S07",
-  "src": "moneycontrol appfeeds quarterly_results_responsive limit=400",
-  "RETRACTED": "2026-08-18 12:32 IST: cell retracted by the con-copy campaign (scripts/con_copy_retractions.json) - no consolidated filing exists for that quarter. Kept for audit; must not be re-applied."
+  "src": "moneycontrol appfeeds quarterly_results_responsive limit=400"
  },
  "_RETRACTED_SUBROS_20180930_con": {
+  "RETRACTED": "2026-08-18 12:32 IST: cell retracted by the con-copy campaign (scripts/con_copy_retractions.json) - no consolidated filing exists for that quarter. Kept for audit; must not be re-applied.",
   "basis": "con",
   "gate": "29 anchors, 0 distant disagreements, none within \u00b16 quarters",
   "neighbour_ratio": 1.389,
   "pat": 23.88,
   "row_label": "Net P/L After M.I & Associates",
   "sc_id": "S07",
-  "src": "moneycontrol appfeeds quarterly_results_responsive limit=400",
-  "RETRACTED": "2026-08-18 12:32 IST: cell retracted by the con-copy campaign (scripts/con_copy_retractions.json) - no consolidated filing exists for that quarter. Kept for audit; must not be re-applied."
+  "src": "moneycontrol appfeeds quarterly_results_responsive limit=400"
  },
  "_RETRACTED_SUBROS_20181231_con": {
+  "RETRACTED": "2026-08-18 12:32 IST: cell retracted by the con-copy campaign (scripts/con_copy_retractions.json) - no consolidated filing exists for that quarter. Kept for audit; must not be re-applied.",
   "basis": "con",
   "gate": "29 anchors, 0 distant disagreements, none within \u00b16 quarters",
   "neighbour_ratio": 0.994,
   "pat": 17.09,
   "row_label": "Net P/L After M.I & Associates",
   "sc_id": "S07",
-  "src": "moneycontrol appfeeds quarterly_results_responsive limit=400",
-  "RETRACTED": "2026-08-18 12:32 IST: cell retracted by the con-copy campaign (scripts/con_copy_retractions.json) - no consolidated filing exists for that quarter. Kept for audit; must not be re-applied."
+  "src": "moneycontrol appfeeds quarterly_results_responsive limit=400"
  },
  "_RETRACTED_SUBROS_20190331_con": {
+  "RETRACTED": "2026-08-18 12:32 IST: cell retracted by the con-copy campaign (scripts/con_copy_retractions.json) - no consolidated filing exists for that quarter. Kept for audit; must not be re-applied.",
   "basis": "con",
   "gate": "29 anchors, 0 distant disagreements, none within \u00b16 quarters",
   "neighbour_ratio": 0.94,
   "pat": 16.16,
   "row_label": "Net P/L After M.I & Associates",
   "sc_id": "S07",
-  "src": "moneycontrol appfeeds quarterly_results_responsive limit=400",
-  "RETRACTED": "2026-08-18 12:32 IST: cell retracted by the con-copy campaign (scripts/con_copy_retractions.json) - no consolidated filing exists for that quarter. Kept for audit; must not be re-applied."
+  "src": "moneycontrol appfeeds quarterly_results_responsive limit=400"
  },
  "_RETRACTED_TNPETRO_20180630_con": {
+  "RETRACTED": "2026-08-18 12:32 IST: cell retracted by the con-copy campaign (scripts/con_copy_retractions.json) - no consolidated filing exists for that quarter. Kept for audit; must not be re-applied.",
   "basis": "con",
   "gate": "27 anchors, 1 distant disagreements, none within \u00b16 quarters",
   "neighbour_ratio": 0.59,
   "pat": 10.07,
   "row_label": "Net P/L After M.I & Associates",
   "sc_id": "TPL",
-  "src": "moneycontrol appfeeds quarterly_results_responsive limit=400",
-  "RETRACTED": "2026-08-18 12:32 IST: cell retracted by the con-copy campaign (scripts/con_copy_retractions.json) - no consolidated filing exists for that quarter. Kept for audit; must not be re-applied."
+  "src": "moneycontrol appfeeds quarterly_results_responsive limit=400"
  },
  "_RETRACTED_TNPETRO_20180930_con": {
+  "RETRACTED": "2026-08-18 12:32 IST: cell retracted by the con-copy campaign (scripts/con_copy_retractions.json) - no consolidated filing exists for that quarter. Kept for audit; must not be re-applied.",
   "basis": "con",
   "gate": "27 anchors, 1 distant disagreements, none within \u00b16 quarters",
   "neighbour_ratio": 1.175,
   "pat": 20.05,
   "row_label": "Net P/L After M.I & Associates",
   "sc_id": "TPL",
-  "src": "moneycontrol appfeeds quarterly_results_responsive limit=400",
-  "RETRACTED": "2026-08-18 12:32 IST: cell retracted by the con-copy campaign (scripts/con_copy_retractions.json) - no consolidated filing exists for that quarter. Kept for audit; must not be re-applied."
+  "src": "moneycontrol appfeeds quarterly_results_responsive limit=400"
  },
  "_RETRACTED_TNPETRO_20190331_con": {
+  "RETRACTED": "2026-08-18 12:32 IST: cell retracted by the con-copy campaign (scripts/con_copy_retractions.json) - no consolidated filing exists for that quarter. Kept for audit; must not be re-applied.",
   "basis": "con",
   "gate": "27 anchors, 1 distant disagreements, none within \u00b16 quarters",
   "neighbour_ratio": 0.705,
   "pat": 12.04,
   "row_label": "Net P/L After M.I & Associates",
   "sc_id": "TPL",
-  "src": "moneycontrol appfeeds quarterly_results_responsive limit=400",
-  "RETRACTED": "2026-08-18 12:32 IST: cell retracted by the con-copy campaign (scripts/con_copy_retractions.json) - no consolidated filing exists for that quarter. Kept for audit; must not be re-applied."
+  "src": "moneycontrol appfeeds quarterly_results_responsive limit=400"
  },
  "_RETRACTED_TVVISION_20180630_con": {
+  "RETRACTED": "2026-08-18 12:32 IST: cell retracted by the con-copy campaign (scripts/con_copy_retractions.json) - no consolidated filing exists for that quarter. Kept for audit; must not be re-applied.",
   "basis": "con",
   "gate": "28 anchors, 0 distant disagreements, none within \u00b16 quarters",
   "neighbour_ratio": 0.889,
   "pat": -9.01,
   "row_label": "Net P/L After M.I & Associates",
   "sc_id": "TVV",
-  "src": "moneycontrol appfeeds quarterly_results_responsive limit=400",
-  "RETRACTED": "2026-08-18 12:32 IST: cell retracted by the con-copy campaign (scripts/con_copy_retractions.json) - no consolidated filing exists for that quarter. Kept for audit; must not be re-applied."
+  "src": "moneycontrol appfeeds quarterly_results_responsive limit=400"
  },
  "_RETRACTED_TVVISION_20180930_con": {
+  "RETRACTED": "2026-08-18 12:32 IST: cell retracted by the con-copy campaign (scripts/con_copy_retractions.json) - no consolidated filing exists for that quarter. Kept for audit; must not be re-applied.",
   "basis": "con",
   "gate": "28 anchors, 0 distant disagreements, none within \u00b16 quarters",
   "neighbour_ratio": 1.293,
   "pat": -13.11,
   "row_label": "Net P/L After M.I & Associates",
   "sc_id": "TVV",
-  "src": "moneycontrol appfeeds quarterly_results_responsive limit=400",
-  "RETRACTED": "2026-08-18 12:32 IST: cell retracted by the con-copy campaign (scripts/con_copy_retractions.json) - no consolidated filing exists for that quarter. Kept for audit; must not be re-applied."
+  "src": "moneycontrol appfeeds quarterly_results_responsive limit=400"
  },
  "_RETRACTED_TVVISION_20181231_con": {
+  "RETRACTED": "2026-08-18 12:32 IST: cell retracted by the con-copy campaign (scripts/con_copy_retractions.json) - no consolidated filing exists for that quarter. Kept for audit; must not be re-applied.",
   "basis": "con",
   "gate": "28 anchors, 0 distant disagreements, none within \u00b16 quarters",
   "neighbour_ratio": 0.368,
   "pat": -3.73,
   "row_label": "Net P/L After M.I & Associates",
   "sc_id": "TVV",
-  "src": "moneycontrol appfeeds quarterly_results_responsive limit=400",
-  "RETRACTED": "2026-08-18 12:32 IST: cell retracted by the con-copy campaign (scripts/con_copy_retractions.json) - no consolidated filing exists for that quarter. Kept for audit; must not be re-applied."
+  "src": "moneycontrol appfeeds quarterly_results_responsive limit=400"
  },
  "_RETRACTED_TVVISION_20190331_con": {
+  "RETRACTED": "2026-08-18 12:32 IST: cell retracted by the con-copy campaign (scripts/con_copy_retractions.json) - no consolidated filing exists for that quarter. Kept for audit; must not be re-applied.",
   "basis": "con",
   "gate": "28 anchors, 0 distant disagreements, none within \u00b16 quarters",
   "neighbour_ratio": 2.431,
   "pat": -24.65,
   "row_label": "Net P/L After M.I & Associates",
   "sc_id": "TVV",
-  "src": "moneycontrol appfeeds quarterly_results_responsive limit=400",
-  "RETRACTED": "2026-08-18 12:32 IST: cell retracted by the con-copy campaign (scripts/con_copy_retractions.json) - no consolidated filing exists for that quarter. Kept for audit; must not be re-applied."
+  "src": "moneycontrol appfeeds quarterly_results_responsive limit=400"
  },
  "_RETRACTED_UGARSUGAR_20180630_con": {
+  "RETRACTED": "2026-08-18 12:32 IST: cell retracted by the con-copy campaign (scripts/con_copy_retractions.json) - no consolidated filing exists for that quarter. Kept for audit; must not be re-applied.",
   "basis": "con",
   "fallback_check": "equals our standalone, but this company never shows con != std across 21 overlapping stored quarters \u2014 genuine no-consolidation-difference, kept",
   "gate": "21 anchors, 0 distant disagreements, none within \u00b16 quarters",
@@ -20354,10 +20349,10 @@
   "pat": -18.91,
   "row_label": "Net P/L After M.I & Associates",
   "sc_id": "USW",
-  "src": "moneycontrol appfeeds quarterly_results_responsive limit=400",
-  "RETRACTED": "2026-08-18 12:32 IST: cell retracted by the con-copy campaign (scripts/con_copy_retractions.json) - no consolidated filing exists for that quarter. Kept for audit; must not be re-applied."
+  "src": "moneycontrol appfeeds quarterly_results_responsive limit=400"
  },
  "_RETRACTED_UGARSUGAR_20180930_con": {
+  "RETRACTED": "2026-08-18 12:32 IST: cell retracted by the con-copy campaign (scripts/con_copy_retractions.json) - no consolidated filing exists for that quarter. Kept for audit; must not be re-applied.",
   "basis": "con",
   "fallback_check": "equals our standalone, but this company never shows con != std across 21 overlapping stored quarters \u2014 genuine no-consolidation-difference, kept",
   "gate": "17 anchors, 0 distant disagreements, none within \u00b16 quarters",
@@ -20365,10 +20360,10 @@
   "pat": -29.08,
   "row_label": "Net P/L After M.I & Associates",
   "sc_id": "USW",
-  "src": "moneycontrol appfeeds quarterly_results_responsive limit=400",
-  "RETRACTED": "2026-08-18 12:32 IST: cell retracted by the con-copy campaign (scripts/con_copy_retractions.json) - no consolidated filing exists for that quarter. Kept for audit; must not be re-applied."
+  "src": "moneycontrol appfeeds quarterly_results_responsive limit=400"
  },
  "_RETRACTED_UGARSUGAR_20181231_con": {
+  "RETRACTED": "2026-08-18 12:32 IST: cell retracted by the con-copy campaign (scripts/con_copy_retractions.json) - no consolidated filing exists for that quarter. Kept for audit; must not be re-applied.",
   "basis": "con",
   "fallback_check": "equals our standalone, but this company never shows con != std across 21 overlapping stored quarters \u2014 genuine no-consolidation-difference, kept",
   "gate": "17 anchors, 0 distant disagreements, none within \u00b16 quarters",
@@ -20376,10 +20371,10 @@
   "pat": 9.54,
   "row_label": "Net P/L After M.I & Associates",
   "sc_id": "USW",
-  "src": "moneycontrol appfeeds quarterly_results_responsive limit=400",
-  "RETRACTED": "2026-08-18 12:32 IST: cell retracted by the con-copy campaign (scripts/con_copy_retractions.json) - no consolidated filing exists for that quarter. Kept for audit; must not be re-applied."
+  "src": "moneycontrol appfeeds quarterly_results_responsive limit=400"
  },
  "_RETRACTED_UGARSUGAR_20190331_con": {
+  "RETRACTED": "2026-08-18 12:32 IST: cell retracted by the con-copy campaign (scripts/con_copy_retractions.json) - no consolidated filing exists for that quarter. Kept for audit; must not be re-applied.",
   "basis": "con",
   "fallback_check": "equals our standalone, but this company never shows con != std across 21 overlapping stored quarters \u2014 genuine no-consolidation-difference, kept",
   "gate": "17 anchors, 0 distant disagreements, none within \u00b16 quarters",
@@ -20387,10 +20382,10 @@
   "pat": 42.8,
   "row_label": "Net P/L After M.I & Associates",
   "sc_id": "USW",
-  "src": "moneycontrol appfeeds quarterly_results_responsive limit=400",
-  "RETRACTED": "2026-08-18 12:32 IST: cell retracted by the con-copy campaign (scripts/con_copy_retractions.json) - no consolidated filing exists for that quarter. Kept for audit; must not be re-applied."
+  "src": "moneycontrol appfeeds quarterly_results_responsive limit=400"
  },
  "_RETRACTED_UGARSUGAR_20190630_con": {
+  "RETRACTED": "2026-08-18 12:32 IST: cell retracted by the con-copy campaign (scripts/con_copy_retractions.json) - no consolidated filing exists for that quarter. Kept for audit; must not be re-applied.",
   "basis": "con",
   "fallback_check": "equals our standalone, but this company never shows con != std across 21 overlapping stored quarters \u2014 genuine no-consolidation-difference, kept",
   "gate": "17 anchors, 0 distant disagreements, none within \u00b16 quarters",
@@ -20398,30 +20393,30 @@
   "pat": -36.37,
   "row_label": "Net P/L After M.I & Associates",
   "sc_id": "USW",
-  "src": "moneycontrol appfeeds quarterly_results_responsive limit=400",
-  "RETRACTED": "2026-08-18 12:32 IST: cell retracted by the con-copy campaign (scripts/con_copy_retractions.json) - no consolidated filing exists for that quarter. Kept for audit; must not be re-applied."
+  "src": "moneycontrol appfeeds quarterly_results_responsive limit=400"
  },
  "_RETRACTED_UNIVCABLES_20190331_con": {
+  "RETRACTED": "2026-08-18 12:32 IST: cell retracted by the con-copy campaign (scripts/con_copy_retractions.json) - no consolidated filing exists for that quarter. Kept for audit; must not be re-applied.",
   "basis": "con",
   "gate": "28 anchors, 0 distant disagreements, none within \u00b16 quarters",
   "neighbour_ratio": 2.477,
   "pat": 41.48,
   "row_label": "Net P/L After M.I & Associates",
   "sc_id": "UC",
-  "src": "moneycontrol appfeeds quarterly_results_responsive limit=400",
-  "RETRACTED": "2026-08-18 12:32 IST: cell retracted by the con-copy campaign (scripts/con_copy_retractions.json) - no consolidated filing exists for that quarter. Kept for audit; must not be re-applied."
+  "src": "moneycontrol appfeeds quarterly_results_responsive limit=400"
  },
  "_RETRACTED_UNIVCABLES_20190630_con": {
+  "RETRACTED": "2026-08-18 12:32 IST: cell retracted by the con-copy campaign (scripts/con_copy_retractions.json) - no consolidated filing exists for that quarter. Kept for audit; must not be re-applied.",
   "basis": "con",
   "gate": "28 anchors, 0 distant disagreements, none within \u00b16 quarters",
   "neighbour_ratio": 1.994,
   "pat": 33.39,
   "row_label": "Net P/L After M.I & Associates",
   "sc_id": "UC",
-  "src": "moneycontrol appfeeds quarterly_results_responsive limit=400",
-  "RETRACTED": "2026-08-18 12:32 IST: cell retracted by the con-copy campaign (scripts/con_copy_retractions.json) - no consolidated filing exists for that quarter. Kept for audit; must not be re-applied."
+  "src": "moneycontrol appfeeds quarterly_results_responsive limit=400"
  },
  "_RETRACTED_VSSL_20231231_con": {
+  "RETRACTED": "2026-08-18 12:32 IST: cell retracted by the con-copy campaign (scripts/con_copy_retractions.json) - no consolidated filing exists for that quarter. Kept for audit; must not be re-applied.",
   "basis": "con",
   "fallback_check": "equals our standalone, but this company never shows con != std across 8 overlapping stored quarters \u2014 genuine no-consolidation-difference, kept",
   "gate": "4 anchors, 0 distant disagreements, none within \u00b16 quarters",
@@ -20429,10 +20424,10 @@
   "pat": 21.81,
   "row_label": "Net P/L After M.I & Associates",
   "sc_id": "VSS01",
-  "src": "moneycontrol appfeeds quarterly_results_responsive limit=400",
-  "RETRACTED": "2026-08-18 12:32 IST: cell retracted by the con-copy campaign (scripts/con_copy_retractions.json) - no consolidated filing exists for that quarter. Kept for audit; must not be re-applied."
+  "src": "moneycontrol appfeeds quarterly_results_responsive limit=400"
  },
  "_RETRACTED_VSSL_20240331_con": {
+  "RETRACTED": "2026-08-18 12:32 IST: cell retracted by the con-copy campaign (scripts/con_copy_retractions.json) - no consolidated filing exists for that quarter. Kept for audit; must not be re-applied.",
   "basis": "con",
   "fallback_check": "equals our standalone, but this company never shows con != std across 8 overlapping stored quarters \u2014 genuine no-consolidation-difference, kept",
   "gate": "4 anchors, 0 distant disagreements, none within \u00b16 quarters",
@@ -20440,17 +20435,16 @@
   "pat": 32.79,
   "row_label": "Net P/L After M.I & Associates",
   "sc_id": "VSS01",
-  "src": "moneycontrol appfeeds quarterly_results_responsive limit=400",
-  "RETRACTED": "2026-08-18 12:32 IST: cell retracted by the con-copy campaign (scripts/con_copy_retractions.json) - no consolidated filing exists for that quarter. Kept for audit; must not be re-applied."
+  "src": "moneycontrol appfeeds quarterly_results_responsive limit=400"
  },
  "_RETRACTED_XPROINDIA_20180930_con": {
+  "RETRACTED": "2026-08-18 12:32 IST: cell retracted by the con-copy campaign (scripts/con_copy_retractions.json) - no consolidated filing exists for that quarter. Kept for audit; must not be re-applied.",
   "basis": "con",
   "gate": "28 anchors, 0 distant disagreements, none within \u00b16 quarters",
   "neighbour_ratio": null,
   "pat": -0.17,
   "row_label": "Net P/L After M.I & Associates",
   "sc_id": "XI",
-  "src": "moneycontrol appfeeds quarterly_results_responsive limit=400",
-  "RETRACTED": "2026-08-18 12:32 IST: cell retracted by the con-copy campaign (scripts/con_copy_retractions.json) - no consolidated filing exists for that quarter. Kept for audit; must not be re-applied."
+  "src": "moneycontrol appfeeds quarterly_results_responsive limit=400"
  }
 }
