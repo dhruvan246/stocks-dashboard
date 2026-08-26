@@ -90,14 +90,25 @@ def load_first_bar(path):
     return {s: int(v.replace("-", "")) for s, v in d.items()}
 
 
-def ann_for(qe, sym, first_bar):
+def ann_for(qe, sym, first_bar, seam_syms=()):
     """-> (ann, floored_from or None). See the module docstring: max(qe+45d, first traded bar).
 
     A symbol with NO entry in the map has no tape at all in the bin -- nothing can select it at any
     date, so the floor has nothing to protect and qe+45d stands. That case is counted and printed,
     never silent: an absent symbol must look different from a floor that did not bind.
+
+    `seam_syms` is the --seam-syms escape, and it is the WRITE-side twin of the warning already on
+    --repair-syms: a first bar is not always a listing date. BBOX (2010-06-08 in this bin) is the
+    named example there, and it is provable rather than assumed -- sf_fundamentals already stores
+    BBOX 2002-12 and 2003-03 with REAL announce dates 2003-01-09 / 2003-05-21, so the company was
+    public and filing seven years before its first bar here; the 2010 date is a rename/tape seam
+    (_rename_map AGCNET->BBOX, FUND_ALIAS AVAYAGCL/TATATELECM->BBOX). Flooring there would push a
+    2003 quarter's availability to 2010, i.e. HIDE a cell whose siblings are visible in 2003.
+    ⚠️ Only list a symbol here when you have READ that evidence for it. The default stays the floor.
     """
     base = ann_default(qe)
+    if sym in seam_syms:
+        return base, "SEAM"
     fb = first_bar.get(sym)
     if fb is None:
         return base, "NO-TAPE"
@@ -127,15 +138,22 @@ def main():
     # other campaign passes its own, because "aggregator pre-2015 std-PAT sweep" stamped on a 2019
     # cell is provenance that misdirects the next reader (memory: provenance-every-backfill).
     ap.add_argument("--label", default="aggregator pre-2015 std-PAT sweep")
+    ap.add_argument("--seam-syms",
+                    help="comma-separated symbols whose FIRST BAR is a proven tape/rename seam "
+                         "rather than a listing date -- the §99 floor is skipped for them and "
+                         "qe+45d stands. Read ann_for()'s docstring before adding one: it needs "
+                         "evidence (older stored rows with REAL announce dates, or a rename map "
+                         "entry), never a hunch.")
     a = ap.parse_args()
 
     props = json.load(open(a.props))["proposals"]
     orig = json.load(open(FUND))
     work = copy.deepcopy(orig)
     first_bar = load_first_bar(a.first_bar)
+    seam_syms = set(a.seam_syms.split(",")) if a.seam_syms else set()
 
     journal, skipped, created, filled = {}, [], 0, 0
-    floored, no_tape, repaired, out_of_scope = [], [], [], []
+    floored, no_tape, repaired, out_of_scope, seamed = [], [], [], [], []
     touched = set()                                  # (sym, qe) we intend to change
 
     for key in sorted(props):
@@ -162,11 +180,14 @@ def main():
             skipped.append("%s: already = %s" % (key, row[i]))
             continue
         row[i] = p["value"]
-        ann, floor_from = ann_for(qe, sym, first_bar)
+        ann, floor_from = ann_for(qe, sym, first_bar, seam_syms)
         if row[ai] in (None, 0):
             row[ai] = ann
             if floor_from == "NO-TAPE":
                 no_tape.append("%s %d" % (sym, qe))
+            elif floor_from == "SEAM":
+                seamed.append("%s %d: floor SKIPPED (declared tape seam), qe+45d = %d"
+                              % (sym, qe, ann))
             elif floor_from:
                 floored.append("%s %d: %d -> %d (first bar)" % (sym, qe, floor_from, ann))
         filled += 1
@@ -192,7 +213,10 @@ def main():
             "ann_floor": ("qe+45d was %d, FLOORED UP to the first traded bar %d -- a pre-listing "
                           "quarter (§99)" % (floor_from, row[ai])) if isinstance(floor_from, int)
                          else ("no tape for this symbol in sf_stock_data.bin, so qe+45d stands "
-                               "unfloored" if floor_from == "NO-TAPE" else None),
+                               "unfloored" if floor_from == "NO-TAPE" else
+                               ("first bar declared a TAPE SEAM (--seam-syms), not a listing date, "
+                                "so the §99 floor is not applied and qe+45d stands"
+                                if floor_from == "SEAM" else None)),
             # A proposal may carry its OWN evidence sentence. The template below describes a
             # gate A/A2 pass and nothing else, so a cell the quarterly gate REFUSED and an
             # independent axis then adjudicated would be journalled as something it is not --
@@ -275,6 +299,10 @@ def main():
         print("      %s" % s)
     if no_tape:
         print("  ⚠️ no tape in the bin, qe+45d unfloored: %d — %s" % (len(no_tape), no_tape[:8]))
+    if seamed:
+        print("  floor SKIPPED on declared tape seams (--seam-syms): %d" % len(seamed))
+        for s in seamed:
+            print("      %s" % s)
     if a.repair_ann:
         print("  ann REPAIRS (written before the floor existed): %d" % len(repaired))
         for s in repaired:

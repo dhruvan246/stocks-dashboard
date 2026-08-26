@@ -74,6 +74,14 @@ MAX_BAD_RATE = 0.15
 NEAR_BAD_Q = 6           # ... but none of them may sit this close to the target
 FY_TOL_REL = 0.004
 FY_TOL_ABS = 0.5
+# E2b -- must the NEIGHBOUR FYs also close, or only the target's own FY?
+# Default True = the original §60d conservatism (reject the years adjacent to a restated one).
+# ★ CALIBRATED BY HOLD-OUT for the pre-2009 era (era_calibrate_e2.py, 2026-08-26) before any cell
+# was written with it False -- see that script's header for the measured mismatch rates. The reason
+# it needed measuring at all: on the 1,852-cell pre-2009 patStd residue this single clause is the
+# largest addressable refusal (159 cells whose OWN target FY closes to the paisa while a neighbour
+# FY does not), and a neighbour restatement is evidence about the NEIGHBOUR, not about the target.
+NEIGHBOUR_FY_REQUIRED = True
 _LASTDAY = {3: 331, 6: 630, 9: 930, 12: 1231}
 _STEP = [3, 6, 9, 12]
 
@@ -204,6 +212,8 @@ def check(sym, qe, field="patS", site="mc", ident=None, excused=None):
         for tag, off in (("target", 0), ("prev", -4), ("next", 4)):
             a5[tag] = site_fy(series, ann, cand, qde(qord(fyend) + off))
         restated = [t for t, (v, _) in a5.items() if v == "RESTATED"]
+        if not NEIGHBOUR_FY_REQUIRED:                    # E2b -- see the constant's note
+            restated = [t for t in restated if t == "target"]
         notest = [t for t, (v, _) in a5.items() if v == "NO-TEST"]
         r.update({"fy_end_month": fem, "fy_end_month_src": femwhy,
                   "A5": {t: {"verdict": v, **d} for t, (v, d) in a5.items()}})
@@ -288,8 +298,15 @@ def main():
     ap.add_argument("--reach", help="mc_era.py output, for ISIN-resolved sc_ids")
     ap.add_argument("--syms")
     ap.add_argument("--out", required=True)
+    ap.add_argument("--e2b", action="store_true",
+                    help="E2 judges the TARGET FY only; a restated neighbour FY no longer vetoes. "
+                         "Calibrated by hold-out first (era_calibrate_e2.py) -- never flip it "
+                         "without re-running that on the era you are filling.")
     a = ap.parse_args()
 
+    global NEIGHBOUR_FY_REQUIRED
+    if a.e2b:
+        NEIGHBOUR_FY_REQUIRED = False
     cells = [tuple(c) for c in json.load(open(a.cells))]
     if a.syms:
         want = set(a.syms.split(","))

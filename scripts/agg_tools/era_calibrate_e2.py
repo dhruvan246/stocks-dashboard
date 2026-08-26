@@ -1,0 +1,106 @@
+# -*- coding: utf-8 -*-
+"""CALIBRATE GATE E2b (the NEIGHBOUR-FY clause) by hold-out, in the era it would be used.
+
+WHY. On the pre-2009 standalone-PAT residue (1,852 cells / 429 symbols, measured 2026-08-26)
+GATE E as shipped passes **1 cell**. Its largest addressable refusal is E2: 328 cells, of which
+**159 have a target FY whose own quarter-sum closes to the paisa** and are refused only because a
+NEIGHBOUR FY does not close. E2's neighbour clause implements runbook §60d ("reject the years
+adjacent to a restated one"), which is a real risk -- a restated vintage can bleed across a year
+boundary -- but it is a conservatism, not a measurement, and a neighbour restatement is evidence
+about the NEIGHBOUR.
+
+So: measure it, exactly as era_calibrate.py measured E1's caps rather than arguing about them.
+Every pre-2009 cell we ALREADY hold at a symbol in the residue's own universe is a hold-out test:
+drop it from the anchor pool, run the gate as if it were a hole, compare what the gate would have
+written against what we store.
+
+  match     the gate reproduces our stored value
+  mismatch  it would have written something else -- one of the two is wrong, and at fill time
+            there is nothing to notice it
+
+⚠️ Our stored value is not ground truth (§90c measured MC disagreeing with 13.1% of our 2002 cells,
+and BHARTIARTL Mar-2005 shows which side can be wrong), so the mismatch rate is an UPPER BOUND on
+the gate's error. That is still the right quantity for choosing between two settings of one clause,
+because both settings are measured against the same imperfect yardstick.
+
+  python3 -X utf8 scripts/agg_tools/era_calibrate_e2.py --reach <reach.json> --sample 1200
+"""
+import argparse
+import collections
+import json
+import os
+import random
+import sys
+import time
+
+HERE = os.path.dirname(os.path.abspath(__file__))
+sys.path.insert(0, HERE)
+import agg_era_gate as EG                                          # noqa: E402
+import agg_gate as G                                               # noqa: E402
+import mc_era as E                                                 # noqa: E402
+
+ROOT = os.path.dirname(os.path.dirname(HERE))
+
+
+def main():
+    ap = argparse.ArgumentParser()
+    ap.add_argument("--reach", required=True)
+    ap.add_argument("--sample", type=int, default=1200)
+    ap.add_argument("--seed", type=int, default=11)
+    ap.add_argument("--to", type=int, default=20081231, help="hold-out era ceiling (quarter-end)")
+    ap.add_argument("--out", default="/tmp/era_calib_e2.json")
+    a = ap.parse_args()
+
+    reach = json.load(open(a.reach))
+    idc = json.load(open(E._ISIN_CACHE))
+    fund = json.load(open(os.path.join(ROOT, "docs", "sf_fundamentals.json")))
+
+    pop = []
+    for sym, rec in reach.items():
+        if not rec.get("resolved") or not idc.get(sym):
+            continue
+        for r in fund.get(sym, []):
+            if r[0] <= a.to and r[1] is not None:
+                pop.append((sym, r[0]))
+    random.Random(a.seed).shuffle(pop)
+    pop = pop[:a.sample]
+    print("hold-out population: %d cells (<= %d) on %d companies\n"
+          % (len(pop), a.to, len({s for s, _ in pop})))
+
+    results = {}
+    for label, neigh in (("E2 strict (target+prev+next)", True), ("E2b target FY only", False)):
+        EG.NEIGHBOUR_FY_REQUIRED = neigh
+        filled = match = 0
+        misses, byyear = [], collections.Counter()
+        t0 = time.time()
+        for sym, qe in pop:
+            ours = G.ours_series(sym, "patS")
+            val, rep = EG.check(sym, qe, "patS", ident=idc[sym], excused={qe})
+            if val is None:
+                continue
+            filled += 1
+            byyear[qe // 10000] += 1
+            if G._agree(ours[qe], val) != "no":
+                match += 1
+            else:
+                misses.append({"sym": sym, "qe": qe, "ours": ours[qe], "gate": val,
+                               "anchors": rep["chosen"]["anchors"],
+                               "fy": rep["detail"].get("A5")})
+        results[label] = {"would_fill": filled, "reproduced_our_value": match,
+                          "mismatch": filled - match,
+                          "mismatch_rate": round(100.0 * (filled - match) / max(1, filled), 2),
+                          "coverage_of_holdout": round(100.0 * filled / max(1, len(pop)), 1),
+                          "by_year": dict(sorted(byyear.items())), "misses": misses[:60]}
+        print("%-30s fills %4d/%d (%4.1f%%)   reproduces ours %4d   MISMATCH %3d (%.2f%%)  [%.0fs]"
+              % (label, filled, len(pop), 100.0 * filled / max(1, len(pop)), match,
+                 filled - match, 100.0 * (filled - match) / max(1, filled), time.time() - t0))
+        sys.stdout.flush()
+    EG.NEIGHBOUR_FY_REQUIRED = True
+
+    json.dump({"population": len(pop), "era_ceiling": a.to, "settings": results},
+              open(a.out, "w"), indent=1, sort_keys=True)
+    print("\nwrote %s" % a.out)
+
+
+if __name__ == "__main__":
+    main()
