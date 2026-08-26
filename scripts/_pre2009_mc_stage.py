@@ -130,11 +130,22 @@ def main():
         q, note = A.mc_quarters(sym, con=False)
         srev = rev.get(sym) or {}
         fmap = {r[0]: r for r in fund.get(sym, [])}
+        # fin (financial-format) is DELIBERATELY NOT ASSERTED by this route.
+        # It used to be inherited symbol-wide ("any stored row has fin=1 -> all my cells get
+        # fin=1"), which was wrong twice over and caused a real overwrite (BALRAMCHIN 2005-03,
+        # stored fin=0 -> 1; _apply_reads sets cell[6]=1 unconditionally when the read says 1,
+        # so an asserted 1 is NOT fill-only and can clobber a stored 0):
+        #   * fin is a per-FILING property, not a company constant -- build_revop.py sets it from
+        #     the XBRL carrying InterestEarned / NetPremiumIncome / PremiumEarned, so it legitimately
+        #     varies quarter to quarter and route to route.
+        #   * the stored flag is unreliable store-wide, so inheriting it PROPAGATES contamination.
+        #     Measured 2026-08-26: BALRAMCHIN (sugar) carries fin=1 on 63 of its 100 rows; and even
+        #     in the reliable post-2018 XBRL era the majority vote calls MOTILALOFS (a broker)
+        #     NOT financial and BALRAMCHIN financial on 1 row. There is no clean signal to inherit.
+        # MC's feed says nothing about filing format, so this route reports 0 = "no evidence",
+        # which is exactly what _apply_reads already defaults an empty cell to, and which can
+        # never overwrite a stored value.
         finflag = 0
-        for r in srev.values():
-            if len(r) > 6 and r[6]:
-                finflag = 1
-                break
         vd_all = verdicts(srev, q)                    # every quarter -- for the window gate
         vd_era = verdicts(srev, q, LO, HI)            # 2002-2008 only -- for the era gate
         agree, disagree = collections.Counter(), collections.Counter()
