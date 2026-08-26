@@ -59,7 +59,16 @@ PRE2015_LEDGERS = [os.path.join(HERE, "pre2015_reads_d.json"),   # STEP D: BSE d
                    os.path.join(HERE, "pre2015_reads_a.json"),   # STEP A: NSE annual-minus-3-siblings derivation
                    os.path.join(HERE, "pre2015_reads_e.json"),   # STEP E: detres EPS-recon re-gate of D's unread-EPS refusals
                    os.path.join(HERE, "pre2015_reads_f.json"),   # STEP F: NSE-archive EPS-recon for cells with no stored PAT anchor
-                   os.path.join(HERE, "pre2015_reads_g.json")]   # STEP G: bespoke 2014 close-out (cross-publisher field completion)
+                   os.path.join(HERE, "pre2015_reads_g.json"),   # STEP G: bespoke 2014 close-out (cross-publisher field completion)
+                   # STEP X: GATE X over the CLASS-D residue, 2026-08-26. PRE2015_CAMPAIGN.md's own
+                   # note on that residue -- "the DATA was read, only the proof failed; a third gate
+                   # (cross-source agreement, the old GATE X idea) could close some without any new
+                   # fetching" -- executed. The exchange-page PAT is recovered from the `seen=` field
+                   # the attempted-ledgers journal on an EPS-recon refusal (invariant verified on all
+                   # 3,915 LANDED cells that carry it: seen == the landed pat, 0 exceptions), and put
+                   # against Moneycontrol's independent standalone print. NSE/BSE and MC are separate
+                   # publishers, unlike mc/tl/tt which are one vendor.
+                   os.path.join(HERE, "pre2015_reads_x.json")]
 
 
 def _load_pre2015_reads():
