@@ -1,4 +1,15 @@
 {
+ "BIRLACABLE|20011231|revStd": {
+  "next_step": "Read the original Dec-2001 filing. NSE's archive floors at 2005-03 so it cannot serve this; try BSE's archived site (PRE2015_CAMPAIGN.md 'STEP B candidate', scoped but never built) or an archived Moneycontrol/myiris quarterly page for FY2002.",
+  "observation": "Moneycontrol's as-filed deep feed gives Net Sales 92.25 for Dec-2001 and its PAT 2.69 matches our stored npStd, so the FILING identity is proven. The value is not. It is 4.6x the preceding Sep-01 quarter (20.01, also MC, also anchor-matched) and the series then collapses to 22.11 by Dec-02 and to 3.77-8.85 through 2003-04. Birla Cable is a telecom-cable maker and the 2001-02 telecom bust is visible in the PAT (turning negative from 2002), so a single 4.6x revenue quarter mid-collapse is not explained by the business.",
+  "status": "OPEN - refused by the pre-2009 std-rev campaign 2026-08-26, deliberately NOT filled.",
+  "tested": "Cumulative-column hypothesis does NOT close: Jun-01 31.54 + Sep-01 20.01 = 51.55, so a 9-month cumulative would need Dec-01 standalone = 40.70, not 92.25; and the FY01 quarters do not tile to it either."
+ },
+ "COHORT_2020_2025_CLOSED_2026_08_25": {
+  "ABSLAMC|20200630": "npStd 97.72. No MC row; earliest listed filing (Q2FY22) carries only Sep-2020 comparative. DRHP dig. 1 cell.",
+  "AETHER|20201231": "npStd 15.25. No MC row; earliest listed filing (Q1FY23) carries only Jun-2021 comparative. DRHP dig. 1 cell.",
+  "closed": "20 revStd fills + 5 npStd heals across ABSLAMC/AETHER/EQUITASBNK/JSL/LICI/RUSTOMJEE (commits 070203c71..c6b84bc06). LICI basis-swap: std slot held the CONSOLIDATED PAT for Mar/Jun/Dec-2022 (own filings standalone vs consolidated statements prove it; npCon slots were already correct - a duplication, now separated)."
+ },
  "CUMMINSIND|20040930+20041231|revStd": {
   "action": "LEFT AS PUBLISHED - two independent lineages agree; no evidence of a parse error. Landed as a side effect of _apply_reads.py --pre2015 (fill-only) during the 2026-08-24 N500 std campaign, which is scoped 2009+.",
   "observation": "both quarters carry revStd 296.76 to the paisa while PAT differs (29.06 vs 32.86)",
@@ -8,11 +19,33 @@
    "moneycontrol rev_ops 296.76 both"
   ]
  },
+ "DSKULKARNI|20060630|revStd": {
+  "next_step": "Read the Jun-2006 filing's Other Income line: if other income ~= 10cr the 0.98 is real and fillable. NSE archive does not reach 2006-06 for this symbol; BSE archived site or an archived aggregator page for FY2007.",
+  "observation": "MC gives Net Sales 0.98 for Jun-2006 with pat_total 9.76 matching our stored npStd. PAT is 10x revenue. For a realty developer that shape is possible when a land or investment sale lands below the revenue line, but the neighbouring quarters are 21.67 (Sep-06), 47.69 (Dec-06) and 49.86 (Mar-07), so 0.98 would be a 20-50x trough.",
+  "status": "OPEN - refused by the pre-2009 std-rev campaign 2026-08-26, deliberately NOT filled."
+ },
  "ESCORTS|20100930|revStd": {
   "status": "RESOLVED 2026-08-24 = 674.39 by annual-minus-9M from the filer's own filings, PAT identity confirming (137.55 - 110.71 = 26.84 == stored). The earlier parked ambiguity (676.77 vs 657.83 vs MC 672.13) is closed."
  },
+ "FIN-FLAG|pre-2009|revop-index-6": {
+  "caused": "Batches 1, 4 and 5 of this campaign staged fin by inheriting it symbol-wide ('any stored row has fin=1'), which propagated that contamination onto 121 newly-filled cells. All 121 landed on cells whose fin was previously null, so NOTHING was overwritten (all three batch diffs recorded 0 overwrites), but six of the symbols are non-financial by the post-2018 XBRL majority: BALRAMCHIN, INDNIPPON, IVRCLINFRA, MAHSCOOTER, RAJESHEXPO and - on that noisy signal - MOTILALOFS.",
+  "fixed_forward": "scripts/_pre2009_mc_stage.py now reports fin=0 ('this route has no evidence of filing format'), which is _apply_reads' own default for an empty cell and can never clobber a stored value. Batch 6 landed 370 cells with 0 overwrites after the fix. The bug was caught by this campaign's per-batch cell-level diff, which requires 0 overwrites, on a real regression: BALRAMCHIN 2005-03 fin 0 -> 1.",
+  "next_step": "Decide the flag for those 121 cells from filings (bank/NBFC format on the face of the filing), not by inheritance. Separately, consider whether _apply_reads should treat cell[6] as fill-only rather than setting 1 unconditionally - that unconditional set is what makes a wrong read able to overwrite.",
+  "observation": "The financial-format flag (sf_revop index 6) is unreliable store-wide. It is a per-FILING property (build_revop.py sets it when the XBRL carries InterestEarned / NetPremiumIncome / PremiumEarned) but is widely inconsistent: BALRAMCHIN, a SUGAR company, carries fin=1 on 63 of its 100 stored rows; even in the reliable post-2018 XBRL era a majority vote calls MOTILALOFS (a broker) NOT financial.",
+  "status": "OPEN - a defect this campaign PARTLY CAUSED and is reporting rather than silently patching."
+ },
+ "HIMACHLFUT|20070930+20071231|npStd": {
+  "next_step": "Identify which line the archive page is reading before treating either value as wrong.",
+  "observation": "NSE archived filing pages read -16.44 and -15.04 against stored npStd -19.41 and -18.22: a consistent ~3cr offset in the same direction on two consecutive quarters, which is the signature of a different row (e.g. before/after an exceptional item) rather than random noise.",
+  "status": "OPEN - PAT-side, one disagreeing reader only. Recorded 2026-08-26, not healed."
+ },
  "ICIL|20160331|revStd": {
   "status": "RESOLVED 2026-08-24 = 525.03 as-filed. Fetched the ORIGINAL 2016-05-07 filing (not the restated year-later column): Standalone Q4 Total Income from operations (net) = 506.83 + 18.20 = 525.03, Net Profit 65.98 = stored npStd. Our stored npStd matches MC as-filed on every quarter (no \u00a7108 contamination); filled 525.03 via _vision_reads. The restated year-later value 493.87 was correctly NOT used."
+ },
+ "LOWBAND_IRREDUCIBLE_2026_08_25": {
+  "AJMERA|20090331": "npStd 17.52. No MC row; NSE archive starts Q1FY10 (no Mar-2009 quarter); BSE API does not serve 2009. Needs Wayback/PDF. 1 cell.",
+  "OSWALGREEN|20121231+20141231": "\u00a7108 restated npStd (NSE as-filed 16.38 vs stored 18.68) - heal for the sweep, not a fill. 2 cells.",
+  "note": "Irreducible low-band (2009-2015) std-rev residual after the all-years sweep. Coverage 97.7-99.4% all years."
  },
  "LTF|20190331|revStd": {
   "derivation": "L&T Finance Holdings' own Sep-2019 filing (page 13, standalone statement, Rs in Crore) prints FY2019 'Total revenue from operations' = 482.11 in its Year-ended-March-31-2019 column. Our three other FY2019 quarters are Jun-18 32.38, Sep-18 97.71, Dec-18 48.87 = 178.96, and EACH of those three equals the same filing's own columns exactly. 482.11 - 178.96 = 303.15, and Moneycontrol independently reports 303.14.",
@@ -22,6 +55,52 @@
   "status": "PROVEN WRONG - heal proposal, NOT written by this campaign (a heal is a different operation from a fill and needs its own ledger so the nightly rebuild does not clobber or re-apply it)",
   "stored": 3.09,
   "why_it_matters": "a ~98x understatement in a live cell; it also blocked the neighbourhood gate for the two Jun/Sep-2019 fills until the filing settled the convention directly"
+ },
+ "MTNL|20160331|revStd": {
+  "filing_npStd": 174.58,
+  "gap": 14.06,
+  "measured": "2026-08-24 vision read of the scanned Annexure I",
+  "own_filing": "BSE 2016-05-30 Annexure I (audited FY+Q4 ended 31/03/2016, Rs Cr). Standalone col 3 (3 months ended 31/03/2016, balancing figure): Total income from operations (Net) 835.79 (=833.66 net + 2.14 other op); Net Profit for the period 174.58 (PBT -317.68 + MAT write-back 492.26).",
+  "status": "\u00a7108 RESTATED-VINTAGE (not a plain fill). Stored npStd 188.64 is the Ind-AS RESTATED comparative (confirmed in the 2017-05-30 FY17 filing Corresponding-31/03/2016 column: Row XIV 188.64, Row I revenue 813.45). Store convention = AS-ORIGINALLY-FILED (runbook \u00a7108): original 2016-05-30 filing shows npStd 174.58 (PBT -317.68 + MAT 492.26) and Total income from ops 835.79; MC as-filed agrees (174.58 / 835.8). ACTION: heal npStd 188.64->174.58 (fund_cell_fix) + fill revStd 835.79 as-filed.",
+  "stored_npStd": 188.64,
+  "verdict": "stored PAT 188.64 != original-filing PAT 174.58 by 14.06 -> stored is the Ind-AS-restated vintage (MTNL FY17 Ind-AS transition). The own-filing revenue 835.79 is the ORIGINAL vintage and must NOT anchor to the restated PAT. To fill, need the May-2017 (Q4FY17) filing whose corresponding 31/03/2016 column shows PAT 188.64; take its revenue there."
+ },
+ "MTNL|FY16_row|\u00a7108": {
+  "finding": "The ENTIRE MTNL FY16 std row holds Ind-AS RESTATED comparatives on original ann dates (a \u00a7108 look-ahead); FY17 quarters are clean as-filed (match MC exactly).",
+  "owner": "runbook \u00a7108 restated-vintage sweep (project-stocks-restated-vintage-class). Healing 20160331 this session; 20150630/20150930/20151231 need original-filing confirmation before heal.",
+  "stored_vs_MC_asfiled": {
+   "20150630": {
+    "npStd_asfiled_MC": -744.97,
+    "npStd_stored": -734.24,
+    "revStd_asfiled_MC": 803.63,
+    "revStd_stored": null
+   },
+   "20150930": {
+    "note": "borderline 0.09 - confirm vs original filing",
+    "npStd_asfiled_MC": -730.44,
+    "npStd_stored": -730.35
+   },
+   "20151231": {
+    "npStd_asfiled_MC": -704.93,
+    "npStd_stored": -671.59,
+    "primary": "FY16-annual 2016-05-30 col 3-months-ended-31/12/2015",
+    "revStd_asfiled_MC": 770.77,
+    "revStd_stored": 756.21
+   },
+   "20160331": {
+    "npStd_asfiled_MC": 174.58,
+    "npStd_stored": 188.64,
+    "primary": "original 2016-05-30 filing + MC",
+    "revStd_asfiled": 835.79,
+    "status": "healing this session"
+   }
+  }
+ },
+ "PNBGILTS|20000930|revStd": {
+  "next_step": "Decide the policy store-wide, then apply it consistently to BOTH this cell and the pre-existing PNBGILTS 2004-06 -19.03/-67.03 pair. Do not fill this cell piecemeal.",
+  "observation": "MC gives Net Sales/Income from operations = -19.03 for Sep-2000 with pat_total -60.56 matching our stored npStd. A NEGATIVE operating income is genuine for a gilts primary dealer (trading losses netted into operating income), and the class is corroborated inside our own store by a PRE-EXISTING -67.03 at 2004-06 that this campaign did not write and that came from a different route.",
+  "question": "Should revStd ever be negative? _nse_archive_revop.py refuses rev <= 0 by construction ('no-rev-row'), while the store already contains negative revStd from other routes. The two behaviours contradict each other.",
+  "status": "OPEN - refused by the pre-2009 std-rev campaign 2026-08-26, deliberately NOT filled. NOT believed to be a defect - a POLICY question."
  },
  "RAIN|CY2014|revStd-annual": {
   "action": "wrote the exchange zeros (primary source, unanimous, printed); the 5.26 divergence is an aggregator presentation question (likely other-income reclass under restatement), NOT adjudicated",
@@ -38,10 +117,73 @@
   "status": "LIVE STD-PAT DEFECT found by the revenue campaign (2nd after LTF 2019-03) - NOT healed here (sf_fundamentals heal needs its own ledger)",
   "stored_npStd": 13.31
  },
+ "STDREV_2016_2020_RESIDUAL_2026_08_25": {
+  "BLUESTARCO|20180331": "stored npStd 25.57 vs MC 45.05 (neighbors match MC) - single-cell \u00a7108 (Ind-AS FY18 transition?). Heal, not fill.",
+  "CORPBANK|20180630+20180930": "Corporation Bank (merged Union Bank 2020). MC total Interest Earned blank (only sub-lines); needs the bank filing total. 2 cells.",
+  "CSBBANK|2018-2019": "CSB Bank listed Dec-2019 - these are PRE-LISTING quarters from the DRHP. 7 cells, deep prospectus dig.",
+  "DALMIABHA|2018-2019": "Dalmia Bharat reorganization (Dalmia/OCL/Odisha Cement merger) - MC entity DBE has no rows; needs the reorganized-entity filings. 5 cells.",
+  "MINDACORP|20180630": "stored npStd 28.4 vs MC 16.89 (neighbors 20180331/0930 match MC exactly) - single-cell defect/\u00a7108, needs a filing read to set as-filed. Heal, not fill.",
+  "note": "std-rev 2016-2020 residual after batch (coverage 99.67-99.97%). All bespoke: bank Interest-Earned reads, reorg-entity filings, single-cell heals."
+ },
+ "STDREV_FINAL_IRREDUCIBLE_2026_08_25": {
+  "AJMERA|20090331 (1)": "No source: NSE archive starts Jun-2009, BSE API no 2009. Wayback dig.",
+  "CSBBANK|2018-2019 (7)": "CSB Bank listed Dec-2019 - pre-listing quarters; Interest-Earned from the DRHP/prospectus. Deep dig.",
+  "DALMIABHA|2018-12..2019-12 (5)": "Dalmia Bharat = formerly Odisha Cement (reorg, listed 542216 Feb-2019). 2019 filings exist under 542216 (16-17pg, consolidated-primary). Needs multi-filing standalone reads. CAUTION: stored npStd are round (38/40/7/48/8) - verify against the filing before anchoring a fill.",
+  "DONE_this_pass": "MINDACORP 20180630 (healed 28.4->16.89 +fill 261.85), BLUESTARCO 20180331 (healed 25.57->45.05 +fill 1371.97), CORPBANK 20180630/0930 (filled Interest Earned 4190.59/3970.57).",
+  "OSWALGREEN|20121231+20141231 (2)": "\u00a7108 restated npStd (NSE as-filed 16.38 vs stored 18.68) - heal for the vintage sweep.",
+  "THOMASCOOK|20150930 (1)": "Whole revStd series on a wrong/gross basis (717/284 vs as-filed 138/104); one-cell fill would mix bases. Series audit.",
+  "note": "std-rev is 98-100% all years 2009-2026. This is the final irreducible tail (~16 cells / 5 symbols), each needing a specialized route (reorg reads, prospectus, \u00a7108 heal, series audit, Wayback)."
+ },
  "SUPRAJIT|restatement-NOT-defect": {
   "point-in-time-note": "whether the dataset SHOULD store the restated (look-ahead) or the original (point-in-time) figure for a pre-amalgamation quarter is a dataset-convention question above this campaigns scope - flagged, not decided.",
   "revenue-fill-implication": "to fill Jun-2016/Dec-2016 revStd at the vintage matching our stored (restated) PAT, need a POST-amalgamation filing whose Jun-2016 comparative shows the restated figure - not the original filing, not MC. Left for a vintage-matched read.",
   "verdict": "RESTATEMENT, not a defect - do NOT heal. Suprajit amalgamated Phoenix Lamps Limited (BSE board-meeting outcome, Record Date 13-Sep-2017, Scheme of Amalgamation). Our stored Jun-2016 npStd 21.28 and Dec-2016 27.01 are the POST-amalgamation RESTATED standalone; the original pre-amalgamation standalone was 12.80 / 13.37 (Moneycontrol + the companys own Aug-2016 press release both show the original). The 4 non-restated SUPRAJIT quarters match MC exactly."
+ },
+ "TECHM|20080331|npStd": {
+  "next_step": "Open the original Q4 FY2008 filing and identify which row +233.10 is. Q4 FY08 is the quarter Indian IT filers booked large AS-11 forex/derivative MTM losses, which makes a standalone loss plausible; confirm from the filing, not from the aggregators.",
+  "observation": "Three readings of Tech Mahindra Q4 FY2008: stored npStd -207.00; Moneycontrol as-filed deep feed pat_total -223.50 (8% from stored, same sign and magnitude); NSE archived filing page +233.10 (opposite sign). An earlier note from this campaign's batch 2 called this a stored-value sign flip on the strength of the NSE page ALONE - that verdict is WITHDRAWN, because MC independently corroborates the negative value.",
+  "reading": "Two of three readers agree the quarter was a LOSS. The NSE page's +233.10 may be a different row or column of the same filing rather than the period's own PAT.",
+  "status": "OPEN - PAT-side, three readers disagree. Recorded by the pre-2009 std-rev campaign 2026-08-26; NOT healed here because docs/sf_fundamentals.json belongs to the concurrent pre-2009 std-PAT campaign."
+ },
+ "THOMASCOOK|20150930|revStd": {
+  "as_filed_from_filing": "BSE 2015-10-29 Thomas Cook (India) Q2+H1 FY16 filing (Rs Lakhs). STANDALONE Quarter ended 30-Sept-2015: (a) Financial & Travel & Related Services 9,806.0 + (d) Other operating income 574.7 = Total Income from operations 10,480.7 lakhs = 104.81 cr; Net Profit for the period 673.9 lakhs = 6.74 cr. (b) Human Resource Services and (c) Vacation Ownership are dashes standalone - those are subsidiaries, consolidated only.",
+  "context": "Thomas Cook India: changed year-end Dec->Mar in 2014-15 (a 15-month period ended 31-Mar-2015); amalgamated Sterling Holiday Resorts; Quess Corp / Vacation Ownership are subsidiaries (consolidated only). Travel revenue has a gross-vs-net presentation question.",
+  "measured": "2026-08-24 vision read of the 2015-10-29 filing + MC standalone cross-check",
+  "problems": {
+   "npStd_anchor_wrong": "stored npStd 20150930 = 10.04 but the filing (and MC) show 6.74. Yet stored Q1 (24.88) and Q3 (-3.13) DO match as-filed - so only Q2 npStd is off, not a clean restatement row. A revStd=104.81 fill would fail the PAT anchor (|10.04-6.74|=3.30 > tol 2.0).",
+   "revStd_basis_unexplained": "stored revStd Q1=717.22 and Q3=284.44 match NEITHER the as-filed standalone income-from-operations (Q1 138.96, Q3 84.67 per MC) NOR consolidated (~929 cr), NOR any 6M/15M period column. ~5x the as-filed net figure - possibly a gross-billings or Ind-AS-115 gross vintage, or a defect. Unknown until the series basis is pinned."
+  },
+  "recommendation": "Dedicated THOMASCOOK series audit: (1) pin the stored revStd basis by matching 717.22/284.44 to a specific filing/line; (2) adjudicate npStd 20150930 10.04 vs 6.74 (check the year-later filing for a restatement, else heal to as-filed 6.74); (3) then fill 20150930 revStd on the confirmed basis.",
+  "status": "NOT FILLED - stored series is internally inconsistent; needs a whole-series basis investigation, not a single-cell fill."
+ },
+ "THREE_ERA_CLOSE_2026_08_25": {
+  "2012-16": "CLOSED - 5 fills + 6 vintage heals. KEY: THOMASCOOK FY16 row MIXED vintages (npStd as-filed, revStd from the 2016-17 re-filings) - that was the real cause of the earlier \"revStd about 5x off\" note, NOT a gross-vs-net basis. DALMIABHA Sep/Dec-15 + OSWALGREEN Dec-14 healed to earliest-filingDate. COFFEEDAY Jun-15 read from the parent standalone statement in the Q1FY17 bundle (entity trap: bundle also holds Coffee Day GLOBAL subsidiary tables).",
+  "2018-19": "CLOSED - CSBBANK 4 (comparative cols + period identities), DALMIABHA 5 (whole-crore prints; round PATs genuine). Plus JSL Jun-22 double heal + LICI 2 con basis-swap heals (peer-supplied filing reads).",
+  "REMAINING": {
+   "ABSLAMC|20200630 + AETHER|20201231": "Pre-IPO, DRHP-only. 2 cells.",
+   "AJMERA|20090331": "No source (NSE archive starts Jun-2009; BSE API no 2009). Wayback dig. 1 cell.",
+   "OSWALGREEN|20070331+20070630": "NSE detail pages exist (filed 03-Jul-2007 / 02-Aug-2007) but NSE persistently 403s those two fetches; no BSE filing under any known code for 2007. Retry later. 2 cells.",
+   "PVP|20040930+20041231+20070930+20071231+20080331": "NSE list has no Non-Consolidated row for these 5 quarters. 5 cells."
+  },
+  "RESIDUAL_UPDATE_final": {
+   "ABSLAMC|20200630 + AETHER|20201231": "OPEN - pre-IPO, DRHP-only.",
+   "AJMERA|20090331": "OPEN - no source found (NSE archive starts Jun-2009, BSE API no 2009, no MC row). Wayback dig remains.",
+   "CLOSED_now": "PVP final 5 (MC deep feed under former name SSI - all nil, PATs exact). OSWALGREEN Jun-2007 revStd 28.88 (NSE cached as-filed page, PAT 23.585 = stored exactly). The NSE 403s were only on RE-FETCH: both 2007 detail pages were already in scripts/_nsearch_cache - always check the cache before declaring an NSE page unreachable.",
+   "OSWALGREEN|20070331": "OPEN, needs a SECOND READER before any write. The NSE as-filed page (financial_res_OSWALGREEN_46560, unaudited Q4FY07) prints Net Sales/Income from Operations 40.76 and PAT 23.04, but stored npStd is 23.69 (2.7% apart). Single reader disagreeing with the store is not enough to heal (feedback-negative-claim-needs-second-reader / no-reader-may-contradict), and a Q4 unaudited-vs-audited gap is exactly where a legitimate revision lives. Next step: the FY2007 AUDITED annual filing (annual minus 9M identity) or MC under the correct sc_id - MC autosuggest returns empty for Oswal Greentech and sc_id OAM is a DIFFERENT company (Oswal Agro Mills, PATs -4.23/0.45). Do NOT fill revStd 40.76 against the unmatched anchor."
+  },
+  "pre-2010": "PVP 11 + IRB 2 + SUMMIT 2 filled = 0 (all investment holdcos; NSE as-filed has an explicit 0.00 revenue row or NO revenue row; every PAT matches stored exactly). PARSER NOTE: the pre-2009 NSE format labels PAT \"Net Profit (+) / Loss (-) for the period\" without \"from ordinary activities after tax\", so _nse_archive_revop skips those pages as pat-anchor-None - read them directly, they are NOT missing."
+ },
+ "TV-18|20070930|npStd": {
+  "next_step": "Second independent reader (MC as-filed under the correct era sc_id, or the original filing) before any change.",
+  "observation": "NSE archived filing page reads PAT 14.43 against stored npStd 8.86 (63% apart). A single reader disagreeing is not grounds to heal.",
+  "status": "OPEN - PAT-side, one disagreeing reader only. Recorded 2026-08-26, not healed."
+ },
+ "UJJIVAN|20170331|revStd": {
+  "doc_in_hand": "BSE 2017-05 UJJIVAN_20170331 bundle is Ujjivan SMALL FINANCE BANK Limited (the unlisted subsidiary) audited results for the STUB period Jul-4-2016 to Mar-31-2017; net profit Rs 350,765 (=Rs 3.5 lakh). Bank commenced ops 2017-02-01.",
+  "measured": "2026-08-24 vision read of pages 0-4 of the bundle",
+  "status": "RESOLVED 2026-08-24 = 132.89. Fetched the holdcos OWN 2017-04-27 filing (Ujjivan Financial Services, scrip 539874); Note 9 Total Income from Operations (Net) Q4 = 13,289.29 lakhs = 132.89 cr, PAT 20.41 = stored. Filled via _vision_reads.",
+  "todo": "Refetch Ujjivan Financial Services Limiteds OWN standalone Q4FY17 results (the filing that also carries our con revCon 314.53). Its standalone total income from operations, anchored to npStd 20.41, is the value.",
+  "why_wrong": "Our ticker UJJIVAN in FY17 = Ujjivan Financial Services Limited (the listed HOLDCO), stored npStd 20.41 cr / npCon 19.35 / revCon 314.53. The holdco transferred its lending business to the bank on 2017-02-01. The subject-filtered refetch picked the bank subsidiary attachment, not the holdco standalone."
  },
  "_gate_failures_2026_08_24": {
   "per_name": {
@@ -209,107 +351,5 @@
   },
   "what": "23 of 25 MC candidates failed the neighbourhood gate (site series must reproduce our stored revStd within +-6 quarters, >=4 tested, zero disagreements)",
   "why_it_matters": "these are the aggregator TWO-REVENUE-DEFINITIONS class: the site quotes a different top line (gross vs net of excise, or total income) for those names, so its value for the gap quarter is not our quantity"
- },
- "MTNL|20160331|revStd": {
-  "status": "\u00a7108 RESTATED-VINTAGE (not a plain fill). Stored npStd 188.64 is the Ind-AS RESTATED comparative (confirmed in the 2017-05-30 FY17 filing Corresponding-31/03/2016 column: Row XIV 188.64, Row I revenue 813.45). Store convention = AS-ORIGINALLY-FILED (runbook \u00a7108): original 2016-05-30 filing shows npStd 174.58 (PBT -317.68 + MAT 492.26) and Total income from ops 835.79; MC as-filed agrees (174.58 / 835.8). ACTION: heal npStd 188.64->174.58 (fund_cell_fix) + fill revStd 835.79 as-filed.",
-  "own_filing": "BSE 2016-05-30 Annexure I (audited FY+Q4 ended 31/03/2016, Rs Cr). Standalone col 3 (3 months ended 31/03/2016, balancing figure): Total income from operations (Net) 835.79 (=833.66 net + 2.14 other op); Net Profit for the period 174.58 (PBT -317.68 + MAT write-back 492.26).",
-  "stored_npStd": 188.64,
-  "filing_npStd": 174.58,
-  "gap": 14.06,
-  "verdict": "stored PAT 188.64 != original-filing PAT 174.58 by 14.06 -> stored is the Ind-AS-restated vintage (MTNL FY17 Ind-AS transition). The own-filing revenue 835.79 is the ORIGINAL vintage and must NOT anchor to the restated PAT. To fill, need the May-2017 (Q4FY17) filing whose corresponding 31/03/2016 column shows PAT 188.64; take its revenue there.",
-  "measured": "2026-08-24 vision read of the scanned Annexure I"
- },
- "UJJIVAN|20170331|revStd": {
-  "status": "RESOLVED 2026-08-24 = 132.89. Fetched the holdcos OWN 2017-04-27 filing (Ujjivan Financial Services, scrip 539874); Note 9 Total Income from Operations (Net) Q4 = 13,289.29 lakhs = 132.89 cr, PAT 20.41 = stored. Filled via _vision_reads.",
-  "doc_in_hand": "BSE 2017-05 UJJIVAN_20170331 bundle is Ujjivan SMALL FINANCE BANK Limited (the unlisted subsidiary) audited results for the STUB period Jul-4-2016 to Mar-31-2017; net profit Rs 350,765 (=Rs 3.5 lakh). Bank commenced ops 2017-02-01.",
-  "why_wrong": "Our ticker UJJIVAN in FY17 = Ujjivan Financial Services Limited (the listed HOLDCO), stored npStd 20.41 cr / npCon 19.35 / revCon 314.53. The holdco transferred its lending business to the bank on 2017-02-01. The subject-filtered refetch picked the bank subsidiary attachment, not the holdco standalone.",
-  "todo": "Refetch Ujjivan Financial Services Limiteds OWN standalone Q4FY17 results (the filing that also carries our con revCon 314.53). Its standalone total income from operations, anchored to npStd 20.41, is the value.",
-  "measured": "2026-08-24 vision read of pages 0-4 of the bundle"
- },
- "MTNL|FY16_row|\u00a7108": {
-  "finding": "The ENTIRE MTNL FY16 std row holds Ind-AS RESTATED comparatives on original ann dates (a \u00a7108 look-ahead); FY17 quarters are clean as-filed (match MC exactly).",
-  "stored_vs_MC_asfiled": {
-   "20150630": {
-    "npStd_stored": -734.24,
-    "npStd_asfiled_MC": -744.97,
-    "revStd_stored": null,
-    "revStd_asfiled_MC": 803.63
-   },
-   "20150930": {
-    "npStd_stored": -730.35,
-    "npStd_asfiled_MC": -730.44,
-    "note": "borderline 0.09 - confirm vs original filing"
-   },
-   "20151231": {
-    "npStd_stored": -671.59,
-    "npStd_asfiled_MC": -704.93,
-    "revStd_stored": 756.21,
-    "revStd_asfiled_MC": 770.77,
-    "primary": "FY16-annual 2016-05-30 col 3-months-ended-31/12/2015"
-   },
-   "20160331": {
-    "npStd_stored": 188.64,
-    "npStd_asfiled_MC": 174.58,
-    "revStd_asfiled": 835.79,
-    "primary": "original 2016-05-30 filing + MC",
-    "status": "healing this session"
-   }
-  },
-  "owner": "runbook \u00a7108 restated-vintage sweep (project-stocks-restated-vintage-class). Healing 20160331 this session; 20150630/20150930/20151231 need original-filing confirmation before heal."
- },
- "THOMASCOOK|20150930|revStd": {
-  "status": "NOT FILLED - stored series is internally inconsistent; needs a whole-series basis investigation, not a single-cell fill.",
-  "as_filed_from_filing": "BSE 2015-10-29 Thomas Cook (India) Q2+H1 FY16 filing (Rs Lakhs). STANDALONE Quarter ended 30-Sept-2015: (a) Financial & Travel & Related Services 9,806.0 + (d) Other operating income 574.7 = Total Income from operations 10,480.7 lakhs = 104.81 cr; Net Profit for the period 673.9 lakhs = 6.74 cr. (b) Human Resource Services and (c) Vacation Ownership are dashes standalone - those are subsidiaries, consolidated only.",
-  "problems": {
-   "npStd_anchor_wrong": "stored npStd 20150930 = 10.04 but the filing (and MC) show 6.74. Yet stored Q1 (24.88) and Q3 (-3.13) DO match as-filed - so only Q2 npStd is off, not a clean restatement row. A revStd=104.81 fill would fail the PAT anchor (|10.04-6.74|=3.30 > tol 2.0).",
-   "revStd_basis_unexplained": "stored revStd Q1=717.22 and Q3=284.44 match NEITHER the as-filed standalone income-from-operations (Q1 138.96, Q3 84.67 per MC) NOR consolidated (~929 cr), NOR any 6M/15M period column. ~5x the as-filed net figure - possibly a gross-billings or Ind-AS-115 gross vintage, or a defect. Unknown until the series basis is pinned."
-  },
-  "context": "Thomas Cook India: changed year-end Dec->Mar in 2014-15 (a 15-month period ended 31-Mar-2015); amalgamated Sterling Holiday Resorts; Quess Corp / Vacation Ownership are subsidiaries (consolidated only). Travel revenue has a gross-vs-net presentation question.",
-  "recommendation": "Dedicated THOMASCOOK series audit: (1) pin the stored revStd basis by matching 717.22/284.44 to a specific filing/line; (2) adjudicate npStd 20150930 10.04 vs 6.74 (check the year-later filing for a restatement, else heal to as-filed 6.74); (3) then fill 20150930 revStd on the confirmed basis.",
-  "measured": "2026-08-24 vision read of the 2015-10-29 filing + MC standalone cross-check"
- },
- "LOWBAND_IRREDUCIBLE_2026_08_25": {
-  "AJMERA|20090331": "npStd 17.52. No MC row; NSE archive starts Q1FY10 (no Mar-2009 quarter); BSE API does not serve 2009. Needs Wayback/PDF. 1 cell.",
-  "OSWALGREEN|20121231+20141231": "\u00a7108 restated npStd (NSE as-filed 16.38 vs stored 18.68) - heal for the sweep, not a fill. 2 cells.",
-  "note": "Irreducible low-band (2009-2015) std-rev residual after the all-years sweep. Coverage 97.7-99.4% all years."
- },
- "STDREV_2016_2020_RESIDUAL_2026_08_25": {
-  "MINDACORP|20180630": "stored npStd 28.4 vs MC 16.89 (neighbors 20180331/0930 match MC exactly) - single-cell defect/\u00a7108, needs a filing read to set as-filed. Heal, not fill.",
-  "BLUESTARCO|20180331": "stored npStd 25.57 vs MC 45.05 (neighbors match MC) - single-cell \u00a7108 (Ind-AS FY18 transition?). Heal, not fill.",
-  "CORPBANK|20180630+20180930": "Corporation Bank (merged Union Bank 2020). MC total Interest Earned blank (only sub-lines); needs the bank filing total. 2 cells.",
-  "CSBBANK|2018-2019": "CSB Bank listed Dec-2019 - these are PRE-LISTING quarters from the DRHP. 7 cells, deep prospectus dig.",
-  "DALMIABHA|2018-2019": "Dalmia Bharat reorganization (Dalmia/OCL/Odisha Cement merger) - MC entity DBE has no rows; needs the reorganized-entity filings. 5 cells.",
-  "note": "std-rev 2016-2020 residual after batch (coverage 99.67-99.97%). All bespoke: bank Interest-Earned reads, reorg-entity filings, single-cell heals."
- },
- "STDREV_FINAL_IRREDUCIBLE_2026_08_25": {
-  "DONE_this_pass": "MINDACORP 20180630 (healed 28.4->16.89 +fill 261.85), BLUESTARCO 20180331 (healed 25.57->45.05 +fill 1371.97), CORPBANK 20180630/0930 (filled Interest Earned 4190.59/3970.57).",
-  "DALMIABHA|2018-12..2019-12 (5)": "Dalmia Bharat = formerly Odisha Cement (reorg, listed 542216 Feb-2019). 2019 filings exist under 542216 (16-17pg, consolidated-primary). Needs multi-filing standalone reads. CAUTION: stored npStd are round (38/40/7/48/8) - verify against the filing before anchoring a fill.",
-  "CSBBANK|2018-2019 (7)": "CSB Bank listed Dec-2019 - pre-listing quarters; Interest-Earned from the DRHP/prospectus. Deep dig.",
-  "OSWALGREEN|20121231+20141231 (2)": "\u00a7108 restated npStd (NSE as-filed 16.38 vs stored 18.68) - heal for the vintage sweep.",
-  "THOMASCOOK|20150930 (1)": "Whole revStd series on a wrong/gross basis (717/284 vs as-filed 138/104); one-cell fill would mix bases. Series audit.",
-  "AJMERA|20090331 (1)": "No source: NSE archive starts Jun-2009, BSE API no 2009. Wayback dig.",
-  "note": "std-rev is 98-100% all years 2009-2026. This is the final irreducible tail (~16 cells / 5 symbols), each needing a specialized route (reorg reads, prospectus, \u00a7108 heal, series audit, Wayback)."
- },
- "COHORT_2020_2025_CLOSED_2026_08_25": {
-  "closed": "20 revStd fills + 5 npStd heals across ABSLAMC/AETHER/EQUITASBNK/JSL/LICI/RUSTOMJEE (commits 070203c71..c6b84bc06). LICI basis-swap: std slot held the CONSOLIDATED PAT for Mar/Jun/Dec-2022 (own filings standalone vs consolidated statements prove it; npCon slots were already correct - a duplication, now separated).",
-  "ABSLAMC|20200630": "npStd 97.72. No MC row; earliest listed filing (Q2FY22) carries only Sep-2020 comparative. DRHP dig. 1 cell.",
-  "AETHER|20201231": "npStd 15.25. No MC row; earliest listed filing (Q1FY23) carries only Jun-2021 comparative. DRHP dig. 1 cell."
- },
- "THREE_ERA_CLOSE_2026_08_25": {
-  "2018-19": "CLOSED - CSBBANK 4 (comparative cols + period identities), DALMIABHA 5 (whole-crore prints; round PATs genuine). Plus JSL Jun-22 double heal + LICI 2 con basis-swap heals (peer-supplied filing reads).",
-  "2012-16": "CLOSED - 5 fills + 6 vintage heals. KEY: THOMASCOOK FY16 row MIXED vintages (npStd as-filed, revStd from the 2016-17 re-filings) - that was the real cause of the earlier \"revStd about 5x off\" note, NOT a gross-vs-net basis. DALMIABHA Sep/Dec-15 + OSWALGREEN Dec-14 healed to earliest-filingDate. COFFEEDAY Jun-15 read from the parent standalone statement in the Q1FY17 bundle (entity trap: bundle also holds Coffee Day GLOBAL subsidiary tables).",
-  "pre-2010": "PVP 11 + IRB 2 + SUMMIT 2 filled = 0 (all investment holdcos; NSE as-filed has an explicit 0.00 revenue row or NO revenue row; every PAT matches stored exactly). PARSER NOTE: the pre-2009 NSE format labels PAT \"Net Profit (+) / Loss (-) for the period\" without \"from ordinary activities after tax\", so _nse_archive_revop skips those pages as pat-anchor-None - read them directly, they are NOT missing.",
-  "REMAINING": {
-   "OSWALGREEN|20070331+20070630": "NSE detail pages exist (filed 03-Jul-2007 / 02-Aug-2007) but NSE persistently 403s those two fetches; no BSE filing under any known code for 2007. Retry later. 2 cells.",
-   "PVP|20040930+20041231+20070930+20071231+20080331": "NSE list has no Non-Consolidated row for these 5 quarters. 5 cells.",
-   "AJMERA|20090331": "No source (NSE archive starts Jun-2009; BSE API no 2009). Wayback dig. 1 cell.",
-   "ABSLAMC|20200630 + AETHER|20201231": "Pre-IPO, DRHP-only. 2 cells."
-  },
-  "RESIDUAL_UPDATE_final": {
-   "CLOSED_now": "PVP final 5 (MC deep feed under former name SSI - all nil, PATs exact). OSWALGREEN Jun-2007 revStd 28.88 (NSE cached as-filed page, PAT 23.585 = stored exactly). The NSE 403s were only on RE-FETCH: both 2007 detail pages were already in scripts/_nsearch_cache - always check the cache before declaring an NSE page unreachable.",
-   "OSWALGREEN|20070331": "OPEN, needs a SECOND READER before any write. The NSE as-filed page (financial_res_OSWALGREEN_46560, unaudited Q4FY07) prints Net Sales/Income from Operations 40.76 and PAT 23.04, but stored npStd is 23.69 (2.7% apart). Single reader disagreeing with the store is not enough to heal (feedback-negative-claim-needs-second-reader / no-reader-may-contradict), and a Q4 unaudited-vs-audited gap is exactly where a legitimate revision lives. Next step: the FY2007 AUDITED annual filing (annual minus 9M identity) or MC under the correct sc_id - MC autosuggest returns empty for Oswal Greentech and sc_id OAM is a DIFFERENT company (Oswal Agro Mills, PATs -4.23/0.45). Do NOT fill revStd 40.76 against the unmatched anchor.",
-   "AJMERA|20090331": "OPEN - no source found (NSE archive starts Jun-2009, BSE API no 2009, no MC row). Wayback dig remains.",
-   "ABSLAMC|20200630 + AETHER|20201231": "OPEN - pre-IPO, DRHP-only."
-  }
  }
 }
