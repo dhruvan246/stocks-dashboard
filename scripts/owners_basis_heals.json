@@ -7,7 +7,8 @@
   "FY22 owners subtotal 604.26 implies 165.94) and SADBHAV 20200331 (stored 886.63 against a",
   "standalone of 8.18, wildly out of family -- no P&L page located in that filing).",
   "2026-08-09 second pass: ATUL FY21+FY22 closed out (Jun-20, Mar-21, Jun-21, Sep-21, Dec-21). SADBHAV 2020-03-31 was RE-CHECKED and is CORRECT as stored: the Jun-2020 filing prints Mar-20 period 1280.78 and NCI 394.14 -> owners 886.64, and FY20 owners -8.07 + -15.94 + -69.79 + 886.63 = 792.83 exactly as printed. The value only looked wrong because it is a very large genuine one-off -- the RENUKA lesson (runbook \u00a769c).",
-  "2026-08-09 third pass: the named fund-vs-revop cells (ATUL Sep-25, SADBHAV Dec-20, RENUKA Dec-20 +Mar-21). Measuring them found sf_fundamentals and sf_revop disagree on 1,372 of 43,731 populated con-PAT cells (3.14%); the 603 where revop is exactly 0.0 against a real fundamentals value were resynced, the 716 genuine disagreements and 15 fundamentals==0 cells are NOT touched. build_discovery's TTM P/E was reading the divergent mirror. \u00a770."
+  "2026-08-09 third pass: the named fund-vs-revop cells (ATUL Sep-25, SADBHAV Dec-20, RENUKA Dec-20 +Mar-21). Measuring them found sf_fundamentals and sf_revop disagree on 1,372 of 43,731 populated con-PAT cells (3.14%); the 603 where revop is exactly 0.0 against a real fundamentals value were resynced, the 716 genuine disagreements and 15 fundamentals==0 cells are NOT touched. build_discovery's TTM P/E was reading the divergent mirror. \u00a770.",
+  "2026-08-26 (runbook \u00a7116): 53 cells across COX&KINGS / S&SPOWER / SURANAT&P whose con slot held the TOTAL. Read from each quarter's OWN consolidated XBRL: owners + NCI == total closes on 59 of 61 filings (the 2 misses are the filer's own arithmetic, Rs51k and Rs91k). 16 were exposed by the HTML-escaped phantom keys retracted in \u00a7114 -- the phantom's reader had taken the owners tag and OURS had taken the total, so the phantom was RIGHT on those and the live store was wrong. The other 37 are the rest of the same series: healing only the disagreeing cells would leave a MIXED-basis series, which breaks YoY/TTM worse than a uniformly wrong one. NOT healed: 24 cells (IL&FSENGG x23, S&SPOWER Mar-2019) where the filer tags owners=0 AND NCI=0 with the real number only in the total -- there the stored total IS correct and the phantom's 0.0 was the defect. None of these symbols is in _reattr_owners.json, which is why apply_owners_full never re-attributed them; 1,417 symbols / 18,175 con cells share that exposure and are NOT swept here."
  ],
  "cells": {
   "3IINFOLTD|20251231|patC": {
@@ -455,6 +456,30 @@
    "source": "CENTURY PLYBOARDS (INDIA) Q4FY20 'Statement of Audited Consolidated Financial Results ... 31st March 2020' (NSE filingDate 26-Jun-2020 18:16) p11, column 'Quarter Ended 31.03.2019 (Audited) (refer note 10)'",
    "stored_before": null,
    "when": "2026-08-17 21:03 IST"
+  },
+  "COX&KINGS|20180331|patC": {
+   "exposed_by_phantom": false,
+   "nci": 0.02,
+   "note": "ProfitOrLossAttributableToOwnersOfParent=-45.50, NonControllingInterests=0.02, ProfitLossForPeriod=-45.48; identity closes. The con slot held the TOTAL, which is the wrong basis for npCon (owners-attributable). Same symbol, same defect, found by sweeping every quarter rather than only the cells the phantom disagreed on (heal the row, not the cell).",
+   "owners": -45.5,
+   "src": "own consolidated XBRL INDAS_36065_16048_26062018125606_WEB_2_xml ctx OneD",
+   "total_was": -45.48
+  },
+  "COX&KINGS|20180930|patC": {
+   "exposed_by_phantom": true,
+   "nci": 42.24,
+   "note": "ProfitOrLossAttributableToOwnersOfParent=81.16, NonControllingInterests=42.24, ProfitLossForPeriod=123.40; identity closes. The con slot held the TOTAL, which is the wrong basis for npCon (owners-attributable). Exposed by the retracted HTML-escaped phantom key, which had read the owners tag correctly (runbook \u00a7116).",
+   "owners": 81.16,
+   "src": "own consolidated XBRL INDAS_41293_60874_15112018053046_WEB_2_xml ctx OneD",
+   "total_was": 123.4
+  },
+  "COX&KINGS|20181231|patC": {
+   "exposed_by_phantom": true,
+   "nci": 20.07,
+   "note": "ProfitOrLossAttributableToOwnersOfParent=28.91, NonControllingInterests=20.07, ProfitLossForPeriod=48.98; identity closes. The con slot held the TOTAL, which is the wrong basis for npCon (owners-attributable). Exposed by the retracted HTML-escaped phantom key, which had read the owners tag correctly (runbook \u00a7116).",
+   "owners": 28.91,
+   "src": "own consolidated XBRL INDAS_43421_83373_15022019030146_WEB_2_xml ctx OneD",
+   "total_was": 48.98
   },
   "CREDITACC|20231231|patC": {
    "identity": "Every YTD subtotal closes on the quarters. FY24 chain: 9M-FY24 printed 1,048.84 = Jun-23 348.46 (stored con) + Sep-23 347.04 (stored con) + Dec-23 353.34 EXACT; FY24 printed 1,445.93 vs the four quarters 348.46+347.04+353.34+397.08 = 1,445.92, a 1-paisa residue from four independently rounded quarters. FY25 chain: H1-FY25 printed 583.72 = 397.66 + 186.06 EXACT; 9M-FY25 printed 484.19 vs 397.66+186.06-99.52 = 484.20, again 1 paisa; FY25 printed 531.40 (Q4FY25 and Q1FY26 filings, already-applied batch-F cells). FY26 chain: H1-FY26 printed 186.00 = 60.19 + 125.81 EXACT; 9M-FY26 printed 438.09 = 60.19+125.81+252.09 EXACT. Revenue closes even harder: 9M-FY25 rev 4,345.70 = 1,512.03+1,453.29+1,380.38 EXACT, H1-FY26 rev 2,971.24 EXACT, 9M-FY26 rev 4,461.65 EXACT.",
@@ -1503,6 +1528,198 @@
    "stored_before": 0.0,
    "when": "2026-08-17 23:49 IST"
   },
+  "S&SPOWER|20180331|patC": {
+   "exposed_by_phantom": true,
+   "nci": 0.24,
+   "note": "ProfitOrLossAttributableToOwnersOfParent=1.15, NonControllingInterests=0.24, ProfitLossForPeriod=1.39; identity closes. The con slot held the TOTAL, which is the wrong basis for npCon (owners-attributable). Exposed by the retracted HTML-escaped phantom key, which had read the owners tag correctly (runbook \u00a7116).",
+   "owners": 1.15,
+   "src": "own consolidated XBRL INDAS_36674_14158_31052018073529_WEB_2_xml ctx OneD",
+   "total_was": 1.39
+  },
+  "S&SPOWER|20180930|patC": {
+   "exposed_by_phantom": true,
+   "nci": -0.08,
+   "note": "ProfitOrLossAttributableToOwnersOfParent=-0.33, NonControllingInterests=-0.08, ProfitLossForPeriod=-0.41; identity closes. The con slot held the TOTAL, which is the wrong basis for npCon (owners-attributable). Exposed by the retracted HTML-escaped phantom key, which had read the owners tag correctly (runbook \u00a7116).",
+   "owners": -0.33,
+   "src": "own consolidated XBRL INDAS_41051_60241_15112018012908_WEB_xml ctx OneD",
+   "total_was": -0.41
+  },
+  "S&SPOWER|20181231|patC": {
+   "exposed_by_phantom": true,
+   "nci": -0.83,
+   "note": "ProfitOrLossAttributableToOwnersOfParent=-0.63, NonControllingInterests=-0.83, ProfitLossForPeriod=-1.46; identity closes. The con slot held the TOTAL, which is the wrong basis for npCon (owners-attributable). Exposed by the retracted HTML-escaped phantom key, which had read the owners tag correctly (runbook \u00a7116).",
+   "owners": -0.63,
+   "src": "own consolidated XBRL INDAS_43518_84247_26022019054556_WEB_xml ctx OneD",
+   "total_was": -1.46
+  },
+  "S&SPOWER|20190630|patC": {
+   "exposed_by_phantom": true,
+   "nci": -0.3,
+   "note": "ProfitOrLossAttributableToOwnersOfParent=-2.24, NonControllingInterests=-0.30, ProfitLossForPeriod=-2.54; identity closes. The con slot held the TOTAL, which is the wrong basis for npCon (owners-attributable). Exposed by the retracted HTML-escaped phantom key, which had read the owners tag correctly (runbook \u00a7116).",
+   "owners": -2.24,
+   "src": "own consolidated XBRL INDAS_47602_131188_13082019050405_WEB_xml ctx OneD",
+   "total_was": -2.54
+  },
+  "S&SPOWER|20190930|patC": {
+   "exposed_by_phantom": true,
+   "nci": -0.37,
+   "note": "ProfitOrLossAttributableToOwnersOfParent=-2.85, NonControllingInterests=-0.37, ProfitLossForPeriod=-3.22; identity closes. The con slot held the TOTAL, which is the wrong basis for npCon (owners-attributable). Exposed by the retracted HTML-escaped phantom key, which had read the owners tag correctly (runbook \u00a7116).",
+   "owners": -2.85,
+   "src": "own consolidated XBRL INDAS_51241_174667_21112019061146_WEB_xml ctx OneD",
+   "total_was": -3.22
+  },
+  "S&SPOWER|20191231|patC": {
+   "exposed_by_phantom": true,
+   "nci": -0.32,
+   "note": "ProfitOrLossAttributableToOwnersOfParent=-0.87, NonControllingInterests=-0.32, ProfitLossForPeriod=-1.19; identity closes. The con slot held the TOTAL, which is the wrong basis for npCon (owners-attributable). Exposed by the retracted HTML-escaped phantom key, which had read the owners tag correctly (runbook \u00a7116).",
+   "owners": -0.87,
+   "src": "own consolidated XBRL INDAS_54262_221848_14022020043103_WEB_xml ctx OneD",
+   "total_was": -1.19
+  },
+  "S&SPOWER|20200331|patC": {
+   "exposed_by_phantom": true,
+   "nci": -2.43,
+   "note": "ProfitOrLossAttributableToOwnersOfParent=-5.98, NonControllingInterests=-2.43, ProfitLossForPeriod=-8.41; identity closes. The con slot held the TOTAL, which is the wrong basis for npCon (owners-attributable). Exposed by the retracted HTML-escaped phantom key, which had read the owners tag correctly (runbook \u00a7116).",
+   "owners": -5.98,
+   "src": "own consolidated XBRL INDAS_58933_300765_31072020053359_WEB_xml ctx OneD",
+   "total_was": -8.41
+  },
+  "S&SPOWER|20200630|patC": {
+   "exposed_by_phantom": true,
+   "nci": -0.35,
+   "note": "ProfitOrLossAttributableToOwnersOfParent=-1.72, NonControllingInterests=-0.35, ProfitLossForPeriod=-2.07; identity closes. The con slot held the TOTAL, which is the wrong basis for npCon (owners-attributable). Exposed by the retracted HTML-escaped phantom key, which had read the owners tag correctly (runbook \u00a7116).",
+   "owners": -1.72,
+   "src": "own consolidated XBRL INDAS_61542_317242_15092020121430_WEB_xml ctx OneD",
+   "total_was": -2.07
+  },
+  "S&SPOWER|20200930|patC": {
+   "exposed_by_phantom": true,
+   "nci": 0.39,
+   "note": "ProfitOrLossAttributableToOwnersOfParent=0.43, NonControllingInterests=0.39, ProfitLossForPeriod=0.82; identity closes. The con slot held the TOTAL, which is the wrong basis for npCon (owners-attributable). Exposed by the retracted HTML-escaped phantom key, which had read the owners tag correctly (runbook \u00a7116).",
+   "owners": 0.43,
+   "src": "own consolidated XBRL INDAS_65324_362629_13112020045635_WEB_xml ctx OneD",
+   "total_was": 0.82
+  },
+  "S&SPOWER|20201231|patC": {
+   "exposed_by_phantom": false,
+   "nci": -0.18,
+   "note": "ProfitOrLossAttributableToOwnersOfParent=0.18, NonControllingInterests=-0.18, ProfitLossForPeriod=0.00; identity closes. The con slot held the TOTAL, which is the wrong basis for npCon (owners-attributable). Same symbol, same defect, found by sweeping every quarter rather than only the cells the phantom disagreed on (heal the row, not the cell).",
+   "owners": 0.18,
+   "src": "own consolidated XBRL INDAS_67285_403146_06022021123435_WEB_xml ctx OneD",
+   "total_was": 0.0
+  },
+  "S&SPOWER|20210630|patC": {
+   "exposed_by_phantom": false,
+   "nci": -0.58,
+   "note": "ProfitOrLossAttributableToOwnersOfParent=-3.32, NonControllingInterests=-0.58, ProfitLossForPeriod=-3.90; identity closes. The con slot held the TOTAL, which is the wrong basis for npCon (owners-attributable). Same symbol, same defect, found by sweeping every quarter rather than only the cells the phantom disagreed on (heal the row, not the cell).",
+   "owners": -3.32,
+   "src": "own consolidated XBRL INDAS_75901_507481_14082021022243_WEB_xml ctx OneD",
+   "total_was": -3.9
+  },
+  "S&SPOWER|20210930|patC": {
+   "exposed_by_phantom": false,
+   "nci": -0.62,
+   "note": "ProfitOrLossAttributableToOwnersOfParent=-3.22, NonControllingInterests=-0.62, ProfitLossForPeriod=-3.84; identity closes. The con slot held the TOTAL, which is the wrong basis for npCon (owners-attributable). Same symbol, same defect, found by sweeping every quarter rather than only the cells the phantom disagreed on (heal the row, not the cell).",
+   "owners": -3.22,
+   "src": "own consolidated XBRL INDAS_79928_560735_16112021040322_WEB_xml ctx OneD",
+   "total_was": -3.84
+  },
+  "S&SPOWER|20211231|patC": {
+   "exposed_by_phantom": false,
+   "nci": -0.47,
+   "note": "ProfitOrLossAttributableToOwnersOfParent=-2.60, NonControllingInterests=-0.47, ProfitLossForPeriod=-3.08; identity closes. The con slot held the TOTAL, which is the wrong basis for npCon (owners-attributable). Same symbol, same defect, found by sweeping every quarter rather than only the cells the phantom disagreed on (heal the row, not the cell).",
+   "owners": -2.6,
+   "src": "own consolidated XBRL INDAS_82626_609148_12022022044024_WEB_xml ctx OneD",
+   "total_was": -3.08
+  },
+  "S&SPOWER|20220331|patC": {
+   "exposed_by_phantom": false,
+   "nci": -0.73,
+   "note": "ProfitOrLossAttributableToOwnersOfParent=-3.96, NonControllingInterests=-0.73, ProfitLossForPeriod=-4.69; identity closes. The con slot held the TOTAL, which is the wrong basis for npCon (owners-attributable). Same symbol, same defect, found by sweeping every quarter rather than only the cells the phantom disagreed on (heal the row, not the cell).",
+   "owners": -3.96,
+   "src": "own consolidated XBRL INDAS_87136_671119_31052022092303_WEB_xml ctx OneD",
+   "total_was": -4.69
+  },
+  "S&SPOWER|20220630|patC": {
+   "exposed_by_phantom": false,
+   "nci": -0.53,
+   "note": "ProfitOrLossAttributableToOwnersOfParent=-5.24, NonControllingInterests=-0.53, ProfitLossForPeriod=-5.76; identity closes. The con slot held the TOTAL, which is the wrong basis for npCon (owners-attributable). Same symbol, same defect, found by sweeping every quarter rather than only the cells the phantom disagreed on (heal the row, not the cell).",
+   "owners": -5.24,
+   "src": "own consolidated XBRL INDAS_663754_2556_13082022235421_WEB_xml ctx OneD",
+   "total_was": -5.76
+  },
+  "S&SPOWER|20220930|patC": {
+   "exposed_by_phantom": false,
+   "nci": -0.69,
+   "note": "ProfitOrLossAttributableToOwnersOfParent=-3.62, NonControllingInterests=-0.69, ProfitLossForPeriod=-4.31; identity closes. The con slot held the TOTAL, which is the wrong basis for npCon (owners-attributable). Same symbol, same defect, found by sweeping every quarter rather than only the cells the phantom disagreed on (heal the row, not the cell).",
+   "owners": -3.62,
+   "src": "own consolidated XBRL INDAS_862929_4897_11112022210110_WEB_xml ctx OneD",
+   "total_was": -4.31
+  },
+  "S&SPOWER|20221231|patC": {
+   "exposed_by_phantom": false,
+   "nci": 0.55,
+   "note": "ProfitOrLossAttributableToOwnersOfParent=10.67, NonControllingInterests=0.55, ProfitLossForPeriod=11.22; identity closes. The con slot held the TOTAL, which is the wrong basis for npCon (owners-attributable). Same symbol, same defect, found by sweeping every quarter rather than only the cells the phantom disagreed on (heal the row, not the cell).",
+   "owners": 10.67,
+   "src": "own consolidated XBRL INDAS_90485_795753_15022023024851_xml ctx OneD",
+   "total_was": 11.22
+  },
+  "S&SPOWER|20230331|patC": {
+   "exposed_by_phantom": false,
+   "nci": 0.32,
+   "note": "ProfitOrLossAttributableToOwnersOfParent=0.63, NonControllingInterests=0.32, ProfitLossForPeriod=0.95; identity closes. The con slot held the TOTAL, which is the wrong basis for npCon (owners-attributable). Same symbol, same defect, found by sweeping every quarter rather than only the cells the phantom disagreed on (heal the row, not the cell).",
+   "owners": 0.63,
+   "src": "own consolidated XBRL INDAS_94026_860983_31052023080540_xml ctx OneD",
+   "total_was": 0.95
+  },
+  "S&SPOWER|20230630|patC": {
+   "exposed_by_phantom": false,
+   "nci": 0.39,
+   "note": "ProfitOrLossAttributableToOwnersOfParent=-0.82, NonControllingInterests=0.39, ProfitLossForPeriod=-0.43; identity closes. The con slot held the TOTAL, which is the wrong basis for npCon (owners-attributable). Same symbol, same defect, found by sweeping every quarter rather than only the cells the phantom disagreed on (heal the row, not the cell).",
+   "owners": -0.82,
+   "src": "own consolidated XBRL INDAS_95835_911777_09082023024743_xml ctx OneD",
+   "total_was": -0.43
+  },
+  "S&SPOWER|20230930|patC": {
+   "exposed_by_phantom": false,
+   "nci": -0.1,
+   "note": "ProfitOrLossAttributableToOwnersOfParent=0.45, NonControllingInterests=-0.10, ProfitLossForPeriod=0.35; identity closes. The con slot held the TOTAL, which is the wrong basis for npCon (owners-attributable). Same symbol, same defect, found by sweeping every quarter rather than only the cells the phantom disagreed on (heal the row, not the cell).",
+   "owners": 0.45,
+   "src": "own consolidated XBRL INDAS_99472_980670_08112023044542_xml ctx OneD",
+   "total_was": 0.35
+  },
+  "S&SPOWER|20231231|patC": {
+   "exposed_by_phantom": false,
+   "nci": 0.67,
+   "note": "ProfitOrLossAttributableToOwnersOfParent=2.75, NonControllingInterests=0.67, ProfitLossForPeriod=3.43; identity closes. The con slot held the TOTAL, which is the wrong basis for npCon (owners-attributable). Same symbol, same defect, found by sweeping every quarter rather than only the cells the phantom disagreed on (heal the row, not the cell).",
+   "owners": 2.75,
+   "src": "own consolidated XBRL INDAS_103248_1050819_09022024104505_xml ctx OneD",
+   "total_was": 3.43
+  },
+  "S&SPOWER|20240331|patC": {
+   "exposed_by_phantom": false,
+   "nci": 0.47,
+   "note": "ProfitOrLossAttributableToOwnersOfParent=0.51, NonControllingInterests=0.47, ProfitLossForPeriod=0.97; identity closes. The con slot held the TOTAL, which is the wrong basis for npCon (owners-attributable). Same symbol, same defect, found by sweeping every quarter rather than only the cells the phantom disagreed on (heal the row, not the cell).",
+   "owners": 0.51,
+   "src": "own consolidated XBRL NBFC_INDAS_108341_1148736_30052024072410_xml ctx OneD",
+   "total_was": 0.97
+  },
+  "S&SPOWER|20240630|patC": {
+   "exposed_by_phantom": false,
+   "nci": 0.23,
+   "note": "ProfitOrLossAttributableToOwnersOfParent=-2.41, NonControllingInterests=0.23, ProfitLossForPeriod=-2.19; identity closes. The con slot held the TOTAL, which is the wrong basis for npCon (owners-attributable). Same symbol, same defect, found by sweeping every quarter rather than only the cells the phantom disagreed on (heal the row, not the cell).",
+   "owners": -2.41,
+   "src": "own consolidated XBRL INDAS_112520_1227790_15082024031844_xml ctx OneD",
+   "total_was": -2.19
+  },
+  "S&SPOWER|20240930|patC": {
+   "exposed_by_phantom": false,
+   "nci": 0.11,
+   "note": "ProfitOrLossAttributableToOwnersOfParent=3.73, NonControllingInterests=0.11, ProfitLossForPeriod=3.84; identity closes. The con slot held the TOTAL, which is the wrong basis for npCon (owners-attributable). Same symbol, same defect, found by sweeping every quarter rather than only the cells the phantom disagreed on (heal the row, not the cell).",
+   "owners": 3.73,
+   "src": "own consolidated XBRL INDAS_116016_1311040_14112024025739_xml ctx OneD",
+   "total_was": 3.84
+  },
   "SADBHAV|20190630|patC": {
    "nci": -21.98,
    "note": "held the TOTAL",
@@ -1565,11 +1782,219 @@
    "period": 30.134,
    "stored_before": 21.28
   },
+  "SURANAT&P|20190630|patC": {
+   "exposed_by_phantom": true,
+   "nci": 0.17,
+   "note": "ProfitOrLossAttributableToOwnersOfParent=1.45, NonControllingInterests=0.17, ProfitLossForPeriod=1.62; identity closes. The con slot held the TOTAL, which is the wrong basis for npCon (owners-attributable). Exposed by the retracted HTML-escaped phantom key, which had read the owners tag correctly (runbook \u00a7116).",
+   "owners": 1.45,
+   "src": "own consolidated XBRL INDAS_46979_129014_08082019044404_WEB_xml ctx OneD",
+   "total_was": 1.62
+  },
+  "SURANAT&P|20190930|patC": {
+   "exposed_by_phantom": false,
+   "nci": -0.02,
+   "note": "ProfitOrLossAttributableToOwnersOfParent=3.51, NonControllingInterests=-0.02, ProfitLossForPeriod=3.48; identity closes. The con slot held the TOTAL, which is the wrong basis for npCon (owners-attributable). Same symbol, same defect, found by sweeping every quarter rather than only the cells the phantom disagreed on (heal the row, not the cell).",
+   "owners": 3.51,
+   "src": "own consolidated XBRL INDAS_49768_163578_09112019084405_WEB_xml ctx OneD",
+   "total_was": 3.48
+  },
+  "SURANAT&P|20191231|patC": {
+   "exposed_by_phantom": true,
+   "nci": -0.42,
+   "note": "ProfitOrLossAttributableToOwnersOfParent=1.60, NonControllingInterests=-0.42, ProfitLossForPeriod=1.18; identity closes. The con slot held the TOTAL, which is the wrong basis for npCon (owners-attributable). Exposed by the retracted HTML-escaped phantom key, which had read the owners tag correctly (runbook \u00a7116).",
+   "owners": 1.6,
+   "src": "own consolidated XBRL INDAS_53018_217172_08022020064430_WEB_xml ctx OneD",
+   "total_was": 1.18
+  },
+  "SURANAT&P|20200331|patC": {
+   "exposed_by_phantom": true,
+   "nci": 0.12,
+   "note": "ProfitOrLossAttributableToOwnersOfParent=0.51, NonControllingInterests=0.12, ProfitLossForPeriod=0.63; identity closes. The con slot held the TOTAL, which is the wrong basis for npCon (owners-attributable). Exposed by the retracted HTML-escaped phantom key, which had read the owners tag correctly (runbook \u00a7116).",
+   "owners": 0.51,
+   "src": "own consolidated XBRL INDAS_56380_268144_24062020041307_WEB_xml ctx OneD",
+   "total_was": 0.63
+  },
+  "SURANAT&P|20200630|patC": {
+   "exposed_by_phantom": true,
+   "nci": -0.33,
+   "note": "ProfitOrLossAttributableToOwnersOfParent=1.45, NonControllingInterests=-0.33, ProfitLossForPeriod=1.13; identity closes. The con slot held the TOTAL, which is the wrong basis for npCon (owners-attributable). Exposed by the retracted HTML-escaped phantom key, which had read the owners tag correctly (runbook \u00a7116).",
+   "owners": 1.45,
+   "src": "own consolidated XBRL INDAS_59671_304321_08082020044350_WEB_xml ctx OneD",
+   "total_was": 1.13
+  },
+  "SURANAT&P|20200930|patC": {
+   "exposed_by_phantom": true,
+   "nci": -0.17,
+   "note": "ProfitOrLossAttributableToOwnersOfParent=0.45, NonControllingInterests=-0.17, ProfitLossForPeriod=0.28; identity closes. The con slot held the TOTAL, which is the wrong basis for npCon (owners-attributable). Exposed by the retracted HTML-escaped phantom key, which had read the owners tag correctly (runbook \u00a7116).",
+   "owners": 0.45,
+   "src": "own consolidated XBRL INDAS_64717_360461_12112020042108_WEB_xml ctx OneD",
+   "total_was": 0.28
+  },
+  "SURANAT&P|20201231|patC": {
+   "exposed_by_phantom": false,
+   "nci": -0.09,
+   "note": "ProfitOrLossAttributableToOwnersOfParent=1.12, NonControllingInterests=-0.09, ProfitLossForPeriod=1.03; identity closes. The con slot held the TOTAL, which is the wrong basis for npCon (owners-attributable). Same symbol, same defect, found by sweeping every quarter rather than only the cells the phantom disagreed on (heal the row, not the cell).",
+   "owners": 1.12,
+   "src": "own consolidated XBRL INDAS_68963_409482_13022021040726_WEB_xml ctx OneD",
+   "total_was": 1.03
+  },
+  "SURANAT&P|20210331|patC": {
+   "exposed_by_phantom": false,
+   "nci": 0.3,
+   "note": "ProfitOrLossAttributableToOwnersOfParent=0.66, NonControllingInterests=0.30, ProfitLossForPeriod=0.97; identity closes. The con slot held the TOTAL, which is the wrong basis for npCon (owners-attributable). Same symbol, same defect, found by sweeping every quarter rather than only the cells the phantom disagreed on (heal the row, not the cell).",
+   "owners": 0.66,
+   "src": "own consolidated XBRL INDAS_71031_456732_09062021103444_WEB_xml ctx OneD",
+   "total_was": 0.97
+  },
+  "SURANAT&P|20210630|patC": {
+   "exposed_by_phantom": false,
+   "nci": 1.0,
+   "note": "ProfitOrLossAttributableToOwnersOfParent=2.15, NonControllingInterests=1.00, ProfitLossForPeriod=3.15; identity closes. The con slot held the TOTAL, which is the wrong basis for npCon (owners-attributable). Same symbol, same defect, found by sweeping every quarter rather than only the cells the phantom disagreed on (heal the row, not the cell).",
+   "owners": 2.15,
+   "src": "own consolidated XBRL INDAS_74414_501427_07082021064112_WEB_xml ctx OneD",
+   "total_was": 3.15
+  },
+  "SURANAT&P|20210930|patC": {
+   "exposed_by_phantom": false,
+   "nci": -0.1,
+   "note": "ProfitOrLossAttributableToOwnersOfParent=0.22, NonControllingInterests=-0.10, ProfitLossForPeriod=0.13; identity closes. The con slot held the TOTAL, which is the wrong basis for npCon (owners-attributable). Same symbol, same defect, found by sweeping every quarter rather than only the cells the phantom disagreed on (heal the row, not the cell).",
+   "owners": 0.22,
+   "src": "own consolidated XBRL INDAS_79423_558501_13112021060302_WEB_xml ctx OneD",
+   "total_was": 0.13
+  },
+  "SURANAT&P|20211231|patC": {
+   "exposed_by_phantom": false,
+   "nci": 0.42,
+   "note": "ProfitOrLossAttributableToOwnersOfParent=1.84, NonControllingInterests=0.42, ProfitLossForPeriod=2.26; identity closes. The con slot held the TOTAL, which is the wrong basis for npCon (owners-attributable). Same symbol, same defect, found by sweeping every quarter rather than only the cells the phantom disagreed on (heal the row, not the cell).",
+   "owners": 1.84,
+   "src": "own consolidated XBRL INDAS_80386_598197_24012022050200_WEB_xml ctx OneD",
+   "total_was": 2.26
+  },
+  "SURANAT&P|20220331|patC": {
+   "exposed_by_phantom": false,
+   "nci": 0.1,
+   "note": "ProfitOrLossAttributableToOwnersOfParent=2.28, NonControllingInterests=0.10, ProfitLossForPeriod=2.38; identity closes. The con slot held the TOTAL, which is the wrong basis for npCon (owners-attributable). Same symbol, same defect, found by sweeping every quarter rather than only the cells the phantom disagreed on (heal the row, not the cell).",
+   "owners": 2.28,
+   "src": "own consolidated XBRL INDAS_85056_658338_21052022063728_WEB_xml ctx OneD",
+   "total_was": 2.38
+  },
+  "SURANAT&P|20220630|patC": {
+   "exposed_by_phantom": false,
+   "nci": 0.54,
+   "note": "ProfitOrLossAttributableToOwnersOfParent=8.18, NonControllingInterests=0.54, ProfitLossForPeriod=8.72; identity closes. The con slot held the TOTAL, which is the wrong basis for npCon (owners-attributable). Same symbol, same defect, found by sweeping every quarter rather than only the cells the phantom disagreed on (heal the row, not the cell).",
+   "owners": 8.18,
+   "src": "own consolidated XBRL INDAS_600276_2854_23072022163755_WEB_xml ctx OneD",
+   "total_was": 8.72
+  },
+  "SURANAT&P|20220930|patC": {
+   "exposed_by_phantom": false,
+   "nci": -0.02,
+   "note": "ProfitOrLossAttributableToOwnersOfParent=0.25, NonControllingInterests=-0.02, ProfitLossForPeriod=0.23; identity closes. The con slot held the TOTAL, which is the wrong basis for npCon (owners-attributable). Same symbol, same defect, found by sweeping every quarter rather than only the cells the phantom disagreed on (heal the row, not the cell).",
+   "owners": 0.25,
+   "src": "own consolidated XBRL INDAS_866732_5195_12112022202141_WEB_xml ctx OneD",
+   "total_was": 0.23
+  },
+  "SURANAT&P|20221231|patC": {
+   "exposed_by_phantom": false,
+   "nci": 0.19,
+   "note": "ProfitOrLossAttributableToOwnersOfParent=1.02, NonControllingInterests=0.19, ProfitLossForPeriod=1.21; identity closes. The con slot held the TOTAL, which is the wrong basis for npCon (owners-attributable). Same symbol, same defect, found by sweeping every quarter rather than only the cells the phantom disagreed on (heal the row, not the cell).",
+   "owners": 1.02,
+   "src": "own consolidated XBRL INDAS_90387_795385_15022023113917_xml ctx OneD",
+   "total_was": 1.21
+  },
+  "SURANAT&P|20230331|patC": {
+   "exposed_by_phantom": false,
+   "nci": 0.36,
+   "note": "ProfitOrLossAttributableToOwnersOfParent=-6.19, NonControllingInterests=0.36, ProfitLossForPeriod=-5.83; identity closes. The con slot held the TOTAL, which is the wrong basis for npCon (owners-attributable). Same symbol, same defect, found by sweeping every quarter rather than only the cells the phantom disagreed on (heal the row, not the cell).",
+   "owners": -6.19,
+   "src": "own consolidated XBRL INDAS_93769_859593_31052023115919_xml ctx OneD",
+   "total_was": -5.83
+  },
+  "SURANAT&P|20230630|patC": {
+   "exposed_by_phantom": false,
+   "nci": 0.32,
+   "note": "ProfitOrLossAttributableToOwnersOfParent=1.28, NonControllingInterests=0.32, ProfitLossForPeriod=1.60; identity closes. The con slot held the TOTAL, which is the wrong basis for npCon (owners-attributable). Same symbol, same defect, found by sweeping every quarter rather than only the cells the phantom disagreed on (heal the row, not the cell).",
+   "owners": 1.28,
+   "src": "own consolidated XBRL INDAS_96020_912810_10082023011258_xml ctx OneD",
+   "total_was": 1.6
+  },
+  "SURANAT&P|20230930|patC": {
+   "exposed_by_phantom": false,
+   "nci": 0.04,
+   "note": "ProfitOrLossAttributableToOwnersOfParent=0.59, NonControllingInterests=0.04, ProfitLossForPeriod=0.63; identity closes. The con slot held the TOTAL, which is the wrong basis for npCon (owners-attributable). Same symbol, same defect, found by sweeping every quarter rather than only the cells the phantom disagreed on (heal the row, not the cell).",
+   "owners": 0.59,
+   "src": "own consolidated XBRL INDAS_99212_979242_07112023061203_xml ctx OneD",
+   "total_was": 0.63
+  },
+  "SURANAT&P|20240331|patC": {
+   "exposed_by_phantom": false,
+   "nci": 0.09,
+   "note": "ProfitOrLossAttributableToOwnersOfParent=5.36, NonControllingInterests=0.09, ProfitLossForPeriod=5.45; identity closes. The con slot held the TOTAL, which is the wrong basis for npCon (owners-attributable). Same symbol, same defect, found by sweeping every quarter rather than only the cells the phantom disagreed on (heal the row, not the cell).",
+   "owners": 5.36,
+   "src": "own consolidated XBRL INDAS_106464_1130833_20052024072101_xml ctx OneD",
+   "total_was": 5.45
+  },
+  "SURANAT&P|20240630|patC": {
+   "exposed_by_phantom": false,
+   "nci": 0.04,
+   "note": "ProfitOrLossAttributableToOwnersOfParent=1.77, NonControllingInterests=0.04, ProfitLossForPeriod=1.82; identity closes. The con slot held the TOTAL, which is the wrong basis for npCon (owners-attributable). Same symbol, same defect, found by sweeping every quarter rather than only the cells the phantom disagreed on (heal the row, not the cell).",
+   "owners": 1.77,
+   "src": "own consolidated XBRL INDAS_109294_1199908_23072024023300_xml ctx OneD",
+   "total_was": 1.82
+  },
+  "SURANAT&P|20240930|patC": {
+   "exposed_by_phantom": false,
+   "nci": -0.33,
+   "note": "ProfitOrLossAttributableToOwnersOfParent=2.24, NonControllingInterests=-0.33, ProfitLossForPeriod=1.91; identity closes. The con slot held the TOTAL, which is the wrong basis for npCon (owners-attributable). Same symbol, same defect, found by sweeping every quarter rather than only the cells the phantom disagreed on (heal the row, not the cell).",
+   "owners": 2.24,
+   "src": "own consolidated XBRL INDAS_115855_1310188_14112024102448_xml ctx OneD",
+   "total_was": 1.91
+  },
+  "SURANAT&P|20241231|patC": {
+   "exposed_by_phantom": false,
+   "nci": -0.26,
+   "note": "ProfitOrLossAttributableToOwnersOfParent=0.76, NonControllingInterests=-0.26, ProfitLossForPeriod=0.49; identity closes. The con slot held the TOTAL, which is the wrong basis for npCon (owners-attributable). Same symbol, same defect, found by sweeping every quarter rather than only the cells the phantom disagreed on (heal the row, not the cell).",
+   "owners": 0.76,
+   "src": "own consolidated XBRL INDAS_118492_1369373_03022025060054_xml ctx OneD",
+   "total_was": 0.49
+  },
+  "SURANAT&P|20250331|patC": {
+   "exposed_by_phantom": false,
+   "nci": -0.06,
+   "note": "ProfitOrLossAttributableToOwnersOfParent=19.28, NonControllingInterests=-0.06, ProfitLossForPeriod=19.22; identity closes. The con slot held the TOTAL, which is the wrong basis for npCon (owners-attributable). Same symbol, same defect, found by sweeping every quarter rather than only the cells the phantom disagreed on (heal the row, not the cell).",
+   "owners": 19.28,
+   "src": "own consolidated XBRL INTEGRATED_FILING_INDAS_1444797_20052025073909_WEB_xml ctx OneD",
+   "total_was": 19.22
+  },
+  "SURANAT&P|20250630|patC": {
+   "exposed_by_phantom": false,
+   "nci": -0.23,
+   "note": "ProfitOrLossAttributableToOwnersOfParent=2.68, NonControllingInterests=-0.23, ProfitLossForPeriod=2.45; identity closes. The con slot held the TOTAL, which is the wrong basis for npCon (owners-attributable). Same symbol, same defect, found by sweeping every quarter rather than only the cells the phantom disagreed on (heal the row, not the cell).",
+   "owners": 2.68,
+   "src": "own consolidated XBRL INTEGRATED_FILING_INDAS_1505290_07082025051125_WEB_xml ctx OneD",
+   "total_was": 2.45
+  },
   "SURANAT&P|20250930|patC": {
    "also_npStd": null,
    "note": "filing Sep-25 column: period 0.17 - NCI (-0.59) = owners 0.76, exactly",
    "owners": 0.76,
    "stored_before": 0.17
+  },
+  "SURANAT&P|20251231|patC": {
+   "exposed_by_phantom": false,
+   "nci": -0.33,
+   "note": "ProfitOrLossAttributableToOwnersOfParent=4.03, NonControllingInterests=-0.33, ProfitLossForPeriod=3.70; identity closes. The con slot held the TOTAL, which is the wrong basis for npCon (owners-attributable). Same symbol, same defect, found by sweeping every quarter rather than only the cells the phantom disagreed on (heal the row, not the cell).",
+   "owners": 4.03,
+   "src": "own consolidated XBRL INTEGRATED_FILING_INDAS_1620994_07022026034120_WEB_xml ctx OneD",
+   "total_was": 3.7
+  },
+  "SURANAT&P|20260331|patC": {
+   "exposed_by_phantom": false,
+   "nci": -2.02,
+   "note": "ProfitOrLossAttributableToOwnersOfParent=17.34, NonControllingInterests=-2.02, ProfitLossForPeriod=15.32; identity closes. The con slot held the TOTAL, which is the wrong basis for npCon (owners-attributable). Same symbol, same defect, found by sweeping every quarter rather than only the cells the phantom disagreed on (heal the row, not the cell).",
+   "owners": 17.34,
+   "src": "own consolidated XBRL INTEGRATED_FILING_INDAS_1669505_19052026071314_WEB_xml ctx OneD",
+   "total_was": 15.32
   },
   "TAKE|20180630|patC": {
    "identity": "H1FY19 closes to the paisa inside the Q2FY19 filing ON THE TARGET: Jun-2018 owners 5,341.69 + Sep-2018 owners 6,023.86 = 11,365.55 == printed 'Half year ended Sep 30 2018' owners EXACT. Total basis closes too: 5,416.85 + 6,079.35 = 11,496.20 == printed. FY18 column printed identically in both filings (owners 16,045.76, total 15,986.22).",
@@ -1734,5 +2159,5 @@
    }
   }
  },
- "generated": "2026-08-18 00:12 IST"
+ "generated": "2026-08-26 14:39 IST"
 }

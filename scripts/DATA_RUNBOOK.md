@@ -81,6 +81,7 @@ loads every session. (README.md is just a short pointer here — this file is th
 ## 0. GOLDEN RULES (the things that bite if forgotten)
 - **§114** ★★★ THE HTML-ESCAPED PHANTOM SYMBOLS WERE NOT INVISIBLE — `M&AMP;M` was RENDERING in docs/discovery.json (47 rows / 21 buckets), and the fundamentals rows were NOT all duplicates (4 unique, 46 contested, both sides filing-sourced). Fundamentals stores retracted to zero + guarded; the Trendlyne sitemap escape was writing off all 10 ampersand tickers (**read before trusting any recorded coverage/absence claim, and before deleting a phantom key**)
 - **§115** ★★★ THE PHANTOM CLASS IS CLOSED — root cause was `build_revop.py` upper-casing a RAW XML capture (XBRL escapes `&`), still firing in a 2026 filing; closing sf_revop ADDED +784 values / +63 quarters. FOUR gate defects: a retraction that RAISED a score, a derived flag voting, "target has no row" read as nothing-to-do, and the resume-cache treated as a mirror. A filing's own ScripCode OUTRANKS the overlap proxy (**read before trusting any agreement gate, and before retracting anything a gate could still harvest**)
+- **§116** ★★★ THE 46 CONTESTED con CELLS ADJUDICATED — the phantom read the OWNERS tag and WE had stored the TOTAL, so the phantom was RIGHT on 16 of 23; the other 7 are the filer's owners=0 mis-tag where the store was right. Swept the rest of each series: **53 cells healed** total→owners, 2018-2026. sf_revop's un-rendered mirror already held the owners figure on 45 of 53. **1,417 symbols / 18,175 con cells share the exposure — sized, not swept** (**read before trusting a con-PAT value for any symbol absent from _reattr_owners.json**)
 - **★★★ NO ASSUMPTIONS. NO GUESSWORK. EVER.** User-mandated 2026-08-10; standing rule across
   this runbook AND every campaign/playbook doc (each carries the same line). Every value written
   and every claim made ("exists", "absent", "fixed", "live", "matches") must trace to something
@@ -12747,4 +12748,73 @@ both readings and provenance, recoverable if that dispute is ever adjudicated.
 
 **A guard that trips on its own audit trail:** re-keying writes `"rekeyed_from": "M&AMP;M|20200630|std"`,
 and the value-scan flagged it as a fresh phantom. A symbol never contains `|`; the scan skips those now.
+
+
+---
+
+## 116. ★★★ THE 46 CONTESTED con CELLS — the phantom was RIGHT on 16 of them, and the live store held the TOTAL  (2026-08-26)
+
+§114 retracted 46 contested `con` cells (23 quarters × 2 stores) into
+`scripts/phantom_symbol_retract.json` without deciding them, on the grounds that both sides were
+filing-sourced and adjudicating them was a separate job. This is that job. **Every one was settled
+against the company's own consolidated XBRL** — no aggregator, no inference.
+
+### 116a. The verdict splits cleanly in two, and it is not the split anyone expected
+
+    16 cells  the PHANTOM was right   -- it read ProfitOrLossAttributableToOwnersOfParent
+                                         and WE had stored ProfitLossForPeriod (the TOTAL)
+     7 cells  the STORED value was right -- the filer tagged owners=0 AND NCI=0 with the real
+                                         number only in the total; the phantom's reader took the 0
+
+The whole disagreement was **one tag choice**, and each side made the opposite mistake on a
+different set of filings. The proof is arithmetic and it closes: `owners + NCI == total` on
+**59 of 61** consolidated filings within filer rounding (the 2 misses are the filer's own
+arithmetic, ₹51k and ₹91k — not our parse).
+
+- **S&SPOWER 20180331** — filing tags owners 1.15, NCI 0.24, total 1.39. Stored: **1.39**. Phantom: **1.15**.
+- **SURANAT&P 20191231** — owners 1.60, NCI **−0.42**, total 1.18. Stored: **1.18**. Phantom: **1.60**.
+  (Negative NCI — owners EXCEEDING the total — is why the disagreement looked directionless at first;
+  memory: feedback-negative-nci-owners-exceeds-total.)
+- **IL&FSENGG, all 6** — the consolidated filing tags owners **0.00** AND NCI **0.00** with the real
+  loss only in `ProfitLossForPeriod`. `build_fundamentals.xbrl_profit` has the `or one` fallback for
+  exactly this; the phantom's reader did not. Stored is right, phantom's 0.0 is the filer's mis-tag.
+
+★ **A THIRD READER AGREES, AND IT IS ONE WE ALREADY HAD.** `sf_revop`'s patC mirror — built by
+`build_revop.metrics_for`, a different code path over the same filings — already held the **owners**
+figure on **45 of the 53** healed cells. §70 says fundamentals is authoritative and the mirror is not
+rendered, and that is still true, but here the un-rendered mirror was RIGHT and the authoritative
+store was WRONG. When two of our own stores disagree, "which one is authoritative" answers the wrong
+question; open the filing.
+
+### 116b. HEAL THE ROW, NOT THE CELL — 16 became 53
+
+The 16 were only the cells the phantom happened to overlap. Sweeping **every** quarter of the four
+symbols against its own filing found the same defect in **53** cells (COX&KINGS 3, S&SPOWER 24,
+SURANAT&P 26) spanning **2018 to 2026** — including current quarters. Healing only the 16 would have
+left a MIXED-basis series, which breaks YoY and TTM worse than a uniformly wrong one.
+
+**Why these symbols were never re-attributed:** `apply_owners_full.py` applies
+`_reattr_owners.json`, and none of them is in it. Routed through `owners_basis_heals.json` (199 →
+252 cells), which that script reads as a HEAL that **outranks** the cache, so nothing reverts it.
+Applied to `docs/sf_fundamentals.json` by the nightly applier; `scripts/fundamentals.json` and the
+7 stale `patC` mirror cells were corrected in the same pass, because the applier writes only docs.
+
+⚠️ **NOT healed, deliberately: 24 cells** (IL&FSENGG ×23, S&SPOWER Mar-2019) in the owners=0
+mis-tag class. There the stored total IS the right value — the same evidence that convicts the store
+on 53 cells acquits it on these 24. An `owners` tag is a label, not a guarantee (§113b's lesson,
+arriving from the other direction).
+
+### 116c. ★★ THE EXPOSURE IS MUCH WIDER, AND IT IS SIZED BUT NOT SWEPT
+
+`_reattr_owners.json` covers 1,590 of the 3,017 symbols holding a con cell. **1,417 symbols /
+18,175 con cells have NO owners source at all** and are exposed to exactly this defect. Most will be
+clean (no NCI ⇒ owners == total), so that is a candidate pool, not a defect count. The screen is
+cheap and exact, and it is the one to run next:
+
+    for each symbol with con cells and no _reattr_owners entry:
+        parse its cached consolidated XBRL -> owners, NCI, total
+        flag where  stored == total  AND  |owners - total| > 0.011
+
+These four were found only because a retracted phantom happened to disagree. **That is not a
+detection strategy** — nothing else was looking.
 
