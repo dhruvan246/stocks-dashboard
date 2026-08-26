@@ -12860,3 +12860,41 @@ symbols; GOLDIAM 19, PATELENG 16, 63MOONS 13, MANINFRA 11...). They need the DOC
 they are older. That is half the store. Nothing here says those are clean — only that this method
 cannot see them.
 
+
+### g. ★★★ A NEGATIVE RESULT THAT EXACTLY MATCHES YOUR OWN COVERAGE IS MEASURING YOUR COVERAGE
+The general form of §112a/c/e/f, and the fourth instance of it in one session. `wayback_nse`'s index
+builder drew its symbol universe from `sf_fundamentals.json` — **which excludes exactly the symbols
+worth indexing**. A symbol we hold no row for is not a key in that file, so the URL parse cannot key
+its pages, so it is never found reachable, so it keeps no rows. **A closed loop that reports its own
+boundary as a property of the archive.** Asked whether 50 Nifty-500 members with no pre-2009
+fundamentals row had archived filings, the index answered **1 of 50**; the raw CDX answers **8 of
+50, 51 captures**, and 9 cells landed from them.
+
+**The tell was in plain sight: a "nothing exists anywhere" verdict that aligned PERFECTLY with the
+set of things we already had nothing for.** Absence discovered exactly where you were already blind
+is not evidence about the world. Whenever a reachability, coverage or exhaustion answer partitions
+along the same line as your own holdings, suspect the instrument before believing the result.
+
+⚠️ **AND WIDENING THE UNIVERSE MADE THE PARSER WORSE, WHICH IS THE COUNTER-INTUITIVE HALF.**
+"Longest suffix that is a key" gets **more wrong as the key set gets more complete**: with more keys
+present, `...Q3UNNNETIL` resolves to `ETIL` (flags `UNNN`) instead of `TIL` (flags `UNNNE`) — and the
+page says TIL LTD. A fix that improves the inputs degraded the output, and it was caught only by
+widening and RE-MEASURING rather than widening and shipping. The resolution was to stop guessing the
+URL grammar and derive it: on 1,987 entries whose symbol the PAGE itself confirms, the run between
+the period token and the symbol matches `^[AU][A-Z]{0,5}E$` in **99.7%** of cases, the five
+exceptions being precisely the corrupt pages.
+
+That also fixed a reproducibility defect nobody had noticed: the old build fell back to the URL for
+any page not on disk, so **the index keys depended on which pages happened to be cached** — two
+sessions could enumerate the same archive and legitimately disagree. An index is a claim; a claim
+that changes with your cache state is not one.
+
+### h. A GUARD THAT BLOCKS CORRECT WORK IS DOING ITS JOB — build a narrower door, never a wider one
+`apply_agg_pat_fills.py` refuses to CREATE a symbol key, because that is how a typo'd or
+HTML-escaped phantom ticker enters the store (`project-stocks-phantom-escaped-symbols`). It refused
+9 correct, fully gated cells for 5 symbols that had no fundamentals row at any date. The fix was NOT
+to relax the guard: it was an explicit `--new-symbols` opt-in, used only after verifying each symbol
+three independent ways — present in a point-in-time index roll, carrying a real first traded bar,
+and with the source document naming the company (INDO GULF CORPORATION LTD, MUKAND LTD, STANDARD
+INDUSTRIES LTD, SURYALAKSHMI COTTON MILLS LTD, Welspun Gujarat Stahl Rohren) — and the run now
+PRINTS every key it creates, so the verification claim is auditable rather than asserted.

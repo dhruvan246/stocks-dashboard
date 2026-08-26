@@ -94,7 +94,18 @@ fundamentals row at all. **Do not promise 100%.**
 
 ---
 
-## 2. What landed (commit `308ca8869`)
+## 2. What landed — 1,503 cells + 14 heals, all verified on origin BY CONTENT
+
+| batch | cells | commit |
+|---|---|---|
+| Moneycontrol via GATE E/E2b | **1,409** | `308ca8869` |
+| Archived NSE filing page, 2001 | **85** | `a1b5eb7f0` |
+| Archived NSE, symbols with NO fundamentals row at any date | **9** | `eb3f7ad54` |
+| Value heals, aggregator → as-filed | **14** | `0b497f21b` `32baa68f7` `a0febec18` |
+
+Verification: 1,638 proposals + 14 heals re-read off `origin/main`, **0 mismatched**.
+
+### 2.0 The MC batch (commit `308ca8869`)
 
 **1,409 std-PAT cells, 318 symbols, verified on origin by content** (all 1,544 proposals present,
 0 mismatched). Blast radius vs origin: 1,409 rows added, **0 changed, 0 removed, 0 strays, 0
@@ -155,7 +166,36 @@ flag needed (a flag would also be erased by any applier re-run):
 * **Both at once — the set to suspect first if anything ever contradicts: 50 cells** (2000:11,
   2001:29, 2002:3, 2003:4, 2004:2, 2005:1). Even these carry a median of 84 reproduced anchors.
 
-### 2d. ⚠️ PROVENANCE DEFECT IN THE LEDGER — the evidence string names the WRONG GATE
+### 2e. ★ THE ARCHIVE AS A SECOND READER OVER OUR OWN AGGREGATOR CELLS — 11.8% wrong
+An as-filed exchange page outranks an aggregator rendition (§108), so the route was turned on this
+session's own MC batch and then on every campaign's:
+
+| audited set | with a page | adjudicable | disagree |
+|---|---|---|---|
+| this session's 1,409 MC cells | 316 | 85 | **10 = 11.8%** |
+| all campaigns' pre-2009 aggregator PAT cells | 744 | 249 | 4 (of which 3 pre-date this session) |
+
+All 14 healed. Each verified by the page's OWN arithmetic (EPS == NetProfit × FaceValue / PaidUp, to
+three decimals) and each tested against the cumulative-in-quarter explanation before concluding
+vintage. Non-adjudicable outcomes are recorded as their own classes — cumulative period, banking
+template, EPS-untestable, empty-shell page — never allowed to read as agreement.
+
+⚠️ **THE 11.8% vs 2.4% DIFFERENCE IS UNEXPLAINED, AND THAT IS THE FINDING.** Tested and REFUTED:
+E2b dependence (strict-E2 13.3% vs E2b 10.0%), era (2001 5.4%, 2002 5.1%), prior healing (1.8% of
+earlier cells heal-touched), nearest-anchor distance (**inverse** — 14.5% at 0-2q vs 8.3% at 5+q),
+bad-anchor count (non-monotonic). **No signal the gate records predicts which cells the archive
+contradicts.** So an aggregator batch cannot be triaged by its own gate evidence: run the archive
+check as a GATE IN FRONT of the batch, landing only cells that agree or have no page, and record
+"no page" as *unevidenced* rather than agreement.
+
+**RELIANCE 2002-06 is deliberately LEFT OPEN.** Archive 720.00 as-filed vs our 918.00. PAT
+differencing off the archived H1 looked clean (1920 − 720 = 1200) — but its NET SALES make Q2 2.4×
+Q1, because the H1 page is POST-merger RIL and the Q1 page PRE-merger: paid-up equity steps
+105,400 → 139,600 lakhs exactly at the Dec-2002 filing, the RPL share issue. The legs are different
+entities, so the subtraction is meaningless, and the runbook's both-quantities rule is what caught
+it. An entity-definition question on a top-weight constituent, recorded rather than forced.
+
+### 2f. ⚠️ PROVENANCE DEFECT IN THE LEDGER — the evidence string names the WRONG GATE
 `apply_agg_pat_fills.py` L220-225 builds a default `evidence` sentence that begins
 *"gate A/A2 passed…"*. GATE-E proposals do not carry their own `evidence`, so **every Gate-E cell in
 `agg_pat_cell_fills.json` claims a gate that never ran** — mine, the sibling's 160, and the earlier
@@ -188,12 +228,12 @@ near-anchor veto and the FY identity, not the global caps. The answer to a vinta
 **independent as-filed reader**, not a wider tolerance:
 * **2005-2008 (604 open cells)** → NSE archive `corporates-financial-results`. Genuinely
   independent. **The sibling session owns this.**
-* **2000-2004 (2,782 open cells)** → NSE archive does not reach (2005+), BSE detres does not reach
-  (2008+, qid 57), and **BSE serves no pre-Oct-2018 attachments (§84)** while NSE has no
-  announcement attachments before ~2012. MC/Trendlyne/Tickertape are **one vendor**
-  (`feedback-aggregators-are-one-vendor`), so TL/TT add no independent voice. What is left is
-  **Wayback of NSE/BSE result pages (§32)**, per-cell expensive. This is the real wall in this era
-  and it should be entered deliberately, not drifted into.
+* **2000-2004** → ★ **THE WALL MOVED. `scripts/wayback_nse/` is an exchange-native, AS-FILED reader
+  for 2000-2006** — NSE's retired `results.jsp` in the Wayback Machine, with period role, cumulative
+  flag, basis, scale and bank/non-bank **declared in the page text**. It is STEP W's source and
+  STEP W is complete *for its 2002-2004 target set*; the 1,473 pages whose period ends in 2000-2001
+  were indexed and never requested (runbook §112e). 85 cells landed from it here, and it doubles as
+  a second reader over the aggregator route (§2e).
 
 ### 3a. UNRESOLVED — a measured hole in `mc_era.py`'s R2 rung
 36 symbols / 288 cells, all "R1 symbol + R2 ISIN both failed". **R2 is gated on our symbol being a
@@ -206,12 +246,23 @@ ORCHIDPHAR. Next rung: supply ISIN from a source keyed by OUR symbol (`isin_sour
 `_isin_seam_verdicts.json`) rather than by BSE scrip_id. Cheap and it also improves the tool for
 every future era fill.
 
-### B2 — 50 symbols with NO fundamentals row at all (1,338 member-months) — UNOWNED
-SB&TINTL 49 · YOKOGAWA 35 · SQRDSFWARE 30 · WELLWININD 30 · ITCHOTEL 29 · JINDALFOTO 26 ·
-COMPUDYNE 25 · GLOBLTRUST 22 · ASHKLEYFIN 17 · BALAJIDIST 17 · JPIND 17 · LAKSHAUTO 17 ·
-ATLASCOPCO/MADURACOAT/PUNJCOMMU/MUKAND 15 · INDOGULF/PARKEDAVIS 14 · … (member-months each).
-Delisted-era names; a whole history is needed, not a cell. Note `ITCHOTEL` here and `ITCHOTELS` in
-class A are the **recycled-ticker pair** (§89 DVL/DTIL class).
+### B2 — 50 symbols with NO fundamentals row at all (1,338 member-months) — PARTLY REACHABLE
+★ The index said 1 of 50 had an archived page. That answer was manufactured by our own key set: the
+builder drew its universe from `sf_fundamentals`, **which excludes exactly these symbols** (runbook
+§112g). The raw CDX says **8 of 50, 51 captures**; 9 cells landed across 5 of them (INDOGULF,
+MUKAND, STDIND, SURYCOTMIL, WELSPUNGUJ) via `apply_agg_pat_fills.py --new-symbols`.
+💡 **Those 9 are also 9 REVENUE anchors on symbols that previously had none** — fold them into the
+next revenue sweep rather than rediscovering them.
+**Reachable (8, archived pages exist):** GLOBLTRUST 10 pages · STDIND 8 · SEARCHEMIN 8 ·
+SQRDSFWARE 7 · INDOGULF 6 · SURYCOTMIL 6 · MUKAND 5 · WELSPUNGUJ 1. Five are seeded; **GLOBLTRUST,
+SEARCHEMIN and SQRDSFWARE still have unread pages** (their captures were refused on the banking
+template, a cumulative period, or an untestable EPS — re-run once the banking schema lands).
+
+**Not reachable via this archive (42):** SB&TINTL 49 · YOKOGAWA 35 · WELLWININD 30 · ITCHOTEL 29 ·
+JINDALFOTO 26 · COMPUDYNE 25 · ASHKLEYFIN 17 · BALAJIDIST 17 · JPIND 17 · LAKSHAUTO 17 ·
+ATLASCOPCO/MADURACOAT/PUNJCOMMU 15 · PARKEDAVIS 14 · … (member-months each). Delisted-era names; a
+whole history is needed, not a cell. Note `ITCHOTEL` here and `ITCHOTELS` in class A are the
+**recycled-ticker pair** (§89 DVL/DTIL class).
 
 ### A — 656 member-months with NO PRICE ROW (×14 params = 9,184) — UNOWNED, and it caps any number either campaign reports
 89 symbols. **569 of the 656 (86.7%) are Jan-Sep 2002**, and the count steps 54 → 3 between the
