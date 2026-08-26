@@ -53,6 +53,12 @@
  "ICIL|20160331|revStd": {
   "status": "RESOLVED 2026-08-24 = 525.03 as-filed. Fetched the ORIGINAL 2016-05-07 filing (not the restated year-later column): Standalone Q4 Total Income from operations (net) = 506.83 + 18.20 = 525.03, Net Profit 65.98 = stored npStd. Our stored npStd matches MC as-filed on every quarter (no \u00a7108 contamination); filled 525.03 via _vision_reads. The restated year-later value 493.87 was correctly NOT used."
  },
+ "ITC|20010930|revStd": {
+  "next_step": "Resolve the 5.67cr PAT gap first -- it is itself a std-PAT finding for the concurrent campaign. If the stored npStd moves to 333.61 the subtraction closes and this cell can be healed to 1102.42.",
+  "observation": "Cumulative differencing of two same-fiscal-year YTD pages (both declare period start 01-APR-2001) gives H1 Net Sales 2150.31 minus Q1 1047.89 = 1102.42 cr for Sep-2001, against our aggregator-derived 1206.72. But the SAME subtraction taken on PAT gives 333.61 against our stored npStd 339.28 -- within the 3% gate yet NOT exact, while the other six cumdiff heals reproduce their stored npStd to the paisa.",
+  "status": "OPEN - the archive CONTRADICTS this cell but the contradiction is not proven to the paisa, so it was deliberately NOT healed.",
+  "why_refused": "A subtraction that does not close exactly on profit is not proof enough to condemn the revenue. ITC Jun-2001 and Dec-2001 WERE healed from direct true-quarter pages (2371.66->1047.89 and 2542.82->1195.27); this quarter has no true-quarter page."
+ },
  "LOWBAND_IRREDUCIBLE_2026_08_25": {
   "AJMERA|20090331": "npStd 17.52. No MC row; NSE archive starts Q1FY10 (no Mar-2009 quarter); BSE API does not serve 2009. Needs Wayback/PDF. 1 cell.",
   "OSWALGREEN|20121231+20141231": "\u00a7108 restated npStd (NSE as-filed 16.38 vs stored 18.68) - heal for the sweep, not a fill. 2 cells.",

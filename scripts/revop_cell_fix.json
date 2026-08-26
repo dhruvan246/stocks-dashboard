@@ -13489,6 +13489,78 @@
    "why": "Wayback NSE results.jsp (archived EXCHANGE page, as-filed) reads Net Sales 785.2 cr for the period the page itself declares 'First Quarter' / 'Audited, Non-Cumulative'; our stored 794.9 came from Moneycontrol's deep feed in this session's pre-2009 std-rev campaign. An as-filed exchange read outranks an aggregator rendition (runbook \u00a7108; PLAN_PRE2009_STDREV \u00a74). CLASS: REVENUE-DEFINITION: our stored value is the page's GROSS INCOME (Net Sales + Other Income = 794.9), not Net Sales. PER-CELL ADJUDICATION: (a) the page's OWN arithmetic closes -- EPS printed 8.94 vs NetProfit x FaceValue / PaidUpCapital = 8.933; (b) the period ROLE is read FROM THE PAGE, not inferred from the dates; (c) the CUMULATIVE-IN-QUARTER hypothesis was TESTED -- ours vs archive + our own preceding 1/2/3 quarters: prev1 20010331=930.9 cum=1716.1; prev2 20001231=780.1 cum=2496.2; prev3 20000930=754.1 cum=3250.3 -> REJECTED; (d) the GROSS-INCOME hypothesis (ours = Net Sales + Other Income = 794.9) was TESTED -> HOLDS -- ours is Net Sales + Other Income. Capture 20030315202842 http://www.nseindia.com:80/marketinfo/companyinfo/eod/results.jsp?01-APR-200130-JUN-2001Q1ANNXEWIPRO",
    "found_by": "wayback-nse audit of this campaign's own MC fills 2026-08-26",
    "archive_pat_cr": 207.7
+  },
+  {
+   "sym": "BALRAMCHIN",
+   "qe": "20011231",
+   "basis": "std",
+   "was": 140.87,
+   "fixed": 138.14,
+   "why": "Wayback NSE results.jsp (archived EXCHANGE page, as-filed) reads Net Sales 138.14 cr for the period the page itself declares 'Third Quarter' / 'Unaudited, Non-Cumulative'; our stored 140.87 is AGGREGATOR-derived (Moneycontrol, landed by an EARLIER campaign, not this session). An as-filed exchange read outranks an aggregator rendition (runbook \u00a7108). CLASS: RESTATED VINTAGE (\u00a7108): cumulative-in-quarter and gross-income hypotheses both TESTED and REJECTED. PER-CELL ADJUDICATION: (a) the page's OWN arithmetic closes -- EPS printed 6.57 vs NetProfit x FaceValue / PaidUpCapital = 6.574; (b) the period ROLE and the period END are read FROM THE PAGE (G2a), never inferred from dates; (c) cumulative-in-quarter TESTED -> REJECTED (prev1 20010930=120.11 cum=258.25; prev2 20010630=139.84 cum=398.09; prev3 20010331=114.04 cum=512.13); (d) gross-income TESTED (ours = Net Sales + Other Income = 138.22) -> REJECTED. Capture 20020815090723 http://www.nseindia.com:80/marketinfo/companyinfo/eod/results.jsp?01-OCT-200131-DEC-2001Q3UNEBALRAMCHIN",
+   "found_by": "wayback-nse audit EXTENDED to earlier campaigns' aggregator revenue cells 2026-08-26"
+  },
+  {
+   "sym": "BALRAMCHIN",
+   "qe": "20020630",
+   "basis": "std",
+   "was": 156.29,
+   "fixed": 189.11,
+   "why": "Wayback NSE results.jsp (archived EXCHANGE page, as-filed) reads Net Sales 189.11 cr for the period the page itself declares 'First Quarter' / 'Unaudited, Non-Cumulative'; our stored 156.29 is AGGREGATOR-derived (Moneycontrol, landed by an EARLIER campaign, not this session). An as-filed exchange read outranks an aggregator rendition (runbook \u00a7108). CLASS: RESTATED VINTAGE (\u00a7108): cumulative-in-quarter and gross-income hypotheses both TESTED and REJECTED. PER-CELL ADJUDICATION: (a) the page's OWN arithmetic closes -- EPS printed 4.37 vs NetProfit x FaceValue / PaidUpCapital = 4.37; (b) the period ROLE and the period END are read FROM THE PAGE (G2a), never inferred from dates; (c) cumulative-in-quarter TESTED -> REJECTED (prev1 20020331=103.68 cum=292.79; prev2 20011231=140.87 cum=433.66; prev3 20010930=120.11 cum=553.77); (d) gross-income TESTED (ours = Net Sales + Other Income = 189.32) -> REJECTED. Capture 20021018232007 http://www.nseindia.com:80/marketinfo/companyinfo/eod/results.jsp?01-APR-200230-JUN-2002Q1UNEBALRAMCHIN",
+   "found_by": "wayback-nse audit EXTENDED to earlier campaigns' aggregator revenue cells 2026-08-26"
+  },
+  {
+   "sym": "ACC",
+   "qe": "20010930",
+   "basis": "std",
+   "was": 713.14,
+   "fixed": 702.62,
+   "why": "Wayback NSE results.jsp, recovered by CUMULATIVE DIFFERENCING: the archive holds no true-quarter page for this period, but it holds two YTD pages of the SAME fiscal year -- both declare period start 01-APR-2001 -- spanning 6m and 3m. Net Sales 1545.13 cr minus 842.51 cr = 702.62 cr for the quarter, against our aggregator-derived 713.14. THE SUBTRACTION IS VALIDATED ON AN INDEPENDENT QUANTITY: the same difference taken on PAT gives 17.03, which reproduces our stored npStd 17.03 EXACTLY -- if the subtraction were invalid it could not close on profit as well as revenue. Both legs pass G1 identity, G4 declared scale and G5 (each page's own EPS arithmetic closes); neither declares Consolidated. Page roles as printed: First Half minus First Quarter. An as-filed exchange read outranks an aggregator rendition (runbook \u00a7108). Captures 20021018233117 http://www.nseindia.com:80/marketinfo/companyinfo/eod/results.jsp?01-APR-200130-SEP-2001H1UCEACC and 20021019003111 http://www.nseindia.com:80/marketinfo/companyinfo/eod/results.jsp?01-APR-200130-JUN-2001Q1UNEACC",
+   "found_by": "wayback-nse audit WIDENED by cumulative differencing 2026-08-26"
+  },
+  {
+   "sym": "BALRAMCHIN",
+   "qe": "20010930",
+   "basis": "std",
+   "was": 120.11,
+   "fixed": 123.24,
+   "why": "Wayback NSE results.jsp, recovered by CUMULATIVE DIFFERENCING: the archive holds no true-quarter page for this period, but it holds two YTD pages of the SAME fiscal year -- both declare period start 01-APR-2001 -- spanning 6m and 3m. Net Sales 263.08 cr minus 139.84 cr = 123.24 cr for the quarter, against our aggregator-derived 120.11. THE SUBTRACTION IS VALIDATED ON AN INDEPENDENT QUANTITY: the same difference taken on PAT gives 6.08, which reproduces our stored npStd 6.08 EXACTLY -- if the subtraction were invalid it could not close on profit as well as revenue. Both legs pass G1 identity, G4 declared scale and G5 (each page's own EPS arithmetic closes); neither declares Consolidated. Page roles as printed: First Half minus First Quarter. An as-filed exchange read outranks an aggregator rendition (runbook \u00a7108). Captures 20020926063504 http://www.nseindia.com:80/marketinfo/companyinfo/eod/results.jsp?01-APR-200130-SEP-2001H1UCEBALRAMCHIN and 20020815083424 http://www.nseindia.com:80/marketinfo/companyinfo/eod/results.jsp?01-APR-200130-JUN-2001Q1UNEBALRAMCHIN",
+   "found_by": "wayback-nse audit WIDENED by cumulative differencing 2026-08-26"
+  },
+  {
+   "sym": "HDFC",
+   "qe": "20020930",
+   "basis": "std",
+   "was": 742.82,
+   "fixed": 760.52,
+   "why": "Wayback NSE results.jsp, recovered by CUMULATIVE DIFFERENCING: the archive holds no true-quarter page for this period, but it holds two YTD pages of the SAME fiscal year -- both declare period start 01-APR-2002 -- spanning 6m and 3m. Net Sales 1463.4 cr minus 702.88 cr = 760.52 cr for the quarter, against our aggregator-derived 742.82. THE SUBTRACTION IS VALIDATED ON AN INDEPENDENT QUANTITY: the same difference taken on PAT gives 167.15, which reproduces our stored npStd 167.15 EXACTLY -- if the subtraction were invalid it could not close on profit as well as revenue. Both legs pass G1 identity, G4 declared scale and G5 (each page's own EPS arithmetic closes); neither declares Consolidated. Page roles as printed: First Half minus First Quarter. An as-filed exchange read outranks an aggregator rendition (runbook \u00a7108). Captures 20030429202652 http://www.nseindia.com:80/marketinfo/companyinfo/eod/results.jsp?01-APR-200230-SEP-2002H1UNCXEHDFC and 20021019002059 http://www.nseindia.com:80/marketinfo/companyinfo/eod/results.jsp?01-APR-200230-JUN-2002Q1UNEHDFC",
+   "found_by": "wayback-nse audit WIDENED by cumulative differencing 2026-08-26"
+  },
+  {
+   "sym": "RELCAPITAL",
+   "qe": "20040930",
+   "basis": "std",
+   "was": 69.59,
+   "fixed": 64.06,
+   "why": "Wayback NSE results.jsp, recovered by CUMULATIVE DIFFERENCING: the archive holds no true-quarter page for this period, but it holds two YTD pages of the SAME fiscal year -- both declare period start 01-APR-2004 -- spanning 6m and 3m. Net Sales 139.64 cr minus 75.58 cr = 64.06 cr for the quarter, against our aggregator-derived 69.59. THE SUBTRACTION IS VALIDATED ON AN INDEPENDENT QUANTITY: the same difference taken on PAT gives 25.07, which reproduces our stored npStd 25.07 EXACTLY -- if the subtraction were invalid it could not close on profit as well as revenue. Both legs pass G1 identity, G4 declared scale and G5 (each page's own EPS arithmetic closes); neither declares Consolidated. Page roles as printed: First Half minus First Quarter. An as-filed exchange read outranks an aggregator rendition (runbook \u00a7108). Captures 20050104213415 http://www.nseindia.com:80/marketinfo/companyinfo/eod/results.jsp?01-APR-200430-SEP-2004H1UNCNERELCAPITAL and 20050104213339 http://www.nseindia.com:80/marketinfo/companyinfo/eod/results.jsp?01-APR-200430-JUN-2004Q1UNNNERELCAPITAL",
+   "found_by": "wayback-nse audit WIDENED by cumulative differencing 2026-08-26"
+  },
+  {
+   "sym": "SAIL",
+   "qe": "20010930",
+   "basis": "std",
+   "was": 3399.3,
+   "fixed": 3898.98,
+   "why": "Wayback NSE results.jsp, recovered by CUMULATIVE DIFFERENCING: the archive holds no true-quarter page for this period, but it holds two YTD pages of the SAME fiscal year -- both declare period start 01-APR-2001 -- spanning 6m and 3m. Net Sales 7248.35 cr minus 3349.37 cr = 3898.98 cr for the quarter, against our aggregator-derived 3399.3. THE SUBTRACTION IS VALIDATED ON AN INDEPENDENT QUANTITY: the same difference taken on PAT gives -328.72, which reproduces our stored npStd -328.72 EXACTLY -- if the subtraction were invalid it could not close on profit as well as revenue. Both legs pass G1 identity, G4 declared scale and G5 (each page's own EPS arithmetic closes); neither declares Consolidated. Page roles as printed: First Half minus First Quarter. An as-filed exchange read outranks an aggregator rendition (runbook \u00a7108). Captures 20030429193154 http://www.nseindia.com:80/marketinfo/companyinfo/eod/results.jsp?01-APR-200130-SEP-2001H1UNCXESAIL and 20030429193018 http://www.nseindia.com:80/marketinfo/companyinfo/eod/results.jsp?01-APR-200130-JUN-2001Q1UNNXESAIL",
+   "found_by": "wayback-nse audit WIDENED by cumulative differencing 2026-08-26"
+  },
+  {
+   "sym": "WIPRO",
+   "qe": "20010930",
+   "basis": "std",
+   "was": 874.2,
+   "fixed": 883.9,
+   "why": "Wayback NSE results.jsp, recovered by CUMULATIVE DIFFERENCING: the archive holds no true-quarter page for this period, but it holds two YTD pages of the SAME fiscal year -- both declare period start 01-APR-2001 -- spanning 6m and 3m. Net Sales 1669.1 cr minus 785.2 cr = 883.9 cr for the quarter, against our aggregator-derived 874.2. THE SUBTRACTION IS VALIDATED ON AN INDEPENDENT QUANTITY: the same difference taken on PAT gives 215.6, which reproduces our stored npStd 215.6 EXACTLY -- if the subtraction were invalid it could not close on profit as well as revenue. Both legs pass G1 identity, G4 declared scale and G5 (each page's own EPS arithmetic closes); neither declares Consolidated. Page roles as printed: First Half minus First Quarter. An as-filed exchange read outranks an aggregator rendition (runbook \u00a7108). Captures 20030315203206 http://www.nseindia.com:80/marketinfo/companyinfo/eod/results.jsp?01-APR-200130-SEP-2001H1ANCXEWIPRO and 20030315202842 http://www.nseindia.com:80/marketinfo/companyinfo/eod/results.jsp?01-APR-200130-JUN-2001Q1ANNXEWIPRO",
+   "found_by": "wayback-nse audit WIDENED by cumulative differencing 2026-08-26"
   }
  ],
  "retracted": [
