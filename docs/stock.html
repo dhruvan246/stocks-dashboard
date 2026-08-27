@@ -16,6 +16,9 @@
   .rng{cursor:pointer}
   .rng.on{background:linear-gradient(135deg,var(--accent),var(--accent-2));color:#fff}
   #chartWrap{position:relative}
+  .clschip{display:inline-flex;align-items:baseline;gap:.3rem;padding:.15rem .55rem;border-radius:999px;border:1px solid var(--border,#e2e8f0);background:var(--surface-2,#f8fafc);color:var(--text-muted,#475569);font-size:.72rem;font-weight:600;line-height:1.5;white-space:nowrap;text-decoration:none;transition:border-color .12s,color .12s}
+  .clschip:hover{border-color:var(--accent,#4f46e5);color:var(--accent,#4f46e5)}
+  .clslv{font-size:.58rem;font-weight:700;text-transform:uppercase;letter-spacing:.04em;color:var(--text-faint,#94a3b8)}
   #tip{position:absolute;pointer-events:none;display:none;background:var(--surface,#fff);border:1px solid var(--border,#e2e8f0);border-radius:.5rem;padding:.35rem .55rem;font-size:.72rem;box-shadow:0 6px 18px -8px rgba(0,0,0,.35);white-space:nowrap;z-index:5}
 </style>
 </head>
@@ -43,6 +46,7 @@
         </div>
         <div id="sName" class="text-sm text-slate-500 mt-0.5"></div>
         <div id="sInd" class="text-xs text-slate-400 mt-0.5"></div>
+        <div id="sCls" class="mt-1.5 flex-wrap items-center gap-1" style="display:none"></div>
         <div id="sMeta" class="text-xs text-slate-500 mt-1.5 flex flex-wrap items-center gap-x-3 gap-y-1"></div>
       </div>
       <div class="text-right">
@@ -939,6 +943,43 @@ function renderStrat(){
     `<b class="${(r[1]||0)>=0?'pos':'neg'} whitespace-nowrap text-[13px]">${r[1]==null?'—':pct(+r[1])}</b></div>`).join('');
 }
 
+/* ---------- sector / industry breadcrumb (sector_classification.json) --------------------------
+ * NSE files every listed company under four nested labels — macro sector → sector → industry →
+ * basic industry — and sectors.html builds a live equal-weighted index for each one. Every rung
+ * here links into that page's chart, constituents and multi-period returns for the exact bucket
+ * this stock sits in.
+ *
+ * Source is the same file sectors.html groups by (~57 KB gzipped, shared browser cache), fetched
+ * AFTER first paint so it never delays the price. A rung is dropped only when it repeats the rung
+ * above BY NAME **and** BY MEMBERSHIP: "Financial Services › Financial Services" is one index
+ * listed twice, but macro "Utilities" (57 stocks) and sector "Utilities" (17) are different
+ * buckets that happen to share a name — name-only de-duping would hide the narrower index. */
+const CLS_CHAIN=[['macro','sector','Sector'],['sector','sub','Sub-sector'],['igroup','industry','Industry'],['industry','basic','Sub-industry']];
+let CLS_MAP=null, CLS_P=null;
+const clsNorm=s=>String(s==null?'':s).replace(/\s+/g,' ').trim();   // mirrors buildGroups() in sectors.html
+function loadClass(){ return CLS_P||(CLS_P=fetch('./sector_classification.json').then(r=>r.ok?r.json():null).catch(()=>null)); }
+async function renderClass(){
+  const el=$('sCls'); if(!el||!TKR) return;
+  if(!CLS_MAP) CLS_MAP=await loadClass();
+  const map=CLS_MAP; if(!map) return;
+  const c=map[TKR+'.NS']||map[TKR+'.BO']||map[TKR]; if(!c) return;   // 477 tickers (mostly renames) aren't filed yet
+  const chain=CLS_CHAIN.map(([f,lvl,lbl])=>({f,lvl,lbl,name:clsNorm(c[f])})).filter(x=>x.name);
+  if(!chain.length) return;
+  const sets=chain.map(()=>new Set());                               // one pass: who else sits in each rung
+  for(const k in map){ const v=map[k]; if(!v)continue;
+    for(let i=0;i<chain.length;i++) if(clsNorm(v[chain[i].f])===chain[i].name) sets[i].add(k); }
+  const same=(a,b)=>{ if(a.size!==b.size)return false; for(const k of a) if(!b.has(k))return false; return true; };
+  const show=chain.filter((x,i)=>i===0||!(x.name===chain[i-1].name&&same(sets[i],sets[i-1])));
+  el.innerHTML=show.map((x,i)=>
+    (i?'<span class="text-slate-300 px-0.5">›</span>':'')+
+    `<a class="clschip" href="./sectors.html?level=${encodeURIComponent(x.lvl)}&name=${encodeURIComponent(x.name)}" `+
+    `title="${esc(x.lbl)} index — open the ${esc(x.name)} chart, constituents and returns">`+
+    `<span class="clslv hidden sm:inline">${esc(x.lbl)}</span>${esc(x.name)}</a>`).join('')+
+    `<span class="text-[10px] text-slate-400 ml-1 hidden sm:inline">← tap any for its index chart</span>`;
+  el.style.display='flex';
+  $('sInd').style.display='none';        // the single coarse label the full chain now supersedes
+}
+
 /* ---------- peer comparison (slice.peers — same industry, mcap-ranked, self first) ---------- */
 function renderPeers(){
   const el=$('peersCard'); if(!el) return;
@@ -1169,6 +1210,7 @@ async function liveQuote(){
     loadRevop().then(()=>{ try{ renderFunds(); }catch(e){ console.error(e); } });
     try{ buildEvents(); drawChart(); }catch(e){ console.error(e); }     // engine FUND has the ann dates
   }
+  renderClass().catch(e=>console.error(e));   // sector chain: after first paint, never blocking it
   // rewind controls: date bounds follow this stock's actual history
   const s0=SERIES[TKR];
   if(s0&&s0.d.length){

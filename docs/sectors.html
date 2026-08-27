@@ -58,9 +58,10 @@
         <span class="absolute left-2.5 top-1/2 -translate-y-1/2 text-slate-400 text-sm">🔎</span>
         <input id="search" placeholder="Search indexes…" class="w-full border border-slate-300 rounded-lg pl-8 pr-2.5 py-1.5 text-sm bg-white" />
       </div>
-      <div class="flex items-center gap-1 text-xs">
+      <!-- five rungs don't fit one phone line: wrap instead of hiding NSE Indices off the right edge -->
+      <div class="flex flex-wrap items-center gap-1 text-xs">
         <span class="text-slate-400 font-semibold mr-0.5">Level</span>
-        <div id="levels" class="flex items-center gap-1"></div>
+        <div id="levels" class="flex flex-wrap items-center gap-1"></div>
       </div>
       <div class="flex items-center gap-1 text-xs">
         <span class="text-slate-400 font-semibold mr-0.5">Show</span>
@@ -96,6 +97,9 @@
     </div>
   </div>
 
+  <!-- deep-link miss. Text colour is a token, not amber-700: on the dark theme a #b45309 on
+       #111930 is unreadable — the amber border carries the "warning" signal on every theme. -->
+  <div id="dlNote" class="hidden rounded-xl border border-amber-400 px-3 py-2 text-xs" style="background:var(--surface-2,#fffbeb);color:var(--text,#78350f)"></div>
   <div id="count" class="text-xs text-slate-400 px-1"></div>
   <div id="grid" class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-3"></div>
   <div id="heat" class="hidden"></div>
@@ -126,8 +130,12 @@ let NIFTY_OFFS=[];
 function niftyValAt(off){ if(!NIFTY_OFFS.length)return null; const i=idxLE(NIFTY_OFFS,off); return i<0?NIFTY_ARR[0][1]:NIFTY_ARR[i][1]; }
 
 /* ---- config ---- */
+/* NSE files every company under four nested labels: macro sector -> sector -> industry ->
+   basic industry. `sub` (the 22-bucket `sector` field) was the one rung this page skipped;
+   stock.html's breadcrumb links into all four, so every rung needs a level to land on. */
 const LEVELS=[
   {key:'sector',   label:'Sectors',        field:'macro'},
+  {key:'sub',      label:'Sub-Sectors',    field:'sector'},
   {key:'industry', label:'Industries',     field:'igroup'},
   {key:'basic',    label:'Sub-Industries', field:'industry'},
   {key:'nse',      label:'NSE Indices',    field:null},
@@ -347,10 +355,49 @@ function wireSparks(){
   });
 }
 
+/* ---- deep links (stock page -> one index's chart) ----------------------------------------------
+ * ?level=<sector|sub|industry|basic|nse>&name=<index name> opens that index's detail on load, and
+ * every open rewrites the URL to match, so any chart here is a shareable link.
+ * The level is a HINT, not a key: several names sit at more than one rung ("Power" is both a
+ * sub-sector and an industry; "Diversified" is all four), so a link carrying the wrong rung falls
+ * back to searching every level instead of dead-ending. */
+function normName(s){ return String(s==null?'':s).replace(/\s+/g,' ').trim(); }   // same shape buildGroups() keys on
+function syncURL(name){
+  try{
+    const u=new URL(location.href);
+    if(name){ u.searchParams.set('level',ST.level); u.searchParams.set('name',name); }
+    else{ u.searchParams.delete('level'); u.searchParams.delete('name'); }
+    history.replaceState(null,'',u.pathname+u.search+u.hash);
+  }catch(e){}
+}
+function resolveDeep(name){
+  const want=name.toLowerCase(), save=ST.level;
+  const order=[ST.level].concat(LEVELS.map(l=>l.key).filter(k=>k!==ST.level));
+  for(const k of order){
+    ST.level=k; buildGroups();
+    const hit=Object.keys(GROUPS).find(g=>g.toLowerCase()===want);
+    if(hit){ ST.level=save; return {level:k,name:hit}; }
+  }
+  ST.level=save; buildGroups();     // leave GROUPS matching ROWS again
+  return null;
+}
+async function openDeepLink(raw){
+  const name=normName(raw); if(!name)return;
+  const hit=resolveDeep(name);
+  if(!hit){
+    $('dlNote').textContent='\u201c'+name+'\u201d is not a tracked index here \u2014 no stock filed under it has price history on this page.';
+    $('dlNote').classList.remove('hidden');
+    return;
+  }
+  ST.level=hit.level; recompute();
+  await openDetail(hit.name);
+}
+
 /* ---- detail modal ---- */
 async function openDetail(name){
   const lv=LEVELS.find(l=>l.key===ST.level);
   const members=GROUPS[name]; if(!members)return;
+  syncURL(name);
   $('modal').style.display='flex'; document.body.style.overflow='hidden';
   $('modalCard').innerHTML='<div class="p-10 text-center text-slate-400 text-sm">Loading…</div>';
   // need full history for the long chart / multi-period
@@ -427,7 +474,7 @@ function drawBigChart(ser){
   svg.onmousemove=e=>{const rc=svg.getBoundingClientRect();const px=(e.clientX-rc.left)/rc.width*W;let bi=0,bd=1e9;for(let i=0;i<ser.idx.length;i++){const d=Math.abs(X(ser.idx[i][0])-px);if(d<bd){bd=d;bi=i;}}const iv=ser.idx[bi][1],bv=ser.bench[bi][1];if(iv==null)return;const cx=X(ser.idx[bi][0]);cr.setAttribute('x1',cx);cr.setAttribute('x2',cx);cr.style.display='';dot.setAttribute('cx',cx);dot.setAttribute('cy',Y(iv));dot.style.display='';tip.style.display='block';tip.innerHTML=`<b>${isoOff(ser.idx[bi][0])}</b><br>Index <b class="${clsPN(iv-100)}">${fmtPct(iv-100)}</b>`+(bv!=null?`<br>Nifty500 <span class="${clsPN(bv-100)}">${fmtPct(bv-100)}</span>`:'');const tx=cx/W*wrap.clientWidth;tip.style.left=Math.min(Math.max(tx+8,2),wrap.clientWidth-120)+'px';tip.style.top='4px';};
   svg.onmouseleave=()=>{cr.style.display='none';dot.style.display='none';tip.style.display='none';};
 }
-function closeModal(){ $('modal').style.display='none'; document.body.style.overflow=''; }
+function closeModal(){ $('modal').style.display='none'; document.body.style.overflow=''; syncURL(null); }
 $('modal').onclick=e=>{ if(e.target.id==='modal')closeModal(); };
 document.addEventListener('keydown',e=>{ if(e.key==='Escape')closeModal(); });
 
@@ -516,8 +563,12 @@ async function gunzipJSON(url){ const buf=await(await fetch(url)).arrayBuffer();
     $('asof').innerHTML='as of <b>'+isoOff(END_OFF)+'</b><br>EOD · refreshes after market close (~7 PM IST)';
     let nCls=0; for(const k in SERIES) if(CLS[k])nCls++;
     document.title='STOCKSWORLD · Sectors';
+    const dq=new URLSearchParams(location.search);
+    const dlLevel=(dq.get('level')||'').trim(), dlName=dq.get('name')||dq.get('g');
+    if(dlLevel&&LEVELS.some(l=>l.key===dlLevel)) ST.level=dlLevel;   // level first, so the grid behind the modal matches
     renderToolbar(); recompute();
     $('ov').style.display='none';
+    if(dlName) openDeepLink(dlName);
   }catch(e){ $('ovT').textContent='Failed to load: '+(e&&e.message||e); console.error(e); }
 })();
 </script>
