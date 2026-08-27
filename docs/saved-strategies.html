@@ -37,6 +37,13 @@
     #list table.sw-cardify tbody td:first-child{
       display:block!important;text-align:left!important;padding:9px 0 10px!important}
   }
+  /* ☆ + 🗑 now share ONE cell → the phone card shows a single compact, right-aligned
+     action row instead of two lonely full-width icon rows (the old mobile "wtf"). */
+  @media(max-width:640px){
+    #list table.sw-cardify tbody td.sw-actcell{
+      justify-content:flex-end!important;gap:28px!important;padding:6px 2px 8px!important}
+    #list table.sw-cardify tbody td.sw-actcell button{font-size:20px;line-height:1;padding:2px}
+  }
 </style>
 </head>
 <body class="bg-slate-50 min-h-screen text-slate-800">
@@ -769,7 +776,6 @@ function render() {
     ${lmode || wcols ? '' : `<th data-sort="main"${dirAttr('main')} class="text-right font-semibold px-3 py-2.5 whitespace-nowrap">${wmode ? (CUSTOM_WIN ? `Return · ${CUSTOM_WIN.start} → ${CUSTOM_WIN.end}${CUSTOM_WIN.topN != null ? ` · top-${CUSTOM_WIN.topN}` : ''}` : 'Return · window') : 'CAGR'}</th>`}
     ${!lmode && wcols ? WAVE_ORDER.map(k => `<th data-sort="${k}"${dirAttr(k)} class="text-right font-semibold px-2 py-2.5 whitespace-nowrap" title="Return over ${esc(WAVE_NAME[k])} (${esc(waveColWindow(k))}), from the ${esc((snapFor(k) && snapFor(k).date) || (WAVE_SNAP && WAVE_SNAP.date) || 'latest')} snapshot">${WAVE_ICON[k]} ${esc(WAVE_NAME[k])}<br><span class="text-[9px] font-medium normal-case tracking-normal text-slate-400">${esc(waveColWindow(k))}</span></th>`).join('') : ''}
     <th class="px-2 py-2.5"></th>
-    ${OWNER ? '<th class="px-2 py-2.5"></th>' : ''}
   </tr></thead>`;
   YRG.clear();
   const body = rows.map((g, gi) => {
@@ -801,8 +807,7 @@ function render() {
         </div>
       </td>
       ${lmode ? liveCells(c) : wcols ? WAVE_ORDER.map(k => waveCell(k, c)).join('') : `<td class="px-3 py-3 text-right text-sm whitespace-nowrap">${cagrCell}</td>`}
-      <td class="px-2 py-3 text-center"><button class="text-base leading-none transition" data-favtoggle="${esc(identityKey(c))}" title="${isFav(favs, c) ? 'Remove from favourites' : 'Add to favourites'}">${isFav(favs, c) ? '⭐' : '☆'}</button></td>
-      ${OWNER ? `<td class="px-2 py-3 text-center whitespace-nowrap"><button class="text-slate-300 hover:text-red-500 text-sm" data-delgroup="${esc(identityKey(c))}" title="Delete strategy">🗑️</button></td>` : ''}
+      <td class="sw-actcell px-2 py-3 text-center whitespace-nowrap"><button class="text-base leading-none transition align-middle" data-favtoggle="${esc(identityKey(c))}" title="${isFav(favs, c) ? 'Remove from favourites' : 'Add to favourites'}">${isFav(favs, c) ? '⭐' : '☆'}</button>${OWNER ? `<button class="text-slate-300 hover:text-red-500 text-sm align-middle ml-3" data-delgroup="${esc(identityKey(c))}" title="Delete strategy">🗑️</button>` : ''}</td>
     </tr>`;
   }).join('');
   $('list').innerHTML = `<table class="w-full text-sm border-collapse sw-cards">${header}<tbody>${body}</tbody></table>`;
