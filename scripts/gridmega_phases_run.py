@@ -91,9 +91,11 @@ def main():
     qlock = threading.Lock()
 
     def loop(slot):
-        # Each run peaks near 3.3 GB while it parses the 9.3M-bar dataset, then settles much lower.
-        # Staggering the starts keeps those load peaks from landing together on a 16 GB box.
-        time.sleep(slot * 25)
+        # Each run peaks near 3.3 GB while it parses the 9.3M-bar dataset, then settles much lower
+        # (measured 2026-08-25: ~0.5 GB steady). Staggering the starts keeps those load peaks from
+        # landing together on a 16 GB box — the stagger must grow with --jobs, since it is the peak
+        # OVERLAP that OOMs, not the steady state.
+        time.sleep(slot * 40)
         while True:
             with qlock:
                 if not q:
