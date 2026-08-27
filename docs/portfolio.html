@@ -1976,11 +1976,17 @@ function zRender(){
     out.push('<div class="khelp">Connected, but Zerodha returned no holdings, positions or orders.</div>');
   $('zBody').innerHTML=out.join('');
 }
+/* Zerodha's SEBI static-IP rule (Apr-2026) rejects API order placement from a non-whitelisted IP —
+   our Cloudflare worker has no static IP, so direct /order can't work here; the Kite basket popup
+   (you confirm on Zerodha's page) has no such requirement. Detect that specific reject and fall back
+   to the popup automatically, remembering it for this session so we don't keep re-trying. */
+function ipBlocked(msg){ return /no ips|static ip|whitelist|allowed ip/i.test(msg||''); }
 async function zPlace(o){
+  if(Z.directBlocked){ kiteSend([o]); return; }
   ktoast('Placing '+o.transaction_type+' '+o.quantity+' '+o.tradingsymbol+'…',6000);
   const body=Object.assign({variety:'regular', validity:'DAY', tag:'pfdash'},o);
   const {st,j}=await zFetch('/order',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify(body)});
-  if(st===403){ ktoast('Zerodha session expired — log in again',5000); zDisconnected(); return; }
+  const msg=(j&&j.message)||('HTTP '+st);
   if(st===200 && j && j.data && j.data.order_id){
     const id=j.data.order_id;
     ktoast('Order placed ✓ — checking status…',4000);
@@ -1988,7 +1994,11 @@ async function zPlace(o){
       const row=r.j&&r.j.data&&r.j.data.find(x=>x.order_id===id);
       if(row) ktoast(row.tradingsymbol+': '+row.status+(row.status_message?' — '+row.status_message:''),7000);
       zRefreshAll(true); },1800);
-  } else ktoast('Zerodha refused it: '+((j&&j.message)||('HTTP '+st)),7000);
+  } else if(ipBlocked(msg) || st===0){ Z.directBlocked=true;
+    ktoast('Direct API orders need a whitelisted static IP — opening the Zerodha basket to confirm instead',5500);
+    kiteSend([o]);
+  } else if(st===403){ ktoast('Zerodha session expired — log in again',5000); zDisconnected();
+  } else ktoast('Zerodha refused it: '+msg,7000);
 }
 $('zBody').addEventListener('click',async e=>{
   const c=e.target.closest('[data-zcancel]');
@@ -2134,13 +2144,24 @@ async function zbPlaceAll(){
   if(b.dataset.arm!=='1'){ b.dataset.arm='1';
     b.textContent='Confirm '+orders.length+' BUY orders ≈ '+zinr(est)+' ?';
     clearTimeout(ZB.t); ZB.t=setTimeout(zbArmReset,8000); return; }
-  b.dataset.arm=''; b.disabled=true; b.textContent='Placing…';
+  b.dataset.arm='';
+  if(Z.directBlocked){ if(kiteSend(orders)) $('zbWrap').classList.remove('open'); return; }
+  b.disabled=true; b.textContent='Placing…';
+  let bailed=false;
   for(const o of orders){
     const r=ZB.rows.find(x=>x.sym===o.tradingsymbol); r.st='…'; zbRender();
     const {st,j}=await zFetch('/order',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify(o)});
+    const msg=(j&&j.message)||('HTTP '+st);
     if(st===200&&j&&j.data&&j.data.order_id){ r.st='sent'; r.oid=j.data.order_id; }
-    else { r.st='fail'; r.msg=(j&&j.message)||('HTTP '+st); }
+    else if(ipBlocked(msg)||st===0){ Z.directBlocked=true; bailed=true; r.st=''; break; }   // static-IP reject: stop, use the popup
+    else { r.st='fail'; r.msg=msg; }
     zbRender();
+  }
+  b.disabled=false; b.textContent='Place all ▸';
+  if(bailed){
+    ZB.rows.forEach(r=>{ if(r.st==='…') r.st=''; }); zbRender();
+    ktoast('Direct API orders need a whitelisted static IP — opening the Zerodha basket to confirm instead…',5500);
+    kiteSend(orders); return;
   }
   await new Promise(r=>setTimeout(r,1800));
   const o=await zFetch('/orders'), list=(o.j&&o.j.data)||[];
