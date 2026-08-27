@@ -2073,6 +2073,8 @@ async function zbFetchMargins(realloc){
   const {st,j}=await zFetch('/margincalc',{method:'POST',headers:{'Content-Type':'application/json'},
     body:JSON.stringify(orders.map(o=>({exchange:o.exchange, tradingsymbol:o.tradingsymbol, product:o.product, quantity:o.quantity})))});
   if(seq!==ZB.mseq || !$('zbWrap').classList.contains('open')) return;   // superseded or closed
+  if(st===0 && !ZB.mretry){ ZB.mretry=1; setTimeout(()=>zbFetchMargins(realloc),1500); return; }   // one dropped request ≠ a failure
+  ZB.mretry=0;
   if(st!==200 || !j || !j.data){ ZB.merr=(j&&j.message)||('HTTP '+st); zbFoot(); return; }
   ZB.merr=null;
   let di=0;
