@@ -53,7 +53,9 @@ SHAPE
 
 OUTPUT
   <outdir>/stk/<SLUG>.json  one per symbol (~8 KB average, 21 KB for a 30-year
-  name) plus <outdir>/stk_meta.json carrying the data version.
+  name) plus <outdir>/stk_meta.json carrying the data version, and
+  <outdir>/pe_ttm.json — {sym: P/E TTM} for the whole market, read by
+  docs/sectors.html's peer-comparison table.
 
   These are force-pushed to the sf-data Pages repo next to the split bins — every
   stock's slice changes every trading day, so committing them here would grow the
@@ -414,6 +416,19 @@ def main():
     ACT = build_activity(end)
     pstats, groups = build_peer_stats(data, meta, core_meta, end)
     print("  activity for %d symbols, %d fine industries" % (len(ACT), len(groups[0])), flush=True)
+
+    # Market-wide P/E, for the peer-comparison table in docs/sectors.html's index detail. It rides
+    # THIS dict — the same point-in-time owners-PAT TTM the per-stock peers table uses — so there is
+    # one P/E rule in the codebase, not two that drift. Only the RATIO travels: market cap and
+    # returns are already on that page from dash_slim.bin, and two sources for one number is exactly
+    # how two pages start quoting different market caps for the same company.
+    pe_only = {s: round(v[1], 1) for s, v in pstats.items() if v[1] is not None}
+    with open(os.path.join(args.out, "pe_ttm.json"), "w", encoding="utf-8") as fh:
+        json.dump({"end": end, "n": len(pe_only),
+                   "basis": "market cap / owners-attributable PAT, last 4 contiguous quarters as filed",
+                   "pe": pe_only}, fh, separators=(",", ":"))
+    print("  pe_ttm.json: %d of %d symbols priced (rest have no contiguous TTM or no mcap)"
+          % (len(pe_only), len(pstats)), flush=True)
 
     outdir = os.path.join(args.out, "stk")
     if os.path.isdir(outdir):

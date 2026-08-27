@@ -23,6 +23,17 @@
   table.tbl{width:100%;font-size:.8rem;border-collapse:collapse}
   table.tbl th{position:sticky;top:0;background:var(--surface,#fff)}
   #ov{position:fixed;inset:0;background:var(--app-bg,#f8fafc);display:flex;flex-direction:column;align-items:center;justify-content:center;z-index:80}
+  /* On phones theme.js re-uses this table's .overflow-x-auto holder as a .sw-scrollx, which PINS
+     the first column. A pinned "SYMBOL Full Company Name" cell measures 228px of a 298px-wide
+     scroller at 375px, so it paints over every column you sideways-scroll to — P/E, 1Y and 6M were
+     all unreachable. The symbol alone identifies the row; the full name is one tap away. */
+  @media (max-width:640px){
+    #mPeerBody .pname{display:none}
+    #mPeerBody td:first-child{max-width:9.5rem}
+  }
+  /* 11 columns in a 60rem modal: a number column left to wrap breaks "₹12.77K Cr" over two lines.
+     Only the numbers are pinned to one line — the company-name column may still wrap. */
+  #mPeerHead th, #mPeerBody td:not(:first-child){white-space:nowrap}
 </style>
 </head>
 <body class="min-h-screen text-slate-800">
@@ -355,6 +366,27 @@ function wireSparks(){
   });
 }
 
+/* ---- market-wide P/E, for the peer-comparison table ------------------------------------------
+ * Lives beside the per-stock slices on the sf-data Pages repo (same origin as the site, so a plain
+ * fetch), written by build_stock_slices.py off the SAME point-in-time owners-PAT TTM that feeds the
+ * stock page's peer table — one P/E rule, not two. ~4.5k symbols, fetched once when the first index
+ * detail opens, never on the grid. Only the ratio comes from there: market cap and returns are
+ * already on this page, and one number with two sources is how two pages start disagreeing. */
+const SFD_BASE=(location.hostname==='localhost'||location.hostname==='127.0.0.1'||location.protocol==='file:')
+  ? './' : 'https://dhruvan246.github.io/sf-data/';
+let PE=null, PE_END='', PE_FAIL=false, pePromise=null;
+function ensurePE(){
+  if(PE||pePromise)return pePromise||Promise.resolve();
+  pePromise=fetch(SFD_BASE+'pe_ttm.json').then(r=>{ if(!r.ok)throw new Error('HTTP '+r.status); return r.json(); })
+    .then(j=>{ PE=(j&&j.pe)||{}; PE_END=(j&&j.end)||''; })
+    .catch(e=>{ PE={}; PE_FAIL=true; console.warn('P/E feed unavailable: '+(e&&e.message||e)); });
+  return pePromise;
+}
+const symOf=t=>(META[t]&&META[t].symbol)||t;
+function peOf(t){ return (PE&&PE[symOf(t)]!=null)?PE[symOf(t)]:null; }
+function medianOf(a){ if(!a.length)return null; const v=a.slice().sort((x,y)=>x-y), h=v.length>>1;
+  return v.length%2?v[h]:(v[h-1]+v[h])/2; }
+
 /* ---- deep links (stock page -> one index's chart) ----------------------------------------------
  * ?level=<sector|sub|industry|basic|nse>&name=<index name> opens that index's detail on load, and
  * every open rewrites the URL to match, so any chart here is a shareable link.
@@ -400,8 +432,10 @@ async function openDetail(name){
   syncURL(name);
   $('modal').style.display='flex'; document.body.style.overflow='hidden';
   $('modalCard').innerHTML='<div class="p-10 text-center text-slate-400 text-sm">Loading…</div>';
-  // need full history for the long chart / multi-period
+  // need full history for the long chart / multi-period; the P/E feed rides alongside it
+  const peP=ensurePE();
   if(!FULL){ try{ await ensureFull(); }catch(e){} }
+  try{ await peP; }catch(e){}
   const endOff=END_OFF;
   const allStats=[['1M',30],['3M',91],['6M',182],['YTD',-1],['1Y',365],['3Y',1095]].map(([l,d])=>{
     const so=d===-1?dayOff(isoOff(endOff).slice(0,4)+'-01-01'):endOff-d;
@@ -418,13 +452,20 @@ async function openDetail(name){
       const p0=priceAt(m.t,endOff-days);
       return (p0==null||p0<=0)?null:(m.p1/p0-1)*100;
     });
+    m.pe=peOf(m.t);
   });
+  PEER={mem:st.mem, pers:STOCK_PERS, per:ST.period, sort:{k:'r',dir:-1}};
+  const peVals=st.mem.map(m=>m.pe).filter(v=>v!=null&&v>0);
+  const medPE=medianOf(peVals);
+  // Coverage is stated, never implied: a median over 84 of 113 members is a different claim from a
+  // median over all of them, and the gap is real (no contiguous TTM, loss-makers, BSE-only lines).
+  const peBit=medPE==null?'' : ` · median P/E <b>${medPE.toFixed(1)}</b> <span class="text-slate-400">(${peVals.length} of ${st.n})</span>`;
   $('modalCard').innerHTML=`
     <div class="p-4 border-b border-slate-200 flex items-start justify-between gap-3">
       <div>
         <div class="text-[11px] uppercase tracking-wide text-slate-400 font-semibold">${esc(lv.label)} index</div>
         <h2 class="text-xl font-extrabold text-slate-900">${esc(name)}</h2>
-        <div class="text-xs text-slate-500 mt-0.5">${st.n} stocks · ${fmtCr(st.mcapSum)} · <b class="pos">${st.up}</b> up / <b class="neg">${st.down}</b> down (${ST.period})</div>
+        <div class="text-xs text-slate-500 mt-0.5">${st.n} stocks · ${fmtCr(st.mcapSum)}${peBit} · <b class="pos">${st.up}</b> up / <b class="neg">${st.down}</b> down (${ST.period})</div>
       </div>
       <button id="mClose" class="text-slate-400 hover:text-slate-700 text-2xl leading-none px-1">×</button>
     </div>
@@ -437,17 +478,61 @@ async function openDetail(name){
         <div class="mchartWrap card p-2" id="mChartWrap"></div>
       </div>
       <div>
-        <div class="text-xs font-semibold text-slate-600 mb-1">Constituents <span class="text-slate-400 font-normal">— sorted by ${ST.period} return, best → worst</span></div>
+        <div class="text-xs font-semibold text-slate-600 mb-1">Peer comparison <span class="text-slate-400 font-normal">— every company in this index · click a column to sort · tap a symbol to open it</span></div>
         <div class="overflow-x-auto tscroll" style="--tscroll-h:320px">
           <table class="tbl">
-            <thead class="text-[10px] uppercase text-slate-400 border-b border-slate-200"><tr><th class="text-left py-1 pr-2">Stock</th><th class="text-right px-2">Last</th><th class="text-right px-2">${ST.period}</th>${STOCK_PERS.map(([lbl])=>`<th class="text-right px-2">${lbl}</th>`).join('')}<th class="text-right px-2">Mkt cap</th></tr></thead>
-            <tbody>${st.mem.map(m=>`<tr class="border-b border-slate-50"><td class="py-1 pr-2"><a href="./stock.html?sym=${encodeURIComponent((META[m.t]&&META[m.t].symbol)||m.t)}" class="font-medium text-indigo-600 hover:underline">${esc((META[m.t]&&META[m.t].symbol)||m.t)}</a> <span class="text-slate-400 text-[11px]">${esc(m.name)}</span></td><td class="text-right px-2">₹${m.p1>=1000?Math.round(m.p1).toLocaleString('en-IN'):m.p1.toFixed(2)}</td><td class="text-right px-2 ${clsPN(m.r)}">${fmtPct(m.r)}</td>${m.mp.map(v=>`<td class="text-right px-2 ${clsPN(v)}">${fmtPct(v)}</td>`).join('')}<td class="text-right px-2 text-slate-500">${fmtCr(m.mc)}</td></tr>`).join('')}</tbody>
+            <thead class="text-[10px] uppercase text-slate-400 border-b border-slate-200"><tr id="mPeerHead"></tr></thead>
+            <tbody id="mPeerBody"></tbody>
           </table>
         </div>
+        <div class="text-[11px] text-slate-400 mt-1.5">P/E (TTM) = market cap ÷ owners-attributable profit over the last 4 <i>contiguous</i> quarters as filed${PE_END?', as of '+esc(PE_END):''} — blank where those 4 quarters aren't on file, where the company lost money, or for a BSE-only line the earnings feed doesn't carry. Not a recommendation.${PE_FAIL?' <b class="neg">The valuation feed didn\'t load this visit, so every P/E is blank.</b>':''}</div>
       </div>
     </div>`;
   $('mClose').onclick=closeModal;
+  renderPeerTable();
   drawBigChart(ser);
+}
+
+/* ---- peer-comparison table (the index's members, sortable on every column) --------------------
+ * Kept out of the modal template so a sort re-paints ~100 rows instead of rebuilding the card and
+ * throwing away the SVG chart underneath it. */
+let PEER={mem:[],pers:[],per:'',sort:{k:'r',dir:-1}};
+function peerCols(){
+  return [{k:'sym',lbl:'Stock',left:1},{k:'p1',lbl:'Last'},{k:'r',lbl:PEER.per}]
+    .concat(PEER.pers.map((p,i)=>({k:'mp'+i,lbl:p[0]})))
+    .concat([{k:'pe',lbl:'P/E (TTM)'},{k:'mc',lbl:'Mkt cap'}]);
+}
+function peerVal(m,k){
+  if(k==='sym') return String(symOf(m.t)).toLowerCase();
+  if(k.slice(0,2)==='mp') return m.mp[+k.slice(2)];
+  return m[k];
+}
+function renderPeerTable(){
+  const head=$('mPeerHead'), body=$('mPeerBody'); if(!head||!body)return;
+  const {k,dir}=PEER.sort;
+  head.innerHTML=peerCols().map(c=>
+    `<th class="${c.left?'text-left py-1 pr-2':'text-right px-2'} pcol" data-k="${c.k}" style="cursor:pointer;white-space:nowrap" title="Sort by ${esc(c.lbl)}">${esc(c.lbl)}${c.k===k?(dir===1?' ▲':' ▼'):''}</th>`).join('');
+  // nulls always sink, whichever way the column is pointed — an unknown P/E is not "the cheapest"
+  const rows=PEER.mem.slice().sort((a,b)=>{
+    const va=peerVal(a,k), vb=peerVal(b,k);
+    if(va==null&&vb==null)return 0; if(va==null)return 1; if(vb==null)return -1;
+    return (va<vb?-1:va>vb?1:0)*dir;
+  });
+  body.innerHTML=rows.map(m=>{
+    const sy=symOf(m.t);
+    return `<tr class="border-b border-slate-50"><td class="py-1 pr-2"><a href="./stock.html?sym=${encodeURIComponent(sy)}" class="font-medium text-indigo-600 hover:underline">${esc(sy)}</a> <span class="pname text-slate-400 text-[11px]">${esc(m.name)}</span></td>`+
+      `<td class="text-right px-2">₹${m.p1>=1000?Math.round(m.p1).toLocaleString('en-IN'):m.p1.toFixed(2)}</td>`+
+      `<td class="text-right px-2 ${clsPN(m.r)}">${fmtPct(m.r)}</td>`+
+      m.mp.map(v=>`<td class="text-right px-2 ${clsPN(v)}">${fmtPct(v)}</td>`).join('')+
+      `<td class="text-right px-2">${m.pe==null?'<span class="text-slate-300">—</span>':m.pe.toFixed(1)}</td>`+
+      `<td class="text-right px-2 text-slate-500">${fmtCr(m.mc)}</td></tr>`;
+  }).join('');
+  head.querySelectorAll('.pcol').forEach(th=>th.onclick=()=>{
+    const nk=th.dataset.k;
+    // same column flips; a new one starts descending, except the A-Z name column
+    PEER.sort=(nk===PEER.sort.k)?{k:nk,dir:-PEER.sort.dir}:{k:nk,dir:nk==='sym'?1:-1};
+    renderPeerTable();
+  });
 }
 function drawBigChart(ser){
   const wrap=$('mChartWrap'); const W=900,H=300,PADL=44,PADR=10,PADT=10,PADB=22;

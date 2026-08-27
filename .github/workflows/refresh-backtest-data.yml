@@ -130,7 +130,7 @@ jobs:
           git init -q -b main
           git config user.name  "github-actions[bot]"
           git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
-          git add sf_recent_*.bin sf_deep_*.bin sf_meta.json stk_meta.json stk
+          git add sf_recent_*.bin sf_deep_*.bin sf_meta.json stk_meta.json pe_ttm.json stk
           git commit -q -m "data $(TZ=Asia/Kolkata date +'%Y-%m-%d %H:%M IST')"
           git push -q --force "https://x:${SF_DATA_TOKEN}@github.com/dhruvan246/sf-data.git" main
           echo "force-pushed fresh split data + $(ls stk | wc -l) stock slices to sf-data"
