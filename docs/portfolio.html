@@ -242,6 +242,11 @@ select,input[type=text],input[type=number],input[type=date]{
 .zchip.open{color:var(--accent); border-color:var(--accent)}
 .zmsg{font-size:11px; color:var(--down); white-space:normal; text-align:left; max-width:280px}
 #zBody input{padding:7px 9px; font-size:13px; border:1px solid var(--border); border-radius:8px; background:var(--surface-2); color:var(--text)}
+/* The Zerodha card lives on its OWN tab (⚡ header button): hidden in the
+   portfolio view, alone on screen in the zview. */
+[data-card="zerodha"]{display:none}
+body.zview [data-card="zerodha"]{display:block}
+body.zview #app>*:not([data-card="zerodha"]){display:none}
 </style>
 </head>
 <body>
@@ -251,6 +256,7 @@ select,input[type=text],input[type=number],input[type=date]{
     <div class="brand"><span class="dot" id="liveDot"></span>Portfolio</div>
     <span class="meta" id="clock"></span>
     <div class="spacer"></div>
+    <button class="btn" id="btnZview" title="Zerodha live account — funds, holdings, orders, trading">⚡ Zerodha</button>
     <button class="btn" id="btnSections" title="Show / hide cards">⊞ Cards</button>
     <button class="btn" id="btnPrivate" title="Blur every number">🙈 Privacy</button>
     <button class="btn" id="btnTheme">◐ Auto</button>
@@ -1061,6 +1067,7 @@ function renderKPIs(rows,H){
    never touches the ?t= token query and is never sent to a server. replaceState = no history spam. ---- */
 function filterToHash(){
   const parts=[];
+  if(ZVIEW) parts.push('view=zerodha');   // the ⚡ tab survives filter changes + reloads
   if(SEL.acct.size) parts.push('acct='+[...SEL.acct].map(encodeURIComponent).join(','));
   if(SEL.pf.size)   parts.push('pf='  +[...SEL.pf].map(encodeURIComponent).join(','));
   const h=parts.join('&');
@@ -1575,7 +1582,7 @@ async function boot(){
   setInterval(updateBadge, 30000);
   let rt=null, lastW=innerWidth;
   syncStickyTop();
-  addEventListener('hashchange',()=>{ hashToFilter(); renderAll(); });   // manual URL edit / opened deep-link
+  addEventListener('hashchange',()=>{ zSyncFromHash(); hashToFilter(); renderAll(); });   // manual URL edit / opened deep-link
   addEventListener('resize',()=>{                 // charts are width-derived; redraw on rotate/resize
     syncStickyTop();                              // header wraps at narrow widths → its height changes
     if(innerWidth===lastW) return;
@@ -1628,7 +1635,7 @@ $('btnSaveAcct').onclick=async()=>{
 };
 /* ---- show/hide cards: the page got long, so let the user curate which sections show.
    Keys are stable data-card attrs (h2 labels change), the hidden set persists in localStorage. ---- */
-function cardEls(){ return [...document.querySelectorAll('#app [data-card]')]; }
+function cardEls(){ return [...document.querySelectorAll('#app [data-card]')].filter(el=>el.dataset.card!=='zerodha'); }   // the ⚡ tab is not a hideable card
 function loadHidden(){ try{ return new Set(JSON.parse(localStorage.getItem('pf_hidden')||'[]')); }catch(e){ return new Set(); } }
 function saveHidden(set){ try{ localStorage.setItem('pf_hidden', JSON.stringify([...set])); }catch(e){} }
 function applyHidden(){ const hid=loadHidden(); let n=0;
@@ -1802,6 +1809,21 @@ $('btnOrder').onclick=()=>openKiteDlg({sym:'', tr:'BUY', qty:1, px:null});
    session lives in the worker's KV, not in any one browser. */
 const Z={connected:false,user:null,data:{},timer:null,confirmT:null};
 const zOnWeb=!/^(localhost|127\.0\.0\.1)$/.test(location.hostname);
+/* --- the ⚡ Zerodha tab: one page, two views, state carried in the hash --- */
+let ZVIEW=false;
+function zShowView(on){
+  ZVIEW=!!on;
+  document.body.classList.toggle('zview',ZVIEW);
+  $('btnZview').textContent=ZVIEW?'📊 Portfolio':'⚡ Zerodha';
+  $('btnZview').classList.toggle('on',ZVIEW);
+  if(typeof filterToHash==='function') filterToHash();
+  if(ZVIEW) scrollTo(0,0);
+}
+function zSyncFromHash(){
+  const want=/(^#|&)view=zerodha(&|$)/.test(location.hash);
+  if(want!==ZVIEW) zShowView(want);
+}
+$('btnZview').onclick=()=>zShowView(!ZVIEW);
 const zWorker=()=>{ try{ return (localStorage.getItem('pf_kite_worker')||'').replace(/\/+$/,''); }catch(e){ return ''; } };
 let Z_TOKEN=null;
 async function zToken(){
@@ -1955,8 +1977,10 @@ $('zBody').addEventListener('click',async e=>{
 /* Kite's login bounces back here with ?request_token=… — catch it, trade it in,
    and scrub the URL so a reload can't replay a dead token. */
 (function zCapture(){
+  zSyncFromHash();                                  // honour a #view=zerodha deep-link on load
   const u=new URL(location.href), rt=u.searchParams.get('request_token');
   if(!rt){ zInit(); return; }
+  zShowView(true);                                  // back from the Kite login → land on the ⚡ tab
   ['request_token','action','status','type'].forEach(k=>u.searchParams.delete(k));
   history.replaceState(null,'',u.pathname+(u.searchParams.toString()?'?'+u.searchParams.toString():'')+u.hash);
   (async()=>{
