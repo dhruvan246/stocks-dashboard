@@ -804,29 +804,34 @@ function stackedArea(host,o){
   const step=Math.max(1,Math.floor(n/(narrow?3:5)));
   for(let i=0;i<n;i+=step) s+='<text class="axis" x="'+X(i).toFixed(1)+'" y="'+(H-8)+'" text-anchor="middle">'+shortDate(offToISO(o.cal[i]))+'</text>';
   let below=o.cal.map(()=>0);
-  series.forEach(se=>{ const top=o.cal.map((_,i)=>below[i]+(se.vals[i]||0));
+  series.forEach((se,k)=>{ const top=o.cal.map((_,i)=>below[i]+(se.vals[i]||0));
     let d='M'+X(0).toFixed(1)+' '+Y(top[0]).toFixed(1);
     for(let i=1;i<n;i++) d+=' L'+X(i).toFixed(1)+' '+Y(top[i]).toFixed(1);
     for(let i=n-1;i>=0;i--) d+=' L'+X(i).toFixed(1)+' '+Y(below[i]).toFixed(1);
-    s+='<path d="'+d+' Z" fill="'+se.color+'" fill-opacity="0.82" stroke="'+se.color+'" stroke-width="0.5"/>';
+    s+='<path class="sband" data-i="'+k+'" d="'+d+' Z" fill="'+se.color+'" fill-opacity="0.82" stroke="'+se.color+'" stroke-width="0.5" style="cursor:pointer"/>';
     below=top; });
-  s+='<path d="'+o.cal.map((_,i)=>(i?'L':'M')+X(i).toFixed(1)+' '+Y(totals[i]).toFixed(1)).join(' ')+'" fill="none" stroke="var(--text)" stroke-width="1.1" opacity="0.45"/>';
-  s+='<line id="sx" x1="0" x2="0" y1="'+P.t+'" y2="'+(H-P.b)+'" stroke="var(--text-3)" opacity="0"/>';
-  s+='<rect x="'+P.l+'" y="'+P.t+'" width="'+(W-P.l-P.r)+'" height="'+(H-P.t-P.b)+'" fill="transparent" id="shit"/></svg>';
+  s+='<path d="'+o.cal.map((_,i)=>(i?'L':'M')+X(i).toFixed(1)+' '+Y(totals[i]).toFixed(1)).join(' ')+'" fill="none" stroke="var(--text)" stroke-width="1.1" opacity="0.45" pointer-events="none"/>';
+  s+='<line id="sx" x1="0" x2="0" y1="'+P.t+'" y2="'+(H-P.b)+'" stroke="var(--text-3)" opacity="0" pointer-events="none"/></svg>';
   let leg='<div class="legend">'+series.map(se=>'<span><i style="background:'+se.color+'"></i>'+esc(se.name)+'</span>').join('')+'</div>';
   host.innerHTML=leg+s;
-  const svg=host.querySelector('svg'), hit=host.querySelector('#shit'), sx=host.querySelector('#sx');
-  function move(ev){ const b=svg.getBoundingClientRect(); const p2=(ev.clientX-b.left)/b.width*W;
+  const svg=host.querySelector('svg'), sx=host.querySelector('#sx');
+  const paths=[...svg.querySelectorAll('path.sband')];
+  /* per-BAND hover: highlight the band under the cursor (dim the rest) and show THAT strategy's
+     value + its share of the book + the total, at the hovered date. */
+  function at(ev,k){ const b=svg.getBoundingClientRect(); const p2=(ev.clientX-b.left)/b.width*W;
     let i=Math.round((p2-P.l)/((W-P.l-P.r)||1)*(n-1)); i=Math.max(0,Math.min(n-1,i));
     sx.setAttribute('x1',X(i)); sx.setAttribute('x2',X(i)); sx.setAttribute('opacity','.5');
-    let html='<b>'+shortDate(offToISO(o.cal[i]))+'</b>';
-    series.forEach(se=>{ const v=se.vals[i]||0; if(v>0) html+='<div class="r"><span><i style="display:inline-block;width:9px;height:9px;border-radius:2px;background:'+se.color+';margin-right:6px"></i>'+esc(se.name)+'</span><b class="secret">'+o.fmtT(v)+'</b></div>'; });
-    html+='<div class="r" style="border-top:1px solid var(--border);margin-top:3px;padding-top:3px"><span>Total</span><b class="secret">'+o.fmtT(totals[i])+'</b></div>';
-    showTip(html,ev); }
-  hit.addEventListener('mousemove',move);
-  hit.addEventListener('mouseleave',()=>{ hideTip(); sx.setAttribute('opacity','0'); });
-  hit.addEventListener('touchstart',e=>{ if(e.touches[0]) move(e.touches[0]); },{passive:true});
-  hit.addEventListener('touchmove', e=>{ if(e.touches[0]) move(e.touches[0]); },{passive:true});
+    paths.forEach(p=>p.setAttribute('fill-opacity', (+p.dataset.i===k)?'0.96':'0.20'));
+    const se=series[k], v=se.vals[i]||0, sh=totals[i]>0?(v/totals[i]*100):0;
+    showTip('<b><i style="display:inline-block;width:10px;height:10px;border-radius:2px;background:'+se.color+';margin-right:7px;vertical-align:-1px"></i>'+esc(se.name)+'</b>'+
+      '<div class="r"><span>'+shortDate(offToISO(o.cal[i]))+'</span><b class="secret">'+o.fmtT(v)+'</b></div>'+
+      '<div class="r"><span>share of book</span><b>'+sh.toFixed(0)+'%</b></div>'+
+      '<div class="r" style="border-top:1px solid var(--border);margin-top:3px;padding-top:3px"><span>Total book</span><b class="secret">'+o.fmtT(totals[i])+'</b></div>', ev); }
+  paths.forEach(p=>{ const k=+p.dataset.i;
+    p.addEventListener('mousemove',e=>at(e,k));
+    p.addEventListener('touchstart',e=>{ if(e.touches[0]) at(e.touches[0],k); },{passive:true});
+    p.addEventListener('touchmove', e=>{ if(e.touches[0]) at(e.touches[0],k); },{passive:true}); });
+  svg.addEventListener('mouseleave',()=>{ hideTip(); sx.setAttribute('opacity','0'); paths.forEach(p=>p.setAttribute('fill-opacity','0.82')); });
 }
 function barsH(host,items,o){
   o=o||{};
