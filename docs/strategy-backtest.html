@@ -523,6 +523,48 @@ function renderNotFound(all, hadId) {
       </div></div>`;
 }
 
+// ── Never white-screen ────────────────────────────────────────────────────────────────────────
+// Everything under the title is painted by renderStrategy(); the static markup ships #subtitle
+// empty and #stratStats/#tabs/#body hidden-or-blank. So ANY throw in boot() before that call
+// leaves the page showing a header and the word "Strategy" and nothing else — which is exactly
+// what the user sees and reports as "clicking a strategy opens a blank page", with no clue why.
+//
+// The throw that class of bug actually takes: Pages serves HTML and JS with max-age=600 and the
+// service worker caches them as separate entries, so a browser can hold THIS page from one deploy
+// and backtest-engine.js / bt-names.js from another. Shared helpers do move between those files —
+// nameWithBasis()/basisSuffix() moved out of backtest-engine.js into bt-names.js, and an older
+// cached copy of this page calls nameWithBasis() on renderStrategy's FIRST line while loading no
+// bt-names.js. Newer engine + older page = ReferenceError = blank.
+//
+// A ReferenceError here therefore means "mismatched asset vintages", which is self-healing: drop
+// the shell cache and reload once. The retry is keyed per URL in sessionStorage so it can NEVER
+// loop — a second failure falls through to the card, which names the error instead of hiding it.
+const SB_RETRY_KEY = 'sb_asset_retry:' + location.search;
+function sbRetried() { try { return sessionStorage.getItem(SB_RETRY_KEY) === '1'; } catch (e) { return true; } }
+function sbMarkRetried() { try { sessionStorage.setItem(SB_RETRY_KEY, '1'); } catch (e) {} }
+async function sbBustAndReload() {
+  sbMarkRetried();
+  try { if (window.caches) { const ks = await caches.keys(); await Promise.all(ks.map(k => caches.delete(k))); } } catch (e) {}
+  location.reload();
+}
+function renderBootFailure(err) {
+  console.error('[strategy-backtest] could not open this strategy:', err);   // the real stack, always
+  const stale = err instanceof ReferenceError;
+  $('title').textContent = 'Couldn’t open this strategy';
+  $('body').innerHTML = `<div class="card p-8 text-center">
+      <div class="text-4xl mb-3">⚠️</div>
+      <div class="font-bold text-slate-900 mb-1">This page hit an error before it could draw</div>
+      <p class="text-xs text-slate-500 max-w-md mx-auto mb-2">${stale
+        ? 'It looks like your browser is holding a half-updated copy of the site — part of it from an older version. Refreshing usually clears it.'
+        : 'Something went wrong while building this strategy’s page. Your saved strategies are safe.'}</p>
+      <p class="text-[11px] text-slate-400 mono max-w-md mx-auto mb-5">${esc(String((err && err.message) || err || 'Unknown error'))}</p>
+      <div class="flex items-center justify-center gap-2 flex-wrap">
+        <button id="sbReload" class="inline-flex items-center gap-2 bg-indigo-600 text-white text-sm font-semibold px-5 py-2.5 rounded-xl hover:bg-indigo-700 transition">↻ Refresh the page</button>
+        <a href="./saved-strategies.html" class="inline-flex items-center gap-2 border border-slate-300 text-sm font-semibold px-5 py-2.5 rounded-xl text-slate-700 hover:bg-slate-100 transition">⭐ Saved Strategies</a>
+      </div></div>`;
+  const btn = $('sbReload'); if (btn) btn.onclick = sbBustAndReload;
+}
+
 (async function boot() {
   const params = new URLSearchParams(location.search);
   const id = params.get('id'), kParam = params.get('k');
@@ -531,25 +573,31 @@ function renderNotFound(all, hadId) {
     try { await btSync.pullStrategies(); } catch (e) {}
     try { HIST = await btSync.pull() || []; } catch (e) { HIST = []; }
   }
-  HIST = HIST.concat(loadLS('bt_private_history'));   // 🔒 private runs (this browser only) — display merge, never synced
-  const all = loadLS('bt_strategies').concat(loadLS('bt_private_strategies'));   // 🔒 private strategies resolve by id/k too
-  let strat = id ? all.find(s => s.id === id) : null;
-  if (!strat && kParam) strat = all.find(s => identityKey(s.cfg) === kParam);
-  if (!strat) { renderNotFound(all, !!(id || kParam)); return; }
-  STRAT = strat;
-  const k = identityKey(strat.cfg);
-  const savedVars = all.filter(s => identityKey(s.cfg) === k);
-  if (!savedVars.some(s => s.id === strat.id)) savedVars.push(strat);
-  const sidSet = new Set(savedVars.map(s => s.id));
-  // baked basket for the instant Live-Picks paint (tiny json; sid there = 'st'+hash36(RULE key — the
-  // logger keys picks per rule, not per stock count, so use ruleKey here or nothing ever matches)
   try {
-    const trk = await (await fetch('./live_tracking.json')).json();
-    const tsid = 'st' + hash36(ruleKey(strat.cfg));
-    const t = (trk.strategies || []).find(s => s.sid === tsid);
-    if (t && t.latest) BAKED = { day: t.latest.day, picks: t.latest.picks || [], updated: trk.updated };
-  } catch (e) {}
-  renderStrategy(strat, backtestsFor(savedVars, sidSet));
+    HIST = HIST.concat(loadLS('bt_private_history'));   // 🔒 private runs (this browser only) — display merge, never synced
+    const all = loadLS('bt_strategies').concat(loadLS('bt_private_strategies'));   // 🔒 private strategies resolve by id/k too
+    let strat = id ? all.find(s => s.id === id) : null;
+    if (!strat && kParam) strat = all.find(s => identityKey(s.cfg) === kParam);
+    if (!strat) { renderNotFound(all, !!(id || kParam)); return; }
+    STRAT = strat;
+    const k = identityKey(strat.cfg);
+    const savedVars = all.filter(s => identityKey(s.cfg) === k);
+    if (!savedVars.some(s => s.id === strat.id)) savedVars.push(strat);
+    const sidSet = new Set(savedVars.map(s => s.id));
+    // baked basket for the instant Live-Picks paint (tiny json; sid there = 'st'+hash36(RULE key — the
+    // logger keys picks per rule, not per stock count, so use ruleKey here or nothing ever matches)
+    try {
+      const trk = await (await fetch('./live_tracking.json')).json();
+      const tsid = 'st' + hash36(ruleKey(strat.cfg));
+      const t = (trk.strategies || []).find(s => s.sid === tsid);
+      if (t && t.latest) BAKED = { day: t.latest.day, picks: t.latest.picks || [], updated: trk.updated };
+    } catch (e) {}
+    renderStrategy(strat, backtestsFor(savedVars, sidSet));
+  } catch (err) {
+    // A missing shared helper means the cached asset vintages disagree — heal it once, silently.
+    if (err instanceof ReferenceError && !sbRetried()) { sbBustAndReload(); return; }
+    renderBootFailure(err);
+  }
 })();
 </script>
 </body>

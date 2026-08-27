@@ -975,5 +975,11 @@ function filterExpr(c) {
   const L = { changePercent: 'Change %', rsi: 'RSI', d52: '% from 52w High', d52_low_pct: '% from 52w Low', indRank: 'Industry rank', mcap: 'Mcap', hist_mcap: 'Hist mcap' };
   return (c.filters || []).map(f => `${L[f.field] || FIELD_LABEL[f.field] || f.field} ${f.op} ${f.val}`).join(' AND ');
 }
-function loadLS(k) { try { return JSON.parse(localStorage.getItem(k) || '[]'); } catch (e) { return []; } }
+// Always hands back an ARRAY. Every one of the ~20 call sites (saved-strategies, strategy-backtest,
+// stock-backtest) goes straight to .map/.filter/.concat/.unshift/.findIndex on the result, so a key
+// holding the WRONG SHAPE — "null", "{}", a bare string: what a half-written or hand-edited entry
+// looks like — used to throw a TypeError deep inside boot() and leave the page blank. A parse
+// failure already fell back to []; a wrong shape now does too. (Checked 2026-08-27: no caller wants
+// a non-array back, so this can only turn a crash into an empty list.)
+function loadLS(k) { try { const v = JSON.parse(localStorage.getItem(k) || '[]'); return Array.isArray(v) ? v : []; } catch (e) { return []; } }
 function saveLS(k, v) { try { localStorage.setItem(k, JSON.stringify(v)); } catch (e) {} }
