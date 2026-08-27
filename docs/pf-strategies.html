@@ -239,6 +239,10 @@ $('btnLoadAll').onclick = async () => {
 
 /* ---------- Zerodha plumbing (shares the portfolio page's localStorage on this origin) ---------- */
 const Z = { connected: false, user: null, held: new Set() };
+/* Zerodha's SEBI static-IP rule (Apr-2026) rejects API order placement from a non-whitelisted IP —
+   our Cloudflare worker has no static IP, so direct /order can't work here; the Kite basket popup
+   (you confirm on Zerodha's page) has no such requirement. Detect that reject and fall back. */
+function ipBlocked(msg){ return /no ips|static ip|whitelist|allowed ip/i.test(msg || ''); }
 const zWorker = () => { try { return (localStorage.getItem('pf_kite_worker') || '').replace(/\/+$/, ''); } catch(e){ return ''; } };
 const zToken  = () => { try { return localStorage.getItem('pf_token') || ''; } catch(e){ return ''; } };
 async function zFetch(path, opts){
@@ -450,13 +454,24 @@ async function zbPlaceAll(){
   if (b.dataset.arm !== '1'){ b.dataset.arm = '1';
     b.textContent = 'Confirm ' + orders.length + ' BUY orders ≈ ' + zinr(est) + ' ?';
     clearTimeout(ZB.t); ZB.t = setTimeout(zbArmReset, 8000); return; }
-  b.dataset.arm = ''; b.disabled = true; b.textContent = 'Placing…';
+  b.dataset.arm = '';
+  if (Z.directBlocked){ if (kiteSend(orders)) $('zbWrap').classList.remove('open'); return; }
+  b.disabled = true; b.textContent = 'Placing…';
+  let bailed = false;
   for (const o of orders){
     const r = ZB.rows.find(x => x.sym === o.tradingsymbol); r.st = '…'; zbRender();
     const { st, j } = await zFetch('/order', { method:'POST', headers:{ 'Content-Type':'application/json' }, body: JSON.stringify(o) });
+    const msg = (j && j.message) || ('HTTP ' + st);
     if (st === 200 && j && j.data && j.data.order_id){ r.st = 'sent'; r.oid = j.data.order_id; }
-    else { r.st = 'fail'; r.msg = (j && j.message) || ('HTTP ' + st); }
+    else if (ipBlocked(msg) || st === 0){ Z.directBlocked = true; bailed = true; r.st = ''; break; }   // static-IP reject: stop, use the popup
+    else { r.st = 'fail'; r.msg = msg; }
     zbRender();
+  }
+  b.disabled = false; b.textContent = 'Place all ▸';
+  if (bailed){
+    ZB.rows.forEach(r => { if (r.st === '…') r.st = ''; }); zbRender();
+    ktoast('Direct API orders need a whitelisted static IP — opening the Zerodha basket to confirm instead…', 5500);
+    kiteSend(orders); return;
   }
   await new Promise(r => setTimeout(r, 1800));
   const o = await zFetch('/orders'), list = (o.j && o.j.data) || [];
