@@ -102,6 +102,8 @@
           <option value="name">Name A–Z</option>
           <option value="n">Most stocks</option>
           <option value="mcap">Market cap</option>
+          <option value="pe">Median P/E ▲</option>
+          <option value="peD">Median P/E ▼</option>
         </select>
       </label>
       <button id="csv" class="ml-auto px-2.5 py-1 rounded-lg border border-slate-300 text-slate-600 hover:bg-slate-100 font-semibold">⬇ CSV</button>
@@ -188,7 +190,7 @@ function periodStart(){
 
 /* ---- stats for a group over the window ---- */
 function groupStats(members,startOff,endOff){
-  let wsum=0,wret=0,up=0,down=0,n=0,mcapSum=0; const mem=[];
+  let wsum=0,wret=0,up=0,down=0,n=0,mcapSum=0; const mem=[],peV=[];
   for(const t of members){
     const p1=priceAt(t,endOff), p0=priceAt(t,startOff);
     if(p0==null||p1==null||p0<=0)continue;
@@ -197,9 +199,13 @@ function groupStats(members,startOff,endOff){
     const w=ST.weight==='mcap'?mc:1;
     if(ST.weight==='mcap'&&w<=0)continue;
     wsum+=w; wret+=w*r; if(r>=0)up++;else down++; n++; mcapSum+=mc;
-    mem.push({t,r,p1,mc,name:(META[t]&&META[t].name)||t});
+    const pe=peOf(t); if(pe!=null&&pe>0)peV.push(pe);
+    mem.push({t,r,p1,mc,pe,name:(META[t]&&META[t].name)||t});
   }
-  return { ret:wsum>0?wret/wsum:null, up,down,n,mcapSum, mem };
+  // MEDIAN, not mean: a cross-section of valuations has a long right tail (one 400x name would
+  // drag a mean into nonsense), and the median is the number a screener actually quotes.
+  // peN travels with it — a median over 54 of 113 members is a different claim from one over all.
+  return { ret:wsum>0?wret/wsum:null, up,down,n,mcapSum, mem, peMed:medianOf(peV), peN:peV.length };
 }
 
 /* ---- index series (sampled, rebased to 100) + benchmark ---- */
@@ -264,6 +270,10 @@ function filterSort(){
   if(s==='name')r.sort((a,b)=>a.name.localeCompare(b.name));
   else if(s==='n')r.sort((a,b)=>b.n-a.n);
   else if(s==='mcap')r.sort((a,b)=>b.mcapSum-a.mcapSum);
+  // an index with no priced member sinks either way — "no P/E on file" is not "the cheapest"
+  else if(s==='pe'||s==='peD'){ const d=s==='pe'?1:-1;
+    r.sort((a,b)=>{ if(a.peMed==null&&b.peMed==null)return 0; if(a.peMed==null)return 1; if(b.peMed==null)return -1;
+      return (a.peMed-b.peMed)*d; }); }
   else if(s==='retA')r.sort((a,b)=>(a.ret==null?1e9:a.ret)-(b.ret==null?1e9:b.ret));
   else r.sort((a,b)=>(b.ret==null?-1e9:b.ret)-(a.ret==null?-1e9:a.ret));
   if(ST.mover==='top')r=r.slice(0,20);
@@ -293,7 +303,7 @@ function card(row){
     <div class="flex items-start justify-between gap-2">
       <div class="min-w-0">
         <div class="font-bold text-slate-900 text-[15px] leading-tight truncate" title="${esc(row.name)}">${esc(row.name)}</div>
-        <div class="text-[11px] text-slate-400 mt-0.5">${row.n} stock${row.n!==1?'s':''} · ${fmtCr(row.mcapSum)}</div>
+        <div class="text-[11px] text-slate-400 mt-0.5"${row.peMed!=null?` title="Median P/E (TTM) of the ${row.peN} of ${row.n} members with four contiguous quarters of profit on file"`:''}>${row.n} stock${row.n!==1?'s':''} · ${fmtCr(row.mcapSum)}${row.peMed!=null?` · P/E ${row.peMed.toFixed(1)} <span class="text-slate-300">(${row.peN})</span>`:''}</div>
       </div>
       <div class="text-right shrink-0">
         <div class="text-lg font-extrabold ${clsPN(row.ret)}">${fmtPct(row.ret)}</div>
@@ -455,11 +465,10 @@ async function openDetail(name){
     m.pe=peOf(m.t);
   });
   PEER={mem:st.mem, pers:STOCK_PERS, per:ST.period, sort:{k:'r',dir:-1}};
-  const peVals=st.mem.map(m=>m.pe).filter(v=>v!=null&&v>0);
-  const medPE=medianOf(peVals);
-  // Coverage is stated, never implied: a median over 84 of 113 members is a different claim from a
+  // Coverage is stated, never implied: a median over 54 of 113 members is a different claim from a
   // median over all of them, and the gap is real (no contiguous TTM, loss-makers, BSE-only lines).
-  const peBit=medPE==null?'' : ` · median P/E <b>${medPE.toFixed(1)}</b> <span class="text-slate-400">(${peVals.length} of ${st.n})</span>`;
+  // Same peMed the card behind this modal shows — groupStats computes it once.
+  const peBit=st.peMed==null?'' : ` · median P/E <b>${st.peMed.toFixed(1)}</b> <span class="text-slate-400">(${st.peN} of ${st.n})</span>`;
   $('modalCard').innerHTML=`
     <div class="p-4 border-b border-slate-200 flex items-start justify-between gap-3">
       <div>
@@ -623,8 +632,8 @@ $('search').oninput=e=>{ ST.q=e.target.value.trim(); renderGrid(); };
 $('sort').onchange=e=>{ ST.sort=e.target.value; renderGrid(); };
 $('csv').onclick=()=>{
   const r=filterSort();
-  const head=['Index','Stocks','Return_'+ST.period+'_%','Advancing','Declining','MarketCap_Cr'];
-  const lines=[head.join(',')].concat(r.map(x=>[`"${x.name.replace(/"/g,'""')}"`,x.n,x.ret==null?'':x.ret.toFixed(2),x.up,x.down,Math.round(x.mcapSum)].join(',')));
+  const head=['Index','Stocks','Return_'+ST.period+'_%','Advancing','Declining','MarketCap_Cr','MedianPE_TTM','PE_Members'];
+  const lines=[head.join(',')].concat(r.map(x=>[`"${x.name.replace(/"/g,'""')}"`,x.n,x.ret==null?'':x.ret.toFixed(2),x.up,x.down,Math.round(x.mcapSum),x.peMed==null?'':x.peMed.toFixed(1),x.peN].join(',')));
   const blob=new Blob([lines.join('\n')],{type:'text/csv'}); const a=document.createElement('a');
   a.href=URL.createObjectURL(blob); a.download='stocksworld_'+ST.level+'_'+ST.period+'.csv'; a.click();
 };
@@ -634,10 +643,14 @@ async function gunzipJSON(url){ const buf=await(await fetch(url)).arrayBuffer();
 (async function boot(){
   try{
     $('ovT').textContent='Loading market data…';
+    // P/E joins the boot fetch now that every CARD carries a median, not just the detail modal.
+    // 14 KB gzipped against dash_slim's megabytes, in parallel — it lands long before the prices do,
+    // and ensurePE() never rejects, so a missing feed costs the cards their P/E and nothing else.
     const [slim,cls,nifty]=await Promise.all([
       gunzipJSON('./dash_slim.bin'),
       fetch('./sector_classification.json').then(r=>r.json()),
       fetch('./nifty.json').then(r=>r.json()).catch(()=>({px:{}})),
+      ensurePE(),
     ]);
     START_TS=slim.startTs; META=slim.meta; SERIES=slim.series; IDXH=slim.indicesHistory||{}; CLS=cls;
     EARLIEST=slim.recentCutoffOff||0;
