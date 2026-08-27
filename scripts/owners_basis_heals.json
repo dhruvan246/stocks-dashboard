@@ -11,7 +11,8 @@
   "2026-08-26 (runbook §116): 53 cells across COX&KINGS / S&SPOWER / SURANAT&P whose con slot held the TOTAL. Read from each quarter's OWN consolidated XBRL: owners + NCI == total closes on 59 of 61 filings (the 2 misses are the filer's own arithmetic, Rs51k and Rs91k). 16 were exposed by the HTML-escaped phantom keys retracted in §114 -- the phantom's reader had taken the owners tag and OURS had taken the total, so the phantom was RIGHT on those and the live store was wrong. The other 37 are the rest of the same series: healing only the disagreeing cells would leave a MIXED-basis series, which breaks YoY/TTM worse than a uniformly wrong one. NOT healed: 24 cells (IL&FSENGG x23, S&SPOWER Mar-2019) where the filer tags owners=0 AND NCI=0 with the real number only in the total -- there the stored total IS correct and the phantom's 0.0 was the defect. None of these symbols is in _reattr_owners.json, which is why apply_owners_full never re-attributed them; 1,417 symbols / 18,175 con cells share that exposure and are NOT swept here.",
   "2026-08-26 §116c SCREEN: ran the owners-vs-total check over ALL 60,768 con cells in sf_fundamentals against their own cached consolidated XBRL (38,668 filings indexed). 52 further cells healed total->owners, on top of the 53 from §116. THE GATE IS THE IDENTITY, not the comparison: 872 cells store the total while the owners tag differs, but only these reconcile as owners+NCI==total. The other 762 are REFUSED and NOT healed -- 302 have NCI=0 (so owners MUST equal total; the owners TAG is wrong and the store is right), 24 are sign flips, 13 are filer power-of-ten scale errors, and 460 have a real NCI that still does not reconcile and need per-cell documents. Also measured: coverage in _reattr_owners.json is per-CELL not per-SYMBOL -- 864 of 869 defect cells sit in symbols the cache covers but quarters it does not.",
   "2026-08-27 §116e: 48 more cells healed total->owners, resolving part of the 460-cell §116d residue that the XBRL identity could NOT close. Each was read from the company's OWN BSE-filed consolidated result PDF (owners_total_verify.py): the filing's profit-attribution block gives owners + NCI == ProfitLossForPeriod EXACTLY (<=0.02cr), the column pinned by total==stored. Gate beyond §116d: an EXPLICIT profit-total row is required (a reconstructed owners+nci total can be the Total-Comprehensive-Income attribution, off by OCI -- that dropped MANINFRA/JAYAGROGN 0.05-0.08cr). 34 symbols incl. ADANIENT 20210331 332.53->233.95 (NCI 98.58), CHOLAHLDNG 20200331 79.57->39.91 (the exact cell §116d named unresolvable via XBRL), INDHOTEL/LUPIN/TECHM/RAIN/JINDALSAW. Deferred: the ~324 cells whose BSE P&L is a SCANNED image (free OCR mis-reads the owners line) and the older 'profit for period / less NCI / profit after NCI' format (GOLDIAM class) -- need vision or extractor work.",
-  "2026-08-27 §116e-vision: 8 more cells from SCANNED-image filings the text pass could not read, read by vision from the rendered consolidated P&L page and gated identically (owners+NCI==total exactly, total==stored). JINDALSTEL 20201231 2566.68->2254.66 (owners=continuing+discontinuing attribution, 312cr), LLOYDSENT 20251231 37.93->-7.86 (owners LOSS, minority took the profit), WAAREEENER 20251231 1106.79->1062.46, ADANIPORTS 20250630 3310.60->3314.59, KANORICHEM x4 (row cleared). NOTE: several high-proxy scanned cells were REFUSED as a DIFFERENT defect class -- their stored value does not match the filing total at all (ADANIENT 20250331 stored 1382.17 vs filed total 4014.90/owners 3844.91; AARTIIND 20210331 stored 692.34 vs 139.34; RAYMOND 20211231 stored 266.67 vs 101.07) -- flagged for separate investigation, NOT owners-vs-total."
+  "2026-08-27 §116e-vision: 8 more cells from SCANNED-image filings the text pass could not read, read by vision from the rendered consolidated P&L page and gated identically (owners+NCI==total exactly, total==stored). JINDALSTEL 20201231 2566.68->2254.66 (owners=continuing+discontinuing attribution, 312cr), LLOYDSENT 20251231 37.93->-7.86 (owners LOSS, minority took the profit), WAAREEENER 20251231 1106.79->1062.46, ADANIPORTS 20250630 3310.60->3314.59, KANORICHEM x4 (row cleared). NOTE: several high-proxy scanned cells were REFUSED as a DIFFERENT defect class -- their stored value does not match the filing total at all (ADANIENT 20250331 stored 1382.17 vs filed total 4014.90/owners 3844.91; AARTIIND 20210331 stored 692.34 vs 139.34; RAYMOND 20211231 stored 266.67 vs 101.07) -- flagged for separate investigation, NOT owners-vs-total.",
+  "2026-08-27 §116e Nifty-500 pass: worked the 88 unhealed 460-residue cells in current Nifty-500 members. 45 healed (1 text + 44 vision from scanned filings via render_pl.py): BIOCON x3 (Syngene NCI, ~30cr), NAVA 338.99->298.61 (Zambia power), IFCI 20241231 -8.74->-30.66, NMDC x5, BLUESTARCO x7 (row cleared), KANORICHEM x4 (row cleared), NCC, GPIL, WOCKPHARMA x2, ZENTEC x3, PIDILITIND x2, POLYCAB x2, TIINDIA, ULTRACEMCO... Not healed: NMDC 20240930/INFY/AJANTPHARM/NUVOCO/AFCONS already store owners (no-op); KAYNES x4 have NO NCI (in the residue only via XBRL power-of-ten garbage); ASIANPAINT/KAYNES 20230331 are STORED-VALUE anomalies (stored != filing total, logged in owners_total_stored_anomalies.json); GLENMARK x3/PHOENIXLTD/ONESOURCE/IFCI 20220331/CHOICEIN/PVRINOX/BEML/VBL/HINDCOPPER deferred (complex continuing+discontinuing, restatements, TCI-only, or extract-only pages). ~11 more file image P&Ls the OCR page-finder cannot key (mostly nil/tiny NCI)."
  ],
  "cells": {
   "20MICRONS|20190630|patC": {
@@ -373,6 +374,14 @@
    "src": "own consolidated result PDF (SCANNED), BSE ann 20250805, page 11, read by vision",
    "total_was": 3310.6
   },
+  "AFFLE|20201231|patC": {
+   "found_by": "§116e Nifty-500 pass (vision read of scanned filing), 2026-08-27",
+   "nci": 0.05,
+   "note": "Consolidated P&L: owners 30.64 + NCI 0.05 = 30.68 == stored ProfitLossForPeriod 30.68 (con slot held the TOTAL). total 30.685; owners 30.64. vision, BSE consolidated P&L Q3FY21 (Rs million 306.85 total, owners 306.40).",
+   "owners": 30.64,
+   "src": "vision, BSE consolidated P&L Q3FY21 (Rs million 306.85 total, owners 306.40)",
+   "total_was": 30.68
+  },
   "ANANTRAJ|20231231|patC": {
    "found_by": "§116e per-cell document read of the company's own BSE-filed consolidated result, 2026-08-27",
    "nci": -0.4,
@@ -381,10 +390,26 @@
    "src": "own consolidated result PDF, BSE ann 20240206, 1843ec02-1a20-4ee6-9533-09bfe9e1d671.pdf (page 1)",
    "total_was": 71.43
   },
+  "APOLLOHOSP|20191231|patC": {
+   "found_by": "§116e Nifty-500 pass (vision read of scanned filing), 2026-08-27",
+   "nci": -2.19,
+   "note": "Consolidated P&L: owners 92.14 + NCI -2.19 = 89.95 == stored ProfitLossForPeriod 89.95 (con slot held the TOTAL). total 89.95; owners 92.14 (NCI -2.19). vision, BSE consolidated P&L Q3FY20 (Rs lakhs 8995 total, owners 9214).",
+   "owners": 92.14,
+   "src": "vision, BSE consolidated P&L Q3FY20 (Rs lakhs 8995 total, owners 9214)",
+   "total_was": 89.95
+  },
   "ARIHANTCAP|20260331|patC": {
    "note": "own Mar-2026 filing p5 (lakhs); column anchored on stored Dec-25 5.18 and Mar-25 7.70; FY26 identity 12.70+13.08+5.18+0.50 = 31.46 closes exactly",
    "owners": 0.5,
    "stored_before": 1.28
+  },
+  "ASAHIINDIA|20230630|patC": {
+   "found_by": "§116e Nifty-500 pass (vision read of scanned filing), 2026-08-27",
+   "nci": -1.03,
+   "note": "Consolidated P&L: owners 103.82 + NCI -1.03 = 102.79 == stored ProfitLossForPeriod 102.79 (con slot held the TOTAL). total 102.79; owners 103.82 (NCI -1.03). vision, BSE consolidated P&L Q1FY24 (Rs lakhs 10279 total, owners 10382).",
+   "owners": 103.82,
+   "src": "vision, BSE consolidated P&L Q1FY24 (Rs lakhs 10279 total, owners 10382)",
+   "total_was": 102.79
   },
   "ASHOKA|20180930|patC": {
    "identity": "FY19 annual owners (Year Ended 31-Mar-19) = -3,346.02 lakh = -33.46 cr. Stored FY19 con quarters + this cell: -5.02 (Jun-18) + -2.48 (Sep-18) + -15.72 (Dec-18) + -10.24 (Mar-19) = -33.46 -> closes EXACTLY. Half-year cross-check in the same table: H1FY19 owners -750.17 lakh = -502.40 (Jun-18) + -247.77 (Sep-18) -> exact in lakhs.",
@@ -401,6 +426,14 @@
    "owners": 37.07,
    "src": "own consolidated result PDF, BSE ann 20230524, 4b0a5ab7-a78f-4eec-81d7-264e778683a3.pdf (page 22)",
    "total_was": 34.21
+  },
+  "ATUL|20190630|patC": {
+   "found_by": "§116e Nifty-500 pass (vision read of scanned filing), 2026-08-27",
+   "nci": 1.41,
+   "note": "Consolidated P&L: owners 147.33 + NCI 1.41 = 148.74 == stored ProfitLossForPeriod 148.74 (con slot held the TOTAL). total 148.74; owners 147.33 + NCI 1.41. vision, BSE consolidated P&L Q1FY20 (row 07).",
+   "owners": 147.33,
+   "src": "vision, BSE consolidated P&L Q1FY20 (row 07)",
+   "total_was": 148.74
   },
   "ATUL|20200630|patC": {
    "nci": 0.16,
@@ -545,6 +578,14 @@
    "owners": 801.58,
    "src": "own consolidated result PDF, BSE ann 20210531, 6041cff3-6bc0-4758-92c1-e7528c3b98eb.pdf (page 9)",
    "total_was": 801.18
+  },
+  "AUROPHARMA|20211231|patC": {
+   "found_by": "§116e Nifty-500 pass (vision read of scanned filing), 2026-08-27",
+   "nci": -0.44,
+   "note": "Consolidated P&L: owners 604.73 + NCI -0.44 = 604.29 == stored ProfitLossForPeriod 604.29 (con slot held the TOTAL). total 604.29; owners 604.73 (NCI -0.44). vision, BSE consolidated P&L Q3FY22 (Rs lakhs 60429 total, owners 60473).",
+   "owners": 604.73,
+   "src": "vision, BSE consolidated P&L Q3FY22 (Rs lakhs 60429 total, owners 60473)",
+   "total_was": 604.29
   },
   "AVONMORE|20230630|patC": {
    "found_by": "§116e per-cell document read of the company's own BSE-filed consolidated result, 2026-08-27",
@@ -740,6 +781,38 @@
    "stored_before": 161.81,
    "when": "2026-08-17 20:27 IST"
   },
+  "BIOCON|20190331|patC": {
+   "found_by": "§116e Nifty-500 pass (vision read of scanned filing), 2026-08-27",
+   "nci": 29.7,
+   "note": "Consolidated P&L: owners 213.7 + NCI 29.7 = 243.4 == stored ProfitLossForPeriod 243.4 (con slot held the TOTAL). stored=profit before NCI 243.4; owners row11 213.7. vision, BSE ann May-2019 consolidated P&L (Q4FY19 col, Rs million 2434/297/2137).",
+   "owners": 213.7,
+   "src": "vision, BSE ann May-2019 consolidated P&L (Q4FY19 col, Rs million 2434/297/2137)",
+   "total_was": 243.4
+  },
+  "BIOCON|20190930|patC": {
+   "found_by": "§116e Nifty-500 pass (vision read of scanned filing), 2026-08-27",
+   "nci": 38.1,
+   "note": "Consolidated P&L: owners 215.7 + NCI 38.1 = 253.8 == stored ProfitLossForPeriod 253.8 (con slot held the TOTAL). total 253.8; owners row11 215.7. vision, BSE ann Jan-2020 consolidated P&L (Q2FY20 col, Rs million 2538/381/2157).",
+   "owners": 215.7,
+   "src": "vision, BSE ann Jan-2020 consolidated P&L (Q2FY20 col, Rs million 2538/381/2157)",
+   "total_was": 253.8
+  },
+  "BIOCON|20191231|patC": {
+   "found_by": "§116e Nifty-500 pass (vision read of scanned filing), 2026-08-27",
+   "nci": 27.5,
+   "note": "Consolidated P&L: owners 202.8 + NCI 27.5 = 230.3 == stored ProfitLossForPeriod 230.3 (con slot held the TOTAL). stored=profit before NCI 230.3; owners row11 202.8. vision, BSE ann Jan-2020 consolidated P&L (Q3FY20 col, Rs million 2303/275/2028).",
+   "owners": 202.8,
+   "src": "vision, BSE ann Jan-2020 consolidated P&L (Q3FY20 col, Rs million 2303/275/2028)",
+   "total_was": 230.3
+  },
+  "BLS|20190331|patC": {
+   "found_by": "§116e Nifty-500 pass (vision read of scanned filing), 2026-08-27",
+   "nci": -0.15,
+   "note": "Consolidated P&L: owners 16.82 + NCI -0.15 = 16.67 == stored ProfitLossForPeriod 16.67 (con slot held the TOTAL). total 16.67; owners 16.82 (NCI -0.15). vision, BSE consolidated P&L Q4FY19 (Rs lakhs 1666.92 total, owners 1681.75).",
+   "owners": 16.82,
+   "src": "vision, BSE consolidated P&L Q4FY19 (Rs lakhs 1666.92 total, owners 1681.75)",
+   "total_was": 16.67
+  },
   "BLUESTARCO|20180930|patC": {
    "identity": "REQUIRED companion to the Dec-18 heal: the printed 9M FY19 owners subtotal closes only with this — 91.58 + 19.55 + (-0.94) = 110.19 == printed.",
    "note": "two filings print the same owners figure; the stored 19.66 is the pre-NCI period line",
@@ -755,6 +828,62 @@
    "source": "BLUE STAR 'Unaudited Consolidated Financial Results for the quarter and nine months ended December 31, 2018' - the quarter's OWN filing (NSE filingDate 12-Feb-2019 13:32, which is exactly the stored conAnnDate) p9, column 'Quarter Ended 31.12.18'",
    "stored_before": 0.0,
    "when": "2026-08-17 21:07 IST"
+  },
+  "BLUESTARCO|20190930|patC": {
+   "found_by": "§116e Nifty-500 pass (vision read of scanned filing), 2026-08-27",
+   "nci": 0.15,
+   "note": "Consolidated P&L: owners 37.94 + NCI 0.15 = 38.09 == stored ProfitLossForPeriod 38.09 (con slot held the TOTAL). total 38.09; owners row9 37.94. vision, BSE ann Jan-2020 consolidated P&L (Q2FY20 col).",
+   "owners": 37.94,
+   "src": "vision, BSE ann Jan-2020 consolidated P&L (Q2FY20 col)",
+   "total_was": 38.09
+  },
+  "BLUESTARCO|20191231|patC": {
+   "found_by": "§116e Nifty-500 pass (vision read of scanned filing), 2026-08-27",
+   "nci": 0.17,
+   "note": "Consolidated P&L: owners 19.58 + NCI 0.17 = 19.75 == stored ProfitLossForPeriod 19.75 (con slot held the TOTAL). stored=NPAT+JV 19.75; owners row9 19.58. vision, BSE ann Jan-2020 consolidated P&L (Q3FY20 col).",
+   "owners": 19.58,
+   "src": "vision, BSE ann Jan-2020 consolidated P&L (Q3FY20 col)",
+   "total_was": 19.75
+  },
+  "BLUESTARCO|20200630|patC": {
+   "found_by": "§116e Nifty-500 pass (vision read of scanned filing), 2026-08-27",
+   "nci": 0.06,
+   "note": "Consolidated P&L: owners -19.66 + NCI 0.06 = -19.6 == stored ProfitLossForPeriod -19.6 (con slot held the TOTAL). total -19.60; owners row10 -19.66. vision, BSE ann 20210804 consolidated P&L p3 (Q1FY21 col).",
+   "owners": -19.66,
+   "src": "vision, BSE ann 20210804 consolidated P&L p3 (Q1FY21 col)",
+   "total_was": -19.6
+  },
+  "BLUESTARCO|20200930|patC": {
+   "found_by": "§116e Nifty-500 pass (vision read of scanned filing), 2026-08-27",
+   "nci": 0.08,
+   "note": "Consolidated P&L: owners 15.32 + NCI 0.08 = 15.4 == stored ProfitLossForPeriod 15.4 (con slot held the TOTAL). total 15.40; owners row9 15.32. vision, BSE ann Jan-2021 consolidated P&L (Q2FY21 col).",
+   "owners": 15.32,
+   "src": "vision, BSE ann Jan-2021 consolidated P&L (Q2FY21 col)",
+   "total_was": 15.4
+  },
+  "BLUESTARCO|20201231|patC": {
+   "found_by": "§116e Nifty-500 pass (vision read of scanned filing), 2026-08-27",
+   "nci": 0.05,
+   "note": "Consolidated P&L: owners 36.72 + NCI 0.05 = 36.77 == stored ProfitLossForPeriod 36.77 (con slot held the TOTAL). stored=NPAT+JV 36.77; owners row9 36.72. vision, BSE ann Jan-2021 consolidated P&L (Q3FY21 col).",
+   "owners": 36.72,
+   "src": "vision, BSE ann Jan-2021 consolidated P&L (Q3FY21 col)",
+   "total_was": 36.77
+  },
+  "BLUESTARCO|20210331|patC": {
+   "found_by": "§116e Nifty-500 pass (vision read of scanned filing), 2026-08-27",
+   "nci": 0.12,
+   "note": "Consolidated P&L: owners 67.97 + NCI 0.12 = 68.09 == stored ProfitLossForPeriod 68.09 (con slot held the TOTAL). total 68.09; owners row10 67.97. vision, BSE ann 20210804 consolidated P&L p3 (Q4FY21 col).",
+   "owners": 67.97,
+   "src": "vision, BSE ann 20210804 consolidated P&L p3 (Q4FY21 col)",
+   "total_was": 68.09
+  },
+  "BLUESTARCO|20210630|patC": {
+   "found_by": "§116e Nifty-500 pass (vision read of scanned filing), 2026-08-27",
+   "nci": 0.02,
+   "note": "Consolidated P&L: owners 12.69 + NCI 0.02 = 12.71 == stored ProfitLossForPeriod 12.71 (con slot held the TOTAL). stored=NPAT+JV total 12.71; owners row10 12.69. vision, BSE ann 20210804 consolidated P&L p3 (Q1FY22 col).",
+   "owners": 12.69,
+   "src": "vision, BSE ann 20210804 consolidated P&L p3 (Q1FY22 col)",
+   "total_was": 12.71
   },
   "BOMDYEING|20190331|patC": {
    "identity": "FY19 consolidated owners (Year Ended March 31 2019) = 1,241.72 cr. Stored FY19 con quarters + this cell: -93.70 (Jun-18) + 324.51 (Sep-18) + -190.15 (Dec-18) + 1,201.06 (Mar-19) = 1,241.72 -> closes EXACTLY to the paisa. That 1,241.72 is independently printed in TWO filings: the FY19 audited results (filed 2019-05-09) and the FY20 comparative (filed 2020-06-10), so it was never restated. FY20 check: 27.65 + 89.20 + 162.42 + 48.57 = 327.84 vs printed 327.83, a 1-paisa artefact of rounding each quarter to 2dp.",
@@ -803,6 +932,14 @@
    "source": "CENTURY PLYBOARDS (INDIA) Q4FY20 'Statement of Audited Consolidated Financial Results ... 31st March 2020' (NSE filingDate 26-Jun-2020 18:16) p11, column 'Quarter Ended 31.03.2019 (Audited) (refer note 10)'",
    "stored_before": null,
    "when": "2026-08-17 21:03 IST"
+  },
+  "CESC|20190930|patC": {
+   "found_by": "§116e Nifty-500 pass (vision read of scanned filing), 2026-08-27",
+   "nci": 2.0,
+   "note": "Consolidated P&L: owners 364.0 + NCI 2.0 = 366.0 == stored ProfitLossForPeriod 366.0 (con slot held the TOTAL). total 366; owners 364 + NCI 2. vision, BSE consolidated P&L Q2FY20 (whole cr).",
+   "owners": 364.0,
+   "src": "vision, BSE consolidated P&L Q2FY20 (whole cr)",
+   "total_was": 366.0
   },
   "CGPOWER|20250930|patC": {
    "found_by": "§116e per-cell document read of the company's own BSE-filed consolidated result, 2026-08-27",
@@ -1030,6 +1167,30 @@
    "period": 214.072,
    "stored_before": 410.47
   },
+  "DLF|20180331|patC": {
+   "found_by": "§116e Nifty-500 pass (text-layer), 2026-08-27",
+   "nci": -4.47,
+   "note": "Consolidated P&L: owners 247.73 + NCI -4.47 = 243.26 == stored ProfitLossForPeriod 243.26 (con slot held the TOTAL). owners 247.73 + NCI -4.47 = 243.26. text-layer, BSE consolidated result Q4FY18.",
+   "owners": 247.73,
+   "src": "text-layer, BSE consolidated result Q4FY18",
+   "total_was": 243.26
+  },
+  "ECLERX|20180930|patC": {
+   "found_by": "§116e Nifty-500 pass (vision read of scanned filing), 2026-08-27",
+   "nci": 0.08,
+   "note": "Consolidated P&L: owners 69.95 + NCI 0.08 = 70.03 == stored ProfitLossForPeriod 70.03 (con slot held the TOTAL). total 70.03; owners 69.95. vision, BSE consolidated P&L Q2FY19 (Rs million 700.29 total, owners 699.50).",
+   "owners": 69.95,
+   "src": "vision, BSE consolidated P&L Q2FY19 (Rs million 700.29 total, owners 699.50)",
+   "total_was": 70.03
+  },
+  "ECLERX|20240930|patC": {
+   "found_by": "§116e Nifty-500 pass (vision read of scanned filing), 2026-08-27",
+   "nci": -0.75,
+   "note": "Consolidated P&L: owners 140.25 + NCI -0.75 = 139.5 == stored ProfitLossForPeriod 139.5 (con slot held the TOTAL). total 139.5; owners 140.25 (NCI -0.75). vision, BSE consolidated P&L Q2FY25 (Rs million 1394.98 total, owners 1402.48).",
+   "owners": 140.25,
+   "src": "vision, BSE consolidated P&L Q2FY25 (Rs million 1394.98 total, owners 1402.48)",
+   "total_was": 139.5
+  },
   "ESCORTS|20180630|patC": {
    "identity": "H1 FY19 owners: Jun-18 121.26 (printed) + Sep-18 101.51 (stored, printed in Q2FY20) = 222.77 == the printed 'six months ended 30-09-2018' owners column in Q2FY20 p9 - EXACT to the paisa, re-verified by my own vision read this session (not inherited from batch C). In-table attribution: owners 121.26 + NCI (0.19) = 121.07 == printed 'Net profit for the period' EXACT. EPS pin: Escorts' consolidated EPS uses ~8.582 cr weighted shares (group excludes Escorts Benefit Trust holding); printed con EPS (disc+cont) Jun-18 14.13 x 8.582 = 121.26 EXACT, and the same share count reproduces Mar-19 (116.70/13.60) and FY19 (478.93/55.82) - three columns, one consistent share base, pinning both the column mapping and the owners row.",
    "note": "printed comparative; owners of the parent 121.26, NCI (0.19), net profit for the period 121.07. NOTE THE NSE ROW IS MISLABELLED: the 'toDate 20180630 Consolidated Audited' row's attachment is the Q1FY20 results bundle (statement + review + the 27-Jul-2019 investor annexure), NOT a standalone Jun-2018 filing - the Jun-2018 consolidated figures exist only as its comparative column (note 3 = management-prepared, unreviewed). ann = 20190912, the NSE filingDate of the document read; the same numbers were in the 27-Jul-2019 BSE annexure (pages 28-31 of the bundle) but the owners row for the Jun-18 column was not verifiable in that annexure's layout, so the conservative later date is used - flagged in refusals_I.json.",
@@ -1246,6 +1407,14 @@
    "src": "own consolidated result PDF, BSE ann 20210628, f020be6a-e2a2-436b-80d2-384e908009e4.pdf (page 8)",
    "total_was": -4.21
   },
+  "FSL|20180331|patC": {
+   "found_by": "§116e Nifty-500 pass (vision read of scanned filing), 2026-08-27",
+   "nci": 0.04,
+   "note": "Consolidated P&L: owners 92.83 + NCI 0.04 = 92.87 == stored ProfitLossForPeriod 92.87 (con slot held the TOTAL). total 92.87; owners 92.83. vision, BSE consolidated P&L Q4FY18 (Rs million 928.68 total, owners 928.25).",
+   "owners": 92.83,
+   "src": "vision, BSE consolidated P&L Q4FY18 (Rs million 928.68 total, owners 928.25)",
+   "total_was": 92.87
+  },
   "GMRP&UI|20220331|patC": {
    "found_by": "§116c screen over all 60,768 con cells, 2026-08-26",
    "nci": -58.43,
@@ -1382,6 +1551,14 @@
    "src": "own consolidated XBRL INTEGRATED_FILING_INDAS_1671087_21052026112958_WEB_xml ctx OneD",
    "total_was": -113.56
   },
+  "GPIL|20210630|patC": {
+   "found_by": "§116e Nifty-500 pass (vision read of scanned filing), 2026-08-27",
+   "nci": 2.38,
+   "note": "Consolidated P&L: owners 434.87 + NCI 2.38 = 437.25 == stored ProfitLossForPeriod 437.25 (con slot held the TOTAL). total profit 437.25; owners 434.87 + NCI 2.38. vision, BSE consolidated P&L Q1FY22 (continuing owners 427.16 + discontinued 7.71).",
+   "owners": 434.87,
+   "src": "vision, BSE consolidated P&L Q1FY22 (continuing owners 427.16 + discontinued 7.71)",
+   "total_was": 437.25
+  },
   "GRINDWELL|20170331|patC": {
    "identity": "Jun-17: owners 3,003 lakhs and total 3,032 are printed IDENTICALLY in both the quarter's own Q1FY18 filing (2017-08-02 p4) and the Q1FY19 comparative — so 30.32 is the total row, not a restatement. Mar-17: owners 3,373 printed in the Q1FY18 filing's audited Mar-17 column against the stored total 3,418.",
    "note": "its own Q4FY17 filing was NOT read this session, so the announce date moves to the filing actually read — later is never look-ahead.",
@@ -1467,6 +1644,14 @@
    "source": "HEG Q3FY21 consolidated statement (NSE filingDate 2021-02-09) p11, column 'Quarter Ended 31-12-2020' (Unaudited)",
    "stored_before": 0.0,
    "when": "2026-08-17 21:07 IST"
+  },
+  "IFCI|20241231|patC": {
+   "found_by": "§116e Nifty-500 pass (vision read of scanned filing), 2026-08-27",
+   "nci": 21.92,
+   "note": "Consolidated P&L: owners -30.66 + NCI 21.92 = -8.74 == stored ProfitLossForPeriod -8.74 (con slot held the TOTAL). total -8.74; owners -30.66 + NCI 21.92 (Stock Holding Corp minority). vision, BSE consolidated P&L Q3FY25 (row 9 total, row 12 owners).",
+   "owners": -30.66,
+   "src": "vision, BSE consolidated P&L Q3FY25 (row 9 total, row 12 owners)",
+   "total_was": -8.74
   },
   "INDHOTEL|20210331|patC": {
    "found_by": "§116e per-cell document read of the company's own BSE-filed consolidated result, 2026-08-27",
@@ -1594,6 +1779,14 @@
    "source": "Akzo Nobel India (now JSWDULUX) Q3FY20 'Statement of Consolidated Unaudited Financial Results ... 31 December 2019' (NSE filingDate 07-Feb-2020 12:49) p7, column 'Quarter ended 31 December 2018'",
    "stored_before": null,
    "when": "2026-08-17 21:03 IST"
+  },
+  "JWL|20250930|patC": {
+   "found_by": "§116e Nifty-500 pass (vision read of scanned filing), 2026-08-27",
+   "nci": -1.23,
+   "note": "Consolidated P&L: owners 46.56 + NCI -1.23 = 45.33 == stored ProfitLossForPeriod 45.33 (con slot held the TOTAL). total 45.33; owners 46.56 (NCI -1.23). vision, BSE consolidated P&L Q2FY26 (Rs lakhs 4532.82 total, owners 4655.93).",
+   "owners": 46.56,
+   "src": "vision, BSE consolidated P&L Q2FY26 (Rs lakhs 4532.82 total, owners 4655.93)",
+   "total_was": 45.33
   },
   "KANORICHEM|20230630|patC": {
    "found_by": "§116e per-cell document read of the company's own BSE-filed consolidated result, 2026-08-27",
@@ -1867,6 +2060,22 @@
    "stored_before": 14.85,
    "when": "2026-08-17 23:49 IST"
   },
+  "LATENTVIEW|20240930|patC": {
+   "found_by": "§116e Nifty-500 pass (vision read of scanned filing), 2026-08-27",
+   "nci": 0.82,
+   "note": "Consolidated P&L: owners 39.89 + NCI 0.82 = 40.7 == stored ProfitLossForPeriod 40.7 (con slot held the TOTAL). total 40.70; owners 39.89. vision, BSE consolidated P&L Q2FY25 (Rs million 407.03 total, owners 398.86).",
+   "owners": 39.89,
+   "src": "vision, BSE consolidated P&L Q2FY25 (Rs million 407.03 total, owners 398.86)",
+   "total_was": 40.7
+  },
+  "LAURUSLABS|20221231|patC": {
+   "found_by": "§116e Nifty-500 pass (vision read of scanned filing), 2026-08-27",
+   "nci": -0.5,
+   "note": "Consolidated P&L: owners 203.04 + NCI -0.5 = 202.54 == stored ProfitLossForPeriod 202.54 (con slot held the TOTAL). total 202.54; owners 203.04 (NCI -0.50). vision, BSE consolidated P&L Q3FY23 (row 7 total, row 10 owners).",
+   "owners": 203.04,
+   "src": "vision, BSE consolidated P&L Q3FY23 (row 7 total, row 10 owners)",
+   "total_was": 202.54
+  },
   "LLOYDSENT|20250930|patC": {
    "found_by": "§116e per-cell document read of the company's own BSE-filed consolidated result, 2026-08-27",
    "nci": 38.38,
@@ -2011,6 +2220,14 @@
    "stored_before": -273.72,
    "when": "2026-08-17 23:56 IST"
   },
+  "NAVA|20220630|patC": {
+   "found_by": "§116e Nifty-500 pass (vision read of scanned filing), 2026-08-27",
+   "nci": 40.38,
+   "note": "Consolidated P&L: owners 298.61 + NCI 40.38 = 338.99 == stored ProfitLossForPeriod 338.99 (con slot held the TOTAL). total 338.99; owners 298.61 + NCI 40.38 (Zambia power minority). vision, BSE consolidated P&L Q1FY23 (Rs lakhs 33899.05 total, owners 29861.14).",
+   "owners": 298.61,
+   "src": "vision, BSE consolidated P&L Q1FY23 (Rs lakhs 33899.05 total, owners 29861.14)",
+   "total_was": 338.99
+  },
   "NAVNETEDUL|20211231|patC": {
    "found_by": "§116e per-cell document read of the company's own BSE-filed consolidated result, 2026-08-27",
    "nci": -0.27,
@@ -2019,11 +2236,67 @@
    "src": "own consolidated result PDF, BSE ann 20220131, 05572ee9-35ac-4c41-944b-3a5e02ab936e.pdf (page 8)",
    "total_was": 70.78
   },
+  "NCC|20200930|patC": {
+   "found_by": "§116e Nifty-500 pass (vision read of scanned filing), 2026-08-27",
+   "nci": 5.1,
+   "note": "Consolidated P&L: owners 64.6 + NCI 5.1 = 69.7 == stored ProfitLossForPeriod 69.7 (con slot held the TOTAL). total 69.70; owners 64.60 + NCI 5.10. vision, BSE consolidated P&L Q2FY21 (row 8 total, owners 64.60).",
+   "owners": 64.6,
+   "src": "vision, BSE consolidated P&L Q2FY21 (row 8 total, owners 64.60)",
+   "total_was": 69.7
+  },
+  "NMDC|20200331|patC": {
+   "found_by": "§116e Nifty-500 pass (vision read of scanned filing), 2026-08-27",
+   "nci": 0.43,
+   "note": "Consolidated P&L: owners 315.39 + NCI 0.43 = 315.82 == stored ProfitLossForPeriod 315.82 (con slot held the TOTAL). stored=total 315.82; owners 315.39 (NCI 0.43). vision, BSE consolidated P&L Q4FY20 (XIII+XIV 315.82, XVI owners 315.39).",
+   "owners": 315.39,
+   "src": "vision, BSE consolidated P&L Q4FY20 (XIII+XIV 315.82, XVI owners 315.39)",
+   "total_was": 315.82
+  },
+  "NMDC|20200930|patC": {
+   "found_by": "§116e Nifty-500 pass (vision read of scanned filing), 2026-08-27",
+   "nci": -0.06,
+   "note": "Consolidated P&L: owners 752.37 + NCI -0.06 = 752.31 == stored ProfitLossForPeriod 752.31 (con slot held the TOTAL). stored=total 752.31; owners 752.37 (NCI -0.06). vision, BSE consolidated P&L Q2FY21 (XIII+XIV 752.31, XVI owners 752.37).",
+   "owners": 752.37,
+   "src": "vision, BSE consolidated P&L Q2FY21 (XIII+XIV 752.31, XVI owners 752.37)",
+   "total_was": 752.31
+  },
+  "NMDC|20220331|patC": {
+   "found_by": "§116e Nifty-500 pass (vision read of scanned filing), 2026-08-27",
+   "nci": -0.16,
+   "note": "Consolidated P&L: owners 1817.45 + NCI -0.16 = 1817.29 == stored ProfitLossForPeriod 1817.29 (con slot held the TOTAL). stored=profit+assoc before NCI 1817.29; owners 1817.45 (NCI -0.16). vision, BSE consolidated P&L Q4FY22 (XIII+XIV total 1817.29, XVI owners 1817.45).",
+   "owners": 1817.45,
+   "src": "vision, BSE consolidated P&L Q4FY22 (XIII+XIV total 1817.29, XVI owners 1817.45)",
+   "total_was": 1817.29
+  },
+  "NMDC|20220930|patC": {
+   "found_by": "§116e Nifty-500 pass (vision read of scanned filing), 2026-08-27",
+   "nci": -0.26,
+   "note": "Consolidated P&L: owners 972.22 + NCI -0.26 = 971.96 == stored ProfitLossForPeriod 971.96 (con slot held the TOTAL). stored=total 971.96; owners 972.22 (NCI -0.26). vision, BSE consolidated P&L Q3FY23 prior-Q col (XIII+XIV 971.96, XVI owners 972.22).",
+   "owners": 972.22,
+   "src": "vision, BSE consolidated P&L Q3FY23 prior-Q col (XIII+XIV 971.96, XVI owners 972.22)",
+   "total_was": 971.96
+  },
+  "NMDC|20221231|patC": {
+   "found_by": "§116e Nifty-500 pass (vision read of scanned filing), 2026-08-27",
+   "nci": 1.44,
+   "note": "Consolidated P&L: owners 912.23 + NCI 1.44 = 913.67 == stored ProfitLossForPeriod 913.67 (con slot held the TOTAL). stored=total before NCI 913.67; owners 912.23 (NCI 1.44). vision, BSE consolidated P&L Q3FY23 (XIII+XIV total 913.67, XVI owners 912.23).",
+   "owners": 912.23,
+   "src": "vision, BSE consolidated P&L Q3FY23 (XIII+XIV total 913.67, XVI owners 912.23)",
+   "total_was": 913.67
+  },
   "NUCLEUS|20251231|patC": {
    "also_npStd": null,
    "note": "screener 21 agrees with the mirror; fund 250.2 vs a 26.8 family median",
    "owners": 20.7,
    "stored_before": 250.2
+  },
+  "OLECTRA|20231231|patC": {
+   "found_by": "§116e Nifty-500 pass (vision read of scanned filing), 2026-08-27",
+   "nci": 0.13,
+   "note": "Consolidated P&L: owners 26.99 + NCI 0.13 = 27.11 == stored ProfitLossForPeriod 27.11 (con slot held the TOTAL). total 27.11; owners 26.99. vision, BSE consolidated P&L Q3FY24 (Rs lakhs 2711.16 total, owners 2698.53).",
+   "owners": 26.99,
+   "src": "vision, BSE consolidated P&L Q3FY24 (Rs lakhs 2711.16 total, owners 2698.53)",
+   "total_was": 27.11
   },
   "OLECTRA|20240930|patC": {
    "found_by": "§116e per-cell document read of the company's own BSE-filed consolidated result, 2026-08-27",
@@ -2054,6 +2327,38 @@
    "note": "screener 4.28 agrees with the mirror; npCon was an exact copy of npStd 0.3",
    "owners": 4.28,
    "stored_before": 0.3
+  },
+  "PIDILITIND|20180930|patC": {
+   "found_by": "§116e Nifty-500 pass (vision read of scanned filing), 2026-08-27",
+   "nci": -0.45,
+   "note": "Consolidated P&L: owners 231.63 + NCI -0.45 = 231.18 == stored ProfitLossForPeriod 231.18 (con slot held the TOTAL). total 231.18; owners 231.63 (NCI -0.45). vision, BSE consolidated P&L Q2FY19 (row 7 total, owners 231.63).",
+   "owners": 231.63,
+   "src": "vision, BSE consolidated P&L Q2FY19 (row 7 total, owners 231.63)",
+   "total_was": 231.18
+  },
+  "PIDILITIND|20181231|patC": {
+   "found_by": "§116e Nifty-500 pass (vision read of scanned filing), 2026-08-27",
+   "nci": 0.09,
+   "note": "Consolidated P&L: owners 219.47 + NCI 0.09 = 219.56 == stored ProfitLossForPeriod 219.56 (con slot held the TOTAL). total 219.56; owners 219.47 (NCI 0.09). vision, BSE consolidated P&L Q3FY19 (row 7 total, owners 219.47).",
+   "owners": 219.47,
+   "src": "vision, BSE consolidated P&L Q3FY19 (row 7 total, owners 219.47)",
+   "total_was": 219.56
+  },
+  "POLYCAB|20191231|patC": {
+   "found_by": "§116e Nifty-500 pass (vision read of scanned filing), 2026-08-27",
+   "nci": 2.62,
+   "note": "Consolidated P&L: owners 218.78 + NCI 2.62 = 221.4 == stored ProfitLossForPeriod 221.4 (con slot held the TOTAL). total 221.40; owners 218.78. vision, BSE consolidated P&L Q3FY20 (Rs million 2214.02 total, owners 2187.80).",
+   "owners": 218.78,
+   "src": "vision, BSE consolidated P&L Q3FY20 (Rs million 2214.02 total, owners 2187.80)",
+   "total_was": 221.4
+  },
+  "POLYCAB|20200930|patC": {
+   "found_by": "§116e Nifty-500 pass (vision read of scanned filing), 2026-08-27",
+   "nci": 1.0,
+   "note": "Consolidated P&L: owners 220.55 + NCI 1.0 = 221.55 == stored ProfitLossForPeriod 221.55 (con slot held the TOTAL). total 221.55; owners 220.55. vision, BSE consolidated P&L Q2FY21 (Rs million 2215.50 total, owners 2205.48).",
+   "owners": 220.55,
+   "src": "vision, BSE consolidated P&L Q2FY21 (Rs million 2215.50 total, owners 2205.48)",
+   "total_was": 221.55
   },
   "POLYCAB|20201231|patC": {
    "found_by": "§116e per-cell document read of the company's own BSE-filed consolidated result, 2026-08-27",
@@ -2570,6 +2875,14 @@
    "src": "own consolidated result PDF (SCANNED), BSE ann 20241113, page 2, read by vision",
    "total_was": 303.78
   },
+  "SONATSOFTW|20180331|patC": {
+   "found_by": "§116e Nifty-500 pass (vision read of scanned filing), 2026-08-27",
+   "nci": -0.56,
+   "note": "Consolidated P&L: owners 54.84 + NCI -0.56 = 54.29 == stored ProfitLossForPeriod 54.29 (con slot held the TOTAL). total 54.29; owners 54.84 (NCI -0.56). vision, BSE consolidated P&L Q4FY18 (Rs lakhs 5428.78 total, owners 5484.43).",
+   "owners": 54.84,
+   "src": "vision, BSE consolidated P&L Q4FY18 (Rs lakhs 5428.78 total, owners 5484.43)",
+   "total_was": 54.29
+  },
   "SUDEEPPHRM|20251231|patC": {
    "found_by": "§116e per-cell document read of the company's own BSE-filed consolidated result, 2026-08-27",
    "nci": 0.24,
@@ -2871,6 +3184,14 @@
    "src": "own consolidated result PDF, BSE ann 20250131, 142d7009-572d-4c13-b3b6-8c23bc85360d.pdf (page 1)",
    "total_was": 76.39
   },
+  "TIINDIA|20180930|patC": {
+   "found_by": "§116e Nifty-500 pass (vision read of scanned filing), 2026-08-27",
+   "nci": 2.99,
+   "note": "Consolidated P&L: owners 63.81 + NCI 2.99 = 66.8 == stored ProfitLossForPeriod 66.8 (con slot held the TOTAL). total 66.80; owners 63.81 + NCI 2.99. vision, BSE consolidated P&L Q2FY19 (row 11 total, owners 63.81).",
+   "owners": 63.81,
+   "src": "vision, BSE consolidated P&L Q2FY19 (row 11 total, owners 63.81)",
+   "total_was": 66.8
+  },
   "TRENT|20220331|patC": {
    "identity": "FY22 consolidated annual owners = 105.83 (printed). Stored con quarters (126.59) + 92.58 + 139.69 plus the healed 0.16 = 105.84, a 1-paisa residue from four independently rounded quarters. The standalone column of the same sheet reproduces stored std exactly for all three quarters shown (Mar-22 74.87, Dec-21 132.89, Mar-21 56.87), confirming the column mapping.",
    "note": "owners 0.16, NCI (21.03), total (20.87). Note the printed consolidated basic EPS for that quarter is 0.00 - a plausible source of the stored 0.0 if an extractor picked the EPS row. ann is unchanged (stored conAnnDate for this cell is already 20220427 and matches the NSE filingDate).",
@@ -3039,6 +3360,22 @@
    "stored_before": 0.0,
    "when": "2026-08-17 23:49 IST"
   },
+  "WOCKPHARMA|20180630|patC": {
+   "found_by": "§116e Nifty-500 pass (vision read of scanned filing), 2026-08-27",
+   "nci": -8.88,
+   "note": "Consolidated P&L: owners -86.18 + NCI -8.88 = -95.06 == stored ProfitLossForPeriod -95.06 (con slot held the TOTAL). stored=PAT before NCI -95.06; owners -86.18 (NCI -8.88). vision, BSE consolidated P&L Q1FY19 (row 7 PAT -95.06, row 10 owners -86.18).",
+   "owners": -86.18,
+   "src": "vision, BSE consolidated P&L Q1FY19 (row 7 PAT -95.06, row 10 owners -86.18)",
+   "total_was": -95.06
+  },
+  "WOCKPHARMA|20181231|patC": {
+   "found_by": "§116e Nifty-500 pass (vision read of scanned filing), 2026-08-27",
+   "nci": -5.75,
+   "note": "Consolidated P&L: owners -71.11 + NCI -5.75 = -76.86 == stored ProfitLossForPeriod -76.86 (con slot held the TOTAL). stored=PAT before NCI -76.86; owners -71.11 (NCI -5.75). vision, BSE consolidated P&L Q3FY19 (row 7 PAT -76.86, row 10 owners -71.11).",
+   "owners": -71.11,
+   "src": "vision, BSE consolidated P&L Q3FY19 (row 7 PAT -76.86, row 10 owners -71.11)",
+   "total_was": -76.86
+  },
   "ZEAL|20260331|patC": {
    "also_npStd": [
     4114.27,
@@ -3056,7 +3393,31 @@
     "owners": 6.53,
     "stored_before": 4114.27
    }
+  },
+  "ZENTEC|20240930|patC": {
+   "found_by": "§116e Nifty-500 pass (vision read of scanned filing), 2026-08-27",
+   "nci": 0.77,
+   "note": "Consolidated P&L: owners 62.67 + NCI 0.77 = 63.44 == stored ProfitLossForPeriod 63.44 (con slot held the TOTAL). total 63.44; owners 62.67. vision, BSE consolidated P&L Q2FY25 (Rs lakhs 6343.57 total, owners 6266.74).",
+   "owners": 62.67,
+   "src": "vision, BSE consolidated P&L Q2FY25 (Rs lakhs 6343.57 total, owners 6266.74)",
+   "total_was": 63.44
+  },
+  "ZENTEC|20250630|patC": {
+   "found_by": "§116e Nifty-500 pass (vision read of scanned filing), 2026-08-27",
+   "nci": 5.32,
+   "note": "Consolidated P&L: owners 47.75 + NCI 5.32 = 53.07 == stored ProfitLossForPeriod 53.07 (con slot held the TOTAL). total 53.07; owners 47.75 + NCI 5.32. vision, BSE consolidated P&L Q1FY26 (Rs lakhs 5307.49 total, owners 4775.26).",
+   "owners": 47.75,
+   "src": "vision, BSE consolidated P&L Q1FY26 (Rs lakhs 5307.49 total, owners 4775.26)",
+   "total_was": 53.07
+  },
+  "ZENTEC|20251231|patC": {
+   "found_by": "§116e Nifty-500 pass (vision read of scanned filing), 2026-08-27",
+   "nci": 0.94,
+   "note": "Consolidated P&L: owners 54.77 + NCI 0.94 = 55.71 == stored ProfitLossForPeriod 55.71 (con slot held the TOTAL). total 55.71; owners 54.77. vision, BSE consolidated P&L Q3FY26 (Rs lakhs 5570.69 total, owners 5476.71).",
+   "owners": 54.77,
+   "src": "vision, BSE consolidated P&L Q3FY26 (Rs lakhs 5570.69 total, owners 5476.71)",
+   "total_was": 55.71
   }
  },
- "generated": "2026-08-27 §116e-vision"
+ "generated": "2026-08-27 §116e-n500"
 }

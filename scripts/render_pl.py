@@ -9,15 +9,34 @@ import os, sys, re, time, datetime, json
 sys.path.insert(0, os.path.dirname(os.path.abspath(__file__)))
 import fitz
 import fetch_insurers as FI
+from owners_total_verify import line_groups, row_numbers, label_of, classify
 
 HERE = os.path.dirname(os.path.abspath(__file__))
 ROOT = os.path.dirname(HERE)
+LOOSE = "--loose" in sys.argv
 scrips = json.load(open(os.path.join(HERE, "bse_scrips.json")))["by_id"]
 fund = json.load(open(os.path.join(ROOT, "docs", "sf_fundamentals.json")))
 
-KW = re.compile(r"non[- ·]?controlling|minorit|attributable|owners of|equity holder", re.I)
 CON = re.compile(r"consolidat", re.I)
-PL = re.compile(r"profit.{0,30}(period|year|after tax|before tax)|total income|comprehensive", re.I)
+ATTR = re.compile(r"attributable|non[- ·]?controlling|minorit|owners of|equity ?holder", re.I)
+PROFIT = re.compile(r"profit.{0,25}(period|year|after tax)|total comprehensive", re.I)
+DEC = re.compile(r"\(?\d[\d,]*\.\d\d")
+
+
+def page_score(txt, loose=False):
+    """A P&L attribution page carries the attribution keywords AND is a DENSE numeric table.
+    The auditor-note page has the same words but in prose (few numbers) — numeric density separates
+    them. Returns (has_attr_and_profit, decimal_number_count)."""
+    if not ATTR.search(txt):
+        # loose fallback: a dense P&L page without the exact keyword (scan may drop 'attributable')
+        if loose and PROFIT.search(txt):
+            dens = len(DEC.findall(txt))
+            return (1, dens) if dens >= 20 else (0, 0)
+        return (0, 0)
+    dens = len(DEC.findall(txt))
+    thr = 6 if loose else 8
+    key = 2 if (PROFIT.search(txt) and dens >= (8 if loose else 12)) else (1 if dens >= thr else 0)
+    return (key, dens)
 
 
 def storedcon(s, q):
@@ -46,23 +65,22 @@ def find_and_render(o, sym, qe, outdir, dpi=230):
             continue
         N = min(len(doc), 45)
         pages_score = []
+        con_state = False
         for p in range(N):
             t = doc[p].get_text()
             if t.strip():
                 txt = t
             else:
                 txt = " ".join(w[4] for w in FI._ocr_words(doc[p]))
-            score = 0
-            if KW.search(txt): score += 2
-            if CON.search(txt): score += 1
-            if PL.search(txt): score += 1
-            # count numeric density (a real P&L table)
-            if len(re.findall(r"\d[\d,]*\.\d\d", txt)) >= 6: score += 1
-            if score >= 3:
-                pages_score.append((score, p))
+            if CON.search(txt):
+                con_state = True
+            key, dens = page_score(txt, loose=LOOSE)
+            if key:
+                conbonus = 1 if ("consolidat" in txt.lower() or con_state) else 0
+                pages_score.append(((key + conbonus, dens), p))
         pages_score.sort(reverse=True)
         rendered = []
-        for score, p in pages_score[:3]:
+        for score, p in pages_score[:(4 if LOOSE else 2)]:
             pix = doc[p].get_pixmap(dpi=dpi)
             fn = os.path.join(outdir, f"{sym}_{qe}_p{p}.png")
             pix.save(fn)
@@ -78,6 +96,8 @@ def main():
     os.makedirs(outdir, exist_ok=True)
     cells = []
     for a in sys.argv[2:]:
+        if a.startswith("--") or "|" not in a:
+            continue
         parts = a.split("|")
         cells.append((parts[0], int(parts[1])))
     o = FI.bse_session(); time.sleep(0.5)
