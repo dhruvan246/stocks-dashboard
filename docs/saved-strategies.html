@@ -82,7 +82,11 @@
     <button data-preset="w2" class="preset px-3 py-1.5 rounded-lg text-xs font-semibold bg-slate-100 text-slate-600 hover:bg-slate-200">🌊 Wave 2 <span class="opacity-60">Mar’23–Sep’24</span></button>
     <button data-preset="w3" class="preset px-3 py-1.5 rounded-lg text-xs font-semibold bg-slate-100 text-slate-600 hover:bg-slate-200">🌊 Wave 3 <span class="opacity-60">Mar’26–date</span></button>
     <button data-preset="cycle" class="preset px-3 py-1.5 rounded-lg text-xs font-semibold bg-slate-100 text-slate-600 hover:bg-slate-200">🔄 Entire cycle <span class="opacity-60">Mar’20–date</span></button>
+    <!-- 📈 Today's topper — the one preset that is NOT a baked window: it ranks every strategy by what
+         it is doing right now, on the basket it actually holds, so it computes on click. -->
+    <button data-preset="live" class="preset px-3 py-1.5 rounded-lg text-xs font-semibold bg-slate-100 text-slate-600 hover:bg-slate-200">📈 Today’s topper <span class="opacity-60">live</span></button>
     <span id="waveSnapInfo" class="text-[11px] text-slate-400 ml-auto"></span>
+    <button id="liveRefresh" class="hidden text-[11px] font-semibold text-indigo-600 hover:underline">↻ Refresh quotes</button>
     <button id="waveUpdate" class="hidden text-[11px] font-semibold text-indigo-600 hover:underline">↻ Update snapshot</button>
   </div>
   <!-- Custom-period compare bar: pick any window, hit Compute → every strategy runs a real backtest over
@@ -104,6 +108,8 @@
        <thead>, so the clickable column headers vanish with it. Same columns, same state. -->
   <div id="sortRow" class="sortrow items-center gap-2 mb-2"></div>
   <div id="list" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4"></div>
+  <!-- shown only under 📈 Today's topper — says exactly what the two live numbers are measured on -->
+  <p id="liveFoot" class="hidden text-[11px] text-slate-400 mt-3 leading-relaxed">Both numbers are measured on the basket each strategy <b>actually holds</b> — the top-N its rule screened at its last month-end rebalance — not on today's screen. <b>Today</b> is the equal-weight move of those stocks from yesterday's close to the live price (Yahoo NSE, ~15-min delay), and reads “—” until quotes arrive; <b>Since reb.</b> runs from their entry prices on the rebalance date. Same maths, same code as the <a href="./all-picks.html" class="text-indigo-600 hover:underline">🎯 All Picks</a> board, where each basket's stocks are listed one by one.</p>
 </main>
 
 <!-- Lightweight "computing" overlay for the custom-period compare (determinate, not a spinner: the
@@ -114,13 +120,13 @@
     <div class="text-2xl mb-1">⏳</div>
     <div id="cOvText" class="text-sm font-semibold text-slate-800">Computing…</div>
     <div class="w-full h-1.5 bg-slate-100 rounded overflow-hidden mt-2.5"><div id="cOvBar" class="h-full bg-indigo-500 transition-all" style="width:0%"></div></div>
-    <div class="text-[11px] text-slate-400 mt-1.5">running a real backtest for each strategy</div>
+    <div id="cOvNote" class="text-[11px] text-slate-400 mt-1.5">running a real backtest for each strategy</div>
   </div>
 </div>
 
 <!-- Year-wise returns, shown while the pointer is over a strategy name. pointer-events:none so it can
      never swallow a click meant for the row underneath. -->
-<div id="yrCard" class="hidden fixed z-50 w-64 card shadow-xl overflow-hidden pointer-events-none" style="left:0;top:0"></div>
+<div id="yrCard" class="hidden fixed z-50 w-72 card shadow-xl overflow-hidden pointer-events-none" style="left:0;top:0"></div>
 
 <!-- Today's Picks modal -->
 <div id="modal" class="hidden fixed inset-0 z-50 bg-slate-900/40 backdrop-blur-sm overflow-y-auto p-3 sm:p-6">
@@ -183,6 +189,7 @@
 </div>
 
 <script src="./backtest-engine.js"></script>
+<script src="./live-perf.js"></script>
 <script>
 'use strict';
 const $ = id => document.getElementById(id);
@@ -343,6 +350,174 @@ function lookupResult(get, c) {
 }
 function waveResult(c) { return lookupResult(k => CUSTOM.get(k), c); }
 
+/* ---------- 📈 Today's topper — the live leaderboard ----------
+ * The fifth Best-return preset, and the only one that isn't a baked window: it ranks every saved
+ * strategy by what it is doing RIGHT NOW. Two numbers per strategy, both measured on the basket it
+ * ACTUALLY HOLDS — the top-N its rule screened at its last month-end rebalance, NOT today's screen:
+ *   Today      — equal-weight move of those stocks from yesterday's close to the live quote
+ *   Since reb. — the same stocks from their entry prices on that rebalance date
+ * The maths is ./live-perf.js, the same file the 🎯 All Picks board runs on, so the two pages can't
+ * report different numbers for one strategy on one day.
+ * Computed on click and never baked: a quote is ~15 minutes old at best and meaningless an hour
+ * later. It needs the engine (ensureEngine — ~80 MB, once a day), which is why it isn't the default
+ * preset: the four wave buttons stay instant. */
+const LIVEPERF = new Map();        // identityKey -> {rebDate, n, day, ret, noData} | {skip}
+const LIVEHELD = new Map();        // identityKey -> its held legs [{sym,tkr,entry,live,ret,day}] — see refreshLivePerf
+let LIVE_DATE = '';                // the screen date the baskets above were formed for
+let LIVE_AT = 0;                   // when the quotes were fetched (ms)
+let LIVE_N = 0;                    // how many stocks actually came back quoted
+let LIVE_BUSY = false, LIVE_ERR = '';
+function liveMode() { return VIEW === 'best' && BEST_WAVE === 'live'; }
+function livePerf(c) { return LIVEPERF.get(identityKey(c)) || null; }
+// The line in the preset row: what these numbers are, and how old.
+function liveStampText() {
+  if (LIVE_ERR) return LIVE_ERR;
+  if (LIVE_BUSY) return 'pricing every strategy’s held basket…';
+  if (!LIVEPERF.size) return 'ranked on the basket each strategy holds — click to compute';
+  const at = new Date(LIVE_AT).toLocaleTimeString('en-IN', { hour: '2-digit', minute: '2-digit' });
+  return LIVE_N ? `🟢 live · ${LIVE_N} quotes at ${at}`
+                : `no live quotes — priced at the ${(typeof SF !== 'undefined' && SF) ? SF.end : 'last'} close`;
+}
+// Apply whichever Best-return preset is selected. A wave loads its baked results into CUSTOM;
+// 📈 Today's topper has none, so it clears that window state — windowMode() stays off and the two
+// live columns take the place of the single Return/CAGR one.
+function applyBestWave() {
+  if (BEST_WAVE === 'live') { CUSTOM.clear(); CUSTOM_WIN = null; return true; }
+  return loadWaveIntoCustom(BEST_WAVE);
+}
+async function computeLivePerf(force) {
+  if (LIVE_BUSY) return;
+  if (LIVEPERF.size && !force) return;            // already priced this visit — ↻ Refresh quotes re-runs it
+  const groups0 = [...buildGroups(strategies()).values()];
+  if (!groups0.length) return;
+  LIVE_BUSY = true; LIVE_ERR = ''; render();
+  try {
+    setComputeUI(true, 'Loading market data…', 0, 'pricing the basket each strategy holds');
+    if (!await ensureEngine()) { LIVE_ERR = 'Couldn’t load market data — try again.'; return; }
+    // Price the membership you're LOOKING AT first, so the visible list fills first (same trick as
+    // computeWindow); a stable sort keeps each partition's order.
+    const groups = groups0.slice();
+    if (UNI !== '*') groups.sort((a, b) => (uniKey(b.rep.cfg) === UNI) - (uniKey(a.rep.cfg) === UNI));
+    // ONE quote fan-out for the union of every strategy's universe — the overlay also splices a
+    // synthetic live bar onto each series, which is what makes priceAt() return the live price.
+    setComputeUI(true, 'Fetching live prices…', 0.04);
+    let live = { n: 0, date: SF.end };
+    try { live = await applyLiveOverlay(groups.map(g => g.rep.cfg), m => setComputeUI(true, m, 0.04)); } catch (e) {}
+    const today = live.date || SF.end;
+    const prog = m => setComputeUI(true, m || 'Loading history…', 0.08);
+    // A yearly strategy's last rebalance can be 12 months back; a rebalance before deepFrom needs the
+    // deep parts, or every basket would come back silently EMPTY (factorsAt has no guard of its own).
+    await ensureHistoryFor(today, prog);
+    lpResetTD();                                  // bars may have just been prepended/appended
+    const rebOf = groups.map(g => lpLastRebalance(g.rep.cfg, today));
+    const earliest = rebOf.filter(Boolean).sort()[0];
+    if (earliest && earliest < today) { await ensureHistoryFor(earliest, prog); lpResetTD(); }
+    const priceOff = dayOff(today);
+    LIVEPERF.clear(); LIVEHELD.clear(); lpResetRows();
+    LIVE_DATE = today;
+    for (let i = 0; i < groups.length; i++) {
+      const cfg = groups[i].rep.cfg, k = identityKey(cfg);
+      setComputeUI(true, `Pricing baskets… ${i + 1}/${groups.length}`, 0.1 + 0.9 * (i / groups.length));
+      await lpYield();                             // yield: the screen below is synchronous and blocking
+                                                    // (lpYield, not setTimeout — a hidden tab throttles timers to ~1/min)
+      // An unbounded universe — or an index we hold no membership snapshot for — would screen all
+      // ~4,400 stocks with every factor family on: minutes per strategy. All Picks skips those too.
+      if (!cfg.indexName || !membersAsOf(cfg.indexName, today)) { LIVEPERF.set(k, { skip: 'universe' }); continue; }
+      if (!rebOf[i]) { LIVEPERF.set(k, { skip: 'notstarted' }); continue; }
+      const rebDate = isoOff(lpSnapTD(dayOff(rebOf[i])));   // a month-end can be a weekend/holiday
+      let heldRows;
+      try { heldRows = lpBasketAt(cfg, rebDate, cfg.topN || 5); }
+      catch (e) { LIVEPERF.set(k, { skip: 'error' }); continue; }
+      const held = heldRows.map(r => lpPriceHold({ sym: r.sym, tkr: r.tkr, entry: r.price }, priceOff, null, true));
+      LIVEHELD.set(k, held);                       // fixed until the next rebalance — see refreshLivePerf
+      // noData is read off the RAW basketAt array — .map() returns a NEW array, which drops the flag.
+      LIVEPERF.set(k, { rebDate, n: held.length, noData: !!heldRows.noData,
+                        day: lpAvg(held, 'day'), ret: lpAvg(held, 'ret') });
+      if (i % 5 === 4) render();                   // stream the leaderboard in as it fills
+    }
+    // `quoted` = quotes that came back; `n` = series that got a synthetic bar spliced on, which is 0
+    // when the daily bin already covers today. Report the quotes — that's what the stamp claims.
+    LIVE_AT = Date.now(); LIVE_N = live.quoted != null ? live.quoted : (live.n || 0);
+  } finally {
+    LIVE_BUSY = false;
+    setComputeUI(false, null, 1);                  // null = leave the Custom tab's own hint text alone
+    render();
+  }
+}
+/* ↻ Refresh quotes. A strategy's basket is FIXED between rebalances, so a refresh needs new quotes
+   and arithmetic — never the minute-long re-screen. It falls back to the full path whenever the
+   stored baskets can't be trusted: no engine yet, nothing priced, the saved list changed under us
+   (a strategy added or deleted has a basket we've never screened), or the screen date has rolled
+   over — past a month-end that moves every monthly strategy's anchor to a NEW basket. */
+async function refreshLivePerf() {
+  if (LIVE_BUSY) return;
+  if (!ENGINE_READY || !LIVEPERF.size) return computeLivePerf(true);
+  const cfgs = [...buildGroups(strategies()).values()].map(g => g.rep.cfg);
+  const keys = cfgs.map(identityKey);
+  if (keys.length !== LIVEPERF.size || keys.some(k => !LIVEPERF.has(k))) return computeLivePerf(true);
+  let rolled = false;                      // the screen date moved on — hand over to the full path
+  LIVE_BUSY = true; LIVE_ERR = ''; render();
+  try {
+    setComputeUI(true, 'Fetching live prices…', 0.2, 'refreshing quotes — the baskets are unchanged');
+    let live = { n: 0, quoted: 0, date: SF.end };
+    try { live = await applyLiveOverlay(cfgs, m => setComputeUI(true, m, 0.5)); } catch (e) {}
+    const today = live.date || SF.end;
+    rolled = today !== LIVE_DATE;
+    if (!rolled) {
+      const priceOff = dayOff(today);
+      for (const [k, held] of LIVEHELD) {
+        const r = LIVEPERF.get(k); if (!r || r.skip) continue;
+        held.forEach(h => lpPriceHold(h, priceOff, null, true));
+        r.day = lpAvg(held, 'day'); r.ret = lpAvg(held, 'ret');
+      }
+      LIVE_AT = Date.now(); LIVE_N = live.quoted != null ? live.quoted : (live.n || 0);
+    }
+  } finally {
+    // Clearing the flag here and re-screening BELOW, not inside the finally: computeLivePerf sets
+    // LIVE_BUSY itself, and calling it from in here would run this block's cleanup over the top of
+    // the run it just started — busy flag off, overlay hidden, mid-flight.
+    LIVE_BUSY = false;
+    if (!rolled) { setComputeUI(false, null, 1); render(); }
+  }
+  if (rolled) await computeLivePerf(true);  // a new session can move every monthly anchor to a new basket
+}
+/* The two live cells for one row. Every "no number" state says WHICH one it is — "in cash" (the
+   screen ran and nothing passed), "no data" (it couldn't run), "not started" (its first rebalance
+   predates the price history) and "—" (no live quote yet) are four different facts, and reporting
+   them all as a dash would assert things we haven't measured. */
+function liveCells(c) {
+  const td = (inner, tip) => `<td class="px-2 py-3 text-right text-sm whitespace-nowrap"${tip ? ` title="${esc(tip)}"` : ''}>${inner}</td>`;
+  const dash = (txt, tip) => td(`<span class="text-slate-300 text-xs">${txt}</span>`, tip);
+  const r = livePerf(c);
+  if (!r) return LIVE_BUSY ? dash('…', 'still pricing') + dash('…', 'still pricing')
+                           : dash('—', 'not priced yet') + dash('—', 'not priced yet');
+  if (r.skip === 'universe') {
+    const t = 'Unbounded universe (all stocks / a turnover floor) — screening it needs a whole-market pass per strategy, so the All Picks board skips it too';
+    return dash('skipped', t) + dash('—', t);
+  }
+  if (r.skip === 'notstarted') {
+    const t = 'Its last rebalance falls before the price history begins — there is no basket to price';
+    return dash('not started', t) + dash('—', t);
+  }
+  if (r.skip === 'error') return dash('—', 'Couldn’t screen this basket') + dash('—', 'Couldn’t screen this basket');
+  if (!r.n) {
+    const t = r.noData ? 'No factor data on ' + r.rebDate + ' — the screen couldn’t run, which is not the same as nothing qualifying'
+                       : 'Nothing passed the filters at the ' + r.rebDate + ' rebalance — the strategy is holding cash';
+    return dash(r.noData ? 'no data' : 'in cash', t) + dash('—', t);
+  }
+  const stocks = r.n + ' stock' + (r.n > 1 ? 's' : '');
+  const day = r.day == null
+    ? dash('—', `No live quote yet for the ${stocks} held since ${r.rebDate}`)
+    : td(`<span class="font-bold ${r.day >= 0 ? 'pos' : 'neg'}">${pct(r.day)}</span>`,
+         `Equal-weight move of the ${stocks} held since the ${r.rebDate} rebalance, from yesterday's close`);
+  const ret = r.ret == null
+    ? dash('—', `No price yet for the ${stocks} held since ${r.rebDate}`)
+    : td(`<span class="font-bold ${r.ret >= 0 ? 'pos' : 'neg'}">${pct(r.ret)}</span>
+          <span class="block text-[10px] text-slate-400 mt-0.5">since ${esc(r.rebDate)} · ${esc(stocks)}</span>`,
+         `The same ${stocks} from their entry prices on ${r.rebDate}`);
+  return day + ret;
+}
+
 /* ---------- per-wave columns (🆕 New tab) ----------
    The snapshot already holds every strategy's return for ALL FOUR market-cycle windows, so the New
    tab can show them side by side with no compute and no engine download — the Best-return tab only
@@ -377,10 +552,12 @@ function waveCell(key, c) {
     + (r.cagr != null ? ` · CAGR ${pct(r.cagr)}` : '')
     + (r.maxDD != null ? ` · MaxDD -${r.maxDD.toFixed(1)}%` : '')
     + (r.topN != null ? ` · top-${r.topN}` : '');
-  // Full cycle spans 6+ years, where an absolute headline like +1001% says nothing about the pace,
-  // so the annualised number rides along in brackets. The three waves are ~18 months — absolute is
-  // plain enough there, and a CAGR on a part-year window reads bigger than the money made.
-  const ann = (key === 'cycle' && r.cagr != null) ? ` <span class="text-[11px] font-normal text-slate-500">(CAGR ${pct(r.cagr)})</span>` : '';
+  // Every window carries its annualised rate in brackets (user, 2026-08-27): an absolute +1001%
+  // says nothing about the pace it was made at, and the four windows are different lengths, so
+  // absolutes alone can't be compared across columns. ⚠️ On a window SHORTER than a year the CAGR
+  // is an extrapolation — Wave 3 is ~5 months — so it reads bigger than the money actually made;
+  // that is what the (CAGR …) label is for, and simulate() computes it, we never invent one.
+  const ann = (r.cagr != null) ? ` <span class="text-[11px] font-normal text-slate-500">(CAGR ${pct(r.cagr)})</span>` : '';
   return `<td class="px-2 py-3 text-right text-sm whitespace-nowrap" title="${esc(tip)}"><span class="font-semibold ${r.ret >= 0 ? 'pos' : 'neg'}">${pct(r.ret)}</span>${ann}</td>`;
 }
 // Load a wave's precomputed results (from the snapshot) into CUSTOM so render() shows them. Returns false if absent.
@@ -414,11 +591,15 @@ function setView(v){
   $('waveRow').classList.toggle('flex',  v === 'best');
   if (v === 'best') {
     highlightWave(BEST_WAVE);
-    const has = loadWaveIntoCustom(BEST_WAVE);
-    $('waveSnapInfo').textContent = has ? (WAVE_SNAP && WAVE_SNAP.date ? `snapshot ${WAVE_SNAP.date}` : '')
+    const has = applyBestWave();
+    $('waveSnapInfo').textContent = liveMode() ? liveStampText()
+      : has ? (WAVE_SNAP && WAVE_SNAP.date ? `snapshot ${WAVE_SNAP.date}` : '')
       : (WAVE_SNAP ? 'this wave not baked' : 'not baked yet — showing full-history CAGR');
   }
   render();
+  // Coming back to the tab with 📈 Today's topper still selected re-uses what was already priced
+  // (computeLivePerf is a no-op unless forced), so switching tabs never re-downloads anything.
+  if (liveMode()) computeLivePerf(false);
 }
 /* ---------- year-wise returns, shown on hover of the strategy name ----------
    Source = the `yby` array stock-backtest.html stamps on EVERY saved history run: [year, strategy%,
@@ -463,11 +644,11 @@ function yearCardHTML(g) {
   const rows = yearRows(g);
   const head = `<div class="px-3 py-1.5 border-b border-slate-200 bg-slate-50">
       <div class="text-[11px] font-semibold text-slate-800 leading-snug line-clamp-2" title="Code-name: ${esc(nameWithBasis(g.rep.name, g.rep.cfg))}">${esc(strategyEnglish(g.rep.cfg))}</div>
-      <div class="text-[10px] text-slate-500">Calendar-year returns${g.rep.cfg.topN != null ? ' · ' + g.rep.cfg.topN + ' stocks' : ''}</div>
+      <div class="text-[10px] text-slate-500">Year-by-year &amp; market cycles${g.rep.cfg.topN != null ? ' · ' + g.rep.cfg.topN + ' stocks' : ''}</div>
     </div>`;
   // Empty is usually not a gap in the data but a stock-count mismatch: since counts became part of a
   // strategy's identity, a top-50 row must not borrow the top-5 run's years. Say so, don't just dash.
-  if (!rows.length) return head + `<div class="px-3 py-3 text-[11px] text-slate-400">No year-wise data yet — no saved backtest of this strategy${g.rep.cfg.topN != null ? ` at ${g.rep.cfg.topN} stocks` : ''} covers ${YR_FROM} onward.</div>`;
+  if (!rows.length) return head + `<div class="px-3 py-3 text-[11px] text-slate-400">No year-wise data yet — no saved backtest of this strategy${g.rep.cfg.topN != null ? ` at ${g.rep.cfg.topN} stocks` : ''} covers ${YR_FROM} onward.</div>` + waveCardBlock(g.rep.cfg);
   const cell = v => v == null ? '<span class="text-slate-300">—</span>' : `<span class="font-semibold ${v >= 0 ? 'pos' : 'neg'}">${pct(v)}</span>`;
   // A run whose benchmark series is missing lands as null or a nonsense -100 (equity read as zero) —
   // show a dash rather than a wrong Nifty 500 number.
@@ -479,7 +660,38 @@ function yearCardHTML(g) {
       <td class="px-3 py-0.5 text-slate-600">${r.year}${r.ret != null && !r.full ? '<span class="text-amber-500">*</span>' : ''}</td>
       <td class="px-2 py-0.5 text-right">${cell(r.ret)}</td>
       <td class="px-3 py-0.5 text-right">${bench(r.bench)}</td></tr>`).join('')}</tbody></table>`
-    + (part ? '<div class="px-3 py-1 text-[10px] text-slate-400 border-t border-slate-100 leading-tight">* part-year — the backtest window starts or ends mid-year</div>' : '');
+    + (part ? '<div class="px-3 py-1 text-[10px] text-slate-400 border-t border-slate-100 leading-tight">* part-year — the backtest window starts or ends mid-year</div>' : '')
+    + waveCardBlock(g.rep.cfg);
+}
+/* The hover card's second block: the same four market-cycle returns the Best-return tab's preset
+   buttons show, read straight from the baked snapshot — no compute, no engine, so the card still
+   opens instantly. The two blocks answer different questions and come from different sources:
+   calendar years come from YOUR saved backtests (`yby`, so they stop where your windows stop),
+   the waves come from the nightly bake of every strategy over the SAME four windows — which is
+   what makes them comparable across strategies. A wave missing from the snapshot prints “—”, never
+   a zero: not baked is not a return of nothing. */
+function waveCardBlock(c) {
+  const any = WAVE_ORDER.some(k => { const r = snapResult(k, c); return r && r.ret != null; });
+  const head = `<div class="px-3 pt-1.5 pb-0.5 border-t border-slate-200 bg-slate-50 flex items-baseline justify-between gap-2">
+      <span class="text-[10px] font-semibold uppercase tracking-wider text-slate-400">Market cycles</span>
+      <span class="text-[9px] text-slate-400">${WAVE_SNAP && WAVE_SNAP.date ? 'snapshot ' + esc(WAVE_SNAP.date) : ''}</span>
+    </div>`;
+  if (!any) return head + `<div class="px-3 py-2 text-[10.5px] text-slate-400 leading-tight">Not in the wave snapshot yet — it is baked nightly for every saved strategy.</div>`;
+  return head + `<table class="w-full text-[11px]"><tbody>${WAVE_ORDER.map(k => {
+    const r = snapResult(k, c);
+    const has = r && r.ret != null;
+    const tip = has ? `${WAVE_NAME[k]} ${waveColWindow(k)} · return ${pct(r.ret)}`
+        + (r.cagr != null ? ` · CAGR ${pct(r.cagr)}` : '')
+        + (r.maxDD != null ? ` · MaxDD -${r.maxDD.toFixed(1)}%` : '')
+        + (r.topN != null ? ` · top-${r.topN}` : '')
+      : `${WAVE_NAME[k]} ${waveColWindow(k)} — not in the snapshot yet`;
+    return `<tr class="border-t border-slate-100" title="${esc(tip)}">
+      <td class="px-3 py-0.5 text-slate-600 whitespace-nowrap">${WAVE_ICON[k]} ${esc(WAVE_NAME[k])}</td>
+      <td class="py-0.5 text-[10px] text-slate-400 whitespace-nowrap">${esc(waveColWindow(k))}</td>
+      <td class="px-3 py-0.5 text-right leading-tight">${has ? `<span class="font-semibold ${r.ret >= 0 ? 'pos' : 'neg'}">${pct(r.ret)}</span>`
+        + (r.cagr != null ? `<span class="block text-[9px] text-slate-400">(CAGR ${pct(r.cagr)})</span>` : '')
+        : '<span class="text-slate-300">—</span>'}</td></tr>`;
+  }).join('')}</tbody></table>`;
 }
 function showYearCard(el, id) {
   const g = YRG.get(id); if (!g) return;
@@ -531,17 +743,24 @@ function buildGroups(items) {
  * New tab swaps one CAGR column for four wave ones). */
 let SORT = { key: null, asc: false };
 // The columns this tab is currently showing, in header order.
-function sortCols(wcols, wmode) {
+function sortCols(wcols, wmode, lmode) {
   const cols = [{ key: 'name', label: 'Strategy' }];
-  if (!wcols) cols.push({ key: 'main', label: wmode ? 'Return' : 'CAGR' });
+  if (lmode) { cols.push({ key: 'live_day', label: 'Today' }); cols.push({ key: 'live_ret', label: 'Since reb.' }); }
+  else if (!wcols) cols.push({ key: 'main', label: wmode ? 'Return' : 'CAGR' });
   else WAVE_ORDER.forEach(k => cols.push({ key: k, label: WAVE_NAME[k] }));
   return cols;
 }
 // What the arrow should mark: an explicit sort, else the column the tab's default order uses
 // (New sorts by save time, which is no column at all, so it gets none).
-function effSort() { return SORT.key ? SORT : { key: VIEW === 'new' ? null : 'main', asc: false }; }
+function effSort() { return SORT.key ? SORT : { key: liveMode() ? 'live_day' : VIEW === 'new' ? null : 'main', asc: false }; }
 function sortValue(g, key) {
   const c = g.rep.cfg;
+  // 📈 Today's topper: a skipped/not-started/in-cash row has no number at all, so it sinks either
+  // way the arrow points rather than filling the top of the leaderboard with dashes.
+  if (key === 'live_day' || key === 'live_ret') {
+    const r = livePerf(c), v = r ? r[key === 'live_day' ? 'day' : 'ret'] : null;
+    return v == null ? null : v;
+  }
   if (key === 'main') {
     if (windowMode()) { const r = waveResult(c); return (r && r.ret != null) ? r.ret : null; }
     return isFinite(g.cagr) ? g.cagr : null;
@@ -596,6 +815,11 @@ function render() {
   const items = strategies();
   $('sortRow').innerHTML = '';                        // rebuilt below; stays empty on every empty state
   const OWNER = !!(window.btSync && btSync.isOwner());   // only the owner sees delete controls
+  // The 📈 Today's topper stamp and its ↻ sit in the preset row, which render() doesn't own — but
+  // they move with the computed numbers, so refresh them on every paint.
+  if (liveMode()) $('waveSnapInfo').textContent = liveStampText();
+  $('liveRefresh').classList.toggle('hidden', !liveMode());
+  $('liveFoot').classList.toggle('hidden', !liveMode());
   $('uniRow').classList.toggle('hidden', !items.length);   // paired with 'flex' like waveRow/customBar — a bare `hidden` loses to `flex`
   $('uniRow').classList.toggle('flex', !!items.length);
   if (!items.length) {
@@ -631,9 +855,12 @@ function render() {
   }
   const favs = loadFavs();
   // sort: 'new' = most-recently-saved; 'custom' = by the computed custom-window CAGR (uncomputed sink to the bottom); else headline CAGR
-  const wmode = windowMode();
+  const wmode = windowMode(), lmode = liveMode();
   const cKey = g => { const r = waveResult(g.rep.cfg); return (r && r.cagr != null) ? r.ret : -Infinity; };
+  // Today's topper's own default order: best move today first, unpriced rows last.
+  const dKey = g => { const r = livePerf(g.rep.cfg); return (r && r.day != null) ? r.day : -Infinity; };
   let rows = [...groups.values()].sort((a, b) =>
+    lmode          ? (dKey(b) - dKey(a)) :
     VIEW === 'new' ? ((b.rep.ts || 0) - (a.rep.ts || 0)) :
     wmode          ? (cKey(b) - cKey(a)) :
                      (b.cagr - a.cagr));
@@ -672,7 +899,7 @@ function render() {
   const wcols = waveColsOn();
   // The New tab swaps one CAGR column for four wave ones, so a sort carried over from another
   // tab can name a column that no longer exists — drop back to the tab's own order if so.
-  const COLS = sortCols(wcols, wmode);
+  const COLS = sortCols(wcols, wmode, lmode);
   if (SORT.key && !COLS.some(c => c.key === SORT.key)) SORT = { key: null, asc: false };
   const eff = effSort();
   const dirAttr = k => (eff.key === k ? ` data-dir="${eff.asc ? 'asc' : 'desc'}"` : '');
@@ -680,8 +907,10 @@ function render() {
   paintSortRow(COLS);
   const header = `<thead><tr class="text-[11px] uppercase tracking-wide text-slate-500 border-b border-slate-200 bg-slate-50">
     <th data-sort="name"${dirAttr('name')} class="text-left font-semibold px-4 py-2.5">Strategy</th>
-    ${wcols ? '' : `<th data-sort="main"${dirAttr('main')} class="text-right font-semibold px-3 py-2.5 whitespace-nowrap">${wmode ? (CUSTOM_WIN ? `Return · ${CUSTOM_WIN.start} → ${CUSTOM_WIN.end}${CUSTOM_WIN.topN != null ? ` · top-${CUSTOM_WIN.topN}` : ''}` : 'Return · window') : 'CAGR'}</th>`}
-    ${wcols ? WAVE_ORDER.map(k => `<th data-sort="${k}"${dirAttr(k)} class="text-right font-semibold px-2 py-2.5 whitespace-nowrap" title="Return over ${esc(WAVE_NAME[k])} (${esc(waveColWindow(k))}), from the ${esc((snapFor(k) && snapFor(k).date) || (WAVE_SNAP && WAVE_SNAP.date) || 'latest')} snapshot">${WAVE_ICON[k]} ${esc(WAVE_NAME[k])}<br><span class="text-[9px] font-medium normal-case tracking-normal text-slate-400">${esc(waveColWindow(k))}</span></th>`).join('') : ''}
+    ${lmode ? `<th data-sort="live_day"${dirAttr('live_day')} class="text-right font-semibold px-2 py-2.5 whitespace-nowrap" title="Equal-weight move of the basket the strategy holds, from yesterday's close to the live price">📈 Today<br><span class="text-[9px] font-medium normal-case tracking-normal text-slate-400">since prev close</span></th>
+    <th data-sort="live_ret"${dirAttr('live_ret')} class="text-right font-semibold px-2 py-2.5 whitespace-nowrap" title="The same held basket from its entry prices on the last rebalance date">Since reb.<br><span class="text-[9px] font-medium normal-case tracking-normal text-slate-400">held basket</span></th>` : ''}
+    ${lmode || wcols ? '' : `<th data-sort="main"${dirAttr('main')} class="text-right font-semibold px-3 py-2.5 whitespace-nowrap">${wmode ? (CUSTOM_WIN ? `Return · ${CUSTOM_WIN.start} → ${CUSTOM_WIN.end}${CUSTOM_WIN.topN != null ? ` · top-${CUSTOM_WIN.topN}` : ''}` : 'Return · window') : 'CAGR'}</th>`}
+    ${!lmode && wcols ? WAVE_ORDER.map(k => `<th data-sort="${k}"${dirAttr(k)} class="text-right font-semibold px-2 py-2.5 whitespace-nowrap" title="Return over ${esc(WAVE_NAME[k])} (${esc(waveColWindow(k))}), from the ${esc((snapFor(k) && snapFor(k).date) || (WAVE_SNAP && WAVE_SNAP.date) || 'latest')} snapshot">${WAVE_ICON[k]} ${esc(WAVE_NAME[k])}<br><span class="text-[9px] font-medium normal-case tracking-normal text-slate-400">${esc(waveColWindow(k))}</span></th>`).join('') : ''}
     <th class="px-2 py-2.5"></th>
     ${OWNER ? '<th class="px-2 py-2.5"></th>' : ''}
   </tr></thead>`;
@@ -698,7 +927,8 @@ function render() {
       const cr = waveResult(c);
       cagrCell = cr && cr.cagr != null
         ? `<span class="font-bold ${cr.ret >= 0 ? 'pos' : 'neg'}">${pct(cr.ret)}</span>
-           <span class="block text-[10px] text-slate-400 mt-0.5">CAGR ${pct(cr.cagr)} · DD -${cr.maxDD.toFixed(1)}%${cr.topN != null ? ` · top-${cr.topN}` : ''}</span>`
+           <span class="text-[11px] font-normal text-slate-500"> (CAGR ${pct(cr.cagr)})</span>
+           <span class="block text-[10px] text-slate-400 mt-0.5">DD -${cr.maxDD.toFixed(1)}%${cr.topN != null ? ` · top-${cr.topN}` : ''}</span>`
         : (CUSTOM_WIN ? '<span class="text-slate-300 text-xs">no data</span>' : '<span class="text-slate-400 text-xs">not computed</span>');
     }
     return `<tr class="border-b border-slate-100 hover:bg-slate-50 cursor-pointer" data-openrow="${esc(it.id)}" title="Open strategy page">
@@ -712,8 +942,7 @@ function render() {
           </span>
         </div>
       </td>
-      ${wcols ? '' : `<td class="px-3 py-3 text-right text-sm whitespace-nowrap">${cagrCell}</td>`}
-      ${wcols ? WAVE_ORDER.map(k => waveCell(k, c)).join('') : ''}
+      ${lmode ? liveCells(c) : wcols ? WAVE_ORDER.map(k => waveCell(k, c)).join('') : `<td class="px-3 py-3 text-right text-sm whitespace-nowrap">${cagrCell}</td>`}
       <td class="px-2 py-3 text-center"><button class="text-base leading-none transition" data-favtoggle="${esc(identityKey(c))}" title="${isFav(favs, c) ? 'Remove from favourites' : 'Add to favourites'}">${isFav(favs, c) ? '⭐' : '☆'}</button></td>
       ${OWNER ? `<td class="px-2 py-3 text-center whitespace-nowrap"><button class="text-slate-300 hover:text-red-500 text-sm" data-delgroup="${esc(identityKey(c))}" title="Delete strategy">🗑️</button></td>` : ''}
     </tr>`;
@@ -765,7 +994,7 @@ function esc(s) { return String(s).replace(/[&<>"]/g, c => ({ '&': '&amp;', '<':
 /* ---------- live performance (computed lazily, one card at a time) ---------- */
 async function computeAllPerf() {
   for (const it of strategies()) {
-    await new Promise(r => setTimeout(r, 0));   // yield so the UI stays responsive
+    await lpYield();                           // yield so the UI stays responsive (timer-free — see live-perf.js)
     const box = document.querySelector(`[data-perf="${it.id}"]`);
     if (!box) continue;
     try {
@@ -789,7 +1018,10 @@ async function computeAllPerf() {
 
 /* ---------- custom-period compare: run a REAL backtest for every strategy over one chosen window,
    then re-sort the list best-first by that window's CAGR (loads the engine on demand, once). ---------- */
-function setComputeUI(on, txt, frac) {
+// `note` (optional) is the small grey line under the bar — it names the JOB, which is not always a
+// backtest: 📈 Today's topper prices baskets that were screened once, it doesn't re-run anything.
+function setComputeUI(on, txt, frac, note) {
+  if (note != null) $('cOvNote').textContent = note;
   $('cOverlay').classList.toggle('hidden', !on);
   $('cCompute').disabled = on;
   const w = Math.round((frac || 0) * 100) + '%';
@@ -815,7 +1047,9 @@ async function computeWindow(from, to, topN, onProgress, sink, existing, onChunk
     const idk = identityKey(g.rep.cfg);
     done++;
     if (out[idk]) { if (onProgress) onProgress(done, groups.length); continue; }   // resume: already computed
-    await new Promise(r => setTimeout(r, 0));                   // yield so the overlay can paint before the next (blocking) backtest
+    await lpYield();                                           // yield so the overlay can paint before the next (blocking)
+                                                               // backtest — timer-free, so a hidden tab (or the headless CI
+                                                               // bake) isn't throttled to one strategy a minute
     const cap = g.rep.cfg.capital || 100000;
     const c = { ...g.rep.cfg, start: from, end: to, capital: cap };
     if (topN != null) c.topN = topN;
@@ -833,7 +1067,7 @@ async function computeWindow(from, to, topN, onProgress, sink, existing, onChunk
 async function computeCustom() {
   const items = strategies();
   if (!items.length) { $('cProgress').textContent = 'No saved strategies to compare.'; return; }
-  setComputeUI(true, 'Loading market data…', 0);
+  setComputeUI(true, 'Loading market data…', 0, 'running a real backtest for each strategy');
   if (!await ensureEngine()) { setComputeUI(false, 'Couldn’t load market data — try again.', 0); return; }
   const from = clampDate($('cFrom').value || SF.start, SF.start, SF.end);
   const to   = clampDate($('cTo').value   || SF.end,   SF.start, SF.end);
@@ -866,6 +1100,14 @@ function bakeWaveList() {
 }
 // Best-return wave click: instant from the snapshot. If a wave has no snapshot yet, the owner can bake it.
 function runPreset(key) {
+  if (key === 'live') {                      // 📈 Today's topper — computed on click, never baked
+    BEST_WAVE = 'live';
+    highlightWave(key);
+    applyBestWave();
+    render();
+    if (LIVEPERF.size) refreshLivePerf(); else computeLivePerf(false);   // a re-click re-quotes rather than showing stale prices
+    return;
+  }
   if (!PERIOD_PRESETS[key]) return;
   BEST_WAVE = key;
   highlightWave(key);
@@ -887,7 +1129,7 @@ function runPreset(key) {
 async function computeAndSaveWaves(headless) {
   const setOut = m => { let o = $('bakeOut'); if (!o) { o = document.createElement('div'); o.id = 'bakeOut'; document.body.appendChild(o); } o.textContent = m; };
   const setMsg = m => { $('waveSnapInfo').textContent = m; if (headless) setOut(m); };
-  setComputeUI(true, 'Loading market data…', 0); setMsg('Loading market data…');
+  setComputeUI(true, 'Loading market data…', 0, 'running a real backtest for each strategy'); setMsg('Loading market data…');
   if (!await ensureEngine()) { setComputeUI(false, 'Couldn’t load market data.', 0); if (headless) setOut('Bake error: market data'); return false; }
   const today = SF.end;
   const groupCountAll = buildGroups(strategies()).size;
@@ -931,7 +1173,7 @@ async function computeAndSaveWaves(headless) {
   setComputeUI(false, '', 1);
   setMsg(complete ? `✅ snapshot ${payload.date}` : `partial snapshot ${payload.date}`);
   if (headless) setOut(complete ? '✅ Done · waves baked ' + payload.date : 'partial — re-run to finish (' + waves.filter(freshDone).length + '/' + waves.length + ' waves)');
-  if (VIEW === 'best') { highlightWave(BEST_WAVE); loadWaveIntoCustom(BEST_WAVE); render(); }
+  if (VIEW === 'best') { highlightWave(BEST_WAVE); applyBestWave(); render(); }
   return complete;
 }
 
@@ -1265,6 +1507,7 @@ function wireUI() {
   if (!$('cTo').value)   $('cTo').value = today;
   $('cCompute').onclick = () => { document.querySelectorAll('.preset').forEach(b => b.classList.remove('!bg-indigo-600', '!text-white')); computeCustom(); };
   document.querySelectorAll('.preset').forEach(b => b.onclick = () => runPreset(b.dataset.preset));
+  $('liveRefresh').onclick = () => refreshLivePerf();   // re-quote + re-price; re-screens only if the set moved
   // The year card is position:fixed, so a scroll would leave it hanging over the wrong row.
   window.addEventListener('scroll', hideYearCard, true);
 }
