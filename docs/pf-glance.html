@@ -97,8 +97,16 @@ async function load(){
     const mtd=document.getElementById('mtd'); mtd.textContent=d.mtdTxt||'—'; mtd.className='v '+cls(d.mtd);
     const tot=document.getElementById('total'); tot.textContent=d.totalTxt||'—'; tot.className='v '+cls(d.total);
     document.getElementById('err').textContent='';
-    document.getElementById('dot').className='dot'+(marketOpen()?' on':'');
-    document.getElementById('status').textContent=(marketOpen()?'live · ':'market closed · ')+'as of '+ (d.asOf||'');
+    const open=marketOpen();
+    /* Freshness: how old is the feed NUMBER (not the fetch). If the cloud job dies, the fetch
+       still succeeds but the number is stale — surface that instead of showing a frozen % as if
+       it were live (2026-08-27: the widget sat on the prior close for 17h with no hint). */
+    const age = d.ts ? Math.max(0, Date.now()/1000 - d.ts) : null;
+    const ago = age==null ? '' : age<90 ? 'just now' : age<3600 ? Math.round(age/60)+'m ago'
+              : age<86400 ? Math.round(age/3600)+'h ago' : Math.round(age/86400)+'d ago';
+    const stale = open && age!=null && age>300;      // market open but the number hasn't moved in >5 min
+    document.getElementById('dot').className='dot'+(open && !stale?' on':'');
+    document.getElementById('status').textContent=(stale?'⚠ stale · ':open?'live · ':'market closed · ')+'updated '+ago;
   }catch(e){
     document.getElementById('status').textContent='could not refresh';
     document.getElementById('err').textContent=e.message;
