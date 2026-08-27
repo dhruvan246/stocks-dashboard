@@ -8,6 +8,8 @@
 <link rel="stylesheet" href="./theme.css" />
 <script src="./theme.js"></script>
 <script src="./bt-names.js"></script>
+<script src="./bt-identity.js"></script>
+<script src="./strategy-hover-card.js"></script>
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 <script src="./bt-sync.js"></script>
 <style>
@@ -76,6 +78,17 @@ const rel=ts=>{const t=num(ts);if(t==null)return'';const s=(Date.now()-t)/1e3;
   if(s<0)return'';if(s<3600)return Math.max(1,Math.round(s/60))+'m ago';
   if(s<86400)return Math.round(s/3600)+'h ago';if(s<604800)return Math.round(s/86400)+'d ago';return'';};
 
+/* ---------- the strategy hover card (strategy-hover-card.js) ----------
+ * Hovering a run's strategy name opens the same card Saved Strategies and All Picks show: calendar
+ * years across EVERY run of that strategy, then the four market-cycle windows from the baked
+ * snapshot. Different question from the ▶ expander next to it, which shows THIS ONE RUN's own
+ * year-by-year row — the card answers "how has this strategy done", the expander "what did this run
+ * do". The module takes live getters, so the card always reads the history this page just re-pulled.
+ * The snapshot is the only extra fetch, it happens after the first paint, and it fails silent — the
+ * card then says the waves aren't baked rather than showing a wrong number. */
+let BTH_SNAP = null;
+scWire({ hist: () => load(), snap: () => BTH_SNAP });
+
 function renderStats(items){
   if(!items.length){ $('stats').innerHTML=''; return; }
   let beat=0,scored=0,best=null;
@@ -104,19 +117,23 @@ function render(){
       <p class="text-xs text-slate-500 mb-5 max-w-sm mx-auto">Every backtest anyone runs lands here automatically — strategy, period, CAGR and how it did against the Nifty 500.</p>
       <a href="./stock-backtest.html" class="inline-flex items-center gap-2 bg-indigo-600 text-white text-sm font-semibold px-5 py-2.5 rounded-xl hover:bg-indigo-700 transition">🚀 Run the first backtest</a>
     </div>`; return; }
+  YRG.clear();   // rebuilt by scRegister below, as the rows are laid out
   $('list').innerHTML=`<div class="card"><div class="overflow-x-auto tscroll" style="--tscroll-h:38rem"><table class="w-full text-sm">
     <thead class="text-[11px] uppercase tracking-wider text-slate-500 border-b border-slate-200"><tr>
       <th class="text-left py-2.5 px-4 font-semibold">Saved</th><th class="text-left px-3 font-semibold">Strategy</th>
       <th class="text-right px-3 font-semibold">CAGR</th><th class="text-right px-3 font-semibold">vs Nifty 500</th>
       <th class="text-right px-3 font-semibold">Max DD</th><th class="text-right px-3 font-semibold">Final ₹1L</th><th class="px-4"></th></tr></thead>
     <tbody>${items.map(it=>{const m=it.m||{},c=it.cfg||{},beat=num(m.benchCagr)!=null&&num(m.cagr)!=null&&m.cagr>=m.benchCagr;
+      // hover target → this run's strategy. `sid` (when the run carries one) lets the card pick up
+      // sibling runs launched from the strategy page even if their config was edited since.
+      scRegister(it.id, { id: it.id, name: it.label, cfg: c, ts: it.ts }, new Set(it.sid ? [it.sid] : []));
       const hasY=Array.isArray(it.yby)&&it.yby.length, r=rel(it.ts), mult=num(m.finalV)!=null?(m.finalV/1e5):null;
       return `<tr class="border-b border-slate-50 ${hasY?'cursor-pointer':''}" ${hasY?`data-exp="${esc(it.id)}"`:''}>
         <td class="px-4 py-2.5 whitespace-nowrap"><div class="flex items-center gap-2">
           <span class="exparrow">${hasY?'▶':''}</span>
           <div><div class="sw-cellmain text-[13px]">${fdateD(it.ts)}</div><div class="sw-cellsub">${esc(fdateT(it.ts))}${r?' · '+r:''}</div></div>
         </div></td>
-        <td class="px-3"><div class="sw-cellmain text-[13px]" title="Code-name: ${esc(nameWithBasis(it.label,c))}">${esc(strategyEnglish(c)||it.label||'—')}</div><div class="sw-cellsub">${esc(c.start||'?')} → ${esc(c.end||'?')}</div></td>
+        <td class="px-3"><div class="sw-cellmain text-[13px]" data-yrs="${esc(it.id)}" title="Code-name: ${esc(nameWithBasis(it.label,c))}">${esc(strategyEnglish(c)||it.label||'—')}</div><div class="sw-cellsub">${esc(c.start||'?')} → ${esc(c.end||'?')}</div></td>
         <td class="text-right px-3 ${(num(m.cagr)||0)>=0?'pos':'neg'}">${pct(m.cagr)}</td>
         <td class="text-right px-3 whitespace-nowrap"><span class="sw-chip ${beat?'pos':'neg'}" title="Nifty 500 CAGR over the same period — ${beat?'strategy beat it':'strategy lagged it'}"><span class="sw-dot"></span>${pct(m.benchCagr)}</span></td>
         <td class="text-right px-3 neg">${num(m.maxDD)!=null?'-'+m.maxDD.toFixed(2)+'%':'—'}</td>
@@ -137,6 +154,7 @@ function render(){
           </tbody></table></div>
         </div></td></tr>`:''}`;}).join('')}
     </tbody></table></div></div>`;
+  scAttach($('list'));   // hover a strategy name → its years + market cycles
   $('list').querySelectorAll('[data-exp]').forEach(row=>row.addEventListener('click',e=>{ if(e.target.closest('button'))return; const d=$('exp_'+row.dataset.exp); if(!d)return; const open=d.style.display==='none'; d.style.display=open?'table-row':'none'; row.classList.toggle('isopen',open); }));
   $('list').querySelectorAll('[data-load]').forEach(b=>b.onclick=()=>{const it=load().find(x=>x.id===b.dataset.load); if(it){localStorage.setItem('bt_load',JSON.stringify({cfg:it.cfg, saved:{m:it.m, yby:it.yby, label:it.label}})); location.href='./stock-backtest.html';}});
   $('list').querySelectorAll('[data-del]').forEach(b=>b.onclick=()=>{save(load().filter(x=>x.id!==b.dataset.del)); render();});
@@ -148,7 +166,11 @@ $('clearAll').onclick=()=>{ if(confirm('Clear the ENTIRE shared history for ever
 // Paint the cached history immediately (pull() persists it to localStorage), THEN refresh from the
 // shared pull — so a cold/slow free-tier DB waking up never leaves the page blank while it responds.
 render();
-(async()=>{ if(window.btSync){ try{ await btSync.pull(); }catch(e){} render(); } })();
+(async()=>{ if(!window.btSync) return;
+  try{ await btSync.pull(); }catch(e){}
+  render();
+  try{ BTH_SNAP = await btSync.snapGet('waves'); }catch(e){ BTH_SNAP = null; }   // hover card's market cycles
+})();
 </script>
 </body>
 </html>

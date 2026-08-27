@@ -176,24 +176,38 @@ function waveCardBlock(c) {
 }
 
 /* ---------- the floating card itself ----------
- * Created on demand so a host page needs no markup of its own. The animation override is not
- * cosmetic: the card borrows .card for theming, and theme.css gives every .card the sw-rise
- * entrance animation — which restarts on each un-hide, so the card would fade+slide in over 0.5s
- * AND be measured 12px above where it lands. A tooltip must appear already in place. */
+ * Created on demand, so a host page needs no markup of its own.
+ * Its geometry is INJECTED CSS, not Tailwind utility classes, and it is injected the
+ * moment this file loads.
+ * Tailwind here is the CDN JIT, which compiles a utility class when it SEES it — the page's HTML at
+ * startup, plus whatever its MutationObserver catches later. `w-72` (and `shadow-xl`, `z-50`,
+ * `pointer-events-none`) appear NOWHERE in the HTML of two of the three host pages, so this card's
+ * classes are only ever compiled by that observer, asynchronously, after the element is inserted.
+ * Measured on Backtest History: the rules do arrive (all seven within ~600 ms), but nothing makes
+ * them arrive before the first hover — and showYearCard MEASURES offsetWidth to place the card, so
+ * a hover inside that window would both flash unstyled and be positioned off a wrong width. Owning
+ * the geometry here removes the race entirely; only `.card` is borrowed from the host page, which
+ * is real CSS in each page's <style> and re-themed for dark by theme.css. */
+(function scInjectStyle() {
+  if (document.getElementById('scStyle')) return;
+  const st = document.createElement('style');
+  st.id = 'scStyle';
+  st.textContent =
+    '#yrCard{position:fixed;left:0;top:0;z-index:50;width:18rem;overflow:hidden;pointer-events:none;' +
+    'box-shadow:0 20px 25px -5px rgba(16,24,40,.14),0 8px 10px -6px rgba(16,24,40,.10);' +
+    // theme.css gives every .card the sw-rise entrance animation, which restarts on each un-hide:
+    // the card would fade+slide in over 0.5s AND be measured 12px above where it lands.
+    'animation:none!important;opacity:1}' +
+    '#yrCard.hidden{display:none}';                  // never rely on Tailwind's .hidden either
+  (document.head || document.documentElement).appendChild(st);
+})();
 function scEnsureCard() {
   let box = document.getElementById('yrCard');
   if (!box) {
     box = document.createElement('div');
     box.id = 'yrCard';
-    box.className = 'hidden fixed z-50 w-72 card shadow-xl overflow-hidden pointer-events-none';
-    box.style.left = '0'; box.style.top = '0';
+    box.className = 'hidden card';
     document.body.appendChild(box);
-  }
-  if (!document.getElementById('scStyle')) {
-    const st = document.createElement('style');
-    st.id = 'scStyle';
-    st.textContent = '#yrCard{animation:none!important;opacity:1}';
-    document.head.appendChild(st);
   }
   return box;
 }
