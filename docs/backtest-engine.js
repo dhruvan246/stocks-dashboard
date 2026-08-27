@@ -562,12 +562,31 @@ function needsFund(cfg) { return FUND_FIELDS.has(cfg.sortBy) || (cfg.filters || 
 // bt-names.js — loaded by every page that shows a strategy name, including the slim ones that don't
 // load this engine (live-tracking, backtest-history, stock-backtest). Not duplicated here.
 function dateIntOff(off) { return parseInt(isoOff(off).replace(/-/g, ''), 10); }
+// A consolidated series that STOPPED while standalone kept filing must not serve a years-stale
+// YoY at a fresh screen date. BANDHANBNK is the proof case (quantmac reconciliation v2,
+// 2026-08-27): its con column is an aggregator-era island ending Dec-2017, so at the 2023-09-29
+// rebalance the con try paired Dec-2017 vs Dec-2016 (+12.3%) while the fresh std pair read
+// -18.7% — 54 N500 symbols measured with the same shape at that date, 99 at 2026-08-21.
+// The blend's con try is credible only while its latest VISIBLE quarter is within 12 months of
+// standalone's: an annual-con filer lags at most 4 quarters (Mar-vs-Mar = 12, allowed); a wider
+// gap means the con series is dead at this date and the blend must fall to std. 'std' and
+// 'conOnly' behaviour untouched. (Sync: stock-backtest.html)
+function _lastVisibleQe(arr, npIdx, annIdx, dateInt) {
+  for (let i = arr.length - 1; i >= 0; i--) { const q = arr[i]; if (q[npIdx] != null && q[annIdx] > 0 && q[annIdx] <= dateInt) return q[0]; }
+  return null;
+}
+function _conFreshEnough(arr, dateInt) {
+  const c = _lastVisibleQe(arr, 3, 4, dateInt); if (c == null) return false;   // no visible con at all -> std try alone resolves it
+  const s = _lastVisibleQe(arr, 1, 2, dateInt); if (s == null) return true;    // con-only filer
+  const mdiff = (Math.floor(s / 10000) - Math.floor(c / 10000)) * 12 + (Math.floor(s / 100) % 100 - Math.floor(c / 100) % 100);
+  return mdiff <= 12;
+}
 function profitAt(sym, dateInt, basis) {
   const arr = fundFor(sym); if (!arr || !arr.length) return null;
   // 'conOnly' reads the consolidated slots with NO standalone fallback. It is a MEASUREMENT
   // basis for the coverage matrix (scripts/build_coverage_matrix.js) — no UI offers it and no
   // saved strategy can carry it, so 'con' (blend) and 'std' behaviour is untouched.
-  const tries = basis === 'std' ? [[1, 2]] : basis === 'conOnly' ? [[3, 4]] : [[3, 4], [1, 2]];   // con falls back to std
+  const tries = basis === 'std' ? [[1, 2]] : basis === 'conOnly' ? [[3, 4]] : _conFreshEnough(arr, dateInt) ? [[3, 4], [1, 2]] : [[1, 2]];   // con falls back to std; a DEAD con series is skipped outright (see _conFreshEnough)
   for (const [npIdx, annIdx] of tries) {
     let cur = null;
     // ⚠️ ann must be TRUTHY, not merely non-null: 0 is the "announce date UNKNOWN" sentinel (runbook
@@ -612,7 +631,9 @@ function profitMetrics(sym, dateInt, basis) {
   // With a single [[3,4]] try the partial-pending path still behaves: a con pass that answered
   // yoy but not ttm/accel stashes _pmPending, the loop ends, and the partial con result is
   // returned — exactly "pure con": the missing fields stay null instead of borrowing std.
-  const tries = basis === 'std' ? [[1, 2]] : basis === 'conOnly' ? [[3, 4]] : [[3, 4], [1, 2]];
+  // Dead-con guard: same rule as profitAt — a con series whose latest visible quarter trails
+  // standalone's by >12 months is skipped, not paired years-stale (BANDHANBNK, quantmac v2).
+  const tries = basis === 'std' ? [[1, 2]] : basis === 'conOnly' ? [[3, 4]] : _conFreshEnough(arr, dateInt) ? [[3, 4], [1, 2]] : [[1, 2]];
   for (const [ni, ai] of tries) {
     // ann > 0, not != null — see profitAt above (0 = date-unknown sentinel, runbook §15/§91).
     let ci = -1; for (let i = arr.length - 1; i >= 0; i--) { if (arr[i][ni] != null && arr[i][ai] > 0 && arr[i][ai] <= dateInt) { ci = i; break; } }

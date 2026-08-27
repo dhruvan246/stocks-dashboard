@@ -839,3 +839,93 @@ Jan-2009 is gone from the basket**, 3 baskets change (2009-01, 2009-02, 2019-05)
 52.88, maxDD unchanged.
 
 **quantmac's finding 3 is now 8/8 resolved with zero residue.**
+
+---
+
+## N. RECONCILIATION REPORT v2 (StockWorld_Reconciliation_Report_v2.xlsx, received 2026-08-27) — every our-side item adjudicated
+
+quantmac's consolidated 5-round status workbook (rounds A-E). Every item it left open on our
+side was re-measured this session against the LIVE engine+data (headless Node harness, both
+bases) and primary sources (BSE broadcasts + filed PDFs) before any write. Fixes shipped:
+
+**N1. BANDHANBNK +12.3% at 2023-09 (round A/D) — REAL, STRUCTURAL, FIXED (engine e9).**
+Their flag reproduced live: `profitAt('con')` paired **Dec-2017 vs Dec-2016** (300.05/267.1 =
++12.34%) at a Sep-2023 screen because Bandhan's con column is an aggregator-era island (std
+copies 2015-2018, nothing until 2025) and the blend tries con first with no staleness check.
+Measured class size: **54 N500 symbols at 2023-09-29, 99 at 2026-08-21** serve a con cur-quarter
+≥365d staler than std's (HUHTAMAKI 7.5y, TASTYBITE, NAVKARCORP, PATANJALI…). Fix: **dead-con
+guard** in profitAt + profitMetrics, BOTH twins (backtest-engine.js + stock-backtest.html):
+the blend's con try is credible only while its latest VISIBLE quarter is within 12 months of
+standalone's (annual-con filers lag at most Mar-vs-Mar = 12, allowed); wider gap ⇒ std.
+ENGINE_VER e8→e9, sw v119. lastResultDate untouched (already takes max across bases).
+A/B (2020-03→2026-08, live data): std top-20 **0/78 baskets change** (std path untouched);
+con top-3 changes exactly 3 baskets, each attributed: 2023-09 BANDHANBNK→MANAPPURAM (this
+guard), 2022-04 M&M→TCNSBRANDS (guard again — TCNS con island ends 2018-06; fresh std +97.95
+now wins; matches what their sheet recorded as our behaviour), 2022-07 (N2). CAGR 75.06→71.94.
+
+**N2. ASHOKLEY invisible at 2022-07-31 (round A) — REAL, FIXED (data heal).** Our Jun-2022 CON
+ann was 20220810 while std said 20220729. BSE archive: exactly ONE result filing in the window,
+**2022-07-29T13:29 IST** ("Un-Audited Financial Results…June 30, 2022", pre-15:30 ⇒ no gate),
+nothing on Aug-10. Healed via ann_date_fills.json override (`ASHOKLEY|20220630`, earlier-only,
+rebuild-proof, nightly reapplied). Con YoY at 07-29 now +101.95 = their +101.9; basket flips
+WELCORP→ASHOKLEY exactly as their sheet predicted. Their guessed root cause (sign-flip on a
+negative base) was WRONG — our engine divides by |base| — but the outcome they flagged was real.
+
+**N3. LEMONTREE +33.8% at 2021-09 (round A) — BOTH SIDES DEFECTIVE; ours FIXED (fund_cell_fix).**
+Their claimed filed base "+41.87 Cr profit" is SIGN-FLIPPED (Jun-2020 was a ₹41.87cr LOSS) —
+their −195.8% "correct" YoY is wrong; flag back to them. But the magnitude exposed OUR defect:
+stored con Jun-2020 −60.56 is the TOTAL loss incl NCI (filing p5: total (6,055.56) lacs, owners
+(4,187.16), NCI (1,868.40)); platform basis is OWNERS. Neighbours verified owners from the
+filings chain (Sep-20 −37.13 ✓, Dec-19 +12.20 ✓, Mar-21 −16.82 ✓, Jun-21 −40.17≈stored −40.12 ✓)
+— Jun-2020 was the lone total-basis cell. Healed −60.56→−41.87. YoY becomes +4.18% (shrinking
+loss, /|base| convention) — still passes >0, LEMONTREE stays held; the remaining pick difference
+vs them is their sign-flipped base + the deliberate shrinking-loss-positive convention.
+
+**N4. UPL/SRF 2025-02 (round A "pending—theirs") — DISPUTED, OUR DATA VERIFIED CORRECT, no fix.**
+Their claim: we drop UPL via loss-base sign-flip, "filed +590". The filed statement (BSE
+2025-01-31T14:55, p16) prints owners' PAT Dec-2024 **+828**, Dec-2023 **−1,217** — exactly our
+stored cells; "+590" appears nowhere in the filing. UPL PASSES our >0 filter (+168% con /abs);
+we hold SRF because UPL ranks 4th on the mdd6 sort (17.07 vs SRF 18.13, BAJAJFINSV 22.45,
+CHAMBLFERT 18.76) — a benign ranking boundary, same class as their own GNFC diagnosis.
+
+**N5. DHANI 2020-09 + WELCORP 2022-04 look-ahead flags (round D) — ALREADY FIXED, verified.**
+Current live data: DHANI std YoY −103.22 (their own figure), con −90.19 ⇒ fails >0 both bases,
+not held. WELCORP std −52.93 / con −69.37 at 2022-04-29 ⇒ fails, not held. The §104 override
+campaign (DHANI 22d entry already in its docstring examples) had healed the dates.
+
+**N6. AEGISVOPAK vs PGEL current pick (round A) — CONVENTION, no defect, no change.** Our d52
+11.30 uses INTRADAY 52w-high (311.49 on 2026-07-13); on closes it is 8.96 ≤ 10. NSE's official
+52-week high is the intraday high — our convention matches the exchange. mdd6 31.41 matches
+their figure exactly. Their own sheet already tags this "benign — likely on their side".
+
+**N7. The 18-row 2026-08-22 cluster (round D) — CONVENTION, documented, no change.** Root cause
+known: monthsBetween() replaces the final month-end with cfg.end, so a mid-month end date gets a
+trailing partial-month rebalance — this IS the "current picks" feature (latest basket = today's
+screen; entries there close same-day at entry price, retPct 0, held:true — an accurate statement
+of a live strategy). Their engine stops at the last full month-end. Exclude the trailing
+rebalance from cross-platform comparisons (already the adjudicated practice, 2026-08-23 memory).
+
+**N8. "Their own defects 2/3" (qe+45d errs both ways; March 45d vs 60d deadline) — the promised
+blanket fix is REFUTED BY MEASUREMENT; do NOT ship it.** Live census: 2,366 March cells still at
+exactly qe+45d (2,215 std / 151 con), none ledgered as a real date. But the campaign's own 925
+REAL pre-2009 March broadcasts measure the actual filing-lag distribution: **p50 = 32d**, p75 =
+54, p90 = 74 (2002-2008) — most companies filed Q4 unaudited EARLY under old Clause 41; and
+2020+ real March lags cluster at 44-48d (p50 = 46). Moving placeholders to +60d would make the
+majority MORE stale in every era, not less look-ahead. The honest closure: (a) pre-2009 residue
+is below the BSE archive floor — placeholder stays, documented; (b) the 2009+ residue (~472
+March cells incl. 216 in 2024-2026, e.g. APOLLOTYRE 20240331) has findable real dates — that is
+the in-flight ann-recon work (backfill_ann_dates_bse.py --recent flow / _ann_recon_skips.json,
+another session's WIP dated 2026-08-23 in the main checkout), NOT a convention change. Tell
+quantmac the "IN FLIGHT" items close as: re-dating where records exist, measured-refusal of the
+60d blanket move where they don't.
+
+**N9. Round B "Fixed—theirs" rows (NIACL, SHRIRAMFIN, CDSL, their membership/TTM/date fixes) —
+spot-verified consistent** with our live data through the harness (NIACL rank 3 held at 2024-07,
+SHRIRAMFIN rank 2 at 2022-12, CDSL −22.4% fails at 2025-06 with POWERINDIA in). DELTACORP
+dispute unchanged: our 2016-08-01 20:00:07 broadcast stands (re-verified twice prior); their
+2016-09-28 date still has no BSE counterpart — the ball is in their court.
+
+Verification: syntax-checked both twins; harness A/B above; browser-verified on the worktree
+server (ENGINE_VER e9; profitAt in-page returns BANDHANBNK −18.66 / LEMONTREE +4.18 / ASHOKLEY
++101.95); saved-strategies.html loads clean (the two localhost 400s are the pre-existing
+Supabase-from-localhost artifact, present on unchanged pages, absent on the live origin).

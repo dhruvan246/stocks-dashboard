@@ -668,7 +668,7 @@ function isAlreadySaved(cfg){
 // every key changes → the old snapshot is no longer found → the next view recomputes with the CURRENT
 // code + data and re-caches. Without this stamp a changed engine or a refreshed dataset would keep
 // serving a stale pre-computed result forever.
-const ENGINE_VER='e8';        // ⬆️ BUMP this whenever simulate()/engine logic changes → invalidates all snapshots  (e8 2026-08-23: foldFundAliases — old-key fundamentals folded under the merged key, §105)
+const ENGINE_VER='e9';        // ⬆️ BUMP this whenever simulate()/engine logic changes → invalidates all snapshots  (e9 2026-08-27: dead-con guard — profitAt/profitMetrics skip a con series >12 months staler than std, BANDHANBNK class; e8 2026-08-23: foldFundAliases — old-key fundamentals folded under the merged key, §105)
                               // e7 (2026-08-20): TTM contiguity check strengthened to pairwise
                               // gaps (each of 4 quarters exactly 3mo apart) — the e6 endpoint-only
                               // check let a duplicate qe row through uncaught (APOLLOTYRE/
@@ -995,11 +995,26 @@ function shpAt(sym, dateInt){
 }
 // As-of `dateInt`, return {cur, base, yoy} for the latest quarter whose result was ANNOUNCED by then,
 // vs the same quarter a year earlier. basis 'con' falls back to 'std' (cos w/o subsidiaries file only standalone).
+// Dead-con guard: a con series that STOPPED while std kept filing (BANDHANBNK's con island ends
+// Dec-2017) must not serve a years-stale pair at a fresh screen date — the con try is credible
+// only while its latest VISIBLE quarter is within 12 months of standalone's (annual-con filers
+// lag at most Mar-vs-Mar = 12, allowed). quantmac reconciliation v2, 2026-08-27; 54 N500 symbols
+// measured with the shape at 2023-09-29. (Sync: backtest-engine.js — keep the twins identical.)
+function _lastVisibleQe(arr, npIdx, annIdx, dateInt){
+  for(let i=arr.length-1;i>=0;i--){ const q=arr[i]; if(q[npIdx]!=null && q[annIdx]>0 && q[annIdx]<=dateInt) return q[0]; }
+  return null;
+}
+function _conFreshEnough(arr, dateInt){
+  const c=_lastVisibleQe(arr,3,4,dateInt); if(c==null) return false;   // no visible con -> std try alone resolves it
+  const s=_lastVisibleQe(arr,1,2,dateInt); if(s==null) return true;    // con-only filer
+  const mdiff=(Math.floor(s/10000)-Math.floor(c/10000))*12 + (Math.floor(s/100)%100 - Math.floor(c/100)%100);
+  return mdiff<=12;
+}
 function profitAt(sym, dateInt, basis){
   const arr=fundFor(sym); if(!arr||!arr.length) return null;
   // 'conOnly' = consolidated slots, NO std fallback — a measurement basis for the coverage
   // matrix builder; no UI offers it. (Sync: backtest-engine.js — same branch in all 3 functions.)
-  const tries = basis==='std' ? [[1,2]] : basis==='conOnly' ? [[3,4]] : [[3,4],[1,2]];
+  const tries = basis==='std' ? [[1,2]] : basis==='conOnly' ? [[3,4]] : _conFreshEnough(arr,dateInt) ? [[3,4],[1,2]] : [[1,2]];
   for(const [npIdx,annIdx] of tries){
     let cur=null;
     // ⚠️ ann must be TRUTHY, not merely non-null: 0 = "announce date UNKNOWN" sentinel (runbook
@@ -1029,7 +1044,9 @@ function profitMetrics(sym, dateInt, basis){
   // nulls. Measured cost: std and con TTM agree in sign 86.9% of the time over 36,891 stock-months
   // where both resolve. (Sync: backtest-engine.js profitMetrics — keep these two identical.)
   let _pmPending = null;
-  const tries = basis==='std' ? [[1,2]] : basis==='conOnly' ? [[3,4]] : [[3,4],[1,2]];
+  // Dead-con guard: same rule as profitAt — a con series whose latest visible quarter trails
+  // standalone's by >12 months is skipped, not paired years-stale (BANDHANBNK, quantmac v2).
+  const tries = basis==='std' ? [[1,2]] : basis==='conOnly' ? [[3,4]] : _conFreshEnough(arr,dateInt) ? [[3,4],[1,2]] : [[1,2]];
   for(const [ni,ai] of tries){
     // ann > 0, not != null — see profitAt above (0 = date-unknown sentinel, runbook §15/§91).
     let ci=-1; for(let i=arr.length-1;i>=0;i--){ if(arr[i][ni]!=null && arr[i][ai]>0 && arr[i][ai]<=dateInt){ ci=i; break; } }
