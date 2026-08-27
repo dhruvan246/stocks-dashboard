@@ -547,7 +547,7 @@ function waveColsOn() { return VIEW === 'new' && !!WAVE_SNAP && WAVE_ORDER.some(
 // and stock count riding along in the tooltip so the column stays one line wide.
 function waveCell(key, c) {
   const r = snapResult(key, c);
-  if (!r || r.ret == null) return '<td class="px-2 py-3 text-right"><span class="text-slate-300 text-xs" title="not in the snapshot yet">—</span></td>';
+  if (!r || r.ret == null) return `<td class="px-2 py-3 text-right"><span class="text-slate-300 text-xs" title="${esc(WAVE_NAME[key] + ' ' + waveColWindow(key) + ' — ' + waveMissingWhy())}">—</span></td>`;
   const tip = `${WAVE_NAME[key]} ${waveColWindow(key)} · return ${pct(r.ret)}`
     + (r.cagr != null ? ` · CAGR ${pct(r.cagr)}` : '')
     + (r.maxDD != null ? ` · MaxDD -${r.maxDD.toFixed(1)}%` : '')
@@ -670,13 +670,25 @@ function yearCardHTML(g) {
    the waves come from the nightly bake of every strategy over the SAME four windows — which is
    what makes them comparable across strategies. A wave missing from the snapshot prints “—”, never
    a zero: not baked is not a return of nothing. */
+/* Why a strategy can have no wave numbers, in one place — the hover card, the 🆕 New tab's four
+   columns and the Best-return column all say the same thing.
+   It is NOT a data gap and never a zero: the bake runs after each daily data refresh over whatever
+   strategies existed AT THAT MOMENT, so one saved since simply hasn't been through a bake yet.
+   Deliberately does NOT claim "saved after the bake" — WAVE_SNAP.date is the snapshot's DATA date
+   (SF.end), not the time the bake ran, so comparing a save timestamp to it would assert something
+   we can't actually check from here. */
+function waveMissingWhy() {
+  return (WAVE_SNAP && WAVE_SNAP.date ? `Not in the latest bake (market data to ${WAVE_SNAP.date}).` : 'No wave snapshot has been baked yet.')
+    + ' Every saved strategy is re-baked after each daily data refresh, so one saved since the last run shows up after the next.'
+    + ((window.btSync && btSync.isOwner()) ? ' To fill it in now, hit ↻ Update snapshot.' : '');
+}
 function waveCardBlock(c) {
   const any = WAVE_ORDER.some(k => { const r = snapResult(k, c); return r && r.ret != null; });
   const head = `<div class="px-3 pt-1.5 pb-0.5 border-t border-slate-200 bg-slate-50 flex items-baseline justify-between gap-2">
       <span class="text-[10px] font-semibold uppercase tracking-wider text-slate-400">Market cycles</span>
       <span class="text-[9px] text-slate-400">${WAVE_SNAP && WAVE_SNAP.date ? 'snapshot ' + esc(WAVE_SNAP.date) : ''}</span>
     </div>`;
-  if (!any) return head + `<div class="px-3 py-2 text-[10.5px] text-slate-400 leading-tight">Not in the wave snapshot yet — it is baked nightly for every saved strategy.</div>`;
+  if (!any) return head + `<div class="px-3 py-2 text-[10.5px] text-slate-400 leading-snug">${esc(waveMissingWhy())}</div>`;
   return head + `<table class="w-full text-[11px]"><tbody>${WAVE_ORDER.map(k => {
     const r = snapResult(k, c);
     const has = r && r.ret != null;
@@ -929,7 +941,8 @@ function render() {
         ? `<span class="font-bold ${cr.ret >= 0 ? 'pos' : 'neg'}">${pct(cr.ret)}</span>
            <span class="text-[11px] font-normal text-slate-500"> (CAGR ${pct(cr.cagr)})</span>
            <span class="block text-[10px] text-slate-400 mt-0.5">DD -${cr.maxDD.toFixed(1)}%${cr.topN != null ? ` · top-${cr.topN}` : ''}</span>`
-        : (CUSTOM_WIN ? '<span class="text-slate-300 text-xs">no data</span>' : '<span class="text-slate-400 text-xs">not computed</span>');
+        : (CUSTOM_WIN ? `<span class="text-slate-300 text-xs" title="${esc(CUSTOM_WIN.wave ? waveMissingWhy() : 'This strategy hasn’t been run over the chosen window yet — hit Compute.')}">no data</span>`
+                      : '<span class="text-slate-400 text-xs">not computed</span>');
     }
     return `<tr class="border-b border-slate-100 hover:bg-slate-50 cursor-pointer" data-openrow="${esc(it.id)}" title="Open strategy page">
       <td class="px-4 py-3" data-label="">
