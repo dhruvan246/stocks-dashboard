@@ -89,7 +89,11 @@
     throw new Error('EARN_BASIS must be con|std|conOnly, got ' + JSON.stringify(process.env.EARN_BASIS));
   const VTAG = (TOPN === 5 && METHOD === 'reset' && UNIVERSE === 'Nifty 500') ? ''
              : '_' + (UNIVERSE === '__FNO__' ? 'fno_' : '') + (METHOD === 'hold' ? 'h' : 'r') + TOPN;
-  const TAG = (process.argv[3] ? START + '_' + END : START) + VTAG; // artifact naming
+  // Artifact naming. The basis is part of the TAG (2026-08-27): the two bases sweep the SAME
+  // 4,440,600 combos, so without it a `con` run silently overwrites the `std` CSV/marker it is
+  // meant to be merged with. Callers that build this tag themselves — gridmega_phases_run.py's
+  // resume check and gridmega_phases_build.js's tagOf — must use the identical suffix.
+  const TAG = (process.argv[3] ? START + '_' + END : START) + VTAG + '_' + EARN_BASIS;
   const CAPITAL = 100000;
   const BASECFG = { start:START, end:END, indexName:UNIVERSE, freq:1, lookback:1, topN:TOPN,
                     capital:CAPITAL, mode:'sf', earnBasis:EARN_BASIS, mcapFloor:0, method:METHOD };

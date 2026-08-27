@@ -42,6 +42,17 @@
   td.mono{font-family:ui-monospace,Consolas,monospace}
   .fam{display:inline-block;background:var(--surface-2,#f1f5f9);border-radius:4px;padding:1px 7px;
     font-size:12px;white-space:nowrap;color:var(--text-muted,#475569)}
+  /* Earnings basis. Std and con must be told apart at a glance because a merged card can hold the
+     SAME rule twice, once per basis; 'any' means the rule reads no earnings at all, so it is
+     deliberately quiet rather than a third competing colour. */
+  .bchip{display:inline-block;border-radius:4px;padding:1px 6px;font-size:11px;font-weight:700;
+    letter-spacing:.03em;white-space:nowrap;border:1px solid transparent}
+  .b-std{background:#eef2ff;color:#4338ca;border-color:#c7d2fe}
+  .b-con{background:#ecfdf5;color:#047857;border-color:#a7f3d0}
+  .b-any{background:transparent;color:var(--text-muted,#94a3b8);border-color:var(--border,#e2e8f0);font-weight:600}
+  html[data-theme="dark"] .b-std{background:#312e81;color:#c7d2fe;border-color:#4338ca}
+  html[data-theme="dark"] .b-con{background:#064e3b;color:#a7f3d0;border-color:#047857}
+  html[data-theme="dark"] .b-any{background:transparent;color:#94a3b8;border-color:#374151}
   .shell{background:var(--surface,#fff);border:1px solid var(--border,#e2e8f0);border-radius:.75rem;overflow-x:auto}
   input[type=search]{background:var(--surface,#fff);border:1px solid var(--border,#cbd5e1);color:var(--text,#0f172a);
     border-radius:.5rem;padding:7px 11px;font-size:13px;min-width:230px}
@@ -62,7 +73,7 @@
 <main class="max-w-6xl mx-auto px-3 sm:px-5 py-5">
   <h1 class="text-xl sm:text-2xl font-extrabold tracking-tight">🧪 Strategy Phases Lab</h1>
   <p class="text-[13px] mt-1" style="color:var(--text-muted,#64748b)">
-    4,440,600 strategies tested (every sort factor × direction × all 1–3 filter combos) · survivorship-free engine ·
+    <span id="nTested">4,440,600</span> strategies tested (every sort factor × direction × all 1–3 filter combos) · survivorship-free engine ·
     Nifty 500 · <span id="vdesc"><b>every strategy = a TOP-5 basket, equal-weight, rebalanced monthly (reset)</b></span>.
     Unlisted research page. <span id="builtAt"></span>
   </p>
@@ -147,7 +158,7 @@
     if(YRS.length){ yw.style.display='';
       document.getElementById('ycards').innerHTML = YRS.map(y=>'<div class="pcard" data-k="'+y.key+'" role="button" tabindex="0">'+
         '<div class="t">'+y.label+'</div><div class="v pos">'+fmtTot(y.rows[0].tot)+'</div>'+
-        '<div class="s">best of 44.4L · bench '+(y.bench?(y.bench.totRet>=0?'+':'')+y.bench.totRet+'%':'—')+'</div></div>').join('')+
+        '<div class="s">best of '+lakh(NPOOL)+' · bench '+(y.bench?(y.bench.totRet>=0?'+':'')+y.bench.totRet+'%':'—')+'</div></div>').join('')+
         (cards.allY?'<div class="pcard" data-k="allY" role="button" tabindex="0">'+
         '<div class="t">⭐ Best in ALL years</div><div class="v pos">Top 100</div>'+
         '<div class="s">worst yearly rank across all '+YRS.length+'</div></div>':'');
@@ -159,7 +170,15 @@
     document.getElementById('builtAt').textContent='Built '+R.built+'.';
     // earnBasis is stamped by gridmega_phases_build.js; absent (older JSONs) = consolidated
     // with standalone fallback, the engine default — say nothing for that case.
-    const basisNote=R.earnBasis==='std'?' · standalone earnings':R.earnBasis==='conOnly'?' · consolidated-only earnings':'';
+    HAS_BASIS = !!(C && C.length && C[0].b);
+    // Pool size is per-payload now: a merged build ranks (strategy × basis) pairs, so it is
+    // larger than the 4,440,600 strategies a single-basis build ranks.
+    NPOOL = R.totalCombos || 4440600;
+    document.getElementById('nTested').textContent = NPOOL.toLocaleString('en-IN');
+    const BN={std:'standalone',con:'consolidated',conOnly:'consolidated-only'};
+    const basisNote = R.earnBasis==='merged'
+      ? ' · '+(R.bases||['std','con']).map(b=>BN[b]||b).join(' + ')+' earnings, ranked together'
+      : R.earnBasis && R.earnBasis!=='con' ? ' · '+(BN[R.earnBasis]||R.earnBasis)+' earnings' : '';
     document.getElementById('vdesc').innerHTML='<b>every strategy = a TOP-'+VDESC[curVar][0]+' basket on '+VDESC[curVar][2]+', equal-weight, '+VDESC[curVar][1]+basisNote+'</b>';
     document.getElementById('basketChip').textContent=(curVar==='fno'?'F&O · ':'')+'Top-'+VDESC[curVar][0]+' basket · equal-weight · '+(VDESC[curVar][1].indexOf('ride')===0?'ride winners':'monthly reset')+basisNote;
     cur='all4'; sortK=null; needle=''; document.getElementById('q').value='';
@@ -168,6 +187,16 @@
   const yearOf = k => YRS.find(y=>y.key===k);
   let cur='all4', sortK=null, sortAsc=true, needle='';
   const famOf = c => c.d+'-'+c.s;
+  const BLBL={std:'STD',con:'CON',any:'—'};
+  const BTIP={std:'Standalone earnings (parent company only)',
+              con:'Consolidated earnings (group, incl. subsidiaries)',
+              any:'Reads no earnings factor — identical under either basis'};
+  // Only show the Basis column when the payload actually carries one (older JSONs do not).
+  let HAS_BASIS=false;
+  // Size of the ranked pool this payload came from (see applyData) — a merged build ranks
+  // (strategy x basis) pairs, so 'out of N' must come from the data, never a baked-in constant.
+  let NPOOL=4440600;
+  const lakh = n => (n/100000).toFixed(1).replace(/\.0$/,'')+' lakh';
   const MQ = window.matchMedia('(max-width:700px)');
   const narrow = () => MQ.matches;
   // Rotate / resize across the breakpoint → rebuild the header in the other order.
@@ -200,12 +229,17 @@
     // strategy a row is. Lead with them there; theme.js then pins 'Rank by' (its
     // pin2 rule pins column 2 when column 1 is a bare rank gutter), so the name
     // stays put while the numbers slide under it.
-    const ident = [['fam','Rank by'],['f','Filters']];
+    // 'Basis' rides with the identity columns: which earnings basis (standalone / consolidated)
+    // produced the row. In a merged build the SAME rule can appear twice, once per basis, so
+    // without this column two rows would look identical and disagree on every number.
+    const ident = HAS_BASIS ? [['fam','Rank by'],['b','Basis'],['f','Filters']]
+                            : [['fam','Rank by'],['f','Filters']];
     return narrow() ? [base[0]].concat(ident, base.slice(1)) : base.concat(ident);
   }
   function valOf(r,k,col){
     if(col==='rk')return r.rk; if(col==='worst')return r.worst;
     if(col==='fam')return famOf(r.c); if(col==='f')return r.c.f;
+    if(col==='b')return BLBL[r.c.b]||r.c.b||'';
     if(r.yr&&col[0]==='y'){ return r.yr[+col.slice(1)]; }
     if(r.y){ return col==='tot'?r.y.tot:col==='cg'?r.y.cg:col==='dd'?r.y.dd:r.y.win; }
     if(k==='all4'){ if(col==='dd') return r.c.p[0][2];
@@ -219,12 +253,14 @@
     document.getElementById('th').innerHTML = '<tr>'+head.map(([ck,l])=>
       '<th data-c="'+ck+'" class="'+(ck==='fam'||ck==='f'?'':'num')+'">'+l+(sortK===ck?(sortAsc?' ▴':' ▾'):'')+'</th>').join('')+'</tr>';
     let rows = rowsFor(cur);
-    if(needle) rows = rows.filter(r=>r.c.f.toLowerCase().includes(needle)||famOf(r.c).toLowerCase().includes(needle));
+    if(needle) rows = rows.filter(r=>r.c.f.toLowerCase().includes(needle)||famOf(r.c).toLowerCase().includes(needle)||(r.c.b||'').toLowerCase().includes(needle));
     if(sortK) rows.sort((a,b)=>{const x=valOf(a,cur,sortK),y=valOf(b,cur,sortK);
       return (typeof x==='number'?x-y:String(x).localeCompare(String(y)))*(sortAsc?1:-1);});
     document.getElementById('tb').innerHTML = rows.map(r=>{
       const cells = head.map(([ck])=>{
         if(ck==='fam')return '<td><span class="fam">'+esc(famOf(r.c))+'</span></td>';
+        if(ck==='b'){const b=r.c.b||'';
+          return '<td><span class="bchip b-'+esc(b)+'" title="'+esc(BTIP[b]||'')+'">'+esc(BLBL[b]||b)+'</span></td>';}
         if(ck==='f')return '<td class="mono" style="font-size:12px">'+esc(r.c.f)+'</td>';
         let v=valOf(r,cur,ck), txt;
         // In the consistency table a phase column is a TOTAL return unless that phase declares
@@ -242,9 +278,9 @@
     document.querySelectorAll('.pcard[data-k]').forEach(el=>el.classList.toggle('on',el.dataset.k===cur));
     const Y=yearOf(cur), pi=PI[cur]||0;
     document.getElementById('foot').textContent = cur==='all4'
-      ? 'Worst rank = a strategy’s poorest rank across the '+P.length+' phases (out of 44.4 lakh). Lower = consistently elite. Total-% columns are absolute returns for each phase — the 2018-20 bear phase is the only one that is not carved out of the post-Covid bull run, so it is where most “consistent” strategies fall apart. All rows: '+basketDesc()+'.'
+      ? 'Worst rank = a strategy’s poorest rank across the '+P.length+' phases (out of '+lakh(NPOOL)+'). Lower = consistently elite. Total-% columns are absolute returns for each phase — the 2018-20 bear phase is the only one that is not carved out of the post-Covid bull run, so it is where most “consistent” strategies fall apart. All rows: '+basketDesc()+'.'
       : cur==='allY'
-      ? 'Worst yearly rank = a strategy’s poorest rank across all '+YRS.length+' calendar years (out of 44.4 lakh). Year columns are absolute total returns. All rows: '+basketDesc()+'.'
+      ? 'Worst yearly rank = a strategy’s poorest rank across all '+YRS.length+' calendar years (out of '+lakh(NPOOL)+'). Year columns are absolute total returns. All rows: '+basketDesc()+'.'
       : Y ? 'Year '+Y.start+' → '+Y.end+' ('+Y.years+'y). Total % is absolute. Benchmark Nifty 500: '+(Y.bench?fmtTot(Y.bench.totRet):'—')+' total. All rows: Nifty 500 universe, '+basketDesc()+'.'
       : 'Phase '+P[pi].start+' → '+P[pi].end+' ('+P[pi].years+'y). Total % is absolute (not annualised). Benchmark Nifty 500: '+(P[pi].bench&&P[pi].bench.totRet!=null?fmtTot(P[pi].bench.totRet):'—')+' total. All rows: Nifty 500 universe, '+basketDesc()+'.';
   }

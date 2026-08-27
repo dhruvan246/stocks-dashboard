@@ -59,10 +59,13 @@ def main():
     subprocess.run(["node", "--check", runner], check=True)
     print("runner built + syntax-checked", flush=True)
 
+    # The marker name must match grid_search_mega.js's TAG exactly, basis suffix included —
+    # otherwise a `con` sweep sees the `std` markers and skips every window as "already done".
+    basis = os.environ.get("EARN_BASIS", "con")
     jobs = []
     for start, end in windows(a.end):
         for vtag, env in VARIANTS:
-            tag = "%s_%s%s" % (start, end, vtag)
+            tag = "%s_%s%s_%s" % (start, end, vtag, basis)
             if os.path.exists(os.path.join(HERE, "_gridmega_top_%s.json" % tag)):
                 continue
             jobs.append((tag, start, end, env))

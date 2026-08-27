@@ -59,58 +59,110 @@ const TOP_PHASE = 1000, TOP_YEAR = 1000, TOP_CONSIST = 100;
 if (!END) { console.error('set GRID_END=<yyyy-mm-dd> (the data end the grids were run with)'); process.exit(1); }
 const resolve = w => ({ ...w, end: w.end === 'END' ? END : w.end });
 const WINDOWS = [...PHASES, ...YEARS].map(resolve);
-const tagOf = w => w.start + '_' + w.end + VTAG;
+// MERGE_BASES=std,con ranks BOTH earnings bases in ONE pool, so a card's top-1000 is the best
+// 1000 (strategy × basis) pairs rather than the best 1000 of whichever basis you happened to
+// build. Every row then carries which basis produced it. Default = the single EARN_BASIS.
+const EARN_BASIS = process.env.EARN_BASIS || 'con';
+const BASES = (process.env.MERGE_BASES || EARN_BASIS).split(',').map(s => s.trim()).filter(Boolean);
+for (const b of BASES) if (!['std', 'con', 'conOnly'].includes(b)) {
+  console.error('MERGE_BASES entries must be std|con|conOnly, got ' + JSON.stringify(b)); process.exit(1); }
+if (new Set(BASES).size !== BASES.length) { console.error('MERGE_BASES has a duplicate: ' + BASES.join(',')); process.exit(1); }
+const tagOf = (w, b) => w.start + '_' + w.end + VTAG + '_' + b;
 
-// ---- gate: every window must have its DONE marker
-const missing = WINDOWS.filter(w => !fs.existsSync(S('_gridmega_top_' + tagOf(w) + '.json')));
+// ---- gate: every window must have its DONE marker, for EVERY basis being merged
+const missing = [];
+for (const w of WINDOWS) for (const b of BASES)
+  if (!fs.existsSync(S('_gridmega_top_' + tagOf(w, b) + '.json'))) missing.push(tagOf(w, b));
 if (missing.length) {
-  console.error('NOT READY — ' + missing.length + ' window(s) still have no _gridmega_top_ marker:');
-  missing.forEach(w => console.error('   ' + w.key + '  ' + tagOf(w)));
+  console.error('NOT READY — ' + missing.length + ' window/basis pair(s) have no _gridmega_top_ marker:');
+  missing.forEach(t => console.error('   ' + t));
   process.exit(2);
 }
 
-// ---- gate: the grids' earnings basis must match this build's EARN_BASIS. The marker is written
-// by the same run that wrote the CSV, so this catches a build whose pass-2 re-scoring would use a
-// different basis than the pass-1 CSVs (markers from before the stamp existed count as 'con').
-const EARN_BASIS = process.env.EARN_BASIS || 'con';
-for (const w of WINDOWS) {
-  const mk = JSON.parse(fs.readFileSync(S('_gridmega_top_' + tagOf(w) + '.json'), 'utf8'));
+// ---- gate: each marker must stamp the basis whose file it is. The marker is written by the same
+// run that wrote the CSV, so this catches a mislabelled or clobbered artifact before its numbers
+// reach the page under the wrong basis label.
+for (const w of WINDOWS) for (const b of BASES) {
+  const mk = JSON.parse(fs.readFileSync(S('_gridmega_top_' + tagOf(w, b) + '.json'), 'utf8'));
   const got = mk.earnBasis || 'con';
-  if (got !== EARN_BASIS) {
-    console.error('BASIS MISMATCH ' + w.key + ': marker says ' + got + ', build running with ' + EARN_BASIS);
+  if (got !== b) {
+    console.error('BASIS MISMATCH ' + w.key + ' [' + b + ']: marker says ' + got);
     process.exit(5);
   }
 }
 
-// ---- pass 1: read each window's CSV, rank every combo by CAGR
-// Keeps one Int32Array of ranks per window (~18 MB each); the CAGR column is freed after ranking.
-async function rankWindow(w) {
-  const file = S('_gridmega_all_' + tagOf(w) + '.csv.gz');
-  const cagr = [];
+// Which grid rows actually READ earnings. The engine's needsFund() (backtest-engine.js) says a
+// strategy consults fundamentals only if its sort field or one of its filters is a FUND field —
+// so a strategy touching none of them scores IDENTICALLY under std and con. Its con copy is a
+// pure duplicate and must never occupy a second slot in a card. Derived from the CSV's own
+// sortBy/filters text, so it cannot drift from the enumeration that produced the row.
+const FUND_FIELDS = ['profitYoyPct', 'profitBase', 'profitAccel', 'profitTTM', 'profitStreak', 'postDrift', 'composite'];
+const FUND_SET = new Set(FUND_FIELDS);
+const FUND_RE = new RegExp('(^|[^A-Za-z])(' + FUND_FIELDS.join('|') + ')([^A-Za-z]|$)');
+let FUNDFLAG = null;          // Uint8Array over the N grid rows, 1 = basis-dependent
+let NROWS = 0;
+
+// Read one window/basis CSV → its CAGR column. On the very first call it also derives FUNDFLAG.
+async function readCagr(file, deriveFlags) {
+  const cagr = [], flags = deriveFlags ? [] : null;
   const rl = readline.createInterface({
     input: fs.createReadStream(file).pipe(zlib.createGunzip()), crlfDelay: Infinity });
   let first = true;
   for await (const line of rl) {
     if (first) { first = false; continue; }              // header
     if (!line) continue;
-    // sortBy,dir,filters,cagr,maxDD,winRate,avgPicks — filters never contains a comma (grid
-    // replaces them with ';'), so the 4th field is always CAGR.
-    let c = 0, i = -1;
-    for (let k = 0; k < line.length && c < 3; k++) if (line.charCodeAt(k) === 44) { c++; i = k; }
-    let j = line.indexOf(',', i + 1);
-    cagr.push(+line.slice(i + 1, j));
+    // sortBy,dir,filters,cagr,maxDD,winRate,avgPicks — filters never contains a comma (the grid
+    // writes ';' between atoms), so field 3 is always CAGR.
+    const c1 = line.indexOf(','), c2 = line.indexOf(',', c1 + 1), c3 = line.indexOf(',', c2 + 1);
+    const c4 = line.indexOf(',', c3 + 1);
+    cagr.push(+line.slice(c3 + 1, c4));
+    if (flags) flags.push((FUND_SET.has(line.slice(0, c1)) || FUND_RE.test(line.slice(c2 + 1, c3))) ? 1 : 0);
   }
-  const n = cagr.length;
-  const C = Float32Array.from(cagr); cagr.length = 0;
+  if (flags) {
+    FUNDFLAG = Uint8Array.from(flags); NROWS = FUNDFLAG.length;
+    const nDep = flags.reduce((a, b) => a + b, 0);
+    console.error('basis-dependent rows: ' + nDep.toLocaleString() + ' of ' + NROWS.toLocaleString() +
+                  ' (' + (nDep / NROWS * 100).toFixed(1) + '%) — the rest score identically under every basis');
+  }
+  return cagr;
+}
+
+// The merged index space: position g → (basis BASES[GB[g]], grid row GR[g]). Basis 0 contributes
+// every row; each later basis contributes only its basis-DEPENDENT rows, which is the dedupe.
+let GB = null, GR = null, M = 0;
+function buildGlobalIndex() {
+  let nDep = 0; for (let i = 0; i < NROWS; i++) if (FUNDFLAG[i]) nDep++;
+  M = NROWS + (BASES.length - 1) * nDep;
+  GB = new Uint8Array(M); GR = new Int32Array(M);
+  let g = 0;
+  for (let i = 0; i < NROWS; i++) { GB[g] = 0; GR[g] = i; g++; }
+  for (let k = 1; k < BASES.length; k++) for (let i = 0; i < NROWS; i++) if (FUNDFLAG[i]) { GB[g] = k; GR[g] = i; g++; }
+  if (g !== M) throw new Error('global index build mismatch: ' + g + ' vs ' + M);
+  console.error('merged pool: ' + M.toLocaleString() + ' (strategy × basis) pairs across ' + BASES.join('+'));
+}
+
+// ---- pass 1: rank the merged pool for one window.
+// Keeps one Int32Array of ranks per window; the CAGR column is freed after ranking.
+async function rankWindow(w) {
+  const per = [];
+  for (const b of BASES) {
+    const arr = await readCagr(S('_gridmega_all_' + tagOf(w, b) + '.csv.gz'), FUNDFLAG === null);
+    if (arr.length !== NROWS) throw new Error('row count ' + arr.length + ' != ' + NROWS + ' for ' + tagOf(w, b));
+    per.push(Float32Array.from(arr));
+  }
+  if (GB === null) buildGlobalIndex();
+  const C = new Float32Array(M);
+  for (let g = 0; g < M; g++) C[g] = per[GB[g]][GR[g]];
   // A plain Array (not a TypedArray) because Array.prototype.sort is spec-stable: ties then keep
   // the grid's enumeration order, so the same input always yields the same ranking.
-  const ord = new Array(n); for (let i = 0; i < n; i++) ord[i] = i;
+  const ord = new Array(M); for (let i = 0; i < M; i++) ord[i] = i;
   ord.sort((a, b) => C[b] - C[a]);
-  const rank = new Int32Array(n);
-  for (let k = 0; k < n; k++) rank[ord[k]] = k + 1;
+  const rank = new Int32Array(M);
+  for (let k = 0; k < M; k++) rank[ord[k]] = k + 1;
   const top = ord.slice(0, Math.max(TOP_PHASE, TOP_YEAR));
-  console.error('  ranked ' + w.key + ': ' + n.toLocaleString() + ' combos, best CAGR ' + C[ord[0]].toFixed(2));
-  return { n, rank, top };
+  console.error('  ranked ' + w.key + ': ' + M.toLocaleString() + ' pairs, best CAGR ' + C[ord[0]].toFixed(2) +
+                ' [' + BASES[GB[ord[0]]] + ']');
+  return { n: M, rank, top };
 }
 
 (async function () {
@@ -146,38 +198,67 @@ async function rankWindow(w) {
   all4Idx.forEach(i => union.add(i)); allYIdx.forEach(i => union.add(i));
   const sel = [...union].sort((a, b) => a - b);
   console.error('selected ' + sel.length.toLocaleString() + ' distinct strategies for the payload');
-  const SELF = S('_gridmega_selidx' + (VTAG || '_r5') + '.json');
-  fs.writeFileSync(SELF, JSON.stringify(sel));
+  // Each basis re-simulates only ITS OWN selected rows, so the SELECT run's env basis always
+  // matches the rows it is scoring.
+  const selRowsByBasis = BASES.map(() => []);
+  sel.forEach(g => selRowsByBasis[GB[g]].push(GR[g]));
+  BASES.forEach((b, k) => console.error('  selection: ' + selRowsByBasis[k].length.toLocaleString() + ' rows on ' + b));
 
   // ---- pass 2: exact metrics for the selection, window by window, through the grid's SELECT mode
   const RUN = S('_gridmega_run.js');
-  const env = { ...process.env, SELECT_FILE: SELF };
-  if (VTAG === '_h5') { env.TOPN = '5'; env.METHOD = 'hold'; }
-  else if (VTAG === '_r3') { env.TOPN = '3'; env.METHOD = 'reset'; }
-  else if (VTAG === '_h3') { env.TOPN = '3'; env.METHOD = 'hold'; }
-  else if (VTAG === '_fno_h3') { env.TOPN = '3'; env.METHOD = 'hold'; env.UNIVERSE = '__FNO__'; }
-  const SEL = {};
+  const baseEnv = { ...process.env };
+  if (VTAG === '_h5') { baseEnv.TOPN = '5'; baseEnv.METHOD = 'hold'; }
+  else if (VTAG === '_r3') { baseEnv.TOPN = '3'; baseEnv.METHOD = 'reset'; }
+  else if (VTAG === '_h3') { baseEnv.TOPN = '3'; baseEnv.METHOD = 'hold'; }
+  else if (VTAG === '_fno_h3') { baseEnv.TOPN = '3'; baseEnv.METHOD = 'hold'; baseEnv.UNIVERSE = '__FNO__'; }
+  const SELF = BASES.map((b, k) => {
+    const f = S('_gridmega_selidx' + (VTAG || '_r5') + '_' + b + '.json');
+    fs.writeFileSync(f, JSON.stringify(selRowsByBasis[k]));
+    return f;
+  });
+  // SEL[windowKey][basisIdx] = Map(gridRow -> exact metrics)
+  const SEL = {}, BENCH = {};
   for (const w of WINDOWS) {
-    const out = S('_gridmega_sel_' + tagOf(w) + '.json');
-    if (!fs.existsSync(out)) {
-      console.error('  re-simulating ' + sel.length + ' strategies over ' + w.key + '…');
-      execFileSync(process.execPath, ['--max-old-space-size=3072', RUN, w.start, w.end],
-                   { env, stdio: ['ignore', 'ignore', 'inherit'] });
+    SEL[w.key] = [];
+    for (let k = 0; k < BASES.length; k++) {
+      const b = BASES[k];
+      const out = S('_gridmega_sel_' + tagOf(w, b) + '.json');
+      if (!fs.existsSync(out)) {
+        console.error('  re-simulating ' + selRowsByBasis[k].length + ' [' + b + '] strategies over ' + w.key + '…');
+        execFileSync(process.execPath, ['--max-old-space-size=3072', RUN, w.start, w.end],
+                     { env: { ...baseEnv, SELECT_FILE: SELF[k], EARN_BASIS: b }, stdio: ['ignore', 'ignore', 'inherit'] });
+      }
+      const j = JSON.parse(fs.readFileSync(out, 'utf8'));
+      if (j.rows.length !== selRowsByBasis[k].length) {
+        console.error('SELECT returned ' + j.rows.length + ' of ' + selRowsByBasis[k].length + ' for ' + w.key + ' [' + b + ']');
+        process.exit(4);
+      }
+      const m = new Map(); for (const r of j.rows) m.set(r.i, r);
+      SEL[w.key].push(m);
+      if (k === 0) BENCH[w.key] = { bench: j.bench, years: j.years };
     }
-    const j = JSON.parse(fs.readFileSync(out, 'utf8'));
-    if (j.rows.length !== sel.length) { console.error('SELECT returned ' + j.rows.length + ' of ' + sel.length + ' for ' + w.key); process.exit(4); }
-    SEL[w.key] = j;
   }
+  const metric = (wkey, g) => {
+    const r = SEL[wkey][GB[g]].get(GR[g]);
+    if (!r) throw new Error('no SELECT row for grid row ' + GR[g] + ' [' + BASES[GB[g]] + '] in ' + wkey);
+    return r;
+  };
 
   // ---- assemble the payload the page reads
-  const pos = new Map(); sel.forEach((rowIdx, k) => pos.set(rowIdx, k));
-  const ref = SEL.full.rows;
-  const combos = sel.map((rowIdx, k) => ({
-    s: ref[k].s, d: ref[k].d, f: ref[k].f,
-    p: PHASES.map(p => { const r = SEL[p.key].rows[k]; return [r.cagr, r.tot, r.dd, r.win]; }),
-  }));
+  const pos = new Map(); sel.forEach((g, k) => pos.set(g, k));
+  const combos = sel.map(g => {
+    const ref = metric('full', g);
+    return {
+      s: ref.s, d: ref.d, f: ref.f,
+      // Which earnings basis produced these numbers — 'any' when the strategy reads NO earnings
+      // factor at all, because then every basis yields this exact row and calling it 'std' would
+      // invent a distinction the data does not have.
+      b: FUNDFLAG[GR[g]] ? BASES[GB[g]] : 'any',
+      p: PHASES.map(p => { const r = metric(p.key, g); return [r.cagr, r.tot, r.dd, r.win]; }),
+    };
+  });
   const cards = { all4: all4Idx.map(i => ({ i: pos.get(i), worst: worst4[i], ranks: PHASES.map(p => R[p.key].rank[i]) })),
-                  allY: allYIdx.map(i => ({ i: pos.get(i), worst: worstY[i], yrets: YEARS.map(y => Math.round(SEL[y.key].rows[pos.get(i)].tot)) })) };
+                  allY: allYIdx.map(i => ({ i: pos.get(i), worst: worstY[i], yrets: YEARS.map(y => Math.round(metric(y.key, i).tot)) })) };
   PHASES.forEach(p => { cards[p.key] = R[p.key].top.slice(0, TOP_PHASE).map(i => pos.get(i)); });
 
   // The grid derives `bench` from nifty500.json, whose DAILY series only starts 2012-01-02 — so any
@@ -193,19 +274,19 @@ async function rankWindow(w) {
     const a = IDXM[iso.slice(0, 4)]; if (!a) return null;
     const v = a[+iso.slice(5, 7) - 1]; return (v == null) ? null : v; };
   for (const p of PHASES) {
-    const b = SEL[p.key].bench;
+    const b = BENCH[p.key].bench;
     if (b && b.cagr != null) continue;
     const e = resolve(p).end;
     // month-end closes: use the start month and the last COMPLETE month before the end
     const em = new Date(Date.parse(e + 'T00:00:00Z')); em.setUTCDate(0);
     const a0 = monthClose(p.start), a1 = monthClose(em.toISOString().slice(0, 10));
     if (a0 && a1) {
-      const yrs = SEL[p.key].years;
-      SEL[p.key].bench = { totRet: +((a1 / a0 - 1) * 100).toFixed(1),
-                           cagr: +(((a1 / a0) ** (1 / yrs) - 1) * 100).toFixed(2),
-                           src: 'index_monthly (daily NIFTY500 starts 2012)' };
+      const yrs = BENCH[p.key].years;
+      BENCH[p.key].bench = { totRet: +((a1 / a0 - 1) * 100).toFixed(1),
+                             cagr: +(((a1 / a0) ** (1 / yrs) - 1) * 100).toFixed(2),
+                             src: 'index_monthly (daily NIFTY500 starts 2012)' };
       console.error('  bench for "' + p.key + '" recovered from index_monthly: ' +
-                    SEL[p.key].bench.cagr + '% CAGR');
+                    BENCH[p.key].bench.cagr + '% CAGR');
     } else {
       console.error('  WARNING: no benchmark for phase "' + p.key + '" — page must tolerate null');
     }
@@ -213,22 +294,25 @@ async function rankWindow(w) {
 
   const universeLabel = VTAG === '_fno_h3' ? 'F&O stocks' : 'Nifty 500';
   const basket = 'top-' + (VTAG.includes('3') ? 3 : 5) + ' · ' + (VTAG.includes('h') ? 'hold' : 'reset');
-  const basisLabel = EARN_BASIS === 'std' ? ' · standalone earnings'
-                   : EARN_BASIS === 'conOnly' ? ' · consolidated-only earnings' : '';
+  const BLABEL = { std: 'standalone', con: 'consolidated', conOnly: 'consolidated-only' };
+  const basisLabel = BASES.length > 1
+    ? ' · ' + BASES.map(b => BLABEL[b]).join(' + ') + ' earnings, ranked together'
+    : BASES[0] === 'con' ? '' : ' · ' + BLABEL[BASES[0]] + ' earnings';
   const out = {
     built: new Date().toISOString().slice(0, 10),
     totalCombos: N,
     universe: universeLabel + ' · monthly · ' + basket + basisLabel,
-    earnBasis: EARN_BASIS,
+    earnBasis: BASES.length > 1 ? 'merged' : BASES[0],
+    bases: BASES,
     dataEnd: END,
     phases: PHASES.map(p => ({ key: p.key, label: p.label, card: p.card, short: p.short,
       metric: p.metric || 'tot', start: p.start, end: resolve(p).end,
-      years: SEL[p.key].years, bench: SEL[p.key].bench })),
+      years: BENCH[p.key].years, bench: BENCH[p.key].bench })),
     combos,
     cards,
     years: YEARS.map(y => ({ key: y.key, label: y.label, start: y.start, end: resolve(y).end,
-      years: SEL[y.key].years, bench: { totRet: SEL[y.key].bench.totRet },
-      rows: R[y.key].top.slice(0, TOP_YEAR).map(i => { const r = SEL[y.key].rows[pos.get(i)];
+      years: BENCH[y.key].years, bench: { totRet: BENCH[y.key].bench.totRet },
+      rows: R[y.key].top.slice(0, TOP_YEAR).map(i => { const r = metric(y.key, i);
         return { i: pos.get(i), cg: r.cagr, tot: r.tot, dd: r.dd, win: r.win }; }) })),
   };
   const DST = path.join(ROOT, 'docs', 'strategy_phases' + VTAG + '.json');
