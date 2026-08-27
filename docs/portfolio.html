@@ -258,6 +258,10 @@ select,input[type=text],input[type=number],input[type=date]{
         <div class="sub" id="valueSub"></div>
         <div class="body"><div id="chValue"></div></div></div>
 
+      <div class="card c12" data-card="stackvalue"><h2>Portfolio value by strategy</h2>
+        <div class="sub" id="stackSub">Each strategy\u2019s share of the total market value over time \u2014 the bands stack to the whole book.</div>
+        <div class="body"><div id="chStackVal"></div></div></div>
+
       <div class="card c4" data-card="allocation"><h2>Allocation</h2>
         <div class="sub">Share of current market value.</div>
         <div class="body">
@@ -581,10 +585,11 @@ function buildHistory(rows){
     return cal.map(o=>{ if(m.has(o)) last=m.get(o); return last; });
   });
   const val=[], cost=[], twr=[];
+  const usedPfs=[...new Set(used.map(r=>r.pf))]; const valByPf={}; usedPfs.forEach(p=>valByPf[p]=[]);   // per-strategy value over time
   for(let i=0;i<cal.length;i++){
-    let v=0,c=0;
-    used.forEach((r,k)=>{ if(r.buyOff<=cal[i] && px[k][i]!=null){ v+=r.qty*px[k][i]; c+=r.cost; } });
-    val.push(v); cost.push(c);
+    let v=0,c=0; const pv={}; usedPfs.forEach(p=>pv[p]=0);
+    used.forEach((r,k)=>{ if(r.buyOff<=cal[i] && px[k][i]!=null){ const x=r.qty*px[k][i]; v+=x; c+=r.cost; pv[r.pf]+=x; } });
+    val.push(v); cost.push(c); usedPfs.forEach(p=>valByPf[p].push(pv[p]));
     if(i===0){ twr.push(1); continue; }
     let num=0,den=0;
     used.forEach((r,k)=>{ const a=px[k][i-1],b=px[k][i];
@@ -595,13 +600,13 @@ function buildHistory(rows){
   const todayOff=isoToOff(istTodayISO());
   if(todayOff>cal[cal.length-1]){
     const last=cal.length-1;
-    let v=0,c=0,num=0,den=0;
+    let v=0,c=0,num=0,den=0; const pv={}; usedPfs.forEach(p=>pv[p]=0);
     used.forEach((r,k)=>{
-      if(r.buyOff<=todayOff && r.px!=null){ v+=r.qty*r.px; c+=r.cost; }
+      if(r.buyOff<=todayOff && r.px!=null){ const x=r.qty*r.px; v+=x; c+=r.cost; pv[r.pf]+=x; }
       const a=px[k][last];
       if(a!=null && r.px!=null && r.buyOff<=cal[last]){ num+=r.qty*r.px; den+=r.qty*a; }
     });
-    if(v>0){ cal.push(todayOff); val.push(v); cost.push(c); twr.push(twr[last]*(den>0?num/den:1)); }
+    if(v>0){ cal.push(todayOff); val.push(v); cost.push(c); twr.push(twr[last]*(den>0?num/den:1)); usedPfs.forEach(p=>valByPf[p].push(pv[p])); }
   }
   /* benchmark aligned to the same calendar, forward filled */
   let nif500=null;
@@ -612,7 +617,7 @@ function buildHistory(rows){
   }
   const dd=[]; let peak=-Infinity;
   twr.forEach(v=>{ peak=Math.max(peak,v); dd.push((v/peak-1)*100); });
-  return {cal, val, cost, twr:twr.map(v=>v*100), nif500, dd,
+  return {cal, val, cost, twr:twr.map(v=>v*100), nif500, dd, valByPf, usedPfs,
           excluded: rows.length-used.length,
           exclValue: rows.filter(r=>!(SERIES[r.hist]&&SERIES[r.hist].d)).reduce((s,r)=>s+(r.value||0),0)};
 }
@@ -694,6 +699,7 @@ function showTip(html,ev){
   TIP.style.left=Math.max(8,x)+'px'; TIP.style.top=Math.max(8,y)+'px';
 }
 function hideTip(){ TIP.classList.remove('show'); }
+function narrowChart(){ return (document.documentElement.clientWidth||800)<640; }
 function chartW(host){
   let el=host, w=0;
   while(el && !w){ w=el.clientWidth||0; el=el.parentElement; }   // 0 inside a hidden subtree
@@ -781,6 +787,47 @@ function lineChart(host,o){
 }
 
 /* ---- horizontal bars, diverging around zero ---- */
+/* stacked area — value over time split into bands (per strategy), like investing.com's
+   "Positions over time". o.series=[{name,color,vals[]}] stacked bottom-up to the total. */
+function stackedArea(host,o){
+  const W=chartW(host), narrow=W<520, H=o.h||300, P={t:14,r:14,b:26,l:narrow?54:64};
+  const n=o.cal.length, series=o.series.filter(se=>se.vals.some(v=>v>0));
+  if(n<2||!series.length){ host.innerHTML='<div class="empty">Not enough history to plot.</div>'; return; }
+  const totals=o.cal.map((_,i)=>series.reduce((a,se)=>a+(se.vals[i]||0),0));
+  const hi=Math.max(...totals,1)*1.06;
+  const priv=privOn(), redY=v=>priv?DOTS:o.fmtY(v);
+  const X=i=>P.l+(W-P.l-P.r)*(n===1?0:i/(n-1));
+  const Y=v=>P.t+(H-P.t-P.b)*(1-v/hi);
+  let s='<svg class="chart" viewBox="0 0 '+W+' '+H+'">';
+  niceTicks(0,hi,4).forEach(t=>{ s+='<line class="gridline" x1="'+P.l+'" x2="'+(W-P.r)+'" y1="'+Y(t).toFixed(1)+'" y2="'+Y(t).toFixed(1)+'"/>'
+    +'<text class="axis" x="'+(P.l-7)+'" y="'+(Y(t)+3.5).toFixed(1)+'" text-anchor="end">'+esc(redY(t))+'</text>'; });
+  const step=Math.max(1,Math.floor(n/(narrow?3:5)));
+  for(let i=0;i<n;i+=step) s+='<text class="axis" x="'+X(i).toFixed(1)+'" y="'+(H-8)+'" text-anchor="middle">'+shortDate(offToISO(o.cal[i]))+'</text>';
+  let below=o.cal.map(()=>0);
+  series.forEach(se=>{ const top=o.cal.map((_,i)=>below[i]+(se.vals[i]||0));
+    let d='M'+X(0).toFixed(1)+' '+Y(top[0]).toFixed(1);
+    for(let i=1;i<n;i++) d+=' L'+X(i).toFixed(1)+' '+Y(top[i]).toFixed(1);
+    for(let i=n-1;i>=0;i--) d+=' L'+X(i).toFixed(1)+' '+Y(below[i]).toFixed(1);
+    s+='<path d="'+d+' Z" fill="'+se.color+'" fill-opacity="0.82" stroke="'+se.color+'" stroke-width="0.5"/>';
+    below=top; });
+  s+='<path d="'+o.cal.map((_,i)=>(i?'L':'M')+X(i).toFixed(1)+' '+Y(totals[i]).toFixed(1)).join(' ')+'" fill="none" stroke="var(--text)" stroke-width="1.1" opacity="0.45"/>';
+  s+='<line id="sx" x1="0" x2="0" y1="'+P.t+'" y2="'+(H-P.b)+'" stroke="var(--text-3)" opacity="0"/>';
+  s+='<rect x="'+P.l+'" y="'+P.t+'" width="'+(W-P.l-P.r)+'" height="'+(H-P.t-P.b)+'" fill="transparent" id="shit"/></svg>';
+  let leg='<div class="legend">'+series.map(se=>'<span><i style="background:'+se.color+'"></i>'+esc(se.name)+'</span>').join('')+'</div>';
+  host.innerHTML=leg+s;
+  const svg=host.querySelector('svg'), hit=host.querySelector('#shit'), sx=host.querySelector('#sx');
+  function move(ev){ const b=svg.getBoundingClientRect(); const p2=(ev.clientX-b.left)/b.width*W;
+    let i=Math.round((p2-P.l)/((W-P.l-P.r)||1)*(n-1)); i=Math.max(0,Math.min(n-1,i));
+    sx.setAttribute('x1',X(i)); sx.setAttribute('x2',X(i)); sx.setAttribute('opacity','.5');
+    let html='<b>'+shortDate(offToISO(o.cal[i]))+'</b>';
+    series.forEach(se=>{ const v=se.vals[i]||0; if(v>0) html+='<div class="r"><span><i style="display:inline-block;width:9px;height:9px;border-radius:2px;background:'+se.color+';margin-right:6px"></i>'+esc(se.name)+'</span><b class="secret">'+o.fmtT(v)+'</b></div>'; });
+    html+='<div class="r" style="border-top:1px solid var(--border);margin-top:3px;padding-top:3px"><span>Total</span><b class="secret">'+o.fmtT(totals[i])+'</b></div>';
+    showTip(html,ev); }
+  hit.addEventListener('mousemove',move);
+  hit.addEventListener('mouseleave',()=>{ hideTip(); sx.setAttribute('opacity','0'); });
+  hit.addEventListener('touchstart',e=>{ if(e.touches[0]) move(e.touches[0]); },{passive:true});
+  hit.addEventListener('touchmove', e=>{ if(e.touches[0]) move(e.touches[0]); },{passive:true});
+}
 function barsH(host,items,o){
   o=o||{};
   /* Privacy: SVG <text> can't be blurred in Safari, so redact the CONTENT when 🙈 is on.
@@ -998,6 +1045,10 @@ function renderCharts(rows){
       extra:i=>{ const g=H.val[i]-H.cost[i];
         return '<div class="r"><span>Unrealised</span><b class="'+cls(g)+'">'+inrSigned(g)+'</b></div>'; }});
     $('valueSub').innerHTML='Daily closes'+(H.excluded?' · <b>'+H.excluded+' holding'+(H.excluded>1?'s':'')+' with no price history excluded</b> ('+inr(H.exclValue)+' of current value)':'')+'. Cost basis steps up on each purchase.';
+    const stackSeries=(H.usedPfs||[]).map(pf=>{ const idx=(DOC.portfolios||[]).findIndex(p=>p.id===pf); const p=pfById(pf);
+        return {name:p.name||pf, color:SLOT[(idx<0?0:idx)%8], vals:H.valByPf[pf]||[]}; })
+      .sort((a,b)=>(b.vals[b.vals.length-1]||0)-(a.vals[a.vals.length-1]||0));   // biggest at the bottom
+    stackedArea($('chStackVal'), {cal:H.cal, h:narrowChart()?260:320, series:stackSeries, fmtY:v=>inr(v,1), fmtT:v=>inr(v)});
     lineChart($('chTwr'),{cal:H.cal,h:250,series:[
         {name:'Portfolio',color:'var(--s1)',vals:H.twr},
         {name:'Nifty 500',color:'var(--s2)',vals:H.nif500||[]}],
@@ -1010,7 +1061,7 @@ function renderCharts(rows){
       fmtY:v=>v.toFixed(0)+'%', fmtT:v=>pct(v), zero:true});
     barsV($('chMonth'),monthlyReturns(H).map(m=>({label:m.m.slice(5)+'/'+m.m.slice(2,4),full:m.m,value:m.r})),{fmtV:v=>pct(v,1)});
   } else {
-    ['chValue','chTwr','chDD','chMonth'].forEach(id=>$(id).innerHTML='<div class="empty">No price history for this selection.</div>');
+    ['chValue','chStackVal','chTwr','chDD','chMonth'].forEach(id=>$(id).innerHTML='<div class="empty">No price history for this selection.</div>');
   }
 
   /* allocation donut */
