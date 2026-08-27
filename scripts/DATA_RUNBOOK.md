@@ -12944,3 +12944,24 @@ the 29,998 pre-XBRL-cache cells, remain open. The pre-2018 screen bounds to **~4
 symbols that demonstrate a real NCI** (a no-NCI symbol has owners==total by definition); the method is
 the same document read, just without the XBRL pre-filter, and needs the BSE `AnnPdfOpen` resolver for
 pre-2018 attachments (`fetch_pdf` already has it). Sibling: `project-stocks-owners-vs-total-uncovered-symbols`.
+
+### 116e-vision. THE SCANNED FILINGS, READ BY VISION — 8 more, and a DIFFERENT defect class surfaced  (2026-08-27)
+
+Followed the text pass with a vision pass over the scanned-image residue: `scripts/render_pl.py` fetches
+the filing, locates the consolidated-P&L page by OCR keyword score, renders it at 230 DPI, and the page is
+read directly. Same gate exactly — `owners + NCI == total` must close and the total must equal the stored
+value. **8 healed:** JINDALSTEL 20201231 **2566.68→2254.66** (owners = continuing-ops 2254.66 + discontinuing
+0.00; NCI = 177.54 + 134.48 = 312.02 — the XBRL saw only the continuing block, which is why it never
+reconciled), LLOYDSENT 20251231 **37.93→−7.86** (owners took a LOSS, minority took +45.79), WAAREEENER
+20251231 1106.79→1062.46, ADANIPORTS 20250630 3310.60→3314.59, KANORICHEM ×4 (row cleared). A recurring
+tell: for these large filers the XBRL owners/NCI tags were the **Other-Comprehensive-Income** attribution,
+not the profit attribution — vision reads the right block.
+
+★ **A DIFFERENT DEFECT HIDING IN THE SAME PILE.** The materiality proxy (built on the incoherent XBRL tags)
+surfaced several cells whose **stored value does not match the filing's total AT ALL** — not an owners-vs-total
+error but a wrong stored number: ADANIENT 20250331 stored **1382.17** against a filed Q4 total 4014.90 (owners
+3844.91); AARTIIND 20210331 stored **692.34** against 139.34; RAYMOND 20211231 stored **266.67** against 101.07.
+The `total == stored` gate REFUSES them (correctly — healing to the filed owners could revert a legitimate
+restatement whose provenance we have not established). They are flagged for a separate audit, NOT healed here.
+The lesson: `total == stored` is not just a column-pinner, it is the tripwire that separates the owners-vs-total
+class from a stored-value-is-simply-wrong class the proxy cannot tell apart.

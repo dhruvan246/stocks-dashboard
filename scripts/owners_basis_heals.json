@@ -10,7 +10,8 @@
   "2026-08-09 third pass: the named fund-vs-revop cells (ATUL Sep-25, SADBHAV Dec-20, RENUKA Dec-20 +Mar-21). Measuring them found sf_fundamentals and sf_revop disagree on 1,372 of 43,731 populated con-PAT cells (3.14%); the 603 where revop is exactly 0.0 against a real fundamentals value were resynced, the 716 genuine disagreements and 15 fundamentals==0 cells are NOT touched. build_discovery's TTM P/E was reading the divergent mirror. §70.",
   "2026-08-26 (runbook §116): 53 cells across COX&KINGS / S&SPOWER / SURANAT&P whose con slot held the TOTAL. Read from each quarter's OWN consolidated XBRL: owners + NCI == total closes on 59 of 61 filings (the 2 misses are the filer's own arithmetic, Rs51k and Rs91k). 16 were exposed by the HTML-escaped phantom keys retracted in §114 -- the phantom's reader had taken the owners tag and OURS had taken the total, so the phantom was RIGHT on those and the live store was wrong. The other 37 are the rest of the same series: healing only the disagreeing cells would leave a MIXED-basis series, which breaks YoY/TTM worse than a uniformly wrong one. NOT healed: 24 cells (IL&FSENGG x23, S&SPOWER Mar-2019) where the filer tags owners=0 AND NCI=0 with the real number only in the total -- there the stored total IS correct and the phantom's 0.0 was the defect. None of these symbols is in _reattr_owners.json, which is why apply_owners_full never re-attributed them; 1,417 symbols / 18,175 con cells share that exposure and are NOT swept here.",
   "2026-08-26 §116c SCREEN: ran the owners-vs-total check over ALL 60,768 con cells in sf_fundamentals against their own cached consolidated XBRL (38,668 filings indexed). 52 further cells healed total->owners, on top of the 53 from §116. THE GATE IS THE IDENTITY, not the comparison: 872 cells store the total while the owners tag differs, but only these reconcile as owners+NCI==total. The other 762 are REFUSED and NOT healed -- 302 have NCI=0 (so owners MUST equal total; the owners TAG is wrong and the store is right), 24 are sign flips, 13 are filer power-of-ten scale errors, and 460 have a real NCI that still does not reconcile and need per-cell documents. Also measured: coverage in _reattr_owners.json is per-CELL not per-SYMBOL -- 864 of 869 defect cells sit in symbols the cache covers but quarters it does not.",
-  "2026-08-27 §116e: 48 more cells healed total->owners, resolving part of the 460-cell §116d residue that the XBRL identity could NOT close. Each was read from the company's OWN BSE-filed consolidated result PDF (owners_total_verify.py): the filing's profit-attribution block gives owners + NCI == ProfitLossForPeriod EXACTLY (<=0.02cr), the column pinned by total==stored. Gate beyond §116d: an EXPLICIT profit-total row is required (a reconstructed owners+nci total can be the Total-Comprehensive-Income attribution, off by OCI -- that dropped MANINFRA/JAYAGROGN 0.05-0.08cr). 34 symbols incl. ADANIENT 20210331 332.53->233.95 (NCI 98.58), CHOLAHLDNG 20200331 79.57->39.91 (the exact cell §116d named unresolvable via XBRL), INDHOTEL/LUPIN/TECHM/RAIN/JINDALSAW. Deferred: the ~324 cells whose BSE P&L is a SCANNED image (free OCR mis-reads the owners line) and the older 'profit for period / less NCI / profit after NCI' format (GOLDIAM class) -- need vision or extractor work."
+  "2026-08-27 §116e: 48 more cells healed total->owners, resolving part of the 460-cell §116d residue that the XBRL identity could NOT close. Each was read from the company's OWN BSE-filed consolidated result PDF (owners_total_verify.py): the filing's profit-attribution block gives owners + NCI == ProfitLossForPeriod EXACTLY (<=0.02cr), the column pinned by total==stored. Gate beyond §116d: an EXPLICIT profit-total row is required (a reconstructed owners+nci total can be the Total-Comprehensive-Income attribution, off by OCI -- that dropped MANINFRA/JAYAGROGN 0.05-0.08cr). 34 symbols incl. ADANIENT 20210331 332.53->233.95 (NCI 98.58), CHOLAHLDNG 20200331 79.57->39.91 (the exact cell §116d named unresolvable via XBRL), INDHOTEL/LUPIN/TECHM/RAIN/JINDALSAW. Deferred: the ~324 cells whose BSE P&L is a SCANNED image (free OCR mis-reads the owners line) and the older 'profit for period / less NCI / profit after NCI' format (GOLDIAM class) -- need vision or extractor work.",
+  "2026-08-27 §116e-vision: 8 more cells from SCANNED-image filings the text pass could not read, read by vision from the rendered consolidated P&L page and gated identically (owners+NCI==total exactly, total==stored). JINDALSTEL 20201231 2566.68->2254.66 (owners=continuing+discontinuing attribution, 312cr), LLOYDSENT 20251231 37.93->-7.86 (owners LOSS, minority took the profit), WAAREEENER 20251231 1106.79->1062.46, ADANIPORTS 20250630 3310.60->3314.59, KANORICHEM x4 (row cleared). NOTE: several high-proxy scanned cells were REFUSED as a DIFFERENT defect class -- their stored value does not match the filing total at all (ADANIENT 20250331 stored 1382.17 vs filed total 4014.90/owners 3844.91; AARTIIND 20210331 stored 692.34 vs 139.34; RAYMOND 20211231 stored 266.67 vs 101.07) -- flagged for separate investigation, NOT owners-vs-total."
  ],
  "cells": {
   "20MICRONS|20190630|patC": {
@@ -363,6 +364,14 @@
    "owners": 233.95,
    "src": "own consolidated result PDF, BSE ann 20210505, c2cf90a6-bbe1-4a9e-8e22-a08c94e9f0b3.pdf (page 2)",
    "total_was": 332.53
+  },
+  "ADANIPORTS|20250630|patC": {
+   "found_by": "§116e VISION read of the company's own BSE-filed consolidated P&L (scanned image), 2026-08-27",
+   "nci": -3.99,
+   "note": "Consolidated P&L, read from the rendered filing page: owners 3314.59 + NCI -3.99 = 3310.6 == stored ProfitLossForPeriod 3310.6 (con slot held the TOTAL). Identity closes exactly. Equity holders of the parent 3314.59 + NCI -3.99 = 3310.60. XBRL had tagged the OCI attribution (owners_tag 52.67, nci_tag 47.66). §116d-refused because the filing is a SCANNED image the text layer/XBRL could not read cleanly.",
+   "owners": 3314.59,
+   "src": "own consolidated result PDF (SCANNED), BSE ann 20250805, page 11, read by vision",
+   "total_was": 3310.6
   },
   "ANANTRAJ|20231231|patC": {
    "found_by": "§116e per-cell document read of the company's own BSE-filed consolidated result, 2026-08-27",
@@ -1554,6 +1563,14 @@
    "src": "own consolidated result PDF, BSE ann 20230811, cee941a8-96c2-471d-b5d7-5efa0a64ee71.pdf (page 8)",
    "total_was": 243.48
   },
+  "JINDALSTEL|20201231|patC": {
+   "found_by": "§116e VISION read of the company's own BSE-filed consolidated P&L (scanned image), 2026-08-27",
+   "nci": 312.02,
+   "note": "Consolidated P&L, read from the rendered filing page: owners 2254.66 + NCI 312.02 = 2566.68 == stored ProfitLossForPeriod 2566.68 (con slot held the TOTAL). Identity closes exactly. Owners = continuing-ops owners 2254.66 + discontinuing-ops owners 0.00; NCI = continuing 177.54 + discontinuing 134.48 = 312.02. The XBRL captured only the CONTINUING attribution (owners_tag 2254.66, nci_tag 177.54), so it did not reconcile against the total; summing both continuing and discontinuing blocks closes it exactly. §116d-refused because the filing is a SCANNED image the text layer/XBRL could not read cleanly.",
+   "owners": 2254.66,
+   "src": "own consolidated result PDF (SCANNED), BSE ann 20210121, page 8, read by vision",
+   "total_was": 2566.68
+  },
   "JSWDULUX|20180630|patC": {
    "identity": "The printed H1 Sep-2018 consolidated subtotal is 802.6 mn = 80.26 cr, and the printed Sep-2018 quarter column is 367.5 mn = 36.75 cr. 80.26 - 36.75 = 43.51 EXACTLY. Independently, Moneycontrol's own consolidated series holds this quarter at 43.51 — two sources agreeing to the paisa, one of them a filing.",
    "note": "Completes the FY19 chain this campaign started. It also makes the H1 identity that the Sep-2018 fill rests on reproducible from our own store, which it was not while this cell sat empty. The Moneycontrol hold on this cell values it identically at 43.51; that hold rested on the weak 'con == std so maybe a copy' test, and for this company con == std is genuine — the subsidiary is wholly owned and contributes ~0, which is exactly why the printed consolidated H1 equals the sum of the two standalone quarters.",
@@ -1586,6 +1603,14 @@
    "src": "own consolidated result PDF, BSE ann 20230808, 765ab556-6c2c-444f-9278-802b5965bdea.pdf (page 4)",
    "total_was": -3.84
   },
+  "KANORICHEM|20230930|patC": {
+   "found_by": "§116e VISION read of the company's own BSE-filed consolidated P&L (scanned image), 2026-08-27",
+   "nci": -2.15,
+   "note": "Consolidated P&L, read from the rendered filing page: owners -18.37 + NCI -2.15 = -20.52 == stored ProfitLossForPeriod -20.52 (con slot held the TOTAL). Identity closes exactly. Owners -18.37 + NCI -2.15 = -20.52 (in lakhs 1837+215=2052). Kanoria Chemicals consolidates a loss-making subsidiary with a real minority. §116d-refused because the filing is a SCANNED image the text layer/XBRL could not read cleanly.",
+   "owners": -18.37,
+   "src": "own consolidated result PDF (SCANNED), BSE ann 20231108, page 8, read by vision",
+   "total_was": -20.52
+  },
   "KANORICHEM|20240331|patC": {
    "found_by": "§116e per-cell document read of the company's own BSE-filed consolidated result, 2026-08-27",
    "nci": -6.43,
@@ -1594,6 +1619,14 @@
    "src": "own consolidated result PDF, BSE ann 20240528, 4bbfb08a-8f52-41bb-882a-d49764c84a4e.pdf (page 13)",
    "total_was": -15.69
   },
+  "KANORICHEM|20240630|patC": {
+   "found_by": "§116e VISION read of the company's own BSE-filed consolidated P&L (scanned image), 2026-08-27",
+   "nci": -6.29,
+   "note": "Consolidated P&L, read from the rendered filing page: owners -16.64 + NCI -6.29 = -22.93 == stored ProfitLossForPeriod -22.93 (con slot held the TOTAL). Identity closes exactly. Owners -16.64 + NCI -6.29 = -22.93 (1664+629=2293 lakhs). §116d-refused because the filing is a SCANNED image the text layer/XBRL could not read cleanly.",
+   "owners": -16.64,
+   "src": "own consolidated result PDF (SCANNED), BSE ann 20240805, page 6, read by vision",
+   "total_was": -22.93
+  },
   "KANORICHEM|20240930|patC": {
    "found_by": "§116e per-cell document read of the company's own BSE-filed consolidated result, 2026-08-27",
    "nci": -2.57,
@@ -1601,6 +1634,22 @@
    "owners": -13.91,
    "src": "own consolidated result PDF, BSE ann 20241113, 52ae6d41-5b42-4731-99a9-356433f0a8bf.pdf (page 9)",
    "total_was": -16.48
+  },
+  "KANORICHEM|20241231|patC": {
+   "found_by": "§116e VISION read of the company's own BSE-filed consolidated P&L (scanned image), 2026-08-27",
+   "nci": -11.96,
+   "note": "Consolidated P&L, read from the rendered filing page: owners -16.67 + NCI -11.96 = -28.63 == stored ProfitLossForPeriod -28.63 (con slot held the TOTAL). Identity closes exactly. Owners -16.67 + NCI -11.96 = -28.63 (1667+1196=2863 lakhs). §116d-refused because the filing is a SCANNED image the text layer/XBRL could not read cleanly.",
+   "owners": -16.67,
+   "src": "own consolidated result PDF (SCANNED), BSE ann 20250213, page 7, read by vision",
+   "total_was": -28.63
+  },
+  "KANORICHEM|20250331|patC": {
+   "found_by": "§116e VISION read of the company's own BSE-filed consolidated P&L (scanned image), 2026-08-27",
+   "nci": -3.73,
+   "note": "Consolidated P&L, read from the rendered filing page: owners -36.38 + NCI -3.73 = -40.11 == stored ProfitLossForPeriod -40.11 (con slot held the TOTAL). Identity closes exactly. Owners -36.38 + NCI -3.73 = -40.11 (3638+373=4011 lakhs). §116d-refused because the filing is a SCANNED image the text layer/XBRL could not read cleanly.",
+   "owners": -36.38,
+   "src": "own consolidated result PDF (SCANNED), BSE ann 20250521, page 13, read by vision",
+   "total_was": -40.11
   },
   "KANORICHEM|20250930|patC": {
    "found_by": "§116e per-cell document read of the company's own BSE-filed consolidated result, 2026-08-27",
@@ -1825,6 +1874,14 @@
    "owners": 23.46,
    "src": "own consolidated result PDF, BSE ann 20251111, 76c1bfca-a8a7-4fc3-8cd2-d112b40f7d8b.pdf (page 10)",
    "total_was": 61.84
+  },
+  "LLOYDSENT|20251231|patC": {
+   "found_by": "§116e VISION read of the company's own BSE-filed consolidated P&L (scanned image), 2026-08-27",
+   "nci": 45.79,
+   "note": "Consolidated P&L, read from the rendered filing page: owners -7.86 + NCI 45.79 = 37.93 == stored ProfitLossForPeriod 37.93 (con slot held the TOTAL). Identity closes exactly. Owners took a LOSS of -7.86 while NCI got +45.79 (minority captured all the profit). XBRL had tagged the OTHER-COMPREHENSIVE-INCOME attribution (owners_tag 113.09) instead of the profit attribution. §116d-refused because the filing is a SCANNED image the text layer/XBRL could not read cleanly.",
+   "owners": -7.86,
+   "src": "own consolidated result PDF (SCANNED), BSE ann 20260209, page 11, read by vision",
+   "total_was": 37.93
   },
   "LUPIN|20180331|patC": {
    "found_by": "§116e per-cell document read of the company's own BSE-filed consolidated result, 2026-08-27 (transient-retry)",
@@ -2926,6 +2983,14 @@
    "stored_before": 24.5,
    "when": "2026-08-17 23:56 IST"
   },
+  "WAAREEENER|20251231|patC": {
+   "found_by": "§116e VISION read of the company's own BSE-filed consolidated P&L (scanned image), 2026-08-27",
+   "nci": 44.33,
+   "note": "Consolidated P&L, read from the rendered filing page: owners 1062.46 + NCI 44.33 = 1106.79 == stored ProfitLossForPeriod 1106.79 (con slot held the TOTAL). Identity closes exactly. Owners of the parent company 1062.46 + NCI 44.33 = 1106.79. XBRL had tagged the OCI attribution (owners_tag 9.52). §116d-refused because the filing is a SCANNED image the text layer/XBRL could not read cleanly.",
+   "owners": 1062.46,
+   "src": "own consolidated result PDF (SCANNED), BSE ann 20260121, page 10, read by vision",
+   "total_was": 1106.79
+  },
   "WABAG|20240630|patC": {
    "found_by": "§116e per-cell document read of the company's own BSE-filed consolidated result, 2026-08-27",
    "nci": -0.2,
@@ -2977,5 +3042,5 @@
    }
   }
  },
- "generated": "2026-08-27 §116e"
+ "generated": "2026-08-27 §116e-vision"
 }
