@@ -242,6 +242,20 @@ select,input[type=text],input[type=number],input[type=date]{
 .zchip.open{color:var(--accent); border-color:var(--accent)}
 .zmsg{font-size:11px; color:var(--down); white-space:normal; text-align:left; max-width:280px}
 #zBody input{padding:7px 9px; font-size:13px; border:1px solid var(--border); border-radius:8px; background:var(--surface-2); color:var(--text)}
+/* ---------- strategy basket-buy dialog ---------- */
+#zbWrap{position:fixed; inset:0; z-index:200; background:rgba(0,0,0,.45); display:none; align-items:center; justify-content:center; padding:16px}
+#zbWrap.open{display:flex}
+#zbDlg{width:min(580px,100%); max-height:92vh; overflow:auto; padding:16px}
+#zbDlg h3{margin:0 0 2px; font-size:14px}
+#zbDlg .krow{display:flex; gap:8px; margin-top:10px}
+#zbDlg label{flex:1; font-size:11px; font-weight:700; color:var(--text-3); text-transform:uppercase; letter-spacing:.05em}
+#zbDlg input,#zbDlg select{width:100%; margin-top:4px; padding:7px 9px; font-size:13.5px; font-weight:600;
+  border:1px solid var(--border); border-radius:8px; background:var(--surface-2); color:var(--text)}
+#zbDlg table{width:100%; border-collapse:collapse; font-size:12.5px; margin-top:10px}
+#zbDlg th{font-size:10.5px; text-transform:uppercase; letter-spacing:.05em; color:var(--text-3); text-align:right; padding:5px 6px; border-bottom:1px solid var(--border)}
+#zbDlg td{padding:6px; text-align:right; border-bottom:1px solid var(--grid); white-space:nowrap}
+#zbDlg th:nth-child(2),#zbDlg td:nth-child(2){text-align:left}
+#zbDlg td input.zbq{width:80px; margin:0; padding:5px 7px; text-align:right}
 /* The Zerodha card lives on its OWN tab (⚡ header button): hidden in the
    portfolio view, alone on screen in the zview. */
 [data-card="zerodha"]{display:none}
@@ -1457,7 +1471,8 @@ function renderCalendar(rows){
     const picks=(m.picks&&m.picks.rows)||[], pickSet=new Set(picks.map(r=>r.sym));
     const dd=next?daysBetween(today,next):null, sell=next?prevWeekday(next):null;
     const exits=[...held].filter(s=>!pickSet.has(s)), entries=picks.filter(r=>!held.has(r.sym)).length;
-    h+='<div class="sblk"><div class="shead"><span class="nm2">'+esc(pf.name)+'</span>'+cycBadge(pf.cycle)+'</div>';
+    h+='<div class="sblk"><div class="shead"><span class="nm2">'+esc(pf.name)+'</span>'+cycBadge(pf.cycle)+
+       ((m.picks&&m.picks.rows&&m.picks.rows.length)?' <button class="btn" data-zbasket="'+esc(pf.id)+'" style="margin-left:10px" title="Buy this strategy’s current basket on Zerodha — one dialog, all its stocks">⚡ Buy basket</button>':'')+'</div>';
     h+='<div class="cal">'+
       '<div class="d"><div class="l">Next rebalance</div><div class="v">'+(next?longDate(next):'—')+'</div><div class="s">'+(dd==null?'':dd===0?'today — ranks on today\u2019s close':dd+' day'+(dd===1?'':'s')+' to go')+'</div></div>'+
       '<div class="d"><div class="l">Sell exits on</div><div class="v">'+(sell?longDate(sell):'—')+'</div><div class="s">MTF proceeds usable the next session</div></div>'+
@@ -1931,16 +1946,26 @@ function zRender(){
     }
   }
   if(D.hold.length){
+    /* Kite splits a holding across fields: MTF-funded shares live ONLY in the
+       mtf object (top-level quantity is 0 for them) and pledged shares in
+       collateral_quantity — verified against the real account 2026-08-27.
+       The API's own pnl also counts only the top-level qty (0 for MTF rows),
+       so P&L is computed here from the blended average instead. */
+    const zq=r=>{ const m=r.mtf||{}; return (r.quantity||0)+(r.t1_quantity||0)+(r.collateral_quantity||0)+(m.quantity||0); };
+    const zavg=r=>{ const m=r.mtf||{}, nq=(r.quantity||0)+(r.t1_quantity||0)+(r.collateral_quantity||0), mq=m.quantity||0, q=nq+mq;
+      return q? ((r.average_price||0)*nq+(m.average_price||0)*mq)/q : 0; };
     let tot=0,totDay=0;
     out.push('<h4>Holdings (demat)</h4><div class="twrap"><table><thead><tr><th>Stock</th><th>Qty</th><th>Avg</th><th>LTP</th><th>Day %</th><th>P&L</th><th>Trade</th></tr></thead><tbody>');
-    const hv=r=>(+r.last_price||0)*((r.quantity||0)+(r.t1_quantity||0));
-    D.hold.slice().sort((a,b)=>hv(b)-hv(a)).forEach(r=>{
-      const q=(r.quantity||0)+(r.t1_quantity||0); tot+=r.pnl||0; totDay+=(r.day_change||0)*q;
+    const hv=r=>(+r.last_price||0)*zq(r);
+    D.hold.filter(r=>zq(r)>0).sort((a,b)=>hv(b)-hv(a)).forEach(r=>{
+      const q=zq(r), avg=zavg(r), pnl=(+r.last_price-avg)*q;
+      tot+=pnl; totDay+=(r.day_change||0)*q;
+      const isMtf=((r.mtf||{}).quantity||0)>0;
       const dotSym=r.tradingsymbol+(r.exchange==='BSE'?'.BO':'.NS');
-      out.push('<tr><td><b>'+esc(r.tradingsymbol)+'</b> <span class="sym">'+esc(r.exchange)+(r.t1_quantity?' · T1:'+r.t1_quantity:'')+'</span></td>'+
-        '<td class="secret">'+q+'</td><td>₹'+(+r.average_price).toFixed(2)+'</td><td>₹'+(+r.last_price).toFixed(2)+'</td>'+
+      out.push('<tr><td><b>'+esc(r.tradingsymbol)+'</b> <span class="sym">'+esc(r.exchange)+(isMtf?' · MTF':'')+(r.t1_quantity?' · T1:'+r.t1_quantity:'')+'</span></td>'+
+        '<td class="secret">'+q.toLocaleString('en-IN')+'</td><td>₹'+avg.toFixed(2)+'</td><td>₹'+(+r.last_price).toFixed(2)+'</td>'+
         '<td class="'+cls(r.day_change_percentage)+'">'+pct(r.day_change_percentage)+'</td>'+
-        '<td class="'+cls(r.pnl)+' secret">'+inrSigned(r.pnl)+'</td>'+
+        '<td class="'+cls(pnl)+' secret">'+inrSigned(pnl)+'</td>'+
         '<td><span class="kbtns"><button class="kbtn b" data-ktr="BUY" data-ksym="'+esc(dotSym)+'" data-kqty="'+q+'" data-kpx="'+(+r.last_price||'')+'">B</button>'+
         '<button class="kbtn s" data-ktr="SELL" data-ksym="'+esc(dotSym)+'" data-kqty="'+q+'" data-kpx="'+(+r.last_price||'')+'">S</button></span></td></tr>');
     });
@@ -1973,6 +1998,117 @@ $('zBody').addEventListener('click',async e=>{
   const b=e.target.closest('.kbtn'); if(!b||!b.dataset.ktr) return;
   openKiteDlg({sym:b.dataset.ksym, tr:b.dataset.ktr,
     qty:(b.dataset.ktr==='SELL'?(+b.dataset.kqty||1):1), px:parseFloat(b.dataset.kpx)});
+});
+/* ---------------- strategy basket-buy: one click buys a whole strategy ----------
+   The rebalance-calendar card gets a "⚡ Buy basket" button per strategy: enter a
+   rupee amount, it splits equally across the picks at live prices (the same
+   equal-weight rule the strategy itself uses), quantities stay editable, then
+   either place all orders directly (armed confirm) or hand them to the Kite
+   popup. ₹ amount = ORDER VALUE, not margin — on MTF Zerodha funds part of it. */
+let ZB={rows:[]};
+function ensureZbDlg(){
+  if($('zbWrap')) return;
+  const w=document.createElement('div'); w.id='zbWrap';
+  w.innerHTML='<div class="card" id="zbDlg">'+
+    '<h3 id="zbTitle"></h3><div class="sub" id="zbSub" style="padding:0"></div>'+
+    '<div class="krow"><label>₹ to deploy (order value)<input id="zbAmt" type="number" min="0" step="10000" placeholder="e.g. 500000"></label>'+
+    '<label>Product<select id="zbProd"><option value="MTF">MTF (margin)</option><option value="CNC">Delivery (CNC)</option><option value="MIS">Intraday (MIS)</option></select></label></div>'+
+    '<div class="twrap"><table id="zbTbl"></table></div>'+
+    '<div class="krow" style="justify-content:flex-end">'+
+    '<button class="btn" id="zbCancel">Cancel</button>'+
+    '<button class="btn" id="zbKite" title="Review and confirm all of them on Zerodha’s own basket page">Kite basket</button>'+
+    '<button class="btn on" id="zbGo" style="display:none">Place all ▸</button></div>'+
+    '<div class="khelp">Market orders, equal ₹ split across ticked rows — the strategy’s own weighting. Edit any qty; re-typing the amount re-splits everything. Held rows are already in this portfolio.</div>'+
+    '</div>';
+  document.body.appendChild(w);
+  w.addEventListener('click',e=>{ if(e.target===w) w.classList.remove('open'); });
+  $('zbCancel').onclick=()=>$('zbWrap').classList.remove('open');
+  $('zbAmt').addEventListener('input',()=>{ zbAlloc(); zbRender(); });
+  $('zbTbl').addEventListener('input',e=>{
+    const q=e.target.closest('input.zbq'); if(!q) return;
+    const r=ZB.rows[+q.dataset.i]; r.qty=Math.max(0,Math.floor(+q.value||0)); zbFoot(); zbArmReset(); });
+  $('zbTbl').addEventListener('change',e=>{
+    const c=e.target.closest('input[type=checkbox]'); if(!c) return;
+    ZB.rows[+c.dataset.i].on=c.checked; zbAlloc(); zbRender(); });
+  $('zbKite').onclick=()=>{ const o=zbOrders(); if(!o.length){ ktoast('Nothing to buy — set an amount first'); return; }
+    if(kiteSend(o)) $('zbWrap').classList.remove('open'); };
+  $('zbGo').onclick=zbPlaceAll;
+}
+function zbOrders(){
+  return ZB.rows.filter(r=>r.on&&r.qty>0).map(r=>({variety:'regular', validity:'DAY', tag:'pfbasket',
+    tradingsymbol:r.sym, exchange:'NSE', transaction_type:'BUY', order_type:'MARKET',
+    quantity:r.qty, product:$('zbProd').value}));
+}
+function zbAlloc(){
+  const amt=+$('zbAmt').value||0, on=ZB.rows.filter(r=>r.on&&r.px>0);
+  const per=on.length? amt/on.length : 0;
+  ZB.rows.forEach(r=>{ r.qty=(r.on&&r.px>0)? Math.floor(per/r.px) : 0; r.st=''; r.msg=''; });
+  if(ZB.pf&&amt) try{ localStorage.setItem('pf_zb_amt_'+ZB.pf.id,String(amt)); }catch(e){}
+}
+function zbFoot(){
+  const rows=ZB.rows.filter(r=>r.on&&r.qty>0);
+  const est=rows.reduce((s,r)=>s+r.qty*(r.px||0),0);
+  const f=$('zbTot'); if(f) f.innerHTML=rows.length+' orders · ≈ <b class="secret">'+zinr(est)+'</b>';
+}
+function zbArmReset(){ const b=$('zbGo'); if(b&&b.dataset.arm==='1'){ b.dataset.arm=''; b.textContent='Place all ▸'; } }
+function zbRender(){
+  let h='<thead><tr><th></th><th>Pick</th><th>Live ₹</th><th>Qty</th><th>≈ Cost</th><th></th></tr></thead><tbody>';
+  ZB.rows.forEach((r,i)=>{
+    const stChip=r.st==='COMPLETE'?'<span class="zchip ok">COMPLETE</span>'
+      : r.st==='REJECTED'?'<span class="zchip bad" title="'+esc(r.msg)+'">REJECTED</span>'
+      : r.st==='fail'?'<span class="zchip bad" title="'+esc(r.msg)+'">FAILED</span>'
+      : r.st?'<span class="zchip open">'+esc(r.st)+'</span>':'';
+    h+='<tr><td><input type="checkbox" data-i="'+i+'"'+(r.on?' checked':'')+'></td>'+
+      '<td><b>'+esc(r.sym)+'</b>'+(r.held?' <span class="tag keep">held</span>':'')+(r.live?'':' <span class="badge">EOD</span>')+'</td>'+
+      '<td>'+(r.px?'₹'+(+r.px).toFixed(2):'—')+'</td>'+
+      '<td><input class="zbq" type="number" min="0" step="1" data-i="'+i+'" value="'+r.qty+'"'+(r.on?'':' disabled')+'></td>'+
+      '<td class="secret">'+(r.qty?zinr(r.qty*r.px):'—')+'</td><td>'+stChip+(r.st==='REJECTED'||r.st==='fail'?'<div class="zmsg">'+esc(r.msg)+'</div>':'')+'</td></tr>';
+  });
+  h+='</tbody><tfoot><tr><td colspan="6" style="text-align:right" id="zbTot"></td></tr></tfoot>';
+  $('zbTbl').innerHTML=h; zbFoot();
+  $('zbGo').style.display=Z.connected?'':'none';
+}
+function zBasketOpen(pfId){
+  const s=modelStrategies(ROWS).find(x=>x.pf.id===pfId);
+  if(!s||!s.m.picks||!s.m.picks.rows.length){ ktoast('No current picks for this strategy'); return; }
+  ensureZbDlg();
+  const held=new Set(ROWS.filter(r=>r.pf===pfId).map(r=>r.sym.replace(/\.(NS|BO)$/,'')));
+  ZB={pf:s.pf, rows:s.m.picks.rows.map(r=>{ const p=modelPx(r.sym);
+    return {sym:r.sym, rank:r.rank, px:(p.px!=null?p.px:(r.px||0)), live:p.src==='live',
+            held:held.has(r.sym), on:true, qty:0, st:'', msg:''}; })};
+  $('zbTitle').textContent='Buy the “'+s.pf.name+'” basket';
+  $('zbSub').textContent=ZB.rows.length+' picks as of the '+shortDate(MODEL.picksAsOf||MODEL.dataEnd)+' close. You confirm before anything is placed.';
+  $('zbProd').value=(s.pf.kind==='mtf')?'MTF':'CNC';
+  $('zbAmt').value=(function(){ try{ return localStorage.getItem('pf_zb_amt_'+pfId)||''; }catch(e){ return ''; } })();
+  zbAlloc(); zbRender();
+  $('zbWrap').classList.add('open');
+}
+async function zbPlaceAll(){
+  const orders=zbOrders();
+  if(!orders.length){ ktoast('Nothing to buy — set an amount first'); return; }
+  const b=$('zbGo'), est=orders.reduce((s,o)=>{ const r=ZB.rows.find(x=>x.sym===o.tradingsymbol); return s+o.quantity*((r&&r.px)||0); },0);
+  if(b.dataset.arm!=='1'){ b.dataset.arm='1';
+    b.textContent='Confirm '+orders.length+' BUY orders ≈ '+zinr(est)+' ?';
+    clearTimeout(ZB.t); ZB.t=setTimeout(zbArmReset,8000); return; }
+  b.dataset.arm=''; b.disabled=true; b.textContent='Placing…';
+  for(const o of orders){
+    const r=ZB.rows.find(x=>x.sym===o.tradingsymbol); r.st='…'; zbRender();
+    const {st,j}=await zFetch('/order',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify(o)});
+    if(st===200&&j&&j.data&&j.data.order_id){ r.st='sent'; r.oid=j.data.order_id; }
+    else { r.st='fail'; r.msg=(j&&j.message)||('HTTP '+st); }
+    zbRender();
+  }
+  await new Promise(r=>setTimeout(r,1800));
+  const o=await zFetch('/orders'), list=(o.j&&o.j.data)||[];
+  ZB.rows.forEach(r=>{ const row=r.oid&&list.find(x=>x.order_id===r.oid);
+    if(row){ r.st=row.status; r.msg=row.status_message||''; } });
+  zbRender(); b.disabled=false; b.textContent='Place all ▸';
+  const okN=ZB.rows.filter(r=>r.st==='COMPLETE').length;
+  ktoast(okN+'/'+orders.length+' orders complete — see the table for the rest',6000);
+  zRefreshAll(true);
+}
+$('calBody').addEventListener('click',e=>{
+  const b=e.target.closest('[data-zbasket]'); if(b) zBasketOpen(b.dataset.zbasket);
 });
 /* Kite's login bounces back here with ?request_token=… — catch it, trade it in,
    and scrub the URL so a reload can't replay a dead token. */
