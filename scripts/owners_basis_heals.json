@@ -3,17 +3,18 @@
   "ATUL / SADBHAV / RENUKA consolidated PAT put onto the OWNERS convention, 2026-08-09.",
   "owners = profit for the period - non-controlling interest, from each quarter's OWN filing.",
   "Each window is closed by a printed full-year or half-year OWNERS subtotal; see the applier",
-  "docstring and runbook \u00a769. Cells NOT changed but suspect: ATUL 20210630 (stored 165.15, the",
+  "docstring and runbook §69. Cells NOT changed but suspect: ATUL 20210630 (stored 165.15, the",
   "FY22 owners subtotal 604.26 implies 165.94) and SADBHAV 20200331 (stored 886.63 against a",
   "standalone of 8.18, wildly out of family -- no P&L page located in that filing).",
-  "2026-08-09 second pass: ATUL FY21+FY22 closed out (Jun-20, Mar-21, Jun-21, Sep-21, Dec-21). SADBHAV 2020-03-31 was RE-CHECKED and is CORRECT as stored: the Jun-2020 filing prints Mar-20 period 1280.78 and NCI 394.14 -> owners 886.64, and FY20 owners -8.07 + -15.94 + -69.79 + 886.63 = 792.83 exactly as printed. The value only looked wrong because it is a very large genuine one-off -- the RENUKA lesson (runbook \u00a769c).",
-  "2026-08-09 third pass: the named fund-vs-revop cells (ATUL Sep-25, SADBHAV Dec-20, RENUKA Dec-20 +Mar-21). Measuring them found sf_fundamentals and sf_revop disagree on 1,372 of 43,731 populated con-PAT cells (3.14%); the 603 where revop is exactly 0.0 against a real fundamentals value were resynced, the 716 genuine disagreements and 15 fundamentals==0 cells are NOT touched. build_discovery's TTM P/E was reading the divergent mirror. \u00a770.",
-  "2026-08-26 (runbook \u00a7116): 53 cells across COX&KINGS / S&SPOWER / SURANAT&P whose con slot held the TOTAL. Read from each quarter's OWN consolidated XBRL: owners + NCI == total closes on 59 of 61 filings (the 2 misses are the filer's own arithmetic, Rs51k and Rs91k). 16 were exposed by the HTML-escaped phantom keys retracted in \u00a7114 -- the phantom's reader had taken the owners tag and OURS had taken the total, so the phantom was RIGHT on those and the live store was wrong. The other 37 are the rest of the same series: healing only the disagreeing cells would leave a MIXED-basis series, which breaks YoY/TTM worse than a uniformly wrong one. NOT healed: 24 cells (IL&FSENGG x23, S&SPOWER Mar-2019) where the filer tags owners=0 AND NCI=0 with the real number only in the total -- there the stored total IS correct and the phantom's 0.0 was the defect. None of these symbols is in _reattr_owners.json, which is why apply_owners_full never re-attributed them; 1,417 symbols / 18,175 con cells share that exposure and are NOT swept here.",
-  "2026-08-26 \u00a7116c SCREEN: ran the owners-vs-total check over ALL 60,768 con cells in sf_fundamentals against their own cached consolidated XBRL (38,668 filings indexed). 52 further cells healed total->owners, on top of the 53 from \u00a7116. THE GATE IS THE IDENTITY, not the comparison: 872 cells store the total while the owners tag differs, but only these reconcile as owners+NCI==total. The other 762 are REFUSED and NOT healed -- 302 have NCI=0 (so owners MUST equal total; the owners TAG is wrong and the store is right), 24 are sign flips, 13 are filer power-of-ten scale errors, and 460 have a real NCI that still does not reconcile and need per-cell documents. Also measured: coverage in _reattr_owners.json is per-CELL not per-SYMBOL -- 864 of 869 defect cells sit in symbols the cache covers but quarters it does not."
+  "2026-08-09 second pass: ATUL FY21+FY22 closed out (Jun-20, Mar-21, Jun-21, Sep-21, Dec-21). SADBHAV 2020-03-31 was RE-CHECKED and is CORRECT as stored: the Jun-2020 filing prints Mar-20 period 1280.78 and NCI 394.14 -> owners 886.64, and FY20 owners -8.07 + -15.94 + -69.79 + 886.63 = 792.83 exactly as printed. The value only looked wrong because it is a very large genuine one-off -- the RENUKA lesson (runbook §69c).",
+  "2026-08-09 third pass: the named fund-vs-revop cells (ATUL Sep-25, SADBHAV Dec-20, RENUKA Dec-20 +Mar-21). Measuring them found sf_fundamentals and sf_revop disagree on 1,372 of 43,731 populated con-PAT cells (3.14%); the 603 where revop is exactly 0.0 against a real fundamentals value were resynced, the 716 genuine disagreements and 15 fundamentals==0 cells are NOT touched. build_discovery's TTM P/E was reading the divergent mirror. §70.",
+  "2026-08-26 (runbook §116): 53 cells across COX&KINGS / S&SPOWER / SURANAT&P whose con slot held the TOTAL. Read from each quarter's OWN consolidated XBRL: owners + NCI == total closes on 59 of 61 filings (the 2 misses are the filer's own arithmetic, Rs51k and Rs91k). 16 were exposed by the HTML-escaped phantom keys retracted in §114 -- the phantom's reader had taken the owners tag and OURS had taken the total, so the phantom was RIGHT on those and the live store was wrong. The other 37 are the rest of the same series: healing only the disagreeing cells would leave a MIXED-basis series, which breaks YoY/TTM worse than a uniformly wrong one. NOT healed: 24 cells (IL&FSENGG x23, S&SPOWER Mar-2019) where the filer tags owners=0 AND NCI=0 with the real number only in the total -- there the stored total IS correct and the phantom's 0.0 was the defect. None of these symbols is in _reattr_owners.json, which is why apply_owners_full never re-attributed them; 1,417 symbols / 18,175 con cells share that exposure and are NOT swept here.",
+  "2026-08-26 §116c SCREEN: ran the owners-vs-total check over ALL 60,768 con cells in sf_fundamentals against their own cached consolidated XBRL (38,668 filings indexed). 52 further cells healed total->owners, on top of the 53 from §116. THE GATE IS THE IDENTITY, not the comparison: 872 cells store the total while the owners tag differs, but only these reconcile as owners+NCI==total. The other 762 are REFUSED and NOT healed -- 302 have NCI=0 (so owners MUST equal total; the owners TAG is wrong and the store is right), 24 are sign flips, 13 are filer power-of-ten scale errors, and 460 have a real NCI that still does not reconcile and need per-cell documents. Also measured: coverage in _reattr_owners.json is per-CELL not per-SYMBOL -- 864 of 869 defect cells sit in symbols the cache covers but quarters it does not.",
+  "2026-08-27 §116e: 48 more cells healed total->owners, resolving part of the 460-cell §116d residue that the XBRL identity could NOT close. Each was read from the company's OWN BSE-filed consolidated result PDF (owners_total_verify.py): the filing's profit-attribution block gives owners + NCI == ProfitLossForPeriod EXACTLY (<=0.02cr), the column pinned by total==stored. Gate beyond §116d: an EXPLICIT profit-total row is required (a reconstructed owners+nci total can be the Total-Comprehensive-Income attribution, off by OCI -- that dropped MANINFRA/JAYAGROGN 0.05-0.08cr). 34 symbols incl. ADANIENT 20210331 332.53->233.95 (NCI 98.58), CHOLAHLDNG 20200331 79.57->39.91 (the exact cell §116d named unresolvable via XBRL), INDHOTEL/LUPIN/TECHM/RAIN/JINDALSAW. Deferred: the ~324 cells whose BSE P&L is a SCANNED image (free OCR mis-reads the owners line) and the older 'profit for period / less NCI / profit after NCI' format (GOLDIAM class) -- need vision or extractor work."
  ],
  "cells": {
   "20MICRONS|20190630|patC": {
-   "found_by": "\u00a7116c screen over all 60,768 con cells, 2026-08-26",
+   "found_by": "§116c screen over all 60,768 con cells, 2026-08-26",
    "nci": -0.03,
    "note": "owners=8.49 + NCI=-0.03 = 8.46 == ProfitLossForPeriod; the con slot held the TOTAL. Identity closes, which is the gate: 762 other stored==total cells were REFUSED because their owners/NCI/total do not reconcile (filer scale errors, sign flips, wrong concept) and cannot be healed by arithmetic.",
    "owners": 8.49,
@@ -21,7 +22,7 @@
    "total_was": 8.46
   },
   "20MICRONS|20190930|patC": {
-   "found_by": "\u00a7116c screen over all 60,768 con cells, 2026-08-26",
+   "found_by": "§116c screen over all 60,768 con cells, 2026-08-26",
    "nci": -0.04,
    "note": "owners=7.09 + NCI=-0.04 = 7.05 == ProfitLossForPeriod; the con slot held the TOTAL. Identity closes, which is the gate: 762 other stored==total cells were REFUSED because their owners/NCI/total do not reconcile (filer scale errors, sign flips, wrong concept) and cannot be healed by arithmetic.",
    "owners": 7.09,
@@ -29,7 +30,7 @@
    "total_was": 7.05
   },
   "20MICRONS|20191231|patC": {
-   "found_by": "\u00a7116c screen over all 60,768 con cells, 2026-08-26",
+   "found_by": "§116c screen over all 60,768 con cells, 2026-08-26",
    "nci": -0.07,
    "note": "owners=5.41 + NCI=-0.07 = 5.34 == ProfitLossForPeriod; the con slot held the TOTAL. Identity closes, which is the gate: 762 other stored==total cells were REFUSED because their owners/NCI/total do not reconcile (filer scale errors, sign flips, wrong concept) and cannot be healed by arithmetic.",
    "owners": 5.41,
@@ -37,7 +38,7 @@
    "total_was": 5.34
   },
   "20MICRONS|20200331|patC": {
-   "found_by": "\u00a7116c screen over all 60,768 con cells, 2026-08-26",
+   "found_by": "§116c screen over all 60,768 con cells, 2026-08-26",
    "nci": 0.2,
    "note": "owners=3.13 + NCI=0.20 = 3.33 == ProfitLossForPeriod; the con slot held the TOTAL. Identity closes, which is the gate: 762 other stored==total cells were REFUSED because their owners/NCI/total do not reconcile (filer scale errors, sign flips, wrong concept) and cannot be healed by arithmetic.",
    "owners": 3.13,
@@ -45,7 +46,7 @@
    "total_was": 3.33
   },
   "20MICRONS|20201231|patC": {
-   "found_by": "\u00a7116c screen over all 60,768 con cells, 2026-08-26",
+   "found_by": "§116c screen over all 60,768 con cells, 2026-08-26",
    "nci": 0.02,
    "note": "owners=5.65 + NCI=0.02 = 5.67 == ProfitLossForPeriod; the con slot held the TOTAL. Identity closes, which is the gate: 762 other stored==total cells were REFUSED because their owners/NCI/total do not reconcile (filer scale errors, sign flips, wrong concept) and cannot be healed by arithmetic.",
    "owners": 5.65,
@@ -53,7 +54,7 @@
    "total_was": 5.67
   },
   "20MICRONS|20210930|patC": {
-   "found_by": "\u00a7116c screen over all 60,768 con cells, 2026-08-26",
+   "found_by": "§116c screen over all 60,768 con cells, 2026-08-26",
    "nci": 0.05,
    "note": "owners=6.53 + NCI=0.05 = 6.58 == ProfitLossForPeriod; the con slot held the TOTAL. Identity closes, which is the gate: 762 other stored==total cells were REFUSED because their owners/NCI/total do not reconcile (filer scale errors, sign flips, wrong concept) and cannot be healed by arithmetic.",
    "owners": 6.53,
@@ -61,7 +62,7 @@
    "total_was": 6.58
   },
   "20MICRONS|20211231|patC": {
-   "found_by": "\u00a7116c screen over all 60,768 con cells, 2026-08-26",
+   "found_by": "§116c screen over all 60,768 con cells, 2026-08-26",
    "nci": 0.06,
    "note": "owners=11.64 + NCI=0.06 = 11.69 == ProfitLossForPeriod; the con slot held the TOTAL. Identity closes, which is the gate: 762 other stored==total cells were REFUSED because their owners/NCI/total do not reconcile (filer scale errors, sign flips, wrong concept) and cannot be healed by arithmetic.",
    "owners": 11.64,
@@ -69,7 +70,7 @@
    "total_was": 11.69
   },
   "20MICRONS|20220331|patC": {
-   "found_by": "\u00a7116c screen over all 60,768 con cells, 2026-08-26",
+   "found_by": "§116c screen over all 60,768 con cells, 2026-08-26",
    "nci": 0.04,
    "note": "owners=10.63 + NCI=0.04 = 10.67 == ProfitLossForPeriod; the con slot held the TOTAL. Identity closes, which is the gate: 762 other stored==total cells were REFUSED because their owners/NCI/total do not reconcile (filer scale errors, sign flips, wrong concept) and cannot be healed by arithmetic.",
    "owners": 10.63,
@@ -77,7 +78,7 @@
    "total_was": 10.67
   },
   "20MICRONS|20220630|patC": {
-   "found_by": "\u00a7116c screen over all 60,768 con cells, 2026-08-26",
+   "found_by": "§116c screen over all 60,768 con cells, 2026-08-26",
    "nci": 0.04,
    "note": "owners=13.26 + NCI=0.04 = 13.30 == ProfitLossForPeriod; the con slot held the TOTAL. Identity closes, which is the gate: 762 other stored==total cells were REFUSED because their owners/NCI/total do not reconcile (filer scale errors, sign flips, wrong concept) and cannot be healed by arithmetic.",
    "owners": 13.26,
@@ -85,7 +86,7 @@
    "total_was": 13.3
   },
   "20MICRONS|20220930|patC": {
-   "found_by": "\u00a7116c screen over all 60,768 con cells, 2026-08-26",
+   "found_by": "§116c screen over all 60,768 con cells, 2026-08-26",
    "nci": 0.08,
    "note": "owners=11.87 + NCI=0.08 = 11.96 == ProfitLossForPeriod; the con slot held the TOTAL. Identity closes, which is the gate: 762 other stored==total cells were REFUSED because their owners/NCI/total do not reconcile (filer scale errors, sign flips, wrong concept) and cannot be healed by arithmetic.",
    "owners": 11.87,
@@ -93,7 +94,7 @@
    "total_was": 11.96
   },
   "20MICRONS|20230331|patC": {
-   "found_by": "\u00a7116c screen over all 60,768 con cells, 2026-08-26",
+   "found_by": "§116c screen over all 60,768 con cells, 2026-08-26",
    "nci": 0.02,
    "note": "owners=9.30 + NCI=0.02 = 9.32 == ProfitLossForPeriod; the con slot held the TOTAL. Identity closes, which is the gate: 762 other stored==total cells were REFUSED because their owners/NCI/total do not reconcile (filer scale errors, sign flips, wrong concept) and cannot be healed by arithmetic.",
    "owners": 9.3,
@@ -101,7 +102,7 @@
    "total_was": 9.32
   },
   "20MICRONS|20230630|patC": {
-   "found_by": "\u00a7116c screen over all 60,768 con cells, 2026-08-26",
+   "found_by": "§116c screen over all 60,768 con cells, 2026-08-26",
    "nci": 0.02,
    "note": "owners=14.91 + NCI=0.02 = 14.93 == ProfitLossForPeriod; the con slot held the TOTAL. Identity closes, which is the gate: 762 other stored==total cells were REFUSED because their owners/NCI/total do not reconcile (filer scale errors, sign flips, wrong concept) and cannot be healed by arithmetic.",
    "owners": 14.91,
@@ -109,7 +110,7 @@
    "total_was": 14.93
   },
   "20MICRONS|20230930|patC": {
-   "found_by": "\u00a7116c screen over all 60,768 con cells, 2026-08-26",
+   "found_by": "§116c screen over all 60,768 con cells, 2026-08-26",
    "nci": 0.02,
    "note": "owners=16.03 + NCI=0.02 = 16.05 == ProfitLossForPeriod; the con slot held the TOTAL. Identity closes, which is the gate: 762 other stored==total cells were REFUSED because their owners/NCI/total do not reconcile (filer scale errors, sign flips, wrong concept) and cannot be healed by arithmetic.",
    "owners": 16.03,
@@ -117,7 +118,7 @@
    "total_was": 16.05
   },
   "20MICRONS|20231231|patC": {
-   "found_by": "\u00a7116c screen over all 60,768 con cells, 2026-08-26",
+   "found_by": "§116c screen over all 60,768 con cells, 2026-08-26",
    "nci": 0.02,
    "note": "owners=11.48 + NCI=0.02 = 11.51 == ProfitLossForPeriod; the con slot held the TOTAL. Identity closes, which is the gate: 762 other stored==total cells were REFUSED because their owners/NCI/total do not reconcile (filer scale errors, sign flips, wrong concept) and cannot be healed by arithmetic.",
    "owners": 11.48,
@@ -125,7 +126,7 @@
    "total_was": 11.51
   },
   "20MICRONS|20240331|patC": {
-   "found_by": "\u00a7116c screen over all 60,768 con cells, 2026-08-26",
+   "found_by": "§116c screen over all 60,768 con cells, 2026-08-26",
    "nci": 0.02,
    "note": "owners=13.64 + NCI=0.02 = 13.67 == ProfitLossForPeriod; the con slot held the TOTAL. Identity closes, which is the gate: 762 other stored==total cells were REFUSED because their owners/NCI/total do not reconcile (filer scale errors, sign flips, wrong concept) and cannot be healed by arithmetic.",
    "owners": 13.64,
@@ -133,7 +134,7 @@
    "total_was": 13.67
   },
   "20MICRONS|20240630|patC": {
-   "found_by": "\u00a7116c screen over all 60,768 con cells, 2026-08-26",
+   "found_by": "§116c screen over all 60,768 con cells, 2026-08-26",
    "nci": 0.05,
    "note": "owners=17.86 + NCI=0.05 = 17.90 == ProfitLossForPeriod; the con slot held the TOTAL. Identity closes, which is the gate: 762 other stored==total cells were REFUSED because their owners/NCI/total do not reconcile (filer scale errors, sign flips, wrong concept) and cannot be healed by arithmetic.",
    "owners": 17.86,
@@ -141,7 +142,7 @@
    "total_was": 17.9
   },
   "20MICRONS|20240930|patC": {
-   "found_by": "\u00a7116c screen over all 60,768 con cells, 2026-08-26",
+   "found_by": "§116c screen over all 60,768 con cells, 2026-08-26",
    "nci": 0.04,
    "note": "owners=16.41 + NCI=0.04 = 16.45 == ProfitLossForPeriod; the con slot held the TOTAL. Identity closes, which is the gate: 762 other stored==total cells were REFUSED because their owners/NCI/total do not reconcile (filer scale errors, sign flips, wrong concept) and cannot be healed by arithmetic.",
    "owners": 16.41,
@@ -149,7 +150,7 @@
    "total_was": 16.45
   },
   "20MICRONS|20241231|patC": {
-   "found_by": "\u00a7116c screen over all 60,768 con cells, 2026-08-26",
+   "found_by": "§116c screen over all 60,768 con cells, 2026-08-26",
    "nci": 0.03,
    "note": "owners=12.89 + NCI=0.03 = 12.92 == ProfitLossForPeriod; the con slot held the TOTAL. Identity closes, which is the gate: 762 other stored==total cells were REFUSED because their owners/NCI/total do not reconcile (filer scale errors, sign flips, wrong concept) and cannot be healed by arithmetic.",
    "owners": 12.89,
@@ -157,7 +158,7 @@
    "total_was": 12.92
   },
   "20MICRONS|20250930|patC": {
-   "found_by": "\u00a7116c screen over all 60,768 con cells, 2026-08-26",
+   "found_by": "§116c screen over all 60,768 con cells, 2026-08-26",
    "nci": -0.04,
    "note": "owners=17.39 + NCI=-0.04 = 17.35 == ProfitLossForPeriod; the con slot held the TOTAL. Identity closes, which is the gate: 762 other stored==total cells were REFUSED because their owners/NCI/total do not reconcile (filer scale errors, sign flips, wrong concept) and cannot be healed by arithmetic.",
    "owners": 17.39,
@@ -165,7 +166,7 @@
    "total_was": 17.35
   },
   "20MICRONS|20251231|patC": {
-   "found_by": "\u00a7116c screen over all 60,768 con cells, 2026-08-26",
+   "found_by": "§116c screen over all 60,768 con cells, 2026-08-26",
    "nci": -0.09,
    "note": "owners=14.96 + NCI=-0.09 = 14.87 == ProfitLossForPeriod; the con slot held the TOTAL. Identity closes, which is the gate: 762 other stored==total cells were REFUSED because their owners/NCI/total do not reconcile (filer scale errors, sign flips, wrong concept) and cannot be healed by arithmetic.",
    "owners": 14.96,
@@ -173,7 +174,7 @@
    "total_was": 14.87
   },
   "20MICRONS|20260331|patC": {
-   "found_by": "\u00a7116c screen over all 60,768 con cells, 2026-08-26",
+   "found_by": "§116c screen over all 60,768 con cells, 2026-08-26",
    "nci": -0.03,
    "note": "owners=17.62 + NCI=-0.03 = 17.59 == ProfitLossForPeriod; the con slot held the TOTAL. Identity closes, which is the gate: 762 other stored==total cells were REFUSED because their owners/NCI/total do not reconcile (filer scale errors, sign flips, wrong concept) and cannot be healed by arithmetic.",
    "owners": 17.62,
@@ -181,7 +182,7 @@
    "total_was": 17.59
   },
   "360ONE|20230331|patC": {
-   "found_by": "\u00a7116c screen over all 60,768 con cells, 2026-08-26",
+   "found_by": "§116c screen over all 60,768 con cells, 2026-08-26",
    "nci": -0.04,
    "note": "owners=155.45 + NCI=-0.04 = 155.41 == ProfitLossForPeriod; the con slot held the TOTAL. Identity closes, which is the gate: 762 other stored==total cells were REFUSED because their owners/NCI/total do not reconcile (filer scale errors, sign flips, wrong concept) and cannot be healed by arithmetic.",
    "owners": 155.45,
@@ -189,7 +190,7 @@
    "total_was": 155.41
   },
   "360ONE|20230630|patC": {
-   "found_by": "\u00a7116c screen over all 60,768 con cells, 2026-08-26",
+   "found_by": "§116c screen over all 60,768 con cells, 2026-08-26",
    "nci": -0.18,
    "note": "owners=183.76 + NCI=-0.18 = 183.58 == ProfitLossForPeriod; the con slot held the TOTAL. Identity closes, which is the gate: 762 other stored==total cells were REFUSED because their owners/NCI/total do not reconcile (filer scale errors, sign flips, wrong concept) and cannot be healed by arithmetic.",
    "owners": 183.76,
@@ -197,7 +198,7 @@
    "total_was": 183.58
   },
   "360ONE|20230930|patC": {
-   "found_by": "\u00a7116c screen over all 60,768 con cells, 2026-08-26",
+   "found_by": "§116c screen over all 60,768 con cells, 2026-08-26",
    "nci": -0.11,
    "note": "owners=186.02 + NCI=-0.11 = 185.91 == ProfitLossForPeriod; the con slot held the TOTAL. Identity closes, which is the gate: 762 other stored==total cells were REFUSED because their owners/NCI/total do not reconcile (filer scale errors, sign flips, wrong concept) and cannot be healed by arithmetic.",
    "owners": 186.02,
@@ -205,7 +206,7 @@
    "total_was": 185.91
   },
   "3IINFOLTD|20250630|patC": {
-   "found_by": "\u00a7116c screen over all 60,768 con cells, 2026-08-26",
+   "found_by": "§116c screen over all 60,768 con cells, 2026-08-26",
    "nci": -0.07,
    "note": "owners=7.62 + NCI=-0.07 = 7.55 == ProfitLossForPeriod; the con slot held the TOTAL. Identity closes, which is the gate: 762 other stored==total cells were REFUSED because their owners/NCI/total do not reconcile (filer scale errors, sign flips, wrong concept) and cannot be healed by arithmetic.",
    "owners": 7.62,
@@ -213,7 +214,7 @@
    "total_was": 7.55
   },
   "3IINFOLTD|20250930|patC": {
-   "found_by": "\u00a7116c screen over all 60,768 con cells, 2026-08-26",
+   "found_by": "§116c screen over all 60,768 con cells, 2026-08-26",
    "nci": -0.23,
    "note": "owners=18.43 + NCI=-0.23 = 18.20 == ProfitLossForPeriod; the con slot held the TOTAL. Identity closes, which is the gate: 762 other stored==total cells were REFUSED because their owners/NCI/total do not reconcile (filer scale errors, sign flips, wrong concept) and cannot be healed by arithmetic.",
    "owners": 18.43,
@@ -222,13 +223,13 @@
   },
   "3IINFOLTD|20251231|patC": {
    "nci": -0.05,
-   "note": "own Dec-2025 filing p7 (lakhs): period 208, NCI -5 => owners 213; XBRL identity closes at owners 2.14 + NCI -0.05 = total 2.09. The \u00a771g resync had written the total.",
+   "note": "own Dec-2025 filing p7 (lakhs): period 208, NCI -5 => owners 213; XBRL identity closes at owners 2.14 + NCI -0.05 = total 2.09. The §71g resync had written the total.",
    "owners": 2.14,
    "period": 2.09,
    "stored_before": 2.09
   },
   "3IINFOTECH|20181231|patC": {
-   "found_by": "\u00a7116c screen over all 60,768 con cells, 2026-08-26",
+   "found_by": "§116c screen over all 60,768 con cells, 2026-08-26",
    "nci": 0.5,
    "note": "owners=17.52 + NCI=0.50 = 18.02 == ProfitLossForPeriod; the con slot held the TOTAL. Identity closes, which is the gate: 762 other stored==total cells were REFUSED because their owners/NCI/total do not reconcile (filer scale errors, sign flips, wrong concept) and cannot be healed by arithmetic.",
    "owners": 17.52,
@@ -236,7 +237,7 @@
    "total_was": 18.02
   },
   "3IINFOTECH|20190331|patC": {
-   "found_by": "\u00a7116c screen over all 60,768 con cells, 2026-08-26",
+   "found_by": "§116c screen over all 60,768 con cells, 2026-08-26",
    "nci": 0.31,
    "note": "owners=34.89 + NCI=0.31 = 35.20 == ProfitLossForPeriod; the con slot held the TOTAL. Identity closes, which is the gate: 762 other stored==total cells were REFUSED because their owners/NCI/total do not reconcile (filer scale errors, sign flips, wrong concept) and cannot be healed by arithmetic.",
    "owners": 34.89,
@@ -244,7 +245,7 @@
    "total_was": 35.2
   },
   "3IINFOTECH|20190630|patC": {
-   "found_by": "\u00a7116c screen over all 60,768 con cells, 2026-08-26",
+   "found_by": "§116c screen over all 60,768 con cells, 2026-08-26",
    "nci": -0.61,
    "note": "owners=1.98 + NCI=-0.61 = 1.37 == ProfitLossForPeriod; the con slot held the TOTAL. Identity closes, which is the gate: 762 other stored==total cells were REFUSED because their owners/NCI/total do not reconcile (filer scale errors, sign flips, wrong concept) and cannot be healed by arithmetic.",
    "owners": 1.98,
@@ -252,7 +253,7 @@
    "total_was": 1.37
   },
   "3IINFOTECH|20190930|patC": {
-   "found_by": "\u00a7116c screen over all 60,768 con cells, 2026-08-26",
+   "found_by": "§116c screen over all 60,768 con cells, 2026-08-26",
    "nci": 1.29,
    "note": "owners=13.35 + NCI=1.29 = 14.63 == ProfitLossForPeriod; the con slot held the TOTAL. Identity closes, which is the gate: 762 other stored==total cells were REFUSED because their owners/NCI/total do not reconcile (filer scale errors, sign flips, wrong concept) and cannot be healed by arithmetic.",
    "owners": 13.35,
@@ -260,7 +261,7 @@
    "total_was": 14.63
   },
   "3IINFOTECH|20191231|patC": {
-   "found_by": "\u00a7116c screen over all 60,768 con cells, 2026-08-26",
+   "found_by": "§116c screen over all 60,768 con cells, 2026-08-26",
    "nci": -0.26,
    "note": "owners=27.46 + NCI=-0.26 = 27.20 == ProfitLossForPeriod; the con slot held the TOTAL. Identity closes, which is the gate: 762 other stored==total cells were REFUSED because their owners/NCI/total do not reconcile (filer scale errors, sign flips, wrong concept) and cannot be healed by arithmetic.",
    "owners": 27.46,
@@ -268,7 +269,7 @@
    "total_was": 27.2
   },
   "63MOONS|20191231|patC": {
-   "found_by": "\u00a7116c screen over all 60,768 con cells, 2026-08-26",
+   "found_by": "§116c screen over all 60,768 con cells, 2026-08-26",
    "nci": 0.02,
    "note": "owners=-14.82 + NCI=0.02 = -14.80 == ProfitLossForPeriod; the con slot held the TOTAL. Identity closes, which is the gate: 762 other stored==total cells were REFUSED because their owners/NCI/total do not reconcile (filer scale errors, sign flips, wrong concept) and cannot be healed by arithmetic.",
    "owners": -14.82,
@@ -276,7 +277,7 @@
    "total_was": -14.8
   },
   "63MOONS|20250630|patC": {
-   "found_by": "\u00a7116c screen over all 60,768 con cells, 2026-08-26",
+   "found_by": "§116c screen over all 60,768 con cells, 2026-08-26",
    "nci": -5.68,
    "note": "owners=3.08 + NCI=-5.68 = -2.60 == ProfitLossForPeriod; the con slot held the TOTAL. Identity closes, which is the gate: 762 other stored==total cells were REFUSED because their owners/NCI/total do not reconcile (filer scale errors, sign flips, wrong concept) and cannot be healed by arithmetic.",
    "owners": 3.08,
@@ -284,7 +285,7 @@
    "total_was": -2.6
   },
   "63MOONS|20251231|patC": {
-   "found_by": "\u00a7116c screen over all 60,768 con cells, 2026-08-26",
+   "found_by": "§116c screen over all 60,768 con cells, 2026-08-26",
    "nci": -11.98,
    "note": "owners=-19.75 + NCI=-11.98 = -31.73 == ProfitLossForPeriod; the con slot held the TOTAL. Identity closes, which is the gate: 762 other stored==total cells were REFUSED because their owners/NCI/total do not reconcile (filer scale errors, sign flips, wrong concept) and cannot be healed by arithmetic.",
    "owners": -19.75,
@@ -292,7 +293,7 @@
    "total_was": -31.73
   },
   "63MOONS|20260331|patC": {
-   "found_by": "\u00a7116c screen over all 60,768 con cells, 2026-08-26",
+   "found_by": "§116c screen over all 60,768 con cells, 2026-08-26",
    "nci": 2.64,
    "note": "owners=22.50 + NCI=2.64 = 25.14 == ProfitLossForPeriod; the con slot held the TOTAL. Identity closes, which is the gate: 762 other stored==total cells were REFUSED because their owners/NCI/total do not reconcile (filer scale errors, sign flips, wrong concept) and cannot be healed by arithmetic.",
    "owners": 22.5,
@@ -324,7 +325,7 @@
    "when": "2026-08-17 23:49 IST"
   },
   "ABB|20250331|patC": {
-   "identity": "ABB Q3CY25 CONSOLIDATED statement (BSE, announced 2025-11-06), p7, verified by my own read of the cached PDF: quarter columns Sep-25 409.04 | Jun-25 351.74 | Sep-24 440.45, YTD Sep-25 1,235.41. Mar-25 = 1,235.41 - 351.74 - 409.04 = 474.63 \u2014 three printed columns of one table.",
+   "identity": "ABB Q3CY25 CONSOLIDATED statement (BSE, announced 2025-11-06), p7, verified by my own read of the cached PDF: quarter columns Sep-25 409.04 | Jun-25 351.74 | Sep-24 440.45, YTD Sep-25 1,235.41. Mar-25 = 1,235.41 - 351.74 - 409.04 = 474.63 — three printed columns of one table.",
    "note": "batch F dated this from the CY2026 filings because the Q1/Q2 CY25 filings genuinely contain no consolidated statement; the Q3CY25 filing does, and the value was derivable the day it appeared. Moving a date EARLIER is done only on this direct read of the printing filing.",
    "owners": 474.63,
    "source": "ABB Q3CY25 consolidated results (BSE 2025-11-06) p7: YTD 1,235.41 minus the two printed quarters",
@@ -332,7 +333,7 @@
    "when": "2026-08-17 23:49 IST"
   },
   "ABB|20250630|patC": {
-   "identity": "ABB Q3CY25 CONSOLIDATED statement (BSE, announced 2025-11-06), p7, verified by my own read of the cached PDF: quarter columns Sep-25 409.04 | Jun-25 351.74 | Sep-24 440.45, YTD Sep-25 1,235.41. Mar-25 = 1,235.41 - 351.74 - 409.04 = 474.63 \u2014 three printed columns of one table.",
+   "identity": "ABB Q3CY25 CONSOLIDATED statement (BSE, announced 2025-11-06), p7, verified by my own read of the cached PDF: quarter columns Sep-25 409.04 | Jun-25 351.74 | Sep-24 440.45, YTD Sep-25 1,235.41. Mar-25 = 1,235.41 - 351.74 - 409.04 = 474.63 — three printed columns of one table.",
    "note": "printed directly; 8 months earlier than the batch-F date.",
    "owners": 351.74,
    "source": "ABB Q3CY25 consolidated results (BSE 2025-11-06) p7, preceding-quarter column June 30 2025: 351.74 printed outright",
@@ -355,6 +356,22 @@
    "stored_before": null,
    "when": "2026-08-17 23:49 IST"
   },
+  "ADANIENT|20210331|patC": {
+   "found_by": "§116e per-cell document read of the company's own BSE-filed consolidated result, 2026-08-27",
+   "nci": 98.58,
+   "note": "Consolidated P&L attribution block, read from the company's own filed result: owners 233.95 + NCI 98.58 = 332.53 == stored ProfitLossForPeriod 332.53 (the con slot held the TOTAL). The identity closes in the FILING to within 0.00cr, which is the gate. §116d refused this cell because its cached XBRL tags are incoherent (owners_tag=29.89, nci_tag=0.28, total_tag=332.53); the document resolves it. Column pinned by total==stored under unit-scale /1.",
+   "owners": 233.95,
+   "src": "own consolidated result PDF, BSE ann 20210505, c2cf90a6-bbe1-4a9e-8e22-a08c94e9f0b3.pdf (page 2)",
+   "total_was": 332.53
+  },
+  "ANANTRAJ|20231231|patC": {
+   "found_by": "§116e per-cell document read of the company's own BSE-filed consolidated result, 2026-08-27",
+   "nci": -0.4,
+   "note": "Consolidated P&L attribution block, read from the company's own filed result: owners 71.83 + NCI -0.4 = 71.43 == stored ProfitLossForPeriod 71.43 (the con slot held the TOTAL). The identity closes in the FILING to within 0.00cr, which is the gate. §116d refused this cell because its cached XBRL tags are incoherent (owners_tag=71.83, nci_tag=-40.0, total_tag=71.43); the document resolves it. Column pinned by total==stored under unit-scale /1.",
+   "owners": 71.83,
+   "src": "own consolidated result PDF, BSE ann 20240206, 1843ec02-1a20-4ee6-9533-09bfe9e1d671.pdf (page 1)",
+   "total_was": 71.43
+  },
   "ARIHANTCAP|20260331|patC": {
    "note": "own Mar-2026 filing p5 (lakhs); column anchored on stored Dec-25 5.18 and Mar-25 7.70; FY26 identity 12.70+13.08+5.18+0.50 = 31.46 closes exactly",
    "owners": 0.5,
@@ -367,6 +384,14 @@
    "source": "ASHOKA Q2FY20 unaudited consolidated financial results (filed 2019-11-14) p11, column 'Quarter Ended 30-Sep-18', row 'Profit / (Loss) for the year attributable to: Owners of the Group' = (247.77) (Rs In Lakh)",
    "stored_before": null,
    "when": "2026-08-17 20:47 IST"
+  },
+  "ASHOKA|20230331|patC": {
+   "found_by": "§116e per-cell document read of the company's own BSE-filed consolidated result, 2026-08-27",
+   "nci": -2.86,
+   "note": "Consolidated P&L attribution block, read from the company's own filed result: owners 37.07 + NCI -2.86 = 34.21 == stored ProfitLossForPeriod 34.21 (the con slot held the TOTAL). The identity closes in the FILING to within 0.00cr, which is the gate. §116d refused this cell because its cached XBRL tags are incoherent (owners_tag=37.07, nci_tag=2.86, total_tag=34.21); the document resolves it. Column pinned by total==stored under unit-scale /100.",
+   "owners": 37.07,
+   "src": "own consolidated result PDF, BSE ann 20230524, 4b0a5ab7-a78f-4eec-81d7-264e778683a3.pdf (page 22)",
+   "total_was": 34.21
   },
   "ATUL|20200630|patC": {
    "nci": 0.16,
@@ -496,6 +521,30 @@
    },
    "stored_before": 182.37
   },
+  "AUROPHARMA|20200630|patC": {
+   "found_by": "§116e per-cell document read of the company's own BSE-filed consolidated result, 2026-08-27",
+   "nci": 0.1,
+   "note": "Consolidated P&L attribution block, read from the company's own filed result: owners 780.58 + NCI 0.1 = 780.68 == stored ProfitLossForPeriod 780.68 (the con slot held the TOTAL). The identity closes in the FILING to within 0.00cr, which is the gate. §116d refused this cell because its cached XBRL tags are incoherent (owners_tag=841.71, nci_tag=0.1, total_tag=780.68); the document resolves it. Column pinned by total==stored under unit-scale /100.",
+   "owners": 780.58,
+   "src": "own consolidated result PDF, BSE ann 20200812, 2bfa80a8-cd4e-40d0-9af7-e0ec1c8011cf.pdf (page 5)",
+   "total_was": 780.68
+  },
+  "AUROPHARMA|20210331|patC": {
+   "found_by": "§116e per-cell document read of the company's own BSE-filed consolidated result, 2026-08-27",
+   "nci": -0.4,
+   "note": "Consolidated P&L attribution block, read from the company's own filed result: owners 801.58 + NCI -0.4 = 801.18 == stored ProfitLossForPeriod 801.18 (the con slot held the TOTAL). The identity closes in the FILING to within 0.00cr, which is the gate. §116d refused this cell because its cached XBRL tags are incoherent (owners_tag=715.52, nci_tag=-0.4, total_tag=801.18); the document resolves it. Column pinned by total==stored under unit-scale /100.",
+   "owners": 801.58,
+   "src": "own consolidated result PDF, BSE ann 20210531, 6041cff3-6bc0-4758-92c1-e7528c3b98eb.pdf (page 9)",
+   "total_was": 801.18
+  },
+  "AVONMORE|20230630|patC": {
+   "found_by": "§116e per-cell document read of the company's own BSE-filed consolidated result, 2026-08-27",
+   "nci": 0.94,
+   "note": "Consolidated P&L attribution block, read from the company's own filed result: owners 2.81 + NCI 0.94 = 3.76 == stored ProfitLossForPeriod 3.75 (the con slot held the TOTAL). The identity closes in the FILING to within 0.01cr, which is the gate. §116d refused this cell because its cached XBRL tags are incoherent (owners_tag=3.87, nci_tag=1.7, total_tag=3.75); the document resolves it. Column pinned by total==stored under unit-scale /100.",
+   "owners": 2.81,
+   "src": "own consolidated result PDF, BSE ann 20230814, a5e7aef1-b020-4fea-a4cb-5dea2ed09ce5.pdf (page 5)",
+   "total_was": 3.76
+  },
   "AXISCADES|20181231|patC": {
    "nci": 0.11,
    "note": "Mar-2019 filing p4: two attribution blocks; PROFIT attribution gives owners -0.73 (total -0.61, NCI 0.11) while the 1.59 in the mirror is the TCI attribution. FY19 control: -7.67 - 0.46 = -8.13 exactly as printed.",
@@ -516,13 +565,21 @@
    "owners": 4.87,
    "stored_before": 4.87
   },
+  "BERGEPAINT|20210630|patC": {
+   "found_by": "§116e per-cell document read of the company's own BSE-filed consolidated result, 2026-08-27",
+   "nci": -0.11,
+   "note": "Consolidated P&L attribution block, read from the company's own filed result: owners 140.59 + NCI -0.11 = 140.48 == stored ProfitLossForPeriod 140.48 (the con slot held the TOTAL). The identity closes in the FILING to within 0.00cr, which is the gate. §116d refused this cell because its cached XBRL tags are incoherent (owners_tag=1742.77, nci_tag=-0.11, total_tag=140.48); the document resolves it. Column pinned by total==stored under unit-scale /1.",
+   "owners": 140.59,
+   "src": "own consolidated result PDF, BSE ann 20210806, 98a2885a-80ea-43e4-b15e-90cc8547ab5a.pdf (page 8)",
+   "total_was": 140.48
+  },
   "BHARATFORG|20190930|patC": {
    "annCon": 20191108,
    "campaign": "con-params-L4 / BHARATFORG owners normalisation",
    "nci": -1.59,
    "note": "stored value was the printed TOTAL (row 9); replaced with the printed OWNERS profit (row 13), which is this project's declared basis for npCon. owners + NCI reproduces the printed total to the paisa, and the filing's own basic EPS reproduces the owners figure.",
    "owners": 207.08,
-   "source": "Bharat Forge Ltd consolidated financial results, the company's own filing for each quarter (BSE announcements, scrip 500493; two quarters sit under the 'Board Meeting' category because 'Result' returns empty for this scrip). Statements declare '(\u20b9 in Million)'.",
+   "source": "Bharat Forge Ltd consolidated financial results, the company's own filing for each quarter (BSE announcements, scrip 500493; two quarters sit under the 'Board Meeting' category because 'Result' returns empty for this scrip). Statements declare '(₹ in Million)'.",
    "stored_before": 205.48,
    "when": "2026-08-18",
    "why_the_cache_was_wrong": "the filer's XBRL either omits ProfitOrLossAttributableToOwnersOfParent or fills it with row 12 (total-comprehensive-income owners), so _reattr_owners.json's reconciliation guard rejected the cell and it kept the total."
@@ -533,7 +590,7 @@
    "nci": -1.35,
    "note": "stored value was the printed TOTAL (row 9); replaced with the printed OWNERS profit (row 13), which is this project's declared basis for npCon. owners + NCI reproduces the printed total to the paisa, and the filing's own basic EPS reproduces the owners figure.",
    "owners": 41.79,
-   "source": "Bharat Forge Ltd consolidated financial results, the company's own filing for each quarter (BSE announcements, scrip 500493; two quarters sit under the 'Board Meeting' category because 'Result' returns empty for this scrip). Statements declare '(\u20b9 in Million)'.",
+   "source": "Bharat Forge Ltd consolidated financial results, the company's own filing for each quarter (BSE announcements, scrip 500493; two quarters sit under the 'Board Meeting' category because 'Result' returns empty for this scrip). Statements declare '(₹ in Million)'.",
    "stored_before": 40.44,
    "when": "2026-08-18",
    "why_the_cache_was_wrong": "the filer's XBRL either omits ProfitOrLossAttributableToOwnersOfParent or fills it with row 12 (total-comprehensive-income owners), so _reattr_owners.json's reconciliation guard rejected the cell and it kept the total."
@@ -544,7 +601,7 @@
    "nci": -1.35,
    "note": "stored value was the printed TOTAL (row 9); replaced with the printed OWNERS profit (row 13), which is this project's declared basis for npCon. owners + NCI reproduces the printed total to the paisa, and the filing's own basic EPS reproduces the owners figure.",
    "owners": 0.03,
-   "source": "Bharat Forge Ltd consolidated financial results, the company's own filing for each quarter (BSE announcements, scrip 500493; two quarters sit under the 'Board Meeting' category because 'Result' returns empty for this scrip). Statements declare '(\u20b9 in Million)'.",
+   "source": "Bharat Forge Ltd consolidated financial results, the company's own filing for each quarter (BSE announcements, scrip 500493; two quarters sit under the 'Board Meeting' category because 'Result' returns empty for this scrip). Statements declare '(₹ in Million)'.",
    "stored_before": -1.32,
    "when": "2026-08-18",
    "why_the_cache_was_wrong": "the filer's XBRL either omits ProfitOrLossAttributableToOwnersOfParent or fills it with row 12 (total-comprehensive-income owners), so _reattr_owners.json's reconciliation guard rejected the cell and it kept the total."
@@ -555,7 +612,7 @@
    "nci": -1.24,
    "note": "stored value was the printed TOTAL (row 9); replaced with the printed OWNERS profit (row 13), which is this project's declared basis for npCon. owners + NCI reproduces the printed total to the paisa, and the filing's own basic EPS reproduces the owners figure.",
    "owners": -209.21,
-   "source": "Bharat Forge Ltd consolidated financial results, the company's own filing for each quarter (BSE announcements, scrip 500493; two quarters sit under the 'Board Meeting' category because 'Result' returns empty for this scrip). Statements declare '(\u20b9 in Million)'.",
+   "source": "Bharat Forge Ltd consolidated financial results, the company's own filing for each quarter (BSE announcements, scrip 500493; two quarters sit under the 'Board Meeting' category because 'Result' returns empty for this scrip). Statements declare '(₹ in Million)'.",
    "stored_before": -210.45,
    "when": "2026-08-18",
    "why_the_cache_was_wrong": "the filer's XBRL either omits ProfitOrLossAttributableToOwnersOfParent or fills it with row 12 (total-comprehensive-income owners), so _reattr_owners.json's reconciliation guard rejected the cell and it kept the total."
@@ -566,7 +623,7 @@
    "nci": 3.52,
    "note": "stored value was the printed TOTAL (row 9); replaced with the printed OWNERS profit (row 13), which is this project's declared basis for npCon. owners + NCI reproduces the printed total to the paisa, and the filing's own basic EPS reproduces the owners figure.",
    "owners": 208.61,
-   "source": "Bharat Forge Ltd consolidated financial results, the company's own filing for each quarter (BSE announcements, scrip 500493; two quarters sit under the 'Board Meeting' category because 'Result' returns empty for this scrip). Statements declare '(\u20b9 in Million)'.",
+   "source": "Bharat Forge Ltd consolidated financial results, the company's own filing for each quarter (BSE announcements, scrip 500493; two quarters sit under the 'Board Meeting' category because 'Result' returns empty for this scrip). Statements declare '(₹ in Million)'.",
    "stored_before": 212.12,
    "when": "2026-08-18",
    "why_the_cache_was_wrong": "the filer's XBRL either omits ProfitOrLossAttributableToOwnersOfParent or fills it with row 12 (total-comprehensive-income owners), so _reattr_owners.json's reconciliation guard rejected the cell and it kept the total."
@@ -577,7 +634,7 @@
    "nci": -0.9,
    "note": "stored value was the printed TOTAL (row 9); replaced with the printed OWNERS profit (row 13), which is this project's declared basis for npCon. owners + NCI reproduces the printed total to the paisa, and the filing's own basic EPS reproduces the owners figure.",
    "owners": 153.65,
-   "source": "Bharat Forge Ltd consolidated financial results, the company's own filing for each quarter (BSE announcements, scrip 500493; two quarters sit under the 'Board Meeting' category because 'Result' returns empty for this scrip). Statements declare '(\u20b9 in Million)'.",
+   "source": "Bharat Forge Ltd consolidated financial results, the company's own filing for each quarter (BSE announcements, scrip 500493; two quarters sit under the 'Board Meeting' category because 'Result' returns empty for this scrip). Statements declare '(₹ in Million)'.",
    "stored_before": 152.75,
    "when": "2026-08-18",
    "why_the_cache_was_wrong": "the filer's XBRL either omits ProfitOrLossAttributableToOwnersOfParent or fills it with row 12 (total-comprehensive-income owners), so _reattr_owners.json's reconciliation guard rejected the cell and it kept the total."
@@ -588,7 +645,7 @@
    "nci": -0.74,
    "note": "stored value was the printed TOTAL (row 9); replaced with the printed OWNERS profit (row 13), which is this project's declared basis for npCon. owners + NCI reproduces the printed total to the paisa, and the filing's own basic EPS reproduces the owners figure.",
    "owners": 271.19,
-   "source": "Bharat Forge Ltd consolidated financial results, the company's own filing for each quarter (BSE announcements, scrip 500493; two quarters sit under the 'Board Meeting' category because 'Result' returns empty for this scrip). Statements declare '(\u20b9 in Million)'.",
+   "source": "Bharat Forge Ltd consolidated financial results, the company's own filing for each quarter (BSE announcements, scrip 500493; two quarters sit under the 'Board Meeting' category because 'Result' returns empty for this scrip). Statements declare '(₹ in Million)'.",
    "stored_before": 270.45,
    "when": "2026-08-18",
    "why_the_cache_was_wrong": "the filer's XBRL either omits ProfitOrLossAttributableToOwnersOfParent or fills it with row 12 (total-comprehensive-income owners), so _reattr_owners.json's reconciliation guard rejected the cell and it kept the total."
@@ -599,7 +656,7 @@
    "nci": 0.81,
    "note": "stored value was the printed TOTAL (row 9); replaced with the printed OWNERS profit (row 13), which is this project's declared basis for npCon. owners + NCI reproduces the printed total to the paisa, and the filing's own basic EPS reproduces the owners figure.",
    "owners": 421.19,
-   "source": "Bharat Forge Ltd consolidated financial results, the company's own filing for each quarter (BSE announcements, scrip 500493; two quarters sit under the 'Board Meeting' category because 'Result' returns empty for this scrip). Statements declare '(\u20b9 in Million)'.",
+   "source": "Bharat Forge Ltd consolidated financial results, the company's own filing for each quarter (BSE announcements, scrip 500493; two quarters sit under the 'Board Meeting' category because 'Result' returns empty for this scrip). Statements declare '(₹ in Million)'.",
    "stored_before": 422.0,
    "when": "2026-08-18",
    "why_the_cache_was_wrong": "the filer's XBRL either omits ProfitOrLossAttributableToOwnersOfParent or fills it with row 12 (total-comprehensive-income owners), so _reattr_owners.json's reconciliation guard rejected the cell and it kept the total."
@@ -610,7 +667,7 @@
    "nci": -4.08,
    "note": "stored value was the printed TOTAL (row 9); replaced with the printed OWNERS profit (row 13), which is this project's declared basis for npCon. owners + NCI reproduces the printed total to the paisa, and the filing's own basic EPS reproduces the owners figure.",
    "owners": 164.45,
-   "source": "Bharat Forge Ltd consolidated financial results, the company's own filing for each quarter (BSE announcements, scrip 500493; two quarters sit under the 'Board Meeting' category because 'Result' returns empty for this scrip). Statements declare '(\u20b9 in Million)'.",
+   "source": "Bharat Forge Ltd consolidated financial results, the company's own filing for each quarter (BSE announcements, scrip 500493; two quarters sit under the 'Board Meeting' category because 'Result' returns empty for this scrip). Statements declare '(₹ in Million)'.",
    "stored_before": 160.37,
    "when": "2026-08-18",
    "why_the_cache_was_wrong": "the filer's XBRL either omits ProfitOrLossAttributableToOwnersOfParent or fills it with row 12 (total-comprehensive-income owners), so _reattr_owners.json's reconciliation guard rejected the cell and it kept the total."
@@ -621,13 +678,13 @@
    "nci": -7.76,
    "note": "stored value was the printed TOTAL (row 9); replaced with the printed OWNERS profit (row 13), which is this project's declared basis for npCon. owners + NCI reproduces the printed total to the paisa, and the filing's own basic EPS reproduces the owners figure.",
    "owners": 135.5,
-   "source": "Bharat Forge Ltd consolidated financial results, the company's own filing for each quarter (BSE announcements, scrip 500493; two quarters sit under the 'Board Meeting' category because 'Result' returns empty for this scrip). Statements declare '(\u20b9 in Million)'.",
+   "source": "Bharat Forge Ltd consolidated financial results, the company's own filing for each quarter (BSE announcements, scrip 500493; two quarters sit under the 'Board Meeting' category because 'Result' returns empty for this scrip). Statements declare '(₹ in Million)'.",
    "stored_before": 127.74,
    "when": "2026-08-18",
    "why_the_cache_was_wrong": "the filer's XBRL either omits ProfitOrLossAttributableToOwnersOfParent or fills it with row 12 (total-comprehensive-income owners), so _reattr_owners.json's reconciliation guard rejected the cell and it kept the total."
   },
   "BHEL|20180630|patC": {
-   "identity": "Everything closes to the paisa. H1 Sep-18 owners 127.15 = Jun-18 40.68 + Sep-18 86.47. 9M Dec-18 owners 323.63 = H1 127.15 (Q2FY20 filing) + Dec-18 196.48 (Q3FY20 filing) \u2014 subtotals from DIFFERENT filings. FY19 owners 1011.84 = 40.68 + 86.47 + 196.48 + 688.21.",
+   "identity": "Everything closes to the paisa. H1 Sep-18 owners 127.15 = Jun-18 40.68 + Sep-18 86.47. 9M Dec-18 owners 323.63 = H1 127.15 (Q2FY20 filing) + Dec-18 196.48 (Q3FY20 filing) — subtotals from DIFFERENT filings. FY19 owners 1011.84 = 40.68 + 86.47 + 196.48 + 688.21.",
    "note": "derived inside one table from two printed columns; confirmed by the FY19 year closing exactly",
    "owners": 40.68,
    "source": "BHEL Q2FY20 consolidated results (NSE attachment, filed 2019-11-13) p5: H1 Sep-18 owners 127.15 - Sep-18 owners 86.47",
@@ -635,7 +692,7 @@
    "when": "2026-08-17 20:27 IST"
   },
   "BHEL|20180930|patC": {
-   "identity": "Everything closes to the paisa. H1 Sep-18 owners 127.15 = Jun-18 40.68 + Sep-18 86.47. 9M Dec-18 owners 323.63 = H1 127.15 (Q2FY20 filing) + Dec-18 196.48 (Q3FY20 filing) \u2014 subtotals from DIFFERENT filings. FY19 owners 1011.84 = 40.68 + 86.47 + 196.48 + 688.21.",
+   "identity": "Everything closes to the paisa. H1 Sep-18 owners 127.15 = Jun-18 40.68 + Sep-18 86.47. 9M Dec-18 owners 323.63 = H1 127.15 (Q2FY20 filing) + Dec-18 196.48 (Q3FY20 filing) — subtotals from DIFFERENT filings. FY19 owners 1011.84 = 40.68 + 86.47 + 196.48 + 688.21.",
    "note": "printed comparative, owners 86.47 (total 85.24, NCI -1.23)",
    "owners": 86.47,
    "source": "BHEL Q2FY20 consolidated results (filed 2019-11-13) p5, corresponding-quarter column 30.09.2018",
@@ -643,7 +700,7 @@
    "when": "2026-08-17 20:27 IST"
   },
   "BHEL|20181231|patC": {
-   "identity": "Everything closes to the paisa. H1 Sep-18 owners 127.15 = Jun-18 40.68 + Sep-18 86.47. 9M Dec-18 owners 323.63 = H1 127.15 (Q2FY20 filing) + Dec-18 196.48 (Q3FY20 filing) \u2014 subtotals from DIFFERENT filings. FY19 owners 1011.84 = 40.68 + 86.47 + 196.48 + 688.21.",
+   "identity": "Everything closes to the paisa. H1 Sep-18 owners 127.15 = Jun-18 40.68 + Sep-18 86.47. 9M Dec-18 owners 323.63 = H1 127.15 (Q2FY20 filing) + Dec-18 196.48 (Q3FY20 filing) — subtotals from DIFFERENT filings. FY19 owners 1011.84 = 40.68 + 86.47 + 196.48 + 688.21.",
    "note": "printed comparative, owners 196.48 (total 196.43, NCI -0.05)",
    "owners": 196.48,
    "source": "BHEL Q3FY20 consolidated results (filed 2020-02-12) p4, corresponding-quarter column 31.12.2018",
@@ -651,7 +708,7 @@
    "when": "2026-08-17 20:27 IST"
   },
   "BHEL|20190331|patC": {
-   "identity": "Everything closes to the paisa. H1 Sep-18 owners 127.15 = Jun-18 40.68 + Sep-18 86.47. 9M Dec-18 owners 323.63 = H1 127.15 (Q2FY20 filing) + Dec-18 196.48 (Q3FY20 filing) \u2014 subtotals from DIFFERENT filings. FY19 owners 1011.84 = 40.68 + 86.47 + 196.48 + 688.21.",
+   "identity": "Everything closes to the paisa. H1 Sep-18 owners 127.15 = Jun-18 40.68 + Sep-18 86.47. 9M Dec-18 owners 323.63 = H1 127.15 (Q2FY20 filing) + Dec-18 196.48 (Q3FY20 filing) — subtotals from DIFFERENT filings. FY19 owners 1011.84 = 40.68 + 86.47 + 196.48 + 688.21.",
    "note": "Q4FY19 owners 688.21; standalone Mar-19 is 682.70, same size. Year closes exactly with the other three.",
    "owners": 688.21,
    "source": "BHEL Q3FY20 consolidated results (filed 2020-02-12) p4: FY19 owners 1011.84 - 9M Dec-18 owners 323.63",
@@ -659,15 +716,15 @@
    "when": "2026-08-17 20:27 IST"
   },
   "BHEL|20190630|patC": {
-   "identity": "Everything closes to the paisa. H1 Sep-18 owners 127.15 = Jun-18 40.68 + Sep-18 86.47. 9M Dec-18 owners 323.63 = H1 127.15 (Q2FY20 filing) + Dec-18 196.48 (Q3FY20 filing) \u2014 subtotals from DIFFERENT filings. FY19 owners 1011.84 = 40.68 + 86.47 + 196.48 + 688.21.",
-   "note": "stored -218.93 is EXACTLY the total row ('Net Profit/(Loss) for the period'); owners is -217.72 (NCI -1.21). Announce date unchanged \u2014 both rows were in the quarter's own filing.",
+   "identity": "Everything closes to the paisa. H1 Sep-18 owners 127.15 = Jun-18 40.68 + Sep-18 86.47. 9M Dec-18 owners 323.63 = H1 127.15 (Q2FY20 filing) + Dec-18 196.48 (Q3FY20 filing) — subtotals from DIFFERENT filings. FY19 owners 1011.84 = 40.68 + 86.47 + 196.48 + 688.21.",
+   "note": "stored -218.93 is EXACTLY the total row ('Net Profit/(Loss) for the period'); owners is -217.72 (NCI -1.21). Announce date unchanged — both rows were in the quarter's own filing.",
    "owners": -217.72,
    "source": "BHEL Q2FY20 consolidated results (filed 2019-11-13) p5, preceding-quarter column 30.06.2019",
    "stored_before": -218.93,
    "when": "2026-08-17 20:27 IST"
   },
   "BHEL|20191231|patC": {
-   "identity": "Everything closes to the paisa. H1 Sep-18 owners 127.15 = Jun-18 40.68 + Sep-18 86.47. 9M Dec-18 owners 323.63 = H1 127.15 (Q2FY20 filing) + Dec-18 196.48 (Q3FY20 filing) \u2014 subtotals from DIFFERENT filings. FY19 owners 1011.84 = 40.68 + 86.47 + 196.48 + 688.21.",
+   "identity": "Everything closes to the paisa. H1 Sep-18 owners 127.15 = Jun-18 40.68 + Sep-18 86.47. 9M Dec-18 owners 323.63 = H1 127.15 (Q2FY20 filing) + Dec-18 196.48 (Q3FY20 filing) — subtotals from DIFFERENT filings. FY19 owners 1011.84 = 40.68 + 86.47 + 196.48 + 688.21.",
    "note": "stored 161.81 is EXACTLY the total row; owners is 162.67 (NCI -0.86). Announce date unchanged.",
    "owners": 162.67,
    "source": "BHEL Q3FY20 consolidated results (filed 2020-02-12) p4, current-quarter column 31.12.2019",
@@ -675,7 +732,7 @@
    "when": "2026-08-17 20:27 IST"
   },
   "BLUESTARCO|20180930|patC": {
-   "identity": "REQUIRED companion to the Dec-18 heal: the printed 9M FY19 owners subtotal closes only with this \u2014 91.58 + 19.55 + (-0.94) = 110.19 == printed.",
+   "identity": "REQUIRED companion to the Dec-18 heal: the printed 9M FY19 owners subtotal closes only with this — 91.58 + 19.55 + (-0.94) = 110.19 == printed.",
    "note": "two filings print the same owners figure; the stored 19.66 is the pre-NCI period line",
    "owners": 19.55,
    "source": "BLUESTARCO Q2FY19 filing (filed 2018-11-23) p12 and Q3FY19 p9, both printing Sep-2018 owners 19.55",
@@ -684,7 +741,7 @@
   },
   "BLUESTARCO|20181231|patC": {
    "identity": "The printed 9M FY19 OWNERS subtotal closes EXACTLY on the written value - the 69 window test: Q1 owners 91.58 (the stored cell, itself already on the owners basis) + Q2 owners 19.55 + Q3 owners (0.94) = 110.19 == printed 'nine months ended 31.12.18' row 9 of 110.19 EXACT. (That closure needs the Sep-2018 cell healed 19.66 -> 19.55 in the same window, per 69's across-the-window rule; it is out of this batch and is listed in refusals_C.json.) Cross-checks: printed H1 FY19 owners 111.13 + (0.94) = 110.19 EXACT; and in-table 13.20 + (14.09) + (0.05) = (0.94) EXACT. Row identity for the company: the same filing's standalone note prints Dec-2018 profit after tax (19.86) == stored stdPAT -19.86.",
-   "note": "read from the quarter's own filing as 69 requires, NOT from the Q3FY20 comparative (which restates the same quarter to owners (0.91) / period (0.86)). Rows: 7 Net Profit after Tax 13.20, 8a Share in Profit/(Loss) of Joint Ventures (14.09), 8b NCI (0.05), 9 Net Profit/(Loss) for the Period (0.94) = the owners figure. Currency \u20b9 in Crores, no conversion. ann is UNCHANGED at 20190212 - the value was public on the original filing date, so it must not be moved forward to the FY20 filing.",
+   "note": "read from the quarter's own filing as 69 requires, NOT from the Q3FY20 comparative (which restates the same quarter to owners (0.91) / period (0.86)). Rows: 7 Net Profit after Tax 13.20, 8a Share in Profit/(Loss) of Joint Ventures (14.09), 8b NCI (0.05), 9 Net Profit/(Loss) for the Period (0.94) = the owners figure. Currency ₹ in Crores, no conversion. ann is UNCHANGED at 20190212 - the value was public on the original filing date, so it must not be moved forward to the FY20 filing.",
    "owners": -0.94,
    "source": "BLUE STAR 'Unaudited Consolidated Financial Results for the quarter and nine months ended December 31, 2018' - the quarter's OWN filing (NSE filingDate 12-Feb-2019 13:32, which is exactly the stored conAnnDate) p9, column 'Quarter Ended 31.12.18'",
    "stored_before": 0.0,
@@ -738,6 +795,30 @@
    "stored_before": null,
    "when": "2026-08-17 21:03 IST"
   },
+  "CGPOWER|20250930|patC": {
+   "found_by": "§116e per-cell document read of the company's own BSE-filed consolidated result, 2026-08-27",
+   "nci": -2.28,
+   "note": "Consolidated P&L attribution block, read from the company's own filed result: owners 286.72 + NCI -2.28 = 284.44 == stored ProfitLossForPeriod 284.44 (the con slot held the TOTAL). The identity closes in the FILING to within 0.00cr, which is the gate. §116d refused this cell because its cached XBRL tags are incoherent (owners_tag=18.24, nci_tag=0.15, total_tag=284.44); the document resolves it. Column pinned by total==stored under unit-scale /1.",
+   "owners": 286.72,
+   "src": "own consolidated result PDF, BSE ann 20251029, cabcb85d-0e6f-46cc-bc92-f5b2213654ea.pdf (page 13)",
+   "total_was": 284.44
+  },
+  "CHOLAHLDNG|20200331|patC": {
+   "found_by": "§116e per-cell document read of the company's own BSE-filed consolidated result, 2026-08-27",
+   "nci": 39.66,
+   "note": "Consolidated P&L attribution block, read from the company's own filed result: owners 39.91 + NCI 39.66 = 79.57 == stored ProfitLossForPeriod 79.57 (the con slot held the TOTAL). The identity closes in the FILING to within 0.00cr, which is the gate. §116d refused this cell because its cached XBRL tags are incoherent (owners_tag=14.71, nci_tag=9.7, total_tag=79.57); the document resolves it. Column pinned by total==stored under unit-scale /1.",
+   "owners": 39.91,
+   "src": "own consolidated result PDF, BSE ann 20200615, 1ec6bbf0-619d-41fa-9fa6-286f480257b3.pdf (page 14)",
+   "total_was": 79.57
+  },
+  "COFFEEDAY|20180331|patC": {
+   "found_by": "§116e per-cell document read of the company's own BSE-filed consolidated result, 2026-08-27",
+   "nci": 9.3,
+   "note": "Consolidated P&L attribution block, read from the company's own filed result: owners 25.2 + NCI 9.3 = 34.5 == stored ProfitLossForPeriod 34.5 (the con slot held the TOTAL). The identity closes in the FILING to within 0.00cr, which is the gate. §116d refused this cell because its cached XBRL tags are incoherent (owners_tag=-2.7, nci_tag=-0.5, total_tag=34.5); the document resolves it. Column pinned by total==stored under unit-scale /10.",
+   "owners": 25.2,
+   "src": "own consolidated result PDF, BSE ann 20180517, f444d3e0-d265-44cf-8cb8-a642d72cab9c.pdf (page 5)",
+   "total_was": 34.5
+  },
   "COX&KINGS|20180331|patC": {
    "exposed_by_phantom": false,
    "nci": 0.02,
@@ -749,7 +830,7 @@
   "COX&KINGS|20180930|patC": {
    "exposed_by_phantom": true,
    "nci": 42.24,
-   "note": "ProfitOrLossAttributableToOwnersOfParent=81.16, NonControllingInterests=42.24, ProfitLossForPeriod=123.40; identity closes. The con slot held the TOTAL, which is the wrong basis for npCon (owners-attributable). Exposed by the retracted HTML-escaped phantom key, which had read the owners tag correctly (runbook \u00a7116).",
+   "note": "ProfitOrLossAttributableToOwnersOfParent=81.16, NonControllingInterests=42.24, ProfitLossForPeriod=123.40; identity closes. The con slot held the TOTAL, which is the wrong basis for npCon (owners-attributable). Exposed by the retracted HTML-escaped phantom key, which had read the owners tag correctly (runbook §116).",
    "owners": 81.16,
    "src": "own consolidated XBRL INDAS_41293_60874_15112018053046_WEB_2_xml ctx OneD",
    "total_was": 123.4
@@ -757,7 +838,7 @@
   "COX&KINGS|20181231|patC": {
    "exposed_by_phantom": true,
    "nci": 20.07,
-   "note": "ProfitOrLossAttributableToOwnersOfParent=28.91, NonControllingInterests=20.07, ProfitLossForPeriod=48.98; identity closes. The con slot held the TOTAL, which is the wrong basis for npCon (owners-attributable). Exposed by the retracted HTML-escaped phantom key, which had read the owners tag correctly (runbook \u00a7116).",
+   "note": "ProfitOrLossAttributableToOwnersOfParent=28.91, NonControllingInterests=20.07, ProfitLossForPeriod=48.98; identity closes. The con slot held the TOTAL, which is the wrong basis for npCon (owners-attributable). Exposed by the retracted HTML-escaped phantom key, which had read the owners tag correctly (runbook §116).",
    "owners": 28.91,
    "src": "own consolidated XBRL INDAS_43421_83373_15022019030146_WEB_2_xml ctx OneD",
    "total_was": 48.98
@@ -852,14 +933,22 @@
   },
   "CUMMINSIND|20190630|patC": {
    "identity": "H1FY20 33,549 lakhs (printed, Q2FY20 filing) - Sep-19 18,293 (stored 182.93 anchors EXACT) = 15,256 = Jun-19. Two filings print 15,256 outright: its own Q1FY20 (2019-08-08 p5) and the Q2FY20 comparative (2019-10-24 p6).",
-   "note": "stored 77.81 matches NO line of any filing, and 77.81 = 0.51 x 152.56 EXACTLY \u2014 a fractional artifact, not a restatement or a wrong row. Its announce date is the very filing that contradicts it.",
+   "note": "stored 77.81 matches NO line of any filing, and 77.81 = 0.51 x 152.56 EXACTLY — a fractional artifact, not a restatement or a wrong row. Its announce date is the very filing that contradicts it.",
    "owners": 152.56,
    "source": "CUMMINSIND Q1FY20 own filing (2019-08-08) p5 and Q2FY20 comparative (2019-10-24) p6, both printing 15,256 lakhs",
    "stored_before": 77.81,
    "when": "2026-08-18 00:04 IST"
   },
+  "DALBHARAT|20250930|patC": {
+   "found_by": "§116e per-cell document read of the company's own BSE-filed consolidated result, 2026-08-27",
+   "nci": 3.0,
+   "note": "Consolidated P&L attribution block, read from the company's own filed result: owners 236.0 + NCI 3.0 = 239.0 == stored ProfitLossForPeriod 239.0 (the con slot held the TOTAL). The identity closes in the FILING to within 0.00cr, which is the gate. §116d refused this cell because its cached XBRL tags are incoherent (owners_tag=-288.0, nci_tag=3.0, total_tag=239.0); the document resolves it. Column pinned by total==stored under unit-scale /1.",
+   "owners": 236.0,
+   "src": "own consolidated result PDF, BSE ann 20251017, 339c5eab-45c4-407d-9896-56281b24c423.pdf (page 5)",
+   "total_was": 239.0
+  },
   "DBL|20180630|patC": {
-   "identity": "FY IDENTITY, exact to the paisa in both years: FY20 audited annual owners 35,776.19 lakhs == 10,248.51+2,861.33+5,986.13+16,680.22 ; FY19 audited annual owners 55,230.85 == 22,347.29+5,974.81+18,140.58+8,768.17. Sum of the stored quarters BEFORE the heal was 35,570.06 \u2014 short by exactly the Jun-19 NCI (206.13 lakhs).",
+   "identity": "FY IDENTITY, exact to the paisa in both years: FY20 audited annual owners 35,776.19 lakhs == 10,248.51+2,861.33+5,986.13+16,680.22 ; FY19 audited annual owners 55,230.85 == 22,347.29+5,974.81+18,140.58+8,768.17. Sum of the stored quarters BEFORE the heal was 35,570.06 — short by exactly the Jun-19 NCI (206.13 lakhs).",
    "lakhs": 22347.29,
    "note": "comparative-column fill (DBL published no consolidated quarterly before 2019-08-07); pinned so a future cache rebuild cannot substitute the total row",
    "owners": 223.47,
@@ -872,7 +961,7 @@
    "when": "2026-08-17 19:40 IST"
   },
   "DBL|20180930|patC": {
-   "identity": "FY IDENTITY, exact to the paisa in both years: FY20 audited annual owners 35,776.19 lakhs == 10,248.51+2,861.33+5,986.13+16,680.22 ; FY19 audited annual owners 55,230.85 == 22,347.29+5,974.81+18,140.58+8,768.17. Sum of the stored quarters BEFORE the heal was 35,570.06 \u2014 short by exactly the Jun-19 NCI (206.13 lakhs).",
+   "identity": "FY IDENTITY, exact to the paisa in both years: FY20 audited annual owners 35,776.19 lakhs == 10,248.51+2,861.33+5,986.13+16,680.22 ; FY19 audited annual owners 55,230.85 == 22,347.29+5,974.81+18,140.58+8,768.17. Sum of the stored quarters BEFORE the heal was 35,570.06 — short by exactly the Jun-19 NCI (206.13 lakhs).",
    "lakhs": 5974.81,
    "note": "comparative-column fill (DBL published no consolidated quarterly before 2019-08-07); pinned so a future cache rebuild cannot substitute the total row",
    "owners": 59.75,
@@ -885,7 +974,7 @@
    "when": "2026-08-17 19:40 IST"
   },
   "DBL|20181231|patC": {
-   "identity": "FY IDENTITY, exact to the paisa in both years: FY20 audited annual owners 35,776.19 lakhs == 10,248.51+2,861.33+5,986.13+16,680.22 ; FY19 audited annual owners 55,230.85 == 22,347.29+5,974.81+18,140.58+8,768.17. Sum of the stored quarters BEFORE the heal was 35,570.06 \u2014 short by exactly the Jun-19 NCI (206.13 lakhs).",
+   "identity": "FY IDENTITY, exact to the paisa in both years: FY20 audited annual owners 35,776.19 lakhs == 10,248.51+2,861.33+5,986.13+16,680.22 ; FY19 audited annual owners 55,230.85 == 22,347.29+5,974.81+18,140.58+8,768.17. Sum of the stored quarters BEFORE the heal was 35,570.06 — short by exactly the Jun-19 NCI (206.13 lakhs).",
    "lakhs": 18140.58,
    "note": "comparative-column fill (DBL published no consolidated quarterly before 2019-08-07); pinned so a future cache rebuild cannot substitute the total row",
    "owners": 181.41,
@@ -898,7 +987,7 @@
    "when": "2026-08-17 19:40 IST"
   },
   "DBL|20190331|patC": {
-   "identity": "FY IDENTITY, exact to the paisa in both years: FY20 audited annual owners 35,776.19 lakhs == 10,248.51+2,861.33+5,986.13+16,680.22 ; FY19 audited annual owners 55,230.85 == 22,347.29+5,974.81+18,140.58+8,768.17. Sum of the stored quarters BEFORE the heal was 35,570.06 \u2014 short by exactly the Jun-19 NCI (206.13 lakhs).",
+   "identity": "FY IDENTITY, exact to the paisa in both years: FY20 audited annual owners 35,776.19 lakhs == 10,248.51+2,861.33+5,986.13+16,680.22 ; FY19 audited annual owners 55,230.85 == 22,347.29+5,974.81+18,140.58+8,768.17. Sum of the stored quarters BEFORE the heal was 35,570.06 — short by exactly the Jun-19 NCI (206.13 lakhs).",
    "lakhs": 8768.17,
    "note": "comparative-column fill (DBL published no consolidated quarterly before 2019-08-07); pinned so a future cache rebuild cannot substitute the total row",
    "owners": 87.68,
@@ -911,9 +1000,9 @@
    "when": "2026-08-17 19:40 IST"
   },
   "DBL|20190630|patC": {
-   "identity": "FY IDENTITY, exact to the paisa in both years: FY20 audited annual owners 35,776.19 lakhs == 10,248.51+2,861.33+5,986.13+16,680.22 ; FY19 audited annual owners 55,230.85 == 22,347.29+5,974.81+18,140.58+8,768.17. Sum of the stored quarters BEFORE the heal was 35,570.06 \u2014 short by exactly the Jun-19 NCI (206.13 lakhs).",
+   "identity": "FY IDENTITY, exact to the paisa in both years: FY20 audited annual owners 35,776.19 lakhs == 10,248.51+2,861.33+5,986.13+16,680.22 ; FY19 audited annual owners 55,230.85 == 22,347.29+5,974.81+18,140.58+8,768.17. Sum of the stored quarters BEFORE the heal was 35,570.06 — short by exactly the Jun-19 NCI (206.13 lakhs).",
    "nci": -2.06,
-   "note": "held the TOTAL row (\"Profit after Tax, share of Profit/(Loss) of associates\" 10,042.38 lakhs) while Sep-19 / Dec-19 / Mar-20 all hold owners \u2014 mixed convention inside one series",
+   "note": "held the TOTAL row (\"Profit after Tax, share of Profit/(Loss) of associates\" 10,042.38 lakhs) while Sep-19 / Dec-19 / Mar-20 all hold owners — mixed convention inside one series",
    "owners": 102.49,
    "period": 100.42,
    "prior_per_file": {
@@ -957,7 +1046,7 @@
    "when": "2026-08-17 21:07 IST"
   },
   "ESCORTS|20190331|patC": {
-   "identity": "REQUIRED companion to the Sep-18/Dec-18 fills: FY19 owners closes only with this heal \u2014 121.26 + 101.51 + 139.46 + 116.70 = 478.93 == printed FY19 owners.",
+   "identity": "REQUIRED companion to the Sep-18/Dec-18 fills: FY19 owners closes only with this heal — 121.26 + 101.51 + 139.46 + 116.70 = 478.93 == printed FY19 owners.",
    "note": "without this heal the FY19 owners year does not close on the two fills applied in the same pass",
    "owners": 116.7,
    "source": "ESCORTS Q1FY20 consolidated filing (filed 2019-09-12) p2, column Mar-2019: owners 116.70, NCI (0.28), period 116.42",
@@ -982,7 +1071,7 @@
   },
   "EXIDEIND|20180630|patC": {
    "identity": "Q2FY20 H1 Sep-18 owners 401.05 = Jun-18 187.88 + Sep-18 213.17 (exact). Q3FY20 9M Dec-18 owners 542.57 = H1 401.05 + Dec-18 141.52 (exact, and the two subtotals come from DIFFERENT filings). FY19 owners 845.55 - 9M 542.57 = Q4FY19 302.98.",
-   "note": "stored 188.60 is EXACTLY the total-row H1 402.47 - Sep-18 total 213.87, i.e. the total convention. Owners is 187.88. Announce date moved to the date the H1 owners subtotal was published rather than assumed to be in the original Q1FY19 filing (which NSE's list does not even carry as a consolidated row) \u2014 later is never look-ahead.",
+   "note": "stored 188.60 is EXACTLY the total-row H1 402.47 - Sep-18 total 213.87, i.e. the total convention. Owners is 187.88. Announce date moved to the date the H1 owners subtotal was published rather than assumed to be in the original Q1FY19 filing (which NSE's list does not even carry as a consolidated row) — later is never look-ahead.",
    "owners": 187.88,
    "source": "EXIDE Q2FY20 consolidated results (filed 2019-11-11) p10: H1 Sep-18 owners 401.05 - Sep-18 owners 213.17",
    "stored_before": 188.6,
@@ -1014,7 +1103,7 @@
   },
   "EXIDEIND|20190630|patC": {
    "identity": "Q2FY20 H1 Sep-18 owners 401.05 = Jun-18 187.88 + Sep-18 213.17 (exact). Q3FY20 9M Dec-18 owners 542.57 = H1 401.05 + Dec-18 141.52 (exact, and the two subtotals come from DIFFERENT filings). FY19 owners 845.55 - 9M 542.57 = Q4FY19 302.98.",
-   "note": "stored 161.58 is the total row ('Net profit after tax'); owners is 161.87 (NCI -0.29). Announce date unchanged \u2014 the quarter's own con filing of 2019-08-10 is where both rows were published.",
+   "note": "stored 161.58 is the total row ('Net profit after tax'); owners is 161.87 (NCI -0.29). Announce date unchanged — the quarter's own con filing of 2019-08-10 is where both rows were published.",
    "owners": 161.87,
    "source": "EXIDE Q2FY20 consolidated results (filed 2019-11-11) p10, preceding-quarter column 30 Jun 2019",
    "stored_before": 161.58,
@@ -1060,6 +1149,22 @@
    "stored_before": 55.27,
    "when": "2026-08-17 19:51 IST"
   },
+  "FDC|20220331|patC": {
+   "found_by": "§116e per-cell document read of the company's own BSE-filed consolidated result, 2026-08-27",
+   "nci": -0.05,
+   "note": "Consolidated P&L attribution block, read from the company's own filed result: owners 10.44 + NCI -0.05 = 10.39 == stored ProfitLossForPeriod 10.39 (the con slot held the TOTAL). The identity closes in the FILING to within 0.00cr, which is the gate. §116d refused this cell because its cached XBRL tags are incoherent (owners_tag=2.9, nci_tag=0.03, total_tag=10.39); the document resolves it. Column pinned by total==stored under unit-scale /100.",
+   "owners": 10.44,
+   "src": "own consolidated result PDF, BSE ann 20220525, 2314df26-10d7-4dd2-9e71-4afb18a2f0a7.pdf (page 13)",
+   "total_was": 10.39
+  },
+  "FDC|20220930|patC": {
+   "found_by": "§116e per-cell document read of the company's own BSE-filed consolidated result, 2026-08-27",
+   "nci": -0.05,
+   "note": "Consolidated P&L attribution block, read from the company's own filed result: owners 51.84 + NCI -0.05 = 51.79 == stored ProfitLossForPeriod 51.79 (the con slot held the TOTAL). The identity closes in the FILING to within 0.00cr, which is the gate. §116d refused this cell because its cached XBRL tags are incoherent (owners_tag=1.45, nci_tag=-0.03, total_tag=51.79); the document resolves it. Column pinned by total==stored under unit-scale /100.",
+   "owners": 51.84,
+   "src": "own consolidated result PDF, BSE ann 20221114, 2c3e3131-41b5-4195-9ae6-565cbc409334.pdf (page 6)",
+   "total_was": 51.79
+  },
   "FEDERALBNK|20180630|patC": {
    "identity": "All row 17, lakhs. Q1FY20 table: Jun-18 = 27,125 - 0 + 169 = 27,294 (arithmetic verified). Q2FY20 table: Sep-18 = 27,931 - 0 + 130 = 28,061 (verified); H1 FY19 printed 55,356 vs Q1+Q2 = 27,294 + 28,061 = 55,355, delta exactly 1 lakh which the filing itself creates by rounding the H1 associates line to 300 vs components 169 + 130 = 299 (row 14 H1: 27,125 + 27,931 = 55,056 == printed EXACT; MI nil both quarters) - the same 0.01 cr residue batch A documented; both cells are PRINTED quarter columns, neither is derived through the H1 subtotal. Batch A's larger chains (H1+Q3=9M EXACT, 9M+Q4=FY19 131,628 EXACT) consume these same printed values and close to the paisa.",
    "note": "printed comparative; components row 14 = 27,125, row 15 MI = '-', row 16 associates = 169 -> 27,125 - 0 + 169 = 27,294 verified. Batch A read the same value and left it in also_fillable_not_written; this batch re-read it by vision and owns the write. No NSE consolidated filing exists with toDate <= 20190331 (first con row is 20190630), so 2019-09-09 is the first public date; equals the stored conAnnDate of the anchor quarter in the same filing (con 20190630 ann = 20190909).",
@@ -1100,8 +1205,16 @@
    "stored_before": 424.4,
    "when": "2026-08-17 21:07 IST"
   },
+  "FLEXITUFF|20191231|patC": {
+   "found_by": "§116e per-cell document read of the company's own BSE-filed consolidated result, 2026-08-27",
+   "nci": -0.26,
+   "note": "Consolidated P&L attribution block, read from the company's own filed result: owners -85.47 + NCI -0.26 = -85.73 == stored ProfitLossForPeriod -85.73 (the con slot held the TOTAL). The identity closes in the FILING to within 0.00cr, which is the gate. §116d refused this cell because its cached XBRL tags are incoherent (owners_tag=85.45, nci_tag=0.26, total_tag=-85.73); the document resolves it. Column pinned by total==stored under unit-scale /100.",
+   "owners": -85.47,
+   "src": "own consolidated result PDF, BSE ann 20200305, 016dc6ad-4461-445d-922e-c9ed00e1799d.pdf (page 9)",
+   "total_was": -85.73
+  },
   "FMGOETZE|20180930|patC": {
-   "identity": "PARTIAL \u2014 the two filings agree on TOTALS (H1 Sep-18 5,261.39 + Dec-18 2,081.57 = 9M 7,342.96 vs printed 7,342.97) but NOT on the owners/NCI split (owners 4,798.77 + 1,956.84 = 6,755.61 vs printed 9M owners 7,030.69, off by 275.08 = exactly the Sep-18 NCI). Filer-side restatement of the attribution. Only PRINTED quarter columns are written; nothing derived through the disputed subtotal.",
+   "identity": "PARTIAL — the two filings agree on TOTALS (H1 Sep-18 5,261.39 + Dec-18 2,081.57 = 9M 7,342.96 vs printed 7,342.97) but NOT on the owners/NCI split (owners 4,798.77 + 1,956.84 = 6,755.61 vs printed 9M owners 7,030.69, off by 275.08 = exactly the Sep-18 NCI). Filer-side restatement of the attribution. Only PRINTED quarter columns are written; nothing derived through the disputed subtotal.",
    "note": "printed comparative, owners row 2,064.39 lacs (total 2,339.46, NCI 275.07)",
    "owners": 20.64,
    "source": "Federal-Mogul Goetze Q2FY20 results (NSE attachment, filed 2019-11-10) p2, consolidated block, comparative column 30 September 2018",
@@ -1109,15 +1222,23 @@
    "when": "2026-08-17 20:19 IST"
   },
   "FMGOETZE|20181231|patC": {
-   "identity": "PARTIAL \u2014 the two filings agree on TOTALS (H1 Sep-18 5,261.39 + Dec-18 2,081.57 = 9M 7,342.96 vs printed 7,342.97) but NOT on the owners/NCI split (owners 4,798.77 + 1,956.84 = 6,755.61 vs printed 9M owners 7,030.69, off by 275.08 = exactly the Sep-18 NCI). Filer-side restatement of the attribution. Only PRINTED quarter columns are written; nothing derived through the disputed subtotal.",
+   "identity": "PARTIAL — the two filings agree on TOTALS (H1 Sep-18 5,261.39 + Dec-18 2,081.57 = 9M 7,342.96 vs printed 7,342.97) but NOT on the owners/NCI split (owners 4,798.77 + 1,956.84 = 6,755.61 vs printed 9M owners 7,030.69, off by 275.08 = exactly the Sep-18 NCI). Filer-side restatement of the attribution. Only PRINTED quarter columns are written; nothing derived through the disputed subtotal.",
    "note": "printed comparative, owners row 1,956.84 lacs (total 2,081.57, NCI 124.73)",
    "owners": 19.57,
    "source": "Federal-Mogul Goetze Q3FY20 results (filed 2020-02-07) p7, consolidated block, comparative column 31 December 2018",
    "stored_before": null,
    "when": "2026-08-17 20:19 IST"
   },
+  "FMGOETZE|20210331|patC": {
+   "found_by": "§116e per-cell document read of the company's own BSE-filed consolidated result, 2026-08-27",
+   "nci": 1.53,
+   "note": "Consolidated P&L attribution block, read from the company's own filed result: owners -5.74 + NCI 1.53 = -4.21 == stored ProfitLossForPeriod -4.21 (the con slot held the TOTAL). The identity closes in the FILING to within 0.00cr, which is the gate. §116d refused this cell because its cached XBRL tags are incoherent (owners_tag=5.74, nci_tag=1.53, total_tag=-4.21); the document resolves it. Column pinned by total==stored under unit-scale /100.",
+   "owners": -5.74,
+   "src": "own consolidated result PDF, BSE ann 20210628, f020be6a-e2a2-436b-80d2-384e908009e4.pdf (page 8)",
+   "total_was": -4.21
+  },
   "GMRP&UI|20220331|patC": {
-   "found_by": "\u00a7116c screen over all 60,768 con cells, 2026-08-26",
+   "found_by": "§116c screen over all 60,768 con cells, 2026-08-26",
    "nci": -58.43,
    "note": "owners=-214.05 + NCI=-58.43 = -272.48 == ProfitLossForPeriod; the con slot held the TOTAL. Identity closes, which is the gate: 762 other stored==total cells were REFUSED because their owners/NCI/total do not reconcile (filer scale errors, sign flips, wrong concept) and cannot be healed by arithmetic.",
    "owners": -214.05,
@@ -1125,7 +1246,7 @@
    "total_was": -272.48
   },
   "GMRP&UI|20220630|patC": {
-   "found_by": "\u00a7116c screen over all 60,768 con cells, 2026-08-26",
+   "found_by": "§116c screen over all 60,768 con cells, 2026-08-26",
    "nci": -10.98,
    "note": "owners=212.65 + NCI=-10.98 = 201.67 == ProfitLossForPeriod; the con slot held the TOTAL. Identity closes, which is the gate: 762 other stored==total cells were REFUSED because their owners/NCI/total do not reconcile (filer scale errors, sign flips, wrong concept) and cannot be healed by arithmetic.",
    "owners": 212.65,
@@ -1133,7 +1254,7 @@
    "total_was": 201.67
   },
   "GMRP&UI|20220930|patC": {
-   "found_by": "\u00a7116c screen over all 60,768 con cells, 2026-08-26",
+   "found_by": "§116c screen over all 60,768 con cells, 2026-08-26",
    "nci": -13.39,
    "note": "owners=1082.70 + NCI=-13.39 = 1069.31 == ProfitLossForPeriod; the con slot held the TOTAL. Identity closes, which is the gate: 762 other stored==total cells were REFUSED because their owners/NCI/total do not reconcile (filer scale errors, sign flips, wrong concept) and cannot be healed by arithmetic.",
    "owners": 1082.7,
@@ -1141,7 +1262,7 @@
    "total_was": 1069.31
   },
   "GMRP&UI|20221231|patC": {
-   "found_by": "\u00a7116c screen over all 60,768 con cells, 2026-08-26",
+   "found_by": "§116c screen over all 60,768 con cells, 2026-08-26",
    "nci": -21.36,
    "note": "owners=360.53 + NCI=-21.36 = 339.17 == ProfitLossForPeriod; the con slot held the TOTAL. Identity closes, which is the gate: 762 other stored==total cells were REFUSED because their owners/NCI/total do not reconcile (filer scale errors, sign flips, wrong concept) and cannot be healed by arithmetic.",
    "owners": 360.53,
@@ -1149,7 +1270,7 @@
    "total_was": 339.17
   },
   "GMRP&UI|20230331|patC": {
-   "found_by": "\u00a7116c screen over all 60,768 con cells, 2026-08-26",
+   "found_by": "§116c screen over all 60,768 con cells, 2026-08-26",
    "nci": 2.18,
    "note": "owners=-473.09 + NCI=2.18 = -470.91 == ProfitLossForPeriod; the con slot held the TOTAL. Identity closes, which is the gate: 762 other stored==total cells were REFUSED because their owners/NCI/total do not reconcile (filer scale errors, sign flips, wrong concept) and cannot be healed by arithmetic.",
    "owners": -473.09,
@@ -1157,7 +1278,7 @@
    "total_was": -470.91
   },
   "GMRP&UI|20230630|patC": {
-   "found_by": "\u00a7116c screen over all 60,768 con cells, 2026-08-26",
+   "found_by": "§116c screen over all 60,768 con cells, 2026-08-26",
    "nci": -12.45,
    "note": "owners=-205.30 + NCI=-12.45 = -217.75 == ProfitLossForPeriod; the con slot held the TOTAL. Identity closes, which is the gate: 762 other stored==total cells were REFUSED because their owners/NCI/total do not reconcile (filer scale errors, sign flips, wrong concept) and cannot be healed by arithmetic.",
    "owners": -205.3,
@@ -1165,7 +1286,7 @@
    "total_was": -217.75
   },
   "GMRP&UI|20230930|patC": {
-   "found_by": "\u00a7116c screen over all 60,768 con cells, 2026-08-26",
+   "found_by": "§116c screen over all 60,768 con cells, 2026-08-26",
    "nci": -17.98,
    "note": "owners=-105.29 + NCI=-17.98 = -123.27 == ProfitLossForPeriod; the con slot held the TOTAL. Identity closes, which is the gate: 762 other stored==total cells were REFUSED because their owners/NCI/total do not reconcile (filer scale errors, sign flips, wrong concept) and cannot be healed by arithmetic.",
    "owners": -105.29,
@@ -1173,7 +1294,7 @@
    "total_was": -123.27
   },
   "GMRP&UI|20231231|patC": {
-   "found_by": "\u00a7116c screen over all 60,768 con cells, 2026-08-26",
+   "found_by": "§116c screen over all 60,768 con cells, 2026-08-26",
    "nci": -2.22,
    "note": "owners=45.38 + NCI=-2.22 = 43.17 == ProfitLossForPeriod; the con slot held the TOTAL. Identity closes, which is the gate: 762 other stored==total cells were REFUSED because their owners/NCI/total do not reconcile (filer scale errors, sign flips, wrong concept) and cannot be healed by arithmetic.",
    "owners": 45.38,
@@ -1181,7 +1302,7 @@
    "total_was": 43.17
   },
   "GMRP&UI|20240331|patC": {
-   "found_by": "\u00a7116c screen over all 60,768 con cells, 2026-08-26",
+   "found_by": "§116c screen over all 60,768 con cells, 2026-08-26",
    "nci": 8.21,
    "note": "owners=162.18 + NCI=8.21 = 170.39 == ProfitLossForPeriod; the con slot held the TOTAL. Identity closes, which is the gate: 762 other stored==total cells were REFUSED because their owners/NCI/total do not reconcile (filer scale errors, sign flips, wrong concept) and cannot be healed by arithmetic.",
    "owners": 162.18,
@@ -1189,7 +1310,7 @@
    "total_was": 170.39
   },
   "GMRP&UI|20240630|patC": {
-   "found_by": "\u00a7116c screen over all 60,768 con cells, 2026-08-26",
+   "found_by": "§116c screen over all 60,768 con cells, 2026-08-26",
    "nci": 136.95,
    "note": "owners=1225.15 + NCI=136.95 = 1362.10 == ProfitLossForPeriod; the con slot held the TOTAL. Identity closes, which is the gate: 762 other stored==total cells were REFUSED because their owners/NCI/total do not reconcile (filer scale errors, sign flips, wrong concept) and cannot be healed by arithmetic.",
    "owners": 1225.15,
@@ -1197,7 +1318,7 @@
    "total_was": 1362.1
   },
   "GMRP&UI|20240930|patC": {
-   "found_by": "\u00a7116c screen over all 60,768 con cells, 2026-08-26",
+   "found_by": "§116c screen over all 60,768 con cells, 2026-08-26",
    "nci": -5.55,
    "note": "owners=255.11 + NCI=-5.55 = 249.56 == ProfitLossForPeriod; the con slot held the TOTAL. Identity closes, which is the gate: 762 other stored==total cells were REFUSED because their owners/NCI/total do not reconcile (filer scale errors, sign flips, wrong concept) and cannot be healed by arithmetic.",
    "owners": 255.11,
@@ -1205,7 +1326,7 @@
    "total_was": 249.56
   },
   "GMRP&UI|20241231|patC": {
-   "found_by": "\u00a7116c screen over all 60,768 con cells, 2026-08-26",
+   "found_by": "§116c screen over all 60,768 con cells, 2026-08-26",
    "nci": -2.0,
    "note": "owners=-106.45 + NCI=-2.00 = -108.45 == ProfitLossForPeriod; the con slot held the TOTAL. Identity closes, which is the gate: 762 other stored==total cells were REFUSED because their owners/NCI/total do not reconcile (filer scale errors, sign flips, wrong concept) and cannot be healed by arithmetic.",
    "owners": -106.45,
@@ -1213,7 +1334,7 @@
    "total_was": -108.45
   },
   "GMRP&UI|20250331|patC": {
-   "found_by": "\u00a7116c screen over all 60,768 con cells, 2026-08-26",
+   "found_by": "§116c screen over all 60,768 con cells, 2026-08-26",
    "nci": 5.32,
    "note": "owners=43.72 + NCI=5.32 = 49.04 == ProfitLossForPeriod; the con slot held the TOTAL. Identity closes, which is the gate: 762 other stored==total cells were REFUSED because their owners/NCI/total do not reconcile (filer scale errors, sign flips, wrong concept) and cannot be healed by arithmetic.",
    "owners": 43.72,
@@ -1221,7 +1342,7 @@
    "total_was": 49.04
   },
   "GMRP&UI|20250630|patC": {
-   "found_by": "\u00a7116c screen over all 60,768 con cells, 2026-08-26",
+   "found_by": "§116c screen over all 60,768 con cells, 2026-08-26",
    "nci": 0.62,
    "note": "owners=-7.80 + NCI=0.62 = -7.16 == ProfitLossForPeriod; the con slot held the TOTAL. Identity closes, which is the gate: 762 other stored==total cells were REFUSED because their owners/NCI/total do not reconcile (filer scale errors, sign flips, wrong concept) and cannot be healed by arithmetic.",
    "owners": -7.8,
@@ -1229,7 +1350,7 @@
    "total_was": -7.16
   },
   "GMRP&UI|20250930|patC": {
-   "found_by": "\u00a7116c screen over all 60,768 con cells, 2026-08-26",
+   "found_by": "§116c screen over all 60,768 con cells, 2026-08-26",
    "nci": 6.31,
    "note": "owners=888.39 + NCI=6.31 = 894.70 == ProfitLossForPeriod; the con slot held the TOTAL. Identity closes, which is the gate: 762 other stored==total cells were REFUSED because their owners/NCI/total do not reconcile (filer scale errors, sign flips, wrong concept) and cannot be healed by arithmetic.",
    "owners": 888.39,
@@ -1237,7 +1358,7 @@
    "total_was": 894.7
   },
   "GMRP&UI|20251231|patC": {
-   "found_by": "\u00a7116c screen over all 60,768 con cells, 2026-08-26",
+   "found_by": "§116c screen over all 60,768 con cells, 2026-08-26",
    "nci": 8.26,
    "note": "owners=-168.53 + NCI=8.26 = -160.27 == ProfitLossForPeriod; the con slot held the TOTAL. Identity closes, which is the gate: 762 other stored==total cells were REFUSED because their owners/NCI/total do not reconcile (filer scale errors, sign flips, wrong concept) and cannot be healed by arithmetic.",
    "owners": -168.53,
@@ -1245,7 +1366,7 @@
    "total_was": -160.27
   },
   "GMRP&UI|20260331|patC": {
-   "found_by": "\u00a7116c screen over all 60,768 con cells, 2026-08-26",
+   "found_by": "§116c screen over all 60,768 con cells, 2026-08-26",
    "nci": -1.84,
    "note": "owners=-111.72 + NCI=-1.84 = -113.56 == ProfitLossForPeriod; the con slot held the TOTAL. Identity closes, which is the gate: 762 other stored==total cells were REFUSED because their owners/NCI/total do not reconcile (filer scale errors, sign flips, wrong concept) and cannot be healed by arithmetic.",
    "owners": -111.72,
@@ -1253,16 +1374,16 @@
    "total_was": -113.56
   },
   "GRINDWELL|20170331|patC": {
-   "identity": "Jun-17: owners 3,003 lakhs and total 3,032 are printed IDENTICALLY in both the quarter's own Q1FY18 filing (2017-08-02 p4) and the Q1FY19 comparative \u2014 so 30.32 is the total row, not a restatement. Mar-17: owners 3,373 printed in the Q1FY18 filing's audited Mar-17 column against the stored total 3,418.",
-   "note": "its own Q4FY17 filing was NOT read this session, so the announce date moves to the filing actually read \u2014 later is never look-ahead.",
+   "identity": "Jun-17: owners 3,003 lakhs and total 3,032 are printed IDENTICALLY in both the quarter's own Q1FY18 filing (2017-08-02 p4) and the Q1FY19 comparative — so 30.32 is the total row, not a restatement. Mar-17: owners 3,373 printed in the Q1FY18 filing's audited Mar-17 column against the stored total 3,418.",
+   "note": "its own Q4FY17 filing was NOT read this session, so the announce date moves to the filing actually read — later is never look-ahead.",
    "owners": 33.73,
    "source": "GRINDWELL Q1FY18 filing (2017-08-02), audited Mar-17 column: owners 3,373 lakhs vs the stored total 3,418",
    "stored_before": 34.18,
    "when": "2026-08-18 00:04 IST"
   },
   "GRINDWELL|20170630|patC": {
-   "identity": "Jun-17: owners 3,003 lakhs and total 3,032 are printed IDENTICALLY in both the quarter's own Q1FY18 filing (2017-08-02 p4) and the Q1FY19 comparative \u2014 so 30.32 is the total row, not a restatement. Mar-17: owners 3,373 printed in the Q1FY18 filing's audited Mar-17 column against the stored total 3,418.",
-   "note": "announce date unchanged \u2014 both rows were in the quarter's own filing.",
+   "identity": "Jun-17: owners 3,003 lakhs and total 3,032 are printed IDENTICALLY in both the quarter's own Q1FY18 filing (2017-08-02 p4) and the Q1FY19 comparative — so 30.32 is the total row, not a restatement. Mar-17: owners 3,373 printed in the Q1FY18 filing's audited Mar-17 column against the stored total 3,418.",
+   "note": "announce date unchanged — both rows were in the quarter's own filing.",
    "owners": 30.03,
    "source": "GRINDWELL Q1FY18 own filing (2017-08-02) p4 and the Q1FY19 comparative: owners 3,003 lakhs vs total 3,032",
    "stored_before": 30.32,
@@ -1285,7 +1406,7 @@
   },
   "HALDER|20260331|patC": {
    "nci": 2.9486,
-   "note": "stored the H2 OWNERS figure (29-May-26 XBRL INDAS_1676935 OneD declares Oct-Mar: owners 36.8223). True Q4 = corrected 12-Jun-26 INDAS_1681056 OneD Jan-Mar: owners 161,854,000, NCI 29,486,000, total 191,340,000. _reattr_owners.json still holds 36.82, so this entry must outrank it (\u00a771d).",
+   "note": "stored the H2 OWNERS figure (29-May-26 XBRL INDAS_1676935 OneD declares Oct-Mar: owners 36.8223). True Q4 = corrected 12-Jun-26 INDAS_1681056 OneD Jan-Mar: owners 161,854,000, NCI 29,486,000, total 191,340,000. _reattr_owners.json still holds 36.82, so this entry must outrank it (§71d).",
    "owners": 16.19,
    "period": 19.134,
    "stored_before": 36.82
@@ -1307,7 +1428,7 @@
    "when": "2026-08-18 00:03 IST"
   },
   "HEG|20180930|patC": {
-   "identity": "FY19 consolidated annual = 3,026.16, printed identically in FOUR filings (FY19 audited p3 'Financial Year Ended 31/03/2019'; Q2FY20 p14 'Year Ended 31-03-2019'; Q3FY20 p13 'Year Ended 31-03-2019'; FY20 audited p10 'Year Ended 31-03-2019') - i.e. NOT restated. H1FY19 = 1,678.45 (Q2FY20 p14). 9M FY19 = 2,543.89 (Q3FY20 p13). Quarters: Q1FY19 = 1,678.45-902.79 = 775.66 (derived); Q2FY19 = 902.79 (printed); Q3FY19 = 865.45 (printed); Q4FY19 = 482.27 (printed AUDITED in FY20 p10). 9M closes: 775.66+902.79+865.45 = 2,543.90 vs printed 2,543.89 (\u03b40.01, the filer's own rounding family). FY closes EXACTLY: 2,543.89 + 482.27 = 3,026.16 == printed annual to the paisa. Q4FY19 is pinned TWO independent ways that agree exactly: printed audited column 482.27, and annual minus 9M = 3,026.16 - 2,543.89 = 482.27. Q3FY21 9M identity: 14.33+(-15.36)+(-0.80) = -1.83 vs printed 9M Dec-2020 (1.86) - \u03b40.03 traceable to the stored Jun-2020 14.33 vs the filing's implied 14.30; does not touch any cell written here.",
+   "identity": "FY19 consolidated annual = 3,026.16, printed identically in FOUR filings (FY19 audited p3 'Financial Year Ended 31/03/2019'; Q2FY20 p14 'Year Ended 31-03-2019'; Q3FY20 p13 'Year Ended 31-03-2019'; FY20 audited p10 'Year Ended 31-03-2019') - i.e. NOT restated. H1FY19 = 1,678.45 (Q2FY20 p14). 9M FY19 = 2,543.89 (Q3FY20 p13). Quarters: Q1FY19 = 1,678.45-902.79 = 775.66 (derived); Q2FY19 = 902.79 (printed); Q3FY19 = 865.45 (printed); Q4FY19 = 482.27 (printed AUDITED in FY20 p10). 9M closes: 775.66+902.79+865.45 = 2,543.90 vs printed 2,543.89 (δ0.01, the filer's own rounding family). FY closes EXACTLY: 2,543.89 + 482.27 = 3,026.16 == printed annual to the paisa. Q4FY19 is pinned TWO independent ways that agree exactly: printed audited column 482.27, and annual minus 9M = 3,026.16 - 2,543.89 = 482.27. Q3FY21 9M identity: 14.33+(-15.36)+(-0.80) = -1.83 vs printed 9M Dec-2020 (1.86) - δ0.03 traceable to the stored Jun-2020 14.33 vs the filing's implied 14.30; does not touch any cell written here.",
    "note": "printed comparative 902.79; the column's own components reproduce it EXACTLY: PBT 1,365.66 - current tax 475.38 - deferred tax 1.38 + share of associates 13.89 = 902.79. No NCI block in the statement, so this is the owners figure. ann matches the stored conAnnDate of the anchor quarter in the same filing (con 20190930 ann = 20191114).",
    "owners": 902.79,
    "source": "HEG Q2FY20 consolidated statement (NSE filingDate 2019-11-14) p14, column 'Quarter Ended 30-09-2018' (Unaudited)",
@@ -1315,7 +1436,7 @@
    "when": "2026-08-17 21:07 IST"
   },
   "HEG|20181231|patC": {
-   "identity": "FY19 consolidated annual = 3,026.16, printed identically in FOUR filings (FY19 audited p3 'Financial Year Ended 31/03/2019'; Q2FY20 p14 'Year Ended 31-03-2019'; Q3FY20 p13 'Year Ended 31-03-2019'; FY20 audited p10 'Year Ended 31-03-2019') - i.e. NOT restated. H1FY19 = 1,678.45 (Q2FY20 p14). 9M FY19 = 2,543.89 (Q3FY20 p13). Quarters: Q1FY19 = 1,678.45-902.79 = 775.66 (derived); Q2FY19 = 902.79 (printed); Q3FY19 = 865.45 (printed); Q4FY19 = 482.27 (printed AUDITED in FY20 p10). 9M closes: 775.66+902.79+865.45 = 2,543.90 vs printed 2,543.89 (\u03b40.01, the filer's own rounding family). FY closes EXACTLY: 2,543.89 + 482.27 = 3,026.16 == printed annual to the paisa. Q4FY19 is pinned TWO independent ways that agree exactly: printed audited column 482.27, and annual minus 9M = 3,026.16 - 2,543.89 = 482.27. Q3FY21 9M identity: 14.33+(-15.36)+(-0.80) = -1.83 vs printed 9M Dec-2020 (1.86) - \u03b40.03 traceable to the stored Jun-2020 14.33 vs the filing's implied 14.30; does not touch any cell written here.",
+   "identity": "FY19 consolidated annual = 3,026.16, printed identically in FOUR filings (FY19 audited p3 'Financial Year Ended 31/03/2019'; Q2FY20 p14 'Year Ended 31-03-2019'; Q3FY20 p13 'Year Ended 31-03-2019'; FY20 audited p10 'Year Ended 31-03-2019') - i.e. NOT restated. H1FY19 = 1,678.45 (Q2FY20 p14). 9M FY19 = 2,543.89 (Q3FY20 p13). Quarters: Q1FY19 = 1,678.45-902.79 = 775.66 (derived); Q2FY19 = 902.79 (printed); Q3FY19 = 865.45 (printed); Q4FY19 = 482.27 (printed AUDITED in FY20 p10). 9M closes: 775.66+902.79+865.45 = 2,543.90 vs printed 2,543.89 (δ0.01, the filer's own rounding family). FY closes EXACTLY: 2,543.89 + 482.27 = 3,026.16 == printed annual to the paisa. Q4FY19 is pinned TWO independent ways that agree exactly: printed audited column 482.27, and annual minus 9M = 3,026.16 - 2,543.89 = 482.27. Q3FY21 9M identity: 14.33+(-15.36)+(-0.80) = -1.83 vs printed 9M Dec-2020 (1.86) - δ0.03 traceable to the stored Jun-2020 14.33 vs the filing's implied 14.30; does not touch any cell written here.",
    "note": "printed comparative 865.45; components reproduce it EXACTLY: PBT 1,328.60 - current tax 458.78 - deferred tax 2.99 + associates (1.38) = 865.45. Cross-filing check: 9M Dec-2018 2,543.89 - H1 Sep-2018 1,678.45 = 865.44, agreeing to 0.01. ann matches the stored conAnnDate of the anchor quarter in the same filing (con 20191231 ann = 20200211).",
    "owners": 865.45,
    "source": "HEG Q3FY20 consolidated statement (NSE filingDate 2020-02-11) p13, column 'Quarter Ended 31-12-2018' (Unaudited)",
@@ -1323,7 +1444,7 @@
    "when": "2026-08-17 21:07 IST"
   },
   "HEG|20190331|patC": {
-   "identity": "FY19 consolidated annual = 3,026.16, printed identically in FOUR filings (FY19 audited p3 'Financial Year Ended 31/03/2019'; Q2FY20 p14 'Year Ended 31-03-2019'; Q3FY20 p13 'Year Ended 31-03-2019'; FY20 audited p10 'Year Ended 31-03-2019') - i.e. NOT restated. H1FY19 = 1,678.45 (Q2FY20 p14). 9M FY19 = 2,543.89 (Q3FY20 p13). Quarters: Q1FY19 = 1,678.45-902.79 = 775.66 (derived); Q2FY19 = 902.79 (printed); Q3FY19 = 865.45 (printed); Q4FY19 = 482.27 (printed AUDITED in FY20 p10). 9M closes: 775.66+902.79+865.45 = 2,543.90 vs printed 2,543.89 (\u03b40.01, the filer's own rounding family). FY closes EXACTLY: 2,543.89 + 482.27 = 3,026.16 == printed annual to the paisa. Q4FY19 is pinned TWO independent ways that agree exactly: printed audited column 482.27, and annual minus 9M = 3,026.16 - 2,543.89 = 482.27. Q3FY21 9M identity: 14.33+(-15.36)+(-0.80) = -1.83 vs printed 9M Dec-2020 (1.86) - \u03b40.03 traceable to the stored Jun-2020 14.33 vs the filing's implied 14.30; does not touch any cell written here.",
+   "identity": "FY19 consolidated annual = 3,026.16, printed identically in FOUR filings (FY19 audited p3 'Financial Year Ended 31/03/2019'; Q2FY20 p14 'Year Ended 31-03-2019'; Q3FY20 p13 'Year Ended 31-03-2019'; FY20 audited p10 'Year Ended 31-03-2019') - i.e. NOT restated. H1FY19 = 1,678.45 (Q2FY20 p14). 9M FY19 = 2,543.89 (Q3FY20 p13). Quarters: Q1FY19 = 1,678.45-902.79 = 775.66 (derived); Q2FY19 = 902.79 (printed); Q3FY19 = 865.45 (printed); Q4FY19 = 482.27 (printed AUDITED in FY20 p10). 9M closes: 775.66+902.79+865.45 = 2,543.90 vs printed 2,543.89 (δ0.01, the filer's own rounding family). FY closes EXACTLY: 2,543.89 + 482.27 = 3,026.16 == printed annual to the paisa. Q4FY19 is pinned TWO independent ways that agree exactly: printed audited column 482.27, and annual minus 9M = 3,026.16 - 2,543.89 = 482.27. Q3FY21 9M identity: 14.33+(-15.36)+(-0.80) = -1.83 vs printed 9M Dec-2020 (1.86) - δ0.03 traceable to the stored Jun-2020 14.33 vs the filing's implied 14.30; does not touch any cell written here.",
    "note": "THE SWEEP'S DIAGNOSIS IS WRONG IN ITS SPECIFICS THOUGH RIGHT THAT THE CELL IS BAD. HEG's FY19 consolidated ANNUAL net profit is 3,026.16, not 2581.58 - printed identically in all four consolidated filings read, including the FY20 audited filing, so it was never restated. 2581.58 matches NO line in any of them: not the annual (3,026.16), not 9M FY19 (2,543.89), not H1FY19 (1,678.45), not the quarter (482.27), not FY19 total comprehensive income (3,025.57), not standalone FY19 (3,050.43). A grep of the five HEG PDFs finds '3,026' on three pages and '2581'/'2,581' on none. In-repo provenance is a dead end: scripts/fundamentals.json carries the value with a NULL conAnnDate (docs/sf_fundamentals.json then shows 20190520, inherited from the stdAnnDate), and 2581.58 appears nowhere else in the dataset. The true audited Q4FY19 consolidated quarter is 482.27, pinned two independent ways that agree to the paisa: (a) printed as an audited quarter column in the FY20 filing, (b) FY19 annual 3,026.16 - printed 9M FY19 2,543.89 = 482.27. The column's own components give 806.22 - 278.98 - 2.82 - 42.14 = 482.28, i.e. the filer's printed 482.27 is 1 paisa off its own arithmetic - the same rounding family seen on Jun-19/Sep-19; the derivation route independently returns the PRINTED 482.27, so 482.27 is the value to write. ann moves 20190520 -> 20200617 because nothing resembling this quarter figure was public in May 2019; the earliest date it became derivable is 2020-02-11 (when the 9M FY19 subtotal was first published), so 20200617 is the conservative choice and 20200211 is the defensible alternative if the main session prefers earliest-knowable.",
    "owners": 482.27,
    "source": "HEG FY20 audited consolidated statement (NSE filingDate 2020-06-17) p10, column 'Quarter Ended 31-03-2019' (Audited)",
@@ -1331,15 +1452,31 @@
    "when": "2026-08-17 21:07 IST"
   },
   "HEG|20201231|patC": {
-   "identity": "FY19 consolidated annual = 3,026.16, printed identically in FOUR filings (FY19 audited p3 'Financial Year Ended 31/03/2019'; Q2FY20 p14 'Year Ended 31-03-2019'; Q3FY20 p13 'Year Ended 31-03-2019'; FY20 audited p10 'Year Ended 31-03-2019') - i.e. NOT restated. H1FY19 = 1,678.45 (Q2FY20 p14). 9M FY19 = 2,543.89 (Q3FY20 p13). Quarters: Q1FY19 = 1,678.45-902.79 = 775.66 (derived); Q2FY19 = 902.79 (printed); Q3FY19 = 865.45 (printed); Q4FY19 = 482.27 (printed AUDITED in FY20 p10). 9M closes: 775.66+902.79+865.45 = 2,543.90 vs printed 2,543.89 (\u03b40.01, the filer's own rounding family). FY closes EXACTLY: 2,543.89 + 482.27 = 3,026.16 == printed annual to the paisa. Q4FY19 is pinned TWO independent ways that agree exactly: printed audited column 482.27, and annual minus 9M = 3,026.16 - 2,543.89 = 482.27. Q3FY21 9M identity: 14.33+(-15.36)+(-0.80) = -1.83 vs printed 9M Dec-2020 (1.86) - \u03b40.03 traceable to the stored Jun-2020 14.33 vs the filing's implied 14.30; does not touch any cell written here.",
+   "identity": "FY19 consolidated annual = 3,026.16, printed identically in FOUR filings (FY19 audited p3 'Financial Year Ended 31/03/2019'; Q2FY20 p14 'Year Ended 31-03-2019'; Q3FY20 p13 'Year Ended 31-03-2019'; FY20 audited p10 'Year Ended 31-03-2019') - i.e. NOT restated. H1FY19 = 1,678.45 (Q2FY20 p14). 9M FY19 = 2,543.89 (Q3FY20 p13). Quarters: Q1FY19 = 1,678.45-902.79 = 775.66 (derived); Q2FY19 = 902.79 (printed); Q3FY19 = 865.45 (printed); Q4FY19 = 482.27 (printed AUDITED in FY20 p10). 9M closes: 775.66+902.79+865.45 = 2,543.90 vs printed 2,543.89 (δ0.01, the filer's own rounding family). FY closes EXACTLY: 2,543.89 + 482.27 = 3,026.16 == printed annual to the paisa. Q4FY19 is pinned TWO independent ways that agree exactly: printed audited column 482.27, and annual minus 9M = 3,026.16 - 2,543.89 = 482.27. Q3FY21 9M identity: 14.33+(-15.36)+(-0.80) = -1.83 vs printed 9M Dec-2020 (1.86) - δ0.03 traceable to the stored Jun-2020 14.33 vs the filing's implied 14.30; does not touch any cell written here.",
    "note": "printed (0.80); components reproduce it EXACTLY: PBT 4.28 - current tax nil - deferred tax (0.40) + share of associates (5.48) = -0.80. Standalone for the same quarter is +4.68, so the sign flip is real (the associate loss drives it). ann UNCHANGED - stored conAnnDate is already 20210209, the filing date.",
    "owners": -0.8,
    "source": "HEG Q3FY21 consolidated statement (NSE filingDate 2021-02-09) p11, column 'Quarter Ended 31-12-2020' (Unaudited)",
    "stored_before": 0.0,
    "when": "2026-08-17 21:07 IST"
   },
+  "INDHOTEL|20210331|patC": {
+   "found_by": "§116e per-cell document read of the company's own BSE-filed consolidated result, 2026-08-27",
+   "nci": -6.42,
+   "note": "Consolidated P&L attribution block, read from the company's own filed result: owners -91.3 + NCI -6.42 = -97.72 == stored ProfitLossForPeriod -97.72 (the con slot held the TOTAL). The identity closes in the FILING to within 0.00cr, which is the gate. §116d refused this cell because its cached XBRL tags are incoherent (owners_tag=-91.3, nci_tag=-3.77, total_tag=-97.72); the document resolves it. Column pinned by total==stored under unit-scale /100.",
+   "owners": -91.3,
+   "src": "own consolidated result PDF, BSE ann 20210430, d21259c7-c898-4696-ac0c-89cc57af4331.pdf (page 18)",
+   "total_was": -97.72
+  },
+  "INTELLECT|20180331|patC": {
+   "found_by": "§116e per-cell document read of the company's own BSE-filed consolidated result, 2026-08-27",
+   "nci": 1.57,
+   "note": "Consolidated P&L attribution block, read from the company's own filed result: owners 25.87 + NCI 1.57 = 27.44 == stored ProfitLossForPeriod 27.44 (the con slot held the TOTAL). The identity closes in the FILING to within 0.00cr, which is the gate. §116d refused this cell because its cached XBRL tags are incoherent (owners_tag=29.13, nci_tag=1.57, total_tag=27.44); the document resolves it. Column pinned by total==stored under unit-scale /100.",
+   "owners": 25.87,
+   "src": "own consolidated result PDF, BSE ann 20180507, cc25e031-ff6b-4d04-b304-861d6acf9a02.pdf (page 0)",
+   "total_was": 27.44
+  },
   "IOB|20210630|patC": {
-   "identity": "9M Dec-21 con 1,15,746 lakhs (Q3FY23 filing) = H1 Sep-21 70,618 (Q2FY23 filing) + Dec-21 45,128 (Q3FY23) \u2014 EXACT, and the two subtotals come from different filings. Jun-21 = H1 70,618 - Sep-21 37,651 = 32,967. MoneyControl's independent con series for these three quarters (329 / 376 / 451) matches all three to its rounding.",
+   "identity": "9M Dec-21 con 1,15,746 lakhs (Q3FY23 filing) = H1 Sep-21 70,618 (Q2FY23 filing) + Dec-21 45,128 (Q3FY23) — EXACT, and the two subtotals come from different filings. Jun-21 = H1 70,618 - Sep-21 37,651 = 32,967. MoneyControl's independent con series for these three quarters (329 / 376 / 451) matches all three to its rounding.",
    "note": "derived from two printed columns of one table; NSE serves no attachment for this filing, so it was fetched from BSE",
    "owners": 329.67,
    "source": "IOB Q2FY23 CONSOLIDATED results (BSE attachment, announced 2022-11-05, NSE-dated 2022-11-09) p3: H1 Sep-21 70,618 - Sep-21 37,651",
@@ -1347,7 +1484,7 @@
    "when": "2026-08-17 20:35 IST"
   },
   "IOB|20210930|patC": {
-   "identity": "9M Dec-21 con 1,15,746 lakhs (Q3FY23 filing) = H1 Sep-21 70,618 (Q2FY23 filing) + Dec-21 45,128 (Q3FY23) \u2014 EXACT, and the two subtotals come from different filings. Jun-21 = H1 70,618 - Sep-21 37,651 = 32,967. MoneyControl's independent con series for these three quarters (329 / 376 / 451) matches all three to its rounding.",
+   "identity": "9M Dec-21 con 1,15,746 lakhs (Q3FY23 filing) = H1 Sep-21 70,618 (Q2FY23 filing) + Dec-21 45,128 (Q3FY23) — EXACT, and the two subtotals come from different filings. Jun-21 = H1 70,618 - Sep-21 37,651 = 32,967. MoneyControl's independent con series for these three quarters (329 / 376 / 451) matches all three to its rounding.",
    "note": "printed comparative: Net Profit 37,651 lakhs",
    "owners": 376.51,
    "source": "IOB Q2FY23 CONSOLIDATED results (BSE, 2022-11-05) p3, comparative column 30.09.2021",
@@ -1355,16 +1492,16 @@
    "when": "2026-08-17 20:35 IST"
   },
   "IOB|20211231|patC": {
-   "identity": "9M Dec-21 con 1,15,746 lakhs (Q3FY23 filing) = H1 Sep-21 70,618 (Q2FY23 filing) + Dec-21 45,128 (Q3FY23) \u2014 EXACT, and the two subtotals come from different filings. Jun-21 = H1 70,618 - Sep-21 37,651 = 32,967. MoneyControl's independent con series for these three quarters (329 / 376 / 451) matches all three to its rounding.",
-   "note": "printed comparative: Net Profit 45,128 lakhs. This is the page that refuted the ledger's 'never produced' sub-claim \u2014 the consolidated P&L prints Dec-21 in full even though the SEGMENT statement's Dec-21 columns are empty (Note 4).",
+   "identity": "9M Dec-21 con 1,15,746 lakhs (Q3FY23 filing) = H1 Sep-21 70,618 (Q2FY23 filing) + Dec-21 45,128 (Q3FY23) — EXACT, and the two subtotals come from different filings. Jun-21 = H1 70,618 - Sep-21 37,651 = 32,967. MoneyControl's independent con series for these three quarters (329 / 376 / 451) matches all three to its rounding.",
+   "note": "printed comparative: Net Profit 45,128 lakhs. This is the page that refuted the ledger's 'never produced' sub-claim — the consolidated P&L prints Dec-21 in full even though the SEGMENT statement's Dec-21 columns are empty (Note 4).",
    "owners": 451.28,
    "source": "IOB Q3FY23 CONSOLIDATED results (NSE attachment, filed 2023-02-10) p3, comparative column 31.12.2021",
    "stored_before": null,
    "when": "2026-08-17 20:35 IST"
   },
   "IOB|20220630|patC": {
-   "identity": "9M Dec-21 con 1,15,746 lakhs (Q3FY23 filing) = H1 Sep-21 70,618 (Q2FY23 filing) + Dec-21 45,128 (Q3FY23) \u2014 EXACT, and the two subtotals come from different filings. Jun-21 = H1 70,618 - Sep-21 37,651 = 32,967. MoneyControl's independent con series for these three quarters (329 / 376 / 451) matches all three to its rounding.",
-   "note": "stored 392.17 is EXACTLY the standalone Jun-22 PAT (392.17) \u2014 a copy. The consolidated figure is 39,310 lakhs = 393.10.",
+   "identity": "9M Dec-21 con 1,15,746 lakhs (Q3FY23 filing) = H1 Sep-21 70,618 (Q2FY23 filing) + Dec-21 45,128 (Q3FY23) — EXACT, and the two subtotals come from different filings. Jun-21 = H1 70,618 - Sep-21 37,651 = 32,967. MoneyControl's independent con series for these three quarters (329 / 376 / 451) matches all three to its rounding.",
+   "note": "stored 392.17 is EXACTLY the standalone Jun-22 PAT (392.17) — a copy. The consolidated figure is 39,310 lakhs = 393.10.",
    "owners": 393.1,
    "source": "IOB Q2FY23 CONSOLIDATED results (BSE, 2022-11-05) p3, preceding-quarter column 30.06.2022",
    "stored_before": 392.17,
@@ -1388,7 +1525,7 @@
   },
   "IPCALAB|20181231|patC": {
    "identity": "FY19 owners 444.83 == 68.55 + 118.54 + 159.19 + 98.55 (exact). Cross-filing: H1 Sep-18 187.09 (Q2FY20) + Dec-18 159.19 (Q3FY20) = 346.28 == the 9M Dec-18 owners column printed in the Q3FY20 filing (exact).",
-   "note": "printed comparative: owners 159.19 (total 159.11, NCI -0.08) \u2014 the OWNERS row, matching the series convention",
+   "note": "printed comparative: owners 159.19 (total 159.11, NCI -0.08) — the OWNERS row, matching the series convention",
    "owners": 159.19,
    "source": "IPCA Q3FY20 consolidated statement (filed 2020-02-13) p5, comparative column Dec 31, 2018",
    "stored_before": null,
@@ -1396,7 +1533,7 @@
   },
   "IPCALAB|20190331|patC": {
    "identity": "FY19 owners 444.83 == 68.55 + 118.54 + 159.19 + 98.55 (exact). Cross-filing: H1 Sep-18 187.09 (Q2FY20) + Dec-18 159.19 (Q3FY20) = 346.28 == the 9M Dec-18 owners column printed in the Q3FY20 filing (exact).",
-   "note": "stored 109.47 is EXACTLY the standalone Mar-19 PAT (109.47) \u2014 a copy, not a consolidated figure. True Q4FY19 owners = 444.83 - 346.28 = 98.55, and 68.55+118.54+159.19+98.55 = 444.83 closes the year exactly. _reattr_owners.json carries the same 109.47, so this heal is reverted nightly unless pinned. Announce date moves 2019-05-30 -> 2020-02-13: the 9M comparative that makes the quarter derivable was only published then, and dating it earlier would be look-ahead.",
+   "note": "stored 109.47 is EXACTLY the standalone Mar-19 PAT (109.47) — a copy, not a consolidated figure. True Q4FY19 owners = 444.83 - 346.28 = 98.55, and 68.55+118.54+159.19+98.55 = 444.83 closes the year exactly. _reattr_owners.json carries the same 109.47, so this heal is reverted nightly unless pinned. Announce date moves 2019-05-30 -> 2020-02-13: the 9M comparative that makes the quarter derivable was only published then, and dating it earlier would be look-ahead.",
    "owners": 98.55,
    "source": "IPCA Q3FY20 consolidated statement (filed 2020-02-13) p5: FY19 owners 444.83 - 9M Dec-18 owners 346.28",
    "stored_before": 109.47,
@@ -1409,9 +1546,17 @@
    "period": -1.02,
    "stored_before": -27.82
   },
+  "JINDALSAW|20230630|patC": {
+   "found_by": "§116e per-cell document read of the company's own BSE-filed consolidated result, 2026-08-27",
+   "nci": -19.67,
+   "note": "Consolidated P&L attribution block, read from the company's own filed result: owners 263.15 + NCI -19.67 = 243.48 == stored ProfitLossForPeriod 243.48 (the con slot held the TOTAL). The identity closes in the FILING to within 0.00cr, which is the gate. §116d refused this cell because its cached XBRL tags are incoherent (owners_tag=263.15, nci_tag=19.67, total_tag=243.48); the document resolves it. Column pinned by total==stored under unit-scale /1.",
+   "owners": 263.15,
+   "src": "own consolidated result PDF, BSE ann 20230811, cee941a8-96c2-471d-b5d7-5efa0a64ee71.pdf (page 8)",
+   "total_was": 243.48
+  },
   "JSWDULUX|20180630|patC": {
-   "identity": "The printed H1 Sep-2018 consolidated subtotal is 802.6 mn = 80.26 cr, and the printed Sep-2018 quarter column is 367.5 mn = 36.75 cr. 80.26 - 36.75 = 43.51 EXACTLY. Independently, Moneycontrol's own consolidated series holds this quarter at 43.51 \u2014 two sources agreeing to the paisa, one of them a filing.",
-   "note": "Completes the FY19 chain this campaign started. It also makes the H1 identity that the Sep-2018 fill rests on reproducible from our own store, which it was not while this cell sat empty. The Moneycontrol hold on this cell values it identically at 43.51; that hold rested on the weak 'con == std so maybe a copy' test, and for this company con == std is genuine \u2014 the subsidiary is wholly owned and contributes ~0, which is exactly why the printed consolidated H1 equals the sum of the two standalone quarters.",
+   "identity": "The printed H1 Sep-2018 consolidated subtotal is 802.6 mn = 80.26 cr, and the printed Sep-2018 quarter column is 367.5 mn = 36.75 cr. 80.26 - 36.75 = 43.51 EXACTLY. Independently, Moneycontrol's own consolidated series holds this quarter at 43.51 — two sources agreeing to the paisa, one of them a filing.",
+   "note": "Completes the FY19 chain this campaign started. It also makes the H1 identity that the Sep-2018 fill rests on reproducible from our own store, which it was not while this cell sat empty. The Moneycontrol hold on this cell values it identically at 43.51; that hold rested on the weak 'con == std so maybe a copy' test, and for this company con == std is genuine — the subsidiary is wholly owned and contributes ~0, which is exactly why the printed consolidated H1 equals the sum of the two standalone quarters.",
    "owners": 43.51,
    "source": "Akzo Nobel India Q2FY20 consolidated results (NSE attachment, filed 2019-11-09) p7: H1 Sep-2018 802.6 mn less the Sep-2018 quarter column 367.5 mn",
    "stored_before": null,
@@ -1432,6 +1577,38 @@
    "source": "Akzo Nobel India (now JSWDULUX) Q3FY20 'Statement of Consolidated Unaudited Financial Results ... 31 December 2019' (NSE filingDate 07-Feb-2020 12:49) p7, column 'Quarter ended 31 December 2018'",
    "stored_before": null,
    "when": "2026-08-17 21:03 IST"
+  },
+  "KANORICHEM|20230630|patC": {
+   "found_by": "§116e per-cell document read of the company's own BSE-filed consolidated result, 2026-08-27",
+   "nci": -1.2,
+   "note": "Consolidated P&L attribution block, read from the company's own filed result: owners -2.64 + NCI -1.2 = -3.84 == stored ProfitLossForPeriod -3.84 (the con slot held the TOTAL). The identity closes in the FILING to within 0.00cr, which is the gate. §116d refused this cell because its cached XBRL tags are incoherent (owners_tag=-1.38, nci_tag=-0.15, total_tag=-3.84); the document resolves it. Column pinned by total==stored under unit-scale /100.",
+   "owners": -2.64,
+   "src": "own consolidated result PDF, BSE ann 20230808, 765ab556-6c2c-444f-9278-802b5965bdea.pdf (page 4)",
+   "total_was": -3.84
+  },
+  "KANORICHEM|20240331|patC": {
+   "found_by": "§116e per-cell document read of the company's own BSE-filed consolidated result, 2026-08-27",
+   "nci": -6.43,
+   "note": "Consolidated P&L attribution block, read from the company's own filed result: owners -9.26 + NCI -6.43 = -15.69 == stored ProfitLossForPeriod -15.69 (the con slot held the TOTAL). The identity closes in the FILING to within 0.00cr, which is the gate. §116d refused this cell because its cached XBRL tags are incoherent (owners_tag=-8.49, nci_tag=-5.9, total_tag=-15.69); the document resolves it. Column pinned by total==stored under unit-scale /100.",
+   "owners": -9.26,
+   "src": "own consolidated result PDF, BSE ann 20240528, 4bbfb08a-8f52-41bb-882a-d49764c84a4e.pdf (page 13)",
+   "total_was": -15.69
+  },
+  "KANORICHEM|20240930|patC": {
+   "found_by": "§116e per-cell document read of the company's own BSE-filed consolidated result, 2026-08-27",
+   "nci": -2.57,
+   "note": "Consolidated P&L attribution block, read from the company's own filed result: owners -13.91 + NCI -2.57 = -16.48 == stored ProfitLossForPeriod -16.48 (the con slot held the TOTAL). The identity closes in the FILING to within 0.00cr, which is the gate. §116d refused this cell because its cached XBRL tags are incoherent (owners_tag=-12.22, nci_tag=-3.11, total_tag=-16.48); the document resolves it. Column pinned by total==stored under unit-scale /100.",
+   "owners": -13.91,
+   "src": "own consolidated result PDF, BSE ann 20241113, 52ae6d41-5b42-4731-99a9-356433f0a8bf.pdf (page 9)",
+   "total_was": -16.48
+  },
+  "KANORICHEM|20250930|patC": {
+   "found_by": "§116e per-cell document read of the company's own BSE-filed consolidated result, 2026-08-27",
+   "nci": -1.63,
+   "note": "Consolidated P&L attribution block, read from the company's own filed result: owners 93.44 + NCI -1.63 = 91.81 == stored ProfitLossForPeriod 91.81 (the con slot held the TOTAL). The identity closes in the FILING to within 0.00cr, which is the gate. §116d refused this cell because its cached XBRL tags are incoherent (owners_tag=101.44, nci_tag=-1.31, total_tag=91.81); the document resolves it. Column pinned by total==stored under unit-scale /100.",
+   "owners": 93.44,
+   "src": "own consolidated result PDF, BSE ann 20251110, f1174c06-a674-4095-9a04-6e85fa9b6335.pdf (page 8)",
+   "total_was": 91.81
   },
   "KEI|20240630|patC": {
    "identity": "All in millions, all EXACT to the paisa-equivalent. FY25: H1-FY25 printed 3,050.61 = 1,502.49 + 1,548.12; 9M-FY25 printed 4,698.66 = + 1,648.05; FY25 annual printed 6,964.14 (in the Q2FY26 and Q3FY26 filings) = + Mar-25 2,265.48 (the already-applied batch-F cell) = 6,964.14 EXACT - the FY25 year closes on the nose. FY26: H1-FY26 printed 3,992.60 = 1,957.47 + 2,035.13 EXACT; 9M-FY26 printed 6,341.21 = + 2,348.61 EXACT. Revenue: H1-FY25 43,401.45 = 20,604.97+22,796.48 EXACT; 9M-FY25 68,074.12 = +24,672.67 EXACT; 9M-FY26 82,713.69 = 25,903.16+27,263.49+29,547.04 EXACT. Cross-check on our own stored crore series: FY25 annual owners 6,964.14 mn = 696.41 cr vs stored/filled quarters 150.25+154.81+164.81+226.55 = 696.42, a 1-paisa residue from four independently rounded quarters.",
@@ -1490,8 +1667,8 @@
    "when": "2026-08-17 23:49 IST"
   },
   "KIMS|20210331|patC": {
-   "identity": "Cross-filing, to the paisa: FY2021 consolidated owners 2,012.19 mn (printed in the audited annual Ind AS financial statements filed 03-Jul-2021 p68, AND re-printed as the 'Year ended 31-Mar-21' column of the Q4FY22 filing) minus nine-months-FY21 owners 1,434.17 mn (printed audited in the Q3FY22 filing, column '9M ended 31-Dec-20') = 578.02 mn \u2014 exactly the printed Mar-2021 quarter owners figure. The same subtraction on the total basis closes too: 2,054.79 - 1,468.58 = 586.21 = the printed Mar-2021 total. Within the Mar-2021 column the split is internally consistent: 578.02 + 8.19 (NCI) = 586.21.",
-   "note": "printed 578.02 in Rupees millions -> round(578.02/10, 2) = 57.80 cr (total for that quarter is 586.21 mn = 58.62 cr; NCI 8.19 mn). Pure-scan page, read from a 2.6x/8x render. ANNOUNCE DATE MOVED FORWARD, never back: the stored 20210703 filing is KIMS's first NSE submission (attachment KIMSFinancials31march2021.pdf, 125 pages) and it is the full audited annual Ind AS financial statements \u2014 standalone auditor's report + statements p1-59, consolidated auditor's report + statements p60-125 \u2014 whose only columns are 'For the year ended 31 March 2021' and '31 March 2020'. It contains no quarterly column anywhere; its consolidated P&L (p68, signed 25 May 2021) prints FY21 profit 2,054.79 / owners 2,012.19 / NCI 42.60, which is the same FY21 column the Q4FY22 filing repeats. The March-2021 QUARTER therefore first became public on 11-Aug-2021, the NSE filingDate of the Q1FY22 statement, which is also the stored conAnnDate of that filing's anchor quarter Jun-2021.",
+   "identity": "Cross-filing, to the paisa: FY2021 consolidated owners 2,012.19 mn (printed in the audited annual Ind AS financial statements filed 03-Jul-2021 p68, AND re-printed as the 'Year ended 31-Mar-21' column of the Q4FY22 filing) minus nine-months-FY21 owners 1,434.17 mn (printed audited in the Q3FY22 filing, column '9M ended 31-Dec-20') = 578.02 mn — exactly the printed Mar-2021 quarter owners figure. The same subtraction on the total basis closes too: 2,054.79 - 1,468.58 = 586.21 = the printed Mar-2021 total. Within the Mar-2021 column the split is internally consistent: 578.02 + 8.19 (NCI) = 586.21.",
+   "note": "printed 578.02 in Rupees millions -> round(578.02/10, 2) = 57.80 cr (total for that quarter is 586.21 mn = 58.62 cr; NCI 8.19 mn). Pure-scan page, read from a 2.6x/8x render. ANNOUNCE DATE MOVED FORWARD, never back: the stored 20210703 filing is KIMS's first NSE submission (attachment KIMSFinancials31march2021.pdf, 125 pages) and it is the full audited annual Ind AS financial statements — standalone auditor's report + statements p1-59, consolidated auditor's report + statements p60-125 — whose only columns are 'For the year ended 31 March 2021' and '31 March 2020'. It contains no quarterly column anywhere; its consolidated P&L (p68, signed 25 May 2021) prints FY21 profit 2,054.79 / owners 2,012.19 / NCI 42.60, which is the same FY21 column the Q4FY22 filing repeats. The March-2021 QUARTER therefore first became public on 11-Aug-2021, the NSE filingDate of the Q1FY22 statement, which is also the stored conAnnDate of that filing's anchor quarter Jun-2021.",
    "owners": 57.8,
    "source": "Krishna Institute of Medical Sciences Limited, 'Statement of Unaudited Consolidated Financial Results for the quarter ended 30 June 2021', NSE filing 11-Aug-2021 15:37 (attachment Q1fy22Financialresults.pdf), p4, column 'Quarter Ended 31-Mar-21 (Unaudited) Refer note 2', row 'Attributable to: Owners of the Company'",
    "stored_before": 0.0,
@@ -1522,7 +1699,7 @@
    "when": "2026-08-17 21:03 IST"
   },
   "KPITTECH|20180331|patC": {
-   "identity": "Shell-period columns close trivially and exactly: FY18 'Year ended March 31, 2018' == 'Quarter ended March 31, 2018' == (2.66) mn in the FY19 audited con statement (the company's first accounting period, Jan-2018 to Mar-2018, was its entire FY18 - quarter == year by construction, printed both places). Jun-2018: expenses 0.12 == PBT (0.12) == PAT (0.12), tax nil, NCI '-'. EPS pins both columns EXACTLY on the shell's 0.1 mn shares (face \u20b910, capital 1.00 mn): Mar-18 EPS (26.60) x 0.1 = (2.66); Jun-18 EPS (1.20) x 0.1 = (0.12). Owners == total in both columns (NCI '-').",
+   "identity": "Shell-period columns close trivially and exactly: FY18 'Year ended March 31, 2018' == 'Quarter ended March 31, 2018' == (2.66) mn in the FY19 audited con statement (the company's first accounting period, Jan-2018 to Mar-2018, was its entire FY18 - quarter == year by construction, printed both places). Jun-2018: expenses 0.12 == PBT (0.12) == PAT (0.12), tax nil, NCI '-'. EPS pins both columns EXACTLY on the shell's 0.1 mn shares (face ₹10, capital 1.00 mn): Mar-18 EPS (26.60) x 0.1 = (2.66); Jun-18 EPS (1.20) x 0.1 = (0.12). Owners == total in both columns (NCI '-').",
    "note": "printed audited comparative, shell period: profit/(loss) for the period (2.66) mn -> -0.27 cr (round(-2.66/10,2)); owners (2.66), NCI '-'; only expense line 'Other expenses 2.66'. Equals the FY18 year column (first accounting period == the quarter). Matches stored std Mar-18 -0.27 because the shell had no consolidation difference. ann = 20190625, the NSE filingDate of the consolidated FY19 row; the stored Mar-19 con cell carries 20190516 (the std filing date - the con value was evidently public with the 16-May results via BSE), but 20190625 is what this session MEASURED and cannot introduce look-ahead; flagged in refusals_I.json.",
    "owners": -0.27,
    "source": "KPIT Technologies (erstwhile KPIT Engineering) 'Statement of Audited Consolidated Financial Results for the quarter and year ended March 31, 2019' (NSE con row filingDate 25-Jun-2019 18:11) p3, column 'March 31, 2018 (Audited) (Refer note 8)'",
@@ -1530,7 +1707,7 @@
    "when": "2026-08-18 00:03 IST"
   },
   "KPITTECH|20180630|patC": {
-   "identity": "Shell-period columns close trivially and exactly: FY18 'Year ended March 31, 2018' == 'Quarter ended March 31, 2018' == (2.66) mn in the FY19 audited con statement (the company's first accounting period, Jan-2018 to Mar-2018, was its entire FY18 - quarter == year by construction, printed both places). Jun-2018: expenses 0.12 == PBT (0.12) == PAT (0.12), tax nil, NCI '-'. EPS pins both columns EXACTLY on the shell's 0.1 mn shares (face \u20b910, capital 1.00 mn): Mar-18 EPS (26.60) x 0.1 = (2.66); Jun-18 EPS (1.20) x 0.1 = (0.12). Owners == total in both columns (NCI '-').",
+   "identity": "Shell-period columns close trivially and exactly: FY18 'Year ended March 31, 2018' == 'Quarter ended March 31, 2018' == (2.66) mn in the FY19 audited con statement (the company's first accounting period, Jan-2018 to Mar-2018, was its entire FY18 - quarter == year by construction, printed both places). Jun-2018: expenses 0.12 == PBT (0.12) == PAT (0.12), tax nil, NCI '-'. EPS pins both columns EXACTLY on the shell's 0.1 mn shares (face ₹10, capital 1.00 mn): Mar-18 EPS (26.60) x 0.1 = (2.66); Jun-18 EPS (1.20) x 0.1 = (0.12). Owners == total in both columns (NCI '-').",
    "note": "printed comparative, shell period: profit/(loss) for the period (0.12) mn -> -0.01 cr; owners (0.12), NCI '-'; EPS (1.20) x 0.1 mn shares = (0.12) EXACT. Matches stored std Jun-18 -0.01. ann matches the stored conAnnDate of the anchor quarter in the same filing (con 20190630 ann = 20190726).",
    "owners": -0.01,
    "source": "KPIT Technologies Q1FY20 'Statement of Unaudited Consolidated Financial Results for the quarter ended June 30, 2019' (NSE filingDate 26-Jul-2019 18:02) p4, column 'June 30, 2018 (Unaudited) (Refer note 8)'",
@@ -1570,8 +1747,8 @@
    "when": "2026-08-17 23:49 IST"
   },
   "KSCL|20190630|patC": {
-   "identity": "KSCL's own Q1FY20 filing (2019-08-13, the exact document the stored announce date points at) prints Jun-19 con PAT total 23,024.16 and PAT owners 22,957.85. Stored 230.72 matches NEITHER \u2014 it equals that filing's 'Total Comprehensive Income attributable to Equity Share Holders' 23,072.42 EXACTLY.",
-   "note": "supersedes the earlier 'filer-side restatement' theory \u2014 measurement of the company's own filing shows a TCI artifact, not a restatement. Written on owners (229.58) to match the flipped series; the total-basis value would be 230.24.",
+   "identity": "KSCL's own Q1FY20 filing (2019-08-13, the exact document the stored announce date points at) prints Jun-19 con PAT total 23,024.16 and PAT owners 22,957.85. Stored 230.72 matches NEITHER — it equals that filing's 'Total Comprehensive Income attributable to Equity Share Holders' 23,072.42 EXACTLY.",
+   "note": "supersedes the earlier 'filer-side restatement' theory — measurement of the company's own filing shows a TCI artifact, not a restatement. Written on owners (229.58) to match the flipped series; the total-basis value would be 230.24.",
    "owners": 229.58,
    "source": "KSCL Q1FY20 consolidated statement (2019-08-13), owners row 22,957.85 lakhs",
    "stored_before": 230.72,
@@ -1641,6 +1818,38 @@
    "stored_before": 14.85,
    "when": "2026-08-17 23:49 IST"
   },
+  "LLOYDSENT|20250930|patC": {
+   "found_by": "§116e per-cell document read of the company's own BSE-filed consolidated result, 2026-08-27",
+   "nci": 38.38,
+   "note": "Consolidated P&L attribution block, read from the company's own filed result: owners 23.46 + NCI 38.38 = 61.84 == stored ProfitLossForPeriod 61.84 (the con slot held the TOTAL). The identity closes in the FILING to within 0.00cr, which is the gate. §116d refused this cell because its cached XBRL tags are incoherent (owners_tag=-590.93, nci_tag=0.36, total_tag=61.84); the document resolves it. Column pinned by total==stored under unit-scale /1.",
+   "owners": 23.46,
+   "src": "own consolidated result PDF, BSE ann 20251111, 76c1bfca-a8a7-4fc3-8cd2-d112b40f7d8b.pdf (page 10)",
+   "total_was": 61.84
+  },
+  "LUPIN|20181231|patC": {
+   "found_by": "§116e per-cell document read of the company's own BSE-filed consolidated result, 2026-08-27",
+   "nci": -0.61,
+   "note": "Consolidated P&L attribution block, read from the company's own filed result: owners -151.75 + NCI -0.61 = -152.36 == stored ProfitLossForPeriod -152.36 (the con slot held the TOTAL). The identity closes in the FILING to within 0.00cr, which is the gate. §116d refused this cell because its cached XBRL tags are incoherent (owners_tag=22.32, nci_tag=-0.02, total_tag=-152.36); the document resolves it. Column pinned by total==stored under unit-scale /10.",
+   "owners": -151.75,
+   "src": "own consolidated result PDF, BSE ann 20190206, a6bdc92e-fc49-422b-bc32-a8824000d8fa.pdf (page 4)",
+   "total_was": -152.36
+  },
+  "LUPIN|20200331|patC": {
+   "found_by": "§116e per-cell document read of the company's own BSE-filed consolidated result, 2026-08-27",
+   "nci": 1.66,
+   "note": "Consolidated P&L attribution block, read from the company's own filed result: owners 389.63 + NCI 1.66 = 391.29 == stored ProfitLossForPeriod 391.29 (the con slot held the TOTAL). The identity closes in the FILING to within 0.00cr, which is the gate. §116d refused this cell because its cached XBRL tags are incoherent (owners_tag=-541.77, nci_tag=1.53, total_tag=391.29); the document resolves it. Column pinned by total==stored under unit-scale /10.",
+   "owners": 389.63,
+   "src": "own consolidated result PDF, BSE ann 20200528, 19849a48-6964-4189-b8fa-3499fb86e8b9.pdf (page 9)",
+   "total_was": 391.29
+  },
+  "LUPIN|20210930|patC": {
+   "found_by": "§116e per-cell document read of the company's own BSE-filed consolidated result, 2026-08-27",
+   "nci": 3.17,
+   "note": "Consolidated P&L attribution block, read from the company's own filed result: owners -2098.04 + NCI 3.17 = -2094.87 == stored ProfitLossForPeriod -2094.87 (the con slot held the TOTAL). The identity closes in the FILING to within 0.00cr, which is the gate. §116d refused this cell because its cached XBRL tags are incoherent (owners_tag=-209.84, nci_tag=3.17, total_tag=-2094.87); the document resolves it. Column pinned by total==stored under unit-scale /10.",
+   "owners": -2098.04,
+   "src": "own consolidated result PDF, BSE ann 20211027, c36879f8-2f87-48c3-ac67-7a6c6b2dbaa7.pdf (page 6)",
+   "total_was": -2094.87
+  },
   "M&MFIN|20190930|patC": {
    "identity": "H1FY20 closes to the paisa THROUGH the target: Jun-2019 107.23 + Sep-2019 261.45 = 368.68 == printed 'Half year ended 30 September 2019' owners 36,868.14 lakh EXACT. H1FY19 closes on stored: 315.91 (Jun-18) + 425.91 (Sep-18) = 741.82 == printed 74,182.15 EXACT. ANOMALY (neighbor periods, not touched, in refusals_H.json): the printed audited FY19 owners 182,729.83 -> 1,827.30 differs from the sum of the four stored FY19 con quarters (315.91+425.91+399.05+687.17 = 1,828.04) by 0.74 cr; since H1FY19 matches exactly, the 0.74 restatement sits in the H2FY19 comparatives (Dec-2018/Mar-2019 as-filed vs FY19 audited).",
    "note": "26,145.09 lakh / 100 = 261.4509 -> 261.45 cr (total 26,360.14 = 263.60; NCI 215.05). This is the company's OWN Q2FY20 con filing (con quarterly was mandatory by FY20) - the con slot was empty only because NSE's detail API serves no attachment for symbols containing '&' (protocol-documented); routed via BSE announcement archive as instructed. ann=20191022 = the BSE announcement timestamp (board meeting 22-Oct-2019); consistent with stored neighbors (Dec-2019 conAnn 20200206). Stored stdAnnDate for this quarter is 0 - the main session may want to set it from the same filing.",
@@ -1648,6 +1857,14 @@
    "source": "Mahindra & Mahindra Financial Services Ltd 'Statement of Unaudited Consolidated Financial Results for the quarter and half year ended 30 September 2019' (Rs. in Lakhs), BSE Regulation 33 & 52 filing 22-Oct-2019 17:28 (scrip 532720), p3, column '30 September 2019', row 'Profit for the period attributable to: Owners of the Company' = 26,145.09",
    "stored_before": null,
    "when": "2026-08-18 00:12 IST"
+  },
+  "MAHLIFE|20181231|patC": {
+   "found_by": "§116e per-cell document read of the company's own BSE-filed consolidated result, 2026-08-27",
+   "nci": -1.15,
+   "note": "Consolidated P&L attribution block, read from the company's own filed result: owners 20.58 + NCI -1.15 = 19.43 == stored ProfitLossForPeriod 19.43 (the con slot held the TOTAL). The identity closes in the FILING to within 0.00cr, which is the gate. §116d refused this cell because its cached XBRL tags are incoherent (owners_tag=20.58, nci_tag=1.15, total_tag=19.43); the document resolves it. Column pinned by total==stored under unit-scale /100.",
+   "owners": 20.58,
+   "src": "own consolidated result PDF, BSE ann 20190128, 7d10b4de-7b08-4db1-bcb4-bfc38eb9cc36.pdf (page 7)",
+   "total_was": 19.43
   },
   "MAZDOCK|20190630|patC": {
    "identity": "Within the Q2FY21 filing: Sep-2020 9,938 + Jun-2020 1,400 = 11,338 == printed H1FY21 EXACT. Cross-filing on the comparatives: printed H1FY20 18,764 (Q2FY21 filing) + printed Dec-2019 quarter 20,872 (Q3FY21 filing, cached btD_MAZDOCK_20201231.pdf, already used for the stored 208.72 fill) = 39,636 == printed 9MFY20 in the Q3FY21 filing EXACT - the subtotals agree across filings to the rupee-lakh. FY20 audited annual 47,706 lakh is printed identically in both filings. KNOWN ANOMALY reconfirmed, not touched (already in refusals_D.json): FY20 47,706 - 9MFY20 39,636 = 8,070 lakh = 80.70 cr implied for Mar-2020, but stored 20200331 con = 74.68 (gap 6.02 cr; the Mar-2020 quarter column was never printed post-listing - MAZDOCK listed 12-Oct-2020).",
@@ -1672,6 +1889,30 @@
    "source": "MAZDOCK Q3FY21 consolidated statement (filed 2021-02-12) p2, column 'Quarter Ended December 31 2019', row 11 Profit for the year = 20,872 (Rs in lakhs)",
    "stored_before": null,
    "when": "2026-08-17 20:47 IST"
+  },
+  "MHRIL|20221231|patC": {
+   "found_by": "§116e per-cell document read of the company's own BSE-filed consolidated result, 2026-08-27",
+   "nci": -1.82,
+   "note": "Consolidated P&L attribution block, read from the company's own filed result: owners -11.9 + NCI -1.82 = -13.71 == stored ProfitLossForPeriod -13.71 (the con slot held the TOTAL). The identity closes in the FILING to within 0.01cr, which is the gate. §116d refused this cell because its cached XBRL tags are incoherent (owners_tag=-10.82, nci_tag=-1.82, total_tag=-13.71); the document resolves it. Column pinned by total==stored under unit-scale /100.",
+   "owners": -11.9,
+   "src": "own consolidated result PDF, BSE ann 20230202, 6bf8d2c0-cfd2-4c1c-8035-cc139e0131ed.pdf (page 2)",
+   "total_was": -13.71
+  },
+  "MHRIL|20240930|patC": {
+   "found_by": "§116e per-cell document read of the company's own BSE-filed consolidated result, 2026-08-27",
+   "nci": -2.29,
+   "note": "Consolidated P&L attribution block, read from the company's own filed result: owners 13.77 + NCI -2.29 = 11.49 == stored ProfitLossForPeriod 11.49 (the con slot held the TOTAL). The identity closes in the FILING to within 0.01cr, which is the gate. §116d refused this cell because its cached XBRL tags are incoherent (owners_tag=56.04, nci_tag=-2.29, total_tag=11.49); the document resolves it. Column pinned by total==stored under unit-scale /100.",
+   "owners": 13.77,
+   "src": "own consolidated result PDF, BSE ann 20241025, 3337fd6c-9f49-496c-ae79-205b4fa26e15.pdf (page 13)",
+   "total_was": 11.49
+  },
+  "MHRIL|20250930|patC": {
+   "found_by": "§116e per-cell document read of the company's own BSE-filed consolidated result, 2026-08-27",
+   "nci": -0.91,
+   "note": "Consolidated P&L attribution block, read from the company's own filed result: owners 17.85 + NCI -0.91 = 16.94 == stored ProfitLossForPeriod 16.94 (the con slot held the TOTAL). The identity closes in the FILING to within 0.00cr, which is the gate. §116d refused this cell because its cached XBRL tags are incoherent (owners_tag=19.08, nci_tag=-0.92, total_tag=16.94); the document resolves it. Column pinned by total==stored under unit-scale /100.",
+   "owners": 17.85,
+   "src": "own consolidated result PDF, BSE ann 20251031, 75c9f08d-b227-40d0-9ca9-9de5c36baa09.pdf (page 11)",
+   "total_was": 16.94
   },
   "MMTC|20180930|patC": {
    "identity": "FY19 consolidated annual = 108.72, printed in THREE filings (Q2FY20 p9 'Year Ended 31-Mar-19'; Q3FY20 p7 'Year Ended 31-Mar-19'; FY20 audited p11 'Consolidated / Year Ended 31-Mar-19'). H1FY19 = 50.58 (Q2FY20 p9). 9M FY19 = 83.52 (Q3FY20 p7). The four FY19 consolidated quarters close to the paisa with no residue: Q1FY19 = H1 50.58 - Q2 36.92 = 13.66, which reproduces our ALREADY-STORED con 20180630 = 13.66 EXACTLY (an independent third-party confirmation of the Sep-2018 read, since 13.66 was ingested in Aug-2018 from a different filing); 9M check 13.66 + 36.92 + 32.94 = 83.52 == printed 9M EXACTLY; FY check 83.52 + 25.20 = 108.72 == printed annual EXACTLY. Every column also reconciles internally as PBT minus total tax: Sep-18 52.99-16.07=36.92; Dec-18 47.00-14.06=32.94; 9M Dec-18 115.80-32.28=83.52; FY19 145.88-37.16=108.72.",
@@ -1705,17 +1946,57 @@
    "stored_before": -273.72,
    "when": "2026-08-17 23:56 IST"
   },
+  "NAVNETEDUL|20211231|patC": {
+   "found_by": "§116e per-cell document read of the company's own BSE-filed consolidated result, 2026-08-27",
+   "nci": -0.27,
+   "note": "Consolidated P&L attribution block, read from the company's own filed result: owners 71.05 + NCI -0.27 = 70.78 == stored ProfitLossForPeriod 70.78 (the con slot held the TOTAL). The identity closes in the FILING to within 0.00cr, which is the gate. §116d refused this cell because its cached XBRL tags are incoherent (owners_tag=71.05, nci_tag=70.78, total_tag=70.78); the document resolves it. Column pinned by total==stored under unit-scale /100.",
+   "owners": 71.05,
+   "src": "own consolidated result PDF, BSE ann 20220131, 05572ee9-35ac-4c41-944b-3a5e02ab936e.pdf (page 8)",
+   "total_was": 70.78
+  },
   "NUCLEUS|20251231|patC": {
    "also_npStd": null,
    "note": "screener 21 agrees with the mirror; fund 250.2 vs a 26.8 family median",
    "owners": 20.7,
    "stored_before": 250.2
   },
+  "OLECTRA|20240930|patC": {
+   "found_by": "§116e per-cell document read of the company's own BSE-filed consolidated result, 2026-08-27",
+   "nci": 0.09,
+   "note": "Consolidated P&L attribution block, read from the company's own filed result: owners 47.56 + NCI 0.09 = 47.65 == stored ProfitLossForPeriod 47.65 (the con slot held the TOTAL). The identity closes in the FILING to within 0.00cr, which is the gate. §116d refused this cell because its cached XBRL tags are incoherent (owners_tag=0.0, nci_tag=0.09, total_tag=47.65); the document resolves it. Column pinned by total==stored under unit-scale /100.",
+   "owners": 47.56,
+   "src": "own consolidated result PDF, BSE ann 20241022, 61d17baf-590a-4145-9a8f-5b0cbd5a98ab.pdf (page 7)",
+   "total_was": 47.65
+  },
+  "OLECTRA|20241231|patC": {
+   "found_by": "§116e per-cell document read of the company's own BSE-filed consolidated result, 2026-08-27",
+   "nci": 0.29,
+   "note": "Consolidated P&L attribution block, read from the company's own filed result: owners 46.33 + NCI 0.29 = 46.62 == stored ProfitLossForPeriod 46.62 (the con slot held the TOTAL). The identity closes in the FILING to within 0.00cr, which is the gate. §116d refused this cell because its cached XBRL tags are incoherent (owners_tag=0.0, nci_tag=0.29, total_tag=46.62); the document resolves it. Column pinned by total==stored under unit-scale /100.",
+   "owners": 46.33,
+   "src": "own consolidated result PDF, BSE ann 20250129, 8eee9950-86bb-4690-b6af-fbd4e2f59570.pdf (page 5)",
+   "total_was": 46.62
+  },
+  "OLECTRA|20250930|patC": {
+   "found_by": "§116e per-cell document read of the company's own BSE-filed consolidated result, 2026-08-27",
+   "nci": -0.12,
+   "note": "Consolidated P&L attribution block, read from the company's own filed result: owners 49.55 + NCI -0.12 = 49.43 == stored ProfitLossForPeriod 49.43 (the con slot held the TOTAL). The identity closes in the FILING to within 0.00cr, which is the gate. §116d refused this cell because its cached XBRL tags are incoherent (owners_tag=0.0, nci_tag=-0.12, total_tag=49.43); the document resolves it. Column pinned by total==stored under unit-scale /100.",
+   "owners": 49.55,
+   "src": "own consolidated result PDF, BSE ann 20251108, 2d2d4940-951d-4a25-a177-5329b3b0593f.pdf (page 8)",
+   "total_was": 49.43
+  },
   "OSWALAGRO|20230630|patC": {
    "also_npStd": null,
    "note": "screener 4.28 agrees with the mirror; npCon was an exact copy of npStd 0.3",
    "owners": 4.28,
    "stored_before": 0.3
+  },
+  "POLYCAB|20201231|patC": {
+   "found_by": "§116e per-cell document read of the company's own BSE-filed consolidated result, 2026-08-27",
+   "nci": 1.11,
+   "note": "Consolidated P&L attribution block, read from the company's own filed result: owners 262.5 + NCI 1.11 = 263.62 == stored ProfitLossForPeriod 263.62 (the con slot held the TOTAL). The identity closes in the FILING to within 0.01cr, which is the gate. §116d refused this cell because its cached XBRL tags are incoherent (owners_tag=255.52, nci_tag=1.12, total_tag=263.62); the document resolves it. Column pinned by total==stored under unit-scale /10.",
+   "owners": 262.5,
+   "src": "own consolidated result PDF, BSE ann 20210123, db111255-2f6a-4f52-b3f3-f6982fbb852c.pdf (page 4)",
+   "total_was": 263.62
   },
   "POONAWALLA|20231231|patC": {
    "identity": "Every owners subtotal closes EXACTLY, with no residue anywhere. FY24: 9M-FY24 owners printed 1,351.05 = Jun-23 225.74 (stored con) + Sep-23 860.17 (stored con) + Dec-23 265.14 EXACT; FY24 owners printed 1,682.75 = those three + Mar-24 331.70 EXACT. FY25: H1-FY25 owners printed (179.40) = 291.64 + (471.04) EXACT; 9M-FY25 owners printed (160.67) = + 18.73 EXACT; FY25 owners printed (98.34) = + Mar-25 62.33 (already-applied batch-F cell) EXACT. FY26: H1-FY26 printed 136.80 = 62.60 + 74.20 EXACT; 9M-FY26 printed 287.02 = + 150.22 EXACT. Revenue closes the same way inside each filing: H1-FY25 rev 1,966.46 = 977.59+988.87 EXACT, 9M-FY25 rev 3,023.49 = +1,057.03 EXACT, FY24 rev 3,109.01 = 9M 2,194.01 + 915.00 EXACT, H1-FY26 rev 2,856.27 EXACT, 9M-FY26 rev 4,674.69 EXACT.",
@@ -1788,6 +2069,30 @@
    "source": "Poonawalla Fincorp Q3FY26 'Statement of Consolidated Unaudited Financial Results for the Quarter and Nine Months Ended 31 December 2025' (BSE filed 2026-01-16 16:11; F_cache/POONAWALLA_Q3FY26.pdf p11), column 'Quarter Ended 31 December 2025 (Unaudited)'",
    "stored_before": null,
    "when": "2026-08-17 23:49 IST"
+  },
+  "PVP|20250331|patC": {
+   "found_by": "§116e per-cell document read of the company's own BSE-filed consolidated result, 2026-08-27",
+   "nci": -0.9,
+   "note": "Consolidated P&L attribution block, read from the company's own filed result: owners -1.67 + NCI -0.9 = -2.57 == stored ProfitLossForPeriod -2.57 (the con slot held the TOTAL). The identity closes in the FILING to within 0.00cr, which is the gate. §116d refused this cell because its cached XBRL tags are incoherent (owners_tag=-0.56, nci_tag=0.9, total_tag=-2.57); the document resolves it. Column pinned by total==stored under unit-scale /100.",
+   "owners": -1.67,
+   "src": "own consolidated result PDF, BSE ann 20250529, 098efe48-cc24-4de9-af33-10fded8764b6.pdf (page 23)",
+   "total_was": -2.57
+  },
+  "RAIN|20211231|patC": {
+   "found_by": "§116e per-cell document read of the company's own BSE-filed consolidated result, 2026-08-27",
+   "nci": 24.65,
+   "note": "Consolidated P&L attribution block, read from the company's own filed result: owners -96.96 + NCI 24.65 = -72.31 == stored ProfitLossForPeriod -72.31 (the con slot held the TOTAL). The identity closes in the FILING to within 0.00cr, which is the gate. §116d refused this cell because its cached XBRL tags are incoherent (owners_tag=96.96, nci_tag=24.65, total_tag=-72.31); the document resolves it. Column pinned by total==stored under unit-scale /10.",
+   "owners": -96.96,
+   "src": "own consolidated result PDF, BSE ann 20220225, 054b5a54-1309-4eb3-9784-b41c71d9ab33.pdf (page 8)",
+   "total_was": -72.31
+  },
+  "RAMKY|20220331|patC": {
+   "found_by": "§116e per-cell document read of the company's own BSE-filed consolidated result, 2026-08-27",
+   "nci": 3.91,
+   "note": "Consolidated P&L attribution block, read from the company's own filed result: owners -51.63 + NCI 3.91 = -47.72 == stored ProfitLossForPeriod -47.72 (the con slot held the TOTAL). The identity closes in the FILING to within 0.00cr, which is the gate. §116d refused this cell because its cached XBRL tags are incoherent (owners_tag=-50.85, nci_tag=4.21, total_tag=-47.72); the document resolves it. Column pinned by total==stored under unit-scale /10.",
+   "owners": -51.63,
+   "src": "own consolidated result PDF, BSE ann 20220527, 155b379d-568b-459d-b3a1-d0ad8cde8dd7.pdf (page 20)",
+   "total_was": -47.72
   },
   "RBA|20210331|patC": {
    "identity": "Both stored values reproduce EXACTLY from the Q4FY22 consolidated statement (NSE filed 2022-05-31), in millions: -598.53 - (-113.67) = -484.86 -> -48.49 cr (Mar-21) and -264.76 - (-37.94) = -226.82 -> -22.68 cr (Dec-21).",
@@ -1925,7 +2230,7 @@
    "when": "2026-08-17 20:47 IST"
   },
   "ROUTE|20201231|patC": {
-   "identity": "printed 9M FY21 owners 9,795.15 lakhs = Jun-20 27.09 + Sep-20 32.87 + Dec-20 37.99 = 97.95 EXACT. With the stored 37.62 it gives 97.58 and does NOT close \u2014 which is what pins the convention and names the defective cell.",
+   "identity": "printed 9M FY21 owners 9,795.15 lakhs = Jun-20 27.09 + Sep-20 32.87 + Dec-20 37.99 = 97.95 EXACT. With the stored 37.62 it gives 97.58 and does NOT close — which is what pins the convention and names the defective cell.",
    "note": "stored 37.62 is EXACTLY the total row 3,762.03/100; owners is 3,799.22/100 = 37.99, and only that value closes the printed 9M owners subtotal",
    "owners": 37.99,
    "source": "ROUTE Q3FY21 consolidated statement (filed 2021-01-28) p6, quarter ended 31.12.2020: 'Profit for the period' 3,762.03 vs 'Owners of the Holding Company' 3,799.22, NCI (37.19)",
@@ -1933,13 +2238,13 @@
    "when": "2026-08-17 21:03 IST"
   },
   "RPSGVENT|20181231|patC": {
-   "note": "RPSGVENT (ex-CESC Ventures) Q4FY19 filing 17-May-2019, 'Statement of Consolidated Audited Financial Results for the Quarter and Year ended 31 March 2019' (Rs in crore): 'Profit attributable to Owners of the equity' = 9.06 | 10.86 | 37.06 | 64.17 | 75.56 under Three months ended 31-Mar-2019 | 31-Dec-2018 | 31-Mar-2018 | Year FY19 | Year FY18. The SAME filing's standalone table reproduces our stored std 2.52 / 3.14 / 2.13 EXACTLY, anchoring the document. con is owners-attributable here (large NCI: Firstsource), which is why the total-PAT row (52.56/54.73/79.52) must NOT be used. \u26a0\ufe0f PINNED HERE because _reattr_owners.json holds the stale rounded CESCVENT|20181231 -> 11.0; CESCVENT is absent from apply_owners_full's ALIAS map today so the cache is unreachable, but adding that alias later would silently revert this heal (feedback-a-heal-that-reapplies).",
+   "note": "RPSGVENT (ex-CESC Ventures) Q4FY19 filing 17-May-2019, 'Statement of Consolidated Audited Financial Results for the Quarter and Year ended 31 March 2019' (Rs in crore): 'Profit attributable to Owners of the equity' = 9.06 | 10.86 | 37.06 | 64.17 | 75.56 under Three months ended 31-Mar-2019 | 31-Dec-2018 | 31-Mar-2018 | Year FY19 | Year FY18. The SAME filing's standalone table reproduces our stored std 2.52 / 3.14 / 2.13 EXACTLY, anchoring the document. con is owners-attributable here (large NCI: Firstsource), which is why the total-PAT row (52.56/54.73/79.52) must NOT be used. ⚠️ PINNED HERE because _reattr_owners.json holds the stale rounded CESCVENT|20181231 -> 11.0; CESCVENT is absent from apply_owners_full's ALIAS map today so the cache is unreachable, but adding that alias later would silently revert this heal (feedback-a-heal-that-reapplies).",
    "owners": 10.86,
    "stored_before": 11.0
   },
   "RTNINDIA|20210630|patC": {
-   "identity": "Year ended 31.03.2021 printed 0.70 lakh = 0.01 cr; stored FY21 con quarters 0.08 (Jun-20) + 0.05 (Sep-20) + 0.10 (Dec-20) + (-0.22) (Mar-21) = 0.01 cr \u2014 closes at 2dp. In lakh: 7.54 + Sep20 + Dec20 - 22.25 = 0.70 implies Sep20+Dec20 = 15.41 lakh; stored 0.05+0.10 = 0.15 cr = 15 lakh, consistent within the 2dp-crore rounding of the two stored cells. Cross-basis check: the standalone statement on p2 of the SAME filing reproduces all three stored std values exactly \u2014 Jun-21 28.04 lakh -> 0.28 == stored 0.28, Mar-21 (22.13) -> -0.22 == stored -0.22, Jun-20 7.54 -> 0.08 == stored 0.08.",
-   "note": "printed (82.66) in Rs. Lakh -> round(-82.66/100, 2) = -0.83 cr. No NCI/owners split anywhere on the page, so total == owners. EXPECTED VALIDATOR FLAG 'SIGN-DIFFERS-FROM-STD': the standalone profit for the same quarter is +28.04 lakh (+0.28 cr) while consolidated is a loss, and the statement prints exactly why \u2014 row 5 'Share of loss in associate' (110.58) lakh appears only in the consolidated column set (standalone PBT 33.04 vs consolidated PBT-after-associate (77.66)). Note 4 identifies the associate: REL acquired 33.33% of Revolt Intellicorp Private Limited during the quarter. The sign flip is real and printed, not a scale or basis error. The page is a pure scan with a garbage OCR text layer (GlyphLessFont; it renders row 8 as '(82,66)}'), so every figure here was read from a 4x render, not from get_text(). Note 2 on the same page confirms the board approved these results on 13 August 2021. Announce date unchanged from the stored 20210813.",
+   "identity": "Year ended 31.03.2021 printed 0.70 lakh = 0.01 cr; stored FY21 con quarters 0.08 (Jun-20) + 0.05 (Sep-20) + 0.10 (Dec-20) + (-0.22) (Mar-21) = 0.01 cr — closes at 2dp. In lakh: 7.54 + Sep20 + Dec20 - 22.25 = 0.70 implies Sep20+Dec20 = 15.41 lakh; stored 0.05+0.10 = 0.15 cr = 15 lakh, consistent within the 2dp-crore rounding of the two stored cells. Cross-basis check: the standalone statement on p2 of the SAME filing reproduces all three stored std values exactly — Jun-21 28.04 lakh -> 0.28 == stored 0.28, Mar-21 (22.13) -> -0.22 == stored -0.22, Jun-20 7.54 -> 0.08 == stored 0.08.",
+   "note": "printed (82.66) in Rs. Lakh -> round(-82.66/100, 2) = -0.83 cr. No NCI/owners split anywhere on the page, so total == owners. EXPECTED VALIDATOR FLAG 'SIGN-DIFFERS-FROM-STD': the standalone profit for the same quarter is +28.04 lakh (+0.28 cr) while consolidated is a loss, and the statement prints exactly why — row 5 'Share of loss in associate' (110.58) lakh appears only in the consolidated column set (standalone PBT 33.04 vs consolidated PBT-after-associate (77.66)). Note 4 identifies the associate: REL acquired 33.33% of Revolt Intellicorp Private Limited during the quarter. The sign flip is real and printed, not a scale or basis error. The page is a pure scan with a garbage OCR text layer (GlyphLessFont; it renders row 8 as '(82,66)}'), so every figure here was read from a 4x render, not from get_text(). Note 2 on the same page confirms the board approved these results on 13 August 2021. Announce date unchanged from the stored 20210813.",
    "owners": -0.83,
    "source": "RattanIndia Enterprises Limited (formerly RattanIndia Infrastructure Limited), 'Statement of Consolidated Unaudited Financial Results for the Quarter Ended 30 June 2021', NSE filing 13-Aug-2021 20:43, p3 of 8, column 'Quarter ended 30.06.2021 (Unaudited)', row 8 '(Loss)/ profit for the period (6-7)'",
    "stored_before": 0.0,
@@ -1948,7 +2253,7 @@
   "S&SPOWER|20180331|patC": {
    "exposed_by_phantom": true,
    "nci": 0.24,
-   "note": "ProfitOrLossAttributableToOwnersOfParent=1.15, NonControllingInterests=0.24, ProfitLossForPeriod=1.39; identity closes. The con slot held the TOTAL, which is the wrong basis for npCon (owners-attributable). Exposed by the retracted HTML-escaped phantom key, which had read the owners tag correctly (runbook \u00a7116).",
+   "note": "ProfitOrLossAttributableToOwnersOfParent=1.15, NonControllingInterests=0.24, ProfitLossForPeriod=1.39; identity closes. The con slot held the TOTAL, which is the wrong basis for npCon (owners-attributable). Exposed by the retracted HTML-escaped phantom key, which had read the owners tag correctly (runbook §116).",
    "owners": 1.15,
    "src": "own consolidated XBRL INDAS_36674_14158_31052018073529_WEB_2_xml ctx OneD",
    "total_was": 1.39
@@ -1956,7 +2261,7 @@
   "S&SPOWER|20180930|patC": {
    "exposed_by_phantom": true,
    "nci": -0.08,
-   "note": "ProfitOrLossAttributableToOwnersOfParent=-0.33, NonControllingInterests=-0.08, ProfitLossForPeriod=-0.41; identity closes. The con slot held the TOTAL, which is the wrong basis for npCon (owners-attributable). Exposed by the retracted HTML-escaped phantom key, which had read the owners tag correctly (runbook \u00a7116).",
+   "note": "ProfitOrLossAttributableToOwnersOfParent=-0.33, NonControllingInterests=-0.08, ProfitLossForPeriod=-0.41; identity closes. The con slot held the TOTAL, which is the wrong basis for npCon (owners-attributable). Exposed by the retracted HTML-escaped phantom key, which had read the owners tag correctly (runbook §116).",
    "owners": -0.33,
    "src": "own consolidated XBRL INDAS_41051_60241_15112018012908_WEB_xml ctx OneD",
    "total_was": -0.41
@@ -1964,7 +2269,7 @@
   "S&SPOWER|20181231|patC": {
    "exposed_by_phantom": true,
    "nci": -0.83,
-   "note": "ProfitOrLossAttributableToOwnersOfParent=-0.63, NonControllingInterests=-0.83, ProfitLossForPeriod=-1.46; identity closes. The con slot held the TOTAL, which is the wrong basis for npCon (owners-attributable). Exposed by the retracted HTML-escaped phantom key, which had read the owners tag correctly (runbook \u00a7116).",
+   "note": "ProfitOrLossAttributableToOwnersOfParent=-0.63, NonControllingInterests=-0.83, ProfitLossForPeriod=-1.46; identity closes. The con slot held the TOTAL, which is the wrong basis for npCon (owners-attributable). Exposed by the retracted HTML-escaped phantom key, which had read the owners tag correctly (runbook §116).",
    "owners": -0.63,
    "src": "own consolidated XBRL INDAS_43518_84247_26022019054556_WEB_xml ctx OneD",
    "total_was": -1.46
@@ -1972,7 +2277,7 @@
   "S&SPOWER|20190630|patC": {
    "exposed_by_phantom": true,
    "nci": -0.3,
-   "note": "ProfitOrLossAttributableToOwnersOfParent=-2.24, NonControllingInterests=-0.30, ProfitLossForPeriod=-2.54; identity closes. The con slot held the TOTAL, which is the wrong basis for npCon (owners-attributable). Exposed by the retracted HTML-escaped phantom key, which had read the owners tag correctly (runbook \u00a7116).",
+   "note": "ProfitOrLossAttributableToOwnersOfParent=-2.24, NonControllingInterests=-0.30, ProfitLossForPeriod=-2.54; identity closes. The con slot held the TOTAL, which is the wrong basis for npCon (owners-attributable). Exposed by the retracted HTML-escaped phantom key, which had read the owners tag correctly (runbook §116).",
    "owners": -2.24,
    "src": "own consolidated XBRL INDAS_47602_131188_13082019050405_WEB_xml ctx OneD",
    "total_was": -2.54
@@ -1980,7 +2285,7 @@
   "S&SPOWER|20190930|patC": {
    "exposed_by_phantom": true,
    "nci": -0.37,
-   "note": "ProfitOrLossAttributableToOwnersOfParent=-2.85, NonControllingInterests=-0.37, ProfitLossForPeriod=-3.22; identity closes. The con slot held the TOTAL, which is the wrong basis for npCon (owners-attributable). Exposed by the retracted HTML-escaped phantom key, which had read the owners tag correctly (runbook \u00a7116).",
+   "note": "ProfitOrLossAttributableToOwnersOfParent=-2.85, NonControllingInterests=-0.37, ProfitLossForPeriod=-3.22; identity closes. The con slot held the TOTAL, which is the wrong basis for npCon (owners-attributable). Exposed by the retracted HTML-escaped phantom key, which had read the owners tag correctly (runbook §116).",
    "owners": -2.85,
    "src": "own consolidated XBRL INDAS_51241_174667_21112019061146_WEB_xml ctx OneD",
    "total_was": -3.22
@@ -1988,7 +2293,7 @@
   "S&SPOWER|20191231|patC": {
    "exposed_by_phantom": true,
    "nci": -0.32,
-   "note": "ProfitOrLossAttributableToOwnersOfParent=-0.87, NonControllingInterests=-0.32, ProfitLossForPeriod=-1.19; identity closes. The con slot held the TOTAL, which is the wrong basis for npCon (owners-attributable). Exposed by the retracted HTML-escaped phantom key, which had read the owners tag correctly (runbook \u00a7116).",
+   "note": "ProfitOrLossAttributableToOwnersOfParent=-0.87, NonControllingInterests=-0.32, ProfitLossForPeriod=-1.19; identity closes. The con slot held the TOTAL, which is the wrong basis for npCon (owners-attributable). Exposed by the retracted HTML-escaped phantom key, which had read the owners tag correctly (runbook §116).",
    "owners": -0.87,
    "src": "own consolidated XBRL INDAS_54262_221848_14022020043103_WEB_xml ctx OneD",
    "total_was": -1.19
@@ -1996,7 +2301,7 @@
   "S&SPOWER|20200331|patC": {
    "exposed_by_phantom": true,
    "nci": -2.43,
-   "note": "ProfitOrLossAttributableToOwnersOfParent=-5.98, NonControllingInterests=-2.43, ProfitLossForPeriod=-8.41; identity closes. The con slot held the TOTAL, which is the wrong basis for npCon (owners-attributable). Exposed by the retracted HTML-escaped phantom key, which had read the owners tag correctly (runbook \u00a7116).",
+   "note": "ProfitOrLossAttributableToOwnersOfParent=-5.98, NonControllingInterests=-2.43, ProfitLossForPeriod=-8.41; identity closes. The con slot held the TOTAL, which is the wrong basis for npCon (owners-attributable). Exposed by the retracted HTML-escaped phantom key, which had read the owners tag correctly (runbook §116).",
    "owners": -5.98,
    "src": "own consolidated XBRL INDAS_58933_300765_31072020053359_WEB_xml ctx OneD",
    "total_was": -8.41
@@ -2004,7 +2309,7 @@
   "S&SPOWER|20200630|patC": {
    "exposed_by_phantom": true,
    "nci": -0.35,
-   "note": "ProfitOrLossAttributableToOwnersOfParent=-1.72, NonControllingInterests=-0.35, ProfitLossForPeriod=-2.07; identity closes. The con slot held the TOTAL, which is the wrong basis for npCon (owners-attributable). Exposed by the retracted HTML-escaped phantom key, which had read the owners tag correctly (runbook \u00a7116).",
+   "note": "ProfitOrLossAttributableToOwnersOfParent=-1.72, NonControllingInterests=-0.35, ProfitLossForPeriod=-2.07; identity closes. The con slot held the TOTAL, which is the wrong basis for npCon (owners-attributable). Exposed by the retracted HTML-escaped phantom key, which had read the owners tag correctly (runbook §116).",
    "owners": -1.72,
    "src": "own consolidated XBRL INDAS_61542_317242_15092020121430_WEB_xml ctx OneD",
    "total_was": -2.07
@@ -2012,7 +2317,7 @@
   "S&SPOWER|20200930|patC": {
    "exposed_by_phantom": true,
    "nci": 0.39,
-   "note": "ProfitOrLossAttributableToOwnersOfParent=0.43, NonControllingInterests=0.39, ProfitLossForPeriod=0.82; identity closes. The con slot held the TOTAL, which is the wrong basis for npCon (owners-attributable). Exposed by the retracted HTML-escaped phantom key, which had read the owners tag correctly (runbook \u00a7116).",
+   "note": "ProfitOrLossAttributableToOwnersOfParent=0.43, NonControllingInterests=0.39, ProfitLossForPeriod=0.82; identity closes. The con slot held the TOTAL, which is the wrong basis for npCon (owners-attributable). Exposed by the retracted HTML-escaped phantom key, which had read the owners tag correctly (runbook §116).",
    "owners": 0.43,
    "src": "own consolidated XBRL INDAS_65324_362629_13112020045635_WEB_xml ctx OneD",
    "total_was": 0.82
@@ -2176,6 +2481,14 @@
    },
    "stored_before": -41.36
   },
+  "SADBHIN|20180331|patC": {
+   "found_by": "§116e per-cell document read of the company's own BSE-filed consolidated result, 2026-08-27",
+   "nci": -1.74,
+   "note": "Consolidated P&L attribution block, read from the company's own filed result: owners -82.26 + NCI -1.74 = -84.0 == stored ProfitLossForPeriod -84.0 (the con slot held the TOTAL). The identity closes in the FILING to within 0.00cr, which is the gate. §116d refused this cell because its cached XBRL tags are incoherent (owners_tag=82.26, nci_tag=1.74, total_tag=-84.0); the document resolves it. Column pinned by total==stored under unit-scale /10.",
+   "owners": -82.26,
+   "src": "own consolidated result PDF, BSE ann 20180508, a3c0127f-9fb0-48cd-b4b5-9f492daf5b09.pdf (page 7)",
+   "total_was": -84.0
+  },
   "SHREECEM|20180930|patC": {
    "identity": "Six Months Ended 30-Sep-2018 owners = 339.78 cr (printed). Stored Jun-2018 con 279.36 + this cell 60.42 = 339.78 -> closes EXACTLY to the paisa. Same-table control: H1FY20 owners 690.29 = 379.67 + 310.62, also exact.",
    "note": "statement is in crore, no conversion. Total for that column is 63.77 with NCI 3.35 (60.42 + 3.35 = 63.77). CAVEAT on the announce date: 20191019 is the NSE filingDate of the filing actually read. Stored con for Dec-2018 carries ann 20190123, implying a consolidated Q3FY19 result existed off-NSE (NSE lists no consolidated filing for 20180930 or 20181231) whose Sep-2018 comparative column would have made this value public earlier. That filing was NOT read, so the conservative verified date is used - late, never look-ahead.",
@@ -2183,6 +2496,14 @@
    "source": "SHREECEM Q2FY20 statement of consolidated unaudited financial results (filed 2019-10-19) p11, column 'Quarter ended 30.09.2018', row 'Profit/(Loss) attributable to: Owners of the Company' = 60.42 (Rs. in Crores)",
    "stored_before": null,
    "when": "2026-08-17 20:47 IST"
+  },
+  "SUDEEPPHRM|20251231|patC": {
+   "found_by": "§116e per-cell document read of the company's own BSE-filed consolidated result, 2026-08-27",
+   "nci": 0.24,
+   "note": "Consolidated P&L attribution block, read from the company's own filed result: owners 47.46 + NCI 0.24 = 47.7 == stored ProfitLossForPeriod 47.7 (the con slot held the TOTAL). The identity closes in the FILING to within 0.00cr, which is the gate. §116d refused this cell because its cached XBRL tags are incoherent (owners_tag=-2.03, nci_tag=0.06, total_tag=47.7); the document resolves it. Column pinned by total==stored under unit-scale /100.",
+   "owners": 47.46,
+   "src": "own consolidated result PDF, BSE ann 20260206, 271c4c55-a48a-4eb7-b4b7-1d84a0d21feb.pdf (page 11)",
+   "total_was": 47.7
   },
   "SUMICHEM|20191231|patC": {
    "identity": "Q3FY20 filing: 9M FY20 = 1,817.89 mn = 181.79 cr; stored Jun-19 53.36 + stored Sep-19 127.75 + this cell 0.68 = 181.79 -> closes exactly. The 9M FY20 figure is printed IDENTICALLY (1,817.89 mn) in both the as-filed Q3FY20 and the Q3FY21 comparative, so the FY20 nine-month aggregate was never restated. CAVEAT (other cells, not this one): the Q3FY20 filing restates Sep-2019 to 1,298.31 mn = 129.83 vs stored 127.75, and implies Jun-2019 = 512.80 mn = 51.28 vs stored 53.36 - i.e. 2.08 cr shifted Q1->Q2 on the Excel Crop Care amalgamation, with H1 unchanged at 181.11. Not touched.",
@@ -2202,7 +2523,7 @@
   "SURANAT&P|20190630|patC": {
    "exposed_by_phantom": true,
    "nci": 0.17,
-   "note": "ProfitOrLossAttributableToOwnersOfParent=1.45, NonControllingInterests=0.17, ProfitLossForPeriod=1.62; identity closes. The con slot held the TOTAL, which is the wrong basis for npCon (owners-attributable). Exposed by the retracted HTML-escaped phantom key, which had read the owners tag correctly (runbook \u00a7116).",
+   "note": "ProfitOrLossAttributableToOwnersOfParent=1.45, NonControllingInterests=0.17, ProfitLossForPeriod=1.62; identity closes. The con slot held the TOTAL, which is the wrong basis for npCon (owners-attributable). Exposed by the retracted HTML-escaped phantom key, which had read the owners tag correctly (runbook §116).",
    "owners": 1.45,
    "src": "own consolidated XBRL INDAS_46979_129014_08082019044404_WEB_xml ctx OneD",
    "total_was": 1.62
@@ -2218,7 +2539,7 @@
   "SURANAT&P|20191231|patC": {
    "exposed_by_phantom": true,
    "nci": -0.42,
-   "note": "ProfitOrLossAttributableToOwnersOfParent=1.60, NonControllingInterests=-0.42, ProfitLossForPeriod=1.18; identity closes. The con slot held the TOTAL, which is the wrong basis for npCon (owners-attributable). Exposed by the retracted HTML-escaped phantom key, which had read the owners tag correctly (runbook \u00a7116).",
+   "note": "ProfitOrLossAttributableToOwnersOfParent=1.60, NonControllingInterests=-0.42, ProfitLossForPeriod=1.18; identity closes. The con slot held the TOTAL, which is the wrong basis for npCon (owners-attributable). Exposed by the retracted HTML-escaped phantom key, which had read the owners tag correctly (runbook §116).",
    "owners": 1.6,
    "src": "own consolidated XBRL INDAS_53018_217172_08022020064430_WEB_xml ctx OneD",
    "total_was": 1.18
@@ -2226,7 +2547,7 @@
   "SURANAT&P|20200331|patC": {
    "exposed_by_phantom": true,
    "nci": 0.12,
-   "note": "ProfitOrLossAttributableToOwnersOfParent=0.51, NonControllingInterests=0.12, ProfitLossForPeriod=0.63; identity closes. The con slot held the TOTAL, which is the wrong basis for npCon (owners-attributable). Exposed by the retracted HTML-escaped phantom key, which had read the owners tag correctly (runbook \u00a7116).",
+   "note": "ProfitOrLossAttributableToOwnersOfParent=0.51, NonControllingInterests=0.12, ProfitLossForPeriod=0.63; identity closes. The con slot held the TOTAL, which is the wrong basis for npCon (owners-attributable). Exposed by the retracted HTML-escaped phantom key, which had read the owners tag correctly (runbook §116).",
    "owners": 0.51,
    "src": "own consolidated XBRL INDAS_56380_268144_24062020041307_WEB_xml ctx OneD",
    "total_was": 0.63
@@ -2234,7 +2555,7 @@
   "SURANAT&P|20200630|patC": {
    "exposed_by_phantom": true,
    "nci": -0.33,
-   "note": "ProfitOrLossAttributableToOwnersOfParent=1.45, NonControllingInterests=-0.33, ProfitLossForPeriod=1.13; identity closes. The con slot held the TOTAL, which is the wrong basis for npCon (owners-attributable). Exposed by the retracted HTML-escaped phantom key, which had read the owners tag correctly (runbook \u00a7116).",
+   "note": "ProfitOrLossAttributableToOwnersOfParent=1.45, NonControllingInterests=-0.33, ProfitLossForPeriod=1.13; identity closes. The con slot held the TOTAL, which is the wrong basis for npCon (owners-attributable). Exposed by the retracted HTML-escaped phantom key, which had read the owners tag correctly (runbook §116).",
    "owners": 1.45,
    "src": "own consolidated XBRL INDAS_59671_304321_08082020044350_WEB_xml ctx OneD",
    "total_was": 1.13
@@ -2242,7 +2563,7 @@
   "SURANAT&P|20200930|patC": {
    "exposed_by_phantom": true,
    "nci": -0.17,
-   "note": "ProfitOrLossAttributableToOwnersOfParent=0.45, NonControllingInterests=-0.17, ProfitLossForPeriod=0.28; identity closes. The con slot held the TOTAL, which is the wrong basis for npCon (owners-attributable). Exposed by the retracted HTML-escaped phantom key, which had read the owners tag correctly (runbook \u00a7116).",
+   "note": "ProfitOrLossAttributableToOwnersOfParent=0.45, NonControllingInterests=-0.17, ProfitLossForPeriod=0.28; identity closes. The con slot held the TOTAL, which is the wrong basis for npCon (owners-attributable). Exposed by the retracted HTML-escaped phantom key, which had read the owners tag correctly (runbook §116).",
    "owners": 0.45,
    "src": "own consolidated XBRL INDAS_64717_360461_12112020042108_WEB_xml ctx OneD",
    "total_was": 0.28
@@ -2422,8 +2743,8 @@
    "when": "2026-08-18 00:12 IST"
   },
   "TATACOFFEE|20180630|patC": {
-   "identity": "FY19 annual owners printed in the same table = 6,877 lakhs = 68.77 cr, and 21.63 + stored Sep-18 25.42 + stored Dec-18 11.23 + stored Mar-19 10.49 = 68.77 \u2014 closes EXACTLY.",
-   "note": "owners 2,163 lakhs -> 21.63 cr (total 3,122 = 31.22, NCI 959) \u2014 a large NCI, so the owners/total distinction is material here",
+   "identity": "FY19 annual owners printed in the same table = 6,877 lakhs = 68.77 cr, and 21.63 + stored Sep-18 25.42 + stored Dec-18 11.23 + stored Mar-19 10.49 = 68.77 — closes EXACTLY.",
+   "note": "owners 2,163 lakhs -> 21.63 cr (total 3,122 = 31.22, NCI 959) — a large NCI, so the owners/total distinction is material here",
    "owners": 21.63,
    "source": "TATACOFFEE Q1FY20 consolidated filing (filed 2019-07-26) p5, column 'Quarter ended June 30, 2018 (UNAUDITED)', row 'Shareholders of the Company (B)' = 2,163 lakhs",
    "stored_before": null,
@@ -2436,6 +2757,38 @@
    "source": "TATACOFFEE statement of consolidated financial results for the quarter ended June 30 2019 (filed 2019-07-26) p5, column 'Quarter ended June 30, 2019 (UNAUDITED)', row 8 'Net Profit/(Loss) attributable to: - Shareholders of the Company (B)' = 2214 (Rs. Lakh); the identical 2214 appears as the Jun-2019 comparative column of the Q1FY21 filing (filed 2020-07-29) p7",
    "stored_before": null,
    "when": "2026-08-17 20:47 IST"
+  },
+  "TECHM|20240630|patC": {
+   "found_by": "§116e per-cell document read of the company's own BSE-filed consolidated result, 2026-08-27",
+   "nci": 13.3,
+   "note": "Consolidated P&L attribution block, read from the company's own filed result: owners 851.5 + NCI 13.3 = 864.8 == stored ProfitLossForPeriod 864.77 (the con slot held the TOTAL). The identity closes in the FILING to within 0.00cr, which is the gate. §116d refused this cell because its cached XBRL tags are incoherent (owners_tag=48.7, nci_tag=-0.2, total_tag=864.77); the document resolves it. Column pinned by total==stored under unit-scale /10.",
+   "owners": 851.5,
+   "src": "own consolidated result PDF, BSE ann 20240725, 053797eb-dcd6-433d-bd98-3fea561ac34c.pdf (page 2)",
+   "total_was": 864.8
+  },
+  "TECHM|20250331|patC": {
+   "found_by": "§116e per-cell document read of the company's own BSE-filed consolidated result, 2026-08-27",
+   "nci": -24.8,
+   "note": "Consolidated P&L attribution block, read from the company's own filed result: owners 1166.7 + NCI -24.8 = 1141.9 == stored ProfitLossForPeriod 1141.9 (the con slot held the TOTAL). The identity closes in the FILING to within 0.00cr, which is the gate. §116d refused this cell because its cached XBRL tags are incoherent (owners_tag=202.6, nci_tag=3.4, total_tag=1141.9); the document resolves it. Column pinned by total==stored under unit-scale /10.",
+   "owners": 1166.7,
+   "src": "own consolidated result PDF, BSE ann 20250424, 93bcb3d7-c9f8-4041-9406-80f6dbbca050.pdf (page 8)",
+   "total_was": 1141.9
+  },
+  "TECHM|20251231|patC": {
+   "found_by": "§116e per-cell document read of the company's own BSE-filed consolidated result, 2026-08-27",
+   "nci": -3.4,
+   "note": "Consolidated P&L attribution block, read from the company's own filed result: owners 1122.0 + NCI -3.4 = 1118.6 == stored ProfitLossForPeriod 1118.6 (the con slot held the TOTAL). The identity closes in the FILING to within 0.00cr, which is the gate. §116d refused this cell because its cached XBRL tags are incoherent (owners_tag=198.7, nci_tag=5.1, total_tag=1118.6); the document resolves it. Column pinned by total==stored under unit-scale /10.",
+   "owners": 1122.0,
+   "src": "own consolidated result PDF, BSE ann 20260116, 23ca7ec2-ffd0-403a-bce2-2107352cc50a.pdf (page 14)",
+   "total_was": 1118.6
+  },
+  "TEXRAIL|20241231|patC": {
+   "found_by": "§116e per-cell document read of the company's own BSE-filed consolidated result, 2026-08-27",
+   "nci": -0.34,
+   "note": "Consolidated P&L attribution block, read from the company's own filed result: owners 76.72 + NCI -0.34 = 76.39 == stored ProfitLossForPeriod 76.39 (the con slot held the TOTAL). The identity closes in the FILING to within 0.01cr, which is the gate. §116d refused this cell because its cached XBRL tags are incoherent (owners_tag=78.53, nci_tag=-0.34, total_tag=76.39); the document resolves it. Column pinned by total==stored under unit-scale /100.",
+   "owners": 76.72,
+   "src": "own consolidated result PDF, BSE ann 20250131, 142d7009-572d-4c13-b3b6-8c23bc85360d.pdf (page 1)",
+   "total_was": 76.39
   },
   "TRENT|20220331|patC": {
    "identity": "FY22 consolidated annual owners = 105.83 (printed). Stored con quarters (126.59) + 92.58 + 139.69 plus the healed 0.16 = 105.84, a 1-paisa residue from four independently rounded quarters. The standalone column of the same sheet reproduces stored std exactly for all three quarters shown (Mar-22 74.87, Dec-21 132.89, Mar-21 56.87), confirming the column mapping.",
@@ -2468,6 +2821,14 @@
    "source": "TTK PRESTIGE Q4FY20 audited statement (NSE filingDate 26-Jun-2020 19:22) p2, column 'Quarter Ended 31.03.2019', consolidated block",
    "stored_before": null,
    "when": "2026-08-17 21:03 IST"
+  },
+  "TVSSRICHAK|20250331|patC": {
+   "found_by": "§116e per-cell document read of the company's own BSE-filed consolidated result, 2026-08-27",
+   "nci": 0.06,
+   "note": "Consolidated P&L attribution block, read from the company's own filed result: owners 9.59 + NCI 0.06 = 9.65 == stored ProfitLossForPeriod 9.65 (the con slot held the TOTAL). The identity closes in the FILING to within 0.00cr, which is the gate. §116d refused this cell because its cached XBRL tags are incoherent (owners_tag=-2.54, nci_tag=0.06, total_tag=9.65); the document resolves it. Column pinned by total==stored under unit-scale /1.",
+   "owners": 9.59,
+   "src": "own consolidated result PDF, BSE ann 20250527, 10bc9fb1-c7f6-47ca-9f53-16376b0b62ca.pdf (page 9)",
+   "total_was": 9.65
   },
   "UNIONBANK|20190331|patC": {
    "identity": "FOUR-QUARTER YEAR CLOSE, EXACT TO THE PAISA, and it uses three already-stored cells plus the new one: stored Jun-2018 140.50 + stored Sep-2018 85.63 + stored Dec-2018 182.97 + new Mar-2019 -3331.45 = -2922.35, which is exactly the printed FY19 consolidated annual (-2,92,235 lacs), a figure printed identically in BOTH the Q1FY20 filing and the Q4FY20 filing. Equivalently, note 2 of the Q1FY20 filing states 'The figures of the last quarter in each of the financial years are the balancing figures between audited figures in respect of the full financial year and the published year to date figures upto the end of third quarter' - so Mar-2019 is by construction FY19 minus 9M FY19, and FY19 -2922.35 minus 9M FY19 (140.50+85.63+182.97 = 409.10) = -3331.45, matching the printed column exactly. No residue anywhere in this chain. Within-column arithmetic also verified: row H -333,262 + row K associates 117 (row J minority nil) = row L -333,145.",
@@ -2510,15 +2871,15 @@
    "when": "2026-08-17 20:47 IST"
   },
   "VALIANTORG|20191231|patC": {
-   "identity": "Mar-2020: FY2020 consolidated owners 12,392.74 lakh (Year Ended 31-Mar-2020 column, printed in the Q4FY21 filing) minus nine-months-FY20 owners 10,207.68 lakh (9 Months ended 31-12-2019 column, printed in the Q3FY21 filing) = 2,185.06 vs the printed quarter 2,185.05 \u2014 0.01 lakh, i.e. identical at 2dp in crore (21.85). Dec-2019: 9M-FY20 owners 10,207.68 (Q3FY21 filing) minus H1-FY20 owners 7,248.34 (6 Months ended 30-Sep-2019 column, printed in the Q2FY21 filing) = 2,959.34 vs the printed quarter 2,959.33 \u2014 again 0.01 lakh, 29.59 either way. All three subtotals are on the Ind AS restated basis (note 2 of the Q2FY21 filing: 'The Company has adopted Indian Accounting Standards (Ind AS) from financial year 2020-21 and year ended 31.3.2020 has been restated as per Ind AS'), which is the basis the whole stored series is on; the ORIGINAL FY20 audited results were IGAAP, half-yearly, and printed con FY20 profit 14,053.29 / minority 200.82 / owners 13,852.47 \u2014 deliberately NOT used.",
-   "note": "printed 2,959.33 in Rs. Lakhs -> round(2959.33/100, 2) = 29.59 cr. Total for that quarter is 2,705.27 lakh = 27.05 cr (NCI (254.06)); 2,959.33 + (254.06) = 2,705.27 checks. Not on NSE: NSE's quarterly-results list for VALIANTORG begins at to=20210630 filed 14-Aug-2021, so the whole FY20-FY21 window is BSE-only. This is the FIRST printing of the Oct-Dec 2019 quarter anywhere \u2014 through FY20 the company reported HALF-YEARLY (its FY20 audited results print only 'Half Year 31-Mar-2020', 'Half Year 30-Sep-2019' and 'Year Ended' columns) and only moved to quarterly reporting from Q1FY21. Announce date is the measured BSE dissemination timestamp, not the 10-Feb-2021 signature date it happens to share.",
+   "identity": "Mar-2020: FY2020 consolidated owners 12,392.74 lakh (Year Ended 31-Mar-2020 column, printed in the Q4FY21 filing) minus nine-months-FY20 owners 10,207.68 lakh (9 Months ended 31-12-2019 column, printed in the Q3FY21 filing) = 2,185.06 vs the printed quarter 2,185.05 — 0.01 lakh, i.e. identical at 2dp in crore (21.85). Dec-2019: 9M-FY20 owners 10,207.68 (Q3FY21 filing) minus H1-FY20 owners 7,248.34 (6 Months ended 30-Sep-2019 column, printed in the Q2FY21 filing) = 2,959.34 vs the printed quarter 2,959.33 — again 0.01 lakh, 29.59 either way. All three subtotals are on the Ind AS restated basis (note 2 of the Q2FY21 filing: 'The Company has adopted Indian Accounting Standards (Ind AS) from financial year 2020-21 and year ended 31.3.2020 has been restated as per Ind AS'), which is the basis the whole stored series is on; the ORIGINAL FY20 audited results were IGAAP, half-yearly, and printed con FY20 profit 14,053.29 / minority 200.82 / owners 13,852.47 — deliberately NOT used.",
+   "note": "printed 2,959.33 in Rs. Lakhs -> round(2959.33/100, 2) = 29.59 cr. Total for that quarter is 2,705.27 lakh = 27.05 cr (NCI (254.06)); 2,959.33 + (254.06) = 2,705.27 checks. Not on NSE: NSE's quarterly-results list for VALIANTORG begins at to=20210630 filed 14-Aug-2021, so the whole FY20-FY21 window is BSE-only. This is the FIRST printing of the Oct-Dec 2019 quarter anywhere — through FY20 the company reported HALF-YEARLY (its FY20 audited results print only 'Half Year 31-Mar-2020', 'Half Year 30-Sep-2019' and 'Year Ended' columns) and only moved to quarterly reporting from Q1FY21. Announce date is the measured BSE dissemination timestamp, not the 10-Feb-2021 signature date it happens to share.",
    "owners": 29.59,
    "source": "Valiant Organics Limited (CIN L24230MH2005PLC151348), ANNEXURE I 'Statement of Standalone and Consolidated Audited Financial Results', quarter and nine months ended 31-12-2020, BSE announcement 2021-02-10 14:55:06 (scripcode 540145, 'Financial Results For The Quarter And Nine Months Ended December 31, 2020'), statement page 2, Consolidated block, column '3 Months ended 31-12-2019 (unaudited)', row 11 'Profit attributable to: Owner of the Company'",
    "stored_before": null,
    "when": "2026-08-17 23:49 IST"
   },
   "VALIANTORG|20200331|patC": {
-   "identity": "Mar-2020: FY2020 consolidated owners 12,392.74 lakh (Year Ended 31-Mar-2020 column, printed in the Q4FY21 filing) minus nine-months-FY20 owners 10,207.68 lakh (9 Months ended 31-12-2019 column, printed in the Q3FY21 filing) = 2,185.06 vs the printed quarter 2,185.05 \u2014 0.01 lakh, i.e. identical at 2dp in crore (21.85). Dec-2019: 9M-FY20 owners 10,207.68 (Q3FY21 filing) minus H1-FY20 owners 7,248.34 (6 Months ended 30-Sep-2019 column, printed in the Q2FY21 filing) = 2,959.34 vs the printed quarter 2,959.33 \u2014 again 0.01 lakh, 29.59 either way. All three subtotals are on the Ind AS restated basis (note 2 of the Q2FY21 filing: 'The Company has adopted Indian Accounting Standards (Ind AS) from financial year 2020-21 and year ended 31.3.2020 has been restated as per Ind AS'), which is the basis the whole stored series is on; the ORIGINAL FY20 audited results were IGAAP, half-yearly, and printed con FY20 profit 14,053.29 / minority 200.82 / owners 13,852.47 \u2014 deliberately NOT used.",
+   "identity": "Mar-2020: FY2020 consolidated owners 12,392.74 lakh (Year Ended 31-Mar-2020 column, printed in the Q4FY21 filing) minus nine-months-FY20 owners 10,207.68 lakh (9 Months ended 31-12-2019 column, printed in the Q3FY21 filing) = 2,185.06 vs the printed quarter 2,185.05 — 0.01 lakh, i.e. identical at 2dp in crore (21.85). Dec-2019: 9M-FY20 owners 10,207.68 (Q3FY21 filing) minus H1-FY20 owners 7,248.34 (6 Months ended 30-Sep-2019 column, printed in the Q2FY21 filing) = 2,959.34 vs the printed quarter 2,959.33 — again 0.01 lakh, 29.59 either way. All three subtotals are on the Ind AS restated basis (note 2 of the Q2FY21 filing: 'The Company has adopted Indian Accounting Standards (Ind AS) from financial year 2020-21 and year ended 31.3.2020 has been restated as per Ind AS'), which is the basis the whole stored series is on; the ORIGINAL FY20 audited results were IGAAP, half-yearly, and printed con FY20 profit 14,053.29 / minority 200.82 / owners 13,852.47 — deliberately NOT used.",
    "note": "printed 2,185.05 in Rs. Lakhs -> round(2185.05/100, 2) = 21.85 cr. Total for that quarter is 2,591.45 lakh = 25.91 cr (NCI 406.40); 2,185.05 + 406.40 = 2,591.45 checks. First printing of the Jan-Mar 2020 quarter anywhere, for the same half-yearly-reporting reason as the Dec-2019 cell. Announce date 20210525 is the measured BSE dissemination timestamp and matches the cover letter ('the Board of Directors of the Company at its meeting held on Tuesday, May 25, 2021'); the stored 20210516 on the Mar-2021 anchor row is 9 days EARLIER than the board approval and is flagged as a look-ahead in refusals_E.json.",
    "owners": 21.85,
    "source": "Valiant Organics Limited, ANNEXURE I 'Statement of Standalone and Consolidated Audited Financial Results', quarter and year ended 31-03-2021, BSE announcement 2021-05-25 14:51:05 (scripcode 540145, 'Audited Standalone And Consolidated Financial Results For The Quarter And Year Ended March 31, 2021'), statement page 2, Consolidated block, column 'Quarter Ended 31-03-2020 (Unaudited)', row 11 'Profit attributable to: Owners of the Company'",
@@ -2527,9 +2888,9 @@
   },
   "VALIANTORG|20200930|patC": {
    "identity": "Q2FY21 filing (BSE, disseminated 2020-11-13) prints Sep-2020: standalone Net Profit 3,070.71 lakh and consolidated owners 3,070.71 -> both 30.71; the H1 identity 2,468.05 + 3,070.71 = 5,538.76 closes exactly. Stored 28.68 (con) and 27.06 (std) match nothing printed in either filing carrying the quarter.",
-   "note": "con healed to the printed owners figure. The standalone twin (27.06, also matching nothing; printed std is the same 30.71) is NOT touched here \u2014 std belongs to a different campaign and its own ledger; recorded in conpat_filing_fills for the std owner to pick up.",
+   "note": "con healed to the printed owners figure. The standalone twin (27.06, also matching nothing; printed std is the same 30.71) is NOT touched here — std belongs to a different campaign and its own ledger; recorded in conpat_filing_fills for the std owner to pick up.",
    "owners": 30.71,
-   "source": "VALIANTORG Q2FY21 results (BSE scrip 540145, disseminated 2020-11-13) \u2014 consolidated owners row 3,070.71 lakh",
+   "source": "VALIANTORG Q2FY21 results (BSE scrip 540145, disseminated 2020-11-13) — consolidated owners row 3,070.71 lakh",
    "stored_before": 28.68,
    "when": "2026-08-17 23:49 IST"
   },
@@ -2549,6 +2910,30 @@
    "stored_before": 24.5,
    "when": "2026-08-17 23:56 IST"
   },
+  "WABAG|20240630|patC": {
+   "found_by": "§116e per-cell document read of the company's own BSE-filed consolidated result, 2026-08-27",
+   "nci": -0.2,
+   "note": "Consolidated P&L attribution block, read from the company's own filed result: owners 55.0 + NCI -0.2 = 54.8 == stored ProfitLossForPeriod 54.8 (the con slot held the TOTAL). The identity closes in the FILING to within 0.00cr, which is the gate. §116d refused this cell because its cached XBRL tags are incoherent (owners_tag=0.0, nci_tag=-0.2, total_tag=54.8); the document resolves it. Column pinned by total==stored under unit-scale /10.",
+   "owners": 55.0,
+   "src": "own consolidated result PDF, BSE ann 20240808, 86524ccb-df60-49b5-b6f6-34a219a46c69.pdf (page 1)",
+   "total_was": 54.8
+  },
+  "WABAG|20240930|patC": {
+   "found_by": "§116e per-cell document read of the company's own BSE-filed consolidated result, 2026-08-27",
+   "nci": -0.3,
+   "note": "Consolidated P&L attribution block, read from the company's own filed result: owners 70.6 + NCI -0.3 = 70.3 == stored ProfitLossForPeriod 70.3 (the con slot held the TOTAL). The identity closes in the FILING to within 0.00cr, which is the gate. §116d refused this cell because its cached XBRL tags are incoherent (owners_tag=18.3, nci_tag=0.6, total_tag=70.3); the document resolves it. Column pinned by total==stored under unit-scale /10.",
+   "owners": 70.6,
+   "src": "own consolidated result PDF, BSE ann 20241107, 17ef02cd-4473-4144-9f4d-5537c3e8a9ee.pdf (page 1)",
+   "total_was": 70.3
+  },
+  "WELENT|20251231|patC": {
+   "found_by": "§116e per-cell document read of the company's own BSE-filed consolidated result, 2026-08-27",
+   "nci": 6.72,
+   "note": "Consolidated P&L attribution block, read from the company's own filed result: owners 24.02 + NCI 6.72 = 30.74 == stored ProfitLossForPeriod 30.74 (the con slot held the TOTAL). The identity closes in the FILING to within 0.00cr, which is the gate. §116d refused this cell because its cached XBRL tags are incoherent (owners_tag=26.72, nci_tag=6.72, total_tag=30.74); the document resolves it. Column pinned by total==stored under unit-scale /1.",
+   "owners": 24.02,
+   "src": "own consolidated result PDF, BSE ann 20260204, a4ba6fa4-487b-4c15-9025-92cc0df4dfd0.pdf (page 6)",
+   "total_was": 30.74
+  },
   "WESTLIFE|20240331|patC": {
    "identity": "FY24 consolidated annual = 6,921.07 lakhs = 69.21 crore. Stored con quarters 28.83 (Jun-23) + 22.37 (Sep-23) + 17.24 (Dec-23) + the healed 0.76 (Mar-24) = 69.20, a 1-paisa residue caused by Jun-23/Sep-23 being stored only to crore precision (in lakhs the printed year is 6,921.07 vs 6,920.67 reconstructed). FY23 cross-check: printed 11,157.98 lakhs = 111.58 crore.",
    "note": "76.35 lakhs = 0.7635 crore -> 0.76. PBT 195.45 less total tax 119.10 = 76.35, so the row is arithmetically self-checking. ann unchanged (stored conAnnDate is already 20240508 and matches the NSE filingDate).",
@@ -2562,7 +2947,7 @@
     4114.27,
     2.04
    ],
-   "note": "SUPERSEDED 2026-08-10 by the nosub_con_lag adjudication (runbook \u00a773b). The 2026-08-09 entry wrote patC 6.53 / npStd 7.15 on 'screener 7 on both' \u2014 a ROUNDED read, and one anchored on a neighbourhood that itself held the FY2025 annual 10.06 duplicated into TWO quarter slots (Mar-25 and Dec-25), both since corrected. The company's OWN AUDITED Q4-FY26 filing (BSE ann 2026-05-28, att ac278e87-b6fb-489e-b29c-622cdba3d086.pdf, p4 'STATEMENT OF STANDALONE AUDITED FINANCIAL RESULT ... 31.03.2026, Amounts in Lakh') prints 'Profit for the period' = 203.818 | 753.396 | 542.273 | 1,411.427 | 1,005.933 -> Mar-26 = 2.04. Confirmed by BSE detres (period-verified 20.38 Rs-mn = 2.038; FY2026 Sum(4) = 141.11 = the .50 audited annual EXACT) and by screener.in standalone (2.04). ZEAL files NO consolidated result at all \u2014 the 12-page audited filing contains ZERO occurrences of 'consolidated', screener's consolidated table is EMPTY, and ZEAL is not NSE-listed \u2014 so patC carries the con=std identity 2.04.",
+   "note": "SUPERSEDED 2026-08-10 by the nosub_con_lag adjudication (runbook §73b). The 2026-08-09 entry wrote patC 6.53 / npStd 7.15 on 'screener 7 on both' — a ROUNDED read, and one anchored on a neighbourhood that itself held the FY2025 annual 10.06 duplicated into TWO quarter slots (Mar-25 and Dec-25), both since corrected. The company's OWN AUDITED Q4-FY26 filing (BSE ann 2026-05-28, att ac278e87-b6fb-489e-b29c-622cdba3d086.pdf, p4 'STATEMENT OF STANDALONE AUDITED FINANCIAL RESULT ... 31.03.2026, Amounts in Lakh') prints 'Profit for the period' = 203.818 | 753.396 | 542.273 | 1,411.427 | 1,005.933 -> Mar-26 = 2.04. Confirmed by BSE detres (period-verified 20.38 Rs-mn = 2.038; FY2026 Sum(4) = 141.11 = the .50 audited annual EXACT) and by screener.in standalone (2.04). ZEAL files NO consolidated result at all — the 12-page audited filing contains ZERO occurrences of 'consolidated', screener's consolidated table is EMPTY, and ZEAL is not NSE-listed — so patC carries the con=std identity 2.04.",
    "owners": 2.04,
    "stored_before": 4114.27,
    "superseded_2026_08_09": {
@@ -2576,5 +2961,5 @@
    }
   }
  },
- "generated": "2026-08-26 15:21 IST"
+ "generated": "2026-08-27 §116e"
 }

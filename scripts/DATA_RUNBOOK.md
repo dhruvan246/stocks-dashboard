@@ -12899,3 +12899,48 @@ three independent ways — present in a point-in-time index roll, carrying a rea
 and with the source document naming the company (INDO GULF CORPORATION LTD, MUKAND LTD, STANDARD
 INDUSTRIES LTD, SURYALAKSHMI COTTON MILLS LTD, Welspun Gujarat Stahl Rohren) — and the run now
 PRINTS every key it creates, so the verification claim is auditable rather than asserted.
+
+### 116e. THE 460-RESIDUE, WORKED FROM THE DOCUMENTS — 48 healed, the identity closed in the FILING where the XBRL could not  (2026-08-27)
+
+§116d screened all 60,768 con cells against their cached XBRL and left **460 unreconciled**: cells
+whose con slot holds `ProfitLossForPeriod` (the TOTAL) while the cached owners/NCI tags do NOT
+reconcile (`owners + NCI != total`). Its own verdict: "they need the DOCUMENT, not arithmetic." This
+is that pass. Every heal was read from the company's **own BSE-filed consolidated result PDF**
+(`scripts/owners_total_verify.py`: BSE announcement archive via `fetch_insurers.datebound`/`fetch_pdf`,
+PyMuPDF text layer), never an aggregator, never the XBRL that was already shown incoherent.
+
+**48 cells healed, 34 symbols.** The material ones are index names the defect distorts most:
+ADANIENT 20210331 **332.53→233.95** (NCI 98.58 — 30% minority), CHOLAHLDNG 20200331 **79.57→39.91**
+(the exact cell §116d named unresolvable — the XBRL said 14.71+9.70=24.41 vs total 79.57; the filing
+says 39.91+39.66=79.57), LLOYDSENT **61.84→23.46**, INDHOTEL 20210331 −97.72→−91.30, RAIN 20211231
+−72.31→−96.96, JINDALSAW 20230630 243.48→263.15, TECHM (3 qtrs), LUPIN (3), COFFEEDAY, MHRIL,
+KANORICHEM, plus small-NCI cells down to 0.05cr.
+
+**THE GATE, TIGHTER THAN §116d's.** A cell is healed only when, for one column under one unit scale:
+`owners + NCI == total` closes to **≤0.02cr** (filer-rounding-tight, not a fuzzy match) AND that total
+equals the stored value (pins the current-quarter column and the scale). Two guards were added after
+they caught real false positives:
+- **An EXPLICIT profit-total row is required** — a total reconstructed from owners+NCI can be the
+  *Total Comprehensive Income* attribution block, whose owners+NCI sums to profit+OCI and coincides
+  with the profit total only when OCI≈0. That block gave AVONMORE 20240331 a spurious 0.97 and SAPPHIRE
+  a second candidate; the explicit-total requirement drops them.
+- **≤0.02cr identity residual** — MANINFRA 20210630 read the TCI-owners (32.78) instead of the
+  profit-owners line "profit after tax and non-controlling interest" (32.83); the 0.08cr residual
+  exceeds the gate, so it is DEFERRED rather than healed wrong. Same for JAYAGROGN, GARFIBRES.
+
+Routed through **`owners_basis_heals.json`** (304→352), the §116 campaign's matching ledger, applied by
+`apply_owners_full.py` (writes docs; the `scripts/fundamentals.json` twin was synced the same pass).
+That ledger's HEALS dict is consulted **before** `_reattr_owners`, so it outranks the cache and the
+nightly rebuild — the durable route (fund_cell_fix.json is re-applied only *after* apply_owners_full in
+refresh-fundamentals.yml, so a cell later added to `_reattr` would silently pre-empt a fund_cell_fix
+heal; the owners ledger cannot be pre-empted).
+
+**DELIBERATELY NOT HEALED (measured, honest limit).** Of the 460, only 42 symbols read at all on the
+text layer; **~324 file their P&L as a SCANNED IMAGE** (GOLDIAM, COFORGE, JINDALSTEL...) where free
+OCR reads the total and NCI but mis-associates the owners line, so the identity cannot be closed — no
+vision API key is available in this environment. Those, plus the older
+"profit for period / less NCI / profit after NCI" format (GOLDIAM class, ~a handful text-layer), and
+the 29,998 pre-XBRL-cache cells, remain open. The pre-2018 screen bounds to **~4,575 con cells in ~416
+symbols that demonstrate a real NCI** (a no-NCI symbol has owners==total by definition); the method is
+the same document read, just without the XBRL pre-filter, and needs the BSE `AnnPdfOpen` resolver for
+pre-2018 attachments (`fetch_pdf` already has it). Sibling: `project-stocks-owners-vs-total-uncovered-symbols`.
