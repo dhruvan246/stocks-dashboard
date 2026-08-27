@@ -338,6 +338,21 @@
   // 2) live intraday quote from Yahoo — OUR Cloudflare Worker first (reliable, cached),
   //    then the public CORS-proxy chain as fallback (see scripts/LIVE_FEED_SETUP.md)
   var WORKER = 'https://stocksworld-quotes.dhruvan2510.workers.dev';
+  // Every leg gets a DEADLINE. A public CORS proxy that returns an error advances the chain; one
+  // that HANGS used to stall it forever, and the GIFT card — the only card with no committed JSON
+  // to fall back on — sat on its "00,000.00" skeleton indefinitely, which reads as a blank price.
+  // Measured 2026-08-27 from the browser: corsproxy.io 44 ms, allorigins/get dead (TypeError),
+  // allorigins/raw and codetabs BOTH still open at 8 s. Deadline > any real route by ~25x.
+  function fetchT(url, ms) {
+    var ctl = (typeof AbortController !== 'undefined') ? new AbortController() : null;
+    var opt = { cache: 'no-store' };
+    if (ctl) opt.signal = ctl.signal;
+    var timer = setTimeout(function () { if (ctl) ctl.abort(); }, ms || 6000);
+    return fetch(url, opt).then(
+      function (r) { clearTimeout(timer); return r; },
+      function (e) { clearTimeout(timer); throw e; }
+    );
+  }
   var PROXIES = [
     function (u) { var m = /chart\/([^?]+)/.exec(u); return { url: WORKER + '/?chart=' + (m ? m[1] : ''), wrap: false }; },
     function (u) { return { url: 'https://corsproxy.io/?url=' + encodeURIComponent(u), wrap: false }; },
@@ -349,7 +364,7 @@
     function tryNext() {
       if (i >= PROXIES.length) return Promise.reject('all proxies failed');
       var p = PROXIES[i++](y);
-      return fetch(p.url, { cache: 'no-store' })
+      return fetchT(p.url)
         .then(function (r) { if (!r.ok) throw 0; return r.text(); })
         .then(function (t) {
           var j = JSON.parse(p.wrap ? JSON.parse(t).contents : t);
@@ -383,7 +398,7 @@
     return rows[0];
   }
   function fetchGift() {
-    return fetch(WORKER + '/?gift=1', { cache: 'no-store' })
+    return fetchT(WORKER + '/?gift=1')
       .then(function (r) { if (!r.ok) throw 0; return r.json(); })
       .then(function (j) {
         if (j.price == null || j.prevClose == null) throw 0;
@@ -394,7 +409,7 @@
         function tryNext() {
           if (i >= PROXIES.length) return Promise.reject('gift: all routes failed');
           var p = PROXIES[i++](GIFT_API);
-          return fetch(p.url, { cache: 'no-store' })
+          return fetchT(p.url)
             .then(function (r) { if (!r.ok) throw 0; return r.text(); })
             .then(function (t) {
               var f = pickGiftRow(JSON.parse(p.wrap ? JSON.parse(t).contents : t));
@@ -414,7 +429,10 @@
       .catch(function () {
         // keep last good paint; the live-only GIFT card has none to keep
         if (!el._painted) el.innerHTML = '<div class="nm">' + el.getAttribute('data-name') + '</div>' +
-          '<div class="px" style="font-size:14px;color:var(--text-faint)">—</div>';
+          '<div class="px" style="font-size:14px;color:var(--text-faint)" title="' +
+          (gift ? 'No route to the NSE IX feed reached us this time — tap to open the exchange page.'
+                : 'The live quote feed did not answer — the daily close above is still current.') +
+          '">—</div>';
       });
   }
 
