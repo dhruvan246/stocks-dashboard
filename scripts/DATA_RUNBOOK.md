@@ -12909,7 +12909,7 @@ is that pass. Every heal was read from the company's **own BSE-filed consolidate
 (`scripts/owners_total_verify.py`: BSE announcement archive via `fetch_insurers.datebound`/`fetch_pdf`,
 PyMuPDF text layer), never an aggregator, never the XBRL that was already shown incoherent.
 
-**48 cells healed, 34 symbols.** The material ones are index names the defect distorts most:
+**50 cells healed, 35 symbols** (48 first pass + LUPIN 20180331 & TATACOMM 20180630 recovered on a transient-retry of 9 no-pdf fetches — the LUPIN row is now fully cleared). The material ones are index names the defect distorts most:
 ADANIENT 20210331 **332.53→233.95** (NCI 98.58 — 30% minority), CHOLAHLDNG 20200331 **79.57→39.91**
 (the exact cell §116d named unresolvable — the XBRL said 14.71+9.70=24.41 vs total 79.57; the filing
 says 39.91+39.66=79.57), LLOYDSENT **61.84→23.46**, INDHOTEL 20210331 −97.72→−91.30, RAIN 20211231
