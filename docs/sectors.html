@@ -330,16 +330,53 @@ function renderGrid(){
   $('grid').innerHTML=r.map(card).join('')||`<div class="col-span-full text-center text-slate-400 py-10 text-sm">No indexes match.</div>`;
   wireCards(); wireSparks();
 }
+/* ---- tile text colour, MEASURED against the tile it sits on -----------------------------------
+ * A tile is rgba(green|red, a) composited over --surface, and the text was hard-coded #fff. On the
+ * light and soft themes that measures 1.18:1 at low alpha — the text-shadow was disguising an
+ * unreadable tile, and adding a 10px P/E line made it plain. So composite the colour and take
+ * whichever of white / ink contrasts more: dark theme keeps white on every tile (4.65-16.9:1),
+ * light and soft flip to ink (4.96-15.8:1). Backgrounds are untouched. */
+function surfaceRGB(){
+  const v=(getComputedStyle(document.documentElement).getPropertyValue('--surface')||'').trim();
+  const m=v.match(/^rgba?\(([^)]+)\)$/);
+  if(m){ const p=m[1].split(',').map(x=>parseFloat(x)); return [p[0]||0,p[1]||0,p[2]||0]; }
+  let h=v.replace('#','');
+  if(h.length===3) h=h.split('').map(c=>c+c).join('');
+  if(h.length<6) return [255,255,255];                       // token missing → assume a light card
+  return [0,2,4].map(i=>parseInt(h.slice(i,i+2),16)||0);
+}
+function relLum(c){ const f=v=>{v/=255; return v<=.03928?v/12.92:Math.pow((v+.055)/1.055,2.4);};
+  return .2126*f(c[0])+.7152*f(c[1])+.0722*f(c[2]); }
+function contrast(a,b){ const l1=relLum(a),l2=relLum(b); return (Math.max(l1,l2)+.05)/(Math.min(l1,l2)+.05); }
+function tileInk(rgb,alpha,srf){
+  const comp=rgb.map((c,i)=>Math.round(alpha*c+(1-alpha)*srf[i]));
+  return contrast(comp,[255,255,255])>=contrast(comp,[11,18,32])
+    ? {fg:'#fff',   sh:'text-shadow:0 1px 2px rgba(0,0,0,.35)'}
+    : {fg:'#0b1220',sh:''};                                  // a dark shadow under dark text is mud
+}
 function renderHeat(r){
   r=r.filter(x=>x.ret!=null);
   const mx=Math.max(1,...r.map(x=>Math.abs(x.ret)));
+  const srf=surfaceRGB();
   const tiles=r.map(x=>{
     const t=Math.min(1,Math.abs(x.ret)/mx);
-    const bg=x.ret>=0?`rgba(22,163,74,${.15+t*.65})`:`rgba(220,38,38,${.15+t*.65})`;
+    const alpha=.15+t*.65, rgb=x.ret>=0?[22,163,74]:[220,38,38];
+    const bg=`rgba(${rgb},${alpha})`;
+    const ink=tileInk(rgb,alpha,srf);
     const fs=Math.max(10,Math.min(15,9+Math.sqrt(x.mcapSum)/120));
-    return `<div class="hm-tile" data-name="${esc(x.name)}" style="background:${bg};color:#fff;min-height:64px">
-      <div style="font-size:${fs}px;font-weight:700;line-height:1.05;text-shadow:0 1px 2px rgba(0,0,0,.3)">${esc(x.name)}</div>
-      <div style="font-size:12px;font-weight:800;text-shadow:0 1px 2px rgba(0,0,0,.3)">${fmtPct(x.ret)}</div>
+    // Third line: the same median groupStats() puts on the card, with the same member count beside
+    // it — a tile is the densest surface here, but it is not the one place the coverage gets
+    // dropped. Colour still encodes RETURN alone; P/E is read, never shaded.
+    const pe=x.peMed==null?'' :
+      `<div style="font-size:10px;font-weight:600;opacity:.92;${ink.sh}">P/E ${x.peMed.toFixed(1)} <span style="opacity:.75">(${x.peN})</span></div>`;
+    // Names truncate on a 130px tile, so the tooltip carries the whole row in words.
+    const tip=`${x.name} — ${x.n} stock${x.n!==1?'s':''}, ${fmtCr(x.mcapSum)}, ${fmtPct(x.ret)} over ${ST.period}`+
+      (x.peMed==null?', no median P/E (no member has four contiguous quarters of profit on file)'
+                    :`, median P/E ${x.peMed.toFixed(1)} across ${x.peN} of ${x.n} members`);
+    return `<div class="hm-tile" data-name="${esc(x.name)}" title="${esc(tip)}" style="background:${bg};color:${ink.fg};min-height:64px">
+      <div style="font-size:${fs}px;font-weight:700;line-height:1.05;${ink.sh}">${esc(x.name)}</div>
+      <div style="font-size:12px;font-weight:800;${ink.sh}">${fmtPct(x.ret)}</div>
+      ${pe}
     </div>`;
   }).join('');
   $('heat').innerHTML=`<div class="grid gap-1.5" style="grid-template-columns:repeat(auto-fill,minmax(130px,1fr))">${tiles}</div>`;
@@ -569,6 +606,12 @@ function drawBigChart(ser){
   svg.onmouseleave=()=>{cr.style.display='none';dot.style.display='none';tip.style.display='none';};
 }
 function closeModal(){ $('modal').style.display='none'; document.body.style.overflow=''; syncURL(null); }
+// Tile ink is resolved into an inline style, so a theme switch repaints the CSS around it and
+// leaves white text on a now-pale tile. theme.js re-resolves pinned table columns for exactly this
+// reason and emits no event, so watch the attribute it sets.
+new MutationObserver(()=>{ if(ST.view==='heat') renderGrid(); })
+  .observe(document.documentElement,{attributes:true,attributeFilter:['data-theme']});
+
 $('modal').onclick=e=>{ if(e.target.id==='modal')closeModal(); };
 document.addEventListener('keydown',e=>{ if(e.key==='Escape')closeModal(); });
 
