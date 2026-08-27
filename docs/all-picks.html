@@ -8,6 +8,7 @@
 <link rel="stylesheet" href="./theme.css" />
 <script src="./theme.js"></script>
 <script src="./bt-names.js"></script>
+<script src="./bt-identity.js"></script>
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 <script src="./bt-sync.js"></script>
 <style>
@@ -126,6 +127,7 @@
 
 <script src="./backtest-engine.js"></script>
 <script src="./live-perf.js"></script>
+<script src="./strategy-hover-card.js"></script>
 <script>
 const $ = id => document.getElementById(id);
 const esc = s => String(s == null ? '' : s).replace(/[&<>"]/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c]));
@@ -219,19 +221,24 @@ const avgOf = lpAvg;                            // equal-weight aggregate over a
 const priceHold = (h, off, prevOff) => lpPriceHold(h, off, prevOff, !ASOF);
 const pricePick = (p, off, prevOff) => lpPricePick(p, off, prevOff, !ASOF);
 
-/* Identity = the SELECTION RULE AT ONE STOCK COUNT, matching saved-strategies.html so BOTH PAGES COUNT
- * THE SAME. Excludes `method` (execution-only) and start/end (the window); INCLUDES `topN` — the same
- * rule saved at 5 and at 200 stocks is two strategies with two baskets. `<`≡`<=` and `>`≡`>=` so a
- * boundary-only difference doesn't split a rule in two.
- * KEEP IN SYNC with saved-strategies.html's identityKey(); a drift here shows a different strategy
- * count on the two pages, which is exactly the bug this fixes. */
-function identityKey(c) { return ruleKey(c) + '|' + (c.topN != null ? c.topN : ''); }
-// The same rule WITHOUT the stock count — the pre-split key form. Only used to honour legacy
-// favourites (see isFav), exactly as saved-strategies.html does.
-function ruleKey(c) {
-  const normOp = op => ({ '<=': '<', '>=': '>' }[op] || op);
-  const f = (c.filters || []).map(x => x.field + normOp(x.op) + x.val).sort().join(',');
-  return [c.indexName || '', c.mcapFloor || 0, c.freq, c.sortBy, c.dir, c.lookback || 1, c.earnBasis || 'con', f].join('|');
+/* Identity = the SELECTION RULE AT ONE STOCK COUNT — identityKey/ruleKey come from bt-identity.js
+ * (loaded above), the same definition Saved Strategies and the CI bake use. This page carried its
+ * own copies with a "KEEP IN SYNC" comment until 2026-08-27; the hover card needs the identical
+ * key to find a strategy in the wave snapshot, so the copies are gone rather than kept in step. */
+
+/* ---------- the hover card's data (strategy-hover-card.js) ----------
+ * Hovering a strategy name shows its calendar-year returns and the four market-cycle windows — the
+ * same card Saved Strategies shows, from the same file. It needs two things this page never fetched:
+ * the shared backtest history (the `yby` rows) and the baked wave snapshot. Both are small, both are
+ * pulled AFTER the board is built (they are decoration, never a reason to delay the picks), and both
+ * fail silent — the card then says which half is missing rather than showing a wrong number. */
+let AP_HIST = [], AP_SNAP = null;
+scWire({ hist: () => AP_HIST, snap: () => AP_SNAP });
+async function loadCardData() {
+  if (!window.btSync) return;
+  try { AP_HIST = (await btSync.pull()) || []; } catch (e) { AP_HIST = []; }
+  try { AP_SNAP = await btSync.snapGet('waves'); } catch (e) { AP_SNAP = null; }
+  paint();                       // repaint so rows registered before the pull can find their data
 }
 
 /* ---------- favourites (read-only mirror of Saved Strategies' ⭐ tab) ----------
@@ -249,12 +256,13 @@ function groupByIdentity(list) {
   for (const s of list) {
     const k = identityKey(s.cfg);
     const g = by.get(k);
-    if (!g) { by.set(k, { rep: s, counts: new Set([s.cfg.topN || 5]) }); continue; }
+    if (!g) { by.set(k, { rep: s, counts: new Set([s.cfg.topN || 5]), ids: new Set([s.id]) }); continue; }
     g.counts.add(s.cfg.topN || 5);
+    g.ids.add(s.id);                                   // every entry id — history runs link back by sid
     if ((s.ts || 0) > (g.rep.ts || 0)) g.rep = s;
   }
   return [...by.values()].map(g => ({
-    s: g.rep, cfg: g.rep.cfg,
+    s: g.rep, cfg: g.rep.cfg, ids: g.ids,
     counts: [...g.counts].sort((a, b) => a - b),
   }));
 }
@@ -403,7 +411,7 @@ function renderCards() {
   $('cards').innerHTML = visible().map(r => `
     <article class="card p-4 pb-0 scard flex flex-col">
       <div class="flex items-start justify-between gap-2">
-        <a href="${stratHref(r.s)}" title="Code-name: ${esc(nameWithBasis(r.name, r.cfg))}" class="text-[13.5px] font-bold text-slate-900 hover:text-indigo-600 leading-snug">${isFav(favs, r.cfg) ? FAV_MARK : ''}${esc(strategyEnglish(r.cfg))}</a>
+        <a href="${stratHref(r.s)}" title="Code-name: ${esc(nameWithBasis(r.name, r.cfg))}" class="text-[13.5px] font-bold text-slate-900 hover:text-indigo-600 leading-snug">${isFav(favs, r.cfg) ? FAV_MARK : ''}<span data-yrs="${esc(r.s.id)}">${esc(strategyEnglish(r.cfg))}</span></a>
         ${!r.held.length
           ? `<span class="text-[11px] font-bold whitespace-nowrap px-2 py-0.5 rounded-full text-slate-500 bg-slate-100">${heldWord(r)}</span>`
           : `<span class="flex flex-col items-end gap-1 shrink-0">
@@ -447,7 +455,7 @@ function renderBoard() {
     <div class="grid-row brow px-4 py-2.5 border-b border-slate-100 transition">
       <div class="text-[11px] text-slate-400 font-bold">${i + 1}</div>
       <div class="min-w-0">
-        <a href="${stratHref(r.s)}" title="Code-name: ${esc(nameWithBasis(r.name, r.cfg))}" class="block text-[12.5px] font-semibold text-slate-800 hover:text-indigo-600">${isFav(favs, r.cfg) ? FAV_MARK : ''}${esc(strategyEnglish(r.cfg))}</a>
+        <a href="${stratHref(r.s)}" title="Code-name: ${esc(nameWithBasis(r.name, r.cfg))}" class="block text-[12.5px] font-semibold text-slate-800 hover:text-indigo-600">${isFav(favs, r.cfg) ? FAV_MARK : ''}<span data-yrs="${esc(r.s.id)}">${esc(strategyEnglish(r.cfg))}</span></a>
         <div class="text-[10.5px] text-slate-400 truncate">${esc(r.uni)} · ${esc(r.freqL)} · ${r.rebDate ? 'since ' + esc(r.rebDate) : 'before our data'}</div>
       </div>
       <div class="text-right text-[12.5px] font-bold ${kls(r.ret)}" title="${r.rebDate ? 'Held basket\'s return from the ' + esc(r.rebDate) + ' rebalance' + (ASOF ? ' to ' + esc(ASOF) : '') : 'The rebalance before this date falls outside the dataset'}">${
@@ -505,7 +513,13 @@ function paint() {
     $('uniClear').onclick = () => setUni('*');
   } else $('uniEmpty').classList.add('hidden');
   paintRewindUI();
+  // Hover a strategy name → its calendar years + the four market cycles (strategy-hover-card.js).
+  // Registered from RESULT, not from the DOM, so both views share one registry; scAttach re-wires
+  // after every repaint because renderCards/renderBoard replace the nodes the handlers sat on.
+  YRG.clear();
+  RESULT.forEach(r => scRegister(r.s.id, r.s, r.ids));
   renderStats(); renderCards(); renderBoard(); paintSortArrows(); setView(VIEW);
+  scAttach($('cards')); scAttach($('board'));
   $('foot').classList.remove('hidden');
 }
 
@@ -584,7 +598,7 @@ async function build(msg) {
     const held = heldRows.map(r => priceHold({ sym: r.sym, tkr: r.tkr, ind: r.ind, entry: r.price }, priceOff, prevOff));
     const picks = pickRows.map(r => pricePick({ sym: r.sym, tkr: r.tkr, ind: r.ind }, priceOff, prevOff));
     RESULT.push({
-      s, name: s.name || strategyLabel(cfg), cfg, topN,
+      s, name: s.name || strategyLabel(cfg), cfg, topN, ids: groups[i].ids,
       uni: universeLabel(cfg), freqL: FREQL[cfg.freq] || (cfg.freq + 'mo'),
       nf: (cfg.filters || []).length, rebDate, rebLabel: rebDate ? 'since ' + rebDate : 'not started', counts,
       picks, held, empty: !picks.length,
@@ -651,7 +665,8 @@ $('rwExit').onclick = exitRewind;
   setView(VIEW);
   paintRewindUI();   // ?asof= in the URL: banner + labels up front, before the slow rebuild
   if (window.btSync) { try { await btSync.pullStrategies(); } catch (e) {} }
-  runBuild();
+  await runBuild();
+  loadCardData();      // history + wave snapshot for the hover card — decoration, so it comes last
 })();
 </script>
 </body>
