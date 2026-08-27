@@ -1,0 +1,492 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="robots" content="noindex,nofollow">
+<title>Strategies · private</title>
+<script src="./bt-names.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+<script src="./bt-sync.js"></script>
+<script src="./bt-identity.js"></script>
+<script src="./backtest-engine.js"></script>
+<style>
+/* ---------- tokens (mirrors portfolio.html so the two pages read as one app) ---------- */
+:root{
+  color-scheme: light;
+  --bg:#f6f6f4; --surface:#fcfcfb; --surface-2:#f0efec; --border:#e2e1dc;
+  --text:#0b0b0b; --text-2:#52514e; --text-3:#8a8981;
+  --accent:#2a78d6; --up:#008300; --down:#e34948; --flat:#8a8981;
+  --grid:#e8e7e2; --shadow:0 1px 2px rgba(0,0,0,.05),0 4px 16px rgba(0,0,0,.04);
+}
+@media (prefers-color-scheme: dark){
+  :root:where(:not([data-theme="light"])){
+    color-scheme: dark;
+    --bg:#131312; --surface:#1a1a19; --surface-2:#232322; --border:#333330;
+    --text:#ffffff; --text-2:#c3c2b7; --text-3:#8a8981;
+    --accent:#3987e5; --up:#22a559; --down:#e66767;
+    --grid:#2a2a28; --shadow:0 1px 2px rgba(0,0,0,.3),0 4px 16px rgba(0,0,0,.25);
+  }
+}
+:root[data-theme="dark"]{
+  color-scheme: dark;
+  --bg:#131312; --surface:#1a1a19; --surface-2:#232322; --border:#333330;
+  --text:#ffffff; --text-2:#c3c2b7; --text-3:#8a8981;
+  --accent:#3987e5; --up:#22a559; --down:#e66767;
+  --grid:#2a2a28; --shadow:0 1px 2px rgba(0,0,0,.3),0 4px 16px rgba(0,0,0,.25);
+}
+*{box-sizing:border-box}
+body{margin:0; background:var(--bg); color:var(--text);
+  font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,Inter,sans-serif;
+  font-feature-settings:"tnum" 1; -webkit-font-smoothing:antialiased}
+.up{color:var(--up)} .down{color:var(--down)} .flat{color:var(--flat)}
+a{color:var(--accent)}
+header{position:sticky; top:0; z-index:50; background:color-mix(in srgb,var(--surface) 92%, transparent);
+  backdrop-filter:blur(10px); border-bottom:1px solid var(--border)}
+.hwrap{max-width:1100px; margin:0 auto; padding:10px 16px; display:flex; align-items:center; gap:12px; flex-wrap:wrap}
+.brand{font-weight:800; letter-spacing:-.02em; font-size:16px}
+.spacer{flex:1}
+.btn{border:1px solid var(--border); background:var(--surface); color:var(--text-2);
+  border-radius:9px; padding:6px 11px; font-size:12.5px; font-weight:600; cursor:pointer; white-space:nowrap; text-decoration:none; display:inline-block}
+.btn:hover{background:var(--surface-2); color:var(--text)}
+.btn.on{background:var(--accent); border-color:var(--accent); color:#fff}
+main{max-width:1100px; margin:0 auto; padding:16px 16px 60px}
+.card{background:var(--surface); border:1px solid var(--border); border-radius:14px; box-shadow:var(--shadow)}
+.card h2{margin:0; padding:13px 16px 0; font-size:13.5px; font-weight:700; letter-spacing:-.01em}
+.card .sub{padding:2px 16px 0; font-size:11.5px; color:var(--text-3); line-height:1.45}
+.card .body{padding:10px 12px 14px}
+.sym{color:var(--text-3); font-size:11px}
+.badge{font-size:9px; font-weight:800; letter-spacing:.05em; padding:1px 5px; border-radius:4px; background:var(--surface-2); color:var(--text-3)}
+.zpill{font-size:11.5px; font-weight:700; padding:4px 10px; border-radius:20px; background:var(--surface-2); color:var(--text-2); border:1px solid var(--border)}
+.zpill.ok{color:var(--up); border-color:color-mix(in srgb,var(--up) 40%,transparent)}
+.zpill.warn{color:#c98500}
+/* ---------- strategy blocks: same anatomy as the rebalance-calendar card ---------- */
+.sblk{border-top:1px solid var(--grid); padding:12px 4px 6px}
+.sblk:first-child{border-top:0; padding-top:4px}
+.shead{display:flex; flex-wrap:wrap; align-items:baseline; gap:6px 12px; margin-bottom:6px}
+.shead .nm2{font-size:13.5px; font-weight:800}
+.tag{font-size:9.5px; font-weight:800; letter-spacing:.06em; padding:2px 6px; border-radius:4px; white-space:nowrap}
+.tag.keep{background:color-mix(in srgb,var(--up) 16%,transparent); color:var(--up)}
+.tag.new{background:color-mix(in srgb,var(--accent) 16%,transparent); color:var(--accent)}
+.twrap{overflow-x:auto; -webkit-overflow-scrolling:touch}
+table{width:100%; border-collapse:collapse; font-size:12.5px}
+th{text-align:right; font-weight:700; color:var(--text-3); font-size:10.5px; text-transform:uppercase;
+  letter-spacing:.05em; padding:7px 9px; border-bottom:1px solid var(--border); white-space:nowrap; background:var(--surface)}
+th:first-child,td:first-child{text-align:left}
+td{padding:7px 9px; border-bottom:1px solid var(--grid); text-align:right; white-space:nowrap}
+td:nth-child(2){text-align:left}
+th:nth-child(2){text-align:left}
+.empty{text-align:center; color:var(--text-3); font-size:12.5px; padding:30px 10px}
+.khelp{font-size:11.5px; color:var(--text-3); line-height:1.5; margin-top:10px}
+/* ---------- basket dialog + toast (same as portfolio.html) ---------- */
+#ktoast{position:fixed; left:50%; bottom:24px; transform:translateX(-50%); z-index:300; background:var(--text); color:var(--bg);
+  padding:8px 14px; border-radius:9px; font-size:12.5px; font-weight:600; opacity:0; pointer-events:none; transition:opacity .25s; max-width:90vw; text-align:center}
+#ktoast.show{opacity:1}
+.zchip{display:inline-block; padding:2px 7px; border-radius:20px; font-size:10.5px; font-weight:700; background:var(--surface-2); border:1px solid var(--border)}
+.zchip.ok{color:var(--up); border-color:var(--up)}
+.zchip.bad{color:var(--down); border-color:var(--down)}
+.zchip.open{color:var(--accent); border-color:var(--accent)}
+.zmsg{font-size:11px; color:var(--down); white-space:normal; text-align:left; max-width:280px}
+#zbWrap{position:fixed; inset:0; z-index:200; background:rgba(0,0,0,.45); display:none; align-items:center; justify-content:center; padding:16px}
+#zbWrap.open{display:flex}
+#zbDlg{width:min(580px,100%); max-height:92vh; overflow:auto; padding:16px}
+#zbDlg h3{margin:0 0 2px; font-size:14px}
+#zbDlg .krow{display:flex; gap:8px; margin-top:10px}
+#zbDlg label{flex:1; font-size:11px; font-weight:700; color:var(--text-3); text-transform:uppercase; letter-spacing:.05em}
+#zbDlg input,#zbDlg select{width:100%; margin-top:4px; padding:7px 9px; font-size:13.5px; font-weight:600;
+  border:1px solid var(--border); border-radius:8px; background:var(--surface-2); color:var(--text)}
+#zbDlg table{margin-top:10px}
+#zbDlg th{position:static}
+#zbDlg td input.zbq{width:80px; margin:0; padding:5px 7px; text-align:right}
+</style>
+</head>
+<body>
+
+<header>
+  <div class="hwrap">
+    <div class="brand">Strategies</div>
+    <span id="zStatus" class="zpill">Zerodha: checking…</span>
+    <div class="spacer"></div>
+    <a class="btn" href="./portfolio.html">📊 Portfolio</a>
+    <a class="btn" href="./portfolio.html#view=zerodha">⚡ Zerodha</a>
+    <button class="btn" id="btnTheme">◐ Auto</button>
+  </div>
+</header>
+
+<main>
+  <div id="lock" style="display:none" class="card"><div class="empty">🔒 This page is private — open your portfolio page once with its <code>?t=</code> link in this browser, then come back.</div></div>
+
+  <div id="app" style="display:none">
+    <div class="card" style="margin-bottom:14px"><div style="display:flex; align-items:baseline; justify-content:space-between; gap:10px">
+      <h2>Saved strategies — what each would buy today</h2>
+      <div style="margin:11px 16px 0; display:flex; gap:7px">
+        <button class="btn" id="btnZLogin" style="display:none">Login to Zerodha ▸</button>
+        <button class="btn" id="btnZSetup" title="Kite worker URL for this browser">⚙</button>
+        <button class="btn on" id="btnLoadAll">🎯 Load all picks</button></div></div>
+      <div class="sub">Every strategy saved on the stocksworld dashboard, one block each — like the rebalance calendar. Picks are the screen's top names as of the latest close; prices go live during market hours. ⚡ buys the whole basket on Zerodha — you always confirm first.</div>
+      <div class="sub" id="status" style="padding-bottom:12px"></div>
+      <div id="zSetupBox" class="body" style="display:none; border-top:1px solid var(--grid)">
+        <div class="khelp" style="margin:0 0 6px">One-time per browser: your Kite worker URL (the portfolio page shares it automatically — set it here only if this browser never opened that page).</div>
+        <div style="display:flex; gap:7px; max-width:520px">
+          <input id="zWUrl" placeholder="https://…workers.dev" style="flex:1; padding:7px 9px; font-size:13px; border:1px solid var(--border); border-radius:8px; background:var(--surface-2); color:var(--text)">
+          <button class="btn on" id="zWSave">Save</button></div>
+      </div>
+    </div>
+
+    <div class="card"><div class="body" id="cards"><div class="empty">Loading saved strategies…</div></div></div>
+  </div>
+</main>
+
+<div id="ktoast"></div>
+
+<script>
+(function(){
+'use strict';
+const $ = id => document.getElementById(id);
+const esc = s => String(s == null ? '' : s).replace(/[&<>"']/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
+const zinr = v => (v == null || !isFinite(v)) ? '—' : '₹' + Math.round(v).toLocaleString('en-IN');
+function ktoast(msg, ms){ const t = $('ktoast'); t.textContent = msg; t.classList.add('show');
+  clearTimeout(ktoast._t); ktoast._t = setTimeout(() => t.classList.remove('show'), ms || 2800); }
+function marketOpen(){ const d = new Date(Date.now() + 330*60000); const dow = d.getUTCDay();
+  if (dow === 0 || dow === 6) return false; const m = d.getUTCHours()*60 + d.getUTCMinutes(); return m >= 555 && m <= 930; }
+
+/* ---------- theme (same knob as portfolio.html: pf_theme) ---------- */
+function applyThemeBtn(){ const t = document.documentElement.getAttribute('data-theme');
+  $('btnTheme').textContent = t === 'dark' ? '🌙 Dark' : t === 'light' ? '☀️ Light' : '◐ Auto'; }
+(function(){ try { const th = localStorage.getItem('pf_theme'); if (th) document.documentElement.setAttribute('data-theme', th); } catch(e){}
+  applyThemeBtn(); })();
+$('btnTheme').onclick = () => { const cur = document.documentElement.getAttribute('data-theme');
+  const next = cur === 'dark' ? 'light' : cur === 'light' ? '' : 'dark';
+  if (next) document.documentElement.setAttribute('data-theme', next); else document.documentElement.removeAttribute('data-theme');
+  try { next ? localStorage.setItem('pf_theme', next) : localStorage.removeItem('pf_theme'); } catch(e){}
+  applyThemeBtn(); };
+
+/* ---------- private curtain: the portfolio token (or the site owner key) unlocks ---------- */
+const UNLOCKED = (function(){ try { return !!(localStorage.getItem('pf_token') || localStorage.getItem('bt_owner_key')); } catch(e){ return false; } })();
+if (!UNLOCKED){ $('lock').style.display = ''; return; }
+$('app').style.display = '';
+
+/* ---------- saved strategies: shared list + this browser's private ones, ONE card per unique identity ---------- */
+function loadLS(k){ try { return JSON.parse(localStorage.getItem(k) || '[]'); } catch(e){ return []; } }
+function privStrategies(){ return loadLS('bt_private_strategies').map(s => Object.assign({}, s, { _priv: true })); }
+function strategies(){
+  const priv = privStrategies();
+  if (!priv.length) return loadLS('bt_strategies');
+  const pk = new Set(priv.map(s => identityKey(s.cfg)));
+  return loadLS('bt_strategies').filter(s => !pk.has(identityKey(s.cfg))).concat(priv);
+}
+function uniqStrategies(){
+  const seen = new Map();
+  for (const s of strategies()){
+    const k = identityKey(s.cfg), cur = seen.get(k);
+    if (!cur || (s.ts || 0) > (cur.ts || 0)) seen.set(k, s);
+  }
+  return [...seen.values()];
+}
+
+/* ---------- lazy engine ---------- */
+let ENGINE_READY = false, ENGINE_LOADING = null;
+async function ensureEngine(){
+  if (ENGINE_READY) return true;
+  if (!ENGINE_LOADING) ENGINE_LOADING = loadEngineData(m => { $('status').textContent = m || ''; })
+    .then(() => { ENGINE_READY = true; $('status').textContent = `Data ${SF.start} → ${SF.end}.`; })
+    .catch(() => { ENGINE_LOADING = null; });
+  await ENGINE_LOADING;
+  return ENGINE_READY;
+}
+
+/* ---------- live quotes (site-wide worker + key) ---------- */
+let LIVE = null, LIVE_TIMER = null;
+const liveQ = sym => (LIVE && LIVE.data && LIVE.data[sym]) || null;
+async function fetchLive(){
+  const wurl = (function(){ try { return localStorage.getItem('live_worker_url') || ''; } catch(e){ return ''; } })();
+  const syms = [...new Set(Object.values(PICKS).flatMap(p => p.rows.map(r => r.sym)))];
+  if (!wurl || !syms.length) return;
+  try {
+    const sep = wurl.includes('?') ? '&' : '?';
+    const res = await fetch(wurl + sep + 'symbols=' + encodeURIComponent(syms.join(',')));
+    const d = await res.json();
+    if (d && d.data){ LIVE = { ts: d.asOf || Date.now(), data: d.data }; renderCards(); }
+  } catch(e){}
+}
+function startLiveLoop(){
+  if (LIVE_TIMER) return;
+  LIVE_TIMER = setInterval(() => { if (!document.hidden && marketOpen() && Object.keys(PICKS).length) fetchLive(); }, 60000);
+}
+
+/* ---------- picks ---------- */
+const PICKS = {};
+function screenOne(it){
+  const picks = screenAsOf(it.cfg, SF.end).slice(0, it.cfg.topN);
+  PICKS[it.id] = { asOf: SF.end, rows: picks.map((r, i) => ({ rank: i+1, sym: r.sym, tkr: r.tkr,
+    px: (META[r.tkr] && META[r.tkr].raw) ? META[r.tkr].raw : r.price })) };
+}
+async function loadPicks(id){
+  const it = strategies().find(x => x.id === id); if (!it) return;
+  if (!await ensureEngine()){ ktoast('Could not load market data — try again'); return; }
+  screenOne(it); renderCards(); fetchLive(); startLiveLoop();
+}
+$('btnLoadAll').onclick = async () => {
+  const list = uniqStrategies(); if (!list.length) return;
+  $('btnLoadAll').disabled = true;
+  if (!await ensureEngine()){ $('btnLoadAll').disabled = false; ktoast('Could not load market data'); return; }
+  for (const it of list){ $('status').textContent = 'Screening ' + (it.name || '') + '…';
+    await new Promise(r => setTimeout(r, 0)); screenOne(it); }
+  $('status').textContent = list.length + ' strategies screened as of ' + SF.end + '.';
+  $('btnLoadAll').disabled = false;
+  renderCards(); fetchLive(); startLiveLoop();
+};
+
+/* ---------- Zerodha plumbing (shares the portfolio page's localStorage on this origin) ---------- */
+const Z = { connected: false, user: null, held: new Set() };
+const zWorker = () => { try { return (localStorage.getItem('pf_kite_worker') || '').replace(/\/+$/, ''); } catch(e){ return ''; } };
+const zToken  = () => { try { return localStorage.getItem('pf_token') || ''; } catch(e){ return ''; } };
+async function zFetch(path, opts){
+  const o = Object.assign({}, opts || {});
+  o.headers = Object.assign({ 'X-PF-Token': zToken() }, o.headers || {});
+  try { const r = await fetch(zWorker() + path, o);
+    let j = null; try { j = await r.json(); } catch(e){}
+    return { st: r.status, j };
+  } catch(e){ return { st: 0, j: null }; }
+}
+function zPill(txt, cls){ const b = $('zStatus'); b.textContent = txt; b.className = 'zpill' + (cls ? ' ' + cls : ''); }
+async function zInit(){
+  $('btnZLogin').style.display = 'none';
+  if (!zWorker() || !zToken()){ zPill('Zerodha: not set up here', 'warn'); return; }
+  const { st, j } = await zFetch('/status');
+  if (st !== 200 || !j){ zPill('Zerodha: worker unreachable', 'warn'); return; }
+  if (!j.connected){ Z.connected = false; zPill('Zerodha: not connected today', 'warn');
+    $('btnZLogin').style.display = ''; return; }
+  Z.connected = true; Z.user = j.user || '';
+  zPill('🟢 ' + Z.user, 'ok');
+  const h = await zFetch('/holdings');
+  if (h.st === 200 && h.j && h.j.data)
+    Z.held = new Set(h.j.data.filter(r => ((r.quantity||0)+(r.t1_quantity||0)+(r.collateral_quantity||0)+((r.mtf||{}).quantity||0)) > 0)
+                             .map(r => r.tradingsymbol));
+  renderCards();
+}
+$('btnZLogin').onclick = () => {
+  const k = (function(){ try { return localStorage.getItem('pf_kite_key') || ''; } catch(e){ return ''; } })();
+  if (!k){ ktoast('No API key saved in this browser — do the daily login from the portfolio page once', 5000); return; }
+  location.href = 'https://kite.zerodha.com/connect/login?v=3&api_key=' + encodeURIComponent(k);
+};
+$('btnZSetup').onclick = () => { const b = $('zSetupBox'); b.style.display = b.style.display === 'none' ? '' : 'none'; $('zWUrl').value = zWorker(); };
+$('zWSave').onclick = () => { const v = $('zWUrl').value.trim().replace(/\/+$/, '');
+  if (!/^https:\/\/.+/.test(v)){ ktoast('That does not look like an https worker URL'); return; }
+  try { localStorage.setItem('pf_kite_worker', v); } catch(e){}
+  $('zSetupBox').style.display = 'none'; zInit(); };
+(function zCapture(){
+  const u = new URL(location.href), rt = u.searchParams.get('request_token');
+  if (!rt){ zInit(); return; }
+  ['request_token','action','status','type'].forEach(k => u.searchParams.delete(k));
+  history.replaceState(null, '', u.pathname + (u.searchParams.toString() ? '?' + u.searchParams.toString() : '') + u.hash);
+  (async () => {
+    const { st, j } = await zFetch('/session', { method:'POST', headers:{ 'Content-Type':'application/json' }, body: JSON.stringify({ request_token: rt }) });
+    if (st === 200 && j && j.ok) ktoast('Zerodha connected ✓ ' + (j.user || ''), 4000);
+    zInit();
+  })();
+})();
+
+/* ---------- strategy blocks (rebalance-calendar anatomy) ---------- */
+function cardMeta(cfg){
+  const bits = ['Top ' + (cfg.topN || '?')];
+  if (cfg.indexName) bits.push(String(cfg.indexName).replace('__FNO__', 'F&O'));
+  return bits.join(' · ');
+}
+function renderCards(){
+  const list = uniqStrategies();
+  if (!list.length){ $('cards').innerHTML = '<div class="empty">No saved strategies found.</div>'; return; }
+  const h = list.map(it => {
+    const en = (typeof strategyEnglish === 'function') ? strategyEnglish(it.cfg) : '';
+    const disp = en || nameWithBasis(it.name, it.cfg);
+    const p = PICKS[it.id];
+    let body = '';
+    if (p){
+      body = '<div class="twrap"><table><thead><tr><th>#</th><th>Pick</th><th>Live ₹</th><th>Day %</th></tr></thead><tbody>' +
+        p.rows.map(r => {
+          const q = liveQ(r.sym); const px = q && q.ltp != null ? q.ltp : r.px;
+          const chg = q && q.ltp != null && q.prevClose ? (q.ltp / q.prevClose - 1) * 100 : null;
+          return '<tr><td class="sym">' + r.rank + '</td>' +
+            '<td><b>' + esc(r.sym) + '</b> ' + (Z.held.has(r.sym) ? '<span class="tag keep">held</span>' : '<span class="tag new">new</span>') +
+            (q && q.ltp != null ? '' : ' <span class="badge">EOD</span>') + '</td>' +
+            '<td>₹' + (+px).toFixed(2) + '</td>' +
+            '<td class="' + (chg == null ? 'sym' : chg >= 0 ? 'up' : 'down') + '">' + (chg == null ? '—' : (chg >= 0 ? '+' : '') + chg.toFixed(2) + '%') + '</td></tr>';
+        }).join('') + '</tbody></table></div>';
+    }
+    return '<div class="sblk"><div class="shead"><span class="nm2" title="Code-name: ' + esc(nameWithBasis(it.name, it.cfg)) + '">' + esc(disp) + '</span>' +
+      (it._priv ? '<span class="tag new">private</span>' : '') +
+      '<span class="sym">' + esc(cardMeta(it.cfg)) + (p ? ' · picks as of ' + esc(p.asOf) : '') + '</span>' +
+      '<span style="margin-left:auto; display:flex; gap:6px">' +
+      '<button class="btn" data-load="' + esc(it.id) + '">🎯 ' + (p ? 'Refresh' : 'Picks') + '</button>' +
+      (p ? '<button class="btn on" data-basket="' + esc(it.id) + '">⚡ Buy basket</button>' : '') +
+      '</span></div>' + body + '</div>';
+  }).join('');
+  $('cards').innerHTML = h;
+}
+$('cards').addEventListener('click', e => {
+  const l = e.target.closest('[data-load]'); if (l){ l.textContent = '⏳…'; loadPicks(l.dataset.load); return; }
+  const b = e.target.closest('[data-basket]'); if (b) zBasketOpen(b.dataset.basket);
+});
+
+/* ---------- basket dialog (identical flow to the portfolio page) ---------- */
+let ZB = { rows: [] };
+function ensureZbDlg(){
+  if ($('zbWrap')) return;
+  const w = document.createElement('div'); w.id = 'zbWrap';
+  w.innerHTML = '<div class="card" id="zbDlg">' +
+    '<h3 id="zbTitle"></h3><div class="sub" style="padding:0" id="zbSub"></div>' +
+    '<div class="krow"><label>₹ to deploy<input id="zbAmt" type="number" min="0" step="10000" placeholder="e.g. 500000"></label>' +
+    '<label>Split ₹ as<select id="zbMode"><option value="value">Order value</option><option value="margin">Funds used (margin)</option></select></label></div>' +
+    '<div class="krow"><label>Product<select id="zbProd"><option value="MTF">MTF (margin)</option><option value="CNC">Delivery (CNC)</option><option value="MIS">Intraday (MIS)</option></select></label></div>' +
+    '<div class="twrap"><table id="zbTbl"></table></div>' +
+    '<div class="krow" style="justify-content:flex-end">' +
+    '<button class="btn" id="zbCancel">Cancel</button>' +
+    '<button class="btn" id="zbKite" title="Review and confirm all of them on Zerodha’s own basket page">Kite basket</button>' +
+    '<button class="btn on" id="zbGo" style="display:none">Place all ▸</button></div>' +
+    '<div class="khelp">Market orders, equal ₹ split across ticked rows. “Uses ₹” is Zerodha’s LIVE margin per order — on MTF the smaller figure your funds actually pay; “funds used” makes your amount mean exactly that. You confirm with a second click before anything is placed.</div></div>';
+  document.body.appendChild(w);
+  w.addEventListener('click', e => { if (e.target === w) w.classList.remove('open'); });
+  $('zbCancel').onclick = () => $('zbWrap').classList.remove('open');
+  $('zbAmt').addEventListener('input', () => { zbAlloc(); zbRender(); zbMarginSoon(true); });
+  $('zbMode').addEventListener('change', () => { zbAlloc(); zbRender(); zbMarginSoon(true); });
+  $('zbProd').addEventListener('change', () => { ZB.rows.forEach(r => { r.mps = 0; r.margin = null; }); zbAlloc(); zbRender(); zbMarginSoon(true); });
+  $('zbTbl').addEventListener('input', e => { const q = e.target.closest('input.zbq'); if (!q) return;
+    const i = +q.dataset.i, r = ZB.rows[i]; r.qty = Math.max(0, Math.floor(+q.value || 0)); r.margin = null;
+    zbRowPaint(i); zbFoot(); zbArmReset(); zbMarginSoon(false); });
+  $('zbTbl').addEventListener('change', e => { const c = e.target.closest('input[type=checkbox]'); if (!c) return;
+    ZB.rows[+c.dataset.i].on = c.checked; zbAlloc(); zbRender(); zbMarginSoon(true); });
+  $('zbKite').onclick = () => { const o = zbOrders(); if (!o.length){ ktoast('Nothing to buy — set an amount first'); return; }
+    if (kiteSend(o)) $('zbWrap').classList.remove('open'); };
+  $('zbGo').onclick = zbPlaceAll;
+}
+function zbOrders(){
+  return ZB.rows.filter(r => r.on && r.qty > 0).map(r => ({ variety:'regular', validity:'DAY', tag:'swbasket',
+    tradingsymbol: r.sym, exchange:'NSE', transaction_type:'BUY', order_type:'MARKET',
+    quantity: r.qty, product: $('zbProd').value }));
+}
+function zbAlloc(){
+  const amt = +$('zbAmt').value || 0, mode = ($('zbMode') && $('zbMode').value) || 'value';
+  const on = ZB.rows.filter(r => r.on && r.px > 0), per = on.length ? amt / on.length : 0;
+  ZB.rows.forEach(r => { r.st = ''; r.msg = '';
+    if (!(r.on && r.px > 0)){ r.qty = 0; r.margin = null; return; }
+    const perShare = (mode === 'margin' && r.mps > 0) ? r.mps : r.px;
+    r.qty = Math.floor(per / perShare); r.margin = null; });
+  if (ZB.id && amt) try { localStorage.setItem('sw_zb_amt_' + ZB.id, String(amt)); } catch(e){}
+}
+function zbFoot(){
+  const rows = ZB.rows.filter(r => r.on && r.qty > 0);
+  const est = rows.reduce((s, r) => s + r.qty * (r.px || 0), 0);
+  const haveM = rows.length && rows.every(r => r.margin != null);
+  const mar = rows.reduce((s, r) => s + (r.margin || 0), 0), chg = rows.reduce((s, r) => s + (r.chg || 0), 0);
+  const f = $('zbTot'); if (f) f.innerHTML = rows.length + ' orders · ≈ <b>' + zinr(est) + '</b>' +
+    (haveM ? ' · blocks ≈ <b>' + zinr(mar) + '</b> of funds' + (chg ? ' + ~₹' + Math.round(chg).toLocaleString('en-IN') + ' charges' : '') :
+     (ZB.merr ? ' · <span class="down">margin check: ' + esc(ZB.merr) + '</span>' : ''));
+}
+function zbMarginSoon(realloc){ clearTimeout(ZB.mt); ZB.mt = setTimeout(() => zbFetchMargins(realloc), 600); }
+async function zbFetchMargins(realloc){
+  if (!Z.connected || !$('zbWrap') || !$('zbWrap').classList.contains('open')) return;
+  const orders = zbOrders();
+  if (!orders.length){ ZB.rows.forEach(r => r.margin = null); zbFoot(); return; }
+  const seq = ZB.mseq = (ZB.mseq || 0) + 1;
+  const { st, j } = await zFetch('/margincalc', { method:'POST', headers:{ 'Content-Type':'application/json' },
+    body: JSON.stringify(orders.map(o => ({ exchange:o.exchange, tradingsymbol:o.tradingsymbol, product:o.product, quantity:o.quantity }))) });
+  if (seq !== ZB.mseq || !$('zbWrap').classList.contains('open')) return;
+  if (st === 0 && !ZB.mretry){ ZB.mretry = 1; setTimeout(() => zbFetchMargins(realloc), 1500); return; }
+  ZB.mretry = 0;
+  if (st !== 200 || !j || !j.data){ ZB.merr = (j && j.message) || ('HTTP ' + st); zbFoot(); return; }
+  ZB.merr = null;
+  let di = 0;
+  ZB.rows.forEach(r => { if (r.on && r.qty > 0){ const d = j.data[di++] || {};
+      r.margin = (d.total != null ? +d.total : null); r.chg = (d.charges && +d.charges.total) || 0;
+      if (r.margin != null) r.mps = r.margin / r.qty; }
+    else r.margin = null; });
+  if (realloc && $('zbMode').value === 'margin'){ zbAlloc(); zbRender(); zbMarginSoon(false); return; }
+  zbRender();
+}
+function zbArmReset(){ const b = $('zbGo'); if (b && b.dataset.arm === '1'){ b.dataset.arm = ''; b.textContent = 'Place all ▸'; } }
+function zbRowPaint(i){
+  const tr = $('zbTbl').querySelectorAll('tbody tr')[i], r = ZB.rows[i]; if (!tr) return;
+  tr.children[4].innerHTML = r.qty ? zinr(r.qty * r.px) : '—';
+  tr.children[5].innerHTML = (Z.connected && r.qty) ? '…' : '—';
+}
+function zbRender(){
+  let h = '<thead><tr><th></th><th>Pick</th><th>Live ₹</th><th>Qty</th><th>≈ Cost</th><th title="What Zerodha will actually block — its live margin API">Uses ₹</th><th></th></tr></thead><tbody>';
+  ZB.rows.forEach((r, i) => {
+    const stChip = r.st === 'COMPLETE' ? '<span class="zchip ok">COMPLETE</span>'
+      : r.st === 'REJECTED' ? '<span class="zchip bad" title="' + esc(r.msg) + '">REJECTED</span>'
+      : r.st === 'fail' ? '<span class="zchip bad" title="' + esc(r.msg) + '">FAILED</span>'
+      : r.st ? '<span class="zchip open">' + esc(r.st) + '</span>' : '';
+    h += '<tr><td><input type="checkbox" data-i="' + i + '"' + (r.on ? ' checked' : '') + '></td>' +
+      '<td><b>' + esc(r.sym) + '</b>' + (Z.held.has(r.sym) ? ' <span class="tag keep">held</span>' : '') + (r.live ? '' : ' <span class="badge">EOD</span>') + '</td>' +
+      '<td>' + (r.px ? '₹' + (+r.px).toFixed(2) : '—') + '</td>' +
+      '<td><input class="zbq" type="number" min="0" step="1" data-i="' + i + '" value="' + r.qty + '"' + (r.on ? '' : ' disabled') + '></td>' +
+      '<td>' + (r.qty ? zinr(r.qty * r.px) : '—') + '</td>' +
+      '<td>' + (r.margin != null ? zinr(r.margin) : (Z.connected && r.qty ? '…' : '—')) + '</td>' +
+      '<td>' + stChip + (r.st === 'REJECTED' || r.st === 'fail' ? '<div class="zmsg">' + esc(r.msg) + '</div>' : '') + '</td></tr>';
+  });
+  h += '</tbody><tfoot><tr><td colspan="7" style="text-align:right" id="zbTot"></td></tr></tfoot>';
+  $('zbTbl').innerHTML = h; zbFoot();
+  $('zbGo').style.display = Z.connected ? '' : 'none';
+}
+function zBasketOpen(id){
+  const it = strategies().find(x => x.id === id), p = PICKS[id];
+  if (!it || !p || !p.rows.length){ ktoast('Load the picks first'); return; }
+  ensureZbDlg();
+  ZB = { id, rows: p.rows.map(r => { const q = liveQ(r.sym);
+    return { sym: r.sym, px: (q && q.ltp != null) ? q.ltp : r.px, live: !!(q && q.ltp != null),
+             on: true, qty: 0, st: '', msg: '', margin: null, mps: 0, chg: 0 }; }) };
+  $('zbTitle').textContent = 'Buy the basket';
+  $('zbSub').textContent = ((typeof strategyEnglish === 'function' && strategyEnglish(it.cfg)) || nameWithBasis(it.name, it.cfg)) + ' — ' + p.rows.length + ' picks as of ' + p.asOf + '. You confirm before anything is placed.';
+  $('zbProd').value = 'MTF';
+  $('zbAmt').value = (function(){ try { return localStorage.getItem('sw_zb_amt_' + id) || ''; } catch(e){ return ''; } })();
+  zbAlloc(); zbRender();
+  $('zbWrap').classList.add('open');
+  zbMarginSoon(true);
+}
+async function zbPlaceAll(){
+  const orders = zbOrders();
+  if (!orders.length){ ktoast('Nothing to buy — set an amount first'); return; }
+  const b = $('zbGo'), est = orders.reduce((s, o) => { const r = ZB.rows.find(x => x.sym === o.tradingsymbol); return s + o.quantity * ((r && r.px) || 0); }, 0);
+  if (b.dataset.arm !== '1'){ b.dataset.arm = '1';
+    b.textContent = 'Confirm ' + orders.length + ' BUY orders ≈ ' + zinr(est) + ' ?';
+    clearTimeout(ZB.t); ZB.t = setTimeout(zbArmReset, 8000); return; }
+  b.dataset.arm = ''; b.disabled = true; b.textContent = 'Placing…';
+  for (const o of orders){
+    const r = ZB.rows.find(x => x.sym === o.tradingsymbol); r.st = '…'; zbRender();
+    const { st, j } = await zFetch('/order', { method:'POST', headers:{ 'Content-Type':'application/json' }, body: JSON.stringify(o) });
+    if (st === 200 && j && j.data && j.data.order_id){ r.st = 'sent'; r.oid = j.data.order_id; }
+    else { r.st = 'fail'; r.msg = (j && j.message) || ('HTTP ' + st); }
+    zbRender();
+  }
+  await new Promise(r => setTimeout(r, 1800));
+  const o = await zFetch('/orders'), list = (o.j && o.j.data) || [];
+  ZB.rows.forEach(r => { const row = r.oid && list.find(x => x.order_id === r.oid);
+    if (row){ r.st = row.status; r.msg = row.status_message || ''; } });
+  zbRender(); b.disabled = false; b.textContent = 'Place all ▸';
+  const okN = ZB.rows.filter(r => r.st === 'COMPLETE').length;
+  ktoast(okN + '/' + orders.length + ' orders complete — see the table for the rest', 6000);
+}
+function kiteSend(orders){
+  const key = (function(){ try { return localStorage.getItem('pf_kite_key') || ''; } catch(e){ return ''; } })();
+  if (!key){ ktoast('No Kite API key in this browser — save it once on the portfolio page', 5000); return false; }
+  if (orders.length > 10){ ktoast('Zerodha baskets take at most 10 orders — send in parts'); return false; }
+  const w = window.open('about:blank', 'kite_basket');
+  if (!w){ ktoast('Your browser blocked the Zerodha tab — allow pop-ups, then send again', 5200); return false; }
+  const f = document.createElement('form');
+  f.method = 'post'; f.action = 'https://kite.zerodha.com/connect/basket'; f.target = 'kite_basket'; f.style.display = 'none';
+  const a = document.createElement('input'); a.type = 'hidden'; a.name = 'api_key'; a.value = key;
+  const b = document.createElement('input'); b.type = 'hidden'; b.name = 'data'; b.value = JSON.stringify(orders);
+  f.append(a, b); document.body.appendChild(f); f.submit(); f.remove();
+  ktoast(orders.length + ' orders sent — review and confirm in the Zerodha tab', 4000);
+  return true;
+}
+
+/* ---------- boot ---------- */
+(async function boot(){
+  renderCards();
+  if (window.btSync){ try { await btSync.pullStrategies(); renderCards(); } catch(e){} }
+})();
+})();
+</script>
+</body>
+</html>
