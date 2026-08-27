@@ -19,6 +19,17 @@
   .clschip{display:inline-flex;align-items:baseline;gap:.3rem;padding:.15rem .55rem;border-radius:999px;border:1px solid var(--border,#e2e8f0);background:var(--surface-2,#f8fafc);color:var(--text-muted,#475569);font-size:.72rem;font-weight:600;line-height:1.5;white-space:nowrap;text-decoration:none;transition:border-color .12s,color .12s}
   .clschip:hover{border-color:var(--accent,#4f46e5);color:var(--accent,#4f46e5)}
   .clslv{font-size:.58rem;font-weight:700;text-transform:uppercase;letter-spacing:.04em;color:var(--text-faint,#94a3b8)}
+  .pkcol{cursor:pointer;white-space:nowrap;user-select:none}
+  .pkcol:hover{color:var(--accent,#4f46e5)}
+  #peers .psym{font-size:.625rem;color:var(--text-faint,#94a3b8);margin-left:.25rem;font-weight:400}
+  /* On phones theme.js makes #peers a .sw-scrollx, which PINS the first column — and a pinned
+     "Company Name SYM" cell measured 269px of a 309px scroller at 375px, hiding MCap, P/E and 1Y
+     (and the headings you now sort by) behind it. Below 640px the row leads with the SYMBOL and
+     drops the long name; the symbol sits inside the same link, so it stays tappable. */
+  @media (max-width:640px){
+    #peers .pname{display:none}
+    #peers .psym{font-size:inherit;color:inherit;margin-left:0;font-weight:inherit}
+  }
   #tip{position:absolute;pointer-events:none;display:none;background:var(--surface,#fff);border:1px solid var(--border,#e2e8f0);border-radius:.5rem;padding:.35rem .55rem;font-size:.72rem;box-shadow:0 6px 18px -8px rgba(0,0,0,.35);white-space:nowrap;z-index:5}
 </style>
 </head>
@@ -147,7 +158,7 @@
       <div class="text-sm font-semibold text-slate-700">🏭 Peer comparison <span id="peersInd" class="text-slate-400 font-normal"></span></div>
     </div>
     <div id="peers" class="sw-scrollx overflow-x-auto text-sm"></div>
-    <div class="text-[11px] text-slate-400 mt-2">Same-industry companies by market cap. P/E uses point-in-time owners-attributable TTM profit (last 4 contiguous quarters); 1Y is the price return. Tap a name to open it.</div>
+    <div class="text-[11px] text-slate-400 mt-2">Same-industry companies, this stock first and the rest by market cap — <b>click any column heading to re-rank them</b> (P/E, size or 1-year return); this stock stays bold wherever it lands. P/E uses point-in-time owners-attributable TTM profit (last 4 contiguous quarters); 1Y is the price return. Tap a name to open it.</div>
   </div>
 
   <!-- shareholding pattern -->
@@ -980,22 +991,46 @@ async function renderClass(){
   $('sInd').style.display='none';        // the single coarse label the full chain now supersedes
 }
 
-/* ---------- peer comparison (slice.peers — same industry, mcap-ranked, self first) ---------- */
+/* ---------- peer comparison (slice.peers — same industry, mcap-ranked, self first) --------------
+ * The builder's order — this stock, then the rest by market cap — is the DEFAULT, not the only one:
+ * a click on any heading re-ranks the industry by P/E, size or 1-year return, which is the question
+ * a peer list is usually being asked. Sorting drops the self-first pin (it would contradict the
+ * sort) but the row stays bold, so you can still see where this stock lands in the ranking.
+ * Same rules as the sectors page's table: a fresh column starts descending (A-Z for the name), the
+ * same column flips, and unknowns sink on BOTH directions — a company with no TTM profit on file
+ * is not the cheapest one in the industry. */
+const PEER_COLS=[{k:'sym',lbl:'Company',left:1},{k:2,lbl:'MCap (₹ cr)'},{k:3,lbl:'P/E (TTM)'},{k:4,lbl:'1Y'}];
+let PEER_SORT=null;                       // null = the builder's own order
 function renderPeers(){
   const el=$('peersCard'); if(!el) return;
   const P=SLICE&&SLICE.peers;
   if(!P||!P.r||P.r.length<2){ el.style.display='none'; return; }
   el.style.display='';
   $('peersInd').textContent='— '+(P.g||'same industry');
+  const rows=P.r.slice();
+  if(PEER_SORT){
+    const k=PEER_SORT.k, dir=PEER_SORT.dir, get=r=>k==='sym'?String(r[0]).toLowerCase():r[k];
+    rows.sort((a,b)=>{ const va=get(a), vb=get(b);
+      if(va==null&&vb==null)return 0; if(va==null)return 1; if(vb==null)return -1;
+      return (va<vb?-1:va>vb?1:0)*dir; });
+  }
+  const arrow=c=>(PEER_SORT&&String(PEER_SORT.k)===String(c.k))?(PEER_SORT.dir===1?' ▲':' ▼'):'';
   $('peers').innerHTML=`<table class="w-full text-sm"><thead class="text-[11px] uppercase text-slate-500 border-b border-slate-200"><tr>`+
-    `<th class="text-left py-1 pr-2">Company</th><th class="text-right px-2">MCap (₹ cr)</th><th class="text-right px-2">P/E (TTM)</th><th class="text-right px-2">1Y</th></tr></thead><tbody>`+
-    P.r.map(r=>{ const me=r[0]===TKR;
+    PEER_COLS.map(c=>`<th class="pkcol ${c.left?'text-left py-1 pr-2':'text-right px-2'}" data-k="${c.k}" title="Sort by ${esc(c.lbl)}">${esc(c.lbl)}${arrow(c)}</th>`).join('')+
+    `</tr></thead><tbody>`+
+    rows.map(r=>{ const me=r[0]===TKR;
+      const cell=`<span class="pname">${esc(r[1])}</span><span class="psym">${esc(r[0])}</span>`;
       return `<tr class="border-b border-slate-50 ${me?'font-bold':''}">`+
-        `<td class="py-1.5 pr-2 whitespace-nowrap">${me?esc(r[1]):`<a class="text-indigo-600 hover:underline" href="./stock.html?sym=${encodeURIComponent(r[0])}">${esc(r[1])}</a>`}<span class="text-[10px] text-slate-400 ml-1 font-normal">${esc(r[0])}</span></td>`+
+        `<td class="py-1.5 pr-2 whitespace-nowrap">${me?cell:`<a class="text-indigo-600 hover:underline" href="./stock.html?sym=${encodeURIComponent(r[0])}">${cell}</a>`}</td>`+
         `<td class="text-right px-2">${r[2]==null?'—':(+r[2]).toLocaleString('en-IN')}</td>`+
         `<td class="text-right px-2">${r[3]==null?'—':(+r[3]).toFixed(1)}</td>`+
         `<td class="text-right px-2 ${r[4]==null?'':(r[4]>=0?'pos':'neg')}">${r[4]==null?'—':pct(+r[4])}</td></tr>`;
     }).join('')+`</tbody></table>`;
+  $('peers').querySelectorAll('.pkcol').forEach(th=>th.onclick=()=>{
+    const nk=th.dataset.k==='sym'?'sym':+th.dataset.k;
+    PEER_SORT=(PEER_SORT&&String(PEER_SORT.k)===String(nk))?{k:nk,dir:-PEER_SORT.dir}:{k:nk,dir:nk==='sym'?1:-1};
+    renderPeers();
+  });
 }
 
 /* ---------- company activity (slice act/ann/ins/dls/dsc — rolling feed windows) ---------- */
