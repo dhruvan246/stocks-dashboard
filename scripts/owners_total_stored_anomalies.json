@@ -1,0 +1,21 @@
+{
+ "_README": [
+  "§116e byproduct, 2026-08-27. NOT owners-vs-total defects and NOT healed here.",
+  "While reading the 460-residue filings, these cells were found to store a con value that does",
+  "NOT match the company's own filed consolidated 'Profit for the period' at all -- neither the",
+  "total nor the owners figure. The owners-vs-total gate (total_read == stored) correctly REFUSES",
+  "them: the stored number came from somewhere the filing does not corroborate (a wrong vintage, a",
+  "restatement whose provenance is unestablished, or a pipeline error). Each needs a SEPARATE audit",
+  "of where the stored value originated before it can be corrected -- healing straight to the filed",
+  "owners could revert a legitimate restatement. Fields: stored (what we serve), filed_total and",
+  "filed_owners (from the company's own filing this session), src (the filing read)."
+ ],
+ "generated": "2026-08-27",
+ "cells": {
+  "ADANIENT|20250331|patC": {"stored": 1382.17, "filed_total": 4014.90, "filed_owners": 3844.91, "filed_nci": 169.99, "src": "BSE ann 20250501, consolidated P&L row 11/14 (Q4FY25), read by vision"},
+  "AARTIIND|20210331|patC": {"stored": 692.34, "filed_total": 139.34, "filed_owners": 136.10, "filed_nci": 3.24, "src": "BSE ann 20210518, consolidated P&L (Q4FY21, Rs lakhs 13934/13610/324), read by vision"},
+  "RAYMOND|20211231|patC": {"stored": 266.67, "filed_total": 101.07, "filed_owners": 100.28, "filed_nci": 0.79, "src": "BSE ann 20220125, consolidated P&L (Q3FY22, Rs lakhs 10107/10028/79), read by vision"},
+  "JISLDVREQS|20230331|patC": {"stored": 1162.06, "filed_total": 976.89, "filed_owners": 976.84, "filed_nci": 0.05, "src": "BSE ann 20230526, consolidated P&L (Q4FY23, Rs lakhs 97689/97684/5), read by vision"},
+  "JISLJALEQS|20230331|patC": {"stored": 1162.06, "filed_total": 976.89, "filed_owners": 976.84, "filed_nci": 0.05, "src": "same underlying as JISLDVREQS (Jain Irrigation, DVR + equity share classes share fundamentals)"}
+ }
+}
