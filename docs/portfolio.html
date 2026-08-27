@@ -202,6 +202,46 @@ select,input[type=text],input[type=number],input[type=date]{
 .cal .d .s{font-size:11.5px; color:var(--text-2); margin-top:2px}
 .mstrip{display:flex; gap:4px; flex-wrap:wrap; margin:2px 0 8px}
 .mstrip span{font-size:11px; font-weight:700; padding:3px 7px; border-radius:6px; background:var(--surface-2)}
+/* ---------- Zerodha trade (Kite basket) ---------- */
+.kbtns{display:flex; gap:4px}
+.kbtn{border:1px solid var(--border); background:var(--surface-2); color:var(--text-2);
+  border-radius:6px; font-size:10.5px; font-weight:800; width:22px; height:20px; line-height:1; cursor:pointer; padding:0}
+.kbtn.b:hover{background:var(--up); border-color:var(--up); color:#fff}
+.kbtn.s:hover{background:var(--down); border-color:var(--down); color:#fff}
+#kdlgWrap{position:fixed; inset:0; z-index:200; background:rgba(0,0,0,.45); display:none; align-items:center; justify-content:center; padding:16px}
+#kdlgWrap.open{display:flex}
+#kdlg{width:min(430px,100%); max-height:92vh; overflow:auto; padding:16px}
+#kdlg h3{margin:0 0 2px; font-size:14px}
+#kdlg .krow{display:flex; gap:8px; margin-top:10px}
+#kdlg label{flex:1; font-size:11px; font-weight:700; color:var(--text-3); text-transform:uppercase; letter-spacing:.05em}
+#kdlg input,#kdlg select{width:100%; margin-top:4px; padding:7px 9px; font-size:13.5px; font-weight:600;
+  border:1px solid var(--border); border-radius:8px; background:var(--surface-2); color:var(--text)}
+#kdlg input:disabled{opacity:.45}
+#kdlg .seg{display:flex; margin-top:4px; border:1px solid var(--border); border-radius:8px; overflow:hidden}
+#kdlg .seg button{flex:1; border:0; padding:8px 0; font-size:12.5px; font-weight:700; background:var(--surface-2); color:var(--text-2); cursor:pointer}
+#kdlg .seg button.on.buy{background:var(--up); color:#fff}
+#kdlg .seg button.on.sell{background:var(--down); color:#fff}
+#kdlg .seg button.on.plain{background:var(--accent); color:#fff}
+.khelp{font-size:11.5px; color:var(--text-3); line-height:1.5; margin-top:10px}
+#kbasketChip{position:fixed; right:16px; bottom:16px; z-index:150; display:none; gap:0; box-shadow:var(--shadow); border-radius:9px; overflow:hidden}
+#kbasketChip.show{display:flex}
+#kbasketChip .btn{border-radius:0; border-right-width:0}
+#kbasketChip .btn:last-child{border-right-width:1px}
+#ktoast{position:fixed; left:50%; bottom:64px; transform:translateX(-50%); z-index:300; background:var(--text); color:var(--bg);
+  padding:8px 14px; border-radius:9px; font-size:12.5px; font-weight:600; opacity:0; pointer-events:none; transition:opacity .25s; max-width:90vw; text-align:center}
+#ktoast.show{opacity:1}
+/* ---------- Zerodha live card ---------- */
+#zBody table{width:100%; border-collapse:collapse; font-size:12.5px}
+#zBody th{font-size:10.5px; text-transform:uppercase; letter-spacing:.05em; color:var(--text-3); text-align:right; padding:5px 8px; border-bottom:1px solid var(--border)}
+#zBody th:first-child,#zBody td:first-child{text-align:left}
+#zBody td{padding:6px 8px; text-align:right; border-bottom:1px solid var(--grid); white-space:nowrap}
+#zBody h4{margin:14px 0 4px; font-size:11.5px; text-transform:uppercase; letter-spacing:.05em; color:var(--text-3)}
+.zchip{display:inline-block; padding:2px 7px; border-radius:20px; font-size:10.5px; font-weight:700; background:var(--surface-2); border:1px solid var(--border)}
+.zchip.ok{color:var(--up); border-color:var(--up)}
+.zchip.bad{color:var(--down); border-color:var(--down)}
+.zchip.open{color:var(--accent); border-color:var(--accent)}
+.zmsg{font-size:11px; color:var(--down); white-space:normal; text-align:left; max-width:280px}
+#zBody input{padding:7px 9px; font-size:13px; border:1px solid var(--border); border-radius:8px; background:var(--surface-2); color:var(--text)}
 </style>
 </head>
 <body>
@@ -230,6 +270,17 @@ select,input[type=text],input[type=number],input[type=date]{
     <div class="card c12" data-card="today" style="margin-bottom:14px"><h2 id="todayH">Today, by strategy</h2>
       <div class="sub" id="todaySub"></div>
       <div class="body"><div class="twrap"><table id="tblToday"></table></div></div></div>
+
+    <div class="card c12" data-card="zerodha" style="margin-bottom:14px">
+      <div style="display:flex; align-items:baseline; justify-content:space-between; gap:10px">
+        <h2>Zerodha — live account</h2>
+        <div style="margin:11px 16px 0; display:flex; gap:7px">
+          <button class="btn" id="zRefresh" style="display:none" title="Reload holdings, positions and orders from Zerodha">↻</button>
+          <button class="btn" id="zAction" style="display:none"></button>
+        </div></div>
+      <div class="sub" id="zSub">Your real Zerodha account — funds, holdings, positions and today's orders — through your own Cloudflare worker. One login a day (sessions die at 6 AM IST, a SEBI rule).</div>
+      <div class="body" id="zBody"><span class="sym">…</span></div>
+    </div>
 
     <div class="grid">
       <div class="card c12" id="cardModel" data-card="model"><h2>You vs the strategy — since its last rebalance</h2>
@@ -294,7 +345,9 @@ select,input[type=text],input[type=number],input[type=date]{
 
       <div class="card c12" data-card="holdings"><div style="display:flex; align-items:baseline; justify-content:space-between; gap:10px">
           <h2>Holdings</h2>
-          <button class="btn" id="btnCsv" style="margin:11px 16px 0" title="Download the rows shown (respects the account/portfolio filter) as a spreadsheet">⭳ CSV</button></div>
+          <div style="margin:11px 16px 0; display:flex; gap:7px">
+            <button class="btn" id="btnOrder" title="Place an order for any stock through Zerodha — you confirm it on Zerodha's own page">⚡ Order</button>
+            <button class="btn" id="btnCsv" title="Download the rows shown (respects the account/portfolio filter) as a spreadsheet">⭳ CSV</button></div></div>
         <div class="sub" id="holdSub"></div>
         <div class="body"><div class="twrap tvscroll"><table id="tblHold"></table></div></div></div>
 
@@ -1118,7 +1171,11 @@ const COLS=[
   {k:'pnlPct', t:'P&L %',    f:r=>'<span class="'+cls(r.pnlPct)+'">'+pct(r.pnlPct)+'</span>'},
   {k:'d52h',   t:'52w Hi',   f:r=>r.d52h==null?'<span class="sym">—</span>':'<span class="'+(r.d52h>=-10?'up':'flat')+'" title="'+(r.d52h>=-10?'within 10% of its 52-week high (passes the strategy\u2019s near-high entry filter)':Math.abs(r.d52h).toFixed(0)+'% below its 52-week high — would fail the near-high entry filter')+'">'+(r.d52h>=0?'+':'')+r.d52h.toFixed(1)+'%</span>'},
   {k:'days',   t:'Held',     f:r=>r.days+'d'},
-  {k:'trend',  t:'8-mo',     f:r=>sparkline(r.hist,64,20)||'<span class="sym">—</span>', nosort:true}
+  {k:'trend',  t:'8-mo',     f:r=>sparkline(r.hist,64,20)||'<span class="sym">—</span>', nosort:true},
+  {k:'trade',  t:'Trade',    nosort:true, f:r=>{ const sym=esc(r.live||r.sym||''), px=(r.px!=null?r.px:'');
+     return '<span class="kbtns">'+
+       '<button class="kbtn b" data-ktr="BUY"  data-ksym="'+sym+'" data-kqty="'+r.qty+'" data-kpx="'+px+'" title="Buy '+sym+' — opens Zerodha to confirm">B</button>'+
+       '<button class="kbtn s" data-ktr="SELL" data-ksym="'+sym+'" data-kqty="'+r.qty+'" data-kpx="'+px+'" title="Sell '+sym+' — opens Zerodha to confirm">S</button></span>'; }}
 ];
 function renderHoldings(rows){
   const t=totals(rows);
@@ -1132,7 +1189,7 @@ function renderHoldings(rows){
   sorted.forEach(r=>{ h+='<tr>'+COLS.map(c=>'<td>'+c.f(r)+'</td>').join('')+'</tr>'; });
   h+='</tbody><tfoot><tr class="pfhead"><td>Total</td><td></td><td></td><td></td><td></td><td class="'+cls(t.dayPct)+'">'+pct(t.dayPct)+'</td>'+
      '<td class="'+cls(t.day)+' secret">'+inrSigned(t.day)+'</td><td class="secret">'+inr(t.value)+'</td>'+
-     '<td class="'+cls(t.pnl)+' secret">'+inrSigned(t.pnl)+'</td><td class="'+cls(t.pnlPct)+'">'+pct(t.pnlPct)+'</td><td></td><td></td></tr></tfoot>';
+     '<td class="'+cls(t.pnl)+' secret">'+inrSigned(t.pnl)+'</td><td class="'+cls(t.pnlPct)+'">'+pct(t.pnlPct)+'</td><td></td><td></td><td></td><td></td></tr></tfoot>';
   $('tblHold').innerHTML=h;
   $('tblHold').querySelectorAll('th').forEach(th=>{ const c=COLS.find(x=>x.k===th.dataset.k);
     if(c&&c.nosort) return;
@@ -1591,6 +1648,327 @@ function buildSectionMenu(){
 $('btnSections').onclick=e=>{ e.stopPropagation(); const m=$('secMenu'), open=!m.classList.contains('open');
   if(open) buildSectionMenu(); m.classList.toggle('open',open); };
 document.addEventListener('click',e=>{ const m=$('secMenu'); if(m.classList.contains('open') && !m.contains(e.target) && e.target!==$('btnSections')) m.classList.remove('open'); });
+/* ---------------- Zerodha order placement (Kite basket) ----------------
+   Orders are BUILT here but always CONFIRMED on Zerodha's own basket page
+   (kite.zerodha.com opens in a new tab; login + final confirm happen there).
+   No password or API secret ever touches this page — the only thing stored is
+   the free Kite api_key, in THIS browser's localStorage, never in this file,
+   so the deployed public copy carries no key. Basket limit: 10 orders. */
+const KBASKET=[];
+const kiteKey=()=>localStorage.getItem('pf_kite_key')||'';
+function kiteMap(sym){
+  const raw=String(sym||'').trim().toUpperCase();
+  return {tradingsymbol:raw.replace(/\.(NS|BO)$/,''), exchange:/\.BO$/.test(raw)?'BSE':'NSE'};
+}
+function ktoast(msg,ms){ let t=$('ktoast');
+  if(!t){ t=document.createElement('div'); t.id='ktoast'; document.body.appendChild(t); }
+  t.textContent=msg; t.classList.add('show');
+  clearTimeout(ktoast._t); ktoast._t=setTimeout(()=>t.classList.remove('show'),ms||2600); }
+function kiteSend(orders){
+  const key=kiteKey();
+  if(!key){ kdlgKeyMode(true); return false; }
+  if(!orders.length){ ktoast('Nothing to send'); return false; }
+  if(orders.length>10){ ktoast('Zerodha baskets take at most 10 orders — send in parts'); return false; }
+  /* Open the tab explicitly: a silently-blocked target=_blank form looks exactly like success. */
+  const w=window.open('about:blank','kite_basket');
+  if(!w){ ktoast('Your browser blocked the Zerodha tab — allow pop-ups for this page, then send again',5200); return false; }
+  const f=document.createElement('form');
+  f.method='post'; f.action='https://kite.zerodha.com/connect/basket'; f.target='kite_basket'; f.style.display='none';
+  const a=document.createElement('input'); a.type='hidden'; a.name='api_key'; a.value=key;
+  const b=document.createElement('input'); b.type='hidden'; b.name='data'; b.value=JSON.stringify(orders);
+  f.append(a,b); document.body.appendChild(f); f.submit(); f.remove();
+  ktoast(orders.length===1?'Order sent — review and confirm it in the Zerodha tab':orders.length+' orders sent — review and confirm in the Zerodha tab',4000);
+  return true;
+}
+/* ----- dialog ----- */
+const KD={side:'BUY', type:'MARKET'};
+function ensureKdlg(){
+  if($('kdlgWrap')) return;
+  const w=document.createElement('div'); w.id='kdlgWrap';
+  w.innerHTML=
+   '<div class="card" id="kdlg">'+
+    '<h3 id="kdTitle">Zerodha order</h3>'+
+    '<div class="sub" style="padding:0">Nothing places from this page — you log in and press the final Buy/Sell on Zerodha’s own screen.</div>'+
+    '<div id="kdKey" style="display:none">'+
+      '<div class="khelp"><b>One-time setup:</b> this page needs your (free) Kite api_key to hand baskets to Zerodha.<br>'+
+      '1. Go to <a href="https://developers.kite.trade/apps" target="_blank" rel="noopener">developers.kite.trade/apps</a> and log in with your Zerodha account.<br>'+
+      '2. Create a new app — the free <b>Personal</b> type is enough (order APIs are ₹0; the ₹500/mo plan is only for market data). Any name; for redirect URL use your portfolio page’s web address.<br>'+
+      '3. Paste the <b>API key</b> (never the secret) below. It stays in this browser only.</div>'+
+      '<div class="krow"><label>API key<input id="kdKeyIn" placeholder="paste api_key" autocomplete="off"></label></div>'+
+      '<div class="krow" style="justify-content:flex-end"><button class="btn" id="kdKeyCancel">Cancel</button>'+
+      '<button class="btn on" id="kdKeySave">Save key</button></div>'+
+    '</div>'+
+    '<div id="kdForm">'+
+      '<div class="krow"><label>Symbol<input id="kdSym" placeholder="e.g. WALCHANNAG.NS or TCS" autocomplete="off"></label>'+
+        '<label>Side<div class="seg" id="kdSide"><button class="buy" data-v="BUY">Buy</button><button class="sell" data-v="SELL">Sell</button></div></label></div>'+
+      '<div class="krow"><label>Qty<input id="kdQty" type="number" min="1" step="1"></label>'+
+        '<label>Order type<div class="seg" id="kdType"><button class="plain" data-v="MARKET">Market</button><button class="plain" data-v="LIMIT">Limit</button></div></label></div>'+
+      '<div class="krow"><label>Limit price<input id="kdPx" type="number" min="0" step="0.05" placeholder="—"></label>'+
+        '<label>Product<select id="kdProd"><option value="CNC">Delivery (CNC)</option><option value="MIS">Intraday (MIS)</option><option value="MTF">MTF (margin)</option></select></label></div>'+
+      '<div class="krow" style="justify-content:flex-end; align-items:center">'+
+        '<a href="#" id="kdKeyEdit" style="font-size:11px; margin-right:auto">api key ✎</a>'+
+        '<button class="btn" id="kdCancel">Cancel</button>'+
+        '<button class="btn" id="kdAdd" title="Collect several orders, then send them together as one Zerodha basket (max 10)">＋ Basket</button>'+
+        '<button class="btn on" id="kdSend">Send ▸</button></div>'+
+      '<div class="krow" style="justify-content:flex-end; margin-top:6px"><a href="#" id="kdAlt" style="font-size:11px; display:none">send via the Kite popup instead</a></div>'+
+      '<div class="khelp">.NS / .BO in the symbol picks the exchange (plain symbols go to NSE). Sell pre-fills your full holding — edit it before sending. Zerodha’s page re-checks the symbol and funds before anything is placed.</div>'+
+    '</div></div>';
+  document.body.appendChild(w);
+  const chip=document.createElement('div'); chip.id='kbasketChip';
+  chip.innerHTML='<button class="btn on" id="kbSend" title="Opens Zerodha with all collected orders for review">🧺 Send basket · <span id="kbN">0</span> ▸</button>'+
+                 '<button class="btn" id="kbClear" title="Empty the basket">✕</button>';
+  document.body.appendChild(chip);
+  /* wiring */
+  w.addEventListener('click',e=>{ if(e.target===w) kdlgClose(); });
+  $('kdCancel').onclick=kdlgClose;
+  $('kdSide').onclick=e=>{ const b=e.target.closest('button'); if(b) kdSetSide(b.dataset.v); };
+  $('kdType').onclick=e=>{ const b=e.target.closest('button'); if(b) kdSetType(b.dataset.v); };
+  $('kdKeyEdit').onclick=e=>{ e.preventDefault(); kdlgKeyMode(true); };
+  $('kdKeyCancel').onclick=()=>{ kiteKey()?kdlgKeyMode(false):kdlgClose(); };
+  $('kdKeySave').onclick=()=>{ const v=$('kdKeyIn').value.trim();
+    if(!v){ ktoast('Paste the api_key first'); return; }
+    localStorage.setItem('pf_kite_key',v); kdlgKeyMode(false); ktoast('Key saved in this browser'); };
+  $('kdAdd').onclick=()=>{ const o=kdReadOrder(); if(!o) return;
+    if(KBASKET.length>=10){ ktoast('Basket is full (Zerodha max = 10) — send it first'); return; }
+    KBASKET.push(o); kbUpdate(); kdlgClose();
+    ktoast(o.transaction_type+' '+o.quantity+' '+o.tradingsymbol+' added · basket has '+KBASKET.length); };
+  /* Send ▸: not connected → Kite basket popup (Phase A). Connected → place
+     directly through the worker, but ALWAYS in two clicks: the first click
+     arms the button with a plain-English summary, the second fires. Any edit
+     to the form disarms it, so the summary can never go stale. */
+  $('kdSend').onclick=()=>{ const o=kdReadOrder(); if(!o) return;
+    if(Z.connected){
+      const b=$('kdSend');
+      if(b.dataset.arm!=='1'){ b.dataset.arm='1';
+        b.textContent='Confirm '+o.transaction_type+' '+o.quantity+' '+o.tradingsymbol+(o.order_type==='LIMIT'?' @ ₹'+o.price:' @ market')+' ?';
+        clearTimeout(Z.confirmT); Z.confirmT=setTimeout(zDisarm,7000);
+        return; }
+      zDisarm(); zPlace(o); kdlgClose();
+    } else if(kiteSend([o])) kdlgClose(); };
+  $('kdAlt').onclick=e=>{ e.preventDefault(); const o=kdReadOrder(); if(o && kiteSend([o])) kdlgClose(); };
+  ['kdSym','kdQty','kdPx','kdProd'].forEach(id=>$(id).addEventListener('input',zDisarm));
+  $('kbSend').onclick=()=>{ if(kiteSend(KBASKET.slice())){ KBASKET.length=0; kbUpdate(); } };
+  $('kbClear').onclick=()=>{ KBASKET.length=0; kbUpdate(); ktoast('Basket emptied'); };
+}
+function kdSetSide(v){ KD.side=v; $('kdSide').querySelectorAll('button').forEach(b=>b.classList.toggle('on',b.dataset.v===v)); zDisarm(); }
+function kdSetType(v){ KD.type=v; $('kdType').querySelectorAll('button').forEach(b=>b.classList.toggle('on',b.dataset.v===v));
+  $('kdPx').disabled=(v!=='LIMIT'); zDisarm(); }
+function kdlgKeyMode(on){ $('kdKey').style.display=on?'':'none'; $('kdForm').style.display=on?'none':'';
+  if(on){ $('kdKeyIn').value=kiteKey(); $('kdlgWrap').classList.add('open'); setTimeout(()=>$('kdKeyIn').focus(),50); } }
+function kdlgClose(){ $('kdlgWrap').classList.remove('open'); }
+function kbUpdate(){ $('kbN').textContent=KBASKET.length; $('kbasketChip').classList.toggle('show',KBASKET.length>0); }
+function kdReadOrder(){
+  const sym=$('kdSym').value.trim();
+  if(!sym){ ktoast('Symbol is empty'); $('kdSym').focus(); return null; }
+  const qty=Math.floor(+$('kdQty').value);
+  if(!(qty>=1)){ ktoast('Quantity must be a whole number ≥ 1'); $('kdQty').focus(); return null; }
+  const o=Object.assign({variety:'regular', transaction_type:KD.side, order_type:KD.type,
+    quantity:qty, product:$('kdProd').value}, kiteMap(sym));
+  if(KD.type==='LIMIT'){ const px=+$('kdPx').value;
+    if(!(px>0)){ ktoast('A limit order needs a price'); $('kdPx').focus(); return null; }
+    o.price=px; }
+  return o;
+}
+function openKiteDlg(opts){
+  ensureKdlg();
+  kdlgKeyMode(!kiteKey());
+  $('kdTitle').textContent=opts.sym?('Zerodha · '+opts.sym):'Zerodha order';
+  $('kdSym').value=opts.sym||'';
+  $('kdQty').value=opts.qty||1;
+  $('kdPx').value=(opts.px!=null&&isFinite(opts.px))?opts.px.toFixed(2):'';
+  $('kdProd').value='CNC';
+  kdSetSide(opts.tr==='SELL'?'SELL':'BUY');
+  kdSetType('MARKET');
+  zSendLabel();
+  $('kdlgWrap').classList.add('open');
+  if(!opts.sym) setTimeout(()=>$('kdSym').focus(),50);
+}
+function zSendLabel(){ const b=$('kdSend'); if(!b) return;
+  b.dataset.arm=''; b.textContent=Z.connected?'Place ▸':'Send ▸';
+  const a=$('kdAlt'); if(a) a.style.display=Z.connected?'':'none'; }
+function zDisarm(){ const b=$('kdSend'); if(b && b.dataset.arm==='1') zSendLabel(); }
+$('tblHold').addEventListener('click',e=>{
+  const b=e.target.closest('.kbtn'); if(!b) return;
+  openKiteDlg({sym:b.dataset.ksym, tr:b.dataset.ktr,
+    qty:(b.dataset.ktr==='SELL'?(+b.dataset.kqty||1):1), px:parseFloat(b.dataset.kpx)});
+});
+$('btnOrder').onclick=()=>openKiteDlg({sym:'', tr:'BUY', qty:1, px:null});
+
+/* ---------------- Zerodha live account (Phase B: Kite Connect via own worker) ----
+   kite-worker.js (Cloudflare) holds the api_secret and the day's access_token;
+   this page talks only to that worker, authed by the same private token that
+   already unlocks holdings (localStorage pf_token, or /.holdings_token when on
+   localhost). One Kite login a day connects every device at once, because the
+   session lives in the worker's KV, not in any one browser. */
+const Z={connected:false,user:null,data:{},timer:null,confirmT:null};
+const zOnWeb=!/^(localhost|127\.0\.0\.1)$/.test(location.hostname);
+const zWorker=()=>{ try{ return (localStorage.getItem('pf_kite_worker')||'').replace(/\/+$/,''); }catch(e){ return ''; } };
+let Z_TOKEN=null;
+async function zToken(){
+  if(Z_TOKEN!=null) return Z_TOKEN;
+  let t=''; try{ t=localStorage.getItem('pf_token')||''; }catch(e){}
+  if(!t && !zOnWeb){ try{ const r=await fetch('/.holdings_token',{cache:'no-store'}); if(r.ok) t=(await r.text()).trim(); }catch(e){} }
+  return (Z_TOKEN=t);
+}
+async function zFetch(path,opts){
+  const t=await zToken(), o=Object.assign({},opts||{});
+  o.headers=Object.assign({'X-PF-Token':t},o.headers||{});
+  try{ const r=await fetch(zWorker()+path,o);
+    let j=null; try{ j=await r.json(); }catch(e){}
+    return {st:r.status,j};
+  }catch(e){ return {st:0,j:null}; }
+}
+const zinr=v=>(v==null||!isFinite(v))?'—':'₹'+Math.round(v).toLocaleString('en-IN');
+function zBtns(show){ $('zRefresh').style.display=show?'':'none';
+  $('zAction').style.display=''; }
+function zSetup(msg){
+  zBtns(false); $('zAction').textContent='⚙ Setup';
+  $('zAction').onclick=()=>zSetup();
+  $('zBody').innerHTML=(msg?'<div class="khelp" style="color:var(--down)">'+msg+'</div>':'')+
+    '<div class="khelp">One-time on this device: paste your Kite worker URL. (Deploying the worker itself is a one-time job — the walkthrough is <b>KITE_SETUP.md</b> in ~/stocks-portfolio.)</div>'+
+    '<div style="display:flex; gap:7px; margin-top:6px; max-width:520px">'+
+    '<input id="zWUrl" placeholder="https://…workers.dev" style="flex:1" value="'+esc(zWorker())+'">'+
+    '<button class="btn on" id="zWSave">Save</button></div>';
+  $('zWSave').onclick=()=>{ const v=$('zWUrl').value.trim().replace(/\/+$/,'');
+    if(!/^https:\/\/.+|^http:\/\/(127\.0\.0\.1|localhost)(:\d+)?$/.test(v)){ ktoast('That does not look like an https worker URL'); return; }
+    try{ localStorage.setItem('pf_kite_worker',v); }catch(e){}
+    zInit(); };
+}
+function zDisconnected(){
+  Z.connected=false; if(Z.timer){ clearInterval(Z.timer); Z.timer=null; }
+  zBtns(false); $('zAction').textContent='Login to Zerodha';
+  $('zAction').onclick=zLogin;
+  $('zBody').innerHTML='<div class="khelp">Not connected today. One login connects the Mac and the phone together, until 6 AM tomorrow.</div>'+
+    '<div style="margin-top:8px"><button class="btn on" id="zLoginBig">Login to Zerodha ▸</button> '+
+    '<a href="#" id="zReconf" style="font-size:11px; margin-left:8px">worker ✎</a></div>';
+  $('zLoginBig').onclick=zLogin;
+  $('zReconf').onclick=e=>{ e.preventDefault(); zSetup(); };
+}
+function zLogin(){
+  const k=kiteKey();
+  if(!k){ ensureKdlg(); kdlgKeyMode(true); ktoast('Save your Kite API key first, then hit Login again',4000); return; }
+  location.href='https://kite.zerodha.com/connect/login?v=3&api_key='+encodeURIComponent(k);
+}
+async function zInit(){
+  if(!zWorker()){ zSetup(); return; }
+  $('zBody').innerHTML='<span class="sym">checking Zerodha…</span>';
+  if(!(await zToken())){
+    zSetup(zOnWeb?'No private token on this device — open the page once from your ?t= link, then retry.':'Could not read .holdings_token from the local server.');
+    return; }
+  const {st,j}=await zFetch('/status');
+  if(st===0){ zSetup('Could not reach the worker — check the URL and your internet.'); return; }
+  if(st===401){ zSetup('The worker refused the private token — its PF_TOKEN secret must equal your .holdings_token.'); return; }
+  if(!j || !j.connected){ zDisconnected(); return; }
+  Z.connected=true; Z.user=j.user||'';
+  zBtns(true); $('zAction').textContent='Logout';
+  $('zAction').onclick=async()=>{ if(!confirm('Log out of the Zerodha session for ALL devices until tomorrow?')) return;
+    await zFetch('/logout',{method:'POST'}); ktoast('Zerodha session closed'); zInit(); };
+  $('zRefresh').onclick=()=>zRefreshAll(false);
+  await zRefreshAll(false);
+  if(!Z.timer) Z.timer=setInterval(()=>{ if(!document.hidden && Z.connected && marketOpen()) zRefreshAll(true); },60000);
+}
+async function zRefreshAll(quiet){
+  if(!quiet) $('zRefresh').textContent='…';
+  const [h,p,o,m]=await Promise.all([zFetch('/holdings'),zFetch('/positions'),zFetch('/orders'),zFetch('/margins')]);
+  $('zRefresh').textContent='↻';
+  if([h,p,o,m].some(x=>x.st===403)){ ktoast('Zerodha session expired — log in again'); zDisconnected(); return; }
+  Z.data={hold:(h.j&&h.j.data)||[], pos:(p.j&&p.j.data&&p.j.data.net)||[], ord:(o.j&&o.j.data)||[], marg:(m.j&&m.j.data)||null};
+  zRender();
+}
+function zRender(){
+  const D=Z.data, out=[];
+  const eq=D.marg&&D.marg.equity;
+  out.push('<div class="trio">'+
+    '<div class="t"><div class="l">Logged in</div><div class="v" style="font-size:16px">'+esc(Z.user||'—')+'</div><div class="s">until 6 AM tomorrow</div></div>'+
+    '<div class="t"><div class="l">Available cash</div><div class="v secret" style="font-size:16px">'+(eq?zinr(eq.available&&eq.available.cash):'—')+'</div><div class="s">equity segment</div></div>'+
+    '<div class="t"><div class="l">Margin used</div><div class="v secret" style="font-size:16px">'+(eq?zinr(eq.utilised&&eq.utilised.debits):'—')+'</div><div class="s">net: <span class="secret">'+(eq?zinr(eq.net):'—')+'</span></div></div></div>');
+  /* today's orders first — that's what you check after placing one */
+  if(D.ord.length){
+    out.push('<h4>Today’s orders</h4><div class="twrap"><table><thead><tr><th>Time</th><th>Stock</th><th>Side</th><th>Qty</th><th>Price</th><th>Status</th><th></th></tr></thead><tbody>');
+    D.ord.slice().reverse().forEach(r=>{
+      const st=r.status||'', cls=st==='COMPLETE'?'ok':(st==='REJECTED'||st==='CANCELLED')?'bad':'open';
+      const live=(st==='OPEN'||st==='TRIGGER PENDING');
+      out.push('<tr><td>'+esc((r.order_timestamp||'').slice(11,16))+'</td>'+
+        '<td><b>'+esc(r.tradingsymbol||'')+'</b> <span class="sym">'+esc(r.exchange||'')+'</span></td>'+
+        '<td class="'+(r.transaction_type==='BUY'?'up':'down')+'">'+esc(r.transaction_type||'')+'</td>'+
+        '<td class="secret">'+(r.filled_quantity||0)+'/'+(r.quantity||0)+'</td>'+
+        '<td>'+(r.average_price?'₹'+(+r.average_price).toFixed(2):(r.price?'₹'+(+r.price).toFixed(2):'—'))+'</td>'+
+        '<td><span class="zchip '+cls+'">'+esc(st)+'</span>'+(st==='REJECTED'&&r.status_message?'<div class="zmsg">'+esc(r.status_message)+'</div>':'')+'</td>'+
+        '<td>'+(live?'<button class="kbtn" data-zcancel="'+esc(r.order_id)+'" data-zvar="'+esc(r.variety||'regular')+'" title="Cancel this order">✕</button>':'')+'</td></tr>');
+    });
+    out.push('</tbody></table></div>');
+  }
+  if(D.pos.length){
+    const open=D.pos.filter(r=>r.quantity!==0);
+    if(open.length){
+      out.push('<h4>Open positions</h4><div class="twrap"><table><thead><tr><th>Stock</th><th>Qty</th><th>Avg</th><th>LTP</th><th>P&L</th></tr></thead><tbody>');
+      open.forEach(r=>{ out.push('<tr><td><b>'+esc(r.tradingsymbol)+'</b> <span class="sym">'+esc(r.exchange)+' · '+esc(r.product)+'</span></td>'+
+        '<td class="secret">'+r.quantity+'</td><td>₹'+(+r.average_price).toFixed(2)+'</td><td>₹'+(+r.last_price).toFixed(2)+'</td>'+
+        '<td class="'+cls(r.pnl)+' secret">'+inrSigned(r.pnl)+'</td></tr>'); });
+      out.push('</tbody></table></div>');
+    }
+  }
+  if(D.hold.length){
+    let tot=0,totDay=0;
+    out.push('<h4>Holdings (demat)</h4><div class="twrap"><table><thead><tr><th>Stock</th><th>Qty</th><th>Avg</th><th>LTP</th><th>Day %</th><th>P&L</th><th>Trade</th></tr></thead><tbody>');
+    const hv=r=>(+r.last_price||0)*((r.quantity||0)+(r.t1_quantity||0));
+    D.hold.slice().sort((a,b)=>hv(b)-hv(a)).forEach(r=>{
+      const q=(r.quantity||0)+(r.t1_quantity||0); tot+=r.pnl||0; totDay+=(r.day_change||0)*q;
+      const dotSym=r.tradingsymbol+(r.exchange==='BSE'?'.BO':'.NS');
+      out.push('<tr><td><b>'+esc(r.tradingsymbol)+'</b> <span class="sym">'+esc(r.exchange)+(r.t1_quantity?' · T1:'+r.t1_quantity:'')+'</span></td>'+
+        '<td class="secret">'+q+'</td><td>₹'+(+r.average_price).toFixed(2)+'</td><td>₹'+(+r.last_price).toFixed(2)+'</td>'+
+        '<td class="'+cls(r.day_change_percentage)+'">'+pct(r.day_change_percentage)+'</td>'+
+        '<td class="'+cls(r.pnl)+' secret">'+inrSigned(r.pnl)+'</td>'+
+        '<td><span class="kbtns"><button class="kbtn b" data-ktr="BUY" data-ksym="'+esc(dotSym)+'" data-kqty="'+q+'" data-kpx="'+(+r.last_price||'')+'">B</button>'+
+        '<button class="kbtn s" data-ktr="SELL" data-ksym="'+esc(dotSym)+'" data-kqty="'+q+'" data-kpx="'+(+r.last_price||'')+'">S</button></span></td></tr>');
+    });
+    out.push('</tbody></table></div><div class="khelp">Holdings P&L <b class="'+cls(tot)+' secret">'+inrSigned(tot)+'</b> · today <b class="'+cls(totDay)+' secret">'+inrSigned(totDay)+'</b></div>');
+  }
+  if(!D.ord.length && !D.hold.length && !D.pos.length)
+    out.push('<div class="khelp">Connected, but Zerodha returned no holdings, positions or orders.</div>');
+  $('zBody').innerHTML=out.join('');
+}
+async function zPlace(o){
+  ktoast('Placing '+o.transaction_type+' '+o.quantity+' '+o.tradingsymbol+'…',6000);
+  const body=Object.assign({variety:'regular', validity:'DAY', tag:'pfdash'},o);
+  const {st,j}=await zFetch('/order',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify(body)});
+  if(st===403){ ktoast('Zerodha session expired — log in again',5000); zDisconnected(); return; }
+  if(st===200 && j && j.data && j.data.order_id){
+    const id=j.data.order_id;
+    ktoast('Order placed ✓ — checking status…',4000);
+    setTimeout(async()=>{ const r=await zFetch('/orders');
+      const row=r.j&&r.j.data&&r.j.data.find(x=>x.order_id===id);
+      if(row) ktoast(row.tradingsymbol+': '+row.status+(row.status_message?' — '+row.status_message:''),7000);
+      zRefreshAll(true); },1800);
+  } else ktoast('Zerodha refused it: '+((j&&j.message)||('HTTP '+st)),7000);
+}
+$('zBody').addEventListener('click',async e=>{
+  const c=e.target.closest('[data-zcancel]');
+  if(c){ if(!confirm('Cancel order '+c.dataset.zcancel+'?')) return;
+    const {st,j}=await zFetch('/order?variety='+encodeURIComponent(c.dataset.zvar)+'&order_id='+encodeURIComponent(c.dataset.zcancel),{method:'DELETE'});
+    ktoast(st===200?'Cancel sent':'Cancel failed: '+((j&&j.message)||('HTTP '+st)),4000);
+    zRefreshAll(true); return; }
+  const b=e.target.closest('.kbtn'); if(!b||!b.dataset.ktr) return;
+  openKiteDlg({sym:b.dataset.ksym, tr:b.dataset.ktr,
+    qty:(b.dataset.ktr==='SELL'?(+b.dataset.kqty||1):1), px:parseFloat(b.dataset.kpx)});
+});
+/* Kite's login bounces back here with ?request_token=… — catch it, trade it in,
+   and scrub the URL so a reload can't replay a dead token. */
+(function zCapture(){
+  const u=new URL(location.href), rt=u.searchParams.get('request_token');
+  if(!rt){ zInit(); return; }
+  ['request_token','action','status','type'].forEach(k=>u.searchParams.delete(k));
+  history.replaceState(null,'',u.pathname+(u.searchParams.toString()?'?'+u.searchParams.toString():'')+u.hash);
+  (async()=>{
+    if(!zWorker()){ zSetup('Kite logged you in, but this device has no worker URL saved yet — save it, then log in again.'); return; }
+    $('zBody').innerHTML='<span class="sym">finishing Zerodha login…</span>';
+    const {st,j}=await zFetch('/session',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({request_token:rt})});
+    if(st===200 && j && j.ok){ ktoast('Zerodha connected ✓ '+(j.user||''),4000); }
+    else ktoast('Login exchange failed: '+JSON.stringify((j&&(j.kite&&j.kite.message||j.error))||st).replace(/"/g,''),7000);
+    zInit();
+  })();
+})();
+
 (function initPrefs(){
   const th=localStorage.getItem('pf_theme'); if(th) document.documentElement.setAttribute('data-theme',th);
   applyThemeBtn();
