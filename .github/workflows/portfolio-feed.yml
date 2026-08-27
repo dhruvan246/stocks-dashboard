@@ -45,4 +45,7 @@ jobs:
           # 35 > the 20-minute trigger gap on purpose: a run keeps pushing across the
           # next slot, so a dropped/delayed trigger still leaves no hole.
           if [ -z "$LOOP" ]; then LOOP=35; fi
-          python3 scripts/portfolio_feed.py --loop "$LOOP" --every 120
+          # --every 60: refresh the number every 60s, matching the live dashboard's poll (no
+          # point faster — the quote worker's own cache is ~1 min). The widget still only
+          # SHOWS it as often as Android lets KWGT fetch.
+          python3 scripts/portfolio_feed.py --loop "$LOOP" --every 60
