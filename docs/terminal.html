@@ -933,6 +933,8 @@ body.blur-secret .secret{filter:blur(7px);-webkit-user-select:none;user-select:n
     if(!zWorkerUrl()){ connectSetup('login'); return; }
     acctFetch('/session',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({request_token:rt})}).then(function(){ renderAcct(false); });
   })();
+  /* deep-link: terminal.html#strategies opens the Strategies panel straight away (e.g. the portfolio header's 🧺 Strategies) */
+  (function(){ if((location.hash||'').toLowerCase()==='#strategies' && !new URL(location.href).searchParams.get('request_token')) openStrategies(); })();
   var POLL=setInterval(function(){ if(document.hidden) return; fetchQuotes(); fetchIndices(); if(ACCT.connected) renderAcct(true); },30000);
   document.addEventListener('visibilitychange',function(){ if(!document.hidden){ fetchQuotes(); fetchIndices(); renderAcct(true); } });
 })();
