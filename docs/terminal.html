@@ -194,8 +194,10 @@ a{color:var(--buy);text-decoration:none}
 .placenote{margin:0 15px 14px;font-size:10.5px;color:var(--text-3);text-align:center;line-height:1.4}
 .placerow{display:flex;gap:8px;margin:4px 15px 6px}
 .placerow .place{margin:0;flex:1;width:auto}
-.basketbtn{flex:none;width:46px;border:1px solid var(--border);background:var(--surface-2);color:var(--text-2);border-radius:11px;font-size:18px;font-weight:700;cursor:pointer}
+.basketbtn{flex:none;min-width:50px;padding:0 11px;border:1px solid var(--border);background:var(--surface-2);color:var(--text-2);border-radius:11px;font-size:16px;font-weight:700;cursor:pointer;white-space:nowrap}
 .basketbtn:hover{border-color:var(--buy);color:var(--buy)}
+.basketbtn.has{border-color:var(--buy);color:var(--buy);background:var(--buy-soft)}
+.basketbtn .bkadd{font-size:11px;vertical-align:super}
 .place.armed{filter:brightness(.85);animation:armpulse 1.1s infinite}
 @keyframes armpulse{0%,100%{opacity:1}50%{opacity:.72}}
 .basketchip{position:fixed;right:18px;bottom:18px;z-index:80;display:none;gap:6px;align-items:center;background:var(--surface);border:1px solid var(--border);border-radius:12px;padding:7px;box-shadow:var(--shadow)}
@@ -381,7 +383,7 @@ body.blur-secret .secret{filter:blur(7px);-webkit-user-select:none;user-select:n
         </div>
         <div class="placerow">
           <button class="place b" id="placeBtn">Buy</button>
-          <button class="basketbtn" id="basketBtn" title="Add to a basket — send several orders together, confirm on Zerodha">＋</button>
+          <button class="basketbtn" id="basketBtn" title="Add to basket — collect several orders, then send &amp; confirm them together on Zerodha">🧺<span class="bkadd">＋</span></button>
         </div>
         <div class="placenote">You review &amp; confirm every order on Zerodha's own page. When connected, placing is two clicks — click, then confirm.</div>
       </div>
@@ -686,7 +688,8 @@ body.blur-secret .secret{filter:blur(7px);-webkit-user-select:none;user-select:n
       clearTimeout(ARMT); ARMT=setTimeout(disarm,7000); return; }
     disarm(); zPlace(o);
   }
-  function updateBasketChip(){ var c=document.getElementById('basketChip'); document.getElementById('bcN').textContent=BASKET.length; c.classList.toggle('show',BASKET.length>0); }
+  function updateBasketChip(){ var c=document.getElementById('basketChip'); document.getElementById('bcN').textContent=BASKET.length; c.classList.toggle('show',BASKET.length>0);
+    var bb=document.getElementById('basketBtn'); if(bb){ bb.innerHTML=BASKET.length?('🧺 '+BASKET.length):'🧺<span class="bkadd">＋</span>'; bb.classList.toggle('has',BASKET.length>0); } }
   function addToBasket(){ var o=buildOrder(); if(!o) return;
     if(BASKET.length>=10){ ktoast('Basket is full (Zerodha max 10) — send it first'); return; }
     BASKET.push(o); updateBasketChip(); ktoast(o.transaction_type+' '+o.quantity+' '+o.tradingsymbol+' added · basket has '+BASKET.length); }
