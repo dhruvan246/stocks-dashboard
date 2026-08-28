@@ -477,7 +477,12 @@ async function gunzipJSON(url){
    two homes — deploy.sh copies it, so the two can never drift apart. */
 const SUPA_GET='https://nebjnsndgrhumnkuipqy.supabase.co/rest/v1/rpc/pf_feed_get';
 const SUPA_ANON='sb_publishable_MDlQwiVc5deii91__UNeDg_z9r4Fk98';
-let MODE='local';
+/* MODE must be known SYNCHRONOUSLY: loadModel()/loadTrades() read it at the top, BEFORE their first
+   await, and they race loadHoldings() (which also sets it) inside loadAll()'s one-wave Promise.all.
+   Seed it from the hostname here (same test as zOnWeb) — otherwise the deployed page still reads the
+   default 'local', fetches ./model.json + ./trades.json (404 on Pages) and shows "nothing yet" even
+   though the token-addressed supabase rows are fine. loadHoldings() re-confirms it via the file probe. */
+let MODE = /^(localhost|127\.0\.0\.1)$/.test(location.hostname) ? 'local' : 'web';
 function readToken(){
   const u=new URL(location.href), t=u.searchParams.get('t');
   if(t){ try{localStorage.setItem('pf_token',t);}catch(e){}
@@ -1396,7 +1401,7 @@ function wireStratTabs(host){ host.querySelectorAll('.stab').forEach(b=>b.onclic
   SEL.stratTab=b.dataset.strat; const rows=visibleRows(); renderModel(rows); renderCalendar(rows); }); }
 function renderModel(rows){
   const body=$('modelBody'), sub=$('modelSub');
-  if(!MODEL){ sub.textContent='No model file yet.'; body.innerHTML='<div class="empty">Run <code>node model_track.js</code> on the Mac, then re-publish.</div>'; return; }
+  if(!MODEL){ sub.textContent='No model file yet.'; body.innerHTML='<div class="empty">Publish from the Mac (double-click <code>Publish.command</code>) to generate it.</div>'; return; }
   const list=modelStrategies(rows);
   if(!list.length){ sub.textContent='No strategy in this selection.'; body.innerHTML='<div class="empty">Pick an MTF strategy.</div>'; return; }
   sub.innerHTML='The strategy\u2019s basket from its last rebalance close vs. what you actually hold, both priced live. '+
@@ -1461,7 +1466,7 @@ function renderModel(rows){
 }
 function renderCalendar(rows){
   const body=$('calBody'), sub=$('calSub');
-  if(!MODEL){ sub.textContent='No model file yet.'; body.innerHTML='<div class="empty">Run <code>node model_track.js</code> on the Mac, then re-publish.</div>'; return; }
+  if(!MODEL){ sub.textContent='No model file yet.'; body.innerHTML='<div class="empty">Publish from the Mac (double-click <code>Publish.command</code>) to generate it.</div>'; return; }
   const list=modelStrategies(rows);
   if(!list.length){ sub.textContent='No strategy in this selection.'; body.innerHTML='<div class="empty">Pick an MTF strategy.</div>'; return; }
   const asOf=MODEL.picksAsOf||MODEL.dataEnd;
