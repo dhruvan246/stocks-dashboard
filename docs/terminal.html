@@ -190,19 +190,48 @@ a{color:var(--buy);text-decoration:none}
 .place.b{background:var(--buy)} .place.s{background:var(--sell)}
 .place:disabled{opacity:1}
 .placenote{margin:0 15px 14px;font-size:10.5px;color:var(--text-3);text-align:center;line-height:1.4}
-.pos{border-top:1px solid var(--border);padding:14px 15px 16px}
-.pos .ph{font-size:12px;font-weight:700;display:flex;align-items:center;gap:8px}
-.pos .pd{font-size:11.5px;color:var(--text-3);margin-top:6px;line-height:1.45}
-.pos .cbtn{margin-top:11px;display:inline-block;font-size:12px;font-weight:700;color:var(--buy);border:1px solid var(--buy);border-radius:9px;padding:8px 13px;background:var(--buy-soft)}
+/* positions & funds card (top of marketwatch) */
+.pfcard{margin:10px 12px 4px;border:1px solid var(--border);border-radius:11px;background:var(--surface-2);padding:10px 12px;cursor:pointer;transition:border-color .12s,background .12s}
+.pfcard:hover{border-color:var(--buy)}
+.pfcard.on{border-color:var(--buy);box-shadow:0 0 0 1px var(--buy);background:color-mix(in srgb,var(--buy-soft) 45%,var(--surface-2))}
+.pfc-top{display:flex;align-items:center;gap:8px;font-size:12.5px;font-weight:700}
+.pfc-ic{font-size:14px}
+.pfc-ar{margin-left:auto;color:var(--text-3);font-weight:800}
+.pfc-sum{font-size:11px;margin-top:5px;color:var(--text-2);font-weight:600;font-family:"JetBrains Mono",monospace}
+.pfc-sum .pfc-hint{color:var(--text-3);font-weight:500;font-family:"Inter",sans-serif}
+/* account view (center) */
+.acctview{padding:1px}
+.av-head{display:flex;align-items:center;gap:10px;flex-wrap:wrap;margin-bottom:12px}
+.av-title{font-size:16px;font-weight:800;letter-spacing:-.02em}
+.av-upd{font-size:11px;color:var(--text-3);margin-left:auto}
+.av-kpis{display:grid;grid-template-columns:repeat(auto-fit,minmax(140px,1fr));gap:10px;margin-bottom:14px}
+.avk{border:1px solid var(--border);border-radius:12px;background:var(--surface-2);padding:11px 13px}
+.avk .l{font-size:9.5px;color:var(--text-3);font-weight:700;text-transform:uppercase;letter-spacing:.05em}
+.avk .v{font-size:18px;font-weight:800;margin-top:4px;font-family:"JetBrains Mono",monospace;letter-spacing:-.02em}
+.avk .s{font-size:10.5px;font-weight:600;margin-top:2px;color:var(--text-3)}
+.av-sec{font-size:10.5px;font-weight:700;text-transform:uppercase;letter-spacing:.05em;color:var(--text-3);margin:15px 2px 6px}
+.atbl-wrap{overflow-x:auto;-webkit-overflow-scrolling:touch;border:1px solid var(--border);border-radius:11px}
+.atbl{width:100%;border-collapse:collapse;font-size:12.5px}
+.atbl th{text-align:right;font-size:10px;font-weight:700;color:var(--text-3);text-transform:uppercase;letter-spacing:.04em;padding:9px 11px;border-bottom:1px solid var(--border);white-space:nowrap;position:sticky;top:0;background:var(--surface)}
+.atbl td{text-align:right;padding:9px 11px;border-bottom:1px solid var(--border-2);white-space:nowrap;vertical-align:top}
+.atbl th:first-child,.atbl td:first-child{text-align:left}
+.atbl tbody tr{cursor:pointer}
+.atbl tbody tr:hover{background:var(--surface-2)}
+.atbl tbody tr:last-child td{border-bottom:none}
+.atbl tfoot td{padding:10px 11px;font-weight:800;border-top:1px solid var(--border);border-bottom:none;background:var(--surface-2)}
+.atbl .nm{font-weight:700}
+.atbl .xtag{font-size:8px;color:var(--text-3);border:1px solid var(--border);border-radius:3px;padding:0 3px;margin-left:4px;font-weight:800;vertical-align:middle}
+.atbl .sub{font-size:10px;font-weight:600;margin-top:1px}
+.acct-msg{padding:22px 4px;font-size:13px;color:var(--text-2);line-height:1.55;max-width:54ch}
+.acct-msg a{font-weight:600}
 
 .foot{max-width:1340px;margin:0 auto;padding:2px 18px 40px;font-size:11px;color:var(--text-3);line-height:1.5}
 .foot code{font-family:"JetBrains Mono",monospace;font-size:10.5px;background:var(--surface-2);padding:1px 5px;border-radius:4px}
 
 @media(max-width:1140px){
   .body{grid-template-columns:236px minmax(0,1fr)}
-  .pane.tk{grid-column:1 / -1;border-left:none;border-top:1px solid var(--border);flex-direction:row;flex-wrap:wrap}
-  .tkbody{max-height:none;flex:1 1 340px}
-  .pos{flex:1 1 280px;border-top:none;border-left:1px solid var(--border)}
+  .pane.tk{grid-column:1 / -1;border-left:none;border-top:1px solid var(--border)}
+  .tkbody{max-height:none}
 }
 @media(max-width:760px){
   .strip{flex-wrap:wrap}
@@ -212,8 +241,6 @@ a{color:var(--buy);text-decoration:none}
   .pane.mw{border-right:none;border-bottom:1px solid var(--border)}
   .mwlist{max-height:220px}
   .focus{max-height:none}
-  .pane.tk{flex-direction:column}
-  .pos{border-left:none;border-top:1px solid var(--border)}
   .legend{display:none}
   .fprice{margin-left:0;text-align:left;width:100%}
 }
@@ -262,14 +289,6 @@ body.blur-secret .secret{filter:blur(7px);-webkit-user-select:none;user-select:n
   <button class="tbtn" id="privBtn" title="Blur account numbers" aria-label="Toggle privacy blur">🙈</button>
   <button class="tbtn" id="themeBtn" title="Toggle theme" aria-label="Toggle theme">🌙</button>
 </div>
-<div class="legend">
-  <span class="l">Best of</span>
-  <span class="lchip"><b>Kite</b> · layout + hover B/S</span>
-  <span class="lchip"><b>Groww</b> · clarity</span>
-  <span class="lchip"><b>Dhan</b> · super-order</span>
-  <span class="lchip"><b>TradingView</b> · chart crosshair</span>
-</div>
-
 <div class="app">
   <div class="strip">
     <div class="idxwrap" id="idxWrap"></div>
@@ -280,12 +299,19 @@ body.blur-secret .secret{filter:blur(7px);-webkit-user-select:none;user-select:n
 
   <div class="body">
     <div class="pane mw">
+      <div class="pfcard" id="pfCard" role="button" tabindex="0" title="View your Zerodha positions & funds">
+        <div class="pfc-top"><span class="pfc-ic">💼</span><span class="pfc-t">Positions &amp; funds</span><span class="pfc-ar">→</span></div>
+        <div class="pfc-sum" id="pfCardSum"><span class="pfc-hint">tap to view your account</span></div>
+      </div>
       <div class="mwtabs"><span class="t">Marketwatch</span></div>
       <div class="mwsearch"><span style="color:var(--text-3)">⌕</span><input id="searchInp" placeholder="Filter…" aria-label="Filter watchlist"></div>
       <div class="mwlist" id="mwlist"></div>
     </div>
 
-    <div class="pane focus" id="focus"></div>
+    <div class="pane focus" id="focus">
+      <div id="stockView"></div>
+      <div id="acctView" class="acctview" style="display:none"></div>
+    </div>
 
     <div class="pane tk">
       <div class="tkbody">
@@ -321,10 +347,6 @@ body.blur-secret .secret{filter:blur(7px);-webkit-user-select:none;user-select:n
         </div>
         <button class="place b" id="placeBtn" disabled>Order placement not wired here</button>
         <div class="placenote">Live price &amp; margin math. To actually place this order, use the ⚡ Order button on your <a href="./portfolio.html">portfolio</a> page.</div>
-      </div>
-      <div class="pos" id="acctPanel">
-        <div class="ph">Positions &amp; funds</div>
-        <div class="pd">Loading your Zerodha account…</div>
       </div>
     </div>
   </div>
@@ -448,10 +470,10 @@ body.blur-secret .secret{filter:blur(7px);-webkit-user-select:none;user-select:n
   }
 
   /* ---------------- focus (worker ?chart=SYM.NS) ---------------- */
-  function selectSym(sym,side){ SEL=sym; if(side){SIDE=side;syncSide();} renderMW(); renderFocusShell(); loadFocus(sym); }
+  function selectSym(sym,side){ SEL=sym; if(side){SIDE=side;syncSide();} showView('stock'); renderMW(); renderFocusShell(); loadFocus(sym); }
   function renderFocusShell(){
     var nm=NAME[SEL]||SEL;
-    document.getElementById('focus').innerHTML=''+
+    document.getElementById('stockView').innerHTML=''+
       '<div class="fhead"><div><div class="nm">'+nm+'</div><div class="exq"><span class="extag">NSE</span> '+SEL+' · Equity</div></div>'+
       '<div class="fprice"><div class="p mono" id="fPx">—</div><div class="ch flat mono" id="fCh">loading…</div></div></div>'+
       '<div class="chmeta"><span class="ct">Intraday</span><span class="livetag">● Live</span><span class="note">1&nbsp;min · Yahoo NSE (~15&nbsp;min delayed)</span></div>'+
@@ -607,7 +629,7 @@ body.blur-secret .secret{filter:blur(7px);-webkit-user-select:none;user-select:n
       .then(function(r){ return r.json().then(function(j){return {st:r.status,j:j};},function(){return {st:r.status,j:null};}); })
       .catch(function(){ return {st:0,j:null}; });
   }
-  function acctMsg(html){ document.getElementById('acctPanel').innerHTML='<div class="ph">Positions &amp; funds</div><div class="pd" style="margin-top:6px">'+html+'</div>'; }
+  function acctMsg(html){ document.getElementById('acctView').innerHTML='<div class="av-head"><span class="av-title">Your Zerodha account</span></div><div class="acct-msg">'+html+'</div>'; }
   var ACCT={connected:false};
   function zq(r){ var m=r.mtf||{}; return (r.quantity||0)+(r.t1_quantity||0)+(r.collateral_quantity||0)+(m.quantity||0); }
   function zavg(r){ var m=r.mtf||{}, nq=(r.quantity||0)+(r.t1_quantity||0)+(r.collateral_quantity||0), mq=m.quantity||0, q=nq+mq; return q?((r.average_price||0)*nq+(m.average_price||0)*mq)/q:0; }
@@ -627,38 +649,68 @@ body.blur-secret .secret{filter:blur(7px);-webkit-user-select:none;user-select:n
       });
     });
   }
+  function kpi(l,v,s,pos){ var cls=pos==null?'':(pos?'up':'down'); return '<div class="avk"><div class="l">'+l+'</div><div class="v secret '+cls+'">'+v+'</div><div class="s '+cls+'">'+(s||'')+'</div></div>'; }
   function drawAcct(D){
     var eq=D.marg&&D.marg.equity, av=(eq&&eq.available)||null;
     var avail=eq?(av&&av.live_balance!=null?av.live_balance:(eq.net!=null?eq.net:(av&&av.cash))):null;
     var used=(eq&&eq.utilised)?eq.utilised.debits:null;
-    var html='<div class="ph" style="display:flex;align-items:center;justify-content:space-between;gap:8px"><span>Positions &amp; funds</span><span class="livetag">● '+esc(D.user||'live')+'</span></div>';
-    html+='<div class="acct-trio"><div class="acct-tile"><div class="l">Funds available</div><div class="v secret">'+zinr(avail)+'</div><div class="s">equity · to trade</div></div>'+
-          '<div class="acct-tile"><div class="l">Margin used</div><div class="v secret">'+zinr(used)+'</div><div class="s">deployed</div></div></div>';
-    var pos=(D.pos||[]).filter(function(r){return r.quantity!==0;});
-    if(pos.length){
-      html+='<div class="acct-sec">Open positions · '+pos.length+'</div>';
-      pos.forEach(function(r){
-        html+='<div class="hcard" data-sy="'+esc(r.tradingsymbol)+'"><div><div class="hs">'+esc(r.tradingsymbol)+'</div><div class="hm secret">'+r.quantity+' @ '+(+r.average_price).toFixed(2)+' · '+esc(r.product||'')+'</div></div>'+
-          '<div class="pr"><div class="hv">₹'+(+r.last_price).toFixed(2)+'</div><div class="hd '+(r.pnl>=0?'up':'down')+' secret">'+inrSigned(r.pnl)+'</div></div></div>';
-      });
-    }
     var hold=(D.hold||[]).filter(function(r){return zq(r)>0;});
-    if(hold.length){
-      var tot=0;
-      hold.sort(function(a,b){return (+b.last_price*zq(b))-(+a.last_price*zq(a));});
-      html+='<div class="acct-sec">Holdings · '+hold.length+'</div>';
-      hold.forEach(function(r){
-        var q=zq(r), avg=zavg(r), pnl=(+r.last_price-avg)*q; tot+=pnl;
-        var isMtf=((r.mtf||{}).quantity||0)>0, dp=r.day_change_percentage;
-        html+='<div class="hcard" data-sy="'+esc(r.tradingsymbol)+'"><div><div class="hs">'+esc(r.tradingsymbol)+(isMtf?' <span class="mtftag">MTF</span>':'')+'</div><div class="hm secret">'+q.toLocaleString('en-IN')+' @ '+avg.toFixed(2)+'</div></div>'+
-          '<div class="pr"><div class="hv secret '+(pnl>=0?'up':'down')+'">'+inrSigned(pnl)+'</div><div class="hd '+((dp||0)>=0?'up':'down')+'">'+(dp==null?'—':signed(dp))+'</div></div></div>';
-      });
-      html+='<div class="acct-tot"><span class="acct-note">Holdings P&amp;L</span><b class="secret '+(tot>=0?'up':'down')+'">'+inrSigned(tot)+'</b></div>';
+    hold.sort(function(a,b){return (+b.last_price*zq(b))-(+a.last_price*zq(a));});
+    var holdTot=0,holdDay=0,curVal=0,invested=0;
+    var hrows=hold.map(function(r){
+      var q=zq(r),avg=zavg(r),ltp=+r.last_price||0,val=ltp*q;
+      var totPnl=(ltp-avg)*q,totPct=avg?(ltp-avg)/avg*100:0,dayPnl=(r.day_change||0)*q,dayPct=r.day_change_percentage;
+      holdTot+=totPnl;holdDay+=dayPnl;curVal+=val;invested+=avg*q;
+      var isMtf=((r.mtf||{}).quantity||0)>0;
+      return '<tr data-sy="'+esc(r.tradingsymbol)+'"><td><span class="nm">'+esc(r.tradingsymbol)+'</span>'+(isMtf?'<span class="xtag">MTF</span>':'')+'</td>'+
+        '<td class="secret">'+q.toLocaleString('en-IN')+'</td><td>₹'+avg.toFixed(2)+'</td><td>₹'+ltp.toFixed(2)+'</td>'+
+        '<td class="secret '+(dayPnl>=0?'up':'down')+'">'+inrSigned(dayPnl)+'<div class="sub '+((dayPct||0)>=0?'up':'down')+'">'+(dayPct==null?'':signed(dayPct))+'</div></td>'+
+        '<td class="secret '+(totPnl>=0?'up':'down')+'">'+inrSigned(totPnl)+'<div class="sub">'+signed(totPct)+'</div></td>'+
+        '<td class="secret">'+zinr(val)+'</td></tr>';
+    }).join('');
+    var pos=(D.pos||[]).filter(function(r){return r.quantity!==0;});
+    var posTot=0,posDay=0;
+    var prows=pos.map(function(r){
+      var pnl=+r.pnl||0,m2m=(r.m2m!=null?+r.m2m:null); posTot+=pnl; posDay+=(m2m||0);
+      return '<tr data-sy="'+esc(r.tradingsymbol)+'"><td><span class="nm">'+esc(r.tradingsymbol)+'</span><span class="xtag">'+esc(r.product||'')+'</span></td>'+
+        '<td class="secret">'+r.quantity+'</td><td>₹'+(+r.average_price).toFixed(2)+'</td><td>₹'+(+r.last_price).toFixed(2)+'</td>'+
+        '<td class="secret '+((m2m||0)>=0?'up':'down')+'">'+(m2m==null?'—':inrSigned(m2m))+'</td>'+
+        '<td class="secret '+(pnl>=0?'up':'down')+'">'+inrSigned(pnl)+'</td></tr>';
+    }).join('');
+    var acctDay=holdDay+posDay, acctTot=holdTot+posTot;
+    var dayPctAll=(curVal-holdDay)?holdDay/(curVal-holdDay)*100:0, totPctAll=invested?holdTot/invested*100:0;
+    var h='<div class="av-head"><span class="av-title">Your Zerodha account</span><span class="livetag">● '+esc(D.user||'live')+'</span><span class="av-upd">as of '+istTime(Date.now())+'</span></div>';
+    h+='<div class="av-kpis">'+
+      kpi("Day's P&L",inrSigned(acctDay),signed(dayPctAll),acctDay>=0)+
+      kpi('Total P&L',inrSigned(acctTot),signed(totPctAll),acctTot>=0)+
+      kpi('Current value',zinr(curVal),'invested <span class="secret">'+zinr(invested)+'</span>',null)+
+      kpi('Funds available',zinr(avail),'equity · to trade',null)+
+      kpi('Margin used',zinr(used),'deployed',null)+'</div>';
+    if(pos.length){
+      h+='<div class="av-sec">Open positions · '+pos.length+'</div><div class="atbl-wrap"><table class="atbl"><thead><tr><th>Contract</th><th>Qty</th><th>Avg</th><th>LTP</th><th>Day P&amp;L</th><th>P&amp;L</th></tr></thead><tbody>'+prows+'</tbody></table></div>';
     }
-    if(!pos.length && !hold.length) html+='<div class="pd" style="margin-top:6px">No open positions or holdings.</div>';
-    document.getElementById('acctPanel').innerHTML=html;
+    if(hold.length){
+      h+='<div class="av-sec">Holdings · '+hold.length+'</div><div class="atbl-wrap"><table class="atbl"><thead><tr><th>Stock</th><th>Qty</th><th>Avg</th><th>LTP</th><th>Day\'s P&amp;L</th><th>Total P&amp;L</th><th>Value</th></tr></thead><tbody>'+hrows+
+        '</tbody><tfoot><tr><td>Total</td><td></td><td></td><td></td><td class="secret '+(holdDay>=0?'up':'down')+'">'+inrSigned(holdDay)+'</td><td class="secret '+(holdTot>=0?'up':'down')+'">'+inrSigned(holdTot)+'</td><td class="secret">'+zinr(curVal)+'</td></tr></tfoot></table></div>';
+    }
+    if(!pos.length && !hold.length) h+='<div class="acct-msg">No open positions or holdings.</div>';
+    document.getElementById('acctView').innerHTML=h;
+    var cs=document.getElementById('pfCardSum');
+    if(cs) cs.innerHTML='Total <b class="'+(acctTot>=0?'up':'down')+'">'+inrSigned(acctTot)+'</b> · Day <b class="'+(acctDay>=0?'up':'down')+'">'+inrSigned(acctDay)+'</b>';
   }
-  document.getElementById('acctPanel').addEventListener('click',function(e){ var c=e.target.closest('.hcard'); if(c && c.dataset.sy) selectSym(c.dataset.sy); });
+  /* center view switch: stock chart <-> account */
+  var VIEW='stock';
+  function showView(v){ VIEW=v;
+    document.getElementById('stockView').style.display=(v==='stock')?'':'none';
+    document.getElementById('acctView').style.display=(v==='account')?'':'none';
+    var c=document.getElementById('pfCard'); if(c) c.classList.toggle('on',v==='account');
+  }
+  (function(){ var card=document.getElementById('pfCard');
+    function open(){ showView('account'); renderAcct(false); }
+    card.addEventListener('click',open);
+    card.addEventListener('keydown',function(e){ if(e.key==='Enter'||e.key===' '){ e.preventDefault(); open(); } });
+  })();
+  document.getElementById('acctView').addEventListener('click',function(e){ var tr=e.target.closest('tr[data-sy]'); if(tr && tr.dataset.sy) selectSym(tr.dataset.sy); });
 
   /* init + polling */
   renderIdxLoading(); renderMW(); renderFocusShell(); syncSide();
