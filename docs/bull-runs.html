@@ -219,7 +219,9 @@
     document.getElementById('foot').textContent =
       'All five periods are measured off the NIFTY 500 daily series with a 13% reversal filter, not calendar years: the four completed legs run trough→peak, and the live leg runs from its measured trough ('+R.cur.s+') to the latest data. '+
       (SVW
-        ? 'These two views hold your '+POOL()+' shared saved strategies — every one of them, not a top-N cut — re-run over the same five windows with the site’s own engine. Each cell shows that run’s absolute return with its placing among the '+POOL()+' beneath; under “Now” the small figure is the same placing in the live run. The live run is NOT part of the ranking. Each row keeps its own basket size, rebalance method and earnings basis exactly as you saved it, and its DDMMYY-NN serial matches the Saved Strategies page.'
+        ? 'These two views hold your saved strategies — every one of them, not a top-N cut — re-run over the same five windows with the site’s own engine. '+
+          (SV.stored>SV.n ? SV.stored+' are saved but '+SV.n+' are distinct rules: '+(SV.stored-SV.n)+' is the same rule saved twice, collapsed here the same way the Saved Strategies page collapses it. ' : '')+
+          'Each cell shows that run’s absolute return with its placing among the '+POOL()+' beneath; under “Now” the small figure is the same placing in the live run. The live run is NOT part of the ranking. Each row keeps its own basket size, rebalance method and earnings basis exactly as you saved it, and its DDMMYY-NN serial matches the Saved Strategies page.'
         : 'Each cell shows that run’s absolute return with its placing out of '+nf(R.pool)+' beneath; under “Now” the small figure is the placing within these 1,000. The live run is NOT part of any ranking, and each view is its own top-1,000 search of the full pool — not a filter of the other. Excluded from the search: '+R.excluded.join(' and ')+'.')+
       ' Baskets are equal-weight, rebalanced monthly, survivorship-free.';
   }

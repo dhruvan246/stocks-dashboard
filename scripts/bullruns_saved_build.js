@@ -33,12 +33,24 @@ function buildSerials(items) {
   });
   return m;
 }
+/* Serials are numbered over EVERY save, before dedupe — so a row's DDMMYY-NN matches the Saved
+   Strategies page whether or not its twin was collapsed. */
 const SN = buildSerials(RAW.rows);
 
-const LEGKEYS = RAW.legs.filter(w => w.k !== 'cur').map(w => w.k);
-const N = RAW.rows.length;
+/* One row per RULE, not per save — the same collapse saved-strategies.html and trade-baskets.html
+   apply, via the shared identity rule, keeping the newest save as the representative. Two entries
+   that differ only by `<` vs `<=` are the same strategy and must not occupy two ranked slots with
+   identical numbers. */
+const { bakeGroups } = require(path.join(ROOT, 'docs', 'bt-identity.js'));
+const KEEP = new Set([...bakeGroups(RAW.rows).values()].map(it => it.id));
+const ITEMS = RAW.rows.filter(r => KEEP.has(r.id));
+const STORED = RAW.rows.length;
 
-const base = RAW.rows.map(r => {
+const LEGKEYS = RAW.legs.filter(w => w.k !== 'cur').map(w => w.k);
+const N = ITEMS.length;
+if (STORED !== N) console.log('collapsed ' + (STORED - N) + ' duplicate save(s): ' + STORED + ' stored → ' + N + ' distinct rules');
+
+const base = ITEMS.map(r => {
   const c = r.cfg || {};
   const fields = [c.sortBy].concat((c.filters || []).map(f => f.field));
   const dep = fields.some(f => FUND_SET.has(f));
@@ -79,7 +91,7 @@ function view(label, keys, blurb) {
 }
 
 const OUT = {
-  built: RAW.built, dataEnd: RAW.dataEnd, n: N,
+  built: RAW.built, dataEnd: RAW.dataEnd, n: N, stored: STORED,
   legMeta: RAW.legMeta,
   views: {
     saved4: view('Our ' + N + ' · all four', LEGKEYS),
