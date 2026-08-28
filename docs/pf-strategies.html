@@ -98,6 +98,8 @@ th:nth-child(2){text-align:left}
 #zbDlg table{margin-top:10px}
 #zbDlg th{position:static}
 #zbDlg td input.zbq{width:80px; margin:0; padding:5px 7px; text-align:right}
+#zbDlg td input.zbl{width:92px; margin:0; padding:5px 7px; text-align:right}
+#zbTbl:not(.lim) .limcol{display:none}
 /* embedded in the terminal (?embed=1): drop our own chrome so it reads as one card */
 html[data-embed] header{display:none}
 html[data-embed] main{max-width:100%; padding:12px 14px 40px}
@@ -215,7 +217,8 @@ async function fetchLive(){
     const sep = wurl.includes('?') ? '&' : '?';
     const res = await fetch(wurl + sep + 'symbols=' + encodeURIComponent(syms.join(',')));
     const d = await res.json();
-    if (d && d.data){ LIVE = { ts: d.asOf || Date.now(), data: d.data }; renderCards(); }
+    if (d && d.data){ LIVE = { ts: d.asOf || Date.now(), data: d.data }; renderCards();
+      if ($('zbWrap') && $('zbWrap').classList.contains('open')) zbLiveTick(); }
   } catch(e){}
 }
 function startLiveLoop(){
@@ -350,22 +353,26 @@ function ensureZbDlg(){
     '<h3 id="zbTitle"></h3><div class="sub" style="padding:0" id="zbSub"></div>' +
     '<div class="krow"><label>₹ to deploy<input id="zbAmt" type="number" min="0" step="10000" placeholder="e.g. 500000"></label>' +
     '<label>Split ₹ as<select id="zbMode"><option value="value">Order value</option><option value="margin">Funds used (margin)</option></select></label></div>' +
-    '<div class="krow"><label>Product<select id="zbProd"><option value="MTF">MTF (margin)</option><option value="CNC">Delivery (CNC)</option><option value="MIS">Intraday (MIS)</option></select></label></div>' +
+    '<div class="krow"><label>Product<select id="zbProd"><option value="MTF">MTF (margin)</option><option value="CNC">Delivery (CNC)</option><option value="MIS">Intraday (MIS)</option></select></label>' +
+    '<label>Order type<select id="zbType"><option value="MARKET">Market</option><option value="LIMIT">Limit (set price per row)</option></select></label></div>' +
     '<div class="twrap"><table id="zbTbl"></table></div>' +
     '<div class="krow" style="justify-content:flex-end">' +
     '<button class="btn" id="zbCancel">Cancel</button>' +
     '<button class="btn" id="zbKite" title="Review and confirm all of them on Zerodha’s own basket page">Kite basket</button>' +
     '<button class="btn on" id="zbGo" style="display:none">Place all ▸</button></div>' +
-    '<div class="khelp">Market orders, equal ₹ split across ticked rows. “Uses ₹” is Zerodha’s LIVE margin per order — on MTF the smaller figure your funds actually pay; “funds used” makes your amount mean exactly that. You confirm with a second click before anything is placed.</div></div>';
+    '<div class="khelp">Market or limit orders, equal ₹ split across ticked rows. On <b>Limit</b>, set a price per row — the <b>Live ₹</b> column keeps updating so you can pick it. “Uses ₹” is Zerodha’s LIVE margin per order — on MTF the smaller figure your funds actually pay; “funds used” makes your amount mean exactly that. You confirm with a second click before anything is placed.</div></div>';
   document.body.appendChild(w);
   w.addEventListener('click', e => { if (e.target === w) w.classList.remove('open'); });
   $('zbCancel').onclick = () => $('zbWrap').classList.remove('open');
   $('zbAmt').addEventListener('input', () => { zbAlloc(); zbRender(); zbMarginSoon(true); });
   $('zbMode').addEventListener('change', () => { zbAlloc(); zbRender(); zbMarginSoon(true); });
   $('zbProd').addEventListener('change', () => { ZB.rows.forEach(r => { r.mps = 0; r.margin = null; }); zbAlloc(); zbRender(); zbMarginSoon(true); });
-  $('zbTbl').addEventListener('input', e => { const q = e.target.closest('input.zbq'); if (!q) return;
-    const i = +q.dataset.i, r = ZB.rows[i]; r.qty = Math.max(0, Math.floor(+q.value || 0)); r.margin = null;
-    zbRowPaint(i); zbFoot(); zbArmReset(); zbMarginSoon(false); });
+  $('zbType').addEventListener('change', () => { const lim = $('zbType').value === 'LIMIT';
+    ZB.rows.forEach(r => { if (lim && !(r.limit > 0)) r.limit = r.px; }); zbRender(); zbArmReset(); });
+  $('zbTbl').addEventListener('input', e => {
+    const q = e.target.closest('input.zbq'); if (q){ const i = +q.dataset.i, r = ZB.rows[i]; r.qty = Math.max(0, Math.floor(+q.value || 0)); r.margin = null;
+      zbRowPaint(i); zbFoot(); zbArmReset(); zbMarginSoon(false); return; }
+    const l = e.target.closest('input.zbl'); if (l){ ZB.rows[+l.dataset.i].limit = Math.max(0, +l.value || 0); zbArmReset(); } });
   $('zbTbl').addEventListener('change', e => { const c = e.target.closest('input[type=checkbox]'); if (!c) return;
     ZB.rows[+c.dataset.i].on = c.checked; zbAlloc(); zbRender(); zbMarginSoon(true); });
   $('zbKite').onclick = () => { const o = zbOrders(); if (!o.length){ ktoast('Nothing to buy — set an amount first'); return; }
@@ -373,9 +380,10 @@ function ensureZbDlg(){
   $('zbGo').onclick = zbPlaceAll;
 }
 function zbOrders(){
-  return ZB.rows.filter(r => r.on && r.qty > 0).map(r => ({ variety:'regular', validity:'DAY', tag:'swbasket',
-    tradingsymbol: r.sym, exchange:'NSE', transaction_type:'BUY', order_type:'MARKET',
-    quantity: r.qty, product: $('zbProd').value }));
+  const type = ($('zbType') && $('zbType').value) || 'MARKET';
+  return ZB.rows.filter(r => r.on && r.qty > 0).map(r => Object.assign({ variety:'regular', validity:'DAY', tag:'swbasket',
+    tradingsymbol: r.sym, exchange:'NSE', transaction_type:'BUY', order_type: type,
+    quantity: r.qty, product: $('zbProd').value }, type === 'LIMIT' ? { price: (r.limit > 0 ? r.limit : r.px) } : {}));
 }
 function zbAlloc(){
   const amt = +$('zbAmt').value || 0, mode = ($('zbMode') && $('zbMode').value) || 'value';
@@ -419,11 +427,21 @@ async function zbFetchMargins(realloc){
 function zbArmReset(){ const b = $('zbGo'); if (b && b.dataset.arm === '1'){ b.dataset.arm = ''; b.textContent = 'Place all ▸'; } }
 function zbRowPaint(i){
   const tr = $('zbTbl').querySelectorAll('tbody tr')[i], r = ZB.rows[i]; if (!tr) return;
-  tr.children[4].innerHTML = r.qty ? zinr(r.qty * r.px) : '—';
-  tr.children[5].innerHTML = (Z.connected && r.qty) ? '…' : '—';
+  tr.children[5].innerHTML = r.qty ? zinr(r.qty * r.px) : '—';
+  tr.children[6].innerHTML = (Z.connected && r.qty) ? '…' : '—';
+}
+/* live-price tick while the basket dialog is open — so you can pick a limit price */
+function zbLiveTick(){
+  const trs = $('zbTbl') ? $('zbTbl').querySelectorAll('tbody tr') : [];
+  ZB.rows.forEach((r, i) => { const q = liveQ(r.sym); if (q && q.ltp != null){ r.px = q.ltp; r.live = true; }
+    const tr = trs[i]; if (!tr) return;
+    tr.children[2].innerHTML = r.px ? '₹' + (+r.px).toFixed(2) : '—';
+    tr.children[5].innerHTML = r.qty ? zinr(r.qty * r.px) : '—'; });
+  zbFoot();
 }
 function zbRender(){
-  let h = '<thead><tr><th></th><th>Pick</th><th>Live ₹</th><th>Qty</th><th>≈ Cost</th><th title="What Zerodha will actually block — its live margin API">Uses ₹</th><th></th></tr></thead><tbody>';
+  const lim = ($('zbType') && $('zbType').value) === 'LIMIT';
+  let h = '<thead><tr><th></th><th>Pick</th><th>Live ₹</th><th class="limcol">Limit ₹</th><th>Qty</th><th>≈ Cost</th><th title="What Zerodha will actually block — its live margin API">Uses ₹</th><th></th></tr></thead><tbody>';
   ZB.rows.forEach((r, i) => {
     const stChip = r.st === 'COMPLETE' ? '<span class="zchip ok">COMPLETE</span>'
       : r.st === 'REJECTED' ? '<span class="zchip bad" title="' + esc(r.msg) + '">REJECTED</span>'
@@ -432,25 +450,27 @@ function zbRender(){
     h += '<tr><td><input type="checkbox" data-i="' + i + '"' + (r.on ? ' checked' : '') + '></td>' +
       '<td><b>' + esc(r.sym) + '</b>' + (Z.held.has(r.sym) ? ' <span class="tag keep">held</span>' : '') + (r.live ? '' : ' <span class="badge">EOD</span>') + '</td>' +
       '<td>' + (r.px ? '₹' + (+r.px).toFixed(2) : '—') + '</td>' +
+      '<td class="limcol"><input class="zbl" type="number" min="0" step="0.05" data-i="' + i + '" value="' + ((r.limit > 0 ? r.limit : r.px) || 0).toFixed(2) + '"' + (r.on ? '' : ' disabled') + '></td>' +
       '<td><input class="zbq" type="number" min="0" step="1" data-i="' + i + '" value="' + r.qty + '"' + (r.on ? '' : ' disabled') + '></td>' +
       '<td>' + (r.qty ? zinr(r.qty * r.px) : '—') + '</td>' +
       '<td>' + (r.margin != null ? zinr(r.margin) : (Z.connected && r.qty ? '…' : '—')) + '</td>' +
       '<td>' + stChip + (r.st === 'REJECTED' || r.st === 'fail' ? '<div class="zmsg">' + esc(r.msg) + '</div>' : '') + '</td></tr>';
   });
-  h += '</tbody><tfoot><tr><td colspan="7" style="text-align:right" id="zbTot"></td></tr></tfoot>';
-  $('zbTbl').innerHTML = h; zbFoot();
+  h += '</tbody><tfoot><tr><td colspan="8" style="text-align:right" id="zbTot"></td></tr></tfoot>';
+  $('zbTbl').innerHTML = h; $('zbTbl').classList.toggle('lim', lim); zbFoot();
   $('zbGo').style.display = Z.connected ? '' : 'none';
 }
 function zBasketOpen(id){
   const it = strategies().find(x => x.id === id), p = PICKS[id];
   if (!it || !p || !p.rows.length){ ktoast('Load the picks first'); return; }
   ensureZbDlg();
-  ZB = { id, rows: p.rows.map(r => { const q = liveQ(r.sym);
-    return { sym: r.sym, px: (q && q.ltp != null) ? q.ltp : r.px, live: !!(q && q.ltp != null),
+  ZB = { id, rows: p.rows.map(r => { const q = liveQ(r.sym); const px = (q && q.ltp != null) ? q.ltp : r.px;
+    return { sym: r.sym, px: px, limit: px, live: !!(q && q.ltp != null),
              on: true, qty: 0, st: '', msg: '', margin: null, mps: 0, chg: 0 }; }) };
   $('zbTitle').textContent = 'Buy the basket';
   $('zbSub').textContent = ((typeof strategyEnglish === 'function' && strategyEnglish(it.cfg)) || nameWithBasis(it.name, it.cfg)) + ' — ' + p.rows.length + ' picks as of ' + p.asOf + '. You confirm before anything is placed.';
   $('zbProd').value = 'MTF';
+  if ($('zbType')) $('zbType').value = 'MARKET';
   $('zbAmt').value = (function(){ try { return localStorage.getItem('sw_zb_amt_' + id) || ''; } catch(e){ return ''; } })();
   zbAlloc(); zbRender();
   $('zbWrap').classList.add('open');
