@@ -179,7 +179,12 @@
     const basisNote = R.earnBasis==='merged'
       ? ' · '+(R.bases||['std','con']).map(b=>BN[b]||b).join(' + ')+' earnings, ranked together'
       : R.earnBasis && R.earnBasis!=='con' ? ' · '+(BN[R.earnBasis]||R.earnBasis)+' earnings' : '';
-    document.getElementById('vdesc').innerHTML='<b>every strategy = a TOP-'+VDESC[curVar][0]+' basket on '+VDESC[curVar][2]+', equal-weight, '+VDESC[curVar][1]+basisNote+'</b>';
+    // Barred factors must be VISIBLE: a reader who knows the grid searches indRank/composite would
+    // otherwise read their absence as "they never won" rather than "they were excluded".
+    const EXN={indRank:'industry rank',composite:'quality-momentum composite'};
+    const exNote=(R.excluded&&R.excluded.length)
+      ? ' <span style="font-weight:400">Excluded from every card: '+R.excluded.map(f=>EXN[f]||f).join(' and ')+'.</span>' : '';
+    document.getElementById('vdesc').innerHTML='<b>every strategy = a TOP-'+VDESC[curVar][0]+' basket on '+VDESC[curVar][2]+', equal-weight, '+VDESC[curVar][1]+basisNote+'</b>'+exNote;
     document.getElementById('basketChip').textContent=(curVar==='fno'?'F&O · ':'')+'Top-'+VDESC[curVar][0]+' basket · equal-weight · '+(VDESC[curVar][1].indexOf('ride')===0?'ride winners':'monthly reset')+basisNote;
     cur='all4'; sortK=null; needle=''; document.getElementById('q').value='';
     buildCards(); paintPills(); render();

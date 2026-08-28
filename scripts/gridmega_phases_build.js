@@ -102,9 +102,26 @@ const FUND_RE = new RegExp('(^|[^A-Za-z])(' + FUND_FIELDS.join('|') + ')([^A-Za-
 let FUNDFLAG = null;          // Uint8Array over the N grid rows, 1 = basis-dependent
 let NROWS = 0;
 
+// Factors barred from the published cards (user policy, 2026-08-28). A strategy is dropped from
+// the pool entirely — every phase card, every year card, both consistency cards — if it names one
+// of these in its sort field OR any filter:
+//   indRank    — the BSE industry map is a CURRENT snapshot, so in a survivorship-free universe
+//                delisted names carry ind='Unknown' (31.9% of the universe in 2004 vs 0.6% today).
+//                They pool into ONE pseudo-industry whose shared rank was <=3 in 41 of 268 months,
+//                admitting up to 163 unrelated stocks through `indRank<=3` in a single clump.
+//   composite  — coverage is 15% in 2004 and only ~82% by 2008, so a composite winner in the 22-year
+//                window is really a post-2008 result carrying a 22-year label.
+// Set EXCLUDE_FIELDS= (empty) to publish them again, or list other fields to bar.
+const EXCLUDE_FIELDS = (process.env.EXCLUDE_FIELDS !== undefined ? process.env.EXCLUDE_FIELDS : 'indRank,composite')
+  .split(',').map(s => s.trim()).filter(Boolean);
+const EXCL_SET = new Set(EXCLUDE_FIELDS);
+const EXCL_RE = EXCLUDE_FIELDS.length
+  ? new RegExp('(^|[^A-Za-z])(' + EXCLUDE_FIELDS.join('|') + ')([^A-Za-z]|$)') : null;
+let EXCLFLAG = null;          // Uint8Array over the N grid rows, 1 = barred from the cards
+
 // Read one window/basis CSV → its CAGR column. On the very first call it also derives FUNDFLAG.
 async function readCagr(file, deriveFlags) {
-  const cagr = [], flags = deriveFlags ? [] : null;
+  const cagr = [], flags = deriveFlags ? [] : null, excl = deriveFlags ? [] : null;
   const rl = readline.createInterface({
     input: fs.createReadStream(file).pipe(zlib.createGunzip()), crlfDelay: Infinity });
   let first = true;
@@ -116,13 +133,21 @@ async function readCagr(file, deriveFlags) {
     const c1 = line.indexOf(','), c2 = line.indexOf(',', c1 + 1), c3 = line.indexOf(',', c2 + 1);
     const c4 = line.indexOf(',', c3 + 1);
     cagr.push(+line.slice(c3 + 1, c4));
-    if (flags) flags.push((FUND_SET.has(line.slice(0, c1)) || FUND_RE.test(line.slice(c2 + 1, c3))) ? 1 : 0);
+    if (flags) {
+      const sortBy = line.slice(0, c1), fil = line.slice(c2 + 1, c3);
+      flags.push((FUND_SET.has(sortBy) || FUND_RE.test(fil)) ? 1 : 0);
+      excl.push(EXCL_RE && (EXCL_SET.has(sortBy) || EXCL_RE.test(fil)) ? 1 : 0);
+    }
   }
   if (flags) {
     FUNDFLAG = Uint8Array.from(flags); NROWS = FUNDFLAG.length;
-    const nDep = flags.reduce((a, b) => a + b, 0);
+    EXCLFLAG = Uint8Array.from(excl);
+    const nDep = flags.reduce((a, b) => a + b, 0), nEx = excl.reduce((a, b) => a + b, 0);
     console.error('basis-dependent rows: ' + nDep.toLocaleString() + ' of ' + NROWS.toLocaleString() +
                   ' (' + (nDep / NROWS * 100).toFixed(1) + '%) — the rest score identically under every basis');
+    if (EXCLUDE_FIELDS.length)
+      console.error('barred by EXCLUDE_FIELDS=' + EXCLUDE_FIELDS.join(',') + ': ' + nEx.toLocaleString() +
+                    ' of ' + NROWS.toLocaleString() + ' rows (' + (nEx / NROWS * 100).toFixed(1) + '%)');
   }
   return cagr;
 }
@@ -131,14 +156,19 @@ async function readCagr(file, deriveFlags) {
 // every row; each later basis contributes only its basis-DEPENDENT rows, which is the dedupe.
 let GB = null, GR = null, M = 0;
 function buildGlobalIndex() {
-  let nDep = 0; for (let i = 0; i < NROWS; i++) if (FUNDFLAG[i]) nDep++;
-  M = NROWS + (BASES.length - 1) * nDep;
+  // EXCLUDE_FIELDS rows never enter the pool, so they cannot reach ANY card — that is the point:
+  // dropping them at ranking time is what lets the remaining strategies move up into the top 1000.
+  const keep = i => !(EXCLFLAG && EXCLFLAG[i]);
+  let nKeep = 0, nDep = 0;
+  for (let i = 0; i < NROWS; i++) if (keep(i)) { nKeep++; if (FUNDFLAG[i]) nDep++; }
+  M = nKeep + (BASES.length - 1) * nDep;
   GB = new Uint8Array(M); GR = new Int32Array(M);
   let g = 0;
-  for (let i = 0; i < NROWS; i++) { GB[g] = 0; GR[g] = i; g++; }
-  for (let k = 1; k < BASES.length; k++) for (let i = 0; i < NROWS; i++) if (FUNDFLAG[i]) { GB[g] = k; GR[g] = i; g++; }
+  for (let i = 0; i < NROWS; i++) if (keep(i)) { GB[g] = 0; GR[g] = i; g++; }
+  for (let k = 1; k < BASES.length; k++) for (let i = 0; i < NROWS; i++) if (keep(i) && FUNDFLAG[i]) { GB[g] = k; GR[g] = i; g++; }
   if (g !== M) throw new Error('global index build mismatch: ' + g + ' vs ' + M);
-  console.error('merged pool: ' + M.toLocaleString() + ' (strategy × basis) pairs across ' + BASES.join('+'));
+  console.error('merged pool: ' + M.toLocaleString() + ' (strategy × basis) pairs across ' + BASES.join('+') +
+                (EXCLUDE_FIELDS.length ? '  [' + (NROWS - nKeep).toLocaleString() + ' strategies barred]' : ''));
 }
 
 // ---- pass 1: rank the merged pool for one window.
@@ -304,6 +334,7 @@ async function rankWindow(w) {
     universe: universeLabel + ' · monthly · ' + basket + basisLabel,
     earnBasis: BASES.length > 1 ? 'merged' : BASES[0],
     bases: BASES,
+    excluded: EXCLUDE_FIELDS,        // factors barred from the cards — the page must say so
     dataEnd: END,
     phases: PHASES.map(p => ({ key: p.key, label: p.label, card: p.card, short: p.short,
       metric: p.metric || 'tot', start: p.start, end: resolve(p).end,
