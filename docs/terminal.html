@@ -217,6 +217,36 @@ a{color:var(--buy);text-decoration:none}
   .legend{display:none}
   .fprice{margin-left:0;text-align:left;width:100%}
 }
+
+/* private-gate lock screen */
+.lockwrap{min-height:72vh;display:grid;place-items:center;padding:40px 18px}
+.lockcard{max-width:430px;text-align:center;border:1px solid var(--border);border-radius:16px;background:var(--surface);padding:34px 28px;box-shadow:var(--shadow)}
+.lockic{font-size:34px}
+.lockt{font-size:19px;font-weight:800;margin-top:10px;letter-spacing:-.02em}
+.lockd{font-size:13px;color:var(--text-2);margin-top:9px;line-height:1.55}
+.lockd code{font-family:"JetBrains Mono",monospace;font-size:11.5px;background:var(--surface-2);padding:1px 5px;border-radius:4px}
+.lockbtn{display:inline-block;margin-top:16px;font-size:13px;font-weight:700;color:#fff;background:var(--buy);border-radius:10px;padding:10px 18px;text-decoration:none}
+/* account panel */
+.acct-trio{display:grid;grid-template-columns:1fr 1fr;gap:8px;margin:11px 0 4px}
+.acct-tile{border:1px solid var(--border);border-radius:10px;background:var(--surface-2);padding:9px 11px}
+.acct-tile .l{font-size:9.5px;color:var(--text-3);font-weight:700;text-transform:uppercase;letter-spacing:.04em}
+.acct-tile .v{font-size:15px;font-weight:800;margin-top:3px;font-family:"JetBrains Mono",monospace}
+.acct-tile .s{font-size:9.5px;color:var(--text-3);margin-top:2px}
+.acct-sec{font-size:10px;font-weight:700;text-transform:uppercase;letter-spacing:.05em;color:var(--text-3);margin:13px 0 4px}
+.hcard{display:grid;grid-template-columns:1fr auto;gap:8px;padding:8px 0;border-bottom:1px solid var(--border-2);cursor:pointer}
+.hcard:last-child{border-bottom:none}
+.hcard:hover{background:var(--surface-2)}
+.hcard .hs{font-size:12px;font-weight:700}
+.hcard .hm{font-size:10px;color:var(--text-3);margin-top:2px;font-family:"JetBrains Mono",monospace}
+.hcard .pr{text-align:right}
+.hcard .hv{font-size:12px;font-weight:700;font-family:"JetBrains Mono",monospace}
+.hcard .hd{font-size:10px;font-weight:600;margin-top:2px}
+.mtftag{font-size:8px;font-weight:800;color:var(--text-3);border:1px solid var(--border);border-radius:3px;padding:0 3px;vertical-align:middle}
+.acct-tot{display:flex;justify-content:space-between;align-items:center;margin-top:11px;padding-top:10px;border-top:1px solid var(--border);font-size:12px;font-weight:600}
+.acct-tot b{font-family:"JetBrains Mono",monospace;font-weight:800;font-size:13px}
+.acct-note{color:var(--text-3)}
+#acctPanel .pd a,.acct-note a{font-weight:600}
+body.blur-secret .secret{filter:blur(7px);-webkit-user-select:none;user-select:none;pointer-events:none}
 </style>
 </head>
 <body>
@@ -229,6 +259,7 @@ a{color:var(--buy);text-decoration:none}
   <div class="spacer"></div>
   <a class="dashlink" href="./index.html">← Dashboard</a>
   <span class="livewrap"><span class="livedot" id="liveDot"></span><span id="liveTxt">Connecting…</span></span>
+  <button class="tbtn" id="privBtn" title="Blur account numbers" aria-label="Toggle privacy blur">🙈</button>
   <button class="tbtn" id="themeBtn" title="Toggle theme" aria-label="Toggle theme">🌙</button>
 </div>
 <div class="legend">
@@ -288,20 +319,19 @@ a{color:var(--buy);text-decoration:none}
           <div class="crow"><span class="k" id="marginK">Margin required</span><span class="v" id="ordMargin">—</span></div>
           <div class="crow"><span class="k">Charges (est.)</span><span class="v flat" id="ordChg">—</span></div>
         </div>
-        <button class="place b" id="placeBtn" disabled>Connect broker to place</button>
-        <div class="placenote">Order value &amp; margin are computed on the live price. Placing real orders needs your broker login.</div>
+        <button class="place b" id="placeBtn" disabled>Order placement not wired here</button>
+        <div class="placenote">Live price &amp; margin math. To actually place this order, use the ⚡ Order button on your <a href="./portfolio.html">portfolio</a> page.</div>
       </div>
-      <div class="pos">
-        <div class="ph">Positions &amp; funds <span class="demotag">demo</span></div>
-        <div class="pd">Your real holdings, funds and P&amp;L are private — they live on the owner-only <a href="./portfolio.html">portfolio</a> page (Zerodha-connected), never on a public URL.</div>
-        <span class="pos cbtn" style="border:1px solid var(--buy)">Connect broker →</span>
+      <div class="pos" id="acctPanel">
+        <div class="ph">Positions &amp; funds</div>
+        <div class="pd">Loading your Zerodha account…</div>
       </div>
     </div>
   </div>
 </div>
 
 <div class="foot">
-  <b style="color:var(--text-2)">Live market data</b> — indices from <code>niftyindices.com</code>, quotes &amp; intraday from your Cloudflare quote worker (Yahoo NSE, ~15&nbsp;min delayed). The order ticket does real price/margin math; order placement, L2 depth, positions and funds need an authenticated broker feed and are shown as demo. Not investment advice.
+  <b style="color:var(--text-2)">Private terminal</b> — owner-only (noindex, gated by the same <code>pf_token</code> as your portfolio). Market data: indices from <code>niftyindices.com</code>, quotes &amp; intraday from your quote worker (Yahoo NSE, ~15&nbsp;min delayed). <b style="color:var(--text-2)">Positions &amp; funds</b> are your live Zerodha account via the kite worker — shown only on your logged-in device, never to anyone without your token. Order placement &amp; L2 depth aren't wired here yet. Not investment advice.
 </div>
 
 <script>
@@ -316,7 +346,30 @@ a{color:var(--buy);text-decoration:none}
   function storedT(){try{return localStorage.getItem('term_theme')}catch(e){return null}}
   function applyT(t){root.setAttribute('data-theme',t);tbn.textContent=t==='dark'?'☀️':'🌙';}
   applyT(storedT()||'dark');
+
+  /* ---- private-page gate: owner-only, same pf_token as the portfolio pages ----
+     The token arrives once via ?t=<token> (then stored & stripped from the URL) or
+     is already in localStorage (shared with portfolio.html, same origin). Localhost
+     is open for local dev. Without a token on the web, the terminal never renders. */
+  function pfToken(){ try{ return localStorage.getItem('pf_token')||''; }catch(e){ return ''; } }
+  (function(){ var p=new URLSearchParams(location.search), ut=p.get('t');
+    if(ut){ try{ localStorage.setItem('pf_token',ut); }catch(e){} p.delete('t');
+      history.replaceState(null,'',location.pathname+(p.toString()?'?'+p.toString():'')+location.hash); } })();
+  var IS_LOCAL=/^(localhost|127\.0\.0\.1)$/.test(location.hostname);
+  if(!IS_LOCAL && !pfToken()){
+    document.body.innerHTML='<div class="lockwrap"><div class="lockcard"><div class="lockic">🔒</div>'+
+      '<div class="lockt">Private terminal</div>'+
+      '<div class="lockd">This page is owner-only, just like your portfolio. Open it from your private access link (the one with <code>?t=…</code>) and it stays unlocked on this device. Your Zerodha data is never shown to anyone without your token.</div>'+
+      '<a class="lockbtn" href="./portfolio.html">Go to portfolio →</a></div></div>';
+    return;
+  }
+
   tbn.addEventListener('click',function(){var n=root.getAttribute('data-theme')==='dark'?'light':'dark';applyT(n);try{localStorage.setItem('term_theme',n)}catch(e){} if(FOCUS)drawChart();});
+  /* privacy blur toggle (account numbers) */
+  var privOn=false; try{ privOn=localStorage.getItem('pf_private')==='1'; }catch(e){}
+  function applyPriv(){ document.body.classList.toggle('blur-secret',privOn); var b=document.getElementById('privBtn'); if(b) b.textContent=privOn?'🙈':'👁️'; }
+  applyPriv();
+  document.getElementById('privBtn').addEventListener('click',function(){ privOn=!privOn; try{localStorage.setItem('pf_private',privOn?'1':'0');}catch(e){} applyPriv(); });
 
   var fmt=function(n,d){var v=Number(n);return isFinite(v)?v.toLocaleString('en-IN',{minimumFractionDigits:d||0,maximumFractionDigits:d||0}):'—';};
   var rup=function(n,d){return isFinite(Number(n))?'₹'+fmt(n,d):'—';};
@@ -538,12 +591,81 @@ a{color:var(--buy);text-decoration:none}
   document.getElementById('superToggle').addEventListener('click',function(){SUPER=!SUPER;document.getElementById('superSw').classList.toggle('on',SUPER);document.getElementById('superBody').classList.toggle('on',SUPER);updateCalc();});
   window.addEventListener('resize',function(){ if(FOCUS)drawChart(); });
 
+  /* ---------------- Zerodha account (live, via the kite worker, gated by pf_token) ----
+     Reuses exactly what the portfolio page set up on this origin: the worker URL
+     (localStorage.pf_kite_worker) and the private token (pf_token), sent as X-PF-Token.
+     The worker refuses any request whose token doesn't match — so this stays blank for
+     anyone without your token, and the Kite session lives in the worker's KV (one login
+     a day covers every device). Read-only: holdings, positions, funds. */
+  function esc(s){ return String(s==null?'':s).replace(/[&<>"]/g,function(c){return {'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c];}); }
+  function zinr(v){ return (v==null||!isFinite(v))?'—':'₹'+Math.round(v).toLocaleString('en-IN'); }
+  function inrSigned(v){ return (v==null||!isFinite(v))?'—':(v>=0?'+':'−')+'₹'+Math.round(Math.abs(v)).toLocaleString('en-IN'); }
+  function zWorkerUrl(){ try{ return (localStorage.getItem('pf_kite_worker')||'').replace(/\/+$/,''); }catch(e){ return ''; } }
+  function acctFetch(path){
+    var w=zWorkerUrl(); if(!w) return Promise.resolve({st:-1,j:null});
+    return fetch(w+path,{headers:{'X-PF-Token':pfToken()},cache:'no-store'})
+      .then(function(r){ return r.json().then(function(j){return {st:r.status,j:j};},function(){return {st:r.status,j:null};}); })
+      .catch(function(){ return {st:0,j:null}; });
+  }
+  function acctMsg(html){ document.getElementById('acctPanel').innerHTML='<div class="ph">Positions &amp; funds</div><div class="pd" style="margin-top:6px">'+html+'</div>'; }
+  var ACCT={connected:false};
+  function zq(r){ var m=r.mtf||{}; return (r.quantity||0)+(r.t1_quantity||0)+(r.collateral_quantity||0)+(m.quantity||0); }
+  function zavg(r){ var m=r.mtf||{}, nq=(r.quantity||0)+(r.t1_quantity||0)+(r.collateral_quantity||0), mq=m.quantity||0, q=nq+mq; return q?((r.average_price||0)*nq+(m.average_price||0)*mq)/q:0; }
+  function renderAcct(quiet){
+    if(!zWorkerUrl()){ acctMsg('Zerodha isn\'t connected on this device yet. Open your <a href="./portfolio.html">portfolio page</a> once (it stores the connection here), then reload.'); return; }
+    if(!pfToken()){ acctMsg('No access token on this device. Open your private link once and it unlocks here too.'); return; }
+    acctFetch('/status').then(function(s){
+      if(s.st===-1){ acctMsg('Zerodha worker not set. Connect once on your <a href="./portfolio.html">portfolio page</a>.'); return; }
+      if(s.st===0){ if(!quiet) acctMsg('Couldn\'t reach your Zerodha worker — check your connection.'); return; }
+      if(s.st===401){ acctMsg('The worker refused this token.'); return; }
+      if(s.st!==200 || !s.j || !s.j.user){ ACCT.connected=false; acctMsg('Not logged in to Zerodha today. One login on the <a href="./portfolio.html">portfolio page</a> connects every device until 6&nbsp;AM tomorrow.'); return; }
+      ACCT.connected=true;
+      Promise.all([acctFetch('/holdings'),acctFetch('/positions'),acctFetch('/margins')]).then(function(res){
+        var h=res[0],p=res[1],m=res[2];
+        if([h,p,m].some(function(x){return x.st===403;})){ ACCT.connected=false; acctMsg('Zerodha session expired — log in again on the <a href="./portfolio.html">portfolio page</a>.'); return; }
+        drawAcct({ user:s.j.user, hold:(h.j&&h.j.data)||[], pos:(p.j&&p.j.data&&p.j.data.net)||[], marg:(m.j&&m.j.data)||null });
+      });
+    });
+  }
+  function drawAcct(D){
+    var eq=D.marg&&D.marg.equity, av=(eq&&eq.available)||null;
+    var avail=eq?(av&&av.live_balance!=null?av.live_balance:(eq.net!=null?eq.net:(av&&av.cash))):null;
+    var used=(eq&&eq.utilised)?eq.utilised.debits:null;
+    var html='<div class="ph" style="display:flex;align-items:center;justify-content:space-between;gap:8px"><span>Positions &amp; funds</span><span class="livetag">● '+esc(D.user||'live')+'</span></div>';
+    html+='<div class="acct-trio"><div class="acct-tile"><div class="l">Funds available</div><div class="v secret">'+zinr(avail)+'</div><div class="s">equity · to trade</div></div>'+
+          '<div class="acct-tile"><div class="l">Margin used</div><div class="v secret">'+zinr(used)+'</div><div class="s">deployed</div></div></div>';
+    var pos=(D.pos||[]).filter(function(r){return r.quantity!==0;});
+    if(pos.length){
+      html+='<div class="acct-sec">Open positions · '+pos.length+'</div>';
+      pos.forEach(function(r){
+        html+='<div class="hcard" data-sy="'+esc(r.tradingsymbol)+'"><div><div class="hs">'+esc(r.tradingsymbol)+'</div><div class="hm secret">'+r.quantity+' @ '+(+r.average_price).toFixed(2)+' · '+esc(r.product||'')+'</div></div>'+
+          '<div class="pr"><div class="hv">₹'+(+r.last_price).toFixed(2)+'</div><div class="hd '+(r.pnl>=0?'up':'down')+' secret">'+inrSigned(r.pnl)+'</div></div></div>';
+      });
+    }
+    var hold=(D.hold||[]).filter(function(r){return zq(r)>0;});
+    if(hold.length){
+      var tot=0;
+      hold.sort(function(a,b){return (+b.last_price*zq(b))-(+a.last_price*zq(a));});
+      html+='<div class="acct-sec">Holdings · '+hold.length+'</div>';
+      hold.forEach(function(r){
+        var q=zq(r), avg=zavg(r), pnl=(+r.last_price-avg)*q; tot+=pnl;
+        var isMtf=((r.mtf||{}).quantity||0)>0, dp=r.day_change_percentage;
+        html+='<div class="hcard" data-sy="'+esc(r.tradingsymbol)+'"><div><div class="hs">'+esc(r.tradingsymbol)+(isMtf?' <span class="mtftag">MTF</span>':'')+'</div><div class="hm secret">'+q.toLocaleString('en-IN')+' @ '+avg.toFixed(2)+'</div></div>'+
+          '<div class="pr"><div class="hv secret '+(pnl>=0?'up':'down')+'">'+inrSigned(pnl)+'</div><div class="hd '+((dp||0)>=0?'up':'down')+'">'+(dp==null?'—':signed(dp))+'</div></div></div>';
+      });
+      html+='<div class="acct-tot"><span class="acct-note">Holdings P&amp;L</span><b class="secret '+(tot>=0?'up':'down')+'">'+inrSigned(tot)+'</b></div>';
+    }
+    if(!pos.length && !hold.length) html+='<div class="pd" style="margin-top:6px">No open positions or holdings.</div>';
+    document.getElementById('acctPanel').innerHTML=html;
+  }
+  document.getElementById('acctPanel').addEventListener('click',function(e){ var c=e.target.closest('.hcard'); if(c && c.dataset.sy) selectSym(c.dataset.sy); });
+
   /* init + polling */
   renderIdxLoading(); renderMW(); renderFocusShell(); syncSide();
   setLive('','Connecting…');
-  fetchIndices(); fetchQuotes(); loadFocus(SEL);
-  var POLL=setInterval(function(){ if(document.hidden) return; fetchQuotes(); fetchIndices(); },30000);
-  document.addEventListener('visibilitychange',function(){ if(!document.hidden){ fetchQuotes(); fetchIndices(); } });
+  fetchIndices(); fetchQuotes(); loadFocus(SEL); renderAcct(false);
+  var POLL=setInterval(function(){ if(document.hidden) return; fetchQuotes(); fetchIndices(); if(ACCT.connected) renderAcct(true); },30000);
+  document.addEventListener('visibilitychange',function(){ if(!document.hidden){ fetchQuotes(); fetchIndices(); renderAcct(true); } });
 })();
 </script>
 </body>
