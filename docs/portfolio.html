@@ -556,9 +556,7 @@ async function loadAll(){
   ]);
   DOC=doc; META=slim.meta||{}; SERIES=slim.series||{}; NIFTY500=nif;   // the strategies screen from Nifty 500 — benchmark against it, not Nifty 50
   DOC.holdings.forEach(h=>{ h.buyOff=isoToOff(h.date); });
-  await loadModel();
-  await loadTrades();
-  await refreshQuotes();
+  await Promise.all([loadModel(), loadTrades()]);   // two small supabase reads → in parallel; live quotes come AFTER first paint (boot), so the ~1s worker hop never blocks the page from showing
 }
 async function refreshQuotes(){
   const syms=[...new Set(DOC.holdings.map(h=>h.live).filter(Boolean).concat(modelSyms()))];
@@ -1579,6 +1577,12 @@ async function boot(){
        800px fallback and shrank the labels to ~4px on a phone */
     $('loading').style.display='none'; $('app').style.display='';
     buildRows(); hashToFilter(); renderAll(); applyHidden();
+    /* Live quotes are the one slow leg (~1s, cross-origin worker → Yahoo). Everything above paints
+       instantly from the cached EOD price bin, so fetch quotes AFTER first paint and refresh the
+       prices in place — the page is on screen in ~0.2s instead of waiting on the quote hop. That
+       waiting tail was what made Safari (which also cold-starts the service worker on navigation)
+       feel like it "loaded very slow". */
+    refreshQuotes().then(()=>{ if(DOC){ buildRows(); renderAll(); } });
     if(MODE==='web'){                              // deployed copy reads; the Mac writes
       $('btnSaveAcct').style.display='none';
       $('tblAcct').querySelectorAll('select').forEach(x=>x.disabled=true);
