@@ -246,6 +246,25 @@ a{color:var(--buy);text-decoration:none}
 .atbl .nm{font-weight:700}
 .atbl .xtag{font-size:8px;color:var(--text-3);border:1px solid var(--border);border-radius:3px;padding:0 3px;margin-left:4px;font-weight:800;vertical-align:middle}
 .atbl .sub{font-size:10px;font-weight:600;margin-top:1px}
+/* today's orders (Kite-style) */
+.ofilters{display:flex;gap:6px;flex-wrap:wrap;margin:2px 2px 11px}
+.ofilt{border:1px solid var(--border);background:var(--surface-2);color:var(--text-2);border-radius:8px;padding:5px 11px;font-size:11.5px;font-weight:700;cursor:pointer;display:inline-flex;align-items:center;gap:6px;-webkit-user-select:none;user-select:none}
+.ofilt:hover{border-color:var(--text-3);color:var(--text)}
+.ofilt.act{border-color:var(--buy);color:var(--buy);background:var(--buy-soft)}
+.ofilt .ocount{font-size:10px;color:var(--text-3);font-weight:800}
+.ofilt.act .ocount{color:var(--buy)}
+.ordtbl .osub{font-size:9.5px;color:var(--text-3);margin-top:1px;font-weight:600;max-width:190px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.ordtbl .osub.down{color:var(--down)}
+.ordtbl .omono{font-family:"JetBrains Mono",monospace}
+.ordtbl .obuy{color:var(--buy);font-weight:800}
+.ordtbl .osell{color:var(--sell);font-weight:800}
+.ochip{display:inline-block;font-size:9px;font-weight:800;letter-spacing:.03em;text-transform:uppercase;padding:2px 6px;border-radius:5px;border:1px solid transparent;white-space:nowrap}
+.ochip.ok{color:var(--up);border-color:color-mix(in srgb,var(--up) 38%,transparent);background:color-mix(in srgb,var(--up) 13%,transparent)}
+.ochip.open{color:var(--buy);border-color:color-mix(in srgb,var(--buy) 38%,transparent);background:var(--buy-soft)}
+.ochip.bad{color:var(--down);border-color:color-mix(in srgb,var(--down) 38%,transparent);background:color-mix(in srgb,var(--down) 13%,transparent)}
+.ochip.flat{color:var(--flat);border-color:var(--border);background:var(--surface-2)}
+.ocancel{border:1px solid var(--border);background:var(--surface-2);color:var(--down);border-radius:6px;width:25px;height:25px;font-size:12px;font-weight:800;cursor:pointer;line-height:1}
+.ocancel:hover{border-color:var(--down);background:color-mix(in srgb,var(--down) 12%,transparent)}
 .acct-msg{padding:22px 4px;font-size:13px;color:var(--text-2);line-height:1.55;max-width:54ch}
 .acct-msg a{font-weight:600}
 .stratframe{width:100%;height:calc(100vh - 200px);min-height:480px;border:0;border-radius:12px;background:var(--surface);display:block}
@@ -341,6 +360,10 @@ body.blur-secret .secret{filter:blur(7px);-webkit-user-select:none;user-select:n
         <div class="pfc-top"><span class="pfc-ic">💼</span><span class="pfc-t">Positions &amp; funds</span><span class="pfc-ar">→</span></div>
         <div class="pfc-sum" id="pfCardSum"><span class="pfc-hint">tap to view your account</span></div>
       </div>
+      <div class="pfcard" id="ordCard" role="button" tabindex="0" title="Today's orders — open, executed, rejected">
+        <div class="pfc-top"><span class="pfc-ic">📋</span><span class="pfc-t">Orders</span><span class="pfc-ar">→</span></div>
+        <div class="pfc-sum" id="ordCardSum"><span class="pfc-hint">today's orders &amp; status</span></div>
+      </div>
       <div class="pfcard" id="stratCard" role="button" tabindex="0" title="Your saved strategies — what each would buy today">
         <div class="pfc-top"><span class="pfc-ic">🎯</span><span class="pfc-t">Strategies</span><span class="pfc-ar">→</span></div>
         <div class="pfc-sum"><span class="pfc-hint">saved strategies &amp; today's picks</span></div>
@@ -354,6 +377,7 @@ body.blur-secret .secret{filter:blur(7px);-webkit-user-select:none;user-select:n
       <div id="stockView"></div>
       <div id="acctView" class="acctview" style="display:none"></div>
       <div id="stratView" class="acctview" style="display:none"></div>
+      <div id="ordView" class="acctview" style="display:none"></div>
     </div>
 
     <div class="pane tk">
@@ -672,7 +696,7 @@ body.blur-secret .secret{filter:blur(7px);-webkit-user-select:none;user-select:n
     var body=Object.assign({variety:'regular',validity:'DAY',tag:'terminal'},o);
     acctFetch('/order',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify(body)}).then(function(res){
       var st=res.st, j=res.j, msg=(j&&j.message)||('HTTP '+st);
-      if(st===200 && j && j.data && j.data.order_id){ ktoast('Order placed ✓ '+o.tradingsymbol,5000); setTimeout(function(){ if(ACCT.connected) renderAcct(true); },1800); }
+      if(st===200 && j && j.data && j.data.order_id){ ktoast('Order placed ✓ '+o.tradingsymbol,5000); setTimeout(function(){ if(ACCT.connected){ renderAcct(true); renderOrders(true); } },1800); }
       else if(ipBlocked(msg) || st===0){ ACCT.directBlocked=true; ktoast('Direct API orders need a whitelisted static IP — opening the Zerodha basket to confirm instead',5500); kiteSend([o]); }
       else if(st===403){ ktoast('Zerodha session expired — log in again',5000); ACCT.connected=false; showView('account'); renderAcct(false); }
       else ktoast('Zerodha refused it: '+msg,7000);
@@ -859,15 +883,76 @@ body.blur-secret .secret{filter:blur(7px);-webkit-user-select:none;user-select:n
     var cs=document.getElementById('pfCardSum');
     if(cs) cs.innerHTML='Total <b class="'+(acctTot>=0?'up':'down')+'">'+inrSigned(acctTot)+'</b> · Day <b class="'+(acctDay>=0?'up':'down')+'">'+inrSigned(acctDay)+'</b>';
   }
+  /* ---- today's orders (Kite-style order book) ---- */
+  var ORD_FILTER='all';
+  function ordMsg(html){ var ov=document.getElementById('ordView'); if(ov) ov.innerHTML='<div class="av-head"><span class="av-title">Today’s orders</span></div><div class="acct-msg">'+html+'</div>'; }
+  function ordBucket(r){ var st=(r.status||'').toUpperCase(); if(st==='COMPLETE') return 'done'; if(st==='REJECTED'||st.indexOf('CANCEL')===0) return 'rej'; return 'open'; }
+  function ordChipCls(st){ st=(st||'').toUpperCase(); if(st==='COMPLETE') return 'ok'; if(st==='REJECTED') return 'bad'; if(st.indexOf('CANCEL')===0) return 'flat'; return 'open'; }
+  function ordLive(r){ var st=(r.status||'').toUpperCase(); return st==='OPEN'||st==='TRIGGER PENDING'; }
+  function ordCounts(list){ var c={open:0,done:0,rej:0}; list.forEach(function(r){ c[ordBucket(r)]++; }); return c; }
+  function updateOrdCardSum(){ var el=document.getElementById('ordCardSum'); if(!el) return;
+    var list=ACCT.ord||[]; if(!list.length){ el.innerHTML='<span class="pfc-hint">today\'s orders &amp; status</span>'; return; }
+    var c=ordCounts(list);
+    el.innerHTML=list.length+' orders'+(c.done?' · <b class="up">'+c.done+' done</b>':'')+(c.open?' · <b>'+c.open+' open</b>':'')+(c.rej?' · <b class="down">'+c.rej+' rej</b>':'');
+  }
+  function renderOrders(quiet){
+    var ov=document.getElementById('ordView'); if(!ov) return;
+    if(!pfToken()){ ordMsg('No access token on this device — open your private <code>?t=…</code> link once to unlock the terminal and your account.'); return; }
+    if(!zWorkerUrl()){ ordMsg('Connect your Zerodha account to see today’s orders. <button class="cbtn" data-oact="connect">Connect account ▸</button>'); return; }
+    acctFetch('/orders').then(function(o){
+      if(o.st===0){ if(!quiet) ordMsg('Couldn’t reach your Zerodha worker. Check your connection, then reopen Orders.'); return; }
+      if(o.st===401){ ordMsg('Your worker refused the token — its <code>PF_TOKEN</code> secret must equal your <code>pf_token</code>.'); return; }
+      if(o.st===403){ ACCT.connected=false; ordMsg('Log in to Zerodha first. <button class="cbtn" data-oact="connect">Connect account ▸</button>'); return; }
+      if(o.st!==200 || !o.j || !o.j.data){ if(!quiet) ordMsg('Couldn’t load orders'+(o.j&&o.j.message?': '+esc(o.j.message):'.')); return; }
+      ACCT.connected=true; ACCT.user=ACCT.user||'live';
+      ACCT.ord=o.j.data||[];
+      drawOrdersView();
+    });
+  }
+  function drawOrdersView(){
+    var ov=document.getElementById('ordView'); if(!ov) return;
+    var list=ACCT.ord||[];
+    var head='<div class="av-head"><span class="av-title">Today’s orders</span>'+
+      (ACCT.connected?'<span class="livetag">● '+esc(ACCT.user||'live')+'</span>':'')+
+      '<span class="av-upd">as of '+istTime(Date.now())+' · <a href="#" data-oact="refresh">refresh</a></span></div>';
+    updateOrdCardSum();
+    if(!list.length){ ov.innerHTML=head+'<div class="acct-msg">No orders today. Anything you place — from the ticket on the right or a strategy basket — shows up here with its live status.</div>'; return; }
+    var c=ordCounts(list);
+    var chips=[['all','All',list.length],['open','Open',c.open],['done','Completed',c.done],['rej','Rejected',c.rej]];
+    var frow='<div class="ofilters">'+chips.map(function(x){ return '<button class="ofilt'+(ORD_FILTER===x[0]?' act':'')+'" data-of="'+x[0]+'">'+x[1]+' <span class="ocount">'+x[2]+'</span></button>'; }).join('')+'</div>';
+    var shown=list.filter(function(r){ return ORD_FILTER==='all'?true:ordBucket(r)===ORD_FILTER; });
+    var rows=shown.slice().reverse().map(function(r){
+      var st=r.status||'', cls=ordChipCls(st), live=ordLive(r), buy=(r.transaction_type||'').toUpperCase()==='BUY';
+      var qf=(r.filled_quantity!=null?r.filled_quantity:0), qt=(r.quantity!=null?r.quantity:0);
+      var px=(+r.average_price>0)?('₹'+(+r.average_price).toFixed(2)):((+r.price>0)?('₹'+(+r.price).toFixed(2)):'MKT');
+      var typ=[(r.order_type||''),(r.product||'')].filter(Boolean).join(' · ');
+      var rej=(st.toUpperCase()==='REJECTED'&&r.status_message);
+      return '<tr data-sy="'+esc(r.tradingsymbol||'')+'">'+
+        '<td class="omono">'+esc((r.order_timestamp||'').slice(11,16)||'—')+'</td>'+
+        '<td><span class="nm">'+esc(r.tradingsymbol||'')+'</span><span class="xtag">'+esc(r.exchange||'NSE')+'</span>'+(typ?'<div class="osub">'+esc(typ)+'</div>':'')+'</td>'+
+        '<td class="'+(buy?'obuy':'osell')+'">'+esc(r.transaction_type||'')+'</td>'+
+        '<td class="secret omono">'+qf+'/'+qt+'</td>'+
+        '<td class="omono">'+px+((+r.trigger_price>0)?'<div class="osub">trg ₹'+(+r.trigger_price).toFixed(2)+'</div>':'')+'</td>'+
+        '<td><span class="ochip '+cls+'">'+esc(st)+'</span>'+(rej?'<div class="osub down" title="'+esc(r.status_message)+'">'+esc(r.status_message)+'</div>':'')+'</td>'+
+        '<td>'+(live?'<button class="ocancel" data-oc="'+esc(r.order_id)+'" data-ov="'+esc(r.variety||'regular')+'" data-osy="'+esc(r.tradingsymbol||'')+'" title="Cancel this order">✕</button>':'')+'</td>'+
+        '</tr>';
+    }).join('');
+    ov.innerHTML=head+frow+'<div class="atbl-wrap"><table class="atbl ordtbl"><thead><tr>'+
+      '<th>Time</th><th>Order</th><th>Side</th><th>Qty</th><th>Price</th><th>Status</th><th></th>'+
+      '</tr></thead><tbody>'+(rows||'<tr><td colspan="7" style="text-align:center;color:var(--text-3);padding:18px">No '+esc(ORD_FILTER)+' orders.</td></tr>')+'</tbody></table></div>';
+  }
+  function openOrders(){ showView('orders'); if(!ACCT.ord) ordMsg('Loading your orders…'); renderOrders(false); }
   /* center view switch: stock chart <-> account */
   var VIEW='stock';
   function showView(v){ VIEW=v;
     document.getElementById('stockView').style.display=(v==='stock')?'':'none';
     document.getElementById('acctView').style.display=(v==='account')?'':'none';
     var sv=document.getElementById('stratView'); if(sv) sv.style.display=(v==='strategies')?'':'none';
+    var ov=document.getElementById('ordView'); if(ov) ov.style.display=(v==='orders')?'':'none';
     var c=document.getElementById('pfCard'); if(c) c.classList.toggle('on',v==='account');
     var sc=document.getElementById('stratCard'); if(sc) sc.classList.toggle('on',v==='strategies');
-    var b=document.querySelector('.body'); if(b) b.classList.toggle('acctmode',(v==='account'||v==='strategies'));
+    var oc=document.getElementById('ordCard'); if(oc) oc.classList.toggle('on',v==='orders');
+    var b=document.querySelector('.body'); if(b) b.classList.toggle('acctmode',(v==='account'||v==='strategies'||v==='orders'));
   }
   /* ---- native strategies panel (lazy-loads the engine + strategies-panel.js) ---- */
   var SP_LOADING=null;
@@ -894,6 +979,7 @@ body.blur-secret .secret{filter:blur(7px);-webkit-user-select:none;user-select:n
       card.addEventListener('click',fn);
       card.addEventListener('keydown',function(e){ if(e.key==='Enter'||e.key===' '){ e.preventDefault(); fn(); } }); }
     bindCard('pfCard',function(){ showView('account'); renderAcct(false); });
+    bindCard('ordCard',openOrders);
     bindCard('stratCard',openStrategies);
   })();
   document.getElementById('acctView').addEventListener('click',function(e){
@@ -917,6 +1003,25 @@ body.blur-secret .secret{filter:blur(7px);-webkit-user-select:none;user-select:n
       renderAcctView(); return; }
     var tr=e.target.closest('tr[data-sy]'); if(tr && tr.dataset.sy) selectSym(tr.dataset.sy);
   });
+  document.getElementById('ordView').addEventListener('click',function(e){
+    var oa=e.target.closest('[data-oact]');
+    if(oa){ e.preventDefault(); var a=oa.dataset.oact;
+      if(a==='connect'){ showView('account'); renderAcct(false); }
+      else if(a==='refresh'){ renderOrders(false); }
+      return; }
+    var of=e.target.closest('[data-of]');
+    if(of){ ORD_FILTER=of.dataset.of; drawOrdersView(); return; }
+    var cc=e.target.closest('[data-oc]');
+    if(cc){ e.preventDefault(); e.stopPropagation();
+      if(!confirm('Cancel the order for '+(cc.dataset.osy||'this stock')+'?')) return;
+      ktoast('Cancelling…',3000);
+      acctFetch('/order?variety='+encodeURIComponent(cc.dataset.ov)+'&order_id='+encodeURIComponent(cc.dataset.oc),{method:'DELETE'}).then(function(res){
+        ktoast(res.st===200?'Cancel sent ✓':'Cancel failed: '+((res.j&&res.j.message)||('HTTP '+res.st)),4800);
+        setTimeout(function(){ renderOrders(true); },1200);
+      });
+      return; }
+    var tr=e.target.closest('tr[data-sy]'); if(tr && tr.dataset.sy) selectSym(tr.dataset.sy);
+  });
 
   /* init + polling */
   renderIdxLoading(); renderMW(); renderFocusShell(); syncSide();
@@ -935,8 +1040,8 @@ body.blur-secret .secret{filter:blur(7px);-webkit-user-select:none;user-select:n
   })();
   /* deep-link: terminal.html#strategies opens the Strategies panel straight away (e.g. the portfolio header's 🧺 Strategies) */
   (function(){ if((location.hash||'').toLowerCase()==='#strategies' && !new URL(location.href).searchParams.get('request_token')) openStrategies(); })();
-  var POLL=setInterval(function(){ if(document.hidden) return; fetchQuotes(); fetchIndices(); if(ACCT.connected) renderAcct(true); },30000);
-  document.addEventListener('visibilitychange',function(){ if(!document.hidden){ fetchQuotes(); fetchIndices(); renderAcct(true); } });
+  var POLL=setInterval(function(){ if(document.hidden) return; fetchQuotes(); fetchIndices(); if(ACCT.connected){ renderAcct(true); if(VIEW==='orders') renderOrders(true); } },30000);
+  document.addEventListener('visibilitychange',function(){ if(!document.hidden){ fetchQuotes(); fetchIndices(); renderAcct(true); if(VIEW==='orders') renderOrders(true); } });
 })();
 </script>
 </body>
