@@ -549,14 +549,20 @@ function modelSyms(){
   return [...out];
 }
 async function loadAll(){
+  /* ONE network wave: holdings + EOD price bin + benchmark + model + trades all fetch together. The
+     model/trades rows are token-addressed (they don't need the holdings doc), and each has its own
+     try/catch so it can never reject the batch — so first paint waits on the single slowest read
+     (~0.6s), not three ~0.6s supabase reads back-to-back. Live quotes (the slow cross-origin worker
+     hop) come AFTER first paint, in boot(). */
   const [doc,slim,nif] = await Promise.all([
     loadHoldings(),
     gunzipJSON(CFG.base+'dash_slim.bin'),
-    fetch(CFG.base+'nifty500.json').then(r=>r.ok?r.json():null).catch(()=>null)
+    fetch(CFG.base+'nifty500.json').then(r=>r.ok?r.json():null).catch(()=>null),
+    loadModel(),        // sets MODEL as a side effect (own try/catch — never rejects this Promise.all)
+    loadTrades()        // sets TRADES as a side effect (own try/catch — never rejects this Promise.all)
   ]);
   DOC=doc; META=slim.meta||{}; SERIES=slim.series||{}; NIFTY500=nif;   // the strategies screen from Nifty 500 — benchmark against it, not Nifty 50
   DOC.holdings.forEach(h=>{ h.buyOff=isoToOff(h.date); });
-  await Promise.all([loadModel(), loadTrades()]);   // two small supabase reads → in parallel; live quotes come AFTER first paint (boot), so the ~1s worker hop never blocks the page from showing
 }
 async function refreshQuotes(){
   const syms=[...new Set(DOC.holdings.map(h=>h.live).filter(Boolean).concat(modelSyms()))];
