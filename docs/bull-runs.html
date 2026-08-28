@@ -25,6 +25,12 @@
   .vcard .m{font-size:11px;color:var(--text-muted,#64748b);margin-top:1px}
   .vcard.on{border-color:var(--accent,#2563eb);box-shadow:0 0 0 1.5px var(--accent,#2563eb) inset}
   .vcard.on .n{color:var(--accent,#2563eb)}
+  /* group heading inside the pill row — the two families rank DIFFERENT populations, so the
+     reader has to be able to tell which one a pill belongs to before clicking it. */
+  .grp{font-size:10px;font-weight:800;letter-spacing:.06em;text-transform:uppercase;
+    color:var(--text-faint,#94a3b8);margin-left:.35rem;padding-left:.7rem;
+    border-left:1px solid var(--border,#e2e8f0)}
+  @media(max-width:640px){.grp{border-left:0;padding-left:0;margin-left:0;flex-basis:100%}}
   .vcard:focus-visible{outline:2px solid var(--accent,#2563eb);outline-offset:2px}
   .pcard.live .t{color:var(--accent,#2563eb)}
   .note{background:var(--surface,#fff);border:1px solid var(--border,#e2e8f0);border-radius:.75rem;
@@ -63,6 +69,7 @@
     Every one of <b id="nTested">4,440,600</b> strategies scored across <b>all four bull markets since 2012</b>,
     on both earnings bases, with industry-rank and quality-momentum composite barred — then ranked by the
     <b>worst</b> placing each one recorded. These are the 1,000 that held up best.
+    <span id="savedIntro"></span>
     Unlisted research page. <span id="builtAt"></span>
     <a href="./strategy-phases.html" class="underline" style="color:var(--accent,#2563eb)">← Strategy Phases Lab</a>
   </p>
@@ -93,6 +100,15 @@
 <script>
 (async function(){
   const R = await (await fetch('./bull_runs.json',{cache:'no-cache'})).json();
+  // The saved-strategy views live in their own file so a grid rebuild of bull_runs.json can never
+  // drop them. Missing or broken → the two extra pills simply do not render.
+  let SV = null;
+  try { const r = await fetch('./bull_runs_saved.json',{cache:'no-cache'});
+        if (r.ok) { const j = await r.json(); if (j && j.views && j.n) SV = j; } }
+  catch(e){ console.warn('saved-strategy views unavailable', e); }
+  if (SV) Object.keys(SV.views).forEach(k => R.views[k] = SV.views[k]);
+  const isSaved = k => !!(SV && SV.views[k]);
+  const POOL = () => isSaved(VIEW) ? SV.n : R.pool;
   const esc = s => String(s).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;');
   const nf = n => n.toLocaleString('en-IN');
   const pct = v => (v>=0?'+':'') + v.toFixed(0) + '%';
@@ -102,15 +118,21 @@
   document.getElementById('nTested').textContent = nf(R.totalCombos);
   document.getElementById('builtAt').textContent = 'Built ' + R.built + ' · data to ' + R.dataEnd + '.';
   document.getElementById('basketChip').textContent = R.basket;
+  if (SV) document.getElementById('savedIntro').innerHTML =
+    'The last two cards drop the grid entirely and put <b>your own ' + SV.n +
+    ' saved strategies</b> through the same five windows.';
 
 
   let VIEW='all4';
   const V = () => R.views[VIEW];
   const med = a => { const b=a.slice().sort((x,y)=>x-y); return b[b.length>>1]; };
 
+  const pill = k => '<button class="vcard" data-v="'+k+'"><div class="n">'+esc(R.views[k].label)+
+    '</div><div class="m">worst placing across '+R.views[k].keys.length+'</div></button>';
+  const grpLabel = t => '<span class="grp">'+esc(t)+'</span>';
   document.getElementById('vpills').insertAdjacentHTML('beforeend',
-    Object.keys(R.views).map(k=>'<button class="vcard" data-v="'+k+'"><div class="n">'+esc(R.views[k].label)+
-      '</div><div class="m">worst placing across '+R.views[k].keys.length+'</div></button>').join(''));
+    Object.keys(R.views).filter(k=>!isSaved(k)).map(pill).join('') +
+    (SV ? grpLabel('Our '+SV.n+' saved') + Object.keys(SV.views).map(pill).join('') : ''));
 
   function paintHead(){
     // Leg cards dim when the active view does not rank on them — the reader must be able to see
@@ -126,27 +148,49 @@
         '<div class="s">index · in progress · '+R.cur.months+' months<br>'+R.cur.s+' → '+R.cur.e+'</div></div>';
     document.querySelectorAll('#vpills .vcard').forEach(b=>b.classList.toggle('on',b.dataset.v===VIEW));
 
-    const rows=V().rows, curs=rows.map(r=>r.cur);
-    document.getElementById('n1').innerHTML =
-      '<b>Ranked on '+(keys.length===4?'all four':'the latest two')+' bull runs.</b> Out of '+nf(R.pool)+
-      ' candidates the most consistent still fell to <b>'+nf(rows[0].worst)+'th</b> in its weakest of the '+
-      keys.length+' — top '+(100*rows[0].worst/R.pool).toFixed(2)+'%. Cut-off at row 1,000: '+nf(rows[999].worst)+'th.'+
-      (keys.length===4 ? ' <b>Nothing was elite in all four.</b>'
-                       : ' Demanding only two is a far easier test — which is exactly why it flatters.');
-    document.getElementById('n2').innerHTML =
-      '<b>How this set is doing in the live run.</b> Median <b>'+pct(med(curs))+'</b> against an index of +'+
-      R.cur.bench.toFixed(1)+'%, with '+nf(curs.filter(v=>v>R.cur.bench).length)+' of 1,000 beating it.'+
-      (keys.length===2 ? ' Note that is <i>worse</i> than the four-run set — fitting to two recent regimes generalises less well.'
-                       : '');
+    const rows=V().rows, curs=rows.map(r=>r.cur), N=POOL();
+    if(isSaved(VIEW)){
+      // Our own saved list is a population of 46, not a search over millions — so the honest read
+      // is "which of MY rules held up", plus whether that says anything about the run underway.
+      const top=rows.slice(0,10), bot=rows.slice(-10);
+      document.getElementById('n1').innerHTML =
+        '<b>Your '+N+' saved strategies, ranked on '+(keys.length===4?'all four':'the latest two')+
+        ' bull runs.</b> Placings here are <i>within your own list</i> (1–'+N+'), not against the grid. '+
+        'The steadiest never fell below <b>#'+rows[0].worst+'</b> in its weakest of the '+keys.length+
+        '; the least steady bottomed at #'+rows[rows.length-1].worst+'. Nothing is barred here — '+
+        R.excluded.join(' and ')+' are excluded from the <i>grid</i> search only, so a saved rule that uses one still appears.';
+      document.getElementById('n2').innerHTML =
+        '<b>Does that predict the run underway?</b> Barely. Your top 10 by consistency have made a median '+
+        pct(med(top.map(r=>r.cur)))+' since '+R.cur.s+'; your bottom 10, '+pct(med(bot.map(r=>r.cur)))+
+        '. The list as a whole is doing well — median <b>'+pct(med(curs))+'</b> against an index of +'+
+        R.cur.bench.toFixed(1)+'%, with <b>'+curs.filter(v=>v>R.cur.bench).length+' of '+N+'</b> beating it — '+
+        'but past-bull-run steadiness is not what is sorting the winners today.';
+    } else {
+      document.getElementById('n1').innerHTML =
+        '<b>Ranked on '+(keys.length===4?'all four':'the latest two')+' bull runs.</b> Out of '+nf(N)+
+        ' candidates the most consistent still fell to <b>'+nf(rows[0].worst)+'th</b> in its weakest of the '+
+        keys.length+' — top '+(100*rows[0].worst/N).toFixed(2)+'%. Cut-off at row 1,000: '+nf(rows[999].worst)+'th.'+
+        (keys.length===4 ? ' <b>Nothing was elite in all four.</b>'
+                         : ' Demanding only two is a far easier test — which is exactly why it flatters.');
+      document.getElementById('n2').innerHTML =
+        '<b>How this set is doing in the live run.</b> Median <b>'+pct(med(curs))+'</b> against an index of +'+
+        R.cur.bench.toFixed(1)+'%, with '+nf(curs.filter(v=>v>R.cur.bench).length)+' of 1,000 beating it.'+
+        (keys.length===2 ? ' Note that is <i>worse</i> than the four-run set — fitting to two recent regimes generalises less well.'
+                         : '');
+    }
   }
 
   let sortK='worst', asc=true, needle='';
   const val=(r,k)=> k[0]==='r'&&k.length===2 ? r.rets[+k[1]]
-                  : k==='fam' ? r.d+'-'+r.s : k==='f' ? r.f : k==='b' ? (BL[r.b]||r.b) : r[k];
+                  : k==='fam' ? r.d+'-'+r.s : k==='f' ? r.f : k==='b' ? (BL[r.b]||r.b)
+                  : k==='bskt' ? (r.tn||0) : r[k];
 
   function render(){
-    const keys=V().keys;
-    const COLS=[['i','#'],['worst','Worst rank'],['fam','Rank by'],['b','Basis'],['f','Filters']]
+    const keys=V().keys, SVW=isSaved(VIEW);
+    // Saved rows carry their own serial and their own basket — the grid cards are one fixed basket,
+    // this list is not, so the basket has to travel with the row.
+    const COLS=(SVW?[['i','#'],['sn','Saved'],['worst','Worst rank'],['fam','Rank by'],['bskt','Basket'],['b','Basis'],['f','Filters']]
+                   :[['i','#'],['worst','Worst rank'],['fam','Rank by'],['b','Basis'],['f','Filters']])
       .concat(keys.map((k,i)=>['r'+i,R.legMeta[k].label]))
       .concat([['cur','Now'],['dd','Worst DD']]);
     if(!COLS.some(c=>c[0]===sortK)) sortK='worst';
@@ -155,25 +199,29 @@
       (k==='cur'?'<span class="sub" style="text-transform:none">since '+R.cur.s+'</span>':'')+
       (sortK===k?(asc?' ▴':' ▾'):'')+'</th>').join('')+'</tr>';
     let list=V().rows;
-    if(needle) list=list.filter(r=>r.f.toLowerCase().includes(needle)||(r.d+'-'+r.s).toLowerCase().includes(needle)||(r.b||'').toLowerCase().includes(needle));
+    if(needle) list=list.filter(r=>r.f.toLowerCase().includes(needle)||(r.d+'-'+r.s).toLowerCase().includes(needle)||
+      (r.b||'').toLowerCase().includes(needle)||(r.sn||'').toLowerCase().includes(needle)||(r.nm||'').toLowerCase().includes(needle));
     list=list.slice().sort((a,b)=>{const x=val(a,sortK),y=val(b,sortK);
       return (typeof x==='number'?x-y:String(x).localeCompare(String(y)))*(asc?1:-1);});
     document.getElementById('tb').innerHTML = list.map(r=>'<tr>'+
       '<td class="num mono" style="color:var(--text-faint,#94a3b8)">'+r.i+'</td>'+
-      '<td class="num mono" style="font-weight:700">'+nf(r.worst)+'</td>'+
+      (SVW?'<td class="mono" style="font-size:12px;font-weight:700" title="'+esc(r.nm||'')+'">'+esc(r.sn)+'</td>':'')+
+      '<td class="num mono" style="font-weight:700">'+nf(r.worst)+(SVW?'<span class="sub">of '+POOL()+'</span>':'')+'</td>'+
       '<td><span class="fam">'+esc(r.d+'-'+r.s)+'</span></td>'+
+      (SVW?'<td><span class="fam">'+esc('top '+r.tn+' · '+r.mth)+'</span></td>':'')+
       '<td><span class="bchip b-'+esc(r.b)+'" title="'+esc(BT[r.b]||'')+'">'+esc(BL[r.b]||r.b)+'</span></td>'+
       '<td class="mono filt" style="font-size:12px">'+esc(r.f)+'</td>'+
-      r.rets.map((v,i)=>'<td class="num mono pos">'+pct(v)+'<span class="sub">'+nf(r.ranks[i])+'</span></td>').join('')+
+      r.rets.map((v,i)=>'<td class="num mono '+(v>=0?'pos':'warn')+'">'+pct(v)+'<span class="sub">'+nf(r.ranks[i])+'</span></td>').join('')+
       '<td class="num mono now">'+pct(r.cur)+'<span class="sub">#'+r.curRank+'</span></td>'+
       '<td class="num mono warn">-'+r.dd.toFixed(0)+'%</td></tr>').join('');
     document.getElementById('count').textContent = nf(list.length)+' strategies'+(needle?' · matching "'+needle+'"':'');
+    document.getElementById('basketChip').textContent = SVW ? 'mixed baskets · your saved list' : R.basket;
     document.getElementById('foot').textContent =
       'All five periods are measured off the NIFTY 500 daily series with a 13% reversal filter, not calendar years: the four completed legs run trough→peak, and the live leg runs from its measured trough ('+R.cur.s+') to the latest data. '+
-      'Each cell shows that run’s absolute return with its placing out of '+nf(R.pool)+' beneath; under “Now” the small '+
-      'figure is the placing within these 1,000. The live run is NOT part of any ranking, and each view is its own '+
-      'top-1,000 search of the full pool — not a filter of the other. Baskets are equal-weight, rebalanced monthly, '+
-      'survivorship-free. Excluded from the search: '+R.excluded.join(' and ')+'.';
+      (SVW
+        ? 'These two views hold your '+POOL()+' shared saved strategies — every one of them, not a top-N cut — re-run over the same five windows with the site’s own engine. Each cell shows that run’s absolute return with its placing among the '+POOL()+' beneath; under “Now” the small figure is the same placing in the live run. The live run is NOT part of the ranking. Each row keeps its own basket size, rebalance method and earnings basis exactly as you saved it, and its DDMMYY-NN serial matches the Saved Strategies page.'
+        : 'Each cell shows that run’s absolute return with its placing out of '+nf(R.pool)+' beneath; under “Now” the small figure is the placing within these 1,000. The live run is NOT part of any ranking, and each view is its own top-1,000 search of the full pool — not a filter of the other. Excluded from the search: '+R.excluded.join(' and ')+'.')+
+      ' Baskets are equal-weight, rebalanced monthly, survivorship-free.';
   }
   document.getElementById('vpills').addEventListener('click',e=>{
     const b=e.target.closest('.vcard'); if(!b) return;
@@ -181,7 +229,7 @@
   });
   document.getElementById('th').addEventListener('click',e=>{
     const th=e.target.closest('th'); if(!th) return; const k=th.dataset.c;
-    if(sortK===k) asc=!asc; else { sortK=k; asc=(k==='worst'||k==='i'||k==='fam'||k==='f'||k==='b'); }
+    if(sortK===k) asc=!asc; else { sortK=k; asc=(k==='worst'||k==='i'||k==='fam'||k==='f'||k==='b'||k==='sn'||k==='bskt'); }
     render();
   });
   document.getElementById('q').addEventListener('input',e=>{ needle=e.target.value.trim().toLowerCase(); render(); });
