@@ -230,6 +230,18 @@ a{color:var(--buy);text-decoration:none}
 .atbl .sub{font-size:10px;font-weight:600;margin-top:1px}
 .acct-msg{padding:22px 4px;font-size:13px;color:var(--text-2);line-height:1.55;max-width:54ch}
 .acct-msg a{font-weight:600}
+.connect{max-width:540px;padding:6px 2px 10px}
+.cmsg{font-size:13px;color:var(--text-2);line-height:1.55;margin:0 0 12px}
+.cmsg code{font-family:"JetBrains Mono",monospace;font-size:11.5px;background:var(--surface-2);padding:1px 5px;border-radius:4px}
+.curl{font-size:12px;background:var(--surface-2);border:1px solid var(--border);border-radius:8px;padding:9px 11px;margin:0 0 12px;word-break:break-all;color:var(--text)}
+.crow{display:flex;gap:8px;margin-bottom:12px;flex-wrap:wrap}
+.crow input{flex:1;min-width:210px;border:1px solid var(--border);background:var(--surface-2);color:var(--text);border-radius:9px;padding:10px 12px;font-size:13px;outline:none;font-family:"JetBrains Mono",monospace}
+.crow input:focus{border-color:var(--buy)}
+.cbtn{border:none;background:var(--buy);color:#fff;border-radius:9px;padding:10px 16px;font-size:13px;font-weight:700;cursor:pointer;white-space:nowrap}
+.cbtn.ghost{background:var(--surface-2);color:var(--text-2);border:1px solid var(--border)}
+.cedit{font-size:11.5px;color:var(--text-3);margin-top:6px}
+.cedit a{font-weight:600}
+.av-upd a{font-weight:600}
 
 .foot{max-width:1340px;margin:0 auto;padding:2px 18px 40px;font-size:11px;color:var(--text-3);line-height:1.5}
 .foot code{font-family:"JetBrains Mono",monospace;font-size:10.5px;background:var(--surface-2);padding:1px 5px;border-radius:4px}
@@ -629,9 +641,11 @@ body.blur-secret .secret{filter:blur(7px);-webkit-user-select:none;user-select:n
   function zinr(v){ return (v==null||!isFinite(v))?'—':'₹'+Math.round(v).toLocaleString('en-IN'); }
   function inrSigned(v){ return (v==null||!isFinite(v))?'—':(v>=0?'+':'−')+'₹'+Math.round(Math.abs(v)).toLocaleString('en-IN'); }
   function zWorkerUrl(){ try{ return (localStorage.getItem('pf_kite_worker')||'').replace(/\/+$/,''); }catch(e){ return ''; } }
-  function acctFetch(path){
+  function acctFetch(path,opts){
     var w=zWorkerUrl(); if(!w) return Promise.resolve({st:-1,j:null});
-    return fetch(w+path,{headers:{'X-PF-Token':pfToken()},cache:'no-store'})
+    var o=Object.assign({cache:'no-store'},opts||{});
+    o.headers=Object.assign({'X-PF-Token':pfToken()},o.headers||{});
+    return fetch(w+path,o)
       .then(function(r){ return r.json().then(function(j){return {st:r.status,j:j};},function(){return {st:r.status,j:null};}); })
       .catch(function(){ return {st:0,j:null}; });
   }
@@ -639,18 +653,43 @@ body.blur-secret .secret{filter:blur(7px);-webkit-user-select:none;user-select:n
   var ACCT={connected:false};
   function zq(r){ var m=r.mtf||{}; return (r.quantity||0)+(r.t1_quantity||0)+(r.collateral_quantity||0)+(m.quantity||0); }
   function zavg(r){ var m=r.mtf||{}, nq=(r.quantity||0)+(r.t1_quantity||0)+(r.collateral_quantity||0), mq=m.quantity||0, q=nq+mq; return q?((r.average_price||0)*nq+(m.average_price||0)*mq)/q:0; }
+  /* ---- Zerodha connection / login (terminal is the login page) ---- */
+  function kiteKey(){ try{ return localStorage.getItem('pf_kite_key')||''; }catch(e){ return ''; } }
+  function termUrl(){ return location.origin+location.pathname; }
+  function zLogin(){ var k=kiteKey(); if(!k){ connectSetup('needkey'); return; }
+    location.href='https://kite.zerodha.com/connect/login?v=3&api_key='+encodeURIComponent(k); }
+  function zLogout(){ if(!confirm('Log out of the Zerodha session for ALL your devices until tomorrow?')) return;
+    acctFetch('/logout',{method:'POST'}).then(function(){ ACCT.connected=false; renderAcct(false); }); }
+  function workerField(){ return '<div class="crow"><input id="cWorker" placeholder="https://…workers.dev" value="'+esc(zWorkerUrl())+'"><button class="cbtn" data-act="savew">Save</button></div>'; }
+  function keyBlock(){ return '<p class="cmsg"><b>Step 2 · your Kite API key.</b> One-time. At <a href="https://developers.kite.trade/apps" target="_blank" rel="noopener">developers.kite.trade/apps</a> create a free <b>Personal</b> app (order APIs are ₹0). Set its <b>Redirect URL</b> to this page:</p>'+
+    '<div class="curl mono">'+esc(termUrl())+'</div>'+
+    '<p class="cmsg">Then paste the <b>API key</b> (never the secret — that lives only in your worker):</p>'+
+    '<div class="crow"><input id="cKey" placeholder="paste api_key" autocomplete="off"><button class="cbtn" data-act="savek">Save key</button></div>'; }
+  function connectSetup(state){
+    var av=document.getElementById('acctView'); if(!av) return;
+    var hasW=!!zWorkerUrl(), hasK=!!kiteKey();
+    var h='<div class="av-head"><span class="av-title">Connect Zerodha</span></div><div class="connect">';
+    if(state==='token'){ h+='<p class="cmsg">No access token on this device. Open your private link (the one with <code>?t=…</code>) once — it unlocks the terminal and your account together.</p>'; }
+    else if(state==='badtoken'){ h+='<p class="cmsg">The worker refused your token — its <code>PF_TOKEN</code> secret must equal your <code>pf_token</code>.</p>'+workerField(); }
+    else if(state==='unreachable'){ h+='<p class="cmsg">Couldn\'t reach your Zerodha worker. Check your connection, or re-enter the URL.</p>'+workerField()+'<button class="cbtn ghost" data-act="retry">Retry</button>'; }
+    else if(state==='editworker'){ h+='<p class="cmsg">Update your Kite worker URL:</p>'+workerField(); }
+    else if(state==='needkey'){ h+=keyBlock(); }
+    else if(!hasW){ h+='<p class="cmsg"><b>Step 1 · your Kite worker.</b> Paste the Cloudflare worker URL that holds your Kite session (the same one your portfolio uses).</p>'+workerField(); }
+    else if(!hasK){ h+=keyBlock(); }
+    else { h+='<p class="cmsg">Ready to connect. One login covers every device until 6&nbsp;AM tomorrow.</p><button class="cbtn" data-act="login">Login to Zerodha ▸</button><div class="cedit"><a href="#" data-act="needkey">api key ✎</a> · <a href="#" data-act="editworker">worker ✎</a></div>'; }
+    av.innerHTML=h+'</div>';
+  }
   function renderAcct(quiet){
-    if(!zWorkerUrl()){ acctMsg('Zerodha isn\'t connected on this device yet. Open your <a href="./portfolio.html">portfolio page</a> once (it stores the connection here), then reload.'); return; }
-    if(!pfToken()){ acctMsg('No access token on this device. Open your private link once and it unlocks here too.'); return; }
+    if(!pfToken()){ connectSetup('token'); return; }
+    if(!zWorkerUrl()){ connectSetup('login'); return; }
     acctFetch('/status').then(function(s){
-      if(s.st===-1){ acctMsg('Zerodha worker not set. Connect once on your <a href="./portfolio.html">portfolio page</a>.'); return; }
-      if(s.st===0){ if(!quiet) acctMsg('Couldn\'t reach your Zerodha worker — check your connection.'); return; }
-      if(s.st===401){ acctMsg('The worker refused this token.'); return; }
-      if(s.st!==200 || !s.j || !s.j.user){ ACCT.connected=false; acctMsg('Not logged in to Zerodha today. One login on the <a href="./portfolio.html">portfolio page</a> connects every device until 6&nbsp;AM tomorrow.'); return; }
+      if(s.st===0){ if(!quiet) connectSetup('unreachable'); return; }
+      if(s.st===401){ connectSetup('badtoken'); return; }
+      if(s.st!==200 || !s.j || !s.j.user){ ACCT.connected=false; connectSetup('login'); return; }
       ACCT.connected=true;
       Promise.all([acctFetch('/holdings'),acctFetch('/positions'),acctFetch('/margins')]).then(function(res){
         var h=res[0],p=res[1],m=res[2];
-        if([h,p,m].some(function(x){return x.st===403;})){ ACCT.connected=false; acctMsg('Zerodha session expired — log in again on the <a href="./portfolio.html">portfolio page</a>.'); return; }
+        if([h,p,m].some(function(x){return x.st===403;})){ ACCT.connected=false; connectSetup('login'); return; }
         drawAcct({ user:s.j.user, hold:(h.j&&h.j.data)||[], pos:(p.j&&p.j.data&&p.j.data.net)||[], marg:(m.j&&m.j.data)||null });
       });
     });
@@ -686,7 +725,7 @@ body.blur-secret .secret{filter:blur(7px);-webkit-user-select:none;user-select:n
     if(!ACCT.user) return;
     var acctDay=ACCT.holdDay+ACCT.posDay, acctTot=ACCT.holdTot+ACCT.posTot;
     var dayPctAll=(ACCT.curVal-ACCT.holdDay)?ACCT.holdDay/(ACCT.curVal-ACCT.holdDay)*100:0, totPctAll=ACCT.invested?ACCT.holdTot/ACCT.invested*100:0;
-    var h='<div class="av-head"><span class="av-title">Your Zerodha account</span><span class="livetag">● '+esc(ACCT.user)+'</span><span class="av-upd">as of '+istTime(Date.now())+'</span></div>';
+    var h='<div class="av-head"><span class="av-title">Your Zerodha account</span><span class="livetag">● '+esc(ACCT.user)+'</span><span class="av-upd">as of '+istTime(Date.now())+' · <a href="#" data-act="logout">logout</a></span></div>';
     h+='<div class="av-kpis">'+
       kpi("Day's P&L",inrSigned(acctDay),signed(dayPctAll),acctDay>=0)+
       kpi('Total P&L',inrSigned(acctTot),signed(totPctAll),acctTot>=0)+
@@ -735,6 +774,20 @@ body.blur-secret .secret{filter:blur(7px);-webkit-user-select:none;user-select:n
     card.addEventListener('keydown',function(e){ if(e.key==='Enter'||e.key===' '){ e.preventDefault(); open(); } });
   })();
   document.getElementById('acctView').addEventListener('click',function(e){
+    var ca=e.target.closest('[data-act]');
+    if(ca){ e.preventDefault(); var act=ca.dataset.act;
+      if(act==='savew'){ var v=((document.getElementById('cWorker')||{}).value||'').trim().replace(/\/+$/,'');
+        if(!/^https:\/\/.+/.test(v)){ alert('That doesn\'t look like an https worker URL'); return; }
+        try{ localStorage.setItem('pf_kite_worker',v); }catch(e2){} renderAcct(false); }
+      else if(act==='savek'){ var k=((document.getElementById('cKey')||{}).value||'').trim();
+        if(!k){ alert('Paste your api_key first'); return; }
+        try{ localStorage.setItem('pf_kite_key',k); }catch(e2){} renderAcct(false); }
+      else if(act==='login'){ zLogin(); }
+      else if(act==='needkey'){ connectSetup('needkey'); }
+      else if(act==='editworker'){ connectSetup('editworker'); }
+      else if(act==='retry'){ renderAcct(false); }
+      else if(act==='logout'){ zLogout(); }
+      return; }
     var thEl=e.target.closest('th[data-col]');
     if(thEl){ var tbl=thEl.closest('table'), st=tbl.classList.contains('postbl')?POS_SORT:HOLD_SORT, col=thEl.dataset.col;
       if(st.col===col) st.dir=-st.dir; else { st.col=col; st.dir=(col==='sym')?1:-1; }
@@ -745,7 +798,18 @@ body.blur-secret .secret{filter:blur(7px);-webkit-user-select:none;user-select:n
   /* init + polling */
   renderIdxLoading(); renderMW(); renderFocusShell(); syncSide();
   setLive('','Connecting…');
-  fetchIndices(); fetchQuotes(); loadFocus(SEL); renderAcct(false);
+  fetchIndices(); fetchQuotes(); loadFocus(SEL);
+  /* Kite login bounces back with ?request_token=… — finish the exchange, then load the account */
+  (function(){
+    var u=new URL(location.href), rt=u.searchParams.get('request_token');
+    if(!rt){ renderAcct(false); return; }
+    ['request_token','action','status','type'].forEach(function(k){ u.searchParams.delete(k); });
+    history.replaceState(null,'',u.pathname+(u.searchParams.toString()?'?'+u.searchParams.toString():'')+u.hash);
+    showView('account');
+    document.getElementById('acctView').innerHTML='<div class="av-head"><span class="av-title">Connect Zerodha</span></div><div class="acct-msg">Finishing Zerodha login…</div>';
+    if(!zWorkerUrl()){ connectSetup('login'); return; }
+    acctFetch('/session',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({request_token:rt})}).then(function(){ renderAcct(false); });
+  })();
   var POLL=setInterval(function(){ if(document.hidden) return; fetchQuotes(); fetchIndices(); if(ACCT.connected) renderAcct(true); },30000);
   document.addEventListener('visibilitychange',function(){ if(!document.hidden){ fetchQuotes(); fetchIndices(); renderAcct(true); } });
 })();
