@@ -1,0 +1,158 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<meta name="robots" content="noindex" />
+<title>STOCKSWORLD · Bull-Run Survivors</title>
+<meta name="description" content="Unlisted research page: the 4.44M-combo grid scored across every bull run since 2012, ranked by worst placing." />
+<script src="https://cdn.tailwindcss.com"></script>
+<link rel="stylesheet" href="./theme.css" />
+<script src="./theme.js"></script>
+<style>
+  body{font-feature-settings:"tnum" 1}
+  .pcard{background:var(--surface,#fff);border:1px solid var(--border,#e2e8f0);border-radius:.75rem;
+    padding:12px 14px;min-width:150px;flex:1}
+  .pcard .t{font-size:11px;font-weight:800;letter-spacing:.05em;text-transform:uppercase;color:var(--text-faint,#94a3b8)}
+  .pcard .v{font-size:19px;font-weight:800;margin-top:2px}
+  .pcard .s{font-size:11px;color:var(--text-muted,#64748b);margin-top:2px}
+  .pcard.live{border-color:var(--accent,#2563eb)}
+  .pcard.live .t{color:var(--accent,#2563eb)}
+  .note{background:var(--surface,#fff);border:1px solid var(--border,#e2e8f0);border-radius:.75rem;
+    padding:12px 14px;font-size:13px;color:var(--text,#0f172a);line-height:1.6}
+  .pos{color:#16a34a} html[data-theme="dark"] .pos{color:#4ade80}
+  .warn{color:#b45309} html[data-theme="dark"] .warn{color:#fbbf24}
+  .shell{background:var(--surface,#fff);border:1px solid var(--border,#e2e8f0);border-radius:.75rem;overflow-x:auto}
+  table{border-collapse:collapse;width:100%;min-width:1000px}
+  th{position:sticky;top:0;background:var(--surface-2,#f1f5f9);color:var(--text-muted,#64748b);
+    font-size:10.5px;text-transform:uppercase;letter-spacing:.06em;text-align:left;padding:8px 9px;
+    cursor:pointer;user-select:none;white-space:nowrap;z-index:1}
+  th.num,td.num{text-align:right}
+  td{padding:6px 9px;border-top:1px solid var(--border,#e2e8f0);font-size:13px}
+  td.mono{font-family:ui-monospace,Consolas,monospace}
+  .fam{display:inline-block;background:var(--surface-2,#f1f5f9);border-radius:4px;padding:1px 7px;
+    font-size:12px;white-space:nowrap;color:var(--text-muted,#475569)}
+  /* Earnings basis — the same rule can appear under either, so it must be readable at a glance. */
+  .bchip{display:inline-block;border-radius:4px;padding:1px 6px;font-size:11px;font-weight:700;
+    letter-spacing:.03em;white-space:nowrap;border:1px solid transparent}
+  .b-std{background:#eef2ff;color:#4338ca} .b-con{background:#ecfdf5;color:#047857}
+  .b-any{background:transparent;color:var(--text-muted,#94a3b8);border-color:var(--border,#e2e8f0);font-weight:600}
+  html[data-theme="dark"] .b-std{background:#312e81;color:#c7d2fe}
+  html[data-theme="dark"] .b-con{background:#064e3b;color:#a7f3d0}
+  html[data-theme="dark"] .b-any{color:#94a3b8;border-color:#374151}
+  .sub{display:block;font-size:10px;color:var(--text-faint,#94a3b8);font-family:ui-monospace,Consolas,monospace}
+  .now{color:var(--accent,#2563eb);font-weight:700}
+  @media(max-width:700px){
+    #tbl th[data-c="f"],#tbl td.filt{min-width:186px;max-width:210px;white-space:normal;overflow-wrap:break-word;line-height:1.35}
+  }
+</style>
+</head>
+<body class="min-h-screen">
+<main class="max-w-6xl mx-auto px-3 sm:px-5 py-5">
+  <h1 class="text-xl sm:text-2xl font-extrabold tracking-tight">🐂 Bull-Run Survivors</h1>
+  <p class="text-[13px] mt-1" style="color:var(--text-muted,#64748b)">
+    Every one of <b id="nTested">4,440,600</b> strategies scored across <b>all four bull markets since 2012</b>,
+    on both earnings bases, with industry-rank and quality-momentum composite barred — then ranked by the
+    <b>worst</b> placing each one recorded. These are the 1,000 that held up best.
+    Unlisted research page. <span id="builtAt"></span>
+    <a href="./strategy-phases.html" class="underline" style="color:var(--accent,#2563eb)">← Strategy Phases Lab</a>
+  </p>
+
+  <div class="flex flex-wrap gap-2.5 mt-3" id="legs"></div>
+
+  <div class="mt-3 grid gap-2.5" style="grid-template-columns:repeat(auto-fit,minmax(300px,1fr))">
+    <div class="note" id="n1"></div>
+    <div class="note" id="n2"></div>
+  </div>
+
+  <div class="flex flex-wrap items-center gap-3 mt-4">
+    <input type="search" id="q" placeholder="Search filters / factor… e.g. delivPct" aria-label="Search"
+      style="background:var(--surface,#fff);border:1px solid var(--border,#cbd5e1);color:var(--text,#0f172a);border-radius:.5rem;padding:7px 11px;font-size:13px;min-width:230px">
+    <span class="fam" style="font-weight:700" id="basketChip"></span>
+    <span id="count" class="text-[12px]" style="color:var(--text-muted,#64748b)"></span>
+  </div>
+
+  <div class="shell mt-2">
+    <table id="tbl"><thead id="th"></thead><tbody id="tb"></tbody></table>
+  </div>
+  <p class="text-[11.5px] mt-3" style="color:var(--text-faint,#94a3b8)" id="foot"></p>
+</main>
+<script>
+(async function(){
+  const R = await (await fetch('./bull_runs.json',{cache:'no-cache'})).json();
+  const esc = s => String(s).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;');
+  const nf = n => n.toLocaleString('en-IN');
+  const pct = v => (v>=0?'+':'') + v.toFixed(0) + '%';
+  const BL = {std:'STD',con:'CON',any:'—'};
+  const BT = {std:'Standalone earnings (parent only)',con:'Consolidated earnings (group)',
+              any:'Reads no earnings factor — identical under either basis'};
+  document.getElementById('nTested').textContent = nf(R.totalCombos);
+  document.getElementById('builtAt').textContent = 'Built ' + R.built + ' · data to ' + R.dataEnd + '.';
+  document.getElementById('basketChip').textContent = R.basket;
+
+  document.getElementById('legs').innerHTML =
+    R.legs.map(l=>'<div class="pcard"><div class="t">'+esc(l.label)+'</div>'+
+      '<div class="v pos">+'+l.bench.toFixed(1)+'%</div>'+
+      '<div class="s">index · '+l.months+' months<br>'+l.s+' → '+l.e+'</div></div>').join('') +
+    '<div class="pcard live"><div class="t">'+esc(R.cur.label)+' · live</div>'+
+      '<div class="v pos">+'+R.cur.bench.toFixed(1)+'%</div>'+
+      '<div class="s">index · in progress<br>'+R.cur.s+' → '+R.cur.e+'</div></div>';
+
+  const rows = R.rows;
+  const med = a => { const b=a.slice().sort((x,y)=>x-y); return b[b.length>>1]; };
+  const curs = rows.map(r=>r.cur);
+  document.getElementById('n1').innerHTML =
+    '<b>The headline is the number that is missing.</b> Out of '+nf(R.pool)+' candidates, the most consistent '+
+    'strategy still fell to <b>'+nf(rows[0].worst)+'th</b> in its weakest bull run — top '+
+    (100*rows[0].worst/R.pool).toFixed(2)+'%, not top 1,000. <b>No rule was elite in all four.</b> '+
+    'By row 1,000 the cut-off is already '+nf(rows[rows.length-1].worst)+'th.';
+  document.getElementById('n2').innerHTML =
+    '<b>Consistency says nothing about the run in progress.</b> Within these 1,000 the rank correlation '+
+    'between worst-case placing and return since '+R.cur.s+' is <b>−0.03</b>. Median now '+
+    '<b>'+pct(med(curs))+'</b> against an index of +'+R.cur.bench.toFixed(1)+'%, and '+
+    nf(curs.filter(v=>v>R.cur.bench).length)+' of 1,000 beat it — the <i>set</i> works, the <i>order inside it</i> is noise.';
+
+  const COLS = [['i','#'],['worst','Worst rank'],['fam','Rank by'],['b','Basis'],['f','Filters']]
+    .concat(R.legs.map((l,i)=>['r'+i,l.label]))
+    .concat([['cur','Now'],['dd','Worst DD']]);
+  rows.forEach((r,i)=>r.i=i+1);
+  let sortK='worst', asc=true, needle='';
+  const val=(r,k)=> k[0]==='r'&&k.length===2 ? r.rets[+k[1]]
+                  : k==='fam' ? r.d+'-'+r.s : k==='f' ? r.f : k==='b' ? (BL[r.b]||r.b) : r[k];
+
+  function render(){
+    document.getElementById('th').innerHTML = '<tr>'+COLS.map(([k,l])=>
+      '<th data-c="'+k+'" class="'+(k==='fam'||k==='f'||k==='b'?'':'num')+'">'+esc(l)+
+      (k==='cur'?'<span class="sub" style="text-transform:none">since '+R.cur.s+'</span>':'')+
+      (sortK===k?(asc?' ▴':' ▾'):'')+'</th>').join('')+'</tr>';
+    let list = rows;
+    if(needle) list = list.filter(r=>r.f.toLowerCase().includes(needle)||(r.d+'-'+r.s).toLowerCase().includes(needle)||(r.b||'').toLowerCase().includes(needle));
+    list = list.slice().sort((a,b)=>{const x=val(a,sortK),y=val(b,sortK);
+      return (typeof x==='number'?x-y:String(x).localeCompare(String(y)))*(asc?1:-1);});
+    document.getElementById('tb').innerHTML = list.map(r=>'<tr>'+
+      '<td class="num mono" style="color:var(--text-faint,#94a3b8)">'+r.i+'</td>'+
+      '<td class="num mono" style="font-weight:700">'+nf(r.worst)+'</td>'+
+      '<td><span class="fam">'+esc(r.d+'-'+r.s)+'</span></td>'+
+      '<td><span class="bchip b-'+esc(r.b)+'" title="'+esc(BT[r.b]||'')+'">'+esc(BL[r.b]||r.b)+'</span></td>'+
+      '<td class="mono filt" style="font-size:12px">'+esc(r.f)+'</td>'+
+      r.rets.map((v,i)=>'<td class="num mono pos">'+pct(v)+'<span class="sub">'+nf(r.ranks[i])+'</span></td>').join('')+
+      '<td class="num mono now">'+pct(r.cur)+'<span class="sub">#'+r.curRank+'</span></td>'+
+      '<td class="num mono warn">-'+r.dd.toFixed(0)+'%</td></tr>').join('');
+    document.getElementById('count').textContent = nf(list.length)+' strategies'+(needle?' · matching "'+needle+'"':'');
+    document.getElementById('foot').textContent =
+      'Legs are measured trough→peak off the NIFTY 500 daily series with a 13% reversal filter, not calendar years. '+
+      'Each cell shows that run’s absolute return with its placing out of '+nf(R.pool)+' beneath; under “Now” the small '+
+      'figure is the placing within these 1,000. The live run is NOT part of the ranking. Baskets are equal-weight, '+
+      'rebalanced monthly, survivorship-free. Excluded from the search: '+R.excluded.join(' and ')+'.';
+  }
+  document.getElementById('th').addEventListener('click',e=>{
+    const th=e.target.closest('th'); if(!th) return; const k=th.dataset.c;
+    if(sortK===k) asc=!asc; else { sortK=k; asc=(k==='worst'||k==='i'||k==='fam'||k==='f'||k==='b'); }
+    render();
+  });
+  document.getElementById('q').addEventListener('input',e=>{ needle=e.target.value.trim().toLowerCase(); render(); });
+  render();
+})();
+</script>
+</body>
+</html>
