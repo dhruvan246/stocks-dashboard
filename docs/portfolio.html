@@ -271,8 +271,7 @@ body.zview #app>*:not([data-card="zerodha"]){display:none}
     <span class="meta" id="clock"></span>
     <div class="spacer"></div>
     <button class="btn" id="btnZview" title="Zerodha live account — funds, holdings, orders, trading">⚡ Zerodha</button>
-    <a class="btn" href="https://dhruvan246.github.io/stocks-dashboard/terminal.html#strategies" style="text-decoration:none" title="Every saved strategy's live picks — buy a whole basket on Zerodha">🧺 Strategies</a>
-    <a class="btn" href="https://dhruvan246.github.io/stocks-dashboard/terminal.html" style="text-decoration:none" title="Live NSE terminal — Kite-style marketwatch, intraday charts &amp; order ticket">📈 Terminal</a>
+    <a class="btn" href="https://dhruvan246.github.io/stocks-dashboard/pf-strategies.html" style="text-decoration:none" title="Every saved strategy's live picks — buy a whole basket on Zerodha">🧺 Strategies</a>
     <button class="btn" id="btnSections" title="Show / hide cards">⊞ Cards</button>
     <button class="btn" id="btnPrivate" title="Blur every number">🙈 Privacy</button>
     <button class="btn" id="btnTheme">◐ Auto</button>
@@ -585,7 +584,7 @@ async function refreshQuotes(){
 function priceFor(h){
   const q=h.live?QUOTES[h.live]:null;
   if(q && q.ltp!=null) return {px:q.ltp, prev:(q.prevClose!=null?q.prevClose:q.ltp), psrc:'live'};
-  if(h.manualPx!=null)  return {px:h.manualPx, prev:(h.manualPrev!=null?h.manualPrev:h.manualPx), psrc:'manual'};
+  if(h.manualPx!=null)  return {px:h.manualPx, prev:(h.manualPrev!=null?h.manualPrev:h.manualPx), psrc:'manual', asOf:h.manualAsOf||null};
   const s=SERIES[h.hist];
   if(s && s.p && s.p.length){
     const n=s.p.length;
@@ -601,25 +600,31 @@ function pfById(id){ return (DOC.portfolios||[]).find(p=>p.id===id)||{}; }
 function acctName(id){ const a=(DOC.accounts||[]).find(x=>x.id===id); return a?a.name:'Unassigned'; }
 
 function buildRows(){
-  const today=Date.parse(istTodayISO()+'T00:00:00Z');
+  const todayISO=istTodayISO(), today=Date.parse(todayISO+'T00:00:00Z');
   ROWS = DOC.holdings.map(h=>{
     const p=priceFor(h), pf=pfById(h.pf), m=META[h.hist]||META[h.live]||{};
     const cost=h.qty*h.avg;
     const value=p.px!=null? h.qty*p.px : null;
-    /* Day-P&L baseline: normally the previous close, but for a FRESHLY bought position use the buy
-       price. A stock bought in the last few days (esp. a new listing like Pine Labs) can carry a
-       stale prevClose from before you owned it — pricing the day move off it shows a phantom gain.
-       Measuring from your buy price matches what investing.com shows. */
+    /* Day-P&L baseline = the prior session's close, EXCEPT on the very day you buy: you didn't own
+       the stock at yesterday's close, so that day the honest "today" move is from your buy price
+       (which is what investing.com shows for a same-day buy). The earlier rule kept using the buy
+       price for the first THREE days, which reported the cumulative since-purchase gain in the
+       TODAY column and could even flip the sign — Pine Labs, bought 3 days ago, read +0.6% "today"
+       while it was actually −1.4% vs the prior close. Once a real prevClose exists, use it. */
+    /* A manual price that has fallen behind the market can't yield a real "today" move — showing
+       one re-broadcasts a frozen number as if it were today's (the GP Eco trap). Blank the day
+       move for a stale manual price and badge it, so it reads as unknown rather than a live 0%. */
+    const staleManual=(p.psrc==='manual' && p.asOf && (today-Date.parse(p.asOf+'T00:00:00Z'))/864e5 > 5);
     const heldDays=Math.max(1,Math.round((today-Date.parse(h.date+'T00:00:00Z'))/864e5));
-    const dayBase=(heldDays<=3)? h.avg : p.prev;
-    const day  =(p.px!=null&&dayBase!=null)? h.qty*(p.px-dayBase) : null;
+    const dayBase=(h.date===todayISO)? h.avg : p.prev;
+    const day  =(!staleManual&&p.px!=null&&dayBase!=null)? h.qty*(p.px-dayBase) : null;
     return Object.assign({},h,p,{
       pfName:pf.name||h.pf, account:pf.account||'', kind:pf.kind||'',
       cname:(h.name||m.name||h.sym), sector:(m.sector||'Unclassified'),
       cost, value, pnl:(value!=null?value-cost:null),
       pnlPct:(value!=null&&cost>0?(value-cost)/cost*100:null),
-      day, dayPct:(p.px!=null&&dayBase)?((p.px-dayBase)/dayBase*100):null,
-      days:heldDays,
+      day, dayPct:(!staleManual&&p.px!=null&&dayBase)?((p.px-dayBase)/dayBase*100):null,
+      staleManual, days:heldDays,
       d52h:(m.h52&&p.px!=null)?(p.px/m.h52-1)*100:null   // % from the 52-week high — the strategy's near-high entry gate
     });
   });
@@ -1191,7 +1196,7 @@ function renderCharts(rows){
 
 }
 const COLS=[
-  {k:'cname',  t:'Stock',    f:r=>'<span class="nm secret">'+esc((r.cname||r.sym).replace(/ (Ltd|Limited)\.?$/,''))+'</span><br><span class="sym"><span class="secret">'+esc(r.sym)+'</span>'+(r.psrc==='manual'?' <span class="badge warn">manual</span>':r.psrc==='eod'?' <span class="badge">EOD</span>':r.psrc==='none'?' <span class="badge warn">no price</span>':'')+'</span>'},
+  {k:'cname',  t:'Stock',    f:r=>'<span class="nm secret">'+esc((r.cname||r.sym).replace(/ (Ltd|Limited)\.?$/,''))+'</span><br><span class="sym"><span class="secret">'+esc(r.sym)+'</span>'+(r.staleManual?' <span class="badge warn">manual · stale</span>':r.psrc==='manual'?' <span class="badge warn">manual</span>':r.psrc==='eod'?' <span class="badge">EOD</span>':r.psrc==='none'?' <span class="badge warn">no price</span>':'')+'</span>'},
   {k:'pfName', t:'Portfolio',f:r=>'<span class="sym">'+esc(r.pfName)+(r.account?' · '+esc(acctName(r.account)):'')+'</span>'},
   {k:'qty',    t:'Qty',      f:r=>'<span class="secret">'+r.qty.toLocaleString('en-IN')+'</span>'},
   {k:'avg',    t:'Avg',      f:r=>'₹'+r.avg.toFixed(2)},
