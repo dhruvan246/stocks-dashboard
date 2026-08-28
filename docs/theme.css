@@ -125,6 +125,16 @@ html[data-theme] .card{
 }
 html[data-theme] .card:hover{ box-shadow: var(--shadow-lg); }
 
+/* Save serial (DDMMYY-NN) — the small monospace tag that identifies a saved strategy, shown
+   identically on Saved Strategies, All Picks, the strategy page and the Mixer. Tabular figures so
+   the digits line up down a column; theme vars keep it readable on light / soft / dark. */
+html[data-theme] .sw-sn{
+  font-family: ui-monospace, SFMono-Regular, Menlo, Consolas, monospace;
+  font-variant-numeric: tabular-nums; font-size:10.5px; font-weight:600; letter-spacing:.02em;
+  color: var(--text-muted); background: var(--surface-2); border:1px solid var(--border);
+  border-radius:4px; padding:0 5px; margin-right:7px; white-space:nowrap;
+}
+
 html[data-theme] header{
   background: var(--header-bg) !important;
   -webkit-backdrop-filter: saturate(170%) blur(14px);

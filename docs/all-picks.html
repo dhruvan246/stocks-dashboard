@@ -141,6 +141,7 @@ const PICK_CAP = 12;   // rows shown per card; a top-50 rule would otherwise bur
 const yieldToUI = lpYield;
 
 let VIEW = 'board', RESULT = [], SKIPPED = [];
+let SERIALS = new Map();   // identityKey → save serial (DDMMYY-NN), same tag Saved Strategies shows
 
 /* ---------- 🕘 rewind (time travel) ----------
  * ASOF = the date the WHOLE board is rendered for, or null for the live view. Same idea as the
@@ -269,9 +270,13 @@ function groupByIdentity(list) {
 // The saved list, normalised. btSync.pullStrategies() REPLACES localStorage with the shared list,
 // so anything deleted on Saved Strategies is already gone by the time we read it here.
 function loadStrategies() {
-  let all = [];
-  try { all = JSON.parse(localStorage.getItem('bt_strategies') || '[]'); } catch (e) { all = []; }
-  try { all = all.concat(JSON.parse(localStorage.getItem('bt_private_strategies') || '[]')); } catch (e) {}   // 🔒 this browser's private strategies
+  let shared = [], priv = [];
+  try { shared = JSON.parse(localStorage.getItem('bt_strategies') || '[]'); } catch (e) { shared = []; }
+  try { priv = JSON.parse(localStorage.getItem('bt_private_strategies') || '[]'); } catch (e) {}   // 🔒 this browser's private strategies
+  // Flag the private ones so saveSerials() can let a private save win over a shared copy of the same
+  // identity — the same private-wins rule strategies() applies on Saved Strategies — so the per-day
+  // serial counter, and therefore every strategy's tag, is identical on both pages.
+  const all = shared.concat(priv.map(s => Object.assign({}, s, { _priv: true })));
   return all.filter(s => s && s.cfg).map(s => {
     const cfg = Object.assign({}, s.cfg);
     cfg.filters = normFilters(cfg.filters);
@@ -424,7 +429,8 @@ function renderCards() {
                     title="Held basket's return from the ${esc(r.rebDate)} rebalance${ASOF ? ' to ' + esc(ASOF) : ''}">${sp(r.ret)} <span class="font-semibold text-slate-400">since ${esc(r.rebDate.slice(5))}</span></span>`}
             </span>`}
       </div>
-      <div class="flex flex-wrap gap-1.5 mt-2 mb-3">
+      <div class="flex flex-wrap items-center gap-1.5 mt-2 mb-3">
+        <span class="sw-sn" title="Save serial — DDMMYY plus the order saved that day">${esc(SERIALS.get(identityKey(r.cfg)) || '—')}</span>
         <span class="chip text-slate-500 bg-slate-50">${esc(r.uni)}</span>
         <span class="chip text-slate-500 bg-slate-50">${esc(r.freqL)}</span>
         <span class="chip text-slate-500 bg-slate-50">${r.counts && r.counts.length > 1 ? esc(r.counts.join('/')) + ' stocks' : 'Top ' + r.topN}</span>
@@ -456,7 +462,7 @@ function renderBoard() {
       <div class="text-[11px] text-slate-400 font-bold">${i + 1}</div>
       <div class="min-w-0">
         <a href="${stratHref(r.s)}" title="Code-name: ${esc(nameWithBasis(r.name, r.cfg))}" class="block text-[12.5px] font-semibold text-slate-800 hover:text-indigo-600">${isFav(favs, r.cfg) ? FAV_MARK : ''}<span data-yrs="${esc(r.s.id)}">${esc(strategyEnglish(r.cfg))}</span></a>
-        <div class="text-[10.5px] text-slate-400 truncate">${esc(r.uni)} · ${esc(r.freqL)} · ${r.rebDate ? 'since ' + esc(r.rebDate) : 'before our data'}</div>
+        <div class="text-[10.5px] text-slate-400 truncate"><span class="sw-sn" title="Save serial — DDMMYY plus the order saved that day">${esc(SERIALS.get(identityKey(r.cfg)) || '—')}</span>${esc(r.uni)} · ${esc(r.freqL)} · ${r.rebDate ? 'since ' + esc(r.rebDate) : 'before our data'}</div>
       </div>
       <div class="text-right text-[12.5px] font-bold ${kls(r.ret)}" title="${r.rebDate ? 'Held basket\'s return from the ' + esc(r.rebDate) + ' rebalance' + (ASOF ? ' to ' + esc(ASOF) : '') : 'The rebalance before this date falls outside the dataset'}">${
         !r.held.length ? `<span class="text-slate-400 font-semibold text-[11px]">${heldWord(r)}</span>`
@@ -543,6 +549,9 @@ async function build(msg) {
   if (ASOF) ASOF = ASOF < rwMin ? rwMin : ASOF > rwMax ? rwMax : ASOF;   // a hand-typed ?asof= can be anywhere
   else if (!$('rwPick').value) $('rwPick').value = rwMax;
   const all = loadStrategies();
+  // DDMMYY-NN per identity — computed once here, stable across live repaints. Guarded so a stale
+  // cached bt-identity.js (pre-saveSerials) degrades to blank tags instead of breaking the page.
+  SERIALS = (typeof saveSerials === 'function') ? saveSerials(all) : new Map();
   if (!all.length) {
     $('status').innerHTML = 'No saved strategies yet. <a class="text-indigo-600 font-semibold hover:underline" href="./stock-backtest.html">Create one →</a>';
     return;

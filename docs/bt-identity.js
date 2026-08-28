@@ -44,4 +44,30 @@ function bakeGroups(items) {
   }
   return out;
 }
-if (typeof module !== 'undefined' && module.exports) module.exports = { identityKey, ruleKey, winKey, bakeGroups };
+// Save serial (DDMMYY-NN) — a stable per-strategy tag, the same on every page that lists strategies
+// (Saved Strategies, All Picks, the strategy page, the Mixer). ONE definition here so the pages can't
+// drift, exactly like identityKey above. The rule, matching what Saved Strategies has always shown:
+//   • number every SAVED ENTRY by its save time within its own calendar day — the 2nd thing saved on
+//     18-Jun is 180626-02 (a whole strategy can hold several entries: one per backtest window);
+//   • then report, per IDENTITY, the serial of its NEWEST entry — the same `rep` bakeGroups picks, so
+//     the tag next to a strategy is the tag of the save that represents it.
+// It is a LABEL, not a sort key (DDMMYY doesn't sort as text). Pass the RAW merged list with private
+// entries flagged `_priv:true`; a private save wins over a shared copy of the same identity (mirrors
+// strategies() on Saved Strategies) so the per-day counter can't double-count that pair. Pure — no
+// DOM, no storage; callers own the localStorage read.
+function saveSerials(items) {
+  const list = (items || []).filter(it => it && it.cfg && it.id != null);
+  const privId = new Set(list.filter(it => it._priv).map(it => identityKey(it.cfg)));
+  const canon = list.filter(it => it._priv || !privId.has(identityKey(it.cfg)));   // private wins
+  const byId = new Map(), perDay = Object.create(null);
+  canon.slice().sort((a, b) => (a.ts || 0) - (b.ts || 0)).forEach(it => {
+    const d = new Date(it.ts || 0);
+    const day = String(d.getDate()).padStart(2, '0') + String(d.getMonth() + 1).padStart(2, '0') + String(d.getFullYear() % 100).padStart(2, '0');
+    perDay[day] = (perDay[day] || 0) + 1;
+    byId.set(it.id, day + '-' + String(perDay[day]).padStart(2, '0'));
+  });
+  const out = new Map();
+  for (const [k, rep] of bakeGroups(canon)) out.set(k, byId.get(rep.id) || '');
+  return out;
+}
+if (typeof module !== 'undefined' && module.exports) module.exports = { identityKey, ruleKey, winKey, bakeGroups, saveSerials };

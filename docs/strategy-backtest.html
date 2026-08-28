@@ -71,6 +71,7 @@ const num = v => (typeof v === 'number' && isFinite(v)) ? v : null;   // shared 
 let HIST = [];
 let SF_END = '';   // latest data date (tiny sf_meta.json) → default End date for the run form
 let STRAT = null;  // the strategy this page shows
+let STRAT_SERIAL = '';  // its save serial (DDMMYY-NN) — the same tag Saved Strategies / All Picks show
 // --- identity + backtest lookup: IDENTICAL semantics to saved-strategies.html so a strategy
 //     resolves to exactly the same set of runs there and here. ---
 // Identity + variant keys: IDENTICAL semantics to saved-strategies.html so this page shows exactly the
@@ -430,6 +431,7 @@ function renderStrategy(strat, list) {
   const fx = filterExpr(c) || '';
   const chip = (t, title) => `<span class="sw-chip" ${title ? `title="${esc(title)}"` : ''} style="max-width:360px;overflow:hidden;text-overflow:ellipsis">${t}</span>`;
   $('subtitle').innerHTML = [
+    STRAT_SERIAL ? `<span class="sw-sn" title="Save serial — DDMMYY plus the order saved that day">${esc(STRAT_SERIAL)}</span>` : '',
     chip('🌐 ' + esc(universeLabel(c))),
     chip('🔁 ' + esc(FREQ[c.freq] || c.freq + 'mo')),
     chip('🧺 Top ' + (+c.topN || '?')),
@@ -575,11 +577,12 @@ function renderBootFailure(err) {
   }
   try {
     HIST = HIST.concat(loadLS('bt_private_history'));   // 🔒 private runs (this browser only) — display merge, never synced
-    const all = loadLS('bt_strategies').concat(loadLS('bt_private_strategies'));   // 🔒 private strategies resolve by id/k too
+    const all = loadLS('bt_strategies').concat(loadLS('bt_private_strategies').map(s => Object.assign({}, s, { _priv: true })));   // 🔒 private strategies resolve by id/k too; _priv lets saveSerials dedup like Saved Strategies
     let strat = id ? all.find(s => s.id === id) : null;
     if (!strat && kParam) strat = all.find(s => identityKey(s.cfg) === kParam);
     if (!strat) { renderNotFound(all, !!(id || kParam)); return; }
     STRAT = strat;
+    STRAT_SERIAL = (typeof saveSerials === 'function' ? saveSerials(all).get(identityKey(strat.cfg)) : '') || '';   // same DDMMYY-NN tag as the list pages; guarded for a stale cached bt-identity.js
     const k = identityKey(strat.cfg);
     const savedVars = all.filter(s => identityKey(s.cfg) === k);
     if (!savedVars.some(s => s.id === strat.id)) savedVars.push(strat);

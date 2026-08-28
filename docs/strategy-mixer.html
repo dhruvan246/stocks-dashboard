@@ -8,6 +8,8 @@
 <link rel="stylesheet" href="./theme.css" />
 <script src="./theme.js"></script>
 <script src="./bt-names.js"></script>
+<script src="./bt-identity.js"></script><!-- saveSerials() + bakeGroups(); identityKey/ruleKey below mirror it -->
+
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 <script src="./bt-sync.js"></script>
 <style>
@@ -241,9 +243,11 @@ function normFilters(list){
   }).filter(Boolean);
 }
 function loadStrategies(){
-  let all = [];
-  try { all = JSON.parse(localStorage.getItem('bt_strategies') || '[]'); } catch(e){ all = []; }
-  try { all = all.concat(JSON.parse(localStorage.getItem('bt_private_strategies') || '[]')); } catch(e){}
+  let shared = [], priv = [];
+  try { shared = JSON.parse(localStorage.getItem('bt_strategies') || '[]'); } catch(e){ shared = []; }
+  try { priv = JSON.parse(localStorage.getItem('bt_private_strategies') || '[]'); } catch(e){}
+  // _priv lets saveSerials dedup private-wins like Saved Strategies, so the save serial matches there.
+  const all = shared.concat(priv.map(s => Object.assign({}, s, { _priv: true })));
   return all.filter(s => s && s.cfg).map(s => {
     const cfg = Object.assign({}, s.cfg); cfg.filters = normFilters(cfg.filters);
     return Object.assign({}, s, { cfg });
@@ -277,6 +281,7 @@ function ownCagr(cfg){
 
 /* ---------- state ---------- */
 let ALL = [];                       // grouped saved strategies [{id,name,cfg,ts}]
+let SERIALS = new Map();            // identityKey → save serial (DDMMYY-NN), same tag as Saved Strategies
 let MODE = 'split';                 // 'split' = a bucket per strategy · 'pool' = one shared portfolio
 const SEL = new Map();              // identityKey -> { s, alloc }  (insertion order = color order)
 let LAST = null;                    // last run result (for redraws + theme changes)
@@ -311,7 +316,8 @@ function renderList(){
       <input type="checkbox" data-k="${esc(k)}" ${on ? 'checked' : ''} ${!on && SEL.size >= MAX_SEL ? 'disabled' : ''}>
       <span class="min-w-0 flex-1">
         <span class="block text-[12.5px] font-semibold text-slate-800 truncate">${isFav(favs,c) ? '<span class="text-amber-500">⭐</span> ' : ''}${esc(stratName(s))}</span>
-        <span class="flex flex-wrap gap-1 mt-0.5">
+        <span class="flex flex-wrap items-center gap-1 mt-0.5">
+          <span class="sw-sn" title="Save serial — DDMMYY plus the order saved that day">${esc(SERIALS.get(k) || '—')}</span>
           <span class="chip text-slate-500 bg-slate-50">${esc(universeLabel(c))}</span>
           <span class="chip text-slate-500 bg-slate-50">${FREQL[c.freq] || c.freq + 'mo'}</span>
           <span class="chip text-slate-500 bg-slate-50">Top ${c.topN || 5}</span>
@@ -349,6 +355,7 @@ function renderMix(){
   $('mixRows').innerHTML = [...SEL.entries()].map(([k, v], i) => `
     <div class="flex items-center gap-2">
       <span class="dot" style="background:${p.s[i % p.s.length]}"></span>
+      <span class="sw-sn shrink-0" title="Save serial — DDMMYY plus the order saved that day">${esc(SERIALS.get(k) || '—')}</span>
       <span class="text-[12px] font-semibold text-slate-700 truncate flex-1 min-w-0" title="${esc(stratName(v.s))}">${esc(shortName(v.s, 34))}</span>
       <span class="text-[11px] text-slate-400 w-11 text-right shrink-0">${tot > 0 && v.alloc > 0 ? (v.alloc / tot * 100).toFixed(0) + '%' : '—'}</span>
       <span class="relative shrink-0"><span class="absolute left-2 top-1/2 -translate-y-1/2 text-[12px] text-slate-400">₹</span>
@@ -1135,7 +1142,11 @@ $('bFav').onclick = () => {
     try { await btSync.pullStrategies(); } catch(e){}
     try { HIST = await btSync.pull() || []; } catch(e){ HIST = []; }
   }
-  ALL = groupByIdentity(loadStrategies());
+  const _loaded = loadStrategies();
+  ALL = groupByIdentity(_loaded);
+  // one DDMMYY-NN per identity, matching Saved Strategies / All Picks. Guarded: if a stale cached
+  // bt-identity.js (pre-saveSerials) is served, degrade to blank tags rather than break boot.
+  SERIALS = (typeof saveSerials === 'function') ? saveSerials(_loaded) : new Map();
   // default window: the latest saved start among strategies would surprise (differs per mix) —
   // use the platform's common default, capped to the data range.
   $('dFrom').value = '2020-01-31';

@@ -15,14 +15,7 @@
   body{font-feature-settings:"tnum" 1}
   .card{background:#fff;border:1px solid #e2e8f0;border-radius:.75rem}
   .pos{color:#15803d}.neg{color:#b91c1c}
-  /* Save serial (DDMMYY-NN). Monospace + tabular figures so the digits line up down the column
-     and the eye can scan dates without reading each one. Leads the meta line so it survives the
-     line's `truncate` on a phone. */
-  .sw-sn{font-family:ui-monospace,SFMono-Regular,Menlo,Consolas,monospace;font-variant-numeric:tabular-nums;
-    font-size:10.5px;font-weight:600;letter-spacing:.02em;color:var(--text-muted,#64748b);
-    background:var(--surface-2,#f1f5f9);border:1px solid var(--border,#e2e8f0);border-radius:4px;
-    padding:0 5px;margin-right:7px;white-space:nowrap}
-  html[data-theme="dark"] .sw-sn{background:#1e293b;border-color:#334155;color:#94a3b8}
+  /* .sw-sn (Save serial pill) now lives in theme.css — shared by every page that lists strategies. */
   /* long strategy names on the KPI tiles stay one tidy line */
   .sw-stat .sw-d{white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
   .mono{font-family:ui-monospace,SFMono-Regular,Menlo,monospace}
@@ -685,24 +678,16 @@ function onSortClick(e) {
 
 // Save serial: DDMMYY + a counter for that day, in save order (oldest = -01). DERIVED from each
 // entry's `ts` rather than stored on it, so it needs no write to the shared list (a whole-array
-// push is what cost 6 strategies on 2026-08-28) and every browser computes the same value.
-// Note it is a LABEL, not a sort key — DDMMYY doesn't sort chronologically as text; the table
-// orders by ts/CAGR as before.
-function buildSerials(items) {
-  const m = new Map(), perDay = {};
-  items.slice().sort((a, b) => (a.ts || 0) - (b.ts || 0)).forEach(it => {
-    const d = new Date(it.ts || 0);
-    const day = String(d.getDate()).padStart(2, '0') + String(d.getMonth() + 1).padStart(2, '0') + String(d.getFullYear() % 100).padStart(2, '0');
-    perDay[day] = (perDay[day] || 0) + 1;
-    m.set(it.id, day + '-' + String(perDay[day]).padStart(2, '0'));
-  });
-  return m;
-}
+// push is what cost 6 strategies on 2026-08-28) and every browser computes the same value. Keyed by
+// IDENTITY so All Picks / the strategy page / the Mixer print the SAME tag — saveSerials() lives in
+// bt-identity.js (one definition, no drift). It is a LABEL, not a sort key — DDMMYY doesn't sort
+// chronologically as text; the table orders by ts/CAGR as before. `items` already private-wins-merged
+// by strategies(), and its private entries carry _priv, so saveSerials reproduces this list unchanged.
 let SERIAL = new Map();
 
 function render() {
   const items = strategies();
-  SERIAL = buildSerials(items);
+  SERIAL = saveSerials(items);
   $('sortRow').innerHTML = '';                        // rebuilt below; stays empty on every empty state
   const OWNER = !!(window.btSync && btSync.isOwner());   // only the owner sees delete controls
   // The 📈 Today's topper stamp and its ↻ sit in the preset row, which render() doesn't own — but
@@ -827,7 +812,7 @@ function render() {
           <span class="w-8 h-8 rounded-lg bg-indigo-50 text-indigo-600 flex items-center justify-center shrink-0">📈</span>
           <span class="min-w-0">
             <span class="block font-semibold text-indigo-700 leading-snug"><span data-yrs="${esc(it.id)}" title="Code-name: ${esc(nameWithBasis(it.name, c))}">${esc(strategyEnglish(c))}</span></span>
-            <span class="block text-[11px] text-slate-500 truncate"><span class="sw-sn" title="Save serial — DDMMYY plus the order saved that day">${esc(SERIAL.get(it.id) || '—')}</span>${esc(universeLabel(c))} · ${FREQ[c.freq] || c.freq + 'mo'} · ${countLabel} · ${SORTL[c.sortBy] || c.sortBy} ${c.dir === 'high' ? '↓' : '↑'} · ${n} backtest${n > 1 ? 's' : ''}</span>
+            <span class="block text-[11px] text-slate-500 truncate"><span class="sw-sn" title="Save serial — DDMMYY plus the order saved that day">${esc(SERIAL.get(identityKey(c)) || '—')}</span>${esc(universeLabel(c))} · ${FREQ[c.freq] || c.freq + 'mo'} · ${countLabel} · ${SORTL[c.sortBy] || c.sortBy} ${c.dir === 'high' ? '↓' : '↑'} · ${n} backtest${n > 1 ? 's' : ''}</span>
             ${(c.filters || []).length ? `<span class="block text-[11px] text-slate-400 truncate" title="${esc(expr)}">Filters: ${esc(expr)}</span>` : ''}
           </span>
         </div>
