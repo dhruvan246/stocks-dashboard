@@ -98,6 +98,9 @@ th:nth-child(2){text-align:left}
 #zbDlg table{margin-top:10px}
 #zbDlg th{position:static}
 #zbDlg td input.zbq{width:80px; margin:0; padding:5px 7px; text-align:right}
+/* embedded in the terminal (?embed=1): drop our own chrome so it reads as one card */
+html[data-embed] header{display:none}
+html[data-embed] main{max-width:100%; padding:12px 14px 40px}
 </style>
 </head>
 <body>
@@ -154,6 +157,12 @@ function marketOpen(){ const d = new Date(Date.now() + 330*60000); const dow = d
 function applyThemeBtn(){ const t = document.documentElement.getAttribute('data-theme');
   $('btnTheme').textContent = t === 'dark' ? '🌙 Dark' : t === 'light' ? '☀️ Light' : '◐ Auto'; }
 (function(){ try { const th = localStorage.getItem('pf_theme'); if (th) document.documentElement.setAttribute('data-theme', th); } catch(e){}
+  // embedded in the terminal: hide our chrome and take the theme from the parent (?theme=)
+  if (/[?&]embed=1/.test(location.search) || window.self !== window.top){
+    document.documentElement.setAttribute('data-embed','1');
+    const qt = (location.search.match(/[?&]theme=(dark|light)/) || [])[1];
+    if (qt) document.documentElement.setAttribute('data-theme', qt);
+  }
   applyThemeBtn(); })();
 $('btnTheme').onclick = () => { const cur = document.documentElement.getAttribute('data-theme');
   const next = cur === 'dark' ? 'light' : cur === 'light' ? '' : 'dark';

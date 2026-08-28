@@ -91,6 +91,7 @@ a{color:var(--buy);text-decoration:none}
 .body{display:grid;grid-template-columns:264px minmax(0,1fr) 340px;min-height:600px}
 .body.acctmode{grid-template-columns:264px minmax(0,1fr)}
 .body.acctmode .pane.tk{display:none}
+.body.acctmode .focus{max-height:none}
 .pane{min-width:0}
 .pane.mw{border-right:1px solid var(--border)}
 .pane.tk{border-left:1px solid var(--border);display:flex;flex-direction:column}
@@ -247,6 +248,8 @@ a{color:var(--buy);text-decoration:none}
 .atbl .sub{font-size:10px;font-weight:600;margin-top:1px}
 .acct-msg{padding:22px 4px;font-size:13px;color:var(--text-2);line-height:1.55;max-width:54ch}
 .acct-msg a{font-weight:600}
+.stratframe{width:100%;height:calc(100vh - 200px);min-height:480px;border:0;border-radius:12px;background:var(--surface);display:block}
+@media(max-width:760px){ .stratframe{height:80vh} }
 .connect{max-width:540px;padding:6px 2px 10px}
 .cmsg{font-size:13px;color:var(--text-2);line-height:1.55;margin:0 0 12px}
 .cmsg code{font-family:"JetBrains Mono",monospace;font-size:11.5px;background:var(--surface-2);padding:1px 5px;border-radius:4px}
@@ -338,6 +341,10 @@ body.blur-secret .secret{filter:blur(7px);-webkit-user-select:none;user-select:n
         <div class="pfc-top"><span class="pfc-ic">💼</span><span class="pfc-t">Positions &amp; funds</span><span class="pfc-ar">→</span></div>
         <div class="pfc-sum" id="pfCardSum"><span class="pfc-hint">tap to view your account</span></div>
       </div>
+      <div class="pfcard" id="stratCard" role="button" tabindex="0" title="Your saved strategies — what each would buy today">
+        <div class="pfc-top"><span class="pfc-ic">🎯</span><span class="pfc-t">Strategies</span><span class="pfc-ar">→</span></div>
+        <div class="pfc-sum"><span class="pfc-hint">saved strategies &amp; today's picks</span></div>
+      </div>
       <div class="mwtabs"><span class="t">Marketwatch</span></div>
       <div class="mwsearch"><span style="color:var(--text-3)">⌕</span><input id="searchInp" placeholder="Filter…" aria-label="Filter watchlist"></div>
       <div class="mwlist" id="mwlist"></div>
@@ -346,6 +353,7 @@ body.blur-secret .secret{filter:blur(7px);-webkit-user-select:none;user-select:n
     <div class="pane focus" id="focus">
       <div id="stockView"></div>
       <div id="acctView" class="acctview" style="display:none"></div>
+      <div id="stratView" class="acctview" style="display:none"></div>
     </div>
 
     <div class="pane tk">
@@ -426,7 +434,8 @@ body.blur-secret .secret{filter:blur(7px);-webkit-user-select:none;user-select:n
     return;
   }
 
-  tbn.addEventListener('click',function(){var n=root.getAttribute('data-theme')==='dark'?'light':'dark';applyT(n);try{localStorage.setItem('term_theme',n)}catch(e){} if(FOCUS)drawChart();});
+  tbn.addEventListener('click',function(){var n=root.getAttribute('data-theme')==='dark'?'light':'dark';applyT(n);try{localStorage.setItem('term_theme',n)}catch(e){} if(FOCUS)drawChart();
+    var sf=document.querySelector('#stratView iframe'); if(sf){ try{ sf.contentDocument.documentElement.setAttribute('data-theme',n); }catch(e){} } });
   /* privacy blur toggle (account numbers) */
   var privOn=false; try{ privOn=localStorage.getItem('pf_private')==='1'; }catch(e){}
   function applyPriv(){ document.body.classList.toggle('blur-secret',privOn); var b=document.getElementById('privBtn'); if(b) b.textContent=privOn?'🙈':'👁️'; }
@@ -855,13 +864,25 @@ body.blur-secret .secret{filter:blur(7px);-webkit-user-select:none;user-select:n
   function showView(v){ VIEW=v;
     document.getElementById('stockView').style.display=(v==='stock')?'':'none';
     document.getElementById('acctView').style.display=(v==='account')?'':'none';
+    var sv=document.getElementById('stratView'); if(sv) sv.style.display=(v==='strategies')?'':'none';
     var c=document.getElementById('pfCard'); if(c) c.classList.toggle('on',v==='account');
-    var b=document.querySelector('.body'); if(b) b.classList.toggle('acctmode',v==='account');
+    var sc=document.getElementById('stratCard'); if(sc) sc.classList.toggle('on',v==='strategies');
+    var b=document.querySelector('.body'); if(b) b.classList.toggle('acctmode',(v==='account'||v==='strategies'));
+    if(v==='strategies') ensureStratFrame();
   }
-  (function(){ var card=document.getElementById('pfCard');
-    function open(){ showView('account'); renderAcct(false); }
-    card.addEventListener('click',open);
-    card.addEventListener('keydown',function(e){ if(e.key==='Enter'||e.key===' '){ e.preventDefault(); open(); } });
+  function ensureStratFrame(){
+    var sv=document.getElementById('stratView'); if(!sv || sv.querySelector('iframe')) return;
+    var theme=root.getAttribute('data-theme')||'';
+    var f=document.createElement('iframe'); f.className='stratframe'; f.title='Saved strategies';
+    f.src='./pf-strategies.html?embed=1'+(theme?'&theme='+encodeURIComponent(theme):'');
+    sv.appendChild(f);
+  }
+  (function(){
+    function bindCard(id,fn){ var card=document.getElementById(id); if(!card)return;
+      card.addEventListener('click',fn);
+      card.addEventListener('keydown',function(e){ if(e.key==='Enter'||e.key===' '){ e.preventDefault(); fn(); } }); }
+    bindCard('pfCard',function(){ showView('account'); renderAcct(false); });
+    bindCard('stratCard',function(){ showView('strategies'); });
   })();
   document.getElementById('acctView').addEventListener('click',function(e){
     var ca=e.target.closest('[data-act]');
