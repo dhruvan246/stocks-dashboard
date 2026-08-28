@@ -192,6 +192,18 @@ a{color:var(--buy);text-decoration:none}
 .place.b{background:var(--buy)} .place.s{background:var(--sell)}
 .place:disabled{opacity:1}
 .placenote{margin:0 15px 14px;font-size:10.5px;color:var(--text-3);text-align:center;line-height:1.4}
+.placerow{display:flex;gap:8px;margin:4px 15px 6px}
+.placerow .place{margin:0;flex:1;width:auto}
+.basketbtn{flex:none;width:46px;border:1px solid var(--border);background:var(--surface-2);color:var(--text-2);border-radius:11px;font-size:18px;font-weight:700;cursor:pointer}
+.basketbtn:hover{border-color:var(--buy);color:var(--buy)}
+.place.armed{filter:brightness(.85);animation:armpulse 1.1s infinite}
+@keyframes armpulse{0%,100%{opacity:1}50%{opacity:.72}}
+.basketchip{position:fixed;right:18px;bottom:18px;z-index:80;display:none;gap:6px;align-items:center;background:var(--surface);border:1px solid var(--border);border-radius:12px;padding:7px;box-shadow:var(--shadow)}
+.basketchip.show{display:flex}
+.bc-send{border:none;background:var(--buy);color:#fff;border-radius:8px;padding:9px 13px;font-size:12.5px;font-weight:700;cursor:pointer}
+.bc-clear{border:1px solid var(--border);background:var(--surface-2);color:var(--text-2);border-radius:8px;padding:0 10px;height:34px;font-weight:700;cursor:pointer}
+#ktoast{position:fixed;left:50%;bottom:24px;transform:translateX(-50%) translateY(10px);z-index:90;background:var(--text);color:var(--bg);font-size:13px;font-weight:600;padding:11px 16px;border-radius:10px;box-shadow:var(--shadow);opacity:0;pointer-events:none;transition:opacity .2s,transform .2s;max-width:90vw;text-align:center}
+#ktoast.show{opacity:1;transform:translateX(-50%) translateY(0)}
 /* positions & funds card (top of marketwatch) */
 .pfcard{margin:10px 12px 4px;border:1px solid var(--border);border-radius:11px;background:var(--surface-2);padding:10px 12px;cursor:pointer;transition:border-color .12s,background .12s}
 .pfcard:hover{border-color:var(--buy)}
@@ -221,6 +233,9 @@ a{color:var(--buy);text-decoration:none}
 .atbl th.sortable:hover{color:var(--text)}
 .atbl th.act{color:var(--text)}
 .atbl .sar{font-size:8px;margin-left:2px}
+.atbl .pctbtn{cursor:pointer;border:1px solid var(--border);border-radius:4px;padding:0 3px;font-size:9px;color:var(--text-3);font-weight:700}
+.atbl .pctbtn:hover{color:var(--text);border-color:var(--text-3)}
+.atbl .pctbtn.act{color:var(--buy);border-color:var(--buy)}
 .atbl tbody tr{cursor:pointer}
 .atbl tbody tr:hover{background:var(--surface-2)}
 .atbl tbody tr:last-child td{border-bottom:none}
@@ -347,6 +362,7 @@ body.blur-secret .secret{filter:blur(7px);-webkit-user-select:none;user-select:n
             <div class="fld"><label>Price</label><div class="in"><input id="price" value="0" inputmode="decimal"><span class="u">₹</span></div></div>
           </div>
           <div class="typ" id="typ"><button class="on">Market</button><button>Limit</button><button>SL</button><button>SL-M</button></div>
+          <div class="fld" id="trigWrap" style="display:none;margin-bottom:12px"><label>Trigger price</label><div class="in"><input id="trig" value="0" inputmode="decimal"><span class="u">₹</span></div></div>
           <div class="super">
             <div class="sh" id="superToggle"><div class="t">Super&nbsp;order <span class="badge">Dhan</span></div><div class="toggle" id="superSw"></div></div>
             <div class="superbody" id="superBody">
@@ -363,11 +379,15 @@ body.blur-secret .secret{filter:blur(7px);-webkit-user-select:none;user-select:n
           <div class="crow"><span class="k" id="marginK">Margin required</span><span class="v" id="ordMargin">—</span></div>
           <div class="crow"><span class="k">Charges (est.)</span><span class="v flat" id="ordChg">—</span></div>
         </div>
-        <button class="place b" id="placeBtn" disabled>Order placement not wired here</button>
-        <div class="placenote">Live price &amp; margin math. To actually place this order, use the ⚡ Order button on your <a href="./portfolio.html">portfolio</a> page.</div>
+        <div class="placerow">
+          <button class="place b" id="placeBtn">Buy</button>
+          <button class="basketbtn" id="basketBtn" title="Add to a basket — send several orders together, confirm on Zerodha">＋</button>
+        </div>
+        <div class="placenote">You review &amp; confirm every order on Zerodha's own page. When connected, placing is two clicks — click, then confirm.</div>
       </div>
     </div>
   </div>
+  <div class="basketchip" id="basketChip"><button class="bc-send" id="bcSend">🧺 Send basket · <span id="bcN">0</span> ▸</button><button class="bc-clear" id="bcClear" title="Empty basket">✕</button></div>
 </div>
 
 <div class="foot">
@@ -427,7 +447,7 @@ body.blur-secret .secret{filter:blur(7px);-webkit-user-select:none;user-select:n
   var QUOTES={};           // sym -> {ltp, prevClose}
   var SEL="RELIANCE";
   var FOCUS=null;          // {sym,name,ltp,prevClose,open,high,low,vol,hi52,lo52,ts:[],close:[],gmt}
-  var SIDE="B", PROD="CNC", SUPER=false;
+  var SIDE="B", PROD="CNC", SUPER=false, OTYPE="MARKET", ARMED=false, ARMT=null, BASKET=[];
 
   function setLive(state,txt){
     var d=document.getElementById('liveDot');
@@ -586,13 +606,14 @@ body.blur-secret .secret{filter:blur(7px);-webkit-user-select:none;user-select:n
   /* ---------------- ticket ---------------- */
   function syncSide(){ document.getElementById('sideB').classList.toggle('on',SIDE==="B"); document.getElementById('sideS').classList.toggle('on',SIDE==="S"); }
   function renderTicket(){
+    ARMED=false;
     var ltp=(FOCUS&&FOCUS.ltp)||(QUOTES[SEL]&&QUOTES[SEL].ltp)||0;
     document.getElementById('tkSym').textContent=SEL;
     document.getElementById('tkLtp').textContent=rup(ltp,2);
     document.getElementById('price').value=ltp?ltp.toFixed(2):'0';
     document.getElementById('tgt').value=ltp?(Math.round(ltp*1.09*20)/20).toFixed(2):'0';
     document.getElementById('stp').value=ltp?(Math.round(ltp*0.97*20)/20).toFixed(2):'0';
-    updateCalc();
+    updateOrderFields(); updateCalc();
   }
   function updateCalc(){
     var q=Math.max(0,parseInt(document.getElementById('qty').value||'0',10));
@@ -603,8 +624,8 @@ body.blur-secret .secret{filter:blur(7px);-webkit-user-select:none;user-select:n
     document.getElementById('marginK').textContent=lev>1?('Margin ('+(PROD==="MIS"?'MIS':'MTF')+' '+lev+'×)'):'Margin required';
     document.getElementById('ordMargin').textContent=val?rup(margin):'—';
     document.getElementById('ordChg').textContent=val?rup(chg,1):'—';
-    var pb=document.getElementById('placeBtn'); pb.className='place '+(SIDE==="B"?'b':'s');
-    pb.textContent=(SIDE==="B"?'Buy':'Sell')+' '+q+' '+SEL+' · connect broker';
+    if(!ARMED){ var pb=document.getElementById('placeBtn'); pb.className='place '+(SIDE==="B"?'b':'s');
+      pb.textContent=(SIDE==="B"?'Buy':'Sell')+' '+q+' '+SEL; }
     if(SUPER){
       var tgt=parseFloat(document.getElementById('tgt').value)||px, stp=parseFloat(document.getElementById('stp').value)||px;
       var rr=Math.abs(tgt-px)/(Math.abs(px-stp)||1);
@@ -613,6 +634,63 @@ body.blur-secret .secret{filter:blur(7px);-webkit-user-select:none;user-select:n
     }
   }
 
+  /* ---------------- order placement (Phase 2) ---------------- */
+  function ktoast(msg,ms){ var t=document.getElementById('ktoast');
+    if(!t){ t=document.createElement('div'); t.id='ktoast'; document.body.appendChild(t); }
+    t.textContent=msg; t.classList.add('show');
+    clearTimeout(ktoast._t); ktoast._t=setTimeout(function(){ t.classList.remove('show'); }, ms||2800); }
+  function kiteSend(orders){
+    var key=kiteKey();
+    if(!key){ ktoast('Set your Kite API key first'); showView('account'); connectSetup('needkey'); return false; }
+    if(!orders.length){ ktoast('Nothing to send'); return false; }
+    if(orders.length>10){ ktoast('Zerodha baskets take at most 10 orders — send in parts'); return false; }
+    var w=window.open('about:blank','kite_basket');
+    if(!w){ ktoast('Your browser blocked the Zerodha tab — allow pop-ups for this page, then try again',5200); return false; }
+    var f=document.createElement('form');
+    f.method='post'; f.action='https://kite.zerodha.com/connect/basket'; f.target='kite_basket'; f.style.display='none';
+    var a=document.createElement('input'); a.type='hidden'; a.name='api_key'; a.value=key;
+    var b=document.createElement('input'); b.type='hidden'; b.name='data'; b.value=JSON.stringify(orders);
+    f.appendChild(a); f.appendChild(b); document.body.appendChild(f); f.submit(); f.remove();
+    ktoast(orders.length===1?'Order sent — review & confirm it in the Zerodha tab':orders.length+' orders sent — confirm them in the Zerodha tab',4200);
+    return true;
+  }
+  function ipBlocked(msg){ return /no ips|static ip|whitelist|allowed ip/i.test(msg||''); }
+  function zPlace(o){
+    if(ACCT.directBlocked){ kiteSend([o]); return; }
+    ktoast('Placing '+o.transaction_type+' '+o.quantity+' '+o.tradingsymbol+'…',6000);
+    var body=Object.assign({variety:'regular',validity:'DAY',tag:'terminal'},o);
+    acctFetch('/order',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify(body)}).then(function(res){
+      var st=res.st, j=res.j, msg=(j&&j.message)||('HTTP '+st);
+      if(st===200 && j && j.data && j.data.order_id){ ktoast('Order placed ✓ '+o.tradingsymbol,5000); setTimeout(function(){ if(ACCT.connected) renderAcct(true); },1800); }
+      else if(ipBlocked(msg) || st===0){ ACCT.directBlocked=true; ktoast('Direct API orders need a whitelisted static IP — opening the Zerodha basket to confirm instead',5500); kiteSend([o]); }
+      else if(st===403){ ktoast('Zerodha session expired — log in again',5000); ACCT.connected=false; showView('account'); renderAcct(false); }
+      else ktoast('Zerodha refused it: '+msg,7000);
+    });
+  }
+  function prodKite(){ return /^MTF/.test(PROD)?'MTF':PROD; }
+  function buildOrder(){
+    var q=Math.floor(parseFloat(document.getElementById('qty').value)||0);
+    if(!(q>=1)){ ktoast('Quantity must be a whole number ≥ 1'); return null; }
+    var o={ variety:'regular', tradingsymbol:SEL, exchange:'NSE', transaction_type:(SIDE==='B'?'BUY':'SELL'), order_type:OTYPE, quantity:q, product:prodKite() };
+    if(OTYPE==='LIMIT'||OTYPE==='SL'){ var px=parseFloat(document.getElementById('price').value); if(!(px>0)){ ktoast('A '+OTYPE+' order needs a price'); return null; } o.price=px; }
+    if(OTYPE==='SL'||OTYPE==='SL-M'){ var tp=parseFloat(document.getElementById('trig').value); if(!(tp>0)){ ktoast('SL / SL-M orders need a trigger price'); return null; } o.trigger_price=tp; }
+    return o;
+  }
+  function updateOrderFields(){ document.getElementById('trigWrap').style.display=(OTYPE==='SL'||OTYPE==='SL-M')?'':'none'; }
+  function disarm(){ ARMED=false; clearTimeout(ARMT); var pb=document.getElementById('placeBtn'); if(pb) pb.classList.remove('armed'); updateCalc(); }
+  function placeClick(){
+    var o=buildOrder(); if(!o) return;
+    if(!ACCT.connected){ kiteSend([o]); return; }
+    if(!ARMED){ ARMED=true; var pb=document.getElementById('placeBtn'); pb.classList.add('armed');
+      pb.textContent='Confirm '+o.transaction_type+' '+o.quantity+' '+o.tradingsymbol+(o.order_type==='MARKET'?' @ market':(o.price?' @ ₹'+o.price:''))+' ?';
+      clearTimeout(ARMT); ARMT=setTimeout(disarm,7000); return; }
+    disarm(); zPlace(o);
+  }
+  function updateBasketChip(){ var c=document.getElementById('basketChip'); document.getElementById('bcN').textContent=BASKET.length; c.classList.toggle('show',BASKET.length>0); }
+  function addToBasket(){ var o=buildOrder(); if(!o) return;
+    if(BASKET.length>=10){ ktoast('Basket is full (Zerodha max 10) — send it first'); return; }
+    BASKET.push(o); updateBasketChip(); ktoast(o.transaction_type+' '+o.quantity+' '+o.tradingsymbol+' added · basket has '+BASKET.length); }
+
   /* events */
   document.getElementById('mwlist').addEventListener('click',function(e){
     var act=e.target.closest('[data-act]');
@@ -620,15 +698,20 @@ body.blur-secret .secret{filter:blur(7px);-webkit-user-select:none;user-select:n
     var row=e.target.closest('.mwrow'); if(row) selectSym(row.dataset.sy);
   });
   document.getElementById('searchInp').addEventListener('input',renderMW);
-  document.getElementById('sideB').addEventListener('click',function(){SIDE="B";syncSide();updateCalc();});
-  document.getElementById('sideS').addEventListener('click',function(){SIDE="S";syncSide();updateCalc();});
-  document.getElementById('prod').addEventListener('click',function(e){var b=e.target.closest('.chipp');if(!b)return;[].forEach.call(this.children,function(c){c.classList.remove('on');});b.classList.add('on');PROD=b.textContent.replace(/\s+/g,' ').trim();updateCalc();});
-  document.getElementById('typ').addEventListener('click',function(e){var b=e.target.closest('button');if(!b)return;[].forEach.call(this.children,function(c){c.classList.remove('on');});b.classList.add('on');});
-  document.getElementById('qty').addEventListener('input',updateCalc);
-  document.getElementById('price').addEventListener('input',updateCalc);
+  document.getElementById('sideB').addEventListener('click',function(){SIDE="B";syncSide();disarm();});
+  document.getElementById('sideS').addEventListener('click',function(){SIDE="S";syncSide();disarm();});
+  document.getElementById('prod').addEventListener('click',function(e){var b=e.target.closest('.chipp');if(!b)return;[].forEach.call(this.children,function(c){c.classList.remove('on');});b.classList.add('on');PROD=b.textContent.replace(/\s+/g,' ').trim();disarm();});
+  document.getElementById('typ').addEventListener('click',function(e){var b=e.target.closest('button');if(!b)return;[].forEach.call(this.children,function(c){c.classList.remove('on');});b.classList.add('on');OTYPE=b.textContent.trim().toUpperCase();updateOrderFields();disarm();});
+  document.getElementById('qty').addEventListener('input',disarm);
+  document.getElementById('price').addEventListener('input',disarm);
+  document.getElementById('trig').addEventListener('input',disarm);
   document.getElementById('tgt').addEventListener('input',updateCalc);
   document.getElementById('stp').addEventListener('input',updateCalc);
   document.getElementById('superToggle').addEventListener('click',function(){SUPER=!SUPER;document.getElementById('superSw').classList.toggle('on',SUPER);document.getElementById('superBody').classList.toggle('on',SUPER);updateCalc();});
+  document.getElementById('placeBtn').addEventListener('click',placeClick);
+  document.getElementById('basketBtn').addEventListener('click',addToBasket);
+  document.getElementById('bcSend').addEventListener('click',function(){ if(kiteSend(BASKET.slice())){ BASKET.length=0; updateBasketChip(); } });
+  document.getElementById('bcClear').addEventListener('click',function(){ BASKET.length=0; updateBasketChip(); ktoast('Basket emptied'); });
   window.addEventListener('resize',function(){ if(FOCUS)drawChart(); });
 
   /* ---------------- Zerodha account (live, via the kite worker, gated by pf_token) ----
@@ -721,6 +804,10 @@ body.blur-secret .secret{filter:blur(7px);-webkit-user-select:none;user-select:n
     if(typeof x==='string'&&typeof y==='string') return d*(x<y?-1:x>y?1:0);
     x=(x==null?-Infinity:x); y=(y==null?-Infinity:y); return d*(x-y); }); }
   function ths(label,col,st){ var a=st.col===col; return '<th data-col="'+col+'" class="sortable'+(a?' act':'')+'">'+label+(a?'<span class="sar">'+(st.dir<0?'▼':'▲')+'</span>':'')+'</th>'; }
+  /* header with two sort targets: the label sorts by the ₹ column, the "%" chip by the % column */
+  function ths2(label,colAmt,colPct,st){ var aA=st.col===colAmt, aP=st.col===colPct;
+    return '<th data-col="'+colAmt+'" class="sortable'+(aA?' act':'')+'">'+label+(aA?'<span class="sar">'+(st.dir<0?'▼':'▲')+'</span>':'')+
+      ' <span class="pctbtn'+(aP?' act':'')+'" data-col="'+colPct+'">%'+(aP?'<span class="sar">'+(st.dir<0?'▼':'▲')+'</span>':'')+'</span></th>'; }
   function renderAcctView(){
     if(!ACCT.user) return;
     var acctDay=ACCT.holdDay+ACCT.posDay, acctTot=ACCT.holdTot+ACCT.posTot;
@@ -752,7 +839,7 @@ body.blur-secret .secret{filter:blur(7px);-webkit-user-select:none;user-select:n
           '<td class="secret">'+zinr(r.val)+'</td></tr>';
       }).join('');
       h+='<div class="av-sec">Holdings · '+ACCT.hold.length+'</div><div class="atbl-wrap"><table class="atbl holdtbl"><thead><tr>'+
-        ths('Stock','sym',HOLD_SORT)+ths('Qty','qty',HOLD_SORT)+ths('Avg','avg',HOLD_SORT)+ths('LTP','ltp',HOLD_SORT)+ths("Day's P&amp;L",'dayPnl',HOLD_SORT)+ths('Total P&amp;L','totPnl',HOLD_SORT)+ths('Value','val',HOLD_SORT)+
+        ths('Stock','sym',HOLD_SORT)+ths('Qty','qty',HOLD_SORT)+ths('Avg','avg',HOLD_SORT)+ths('LTP','ltp',HOLD_SORT)+ths2("Day's P&amp;L",'dayPnl','dayPct',HOLD_SORT)+ths2('Total P&amp;L','totPnl','totPct',HOLD_SORT)+ths('Value','val',HOLD_SORT)+
         '</tr></thead><tbody>'+hrows+'</tbody><tfoot><tr><td>Total</td><td></td><td></td><td></td><td class="secret '+(ACCT.holdDay>=0?'up':'down')+'">'+inrSigned(ACCT.holdDay)+'</td><td class="secret '+(ACCT.holdTot>=0?'up':'down')+'">'+inrSigned(ACCT.holdTot)+'</td><td class="secret">'+zinr(ACCT.curVal)+'</td></tr></tfoot></table></div>';
     }
     if(!ACCT.pos.length && !ACCT.hold.length) h+='<div class="acct-msg">No open positions or holdings.</div>';
@@ -788,7 +875,7 @@ body.blur-secret .secret{filter:blur(7px);-webkit-user-select:none;user-select:n
       else if(act==='retry'){ renderAcct(false); }
       else if(act==='logout'){ zLogout(); }
       return; }
-    var thEl=e.target.closest('th[data-col]');
+    var thEl=e.target.closest('[data-col]');
     if(thEl){ var tbl=thEl.closest('table'), st=tbl.classList.contains('postbl')?POS_SORT:HOLD_SORT, col=thEl.dataset.col;
       if(st.col===col) st.dir=-st.dir; else { st.col=col; st.dir=(col==='sym')?1:-1; }
       renderAcctView(); return; }
