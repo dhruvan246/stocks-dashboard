@@ -123,7 +123,7 @@
         '<div class="s">index · '+l.months+' months<br>'+l.s+' → '+l.e+'</div></div>';}).join('') +
       '<div class="pcard live"><div class="t">'+esc(R.cur.label)+' · live</div>'+
         '<div class="v pos">+'+R.cur.bench.toFixed(1)+'%</div>'+
-        '<div class="s">index · in progress<br>'+R.cur.s+' → '+R.cur.e+'</div></div>';
+        '<div class="s">index · in progress · '+R.cur.months+' months<br>'+R.cur.s+' → '+R.cur.e+'</div></div>';
     document.querySelectorAll('#vpills .vcard').forEach(b=>b.classList.toggle('on',b.dataset.v===VIEW));
 
     const rows=V().rows, curs=rows.map(r=>r.cur);
@@ -169,7 +169,7 @@
       '<td class="num mono warn">-'+r.dd.toFixed(0)+'%</td></tr>').join('');
     document.getElementById('count').textContent = nf(list.length)+' strategies'+(needle?' · matching "'+needle+'"':'');
     document.getElementById('foot').textContent =
-      'Legs are measured trough→peak off the NIFTY 500 daily series with a 13% reversal filter, not calendar years. '+
+      'All five periods are measured off the NIFTY 500 daily series with a 13% reversal filter, not calendar years: the four completed legs run trough→peak, and the live leg runs from its measured trough ('+R.cur.s+') to the latest data. '+
       'Each cell shows that run’s absolute return with its placing out of '+nf(R.pool)+' beneath; under “Now” the small '+
       'figure is the placing within these 1,000. The live run is NOT part of any ranking, and each view is its own '+
       'top-1,000 search of the full pool — not a filter of the other. Baskets are equal-weight, rebalanced monthly, '+
