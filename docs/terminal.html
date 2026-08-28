@@ -89,6 +89,8 @@ a{color:var(--buy);text-decoration:none}
 .asof b{display:block;font-size:12px;color:var(--text-2);font-weight:700}
 
 .body{display:grid;grid-template-columns:264px minmax(0,1fr) 340px;min-height:600px}
+.body.acctmode{grid-template-columns:264px minmax(0,1fr)}
+.body.acctmode .pane.tk{display:none}
 .pane{min-width:0}
 .pane.mw{border-right:1px solid var(--border)}
 .pane.tk{border-left:1px solid var(--border);display:flex;flex-direction:column}
@@ -237,7 +239,7 @@ a{color:var(--buy);text-decoration:none}
   .strip{flex-wrap:wrap}
   .idxwrap{width:100%;border-bottom:1px solid var(--border)}
   .stripr{width:100%;margin-left:0;justify-content:space-between}
-  .body{grid-template-columns:1fr}
+  .body,.body.acctmode{grid-template-columns:1fr}
   .pane.mw{border-right:none;border-bottom:1px solid var(--border)}
   .mwlist{max-height:220px}
   .focus{max-height:none}
@@ -704,6 +706,7 @@ body.blur-secret .secret{filter:blur(7px);-webkit-user-select:none;user-select:n
     document.getElementById('stockView').style.display=(v==='stock')?'':'none';
     document.getElementById('acctView').style.display=(v==='account')?'':'none';
     var c=document.getElementById('pfCard'); if(c) c.classList.toggle('on',v==='account');
+    var b=document.querySelector('.body'); if(b) b.classList.toggle('acctmode',v==='account');
   }
   (function(){ var card=document.getElementById('pfCard');
     function open(){ showView('account'); renderAcct(false); }
