@@ -1926,10 +1926,19 @@ async function zRefreshAll(quiet){
 function zRender(){
   const D=Z.data, out=[];
   const eq=D.marg&&D.marg.equity;
+  /* Kite's available.cash is 0 whenever the day's funds are fully deployed into
+     positions/collateral, even though real buying power remains — so it read a
+     misleading "₹0" here. The number a trader means by "what can I deploy now"
+     is the net live balance (available.live_balance == equity.net). Verified vs
+     the live account 2026-08-28: cash 0, live_balance/net ₹58.7 L, opening ₹3.09 Cr,
+     used ₹2.50 Cr (opening = available + used). Show net; keep opening for context. */
+  const av=(eq&&eq.available)||null;
+  const avail=eq?(av&&av.live_balance!=null?av.live_balance:(eq.net!=null?eq.net:(av&&av.cash))):null;
+  const opening=av?av.opening_balance:null;
   out.push('<div class="trio">'+
     '<div class="t"><div class="l">Logged in</div><div class="v" style="font-size:16px">'+esc(Z.user||'—')+'</div><div class="s">until 6 AM tomorrow</div></div>'+
-    '<div class="t"><div class="l">Available cash</div><div class="v secret" style="font-size:16px">'+(eq?zinr(eq.available&&eq.available.cash):'—')+'</div><div class="s">equity segment</div></div>'+
-    '<div class="t"><div class="l">Margin used</div><div class="v secret" style="font-size:16px">'+(eq?zinr(eq.utilised&&eq.utilised.debits):'—')+'</div><div class="s">net: <span class="secret">'+(eq?zinr(eq.net):'—')+'</span></div></div></div>');
+    '<div class="t"><div class="l">Funds available</div><div class="v secret" style="font-size:16px">'+(eq?zinr(avail):'—')+'</div><div class="s">equity · to trade</div></div>'+
+    '<div class="t"><div class="l">Margin used</div><div class="v secret" style="font-size:16px">'+(eq?zinr(eq.utilised&&eq.utilised.debits):'—')+'</div><div class="s">opening: <span class="secret">'+(eq?zinr(opening):'—')+'</span></div></div></div>');
   /* today's orders first — that's what you check after placing one */
   if(D.ord.length){
     out.push('<h4>Today’s orders</h4><div class="twrap"><table><thead><tr><th>Time</th><th>Stock</th><th>Side</th><th>Qty</th><th>Price</th><th>Status</th><th></th></tr></thead><tbody>');
