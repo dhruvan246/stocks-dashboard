@@ -217,6 +217,10 @@ a{color:var(--buy);text-decoration:none}
 .atbl th{text-align:right;font-size:10px;font-weight:700;color:var(--text-3);text-transform:uppercase;letter-spacing:.04em;padding:9px 11px;border-bottom:1px solid var(--border);white-space:nowrap;position:sticky;top:0;background:var(--surface)}
 .atbl td{text-align:right;padding:9px 11px;border-bottom:1px solid var(--border-2);white-space:nowrap;vertical-align:top}
 .atbl th:first-child,.atbl td:first-child{text-align:left}
+.atbl th.sortable{cursor:pointer;-webkit-user-select:none;user-select:none}
+.atbl th.sortable:hover{color:var(--text)}
+.atbl th.act{color:var(--text)}
+.atbl .sar{font-size:8px;margin-left:2px}
 .atbl tbody tr{cursor:pointer}
 .atbl tbody tr:hover{background:var(--surface-2)}
 .atbl tbody tr:last-child td{border-bottom:none}
@@ -652,50 +656,67 @@ body.blur-secret .secret{filter:blur(7px);-webkit-user-select:none;user-select:n
     });
   }
   function kpi(l,v,s,pos){ var cls=pos==null?'':(pos?'up':'down'); return '<div class="avk"><div class="l">'+l+'</div><div class="v secret '+cls+'">'+v+'</div><div class="s '+cls+'">'+(s||'')+'</div></div>'; }
+  var HOLD_SORT={col:'val',dir:-1}, POS_SORT={col:'pnl',dir:-1};
+  /* compute row objects + totals once per fetch, then render (re-render on sort without refetch) */
   function drawAcct(D){
     var eq=D.marg&&D.marg.equity, av=(eq&&eq.available)||null;
-    var avail=eq?(av&&av.live_balance!=null?av.live_balance:(eq.net!=null?eq.net:(av&&av.cash))):null;
-    var used=(eq&&eq.utilised)?eq.utilised.debits:null;
-    var hold=(D.hold||[]).filter(function(r){return zq(r)>0;});
-    hold.sort(function(a,b){return (+b.last_price*zq(b))-(+a.last_price*zq(a));});
+    ACCT.avail=eq?(av&&av.live_balance!=null?av.live_balance:(eq.net!=null?eq.net:(av&&av.cash))):null;
+    ACCT.used=(eq&&eq.utilised)?eq.utilised.debits:null;
+    ACCT.user=D.user||'live';
     var holdTot=0,holdDay=0,curVal=0,invested=0;
-    var hrows=hold.map(function(r){
+    ACCT.hold=(D.hold||[]).filter(function(r){return zq(r)>0;}).map(function(r){
       var q=zq(r),avg=zavg(r),ltp=+r.last_price||0,val=ltp*q;
       var totPnl=(ltp-avg)*q,totPct=avg?(ltp-avg)/avg*100:0,dayPnl=(r.day_change||0)*q,dayPct=r.day_change_percentage;
       holdTot+=totPnl;holdDay+=dayPnl;curVal+=val;invested+=avg*q;
-      var isMtf=((r.mtf||{}).quantity||0)>0;
-      return '<tr data-sy="'+esc(r.tradingsymbol)+'"><td><span class="nm">'+esc(r.tradingsymbol)+'</span>'+(isMtf?'<span class="xtag">MTF</span>':'')+'</td>'+
-        '<td class="secret">'+q.toLocaleString('en-IN')+'</td><td>₹'+avg.toFixed(2)+'</td><td>₹'+ltp.toFixed(2)+'</td>'+
-        '<td class="secret '+(dayPnl>=0?'up':'down')+'">'+inrSigned(dayPnl)+'<div class="sub '+((dayPct||0)>=0?'up':'down')+'">'+(dayPct==null?'':signed(dayPct))+'</div></td>'+
-        '<td class="secret '+(totPnl>=0?'up':'down')+'">'+inrSigned(totPnl)+'<div class="sub">'+signed(totPct)+'</div></td>'+
-        '<td class="secret">'+zinr(val)+'</td></tr>';
-    }).join('');
-    var pos=(D.pos||[]).filter(function(r){return r.quantity!==0;});
+      return {sym:r.tradingsymbol,qty:q,avg:avg,ltp:ltp,dayPnl:dayPnl,dayPct:dayPct,totPnl:totPnl,totPct:totPct,val:val,isMtf:((r.mtf||{}).quantity||0)>0};
+    });
     var posTot=0,posDay=0;
-    var prows=pos.map(function(r){
+    ACCT.pos=(D.pos||[]).filter(function(r){return r.quantity!==0;}).map(function(r){
       var pnl=+r.pnl||0,m2m=(r.m2m!=null?+r.m2m:null); posTot+=pnl; posDay+=(m2m||0);
-      return '<tr data-sy="'+esc(r.tradingsymbol)+'"><td><span class="nm">'+esc(r.tradingsymbol)+'</span><span class="xtag">'+esc(r.product||'')+'</span></td>'+
-        '<td class="secret">'+r.quantity+'</td><td>₹'+(+r.average_price).toFixed(2)+'</td><td>₹'+(+r.last_price).toFixed(2)+'</td>'+
-        '<td class="secret '+((m2m||0)>=0?'up':'down')+'">'+(m2m==null?'—':inrSigned(m2m))+'</td>'+
-        '<td class="secret '+(pnl>=0?'up':'down')+'">'+inrSigned(pnl)+'</td></tr>';
-    }).join('');
-    var acctDay=holdDay+posDay, acctTot=holdTot+posTot;
-    var dayPctAll=(curVal-holdDay)?holdDay/(curVal-holdDay)*100:0, totPctAll=invested?holdTot/invested*100:0;
-    var h='<div class="av-head"><span class="av-title">Your Zerodha account</span><span class="livetag">● '+esc(D.user||'live')+'</span><span class="av-upd">as of '+istTime(Date.now())+'</span></div>';
+      return {sym:r.tradingsymbol,product:r.product||'',qty:r.quantity,avg:+r.average_price||0,ltp:+r.last_price||0,dayPnl:m2m,pnl:pnl};
+    });
+    ACCT.holdTot=holdTot;ACCT.holdDay=holdDay;ACCT.curVal=curVal;ACCT.invested=invested;ACCT.posTot=posTot;ACCT.posDay=posDay;
+    renderAcctView();
+  }
+  function sortRows(rows,st){ var c=st.col,d=st.dir; return rows.slice().sort(function(a,b){ var x=a[c],y=b[c];
+    if(typeof x==='string'&&typeof y==='string') return d*(x<y?-1:x>y?1:0);
+    x=(x==null?-Infinity:x); y=(y==null?-Infinity:y); return d*(x-y); }); }
+  function ths(label,col,st){ var a=st.col===col; return '<th data-col="'+col+'" class="sortable'+(a?' act':'')+'">'+label+(a?'<span class="sar">'+(st.dir<0?'▼':'▲')+'</span>':'')+'</th>'; }
+  function renderAcctView(){
+    if(!ACCT.user) return;
+    var acctDay=ACCT.holdDay+ACCT.posDay, acctTot=ACCT.holdTot+ACCT.posTot;
+    var dayPctAll=(ACCT.curVal-ACCT.holdDay)?ACCT.holdDay/(ACCT.curVal-ACCT.holdDay)*100:0, totPctAll=ACCT.invested?ACCT.holdTot/ACCT.invested*100:0;
+    var h='<div class="av-head"><span class="av-title">Your Zerodha account</span><span class="livetag">● '+esc(ACCT.user)+'</span><span class="av-upd">as of '+istTime(Date.now())+'</span></div>';
     h+='<div class="av-kpis">'+
       kpi("Day's P&L",inrSigned(acctDay),signed(dayPctAll),acctDay>=0)+
       kpi('Total P&L',inrSigned(acctTot),signed(totPctAll),acctTot>=0)+
-      kpi('Current value',zinr(curVal),'invested <span class="secret">'+zinr(invested)+'</span>',null)+
-      kpi('Funds available',zinr(avail),'equity · to trade',null)+
-      kpi('Margin used',zinr(used),'deployed',null)+'</div>';
-    if(pos.length){
-      h+='<div class="av-sec">Open positions · '+pos.length+'</div><div class="atbl-wrap"><table class="atbl"><thead><tr><th>Contract</th><th>Qty</th><th>Avg</th><th>LTP</th><th>Day P&amp;L</th><th>P&amp;L</th></tr></thead><tbody>'+prows+'</tbody></table></div>';
+      kpi('Current value',zinr(ACCT.curVal),'invested <span class="secret">'+zinr(ACCT.invested)+'</span>',null)+
+      kpi('Funds available',zinr(ACCT.avail),'equity · to trade',null)+
+      kpi('Margin used',zinr(ACCT.used),'deployed',null)+'</div>';
+    if(ACCT.pos.length){
+      var prows=sortRows(ACCT.pos,POS_SORT).map(function(r){
+        return '<tr data-sy="'+esc(r.sym)+'"><td><span class="nm">'+esc(r.sym)+'</span><span class="xtag">'+esc(r.product)+'</span></td>'+
+          '<td class="secret">'+r.qty+'</td><td>₹'+r.avg.toFixed(2)+'</td><td>₹'+r.ltp.toFixed(2)+'</td>'+
+          '<td class="secret '+((r.dayPnl||0)>=0?'up':'down')+'">'+(r.dayPnl==null?'—':inrSigned(r.dayPnl))+'</td>'+
+          '<td class="secret '+(r.pnl>=0?'up':'down')+'">'+inrSigned(r.pnl)+'</td></tr>';
+      }).join('');
+      h+='<div class="av-sec">Open positions · '+ACCT.pos.length+'</div><div class="atbl-wrap"><table class="atbl postbl"><thead><tr>'+
+        ths('Contract','sym',POS_SORT)+ths('Qty','qty',POS_SORT)+ths('Avg','avg',POS_SORT)+ths('LTP','ltp',POS_SORT)+ths('Day P&amp;L','dayPnl',POS_SORT)+ths('P&amp;L','pnl',POS_SORT)+
+        '</tr></thead><tbody>'+prows+'</tbody></table></div>';
     }
-    if(hold.length){
-      h+='<div class="av-sec">Holdings · '+hold.length+'</div><div class="atbl-wrap"><table class="atbl"><thead><tr><th>Stock</th><th>Qty</th><th>Avg</th><th>LTP</th><th>Day\'s P&amp;L</th><th>Total P&amp;L</th><th>Value</th></tr></thead><tbody>'+hrows+
-        '</tbody><tfoot><tr><td>Total</td><td></td><td></td><td></td><td class="secret '+(holdDay>=0?'up':'down')+'">'+inrSigned(holdDay)+'</td><td class="secret '+(holdTot>=0?'up':'down')+'">'+inrSigned(holdTot)+'</td><td class="secret">'+zinr(curVal)+'</td></tr></tfoot></table></div>';
+    if(ACCT.hold.length){
+      var hrows=sortRows(ACCT.hold,HOLD_SORT).map(function(r){
+        return '<tr data-sy="'+esc(r.sym)+'"><td><span class="nm">'+esc(r.sym)+'</span>'+(r.isMtf?'<span class="xtag">MTF</span>':'')+'</td>'+
+          '<td class="secret">'+r.qty.toLocaleString('en-IN')+'</td><td>₹'+r.avg.toFixed(2)+'</td><td>₹'+r.ltp.toFixed(2)+'</td>'+
+          '<td class="secret '+(r.dayPnl>=0?'up':'down')+'">'+inrSigned(r.dayPnl)+'<div class="sub '+((r.dayPct||0)>=0?'up':'down')+'">'+(r.dayPct==null?'':signed(r.dayPct))+'</div></td>'+
+          '<td class="secret '+(r.totPnl>=0?'up':'down')+'">'+inrSigned(r.totPnl)+'<div class="sub">'+signed(r.totPct)+'</div></td>'+
+          '<td class="secret">'+zinr(r.val)+'</td></tr>';
+      }).join('');
+      h+='<div class="av-sec">Holdings · '+ACCT.hold.length+'</div><div class="atbl-wrap"><table class="atbl holdtbl"><thead><tr>'+
+        ths('Stock','sym',HOLD_SORT)+ths('Qty','qty',HOLD_SORT)+ths('Avg','avg',HOLD_SORT)+ths('LTP','ltp',HOLD_SORT)+ths("Day's P&amp;L",'dayPnl',HOLD_SORT)+ths('Total P&amp;L','totPnl',HOLD_SORT)+ths('Value','val',HOLD_SORT)+
+        '</tr></thead><tbody>'+hrows+'</tbody><tfoot><tr><td>Total</td><td></td><td></td><td></td><td class="secret '+(ACCT.holdDay>=0?'up':'down')+'">'+inrSigned(ACCT.holdDay)+'</td><td class="secret '+(ACCT.holdTot>=0?'up':'down')+'">'+inrSigned(ACCT.holdTot)+'</td><td class="secret">'+zinr(ACCT.curVal)+'</td></tr></tfoot></table></div>';
     }
-    if(!pos.length && !hold.length) h+='<div class="acct-msg">No open positions or holdings.</div>';
+    if(!ACCT.pos.length && !ACCT.hold.length) h+='<div class="acct-msg">No open positions or holdings.</div>';
     document.getElementById('acctView').innerHTML=h;
     var cs=document.getElementById('pfCardSum');
     if(cs) cs.innerHTML='Total <b class="'+(acctTot>=0?'up':'down')+'">'+inrSigned(acctTot)+'</b> · Day <b class="'+(acctDay>=0?'up':'down')+'">'+inrSigned(acctDay)+'</b>';
@@ -713,7 +734,13 @@ body.blur-secret .secret{filter:blur(7px);-webkit-user-select:none;user-select:n
     card.addEventListener('click',open);
     card.addEventListener('keydown',function(e){ if(e.key==='Enter'||e.key===' '){ e.preventDefault(); open(); } });
   })();
-  document.getElementById('acctView').addEventListener('click',function(e){ var tr=e.target.closest('tr[data-sy]'); if(tr && tr.dataset.sy) selectSym(tr.dataset.sy); });
+  document.getElementById('acctView').addEventListener('click',function(e){
+    var thEl=e.target.closest('th[data-col]');
+    if(thEl){ var tbl=thEl.closest('table'), st=tbl.classList.contains('postbl')?POS_SORT:HOLD_SORT, col=thEl.dataset.col;
+      if(st.col===col) st.dir=-st.dir; else { st.col=col; st.dir=(col==='sym')?1:-1; }
+      renderAcctView(); return; }
+    var tr=e.target.closest('tr[data-sy]'); if(tr && tr.dataset.sy) selectSym(tr.dataset.sy);
+  });
 
   /* init + polling */
   renderIdxLoading(); renderMW(); renderFocusShell(); syncSide();
