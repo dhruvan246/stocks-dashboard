@@ -353,6 +353,37 @@ def cmd_adjudicate(write_audit=True):
         else:
             stats["mixed-HOLD"] += 1
             cells[key] = dict(base, verdict="mixed-foreign-domestic")
+    # SECOND PASS — same-symbol block continuity (the §22i regime idea in miniature): a HELD
+    # cell whose Any-Other block is the SAME SIZE (±0.5pp) as a name-classified block in an
+    # adjacent quarter (±2) of the same symbol is the same holder persisting; adopt that class.
+    # Only name-verdict cells seed it (never another continuity cell — no transitive chains).
+    by_sym = defaultdict(list)
+    for key, v in cells.items():
+        sym, qe = key.split("|")
+        by_sym[sym].append((qe, key, v))
+    QSEQ = lambda qe: (int(qe[:4]) * 4 + {"03": 0, "06": 1, "09": 2, "12": 3}[qe[5:7]])
+    for sym, lst in by_sym.items():
+        seeds = [(QSEQ(qe), v["oth"], v["verdict"]) for qe, k, v in lst
+                 if v["verdict"] in ("foreign-confirmed", "domestic-kept")]
+        if not seeds:
+            continue
+        for qe, key, v in lst:
+            if v["verdict"] not in ("names-insufficient", "name-unknown"):
+                continue
+            near = {vd for qs, oth, vd in seeds
+                    if abs(qs - QSEQ(qe)) <= 2 and abs(oth - v["oth"]) <= 0.5}
+            if near == {"foreign-confirmed"}:
+                stats[("names-insufficient-HOLD" if v["verdict"] == "names-insufficient"
+                       else "name-unknown-HOLD")] -= 1
+                stats["FOREIGN-heal-continuity"] += 1
+                v["verdict"] = "foreign-confirmed"
+                v["basis"] = "same-symbol block continuity (adjacent quarter named-foreign, same size)"
+            elif near == {"domestic-kept"}:
+                stats[("names-insufficient-HOLD" if v["verdict"] == "names-insufficient"
+                       else "name-unknown-HOLD")] -= 1
+                stats["domestic-kept-continuity"] += 1
+                v["verdict"] = "domestic-kept"
+                v["basis"] = "same-symbol block continuity"
     print("== adjudication ==")
     for k in sorted(stats):
         print("  %-28s %d" % (k, stats[k]))
