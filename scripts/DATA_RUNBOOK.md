@@ -13122,3 +13122,48 @@ never liquidated), date_labels=calendar month-end.
 growth as (cur−base)/|base|×100 — point YoY, accel's yoyOf, TTM (backtest-engine.js:604/642/664,
 stock-backtest.html:1031/1055/1070) — landed 2026-06-14 commit b48e30a19. A shrinking loss
 prints POSITIVE by convention (flagged, deliberate — §N3).
+
+## 117. ★★★ STOCKVIEW ROUND 5 — the END-DATE REBALANCE class, a filer XBRL at 1/100, and the CA store proven clean  (2026-08-30)
+**NO ASSUMPTIONS, NO GUESSWORK** — every verdict below was measured this session (detres/XBRL/tape reads, A/B engine runs).
+
+External recon (StockView R5) raised 7 findings; resolution session verdicts, evidence in the commits:
+
+* **F-03 CONFIRMED+FIXED (c12c5ecc1, engine e11 / sw v125).** `monthsBetween()` pins its LAST entry
+  to `cfg.end`, so `simulate()` re-screened and OPENED a basket ON the backtest end date — trades
+  with entryDate == exitDate == end, zero holding, padding trade lists and pick breadth (their "20
+  picks opened 2026-08-20" = the high-mdd6 recon strategy's end-date re-screen; our repro: 17/20
+  same names, 7 zero-length entries). Guard in BOTH twins: the end date only MARKS equity and
+  CLOSES positions, never opens (`!(mi === months.length-1 && mi > 0)`). A/B: rebs 212→211, trades
+  2869→2862 (exactly the 7), equity/CAGR/maxDD/finalV byte-identical, twin parity exact.
+  `portfolio_model.js` already filtered `realRebs` to month-ends; monthly_returns_bake reads only
+  equity — both unaffected.
+* **F-04: the ~504 base was RIGHT — the defect was a filer XBRL at 1/100 (85c1f3c8f).** LODHA
+  Mar-2022 std filing INDAS_83654_648549 carries EVERY monetary tag at 1/100 true rupees
+  (decimals=-5 vs the same-day con filing's -7 — the BATAINDIA fingerprint §11, first seen going
+  DOWN). Stored 5.04/33.17/8.23/8.09 → as-filed 503.79/3317.13/823.49/809.17 (detres print + EPS
+  10.46×48.2cr shares + FY22 .50 annual 1,133.46 cr all agree). StockView's "XBRL-exact 5.04"
+  carries the same filer error — reported back. scale_fix.json got the parse-time guard; exact
+  values landed via fund/revop_cell_fix (CI-replayed). `apply_revop_cell_fix` + verify_fills_live
+  now take `ebit_std`/`ebit_con` (slots 7/8).
+* **F-02 CONFIRMED (§108 class, outside §109's window): BAYERCROP FY19 row held the Bayer-Monsanto
+  merger RESTATED comparatives wearing original ann dates** — Sep-18 166.8→142.7, Mar-19
+  −57.1→−79.8, Jun-19 135.3→59.3 (as-filed FY19 identity closes EXACT: 147.2+142.7+27.5−79.8 =
+  237.6 = .50 annual). The store does NOT overwrite on restatement — the class is backfill passes
+  READING the later document with no vintage rule. Scope measured, not swept: **2,188
+  NSE-archive-sourced fill rows sit OUTSIDE the §109-healed window** (1,237 in 2017, 401 in 2015,
+  ~550 in 2005-14) — candidates for the §109 dual-vintage join, open campaign.
+* **F-05 CONFIRMED, cause corrected: DATAPATTNS Dec-21 10.39 was the FILER's own XBRL mis-fill**
+  (NONINDAS_81805: PBT 13.81/PAT 10.39 contradict the same filing's print PBT 11.91/NP 8.96/EPS
+  1.91) — not a vendor recompute. Healed to 8.96 (print outranks the XBRL; two-files-one-quantity).
+* **F-07 REFUTED for our store, hardened anyway (d1e821eb9).** All 42,612 NSE CA feed rows swept:
+  14 instrument-class bonus rows (NCRPS/DVR/debenture/preference — incl. abbreviated "Ncrps",
+  which the lowercased class regex already catches), ZERO carry a factor; turnover-step ≈ 1.0 on
+  the live tape at all 13 distinct dates (their 8 + BLUEDART-2014, BRITANNIA-2019/21,
+  GUJNRECOKE-2010, JISLJALEQS-2011). `\bncd\b|ccps` added to the exclusion (zero live instances).
+  NB: NSE serves TWO rows for SIYSIL 2026-08-21 (Ncrps 3:1 AND 4:1) — that dual row is what
+  confused their feed.
+* **F-01 (systemic half): rebalance gating uses ACTUAL announce dates**, never period_end+N —
+  `q[annIdx] > 0 && q[annIdx] <= dateInt` (backtest-engine.js:595/639/695, ann=0 excluded §91);
+  the two flagged cells are the ann-date ledger session's scope. **F-06 conceded:** +10.99% =
+  (−0.0567−(−0.0637))/0.0637 exactly — our own Δ/|base| rule; near-zero-base display suppression
+  is a product decision, not taken here.
