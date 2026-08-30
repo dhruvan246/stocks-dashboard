@@ -11163,6 +11163,27 @@ archive row-by-row (never trust the resolver's label):
      accepts an unstated-period filing inside a window; a non-results "Outcome of Board Meeting"
      inside that window poisons it. 599 seq-sourced entries exist (280 sweep2 / 53 sweep1 /
      266 fill-era) — one proven bad; class un-audited.
+     **CLASS AUDIT CLOSED 2026-08-30 (seq-audit, this worktree/commit).** All 600 seq entries
+     re-adjudicated against raw BSE windows (`strCat=-1`, NO result-filter — the filter itself
+     was a poison source) cached in `scripts/_seq_audit_rows.json`; verdicts + evidence in
+     `scripts/_seq_audit_verdicts.json` (both gitignored, regenerate via `_seq_audit_fetch.py`/
+     `_seq_audit_report.py`/`_seq_audit_probe.py`). **150/600 (25%) were WRONG** → replaced with
+     `exact` entries (450 verified-correct seq entries kept): 92 fill-era / 44 sweep2 / 12 sweep1 /
+     2 recon. 144 look-aheads (median 53d, max GAYAPROJ Mar-2023 845d — CIRP results filed
+     Nov-2025) + 6 wrong-late (ECORECO Dec-2023 −92d = stamped with the NEXT quarter's date).
+     Poison sub-classes found (all now in the report tooling's vetoes): RPT Reg-23(9)
+     disclosures RIDE the Result|Financial-Results subcategory (MIDHANI/CHOLAHLDNG/RICOAUTO/
+     DBCORP/IFCI...); "Results-Delay in Financial Results" delay NOTICES ride it too (VEDL
+     Jun-2020, SPICEJET FY22, TITAGARH FY20 stored the delay-notice date as the results date!);
+     AGM-business outcomes (annual report/dividend/book-closure) in results-shaped windows;
+     fundraise/warrant/bonus/split meetings; adjournment outcomes (CUPIDALBV, ITCONS);
+     auditor/CS-appointment meetings. Big names healed: BRITANNIA Sep-2018 (+35d), VEDL Jun-2018
+     (+19d) & Jun-2020 (+21d), FORTIS Mar+Jun-2018, PVRINOX Jun-2020 (+71d), CGPOWER Jun-2020,
+     SBIN-adjacent none. 34 ambiguous outcomes settled by reading the filing PDFs (pypdf text +
+     page-image reads); SME half-yearly filers with NO per-quarter filing were dated to the first
+     covering H1/H2/FY filing (conservative-late). Rule for the future: a caption-level "seq"
+     match is only as good as the CATEGORY of the row it matched — Result-category or a
+     results-stating caption, or it isn't a results date.
   2. **Board-meeting INTIMATION stamped as the result date.** TASTYBITE Mar-2021 (stored 20210405
      = gated Apr-3 intimation; results May-15) and NMDC Jun-2019 (stored 20190724 = intimation
      day; results Aug-13). Both predate the ledger — an older backfill writer did it.

@@ -1,0 +1,1099 @@
+{
+ "_doc": "seq-audit 2026-08-30. verdict: BAD = stored seq date is not the quarter's results filing (look-ahead or mismatch); OK-eye = suspect bucket but adjudicated genuine by eye; UNCLEAR = needs PDF/wider window. true_dt = BSE NEWS_DT of the adjudicated results filing; gated = PIT date per runbook 12 (post-15:30/weekend -> next weekday). Every verdict traces to fetched _seq_audit_rows.json rows. FULL-WINDOW recheck required before ledgering each BAD.",
+ "AIFL|20170331": {
+  "verdict": "BAD",
+  "true_dt": "2017-05-29T20:01",
+  "gated": 20170530,
+  "note": "stored 20170405 = BM outcome 16:41 (Board Meeting cat). FY results = Result|FinResults 2017-05-29T20:01 (next results row Sep-14 states Jun-2017)."
+ },
+ "PVRINOX|20200630": {
+  "verdict": "BAD",
+  "true_dt": "2020-09-14T17:08",
+  "gated": 20200915,
+  "note": "stored 20200706 = BM outcome 19:42 (fundraise era). Jun-2020 results = Result|FinResults 2020-09-14T17:08; sequence Nov-3 (Sep q), Jan-15 (Dec q)."
+ },
+ "TASTYBITE|20180630": {
+  "verdict": "BAD",
+  "true_dt": "2018-08-08T19:26",
+  "gated": 20180809,
+  "note": "stored 20180706 = BM outcomes 15:07/15:42 (Board Meeting cat). Aug-1 intimation 'Un-Audited FR for Quarter Ended June 30, 2018'; results = Result|FinResults 2018-08-08T19:26."
+ },
+ "BRITANNIA|20180930": {
+  "verdict": "BAD",
+  "true_dt": "2018-11-12T15:06",
+  "gated": 20181112,
+  "note": "stored 20181008 = BM outcome 19:12. Sep-2018 results = Result|FinResults 'Outcome Of Board Meeting Held On 12Th November, 2018' 15:06 (pre-close); Feb-7 row states Dec-2018."
+ },
+ "PERVASIVE|20200930": {
+  "verdict": "BAD",
+  "true_dt": "2020-11-11T15:59",
+  "gated": 20201112,
+  "note": "stored 20201009 = BM outcome 16:23 + rights-issue approval 17:01. Results = Result|FinResults 'Results - Financial Results September 2020' 2020-11-11T15:59 (post-close)."
+ },
+ "ALMONDZ|20260331": {
+  "verdict": "BAD",
+  "true_dt": "2026-05-22T14:56",
+  "gated": 20260522,
+  "note": "recon:seq stored 20260410 = BM outcome 13:42. May-15 intimation to consider audited FY results; results = Result|FinResults 2026-05-22T14:56 (pre-close)."
+ },
+ "CAPLIPOINT|20181231": {
+  "verdict": "BAD",
+  "true_dt": "2019-02-11T13:43",
+  "gated": 20190211,
+  "note": "stored 20190111 = BM outcome 13:05 (+ subsidiary-investment intimation). Dec-2018 results = Result|FinResults 'Un-Audited Financial Results ... December 31,2018' 2019-02-11T13:43."
+ },
+ "TASTYBITE|20180930": {
+  "verdict": "BAD",
+  "true_dt": "2018-11-12T17:09",
+  "gated": 20181113,
+  "note": "stored 20181011 = BM outcome 14:12 (cessation/postal-ballot day). Sep-2018 results = Result|FinResults 2018-11-12T17:09 (post-close); Feb-6 row states Dec-2018."
+ },
+ "FORTIS|20180630": {
+  "verdict": "BAD",
+  "true_dt": "2018-08-14T19:09",
+  "gated": 20180815,
+  "note": "stored 20180713 = BM outcome 05:57 + open-offer rows (IHH bid era). Jun-2018 results = Result|FinResults 2018-08-14T19:09 (post-close -> next weekday 20180815 per gated_ann convention)."
+ },
+ "SPANDANA|20210630": {
+  "verdict": "BAD",
+  "true_dt": "2021-08-14T20:40",
+  "gated": 20210816,
+  "note": "stored 20210713 = Management Committee outcome 12:13. Jun-2021 results = Result|FinResults Sat 2021-08-14T20:40 -> Mon."
+ },
+ "VEDL|20180630": {
+  "verdict": "BAD",
+  "true_dt": "2018-07-31T16:07",
+  "gated": 20180801,
+  "note": "stored 20180713 = BM outcome 18:36 + news clarification. Jun-2018 results = Result|FinResults 2018-07-31T16:07 (post-close); Oct-31/Jan-31 continue the sequence."
+ },
+ "MIDHANI|20200630": {
+  "verdict": "BAD",
+  "true_dt": "2020-09-11T18:52",
+  "gated": 20200914,
+  "note": "stored 20200716 = RPT statement Reg 23(9) riding Result|FinResults 15:00. Jun-2020 results = 'Intimation Of Outcome Of The Board Meeting Held On 11Th September, 2020' 18:52 (post-close Fri -> Mon); Nov-11 row states Sep-2020."
+ },
+ "TFCILTD|20200630": {
+  "verdict": "BAD",
+  "true_dt": "2020-08-13T13:59",
+  "gated": 20200813,
+  "note": "stored 20200716 = CompanyUpdate|General outcome 14:58. Aug-5 intimation 'Financial Results For Quarter Ended 30.6.2020' proves results not yet out; results = Result|FinResults 'Results' 2020-08-13T13:59."
+ },
+ "INDUSFINL|20221231": {
+  "verdict": "BAD",
+  "true_dt": "2023-05-29T14:42",
+  "gated": 20230529,
+  "note": "stored 20230106 = BM outcome 13:56. NO Dec-2022 results filing in qe+240 window; earliest covering filing = FY Mar-2023 results 2023-05-29T14:42 (pre-close). Conservative-late."
+ },
+ "EXHICON|20231231": {
+  "verdict": "BAD",
+  "true_dt": "2024-05-24T19:13",
+  "gated": 20240527,
+  "note": "stored 20240106 = BM outcome (preferential-allotment committee). SME half-yearly: no Dec-2023 filing; H2/FY results 2024-05-24T19:13 Fri post-close -> Mon 20240527."
+ },
+ "ACLD|20241231": {
+  "verdict": "BAD",
+  "true_dt": "2025-05-29T21:08",
+  "gated": 20250530,
+  "note": "stored 20250116 = BM outcome 14:00. Half-yearly filer: 'Audited FR For Half Year And Year Ended March 31, 2025' 2025-05-29T21:08 post-close -> 20250530."
+ },
+ "ACLD|20251231": {
+  "verdict": "BAD",
+  "true_dt": "2026-05-22T18:29",
+  "gated": 20260525,
+  "note": "stored 20260112 = BM outcome 12:22. Half-yearly filer: FY results 2026-05-22T18:29 Fri post-close -> Mon 20260525."
+ },
+ "SHPLPUNE|20241231": {
+  "verdict": "BAD",
+  "true_dt": "2025-05-24T11:41",
+  "gated": 20250526,
+  "note": "stored 20250114 = BM outcome 14:32 + change-in-management. Half-yearly filer: FY 'Quick Results' Sat 2025-05-24T11:41 -> Mon 20250526."
+ },
+ "KESORAMIND|20250630": {
+  "verdict": "OK-eye",
+  "note": "Jul-9 intimation 'Consider And Approve The Unaudited Financial Results' (target qe); Jul-14 outcome 14:46 pre-close = results day (merged into UltraTech after, hence no later rows). Stored 20250714 stands."
+ },
+ "HDFCLIFE|20240630": {
+  "verdict": "OK-eye",
+  "note": "insurer files results as BM outcome: Jul-15 outcome 14:09 + press release/investor presentation + same-day earnings-call audio 'For The Quarter Ended June 30, 2024'. Stored 20240715 stands."
+ },
+ "CDG|20251231": {
+  "verdict": "OK-eye",
+  "note": "PDF: Jan-5-2026 outcome approved Q3 Dec-2025 unaudited std+con results (meeting 16:10-18:45, filed 19:40). Stored 20260105 correct day."
+ },
+ "LANCER|20171231": {
+  "verdict": "BAD",
+  "true_dt": "2018-06-05T17:04",
+  "gated": 20180606,
+  "note": "SME half-yearly: no Dec-2017 filing anywhere in window; covering H2/FY-Mar-2018 results 2018-06-05T17:04 post-close -> 20180606. Jan-5 outcome PDF-pending (non-results presumed)."
+ },
+ "ITHL|20230930": {
+  "verdict": "OK-eye",
+  "note": "PDF: Oct-12 outcome = Reg-33 filing with Q2/H1 Sep-2023 unaudited results + LR report (meeting 09:40-10:15). Stored 20231012 correct."
+ },
+ "OKPLA|20251231": {
+  "verdict": "OK-eye",
+  "note": "PDF: Jan-12 outcome = Reg-33 Q3 Dec-2025 unaudited std+con results + LR. Stored 20260112 correct (15:26 pre-close)."
+ },
+ "ONIXSOLAR|20241231": {
+  "verdict": "OK-eye",
+  "note": "PDF: Jan-16 outcome = Q3/9M Dec-2024 unaudited results + LR. Stored 20250116 correct (17:59 post-close raw convention)."
+ },
+ "SPICEJET|20230630": {
+  "verdict": "BAD",
+  "true_dt": "2024-07-15T19:19",
+  "gated": 20240716,
+  "note": "stored 20230712 = Jul-2023 BM outcome (fundraise era). Q1/Q2 FY24 never separately filed; first covering = Jul-15-2024 combined Q3+FY24 filing (9M cumulative + preceding-qtr columns make Jun-2023 derivable) 19:19 post-close -> 20240716."
+ },
+ "CHOLAHLDNG|20200630": {
+  "verdict": "BAD",
+  "true_dt": "2020-08-12T15:13",
+  "gated": 20200812,
+  "note": "stored 20200714 = RPT Reg 23(9) disclosure 21:03 riding Result|FinResults. Jun-2020 results = 'Intimation On Outcome Of Board Meeting Held On August 12, 2020' 15:13 pre-close; Nov-3 row states Sep-2020."
+ },
+ "RICOAUTO|20200630": {
+  "verdict": "BAD",
+  "true_dt": "2020-08-28T16:31",
+  "gated": 20200831,
+  "note": "stored 20200715 = RPT Reg 23(9) disclosure 11:57. Aug-20 intimation: BM Aug-28 to consider target-qtr results; results 2020-08-28T16:31 post-close Fri -> Mon 20200831."
+ },
+ "HDFCLIFE|20241231": {
+  "verdict": "OK-eye",
+  "note": "insurer files results as BM outcome 15:54 + 9M FY25 press release 15:57 + same-day earnings call. Correct DAY; post-15:30 raw-date convention matches whole bse:* ledger (nightly month-end gate owns that class; Jan-15 not month-end)."
+ },
+ "HDFCLIFE|20250630": {
+  "verdict": "OK-eye",
+  "note": "BM outcome 15:50 + Q1 FY26 press release + same-day earnings call. Correct day."
+ },
+ "HDFCLIFE|20240930": {
+  "verdict": "OK-eye",
+  "note": "BM outcome 14:18 + H1 FY25 press release 14:22 pre-close. Correct."
+ },
+ "HDFCLIFE|20250930": {
+  "verdict": "OK-eye",
+  "note": "BM outcome 15:31 + press release 15:35 + same-day earnings call. Correct day (not month-end)."
+ },
+ "HATHWAY|20180930": {
+  "verdict": "BAD",
+  "true_dt": "2018-11-12T17:57",
+  "gated": 20181113,
+  "note": "stored 20181017 = compliance cert + BM outcome 18:50 + OPEN OFFER (RJio acquisition era). Nov-1 intimation to consider Sep-qtr results; results 2018-11-12T17:57 post-close; Jan-23 row states Dec-2018."
+ },
+ "TECHKGREEN|20250630": {
+  "verdict": "BAD",
+  "true_dt": "2025-11-13T13:38",
+  "gated": 20251113,
+  "note": "stored 20250718 = BM outcome (CS appointment) + directorate changes. Half-yearly filer: no Jun-2025 filing; H1 results 2025-11-13T13:38 pre-close."
+ },
+ "CUB|20190630": {
+  "verdict": "BAD",
+  "true_dt": "2019-08-08T11:20",
+  "gated": 20190808,
+  "note": "stored 20190718 = BM outcome 14:50 (Board Meeting cat). Jun-2019 results = Result|FinResults 2019-08-08T11:20; Nov-7 Q2, Feb-12 Q3 continue sequence."
+ },
+ "JINDALPOLY|20200630": {
+  "verdict": "BAD",
+  "true_dt": "2020-08-31T18:18",
+  "gated": 20200901,
+  "note": "stored 20200718 = RPT Reg 23(9) submission 20:25. Results = 'Financial Result Qtr 30.06.2020' 2020-08-31T18:18 post-close."
+ },
+ "SPANDANA|20250630": {
+  "verdict": "BAD",
+  "true_dt": "2025-08-14T18:23",
+  "gated": 20250815,
+  "note": "stored 20250718 = BM outcome 17:48 + rights-issue record date. Q1FY26 results 2025-08-14T18:23 post-close -> next weekday 20250815 (gated_ann convention)."
+ },
+ "GAMCO|20251231": {
+  "verdict": "BAD",
+  "true_dt": "2026-05-21T20:32",
+  "gated": 20260522,
+  "note": "stored 20260119 = CompanyUpdate|General outcome 18:45. No Dec-2025 filing; FY Mar-2026 results 2026-05-21T20:32 post-close."
+ },
+ "IFCI|20200630": {
+  "verdict": "BAD",
+  "true_dt": "2020-09-14T17:08",
+  "gated": 20200915,
+  "note": "stored 20200720 = 'Consolidated Report On Related Party Transactions' 13:48. Results = 'Financial Results' 2020-09-14T17:08 post-close; Nov-11 Q2, Feb-12 Q3."
+ },
+ "LOVABLE|20200630": {
+  "verdict": "BAD",
+  "true_dt": "2020-09-09T16:11",
+  "gated": 20200910,
+  "note": "stored 20200720 = RPT (Mar-2020) 16:48. Sep-3 intimation for Jun-qtr results; results 'Financials Results For Quarter 30Th June, 2020' 2020-09-09T16:11 post-close."
+ },
+ "IOB|20191231": {
+  "verdict": "BAD",
+  "true_dt": "2020-02-10T14:16",
+  "gated": 20200210,
+  "note": "stored 20200121 = BM outcome 16:05 + committee-meeting intimations (capital raising). Jan-30 intimation to consider Dec-2019 results; results 2020-02-10T14:16 pre-close."
+ },
+ "DBCORP|20200630": {
+  "verdict": "BAD",
+  "true_dt": "2020-08-13T12:32",
+  "gated": 20200813,
+  "note": "stored 20200721 = RPT Reg 23(9) disclosure 12:10. Results = BM outcome Result|FinResults 2020-08-13T12:32; Oct-21 Sep-qtr, Jan-28 Dec-qtr."
+ },
+ "TREEHOUSE|20181231": {
+  "verdict": "BAD",
+  "true_dt": "2019-02-12T11:44",
+  "gated": 20190212,
+  "note": "stored 20190121 = BM outcome 11:10 (Board Meeting cat). Results = 'Results-Financial Result For 31-12-2018' 2019-02-12T11:44 pre-close."
+ },
+ "EXHICON|20241231": {
+  "verdict": "BAD",
+  "true_dt": "2025-05-12T20:33",
+  "gated": 20250513,
+  "note": "stored 20250123 = BM outcome 16:30. Half-yearly filer: H2/FY results 2025-05-12T20:33 post-close."
+ },
+ "FORTIS|20180331": {
+  "verdict": "BAD",
+  "true_dt": "2018-06-27T04:06",
+  "gated": 20180627,
+  "note": "stored 20180419 = bid-war BM outcome (SAST disclosures same day). FY18 results first public via Result|FinResults filing 2018-06-27T04:06 (overnight upload, pre-close -> same day) + investor presentation 12:52; Jul-7 Result row = follow-up. PDFs gone from BSE; category+presentation+sequence decisive."
+ },
+ "INOXWIND|20220930": {
+  "verdict": "BAD",
+  "true_dt": "2022-12-02T19:52",
+  "gated": 20221205,
+  "note": "stored 20221019 = Reg-30 disclosure outcome. PDF: Dec-2 Regs 30/33/52/54 filing = Q2/H1 Sep-2022 results + LR; 19:52 post-close Fri -> Mon 20221205."
+ },
+ "KAMDHENU|20170331": {
+  "verdict": "BAD",
+  "true_dt": "2017-05-30T18:22",
+  "gated": 20170531,
+  "note": "PDF CONFIRMS: Apr-20-2017 meeting = 30L warrants preferential issue + ESOP-2017 approval, NOT results. FY17 results = May-30 meeting (4 outcomes + dividend) 18:22 post-close -> 20170531."
+ },
+ "GTTDATA|20231231": {
+  "verdict": "BAD",
+  "true_dt": "2024-02-13T17:09",
+  "gated": 20240214,
+  "note": "stored 20240117 = fundraise outcome (open-offer saga). Feb-5 intimation names Dec-2023 results -> Feb-13 outcome 17:09 post-close -> 20240214. May-29 FY results confirm cadence."
+ },
+ "PNBHOUSING|20191231": {
+  "verdict": "OK-eye",
+  "note": "Jan-23 15:14 Result|FinResults outcome + investor presentation + press release same day = results day. (Was false-suspect via greedy reg-23 regex.)"
+ },
+ "CANFINHOME|20200630": {
+  "verdict": "BAD",
+  "true_dt": "2020-08-25T15:57",
+  "gated": 20200826,
+  "note": "stored 20200723 = BM outcome 17:10 (Board Meeting cat) + newspaper rows. Aug-17 intimation: BM for Q1FY21 results; results 2020-08-25T15:57/16:12 post-close -> 20200826."
+ },
+ "ABMKNO|20190930": {
+  "verdict": "OK-eye",
+  "note": "Oct-15 intimation names unaudited results for target qtr; Oct-24 20:39 outcome = that meeting (no later Sep-2019 results row; Jan-24 row is Dec-2019). Results day correct; post-close raw-date convention left as ledger-wide."
+ },
+ "NBCC|20200630": {
+  "verdict": "BAD",
+  "true_dt": "2020-09-14T18:32",
+  "gated": 20200915,
+  "note": "stored 20200724 = RPT disclosure 10:38. Jun-2020 results = 'Outcome Of Board Meeting ... Under Regulation 33' 2020-09-14T18:32 post-close; Nov-11 row states Sep-2020."
+ },
+ "BAJAJCON|20250630": {
+  "verdict": "BAD",
+  "true_dt": "2025-08-11T14:29",
+  "gated": 20250811,
+  "note": "stored 20250724 = BM outcome (Board Meeting cat) 15:47. Results = Result|FinResults outcome 2025-08-11T14:29 pre-close; Nov-10 row states Sep-2025."
+ },
+ "COSMICCRF|20241231": {
+  "verdict": "BAD",
+  "true_dt": "2025-05-23T19:19",
+  "gated": 20250526,
+  "note": "stored 20250125 = BM outcome 16:39. Half-yearly filer: H2/FY results 2025-05-23T19:19 Fri post-close -> Mon 20250526."
+ },
+ "GEE|20220630": {
+  "verdict": "BAD",
+  "true_dt": "2022-07-28T18:49",
+  "gated": 20220729,
+  "note": "stored 20220725 = BM outcome 18:26 (AGM-business: AGM notice + annual report same evening). Results = Result|FinResults outcome 2022-07-28T18:49 post-close -> 20220729."
+ },
+ "PRIMEFRESH|20220630": {
+  "verdict": "BAD",
+  "true_dt": "2022-11-14T18:07",
+  "gated": 20221115,
+  "note": "stored 20220725 = BM outcome 16:41 + AGM cutoff intimation. SME half-yearly: no Jun-2022 filing; H1 results outcome 2022-11-14T18:07 post-close -> 20221115 (Nov-15 filing states Sep-30 period)."
+ },
+ "INDIANCARD|20200630": {
+  "verdict": "BAD",
+  "true_dt": "2020-09-14T13:40",
+  "gated": 20200914,
+  "note": "stored 20200725 = RPT Reg 23(9) 17:20. Sep-6 intimation: BM for adoption of unaudited results; results 2020-09-14T13:40 pre-close."
+ },
+ "MIIL|20221231": {
+  "verdict": "BAD",
+  "true_dt": "2023-05-29T17:54",
+  "gated": 20230530,
+  "note": "stored 20230127 = BM outcome 12:44. No Dec-2022 results filing; FY Mar-2023 results 2023-05-29T17:54 post-close -> 20230530."
+ },
+ "UVDRHOR|20231231": {
+  "verdict": "BAD",
+  "true_dt": "2024-02-09T19:53",
+  "gated": 20240212,
+  "note": "stored 20240125 = stock-split outcome. FULL window: Feb-2 intimation for Dec-qtr results -> Feb-9 outcome 19:53 + deviation statement (Dec-2023) + dividend. Post-close Fri -> Mon 20240212."
+ },
+ "SHARONBIO|20170331": {
+  "verdict": "BAD",
+  "true_dt": "2017-12-08T17:09",
+  "gated": 20171211,
+  "note": "stored 20170425 = BM outcome (BIFR era). FY-Mar-2017 results filed Fri 2017-12-08T17:09 post-close -> Mon 20171211."
+ },
+ "CGPOWER|20200630": {
+  "verdict": "BAD",
+  "true_dt": "2020-09-08T03:37",
+  "gated": 20200908,
+  "note": "stored 20200726 = RPT Reg 23(9). PDF: Sep-8 03:37 filing = Q1 Jun-2020 unaudited results + LR (pre-close -> same day)."
+ },
+ "SETUINFRA|20170331": {
+  "verdict": "BAD",
+  "true_dt": "2017-05-30T21:18",
+  "gated": 20170531,
+  "note": "PDF: May-30-2017 meeting (15:00-20:25) approved AUDITED FY-Mar-2017 std+con results + rights issue + office shift; filed 21:18 post-close -> 20170531. Stored 20170426 = other business."
+ },
+ "ANANTRAJ|20260331": {
+  "verdict": "BAD",
+  "true_dt": "2026-05-11T18:21",
+  "gated": 20260512,
+  "note": "recon:seq stored 20260427 = subsidiary-incorporation/investment/acquisition outcomes. FY26 results = 'Audited Financial Results' 2026-05-11T18:21 post-close -> 20260512; Aug-8 row states Jun-2026."
+ },
+ "PFOCUS|20160331": {
+  "verdict": "BAD",
+  "true_dt": "2016-05-31T11:39",
+  "gated": 20160531,
+  "note": "stored 20160428 = 'Prime Focus divests 30% stake in Digital Domain' BM outcome. FY16 results = Result|Auditors Report 'Standalone & Consolidated Financial Results ... for March 31, 2016' 2016-05-31T11:39 pre-close."
+ },
+ "VSTTILLERS|20170331": {
+  "verdict": "BAD",
+  "true_dt": "2017-05-25T18:03",
+  "gated": 20170526,
+  "note": "stored 20170428 = 'The Company Intent To Publish Audited Results' (an INTENT notice, Board Meeting cat). Results = 'Results' 2017-05-25T18:03 post-close -> 20170526."
+ },
+ "SHARDUL|20251231": {
+  "verdict": "OK-eye",
+  "note": "Jan-21 intimation names un-audited FR (target); Jan-29 20:34 outcome = results meeting; May-27 row states Mar-2026. Correct day (post-close raw-date convention)."
+ },
+ "TIPSMUSIC|20200630": {
+  "verdict": "BAD",
+  "true_dt": "2020-08-19T16:36",
+  "gated": 20200820,
+  "note": "stored 20200729 = RPT Reg 23(9) 18:08. Aug-11 intimation for Jun-qtr results; results 2020-08-19T16:36 post-close -> 20200820. (Jul-24 row = Mar-2020 FY results.)"
+ },
+ "AMARJOTHI|20180630": {
+  "verdict": "OK-eye",
+  "note": "stored Jul-30 13:06 IS Result|FinResults outcome (Jun-qtr results; Oct-31 = Sep-qtr). prev_after flag = Aug-7 REVISION of Mar-2018 results, harmless."
+ },
+ "ICONIKSPEV|20250331": {
+  "verdict": "BAD",
+  "true_dt": "2025-05-29T15:48",
+  "gated": 20250530,
+  "note": "stored 20250430 = un-agenda'd meeting outcome. FY25 results = May-29 outcome 'Under Regulations 30 And 33' 15:48 post-close -> 20250530; Aug-4/Nov-13 quarterly cadence follows."
+ },
+ "PESB|20240630": {
+  "verdict": "BAD",
+  "true_dt": "2024-11-08T19:02",
+  "gated": 20241111,
+  "note": "stored 20240731 = BM outcome 18:25. Half-yearly filer: H1 results 2024-11-08T19:02 Fri post-close -> Mon 20241111."
+ },
+ "SUPRAPFSL|20180630": {
+  "verdict": "BAD",
+  "true_dt": "2018-08-11T13:04",
+  "gated": 20180813,
+  "note": "stored 20180731 = BM outcome 11:51 (Board Meeting cat). Aug-1 intimation for Jun-qtr results; results Sat 2018-08-11T13:04 -> Mon 20180813."
+ },
+ "COFFEEDAY|20190630": {
+  "verdict": "BAD",
+  "true_dt": "2019-11-13T15:47",
+  "gated": 20191114,
+  "note": "stored 20190731 = crisis BM outcome (CompanyUpdate|General). Aug-2 'Disclosure Of Reasons For Delay In Submission Of Financial Results For The Quarter Ended 30 June 2019' PROVES results not yet filed; results outcome 2019-11-13T15:47 post-close -> 20191114."
+ },
+ "BCG|20180630": {
+  "verdict": "BAD",
+  "true_dt": "2018-08-11T17:23",
+  "gated": 20180813,
+  "note": "stored 20180731 = BM outcome 17:08 (Board Meeting cat). Aug-2 intimation for Q1 results; results Sat 2018-08-11T17:23 post-close -> Mon 20180813."
+ },
+ "KAYCEEI|20240630": {
+  "verdict": "OK-eye",
+  "note": "Jul-15 intimation names Jun-qtr results; Aug-1 outcome 15:34 = results meeting; Nov-4 = Sep-qtr. Correct day."
+ },
+ "KDML|20231231": {
+  "verdict": "BAD",
+  "true_dt": "2024-05-02T18:21",
+  "gated": 20240503,
+  "note": "stored 20240201 = admin BM outcome (CS resignation/appointment, mgmt change). No Dec-2023 filing; H2/FY results 2024-05-02T18:21 post-close -> 20240503."
+ },
+ "JKIL|20200630": {
+  "verdict": "BAD",
+  "true_dt": "2020-08-20T16:50",
+  "gated": 20200821,
+  "note": "stored 20200728 = 'Declaration For Audit Reports With Unmodified Opinion(s)' (annual paperwork). Aug-13 intimation: Aug-20 meeting for un-audited Q1; results submission 2020-08-20T16:50 post-close -> 20200821. Nov-10 Q2 follows."
+ },
+ "ORISSAMINE|20220630": {
+  "verdict": "BAD",
+  "true_dt": "2022-08-30T16:22",
+  "gated": 20220831,
+  "note": "stored 20220728 = audit-qualification impact statement. Aug-10 results meeting CANCELLED; Aug-25 re-intimation -> Aug-30 outcome (Result cat) = Q1 results, 16:22 post-close -> 20220831."
+ },
+ "SGRL|20250630": {
+  "verdict": "OK-eye",
+  "note": "Jul-28 intimation names Jun-qtr results; Aug-1 outcome 16:56 = results meeting; Nov-7 = Sep-qtr, Jan-23 = Dec-qtr. Correct day."
+ },
+ "CDG|20190930": {
+  "verdict": "BAD",
+  "true_dt": "2020-02-14T17:57",
+  "gated": 20200217,
+  "note": "PDF: Nov-2-2019 (Urbaknitt) meeting = NAME-CHANGE approval only (30-min meeting, no results). Sep-2019 qtr numbers first public via Q3 FY20 filing's preceding-quarter column 2020-02-14T17:57 post-close Fri -> Mon 20200217."
+ },
+ "GHVINFRA|20250930": {
+  "verdict": "OK-eye",
+  "note": "PDF: Nov-3 outcome approved Sep-2025 Q2/H1 unaudited results + LR (11:17 pre-close). Stored 20251103 correct."
+ },
+ "SISL|20240630": {
+  "verdict": "BAD",
+  "true_dt": "2024-11-14T13:32",
+  "gated": 20241114,
+  "note": "stored 20240803 = RPT-approval outcome + tender-date correction. SME half-yearly: no Jun-2024 filing; H1 results 2024-11-14T13:32 pre-close."
+ },
+ "NEXTMEDIA|20170331": {
+  "verdict": "OK-eye",
+  "note": "PDF: May-4-2017 outcome = Reg-33 AUDITED FY-Mar-2017 results (std+con) + press release. Stored 20170504 correct day (15:40). Aug-29 filing was Q1 FY18."
+ },
+ "GEOJITFSL|20200630": {
+  "verdict": "OK-eye",
+  "note": "stored Aug-4: BM outcome 15:45 + 'Financials Results For The Quarter Ended 30.06.2020' (miscategorized Joint Venture subcat) + press release + investor presentation. Results day correct."
+ },
+ "KHAZANCHI|20231231": {
+  "verdict": "BAD",
+  "true_dt": "2024-05-17T15:18",
+  "gated": 20240517,
+  "note": "stored 20240205 = BM outcome 14:46. No Dec-2023 filing; FY results 2024-05-17T15:18 pre-close."
+ },
+ "SEML|20230630": {
+  "verdict": "BAD",
+  "true_dt": "2023-11-08T17:44",
+  "gated": 20231109,
+  "note": "stored 20230805 = AGM-business outcome (AGM notice + annual report follow; Jul-3 was the 1:1 bonus). Half-yearly: H1 results outcome 2023-11-08T17:44 post-close -> 20231109."
+ },
+ "BGDL|20230930": {
+  "verdict": "OK-eye",
+  "note": "Oct-30 intimation 'APPROVAL OF FINANCIAL RESULTS AS ON 30.09.2023'; Nov-6 outcome = results meeting; Feb-13 = Dec-qtr. Correct day."
+ },
+ "METHODHUB|20251231": {
+  "verdict": "BAD",
+  "true_dt": "2026-05-26T22:47",
+  "gated": 20260527,
+  "note": "stored 20260206 = BM outcome 17:55. Half-yearly: H2/FY results 2026-05-26T22:47 post-close -> 20260527."
+ },
+ "ELNET|20231231": {
+  "verdict": "OK-eye",
+  "note": "PDF: Feb-7 outcome = Q3/9M Dec-2023 unaudited results (13:10 pre-close). Stored 20240207 correct."
+ },
+ "MCCHRLS-B|20180630": {
+  "verdict": "OK-eye",
+  "note": "Aug-7 outcome PDF gone from BSE (all 3 bases). Reg-33 30-min submission convention + next-day 'Results-Financial Results For Jun,30,2018' upload -> Aug-7 = results meeting day; stored 20180807 kept (post-close raw convention, non-month-end)."
+ },
+ "ZFCVINDIA|20190331": {
+  "verdict": "OK-eye",
+  "note": "May-2 intimation 'To Consider Audited FR For The Year Ended 31St March'; May-8 outcome 11:03 pre-close = FY19 results day. Stored 20190508 stands."
+ },
+ "NAVA|20181231": {
+  "verdict": "OK-eye",
+  "note": "Jan-19 intimation names unaudited FR (target); Feb-7 outcome 20:37 + press release = results day. Correct day (post-close raw convention)."
+ },
+ "DENORA|20170331": {
+  "verdict": "OK-eye",
+  "note": "PDF: May-8-2017 outcome = Reg-33 AUDITED FY-Mar-2017 results + dividend (meeting 16:00-17:30, filed 18:03). Stored 20170508 correct day."
+ },
+ "ACEMEN|20250331": {
+  "verdict": "OK-eye",
+  "note": "May-6 intimation names audited FY results; May-9 outcome 21:18 + Integrated Filing (Financial) 21:44 = results submission. Correct day."
+ },
+ "HITECHCORP|20170331": {
+  "verdict": "OK-eye",
+  "note": "May-9 outcome 19:39 + dividend recommendation (annual-results meeting); May-10 'Financial Results Updates' = upload. Reg-33 30-min submission = outcome carries results. Stored 20170509 correct day."
+ },
+ "MTEDUCARE|20180630": {
+  "verdict": "OK-eye",
+  "note": "PDF: Aug-9-2018 outcome item 1 = Reg-33 un-audited Q1 FY19 (Jun-2018) results. Stored 20180809 correct day."
+ },
+ "SPTL|20170630": {
+  "verdict": "BAD",
+  "true_dt": "2017-10-31T17:22",
+  "gated": 20171101,
+  "note": "Sintex Plastics listed Aug-2017; stored 20170809 = AGM-business outcome (book closure). Jun-2017 figures first public via H1 filing 2017-10-31T17:22 post-close -> 20171101 (conservative-late)."
+ },
+ "HLVLTD|20190630": {
+  "verdict": "BAD",
+  "true_dt": "2019-08-13T14:16",
+  "gated": 20190813,
+  "note": "stored 20190810 = Sat BM outcome 14:49 (Board Meeting cat). Results = Result|FinResults outcome 2019-08-13T14:16 pre-close; Nov-12/Feb-10 continue quarterly sequence."
+ },
+ "INDUSFINL|20241231": {
+  "verdict": "OK-eye",
+  "note": "stored Feb-11 = Integrated Filing (Financial) 18:14 + outcome 18:17 = results submission. Correct day."
+ },
+ "VADILENT|20250930": {
+  "verdict": "OK-eye",
+  "note": "Nov-5 intimation names unaudited FR H1 (target); Nov-11 outcome 14:39 pre-close = results day."
+ },
+ "FABCLEAN|20251231": {
+  "verdict": "BAD",
+  "true_dt": "2026-04-29T01:09",
+  "gated": 20260429,
+  "note": "stored 20260212 = BM outcome + Acquisition + Preferential Issue (fundraise meeting). No Dec-2025 filing; H2/FY results 2026-04-29T01:09 (pre-close) -> 20260429."
+ },
+ "HPBL|20250630": {
+  "verdict": "OK-eye",
+  "note": "PDF: Aug-12 outcome = Jun-2025 unaudited std+con results. Stored 20250812 correct day."
+ },
+ "LANCER|20240630": {
+  "verdict": "OK-eye",
+  "note": "Aug-1 intimation names un-audited std+con FR (target); Aug-12 outcome 19:15 = results meeting. Correct day (post-close raw convention)."
+ },
+ "SPICEJET|20250930": {
+  "verdict": "OK-eye",
+  "note": "PDF: Nov-12-2025 outcome = Q2/H1 Sep-2025 unaudited results + press release (filed 15:30:00, within gate). Stored 20251112 correct."
+ },
+ "SPANDANA|20210930": {
+  "verdict": "BAD",
+  "true_dt": "2022-01-05T19:48",
+  "gated": 20220106,
+  "note": "stored 20211112 = 'Reasons For Delayed/Non-Submission Of Financial Results' - the DELAY notice. Sep-2021 results = Jan-5-2022 outcome 19:48 post-close -> 20220106 (Feb-14 = Dec-qtr follows)."
+ },
+ "SSWL|20170331": {
+  "verdict": "BAD",
+  "true_dt": "2017-05-29T12:30",
+  "gated": 20170529,
+  "note": "stored 20170513 = Sat BM outcome 12:45 (Board Meeting cat). FY17 results = 'Financial Results For March 31,2017' 2017-05-29T12:30 pre-close."
+ },
+ "ACESOFT|20251231": {
+  "verdict": "OK-eye",
+  "note": "Feb-10 intimation names unaudited std+con FR (target); Feb-13 outcome 20:34 = results meeting. Correct day."
+ },
+ "LANCER|20240930": {
+  "verdict": "OK-eye",
+  "note": "Nov-5 intimation (target); Nov-13 outcome 19:33 = results meeting. Correct day."
+ },
+ "NEAGI|20241231": {
+  "verdict": "OK-eye",
+  "note": "Feb-13 outcome 13:32 + Integrated Filing (Financial) 15:07 = results submission. Correct day."
+ },
+ "NISUS|20241231": {
+  "verdict": "BAD",
+  "true_dt": "2025-05-29T17:54",
+  "gated": 20250530,
+  "note": "PDF: Feb-13 meeting (16:00-16:45) = auditor/internal-auditor APPOINTMENTS only. Dec-2024-IPO SME: first results = H2/FY Mar-2025 2025-05-29T17:54 post-close -> 20250530."
+ },
+ "SGFRL|20240630": {
+  "verdict": "BAD",
+  "true_dt": "2024-11-13T19:40",
+  "gated": 20241114,
+  "note": "PDF: Aug-13 outcome = independent-director re-appointment (VC meeting). H1 results 2024-11-13T19:40 post-close -> 20241114."
+ },
+ "TECHKGREEN|20241231": {
+  "verdict": "BAD",
+  "true_dt": "2025-05-27T15:24",
+  "gated": 20250527,
+  "note": "PDF: Feb-13-2025 meeting = ICICI credit-facilities approval. No Dec-2024 filing; FY results 2025-05-27T15:24 pre-close."
+ },
+ "VALENCIA|20251231": {
+  "verdict": "BAD",
+  "true_dt": "2026-05-28T19:49",
+  "gated": 20260529,
+  "note": "stored 20260213 = revised outcome of Feb-10 un-intimated meeting (results need Reg-29 notice). No Dec-2025 filing; H2/FY results 2026-05-28T19:49 post-close -> 20260529."
+ },
+ "STCINDIA|20250630": {
+  "verdict": "BAD",
+  "true_dt": "2025-09-17T20:48",
+  "gated": 20250918,
+  "note": "stored 20250813 = delay notice. PDF: Sep-17 filing = FY-Mar-2025 audited AND Jun-2025 quarter unaudited together; 20:48 post-close -> 20250918."
+ },
+ "MARBLE|20251231": {
+  "verdict": "OK-eye",
+  "note": "PDF: Feb-14 outcome = 'APPROVAL OF UN-AUDITED FINANCIAL RESULTS FOR THE QUARTER' (Sat meeting 17:00-17:50). Stored 20260214 correct day."
+ },
+ "META|20250331": {
+  "verdict": "OK-eye",
+  "note": "May-10 intimation 'Audited FR For Year Ended 31st Mar 2025 And Raising Of Funds'; May-15 outcome + press release + investor presentation = results day. Correct day."
+ },
+ "MIDWEST|20230630": {
+  "verdict": "OK-eye",
+  "note": "PDF: Aug-14 outcome item 1 = un-audited Jun-2023 quarter results + LR + FY23 board report/AGM notice. Stored 20230814 correct day."
+ },
+ "RSDFIN|20221231": {
+  "verdict": "OK-eye",
+  "note": "Feb-6 intimation names un-audited results (target); Feb-14 outcome 22:56 = results meeting. Correct day."
+ },
+ "PFS|20211231": {
+  "verdict": "BAD",
+  "true_dt": "2022-05-27T16:56",
+  "gated": 20220530,
+  "note": "stored 20220214 = Reg-33 delay notice. PDF: May-26 meeting approved Q3 FY22 (Dec-2021) unaudited results, filed 2022-05-27T16:56 post-close Fri -> Mon 20220530."
+ },
+ "SUPREMEINF|20240331": {
+  "verdict": "BAD",
+  "true_dt": "2024-06-25T17:32",
+  "gated": 20240626,
+  "note": "stored 20240515 = scheme-of-compromise meeting outcome. FY24 results = Jun-25 outcome (Jun-15 intimation names audited FY results) 2024-06-25T17:32 post-close -> 20240626. Oct-18 = Jun-2024 qtr follows."
+ },
+ "ZUARIIND|20200630": {
+  "verdict": "BAD",
+  "true_dt": "2020-09-07T19:56",
+  "gated": 20200908,
+  "note": "PDF: Aug-14 outcome says board DEFERRED the Jun-2020 results. True = 'Result For The Quarter Ended June 30Th, 2020' 2020-09-07T19:56 post-close -> 20200908."
+ },
+ "ONELIFECAP|20180930": {
+  "verdict": "OK-eye",
+  "note": "Nov-5 intimation (target); Nov-15 00:26 outcome = overnight upload of Nov-14 results meeting. Correct day."
+ },
+ "PRECISIO|20240331": {
+  "verdict": "OK-eye",
+  "note": "PDF: May-17 outcome = audited FY-Mar-2024 std results (quarter + year). Stored 20240517 correct day."
+ },
+ "CHEMCRUX|20211231": {
+  "verdict": "BAD",
+  "true_dt": "2022-05-20T15:22",
+  "gated": 20220520,
+  "note": "PDF: Feb-19 outcome = SME-to-mainboard migration + postal ballot. Half-yearly filer: H2/FY results 2022-05-20T15:22 pre-close."
+ },
+ "ACLD|20250630": {
+  "verdict": "BAD",
+  "true_dt": "2025-10-15T18:24",
+  "gated": 20251016,
+  "note": "stored 20250820 = AGM-business outcome (insider-code amendment, book closure, AGM notice, annual report). Half-yearly filer: H1 Sep-2025 results 2025-10-15T18:24 post-close -> 20251016."
+ },
+ "BAMBINO|20250331": {
+  "verdict": "OK-eye",
+  "note": "PDF: May-21 outcome = audited FY-Mar-2025 results + final dividend (13:20 pre-close). Stored 20250521 correct."
+ },
+ "BHATIA|20200630": {
+  "verdict": "BAD",
+  "true_dt": "2020-11-14T14:33",
+  "gated": 20201116,
+  "note": "PDF: Aug-20 outcome = Director's Report + Annual Report FY20 + dividend/book closure (AGM business, no results). Q2+H1 filing Sat 2020-11-14T14:33 -> Mon 20201116."
+ },
+ "EDELWEISS|20200331": {
+  "verdict": "BAD",
+  "true_dt": "2020-07-04T21:59",
+  "gated": 20200706,
+  "note": "stored 20200521 = CompanyUpdate|General outcome 19:00 (COVID-era non-results). FY20 results = Result outcome Sat 2020-07-04T21:59 -> Mon 20200706; Aug-27 Jun-qtr, Oct-30 Sep-qtr follow."
+ },
+ "DCW|20180331": {
+  "verdict": "BAD",
+  "true_dt": "2018-05-29T15:26",
+  "gated": 20180529,
+  "note": "stored 20180522 = BM outcome + RIGHTS ISSUE approval 13:33. FY18 results = Result outcome 2018-05-29T15:26 pre-close; Aug-13 Jun-qtr follows."
+ },
+ "DISHTV|20200630": {
+  "verdict": "BAD",
+  "true_dt": "2020-09-02T17:38",
+  "gated": 20200903,
+  "note": "stored 20200821 = RPT Reg 23(9) disclosure 21:00. Jun-2020 results = Result outcome 2020-09-02T17:38 post-close -> 20200903; Jul-23 was FY-Mar-2020, Nov-5 Sep-qtr."
+ },
+ "ORIENTALTL|20170331": {
+  "verdict": "BAD",
+  "true_dt": "2017-05-29T20:50",
+  "gated": 20170530,
+  "note": "stored 20170522 = 'Financial Results And Fund Raising' BM-cat NOTICE 17:00 (meeting announcement); results = Result outcome 2017-05-29T20:50 post-close -> 20170530."
+ },
+ "SPTL|20200630": {
+  "verdict": "BAD",
+  "true_dt": "2020-09-11T14:31",
+  "gated": 20200911,
+  "note": "stored 20200822 = Sat RPT Reg 23(9) disclosure 11:48. Sep-4 intimation for Jun-qtr results; results = Result outcome 2020-09-11T14:31 pre-close."
+ },
+ "BRPL|20181231": {
+  "verdict": "BAD",
+  "true_dt": "2019-05-11T13:49",
+  "gated": 20190513,
+  "note": "stored 20190223 = Sat BM outcome 12:38. Half-yearly filer: H2/FY results Sat 2019-05-11T13:49 -> Mon 20190513."
+ },
+ "SUPERSHAKT|20190630": {
+  "verdict": "BAD",
+  "true_dt": "2019-11-02T15:13",
+  "gated": 20191104,
+  "note": "stored 20190823 = BM outcome + BONUS ISSUE approval. No Jun-2019 filing; Sep-qtr results Sat 2019-11-02T15:13 -> Mon 20191104."
+ },
+ "VGIL|20230630": {
+  "verdict": "BAD",
+  "true_dt": "2023-11-04T14:04",
+  "gated": 20231106,
+  "note": "PDF: Aug-23 outcome = bonus-share listing consent + misc resolutions. H1 Sep-2023 results outcome Sat 2023-11-04T14:04 -> Mon 20231106."
+ },
+ "ATLASCYCLE|20180331": {
+  "verdict": "BAD",
+  "true_dt": "2018-09-17T20:00",
+  "gated": 20180918,
+  "note": "stored 20180524 = BM outcome. Aug-30 upload names only Jun-2018; FY-Mar-2018 = Sep-17 Result outcomes 20:00/20:05 post-close -> 20180918 (PDFs gone from BSE; elimination by document set). Conservative-late."
+ },
+ "ATLASCYCLE|20190331": {
+  "verdict": "BAD",
+  "true_dt": "2019-10-29T20:40",
+  "gated": 20191030,
+  "note": "PDF: Oct-29-2019 outcome approved AUDITED FY-Mar-2019 std+con results (unmodified opinion) + unaudited later quarters; 20:40 post-close -> 20191030. Nov-14 = Sep-2019 qtr."
+ },
+ "NAGREEKEXP|20170331": {
+  "verdict": "OK-eye",
+  "note": "PDF: May-24-2017 outcome = audited FY-Mar-2017 results approved at 16:00 meeting (no dividend). Stored 20170524 correct day."
+ },
+ "PRIMEFRESH|20240630": {
+  "verdict": "BAD",
+  "true_dt": "2024-11-11T16:08",
+  "gated": 20241112,
+  "note": "stored 20240824 = AGM-business outcome (dividend, book closure, MoA amendment, ESOP). H1 Sep-2024 results 2024-11-11T16:08 post-close -> 20241112."
+ },
+ "PESB|20250630": {
+  "verdict": "BAD",
+  "true_dt": "2025-11-04T18:45",
+  "gated": 20251105,
+  "note": "stored 20250825 = AGM-business outcome (annual report same day). H1 results = 'OUTCOME ... FOR HALF YEARLY FINANCIAL RESULTS ENDED 30-09-2025' 2025-11-04T18:45 post-close -> 20251105."
+ },
+ "CUPIDALBV|20240331": {
+  "verdict": "BAD",
+  "true_dt": "2024-07-19T00:26",
+  "gated": 20240719,
+  "note": "PDF: May-27 meeting ADJOURNED (FY24 results not approved); Jul-18 meeting approved FY-Mar-2024 audited + Jun-2024 unaudited, filed 2024-07-19T00:26 (pre-close) -> 20240719."
+ },
+ "IPRINGLTD|20240331": {
+  "verdict": "OK-eye",
+  "note": "PDF: May-27-2024 outcome = Reg-33 audited FY-Mar-2024 std+con results (meeting 14:30-18:15). Stored 20240527 correct day."
+ },
+ "MANAS|20220630": {
+  "verdict": "BAD",
+  "true_dt": "2022-11-14T17:17",
+  "gated": 20221115,
+  "note": "stored 20220826 = AGM-business outcome (book closure, auditor appointment). No Jun-2022 filing; H1 results 2022-11-14T17:17 post-close -> 20221115."
+ },
+ "PENINLAND|20200630": {
+  "verdict": "BAD",
+  "true_dt": "2020-09-15T21:57",
+  "gated": 20200916,
+  "note": "stored 20200826 = RPT Reg 23(9) disclosure 19:56. Jun-2020 results = Result outcome 2020-09-15T21:57 post-close -> 20200916 (Jul-29 was FY-Mar-2020; Nov-12 Sep-qtr)."
+ },
+ "RAJPALAYAM|20201231": {
+  "verdict": "BAD",
+  "true_dt": "2021-02-04T13:21",
+  "gated": 20210204,
+  "note": "stored 20210227 = RIGHTS-ISSUE committee outcome. Dec-2020 results = 'Unaudited ... Nine Months Ended 31-12-2020' 2021-02-04T13:21 pre-close - stored was wrong-LATE + wrong event; exact asserts both ways."
+ },
+ "RNITAI|20240930": {
+  "verdict": "BAD",
+  "true_dt": "2025-05-28T22:30",
+  "gated": 20250529,
+  "note": "stored 20241127 = admin outcome (office change, CS appointment). PDF: May-14-2025 meeting DEFERRED Q1/Q2/Q3 FY25 results; May-24 intimation names audited+unaudited results -> approved at May-28 meeting, outcome 2025-05-28T22:30 post-close -> 20250529."
+ },
+ "SUPERSHAKT|20210630": {
+  "verdict": "BAD",
+  "true_dt": "2021-11-11T17:18",
+  "gated": 20211112,
+  "note": "stored 20210827 = AGM-business outcome (record date, AGM notice). H1 Sep-2021 results 2021-11-11T17:18 post-close -> 20211112."
+ },
+ "ZEAL|20190630": {
+  "verdict": "BAD",
+  "true_dt": "2019-11-14T18:23",
+  "gated": 20191115,
+  "note": "stored 20190827 = AGM-business outcome (book closure). No Jun-2019 filing; Sep-qtr results outcome 2019-11-14T18:23 post-close -> 20191115."
+ },
+ "ACHYUT|20230630": {
+  "verdict": "BAD",
+  "true_dt": "2023-11-04T15:45",
+  "gated": 20231106,
+  "note": "stored 20230828 = AGM-business outcome (AGM notice, book closure). H1 Sep-2023 results Sat 2023-11-04T15:45 -> Mon 20231106."
+ },
+ "ACLD|20240630": {
+  "verdict": "BAD",
+  "true_dt": "2024-10-26T15:55",
+  "gated": 20241028,
+  "note": "stored 20240828 = DELAYED FY-Mar-2024 audited results meeting (Aug-21 intimation states Mar-2024) - wrong quarter. Jun-2024 first public via H1 filing Sat 2024-10-26T15:55 -> Mon 20241028."
+ },
+ "KOVAI|20230331": {
+  "verdict": "OK-eye",
+  "note": "Apr-24 intimation for May-29 audited-FY meeting; May-29 outcome 18:32 + 'Results For The Financial Year Ended 31.03.2023' 18:34. Correct day."
+ },
+ "SATTRIX|20250630": {
+  "verdict": "BAD",
+  "true_dt": "2026-05-29T12:44",
+  "gated": 20260529,
+  "note": "PDF: Aug-28-2025 outcome = director resignation + auditor appointments. NO H1 filing; first results = FY-Mar-2026 'Financial Results For The Year Ended' 2026-05-29T12:44 pre-close (May-28 22:20 outcome gates to same date)."
+ },
+ "SPICEJET|20200630": {
+  "verdict": "BAD",
+  "true_dt": "2020-09-15T16:05",
+  "gated": 20200916,
+  "note": "stored 20200828 = RPT Reg 23(9) disclosure 13:35. Jul-29 = FY-Mar-2020 results; Sep-9 intimation for Jun-qtr; results outcome 2020-09-15T16:05 post-close -> 20200916."
+ },
+ "EXHICON|20250630": {
+  "verdict": "BAD",
+  "true_dt": "2025-11-10T13:58",
+  "gated": 20251110,
+  "note": "stored 20250829 = outcome + ERP implementation + directorate/mgmt changes. H1 Sep-2025 results 2025-11-10T13:58 pre-close."
+ },
+ "INDSWFTLAB|20250331": {
+  "verdict": "BAD",
+  "true_dt": "2025-08-13T18:23",
+  "gated": 20250814,
+  "note": "stored 20250530 = outcome + secretarial-compliance (non-results). PDF: Aug-13 filing = Jun-2025 quarter only, but its preceding-quarter column first publishes Mar-2025 quarter numbers; 18:23 post-close -> 20250814. (No separate FY25 Reg-33 filing found through Aug-2026.)"
+ },
+ "STARLENT|20181231": {
+  "verdict": "BAD",
+  "true_dt": "2019-05-29T16:23",
+  "gated": 20190529,
+  "note": "stored 20190302 = admin outcome (CS appointment, KMP list, insider code). No Dec-2018 filing; H2/FY results 2019-05-29T16:23 pre-close."
+ },
+ "JAYSREETEA|20200630": {
+  "verdict": "BAD",
+  "true_dt": "2020-09-15T23:28",
+  "gated": 20200916,
+  "note": "stored 20200831 = 'Related Party-31.03.2020' RPT row 19:54. Sep-4 intimation for Jun-qtr; results 2020-09-15T23:28 post-close -> 20200916."
+ },
+ "VALENCIA|20240630": {
+  "verdict": "BAD",
+  "true_dt": "2024-11-13T17:41",
+  "gated": 20241114,
+  "note": "stored 20240902 = outcome + directorate change + MoA + preferential issue + fundraise. H1 Sep-2024 results 2024-11-13T17:41 post-close -> 20241114."
+ },
+ "TREEHOUSE|20160930": {
+  "verdict": "BAD",
+  "true_dt": "2016-11-14T18:07",
+  "gated": 20161115,
+  "note": "stored 20161203 = BM outcome 17:43 - WRONG-LATE + wrong event: true Sep-2016 results = 'Standalone FR, LR Report, Results Press Release for September 30, 2016' 2016-11-14T18:07 post-close -> 20161115."
+ },
+ "ACHYUT|20220630": {
+  "verdict": "BAD",
+  "true_dt": "2022-11-12T12:55",
+  "gated": 20221114,
+  "note": "stored 20220903 = AGM outcome (notice/book closure/record date). H1 Sep-2022 results Sat 2022-11-12T12:55 -> Mon 20221114."
+ },
+ "BIZOTIC|20250630": {
+  "verdict": "BAD",
+  "true_dt": "2025-10-10T18:26",
+  "gated": 20251013,
+  "note": "stored 20250903 = thrice-rescheduled SHARE-WARRANT issue meeting (Jul-23 fundraise intimation). H1 results: Oct-3 intimation -> Oct-10 outcome 18:26 post-close Fri -> Mon 20251013."
+ },
+ "EXHICON|20240630": {
+  "verdict": "BAD",
+  "true_dt": "2024-11-14T21:20",
+  "gated": 20241115,
+  "note": "stored 20240903 = AGM-business outcome (dividend, preferential issue, book closure). H1 Sep-2024 results 2024-11-14T21:20 post-close -> 20241115."
+ },
+ "BRIGHT|20240630": {
+  "verdict": "BAD",
+  "true_dt": "2024-11-14T18:02",
+  "gated": 20241115,
+  "note": "stored 20240904 = AGM-business outcome (AGM notice, annual report, dividend record date). H1 results 2024-11-14T18:02 post-close -> 20241115."
+ },
+ "ALSL|20190630": {
+  "verdict": "BAD",
+  "true_dt": "2019-11-14T18:39",
+  "gated": 20191115,
+  "note": "stored 20190905 = AGM-season outcome 17:48. H1 Sep-2019 results 2019-11-14T18:39 post-close -> 20191115."
+ },
+ "BONDADA|20250630": {
+  "verdict": "BAD",
+  "true_dt": "2025-10-28T13:38",
+  "gated": 20251028,
+  "note": "stored 20250905 = dividend/AGM outcome. H1 results = outcome 'Approval Of First Half Year Un-Audited Financial Results' 2025-10-28T13:38 pre-close."
+ },
+ "CFF|20240630": {
+  "verdict": "BAD",
+  "true_dt": "2024-10-29T18:58",
+  "gated": 20241030,
+  "note": "stored 20240905 = outcome + fundraise + AGM notice + annual report. H1 results 2024-10-29T18:58 post-close -> 20241030."
+ },
+ "NWIL|20220930": {
+  "verdict": "BAD",
+  "true_dt": "2022-11-14T16:03",
+  "gated": 20221115,
+  "note": "stored 20221206 = CFO-resignation/admin outcome - WRONG-LATE + wrong event: true Sep-2022 results = Nov-14 outcome+unaudited FR (target) 2022-11-14T16:03 post-close -> 20221115."
+ },
+ "JYOTISTRUC|20210930": {
+  "verdict": "BAD",
+  "true_dt": "2022-01-18T22:47",
+  "gated": 20220119,
+  "note": "stored 20211206 = corrigendum-to-Nov-11-outcome + CEO appointment. Nov-10 = Jun-2021 results; Sep-2021 results = Jan-18-2022 outcome 22:47 post-close -> 20220119 (Mar-25 = Dec-qtr follows)."
+ },
+ "ALSL|20221231": {
+  "verdict": "BAD",
+  "true_dt": "2023-05-16T17:36",
+  "gated": 20230517,
+  "note": "stored 20230309 = independent-directors meeting outcome. No Dec-2022 filing; FY results 2023-05-16T17:36 post-close -> 20230517."
+ },
+ "BRIGHT|20230630": {
+  "verdict": "BAD",
+  "true_dt": "2023-11-14T16:32",
+  "gated": 20231115,
+  "note": "stored 20230906 = AGM-business outcome. H1 results 2023-11-14T16:32 post-close -> 20231115."
+ },
+ "ALSL|20230630": {
+  "verdict": "BAD",
+  "true_dt": "2023-11-03T16:16",
+  "gated": 20231106,
+  "note": "stored 20230907 = AGM-business outcome (AGM notice + annual report). H1 results 2023-11-03T16:16 post-close -> 20231106."
+ },
+ "QLL|20250630": {
+  "verdict": "BAD",
+  "true_dt": "2025-11-12T19:34",
+  "gated": 20251113,
+  "note": "stored 20250910 = outcome + share allotment. H1 results 2025-11-12T19:34 post-close -> 20251113."
+ },
+ "PRIMEFRESH|20231231": {
+  "verdict": "BAD",
+  "true_dt": "2024-05-16T17:12",
+  "gated": 20240517,
+  "note": "stored 20240314 = outcome + CSR committee + business update. No Dec-2023 filing; H2/FY results 2024-05-16T17:12 post-close -> 20240517."
+ },
+ "SPICEJET|20250331": {
+  "verdict": "BAD",
+  "true_dt": "2025-09-05T16:47",
+  "gated": 20250908,
+  "note": "stored 20250614 = auditor-change/restructuring outcome. PDF: Sep-5-2025 Q1FY26 filing carries the Mar-2025 quarter figures (preceding-quarter column, LR note references them); 16:47 post-close Fri -> Mon 20250908."
+ },
+ "COSMICCRF|20251231": {
+  "verdict": "BAD",
+  "true_dt": "2026-05-25T21:36",
+  "gated": 20260526,
+  "note": "stored 20260326 = BM outcome 12:02. H2/FY results 2026-05-25T21:36 post-close -> 20260526."
+ },
+ "SPICEJET|20220331": {
+  "verdict": "BAD",
+  "true_dt": "2022-08-31T18:48",
+  "gated": 20220901,
+  "note": "stored 20220527 = delay notice 17:27 + board meeting CANCELLED 18:28. Q4+FY22 results outcome 2022-08-31T18:48 post-close -> 20220901."
+ },
+ "ARSHIYA|20250331": {
+  "verdict": "BAD",
+  "true_dt": "2026-05-19T19:33",
+  "gated": 20260520,
+  "note": "stored 20250530 = delay notice. CIRP backlog: FY-Mar-2025 results filed 2026-05-19T19:33 (with Jun/Sep/Dec-2024 same evening) post-close -> 20260520. ~1yr look-ahead healed."
+ },
+ "VEDL|20200630": {
+  "verdict": "BAD",
+  "true_dt": "2020-10-03T21:20",
+  "gated": 20201005,
+  "note": "stored 20200914 = the DELAY notice 23:44. Sep-28 intimation 'Approving Financial Results For The First Quarter Ended June 30, 2020' -> results outcome Sat 2020-10-03T21:20 -> Mon 20201005."
+ },
+ "DOLFIN|20211231": {
+  "verdict": "BAD",
+  "true_dt": "2022-05-28T15:45",
+  "gated": 20220530,
+  "note": "stored 20220328 = outcome + postal ballot + BONUS ISSUE. No Dec-2021 filing; H2/FY results Sat 2022-05-28T15:45 -> Mon 20220530."
+ },
+ "VGIL|20240630": {
+  "verdict": "BAD",
+  "true_dt": "2024-10-24T17:33",
+  "gated": 20241025,
+  "note": "stored 20240926 = outcome + CS appointment. H1 results 2024-10-24T17:33 post-close -> 20241025."
+ },
+ "JMFINANCIL|20151231": {
+  "verdict": "BAD",
+  "true_dt": "2016-02-03T16:34",
+  "gated": 20160204,
+  "note": "stored 20160330 = BM outcome 08:20 - WRONG-LATE + wrong event: true Dec-2015 results = 'Financial Results with Results Press Release... for Dec 31, 2015' 2016-02-03T16:34 post-close -> 20160204."
+ },
+ "M&MFIN|20170630": {
+  "verdict": "BAD",
+  "true_dt": "2017-07-24T15:36",
+  "gated": 20170725,
+  "note": "stored 20171006 = BM outcome - WRONG-LATE + wrong event: true Jun-2017 results = Result|LR 2017-07-24T15:36 (post-15:30) -> 20170725."
+ },
+ "PRIMEFRESH|20241231": {
+  "verdict": "BAD",
+  "true_dt": "2025-05-17T18:54",
+  "gated": 20250519,
+  "note": "stored 20250409 = outcome + SME-migration + preferential issue. No Dec-2024 filing; H2/FY results Sat 2025-05-17T18:54 -> Mon 20250519."
+ },
+ "BEEZAASAN|20250630": {
+  "verdict": "BAD",
+  "true_dt": "2025-11-13T17:46",
+  "gated": 20251114,
+  "note": "stored 20251013 = post-AGM outcome 19:34. H1 results 2025-11-13T17:46 post-close -> 20251114."
+ },
+ "SPICEJET|20240331": {
+  "verdict": "OK-eye",
+  "note": "PDF: Jul-15-2024 outcome approved Q3 Dec-2023 unaudited AND Q4+FY-Mar-2024 audited results. Stored 20240715 correct day (19:19 post-close raw convention)."
+ },
+ "ACHYUT|20241231": {
+  "verdict": "BAD",
+  "true_dt": "2025-05-29T16:49",
+  "gated": 20250530,
+  "note": "stored 20250417 = 1st-meeting-of-FY outcome + mgmt change. No Dec-2024 filing; H2/FY results 2025-05-29T16:49 post-close -> 20250530."
+ },
+ "MPKSTEELS|20250630": {
+  "verdict": "BAD",
+  "true_dt": "2025-11-14T16:34",
+  "gated": 20251117,
+  "note": "stored 20251015 = admin outcome (Reg 74(5) cert, CS appointment). H1 results 2025-11-14T16:34 Fri post-close -> Mon 20251117."
+ },
+ "EXHICON|20251231": {
+  "verdict": "BAD",
+  "true_dt": "2026-05-18T13:28",
+  "gated": 20260518,
+  "note": "stored 20260420 = BM outcome. H2/FY results 2026-05-18T13:28 pre-close."
+ },
+ "KDML|20180630": {
+  "verdict": "BAD",
+  "true_dt": "2018-11-02T11:04",
+  "gated": 20181102,
+  "note": "stored 20181020 = Sat BM outcome. Half-yearly filer: H1 results outcome (Result cat) 2018-11-02T11:04 pre-close; Nov-6 doc states Sep-30 period."
+ },
+ "FABCLEAN|20241231": {
+  "verdict": "BAD",
+  "true_dt": "2025-05-26T20:02",
+  "gated": 20250527,
+  "note": "stored 20250505 = outcome + acquisition + dividend updates. H2/FY results 2025-05-26T20:02 post-close -> 20250527."
+ },
+ "ITCONS|20231231": {
+  "verdict": "BAD",
+  "true_dt": "2024-05-30T16:33",
+  "gated": 20240531,
+  "note": "stored 20240508 = ADJOURNMENT of board meeting. H2/FY results 2024-05-30T16:33 post-close -> 20240531."
+ },
+ "AMIC|20251231": {
+  "verdict": "BAD",
+  "true_dt": "2026-05-30T21:52",
+  "gated": 20260601,
+  "note": "stored 20260511 = outcome + issue-of-securities/fundraise. H2/FY 'Audited Financial Result' Sat 2026-05-30T21:52 -> Mon 20260601."
+ },
+ "ECORECO|20231231": {
+  "verdict": "BAD",
+  "true_dt": "2024-02-12T13:41",
+  "gated": 20240212,
+  "note": "stored 20240514 = the MAR-2024 Q4 results day (wrong quarter, wrong-late). Dec-2023 results = Feb-12 outcome + earnings release (target-stated) 2024-02-12T13:41 pre-close."
+ },
+ "PJL|20240630": {
+  "verdict": "BAD",
+  "true_dt": "2024-11-14T00:04",
+  "gated": 20241114,
+  "note": "stored 20241113 = board-meeting day; H1 results uploaded 2024-11-14T00:04 - numbers first public Nov-14. 1d look-ahead healed."
+ },
+ "NSL|20181231": {
+  "verdict": "BAD",
+  "true_dt": "2019-05-30T14:46",
+  "gated": 20190530,
+  "note": "PDF: May-24 meeting = auditor/CS appointments + BTA addendum. May-30 meeting approved un-audited FY-Mar-2019 results (first covering filing for Dec-2018) 14:46 pre-close."
+ },
+ "TITAGARH|20200331": {
+  "verdict": "BAD",
+  "true_dt": "2020-10-08T18:53",
+  "gated": 20201009,
+  "note": "stored 20200727 = delay notice 22:53. FY-Mar-2020 results 'Results-Financial Results 31.03.2020' 2020-10-08T18:53 post-close -> 20201009 (Oct-14 = Jun-qtr follows)."
+ },
+ "ATLASCYCLE|20200331": {
+  "verdict": "BAD",
+  "true_dt": "2021-09-12T21:34",
+  "gated": 20210913,
+  "note": "stored 20200801 = delay notice. FY-Mar-2020 results filed Sun 2021-09-12T21:34 -> Mon 20210913 (13.5-month look-ahead healed)."
+ },
+ "GAYAPROJ|20230331": {
+  "verdict": "BAD",
+  "true_dt": "2025-11-04T20:21",
+  "gated": 20251105,
+  "note": "stored 20230714 = delay notice (CIRP). PDF: Nov-4-2025 filing = AUDITED FY-Mar-2023 results (quarter+year) approved under resolution; 20:21 post-close -> 20251105. 2.3yr look-ahead healed."
+ },
+ "KIRLOSIND|20191231": {
+  "verdict": "OK-eye",
+  "note": "FULL window: Jan-30 15:00 Result-cat NRC+Board outcome = Q3 results (pre-close). Stored 20200130 correct."
+ },
+ "BASANTGL|20240630": {
+  "verdict": "OK-eye",
+  "note": "PDF: Jul-29 outcome = un-audited Jun-2024 results + LR + AGM matters. Stored 20240729 correct day."
+ }
+}
