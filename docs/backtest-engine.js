@@ -734,7 +734,11 @@ async function loadShp() {
   for (const old in FUND_ALIAS) {
     if (!SHPD[old]) continue;
     const nw = FUND_ALIAS[old], by = {};
-    (SHPD[nw] || []).concat(SHPD[old]).forEach(q => { if (!by[q[0]] || q[3] > by[q[0]][3]) by[q[0]] = q; });
+    // A DATED row always beats an UN-DATED one (sub 99999999 = no evidenced visibility date;
+    // a plain `q[3] > cur[3]` would let the sentinel win the collision and blind the cell).
+    (SHPD[nw] || []).concat(SHPD[old]).forEach(q => { const cur = by[q[0]]; if (!cur) { by[q[0]] = q; return; }
+      const qU = q[3] === 99999999, cU = cur[3] === 99999999;
+      if ((cU && !qU) || (qU === cU && q[3] > cur[3])) by[q[0]] = q; });
     SHPD[nw] = Object.values(by).sort((a, b) => a[0] - b[0]);
   }
 }
@@ -742,11 +746,13 @@ function prevQeInt(qe) { let y = Math.floor(qe / 10000), m = Math.floor(qe / 100
 // A row dated anything other than a March/June/September/December quarter end is an EVENT-driven
 // SHP (capital change / SAST) merged in by §22k — same shape, but no calendar-previous quarter.
 function isQuarterEnd(d) { return ({ 3: 31, 6: 30, 9: 30, 12: 31 }[Math.floor(d / 100) % 100] || 0) === d % 100; }
-// ⚠️ PRE-2016 sub dates are a CONVENTION, not measurements: every pre-2016 row carries
-// sub = quarter-end + 21 days exactly (25,867/25,867 measured 2026-08-23) — the era's
-// Clause-35/LODR filing DEADLINE, i.e. the latest a compliant filing could have gone
-// public. A recovery campaign for the real dates is in flight (PLAN_SHP_DATES.md /
-// runbook §105); the convention stands per cell only until a measured date replaces it.
+// ⚠️ UN-DATED PRE-JUN-2016 ROWS (SW-1, 2026-08-30): a pre-Jun-2016 row with no MEASURED
+// visibility date is served with sub = 99999999 by build_engine_feed (fetch_shareholding.py)
+// — the old qe+21d convention was the filing DEADLINE, not a measurement, so such a row can
+// never satisfy `sub <= screenDate` and is invisible to point-in-time screens BY DESIGN
+// (a DII/FII-sorted backtest holds nothing in months where no dated filing exists; real
+// dates exist from Jan-2014 via BSE's announcement stream and from Mar-2016 via SHPQNewFormat
+// — see shp_sub_dates.json + PLAN_SHP_DATES.md / runbook §105). Values stay in the row.
 function shpAt(sym, dateInt) {
   const arr = SHPD[sym] || (FUND_ALIAS[sym] ? SHPD[FUND_ALIAS[sym]] : null); if (!arr || !arr.length) return null;
   let ci = -1; for (let i = arr.length - 1; i >= 0; i--) { if (arr[i][3] <= dateInt) { ci = i; break; } }

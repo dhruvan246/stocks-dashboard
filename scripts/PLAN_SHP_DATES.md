@@ -211,3 +211,24 @@ contrast the membership + TTM fixes, which moved 52 baskets and cut maxDD 4.2pp.
 **Residue, stated:** pre-2016 (25,867 cells) keeps the qe+21d convention with the earned negative
 verdict (§105) and the 0e calibration (median real lag 17d, 96% within the deadline); the 1,659
 ambiguous BSE-later cells; 350 symbols never fetched (no post-2016 non-convention cells).
+
+---
+
+## ANN-STREAM ADDENDUM — P0's announcement verdict was SCOPE-WRONG; 4,924 pre-2016 dates recovered (2026-08-30, quantmac r5 SW-1)
+
+P0 probed the announcements stream on 2006/2009/2012 windows only and wrote "SHP filings did
+not ride the announcements stream" as an era-wide negative. Re-probed with 2014-2016 windows
+(quantmac's counter-claim): **from the March-2014 quarter, `AnnSubCategoryGetData` serves
+"Company Update / Shareholding" rows with NEWS_DT to the second** (6/6 hits on 2014-15 probes,
+0/2 on 2012-13 controls; JSWSTEEL Jun-2016 NEWS_DT == SHPQNewFormat filing_date_time to the
+SECOND). A negative verdict is only as wide as the windows it measured.
+
+`fetch_ann_2014.py` (this dir): 5,535 target cells (Dec-2013..Mar-2016), **4,924 dated (89%)**
+— merged 4,204 re-dates + 341 convention-confirms into `shp_sub_dates.json` (src `ann-stream`),
+patched via patch_history.py (4,225 sub slots; cell_fix lockstep 18; WARNs 65→83→65, zero
+regression). Lag: p50 16d, p90 23d, max 83d; **14.8% filed after the 21d deadline** (the era's
+real look-ahead, now removed — vs 4.0% post-2016). Refusals tracked in `ann2014_refusals.json`
+(597 no-shp-row incl. 530/533 at Dec-2013 = the stream's start boundary).
+
+**And the convention is no longer served at all** — build_engine_feed now emits sub=99999999
+for unevidenced pre-Jun-2016 rows (PIT-invisible; engines e10). See runbook §105 addendum + §117.

@@ -668,7 +668,7 @@ function isAlreadySaved(cfg){
 // every key changes → the old snapshot is no longer found → the next view recomputes with the CURRENT
 // code + data and re-caches. Without this stamp a changed engine or a refreshed dataset would keep
 // serving a stale pre-computed result forever.
-const ENGINE_VER='e9';        // ⬆️ BUMP this whenever simulate()/engine logic changes → invalidates all snapshots  (e9 2026-08-27: dead-con guard — profitAt/profitMetrics skip a con series >12 months staler than std, BANDHANBNK class; e8 2026-08-23: foldFundAliases — old-key fundamentals folded under the merged key, §105)
+const ENGINE_VER='e10';       // ⬆️ BUMP this whenever simulate()/engine logic changes → invalidates all snapshots  (e10 2026-08-30: SW-1 un-dated pre-Jun-2016 SHP rows — feed serves sub=99999999 for unevidenced visibility dates, alias-merge prefers dated rows; DII/FII strategies hold nothing before ~Feb-2014 by design; e9 2026-08-27: dead-con guard — profitAt/profitMetrics skip a con series >12 months staler than std, BANDHANBNK class; e8 2026-08-23: foldFundAliases — old-key fundamentals folded under the merged key, §105)
                               // e7 (2026-08-20): TTM contiguity check strengthened to pairwise
                               // gaps (each of 4 quarters exactly 3mo apart) — the e6 endpoint-only
                               // check let a duplicate qe row through uncaught (APOLLOTYRE/
@@ -730,7 +730,10 @@ async function loadShp(){
   for(const old in FUND_ALIAS){
     if(!SHPD[old]) continue;
     const nw=FUND_ALIAS[old], by={};
-    (SHPD[nw]||[]).concat(SHPD[old]).forEach(q=>{ if(!by[q[0]]||q[3]>by[q[0]][3]) by[q[0]]=q; });
+    // A DATED row always beats an UN-DATED one (sub 99999999 = no evidenced visibility date). (Sync: backtest-engine.js)
+    (SHPD[nw]||[]).concat(SHPD[old]).forEach(q=>{ const cur=by[q[0]]; if(!cur){ by[q[0]]=q; return; }
+      const qU=q[3]===99999999, cU=cur[3]===99999999;
+      if((cU&&!qU)||(qU===cU&&q[3]>cur[3])) by[q[0]]=q; });
     SHPD[nw]=Object.values(by).sort((a,b)=>a[0]-b[0]);
   }
 }
@@ -970,7 +973,7 @@ function needsShp(cfg){ return SHP_FIELDS.has(cfg.sortBy) || (cfg.filters||[]).s
 function prevQeInt(qe){ let y=Math.floor(qe/10000), m=Math.floor(qe/100)%100-3; if(m<=0){y--;m+=12;} return y*10000+m*100+{3:31,6:30,9:30,12:31}[m]; }
 // Any row not dated a Mar/Jun/Sep/Dec quarter end is an EVENT-driven SHP merged in by §22k.
 function isQuarterEnd(d){ return ({3:31,6:30,9:30,12:31}[Math.floor(d/100)%100]||0)===d%100; }
-// ⚠️ PRE-2016 sub dates are a CONVENTION (qe+21d = the Clause-35/LODR filing deadline), recovery campaign in flight (PLAN_SHP_DATES.md / runbook §105). (Sync: backtest-engine.js)
+// ⚠️ UN-DATED PRE-JUN-2016 ROWS (SW-1 2026-08-30): rows with no MEASURED visibility date are served sub=99999999 (feed-side) — PIT-invisible by design; real dates recovered from Jan-2014 via the BSE announcement stream (shp_sub_dates.json, runbook §105). (Sync: backtest-engine.js)
 function shpAt(sym, dateInt){
   const arr=SHPD[sym] || (FUND_ALIAS[sym] ? SHPD[FUND_ALIAS[sym]] : null); if(!arr||!arr.length) return null;
   let ci=-1; for(let i=arr.length-1;i>=0;i--){ if(arr[i][3]<=dateInt){ ci=i; break; } }
@@ -1437,6 +1440,28 @@ function renderTradePage(p){
     `<span class="text-slate-400 ml-2 w-full sm:w-auto text-center">${tr.length} trades · showing ${a+1}–${b} (page ${TRADE_PAGE+1}/${np})</span>`;
   pg.querySelectorAll('.tpBtn').forEach(el=>{ if(!el.disabled) el.onclick=()=>renderTradePage(+el.dataset.pg); });
 }
+// ---- shared CSV metadata preamble (SW-3/4/5, cross-platform reconciliation r5 2026-08-30) ----
+// Stated conventions so a cross-platform diff compares like with like: headline stats incl.
+// max drawdown, the Sharpe with its risk-free rate IN THE NAME, the final-period semantics,
+// and the exact accel/RSI formulas (published per quantmac SW-3/SW-4 — definitions, no change).
+function csvMetaRows(r){
+  const rets=[]; for(let i=1;i<(r.equity||[]).length;i++){ const a=r.equity[i-1][1], b=r.equity[i][1]; if(a>0) rets.push(b/a-1); }
+  const mean=rets.reduce((x,y)=>x+y,0)/(rets.length||1);
+  const sd=rets.length>1?Math.sqrt(rets.reduce((x,y)=>x+(y-mean)**2,0)/(rets.length-1)):0;
+  const ppy=(r.years>0&&rets.length)?rets.length/r.years:12;   // periods per year, measured
+  const sharpe=sd>0?(mean*ppy)/(sd*Math.sqrt(ppy)):null;
+  return [
+    ['# metric','value','note'],
+    ['# cagr_pct',r.cagr!=null?r.cagr.toFixed(2):'','geometric, simulated period '+(r.effStart||'')+'..'+(r.cfg&&r.cfg.end||'')],
+    ['# max_drawdown_pct',r.maxDD!=null?r.maxDD.toFixed(2):'','peak-to-trough of the rebalance-date equity curve'],
+    ['# sharpe_rf0',sharpe!=null?sharpe.toFixed(3):'','mean(period return) x p/yr over stdev x sqrt(p/yr); risk-free rate = 0 (stated); p/yr measured = '+ppy.toFixed(1)],
+    ['# final_period','open','the last rebalance opens positions with no exit (live current picks, marked to the end date, never liquidated)'],
+    ['# date_labels','calendar month-end','rebalances labelled at calendar month-end, priced at the last trading day at or before it; join cross-platform comparisons on month'],
+    ['# accel_definition','ret30cd minus prior ret30cd','30-CALENDAR-day close-over-close return ending at the screen date D, minus the same ending at D-30; each endpoint uses the last trading close at or before it; corporate-action-adjusted closes, ordinary dividends not reinvested'],
+    ['# rsi_definition','Wilder RSI(14) daily','14-period Wilder smoothing on daily corporate-action-adjusted closes, seeded with a simple 14-change average starting at most 100 bars back'],
+    ['#']
+  ];
+}
 // ---- download the full trade log as CSV ----
 function downloadTradeCsv(r,cfg){
   const q=v=>{ if(v==null) return ''; const s=String(v); return /[",\n]/.test(s)?'"'+s.replace(/"/g,'""')+'"':s; };
@@ -1444,7 +1469,7 @@ function downloadTradeCsv(r,cfg){
   const head=['#','Stock','Held','Entry Date','Entry Price','Exit Date','Exit Price','Return %',flabel,'RSI@entry'];
   const rows=r.trades.map((t,i)=>[i+1,t.sym,t.held?'HELD':'',t.entryDate,t.entryPrice,t.exitDate,t.exitPrice,
     t.retPct!=null?t.retPct.toFixed(2):'',t.factor!=null?t.factor:'',t.rsi!=null?t.rsi.toFixed(2):'']);
-  const csv=[head,...rows].map(row=>row.map(q).join(',')).join('\r\n');
+  const csv=[...csvMetaRows(r),head,...rows].map(row=>row.map(q).join(',')).join('\r\n');
   const blob=new Blob(['﻿'+csv],{type:'text/csv;charset=utf-8;'});
   const url=URL.createObjectURL(blob);
   const a=document.createElement('a');
@@ -1470,7 +1495,7 @@ function downloadRebalCsv(r,cfg){
     if(rb.cash>1) rows.push([...meta,'Cash',rb.cashWt!=null?rb.cashWt.toFixed(2):'',Math.round(rb.cash),
       ...r.dispCols.map(()=>''),'','']);
   });
-  const csv=[head,...rows].map(row=>row.map(q).join(',')).join('\r\n');
+  const csv=[...csvMetaRows(r),head,...rows].map(row=>row.map(q).join(',')).join('\r\n');
   const blob=new Blob(['﻿'+csv],{type:'text/csv;charset=utf-8;'});
   const url=URL.createObjectURL(blob);
   const a=document.createElement('a');

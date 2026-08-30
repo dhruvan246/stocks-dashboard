@@ -923,31 +923,72 @@ def build_feed():
           (os.path.normpath(OUT), len(rows), len(quarters), os.path.getsize(OUT) / 1e3))
     return True
 
+UNDATED_SUB = 99999999   # sentinel: value is real, its visibility date is NOT evidenced —
+                         # never satisfies `sub <= screenDate`, so PIT screens exclude the row.
+
+def _is_conv21(qi, sub):
+    """True when sub is exactly quarter-end + 21 calendar days (the placeholder signature)."""
+    try:
+        d0 = datetime.date(qi // 10000, (qi // 100) % 100, qi % 100)
+        d1 = datetime.date(sub // 10000, (sub // 100) % 100, sub % 100)
+    except ValueError:
+        return False
+    return (d1 - d0).days == 21
+
 def build_engine_feed():
     """docs/shp_engine.json — the backtest engines' point-in-time FII/DII series:
     {SYM: [[qeInt, fii, dii, subInt], ...] sorted by quarter}. ALL quarters (not the page's 8);
-    the engines gate on subInt <= rebalance date so there is no look-ahead."""
+    the engines gate on subInt <= rebalance date so there is no look-ahead.
+
+    ★ UN-DATED PRE-JUN-2016 ROWS (SW-1 quantmac round 5, 2026-08-30 — supersedes §105's
+    'keep + document' state): a row whose sub is only the qe+21d CONVENTION (the era's filing
+    DEADLINE, never a measurement) is served with sub = UNDATED_SUB so a point-in-time screen
+    can never select it. An unfalsifiable date is a look-ahead in exactly the tail cases —
+    late filers (PAISALO Dec-2015 really filed 2016-03-17, 77 days after quarter end). The
+    VALUES stay in the row; only the claim 'public by date X' is withdrawn.
+    Evidence test per cell — a pre-Jun-2016 row keeps a real sub iff:
+      (a) its stored sub is NOT the convention (Mar-2016 SHPQNewFormat-era filing dates), or
+      (b) scripts/shp_sub_dates.json holds a measured date for SYM|qe — the P2-P4 SHPQNewFormat
+          entries plus the 2014-16 BSE announcement-stream recovery (src 'ann-stream';
+          the stream carries SHP filings from Jan-2014 ONLY — 2013 and earlier measured empty
+          on every route, PLAN_SHP_DATES.md / runbook §105)."""
     hist = load_hist()
     events = load_events()
     out = {}
-    def rows_of(qs):
+    try:
+        led_keys = {k for k in json.load(open(os.path.join(HERE, "shp_sub_dates.json"),
+                                              encoding="utf-8")) if not k.startswith("_")}
+    except Exception as e:
+        led_keys = set()
+        print("WARN shp_sub_dates.json unreadable (%s) — every convention-dated pre-2016 row "
+              "will be served UN-DATED (conservative direction)" % e)
+    n_undated = [0]
+    def rows_of(qs, sym):
         rows = []
         for qe, c in (qs or {}).items():
             try:
-                rows.append([int(qe.replace("-", "")), c[1], c[2], int(str(c[5]).replace("-", ""))])
+                qi = int(qe.replace("-", ""))
+                sub = int(str(c[5]).replace("-", ""))
+                if (qi <= 20160331 and _is_conv21(qi, sub)
+                        and "%s|%d" % (sym, qi) not in led_keys):
+                    sub = UNDATED_SUB
+                    n_undated[0] += 1
+                rows.append([qi, c[1], c[2], sub])
             except (ValueError, TypeError, IndexError):
                 continue
         return rows
     for sym in set(hist) | set(events):
         if sym.startswith("_"): continue
         qs = hist.get(sym)
-        rows = rows_of(qs if isinstance(qs, dict) else None)
+        rows = rows_of(qs if isinstance(qs, dict) else None, sym)
         # EVENT rows carry an AS-ON date in the same slot as a quarter end, so they sort into the
         # series by date and the engines' "latest row whose sub <= screen date" picks them up with
         # no engine change. A quarter-end row wins a same-date collision (it is the fuller filing).
         seen = {r[0] for r in rows}
-        rows += [r for r in rows_of(events.get(sym)) if r[0] not in seen]
+        rows += [r for r in rows_of(events.get(sym), sym) if r[0] not in seen]
         if rows: out[sym] = sorted(rows)
+    print("  engine feed: %d pre-Jun-2016 rows served UN-DATED (no evidenced visibility date)"
+          % n_undated[0])
     n_ev = sum(len(v) for v in events.values())
     if n_ev: print("  engine feed: merged %d event rows from %d symbols" % (n_ev, len(events)))
     ep = os.path.join(HERE, "..", "docs", "shp_engine.json")

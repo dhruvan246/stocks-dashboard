@@ -11225,6 +11225,24 @@ KNOWN, DOCUMENTED assumption — never present pre-2016 SHP visibility as measur
 the 0e calibration: over 748 real post-2016 filings the median lag is 17d and only 4.0% exceed the
 21-day deadline, so the convention is empirically sound and deadline-anchored (conservative).
 
+**★ 2026-08-30 SUPERSEDED IN TWO WAYS (quantmac round 5 SW-1 — see §117 / PLAN_QUANTMAC_FIXES §O):**
+1. **The announcement-stream negative was SCOPE-WRONG.** P0's "SHP never rode the announcements
+   stream" was measured only on 2006/2009/2012 windows. Re-probed 2026-08-30: from **January
+   2014** BSE's `AnnSubCategoryGetData` serves "Company Update / Shareholding" rows with NEWS_DT
+   to the second (6/6 hits on 2014-15 probes, 0/2 on 2012-13 controls; JSWSTEEL Jun-2016 NEWS_DT
+   == SHPQNewFormat filing_date_time TO THE SECOND). `_shp_dates/fetch_ann_2014.py` recovered
+   real dates for the Dec-2013..Mar-2016 quarters into `shp_sub_dates.json` (src `ann-stream`),
+   incl. genuine late filers the convention was hiding (PAISALO Dec-2015 filed 2016-03-17, 77d).
+2. **The convention is no longer SERVED — un-dating shipped (user-approved policy change):**
+   `build_engine_feed()` emits `sub = 99999999` (UNDATED_SUB) for any pre-Jun-2016 row whose
+   visibility date is unevidenced (stored sub == qe+21d AND no `shp_sub_dates.json` entry) —
+   such a row can never pass the engines' `sub <= screenDate` gate, so point-in-time DII/FII
+   screens EXCLUDE it by design (they hold nothing in months with no dated filing — before
+   ~Feb-2014 that is every month). Values stay in the rows; only the unfalsifiable "public by
+   X" claim is withdrawn. Engines e10 / sw v124; the alias-merge in loadShp prefers a dated row
+   over the sentinel. 2013-09-30-and-earlier remains a full-ladder negative (no route ever
+   measured a date there) — un-dated permanently unless a new route appears.
+
 ## 106. ★★★ THE ISIN-SEAM QUEUE LANDED — 31 old tapes stitched, era-aware membership for the 71 that cannot be, 12 missing sessions restored  (2026-08-23)
 **NO ASSUMPTIONS, NO GUESSWORK** — every number here was measured on the LIVE bins (fetch_live_sf.py
 into `~/stocks-wt/seams`) and re-verified against Yahoo/NSE before anything was written.
@@ -13058,3 +13076,49 @@ across 11 symbols · 4 anomalies logged (ADANIPORTS ×3 JV-omission + WOCKPHARMA
 the pre-2016 scanned tail are UNREAD (bounded scope).** The honest headline: the pre-2018 owners-vs-total
 defect is rare and sparse; the material tier is already-correct. Sibling memory:
 `project-stocks-owners-vs-total-uncovered-symbols`.
+
+## 117. ★★★ QUANTMAC ROUND 5 (DII strategy) — un-dated pre-2016 SHP visibility SHIPPED, the Any-Other-institutions DII inflation class, and the published formula specs  (2026-08-30)
+
+Findings report: quantmac r5 2026-08-29 (SW-1..SW-5). Detailed record: PLAN_QUANTMAC_FIXES.md §O.
+Every verdict below traces to a primary document or code read this session.
+
+**SW-1 (visibility dates) — CONFIRMED + FIXED.** See the 2026-08-30 addendum in §105: the
+qe+21d convention is no longer served; unevidenced pre-Jun-2016 rows go out with sub=99999999
+(PIT-invisible), and real dates for Dec-2013..Mar-2016 were recovered from BSE's announcement
+stream (`_shp_dates/fetch_ann_2014.py` → `shp_sub_dates.json` src `ann-stream` →
+`_shp_dates/patch_history.py`). ⚠️ The P0 probe's "stream is weak" verdict was scope-wrong (it
+never probed 2014+): a negative verdict is only as wide as the windows it measured — re-check
+era boundaries before reusing an old negative.
+
+**SW-2 (DII cells disagree with filings) — CONFIRMED, class root-caused, swept.** The §22i
+swallowed-foreign-block's dii-side sibling: in the Jun-2016..Jun-2022 format the institutions
+block's "Any Other (specify)" row (`OtherInstitutionsMember`) is routed into dii by
+`OLD_OTHER_TO_DII=True` — correct for domestic blocks, WRONG when the row holds a foreign
+strategic holder. Adjudicated against BSE's own filed XBRLs (typed-member NameOfTheShareholder):
+JSWSTEEL Jun-2016 dii 17.00 stored vs 1.99 filed domestic (JFE STEEL INTERNATIONAL EUROPE B V
+15.00 in Any-Other); PETRONET Jun-2016 16.48 vs 6.48 (GDF at exactly 10.00); JUBLPHARMA Dec-2015
+15.23 vs 0.11 (aspx page; 15.12 Any-Other, trendlyne-derived fill had summed it in); JSWSTEEL
+Dec-2015 fii 31.99 = the same block swept into FII by the seam inversion. Sweep tool:
+`_shp_other_inst_sweep.py` (targets/fetch/adjudicate/apply; raw XBRLs cached; census local;
+verdicts in `_shp_other_inst_audit.json`; heals via `shp_cell_fix.json` — foreign block moves
+dii→fii, domestic-only dii recomputed at 4dp from the filing's share counts). A name-classifier
+only PROPOSES; the curated name_verdicts map decides; ambiguity HOLDs.
+
+**SW-3/SW-4 (formula specs) — DOCUMENTED, no formula change.** Now published in every backtest
+CSV export (`csvMetaRows()` in stock-backtest.html):
+* accel ("Momentum acceleration %") = ret30cd(D) − ret30cd(D−30): 30-CALENDAR-day close-over-
+  close returns; each endpoint = last trading close at or before it; CA-adjusted closes,
+  ordinary dividends not reinvested. (computeTech: `retPctAt(off,30) − retPctAt(off−30,30)`.)
+* RSI = Wilder RSI(14) on daily CA-adjusted closes, seeded with a simple 14-change average
+  starting ≤100 bars back (rsi14()). NB their 98.8% disagreement is formula-environment (seed
+  window + price basis), era-flat, display-only in the DII run.
+
+**SW-5 (export comparability) — DONE (export-only; engine rebalance semantics untouched):**
+the CSV preamble states cagr, max_drawdown_pct, sharpe_rf0 (rf=0 IN THE NAME, formula stated,
+periods/yr measured), final_period=open (our last rebalance is the live current-picks basket,
+never liquidated), date_labels=calendar month-end.
+
+**YoY loss-base status (their ledger question) — LONG FIXED.** Both engine twins compute every
+growth as (cur−base)/|base|×100 — point YoY, accel's yoyOf, TTM (backtest-engine.js:604/642/664,
+stock-backtest.html:1031/1055/1070) — landed 2026-06-14 commit b48e30a19. A shrinking loss
+prints POSITIVE by convention (flagged, deliberate — §N3).
