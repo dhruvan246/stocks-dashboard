@@ -13478,9 +13478,14 @@ first corroborated results filing (guards §119d), median lead healed ~20-40d; i
 `bse:*:exact` ledger entries REVERTED** (both CRISILs, BHEL Jun-2018, FEDERALBNK, HINDPETRO,
 LICHSGFIN COVID-notice, J&KBANK...; pre-sweep `was` corroborates the target on every entry
 that has one — the was(NSE-late) > target(real) > ledger(notice) ordering holds throughout).
-4 kept (genuine other-category filings), 18 ambiguous LEFT + logged in
-`annidx/out/exact_round2.json` (CGPOWER's three fraud-year quarters among them — result-ish
-rows sit between the ledger date and the corroborated filing; needs a per-filing read).
+4 kept (genuine other-category filings), 18 initially ambiguous. Of those: the CGPOWER trio
+was PDF-verified + healed by the seq-audit session (820f0f896 — the delay notices' own dates;
+the pre-sweep `was` values WERE the truth), and 10 more healed in round 3 (7e9bc681c) on the
+**CGPOWER-shape standard**: ledger date == a delay/extension/intimation row's own date, zero
+corroborated results rows there, AND the entry's own pre-sweep NSE `was` lands on the
+Result-category filing (two independent sources agree). 5 remain LEFT + logged in
+`annidx/out/exact_round2.json` (AKCAPIT/CUPIDALBV/ONIDA/SURYALA have no `was` to corroborate;
+HSCL|20220331's was is a year off — each needs its filing read).
 434 of 746 wrong-early candidates refused by guards and left alone.
 
 ### 119f. Spot-check: the heals move real backtests
