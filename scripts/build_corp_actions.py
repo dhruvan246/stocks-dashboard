@@ -79,7 +79,11 @@ def official_factor(subj):
     # multiply these in (2026-08-11 campaign; previously only the numeric gate excluded them).
     # "Sch Of Agmt- Bonus Deb1:1" (BRITANNIA 2010-03-08, ASTRAZEN 2008-01-04) is a bonus DEBENTURE
     # issue, not an equity bonus — the tape's open proves no basis change (open-gap 1.84-1.92).
-    if re.search(r"\bncrps\b|\bdvr\b|preference|debenture|\bdeb\s*\d+\s*:", s):
+    # ncd/ccps added 2026-08-30 (StockView R5 F-07 hardening): zero live instances today
+    # (42,612 feed rows swept, 14 class-bonus rows — all ncrps/dvr/debenture/preference,
+    # every one factor-free in our store), but a future "Bonus NCD 1:1" / CCPS bonus must
+    # be excluded by the same class rule, not by luck.
+    if re.search(r"\bncrps\b|\bdvr\b|preference|debenture|\bdeb\s*\d+\s*:|\bncd\b|ccps", s):
         return (None, None)
     factor = 1.0; parts = []
     # A single NSE subject can carry a bonus AND a split together ("Bonus 1:1/Face Value Split - From
