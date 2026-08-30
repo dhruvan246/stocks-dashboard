@@ -11149,6 +11149,39 @@ class 2 — FY-identity sweep results + XBRL adjudication tooling in `scripts/_p
 scratch `sweep_c2_verify.py`; fixes ONLY what the filer's own per-quarter XBRL contradicts,
 restatements are logged and left alone.
 
+**§104b — the "exact" ledger kind + the WRONG-EARLY (look-ahead) classes (2026-08-30, StockWorld
+parity 0829, commit 28ba981ed).** The override kind can only move a date EARLIER, so it cannot
+express the opposite defect — a stored ann that PRECEDES the true first-public filing (a
+look-ahead). `ann_date_fills.json` entries may now carry `"exact": true`: a hand-adjudicated
+PIT-EFFECTIVE date (gated per §12 — write the date the engine should compare, no +4d buffer),
+asserted in BOTH directions by `apply_ledger`. Reviewed entries only; each carries the BSE
+announcement timestamp in `src`. Three wrong-early classes found, all verified against the BSE
+archive row-by-row (never trust the resolver's label):
+  1. **A batch "seq" override matched the WRONG board meeting.** SUZLON Mar-2020: tier-2
+     `bse:sweep2:seq` re-dated the previously-CORRECT 20200707 to 20200418 — the Apr-18 filing
+     was the debt-restructuring board outcome, not results (results: Jul-6 22:23). The seq rule
+     accepts an unstated-period filing inside a window; a non-results "Outcome of Board Meeting"
+     inside that window poisons it. 599 seq-sourced entries exist (280 sweep2 / 53 sweep1 /
+     266 fill-era) — one proven bad; class un-audited.
+  2. **Board-meeting INTIMATION stamped as the result date.** TASTYBITE Mar-2021 (stored 20210405
+     = gated Apr-3 intimation; results May-15) and NMDC Jun-2019 (stored 20190724 = intimation
+     day; results Aug-13). Both predate the ledger — an older backfill writer did it.
+  3. **A 1-day-late stored date the override buffer refuses to fix.** ESCORTS Sep-2021 filed
+     Fri Oct-29 14:22 (PRE-close) but stored 20211030 — hid the quarter from that same Friday's
+     month-end rebalance. Inside the ±4d gate buffer, so only an `exact` entry can heal it.
+**The historical blind spot that let the stale-quarter class recur:** the tier-1/2 sweeps only
+CANDIDATED cells whose stored ann was very late vs qe (Q1-3 >72d, Q4 >150d), and the nightly
+`--recent 220` covers only fresh quarters — so ordinary 1–70d NSE-broadcast lags on TIMELY
+filings (ZFCVINDIA Sep-21 13d, ICICIGI Jun-23 23d, KPRMILL Sep-20 8d, GILLETTE Mar-25 22d,
+SRF Sep-22 5d — every one under the 72d bar) were never screened for 2015–2025. ~170k dated
+(np,ann) cells share that exposure; a close-out = the §104 reconciler walked over the backlog
+(~120 cells/night pace, or a bounded batch in a worktree). Engine visibility itself is clean:
+`profitAt`/`profitMetrics` gate purely on stored ann ints (backtest-engine.js:595/639 + the
+stock-backtest.html twin); the surviving DERIVED-date writers are `fill_ann_dates.py:34`
+(null ann -> SEBI deadline qe+45/60d, conservative-late) and
+`agg_tools/apply_agg_pat_fills.py` (`ann = max(qe+45d, first bar)`, §99 — 20,818 pre-2015
+cells sit at exactly qe+45d by convention).
+
 ## 105. ★★ PRE-2016 SHP VISIBILITY = qe+21d CONVENTION — policy RESCINDED same day; recovery campaign in flight (2026-08-23)
 
 **The fact, measured to completeness:** every pre-2016 row in `docs/shp_engine.json` — **25,867 of
