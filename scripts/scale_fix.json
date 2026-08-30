@@ -741,6 +741,28 @@
    },
    "was_fund": 5.04,
    "fixed_fund": 503.79
+  },
+  {
+   "sym": "SRF",
+   "qe": "20220930",
+   "basis": "std",
+   "k": -2,
+   "file": "INDAS_845678_4722_08112022130534_WEB_xml",
+   "why": "Filer-side /100 (first NEGATIVE-k entry): every monetary tag in the std XBRL is 1/100 of its rupee value — ProfitLossForPeriod OneD 43,915,000 vs the filing PDF's 439.15cr; RevenueFromOperations 297,184,000 vs PDF 2,971.84cr; FourD half-year PAT 94,758,000 vs PDF 947.58cr. The same-day con filing INDAS_845679_4722_08112022130534 is correctly scaled (4,809,900,000 -> 480.99cr, matches store). Anchors: (a) the filing's own PDF (BSE ann 2022-11-03, attachment dcd6be35-e6f3-4688-8a40-b209f7c37e58.pdf) prints std Q2 PAT 439.15 and H1 947.58 = 508.43 (Jun-22, already in store) + 439.15; (b) PDF comparatives Jun-22 508.43 / Sep-21 311.70 both match the store. fixed rev/pat exactified to the PDF's 2971.84/439.15 after --apply (op/ebit are x100 of the 2dp-rounded stored values; a full rebuild recomputes them exactly via factor()). Found via StockWorld parity SW report (SRF 2023-12-31 YoY 6932.35 = 308.72 vs the /100 base 4.39). parity-0829 2026-08-30 16:33 IST.",
+   "was_revop": {
+    "rev": 29.72,
+    "op": 6.87,
+    "pat": 4.39,
+    "ebit": 5.72
+   },
+   "fixed_revop": {
+    "rev": 2971.84,
+    "op": 687.0,
+    "pat": 439.15,
+    "ebit": 572.0
+   },
+   "was_fund": 4.39,
+   "fixed_fund": 439.15
   }
  ]
 }

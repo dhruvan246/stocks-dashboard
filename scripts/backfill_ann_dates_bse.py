@@ -131,14 +131,25 @@ def resolve(cands, qe, prev_ann=None, next_ann=None):
 def apply_ledger(ledger):
     """Ledger -> both fundamentals files. Returns (cells_docs, cells_master).
 
-    Two entry kinds:
+    Three entry kinds:
       normal              — FILL-ONLY (current ann==0, PAT present). Unchanged historic behavior.
       "override": true    — CORRECTS a wrong-LATE date: applied when the stored ann is a real date
                             LATER than the ledger's. Only ever moves a date EARLIER (toward the
                             true first-public date, never later) — the NSE-broadcast-lag class
                             (SBICARD 88d / MFSL 61d / DHANI 22d / ABB 118d...; runbook §104).
                             This is what makes the heals REBUILD-PROOF: a full rebuild resurrects
-                            NSE's lagged dates, and the nightly --reapply re-asserts the truth."""
+                            NSE's lagged dates, and the nightly --reapply re-asserts the truth.
+      "exact": true       — hand-adjudicated PIT-EFFECTIVE date, asserted in BOTH directions
+                            (a populated ann that differs is set to it, earlier or later).
+                            For the wrong-EARLY (look-ahead) class the override kind cannot
+                            express: a stored date that PRECEDES the true first-public filing
+                            (SUZLON Mar-2020: a tier-2 seq override matched a debt-restructuring
+                            board outcome, 80 days before the results; TASTYBITE Mar-2021 /
+                            NMDC Jun-2019: the board-meeting INTIMATION stamped as the result
+                            date). Unlike raw-BSE override dates, an exact date is the GATED
+                            (15:30/weekend-aware, runbook §12) value — write the date the engine
+                            should compare against, so no buffer applies. Reviewed entries only:
+                            each needs the BSE announcement timestamp in its src note."""
     counts = []
     for path in (SF, MASTER):
         data = jload(path, None)
@@ -152,6 +163,10 @@ def apply_ledger(ledger):
             ovr = bool(rec.get("override"))
             for q in data.get(sym) or []:
                 if not (isinstance(q, list) and len(q) >= 5 and q[0] == qe):
+                    continue
+                if rec.get("exact"):   # adjudicated PIT date — asserted both ways, no gate buffer
+                    if q[1] is not None and isinstance(q[2], int) and q[2] > 0 and q[2] != ann: q[2] = ann; n += 1
+                    if q[3] is not None and isinstance(q[4], int) and q[4] > 0 and q[4] != ann: q[4] = ann; n += 1
                     continue
                 if q[1] is not None and q[2] == 0: q[2] = ann; n += 1
                 if q[3] is not None and q[4] == 0: q[4] = ann; n += 1
