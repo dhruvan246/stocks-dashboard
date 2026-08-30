@@ -13365,3 +13365,102 @@ in place, appliers idempotent, verify_fills_live 13,377 cells 0/0/0. The
 `screener-annual derivation` recipe is RETIRED: 56 of its 137 surviving cells (41%) were wrong
 — a residue is only as good as its inputs, its annual's definition, AND quarter-additivity,
 and this family failed all three ways.
+## 119. ★★★ THE 2015-2025 ANN-DATE BACKLOG SWEEP — per-date archive index, 3,564 lag overrides, the look-ahead classes measured cell-by-cell  (2026-08-30)
+
+**NO ASSUMPTIONS, NO GUESSWORK (§0).** Every re-dated cell traces to a BSE archive row fetched
+this session; everything not provably wrong was LEFT ALONE with a logged reason. §104b's
+close-out: the ordinary 1-70d NSE-broadcast lags on timely 2015-2025 filings that tier-1/2
+(>72d bar) and the nightly `--recent 220` never screened.
+
+### 119a. The route: ONE per-date index instead of 77k per-cell fetches
+`AnnSubCategoryGetData` per-DATE with `strCat=Result` (the §12 fetch_filing_times pattern,
+full NEWS_DT + NEWSSUB + SUBCATNAME + attachment flag kept) covers the whole decade in
+~4,260 requests (97 min, 0 failures) instead of ~77k windowed fetches (~2 days). Shards +
+state live in the session scratchpad (`annidx/`); per-cell `strCat=-1` windows are then needed
+ONLY for the few hundred wrong-early candidates (negative claims need the full category
+surface, §119d). Serves all eras 2015+ (the ann-stream starts Jan-2014, §105).
+
+### 119b. The E-classifier — four poison classes found while building it
+E = earliest Result-category row with attachment + 'result' in blob + veto-clean + an
+ANCHOR-derived `parse_qe == qe`. Each condition earned its place this session:
+1. **FY-fallback poison (VIMTALABS).** `parse_qe`'s `_FY_RE` fallback maps 'Q2 FY-2025-26 -
+   Unaudited Financial Results' to the FY-END quarter (20260331) — a Q1-Q3 filing masquerades
+   as the Mar-quarter results months early. Gate: the match must SURVIVE `_FY_RE.sub(' ', sub)`
+   re-parse (anchored statements only).
+2. **Reg 23(9) RPT disclosures** (half-yearly, LODR-amended Apr-2022): period-stated, filed
+   under subcat 'Financial Results', NOT results. Flooded the 2022 wrong-early candidates
+   (334→62 after veto). Veto also covers deviation statements/governance/shareholding/
+   complaint statements.
+3. **'Notice of'/future-tense meeting notices** phrased without the word 'intimation'
+   ('Board Meeting To Consider...', 'Notice For Calling...') — dodge `_RESULT_VETO`.
+4. **CRISIL-class advance notes**: 'Company Update / General' row titled exactly like a
+   results filing ('Audited Financial Results For The FY Ended December 31, 2024', Jan-16)
+   25d before the real filing (Feb-10 19:45). Headline analysis CANNOT catch these — only
+   corroboration can (§119e).
+
+### 119c. The lag class (override entries, raw BSE date, §104 +4d buffer convention)
+77,523 (sym,qe) rows with >=1 dated np cell enumerated; classes sum exactly to the universe
+(§38b identity). 53.7% ok-gated (stored within [E-1, E+4]). **3,564 override heals pushed**
+(chunks 5667508ca..46a1a79b7): stored > E+4d, median lag 14d, p90 40d, max 734d
+(VALIANTORG Mar-2020 382d, AETHER Mar-2022 324d). Rate by era: 2023-25 ≈0.5%, 2019-20 ≈3%,
+**2018 = 40% of measurable rows (2,342 heals)** — the deep-backfill era's dates were
+systematically late vs the BSE archive. 11/11 hand-verified across eras (full -1-window
+row-by-row reads). Left alone + logged: no-exact-match 17,808 (unstated-period headlines only),
+no-candidates 1,892, no-scrip 7,478 rows/11,348 cells (no ISIN-guarded BSE identity),
+basis-split 1,598 (annStd != annCon — a min()-based override could create a con look-ahead;
+never auto-heal these), early-small 132 (stored 2-6d before E; NSE can legitimately lead BSE
+by a day). Overrides are direction-safe by construction: E is a real public filing, so moving
+a LATER stored date to E can never create a look-ahead, even where the index missed an
+earlier row in another category.
+
+### 119d. The wrong-early (look-ahead) class needs per-cell negative evidence
+A stored date EARLIER than E is only a candidate — reverting it asserts "nothing was public
+at stored", a negative claim (§57-adjacent). Guards, all mandatory: full `strCat=-1` window
+(paginated to ROWCNT, truncation = unverifiable); blockers = result-ish rows near stored
+whose period parse is 0 or qe (a row stating a DIFFERENT quarter — e.g. the previous quarter
+filed late — cannot legitimize stored, but an unstated-period board outcome keeps SUZLON
+safety); no period-stated row earlier than the Result-category target; margin >=7d after §12
+gating (times from the index); annStd==annCon (split-basis rows never auto-heal). The
+proposed date is always the RESULT-CATEGORY filing's gated timestamp, never a headline-picked
+`-1` row (CRISIL lesson). Corrupted-date writer class found: 2020-21 cells stored at qe+1..+6
+(physically impossible; e.g. APLAPOLLO Jun-2020 stored 20200701, results 2020-08-13).
+
+### 119e. The Aug-23 campaign's own 'exact' rule stamped notices as result dates
+Calibrating all 2,213 `bse:*:exact` ledger entries against the index: 96% agree; 85 sit >=7d
+EARLIER than the Result-category first filing. Round-2 adjudication (corroboration test: a
+genuine results row needs 'outcome'/'submission' wording, Result category, or a same-day
+outcome row — plus the future-tense veto): most were meeting notices ('Board Meeting To
+Consider...'), delay/extension notices (CGPOWER's fraud year: 3 quarters up to 169d early;
+LICHSGFIN Mar-2020 COVID 'non-publication' notice stamped as the result date, 40d early;
+FEDERALBNK/HINDPETRO/J&KBANK notices), and CRISIL-class advance notes (x2). Healed via
+`exact` entries that REPLACE the poisoned ledger entries; ambiguous ones left + logged.
+⚠️ For any future sweep: `datebound`+`resolve`'s 'exact' is NOT review-grade on its own —
+the anchor gate, the future-tense veto and the corroboration test are all load-bearing.
+
+### 119e-2. What landed for the look-ahead classes
+Chunk 8 (0021cc756): **312 `exact` look-ahead heals** — stored dates that provably predate the
+first corroborated results filing (guards §119d), median lead healed ~20-40d; includes the
+2020-21 corrupted qe+1..+6 writer class (163 cells). Chunk 9 (17412be52): **61 poisoned
+`bse:*:exact` ledger entries REVERTED** (both CRISILs, BHEL Jun-2018, FEDERALBNK, HINDPETRO,
+LICHSGFIN COVID-notice, J&KBANK...; pre-sweep `was` corroborates the target on every entry
+that has one — the was(NSE-late) > target(real) > ledger(notice) ordering holds throughout).
+4 kept (genuine other-category filings), 18 ambiguous LEFT + logged in
+`annidx/out/exact_round2.json` (CGPOWER's three fraud-year quarters among them — result-ish
+rows sit between the ledger date and the corroborated filing; needs a per-filing read).
+434 of 746 wrong-early candidates refused by guards and left alone.
+
+### 119f. Spot-check: the heals move real backtests
+Saved strategy smtbxpvrrvav (N500 profitYoyPct top-3, profitStreak>=2, ret12m>0) over
+2015-01-01..2026-08-28, before (2b791e915) vs after, engine + prices identical: **12 of 139 rebalance months change picks** (2015-2019 + one 2021 month where a look-ahead
+reversion correctly DROPS a pick), final 88.0x -> 95.3x, maxDD 51.1 -> 49.9. Attribution clean:
+applying ONLY the ann-date ledger entries to the before file reproduces the pick diff exactly.
+Total store impact vs pre-sweep: **4,087 rows / 6,065 ann-cells re-dated** (np values untouched).
+
+### 119g. Interactions (by design, no action needed)
+Override entries store RAW BSE dates; ~25 heals landing post-15:30 on month-ends get bumped
+to the next trading day by the nightly gate_1530 pass (§12/§88c). The nightly `--reapply`
+re-asserts everything after any rebuild. Tools: scratchpad `annidx/` (fetch_index / resolve_year
+(+_lib, ONE shared classifier) / verify_early / verify_exact_round2 / push_chunk / spot_check.js);
+push = fresh `reset --hard origin/main` in the worktree + ledger union + `--reapply` + gates
+(np values byte-equal, every changed cell explained by a ledger key) + rebase-push +
+read-back from origin + LIVE poll ~20 min later (all 7 chunks LIVE-verified).
