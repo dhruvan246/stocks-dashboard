@@ -92,13 +92,18 @@
   const SETTINGS_KEYS = []; // filled by theme.js via swSync.syncSettings([...keys])
   const _sTs = k => { try { return +(localStorage.getItem('swset_ts_' + k) || 0); } catch (e) { return 0; } };
   const _sStamp = (k, ts) => { try { localStorage.setItem('swset_ts_' + k, String(ts)); } catch (e) {} };
-  let _snap = {};
+  let _snap = {}, _remoteExtra = [];   // _remoteExtra: SETTINGS entries this page's key list doesn't know
   async function syncSettings(keys) {
     if (keys && keys.length) SETTINGS_KEYS.splice(0, SETTINGS_KEYS.length, ...keys);
     if (!SETTINGS_KEYS.length) return;
     try {
       const remote = await kvGet('SETTINGS');
       const map = {}; (Array.isArray(remote) ? remote : []).forEach(e => { if (e && e.k) map[e.k] = e; });
+      // Remember the entries we DON'T track so a later push can carry them through unchanged —
+      // pushSettings used to replace the whole doc with only its own keys, so any tab running an
+      // older cached theme.js silently DELETED every newer synced key (measured 2026-08-30: a
+      // pre-v122 tab's pagehide push dropped mix_state_v1 minutes after it was added).
+      _remoteExtra = (Array.isArray(remote) ? remote : []).filter(e => e && e.k && SETTINGS_KEYS.indexOf(e.k) < 0);
       SETTINGS_KEYS.forEach(k => {
         const r = map[k];
         if (r && r.ts > _sTs(k)) { // remote newer → apply
@@ -115,8 +120,10 @@
     SETTINGS_KEYS.forEach(k => { let v = null; try { v = localStorage.getItem(k); } catch (e) {}
       if (v !== _snap[k]) { _sStamp(k, Date.now()); _snap[k] = v; changed = true; } });
     if (!changed) return;
+    // MERGE, never replace: our keys, plus the remote-doc entries we don't track (kept verbatim
+    // from the last pull — no network read here; this can run on pagehide).
     const out = SETTINGS_KEYS.map(k => { let v = null; try { v = localStorage.getItem(k); } catch (e) {}
-      return { k, v, ts: _sTs(k) || Date.now() }; });
+      return { k, v, ts: _sTs(k) || Date.now() }; }).concat(_remoteExtra);
     await kvSet('SETTINGS', out);
   }
 

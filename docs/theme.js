@@ -1393,10 +1393,14 @@
       s1.onload = function () {
         var s2 = document.createElement('script'); s2.src = './sw-watchlist.js';
         document.head.appendChild(s2);
-        // cross-device preference sync (owner browsers push; everyone pulls)
-        try { window.swSync.syncSettings(['sw_theme', 'sw_sec_watch', 'bt_fav_strategies',
+        // cross-device preference sync (owner browsers push; everyone pulls). ONE definition of the
+        // key list, hoisted to window, so a page that must AWAIT the pull before reading one of these
+        // (the Mixer reads mix_state_v1 at boot) can re-call syncSettings with the same list instead
+        // of keeping a second copy that drifts.
+        window.SW_SETTINGS_KEYS = ['sw_theme', 'sw_sec_watch', 'bt_fav_strategies',
           'live_worker_url', 'savedRotations', 'savedCatRot', 'savedBOB', 'sw_dash_presets', 'sw_triage_hide',
-          'mix_state_v1']); } catch (e) {}   // mix_state_v1: the Strategy Mixer's selection — synced so a mix set up once lands on every device
+          'mix_state_v1'];   // mix_state_v1: the Strategy Mixer's selection — synced so a mix set up once lands on every device
+        try { window.swSync.syncSettings(window.SW_SETTINGS_KEYS); } catch (e) {}
       };
       document.head.appendChild(s1);
     } catch (e) {}

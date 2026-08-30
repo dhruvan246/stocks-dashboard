@@ -1138,6 +1138,15 @@ $('bFav').onclick = () => {
 (async function boot(){
   let sfEnd = '';
   try { sfEnd = (await (await fetch('./sf_meta.json')).json()).end || ''; } catch(e){}
+  // The synced settings (⭐ favourites + this page's own mix_state_v1) arrive via sw-sync AFTER
+  // first paint, and theme.js loads that script async — on a fresh device this boot would read
+  // mix_state_v1 BEFORE the pull landed and open with nothing selected (measured live 2026-08-30).
+  // Wait briefly for sw-sync, then await one explicit pull with theme.js's own key list.
+  // time-capped, not iteration-capped: a hidden tab throttles setTimeout to ~1/min, and a wall-clock
+  // cap means at most one throttled yield before boot proceeds with whatever is already local.
+  const _sw0 = Date.now();
+  while (Date.now() - _sw0 < 4000 && !(window.swSync && window.SW_SETTINGS_KEYS)) await new Promise(r => setTimeout(r, 120));
+  if (window.swSync && window.SW_SETTINGS_KEYS) { try { await swSync.syncSettings(window.SW_SETTINGS_KEYS); } catch(e){} }
   if (window.btSync){
     try { await btSync.pullStrategies(); } catch(e){}
     try { HIST = await btSync.pull() || []; } catch(e){ HIST = []; }
