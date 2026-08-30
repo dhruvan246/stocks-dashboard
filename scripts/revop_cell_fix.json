@@ -13673,6 +13673,114 @@
    "was": 8.09,
    "fixed": 809.17,
    "why": "StockView R5 F-04 — refutes the basis-crossing theory; the true defect is the filer's std XBRL scaled 1/100 (k=-2), the BATAINDIA fingerprint: INDAS_83654_648549_27042022044059_WEB_xml carries every monetary tag at 1/100 true rupees (decimals=-5; PAT OneD 50,379,000 = 5.04 cr) while the SAME-DAY con filing INDAS_83655_648552 is true-scale (decimals=-7). As-filed proof: BSE detres scrip 543287 qtr 113.00 (BSE's render of the same filing) prints rev 33,171.3 / NP 5,037.9 Rs-mn = 3,317.13 / 503.79 cr; printed EPS 10.46 × ~48.2 cr shares = 503.9 cr; FY22 .50 annual NP 11,334.6 mn = 1,133.46 cr. Stored 33.17/8.23/5.04/8.09 are exactly these ÷100. Parse-time guard in scale_fix.json (same file key); exact values land via these cell-fix entries, which CI replays nightly. 2026-08-30 16:25 IST"
+  },
+  {
+   "sym": "AMTEKAUTO",
+   "qe": "20170630",
+   "basis": "std",
+   "was": 462.26,
+   "fixed": 424.64,
+   "why": "AMTEKAUTO Jun-2017 std — §108 restated-vintage: store held the Sep-2017-quarter filing's PRECEDING column (filed 2018-09-05 under CIRP; grid rev col2 46,226 lakh, PAT (86,252)), but the quarter has its OWN TIMELY original filing 2017-07-28 (NSE financial_res_AMTEKAUTO_1027900.html): Total income from operations (net) 42,464 lakh = 424.64 cr, Net Profit (889.58), EPS -3.58 reproduces (-889.58cr / 248.2cr sh). BSE detres as-filed agrees to the paisa (424.64 / -889.58); MC deep std feed agrees (424.64 / -889.58). The fill's src claimed 'first-ever publication' and 'detres was a later amended refiling' — refuted: NSE lists exactly ONE Jun-2017 row, filed 2017-07-28, printing the detres values. Store convention as-originally-filed (§42). Stored ann 20180821 is the later doc's date — ann follow-up left to the ann-date ledger session (move to 20170728).",
+   "found": "§117c comparative-column vision-fill audit 2026-08-30 (worktree ~/stocks-wt/vision-comp-audit): 114 outside-window vision fills citing col2/col3/preceding/corresponding audited against the ORIGINAL filing of each quarter"
+  },
+  {
+   "sym": "AMTEKAUTO",
+   "qe": "20170630",
+   "basis": "pat_std",
+   "was": -862.52,
+   "fixed": -889.58,
+   "why": "§70 mirror of the fund_cell_fix heal. AMTEKAUTO Jun-2017 std — §108 restated-vintage: store held the Sep-2017-quarter filing's PRECEDING column (filed 2018-09-05 under CIRP; grid rev col2 46,226 lakh, PAT (86,252)), but the quarter has its OWN TIMELY original filing 2017-07-28 (NSE financial_res_AMTEKAUTO_1027900.html): Total income from operations (net) 42,464 lakh = 424.64 cr, Net Profit (889.58), EPS -3.58 reproduces (-889.58cr / 248.2cr sh). BSE detres as-filed agrees to the paisa (424.64 / -889.58); MC deep std feed agrees (424.64 / -889.58). The fill's src claimed 'first-ever publication' and 'detres was a later amended refiling' — refuted: NSE lists exactly ONE Jun-2017 row, filed 2017-07-28, printing the detres values. Store convention as-originally-filed (§42). Stored ann 20180821 is the later doc's date — ann follow-up left to the ann-date ledger session (move to 20170728).",
+   "found": "§117c comparative-column vision-fill audit 2026-08-30 (worktree ~/stocks-wt/vision-comp-audit): 114 outside-window vision fills citing col2/col3/preceding/corresponding audited against the ORIGINAL filing of each quarter"
+  },
+  {
+   "sym": "ABREL",
+   "qe": "20220630",
+   "basis": "pat_std",
+   "was": 63.69,
+   "fixed": 63.09,
+   "why": "§70 mirror of the fund_cell_fix heal. ABREL Jun-2022 std PAT — store 63.69 matches NO vintage: the original filing (detres as-filed) prints Net Profit 63.09 (54.40 continuing + 8.69 discontinued), the Sep-2022 filing's preceding column prints the same 63.09, printed EPS 5.65 x 11.169cr shares = 63.10, and MC deep std pat_total = 63.09. Both vintages agree against the stored third value (the vision pass itself flagged the 0.60cr drift in its src note but left it as within-tolerance). Healed to the as-filed print.",
+   "found": "§117c comparative-column vision-fill audit 2026-08-30 (worktree ~/stocks-wt/vision-comp-audit): 114 outside-window vision fills citing col2/col3/preceding/corresponding audited against the ORIGINAL filing of each quarter"
+  },
+  {
+   "sym": "INDUSINDBK",
+   "qe": "20220930",
+   "basis": "pat_std",
+   "was": 1805.22,
+   "fixed": 1786.72,
+   "why": "§70 mirror of the fund_cell_fix heal. INDUSINDBK Sep-2022 std — CON value in the STD slot (§59 class, not a vintage): the vision fill read the Dec-2022 filing's p4 col2 which its own src labels CONSOLIDATED; npStd==npCon==1805.22 in the store. As-filed STANDALONE (BSE detres): Net Profit 1786.72, Operating Profit Before Provisions and Contingencies 3519.66, Interest Earned 8708.03 (rev slot was already the std value). MC deep std pat_total 1786.72 agrees. NSE's filing list drops the 30-Sep-2022 period entirely (measured on cache AND live 2026-08-30 — silent endpoint gap), so detres+MC+provenance carry the heal.",
+   "found": "§117c comparative-column vision-fill audit 2026-08-30 (worktree ~/stocks-wt/vision-comp-audit): 114 outside-window vision fills citing col2/col3/preceding/corresponding audited against the ORIGINAL filing of each quarter"
+  },
+  {
+   "sym": "INDUSINDBK",
+   "qe": "20220930",
+   "basis": "op_std",
+   "was": 3544.36,
+   "fixed": 3519.66,
+   "why": "INDUSINDBK Sep-2022 std — CON value in the STD slot (§59 class, not a vintage): the vision fill read the Dec-2022 filing's p4 col2 which its own src labels CONSOLIDATED; npStd==npCon==1805.22 in the store. As-filed STANDALONE (BSE detres): Net Profit 1786.72, Operating Profit Before Provisions and Contingencies 3519.66, Interest Earned 8708.03 (rev slot was already the std value). MC deep std pat_total 1786.72 agrees. NSE's filing list drops the 30-Sep-2022 period entirely (measured on cache AND live 2026-08-30 — silent endpoint gap), so detres+MC+provenance carry the heal.",
+   "found": "§117c comparative-column vision-fill audit 2026-08-30 (worktree ~/stocks-wt/vision-comp-audit): 114 outside-window vision fills citing col2/col3/preceding/corresponding audited against the ORIGINAL filing of each quarter"
+  },
+  {
+   "sym": "INDUSINDBK",
+   "qe": "20230331",
+   "basis": "pat_std",
+   "was": 2043.36,
+   "fixed": 2040.51,
+   "why": "§70 mirror of the fund_cell_fix heal. INDUSINDBK Mar-2023 std PAT — CON value in the STD slot (§59): npStd==npCon==2043.36; the vision src itself notes 'PAT 2040.51 printed (EPS 26.30 confirms) vs stored 2043.36' from the Jun-2023 filing's col2. As-filed STANDALONE: BSE detres 2040.51, MC deep std 2040.51, printed EPS 26.30 x 77.6cr sh reproduces. rev/op std slots already hold the std as-filed values (verified vs detres).",
+   "found": "§117c comparative-column vision-fill audit 2026-08-30 (worktree ~/stocks-wt/vision-comp-audit): 114 outside-window vision fills citing col2/col3/preceding/corresponding audited against the ORIGINAL filing of each quarter"
+  },
+  {
+   "sym": "SOBHA",
+   "qe": "20180630",
+   "basis": "op_std",
+   "was": 201.7,
+   "fixed": 113.0,
+   "why": "SOBHA Jun-2018 std op — the vision fill computed op from the Jun-2019 filing's corresponding column as 59.3+94.5+52.2-4.3=201.7, but 94.5 is not the D&A component (as-filed D&A is 13.9 — a misread/mis-mapped cell). As-filed op by the store's own builder convention (PBET+FC+DA-OI, §11): detres components 59.3+52.2+13.9-4.3 -> 121.1 on detres OI; the filer's OWN Sep-2018 XBRL (INDAS_40460) settles the OI tagging: builder on it reproduces stored Sep-18 exactly (640.9/133.1), and its H1 FourD cumulative gives op(H1)=246.1, so op(Jun-18) = 246.1 - 133.1 = 113.0 by the filer's own arithmetic (same identity gives rev 1175.6-640.9=534.7 == stored rev, which is why rev is NOT healed). MC op_pre 121.1 differs only by the OOI leg the filer folds into OtherIncome; the H1-identity value is the series-consistent one.",
+   "found": "§117c comparative-column vision-fill audit 2026-08-30 (worktree ~/stocks-wt/vision-comp-audit): 114 outside-window vision fills citing col2/col3/preceding/corresponding audited against the ORIGINAL filing of each quarter"
+  },
+  {
+   "sym": "GMDCLTD",
+   "qe": "20210331",
+   "basis": "std",
+   "was": 569.2,
+   "fixed": 565.81,
+   "why": "GMDCLTD Mar-2021 std — §108 restated-vintage on rev/op (PAT untouched): store holds the Jun-2021 filing's preceding-quarter column (rev 569.20 / op 36.57, per the fill's own src), which regrouped +3.39cr into revenue. As-filed original (BSE detres, audited, Date End 31-Mar-21): Net Sales/Revenue From Operations 5,658.07 lakh = 565.81, and op by the store's builder convention PBET+FC+DA-OI = 47.296+0.4805+27.6537-42.253 = 33.18 (builder verified against this filer: reproduces stored Jun-2021 498.33/31.55 from its XBRL INDAS_75850 exactly). PAT -185.24 == detres -185.244 == EPS -5.83 x 31.8cr sh, unchanged. MC's Mar-21 'quarter' is PROVEN a derivation (MC FY21 annual 1468.11 minus MC 9M 866.62 = 601.49 = its Mar-21 row) so it is not a reader of the as-filed print and does not contradict.",
+   "found": "§117c comparative-column vision-fill audit 2026-08-30 (worktree ~/stocks-wt/vision-comp-audit): 114 outside-window vision fills citing col2/col3/preceding/corresponding audited against the ORIGINAL filing of each quarter"
+  },
+  {
+   "sym": "GMDCLTD",
+   "qe": "20210331",
+   "basis": "op_std",
+   "was": 36.57,
+   "fixed": 33.18,
+   "why": "GMDCLTD Mar-2021 std — §108 restated-vintage on rev/op (PAT untouched): store holds the Jun-2021 filing's preceding-quarter column (rev 569.20 / op 36.57, per the fill's own src), which regrouped +3.39cr into revenue. As-filed original (BSE detres, audited, Date End 31-Mar-21): Net Sales/Revenue From Operations 5,658.07 lakh = 565.81, and op by the store's builder convention PBET+FC+DA-OI = 47.296+0.4805+27.6537-42.253 = 33.18 (builder verified against this filer: reproduces stored Jun-2021 498.33/31.55 from its XBRL INDAS_75850 exactly). PAT -185.24 == detres -185.244 == EPS -5.83 x 31.8cr sh, unchanged. MC's Mar-21 'quarter' is PROVEN a derivation (MC FY21 annual 1468.11 minus MC 9M 866.62 = 601.49 = its Mar-21 row) so it is not a reader of the as-filed print and does not contradict.",
+   "found": "§117c comparative-column vision-fill audit 2026-08-30 (worktree ~/stocks-wt/vision-comp-audit): 114 outside-window vision fills citing col2/col3/preceding/corresponding audited against the ORIGINAL filing of each quarter"
+  },
+  {
+   "sym": "OBEROIRLTY",
+   "qe": "20180331",
+   "basis": "con",
+   "was": 352.84,
+   "fixed": 344.97,
+   "why": "OBEROIRLTY Mar-2018 con rev — §108 restated-vintage: store holds 352.84 from the Q4FY19 press release's year-ago column (Ind-AS 115 restated comparative; Oberoi adopted 115 on 2018-04-01). The ORIGINAL audited con filing (BSE ann 2018-04-24, d37ef8c7-8ff5-431c-af80-7fc34d0e0cb5.pdf p2, digital text) prints quarter 31/03/2018 Revenue from operations 34,497 lakh = 344.97; Net profit 14,292 lakh = 142.92 == stored npCon (anchor). MC deep con rev_ops 344.97 agrees; pat_own 142.92 agrees.",
+   "found": "§117c comparative-column vision-fill audit 2026-08-30 (worktree ~/stocks-wt/vision-comp-audit): 114 outside-window vision fills citing col2/col3/preceding/corresponding audited against the ORIGINAL filing of each quarter"
+  },
+  {
+   "sym": "RECLTD",
+   "qe": "20190930",
+   "basis": "std",
+   "was": 7598.18,
+   "fixed": 7422.63,
+   "why": "RECLTD Sep-2019 std rev — §108 restated-vintage: store holds 7,598.18 from the Dec-2019 filing's preceding column (the fill's src names it). The ORIGINAL filing (BSE ann 2019-11-05, 60a21d50-3b5e-4bce-8abb-b3624c11e8d7.pdf p7 standalone, OCR read) prints Total Revenue from Operations (A+B) 7,422.63 for the 30-09-2019 quarter (Interest income 7,404.68 + other operating income 17.95), Net profit 1,306.76 == stored (anchor). The Dec-2019 comparative reclassified the quarter's 'Net loss/(gain) on fair value changes' (175.55) into revenue: 7,422.63 + 175.55 = 7,598.18 exactly. MC deep std rev_total 7,422.63 agrees; series convention (Dec-19, Mar-20 stored == MC rev_total exactly) confirms the line.",
+   "found": "§117c comparative-column vision-fill audit 2026-08-30 (worktree ~/stocks-wt/vision-comp-audit): 114 outside-window vision fills citing col2/col3/preceding/corresponding audited against the ORIGINAL filing of each quarter"
+  },
+  {
+   "sym": "SAMMAANCAP",
+   "qe": "20190930",
+   "basis": "con",
+   "was": 3480.49,
+   "fixed": 3419.54,
+   "why": "SAMMAANCAP (Indiabulls Housing) Sep-2019 con rev — §108 restated-vintage: store holds 3,480.49 from the Dec-2019 filing's p1 preceding column (the fill's src names it). The ORIGINAL filing (BSE ann 2019-11-06, eb32a7ea-bd3b-4ede-8c4d-adad95556922.pdf p2 consolidated, OCR read of the rotated scan) prints the 30.09.2019 quarter column 3,068.37 + 280.12 + 74.62 + (60.95) + 57.38 = Total revenue from operations 3,419.54 (internal sum exact); PAT 702.18 total / 709.52 owners == stored npCon (anchor). The Dec-2019 comparative excluded the (60.95) net fair-value loss from revenue: 3,419.54 + 60.95 = 3,480.49 exactly — same reclassification mechanism as RECLTD the same quarter. MC deep con rev_ops 3,419.54 agrees; series convention (Dec-19, Mar-20 stored == MC exactly) confirms.",
+   "found": "§117c comparative-column vision-fill audit 2026-08-30 (worktree ~/stocks-wt/vision-comp-audit): 114 outside-window vision fills citing col2/col3/preceding/corresponding audited against the ORIGINAL filing of each quarter"
   }
  ],
  "retracted": [

@@ -11163,27 +11163,6 @@ archive row-by-row (never trust the resolver's label):
      accepts an unstated-period filing inside a window; a non-results "Outcome of Board Meeting"
      inside that window poisons it. 599 seq-sourced entries exist (280 sweep2 / 53 sweep1 /
      266 fill-era) — one proven bad; class un-audited.
-     **CLASS AUDIT CLOSED 2026-08-30 (seq-audit, this worktree/commit).** All 600 seq entries
-     re-adjudicated against raw BSE windows (`strCat=-1`, NO result-filter — the filter itself
-     was a poison source) cached in `scripts/_seq_audit_rows.json`; verdicts + evidence in
-     `scripts/_seq_audit_verdicts.json` (both gitignored, regenerate via `_seq_audit_fetch.py`/
-     `_seq_audit_report.py`/`_seq_audit_probe.py`). **150/600 (25%) were WRONG** → replaced with
-     `exact` entries (450 verified-correct seq entries kept): 92 fill-era / 44 sweep2 / 12 sweep1 /
-     2 recon. 144 look-aheads (median 53d, max GAYAPROJ Mar-2023 845d — CIRP results filed
-     Nov-2025) + 6 wrong-late (ECORECO Dec-2023 −92d = stamped with the NEXT quarter's date).
-     Poison sub-classes found (all now in the report tooling's vetoes): RPT Reg-23(9)
-     disclosures RIDE the Result|Financial-Results subcategory (MIDHANI/CHOLAHLDNG/RICOAUTO/
-     DBCORP/IFCI...); "Results-Delay in Financial Results" delay NOTICES ride it too (VEDL
-     Jun-2020, SPICEJET FY22, TITAGARH FY20 stored the delay-notice date as the results date!);
-     AGM-business outcomes (annual report/dividend/book-closure) in results-shaped windows;
-     fundraise/warrant/bonus/split meetings; adjournment outcomes (CUPIDALBV, ITCONS);
-     auditor/CS-appointment meetings. Big names healed: BRITANNIA Sep-2018 (+35d), VEDL Jun-2018
-     (+19d) & Jun-2020 (+21d), FORTIS Mar+Jun-2018, PVRINOX Jun-2020 (+71d), CGPOWER Jun-2020,
-     SBIN-adjacent none. 34 ambiguous outcomes settled by reading the filing PDFs (pypdf text +
-     page-image reads); SME half-yearly filers with NO per-quarter filing were dated to the first
-     covering H1/H2/FY filing (conservative-late). Rule for the future: a caption-level "seq"
-     match is only as good as the CATEGORY of the row it matched — Result-category or a
-     results-stating caption, or it isn't a results date.
   2. **Board-meeting INTIMATION stamped as the result date.** TASTYBITE Mar-2021 (stored 20210405
      = gated Apr-3 intimation; results May-15) and NMDC Jun-2019 (stored 20190724 = intimation
      day; results Aug-13). Both predate the ledger — an older backfill writer did it.
@@ -13111,7 +13090,7 @@ stream (`_shp_dates/fetch_ann_2014.py` → `shp_sub_dates.json` src `ann-stream`
 never probed 2014+): a negative verdict is only as wide as the windows it measured — re-check
 era boundaries before reusing an old negative.
 
-**SW-2 (DII cells disagree with filings) — CONFIRMED, class root-caused, swept (final tally 2026-08-30 EOD: XBRL era 16,919 cells re-read → 914 foreign-confirmed / 901 heals; pre-XBRL phase-2 5,526 aspx pages (Dec-2013..Mar-2016) → 262 dii heals to the era's own mf+banks+ins(+vcf) convention incl. JUBLPHARMA Dec-15 15.23→0.1086; ~1.55k XBRL-era + 20 aspx cells HELD with reasons; 110 matches-neither journalled — the AXISBANK-class sits between conventions, open).** The §22i
+**SW-2 (DII cells disagree with filings) — CONFIRMED, class root-caused, swept.** The §22i
 swallowed-foreign-block's dii-side sibling: in the Jun-2016..Jun-2022 format the institutions
 block's "Any Other (specify)" row (`OtherInstitutionsMember`) is routed into dii by
 `OLD_OTHER_TO_DII=True` — correct for domestic blocks, WRONG when the row holds a foreign
@@ -13222,3 +13201,89 @@ Follow-ups NOT taken here: IIFL Jun-17 ann 20171103→20170805 is safe for STD o
 value-identity; the con original is unreadable, so moving con's ann would attach possibly-amended
 values to the earlier date) — ann-date ledger session's scope (F-01). IIFL op slots hold 0.0
 (NSE's blank-as-0.0000 sentinel, §108 falsy-sentinel) for an NBFC — a separate class.
+
+### 117c. The vision-PDF half RAN — 114 comparative-column fills audited, 8 cells CONTAMINATED, all healed  (2026-08-30, ~/stocks-wt/vision-comp-audit)
+
+**NO ASSUMPTIONS, NO GUESSWORK** — every verdict below is a measured read (BSE detres, NSE
+archive/XBRL, MC deep feeds, and the ORIGINAL filing PDFs — two of them OCR'd scans).
+
+§117b closed the NSE-archive family and left the vision-PDF family open: 114 outside-window
+basis-rows whose `vision_rev_fills` src cites a COMPARATIVE column (col2/col3/preceding/
+corresponding — the §108 mechanism that produced BAYERCROP F-02). All 114 audited against the
+ORIGINAL filing of the target quarter itself (value-level — unlike §117b's provenance test,
+a single-filing period clears nothing here, because the pass read a LATER document by design).
+
+Routes: BSE detres served 47 std rows (`vintage117c_visioncomp.py` + offline
+`vintage117c_adjudicate.py` re-deriving the store's own conventions from persisted raw field
+dicts); NSE XBRL 6 (`vintage117c_xbrl.py`/`_ctxread.py`); MC deep feed 51 (8 NBFC/con rows with
+no XBRL on the earliest filing + the 43 insurer rows — MC covers ALL insurers, store maps
+rev=rev_total / op=ebit_pre to the paisa); original-filing PDF reads for the 4 finalists
+(OBEROIRLTY digital; RECLTD + IBULHSGFIN scanned → rapidocr via fetch_insurers._ocr_words;
+GICRE digital).
+
+| verdict over the 114 | rows |
+|---|---|
+| CLEAN — stored slot(s) reproduce from the original as-filed publication | 101 |
+| CLEAN, first-publication — the comparative IS the earliest publication (NSE lists the year-ago comparative as its OWN row sharing the later filing's XBRL: 5 FY19 con-quarterly non-filers + TECHNOE; SYNGENE/EQUITASBNK/STARHEALTH/LICI pre-listing) | — counted above |
+| **CONTAMINATED → HEALED** (8 cells, 12 ledger slots + 4 fund) | **8** |
+| OPEN — NIACL Mar-18 rev (Δ195.65 vs MC ≈ the GICRE shareholders'-inv-leg convention pattern; own filing is a 2018 scan → vision rung, not spent) | 1 |
+| convention notes, no vintage defect (GICRE Mar-22 3-leg vs 2-leg — own filing reproduces stored; CRISIL Mar-18 rev_ops vs rev_total line choice — both printed in the original) | 4 |
+
+**The 8 healed cells** (fund_cell_fix + revop_cell_fix, `found`=§117c, appliers idempotent,
+verify_fills_live 13,323 cells MISSING/REVERTED/RESURRECTED 0):
+* **AMTEKAUTO Jun-17 std rev 462.26→424.64, PAT −862.52→−889.58** — the fill's own src claimed
+  "first-ever publication (CIRP)" and "detres was a later amended refiling"; the timely original
+  (NSE `financial_res_AMTEKAUTO_1027900.html`, filed 2017-07-28) prints the detres values, EPS
+  −3.58 reproduces. A negative vintage claim needs the ladder walked (§113a) — the refuted claim
+  had sat in provenance for a month.
+* **RECLTD Sep-19 std rev 7598.18→7422.63** and **SAMMAANCAP Sep-19 con rev 3480.49→3419.54** —
+  same NBFC mechanism, same quarter: the Dec-19 filings' preceding columns reclassified the
+  net-fair-value line into revenue (REC +175.55, IBUL −(60.95) — both close EXACTLY). Originals
+  OCR-read; IBUL's rotated-scan column self-proves (3,068.37+280.12+74.62−60.95+57.38=3,419.54).
+* **OBEROIRLTY Mar-18 con rev 352.84→344.97** — Ind-AS 115 restated year-ago col of the Q4FY19
+  press release; original audited filing prints 34,497 lakh, PAT 142.92 anchors.
+* **INDUSINDBK Sep-22 std PAT 1805.22→1786.72 + op 3544.36→3519.66, Mar-23 std PAT
+  2043.36→2040.51** — not §108 but §59 con-in-std: the vision src itself labels the source page
+  CONSOLIDATED; npStd==npCon in the store was the tell. NB: NSE's list API drops the 30-Sep-2022
+  period entirely (cache AND live) — a lone missing period is an endpoint gap, not absence.
+* **GMDCLTD Mar-21 std rev 569.2→565.81 + op 36.57→33.18** — Jun-21 filing's preceding col
+  regrouped +3.39 into revenue (both slots inherit it). MC does NOT contradict: its Mar-21 "row"
+  is PROVEN a derivation (MC FY21 annual 1468.11 − MC 9M 866.62 = 601.49 = its row) — an
+  aggregator Q4 can be an arithmetic residue of a RESTATED annual, not a print.
+* **SOBHA Jun-18 std op 201.7→113.0** — a vision MISREAD, not a vintage (comparative components
+  match the original; 94.5 sits where D&A 13.9 belongs). Heal value from the filer's OWN Sep-18
+  XBRL H1 identity: op(H1) 246.1 − op(Sep) 133.1 = 113.0; same identity reproduces stored rev
+  534.7, which is why rev is NOT healed. (Builder-on-XBRL reproduces stored neighbours exactly —
+  the right convention arbiter when detres OI-vs-OOI folding is ambiguous.)
+* **ABREL Jun-22 std PAT 63.69→63.09** — matches NO vintage (both the original and the
+  comparative print 63.09, EPS 5.65 confirms); the fill's src had flagged the drift and left it.
+
+Replay-proofed: the 7 defective `vision_rev_fills` entries corrected in place (value + src note,
+all-or-nothing per entry, §109d). ⚠️ That file's format is `indent=0, sort_keys=True,
+ensure_ascii=True` — the first re-dump used the cell-fix ledgers' format and produced a 233k-line
+diff for 7 entries (§113d's ensure_ascii trap, caught pre-commit by `git diff --stat`).
+
+Method notes that survived contact:
+* detres prints expense lines NEGATIVE, `Profit after Interest but before Exceptional Items` is
+  the PBET line, and bank fields are `Interest Earned/Net Income from sales/services` +
+  `Operating Profit Before Provisions and Contingencies` (capital B) — 14 of the first pass's 22
+  "candidates" were these spellings/signs, killed offline against the persisted raw dicts.
+* NSE "earliest row filed months late" can be a RE-SUBMISSION while the real original lives only
+  in BSE announcements (IBUL Nov-2019 vs NSE's Jan-2020; OBEROI Apr-2018 vs NSE's Jun-2018) —
+  the §117b gate (a lone late NSE page cannot state what was originally filed) cuts both ways.
+* Insurers: NSE equities-results API serves NONE of them; MC deep serves ALL, on the store's own
+  conventions, and 41/43 match to the paisa. A GI "revenue" delta that equals the shareholders'
+  investment-income leg exactly (GICRE Mar-22: 801.73 = 80,173 lakh) is a LEG-INCLUSION split,
+  not a vintage.
+
+Open residue: NIACL Mar-18 (above); neighbour observations logged, NOT healed (outside the 114):
+REC Jun-19 std rev 6684.66 + SAMMAANCAP Mar/Jun-19 con rev match no MC line (same fair-value
+reclass suspects), INDUSINDBK Sep-22/Mar-23 rev_con==rev_std exactly (std-copy suspect, con
+campaign), CRISIL Dec-17-vs-Mar-18 rev line-choice wobble, AMTEKAUTO ann 20180821→20170728
+(ann-date ledger session). The remaining vision family (4,682 non-comparative outside-window
+rows + 2,994 rename-mirrors) stays open; with 8/114 (7.0%) contaminated on the comparative
+subset — vs §117b's 0/2,828 — the comparative-citing fills were exactly the right place to look,
+and the non-comparative residue's src cites current-quarter columns (different mechanism, lower
+risk). Tools: `vintage117c_{visioncomp,xbrl,adjudicate,ctxread}.py` + `vintage117c_land.py`;
+worktree ledgers `_vintage117c_{scan,raw,xscan,adjud}.json` + `_audit114_targets.json`
+(regenerable from the enumeration in §117b's boundary note).

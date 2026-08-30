@@ -5042,6 +5042,42 @@
    "was": 5.04,
    "fixed": 503.79,
    "why": "StockView R5 F-04 — refutes the basis-crossing theory; the true defect is the filer's std XBRL scaled 1/100 (k=-2), the BATAINDIA fingerprint: INDAS_83654_648549_27042022044059_WEB_xml carries every monetary tag at 1/100 true rupees (decimals=-5; PAT OneD 50,379,000 = 5.04 cr) while the SAME-DAY con filing INDAS_83655_648552 is true-scale (decimals=-7). As-filed proof: BSE detres scrip 543287 qtr 113.00 (BSE's render of the same filing) prints rev 33,171.3 / NP 5,037.9 Rs-mn = 3,317.13 / 503.79 cr; printed EPS 10.46 × ~48.2 cr shares = 503.9 cr; FY22 .50 annual NP 11,334.6 mn = 1,133.46 cr. Stored 33.17/8.23/5.04/8.09 are exactly these ÷100. Parse-time guard in scale_fix.json (same file key); exact values land via these cell-fix entries, which CI replays nightly. 2026-08-30 16:25 IST"
+  },
+  {
+   "sym": "AMTEKAUTO",
+   "qe": "20170630",
+   "basis": "std",
+   "was": -862.52,
+   "fixed": -889.58,
+   "why": "AMTEKAUTO Jun-2017 std — §108 restated-vintage: store held the Sep-2017-quarter filing's PRECEDING column (filed 2018-09-05 under CIRP; grid rev col2 46,226 lakh, PAT (86,252)), but the quarter has its OWN TIMELY original filing 2017-07-28 (NSE financial_res_AMTEKAUTO_1027900.html): Total income from operations (net) 42,464 lakh = 424.64 cr, Net Profit (889.58), EPS -3.58 reproduces (-889.58cr / 248.2cr sh). BSE detres as-filed agrees to the paisa (424.64 / -889.58); MC deep std feed agrees (424.64 / -889.58). The fill's src claimed 'first-ever publication' and 'detres was a later amended refiling' — refuted: NSE lists exactly ONE Jun-2017 row, filed 2017-07-28, printing the detres values. Store convention as-originally-filed (§42). Stored ann 20180821 is the later doc's date — ann follow-up left to the ann-date ledger session (move to 20170728).",
+   "found": "§117c comparative-column vision-fill audit 2026-08-30 (worktree ~/stocks-wt/vision-comp-audit): 114 outside-window vision fills citing col2/col3/preceding/corresponding audited against the ORIGINAL filing of each quarter"
+  },
+  {
+   "sym": "ABREL",
+   "qe": "20220630",
+   "basis": "std",
+   "was": 63.69,
+   "fixed": 63.09,
+   "why": "ABREL Jun-2022 std PAT — store 63.69 matches NO vintage: the original filing (detres as-filed) prints Net Profit 63.09 (54.40 continuing + 8.69 discontinued), the Sep-2022 filing's preceding column prints the same 63.09, printed EPS 5.65 x 11.169cr shares = 63.10, and MC deep std pat_total = 63.09. Both vintages agree against the stored third value (the vision pass itself flagged the 0.60cr drift in its src note but left it as within-tolerance). Healed to the as-filed print.",
+   "found": "§117c comparative-column vision-fill audit 2026-08-30 (worktree ~/stocks-wt/vision-comp-audit): 114 outside-window vision fills citing col2/col3/preceding/corresponding audited against the ORIGINAL filing of each quarter"
+  },
+  {
+   "sym": "INDUSINDBK",
+   "qe": "20220930",
+   "basis": "std",
+   "was": 1805.22,
+   "fixed": 1786.72,
+   "why": "INDUSINDBK Sep-2022 std — CON value in the STD slot (§59 class, not a vintage): the vision fill read the Dec-2022 filing's p4 col2 which its own src labels CONSOLIDATED; npStd==npCon==1805.22 in the store. As-filed STANDALONE (BSE detres): Net Profit 1786.72, Operating Profit Before Provisions and Contingencies 3519.66, Interest Earned 8708.03 (rev slot was already the std value). MC deep std pat_total 1786.72 agrees. NSE's filing list drops the 30-Sep-2022 period entirely (measured on cache AND live 2026-08-30 — silent endpoint gap), so detres+MC+provenance carry the heal.",
+   "found": "§117c comparative-column vision-fill audit 2026-08-30 (worktree ~/stocks-wt/vision-comp-audit): 114 outside-window vision fills citing col2/col3/preceding/corresponding audited against the ORIGINAL filing of each quarter"
+  },
+  {
+   "sym": "INDUSINDBK",
+   "qe": "20230331",
+   "basis": "std",
+   "was": 2043.36,
+   "fixed": 2040.51,
+   "why": "INDUSINDBK Mar-2023 std PAT — CON value in the STD slot (§59): npStd==npCon==2043.36; the vision src itself notes 'PAT 2040.51 printed (EPS 26.30 confirms) vs stored 2043.36' from the Jun-2023 filing's col2. As-filed STANDALONE: BSE detres 2040.51, MC deep std 2040.51, printed EPS 26.30 x 77.6cr sh reproduces. rev/op std slots already hold the std as-filed values (verified vs detres).",
+   "found": "§117c comparative-column vision-fill audit 2026-08-30 (worktree ~/stocks-wt/vision-comp-audit): 114 outside-window vision fills citing col2/col3/preceding/corresponding audited against the ORIGINAL filing of each quarter"
   }
  ],
  "retracted": [
