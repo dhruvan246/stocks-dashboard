@@ -13287,3 +13287,25 @@ and the non-comparative residue's src cites current-quarter columns (different m
 risk). Tools: `vintage117c_{visioncomp,xbrl,adjudicate,ctxread}.py` + `vintage117c_land.py`;
 worktree ledgers `_vintage117c_{scan,raw,xscan,adjud}.json` + `_audit114_targets.json`
 (regenerable from the enumeration in §117b's boundary note).
+
+**117c addendum (2026-08-30 evening) — the 4 REC/SAMMAANCAP neighbour suspects RAN: all 4 wrong,
+all healed, NONE of them vintage.** Each was read against its quarter's ORIGINAL filing
+(rec_q1fy20 digital; the other three scans OCR'd, REC Q4 via x-geometry on a rotated page):
+RECLTD Mar-19 std rev 5041.0→6671.81 and Jun-19 6684.66→6986.19 (both were
+`screener-annual-derivation` residues — REC's as-filed quarters are NON-ADDITIVE, Q-sum
+26,484.31 vs FY19 annual 25,309.72, because FV-gain lines move between revenue and expense per
+filing; Jun-19's input also included §117c's contaminated Sep-19); SAMMAANCAP Jun-19 con
+3419.31→3884.99 (same two diseases); SAMMAANCAP Mar-19 con 3749.64→4209.53 (a ROW MISREAD —
+the old OCR stored the Interest-Income COMPONENT as the total; BOTH Q4FY19 vintages print
+4,209.53, so §109's correction-filing question never even arises). Every heal: original print +
+next filing's comparative + MC agreeing, PAT anchor exact; appliers idempotent;
+verify_fills_live 0/0/0.
+
+Two follow-ups measured, not taken: (1) RECLTD Jun-19's stored ann 20190710 is a BOND
+board-meeting date (that outcome PDF contains no results — read it); first results publication
+was 2019-08-06 → a ~27-day ann look-ahead, ann-date session's scope. (2) The
+`screener-annual derivation` pass has **140 rows** (2015:3, 2016:27, 2017:22, 2018:65,
+2019:23); a derivation is only as good as its inputs AND additivity, and 3 of the 4 cells above
+came from it. Only GMDCLTD|20160630 among the rest sits on a symbol with §117c-healed cells
+(different-era inputs, unaffected). Screening the other 136 against MC (the §117c insurer
+method) is the obvious next campaign — NOT run here.
