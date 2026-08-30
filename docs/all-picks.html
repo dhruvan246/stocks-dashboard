@@ -45,6 +45,35 @@
   .sortcol:hover{color:var(--text,#475569)}
   .sortcol .ar{font-size:9px;margin-left:3px;opacity:.9}
   @media (max-width:1176px){ #boardScroll{overflow-x:auto} #boardScroll>div{min-width:1176px} }
+  /* ---- Monthly-returns card + matrix modal ---- */
+  #mrCard{cursor:pointer;transition:.18s cubic-bezier(.4,0,.2,1)}
+  #mrCard:hover{transform:translateY(-2px);box-shadow:0 16px 44px -18px rgba(16,24,40,.34)}
+  #mrModal{background:rgba(15,23,42,.45);-webkit-backdrop-filter:blur(3px);backdrop-filter:blur(3px)}
+  #mrTbl{border-collapse:separate;border-spacing:0;font-size:11px;line-height:1.15;white-space:nowrap;font-variant-numeric:tabular-nums}
+  #mrTbl th,#mrTbl td{padding:4px 7px;text-align:right;border-bottom:1px solid var(--border,#eef2f7)}
+  #mrTbl thead th{position:sticky;top:0;z-index:3;background:var(--surface,#fff);color:var(--text-muted,#64748b);
+    font-weight:700;font-size:10px;border-bottom:1px solid var(--border-strong,#d6dbe8)}
+  #mrTbl .stk{position:sticky;left:0;z-index:2;background:var(--surface,#fff);text-align:left;
+    border-right:1px solid var(--border-strong,#d6dbe8);overflow:hidden}
+  /* an inner fixed-width box, because max-width on a table-cell is only a hint (the long CAGR line
+     would otherwise stretch the whole name column) */
+  #mrTbl .stkwrap{width:206px}
+  #mrTbl thead .stk{z-index:5}
+  #mrTbl .stk a{display:flex;align-items:baseline;gap:5px;min-width:0}
+  #mrTbl .stk .sname{overflow:hidden;text-overflow:ellipsis;white-space:nowrap;min-width:0;flex:1}
+  #mrTbl .stk .smeta{display:block;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+  #mrTbl tbody tr:hover td{filter:brightness(.96)}
+  #mrTbl tbody tr:hover .stk{filter:none;background:var(--surface-2,#f1f5f9)}
+  #mrTbl .bench td{background:var(--surface-2,#f1f5f9) !important;font-weight:700}
+  #mrTbl .bench .stk{background:var(--surface-2,#f1f5f9)}
+  #mrTbl .mono{font-family:ui-monospace,SFMono-Regular,Menlo,Consolas,monospace}
+  #mrTbl .cellv{color:var(--text,#0f172a)}
+  html[data-theme="dark"] #mrTbl thead th,html[data-theme="dark"] #mrTbl .stk{background:var(--surface,#0f1930)}
+  html[data-theme="dark"] #mrTbl .cellv{color:#e5edf7}
+  @media (max-width:640px){
+    #mrTbl .stkwrap{width:150px}   /* a narrower name column leaves room for more months on a phone */
+    #mrTbl th,#mrTbl td{padding:4px 5px}
+  }
 </style>
 </head>
 <body class="bg-slate-50 min-h-screen text-slate-800">
@@ -95,6 +124,20 @@
     <button id="rwExit" class="ml-auto px-2.5 py-1 rounded-lg text-xs font-bold bg-indigo-600 hover:bg-indigo-700 text-white shrink-0">← Back to live</button>
   </div>
 
+  <!-- Monthly-returns card: opens the full month-by-month matrix (every saved strategy since
+       31 Mar 2020). Data is pre-baked (docs/monthly_returns.json) so the table opens instantly —
+       computing 45 strategies × 77 months live would take minutes. -->
+  <div id="mrCard" role="button" tabindex="0" class="hidden card p-3.5 mt-5 mb-4 flex items-center justify-between gap-3">
+    <span class="flex items-center gap-3 min-w-0">
+      <span class="w-10 h-10 rounded-xl bg-gradient-to-br from-indigo-500 to-violet-600 text-white flex items-center justify-center text-lg shrink-0 shadow-sm">📅</span>
+      <span class="min-w-0">
+        <span class="block font-bold text-slate-900 leading-tight">Monthly returns — every strategy, month by month</span>
+        <span class="block text-[12px] text-slate-500 mt-0.5" id="mrCardSub">Each saved strategy's return for every month since 31 Mar 2020</span>
+      </span>
+    </span>
+    <span class="text-indigo-600 font-bold text-sm whitespace-nowrap shrink-0">Open table →</span>
+  </div>
+
   <div id="stats" class="grid gap-3 mt-5 mb-4" style="grid-template-columns:repeat(auto-fit,minmax(158px,1fr))"></div>
   <div id="topPicks" class="hidden card p-3 mb-4 flex flex-wrap items-center gap-2"></div>
   <div id="status" class="text-sm text-slate-500 py-8 text-center card border-dashed">Loading saved strategies…</div>
@@ -121,6 +164,26 @@
       <div id="boardRows"></div>
     </div></div>
   </section>
+
+  <!-- Monthly-returns matrix modal (opened by #mrCard) -->
+  <div id="mrModal" class="hidden fixed inset-0 z-50 p-2 sm:p-5 flex items-start justify-center">
+    <div class="card w-full flex flex-col shadow-2xl" style="max-width:min(1500px,96vw);max-height:92vh">
+      <div class="flex items-start justify-between gap-3 px-4 py-3 border-b border-slate-200 shrink-0">
+        <div class="min-w-0">
+          <h2 class="font-bold text-slate-900 flex items-center gap-2">📅 Monthly returns — every saved strategy</h2>
+          <p id="mrSub" class="text-[12px] text-slate-500 mt-0.5">Loading…</p>
+        </div>
+        <div class="flex items-center gap-2 shrink-0">
+          <button id="mrCsv" class="border border-slate-300 text-slate-600 hover:bg-slate-50 rounded-lg px-2.5 py-1.5 text-xs font-semibold" title="Download the whole matrix as CSV">⬇ CSV</button>
+          <button id="mrClose" class="border border-slate-300 text-slate-600 hover:bg-slate-50 rounded-lg px-2.5 py-1.5 text-xs font-semibold" aria-label="Close">✕ Close</button>
+        </div>
+      </div>
+      <div id="mrLegend" class="px-4 py-2 text-[11px] text-slate-500 border-b border-slate-100 flex flex-wrap items-center gap-x-4 gap-y-1 shrink-0"></div>
+      <div id="mrBody" class="overflow-auto grow" style="min-height:120px">
+        <div class="p-8 text-center text-sm text-slate-400">Loading the matrix…</div>
+      </div>
+    </div>
+  </div>
 
   <p id="foot" class="text-[11px] text-slate-400 mt-4 hidden"><span class="text-amber-500">⭐</span> marks a strategy you've starred in the Favourites tab on <a href="./saved-strategies.html?view=fav" class="text-indigo-600 hover:underline">Saved Strategies</a> (stars are set there; this page only mirrors them, and they live in this browser). <span id="footRw" class="hidden">Prices are that session's official close (bhavcopy, split/bonus-adjusted); per-stock figures are the move over that one session. The listed stocks are the top-N the rule screened on that date, off the index membership, filters and factors as they stood then — nothing later leaks in. The board's last column is what the strategy held going into the day — the top-N screened at the last rebalance before it — with each stock's move from that entry to the as-of close. One card per selection rule, so the count matches Saved Strategies. ↻ Refresh is off while rewound: the closes can't change.</span><span id="footLive">Prices are live (Yahoo NSE, ~15-min delay); per-stock figures are today's move. The listed stocks are the strategy's top-N screened as of now, so they match its Live Picks tab and can differ from what it currently holds. The board's last column is that held basket — the top-N screened on the rebalance date — with each stock's move since then. Both badges are measured on the held basket — the top-N as screened on the last rebalance date — as the equal-weight move of those stocks to the live price: “since prev close” from yesterday's close (it reads “—” until live quotes arrive), “since reb.” from the rebalance day's close. One card per selection rule, so the count matches Saved Strategies. ↻ Refresh re-fetches quotes.</span></p>
 </main>
@@ -676,6 +739,101 @@ $('rwExit').onclick = exitRewind;
   if (window.btSync) { try { await btSync.pullStrategies(); } catch (e) {} }
   await runBuild();
   loadCardData();      // history + wave snapshot for the hover card — decoration, so it comes last
+})();
+</script>
+<script>
+/* ---- Monthly-returns card + matrix modal ----------------------------------
+   Opens the pre-baked month-by-month matrix (docs/monthly_returns.json) for every
+   saved strategy since 31 Mar 2020. Self-contained: only fetch + DOM, independent
+   of the board's engine. Baked because 45 strategies × 77 months is minutes of
+   compute — far too slow to run live on a click. */
+(function () {
+  const $ = id => document.getElementById(id);
+  let MR = null, SORT = { key: 'total', asc: false };   // default: best total first
+  const esc = s => String(s == null ? '' : s).replace(/[&<>"]/g, m => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;' }[m]));
+  const short = (s, n) => { s = String(s || ''); return s.length > n ? s.slice(0, n - 1) + '…' : s; };
+  const fmt = v => v == null ? '·' : (v >= 0 ? '+' : '') + v.toFixed(1);
+  function heat(v) {
+    if (v == null) return '';
+    const a = (0.10 + Math.min(Math.abs(v) / 12, 1) * 0.55).toFixed(3);
+    return v >= 0 ? `background:rgba(22,163,74,${a})` : `background:rgba(220,38,38,${a})`;
+  }
+  async function load() {
+    if (MR) return MR;
+    const r = await fetch('./monthly_returns.json', { cache: 'no-store' });
+    if (!r.ok) throw new Error('HTTP ' + r.status);
+    MR = await r.json();
+    return MR;
+  }
+  function sortedCards() {
+    const k = SORT.key, cards = MR.cards.slice();
+    cards.sort((a, b) => {
+      if (k === 'name') return a.name.localeCompare(b.name) * (SORT.asc ? 1 : -1);
+      let x = k === 'total' ? a.total : a.rets[+k], y = k === 'total' ? b.total : b.rets[+k];
+      x = x == null ? -1e9 : x; y = y == null ? -1e9 : y;
+      return SORT.asc ? x - y : y - x;
+    });
+    return cards;
+  }
+  function render() {
+    const M = MR, labels = M.labels, last = labels.length - 1;
+    $('mrSub').textContent = `${M.cards.length} strategies · entered 31 Mar 2020 · ${labels[0]} → ${labels[last]} (last is partial, to ${M.dataEnd}) · updated ${M.generated}`;
+    $('mrLegend').innerHTML = 'Each cell is that strategy\'s equal-weight basket return for the month. '
+      + '<b>Total</b> = full-window growth, <b>CAGR</b> = annualised. <b>*</b> = partial current month. Click any month or “Strategy” to sort.'
+      + '<span style="display:inline-flex;align-items:center;gap:5px;margin-left:2px">'
+      + '<span style="width:15px;height:12px;border-radius:2px;background:rgba(220,38,38,.62);display:inline-block"></span>−12%'
+      + '<span style="width:15px;height:12px;border-radius:2px;background:rgba(148,163,184,.18);display:inline-block"></span>0'
+      + '<span style="width:15px;height:12px;border-radius:2px;background:rgba(22,163,74,.62);display:inline-block"></span>+12% or more</span>';
+    const arrow = k => SORT.key === k ? (SORT.asc ? ' ▲' : ' ▼') : '';
+    let head = '<thead><tr>'
+      + `<th class="stk" style="text-align:left;cursor:pointer" data-mrsort="total" title="Sort by total return">Strategy${arrow('total')}</th>`;
+    labels.forEach((lb, i) => head += `<th data-mrsort="${i}" style="cursor:pointer" title="Sort by ${lb}${i === last ? ' — partial month to ' + M.dataEnd : ''}">${lb}${i === last ? '*' : ''}${arrow(String(i))}</th>`);
+    head += '</tr></thead>';
+    const benchTotal = M.benchRets.reduce((p, v) => v == null ? p : p * (1 + v / 100), 1);
+    let body = '<tbody>'
+      + `<tr class="bench"><td class="stk"><div class="stkwrap"><span class="font-bold text-slate-700">${esc(M.benchName)}</span><span class="block text-[10px] text-slate-400 mono">benchmark · total +${((benchTotal - 1) * 100).toFixed(0)}%</span></div></td>`
+      + M.benchRets.map(v => `<td class="cellv" style="${heat(v)}">${fmt(v)}</td>`).join('') + '</tr>';
+    for (const c of sortedCards()) {
+      body += '<tr>'
+        + `<td class="stk"><div class="stkwrap"><a href="./strategy-backtest.html?k=${encodeURIComponent(c.key)}" class="flex items-center gap-1 min-w-0 hover:text-indigo-600" title="${esc(c.name)}"><span class="sw-sn shrink-0">${esc(c.serial)}</span><span class="sname text-[11.5px] font-semibold text-slate-800">${esc(c.name)}</span></a>`
+        + `<span class="smeta text-[10px] text-slate-400 mono">total ${c.total >= 0 ? '+' : ''}${Math.round(c.total)}% · CAGR ${c.cagr >= 0 ? '+' : ''}${c.cagr.toFixed(1)}%</span></div></td>`
+        + c.rets.map(v => `<td class="cellv" style="${heat(v)}">${fmt(v)}</td>`).join('') + '</tr>';
+    }
+    $('mrBody').innerHTML = `<table id="mrTbl">${head}${body}</tbody></table>`;
+    $('mrBody').querySelectorAll('[data-mrsort]').forEach(el => el.onclick = () => {
+      const k = el.dataset.mrsort;
+      if (SORT.key === k) SORT.asc = !SORT.asc; else SORT = { key: k, asc: false };
+      render();
+    });
+  }
+  async function open() {
+    $('mrModal').classList.remove('hidden'); document.body.style.overflow = 'hidden';
+    try { await load(); render(); }
+    catch (e) { $('mrBody').innerHTML = `<div class="p-8 text-center text-sm text-slate-400">Couldn't load the monthly-returns data (${esc(e.message || e)}).</div>`; }
+  }
+  function close() { $('mrModal').classList.add('hidden'); document.body.style.overflow = ''; }
+  function csv() {
+    if (!MR) return;
+    const rows = [['Serial', 'Strategy', 'Total %', 'CAGR %', ...MR.labels]];
+    rows.push(['', 'Nifty 500 (benchmark)', '', '', ...MR.benchRets.map(v => v == null ? '' : v)]);
+    for (const c of sortedCards()) rows.push([c.serial, c.name, c.total, c.cagr, ...c.rets.map(v => v == null ? '' : v)]);
+    const str = rows.map(r => r.map(x => { const s = String(x == null ? '' : x); return /[",\n]/.test(s) ? '"' + s.replace(/"/g, '""') + '"' : s; }).join(',')).join('\n');
+    const a = document.createElement('a'); a.href = URL.createObjectURL(new Blob([str], { type: 'text/csv' }));
+    a.download = 'monthly_returns_' + (MR.dataEnd || '') + '.csv'; a.click();
+    setTimeout(() => URL.revokeObjectURL(a.href), 1000);
+  }
+  $('mrCard').onclick = open;
+  $('mrCard').onkeydown = e => { if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); open(); } };
+  $('mrClose').onclick = close;
+  $('mrCsv').onclick = csv;
+  $('mrModal').onclick = e => { if (e.target === $('mrModal')) close(); };
+  document.addEventListener('keydown', e => { if (e.key === 'Escape' && !$('mrModal').classList.contains('hidden')) close(); });
+  // Reveal the card + fill its subtitle from the baked file (small ~36 KB). If the file isn't there
+  // yet (first deploy before the bake lands), leave the card hidden rather than show a dead button.
+  load().then(M => {
+    $('mrCard').classList.remove('hidden');
+    $('mrCardSub').textContent = `${M.cards.length} strategies · every month since 31 Mar 2020 · to ${M.dataEnd}`;
+  }).catch(() => {});
 })();
 </script>
 </body>

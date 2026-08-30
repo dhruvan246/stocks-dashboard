@@ -1,0 +1,95 @@
+name: Bake monthly returns
+
+# Re-bakes docs/monthly_returns.json — every saved strategy's month-by-month return since
+# 31 Mar 2020 — so the "Monthly returns" card on All Picks stays current on its own. Runs the
+# site's OWN backtest engine under Node (scripts/monthly_returns_bake.js, no browser needed),
+# exactly like the Backtest page, so the numbers can't drift from it.
+#
+# Monthly returns depend on BOTH the price data AND the fundamentals (some strategies rank on
+# earnings), so re-bake after EITHER daily refresh lands — the same trigger bake-waves uses. Only
+# the current (partial) month's cell and the full-window totals move day to day; past months are
+# fixed. Not correctness-critical: if a run fails the card keeps showing the last good file.
+on:
+  workflow_run:
+    workflows: ["Daily backtest data refresh", "Daily fundamentals refresh"]
+    types: [completed]
+  workflow_dispatch: {}
+
+permissions:
+  contents: write
+
+concurrency:
+  group: monthly-returns
+  cancel-in-progress: true      # a newer data refresh supersedes an in-flight bake
+
+jobs:
+  bake:
+    # Manual runs always; auto runs only after the upstream refresh actually SUCCEEDED.
+    if: ${{ github.event_name == 'workflow_dispatch' || github.event.workflow_run.conclusion == 'success' }}
+    runs-on: ubuntu-latest
+    timeout-minutes: 30           # pure Node: ~18s data load + 45 cards; 30 is generous
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v5
+
+      - name: Set up Node
+        uses: actions/setup-node@v4
+        with:
+          node-version: "22"
+
+      - name: Bake the monthly-returns matrix
+        run: node --max-old-space-size=8192 scripts/monthly_returns_bake.js --out docs/monthly_returns.json
+
+      - name: Guard — refuse to commit an empty or malformed matrix
+        run: |
+          node -e '
+            const j = require("./docs/monthly_returns.json");
+            if (!Array.isArray(j.cards) || j.cards.length < 5) { console.error("too few cards: " + (j.cards||[]).length); process.exit(1); }
+            if (!Array.isArray(j.months) || !j.months.length) { console.error("no months"); process.exit(1); }
+            const bad = j.cards.filter(c => !c.serial || !c.name || !Array.isArray(c.rets) || c.rets.length !== j.months.length);
+            if (bad.length) { console.error(bad.length + " cards malformed (serial/name/rets length)"); process.exit(1); }
+            if (!Array.isArray(j.benchRets) || j.benchRets.length !== j.months.length) { console.error("benchmark length mismatch"); process.exit(1); }
+            console.log("guard ok: " + j.cards.length + " cards × " + j.months.length + " months, to " + j.dataEnd);
+          '
+
+      - name: Commit updated matrix (only if changed)
+        id: commit
+        run: |
+          git config user.name  "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          cp docs/monthly_returns.json /tmp/monthly_returns.json
+          for attempt in 1 2 3 4 5; do
+            git fetch origin main
+            git reset --hard origin/main
+            cp /tmp/monthly_returns.json docs/monthly_returns.json
+            git add docs/monthly_returns.json
+            if git diff --cached --quiet; then
+              echo "Matrix unchanged — nothing to commit"
+              echo "changed=false" >> "$GITHUB_OUTPUT"
+              exit 0
+            fi
+            git commit -m "Monthly returns refresh $(TZ=Asia/Kolkata date +'%Y-%m-%d %H:%M IST')"
+            if git push origin HEAD:main; then
+              echo "Pushed on attempt #$attempt"
+              echo "changed=true" >> "$GITHUB_OUTPUT"
+              exit 0
+            fi
+            echo "Push attempt #$attempt rejected; resetting and retrying"
+            sleep $(( attempt * 3 ))
+          done
+          echo "Failed to push after 5 attempts"
+          exit 1
+
+      # Bot commits can't auto-trigger pages.yml — dispatch it explicitly on change. Never fail the
+      # run on this line: the data is already committed, and the next push or ci-janitor.yml publishes it.
+      - name: Publish to Pages (only when the matrix changed)
+        if: steps.commit.outputs.changed == 'true'
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          for i in 1 2 3; do
+            gh workflow run pages.yml && exit 0
+            echo "::warning::pages dispatch attempt $i failed (GitHub-side); retrying in 15s"
+            sleep 15
+          done
+          echo "::warning::pages dispatch failed 3x — payload is committed; next push or ci-janitor publishes it"
