@@ -40,8 +40,13 @@
   async function kvGet(k) {
     try {
       if (_isDirty(k)) { // local changes never yet pushed — push first so they aren't lost
-        const ok = await rpc('sw_kv_set', { secret: WRITE, k, payload: _get(k) || [] });
-        if (ok === true) _clean(k);
+        // SETTINGS is a per-key {k,v,ts} doc shared by every device: replaying a stale mirror
+        // verbatim erases every key another device wrote since this browser last synced
+        // (measured 2026-08-30 19:55: the ⭐-favourites doc regressed 8→6 this way). Merge
+        // mirror↔remote by per-entry ts before pushing; only the plain-array docs may replay.
+        const payload = (k === 'SETTINGS') ? _mergeSettingsDocs(_get(k) || [], await rpc('sw_kv_get', { k })) : (_get(k) || []);
+        const ok = await rpc('sw_kv_set', { secret: WRITE, k, payload });
+        if (ok === true) { _put(k, payload); _clean(k); }
       }
       const v = await rpc('sw_kv_get', { k });
       if (v != null) { _put(k, v); return v; }
@@ -114,16 +119,33 @@
     } catch (e) {}
     _snap = {}; SETTINGS_KEYS.forEach(k => { try { _snap[k] = localStorage.getItem(k); } catch (e) {} });
   }
-  async function pushSettings() {
+  function _mergeSettingsDocs(a, b) {   // union of two SETTINGS docs, newer ts wins per key
+    const m = {};
+    [a, b].forEach(doc => (Array.isArray(doc) ? doc : []).forEach(e => {
+      if (e && e.k && (!m[e.k] || (e.ts || 0) > (m[e.k].ts || 0))) m[e.k] = e; }));
+    return Object.keys(m).map(k => m[k]);
+  }
+  async function pushSettings(opts) {
     if (!SETTINGS_KEYS.length || !ownerKey()) return;
     let changed = false;
     SETTINGS_KEYS.forEach(k => { let v = null; try { v = localStorage.getItem(k); } catch (e) {}
       if (v !== _snap[k]) { _sStamp(k, Date.now()); _snap[k] = v; changed = true; } });
     if (!changed) return;
-    // MERGE, never replace: our keys, plus the remote-doc entries we don't track (kept verbatim
-    // from the last pull — no network read here; this can run on pagehide).
-    const out = SETTINGS_KEYS.map(k => { let v = null; try { v = localStorage.getItem(k); } catch (e) {}
-      return { k, v, ts: _sTs(k) || Date.now() }; }).concat(_remoteExtra);
+    // A tab may sit open for hours while other devices write the doc: never overwrite a key
+    // whose remote entry is NEWER than this tab's stamp for it. Reference doc = a fresh read
+    // when the page can still await one (visibilitychange), else the swkv_SETTINGS mirror —
+    // shared per browser, so any tab's pull protects every other tab's push. pagehide cannot
+    // await a read, which is why the hidden-state push does the fetch ahead of it.
+    let ref = _get('SETTINGS');
+    if (opts && opts.fetchFirst) { try { const r = await rpc('sw_kv_get', { k: 'SETTINGS' }); if (r != null) { ref = r; _put('SETTINGS', r); } } catch (e) {} }
+    const rm = {}; (Array.isArray(ref) ? ref : _remoteExtra).forEach(e => { if (e && e.k) rm[e.k] = e; });
+    const out = SETTINGS_KEYS.map(k => {
+      const r = rm[k], st = _sTs(k);
+      if (r && (r.ts || 0) > st) return r;              // someone else knows newer — keep theirs
+      let v = null; try { v = localStorage.getItem(k); } catch (e) {}
+      return { k, v, ts: st || Date.now() };
+    });
+    Object.keys(rm).forEach(k => { if (SETTINGS_KEYS.indexOf(k) < 0) out.push(rm[k]); });
     await kvSet('SETTINGS', out);
   }
 
@@ -137,7 +159,10 @@
     if (ok) { localStorage.setItem(OWNER_KEY, ok); u.searchParams.delete('ownerkey'); history.replaceState(null, '', u.pathname + u.search + u.hash); }
   } catch (e) {}
 
-  // auto-init: count the visit; flush changed settings when leaving
+  // auto-init: count the visit; flush changed settings when leaving. The hidden-state flush
+  // runs while the page can still await the guard's remote read; pagehide is the last-resort
+  // flush (mirror-guarded only) for browsers that kill the tab without a hidden event.
   pvHit();
+  addEventListener('visibilitychange', () => { if (document.visibilityState === 'hidden') pushSettings({ fetchFirst: true }); });
   addEventListener('pagehide', () => { pushSettings(); });
 })(window);
