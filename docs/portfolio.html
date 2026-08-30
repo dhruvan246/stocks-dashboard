@@ -514,6 +514,17 @@ async function unzipRow(row){
   const st=new Blob([bytes]).stream().pipeThrough(new DecompressionStream('gzip'));
   return JSON.parse(await new Response(st).text());
 }
+/* One token-gated row, unzipped — or null (a missing row is normal, not an error). */
+async function fetchRowZ(name){
+  const r=await fetch(SUPA_GET+'?token='+encodeURIComponent(name)+'&apikey='+SUPA_ANON,{cache:'no-store'});
+  if(!r.ok) return null; const row=await r.json(); return (row&&row.z)?unzipRow(row):null;
+}
+/* A document too big for one 4KB supabase row is split by the publisher across <name>, <name>2, … —
+   row 1 carries 'parts: N'. Fetch rows 2..N in parallel; a missing part resolves null and we merge
+   what exists (the next publish heals a half-written set). */
+function extraParts(base,n){
+  return Promise.all(Array.from({length:n-1},(_,i)=>fetchRowZ(base+(i+2)).catch(()=>null)));
+}
 /* trades.json (closed positions from investing.com). Local: the file; web: its token-gated row
    (holdings token + '.trades'). Normalised to TRADES={updated, byPf:{pf:[{sym,od,cd,qty,opx,cpx,pnl,gain}]}}. */
 async function loadTrades(){
@@ -529,9 +540,10 @@ async function loadTrades(){
       for(const pf in TRADES.byStock){ TRADES.byStock[pf]=Object.entries(TRADES.byStock[pf]).map(([sym,v])=>[sym,v[0],v[1],v[2]]); }
       return; }
     const t=readToken(); if(!t) return;
-    const r=await fetch(SUPA_GET+'?token='+encodeURIComponent(t+'.trades')+'&apikey='+SUPA_ANON,{cache:'no-store'});
-    if(!r.ok) return; const row=await r.json(); if(!row||!row.z) return;
-    const d=await unzipRow(row); TRADES={updated:d.u, byPf:{}, summary:{}, monthly:(d.m||{}), byStock:(d.k||{}), partial:false};
+    const d=await fetchRowZ(t+'.trades'); if(!d) return;
+    if(d.parts>1) (await extraParts(t+'.trades',d.parts)).forEach(e=>{ if(!e) return;
+      Object.assign(d.r=d.r||{},e.r||{}); Object.assign(d.m=d.m||{},e.m||{}); Object.assign(d.k=d.k||{},e.k||{}); });
+    TRADES={updated:d.u, byPf:{}, summary:{}, monthly:(d.m||{}), byStock:(d.k||{}), partial:false};
     for(const pf in (d.s||{})){ const a=d.s[pf]; TRADES.summary[pf]={n:a[0],pnl:a[1],wins:a[2]}; }
     for(const pf in (d.r||{})){ TRADES.byPf[pf]=d.r[pf].map(mk); if(TRADES.byPf[pf].length<(TRADES.summary[pf]?TRADES.summary[pf].n:0)) TRADES.partial=true; }
   }catch(e){ console.warn('trades not loaded:',e.message); }
@@ -540,8 +552,9 @@ async function loadModel(){
   try{
     if(MODE==='local'){ const r=await fetch('./model.json',{cache:'no-store'}); if(r.ok) MODEL=await r.json(); return; }
     const t=readToken(); if(!t) return;
-    const r=await fetch(SUPA_GET+'?token='+encodeURIComponent(t+'.model')+'&apikey='+SUPA_ANON,{cache:'no-store'});
-    if(!r.ok) return; const row=await r.json(); if(row&&row.z) MODEL=await unzipRow(row);
+    const m=await fetchRowZ(t+'.model'); if(!m) return;
+    if(m.parts>1) (await extraParts(t+'.model',m.parts)).forEach(e=>{ if(e&&e.strategies) Object.assign(m.strategies=m.strategies||{},e.strategies); });
+    MODEL=m;
   }catch(e){ console.warn('model not loaded:',e.message); }
 }
 /* every symbol the model cards need a price for — basket at the last rebalance + today's picks */
