@@ -40,6 +40,8 @@ def fetch_one(sym, qe, code, stored):
     if not parsed:
         return {"sym": sym, "qe": qe, "code": code, "absent": "no-table"}
     rows, name = parsed
+    if not isinstance(rows, dict):        # parse_new can return (None, name) — a shell page
+        return {"sym": sym, "qe": qe, "code": code, "absent": "no-table-rows"}
     return {"sym": sym, "qe": qe, "code": code, "page_name": name, "stored": stored,
             "rows": {k: v for k, v in rows.items()}}
 
@@ -48,7 +50,12 @@ def main():
     ap = argparse.ArgumentParser()
     ap.add_argument("--threads", type=int, default=2)
     ap.add_argument("--limit", type=int, default=0)
+    ap.add_argument("--adjudicate", action="store_true")
+    ap.add_argument("--write", action="store_true")
     a = ap.parse_args()
+    if a.adjudicate:
+        p2_adjudicate(a.write)
+        return
     hist = json.load(open(os.path.join(HERE, "shp_history.json"), encoding="utf-8"))
     names = hist.get("_names", {})
     cmap, by_name = H.build_codemap(names)
@@ -83,7 +90,10 @@ def main():
     with ThreadPoolExecutor(max_workers=a.threads) as ex:
         futs = [ex.submit(fetch_one, *t) for t in todo]
         for fu in as_completed(futs):
-            r = fu.result()
+            try:
+                r = fu.result()
+            except Exception as e:
+                r = {"sym": "?", "qe": "?", "absent": "worker-crash %r" % (e,)}
             with _lk:
                 fh.write(json.dumps(r, default=str) + "\n")
                 n += 1
@@ -93,6 +103,87 @@ def main():
                           flush=True)
     fh.close()
     print("p2 fetch done: %d" % n)
+
+
+
+
+# ---------------------------------------------------------------- adjudicate + apply
+# The pre-2016 store's own family convention (the Wayback-MC majority, ~22k cells) is
+# dii = mf + banks + ins (+ vcf) — the Any-Other row is NOT part of dii. A stored cell whose
+# dii equals dom + Any-Other got that block folded in by a minority route (trendlyne seam rows,
+# the aspx reconciliation fold, or an era XBRL read) — heal dii back to the convention using the
+# page's own %(A+B+C) values. No nationality call is needed for dii (unlike the XBRL-era fii
+# heal); the fii side of these cells is left as authored and journalled open.
+def p2_adjudicate(write=False):
+    import datetime
+    from collections import Counter
+    hist = json.load(open(os.path.join(HERE, "shp_history.json"), encoding="utf-8"))
+    led = json.load(open(os.path.join(HERE, "shp_cell_fix.json"), encoding="utf-8"))
+    fix = led.setdefault("fix", {})
+    st = Counter()
+    stamp = datetime.date.today().isoformat()
+    n_new = 0
+    for line in open(CENSUS, encoding="utf-8"):
+        r = json.loads(line)
+        if "absent" in r:
+            st["absent"] += 1
+            continue
+        sym, qe = r["sym"], r["qe"]
+        cur = (hist.get(sym) or {}).get(qe)
+        if cur is None:
+            st["cell-gone"] += 1
+            continue
+        rows = r["rows"]
+        def val(slot):
+            p = rows.get(slot)
+            if not p:
+                return None
+            return p[1] if p[1] is not None else p[0]
+        anyoth, fpi = val("anyoth"), val("fpi")
+        oth = 0.0
+        if anyoth is not None and fpi is not None:
+            oth = 0.0 if abs(anyoth - fpi) <= 0.02 else max(0.0, anyoth - fpi)
+        elif anyoth is not None:
+            oth = anyoth
+        dom = round((val("mf") or 0.0) + (val("banks") or 0.0) + (val("ins") or 0.0)
+                    + (val("vcf") or 0.0), 4)
+        if oth < 0.25:
+            st["no-material-block"] += 1
+            continue
+        try:
+            dii = float(cur[2])
+        except (TypeError, ValueError):
+            st["bad-stored"] += 1
+            continue
+        if abs(dii - dom) <= 0.06:
+            st["already-convention"] += 1
+            continue
+        if abs(dii - (dom + oth)) > 0.06:
+            st["matches-neither"] += 1
+            continue
+        if qe in (fix.get(sym) or {}):
+            st["already-ledgered"] += 1
+            continue
+        new = list(cur)
+        new[2] = dom
+        fix.setdefault(sym, {})[qe] = {
+            "cell": new, "was": list(cur),
+            "src": "bseaspx:%s:qtrid%d" % (r["code"], A.qtrid_of(qe)),
+            "why": ("SW-2 phase-2 %s: pre-2016 family convention is dii = mf+banks+ins(+vcf); "
+                    "this cell's dii equals that PLUS the institutions Any-Other row (%.2fpp) "
+                    "folded in by a minority route. Healed to the page's own domestic rows "
+                    "(%.4f). fii left as authored (block nationality not adjudicated here). "
+                    "Census: _shp_oth_p2_census.jsonl") % (stamp, oth, dom),
+        }
+        st["HEAL"] += 1
+        n_new += 1
+    print("p2 adjudication:", dict(st))
+    if write and n_new:
+        json.dump(led, open(os.path.join(HERE, "shp_cell_fix.json"), "w", encoding="utf-8"),
+                  indent=1, ensure_ascii=False)
+        print("wrote shp_cell_fix.json (+%d)" % n_new)
+    elif not write:
+        print("(dry run — use adjudicate --write)")
 
 
 if __name__ == "__main__":

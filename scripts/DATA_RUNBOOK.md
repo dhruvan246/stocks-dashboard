@@ -13090,7 +13090,7 @@ stream (`_shp_dates/fetch_ann_2014.py` → `shp_sub_dates.json` src `ann-stream`
 never probed 2014+): a negative verdict is only as wide as the windows it measured — re-check
 era boundaries before reusing an old negative.
 
-**SW-2 (DII cells disagree with filings) — CONFIRMED, class root-caused, swept.** The §22i
+**SW-2 (DII cells disagree with filings) — CONFIRMED, class root-caused, swept (final tally 2026-08-30 EOD: XBRL era 16,919 cells re-read → 914 foreign-confirmed / 901 heals; pre-XBRL phase-2 5,526 aspx pages (Dec-2013..Mar-2016) → 262 dii heals to the era's own mf+banks+ins(+vcf) convention incl. JUBLPHARMA Dec-15 15.23→0.1086; ~1.55k XBRL-era + 20 aspx cells HELD with reasons; 110 matches-neither journalled — the AXISBANK-class sits between conventions, open).** The §22i
 swallowed-foreign-block's dii-side sibling: in the Jun-2016..Jun-2022 format the institutions
 block's "Any Other (specify)" row (`OtherInstitutionsMember`) is routed into dii by
 `OLD_OTHER_TO_DII=True` — correct for domestic blocks, WRONG when the row holds a foreign
