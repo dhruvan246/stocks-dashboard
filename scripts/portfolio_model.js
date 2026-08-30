@@ -171,7 +171,7 @@ async function main() {
                h: r.holds.map(h => [h.sym, round(h.wt, 2), E.priceAt(symToTkr[h.sym], off), h.isNew ? 1 : 0]) };
     });
     out.strategies[p.id] = {
-      name: p.name, cycle: p.cycle, anchor: cfg.start, label: E.strategyLabel(cfg), topN: cfg.topN,
+      name: p.name, cycle: p.cycle, anchor: cfg.start, label: E.strategyLabel(cfg) + (cfg.method === 'reset' ? ' · Reset each cycle' : ' · Hold winners'), topN: cfg.topN,
       final: { val: Math.round(res.finalV), cagr: round(res.cagr, 2), years: round(res.years, 2), benchCagr: round(res.benchCagr, 2) },
       rebs, picks: { asOf: E.isoOff(latestOff), qualifying: rows.length, rows: picks }, standing
     };

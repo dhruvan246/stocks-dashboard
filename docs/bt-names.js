@@ -17,7 +17,15 @@
 const NAME_FUND_FIELDS = new Set(['profitYoyPct', 'profitBase', 'profitAccel', 'profitTTM', 'profitStreak', 'postDrift', 'composite']);
 function usesEarnings(c) { return !!c && (NAME_FUND_FIELDS.has(c.sortBy) || (c.filters || []).some(f => NAME_FUND_FIELDS.has(f.field))); }
 function basisSuffix(c) { return usesEarnings(c) ? (' · ' + (c && c.earnBasis === 'std' ? 'Standalone' : 'Consolidated')) : ''; }
-function nameWithBasis(name, c) { const s = basisSuffix(c); name = name || ''; return (s && !name.endsWith(s)) ? name + s : name; }
+// Rebalance method — the user asked for this after 8 look-alike favourites (2026-08-30): hold-vs-reset
+// changes how a basket is managed month to month, so a name that hides it is ambiguous where it counts.
+function methodSuffix(c) { return c && c.method ? (' · ' + (c.method === 'reset' ? 'Reset each cycle' : 'Hold winners')) : ''; }
+function nameWithBasis(name, c) {
+  name = name || '';
+  const b = basisSuffix(c);  if (b && !name.includes(b)) name += b;
+  const m = methodSuffix(c); if (m && !name.includes(m)) name += m;
+  return name;
+}
 
 // Plain-English field vocabulary. `p:1` = the value is a percentage (append '%'); labels never end in
 // '%' so the appended one never doubles up. Keep the key set aligned with stock-backtest.html FIELDS.
@@ -45,6 +53,7 @@ function strategyEnglish(c) {
   const pick = (c.dir === 'high' ? 'Top' : 'Lowest') + ' ' + (c.topN != null ? c.topN : '') + ' by ' + enField(c.sortBy);
   const fils = (c.filters || []).map(enFilter).join(' · ');
   const basis = usesEarnings(c) ? (' · ' + (c.earnBasis === 'std' ? 'standalone' : 'consolidated')) : '';
-  return pick + ' · ' + uni + ' · ' + FQ + (fils ? ' · ' + fils : '') + basis;
+  const meth = c.method ? (' · ' + (c.method === 'reset' ? 'reset each cycle' : 'hold winners')) : '';
+  return pick + ' · ' + uni + ' · ' + FQ + (fils ? ' · ' + fils : '') + basis + meth;
 }
-if (typeof module !== 'undefined' && module.exports) module.exports = { usesEarnings, basisSuffix, nameWithBasis, strategyEnglish };
+if (typeof module !== 'undefined' && module.exports) module.exports = { usesEarnings, basisSuffix, methodSuffix, nameWithBasis, strategyEnglish };

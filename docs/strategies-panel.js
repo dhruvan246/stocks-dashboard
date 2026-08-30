@@ -121,6 +121,15 @@ $('btnLoadAll').onclick = async () => {
 
 /* ---------- Zerodha plumbing (shares the portfolio page's localStorage on this origin) ---------- */
 const Z = { connected: false, user: null, held: new Set() };
+/* Which strategies' baskets were SENT to Zerodha today — so buying 8 in a row stays legible
+   (user 2026-08-30: "show me label basket bought or i will be confused which of 8 are done").
+   Marked the moment orders leave for Zerodha (direct API or the Kite popup); browser-local
+   (same device that buys), auto-expires at midnight, and the chip un-marks on click if a
+   basket was cancelled on Zerodha's page. */
+const zbDayKey = () => { const d = new Date(); return d.getFullYear() + '-' + String(d.getMonth() + 1).padStart(2, '0') + '-' + String(d.getDate()).padStart(2, '0'); };
+function zbBoughtSet(){ try { const j = JSON.parse(localStorage.getItem('sp_bought_v1') || '{}'); return new Set(j[zbDayKey()] || []); } catch(e){ return new Set(); } }
+function zbSetBought(id, on){ try { const k = zbDayKey(), a = zbBoughtSet(); on ? a.add(id) : a.delete(id);
+    localStorage.setItem('sp_bought_v1', JSON.stringify({ [k]: [...a] })); } catch(e){} renderCards(); }
 /* Zerodha's SEBI static-IP rule (Apr-2026) rejects API order placement from a non-whitelisted IP —
    our Cloudflare worker has no static IP, so direct /order can't work here; the Kite basket popup
    (you confirm on Zerodha's page) has no such requirement. Detect that reject and fall back. */
@@ -182,6 +191,7 @@ function renderCards(){
   const list = (useFav ? all.filter(it => isFavCfg(favs, it.cfg)) : all)
     .slice().sort((a, b) => (isFavCfg(favs, b.cfg) ? 1 : 0) - (isFavCfg(favs, a.cfg) ? 1 : 0));
   if (!list.length){ $('cards').innerHTML = '<div class="empty">No saved strategies found.</div>'; return; }
+  const bought = zbBoughtSet();
   const h = list.map(it => {
     const en = (typeof strategyEnglish === 'function') ? strategyEnglish(it.cfg) : '';
     const disp = en || nameWithBasis(it.name, it.cfg);
@@ -201,15 +211,17 @@ function renderCards(){
     }
     return '<div class="sblk"><div class="shead"><span class="nm2" title="Code-name: ' + esc(nameWithBasis(it.name, it.cfg)) + '">' + (isFavCfg(loadFavs(), it.cfg) ? '\u2b50 ' : '') + esc(disp) + '</span>' +
       (it._priv ? '<span class="tag new">private</span>' : '') +
+      (bought.has(it.id) ? '<span class="tag keep" data-unbought="' + esc(it.id) + '" title="Basket sent to Zerodha today — click if that was cancelled" style="cursor:pointer">✓ bought today</span>' : '') +
       '<span class="sym">' + esc(cardMeta(it.cfg)) + (p ? ' · picks as of ' + esc(p.asOf) : '') + '</span>' +
       '<span style="margin-left:auto; display:flex; gap:6px">' +
       '<button class="btn" data-load="' + esc(it.id) + '">🎯 ' + (p ? 'Refresh' : 'Picks') + '</button>' +
-      (p ? '<button class="btn on" data-basket="' + esc(it.id) + '">⚡ Buy basket</button>' : '') +
+      (p ? '<button class="btn on" data-basket="' + esc(it.id) + '">⚡ ' + (bought.has(it.id) ? 'Buy again' : 'Buy basket') + '</button>' : '') +
       '</span></div>' + body + '</div>';
   }).join('');
   $('cards').innerHTML = h;
 }
 $('cards').addEventListener('click', e => {
+  const u = e.target.closest('[data-unbought]'); if (u){ zbSetBought(u.dataset.unbought, false); ktoast('Un-marked — it shows as not bought again'); return; }
   const l = e.target.closest('[data-load]'); if (l){ l.textContent = '⏳…'; loadPicks(l.dataset.load); return; }
   const b = e.target.closest('[data-basket]'); if (b) zBasketOpen(b.dataset.basket);
 });
@@ -246,7 +258,7 @@ function ensureZbDlg(){
   $('zbTbl').addEventListener('change', e => { const c = e.target.closest('input[type=checkbox]'); if (!c) return;
     ZB.rows[+c.dataset.i].on = c.checked; zbAlloc(); zbRender(); zbMarginSoon(true); });
   $('zbKite').onclick = () => { const o = zbOrders(); if (!o.length){ ktoast('Nothing to buy — set an amount first'); return; }
-    if (kiteSend(o)) $('zbWrap').classList.remove('open'); };
+    if (kiteSend(o)){ zbSetBought(ZB.id, true); $('zbWrap').classList.remove('open'); } };
   $('zbGo').onclick = zbPlaceAll;
 }
 function zbOrders(){
@@ -354,7 +366,7 @@ async function zbPlaceAll(){
     b.textContent = 'Confirm ' + orders.length + ' BUY orders ≈ ' + zinr(est) + ' ?';
     clearTimeout(ZB.t); ZB.t = setTimeout(zbArmReset, 8000); return; }
   b.dataset.arm = '';
-  if (Z.directBlocked){ if (kiteSend(orders)) $('zbWrap').classList.remove('open'); return; }
+  if (Z.directBlocked){ if (kiteSend(orders)){ zbSetBought(ZB.id, true); $('zbWrap').classList.remove('open'); } return; }
   b.disabled = true; b.textContent = 'Placing…';
   let bailed = false;
   for (const o of orders){
@@ -370,7 +382,7 @@ async function zbPlaceAll(){
   if (bailed){
     ZB.rows.forEach(r => { if (r.st === '…') r.st = ''; }); zbRender();
     ktoast('Direct API orders need a whitelisted static IP — opening the Zerodha basket to confirm instead…', 5500);
-    kiteSend(orders); return;
+    if (kiteSend(orders)) zbSetBought(ZB.id, true); return;
   }
   await new Promise(r => setTimeout(r, 1800));
   const o = await zFetch('/orders'), list = (o.j && o.j.data) || [];
@@ -378,6 +390,7 @@ async function zbPlaceAll(){
     if (row){ r.st = row.status; r.msg = row.status_message || ''; } });
   zbRender(); b.disabled = false; b.textContent = 'Place all ▸';
   const okN = ZB.rows.filter(r => r.st === 'COMPLETE').length;
+  if (ZB.rows.some(r => r.oid)) zbSetBought(ZB.id, true);
   ktoast(okN + '/' + orders.length + ' orders complete — see the table for the rest', 6000);
 }
 function kiteSend(orders){
