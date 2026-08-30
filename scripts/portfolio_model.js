@@ -66,13 +66,42 @@ async function loadHoldings() {
   throw new Error('no holdings source: set PF_HOLDINGS_TOKEN (cloud) or pass --holdings <file> (local)');
 }
 async function publish(out) {
-  const slim = Object.assign({}, out, { strategies: {} });
-  for (const k in out.strategies) { const st = Object.assign({}, out.strategies[k]); st.rebs = (st.rebs || []).slice(-KEEP_REBS); slim.strategies[k] = st; }
-  const blob = zlib.gzipSync(Buffer.from(JSON.stringify(slim)), { level: 9 }).toString('base64');
-  if (blob.length + 32 > CAP) throw new Error('model payload ' + blob.length + ' B exceeds the ' + CAP + ' B column cap — lower KEEP_REBS');
-  const ok = await rpc('pf_feed_set', { secret: OWNER, token: HOLD_TOKEN + '.model', payload: { z: blob } });
-  if (ok !== true) throw new Error('supabase rejected the model write: ' + JSON.stringify(ok));
-  log('pushed model row <token>.model — ' + blob.length + ' B of ' + CAP + ' (' + Object.keys(slim.strategies).length + ' strategies × last ' + KEEP_REBS + ' rebalances)');
+  /* The strategies no longer fit one 4 KB pf_feed row (8 monthly strategies ≈ 2-3 rows), so the
+     model is split: row `<token>.model` = metadata + as many strategies as pack under the cap
+     (+ `parts: N` when more follow), rows `.model2`… = `{strategies:{…}}` with the rest. The page
+     fetches row 1 and, when `parts` says so, the extra rows — merging all `strategies` together.
+     push_holdings.py (the Mac-side publisher) splits identically — keep the two in lockstep. */
+  const strats = {};
+  for (const k in out.strategies) { const st = Object.assign({}, out.strategies[k]); st.rebs = (st.rebs || []).slice(-KEEP_REBS); strats[k] = st; }
+  const head = Object.assign({}, out); delete head.strategies;
+  const packB = doc => zlib.gzipSync(Buffer.from(JSON.stringify(doc)), { level: 9 }).toString('base64');
+  const buildDoc = (sub, first, n) => {
+    const doc = first ? Object.assign({}, head, { strategies: sub }) : { strategies: sub };
+    if (first && n > 1) doc.parts = n;
+    return doc;
+  };
+  /* PF_SPLIT_TEST=1 halves the split threshold so the multi-row path can be exercised with small
+     real data (same hook as push_holdings.py); the per-row write guard below stays at the real CAP. */
+  const lim = (process.env.PF_SPLIT_TEST === '1' ? CAP / 2 : CAP) - 32, groups = []; let cur = {};
+  for (const k in strats) {                       // greedy: new row the moment the packed row would overflow
+    cur[k] = strats[k];                           // (trial n=99 packs to the same length as any 2-digit count)
+    if (packB(buildDoc(cur, !groups.length, 99)).length > lim && Object.keys(cur).length > 1) {
+      delete cur[k]; groups.push(cur); cur = {}; cur[k] = strats[k];
+    }
+  }
+  groups.push(cur);
+  const docs = groups.map((g, i) => buildDoc(g, i === 0, groups.length));
+  for (let i = 0; i < docs.length; i++) {
+    const blob = packB(docs[i]);
+    if (blob.length + 32 > CAP) throw new Error('one model row still ' + blob.length + ' B > the ' + CAP + ' B cap (strategies: ' +
+      Object.keys(groups[i]).join(',') + ') — lower KEEP_REBS');
+    const token = HOLD_TOKEN + '.model' + (i ? String(i + 1) : '');
+    const ok = await rpc('pf_feed_set', { secret: OWNER, token, payload: { z: blob } });
+    if (ok !== true) throw new Error('supabase rejected the model write (' + token + '): ' + JSON.stringify(ok));
+    log('pushed model row ' + (i ? '<token>.model' + (i + 1) : '<token>.model') + ' — ' + blob.length + ' B of ' + CAP +
+        ' (' + Object.keys(groups[i]).length + ' of ' + Object.keys(strats).length + ' strategies × last ' + KEEP_REBS + ' rebalances' +
+        (docs.length > 1 ? ', row ' + (i + 1) + '/' + docs.length : '') + ')');
+  }
 }
 
 function anchorFor(cycle) {
