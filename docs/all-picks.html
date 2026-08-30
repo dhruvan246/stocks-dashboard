@@ -68,6 +68,10 @@
   #mrTbl .bench .stk{background:var(--surface-2,#f1f5f9)}
   #mrTbl .mono{font-family:ui-monospace,SFMono-Regular,Menlo,Consolas,monospace}
   #mrTbl .cellv{color:var(--text,#0f172a)}
+  /* the current month, re-priced at live quotes — a left rule + a pulsing dot on the header */
+  #mrTbl td.mrlive,#mrTbl th.mrlive{border-left:2px solid rgba(37,99,235,.5)}
+  #mrTbl th.mrlive::after{content:"";display:inline-block;width:6px;height:6px;border-radius:50%;background:#22c55e;margin-left:5px;vertical-align:middle;box-shadow:0 0 0 0 rgba(34,197,94,.6);animation:mrpulse 1.8s infinite}
+  @keyframes mrpulse{0%{box-shadow:0 0 0 0 rgba(34,197,94,.5)}70%{box-shadow:0 0 0 5px rgba(34,197,94,0)}100%{box-shadow:0 0 0 0 rgba(34,197,94,0)}}
   html[data-theme="dark"] #mrTbl thead th,html[data-theme="dark"] #mrTbl .stk{background:var(--surface,#0f1930)}
   html[data-theme="dark"] #mrTbl .cellv{color:#e5edf7}
   @media (max-width:640px){
@@ -767,19 +771,48 @@ $('rwExit').onclick = exitRewind;
     MR = await r.json();
     return MR;
   }
+  // ---- live current-month overlay -----------------------------------------------------------------
+  // The last column is the still-running month. Every saved strategy is monthly, so its held basket
+  // (baked as `hold`: [sym, tkr, monthEndClose, weight%]) has been fixed since the last month-end — the
+  // same board that prices "since rebalance" has the live quotes, so we re-price that basket live and
+  // show today's move in the last cell. Re-priced with the strategy's OWN weights (method-aware), so it
+  // stays consistent with the baked history. Only in the live board view, never in a rewind.
+  const _lbar = () => (typeof LIVE_BAR !== 'undefined' && LIVE_BAR) ? LIVE_BAR : null;
+  function liveOn() {
+    const noAsof = (typeof ASOF === 'undefined') || !ASOF;
+    const lb = _lbar();
+    return !!(MR && MR.partialLast && noAsof && lb && lb.off != null && lb.syms && lb.syms.length);
+  }
+  function liveLast(c) {   // live value (%) for c's current month, or null if not (re)priceable live
+    if (!c.hold || !c.hold.length || typeof priceAt !== 'function') return null;
+    const lb = _lbar(); if (!lb || lb.off == null) return null;
+    let acc = 0, real = false;
+    for (const [sym, tkr, base, wt] of c.hold) {
+      if (!(base > 0)) return null;
+      const q = (typeof liveQuote === 'function') ? liveQuote(sym) : null;
+      const live = (q && q.ltp != null) ? q.ltp : priceAt(tkr, lb.off);
+      if (live == null) return null;
+      if (q && q.ltp != null) real = true;
+      acc += (wt / 100) * (live / base - 1);
+    }
+    return real ? +(acc * 100).toFixed(2) : null;   // only override when a real quote actually moved it
+  }
+  // the value used for the last column (live if available), for both display and sorting
+  function lastVal(c) { const lv = liveOn() ? liveLast(c) : null; return lv != null ? lv : c.rets[c.rets.length - 1]; }
   function sortedCards() {
-    const k = SORT.key, cards = MR.cards.slice();
+    const k = SORT.key, last = MR.months.length - 1, cards = MR.cards.slice();
+    const val = (c) => k === 'total' ? c.total : (+k === last ? lastVal(c) : c.rets[+k]);
     cards.sort((a, b) => {
       if (k === 'name') return a.name.localeCompare(b.name) * (SORT.asc ? 1 : -1);
-      let x = k === 'total' ? a.total : a.rets[+k], y = k === 'total' ? b.total : b.rets[+k];
+      let x = val(a), y = val(b);
       x = x == null ? -1e9 : x; y = y == null ? -1e9 : y;
       return SORT.asc ? x - y : y - x;
     });
     return cards;
   }
   function render() {
-    const M = MR, labels = M.labels, last = labels.length - 1;
-    $('mrSub').textContent = `${M.cards.length} strategies · entered 31 Mar 2020 · ${labels[0]} → ${labels[last]} (last is partial, to ${M.dataEnd}) · updated ${M.generated}`;
+    const M = MR, labels = M.labels, last = labels.length - 1, LIVE = liveOn();
+    $('mrSub').textContent = `${M.cards.length} strategies · entered 31 Mar 2020 · ${labels[0]} → ${labels[last]} · ${LIVE ? labels[last] + ' is LIVE (today\'s move, ↻ Refresh to update)' : 'last is partial, to ' + M.dataEnd} · updated ${M.generated}`;
     $('mrLegend').innerHTML = 'Each cell is that strategy\'s equal-weight basket return for the month. '
       + '<b>Total</b> = full-window growth, <b>CAGR</b> = annualised. <b>*</b> = partial current month. Click any month or “Strategy” to sort.'
       + '<span style="display:inline-flex;align-items:center;gap:5px;margin-left:2px">'
@@ -789,17 +822,21 @@ $('rwExit').onclick = exitRewind;
     const arrow = k => SORT.key === k ? (SORT.asc ? ' ▲' : ' ▼') : '';
     let head = '<thead><tr>'
       + `<th class="stk" style="text-align:left;cursor:pointer" data-mrsort="total" title="Sort by total return">Strategy${arrow('total')}</th>`;
-    labels.forEach((lb, i) => head += `<th data-mrsort="${i}" style="cursor:pointer" title="Sort by ${lb}${i === last ? ' — partial month to ' + M.dataEnd : ''}">${lb}${i === last ? '*' : ''}${arrow(String(i))}</th>`);
+    labels.forEach((lb, i) => head += `<th data-mrsort="${i}" class="${i === last && LIVE ? 'mrlive' : ''}" style="cursor:pointer" title="Sort by ${lb}${i === last ? (LIVE ? ' — live, today\'s move' : ' — partial month to ' + M.dataEnd) : ''}">${lb}${i === last ? '*' : ''}${arrow(String(i))}</th>`);
     head += '</tr></thead>';
     const benchTotal = M.benchRets.reduce((p, v) => v == null ? p : p * (1 + v / 100), 1);
     let body = '<tbody>'
       + `<tr class="bench"><td class="stk"><div class="stkwrap"><span class="font-bold text-slate-700">${esc(M.benchName)}</span><span class="block text-[10px] text-slate-400 mono">benchmark · total +${((benchTotal - 1) * 100).toFixed(0)}%</span></div></td>`
-      + M.benchRets.map(v => `<td class="cellv" style="${heat(v)}">${fmt(v)}</td>`).join('') + '</tr>';
+      + M.benchRets.map((v, i) => `<td class="cellv${i === last && LIVE ? ' mrlive' : ''}" style="${heat(v)}">${fmt(v)}</td>`).join('') + '</tr>';
     for (const c of sortedCards()) {
+      const lv = (LIVE) ? liveLast(c) : null;   // live current-month value (null → fall back to baked)
       body += '<tr>'
         + `<td class="stk"><div class="stkwrap"><a href="./strategy-backtest.html?k=${encodeURIComponent(c.key)}" class="flex items-center gap-1 min-w-0 hover:text-indigo-600" title="${esc(c.name)}"><span class="sw-sn shrink-0">${esc(c.serial)}</span><span class="sname text-[11.5px] font-semibold text-slate-800">${esc(c.name)}</span></a>`
         + `<span class="smeta text-[10px] text-slate-400 mono">total ${c.total >= 0 ? '+' : ''}${Math.round(c.total)}% · CAGR ${c.cagr >= 0 ? '+' : ''}${c.cagr.toFixed(1)}%</span></div></td>`
-        + c.rets.map(v => `<td class="cellv" style="${heat(v)}">${fmt(v)}</td>`).join('') + '</tr>';
+        + c.rets.map((v, i) => {
+            if (i === last && lv != null) return `<td class="cellv mrlive" style="${heat(lv)}" title="Live — today's move on the held basket (↻ Refresh to update)">${fmt(lv)}</td>`;
+            return `<td class="cellv${i === last && LIVE ? ' mrlive' : ''}" style="${heat(v)}">${fmt(v)}</td>`;
+          }).join('') + '</tr>';
     }
     $('mrBody').innerHTML = `<table id="mrTbl">${head}${body}</tbody></table>`;
     $('mrBody').querySelectorAll('[data-mrsort]').forEach(el => el.onclick = () => {
@@ -819,8 +856,13 @@ $('rwExit').onclick = exitRewind;
     const prev = MR && MR.generated;
     btn.disabled = true; btn.textContent = '↻ Refreshing…';
     try {
-      await load(true); render();                    // force = cache-bust; render() repaints the "updated …" line
-      btn.textContent = (MR.generated !== prev) ? '✓ Updated' : '✓ Up to date';
+      // re-fetch the baked history AND refresh live quotes so the current-month column re-prices live
+      const noAsof = (typeof ASOF === 'undefined') || !ASOF;
+      const jobs = [load(true)];
+      if (noAsof && typeof refreshPrices === 'function') jobs.push(Promise.resolve(refreshPrices()).catch(() => {}));
+      await Promise.all(jobs);
+      render();                                        // repaints history + the live last column + the "updated …" line
+      btn.textContent = (liveOn() || MR.generated !== prev) ? '✓ Updated' : '✓ Up to date';
     } catch (e) { btn.textContent = '⚠ Failed'; }
     setTimeout(() => { btn.textContent = '↻ Refresh'; btn.disabled = false; }, 1600);
   }
@@ -828,7 +870,11 @@ $('rwExit').onclick = exitRewind;
     if (!MR) return;
     const rows = [['Serial', 'Strategy', 'Total %', 'CAGR %', ...MR.labels]];
     rows.push(['', 'Nifty 500 (benchmark)', '', '', ...MR.benchRets.map(v => v == null ? '' : v)]);
-    for (const c of sortedCards()) rows.push([c.serial, c.name, c.total, c.cagr, ...c.rets.map(v => v == null ? '' : v)]);
+    const useLive = liveOn();
+    for (const c of sortedCards()) {
+      const r = c.rets.slice(); const lv = useLive ? liveLast(c) : null; if (lv != null) r[r.length - 1] = lv;
+      rows.push([c.serial, c.name, c.total, c.cagr, ...r.map(v => v == null ? '' : v)]);
+    }
     const str = rows.map(r => r.map(x => { const s = String(x == null ? '' : x); return /[",\n]/.test(s) ? '"' + s.replace(/"/g, '""') + '"' : s; }).join(',')).join('\n');
     const a = document.createElement('a'); a.href = URL.createObjectURL(new Blob([str], { type: 'text/csv' }));
     a.download = 'monthly_returns_' + (MR.dataEnd || '') + '.csv'; a.click();

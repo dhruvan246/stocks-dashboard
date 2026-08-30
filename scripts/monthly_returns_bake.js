@@ -73,7 +73,7 @@ async function main() {
   await loadLive('bt-identity.js', 'globalThis.__ID={identityKey,ruleKey,bakeGroups,saveSerials};');
   await loadLive('bt-names.js', 'globalThis.__N={strategyEnglish:(typeof strategyEnglish!=="undefined")?strategyEnglish:null};');
   const engBytes = await loadLive('backtest-engine.js',
-    'globalThis.__E={simulate,factorsAt,passFilters,fieldVal,loadEngineData,ensureHistoryFor,strategyLabel,getSF:()=>SF,getMETA:()=>META,getSERIES:()=>SERIES};');
+    'globalThis.__E={simulate,factorsAt,passFilters,fieldVal,loadEngineData,ensureHistoryFor,strategyLabel,priceAt,dayOff,idxLE,getSF:()=>SF,getMETA:()=>META,getSERIES:()=>SERIES};');
   const ID = globalThis.__ID, N = globalThis.__N, E = globalThis.__E;
 
   // 3) cards = one rep per identityKey (exactly what saved-strategies renders); serial = its DDMMYY-NN tag
@@ -88,8 +88,15 @@ async function main() {
   // 4) engine data (live bins) — once per process
   const t0 = Date.now();
   await E.loadEngineData(m => { if (m) log('  ' + m); });
-  const SF = E.getSF();
+  const SF = E.getSF(), META = E.getMETA(), SERIES = E.getSERIES();
   log('engine data loaded in ' + Math.round((Date.now() - t0) / 1000) + 's · bars to ' + SF.end + ' · engine ' + engBytes + ' B');
+  // trading-day calendar + sym->tkr, to price the current held basket (same snap simulate() uses)
+  const symToTkr = {}; for (const t in META) symToTkr[META[t].symbol || t] = t;
+  const tdset = new Set(); for (const r of REFS) { const s = SERIES[r]; if (s && s.d) for (const o of s.d) tdset.add(o); }
+  const td = [...tdset].sort((a, b) => a - b);
+  const snapTD = o => { if (!td.length) return o; const i = E.idxLE(td, o); return i < 0 ? o : td[i]; };
+  const offOf = d => snapTD(E.dayOff(d));
+  const isMonthEnd = d => new Date(Date.parse(d + 'T00:00:00Z') + 864e5).getUTCDate() === 1;   // next day is the 1st
 
   let months = null, benchRets = null;   // shared grid + Nifty-500 monthly returns (identical across cards)
   const out = [];
@@ -117,9 +124,30 @@ async function main() {
     const total = res.finalV / CAP;
     if (total > 0.01 && Math.abs(comp / total - 1) > 0.01) throw new Error('compounding sanity FAILED for ' + card.serial + ': ' + comp.toFixed(6) + ' vs ' + total.toFixed(6));
     const name = (N.strategyEnglish && N.strategyEnglish(cfg)) || E.strategyLabel(cfg);
+    // Held basket for the CURRENT partial month — [sym, tkr, monthEndClose, weight%] — so the page can
+    // re-price it LIVE and update only the last column intraday. Every saved strategy is monthly, so the
+    // last completed month-end IS this basket's entry; weights come straight from simulate's rebalance
+    // (method-aware) so the live cell can never drift from the baked history. Verified by reconstructing
+    // the baked last cell from this basket at EOD prices.
+    let hold = null;
+    if (rets.length && !isMonthEnd(SF.end)) {
+      const realRebs = res.rebs.filter(rb => isMonthEnd(rb.date));
+      const anchor = realRebs[realRebs.length - 1];              // the last COMPLETED month-end = months[secondlast]
+      if (anchor && anchor.holds && anchor.holds.length) {
+        const meoff = offOf(anchor.date), deoff = offOf(SF.end);
+        const legs = anchor.holds.map(h => ({ s: h.sym, t: symToTkr[h.sym], w: h.wt }))
+          .map(x => ({ ...x, b: x.t ? E.priceAt(x.t, meoff) : null }))
+          .filter(x => x.b != null && x.b > 0);
+        let recon = 0; for (const x of legs) { const p = E.priceAt(x.t, deoff); if (p != null) recon += (x.w / 100) * (p / x.b - 1); }
+        recon *= 100;
+        const cell = rets[rets.length - 1];
+        if (cell != null && Math.abs(recon - cell) > 0.12) throw new Error('current-month reconstruction FAILED for ' + card.serial + ': ' + recon.toFixed(3) + ' vs baked ' + cell);
+        hold = legs.map(x => [x.s, x.t, round(x.b, 2), round(x.w, 3)]);
+      }
+    }
     out.push({ key: card.key, serial: card.serial, name, topN: cfg.topN,
       basis: cfg.earnBasis || 'con', method: cfg.method || 'hold',
-      total: round((total - 1) * 100, 2), cagr: round(res.cagr, 2), maxDD: round(res.maxDD, 2), rets });
+      total: round((total - 1) * 100, 2), cagr: round(res.cagr, 2), maxDD: round(res.maxDD, 2), rets, hold });
     log(card.serial + '  ' + name.slice(0, 46).padEnd(46) + '  ' + rets.length + ' mo  total ' + round((total - 1) * 100, 1) + '%  (oracle ok)');
   }
 
@@ -127,7 +155,7 @@ async function main() {
     months: (months || []).slice(1),                    // return columns = months[1..] (months[0] is the anchor/entry)
     anchorEnd: (months || [])[0] || START,
     labels: (months || []).slice(1).map(monLabel),
-    partialLast: ((months || [])[months ? months.length - 1 : 0] || '') !== '',   // last col is a partial month unless data lands on a month-end
+    partialLast: months && months.length ? !isMonthEnd(months[months.length - 1]) : false,   // last col is a partial (still-running) month unless the data lands exactly on a month-end
     benchName: 'Nifty 500', benchRets: benchRets || [],
     engineBytes: engBytes, cards: out };
   if (OUT) { fs.writeFileSync(OUT + '.tmp', JSON.stringify(payload)); fs.renameSync(OUT + '.tmp', OUT); log('wrote ' + OUT + ' (' + fs.statSync(OUT).size + ' B, ' + out.length + ' cards, ' + payload.months.length + ' months)'); }
