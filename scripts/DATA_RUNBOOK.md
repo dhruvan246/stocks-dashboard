@@ -13309,3 +13309,20 @@ was 2019-08-06 → a ~27-day ann look-ahead, ann-date session's scope. (2) The
 came from it. Only GMDCLTD|20160630 among the rest sits on a symbol with §117c-healed cells
 (different-era inputs, unaffected). Screening the other 136 against MC (the §117c insurer
 method) is the obvious next campaign — NOT run here.
+
+**117c addendum 2 (2026-08-30 evening, the verifying session) — NIACL Mar-18 CLOSED: healed
+rev_std 6,563.81 → 6,368.16, and it was NOT vintage.** The stored value was an ARITHMETIC
+ARTIFACT printed nowhere: the fill's residue (FY19-AR FY18-comparative total 24,891.41 − stored
+Jun+Sep+Dec-17 18,327.60) absorbed a −194.34 leg-mix shortfall from those three IRDAI-pack
+fills. The FY19 AR comparative itself was FAITHFUL (as-filed FY18 legs 23,252.88 + 1,637.21 vs
+the AR's 23,254.19 + 1,637.22 — Δ1.3 cr). Proof of the heal value: the ORIGINAL 11-May-2018 BSE
+filing's Q4 column (policyholders Total income 606,048 + shareholders' inv income 30,768 lakh —
+OCR x-geometry over a garbled embedded text layer), the 13-May Revised Audited filing (identical
+rows), and MC rev_total — all three EXACT; PAT anchor 33,596 lakh == stored 335.96; FY identity
+closes to 0.01 (MC 3Q sum 18,521.94 + 6,368.16 = on-convention FY18 24,890.10); the filing's own
+Q3 column (590,068+41,127=6,311.95) == MC Dec-17 exact. BSE discovery note: `is_result_filing`
+missed both results rows ("Financial Results For 31 March, 2018" 2018-05-11, "Revised Audited…"
+2018-05-13) — found via raw AnnSubCategoryGetData. New opens from the row check: NIACL Jun-17
+(−112.50) / Sep-17 (−83.91) vs the SEBI-filing convention — PRE-LISTING quarters (Nov-2017 IPO,
+no BSE filing exists), IRDAI 3-segment-pack fills; Dec-17 +2.07 sits inside near(). Stored
+Mar-18 ann 20180530 is late — results were public 2018-05-11 (ann-date session).
