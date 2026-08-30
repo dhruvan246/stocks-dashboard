@@ -13525,3 +13525,13 @@ no longer starts with ~8 empty months for SHP-gated strategies. 2016+ results ar
 (zero sentinel rows there). Numbers from the fallback era should be read as "approx (late-biased)"
 next to dated-era numbers. Real-date recovery for pre-2014 continues (spawned session, BSE
 announcement archive probe) — every recovered date shrinks the fallback's domain.
+
+**§120 ADDENDUM (2026-08-31, same session): 30d → 28d.** User caught the boundary defect: +30d
+lands a Mar-quarter stamp exactly ON 30-Apr — same-day visibility when the screen IS the 30th
+(a synthetic date has no 15:30 clock to gate it, unlike real filings which get the 15:30 gate),
+and a FULL-MONTH slip when a holiday pulls the screen to the 29th. Calendar census (majority-of-8
+trading calendar, day-of-week validated): across ALL 56 Jan/Apr/Jul/Oct month-end screens of
+2003-2016, the earliest is day 29 — including Apr-2006, where 29th was a SATURDAY but a special
+session ran (7/8 refs traded). Day 28 is therefore strictly before every screen these stamps can
+ever meet (closed era = census, not probability). Lag cost of 28 vs 30 is ~0.2pp (2014) / ~3pp
+(2015) of filings uncovered — accepted for determinism. Engine e13, both twins, sw v129.

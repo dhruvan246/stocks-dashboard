@@ -741,16 +741,22 @@ async function loadShp() {
       if ((cU && !qU) || (qU === cU && q[3] > cur[3])) by[q[0]] = q; });
     SHPD[nw] = Object.values(by).sort((a, b) => a[0] - b[0]);
   }
-  // +30d FALLBACK for rows STILL un-dated after §105's recovery (essentially pre-2014):
-  // visibility = quarter-end + 30 calendar days. 30 is MEASURED, not the legal 21d deadline —
-  // of the era's own dated filings, ≤30d covers 99.5% (2014) / 89.8% (2015) while ≤21d covers
-  // only 91% / 74%, and the undated remainder plausibly skews later still; a late floor
-  // understates returns instead of inventing look-ahead. Stamped AFTER the alias merge so
-  // dated-beats-undated collision preference above still sees the raw sentinel. A recovered
-  // real date arrives already-dated from the feed and is never touched here. Runbook §120.
-  for (const sym in SHPD) for (const q of SHPD[sym]) if (q[3] === 99999999) q[3] = qePlus30(q[0]);
+  // +28d FALLBACK for rows STILL un-dated after §105's recovery (essentially pre-2014):
+  // visibility = quarter-end + 28 calendar days. MEASURED twice over (runbook §120):
+  // (1) lag: ≤28d covers ~99.3% (2014) / ~87% (2015) of the era's own dated filings vs
+  //     91% / 74% at the legal 21d — the undated remainder plausibly skews later still,
+  //     so a late floor understates returns instead of inventing look-ahead;
+  // (2) calendar: day 28 is STRICTLY BEFORE every screen these stamps can ever meet —
+  //     the earliest month-end trading day across ALL 56 Jan/Apr/Jul/Oct screens of
+  //     2003-2016 (a closed census, majority-of-8 calendar, incl. the Sat-29-Apr-2006
+  //     special session) is day 29. A synthetic date has no 15:30 clock, so it must
+  //     never coincide with a screen date; +30 could land ON a day-30 screen.
+  // Stamped AFTER the alias merge so dated-beats-undated collision preference above
+  // still sees the raw sentinel; a recovered real date arrives already-dated from the
+  // feed and is never touched here.
+  for (const sym in SHPD) for (const q of SHPD[sym]) if (q[3] === 99999999) q[3] = qePlus28(q[0]);
 }
-function qePlus30(qe) { const d = new Date(Date.UTC(Math.floor(qe / 10000), Math.floor(qe / 100) % 100 - 1, qe % 100)); d.setUTCDate(d.getUTCDate() + 30); return d.getUTCFullYear() * 10000 + (d.getUTCMonth() + 1) * 100 + d.getUTCDate(); }
+function qePlus28(qe) { const d = new Date(Date.UTC(Math.floor(qe / 10000), Math.floor(qe / 100) % 100 - 1, qe % 100)); d.setUTCDate(d.getUTCDate() + 28); return d.getUTCFullYear() * 10000 + (d.getUTCMonth() + 1) * 100 + d.getUTCDate(); }
 function prevQeInt(qe) { let y = Math.floor(qe / 10000), m = Math.floor(qe / 100) % 100 - 3; if (m <= 0) { y--; m += 12; } return y * 10000 + m * 100 + { 3: 31, 6: 30, 9: 30, 12: 31 }[m]; }
 // A row dated anything other than a March/June/September/December quarter end is an EVENT-driven
 // SHP (capital change / SAST) merged in by §22k — same shape, but no calendar-previous quarter.
@@ -759,7 +765,7 @@ function isQuarterEnd(d) { return ({ 3: 31, 6: 30, 9: 30, 12: 31 }[Math.floor(d 
 // date is served with sub = 99999999 by build_engine_feed (fetch_shareholding.py). Real dates
 // exist from Jan-2014 (BSE announcement stream) and Mar-2016 (SHPQNewFormat) — see
 // shp_sub_dates.json + PLAN_SHP_DATES.md / runbook §105. Rows STILL sentinel after that
-// (essentially pre-2014) get the measured-conservative qe+30d visibility stamped at load
+// (essentially pre-2014) get the measured-conservative qe+28d visibility stamped at load
 // (§120, see loadShp) — so early-era DII/FII screens invest on a disclosed, late-biased
 // approximation instead of holding nothing; recovered real dates always take precedence.
 function shpAt(sym, dateInt) {

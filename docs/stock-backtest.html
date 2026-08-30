@@ -670,7 +670,7 @@ function isAlreadySaved(cfg){
 // every key changes → the old snapshot is no longer found → the next view recomputes with the CURRENT
 // code + data and re-caches. Without this stamp a changed engine or a refreshed dataset would keep
 // serving a stale pre-computed result forever.
-const ENGINE_VER='e12';       // ⬆️ BUMP this whenever simulate()/engine logic changes → invalidates all snapshots  (e12 2026-08-31: §120 SHP +30d fallback — rows still un-dated after §105 recovery (≈pre-2014) become PIT-visible at quarter-end+30d, the measured-conservative floor, both twins; e11 2026-08-30: end-date rebalance guard — simulate() never OPENS a basket on cfg.end, both twins, StockView R5 F-03; e10 2026-08-30: SW-1 un-dated pre-Jun-2016 SHP rows — feed serves sub=99999999 for unevidenced visibility dates, alias-merge prefers dated rows; DII/FII strategies hold nothing before ~Feb-2014 by design; e9 2026-08-27: dead-con guard — profitAt/profitMetrics skip a con series >12 months staler than std, BANDHANBNK class; e8 2026-08-23: foldFundAliases — old-key fundamentals folded under the merged key, §105)
+const ENGINE_VER='e13';       // ⬆️ BUMP this whenever simulate()/engine logic changes → invalidates all snapshots  (e13 2026-08-31: §120 fallback 30d→28d — day 28 is strictly before every 2003-16 stamp-month screen (census min day 29), so a clockless synthetic date can never collide with a rebalance screen; e12 2026-08-31: §120 SHP +30d fallback — rows still un-dated after §105 recovery (≈pre-2014) become PIT-visible at quarter-end+30d, the measured-conservative floor, both twins; e11 2026-08-30: end-date rebalance guard — simulate() never OPENS a basket on cfg.end, both twins, StockView R5 F-03; e10 2026-08-30: SW-1 un-dated pre-Jun-2016 SHP rows — feed serves sub=99999999 for unevidenced visibility dates, alias-merge prefers dated rows; DII/FII strategies hold nothing before ~Feb-2014 by design; e9 2026-08-27: dead-con guard — profitAt/profitMetrics skip a con series >12 months staler than std, BANDHANBNK class; e8 2026-08-23: foldFundAliases — old-key fundamentals folded under the merged key, §105)
                               // e7 (2026-08-20): TTM contiguity check strengthened to pairwise
                               // gaps (each of 4 quarters exactly 3mo apart) — the e6 endpoint-only
                               // check let a duplicate qe row through uncaught (APOLLOTYRE/
@@ -738,13 +738,16 @@ async function loadShp(){
       if((cU&&!qU)||(qU===cU&&q[3]>cur[3])) by[q[0]]=q; });
     SHPD[nw]=Object.values(by).sort((a,b)=>a[0]-b[0]);
   }
-  // §120 +30d fallback: rows STILL un-dated after §105 recovery (≈pre-2014) become visible at
-  // quarter-end + 30 calendar days — measured floor (≤30d = 99.5% of 2014 / 89.8% of 2015 dated
-  // filings vs 91%/74% at the legal 21d), stamped AFTER the merge so dated-beats-undated still
-  // sees raw sentinels; recovered real dates arrive dated and are never touched. (Sync: backtest-engine.js)
-  for(const sym in SHPD) for(const q of SHPD[sym]) if(q[3]===99999999) q[3]=qePlus30(q[0]);
+  // §120 +28d fallback: rows STILL un-dated after §105 recovery (≈pre-2014) become visible at
+  // quarter-end + 28 calendar days — measured twice: lag (≤28d ≈ 99.3% of 2014 / 87% of 2015 dated
+  // filings vs 91%/74% at the legal 21d) AND calendar (day 28 is STRICTLY before every 2003-16
+  // Jan/Apr/Jul/Oct month-end screen — census min is day 29, incl. the Sat-29-Apr-2006 special
+  // session; a synthetic date has no 15:30 clock so it must never land ON a screen day, which +30
+  // could). Stamped AFTER the merge so dated-beats-undated still sees raw sentinels; recovered
+  // real dates arrive dated and are never touched. (Sync: backtest-engine.js)
+  for(const sym in SHPD) for(const q of SHPD[sym]) if(q[3]===99999999) q[3]=qePlus28(q[0]);
 }
-function qePlus30(qe){ const d=new Date(Date.UTC(Math.floor(qe/10000), Math.floor(qe/100)%100-1, qe%100)); d.setUTCDate(d.getUTCDate()+30); return d.getUTCFullYear()*10000+(d.getUTCMonth()+1)*100+d.getUTCDate(); }
+function qePlus28(qe){ const d=new Date(Date.UTC(Math.floor(qe/10000), Math.floor(qe/100)%100-1, qe%100)); d.setUTCDate(d.getUTCDate()+28); return d.getUTCFullYear()*10000+(d.getUTCMonth()+1)*100+d.getUTCDate(); }
 // ---- the engine ----
 let LAST_RUN=null;
 // Lazily load the heavy market data (only when a real Run is actually requested). A direct visit shows
@@ -982,7 +985,7 @@ function needsShp(cfg){ return SHP_FIELDS.has(cfg.sortBy) || (cfg.filters||[]).s
 function prevQeInt(qe){ let y=Math.floor(qe/10000), m=Math.floor(qe/100)%100-3; if(m<=0){y--;m+=12;} return y*10000+m*100+{3:31,6:30,9:30,12:31}[m]; }
 // Any row not dated a Mar/Jun/Sep/Dec quarter end is an EVENT-driven SHP merged in by §22k.
 function isQuarterEnd(d){ return ({3:31,6:30,9:30,12:31}[Math.floor(d/100)%100]||0)===d%100; }
-// ⚠️ UN-DATED ROWS (SW-1 2026-08-30 → §120 2026-08-31): served sub=99999999 feed-side; real dates recovered from Jan-2014 (BSE announcements) / Mar-2016 (SHPQNewFormat), runbook §105; remaining sentinels (≈pre-2014) get the measured qe+30d visibility at load (§120, loadShp). (Sync: backtest-engine.js)
+// ⚠️ UN-DATED ROWS (SW-1 2026-08-30 → §120 2026-08-31): served sub=99999999 feed-side; real dates recovered from Jan-2014 (BSE announcements) / Mar-2016 (SHPQNewFormat), runbook §105; remaining sentinels (≈pre-2014) get the measured qe+28d visibility at load (§120, loadShp). (Sync: backtest-engine.js)
 function shpAt(sym, dateInt){
   const arr=SHPD[sym] || (FUND_ALIAS[sym] ? SHPD[FUND_ALIAS[sym]] : null); if(!arr||!arr.length) return null;
   let ci=-1; for(let i=arr.length-1;i>=0;i--){ if(arr[i][3]<=dateInt){ ci=i; break; } }
