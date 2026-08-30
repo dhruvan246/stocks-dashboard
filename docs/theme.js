@@ -1395,7 +1395,8 @@
         document.head.appendChild(s2);
         // cross-device preference sync (owner browsers push; everyone pulls)
         try { window.swSync.syncSettings(['sw_theme', 'sw_sec_watch', 'bt_fav_strategies',
-          'live_worker_url', 'savedRotations', 'savedCatRot', 'savedBOB', 'sw_dash_presets', 'sw_triage_hide']); } catch (e) {}
+          'live_worker_url', 'savedRotations', 'savedCatRot', 'savedBOB', 'sw_dash_presets', 'sw_triage_hide',
+          'mix_state_v1']); } catch (e) {}   // mix_state_v1: the Strategy Mixer's selection — synced so a mix set up once lands on every device
       };
       document.head.appendChild(s1);
     } catch (e) {}

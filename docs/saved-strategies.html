@@ -319,6 +319,9 @@ function uniRank(k) {
   return 200;                                              // '' = All stocks, last
 }
 let UNI = localStorage.getItem('bt_uni_filter') || '*';    // sticky across tabs AND visits
+// All Picks adds a '__FAV__' (⭐ favourites) choice to this SHARED key; this page has its own
+// Favourites tab instead, so fall back to All here rather than filtering the list to nothing.
+if (UNI === '__FAV__') UNI = '*';
 // Rebuild the picker from the universes present in `rows` (the CURRENT tab's set, before the universe
 // filter) so each option carries a count that means something on the tab you're looking at. The active
 // pick is always kept selectable even at 0, otherwise the <select> would silently jump to another value.

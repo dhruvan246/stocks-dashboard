@@ -244,7 +244,7 @@ try { VIEW = localStorage.getItem('ap_view2') === 'cards' ? 'cards' : 'board'; }
  * KEEP IN SYNC with saved-strategies.html. Screening isn't re-run on change — RESULT keeps
  * every card and visible() is the filtered view both renderers draw from. */
 function uniKey(c) { return c.indexName ? c.indexName : (c.mcapFloor ? 'mcap:' + c.mcapFloor : ''); }
-function uniText(k) { return universeLabel(k.slice(0, 5) === 'mcap:' ? { mcapFloor: +k.slice(5) } : { indexName: k }); }
+function uniText(k) { return k === '__FAV__' ? '⭐ Favourite strategies' : universeLabel(k.slice(0, 5) === 'mcap:' ? { mcapFloor: +k.slice(5) } : { indexName: k }); }
 // Display order: indices broad-to-narrow, then F&O, then turnover buckets ascending, then All stocks.
 const UNI_ORDER = ['Nifty 50', 'Nifty 100', 'Nifty 200', 'Nifty 500', 'Nifty Midcap 150', 'Nifty Smallcap 250', '__FNO__'];
 function uniRank(k) {
@@ -254,16 +254,24 @@ function uniRank(k) {
 }
 let UNI = '*';
 try { UNI = localStorage.getItem('bt_uni_filter') || '*'; } catch (e) {}
-function visible() { return UNI === '*' ? RESULT : RESULT.filter(r => uniKey(r.cfg) === UNI); }
+function visible() {
+  if (UNI === '*') return RESULT;
+  // ⭐ Favourite strategies — the stars set on Saved Strategies (synced across devices via SETTINGS).
+  // Read fresh each paint so a toggle over there shows here on the next rebuild/refresh.
+  if (UNI === '__FAV__') { const f = loadFavs(); return RESULT.filter(r => isFav(f, r.cfg)); }
+  return RESULT.filter(r => uniKey(r.cfg) === UNI);
+}
 // Options carry the count of built cards on each universe. The active pick stays selectable
 // even at 0 (e.g. it was set on Saved Strategies for a universe this page skipped), otherwise
 // the <select> would silently jump to another value.
 function buildUniSelect() {
   const counts = new Map();
   for (const r of RESULT) { const k = uniKey(r.cfg); counts.set(k, (counts.get(k) || 0) + 1); }
-  if (UNI !== '*' && !counts.has(UNI)) counts.set(UNI, 0);
+  if (UNI !== '*' && UNI !== '__FAV__' && !counts.has(UNI)) counts.set(UNI, 0);   // '__FAV__' gets its own option below, never a universe row
   const keys = [...counts.keys()].sort((a, b) => uniRank(a) - uniRank(b) || a.localeCompare(b));
+  const favs = loadFavs(), nFav = RESULT.filter(r => isFav(favs, r.cfg)).length;
   $('uniSel').innerHTML = `<option value="*">All memberships (${RESULT.length})</option>` +
+    `<option value="__FAV__">⭐ Favourite strategies (${nFav})</option>` +
     keys.map(k => `<option value="${esc(k)}">${esc(uniText(k))} (${counts.get(k)})</option>`).join('');
   $('uniSel').value = UNI;
   $('uniRow').classList.toggle('hidden', !RESULT.length);   // paired with 'flex' — a bare `hidden` loses to `flex`
@@ -581,8 +589,10 @@ function paint() {
   applySort();
   buildUniSelect();
   if (RESULT.length && !visible().length) {   // a membership with nothing here — offer the way back
-    $('uniEmpty').innerHTML = `No <b>${esc(uniText(UNI))}</b> strategies here.
-      <button id="uniClear" class="text-indigo-600 hover:underline font-semibold">Show all ${RESULT.length}</button>`;
+    $('uniEmpty').innerHTML = (UNI === '__FAV__'
+      ? `No favourites yet — ⭐ strategies on <a href="./saved-strategies.html" class="text-indigo-600 hover:underline font-semibold">Saved Strategies</a>. `
+      : `No <b>${esc(uniText(UNI))}</b> strategies here. `) +
+      `<button id="uniClear" class="text-indigo-600 hover:underline font-semibold">Show all ${RESULT.length}</button>`;
     $('uniEmpty').classList.remove('hidden');
     $('uniClear').onclick = () => setUni('*');
   } else $('uniEmpty').classList.add('hidden');
