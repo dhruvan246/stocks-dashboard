@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8" />
 <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-<title>STOCKSWORLD · Create a Strategy</title>
+<title>STOCKSWORLD · Backtest a Strategy</title>
 <script src="https://cdn.tailwindcss.com"></script>
 <link rel="stylesheet" href="./theme.css" />
 <script src="./theme.js"></script>
@@ -41,7 +41,7 @@
 
 <main class="max-w-screen-xl mx-auto px-4 py-6">
   <div class="flex items-center justify-between flex-wrap gap-2 mb-1">
-    <h1 class="text-xl md:text-2xl font-bold text-slate-900">📈 Create a Strategy</h1>
+    <h1 class="text-xl md:text-2xl font-bold text-slate-900">📈 Backtest a Strategy</h1>
     <div class="flex gap-3 text-sm">
       <a href="./backtest-history.html" class="text-indigo-600 hover:underline font-semibold">📜 History</a>
       <a href="./saved-strategies.html" class="text-amber-600 hover:underline font-semibold">⭐ Saved Strategies</a>
@@ -89,11 +89,12 @@
         <button id="addF" class="text-xs font-semibold text-blue-600 hover:underline">+ Add filter</button></div>
       <div id="filters" class="space-y-2"></div>
     </div>
-    <div class="mt-4 flex items-center gap-3">
-      <button id="run" class="bg-amber-500 hover:bg-amber-600 text-white rounded-lg px-5 py-2 text-sm font-semibold shadow-sm">💾 Save Strategy</button>
+    <div class="mt-4 flex items-center gap-3 flex-wrap">
+      <button id="run" class="bg-blue-600 hover:bg-blue-700 text-white rounded-lg px-5 py-2 text-sm font-semibold shadow-sm">▶ Run Backtest</button>
+      <button id="saveStratBtn" class="bg-amber-500 hover:bg-amber-600 text-white rounded-lg px-5 py-2 text-sm font-semibold shadow-sm">💾 Save Strategy</button>
       <span id="runMsg" class="text-xs text-slate-500"></span>
     </div>
-    <p id="saveHint" class="mt-2 text-xs text-slate-500">Set up your filters &amp; settings, then <b>Save Strategy</b> — it’s added to your <a href="./saved-strategies.html" class="text-indigo-600 hover:underline">⭐ Saved Strategies</a>. Run the backtest from there (📈 Backtest on the card); results auto-save to History and appear as cards under the strategy.</p>
+    <p id="saveHint" class="mt-2 text-xs text-slate-500">Set up your filters &amp; settings, then <b>▶ Run Backtest</b> to see the equity curve, rebalance log &amp; today’s picks — the result is saved to your <a href="./backtest-history.html" class="text-indigo-600 hover:underline">📜 Backtest History</a>. Like the strategy? Use <b>⭐ Save as Strategy</b> on the results (or <b>💾 Save Strategy</b> here) to add it to <a href="./saved-strategies.html" class="text-indigo-600 hover:underline">⭐ Saved Strategies</a>.</p>
   </div>
 
   <div id="out"></div>
@@ -465,7 +466,7 @@ async function initUI(){
   $('cSort').innerHTML=fieldOptionsHtml(); $('cSort').value=DEFAULT_SORT;   // pin: grouping reordered FIELDS, and option 0 is no longer RSI
   addFilter(); // one empty filter row
   $('addF').onclick=addFilter;
-  $('run').onclick=saveStrategyFromForm;   // primary action is now SAVE; runs are launched from the Saved Strategies cards
+  $('run').onclick=run; { const _sb=$('saveStratBtn'); if(_sb) _sb.onclick=saveStrategyFromForm; }   // primary = ▶ Run (result auto-saves to History; strategy save is opt-in), secondary = 💾 Save Strategy
   // Survivorship-free is the ONLY data source — activate it before the UI is shown.
   await setMode('sf');   // loads sf_stock_data.bin, sets dates/universe to the SF dataset
   if(window.btSync){ try{ await btSync.pull(); }catch(e){} }   // pull history from other devices BEFORE any auto-save, so a local save never overwrites them
@@ -479,6 +480,7 @@ async function initUI(){
     // "Run" mode: primary button → ▶ Run Backtest, heading reflects it, create-hint hidden. We do NOT auto-run.
     const rb=$('run'); rb.textContent='▶ Run Backtest'; rb.className='bg-blue-600 hover:bg-blue-700 text-white rounded-lg px-5 py-2 text-sm font-semibold shadow-sm'; rb.onclick=run;
     const h1=document.querySelector('h1'); if(h1) h1.textContent='📈 Backtest'; const hint=$('saveHint'); if(hint) hint.style.display='none';
+    { const _sb=$('saveStratBtn'); if(_sb) _sb.style.display='none'; }   // loaded from a card/history — save is offered on the result (⭐ Save as Strategy), not the form
     if(resultOnly){
       // Opened just to VIEW a run → hide the builder/config + intro, then auto-run so ONLY the result sections render.
       window.__viewOnly = true;   // don't republish this view to the shared public history/strategies
@@ -780,7 +782,7 @@ async function run(){
   LoadUI.done();
   $('runMsg').textContent='Running…';
   clearLiveOverlay();   // a previous ⚡ Go Live left a synthetic today-bar spliced on — the BACKTEST must never see it
-  setTimeout(()=>{ try{ const res=simulate(cfg); LAST_RUN={cfg,res}; render(res,cfg); $('runMsg').textContent=res.membershipNote||''; saveSnapshot(cfg,res); autoSaveHistory().then(autoSaveStrategy); }
+  setTimeout(()=>{ try{ const res=simulate(cfg); LAST_RUN={cfg,res}; render(res,cfg); $('runMsg').textContent=res.membershipNote||''; saveSnapshot(cfg,res); autoSaveHistory(); }   // run → the RESULT auto-saves to History; a Strategy is created ONLY when the user clicks ⭐ Save as Strategy (no auto-save)
     catch(e){ $('runMsg').textContent='Error: '+e.message; console.error(e); } }, 30);
 }
 // ---- PRIVATE strategies (this browser only — bt_private_* keys, never synced): any run of a
@@ -801,9 +803,9 @@ async function autoSaveHistory(){
   if(h.some(x=>JSON.stringify(x.cfg)===s)) return;   // an identical config is already in history — no duplicate row
   h.unshift(item); saveLS('bt_history', h.slice(0,300)); if(window.btSync)btSync.append(item);   // atomic add — no whole-array clobber
 }
-// Every run also ensures a parent Strategy exists in the Saved Strategies tab, so the run nests as a
-// card under it. Dedup by identity (config minus the date window) → re-running the SAME strategy with
-// different dates adds a card under the existing row, never a duplicate strategy.
+// NOTE: no longer auto-invoked (2026-08-30). A run saves its RESULT to History but must NOT silently
+// create a Strategy — saving a strategy is now an explicit user choice (⭐ Save as Strategy → saveStrategy).
+// Kept for reference / possible reuse; dedups by identity (config minus the date window) if ever re-wired.
 async function autoSaveStrategy(){
   if(window.__viewOnly) return;   // view-only (👁) — don't publish a strategy to the shared list
   if(window.__runSid) return;     // run launched FROM a strategy page — it nests there via sid; editing params must NOT spawn a duplicate strategy (Trendlyne semantics)
@@ -883,6 +885,7 @@ function enterEditMode(raw){
   const rb=$('run'); rb.textContent='💾 Update Strategy';
   rb.className='bg-emerald-600 hover:bg-emerald-700 text-white rounded-lg px-5 py-2 text-sm font-semibold shadow-sm';
   rb.onclick=updateStrategyInPlace;
+  { const _sb=$('saveStratBtn'); if(_sb) _sb.style.display='none'; }   // editing an existing strategy — the form Save-as-new button doesn't apply
   const h1=document.querySelector('h1'); if(h1) h1.textContent='✏️ Edit Strategy';
   const hint=$('saveHint'); if(hint){ hint.textContent=''; const b=document.createElement('b'); b.textContent=raw.name||'strategy';
     hint.append('Editing '); hint.append(b); hint.append(' — change anything, then 💾 Update Strategy. It updates the SAME strategy (no duplicate is created) and its backtest history stays attached.'); }
@@ -1904,14 +1907,14 @@ async function bakeAll(){
   }catch(e){ log(`<div class="card p-4 text-red-600">Bake error: ${e&&e.message||e}</div>`); }
 }
 // Build the builder UI from STATIC data only (no 17 MB / 90 MB) so a direct visit paints instantly.
-// Saving a strategy needs no market data; an actual Run is launched from Saved Strategies (bt_load),
-// which loads the full engine via load()/applyCfg. So the heavy data is deferred until it's truly needed.
+// ▶ Run Backtest and 💾 Save Strategy both work from here: Save needs no market data; Run pulls the full
+// engine on demand via ensureData() (the ~17 MB membership + price parts download once, on the first Run).
 async function initUIStatic(){
   DATA_MODE='sf';
   buildUniverse('sf', false);                                   // universe options are static (TURN_OPTS + index list)
   $('cSort').innerHTML=fieldOptionsHtml(); $('cSort').value=DEFAULT_SORT;   // pin: grouping reordered FIELDS, and option 0 is no longer RSI
   addFilter(); $('addF').onclick=addFilter;
-  $('run').onclick=saveStrategyFromForm;                        // primary action = Save (no market data needed)
+  $('run').onclick=run; { const _sb=$('saveStratBtn'); if(_sb) _sb.onclick=saveStrategyFromForm; }   // primary = ▶ Run (data loads on demand), secondary = 💾 Save Strategy
   let end=''; try{ end=(await (await fetch('./sf_meta.json')).json()).end||''; }catch(e){}
   $('cTo').value = end || new Date().toISOString().slice(0,10);
   $('cFrom').value='2020-03-31';
