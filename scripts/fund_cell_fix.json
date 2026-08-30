@@ -5078,6 +5078,24 @@
    "fixed": 2040.51,
    "why": "INDUSINDBK Mar-2023 std PAT — CON value in the STD slot (§59): npStd==npCon==2043.36; the vision src itself notes 'PAT 2040.51 printed (EPS 26.30 confirms) vs stored 2043.36' from the Jun-2023 filing's col2. As-filed STANDALONE: BSE detres 2040.51, MC deep std 2040.51, printed EPS 26.30 x 77.6cr sh reproduces. rev/op std slots already hold the std as-filed values (verified vs detres).",
    "found": "§117c comparative-column vision-fill audit 2026-08-30 (worktree ~/stocks-wt/vision-comp-audit): 114 outside-window vision fills citing col2/col3/preceding/corresponding audited against the ORIGINAL filing of each quarter"
+  },
+  {
+   "sym": "CONCOR",
+   "qe": "20171231",
+   "basis": "std",
+   "was": 278.71,
+   "fixed": 289.08,
+   "why": "§108-class ROW defect found while adjudicating the derivation family: stored rev 1629.43 / npStd 278.71 match NO as-filed reader; BSE detres prints rev 1639.55 / NP 289.08 and MC deep std agrees on both (1639.55 / 289.08) — the store holds CONCOR's later re-presented Q3FY18 (the Q4FY18 filing restated Q3 for the SEIS/other-income reclassification). Healed to as-filed per §42.",
+   "found": "§117c derivation-family screen 2026-08-30 (user-directed): all 137 remaining screener-annual-derivation fills screened vs MC deep, mismatches adjudicated vs BSE detres prints + original filings; worktree ~/stocks-wt/vision-comp-audit ledgers _deriv136_*"
+  },
+  {
+   "sym": "DEN",
+   "qe": "20170630",
+   "basis": "std",
+   "was": -30.21,
+   "fixed": -38.7,
+   "why": "screener-annual-derivation residue retracted (the pass derived this quarter as screener FY sales minus the other three stored quarters; §117c addendum proved the recipe unsound). As-filed value 271.92: BSE detres print 'net-sales' agrees with MC deep rev_ops (series convention: neighbours match MC ops=37 total=59 neither=0). NP anchor detres==stored npStd OK.",
+   "found": "§117c derivation-family screen 2026-08-30 (user-directed): all 137 remaining screener-annual-derivation fills screened vs MC deep, mismatches adjudicated vs BSE detres prints + original filings; worktree ~/stocks-wt/vision-comp-audit ledgers _deriv136_*"
   }
  ],
  "retracted": [

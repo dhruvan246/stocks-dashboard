@@ -13326,3 +13326,42 @@ missed both results rows ("Financial Results For 31 March, 2018" 2018-05-11, "Re
 (−112.50) / Sep-17 (−83.91) vs the SEBI-filing convention — PRE-LISTING quarters (Nov-2017 IPO,
 no BSE filing exists), IRDAI 3-segment-pack fills; Dec-17 +2.07 sits inside near(). Stored
 Mar-18 ann 20180530 is late — results were public 2018-05-11 (ann-date session).
+
+**117c addendum 3 (2026-08-30 night) — the WHOLE screener-annual-derivation family RAN: 137
+cells screened, 52 healed, the recipe is retired.** `deriv136_screen.py` (MC deep, §117c insurer
+method) → 55 EXACT; `deriv136_detres.py` + offline adjudication over the 81 mismatches
+(detres prints, per-symbol SERIES-CONVENTION check vs MC — `_deriv136_conv.json` — plus
+excise-era net-of-excise candidates from the transpose's own excise rows) → 22 more clean at
+the print, 41 machine heals (print==MC on the series line, NP anchors exact), and hand
+finishes: CARBORUNIV Jun-17 326.00 (gross−excise==mc_total), THERMAX Jun-16 791.42 (the
+print's own net-of-excise line), ULTRACEMCO Jun-18 8,655.00 (print + SERIES REPRODUCTION —
+Sep/Dec-18 stored equal the same print line; MC's row deviates from its own pattern),
+THERMAX Jun-15 con 1,230.69 (late re-filing page + MC), UJJIVAN Mar-18 con 422.62 (XBRL==MC),
+UJJIVAN Mar-19 std 11.00 (original print, holdco), CDSL Jun-19 40.54 (filed results extract,
+NSE-only listing). Biggest artifacts: ULTRACEMCO Jun-18 +4,186.61, RECLTD-class residues,
+INFY Jun-16 13,657→14,420, HINDALCO Mar-17 9,862.94→11,026.09 (net-of-excise), VEEDOL Jun-16
+118.11→288.13 (+144%), UJJIVAN Mar-19 30→11 (−63%).
+
+Found while adjudicating, healed as §108-class ROW defects (detres+MC agree on BOTH slots
+against the store): **CONCOR Dec-17 rev 1629.43→1639.55 + npStd 278.71→289.08** (the Q4FY18
+filing's SEIS re-presentation was in our slots) and **DEN Jun-17 rev 258.15→279.79 + npStd
+−30.21→−38.70** (continuing-ops re-presentation).
+
+HOLDs, measured and logged: RELIANCE Mar-18 (stored 71,080 matches nothing; RIL's store series
+is 'neither' vs MC on 61 quarters — the sales/GST/excise definition needs its own study before
+any heal); JSL Jun-15 (the WHOLE FY16 series — and MC's own — sits on the post-demerger
+RESTATED basis; the original prints 3,215.18/−117.97; healing one cell makes a half-and-half
+series → demerger campaign. Bonus find inside it: **JSL Sep-15 is a ÷100 SCALE defect** —
+stored 16.02/−1.88 vs 1,601.65/−188.05 on its own basis); TITAN Mar-17 con (live None; the
+fill's 3,746.07 matches no reader — MC 3,547.99 is a proven residue, the only NSE XBRL is a
+year-later restated 4,107.22 — read RETRACTED in vision_rev_fills, rev nulled). Sub-gate
+MC-only deltas left alone: AAVAS Sep-19 (0.3), DHANI Jun-19 (0.23), MUTHOOTFIN Jun-19 (10.94),
+CDSL Jun-18 (0.84), LTF Jun-19 con (87.73 = 2.4%), DHANI Jun-16 con (3.66, MC-only, no NSE
+row). KOTAKBANK Mar-18 con proved CLEAN at the print (6,732.37 vs stored 6,732.29 — the MC
+screen is blind on bank cons).
+
+52 revop + 2 fund entries landed (§70 pat mirrors incl.), 51 vision_rev_fills reads corrected
+in place, appliers idempotent, verify_fills_live 13,377 cells 0/0/0. The
+`screener-annual derivation` recipe is RETIRED: 56 of its 137 surviving cells (41%) were wrong
+— a residue is only as good as its inputs, its annual's definition, AND quarter-additivity,
+and this family failed all three ways.
