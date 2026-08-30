@@ -929,3 +929,82 @@ Verification: syntax-checked both twins; harness A/B above; browser-verified on 
 server (ENGINE_VER e9; profitAt in-page returns BANDHANBNK −18.66 / LEMONTREE +4.18 / ASHOKLEY
 +101.95); saved-strategies.html loads clean (the two localhost 400s are the pre-existing
 Supabase-from-localhost artifact, present on unchanged pages, absent on the live origin).
+
+---
+
+## O. ROUND 5 (r5 findings report 2026-08-29, DII strategy top-50) — RESOLVED 2026-08-30 (Fable)
+
+Config: N500 · monthly · 2009-01-01→2026-08-27 · top 50 by diiPct ASC · d52≤10 / d52low≥100 /
+accel1m>0. Their headline: 69.5% of 4,457 holding-months agree. Detailed evidence lives in
+runbook §118 (quantmac side) — §117 same-day is the SIBLING StockView-R5 record.
+
+**SW-1 (pre-2016 visibility dates, HIGH) — CONFIRMED + FIXED (commits bca7ac269 batch).**
+* Their claim verified against our store: 26,953 pre-Jun-2016 cells carried sub == qe+21d
+  exactly (grown from 25,867 by later fills); the only non-convention pre-2016 subs were 384
+  Mar-2016 real dates.
+* Their 2014-16 route claim VERIFIED and our own P0 probe REFUTED as scope-wrong: BSE's
+  announcements stream carries SHP filings from the Mar-2014 quarter (not 2006-2012, which is
+  all P0 had probed). `_shp_dates/fetch_ann_2014.py` recovered **4,924 of 5,535** target-cell
+  dates (they recovered 2,854); p50 lag 16d, p90 23d, max 83d, **14.8% past the 21d deadline**
+  (the era's real look-ahead, worse than post-2016's 4.0%). Dec-2013: 530/533 no-shp-row — the
+  stream's hard start boundary, measured. 15:30-gated, `was`-guarded, cell_fix lockstep 18
+  (WARNs 65→83→65 = zero regression).
+* Un-dating SHIPPED: build_engine_feed serves sub=99999999 (UNDATED_SUB) for the 22,408
+  unevidenced pre-Jun-2016 rows; engines' `sub <= screenDate` gate then excludes them with NO
+  engine logic change (only the loadShp alias-merge learned to prefer a dated row). e10/v124
+  (superseded same-day by sibling e11/v125 — both live).
+* **Their acceptance test PASSES:** A/B on their exact config — 2009-2013 holding-rows
+  **946 → 0** (only evidenced filings screen; none exist pre-Mar-2014), 2014-16 787 → 731,
+  2017+ **2,011 → 2,011 untouched** (clean control). CAGR 11.49→8.75 on our tape (the
+  strategy correctly sits in cash where no disclosure dates exist).
+
+**SW-2 (~264 DII cells vs filed documents, HIGH) — CONFIRMED, root-caused, 901 cells healed
+(commit 54882cf57).** Root cause is §22i's dii-side sibling: `OLD_OTHER_TO_DII=True` routes the
+institutions "Any Other (specify)" row into dii; wrong when the row holds a FOREIGN holder.
+All 4 adjudication cells settled from primary documents (answers for their reply):
+| cell | ours | filing says | source read from |
+|---|---|---|---|
+| JSWSTEEL Jun-16 | 17.00 | dom 1.9815 (MF 1.50 + Banks 0.49; NBFC 0.01 excl) | BSE XBRL 500228_12720161161_SHP.xml: OtherInstitutions 15.02 = typed holder **"JFE STEEL INTERNATIONAL EUROPE B V" 15.00** — foreign, was inside our dii |
+| JSWSTEEL Jan-17 (Dec-16 row) | 16.72 | dom 1.721 | same class; NB their "no later filing visible" is wrong — BSE filing_date_time 2017-01-19 ≤ their Jan rebalance, so the Dec-16 filing (not Jun-16's 1.99) is the right value at that date |
+| PETRONET Aug-16 (Jun-16 row) | 16.48 | dom 6.4775 (MF 6.46 + Banks 0.02) | BSE XBRL: OtherInstitutions exactly **10.00** = GDF/Engie block, labelled "OVERSEAS CORPORATE BODIES" in adjacent quarters — their "exact 10.00 offset" is that block |
+| JUBLPHARMA Mar-16 (Dec-15 row) | 15.23 | dom **0.11** (banks 0.11) | BSE ShareholdingPattern.aspx qtrid 88: QFI row 11.19 (our fii ✓) + Any-Others 15.12; the trendlyne-derived fill had summed Any-Others into dii |
+Their column hypothesis refined: not a neighbouring-column read — the "Any Other (specify)"
+institutions row blanket-routed into the DII family total. Swept table-wide (16,919 XBRL-era
+cells re-read from BSE's own copies, raw-cached): 914 foreign-confirmed → healed via
+shp_cell_fix.json (dii → domestic-only 4dp from share counts, fii += block), 143 domestic-kept
+(genuinely domestic Any-Other: LIC/insurer folios — a stated definitional line vs their
+B1-domestic-only), 1,553 HELD with reasons (QIB-labelled blocks are nationality-unknowable),
+verdict per cell + curated holder-name map in `_shp_other_inst_audit.json`. Evidence ladder for
+"foreign": the filing's own typed NameOfTheShareholder / the filer's own (FII)/(FPI) tag /
+cross-reference (same name ≥2× under FPI rows of other filings, never domestic — AMANSA 418×,
+MALABAR 257×, ELARA 228×) / same-symbol same-size block continuity. Never a bare name guess.
+Also healed beyond their list: JSWSTEEL Dec-15 **fii** 31.99 → the seam-inversion had swept the
+same JFE block into FII (their DII-only diff couldn't see it).
+NB precision: our store is share-count 4dp (JSWSTEEL Jun-16 = 1.9815); the filing's printed 2dp
+rows sum to their 1.99 — a stated convention difference of ≤1bp, not a disagreement.
+A/B on their config: 3/210 baskets change (CAGR 8.75→8.79) — correctness win, small strategy
+footprint. Pre-XBRL era (aspx) phase-2 sweep of the Dec-2013..Mar-2016 selectable quarters ran
+the same day (see runbook §118 tally).
+
+**SW-3 (accel definition, MEDIUM) — DOCUMENTED (no formula change).** Ours:
+`accel = ret(D,30cd) − ret(D−30cd,30cd)` — 30 CALENDAR days, endpoints = last trading close at
+or before each date, corporate-action-adjusted closes, ordinary dividends not reinvested.
+Structurally the same as theirs (30cd vs 30cd, dividend-free) — the 85.6% small deltas are
+endpoint-anchor differences (their labels: last trading day; ours: calendar month-end anchored
+back to the last close). Published in every CSV export via `csvMetaRows()` + runbook §118.
+
+**SW-4 (RSI, LOW) — DOCUMENTED.** Wilder RSI(14) on daily CA-adjusted closes, seeded with a
+simple 14-change average starting ≤100 bars back (`rsi14()`). Same smoothing family as theirs;
+the disagreement is seed-window + price-basis environment. Published in the same two surfaces.
+
+**SW-5 (export comparability, LOW) — DONE, export-only (the engine end-date-rebalance guard is
+the sibling StockView-R5 session's item and landed separately as e11).** Both CSV exports now
+carry a metadata preamble: cagr, **max_drawdown_pct**, **sharpe_rf0** (rf=0 stated in the name,
+formula + measured periods/yr in the note), **final_period=open** (our last rebalance is the
+live current-picks basket), date_labels=calendar month-end.
+
+**Their status question (YoY sign on loss-base year-ago quarters) — FIXED LONG AGO, verified in
+code this session:** both engine twins use `(cur − base)/|base| × 100` in all three growth
+surfaces (point YoY, accel's yoyOf, TTM — backtest-engine.js:604/642/664 ==
+stock-backtest.html:1031/1055/1070), landed **2026-06-14, commit b48e30a19**. A shrinking loss
+prints POSITIVE by deliberate convention (§N3). Tell them: closed since June.

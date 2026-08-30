@@ -11225,7 +11225,7 @@ KNOWN, DOCUMENTED assumption — never present pre-2016 SHP visibility as measur
 the 0e calibration: over 748 real post-2016 filings the median lag is 17d and only 4.0% exceed the
 21-day deadline, so the convention is empirically sound and deadline-anchored (conservative).
 
-**★ 2026-08-30 SUPERSEDED IN TWO WAYS (quantmac round 5 SW-1 — see §117 / PLAN_QUANTMAC_FIXES §O):**
+**★ 2026-08-30 SUPERSEDED IN TWO WAYS (quantmac round 5 SW-1 — see §118 / PLAN_QUANTMAC_FIXES §O):**
 1. **The announcement-stream negative was SCOPE-WRONG.** P0's "SHP never rode the announcements
    stream" was measured only on 2006/2009/2012 windows. Re-probed 2026-08-30: from **January
    2014** BSE's `AnnSubCategoryGetData` serves "Company Update / Shareholding" rows with NEWS_DT
@@ -13077,7 +13077,7 @@ the pre-2016 scanned tail are UNREAD (bounded scope).** The honest headline: the
 defect is rare and sparse; the material tier is already-correct. Sibling memory:
 `project-stocks-owners-vs-total-uncovered-symbols`.
 
-## 117. ★★★ QUANTMAC ROUND 5 (DII strategy) — un-dated pre-2016 SHP visibility SHIPPED, the Any-Other-institutions DII inflation class, and the published formula specs  (2026-08-30)
+## 118. ★★★ QUANTMAC ROUND 5 (DII strategy) — un-dated pre-2016 SHP visibility SHIPPED, the Any-Other-institutions DII inflation class, and the published formula specs  (2026-08-30)
 
 Findings report: quantmac r5 2026-08-29 (SW-1..SW-5). Detailed record: PLAN_QUANTMAC_FIXES.md §O.
 Every verdict below traces to a primary document or code read this session.
