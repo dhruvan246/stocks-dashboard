@@ -61,6 +61,38 @@
    "filed_nci": 0,
    "src": "BSE ann 20230516, consolidated Q4FY23 profit 412.81 Rs million=41.28cr; Kaynes has NO NCI; stored 63.51 is an XBRL power-of-ten anomaly",
    "note": "no NCI -- not owners-vs-total; scale-error class"
+  },
+  "ADANIPORTS|20170930|patC": {
+   "stored": 997.04,
+   "filed_total": 992.37,
+   "filed_owners": 992.08,
+   "filed_nci": 0.29,
+   "src": "BSE ann 20180118 Dec-2017 filing, Sep-2017 comparative col (Rs cr): row7 'PAT before share of JV' 997.04 == stored; row9 'Profit for period (7+8)' 992.37; owners 992.08 + NCI 0.29",
+   "note": "JV-omission class: stored is Profit-AFTER-TAX-BEFORE-JV-share (997.04), not owners (992.08) nor total-for-period (992.37). NOT owners-vs-total. ADANIPORTS con series systematically omits the equity-method JV/associate share; needs a holistic audit across all eras."
+  },
+  "ADANIPORTS|20170630|patC": {
+   "stored": 705.58,
+   "filed_total": 710.25,
+   "filed_owners": 703.43,
+   "filed_nci": 6.82,
+   "src": "BSE ann 20170812 own Q1FY18 (Rs cr): row5 'PAT before share of JV' 705.58 == stored; row7 'Net Profit for period (5+6)' 710.25; owners 703.43 + NCI 6.82",
+   "note": "JV-omission class: stored=PAT-before-JV (705.58), not owners (703.43) nor total (710.25). See ADANIPORTS|20170930 note."
+  },
+  "ADANIPORTS|20170331|patC": {
+   "stored": 1161.32,
+   "filed_total": 1164.07,
+   "filed_owners": 1166.91,
+   "filed_nci": -2.84,
+   "src": "BSE ann 20170812 Q1FY18 filing, Mar-2017 comparative col (Rs cr): row5 'PAT before share of JV' 1161.32 == stored; row7 total 1164.07; owners 1166.91 + NCI -2.84 (minority loss, owners>total)",
+   "note": "JV-omission class: stored=PAT-before-JV (1161.32), not owners (1166.91) nor total (1164.07). See ADANIPORTS|20170930 note."
+  },
+  "WOCKPHARMA|20170930|patC": {
+   "stored": 3.33,
+   "filed_total": -8.82,
+   "filed_owners": -3.33,
+   "filed_nci": -5.49,
+   "src": "BSE ann 20171030 own Q2FY18 (Rs lakhs/100): row7 Net Profit after tax -8.82; row9 NCI -5.49; row10 'Net Profit after NCI...' (333)lakh = -3.33 owners. Cross-checked in Dec-2017 filing Sep col.",
+   "note": "SIGN FLIP: |stored|==|owners| (3.33) but stored is POSITIVE while filed owners is a LOSS -3.33. NOT owners-vs-total. Stored-value sign defect; needs pipeline audit (out of scope here)."
   }
  }
 }

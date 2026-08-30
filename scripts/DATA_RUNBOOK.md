@@ -12965,3 +12965,63 @@ The `total == stored` gate REFUSES them (correctly — healing to the filed owne
 restatement whose provenance we have not established). They are flagged for a separate audit, NOT healed here.
 The lesson: `total == stored` is not just a column-pinner, it is the tripwire that separates the owners-vs-total
 class from a stored-value-is-simply-wrong class the proxy cannot tell apart.
+
+### 116f. THE PRE-2018 TAIL, MARQUEE SLICE — the defect is essentially ABSENT here; the pre-2018 extraction era took the OWNERS line  (2026-08-30)
+
+§116d left **29,998 con cells older than the XBRL cache UNSCREENED** (roughly pre-2018). This is the
+pre-2018 pass over that tail. It has no XBRL to screen against, so detection == reading the filed PDF.
+Population: **5,355 pre-2018 con cells; 4,994 uncovered by the cache.** Restricting to symbols with a
+KNOWN real NCI (in `owners_basis_heals` ∪ `owners_basis_unreconciled`) bounds the material suspects to
+**1,249 cells / 109 symbols**; the rest are no-NCI symbols (owners==total by definition, out of class).
+
+★★★ **THE RESULT INVERTS THE NAIVE EXPECTATION, AGAIN (detection is not conviction).** Vision-read the
+current-quarter (authoritative) column for the **14 highest-NCI marquee symbols** (JINDALSTEL, ADANIENT,
+NAVA, CHOLAHLDNG, BIOCON, RAIN, SOLARINDS, TECHM, WOCKPHARMA, UPL, DLF, ADANIPORTS, GPIL, TIINDIA,
+INTELLECT…). **~26 as-filed cells across 11 symbols were ALREADY on the owners basis** — stored ==
+owners exactly, verified against each filing's own `owners + NCI == total`. The pre-2018 extraction era
+(whatever built these) took the *"Net Profit attributable to owners/shareholders"* line correctly, even
+for the same symbols whose POST-2018 (XBRL-era) cells §116/d/e convicted. **The owners-vs-total defect is
+a post-2018 XBRL-extraction artifact; it is essentially absent from the pre-2018 marquee tier.** Two
+structural reasons: (a) pre-2016 old-Indian-GAAP results print the bottom-line *"Net Profit"* already
+AFTER minority interest (owners by construction — no total-incl-NCI line for an extractor to grab); (b)
+the 2016–2017 Ind-AS filings were read for their owners attribution line, not the *"Profit for the
+period"* subtotal.
+
+★ **The defect IS present but SPARSE and per-SYMBOL, not per-era.** GRINDWELL 20170331/20170630 (already
+in `owners_basis_heals` from a prior sweep) prove a pre-2018 owners-vs-total defect can occur. ADANIENT
+(clean) and ADANIPORTS (defective) are both Adani-group, same filing house, same format — yet one took
+owners and the other did not. So the defect tracks HOW a symbol's series was extracted, not the era; a
+clean Dec-quarter does not clear the symbol, and a defective one does not condemn the era.
+
+★ **ADANIPORTS is NOT owners-vs-total — it is a JV-SHARE-OMISSION class, and the tripwire caught it.**
+ADANIPORTS's con series stores *"Profit after tax and BEFORE share of profit from joint ventures"* (row 5
+/ row 7-before-JV): Sep-17 997.04, Jun-17 705.58, Mar-17 1161.32 each == that line exactly, matching
+NEITHER owners (992.08 / 703.43 / 1166.91) NOR the total-for-period (992.37 / 710.25 / 1164.07). Those
+three go to `owners_total_stored_anomalies.json` for a dedicated audit (the omission likely spans all
+eras). Only **Dec-2017 passed the owners-vs-total gate** — and only because JV share was NIL that quarter,
+so PAT-before-JV coincided with the total (1001.00 == stored); owners 994.07 + NCI 6.93 = 1001.00 closes,
+so it was **healed 1001.0 → 994.07** (`owners_basis_heals` 409→410). `total == stored` is once more the
+tripwire that separates the healable owners-vs-total cell from the systematic stored-value-wrong class.
+
+★ **Two more byproducts logged, not healed:** WOCKPHARMA 20170930 stored **+3.33** while its own Q2FY18
+filing prints owners **(333) lakh = −3.33** — a SIGN FLIP (magnitude == owners, sign inverted), logged to
+`owners_total_stored_anomalies.json` for a pipeline audit. And COFFEEDAY's BSE scripcode resolved to
+*Coffee Day Global* (the unlisted subsidiary, owners 100.54, no NCI) not the listed *Coffee Day
+Enterprises* (stored 5.40) — an identity/scripcode mismatch; skipped, NOT healed from the wrong entity.
+
+**Reach reality (measure source reach first).** Pre-2018 BSE filings are OVERWHELMINGLY scanned images
+with no text layer — `owners_total_verify.py` text mode returned `unread` on every attempt, and free
+rapidocr mis-associates the owners line (the §116e wall). So the material reads were **model-vision**
+(`render_pl.py` → read under the same identity gate), done one-at-a-time with the user's explicit
+approval (bounded to the marquee, per the standing vision-reads-last/ask-first rule). Comparative columns
+are unreliable (Ind-AS restatement: NAVA's Dec-16 read 18.78 restated in the Dec-17 filing vs the as-filed
+23.33 = owners in NAVA's own Dec-16 filing) — only the CURRENT-quarter column of each filing is
+authoritative; classify from the own filing, and read the year-later filing only to disambiguate, never
+to overwrite.
+
+**TALLY (marquee slice):** 1 healed (ADANIPORTS 20171231, owners-vs-total gate-clean) · ~26 already-owners
+across 11 symbols · 4 anomalies logged (ADANIPORTS ×3 JV-omission + WOCKPHARMA sign) · 1 skipped
+(COFFEEDAY entity mismatch) · 0 unreconciled. **The remaining lower-NCI marquee names, all of Tier-B, and
+the pre-2016 scanned tail are UNREAD (bounded scope).** The honest headline: the pre-2018 owners-vs-total
+defect is rare and sparse; the material tier is already-correct. Sibling memory:
+`project-stocks-owners-vs-total-uncovered-symbols`.
