@@ -283,7 +283,8 @@ def main():
     for name, payload, slots in (("fund_cell_fix.json", "fund", {"std": 1, "con": 3}),
                                  ("revop_cell_fix.json", "revop",
                                   {"std": 0, "con": 1, "op_std": 2, "op_con": 3,
-                                   "pat_std": 4, "pat_con": 5})):
+                                   "pat_std": 4, "pat_con": 5,
+                                   "ebit_std": 7, "ebit_con": 8})):
         p3 = os.path.join(HERE, name)
         if not os.path.exists(p3):
             continue

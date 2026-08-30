@@ -20,7 +20,8 @@ ROOT = os.path.dirname(HERE)
 LEDGER = os.path.join(HERE, "revop_cell_fix.json")
 TARGETS = [os.path.join(ROOT, "docs", "sf_revop.json"),
            os.path.join(HERE, "revop_fundamentals.json")]
-SLOT = {"std": 0, "con": 1, "op_std": 2, "op_con": 3, "pat_std": 4, "pat_con": 5}
+SLOT = {"std": 0, "con": 1, "op_std": 2, "op_con": 3, "pat_std": 4, "pat_con": 5,
+        "ebit_std": 7, "ebit_con": 8}   # 7/8 added 2026-08-30 (LODHA 20220331 scale row)
 TOL = 0.01
 
 

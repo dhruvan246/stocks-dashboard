@@ -719,6 +719,28 @@
    "was_revop": {},
    "was_fund": 506.82,
    "fixed_fund": 5.07
+  },
+  {
+   "sym": "LODHA",
+   "qe": "20220331",
+   "basis": "std",
+   "k": -2,
+   "file": "INDAS_83654_648549_27042022044059_WEB_xml",
+   "why": "Filer's std XBRL is uniformly 1/100 of true rupees (decimals=-5; only OneD+FourD contexts exist, both scaled). Cross-basis anchor: same-day con filing INDAS_83655_648552_27042022044255_WEB_xml at true scale (decimals=-7, rev OneD 34,445.6 mn). detres print of the same filing: rev 33,171.3 / NP 5,037.9 Rs-mn; printed EPS 10.46 reconciles 503.9 cr; FY22 .50 annual 11,334.6 mn = 1,133.46 cr. Exact live values were landed via fund_cell_fix/revop_cell_fix (CI-replayed); this entry is the PARSE-TIME guard so a full rebuild off _xbrl_cache stays clean. scale_fix.py --apply deliberately NOT run for this entry (cell-fix landed exact 503.79; --apply would compute was/10^k = 504.0 from the 2dp stored value). StockView R5 F-04. 2026-08-30 16:25 IST",
+   "was_revop": {
+    "rev": 33.17,
+    "op": 8.23,
+    "pat": 5.04,
+    "ebit": 8.09
+   },
+   "fixed_revop": {
+    "rev": 3317.13,
+    "op": 823.49,
+    "pat": 503.79,
+    "ebit": 809.17
+   },
+   "was_fund": 5.04,
+   "fixed_fund": 503.79
   }
  ]
 }
