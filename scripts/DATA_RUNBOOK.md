@@ -13202,7 +13202,7 @@ value-identity; the con original is unreadable, so moving con's ann would attach
 values to the earlier date) — ann-date ledger session's scope (F-01). IIFL op slots hold 0.0
 (NSE's blank-as-0.0000 sentinel, §108 falsy-sentinel) for an NBFC — a separate class.
 
-### 117c. The vision-PDF half RAN — 114 comparative-column fills audited, 8 cells CONTAMINATED, all healed  (2026-08-30, ~/stocks-wt/vision-comp-audit)
+### 117c. The vision-PDF half RAN — 114 comparative-column fills audited, 9 cells CONTAMINATED, all healed  (2026-08-30, ~/stocks-wt/vision-comp-audit)
 
 **NO ASSUMPTIONS, NO GUESSWORK** — every verdict below is a measured read (BSE detres, NSE
 archive/XBRL, MC deep feeds, and the ORIGINAL filing PDFs — two of them OCR'd scans).
@@ -13223,13 +13223,13 @@ GICRE digital).
 
 | verdict over the 114 | rows |
 |---|---|
-| CLEAN — stored slot(s) reproduce from the original as-filed publication | 101 |
+| CLEAN — stored slot(s) reproduce from the original as-filed publication | 104 (3 carry convention notes) |
 | CLEAN, first-publication — the comparative IS the earliest publication (NSE lists the year-ago comparative as its OWN row sharing the later filing's XBRL: 5 FY19 con-quarterly non-filers + TECHNOE; SYNGENE/EQUITASBNK/STARHEALTH/LICI pre-listing) | — counted above |
-| **CONTAMINATED → HEALED** (8 cells, 12 ledger slots + 4 fund) | **8** |
+| **CONTAMINATED → HEALED** (9 cells, 12 revop slots + 4 fund) | **9** |
+| convention notes on 3 of the clean rows: GICRE Mar-22 (3-leg vs 2-leg GI revenue — own filing reproduces stored), CRISIL Mar-18 std + DHAMPURSUG Jun-08 (rev line choice — both values printed in the original) | — |
 | OPEN — NIACL Mar-18 rev (Δ195.65 vs MC ≈ the GICRE shareholders'-inv-leg convention pattern; own filing is a 2018 scan → vision rung, not spent) | 1 |
-| convention notes, no vintage defect (GICRE Mar-22 3-leg vs 2-leg — own filing reproduces stored; CRISIL Mar-18 rev_ops vs rev_total line choice — both printed in the original) | 4 |
 
-**The 8 healed cells** (fund_cell_fix + revop_cell_fix, `found`=§117c, appliers idempotent,
+**The 9 healed cells** (fund_cell_fix + revop_cell_fix, `found`=§117c, appliers idempotent,
 verify_fills_live 13,323 cells MISSING/REVERTED/RESURRECTED 0):
 * **AMTEKAUTO Jun-17 std rev 462.26→424.64, PAT −862.52→−889.58** — the fill's own src claimed
   "first-ever publication (CIRP)" and "detres was a later amended refiling"; the timely original
@@ -13281,7 +13281,7 @@ REC Jun-19 std rev 6684.66 + SAMMAANCAP Mar/Jun-19 con rev match no MC line (sam
 reclass suspects), INDUSINDBK Sep-22/Mar-23 rev_con==rev_std exactly (std-copy suspect, con
 campaign), CRISIL Dec-17-vs-Mar-18 rev line-choice wobble, AMTEKAUTO ann 20180821→20170728
 (ann-date ledger session). The remaining vision family (4,682 non-comparative outside-window
-rows + 2,994 rename-mirrors) stays open; with 8/114 (7.0%) contaminated on the comparative
+rows + 2,994 rename-mirrors) stays open; with 9/114 (7.9%) contaminated on the comparative
 subset — vs §117b's 0/2,828 — the comparative-citing fills were exactly the right place to look,
 and the non-comparative residue's src cites current-quarter columns (different mechanism, lower
 risk). Tools: `vintage117c_{visioncomp,xbrl,adjudicate,ctxread}.py` + `vintage117c_land.py`;
