@@ -741,18 +741,27 @@ async function loadShp() {
       if ((cU && !qU) || (qU === cU && q[3] > cur[3])) by[q[0]] = q; });
     SHPD[nw] = Object.values(by).sort((a, b) => a[0] - b[0]);
   }
+  // +30d FALLBACK for rows STILL un-dated after §105's recovery (essentially pre-2014):
+  // visibility = quarter-end + 30 calendar days. 30 is MEASURED, not the legal 21d deadline —
+  // of the era's own dated filings, ≤30d covers 99.5% (2014) / 89.8% (2015) while ≤21d covers
+  // only 91% / 74%, and the undated remainder plausibly skews later still; a late floor
+  // understates returns instead of inventing look-ahead. Stamped AFTER the alias merge so
+  // dated-beats-undated collision preference above still sees the raw sentinel. A recovered
+  // real date arrives already-dated from the feed and is never touched here. Runbook §120.
+  for (const sym in SHPD) for (const q of SHPD[sym]) if (q[3] === 99999999) q[3] = qePlus30(q[0]);
 }
+function qePlus30(qe) { const d = new Date(Date.UTC(Math.floor(qe / 10000), Math.floor(qe / 100) % 100 - 1, qe % 100)); d.setUTCDate(d.getUTCDate() + 30); return d.getUTCFullYear() * 10000 + (d.getUTCMonth() + 1) * 100 + d.getUTCDate(); }
 function prevQeInt(qe) { let y = Math.floor(qe / 10000), m = Math.floor(qe / 100) % 100 - 3; if (m <= 0) { y--; m += 12; } return y * 10000 + m * 100 + { 3: 31, 6: 30, 9: 30, 12: 31 }[m]; }
 // A row dated anything other than a March/June/September/December quarter end is an EVENT-driven
 // SHP (capital change / SAST) merged in by §22k — same shape, but no calendar-previous quarter.
 function isQuarterEnd(d) { return ({ 3: 31, 6: 30, 9: 30, 12: 31 }[Math.floor(d / 100) % 100] || 0) === d % 100; }
-// ⚠️ UN-DATED PRE-JUN-2016 ROWS (SW-1, 2026-08-30): a pre-Jun-2016 row with no MEASURED
-// visibility date is served with sub = 99999999 by build_engine_feed (fetch_shareholding.py)
-// — the old qe+21d convention was the filing DEADLINE, not a measurement, so such a row can
-// never satisfy `sub <= screenDate` and is invisible to point-in-time screens BY DESIGN
-// (a DII/FII-sorted backtest holds nothing in months where no dated filing exists; real
-// dates exist from Jan-2014 via BSE's announcement stream and from Mar-2016 via SHPQNewFormat
-// — see shp_sub_dates.json + PLAN_SHP_DATES.md / runbook §105). Values stay in the row.
+// ⚠️ UN-DATED ROWS (SW-1 2026-08-30 → §120 2026-08-31): a row with no MEASURED visibility
+// date is served with sub = 99999999 by build_engine_feed (fetch_shareholding.py). Real dates
+// exist from Jan-2014 (BSE announcement stream) and Mar-2016 (SHPQNewFormat) — see
+// shp_sub_dates.json + PLAN_SHP_DATES.md / runbook §105. Rows STILL sentinel after that
+// (essentially pre-2014) get the measured-conservative qe+30d visibility stamped at load
+// (§120, see loadShp) — so early-era DII/FII screens invest on a disclosed, late-biased
+// approximation instead of holding nothing; recovered real dates always take precedence.
 function shpAt(sym, dateInt) {
   const arr = SHPD[sym] || (FUND_ALIAS[sym] ? SHPD[FUND_ALIAS[sym]] : null); if (!arr || !arr.length) return null;
   let ci = -1; for (let i = arr.length - 1; i >= 0; i--) { if (arr[i][3] <= dateInt) { ci = i; break; } }

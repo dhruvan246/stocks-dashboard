@@ -13503,3 +13503,25 @@ re-asserts everything after any rebuild. Tools: scratchpad `annidx/` (fetch_inde
 push = fresh `reset --hard origin/main` in the worktree + ledger union + `--reapply` + gates
 (np values byte-equal, every changed cell explained by a ledger key) + rebase-push +
 read-back from origin + LIVE poll ~20 min later (all 7 chunks LIVE-verified).
+
+## 120. SHP +30d VISIBILITY FALLBACK for rows still un-dated after §105 (≈pre-2014)  (2026-08-31)
+
+**Convention (engine e12, both twins, user-approved 2026-08-31):** an SHP row whose visibility
+date is still the `sub=99999999` sentinel after §105's recovery (BSE ann-stream dates reach
+Jan-2014; SHPQNewFormat reaches Mar-2016) is stamped `quarter-end + 30 calendar days` at
+loadShp() time. Stamping happens AFTER the alias-merge so §118's dated-beats-undated collision
+preference still sees raw sentinels; a recovered real date always arrives already-dated from the
+feed and is never touched. Helper `qePlus30()` in both twins.
+
+**Why 30 and not the legal 21 (measured on shp_engine.json's own dated rows):** ≤21d covers
+91.1% of 2014's and only 73.8% of 2015's dated filings (2020: 73%); ≤30d covers 99.5% / 89.8%.
+Every filing later than the assumed day is look-ahead IN THE STRATEGY'S FAVOUR, and the undated
+remainder plausibly skews later than the dated sample (diligent filers got dated). A late floor
+understates returns — the trustworthy direction. Precedent: the pre-§118 qe+21d convention was
+retired precisely because it was a deadline, not a measurement.
+
+**Effect:** early-era (2013→early-2014) DII/FII screens invest again — e.g. the 2013-15 bull leg
+no longer starts with ~8 empty months for SHP-gated strategies. 2016+ results are byte-identical
+(zero sentinel rows there). Numbers from the fallback era should be read as "approx (late-biased)"
+next to dated-era numbers. Real-date recovery for pre-2014 continues (spawned session, BSE
+announcement archive probe) — every recovered date shrinks the fallback's domain.
