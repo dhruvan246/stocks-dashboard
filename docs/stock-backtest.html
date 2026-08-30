@@ -668,7 +668,7 @@ function isAlreadySaved(cfg){
 // every key changes → the old snapshot is no longer found → the next view recomputes with the CURRENT
 // code + data and re-caches. Without this stamp a changed engine or a refreshed dataset would keep
 // serving a stale pre-computed result forever.
-const ENGINE_VER='e10';       // ⬆️ BUMP this whenever simulate()/engine logic changes → invalidates all snapshots  (e10 2026-08-30: SW-1 un-dated pre-Jun-2016 SHP rows — feed serves sub=99999999 for unevidenced visibility dates, alias-merge prefers dated rows; DII/FII strategies hold nothing before ~Feb-2014 by design; e9 2026-08-27: dead-con guard — profitAt/profitMetrics skip a con series >12 months staler than std, BANDHANBNK class; e8 2026-08-23: foldFundAliases — old-key fundamentals folded under the merged key, §105)
+const ENGINE_VER='e11';       // ⬆️ BUMP this whenever simulate()/engine logic changes → invalidates all snapshots  (e11 2026-08-30: end-date rebalance guard — simulate() never OPENS a basket on cfg.end, both twins, StockView R5 F-03; e10 2026-08-30: SW-1 un-dated pre-Jun-2016 SHP rows — feed serves sub=99999999 for unevidenced visibility dates, alias-merge prefers dated rows; DII/FII strategies hold nothing before ~Feb-2014 by design; e9 2026-08-27: dead-con guard — profitAt/profitMetrics skip a con series >12 months staler than std, BANDHANBNK class; e8 2026-08-23: foldFundAliases — old-key fundamentals folded under the merged key, §105)
                               // e7 (2026-08-20): TTM contiguity check strengthened to pairwise
                               // gaps (each of 4 quarters exactly 3mo apart) — the e6 endpoint-only
                               // check let a duplicate qe row through uncaught (APOLLOTYRE/
@@ -1213,7 +1213,12 @@ function simulate(cfg){
     const mv = started ? mark(off) : cfg.capital;
     equity.push([md, mv]);
     monthsSinceReb++;
-    const isReb = (mi===0) || (monthsSinceReb>=cfg.freq);
+    // ⚠️ END-DATE REBALANCE GUARD (StockView R5 F-03, 2026-08-30): monthsBetween() pins its LAST
+    // entry to cfg.end itself, so without this guard the loop re-screens and OPENS a fresh basket
+    // ON the backtest end date — zero-holding trades that pad the trade list and pick breadth.
+    // The end date only MARKS equity and CLOSES open positions; it never opens. mi>0 keeps the
+    // degenerate single-entry window behaving as before. (Sync: backtest-engine.js — same guard.)
+    const isReb = ((mi===0) || (monthsSinceReb>=cfg.freq)) && !(mi===months.length-1 && mi>0);
     if(isReb){
       // screen → filter → rank → top-N target
       const rows=screenAt(cfg,off);

@@ -911,7 +911,15 @@ function simulate(cfg) {
     const mv = started ? mark(off) : cfg.capital;
     equity.push([md, mv]);
     monthsSinceReb++;
-    const isReb = (mi === 0) || (monthsSinceReb >= cfg.freq);
+    // ⚠️ END-DATE REBALANCE GUARD (StockView R5 F-03, 2026-08-30): monthsBetween() pins its LAST
+    // entry to cfg.end itself, so without this guard the loop re-screens and OPENS a fresh basket
+    // ON the backtest end date — positions with entryDate == exitDate == end, zero holding period,
+    // zero return, padding the trade list and pick breadth (measured: 7 zero-length entries + a
+    // full 20-name re-screen at 2026-08-20 on the high-mdd6 recon strategy). The end date only
+    // MARKS equity (above) and CLOSES open positions (post-loop, held:true) — it never opens.
+    // mi>0 keeps the degenerate single-entry window (start==end month) behaving as before.
+    // (Sync: stock-backtest.html carries the same guard.)
+    const isReb = ((mi === 0) || (monthsSinceReb >= cfg.freq)) && !(mi === months.length - 1 && mi > 0);
     if (isReb) {
       let rows = factorsAt(off, cfg).filter(r => r.rsi != null && passFilters(r, cfg.filters));
       rows = rows.filter(r => fieldVal(r, cfg.sortBy) != null);   // can't rank a stock on a factor it's missing (keep in sync with stock-backtest.html)
