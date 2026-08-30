@@ -1399,7 +1399,8 @@
         // of keeping a second copy that drifts.
         window.SW_SETTINGS_KEYS = ['sw_theme', 'sw_sec_watch', 'bt_fav_strategies',
           'live_worker_url', 'savedRotations', 'savedCatRot', 'savedBOB', 'sw_dash_presets', 'sw_triage_hide',
-          'mix_state_v1'];   // mix_state_v1: the Strategy Mixer's selection — synced so a mix set up once lands on every device
+          'mix_state_v1',    // mix_state_v1: the Strategy Mixer's selection — synced so a mix set up once lands on every device
+          'mix_presets_v1']; // mix_presets_v1: the Mixer's NAMED mixes ("⭐ 8 favourites" …) — one-click labelled selections
         try { window.swSync.syncSettings(window.SW_SETTINGS_KEYS); } catch (e) {}
       };
       document.head.appendChild(s1);

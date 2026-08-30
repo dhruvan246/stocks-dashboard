@@ -83,6 +83,7 @@
         <button id="bFav" class="chip text-slate-600 bg-slate-50 hover:border-indigo-300" title="Tick every ⭐ favourite">⭐ Add favourites</button>
         <button id="bClear" class="chip text-slate-600 bg-slate-50 hover:border-rose-300">Clear all</button>
       </div>
+      <div id="mixPresets" class="hidden flex-wrap items-center gap-1.5 mt-2 flex"></div>
       <div class="text-sm font-bold text-slate-900 mt-4 mb-1.5">3 · How the money is invested</div>
       <div class="grid grid-cols-1 sm:grid-cols-2 gap-2">
         <button id="mSplit" class="modecard" aria-pressed="true">
@@ -298,6 +299,52 @@ function saveState(){
 }
 function loadState(){ try { return JSON.parse(localStorage.getItem('mix_state_v1') || 'null'); } catch(e){ return null; } }
 
+/* ---------- named mixes — a labelled snapshot of the selection (keys+₹+mode), one chip each.
+ * Stored in mix_presets_v1, which syncs through SETTINGS like mix_state_v1, so a mix saved
+ * here (e.g. "⭐ 8 favourites") is one click away on every device. Same label re-saves over. */
+function loadPresets(){ try { const v = JSON.parse(localStorage.getItem('mix_presets_v1') || '[]'); return Array.isArray(v) ? v.filter(p => p && p.label && Array.isArray(p.sel)) : []; } catch(e){ return []; } }
+function savePresets(list){ try { localStorage.setItem('mix_presets_v1', JSON.stringify(list)); } catch(e){} }
+function renderPresets(){
+  const ps = loadPresets(), box = $('mixPresets'), canSave = SEL.size >= 2;
+  box.classList.toggle('hidden', !ps.length && !canSave);
+  box.innerHTML = (ps.length ? '<span class="text-[11px] font-semibold text-slate-400 mr-0.5">Saved mixes:</span>' : '')
+    + ps.map((p, i) => `<span class="chip text-slate-600 bg-slate-50 inline-flex items-center gap-1">
+        <button data-ld="${i}" class="font-semibold hover:text-indigo-600" title="Load this mix — ${p.sel.length} strategies">${esc(p.label)}</button>
+        <button data-del="${i}" class="text-slate-300 hover:text-rose-500" title="Delete this saved mix">✕</button></span>`).join('')
+    + (canSave ? '<button id="bSaveMix" class="chip text-indigo-600 bg-indigo-50 hover:border-indigo-300" title="Save the current selection (strategies + ₹ + mode) under a name">💾 Save mix as…</button>' : '');
+  box.querySelectorAll('button[data-ld]').forEach(b => b.onclick = () => applyPreset(loadPresets()[+b.dataset.ld]));
+  box.querySelectorAll('button[data-del]').forEach(b => b.onclick = () => {
+    const ps2 = loadPresets(), p = ps2[+b.dataset.del];
+    if (p && confirm('Delete saved mix "' + p.label + '"?')){ ps2.splice(+b.dataset.del, 1); savePresets(ps2); renderPresets(); }
+  });
+  const sv = $('bSaveMix'); if (sv) sv.onclick = saveCurrentAsPreset;
+}
+function applyPreset(p){
+  if (!p) return;
+  SEL.clear();
+  const missing = [];
+  for (const k of p.sel){
+    if (SEL.size >= MAX_SEL) break;
+    const s = ALL.find(x => identityKey(x.cfg) === k);
+    if (!s){ missing.push(k); continue; }
+    const a = +((p.alloc || {})[k]);
+    SEL.set(k, { s, alloc: a >= 0 ? a : 100000 });
+  }
+  if (p.mode === 'pool' || p.mode === 'split') setMode(p.mode);
+  renderMix(); renderList(); saveState();
+  if (missing.length) setMsg(missing.length + ' of this mix’s strategies are no longer in the saved list — loaded the other ' + SEL.size + '.', true);
+  if (SEL.size >= 2) runMix();
+}
+function saveCurrentAsPreset(){
+  if (SEL.size < 2) return;
+  const label = (prompt('Name this mix:', '') || '').trim();
+  if (!label) return;
+  const ps = loadPresets().filter(p => p.label !== label);
+  ps.unshift({ label, sel: [...SEL.keys()], alloc: Object.fromEntries([...SEL.entries()].map(([k,v]) => [k, v.alloc])), mode: MODE, ts: Date.now() });
+  savePresets(ps.slice(0, 12));
+  renderPresets();
+}
+
 /* ---------- picker list ---------- */
 function stratName(s){ return strategyEnglish(s.cfg) || s.name || (typeof strategyLabel === 'function' ? strategyLabel(s.cfg) : ''); }
 function stratHref(s){ return './strategy-backtest.html?id=' + encodeURIComponent(s.id); }
@@ -367,6 +414,7 @@ function renderMix(){
     const v = SEL.get(inp.dataset.al); if (v){ v.alloc = Math.max(0, +inp.value || 0); renderMix(); saveState(); }
   });
   $('mixRows').querySelectorAll('button[data-rm]').forEach(b => b.onclick = () => toggleSel(b.dataset.rm, false));
+  renderPresets();   // the row lives under the tray buttons; selection size gates the 💾 button
 }
 
 /* ---------- run ---------- */
