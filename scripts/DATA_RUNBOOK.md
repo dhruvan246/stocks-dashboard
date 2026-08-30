@@ -13167,3 +13167,37 @@ External recon (StockView R5) raised 7 findings; resolution session verdicts, ev
   the two flagged cells are the ann-date ledger session's scope. **F-06 conceded:** +10.99% =
   (−0.0567−(−0.0637))/0.0637 exactly — our own Δ/|base| rule; near-zero-base display suppression
   is a product decision, not taken here.
+
+### 117b. The F-02 open campaign RAN — the NSE-archive half is CLOSED: 2,828 rows audited, ZERO contaminated  (2026-08-30, ~/stocks-wt/restated-vintage-audit)
+
+**NO ASSUMPTIONS, NO GUESSWORK** — every verdict below is a measured read (cached NSE archive
+lists/pages seeded from the §109 worktrees, live BSE detres, MC deep con feed).
+
+`vintage117_provenance.py` = §109b's provenance test with the window COMPLEMENTED: every
+`vision_rev_fills.json` row citing an NSE archive page whose qe is OUTSIDE 20150630..20170331 —
+**2,828 basis-rows / 2,187 (sym,qe) keys / 602 symbols** (2017: 1,237 keys, Mar-2015-and-earlier
+2015: 401, 2005-14: 549). Verdicts (ledger `_vintage117_prov.json`, worktree-local, regenerable):
+
+| verdict | rows | resolution |
+|---|---|---|
+| `single-row`, filed ≤180d after qe | 2,767 | timely sole filing = as-filed (§111 gate) — CLEAN |
+| `src-is-earliest` | 33 | pass read the original of ≥2 filings — CLEAN |
+| `single-row`, filingDate `"-"` (2005-06 era) | 21 | NSE records NO dates that era; every filled slot + the page's printed PAT match the store exactly (read-verified); detres has no 2005 reach (3 metadata fields, no financials at qid 45.00) — no second vintage on any route, vintage unverifiable further, ZERO contamination evidence |
+| `single-row`, filed >180d after qe (§111's re-filing class) | 5 | GODREJIND Mar-15 std+con (+566d), ALBK (+450d), INDUSINDBK (+394d), KESORAMIND (+206d) Mar-15 std: every slot == BSE detres as-filed to the paisa (rev incl. other-op-income def; bank op = TI−TE); GODREJIND con == MC deep con (pat 138.96/rev 2308.79/op 91.99 exact) — CLEAN, the late row was an unchanged re-filing |
+| **`src-is-later-vintage`** | **2** | IIFL Jun-17 std+con: pass read the 03-Nov-2017 amendment (`reInd:"A"`, +90d — §109's correction class, not a restatement). The 05-Aug-2017 original pages are EMPTY on NSE (HTTP 200, 0 bytes). BSE detres as-filed std == stored exactly (rev 34.41 / NP 19.634) → the amendment changed NO std value; con pat/rev == MC. Stored ann = 20171103 = the amendment date → values and date CONSISTENT, **no look-ahead**. NOT healed (nothing wrong-vintage to heal). |
+
+**Confirmed contaminated: 0. Healed: 0.** Why so unlike §109's window (326/5,059): dual NSE
+vintages are overwhelmingly the Ind-AS FY16-17 transition re-filings; outside that window 98.8%
+of periods have exactly one filing, so the pass had nothing wrong to pick.
+
+**The boundary of this negative result (the part that stays OPEN).** This closes the
+NSE-archive-sourced family only. BAYERCROP F-02 itself was filled by the *vision-PDF* pass
+(src `vision Q4_BAYERCROP col1…`) — that family has **4,796 outside-window fill rows, 114 of
+them explicitly citing a comparative column** (col2/col3/preceding — the exact §108 mechanism),
+plus 2,994 rename-mirror rows inheriting their source cell's vintage. Auditing those needs the
+§113 comparative-column discipline, not the §109 dual-vintage join.
+
+Follow-ups NOT taken here: IIFL Jun-17 ann 20171103→20170805 is safe for STD only (detres proves
+value-identity; the con original is unreadable, so moving con's ann would attach possibly-amended
+values to the earlier date) — ann-date ledger session's scope (F-01). IIFL op slots hold 0.0
+(NSE's blank-as-0.0000 sentinel, §108 falsy-sentinel) for an NBFC — a separate class.
