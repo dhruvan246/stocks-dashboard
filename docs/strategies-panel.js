@@ -6,7 +6,7 @@
   if (window.mountStrategies) return;
   var mounted = false;
   var SP_CSS = "\n.spwrap{font-size:13px;line-height:1.5}\n.spwrap .sp-top{display:flex;align-items:baseline;justify-content:space-between;gap:10px;flex-wrap:wrap;margin-bottom:2px}\n.spwrap .sp-h{font-size:14px;font-weight:800;letter-spacing:-.01em;margin:0}\n.spwrap .sp-actions{display:flex;gap:7px;align-items:center;flex-wrap:wrap}\n.spwrap .sp-sub{font-size:11.5px;color:var(--text-3);line-height:1.45;margin:4px 0}\n.spwrap .sp-input{flex:1;padding:7px 9px;font-size:13px;border:1px solid var(--border);border-radius:8px;background:var(--surface-2);color:var(--text)}\n.spwrap .sym{color:var(--text-3);font-size:11px}\n.spwrap .badge{font-size:9px;font-weight:800;letter-spacing:.05em;padding:1px 5px;border-radius:4px;background:var(--surface-2);color:var(--text-3)}\n.spwrap .zpill{font-size:11.5px;font-weight:700;padding:4px 10px;border-radius:20px;background:var(--surface-2);color:var(--text-2);border:1px solid var(--border)}\n.spwrap .zpill.ok{color:var(--up)} .spwrap .zpill.warn{color:#c98500}\n.spwrap .sblk{border-top:1px solid var(--border);padding:12px 4px 6px}\n.spwrap .sblk:first-child{border-top:0;padding-top:4px}\n.spwrap .shead{display:flex;flex-wrap:wrap;align-items:baseline;gap:6px 12px;margin-bottom:6px}\n.spwrap .shead .nm2{font-size:13.5px;font-weight:800}\n.spwrap .tag{font-size:9.5px;font-weight:800;letter-spacing:.06em;padding:2px 6px;border-radius:4px;white-space:nowrap}\n.spwrap .tag.keep{background:color-mix(in srgb,var(--up) 16%,transparent);color:var(--up)}\n.spwrap .tag.new{background:color-mix(in srgb,var(--buy) 16%,transparent);color:var(--buy)}\n.spwrap .twrap{overflow-x:auto;-webkit-overflow-scrolling:touch}\n.spwrap table{width:100%;border-collapse:collapse;font-size:12.5px}\n.spwrap th{text-align:right;font-weight:700;color:var(--text-3);font-size:10.5px;text-transform:uppercase;letter-spacing:.05em;padding:7px 9px;border-bottom:1px solid var(--border);white-space:nowrap;background:var(--surface)}\n.spwrap th:first-child,.spwrap td:first-child{text-align:left}\n.spwrap td{padding:7px 9px;border-bottom:1px solid var(--border);text-align:right;white-space:nowrap}\n.spwrap td:nth-child(2),.spwrap th:nth-child(2){text-align:left}\n.spwrap .empty{text-align:center;color:var(--text-3);font-size:12.5px;padding:30px 10px}\n.spwrap .khelp{font-size:11.5px;color:var(--text-3);line-height:1.5;margin-top:10px}\n.spwrap .up{color:var(--up)} .spwrap .down{color:var(--down)}\n.spwrap .btn,#zbDlg .btn{border:1px solid var(--border);background:var(--surface);color:var(--text-2);border-radius:9px;padding:6px 11px;font-size:12.5px;font-weight:600;cursor:pointer;white-space:nowrap;display:inline-block}\n.spwrap .btn:hover,#zbDlg .btn:hover{background:var(--surface-2);color:var(--text)}\n.spwrap .btn.on,#zbDlg .btn.on{background:var(--buy);border-color:var(--buy);color:#fff}\n#ktoast{position:fixed;left:50%;bottom:24px;transform:translateX(-50%);z-index:300;background:var(--text);color:var(--bg);padding:8px 14px;border-radius:9px;font-size:12.5px;font-weight:600;opacity:0;pointer-events:none;transition:opacity .25s;max-width:90vw;text-align:center}\n#ktoast.show{opacity:1}\n.zchip{display:inline-block;padding:2px 7px;border-radius:20px;font-size:10.5px;font-weight:700;background:var(--surface-2);border:1px solid var(--border)}\n.zchip.ok{color:var(--up);border-color:var(--up)} .zchip.bad{color:var(--down);border-color:var(--down)} .zchip.open{color:var(--buy);border-color:var(--buy)}\n.zmsg{font-size:11px;color:var(--down);white-space:normal;text-align:left;max-width:280px}\n#zbWrap{position:fixed;inset:0;z-index:200;background:rgba(0,0,0,.5);display:none;align-items:center;justify-content:center;padding:16px}\n#zbWrap.open{display:flex}\n#zbDlg{width:min(600px,100%);max-height:92vh;overflow:auto;padding:16px;background:var(--surface);border:1px solid var(--border);border-radius:14px;box-shadow:var(--shadow)}\n#zbDlg h3{margin:0 0 2px;font-size:14px}\n#zbDlg .sub{font-size:11.5px;color:var(--text-3)}\n#zbDlg .krow{display:flex;gap:8px;margin-top:10px}\n#zbDlg label{flex:1;font-size:11px;font-weight:700;color:var(--text-3);text-transform:uppercase;letter-spacing:.05em}\n#zbDlg input,#zbDlg select{width:100%;margin-top:4px;padding:7px 9px;font-size:13.5px;font-weight:600;border:1px solid var(--border);border-radius:8px;background:var(--surface-2);color:var(--text)}\n#zbDlg table{margin-top:10px;width:100%;border-collapse:collapse;font-size:12.5px}\n#zbDlg th{font-size:10.5px;color:var(--text-3);text-transform:uppercase;padding:7px 9px;text-align:right;border-bottom:1px solid var(--border);white-space:nowrap}\n#zbDlg th:first-child,#zbDlg td:first-child{text-align:left}\n#zbDlg td{padding:6px 9px;border-bottom:1px solid var(--border);text-align:right}\n#zbDlg td input.zbq{width:80px;margin:0;padding:5px 7px;text-align:right}\n#zbDlg td input.zbl{width:92px;margin:0;padding:5px 7px;text-align:right}\n#zbTbl:not(.lim) .limcol{display:none}\n";
-  var SP_DOM = "<div class=\"spwrap\"><div class=\"sp-top\"><h2 class=\"sp-h\">Saved strategies \u2014 what each would buy today</h2><div class=\"sp-actions\"><span id=\"zStatus\" class=\"zpill\">Zerodha: checking\u2026</span><button class=\"btn\" id=\"btnZLogin\" style=\"display:none\">Login to Zerodha \u25b8</button><button class=\"btn\" id=\"btnZSetup\" title=\"Kite worker URL\">\u2699</button><button class=\"btn on\" id=\"btnLoadAll\">\ud83c\udfaf Load all picks</button></div></div><div class=\"sp-sub\">Every strategy saved on the dashboard, one block each. Picks are the screen\u2019s top names as of the latest close; prices go live during market hours. \u26a1 buys the whole basket on Zerodha \u2014 you always confirm first.</div><div class=\"sp-sub\" id=\"status\"></div><div id=\"zSetupBox\" style=\"display:none\"><div class=\"khelp\">One-time per browser: your Kite worker URL (the portfolio/terminal shares it automatically).</div><div style=\"display:flex;gap:7px;max-width:520px;margin-top:6px\"><input id=\"zWUrl\" placeholder=\"https://\u2026workers.dev\" class=\"sp-input\"><button class=\"btn on\" id=\"zWSave\">Save</button></div></div><div id=\"cards\"><div class=\"empty\">Loading saved strategies\u2026</div></div></div>";
+  var SP_DOM = "<div class=\"spwrap\"><div class=\"sp-top\"><h2 class=\"sp-h\">Saved strategies \u2014 what each would buy today</h2><div class=\"sp-actions\"><span id=\"zStatus\" class=\"zpill\">Zerodha: checking\u2026</span><button class=\"btn\" id=\"btnZLogin\" style=\"display:none\">Login to Zerodha \u25b8</button><button class=\"btn\" id=\"btnZSetup\" title=\"Kite worker URL\">\u2699</button><button class=\"btn\" id=\"spFavToggle\" title=\"Show only your \u2b50 favourite strategies\"></button><button class=\"btn on\" id=\"btnLoadAll\">\ud83c\udfaf Load all picks</button></div></div><div class=\"sp-sub\">Every strategy saved on the dashboard, one block each. Picks are the screen\u2019s top names as of the latest close; prices go live during market hours. \u26a1 buys the whole basket on Zerodha \u2014 you always confirm first.</div><div class=\"sp-sub\" id=\"status\"></div><div id=\"zSetupBox\" style=\"display:none\"><div class=\"khelp\">One-time per browser: your Kite worker URL (the portfolio/terminal shares it automatically).</div><div style=\"display:flex;gap:7px;max-width:520px;margin-top:6px\"><input id=\"zWUrl\" placeholder=\"https://\u2026workers.dev\" class=\"sp-input\"><button class=\"btn on\" id=\"zWSave\">Save</button></div></div><div id=\"cards\"><div class=\"empty\">Loading saved strategies\u2026</div></div></div>";
   function injectCSS(){ if (document.getElementById('sp-css')) return; var s=document.createElement('style'); s.id='sp-css'; s.textContent=SP_CSS; document.head.appendChild(s); }
   window.mountStrategies = function(container, opts){
     if (mounted) return; mounted = true;
@@ -39,6 +39,26 @@ function uniqStrategies(){
     if (!cur || (s.ts || 0) > (cur.ts || 0)) seen.set(k, s);
   }
   return [...seen.values()];
+}
+
+/* ---------- ⭐ favourites (same store the whole site uses; synced via SETTINGS elsewhere) ---------- */
+function loadFavs(){ try { return new Set(JSON.parse(localStorage.getItem('bt_fav_strategies') || '[]')); } catch(e){ return new Set(); } }
+function isFavCfg(favs, c){ return favs.has(identityKey(c)) || (typeof ruleKey === 'function' && favs.has(ruleKey(c))); }
+let FAVONLY = (function(){ try { return localStorage.getItem('sp_fav_only') !== '0'; } catch(e){ return true; } })();
+/* terminal.html loads no theme.js/sw-sync, so pull the synced favourites once here — remote-newer-wins
+   with the SAME swset_ts stamp sw-sync uses, so the two never fight. Fail-silent offline. */
+async function refreshFavsFromSettings(){
+  try {
+    const r = await fetch('https://nebjnsndgrhumnkuipqy.supabase.co/rest/v1/rpc/sw_kv_get', { method:'POST',
+      headers: { apikey:'sb_publishable_MDlQwiVc5deii91__UNeDg_z9r4Fk98', Authorization:'Bearer sb_publishable_MDlQwiVc5deii91__UNeDg_z9r4Fk98', 'Content-Type':'application/json' },
+      body: JSON.stringify({ k:'SETTINGS' }) });
+    const doc = await r.json();
+    const e = (Array.isArray(doc) ? doc : []).find(x => x && x.k === 'bt_fav_strategies');
+    if (!e) return;
+    const stamp = +(localStorage.getItem('swset_ts_bt_fav_strategies') || 0);
+    if (e.ts > stamp){ e.v == null ? localStorage.removeItem('bt_fav_strategies') : localStorage.setItem('bt_fav_strategies', e.v);
+      localStorage.setItem('swset_ts_bt_fav_strategies', String(e.ts)); renderCards(); }
+  } catch(e){}
 }
 
 /* ---------- lazy engine ---------- */
@@ -85,7 +105,11 @@ async function loadPicks(id){
   screenOne(it); renderCards(); fetchLive(); startLiveLoop();
 }
 $('btnLoadAll').onclick = async () => {
-  const list = uniqStrategies(); if (!list.length) return;
+  const favs = loadFavs();
+  const all = uniqStrategies();
+  const nFav = all.filter(it => isFavCfg(favs, it.cfg)).length;
+  const list = (FAVONLY && nFav > 0) ? all.filter(it => isFavCfg(favs, it.cfg)) : all;
+  if (!list.length) return;
   $('btnLoadAll').disabled = true;
   if (!await ensureEngine()){ $('btnLoadAll').disabled = false; ktoast('Could not load market data'); return; }
   for (const it of list){ $('status').textContent = 'Screening ' + (it.name || '') + '…';
@@ -146,7 +170,17 @@ function cardMeta(cfg){
   return bits.join(' · ');
 }
 function renderCards(){
-  const list = uniqStrategies();
+  const favs = loadFavs();
+  const all = uniqStrategies();
+  // favourites float to the top; the toggle narrows to just them (default on when stars exist)
+  const nFav = all.filter(it => isFavCfg(favs, it.cfg)).length;
+  const tg = $('spFavToggle');
+  if (tg){ tg.style.display = nFav ? '' : 'none';
+    tg.textContent = FAVONLY ? ('\u2b50 Favourites (' + nFav + ')') : ('All (' + all.length + ')');
+    tg.classList.toggle('on', FAVONLY && !!nFav); }
+  const useFav = FAVONLY && nFav > 0;
+  const list = (useFav ? all.filter(it => isFavCfg(favs, it.cfg)) : all)
+    .slice().sort((a, b) => (isFavCfg(favs, b.cfg) ? 1 : 0) - (isFavCfg(favs, a.cfg) ? 1 : 0));
   if (!list.length){ $('cards').innerHTML = '<div class="empty">No saved strategies found.</div>'; return; }
   const h = list.map(it => {
     const en = (typeof strategyEnglish === 'function') ? strategyEnglish(it.cfg) : '';
@@ -165,7 +199,7 @@ function renderCards(){
             '<td class="' + (chg == null ? 'sym' : chg >= 0 ? 'up' : 'down') + '">' + (chg == null ? '—' : (chg >= 0 ? '+' : '') + chg.toFixed(2) + '%') + '</td></tr>';
         }).join('') + '</tbody></table></div>';
     }
-    return '<div class="sblk"><div class="shead"><span class="nm2" title="Code-name: ' + esc(nameWithBasis(it.name, it.cfg)) + '">' + esc(disp) + '</span>' +
+    return '<div class="sblk"><div class="shead"><span class="nm2" title="Code-name: ' + esc(nameWithBasis(it.name, it.cfg)) + '">' + (isFavCfg(loadFavs(), it.cfg) ? '\u2b50 ' : '') + esc(disp) + '</span>' +
       (it._priv ? '<span class="tag new">private</span>' : '') +
       '<span class="sym">' + esc(cardMeta(it.cfg)) + (p ? ' · picks as of ' + esc(p.asOf) : '') + '</span>' +
       '<span style="margin-left:auto; display:flex; gap:6px">' +
@@ -363,7 +397,10 @@ function kiteSend(orders){
 
 /* ---------- boot ---------- */
 (async function boot(){
+  const tg = $('spFavToggle');
+  if (tg) tg.onclick = () => { FAVONLY = !FAVONLY; try { localStorage.setItem('sp_fav_only', FAVONLY ? '1' : '0'); } catch(e){} renderCards(); };
   renderCards();
+  refreshFavsFromSettings();
   if (window.btSync){ try { await btSync.pullStrategies(); renderCards(); } catch(e){} }
 })();
   };
