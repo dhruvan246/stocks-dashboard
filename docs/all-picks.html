@@ -100,7 +100,8 @@
     <div class="flex items-center gap-2 flex-wrap">
       <!-- Membership (universe) picker — same filter as Saved Strategies (shared bt_uni_filter key):
            pick Nifty 500 and only Nifty-500 strategies' baskets show, pick F&O and only F&O ones.
-           Options come from the universes the built cards actually use, with counts. -->
+           Options come from the universes the built cards actually use, with counts — plus two
+           synthetic ones: ⭐ favourites, and every saved mix from the Strategy Mixer. -->
       <div id="uniRow" class="hidden items-center gap-1.5">
         <label for="uniSel" class="text-[11px] font-bold uppercase tracking-wide text-slate-500">Membership</label>
         <select id="uniSel" title="Show only strategies built on this universe" class="border border-slate-300 rounded-lg px-2.5 py-1.5 text-xs font-semibold bg-white"></select>
@@ -244,7 +245,16 @@ try { VIEW = localStorage.getItem('ap_view2') === 'cards' ? 'cards' : 'board'; }
  * KEEP IN SYNC with saved-strategies.html. Screening isn't re-run on change — RESULT keeps
  * every card and visible() is the filtered view both renderers draw from. */
 function uniKey(c) { return c.indexName ? c.indexName : (c.mcapFloor ? 'mcap:' + c.mcapFloor : ''); }
-function uniText(k) { return k === '__FAV__' ? '⭐ Favourite strategies' : universeLabel(k.slice(0, 5) === 'mcap:' ? { mcapFloor: +k.slice(5) } : { indexName: k }); }
+function uniText(k) { return k === '__FAV__' ? '⭐ Favourite strategies'
+  : k.slice(0, 7) === '__MIX__' ? k.slice(7)
+  : universeLabel(k.slice(0, 5) === 'mcap:' ? { mcapFloor: +k.slice(5) } : { indexName: k }); }
+/* Saved mixes — the NAMED selections from the Strategy Mixer (mix_presets_v1, synced through
+ * SETTINGS like the favourites). Each one becomes a '__MIX__<label>' membership option here, so a
+ * mix set up once ("🍀 The Four") filters this page too, and a mix saved later appears by itself.
+ * A mix holds identityKeys, so membership is the same two-form test the stars use (isFav). */
+function loadMixes() { try { const v = JSON.parse(localStorage.getItem('mix_presets_v1') || '[]');
+  return Array.isArray(v) ? v.filter(p => p && p.label && Array.isArray(p.sel)) : []; } catch (e) { return []; } }
+function inKeySet(set, c) { return set.has(identityKey(c)) || set.has(ruleKey(c)); }
 // Display order: indices broad-to-narrow, then F&O, then turnover buckets ascending, then All stocks.
 const UNI_ORDER = ['Nifty 50', 'Nifty 100', 'Nifty 200', 'Nifty 500', 'Nifty Midcap 150', 'Nifty Smallcap 250', '__FNO__'];
 function uniRank(k) {
@@ -259,19 +269,31 @@ function visible() {
   // ⭐ Favourite strategies — the stars set on Saved Strategies (synced across devices via SETTINGS).
   // Read fresh each paint so a toggle over there shows here on the next rebuild/refresh.
   if (UNI === '__FAV__') { const f = loadFavs(); return RESULT.filter(r => isFav(f, r.cfg)); }
+  // A saved mix, read fresh each paint so an edit in the Mixer shows here on the next rebuild.
+  if (UNI.slice(0, 7) === '__MIX__') {
+    const m = loadMixes().find(p => p.label === UNI.slice(7));
+    if (!m) return RESULT;                                 // deleted elsewhere — buildUniSelect resets UNI
+    const s = new Set(m.sel); return RESULT.filter(r => inKeySet(s, r.cfg));
+  }
   return RESULT.filter(r => uniKey(r.cfg) === UNI);
 }
 // Options carry the count of built cards on each universe. The active pick stays selectable
 // even at 0 (e.g. it was set on Saved Strategies for a universe this page skipped), otherwise
 // the <select> would silently jump to another value.
 function buildUniSelect() {
+  const mixes = loadMixes();
+  // a mix deleted on another device would leave the <select> with no matching value → show all
+  if (UNI.slice(0, 7) === '__MIX__' && !mixes.some(m => m.label === UNI.slice(7))) UNI = '*';
   const counts = new Map();
   for (const r of RESULT) { const k = uniKey(r.cfg); counts.set(k, (counts.get(k) || 0) + 1); }
-  if (UNI !== '*' && UNI !== '__FAV__' && !counts.has(UNI)) counts.set(UNI, 0);   // '__FAV__' gets its own option below, never a universe row
+  const synth = UNI === '*' || UNI === '__FAV__' || UNI.slice(0, 7) === '__MIX__';   // these get their own options below, never a universe row
+  if (!synth && !counts.has(UNI)) counts.set(UNI, 0);
   const keys = [...counts.keys()].sort((a, b) => uniRank(a) - uniRank(b) || a.localeCompare(b));
   const favs = loadFavs(), nFav = RESULT.filter(r => isFav(favs, r.cfg)).length;
+  const mixOpts = mixes.map(m => { const s = new Set(m.sel), n = RESULT.filter(r => inKeySet(s, r.cfg)).length;
+    return `<option value="${esc('__MIX__' + m.label)}">${esc(m.label)} (${n})</option>`; }).join('');
   $('uniSel').innerHTML = `<option value="*">All memberships (${RESULT.length})</option>` +
-    `<option value="__FAV__">⭐ Favourite strategies (${nFav})</option>` +
+    `<option value="__FAV__">⭐ Favourite strategies (${nFav})</option>` + mixOpts +
     keys.map(k => `<option value="${esc(k)}">${esc(uniText(k))} (${counts.get(k)})</option>`).join('');
   $('uniSel').value = UNI;
   $('uniRow').classList.toggle('hidden', !RESULT.length);   // paired with 'flex' — a bare `hidden` loses to `flex`
@@ -591,6 +613,8 @@ function paint() {
   if (RESULT.length && !visible().length) {   // a membership with nothing here — offer the way back
     $('uniEmpty').innerHTML = (UNI === '__FAV__'
       ? `No favourites yet — ⭐ strategies on <a href="./saved-strategies.html" class="text-indigo-600 hover:underline font-semibold">Saved Strategies</a>. `
+      : UNI.slice(0, 7) === '__MIX__'
+      ? `Nothing from the saved mix <b>${esc(uniText(UNI))}</b> is here — its strategies may not have run today. `
       : `No <b>${esc(uniText(UNI))}</b> strategies here. `) +
       `<button id="uniClear" class="text-indigo-600 hover:underline font-semibold">Show all ${RESULT.length}</button>`;
     $('uniEmpty').classList.remove('hidden');
