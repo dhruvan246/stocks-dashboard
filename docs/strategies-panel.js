@@ -329,7 +329,7 @@ async function buyAllStart(rows){
   if (!Z.connected || Z.directBlocked){ ktoast('Not connected for paced slices — use each strategy’s ⚡ dialog to send via the Zerodha basket', 5600); return; }
   const slices = buySlices(orders);
   BUYSLICER['__all__'] = { slices: slices, i: 0, n: slices.length, btn: null, t: 0 };
-  ktoast('Buying all ' + live.length + ' stocks in ' + slices.length + ' slices of ≤₹' + sliceLakh() + 'L every ' + sliceGap() + 's, each a limit ≤' + sliceRng() + '% above live — keep this tab open; tap the counter to stop', 7000);
+  ktoast('Buying all ' + live.length + ' stocks in ' + slices.length + ' liquidity-sized slices (1% of each stock\u2019s 10-day traded value, \u20b95L\u2013\u20b91Cr) every ' + sliceGap() + 's, each a limit \u2264' + sliceRng() + '% above live \u2014 keep this tab open; tap the counter to stop', 7000);
   renderCards();
   buyFire('__all__');
 }
@@ -558,9 +558,30 @@ function freshLtp(sym){
     .then(d => { const q = d && d.data && d.data[sym]; return (q && q.ltp != null) ? +q.ltp : null; }).catch(() => null);
 }
 const BUYSLICER = {};   // strategy id -> {slices, i, n, btn, t}
+/* Liquidity-sized slices (user 2026-09-01: "instead of 25 lakhs, do it according to avg volume").
+   A flat ₹25L was both too timid for ₹1,000-Cr/day names (ATHERENERG) and too chunky for
+   ₹18-Cr/day ones (CAPLIPOINT). Per-stock cap = 1% of the 10-day average traded value from the
+   engine's turnover series (₹ lakh/day, already loaded on this tab), clamped to ₹5L–₹1Cr.
+   ~1% of ADV every 150s ≈ 1.5× the market's own per-beat volume — small, and the ≤0.5% limit
+   band still bounds price. No turnover data (fresh listing, odd symbol) → the ₹L knob as before. */
+const ADVCAP = {};
+function advSliceCap(sym){
+  if (sym in ADVCAP) return ADVCAP[sym];
+  let cap = sliceLakh() * 1e5;                                   // fallback: the flat knob
+  try {
+    let tkr = null; for (const t in META){ if ((META[t].symbol || t) === sym){ tkr = t; break; } }
+    if (tkr){ let sum = 0, n = 0;
+      for (let off = dayOff(SF.end); off > dayOff(SF.end) - 20 && n < 10; off--){
+        const v = turnoverAt(tkr, off); if (v > 0){ sum += v; n++; } }
+      if (n) cap = Math.min(100e5, Math.max(5e5, 0.01 * (sum / n) * 1e5));   // 1% of ADV10, ₹5L–₹1Cr
+    }
+  } catch (e){}
+  ADVCAP[sym] = cap; return cap;
+}
 function buySlices(orders){
-  const cap = sliceLakh() * 1e5, per = {};
-  orders.forEach(o => { const px = o._px || o.price || 0, chunk = px > 0 ? Math.max(1, Math.floor(cap / px)) : o.quantity;
+  const per = {};
+  orders.forEach(o => { const cap = advSliceCap(o.tradingsymbol);
+    const px = o._px || o.price || 0, chunk = px > 0 ? Math.max(1, Math.floor(cap / px)) : o.quantity;
     const list = []; let q = o.quantity;
     while (q > 0){ const take = Math.min(chunk, q); q -= take; list.push(Object.assign({}, o, { quantity: take })); }
     per[o.tradingsymbol] = list; });
@@ -622,7 +643,7 @@ async function zbPlaceAll(){
   BUYSLICER[ZB.id] = { slices: slices, i: 0, n: slices.length, btn: null, t: 0 };
   zbSetBought(ZB.id, true);
   $('zbWrap').classList.remove('open');
-  ktoast('Buying in ' + slices.length + ' slices of ≤₹' + sliceLakh() + 'L every ' + sliceGap() + 's, each a limit ≤' + sliceRng() + '% above live — keep this tab open; tap the ⚡ counter to stop', 6500);
+  ktoast('Buying in ' + slices.length + ' liquidity-sized slices (1% of the stock\u2019s 10-day traded value, \u20b95L\u2013\u20b91Cr each) every ' + sliceGap() + 's, each a limit \u2264' + sliceRng() + '% above live \u2014 keep this tab open; tap the \u26a1 counter to stop', 6500);
   renderCards();
   buyFire(ZB.id);
 }
