@@ -295,15 +295,20 @@ function renderCards(){
       (p && p.live ? '<span class="tag new">LIVE</span>' : '') +
       '<span style="margin-left:auto; display:flex; gap:6px">' +
       '<button class="btn" data-load="' + esc(it.id) + '">🎯 ' + (p ? 'Refresh' : 'Picks') + '</button>' +
-      (p ? '<button class="btn on" data-basket="' + esc(it.id) + '">⚡ ' + (bought.has(it.id) ? 'Buy again' : 'Buy basket') + '</button>' : '') +
+      (p ? '<button class="btn on" data-basket="' + esc(it.id) + '">' + (BUYSLICER[it.id] ? '⚡ ' + BUYSLICER[it.id].i + '/' + BUYSLICER[it.id].n : '⚡ ' + (bought.has(it.id) ? 'Buy again' : 'Buy basket')) + '</button>' : '') +
       '</span></div>' + body + '</div>';
   }).join('');
   $('cards').innerHTML = h;
+  for (const id in BUYSLICER){ const el = document.querySelector('[data-basket="' + id + '"]');
+    BUYSLICER[id].btn = el || null; if (el) el.textContent = '⚡ ' + BUYSLICER[id].i + '/' + BUYSLICER[id].n; }
 }
 $('cards').addEventListener('click', e => {
   const u = e.target.closest('[data-unbought]'); if (u){ zbSetBought(u.dataset.unbought, false); ktoast('Un-marked — it shows as not bought again'); return; }
   const l = e.target.closest('[data-load]'); if (l){ l.textContent = '⏳…'; loadPicks(l.dataset.load); return; }
-  const b = e.target.closest('[data-basket]'); if (b) zBasketOpen(b.dataset.basket);
+  const b = e.target.closest('[data-basket]'); if (b){
+    if (BUYSLICER[b.dataset.basket]){ const B = BUYSLICER[b.dataset.basket];
+      buyStop(b.dataset.basket, 'Buying stopped — ' + B.i + '/' + B.n + ' slices sent, rest kept'); return; }
+    zBasketOpen(b.dataset.basket); }
 });
 
 /* ---------- basket dialog (identical flow to the portfolio page) ---------- */
@@ -438,6 +443,84 @@ function zBasketOpen(id){
   $('zbWrap').classList.add('open');
   zbMarginSoon(true);
 }
+/* ---------- sliced basket buying (user 2026-08-31: "same mechanism i.e. slicing and nse only
+   placement i want for my basket buying") ----------
+   Mirrors the terminal's sell slicer: each stock's quantity splits into orders of at most
+   ₹<slice>L, fired every <gap>s ROUND-ROBIN across the basket's stocks (so all names build
+   evenly), each a LIMIT pegged ≤<rng>% ABOVE a fresh live price on the stock's real tick grid
+   (tick_sizes.json + ticks learned from rejections). Knobs are the same localStorage trio the
+   account view edits. Exchange is always NSE (zbOrders pins it). The strategy's ⚡ button shows
+   n/N progress; tapping it mid-run stops the remaining slices. Every accepted slice's fate is
+   read back from the order book, so exchange rejections surface here with their reason. */
+const TICKMEM = {};
+let TICKS_LOADED = false;
+function loadTicks(){
+  if (TICKS_LOADED) return Promise.resolve(); TICKS_LOADED = true;
+  return fetch('./tick_sizes.json', { cache: 'no-store' }).then(r => r.json())
+    .then(d => { const t = (d && d.t) || {}; for (const k in t) if (!(k in TICKMEM)) TICKMEM[k] = t[k]; })
+    .catch(() => { TICKS_LOADED = false; });
+}
+function tickFromMsg(m){ const x = /TICK\s*\[\s*([0-9.]+)\s*\]/i.exec(m || '') || /tick size for this scrip?t is\s*([0-9.]+)/i.exec(m || ''); return x ? parseFloat(x[1]) || 0 : 0; }
+const sliceLakh = () => { const v = parseFloat(localStorage.getItem('sw_sell_slice_lakh')) || 25; return v > 0 ? v : 25; };
+const sliceGap  = () => { const v = parseInt(localStorage.getItem('sw_sell_gap_s'), 10); return (v >= 3 && v <= 900) ? v : 150; };
+const sliceRng  = () => { const v = parseFloat(localStorage.getItem('sw_sell_rng_pct')); return (v >= 0 && v <= 5) ? v : 0.5; };
+function buyLimitPx(sym, px){ const t = TICKMEM[sym] || 0.05; return +((Math.ceil(px * (1 + sliceRng() / 100) / t)) * t).toFixed(2); }
+function freshLtp(sym){
+  const w = (function(){ try { return (localStorage.getItem('live_worker_url') || '').trim(); } catch(e){ return ''; } })();
+  if (!w) return Promise.resolve(null);
+  const sep = w.includes('?') ? '&' : '?';
+  return fetch(w + sep + 'symbols=' + encodeURIComponent(sym), { cache: 'no-store' }).then(r => r.json())
+    .then(d => { const q = d && d.data && d.data[sym]; return (q && q.ltp != null) ? +q.ltp : null; }).catch(() => null);
+}
+const BUYSLICER = {};   // strategy id -> {slices, i, n, btn, t}
+function buySlices(orders){
+  const cap = sliceLakh() * 1e5, per = {};
+  orders.forEach(o => { const px = o._px || o.price || 0, chunk = px > 0 ? Math.max(1, Math.floor(cap / px)) : o.quantity;
+    const list = []; let q = o.quantity;
+    while (q > 0){ const take = Math.min(chunk, q); q -= take; list.push(Object.assign({}, o, { quantity: take })); }
+    per[o.tradingsymbol] = list; });
+  const out = []; let more = true;                 // round-robin so every stock builds evenly
+  while (more){ more = false; for (const k in per){ const l = per[k]; if (l.length){ out.push(l.shift()); if (l.length) more = true; } } }
+  return out;
+}
+function buyStop(id, msg){ const B = BUYSLICER[id]; if (!B) return; clearTimeout(B.t); delete BUYSLICER[id];
+  if (msg) ktoast(msg, 6500); renderCards(); }
+function buyFire(id){
+  const B = BUYSLICER[id]; if (!B) return;
+  if (B.i >= B.slices.length){ buyStop(id, 'Basket done — all ' + B.n + ' buy slices sent (unfilled tails rest at their limits)'); return; }
+  const o0 = B.slices[B.i];
+  freshLtp(o0.tradingsymbol).then(ltp => {
+    const px = (ltp || o0._px || 0), o = Object.assign({}, o0); delete o._px;
+    if (px > 0 && sliceRng() > 0){ o.order_type = 'LIMIT'; o.price = buyLimitPx(o.tradingsymbol, px); }
+    zFetch('/order', { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify(o) }).then(res => {
+      const st = res.st, j = res.j, msg = (j && j.message) || ('HTTP ' + st);
+      if (st === 200 && j && j.data && j.data.order_id){
+        const oid = j.data.order_id;
+        B.t = setTimeout(() => { zFetch('/orders').then(ob => {
+          const row = ((ob.j && ob.j.data) || []).filter(x => x.order_id === oid).pop();
+          const ost = ((row && row.status) || '').toUpperCase(), omsg = (row && row.status_message) || '';
+          if (ost === 'REJECTED'){
+            const tk = tickFromMsg(omsg);
+            if (tk > 0 && !o0._tickRetry){ TICKMEM[o0.tradingsymbol] = tk; o0._tickRetry = 1;
+              ktoast(o0.tradingsymbol + ': tick is ' + tk + ' — re-pricing and retrying', 4200);
+              B.t = setTimeout(() => buyFire(id), 1200); return; }
+            buyStop(id, o0.tradingsymbol + ' buy REJECTED: ' + (omsg || 'no reason') + ' · stopped after ' + B.i + '/' + B.n); return;
+          }
+          B.i++; if (B.btn) B.btn.textContent = '⚡ ' + B.i + '/' + B.n;
+          if (B.i >= B.slices.length) buyStop(id, 'Basket done — all ' + B.n + ' buy slices sent (unfilled tails rest at their limits)');
+          else B.t = setTimeout(() => buyFire(id), Math.max(3, sliceGap() - 2) * 1000);
+        }); }, 1800);
+      }
+      else if (ipBlocked(msg) || st === 0){ Z.directBlocked = true;
+        buyStop(id, 'Static-IP rule — remaining slices need the Zerodha basket popup: reopen ⚡ and use "Kite basket"'); }
+      else { const tk = tickFromMsg(msg);
+        if (tk > 0 && !o0._tickRetry){ TICKMEM[o0.tradingsymbol] = tk; o0._tickRetry = 1;
+          ktoast(o0.tradingsymbol + ': tick is ' + tk + ' (Zerodha) — re-pricing and retrying', 4200);
+          B.t = setTimeout(() => buyFire(id), 1200); return; }
+        buyStop(id, o0.tradingsymbol + ' buy refused by Zerodha: ' + msg + ' · stopped after ' + B.i + '/' + B.n); }
+    });
+  });
+}
 async function zbPlaceAll(){
   const orders = zbOrders();
   if (!orders.length){ ktoast('Nothing to buy — set an amount first'); return; }
@@ -447,31 +530,16 @@ async function zbPlaceAll(){
     clearTimeout(ZB.t); ZB.t = setTimeout(zbArmReset, 8000); return; }
   b.dataset.arm = '';
   if (Z.directBlocked){ if (kiteSend(orders)){ zbSetBought(ZB.id, true); $('zbWrap').classList.remove('open'); } return; }
-  b.disabled = true; b.textContent = 'Placing…';
-  let bailed = false;
-  for (const o of orders){
-    const r = ZB.rows.find(x => x.sym === o.tradingsymbol); r.st = '…'; zbRender();
-    const { st, j } = await zFetch('/order', { method:'POST', headers:{ 'Content-Type':'application/json' }, body: JSON.stringify(o) });
-    const msg = (j && j.message) || ('HTTP ' + st);
-    if (st === 200 && j && j.data && j.data.order_id){ r.st = 'sent'; r.oid = j.data.order_id; }
-    else if (ipBlocked(msg) || st === 0){ Z.directBlocked = true; bailed = true; r.st = ''; break; }   // static-IP reject: stop, use the popup
-    else { r.st = 'fail'; r.msg = msg; }
-    zbRender();
-  }
-  b.disabled = false; b.textContent = 'Place all ▸';
-  if (bailed){
-    ZB.rows.forEach(r => { if (r.st === '…') r.st = ''; }); zbRender();
-    ktoast('Direct API orders need a whitelisted static IP — opening the Zerodha basket to confirm instead…', 5500);
-    if (kiteSend(orders)) zbSetBought(ZB.id, true); return;
-  }
-  await new Promise(r => setTimeout(r, 1800));
-  const o = await zFetch('/orders'), list = (o.j && o.j.data) || [];
-  ZB.rows.forEach(r => { const row = r.oid && list.find(x => x.order_id === r.oid);
-    if (row){ r.st = row.status; r.msg = row.status_message || ''; } });
-  zbRender(); b.disabled = false; b.textContent = 'Place all ▸';
-  const okN = ZB.rows.filter(r => r.st === 'COMPLETE').length;
-  if (ZB.rows.some(r => r.oid)) zbSetBought(ZB.id, true);
-  ktoast(okN + '/' + orders.length + ' orders complete — see the table for the rest', 6000);
+  await loadTicks();
+  orders.forEach(o => { const r = ZB.rows.find(x => x.sym === o.tradingsymbol); o._px = (r && r.px) || o.price || 0; });
+  const slices = buySlices(orders);
+  if (BUYSLICER[ZB.id]) buyStop(ZB.id);
+  BUYSLICER[ZB.id] = { slices: slices, i: 0, n: slices.length, btn: null, t: 0 };
+  zbSetBought(ZB.id, true);
+  $('zbWrap').classList.remove('open');
+  ktoast('Buying in ' + slices.length + ' slices of ≤₹' + sliceLakh() + 'L every ' + sliceGap() + 's, each a limit ≤' + sliceRng() + '% above live — keep this tab open; tap the ⚡ counter to stop', 6500);
+  renderCards();
+  buyFire(ZB.id);
 }
 function kiteSend(orders){
   const key = (function(){ try { return localStorage.getItem('pf_kite_key') || ''; } catch(e){ return ''; } })();

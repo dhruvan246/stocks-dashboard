@@ -1003,6 +1003,16 @@ body.blur-secret .secret{filter:blur(7px);-webkit-user-select:none;user-select:n
      a HIDDEN tab — keep the terminal visible while a slicer runs. */
   var SELLROW={t:0,btn:null};
   var SLICER={};   // sym -> {slices:[], i, n, btn, t, sold}
+  /* Exact tick sizes, preloaded from Kite's own instruments dump (baked as tick_sizes.json —
+     only the 459 NSE scrips whose tick exceeds 0.05; a 0.05-grid price is always valid on a
+     0.01/0.05-tick scrip). Learned-from-rejection values still win over the baked file. */
+  var TICKS_LOADED=false;
+  function loadTicks(){
+    if(TICKS_LOADED) return; TICKS_LOADED=true;
+    fetch('./tick_sizes.json',{cache:'no-store'}).then(function(r){return r.json();})
+      .then(function(d){ var t=(d&&d.t)||{}; for(var k in t) if(!(k in TICKMEM)) TICKMEM[k]=t[k]; })
+      .catch(function(){ TICKS_LOADED=false; });
+  }
   function sliceLakh(){ var v=parseFloat(localStorage.getItem('sw_sell_slice_lakh'))||25; return v>0?v:25; }
   function sliceGap(){ var v=parseInt(localStorage.getItem('sw_sell_gap_s'),10); return (v>=3&&v<=900)?v:150; }   // default 2.5 min between slices (user: '20s too short, take 2-3 mins')
   /* Slippage band (user 2026-08-31: "0.5% range so market orders dont give high slippage"):
@@ -1107,6 +1117,7 @@ body.blur-secret .secret{filter:blur(7px);-webkit-user-select:none;user-select:n
   function rowSellDisarm(){ if(SELLROW.btn && !SLICER[(SELLROW.btn.dataset.sy||'')]){ SELLROW.btn.dataset.arm=''; SELLROW.btn.textContent='S'; } SELLROW.btn=null; }
   function rowSell(kind,sym,btn){
     if(SLICER[sym]){ var S=SLICER[sym]; slicerStop(sym,sym+': stopped — '+S.i+'/'+S.n+' slices sent ('+S.sold.toLocaleString('en-IN')+' qty), rest kept'); return; }
+    loadTicks();
     var buckets=rowSellOrders(kind,sym);
     if(!buckets.length){ ktoast('Nothing sellable in '+sym); return; }
     var slices=buildSlices(buckets), qty=buckets.reduce(function(a,b){return a+b.qty;},0);
