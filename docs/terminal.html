@@ -1023,8 +1023,11 @@ body.blur-secret .secret{filter:blur(7px);-webkit-user-select:none;user-select:n
       out.push({o:{tradingsymbol:r.sym,exchange:r.exch,transaction_type:'SELL',order_type:'MARKET',product:r.product||'CNC',validity:'DAY',variety:'regular',tag:'swsell'},qty:r.qty,ltp:r.ltp||0}); }); }
     else { ACCT.hold.forEach(function(r){ if(r.sym!==sym) return;
       var cnc=r.qty-(r.mq||0)-(r.cq||0);   // pledged (collateral) shares can't be sold until unpledged
-      if(cnc>0) out.push({o:{tradingsymbol:r.sym,exchange:r.exch,transaction_type:'SELL',order_type:'MARKET',product:'CNC',validity:'DAY',variety:'regular',tag:'swsell'},qty:cnc,ltp:r.ltp||0});
-      if((r.mq||0)>0) out.push({o:{tradingsymbol:r.sym,exchange:r.exch,transaction_type:'SELL',order_type:'MARKET',product:'MTF',validity:'DAY',variety:'regular',tag:'swsell'},qty:r.mq,ltp:r.ltp||0});
+      /* Delivery shares are demat-fungible — always sell on NSE (user 2026-08-31: BSE books are
+         thin). If NSE rejects the symbol (a BSE-only scrip), the slicer retries once on the
+         holding's own exchange. */
+      if(cnc>0) out.push({o:{tradingsymbol:r.sym,exchange:'NSE',transaction_type:'SELL',order_type:'MARKET',product:'CNC',validity:'DAY',variety:'regular',tag:'swsell',_exch2:(r.exch!=='NSE'?r.exch:null)},qty:cnc,ltp:r.ltp||0});
+      if((r.mq||0)>0) out.push({o:{tradingsymbol:r.sym,exchange:'NSE',transaction_type:'SELL',order_type:'MARKET',product:'MTF',validity:'DAY',variety:'regular',tag:'swsell',_exch2:(r.exch!=='NSE'?r.exch:null)},qty:r.mq,ltp:r.ltp||0});
       if((r.cq||0)>0) ktoast(r.cq.toLocaleString('en-IN')+' pledged '+r.sym+' stay put — unpledge on Kite first',5000); }); }
     return out;
   }
@@ -1049,15 +1052,35 @@ body.blur-secret .secret{filter:blur(7px);-webkit-user-select:none;user-select:n
     if(S.i>=S.slices.length){ slicerStop(sym,sym+': all '+S.n+' slices sent · '+S.sold.toLocaleString('en-IN')+' qty — any unfilled tail rests at its limit (Orders)'); return; }
     var o0=S.slices[S.i];
     freshLtp(o0.tradingsymbol).then(function(ltp){
-    var px=(ltp||o0._px||0), o=Object.assign({},o0); delete o._px;
+    var px=(ltp||o0._px||0), o=Object.assign({},o0); delete o._px; delete o._exch2;
     if(sliceRng()>0 && px>0){ o.order_type='LIMIT'; o.price=sellLimitPx(o.tradingsymbol,px); }
     acctFetch('/order',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify(o)}).then(function(res){
       var st=res.st,j=res.j,msg=(j&&j.message)||('HTTP '+st);
       if(st===200&&j&&j.data&&j.data.order_id){
-        S.i++; S.sold+=o.quantity;
-        if(S.btn) S.btn.textContent=S.i+'/'+S.n;
-        if(S.i>=S.slices.length){ slicerStop(sym,sym+': all '+S.n+' slices sent · '+S.sold.toLocaleString('en-IN')+' qty — any unfilled tail rests at its limit (Orders)'); }
-        else S.t=setTimeout(function(){ slicerFire(sym); },sliceGap()*1000);
+        /* Zerodha ACCEPTING an order is not the exchange FILLING it — ASHOKLEY's tick reject came
+           back a beat later, only in the order book. Read this order's fate before moving on, and
+           show the exchange's own reason on the terminal (user: "u should also show the reason"). */
+        var oid=j.data.order_id;
+        S.t=setTimeout(function(){ acctFetch('/orders').then(function(ob){
+          var row=(ob.j&&ob.j.data||[]).filter(function(x){return x.order_id===oid;}).pop();
+          var ost=((row&&row.status)||'').toUpperCase(), omsg=(row&&row.status_message)||'';
+          if(ost==='REJECTED'){
+            var tm=/TICK\s*\[\s*([0-9.]+)\s*\]/i.exec(omsg);
+            if(tm && parseFloat(tm[1])>0 && !o0._tickRetry){ TICKMEM[o0.tradingsymbol]=parseFloat(tm[1]); o0._tickRetry=1;
+              ktoast(o0.tradingsymbol+': exchange tick is '+tm[1]+' — re-pricing this slice and retrying',4500);
+              S.t=setTimeout(function(){ slicerFire(sym); },1200); return; }
+            if(o0._exch2 && !o0._exchRetry && /instrument|symbol|not exist|invalid|scrip/i.test(omsg)){ o0._exchRetry=1;
+              var oo=S.slices[S.i]; oo.exchange=o0._exch2;
+              ktoast(o0.tradingsymbol+': NSE refused the symbol — retrying on '+o0._exch2,4500);
+              S.t=setTimeout(function(){ slicerFire(sym); },1200); return; }
+            slicerStop(sym,sym+' slice REJECTED by the exchange: '+(omsg||'no reason given')+' · stopped after '+S.i+'/'+S.n);
+            return;
+          }
+          S.i++; S.sold+=o.quantity;
+          if(S.btn) S.btn.textContent=S.i+'/'+S.n;
+          if(S.i>=S.slices.length){ slicerStop(sym,sym+': all '+S.n+' slices sent · '+S.sold.toLocaleString('en-IN')+' qty — any unfilled tail rests at its limit (Orders)'); }
+          else S.t=setTimeout(function(){ slicerFire(sym); },Math.max(3,sliceGap()-2)*1000);
+        }); },1800);
       }
       else if(ipBlocked(msg)||st===0){ ACCT.directBlocked=true;
         var rest=S.slices.slice(S.i);
@@ -1066,12 +1089,7 @@ body.blur-secret .secret{filter:blur(7px);-webkit-user-select:none;user-select:n
         kiteSend(rest.slice(0,10));
       }
       else if(st===403){ slicerStop(sym,'Zerodha session expired — log in again'); ACCT.connected=false; }
-      else { var tm=/TICK\s*\[\s*([0-9.]+)\s*\]/i.exec(msg||'');
-        if(tm && parseFloat(tm[1])>0 && !o0._tickRetry){
-          TICKMEM[o0.tradingsymbol]=parseFloat(tm[1]); o0._tickRetry=1;
-          ktoast(o0.tradingsymbol+': exchange tick is '+tm[1]+' — re-pricing this slice and retrying',4500);
-          S.t=setTimeout(function(){ slicerFire(sym); },1200); return; }
-        slicerStop(sym,sym+' slice refused: '+msg+' · stopped after '+S.i+'/'+S.n); }
+      else { slicerStop(sym,sym+' slice refused by Zerodha: '+msg+' · stopped after '+S.i+'/'+S.n); }
     });
     });
   }
