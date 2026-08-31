@@ -6,7 +6,7 @@
   if (window.mountStrategies) return;
   var mounted = false;
   var SP_CSS = "\n.spwrap{font-size:13px;line-height:1.5}\n.spwrap .sp-top{display:flex;align-items:baseline;justify-content:space-between;gap:10px;flex-wrap:wrap;margin-bottom:2px}\n.spwrap .sp-h{font-size:14px;font-weight:800;letter-spacing:-.01em;margin:0}\n.spwrap .sp-actions{display:flex;gap:7px;align-items:center;flex-wrap:wrap}\n.spwrap .sp-sub{font-size:11.5px;color:var(--text-3);line-height:1.45;margin:4px 0}\n.spwrap .sp-input{flex:1;padding:7px 9px;font-size:13px;border:1px solid var(--border);border-radius:8px;background:var(--surface-2);color:var(--text)}\n.spwrap .sym{color:var(--text-3);font-size:11px}\n.spwrap .badge{font-size:9px;font-weight:800;letter-spacing:.05em;padding:1px 5px;border-radius:4px;background:var(--surface-2);color:var(--text-3)}\n.spwrap .zpill{font-size:11.5px;font-weight:700;padding:4px 10px;border-radius:20px;background:var(--surface-2);color:var(--text-2);border:1px solid var(--border)}\n.spwrap .zpill.ok{color:var(--up)} .spwrap .zpill.warn{color:#c98500}\n.spwrap .sblk{border-top:1px solid var(--border);padding:12px 4px 6px}\n.spwrap .sblk:first-child{border-top:0;padding-top:4px}\n.spwrap .shead{display:flex;flex-wrap:wrap;align-items:baseline;gap:6px 12px;margin-bottom:6px}\n.spwrap .shead .nm2{font-size:13.5px;font-weight:800}\n.spwrap .tag{font-size:9.5px;font-weight:800;letter-spacing:.06em;padding:2px 6px;border-radius:4px;white-space:nowrap}\n.spwrap .tag.keep{background:color-mix(in srgb,var(--up) 16%,transparent);color:var(--up)}\n.spwrap .tag.new{background:color-mix(in srgb,var(--buy) 16%,transparent);color:var(--buy)}\n.spwrap .twrap{overflow-x:auto;-webkit-overflow-scrolling:touch}\n.spwrap table{width:100%;border-collapse:collapse;font-size:12.5px}\n.spwrap th{text-align:right;font-weight:700;color:var(--text-3);font-size:10.5px;text-transform:uppercase;letter-spacing:.05em;padding:7px 9px;border-bottom:1px solid var(--border);white-space:nowrap;background:var(--surface)}\n.spwrap th:first-child,.spwrap td:first-child{text-align:left}\n.spwrap td{padding:7px 9px;border-bottom:1px solid var(--border);text-align:right;white-space:nowrap}\n.spwrap td:nth-child(2),.spwrap th:nth-child(2){text-align:left}\n.spwrap .empty{text-align:center;color:var(--text-3);font-size:12.5px;padding:30px 10px}\n.spwrap .khelp{font-size:11.5px;color:var(--text-3);line-height:1.5;margin-top:10px}\n.spwrap .up{color:var(--up)} .spwrap .down{color:var(--down)}\n.spwrap .btn,#zbDlg .btn{border:1px solid var(--border);background:var(--surface);color:var(--text-2);border-radius:9px;padding:6px 11px;font-size:12.5px;font-weight:600;cursor:pointer;white-space:nowrap;display:inline-block}\n.spwrap .btn:hover,#zbDlg .btn:hover{background:var(--surface-2);color:var(--text)}\n.spwrap .btn.on,#zbDlg .btn.on{background:var(--buy);border-color:var(--buy);color:#fff}\n#ktoast{position:fixed;left:50%;bottom:24px;transform:translateX(-50%);z-index:300;background:var(--text);color:var(--bg);padding:8px 14px;border-radius:9px;font-size:12.5px;font-weight:600;opacity:0;pointer-events:none;transition:opacity .25s;max-width:90vw;text-align:center}\n#ktoast.show{opacity:1}\n.zchip{display:inline-block;padding:2px 7px;border-radius:20px;font-size:10.5px;font-weight:700;background:var(--surface-2);border:1px solid var(--border)}\n.zchip.ok{color:var(--up);border-color:var(--up)} .zchip.bad{color:var(--down);border-color:var(--down)} .zchip.open{color:var(--buy);border-color:var(--buy)}\n.zmsg{font-size:11px;color:var(--down);white-space:normal;text-align:left;max-width:280px}\n#zbWrap{position:fixed;inset:0;z-index:200;background:rgba(0,0,0,.5);display:none;align-items:center;justify-content:center;padding:16px}\n#zbWrap.open{display:flex}\n#zbDlg{width:min(600px,100%);max-height:92vh;overflow:auto;padding:16px;background:var(--surface);border:1px solid var(--border);border-radius:14px;box-shadow:var(--shadow)}\n#zbDlg h3{margin:0 0 2px;font-size:14px}\n#zbDlg .sub{font-size:11.5px;color:var(--text-3)}\n#zbDlg .krow{display:flex;gap:8px;margin-top:10px}\n#zbDlg label{flex:1;font-size:11px;font-weight:700;color:var(--text-3);text-transform:uppercase;letter-spacing:.05em}\n#zbDlg input,#zbDlg select{width:100%;margin-top:4px;padding:7px 9px;font-size:13.5px;font-weight:600;border:1px solid var(--border);border-radius:8px;background:var(--surface-2);color:var(--text)}\n#zbDlg table{margin-top:10px;width:100%;border-collapse:collapse;font-size:12.5px}\n#zbDlg th{font-size:10.5px;color:var(--text-3);text-transform:uppercase;padding:7px 9px;text-align:right;border-bottom:1px solid var(--border);white-space:nowrap}\n#zbDlg th:first-child,#zbDlg td:first-child{text-align:left}\n#zbDlg td{padding:6px 9px;border-bottom:1px solid var(--border);text-align:right}\n#zbDlg td input.zbq{width:80px;margin:0;padding:5px 7px;text-align:right}\n#zbDlg td input.zbl{width:92px;margin:0;padding:5px 7px;text-align:right}\n#zbTbl:not(.lim) .limcol{display:none}\n";
-  var SP_DOM = "<div class=\"spwrap\"><div class=\"sp-top\"><h2 class=\"sp-h\">Saved strategies \u2014 what each would buy today</h2><div class=\"sp-actions\"><span id=\"zStatus\" class=\"zpill\">Zerodha: checking\u2026</span><button class=\"btn\" id=\"btnZLogin\" style=\"display:none\">Login to Zerodha \u25b8</button><button class=\"btn\" id=\"btnZSetup\" title=\"Kite worker URL\">\u2699</button><button class=\"btn\" id=\"spFavToggle\" title=\"Show only your \u2b50 favourite strategies\"></button><button class=\"btn on\" id=\"btnLoadAll\">\ud83c\udfaf Load all picks</button></div></div><div class=\"sp-sub\">Every strategy saved on the dashboard, one block each. Picks are the screen\u2019s top names as of the latest close; prices go live during market hours. \u26a1 buys the whole basket on Zerodha \u2014 you always confirm first.</div><div class=\"sp-sub\" id=\"status\"></div><div id=\"zSetupBox\" style=\"display:none\"><div class=\"khelp\">One-time per browser: your Kite worker URL (the portfolio/terminal shares it automatically).</div><div style=\"display:flex;gap:7px;max-width:520px;margin-top:6px\"><input id=\"zWUrl\" placeholder=\"https://\u2026workers.dev\" class=\"sp-input\"><button class=\"btn on\" id=\"zWSave\">Save</button></div></div><div id=\"cards\"><div class=\"empty\">Loading saved strategies\u2026</div></div></div>";
+  var SP_DOM = "<div class=\"spwrap\"><div class=\"sp-top\"><h2 class=\"sp-h\">Saved strategies \u2014 what each would buy today</h2><div class=\"sp-actions\"><span id=\"zStatus\" class=\"zpill\">Zerodha: checking\u2026</span><button class=\"btn\" id=\"btnZLogin\" style=\"display:none\">Login to Zerodha \u25b8</button><button class=\"btn\" id=\"btnZSetup\" title=\"Kite worker URL\">\u2699</button><button class=\"btn\" id=\"spFavToggle\" title=\"Show only your \u2b50 favourite strategies\"></button><button class=\"btn\" id=\"spMode\" title=\"Rebalance picks rank on the LAST CLOSE \u2014 the official screen the backtest uses. Live picks re-rank the price-based factors (52w high/low distance, returns, momentum) at the CURRENT market price \u2014 fundamentals and holdings stay as filed. Near the close of a rebalance day the two converge.\"></button><button class=\"btn on\" id=\"btnLoadAll\">\ud83c\udfaf Load all picks</button></div></div><div class=\"sp-sub\">Every strategy saved on the dashboard, one block each. Picks are the screen\u2019s top names as of the latest close; prices go live during market hours. \u26a1 buys the whole basket on Zerodha \u2014 you always confirm first.</div><div class=\"sp-sub\" id=\"status\"></div><div id=\"zSetupBox\" style=\"display:none\"><div class=\"khelp\">One-time per browser: your Kite worker URL (the portfolio/terminal shares it automatically).</div><div style=\"display:flex;gap:7px;max-width:520px;margin-top:6px\"><input id=\"zWUrl\" placeholder=\"https://\u2026workers.dev\" class=\"sp-input\"><button class=\"btn on\" id=\"zWSave\">Save</button></div></div><div id=\"cards\"><div class=\"empty\">Loading saved strategies\u2026</div></div></div>";
   function injectCSS(){ if (document.getElementById('sp-css')) return; var s=document.createElement('style'); s.id='sp-css'; s.textContent=SP_CSS; document.head.appendChild(s); }
   window.mountStrategies = function(container, opts){
     if (mounted) return; mounted = true;
@@ -89,7 +89,7 @@ async function fetchLive(){
 }
 function startLiveLoop(){
   if (LIVE_TIMER) return;
-  LIVE_TIMER = setInterval(() => { if (!document.hidden && marketOpen() && Object.keys(PICKS).length) fetchLive(); }, 60000);
+  LIVE_TIMER = setInterval(() => { if (!document.hidden && marketOpen() && Object.keys(PICKS).length){ fetchLive(); if (PICKMODE === 'live') liveRerankAll(); } }, 60000);
 }
 
 /* ---------- picks ---------- */
@@ -99,10 +99,88 @@ function screenOne(it){
   PICKS[it.id] = { asOf: SF.end, rows: picks.map((r, i) => ({ rank: i+1, sym: r.sym, tkr: r.tkr,
     px: (META[r.tkr] && META[r.tkr].raw) ? META[r.tkr].raw : r.price })) };
 }
+/* ---------- LIVE re-ranking (user 2026-08-31: "live picks or rebalance picks") ----------
+   Rebalance mode ranks on the last close — the official screen, identical to the backtest.
+   Live mode re-ranks the PRICE-derived factors at the current market price, exactly: the 52w
+   high/low LEVELS, DMA levels and past-price anchors are recovered from the close row, then the
+   factor is recomputed at the live price (returns become "to now", accel's recent leg moves, the
+   prior leg is history). Fundamentals/holdings can't move intraday and stay as filed; path-
+   dependent fields (vol, mdd6, RSI, MACD, stoch, bollB…) have no closed-form live update and hold
+   their close values — none of the ⭐ strategies uses one. Candidates = every row that could pass
+   the price filters within a ±20%% intraday move (the circuit band), so a big mover can ENTER the
+   live top-N, not just reshuffle it. Ratios use the RAW close (META.raw) so the maths matches the
+   quote worker's raw ltp; a stock trading EX a split/bonus today will look crashed here — same
+   one-day trap as any raw-price comparison. */
+  const LIVE_FIELDS = new Set(['d52','d52_low_pct','changePercent','ret1m','ret3m','ret6m','ret12m','accel','dma50','dma200','rangePos','postDrift']);
+  let PICKMODE = (function(){ try { return localStorage.getItem('sp_pick_mode') || 'reb'; } catch(e){ return 'reb'; } })();
+  const CAND = {};                      // per-strategy candidate rows (close-based); quotes re-applied each tick
+  const LIVEALL = { ts: 0, data: {} };  // live quotes for every candidate symbol, shared across strategies
+  function liveRow(r, ratio){
+    if (!(ratio > 0) || Math.abs(ratio - 1) < 1e-9) return r;
+    const o = Object.assign({}, r); const px = r.price * ratio; o.price = px;
+    const hi = r.price / (1 - r.d52 / 100), H = Math.max(hi, px);
+    o.d52 = (H - px) / H * 100;
+    let lo = null;
+    if (r.d52low != null){ lo = r.price / (1 + r.d52low / 100); const L = Math.min(lo, px); if (L > 0) o.d52low = (px - L) / L * 100; }
+    const g = x => x == null ? null : ((1 + x / 100) * ratio - 1) * 100;   // a close-to-close return, re-measured to NOW
+    if (r.accel != null && r.chg != null) o.accel = r.accel + (1 + r.chg / 100) * (ratio - 1) * 100;
+    o.chg = g(r.chg);
+    for (const f of ['ret1m','ret3m','ret6m','ret12m','postDrift']) if (r[f] != null) o[f] = g(r[f]);
+    for (const f of ['dma50','dma200']) if (r[f] != null){ const ma = r.price / (1 + r[f] / 100); o[f] = (px / ma - 1) * 100; }
+    if (r.rangePos != null && lo != null){ const H2 = Math.max(hi, px), L2 = Math.min(lo, px); if (H2 > L2) o.rangePos = (px - L2) / (H2 - L2) * 100; }
+    return o;
+  }
+  function liveCandidates(cfg, rows){
+    return rows.filter(r => {
+      if (r.rsi == null || fieldVal(r, cfg.sortBy) == null) return false;
+      for (const f of (cfg.filters || [])){
+        if (!LIVE_FIELDS.has(f.field)){ if (!passFilters(r, [f])) return false; continue; }
+        const a = fieldVal(liveRow(r, 1.2), f.field), b = fieldVal(liveRow(r, 0.8), f.field);
+        if (a == null || b == null){ if (!passFilters(r, [f])) return false; continue; }
+        const x = (f.op === '>' || f.op === '>=') ? Math.max(a, b) : Math.min(a, b);
+        const ok = f.op === '>' ? x > f.val : f.op === '>=' ? x >= f.val : f.op === '<' ? x < f.val : f.op === '<=' ? x <= f.val : (Math.min(a, b) <= f.val && f.val <= Math.max(a, b));
+        if (!ok) return false;
+      }
+      return true;
+    });
+  }
+  async function fetchQuotesFor(syms){
+    const wurl = (function(){ try { return localStorage.getItem('live_worker_url') || ''; } catch(e){ return ''; } })();
+    syms = syms.filter(Boolean); if (!wurl || !syms.length) return;
+    const sep = wurl.includes('?') ? '&' : '?';
+    const chunks = []; for (let i = 0; i < syms.length; i += 60) chunks.push(syms.slice(i, i + 60));
+    await Promise.all(chunks.map(c => fetch(wurl + sep + 'symbols=' + encodeURIComponent(c.join(',')))
+      .then(r => r.json()).then(d => { if (d && d.data){ Object.assign(LIVEALL.data, d.data); LIVEALL.ts = d.asOf || Date.now(); } }).catch(() => {})));
+  }
+  function rawClose(r){ return (META[r.tkr] && META[r.tkr].raw) ? META[r.tkr].raw : r.price; }
+  function rankLive(it){
+    const cand = CAND[it.id] || [];
+    const adj = cand.map(r => { const q = LIVEALL.data[r.sym]; return (q && q.ltp != null && rawClose(r) > 0) ? liveRow(r, q.ltp / rawClose(r)) : r; });
+    const rows = adj.filter(r => passFilters(r, it.cfg.filters) && fieldVal(r, it.cfg.sortBy) != null);
+    rows.sort((a, b) => { const x = fieldVal(a, it.cfg.sortBy), y = fieldVal(b, it.cfg.sortBy); return it.cfg.dir === 'high' ? y - x : x - y; });
+    PICKS[it.id] = { asOf: SF.end, live: true, liveTs: LIVEALL.ts, rows: rows.slice(0, it.cfg.topN).map((r, i) => {
+      const q = LIVEALL.data[r.sym];
+      return { rank: i + 1, sym: r.sym, tkr: r.tkr, px: (q && q.ltp != null) ? q.ltp : rawClose(r) }; }) };
+  }
+  async function screenLive(it){
+    CAND[it.id] = liveCandidates(it.cfg, factorsAt(dayOff(SF.end), it.cfg));
+    await fetchQuotesFor([...new Set(CAND[it.id].map(r => r.sym))].filter(s => !(s in LIVEALL.data)));
+    rankLive(it);
+  }
+  async function screenPick(it){ if (PICKMODE === 'live') await screenLive(it); else screenOne(it); }
+  let LIVE_RERANK = false;
+  async function liveRerankAll(){
+    if (LIVE_RERANK) return; LIVE_RERANK = true;
+    try {
+      const ids = Object.keys(CAND).filter(id => PICKS[id] && PICKS[id].live);
+      if (ids.length){ await fetchQuotesFor([...new Set(ids.flatMap(id => CAND[id].map(r => r.sym)))]);
+        for (const id of ids){ const it = strategies().find(x => x.id === id); if (it) rankLive(it); } renderCards(); }
+    } finally { LIVE_RERANK = false; }
+  }
 async function loadPicks(id){
   const it = strategies().find(x => x.id === id); if (!it) return;
   if (!await ensureEngine()){ ktoast('Could not load market data — try again'); return; }
-  screenOne(it); renderCards(); fetchLive(); startLiveLoop();
+  await screenPick(it); renderCards(); fetchLive(); startLiveLoop();
 }
 $('btnLoadAll').onclick = async () => {
   const favs = loadFavs();
@@ -113,8 +191,9 @@ $('btnLoadAll').onclick = async () => {
   $('btnLoadAll').disabled = true;
   if (!await ensureEngine()){ $('btnLoadAll').disabled = false; ktoast('Could not load market data'); return; }
   for (const it of list){ $('status').textContent = 'Screening ' + (it.name || '') + '…';
-    await new Promise(r => setTimeout(r, 0)); screenOne(it); }
-  $('status').textContent = list.length + ' strategies screened as of ' + SF.end + '.';
+    await new Promise(r => setTimeout(r, 0)); await screenPick(it); }
+  $('status').textContent = list.length + ' strategies screened as of ' + SF.end +
+    (PICKMODE === 'live' ? ' — re-ranked LIVE (fundamentals as filed; ranking updates every minute while the market is open).' : '.');
   $('btnLoadAll').disabled = false;
   renderCards(); fetchLive(); startLiveLoop();
 };
@@ -212,7 +291,8 @@ function renderCards(){
     return '<div class="sblk"><div class="shead"><span class="nm2" title="Code-name: ' + esc(nameWithBasis(it.name, it.cfg)) + '">' + (isFavCfg(loadFavs(), it.cfg) ? '\u2b50 ' : '') + esc(disp) + '</span>' +
       (it._priv ? '<span class="tag new">private</span>' : '') +
       (bought.has(it.id) ? '<span class="tag keep" data-unbought="' + esc(it.id) + '" title="Basket sent to Zerodha today — click if that was cancelled" style="cursor:pointer">✓ bought today</span>' : '') +
-      '<span class="sym">' + esc(cardMeta(it.cfg)) + (p ? ' · picks as of ' + esc(p.asOf) : '') + '</span>' +
+      '<span class="sym">' + esc(cardMeta(it.cfg)) + (p ? (p.live ? ' · LIVE picks · close ' + esc(p.asOf) + ' + prices ' + (p.liveTs ? new Date(p.liveTs).toTimeString().slice(0, 5) : 'now') : ' · picks as of ' + esc(p.asOf)) : '') + '</span>' +
+      (p && p.live ? '<span class="tag new">LIVE</span>' : '') +
       '<span style="margin-left:auto; display:flex; gap:6px">' +
       '<button class="btn" data-load="' + esc(it.id) + '">🎯 ' + (p ? 'Refresh' : 'Picks') + '</button>' +
       (p ? '<button class="btn on" data-basket="' + esc(it.id) + '">⚡ ' + (bought.has(it.id) ? 'Buy again' : 'Buy basket') + '</button>' : '') +
@@ -412,6 +492,19 @@ function kiteSend(orders){
 (async function boot(){
   const tg = $('spFavToggle');
   if (tg) tg.onclick = () => { FAVONLY = !FAVONLY; try { localStorage.setItem('sp_fav_only', FAVONLY ? '1' : '0'); } catch(e){} renderCards(); };
+  const mb = $('spMode');
+  const mLbl = () => { if (mb){ mb.textContent = PICKMODE === 'live' ? '⚡ Live picks' : '📅 Rebalance picks'; mb.classList.toggle('on', PICKMODE === 'live'); } };
+  if (mb) mb.onclick = async () => {
+    PICKMODE = PICKMODE === 'live' ? 'reb' : 'live';
+    try { localStorage.setItem('sp_pick_mode', PICKMODE); } catch(e){}
+    mLbl();
+    const ids = Object.keys(PICKS);
+    if (ids.length && await ensureEngine()){
+      for (const id of ids){ const it = strategies().find(x => x.id === id); if (it) await screenPick(it); }
+      renderCards(); fetchLive();
+    }
+  };
+  mLbl();
   renderCards();
   refreshFavsFromSettings();
   if (window.btSync){ try { await btSync.pullStrategies(); renderCards(); } catch(e){} }
