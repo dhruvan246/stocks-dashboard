@@ -865,7 +865,11 @@ body.blur-secret .secret{filter:blur(7px);-webkit-user-select:none;user-select:n
       }).join('');
       h+='<div class="av-sec">Open positions · '+ACCT.pos.length+'</div><div class="atbl-wrap"><table class="atbl postbl"><thead><tr>'+
         ths('Contract','sym',POS_SORT)+ths('Qty','qty',POS_SORT)+ths('Avg','avg',POS_SORT)+ths('LTP','ltp',POS_SORT)+ths('Day P&amp;L','dayPnl',POS_SORT)+ths('P&amp;L','pnl',POS_SORT)+'<th></th>'+
-        '</tr></thead><tbody>'+prows+'</tbody></table></div>';
+        '</tr></thead><tbody>'+prows+'</tbody>'+
+        '<tfoot><tr><td>Futures total</td><td></td><td></td><td></td>'+
+        '<td class="secret '+(ACCT.posDay>=0?'up':'down')+'">'+inrSigned(ACCT.posDay)+'</td>'+
+        '<td class="secret '+(ACCT.posTot>=0?'up':'down')+'">'+inrSigned(ACCT.posTot)+'</td>'+
+        '<td></td></tr></tfoot></table></div>';
     }
     if(ACCT.hold.length){
       var hrows=sortRows(ACCT.hold,HOLD_SORT).map(function(r){
