@@ -826,12 +826,12 @@ body.blur-secret .secret{filter:blur(7px);-webkit-user-select:none;user-select:n
       var q=zq(r),avg=zavg(r),ltp=+r.last_price||0,val=ltp*q;
       var totPnl=(ltp-avg)*q,totPct=avg?(ltp-avg)/avg*100:0,dayPnl=(r.day_change||0)*q,dayPct=r.day_change_percentage;
       holdTot+=totPnl;holdDay+=dayPnl;curVal+=val;invested+=avg*q;
-      return {sym:r.tradingsymbol,qty:q,avg:avg,ltp:ltp,dayPnl:dayPnl,dayPct:dayPct,totPnl:totPnl,totPct:totPct,val:val,isMtf:((r.mtf||{}).quantity||0)>0};
+      return {sym:r.tradingsymbol,exch:r.exchange||'NSE',qty:q,avg:avg,ltp:ltp,dayPnl:dayPnl,dayPct:dayPct,totPnl:totPnl,totPct:totPct,val:val,isMtf:((r.mtf||{}).quantity||0)>0,mq:(r.mtf||{}).quantity||0,cq:r.collateral_quantity||0};
     });
     var posTot=0,posDay=0;
     ACCT.pos=(D.pos||[]).filter(function(r){return r.quantity!==0;}).map(function(r){
       var pnl=+r.pnl||0,m2m=(r.m2m!=null?+r.m2m:null); posTot+=pnl; posDay+=(m2m||0);
-      return {sym:r.tradingsymbol,product:r.product||'',qty:r.quantity,avg:+r.average_price||0,ltp:+r.last_price||0,dayPnl:m2m,pnl:pnl};
+      return {sym:r.tradingsymbol,exch:r.exchange||'NSE',product:r.product||'',qty:r.quantity,avg:+r.average_price||0,ltp:+r.last_price||0,dayPnl:m2m,pnl:pnl};
     });
     ACCT.holdTot=holdTot;ACCT.holdDay=holdDay;ACCT.curVal=curVal;ACCT.invested=invested;ACCT.posTot=posTot;ACCT.posDay=posDay;
     renderAcctView();
@@ -862,7 +862,7 @@ body.blur-secret .secret{filter:blur(7px);-webkit-user-select:none;user-select:n
           '<td class="secret '+((r.dayPnl||0)>=0?'up':'down')+'">'+(r.dayPnl==null?'—':inrSigned(r.dayPnl))+'</td>'+
           '<td class="secret '+(r.pnl>=0?'up':'down')+'">'+inrSigned(r.pnl)+'</td></tr>';
       }).join('');
-      h+='<div class="av-sec">Open positions · '+ACCT.pos.length+'</div><div class="atbl-wrap"><table class="atbl postbl"><thead><tr>'+
+      h+='<div class="av-sec">Open positions · '+ACCT.pos.length+'<button class="cbtn sellall" data-act="sellpos" style="margin-left:10px;padding:3px 10px;font-size:11px;background:#d43f3f">Sell all ▸</button></div><div class="atbl-wrap"><table class="atbl postbl"><thead><tr>'+
         ths('Contract','sym',POS_SORT)+ths('Qty','qty',POS_SORT)+ths('Avg','avg',POS_SORT)+ths('LTP','ltp',POS_SORT)+ths('Day P&amp;L','dayPnl',POS_SORT)+ths('P&amp;L','pnl',POS_SORT)+
         '</tr></thead><tbody>'+prows+'</tbody></table></div>';
     }
@@ -874,7 +874,7 @@ body.blur-secret .secret{filter:blur(7px);-webkit-user-select:none;user-select:n
           '<td class="secret '+(r.totPnl>=0?'up':'down')+'">'+inrSigned(r.totPnl)+'<div class="sub">'+signed(r.totPct)+'</div></td>'+
           '<td class="secret">'+zinr(r.val)+'</td></tr>';
       }).join('');
-      h+='<div class="av-sec">Holdings · '+ACCT.hold.length+'</div><div class="atbl-wrap"><table class="atbl holdtbl"><thead><tr>'+
+      h+='<div class="av-sec">Holdings · '+ACCT.hold.length+'<button class="cbtn sellall" data-act="sellhold" style="margin-left:10px;padding:3px 10px;font-size:11px;background:#d43f3f">Sell all ▸</button></div><div class="atbl-wrap"><table class="atbl holdtbl"><thead><tr>'+
         ths('Stock','sym',HOLD_SORT)+ths('Qty','qty',HOLD_SORT)+ths('Avg','avg',HOLD_SORT)+ths('LTP','ltp',HOLD_SORT)+ths2("Day's P&amp;L",'dayPnl','dayPct',HOLD_SORT)+ths2('Total P&amp;L','totPnl','totPct',HOLD_SORT)+ths('Value','val',HOLD_SORT)+
         '</tr></thead><tbody>'+hrows+'</tbody><tfoot><tr><td>Total</td><td></td><td></td><td></td><td class="secret '+(ACCT.holdDay>=0?'up':'down')+'">'+inrSigned(ACCT.holdDay)+'</td><td class="secret '+(ACCT.holdTot>=0?'up':'down')+'">'+inrSigned(ACCT.holdTot)+'</td><td class="secret">'+zinr(ACCT.curVal)+'</td></tr></tfoot></table></div>';
     }
@@ -982,6 +982,70 @@ body.blur-secret .secret{filter:blur(7px);-webkit-user-select:none;user-select:n
     bindCard('ordCard',openOrders);
     bindCard('stratCard',openStrategies);
   })();
+  /* ---- Sell all positions / holdings (user 2026-08-31, for the strategy-swap exits) ----
+     Builds market SELL orders for every row: a holding sells its CNC part (settled+T1+collateral)
+     and its MTF part as separate orders (Zerodha needs the product to match the funding); an open
+     LONG position sells at its own product; a SHORT position is skipped (selling would add to it).
+     Two-click confirm on the button itself, then the same routing as every other order here:
+     direct API when the session allows it, else Zerodha's own basket popup — baskets take at most
+     10 orders, so a bigger sell-off queues and the button becomes "Send next N" (one click per
+     popup — browsers demand a user gesture each). Nothing is placed without your confirm. */
+  var SELLQ={kind:'',pending:[]};
+  function sellBuild(kind){
+    var out=[];
+    if(kind==='sellpos'){ ACCT.pos.forEach(function(r){
+      if(r.qty>0) out.push({tradingsymbol:r.sym,exchange:r.exch,transaction_type:'SELL',order_type:'MARKET',quantity:r.qty,product:r.product||'CNC',validity:'DAY',variety:'regular',tag:'swsellall'}); }); }
+    else { ACCT.hold.forEach(function(r){
+      var cnc=r.qty-(r.mq||0)-(r.cq||0);   // pledged (collateral) shares can't be sold until unpledged on Kite
+      if(cnc>0) out.push({tradingsymbol:r.sym,exchange:r.exch,transaction_type:'SELL',order_type:'MARKET',quantity:cnc,product:'CNC',validity:'DAY',variety:'regular',tag:'swsellall'});
+      if((r.mq||0)>0) out.push({tradingsymbol:r.sym,exchange:r.exch,transaction_type:'SELL',order_type:'MARKET',quantity:r.mq,product:'MTF',validity:'DAY',variety:'regular',tag:'swsellall'}); }); }
+    return out;
+  }
+  function sellEstimate(orders){ var v=0; orders.forEach(function(o){ var rows=(SELLQ.kind==='sellpos'?ACCT.pos:ACCT.hold); var r=rows.filter(function(x){return x.sym===o.tradingsymbol;})[0]; v+=o.quantity*((r&&r.ltp)||0); }); return v; }
+  function sellChunk(){
+    var chunk=SELLQ.pending.slice(0,10);
+    if(!chunk.length) return;
+    if(ACCT.connected && !ACCT.directBlocked){
+      var sent=0,fails=0,i=0;
+      (function next(){
+        if(i>=chunk.length){ SELLQ.pending=SELLQ.pending.slice(chunk.length);
+          ktoast(sent+' SELL orders placed'+(fails?', '+fails+' refused (see Orders)':'')+(SELLQ.pending.length?' — '+SELLQ.pending.length+' more: click the button again':''),6500);
+          setTimeout(function(){ renderAcct(true); renderOrders(true); },1800); return; }
+        var o=chunk[i++];
+        acctFetch('/order',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify(o)}).then(function(res){
+          var st=res.st,j=res.j,msg=(j&&j.message)||('HTTP '+st);
+          if(st===200&&j&&j.data&&j.data.order_id){ sent++; next(); }
+          else if(ipBlocked(msg)||st===0){ ACCT.directBlocked=true; ktoast('Static-IP rule — switching to the Zerodha basket popup',5000);
+            if(kiteSend(chunk.slice(i-1))){ SELLQ.pending=SELLQ.pending.slice(chunk.length); } sellButtons(); return; }
+          else { fails++; next(); }
+        });
+      })();
+    } else {
+      if(kiteSend(chunk)) SELLQ.pending=SELLQ.pending.slice(chunk.length);
+    }
+    sellButtons();
+  }
+  function sellButtons(){
+    ['sellpos','sellhold'].forEach(function(k){
+      var b=document.querySelector('[data-act="'+k+'"]'); if(!b) return;
+      if(SELLQ.kind===k && SELLQ.pending.length) b.textContent='Send next '+Math.min(10,SELLQ.pending.length)+' of '+SELLQ.pending.length+' ▸';
+    });
+  }
+  function sellAll(kind,btn){
+    if(SELLQ.kind===kind && SELLQ.pending.length){ sellChunk(); return; }   // continuation chunks — one click each
+    var orders=sellBuild(kind);
+    if(!orders.length){ ktoast(kind==='sellpos'?'No open long positions to sell':'No holdings to sell'); return; }
+    if(btn.dataset.arm!=='1'){ btn.dataset.arm='1';
+      btn.textContent='Confirm SELL '+orders.length+' orders ≈ '+zinr(sellEstimate(orders))+' ?';
+      clearTimeout(SELLQ.t); SELLQ.t=setTimeout(function(){ btn.dataset.arm=''; btn.textContent='Sell all ▸'; },8000); return; }
+    btn.dataset.arm='';
+    SELLQ.kind=kind; SELLQ.pending=orders;
+    var shorts=(kind==='sellpos')?ACCT.pos.filter(function(r){return r.qty<0;}).length:0;
+    if(shorts) ktoast(shorts+' short position(s) skipped — selling would add to them',5000);
+    var pledged=(kind==='sellhold')?ACCT.hold.filter(function(r){return (r.cq||0)>0;}).length:0;
+    if(pledged) ktoast(pledged+' holding(s) have pledged shares — those stay put until you unpledge on Kite',6000);
+    sellChunk();
+  }
   document.getElementById('acctView').addEventListener('click',function(e){
     var ca=e.target.closest('[data-act]');
     if(ca){ e.preventDefault(); var act=ca.dataset.act;
@@ -996,6 +1060,7 @@ body.blur-secret .secret{filter:blur(7px);-webkit-user-select:none;user-select:n
       else if(act==='editworker'){ connectSetup('editworker'); }
       else if(act==='retry'){ renderAcct(false); }
       else if(act==='logout'){ zLogout(); }
+      else if(act==='sellpos'||act==='sellhold'){ sellAll(act,ca); }
       return; }
     var thEl=e.target.closest('[data-col]');
     if(thEl){ var tbl=thEl.closest('table'), st=tbl.classList.contains('postbl')?POS_SORT:HOLD_SORT, col=thEl.dataset.col;
