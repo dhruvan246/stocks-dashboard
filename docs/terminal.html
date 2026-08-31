@@ -93,6 +93,10 @@ a{color:var(--buy);text-decoration:none}
    the per-row Sell buttons and strategy basket buys. Hidden, not cut: its inputs keep their ids
    so every listener still binds. The grid drops its 340px column. */
 .pane.tk{display:none !important}
+/* The stock focus view (chart + stats + depth card) went with the marketwatch (user 2026-08-31):
+   the terminal opens straight on the account — the login card when not connected, positions when
+   connected. */
+#stockView{display:none !important}
 .body.acctmode{grid-template-columns:264px minmax(0,1fr)}
 .body.acctmode .pane.tk{display:none}
 .body.acctmode .focus{max-height:none}
@@ -1212,7 +1216,8 @@ body.blur-secret .secret{filter:blur(7px);-webkit-user-select:none;user-select:n
   /* init + polling */
   renderIdxLoading(); renderMW(); renderFocusShell(); syncSide();
   setLive('','Connecting…');
-  fetchIndices(); fetchQuotes(); loadFocus(SEL);
+  fetchIndices(); fetchQuotes();
+  showView('account');   // land on login/positions, never the stock chart (loadFocus dropped with the marketwatch)
   /* Kite login bounces back with ?request_token=… — finish the exchange, then load the account */
   (function(){
     var u=new URL(location.href), rt=u.searchParams.get('request_token');
