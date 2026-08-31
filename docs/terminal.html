@@ -848,7 +848,7 @@ body.blur-secret .secret{filter:blur(7px);-webkit-user-select:none;user-select:n
     if(!ACCT.user) return;
     var acctDay=ACCT.holdDay+ACCT.posDay, acctTot=ACCT.holdTot+ACCT.posTot;
     var dayPctAll=(ACCT.curVal-ACCT.holdDay)?ACCT.holdDay/(ACCT.curVal-ACCT.holdDay)*100:0, totPctAll=ACCT.invested?ACCT.holdTot/ACCT.invested*100:0;
-    var h='<div class="av-head"><span class="av-title">Your Zerodha account</span><span class="livetag">● '+esc(ACCT.user)+'</span><span class="av-upd">as of '+istTime(Date.now())+' · <a href="#" data-act="logout">logout</a></span></div>';
+    var h='<div class="av-head"><span class="av-title">Your Zerodha account</span><span class="livetag">● '+esc(ACCT.user)+'</span><span class="av-upd">slice ₹<input id="slLakh" value="'+sliceLakh()+'" style="width:34px;text-align:right;border:1px solid var(--border);border-radius:5px;background:transparent;color:inherit;font:inherit;padding:1px 3px">L · gap <input id="slGap" value="'+sliceGap()+'" style="width:28px;text-align:right;border:1px solid var(--border);border-radius:5px;background:transparent;color:inherit;font:inherit;padding:1px 3px">s · as of '+istTime(Date.now())+' · <a href="#" data-act="logout">logout</a></span></div>';
     h+='<div class="av-kpis">'+
       kpi("Day's P&L",inrSigned(acctDay),signed(dayPctAll),acctDay>=0)+
       kpi('Total P&L',inrSigned(acctTot),signed(totPctAll),acctTot>=0)+
@@ -984,41 +984,98 @@ body.blur-secret .secret{filter:blur(7px);-webkit-user-select:none;user-select:n
     bindCard('ordCard',openOrders);
     bindCard('stratCard',openStrategies);
   })();
-  /* ---- per-row SELL, Kite-style (user 2026-08-31: "sell button for every holding like zerodha") ----
-     Every holding/position row carries a small S button. First click ARMS it (shows ✓? + a toast
-     with the exact quantity); a second click within 6s sells THAT row at market — a holding's CNC
-     part (settled+T1) and MTF part go as separate orders per Zerodha's product rules, pledged
-     shares excluded (unpledge on Kite first), shorts never get a button (selling would add).
-     Routing is the terminal's usual: direct API when the session allows, else Zerodha's basket
-     popup where you confirm. */
+  /* ---- per-row SELL with value-sliced execution (user 2026-08-31: "should not sell all
+     quantity at once because my quantity is high") ----
+     One S button per holding/position row. First click ARMS it and the toast states the plan;
+     the second click starts a SLICER: the row's quantity is split into market orders of at most
+     ₹SLICE_LAKH lakh each (per product bucket — CNC and MTF slice separately, pledged shares
+     excluded), fired GAP seconds apart so the order book refills between hits. The button shows
+     n/N progress; clicking it mid-run STOPS the remaining slices. Small rows (one slice) sell in
+     a single order. Direct API only — the popup path can't self-pace (a popup needs a user
+     gesture each), so when the static-IP rule blocks the API the remaining slices go to one
+     Zerodha basket (still separate orders, but simultaneous) after a warning. Timers throttle in
+     a HIDDEN tab — keep the terminal visible while a slicer runs. */
   var SELLROW={t:0,btn:null};
+  var SLICER={};   // sym -> {slices:[], i, n, btn, t, sold}
+  function sliceLakh(){ var v=parseFloat(localStorage.getItem('sw_sell_slice_lakh'))||25; return v>0?v:25; }
+  function sliceGap(){ var v=parseInt(localStorage.getItem('sw_sell_gap_s'),10); return (v>=3&&v<=600)?v:20; }
   function rowSellOrders(kind,sym){
     var out=[];
     if(kind==='pos'){ ACCT.pos.forEach(function(r){ if(r.sym===sym && r.qty>0)
-      out.push({tradingsymbol:r.sym,exchange:r.exch,transaction_type:'SELL',order_type:'MARKET',quantity:r.qty,product:r.product||'CNC',validity:'DAY',variety:'regular',tag:'swsell'}); }); }
+      out.push({o:{tradingsymbol:r.sym,exchange:r.exch,transaction_type:'SELL',order_type:'MARKET',product:r.product||'CNC',validity:'DAY',variety:'regular',tag:'swsell'},qty:r.qty,ltp:r.ltp||0}); }); }
     else { ACCT.hold.forEach(function(r){ if(r.sym!==sym) return;
       var cnc=r.qty-(r.mq||0)-(r.cq||0);   // pledged (collateral) shares can't be sold until unpledged
-      if(cnc>0) out.push({tradingsymbol:r.sym,exchange:r.exch,transaction_type:'SELL',order_type:'MARKET',quantity:cnc,product:'CNC',validity:'DAY',variety:'regular',tag:'swsell'});
-      if((r.mq||0)>0) out.push({tradingsymbol:r.sym,exchange:r.exch,transaction_type:'SELL',order_type:'MARKET',quantity:r.mq,product:'MTF',validity:'DAY',variety:'regular',tag:'swsell'});
+      if(cnc>0) out.push({o:{tradingsymbol:r.sym,exchange:r.exch,transaction_type:'SELL',order_type:'MARKET',product:'CNC',validity:'DAY',variety:'regular',tag:'swsell'},qty:cnc,ltp:r.ltp||0});
+      if((r.mq||0)>0) out.push({o:{tradingsymbol:r.sym,exchange:r.exch,transaction_type:'SELL',order_type:'MARKET',product:'MTF',validity:'DAY',variety:'regular',tag:'swsell'},qty:r.mq,ltp:r.ltp||0});
       if((r.cq||0)>0) ktoast(r.cq.toLocaleString('en-IN')+' pledged '+r.sym+' stay put — unpledge on Kite first',5000); }); }
     return out;
   }
-  function rowSellDisarm(){ if(SELLROW.btn){ SELLROW.btn.dataset.arm=''; SELLROW.btn.textContent='S'; } SELLROW.btn=null; }
-  function rowSell(kind,sym,btn){
-    var orders=rowSellOrders(kind,sym);
-    if(!orders.length){ ktoast('Nothing sellable in '+sym); return; }
-    var qty=orders.reduce(function(a,o){return a+o.quantity;},0);
-    if(btn.dataset.arm!=='1'){
-      rowSellDisarm();                       // only one row armed at a time
-      btn.dataset.arm='1'; btn.textContent='✓?'; SELLROW.btn=btn;
-      ktoast('Tap ✓? again to SELL '+qty.toLocaleString('en-IN')+' '+sym+' at market',4200);
-      clearTimeout(SELLROW.t); SELLROW.t=setTimeout(rowSellDisarm,6000); return;
-    }
-    clearTimeout(SELLROW.t); rowSellDisarm();
-    if(!ACCT.connected || ACCT.directBlocked){ kiteSend(orders); return; }
-    orders.forEach(zPlace);                  // 1-2 orders; zPlace toasts, refreshes, and falls back to the popup on a static-IP reject
+  function buildSlices(buckets){
+    var cap=sliceLakh()*1e5, slices=[];
+    buckets.forEach(function(b){
+      var per=b.ltp>0?Math.max(1,Math.floor(cap/b.ltp)):b.qty, q=b.qty;
+      while(q>0){ var take=Math.min(per,q); q-=take;
+        slices.push(Object.assign({},b.o,{quantity:take})); }
+    });
+    return slices;
   }
-    document.getElementById('acctView').addEventListener('click',function(e){
+  function slicerStop(sym,doneMsg){
+    var S=SLICER[sym]; if(!S) return;
+    clearTimeout(S.t); delete SLICER[sym];
+    if(S.btn){ S.btn.dataset.arm=''; S.btn.textContent='S'; }
+    if(doneMsg) ktoast(doneMsg,6000);
+    setTimeout(function(){ if(ACCT.connected){ renderAcct(true); renderOrders(true); } },1800);
+  }
+  function slicerFire(sym){
+    var S=SLICER[sym]; if(!S) return;
+    if(S.i>=S.slices.length){ slicerStop(sym,sym+': all '+S.n+' slices sent · '+S.sold.toLocaleString('en-IN')+' qty'); return; }
+    var o=S.slices[S.i];
+    acctFetch('/order',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify(o)}).then(function(res){
+      var st=res.st,j=res.j,msg=(j&&j.message)||('HTTP '+st);
+      if(st===200&&j&&j.data&&j.data.order_id){
+        S.i++; S.sold+=o.quantity;
+        if(S.btn) S.btn.textContent=S.i+'/'+S.n;
+        if(S.i>=S.slices.length){ slicerStop(sym,sym+': all '+S.n+' slices sent · '+S.sold.toLocaleString('en-IN')+' qty'); }
+        else S.t=setTimeout(function(){ slicerFire(sym); },sliceGap()*1000);
+      }
+      else if(ipBlocked(msg)||st===0){ ACCT.directBlocked=true;
+        var rest=S.slices.slice(S.i);
+        ktoast('Static-IP rule — sending the remaining '+rest.length+' slices to one Zerodha basket (they land together there)',6000);
+        slicerStop(sym); if(rest.length>10) ktoast('Basket cap is 10 — sell the rest with another tap',5200);
+        kiteSend(rest.slice(0,10));
+      }
+      else if(st===403){ slicerStop(sym,'Zerodha session expired — log in again'); ACCT.connected=false; }
+      else { slicerStop(sym,sym+' slice refused: '+msg+' · stopped after '+S.i+'/'+S.n); }
+    });
+  }
+  function rowSellDisarm(){ if(SELLROW.btn && !SLICER[(SELLROW.btn.dataset.sy||'')]){ SELLROW.btn.dataset.arm=''; SELLROW.btn.textContent='S'; } SELLROW.btn=null; }
+  function rowSell(kind,sym,btn){
+    if(SLICER[sym]){ var S=SLICER[sym]; slicerStop(sym,sym+': stopped — '+S.i+'/'+S.n+' slices sent ('+S.sold.toLocaleString('en-IN')+' qty), rest kept'); return; }
+    var buckets=rowSellOrders(kind,sym);
+    if(!buckets.length){ ktoast('Nothing sellable in '+sym); return; }
+    var slices=buildSlices(buckets), qty=buckets.reduce(function(a,b){return a+b.qty;},0);
+    if(btn.dataset.arm!=='1'){
+      rowSellDisarm();
+      btn.dataset.arm='1'; btn.textContent='✓?'; SELLROW.btn=btn;
+      ktoast(slices.length>1
+        ? ('Tap ✓? again: SELL '+qty.toLocaleString('en-IN')+' '+sym+' in '+slices.length+' market slices of ≤₹'+sliceLakh()+'L, '+sliceGap()+'s apart — keep this tab open; tap again mid-run to stop')
+        : ('Tap ✓? again to SELL '+qty.toLocaleString('en-IN')+' '+sym+' at market'),5200);
+      clearTimeout(SELLROW.t); SELLROW.t=setTimeout(rowSellDisarm,7000); return;
+    }
+    clearTimeout(SELLROW.t); SELLROW.btn=null; btn.dataset.arm='';
+    if(!ACCT.connected || ACCT.directBlocked){
+      if(slices.length>10){ ktoast('Not connected for paced slices — sending the first 10 to a Zerodha basket; tap again for the rest',5600); }
+      kiteSend(slices.slice(0,10)); return;
+    }
+    SLICER[sym]={slices:slices,i:0,n:slices.length,btn:btn,t:0,sold:0};
+    btn.textContent='0/'+slices.length;
+    slicerFire(sym);
+  }
+    document.getElementById('acctView').addEventListener('change',function(e){
+    if(e.target.id==='slLakh'){ var v=parseFloat(e.target.value); if(v>0){ try{ localStorage.setItem('sw_sell_slice_lakh',String(v)); }catch(e2){} ktoast('Sell slices: ≤₹'+v+'L each'); } }
+    if(e.target.id==='slGap'){ var g=parseInt(e.target.value,10); if(g>=3&&g<=600){ try{ localStorage.setItem('sw_sell_gap_s',String(g)); }catch(e2){} ktoast('Sell slices: '+g+'s apart'); } }
+  });
+  document.getElementById('acctView').addEventListener('click',function(e){
     var ca=e.target.closest('[data-act]');
     if(ca){ e.preventDefault(); var act=ca.dataset.act;
       if(act==='savew'){ var v=((document.getElementById('cWorker')||{}).value||'').trim().replace(/\/+$/,'');
@@ -1033,6 +1090,7 @@ body.blur-secret .secret{filter:blur(7px);-webkit-user-select:none;user-select:n
       else if(act==='retry'){ renderAcct(false); }
       else if(act==='logout'){ zLogout(); }
       return; }
+    if(e.target.id==='slLakh'||e.target.id==='slGap'){ e.stopPropagation(); return; }
     var sb=e.target.closest('[data-sell]');
     if(sb){ e.preventDefault(); e.stopPropagation(); rowSell(sb.dataset.sell,sb.dataset.sy,sb); return; }
     var thEl=e.target.closest('[data-col]');
