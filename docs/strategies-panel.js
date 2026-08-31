@@ -99,82 +99,36 @@ function screenOne(it){
   PICKS[it.id] = { asOf: SF.end, rows: picks.map((r, i) => ({ rank: i+1, sym: r.sym, tkr: r.tkr,
     px: (META[r.tkr] && META[r.tkr].raw) ? META[r.tkr].raw : r.price })) };
 }
-/* ---------- LIVE re-ranking (user 2026-08-31: "live picks or rebalance picks") ----------
-   Rebalance mode ranks on the last close — the official screen, identical to the backtest.
-   Live mode re-ranks the PRICE-derived factors at the current market price, exactly: the 52w
-   high/low LEVELS, DMA levels and past-price anchors are recovered from the close row, then the
-   factor is recomputed at the live price (returns become "to now", accel's recent leg moves, the
-   prior leg is history). Fundamentals/holdings can't move intraday and stay as filed; path-
-   dependent fields (vol, mdd6, RSI, MACD, stoch, bollB…) have no closed-form live update and hold
-   their close values — none of the ⭐ strategies uses one. Candidates = every row that could pass
-   the price filters within a ±20%% intraday move (the circuit band), so a big mover can ENTER the
-   live top-N, not just reshuffle it. Ratios use the RAW close (META.raw) so the maths matches the
-   quote worker's raw ltp; a stock trading EX a split/bonus today will look crashed here — same
-   one-day trap as any raw-price comparison. */
-  const LIVE_FIELDS = new Set(['d52','d52_low_pct','changePercent','ret1m','ret3m','ret6m','ret12m','accel','dma50','dma200','rangePos','postDrift']);
+/* ---------- LIVE re-ranking — the ENGINE'S OWN overlay (unified 2026-08-31) ----------
+   The first version approximated live factors with ratio maths and its own candidate quotes —
+   and disagreed with all-picks on borderline names (OFSS/JINDALSAW), because all-picks uses the
+   engine's applyLiveOverlay: whole-universe quotes WITH the retry rounds Yahoo needs (~15% of a
+   first pass drops silently), spliced into SERIES as a real bar so every factor recomputes
+   exactly. One implementation, shared with all-picks, so the two pages cannot diverge again.
+   Rebalance mode is untouched: screening at SF.end never sees the spliced live bar. */
   let PICKMODE = (function(){ try { return localStorage.getItem('sp_pick_mode') || 'reb'; } catch(e){ return 'reb'; } })();
-  const CAND = {};                      // per-strategy candidate rows (close-based); quotes re-applied each tick
-  const LIVEALL = { ts: 0, data: {} };  // live quotes for every candidate symbol, shared across strategies
-  function liveRow(r, ratio){
-    if (!(ratio > 0) || Math.abs(ratio - 1) < 1e-9) return r;
-    const o = Object.assign({}, r); const px = r.price * ratio; o.price = px;
-    const hi = r.price / (1 - r.d52 / 100), H = Math.max(hi, px);
-    o.d52 = (H - px) / H * 100;
-    let lo = null;
-    if (r.d52low != null){ lo = r.price / (1 + r.d52low / 100); const L = Math.min(lo, px); if (L > 0) o.d52low = (px - L) / L * 100; }
-    const g = x => x == null ? null : ((1 + x / 100) * ratio - 1) * 100;   // a close-to-close return, re-measured to NOW
-    if (r.accel != null && r.chg != null) o.accel = r.accel + (1 + r.chg / 100) * (ratio - 1) * 100;
-    o.chg = g(r.chg);
-    for (const f of ['ret1m','ret3m','ret6m','ret12m','postDrift']) if (r[f] != null) o[f] = g(r[f]);
-    for (const f of ['dma50','dma200']) if (r[f] != null){ const ma = r.price / (1 + r[f] / 100); o[f] = (px / ma - 1) * 100; }
-    if (r.rangePos != null && lo != null){ const H2 = Math.max(hi, px), L2 = Math.min(lo, px); if (H2 > L2) o.rangePos = (px - L2) / (H2 - L2) * 100; }
-    return o;
+  let LIVEOV = { ts: 0, date: null, n: 0 };
+  async function ensureLiveOverlay(cfgs, force){
+    if (!force && LIVEOV.ts && Date.now() - LIVEOV.ts < 55000) return;
+    const r = await applyLiveOverlay(cfgs, m => { $('status').textContent = m || ''; });
+    LIVEOV = { ts: Date.now(), date: (r && r.date) || SF.end, n: (r && r.n) || 0 };
   }
-  function liveCandidates(cfg, rows){
-    return rows.filter(r => {
-      if (r.rsi == null || fieldVal(r, cfg.sortBy) == null) return false;
-      for (const f of (cfg.filters || [])){
-        if (!LIVE_FIELDS.has(f.field)){ if (!passFilters(r, [f])) return false; continue; }
-        const a = fieldVal(liveRow(r, 1.2), f.field), b = fieldVal(liveRow(r, 0.8), f.field);
-        if (a == null || b == null){ if (!passFilters(r, [f])) return false; continue; }
-        const x = (f.op === '>' || f.op === '>=') ? Math.max(a, b) : Math.min(a, b);
-        const ok = f.op === '>' ? x > f.val : f.op === '>=' ? x >= f.val : f.op === '<' ? x < f.val : f.op === '<=' ? x <= f.val : (Math.min(a, b) <= f.val && f.val <= Math.max(a, b));
-        if (!ok) return false;
-      }
-      return true;
-    });
+  function screenLiveOne(it){
+    const picks = screenAsOf(it.cfg, LIVEOV.date || SF.end).slice(0, it.cfg.topN);
+    PICKS[it.id] = { asOf: SF.end, live: true, liveTs: LIVEOV.ts, rows: picks.map((r, i) => ({ rank: i + 1, sym: r.sym, tkr: r.tkr,
+      px: r.price })) };   // the spliced bar IS the live price; rebalance mode still shows META.raw
   }
-  async function fetchQuotesFor(syms){
-    const wurl = (function(){ try { return localStorage.getItem('live_worker_url') || ''; } catch(e){ return ''; } })();
-    syms = syms.filter(Boolean); if (!wurl || !syms.length) return;
-    const sep = wurl.includes('?') ? '&' : '?';
-    const chunks = []; for (let i = 0; i < syms.length; i += 60) chunks.push(syms.slice(i, i + 60));
-    await Promise.all(chunks.map(c => fetch(wurl + sep + 'symbols=' + encodeURIComponent(c.join(',')))
-      .then(r => r.json()).then(d => { if (d && d.data){ Object.assign(LIVEALL.data, d.data); LIVEALL.ts = d.asOf || Date.now(); } }).catch(() => {})));
+  async function screenPick(it){
+    if (PICKMODE === 'live'){ await ensureLiveOverlay([it.cfg]); screenLiveOne(it); }
+    else screenOne(it);
   }
-  function rawClose(r){ return (META[r.tkr] && META[r.tkr].raw) ? META[r.tkr].raw : r.price; }
-  function rankLive(it){
-    const cand = CAND[it.id] || [];
-    const adj = cand.map(r => { const q = LIVEALL.data[r.sym]; return (q && q.ltp != null && rawClose(r) > 0) ? liveRow(r, q.ltp / rawClose(r)) : r; });
-    const rows = adj.filter(r => passFilters(r, it.cfg.filters) && fieldVal(r, it.cfg.sortBy) != null);
-    rows.sort((a, b) => { const x = fieldVal(a, it.cfg.sortBy), y = fieldVal(b, it.cfg.sortBy); return it.cfg.dir === 'high' ? y - x : x - y; });
-    PICKS[it.id] = { asOf: SF.end, live: true, liveTs: LIVEALL.ts, rows: rows.slice(0, it.cfg.topN).map((r, i) => {
-      const q = LIVEALL.data[r.sym];
-      return { rank: i + 1, sym: r.sym, tkr: r.tkr, px: (q && q.ltp != null) ? q.ltp : rawClose(r) }; }) };
-  }
-  async function screenLive(it){
-    CAND[it.id] = liveCandidates(it.cfg, factorsAt(dayOff(SF.end), it.cfg));
-    await fetchQuotesFor([...new Set(CAND[it.id].map(r => r.sym))].filter(s => !(s in LIVEALL.data)));
-    rankLive(it);
-  }
-  async function screenPick(it){ if (PICKMODE === 'live') await screenLive(it); else screenOne(it); }
   let LIVE_RERANK = false;
   async function liveRerankAll(){
     if (LIVE_RERANK) return; LIVE_RERANK = true;
     try {
-      const ids = Object.keys(CAND).filter(id => PICKS[id] && PICKS[id].live);
-      if (ids.length){ await fetchQuotesFor([...new Set(ids.flatMap(id => CAND[id].map(r => r.sym)))]);
-        for (const id of ids){ const it = strategies().find(x => x.id === id); if (it) rankLive(it); } renderCards(); }
+      const its = strategies().filter(x => PICKS[x.id] && PICKS[x.id].live);
+      if (its.length){ await ensureLiveOverlay(its.map(x => x.cfg), true);
+        its.forEach(screenLiveOne); renderCards(); }
     } finally { LIVE_RERANK = false; }
   }
 async function loadPicks(id){
@@ -190,8 +144,10 @@ $('btnLoadAll').onclick = async () => {
   if (!list.length) return;
   $('btnLoadAll').disabled = true;
   if (!await ensureEngine()){ $('btnLoadAll').disabled = false; ktoast('Could not load market data'); return; }
+  if (PICKMODE === 'live'){ try { await ensureLiveOverlay(list.map(x => x.cfg), true); } catch(e){} }
   for (const it of list){ $('status').textContent = 'Screening ' + (it.name || '') + '…';
-    await new Promise(r => setTimeout(r, 0)); await screenPick(it); }
+    await new Promise(r => setTimeout(r, 0));
+    if (PICKMODE === 'live') screenLiveOne(it); else screenOne(it); }
   $('status').textContent = list.length + ' strategies screened as of ' + SF.end +
     (PICKMODE === 'live' ? ' — re-ranked LIVE (fundamentals as filed; ranking updates every minute while the market is open).' : '.');
   $('btnLoadAll').disabled = false;
