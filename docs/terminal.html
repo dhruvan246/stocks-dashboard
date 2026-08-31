@@ -88,7 +88,11 @@ a{color:var(--buy);text-decoration:none}
 .asof{font-size:11px;color:var(--text-3);font-weight:600;text-align:right;line-height:1.25;white-space:nowrap}
 .asof b{display:block;font-size:12px;color:var(--text-2);font-weight:700}
 
-.body{display:grid;grid-template-columns:264px minmax(0,1fr) 340px;min-height:600px}
+.body{display:grid;grid-template-columns:264px minmax(0,1fr);min-height:600px}
+/* Order-ticket pane removed with the marketwatch (user 2026-08-31) — all trading happens through
+   the per-row Sell buttons and strategy basket buys. Hidden, not cut: its inputs keep their ids
+   so every listener still binds. The grid drops its 340px column. */
+.pane.tk{display:none !important}
 .body.acctmode{grid-template-columns:264px minmax(0,1fr)}
 .body.acctmode .pane.tk{display:none}
 .body.acctmode .focus{max-height:none}
