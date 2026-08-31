@@ -504,7 +504,18 @@ function zbaSet(id, amt){ const d = zbaDoc(); d.amts[id] = amt; d.ts = Date.now(
   clearTimeout(zbaSet._t); zbaSet._t = setTimeout(zbaPush, 1500); }
 async function zbaPush(){ const row = zbaRow(); if (!row || typeof CompressionStream === 'undefined') return;
   try {
-    const st = new Blob([JSON.stringify(zbaDoc())]).stream().pipeThrough(new CompressionStream('gzip'));
+    let doc = zbaDoc();
+    try {   // merge with what the row holds so a one-key edit never clobbers the rest
+      const r0 = await fetch(ZBA_URL + 'pf_feed_get?token=' + encodeURIComponent(row) + '&apikey=' + ZBA_ANON, { cache: 'no-store' });
+      if (r0.ok){ const j0 = await r0.json();
+        if (j0 && j0.z && typeof DecompressionStream !== 'undefined'){
+          const by = Uint8Array.from(atob(j0.z), c => c.charCodeAt(0));
+          const st0 = new Blob([by]).stream().pipeThrough(new DecompressionStream('gzip'));
+          const rem0 = JSON.parse(await new Response(st0).text());
+          if (rem0 && rem0.amts){ doc = zbaMerge(rem0, doc); try { localStorage.setItem(ZBA_LS, JSON.stringify(doc)); } catch (e){} }
+        } }
+    } catch (e){}
+    const st = new Blob([JSON.stringify(doc)]).stream().pipeThrough(new CompressionStream('gzip'));
     const buf = new Uint8Array(await new Response(st).arrayBuffer());
     let b = ''; buf.forEach(x => b += String.fromCharCode(x));
     await fetch(ZBA_URL + 'pf_feed_set', { method: 'POST',
@@ -518,8 +529,13 @@ async function zbaPull(){ const row = zbaRow(); if (!row || typeof Decompression
     const bytes = Uint8Array.from(atob(j.z), c => c.charCodeAt(0));
     const st = new Blob([bytes]).stream().pipeThrough(new DecompressionStream('gzip'));
     const rem = JSON.parse(await new Response(st).text());
-    if (rem && rem.amts && (rem.ts || 0) > zbaDoc().ts) try { localStorage.setItem(ZBA_LS, JSON.stringify(rem)); } catch (e){}
+    if (rem && rem.amts) try { localStorage.setItem(ZBA_LS, JSON.stringify(zbaMerge(zbaDoc(), rem))); } catch (e){}
   } catch (e){} }
+/* Merge two amount docs: the newer doc's values win where both name a strategy, but a strategy
+   only ONE doc names always survives — so an edit made before this device ever pulled can never
+   wipe the other seven seeded amounts (whole-map last-writer-wins did exactly that). */
+function zbaMerge(a, b){ const newer = (b.ts || 0) >= (a.ts || 0) ? b : a, older = newer === b ? a : b;
+  return { ts: Math.max(a.ts || 0, b.ts || 0), amts: Object.assign({}, older.amts, newer.amts) }; }
 
 const TICKMEM = {};
 let TICKS_LOADED = false;
