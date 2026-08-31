@@ -113,7 +113,7 @@ a{color:var(--buy);text-decoration:none}
   .kcard.up:before{background:var(--up);opacity:1} .kcard.down:before{background:var(--down);opacity:1}
   .kcard .khead{display:flex;align-items:baseline;gap:8px}
   .kcard .knm{font-size:14.5px;font-weight:800;letter-spacing:-.01em}
-  .kcard .kday{margin-left:auto;font-size:12px;font-weight:700}
+  .kcard .kday{margin-left:auto;font-size:12px;font-weight:700;white-space:nowrap}
   .kcard .kpnl{display:grid;grid-template-columns:1fr 1fr auto;gap:8px;align-items:end;margin-top:7px}
   .kcard .kpl .lbl{font-size:9.5px;font-weight:800;letter-spacing:.06em;color:var(--text-3);text-transform:uppercase}
   .kcard .kpl .v{font-size:14px;font-weight:800;font-variant-numeric:tabular-nums;line-height:1.25}
@@ -921,7 +921,7 @@ body.blur-secret .secret{filter:blur(7px);-webkit-user-select:none;user-select:n
           '<td class="secret">'+r.qty+'</td><td>₹'+r.avg.toFixed(2)+'</td><td>₹'+r.ltp.toFixed(2)+'</td>'+
           '<td class="secret '+((r.dayPnl||0)>=0?'up':'down')+'">'+(r.dayPnl==null?'—':inrSigned(r.dayPnl))+'</td>'+
           '<td class="secret '+(r.pnl>=0?'up':'down')+'">'+inrSigned(r.pnl)+'</td>'+
-          '<td>'+(r.qty>0?'<button class="abtn s" data-sell="pos" data-sy="'+esc(r.sym)+'" title="Sell this position at market">S</button>':'')+'</td></tr>';
+          '<td>'+((r.qty>0 && !/FUT$|CE$|PE$/.test(r.sym))?'<button class="abtn s" data-sell="pos" data-sy="'+esc(r.sym)+'" title="Sell this position at market">S</button>':'')+'</td></tr>';
       }).join('');
       var pcards=sortRows(ACCT.pos,POS_SORT).map(function(r){
         var ppct=(r.avg&&r.qty)?(r.pnl/Math.abs(r.avg*r.qty)*100):null;
@@ -932,7 +932,7 @@ body.blur-secret .secret{filter:blur(7px);-webkit-user-select:none;user-select:n
             '<div class="kpl"><div class="lbl">Today (M2M)</div><div class="v secret '+((r.dayPnl||0)>=0?'up':'down')+'">'+(r.dayPnl==null?'—':inrSigned(r.dayPnl))+'</div></div>'+
             '<div class="kpl"><div class="lbl">Total</div><div class="v secret '+(r.pnl>=0?'up':'down')+'">'+inrSigned(r.pnl)+'</div>'+
               (ppct==null?'':'<div class="p '+(ppct>=0?'up':'down')+'">'+signed(ppct)+'</div>')+'</div>'+
-            '<div class="act">'+(r.qty>0?'<button class="abtn s" data-sell="pos" data-sy="'+esc(r.sym)+'">S</button>':'')+'</div></div>'+
+            '<div class="act">'+((r.qty>0 && !/FUT$|CE$|PE$/.test(r.sym))?'<button class="abtn s" data-sell="pos" data-sy="'+esc(r.sym)+'">S</button>':'')+'</div></div>'+
           '<div class="kfoot"><span class="secret">'+Math.abs(r.qty).toLocaleString('en-IN')+'</span> @ '+r.avg.toFixed(2)+' · LTP '+r.ltp.toFixed(2)+'</div></div>';
       }).join('');
       h+='<div class="ksec" data-sec="pos"><div class="av-sec">Open positions · '+ACCT.pos.length+'</div><div class="kcards">'+pcards+'</div><div class="atbl-wrap"><table class="atbl postbl"><thead><tr>'+
