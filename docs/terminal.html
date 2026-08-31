@@ -166,6 +166,10 @@ a{color:var(--buy);text-decoration:none}
 .mwrow:hover .pr{opacity:0}
 .abtn{width:23px;height:23px;border-radius:6px;display:grid;place-items:center;font-size:11px;font-weight:800;border:none;color:#fff}
 .abtn.b{background:var(--buy)} .abtn.s{background:var(--sell)}
+/* The sell button doubles as the slicer's progress readout ("2/14"), which a 23px square clips
+   (user 2026-08-31). Sell buttons size to their text and read at a glance. */
+.abtn[data-sell]{width:auto;min-width:40px;height:27px;padding:0 10px;font-size:13px;font-variant-numeric:tabular-nums;cursor:pointer}
+.abtn[data-sell]:hover{filter:brightness(1.08)}
 
 .focus{padding:15px 18px 20px;overflow-y:auto;max-height:600px}
 .fhead{display:flex;align-items:flex-start;gap:14px;flex-wrap:wrap}
