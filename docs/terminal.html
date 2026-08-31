@@ -874,15 +874,27 @@ body.blur-secret .secret{filter:blur(7px);-webkit-user-select:none;user-select:n
      frozen no matter how fast we polled. True prices come from Kite's quote endpoint, relayed by
      the worker as /ltp. If the worker has no /ltp route yet, this quietly leaves the snapshot
      prices in place, so the page is never worse off than before. */
-  var LTPMAP={};
+  var LTPMAP={}, LTP_ROUTE=null;   // null = untested, true = worker has /ltp, false = fall back to the quotes worker
   function fetchLtps(syms){
     syms=syms.filter(Boolean).filter(function(v,i,a){ return a.indexOf(v)===i; });
     if(!syms.length) return Promise.resolve();
+    /* Preferred: the kite worker's /ltp relay (tick-exact). Until that route is deployed it 404s
+       once, we remember, and every refresh prices off the site's quotes worker instead — near-live
+       (seconds behind at worst) and already serving the rest of the site. Either way the holdings
+       stop being priced off Kite's frozen portfolio snapshot. */
+    var viaQuotes=function(){
+      return fetch(workerUrl()+'/?symbols='+encodeURIComponent(syms.join(',')),{cache:'no-store'})
+        .then(function(r){return r.json();})
+        .then(function(d){ var m=(d&&d.data)||{}; for(var k in m){ if(m[k]&&m[k].ltp!=null) LTPMAP[k]=+m[k].ltp; } })
+        .catch(function(){});
+    };
+    if(LTP_ROUTE===false) return viaQuotes();
     return acctFetch('/ltp?i='+encodeURIComponent(syms.join(','))).then(function(r){
-      if(r.st!==200 || !r.j || !r.j.data) return;
-      var d=r.j.data;
-      for(var k in d){ var sy=k.split(':').pop(); if(d[k] && d[k].last_price!=null) LTPMAP[sy]=+d[k].last_price; }
-    }).catch(function(){});
+      if(r.st===200 && r.j && r.j.data){ LTP_ROUTE=true;
+        var d=r.j.data; for(var k in d){ var sy=k.split(':').pop(); if(d[k]&&d[k].last_price!=null) LTPMAP[sy]=+d[k].last_price; } return; }
+      if(r.st===404 || (r.j&&r.j.error)) LTP_ROUTE=false;
+      return viaQuotes();
+    }).catch(function(){ return viaQuotes(); });
   }
   function renderAcct(quiet){
     if(!pfToken()){ connectSetup('token'); return; }
