@@ -272,7 +272,7 @@ function buyAllAgg(list){
   const agg = {}, missing = [];
   list.forEach((it, i) => {
     const p = PICKS[it.id]; if (!p || !p.rows.length) return;
-    const amt = +(function(){ try { return localStorage.getItem('sw_zb_amt_' + it.id) || 0; } catch(e){ return 0; } })();
+    const amt = zbaGet(it.id);
     if (!amt) missing.push(i + 1);
     const per = amt ? amt / p.rows.length : 0;
     p.rows.forEach(r => {
@@ -390,7 +390,7 @@ function zbAlloc(){
     if (!(r.on && r.px > 0)){ r.qty = 0; r.margin = null; return; }
     const perShare = (mode === 'margin' && r.mps > 0) ? r.mps : r.px;
     r.qty = Math.floor(per / perShare); r.margin = null; });
-  if (ZB.id && amt) try { localStorage.setItem('sw_zb_amt_' + ZB.id, String(amt)); } catch(e){}
+  if (ZB.id && amt) zbaSet(ZB.id, amt);
 }
 function zbFoot(){
   const rows = ZB.rows.filter(r => r.on && r.qty > 0);
@@ -469,7 +469,7 @@ function zBasketOpen(id){
   $('zbSub').textContent = ((typeof strategyEnglish === 'function' && strategyEnglish(it.cfg)) || nameWithBasis(it.name, it.cfg)) + ' — ' + p.rows.length + ' picks as of ' + p.asOf + '. You confirm before anything is placed.';
   $('zbProd').value = 'MTF';
   if ($('zbType')) $('zbType').value = 'MARKET';
-  $('zbAmt').value = (function(){ try { return localStorage.getItem('sw_zb_amt_' + id) || ''; } catch(e){ return ''; } })();
+  $('zbAmt').value = zbaGet(id) || '';
   zbAlloc(); zbRender();
   $('zbWrap').classList.add('open');
   zbMarginSoon(true);
@@ -483,6 +483,44 @@ function zBasketOpen(id){
    account view edits. Exchange is always NSE (zbOrders pins it). The strategy's ⚡ button shows
    n/N progress; tapping it mid-run stops the remaining slices. Every accepted slice's fate is
    read back from the order book, so exchange rejections surface here with their reason. */
+/* ---- per-strategy ₹ amounts, synced ACROSS DEVICES (user 2026-09-01: "i should see same from
+   my mobile as well as mac"). They used to live only in this browser (sw_zb_amt_<id>). Now the
+   whole map lives in a TOKEN-GATED pf_feed row (<pf_token>.zbamts) — the same private channel as
+   the portfolio holdings, deliberately NOT the public SETTINGS doc: position sizing must never
+   sit in a world-readable store. Whole-map last-writer-wins by ts (amounts are edited by one
+   person, occasionally). Boot pulls the row and applies it when newer; every edit pushes back
+   (debounced). No token / offline / old browser → localStorage keeps working alone. */
+const ZBA_LS = 'sw_zb_amts_v1';
+const ZBA_URL = 'https://nebjnsndgrhumnkuipqy.supabase.co/rest/v1/rpc/';
+const ZBA_ANON = 'sb_publishable_MDlQwiVc5deii91__UNeDg_z9r4Fk98';
+const ZBA_SECRET = 'sw_owner_8Kq2Lm9Xp4Rt7v';        // same public write secret sw-sync.js ships
+function zbaRow(){ try { const t = localStorage.getItem('pf_token') || ''; return t ? t + '.zbamts' : ''; } catch (e){ return ''; } }
+function zbaDoc(){ try { const d = JSON.parse(localStorage.getItem(ZBA_LS) || 'null'); if (d && d.amts) return d; } catch (e){} return { ts: 0, amts: {} }; }
+function zbaGet(id){ const v = +zbaDoc().amts[id] || 0; if (v) return v;
+  try { return +(localStorage.getItem('sw_zb_amt_' + id) || 0); } catch (e){ return 0; } }      // pre-sync saves
+function zbaSet(id, amt){ const d = zbaDoc(); d.amts[id] = amt; d.ts = Date.now();
+  try { localStorage.setItem(ZBA_LS, JSON.stringify(d)); } catch (e){}
+  try { localStorage.setItem('sw_zb_amt_' + id, String(amt)); } catch (e){}
+  clearTimeout(zbaSet._t); zbaSet._t = setTimeout(zbaPush, 1500); }
+async function zbaPush(){ const row = zbaRow(); if (!row || typeof CompressionStream === 'undefined') return;
+  try {
+    const st = new Blob([JSON.stringify(zbaDoc())]).stream().pipeThrough(new CompressionStream('gzip'));
+    const buf = new Uint8Array(await new Response(st).arrayBuffer());
+    let b = ''; buf.forEach(x => b += String.fromCharCode(x));
+    await fetch(ZBA_URL + 'pf_feed_set', { method: 'POST',
+      headers: { apikey: ZBA_ANON, Authorization: 'Bearer ' + ZBA_ANON, 'Content-Type': 'application/json' },
+      body: JSON.stringify({ secret: ZBA_SECRET, token: row, payload: { z: btoa(b) } }) });
+  } catch (e){} }
+async function zbaPull(){ const row = zbaRow(); if (!row || typeof DecompressionStream === 'undefined') return;
+  try {
+    const r = await fetch(ZBA_URL + 'pf_feed_get?token=' + encodeURIComponent(row) + '&apikey=' + ZBA_ANON, { cache: 'no-store' });
+    if (!r.ok) return; const j = await r.json(); if (!j || !j.z) return;
+    const bytes = Uint8Array.from(atob(j.z), c => c.charCodeAt(0));
+    const st = new Blob([bytes]).stream().pipeThrough(new DecompressionStream('gzip'));
+    const rem = JSON.parse(await new Response(st).text());
+    if (rem && rem.amts && (rem.ts || 0) > zbaDoc().ts) try { localStorage.setItem(ZBA_LS, JSON.stringify(rem)); } catch (e){}
+  } catch (e){} }
+
 const TICKMEM = {};
 let TICKS_LOADED = false;
 function loadTicks(){
@@ -606,6 +644,7 @@ function kiteSend(orders){
   mLbl();
   renderCards();
   refreshFavsFromSettings();
+  zbaPull();   // synced \u20b9 amounts (token-gated row) \u2014 lands before any basket dialog opens
   if (window.btSync){ try { await btSync.pullStrategies(); renderCards(); } catch(e){} }
 })();
   };
