@@ -211,6 +211,16 @@ a{color:var(--buy);text-decoration:none}
    baskets; the quote list was noise. Hidden via CSS (not cut from the DOM) so every listener the
    script wires to these nodes stays valid; the launcher cards above them keep the column. */
 .mwtabs,.mwsearch,.mwlist{display:none !important}
+/* Mobile: the three launchers live in a fixed footer bar, app-style (user 2026-08-31). The
+   buttons just .click() the original (hidden) cards, so every handler stays untouched. */
+.mftr{display:none}
+@media (max-width:768px){
+  .mftr{display:flex;position:fixed;left:0;right:0;bottom:0;z-index:150;background:var(--surface);border-top:1px solid var(--border);padding:5px max(8px,env(safe-area-inset-left)) calc(5px + env(safe-area-inset-bottom)) max(8px,env(safe-area-inset-right))}
+  .mftr button{flex:1;display:flex;flex-direction:column;align-items:center;gap:1px;background:none;border:none;color:var(--text-2);font-size:18px;padding:4px 0;cursor:pointer}
+  .mftr button span{font-size:10px;font-weight:700;letter-spacing:.02em}
+  .pfcard{display:none}
+  body{padding-bottom:76px}
+}
 /* positions & funds card (top of marketwatch) */
 .pfcard{margin:10px 12px 4px;border:1px solid var(--border);border-radius:11px;background:var(--surface-2);padding:10px 12px;cursor:pointer;transition:border-color .12s,background .12s}
 .pfcard:hover{border-color:var(--buy)}
@@ -1215,6 +1225,18 @@ body.blur-secret .secret{filter:blur(7px);-webkit-user-select:none;user-select:n
   var POLL=setInterval(function(){ if(document.hidden) return; fetchQuotes(); fetchIndices(); if(ACCT.connected){ renderAcct(true); if(VIEW==='orders') renderOrders(true); } },30000);
   document.addEventListener('visibilitychange',function(){ if(!document.hidden){ fetchQuotes(); fetchIndices(); renderAcct(true); if(VIEW==='orders') renderOrders(true); } });
 })();
+</script>
+<nav class="mftr" id="mFtr" aria-label="Terminal sections">
+  <button data-mf="pfCard">💼<span>Positions</span></button>
+  <button data-mf="ordCard">📋<span>Orders</span></button>
+  <button data-mf="stratCard">🎯<span>Strategies</span></button>
+</nav>
+<script>
+document.getElementById('mFtr').addEventListener('click',function(e){
+  var b=e.target.closest('[data-mf]'); if(!b) return;
+  var c=document.getElementById(b.dataset.mf); if(c) c.click();
+  window.scrollTo({top:0,behavior:'smooth'});
+});
 </script>
 </body>
 </html>
