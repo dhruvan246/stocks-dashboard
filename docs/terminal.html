@@ -931,7 +931,13 @@ body.blur-secret .secret{filter:blur(7px);-webkit-user-select:none;user-select:n
       }).join('');
       var hcards=sortRows(ACCT.hold,HOLD_SORT).map(function(r){
         var cnc=r.qty-(r.mq||0);
-        return '<div class="kcard"><div class="l1">Qty. <span class="secret">'+cnc.toLocaleString('en-IN')+'</span>'+((r.mq||0)>0?'<span class="mchip">M: <span class="secret">'+r.mq.toLocaleString('en-IN')+'</span></span>':'')+' · Avg. '+r.avg.toFixed(2)+'</div>'+
+        /* a fully-MTF holding has no delivery leg — show the MTF quantity as THE quantity with an
+           MTF chip, instead of a meaningless "Qty. 0" followed by the real number (2026-08-31). */
+        var qtyBit = (cnc>0 && (r.mq||0)>0)
+          ? 'Qty. <span class="secret">'+cnc.toLocaleString('en-IN')+'</span><span class="mchip">MTF <span class="secret">'+r.mq.toLocaleString('en-IN')+'</span></span>'
+          : ((r.mq||0)>0 ? 'Qty. <span class="secret">'+r.mq.toLocaleString('en-IN')+'</span><span class="mchip">MTF</span>'
+                         : 'Qty. <span class="secret">'+cnc.toLocaleString('en-IN')+'</span>');
+        return '<div class="kcard"><div class="l1">'+qtyBit+' · Avg. '+r.avg.toFixed(2)+'</div>'+
           '<div class="r1 '+(r.totPct>=0?'up':'down')+'">'+signed(r.totPct)+'</div>'+
           '<div class="l2">'+esc(r.sym)+'</div>'+
           '<div class="r2 secret '+(r.totPnl>=0?'up':'down')+'">'+inrSigned(r.totPnl)+'</div>'+
