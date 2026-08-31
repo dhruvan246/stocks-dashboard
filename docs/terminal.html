@@ -101,6 +101,7 @@ a{color:var(--buy);text-decoration:none}
    instead of a sideways-scrolling table, plus a sticky Day's P&L bar above the footer. */
 .kcards{display:none}
 .kdppl{display:none}
+.ktabs{display:none}
 @media (max-width:768px){
   .atbl-wrap{display:none}
   .kcards{display:block}
@@ -114,6 +115,13 @@ a{color:var(--buy);text-decoration:none}
   .kcard .act{grid-column:3;grid-row:1/span 3;align-self:center}
   .kcard .mchip{font-size:9.5px;font-weight:800;border:1px solid var(--border);border-radius:4px;padding:0 4px;margin-left:4px;color:var(--text-3)}
   .kdppl{display:flex;justify-content:space-between;align-items:center;position:fixed;left:0;right:0;bottom:calc(58px + env(safe-area-inset-bottom));z-index:140;background:var(--surface);border-top:1px solid var(--border);padding:8px 14px;font-size:12.5px;font-weight:700}
+  .ktabs{display:flex;gap:4px;margin:12px 0 2px;border-bottom:1px solid var(--border)}
+  .ktabs button{flex:1;background:none;border:none;border-bottom:2px solid transparent;color:var(--text-3);font:inherit;font-size:13.5px;font-weight:700;padding:9px 4px;cursor:pointer}
+  .ktabs button.on{color:var(--buy);border-bottom-color:var(--buy)}
+  .ktabs .cnt{font-size:11px;font-weight:800;background:var(--surface-2);border-radius:20px;padding:1px 7px;margin-left:5px}
+  .ksec[data-sec]{display:none}
+  .ksec[data-sec].on{display:block}
+  .ksec .av-sec{display:none}
   body{padding-bottom:122px}
 }
 .body.acctmode{grid-template-columns:264px minmax(0,1fr)}
@@ -896,6 +904,10 @@ body.blur-secret .secret{filter:blur(7px);-webkit-user-select:none;user-select:n
       kpi('Current value',zinr(ACCT.curVal),'invested <span class="secret">'+zinr(ACCT.invested)+'</span>',null)+
       kpi('Funds available',zinr(ACCT.avail),'equity · to trade',null)+
       kpi('Margin used',zinr(ACCT.used),'deployed',null)+'</div>';
+    /* Kite-style tabs (mobile): Holdings | Positions side by side, one section shown at a time.
+       Desktop CSS ignores them and keeps both sections stacked. */
+    h+='<div class="ktabs"><button data-sec="hold" class="on">Holdings<span class="cnt">'+ACCT.hold.length+'</span></button>'+
+      '<button data-sec="pos">Positions<span class="cnt">'+ACCT.pos.length+'</span></button></div>';
     if(ACCT.pos.length){
       var prows=sortRows(ACCT.pos,POS_SORT).map(function(r){
         return '<tr data-sy="'+esc(r.sym)+'"><td><span class="nm">'+esc(r.sym)+'</span><span class="xtag">'+esc(r.product)+'</span></td>'+
@@ -912,13 +924,13 @@ body.blur-secret .secret{filter:blur(7px);-webkit-user-select:none;user-select:n
           '<div class="l3">LTP '+r.ltp.toFixed(2)+'</div><div class="r3"></div>'+
           '<div class="act">'+(r.qty>0?'<button class="abtn s" data-sell="pos" data-sy="'+esc(r.sym)+'">S</button>':'')+'</div></div>';
       }).join('');
-      h+='<div class="av-sec">Open positions · '+ACCT.pos.length+'</div><div class="kcards">'+pcards+'</div><div class="atbl-wrap"><table class="atbl postbl"><thead><tr>'+
+      h+='<div class="ksec" data-sec="pos"><div class="av-sec">Open positions · '+ACCT.pos.length+'</div><div class="kcards">'+pcards+'</div><div class="atbl-wrap"><table class="atbl postbl"><thead><tr>'+
         ths('Contract','sym',POS_SORT)+ths('Qty','qty',POS_SORT)+ths('Avg','avg',POS_SORT)+ths('LTP','ltp',POS_SORT)+ths('Day P&amp;L','dayPnl',POS_SORT)+ths('P&amp;L','pnl',POS_SORT)+'<th></th>'+
         '</tr></thead><tbody>'+prows+'</tbody>'+
         '<tfoot><tr><td>Futures total</td><td></td><td></td><td></td>'+
         '<td class="secret '+(ACCT.posDay>=0?'up':'down')+'">'+inrSigned(ACCT.posDay)+'</td>'+
         '<td class="secret '+(ACCT.posTot>=0?'up':'down')+'">'+inrSigned(ACCT.posTot)+'</td>'+
-        '<td></td></tr></tfoot></table></div>';
+        '<td></td></tr></tfoot></table></div></div>';
     }
     if(ACCT.hold.length){
       var hrows=sortRows(ACCT.hold,HOLD_SORT).map(function(r){
@@ -945,13 +957,15 @@ body.blur-secret .secret{filter:blur(7px);-webkit-user-select:none;user-select:n
           '<div class="r3">LTP '+r.ltp.toFixed(2)+' <span class="'+((r.dayPct||0)>=0?'up':'down')+'">('+(r.dayPct==null?'—':signed(r.dayPct))+')</span></div>'+
           '<div class="act"><button class="abtn s" data-sell="hold" data-sy="'+esc(r.sym)+'">S</button></div></div>';
       }).join('');
-      h+='<div class="av-sec">Holdings · '+ACCT.hold.length+'</div><div class="kcards">'+hcards+'</div><div class="atbl-wrap"><table class="atbl holdtbl"><thead><tr>'+
+      h+='<div class="ksec" data-sec="hold"><div class="av-sec">Holdings · '+ACCT.hold.length+'</div><div class="kcards">'+hcards+'</div><div class="atbl-wrap"><table class="atbl holdtbl"><thead><tr>'+
         ths('Stock','sym',HOLD_SORT)+ths('Qty','qty',HOLD_SORT)+ths('Avg','avg',HOLD_SORT)+ths('LTP','ltp',HOLD_SORT)+ths2("Day's P&amp;L",'dayPnl','dayPct',HOLD_SORT)+ths2('Total P&amp;L','totPnl','totPct',HOLD_SORT)+ths('Value','val',HOLD_SORT)+'<th></th>'+
-        '</tr></thead><tbody>'+hrows+'</tbody><tfoot><tr><td>Total</td><td></td><td></td><td></td><td class="secret '+(ACCT.holdDay>=0?'up':'down')+'">'+inrSigned(ACCT.holdDay)+'</td><td class="secret '+(ACCT.holdTot>=0?'up':'down')+'">'+inrSigned(ACCT.holdTot)+'</td><td class="secret">'+zinr(ACCT.curVal)+'</td><td></td></tr></tfoot></table></div>';
+        '</tr></thead><tbody>'+hrows+'</tbody><tfoot><tr><td>Total</td><td></td><td></td><td></td><td class="secret '+(ACCT.holdDay>=0?'up':'down')+'">'+inrSigned(ACCT.holdDay)+'</td><td class="secret '+(ACCT.holdTot>=0?'up':'down')+'">'+inrSigned(ACCT.holdTot)+'</td><td class="secret">'+zinr(ACCT.curVal)+'</td><td></td></tr></tfoot></table></div></div>';
     }
     if(!ACCT.pos.length && !ACCT.hold.length) h+='<div class="acct-msg">No open positions or holdings.</div>';
     h+='<div class="kdppl"><span>Day&#39;s P&amp;L</span><span class="secret '+(acctDay>=0?'up':'down')+'">'+inrSigned(acctDay)+' <span style="font-weight:600">'+signed(dayPctAll)+'</span></span></div>';
     document.getElementById('acctView').innerHTML=h;
+    var sec0=document.querySelector('.ksec[data-sec="hold"]')||document.querySelector('.ksec[data-sec]');
+    if(sec0) sec0.classList.add('on');
     /* The 30s account poll rebuilds this HTML, which used to orphan a running slicer's button —
        progress showed 1/9 then "disappeared" while the slices kept firing underneath (2026-08-31).
        Re-point every live slicer at its fresh button and restore the n/N label. */
@@ -1209,7 +1223,13 @@ body.blur-secret .secret{filter:blur(7px);-webkit-user-select:none;user-select:n
     btn.textContent='0/'+slices.length;
     slicerFire(sym);
   }
-    document.getElementById('acctView').addEventListener('change',function(e){
+    document.getElementById('acctView').addEventListener('click',function(e){
+    var tb=e.target.closest('.ktabs [data-sec]'); if(!tb) return;
+    e.stopPropagation();
+    document.querySelectorAll('.ktabs [data-sec]').forEach(function(b){ b.classList.toggle('on',b===tb); });
+    document.querySelectorAll('.ksec[data-sec]').forEach(function(x){ x.classList.toggle('on',x.dataset.sec===tb.dataset.sec); });
+  });
+  document.getElementById('acctView').addEventListener('change',function(e){
     if(e.target.id==='slLakh'){ var v=parseFloat(e.target.value); if(v>0){ try{ localStorage.setItem('sw_sell_slice_lakh',String(v)); }catch(e2){} ktoast('Sell slices: ≤₹'+v+'L each'); } }
     if(e.target.id==='slGap'){ var g=parseInt(e.target.value,10); if(g>=3&&g<=600){ try{ localStorage.setItem('sw_sell_gap_s',String(g)); }catch(e2){} ktoast('Sell slices: '+g+'s apart'); } }
     if(e.target.id==='slRng'){ var p=parseFloat(e.target.value); if(p>=0&&p<=5){ try{ localStorage.setItem('sw_sell_rng_pct',String(p)); }catch(e2){} ktoast(p>0?('Slices go as limits ≤'+p+'% below live'):'Slices go as plain market orders'); } }
