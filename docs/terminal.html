@@ -102,6 +102,14 @@ a{color:var(--buy);text-decoration:none}
 .kcards{display:none}
 .kdppl{display:none}
 .ktabs{display:none}
+/* Filter + sort chips — shown on every width: the tables can be sorted by their headers, but
+   nothing else offers "only my MTF holdings" or a sort a phone can reach. */
+.ktools{display:flex;gap:6px;align-items:center;overflow-x:auto;-webkit-overflow-scrolling:touch;padding:2px 0;margin:6px 0 8px;scrollbar-width:none}
+.ktools::-webkit-scrollbar{display:none}
+.ktools .tlbl{font-size:10px;font-weight:800;letter-spacing:.06em;color:var(--text-3);text-transform:uppercase;padding-right:2px}
+.ktools button{white-space:nowrap;background:var(--surface-2);border:1px solid var(--border);color:var(--text-2);border-radius:20px;padding:5px 11px;font:inherit;font-size:11.5px;font-weight:700;cursor:pointer}
+.ktools button:hover{color:var(--text)}
+.ktools button.on{background:var(--buy);border-color:var(--buy);color:#fff}
 @media (max-width:768px){
   .atbl-wrap{display:none}
   .kcards{display:block}
@@ -129,6 +137,7 @@ a{color:var(--buy);text-decoration:none}
   .ksec[data-sec]{display:none}
   .ksec[data-sec].on{display:block}
   .ksec .av-sec{display:none}
+  .ktools{margin:0 0 6px}
   body{padding-bottom:122px}
 }
 .body.acctmode{grid-template-columns:264px minmax(0,1fr)}
@@ -871,6 +880,21 @@ body.blur-secret .secret{filter:blur(7px);-webkit-user-select:none;user-select:n
   }
   function kpi(l,v,s,pos){ var cls=pos==null?'':(pos?'up':'down'); return '<div class="avk"><div class="l">'+l+'</div><div class="v secret '+cls+'">'+v+'</div><div class="s '+cls+'">'+(s||'')+'</div></div>'; }
   var HOLD_SORT={col:'val',dir:-1}, POS_SORT={col:'pnl',dir:-1};
+  /* Filter + sort chips, the pair Kite puts behind its funnel icon (user 2026-08-31). The filter
+     narrows WHICH holdings are listed (funding type), the sort chips reorder them — on a phone
+     there are no table headers to click, and a 25-row list is unusable without both. Filtering
+     applies to the tables too, so desktop and mobile can never show a different set. */
+  var HOLD_FILT='', KSEC='hold';
+  function holdRows(){
+    var l=ACCT.hold||[];
+    if(HOLD_FILT==='mtf')  l=l.filter(function(r){ return (r.mq||0)>0; });
+    if(HOLD_FILT==='del')  l=l.filter(function(r){ return (r.qty-(r.mq||0)-(r.cq||0))>0; });
+    if(HOLD_FILT==='pl')   l=l.filter(function(r){ return (r.cq||0)>0; });
+    return l;
+  }
+  function chipSort(col,label,which,st){
+    return '<button data-sort="'+col+'" data-for="'+which+'" class="'+(st.col===col?'on':'')+'">'+label+(st.col===col?(st.dir<0?' ↓':' ↑'):'')+'</button>';
+  }
   /* compute row objects + totals once per fetch, then render (re-render on sort without refetch) */
   function drawAcct(D){
     var eq=D.marg&&D.marg.equity, av=(eq&&eq.available)||null;
@@ -882,7 +906,7 @@ body.blur-secret .secret{filter:blur(7px);-webkit-user-select:none;user-select:n
       var q=zq(r),avg=zavg(r),ltp=+r.last_price||0,val=ltp*q;
       var totPnl=(ltp-avg)*q,totPct=avg?(ltp-avg)/avg*100:0,dayPnl=(r.day_change||0)*q,dayPct=r.day_change_percentage;
       holdTot+=totPnl;holdDay+=dayPnl;curVal+=val;invested+=avg*q;
-      return {sym:r.tradingsymbol,exch:r.exchange||'NSE',qty:q,avg:avg,ltp:ltp,dayPnl:dayPnl,dayPct:dayPct,totPnl:totPnl,totPct:totPct,val:val,isMtf:((r.mtf||{}).quantity||0)>0,mq:(r.mtf||{}).quantity||0,cq:r.collateral_quantity||0};
+      return {sym:r.tradingsymbol,exch:r.exchange||'NSE',qty:q,avg:avg,ltp:ltp,dayPnl:dayPnl,dayPct:dayPct,totPnl:totPnl,totPct:totPct,val:val,inv:avg*q,isMtf:((r.mtf||{}).quantity||0)>0,mq:(r.mtf||{}).quantity||0,cq:r.collateral_quantity||0};
     });
     var posTot=0,posDay=0;
     ACCT.pos=(D.pos||[]).filter(function(r){return r.quantity!==0;}).map(function(r){
@@ -913,8 +937,9 @@ body.blur-secret .secret{filter:blur(7px);-webkit-user-select:none;user-select:n
       kpi('Margin used',zinr(ACCT.used),'deployed',null)+'</div>';
     /* Kite-style tabs (mobile): Holdings | Positions side by side, one section shown at a time.
        Desktop CSS ignores them and keeps both sections stacked. */
-    h+='<div class="ktabs"><button data-sec="hold" class="on">Holdings<span class="cnt">'+ACCT.hold.length+'</span></button>'+
-      '<button data-sec="pos">Positions<span class="cnt">'+ACCT.pos.length+'</span></button></div>';
+    var hlist=holdRows();
+    h+='<div class="ktabs"><button data-sec="hold" class="'+(KSEC==='hold'?'on':'')+'">Holdings<span class="cnt">'+hlist.length+(HOLD_FILT?' / '+ACCT.hold.length:'')+'</span></button>'+
+      '<button data-sec="pos" class="'+(KSEC==='pos'?'on':'')+'">Positions<span class="cnt">'+ACCT.pos.length+'</span></button></div>';
     if(ACCT.pos.length){
       var prows=sortRows(ACCT.pos,POS_SORT).map(function(r){
         return '<tr data-sy="'+esc(r.sym)+'"><td><span class="nm">'+esc(r.sym)+'</span><span class="xtag">'+esc(r.product)+'</span></td>'+
@@ -935,7 +960,10 @@ body.blur-secret .secret{filter:blur(7px);-webkit-user-select:none;user-select:n
             '<div class="act">'+((r.qty>0 && !/FUT$|CE$|PE$/.test(r.sym))?'<button class="abtn s" data-sell="pos" data-sy="'+esc(r.sym)+'">S</button>':'')+'</div></div>'+
           '<div class="kfoot"><span class="secret">'+Math.abs(r.qty).toLocaleString('en-IN')+'</span> @ '+r.avg.toFixed(2)+' · LTP '+r.ltp.toFixed(2)+'</div></div>';
       }).join('');
-      h+='<div class="ksec" data-sec="pos"><div class="av-sec">Open positions · '+ACCT.pos.length+'</div><div class="kcards">'+pcards+'</div><div class="atbl-wrap"><table class="atbl postbl"><thead><tr>'+
+      var ptools='<div class="ktools"><span class="tlbl">Sort</span>'+
+        [['pnl','P&L'],['dayPnl','Today'],['ltp','LTP'],['qty','Qty'],['sym','A-Z']]
+          .map(function(c){ return chipSort(c[0],c[1],'pos',POS_SORT); }).join('')+'</div>';
+      h+='<div class="ksec" data-sec="pos"><div class="av-sec">Open positions · '+ACCT.pos.length+'</div>'+ptools+'<div class="kcards">'+pcards+'</div><div class="atbl-wrap"><table class="atbl postbl"><thead><tr>'+
         ths('Contract','sym',POS_SORT)+ths('Qty','qty',POS_SORT)+ths('Avg','avg',POS_SORT)+ths('LTP','ltp',POS_SORT)+ths('Day P&amp;L','dayPnl',POS_SORT)+ths('P&amp;L','pnl',POS_SORT)+'<th></th>'+
         '</tr></thead><tbody>'+prows+'</tbody>'+
         '<tfoot><tr><td>Futures total</td><td></td><td></td><td></td>'+
@@ -944,7 +972,16 @@ body.blur-secret .secret{filter:blur(7px);-webkit-user-select:none;user-select:n
         '<td></td></tr></tfoot></table></div></div>';
     }
     if(ACCT.hold.length){
-      var hrows=sortRows(ACCT.hold,HOLD_SORT).map(function(r){
+      var nMtf=ACCT.hold.filter(function(r){ return (r.mq||0)>0; }).length,
+          nDel=ACCT.hold.filter(function(r){ return (r.qty-(r.mq||0)-(r.cq||0))>0; }).length,
+          nPl =ACCT.hold.filter(function(r){ return (r.cq||0)>0; }).length;
+      var filts=[['','All',ACCT.hold.length],['mtf','MTF',nMtf],['del','Delivery',nDel],['pl','Pledged',nPl]]
+        .filter(function(f){ return f[2]>0; })
+        .map(function(f){ return '<button data-filt="'+f[0]+'" class="'+(HOLD_FILT===f[0]?'on':'')+'">'+f[1]+' '+f[2]+'</button>'; }).join('');
+      var sorts=[['totPnl','P&L'],['totPct','P&L %'],['dayPct','% Chg'],['val','Value'],['inv','Invested'],['ltp','LTP'],['sym','A-Z']]
+        .map(function(c){ return chipSort(c[0],c[1],'hold',HOLD_SORT); }).join('');
+      var htools='<div class="ktools">'+filts+'</div><div class="ktools"><span class="tlbl">Sort</span>'+sorts+'</div>';
+      var hrows=sortRows(hlist,HOLD_SORT).map(function(r){
         return '<tr data-sy="'+esc(r.sym)+'"><td><span class="nm">'+esc(r.sym)+'</span>'+(r.isMtf?'<span class="xtag">MTF</span>':'')+'</td>'+
           '<td class="secret">'+r.qty.toLocaleString('en-IN')+'</td><td>₹'+r.avg.toFixed(2)+'</td><td>₹'+r.ltp.toFixed(2)+'</td>'+
           '<td class="secret '+(r.dayPnl>=0?'up':'down')+'">'+inrSigned(r.dayPnl)+'<div class="sub '+((r.dayPct||0)>=0?'up':'down')+'">'+(r.dayPct==null?'':signed(r.dayPct))+'</div></td>'+
@@ -952,7 +989,7 @@ body.blur-secret .secret{filter:blur(7px);-webkit-user-select:none;user-select:n
           '<td class="secret">'+zinr(r.val)+'</td>'+
           '<td><button class="abtn s" data-sell="hold" data-sy="'+esc(r.sym)+'" title="Sell this holding at market">S</button></td></tr>';
       }).join('');
-      var hcards=sortRows(ACCT.hold,HOLD_SORT).map(function(r){
+      var hcards=sortRows(hlist,HOLD_SORT).map(function(r){
         var cnc=r.qty-(r.mq||0);
         /* a fully-MTF holding has no delivery leg — show the MTF quantity as THE quantity with an
            MTF chip, instead of a meaningless "Qty. 0" followed by the real number (2026-08-31). */
@@ -970,14 +1007,14 @@ body.blur-secret .secret{filter:blur(7px);-webkit-user-select:none;user-select:n
             '<div class="act"><button class="abtn s" data-sell="hold" data-sy="'+esc(r.sym)+'">S</button></div></div>'+
           '<div class="kfoot">'+qtyBit+' @ '+r.avg.toFixed(2)+' · LTP '+r.ltp.toFixed(2)+' · <span class="secret">'+zinr(r.val)+'</span></div></div>';
       }).join('');
-      h+='<div class="ksec" data-sec="hold"><div class="av-sec">Holdings · '+ACCT.hold.length+'</div><div class="kcards">'+hcards+'</div><div class="atbl-wrap"><table class="atbl holdtbl"><thead><tr>'+
+      h+='<div class="ksec" data-sec="hold"><div class="av-sec">Holdings · '+hlist.length+(HOLD_FILT?' of '+ACCT.hold.length:'')+'</div>'+htools+'<div class="kcards">'+hcards+'</div><div class="atbl-wrap"><table class="atbl holdtbl"><thead><tr>'+
         ths('Stock','sym',HOLD_SORT)+ths('Qty','qty',HOLD_SORT)+ths('Avg','avg',HOLD_SORT)+ths('LTP','ltp',HOLD_SORT)+ths2("Day's P&amp;L",'dayPnl','dayPct',HOLD_SORT)+ths2('Total P&amp;L','totPnl','totPct',HOLD_SORT)+ths('Value','val',HOLD_SORT)+'<th></th>'+
         '</tr></thead><tbody>'+hrows+'</tbody><tfoot><tr><td>Total</td><td></td><td></td><td></td><td class="secret '+(ACCT.holdDay>=0?'up':'down')+'">'+inrSigned(ACCT.holdDay)+'</td><td class="secret '+(ACCT.holdTot>=0?'up':'down')+'">'+inrSigned(ACCT.holdTot)+'</td><td class="secret">'+zinr(ACCT.curVal)+'</td><td></td></tr></tfoot></table></div></div>';
     }
     if(!ACCT.pos.length && !ACCT.hold.length) h+='<div class="acct-msg">No open positions or holdings.</div>';
     h+='<div class="kdppl"><span>Day&#39;s P&amp;L</span><span class="secret '+(acctDay>=0?'up':'down')+'">'+inrSigned(acctDay)+' <span style="font-weight:600">'+signed(dayPctAll)+'</span></span></div>';
     document.getElementById('acctView').innerHTML=h;
-    var sec0=document.querySelector('.ksec[data-sec="hold"]')||document.querySelector('.ksec[data-sec]');
+    var sec0=document.querySelector('.ksec[data-sec="'+KSEC+'"]')||document.querySelector('.ksec[data-sec]');
     if(sec0) sec0.classList.add('on');
     /* The 30s account poll rebuilds this HTML, which used to orphan a running slicer's button —
        progress showed 1/9 then "disappeared" while the slices kept firing underneath (2026-08-31).
@@ -1237,10 +1274,18 @@ body.blur-secret .secret{filter:blur(7px);-webkit-user-select:none;user-select:n
     slicerFire(sym);
   }
     document.getElementById('acctView').addEventListener('click',function(e){
-    var tb=e.target.closest('.ktabs [data-sec]'); if(!tb) return;
-    e.stopPropagation();
-    document.querySelectorAll('.ktabs [data-sec]').forEach(function(b){ b.classList.toggle('on',b===tb); });
-    document.querySelectorAll('.ksec[data-sec]').forEach(function(x){ x.classList.toggle('on',x.dataset.sec===tb.dataset.sec); });
+    var tb=e.target.closest('.ktabs [data-sec]');
+    if(tb){ e.stopPropagation(); KSEC=tb.dataset.sec;
+      document.querySelectorAll('.ktabs [data-sec]').forEach(function(b){ b.classList.toggle('on',b===tb); });
+      document.querySelectorAll('.ksec[data-sec]').forEach(function(x){ x.classList.toggle('on',x.dataset.sec===KSEC); });
+      return; }
+    var so=e.target.closest('.ktools [data-sort]');
+    if(so){ e.stopPropagation();
+      var st=(so.dataset.for==='pos')?POS_SORT:HOLD_SORT, c=so.dataset.sort;
+      if(st.col===c) st.dir=-st.dir; else { st.col=c; st.dir=(c==='sym')?1:-1; }   // names A→Z, numbers big→small
+      renderAcctView(); return; }
+    var fi=e.target.closest('.ktools [data-filt]');
+    if(fi){ e.stopPropagation(); HOLD_FILT=fi.dataset.filt; renderAcctView(); return; }
   });
   document.getElementById('acctView').addEventListener('change',function(e){
     if(e.target.id==='slLakh'){ var v=parseFloat(e.target.value); if(v>0){ try{ localStorage.setItem('sw_sell_slice_lakh',String(v)); }catch(e2){} ktoast('Sell slices: ≤₹'+v+'L each'); } }
