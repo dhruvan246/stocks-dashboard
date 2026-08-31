@@ -868,37 +868,9 @@ body.blur-secret .secret{filter:blur(7px);-webkit-user-select:none;user-select:n
     else { h+='<p class="cmsg">Ready to connect. One login covers every device until 6&nbsp;AM tomorrow.</p><button class="cbtn" data-act="login">Login to Zerodha ▸</button><div class="cedit"><a href="#" data-act="needkey">api key ✎</a> · <a href="#" data-act="editworker">worker ✎</a></div>'; }
     av.innerHTML=h+'</div>';
   }
-  /* LIVE prices for the account view. Kite's /portfolio/holdings carries a `last_price`, but it
-     is a slow SNAPSHOT: two reads 9s apart in a live market returned identical prices while an
-     independent feed sat 0.5% away (measured 2026-08-31) — which is why the numbers looked
-     frozen no matter how fast we polled. True prices come from Kite's quote endpoint, relayed by
-     the worker as /ltp. If the worker has no /ltp route yet, this quietly leaves the snapshot
-     prices in place, so the page is never worse off than before. */
-  var LTPMAP={}, LTP_ROUTE=null;   // null = untested, true = worker has /ltp, false = fall back to the quotes worker
-  function fetchLtps(syms){
-    syms=syms.filter(Boolean).filter(function(v,i,a){ return a.indexOf(v)===i; });
-    if(!syms.length) return Promise.resolve();
-    /* Preferred: the kite worker's /ltp relay (tick-exact). Until that route is deployed it 404s
-       once, we remember, and every refresh prices off the site's quotes worker instead — near-live
-       (seconds behind at worst) and already serving the rest of the site. Either way the holdings
-       stop being priced off Kite's frozen portfolio snapshot. */
-    var viaQuotes=function(){
-      return fetch(workerUrl()+'/?symbols='+encodeURIComponent(syms.join(',')),{cache:'no-store'})
-        .then(function(r){return r.json();})
-        .then(function(d){ var m=(d&&d.data)||{}; for(var k in m){ if(m[k]&&m[k].ltp!=null) LTPMAP[k]=+m[k].ltp; } })
-        .catch(function(){});
-    };
-    if(LTP_ROUTE===false) return viaQuotes();
-    return acctFetch('/ltp?i='+encodeURIComponent(syms.join(','))).then(function(r){
-      if(r.st===200 && r.j && r.j.data){ LTP_ROUTE=true;
-        var d=r.j.data; for(var k in d){ var sy=k.split(':').pop(); if(d[k]&&d[k].last_price!=null) LTPMAP[sy]=+d[k].last_price; } return; }
-      /* 404 = route not deployed; PermissionException = the API key has no market-quote
-         subscription (measured 2026-08-31 — Zerodha sells quotes as a paid add-on). Both are
-         permanent for this session: remember, stop probing, price off the quotes worker. */
-      if(r.st===404 || r.st===403 || (r.j&&(r.j.error||r.j.error_type))) LTP_ROUTE=false;
-      return viaQuotes();
-    }).catch(function(){ return viaQuotes(); });
-  }
+  /* The account view prices off ZERODHA'S OWN last_price / day_change (matches the Kite app to
+     the rupee). A Yahoo LTP overlay was tried 2026-08-31 and reverted — Yahoo NSE is ~15 min
+     delayed, so it showed staler prices than Zerodha AND broke the match with the app. */
   function renderAcct(quiet){
     if(!pfToken()){ connectSetup('token'); return; }
     if(!zWorkerUrl()){ connectSetup('login'); return; }
@@ -910,9 +882,7 @@ body.blur-secret .secret{filter:blur(7px);-webkit-user-select:none;user-select:n
       Promise.all([acctFetch('/holdings'),acctFetch('/positions'),acctFetch('/margins')]).then(function(res){
         var h=res[0],p=res[1],m=res[2];
         if([h,p,m].some(function(x){return x.st===403;})){ ACCT.connected=false; connectSetup('login'); return; }
-        var H2=(h.j&&h.j.data)||[], P2=(p.j&&p.j.data&&p.j.data.net)||[];
-        fetchLtps(H2.map(function(x){return x.tradingsymbol;}).concat(P2.map(function(x){return x.tradingsymbol;})))
-          .then(function(){ drawAcct({ user:s.j.user, hold:H2, pos:P2, marg:(m.j&&m.j.data)||null }); });
+        drawAcct({ user:s.j.user, hold:(h.j&&h.j.data)||[], pos:(p.j&&p.j.data&&p.j.data.net)||[], marg:(m.j&&m.j.data)||null });
       });
     });
   }
@@ -942,11 +912,11 @@ body.blur-secret .secret{filter:blur(7px);-webkit-user-select:none;user-select:n
     var holdTot=0,holdDay=0,curVal=0,invested=0;
     ACCT.hold=(D.hold||[]).filter(function(r){return zq(r)>0;}).map(function(r){
       var q=zq(r),avg=zavg(r);
-      var ltp=(LTPMAP[r.tradingsymbol]!=null?LTPMAP[r.tradingsymbol]:(+r.last_price||0)),val=ltp*q;
-      var prev=+r.close_price||0;   // yesterday's close — lets the day move follow the live price
+      var ltp=+r.last_price||0,val=ltp*q;
+      /* total is (ltp-avg)*q, NOT Zerodha's `pnl` field — that field mis-reports a freshly-bought
+         MTF holding as ~0 (PINELABS showed pnl=-3 for a real -2.35L on 2026-08-31). */
       var totPnl=(ltp-avg)*q,totPct=avg?(ltp-avg)/avg*100:0,
-          dayPnl=prev?(ltp-prev)*q:(r.day_change||0)*q,
-          dayPct=prev?(ltp/prev-1)*100:r.day_change_percentage;
+          dayPnl=(r.day_change||0)*q,dayPct=r.day_change_percentage;
       holdTot+=totPnl;holdDay+=dayPnl;curVal+=val;invested+=avg*q;
       return {sym:r.tradingsymbol,exch:r.exchange||'NSE',qty:q,avg:avg,ltp:ltp,dayPnl:dayPnl,dayPct:dayPct,totPnl:totPnl,totPct:totPct,val:val,inv:avg*q,isMtf:((r.mtf||{}).quantity||0)>0,mq:(r.mtf||{}).quantity||0,cq:r.collateral_quantity||0};
     });
@@ -954,9 +924,11 @@ body.blur-secret .secret{filter:blur(7px);-webkit-user-select:none;user-select:n
     ACCT.pos=(D.pos||[]).filter(function(r){return r.quantity!==0;}).map(function(r){
       var pnl=+r.pnl||0,m2m=(r.m2m!=null?+r.m2m:null); posTot+=pnl; posDay+=(m2m||0);
       return {sym:r.tradingsymbol,exch:r.exchange||'NSE',product:r.product||'',qty:r.quantity,avg:+r.average_price||0,
-        ltp:(LTPMAP[r.tradingsymbol]!=null?LTPMAP[r.tradingsymbol]:(+r.last_price||0)),dayPnl:m2m,pnl:pnl};
+        ltp:+r.last_price||0,dayPnl:m2m,pnl:pnl};
     });
-    ACCT.holdTot=holdTot;ACCT.holdDay=holdDay;ACCT.curVal=curVal;ACCT.invested=invested;ACCT.posTot=posTot;ACCT.posDay=posDay;
+    var posFutDay=0,posFutTot=0;   // derivative legs only — the 'Futures total' row
+    ACCT.pos.forEach(function(r){ if(r.exch==='NFO'||/FUT$|CE$|PE$/.test(r.sym)){ posFutDay+=(r.dayPnl||0); posFutTot+=(r.pnl||0); } });
+    ACCT.holdTot=holdTot;ACCT.holdDay=holdDay;ACCT.curVal=curVal;ACCT.invested=invested;ACCT.posTot=posTot;ACCT.posDay=posDay;ACCT.posFutDay=posFutDay;ACCT.posFutTot=posFutTot;
     renderAcctView();
   }
   function sortRows(rows,st){ var c=st.col,d=st.dir; return rows.slice().sort(function(a,b){ var x=a[c],y=b[c];
@@ -1010,9 +982,14 @@ body.blur-secret .secret{filter:blur(7px);-webkit-user-select:none;user-select:n
         ths('Contract','sym',POS_SORT)+ths('Qty','qty',POS_SORT)+ths('Avg','avg',POS_SORT)+ths('LTP','ltp',POS_SORT)+ths('Day P&amp;L','dayPnl',POS_SORT)+ths('P&amp;L','pnl',POS_SORT)+'<th></th>'+
         '</tr></thead><tbody>'+prows+'</tbody>'+
         '<tfoot><tr><td>Futures total</td><td></td><td></td><td></td>'+
-        '<td class="secret '+(ACCT.posDay>=0?'up':'down')+'">'+inrSigned(ACCT.posDay)+'</td>'+
-        '<td class="secret '+(ACCT.posTot>=0?'up':'down')+'">'+inrSigned(ACCT.posTot)+'</td>'+
-        '<td></td></tr></tfoot></table></div></div>';
+        '<td class="secret '+(ACCT.posFutDay>=0?'up':'down')+'">'+inrSigned(ACCT.posFutDay)+'</td>'+
+        '<td class="secret '+(ACCT.posFutTot>=0?'up':'down')+'">'+inrSigned(ACCT.posFutTot)+'</td>'+
+        '<td></td></tr>'+
+        ((Math.abs(ACCT.posDay-ACCT.posFutDay)>1||Math.abs(ACCT.posTot-ACCT.posFutTot)>1)?
+          '<tr><td>All positions</td><td></td><td></td><td></td>'+
+          '<td class="secret '+(ACCT.posDay>=0?'up':'down')+'">'+inrSigned(ACCT.posDay)+'</td>'+
+          '<td class="secret '+(ACCT.posTot>=0?'up':'down')+'">'+inrSigned(ACCT.posTot)+'</td><td></td></tr>':'')+
+        '</tfoot></table></div></div>';
     }
     if(ACCT.hold.length){
       var nMtf=ACCT.hold.filter(function(r){ return (r.mq||0)>0; }).length,
@@ -1419,9 +1396,7 @@ body.blur-secret .secret{filter:blur(7px);-webkit-user-select:none;user-select:n
       if([hh,pp,mm].some(function(x){return x.st===403;})){ ACCT.connected=false; renderAcct(false); return; }
       if(hh.st!==200 || pp.st!==200) return;                              // transient blip — next tick
       if(document.querySelector('[data-sell][data-arm="1"]')) return;     // don't wipe an armed confirm
-      var H=(hh.j&&hh.j.data)||[], P=(pp.j&&pp.j.data&&pp.j.data.net)||[];
-      fetchLtps(H.map(function(x){return x.tradingsymbol;}).concat(P.map(function(x){return x.tradingsymbol;})))
-        .then(function(){ drawAcct({ user:ACCT.user, hold:H, pos:P, marg:(mm.j&&mm.j.data)||null }); });
+      drawAcct({ user:ACCT.user, hold:(hh.j&&hh.j.data)||[], pos:(pp.j&&pp.j.data&&pp.j.data.net)||[], marg:(mm.j&&mm.j.data)||null });
     }).catch(function(){ ACCT_BUSY=false; });
   }
   var FASTPOLL=setInterval(refreshAcctFast,4000);
