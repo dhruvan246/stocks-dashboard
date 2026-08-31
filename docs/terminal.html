@@ -559,6 +559,7 @@ body.blur-secret .secret{filter:blur(7px);-webkit-user-select:none;user-select:n
     document.getElementById('liveTxt').textContent=txt;
   }
   function istTime(ms){ var d=new Date((ms||Date.now())+330*60000); var p=function(n){return String(n).padStart(2,'0');}; return p(d.getUTCHours())+':'+p(d.getUTCMinutes()); }
+  function istTimeSec(ms){ var d=new Date((ms||Date.now())+330*60000); var p=function(n){return String(n).padStart(2,'0');}; return p(d.getUTCHours())+':'+p(d.getUTCMinutes())+':'+p(d.getUTCSeconds()); }
 
   /* ---------------- indices (direct NSE CDN, CORS-open) ---------------- */
   var IDX_WANT=[["NIFTY 50","NIFTY 50"],["NIFTY BANK","BANK NIFTY"],["NIFTY FINANCIAL SERVICES","FINNIFTY"],["NIFTY 500","NIFTY 500"],["NIFTY NEXT 50","NIFTY NEXT 50"],["INDIA VIX","INDIA VIX"],["NIFTY IT","NIFTY IT"]];
@@ -932,7 +933,7 @@ body.blur-secret .secret{filter:blur(7px);-webkit-user-select:none;user-select:n
     if(!ACCT.user) return;
     var acctDay=ACCT.holdDay+ACCT.posDay, acctTot=ACCT.holdTot+ACCT.posTot;
     var dayPctAll=(ACCT.curVal-ACCT.holdDay)?ACCT.holdDay/(ACCT.curVal-ACCT.holdDay)*100:0, totPctAll=ACCT.invested?ACCT.holdTot/ACCT.invested*100:0;
-    var h='<div class="av-head"><span class="av-title">Your Zerodha account</span><span class="livetag">● '+esc(ACCT.user)+'</span><span class="av-upd">'+(mktOpenIST()?'<span class="livetag">● LIVE</span> · ':'')+'slice ₹<input id="slLakh" value="'+sliceLakh()+'" style="width:34px;text-align:right;border:1px solid var(--border);border-radius:5px;background:transparent;color:inherit;font:inherit;padding:1px 3px">L · gap <input id="slGap" value="'+sliceGap()+'" style="width:28px;text-align:right;border:1px solid var(--border);border-radius:5px;background:transparent;color:inherit;font:inherit;padding:1px 3px">s · rng <input id="slRng" value="'+sliceRng()+'" style="width:30px;text-align:right;border:1px solid var(--border);border-radius:5px;background:transparent;color:inherit;font:inherit;padding:1px 3px">% · as of '+istTime(Date.now())+' · <a href="#" data-act="logout">logout</a></span></div>';
+    var h='<div class="av-head"><span class="av-title">Your Zerodha account</span><span class="livetag">● '+esc(ACCT.user)+'</span><span class="av-upd">'+(mktOpenIST()?'<span class="livetag">● LIVE</span> · ':'')+'slice ₹<input id="slLakh" value="'+sliceLakh()+'" style="width:34px;text-align:right;border:1px solid var(--border);border-radius:5px;background:transparent;color:inherit;font:inherit;padding:1px 3px">L · gap <input id="slGap" value="'+sliceGap()+'" style="width:28px;text-align:right;border:1px solid var(--border);border-radius:5px;background:transparent;color:inherit;font:inherit;padding:1px 3px">s · rng <input id="slRng" value="'+sliceRng()+'" style="width:30px;text-align:right;border:1px solid var(--border);border-radius:5px;background:transparent;color:inherit;font:inherit;padding:1px 3px">% · updated '+istTimeSec(Date.now())+' · <a href="#" data-act="logout">logout</a></span></div>';
     h+='<div class="av-kpis">'+
       kpi("Day's P&L",inrSigned(acctDay),signed(dayPctAll),acctDay>=0)+
       kpi('Total P&L',inrSigned(acctTot),signed(totPctAll),acctTot>=0)+
@@ -1365,12 +1366,15 @@ body.blur-secret .secret{filter:blur(7px);-webkit-user-select:none;user-select:n
      4s is ~0.75/s against Kite's 10/s ceiling. Two paint guards keep it out of your way: nothing
      repaints while a sell button sits ARMED (that would wipe the ✓? before you confirm), and a
      hidden tab doesn't poll at all. The 30s loop still drives quotes, indices and the orders. */
-  var ACCT_BUSY=false;
+  var ACCT_BUSY=false, ACCT_BUSY_AT=0;
   function mktOpenIST(){ var d=new Date(Date.now()+330*60000), dw=d.getUTCDay(), t=d.getUTCHours()*60+d.getUTCMinutes();
     return dw>=1 && dw<=5 && t>=555 && t<=935; }   // Mon-Fri 09:15-15:35 IST
   function refreshAcctFast(){
-    if(!ACCT.connected || ACCT_BUSY || document.hidden || VIEW!=='account') return;
-    ACCT_BUSY=true;
+    if(!ACCT.connected || document.hidden || VIEW!=='account') return;
+    /* a request that never settles used to latch ACCT_BUSY and stop the loop for good — after
+       12s assume it is gone and start a fresh cycle (2026-08-31: the clock froze at 15:22). */
+    if(ACCT_BUSY && Date.now()-ACCT_BUSY_AT < 12000) return;
+    ACCT_BUSY=true; ACCT_BUSY_AT=Date.now();
     Promise.all([acctFetch('/holdings'),acctFetch('/positions'),acctFetch('/margins')]).then(function(res){
       ACCT_BUSY=false;
       var hh=res[0],pp=res[1],mm=res[2];
@@ -1381,7 +1385,7 @@ body.blur-secret .secret{filter:blur(7px);-webkit-user-select:none;user-select:n
     }).catch(function(){ ACCT_BUSY=false; });
   }
   var FASTPOLL=setInterval(refreshAcctFast,4000);
-  var POLL=setInterval(function(){ if(document.hidden) return; fetchQuotes(); fetchIndices(); if(ACCT.connected){ if(VIEW!=='account') renderAcct(true); if(VIEW==='orders') renderOrders(true); } },30000);
+  var POLL=setInterval(function(){ if(document.hidden) return; fetchQuotes(); fetchIndices(); if(ACCT.connected){ renderAcct(true); if(VIEW==='orders') renderOrders(true); } },30000);   // safety net: never let the account go stale if the 4s loop stalls
   document.addEventListener('visibilitychange',function(){ if(!document.hidden){ fetchQuotes(); fetchIndices(); refreshAcctFast(); if(VIEW!=='account') renderAcct(true); if(VIEW==='orders') renderOrders(true); } });
 })();
 </script>
