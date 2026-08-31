@@ -998,7 +998,7 @@ body.blur-secret .secret{filter:blur(7px);-webkit-user-select:none;user-select:n
   var SELLROW={t:0,btn:null};
   var SLICER={};   // sym -> {slices:[], i, n, btn, t, sold}
   function sliceLakh(){ var v=parseFloat(localStorage.getItem('sw_sell_slice_lakh'))||25; return v>0?v:25; }
-  function sliceGap(){ var v=parseInt(localStorage.getItem('sw_sell_gap_s'),10); return (v>=3&&v<=600)?v:20; }
+  function sliceGap(){ var v=parseInt(localStorage.getItem('sw_sell_gap_s'),10); return (v>=3&&v<=900)?v:150; }   // default 2.5 min between slices (user: '20s too short, take 2-3 mins')
   function rowSellOrders(kind,sym){
     var out=[];
     if(kind==='pos'){ ACCT.pos.forEach(function(r){ if(r.sym===sym && r.qty>0)
