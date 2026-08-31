@@ -848,7 +848,7 @@ body.blur-secret .secret{filter:blur(7px);-webkit-user-select:none;user-select:n
     if(!ACCT.user) return;
     var acctDay=ACCT.holdDay+ACCT.posDay, acctTot=ACCT.holdTot+ACCT.posTot;
     var dayPctAll=(ACCT.curVal-ACCT.holdDay)?ACCT.holdDay/(ACCT.curVal-ACCT.holdDay)*100:0, totPctAll=ACCT.invested?ACCT.holdTot/ACCT.invested*100:0;
-    var h='<div class="av-head"><span class="av-title">Your Zerodha account</span><span class="livetag">● '+esc(ACCT.user)+'</span><span class="av-upd">slice ₹<input id="slLakh" value="'+sliceLakh()+'" style="width:34px;text-align:right;border:1px solid var(--border);border-radius:5px;background:transparent;color:inherit;font:inherit;padding:1px 3px">L · gap <input id="slGap" value="'+sliceGap()+'" style="width:28px;text-align:right;border:1px solid var(--border);border-radius:5px;background:transparent;color:inherit;font:inherit;padding:1px 3px">s · as of '+istTime(Date.now())+' · <a href="#" data-act="logout">logout</a></span></div>';
+    var h='<div class="av-head"><span class="av-title">Your Zerodha account</span><span class="livetag">● '+esc(ACCT.user)+'</span><span class="av-upd">slice ₹<input id="slLakh" value="'+sliceLakh()+'" style="width:34px;text-align:right;border:1px solid var(--border);border-radius:5px;background:transparent;color:inherit;font:inherit;padding:1px 3px">L · gap <input id="slGap" value="'+sliceGap()+'" style="width:28px;text-align:right;border:1px solid var(--border);border-radius:5px;background:transparent;color:inherit;font:inherit;padding:1px 3px">s · rng <input id="slRng" value="'+sliceRng()+'" style="width:30px;text-align:right;border:1px solid var(--border);border-radius:5px;background:transparent;color:inherit;font:inherit;padding:1px 3px">% · as of '+istTime(Date.now())+' · <a href="#" data-act="logout">logout</a></span></div>';
     h+='<div class="av-kpis">'+
       kpi("Day's P&L",inrSigned(acctDay),signed(dayPctAll),acctDay>=0)+
       kpi('Total P&L',inrSigned(acctTot),signed(totPctAll),acctTot>=0)+
@@ -999,6 +999,20 @@ body.blur-secret .secret{filter:blur(7px);-webkit-user-select:none;user-select:n
   var SLICER={};   // sym -> {slices:[], i, n, btn, t, sold}
   function sliceLakh(){ var v=parseFloat(localStorage.getItem('sw_sell_slice_lakh'))||25; return v>0?v:25; }
   function sliceGap(){ var v=parseInt(localStorage.getItem('sw_sell_gap_s'),10); return (v>=3&&v<=900)?v:150; }   // default 2.5 min between slices (user: '20s too short, take 2-3 mins')
+  /* Slippage band (user 2026-08-31: "0.5% range so market orders dont give high slippage"):
+     each slice goes as a LIMIT at (live price − rng%) — fills like a market order against the
+     book but can never fill below the band; an unfilled tail RESTS at the limit (see Orders)
+     instead of walking the book. rng=0 falls back to a plain market order. The live price is
+     re-fetched per slice (a 25-min slicer can't price off the row's stale ltp). */
+  function sliceRng(){ var v=parseFloat(localStorage.getItem('sw_sell_rng_pct')); return (v>=0&&v<=5)?v:0.5; }
+  function tickFor(px){ return px<250?0.01:0.05; }   // NSE price-banded ticks (2024 reform); 0.05 stays valid on BSE
+  function sellLimitPx(px){ var t=tickFor(px); return Math.max(t,+((Math.floor(px*(1-sliceRng()/100)/t))*t).toFixed(2)); }
+  function freshLtp(sym){
+    return fetch(workerUrl()+'/?symbols='+encodeURIComponent(sym),{cache:'no-store'})
+      .then(function(r){return r.json();})
+      .then(function(d){ var q=d&&d.data&&d.data[sym]; return (q&&q.ltp!=null)?+q.ltp:null; })
+      .catch(function(){ return null; });
+  }
   function rowSellOrders(kind,sym){
     var out=[];
     if(kind==='pos'){ ACCT.pos.forEach(function(r){ if(r.sym===sym && r.qty>0)
@@ -1015,7 +1029,7 @@ body.blur-secret .secret{filter:blur(7px);-webkit-user-select:none;user-select:n
     buckets.forEach(function(b){
       var per=b.ltp>0?Math.max(1,Math.floor(cap/b.ltp)):b.qty, q=b.qty;
       while(q>0){ var take=Math.min(per,q); q-=take;
-        slices.push(Object.assign({},b.o,{quantity:take})); }
+        slices.push(Object.assign({},b.o,{quantity:take,_px:b.ltp})); }
     });
     return slices;
   }
@@ -1028,14 +1042,17 @@ body.blur-secret .secret{filter:blur(7px);-webkit-user-select:none;user-select:n
   }
   function slicerFire(sym){
     var S=SLICER[sym]; if(!S) return;
-    if(S.i>=S.slices.length){ slicerStop(sym,sym+': all '+S.n+' slices sent · '+S.sold.toLocaleString('en-IN')+' qty'); return; }
-    var o=S.slices[S.i];
+    if(S.i>=S.slices.length){ slicerStop(sym,sym+': all '+S.n+' slices sent · '+S.sold.toLocaleString('en-IN')+' qty — any unfilled tail rests at its limit (Orders)'); return; }
+    var o0=S.slices[S.i];
+    freshLtp(o0.tradingsymbol).then(function(ltp){
+    var px=(ltp||o0._px||0), o=Object.assign({},o0); delete o._px;
+    if(sliceRng()>0 && px>0){ o.order_type='LIMIT'; o.price=sellLimitPx(px); }
     acctFetch('/order',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify(o)}).then(function(res){
       var st=res.st,j=res.j,msg=(j&&j.message)||('HTTP '+st);
       if(st===200&&j&&j.data&&j.data.order_id){
         S.i++; S.sold+=o.quantity;
         if(S.btn) S.btn.textContent=S.i+'/'+S.n;
-        if(S.i>=S.slices.length){ slicerStop(sym,sym+': all '+S.n+' slices sent · '+S.sold.toLocaleString('en-IN')+' qty'); }
+        if(S.i>=S.slices.length){ slicerStop(sym,sym+': all '+S.n+' slices sent · '+S.sold.toLocaleString('en-IN')+' qty — any unfilled tail rests at its limit (Orders)'); }
         else S.t=setTimeout(function(){ slicerFire(sym); },sliceGap()*1000);
       }
       else if(ipBlocked(msg)||st===0){ ACCT.directBlocked=true;
@@ -1046,6 +1063,7 @@ body.blur-secret .secret{filter:blur(7px);-webkit-user-select:none;user-select:n
       }
       else if(st===403){ slicerStop(sym,'Zerodha session expired — log in again'); ACCT.connected=false; }
       else { slicerStop(sym,sym+' slice refused: '+msg+' · stopped after '+S.i+'/'+S.n); }
+    });
     });
   }
   function rowSellDisarm(){ if(SELLROW.btn && !SLICER[(SELLROW.btn.dataset.sy||'')]){ SELLROW.btn.dataset.arm=''; SELLROW.btn.textContent='S'; } SELLROW.btn=null; }
@@ -1058,7 +1076,7 @@ body.blur-secret .secret{filter:blur(7px);-webkit-user-select:none;user-select:n
       rowSellDisarm();
       btn.dataset.arm='1'; btn.textContent='✓?'; SELLROW.btn=btn;
       ktoast(slices.length>1
-        ? ('Tap ✓? again: SELL '+qty.toLocaleString('en-IN')+' '+sym+' in '+slices.length+' market slices of ≤₹'+sliceLakh()+'L, '+sliceGap()+'s apart — keep this tab open; tap again mid-run to stop')
+        ? ('Tap ✓? again: SELL '+qty.toLocaleString('en-IN')+' '+sym+' in '+slices.length+' slices of ≤₹'+sliceLakh()+'L every '+sliceGap()+'s, each a limit ≤'+sliceRng()+'% below live — keep this tab open; tap again mid-run to stop')
         : ('Tap ✓? again to SELL '+qty.toLocaleString('en-IN')+' '+sym+' at market'),5200);
       clearTimeout(SELLROW.t); SELLROW.t=setTimeout(rowSellDisarm,7000); return;
     }
@@ -1074,6 +1092,7 @@ body.blur-secret .secret{filter:blur(7px);-webkit-user-select:none;user-select:n
     document.getElementById('acctView').addEventListener('change',function(e){
     if(e.target.id==='slLakh'){ var v=parseFloat(e.target.value); if(v>0){ try{ localStorage.setItem('sw_sell_slice_lakh',String(v)); }catch(e2){} ktoast('Sell slices: ≤₹'+v+'L each'); } }
     if(e.target.id==='slGap'){ var g=parseInt(e.target.value,10); if(g>=3&&g<=600){ try{ localStorage.setItem('sw_sell_gap_s',String(g)); }catch(e2){} ktoast('Sell slices: '+g+'s apart'); } }
+    if(e.target.id==='slRng'){ var p=parseFloat(e.target.value); if(p>=0&&p<=5){ try{ localStorage.setItem('sw_sell_rng_pct',String(p)); }catch(e2){} ktoast(p>0?('Slices go as limits ≤'+p+'% below live'):'Slices go as plain market orders'); } }
   });
   document.getElementById('acctView').addEventListener('click',function(e){
     var ca=e.target.closest('[data-act]');
@@ -1090,7 +1109,7 @@ body.blur-secret .secret{filter:blur(7px);-webkit-user-select:none;user-select:n
       else if(act==='retry'){ renderAcct(false); }
       else if(act==='logout'){ zLogout(); }
       return; }
-    if(e.target.id==='slLakh'||e.target.id==='slGap'){ e.stopPropagation(); return; }
+    if(e.target.id==='slLakh'||e.target.id==='slGap'||e.target.id==='slRng'){ e.stopPropagation(); return; }
     var sb=e.target.closest('[data-sell]');
     if(sb){ e.preventDefault(); e.stopPropagation(); rowSell(sb.dataset.sell,sb.dataset.sy,sb); return; }
     var thEl=e.target.closest('[data-col]');
