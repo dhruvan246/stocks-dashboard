@@ -892,7 +892,10 @@ body.blur-secret .secret{filter:blur(7px);-webkit-user-select:none;user-select:n
     return acctFetch('/ltp?i='+encodeURIComponent(syms.join(','))).then(function(r){
       if(r.st===200 && r.j && r.j.data){ LTP_ROUTE=true;
         var d=r.j.data; for(var k in d){ var sy=k.split(':').pop(); if(d[k]&&d[k].last_price!=null) LTPMAP[sy]=+d[k].last_price; } return; }
-      if(r.st===404 || (r.j&&r.j.error)) LTP_ROUTE=false;
+      /* 404 = route not deployed; PermissionException = the API key has no market-quote
+         subscription (measured 2026-08-31 — Zerodha sells quotes as a paid add-on). Both are
+         permanent for this session: remember, stop probing, price off the quotes worker. */
+      if(r.st===404 || r.st===403 || (r.j&&(r.j.error||r.j.error_type))) LTP_ROUTE=false;
       return viaQuotes();
     }).catch(function(){ return viaQuotes(); });
   }
