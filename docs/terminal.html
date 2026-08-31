@@ -207,6 +207,10 @@ a{color:var(--buy);text-decoration:none}
 .bc-clear{border:1px solid var(--border);background:var(--surface-2);color:var(--text-2);border-radius:8px;padding:0 10px;height:34px;font-weight:700;cursor:pointer}
 #ktoast{position:fixed;left:50%;bottom:24px;transform:translateX(-50%) translateY(10px);z-index:90;background:var(--text);color:var(--bg);font-size:13px;font-weight:600;padding:11px 16px;border-radius:10px;box-shadow:var(--shadow);opacity:0;pointer-events:none;transition:opacity .2s,transform .2s;max-width:90vw;text-align:center}
 #ktoast.show{opacity:1;transform:translateX(-50%) translateY(0)}
+/* Marketwatch removed (user 2026-08-31) — the terminal's job is positions, orders and strategy
+   baskets; the quote list was noise. Hidden via CSS (not cut from the DOM) so every listener the
+   script wires to these nodes stays valid; the launcher cards above them keep the column. */
+.mwtabs,.mwsearch,.mwlist{display:none !important}
 /* positions & funds card (top of marketwatch) */
 .pfcard{margin:10px 12px 4px;border:1px solid var(--border);border-radius:11px;background:var(--surface-2);padding:10px 12px;cursor:pointer;transition:border-color .12s,background .12s}
 .pfcard:hover{border-color:var(--buy)}
