@@ -1005,8 +1005,12 @@ body.blur-secret .secret{filter:blur(7px);-webkit-user-select:none;user-select:n
      instead of walking the book. rng=0 falls back to a plain market order. The live price is
      re-fetched per slice (a 25-min slicer can't price off the row's stale ltp). */
   function sliceRng(){ var v=parseFloat(localStorage.getItem('sw_sell_rng_pct')); return (v>=0&&v<=5)?v:0.5; }
-  function tickFor(px){ return px<250?0.01:0.05; }   // NSE price-banded ticks (2024 reform); 0.05 stays valid on BSE
-  function sellLimitPx(px){ var t=tickFor(px); return Math.max(t,+((Math.floor(px*(1-sliceRng()/100)/t))*t).toFixed(2)); }
+  /* Tick sizes are NOT guessable from price — ASHOKLEY at ₹175 rejected a 0.01-grid limit with
+     "RATE NOT MULTIPLE OF TICK[0.05]" (2026-08-31). Default to the 0.05 grid, and when an
+     exchange rejects a slice naming its tick, LEARN it from the message and retry that slice. */
+  var TICKMEM={};
+  function tickFor(sym){ return TICKMEM[sym]||0.05; }
+  function sellLimitPx(sym,px){ var t=tickFor(sym); return Math.max(t,+((Math.floor(px*(1-sliceRng()/100)/t))*t).toFixed(2)); }
   function freshLtp(sym){
     return fetch(workerUrl()+'/?symbols='+encodeURIComponent(sym),{cache:'no-store'})
       .then(function(r){return r.json();})
@@ -1046,7 +1050,7 @@ body.blur-secret .secret{filter:blur(7px);-webkit-user-select:none;user-select:n
     var o0=S.slices[S.i];
     freshLtp(o0.tradingsymbol).then(function(ltp){
     var px=(ltp||o0._px||0), o=Object.assign({},o0); delete o._px;
-    if(sliceRng()>0 && px>0){ o.order_type='LIMIT'; o.price=sellLimitPx(px); }
+    if(sliceRng()>0 && px>0){ o.order_type='LIMIT'; o.price=sellLimitPx(o.tradingsymbol,px); }
     acctFetch('/order',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify(o)}).then(function(res){
       var st=res.st,j=res.j,msg=(j&&j.message)||('HTTP '+st);
       if(st===200&&j&&j.data&&j.data.order_id){
@@ -1062,7 +1066,12 @@ body.blur-secret .secret{filter:blur(7px);-webkit-user-select:none;user-select:n
         kiteSend(rest.slice(0,10));
       }
       else if(st===403){ slicerStop(sym,'Zerodha session expired — log in again'); ACCT.connected=false; }
-      else { slicerStop(sym,sym+' slice refused: '+msg+' · stopped after '+S.i+'/'+S.n); }
+      else { var tm=/TICK\s*\[\s*([0-9.]+)\s*\]/i.exec(msg||'');
+        if(tm && parseFloat(tm[1])>0 && !o0._tickRetry){
+          TICKMEM[o0.tradingsymbol]=parseFloat(tm[1]); o0._tickRetry=1;
+          ktoast(o0.tradingsymbol+': exchange tick is '+tm[1]+' — re-pricing this slice and retrying',4500);
+          S.t=setTimeout(function(){ slicerFire(sym); },1200); return; }
+        slicerStop(sym,sym+' slice refused: '+msg+' · stopped after '+S.i+'/'+S.n); }
     });
     });
   }
