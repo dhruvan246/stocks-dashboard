@@ -1015,6 +1015,7 @@ body.blur-secret .secret{filter:blur(7px);-webkit-user-select:none;user-select:n
      "RATE NOT MULTIPLE OF TICK[0.05]" (2026-08-31). Default to the 0.05 grid, and when an
      exchange rejects a slice naming its tick, LEARN it from the message and retry that slice. */
   var TICKMEM={};
+  function tickFromMsg(m){ var x=/TICK\s*\[\s*([0-9.]+)\s*\]/i.exec(m||'')||/tick size for this scrip?t is\s*([0-9.]+)/i.exec(m||''); return x?parseFloat(x[1])||0:0; }
   function tickFor(sym){ return TICKMEM[sym]||0.05; }
   function sellLimitPx(sym,px){ var t=tickFor(sym); return Math.max(t,+((Math.floor(px*(1-sliceRng()/100)/t))*t).toFixed(2)); }
   function freshLtp(sym){
@@ -1071,9 +1072,9 @@ body.blur-secret .secret{filter:blur(7px);-webkit-user-select:none;user-select:n
           var row=(ob.j&&ob.j.data||[]).filter(function(x){return x.order_id===oid;}).pop();
           var ost=((row&&row.status)||'').toUpperCase(), omsg=(row&&row.status_message)||'';
           if(ost==='REJECTED'){
-            var tm=/TICK\s*\[\s*([0-9.]+)\s*\]/i.exec(omsg);
-            if(tm && parseFloat(tm[1])>0 && !o0._tickRetry){ TICKMEM[o0.tradingsymbol]=parseFloat(tm[1]); o0._tickRetry=1;
-              ktoast(o0.tradingsymbol+': exchange tick is '+tm[1]+' — re-pricing this slice and retrying',4500);
+            var tk=tickFromMsg(omsg);
+            if(tk>0 && !o0._tickRetry){ TICKMEM[o0.tradingsymbol]=tk; o0._tickRetry=1;
+              ktoast(o0.tradingsymbol+': exchange tick is '+tk+' — re-pricing this slice and retrying',4500);
               S.t=setTimeout(function(){ slicerFire(sym); },1200); return; }
             if(o0._exch2 && !o0._exchRetry && /instrument|symbol|not exist|invalid|scrip/i.test(omsg)){ o0._exchRetry=1;
               var oo=S.slices[S.i]; oo.exchange=o0._exch2;
@@ -1095,7 +1096,11 @@ body.blur-secret .secret{filter:blur(7px);-webkit-user-select:none;user-select:n
         kiteSend(rest.slice(0,10));
       }
       else if(st===403){ slicerStop(sym,'Zerodha session expired — log in again'); ACCT.connected=false; }
-      else { slicerStop(sym,sym+' slice refused by Zerodha: '+msg+' · stopped after '+S.i+'/'+S.n); }
+      else { var tk2=tickFromMsg(msg);
+        if(tk2>0 && !o0._tickRetry){ TICKMEM[o0.tradingsymbol]=tk2; o0._tickRetry=1;
+          ktoast(o0.tradingsymbol+': tick is '+tk2+' (Zerodha) — re-pricing this slice and retrying',4500);
+          S.t=setTimeout(function(){ slicerFire(sym); },1200); return; }
+        slicerStop(sym,sym+' slice refused by Zerodha: '+msg+' · stopped after '+S.i+'/'+S.n); }
     });
     });
   }
