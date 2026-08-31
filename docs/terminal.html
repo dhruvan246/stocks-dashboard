@@ -882,6 +882,12 @@ body.blur-secret .secret{filter:blur(7px);-webkit-user-select:none;user-select:n
     }
     if(!ACCT.pos.length && !ACCT.hold.length) h+='<div class="acct-msg">No open positions or holdings.</div>';
     document.getElementById('acctView').innerHTML=h;
+    /* The 30s account poll rebuilds this HTML, which used to orphan a running slicer's button —
+       progress showed 1/9 then "disappeared" while the slices kept firing underneath (2026-08-31).
+       Re-point every live slicer at its fresh button and restore the n/N label. */
+    if(typeof SLICER!=='undefined') Object.keys(SLICER).forEach(function(sy){
+      var S=SLICER[sy], el=document.querySelector('[data-sell][data-sy="'+sy+'"]');
+      if(el){ S.btn=el; el.textContent=S.i+'/'+S.n; } else S.btn=null; });
     var cs=document.getElementById('pfCardSum');
     if(cs) cs.innerHTML='Total <b class="'+(acctTot>=0?'up':'down')+'">'+inrSigned(acctTot)+'</b> · Day <b class="'+(acctDay>=0?'up':'down')+'">'+inrSigned(acctDay)+'</b>';
   }
