@@ -160,7 +160,17 @@ def main():
                 print("IMPOSSIBLE ann dropped: %s qe=%d ann=%d" % (sym, r[0], ann)); ann = None
             if ann: anns[r[0]] = ann; rows[i][6] = ann
         # Revenue / Operating Profit from sf_revop (pad legacy 7-elem)
-        fin = 0
+        # fin (bank/NBFC/insurer FORMAT) comes from sf_revop's per-quarter flag, but the source flag
+        # is a too-broad `"InterestEarned" in xml` substring that also fires on an INDUSTRIAL's
+        # interest-on-cash — flipping Page Industries, Atul, Balrampur… to 'financial' off a single
+        # stray fin=1 cell (audit 2026-09-01). Denoise CONSERVATIVELY: the company is financial if ANY
+        # window quarter is fin (the source signal, which correctly reads 0 for fee-based financials
+        # like CRISIL/CAMS/MCX), EXCEPT demote to industrial when the fin signal is a lone stray hit
+        # (≤1 of ≥8 flagged quarters) AND the macro sector is not financial. That fixes the 18 clear
+        # misflags and touches NOTHING ambiguous — real NBFCs with patchy tagging (PIRAMALFIN 4/12)
+        # and every Financial-Services name stay exactly as before. (Majority voting would wrongly
+        # demote those patchy NBFCs; sector alone would wrongly promote the fee-based financials.)
+        fin_ones = fin_tot = 0
         for k, v in (revop.get(sym) or {}).items():
             try:
                 qe = int(k)
@@ -174,7 +184,14 @@ def main():
                 if v[src] is not None:
                     try: rows[i][dst] = round(float(v[src]), 2)
                     except Exception: pass
-            if v[6] == 1: fin = 1
+            if v[6] in (0, 1):
+                fin_tot += 1; fin_ones += (1 if v[6] == 1 else 0)
+        _kk = klass.get(sym) or klass.get(sym + ".NS") or {}
+        _macro = (_kk.get("macro") or (slim_meta.get(sym) or {}).get("sector") or meta.get("ind") or "")
+        _fin_sector = "financial" in _macro.lower()
+        fin = 1 if fin_ones >= 1 else 0
+        if fin and fin_ones <= 1 and fin_tot >= 8 and not _fin_sector:
+            fin = 0                          # lone stray InterestEarned hit on a non-financial company
         if all(r is None for r in rows):
             continue
 
