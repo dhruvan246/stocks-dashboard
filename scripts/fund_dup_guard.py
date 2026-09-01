@@ -123,7 +123,39 @@ def dedup(fund):
             n_merged += 1
         if drop:
             fund[sym] = [r for i, r in enumerate(rows) if i not in drop]
+    sort_rows(fund)   # rows MUST end sorted by quarter-end: the backtest engine finds the "current"
+                      # quarter by scanning BACKWARDS from the array end (profitAt/profitMetrics),
+                      # so an out-of-order tail makes it serve a stale quarter. ci_preserve_merge's
+                      # merge_listrows appends a CI-only quarter to the end without re-sorting, which
+                      # left 8 symbols out of order (STCINDIA `…20260630, 20260331`; audit 2026-09-01).
     return n_merged, conflicts
+
+
+def sort_rows(fund):
+    """Sort every symbol's rows by quarter-end (ascending) IN PLACE. Stable, so registered
+    duplicate rows for one quarter keep their relative order. Returns the count of symbols that
+    were out of order."""
+    n = 0
+    for sym, rows in fund.items():
+        if not isinstance(rows, list) or len(rows) < 2:
+            continue
+        keys = [r[0] for r in rows if isinstance(r, list) and r]
+        if keys != sorted(keys):
+            rows.sort(key=lambda r: r[0] if isinstance(r, list) and r else 0)
+            n += 1
+    return n
+
+
+def unsorted_symbols(fund):
+    """-> sorted [sym, ...] whose rows are NOT in non-decreasing quarter-end order."""
+    out = []
+    for sym, rows in fund.items():
+        if not isinstance(rows, list) or len(rows) < 2:
+            continue
+        keys = [r[0] for r in rows if isinstance(r, list) and r]
+        if keys != sorted(keys):
+            out.append(sym)
+    return sorted(out)
 
 
 def load_allow(path=ALLOW):
@@ -157,6 +189,14 @@ def assert_ok(fund, where="sf_fundamentals"):
             "Fix the writer, then `python3 scripts/fund_dup_guard.py --merge`; register a genuine "
             "value conflict in scripts/fund_dup_allow.json instead of merging it."
             % (where, len(bad), ", ".join(bad[:10]), " ..." if len(bad) > 10 else ""))
+    unsorted = unsorted_symbols(fund)
+    if unsorted:
+        raise DuplicateQuarterError(
+            "%s: %d symbol(s) carry rows OUT OF quarter-end ORDER -- %s%s. The engine scans "
+            "backwards for the current quarter, so an unsorted tail serves a stale quarter. "
+            "Sort the writer's output (fund_dup_guard.dedup() already does), or call "
+            "fund_dup_guard.sort_rows(fund) before writing."
+            % (where, len(unsorted), ", ".join(unsorted[:10]), " ..." if len(unsorted) > 10 else ""))
     return True
 
 
@@ -168,8 +208,13 @@ def main():
     dups = find_dups(fund)
     n_q = sum(len(d) for d in dups.values())
     n_extra = sum(len(v) - 1 for d in dups.values() for v in d.values())
-    print("%s: %d symbols, %d rows | %d symbols carry %d duplicated quarter-ends (%d extra rows)"
-          % (os.path.relpath(path, ROOT), len(fund), before, len(dups), n_q, n_extra))
+    unsorted = unsorted_symbols(fund)
+    print("%s: %d symbols, %d rows | %d symbols carry %d duplicated quarter-ends (%d extra rows) | "
+          "%d symbols OUT OF ORDER"
+          % (os.path.relpath(path, ROOT), len(fund), before, len(dups), n_q, n_extra, len(unsorted)))
+    if unsorted:
+        print("  out-of-order (engine serves a stale quarter for these): %s%s"
+              % (", ".join(unsorted[:20]), " ..." if len(unsorted) > 20 else ""))
 
     preview = json.loads(json.dumps(fund))
     n_merged, conflicts = dedup(preview)
