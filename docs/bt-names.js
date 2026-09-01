@@ -45,15 +45,61 @@ const EN_FIELD = {
 const EN_OP = { '<=': '≤', '>=': '≥', '<': '<', '>': '>', '=': '=', '==': '=' };
 function enField(f) { return (EN_FIELD[f] && EN_FIELD[f].l) || f; }
 function enFilter(x) { const m = EN_FIELD[x.field] || {}; return enField(x.field) + ' ' + (EN_OP[x.op] || x.op) + ' ' + x.val + (m.p ? '%' : ''); }
-// Full English name. Returns '' for a null/absent cfg — callers fall back to the stored code-name.
+/* Full English name, in the USER'S convention (2026-09-01, portfolio-page rename):
+ *   "<sort phrase> · <filter phrases> (<basis> <method>[ · non-default universe/freq])"
+ * e.g. "Low DII · near 52WH · 2x from 52WL · profit >25% YoY (std hold)".
+ * Nifty 500 + monthly are the defaults and stay silent; anything else rides in the bracket.
+ * topN lives in the card meta ("Top 3 · Nifty 500"), not the name. Returns '' for a null cfg. */
+const EN_SHORT = { diiPct: 'DII', fiiPct: 'FII', d52: 'off 52WH', d52_low_pct: 'off 52WL', rsi: 'RSI',
+  accel: 'momentum accel', profitAccel: 'profit accel', profitYoyPct: 'profit YoY', profitTTM: 'TTM profit',
+  profitStreak: 'streak', ret1m: '1m return', ret3m: '3m return', ret6m: '6m return', ret12m: '12m return',
+  mcap: 'mcap', hist_mcap: 'mcap (hist)', vol: 'volatility', delivPct: 'delivery' };
+function enSortShort(c) {
+  const d = c.dir === 'high';
+  switch (c.sortBy) {
+    case 'diiPct': return (d ? 'High' : 'Low') + ' DII';
+    case 'fiiPct': return (d ? 'High' : 'Low') + ' FII';
+    case 'd52': return d ? 'Farthest below 52WH' : 'Near 52WH';
+    case 'd52_low_pct': return d ? 'Top rise from 52WL' : 'Least off 52WL';
+    case 'ret1m': case 'ret3m': case 'ret6m': case 'ret12m': {
+      const n = c.sortBy.slice(3, -1); return (d ? 'Top ' : 'Worst ') + n + '-month return'; }
+    case 'profitYoyPct': return (d ? 'Top' : 'Lowest') + ' profit growth';
+    case 'profitAccel': return (d ? 'Top' : 'Lowest') + ' profit accel';
+    case 'accel': return (d ? 'Top' : 'Lowest') + ' momentum accel';
+    case 'profitTTM': return (d ? 'Top' : 'Lowest') + ' TTM profit growth';
+    case 'mcap': case 'hist_mcap': return d ? 'Largest mcap' : 'Smallest mcap';
+    case 'vol': return d ? 'Most volatile' : 'Least volatile';
+    case 'turnover': return d ? 'Most traded' : 'Least traded';
+  }
+  return (d ? 'Top ' : 'Low ') + (EN_SHORT[c.sortBy] || enField(c.sortBy));
+}
+function enFilterShort(f) {
+  const op = EN_OP[f.op] || f.op, v = +f.val, up = (f.op === '>' || f.op === '>=');
+  switch (f.field) {
+    case 'd52': return !up ? (v <= 15 ? 'near 52WH' : op + v + '% off 52WH') : op + v + '% below 52WH';
+    case 'd52_low_pct': return up ? (v === 100 ? '2x from 52WL' : v === 200 ? '3x from 52WL' : op + v + '% off 52WL') : op + v + '% off 52WL';
+    case 'profitYoyPct': return (up && v === 0) ? 'profit growth' : 'profit ' + op + v + '% YoY';
+    case 'profitStreak': return v + 'q streak';
+    case 'profitTTM': return (up && v === 0) ? 'TTM profit +ve' : 'TTM profit ' + op + v + '%';
+    case 'profitAccel': return (up && v === 0) ? 'profit accel' : 'profit accel ' + op + v;
+    case 'accel': return (up && v === 0) ? 'momentum accel' : 'momentum accel ' + op + v + '%';
+    case 'fiiPct': return 'FII ' + op + v + '%';
+    case 'diiPct': return 'DII ' + op + v + '%';
+    case 'ret1m': case 'ret3m': case 'ret6m': case 'ret12m': {
+      const n = f.field.slice(3, -1);
+      return (up && v === 0) ? '+ve ' + n + 'm return' : n + 'm return ' + op + v + '%'; }
+  }
+  const m = EN_FIELD[f.field] || {};
+  return (EN_SHORT[f.field] || m.l || f.field) + ' ' + op + ' ' + f.val + (m.p ? '%' : '');
+}
 function strategyEnglish(c) {
   if (!c || !c.sortBy) return '';   // null/empty cfg → caller falls back to the stored code-name
-  const FQ = { 1: 'Monthly', 3: 'Quarterly', 6: 'Half-yearly', 12: 'Yearly' }[c.freq] || (c.freq + 'mo');
-  const uni = c.indexName ? String(c.indexName).replace('__FNO__', 'F&O') : (c.mcapFloor ? '≥₹' + (+c.mcapFloor).toLocaleString('en-IN') + 'L turnover' : 'All stocks');
-  const pick = (c.dir === 'high' ? 'Top' : 'Lowest') + ' ' + (c.topN != null ? c.topN : '') + ' by ' + enField(c.sortBy);
-  const fils = (c.filters || []).map(enFilter).join(' · ');
-  const basis = usesEarnings(c) ? (' · ' + (c.earnBasis === 'std' ? 'standalone' : 'consolidated')) : '';
-  const meth = c.method ? (' · ' + (c.method === 'reset' ? 'reset each cycle' : 'hold winners')) : '';
-  return pick + ' · ' + uni + ' · ' + FQ + (fils ? ' · ' + fils : '') + basis + meth;
+  const fils = (c.filters || []).map(enFilterShort).join(' · ');
+  const par = [];
+  if (c.earnBasis) par.push(c.earnBasis === 'std' ? 'std' : 'con');   // user 2026-09-01: basis shown whenever the cfg carries one
+  par.push(c.method === 'reset' ? 'reset' : 'hold');
+  if (c.indexName && c.indexName !== 'Nifty 500') par.push(String(c.indexName).replace('__FNO__', 'F&O'));
+  if (c.freq && c.freq !== 1) par.push({ 3: 'quarterly', 6: 'half-yearly', 12: 'yearly' }[c.freq] || (c.freq + 'mo'));
+  return enSortShort(c) + (fils ? ' · ' + fils : '') + ' (' + par.join(' ') + ')';
 }
 if (typeof module !== 'undefined' && module.exports) module.exports = { usesEarnings, basisSuffix, methodSuffix, nameWithBasis, strategyEnglish };
