@@ -5,6 +5,7 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <meta name="robots" content="noindex,nofollow">
 <title>Portfolio · private</title>
+<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 64 64'%3E%3Crect width='64' height='64' rx='14' fill='%230a0e16'/%3E%3Cpath d='M14 44 26 30l9 8 15-18' stroke='%235b8cff' stroke-width='6' fill='none' stroke-linecap='round' stroke-linejoin='round'/%3E%3Ccircle cx='50' cy='20' r='5' fill='%232fd181'/%3E%3C/svg%3E">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Inter+Tight:wght@400;500;600;700;800&display=swap" rel="stylesheet">
@@ -361,6 +362,24 @@ tbody tr:hover{background:color-mix(in srgb,var(--accent) 7%,transparent)}
 .snum2{font-size:9.5px; font-weight:800; background:var(--surface-2); border:1px solid var(--border); border-radius:4px; padding:1px 4px; color:var(--text-3); flex:0 0 auto}
 #tblToday td:first-child,#tblMonthEnd td:first-child,#tblBuy td:first-child{white-space:normal;min-width:250px;line-height:1.45}
 .legend span{display:inline-flex;align-items:center;max-width:300px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.statuschip{display:inline-flex; align-items:center; gap:8px; font-size:12px; color:var(--text-3);
+  background:color-mix(in srgb,var(--surface-2) 55%,transparent); border:1px solid color-mix(in srgb,var(--border) 80%,transparent);
+  border-radius:999px; padding:5px 12px}
+.hgroup{display:inline-flex; gap:6px}
+.btn.ico{width:34px; height:33px; padding:0; display:inline-grid; place-items:center; font-size:14.5px}
+.sechead{margin:14px 2px -4px; font-size:11px; font-weight:800; text-transform:uppercase; letter-spacing:.12em;
+  color:var(--text-3); display:flex; align-items:center; gap:12px}
+.sechead::after{content:""; flex:1; height:1px; background:linear-gradient(90deg,var(--border),transparent)}
+.sechead:first-child{margin-top:0}
+#loading{padding:26px 0}
+.skel{border-radius:14px; background:linear-gradient(100deg,var(--surface) 40%,var(--surface-2) 50%,var(--surface) 60%);
+  background-size:220% 100%; animation:skm 1.3s infinite linear; border:1px solid var(--border)}
+@keyframes skm{to{background-position:-120% 0}}
+.skH{height:44px; margin-bottom:12px}
+.skrow{display:grid; grid-template-columns:repeat(auto-fit,minmax(180px,1fr)); gap:12px; margin-bottom:12px}
+.skK{height:96px}
+.skC{height:280px; margin-bottom:12px}
+.skmsg{text-align:center; color:var(--text-3); font-size:12.5px; padding-top:6px}
 @media(max-width:640px){ .kpi .val{font-size:24px} }
 </style>
 </head>
@@ -368,21 +387,23 @@ tbody tr:hover{background:color-mix(in srgb,var(--accent) 7%,transparent)}
 
 <header>
   <div class="hwrap">
-    <div class="brand"><span class="dot" id="liveDot"></span>Portfolio</div>
-    <span class="meta" id="clock"></span>
+    <div class="brand">Portfolio</div>
+    <span class="statuschip"><span class="dot" id="liveDot"></span><span class="meta" id="clock"></span></span>
     <div class="spacer"></div>
     <button class="btn" id="btnZview" title="Zerodha live account — funds, holdings, orders, trading">⚡ Zerodha</button>
     <a class="btn" href="https://dhruvan246.github.io/stocks-dashboard/terminal.html" style="text-decoration:none" title="Live terminal — quotes, chart, Zerodha positions & strategy baskets">📟 Terminal</a>
-    <button class="btn" id="btnSections" title="Show / hide cards">⊞ Cards</button>
-    <button class="btn" id="btnPrivate" title="Blur every number">🙈 Privacy</button>
-    <button class="btn" id="btnTheme">◐ Auto</button>
-    <button class="btn" id="btnRefresh">↻ Refresh</button>
+    <span class="hgroup">
+      <button class="btn ico" id="btnSections" title="Show / hide / jump to cards">⊞</button>
+      <button class="btn ico" id="btnPrivate" title="Blur every number">🙈</button>
+      <button class="btn ico" id="btnTheme" title="Theme">◐</button>
+      <button class="btn ico" id="btnRefresh" title="Refresh prices">↻</button>
+    </span>
   </div>
 </header>
 <div id="secMenu"></div>
 
 <main>
-  <div id="loading">Loading holdings, prices and history…</div>
+  <div id="loading"><div class="skel skH"></div><div class="skrow"><div class="skel skK"></div><div class="skel skK"></div><div class="skel skK"></div><div class="skel skK"></div><div class="skel skK"></div></div><div class="skel skC"></div><div class="skel skC" style="height:120px"></div><div class="skmsg">Loading holdings, prices and history…</div></div>
   <div id="app" style="display:none">
 
     <div class="filters" id="filters"></div>
@@ -405,6 +426,7 @@ tbody tr:hover{background:color-mix(in srgb,var(--accent) 7%,transparent)}
     </div>
 
     <div class="grid">
+      <div class="sechead c12">You vs your strategies</div>
       <div class="card c12" id="cardModel" data-card="model"><h2>You vs the strategy — since its last rebalance</h2>
         <div class="sub" id="modelSub"></div>
         <div class="body" id="modelBody"></div></div>
@@ -419,10 +441,12 @@ tbody tr:hover{background:color-mix(in srgb,var(--accent) 7%,transparent)}
         <div class="body"><div id="chBuy"></div>
           <div class="twrap"><table id="tblBuy"></table></div></div></div>
 
+      <div class="sechead c12">Trades</div>
       <div class="card c12" data-card="closed"><h2>Closed trades — realized P&amp;L</h2>
         <div class="sub" id="closedSub"></div>
         <div class="body" id="closedBody"></div></div>
 
+      <div class="sechead c12">Value &amp; allocation</div>
       <div class="card c8" data-card="value"><h2>Portfolio value</h2>
         <div class="sub" id="valueSub"></div>
         <div class="body"><div id="chValue"></div></div></div>
@@ -437,6 +461,7 @@ tbody tr:hover{background:color-mix(in srgb,var(--accent) 7%,transparent)}
           <div class="filters" style="margin:0 0 8px 4px" id="allocModes"></div>
           <div id="chAlloc"></div></div></div>
 
+      <div class="sechead c12">Performance &amp; risk</div>
       <div class="card c6" data-card="growth"><h2>Growth of ₹100 vs Nifty 500</h2>
         <div class="sub" id="twrSub">Time-weighted return — immune to money added or removed.</div>
         <div class="body"><div id="chTwr"></div></div></div>
@@ -461,6 +486,7 @@ tbody tr:hover{background:color-mix(in srgb,var(--accent) 7%,transparent)}
         <div class="sub">Concentration — largest positions first.</div>
         <div class="body"><div id="chWeight"></div></div></div>
 
+      <div class="sechead c12">The book</div>
       <div class="card c12" data-card="holdings"><div style="display:flex; align-items:baseline; justify-content:space-between; gap:10px">
           <h2>Holdings</h2>
           <div style="margin:11px 16px 0; display:flex; gap:7px">
@@ -1199,7 +1225,7 @@ function renderKPIs(rows,H){
     {lab:dayWord()+dayWhen(), val:inrSigned(t.day), chip:pct(t.dayPct), c:cls(t.day), secret:true},
     {lab:'Unrealised P&L', val:inrSigned(t.pnl), chip:pct(t.pnlPct), c:cls(t.pnl), secret:true},
     {lab:'Invested', val:inr(t.cost), sub:'cost basis', secret:true},
-    {lab:'XIRR', val:(x==null?'—':pct(x,1)), chip:(x==null?null:'money-weighted'), sub:(x==null?'annualised, money-weighted':'annualised'), c:cls(x)}
+    {lab:'XIRR', val:(x==null?'—':pct(x,1)), sub:'annualised · since '+(rows.length?shortDate(rows.map(r=>r.date).sort()[0]):'—'), c:cls(x)}
   ];
   const arrow=c=>c==='up'?'▲ ':c==='down'?'▼ ':'';
   $('kpis').innerHTML=tiles.map(k=>
@@ -1291,7 +1317,7 @@ function renderCharts(rows){
       .sort((a,b)=>(b.vals[b.vals.length-1]||0)-(a.vals[a.vals.length-1]||0));   // biggest at the bottom
     stackedArea($('chStackVal'), {cal:H.cal, h:narrowChart()?260:320, series:stackSeries, fmtY:v=>inr(v,1), fmtT:v=>inr(v)});
     lineChart($('chTwr'),{cal:H.cal,h:250,series:[
-        {name:'Portfolio',color:'var(--s1)',vals:H.twr},
+        {name:'Portfolio',color:'var(--s1)',vals:H.twr,fill:true},
         {name:'Nifty 500',color:'var(--s2)',vals:H.nif500||[]}],
       fmtY:v=>'₹'+v.toFixed(0), fmtT:v=>'₹'+v.toFixed(1)});
     const first=H.twr[0], lastT=H.twr[H.twr.length-1];
@@ -1810,15 +1836,15 @@ function exportCSV(){
   document.body.appendChild(a); a.click(); a.remove(); setTimeout(()=>URL.revokeObjectURL(url),1500);
 }
 $('btnCsv').onclick=()=>{ const b=$('btnCsv'); exportCSV(); const t=b.textContent; b.textContent='✓ saved'; setTimeout(()=>b.textContent=t,1400); };
-$('btnRefresh').onclick=async()=>{ $('btnRefresh').textContent='…'; await refreshQuotes(); buildRows(); renderAll(); $('btnRefresh').textContent='↻ Refresh'; };
+$('btnRefresh').onclick=async()=>{ $('btnRefresh').textContent='…'; await refreshQuotes(); buildRows(); renderAll(); $('btnRefresh').textContent='↻'; };
 $('btnPrivate').onclick=()=>{ document.body.classList.toggle('private');
   localStorage.setItem('pf_private', document.body.classList.contains('private')?'1':'0');
   $('btnPrivate').classList.toggle('on', document.body.classList.contains('private'));
   if(DOC) renderAll(); };   // redraw: SVG chart text is redacted at render time, not by CSS
 /* The button shows the ACTIVE mode (Auto follows the OS); tapping cycles Auto → Dark → Light → Auto. */
 function applyThemeBtn(){ const t=document.documentElement.getAttribute('data-theme');
-  const lbl=t==='dark'?'🌙 Dark':t==='light'?'☀️ Light':'◐ Auto';
-  const b=$('btnTheme'); b.textContent=lbl; b.title='Theme: '+lbl.replace(/^\S+\s/,'')+' — tap to change'; }
+  const b=$('btnTheme'); b.textContent=t==='dark'?'🌙':t==='light'?'☀️':'◐';
+  b.title='Theme: '+(t==='dark'?'Dark':t==='light'?'Light':'Auto')+' — tap to change'; }
 $('btnTheme').onclick=()=>{ const cur=document.documentElement.getAttribute('data-theme');
   const next=cur==='dark'?'light':cur==='light'?'':'dark';
   if(next) document.documentElement.setAttribute('data-theme',next); else document.documentElement.removeAttribute('data-theme');
@@ -1838,7 +1864,7 @@ function loadHidden(){ try{ return new Set(JSON.parse(localStorage.getItem('pf_h
 function saveHidden(set){ try{ localStorage.setItem('pf_hidden', JSON.stringify([...set])); }catch(e){} }
 function applyHidden(){ const hid=loadHidden(); let n=0;
   cardEls().forEach(el=>{ const h=hid.has(el.dataset.card); el.classList.toggle('card-hidden',h); if(h) n++; });
-  const b=$('btnSections'); if(b) b.textContent='⊞ Cards'+(n?' ('+n+' hidden)':''); }
+  const b=$('btnSections'); if(b){ b.textContent='⊞'+(n?' '+n:''); b.title=(n?n+' card'+(n>1?'s':'')+' hidden — ':'')+'show / hide / jump to cards'; } }
 function buildSectionMenu(){
   const menu=$('secMenu'), hid=loadHidden();
   let h='<div class="hd"><b>Cards to show</b><a id="secAll">Show all</a></div>';
