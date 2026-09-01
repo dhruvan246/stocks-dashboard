@@ -584,7 +584,8 @@ async function zbaPull(){ const row = zbaRow(); if (!row || typeof Decompression
 function zbaMerge(a, b){ const newer = (b.ts || 0) >= (a.ts || 0) ? b : a, older = newer === b ? a : b;
   return { ts: Math.max(a.ts || 0, b.ts || 0), amts: Object.assign({}, older.amts, newer.amts),
            caps: Object.assign({}, older.caps || {}, newer.caps || {}),
-           sliceCaps: Object.assign({}, older.sliceCaps || {}, newer.sliceCaps || {}) }; }
+           sliceCaps: Object.assign({}, older.sliceCaps || {}, newer.sliceCaps || {}),
+           residual: (newer.residual !== undefined ? newer.residual : older.residual) }; }
 
 const TICKMEM = {};
 let TICKS_LOADED = false;
