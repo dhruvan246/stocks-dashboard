@@ -1,5 +1,35 @@
 # PLAN — FULL DATA AUDIT 2026-09-01 → the fix queue for the next session
 
+## ✅ SHIPPED so far (Opus implementation pass, 2026-09-01)
+
+Commits on origin/main; each verified before push (Node harness on the live release asset, before/after).
+- **P0-1 F&O membership alias-fold** — engine e14, CONDITIONAL (a first unconditional version was
+  caught corrupting N500 — it redirected names that still hold their own era tape — and fixed to fold
+  only when the roster name has no series of its own). Recovers 3,135/32,073 F&O slots; N500/all-stocks
+  byte-identical.
+- **P0-7 profitAccel/profitStreak calendar-step** — engine e14. Unit-proven (streak 7→2 across a gap);
+  inert on gapless N500 (0 of the 500 current members change).
+- **P1-1 grid_search tools load the live bin + abort on stale** (+ a `typeof location` guard so the
+  engine loads under Node — the tools were unrunnable in plain Node before).
+- **P0-3 out-of-order rows** — `fund_dup_guard.dedup()` sorts + `assert_ok()` rejects unsorted; a
+  follow-up made the two direct writers (`update_fundamentals`, `build_fundamentals`) sort before the
+  guard (else the stricter guard would have failed the nightly). Self-heals the 8 on the next refresh.
+- **P0-4 ebit>op** — `build_revop.normalize_ebit()` nulls the 169 impossible cells at finalization.
+- **P1-3 bank/industrial misflag** — quarterly-results flag denoised conservatively; 18 clear
+  industrials (Page, Atul, Balrampur…) fixed, ZERO regressions (real NBFCs / fee-based financials
+  untouched). NOTE: the deeper source classifier (`"InterestEarned" in xml` substring) still
+  mis-tags ~34 historical quarters per industrial → a separate careful job (see P1-3).
+- **P0-5 (marquee cell) M&M 20210930 con −479.08 → 1928.64** via `fund_cell_fix.json` + applied to the
+  live store. Externally confirmed to the crore (Q2FY22 con PAT ₹1,929cr, rev 21,470 matches). Nifty-50
+  name, feeds every profit factor. The remaining ~133 mirror disagreements are small-value /
+  genuine-bad-quarter cells with no clear authority-wrong signal — left for per-cell filing adjudication.
+
+**Still blocked by concurrency** (other sessions hold these files dirty): **P0-6** (nightly ann-date
+reconciler — `backfill_ann_dates_bse.py`), **P0-8** (13 DII heals — the SHP pipeline). **Heavy / not
+yet done:** P0-9 (trading-calendar ghost days), P0-10 (ETF splits), P0-11 (RASOYPR), P1-4, P0-2.
+
+---
+
 **What this is.** A user-requested full sweep of every dataset the backtest consumes ("check entire
 data every possible way, find many many bugs, make a plan for Opus to follow and resolve them"),
 plus the user's mid-run additions: DII/FII holdings, the dates of every fetch, whether stored
