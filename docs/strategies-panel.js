@@ -497,7 +497,7 @@ const ZBA_URL = 'https://nebjnsndgrhumnkuipqy.supabase.co/rest/v1/rpc/';
 const ZBA_ANON = 'sb_publishable_MDlQwiVc5deii91__UNeDg_z9r4Fk98';
 const ZBA_SECRET = 'sw_owner_8Kq2Lm9Xp4Rt7v';        // same public write secret sw-sync.js ships
 function zbaRow(){ try { const t = localStorage.getItem('pf_token') || ''; return t ? t + '.zbamts' : ''; } catch (e){ return ''; } }
-function zbaDoc(){ try { const d = JSON.parse(localStorage.getItem(ZBA_LS) || 'null'); if (d && d.amts) return d; } catch (e){} return { ts: 0, amts: {}, caps: {} }; }
+function zbaDoc(){ try { const d = JSON.parse(localStorage.getItem(ZBA_LS) || 'null'); if (d && d.amts) return d; } catch (e){} return { ts: 0, amts: {}, caps: {}, sliceCaps: {} }; }
 /* Per-stock ₹ cap applied to EACH basket that holds the stock (user 2026-09-01: HFCL lost its MTF
    leverage — 1.0x/100% margin — so cap it at ₹1 Cr/basket while every other pick stays at full
    ₹1.47 Cr, no per-strategy shrink). Lives in the same synced row (caps:{SYM:rupees}); clear it to
@@ -543,7 +543,8 @@ async function zbaPull(){ const row = zbaRow(); if (!row || typeof Decompression
    wipe the other seven seeded amounts (whole-map last-writer-wins did exactly that). */
 function zbaMerge(a, b){ const newer = (b.ts || 0) >= (a.ts || 0) ? b : a, older = newer === b ? a : b;
   return { ts: Math.max(a.ts || 0, b.ts || 0), amts: Object.assign({}, older.amts, newer.amts),
-           caps: Object.assign({}, older.caps || {}, newer.caps || {}) }; }
+           caps: Object.assign({}, older.caps || {}, newer.caps || {}),
+           sliceCaps: Object.assign({}, older.sliceCaps || {}, newer.sliceCaps || {}) }; }
 
 const TICKMEM = {};
 let TICKS_LOADED = false;
@@ -575,6 +576,8 @@ const BUYSLICER = {};   // strategy id -> {slices, i, n, btn, t}
 const ADVCAP = {};
 function advSliceCap(sym){
   if (sym in ADVCAP) return ADVCAP[sym];
+  const baked = +((zbaDoc().sliceCaps || {})[sym]) || 0;   // live-liquidity cap baked at market open (see zbamts row)
+  if (baked > 0){ ADVCAP[sym] = baked; return baked; }
   let cap = sliceLakh() * 1e5;                                   // fallback: the flat knob
   try {
     let tkr = null; for (const t in META){ if ((META[t].symbol || t) === sym){ tkr = t; break; } }
