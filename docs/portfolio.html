@@ -5,38 +5,44 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <meta name="robots" content="noindex,nofollow">
 <title>Portfolio · private</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Inter+Tight:wght@400;500;600;700;800&display=swap" rel="stylesheet">
 <style>
 /* ---------- tokens (light) ---------- */
 :root{
   color-scheme: light;
-  --bg:#f6f6f4; --surface:#fcfcfb; --surface-2:#f0efec; --border:#e2e1dc;
-  --text:#0b0b0b; --text-2:#52514e; --text-3:#8a8981;
-  --accent:#2a78d6; --up:#008300; --down:#e34948; --flat:#8a8981;
-  --s1:#2a78d6; --s2:#eb6834; --s3:#1baf7a; --s4:#eda100; --s5:#e87ba4; --s6:#008300; --s7:#4a3aa7; --s8:#e34948;
-  --grid:#e8e7e2; --shadow:0 1px 2px rgba(0,0,0,.05),0 4px 16px rgba(0,0,0,.04);
+  --bg:#f2f4f9; --surface:#ffffff; --surface-2:#eef1f7; --border:#dfe4ee;
+  --text:#0d1220; --text-2:#4a5468; --text-3:#8791a5;
+  --accent:#3565e6; --up:#0c8f4e; --down:#e0455c; --flat:#8791a5;
+  --s1:#3565e6; --s2:#e8722f; --s3:#0c9f66; --s4:#d99a12; --s5:#d8548e; --s6:#0e9a92; --s7:#7c5cd6; --s8:#e0455c;
+  --grid:#e7ebf3; --glow:rgba(53,101,230,.10);
+  --shadow:0 1px 2px rgba(13,18,32,.05),0 8px 24px rgba(13,18,32,.06);
 }
 @media (prefers-color-scheme: dark){
   :root:where(:not([data-theme="light"])){
     color-scheme: dark;
-    --bg:#131312; --surface:#1a1a19; --surface-2:#232322; --border:#333330;
-    --text:#ffffff; --text-2:#c3c2b7; --text-3:#8a8981;
-    --accent:#3987e5; --up:#22a559; --down:#e66767;
-    --s1:#3987e5; --s2:#d95926; --s3:#199e70; --s4:#c98500; --s5:#d55181; --s6:#008300; --s7:#9085e9; --s8:#e66767;
-    --grid:#2a2a28; --shadow:0 1px 2px rgba(0,0,0,.3),0 4px 16px rgba(0,0,0,.25);
+    --bg:#0a0e16; --surface:#101623; --surface-2:#182136; --border:#1f2a41;
+    --text:#eef2fa; --text-2:#aeb8cf; --text-3:#67738f;
+    --accent:#5b8cff; --up:#2fd181; --down:#ff5d6c; --flat:#67738f;
+    --s1:#5b8cff; --s2:#ff8a4c; --s3:#2fd181; --s4:#f5b83d; --s5:#ff6fa5; --s6:#35c7c0; --s7:#a78bfa; --s8:#ff5d6c;
+    --grid:#17203499; --glow:rgba(91,140,255,.14);
+    --shadow:0 1px 2px rgba(0,0,0,.5),0 10px 32px rgba(0,0,0,.42);
   }
 }
 :root[data-theme="dark"]{
   color-scheme: dark;
-  --bg:#131312; --surface:#1a1a19; --surface-2:#232322; --border:#333330;
-  --text:#ffffff; --text-2:#c3c2b7; --text-3:#8a8981;
-  --accent:#3987e5; --up:#22a559; --down:#e66767;
-  --s1:#3987e5; --s2:#d95926; --s3:#199e70; --s4:#c98500; --s5:#d55181; --s6:#008300; --s7:#9085e9; --s8:#e66767;
-  --grid:#2a2a28; --shadow:0 1px 2px rgba(0,0,0,.3),0 4px 16px rgba(0,0,0,.25);
+  --bg:#0a0e16; --surface:#101623; --surface-2:#182136; --border:#1f2a41;
+  --text:#eef2fa; --text-2:#aeb8cf; --text-3:#67738f;
+  --accent:#5b8cff; --up:#2fd181; --down:#ff5d6c; --flat:#67738f;
+  --s1:#5b8cff; --s2:#ff8a4c; --s3:#2fd181; --s4:#f5b83d; --s5:#ff6fa5; --s6:#35c7c0; --s7:#a78bfa; --s8:#ff5d6c;
+  --grid:#17203499; --glow:rgba(91,140,255,.14);
+  --shadow:0 1px 2px rgba(0,0,0,.5),0 10px 32px rgba(0,0,0,.42);
 }
 *{box-sizing:border-box}
 body{
   margin:0; background:var(--bg); color:var(--text);
-  font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,Inter,sans-serif;
+  font-family:"Inter Tight",-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,Inter,sans-serif;
   font-feature-settings:"tnum" 1; -webkit-font-smoothing:antialiased;
 }
 .num{font-variant-numeric:tabular-nums}
@@ -261,6 +267,99 @@ select,input[type=text],input[type=number],input[type=date]{
 [data-card="zerodha"]{display:none}
 body.zview [data-card="zerodha"]{display:block}
 body.zview #app>*:not([data-card="zerodha"]){display:none}
+
+/* ================= v2 skin (2026-09-01) — trading-desk look, tokens above ================= */
+html{scroll-behavior:smooth}
+body{background:
+  radial-gradient(1100px 420px at 85% -180px, var(--glow), transparent 60%),
+  radial-gradient(900px 420px at -10% -160px, color-mix(in srgb,var(--glow) 55%,transparent), transparent 60%),
+  var(--bg)}
+::selection{background:color-mix(in srgb,var(--accent) 30%,transparent)}
+*{scrollbar-width:thin; scrollbar-color:var(--border) transparent}
+::-webkit-scrollbar{width:9px;height:9px} ::-webkit-scrollbar-thumb{background:var(--border);border-radius:9px}
+:focus-visible{outline:2px solid var(--accent); outline-offset:2px; border-radius:6px}
+
+header{background:color-mix(in srgb,var(--bg) 78%, transparent); backdrop-filter:blur(14px) saturate(1.2);
+  border-bottom:1px solid color-mix(in srgb,var(--border) 75%,transparent)}
+.brand{font-size:16.5px; font-weight:800}
+.brand::after{content:"PRIVATE"; font-size:8.5px; font-weight:800; letter-spacing:.14em; color:var(--accent);
+  border:1px solid color-mix(in srgb,var(--accent) 45%,transparent); border-radius:5px; padding:2px 5px;
+  background:color-mix(in srgb,var(--accent) 10%,transparent)}
+.btn{background:color-mix(in srgb,var(--surface-2) 70%,transparent); border-radius:10px; transition:.15s}
+.btn:hover{border-color:color-mix(in srgb,var(--accent) 55%,transparent); transform:translateY(-1px)}
+.btn.on{background:linear-gradient(135deg,var(--accent),color-mix(in srgb,var(--accent) 70%,#7c5cd6)); border-color:transparent}
+
+.card{border-radius:16px; background:linear-gradient(180deg,color-mix(in srgb,var(--surface-2) 26%,var(--surface)),var(--surface) 42%);
+  transition:border-color .15s}
+.card:hover{border-color:color-mix(in srgb,var(--accent) 26%,var(--border))}
+.card h2{font-size:14px; font-weight:800; letter-spacing:-.015em; display:flex; align-items:center; gap:8px}
+.card h2::before{content:""; width:4px; height:15px; border-radius:3px; flex:0 0 auto;
+  background:linear-gradient(180deg,var(--accent),color-mix(in srgb,var(--accent) 45%,transparent))}
+.card .sub{padding-top:3px}
+
+/* KPI hero */
+.kpis{gap:12px}
+.kpi{padding:15px 17px 14px; position:relative; overflow:hidden}
+.kpi::before{content:""; position:absolute; inset:0 0 auto 0; height:2px;
+  background:linear-gradient(90deg,color-mix(in srgb,var(--accent) 65%,transparent),transparent 70%)}
+.kpi.up-tile::before{background:linear-gradient(90deg,var(--up),transparent 70%)}
+.kpi.down-tile::before{background:linear-gradient(90deg,var(--down),transparent 70%)}
+.kpi .krow2{display:flex; align-items:center; justify-content:space-between; gap:8px}
+.kpi .val{font-size:29px; font-weight:800; letter-spacing:-.03em; margin-top:6px}
+.kpi .sub2{color:var(--text-3); font-weight:600; margin-top:4px; min-height:15px}
+.kd{font-size:11px; font-weight:800; padding:3px 8px; border-radius:999px; letter-spacing:.02em; white-space:nowrap}
+.kd.up{background:color-mix(in srgb,var(--up) 15%,transparent); color:var(--up)}
+.kd.down{background:color-mix(in srgb,var(--down) 15%,transparent); color:var(--down)}
+.kd.flat,.kd:not(.up):not(.down){background:var(--surface-2); color:var(--text-3)}
+
+/* chips + tabs: accent-tinted on-state */
+.chip{background:color-mix(in srgb,var(--surface-2) 70%,transparent); transition:.15s}
+.chip.on{background:color-mix(in srgb,var(--accent) 16%,transparent); color:var(--accent);
+  border-color:color-mix(in srgb,var(--accent) 45%,transparent)}
+.chip .sw{border-radius:50%; width:8px; height:8px; box-shadow:0 0 0 2.5px color-mix(in srgb,currentColor 0%,transparent)}
+.stab.on{background:color-mix(in srgb,var(--accent) 16%,transparent); color:var(--accent);
+  border-color:color-mix(in srgb,var(--accent) 45%,transparent)}
+#filters{border-bottom:1px solid color-mix(in srgb,var(--border) 70%,transparent)}
+
+/* tables */
+th{background:color-mix(in srgb,var(--surface-2) 45%,var(--surface)); font-size:10px; letter-spacing:.08em; padding:8px 10px}
+td{padding:8px 10px}
+td:first-child{font-weight:600}
+tbody tr{transition:background .1s}
+tbody tr:hover{background:color-mix(in srgb,var(--accent) 7%,transparent)}
+.tag{border-radius:5px; padding:2.5px 7px}
+.trio .t{background:linear-gradient(180deg,color-mix(in srgb,var(--surface-2) 80%,transparent),color-mix(in srgb,var(--surface-2) 45%,transparent));
+  border:1px solid color-mix(in srgb,var(--border) 70%,transparent); border-radius:12px}
+.trio .t .v{font-size:21px}
+.tip{border-radius:11px; backdrop-filter:blur(8px); background:color-mix(in srgb,var(--surface) 92%,transparent)}
+.mstrip span{border-radius:7px}
+.sw2{width:9px;height:9px;border-radius:50%;display:inline-block;margin-right:7px;vertical-align:0}
+.card{scroll-margin-top:118px}
+#secMenu{border-radius:14px}
+#secMenu label{justify-content:space-between}
+#secMenu label>span{flex:1}
+.jgo{color:var(--text-3); font-weight:800; cursor:pointer; padding:0 4px; border-radius:6px; text-decoration:none}
+.jgo:hover{color:var(--accent); background:color-mix(in srgb,var(--accent) 12%,transparent)}
+#toTop{position:fixed; left:16px; bottom:16px; z-index:140; width:38px; height:38px; border-radius:50%;
+  border:1px solid var(--border); background:color-mix(in srgb,var(--surface) 88%,transparent); backdrop-filter:blur(8px);
+  color:var(--text-2); font-size:16px; font-weight:800; cursor:pointer; box-shadow:var(--shadow); display:none}
+#toTop.show{display:block}
+#toTop:hover{color:var(--accent); border-color:var(--accent)}
+#pfMenu{position:fixed; z-index:85; width:min(370px,calc(100vw - 20px)); max-height:62vh; overflow:auto;
+  background:color-mix(in srgb,var(--surface) 96%,transparent); backdrop-filter:blur(12px);
+  border:1px solid var(--border); border-radius:14px; box-shadow:var(--shadow); padding:6px; display:none}
+#pfMenu.open{display:block}
+#pfMenu .hd{display:flex; justify-content:space-between; align-items:center; gap:10px; padding:6px 9px; border-bottom:1px solid var(--grid); margin-bottom:4px}
+#pfMenu .hd b{font-size:10.5px; text-transform:uppercase; letter-spacing:.08em; color:var(--text-3)}
+#pfMenu .hd a{font-size:12px; color:var(--accent); cursor:pointer; font-weight:700}
+#pfMenu .pfrow{display:flex; align-items:center; gap:9px; padding:8px 9px; border-radius:9px; font-size:12.5px; cursor:pointer; line-height:1.35}
+#pfMenu .pfrow:hover{background:var(--surface-2)}
+#pfMenu .pfrow.on{background:color-mix(in srgb,var(--accent) 11%,transparent)}
+#pfMenu .pfrow .sw{width:9px;height:9px;border-radius:50%;flex:0 0 auto}
+#pfMenu .pn{flex:1; font-weight:600; white-space:normal}
+#pfMenu .ck{color:var(--accent); font-weight:800; width:14px; text-align:right}
+.snum2{font-size:9.5px; font-weight:800; background:var(--surface-2); border:1px solid var(--border); border-radius:4px; padding:1px 4px; color:var(--text-3); flex:0 0 auto}
+@media(max-width:640px){ .kpi .val{font-size:24px} }
 </style>
 </head>
 <body>
@@ -381,6 +480,7 @@ body.zview #app>*:not([data-card="zerodha"]){display:none}
   </div>
 </main>
 
+<button id="toTop" title="Back to top">↑</button>
 <div class="tip" id="tip"></div>
 
 <script>
@@ -1091,15 +1191,17 @@ function renderKPIs(rows,H){
   const t=totals(rows), x=xirr(rows);
   const tiles=[
     {lab:'Market value', val:inr(t.value), sub:rows.length+' holdings · '+new Set(rows.map(r=>r.sym)).size+' stocks', secret:true},
-    {lab:dayWord()+dayWhen(), val:inrSigned(t.day), sub:pct(t.dayPct), c:cls(t.day), secret:true},
-    {lab:'Unrealised P&L', val:inrSigned(t.pnl), sub:pct(t.pnlPct), c:cls(t.pnl), secret:true},
+    {lab:dayWord()+dayWhen(), val:inrSigned(t.day), chip:pct(t.dayPct), c:cls(t.day), secret:true},
+    {lab:'Unrealised P&L', val:inrSigned(t.pnl), chip:pct(t.pnlPct), c:cls(t.pnl), secret:true},
     {lab:'Invested', val:inr(t.cost), sub:'cost basis', secret:true},
-    {lab:'XIRR', val:(x==null?'—':pct(x,1)), sub:'annualised, money-weighted', c:cls(x)}
+    {lab:'XIRR', val:(x==null?'—':pct(x,1)), chip:(x==null?null:'money-weighted'), sub:(x==null?'annualised, money-weighted':'annualised'), c:cls(x)}
   ];
+  const arrow=c=>c==='up'?'▲ ':c==='down'?'▼ ':'';
   $('kpis').innerHTML=tiles.map(k=>
-    '<div class="card kpi"><div class="lab">'+k.lab+'</div>'+
-    '<div class="val '+(k.c||'')+(k.secret?' secret':'')+'">'+k.val+'</div>'+
-    '<div class="sub2 '+(k.c||'')+'">'+k.sub+'</div></div>').join('');
+    '<div class="card kpi'+(k.c?' '+k.c+'-tile':'')+'"><div class="krow2"><span class="lab">'+k.lab+'</span>'+
+    (k.chip && /%/.test(k.chip)?'<span class="kd '+(k.c||'')+'">'+arrow(k.c)+String(k.chip).replace(/^[+\-−]/,'')+'</span>':'')+'</div>'+
+    '<div class="val num '+(k.c||'')+(k.secret?' secret':'')+'">'+k.val+'</div>'+
+    '<div class="sub2">'+(k.sub||'')+'</div></div>').join('');
 }
 /* ---- deep-link the account/portfolio filter into the URL hash (#acct=…&pf=…): bookmark or
    open straight to a strategy on the phone, and a reload keeps the filter. Uses the HASH, so it
@@ -1126,15 +1228,45 @@ function renderFilters(){
   accs.forEach(a=>{ const n=ROWS.filter(r=>(r.account||'')===a).length;
     h+='<button class="chip'+(SEL.acct.has(a)?' on':'')+'" data-t="acct" data-v="'+esc(a)+'">'+esc(a?acctName(a):'Unassigned')+' <span class="sym">'+n+'</span></button>'; });
   h+='<span style="width:14px"></span><span class="flab">Portfolio</span>';
-  h+='<button class="chip'+(SEL.pf.size===0?' on':'')+'" data-t="pf" data-v="">All</button>';
-  (DOC.portfolios||[]).forEach((p,i)=>{ const n=ROWS.filter(r=>r.pf===p.id).length; if(!n) return;
-    h+='<button class="chip'+(SEL.pf.has(p.id)?' on':'')+'" data-t="pf" data-v="'+esc(p.id)+'"><span class="sw" style="background:'+SLOT[i%8]+'"></span>'+esc(p.name)+' <span class="sym">'+n+'</span></button>'; });
+  /* the 8 strategy names are long config strings — as chips they were a 3-row wall
+     (user 2026-09-01: "should be a dropdown"). One summary button + a checklist panel. */
+  const pfLabel = SEL.pf.size===0 ? 'All' : SEL.pf.size===1 ? pfShort(pfById([...SEL.pf][0])) : SEL.pf.size+' selected';
+  h+='<button class="chip'+(SEL.pf.size?' on':'')+'" id="pfDrop">'+esc(pfLabel)+' <span style="opacity:.65">▾</span></button>';
   $('filters').innerHTML=h;
-  $('filters').querySelectorAll('.chip').forEach(c=>c.onclick=()=>{
+  $('filters').querySelectorAll('.chip[data-t]').forEach(c=>c.onclick=()=>{
     const set=c.dataset.t==='acct'?SEL.acct:SEL.pf, v=c.dataset.v;
     if(v===''){ set.clear(); } else { set.has(v)?set.delete(v):set.add(v); }
     filterToHash(); renderAll();
   });
+  const pd=$('pfDrop'); if(pd) pd.onclick=e=>{ e.stopPropagation(); pfMenuToggle(pd); };
+}
+function pfShort(p){ if(!p) return '?'; const n=p.name||p.id;
+  return n.length>26 ? n.slice(0,24)+'…' : n; }
+function pfMenuEl(){ let m=$('pfMenu');
+  if(!m){ m=document.createElement('div'); m.id='pfMenu'; document.body.appendChild(m);
+    document.addEventListener('click',e=>{ if(m.classList.contains('open') && !m.contains(e.target) && e.target.id!=='pfDrop') m.classList.remove('open'); }); }
+  return m; }
+function pfMenuFill(){
+  const m=pfMenuEl();
+  let k=0, h='<div class="hd"><b>Portfolios</b><a id="pfClear">All</a></div>';
+  (DOC.portfolios||[]).forEach((p,i)=>{ const n=ROWS.filter(r=>r.pf===p.id).length; if(!n) return;
+    const num = p.strategy ? '<span class="snum2">#'+(++k)+'</span>' : '';
+    h+='<div class="pfrow'+(SEL.pf.has(p.id)?' on':'')+'" data-v="'+esc(p.id)+'">'+
+       '<span class="sw" style="background:'+SLOT[i%8]+'"></span>'+num+
+       '<span class="pn" title="'+esc(p.cfgName||'')+'">'+esc(p.name)+'</span><span class="sym">'+n+'</span>'+
+       '<span class="ck">'+(SEL.pf.has(p.id)?'✓':'')+'</span></div>'; });
+  m.innerHTML=h;
+  m.querySelectorAll('.pfrow').forEach(r=>r.onclick=e=>{ e.stopPropagation();
+    const v=r.dataset.v; SEL.pf.has(v)?SEL.pf.delete(v):SEL.pf.add(v);
+    filterToHash(); renderAll(); pfMenuFill(); });
+  const pc=m.querySelector('#pfClear'); if(pc) pc.onclick=e=>{ e.stopPropagation(); SEL.pf.clear(); filterToHash(); renderAll(); pfMenuFill(); };
+}
+function pfMenuToggle(btn){
+  const m=pfMenuEl(), open=!m.classList.contains('open');
+  if(open){ pfMenuFill(); const r=btn.getBoundingClientRect();
+    m.style.top=Math.round(r.bottom+8)+'px';
+    m.style.left=Math.round(Math.min(r.left, innerWidth-370))+'px'; }
+  m.classList.toggle('open',open);
 }
 function renderCharts(rows){
   const H=buildHistory(rows); HIST=H;
@@ -1267,8 +1399,9 @@ function renderToday(rows){
   const groups=groupBy(rows,r=>r.pfName);
   const list=[...groups.entries()].map(([name,rs])=>{
     const a=agg(rs), base=a.value-a.day;
-    const pf=(DOC.portfolios||[]).find(p=>p.name===name)||{};
-    return {name, acct:pf.account?acctName(pf.account):'—', n:rs.length,
+    const pfi=(DOC.portfolios||[]).findIndex(p=>p.name===name);
+    const pf=(DOC.portfolios||[])[pfi]||{};
+    return {name, sw:SLOT[(pfi<0?0:pfi)%8], cfg:pf.cfgName||'', acct:pf.account?acctName(pf.account):'—', n:rs.length,
             day:a.day, pct:base>0? a.day/base*100 : null, value:a.value};
   }).sort((x,y)=>(y.pct==null?-1e9:y.pct)-(x.pct==null?-1e9:x.pct));
   $('todayH').textContent=dayWord()+', by strategy';
@@ -1283,7 +1416,7 @@ function renderToday(rows){
   list.forEach((r,gi)=>{
     const open=TODAY_OPEN.has(r.name);
     h+='<tr class="todayRow" data-pf="'+esc(r.name)+'" style="cursor:pointer">'+
-       '<td><b>'+(open?'\u25be ':'\u25b8 ')+esc(r.name)+'</b>'+(narrow?'<br><span class="sym">'+esc(r.acct)+'</span>':'')+'</td>'+
+       '<td title="'+esc(r.cfg||'')+'"><span class="sw2" style="background:'+r.sw+'"></span><b>'+(open?'\u25be ':'\u25b8 ')+esc(r.name)+'</b>'+(narrow?'<br><span class="sym">'+esc(r.acct)+'</span>':'')+'</td>'+
        (narrow?'':'<td><span class="sym">'+esc(r.acct)+'</span></td><td>'+r.n+'</td><td class="secret">'+inr(r.value)+'</td>')+
        '<td class="'+cls(r.day)+' secret">'+inrSigned(r.day)+'</td>'+
        '<td class="'+cls(r.pct)+'"><b>'+pct(r.pct)+'</b></td></tr>';
@@ -1456,7 +1589,9 @@ function renderModel(rows){
     const rate=(DOC.mtfRate!=null&&isFinite(DOC.mtfRate))?DOC.mtfRate:0;
     let interest=0; if(rate>0) mine2.forEach(r=>{ interest+=r.cost*(rate/100)*(r.days/365); });
     const netRet=(rate>0&&yb>0)?(yn-yb-interest)/yb*100:null;
-    h+='<div class="sblk"><div class="shead"><span class="nm2">'+esc(pf.name)+'</span>'+cycBadge(pf.cycle)+
+    const basis=(pf.strategy&&pf.strategy.earnBasis)?String(pf.strategy.earnBasis).toUpperCase():'';
+    h+='<div class="sblk"><div class="shead"><span class="nm2" title="'+esc(pf.cfgName||pf.name)+'">'+esc(pf.name)+'</span>'+
+       (basis?'<span class="cyc">'+basis+'</span>':'')+cycBadge(pf.cycle)+
        '<span class="meta">strategy rebalanced <b>'+shortDate(last.td)+'</b> ('+days+' days ago)'+
        (first?' · you bought '+(first===lastD?shortDate(first):shortDate(first)+' – '+shortDate(lastD)):'')+'</span></div>';
     h+='<div class="trio">'+
@@ -1660,8 +1795,11 @@ function buildSectionMenu(){
   const menu=$('secMenu'), hid=loadHidden();
   let h='<div class="hd"><b>Cards to show</b><a id="secAll">Show all</a></div>';
   cardEls().forEach(el=>{ const k=el.dataset.card, t=(el.querySelector('h2')||{}).textContent||k;
-    h+='<label><input type="checkbox" data-k="'+esc(k)+'"'+(hid.has(k)?'':' checked')+'>'+esc(t.replace(/\s+—.*$/,''))+'</label>'; });
+    h+='<label><input type="checkbox" data-k="'+esc(k)+'"'+(hid.has(k)?'':' checked')+'><span>'+esc(t.replace(/\s+—.*$/,''))+'</span><a class="jgo" data-go="'+esc(k)+'" title="Jump to this card">→</a></label>'; });
   menu.innerHTML=h;
+  menu.querySelectorAll('.jgo').forEach(a=>a.onclick=e=>{ e.preventDefault(); e.stopPropagation();
+    const el=document.querySelector('[data-card="'+a.dataset.go+'"]'); menu.classList.remove('open');
+    if(el){ el.classList.remove('card-hidden'); el.scrollIntoView({behavior:'smooth',block:'start'}); } });
   menu.querySelectorAll('input').forEach(cb=>cb.onchange=()=>{
     const set=loadHidden(); cb.checked? set.delete(cb.dataset.k) : set.add(cb.dataset.k);
     saveHidden(set); applyHidden(); });
@@ -2199,6 +2337,11 @@ async function zbPlaceAll(){
   })();
 })();
 
+(function initTop(){
+  const b=$('toTop'); if(!b) return;
+  addEventListener('scroll',()=>{ b.classList.toggle('show', scrollY>700); },{passive:true});
+  b.onclick=()=>scrollTo({top:0,behavior:'smooth'});
+})();
 (function initPrefs(){
   const th=localStorage.getItem('pf_theme'); if(th) document.documentElement.setAttribute('data-theme',th);
   applyThemeBtn();
