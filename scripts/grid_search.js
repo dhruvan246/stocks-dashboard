@@ -8,9 +8,40 @@
 // Writes ranked top-25 (by CAGR and by risk-adjusted CAGR/maxDD) to scripts/_gridresult.json.
 (function () {
   const fs = require('fs'), zlib = require('zlib'), path = require('path');
+  const os = require('os'), { execFileSync } = require('child_process');
   const ROOT = path.resolve(__dirname, '..');
   const GZ = p => JSON.parse(zlib.gunzipSync(fs.readFileSync(path.join(ROOT, p))));
   const J = p => JSON.parse(fs.readFileSync(path.join(ROOT, p), 'utf8'));
+
+  // ── LIVE-bin resolver (audit 2026-09-01, P1-1). docs/sf_stock_data.bin is a FROZEN snapshot
+  //    (was end 2026-06-13 while live was 2026-08-31) — fitting strategies on it silently uses
+  //    ~10-week-old prices AND a different universe. So: load the LIVE release asset (cached in
+  //    tmp, validated, re-downloaded when the cache falls behind docs/sf_meta.json), and ABORT
+  //    rather than run on stale prices. SF_BIN=<path> overrides (CI, where a fresh bin is on disk).
+  //    Mirrors scripts/build_coverage_matrix.js resolveBin(). ──
+  const RELEASE_BIN = 'https://github.com/dhruvan246/stocks-dashboard/releases/download/data/sf_stock_data.bin';
+  const _binBad = p => { if (!fs.existsSync(p)) return 'no file'; const sz = fs.statSync(p).size;
+    if (sz < 5e7) return `only ${sz} bytes (expected >50MB)`; const fd = fs.openSync(p, 'r'), m = Buffer.alloc(2);
+    fs.readSync(fd, m, 0, 2, 0); fs.closeSync(fd); return (m[0] === 0x1f && m[1] === 0x8b) ? null : `not gzip (0x${m.toString('hex')})`; };
+  const _dlBin = dest => { for (let a = 1; a <= 4; a++) { let c;
+      try { execFileSync('curl', ['-fsSL', '--connect-timeout', '20', '--max-time', '900', '-o', dest, RELEASE_BIN], { stdio: 'inherit' }); c = _binBad(dest); if (!c) return; }
+      catch (e) { c = 'curl failed: ' + String(e.message).split('\n')[0]; }
+      console.error(`bin download ${a}/4 rejected — ${c}`); try { fs.unlinkSync(dest); } catch { /* nothing */ }
+      if (a < 4) Atomics.wait(new Int32Array(new SharedArrayBuffer(4)), 0, 0, a * 15000); }
+    throw new Error(`could not download a valid ${RELEASE_BIN} after 4 attempts`); };
+  function resolveSfBin() {
+    let expect = ''; try { expect = (J('docs/sf_meta.json').end) || ''; } catch { /* no marker */ }
+    const load = p => JSON.parse(zlib.gunzipSync(fs.readFileSync(p)));
+    const ov = process.env.SF_BIN;
+    if (ov) { const src = path.resolve(ov); const c = _binBad(src); if (c) throw new Error(`SF_BIN=${src} unusable: ${c}`);
+      const bin = load(src); if (expect && bin.end && bin.end < expect) throw new Error(`STALE SF_BIN: end=${bin.end} < sf_meta ${expect}`);
+      console.error(`bin: end=${bin.end} syms=${Object.keys(bin.data).length} src=SF_BIN`); return bin; }
+    const cache = path.join(os.tmpdir(), 'sf_stock_data_live.bin');
+    let bin = _binBad(cache) ? null : load(cache);
+    if (!bin || (expect && bin.end < expect)) { console.error(`downloading LIVE release asset (repo bin is frozen; cache ${bin ? 'end ' + bin.end + ' < ' + expect : 'missing'})…`); _dlBin(cache); bin = load(cache); }
+    if (expect && bin.end && bin.end < expect) throw new Error(`STALE BIN after download: end=${bin.end} < sf_meta ${expect} — the release asset itself is behind; check the daily refresh.`);
+    console.error(`bin: end=${bin.end} syms=${Object.keys(bin.data).length} src=release-asset`); return bin;
+  }
 
   // ---- loadCore() equivalent ----
   const SD = GZ('docs/stock_data.bin');
@@ -18,7 +49,7 @@
   NIFTY = (J('docs/nifty.json').px) || {};
 
   // ---- loadSF() equivalent (mirrors backtest-engine.js loadSF) ----
-  const SFD = GZ('docs/sf_stock_data.bin');
+  const SFD = resolveSfBin();
   const ts = START_TS, ser = {}, turn = {}, meta = {};
   for (const sym in SFD.data) {
     const o = SFD.data[sym], n = o.d.length, d = new Array(n), p = new Array(n), t = new Array(n);

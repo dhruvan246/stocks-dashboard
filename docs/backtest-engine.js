@@ -261,7 +261,10 @@ async function loadEngineData(onProgress) {
  * ---------------------------------------------------------------------------------------------- */
 // Production: sf-data is the SAME origin as the site (both dhruvan246.github.io), so this is a
 // plain same-origin fetch, no CORS. Serving docs/ locally, point at a locally built ./stk/ instead.
-const SLICE_BASE = (location.hostname === 'localhost' || location.hostname === '127.0.0.1' || location.protocol === 'file:')
+// `typeof location` guard so this file loads under Node (grid_search.js appends the engine and runs
+// it there). SLICE_BASE feeds only loadStockSlice(), a browser-only fetch never reached in Node —
+// in the browser `location` is always defined, so this is behavior-identical (no ENGINE_VER change).
+const SLICE_BASE = (typeof location !== 'undefined' && (location.hostname === 'localhost' || location.hostname === '127.0.0.1' || location.protocol === 'file:'))
   ? './stk/' : 'https://dhruvan246.github.io/sf-data/stk/';
 // Mirrors slug() in build_stock_slices.py / build_stock_fin.py — 23 symbols carry & or + (M&M, L&T…)
 function slugSym(s) { return String(s).replace(/[^A-Za-z0-9._-]/g, '_'); }
