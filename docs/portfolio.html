@@ -308,10 +308,6 @@ body.zview #app>*:not([data-card="zerodha"]){display:none}
         <div class="sub" id="modelSub"></div>
         <div class="body" id="modelBody"></div></div>
 
-      <div class="card c12" id="cardCal" data-card="calendar"><h2>Rebalance calendar — what the screen says today</h2>
-        <div class="sub" id="calSub"></div>
-        <div class="body" id="calBody"></div></div>
-
       <div class="card c12" data-card="ret-monthend"><h2>Strategy returns since last month-end</h2>
         <div class="sub" id="meSub"></div>
         <div class="body"><div id="chMonthEnd"></div>
@@ -1417,7 +1413,7 @@ function stratTabsHTML(list, sel){
 function resolveStratTab(list){ const ids=list.map(x=>x.pf.id); let sel=SEL.stratTab;
   if(sel!=='__all__' && !ids.includes(sel)) sel=ids[0]; return sel; }
 function wireStratTabs(host){ host.querySelectorAll('.stab').forEach(b=>b.onclick=()=>{
-  SEL.stratTab=b.dataset.strat; const rows=visibleRows(); renderModel(rows); renderCalendar(rows); }); }
+  SEL.stratTab=b.dataset.strat; const rows=visibleRows(); renderModel(rows); }); }
 function renderModel(rows){
   const body=$('modelBody'), sub=$('modelSub');
   if(!MODEL){ sub.textContent='No model file yet.'; body.innerHTML='<div class="empty">Publish from the Mac (double-click <code>Publish.command</code>) to generate it.</div>'; return; }
@@ -1428,8 +1424,19 @@ function renderModel(rows){
   const sel=resolveStratTab(list), shown = sel==='__all__'? list : list.filter(x=>x.pf.id===sel);
   let h = list.length>1 ? stratTabsHTML(list, sel) : '';
   shown.forEach(({pf,m})=>{
-    const last=m.rebs[m.rebs.length-1]; if(!last) return;
+    let last=m.rebs[m.rebs.length-1]; if(!last) return;
     const mine=ROWS.filter(r=>r.pf===pf.id);
+    /* Month-end just passed: the basket you HOLD is the latest rebalance's picks (m.picks,
+       dated picksAsOf), which the model can't close as a leg yet (no bar after it). If you
+       bought on/after that rebalance, anchor to it — not the prior closed leg — so entry,
+       slip and returns compare against what you actually bought, not last month's basket. */
+    const _fb=mine.map(r=>r.date).sort()[0], _pk=m.picks;
+    if(_pk && _pk.asOf && _pk.rows && _pk.asOf>last.td && (!_fb || _pk.asOf<=_fb)){
+      const _tn=m.topN||last.h.length||_pk.rows.length;
+      const _held=_pk.rows.slice(0,_tn).filter(r=>r.px!=null);
+      const _wt=_held.length?100/_tn:0;
+      last={ d:_pk.asOf, td:_pk.asOf, cashWt:Math.max(0,100-_held.length*_wt), h:_held.map(r=>[r.sym,_wt,r.px,1]) };
+    }
     /* model basket: Σ weight × (now ÷ rebalance close) + cash → one return; per-stock rows */
     let mnum=0, mden=0, eod=0;
     const mrows=last.h.map(([sym,wt,px0,isNew])=>{ const p=modelPx(sym); if(p.src==='eod') eod++;
@@ -1483,52 +1490,6 @@ function renderModel(rows){
   });
   body.innerHTML=h; wireStratTabs(body);
 }
-function renderCalendar(rows){
-  const body=$('calBody'), sub=$('calSub');
-  if(!MODEL){ sub.textContent='No model file yet.'; body.innerHTML='<div class="empty">Publish from the Mac (double-click <code>Publish.command</code>) to generate it.</div>'; return; }
-  const list=modelStrategies(rows);
-  if(!list.length){ sub.textContent='No strategy in this selection.'; body.innerHTML='<div class="empty">Pick an MTF strategy.</div>'; return; }
-  const asOf=MODEL.picksAsOf||MODEL.dataEnd;
-  sub.innerHTML='Next rebalance per strategy, and the screen\u2019s top picks <b>as of the '+shortDate(asOf)+' close</b> — what it would buy if the rebalance were today. '+
-    'Picks move with every close until the day itself. MTF: sell the exits the session before, buy the entries on the day. '+
-    'Dates are calendar month-ends stepped back over weekends; NSE holidays are not modelled.';
-  const sel=resolveStratTab(list), shown = sel==='__all__'? list : list.filter(x=>x.pf.id===sel);
-  const today=istTodayISO(); let h = list.length>1 ? stratTabsHTML(list, sel) : '';
-  shown.forEach(({pf,m,next})=>{
-    const mine=ROWS.filter(r=>r.pf===pf.id);
-    const held=new Set(mine.map(r=>r.sym.replace(/\.(NS|BO)$/,'')));
-    const picks=(m.picks&&m.picks.rows)||[], pickSet=new Set(picks.map(r=>r.sym));
-    const dd=next?daysBetween(today,next):null, sell=next?prevWeekday(next):null;
-    const exits=[...held].filter(s=>!pickSet.has(s)), entries=picks.filter(r=>!held.has(r.sym)).length;
-    h+='<div class="sblk"><div class="shead"><span class="nm2">'+esc(pf.name)+'</span>'+cycBadge(pf.cycle)+
-       ((m.picks&&m.picks.rows&&m.picks.rows.length)?' <button class="btn" data-zbasket="'+esc(pf.id)+'" style="margin-left:10px" title="Buy this strategy’s current basket on Zerodha — one dialog, all its stocks">⚡ Buy basket</button>':'')+'</div>';
-    h+='<div class="cal">'+
-      '<div class="d"><div class="l">Next rebalance</div><div class="v">'+(next?longDate(next):'—')+'</div><div class="s">'+(dd==null?'':dd===0?'today — ranks on today\u2019s close':dd+' day'+(dd===1?'':'s')+' to go')+'</div></div>'+
-      '<div class="d"><div class="l">Sell exits on</div><div class="v">'+(sell?longDate(sell):'—')+'</div><div class="s">MTF proceeds usable the next session</div></div>'+
-      '<div class="d"><div class="l">If it were today</div><div class="v">'+exits.length+' exit · '+entries+' new</div><div class="s">'+(m.picks?m.picks.qualifying+' stocks pass the filters':'')+'</div></div></div>';
-    h+='<div class="twrap"><table><thead><tr><th>#</th><th>Pick</th><th>'+esc((m.label||'').split(' ')[0]||'Factor')+' (sort)</th><th>From 52w high</th><th>Above 52w low</th><th>Close '+shortDate(asOf)+'</th><th>Now</th></tr></thead><tbody>';
-    picks.forEach(r=>{ const p=modelPx(r.sym);
-      h+='<tr><td>'+r.rank+'</td><td><span class="secret"><b>'+esc(r.sym)+'</b></span> '+(held.has(r.sym)?'<span class="tag keep">held</span>':'<span class="tag new">new</span>')+'</td>'+
-         '<td>'+(r.f==null?'—':r.f.toFixed(1)+'%')+'</td><td>'+(r.d52==null?'—':'−'+r.d52.toFixed(1)+'%')+'</td><td>'+(r.lo==null?'—':'+'+r.lo.toFixed(0)+'%')+'</td>'+
-         '<td>'+(r.px!=null?'₹'+(+r.px).toFixed(2):'—')+'</td><td>'+(p.px!=null?'₹'+p.px.toFixed(2):'—')+(p.src==='eod'?' <span class="badge">EOD</span>':'')+'</td></tr>'; });
-    /* your holdings that are NOT in today's top-N: where they stand */
-    const standing=m.standing||[];
-    const FN={d52:'from its 52-week high',d52_low_pct:'above its 52-week low',profitYoyPct:'profit growth YoY',profitTTM:'profit growth TTM'};
-    const OPW={'>':'needs more than','>=':'needs at least','<':'needs under','<=':'needs at most','=':'needs'};
-    const phrase=f=>{ if(!f) return 'no longer passes the screen'; const nm=FN[f.field]||f.field;
-      return f.x==null? 'no '+nm+' reading' : nm+' is '+f.x+'% \u2014 '+(OPW[f.op]||f.op)+' '+f.val+'%'; };
-    h+='</tbody></table></div>';
-    /* exits as wrapping rows, not table rows: on a phone the table scrolls sideways and the
-       reason — the one thing worth reading before a rebalance — would be the part cut off */
-    exits.forEach(sym=>{ const st=standing.find(x=>x.sym===sym);
-      const why= !st? 'not in the strategy\u2019s basket' : st.rank? 'now rank '+st.rank+' of '+m.picks.qualifying+' \u2014 below the top '+(m.topN||picks.length) : phrase(st.fail);
-      h+='<div style="display:flex;flex-wrap:wrap;align-items:baseline;gap:2px 12px;padding:7px 9px;border-bottom:1px solid var(--grid);font-size:12.5px">'+
-         '<span style="white-space:nowrap"><span class="secret"><b>'+esc(sym)+'</b></span> <span class="tag exit">exit</span></span>'+
-         '<span class="sym" style="min-width:0">'+esc(why)+'</span></div>'; });
-    h+='</div>';
-  });
-  body.innerHTML=h; wireStratTabs(body);
-}
 function renderClosed(rows){
   const body=$('closedBody'), sub=$('closedSub');
   if(!TRADES){ sub.textContent='No trade log yet.'; body.innerHTML='<div class="empty">Fetch closed positions on the Mac, then re-publish.</div>'; return; }
@@ -1577,7 +1538,7 @@ function renderClosed(rows){
 function renderAll(){
   const rows=visibleRows();
   renderKPIs(rows); renderToday(rows); renderFilters();
-  renderModel(rows); renderCalendar(rows); renderClosed(rows);
+  renderModel(rows); renderClosed(rows);
   renderStrategyCard(rows,'close',{sub:'meSub',chart:'chMonthEnd',tbl:'tblMonthEnd'});
   renderStrategyCard(rows,'buy',  {sub:'buySub',chart:'chBuy',    tbl:'tblBuy'});
   renderCharts(rows); renderHoldings(rows); renderAccounts();
@@ -2215,9 +2176,6 @@ async function zbPlaceAll(){
   ktoast(okN+'/'+orders.length+' orders complete — see the table for the rest',6000);
   zRefreshAll(true);
 }
-$('calBody').addEventListener('click',e=>{
-  const b=e.target.closest('[data-zbasket]'); if(b) zBasketOpen(b.dataset.zbasket);
-});
 /* Kite's login bounces back here with ?request_token=… — catch it, trade it in,
    and scrub the URL so a reload can't replay a dead token. */
 (function zCapture(){
