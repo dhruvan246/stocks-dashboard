@@ -413,6 +413,9 @@ def main():
 
     docs = os.path.join(os.path.dirname(HERE), "docs", "sf_fundamentals.json")
     def flush():
+        fund_dup_guard.sort_rows(data)   # rows must stay sorted by quarter-end (engine scans backwards);
+                                         # `data` is loaded from an existing store that another writer
+                                         # may have left out of order. Idempotent. (audit 2026-09-01)
         fund_dup_guard.assert_ok(data, "build_fundamentals")
         json.dump(data, open(OUT, "w"), separators=(",", ":"))
         json.dump(data, open(docs, "w"), separators=(",", ":"))   # web copy stays usable mid-build

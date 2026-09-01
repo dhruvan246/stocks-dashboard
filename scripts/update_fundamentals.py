@@ -295,6 +295,13 @@ def main():
 
     if not changed and not newsyms and not revop_changed:
         print("no new earnings — nothing to update"); return
+    # Normalise quarter-end order before the guard: rows MUST be sorted (the engine scans backwards
+    # for the current quarter). This upsert sorts only the rec it appends to, so a symbol left out
+    # of order by another writer (ci_preserve_merge appends a CI-only quarter without re-sorting)
+    # would otherwise trip assert_ok's sorted-invariant. sort_rows is idempotent. (audit 2026-09-01)
+    _reordered = fund_dup_guard.sort_rows(data)
+    if _reordered:
+        print("sorted %d symbol(s) whose rows were out of quarter-end order" % _reordered)
     fund_dup_guard.assert_ok(data, "update_fundamentals")
     json.dump(data, open(DOCS, "w"), separators=(",", ":"))
     json.dump(revop, open(REVOP, "w"), separators=(",", ":"))
