@@ -596,8 +596,8 @@ function buySlices(orders){
     const list = []; let q = o.quantity;
     while (q > 0){ const take = Math.min(chunk, q); q -= take; list.push(Object.assign({}, o, { quantity: take })); }
     per[o.tradingsymbol] = list; });
-  const out = []; let more = true;                 // round-robin so every stock builds evenly
-  while (more){ more = false; for (const k in per){ const l = per[k]; if (l.length){ out.push(l.shift()); if (l.length) more = true; } } }
+  const out = []; let more = true, round = 0;       // round-robin; TAG each slice with its round #
+  while (more){ more = false; for (const k in per){ const l = per[k]; if (l.length){ const sl = l.shift(); sl._round = round; out.push(sl); if (l.length) more = true; } } round++; }
   return out;
 }
 function buyStop(id, msg){ const B = BUYSLICER[id]; if (!B) return; clearTimeout(B.t); delete BUYSLICER[id];
@@ -625,7 +625,9 @@ function buyFire(id){
           }
           B.i++; if (B.btn) B.btn.textContent = '⚡ ' + B.i + '/' + B.n;
           if (B.i >= B.slices.length) buyStop(id, 'Basket done — all ' + B.n + ' buy slices sent (unfilled tails rest at their limits)');
-          else B.t = setTimeout(() => buyFire(id), Math.max(3, sliceGap() - 2) * 1000);
+          else { const sameRound = B.slices[B.i] && B.slices[B.i]._round === o0._round;   // o0 = slice just filled
+                 const wait = sameRound ? 3 : Math.max(3, sliceGap() - 2);                // gap ONLY between rounds
+                 B.t = setTimeout(() => buyFire(id), wait * 1000); }
         }); }, 1800);
       }
       else if (ipBlocked(msg) || st === 0){ Z.directBlocked = true;
