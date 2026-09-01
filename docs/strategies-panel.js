@@ -644,9 +644,24 @@ function buySlices(orders){
 }
 function buyStop(id, msg){ const B = BUYSLICER[id]; if (!B) return; clearTimeout(B.t); delete BUYSLICER[id];
   if (msg) ktoast(msg, 6500); renderCards(); }
+/* A per-stock failure SKIPS that stock (drops its remaining slices) and continues the rest,
+   instead of killing the whole basket (user 2026-09-01). Failed names are reported at the end. */
+function buySkipStock(id, o0, reason){
+  const B = BUYSLICER[id]; if (!B) return;
+  (B.failed = B.failed || []).push(o0.tradingsymbol);
+  const head = B.slices.slice(0, B.i), tail = B.slices.slice(B.i).filter(x => x.tradingsymbol !== o0.tradingsymbol);
+  B.slices = head.concat(tail); B.n = B.slices.length;
+  ktoast(o0.tradingsymbol + ' failed (' + reason + ') — skipped, continuing with the rest', 5200);
+  if (B.i >= B.slices.length){ buyDone(id); return; }
+  if (B.btn) B.btn.textContent = '⚡ ' + B.i + '/' + B.n;
+  B.t = setTimeout(() => buyFire(id), 1000);
+}
+function buyDone(id){ const B = BUYSLICER[id]; if (!B) return;
+  const f = B.failed && B.failed.length ? [...new Set(B.failed)] : [];
+  buyStop(id, 'Basket done — ' + B.n + ' slices sent' + (f.length ? ' · FAILED (buy separately): ' + f.join(', ') : ' (unfilled tails rest at their limits)')); }
 function buyFire(id){
   const B = BUYSLICER[id]; if (!B) return;
-  if (B.i >= B.slices.length){ buyStop(id, 'Basket done — all ' + B.n + ' buy slices sent (unfilled tails rest at their limits)'); return; }
+  if (B.i >= B.slices.length){ buyDone(id); return; }
   const o0 = B.slices[B.i];
   freshLtp(o0.tradingsymbol).then(ltp => {
     const px = (ltp || o0._px || 0), o = Object.assign({}, o0); delete o._px;
@@ -663,10 +678,10 @@ function buyFire(id){
             if (tk > 0 && !o0._tickRetry){ TICKMEM[o0.tradingsymbol] = tk; o0._tickRetry = 1;
               ktoast(o0.tradingsymbol + ': tick is ' + tk + ' — re-pricing and retrying', 4200);
               B.t = setTimeout(() => buyFire(id), 1200); return; }
-            buyStop(id, o0.tradingsymbol + ' buy REJECTED: ' + (omsg || 'no reason') + ' · stopped after ' + B.i + '/' + B.n); return;
+            buySkipStock(id, o0, 'rejected: ' + (omsg || 'no reason')); return;
           }
           B.i++; if (B.btn) B.btn.textContent = '⚡ ' + B.i + '/' + B.n;
-          if (B.i >= B.slices.length) buyStop(id, 'Basket done — all ' + B.n + ' buy slices sent (unfilled tails rest at their limits)');
+          if (B.i >= B.slices.length) buyDone(id);
           else { const sameRound = B.slices[B.i] && B.slices[B.i]._round === o0._round;   // o0 = slice just filled
                  const wait = sameRound ? 3 : Math.max(3, sliceGap() - 2);                // gap ONLY between rounds
                  B.t = setTimeout(() => buyFire(id), wait * 1000); }
@@ -682,7 +697,7 @@ function buyFire(id){
         if (tk > 0 && !o0._tickRetry){ TICKMEM[o0.tradingsymbol] = tk; o0._tickRetry = 1;
           ktoast(o0.tradingsymbol + ': tick is ' + tk + ' (Zerodha) — re-pricing and retrying', 4200);
           B.t = setTimeout(() => buyFire(id), 1200); return; }
-        buyStop(id, o0.tradingsymbol + ' buy refused by Zerodha: ' + msg + ' · stopped after ' + B.i + '/' + B.n); }
+        buySkipStock(id, o0, msg); }
     });
   });
 }
