@@ -251,7 +251,11 @@ function renderCards(){
       (p && p.live ? '<span class="tag new">LIVE</span>' : '') +
       '<span style="margin-left:auto; display:flex; gap:6px">' +
       '<button class="btn" data-load="' + esc(it.id) + '">🎯 ' + (p ? 'Refresh' : 'Picks') + '</button>' +
-      (p ? '<button class="btn on" data-basket="' + esc(it.id) + '">' + (BUYSLICER[it.id] ? '⚡ ' + BUYSLICER[it.id].i + '/' + BUYSLICER[it.id].n : '⚡ ' + (bought.has(it.id) ? 'Buy again' : 'Buy basket')) + '</button>' : '') +
+      (p ? (BUYSLICER[it.id]
+              ? '<button class="btn on" data-basket="' + esc(it.id) + '">⚡ ' + BUYSLICER[it.id].i + '/' + BUYSLICER[it.id].n + '</button>'
+              : (bought.has(it.id)
+                   ? '<button class="btn" disabled title="Already bought today — click the ✓ bought-today chip to re-enable" style="opacity:.5;cursor:not-allowed;color:var(--up)">✓ Bought</button>'
+                   : '<button class="btn on" data-basket="' + esc(it.id) + '">⚡ Buy basket</button>')) : '') +
       '</span></div>' + body + '</div>';
   }).join('');
   $('cards').innerHTML = h;
