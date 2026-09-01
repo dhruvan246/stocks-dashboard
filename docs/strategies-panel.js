@@ -215,6 +215,8 @@ function cardMeta(cfg){
 }
 function renderCards(){
   const favs = loadFavs();
+  const favOrder = (function(){ try { return JSON.parse(localStorage.getItem('bt_fav_strategies') || '[]'); } catch(e){ return []; } })();
+  const favNum = cfg => { let i = favOrder.indexOf(identityKey(cfg)); if (i < 0 && typeof ruleKey === 'function') i = favOrder.indexOf(ruleKey(cfg)); return i + 1; };
   const all = uniqStrategies();
   // favourites float to the top; the toggle narrows to just them (default on when stars exist)
   const nFav = all.filter(it => isFavCfg(favs, it.cfg)).length;
@@ -244,7 +246,7 @@ function renderCards(){
             '<td class="' + (chg == null ? 'sym' : chg >= 0 ? 'up' : 'down') + '">' + (chg == null ? '—' : (chg >= 0 ? '+' : '') + chg.toFixed(2) + '%') + '</td></tr>';
         }).join('') + '</tbody></table></div>';
     }
-    return '<div class="sblk"><div class="shead"><span class="nm2" title="Code-name: ' + esc(nameWithBasis(it.name, it.cfg)) + '">' + (isFavCfg(loadFavs(), it.cfg) ? '\u2b50 ' : '') + esc(disp) + '</span>' +
+    return '<div class="sblk"><div class="shead">' + (favNum(it.cfg) ? '<span class="snum" style="font-size:11px;background:var(--buy);color:#fff;border-color:var(--buy);padding:1px 6px;margin:0 4px 0 0">#' + favNum(it.cfg) + '</span>' : '') + '<span class="nm2" title="Code-name: ' + esc(nameWithBasis(it.name, it.cfg)) + '">' + (isFavCfg(loadFavs(), it.cfg) ? '\u2b50 ' : '') + esc(disp) + '</span>' +
       (it._priv ? '<span class="tag new">private</span>' : '') +
       (bought.has(it.id) ? '<span class="tag keep" data-unbought="' + esc(it.id) + '" title="Basket sent to Zerodha today — click if that was cancelled" style="cursor:pointer">✓ bought today</span>' : '') +
       '<span class="sym">' + esc(cardMeta(it.cfg)) + (p ? (p.live ? ' · LIVE picks · close ' + esc(p.asOf) + ' + prices ' + (p.liveTs ? new Date(p.liveTs).toTimeString().slice(0, 5) : 'now') : ' · picks as of ' + esc(p.asOf)) : '') + '</span>' +
