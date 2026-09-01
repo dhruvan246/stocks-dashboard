@@ -116,7 +116,7 @@ function round(x, d) { return (x == null || !isFinite(x)) ? null : +(+x).toFixed
 
 async function main() {
   const doc = await loadHoldings();
-  const pfs = (doc.portfolios || []).filter(p => p.strategy && p.cycle && p.cycle.length);
+  const pfs = (doc.portfolios || []).filter(p => p.strategy && p.cycle && p.cycle.length && !p.archived);
   if (!pfs.length) { log('no portfolio carries a strategy + cycle — nothing to do'); process.exit(2); }
   log((CLOUD ? 'CLOUD' : 'LOCAL') + ' mode · ' + pfs.length + ' strategies · fetching the live engine…');
 
