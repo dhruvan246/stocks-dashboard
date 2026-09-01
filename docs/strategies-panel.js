@@ -748,6 +748,21 @@ function sellRuntime(exitRows){
   return { tot: tot, mins: mins, startBy: (t > 9 * 60 && mins > 3) ? (Math.floor(t / 60) + ':' + String(t % 60).padStart(2, '0')) : null };
 }
 function livePicksOk(p){ return !!(p && p.live && p.liveTs && Date.now() - p.liveTs < 180000); }
+/* Sell baskets only MEAN anything on the rebalance window: T-1 (sell exits near that close, the
+   adopted convention) and T = the month-end session (flush late exits). Any other day the view is
+   informational -- an armed Sell button on Sep 1 is how a mid-month accidental dump happens
+   (user 2026-09-01: "y does terminal say sell this?"). Weekend-aware; NSE holidays not modelled. */
+function rebalWindow(){
+  const now = new Date(Date.now() + 330 * 60000);
+  const y = now.getUTCFullYear(), m = now.getUTCMonth();
+  let t = new Date(Date.UTC(y, m + 1, 0));
+  while (t.getUTCDay() % 6 === 0) t = new Date(t.getTime() - 864e5);       // T: last trading day of month
+  let t1 = new Date(t.getTime() - 864e5);
+  while (t1.getUTCDay() % 6 === 0) t1 = new Date(t1.getTime() - 864e5);    // T-1: the session before
+  const d0 = Date.UTC(y, m, now.getUTCDate());
+  const lab = d => new Date(d).toLocaleDateString('en-GB', { day: 'numeric', month: 'short', timeZone: 'UTC' });
+  return { in: d0 >= +t1 && d0 <= +t, t1lab: lab(+t1), tlab: lab(+t) };
+}
 function sellCardHTML(it, disp, favNum){
   const sold = zbSoldSet();
   const held = heldFor(it.cfg);
@@ -782,13 +797,14 @@ function sellCardHTML(it, disp, favNum){
                 : '<span class="badge">load picks</span>')) + '</td></tr>').join('') +
       '</tbody></table></div>' +
       '<div class="khelp">' + (isReset
-        ? 'Reset strategy: the whole basket sells every rebalance and re-enters fresh \u2014 even a stock picked again.' + rtTxt
+        ? 'Reset strategy: the whole basket sells every rebalance and re-enters fresh \u2014 even a stock picked again. Acts on the rebalance window only (' + rebalWindow().t1lab + '\u2013' + rebalWindow().tlab + ').' + rtTxt
         : (pickSet ? exits.length + ' exit' + (exits.length === 1 ? '' : 's') + ' to sell' + (est ? ' \u2248 ' + zinr(est) : '') + rtTxt + ' \u00b7 greyed rows stay for next month and are never sold.'
                    : 'Load the picks (\ud83c\udfaf) first \u2014 without them the exits are unknown, so nothing can be sold.')) +
       (!liveOk && pickSet ? '<br>\u26a0 <b>Picks are ' + (p && p.live ? 'STALE live' : 'REBALANCE-mode \u2014 yesterday\u2019s bake, one day older than you think') + '.</b> Switch to \u26a1 Live picks (top bar) and refresh \u2014 selling is locked until then.' : '') + '</div>';
-    const B = BUYSLICER[it.id];
+    const B = BUYSLICER[it.id], RW = rebalWindow();
     if (B && B.sell) btn = '<button class="btn on" data-sellbasket="' + esc(it.id) + '">\ud83d\udd3b ' + B.i + '/' + B.n + '</button>';
     else if (sold.has(it.id)) btn = '<button class="btn" disabled style="opacity:.5;cursor:not-allowed;color:var(--down)" title="Sold today \u2014 click the \u2713 sold-today chip to re-enable">\u2713 Sold</button>';
+    else if ((pickSet || isReset) && exits.length && !RW.in) btn = '<span class="tag off" title="Sell baskets act only on the rebalance window \u2014 sell exits near the T\u22121 close, flush stragglers on month-end. Until then this list is informational.">\ud83d\udd12 arms ' + esc(RW.t1lab) + '</span>';
     else if ((pickSet || isReset) && exits.length && liveOk) btn = '<button class="btn on" style="background:var(--down);border-color:var(--down)" data-sellbasket="' + esc(it.id) + '">\ud83d\udd3b Sell ' + (isReset ? 'all ' : '') + exits.length + '</button>';
     else if ((pickSet || isReset) && exits.length) btn = '<span class="tag" style="background:color-mix(in srgb,#c98500 18%,transparent);color:#c98500">\u26a1 Live picks required</span>';
   }
@@ -806,6 +822,8 @@ async function sellBasketStart(id){
   const isReset = held.method === 'reset';
   const p = PICKS[id];
   if (!isReset && (!p || !p.rows.length)){ ktoast('Load the picks first \u2014 exits are unknown without them'); return; }
+  const RW = rebalWindow();
+  if (!RW.in){ ktoast('\ud83d\udd12 Sell baskets act only on the rebalance window \u2014 ' + RW.t1lab + ' (T\u22121, sell exits near the close) and ' + RW.tlab + ' (month-end). Nothing sent.', 7500); return; }
   if (!isReset && marketOpen() && !livePicksOk(p)){
     ktoast('\u26a0 Picks are ' + (p.live ? 'stale' : 'REBALANCE-mode (yesterday\u2019s bake)') + ' \u2014 switch to \u26a1 Live picks and refresh; selling exits is locked until the screen is live-fresh', 7500); return; }
   const pickSet = new Set(((p && p.rows) || []).map(r => r.sym));
