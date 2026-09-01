@@ -531,6 +531,10 @@ def main():
                     json.dump({"done": start_i + processed}, open(PROG, "w"))
                     print("  %d/%d files, %d symbols" % (start_i + processed, total, len(data)), flush=True)
 
+    nbad = normalize_ebit(data)
+    if nbad:
+        print("[ebit<=op guard] nulled %d impossible ebit slot(s) (ebit = op - depreciation, so "
+              "ebit > op cannot occur; op and ebit had come from different filings)" % nbad)
     json.dump(data, open(OUT, "w"), separators=(",", ":"))
     if not limit:
         json.dump({"done": total}, open(PROG, "w"))
@@ -538,6 +542,30 @@ def main():
     print("Wrote %s + %s: %d symbols, %d files processed" % (OUT, DOCS_OUT, len(data), processed))
 
     validate(data)
+
+
+def normalize_ebit(data):
+    """Null any ebit slot that exceeds its op slot. ebit is defined op - Depreciation (after-dep
+    operating profit) and depreciation >= 0, so ebit > op is impossible by construction. It arises
+    because op (slot 2/3) and ebit (slot 7/8) are filled latest-filing-wins INDEPENDENTLY, so a
+    revised op can leave a stale ebit above it (audit 2026-09-01, 169 cells). The value is
+    unreconstructable (we don't keep depreciation), so the provably-wrong ebit is dropped, not kept.
+    Returns the number of slots nulled. Small epsilon so filer rounding (ebit == op to the paisa,
+    zero depreciation) is not disturbed."""
+    EPS = 0.01
+    n = 0
+    for sym, qmap in data.items():
+        if not isinstance(qmap, dict):
+            continue
+        for qe, row in qmap.items():
+            if not isinstance(row, list) or len(row) < 9:
+                continue
+            for op_i, eb_i in ((2, 7), (3, 8)):   # (opStd, ebitStd), (opCon, ebitCon)
+                op, eb = row[op_i], row[eb_i]
+                if op is not None and eb is not None and eb > op + EPS:
+                    row[eb_i] = None
+                    n += 1
+    return n
 
 
 def validate(data):
