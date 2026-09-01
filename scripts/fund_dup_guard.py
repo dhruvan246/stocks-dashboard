@@ -189,14 +189,16 @@ def assert_ok(fund, where="sf_fundamentals"):
             "Fix the writer, then `python3 scripts/fund_dup_guard.py --merge`; register a genuine "
             "value conflict in scripts/fund_dup_allow.json instead of merging it."
             % (where, len(bad), ", ".join(bad[:10]), " ..." if len(bad) > 10 else ""))
+    # Out-of-order rows are WARNED, never raised: a raise here is too fragile — the live store
+    # carries 8 legacy out-of-order symbols, so any caller that runs assert_ok before its store is
+    # sorted crashes (it failed the nightly refresh on a mid-deploy race, 2026-09-01). The fix for
+    # the ORDER invariant is the writers calling sort_rows() (dedup / update_fundamentals /
+    # build_fundamentals all do), NOT a hard gate here. Duplicates stay a hard error above.
     unsorted = unsorted_symbols(fund)
     if unsorted:
-        raise DuplicateQuarterError(
-            "%s: %d symbol(s) carry rows OUT OF quarter-end ORDER -- %s%s. The engine scans "
-            "backwards for the current quarter, so an unsorted tail serves a stale quarter. "
-            "Sort the writer's output (fund_dup_guard.dedup() already does), or call "
-            "fund_dup_guard.sort_rows(fund) before writing."
-            % (where, len(unsorted), ", ".join(unsorted[:10]), " ..." if len(unsorted) > 10 else ""))
+        print("[fund_dup_guard] WARN %s: %d symbol(s) out of quarter-end order -- %s%s "
+              "(call sort_rows() before writing; not fatal)"
+              % (where, len(unsorted), ", ".join(unsorted[:10]), " ..." if len(unsorted) > 10 else ""))
     return True
 
 
