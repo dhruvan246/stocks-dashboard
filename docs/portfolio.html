@@ -1394,6 +1394,10 @@ function nextRebalance(cycle){
   return null;
 }
 function daysBetween(a,b){ return Math.round((Date.parse(b+'T00:00:00Z')-Date.parse(a+'T00:00:00Z'))/864e5); }
+/* Is `iso` the last TRADING day of its month? (its next weekday lands in a new month) - matches
+   the model's weekend-only month-end stepping, so it holds even when the 31st is a Sat/Sun. */
+function isMonthEndTD(iso){ const d=new Date(iso+'T00:00:00Z'), m=d.getUTCMonth(); let n=new Date(d.getTime()+864e5);
+  while(n.getUTCDay()%6===0) n=new Date(n.getTime()+864e5); return n.getUTCMonth()!==m; }
 function longDate(iso){ return new Date(iso+'T00:00:00Z').toLocaleDateString('en-GB',{weekday:'short',day:'numeric',month:'short',timeZone:'UTC'}); }
 /* strategies to show = MTF portfolios with a model, honouring the account/portfolio chips */
 function modelStrategies(rows){
@@ -1430,8 +1434,8 @@ function renderModel(rows){
        dated picksAsOf), which the model can't close as a leg yet (no bar after it). If you
        bought on/after that rebalance, anchor to it — not the prior closed leg — so entry,
        slip and returns compare against what you actually bought, not last month's basket. */
-    const _fb=mine.map(r=>r.date).sort()[0], _pk=m.picks;
-    if(_pk && _pk.asOf && _pk.rows && _pk.asOf>last.td && (!_fb || _pk.asOf<=_fb)){
+    const _lb=mine.map(r=>r.date).sort().slice(-1)[0], _pk=m.picks;
+    if(_pk && _pk.asOf && _pk.rows && _pk.asOf>last.td && isMonthEndTD(_pk.asOf) && (!_lb || _lb>=_pk.asOf)){
       const _tn=m.topN||last.h.length||_pk.rows.length;
       const _held=_pk.rows.slice(0,_tn).filter(r=>r.px!=null);
       const _wt=_held.length?100/_tn:0;
