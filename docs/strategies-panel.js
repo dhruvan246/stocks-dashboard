@@ -269,6 +269,7 @@ function renderCards(){
     .slice().sort((a, b) => (isFavCfg(favs, b.cfg) ? 1 : 0) - (isFavCfg(favs, a.cfg) ? 1 : 0));
   if (!list.length){ $('cards').innerHTML = '<div class="empty">No saved strategies found.</div>'; return; }
   const bought = zbBoughtSet();
+  const RW = rebalWindow();
   const h = list.map(it => {
     const en = (typeof strategyEnglish === 'function') ? strategyEnglish(it.cfg) : '';
     const disp = en || nameWithBasis(it.name, it.cfg);
@@ -300,7 +301,7 @@ function renderCards(){
               ? '<button class="btn on" data-basket="' + esc(it.id) + '">⚡ ' + BUYSLICER[it.id].i + '/' + BUYSLICER[it.id].n + '</button>'
               : (bought.has(it.id)
                    ? '<button class="btn" disabled title="Already bought today — click the ✓ bought-today chip to re-enable" style="opacity:.5;cursor:not-allowed;color:var(--up)">✓ Bought</button>'
-                   : '<button class="btn on" data-basket="' + esc(it.id) + '">⚡ Buy basket</button>')) : '') +
+                   : (RW.in ? '<button class="btn on" data-basket="' + esc(it.id) + '">⚡ Buy basket</button>' : '<span class="tag off" title="Buy baskets act only on the rebalance window — enter new positions near the month-end close, funded by the exits. Off-window this is a preview only.">🔒 arms ' + RW.t1lab + '</span>'))) : '') +
       '</span></div>' + body + '</div>';
   }).join('');
   $('cards').innerHTML = h;
@@ -322,16 +323,27 @@ function buyAllAgg(list){
   const agg = {}, missing = [];
   list.forEach((it, i) => {
     const p = PICKS[it.id]; if (!p || !p.rows.length) return;
-    const amt = zbaGet(it.id);
-    if (!amt) missing.push(i + 1);
-    /* engine sizing (2026-09-01): a HOLD strategy re-buys nothing it already holds — only the
-       new entries get money. The strategy's amount is spread over those entries alone. */
+    /* engine sizing (2026-09-01, FIXED): a HOLD strategy funds each NEW entry from its EXIT
+       proceeds (value of the holds it drops from the picks) ÷ open slots — never a fresh full
+       amount. RESET sells its whole book, split topN ways. Proceeds are estimated at live prices
+       (the ⚡ dialog + rebalance_sync reconcile the actual fills). Only a strategy with no held
+       book yet (a first-ever buy) falls back to the ₹ amount typed in its dialog. */
     const held = heldFor(it.cfg);
-    const holdKeep = held && held.rows.length && held.method !== 'reset';
+    const isReset = !!(held && held.method === 'reset');
+    const holdKeep = held && held.rows.length && !isReset;
     const heldSet = holdKeep ? new Set(held.rows.map(x => x.sym)) : null;
     const rows2 = holdKeep ? p.rows.filter(r => !heldSet.has(r.sym)) : p.rows;
     if (!rows2.length) return;
-    const per = amt ? amt / rows2.length : 0;
+    let per;
+    if (held && held.rows.length){
+      const pxOf = h => { const q = liveQ(h.sym); return (q && q.ltp != null) ? +q.ltp : (h.avg || 0); };
+      if (isReset){ const book = held.rows.reduce((s, h) => s + h.qty * pxOf(h), 0);
+        per = book / (held.topN || p.rows.length); }
+      else { const pickSet = new Set(p.rows.map(r => r.sym));
+        const exitVal = held.rows.filter(h => !pickSet.has(h.sym)).reduce((s, h) => s + h.qty * pxOf(h), 0);
+        const stays = held.rows.filter(h => pickSet.has(h.sym)).length;
+        per = exitVal / Math.max(1, (held.topN || p.rows.length) - stays); }
+    } else { const amt = zbaGet(it.id); if (!amt) missing.push(i + 1); per = amt ? amt / rows2.length : 0; }
     rows2.forEach(r => {
       const q = liveQ(r.sym), px = (q && q.ltp != null) ? q.ltp : r.px;
       const cap = zbCap(r.sym), contrib = cap > 0 ? Math.min(per, cap) : per;   // per-basket ₹ cap (HFCL)
@@ -365,7 +377,7 @@ function renderBuyAll(list){
       '<td>' + (r.qty ? r.qty.toLocaleString('en-IN') : '—') + '</td>' +
       '<td>' + (r.amt ? zinr(r.amt) : '—') + (r.capped ? ' <span class="sym" title="capped per basket">cap</span>' : '') + '</td></tr>').join('') +
     '</tbody></table></div>' +
-    '<div class="khelp">Numbered by the strategy blocks below. A stock several strategies want is bought once, for the combined amount. Set a strategy’s ₹ amount once in its ⚡ dialog — it is remembered.</div></div>';
+    '<div class="khelp">Numbered by the strategy blocks below. Amounts are the engine’s rebalance sizing — each new entry funded by its strategy’s EXIT proceeds (value of the holds it drops), estimated at live prices; a first-ever buy with no holdings falls back to the ₹ amount in its ⚡ dialog. A stock several strategies want is bought once, for the combined amount.</div></div>';
   const lg = $('levGo'); if (lg) lg.onclick = () => zbLevSweep(rows);
   const go = $('balGo');
   if (go) go.onclick = () => {
@@ -978,6 +990,8 @@ function buyFire(id){
   });
 }
 async function zbPlaceAll(){
+  const RW = rebalWindow();
+  if (!RW.in){ ktoast('🔒 Buy baskets act only on the rebalance window — ' + RW.t1lab + ' (T−1) to ' + RW.tlab + ' (month-end). Nothing placed.', 7500); return; }
   const orders = zbOrders();
   if (!orders.length){ ktoast('Nothing to buy — set an amount first'); return; }
   const b = $('zbGo'), est = orders.reduce((s, o) => { const r = ZB.rows.find(x => x.sym === o.tradingsymbol); return s + o.quantity * ((r && r.px) || 0); }, 0);
