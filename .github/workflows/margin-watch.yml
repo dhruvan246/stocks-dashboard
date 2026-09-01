@@ -1,0 +1,46 @@
+# Standing MTF-margin watchdog (user 2026-09-01, after the Sept-1 8-strategy deployment).
+# Polls Zerodha /margins through the kite worker every ~30 min of the trading day and FAILS
+# the run when net available margin sits below the floor — a failed run is the alert (GitHub
+# e-mails failures). PUBLIC repo => the logs never print a single rupee figure on purpose.
+# Kite not logged in yet (the daily login) => no data => skip quietly, no false alarms.
+# Floor: edit FLOOR_RUPEES below (currently 15L).
+name: margin-watch
+on:
+  schedule:
+    - cron: '45 3 * * 1-5'        # 09:15 IST open check
+    - cron: '15,45 4-9 * * 1-5'   # 09:45-15:15 IST, every 30 min
+    - cron: '0 10 * * 1-5'        # 15:30 IST close check
+  workflow_dispatch:
+permissions: {}
+concurrency: margin-watch
+jobs:
+  check:
+    runs-on: ubuntu-latest
+    timeout-minutes: 5
+    steps:
+      - name: margin floor check (log stays number-free)
+        env:
+          TOK: ${{ secrets.PF_HOLDINGS_TOKEN }}
+          FLOOR_RUPEES: '1500000'
+        run: |
+          set -euo pipefail
+          if [ -z "$TOK" ]; then echo "PF_HOLDINGS_TOKEN secret missing"; exit 1; fi
+          R="$(curl -sS --max-time 30 -H "X-PF-Token: $TOK" -H "User-Agent: Mozilla/5.0" https://kite-proxy.dhruvan2510.workers.dev/margins || true)"
+          printf '%s' "$R" | python3 -c '
+          import sys, json, os
+          raw = sys.stdin.read()
+          try:
+              d = json.loads(raw)
+          except Exception:
+              print("worker response unreadable - skip (no data, no verdict)"); raise SystemExit(0)
+          eq = (d.get("data") or {}).get("equity") or {}
+          net = eq.get("net")
+          if net is None:
+              print("no margin data (kite not logged in yet today?) - skip"); raise SystemExit(0)
+          floor = float(os.environ.get("FLOOR_RUPEES", "1500000"))
+          if net < 0:
+              print("MARGIN NEGATIVE - shortfall"); raise SystemExit(1)
+          if net < floor:
+              print("MARGIN BELOW FLOOR"); raise SystemExit(1)
+          print("margin ok (above floor)")
+          '

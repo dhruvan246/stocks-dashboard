@@ -95,9 +95,30 @@ function startLiveLoop(){
 
 /* ---------- picks ---------- */
 const PICKS = {};
+/* ---- borderline detection (user 2026-09-01: which slot to buy LAST on rebalance day) ----
+   A pick is "borderline" when intraday price moves could still flip it by the close: the
+   rank-N vs rank-N+1 gap on a PRICE-SENSITIVE sort factor is small, or a pick sits within a
+   whisker of a price-sensitive filter cut (e.g. d52<=10 with d52 at 9.4). Fundamental factors
+   (diiPct, profit growth) cannot move intraday and are deliberately excluded. Bands are
+   heuristic surfacing thresholds — the tooltip shows the measured numbers. */
+const PS_BAND = { d52: 1.2, d52_low_pct: 4, ret1m: 1.5, ret3m: 2, ret6m: 2.5, ret12m: 3, changePercent: 0.7, rsi: 2 };
+function borderMap(cfg, all){
+  const N = cfg.topN, out = {};
+  const last = all[N - 1], next = all[N];
+  if (last && next && (cfg.sortBy in PS_BAND)){
+    const a = fieldVal(last, cfg.sortBy), b = fieldVal(next, cfg.sortBy);
+    if (a != null && b != null && Math.abs(a - b) <= PS_BAND[cfg.sortBy])
+      out[N] = 'rank #' + N + ' vs #' + (N + 1) + ': ' + cfg.sortBy + ' gap ' + Math.abs(a - b).toFixed(1) + ' \u2014 price moves can flip this slot by the close';
+  }
+  (cfg.filters || []).forEach(f => { if (!(f.field in PS_BAND)) return;
+    for (let i = 0; i < N && i < all.length; i++){ const v = fieldVal(all[i], f.field);
+      if (v != null && Math.abs(v - f.val) <= PS_BAND[f.field])
+        out[i + 1] = (out[i + 1] ? out[i + 1] + ' \u00b7 ' : '') + f.field + ' ' + (+v).toFixed(1) + ' sits near the ' + f.op + ' ' + f.val + ' cut'; } });
+  return out;
+}
 function screenOne(it){
-  const picks = screenAsOf(it.cfg, SF.end).slice(0, it.cfg.topN);
-  PICKS[it.id] = { asOf: SF.end, rows: picks.map((r, i) => ({ rank: i+1, sym: r.sym, tkr: r.tkr,
+  const all = screenAsOf(it.cfg, SF.end), picks = all.slice(0, it.cfg.topN), bd = borderMap(it.cfg, all);
+  PICKS[it.id] = { asOf: SF.end, rows: picks.map((r, i) => ({ rank: i+1, sym: r.sym, tkr: r.tkr, bd: bd[i+1] || null,
     px: (META[r.tkr] && META[r.tkr].raw) ? META[r.tkr].raw : r.price })) };
 }
 /* ---------- LIVE re-ranking — the ENGINE'S OWN overlay (unified 2026-08-31) ----------
@@ -115,8 +136,8 @@ function screenOne(it){
     LIVEOV = { ts: Date.now(), date: (r && r.date) || SF.end, n: (r && r.n) || 0 };
   }
   function screenLiveOne(it){
-    const picks = screenAsOf(it.cfg, LIVEOV.date || SF.end).slice(0, it.cfg.topN);
-    PICKS[it.id] = { asOf: SF.end, live: true, liveTs: LIVEOV.ts, rows: picks.map((r, i) => ({ rank: i + 1, sym: r.sym, tkr: r.tkr,
+    const all = screenAsOf(it.cfg, LIVEOV.date || SF.end), picks = all.slice(0, it.cfg.topN), bd = borderMap(it.cfg, all);
+    PICKS[it.id] = { asOf: SF.end, live: true, liveTs: LIVEOV.ts, rows: picks.map((r, i) => ({ rank: i + 1, sym: r.sym, tkr: r.tkr, bd: bd[i+1] || null,
       px: r.price })) };   // the spliced bar IS the live price; rebalance mode still shows META.raw
   }
   async function screenPick(it){
@@ -253,10 +274,12 @@ function renderCards(){
           const chg = q && q.ltp != null && q.prevClose ? (q.ltp / q.prevClose - 1) * 100 : null;
           return '<tr><td class="sym">' + r.rank + '</td>' +
             '<td><b>' + esc(r.sym) + '</b> ' + (Z.held.has(r.sym) ? '<span class="tag keep">held</span>' : '<span class="tag new">new</span>') +
+            (r.bd ? ' <span class="tag" style="background:color-mix(in srgb,#c98500 18%,transparent);color:#c98500" title="' + esc(r.bd) + '">borderline</span>' : '') +
             (q && q.ltp != null ? '' : ' <span class="badge">EOD</span>') + '</td>' +
             '<td>₹' + (+px).toFixed(2) + '</td>' +
             '<td class="' + (chg == null ? 'sym' : chg >= 0 ? 'up' : 'down') + '">' + (chg == null ? '—' : (chg >= 0 ? '+' : '') + chg.toFixed(2) + '%') + '</td></tr>';
-        }).join('') + '</tbody></table></div>';
+        }).join('') + '</tbody></table></div>' +
+        (p.rows.some(r => r.bd) ? '<div class="khelp">\u26a0 borderline = the screen can still flip this pick by the close (hover it for the numbers) \u2014 on a rebalance day buy that slot LAST (~3:25 IST), the safe ones early.</div>' : '');
     }
     return '<div class="sblk"><div class="shead">' + (favNum(it.cfg) ? '<span class="snum" style="font-size:11px;background:var(--buy);color:#fff;border-color:var(--buy);padding:1px 6px;margin:0 4px 0 0">#' + favNum(it.cfg) + '</span>' : '') + '<span class="nm2" title="Code-name: ' + esc(nameWithBasis(it.name, it.cfg)) + '">' + (isFavCfg(loadFavs(), it.cfg) ? '\u2b50 ' : '') + esc(disp) + '</span>' +
       (it._priv ? '<span class="tag new">private</span>' : '') +
