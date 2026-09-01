@@ -633,7 +633,8 @@ function advSliceCap(sym){
 function buySlices(orders){
   const per = {};
   orders.forEach(o => { const cap = advSliceCap(o.tradingsymbol);
-    const px = o._px || o.price || 0, chunk = px > 0 ? Math.max(1, Math.floor(cap / px)) : o.quantity;
+    const px = o._px || o.price || 0;
+    const chunk = Math.min(80000, px > 0 ? Math.max(1, Math.floor(cap / px)) : o.quantity);   // hard 80k-share cap: Zerodha refuses single orders >=1,00,000 (5-level market-depth limit)
     const list = []; let q = o.quantity;
     while (q > 0){ const take = Math.min(chunk, q); q -= take; list.push(Object.assign({}, o, { quantity: take })); }
     per[o.tradingsymbol] = list; });
