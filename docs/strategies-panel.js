@@ -277,8 +277,9 @@ function buyAllAgg(list){
     const per = amt ? amt / p.rows.length : 0;
     p.rows.forEach(r => {
       const q = liveQ(r.sym), px = (q && q.ltp != null) ? q.ltp : r.px;
-      const a = agg[r.sym] = agg[r.sym] || { sym: r.sym, px: px, amt: 0, from: [] };
-      a.px = px; a.amt += per; a.from.push(i + 1);
+      const cap = zbCap(r.sym), contrib = cap > 0 ? Math.min(per, cap) : per;   // per-basket ₹ cap (HFCL)
+      const a = agg[r.sym] = agg[r.sym] || { sym: r.sym, px: px, amt: 0, from: [], capped: false };
+      a.px = px; a.amt += contrib; if (cap > 0 && contrib < per) a.capped = true; a.from.push(i + 1);
     });
   });
   const rows = Object.values(agg).map(a => Object.assign(a, { qty: (a.amt > 0 && a.px > 0) ? Math.floor(a.amt / a.px) : 0 }))
@@ -303,7 +304,7 @@ function renderBuyAll(list){
       '<td class="sym">' + r.from.map(n => '<span class="snum">#' + n + '</span>').join('') + (r.from.length > 1 ? ' <b>×' + r.from.length + '</b>' : '') + '</td>' +
       '<td>₹' + (+r.px).toFixed(2) + '</td>' +
       '<td>' + (r.qty ? r.qty.toLocaleString('en-IN') : '—') + '</td>' +
-      '<td>' + (r.amt ? zinr(r.amt) : '—') + '</td></tr>').join('') +
+      '<td>' + (r.amt ? zinr(r.amt) : '—') + (r.capped ? ' <span class="sym" title="capped per basket">cap</span>' : '') + '</td></tr>').join('') +
     '</tbody></table></div>' +
     '<div class="khelp">Numbered by the strategy blocks below. A stock several strategies want is bought once, for the combined amount. Set a strategy’s ₹ amount once in its ⚡ dialog — it is remembered.</div></div>';
   const go = $('balGo');
@@ -389,7 +390,8 @@ function zbAlloc(){
   ZB.rows.forEach(r => { r.st = ''; r.msg = '';
     if (!(r.on && r.px > 0)){ r.qty = 0; r.margin = null; return; }
     const perShare = (mode === 'margin' && r.mps > 0) ? r.mps : r.px;
-    r.qty = Math.floor(per / perShare); r.margin = null; });
+    const cap = zbCap(r.sym), val = (cap > 0 && mode !== 'margin') ? Math.min(per, cap) : per;   // HFCL ₹1 Cr cap
+    r.qty = Math.floor(val / perShare); r.margin = null; });
   if (ZB.id && amt) zbaSet(ZB.id, amt);
 }
 function zbFoot(){
@@ -495,7 +497,12 @@ const ZBA_URL = 'https://nebjnsndgrhumnkuipqy.supabase.co/rest/v1/rpc/';
 const ZBA_ANON = 'sb_publishable_MDlQwiVc5deii91__UNeDg_z9r4Fk98';
 const ZBA_SECRET = 'sw_owner_8Kq2Lm9Xp4Rt7v';        // same public write secret sw-sync.js ships
 function zbaRow(){ try { const t = localStorage.getItem('pf_token') || ''; return t ? t + '.zbamts' : ''; } catch (e){ return ''; } }
-function zbaDoc(){ try { const d = JSON.parse(localStorage.getItem(ZBA_LS) || 'null'); if (d && d.amts) return d; } catch (e){} return { ts: 0, amts: {} }; }
+function zbaDoc(){ try { const d = JSON.parse(localStorage.getItem(ZBA_LS) || 'null'); if (d && d.amts) return d; } catch (e){} return { ts: 0, amts: {}, caps: {} }; }
+/* Per-stock ₹ cap applied to EACH basket that holds the stock (user 2026-09-01: HFCL lost its MTF
+   leverage — 1.0x/100% margin — so cap it at ₹1 Cr/basket while every other pick stays at full
+   ₹1.47 Cr, no per-strategy shrink). Lives in the same synced row (caps:{SYM:rupees}); clear it to
+   remove. Order-value cap only (value mode); margin mode is left untouched. */
+function zbCap(sym){ try { return +((zbaDoc().caps || {})[sym]) || 0; } catch (e){ return 0; } }
 function zbaGet(id){ const v = +zbaDoc().amts[id] || 0; if (v) return v;
   try { return +(localStorage.getItem('sw_zb_amt_' + id) || 0); } catch (e){ return 0; } }      // pre-sync saves
 function zbaSet(id, amt){ const d = zbaDoc(); d.amts[id] = amt; d.ts = Date.now();
@@ -535,7 +542,8 @@ async function zbaPull(){ const row = zbaRow(); if (!row || typeof Decompression
    only ONE doc names always survives — so an edit made before this device ever pulled can never
    wipe the other seven seeded amounts (whole-map last-writer-wins did exactly that). */
 function zbaMerge(a, b){ const newer = (b.ts || 0) >= (a.ts || 0) ? b : a, older = newer === b ? a : b;
-  return { ts: Math.max(a.ts || 0, b.ts || 0), amts: Object.assign({}, older.amts, newer.amts) }; }
+  return { ts: Math.max(a.ts || 0, b.ts || 0), amts: Object.assign({}, older.amts, newer.amts),
+           caps: Object.assign({}, older.caps || {}, newer.caps || {}) }; }
 
 const TICKMEM = {};
 let TICKS_LOADED = false;
