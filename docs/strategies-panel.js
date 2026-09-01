@@ -6,7 +6,7 @@
   if (window.mountStrategies) return;
   var mounted = false;
   var SP_CSS = "\n.spwrap{font-size:13px;line-height:1.5}\n.spwrap .sp-top{display:flex;align-items:baseline;justify-content:space-between;gap:10px;flex-wrap:wrap;margin-bottom:2px}\n.spwrap .sp-h{font-size:14px;font-weight:800;letter-spacing:-.01em;margin:0}\n.spwrap .sp-actions{display:flex;gap:7px;align-items:center;flex-wrap:wrap}\n.spwrap .sp-sub{font-size:11.5px;color:var(--text-3);line-height:1.45;margin:4px 0}\n.spwrap .sp-input{flex:1;padding:7px 9px;font-size:13px;border:1px solid var(--border);border-radius:8px;background:var(--surface-2);color:var(--text)}\n.spwrap .sym{color:var(--text-3);font-size:11px}\n.spwrap .badge{font-size:9px;font-weight:800;letter-spacing:.05em;padding:1px 5px;border-radius:4px;background:var(--surface-2);color:var(--text-3)}\n.spwrap .zpill{font-size:11.5px;font-weight:700;padding:4px 10px;border-radius:20px;background:var(--surface-2);color:var(--text-2);border:1px solid var(--border)}\n.spwrap .zpill.ok{color:var(--up)} .spwrap .zpill.warn{color:#c98500}\n.spwrap .sblk{border-top:1px solid var(--border);padding:12px 4px 6px}\n.spwrap .sblk:first-child{border-top:0;padding-top:4px}\n.spwrap .shead{display:flex;flex-wrap:wrap;align-items:baseline;gap:6px 12px;margin-bottom:6px}\n.spwrap .shead .nm2{font-size:13.5px;font-weight:800}\n.spwrap .tag{font-size:9.5px;font-weight:800;letter-spacing:.06em;padding:2px 6px;border-radius:4px;white-space:nowrap}\n.spwrap .tag.keep{background:color-mix(in srgb,var(--up) 16%,transparent);color:var(--up)}\n.spwrap .tag.new{background:color-mix(in srgb,var(--buy) 16%,transparent);color:var(--buy)}\n.spwrap .twrap{overflow-x:auto;-webkit-overflow-scrolling:touch}\n.spwrap table{width:100%;border-collapse:collapse;font-size:12.5px}\n.spwrap th{text-align:right;font-weight:700;color:var(--text-3);font-size:10.5px;text-transform:uppercase;letter-spacing:.05em;padding:7px 9px;border-bottom:1px solid var(--border);white-space:nowrap;background:var(--surface)}\n.spwrap th:first-child,.spwrap td:first-child{text-align:left}\n.spwrap td{padding:7px 9px;border-bottom:1px solid var(--border);text-align:right;white-space:nowrap}\n.spwrap td:nth-child(2),.spwrap th:nth-child(2){text-align:left}\n.spwrap .empty{text-align:center;color:var(--text-3);font-size:12.5px;padding:30px 10px}\n.spwrap .bal{border:1px solid var(--border);border-radius:12px;padding:12px 13px;margin:10px 0 4px;background:var(--surface-2)}\n.spwrap .bal-h{display:flex;align-items:baseline;gap:9px;flex-wrap:wrap;margin-bottom:8px}\n.spwrap .bal-h b{font-size:13.5px}\n.spwrap .bal-h .sub{font-size:11.5px;color:var(--text-3)}\n.spwrap .bal-h .go{margin-left:auto}\n.spwrap .snum{display:inline-block;font-size:9.5px;font-weight:800;background:var(--surface);border:1px solid var(--border);border-radius:4px;padding:0 4px;margin-left:3px;color:var(--text-3)}\n.spwrap .khelp{font-size:11.5px;color:var(--text-3);line-height:1.5;margin-top:10px}\n.spwrap .up{color:var(--up)} .spwrap .down{color:var(--down)}\n.spwrap .btn,#zbDlg .btn{border:1px solid var(--border);background:var(--surface);color:var(--text-2);border-radius:9px;padding:6px 11px;font-size:12.5px;font-weight:600;cursor:pointer;white-space:nowrap;display:inline-block}\n.spwrap .btn:hover,#zbDlg .btn:hover{background:var(--surface-2);color:var(--text)}\n.spwrap .btn.on,#zbDlg .btn.on{background:var(--buy);border-color:var(--buy);color:#fff}\n#ktoast{position:fixed;left:50%;bottom:24px;transform:translateX(-50%);z-index:300;background:var(--text);color:var(--bg);padding:8px 14px;border-radius:9px;font-size:12.5px;font-weight:600;opacity:0;pointer-events:none;transition:opacity .25s;max-width:90vw;text-align:center}\n#ktoast.show{opacity:1}\n.zchip{display:inline-block;padding:2px 7px;border-radius:20px;font-size:10.5px;font-weight:700;background:var(--surface-2);border:1px solid var(--border)}\n.zchip.ok{color:var(--up);border-color:var(--up)} .zchip.bad{color:var(--down);border-color:var(--down)} .zchip.open{color:var(--buy);border-color:var(--buy)}\n.zmsg{font-size:11px;color:var(--down);white-space:normal;text-align:left;max-width:280px}\n#zbWrap{position:fixed;inset:0;z-index:200;background:rgba(0,0,0,.5);display:none;align-items:center;justify-content:center;padding:16px}\n#zbWrap.open{display:flex}\n#zbDlg{width:min(600px,100%);max-height:92vh;overflow:auto;padding:16px;background:var(--surface);border:1px solid var(--border);border-radius:14px;box-shadow:var(--shadow)}\n#zbDlg h3{margin:0 0 2px;font-size:14px}\n#zbDlg .sub{font-size:11.5px;color:var(--text-3)}\n#zbDlg .krow{display:flex;gap:8px;margin-top:10px}\n#zbDlg label{flex:1;font-size:11px;font-weight:700;color:var(--text-3);text-transform:uppercase;letter-spacing:.05em}\n#zbDlg input,#zbDlg select{width:100%;margin-top:4px;padding:7px 9px;font-size:13.5px;font-weight:600;border:1px solid var(--border);border-radius:8px;background:var(--surface-2);color:var(--text)}\n#zbDlg table{margin-top:10px;width:100%;border-collapse:collapse;font-size:12.5px}\n#zbDlg th{font-size:10.5px;color:var(--text-3);text-transform:uppercase;padding:7px 9px;text-align:right;border-bottom:1px solid var(--border);white-space:nowrap}\n#zbDlg th:first-child,#zbDlg td:first-child{text-align:left}\n#zbDlg td{padding:6px 9px;border-bottom:1px solid var(--border);text-align:right}\n#zbDlg td input.zbq{width:80px;margin:0;padding:5px 7px;text-align:right}\n#zbDlg td input.zbl{width:92px;margin:0;padding:5px 7px;text-align:right}\n#zbTbl:not(.lim) .limcol{display:none}\n";
-  var SP_DOM = "<div class=\"spwrap\"><div class=\"sp-top\"><h2 class=\"sp-h\">Saved strategies \u2014 what each would buy today</h2><div class=\"sp-actions\"><span id=\"zStatus\" class=\"zpill\">Zerodha: checking\u2026</span><button class=\"btn\" id=\"btnZLogin\" style=\"display:none\">Login to Zerodha \u25b8</button><button class=\"btn\" id=\"btnZSetup\" title=\"Kite worker URL\">\u2699</button><button class=\"btn\" id=\"spFavToggle\" title=\"Show only your \u2b50 favourite strategies\"></button><button class=\"btn\" id=\"spMode\" title=\"Rebalance picks rank on the LAST CLOSE \u2014 the official screen the backtest uses. Live picks re-rank the price-based factors (52w high/low distance, returns, momentum) at the CURRENT market price \u2014 fundamentals and holdings stay as filed. Near the close of a rebalance day the two converge.\"></button><button class=\"btn on\" id=\"btnLoadAll\">\ud83c\udfaf Load all picks</button></div></div><div class=\"sp-sub\">Every strategy saved on the dashboard, one block each. Picks are the screen\u2019s top names as of the latest close; prices go live during market hours. \u26a1 buys the whole basket on Zerodha \u2014 you always confirm first.</div><div class=\"sp-sub\" id=\"status\"></div><div id=\"zSetupBox\" style=\"display:none\"><div class=\"khelp\">One-time per browser: your Kite worker URL (the portfolio/terminal shares it automatically).</div><div style=\"display:flex;gap:7px;max-width:520px;margin-top:6px\"><input id=\"zWUrl\" placeholder=\"https://\u2026workers.dev\" class=\"sp-input\"><button class=\"btn on\" id=\"zWSave\">Save</button></div></div><div id=\"buyall\"></div><div id=\"cards\"><div class=\"empty\">Loading saved strategies\u2026</div></div></div>";
+  var SP_DOM = "<div class=\"spwrap\"><div class=\"sp-top\"><h2 class=\"sp-h\">Saved strategies \u2014 what each would buy today</h2><div class=\"sp-actions\"><span id=\"zStatus\" class=\"zpill\">Zerodha: checking\u2026</span><button class=\"btn\" id=\"btnZLogin\" style=\"display:none\">Login to Zerodha \u25b8</button><button class=\"btn\" id=\"btnZSetup\" title=\"Kite worker URL\">\u2699</button><button class=\"btn\" id=\"spFavToggle\" title=\"Show only your \u2b50 favourite strategies\"></button><button class=\"btn\" id=\"spMode\" title=\"Rebalance picks rank on the LAST CLOSE \u2014 the official screen the backtest uses. Live picks re-rank the price-based factors (52w high/low distance, returns, momentum) at the CURRENT market price \u2014 fundamentals and holdings stay as filed. Near the close of a rebalance day the two converge.\"></button><button class=\"btn\" id=\"spSide\"></button><button class=\"btn on\" id=\"btnLoadAll\">\ud83c\udfaf Load all picks</button></div></div><div class=\"sp-sub\">Every strategy saved on the dashboard, one block each. Picks are the screen\u2019s top names as of the latest close; prices go live during market hours. \u26a1 buys the whole basket on Zerodha \u2014 you always confirm first.</div><div class=\"sp-sub\" id=\"status\"></div><div id=\"zSetupBox\" style=\"display:none\"><div class=\"khelp\">One-time per browser: your Kite worker URL (the portfolio/terminal shares it automatically).</div><div style=\"display:flex;gap:7px;max-width:520px;margin-top:6px\"><input id=\"zWUrl\" placeholder=\"https://\u2026workers.dev\" class=\"sp-input\"><button class=\"btn on\" id=\"zWSave\">Save</button></div></div><div id=\"buyall\"></div><div id=\"cards\"><div class=\"empty\">Loading saved strategies\u2026</div></div></div>";
   function injectCSS(){ if (document.getElementById('sp-css')) return; var s=document.createElement('style'); s.id='sp-css'; s.textContent=SP_CSS; document.head.appendChild(s); }
   window.mountStrategies = function(container, opts){
     if (mounted) return; mounted = true;
@@ -77,7 +77,8 @@ let LIVE = null, LIVE_TIMER = null;
 const liveQ = sym => (LIVE && LIVE.data && LIVE.data[sym]) || null;
 async function fetchLive(){
   const wurl = (function(){ try { return localStorage.getItem('live_worker_url') || ''; } catch(e){ return ''; } })();
-  const syms = [...new Set(Object.values(PICKS).flatMap(p => p.rows.map(r => r.sym)))];
+  const syms = [...new Set(Object.values(PICKS).flatMap(p => p.rows.map(r => r.sym))
+    .concat(Object.values(FEED.byKey || {}).flatMap(f => f.rows.map(h => h.sym))))];
   if (!wurl || !syms.length) return;
   try {
     const sep = wurl.includes('?') ? '&' : '?';
@@ -155,7 +156,7 @@ $('btnLoadAll').onclick = async () => {
 };
 
 /* ---------- Zerodha plumbing (shares the portfolio page's localStorage on this origin) ---------- */
-const Z = { connected: false, user: null, held: new Set() };
+const Z = { connected: false, user: null, held: new Set(), hold: {} };
 /* Which strategies' baskets were SENT to Zerodha today — so buying 8 in a row stays legible
    (user 2026-08-30: "show me label basket bought or i will be confused which of 8 are done").
    Marked the moment orders leave for Zerodha (direct API or the Kite popup); browser-local
@@ -189,11 +190,21 @@ async function zInit(){
     $('btnZLogin').style.display = ''; return; }
   Z.connected = true; Z.user = j.user || '';
   zPill('🟢 ' + Z.user, 'ok');
+  await zHoldRefresh();
+  renderCards();
+}
+/* Kite /holdings, kept as PER-PRODUCT buckets: an MTF-funded holding has top-level quantity 0 —
+   the real qty sits in the mtf object (user-caught 2026-08-27). Sells must name the bucket:
+   product MTF closes the MTF position, CNC sells demat shares. Pledged (collateral) is NOT
+   sellable without unpledging, so it stays out of both buckets on purpose. */
+async function zHoldRefresh(){
   const h = await zFetch('/holdings');
-  if (h.st === 200 && h.j && h.j.data)
+  if (h.st === 200 && h.j && h.j.data){
+    Z.hold = {};
+    h.j.data.forEach(r => { Z.hold[r.tradingsymbol] = { mtf: ((r.mtf || {}).quantity || 0), cnc: (r.quantity || 0) + (r.t1_quantity || 0) }; });
     Z.held = new Set(h.j.data.filter(r => ((r.quantity||0)+(r.t1_quantity||0)+(r.collateral_quantity||0)+((r.mtf||{}).quantity||0)) > 0)
                              .map(r => r.tradingsymbol));
-  renderCards();
+  }
 }
 $('btnZLogin').onclick = () => {
   const k = (function(){ try { return localStorage.getItem('pf_kite_key') || ''; } catch(e){ return ''; } })();
@@ -232,6 +243,7 @@ function renderCards(){
   const h = list.map(it => {
     const en = (typeof strategyEnglish === 'function') ? strategyEnglish(it.cfg) : '';
     const disp = en || nameWithBasis(it.name, it.cfg);
+    if (SIDE === 'sell') return sellCardHTML(it, disp, favNum);
     const p = PICKS[it.id];
     let body = '';
     if (p){
@@ -263,8 +275,9 @@ function renderCards(){
   $('cards').innerHTML = h;
   renderBuyAll(list);
   for (const id in BUYSLICER){
-    const el = (id === '__all__') ? $('balGo') : (id === '__residual__') ? $('residGo') : document.querySelector('[data-basket="' + id + '"]');
-    BUYSLICER[id].btn = el || null; if (el) el.textContent = '⚡ ' + BUYSLICER[id].i + '/' + BUYSLICER[id].n; }
+    const el = (id === '__all__') ? $('balGo') : (id === '__residual__') ? $('residGo')
+      : (document.querySelector('[data-basket="' + id + '"]') || document.querySelector('[data-sellbasket="' + id + '"]'));
+    BUYSLICER[id].btn = el || null; if (el) el.textContent = (BUYSLICER[id].sell ? '\ud83d\udd3b ' : '⚡ ') + BUYSLICER[id].i + '/' + BUYSLICER[id].n; }
 }
 /* ---------- THIS REBALANCE: every stock to buy, in one place (user 2026-08-31) ----------
    Eight strategies × three picks means eight blocks to read, and the same stock often appears in
@@ -280,8 +293,15 @@ function buyAllAgg(list){
     const p = PICKS[it.id]; if (!p || !p.rows.length) return;
     const amt = zbaGet(it.id);
     if (!amt) missing.push(i + 1);
-    const per = amt ? amt / p.rows.length : 0;
-    p.rows.forEach(r => {
+    /* engine sizing (2026-09-01): a HOLD strategy re-buys nothing it already holds — only the
+       new entries get money. The strategy's amount is spread over those entries alone. */
+    const held = heldFor(it.cfg);
+    const holdKeep = held && held.rows.length && held.method !== 'reset';
+    const heldSet = holdKeep ? new Set(held.rows.map(x => x.sym)) : null;
+    const rows2 = holdKeep ? p.rows.filter(r => !heldSet.has(r.sym)) : p.rows;
+    if (!rows2.length) return;
+    const per = amt ? amt / rows2.length : 0;
+    rows2.forEach(r => {
       const q = liveQ(r.sym), px = (q && q.ltp != null) ? q.ltp : r.px;
       const cap = zbCap(r.sym), contrib = cap > 0 ? Math.min(per, cap) : per;   // per-basket ₹ cap (HFCL)
       const a = agg[r.sym] = agg[r.sym] || { sym: r.sym, px: px, amt: 0, from: [], capped: false };
@@ -294,6 +314,7 @@ function buyAllAgg(list){
 }
 function renderBuyAll(list){
   const box = $('buyall'); if (!box) return;
+  if (SIDE === 'sell'){ box.innerHTML = '<div class="khelp" style="margin:6px 4px 10px">Adopted timing (backtested \u2248+10pp/yr vs buying next morning): <b>sell the exits near the close of T\u22121</b> \u2014 the session BEFORE month-end, on that day\u2019s near-final \u26a1 live picks \u00b7 <b>buy the entries near the month-end close</b>, sized from the sell proceeds.</div>'; return; }
   const residHTML = renderResidual();
   const withPicks = list.filter(it => PICKS[it.id] && PICKS[it.id].rows.length);
   if (!withPicks.length){ box.innerHTML = residHTML; wireResidGo(); return; }
@@ -377,6 +398,12 @@ async function buyAllStart(rows){
 $('cards').addEventListener('click', e => {
   const u = e.target.closest('[data-unbought]'); if (u){ zbSetBought(u.dataset.unbought, false); ktoast('Un-marked — it shows as not bought again'); return; }
   const l = e.target.closest('[data-load]'); if (l){ l.textContent = '⏳…'; loadPicks(l.dataset.load); return; }
+  const us = e.target.closest('[data-unsold]'); if (us){ zbSetSold(us.dataset.unsold, false); ktoast('Un-marked — it shows as not sold again'); return; }
+  const sb = e.target.closest('[data-sellbasket]'); if (sb){
+    const sid = sb.dataset.sellbasket;
+    if (BUYSLICER[sid]){ const S = BUYSLICER[sid];
+      buyStop(sid, 'Selling stopped — ' + S.i + '/' + S.n + ' slices sent, rest kept'); return; }
+    sellBasketStart(sid); return; }
   const b = e.target.closest('[data-basket]'); if (b){
     if (BUYSLICER[b.dataset.basket]){ const B = BUYSLICER[b.dataset.basket];
       buyStop(b.dataset.basket, 'Buying stopped — ' + B.i + '/' + B.n + ' slices sent, rest kept'); return; }
@@ -488,7 +515,7 @@ function zbRender(){
       : r.st === 'fail' ? '<span class="zchip bad" title="' + esc(r.msg) + '">FAILED</span>'
       : r.st ? '<span class="zchip open">' + esc(r.st) + '</span>' : '';
     h += '<tr><td><input type="checkbox" data-i="' + i + '"' + (r.on ? ' checked' : '') + '></td>' +
-      '<td><b>' + esc(r.sym) + '</b>' + (Z.held.has(r.sym) ? ' <span class="tag keep">held</span>' : '') + (r.live ? '' : ' <span class="badge">EOD</span>') + '</td>' +
+      '<td><b>' + esc(r.sym) + '</b>' + (r.kept ? ' <span class="tag keep">kept \u2014 riding, not re-bought</span>' : (Z.held.has(r.sym) ? ' <span class="tag keep">held</span>' : '')) + (r.live ? '' : ' <span class="badge">EOD</span>') + '</td>' +
       '<td>' + (r.px ? '₹' + (+r.px).toFixed(2) : '—') + '</td>' +
       '<td class="limcol"><input class="zbl" type="number" min="0" step="0.05" data-i="' + i + '" value="' + ((r.limit > 0 ? r.limit : r.px) || 0).toFixed(2) + '"' + (r.on ? '' : ' disabled') + '></td>' +
       '<td><input class="zbq" type="number" min="0" step="1" data-i="' + i + '" value="' + r.qty + '"' + (r.on ? '' : ' disabled') + '></td>' +
@@ -512,6 +539,28 @@ function zBasketOpen(id){
   $('zbProd').value = 'MTF';
   if ($('zbType')) $('zbType').value = 'MARKET';
   $('zbAmt').value = zbaGet(id) || '';
+  /* Month 2+ engine sizing (user 2026-09-01): kept winners are untouched — untick them; the
+     amount prefills to the EXITS' current value scaled entries/openSlots, so the dialog's equal
+     split across the ticked rows IS the engine's per-slot funding. Reset strategies instead
+     prefill the whole book's value (sell all, fresh equal split). Editable as ever. */
+  (function(){
+    const held = heldFor(it.cfg); if (!held || !held.rows.length) return;
+    const px = h => { const q = liveQ(h.sym); return (q && q.ltp != null) ? +q.ltp : (h.avg || 0); };
+    if (held.method === 'reset'){
+      const all = held.rows.reduce((s, h) => s + h.qty * px(h), 0);
+      if (all > 0) $('zbAmt').value = Math.round(all);
+      return;
+    }
+    const heldSet = new Set(held.rows.map(h => h.sym));
+    let stay = 0; ZB.rows.forEach(r => { if (heldSet.has(r.sym)){ r.on = false; r.kept = true; stay++; } });
+    if (!stay) return;
+    const pickSet = new Set(p.rows.map(r => r.sym));
+    const exitVal = held.rows.filter(h => !pickSet.has(h.sym)).reduce((s, h) => s + h.qty * px(h), 0);
+    const openSlots = Math.max(1, (held.topN || p.rows.length) - stay);
+    const entries = ZB.rows.filter(r => r.on).length;
+    if (exitVal > 0 && entries) $('zbAmt').value = Math.round(exitVal * entries / openSlots);
+    $('zbSub').textContent += ' · kept winners stay unticked; amount = the exits\u2019 value per open slot (engine sizing) — edit to your actual sell proceeds.';
+  })();
   zbAlloc(); zbRender();
   $('zbWrap').classList.add('open');
   zbMarginSoon(true);
@@ -587,6 +636,124 @@ function zbaMerge(a, b){ const newer = (b.ts || 0) >= (a.ts || 0) ? b : a, older
            sliceCaps: Object.assign({}, older.sliceCaps || {}, newer.sliceCaps || {}),
            residual: (newer.residual !== undefined ? newer.residual : older.residual) }; }
 
+/* ================= SELL BASKETS (user 2026-09-01) =================
+   Month-end mirror of the buy side. The card shows EVERY stock the strategy holds (exact
+   per-strategy quantities from the portfolio feed — a shared stock sells only THIS strategy's
+   share); the button sells ONLY the exits (dropped from the new picks). Stocks staying next
+   month render greyed and are never touched. A RESET strategy sells everything, always —
+   even a stock picked again — because reset re-enters fresh equal thirds. */
+let SIDE = 'buy';                     // 'buy' | 'sell' — the top-of-panel selector
+const FEED = { ts: 0, byKey: null };  // pf_feed holdings row -> per-strategy held quantities
+async function feedPull(force){
+  const tok = zToken(); if (!tok || typeof DecompressionStream === 'undefined') return null;
+  if (!force && FEED.byKey && Date.now() - FEED.ts < 120000) return FEED.byKey;
+  try {
+    const r = await fetch(ZBA_URL + 'pf_feed_get?token=' + encodeURIComponent(tok) + '&apikey=' + ZBA_ANON, { cache: 'no-store' });
+    if (!r.ok) return FEED.byKey;
+    const j = await r.json(); if (!j || !j.z) return FEED.byKey;
+    const by = Uint8Array.from(atob(j.z), c => c.charCodeAt(0));
+    const st = new Blob([by]).stream().pipeThrough(new DecompressionStream('gzip'));
+    const doc = JSON.parse(await new Response(st).text());
+    const map = {};
+    (doc.portfolios || []).forEach(pf => {
+      if (!pf.strategy || pf.archived) return;
+      const rows = (doc.holdings || []).filter(h => h.pf === pf.id)
+        .map(h => ({ sym: String(h.sym || '').replace(/\.(NS|BO)$/, ''), qty: Math.floor(+h.qty || 0), avg: +h.avg || 0 }))
+        .filter(h => h.sym && h.qty > 0);
+      map[identityKey(pf.strategy)] = { pfId: pf.id, method: (pf.strategy.method || 'hold'),
+                                        topN: (pf.strategy.topN || 3), rows: rows };
+    });
+    FEED.ts = Date.now(); FEED.byKey = map;
+    if (SIDE === 'sell') renderCards();
+  } catch (e){}
+  return FEED.byKey;
+}
+function heldFor(cfg){ try { return (FEED.byKey || {})[identityKey(cfg)] || null; } catch (e){ return null; } }
+function zbSoldSet(){ try { const j = JSON.parse(localStorage.getItem('sp_sold_v1') || '{}'); return new Set(j[zbDayKey()] || []); } catch (e){ return new Set(); } }
+function zbSetSold(id, on){ try { const k = zbDayKey(), a = zbSoldSet(); on ? a.add(id) : a.delete(id);
+    localStorage.setItem('sp_sold_v1', JSON.stringify({ [k]: [...a] })); } catch (e){} renderCards(); }
+function sellCardHTML(it, disp, favNum){
+  const sold = zbSoldSet();
+  const held = heldFor(it.cfg);
+  const p = PICKS[it.id];
+  const isReset = !!(held && held.method === 'reset');
+  const pickSet = (p && p.rows.length) ? new Set(p.rows.map(r => r.sym)) : null;
+  let body = '', btn = '';
+  if (!held) body = '<div class="khelp">No holdings feed in this browser yet (needs the pf token) — or this strategy has no live book.</div>';
+  else if (!held.rows.length) body = '<div class="khelp">Nothing held under this strategy.</div>';
+  else {
+    const rows = held.rows.map(h => {
+      const q = liveQ(h.sym), px = (q && q.ltp != null) ? +q.ltp : null;
+      return { h: h, px: px, stays: !isReset && !!(pickSet && pickSet.has(h.sym)), val: px != null ? h.qty * px : null };
+    });
+    const exits = rows.filter(r => !r.stays);
+    const est = exits.reduce((s, r) => s + (r.val || 0), 0);
+    body = '<div class="twrap"><table><thead><tr><th>Stock</th><th>Held</th><th>Live \u20b9</th><th>Value</th><th></th></tr></thead><tbody>' +
+      rows.map(r => '<tr' + (r.stays ? ' style="opacity:.45"' : '') + '><td><b>' + esc(r.h.sym) + '</b></td>' +
+        '<td>' + r.h.qty.toLocaleString('en-IN') + '</td>' +
+        '<td>' + (r.px != null ? '\u20b9' + r.px.toFixed(2) : '\u2014') + '</td>' +
+        '<td>' + (r.val != null ? zinr(r.val) : '\u2014') + '</td>' +
+        '<td>' + (r.stays ? '<span class="tag keep">stays \u2014 not sold</span>'
+                : (pickSet || isReset ? '<span class="tag" style="background:color-mix(in srgb,var(--down) 16%,transparent);color:var(--down)">' + (isReset ? 'reset \u2014 sell' : 'EXIT \u2014 sell') + '</span>'
+                : '<span class="badge">load picks</span>')) + '</td></tr>').join('') +
+      '</tbody></table></div>' +
+      '<div class="khelp">' + (isReset
+        ? 'Reset strategy: the whole basket sells every rebalance and re-enters fresh \u2014 even a stock picked again.'
+        : (pickSet ? exits.length + ' exit' + (exits.length === 1 ? '' : 's') + ' to sell' + (est ? ' \u2248 ' + zinr(est) : '') + ' \u00b7 greyed rows stay for next month and are never sold.'
+                   : 'Load the picks (\ud83c\udfaf) first \u2014 without them the exits are unknown, so nothing can be sold.')) + '</div>';
+    const B = BUYSLICER[it.id];
+    if (B && B.sell) btn = '<button class="btn on" data-sellbasket="' + esc(it.id) + '">\ud83d\udd3b ' + B.i + '/' + B.n + '</button>';
+    else if (sold.has(it.id)) btn = '<button class="btn" disabled style="opacity:.5;cursor:not-allowed;color:var(--down)" title="Sold today \u2014 click the \u2713 sold-today chip to re-enable">\u2713 Sold</button>';
+    else if ((pickSet || isReset) && exits.length) btn = '<button class="btn on" style="background:var(--down);border-color:var(--down)" data-sellbasket="' + esc(it.id) + '">\ud83d\udd3b Sell ' + (isReset ? 'all ' : '') + exits.length + '</button>';
+  }
+  return '<div class="sblk"><div class="shead">' + (favNum(it.cfg) ? '<span class="snum" style="font-size:11px;background:var(--down);color:#fff;border-color:var(--down);padding:1px 6px;margin:0 4px 0 0">#' + favNum(it.cfg) + '</span>' : '') +
+    '<span class="nm2" title="Code-name: ' + esc(nameWithBasis(it.name, it.cfg)) + '">' + esc(disp) + '</span>' +
+    (sold.has(it.id) ? '<span class="tag keep" data-unsold="' + esc(it.id) + '" title="Sell basket sent today \u2014 click if that was cancelled" style="cursor:pointer">\u2713 sold today</span>' : '') +
+    '<span class="sym">' + (held ? esc(held.pfId + ' \u00b7 ' + held.method) : '') + (p ? ' \u00b7 picks as of ' + esc(p.asOf) : '') + '</span>' +
+    '<span style="margin-left:auto;display:flex;gap:6px">' +
+    '<button class="btn" data-load="' + esc(it.id) + '">\ud83c\udfaf ' + (p ? 'Refresh' : 'Picks') + '</button>' + btn + '</span></div>' + body + '</div>';
+}
+async function sellBasketStart(id){
+  const it = strategies().find(x => x.id === id); if (!it) return;
+  const held = heldFor(it.cfg);
+  if (!held || !held.rows.length){ ktoast('No holdings on record for this strategy'); return; }
+  const isReset = held.method === 'reset';
+  const p = PICKS[id];
+  if (!isReset && (!p || !p.rows.length)){ ktoast('Load the picks first \u2014 exits are unknown without them'); return; }
+  const pickSet = new Set(((p && p.rows) || []).map(r => r.sym));
+  const exits = held.rows.filter(h => isReset || !pickSet.has(h.sym));
+  if (!exits.length){ ktoast('Nothing to sell \u2014 every holding stays next month'); return; }
+  const btn = document.querySelector('[data-sellbasket="' + id + '"]');
+  if (btn && btn.dataset.arm !== '1'){ btn.dataset.arm = '1';
+    btn.textContent = 'Confirm SELL ' + exits.length + (isReset ? ' (reset: all)' : ' exit' + (exits.length === 1 ? '' : 's')) + ' ?';
+    clearTimeout(sellBasketStart._t); sellBasketStart._t = setTimeout(() => { btn.dataset.arm = ''; renderCards(); }, 8000); return; }
+  if (btn) btn.dataset.arm = '';
+  if (!Z.connected){ ktoast('Zerodha not connected'); return; }
+  await loadTicks();
+  await zHoldRefresh();                 // fresh per-product buckets right before selling
+  const orders = [], short = [];
+  exits.forEach(h => {
+    const q = liveQ(h.sym), px = (q && q.ltp != null) ? +q.ltp : (h.avg || 0);
+    const bk = Z.hold[h.sym] || { mtf: 0, cnc: 0 };
+    let mq = Math.min(h.qty, bk.mtf), cq = Math.min(h.qty - mq, bk.cnc);
+    if (mq + cq < h.qty) short.push(h.sym + ' (' + (h.qty - mq - cq) + ')');
+    const base = { variety: 'regular', validity: 'DAY', tag: 'swsell', tradingsymbol: h.sym,
+                   exchange: 'NSE', transaction_type: 'SELL', order_type: 'MARKET', _px: px };
+    if (mq > 0) orders.push(Object.assign({}, base, { quantity: mq, product: 'MTF' }));
+    if (cq > 0) orders.push(Object.assign({}, base, { quantity: cq, product: 'CNC' }));
+  });
+  if (!orders.length){ ktoast('Zerodha shows no sellable shares for these exits \u2014 nothing sent', 6000); return; }
+  if (short.length) ktoast('\u26a0 fewer sellable shares than the ledger for ' + short.join(', ') + ' \u2014 selling what is there', 7000);
+  const slices = buySlices(orders);
+  if (BUYSLICER[id]) buyStop(id);
+  BUYSLICER[id] = { slices: slices, i: 0, n: slices.length, btn: btn || null, t: 0, sell: true };
+  zbSetSold(id, true);
+  ktoast('Selling ' + exits.length + ' stock' + (exits.length === 1 ? '' : 's') + ' in ' + slices.length +
+    ' slices \u2014 each a limit \u2264' + sliceRng() + '% BELOW live on NSE, MTF shares as MTF, demat as CNC; tap the counter to stop', 7000);
+  buyFire(id);
+  renderCards();
+}
+
 const TICKMEM = {};
 let TICKS_LOADED = false;
 function loadTicks(){
@@ -600,6 +767,7 @@ const sliceLakh = () => { const v = parseFloat(localStorage.getItem('sw_sell_sli
 const sliceGap  = () => { const v = parseInt(localStorage.getItem('sw_sell_gap_s'), 10); return (v >= 3 && v <= 900) ? v : 150; };
 const sliceRng  = () => { const v = parseFloat(localStorage.getItem('sw_sell_rng_pct')); return (v >= 0 && v <= 5) ? v : 0.5; };
 function buyLimitPx(sym, px){ const t = TICKMEM[sym] || 0.05; return +((Math.ceil(px * (1 + sliceRng() / 100) / t)) * t).toFixed(2); }
+function sellLimitPx(sym, px){ const t = TICKMEM[sym] || 0.05; return +((Math.floor(px * (1 - sliceRng() / 100) / t)) * t).toFixed(2); }
 function freshLtp(sym){
   const w = (function(){ try { return (localStorage.getItem('live_worker_url') || '').trim(); } catch(e){ return ''; } })();
   if (!w) return Promise.resolve(null);
@@ -637,7 +805,7 @@ function buySlices(orders){
     const chunk = Math.min(80000, px > 0 ? Math.max(1, Math.floor(cap / px)) : o.quantity);   // hard 80k-share cap: Zerodha refuses single orders >=1,00,000 (5-level market-depth limit)
     const list = []; let q = o.quantity;
     while (q > 0){ const take = Math.min(chunk, q); q -= take; list.push(Object.assign({}, o, { quantity: take })); }
-    per[o.tradingsymbol] = list; });
+    per[o.tradingsymbol + '|' + (o.product || '')] = list; });
   const out = []; let more = true, round = 0;       // round-robin; TAG each slice with its round #
   while (more){ more = false; for (const k in per){ const l = per[k]; if (l.length){ const sl = l.shift(); sl._round = round; out.push(sl); if (l.length) more = true; } } round++; }
   return out;
@@ -658,14 +826,14 @@ function buySkipStock(id, o0, reason){
 }
 function buyDone(id){ const B = BUYSLICER[id]; if (!B) return;
   const f = B.failed && B.failed.length ? [...new Set(B.failed)] : [];
-  buyStop(id, 'Basket done — ' + B.n + ' slices sent' + (f.length ? ' · FAILED (buy separately): ' + f.join(', ') : ' (unfilled tails rest at their limits)')); }
+  buyStop(id, 'Basket done — ' + B.n + ' slices sent' + (f.length ? (B.sell ? ' · FAILED (sell separately): ' : ' · FAILED (buy separately): ') + f.join(', ') : ' (unfilled tails rest at their limits)')); }
 function buyFire(id){
   const B = BUYSLICER[id]; if (!B) return;
   if (B.i >= B.slices.length){ buyDone(id); return; }
   const o0 = B.slices[B.i];
   freshLtp(o0.tradingsymbol).then(ltp => {
     const px = (ltp || o0._px || 0), o = Object.assign({}, o0); delete o._px;
-    if (px > 0 && sliceRng() > 0){ o.order_type = 'LIMIT'; o.price = buyLimitPx(o.tradingsymbol, px); }
+    if (px > 0 && sliceRng() > 0){ o.order_type = 'LIMIT'; o.price = (o.transaction_type === 'SELL' ? sellLimitPx : buyLimitPx)(o.tradingsymbol, px); }
     zFetch('/order', { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify(o) }).then(res => {
       const st = res.st, j = res.j, msg = (j && j.message) || ('HTTP ' + st);
       if (st === 200 && j && j.data && j.data.order_id){
@@ -690,7 +858,7 @@ function buyFire(id){
       else if (ipBlocked(msg) || st === 0){ Z.directBlocked = true;
         buyStop(id, 'Static-IP rule — remaining slices need the Zerodha basket popup: reopen ⚡ and use "Kite basket"'); }
       else {
-        if (/MTF/i.test(msg) && /(block|not allowed|not permitted|blocked)/i.test(msg) && !o0._cncRetry){ o0._cncRetry = 1; o0.product = 'CNC';
+        if (o0.transaction_type !== 'SELL' && /MTF/i.test(msg) && /(block|not allowed|not permitted|blocked)/i.test(msg) && !o0._cncRetry){ o0._cncRetry = 1; o0.product = 'CNC';
           ktoast(o0.tradingsymbol + ': MTF blocked - buying as CNC (delivery) instead', 4500);
           B.t = setTimeout(() => buyFire(id), 1000); return; }
         const tk = tickFromMsg(msg);
@@ -753,9 +921,17 @@ function kiteSend(orders){
     }
   };
   mLbl();
+  const sb2 = $('spSide');
+  const sLbl = () => { if (sb2){ sb2.textContent = SIDE === 'sell' ? '\ud83d\udd3b Sell baskets' : '\ud83d\uded2 Buy baskets'; sb2.classList.toggle('on', SIDE === 'sell'); } };
+  if (sb2) sb2.onclick = async () => {
+    SIDE = SIDE === 'sell' ? 'buy' : 'sell'; sLbl(); renderCards();
+    if (SIDE === 'sell'){ await feedPull(true); renderCards(); fetchLive(); }
+  };
+  sLbl();
   renderCards();
   refreshFavsFromSettings();
   zbaPull();   // synced \u20b9 amounts (token-gated row) \u2014 lands before any basket dialog opens
+  feedPull();  // per-strategy held quantities \u2014 the sell view + engine-sized buys read these
   if (window.btSync){ try { await btSync.pullStrategies(); renderCards(); } catch(e){} }
 })();
   };
