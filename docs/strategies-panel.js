@@ -263,7 +263,7 @@ function renderCards(){
   $('cards').innerHTML = h;
   renderBuyAll(list);
   for (const id in BUYSLICER){
-    const el = (id === '__all__') ? $('balGo') : document.querySelector('[data-basket="' + id + '"]');
+    const el = (id === '__all__') ? $('balGo') : (id === '__residual__') ? $('residGo') : document.querySelector('[data-basket="' + id + '"]');
     BUYSLICER[id].btn = el || null; if (el) el.textContent = '⚡ ' + BUYSLICER[id].i + '/' + BUYSLICER[id].n; }
 }
 /* ---------- THIS REBALANCE: every stock to buy, in one place (user 2026-08-31) ----------
@@ -294,13 +294,14 @@ function buyAllAgg(list){
 }
 function renderBuyAll(list){
   const box = $('buyall'); if (!box) return;
+  const residHTML = renderResidual();
   const withPicks = list.filter(it => PICKS[it.id] && PICKS[it.id].rows.length);
-  if (!withPicks.length){ box.innerHTML = ''; return; }
+  if (!withPicks.length){ box.innerHTML = residHTML; wireResidGo(); return; }
   const agg = buyAllAgg(list), rows = agg.rows;
   const totAmt = rows.reduce((s, r) => s + r.amt, 0);
   const anyQty = rows.some(r => r.qty > 0);
   const B = BUYSLICER['__all__'];
-  box.innerHTML = '<div class="bal"><div class="bal-h"><b>This rebalance · ' + rows.length + ' stocks to buy</b>' +
+  box.innerHTML = residHTML + '<div class="bal"><div class="bal-h"><b>This rebalance · ' + rows.length + ' stocks to buy</b>' +
     '<span class="sub">from ' + withPicks.length + ' ' + (withPicks.length === 1 ? 'strategy' : 'strategies') +
       (totAmt ? ' · ' + zinr(totAmt) : '') +
       (agg.missing.length ? ' · no amount set for ' + agg.missing.map(n => '#' + n).join(', ') : '') + '</span>' +
@@ -319,6 +320,39 @@ function renderBuyAll(list){
       buyStop('__all__', 'Buying stopped — ' + S.i + '/' + S.n + ' slices sent, rest kept'); return; }
     buyAllStart(rows);
   };
+  wireResidGo();
+}
+function renderResidual(){
+  let res = []; try { res = (zbaDoc().residual || []).filter(r => r && r.sym && +r.qty > 0); } catch(e){}
+  if (!res.length) return '';
+  const B = BUYSLICER['__residual__'];
+  return '<div class="bal" style="border:1px solid var(--buy)"><div class="bal-h"><b>\u26a1 Buy the remaining \u2014 exact quantities</b>' +
+    '<span class="sub">' + res.length + ' stocks \u00b7 HFCL as delivery (CNC), the rest MTF</span>' +
+    '<span class="go"><button class="btn on" id="residGo">' + (B ? '\u26a1 ' + B.i + '/' + B.n : '\u26a1 Buy remaining') + '</button></span></div>' +
+    '<div class="twrap"><table><thead><tr><th>Stock</th><th>Qty</th><th>Product</th></tr></thead><tbody>' +
+    res.map(r => '<tr><td><b>' + esc(r.sym) + '</b></td><td>' + Math.floor(+r.qty).toLocaleString('en-IN') + '</td><td>' + esc(r.product || 'MTF') + '</td></tr>').join('') +
+    '</tbody></table></div><div class="khelp">One tap buys exactly these \u2014 sliced, NSE, limit \u22640.5% above live. HFCL routes to CNC because MTF is blocked for it.</div></div>';
+}
+function wireResidGo(){ const g = $('residGo'); if (!g) return;
+  g.onclick = () => { if (BUYSLICER['__residual__']){ const S = BUYSLICER['__residual__']; buyStop('__residual__', 'Stopped'); return; } buyResidual(); }; }
+async function buyResidual(){
+  let res = []; try { res = (zbaDoc().residual || []).filter(r => r && r.sym && +r.qty > 0); } catch(e){}
+  if (!res.length){ ktoast('Nothing remaining set'); return; }
+  const g = $('residGo');
+  if (g && g.dataset.arm !== '1'){ g.dataset.arm = '1'; g.textContent = 'Confirm buy ' + res.length + ' stocks ?';
+    clearTimeout(buyResidual._t); buyResidual._t = setTimeout(() => { g.dataset.arm = ''; g.textContent = '\u26a1 Buy remaining'; }, 8000); return; }
+  if (g) g.dataset.arm = '';
+  if (!Z.connected){ ktoast('Zerodha not connected'); return; }
+  await loadTicks();
+  const orders = res.map(r => { const q = liveQ(r.sym); return { variety:'regular', validity:'DAY', tag:'swresid',
+    tradingsymbol: r.sym, exchange:'NSE', transaction_type:'BUY', order_type:'MARKET', quantity: Math.floor(+r.qty),
+    product: (r.product || 'MTF'), _px: (q && q.ltp != null ? q.ltp : (+r.px || 0)) }; });
+  const slices = buySlices(orders);
+  if (BUYSLICER['__residual__']) buyStop('__residual__');
+  BUYSLICER['__residual__'] = { slices: slices, i: 0, n: slices.length, btn: null, t: 0 };
+  ktoast('Buying ' + res.length + ' remaining in ' + slices.length + ' slices (HFCL as CNC)', 6500);
+  buyFire('__residual__');
+  renderCards();
 }
 async function buyAllStart(rows){
   const live = rows.filter(r => r.qty > 0);
@@ -638,7 +672,11 @@ function buyFire(id){
       }
       else if (ipBlocked(msg) || st === 0){ Z.directBlocked = true;
         buyStop(id, 'Static-IP rule — remaining slices need the Zerodha basket popup: reopen ⚡ and use "Kite basket"'); }
-      else { const tk = tickFromMsg(msg);
+      else {
+        if (/MTF/i.test(msg) && /(block|not allowed|not permitted|blocked)/i.test(msg) && !o0._cncRetry){ o0._cncRetry = 1; o0.product = 'CNC';
+          ktoast(o0.tradingsymbol + ': MTF blocked - buying as CNC (delivery) instead', 4500);
+          B.t = setTimeout(() => buyFire(id), 1000); return; }
+        const tk = tickFromMsg(msg);
         if (tk > 0 && !o0._tickRetry){ TICKMEM[o0.tradingsymbol] = tk; o0._tickRetry = 1;
           ktoast(o0.tradingsymbol + ': tick is ' + tk + ' (Zerodha) — re-pricing and retrying', 4200);
           B.t = setTimeout(() => buyFire(id), 1200); return; }
