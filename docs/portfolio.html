@@ -345,20 +345,22 @@ tbody tr:hover{background:color-mix(in srgb,var(--accent) 7%,transparent)}
   color:var(--text-2); font-size:16px; font-weight:800; cursor:pointer; box-shadow:var(--shadow); display:none}
 #toTop.show{display:block}
 #toTop:hover{color:var(--accent); border-color:var(--accent)}
-#pfMenu{position:fixed; z-index:85; width:min(370px,calc(100vw - 20px)); max-height:62vh; overflow:auto;
+#pfMenu,#stMenu{position:fixed; z-index:85; width:min(370px,calc(100vw - 20px)); max-height:62vh; overflow:auto;
   background:color-mix(in srgb,var(--surface) 96%,transparent); backdrop-filter:blur(12px);
   border:1px solid var(--border); border-radius:14px; box-shadow:var(--shadow); padding:6px; display:none}
-#pfMenu.open{display:block}
-#pfMenu .hd{display:flex; justify-content:space-between; align-items:center; gap:10px; padding:6px 9px; border-bottom:1px solid var(--grid); margin-bottom:4px}
-#pfMenu .hd b{font-size:10.5px; text-transform:uppercase; letter-spacing:.08em; color:var(--text-3)}
-#pfMenu .hd a{font-size:12px; color:var(--accent); cursor:pointer; font-weight:700}
-#pfMenu .pfrow{display:flex; align-items:center; gap:9px; padding:8px 9px; border-radius:9px; font-size:12.5px; cursor:pointer; line-height:1.35}
-#pfMenu .pfrow:hover{background:var(--surface-2)}
-#pfMenu .pfrow.on{background:color-mix(in srgb,var(--accent) 11%,transparent)}
-#pfMenu .pfrow .sw{width:9px;height:9px;border-radius:50%;flex:0 0 auto}
-#pfMenu .pn{flex:1; font-weight:600; white-space:normal}
-#pfMenu .ck{color:var(--accent); font-weight:800; width:14px; text-align:right}
+#pfMenu.open,#stMenu.open{display:block}
+#pfMenu .hd,#stMenu .hd{display:flex; justify-content:space-between; align-items:center; gap:10px; padding:6px 9px; border-bottom:1px solid var(--grid); margin-bottom:4px}
+#pfMenu .hd b,#stMenu .hd b{font-size:10.5px; text-transform:uppercase; letter-spacing:.08em; color:var(--text-3)}
+#pfMenu .hd a,#stMenu .hd a{font-size:12px; color:var(--accent); cursor:pointer; font-weight:700}
+#pfMenu .pfrow,#stMenu .pfrow{display:flex; align-items:center; gap:9px; padding:8px 9px; border-radius:9px; font-size:12.5px; cursor:pointer; line-height:1.35}
+#pfMenu .pfrow:hover,#stMenu .pfrow:hover{background:var(--surface-2)}
+#pfMenu .pfrow.on,#stMenu .pfrow.on{background:color-mix(in srgb,var(--accent) 11%,transparent)}
+#pfMenu .pfrow .sw,#stMenu .pfrow .sw{width:9px;height:9px;border-radius:50%;flex:0 0 auto}
+#pfMenu .pn,#stMenu .pn{flex:1; font-weight:600; white-space:normal}
+#pfMenu .ck,#stMenu .ck{color:var(--accent); font-weight:800; width:14px; text-align:right}
 .snum2{font-size:9.5px; font-weight:800; background:var(--surface-2); border:1px solid var(--border); border-radius:4px; padding:1px 4px; color:var(--text-3); flex:0 0 auto}
+#tblToday td:first-child,#tblMonthEnd td:first-child,#tblBuy td:first-child{white-space:normal;min-width:250px;line-height:1.45}
+.legend span{display:inline-flex;align-items:center;max-width:300px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
 @media(max-width:640px){ .kpi .val{font-size:24px} }
 </style>
 </head>
@@ -912,6 +914,9 @@ function fitText(str,px,fs){                       // truncate to what actually 
 function privOn(){ return document.body.classList.contains('private'); }
 const DOTS='\u2022\u2022\u2022\u2022';   // shown in place of a name/amount when privacy is on
 const SLOT=['var(--s1)','var(--s2)','var(--s3)','var(--s4)','var(--s5)','var(--s6)','var(--s7)','var(--s8)'];
+function pfNum(name){ let k=0;
+  for(const p of (DOC.portfolios||[])){ if(!p.strategy||p.archived) continue; k++; if(p.name===name) return '#'+k; }
+  return ''; }
 function niceTicks(min,max,n){
   if(!isFinite(min)||!isFinite(max)) return [0];
   if(min===max){ min-=1; max+=1; }
@@ -957,7 +962,7 @@ function lineChart(host,o){
   /* >=2 series must carry a legend — identity is never colour-alone */
   let leg='';
   if(o.series.length>1){
-    leg='<div class="legend">'+o.series.map(se=>'<span><i style="background:'+se.color+
+    leg='<div class="legend">'+o.series.map(se=>'<span title="'+esc(se.name)+'"><i style="background:'+se.color+
         (se.dash?';outline:1px dashed var(--text-3);outline-offset:1px':'')+'"></i>'+esc(se.name)+'</span>').join('')+'</div>';
   }
   host.innerHTML=leg+s;
@@ -1010,7 +1015,7 @@ function stackedArea(host,o){
     below=top; });
   s+='<path d="'+o.cal.map((_,i)=>(i?'L':'M')+X(i).toFixed(1)+' '+Y(totals[i]).toFixed(1)).join(' ')+'" fill="none" stroke="var(--text)" stroke-width="1.1" opacity="0.45" pointer-events="none"/>';
   s+='<line id="sx" x1="0" x2="0" y1="'+P.t+'" y2="'+(H-P.b)+'" stroke="var(--text-3)" opacity="0" pointer-events="none"/></svg>';
-  let leg='<div class="legend">'+series.map(se=>'<span><i style="background:'+se.color+'"></i>'+esc(se.name)+'</span>').join('')+'</div>';
+  let leg='<div class="legend">'+series.map(se=>'<span title="'+esc(se.name)+'"><i style="background:'+se.color+'"></i>'+esc(se.name)+'</span>').join('')+'</div>';
   host.innerHTML=leg+s;
   const svg=host.querySelector('svg'), sx=host.querySelector('#sx');
   const paths=[...svg.querySelectorAll('path.sband')];
@@ -1473,7 +1478,7 @@ function renderStrategyCard(rows, mode, ids){
       'regardless of when it was bought. Whole book <b class="'+cls(M.total.ret)+'">'+pct(M.total.ret)+'</b> ('+inrSigned(M.total.chg)+').';
   }
   barsH(chart, M.rows.map(r=>({
-      label:r.name.slice(0,26), full:r.name, value:r.ret,
+      label:(pfNum(r.name)?pfNum(r.name)+' ':'')+r.name.slice(0,24), full:r.name, value:r.ret,
       tip:'<div class="r"><span>Return</span><b>'+pct(r.ret)+'</b></div>'+
           '<div class="r"><span>Measured from</span><b>'+(mode==='close'? shortDate(M.iso)+' close' : 'buy price')+'</b></div>'+
           '<div class="r"><span>Change</span><b class="secret">'+inrSigned(r.chg)+'</b></div>'+
@@ -1541,16 +1546,39 @@ function modelStrategies(rows){
     .sort((a,b)=>(a.next||'9').localeCompare(b.next||'9'));
 }
 function stratTabsHTML(list, sel){
-  let h='<div class="stabs">';
+  const cur = sel==='__all__' ? 'All '+list.length+' strategies'
+    : (list.find(z=>z.pf.id===sel)||{pf:{name:sel}}).pf.name;
+  const i = sel==='__all__' ? -1 : (DOC.portfolios||[]).findIndex(p=>p.id===sel);
+  return '<div class="stabs"><button class="stab on" id="stDrop">'+
+    (i>=0?'<span class="dot2" style="background:'+SLOT[i%8]+'"></span>':'')+
+    esc(String(cur).length>52?String(cur).slice(0,50)+'\u2026':cur)+' <span style="opacity:.6">\u25be</span></button></div>';
+}
+function stMenuEl(){ let m=$('stMenu');
+  if(!m){ m=document.createElement('div'); m.id='stMenu'; document.body.appendChild(m);
+    document.addEventListener('click',e=>{ if(m.classList.contains('open') && !m.contains(e.target) && e.target.id!=='stDrop') m.classList.remove('open'); }); }
+  return m; }
+function stMenuOpen(btn, list){
+  const m=stMenuEl(), sel=resolveStratTab(list);
+  let k=0, h='<div class="hd"><b>Strategy</b></div>';
+  h+='<div class="pfrow'+(sel==='__all__'?' on':'')+'" data-v="__all__"><span class="pn">All '+list.length+' strategies</span><span class="ck">'+(sel==='__all__'?'\u2713':'')+'</span></div>';
   list.forEach(x=>{ const id=x.pf.id, i=(DOC.portfolios||[]).findIndex(p=>p.id===id);
-    h+='<button class="stab'+(sel===id?' on':'')+'" data-strat="'+esc(id)+'"><span class="dot2" style="background:'+SLOT[(i<0?0:i)%8]+'"></span>'+esc(x.pf.name)+'</button>'; });
-  h+='<button class="stab'+(sel==='__all__'?' on':'')+'" data-strat="__all__">All '+list.length+'</button></div>';
-  return h;
+    h+='<div class="pfrow'+(sel===id?' on':'')+'" data-v="'+esc(id)+'">'+
+       '<span class="sw" style="background:'+SLOT[(i<0?0:i)%8]+'"></span><span class="snum2">#'+(++k)+'</span>'+
+       '<span class="pn" title="'+esc(x.pf.cfgName||'')+'">'+esc(x.pf.name)+'</span><span class="ck">'+(sel===id?'\u2713':'')+'</span></div>'; });
+  m.innerHTML=h;
+  m.querySelectorAll('.pfrow').forEach(r=>r.onclick=e=>{ e.stopPropagation();
+    SEL.stratTab=r.dataset.v; m.classList.remove('open'); renderModel(visibleRows()); });
+  const rct=btn.getBoundingClientRect();
+  m.style.top=Math.round(rct.bottom+8)+'px';
+  m.style.left=Math.round(Math.min(rct.left, innerWidth-390))+'px';
+  m.classList.add('open');
 }
 function resolveStratTab(list){ const ids=list.map(x=>x.pf.id); let sel=SEL.stratTab;
   if(sel!=='__all__' && !ids.includes(sel)) sel=ids[0]; return sel; }
-function wireStratTabs(host){ host.querySelectorAll('.stab').forEach(b=>b.onclick=()=>{
-  SEL.stratTab=b.dataset.strat; const rows=visibleRows(); renderModel(rows); }); }
+function wireStratTabs(host){ const b=host.querySelector('#stDrop'); if(!b) return;
+  b.onclick=e=>{ e.stopPropagation(); const m=$('stMenu');
+    if(m && m.classList.contains('open')){ m.classList.remove('open'); return; }
+    stMenuOpen(b, modelStrategies(visibleRows())); }; }
 function renderModel(rows){
   const body=$('modelBody'), sub=$('modelSub');
   if(!MODEL){ sub.textContent='No model file yet.'; body.innerHTML='<div class="empty">Publish from the Mac (double-click <code>Publish.command</code>) to generate it.</div>'; return; }
@@ -1643,9 +1671,14 @@ function renderClosed(rows){
   const partialNote=(trs.length<nTot)?' Showing the '+trs.length+' most recent \u2014 the full '+nTot+'-trade log lives on the Mac.':'';
   sub.innerHTML='Positions you\u2019ve closed (or trimmed), pulled from investing.com \u2014 realized P&L from your <b>actual</b> entry &amp; exit.'+partialNote+' '+(TRADES.updated?'Fetched '+esc(TRADES.updated)+'.':'');
   let h='';
-  if(ordered.length>1){ h+='<div class="stabs">'+ordered.map(x=>{ const i=(DOC.portfolios||[]).findIndex(p=>p.id===x.pf);
-    return '<button class="stab'+(sel===x.pf?' on':'')+'" data-ctab="'+esc(x.pf)+'"><span class="dot2" style="background:'+SLOT[(i<0?0:i)%8]+'"></span>'+esc(x.name)+' <span class="sym">'+x.sum.n+'</span></button>'; }).join('')+
-    '<button class="stab'+(sel==='__all__'?' on':'')+'" data-ctab="__all__">All '+ordered.reduce((a,x)=>a+x.sum.n,0)+'</button></div>'; }
+  if(ordered.length>1){
+    const curC = sel==='__all__' ? 'All portfolios · '+ordered.reduce((a,x)=>a+x.sum.n,0)+' trades'
+      : ((ordered.find(x=>x.pf===sel)||{}).name||sel);
+    const ci = sel==='__all__' ? -1 : (DOC.portfolios||[]).findIndex(p=>p.id===sel);
+    h+='<div class="stabs"><button class="stab on" id="ctDrop">'+
+       (ci>=0?'<span class="dot2" style="background:'+SLOT[ci%8]+'"></span>':'')+
+       esc(String(curC).length>52?String(curC).slice(0,50)+'\u2026':curC)+' <span style="opacity:.6">\u25be</span></button></div>';
+  }
   const unreal=ROWS.filter(r=>shownSel.some(x=>x.pf===r.pf)&&r.pnl!=null).reduce((a,r)=>a+r.pnl,0);
   h+='<div class="trio"><div class="t"><div class="l">Realized P&L</div><div class="v '+cls(total)+' secret">'+inrSigned(total)+'</div><div class="s">'+nTot+' closed \u00b7 booked</div></div>'+
      '<div class="t"><div class="l">Open (unrealised)</div><div class="v '+cls(unreal)+' secret">'+inrSigned(unreal)+'</div><div class="s">still held</div></div>'+
@@ -1672,7 +1705,22 @@ function renderClosed(rows){
   if(allM.length>1 && $('chClosedCum')) lineChart($('chClosedCum'), {cal:allM.map(ym=>isoToOff(ym+'-01')), h:190, secretY:true, series:[{name:'Realized P&L', color:'var(--s3)', vals:cumSeries, fill:true}], fmtY:v=>inr(v,1), fmtT:v=>inr(v)});
   if(mKeys.length>1 && $('chClosedMonthly')) barsV($('chClosedMonthly'), mKeys.map(ym=>({label:ym.slice(5)+'/'+ym.slice(2,4), full:ym, value:mAgg[ym]})), {fmtV:v=>inrSigned(v), secretValues:true});
   if(stkShow.length>1 && $('chClosedStock')) barsH($('chClosedStock'), stkShow.map(x=>({label:x.sym, full:x.sym+' \u00b7 '+x.cnt+' trade'+(x.cnt!==1?'s':''), value:x.ret, tip:'<div class="r"><span>Return</span><b>'+pct(x.ret)+'</b></div><div class="r"><span>Realized</span><b class="secret">'+inrSigned(x.pnl)+'</b></div><div class="r"><span>Trades</span><b>'+x.cnt+'</b></div>'})), {fmtV:v=>pct(v), labW:110, secretLabels:true, rowH:22});
-  body.querySelectorAll('.stab').forEach(b=>b.onclick=()=>{ SEL.closedTab=b.dataset.ctab; renderClosed(visibleRows()); });
+  const ctb=body.querySelector('#ctDrop');
+  if(ctb) ctb.onclick=e=>{ e.stopPropagation(); const m=stMenuEl();
+    if(m.classList.contains('open')){ m.classList.remove('open'); return; }
+    let hh='<div class="hd"><b>Portfolio</b></div>';
+    hh+='<div class="pfrow'+(sel==='__all__'?' on':'')+'" data-v="__all__"><span class="pn">All portfolios</span><span class="ck">'+(sel==='__all__'?'\u2713':'')+'</span></div>';
+    ordered.forEach(x=>{ const i=(DOC.portfolios||[]).findIndex(pp=>pp.id===x.pf);
+      hh+='<div class="pfrow'+(sel===x.pf?' on':'')+'" data-v="'+esc(x.pf)+'">'+
+          '<span class="sw" style="background:'+SLOT[(i<0?0:i)%8]+'"></span>'+
+          '<span class="pn">'+esc(x.name)+'</span><span class="sym">'+x.sum.n+'</span><span class="ck">'+(sel===x.pf?'\u2713':'')+'</span></div>'; });
+    m.innerHTML=hh;
+    m.querySelectorAll('.pfrow').forEach(r=>r.onclick=ev=>{ ev.stopPropagation();
+      SEL.closedTab=r.dataset.v; m.classList.remove('open'); renderClosed(visibleRows()); });
+    const rct=ctb.getBoundingClientRect();
+    m.style.top=Math.round(rct.bottom+8)+'px';
+    m.style.left=Math.round(Math.min(rct.left, innerWidth-390))+'px';
+    m.classList.add('open'); };
 }
 function renderAll(){
   const rows=visibleRows();
