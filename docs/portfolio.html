@@ -361,7 +361,9 @@ tbody tr:hover{background:color-mix(in srgb,var(--accent) 7%,transparent)}
 #pfMenu .ck,#stMenu .ck{color:var(--accent); font-weight:800; width:14px; text-align:right}
 .snum2{font-size:9.5px; font-weight:800; background:var(--surface-2); border:1px solid var(--border); border-radius:4px; padding:1px 4px; color:var(--text-3); flex:0 0 auto}
 #tblToday td:first-child,#tblMonthEnd td:first-child,#tblBuy td:first-child{white-space:normal;min-width:250px;line-height:1.45}
-.legend span{display:inline-flex;align-items:center;max-width:300px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.legend span{display:inline-flex;align-items:center;max-width:100%;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.legend .ll{font-style:normal;min-width:0;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;margin-right:5px}
+.legend b{flex:none}
 .statuschip{display:inline-flex; align-items:center; gap:8px; font-size:12px; color:var(--text-3);
   background:color-mix(in srgb,var(--surface-2) 55%,transparent); border:1px solid color-mix(in srgb,var(--border) 80%,transparent);
   border-radius:999px; padding:5px 12px}
@@ -381,6 +383,18 @@ tbody tr:hover{background:color-mix(in srgb,var(--accent) 7%,transparent)}
 .skC{height:280px; margin-bottom:12px}
 .skmsg{text-align:center; color:var(--text-3); font-size:12.5px; padding-top:6px}
 @media(max-width:640px){ .kpi .val{font-size:24px} }
+.btn svg.ic{width:15px;height:15px;flex:none;display:block}
+.btn.ico svg.ic{width:16px;height:16px}
+.btn .cnt{font-size:9.5px;font-weight:800;background:var(--accent);color:#fff;border-radius:999px;padding:0 5px;line-height:15px;margin-left:-3px}
+.btn.has{border-color:color-mix(in srgb,var(--accent) 45%,transparent);color:var(--accent)}
+@keyframes pfspin{to{transform:rotate(360deg)}}
+.btn.busy svg{animation:pfspin .9s linear infinite}
+#tblHold{font-size:12px} #tblHold th,#tblHold td{padding:7px 8px} #tblHold .nm{max-width:170px}
+.pfcell{display:inline-block;max-width:200px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;vertical-align:bottom}
+#stDrop,#ctDrop{max-width:100%;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;display:inline-block}
+/* phone header: icon-only actions on one row, the status chip on its own line — the wrapped 3-row bar was 153px tall */
+@media(max-width:640px){ .hwrap{gap:6px;padding:8px 12px} .hwrap .btn .t{display:none} #btnZview,.hwrap a.btn{width:34px;height:33px;padding:0;justify-content:center} .brand::after{display:none}
+  .statuschip{order:10;width:100%;justify-content:center;padding:4px 10px} }
 </style>
 </head>
 <body>
@@ -390,13 +404,13 @@ tbody tr:hover{background:color-mix(in srgb,var(--accent) 7%,transparent)}
     <div class="brand">Portfolio</div>
     <span class="statuschip"><span class="dot" id="liveDot"></span><span class="meta" id="clock"></span></span>
     <div class="spacer"></div>
-    <button class="btn" id="btnZview" title="Zerodha live account — funds, holdings, orders, trading">⚡ Zerodha</button>
-    <a class="btn" href="https://dhruvan246.github.io/stocks-dashboard/terminal.html" style="text-decoration:none" title="Live terminal — quotes, chart, Zerodha positions & strategy baskets">📟 Terminal</a>
+    <button class="btn" id="btnZview" title="Zerodha live account — funds, holdings, orders, trading"><svg class="ic" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M13 2L4 14h7l-1 8 9-12h-7l1-8z"/></svg><span class="t">Zerodha</span></button>
+    <a class="btn" href="https://dhruvan246.github.io/stocks-dashboard/terminal.html" title="Live terminal — Zerodha positions, orders & strategy baskets"><svg class="ic" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="2" y="4" width="20" height="16" rx="2"/><path d="M6 9l3 3-3 3M12 15h6"/></svg><span class="t">Terminal</span></a>
     <span class="hgroup">
-      <button class="btn ico" id="btnSections" title="Show / hide / jump to cards">⊞</button>
-      <button class="btn ico" id="btnPrivate" title="Blur every number">🙈</button>
-      <button class="btn ico" id="btnTheme" title="Theme">◐</button>
-      <button class="btn ico" id="btnRefresh" title="Refresh prices">↻</button>
+      <button class="btn ico" id="btnSections" title="Show / hide / jump to cards"><svg class="ic" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="3" width="7" height="7" rx="1.5"/><rect x="14" y="3" width="7" height="7" rx="1.5"/><rect x="3" y="14" width="7" height="7" rx="1.5"/><rect x="14" y="14" width="7" height="7" rx="1.5"/></svg></button>
+      <button class="btn ico" id="btnPrivate" title="Blur every number"><svg class="ic" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M2 12s3.5-6 10-6 10 6 10 6-3.5 6-10 6S2 12 2 12z"/><circle cx="12" cy="12" r="3"/></svg></button>
+      <button class="btn ico" id="btnTheme" title="Theme"></button>
+      <button class="btn ico" id="btnRefresh" title="Refresh prices"><svg class="ic" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 12a9 9 0 1 1-2.6-6.4M21 3v6h-6"/></svg></button>
     </span>
   </div>
 </header>
@@ -452,7 +466,7 @@ tbody tr:hover{background:color-mix(in srgb,var(--accent) 7%,transparent)}
         <div class="body"><div id="chValue"></div></div></div>
 
       <div class="card c12" data-card="stackvalue"><h2>Portfolio value by strategy</h2>
-        <div class="sub" id="stackSub">Each strategy\u2019s share of the total market value over time \u2014 the bands stack to the whole book.</div>
+        <div class="sub" id="stackSub">Each strategy’s share of the total market value over time — the bands stack to the whole book.</div>
         <div class="body"><div id="chStackVal"></div></div></div>
 
       <div class="card c4" data-card="allocation"><h2>Allocation</h2>
@@ -490,8 +504,8 @@ tbody tr:hover{background:color-mix(in srgb,var(--accent) 7%,transparent)}
       <div class="card c12" data-card="holdings"><div style="display:flex; align-items:baseline; justify-content:space-between; gap:10px">
           <h2>Holdings</h2>
           <div style="margin:11px 16px 0; display:flex; gap:7px">
-            <button class="btn" id="btnOrder" title="Place an order for any stock through Zerodha — you confirm it on Zerodha's own page">⚡ Order</button>
-            <button class="btn" id="btnCsv" title="Download the rows shown (respects the account/portfolio filter) as a spreadsheet">⭳ CSV</button></div></div>
+            <button class="btn" id="btnOrder" title="Place an order for any stock through Zerodha — you confirm it on Zerodha's own page">New order</button>
+            <button class="btn" id="btnCsv" title="Download the rows shown (respects the account/portfolio filter) as a spreadsheet">Export CSV</button></div></div>
         <div class="sub" id="holdSub"></div>
         <div class="body"><div class="twrap tvscroll"><table id="tblHold"></table></div></div></div>
 
@@ -527,6 +541,7 @@ const CFG = {
   refresh: 60000
 };
 const $ = id => document.getElementById(id);
+const PF_IC={"bolt": "<svg class=\"ic\" viewBox=\"0 0 24 24\" fill=\"none\" stroke=\"currentColor\" stroke-width=\"2\" stroke-linecap=\"round\" stroke-linejoin=\"round\"><path d=\"M13 2L4 14h7l-1 8 9-12h-7l1-8z\"/></svg>", "chart": "<svg class=\"ic\" viewBox=\"0 0 24 24\" fill=\"none\" stroke=\"currentColor\" stroke-width=\"2\" stroke-linecap=\"round\" stroke-linejoin=\"round\"><path d=\"M3 3v18h18M7 15l4-5 4 3 5-7\"/></svg>", "grid": "<svg class=\"ic\" viewBox=\"0 0 24 24\" fill=\"none\" stroke=\"currentColor\" stroke-width=\"2\" stroke-linecap=\"round\" stroke-linejoin=\"round\"><rect x=\"3\" y=\"3\" width=\"7\" height=\"7\" rx=\"1.5\"/><rect x=\"14\" y=\"3\" width=\"7\" height=\"7\" rx=\"1.5\"/><rect x=\"3\" y=\"14\" width=\"7\" height=\"7\" rx=\"1.5\"/><rect x=\"14\" y=\"14\" width=\"7\" height=\"7\" rx=\"1.5\"/></svg>", "sun": "<svg class=\"ic\" viewBox=\"0 0 24 24\" fill=\"none\" stroke=\"currentColor\" stroke-width=\"2\" stroke-linecap=\"round\" stroke-linejoin=\"round\"><circle cx=\"12\" cy=\"12\" r=\"4\"/><path d=\"M12 2v2M12 20v2M4.9 4.9l1.4 1.4M17.7 17.7l1.4 1.4M2 12h2M20 12h2M4.9 19.1l1.4-1.4M17.7 6.3l1.4-1.4\"/></svg>", "moon": "<svg class=\"ic\" viewBox=\"0 0 24 24\" fill=\"none\" stroke=\"currentColor\" stroke-width=\"2\" stroke-linecap=\"round\" stroke-linejoin=\"round\"><path d=\"M21 12.8A9 9 0 1 1 11.2 3a7 7 0 0 0 9.8 9.8z\"/></svg>", "auto": "<svg class=\"ic\" viewBox=\"0 0 24 24\" fill=\"none\" stroke=\"currentColor\" stroke-width=\"2\" stroke-linecap=\"round\" stroke-linejoin=\"round\"><circle cx=\"12\" cy=\"12\" r=\"9\"/><path d=\"M12 3a9 9 0 0 1 0 18z\" fill=\"currentColor\" stroke=\"none\"/></svg>"};
 const EPOCH = Date.UTC(1996,0,1);
 const offToISO = o => new Date(EPOCH + o*864e5).toISOString().slice(0,10);
 const isoToOff = s => Math.round((Date.parse(s+'T00:00:00Z') - EPOCH)/864e5);
@@ -1150,7 +1165,7 @@ function donut(host,items,o){
   s+='<text x="'+cx+'" y="'+(cy+15)+'" text-anchor="middle" fill="var(--text)" font-size="16" font-weight="800">'+esc(privOn()?DOTS:inr(tot))+'</text>';
   s+='</svg>';
   let leg='<div class="legend">';
-  items.forEach((d,i)=>leg+='<span><i style="background:'+(d.color||SLOT[i%8])+'"></i>'+esc(d.label)+' <b>'+(d.value/tot*100).toFixed(1)+'%</b></span>');
+  items.forEach((d,i)=>leg+='<span title="'+esc(d.label)+'"><i style="background:'+(d.color||SLOT[i%8])+'"></i><em class="ll">'+esc(d.label)+'</em><b>'+(d.value/tot*100).toFixed(1)+'%</b></span>');
   leg+='</div>';
   host.innerHTML=s+leg;
   host.querySelectorAll('path.sl').forEach(p=>{
@@ -1222,7 +1237,7 @@ function renderKPIs(rows,H){
   const t=totals(rows), x=xirr(rows);
   const tiles=[
     {lab:'Market value', val:inr(t.value), sub:rows.length+' holdings · '+new Set(rows.map(r=>r.sym)).size+' stocks', secret:true},
-    {lab:dayWord()+dayWhen(), val:inrSigned(t.day), chip:pct(t.dayPct), c:cls(t.day), secret:true},
+    {lab:dayWord(), val:inrSigned(t.day), chip:pct(t.dayPct), c:cls(t.day), secret:true, sub:(sessionIsToday()?'vs previous close':(lastSessionISO()?'session of '+shortDate(lastSessionISO()):''))},
     {lab:'Unrealised P&L', val:inrSigned(t.pnl), chip:pct(t.pnlPct), c:cls(t.pnl), secret:true},
     {lab:'Invested', val:inr(t.cost), sub:'cost basis', secret:true},
     {lab:'XIRR', val:(x==null?'—':pct(x,1)), sub:'annualised · since '+(rows.length?shortDate(rows.map(r=>r.date).sort()[0]):'—'), c:cls(x)}
@@ -1257,7 +1272,7 @@ function renderFilters(){
   let h='<span class="flab">Account</span>';
   h+='<button class="chip'+(SEL.acct.size===0?' on':'')+'" data-t="acct" data-v="">All</button>';
   accs.forEach(a=>{ const n=ROWS.filter(r=>(r.account||'')===a).length;
-    h+='<button class="chip'+(SEL.acct.has(a)?' on':'')+'" data-t="acct" data-v="'+esc(a)+'">'+esc(a?acctName(a):'Unassigned')+' <span class="sym">'+n+'</span></button>'; });
+    h+='<button class="chip'+(SEL.acct.has(a)?' on':'')+'" data-t="acct" data-v="'+esc(a||'__none__')+'">'+esc(a?acctName(a):'Unassigned')+' <span class="sym">'+n+'</span></button>'; });
   h+='<span style="width:14px"></span><span class="flab">Portfolio</span>';
   /* the 8 strategy names are long config strings — as chips they were a 3-row wall
      (user 2026-09-01: "should be a dropdown"). One summary button + a checklist panel. */
@@ -1266,7 +1281,7 @@ function renderFilters(){
   $('filters').innerHTML=h;
   $('filters').querySelectorAll('.chip[data-t]').forEach(c=>c.onclick=()=>{
     const set=c.dataset.t==='acct'?SEL.acct:SEL.pf, v=c.dataset.v;
-    if(v===''){ set.clear(); } else { set.has(v)?set.delete(v):set.add(v); }
+    if(v===''){ set.clear(); } else { const k=(v==='__none__')?'':v; set.has(k)?set.delete(k):set.add(k); }
     filterToHash(); renderAll();
   });
   const pd=$('pfDrop'); if(pd) pd.onclick=e=>{ e.stopPropagation(); pfMenuToggle(pd); };
@@ -1369,7 +1384,7 @@ function renderCharts(rows){
 }
 const COLS=[
   {k:'cname',  t:'Stock',    f:r=>'<span class="nm secret">'+esc((r.cname||r.sym).replace(/ (Ltd|Limited)\.?$/,''))+'</span><br><span class="sym"><span class="secret">'+esc(r.sym)+'</span>'+(r.staleManual?' <span class="badge warn">manual · stale</span>':r.psrc==='manual'?' <span class="badge warn">manual</span>':r.psrc==='eod'?' <span class="badge">EOD</span>':r.psrc==='none'?' <span class="badge warn">no price</span>':'')+'</span>'},
-  {k:'pfName', t:'Portfolio',f:r=>'<span class="sym">'+esc(r.pfName)+(r.account?' · '+esc(acctName(r.account)):'')+'</span>'},
+  {k:'pfName', t:'Portfolio',f:r=>'<span class="sym pfcell" title="'+esc(r.pfName+(r.account?' · '+acctName(r.account):''))+'">'+esc(r.pfName)+(r.account?' · '+esc(acctName(r.account)):'')+'</span>'},
   {k:'qty',    t:'Qty',      f:r=>'<span class="secret">'+r.qty.toLocaleString('en-IN')+'</span>'},
   {k:'avg',    t:'Avg',      f:r=>'₹'+r.avg.toFixed(2)},
   {k:'px',     t:'Price',    f:r=>r.px==null?'—':'₹'+r.px.toFixed(2)},
@@ -1380,7 +1395,7 @@ const COLS=[
   {k:'pnlPct', t:'P&L %',    f:r=>'<span class="'+cls(r.pnlPct)+'">'+pct(r.pnlPct)+'</span>'},
   {k:'d52h',   t:'52w Hi',   f:r=>r.d52h==null?'<span class="sym">—</span>':'<span class="'+(r.d52h>=-10?'up':'flat')+'" title="'+(r.d52h>=-10?'within 10% of its 52-week high (passes the strategy\u2019s near-high entry filter)':Math.abs(r.d52h).toFixed(0)+'% below its 52-week high — would fail the near-high entry filter')+'">'+(r.d52h>=0?'+':'')+r.d52h.toFixed(1)+'%</span>'},
   {k:'days',   t:'Held',     f:r=>r.days+'d'},
-  {k:'trend',  t:'8-mo',     f:r=>sparkline(r.hist,64,20)||'<span class="sym">—</span>', nosort:true},
+  {k:'trend',  t:'8-mo',     f:r=>sparkline(r.hist,52,18)||'<span class="sym">—</span>', nosort:true},
   {k:'trade',  t:'Trade',    nosort:true, f:r=>{ const sym=esc(r.live||r.sym||''), px=(r.px!=null?r.px:'');
      return '<span class="kbtns">'+
        '<button class="kbtn b" data-ktr="BUY"  data-ksym="'+sym+'" data-kqty="'+r.qty+'" data-kpx="'+px+'" title="Buy '+sym+' — opens Zerodha to confirm">B</button>'+
@@ -1801,6 +1816,7 @@ async function boot(){
   }
   setInterval(async()=>{
     if(!marketOpen()) { updateBadge(); return; }
+    const ae=document.activeElement; if(ae && /^(INPUT|SELECT|TEXTAREA)$/.test(ae.tagName)) return;   // mid-edit — try again next minute
     await refreshQuotes(); buildRows(); renderAll();
   }, CFG.refresh);
   setInterval(updateBadge, 30000);
@@ -1836,14 +1852,14 @@ function exportCSV(){
   document.body.appendChild(a); a.click(); a.remove(); setTimeout(()=>URL.revokeObjectURL(url),1500);
 }
 $('btnCsv').onclick=()=>{ const b=$('btnCsv'); exportCSV(); const t=b.textContent; b.textContent='✓ saved'; setTimeout(()=>b.textContent=t,1400); };
-$('btnRefresh').onclick=async()=>{ $('btnRefresh').textContent='…'; await refreshQuotes(); buildRows(); renderAll(); $('btnRefresh').textContent='↻'; };
+$('btnRefresh').onclick=async()=>{ $('btnRefresh').classList.add('busy'); await refreshQuotes(); buildRows(); renderAll(); $('btnRefresh').classList.remove('busy'); };
 $('btnPrivate').onclick=()=>{ document.body.classList.toggle('private');
   localStorage.setItem('pf_private', document.body.classList.contains('private')?'1':'0');
   $('btnPrivate').classList.toggle('on', document.body.classList.contains('private'));
   if(DOC) renderAll(); };   // redraw: SVG chart text is redacted at render time, not by CSS
 /* The button shows the ACTIVE mode (Auto follows the OS); tapping cycles Auto → Dark → Light → Auto. */
 function applyThemeBtn(){ const t=document.documentElement.getAttribute('data-theme');
-  const b=$('btnTheme'); b.textContent=t==='dark'?'🌙':t==='light'?'☀️':'◐';
+  const b=$('btnTheme'); b.innerHTML=t==='dark'?PF_IC.moon:t==='light'?PF_IC.sun:PF_IC.auto;
   b.title='Theme: '+(t==='dark'?'Dark':t==='light'?'Light':'Auto')+' — tap to change'; }
 $('btnTheme').onclick=()=>{ const cur=document.documentElement.getAttribute('data-theme');
   const next=cur==='dark'?'light':cur==='light'?'':'dark';
@@ -1864,7 +1880,7 @@ function loadHidden(){ try{ return new Set(JSON.parse(localStorage.getItem('pf_h
 function saveHidden(set){ try{ localStorage.setItem('pf_hidden', JSON.stringify([...set])); }catch(e){} }
 function applyHidden(){ const hid=loadHidden(); let n=0;
   cardEls().forEach(el=>{ const h=hid.has(el.dataset.card); el.classList.toggle('card-hidden',h); if(h) n++; });
-  const b=$('btnSections'); if(b){ b.textContent='⊞'+(n?' '+n:''); b.title=(n?n+' card'+(n>1?'s':'')+' hidden — ':'')+'show / hide / jump to cards'; } }
+  const b=$('btnSections'); if(b){ b.innerHTML=PF_IC.grid+(n?'<span class="cnt">'+n+'</span>':''); b.classList.toggle('has',n>0); b.title=(n?n+' card'+(n>1?'s':'')+' hidden — ':'')+'show / hide / jump to cards'; } }
 function buildSectionMenu(){
   const menu=$('secMenu'), hid=loadHidden();
   let h='<div class="hd"><b>Cards to show</b><a id="secAll">Show all</a></div>';
@@ -2041,7 +2057,7 @@ let ZVIEW=false;
 function zShowView(on){
   ZVIEW=!!on;
   document.body.classList.toggle('zview',ZVIEW);
-  $('btnZview').textContent=ZVIEW?'📊 Portfolio':'⚡ Zerodha';
+  $('btnZview').innerHTML=ZVIEW?(PF_IC.chart+'<span class="t">Portfolio</span>'):(PF_IC.bolt+'<span class="t">Zerodha</span>');
   $('btnZview').classList.toggle('on',ZVIEW);
   if(typeof filterToHash==='function') filterToHash();
   if(ZVIEW) scrollTo(0,0);
