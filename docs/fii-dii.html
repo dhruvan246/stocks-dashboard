@@ -265,7 +265,7 @@ const fmt = n => n==null ? '·' : (n<0?'−':'')+Math.abs(Math.round(n)).toLocal
 const fmtSigned = n => n==null ? '·' : (n>=0?'+':'−')+Math.abs(Math.round(n)).toLocaleString('en-IN');
 const MON=['Jan','Feb','Mar','Apr','May','Jun','Jul','Aug','Sep','Oct','Nov','Dec'];
 const fmtDate = d => { const p=d.split('-'); return p[2]+' '+MON[+p[1]-1]+' '+p[0]; };
-let ROWS=[], FO=[], sortKey='date', sortAsc=true, foRange='3y';
+let ROWS=[], FO=[], sortKey='date', sortAsc=false, foRange='3y';   // daily table defaults to newest-first
 let NIFTY={}, foRatioRange='3y', CHART_STATE={}, foView='split', foSection='charts';
 let foCustom={from:'',to:''}, foRatioCustom={from:'',to:''};
 let MONTHLY=[], YEARLY=[], cashView='daily', focus='fii', monRange='5Y';
