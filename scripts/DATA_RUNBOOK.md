@@ -13864,3 +13864,38 @@ point: on those names the "consolidated" strategy had been screening standalone 
 **Left open:** CONFLICT 16 (filing read needed: BHARATFORG, SIEMENS, IPCALAB, CANBK, M&M, RALLIS, RAYMOND, NIITLTD, TATASTLBSL…),
 NSE-NO-STD-ROWS 25, ONE-READER 11, the 291+49 refusals, the comparative-year quarters after each first consolidated filing (fillable
 from that filing's year-ago column — a PDF read), DCMSHRIRAM's 8 404s, and the 74 un-merged ledger entries.
+
+---
+
+## 125. ★★ ANN-DATE RESIDUE SWEEP — the classes §119 could not judge, plus the 2014 band  (2026-09-02, chunk 1)
+
+**Trigger:** the quantmac walk-back found three results dated LATER in our store than BSE's own filing: KTKBANK
+Jun-2017 (ours 03-Aug, BSE 15-Jul 14:40), CARERATING Jun-2014 (ours 17-Jul-**2015**, BSE 31-Jul-2014 18:26 — the
+next year's filing date on the comparative column), GPPL Dec-2018 (ours 01-Feb, BSE 30-Jan 13:52 = 2 d, inside the
+§119c +4 d gate → ok by convention). User: "fix them and find more such stocks with such bug".
+
+**Method (subagent, worktree `~/stocks-wt/ann-residue`, 49 min wall, one shared classifier `scratch/annlib.py`):**
+rebuilt the per-date BSE Result index (§119a) 2012-01-01..2018-07-31 (2,388 shards, 0 rate-limit stubs), sized every
+class first (110,645 dated rows / 170,081 cells; no-scrip 13,679 rows / 1,115 symbols; basis-split 1,961 rows),
+then screened: (4) the 2014 band the §119 index never covered; (1) no-scrip rows after ISIN-guarded resolution
+(NSE EQUITY_L + dated bhavcopy ISINs → BSE all-status master: 286 resolved / 450 NSE-only / 375 no ISIN anywhere;
+**`bse_scrips.json` by_id is STALE — 168 of 4,991 Active scrips absent**); (2+3) the whole 2015-18 universe
+re-classified (partial: index to 2018-03-20; the rest chained). **Calibration first — all three known cases reproduced**
+(KTKBANK → 20170715 override, CARERATING → 20140731 override, GPPL → ok-gated), and the calibration itself caught two
+classifier defects before anything was trusted (`parse_qe` misses "June 30,2017"; a blanket 'press release' veto killed
+CARERATING's title). Hand-verification 7/7 on the 2014 band, full `strCat=-1` windows row by row.
+
+**Landed (this chunk):** 650 override proposals → 630 ledger entries (20 keys already ledgered, left as they were),
+`--reapply` re-dated **630 cells in docs/sf_fundamentals.json / 505 in scripts/fundamentals.json**; np values
+byte-equal; every changed cell explained by a ledger key. Lags: median 15 d, p90 68 d, max 616 d; by qe-year 2013:35
+2014:276 2015:96 2016:85 2017:158. **273 of the 311 band-2014 proposals sat EXACTLY on qe+45d / qe+60d** — the old
+`fill_ann_dates.py` SEBI-deadline convention (§104b), never real dates; plus the year-off comparative-column class
+(CARERATING ×3, AARTIIND, AMTEKAUTO 616 d). Proposals carry the BSE row (NEWS_DT, NEWSSUB, SUBCATNAME, attachment).
+⚠️ Gate lesson: a "np values unchanged" gate keyed by quarter-end FALSE-ALARMS on the duplicate-row symbols
+(APOLLOTYRE 20140331 std/con split pair, §… dup-rows class) — key by (qe, position) or compare the row lists.
+
+**Left alone + logged (`scripts/ann_residue_report.md` in that worktree):** exact-early look-ahead candidates 23
+(§119d negative evidence needed), basis-split rows 12 (never auto-healed), review-titled 2, 13 windows with ZERO BSE rows
+of any category (scrips first seen on BSE in 2015), `isin-multi-code` CIGNITITEC/QUINTEGRA, the §76 deny-list pair.
+Pre-2014 is unreachable through BSE announcements (stream starts Jan-2014) — not guessed.
+Chunk 2 (2018-03 → 2025 for classes 2/3) follows when the index chain completes.
