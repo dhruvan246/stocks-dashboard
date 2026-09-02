@@ -799,7 +799,16 @@ body.blur-secret .secret{filter:blur(7px);-webkit-user-select:none;user-select:n
      narrows WHICH holdings are listed (funding type), the sort chips reorder them — on a phone
      there are no table headers to click, and a 25-row list is unusable without both. Filtering
      applies to the tables too, so desktop and mobile can never show a different set. */
-  var HOLD_FILT='', KSEC='hold';
+  var HOLD_FILT='', POS_FILT='', KSEC='hold';
+  /* one derivative test for the F&O chip AND the 'Futures total' row, so they can never disagree */
+  function isFo(r){ return r.exch==='NFO'||/FUT$|CE$|PE$/.test(r.sym); }
+  /* positions filter: '' all · 'fo' derivative legs · 'p:<PRODUCT>' equity legs of that product */
+  function posRows(){
+    var l=ACCT.pos||[];
+    if(POS_FILT==='fo') l=l.filter(isFo);
+    else if(POS_FILT.slice(0,2)==='p:'){ var pr=POS_FILT.slice(2); l=l.filter(function(r){ return !isFo(r) && (r.product||'')===pr; }); }
+    return l;
+  }
   function holdRows(){
     var l=ACCT.hold||[];
     if(HOLD_FILT==='mtf')  l=l.filter(function(r){ return (r.mq||0)>0; });
@@ -834,7 +843,7 @@ body.blur-secret .secret{filter:blur(7px);-webkit-user-select:none;user-select:n
         ltp:+r.last_price||0,dayPnl:m2m,pnl:pnl};
     });
     var posFutDay=0,posFutTot=0;   // derivative legs only — the 'Futures total' row
-    ACCT.pos.forEach(function(r){ if(r.exch==='NFO'||/FUT$|CE$|PE$/.test(r.sym)){ posFutDay+=(r.dayPnl||0); posFutTot+=(r.pnl||0); } });
+    ACCT.pos.forEach(function(r){ if(isFo(r)){ posFutDay+=(r.dayPnl||0); posFutTot+=(r.pnl||0); } });
     ACCT.holdTot=holdTot;ACCT.holdDay=holdDay;ACCT.curVal=curVal;ACCT.invested=invested;ACCT.posTot=posTot;ACCT.posDay=posDay;ACCT.posFutDay=posFutDay;ACCT.posFutTot=posFutTot;
     if(!editingAcct()) renderAcctView();
   }
@@ -876,17 +885,25 @@ body.blur-secret .secret{filter:blur(7px);-webkit-user-select:none;user-select:n
        fall back to All rather than leave an empty list with no chip lit. Decided BEFORE the tab
        count below is built, so the Holdings tab, the section title and the footer agree. */
     if(HOLD_FILT && !filtDefs.some(function(f){ return f[0]===HOLD_FILT; })){ HOLD_FILT=''; hlist=holdRows(); }
+    /* positions get the same chips: All · F&O · one per equity product actually present (MTF/CNC/MIS…),
+       counts from the data, nothing hard-coded; same empty-bucket fallback (user 2026-09-02) */
+    var plist=posRows(), nFo=ACCT.pos.filter(isFo).length, prodN={};
+    ACCT.pos.forEach(function(r){ if(!isFo(r)){ var k=r.product||'—'; prodN[k]=(prodN[k]||0)+1; } });
+    var pfiltDefs=[['','All',ACCT.pos.length],['fo','F&O',nFo]]
+      .concat(Object.keys(prodN).sort().map(function(k){ return ['p:'+k,k,prodN[k]]; }))
+      .filter(function(f){ return f[2]>0; });
+    if(POS_FILT && !pfiltDefs.some(function(f){ return f[0]===POS_FILT; })){ POS_FILT=''; plist=posRows(); }
     h+='<div class="ktabs"><button data-sec="hold" class="'+(KSEC==='hold'?'on':'')+'">Holdings<span class="cnt">'+hlist.length+(HOLD_FILT?' / '+ACCT.hold.length:'')+'</span></button>'+
-      '<button data-sec="pos" class="'+(KSEC==='pos'?'on':'')+'">Positions<span class="cnt">'+ACCT.pos.length+'</span></button></div>';
+      '<button data-sec="pos" class="'+(KSEC==='pos'?'on':'')+'">Positions<span class="cnt">'+plist.length+(POS_FILT?' / '+ACCT.pos.length:'')+'</span></button></div>';
     if(ACCT.pos.length){
-      var prows=sortRows(ACCT.pos,POS_SORT).map(function(r){
+      var prows=sortRows(plist,POS_SORT).map(function(r){
         return '<tr data-sy="'+esc(r.sym)+'"><td><span class="nm">'+esc(r.sym)+'</span><span class="xtag">'+esc(r.product)+'</span></td>'+
           '<td class="secret">'+r.qty+'</td><td>₹'+r.avg.toFixed(2)+'</td><td>₹'+r.ltp.toFixed(2)+'</td>'+
           '<td class="secret '+((r.dayPnl||0)>=0?'up':'down')+'">'+(r.dayPnl==null?'—':inrSigned(r.dayPnl))+'</td>'+
           '<td class="secret '+(r.pnl>=0?'up':'down')+'">'+inrSigned(r.pnl)+'</td>'+
           '<td>'+((r.qty>0 && !/FUT$|CE$|PE$/.test(r.sym))?'<button class="abtn s" data-sell="pos" data-sy="'+esc(r.sym)+'" title="Sell this position at market">Sell</button>':'')+'</td></tr>';
       }).join('');
-      var pcards=sortRows(ACCT.pos,POS_SORT).map(function(r){
+      var pcards=sortRows(plist,POS_SORT).map(function(r){
         var ppct=(r.avg&&r.qty)?(r.pnl/Math.abs(r.avg*r.qty)*100):null;
         return '<div class="kcard '+(r.pnl>=0?'up':'down')+'">'+
           '<div class="khead"><span class="knm">'+esc(r.sym)+'</span><span class="mchip">'+esc(r.product)+'</span>'+
@@ -898,20 +915,27 @@ body.blur-secret .secret{filter:blur(7px);-webkit-user-select:none;user-select:n
             '<div class="act">'+((r.qty>0 && !/FUT$|CE$|PE$/.test(r.sym))?'<button class="abtn s" data-sell="pos" data-sy="'+esc(r.sym)+'">Sell</button>':'')+'</div></div>'+
           '<div class="kfoot"><span class="secret">'+Math.abs(r.qty).toLocaleString('en-IN')+'</span> @ '+r.avg.toFixed(2)+' · LTP '+r.ltp.toFixed(2)+'</div></div>';
       }).join('');
-      var ptools='<div class="ktools"><span class="tlbl">Sort</span>'+
+      var pfilts=pfiltDefs
+        .map(function(f){ return '<button data-filt="'+esc(f[0])+'" data-for="pos" class="'+(POS_FILT===f[0]?'on':'')+'">'+esc(f[1])+' '+f[2]+'</button>'; }).join('');
+      var ptools='<div class="ktools">'+pfilts+'</div><div class="ktools"><span class="tlbl">Sort</span>'+
         [['pnl','P&L'],['dayPnl','Today'],['ltp','LTP'],['qty','Qty'],['sym','A-Z']]
           .map(function(c){ return chipSort(c[0],c[1],'pos',POS_SORT); }).join('')+'</div>';
-      h+='<div class="ksec" data-sec="pos"><div class="av-sec">Open positions · '+ACCT.pos.length+'</div>'+ptools+'<div class="kcards">'+pcards+'</div><div class="atbl-wrap"><table class="atbl postbl"><thead><tr>'+
+      /* footer sums the rows LISTED (unfiltered = every position, same order as drawAcct's posDay/posTot);
+         the 'Futures total' split stays as a second row only while both F&O and equity legs are open */
+      var pDay=0,pTot=0; plist.forEach(function(r){ pDay+=(r.dayPnl||0); pTot+=(r.pnl||0); });
+      var pName=POS_FILT==='fo'?'F&O':POS_FILT.slice(2);
+      var pLbl=POS_FILT?'Total · '+esc(pName)+' '+plist.length+' of '+ACCT.pos.length:'Total';
+      h+='<div class="ksec" data-sec="pos"><div class="av-sec">Open positions · '+plist.length+(POS_FILT?' of '+ACCT.pos.length:'')+'</div>'+ptools+'<div class="kcards">'+pcards+'</div><div class="atbl-wrap"><table class="atbl postbl"><thead><tr>'+
         ths('Contract','sym',POS_SORT)+ths('Qty','qty',POS_SORT)+ths('Avg','avg',POS_SORT)+ths('LTP','ltp',POS_SORT)+ths('Day P&amp;L','dayPnl',POS_SORT)+ths('P&amp;L','pnl',POS_SORT)+'<th></th>'+
         '</tr></thead><tbody>'+prows+'</tbody>'+
-        '<tfoot><tr><td>Futures total</td><td></td><td></td><td></td>'+
-        '<td class="secret '+(ACCT.posFutDay>=0?'up':'down')+'">'+inrSigned(ACCT.posFutDay)+'</td>'+
-        '<td class="secret '+(ACCT.posFutTot>=0?'up':'down')+'">'+inrSigned(ACCT.posFutTot)+'</td>'+
+        '<tfoot><tr><td>'+pLbl+'</td><td></td><td></td><td></td>'+
+        '<td class="secret '+(pDay>=0?'up':'down')+'">'+inrSigned(pDay)+'</td>'+
+        '<td class="secret '+(pTot>=0?'up':'down')+'">'+inrSigned(pTot)+'</td>'+
         '<td></td></tr>'+
-        ((Math.abs(ACCT.posDay-ACCT.posFutDay)>1||Math.abs(ACCT.posTot-ACCT.posFutTot)>1)?
-          '<tr><td>All positions</td><td></td><td></td><td></td>'+
-          '<td class="secret '+(ACCT.posDay>=0?'up':'down')+'">'+inrSigned(ACCT.posDay)+'</td>'+
-          '<td class="secret '+(ACCT.posTot>=0?'up':'down')+'">'+inrSigned(ACCT.posTot)+'</td><td></td></tr>':'')+
+        ((!POS_FILT && nFo>0 && nFo<ACCT.pos.length)?
+          '<tr><td>Futures total</td><td></td><td></td><td></td>'+
+          '<td class="secret '+(ACCT.posFutDay>=0?'up':'down')+'">'+inrSigned(ACCT.posFutDay)+'</td>'+
+          '<td class="secret '+(ACCT.posFutTot>=0?'up':'down')+'">'+inrSigned(ACCT.posFutTot)+'</td><td></td></tr>':'')+
         '</tfoot></table></div></div>';
     }
     if(ACCT.hold.length){
@@ -1232,7 +1256,7 @@ body.blur-secret .secret{filter:blur(7px);-webkit-user-select:none;user-select:n
       if(st.col===c) st.dir=-st.dir; else { st.col=c; st.dir=(c==='sym')?1:-1; }   // names A→Z, numbers big→small
       renderAcctView(); return; }
     var fi=e.target.closest('.ktools [data-filt]');
-    if(fi){ e.stopPropagation(); HOLD_FILT=fi.dataset.filt; renderAcctView(); return; }
+    if(fi){ e.stopPropagation(); if(fi.dataset.for==='pos') POS_FILT=fi.dataset.filt; else HOLD_FILT=fi.dataset.filt; renderAcctView(); return; }
   });
   document.getElementById('acctView').addEventListener('change',function(e){
     if(e.target.id==='slLakh'){ var v=parseFloat(e.target.value); if(v>0){ try{ localStorage.setItem('sw_sell_slice_lakh',String(v)); }catch(e2){} ktoast('Sell slices: ≤₹'+v+'L each'); } }
