@@ -14001,3 +14001,56 @@ cell explained by a ledger key, gate keyed by ROW POSITION this time (the dup-ro
 deep-backfill era again (§119c's 40% class) — the residue §119 could not judge. Not attempted, stated: pre-Apr-2011
 (no BSE Result stream), the 375 symbols with no dated NSE ISIN, per-basis E for basis-split rows, the 23+ exact-early
 look-ahead candidates (§119d evidence needed). Ledger 7,464 → 9,422 entries.
+
+---
+
+## 126. ★★ THE PERSISTENCE / STRADDLE ARBITER — the up-move queue is not a bug queue, and a universe scan finds no live phantom  (2026-09-02)
+
+**Trigger:** §124d left 81 inferred UP-moves (factor >= 1.8) unarbitrated, and I had loosely called them
+"81 rebounds". User: "fix the 81 rebound cases with a proper arbiter" then "u can perform this on all
+stocks not just 81". **Result: nothing to fix. The 81 are real consolidations or orphan stubs; a
+universe-wide scan of all 2,567 adjustments finds NO confirmed phantom on a live/liquid key** — every
+apparent flag drilled into (7/7) is a real, already-ledgered corporate action. §124's targeted crash
+sweep had already caught the one genuine phantom class (crashes divided as splits).
+
+### 126a. The right test — persistence, straddling the ex-date
+A real reverse split/consolidation reprices the OPEN to the new basis and the level HOLDS; a rebound rally
+opens flat and rises intraday. Three tools (`scripts/ca_sweep_tools/`, all read-only, sourced from
+§124's `sweep_applied_steps.py`):
+- `arbitrate_upmoves2.py` — per-event, CALENDAR-adjacent raw closes + a persistence check (v1's open-gap
+  read misfired on muhurat glitches).
+- `phantom_persistence_scan.py` — universe-wide: for every applied step, is the factor EXPLAINED by the
+  raw move (`|applied/raw_step − 1| <= 0.14`), or applied while the raw sat flat (phantom)?
+- `phantom_straddle.py` — the decisive one: median raw close `[ex-18d,ex-4d]` vs `[ex+4d,ex+18d]`, robust
+  to a factor dated a day or two off the true ex. REAL when the LEVEL re-based by ~factor; PHANTOM only
+  when the level was unchanged across the whole straddle.
+
+### 126b. What the scan actually found (2,567 non-quant adjustments, both directions)
+81 up-moves → 9 real consolidations (raw re-based and held), 0 real rebounds on live keys (Jet was the
+only one, fixed in §124). Universe: raw 388 → tightened 90 → orphan/stub/ETF filter 26 → straddle 48
+"confirmed", **all real** on inspection: CONCOR 20170405 1:4 bonus (in corp_actions), NMDC 20221027 &
+TATACOMM 20190917 demergers (in demerger_adj), BERGEPAINT 20160715 / AUROPHARMA / GLENMARK splits,
+ASIANTILES / NEULANDLAB demergers. 36 of 48 sit on a clean bonus ratio. **Net confirmed live phantom: 0.**
+
+### 126c. ★★★ Four calibration lessons — why any bin-wide factor scan over-flags (in order found)
+1. **A small real bonus looks phantom by ratio-width.** A 1:10 bonus is factor 0.909 with raw_step ~0.912;
+   a `raw_step in [0.80,1.25]` window sweeps up every real small bonus. PHANTOM must require the factor be
+   UNEXPLAINED by the raw move (`|applied/raw_step − 1| > 0.15` AND raw flat), never a raw_step band.
+2. **★★ ORPHAN STUB KEYS dominate a bin-wide scan.** The bin's `TATAMOTORS` key is 845 sparse bars of
+   frozen ~₹440-510 garbage; the real Tata Motors is under `TMPV` (foldFundAliases merged it, §106). `f =
+   raw/adj` on a stub explodes into dozens of fake steps. EXCLUDE any sym where `_rename_map[sym]` exists
+   (a rename SOURCE → dead) or with < 40 bars/yr. This is the §86/§95 orphan class — dead keys, never in a
+   backtest universe (AGCNET→BBOX, MORAREALTY→PENINLAND, CAREERP→CPCAP, SASTASUNDR→HEALTHX… all appeared
+   only for this reason).
+3. **Splits are dated 1-2 days off on muhurat/special sessions.** AUROPHARMA/GLENMARK really split on
+   20031025 (raw 590→309, 367→84) but the bin carries the factor on the 20031027 muhurat bar; checking the
+   exact date sees already-rebased flat raw. Straddle, never the single ex-day.
+4. **Bonuses and demergers show a PARTIAL level change.** A real 1:4 bonus can straddle-level 0.85-0.95
+   (not 0.80) because the price mean-reverts inside the window; a demerger separates value to a spin-off so
+   raw drops less than the factor. A straddle-level between 1 and factor is NORMAL for a real action, NOT
+   evidence of a phantom. The persistence test's clean win is only the orphan-stub / muhurat fabrication
+   class — which the filter already removes.
+
+**Bottom line: the price-adjustment layer is sound for live/liquid stocks.** No data change shipped. The
+one genuinely open item this corroborates is the §86/§95 orphan-stub class (dead keys carrying junk), a
+separate campaign.
