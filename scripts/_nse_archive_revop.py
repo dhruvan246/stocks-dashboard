@@ -261,6 +261,16 @@ def main():
     limit = int(argv[argv.index("--limit") + 1]) if "--limit" in argv else None
     shard = argv[argv.index("--shard") + 1] if "--shard" in argv else None
     suffix = argv[argv.index("--out-suffix") + 1] if "--out-suffix" in argv else ""
+    # --basis con|std (2026-09-02, WP1 revCon): the reads file is keyed by (sym, qe) only, so a
+    # quarter read once for STD was never re-visited for CON -- 181 of the Nifty-500 revCon gaps
+    # carried a std-only entry that made `want` drop the quarter before any con page was fetched
+    # (memory feedback-key-the-ledger-by-basis). With --basis, a quarter counts as done only when
+    # an entry of THAT basis exists, list rows of the other basis are not fetched, and a page whose
+    # DECLARED basis differs is skipped after parsing (the page, never the index row, is trusted).
+    # Without the flag the legacy basis-blind behaviour is unchanged.
+    basis_want = argv[argv.index("--basis") + 1] if "--basis" in argv else None
+    if basis_want not in (None, "con", "std"):
+        sys.exit("--basis must be con or std")
 
     outp = OUT.replace(".json", suffix + ".json")
     skipp = SKIPS.replace(".json", suffix + ".json")
@@ -288,7 +298,14 @@ def main():
 
     nfill = 0
     for si, sym in enumerate(syms, 1):
-        want = {int(q) for q in gaps[sym] if str(q) not in out.get(sym, {})}
+        def have(q):
+            ent = out.get(sym, {}).get(str(q))
+            if ent is None:
+                return False
+            if basis_want is None:
+                return True
+            return any(e.get("basis") == basis_want for e in (ent if isinstance(ent, list) else [ent]))
+        want = {int(q) for q in gaps[sym] if not have(q)}
         if not want:
             continue
         rows = list_rows(sym)
@@ -300,6 +317,10 @@ def main():
             qe = iso_qe(r.get("toDate"))
             if qe not in want or not r.get("resultDetailedDataLink"):
                 continue
+            if basis_want:
+                row_basis = "con" if str(r.get("consolidated", "")).strip().lower() == "consolidated" else "std"
+                if row_basis != basis_want:
+                    continue
             link = r["resultDetailedDataLink"]
             dp = os.path.join(CACHE, re.sub(r"[^A-Za-z0-9_.]", "_", link.rsplit("/", 1)[-1]))
             try:
@@ -313,6 +334,9 @@ def main():
             isfin = isbank or any(c[6] == 1 for c in (revop_now.get(sym) or {}).values()
                                   if len(c) > 6 and c[6] is not None)
             basis = "con" if "Non" not in (meta.get("Consolidated / Non-Consolidated") or "Non") else "std"
+            if basis_want and basis != basis_want:
+                skips["%s|%d|%s" % (sym, qe, basis_want)] = "page-basis-%s-not-%s" % (basis, basis_want)
+                continue
             frow = fmap.get(sym, {}).get(qe)
             if not frow:
                 continue

@@ -28,6 +28,10 @@ HERE = os.path.dirname(os.path.abspath(__file__))
 ROOT = os.path.dirname(HERE)
 DOCS = os.path.join(ROOT, 'docs')
 MAIN_CACHE = '/Users/dhruvan/stocks-dashboard/scripts/_xbrl_cache'   # shared, untracked
+# Where NEW downloads go: this tree's own scripts/_xbrl_cache (== MAIN_CACHE when run from the main
+# checkout, so nothing changes there; a worktree keeps its downloads to itself and never writes into
+# the shared cache -- WP1 revCon 2026-09-02). Lookups try MAIN_CACHE first, then here.
+LOCAL_CACHE = os.path.join(HERE, '_xbrl_cache')
 LIST_CACHE = os.path.join(HERE, '_nse_list_cache')
 socket.setdefaulttimeout(45)
 sys.path.insert(0, HERE)
@@ -70,13 +74,27 @@ def urls_for(sym, qe):
     return out
 
 
+def cached_path(fn):
+    """The nightly fetcher stores a filing as <basename with '.xml' -> '_xml'> (measured 2026-09-02:
+    104,331 of the shared cache's files end in `_xml`, 204 in `.xml`), so a lookup by the URL basename
+    alone missed the whole cache and re-downloaded every filing. Try both spellings, both dirs."""
+    for d in (MAIN_CACHE, LOCAL_CACHE):
+        for name in (fn, re.sub(r'\.xml$', '_xml', fn)):
+            p = os.path.join(d, name)
+            if os.path.exists(p):
+                return p
+    return None
+
+
 def fetch(url):
     fn = url.rsplit('/', 1)[-1]
-    p = os.path.join(MAIN_CACHE, fn)
-    if not os.path.exists(p):
+    p = cached_path(fn)
+    if p is None:
         raw = urllib.request.urlopen(urllib.request.Request(url, headers=UA), timeout=45).read()
         if len(raw) < 2048 or b'<?xml' not in raw[:300]:
             raise ValueError('not an XBRL (%d bytes)' % len(raw))
+        os.makedirs(LOCAL_CACHE, exist_ok=True)
+        p = os.path.join(LOCAL_CACHE, fn)
         open(p, 'wb').write(raw)
         time.sleep(0.6)
     return open(p, encoding='utf-8', errors='replace').read()
@@ -105,13 +123,56 @@ def parse(xml, basis_hint=None):
         v = B.metrics_for(xml, 'OneD')
         if any(x is not None for x in v):
             out['con' if 'consol' in one_nat else 'std'] = dict(zip(('rev', 'op', 'ebit', 'pat', 'owners'), v))
+            out['con' if 'consol' in one_nat else 'std']['_end'] = period_end(xml, 'OneD')
     four_nat = nat.get('FourD', '')
     if four_nat and four_nat != one_nat and B.is_quarter_ctx(xml, 'FourD'):
         v = B.metrics_for(xml, 'FourD')
         b = 'con' if 'consol' in four_nat else 'std'
         if any(x is not None for x in v) and b not in out:
             out[b] = dict(zip(('rev', 'op', 'ebit', 'pat', 'owners'), v))
+            out[b]['_end'] = period_end(xml, 'FourD')
     return out
+
+
+def period_end(xml, cid):
+    """'YYYYMMDD' end of context cid's stated period, else None (old BANKING/NONINDAS files state none)."""
+    per = B.ctx_period(xml, cid)
+    return per[1].replace('-', '') if per else None
+
+
+def filed_days_after(filed, qe):
+    """Days from quarter-end to the list row's filing date ('25-Oct-2019 19:46'); None if unparseable."""
+    import datetime
+    m = re.match(r'(\d{1,2})-([A-Za-z]{3})-(\d{4})', (filed or '').strip())
+    if not m:
+        return None
+    M = {x: i for i, x in enumerate(['Jan','Feb','Mar','Apr','May','Jun','Jul','Aug','Sep','Oct','Nov','Dec'], 1)}
+    try:
+        f = datetime.date(int(m.group(3)), M[m.group(2).title()], int(m.group(1)))
+        q = datetime.date(int(qe[:4]), int(qe[4:6]), int(qe[6:8]))
+    except Exception:
+        return None
+    return (f - q).days
+
+
+def period_ok(m, filed, qe):
+    """★ PERIOD GATE (2026-09-02, WP1 revCon). The NSE index double-indexes: its row for toDate
+    30-Sep-2018 can carry the Sep-2019 filing's XBRL (RATNAMANI/GHCL `_WEB_2.xml`, §45), and the PAT
+    anchor cannot catch it when the stored con PAT for that quarter was itself read from the same
+    mis-indexed file (RATNAMANI con PAT 76.46 stored for BOTH Sep-2018 and Sep-2019). Two wrong
+    revenue cells were written and caught by the duplicate-to-the-paisa screen before any push.
+    Rule: the context's stated period must END on the target quarter; when the file states no
+    period (old BANKING/NONINDAS instances) the row's filing date must sit 0..150 days after the
+    quarter-end (runbook §52's post-quarter stretch). -> (ok, reason)."""
+    end = m.get('_end')
+    if end is not None:
+        return (end == qe), None if end == qe else 'period-mismatch: XBRL context ends %s, target %s (index double-indexing, §45)' % (end, qe)
+    d = filed_days_after(filed, qe)
+    if d is None:
+        return False, 'no-period-in-xbrl and no parseable filing date'
+    if 0 <= d <= 150:
+        return True, None
+    return False, 'no-period-in-xbrl and filed %d days after quarter-end (not this quarter)' % d
 
 
 def main():
@@ -211,6 +272,11 @@ def main():
                 stats['field_none_by_format'] += 1
                 refusals.append({'sym': sym, 'qe': qe, 'basis': b, 'field': f,
                                  'why': 'parsed OK but %s is None — filing format does not yield it via metrics_for' % f})
+                continue
+            pok, perr = period_ok(m, filed_at.get(b, ('?', '?'))[0], qe)
+            if not pok:
+                stats['period_fail'] = stats.get('period_fail', 0) + 1
+                refusals.append({'sym': sym, 'qe': qe, 'basis': b, 'field': f, 'why': perr, 'url': filed_at.get(b, ('?', '?'))[1]})
                 continue
             anc, err = anchor_ok(sym, qe, b, m)
             if anc is None:

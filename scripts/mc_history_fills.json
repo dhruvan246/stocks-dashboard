@@ -7638,8 +7638,8 @@
   "type_format": "cons_quarterly"
  },
  "ENIL|20161231|con": {
+  "fallback_check": "STALE HOLD SETTLED BY HAND 2026-09-02 18:23 IST (WP1 revCon, runbook 57/58 route 2). This hold asked to be settled from the filing; the NSE results-archive detail page nse-archive financial_res_ENIL_1019906.html (lakhs, Non Banking) -- a filing listed by the exchange under a CONSOLIDATED row for this quarter, page body declares 'Consolidated', Period Ended matches, Symbol matches -- prints revenue 150.65 (declared unit lakhs) and an owners-PAT of 16.42 that reproduces the stored consolidated PAT 16.42 (stored standalone PAT 16.29). Read by scripts/_nse_archive_revop.py --basis con, applied fill-only by scripts/_apply_reads.py, provenance in scripts/vision_rev_fills.json key ENIL|20161231 [con]. The payload holds that page's value; this aggregator hold is outranked by the exchange filing.",
   "gate": "36 anchors, 2 distant disagreements, none within \u00b16 quarters",
-  "held": "MC consolidated == our standalone for this quarter, and this company's own history shows con != std elsewhere \u2014 Moneycontrol's consolidated table falls back to standalone where no consolidated result was filed. Writing it would manufacture a consolidated figure (\u00a767 class).",
   "neighbour_ratio": 1.124,
   "rev": 150.65,
   "row_label": "Total Income From Operations",
@@ -11125,8 +11125,8 @@
   "type_format": "cons_quarterly"
  },
  "HERITGFOOD|20160930|con": {
+  "fallback_check": "STALE HOLD SETTLED BY HAND 2026-09-02 18:23 IST (WP1 revCon, runbook 57/58 route 2). This hold asked to be settled from the filing; the NSE results-archive detail page nse-archive financial_res_HERITGFOOD_1015290.html (lakhs, Non Banking) -- a filing listed by the exchange under a CONSOLIDATED row for this quarter, page body declares 'Consolidated', Period Ended matches, Symbol matches -- prints revenue 641.31 (declared unit lakhs) and an owners-PAT of 15.7 that reproduces the stored consolidated PAT 15.7 (stored standalone PAT 15.7). Read by scripts/_nse_archive_revop.py --basis con, applied fill-only by scripts/_apply_reads.py, provenance in scripts/vision_rev_fills.json key HERITGFOOD|20160930 [con]. The payload holds that page's value; this aggregator hold is outranked by the exchange filing.",
   "gate": "38 anchors, 4 distant disagreements, none within \u00b16 quarters",
-  "held": "MC consolidated == our standalone for this quarter, and this company's own history shows con != std elsewhere \u2014 Moneycontrol's consolidated table falls back to standalone where no consolidated result was filed. Writing it would manufacture a consolidated figure (\u00a767 class).",
   "neighbour_ratio": 1.066,
   "rev": 641.31,
   "row_label": "Total Income From Operations",
@@ -15714,8 +15714,8 @@
   "type_format": "cons_quarterly"
  },
  "KRBL|20240930|con": {
+  "fallback_check": "STALE HOLD SETTLED AUTOMATICALLY 2026-09-02 18:23 IST by scripts/settle_stale_holds.py. This hold asked to be settled from the filing (57/58), and nse_xbrl_rev_fills.json now asserts the same value 1270.48 for this cell from a primary filing, which outranks this aggregator read. The payload was NOT changed. Provenance in that ledger under key KRBL|20240930|con: src=https://nsearchives.nseindia.com/corporate/xbrl/INDAS_115745_1309479_13112024065329.xml | anchor=102.67 | filed=13-Nov-2024 18:53 | fill_pass=2026-08-16 phaseD",
   "gate": "34 anchors, 2 distant disagreements, none within \u00b16 quarters",
-  "held": "MC consolidated == our standalone for this quarter, and this company's own history shows con != std elsewhere \u2014 Moneycontrol's consolidated table falls back to standalone where no consolidated result was filed. Writing it would manufacture a consolidated figure (\u00a767 class).",
   "neighbour_ratio": 0.978,
   "rev": 1270.48,
   "row_label": "Net Sales/Income from operations",
@@ -15724,8 +15724,8 @@
   "type_format": "cons_quarterly"
  },
  "KRBL|20241231|con": {
+  "fallback_check": "STALE HOLD SETTLED AUTOMATICALLY 2026-09-02 18:23 IST by scripts/settle_stale_holds.py. This hold asked to be settled from the filing (57/58), and nse_xbrl_rev_fills.json now asserts the same value 1681.9 for this cell from a primary filing, which outranks this aggregator read. The payload was NOT changed. Provenance in that ledger under key KRBL|20241231|con: src=https://nsearchives.nseindia.com/corporate/xbrl/INDAS_119031_1374252_07022025025310.xml | anchor=132.61 | filed=07-Feb-2025 14:53 | fill_pass=2026-08-16 phaseD",
   "gate": "34 anchors, 2 distant disagreements, none within \u00b16 quarters",
-  "held": "MC consolidated == our standalone for this quarter, and this company's own history shows con != std elsewhere \u2014 Moneycontrol's consolidated table falls back to standalone where no consolidated result was filed. Writing it would manufacture a consolidated figure (\u00a767 class).",
   "neighbour_ratio": 1.295,
   "rev": 1681.9,
   "row_label": "Net Sales/Income from operations",
@@ -15734,8 +15734,8 @@
   "type_format": "cons_quarterly"
  },
  "KRBL|20250331|con": {
+  "fallback_check": "STALE HOLD SETTLED AUTOMATICALLY 2026-09-02 18:23 IST by scripts/settle_stale_holds.py. This hold asked to be settled from the filing (57/58), and nse_xbrl_rev_fills.json now asserts the same value 1442.25 for this cell from a primary filing, which outranks this aggregator read. The payload was NOT changed. Provenance in that ledger under key KRBL|20250331|con: src=https://nsearchives.nseindia.com/corporate/xbrl/INTEGRATED_FILING_INDAS_1441856_16052025111514_WEB.xml | anchor=154.21 | filed=16-May-2025 23:15:14 | fill_pass=2026-08-16 phaseD",
   "gate": "34 anchors, 2 distant disagreements, none within \u00b16 quarters",
-  "held": "MC consolidated == our standalone for this quarter, and this company's own history shows con != std elsewhere \u2014 Moneycontrol's consolidated table falls back to standalone where no consolidated result was filed. Writing it would manufacture a consolidated figure (\u00a767 class).",
   "neighbour_ratio": 1.056,
   "rev": 1442.25,
   "row_label": "Net Sales/Income from operations",
@@ -15744,8 +15744,8 @@
   "type_format": "cons_quarterly"
  },
  "KRBL|20250630|con": {
+  "fallback_check": "STALE HOLD SETTLED AUTOMATICALLY 2026-09-02 18:23 IST by scripts/settle_stale_holds.py. This hold asked to be settled from the filing (57/58), and nse_xbrl_rev_fills.json now asserts the same value 1584.35 for this cell from a primary filing, which outranks this aggregator read. The payload was NOT changed. Provenance in that ledger under key KRBL|20250630|con: src=https://nsearchives.nseindia.com/corporate/xbrl/INTEGRATED_FILING_INDAS_1506093_07082025081917_WEB.xml | anchor=150.58 | filed=07-Aug-2025 20:19:17 | fill_pass=2026-08-16 phaseD",
   "gate": "34 anchors, 2 distant disagreements, none within \u00b16 quarters",
-  "held": "MC consolidated == our standalone for this quarter, and this company's own history shows con != std elsewhere \u2014 Moneycontrol's consolidated table falls back to standalone where no consolidated result was filed. Writing it would manufacture a consolidated figure (\u00a767 class).",
   "neighbour_ratio": 1.16,
   "rev": 1584.35,
   "row_label": "Net Sales/Income from operations",
@@ -15754,8 +15754,8 @@
   "type_format": "cons_quarterly"
  },
  "KRBL|20250930|con": {
+  "fallback_check": "STALE HOLD SETTLED AUTOMATICALLY 2026-09-02 18:23 IST by scripts/settle_stale_holds.py. This hold asked to be settled from the filing (57/58), and nse_xbrl_rev_fills.json now asserts the same value 1511.08 for this cell from a primary filing, which outranks this aggregator read. The payload was NOT changed. Provenance in that ledger under key KRBL|20250930|con: src=https://nsearchives.nseindia.com/corporate/xbrl/INTEGRATED_FILING_INDAS_1574534_13112025103510_WEB.xml | anchor=172.11 | filed=13-Nov-2025 22:35:11 | fill_pass=2026-08-16 phaseD",
   "gate": "34 anchors, 2 distant disagreements, none within \u00b16 quarters",
-  "held": "MC consolidated == our standalone for this quarter, and this company's own history shows con != std elsewhere \u2014 Moneycontrol's consolidated table falls back to standalone where no consolidated result was filed. Writing it would manufacture a consolidated figure (\u00a767 class).",
   "neighbour_ratio": 1.106,
   "rev": 1511.08,
   "row_label": "Net Sales/Income from operations",
@@ -17455,8 +17455,8 @@
   "type_format": "cons_quarterly"
  },
  "MINDTREE|20140331|con": {
+  "fallback_check": "STALE HOLD SETTLED BY HAND 2026-09-02 18:23 IST (WP1 revCon, runbook 57/58 route 2). This hold asked to be settled from the filing; the NSE results-archive detail page nse-archive financial_res_MINDTREE_116262.html (lakhs, Non Banking) -- a filing listed by the exchange under a CONSOLIDATED row for this quarter, page body declares 'Consolidated', Period Ended matches, Symbol matches -- prints revenue 823.7 (declared unit lakhs) and an owners-PAT of 98.2 that reproduces the stored consolidated PAT 98.2 (stored standalone PAT 98.4). Read by scripts/_nse_archive_revop.py --basis con, applied fill-only by scripts/_apply_reads.py, provenance in scripts/vision_rev_fills.json key MINDTREE|20140331 [con]. The payload holds that page's value; this aggregator hold is outranked by the exchange filing.",
   "gate": "14 anchors, 0 distant disagreements, none within \u00b16 quarters",
-  "held": "MC consolidated == our standalone for this quarter, and this company's own history shows con != std elsewhere \u2014 Moneycontrol's consolidated table falls back to standalone where no consolidated result was filed. Writing it would manufacture a consolidated figure (\u00a767 class).",
   "neighbour_ratio": 0.691,
   "rev": 823.7,
   "row_label": "Net Sales/Income from operations",
@@ -17505,8 +17505,8 @@
   "type_format": "cons_quarterly"
  },
  "MINDTREE|20181231|con": {
+  "fallback_check": "STALE HOLD SETTLED AUTOMATICALLY 2026-09-02 18:23 IST by scripts/settle_stale_holds.py. This hold asked to be settled from the filing (57/58), and nse_xbrl_rev_fills.json now asserts the same value 1787.2 for this cell from a primary filing, which outranks this aggregator read. The payload was NOT changed. Provenance in that ledger under key MINDTREE|20181231|con: src=https://nsearchives.nseindia.com/corporate/xbrl/INDAS_41518_73107_16012019050702_WEB_2.xml | anchor=191.2 | filed=16-Jan-2019 19:09 | fill_pass=2026-08-16 phaseD",
   "gate": "14 anchors, 0 distant disagreements, none within \u00b16 quarters",
-  "held": "MC consolidated == our standalone for this quarter, and this company's own history shows con != std elsewhere \u2014 Moneycontrol's consolidated table falls back to standalone where no consolidated result was filed. Writing it would manufacture a consolidated figure (\u00a767 class).",
   "neighbour_ratio": 1.319,
   "rev": 1787.2,
   "row_label": "Net Sales/Income from operations",
@@ -22161,8 +22161,8 @@
   "type_format": "cons_quarterly"
  },
  "RAIN|20140930|con": {
+  "fallback_check": "STALE HOLD SETTLED BY HAND 2026-09-02 18:23 IST (WP1 revCon, runbook 57/58 route 2). This hold asked to be settled from the filing; the NSE results-archive detail page nse-archive financial_res_RAIN_123614.html (lakhs, Non Banking) -- a filing listed by the exchange under a CONSOLIDATED row for this quarter, page body declares 'Consolidated', Period Ended matches, Symbol matches -- prints revenue 3032.11 (declared unit lakhs) and an owners-PAT of 114.66 that reproduces the stored consolidated PAT 114.66 (stored standalone PAT 25.82). Read by scripts/_nse_archive_revop.py --basis con, applied fill-only by scripts/_apply_reads.py, provenance in scripts/vision_rev_fills.json key RAIN|20140930 [con]. The payload holds that page's value; this aggregator hold is outranked by the exchange filing.",
   "gate": "41 anchors, 1 distant disagreements, none within \u00b16 quarters",
-  "held": "HOLD-NO-TWIN: our standalone cell for this quarter is empty AND MC serves no standalone row for it, so the fallback test cannot run at all. Unverifiable rather than verified \u2014 not written.",
   "neighbour_ratio": 1.196,
   "rev": 3032.11,
   "row_label": "Total Income From Operations",
@@ -26722,8 +26722,8 @@
   "type_format": "cons_quarterly"
  },
  "SUPREMEIND|20140331|con": {
+  "fallback_check": "STALE HOLD SETTLED BY HAND 2026-09-02 18:23 IST (WP1 revCon, runbook 57/58 route 2). This hold asked to be settled from the filing; the NSE results-archive detail page nse-archive financial_res_SUPREMEIND_116492.html (lakhs, Non Banking) -- a filing listed by the exchange under a CONSOLIDATED row for this quarter, page body declares 'Consolidated', Period Ended matches, Symbol matches -- prints revenue 1005.23 (declared unit lakhs) and an owners-PAT of 58.34 that reproduces the stored consolidated PAT 58.34 (stored standalone PAT 55.45). Read by scripts/_nse_archive_revop.py --basis con, applied fill-only by scripts/_apply_reads.py, provenance in scripts/vision_rev_fills.json key SUPREMEIND|20140331 [con]. The payload holds that page's value; this aggregator hold is outranked by the exchange filing.",
   "gate": "43 anchors, 1 distant disagreements, none within \u00b16 quarters",
-  "held": "MC consolidated == our standalone for this quarter, and this company's own history shows con != std elsewhere \u2014 Moneycontrol's consolidated table falls back to standalone where no consolidated result was filed. Writing it would manufacture a consolidated figure (\u00a767 class).",
   "neighbour_ratio": 0.859,
   "rev": 1005.23,
   "row_label": "Total Income From Operations",
