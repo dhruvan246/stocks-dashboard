@@ -74,6 +74,76 @@ R_MINORITY = re.compile(r"^minority interest", re.I)
 R_EQCAP = re.compile(r"paid-?up equity share capital", re.I)
 R_FV = re.compile(r"face value", re.I)
 R_BASIC = re.compile(r"^\(?a\)?\s*basic", re.I)
+# PRE-2011 ARCHIVE TEMPLATE (measured on the MPHASIS Mar-2008 and GMRINFRA Sep-2010 pages,
+# 2026-09-02, CON-GAP PRE-2020 campaign). The labels differ from both later templates:
+#   "Net Profit (+) / Loss (-) for the period"               = the period row (before MI/associates)
+#   "Minority Interest" / "Shares of Associates"              = SIGNED deductions
+#   "Consolidated Net Profit (+) / Loss (-) for the period"   = period - MI - associates = OWNERS
+# GMRINFRA Sep-2010 prints 42.53 - (-25.98) - (-2.61) = 71.12 on that last row exactly. In the
+# Ind-AS-era template (§53e) the "Consolidated Net Profit" row merely DUPLICATES the period row, so
+# it is trusted only when it reproduces the deduction identity or when no MI/associates row exists.
+R_PERIOD_OLD = re.compile(r"^net profit\s*\(\+\)\s*/\s*loss\s*\(-\)\s*for the period", re.I)
+R_CONNET = re.compile(r"^consolidated net profit.*for the period", re.I)
+R_ASSOC = re.compile(r"^shares? of\b.*associates", re.I)
+# the old template prints "Basic EPS before/after Extraordinary items (in Rs.)" with no "(a)"
+# serial, which R_BASIC (written for "(a) Basic") never matched -> every 2005-2010 page read as
+# "eps-inputs-missing". Both spellings are candidates; the recon still has to land within 6%.
+R_BASIC_OLD = re.compile(r"^basic\s+eps\b", re.I)
+IDENT_ABS, IDENT_REL = 0.02, 0.002                  # on-page identity tolerance (print rounding)
+
+
+def owners_pat(rows, want_con):
+    """Owners-attributable PAT from the page rows -> (value, mode) or (None, refusal reason).
+    Modes are journalled so a later session can see WHICH convention produced each figure."""
+    own = NAR.pick(rows, R_OWN)
+    per = NAR.pick(rows, R_PERIOD, R_PERIOD_OLD)
+    mi = NAR.pick(rows, R_MINORITY)
+    assoc = NAR.pick(rows, R_ASSOC)
+    connet = NAR.pick(rows, R_CONNET)
+    if own is not None:
+        return own, "owners-row"
+    if per is None:
+        return None, "no-pat-row"
+    if not want_con:
+        return per, "period-row(std)"
+    tol = lambda x: max(IDENT_ABS, abs(x) * IDENT_REL)
+
+    def via_intermediate_rows():
+        # ABAN Dec-2010 class: the deduction sits under a generic label ("Other Related Items"
+        # 43.26) between the period row (105.27) and the consolidated row (62.02). Accept the
+        # consolidated row when the rows printed BETWEEN the two close the identity exactly; the
+        # EPS gate still has to reconcile to the figure chosen (ABAN: 0.1425*8.7033/0.02 = 62.01).
+        labs = [lab.strip() for lab, _ in rows]
+        ip = next((i for i, l in enumerate(labs) if R_PERIOD.search(l) or R_PERIOD_OLD.search(l)), None)
+        ic = next((i for i, l in enumerate(labs) if R_CONNET.search(l)), None)
+        if ip is not None and ic is not None and ic > ip + 1:
+            mid = [v for _, v in rows[ip + 1:ic]]
+            if abs(per - sum(mid) - connet) <= tol(connet):
+                return connet, "connet==period-minus-intermediate-rows(%s)" % "; ".join(
+                    "%s=%.2f" % (l[:28], v) for l, v in rows[ip + 1:ic])
+        return None, None
+
+    if mi in (None, 0.0) and assoc in (None, 0.0):
+        if connet is not None and abs(connet - per) > tol(per):
+            v, mode = via_intermediate_rows()
+            if v is not None:
+                return v, mode
+            return None, "connet-differs-from-period-without-MI(%.2f vs %.2f)" % (connet, per)
+        return per, "period-row(no-MI)"
+    ident = per - (mi or 0.0) - (assoc or 0.0)
+    if connet is not None and abs(connet - ident) <= tol(ident):
+        return connet, "connet==period-MI-assoc(old template)"
+    if connet is not None:
+        v, mode = via_intermediate_rows()
+        if v is not None:
+            return v, mode
+    if connet is not None and abs(connet - per) <= tol(per):
+        # Ind-AS template: the consolidated row duplicates the period row (§53e convention,
+        # calibrated 49/49 on that template): owners = period - minority - associates
+        return ident, "deduction-identity(§53e)"
+    if connet is None:
+        return None, "no-owners-row-but-minority-present"
+    return None, "owners-identity-unresolved(per %.2f mi %s assoc %s connet %.2f)" % (per, mi, assoc, connet)
 
 
 def qe_of(s):
@@ -90,6 +160,11 @@ def read_page(link, sym, qe, want_con):
         return None, "fetch:%s" % type(ex).__name__, None
     meta, rows = NAR.parse_detail(html)
     basis = meta.get("Consolidated / Non-Consolidated", "")
+    # §53e: a page with NO declared basis and no rows is the archive's content-free shell
+    # (symbols containing '&', 0-byte files) -- say so, never "basis-mismatch:?", which sent a
+    # whole pass hunting for a better link.
+    if not basis and not rows:
+        return None, "empty-shell(no meta, %d bytes)" % len(html), None
     is_con = basis.strip().lower() == "consolidated"
     if is_con != want_con:
         return None, "basis-mismatch:%s" % (basis or "?"), None
@@ -105,16 +180,10 @@ def read_page(link, sym, qe, want_con):
     m = re.search(r"Cumulative\s*/\s*Non-?Cumulative\s*\|?\s*(Non-?Cumulative|Cumulative)", html, re.I)
     if m and m.group(1).lower().replace("-", "").startswith("cumulative"):
         return None, "cumulative-page(YTD not quarter)", None
-    own = NAR.pick(rows, R_OWN)
-    per = NAR.pick(rows, R_PERIOD)
-    mi = NAR.pick(rows, R_MINORITY)
-    pat = own
+    pat, mode = owners_pat(rows, want_con)
     if pat is None:
-        if want_con and mi not in (None, 0.0):
-            return None, "no-owners-row-but-minority-present", None
-        pat = per
-    if pat is None:
-        return None, "no-pat-row", None
+        return None, mode, None
+    meta["pat_mode"] = mode
     # BLANK TEMPLATE PAGES. Some filers submitted the consolidated form with every P&L row left at
     # 0.00 (SUNTV Mar-2017: profit, tax, EPS, minority all 0.0; only Paid-up equity populated).
     # The page validates on basis/period/symbol and its sibling std page is perfectly good, so
@@ -129,13 +198,21 @@ def read_page(link, sym, qe, want_con):
 _LIST_CACHE = {}
 
 
-def std_link(sym, qe):
-    """resultDetailedDataLink of the NON-Consolidated filing for this quarter, or None."""
+def std_link(sym, qe, key=None):
+    """resultDetailedDataLink of the NON-Consolidated filing for this quarter, or None.
+    `key` (the fundamentals key = the CURRENT name, e.g. BBOX for era symbol AGCNET) is queried
+    too: NAR.list_rows(sym) merges only names OLDER than sym, so a std row filed under the newer
+    name was invisible and GATE S' silently read as unavailable for every era-named symbol."""
     if sym not in _LIST_CACHE:
         try:
             _LIST_CACHE[sym] = NAR.list_rows(sym)
         except Exception:
             _LIST_CACHE[sym] = []
+        if key and key.upper() != sym.upper():
+            try:
+                _LIST_CACHE[sym] = _LIST_CACHE[sym] + NAR.list_rows(key)
+            except Exception:
+                pass
         time.sleep(0.5)
     for row in _LIST_CACHE[sym]:
         if (row.get("consolidated") or "").strip().lower().startswith("non"):
@@ -147,43 +224,74 @@ def std_link(sym, qe):
 def eps_gate(pat, rows):
     """PAT == eps * eqcap / fv. The declared-unit divisor cancels, so per-share rows scaled by
     the parser (Face Value 2 -> 0.02 under lakhs) are harmless here."""
-    eq, fv, eps = NAR.pick(rows, R_EQCAP), NAR.pick(rows, R_FV), NAR.pick(rows, R_BASIC)
-    if not (eq and fv and eps) or abs(pat) < 1e-9:
+    eq, fv = NAR.pick(rows, R_EQCAP), NAR.pick(rows, R_FV)
+    # §53e: test EVERY basic-EPS row (before/after extraordinary items) and journal which one
+    # matched -- the archive prints both, and a first-match-only read picked the wrong one.
+    cands = [(lab, v) for lab, v in rows
+             if R_BASIC.search(lab.strip()) or R_BASIC.search(NAR.ROWNUM.sub("", lab.strip()))
+             or R_BASIC_OLD.search(lab.strip())]
+    if not (eq and fv and cands) or abs(pat) < 1e-9:
         return None, "eps-inputs-missing"
-    recon = eps * eq / fv
-    err = abs(recon - pat) / abs(pat)
-    return (err <= EPS_TOL), "eps %.1f%% (recon %.2f vs %.2f)" % (err * 100, recon, pat)
+    best = None
+    for lab, eps in cands:
+        recon = eps * eq / fv
+        err = abs(recon - pat) / abs(pat)
+        if best is None or err < best[0]:
+            best = (err, recon, lab.strip())
+    err, recon, lab = best
+    return (err <= EPS_TOL), "eps %.1f%% (recon %.2f vs %.2f; row '%s')" % (err * 100, recon, pat, lab[:45])
 
 
 def main():
     args = sys.argv[1:]
+    # --inv / --targets: another campaign's inventory + target files (CON-GAP PRE-2020 uses
+    # con_discover_pre2015.py's _con_pre2015_nse_inventory.json, whose per-cell entries are dicts
+    # carrying the exchange filing date). Defaults keep the 2015-19 behaviour byte-identical.
+    inv_path = args[args.index("--inv") + 1] if "--inv" in args else INV
+    tgt_path = args[args.index("--targets") + 1] if "--targets" in args else TARGETS
+    # --reads PATH: a private ledger for one shard of a parallel run (two readers writing the
+    # shared ledger every 10 cells would clobber each other); merge shards back with
+    # merge_con_reads.py before --apply. The shard still SEEDS its skip-list from the shared
+    # ledger so no cell is read twice.
+    global READS
+    shard_reads = args[args.index("--reads") + 1] if "--reads" in args else None
     if "--apply" in args:
-        return apply_reads()
+        return apply_reads(inv_path if "--inv" in args else None, tgt_path)
     limit = int(args[args.index("--limit") + 1]) if "--limit" in args else None
     only = set(args[args.index("--only") + 1].split(",")) if "--only" in args else None
-    if not os.path.exists(INV):
-        print("no inventory yet -- run nse_con_discover.py first")
+    if not os.path.exists(inv_path):
+        print("no inventory yet -- run the discovery sweep first (%s)" % inv_path)
         return
-    inv = json.load(open(INV))
+    inv = json.load(open(inv_path))
     fund = json.load(open(DOCS))
-    targets = json.load(open(TARGETS))
+    targets = json.load(open(tgt_path))
     reads = json.load(open(READS)) if os.path.exists(READS) else {}
+    if shard_reads:
+        done_keys = set(reads)                       # shared ledger = what NOT to re-read
+        reads = json.load(open(shard_reads)) if os.path.exists(shard_reads) else {}
+        READS = shard_reads
+    else:
+        done_keys = set(reads)
     os.makedirs(CACHE, exist_ok=True)
 
     work = []
     for sym, rec in sorted(inv.items()):
         if only and sym not in only:
             continue
-        for qe_s, link in sorted((rec.get("qtr") or {}).items()):
-            if "%s|%s" % (sym, qe_s) in reads:
+        qmap = rec.get("con_qtr") if "con_qtr" in rec else (rec.get("qtr") or {})
+        for qe_s, ent in sorted((qmap or {}).items()):
+            if "%s|%s" % (sym, qe_s) in done_keys or "%s|%s" % (sym, qe_s) in reads:
                 continue
-            work.append((sym, int(qe_s), link))
+            link = ent["link"] if isinstance(ent, dict) else ent
+            filed = ent.get("filed") if isinstance(ent, dict) else None
+            if link:
+                work.append((sym, int(qe_s), link, filed))
     if limit:
         work = work[:limit]
     print("con-PAT reads to attempt: %d" % len(work), flush=True)
 
     ok = skip = 0
-    for i, (sym, qe, link) in enumerate(work):
+    for i, (sym, qe, link, filed) in enumerate(work):
         key = targets.get(sym, {}).get("key", sym)
         stdrow = {r[0]: r for r in fund.get(key, [])}.get(qe)
         stored_std = stdrow[1] if stdrow else None
@@ -198,10 +306,11 @@ def main():
         # GATE S' -- validate the document family via the basis we already hold.
         # The std link comes from NAR.list_rows (disk-cached, alias-aware: it merges the era
         # spellings, which matters because NSE rewrites archive filenames to the CURRENT symbol).
-        srec = std_link(sym, qe)
+        srec = std_link(sym, qe, key)
         blocked = None
+        spat, stdrows = None, None
         if stored_std is not None and srec:
-            spat, smeta, _ = read_page(srec, sym, qe, False)
+            spat, smeta, stdrows = read_page(srec, sym, qe, False)
             time.sleep(0.7)
             if spat is not None:
                 d = abs(spat - stored_std)
@@ -220,6 +329,22 @@ def main():
             else:
                 gates.append("S':unavailable(%s)" % smeta)
         eg, note = eps_gate(pat, rows)
+        # §53e GATE C -- the EPS POSITIVE CONTROL, run on the same filing's STANDALONE page whose
+        # PAT just reproduced our stored std to the paisa (S' PASS). EPS is computed on the
+        # weighted-average share count while the page prints PERIOD-END paid-up capital, so in a
+        # quarter with a rights issue / QIP / conversion the recon misses on BOTH bases by the
+        # same margin. If the std page misses by (nearly) the same error, the miss is the share
+        # count, not the row choice, and the con figure stands; if the std page reconciles while
+        # the con page does not, the picked con row is suspect and the block stays.
+        if eg is False and stdrows is not None and spat is not None:
+            ceg, cnote = eps_gate(spat, stdrows)
+            m = re.search(r"eps ([\d.]+)%", note)
+            mc = re.search(r"eps ([\d.]+)%", cnote)
+            if ceg is False and m and mc and abs(float(m.group(1)) - float(mc.group(1))) <= 3.0:
+                eg = True
+                note += " | CONTROLLED: std page misses identically (%s)" % cnote
+            else:
+                note += " | control: std page %s" % cnote
         gates.append("E:%s %s" % ({True: "PASS", False: "FAIL", None: "n/a"}[eg], note))
         passed = passed or (eg is True)
         # A FAILING E is also a hard block, for the same reason as S': GATE S' validates the page
@@ -233,7 +358,9 @@ def main():
         if blocked:
             passed = False
         rec = {"con": round(pat, 2), "unit": meta.get("unit"), "gates": gates,
-               "stored_std": stored_std, "link": link}
+               "stored_std": stored_std, "link": link, "pat_mode": meta.get("pat_mode")}
+        if filed:
+            rec["filed"] = filed                       # exchange filing timestamp from the list row
         if passed:
             reads["%s|%d" % (sym, qe)] = rec
             ok += 1
@@ -250,15 +377,34 @@ def main():
     print("\nlanded %d | skipped %d  -> %s" % (ok, skip, os.path.basename(READS)))
 
 
-def apply_reads():
+def filed_int(s, qe):
+    """'01-May-2008 13:45' -> 20080501, or None when unparseable / before the quarter end."""
+    d = NAR.iso_qe((s or "").split(" ")[0])
+    return d if d and d >= qe else None
+
+
+def apply_reads(inv_path=None, tgt_path=TARGETS):
+    """Fill-only merge into both twins. With inv_path, ONLY reads whose (sym, qe) is a con-quarter
+    hit in that inventory are applied -- a re-apply of the whole ledger would otherwise re-land
+    every earlier campaign's reads too (fill-only is no defence against a cell a later campaign
+    deliberately emptied: memory feedback-held-cell-asserts-absence)."""
     reads = json.load(open(READS))
     good = {k: v for k, v in reads.items() if "con" in v and not v.get("skip")}
-    targets = json.load(open(TARGETS))
+    if inv_path:
+        inv = json.load(open(inv_path))
+        allowed = set()
+        for sym, rec in inv.items():
+            qmap = rec.get("con_qtr") if "con_qtr" in rec else (rec.get("qtr") or {})
+            for qe_s in (qmap or {}):
+                allowed.add("%s|%s" % (sym, qe_s))
+        good = {k: v for k, v in good.items() if k in allowed}
+    targets = json.load(open(tgt_path))
     n_files = []
+    applied = []
     for path in (DOCS, MIRROR):
         d = json.load(open(path))
         n = 0
-        for k, v in good.items():
+        for k, v in sorted(good.items()):
             sym, qe = k.split("|")
             qe = int(qe)
             key = targets.get(sym, {}).get("key", sym)
@@ -271,11 +417,18 @@ def apply_reads():
                 continue
             r[3] = v["con"]
             if r[4] is None:
-                r[4] = r[2]
+                # the exchange's own filing timestamp for the CONSOLIDATED row when the list carried
+                # one (§52: stored pre-2018 std announce dates are often a qe+45d default, not a
+                # filing date); the std announce date otherwise.
+                r[4] = filed_int(v.get("filed"), qe) or r[2]
             n += 1
+            if path == DOCS:
+                applied.append((key, qe, v["con"], r[4]))
         json.dump(d, open(path, "w"), separators=(",", ":"))
         n_files.append(n)
-    print("applied: docs %d | mirror %d (of %d landed reads)" % (n_files[0], n_files[1], len(good)))
+    print("applied: docs %d | mirror %d (of %d landed reads%s)" % (
+        n_files[0], n_files[1], len(good), " in inventory scope" if inv_path else ""))
+    return applied
 
 
 if __name__ == "__main__":

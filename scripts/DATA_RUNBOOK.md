@@ -13723,3 +13723,143 @@ test flags every legitimately adjusted bar as "still wrong".
 2. The open arbitrates FALLS; up-moves need their own calibration (there are no official consolidations to
    learn from in our ledgers).
 3. Boundary-ratio, then level-by-later-ledger — never level alone (122c).
+
+---
+
+## 123. ★★★ PRE-2015 CONSOLIDATED PAT — the wall was the POPULATION, not the era: 28% of 2008-14 gap quarters have a consolidated filing  (2026-09-02, CON-GAP PRE-2020 campaign)
+
+**NO ASSUMPTIONS, NO GUESSWORK (§0).** Every number below was measured this session on the NSE archive, Moneycontrol,
+BSE and the live page. Plan: `scripts/PLAN_CON_GAP_PRE2020.md`; worklist `scripts/con_gap_worklist_2026-09-02.json`.
+Why it mattered: on a "Consolidated" strategy the engine ran FULLY on standalone for every Nifty-500 name with no
+consolidated quarter visible at the screen (path A, §121): **500/501 at 2009-01-30, 384 at 2015-01-30, 60 at 2019-01-31**
+(re-measured live before acting, engine e15, identical to the plan's baseline).
+
+### 123a. Job 1 — reach, measured before anything was written
+§53's 2.7% (2015Q1-2019Q4) was quoted as "the wall". It was a fact about the RESIDUE population (311 companies whose
+2015-19 gaps had survived every earlier fill), not about the era. Swept the whole worklist — 725 symbols, 14,840
+standalone-only quarters 2008Q1-2014Q4 — against the NSE results-archive list API (`con_discover_pre2015.py --route nse`,
+era names via `_rename_map`/`symchg.csv` + the fundamentals key, 0 errors, 0 empty records) and Moneycontrol's consolidated
+feed (`--route mc`, source-internal con-vs-std per quarter, §85):
+
+| year | gap cells | NSE consolidated QUARTERLY row for that exact quarter | MC con≠std | either |
+|---|---|---|---|---|
+| 2008 | 2,130 | 545 (25.6%) | 589 | 628 (29.5%) |
+| 2009 | 2,191 | 571 (26.1%) | 636 | 667 (30.4%) |
+| 2010 | 2,292 | 662 (28.9%) | 739 | 767 (33.5%) |
+| 2011 | 2,332 | 708 (30.4%) | 821 | 849 (36.4%) |
+| 2012 | 2,065 | 641 (31.0%) | 695 | 717 (34.7%) |
+| 2013 | 1,939 | 575 (29.7%) | 581 | 612 (31.6%) |
+| 2014 | 1,891 | 493 (26.1%) | 511 | 541 (28.6%) |
+
+**4,195 cells (28.3%) in 292 companies have a consolidated quarterly document on NSE** — ~10× the residue rate. Under
+Clause 41 consolidated quarterlies were optional, and about a third of the roster opted in; our store never carried them
+because the pre-2015 extraction routes (MC deep STANDALONE feed, BSE detres) are standalone-only. NSE's first-ever
+consolidated quarterly row per symbol: 2005:84 2006:40 2007:50 2008:29 2009:25 2010:32 2011:19 2012:16 2013:15
+2014:13 2015:14 2016:34 2017:10 2018:68 2019:136 2020+:26 never:114. The archive reaches 2005 (CUB/PGHH) — 2007 (COLPAL)
+and declares basis per row; 1 in-scope con row was cumulative.
+
+### 123b. The PRE-2011 archive template — three label changes the reader had to learn
+`read_con_pat_nse.py` was written for the 2015-19 pages and returned `no-pat-row` on every 2005-2010 page:
+- PAT row prints **"Net Profit (+) / Loss (-) for the period"**; minority interest and **"Shares of Associates"** are
+  SIGNED deductions below it; **"Consolidated Net Profit (+) / Loss (-) for the period" = period − MI − associates =
+  OWNERS** (GMRINFRA Sep-2010: 42.53 − (−25.98) − (−2.61) = 71.12, printed). In the Ind-AS template that same row
+  merely duplicates the period row (§53e), so it is trusted only when it reproduces the identity or no MI row exists.
+- **ABAN Dec-2010 class:** the deduction sits under a generic label ("Other Related Items" 43.26) between period 105.27
+  and consolidated 62.02; accepted when the rows printed BETWEEN the two close the identity, and the EPS gate must
+  still reconcile to the figure chosen (0.1425 × 8.7033 / 0.02 = 62.01 ✓).
+- EPS rows are **"Basic EPS before/after Extraordinary items (in Rs.)"** with no "(a)" serial — `R_BASIC` never matched,
+  so every old page read `eps-inputs-missing`. Every basic-EPS row is now tested and the matching one journalled (§53e).
+Owners mode is journalled per cell (`pat_mode`): connet==period−MI−assoc / owners-row / period-row(no-MI) /
+connet==period−minus-intermediate-rows / deduction-identity(§53e). Regression: the 9 sampled 2015-19 landed cells
+reproduce to the paisa.
+
+### 123c. Three more reader defects found by the refusals, each a class
+- **Renamed symbols, the OTHER direction (AGCNET → BBOX, 14 cells `fetch:HTTPError`).** The list queried under the era
+  name still rewrites the filename to the CURRENT name (`financial_res_BBOX_53155.html`, 404) while the stored file
+  carries the era name; `aliases(sym)` lists only names OLDER than sym, so AGCNET itself was never tried. Fixed in the
+  shared `_nse_archive_revop.get_detail` (sym added to the fallback list). All 14 land with EPS 0.0-0.1%.
+- **GATE C control (§53e) built in.** An E-recon miss with S' PASS is now re-run on the SAME filing's standalone page
+  (whose PAT equals our stored std to the paisa): if that page misses by the same margin (±3 pp) the miss is the
+  weighted share count, not the row (3IINFOTECH Jun-2012: explicit owners row −166.41, both pages ~118% off through a
+  capital restructuring) → `E:CONTROLLED`. If the std page reconciles while the con page does not, the block stands
+  (ABAN Mar-2011 8.8% vs 0.1%; ADSL Mar-2012 22% vs 0.1%). 11 cells landed, 23 correctly stayed refused.
+- **Empty shells labelled honestly.** COX&KINGS' 21 pages are the '&' archiver shell (2,906 B, §53e); they now read
+  `empty-shell(no meta, N bytes)` instead of `basis-mismatch:?`.
+Also: `std_link()` consults the fundamentals key's list too (S' was silently unavailable for era-named symbols), the
+applier takes `--inv/--targets`, applies ONLY the given inventory's keys (a whole-ledger re-apply would re-land every
+earlier campaign's reads, memory feedback-held-cell-asserts-absence), and writes the CON announce date from the
+exchange's own `filingDate` on the list row (§52: stored pre-2018 std dates are often a qe+45d default — MPHASIS
+Mar-2008 std ann 20080515 vs the con filing 2008-05-01).
+
+### 123d. Reader 2 is only a reader when it is talking about the same company
+Moneycontrol resolved 24 era names to nothing (`mc_id` wants an exact NSE token). `mc_resolve_era_ids.py` maps era →
+current via the repo's own rename maps (ALOKTEXT→ALOKINDS, HEXAWARE→HEXT, TUBEINVEST→CHOLAHLDNG, RUCHISOYA→PATANJALI…),
+BSE code (OSWALGREEN 539290, SPSL 533110) or a successor listing (GDL→GATEWAY, TECHNO→TECHNOE, DISHMAN→DCAL,
+PRICOL→PRICOLLTD, OCL→DALBHARAT, SUMMIT→SUMMITSEC). The sweep then journals an **identity anchor** per symbol — MC's
+standalone PAT vs our stored std over the gap quarters, ±max(0.06, 0.5%): **702/725 anchored, 18 with no overlapping
+quarter (every successor listing + HEXT: MC's series is the successor's own history), 3 unanchored, 2 unresolved**.
+`con_na_pre2020.py` counts MC as a reader ONLY when resolved and anchored; otherwise the symbol is `ONE-READER` and is
+never closed as N/A.
+**MC's consolidated series starts exactly four quarters before NSE's first consolidated row** (ACLGATI 2011-09 vs
+2012-09, ADANIPORTS 2011-06 vs 2012-06, ADANIPOWER, AKSHOPTFBR 2010-06 vs 2011-06): the year-ago COMPARATIVE column of
+the first filings, public only from that filing date. Not a conflict with a date-bounded N/A — it is the fill route
+(the filing's comparative column) for the year-ago base AFTER the first filing.
+
+### 123e. N/A only where three things agree, and only before the first consolidated filing
+An N/A entry (`scripts/coverage_na_ledger.json`, class `C-basis (no consolidated statement exists - two readers)`) is
+written for a name only when: NSE lists a standalone row for the gap quarters and NO consolidated row (§54b E1/E2);
+the quarters precede the company's first consolidated quarterly row ever (E3) — `to` = the day before that row's
+`filingDate`; MC (resolved + anchored) shows no consolidated figure differing from standalone older than the
+comparative year; and the builder's `--explain` reports the parameter unresolved for the name on those dates
+(`bound_derivation`). Everything after the first consolidated filing stays visible (real gaps, refusals, index holes).
+**Rung 4, sampled on the filer's own document:** the BSE result packs for QE 30-Sep-2012 of six of the largest
+candidates (COLPAL 7 pages, NMDC 5, HINDZINC 4, SKFINDIA 3, CUB 5, KARURVYSYA 7) are SCANS with no text layer, rendered
+and read page by page — each carries ONE standalone statement and no consolidated one; the positive control (Tata
+Motors Q2 FY13, a text PDF) lights up on "Consolidated Financial Results". Pre-2016 BSE packs cannot be swept by text
+search, which is why this rung is a sample and the two indexes carry the verdict.
+Classes NOT closed: `CONFLICT-MC-DIFFERS` (MC holds differing con figures older than the comparative year while NSE
+lists none — BHARATFORG, SIEMENS, IPCALAB, CANBK, M&M, RALLIS…: needs a filing read), `NSE-NO-STD-ROWS` (the gap
+quarters have no standalone row either — BAJAJ-AUTO 2008Q1, COALINDIA pre-listing…: index silence is not evidence),
+`ONE-READER`, `CON-FILER-THROUGHOUT` (first con precedes every gap: fills/refusals only).
+
+### 123f. Landed / refused / closed — the numbers (2026-09-02)
+| | 2008Q1-2014Q4 | 2015Q1-2019Q4 |
+|---|---|---|
+| gap cells swept | 14,840 (725 symbols) | 5,778 (499 symbols) |
+| cells with an NSE consolidated quarterly page | 4,195 (28.3%) | 149 (2.6%; 23 already read by §53) |
+| **landed** (fill-only, both twins, con announce date = exchange filing date) | **3,904 → 3,890 new cells in docs** (282 companies) | **36** (19 companies) |
+| refused, with reason in `con_pat_nse_reads.json` | 291: E-recon 173 (std page reconciles, con row suspect) · empty-shell 78 ('&' names M&MFIN 27 / COX&KINGS 21 / LTF 13 / IL&FSTRANS 11) · S'-mismatch 31 · fetch 8 (DCMSHRIRAM) · no-gate 1 | 49: S'-mismatch 22 · basis-mismatch 12 · E-recon 10 · blank-template 5 |
+| revenue twins (`_nse_archive_revop.py` on the same pages, `_apply_reads.py`) | 3,450 revC of 3,534 empty twins (61 no-rev-row, 30 pat-anchor, 13 unread) | — |
+Owners modes over the 3,904: connet==period−MI−assoc 1,644 · owners-row 1,418 · period-row(no-MI) 784 · intermediate-rows identity 58;
+125 landed through the §53e control. Idempotency: the second `--apply` landed 0. `verify_fills_live.py`: MISSING 0, RESURRECTED 0
+after 14 stale Moneycontrol holds (HERITGFOOD, ENIL, RASOYPR, TATAMETALI) were settled by the exchange pages that now back the
+values (5 by `settle_stale_holds.py --apply`, 9 revenue holds by hand with the page provenance). `no_con_filing.json`:
+DCW, DWARKESH, GRUH, TATAELXSI, TATAMETALI, VIJAYABANK removed from `never_filed_con` — the archive serves consolidated pages for
+each; DCW/TATAELXSI/TATAMETALI moved to `started_filing_con`.
+
+**N/A ledger** (`coverage_na_ledger.json`): 3,761 entries added and 418 widened backwards across the 9 con-basis params for the
+495 NA-LEADING-RUN names; 74 existing entries of another class left for manual adjudication (9 names on profitYoyCon: ESABINDIA,
+INGERRAND, IOB, IOLCP, LAOPALA, SCHNEIDER, SPLPETRO, SWARAJENG, VESUVIUS — their pre-2020 dates stay visible).
+
+**Coverage, Nifty 500, 132 month-ends 2009-01-30..2019-12-31 (66,162 member-dates), covered / N/A / holes, local bakes on the shared grid:**
+patCon 21,369/563/44,230 → 33,372/29,641/**3,149** · profitYoyCon 15,124/431/50,607 → 26,202/31,352/**8,608** · profitTTMCon
+10,562/431/55,169 → 18,040/31,267/16,855 · revCon 16,304/431/49,427 → 17,325/30,152/18,685 · postDriftCon 21,319/563/44,280 →
+33,339/29,679/3,144. Blended profitYoyPct/profitBase/profitStreak holes 97 → 96. ⚠️ Blended profitTTM/composite holes 350 → 357:
+**not a data regression** — 8 cells (EMBDL, LAKSHMIEFL, LITL, TV-18 at 2009-01-30; TORNTPOWER 2009-07; CAPF, EKC 2009-10; ESSARSHIP
+2010-01) moved from N/A to hole because the builder's 8-quarter N/A rule reads the newest VISIBLE quarter (now the consolidated one)
+while the value still comes from the standalone fallback whose own window is a quarter older; `profitMetrics` returns the identical
+null on both bases before and after (checked in a vm for EMBDL/TV-18). Fix belongs in `build_coverage_matrix.js`'s N/A rule.
+
+**Path A (plan §5 snippet), Nifty-500 members with no consolidated quarter visible:** live before 500 / 384 / 60 / 0 at 2009-01-30 / 2015-01-30 / 2019-01-31 / 2026-05-29; local bake after the fills **360 / 258 / 59 / 0** (the live re-measurement after the push is recorded in the campaign log and memory).
+**Saved strategies, 45 cards, live engine + live prices, only `sf_fundamentals` swapped, 2009-01-01→2026-09-01 (212 rebalances):**
+10 standalone-basis cards byte-identical (the control), 10 consolidated cards unchanged, **25 consolidated cards re-ranked** from
+2009-06..2012-05 onward; CAGR moved between **−5.91 pp** (300726-03 Top 6-month max drawdown · profit growth · 52-week range) and
+**+5.28 pp** (300726-01 Top profit growth · near 52WH · profit >25% YoY · TTM profit), 14 down / 11 up. That direction is the
+point: on those names the "consolidated" strategy had been screening standalone numbers for 2009-2014.
+
+**Tools:** `fill2020_tools/con_discover_pre2015.py` (--route nse|mc, --window/--targets/--out), `read_con_pat_nse.py` (--inv/--targets/
+--reads, era-aware `owners_pat`, GATE C control), `reopen_con_reads.py`, `merge_con_reads.py`, `mc_resolve_era_ids.py`,
+`con_na_pre2020.py` (--write), inventories `_con_pre2015_*`/`_con_2015_2019_*`, report `con_na_pre2020_report.json`.
+**Left open:** CONFLICT 16 (filing read needed: BHARATFORG, SIEMENS, IPCALAB, CANBK, M&M, RALLIS, RAYMOND, NIITLTD, TATASTLBSL…),
+NSE-NO-STD-ROWS 25, ONE-READER 11, the 291+49 refusals, the comparative-year quarters after each first consolidated filing (fillable
+from that filing's year-ago column — a PDF read), DCMSHRIRAM's 8 404s, and the 74 un-merged ledger entries.

@@ -81,6 +81,7 @@ R_PAT_ANY = re.compile(r"net profit\s*/?\s*\(?loss\)?\s*for the period"
 # above) so every currently-matching page keeps the exact row it matches today -- widening an
 # existing alternation could make it match an EARLIER row and silently change landed values.
 R_REV_SIGNED = re.compile(r"net sales\s*/\s*income from operations?\b", re.I)
+R_PAT_CONNET = re.compile(r"^consolidated net profit.*for the period", re.I)
 R_PAT_SIGNED = re.compile(r"net profit\s*\([+-]\)\s*/?\s*\(?loss\)?\s*\([+-]\)?\s*for the period"
                           r"|net profit\s*\([+-]\)\s*/\s*loss", re.I)
 
@@ -152,8 +153,14 @@ def get_detail(link, sym, path=None):
     names = [link]
     m = re.match(r"(.*financial_res_)(.+)(_\d+\.html?)$", link, re.I)
     if m:
-        for a in aliases(sym):
-            names.append(m.group(1) + a + m.group(3))
+        # `sym` ITSELF is a candidate too (2026-09-02, CON-GAP PRE-2020): when the list is queried
+        # under an era name (AGCNET) the API still rewrites the filename to the CURRENT name
+        # (financial_res_BBOX_53155.html, 404) while the stored file carries the era name that
+        # was asked for -- aliases(sym) lists only names OLDER than sym, so AGCNET was never tried
+        # and all 14 of its 2008-2011 consolidated pages read as fetch:HTTPError.
+        for a in [sym] + aliases(sym):
+            if a.upper() != m.group(2).upper():
+                names.append(m.group(1) + a + m.group(3))
     err = None
     for u in names:
         try:
@@ -325,8 +332,15 @@ def main():
             # breaks on the first candidate matching the stored anchor, so a last-place candidate
             # cannot change any page that resolves today -- it can only rescue one resolving None.
             pat3 = pick(prows, R_PAT_SIGNED)
+            # PRE-2011 CONSOLIDATED pages print minority interest / associates as signed deductions
+            # BELOW the period row and then "Consolidated Net Profit (+) / Loss (-) for the period"
+            # = the owners-attributable figure this dataset stores (GMRINFRA Sep-2010: period 42.53,
+            # consolidated 71.12 = stored). The three candidates above all read the PERIOD row, so
+            # every such page failed the con anchor. Tried strictly LAST, same rule as pat3
+            # (2026-09-02, CON-GAP PRE-2020 campaign).
+            pat4 = pick(prows, R_PAT_CONNET) if basis == "con" else None
             hit = None
-            for cand in (pat, pat2, pat3):
+            for cand in (pat, pat2, pat3, pat4):
                 if close(cand, stored):
                     hit = cand
                     break
