@@ -177,6 +177,11 @@
 
     <!-- ===================== F&O ===================== -->
     <section id="pane-fo" class="hidden">
+      <div class="flex flex-wrap items-center gap-2 mb-4">
+        <div id="foViewBtns2" class="inline-flex rounded-lg border border-slate-200 overflow-hidden text-sm font-semibold"></div>
+        <span class="text-[11px] text-slate-400">Daily positions &amp; turnover · Monthly = month-end snapshot since 2012</span>
+      </div>
+      <div id="fo-daily">
       <div id="foCards" class="grid grid-cols-2 md:grid-cols-4 gap-3 mb-5"></div>
       <div id="foChartsSection">
       <div class="flex items-center gap-2 mb-3 text-xs">
@@ -240,6 +245,36 @@
         </div>
       </div>
       </div><!-- /foTablesSection -->
+      </div><!-- /fo-daily -->
+
+      <!-- ---------- F&O MONTHLY (month-end snapshot) ---------- -->
+      <div id="fo-monthly" class="hidden">
+        <div id="foMonCards" class="grid grid-cols-2 md:grid-cols-4 gap-3 mb-5"></div>
+        <div class="flex items-center gap-2 mb-3 text-xs">
+          <span class="text-slate-500 font-medium">Chart view:</span>
+          <div id="foMonViewBtns" class="flex gap-1"></div>
+          <span class="text-slate-400">— month-end FII index-futures net position vs Nifty</span>
+        </div>
+        <div class="card p-4 mb-4">
+          <div class="text-sm font-semibold text-slate-700 mb-2"><span class="text-red-700">FII Index-Futures net</span> — month-end <span class="text-slate-400 font-normal">(contracts long − short)</span> vs <span class="text-amber-600">Nifty 50</span></div>
+          <div id="foMonChart"></div>
+        </div>
+        <div class="card p-4">
+          <div class="text-sm font-semibold text-slate-700 mb-2">Month-end positions <span class="text-[11px] font-normal text-slate-400">(newest first · net contracts = long − short)</span></div>
+          <div class="overflow-x-auto tscroll rounded-lg border border-slate-100" style="--tscroll-h:30rem">
+            <table class="w-full text-sm"><thead class="text-[11px] uppercase text-slate-500 border-b border-slate-200 sticky top-0 bg-white"><tr>
+              <th class="text-left py-2 px-2">Month</th>
+              <th class="text-right px-2">FII idx-fut net</th>
+              <th class="text-right px-2">FII L/S</th>
+              <th class="text-right px-2">FII stk-fut net</th>
+              <th class="text-right px-2">DII idx-fut net</th>
+              <th class="text-right px-2">Nifty</th>
+            </tr></thead><tbody id="foMonBody"></tbody></table>
+          </div>
+        </div>
+        <p class="text-[11px] text-slate-500 mt-3">Month-end = the last trading day's participant open interest in each month (positions are a snapshot, not a monthly sum). <b>Net</b> = long − short; a large negative FII index-futures number = net short / bearish. <b>L/S</b> = long ÷ short (&lt;1 = net short). Since 2012.</p>
+      </div><!-- /fo-monthly -->
+
       <p class="text-[11px] text-slate-500 mt-5">F&amp;O participant positions = <b>open interest</b> (no. of contracts). <b>Idx-Fut net</b> = index-futures long − short; a large negative FII number = net short / bearish positioning. Buy/sell table is FII-only derivative turnover value. Source: NSE participant-wise OI + FII derivative-stats reports. <span id="updated"></span></p>
     </section>
 
@@ -264,7 +299,7 @@ const fmtDate = d => { const p=d.split('-'); return p[2]+' '+MON[+p[1]-1]+' '+p[
 let ROWS=[], FO=[], sortKey='date', sortAsc=false, foRange='3y';   // daily table defaults to newest-first
 let NIFTY={}, foRatioRange='3y', CHART_STATE={}, foView='split', foSection='charts';
 let foCustom={from:'',to:''}, foRatioCustom={from:'',to:''};
-let MONTHLY=[], YEARLY=[], cashView='daily', focus='fii', monRange='5Y';
+let MONTHLY=[], YEARLY=[], cashView='daily', focus='fii', monRange='5Y', foMode='daily';
 
 async function load(){
   let data, fdata={rows:[]}, mdata={rows:[]};
@@ -281,7 +316,7 @@ async function load(){
   $('status').classList.add('hidden'); $('content').classList.remove('hidden');
   renderCards(); renderNetChart(); renderCumChart(); renderTable();
   prepMonthly(); setupCashView(); setupFocus();
-  renderFO();
+  renderFO(); setupFOView();
   liveFiiDii();
 }
 
@@ -797,6 +832,56 @@ function renderFODaily(){
       <td class="text-right px-3 font-semibold ${net>=0?'pos':'neg'}">${fmtSigned(net)}</td>
       <td class="text-right px-3 font-medium tabular-nums">${ratio}</td></tr>`;}).join('')
     || '<tr><td colspan="5" class="py-3 px-3 text-slate-400 text-xs">No data for this selection.</td></tr>';
+}
+
+/* ---- F&O Daily / Monthly switch ---- */
+function setupFOView(){
+  const btns=[['daily','Daily'],['monthly','Monthly']];
+  const draw=()=>{
+    $('foViewBtns2').innerHTML = btns.map(([k,l],i)=>
+      `<button data-m="${k}" class="px-4 py-1.5 ${i?'border-l border-slate-200':''} ${foMode===k?'bg-blue-600 text-white':'bg-white text-slate-600 hover:bg-slate-50'}">${l}</button>`).join('');
+    $('foViewBtns2').querySelectorAll('button').forEach(b=>b.onclick=()=>{foMode=b.dataset.m; draw();});
+    $('fo-daily').classList.toggle('hidden',foMode!=='daily');
+    $('fo-monthly').classList.toggle('hidden',foMode!=='monthly');
+    if(foMode==='monthly') renderFOMonthly();
+  };
+  draw();
+}
+// month-end snapshot per month: last trading day's participant OI in each calendar month
+function foMonthlyRows(){
+  const bym={}; FO.forEach(r=>{ if(r.oi&&r.oi.FII) bym[r.date.slice(0,7)]=r; });  // FO is asc -> last wins
+  const monClose={}; MONTHLY.forEach(m=>{ monClose[m.ym]=m.close; });
+  return Object.keys(bym).sort().map(ym=>{
+    const r=bym[ym], oi=r.oi, fi=oi.FII.futIdx, fs=oi.FII.futStk, di=oi.DII?oi.DII.futIdx:null;
+    const nifty = NIFTY[r.date]!=null ? NIFTY[r.date] : (monClose[ym]!=null ? monClose[ym] : null);
+    return { ym, date:r.date, idxNet:fi[0]-fi[1], stkNet:fs[0]-fs[1],
+             ratio: fi[1]? fi[0]/fi[1] : null, diiIdxNet: di? di[0]-di[1] : null, nifty };
+  });
+}
+function renderFOMonthly(){
+  const rows=foMonthlyRows();
+  if(!rows.length){ $('foMonBody').innerHTML='<tr><td colspan="6" class="py-4 text-slate-400 text-xs">No F&O data yet.</td></tr>'; $('foMonChart').innerHTML=''; $('foMonCards').innerHTML=''; return; }
+  const mlabel=ym=>{const p=ym.split('-');return MON[+p[1]-1]+' '+p[0];};
+  const last=rows[rows.length-1], prev=rows[rows.length-2];
+  const chg = prev? last.idxNet-prev.idxNet : null;
+  const card=(t,v,sub,cls)=>`<div class="card p-3"><div class="text-[10px] uppercase text-slate-500">${t}</div><div class="text-lg font-bold ${cls||''}">${v}</div><div class="text-[11px] text-slate-400">${sub||''}</div></div>`;
+  $('foMonCards').innerHTML =
+     card('FII idx-fut · '+mlabel(last.ym), fmtSigned(last.idxNet), 'month-end net contracts', last.idxNet>=0?'pos':'neg')
+    +card('MoM change', chg!=null?fmtSigned(chg):'·', 'vs previous month-end', (chg||0)>=0?'pos':'neg')
+    +card('FII long/short', last.ratio!=null?last.ratio.toFixed(2):'·', last.ratio!=null?(last.ratio<1?'net short (bearish)':'net long (bullish)'):'', (last.ratio||0)>=1?'pos':'neg')
+    +card('DII idx-fut', last.diiIdxNet!=null?fmtSigned(last.diiIdxNet):'·', 'month-end net contracts', (last.diiIdxNet||0)>=0?'pos':'neg');
+  $('foMonViewBtns').innerHTML = [['overlay','Overlay'],['split','Split']].map(([k,l])=>`<button data-v="${k}" class="px-2.5 py-1 rounded font-semibold ${foView===k?'bg-blue-600 text-white':'bg-slate-100 text-slate-600'}">${l}</button>`).join('');
+  $('foMonViewBtns').querySelectorAll('button').forEach(b=>b.onclick=()=>{foView=b.dataset.v; renderFOMonthly();});
+  const series=rows.filter(r=>r.idxNet!=null).map(r=>({d:r.date, v:r.idxNet}));
+  $('foMonChart').innerHTML = dualChart('foMonChart', series, {baseline:true, color:'#b91c1c', areaFill:'#fee2e2', label:'FII idx-fut net', fmt:fmtSigned, unit:'contracts'});
+  attachHover('foMonChart');
+  $('foMonBody').innerHTML = rows.slice().reverse().map(r=>`<tr class="border-b border-slate-50 hover:bg-slate-50">
+    <td class="py-1.5 px-2 font-medium text-slate-700">${mlabel(r.ym)}</td>
+    <td class="text-right px-2 ${r.idxNet>=0?'pos':'neg'}">${fmtSigned(r.idxNet)}</td>
+    <td class="text-right px-2 ${(r.ratio||0)>=1?'pos':'neg'}">${r.ratio!=null?r.ratio.toFixed(2):'·'}</td>
+    <td class="text-right px-2 ${r.stkNet>=0?'pos':'neg'}">${fmtSigned(r.stkNet)}</td>
+    <td class="text-right px-2 ${(r.diiIdxNet||0)>=0?'pos':'neg'}">${r.diiIdxNet!=null?fmtSigned(r.diiIdxNet):'·'}</td>
+    <td class="text-right px-2">${r.nifty!=null?Math.round(r.nifty).toLocaleString('en-IN'):'·'}</td></tr>`).join('');
 }
 // Dual chart with two view modes (foView): 'overlay' = primary + Nifty on one plot (dual axes);
 // 'split' = TradingView-style stacked panes (Nifty on top, primary below), shared time axis.
