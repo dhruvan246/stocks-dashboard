@@ -1,6 +1,6 @@
 {
  "_doc": "Industry/name for symbols that are DELISTED, hence absent from dash_slim.bin's currently-listed universe -- which is the only source build_sf_data.py has for meta.ind, so every one of them came out ind='Unknown', name=<symbol>. That is not a classification gap, it is a survivorship gap: the scrape only covers live scrips. 2,008 of the live bin's 4,445 symbols are affected; the 26 here are the ones that reached Nifty 500 membership between 2020-01 and 2026-06 and so showed up as holes on the coverage matrix (industry 857 cells).\nSOURCE: BSE ComHeadernew/w -> IndustryNew, the SAME field fetch_sectors.py reads for live scrips, so the vocabulary is identical by construction and needs no cross-map (verified: RELIANCE 500325 returns 'Oil, Gas & Consumable Fuels', which is exactly what dash_slim stores).\nIDENTITY GATE: the BSE code came from Moneycontrol's autosuggest and was accepted only when the ISIN matched ours -- exactly, or on the 7-char issuer prefix where a face-value change reissued it (runbook §95). Then BSE's OWN returned ISIN had to confirm it again. A name match was never enough: MC's top hit for HDFC is HDFC *Bank* and for HEXAWARE is HEXT, both different securities.\nConsumed by build_sf_data.py when the live universe has no row for a symbol.\n2026-08-16 (N500 2015-2019 campaign, PLAN_N500_COVERAGE_2015_2020.md): +43 entries for the delisted members that showed as industry holes on the 2015-01..2019-12 window (2,111 cells over 89 names). Route reach MEASURED, not assumed: of 81 names resolvable by exact ISIN in BSE's all-status scrip master, ComHeadernew returned a non-empty IndustryNew for only 37 -- the other 44 (older full delistings: the merged PSU banks, RANBAXY, CAIRN, GRUH, SBBJ/SBT, CMC, POLARIS ...) return an EMPTY classification block from BSE. Those are recorded not-found-via:bse-comheadernew and stay visible gaps; they need an aggregator rung of the §57 ladder, never a guess. 7 further names carry a REISSUED ISIN (IBC/face-value/rename): matched on the 9-char issuer+type prefix, confirmed by BSE's own returned ISIN on the successor, and each checked for same-business continuity against our own series spans. TUBEINVEST is deliberately WITHHELD: its series ends 2017-08-23 (pre-demerger Tube Investments of India, a manufacturer) while its ISIN successor is Cholamandalam Financial Holdings (Financial Services) and the manufacturing business went to a SEPARATE listing, TIINDIA -- filling it from the successor would misclassify the historical series and corrupt indRank for the era. Needs adjudication, not an inference.",
- "_generated": "2026-09-02 18:49 IST",
+ "_generated": "2026-09-03 01:06 IST",
  "fills": {
   "3IINFOTECH": {
    "bse_code": "532628",
@@ -64,6 +64,15 @@
    "name": "Black Box Ltd",
    "src": "BSE ComHeadernew/w IndustryNew (same field fetch_sectors.py uses for live scrips)",
    "successor_isin": "INE676A01027"
+  },
+  "AGREVOIND": {
+   "bse_code": "530415",
+   "evidence": "NSE's 2002-2003 archived listing names the scrip Aventis/Bayer Cropscience India (crop-protection). Every crop-protection maker in our live bin is Chemicals. Bucket = Chemicals.",
+   "identity_gate": "NSE 2003 archive (Aventis/Bayer Cropscience India, INE556A01013) -> BSE 530415",
+   "industry": "Chemicals",
+   "isin": "INE556A01013",
+   "name": "Aventis Cropscience India Ltd",
+   "src": "agrochemicals; comparables Bayer CropScience (BAYERCROP), UPL, Rallis (RALLIS), Sumitomo Chemical (SUMICHEM), Insecticides (INSECTICID) all = Chemicals"
   },
   "AGRODUTCH": {
    "bse_code": "519281",
@@ -240,6 +249,15 @@
    "name": "Bharat Hotels Ltd",
    "src": "aggregator: screener.in + Moneycontrol (BSE ComHeadernew returned an EMPTY classification block for this delisted scrip); value mapped onto the dash_slim IndustryNew vocabulary"
   },
+  "BLOWPLAST": {
+   "bse_code": "500066",
+   "evidence": "Blow Plast Ltd made VIP-brand luggage and merged into VIP Industries in 2006 (web-confirmed). Luggage makers sit in Consumer Durables (VIPIND, SAFARI). Bucket = Consumer Durables.",
+   "identity_gate": "isin/name (INE051A01015, BSE 500066); web-confirmed business",
+   "industry": "Consumer Durables",
+   "isin": "INE051A01015",
+   "name": "Blow Plast Ltd",
+   "src": "moulded/soft luggage & office furniture under the 'VIP' brand (merged into VIP Industries 1:1, effective 2006-04-01); comparables VIP Industries (VIPIND), Safari (SAFARI) = Consumer Durables"
+  },
   "BLUESTINFO": {
    "bse_code": "532346",
    "evidence": "Moneycontrol categorises this scrip under 'computers-software'; that category maps to 'Information Technology' on the dash_slim vocabulary (calibrated over live ISIN-matched symbols: {'Information Technology': 23, 'Capital Goods': 1, 'Services': 1}). BSE ComHeadernew returned an EMPTY block and screener.in carried no classification.",
@@ -328,6 +346,15 @@
    "src": "BSE ComHeadernew/w IndustryNew (same field fetch_sectors.py uses for live scrips)",
    "successor_isin": "INE482A01020"
   },
+  "CENTURION": {
+   "bse_code": "",
+   "evidence": "NSE's 2003 archived listing names it 'Centurion Bank Limited'. Every bank in our live bin is Financial Services. Bucket = Financial Services.",
+   "identity_gate": "NSE 2003 archive (Centurion Bank Limited, INE484A01018)",
+   "industry": "Financial Services",
+   "isin": "INE484A01018",
+   "name": "Centurion Bank Ltd",
+   "src": "bank (later Centurion Bank of Punjab, merged into HDFC Bank); banks = Financial Services unanimously in our data"
+  },
   "CHEMPLAST": {
    "bse_code": "543336",
    "evidence": "Chemplast Sanmar delisted 2012-06 (our tape ends 2012-06-15, old ISIN INE488A01034 -> BSE 506355 which returns an EMPTY block) and re-listed 2021-08 as the same company under 543336 INE488A01050; PVC/chemicals business continuous",
@@ -346,6 +373,15 @@
    "isin": "INE908A01016",
    "name": "CIBASPEC",
    "src": "aggregator: screener.in + Moneycontrol (BSE ComHeadernew returned an EMPTY classification block for this delisted scrip); value mapped onto the dash_slim IndustryNew vocabulary"
+  },
+  "CIPL": {
+   "bse_code": "500099",
+   "evidence": "Central India Polyesters made polyester (man-made fibre). Polyester/PSF makers sit in Textiles in our live bin (INDORAMA, FILATEX). Bucket = Textiles.",
+   "identity_gate": "isin-exact (INE496A01020, BSE 500099)",
+   "industry": "Textiles",
+   "isin": "INE496A01020",
+   "name": "Central India Polyesters Ltd",
+   "src": "polyester / man-made fibre (MC slug=textiles-manmade); comparables Indo Rama Synthetics (INDORAMA), Filatex (FILATEX) = Textiles"
   },
   "CLARIANT": {
    "bse_code": "500373",
@@ -533,6 +569,15 @@
    "name": "Eicher Ltd",
    "src": "aggregator: screener.in + Moneycontrol (BSE ComHeadernew returned an EMPTY classification block for this delisted scrip); value mapped onto the dash_slim IndustryNew vocabulary"
   },
+  "EICHERLTD": {
+   "bse_code": "531835",
+   "evidence": "Eicher Ltd (our tape 1996..2004) made Royal Enfield motorcycles, Eicher tractors and CVs; it became Eicher Motors (EICHERMOT = Automobile and Auto Components). Both era and successor are Auto (no inversion). Bucket = Auto & Auto Components.",
+   "identity_gate": "NSE 2003 archive (Eicher Ltd, INE065A01015) + BSE master 531835 (INE065A01023)",
+   "industry": "Automobile and Auto Components",
+   "isin": "INE065A01023",
+   "name": "Eicher Ltd",
+   "src": "motorcycles (Royal Enfield), tractors and commercial vehicles; successor Eicher Motors (EICHERMOT) = Automobile and Auto Components -- era and successor both Auto"
+  },
   "ELDERPHARM": {
    "bse_code": "532322",
    "evidence": "screener.in states Sector='Healthcare' / Industry='Pharmaceuticals'; Moneycontrol category 'pharmaceuticals'; both map to 'Healthcare' on the dash_slim vocabulary.",
@@ -550,6 +595,15 @@
    "name": "Equitas Holdings",
    "src": "BSE ComHeadernew/w IndustryNew (same field fetch_sectors.py uses for live scrips)"
   },
+  "ERAINFRA": {
+   "bse_code": "530323",
+   "evidence": "Era Infra Engineering was a construction/EPC contractor (roads, buildings). EPC/construction contractors sit in Construction in our live bin (NCC, IRB, NBCC). Bucket = Construction.",
+   "identity_gate": "isin-exact (INE039E01020, BSE 530323)",
+   "industry": "Construction",
+   "isin": "INE039E01020",
+   "name": "Era Infra Engineering Ltd",
+   "src": "construction / EPC contractor; comparables NCC, IRB, NBCC, IRCON, PNC Infratech = Construction"
+  },
   "EROSMEDIA": {
    "bse_code": "533261",
    "identity_gate": "isin-exact + bse-isin-confirmed",
@@ -557,6 +611,15 @@
    "isin": "INE416L01017",
    "name": "Eros International Media Ltd",
    "src": "BSE ComHeadernew/w IndustryNew (same field fetch_sectors.py uses for live scrips)"
+  },
+  "ESSARGUJ": {
+   "bse_code": "500627",
+   "evidence": "Essar Steel is an integrated flat-steel producer. Steel producers sit in Metals & Mining in our live bin. Bucket = Metals & Mining.",
+   "identity_gate": "issuer-prefix (our INE127A01013) -> BSE 500627 Essar Steel",
+   "industry": "Metals & Mining",
+   "isin": "INE127A01013",
+   "name": "Essar Steel Ltd",
+   "src": "integrated flat-steel producer; comparables Tata Steel, JSW Steel, SAIL, Jindal Steel = Metals & Mining"
   },
   "ESSAROIL": {
    "bse_code": "500134",
@@ -567,6 +630,15 @@
    "name": "Essar Oil Ltd",
    "src": "aggregator: screener.in + Moneycontrol (BSE ComHeadernew returned an EMPTY classification block for this delisted scrip); value mapped onto the dash_slim IndustryNew vocabulary"
   },
+  "ESSARSHIP": {
+   "bse_code": "500630",
+   "evidence": "Essar Shipping ran a shipping fleet and ports/logistics. Shipping AND ports both sit in Services in our live bin (GESHIP, SCI, ADANIPORTS), so the bucket is invariant to the shipping-vs-ports split. Bucket = Services.",
+   "identity_gate": "issuer-prefix (our INE282A01016) -> BSE 500630 (Essar Ports)",
+   "industry": "Services",
+   "isin": "INE282A01016",
+   "name": "Essar Shipping Ltd",
+   "src": "shipping / ports & logistics; comparables Great Eastern Shipping (GESHIP), Shipping Corp (SCI), Adani Ports = Services (matches WP2's GESHIPPING/VARUNSHIP = Services fills)"
+  },
   "ESSDEE": {
    "bse_code": "532787",
    "identity_gate": "isin-exact + bse-isin-confirmed",
@@ -574,6 +646,15 @@
    "isin": "INE825H01017",
    "name": "Ess Dee Aluminium Ltd",
    "src": "BSE ComHeadernew/w IndustryNew (same field fetch_sectors.py uses for live scrips)"
+  },
+  "ESTL": {
+   "bse_code": "500627",
+   "evidence": "ESTL is Essar Steel (MC slug=steel-large). Steel producers = Metals & Mining in our live bin. Bucket = Metals & Mining.",
+   "identity_gate": "isin-exact (INE127A01021, BSE 500627 Essar Steel)",
+   "industry": "Metals & Mining",
+   "isin": "INE127A01021",
+   "name": "Essar Steel Ltd",
+   "src": "integrated flat-steel producer; steel = Metals & Mining"
   },
   "EXCELCROP": {
    "bse_code": "532511",
@@ -583,6 +664,15 @@
    "isin": "INE223G01017",
    "name": "Excel Crop Care Ltd",
    "src": "aggregator: screener.in + Moneycontrol (BSE ComHeadernew returned an EMPTY classification block for this delisted scrip); value mapped onto the dash_slim IndustryNew vocabulary"
+  },
+  "EXCELIND": {
+   "bse_code": "500650",
+   "evidence": "Excel Industries is a specialty/agro-chemicals maker, currently listed as EXCELINDUS = Chemicals in our own bin. The 2003 Excel Crop Care demerger was Chemicals -> Chemicals (no inversion). ERA bucket = Chemicals.",
+   "identity_gate": "name + same-company successor (Excel Industries Ltd = EXCELINDUS in our live bin)",
+   "industry": "Chemicals",
+   "isin": "",
+   "name": "Excel Industries Ltd",
+   "src": "era classification (specialty & agro chemicals, 1996..2003-09); the same company is currently listed as EXCELINDUS = Chemicals"
   },
   "FCONSUMER": {
    "bse_code": "533400",
@@ -792,6 +882,15 @@
    "name": "Gujarat NRE Coke Ltd",
    "src": "BSE ComHeadernew/w IndustryNew (same field fetch_sectors.py uses for live scrips)"
   },
+  "GUJRATGAS": {
+   "bse_code": "523477",
+   "evidence": "Gujarat Gas is a city-gas distributor. Every gas-distribution/utility name in our live bin -- IGL, MGL, GAIL -- is Oil, Gas & Consumable Fuels (NOT Utilities). Bucket = Oil, Gas & Consumable Fuels.",
+   "identity_gate": "isin-exact (INE374A01029, BSE 523477)",
+   "industry": "Oil, Gas & Consumable Fuels",
+   "isin": "INE374A01029",
+   "name": "Gujarat Gas Company Ltd",
+   "src": "city-gas distribution; comparables Indraprastha Gas (IGL), Mahanagar Gas (MGL), GAIL = Oil, Gas & Consumable Fuels"
+  },
   "HDFC": {
    "bse_code": "500010",
    "identity_gate": "isin-exact + bse-isin-confirmed",
@@ -835,6 +934,15 @@
    "name": "IBP Company Ltd",
    "src": "aggregator: screener.in + Moneycontrol (BSE ComHeadernew returned an EMPTY classification block for this delisted scrip); value mapped onto the dash_slim IndustryNew vocabulary"
   },
+  "ICICI": {
+   "bse_code": "500015",
+   "evidence": "ICICI Ltd was the development financial institution that reverse-merged into ICICI Bank in 2002 (our tape ends 2002-05). FIs/banks are Financial Services. Bucket = Financial Services.",
+   "identity_gate": "BSE code 500015 = ICICI Ltd (the DFI, reverse-merged into ICICI Bank 2002)",
+   "industry": "Financial Services",
+   "isin": "",
+   "name": "ICICI Ltd",
+   "src": "development financial institution; ICICI Bank and every bank/FI in our data = Financial Services"
+  },
   "ICSA": {
    "bse_code": "531524",
    "identity_gate": "isin-exact + bse-isin-confirmed",
@@ -842,6 +950,15 @@
    "isin": "INE306B01029",
    "name": "ICSA (India) Ltd",
    "src": "BSE ComHeadernew/w IndustryNew (same field fetch_sectors.py uses for live scrips)"
+  },
+  "IDBIBANK": {
+   "bse_code": "532235",
+   "evidence": "The old IDBI Bank Ltd (merged into IDBI in 2005). Banks are Financial Services. Bucket = Financial Services.",
+   "identity_gate": "NSE 2003 archive (IDBI Bank Ltd, INE307A01011) -> BSE 532235",
+   "industry": "Financial Services",
+   "isin": "INE307A01011",
+   "name": "IDBI Bank Ltd",
+   "src": "bank (merged into IDBI in 2005); banks = Financial Services"
   },
   "IDFC": {
    "bse_code": "532659",
@@ -896,6 +1013,15 @@
    "name": "Kodak India Ltd",
    "src": "aggregator: screener.in + Moneycontrol (BSE ComHeadernew returned an EMPTY classification block for this delisted scrip); value mapped onto the dash_slim IndustryNew vocabulary"
   },
+  "INDORAMSYN": {
+   "bse_code": "",
+   "evidence": "Indo Rama Synthetics (India) makes polyester/PSF and is currently listed as INDORAMA = Textiles in our own bin. Bucket = Textiles.",
+   "identity_gate": "name + same-company continuity (Indo Rama Synthetics (India) Ltd = INDORAMA in our live bin)",
+   "industry": "Textiles",
+   "isin": "",
+   "name": "Indo Rama Synthetics (India) Ltd",
+   "src": "polyester / PSF; the same company is currently listed as INDORAMA = Textiles"
+  },
   "INFINITE": {
    "bse_code": "533154",
    "evidence": "Moneycontrol categorises this scrip under 'computers-software'; that category maps to 'Information Technology' on the dash_slim vocabulary (calibrated over live ISIN-matched symbols: {'Information Technology': 23, 'Capital Goods': 1, 'Services': 1}). BSE ComHeadernew returned an EMPTY block and screener.in carried no classification.",
@@ -948,6 +1074,15 @@
    "name": "ICICI Securities",
    "src": "BSE ComHeadernew/w IndustryNew (same field fetch_sectors.py uses for live scrips)"
   },
+  "ITCHOTEL": {
+   "bse_code": "500216",
+   "evidence": "ITC Hotels Ltd (delisted 2005 into ITC) -- the hotels business, now relisted as ITCHOTELS = Consumer Services in our bin. Every hotel operator in our live bin is Consumer Services. Bucket = Consumer Services.",
+   "identity_gate": "NSE 2003 archive (ITC Hotels Ltd, INE379A01010) -> BSE 500216; same-name business now relisted as ITCHOTELS = Consumer Services",
+   "industry": "Consumer Services",
+   "isin": "INE379A01010",
+   "name": "ITC Hotels Ltd",
+   "src": "hotels; the hotels business is currently listed as ITCHOTELS = Consumer Services; Indian Hotels (INDHOTEL), EIH (EIHOTEL) = Consumer Services"
+  },
   "IVRCLINFRA": {
    "bse_code": "530773",
    "identity_gate": "isin-exact + bse-isin-confirmed",
@@ -987,6 +1122,24 @@
    "isin": "INE802G01018",
    "name": "Jet Airways (India) Ltd",
    "src": "BSE ComHeadernew/w IndustryNew (same field fetch_sectors.py uses for live scrips)"
+  },
+  "JINDALIRON": {
+   "bse_code": "500107",
+   "evidence": "Jindal Iron & Steel (galvanised/coated flat steel, later merged into JSW Steel). Steel producers = Metals & Mining. Bucket = Metals & Mining.",
+   "identity_gate": "NSE 2003 archive (Jindal Iron & Steel Co Ltd, INE020A01010) -> BSE 500107",
+   "industry": "Metals & Mining",
+   "isin": "INE020A01010",
+   "name": "Jindal Iron & Steel Co Ltd",
+   "src": "flat/coated-steel producer (merged into JSW Steel); steel = Metals & Mining"
+  },
+  "JINDLSTRIP": {
+   "bse_code": "",
+   "evidence": "Jindal Strips made stainless/alloy steel strip. Our span 1999-08..2003-09 is entirely pre the 2003-04 demerger that carved the stainless business into Jindal Stainless (JSL = Metals & Mining) and left the shell as Nalwa Sons Investments (Financial Services, the successor trap). The steel bucket is invariant to any residual identity ambiguity. ERA bucket = Metals & Mining.",
+   "identity_gate": "name + NSE 2004 archive (Jindal Strips = JSTRIPS, INE023A01030); ERA classified, not the FS successor",
+   "industry": "Metals & Mining",
+   "isin": "INE023A01030",
+   "name": "Jindal Strips Ltd",
+   "src": "era classification (our tape 1999-08..2003-09 is the stainless/alloy-steel era, pre the 2003-04 demerger); comparable Jindal Stainless (JSL) = Metals & Mining"
   },
   "JINDVIJSTL": {
    "bse_code": "500228",
@@ -1039,6 +1192,15 @@
    "name": "Jindal Stainless (Hisar)",
    "src": "BSE ComHeadernew/w IndustryNew (same field fetch_sectors.py uses for live scrips)"
   },
+  "JSWISPAT": {
+   "bse_code": "500305",
+   "evidence": "JSW Ispat Steel (formerly Ispat Industries). Steel producers = Metals & Mining. Bucket = Metals & Mining.",
+   "identity_gate": "isin-exact (INE136A01022, BSE 500305)",
+   "industry": "Metals & Mining",
+   "isin": "INE136A01022",
+   "name": "JSW Ispat Steel Ltd",
+   "src": "integrated steel producer; steel = Metals & Mining"
+  },
   "KBL": {
    "bse_code": "500241",
    "identity_gate": "issuer-prefix (ISIN INExxxxxNN, face-value/IBC reissue) + bse-isin-confirmed on the successor + same-business continuity checked against our own series span",
@@ -1047,6 +1209,15 @@
    "name": "Kirloskar Brothers Ltd",
    "src": "BSE ComHeadernew/w IndustryNew (same field fetch_sectors.py uses for live scrips)",
    "successor_isin": "INE732A01036"
+  },
+  "KELVINATOR": {
+   "bse_code": "",
+   "evidence": "'Kelvinator' = refrigerators / white goods. Our tape has no ISIN, but BOTH candidate identities for the key resolve to Consumer Durables in our live bin: Kelvinator of India Ltd (renamed Whirlpool of India, WHIRLPOOL = Consumer Durables) and Electrolux Kelvinator (formerly Maharaja International, white goods). The bucket is invariant to the residual identity ambiguity, so Consumer Durables is written; no other 'KELVINATOR' company plausibly traded under this key.",
+   "identity_gate": "name (bucket invariant): both candidate identities are Consumer Durables in our own live data",
+   "industry": "Consumer Durables",
+   "isin": "",
+   "name": "Kelvinator of India Ltd",
+   "src": "era classification (refrigerators / white goods, 1996..2003-08); Kelvinator of India -> Whirlpool of India (WHIRLPOOL = Consumer Durables); the alternate 'Electrolux Kelvinator' (<-Maharaja Intl) is also a white-goods maker = Consumer Durables"
   },
   "KGL": {
    "bse_code": "531687",
@@ -1064,6 +1235,24 @@
    "isin": "INE267B01015",
    "name": "Kinetic Motor Company Ltd",
    "src": "aggregator: screener.in + Moneycontrol (BSE ComHeadernew returned an EMPTY classification block for this delisted scrip); value mapped onto the dash_slim IndustryNew vocabulary"
+  },
+  "KIRLOSOIL": {
+   "bse_code": "500243",
+   "evidence": "Old Kirloskar Oil Engines made diesel engines and gensets. Our span 1998..2010-04 is that era. The 2010 demerger moved the engines business to a new KIRLOSENG (Capital Goods) and the old shell became Kirloskar Industries -- which is ALSO Capital Goods, so the bucket is invariant to the demerger. ERA bucket = Capital Goods.",
+   "identity_gate": "issuer-prefix (our INE250A01021) -> BSE 500243; ERA classified (bucket invariant to the demerger)",
+   "industry": "Capital Goods",
+   "isin": "INE250A01021",
+   "name": "Kirloskar Oil Engines Ltd",
+   "src": "era classification (our tape 1998..2010-04 is the diesel-engines era); comparables Kirloskar Oil Engines (KIRLOSENG), Cummins India (CUMMINSIND), Kirloskar Industries (KIRLOSIND) all = Capital Goods"
+  },
+  "KITPLYIND": {
+   "bse_code": "502595",
+   "evidence": "Kitply is a branded structural-plywood/laminate maker. The three major branded plywood makers in our live bin -- Century Plyboards, Greenply, Greenpanel -- are all Consumer Durables (one smaller name, National Plywood, is Forest Materials). Majority-comparable bucket = Consumer Durables.",
+   "identity_gate": "isin-exact (INE147B01019, BSE 502595)",
+   "industry": "Consumer Durables",
+   "isin": "INE147B01019",
+   "name": "Kitply Industries Ltd",
+   "src": "branded plywood / laminates; comparables Century Plyboards (CENTURYPLY), Greenply (GREENPLY), Greenpanel (GREENPANEL) = Consumer Durables (National Plywood dissents = Forest Materials)"
   },
   "KOPDRUGS": {
    "bse_code": "532291",
@@ -1170,6 +1359,15 @@
    "name": "Madura Coats Ltd",
    "src": "aggregator: screener.in + Moneycontrol (BSE ComHeadernew returned an EMPTY classification block for this delisted scrip); value mapped onto the dash_slim IndustryNew vocabulary"
   },
+  "MAHINDUGIN": {
+   "bse_code": "504823",
+   "evidence": "Mahindra Ugine Steel is an alloy/specialty-steel producer. Steel producers = Metals & Mining. Bucket = Metals & Mining.",
+   "identity_gate": "isin-exact (INE850A01010, BSE 504823)",
+   "industry": "Metals & Mining",
+   "isin": "INE850A01010",
+   "name": "Mahindra Ugine Steel Co Ltd",
+   "src": "alloy / specialty-steel producer; steel = Metals & Mining"
+  },
   "MANALIPET": {
    "bse_code": "500268",
    "identity_gate": "issuer-prefix (ISIN INExxxxxNN, face-value/IBC reissue) + bse-isin-confirmed on the successor + same-business continuity checked against our own series span",
@@ -1237,6 +1435,15 @@
    "name": "Metalyst Forgings Ltd",
    "src": "BSE ComHeadernew/w IndustryNew (same field fetch_sectors.py uses for live scrips)"
   },
+  "MICRO": {
+   "bse_code": "523886",
+   "evidence": "Micro Inks manufactures printing inks and intermediates (Huber Group, web-confirmed). The other listed printing-ink maker in our live bin, DIC India, is Chemicals. The aggregators' 'printing-stationery' slug is a mis-tag (it makes ink, it is not a printer/publisher). Bucket = Chemicals.",
+   "identity_gate": "isin-exact (INE056A01014, BSE 523886)",
+   "industry": "Chemicals",
+   "isin": "INE056A01014",
+   "name": "Micro Inks Ltd",
+   "src": "printing-ink manufacturer (Huber Group subsidiary); comparable DIC India (DICIND), a printing-ink maker, = Chemicals"
+  },
   "MINDTREE": {
    "bse_code": "532819",
    "identity_gate": "isin-exact + bse-isin-confirmed",
@@ -1262,6 +1469,15 @@
    "isin": "INE274B01011",
    "name": "Monsanto India Ltd",
    "src": "aggregator: screener.in + Moneycontrol (BSE ComHeadernew returned an EMPTY classification block for this delisted scrip); value mapped onto the dash_slim IndustryNew vocabulary"
+  },
+  "MORAREALTY": {
+   "bse_code": "503031",
+   "evidence": "The origin symbol MORARJESPG (Morarjee Goculdas Spinning & Weaving) shows this was a textile mill; ~1996-2005 (nine of the ten years our tape covers) it operated as a spinning & weaving company. Only at the tail did it demerge textiles to Morarjee Textiles and rename to Morarjee Realties -> Peninsula Land (Realty). Filling from the realty successor would be the TUBEINVEST inversion; the dominant ERA bucket = Textiles.",
+   "identity_gate": "NSE symbolchange origin (MORARJESPG -> MORAREALTY -> PENINLAND); ERA classified, not the realty successor",
+   "industry": "Textiles",
+   "isin": "",
+   "name": "Morarjee Goculdas Spinning & Weaving Co Ltd",
+   "src": "era classification (our tape 1996..2006-04 is dominantly the spinning & weaving era; the origin symbol MORARJESPG = Morarjee spinning); the realty successor is Peninsula Land (PENINLAND, BSE 503031) = Realty"
   },
   "MOSERBAER": {
    "bse_code": "517140",
@@ -1316,6 +1532,15 @@
    "name": "Nagarjuna Fertilizers and Chemicals Ltd",
    "src": "aggregator: screener.in + Moneycontrol (BSE ComHeadernew returned an EMPTY classification block for this delisted scrip); value mapped onto the dash_slim IndustryNew vocabulary"
   },
+  "NAHAREXP": {
+   "bse_code": "523391",
+   "evidence": "Nahar Exports was a cotton-yarn spinner/exporter. Our span 1996..2007-01 is the textiles era; in the 2006-07 Nahar-group restructuring the textile business moved to Nahar Spinning (Textiles) and the shell became Nahar Polyfilms (Capital Goods, a BOPP-film maker -- the successor trap). ERA bucket = Textiles.",
+   "identity_gate": "issuer-prefix (our INE308A01019) -> BSE 523391; ERA classified, not the successor",
+   "industry": "Textiles",
+   "isin": "INE308A01019",
+   "name": "Nahar Exports Ltd",
+   "src": "era classification (our tape 1996..2007-01 is the spinning/yarn-export era); comparables Nahar Spinning Mills (NAHARSPING) and Nahar Industrial Enterprises (NAHARINDUS) = Textiles"
+  },
   "NAHARSPG": {
    "bse_code": "500296",
    "identity_gate": "issuer-prefix (ISIN INExxxxxNN, face-value/IBC reissue) + bse-isin-confirmed on the successor + same-business continuity checked against our own series span",
@@ -1342,6 +1567,33 @@
    "isin": "INE588A01016",
    "name": "NEPC India Ltd",
    "src": "aggregator: screener.in + Moneycontrol (BSE ComHeadernew returned an EMPTY classification block for this delisted scrip); value mapped onto the dash_slim IndustryNew vocabulary"
+  },
+  "NESTLE": {
+   "bse_code": "500790",
+   "evidence": "'NESTLE' -> Nestle India Ltd, currently listed as NESTLEIND = Fast Moving Consumer Goods in our own bin (the later bars sit under NESTLEIND from 2010, the earlier ones under this key). Nestle India is a single unambiguous packaged-foods company; no recycled-ticker risk. ERA bucket = FMCG.",
+   "identity_gate": "name + same-company successor (Nestle India Ltd = NESTLEIND in our live bin)",
+   "industry": "Fast Moving Consumer Goods",
+   "isin": "INE239A01016",
+   "name": "Nestle India Ltd",
+   "src": "era classification (packaged foods, 1996..2003-08); the same company is currently listed as NESTLEIND = Fast Moving Consumer Goods (the pre-rename symbol carries the earlier bars)"
+  },
+  "NIPPONDENR": {
+   "bse_code": "500305",
+   "evidence": "Nippon Denro Ispat was the original name of Ispat Industries (later JSW Ispat), an integrated steel producer. Steel producers = Metals & Mining. Bucket = Metals & Mining.",
+   "identity_gate": "issuer-prefix (our INE136A01014) -> BSE 500305 (Ispat / JSW Ispat)",
+   "industry": "Metals & Mining",
+   "isin": "INE136A01014",
+   "name": "Nippon Denro Ispat Ltd",
+   "src": "integrated steel producer (Nippon Denro Ispat -> Ispat Industries -> JSW Ispat); steel = Metals & Mining"
+  },
+  "NIRMA": {
+   "bse_code": "500308",
+   "evidence": "Nirma is a detergents/soaps maker. Detergent/soap makers sit in FMCG in our live bin (Jyothy Labs, HUL, Godrej Consumer). Bucket = FMCG.",
+   "identity_gate": "isin-exact (INE091A01029, BSE 500308)",
+   "industry": "Fast Moving Consumer Goods",
+   "isin": "INE091A01029",
+   "name": "Nirma Ltd",
+   "src": "detergents / soaps (MC slug=detergents); comparables Jyothy Labs (JYOTHYLAB), Hindustan Unilever, Godrej Consumer = FMCG"
   },
   "NITINFIRE": {
    "bse_code": "532854",
@@ -1370,6 +1622,15 @@
    "name": "Neueon Corporation Ltd",
    "src": "BSE ComHeadernew/w IndustryNew (same field fetch_sectors.py uses for live scrips)",
    "successor_isin": "INE333I01044"
+  },
+  "NXTDIGITAL": {
+   "bse_code": "500189",
+   "evidence": "Our series under NXTDIGITAL spans 2007-04..2020-11 -- entirely the media era (Hinduja Ventures / NXTDIGITAL, cable-TV IN Cable + DTH). Moneycontrol's ISIN-gated row for INE353A01023 carries slug=mediaentertainment. Only AFTER our span (2022 Hinduja Global demerger) did the shell become NDL Ventures (Financial Services) -- filling from that successor would be the TUBEINVEST inversion, so the ERA bucket Media is written.",
+   "identity_gate": "isin-exact (INE353A01023 == ours) -> BSE 500189; ERA classified, not the successor",
+   "industry": "Media, Entertainment & Publication",
+   "isin": "INE353A01023",
+   "name": "Hinduja Ventures Ltd",
+   "src": "era classification (our tape 2007-04..2020-11 is the cable/DTH media era of this ISIN's company); MC ISIN-row slug=mediaentertainment; our-data media broadcasters (SUNTV/ZEEL/TVTODAY) = Media"
   },
   "OCL": {
    "bse_code": "502165",
@@ -1423,6 +1684,15 @@
    "isin": "INE067B01019",
    "name": "Orient Information Technology Ltd",
    "src": "aggregator: screener.in + Moneycontrol (BSE ComHeadernew returned an EMPTY classification block for this delisted scrip); value mapped onto the dash_slim IndustryNew vocabulary"
+  },
+  "OTIS": {
+   "bse_code": "504130",
+   "evidence": "Otis makes elevators/lifts. The elevator maker in our live bin, L. T. Elevator, is Capital Goods. Bucket = Capital Goods.",
+   "identity_gate": "isin-exact (INE099A01014, BSE 504130)",
+   "industry": "Capital Goods",
+   "isin": "INE099A01014",
+   "name": "OTIS Elevator Company (India) Ltd",
+   "src": "elevators; comparable L. T. Elevator (LTELEVATOR) = Capital Goods"
   },
   "PAREKHPLAT": {
    "bse_code": "500323",
@@ -1504,6 +1774,15 @@
    "name": "Polaris Consulting & Services Ltd",
    "src": "aggregator: screener.in + Moneycontrol (BSE ComHeadernew returned an EMPTY classification block for this delisted scrip); value mapped onto the dash_slim IndustryNew vocabulary"
   },
+  "PRICOL": {
+   "bse_code": "526109",
+   "evidence": "Pricol makes automotive instrument clusters and components; the same company is currently listed as PRICOLLTD = Automobile and Auto Components in our own bin. Bucket = Auto & Auto Components.",
+   "identity_gate": "isin-exact (INE605A01026, BSE 526109); same company currently listed as PRICOLLTD",
+   "industry": "Automobile and Auto Components",
+   "isin": "INE605A01026",
+   "name": "Pricol Ltd",
+   "src": "auto instrument clusters / components; the same company is currently listed as PRICOLLTD = Automobile and Auto Components"
+  },
   "PROVOGE": {
    "bse_code": "532647",
    "evidence": "Moneycontrol categorises this scrip under 'retail'; that category maps to 'Consumer Services' on the dash_slim vocabulary (calibrated over live ISIN-matched symbols: {'Consumer Durables': 1, 'Consumer Services': 9, 'Textiles': 1}). BSE ComHeadernew returned an EMPTY block and screener.in carried no classification.",
@@ -1539,6 +1818,15 @@
    "name": "PSL Ltd",
    "src": "BSE ComHeadernew/w IndustryNew (same field fetch_sectors.py uses for live scrips)"
   },
+  "PUNJABTRAC": {
+   "bse_code": "500344",
+   "evidence": "Punjab Tractors made Swaraj tractors. Pure tractor / farm-equipment makers sit in Capital Goods in our live bin (Escorts Kubota, VST Tillers). Bucket = Capital Goods.",
+   "identity_gate": "isin-exact (INE170A01013, BSE 500344)",
+   "industry": "Capital Goods",
+   "isin": "INE170A01013",
+   "name": "Punjab Tractors Ltd",
+   "src": "tractors (Swaraj); comparables Escorts Kubota (ESCORTS), VST Tillers Tractors (VSTTILLERS), SML Mahindra = Capital Goods"
+  },
   "PUNJLLOYD": {
    "bse_code": "532693",
    "identity_gate": "isin-exact + bse-isin-confirmed",
@@ -1564,6 +1852,15 @@
    "isin": "INE015A01028",
    "name": "Ranbaxy Laboratories Ltd",
    "src": "aggregator: screener.in + Moneycontrol (BSE ComHeadernew returned an EMPTY classification block for this delisted scrip); value mapped onto the dash_slim IndustryNew vocabulary"
+  },
+  "RANEBRAKE": {
+   "bse_code": "532328",
+   "evidence": "Rane Brake Linings makes automotive friction material. Rane-group auto ancillaries sit in Auto & Auto Components in our live bin. Bucket = Auto & Auto Components.",
+   "identity_gate": "isin-exact (INE413A01017, BSE 532328)",
+   "industry": "Automobile and Auto Components",
+   "isin": "INE413A01017",
+   "name": "Rane Brake Linings Ltd",
+   "src": "auto brake linings; comparables Rane (Madras) (RML), Pricol (PRICOLLTD) = Automobile and Auto Components"
   },
   "RANEENGINE": {
    "bse_code": "532988",
@@ -1623,6 +1920,15 @@
    "isin": "INE540B01015",
    "name": "Reliance MediaWorks Ltd",
    "src": "aggregator: screener.in + Moneycontrol (BSE ComHeadernew returned an EMPTY classification block for this delisted scrip); value mapped onto the dash_slim IndustryNew vocabulary"
+  },
+  "REVL": {
+   "bse_code": "532490",
+   "evidence": "Rane Engine Valves makes automotive engine valves. Rane-group auto ancillaries = Auto & Auto Components. Bucket = Auto & Auto Components.",
+   "identity_gate": "isin-exact (INE385A01017, BSE 532490)",
+   "industry": "Automobile and Auto Components",
+   "isin": "INE385A01017",
+   "name": "Rane Engine Valves Ltd",
+   "src": "auto engine valves; comparable Rane (Madras) (RML) = Automobile and Auto Components"
   },
   "RNAVAL": {
    "bse_code": "533107",
@@ -1811,6 +2117,15 @@
    "name": "Shriram Investments Ltd",
    "src": "aggregator: screener.in + Moneycontrol (BSE ComHeadernew returned an EMPTY classification block for this delisted scrip); value mapped onto the dash_slim IndustryNew vocabulary"
   },
+  "SHYAMTELE": {
+   "bse_code": "517411",
+   "evidence": "Shyam Telecom was a telecom-equipment/RF-transmission maker (NSE's 2003 archived listing names it 'Shyam Telecom Ltd'). Our span 1996..2006-07 is that era. Only later did the shell become a Services/Trading & Distributors entity. Telecom-equipment makers sit in Telecommunication in our vocabulary (STLTECH). ERA bucket = Telecommunication.",
+   "identity_gate": "NSE 2003 archive (Shyam Telecom Ltd, INE635A01015) -> BSE 517411; ERA classified, not the trading successor",
+   "industry": "Telecommunication",
+   "isin": "INE635A01015",
+   "name": "Shyam Telecom Ltd",
+   "src": "era classification (our tape 1996..2006-07 is the telecom-equipment era); the Telecommunication bucket houses telecom-equipment makers -- comparable Sterlite Technologies (STLTECH) = Telecommunication"
+  },
   "SILTAPCHEM": {
    "bse_code": "507777",
    "evidence": "Moneycontrol categorises this scrip under 'packaging'; that category maps to 'Capital Goods' on the dash_slim vocabulary (calibrated over live ISIN-matched symbols: {'Capital Goods': 6, 'Textiles': 1}). BSE ComHeadernew returned an EMPTY block and screener.in carried no classification.",
@@ -1844,6 +2159,15 @@
    "isin": "INE202C01010",
    "name": "Sirpur Paper Mills Ltd",
    "src": "aggregator: screener.in + Moneycontrol (BSE ComHeadernew returned an EMPTY classification block for this delisted scrip); value mapped onto the dash_slim IndustryNew vocabulary"
+  },
+  "SKUMARSYNF": {
+   "bse_code": "514304",
+   "evidence": "S. Kumars Nationwide is a fabric/apparel textile maker. Textile/fabric makers sit in Textiles in our live bin. Bucket = Textiles.",
+   "identity_gate": "isin-exact (INE772A01016, BSE 514304)",
+   "industry": "Textiles",
+   "isin": "INE772A01016",
+   "name": "S. Kumars Nationwide Ltd",
+   "src": "textiles / apparel fabrics (Reid & Taylor, Belmonte) (MC slug=textiles-syntheticsilk); textile makers = Textiles"
   },
   "SNOWCEMIND": {
    "bse_code": "531890",
@@ -1913,6 +2237,24 @@
    "isin": "INE324C01038",
    "name": "Sterling Biotech Ltd",
    "src": "BSE ComHeadernew/w IndustryNew (same field fetch_sectors.py uses for live scrips)"
+  },
+  "SUMMIT": {
+   "bse_code": "504807",
+   "evidence": "Summit Securities is an RPG-group investment/holding company (NBFC). Every pure investment/holding company in our live bin is Financial Services. Bucket = Financial Services.",
+   "identity_gate": "isin-exact (INE852A01016, BSE 504807)",
+   "industry": "Financial Services",
+   "isin": "INE852A01016",
+   "name": "Summit Securities Ltd",
+   "src": "investment / holding company (RPG group, NBFC); comparables Bajaj Holdings, Rane Holdings (RANEHOLDIN), Cholamandalam Financial Holdings, Vardhman Holdings all = Financial Services"
+  },
+  "SUNDRMCLAY": {
+   "bse_code": "520056",
+   "evidence": "Sundaram-Clayton made brake systems and aluminium die-castings for TVS/CVs. Our span 1996..2008-04 is entirely that era. The 2023 demerger split the auto-components business into a NEW listing 'Sundaram-Clayton Ltd' (current SUNCLAY = Automobile and Auto Components) while the shell became TVS Holdings (Financial Services). ERA bucket = Auto; the FS successor is post-span.",
+   "identity_gate": "issuer-prefix (our INE105A01019) -> BSE 520056; ERA classified, not the FS successor",
+   "industry": "Automobile and Auto Components",
+   "isin": "INE105A01019",
+   "name": "Sundaram-Clayton Ltd",
+   "src": "era classification (our tape 1996..2008-04 is the auto-components era); the demerged auto-components business is currently listed as SUNCLAY = Automobile and Auto Components; TVS-group ancillaries TVSSRICHAK/WHEELS/SUNDRMBRAK = Auto"
   },
   "SUPPETRO": {
    "bse_code": "500405",
@@ -1999,6 +2341,15 @@
    "name": "Tata Steel Long Products",
    "src": "BSE ComHeadernew/w IndustryNew (same field fetch_sectors.py uses for live scrips)"
   },
+  "TATAVASHIS": {
+   "bse_code": "523634",
+   "evidence": "Vashisti Detergents made detergents (Tata/HLL-associated). Detergent makers sit in FMCG in our live bin. Bucket = FMCG.",
+   "identity_gate": "isin-exact (INE330A01013, BSE 523634)",
+   "industry": "Fast Moving Consumer Goods",
+   "isin": "INE330A01013",
+   "name": "Vashisti Detergents Ltd",
+   "src": "detergents (MC slug=detergents); comparables Jyothy Labs (JYOTHYLAB), Hindustan Unilever = FMCG"
+  },
   "TCNSBRANDS": {
    "bse_code": "541700",
    "identity_gate": "isin-exact + bse-isin-confirmed",
@@ -2006,6 +2357,15 @@
    "isin": "INE778U01029",
    "name": "TCNS Clothing Co",
    "src": "BSE ComHeadernew/w IndustryNew (same field fetch_sectors.py uses for live scrips)"
+  },
+  "TECHNO": {
+   "bse_code": "533281",
+   "evidence": "Techno Electric & Engineering is a power-T&D EPC contractor; the same company is currently listed as TECHNOE = Construction in our own bin. Bucket = Construction.",
+   "identity_gate": "isin-exact (INE286K01024, BSE 533281); same company currently listed as TECHNOE",
+   "industry": "Construction",
+   "isin": "INE286K01024",
+   "name": "Techno Electric & Engineering Co Ltd",
+   "src": "power-transmission (T&D) EPC contractor; the same company is currently listed as TECHNOE = Construction"
   },
   "THIRUSUGAR": {
    "bse_code": "507450",
@@ -2015,6 +2375,15 @@
    "name": "Thiru Arooran Sugars Ltd",
    "src": "BSE ComHeadernew/w IndustryNew (same field fetch_sectors.py uses for live scrips)"
   },
+  "TIMEXWATCH": {
+   "bse_code": "500414",
+   "evidence": "'Timex Watches' -> Timex Group India Ltd, currently listed as TIMEX = Consumer Durables in our own bin. Watch makers sit in Consumer Durables (Titan). ERA bucket = Consumer Durables.",
+   "identity_gate": "name + same-company successor (Timex Group India, INE064A01026 / 500414 = TIMEX in our live bin)",
+   "industry": "Consumer Durables",
+   "isin": "INE064A01026",
+   "name": "Timex Watches Ltd",
+   "src": "era classification (watches, 1996..2002-01); same company currently listed as TIMEX (Timex Group India Ltd) = Consumer Durables; Titan (TITAN) = Consumer Durables"
+  },
   "TINPLATE": {
    "bse_code": "504966",
    "identity_gate": "isin-exact + bse-isin-confirmed",
@@ -2022,6 +2391,15 @@
    "isin": "INE422C01014",
    "name": "Tinplate Company of India Ltd",
    "src": "BSE ComHeadernew/w IndustryNew (same field fetch_sectors.py uses for live scrips)"
+  },
+  "TODAYS": {
+   "bse_code": "531830",
+   "evidence": "Todays Writing Instruments makes pens/writing instruments. The pure writing-instrument makers in our live bin, Flair and Linc, are both FMCG. Bucket = FMCG.",
+   "identity_gate": "isin-exact (INE944B01019, BSE 531830)",
+   "industry": "Fast Moving Consumer Goods",
+   "isin": "INE944B01019",
+   "name": "Todays Writing Instruments Ltd",
+   "src": "writing instruments / pens; comparables Flair Writing (FLAIR), Linc (LINC) = Fast Moving Consumer Goods"
   },
   "TORRENTAEC": {
    "bse_code": "500004",
@@ -2050,6 +2428,15 @@
    "name": "Television Eighteen India Ltd",
    "src": "aggregator: screener.in + Moneycontrol (BSE ComHeadernew returned an EMPTY classification block for this delisted scrip); value mapped onto the dash_slim IndustryNew vocabulary"
   },
+  "TV18": {
+   "bse_code": "532299",
+   "evidence": "Television Eighteen India ran CNBC-TV18 news broadcasting. TV broadcasters sit in Media in our live bin. Bucket = Media, Entertainment & Publication.",
+   "identity_gate": "isin-exact (INE889A01018, BSE 532299)",
+   "industry": "Media, Entertainment & Publication",
+   "isin": "INE889A01018",
+   "name": "Television Eighteen India Ltd",
+   "src": "TV news broadcaster (CNBC-TV18); comparables Zee (ZEEL), TV Today (TVTODAY), Sun TV (SUNTV) = Media, Entertainment & Publication"
+  },
   "TV18BRDCST": {
    "bse_code": "532800",
    "identity_gate": "isin-exact + bse-isin-confirmed",
@@ -2057,6 +2444,15 @@
    "isin": "INE886H01027",
    "name": "TV18 Broadcast",
    "src": "BSE ComHeadernew/w IndustryNew (same field fetch_sectors.py uses for live scrips)"
+  },
+  "TVSELEC": {
+   "bse_code": "500423",
+   "evidence": "TVS Electronics makes IT peripherals; the same-line business is currently listed as TVSELECT = Information Technology in our own bin. Bucket = Information Technology.",
+   "identity_gate": "NSE 2003 archive (TVS Electronics Ltd, INE380A01018) -> BSE 500423; same-name business now listed as TVSELECT",
+   "industry": "Information Technology",
+   "isin": "INE380A01018",
+   "name": "TVS Electronics Ltd",
+   "src": "IT peripherals (keyboards/printers/PoS); the same-line business is currently listed as TVSELECT = Information Technology; MC/calibration computers-hardware -> IT"
   },
   "UJJIVAN": {
    "bse_code": "539874",
@@ -2137,6 +2533,15 @@
    "name": "Value Industries Ltd",
    "src": "BSE ComHeadernew/w IndustryNew (same field fetch_sectors.py uses for live scrips)"
   },
+  "VARDHMNSPG": {
+   "bse_code": "500439",
+   "evidence": "Vardhman Spinning & General Mills was a cotton-yarn spinner. Our span 1996..2005-04 is the textiles era. After the group restructuring the shell became Vardhman Holdings (Financial Services) and the textile business is Vardhman Textiles (VTL = Textiles). ERA bucket = Textiles.",
+   "identity_gate": "issuer-prefix (our INE701A01015) -> BSE 500439; ERA classified, not the FS successor",
+   "industry": "Textiles",
+   "isin": "INE701A01015",
+   "name": "Vardhman Spinning & General Mills Ltd",
+   "src": "era classification (our tape 1996..2005-04 is the textile-spinning era); comparables Vardhman Textiles (VTL) and Vardhman Polytex (VARDMNPOLY) = Textiles"
+  },
   "VARUNSHIP": {
    "bse_code": "500465",
    "identity_gate": "isin-exact + bse-isin-confirmed",
@@ -2198,6 +2603,15 @@
    "name": "Wartsila India Ltd",
    "src": "aggregator: screener.in + Moneycontrol (BSE ComHeadernew returned an EMPTY classification block for this delisted scrip); value mapped onto the dash_slim IndustryNew vocabulary"
   },
+  "WELSPUNGUJ": {
+   "bse_code": "532144",
+   "evidence": "Welspun Gujarat Stahl Rohren made large-diameter SAW steel line-pipes; it was renamed Welspun Corp (current WELCORP = Capital Goods in our bin). Steel-pipe makers sit in Capital Goods (Jindal Saw). ERA bucket = Capital Goods.",
+   "identity_gate": "name + same-company successor (Welspun Gujarat Stahl Rohren -> Welspun Corp, WELCORP in our live bin)",
+   "industry": "Capital Goods",
+   "isin": "",
+   "name": "Welspun Gujarat Stahl Rohren Ltd",
+   "src": "era classification (SAW steel line-pipes, 2003-12..2005-04); same company renamed Welspun Corp = WELCORP = Capital Goods; comparable Jindal Saw (JINDALSAW) = Capital Goods"
+  },
   "WYETH": {
    "bse_code": "500095",
    "evidence": "screener.in states Sector='Healthcare' / Industry='Pharmaceuticals'; Moneycontrol category 'pharmaceuticals'; both map to 'Healthcare' on the dash_slim vocabulary.",
@@ -2206,6 +2620,15 @@
    "isin": "INE378A01012",
    "name": "Wyeth Ltd",
    "src": "aggregator: screener.in + Moneycontrol (BSE ComHeadernew returned an EMPTY classification block for this delisted scrip); value mapped onto the dash_slim IndustryNew vocabulary"
+  },
+  "YOKOGAWA": {
+   "bse_code": "517216",
+   "evidence": "Yokogawa India makes industrial process-automation and control instrumentation. Industrial-automation makers sit in Capital Goods in our live bin (Honeywell Automation, ABB, Siemens). The MC 'telecommunications-equipment' slug is a mis-tag. Bucket = Capital Goods.",
+   "identity_gate": "NSE 2003 archive (Yokogawa Blue Star Ltd, INE718A01019) -> BSE 517216",
+   "industry": "Capital Goods",
+   "isin": "INE718A01019",
+   "name": "Yokogawa India Ltd",
+   "src": "industrial process-automation & control instruments; comparables Honeywell Automation (HONAUT), ABB (ABB), Siemens (SIEMENS) = Capital Goods"
   },
   "ZENITHCOMP": {
    "bse_code": "517164",
