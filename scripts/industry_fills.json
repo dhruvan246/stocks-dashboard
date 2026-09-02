@@ -1,7 +1,34 @@
 {
- "_doc": "Industry/name for symbols that are DELISTED, hence absent from dash_slim.bin's currently-listed universe -- which is the only source build_sf_data.py has for meta.ind, so every one of them came out ind='Unknown', name=<symbol>. That is not a classification gap, it is a survivorship gap: the scrape only covers live scrips. 2,008 of the live bin's 4,445 symbols are affected; the 26 here are the ones that reached Nifty 500 membership between 2020-01 and 2026-06 and so showed up as holes on the coverage matrix (industry 857 cells).\nSOURCE: BSE ComHeadernew/w -> IndustryNew, the SAME field fetch_sectors.py reads for live scrips, so the vocabulary is identical by construction and needs no cross-map (verified: RELIANCE 500325 returns 'Oil, Gas & Consumable Fuels', which is exactly what dash_slim stores).\nIDENTITY GATE: the BSE code came from Moneycontrol's autosuggest and was accepted only when the ISIN matched ours -- exactly, or on the 7-char issuer prefix where a face-value change reissued it (runbook \u00a795). Then BSE's OWN returned ISIN had to confirm it again. A name match was never enough: MC's top hit for HDFC is HDFC *Bank* and for HEXAWARE is HEXT, both different securities.\nConsumed by build_sf_data.py when the live universe has no row for a symbol.\n2026-08-16 (N500 2015-2019 campaign, PLAN_N500_COVERAGE_2015_2020.md): +43 entries for the delisted members that showed as industry holes on the 2015-01..2019-12 window (2,111 cells over 89 names). Route reach MEASURED, not assumed: of 81 names resolvable by exact ISIN in BSE's all-status scrip master, ComHeadernew returned a non-empty IndustryNew for only 37 -- the other 44 (older full delistings: the merged PSU banks, RANBAXY, CAIRN, GRUH, SBBJ/SBT, CMC, POLARIS ...) return an EMPTY classification block from BSE. Those are recorded not-found-via:bse-comheadernew and stay visible gaps; they need an aggregator rung of the \u00a757 ladder, never a guess. 7 further names carry a REISSUED ISIN (IBC/face-value/rename): matched on the 9-char issuer+type prefix, confirmed by BSE's own returned ISIN on the successor, and each checked for same-business continuity against our own series spans. TUBEINVEST is deliberately WITHHELD: its series ends 2017-08-23 (pre-demerger Tube Investments of India, a manufacturer) while its ISIN successor is Cholamandalam Financial Holdings (Financial Services) and the manufacturing business went to a SEPARATE listing, TIINDIA -- filling it from the successor would misclassify the historical series and corrupt indRank for the era. Needs adjudication, not an inference.",
- "_generated": "2026-08-16 16:30 IST",
+ "_doc": "Industry/name for symbols that are DELISTED, hence absent from dash_slim.bin's currently-listed universe -- which is the only source build_sf_data.py has for meta.ind, so every one of them came out ind='Unknown', name=<symbol>. That is not a classification gap, it is a survivorship gap: the scrape only covers live scrips. 2,008 of the live bin's 4,445 symbols are affected; the 26 here are the ones that reached Nifty 500 membership between 2020-01 and 2026-06 and so showed up as holes on the coverage matrix (industry 857 cells).\nSOURCE: BSE ComHeadernew/w -> IndustryNew, the SAME field fetch_sectors.py reads for live scrips, so the vocabulary is identical by construction and needs no cross-map (verified: RELIANCE 500325 returns 'Oil, Gas & Consumable Fuels', which is exactly what dash_slim stores).\nIDENTITY GATE: the BSE code came from Moneycontrol's autosuggest and was accepted only when the ISIN matched ours -- exactly, or on the 7-char issuer prefix where a face-value change reissued it (runbook §95). Then BSE's OWN returned ISIN had to confirm it again. A name match was never enough: MC's top hit for HDFC is HDFC *Bank* and for HEXAWARE is HEXT, both different securities.\nConsumed by build_sf_data.py when the live universe has no row for a symbol.\n2026-08-16 (N500 2015-2019 campaign, PLAN_N500_COVERAGE_2015_2020.md): +43 entries for the delisted members that showed as industry holes on the 2015-01..2019-12 window (2,111 cells over 89 names). Route reach MEASURED, not assumed: of 81 names resolvable by exact ISIN in BSE's all-status scrip master, ComHeadernew returned a non-empty IndustryNew for only 37 -- the other 44 (older full delistings: the merged PSU banks, RANBAXY, CAIRN, GRUH, SBBJ/SBT, CMC, POLARIS ...) return an EMPTY classification block from BSE. Those are recorded not-found-via:bse-comheadernew and stay visible gaps; they need an aggregator rung of the §57 ladder, never a guess. 7 further names carry a REISSUED ISIN (IBC/face-value/rename): matched on the 9-char issuer+type prefix, confirmed by BSE's own returned ISIN on the successor, and each checked for same-business continuity against our own series spans. TUBEINVEST is deliberately WITHHELD: its series ends 2017-08-23 (pre-demerger Tube Investments of India, a manufacturer) while its ISIN successor is Cholamandalam Financial Holdings (Financial Services) and the manufacturing business went to a SEPARATE listing, TIINDIA -- filling it from the successor would misclassify the historical series and corrupt indRank for the era. Needs adjudication, not an inference.",
+ "_generated": "2026-09-02 18:24 IST",
  "fills": {
+  "3IINFOTECH": {
+   "bse_code": "532628",
+   "identity_gate": "issuer-prefix (ISIN INExxxxxNN, face-value/IBC reissue) + bse-isin-confirmed on the successor + same-business continuity checked against our own series span",
+   "industry": "Information Technology",
+   "isin": "INE748C01020",
+   "name": "3i Infotech Ltd",
+   "src": "BSE ComHeadernew/w IndustryNew (same field fetch_sectors.py uses for live scrips)",
+   "successor_isin": "INE748C01038"
+  },
+  "ACLGATI": {
+   "bse_code": "532345",
+   "identity_gate": "isin-exact + bse-isin-confirmed",
+   "industry": "Services",
+   "isin": "INE152B01027",
+   "name": "Allcargo Gati Ltd",
+   "src": "BSE ComHeadernew/w IndustryNew (same field fetch_sectors.py uses for live scrips)"
+  },
+  "AGCNET": {
+   "bse_code": "500463",
+   "evidence": "same legal entity through the Tata Telecom -> Avaya GlobalConnect -> AGC Networks -> Black Box renames; NSE symbolchange.csv AVAYAGCL->AGCNET 2010-06-08, AGCNET->BBOX 2021-12-03",
+   "identity_gate": "issuer-prefix (ISIN INExxxxxNN, face-value/IBC reissue) + bse-isin-confirmed on the successor + same-business continuity checked against our own series span",
+   "industry": "Information Technology",
+   "isin": "INE676A01019",
+   "name": "Black Box Ltd",
+   "src": "BSE ComHeadernew/w IndustryNew (same field fetch_sectors.py uses for live scrips)",
+   "successor_isin": "INE676A01027"
+  },
   "AJRINFRA": {
    "bse_code": "532959",
    "identity_gate": "isin-exact + bse-isin-confirmed",
@@ -25,6 +52,22 @@
    "industry": "Automobile and Auto Components",
    "isin": "INE130C01021",
    "name": "Amtek Auto Ltd",
+   "src": "BSE ComHeadernew/w IndustryNew (same field fetch_sectors.py uses for live scrips)"
+  },
+  "ARSSINFRA": {
+   "bse_code": "533163",
+   "identity_gate": "isin-exact + bse-isin-confirmed",
+   "industry": "Construction",
+   "isin": "INE267I01010",
+   "name": "ARSS Infrastructure Projects Ltd",
+   "src": "BSE ComHeadernew/w IndustryNew (same field fetch_sectors.py uses for live scrips)"
+  },
+  "ATCOM": {
+   "bse_code": "527007",
+   "identity_gate": "mc-exact-symbol row (INE834A01014, ATCOM, 527007) == BSE all-status master row (scrip_id ATCOM, INE834A01014) -- two independent vendors agree, no NSE-side ISIN record survives for this pre-2006 symbol; NSE symbolchange.csv names the listing \"Atcom Technologies Limited\" (ATCOIND->ATCOM 2004-04-29); bse-isin-confirmed",
+   "industry": "Capital Goods",
+   "isin": "INE834A01014",
+   "name": "Atcom Technologies Ltd",
    "src": "BSE ComHeadernew/w IndustryNew (same field fetch_sectors.py uses for live scrips)"
   },
   "BALLARPUR": {
@@ -51,6 +94,25 @@
    "name": "Castex Technologies Ltd",
    "src": "BSE ComHeadernew/w IndustryNew (same field fetch_sectors.py uses for live scrips)"
   },
+  "CEAT": {
+   "bse_code": "500878",
+   "identity_gate": "issuer-prefix (ISIN INExxxxxNN, face-value/IBC reissue) + bse-isin-confirmed on the successor + same-business continuity checked against our own series span",
+   "industry": "Automobile and Auto Components",
+   "isin": "INE482A01012",
+   "name": "Ceat Ltd",
+   "src": "BSE ComHeadernew/w IndustryNew (same field fetch_sectors.py uses for live scrips)",
+   "successor_isin": "INE482A01020"
+  },
+  "CHEMPLAST": {
+   "bse_code": "543336",
+   "evidence": "Chemplast Sanmar delisted 2012-06 (our tape ends 2012-06-15, old ISIN INE488A01034 -> BSE 506355 which returns an EMPTY block) and re-listed 2021-08 as the same company under 543336 INE488A01050; PVC/chemicals business continuous",
+   "identity_gate": "issuer-prefix (ISIN INExxxxxNN, face-value/IBC reissue) + bse-isin-confirmed on the successor + same-business continuity checked against our own series span",
+   "industry": "Chemicals",
+   "isin": "INE488A01027",
+   "name": "Chemplast Sanmar Ltd",
+   "src": "BSE ComHeadernew/w IndustryNew (same field fetch_sectors.py uses for live scrips)",
+   "successor_isin": "INE488A01050"
+  },
   "COX&KINGS": {
    "bse_code": "533144",
    "identity_gate": "isin-exact + bse-isin-confirmed",
@@ -74,6 +136,16 @@
    "isin": "INE202B01012",
    "name": "Dewan Housing Finance Corporation",
    "src": "BSE ComHeadernew/w IndustryNew (same field fetch_sectors.py uses for live scrips)"
+  },
+  "DSKULKARNI": {
+   "bse_code": "523890",
+   "evidence": "same BSE code, ISIN reissued; our tape runs to 2026-08-28 under the old key",
+   "identity_gate": "issuer-prefix (ISIN INExxxxxNN, face-value/IBC reissue) + bse-isin-confirmed on the successor + same-business continuity checked against our own series span",
+   "industry": "Realty",
+   "isin": "INE891A01014",
+   "name": "DS Kulkarni Developers Ltd",
+   "src": "BSE ComHeadernew/w IndustryNew (same field fetch_sectors.py uses for live scrips)",
+   "successor_isin": "INE891A01022"
   },
   "EDUCOMP": {
    "bse_code": "532696",
@@ -139,6 +211,16 @@
    "name": "Gateway Distriparks Ltd",
    "src": "BSE ComHeadernew/w IndustryNew (same field fetch_sectors.py uses for live scrips)"
   },
+  "GESHIPPING": {
+   "bse_code": "500620",
+   "evidence": "NSE EQUITY_L wayback 2006-08-24 lists GESHIPPING INE017A01024 (Great Eastern Shipping Co. Ltd.); successor GESHIP INE017A01032 listed 27-NOV-2006, tape continuous (isin_seam_verdicts CONFIRMED)",
+   "identity_gate": "issuer-prefix (ISIN INExxxxxNN, face-value/IBC reissue) + bse-isin-confirmed on the successor + same-business continuity checked against our own series span",
+   "industry": "Services",
+   "isin": "INE017A01024",
+   "name": "Great Eastern Shipping Company Ltd",
+   "src": "BSE ComHeadernew/w IndustryNew (same field fetch_sectors.py uses for live scrips)",
+   "successor_isin": "INE017A01032"
+  },
   "GITANJALI": {
    "bse_code": "532715",
    "identity_gate": "isin-exact + bse-isin-confirmed",
@@ -163,6 +245,14 @@
    "name": "Gujarat State Petronet",
    "src": "BSE ComHeadernew/w IndustryNew (same field fetch_sectors.py uses for live scrips)"
   },
+  "GTNIND": {
+   "bse_code": "500170",
+   "identity_gate": "isin-exact + bse-isin-confirmed",
+   "industry": "Textiles",
+   "isin": "INE537A01013",
+   "name": "GTN Industries Ltd",
+   "src": "BSE ComHeadernew/w IndustryNew (same field fetch_sectors.py uses for live scrips)"
+  },
   "GUJNRECOKE": {
    "bse_code": "512579",
    "identity_gate": "isin-exact + bse-isin-confirmed",
@@ -185,6 +275,14 @@
    "industry": "Information Technology",
    "isin": "INE093A01041",
    "name": "Hexaware Technologies",
+   "src": "BSE ComHeadernew/w IndustryNew (same field fetch_sectors.py uses for live scrips)"
+  },
+  "ICSA": {
+   "bse_code": "531524",
+   "identity_gate": "isin-exact + bse-isin-confirmed",
+   "industry": "Construction",
+   "isin": "INE306B01029",
+   "name": "ICSA (India) Ltd",
    "src": "BSE ComHeadernew/w IndustryNew (same field fetch_sectors.py uses for live scrips)"
   },
   "IDFC": {
@@ -219,6 +317,14 @@
    "name": "IVRCL Ltd",
    "src": "BSE ComHeadernew/w IndustryNew (same field fetch_sectors.py uses for live scrips)"
   },
+  "JAINSTUDIO": {
+   "bse_code": "532033",
+   "identity_gate": "isin-exact + bse-isin-confirmed",
+   "industry": "Media, Entertainment & Publication",
+   "isin": "INE486B01011",
+   "name": "Jain Studios Ltd",
+   "src": "BSE ComHeadernew/w IndustryNew (same field fetch_sectors.py uses for live scrips)"
+  },
   "JBCHEPHARM": {
    "bse_code": "506943",
    "identity_gate": "isin-issuer-prefix + bse-isin-confirmed",
@@ -242,6 +348,16 @@
    "isin": "INE802G01018",
    "name": "Jet Airways (India) Ltd",
    "src": "BSE ComHeadernew/w IndustryNew (same field fetch_sectors.py uses for live scrips)"
+  },
+  "JINDVIJSTL": {
+   "bse_code": "500228",
+   "evidence": "steel before and after the rename; our tape ends 2005-02-18",
+   "identity_gate": "nse-own-record issuer-prefix: NSE listed-equities page (wayback 2004-08-09) lists \"Jindal Vijayanagar Steel Ltd JINDVIJSTL INE019A01012\"; successor 500228 JSW Steel INE019A01038 (same legal entity, renamed); bse-isin-confirmed",
+   "industry": "Metals & Mining",
+   "isin": "INE019A01012",
+   "name": "JSW Steel Ltd",
+   "src": "BSE ComHeadernew/w IndustryNew (same field fetch_sectors.py uses for live scrips)",
+   "successor_isin": "INE019A01038"
   },
   "JMTAUTOLTD": {
    "bse_code": "513691",
@@ -275,12 +391,37 @@
    "name": "Jindal Stainless (Hisar)",
    "src": "BSE ComHeadernew/w IndustryNew (same field fetch_sectors.py uses for live scrips)"
   },
+  "KBL": {
+   "bse_code": "500241",
+   "identity_gate": "issuer-prefix (ISIN INExxxxxNN, face-value/IBC reissue) + bse-isin-confirmed on the successor + same-business continuity checked against our own series span",
+   "industry": "Capital Goods",
+   "isin": "INE732A01028",
+   "name": "Kirloskar Brothers Ltd",
+   "src": "BSE ComHeadernew/w IndustryNew (same field fetch_sectors.py uses for live scrips)",
+   "successor_isin": "INE732A01036"
+  },
+  "KGL": {
+   "bse_code": "531687",
+   "identity_gate": "isin-exact + bse-isin-confirmed",
+   "industry": "Fast Moving Consumer Goods",
+   "isin": "INE299C01024",
+   "name": "Karuturi Global Ltd",
+   "src": "BSE ComHeadernew/w IndustryNew (same field fetch_sectors.py uses for live scrips)"
+  },
   "KSK": {
    "bse_code": "532997",
    "identity_gate": "isin-exact + bse-isin-confirmed",
    "industry": "Power",
    "isin": "INE143H01015",
    "name": "KSK Energy Ventures Ltd",
+   "src": "BSE ComHeadernew/w IndustryNew (same field fetch_sectors.py uses for live scrips)"
+  },
+  "KSOILS": {
+   "bse_code": "526209",
+   "identity_gate": "isin-exact + bse-isin-confirmed",
+   "industry": "Fast Moving Consumer Goods",
+   "isin": "INE727D01022",
+   "name": "K S Oils Ltd",
    "src": "BSE ComHeadernew/w IndustryNew (same field fetch_sectors.py uses for live scrips)"
   },
   "KWALITY": {
@@ -291,6 +432,24 @@
    "name": "Kwality Ltd",
    "src": "BSE ComHeadernew/w IndustryNew (same field fetch_sectors.py uses for live scrips)"
   },
+  "L&T": {
+   "bse_code": "500510",
+   "evidence": "our L&T tape ends 2004-05-21, LT tape starts 2004-06-23 (rename map L&T->LT); E&C business continuous",
+   "identity_gate": "nse-own-record issuer-prefix: NSE page (wayback 2003-08-31) lists \"Larsen & Toubro Ltd. L&T INE018A01014\"; successor 500510 INE018A01030 (same entity, LT); bse-isin-confirmed",
+   "industry": "Construction",
+   "isin": "INE018A01014",
+   "name": "Larsen & Toubro Ltd",
+   "src": "BSE ComHeadernew/w IndustryNew (same field fetch_sectors.py uses for live scrips)",
+   "successor_isin": "INE018A01030"
+  },
+  "LAKSHMIEFL": {
+   "bse_code": "519570",
+   "identity_gate": "isin-exact + bse-isin-confirmed",
+   "industry": "Fast Moving Consumer Goods",
+   "isin": "INE992B01026",
+   "name": "Lakshmi Overseas Industries Ltd",
+   "src": "BSE ComHeadernew/w IndustryNew (same field fetch_sectors.py uses for live scrips)"
+  },
   "LAKSHVILAS": {
    "bse_code": "534690",
    "evidence": "MC's ISIN-gated sc_sector is 'Banks'. Measured, not mapped by assumption: (a) all 31 scheduled banks we hold carry 'Financial Services' in our own data, 31/31 unanimous; (b) the MC-sector->our-industry calibration over 520 ISIN-matched live symbols puts MC 'Banks' -> 'Financial Services' at 12/12.",
@@ -299,6 +458,15 @@
    "isin": "INE694C01018",
    "name": "Lakshmi Vilas Bank",
    "src": "our own data + moneycontrol (BSE returns EVERY classification field empty for this scrip)"
+  },
+  "MANALIPET": {
+   "bse_code": "500268",
+   "identity_gate": "issuer-prefix (ISIN INExxxxxNN, face-value/IBC reissue) + bse-isin-confirmed on the successor + same-business continuity checked against our own series span",
+   "industry": "Chemicals",
+   "isin": "INE201A01016",
+   "name": "Manali Petrochemicals Ltd",
+   "src": "BSE ComHeadernew/w IndustryNew (same field fetch_sectors.py uses for live scrips)",
+   "successor_isin": "INE201A01024"
   },
   "MANDHANA": {
    "bse_code": "533204",
@@ -323,6 +491,14 @@
    "industry": "Fast Moving Consumer Goods",
    "isin": "INE122R01018",
    "name": "Manpasand Beverages Ltd",
+   "src": "BSE ComHeadernew/w IndustryNew (same field fetch_sectors.py uses for live scrips)"
+  },
+  "MELSTAR": {
+   "bse_code": "532307",
+   "identity_gate": "isin-exact + bse-isin-confirmed",
+   "industry": "Information Technology",
+   "isin": "INE817A01019",
+   "name": "Melstar Information Technologies Ltd",
    "src": "BSE ComHeadernew/w IndustryNew (same field fetch_sectors.py uses for live scrips)"
   },
   "MERCATOR": {
@@ -358,6 +534,41 @@
    "src": "BSE ComHeadernew/w IndustryNew (same field fetch_sectors.py uses for live scrips)",
    "successor_isin": "INE743C01021"
   },
+  "MUKAND": {
+   "bse_code": "500460",
+   "identity_gate": "nse-own-record issuer-prefix: NSE page (wayback 2003-07-09) lists \"Mukand Ltd MUKAND INE304A01018\"; successor 500460 INE304A01026 (same entity); bse-isin-confirmed",
+   "industry": "Capital Goods",
+   "isin": "INE304A01018",
+   "name": "Mukand Ltd",
+   "src": "BSE ComHeadernew/w IndustryNew (same field fetch_sectors.py uses for live scrips)",
+   "successor_isin": "INE304A01026"
+  },
+  "MUNJALAUTO": {
+   "bse_code": "520059",
+   "identity_gate": "issuer-prefix (ISIN INExxxxxNN, face-value/IBC reissue) + bse-isin-confirmed on the successor + same-business continuity checked against our own series span",
+   "industry": "Automobile and Auto Components",
+   "isin": "INE672B01016",
+   "name": "Munjal Auto Industries Ltd",
+   "src": "BSE ComHeadernew/w IndustryNew (same field fetch_sectors.py uses for live scrips)",
+   "successor_isin": "INE672B01032"
+  },
+  "MVL": {
+   "bse_code": "532991",
+   "identity_gate": "isin-exact + bse-isin-confirmed",
+   "industry": "Realty",
+   "isin": "INE744I01034",
+   "name": "MVL Ltd",
+   "src": "BSE ComHeadernew/w IndustryNew (same field fetch_sectors.py uses for live scrips)"
+  },
+  "NAHARSPG": {
+   "bse_code": "500296",
+   "identity_gate": "issuer-prefix (ISIN INExxxxxNN, face-value/IBC reissue) + bse-isin-confirmed on the successor + same-business continuity checked against our own series span",
+   "industry": "Textiles",
+   "isin": "INE290A01019",
+   "name": "Nahar Spinning Mills Ltd",
+   "src": "BSE ComHeadernew/w IndustryNew (same field fetch_sectors.py uses for live scrips)",
+   "successor_isin": "INE290A01027"
+  },
   "NITINFIRE": {
    "bse_code": "532854",
    "identity_gate": "isin-exact + bse-isin-confirmed",
@@ -365,6 +576,26 @@
    "isin": "INE489H01020",
    "name": "Nitin Fire Protection Industries Ltd",
    "src": "BSE ComHeadernew/w IndustryNew (same field fetch_sectors.py uses for live scrips)"
+  },
+  "NOVAPETRO": {
+   "bse_code": "530605",
+   "evidence": "Nova Petrochemicals -> GSL Nova Petrochemicals (same entity, same plant); successor tape GSLNOVA starts 2009-12-14, ours ends 2009-10-20",
+   "identity_gate": "issuer-prefix (ISIN INExxxxxNN, face-value/IBC reissue) + bse-isin-confirmed on the successor + same-business continuity checked against our own series span",
+   "industry": "Textiles",
+   "isin": "INE787A01014",
+   "name": "GSL Nova Petrochemicals Ltd",
+   "src": "BSE ComHeadernew/w IndustryNew (same field fetch_sectors.py uses for live scrips)",
+   "successor_isin": "INE787A01022"
+  },
+  "NTL": {
+   "bse_code": "532887",
+   "evidence": "Sujana Towers -> Neueon Towers (NSE symbolchange 2017-02-17) -> Neueon Corporation (2025-12-22); same entity",
+   "identity_gate": "issuer-prefix (ISIN INExxxxxNN, face-value/IBC reissue) + bse-isin-confirmed on the successor + same-business continuity checked against our own series span",
+   "industry": "Capital Goods",
+   "isin": "INE333I01036",
+   "name": "Neueon Corporation Ltd",
+   "src": "BSE ComHeadernew/w IndustryNew (same field fetch_sectors.py uses for live scrips)",
+   "successor_isin": "INE333I01044"
   },
   "OPTOCIRCUI": {
    "bse_code": "532391",
@@ -391,12 +622,54 @@
    "name": "Piramal Enterprises",
    "src": "BSE ComHeadernew/w IndustryNew (same field fetch_sectors.py uses for live scrips)"
   },
+  "PENTSFWARE": {
+   "bse_code": "500329",
+   "identity_gate": "nse-own-record issuer-prefix: NSE EQUITY_L wayback 2006-08-24 lists PENTSFWARE INE202A01014 (Pentamedia Graphics Limited); successor 500329 INE202A01022 (same entity); bse-isin-confirmed; MC exact-symbol row agrees (INE202A01022, 500329)",
+   "industry": "Media, Entertainment & Publication",
+   "isin": "INE202A01014",
+   "name": "Pentamedia Graphics Ltd",
+   "src": "BSE ComHeadernew/w IndustryNew (same field fetch_sectors.py uses for live scrips)",
+   "successor_isin": "INE202A01022"
+  },
+  "PSL": {
+   "bse_code": "526801",
+   "identity_gate": "isin-exact + bse-isin-confirmed",
+   "industry": "Capital Goods",
+   "isin": "INE474B01017",
+   "name": "PSL Ltd",
+   "src": "BSE ComHeadernew/w IndustryNew (same field fetch_sectors.py uses for live scrips)"
+  },
   "PUNJLLOYD": {
    "bse_code": "532693",
    "identity_gate": "isin-exact + bse-isin-confirmed",
    "industry": "Construction",
    "isin": "INE701B01021",
    "name": "Punj Lloyd Ltd",
+   "src": "BSE ComHeadernew/w IndustryNew (same field fetch_sectors.py uses for live scrips)"
+  },
+  "RAMANEWSPR": {
+   "bse_code": "500356",
+   "identity_gate": "issuer-prefix (ISIN INExxxxxNN, face-value/IBC reissue) + bse-isin-confirmed on the successor + same-business continuity checked against our own series span",
+   "industry": "Forest Materials",
+   "isin": "INE278B01012",
+   "name": "Shree Rama Newsprint Ltd",
+   "src": "BSE ComHeadernew/w IndustryNew (same field fetch_sectors.py uses for live scrips)",
+   "successor_isin": "INE278B01020"
+  },
+  "RANEENGINE": {
+   "bse_code": "532988",
+   "identity_gate": "isin-exact + bse-isin-confirmed",
+   "industry": "Automobile and Auto Components",
+   "isin": "INE222J01013",
+   "name": "Rane Engine Valve Ltd",
+   "src": "BSE ComHeadernew/w IndustryNew (same field fetch_sectors.py uses for live scrips)"
+  },
+  "RBL": {
+   "bse_code": "532987",
+   "identity_gate": "isin-exact + bse-isin-confirmed",
+   "industry": "Automobile and Auto Components",
+   "isin": "INE244J01017",
+   "name": "Rane Brake Lining Ltd",
    "src": "BSE ComHeadernew/w IndustryNew (same field fetch_sectors.py uses for live scrips)"
   },
   "RELCAPITAL": {
@@ -441,12 +714,56 @@
    "src": "BSE ComHeadernew/w IndustryNew (same field fetch_sectors.py uses for live scrips)",
    "successor_isin": "INE619A01035"
   },
+  "SABTN": {
+   "bse_code": "530943",
+   "evidence": "Sri Adhikari Brothers Television Network -> Aqylon Nexus (same entity); BSE still classifies it Media",
+   "identity_gate": "issuer-prefix (ISIN INExxxxxNN, face-value/IBC reissue) + bse-isin-confirmed on the successor + same-business continuity checked against our own series span",
+   "industry": "Media, Entertainment & Publication",
+   "isin": "INE416A01036",
+   "name": "Aqylon Nexus Ltd",
+   "src": "BSE ComHeadernew/w IndustryNew (same field fetch_sectors.py uses for live scrips)",
+   "successor_isin": "INE416A01051"
+  },
+  "SEARCHEMIN": {
+   "bse_code": "512070",
+   "evidence": "agrochemicals before and after",
+   "identity_gate": "nse-own-record issuer-prefix: NSE page (wayback 2003-08-31) lists \"Search Chem Industries Ltd. SEARCHEMIN INE628A01010\"; successor 512070 UPL Ltd INE628A01036 (Search Chem was renamed United Phosphorus after the 2003 merger, same legal entity); bse-isin-confirmed",
+   "industry": "Chemicals",
+   "isin": "INE628A01010",
+   "name": "UPL Ltd",
+   "src": "BSE ComHeadernew/w IndustryNew (same field fetch_sectors.py uses for live scrips)",
+   "successor_isin": "INE628A01036"
+  },
+  "SHIRPUR-G": {
+   "bse_code": "512289",
+   "identity_gate": "isin-exact + bse-isin-confirmed",
+   "industry": "Metals & Mining",
+   "isin": "INE196B01016",
+   "name": "Shirpur Gold Refinery Ltd",
+   "src": "BSE ComHeadernew/w IndustryNew (same field fetch_sectors.py uses for live scrips)"
+  },
+  "SHLAKSHMI": {
+   "bse_code": "526049",
+   "identity_gate": "isin-exact + bse-isin-confirmed",
+   "industry": "Textiles",
+   "isin": "INE851B01016",
+   "name": "Shri Lakshmi Cotsyn Ltd",
+   "src": "BSE ComHeadernew/w IndustryNew (same field fetch_sectors.py uses for live scrips)"
+  },
   "SHRIRAMCIT": {
    "bse_code": "532498",
    "identity_gate": "isin-exact + bse-isin-confirmed",
    "industry": "Financial Services",
    "isin": "INE722A01011",
    "name": "Shriram City Union Finance",
+   "src": "BSE ComHeadernew/w IndustryNew (same field fetch_sectors.py uses for live scrips)"
+  },
+  "SILVERLINE": {
+   "bse_code": "500389",
+   "identity_gate": "mc-exact-symbol row (INE368A01021, SILVERLINE, 500389) == BSE all-status master row (scrip_id SILVERLINE, INE368A01021) -- two independent vendors agree, no NSE-side ISIN record survives (tape ended 2003-04-04, before the first archived NSE list); bse-isin-confirmed",
+   "industry": "Information Technology",
+   "isin": "INE368A01021",
+   "name": "Silverline Technologies Ltd",
    "src": "BSE ComHeadernew/w IndustryNew (same field fetch_sectors.py uses for live scrips)"
   },
   "SINTEX": {
@@ -473,12 +790,30 @@
    "name": "SREI Infrastructure Finance Ltd",
    "src": "BSE ComHeadernew/w IndustryNew (same field fetch_sectors.py uses for live scrips)"
   },
+  "SRIADIKARI": {
+   "bse_code": "530943",
+   "evidence": "older key of the same Sri Adhikari Brothers series (ISIN INE416A01028 -> INE416A01036 -> INE416A01051)",
+   "identity_gate": "issuer-prefix (ISIN INExxxxxNN, face-value/IBC reissue) + bse-isin-confirmed on the successor + same-business continuity checked against our own series span",
+   "industry": "Media, Entertainment & Publication",
+   "isin": "INE416A01028",
+   "name": "Aqylon Nexus Ltd",
+   "src": "BSE ComHeadernew/w IndustryNew (same field fetch_sectors.py uses for live scrips)",
+   "successor_isin": "INE416A01051"
+  },
   "SRIPIPES": {
    "bse_code": "513605",
    "identity_gate": "isin-exact + bse-isin-confirmed",
    "industry": "Capital Goods",
    "isin": "INE943C01027",
    "name": "Srikalahasthi Pipes Ltd",
+   "src": "BSE ComHeadernew/w IndustryNew (same field fetch_sectors.py uses for live scrips)"
+  },
+  "STERLINBIO": {
+   "bse_code": "512299",
+   "identity_gate": "isin-exact + bse-isin-confirmed",
+   "industry": "Healthcare",
+   "isin": "INE324C01038",
+   "name": "Sterling Biotech Ltd",
    "src": "BSE ComHeadernew/w IndustryNew (same field fetch_sectors.py uses for live scrips)"
   },
   "SUPPETRO": {
@@ -489,12 +824,47 @@
    "name": "Supreme Petrochem",
    "src": "BSE ComHeadernew/w IndustryNew (same field fetch_sectors.py uses for live scrips)"
   },
+  "SURYCOTMIL": {
+   "bse_code": "521200",
+   "identity_gate": "nse-own-record issuer-prefix: NSE page (wayback 2003-08-31) lists \"Suryalakshmi Cotton Mills Ltd. SURYCOTMIL INE713B01018\"; successor 521200 INE713B01026 (same entity); bse-isin-confirmed",
+   "industry": "Textiles",
+   "isin": "INE713B01018",
+   "name": "Suryalakshmi Cotton Mills Ltd",
+   "src": "BSE ComHeadernew/w IndustryNew (same field fetch_sectors.py uses for live scrips)",
+   "successor_isin": "INE713B01026"
+  },
   "TATACOFFEE": {
    "bse_code": "532301",
    "identity_gate": "isin-exact + bse-isin-confirmed",
    "industry": "Fast Moving Consumer Goods",
    "isin": "INE493A01027",
    "name": "Tata Coffee",
+   "src": "BSE ComHeadernew/w IndustryNew (same field fetch_sectors.py uses for live scrips)"
+  },
+  "TATAINFO": {
+   "bse_code": "509069",
+   "evidence": "Tata Infomedia -> Infomedia India (NSE symbolchange TATAPRESS->TATAINFO 2003-09-17) -> Infomedia Press; publishing throughout",
+   "identity_gate": "issuer-prefix (ISIN INExxxxxNN, face-value/IBC reissue) + bse-isin-confirmed on the successor + same-business continuity checked against our own series span",
+   "industry": "Media, Entertainment & Publication",
+   "isin": "INE669A01014",
+   "name": "Infomedia Press Ltd",
+   "src": "BSE ComHeadernew/w IndustryNew (same field fetch_sectors.py uses for live scrips)",
+   "successor_isin": "INE669A01022"
+  },
+  "TATAMETALI": {
+   "bse_code": "513434",
+   "identity_gate": "isin-exact + bse-isin-confirmed",
+   "industry": "Metals & Mining",
+   "isin": "INE056C01010",
+   "name": "Tata Metaliks Ltd",
+   "src": "BSE ComHeadernew/w IndustryNew (same field fetch_sectors.py uses for live scrips)"
+  },
+  "TATAMOTORS": {
+   "bse_code": "500570",
+   "identity_gate": "isin-exact + bse-isin-confirmed",
+   "industry": "Automobile and Auto Components",
+   "isin": "INE155A01022",
+   "name": "Tata Motors Passenger Vehicles Ltd",
    "src": "BSE ComHeadernew/w IndustryNew (same field fetch_sectors.py uses for live scrips)"
   },
   "TATASTLBSL": {
@@ -521,6 +891,14 @@
    "name": "TCNS Clothing Co",
    "src": "BSE ComHeadernew/w IndustryNew (same field fetch_sectors.py uses for live scrips)"
   },
+  "THIRUSUGAR": {
+   "bse_code": "507450",
+   "identity_gate": "isin-exact + bse-isin-confirmed",
+   "industry": "Fast Moving Consumer Goods",
+   "isin": "INE409A01015",
+   "name": "Thiru Arooran Sugars Ltd",
+   "src": "BSE ComHeadernew/w IndustryNew (same field fetch_sectors.py uses for live scrips)"
+  },
   "TINPLATE": {
    "bse_code": "504966",
    "identity_gate": "isin-exact + bse-isin-confirmed",
@@ -545,6 +923,34 @@
    "name": "Ujjivan Financial Services",
    "src": "BSE ComHeadernew/w IndustryNew (same field fetch_sectors.py uses for live scrips)"
   },
+  "UNIONCARBI": {
+   "bse_code": "531508",
+   "evidence": "NSE itself named the UNIONCARBI listing Eveready Industries in 2003; batteries business continuous",
+   "identity_gate": "nse-own-record issuer-prefix: NSE page (wayback 2003-07-24) lists \"Eveready Industries Ltd UNIONCARBI INE128A01011\"; successor 531508 Eveready Industries India INE128A01029 (same entity); bse-isin-confirmed",
+   "industry": "Fast Moving Consumer Goods",
+   "isin": "INE128A01011",
+   "name": "Eveready Industries India Ltd",
+   "src": "BSE ComHeadernew/w IndustryNew (same field fetch_sectors.py uses for live scrips)",
+   "successor_isin": "INE128A01029"
+  },
+  "UNITEDPHOS": {
+   "bse_code": "500429",
+   "evidence": "BSE buckets both the successor (Trading - Chemicals) and UPL (Pesticides & Agrochemicals) under Chemicals, so the era agrochemicals business lands in the same bucket either way",
+   "identity_gate": "nse-own-record issuer-prefix: NSE page (wayback 2003-08-31) lists \"United Phosphorous Ltd. UNITEDPHOS INE037A01014\"; successor 500429 Uniphos Enterprises INE037A01022 (the old United Phosphorus legal entity, renamed after the 2003 merger moved the operating business into Search Chem/UPL); bse-isin-confirmed",
+   "industry": "Chemicals",
+   "isin": "INE037A01014",
+   "name": "Uniphos Enterprises Ltd",
+   "src": "BSE ComHeadernew/w IndustryNew (same field fetch_sectors.py uses for live scrips)",
+   "successor_isin": "INE037A01022"
+  },
+  "UNITY": {
+   "bse_code": "532746",
+   "identity_gate": "isin-exact + bse-isin-confirmed",
+   "industry": "Construction",
+   "isin": "INE466H01028",
+   "name": "Unity Infraprojects Ltd",
+   "src": "BSE ComHeadernew/w IndustryNew (same field fetch_sectors.py uses for live scrips)"
+  },
   "UTTAMSTL": {
    "bse_code": "513216",
    "identity_gate": "isin-exact + bse-isin-confirmed",
@@ -553,12 +959,45 @@
    "name": "Uttam Galva Steels Ltd",
    "src": "BSE ComHeadernew/w IndustryNew (same field fetch_sectors.py uses for live scrips)"
   },
+  "VALUEIND": {
+   "bse_code": "500945",
+   "identity_gate": "isin-exact + bse-isin-confirmed",
+   "industry": "Consumer Durables",
+   "isin": "INE352A01017",
+   "name": "Value Industries Ltd",
+   "src": "BSE ComHeadernew/w IndustryNew (same field fetch_sectors.py uses for live scrips)"
+  },
+  "VARUNSHIP": {
+   "bse_code": "500465",
+   "identity_gate": "isin-exact + bse-isin-confirmed",
+   "industry": "Services",
+   "isin": "INE702A01013",
+   "name": "Varun Shipping Company Ltd",
+   "src": "BSE ComHeadernew/w IndustryNew (same field fetch_sectors.py uses for live scrips)"
+  },
   "VIDEOIND": {
    "bse_code": "511389",
    "identity_gate": "isin-exact + bse-isin-confirmed",
    "industry": "Consumer Durables",
    "isin": "INE703A01011",
    "name": "Videocon Industries Ltd",
+   "src": "BSE ComHeadernew/w IndustryNew (same field fetch_sectors.py uses for live scrips)"
+  },
+  "VINYLCHEM": {
+   "bse_code": "524129",
+   "identity_gate": "issuer-prefix (ISIN INExxxxxNN, face-value/IBC reissue) + bse-isin-confirmed on the successor + same-business continuity checked against our own series span",
+   "industry": "Chemicals",
+   "isin": "INE250B01011",
+   "name": "Vinyl Chemicals (India) Ltd",
+   "src": "BSE ComHeadernew/w IndustryNew (same field fetch_sectors.py uses for live scrips)",
+   "successor_isin": "INE250B01029"
+  },
+  "ZENITHCOMP": {
+   "bse_code": "517164",
+   "identity_gate": "isin-exact + bse-isin-confirmed",
+   "industry": "Information Technology",
+   "isin": "INE598B01013",
+   "name": "Zenith Computers Ltd",
    "src": "BSE ComHeadernew/w IndustryNew (same field fetch_sectors.py uses for live scrips)"
   }
  }
