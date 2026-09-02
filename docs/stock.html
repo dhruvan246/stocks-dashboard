@@ -16,6 +16,11 @@
   .rng{cursor:pointer}
   .rng.on{background:linear-gradient(135deg,var(--accent),var(--accent-2));color:#fff}
   #chartWrap{position:relative}
+  /* price card: Lightweight Charts draws into #chart (autoSize follows this box) */
+  #chart{height:340px}
+  @media (max-width:640px){ #chart{height:260px} }
+  .tvlink{display:inline-flex;align-items:center;gap:.3rem;padding:.25rem .6rem;border-radius:.5rem;border:1px solid var(--border,#e2e8f0);font-size:11px;font-weight:700;color:var(--text-muted,#64748b);text-decoration:none;line-height:1.4}
+  .tvlink:hover{border-color:var(--accent,#4f46e5);color:var(--accent,#4f46e5)}
   .clschip{display:inline-flex;align-items:baseline;gap:.3rem;padding:.15rem .55rem;border-radius:999px;border:1px solid var(--border,#e2e8f0);background:var(--surface-2,#f8fafc);color:var(--text-muted,#475569);font-size:.72rem;font-weight:600;line-height:1.5;white-space:nowrap;text-decoration:none;transition:border-color .12s,color .12s}
   .clschip:hover{border-color:var(--accent,#4f46e5);color:var(--accent,#4f46e5)}
   .clslv{font-size:.58rem;font-weight:700;text-transform:uppercase;letter-spacing:.04em;color:var(--text-faint,#94a3b8)}
@@ -86,12 +91,16 @@
   <!-- quick stats -->
   <div id="stats" class="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-6 gap-3"></div>
 
-  <!-- price chart -->
+  <!-- price chart: our split/bonus-adjusted close series (Lightweight Charts) + events -->
   <div class="card p-4">
     <div class="flex items-center justify-between flex-wrap gap-2 mb-2">
-      <div class="text-sm font-semibold text-slate-700">📈 Price <span class="text-slate-400 font-normal">(split/bonus-adjusted close · hover for values)</span></div>
+      <div class="flex items-center gap-2 flex-wrap min-w-0">
+        <div class="text-sm font-semibold text-slate-700">📈 Price</div>
+        <span class="text-slate-400 text-[11px] font-normal">split/bonus-adjusted close · drag to pan · scroll to zoom · hover for values</span>
+      </div>
       <div class="flex items-center gap-2 flex-wrap">
         <div id="ranges" class="flex items-center gap-1 text-[11px] font-semibold"></div>
+        <a id="tvLink" class="tvlink hidden" target="_blank" rel="noopener" title="Open the full TradingView chart (candles, indicators, drawing tools) in a new tab">TradingView ↗</a>
         <span class="text-slate-300">·</span>
         <input id="rwPick" type="date" class="border border-slate-300 rounded-lg px-1.5 py-0.5 text-[11px] text-slate-600" title="Rewind: view the page as of a past date" />
         <button id="rwGo" class="px-2 py-1 rounded-md text-[11px] font-semibold border border-indigo-300 text-indigo-600 hover:bg-indigo-50">🕰️ Rewind</button>
@@ -195,6 +204,7 @@
 </main>
 
 <script src="./backtest-engine.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/lightweight-charts@5.2.1/dist/lightweight-charts.standalone.production.js"></script>
 <script>
 'use strict';
 const $=id=>document.getElementById(id);
@@ -309,17 +319,150 @@ function renderEvLegend(){
     return `<button data-ev="${t}" class="px-2 py-0.5 rounded-full border ${on?'border-slate-300':'border-slate-200 opacity-40'}" style="color:${EV_TYPES[t][1]}"><span style="font-weight:800">●</span> ${EV_TYPES[t][0]} ${counts[t]}</button>`;
   });
   el.innerHTML=chips.length?chips.join('')+'<span class="text-slate-400 ml-1">events on the chart — tap to toggle</span>':'';
-  el.querySelectorAll('[data-ev]').forEach(b=>b.onclick=()=>{ const t=b.dataset.ev; if(EVSHOW.has(t)) EVSHOW.delete(t); else EVSHOW.add(t); drawChart(); renderEvLegend(); });
+  el.querySelectorAll('[data-ev]').forEach(b=>b.onclick=()=>{ const t=b.dataset.ev; if(EVSHOW.has(t)) EVSHOW.delete(t); else EVSHOW.add(t); if(LW) lwRefreshMarkers(); else drawChart(); renderEvLegend(); });
 }
 
-/* ---------- price chart (SVG line + area + hover) ---------- */
+/* ---------- price chart -------------------------------------------------------------------------
+ * Our split/bonus-adjusted close series drawn with Lightweight Charts (TradingView's open-source
+ * library): real date axis (years / months), drag to pan, wheel or pinch to zoom, crosshair tooltip
+ * (close, 1-day %, volume, the day's events), volume for the last 400 sessions (all the slice
+ * carries), and the events (results, dividends, corp actions, deals, insider, triggers) as markers
+ * under the line. Honours Rewind (bars clip at ASOF). If the library never loaded (offline PWA),
+ * the old inline SVG chart further down draws instead — same data, fewer tricks.
+ *
+ * Why no embedded TradingView widget (tried 2026-09-03): the free Advanced Chart widget refuses
+ * every NSE symbol with "This symbol is only available on TradingView" (their NSE licence does not
+ * cover embeds), and the BSE listing could not be shown loading data in either test browser. So
+ * the header carries a deep link to the full TradingView chart instead — that URL is verified. --- */
+let LW=null;                // Lightweight Charts state: {chart, area, vol, markers, px, byT, days}
+const cssVar=(n,fb)=>{ const v=getComputedStyle(document.documentElement).getPropertyValue(n).trim(); return v||fb; };
+const isDark=()=>document.documentElement.getAttribute('data-theme')==='dark';
+// '#rrggbb' → 'rgba(r,g,b,a)'; any other colour form is returned as-is (no alpha applied)
+function alpha(c,a){ const m=/^#([0-9a-f]{6})$/i.exec(c||''); if(!m) return c; const n=parseInt(m[1],16); return `rgba(${n>>16},${(n>>8)&255},${n&255},${a})`; }
+const fmtPx=v=>v>=1000?Math.round(v).toLocaleString('en-IN'):(+v).toFixed(2);
 function seriesPoints(){
   const s=SERIES[TKR]; const out=[];
   for(let i=0;i<s.d.length;i++) out.push([s.d[i], s.p[i]/100]);   // [offset, price]
   return out;
 }
 function rangeDays(r){ return {'1M':30,'6M':182,'1Y':365,'3Y':1095,'5Y':1825,'Max':1e9}[r]||1e9; }
+
+function lwColors(){
+  const dark=isDark();
+  return { bg:cssVar('--surface','#ffffff'), text:cssVar('--text-muted','#586173'), faint:cssVar('--text-faint','#8b94a6'),
+    grid:cssVar('--border','#e7eaf2'), accent:cssVar('--accent','#4f46e5'),
+    vol:dark?'rgba(148,163,184,.30)':'rgba(100,116,139,.22)' };
+}
+// colours only — safe to re-apply on a theme switch (re-applying timeScale options resets the zoom)
+function lwThemeOptions(){
+  const c=lwColors();
+  return {
+    layout:{ background:{type:'solid',color:c.bg}, textColor:c.text },
+    grid:{ vertLines:{color:c.grid}, horzLines:{color:c.grid} },
+    rightPriceScale:{ borderColor:c.grid },
+    timeScale:{ borderColor:c.grid },
+    crosshair:{ vertLine:{color:c.faint,labelBackgroundColor:c.accent}, horzLine:{color:c.faint,labelBackgroundColor:c.accent} } };
+}
+function lwOptions(){
+  const LC=window.LightweightCharts, t=lwThemeOptions();
+  return { autoSize:true,
+    layout:Object.assign({ fontSize:11, fontFamily:getComputedStyle(document.body).fontFamily, attributionLogo:true }, t.layout),
+    grid:t.grid,
+    rightPriceScale:Object.assign({ scaleMargins:{top:.08,bottom:.24} }, t.rightPriceScale),
+    timeScale:Object.assign({ timeVisible:false, rightOffset:3, minBarSpacing:.01 }, t.timeScale),   // .01: 'Max' must fit a 30-year name (7,500 bars) into a 340px phone
+    crosshair:Object.assign({ mode:LC.CrosshairMode.Normal }, t.crosshair),
+    handleScroll:{ vertTouchDrag:false },                     // a phone must still scroll the page
+    localization:{ locale:'en-IN', priceFormatter:v=>v<0?'':fmtPx(v) } };   // the bottom margin's ticks run below 0 on a low-priced early history — blank them
+}
+// bars → chart points. Times are UTC-midnight unix seconds (Lightweight Charts reads them as UTC,
+// so the axis shows the trading date exactly). Rewind clips at ASOF. A non-ascending offset is
+// skipped: the library throws on out-of-order times and one bad bar would blank the chart.
+function lwData(){
+  const s=SERIES[TKR], px=[], vol=[], byT=new Map(); let prev=-Infinity;
+  for(let i=0;i<s.d.length;i++){
+    const o=s.d[i]; if(ASOF!=null&&o>ASOF) break; if(!(o>prev)) continue; prev=o;
+    const t=START_TS+o*DAY;
+    px.push({time:t,value:s.p[i]/100}); byT.set(t,i);
+    if(s.v&&s.v[i]>0) vol.push({time:t,value:s.v[i]});
+  }
+  return {px,vol,byT};
+}
+// events → markers, one per trading day, snapped to the first session on/after the event date
+// (a Sunday ex-date or a Saturday results filing has no bar of its own), coloured by the day's
+// top-priority type. Kept as a Map keyed by bar time so the tooltip can list the day's events.
+function lwMarkers(){
+  const s=SERIES[TKR], days=new Map();
+  for(const e of EVENTS){ if(!EVSHOW.has(e.t)||!Number.isFinite(e.off)) continue;
+    const j=lbound(s.d,e.off); if(j>=s.d.length||s.d[j]-e.off>7) continue;
+    if(ASOF!=null&&s.d[j]>ASOF) continue;
+    const t=START_TS+s.d[j]*DAY; let d=days.get(t); if(!d){ d={types:[],lbls:[]}; days.set(t,d); }
+    d.types.push(e.t); d.lbls.push(e.lbl); }
+  const mk=[];
+  for(const [t,d] of days){ const top=EV_PRIO.find(x=>d.types.includes(x));
+    mk.push({time:t, position:'belowBar', shape:'circle', color:EV_TYPES[top][1], size:d.lbls.length>1?1:.7}); }
+  mk.sort((a,b)=>a.time-b.time);
+  return {mk,days};
+}
+function lwRefreshMarkers(){ if(!LW) return; const {mk,days}=lwMarkers(); LW.days=days; LW.markers.setMarkers(mk); }
+function lwTip(param){
+  const tip=$('tip');
+  if(!LW||!param||param.time==null||!param.point){ tip.style.display='none'; return; }
+  const i=LW.byT.get(param.time); if(i==null){ tip.style.display='none'; return; }
+  const s=SERIES[TKR], v=s.p[i]/100, pv=i>0?s.p[i-1]/100:0, chg=pv>0?(v/pv-1)*100:null;
+  const vol=(s.v&&s.v[i]>0)?s.v[i]:null, d=LW.days.get(param.time);
+  let evTxt='';
+  if(d) evTxt=d.lbls.slice(0,4).map((l,ix)=>`<div style="white-space:normal;max-width:240px;color:${EV_TYPES[d.types[ix]][1]}">● ${esc(l.length>70?l.slice(0,69)+'…':l)}</div>`).join('')
+        +(d.lbls.length>4?`<div class="text-slate-400">+${d.lbls.length-4} more</div>`:'');
+  tip.innerHTML=`<b>${isoOff(s.d[i])}</b> · ₹${fmtPx(v)}`+(chg==null?'':` <span class="${chg>=0?'pos':'neg'}">${pct(chg)}</span>`)
+    +(vol==null?'':`<br><span class="text-slate-400">Vol</span> ${vol.toLocaleString('en-IN')}`)+evTxt;
+  tip.style.display='block';
+  const w=$('chartWrap').clientWidth, tw=tip.offsetWidth||140;
+  let x=param.point.x+14; if(x+tw>w-8) x=Math.max(4,param.point.x-tw-14);
+  tip.style.left=x+'px'; tip.style.top='8px';
+}
+function lwRange(){
+  if(!LW||!LW.px.length) return;
+  const ts=LW.chart.timeScale();
+  if(RANGE==='Max'){ ts.fitContent(); return; }
+  const last=LW.px[LW.px.length-1].time, first=LW.px[0].time;
+  ts.setVisibleRange({from:Math.max(first,last-rangeDays(RANGE)*DAY), to:last});
+}
+function lwSeriesOpts(){ const c=lwColors(); return {lineColor:c.accent, topColor:alpha(c.accent,.35), bottomColor:alpha(c.accent,.02)}; }
+function lwTheme(){ if(!LW) return; LW.chart.applyOptions(lwThemeOptions()); LW.area.applyOptions(lwSeriesOpts()); LW.vol.applyOptions({color:lwColors().vol}); }
+function lwDestroy(){ if(LW){ try{ LW.chart.remove(); }catch(e){} LW=null; } }
+function onRangeChange(){ if(LW) lwRange(); else drawChart(); }
+
 function drawChart(){
+  const s=SERIES[TKR], el=$('chart');
+  if(!s||!s.d.length){ lwDestroy(); el.innerHTML='<div class="text-slate-400 text-sm py-10 text-center">No price history.</div>'; return; }
+  if(!window.LightweightCharts){ drawChartSvg(); return; }
+  const {px,vol,byT}=lwData();
+  if(!px.length){ lwDestroy(); el.innerHTML='<div class="text-slate-400 text-sm py-10 text-center">No trading history before this date.</div>'; return; }
+  if(!LW){
+    const LC=window.LightweightCharts;
+    el.innerHTML='';
+    const chart=LC.createChart(el,lwOptions());
+    const area=chart.addSeries(LC.AreaSeries,Object.assign({lineWidth:2, priceLineVisible:true, lastValueVisible:true, crosshairMarkerVisible:true,
+      priceFormat:{type:'price',precision:2,minMove:.01}},lwSeriesOpts()));
+    const volS=chart.addSeries(LC.HistogramSeries,{priceScaleId:'', color:lwColors().vol, priceFormat:{type:'volume'}, lastValueVisible:false, priceLineVisible:false});
+    volS.priceScale().applyOptions({scaleMargins:{top:.82,bottom:0}});
+    const markers=LC.createSeriesMarkers(area,[]);
+    chart.subscribeCrosshairMove(lwTip);
+    el.addEventListener('mouseleave',()=>{ $('tip').style.display='none'; });
+    LW={chart,area,vol:volS,markers,px:[],byT:new Map(),days:new Map()};
+  }
+  LW.px=px; LW.byT=byT;
+  LW.area.setData(px); LW.vol.setData(vol);
+  lwRefreshMarkers();
+  lwRange();
+}
+// theme switch (theme.js flips <html data-theme>): recolour the chart in place, zoom untouched
+new MutationObserver(()=>{ try{ lwTheme(); }catch(e){ console.error(e); } })
+  .observe(document.documentElement,{attributes:true,attributeFilter:['data-theme']});
+
+/* ---------- FALLBACK: the pre-2026-09 inline SVG chart — drawn only when Lightweight Charts
+   never loaded (offline PWA, blocked CDN). Same data, no pan/zoom, 3 date labels. ---------- */
+function drawChartSvg(){
   let all=seriesPoints(); if(!all.length){ $('chart').innerHTML='<div class="text-slate-400 text-sm py-10 text-center">No price history.</div>'; return; }
   if(ASOF!=null) all=all.filter(p=>p[0]<=ASOF);
   if(!all.length){ $('chart').innerHTML='<div class="text-slate-400 text-sm py-10 text-center">No trading history before this date.</div>'; return; }
@@ -357,7 +500,7 @@ function drawChart(){
     const t=EV_PRIO.find(x=>d.types.includes(x));
     marks+=`<circle cx="${X(off).toFixed(1)}" cy="${H-PADB+8}" r="${d.lbls.length>1?4:3}" fill="${EV_TYPES[t][1]}" fill-opacity=".85"/>`;
   }
-  $('chart').innerHTML=`<svg id="svg" viewBox="0 0 ${W} ${H}" width="100%" preserveAspectRatio="none" style="display:block">
+  $('chart').innerHTML=`<svg id="svg" viewBox="0 0 ${W} ${H}" width="100%" height="100%" preserveAspectRatio="none" style="display:block">
     ${grid}<path d="${area}" fill="${fill}" stroke="none"/><path d="${line}" fill="none" stroke="${stroke}" stroke-width="2"/>${marks}
     <line id="cross" x1="0" y1="${PADT}" x2="0" y2="${H-PADB}" stroke="var(--text-faint,#94a3b8)" stroke-width="1" stroke-dasharray="3 3" style="display:none"/>
     <circle id="dot" r="3.5" fill="${stroke}" style="display:none"/>${xlab}</svg>`;
@@ -434,9 +577,10 @@ function render(){
   ].join('');
   // ranges
   $('ranges').innerHTML=['1M','6M','1Y','3Y','5Y','Max'].map(r=>`<span class="rng ${r===RANGE?'on':'text-slate-500 hover:bg-slate-100'} px-2 py-1 rounded-md border border-slate-200" data-r="${r}">${r}</span>`).join('');
-  $('ranges').querySelectorAll('[data-r]').forEach(b=>b.onclick=()=>{ RANGE=b.dataset.r; drawChart(); $('ranges').querySelectorAll('[data-r]').forEach(x=>x.classList.toggle('on',x.dataset.r===RANGE)); $('ranges').querySelectorAll('[data-r]').forEach(x=>{if(x.dataset.r!==RANGE)x.classList.add('text-slate-500');else x.classList.remove('text-slate-500');}); });
+  $('ranges').querySelectorAll('[data-r]').forEach(b=>b.onclick=()=>{ RANGE=b.dataset.r; onRangeChange(); $('ranges').querySelectorAll('[data-r]').forEach(x=>x.classList.toggle('on',x.dataset.r===RANGE)); $('ranges').querySelectorAll('[data-r]').forEach(x=>{if(x.dataset.r!==RANGE)x.classList.add('text-slate-500');else x.classList.remove('text-slate-500');}); });
   buildEvents();          // slice events now; results dates join once the fin file lands
   drawChart();
+  const tv=$('tvLink'); tv.href='https://www.tradingview.com/chart/?symbol='+encodeURIComponent('NSE:'+m.symbol); tv.classList.toggle('hidden',rw||!m.alive);
   if(rw){                 // current-only sections: hide, never show today's data under a past date
     ['stratCard','peersCard','actCard'].forEach(id=>{ const el=$(id); if(el) el.style.display='none'; });
     $('delivSpark').style.display='none';
@@ -1233,7 +1377,7 @@ async function liveQuote(){
         try{ shpTrendChart(F.shpH); renderSHPdeep(); wireShpToggle(); }
         catch(e){ console.error(e); renderSHP(F&&F.shpQ, F&&F.shp); }
       }else renderSHP(F&&F.shpQ, F&&F.shp);
-      try{ buildEvents(); drawChart(); }catch(e){ console.error(e); }   // results dates just arrived
+      try{ buildEvents(); if(LW) lwRefreshMarkers(); else drawChart(); }catch(e){ console.error(e); }   // results dates just arrived
     });
   }else{
     // FALLBACK: no slice for this symbol yet — load the whole market, as the page always did.
@@ -1253,7 +1397,7 @@ async function liveQuote(){
     // Revenue/margins arrive after first paint: the PAT-only table is already on screen,
     // and re-renders with the full columns when sf_revop lands.
     loadRevop().then(()=>{ try{ renderFunds(); }catch(e){ console.error(e); } });
-    try{ buildEvents(); drawChart(); }catch(e){ console.error(e); }     // engine FUND has the ann dates
+    try{ buildEvents(); if(LW) lwRefreshMarkers(); else drawChart(); }catch(e){ console.error(e); }     // engine FUND has the ann dates
   }
   renderClass().catch(e=>console.error(e));   // sector chain: after first paint, never blocking it
   // rewind controls: date bounds follow this stock's actual history

@@ -4074,6 +4074,27 @@ consolidated for the figures filed that way and standalone for the rest (typical
 with standalone revenue, the 2015-19 shape). Labelling such a row `std`, as it did before, hides a
 consolidated profit behind a standalone label. Anything that shows a per-row basis owes the same.
 
+
+### 40b. Price chart = Lightweight Charts; TradingView embed is NOT an option for NSE  (2026-09-03)
+
+The card's chart is TradingView's open-source **Lightweight Charts 5.2.1** (pinned, jsdelivr): real
+year/month axis, drag-pan, wheel/pinch zoom, crosshair tooltip (close · 1-day % · volume · the day's
+events), volume for the slice's last 400 sessions, event markers snapped to the first session on/after
+the event date, Rewind clips at ASOF. The pre-2026-09 inline SVG chart survives as `drawChartSvg()` and
+draws only when the library never loaded (offline PWA). Theme switches re-apply COLOURS only
+(`lwThemeOptions()`): re-applying `timeScale` options resets the zoom to the full history (measured).
+`minBarSpacing:.01` is what lets "Max" fit 30 years on a phone; the price formatter blanks the sub-zero
+ticks the bottom scale margin produces on a low-priced early history.
+
+**TradingView's free Advanced Chart widget was tried and dropped.** Every `NSE:` symbol gets the modal
+*"This symbol is only available on TradingView"* (seen in the Browser pane and in the user's real
+Chrome — NSE data is not licensed for embeds). `BSE:` symbols mount without the modal but never showed
+a bar, and neither did an AAPL control nor TradingView's own widget-docs demo in that Chrome, so the
+BSE route could not be shown working and was not shipped (§39: not seen = not done). The header carries
+a verified deep link instead: `https://www.tradingview.com/chart/?symbol=NSE%3A<sym>` (curl 200 for
+RELIANCE, M&M, BAJAJ-AUTO; hidden in Rewind and for delisted names). Candles from OUR data need the
+slice builder to carry opens first — today it has h/l/v for the last 400 bars only (§40).
+
 ---
 
 ## 41. ★ PUBLISHING A DATA HEAL — "live on the server" ≠ "the site uses it"  (2026-08-02, learned the hard way)
