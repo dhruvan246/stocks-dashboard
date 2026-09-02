@@ -13896,6 +13896,68 @@ STORE's own earliest consolidated announce date as well as NSE's first consolida
 a filled value, (c) carries `CONFLICT_RESOLVED` — per-name reader-3 text from the packs — so 14 of the 16 became NA-LEADING-RUN.
 AJMERA and OBEROIRLTY resolve to NSE-NO-STD-ROWS (their gap quarters have no standalone row on NSE either) and stay visible.
 
+
+### 123h. The placeholder STANDALONE dates 2008-2014 — re-dated from the same archive lists (2026-09-02, third pass)
+User, on seeing the +7 blended-TTM "holes": *"why didn't you fill the standalone along with the consolidated?"* The standalone
+NUMBERS were there; their DATES were the old SEBI-deadline convention — qe+45d (Q1-Q3) / qe+60d (Q4), §104b/§125 — not filing
+dates. TV-18 Dec-2008: stored 14-Feb-2009 (= qe+45d exactly), NSE `filingDate` 29-Jan-2009 20:35, the same timestamp as the
+consolidated row filled that morning. So on 30-Jan-2009 the store showed the consolidated quarter as public and the standalone one
+as not — a phantom basis split that the 8-quarter N/A rule then mis-read (the standalone fallback's window looked a quarter short).
+Measured over the 725 campaign symbols 2008-2014: **2,408 cells on +45d, 664 on +60d, 4 on ann=0 = 3,076 placeholders** of 15,948
+standalone quarters (16%). The BSE announcement stream starts Jan-2014, which is why §125 could not reach this era; the NSE archive
+lists cached for §123 carry `filingDate` with the time for every row.
+
+**⚠️ THE ARCHIVE LAGS — the finding that reshaped this pass.** A first cut re-dated all 3,076 placeholders BOTH ways from the archive
+(2,582 written, 968 of them LATER). Before committing, the tool was made to CALIBRATE itself (memory feedback-calibrate-gate-by-holdout):
+for every OBSERVED standalone date already in the store (not a placeholder, not written by this tool), how often does the archive's
+gated `filingDate` sit ≥4 days AFTER it? Per quarter-end, over ~13,900 observed cells:
+
+| quarter-end era | archive ≥4d LATER than the observed date |
+|---|---|
+| 2008Q2 – 2010Q4 | 1–7% |
+| 2011 (all quarters) | 10–16% |
+| **2012Q1 onward** | **19–80%** (2013Q3: 340/455 = 75%; 2014Q3: 410/515 = 80%) |
+
+The archive was NEVER observed EARLIER than a real declaration (0–4% across every year). So the two directions are NOT symmetric:
+an archive date EARLIER than the placeholder is trustworthy (the true filing was at least that early → the placeholder was a
+look-ahead-delay, move it earlier); an archive date LATER than the placeholder, from 2012 on, is far more likely the archive's own
+re-filing/broadcast lag than a genuinely late filer. **Rule (per quarter-end, in-tool): refuse a LATER move whenever that quarter's
+measured lag rate > 10%.** This dropped 846 later-moves in the 2012-2014 lag era; the 67 later-moves that survive are all in
+2008-2010 low-lag quarters (a real late filer, safe to correct).
+
+Cross-checked two independent BSE-broadcast readers. (a) `_staleness_fix/redate_ledger.json` (§102/§103): only 15 proposals overlap a
+usable BSE date; 8 agree within 2 days, 6 "disagreements" are the ledger matching an AGM-voting / postal-ballot notice pinned to the
+quarter-end (junk), 1 is GUJRATGAS Dec-2010, a genuine 7-day archive lag in a low-lag quarter. (b) **§125's BSE residue sweep landed
+first on 420 of these very cells** (its `bse:residue:exact` entries were in origin's ledger before this push): on the 380 where the
+date differs, the BSE broadcast is EARLIER than the archive on **every one** (median 2 d, max 29 d — LTF/BIOCON/INDUSTOWER Mar-2012/13).
+That is the archive-lag class confirmed by a second reader: even the archive's EARLIER-than-placeholder moves can still trail the true
+broadcast, so where §125 had already dated a cell this pass yields to it (readers have precedence, memory feedback-no-reader-may-contradict).
+
+**Tool:** `fill2020_tools/redate_std_from_nse_archive.py` → `exact` entries in `ann_date_fills.json` (asserted both ways by
+`backfill_ann_dates_bse.py --reapply`, rebuild-proof). Guards: only exact-placeholder cells (an observed date is never touched);
+earliest Non-Consolidated / Quarterly / non-cumulative row = first declaration; **§12 PIT gate applied by the tool** (≥15:30 or a
+non-trading day → next trading day, `scripts/_trading_days.json`); qe < date ≤ qe+200d; ≥ first traded bar over ALL era names
+(AGCNET's 1996 bars count for BBOX's 2008 rows); basis-split (§119c): the quarter's consolidated row must gate to the same day or
+the cell is skipped, since an `exact` entry stamps both slots; **con-date-observed-elsewhere**: a stored con date that is neither the
+archive raw/gated value nor a placeholder was set by another reader (BSE, a filed pack) and is left untouched (readers have precedence);
+the lag-era refusal above; ledger precedence.
+
+**Landed:** of the 3,076 placeholders, **420 had already been re-dated by the parallel §125 BSE-broadcast residue sweep** (below);
+deferred to those. Of the rest this pass **re-dated 1,258** (1,191 EARLIER, median −16 d — the published-but-hidden class; 67 LATER,
+all 2008-2010). Refused, each journalled: 846 nse-archive-lag-era, 233 no standalone row in the archive, 122 same-as-placeholder,
+79 basis-split, 46 already ledgered, 7 con-date-observed-elsewhere, 2 late outliers (ARSHIYA Mar-2013 filed 17-Dec-2013; IL&FSENGG
+Sep-2009 filed 29-Jun-2010). `--reapply` onto origin's fund: 1,471 cells in docs (1,258 std dates + 213 consolidated dates re-gated
+on the same filing day — the §123 con dates were the raw timestamp, ungated, or a Q4 +60d placeholder), 817 in the mirror; PAT values
+byte-identical; verifier MISSING 0 / RESURRECTED 0 / REVERTED 0.
+⚠️ **Comparison trap (again):** diffing before/after keyed by quarter-end flagged APOLLOTYRE 20140331 as a value change — it has
+two rows for that quarter (the std/con split pair §125 warned about); both rows were byte-identical. Key duplicates by (qe, position).
+
+**Still a placeholder on purpose:** the 846 lag-era later-moves keep qe+45d/qe+60d rather than take an untrustworthy archive date.
+Where such a cell is genuinely a look-ahead (a real late filer), the authoritative fix is the BSE-broadcast ledger
+(`_staleness_fix/redate_ledger.json`, ~13k cells 2008-2014), not this archive — a separate campaign, not folded in here.
+
+**Coverage — my incremental contribution (this pass's 1,258 cells baked ON TOP of origin, which already carried §125's 420; same builder, same live bin, shared 132-date grid, Nifty 500 2009-01-30..2019-12-31):** standalone holes fell across the board — profitYoyStd / profitBaseStd / profitStreakStd **−7**, profitAccelStd **−9**, **profitTTMStd / compositeStd −16**; the BLENDED families that prompted this pass (con-first, std-fills-per-field) turned from the +7 of the con-only fills to **profitTTM / composite −9, profitAccel −4** — the phantom split is gone. revStd −1. Three CONSOLIDATED derived params (profitYoyCon / profitBaseCon / profitStreakCon) rose by exactly **+1** cell — one symbol on the single month-end 2009-07-31, whose Jun-2009 consolidated date the §12 15:30 gate moved across that boundary (a look-ahead removed, not a data loss). No param lost real coverage; this pass wrote no N/A, so the N/A ledger counts are unchanged.
+
 ## 125. ★★ ANN-DATE RESIDUE SWEEP — the classes §119 could not judge, plus the 2014 band  (2026-09-02, chunk 1)
 
 **Trigger:** the quantmac walk-back found three results dated LATER in our store than BSE's own filing: KTKBANK
