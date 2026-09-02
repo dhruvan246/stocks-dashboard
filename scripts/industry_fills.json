@@ -1,6 +1,6 @@
 {
  "_doc": "Industry/name for symbols that are DELISTED, hence absent from dash_slim.bin's currently-listed universe -- which is the only source build_sf_data.py has for meta.ind, so every one of them came out ind='Unknown', name=<symbol>. That is not a classification gap, it is a survivorship gap: the scrape only covers live scrips. 2,008 of the live bin's 4,445 symbols are affected; the 26 here are the ones that reached Nifty 500 membership between 2020-01 and 2026-06 and so showed up as holes on the coverage matrix (industry 857 cells).\nSOURCE: BSE ComHeadernew/w -> IndustryNew, the SAME field fetch_sectors.py reads for live scrips, so the vocabulary is identical by construction and needs no cross-map (verified: RELIANCE 500325 returns 'Oil, Gas & Consumable Fuels', which is exactly what dash_slim stores).\nIDENTITY GATE: the BSE code came from Moneycontrol's autosuggest and was accepted only when the ISIN matched ours -- exactly, or on the 7-char issuer prefix where a face-value change reissued it (runbook §95). Then BSE's OWN returned ISIN had to confirm it again. A name match was never enough: MC's top hit for HDFC is HDFC *Bank* and for HEXAWARE is HEXT, both different securities.\nConsumed by build_sf_data.py when the live universe has no row for a symbol.\n2026-08-16 (N500 2015-2019 campaign, PLAN_N500_COVERAGE_2015_2020.md): +43 entries for the delisted members that showed as industry holes on the 2015-01..2019-12 window (2,111 cells over 89 names). Route reach MEASURED, not assumed: of 81 names resolvable by exact ISIN in BSE's all-status scrip master, ComHeadernew returned a non-empty IndustryNew for only 37 -- the other 44 (older full delistings: the merged PSU banks, RANBAXY, CAIRN, GRUH, SBBJ/SBT, CMC, POLARIS ...) return an EMPTY classification block from BSE. Those are recorded not-found-via:bse-comheadernew and stay visible gaps; they need an aggregator rung of the §57 ladder, never a guess. 7 further names carry a REISSUED ISIN (IBC/face-value/rename): matched on the 9-char issuer+type prefix, confirmed by BSE's own returned ISIN on the successor, and each checked for same-business continuity against our own series spans. TUBEINVEST is deliberately WITHHELD: its series ends 2017-08-23 (pre-demerger Tube Investments of India, a manufacturer) while its ISIN successor is Cholamandalam Financial Holdings (Financial Services) and the manufacturing business went to a SEPARATE listing, TIINDIA -- filling it from the successor would misclassify the historical series and corrupt indRank for the era. Needs adjudication, not an inference.",
- "_generated": "2026-09-02 18:24 IST",
+ "_generated": "2026-09-02 18:49 IST",
  "fills": {
   "3IINFOTECH": {
    "bse_code": "532628",
@@ -11,6 +11,24 @@
    "src": "BSE ComHeadernew/w IndustryNew (same field fetch_sectors.py uses for live scrips)",
    "successor_isin": "INE748C01038"
   },
+  "ABGSHIP": {
+   "bse_code": "532682",
+   "evidence": "screener.in Sector=Capital Goods; Moneycontrol's 'shipping' category is a mis-tag (ABG Shipyard BUILDS ships, it is not a shipping operator). Adjudicated against live shipbuilder comparables: Cochin Shipyard, Mazagon Dock and Garden Reach Shipbuilders all carry BSE IndustryNew 'Capital Goods' (BSE Industry 'Ship Building & Allied Services').",
+   "identity_gate": "isin-exact + bse-isin-confirmed (532682, INE067H01016)",
+   "industry": "Capital Goods",
+   "isin": "INE067H01016",
+   "name": "ABG Shipyard Ltd",
+   "src": "aggregator: screener.in + Moneycontrol (BSE ComHeadernew returned an EMPTY classification block for this delisted scrip); value mapped onto the dash_slim IndustryNew vocabulary"
+  },
+  "ABIRLANUVO": {
+   "bse_code": "500303",
+   "evidence": "screener.in states Sector='Diversified' / Industry='Diversified' -> 'Diversified' (dash_slim vocabulary); BSE ComHeadernew EMPTY, no calibrated Moneycontrol category.",
+   "identity_gate": "screener.in classification, identity via screener BSE code 500303 == our resolved scrip",
+   "industry": "Diversified",
+   "isin": "INE069A01017",
+   "name": "Aditya Birla Nuvo Ltd",
+   "src": "aggregator: screener.in + Moneycontrol (BSE ComHeadernew returned an EMPTY classification block for this delisted scrip); value mapped onto the dash_slim IndustryNew vocabulary"
+  },
   "ACLGATI": {
    "bse_code": "532345",
    "identity_gate": "isin-exact + bse-isin-confirmed",
@@ -18,6 +36,24 @@
    "isin": "INE152B01027",
    "name": "Allcargo Gati Ltd",
    "src": "BSE ComHeadernew/w IndustryNew (same field fetch_sectors.py uses for live scrips)"
+  },
+  "ADVANTA": {
+   "bse_code": "532840",
+   "evidence": "screener.in states Sector='Fast Moving Consumer Goods' / Industry='Other Agricultural Products' -> 'Fast Moving Consumer Goods' (dash_slim vocabulary); BSE ComHeadernew EMPTY, no calibrated Moneycontrol category.",
+   "identity_gate": "screener.in classification, identity via screener BSE code 532840 == our resolved scrip",
+   "industry": "Fast Moving Consumer Goods",
+   "isin": "INE517H01028",
+   "name": "Advanta Ltd",
+   "src": "aggregator: screener.in + Moneycontrol (BSE ComHeadernew returned an EMPTY classification block for this delisted scrip); value mapped onto the dash_slim IndustryNew vocabulary"
+  },
+  "AFTEK": {
+   "bse_code": "530707",
+   "evidence": "Moneycontrol categorises this scrip under 'computers-software-mediumsmall'; that category maps to 'Information Technology' on the dash_slim vocabulary (calibrated over live ISIN-matched symbols: {'Services': 4, 'Consumer Services': 3, 'Information Technology': 30}). BSE ComHeadernew returned an EMPTY block and screener.in carried no classification.",
+   "identity_gate": "ISIN-gated: Moneycontrol autosuggest exact row ISIN INE796A01023 == our resolved BSE scrip 530707 (isin-exact); BSE ComHeadernew EMPTY block",
+   "industry": "Information Technology",
+   "isin": "INE796A01023",
+   "name": "Aftek Ltd",
+   "src": "aggregator: screener.in + Moneycontrol (BSE ComHeadernew returned an EMPTY classification block for this delisted scrip); value mapped onto the dash_slim IndustryNew vocabulary"
   },
   "AGCNET": {
    "bse_code": "500463",
@@ -29,6 +65,15 @@
    "src": "BSE ComHeadernew/w IndustryNew (same field fetch_sectors.py uses for live scrips)",
    "successor_isin": "INE676A01027"
   },
+  "AGRODUTCH": {
+   "bse_code": "519281",
+   "evidence": "screener.in states Sector='Fast Moving Consumer Goods' / Industry='Other Agricultural Products'; Moneycontrol category 'food-processing'; both map to 'Fast Moving Consumer Goods' on the dash_slim vocabulary.",
+   "identity_gate": "aggregator concordance: screener.in Sector/Industry and the ISIN-gated Moneycontrol category agree; screener BSE code 519281 confirms the scrip",
+   "industry": "Fast Moving Consumer Goods",
+   "isin": "INE135B01014",
+   "name": "Agro Dutch Industries Ltd",
+   "src": "aggregator: screener.in + Moneycontrol (BSE ComHeadernew returned an EMPTY classification block for this delisted scrip); value mapped onto the dash_slim IndustryNew vocabulary"
+  },
   "AJRINFRA": {
    "bse_code": "532959",
    "identity_gate": "isin-exact + bse-isin-confirmed",
@@ -36,6 +81,24 @@
    "isin": "INE181G01025",
    "name": "AJR Infra And Tolling Ltd",
    "src": "BSE ComHeadernew/w IndustryNew (same field fetch_sectors.py uses for live scrips)"
+  },
+  "ALBK": {
+   "bse_code": "532480",
+   "evidence": "Moneycontrol categorises this scrip under 'banks-public-sector'; that category maps to 'Financial Services' on the dash_slim vocabulary (calibrated over live ISIN-matched symbols: {'Financial Services': 7}). BSE ComHeadernew returned an EMPTY block and screener.in carried no classification.",
+   "identity_gate": "ISIN-gated: Moneycontrol autosuggest exact row ISIN INE428A01015 == our resolved BSE scrip 532480 (isin-exact); BSE ComHeadernew EMPTY block",
+   "industry": "Financial Services",
+   "isin": "INE428A01015",
+   "name": "Allahabad Bank",
+   "src": "aggregator: screener.in + Moneycontrol (BSE ComHeadernew returned an EMPTY classification block for this delisted scrip); value mapped onto the dash_slim IndustryNew vocabulary"
+  },
+  "ALFALAVAL": {
+   "bse_code": "505885",
+   "evidence": "screener.in states Sector='Capital Goods' / Industry='Industrial Machinery' -> 'Capital Goods' (dash_slim vocabulary); BSE ComHeadernew EMPTY, no calibrated Moneycontrol category.",
+   "identity_gate": "screener.in classification, identity via screener BSE code 505885 == our resolved scrip",
+   "industry": "Capital Goods",
+   "isin": "INE427A01017",
+   "name": "Alfa Laval (India) Ltd",
+   "src": "aggregator: screener.in + Moneycontrol (BSE ComHeadernew returned an EMPTY classification block for this delisted scrip); value mapped onto the dash_slim IndustryNew vocabulary"
   },
   "ALOKTEXT": {
    "bse_code": "521070",
@@ -54,6 +117,15 @@
    "name": "Amtek Auto Ltd",
    "src": "BSE ComHeadernew/w IndustryNew (same field fetch_sectors.py uses for live scrips)"
   },
+  "ANDHRABANK": {
+   "bse_code": "532418",
+   "evidence": "Moneycontrol categorises this scrip under 'banks-public-sector'; that category maps to 'Financial Services' on the dash_slim vocabulary (calibrated over live ISIN-matched symbols: {'Financial Services': 7}). BSE ComHeadernew returned an EMPTY block and screener.in carried no classification.",
+   "identity_gate": "ISIN-gated: Moneycontrol autosuggest exact row ISIN INE434A01013 == our resolved BSE scrip 532418 (isin-exact); BSE ComHeadernew EMPTY block",
+   "industry": "Financial Services",
+   "isin": "INE434A01013",
+   "name": "Andhra Bank",
+   "src": "aggregator: screener.in + Moneycontrol (BSE ComHeadernew returned an EMPTY classification block for this delisted scrip); value mapped onto the dash_slim IndustryNew vocabulary"
+  },
   "ARSSINFRA": {
    "bse_code": "533163",
    "identity_gate": "isin-exact + bse-isin-confirmed",
@@ -61,6 +133,24 @@
    "isin": "INE267I01010",
    "name": "ARSS Infrastructure Projects Ltd",
    "src": "BSE ComHeadernew/w IndustryNew (same field fetch_sectors.py uses for live scrips)"
+  },
+  "ASHKLEYFIN": {
+   "bse_code": "500062",
+   "evidence": "Moneycontrol categorises this scrip under 'finance-investments'; that category maps to 'Financial Services' on the dash_slim vocabulary (calibrated over live ISIN-matched symbols: {'Services': 2, 'Financial Services': 16, 'Consumer Durables': 1}). BSE ComHeadernew returned an EMPTY block and screener.in carried no classification.",
+   "identity_gate": "ISIN-gated: Moneycontrol autosuggest exact row ISIN INE251A01011 == our resolved BSE scrip 500062 (no-isin); BSE ComHeadernew EMPTY block",
+   "industry": "Financial Services",
+   "isin": "INE251A01011",
+   "name": "Ashok Leyland Finance Ltd",
+   "src": "aggregator: screener.in + Moneycontrol (BSE ComHeadernew returned an EMPTY classification block for this delisted scrip); value mapped onto the dash_slim IndustryNew vocabulary"
+  },
+  "ASSAMCO": {
+   "bse_code": "500024",
+   "evidence": "screener.in states Sector='Fast Moving Consumer Goods' / Industry='Tea & Coffee'; Moneycontrol category 'plantations-teacoffee'; both map to 'Fast Moving Consumer Goods' on the dash_slim vocabulary.",
+   "identity_gate": "aggregator concordance: screener.in Sector/Industry and the ISIN-gated Moneycontrol category agree; screener BSE code 500024 confirms the scrip",
+   "industry": "Fast Moving Consumer Goods",
+   "isin": "INE442A01024",
+   "name": "Assam Company India Ltd",
+   "src": "aggregator: screener.in + Moneycontrol (BSE ComHeadernew returned an EMPTY classification block for this delisted scrip); value mapped onto the dash_slim IndustryNew vocabulary"
   },
   "ATCOM": {
    "bse_code": "527007",
@@ -70,6 +160,33 @@
    "name": "Atcom Technologies Ltd",
    "src": "BSE ComHeadernew/w IndustryNew (same field fetch_sectors.py uses for live scrips)"
   },
+  "ATLASCOPCO": {
+   "bse_code": "526991",
+   "evidence": "screener.in states Sector='Capital Goods' / Industry='Industrial Machinery' -> 'Capital Goods' (dash_slim vocabulary); BSE ComHeadernew EMPTY, no calibrated Moneycontrol category.",
+   "identity_gate": "screener.in classification, identity via screener BSE code 526991 == our resolved scrip",
+   "industry": "Capital Goods",
+   "isin": "INE445A01019",
+   "name": "Atlas Copco India Ltd",
+   "src": "aggregator: screener.in + Moneycontrol (BSE ComHeadernew returned an EMPTY classification block for this delisted scrip); value mapped onto the dash_slim IndustryNew vocabulary"
+  },
+  "AZTECSOFT": {
+   "bse_code": "532385",
+   "evidence": "Moneycontrol categorises this scrip under 'computers-software'; that category maps to 'Information Technology' on the dash_slim vocabulary (calibrated over live ISIN-matched symbols: {'Information Technology': 23, 'Capital Goods': 1, 'Services': 1}). BSE ComHeadernew returned an EMPTY block and screener.in carried no classification.",
+   "identity_gate": "ISIN-gated: Moneycontrol autosuggest exact row ISIN INE651B01010 == our resolved BSE scrip 532385 (isin-exact); BSE ComHeadernew EMPTY block",
+   "industry": "Information Technology",
+   "isin": "INE651B01010",
+   "name": "Aztecsoft Ltd",
+   "src": "aggregator: screener.in + Moneycontrol (BSE ComHeadernew returned an EMPTY classification block for this delisted scrip); value mapped onto the dash_slim IndustryNew vocabulary"
+  },
+  "BALAJIDIST": {
+   "bse_code": "500035",
+   "evidence": "screener.in states Sector='Fast Moving Consumer Goods' / Industry='Breweries & Distilleries'; Moneycontrol category 'breweriesdistilleries'; both map to 'Fast Moving Consumer Goods' on the dash_slim vocabulary.",
+   "identity_gate": "aggregator concordance: screener.in Sector/Industry and the ISIN-gated Moneycontrol category agree; screener BSE code 500035 confirms the scrip",
+   "industry": "Fast Moving Consumer Goods",
+   "isin": "INE453A01013",
+   "name": "Balaji Distilleries Ltd",
+   "src": "aggregator: screener.in + Moneycontrol (BSE ComHeadernew returned an EMPTY classification block for this delisted scrip); value mapped onto the dash_slim IndustryNew vocabulary"
+  },
   "BALLARPUR": {
    "bse_code": "500102",
    "identity_gate": "isin-exact + bse-isin-confirmed",
@@ -78,6 +195,87 @@
    "name": "Ballarpur Industries Ltd",
    "src": "BSE ComHeadernew/w IndustryNew (same field fetch_sectors.py uses for live scrips)"
   },
+  "BANKPUNJAB": {
+   "bse_code": "500070",
+   "evidence": "Moneycontrol categorises this scrip under 'banks-private-sector'; that category maps to 'Financial Services' on the dash_slim vocabulary (calibrated over live ISIN-matched symbols: {'Financial Services': 12}). BSE ComHeadernew returned an EMPTY block and screener.in carried no classification.",
+   "identity_gate": "ISIN-gated: Moneycontrol autosuggest exact row ISIN INE458A01012 == our resolved BSE scrip 500070 (isin-exact); BSE ComHeadernew EMPTY block",
+   "industry": "Financial Services",
+   "isin": "INE458A01012",
+   "name": "Bank of Punjab Ltd",
+   "src": "aggregator: screener.in + Moneycontrol (BSE ComHeadernew returned an EMPTY classification block for this delisted scrip); value mapped onto the dash_slim IndustryNew vocabulary"
+  },
+  "BANKRAJAS": {
+   "bse_code": "500019",
+   "evidence": "Moneycontrol categorises this scrip under 'banks-private-sector'; that category maps to 'Financial Services' on the dash_slim vocabulary (calibrated over live ISIN-matched symbols: {'Financial Services': 12}). BSE ComHeadernew returned an EMPTY block and screener.in carried no classification.",
+   "identity_gate": "ISIN-gated: Moneycontrol autosuggest exact row ISIN INE320A01014 == our resolved BSE scrip 500019 (no-isin); BSE ComHeadernew EMPTY block",
+   "industry": "Financial Services",
+   "isin": "INE320A01014",
+   "name": "Bank of Rajasthan Ltd",
+   "src": "aggregator: screener.in + Moneycontrol (BSE ComHeadernew returned an EMPTY classification block for this delisted scrip); value mapped onto the dash_slim IndustryNew vocabulary"
+  },
+  "BGFL": {
+   "bse_code": "500064",
+   "evidence": "Moneycontrol categorises this scrip under 'finance-investments'; that category maps to 'Financial Services' on the dash_slim vocabulary (calibrated over live ISIN-matched symbols: {'Services': 2, 'Financial Services': 16, 'Consumer Durables': 1}). BSE ComHeadernew returned an EMPTY block and screener.in carried no classification.",
+   "identity_gate": "ISIN-gated: Moneycontrol autosuggest exact row ISIN INE097A01018 == our resolved BSE scrip 500064 (isin-exact); BSE ComHeadernew EMPTY block",
+   "industry": "Financial Services",
+   "isin": "INE097A01018",
+   "name": "Birla Global Finance Ltd",
+   "src": "aggregator: screener.in + Moneycontrol (BSE ComHeadernew returned an EMPTY classification block for this delisted scrip); value mapped onto the dash_slim IndustryNew vocabulary"
+  },
+  "BHARATFIN": {
+   "bse_code": "533228",
+   "evidence": "Moneycontrol categorises this scrip under 'finance-general'; that category maps to 'Financial Services' on the dash_slim vocabulary (calibrated over live ISIN-matched symbols: {'Financial Services': 11, 'Fast Moving Consumer Goods': 1}). BSE ComHeadernew returned an EMPTY block and screener.in carried no classification.",
+   "identity_gate": "ISIN-gated: Moneycontrol autosuggest exact row ISIN INE180K01011 == our resolved BSE scrip 533228 (isin-exact); BSE ComHeadernew EMPTY block",
+   "industry": "Financial Services",
+   "isin": "INE180K01011",
+   "name": "Bharat Financial Inclusion Ltd",
+   "src": "aggregator: screener.in + Moneycontrol (BSE ComHeadernew returned an EMPTY classification block for this delisted scrip); value mapped onto the dash_slim IndustryNew vocabulary"
+  },
+  "BHARATHOT": {
+   "bse_code": "508984",
+   "evidence": "Moneycontrol categorises this scrip under 'hotels'; that category maps to 'Consumer Services' on the dash_slim vocabulary (calibrated over live ISIN-matched symbols: {'Consumer Services': 21}). BSE ComHeadernew returned an EMPTY block and screener.in carried no classification.",
+   "identity_gate": "ISIN-gated: Moneycontrol autosuggest exact row ISIN INE466A01015 == our resolved BSE scrip 508984 (no-isin); BSE ComHeadernew EMPTY block",
+   "industry": "Consumer Services",
+   "isin": "INE466A01015",
+   "name": "Bharat Hotels Ltd",
+   "src": "aggregator: screener.in + Moneycontrol (BSE ComHeadernew returned an EMPTY classification block for this delisted scrip); value mapped onto the dash_slim IndustryNew vocabulary"
+  },
+  "BLUESTINFO": {
+   "bse_code": "532346",
+   "evidence": "Moneycontrol categorises this scrip under 'computers-software'; that category maps to 'Information Technology' on the dash_slim vocabulary (calibrated over live ISIN-matched symbols: {'Information Technology': 23, 'Capital Goods': 1, 'Services': 1}). BSE ComHeadernew returned an EMPTY block and screener.in carried no classification.",
+   "identity_gate": "ISIN-gated: Moneycontrol autosuggest exact row ISIN INE504B01011 == our resolved BSE scrip 532346 (isin-exact); BSE ComHeadernew EMPTY block",
+   "industry": "Information Technology",
+   "isin": "INE504B01011",
+   "name": "Blue Star Infotech Ltd",
+   "src": "aggregator: screener.in + Moneycontrol (BSE ComHeadernew returned an EMPTY classification block for this delisted scrip); value mapped onto the dash_slim IndustryNew vocabulary"
+  },
+  "BONGAIREFN": {
+   "bse_code": "500072",
+   "evidence": "Moneycontrol categorises this scrip under 'refineries'; that category maps to 'Oil, Gas & Consumable Fuels' on the dash_slim vocabulary (calibrated over live ISIN-matched symbols: {'Oil, Gas & Consumable Fuels': 7}). BSE ComHeadernew returned an EMPTY block and screener.in carried no classification.",
+   "identity_gate": "ISIN-gated: Moneycontrol autosuggest exact row ISIN INE241A01012 == our resolved BSE scrip 500072 (isin-exact); BSE ComHeadernew EMPTY block",
+   "industry": "Oil, Gas & Consumable Fuels",
+   "isin": "INE241A01012",
+   "name": "Bongaigaon Refinery & Petrochemicals Ltd",
+   "src": "aggregator: screener.in + Moneycontrol (BSE ComHeadernew returned an EMPTY classification block for this delisted scrip); value mapped onto the dash_slim IndustryNew vocabulary"
+  },
+  "BOSCHCHASY": {
+   "bse_code": "505185",
+   "evidence": "Moneycontrol categorises this scrip under 'auto-ancillaries'; that category maps to 'Automobile and Auto Components' on the dash_slim vocabulary (calibrated over live ISIN-matched symbols: {'Automobile and Auto Components': 38}). BSE ComHeadernew returned an EMPTY block and screener.in carried no classification.",
+   "identity_gate": "ISIN-gated: Moneycontrol autosuggest exact row ISIN INE053B01019 == our resolved BSE scrip 505185 (no-isin); BSE ComHeadernew EMPTY block",
+   "industry": "Automobile and Auto Components",
+   "isin": "INE053B01019",
+   "name": "Bosch Chassis Systems India Ltd",
+   "src": "aggregator: screener.in + Moneycontrol (BSE ComHeadernew returned an EMPTY classification block for this delisted scrip); value mapped onto the dash_slim IndustryNew vocabulary"
+  },
+  "BRABOURNE": {
+   "bse_code": "500384",
+   "evidence": "screener.in states Sector='Healthcare' / Industry='Pharmaceuticals'; Moneycontrol category 'pharmaceuticals'; both map to 'Healthcare' on the dash_slim vocabulary.",
+   "identity_gate": "aggregator concordance: screener.in Sector/Industry and the ISIN-gated Moneycontrol category agree; screener BSE code 500384 confirms the scrip",
+   "industry": "Healthcare",
+   "isin": "INE629A01018",
+   "name": "Brabourne Enterprises Ltd",
+   "src": "aggregator: screener.in + Moneycontrol (BSE ComHeadernew returned an EMPTY classification block for this delisted scrip); value mapped onto the dash_slim IndustryNew vocabulary"
+  },
   "BRFL": {
    "bse_code": "532678",
    "identity_gate": "isin-exact + bse-isin-confirmed",
@@ -85,6 +283,33 @@
    "isin": "INE589G01011",
    "name": "Bombay Rayon Fashions Ltd",
    "src": "BSE ComHeadernew/w IndustryNew (same field fetch_sectors.py uses for live scrips)"
+  },
+  "CADBURY": {
+   "bse_code": "500793",
+   "evidence": "Moneycontrol categorises this scrip under 'food-processing'; that category maps to 'Fast Moving Consumer Goods' on the dash_slim vocabulary (calibrated over live ISIN-matched symbols: {'Fast Moving Consumer Goods': 10, 'Consumer Services': 1}). BSE ComHeadernew returned an EMPTY block and screener.in carried no classification.",
+   "identity_gate": "ISIN-gated: Moneycontrol autosuggest exact row ISIN INE184A01014 == our resolved BSE scrip 500793 (no-isin); BSE ComHeadernew EMPTY block",
+   "industry": "Fast Moving Consumer Goods",
+   "isin": "INE184A01014",
+   "name": "Cadbury India Ltd",
+   "src": "aggregator: screener.in + Moneycontrol (BSE ComHeadernew returned an EMPTY classification block for this delisted scrip); value mapped onto the dash_slim IndustryNew vocabulary"
+  },
+  "CAIRN": {
+   "bse_code": "532792",
+   "evidence": "Moneycontrol categorises this scrip under 'oil-drillingexploration'; that category maps to 'Oil, Gas & Consumable Fuels' on the dash_slim vocabulary (calibrated over live ISIN-matched symbols: {'Oil, Gas & Consumable Fuels': 10}). BSE ComHeadernew returned an EMPTY block and screener.in carried no classification.",
+   "identity_gate": "ISIN-gated: Moneycontrol autosuggest exact row ISIN INE910H01017 == our resolved BSE scrip 532792 (isin-exact); BSE ComHeadernew EMPTY block",
+   "industry": "Oil, Gas & Consumable Fuels",
+   "isin": "INE910H01017",
+   "name": "Cairn India Ltd",
+   "src": "aggregator: screener.in + Moneycontrol (BSE ComHeadernew returned an EMPTY classification block for this delisted scrip); value mapped onto the dash_slim IndustryNew vocabulary"
+  },
+  "CAPF": {
+   "bse_code": "532938",
+   "evidence": "screener.in states Sector='Financial Services' / Industry='Other Financial Services'; Moneycontrol category 'finance-general'; both map to 'Financial Services' on the dash_slim vocabulary.",
+   "identity_gate": "aggregator concordance: screener.in Sector/Industry and the ISIN-gated Moneycontrol category agree; screener BSE code 532938 confirms the scrip",
+   "industry": "Financial Services",
+   "isin": "INE688I01017",
+   "name": "Capital First Ltd",
+   "src": "aggregator: screener.in + Moneycontrol (BSE ComHeadernew returned an EMPTY classification block for this delisted scrip); value mapped onto the dash_slim IndustryNew vocabulary"
   },
   "CASTEXTECH": {
    "bse_code": "532282",
@@ -113,6 +338,78 @@
    "src": "BSE ComHeadernew/w IndustryNew (same field fetch_sectors.py uses for live scrips)",
    "successor_isin": "INE488A01050"
   },
+  "CIBASPEC": {
+   "bse_code": "532184",
+   "evidence": "Moneycontrol categorises this scrip under 'chemicals'; that category maps to 'Chemicals' on the dash_slim vocabulary (calibrated over live ISIN-matched symbols: {'Chemicals': 29, 'Fast Moving Consumer Goods': 1, 'Oil, Gas & Consumable Fuels': 2, 'Capital Goods': 1, 'Realty': 1}). BSE ComHeadernew returned an EMPTY block and screener.in carried no classification.",
+   "identity_gate": "ISIN-gated: Moneycontrol autosuggest exact row ISIN INE908A01016 == our resolved BSE scrip 532184 (no-isin); BSE ComHeadernew EMPTY block",
+   "industry": "Chemicals",
+   "isin": "INE908A01016",
+   "name": "CIBASPEC",
+   "src": "aggregator: screener.in + Moneycontrol (BSE ComHeadernew returned an EMPTY classification block for this delisted scrip); value mapped onto the dash_slim IndustryNew vocabulary"
+  },
+  "CLARIANT": {
+   "bse_code": "500373",
+   "evidence": "Moneycontrol categorises this scrip under 'dyespigments'; that category maps to 'Chemicals' on the dash_slim vocabulary (calibrated over live ISIN-matched symbols: {'Chemicals': 9}). BSE ComHeadernew returned an EMPTY block and screener.in carried no classification.",
+   "identity_gate": "ISIN-gated: Moneycontrol autosuggest exact row ISIN INE221A01014 == our resolved BSE scrip 500373 (isin-exact); BSE ComHeadernew EMPTY block",
+   "industry": "Chemicals",
+   "isin": "INE221A01014",
+   "name": "Clariant India Ltd",
+   "src": "aggregator: screener.in + Moneycontrol (BSE ComHeadernew returned an EMPTY classification block for this delisted scrip); value mapped onto the dash_slim IndustryNew vocabulary"
+  },
+  "CMC": {
+   "bse_code": "517326",
+   "evidence": "Moneycontrol categorises this scrip under 'computers-hardware'; that category maps to 'Information Technology' on the dash_slim vocabulary (calibrated over live ISIN-matched symbols: {'Information Technology': 5, 'Services': 1}). BSE ComHeadernew returned an EMPTY block and screener.in carried no classification.",
+   "identity_gate": "ISIN-gated: Moneycontrol autosuggest exact row ISIN INE314A01017 == our resolved BSE scrip 517326 (isin-exact); BSE ComHeadernew EMPTY block",
+   "industry": "Information Technology",
+   "isin": "INE314A01017",
+   "name": "CMC Ltd",
+   "src": "aggregator: screener.in + Moneycontrol (BSE ComHeadernew returned an EMPTY classification block for this delisted scrip); value mapped onto the dash_slim IndustryNew vocabulary"
+  },
+  "COCHINREFN": {
+   "bse_code": "500873",
+   "evidence": "Moneycontrol categorises this scrip under 'refineries'; that category maps to 'Oil, Gas & Consumable Fuels' on the dash_slim vocabulary (calibrated over live ISIN-matched symbols: {'Oil, Gas & Consumable Fuels': 7}). BSE ComHeadernew returned an EMPTY block and screener.in carried no classification.",
+   "identity_gate": "ISIN-gated: Moneycontrol autosuggest exact row ISIN INE123A01012 == our resolved BSE scrip 500873 (isin-exact); BSE ComHeadernew EMPTY block",
+   "industry": "Oil, Gas & Consumable Fuels",
+   "isin": "INE123A01012",
+   "name": "Kochi Refineries Ltd",
+   "src": "aggregator: screener.in + Moneycontrol (BSE ComHeadernew returned an EMPTY classification block for this delisted scrip); value mapped onto the dash_slim IndustryNew vocabulary"
+  },
+  "COMPUDYNE": {
+   "bse_code": "532306",
+   "evidence": "Moneycontrol categorises this scrip under 'computers-software-mediumsmall'; that category maps to 'Information Technology' on the dash_slim vocabulary (calibrated over live ISIN-matched symbols: {'Services': 4, 'Consumer Services': 3, 'Information Technology': 30}). BSE ComHeadernew returned an EMPTY block and screener.in carried no classification.",
+   "identity_gate": "ISIN-gated: Moneycontrol autosuggest exact row ISIN INE531B01014 == our resolved BSE scrip 532306 (sid-only(unverified)); BSE ComHeadernew EMPTY block",
+   "industry": "Information Technology",
+   "isin": "INE531B01014",
+   "name": "Compudyne Winfosystems Ltd",
+   "src": "aggregator: screener.in + Moneycontrol (BSE ComHeadernew returned an EMPTY classification block for this delisted scrip); value mapped onto the dash_slim IndustryNew vocabulary"
+  },
+  "CONSOFINVT": {
+   "bse_code": "500226",
+   "evidence": "screener.in states Sector='Financial Services' / Industry='Non Banking Financial Company (NBFC)'; Moneycontrol category 'finance-general'; both map to 'Financial Services' on the dash_slim vocabulary.",
+   "identity_gate": "aggregator concordance: screener.in Sector/Industry and the ISIN-gated Moneycontrol category agree; company name on screener page matches; ISIN-gated MC row",
+   "industry": "Financial Services",
+   "isin": "INE025A01027",
+   "name": "Consolidated Finvest & Holdings Ltd",
+   "src": "aggregator: screener.in + Moneycontrol (BSE ComHeadernew returned an EMPTY classification block for this delisted scrip); value mapped onto the dash_slim IndustryNew vocabulary"
+  },
+  "COREEDUTEC": {
+   "bse_code": "512199",
+   "evidence": "Moneycontrol categorises this scrip under 'computers-software-training'; that category maps to 'Consumer Services' on the dash_slim vocabulary (calibrated over live ISIN-matched symbols: {'Consumer Services': 5}). BSE ComHeadernew returned an EMPTY block and screener.in carried no classification.",
+   "identity_gate": "ISIN-gated: Moneycontrol autosuggest exact row ISIN INE247G01024 == our resolved BSE scrip 512199 (isin-exact); BSE ComHeadernew EMPTY block",
+   "industry": "Consumer Services",
+   "isin": "INE247G01024",
+   "name": "CORE Education & Technologies Ltd",
+   "src": "aggregator: screener.in + Moneycontrol (BSE ComHeadernew returned an EMPTY classification block for this delisted scrip); value mapped onto the dash_slim IndustryNew vocabulary"
+  },
+  "CORPBANK": {
+   "bse_code": "532179",
+   "evidence": "Moneycontrol categorises this scrip under 'banks-public-sector'; that category maps to 'Financial Services' on the dash_slim vocabulary (calibrated over live ISIN-matched symbols: {'Financial Services': 7}). BSE ComHeadernew returned an EMPTY block and screener.in carried no classification.",
+   "identity_gate": "ISIN-gated: Moneycontrol autosuggest exact row ISIN INE112A01023 == our resolved BSE scrip 532179 (isin-exact); BSE ComHeadernew EMPTY block",
+   "industry": "Financial Services",
+   "isin": "INE112A01023",
+   "name": "Corporation Bank",
+   "src": "aggregator: screener.in + Moneycontrol (BSE ComHeadernew returned an EMPTY classification block for this delisted scrip); value mapped onto the dash_slim IndustryNew vocabulary"
+  },
   "COX&KINGS": {
    "bse_code": "533144",
    "identity_gate": "isin-exact + bse-isin-confirmed",
@@ -120,6 +417,42 @@
    "isin": "INE008I01026",
    "name": "Cox & Kings Ltd",
    "src": "BSE ComHeadernew/w IndustryNew (same field fetch_sectors.py uses for live scrips)"
+  },
+  "CRESTANI": {
+   "bse_code": "526785",
+   "evidence": "Moneycontrol categorises this scrip under 'mediaentertainment'; that category maps to 'Media, Entertainment & Publication' on the dash_slim vocabulary (calibrated over live ISIN-matched symbols: {'Media, Entertainment & Publication': 36, 'Realty': 1}). BSE ComHeadernew returned an EMPTY block and screener.in carried no classification.",
+   "identity_gate": "ISIN-gated: Moneycontrol autosuggest exact row ISIN INE774A01012 == our resolved BSE scrip 526785 (isin-exact); BSE ComHeadernew EMPTY block",
+   "industry": "Media, Entertainment & Publication",
+   "isin": "INE774A01012",
+   "name": "Crest Animation Studios Ltd",
+   "src": "aggregator: screener.in + Moneycontrol (BSE ComHeadernew returned an EMPTY classification block for this delisted scrip); value mapped onto the dash_slim IndustryNew vocabulary"
+  },
+  "DALMIABHA": {
+   "bse_code": "533309",
+   "evidence": "Moneycontrol categorises this scrip under 'cement-major'; that category maps to 'Construction Materials' on the dash_slim vocabulary (calibrated over live ISIN-matched symbols: {'Construction Materials': 18, 'Chemicals': 1}). BSE ComHeadernew returned an EMPTY block and screener.in carried no classification.",
+   "identity_gate": "ISIN-gated: Moneycontrol autosuggest exact row ISIN INE439L01019 == our resolved BSE scrip 533309 (isin-exact); BSE ComHeadernew EMPTY block",
+   "industry": "Construction Materials",
+   "isin": "INE439L01019",
+   "name": "Dalmia Bharat Ltd",
+   "src": "aggregator: screener.in + Moneycontrol (BSE ComHeadernew returned an EMPTY classification block for this delisted scrip); value mapped onto the dash_slim IndustryNew vocabulary"
+  },
+  "DCHL": {
+   "bse_code": "532608",
+   "evidence": "Moneycontrol categorises this scrip under 'mediaentertainment'; that category maps to 'Media, Entertainment & Publication' on the dash_slim vocabulary (calibrated over live ISIN-matched symbols: {'Media, Entertainment & Publication': 36, 'Realty': 1}). BSE ComHeadernew returned an EMPTY block and screener.in carried no classification.",
+   "identity_gate": "ISIN-gated: Moneycontrol autosuggest exact row ISIN INE137G01027 == our resolved BSE scrip 532608 (isin-exact); BSE ComHeadernew EMPTY block",
+   "industry": "Media, Entertainment & Publication",
+   "isin": "INE137G01027",
+   "name": "Deccan Chronicle Holdings Ltd",
+   "src": "aggregator: screener.in + Moneycontrol (BSE ComHeadernew returned an EMPTY classification block for this delisted scrip); value mapped onto the dash_slim IndustryNew vocabulary"
+  },
+  "DENABANK": {
+   "bse_code": "532121",
+   "evidence": "Moneycontrol categorises this scrip under 'banks-public-sector'; that category maps to 'Financial Services' on the dash_slim vocabulary (calibrated over live ISIN-matched symbols: {'Financial Services': 7}). BSE ComHeadernew returned an EMPTY block and screener.in carried no classification.",
+   "identity_gate": "ISIN-gated: Moneycontrol autosuggest exact row ISIN INE077A01010 == our resolved BSE scrip 532121 (isin-exact); BSE ComHeadernew EMPTY block",
+   "industry": "Financial Services",
+   "isin": "INE077A01010",
+   "name": "Dena Bank",
+   "src": "aggregator: screener.in + Moneycontrol (BSE ComHeadernew returned an EMPTY classification block for this delisted scrip); value mapped onto the dash_slim IndustryNew vocabulary"
   },
   "DHANI": {
    "bse_code": "532960",
@@ -137,6 +470,33 @@
    "name": "Dewan Housing Finance Corporation",
    "src": "BSE ComHeadernew/w IndustryNew (same field fetch_sectors.py uses for live scrips)"
   },
+  "DIGITALEQP": {
+   "bse_code": "500121",
+   "evidence": "Moneycontrol categorises this scrip under 'computers-software'; that category maps to 'Information Technology' on the dash_slim vocabulary (calibrated over live ISIN-matched symbols: {'Information Technology': 23, 'Capital Goods': 1, 'Services': 1}). BSE ComHeadernew returned an EMPTY block and screener.in carried no classification.",
+   "identity_gate": "ISIN-gated: Moneycontrol autosuggest exact row ISIN INE124A01010 == our resolved BSE scrip 500121 (no-isin); BSE ComHeadernew EMPTY block",
+   "industry": "Information Technology",
+   "isin": "INE124A01010",
+   "name": "Digital GlobalSoft Ltd",
+   "src": "aggregator: screener.in + Moneycontrol (BSE ComHeadernew returned an EMPTY classification block for this delisted scrip); value mapped onto the dash_slim IndustryNew vocabulary"
+  },
+  "DISHMAN": {
+   "bse_code": "532526",
+   "evidence": "screener.in states Sector='Healthcare' / Industry='Pharmaceuticals'; Moneycontrol category 'pharmaceuticals'; both map to 'Healthcare' on the dash_slim vocabulary.",
+   "identity_gate": "aggregator concordance: screener.in Sector/Industry and the ISIN-gated Moneycontrol category agree; screener BSE code 532526 confirms the scrip",
+   "industry": "Healthcare",
+   "isin": "INE353G01020",
+   "name": "Dishman Pharmaceuticals and Chemicals Ltd",
+   "src": "aggregator: screener.in + Moneycontrol (BSE ComHeadernew returned an EMPTY classification block for this delisted scrip); value mapped onto the dash_slim IndustryNew vocabulary"
+  },
+  "DRDATSONS": {
+   "bse_code": "533412",
+   "evidence": "screener.in states Sector='Healthcare' / Industry='Pharmaceuticals'; Moneycontrol category 'pharmaceuticals'; both map to 'Healthcare' on the dash_slim vocabulary.",
+   "identity_gate": "aggregator concordance: screener.in Sector/Industry and the ISIN-gated Moneycontrol category agree; company name on screener page matches; ISIN-gated MC row",
+   "industry": "Healthcare",
+   "isin": "INE928K01013",
+   "name": "Dr.Datsons Labs Ltd",
+   "src": "aggregator: screener.in + Moneycontrol (BSE ComHeadernew returned an EMPTY classification block for this delisted scrip); value mapped onto the dash_slim IndustryNew vocabulary"
+  },
   "DSKULKARNI": {
    "bse_code": "523890",
    "evidence": "same BSE code, ISIN reissued; our tape runs to 2026-08-28 under the old key",
@@ -147,6 +507,15 @@
    "src": "BSE ComHeadernew/w IndustryNew (same field fetch_sectors.py uses for live scrips)",
    "successor_isin": "INE891A01022"
   },
+  "E-SERVEINT": {
+   "bse_code": "509028",
+   "evidence": "Moneycontrol categorises this scrip under 'computers-software'; that category maps to 'Information Technology' on the dash_slim vocabulary (calibrated over live ISIN-matched symbols: {'Information Technology': 23, 'Capital Goods': 1, 'Services': 1}). BSE ComHeadernew returned an EMPTY block and screener.in carried no classification.",
+   "identity_gate": "ISIN-gated: Moneycontrol autosuggest exact row ISIN INE784A01011 == our resolved BSE scrip 509028 (no-isin); BSE ComHeadernew EMPTY block",
+   "industry": "Information Technology",
+   "isin": "INE784A01011",
+   "name": "e-Serve International Ltd",
+   "src": "aggregator: screener.in + Moneycontrol (BSE ComHeadernew returned an EMPTY classification block for this delisted scrip); value mapped onto the dash_slim IndustryNew vocabulary"
+  },
   "EDUCOMP": {
    "bse_code": "532696",
    "identity_gate": "isin-exact + bse-isin-confirmed",
@@ -154,6 +523,24 @@
    "isin": "INE216H01027",
    "name": "Educomp Solutions Ltd",
    "src": "BSE ComHeadernew/w IndustryNew (same field fetch_sectors.py uses for live scrips)"
+  },
+  "EICHER": {
+   "bse_code": "531835",
+   "evidence": "Moneycontrol categorises this scrip under 'finance-investments'; that category maps to 'Financial Services' on the dash_slim vocabulary (calibrated over live ISIN-matched symbols: {'Services': 2, 'Financial Services': 16, 'Consumer Durables': 1}). BSE ComHeadernew returned an EMPTY block and screener.in carried no classification.",
+   "identity_gate": "ISIN-gated: Moneycontrol autosuggest exact row ISIN INE065A01023 == our resolved BSE scrip 531835 (isin-exact); BSE ComHeadernew EMPTY block",
+   "industry": "Financial Services",
+   "isin": "INE065A01023",
+   "name": "Eicher Ltd",
+   "src": "aggregator: screener.in + Moneycontrol (BSE ComHeadernew returned an EMPTY classification block for this delisted scrip); value mapped onto the dash_slim IndustryNew vocabulary"
+  },
+  "ELDERPHARM": {
+   "bse_code": "532322",
+   "evidence": "screener.in states Sector='Healthcare' / Industry='Pharmaceuticals'; Moneycontrol category 'pharmaceuticals'; both map to 'Healthcare' on the dash_slim vocabulary.",
+   "identity_gate": "aggregator concordance: screener.in Sector/Industry and the ISIN-gated Moneycontrol category agree; screener BSE code 532322 confirms the scrip",
+   "industry": "Healthcare",
+   "isin": "INE975A01015",
+   "name": "Elder Pharmaceuticals Ltd",
+   "src": "aggregator: screener.in + Moneycontrol (BSE ComHeadernew returned an EMPTY classification block for this delisted scrip); value mapped onto the dash_slim IndustryNew vocabulary"
   },
   "EQUITAS": {
    "bse_code": "539844",
@@ -171,6 +558,15 @@
    "name": "Eros International Media Ltd",
    "src": "BSE ComHeadernew/w IndustryNew (same field fetch_sectors.py uses for live scrips)"
   },
+  "ESSAROIL": {
+   "bse_code": "500134",
+   "evidence": "Moneycontrol categorises this scrip under 'refineries'; that category maps to 'Oil, Gas & Consumable Fuels' on the dash_slim vocabulary (calibrated over live ISIN-matched symbols: {'Oil, Gas & Consumable Fuels': 7}). BSE ComHeadernew returned an EMPTY block and screener.in carried no classification.",
+   "identity_gate": "ISIN-gated: Moneycontrol autosuggest exact row ISIN INE011A01019 == our resolved BSE scrip 500134 (isin-exact); BSE ComHeadernew EMPTY block",
+   "industry": "Oil, Gas & Consumable Fuels",
+   "isin": "INE011A01019",
+   "name": "Essar Oil Ltd",
+   "src": "aggregator: screener.in + Moneycontrol (BSE ComHeadernew returned an EMPTY classification block for this delisted scrip); value mapped onto the dash_slim IndustryNew vocabulary"
+  },
   "ESSDEE": {
    "bse_code": "532787",
    "identity_gate": "isin-exact + bse-isin-confirmed",
@@ -178,6 +574,15 @@
    "isin": "INE825H01017",
    "name": "Ess Dee Aluminium Ltd",
    "src": "BSE ComHeadernew/w IndustryNew (same field fetch_sectors.py uses for live scrips)"
+  },
+  "EXCELCROP": {
+   "bse_code": "532511",
+   "evidence": "Excel Crop Care (crop-protection chemicals). Moneycontrol category \"pesticidesagro-chemicals\" -> Chemicals (same basis as MONSANTO/NAGARFERT).",
+   "identity_gate": "ISIN-gated: our resolved BSE scrip 532511 (ISIN INE223G01017); BSE ComHeadernew EMPTY, screener.in empty",
+   "industry": "Chemicals",
+   "isin": "INE223G01017",
+   "name": "Excel Crop Care Ltd",
+   "src": "aggregator: screener.in + Moneycontrol (BSE ComHeadernew returned an EMPTY classification block for this delisted scrip); value mapped onto the dash_slim IndustryNew vocabulary"
   },
   "FCONSUMER": {
    "bse_code": "533400",
@@ -187,6 +592,24 @@
    "name": "Future Consumer",
    "src": "BSE ComHeadernew/w IndustryNew (same field fetch_sectors.py uses for live scrips)"
   },
+  "FIRSTLEASE": {
+   "bse_code": "500145",
+   "evidence": "Moneycontrol categorises this scrip under 'finance-leasinghire-purchase'; that category maps to 'Financial Services' on the dash_slim vocabulary (calibrated over live ISIN-matched symbols: {'Financial Services': 4, 'Services': 1}). BSE ComHeadernew returned an EMPTY block and screener.in carried no classification.",
+   "identity_gate": "ISIN-gated: Moneycontrol autosuggest exact row ISIN INE492B01019 == our resolved BSE scrip 500145 (isin-exact); BSE ComHeadernew EMPTY block",
+   "industry": "Financial Services",
+   "isin": "INE492B01019",
+   "name": "First Leasing Company of India Ltd",
+   "src": "aggregator: screener.in + Moneycontrol (BSE ComHeadernew returned an EMPTY classification block for this delisted scrip); value mapped onto the dash_slim IndustryNew vocabulary"
+  },
+  "FKONCO": {
+   "bse_code": "532545",
+   "evidence": "screener.in states Sector='Healthcare' / Industry='Pharmaceuticals'; Moneycontrol category 'pharmaceuticals'; both map to 'Healthcare' on the dash_slim vocabulary.",
+   "identity_gate": "aggregator concordance: screener.in Sector/Industry and the ISIN-gated Moneycontrol category agree; screener BSE code 532545 confirms the scrip",
+   "industry": "Healthcare",
+   "isin": "INE575G01010",
+   "name": "Fresenius Kabi Oncology Ltd",
+   "src": "aggregator: screener.in + Moneycontrol (BSE ComHeadernew returned an EMPTY classification block for this delisted scrip); value mapped onto the dash_slim IndustryNew vocabulary"
+  },
   "FRETAIL": {
    "bse_code": "540064",
    "identity_gate": "isin-exact + bse-isin-confirmed",
@@ -194,6 +617,24 @@
    "isin": "INE752P01024",
    "name": "Future Retail",
    "src": "BSE ComHeadernew/w IndustryNew (same field fetch_sectors.py uses for live scrips)"
+  },
+  "FSS": {
+   "bse_code": "532266",
+   "evidence": "Moneycontrol categorises this scrip under 'computers-software-mediumsmall'; that category maps to 'Information Technology' on the dash_slim vocabulary (calibrated over live ISIN-matched symbols: {'Services': 4, 'Consumer Services': 3, 'Information Technology': 30}). BSE ComHeadernew returned an EMPTY block and screener.in carried no classification.",
+   "identity_gate": "ISIN-gated: Moneycontrol autosuggest exact row ISIN INE801A01021 == our resolved BSE scrip 532266 (isin-exact); BSE ComHeadernew EMPTY block",
+   "industry": "Information Technology",
+   "isin": "INE801A01021",
+   "name": "Flextronics Software Systems Ltd",
+   "src": "aggregator: screener.in + Moneycontrol (BSE ComHeadernew returned an EMPTY classification block for this delisted scrip); value mapped onto the dash_slim IndustryNew vocabulary"
+  },
+  "FULFORD": {
+   "bse_code": "506803",
+   "evidence": "screener.in states Sector='Healthcare' / Industry='Pharmaceuticals'; Moneycontrol category 'pharmaceuticals'; both map to 'Healthcare' on the dash_slim vocabulary.",
+   "identity_gate": "aggregator concordance: screener.in Sector/Industry and the ISIN-gated Moneycontrol category agree; screener BSE code 506803 confirms the scrip",
+   "industry": "Healthcare",
+   "isin": "INE521A01017",
+   "name": "Fulford India Ltd",
+   "src": "aggregator: screener.in + Moneycontrol (BSE ComHeadernew returned an EMPTY classification block for this delisted scrip); value mapped onto the dash_slim IndustryNew vocabulary"
   },
   "GAMMONIND": {
    "bse_code": "509550",
@@ -203,6 +644,15 @@
    "name": "Gammon India Ltd",
    "src": "BSE ComHeadernew/w IndustryNew (same field fetch_sectors.py uses for live scrips)"
   },
+  "GARDENSILK": {
+   "bse_code": "500155",
+   "evidence": "Moneycontrol categorises this scrip under 'textiles-weaving'; that category maps to 'Textiles' on the dash_slim vocabulary (calibrated over live ISIN-matched symbols: {'Textiles': 5}). BSE ComHeadernew returned an EMPTY block and screener.in carried no classification.",
+   "identity_gate": "ISIN-gated: Moneycontrol autosuggest exact row ISIN INE526A01016 == our resolved BSE scrip 500155 (isin-exact); BSE ComHeadernew EMPTY block",
+   "industry": "Textiles",
+   "isin": "INE526A01016",
+   "name": "Garden Silk Mills Ltd",
+   "src": "aggregator: screener.in + Moneycontrol (BSE ComHeadernew returned an EMPTY classification block for this delisted scrip); value mapped onto the dash_slim IndustryNew vocabulary"
+  },
   "GDL": {
    "bse_code": "532622",
    "identity_gate": "isin-exact + bse-isin-confirmed",
@@ -210,6 +660,42 @@
    "isin": "INE852F01015",
    "name": "Gateway Distriparks Ltd",
    "src": "BSE ComHeadernew/w IndustryNew (same field fetch_sectors.py uses for live scrips)"
+  },
+  "GEODESIC": {
+   "bse_code": "503699",
+   "evidence": "Moneycontrol categorises this scrip under 'computers-software'; that category maps to 'Information Technology' on the dash_slim vocabulary (calibrated over live ISIN-matched symbols: {'Information Technology': 23, 'Capital Goods': 1, 'Services': 1}). BSE ComHeadernew returned an EMPTY block and screener.in carried no classification.",
+   "identity_gate": "ISIN-gated: Moneycontrol autosuggest exact row ISIN INE371D01029 == our resolved BSE scrip 503699 (isin-exact); BSE ComHeadernew EMPTY block",
+   "industry": "Information Technology",
+   "isin": "INE371D01029",
+   "name": "Geodesic Ltd",
+   "src": "aggregator: screener.in + Moneycontrol (BSE ComHeadernew returned an EMPTY classification block for this delisted scrip); value mapped onto the dash_slim IndustryNew vocabulary"
+  },
+  "GEOMETRIC": {
+   "bse_code": "532312",
+   "evidence": "Moneycontrol categorises this scrip under 'computers-software'; that category maps to 'Information Technology' on the dash_slim vocabulary (calibrated over live ISIN-matched symbols: {'Information Technology': 23, 'Capital Goods': 1, 'Services': 1}). BSE ComHeadernew returned an EMPTY block and screener.in carried no classification.",
+   "identity_gate": "ISIN-gated: Moneycontrol autosuggest exact row ISIN INE797A01021 == our resolved BSE scrip 532312 (isin-exact); BSE ComHeadernew EMPTY block",
+   "industry": "Information Technology",
+   "isin": "INE797A01021",
+   "name": "Geometric Ltd",
+   "src": "aggregator: screener.in + Moneycontrol (BSE ComHeadernew returned an EMPTY classification block for this delisted scrip); value mapped onto the dash_slim IndustryNew vocabulary"
+  },
+  "GEORGWILIM": {
+   "bse_code": "508238",
+   "evidence": "Moneycontrol categorises this scrip under 'plantations-teacoffee'; that category maps to 'Fast Moving Consumer Goods' on the dash_slim vocabulary (calibrated over live ISIN-matched symbols: {'Fast Moving Consumer Goods': 7, 'Capital Goods': 1}). BSE ComHeadernew returned an EMPTY block and screener.in carried no classification.",
+   "identity_gate": "ISIN-gated: Moneycontrol autosuggest exact row ISIN INE222A01012 == our resolved BSE scrip 508238 (isin-exact); BSE ComHeadernew EMPTY block",
+   "industry": "Fast Moving Consumer Goods",
+   "isin": "INE222A01012",
+   "name": "Williamson Tea Assam Ltd",
+   "src": "aggregator: screener.in + Moneycontrol (BSE ComHeadernew returned an EMPTY classification block for this delisted scrip); value mapped onto the dash_slim IndustryNew vocabulary"
+  },
+  "GERMANREM": {
+   "bse_code": "500156",
+   "evidence": "Moneycontrol categorises this scrip under 'pharmaceuticals'; that category maps to 'Healthcare' on the dash_slim vocabulary (calibrated over live ISIN-matched symbols: {'Healthcare': 52, 'Diversified': 1, 'Realty': 1, 'Chemicals': 1}). BSE ComHeadernew returned an EMPTY block and screener.in carried no classification.",
+   "identity_gate": "ISIN-gated: Moneycontrol autosuggest exact row ISIN INE382A01014 == our resolved BSE scrip 500156 (no-isin); BSE ComHeadernew EMPTY block",
+   "industry": "Healthcare",
+   "isin": "INE382A01014",
+   "name": "German Remedies Ltd",
+   "src": "aggregator: screener.in + Moneycontrol (BSE ComHeadernew returned an EMPTY classification block for this delisted scrip); value mapped onto the dash_slim IndustryNew vocabulary"
   },
   "GESHIPPING": {
    "bse_code": "500620",
@@ -229,6 +715,15 @@
    "name": "Gitanjali Gems Ltd",
    "src": "BSE ComHeadernew/w IndustryNew (same field fetch_sectors.py uses for live scrips)"
   },
+  "GLOBLTRUST": {
+   "bse_code": "500161",
+   "evidence": "Moneycontrol categorises this scrip under 'banks-private-sector'; that category maps to 'Financial Services' on the dash_slim vocabulary (calibrated over live ISIN-matched symbols: {'Financial Services': 12}). BSE ComHeadernew returned an EMPTY block and screener.in carried no classification.",
+   "identity_gate": "ISIN-gated: Moneycontrol autosuggest exact row ISIN INE130A01017 == our resolved BSE scrip 500161 (no-isin); BSE ComHeadernew EMPTY block",
+   "industry": "Financial Services",
+   "isin": "INE130A01017",
+   "name": "Global Trust Bank Ltd",
+   "src": "aggregator: screener.in + Moneycontrol (BSE ComHeadernew returned an EMPTY classification block for this delisted scrip); value mapped onto the dash_slim IndustryNew vocabulary"
+  },
   "GLOBOFFS": {
    "bse_code": "501848",
    "identity_gate": "isin-exact + bse-isin-confirmed",
@@ -236,6 +731,33 @@
    "isin": "INE446C01013",
    "name": "Garware Offshore Services Ltd",
    "src": "BSE ComHeadernew/w IndustryNew (same field fetch_sectors.py uses for live scrips)"
+  },
+  "GODAVRFERT": {
+   "bse_code": "507732",
+   "evidence": "Moneycontrol categorises this scrip under 'fertilisers'; that category maps to 'Chemicals' on the dash_slim vocabulary (calibrated over live ISIN-matched symbols: {'Chemicals': 10, 'Fast Moving Consumer Goods': 2}). BSE ComHeadernew returned an EMPTY block and screener.in carried no classification.",
+   "identity_gate": "ISIN-gated: Moneycontrol autosuggest exact row ISIN INE507C01012 == our resolved BSE scrip 507732 (isin-exact); BSE ComHeadernew EMPTY block",
+   "industry": "Chemicals",
+   "isin": "INE507C01012",
+   "name": "Godavari Fertilisers & Chemicals Ltd",
+   "src": "aggregator: screener.in + Moneycontrol (BSE ComHeadernew returned an EMPTY classification block for this delisted scrip); value mapped onto the dash_slim IndustryNew vocabulary"
+  },
+  "GRUH": {
+   "bse_code": "511288",
+   "evidence": "Moneycontrol categorises this scrip under 'finance-housing'; that category maps to 'Financial Services' on the dash_slim vocabulary (calibrated over live ISIN-matched symbols: {'Services': 1, 'Financial Services': 5}). BSE ComHeadernew returned an EMPTY block and screener.in carried no classification.",
+   "identity_gate": "ISIN-gated: Moneycontrol autosuggest exact row ISIN INE580B01029 == our resolved BSE scrip 511288 (isin-exact); BSE ComHeadernew EMPTY block",
+   "industry": "Financial Services",
+   "isin": "INE580B01029",
+   "name": "Gruh Finance Ltd",
+   "src": "aggregator: screener.in + Moneycontrol (BSE ComHeadernew returned an EMPTY classification block for this delisted scrip); value mapped onto the dash_slim IndustryNew vocabulary"
+  },
+  "GSKCONS": {
+   "bse_code": "500676",
+   "evidence": "screener.in states Sector='Fast Moving Consumer Goods' / Industry='Packaged Foods'; Moneycontrol category 'food-processing'; both map to 'Fast Moving Consumer Goods' on the dash_slim vocabulary.",
+   "identity_gate": "aggregator concordance: screener.in Sector/Industry and the ISIN-gated Moneycontrol category agree; company name on screener page matches; ISIN-gated MC row",
+   "industry": "Fast Moving Consumer Goods",
+   "isin": "INE264A01014",
+   "name": "GlaxoSmithkline Consumer Healthcare Ltd",
+   "src": "aggregator: screener.in + Moneycontrol (BSE ComHeadernew returned an EMPTY classification block for this delisted scrip); value mapped onto the dash_slim IndustryNew vocabulary"
   },
   "GSPL": {
    "bse_code": "532702",
@@ -252,6 +774,15 @@
    "isin": "INE537A01013",
    "name": "GTN Industries Ltd",
    "src": "BSE ComHeadernew/w IndustryNew (same field fetch_sectors.py uses for live scrips)"
+  },
+  "GTOFFSHORE": {
+   "bse_code": "532786",
+   "evidence": "screener.in Sector=Oil, Gas & Consumable Fuels / Oil Equipment & Services; Great Offshore ran offshore oilfield support vessels for E&P. Adjudicated against live offshore-services comparables Aban Offshore and Dolphin Offshore, both 'Oil, Gas & Consumable Fuels'. (Moneycontrol's 'shipping'->Services reflects cargo shipping, not oilfield services.)",
+   "identity_gate": "isin-exact + bse-isin-confirmed (532786, INE892H01017)",
+   "industry": "Oil, Gas & Consumable Fuels",
+   "isin": "INE892H01017",
+   "name": "GOL Offshore Ltd",
+   "src": "aggregator: screener.in + Moneycontrol (BSE ComHeadernew returned an EMPTY classification block for this delisted scrip); value mapped onto the dash_slim IndustryNew vocabulary"
   },
   "GUJNRECOKE": {
    "bse_code": "512579",
@@ -277,6 +808,33 @@
    "name": "Hexaware Technologies",
    "src": "BSE ComHeadernew/w IndustryNew (same field fetch_sectors.py uses for live scrips)"
   },
+  "HINDLEVCHM": {
+   "bse_code": "506737",
+   "evidence": "Moneycontrol categorises this scrip under 'fertilisers'; that category maps to 'Chemicals' on the dash_slim vocabulary (calibrated over live ISIN-matched symbols: {'Chemicals': 10, 'Fast Moving Consumer Goods': 2}). BSE ComHeadernew returned an EMPTY block and screener.in carried no classification.",
+   "identity_gate": "ISIN-gated: Moneycontrol autosuggest exact row ISIN INE336A01010 == our resolved BSE scrip 506737 (sid-only(unverified)); BSE ComHeadernew EMPTY block",
+   "industry": "Chemicals",
+   "isin": "INE336A01010",
+   "name": "Hind Lever Chemicals Ltd",
+   "src": "aggregator: screener.in + Moneycontrol (BSE ComHeadernew returned an EMPTY classification block for this delisted scrip); value mapped onto the dash_slim IndustryNew vocabulary"
+  },
+  "HINVDIR": {
+   "bse_code": "532653",
+   "evidence": "screener.in states Sector='Financial Services' / Industry='Other Financial Services'; Moneycontrol category 'finance-general'; both map to 'Financial Services' on the dash_slim vocabulary.",
+   "identity_gate": "aggregator concordance: screener.in Sector/Industry and the ISIN-gated Moneycontrol category agree; screener BSE code 532653 confirms the scrip",
+   "industry": "Financial Services",
+   "isin": "INE800B01013",
+   "name": "HSBC InvestDirect (India) Ltd",
+   "src": "aggregator: screener.in + Moneycontrol (BSE ComHeadernew returned an EMPTY classification block for this delisted scrip); value mapped onto the dash_slim IndustryNew vocabulary"
+  },
+  "IBP": {
+   "bse_code": "500198",
+   "evidence": "Moneycontrol categorises this scrip under 'refineries'; that category maps to 'Oil, Gas & Consumable Fuels' on the dash_slim vocabulary (calibrated over live ISIN-matched symbols: {'Oil, Gas & Consumable Fuels': 7}). BSE ComHeadernew returned an EMPTY block and screener.in carried no classification.",
+   "identity_gate": "ISIN-gated: Moneycontrol autosuggest exact row ISIN INE261A01010 == our resolved BSE scrip 500198 (isin-exact); BSE ComHeadernew EMPTY block",
+   "industry": "Oil, Gas & Consumable Fuels",
+   "isin": "INE261A01010",
+   "name": "IBP Company Ltd",
+   "src": "aggregator: screener.in + Moneycontrol (BSE ComHeadernew returned an EMPTY classification block for this delisted scrip); value mapped onto the dash_slim IndustryNew vocabulary"
+  },
   "ICSA": {
    "bse_code": "531524",
    "identity_gate": "isin-exact + bse-isin-confirmed",
@@ -293,6 +851,78 @@
    "name": "IDFC",
    "src": "BSE ComHeadernew/w IndustryNew (same field fetch_sectors.py uses for live scrips)"
   },
+  "IGFLFERT": {
+   "bse_code": "532492",
+   "evidence": "Moneycontrol categorises this scrip under 'fertilisers'; that category maps to 'Chemicals' on the dash_slim vocabulary (calibrated over live ISIN-matched symbols: {'Chemicals': 10, 'Fast Moving Consumer Goods': 2}). BSE ComHeadernew returned an EMPTY block and screener.in carried no classification.",
+   "identity_gate": "ISIN-gated: Moneycontrol autosuggest exact row ISIN INE911F01019 == our resolved BSE scrip 532492 (isin-exact); BSE ComHeadernew EMPTY block",
+   "industry": "Chemicals",
+   "isin": "INE911F01019",
+   "name": "Indo Gulf Fertilisers Ltd",
+   "src": "aggregator: screener.in + Moneycontrol (BSE ComHeadernew returned an EMPTY classification block for this delisted scrip); value mapped onto the dash_slim IndustryNew vocabulary"
+  },
+  "IGS": {
+   "bse_code": "532337",
+   "evidence": "Moneycontrol categorises this scrip under 'computers-software'; that category maps to 'Information Technology' on the dash_slim vocabulary (calibrated over live ISIN-matched symbols: {'Information Technology': 23, 'Capital Goods': 1, 'Services': 1}). BSE ComHeadernew returned an EMPTY block and screener.in carried no classification.",
+   "identity_gate": "ISIN-gated: Moneycontrol autosuggest exact row ISIN INE177B01016 == our resolved BSE scrip 532337 (isin-exact); BSE ComHeadernew EMPTY block",
+   "industry": "Information Technology",
+   "isin": "INE177B01016",
+   "name": "iGate Global Solutions Ltd",
+   "src": "aggregator: screener.in + Moneycontrol (BSE ComHeadernew returned an EMPTY classification block for this delisted scrip); value mapped onto the dash_slim IndustryNew vocabulary"
+  },
+  "INDAL": {
+   "bse_code": "500445",
+   "evidence": "Indian Aluminium Company (aluminium smelter). Moneycontrol category \"aluminium\"; aluminium is Metals & Mining in the dash_slim vocabulary without exception (HINDALCO, NALCO, VEDL, NATIONALUM all Metals & Mining).",
+   "identity_gate": "ISIN-gated: our resolved BSE scrip 500445 (ISIN INE249A01023); BSE ComHeadernew EMPTY, screener.in empty",
+   "industry": "Metals & Mining",
+   "isin": "INE249A01023",
+   "name": "Indian Aluminium Company Ltd",
+   "src": "aggregator: screener.in + Moneycontrol (BSE ComHeadernew returned an EMPTY classification block for this delisted scrip); value mapped onto the dash_slim IndustryNew vocabulary"
+  },
+  "INDIABULLS": {
+   "bse_code": "532544",
+   "evidence": "screener.in states Sector='Financial Services' / Industry='Other Financial Services'; Moneycontrol category 'finance-general'; both map to 'Financial Services' on the dash_slim vocabulary.",
+   "identity_gate": "aggregator concordance: screener.in Sector/Industry and the ISIN-gated Moneycontrol category agree; screener BSE code 532544 confirms the scrip",
+   "industry": "Financial Services",
+   "isin": "INE894F01025",
+   "name": "Indiabulls Financial Services Ltd",
+   "src": "aggregator: screener.in + Moneycontrol (BSE ComHeadernew returned an EMPTY classification block for this delisted scrip); value mapped onto the dash_slim IndustryNew vocabulary"
+  },
+  "INDIAPHOTO": {
+   "bse_code": "509704",
+   "evidence": "Kodak India (photographic consumer goods / cameras). Moneycontrol category 'consumer-goods-electronic' -> Consumer Durables (same basis as PHILIPS/SAMTEL).",
+   "identity_gate": "mc-exact-symbol-isin (INE377A01014, 509704) == BSE all-status master row (name Kodak India)",
+   "industry": "Consumer Durables",
+   "isin": "INE377A01014",
+   "name": "Kodak India Ltd",
+   "src": "aggregator: screener.in + Moneycontrol (BSE ComHeadernew returned an EMPTY classification block for this delisted scrip); value mapped onto the dash_slim IndustryNew vocabulary"
+  },
+  "INFINITE": {
+   "bse_code": "533154",
+   "evidence": "Moneycontrol categorises this scrip under 'computers-software'; that category maps to 'Information Technology' on the dash_slim vocabulary (calibrated over live ISIN-matched symbols: {'Information Technology': 23, 'Capital Goods': 1, 'Services': 1}). BSE ComHeadernew returned an EMPTY block and screener.in carried no classification.",
+   "identity_gate": "ISIN-gated: Moneycontrol autosuggest exact row ISIN INE486J01014 == our resolved BSE scrip 533154 (isin-exact); BSE ComHeadernew EMPTY block",
+   "industry": "Information Technology",
+   "isin": "INE486J01014",
+   "name": "Infinite Computer Solutions (India) Ltd",
+   "src": "aggregator: screener.in + Moneycontrol (BSE ComHeadernew returned an EMPTY classification block for this delisted scrip); value mapped onto the dash_slim IndustryNew vocabulary"
+  },
+  "INGVYSYABK": {
+   "bse_code": "531807",
+   "evidence": "Moneycontrol categorises this scrip under 'banks-private-sector'; that category maps to 'Financial Services' on the dash_slim vocabulary (calibrated over live ISIN-matched symbols: {'Financial Services': 12}). BSE ComHeadernew returned an EMPTY block and screener.in carried no classification.",
+   "identity_gate": "ISIN-gated: Moneycontrol autosuggest exact row ISIN INE166A01011 == our resolved BSE scrip 531807 (isin-exact); BSE ComHeadernew EMPTY block",
+   "industry": "Financial Services",
+   "isin": "INE166A01011",
+   "name": "ING Vysya Bank Ltd",
+   "src": "aggregator: screener.in + Moneycontrol (BSE ComHeadernew returned an EMPTY classification block for this delisted scrip); value mapped onto the dash_slim IndustryNew vocabulary"
+  },
+  "INNOIND": {
+   "bse_code": "533402",
+   "evidence": "screener.in states Sector='Capital Goods' / Industry='Iron & Steel Products'; Moneycontrol category 'steel-tubespipes'; both map to 'Capital Goods' on the dash_slim vocabulary.",
+   "identity_gate": "aggregator concordance: screener.in Sector/Industry and the ISIN-gated Moneycontrol category agree; company name on screener page matches; ISIN-gated MC row",
+   "industry": "Capital Goods",
+   "isin": "INE549I01011",
+   "name": "Innoventive Industries Ltd",
+   "src": "aggregator: screener.in + Moneycontrol (BSE ComHeadernew returned an EMPTY classification block for this delisted scrip); value mapped onto the dash_slim IndustryNew vocabulary"
+  },
   "INOXLEISUR": {
    "bse_code": "532706",
    "identity_gate": "isin-exact + bse-isin-confirmed",
@@ -300,6 +930,15 @@
    "isin": "INE312H01016",
    "name": "INOX Leisure",
    "src": "BSE ComHeadernew/w IndustryNew (same field fetch_sectors.py uses for live scrips)"
+  },
+  "IPCL": {
+   "bse_code": "500105",
+   "evidence": "Indian Petrochemicals Corporation (polymer/petrochemical producer, merged into Reliance). Moneycontrol category \"petrochemicals\"; BSE's own taxonomy maps Petrochemicals -> Chemicals, established this campaign by MANALIPET (BSE IndustryNew \"Chemicals\", Industry \"Petrochemicals\").",
+   "identity_gate": "ISIN-gated: our resolved BSE scrip 500105 (ISIN INE006A01019); BSE ComHeadernew EMPTY, screener.in empty",
+   "industry": "Chemicals",
+   "isin": "INE006A01019",
+   "name": "Indian Petrochemicals Corporation Ltd",
+   "src": "aggregator: screener.in + Moneycontrol (BSE ComHeadernew returned an EMPTY classification block for this delisted scrip); value mapped onto the dash_slim IndustryNew vocabulary"
   },
   "ISEC": {
    "bse_code": "541179",
@@ -375,6 +1014,15 @@
    "name": "Jaiprakash Associates Ltd",
    "src": "BSE ComHeadernew/w IndustryNew (same field fetch_sectors.py uses for live scrips)"
   },
+  "JPIND": {
+   "bse_code": "500888",
+   "evidence": "Moneycontrol categorises this scrip under 'cement-mini'; that category maps to 'Construction Materials' on the dash_slim vocabulary (calibrated over live ISIN-matched symbols: {'Construction Materials': 4}). BSE ComHeadernew returned an EMPTY block and screener.in carried no classification.",
+   "identity_gate": "ISIN-gated: Moneycontrol autosuggest exact row ISIN INE575A01013 == our resolved BSE scrip 500888 (no-isin); BSE ComHeadernew EMPTY block",
+   "industry": "Construction Materials",
+   "isin": "INE575A01013",
+   "name": "Jaiprakash Industries Ltd",
+   "src": "aggregator: screener.in + Moneycontrol (BSE ComHeadernew returned an EMPTY classification block for this delisted scrip); value mapped onto the dash_slim IndustryNew vocabulary"
+  },
   "JPINFRATEC": {
    "bse_code": "533207",
    "identity_gate": "isin-exact + bse-isin-confirmed",
@@ -407,6 +1055,33 @@
    "isin": "INE299C01024",
    "name": "Karuturi Global Ltd",
    "src": "BSE ComHeadernew/w IndustryNew (same field fetch_sectors.py uses for live scrips)"
+  },
+  "KINETICMOT": {
+   "bse_code": "505190",
+   "evidence": "screener.in states Sector='Automobile and Auto Components' / Industry='2/3 Wheelers'; Moneycontrol category 'auto-23-wheelers'; both map to 'Automobile and Auto Components' on the dash_slim vocabulary.",
+   "identity_gate": "aggregator concordance: screener.in Sector/Industry and the ISIN-gated Moneycontrol category agree; screener BSE code 505190 confirms the scrip",
+   "industry": "Automobile and Auto Components",
+   "isin": "INE267B01015",
+   "name": "Kinetic Motor Company Ltd",
+   "src": "aggregator: screener.in + Moneycontrol (BSE ComHeadernew returned an EMPTY classification block for this delisted scrip); value mapped onto the dash_slim IndustryNew vocabulary"
+  },
+  "KOPDRUGS": {
+   "bse_code": "532291",
+   "evidence": "screener.in states Sector='Healthcare' / Industry='Pharmaceuticals'; Moneycontrol category 'pharmaceuticals'; both map to 'Healthcare' on the dash_slim vocabulary.",
+   "identity_gate": "aggregator concordance: screener.in Sector/Industry and the ISIN-gated Moneycontrol category agree; screener BSE code 532291 confirms the scrip",
+   "industry": "Healthcare",
+   "isin": "INE746A01010",
+   "name": "Kdl Biotech Ltd",
+   "src": "aggregator: screener.in + Moneycontrol (BSE ComHeadernew returned an EMPTY classification block for this delisted scrip); value mapped onto the dash_slim IndustryNew vocabulary"
+  },
+  "KOUTONS": {
+   "bse_code": "532901",
+   "evidence": "Moneycontrol categorises this scrip under 'retail'; that category maps to 'Consumer Services' on the dash_slim vocabulary (calibrated over live ISIN-matched symbols: {'Consumer Durables': 1, 'Consumer Services': 9, 'Textiles': 1}). BSE ComHeadernew returned an EMPTY block and screener.in carried no classification.",
+   "identity_gate": "ISIN-gated: Moneycontrol autosuggest exact row ISIN INE406I01014 == our resolved BSE scrip 532901 (isin-exact); BSE ComHeadernew EMPTY block",
+   "industry": "Consumer Services",
+   "isin": "INE406I01014",
+   "name": "Koutons Retail India Ltd",
+   "src": "aggregator: screener.in + Moneycontrol (BSE ComHeadernew returned an EMPTY classification block for this delisted scrip); value mapped onto the dash_slim IndustryNew vocabulary"
   },
   "KSK": {
    "bse_code": "532997",
@@ -442,6 +1117,15 @@
    "src": "BSE ComHeadernew/w IndustryNew (same field fetch_sectors.py uses for live scrips)",
    "successor_isin": "INE018A01030"
   },
+  "LAKSHAUTO": {
+   "bse_code": "520061",
+   "evidence": "Moneycontrol categorises this scrip under 'auto-ancillaries'; that category maps to 'Automobile and Auto Components' on the dash_slim vocabulary (calibrated over live ISIN-matched symbols: {'Automobile and Auto Components': 38}). BSE ComHeadernew returned an EMPTY block and screener.in carried no classification.",
+   "identity_gate": "ISIN-gated: Moneycontrol autosuggest exact row ISIN INE871A01016 == our resolved BSE scrip 520061 (no-isin); BSE ComHeadernew EMPTY block",
+   "industry": "Automobile and Auto Components",
+   "isin": "INE871A01016",
+   "name": "Lakshmi Auto Components Ltd",
+   "src": "aggregator: screener.in + Moneycontrol (BSE ComHeadernew returned an EMPTY classification block for this delisted scrip); value mapped onto the dash_slim IndustryNew vocabulary"
+  },
   "LAKSHMIEFL": {
    "bse_code": "519570",
    "identity_gate": "isin-exact + bse-isin-confirmed",
@@ -458,6 +1142,33 @@
    "isin": "INE694C01018",
    "name": "Lakshmi Vilas Bank",
    "src": "our own data + moneycontrol (BSE returns EVERY classification field empty for this scrip)"
+  },
+  "LML": {
+   "bse_code": "500255",
+   "evidence": "screener.in states Sector='Automobile and Auto Components' / Industry='2/3 Wheelers'; Moneycontrol category 'auto-23-wheelers'; both map to 'Automobile and Auto Components' on the dash_slim vocabulary.",
+   "identity_gate": "aggregator concordance: screener.in Sector/Industry and the ISIN-gated Moneycontrol category agree; screener BSE code 500255 confirms the scrip",
+   "industry": "Automobile and Auto Components",
+   "isin": "INE862A01015",
+   "name": "LML Ltd",
+   "src": "aggregator: screener.in + Moneycontrol (BSE ComHeadernew returned an EMPTY classification block for this delisted scrip); value mapped onto the dash_slim IndustryNew vocabulary"
+  },
+  "MAARSOFTW": {
+   "bse_code": "531528",
+   "evidence": "Moneycontrol categorises this scrip under 'computers-software-mediumsmall'; that category maps to 'Information Technology' on the dash_slim vocabulary (calibrated over live ISIN-matched symbols: {'Services': 4, 'Consumer Services': 3, 'Information Technology': 30}). BSE ComHeadernew returned an EMPTY block and screener.in carried no classification.",
+   "identity_gate": "ISIN-gated: Moneycontrol autosuggest exact row ISIN INE390A01017 == our resolved BSE scrip 531528 (isin-exact); BSE ComHeadernew EMPTY block",
+   "industry": "Information Technology",
+   "isin": "INE390A01017",
+   "name": "Maars Software International Ltd",
+   "src": "aggregator: screener.in + Moneycontrol (BSE ComHeadernew returned an EMPTY classification block for this delisted scrip); value mapped onto the dash_slim IndustryNew vocabulary"
+  },
+  "MADURACOAT": {
+   "bse_code": "500090",
+   "evidence": "Moneycontrol categorises this scrip under 'textiles-composite-mills'; that category maps to 'Textiles' on the dash_slim vocabulary (calibrated over live ISIN-matched symbols: {'Textiles': 3}). BSE ComHeadernew returned an EMPTY block and screener.in carried no classification.",
+   "identity_gate": "ISIN-gated: Moneycontrol autosuggest exact row ISIN INE122A01014 == our resolved BSE scrip 500090 (no-isin); BSE ComHeadernew EMPTY block",
+   "industry": "Textiles",
+   "isin": "INE122A01014",
+   "name": "Madura Coats Ltd",
+   "src": "aggregator: screener.in + Moneycontrol (BSE ComHeadernew returned an EMPTY classification block for this delisted scrip); value mapped onto the dash_slim IndustryNew vocabulary"
   },
   "MANALIPET": {
    "bse_code": "500268",
@@ -492,6 +1203,15 @@
    "isin": "INE122R01018",
    "name": "Manpasand Beverages Ltd",
    "src": "BSE ComHeadernew/w IndustryNew (same field fetch_sectors.py uses for live scrips)"
+  },
+  "MATRIXLABS": {
+   "bse_code": "524794",
+   "evidence": "screener.in states Sector='Healthcare' / Industry='Pharmaceuticals'; Moneycontrol category 'pharmaceuticals'; both map to 'Healthcare' on the dash_slim vocabulary.",
+   "identity_gate": "aggregator concordance: screener.in Sector/Industry and the ISIN-gated Moneycontrol category agree; company name on screener page matches; ISIN-gated MC row",
+   "industry": "Healthcare",
+   "isin": "INE604D01023",
+   "name": "Matrix Laboratories Ltd",
+   "src": "aggregator: screener.in + Moneycontrol (BSE ComHeadernew returned an EMPTY classification block for this delisted scrip); value mapped onto the dash_slim IndustryNew vocabulary"
   },
   "MELSTAR": {
    "bse_code": "532307",
@@ -534,6 +1254,24 @@
    "src": "BSE ComHeadernew/w IndustryNew (same field fetch_sectors.py uses for live scrips)",
    "successor_isin": "INE743C01021"
   },
+  "MONSANTO": {
+   "bse_code": "524084",
+   "evidence": "Monsanto India (crop-protection / agrochemicals). Moneycontrol category \"pesticidesagro-chemicals\"; agrochemicals are Chemicals in BSE's taxonomy, established this campaign by NAGARFERT and by BAYER/AGREVOIND (\"Pesticides & Agrochemicals\" -> Chemicals).",
+   "identity_gate": "ISIN-gated: our resolved BSE scrip 524084 (ISIN INE274B01011); BSE ComHeadernew EMPTY, screener.in empty",
+   "industry": "Chemicals",
+   "isin": "INE274B01011",
+   "name": "Monsanto India Ltd",
+   "src": "aggregator: screener.in + Moneycontrol (BSE ComHeadernew returned an EMPTY classification block for this delisted scrip); value mapped onto the dash_slim IndustryNew vocabulary"
+  },
+  "MOSERBAER": {
+   "bse_code": "517140",
+   "evidence": "Moneycontrol categorises this scrip under 'computers-hardware'; that category maps to 'Information Technology' on the dash_slim vocabulary (calibrated over live ISIN-matched symbols: {'Information Technology': 5, 'Services': 1}). BSE ComHeadernew returned an EMPTY block and screener.in carried no classification.",
+   "identity_gate": "ISIN-gated: Moneycontrol autosuggest exact row ISIN INE739A01015 == our resolved BSE scrip 517140 (isin-exact); BSE ComHeadernew EMPTY block",
+   "industry": "Information Technology",
+   "isin": "INE739A01015",
+   "name": "Moser Baer India Ltd",
+   "src": "aggregator: screener.in + Moneycontrol (BSE ComHeadernew returned an EMPTY classification block for this delisted scrip); value mapped onto the dash_slim IndustryNew vocabulary"
+  },
   "MUKAND": {
    "bse_code": "500460",
    "identity_gate": "nse-own-record issuer-prefix: NSE page (wayback 2003-07-09) lists \"Mukand Ltd MUKAND INE304A01018\"; successor 500460 INE304A01026 (same entity); bse-isin-confirmed",
@@ -560,6 +1298,24 @@
    "name": "MVL Ltd",
    "src": "BSE ComHeadernew/w IndustryNew (same field fetch_sectors.py uses for live scrips)"
   },
+  "MYSOREBANK": {
+   "bse_code": "532200",
+   "evidence": "Moneycontrol categorises this scrip under 'banks-public-sector'; that category maps to 'Financial Services' on the dash_slim vocabulary (calibrated over live ISIN-matched symbols: {'Financial Services': 7}). BSE ComHeadernew returned an EMPTY block and screener.in carried no classification.",
+   "identity_gate": "ISIN-gated: Moneycontrol autosuggest exact row ISIN INE651A01020 == our resolved BSE scrip 532200 (isin-exact); BSE ComHeadernew EMPTY block",
+   "industry": "Financial Services",
+   "isin": "INE651A01020",
+   "name": "State Bank of Mysore",
+   "src": "aggregator: screener.in + Moneycontrol (BSE ComHeadernew returned an EMPTY classification block for this delisted scrip); value mapped onto the dash_slim IndustryNew vocabulary"
+  },
+  "NAGARFERT": {
+   "bse_code": "500075",
+   "evidence": "screener.in states Sector='Chemicals' / Industry='Fertilizers' -> 'Chemicals' (dash_slim vocabulary); BSE ComHeadernew EMPTY, no calibrated Moneycontrol category.",
+   "identity_gate": "screener.in classification, identity via screener BSE code 500075 == our resolved scrip",
+   "industry": "Chemicals",
+   "isin": "INE580A01013",
+   "name": "Nagarjuna Fertilizers and Chemicals Ltd",
+   "src": "aggregator: screener.in + Moneycontrol (BSE ComHeadernew returned an EMPTY classification block for this delisted scrip); value mapped onto the dash_slim IndustryNew vocabulary"
+  },
   "NAHARSPG": {
    "bse_code": "500296",
    "identity_gate": "issuer-prefix (ISIN INExxxxxNN, face-value/IBC reissue) + bse-isin-confirmed on the successor + same-business continuity checked against our own series span",
@@ -568,6 +1324,24 @@
    "name": "Nahar Spinning Mills Ltd",
    "src": "BSE ComHeadernew/w IndustryNew (same field fetch_sectors.py uses for live scrips)",
    "successor_isin": "INE290A01027"
+  },
+  "NARMDCHEMA": {
+   "bse_code": "524650",
+   "evidence": "Narmada Chematur Petrochemicals. Moneycontrol category \"petrochemicals\" -> Chemicals (same BSE-taxonomy basis as IPCL/MANALIPET).",
+   "identity_gate": "ISIN-gated: our resolved BSE scrip 524650 (ISIN INE693B01012); BSE ComHeadernew EMPTY, screener.in empty",
+   "industry": "Chemicals",
+   "isin": "INE693B01012",
+   "name": "Narmada Chematur Petrochemicals Ltd",
+   "src": "aggregator: screener.in + Moneycontrol (BSE ComHeadernew returned an EMPTY classification block for this delisted scrip); value mapped onto the dash_slim IndustryNew vocabulary"
+  },
+  "NEPCMICON": {
+   "bse_code": "500301",
+   "evidence": "screener.in states Sector='Capital Goods' / Industry='Heavy Electrical Equipment' -> 'Capital Goods' (dash_slim vocabulary); BSE ComHeadernew EMPTY, no calibrated Moneycontrol category.",
+   "identity_gate": "screener.in classification, identity via screener page keyed by our symbol NEPCMICON",
+   "industry": "Capital Goods",
+   "isin": "INE588A01016",
+   "name": "NEPC India Ltd",
+   "src": "aggregator: screener.in + Moneycontrol (BSE ComHeadernew returned an EMPTY classification block for this delisted scrip); value mapped onto the dash_slim IndustryNew vocabulary"
   },
   "NITINFIRE": {
    "bse_code": "532854",
@@ -597,6 +1371,15 @@
    "src": "BSE ComHeadernew/w IndustryNew (same field fetch_sectors.py uses for live scrips)",
    "successor_isin": "INE333I01044"
   },
+  "OCL": {
+   "bse_code": "502165",
+   "evidence": "screener.in states Sector='Construction Materials' / Industry='Cement & Cement Products' -> 'Construction Materials' (dash_slim vocabulary); BSE ComHeadernew EMPTY, no calibrated Moneycontrol category.",
+   "identity_gate": "screener.in classification, identity via screener BSE code 502165 == our resolved scrip",
+   "industry": "Construction Materials",
+   "isin": "INE290B01025",
+   "name": "OCL India Ltd",
+   "src": "aggregator: screener.in + Moneycontrol (BSE ComHeadernew returned an EMPTY classification block for this delisted scrip); value mapped onto the dash_slim IndustryNew vocabulary"
+  },
   "OPTOCIRCUI": {
    "bse_code": "532391",
    "identity_gate": "isin-exact + bse-isin-confirmed",
@@ -604,6 +1387,15 @@
    "isin": "INE808B01016",
    "name": "Opto Circuits (India) Ltd",
    "src": "BSE ComHeadernew/w IndustryNew (same field fetch_sectors.py uses for live scrips)"
+  },
+  "ORBITCORP": {
+   "bse_code": "532837",
+   "evidence": "Moneycontrol categorises this scrip under 'constructioncontracting-real-estate'; that category maps to 'Realty' on the dash_slim vocabulary (calibrated over live ISIN-matched symbols: {'Realty': 21, 'Consumer Services': 1, 'Services': 1, 'Construction': 2}). BSE ComHeadernew returned an EMPTY block and screener.in carried no classification.",
+   "identity_gate": "ISIN-gated: Moneycontrol autosuggest exact row ISIN INE628H01015 == our resolved BSE scrip 532837 (isin-exact); BSE ComHeadernew EMPTY block",
+   "industry": "Realty",
+   "isin": "INE628H01015",
+   "name": "Orbit Corporation Ltd",
+   "src": "aggregator: screener.in + Moneycontrol (BSE ComHeadernew returned an EMPTY classification block for this delisted scrip); value mapped onto the dash_slim IndustryNew vocabulary"
   },
   "ORCHIDPHAR": {
    "bse_code": "524372",
@@ -614,6 +1406,51 @@
    "src": "BSE ComHeadernew/w IndustryNew (same field fetch_sectors.py uses for live scrips)",
    "successor_isin": "INE191A01027"
   },
+  "ORIENTBANK": {
+   "bse_code": "500315",
+   "evidence": "Moneycontrol categorises this scrip under 'banks-public-sector'; that category maps to 'Financial Services' on the dash_slim vocabulary (calibrated over live ISIN-matched symbols: {'Financial Services': 7}). BSE ComHeadernew returned an EMPTY block and screener.in carried no classification.",
+   "identity_gate": "ISIN-gated: Moneycontrol autosuggest exact row ISIN INE141A01014 == our resolved BSE scrip 500315 (isin-exact); BSE ComHeadernew EMPTY block",
+   "industry": "Financial Services",
+   "isin": "INE141A01014",
+   "name": "Oriental Bank of Commerce",
+   "src": "aggregator: screener.in + Moneycontrol (BSE ComHeadernew returned an EMPTY classification block for this delisted scrip); value mapped onto the dash_slim IndustryNew vocabulary"
+  },
+  "ORIENTINFO": {
+   "bse_code": "531167",
+   "evidence": "Moneycontrol categorises this scrip under 'computers-software-mediumsmall'; that category maps to 'Information Technology' on the dash_slim vocabulary (calibrated over live ISIN-matched symbols: {'Services': 4, 'Consumer Services': 3, 'Information Technology': 30}). BSE ComHeadernew returned an EMPTY block and screener.in carried no classification.",
+   "identity_gate": "ISIN-gated: Moneycontrol autosuggest exact row ISIN INE067B01019 == our resolved BSE scrip 531167 (sid-only(unverified)); BSE ComHeadernew EMPTY block",
+   "industry": "Information Technology",
+   "isin": "INE067B01019",
+   "name": "Orient Information Technology Ltd",
+   "src": "aggregator: screener.in + Moneycontrol (BSE ComHeadernew returned an EMPTY classification block for this delisted scrip); value mapped onto the dash_slim IndustryNew vocabulary"
+  },
+  "PAREKHPLAT": {
+   "bse_code": "500323",
+   "evidence": "Moneycontrol categorises this scrip under 'diamond-cuttingjewelleryprecious-metals'; that category maps to 'Consumer Durables' on the dash_slim vocabulary (calibrated over live ISIN-matched symbols: {'Consumer Durables': 5}). BSE ComHeadernew returned an EMPTY block and screener.in carried no classification.",
+   "identity_gate": "ISIN-gated: Moneycontrol autosuggest exact row ISIN INE598A01015 == our resolved BSE scrip 500323 (isin-exact); BSE ComHeadernew EMPTY block",
+   "industry": "Consumer Durables",
+   "isin": "INE598A01015",
+   "name": "Parekh Platinum Ltd",
+   "src": "aggregator: screener.in + Moneycontrol (BSE ComHeadernew returned an EMPTY classification block for this delisted scrip); value mapped onto the dash_slim IndustryNew vocabulary"
+  },
+  "PARKEDAVIS": {
+   "bse_code": "500677",
+   "evidence": "Moneycontrol categorises this scrip under 'pharmaceuticals'; that category maps to 'Healthcare' on the dash_slim vocabulary (calibrated over live ISIN-matched symbols: {'Healthcare': 52, 'Diversified': 1, 'Realty': 1, 'Chemicals': 1}). BSE ComHeadernew returned an EMPTY block and screener.in carried no classification.",
+   "identity_gate": "ISIN-gated: Moneycontrol autosuggest exact row ISIN INE254A01015 == our resolved BSE scrip 500677 (no-isin); BSE ComHeadernew EMPTY block",
+   "industry": "Healthcare",
+   "isin": "INE254A01015",
+   "name": "Parke-Davis (India) Ltd",
+   "src": "aggregator: screener.in + Moneycontrol (BSE ComHeadernew returned an EMPTY classification block for this delisted scrip); value mapped onto the dash_slim IndustryNew vocabulary"
+  },
+  "PATNI": {
+   "bse_code": "532517",
+   "evidence": "Moneycontrol categorises this scrip under 'computers-software'; that category maps to 'Information Technology' on the dash_slim vocabulary (calibrated over live ISIN-matched symbols: {'Information Technology': 23, 'Capital Goods': 1, 'Services': 1}). BSE ComHeadernew returned an EMPTY block and screener.in carried no classification.",
+   "identity_gate": "ISIN-gated: Moneycontrol autosuggest exact row ISIN INE660F01012 == our resolved BSE scrip 532517 (isin-exact); BSE ComHeadernew EMPTY block",
+   "industry": "Information Technology",
+   "isin": "INE660F01012",
+   "name": "Patni Computer Systems Ltd",
+   "src": "aggregator: screener.in + Moneycontrol (BSE ComHeadernew returned an EMPTY classification block for this delisted scrip); value mapped onto the dash_slim IndustryNew vocabulary"
+  },
   "PEL": {
    "bse_code": "500302",
    "identity_gate": "isin-exact + bse-isin-confirmed",
@@ -621,6 +1458,15 @@
    "isin": "INE140A01024",
    "name": "Piramal Enterprises",
    "src": "BSE ComHeadernew/w IndustryNew (same field fetch_sectors.py uses for live scrips)"
+  },
+  "PENTACOMMU": {
+   "bse_code": "531492",
+   "evidence": "Moneycontrol categorises this scrip under 'computers-software-mediumsmall'; that category maps to 'Information Technology' on the dash_slim vocabulary (calibrated over live ISIN-matched symbols: {'Services': 4, 'Consumer Services': 3, 'Information Technology': 30}). BSE ComHeadernew returned an EMPTY block and screener.in carried no classification.",
+   "identity_gate": "ISIN-gated: Moneycontrol autosuggest exact row ISIN INE408A01017 == our resolved BSE scrip 531492 (isin-exact); BSE ComHeadernew EMPTY block",
+   "industry": "Information Technology",
+   "isin": "INE408A01017",
+   "name": "Pentasoft Technologies Ltd",
+   "src": "aggregator: screener.in + Moneycontrol (BSE ComHeadernew returned an EMPTY classification block for this delisted scrip); value mapped onto the dash_slim IndustryNew vocabulary"
   },
   "PENTSFWARE": {
    "bse_code": "500329",
@@ -630,6 +1476,60 @@
    "name": "Pentamedia Graphics Ltd",
    "src": "BSE ComHeadernew/w IndustryNew (same field fetch_sectors.py uses for live scrips)",
    "successor_isin": "INE202A01022"
+  },
+  "PHARMACIA": {
+   "bse_code": "506817",
+   "evidence": "Moneycontrol categorises this scrip under 'pharmaceuticals'; that category maps to 'Healthcare' on the dash_slim vocabulary (calibrated over live ISIN-matched symbols: {'Healthcare': 52, 'Diversified': 1, 'Realty': 1, 'Chemicals': 1}). BSE ComHeadernew returned an EMPTY block and screener.in carried no classification.",
+   "identity_gate": "ISIN-gated: Moneycontrol autosuggest exact row ISIN INE252B01025 == our resolved BSE scrip 506817 (no-isin); BSE ComHeadernew EMPTY block",
+   "industry": "Healthcare",
+   "isin": "INE252B01025",
+   "name": "Pharmacia Healthcare Ltd",
+   "src": "aggregator: screener.in + Moneycontrol (BSE ComHeadernew returned an EMPTY classification block for this delisted scrip); value mapped onto the dash_slim IndustryNew vocabulary"
+  },
+  "PHILIPS": {
+   "bse_code": "500560",
+   "evidence": "Philips India (consumer electronics). Moneycontrol category 'consumer-goods-electronic'; consumer electronics are Consumer Durables in the dash_slim vocabulary, established this campaign by SAMTEL (screener 'Consumer Electronics' -> Consumer Durables).",
+   "identity_gate": "mc-exact-symbol-isin (INE319A01016, 500560) == BSE all-status master row (name Philips India)",
+   "industry": "Consumer Durables",
+   "isin": "INE319A01016",
+   "name": "Philips India Ltd",
+   "src": "aggregator: screener.in + Moneycontrol (BSE ComHeadernew returned an EMPTY classification block for this delisted scrip); value mapped onto the dash_slim IndustryNew vocabulary"
+  },
+  "POLARIS": {
+   "bse_code": "532254",
+   "evidence": "Moneycontrol categorises this scrip under 'computers-software'; that category maps to 'Information Technology' on the dash_slim vocabulary (calibrated over live ISIN-matched symbols: {'Information Technology': 23, 'Capital Goods': 1, 'Services': 1}). BSE ComHeadernew returned an EMPTY block and screener.in carried no classification.",
+   "identity_gate": "ISIN-gated: Moneycontrol autosuggest exact row ISIN INE763A01023 == our resolved BSE scrip 532254 (isin-exact); BSE ComHeadernew EMPTY block",
+   "industry": "Information Technology",
+   "isin": "INE763A01023",
+   "name": "Polaris Consulting & Services Ltd",
+   "src": "aggregator: screener.in + Moneycontrol (BSE ComHeadernew returned an EMPTY classification block for this delisted scrip); value mapped onto the dash_slim IndustryNew vocabulary"
+  },
+  "PROVOGE": {
+   "bse_code": "532647",
+   "evidence": "Moneycontrol categorises this scrip under 'retail'; that category maps to 'Consumer Services' on the dash_slim vocabulary (calibrated over live ISIN-matched symbols: {'Consumer Durables': 1, 'Consumer Services': 9, 'Textiles': 1}). BSE ComHeadernew returned an EMPTY block and screener.in carried no classification.",
+   "identity_gate": "ISIN-gated: Moneycontrol autosuggest exact row ISIN INE968G01033 == our resolved BSE scrip 532647 (isin-exact); BSE ComHeadernew EMPTY block",
+   "industry": "Consumer Services",
+   "isin": "INE968G01033",
+   "name": "Provogue (India) Ltd",
+   "src": "aggregator: screener.in + Moneycontrol (BSE ComHeadernew returned an EMPTY classification block for this delisted scrip); value mapped onto the dash_slim IndustryNew vocabulary"
+  },
+  "PROVOGUE": {
+   "bse_code": "532647",
+   "evidence": "Moneycontrol categorises this scrip under 'retail'; that category maps to 'Consumer Services' on the dash_slim vocabulary (calibrated over live ISIN-matched symbols: {'Consumer Durables': 1, 'Consumer Services': 9, 'Textiles': 1}). BSE ComHeadernew returned an EMPTY block and screener.in carried no classification.",
+   "identity_gate": "ISIN-gated: Moneycontrol autosuggest exact row ISIN INE968G01033 == our resolved BSE scrip 532647 (issuer-prefix); BSE ComHeadernew EMPTY block",
+   "industry": "Consumer Services",
+   "isin": "INE968G01033",
+   "name": "Provogue (India) Ltd",
+   "src": "aggregator: screener.in + Moneycontrol (BSE ComHeadernew returned an EMPTY classification block for this delisted scrip); value mapped onto the dash_slim IndustryNew vocabulary"
+  },
+  "PSIDATASYS": {
+   "bse_code": "532199",
+   "evidence": "Moneycontrol categorises this scrip under 'computers-software'; that category maps to 'Information Technology' on the dash_slim vocabulary (calibrated over live ISIN-matched symbols: {'Information Technology': 23, 'Capital Goods': 1, 'Services': 1}). BSE ComHeadernew returned an EMPTY block and screener.in carried no classification.",
+   "identity_gate": "ISIN-gated: Moneycontrol autosuggest exact row ISIN INE299A01010 == our resolved BSE scrip 532199 (no-isin); BSE ComHeadernew EMPTY block",
+   "industry": "Information Technology",
+   "isin": "INE299A01010",
+   "name": "PSI Data Systems Ltd",
+   "src": "aggregator: screener.in + Moneycontrol (BSE ComHeadernew returned an EMPTY classification block for this delisted scrip); value mapped onto the dash_slim IndustryNew vocabulary"
   },
   "PSL": {
    "bse_code": "526801",
@@ -656,6 +1556,15 @@
    "src": "BSE ComHeadernew/w IndustryNew (same field fetch_sectors.py uses for live scrips)",
    "successor_isin": "INE278B01020"
   },
+  "RANBAXY": {
+   "bse_code": "500359",
+   "evidence": "screener.in states Sector='Healthcare' / Industry='Pharmaceuticals'; Moneycontrol category 'pharmaceuticals'; both map to 'Healthcare' on the dash_slim vocabulary.",
+   "identity_gate": "aggregator concordance: screener.in Sector/Industry and the ISIN-gated Moneycontrol category agree; screener BSE code 500359 confirms the scrip",
+   "industry": "Healthcare",
+   "isin": "INE015A01028",
+   "name": "Ranbaxy Laboratories Ltd",
+   "src": "aggregator: screener.in + Moneycontrol (BSE ComHeadernew returned an EMPTY classification block for this delisted scrip); value mapped onto the dash_slim IndustryNew vocabulary"
+  },
   "RANEENGINE": {
    "bse_code": "532988",
    "identity_gate": "isin-exact + bse-isin-confirmed",
@@ -664,6 +1573,15 @@
    "name": "Rane Engine Valve Ltd",
    "src": "BSE ComHeadernew/w IndustryNew (same field fetch_sectors.py uses for live scrips)"
   },
+  "RASOYPR": {
+   "bse_code": "531522",
+   "evidence": "Rasoya Proteins (edible-oil / solvent extraction). Moneycontrol category \"edible-oilssolvent-extraction\"; edible oil is Fast Moving Consumer Goods in the dash_slim vocabulary, established this campaign by KSOILS (Edible Oil -> FMCG) and by RUCHISOYA/Patanjali.",
+   "identity_gate": "ISIN-gated: our resolved BSE scrip 531522 (ISIN INE904G01038); BSE ComHeadernew EMPTY, screener.in empty",
+   "industry": "Fast Moving Consumer Goods",
+   "isin": "INE904G01038",
+   "name": "Rasoya Proteins Ltd",
+   "src": "aggregator: screener.in + Moneycontrol (BSE ComHeadernew returned an EMPTY classification block for this delisted scrip); value mapped onto the dash_slim IndustryNew vocabulary"
+  },
   "RBL": {
    "bse_code": "532987",
    "identity_gate": "isin-exact + bse-isin-confirmed",
@@ -671,6 +1589,15 @@
    "isin": "INE244J01017",
    "name": "Rane Brake Lining Ltd",
    "src": "BSE ComHeadernew/w IndustryNew (same field fetch_sectors.py uses for live scrips)"
+  },
+  "REIAGROLTD": {
+   "bse_code": "532106",
+   "evidence": "screener.in states Sector='Fast Moving Consumer Goods' / Industry='Packaged Foods'; Moneycontrol category 'food-processing'; both map to 'Fast Moving Consumer Goods' on the dash_slim vocabulary.",
+   "identity_gate": "aggregator concordance: screener.in Sector/Industry and the ISIN-gated Moneycontrol category agree; screener BSE code 532106 confirms the scrip",
+   "industry": "Fast Moving Consumer Goods",
+   "isin": "INE385B01031",
+   "name": "Rei Agro Ltd",
+   "src": "aggregator: screener.in + Moneycontrol (BSE ComHeadernew returned an EMPTY classification block for this delisted scrip); value mapped onto the dash_slim IndustryNew vocabulary"
   },
   "RELCAPITAL": {
    "bse_code": "500111",
@@ -688,6 +1615,15 @@
    "name": "Reliance Infrastructure",
    "src": "BSE ComHeadernew/w IndustryNew (same field fetch_sectors.py uses for live scrips)"
   },
+  "RELMEDIA": {
+   "bse_code": "532399",
+   "evidence": "Moneycontrol categorises this scrip under 'mediaentertainment'; that category maps to 'Media, Entertainment & Publication' on the dash_slim vocabulary (calibrated over live ISIN-matched symbols: {'Media, Entertainment & Publication': 36, 'Realty': 1}). BSE ComHeadernew returned an EMPTY block and screener.in carried no classification.",
+   "identity_gate": "ISIN-gated: Moneycontrol autosuggest exact row ISIN INE540B01015 == our resolved BSE scrip 532399 (isin-exact); BSE ComHeadernew EMPTY block",
+   "industry": "Media, Entertainment & Publication",
+   "isin": "INE540B01015",
+   "name": "Reliance MediaWorks Ltd",
+   "src": "aggregator: screener.in + Moneycontrol (BSE ComHeadernew returned an EMPTY classification block for this delisted scrip); value mapped onto the dash_slim IndustryNew vocabulary"
+  },
   "RNAVAL": {
    "bse_code": "533107",
    "identity_gate": "issuer-prefix (ISIN INExxxxxNN, face-value/IBC reissue) + bse-isin-confirmed on the successor + same-business continuity checked against our own series span",
@@ -697,6 +1633,15 @@
    "src": "BSE ComHeadernew/w IndustryNew (same field fetch_sectors.py uses for live scrips)",
    "successor_isin": "INE542F01020"
   },
+  "RNRL": {
+   "bse_code": "532709",
+   "evidence": "Moneycontrol categorises this scrip under 'oil-drillingexploration'; that category maps to 'Oil, Gas & Consumable Fuels' on the dash_slim vocabulary (calibrated over live ISIN-matched symbols: {'Oil, Gas & Consumable Fuels': 10}). BSE ComHeadernew returned an EMPTY block and screener.in carried no classification.",
+   "identity_gate": "ISIN-gated: Moneycontrol autosuggest exact row ISIN INE328H01012 == our resolved BSE scrip 532709 (isin-exact); BSE ComHeadernew EMPTY block",
+   "industry": "Oil, Gas & Consumable Fuels",
+   "isin": "INE328H01012",
+   "name": "Reliance Natural Resources Ltd",
+   "src": "aggregator: screener.in + Moneycontrol (BSE ComHeadernew returned an EMPTY classification block for this delisted scrip); value mapped onto the dash_slim IndustryNew vocabulary"
+  },
   "ROLTA": {
    "bse_code": "500366",
    "identity_gate": "isin-exact + bse-isin-confirmed",
@@ -704,6 +1649,24 @@
    "isin": "INE293A01013",
    "name": "Rolta India Ltd",
    "src": "BSE ComHeadernew/w IndustryNew (same field fetch_sectors.py uses for live scrips)"
+  },
+  "RPGCABLES": {
+   "bse_code": "517056",
+   "evidence": "Moneycontrol categorises this scrip under 'cables-powerothers'; that category maps to 'Capital Goods' on the dash_slim vocabulary (calibrated over live ISIN-matched symbols: {'Capital Goods': 3}). BSE ComHeadernew returned an EMPTY block and screener.in carried no classification.",
+   "identity_gate": "ISIN-gated: Moneycontrol autosuggest exact row ISIN INE145A01015 == our resolved BSE scrip 517056 (no-isin); BSE ComHeadernew EMPTY block",
+   "industry": "Capital Goods",
+   "isin": "INE145A01015",
+   "name": "RPG Cables Ltd",
+   "src": "aggregator: screener.in + Moneycontrol (BSE ComHeadernew returned an EMPTY classification block for this delisted scrip); value mapped onto the dash_slim IndustryNew vocabulary"
+  },
+  "RPL": {
+   "bse_code": "532743",
+   "evidence": "Moneycontrol categorises this scrip under 'refineries'; that category maps to 'Oil, Gas & Consumable Fuels' on the dash_slim vocabulary (calibrated over live ISIN-matched symbols: {'Oil, Gas & Consumable Fuels': 7}). BSE ComHeadernew returned an EMPTY block and screener.in carried no classification.",
+   "identity_gate": "ISIN-gated: Moneycontrol autosuggest exact row ISIN INE475H01011 == our resolved BSE scrip 532743 (isin-exact); BSE ComHeadernew EMPTY block",
+   "industry": "Oil, Gas & Consumable Fuels",
+   "isin": "INE475H01011",
+   "name": "Reliance Petroleum Ltd",
+   "src": "aggregator: screener.in + Moneycontrol (BSE ComHeadernew returned an EMPTY classification block for this delisted scrip); value mapped onto the dash_slim IndustryNew vocabulary"
   },
   "RUCHISOYA": {
    "bse_code": "500368",
@@ -724,6 +1687,51 @@
    "src": "BSE ComHeadernew/w IndustryNew (same field fetch_sectors.py uses for live scrips)",
    "successor_isin": "INE416A01051"
   },
+  "SAMTEL": {
+   "bse_code": "500372",
+   "evidence": "screener.in states Sector='Consumer Durables' / Industry='Consumer Electronics' -> 'Consumer Durables' (dash_slim vocabulary); BSE ComHeadernew EMPTY, no calibrated Moneycontrol category.",
+   "identity_gate": "screener.in classification, identity via screener BSE code 500372 == our resolved scrip",
+   "industry": "Consumer Durables",
+   "isin": "INE381A01016",
+   "name": "Samtel Color Ltd",
+   "src": "aggregator: screener.in + Moneycontrol (BSE ComHeadernew returned an EMPTY classification block for this delisted scrip); value mapped onto the dash_slim IndustryNew vocabulary"
+  },
+  "SATYAMCOMP": {
+   "bse_code": "500376",
+   "evidence": "Moneycontrol categorises this scrip under 'computers-software'; that category maps to 'Information Technology' on the dash_slim vocabulary (calibrated over live ISIN-matched symbols: {'Information Technology': 23, 'Capital Goods': 1, 'Services': 1}). BSE ComHeadernew returned an EMPTY block and screener.in carried no classification.",
+   "identity_gate": "ISIN-gated: Moneycontrol autosuggest exact row ISIN INE275A01028 == our resolved BSE scrip 500376 (isin-exact); BSE ComHeadernew EMPTY block",
+   "industry": "Information Technology",
+   "isin": "INE275A01028",
+   "name": "Satyam Computer Services Ltd",
+   "src": "aggregator: screener.in + Moneycontrol (BSE ComHeadernew returned an EMPTY classification block for this delisted scrip); value mapped onto the dash_slim IndustryNew vocabulary"
+  },
+  "SB&TINTL": {
+   "bse_code": "513583",
+   "evidence": "Moneycontrol categorises this scrip under 'diamond-cuttingjewelleryprecious-metals'; that category maps to 'Consumer Durables' on the dash_slim vocabulary (calibrated over live ISIN-matched symbols: {'Consumer Durables': 5}). BSE ComHeadernew returned an EMPTY block and screener.in carried no classification.",
+   "identity_gate": "ISIN-gated: Moneycontrol autosuggest exact row ISIN INE465B01015 == our resolved BSE scrip 513583 (isin-exact); BSE ComHeadernew EMPTY block",
+   "industry": "Consumer Durables",
+   "isin": "INE465B01015",
+   "name": "SB&T International Ltd",
+   "src": "aggregator: screener.in + Moneycontrol (BSE ComHeadernew returned an EMPTY classification block for this delisted scrip); value mapped onto the dash_slim IndustryNew vocabulary"
+  },
+  "SBBJ": {
+   "bse_code": "501061",
+   "evidence": "Moneycontrol categorises this scrip under 'banks-public-sector'; that category maps to 'Financial Services' on the dash_slim vocabulary (calibrated over live ISIN-matched symbols: {'Financial Services': 7}). BSE ComHeadernew returned an EMPTY block and screener.in carried no classification.",
+   "identity_gate": "ISIN-gated: Moneycontrol autosuggest exact row ISIN INE648A01026 == our resolved BSE scrip 501061 (isin-exact); BSE ComHeadernew EMPTY block",
+   "industry": "Financial Services",
+   "isin": "INE648A01026",
+   "name": "State Bank of Bikaner and Jaipur",
+   "src": "aggregator: screener.in + Moneycontrol (BSE ComHeadernew returned an EMPTY classification block for this delisted scrip); value mapped onto the dash_slim IndustryNew vocabulary"
+  },
+  "SBT": {
+   "bse_code": "532191",
+   "evidence": "Moneycontrol categorises this scrip under 'banks-public-sector'; that category maps to 'Financial Services' on the dash_slim vocabulary (calibrated over live ISIN-matched symbols: {'Financial Services': 7}). BSE ComHeadernew returned an EMPTY block and screener.in carried no classification.",
+   "identity_gate": "ISIN-gated: Moneycontrol autosuggest exact row ISIN INE654A01024 == our resolved BSE scrip 532191 (isin-exact); BSE ComHeadernew EMPTY block",
+   "industry": "Financial Services",
+   "isin": "INE654A01024",
+   "name": "State Bank of Travancore",
+   "src": "aggregator: screener.in + Moneycontrol (BSE ComHeadernew returned an EMPTY classification block for this delisted scrip); value mapped onto the dash_slim IndustryNew vocabulary"
+  },
   "SEARCHEMIN": {
    "bse_code": "512070",
    "evidence": "agrochemicals before and after",
@@ -733,6 +1741,24 @@
    "name": "UPL Ltd",
    "src": "BSE ComHeadernew/w IndustryNew (same field fetch_sectors.py uses for live scrips)",
    "successor_isin": "INE628A01036"
+  },
+  "SFCL": {
+   "bse_code": "536666",
+   "evidence": "screener.in states Sector='Construction Materials' / Industry='Cement & Cement Products' -> 'Construction Materials' (dash_slim vocabulary); BSE ComHeadernew EMPTY, no calibrated Moneycontrol category.",
+   "identity_gate": "screener.in classification, identity via screener BSE code 536666 == our resolved scrip",
+   "industry": "Construction Materials",
+   "isin": "INE935O01010",
+   "name": "Star Ferro and Cement Ltd",
+   "src": "aggregator: screener.in + Moneycontrol (BSE ComHeadernew returned an EMPTY classification block for this delisted scrip); value mapped onto the dash_slim IndustryNew vocabulary"
+  },
+  "SHASUNPHAR": {
+   "bse_code": "524552",
+   "evidence": "screener.in states Sector='Healthcare' / Industry='Pharmaceuticals'; Moneycontrol category 'pharmaceuticals'; both map to 'Healthcare' on the dash_slim vocabulary.",
+   "identity_gate": "aggregator concordance: screener.in Sector/Industry and the ISIN-gated Moneycontrol category agree; screener BSE code 524552 confirms the scrip",
+   "industry": "Healthcare",
+   "isin": "INE317A01028",
+   "name": "Shasun Pharmaceuticals Ltd",
+   "src": "aggregator: screener.in + Moneycontrol (BSE ComHeadernew returned an EMPTY classification block for this delisted scrip); value mapped onto the dash_slim IndustryNew vocabulary"
   },
   "SHIRPUR-G": {
    "bse_code": "512289",
@@ -750,6 +1776,24 @@
    "name": "Shri Lakshmi Cotsyn Ltd",
    "src": "BSE ComHeadernew/w IndustryNew (same field fetch_sectors.py uses for live scrips)"
   },
+  "SHREEASHTA": {
+   "bse_code": "532793",
+   "evidence": "Moneycontrol categorises this scrip under 'mediaentertainment'; that category maps to 'Media, Entertainment & Publication' on the dash_slim vocabulary (calibrated over live ISIN-matched symbols: {'Media, Entertainment & Publication': 36, 'Realty': 1}). BSE ComHeadernew returned an EMPTY block and screener.in carried no classification.",
+   "identity_gate": "ISIN-gated: Moneycontrol autosuggest exact row ISIN INE538H01024 == our resolved BSE scrip 532793 (isin-exact); BSE ComHeadernew EMPTY block",
+   "industry": "Media, Entertainment & Publication",
+   "isin": "INE538H01024",
+   "name": "Shree Ashtavinayak Cine Vision Ltd",
+   "src": "aggregator: screener.in + Moneycontrol (BSE ComHeadernew returned an EMPTY classification block for this delisted scrip); value mapped onto the dash_slim IndustryNew vocabulary"
+  },
+  "SHRENUJ": {
+   "bse_code": "523236",
+   "evidence": "Moneycontrol categorises this scrip under 'diamond-cuttingjewelleryprecious-metals'; that category maps to 'Consumer Durables' on the dash_slim vocabulary (calibrated over live ISIN-matched symbols: {'Consumer Durables': 5}). BSE ComHeadernew returned an EMPTY block and screener.in carried no classification.",
+   "identity_gate": "ISIN-gated: Moneycontrol autosuggest exact row ISIN INE633A01028 == our resolved BSE scrip 523236 (isin-exact); BSE ComHeadernew EMPTY block",
+   "industry": "Consumer Durables",
+   "isin": "INE633A01028",
+   "name": "Shrenuj & Company Ltd",
+   "src": "aggregator: screener.in + Moneycontrol (BSE ComHeadernew returned an EMPTY classification block for this delisted scrip); value mapped onto the dash_slim IndustryNew vocabulary"
+  },
   "SHRIRAMCIT": {
    "bse_code": "532498",
    "identity_gate": "isin-exact + bse-isin-confirmed",
@@ -757,6 +1801,24 @@
    "isin": "INE722A01011",
    "name": "Shriram City Union Finance",
    "src": "BSE ComHeadernew/w IndustryNew (same field fetch_sectors.py uses for live scrips)"
+  },
+  "SHRIRAMINV": {
+   "bse_code": "511164",
+   "evidence": "Moneycontrol categorises this scrip under 'finance-leasinghire-purchase'; that category maps to 'Financial Services' on the dash_slim vocabulary (calibrated over live ISIN-matched symbols: {'Financial Services': 4, 'Services': 1}). BSE ComHeadernew returned an EMPTY block and screener.in carried no classification.",
+   "identity_gate": "ISIN-gated: Moneycontrol autosuggest exact row ISIN INE401A01012 == our resolved BSE scrip 511164 (isin-exact); BSE ComHeadernew EMPTY block",
+   "industry": "Financial Services",
+   "isin": "INE401A01012",
+   "name": "Shriram Investments Ltd",
+   "src": "aggregator: screener.in + Moneycontrol (BSE ComHeadernew returned an EMPTY classification block for this delisted scrip); value mapped onto the dash_slim IndustryNew vocabulary"
+  },
+  "SILTAPCHEM": {
+   "bse_code": "507777",
+   "evidence": "Moneycontrol categorises this scrip under 'packaging'; that category maps to 'Capital Goods' on the dash_slim vocabulary (calibrated over live ISIN-matched symbols: {'Capital Goods': 6, 'Textiles': 1}). BSE ComHeadernew returned an EMPTY block and screener.in carried no classification.",
+   "identity_gate": "ISIN-gated: Moneycontrol autosuggest exact row ISIN INE637A01011 == our resolved BSE scrip 507777 (no-isin); BSE ComHeadernew EMPTY block",
+   "industry": "Capital Goods",
+   "isin": "INE637A01011",
+   "name": "Siltap Chemicals Ltd",
+   "src": "aggregator: screener.in + Moneycontrol (BSE ComHeadernew returned an EMPTY classification block for this delisted scrip); value mapped onto the dash_slim IndustryNew vocabulary"
   },
   "SILVERLINE": {
    "bse_code": "500389",
@@ -774,6 +1836,24 @@
    "name": "Sintex Industries Ltd",
    "src": "BSE ComHeadernew/w IndustryNew (same field fetch_sectors.py uses for live scrips)"
   },
+  "SIRPAPER": {
+   "bse_code": "502455",
+   "evidence": "screener.in states Sector='Forest Materials' / Industry='Paper & Paper Products'; Moneycontrol category 'paper'; both map to 'Forest Materials' on the dash_slim vocabulary.",
+   "identity_gate": "aggregator concordance: screener.in Sector/Industry and the ISIN-gated Moneycontrol category agree; company name on screener page matches; ISIN-gated MC row",
+   "industry": "Forest Materials",
+   "isin": "INE202C01010",
+   "name": "Sirpur Paper Mills Ltd",
+   "src": "aggregator: screener.in + Moneycontrol (BSE ComHeadernew returned an EMPTY classification block for this delisted scrip); value mapped onto the dash_slim IndustryNew vocabulary"
+  },
+  "SNOWCEMIND": {
+   "bse_code": "531890",
+   "evidence": "Moneycontrol categorises this scrip under 'paintsvarnishes'; that category maps to 'Consumer Durables' on the dash_slim vocabulary (calibrated over live ISIN-matched symbols: {'Consumer Durables': 6}). BSE ComHeadernew returned an EMPTY block and screener.in carried no classification.",
+   "identity_gate": "ISIN-gated: Moneycontrol autosuggest exact row ISIN INE734A01016 == our resolved BSE scrip 531890 (sid-only(unverified)); BSE ComHeadernew EMPTY block",
+   "industry": "Consumer Durables",
+   "isin": "INE734A01016",
+   "name": "Snowcem India Ltd",
+   "src": "aggregator: screener.in + Moneycontrol (BSE ComHeadernew returned an EMPTY classification block for this delisted scrip); value mapped onto the dash_slim IndustryNew vocabulary"
+  },
   "SPTL": {
    "bse_code": "540653",
    "identity_gate": "isin-exact + bse-isin-confirmed",
@@ -781,6 +1861,15 @@
    "isin": "INE501W01021",
    "name": "Sintex Plastics Technology Ltd",
    "src": "BSE ComHeadernew/w IndustryNew (same field fetch_sectors.py uses for live scrips)"
+  },
+  "SQRDSFWARE": {
+   "bse_code": "523864",
+   "evidence": "Moneycontrol categorises this scrip under 'computers-software-mediumsmall'; that category maps to 'Information Technology' on the dash_slim vocabulary (calibrated over live ISIN-matched symbols: {'Services': 4, 'Consumer Services': 3, 'Information Technology': 30}). BSE ComHeadernew returned an EMPTY block and screener.in carried no classification.",
+   "identity_gate": "ISIN-gated: Moneycontrol autosuggest exact row ISIN INE286A01017 == our resolved BSE scrip 523864 (isin-exact); BSE ComHeadernew EMPTY block",
+   "industry": "Information Technology",
+   "isin": "INE286A01017",
+   "name": "DSQ Software Ltd",
+   "src": "aggregator: screener.in + Moneycontrol (BSE ComHeadernew returned an EMPTY classification block for this delisted scrip); value mapped onto the dash_slim IndustryNew vocabulary"
   },
   "SREINFRA": {
    "bse_code": "523756",
@@ -808,6 +1897,15 @@
    "name": "Srikalahasthi Pipes Ltd",
    "src": "BSE ComHeadernew/w IndustryNew (same field fetch_sectors.py uses for live scrips)"
   },
+  "STER": {
+   "bse_code": "500900",
+   "evidence": "screener.in states Sector='Metals & Mining' / Industry='Copper'; Moneycontrol category 'metals-non-ferrous'; both map to 'Metals & Mining' on the dash_slim vocabulary.",
+   "identity_gate": "aggregator concordance: screener.in Sector/Industry and the ISIN-gated Moneycontrol category agree; screener BSE code 500900 confirms the scrip",
+   "industry": "Metals & Mining",
+   "isin": "INE268A01049",
+   "name": "Sterlite Industries (India) Ltd",
+   "src": "aggregator: screener.in + Moneycontrol (BSE ComHeadernew returned an EMPTY classification block for this delisted scrip); value mapped onto the dash_slim IndustryNew vocabulary"
+  },
   "STERLINBIO": {
    "bse_code": "512299",
    "identity_gate": "isin-exact + bse-isin-confirmed",
@@ -833,6 +1931,15 @@
    "src": "BSE ComHeadernew/w IndustryNew (same field fetch_sectors.py uses for live scrips)",
    "successor_isin": "INE713B01026"
   },
+  "SYNDIBANK": {
+   "bse_code": "532276",
+   "evidence": "Moneycontrol categorises this scrip under 'banks-public-sector'; that category maps to 'Financial Services' on the dash_slim vocabulary (calibrated over live ISIN-matched symbols: {'Financial Services': 7}). BSE ComHeadernew returned an EMPTY block and screener.in carried no classification.",
+   "identity_gate": "ISIN-gated: Moneycontrol autosuggest exact row ISIN INE667A01018 == our resolved BSE scrip 532276 (isin-exact); BSE ComHeadernew EMPTY block",
+   "industry": "Financial Services",
+   "isin": "INE667A01018",
+   "name": "Syndicate Bank",
+   "src": "aggregator: screener.in + Moneycontrol (BSE ComHeadernew returned an EMPTY classification block for this delisted scrip); value mapped onto the dash_slim IndustryNew vocabulary"
+  },
   "TATACOFFEE": {
    "bse_code": "532301",
    "identity_gate": "isin-exact + bse-isin-confirmed",
@@ -840,6 +1947,15 @@
    "isin": "INE493A01027",
    "name": "Tata Coffee",
    "src": "BSE ComHeadernew/w IndustryNew (same field fetch_sectors.py uses for live scrips)"
+  },
+  "TATAFIN": {
+   "bse_code": "511231",
+   "evidence": "Moneycontrol categorises this scrip under 'finance-leasinghire-purchase'; that category maps to 'Financial Services' on the dash_slim vocabulary (calibrated over live ISIN-matched symbols: {'Financial Services': 4, 'Services': 1}). BSE ComHeadernew returned an EMPTY block and screener.in carried no classification.",
+   "identity_gate": "ISIN-gated: Moneycontrol autosuggest exact row ISIN INE265A01011 == our resolved BSE scrip 511231 (isin-exact); BSE ComHeadernew EMPTY block",
+   "industry": "Financial Services",
+   "isin": "INE265A01011",
+   "name": "Tata Finance Ltd",
+   "src": "aggregator: screener.in + Moneycontrol (BSE ComHeadernew returned an EMPTY classification block for this delisted scrip); value mapped onto the dash_slim IndustryNew vocabulary"
   },
   "TATAINFO": {
    "bse_code": "509069",
@@ -907,6 +2023,33 @@
    "name": "Tinplate Company of India Ltd",
    "src": "BSE ComHeadernew/w IndustryNew (same field fetch_sectors.py uses for live scrips)"
   },
+  "TORRENTAEC": {
+   "bse_code": "500004",
+   "evidence": "Moneycontrol categorises this scrip under 'power-generationdistribution'; that category maps to 'Power' on the dash_slim vocabulary (calibrated over live ISIN-matched symbols: {'Power': 20, 'Services': 1, 'Capital Goods': 1, 'Construction': 2}). BSE ComHeadernew returned an EMPTY block and screener.in carried no classification.",
+   "identity_gate": "ISIN-gated: Moneycontrol autosuggest exact row ISIN INE424A01014 == our resolved BSE scrip 500004 (isin-exact); BSE ComHeadernew EMPTY block",
+   "industry": "Power",
+   "isin": "INE424A01014",
+   "name": "Torrent Power AEC Ltd",
+   "src": "aggregator: screener.in + Moneycontrol (BSE ComHeadernew returned an EMPTY classification block for this delisted scrip); value mapped onto the dash_slim IndustryNew vocabulary"
+  },
+  "TULIP": {
+   "bse_code": "532691",
+   "evidence": "screener.in states Sector='Telecommunication' / Industry='Other Telecom Services'; Moneycontrol category 'telecommunications-service'; both map to 'Telecommunication' on the dash_slim vocabulary.",
+   "identity_gate": "aggregator concordance: screener.in Sector/Industry and the ISIN-gated Moneycontrol category agree; screener BSE code 532691 confirms the scrip",
+   "industry": "Telecommunication",
+   "isin": "INE122H01027",
+   "name": "Tulip Telecom Ltd",
+   "src": "aggregator: screener.in + Moneycontrol (BSE ComHeadernew returned an EMPTY classification block for this delisted scrip); value mapped onto the dash_slim IndustryNew vocabulary"
+  },
+  "TV-18": {
+   "bse_code": "532299",
+   "evidence": "Moneycontrol categorises this scrip under 'mediaentertainment'; that category maps to 'Media, Entertainment & Publication' on the dash_slim vocabulary (calibrated over live ISIN-matched symbols: {'Media, Entertainment & Publication': 36, 'Realty': 1}). BSE ComHeadernew returned an EMPTY block and screener.in carried no classification.",
+   "identity_gate": "ISIN-gated: Moneycontrol autosuggest exact row ISIN INE889A01026 == our resolved BSE scrip 532299 (no-isin); BSE ComHeadernew EMPTY block",
+   "industry": "Media, Entertainment & Publication",
+   "isin": "INE889A01026",
+   "name": "Television Eighteen India Ltd",
+   "src": "aggregator: screener.in + Moneycontrol (BSE ComHeadernew returned an EMPTY classification block for this delisted scrip); value mapped onto the dash_slim IndustryNew vocabulary"
+  },
   "TV18BRDCST": {
    "bse_code": "532800",
    "identity_gate": "isin-exact + bse-isin-confirmed",
@@ -933,6 +2076,15 @@
    "src": "BSE ComHeadernew/w IndustryNew (same field fetch_sectors.py uses for live scrips)",
    "successor_isin": "INE128A01029"
   },
+  "UNITEDBNK": {
+   "bse_code": "533171",
+   "evidence": "Moneycontrol categorises this scrip under 'banks-public-sector'; that category maps to 'Financial Services' on the dash_slim vocabulary (calibrated over live ISIN-matched symbols: {'Financial Services': 7}). BSE ComHeadernew returned an EMPTY block and screener.in carried no classification.",
+   "identity_gate": "ISIN-gated: Moneycontrol autosuggest exact row ISIN INE695A01019 == our resolved BSE scrip 533171 (isin-exact); BSE ComHeadernew EMPTY block",
+   "industry": "Financial Services",
+   "isin": "INE695A01019",
+   "name": "United Bank of India",
+   "src": "aggregator: screener.in + Moneycontrol (BSE ComHeadernew returned an EMPTY classification block for this delisted scrip); value mapped onto the dash_slim IndustryNew vocabulary"
+  },
   "UNITEDPHOS": {
    "bse_code": "500429",
    "evidence": "BSE buckets both the successor (Trading - Chemicals) and UPL (Pesticides & Agrochemicals) under Chemicals, so the era agrochemicals business lands in the same bucket either way",
@@ -951,6 +2103,15 @@
    "name": "Unity Infraprojects Ltd",
    "src": "BSE ComHeadernew/w IndustryNew (same field fetch_sectors.py uses for live scrips)"
   },
+  "UNIWESTBNK": {
+   "bse_code": "500430",
+   "evidence": "Moneycontrol categorises this scrip under 'banks-private-sector'; that category maps to 'Financial Services' on the dash_slim vocabulary (calibrated over live ISIN-matched symbols: {'Financial Services': 12}). BSE ComHeadernew returned an EMPTY block and screener.in carried no classification.",
+   "identity_gate": "ISIN-gated: Moneycontrol autosuggest exact row ISIN INE165A01013 == our resolved BSE scrip 500430 (isin-exact); BSE ComHeadernew EMPTY block",
+   "industry": "Financial Services",
+   "isin": "INE165A01013",
+   "name": "United Western Bank Ltd",
+   "src": "aggregator: screener.in + Moneycontrol (BSE ComHeadernew returned an EMPTY classification block for this delisted scrip); value mapped onto the dash_slim IndustryNew vocabulary"
+  },
   "UTTAMSTL": {
    "bse_code": "513216",
    "identity_gate": "isin-exact + bse-isin-confirmed",
@@ -958,6 +2119,15 @@
    "isin": "INE699A01011",
    "name": "Uttam Galva Steels Ltd",
    "src": "BSE ComHeadernew/w IndustryNew (same field fetch_sectors.py uses for live scrips)"
+  },
+  "UTVSOF": {
+   "bse_code": "532619",
+   "evidence": "Moneycontrol categorises this scrip under 'mediaentertainment'; that category maps to 'Media, Entertainment & Publication' on the dash_slim vocabulary (calibrated over live ISIN-matched symbols: {'Media, Entertainment & Publication': 36, 'Realty': 1}). BSE ComHeadernew returned an EMPTY block and screener.in carried no classification.",
+   "identity_gate": "ISIN-gated: Moneycontrol autosuggest exact row ISIN INE507B01022 == our resolved BSE scrip 532619 (isin-exact); BSE ComHeadernew EMPTY block",
+   "industry": "Media, Entertainment & Publication",
+   "isin": "INE507B01022",
+   "name": "UTV Software Communications Ltd",
+   "src": "aggregator: screener.in + Moneycontrol (BSE ComHeadernew returned an EMPTY classification block for this delisted scrip); value mapped onto the dash_slim IndustryNew vocabulary"
   },
   "VALUEIND": {
    "bse_code": "500945",
@@ -975,6 +2145,15 @@
    "name": "Varun Shipping Company Ltd",
    "src": "BSE ComHeadernew/w IndustryNew (same field fetch_sectors.py uses for live scrips)"
   },
+  "VDOCONINTL": {
+   "bse_code": "500947",
+   "evidence": "Videocon International (consumer electronics / appliances). Moneycontrol category 'consumer-goods-electronic' -> Consumer Durables (same basis as PHILIPS/SAMTEL).",
+   "identity_gate": "isin-exact + bse-isin-confirmed",
+   "industry": "Consumer Durables",
+   "isin": "INE341A01010",
+   "name": "Videocon International Ltd",
+   "src": "aggregator: screener.in + Moneycontrol (BSE ComHeadernew returned an EMPTY classification block for this delisted scrip); value mapped onto the dash_slim IndustryNew vocabulary"
+  },
   "VIDEOIND": {
    "bse_code": "511389",
    "identity_gate": "isin-exact + bse-isin-confirmed",
@@ -982,6 +2161,15 @@
    "isin": "INE703A01011",
    "name": "Videocon Industries Ltd",
    "src": "BSE ComHeadernew/w IndustryNew (same field fetch_sectors.py uses for live scrips)"
+  },
+  "VIJAYABANK": {
+   "bse_code": "532401",
+   "evidence": "Moneycontrol categorises this scrip under 'banks-public-sector'; that category maps to 'Financial Services' on the dash_slim vocabulary (calibrated over live ISIN-matched symbols: {'Financial Services': 7}). BSE ComHeadernew returned an EMPTY block and screener.in carried no classification.",
+   "identity_gate": "ISIN-gated: Moneycontrol autosuggest exact row ISIN INE705A01016 == our resolved BSE scrip 532401 (isin-exact); BSE ComHeadernew EMPTY block",
+   "industry": "Financial Services",
+   "isin": "INE705A01016",
+   "name": "Vijaya Bank",
+   "src": "aggregator: screener.in + Moneycontrol (BSE ComHeadernew returned an EMPTY classification block for this delisted scrip); value mapped onto the dash_slim IndustryNew vocabulary"
   },
   "VINYLCHEM": {
    "bse_code": "524129",
@@ -991,6 +2179,33 @@
    "name": "Vinyl Chemicals (India) Ltd",
    "src": "BSE ComHeadernew/w IndustryNew (same field fetch_sectors.py uses for live scrips)",
    "successor_isin": "INE250B01029"
+  },
+  "VISUALSOFT": {
+   "bse_code": "532214",
+   "evidence": "Moneycontrol categorises this scrip under 'computers-software-mediumsmall'; that category maps to 'Information Technology' on the dash_slim vocabulary (calibrated over live ISIN-matched symbols: {'Services': 4, 'Consumer Services': 3, 'Information Technology': 30}). BSE ComHeadernew returned an EMPTY block and screener.in carried no classification.",
+   "identity_gate": "ISIN-gated: Moneycontrol autosuggest exact row ISIN INE755A01011 == our resolved BSE scrip 532214 (isin-exact); BSE ComHeadernew EMPTY block",
+   "industry": "Information Technology",
+   "isin": "INE755A01011",
+   "name": "Visualsoft Technologies Ltd",
+   "src": "aggregator: screener.in + Moneycontrol (BSE ComHeadernew returned an EMPTY classification block for this delisted scrip); value mapped onto the dash_slim IndustryNew vocabulary"
+  },
+  "WARTSILA": {
+   "bse_code": "500443",
+   "evidence": "Wartsila India (marine/industrial diesel engines). Moneycontrol category 'engines'; diesel engines are Capital Goods in BSE's taxonomy, established this campaign by KBL and KIRLOSOIL (BSE Industry 'Compressors, Pumps & Diesel Engines' -> Capital Goods).",
+   "identity_gate": "isin-exact + bse-isin-confirmed (NSE 2003 listed-equities page ties WARTSILA to INE057A01012)",
+   "industry": "Capital Goods",
+   "isin": "INE057A01012",
+   "name": "Wartsila India Ltd",
+   "src": "aggregator: screener.in + Moneycontrol (BSE ComHeadernew returned an EMPTY classification block for this delisted scrip); value mapped onto the dash_slim IndustryNew vocabulary"
+  },
+  "WYETH": {
+   "bse_code": "500095",
+   "evidence": "screener.in states Sector='Healthcare' / Industry='Pharmaceuticals'; Moneycontrol category 'pharmaceuticals'; both map to 'Healthcare' on the dash_slim vocabulary.",
+   "identity_gate": "aggregator concordance: screener.in Sector/Industry and the ISIN-gated Moneycontrol category agree; screener BSE code 500095 confirms the scrip",
+   "industry": "Healthcare",
+   "isin": "INE378A01012",
+   "name": "Wyeth Ltd",
+   "src": "aggregator: screener.in + Moneycontrol (BSE ComHeadernew returned an EMPTY classification block for this delisted scrip); value mapped onto the dash_slim IndustryNew vocabulary"
   },
   "ZENITHCOMP": {
    "bse_code": "517164",
