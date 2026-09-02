@@ -13928,3 +13928,14 @@ byte-equal; every changed cell explained by a ledger key. Lags: median 15 d, p90
 of any category (scrips first seen on BSE in 2015), `isin-multi-code` CIGNITITEC/QUINTEGRA, the §76 deny-list pair.
 Pre-2014 is unreachable through BSE announcements (stream starts Jan-2014) — not guessed.
 Chunk 2 (2018-03 → 2025 for classes 2/3) follows when the index chain completes.
+
+**§125 chunk 2 (18:30 IST) — the sweep's final report (17:28 IST, 222 min wall, index 2011-04..2019-07 + 2019-25 streams,
+5,389 shards, 0 rate-limit stubs): 2,621 proposals in all** (by qe-year 2011:175 2012:232 2013:214 2014:276 2015:96
+2016:85 2017:162 **2018:1,023** 2019:138 2020:100 2021:30 2022:37 2023:15 2024:17 2025:21; 2,001 exact / 617
+corroborated / 3 audit-report). Applied the 1,958 not yet ledgered + 1 supersede (an earlier REAL filing beats a later
+non-`exact` ledger date; the 7 collisions with hand-adjudicated `exact` entries stay on the review list, §125's 6b):
+`--reapply` re-dated **1,959 cells in docs / 1,868 in the master mirror**, np and qe values byte-equal, every changed
+cell explained by a ledger key, gate keyed by ROW POSITION this time (the dup-row lesson above). 2018's 1,023 is the
+deep-backfill era again (§119c's 40% class) — the residue §119 could not judge. Not attempted, stated: pre-Apr-2011
+(no BSE Result stream), the 375 symbols with no dated NSE ISIN, per-basis E for basis-split rows, the 23+ exact-early
+look-ahead candidates (§119d evidence needed). Ledger 7,464 → 9,422 entries.
