@@ -1114,7 +1114,7 @@ body.blur-secret .secret{filter:blur(7px);-webkit-user-select:none;user-select:n
   function ensureStrategies(){
     if(window.mountStrategies) return Promise.resolve();
     if(SP_LOADING) return SP_LOADING;
-    var deps=['https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2','./bt-names.js','./bt-identity.js','./backtest-engine.js','./bt-sync.js','./strategies-panel.js?v=zba19'];   // versioned: GitHub Pages serves JS with max-age=600, so a plain name kept serving the pre-sync copy for 10 min after a deploy
+    var deps=['https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2','./bt-names.js','./bt-identity.js','./backtest-engine.js','./bt-sync.js','./strategies-panel.js?v=zba20'];   // versioned: GitHub Pages serves JS with max-age=600, so a plain name kept serving the pre-sync copy for 10 min after a deploy
     SP_LOADING=deps.reduce(function(p,src){ return p.then(function(){ return loadScript(src); }); }, Promise.resolve());
     return SP_LOADING;
   }

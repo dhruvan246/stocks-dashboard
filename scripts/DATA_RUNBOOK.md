@@ -3839,6 +3839,15 @@ injected site-wide. Never push those unchecked. Never let `|| echo` swallow a fa
 `read_page` and confirm the new thing is really in the DOM **with real values** — not `Loading…`,
 `NaN`, `undefined`, `null`, `—`, or an empty table. Reading your own diff is not verification.
 
+- **★ SEEDING TEST STATE: NEVER WRITE A SYNCED KEY IN A TEST TAB WITHOUT CHECKING THE OWNER GATE**
+  (added 2026-09-02, strategies chips). `bt_fav_strategies`, `mix_state_v1`, `sw_theme`… are
+  `SW_SETTINGS_KEYS` (theme.js) — `sw-sync.js` pushes them to the shared SETTINGS doc on
+  visibilitychange-hidden / pagehide, and a localhost tab talks to the same Supabase. The push is
+  gated on `localStorage.bt_owner_key`; a test tab must prove that key is ABSENT (measure it) before
+  seeding such a key, else a fake ★ list can overwrite the real favourites (the 8→6 class, v126).
+  Prefer local-only stores (`sp_bought_v1`, `sw_zb_amt_<id>`, `bt_private_strategies`) for seeds,
+  and remove every seeded key when done.
+
 **1b. ★ A COVERAGE RULE OR A DATA FILL MUST BE SHOWN TO MOVE A COUNT** (added 2026-08-16 after this
 bit three times in one session). Compiling is not working — a rule can read perfectly and mark
 NOTHING. Bake and diff the payload BEFORE committing; `--explain` names the exact cells, so a rule

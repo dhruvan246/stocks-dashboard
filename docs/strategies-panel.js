@@ -5,8 +5,8 @@
   'use strict';
   if (window.mountStrategies) return;
   var mounted = false;
-  var SP_CSS = "\n.spwrap{font-size:13px;line-height:1.5}\n.spwrap .sp-top{display:flex;align-items:center;justify-content:space-between;gap:10px;flex-wrap:wrap;margin-bottom:4px}\n.spwrap .sp-h{font-size:15px;font-weight:800;letter-spacing:-.015em;margin:0;display:flex;align-items:center;gap:9px}\n.spwrap .sp-h::before{content:\"\";width:4px;height:15px;border-radius:3px;flex:none;background:linear-gradient(180deg,var(--accent),color-mix(in srgb,var(--accent) 45%,transparent))}\n.spwrap .sp-actions{display:flex;gap:7px;align-items:center;flex-wrap:wrap}\n.spwrap .sp-sub{font-size:11.5px;color:var(--text-3);line-height:1.45;margin:4px 0}\n.spwrap .sp-input{flex:1;padding:7px 9px;font-size:13px;border:1px solid var(--border);border-radius:8px;background:var(--surface-2);color:var(--text);font-family:inherit}\n.spwrap .sym{color:var(--text-3);font-size:11px;font-weight:600}\n.spwrap .badge{font-size:9px;font-weight:800;letter-spacing:.05em;padding:1px 5px;border-radius:4px;background:var(--surface-2);color:var(--text-3);border:1px solid var(--border)}\n.spwrap .zpill{display:inline-flex;align-items:center;gap:6px;font-size:11.5px;font-weight:700;padding:5px 11px;border-radius:999px;background:color-mix(in srgb,var(--surface-2) 70%,transparent);color:var(--text-2);border:1px solid var(--border);white-space:nowrap}\n.spwrap .zpill.ok{color:var(--up);border-color:color-mix(in srgb,var(--up) 40%,transparent)} .spwrap .zpill.warn{color:#c98500;border-color:color-mix(in srgb,#c98500 40%,transparent)}\n.spwrap .sblk{border:1px solid var(--border);border-radius:14px;padding:13px 14px 11px;margin:10px 0;background:linear-gradient(180deg,color-mix(in srgb,var(--surface-2) 40%,transparent),transparent)}\n.spwrap .shead{display:flex;flex-wrap:wrap;align-items:center;gap:6px 10px;margin-bottom:8px}\n.spwrap .shead .nm2{font-size:13.5px;font-weight:800;letter-spacing:-.01em}\n.spwrap .tag{font-size:9.5px;font-weight:800;letter-spacing:.06em;padding:2.5px 7px;border-radius:5px;white-space:nowrap;text-transform:uppercase}\n.spwrap .tag.keep{background:color-mix(in srgb,var(--up) 16%,transparent);color:var(--up)}\n.spwrap .tag.new{background:color-mix(in srgb,var(--accent) 16%,transparent);color:var(--accent)}\n.spwrap .tag.off{background:var(--surface-2);color:var(--text-3);border:1px solid var(--border)}\n.spwrap .tag.warn{background:color-mix(in srgb,#c98500 18%,transparent);color:#c98500}\n.spwrap .tag.exit{background:color-mix(in srgb,var(--down) 16%,transparent);color:var(--down)}\n.spwrap .twrap{overflow-x:auto;-webkit-overflow-scrolling:touch;border:1px solid var(--border);border-radius:10px;background:var(--surface)}\n.spwrap table{width:100%;border-collapse:collapse;font-size:12.5px}\n.spwrap th{text-align:right;font-weight:700;color:var(--text-3);font-size:10px;text-transform:uppercase;letter-spacing:.08em;padding:8px 10px;border-bottom:1px solid var(--border);white-space:nowrap;background:color-mix(in srgb,var(--surface-2) 45%,var(--surface))}\n.spwrap th:first-child,.spwrap td:first-child{text-align:left}\n.spwrap td{padding:8px 10px;border-bottom:1px solid var(--border-2);text-align:right;white-space:nowrap;font-variant-numeric:tabular-nums}\n.spwrap tbody tr:last-child td{border-bottom:none}\n.spwrap td:nth-child(2),.spwrap th:nth-child(2){text-align:left}\n.spwrap .empty{text-align:center;color:var(--text-3);font-size:12.5px;padding:30px 10px}\n.spwrap .bal{border:1px solid var(--border);border-radius:14px;padding:13px 14px;margin:10px 0 4px;background:color-mix(in srgb,var(--surface-2) 45%,transparent)}\n.spwrap .bal-h{display:flex;align-items:center;gap:9px;flex-wrap:wrap;margin-bottom:8px}\n.spwrap .bal-h b{font-size:13.5px}\n.spwrap .bal-h .sub{font-size:11.5px;color:var(--text-3)}\n.spwrap .bal-h .go{margin-left:auto}\n.spwrap .snum{display:inline-block;font-size:9.5px;font-weight:800;background:var(--surface);border:1px solid var(--border);border-radius:4px;padding:0 4px;margin-left:3px;color:var(--text-3)}\n.spwrap .khelp{font-size:11.5px;color:var(--text-3);line-height:1.5;margin-top:10px}\n.spwrap .up{color:var(--up)} .spwrap .down{color:var(--down)}\n.spwrap .btn,#zbDlg .btn{border:1px solid var(--border);background:color-mix(in srgb,var(--surface-2) 70%,transparent);color:var(--text-2);border-radius:10px;padding:6px 11px;font-size:12.5px;font-weight:600;cursor:pointer;white-space:nowrap;display:inline-flex;align-items:center;gap:6px;transition:.15s;font-family:inherit;line-height:1.3}\n.spwrap .btn:hover,#zbDlg .btn:hover{border-color:color-mix(in srgb,var(--accent) 55%,transparent);color:var(--text)}\n.spwrap .btn.on,#zbDlg .btn.on{background:linear-gradient(135deg,var(--accent),color-mix(in srgb,var(--accent) 70%,#7c5cd6));border-color:transparent;color:#fff}\n.spwrap .btn.sell{background:var(--down);border-color:var(--down);color:#fff}\n.spwrap .btn:disabled{cursor:not-allowed;opacity:.55;transform:none}\n#ktoast{position:fixed;left:50%;bottom:24px;transform:translateX(-50%);z-index:300;background:var(--text);color:var(--bg);padding:9px 14px;border-radius:10px;font-size:12.5px;font-weight:600;opacity:0;pointer-events:none;transition:opacity .25s;max-width:90vw;text-align:center}\n#ktoast.show{opacity:1}\n.zchip{display:inline-block;padding:2px 7px;border-radius:20px;font-size:10.5px;font-weight:700;background:var(--surface-2);border:1px solid var(--border)}\n.zchip.ok{color:var(--up);border-color:var(--up)} .zchip.bad{color:var(--down);border-color:var(--down)} .zchip.open{color:var(--accent);border-color:var(--accent)}\n.zmsg{font-size:11px;color:var(--down);white-space:normal;text-align:left;max-width:280px}\n#zbWrap{position:fixed;inset:0;z-index:200;background:rgba(5,8,14,.55);backdrop-filter:blur(4px);display:none;align-items:center;justify-content:center;padding:16px}\n#zbWrap.open{display:flex}\n#zbDlg{width:min(620px,100%);max-height:92vh;overflow:auto;padding:18px;background:var(--surface);border:1px solid var(--border);border-radius:16px;box-shadow:var(--shadow)}\n#zbDlg h3{margin:0 0 2px;font-size:14.5px;font-weight:800;letter-spacing:-.01em}\n#zbDlg .sub{font-size:11.5px;color:var(--text-3)}\n#zbDlg .krow{display:flex;gap:8px;margin-top:10px}\n#zbDlg label{flex:1;font-size:10.5px;font-weight:800;color:var(--text-3);text-transform:uppercase;letter-spacing:.06em}\n#zbDlg input,#zbDlg select{width:100%;margin-top:4px;padding:7px 9px;font-size:13.5px;font-weight:600;border:1px solid var(--border);border-radius:8px;background:var(--surface-2);color:var(--text);font-family:inherit}\n#zbDlg table{margin-top:10px;width:100%;border-collapse:collapse;font-size:12.5px}\n#zbDlg th{font-size:10px;letter-spacing:.06em;color:var(--text-3);text-transform:uppercase;padding:7px 9px;text-align:right;border-bottom:1px solid var(--border);white-space:nowrap}\n#zbDlg th:first-child,#zbDlg td:first-child{text-align:left}\n#zbDlg td{padding:6px 9px;border-bottom:1px solid var(--border-2);text-align:right;font-variant-numeric:tabular-nums}\n#zbDlg td input.zbq{width:80px;margin:0;padding:5px 7px;text-align:right}\n#zbDlg td input.zbl{width:92px;margin:0;padding:5px 7px;text-align:right}\n#zbDlg .khelp{font-size:11.5px;color:var(--text-3);line-height:1.5;margin-top:10px}\n#zbTbl:not(.lim) .limcol{display:none}\n";
-  var SP_DOM = "<div class=\"spwrap\"><div class=\"sp-top\"><h2 class=\"sp-h\">Strategies</h2><div class=\"sp-actions\"><span id=\"zStatus\" class=\"zpill\">Zerodha: checking…</span><button class=\"btn\" id=\"btnZLogin\" style=\"display:none\">Login to Zerodha ▸</button><button class=\"btn\" id=\"btnZSetup\" title=\"Kite worker URL\">Worker</button><button class=\"btn\" id=\"spFavToggle\" title=\"Show only your favourite strategies\"></button><button class=\"btn\" id=\"spMode\" title=\"Rebalance picks rank on the LAST CLOSE — the official screen the backtest uses. Live picks re-rank the price-based factors (52w high/low distance, returns, momentum) at the CURRENT market price — fundamentals and holdings stay as filed. Near the close of a rebalance day the two converge.\"></button><button class=\"btn\" id=\"spSide\"></button><button class=\"btn on\" id=\"btnLoadAll\">Load all picks</button></div></div><div class=\"sp-sub\">One block per saved strategy: the screen’s top picks as of the latest close, live prices during market hours, and a basket order for the whole block — you confirm before anything is placed.</div><div class=\"sp-sub\" id=\"status\"></div><div id=\"zSetupBox\" style=\"display:none\"><div class=\"khelp\">One-time per browser: your Kite worker URL (the portfolio/terminal shares it automatically).</div><div style=\"display:flex;gap:7px;max-width:520px;margin-top:6px\"><input id=\"zWUrl\" placeholder=\"https://…workers.dev\" class=\"sp-input\"><button class=\"btn on\" id=\"zWSave\">Save</button></div></div><div id=\"buyall\"></div><div id=\"cards\"><div class=\"empty\">Loading saved strategies…</div></div></div>";
+  var SP_CSS = "\n.spwrap{font-size:13px;line-height:1.5}\n.spwrap .sp-top{display:flex;align-items:center;justify-content:space-between;gap:10px;flex-wrap:wrap;margin-bottom:4px}\n.spwrap .sp-h{font-size:15px;font-weight:800;letter-spacing:-.015em;margin:0;display:flex;align-items:center;gap:9px}\n.spwrap .sp-h::before{content:\"\";width:4px;height:15px;border-radius:3px;flex:none;background:linear-gradient(180deg,var(--accent),color-mix(in srgb,var(--accent) 45%,transparent))}\n.spwrap .sp-actions{display:flex;gap:7px;align-items:center;flex-wrap:wrap}\n.spwrap .sp-sub{font-size:11.5px;color:var(--text-3);line-height:1.45;margin:4px 0}\n.spwrap .sp-input{flex:1;padding:7px 9px;font-size:13px;border:1px solid var(--border);border-radius:8px;background:var(--surface-2);color:var(--text);font-family:inherit}\n.spwrap .sym{color:var(--text-3);font-size:11px;font-weight:600}\n.spwrap .badge{font-size:9px;font-weight:800;letter-spacing:.05em;padding:1px 5px;border-radius:4px;background:var(--surface-2);color:var(--text-3);border:1px solid var(--border)}\n.spwrap .zpill{display:inline-flex;align-items:center;gap:6px;font-size:11.5px;font-weight:700;padding:5px 11px;border-radius:999px;background:color-mix(in srgb,var(--surface-2) 70%,transparent);color:var(--text-2);border:1px solid var(--border);white-space:nowrap}\n.spwrap .zpill.ok{color:var(--up);border-color:color-mix(in srgb,var(--up) 40%,transparent)} .spwrap .zpill.warn{color:#c98500;border-color:color-mix(in srgb,#c98500 40%,transparent)}\n.spwrap .sblk{border:1px solid var(--border);border-radius:14px;padding:13px 14px 11px;margin:10px 0;background:linear-gradient(180deg,color-mix(in srgb,var(--surface-2) 40%,transparent),transparent)}\n.spwrap .shead{display:flex;flex-wrap:wrap;align-items:center;gap:6px 10px;margin-bottom:8px}\n.spwrap .shead .nm2{font-size:13.5px;font-weight:800;letter-spacing:-.01em}\n.spwrap .tag{font-size:9.5px;font-weight:800;letter-spacing:.06em;padding:2.5px 7px;border-radius:5px;white-space:nowrap;text-transform:uppercase}\n.spwrap .tag.keep{background:color-mix(in srgb,var(--up) 16%,transparent);color:var(--up)}\n.spwrap .tag.new{background:color-mix(in srgb,var(--accent) 16%,transparent);color:var(--accent)}\n.spwrap .tag.off{background:var(--surface-2);color:var(--text-3);border:1px solid var(--border)}\n.spwrap .tag.warn{background:color-mix(in srgb,#c98500 18%,transparent);color:#c98500}\n.spwrap .tag.exit{background:color-mix(in srgb,var(--down) 16%,transparent);color:var(--down)}\n.spwrap .twrap{overflow-x:auto;-webkit-overflow-scrolling:touch;border:1px solid var(--border);border-radius:10px;background:var(--surface)}\n.spwrap table{width:100%;border-collapse:collapse;font-size:12.5px}\n.spwrap th{text-align:right;font-weight:700;color:var(--text-3);font-size:10px;text-transform:uppercase;letter-spacing:.08em;padding:8px 10px;border-bottom:1px solid var(--border);white-space:nowrap;background:color-mix(in srgb,var(--surface-2) 45%,var(--surface))}\n.spwrap th:first-child,.spwrap td:first-child{text-align:left}\n.spwrap td{padding:8px 10px;border-bottom:1px solid var(--border-2);text-align:right;white-space:nowrap;font-variant-numeric:tabular-nums}\n.spwrap tbody tr:last-child td{border-bottom:none}\n.spwrap td:nth-child(2),.spwrap th:nth-child(2){text-align:left}\n.spwrap .empty{text-align:center;color:var(--text-3);font-size:12.5px;padding:30px 10px}\n.spwrap .bal{border:1px solid var(--border);border-radius:14px;padding:13px 14px;margin:10px 0 4px;background:color-mix(in srgb,var(--surface-2) 45%,transparent)}\n.spwrap .bal-h{display:flex;align-items:center;gap:9px;flex-wrap:wrap;margin-bottom:8px}\n.spwrap .bal-h b{font-size:13.5px}\n.spwrap .bal-h .sub{font-size:11.5px;color:var(--text-3)}\n.spwrap .bal-h .go{margin-left:auto}\n.spwrap .snum{display:inline-block;font-size:9.5px;font-weight:800;background:var(--surface);border:1px solid var(--border);border-radius:4px;padding:0 4px;margin-left:3px;color:var(--text-3)}\n.spwrap .khelp{font-size:11.5px;color:var(--text-3);line-height:1.5;margin-top:10px}\n.spwrap .up{color:var(--up)} .spwrap .down{color:var(--down)}\n.spwrap .btn,#zbDlg .btn{border:1px solid var(--border);background:color-mix(in srgb,var(--surface-2) 70%,transparent);color:var(--text-2);border-radius:10px;padding:6px 11px;font-size:12.5px;font-weight:600;cursor:pointer;white-space:nowrap;display:inline-flex;align-items:center;gap:6px;transition:.15s;font-family:inherit;line-height:1.3}\n.spwrap .btn:hover,#zbDlg .btn:hover{border-color:color-mix(in srgb,var(--accent) 55%,transparent);color:var(--text)}\n.spwrap .btn.on,#zbDlg .btn.on{background:linear-gradient(135deg,var(--accent),color-mix(in srgb,var(--accent) 70%,#7c5cd6));border-color:transparent;color:#fff}\n.spwrap .btn.sell{background:var(--down);border-color:var(--down);color:#fff}\n.spwrap .btn:disabled{cursor:not-allowed;opacity:.55;transform:none}\n#ktoast{position:fixed;left:50%;bottom:24px;transform:translateX(-50%);z-index:300;background:var(--text);color:var(--bg);padding:9px 14px;border-radius:10px;font-size:12.5px;font-weight:600;opacity:0;pointer-events:none;transition:opacity .25s;max-width:90vw;text-align:center}\n#ktoast.show{opacity:1}\n.zchip{display:inline-block;padding:2px 7px;border-radius:20px;font-size:10.5px;font-weight:700;background:var(--surface-2);border:1px solid var(--border)}\n.zchip.ok{color:var(--up);border-color:var(--up)} .zchip.bad{color:var(--down);border-color:var(--down)} .zchip.open{color:var(--accent);border-color:var(--accent)}\n.zmsg{font-size:11px;color:var(--down);white-space:normal;text-align:left;max-width:280px}\n#zbWrap{position:fixed;inset:0;z-index:200;background:rgba(5,8,14,.55);backdrop-filter:blur(4px);display:none;align-items:center;justify-content:center;padding:16px}\n#zbWrap.open{display:flex}\n#zbDlg{width:min(620px,100%);max-height:92vh;overflow:auto;padding:18px;background:var(--surface);border:1px solid var(--border);border-radius:16px;box-shadow:var(--shadow)}\n#zbDlg h3{margin:0 0 2px;font-size:14.5px;font-weight:800;letter-spacing:-.01em}\n#zbDlg .sub{font-size:11.5px;color:var(--text-3)}\n#zbDlg .krow{display:flex;gap:8px;margin-top:10px}\n#zbDlg label{flex:1;font-size:10.5px;font-weight:800;color:var(--text-3);text-transform:uppercase;letter-spacing:.06em}\n#zbDlg input,#zbDlg select{width:100%;margin-top:4px;padding:7px 9px;font-size:13.5px;font-weight:600;border:1px solid var(--border);border-radius:8px;background:var(--surface-2);color:var(--text);font-family:inherit}\n#zbDlg table{margin-top:10px;width:100%;border-collapse:collapse;font-size:12.5px}\n#zbDlg th{font-size:10px;letter-spacing:.06em;color:var(--text-3);text-transform:uppercase;padding:7px 9px;text-align:right;border-bottom:1px solid var(--border);white-space:nowrap}\n#zbDlg th:first-child,#zbDlg td:first-child{text-align:left}\n#zbDlg td{padding:6px 9px;border-bottom:1px solid var(--border-2);text-align:right;font-variant-numeric:tabular-nums}\n#zbDlg td input.zbq{width:80px;margin:0;padding:5px 7px;text-align:right}\n#zbDlg td input.zbl{width:92px;margin:0;padding:5px 7px;text-align:right}\n#zbDlg .khelp{font-size:11.5px;color:var(--text-3);line-height:1.5;margin-top:10px}\n#zbTbl:not(.lim) .limcol{display:none}\n\n.spwrap .sp-cnt{font-size:11px;font-weight:800;background:var(--surface-2);border-radius:20px;padding:1px 8px;color:var(--text-2);letter-spacing:0}\n.spwrap .spchips{display:flex;gap:6px;align-items:center;overflow-x:auto;-webkit-overflow-scrolling:touch;padding:2px 0;margin:6px 0 10px;scrollbar-width:none}\n.spwrap .spchips::-webkit-scrollbar{display:none}\n.spwrap .spchips button{white-space:nowrap;background:color-mix(in srgb,var(--surface-2) 70%,transparent);border:1px solid var(--border);color:var(--text-2);border-radius:999px;padding:5px 12px;font:inherit;font-size:12px;font-weight:700;cursor:pointer}\n.spwrap .spchips button:hover{border-color:color-mix(in srgb,var(--accent) 55%,transparent);color:var(--text)}\n.spwrap .spchips button.on{background:color-mix(in srgb,var(--accent) 16%,transparent);border-color:color-mix(in srgb,var(--accent) 45%,transparent);color:var(--accent)}\n.spwrap .spchips .n{font-size:10.5px;font-weight:800;opacity:.75;margin-left:5px}\n.spwrap .bal tfoot td{font-weight:800;border-top:1px solid var(--border);background:color-mix(in srgb,var(--surface-2) 45%,transparent)}";
+  var SP_DOM = "<div class=\"spwrap\"><div class=\"sp-top\"><h2 class=\"sp-h\">Strategies<span class=\"sp-cnt\" id=\"spCnt\"></span></h2><div class=\"sp-actions\"><span id=\"zStatus\" class=\"zpill\">Zerodha: checking…</span><button class=\"btn\" id=\"btnZLogin\" style=\"display:none\">Login to Zerodha ▸</button><button class=\"btn\" id=\"btnZSetup\" title=\"Kite worker URL\">Worker</button><button class=\"btn\" id=\"spMode\" title=\"Rebalance picks rank on the LAST CLOSE — the official screen the backtest uses. Live picks re-rank the price-based factors (52w high/low distance, returns, momentum) at the CURRENT market price — fundamentals and holdings stay as filed. Near the close of a rebalance day the two converge.\"></button><button class=\"btn\" id=\"spSide\"></button><button class=\"btn on\" id=\"btnLoadAll\">Load all picks</button></div></div><div class=\"sp-sub\">One block per saved strategy: the screen’s top picks as of the latest close, live prices during market hours, and a basket order for the whole block — you confirm before anything is placed.</div><div class=\"sp-sub\" id=\"status\"></div><div id=\"zSetupBox\" style=\"display:none\"><div class=\"khelp\">One-time per browser: your Kite worker URL (the portfolio/terminal shares it automatically).</div><div style=\"display:flex;gap:7px;max-width:520px;margin-top:6px\"><input id=\"zWUrl\" placeholder=\"https://…workers.dev\" class=\"sp-input\"><button class=\"btn on\" id=\"zWSave\">Save</button></div></div><div class=\"spchips\" id=\"spChips\"></div><div id=\"buyall\"></div><div id=\"cards\"><div class=\"empty\">Loading saved strategies…</div></div></div>";
   function injectCSS(){ if (document.getElementById('sp-css')) return; var s=document.createElement('style'); s.id='sp-css'; s.textContent=SP_CSS; document.head.appendChild(s); }
   window.mountStrategies = function(container, opts){
     if (mounted) return; mounted = true;
@@ -45,6 +45,40 @@ function uniqStrategies(){
 function loadFavs(){ try { return new Set(JSON.parse(localStorage.getItem('bt_fav_strategies') || '[]')); } catch(e){ return new Set(); } }
 function isFavCfg(favs, c){ return favs.has(identityKey(c)) || (typeof ruleKey === 'function' && favs.has(ruleKey(c))); }
 let FAVONLY = (function(){ try { return localStorage.getItem('sp_fav_only') !== '0'; } catch(e){ return true; } })();
+/* Chips over the saved list — All · ★ Favourites · ✓ Bought/Sold today · Private — the same
+   filter + totals treatment the holdings / positions / orders tabs got (user 2026-09-02). Exactly
+   one chip is on. ★ keeps the persisted sp_fav_only; the other buckets are session state
+   (SP_FILT) and a bucket that empties (its chip disappears) falls back to All / ★. */
+let SP_FILT = '';
+function spMarkSet(){ return SIDE === 'sell' ? zbSoldSet() : zbBoughtSet(); }
+function spBuckets(all, favs){
+  const mark = spMarkSet();
+  return { all: all.length, fav: all.filter(it => isFavCfg(favs, it.cfg)).length,
+           mark: all.filter(it => mark.has(it.id)).length, priv: all.filter(it => it._priv).length };
+}
+function spList(all, favs){
+  const B = spBuckets(all, favs);
+  if (SP_FILT && !B[SP_FILT]) SP_FILT = '';
+  const mark = spMarkSet();
+  let l = all;
+  if (SP_FILT === 'mark') l = all.filter(it => mark.has(it.id));
+  else if (SP_FILT === 'priv') l = all.filter(it => it._priv);
+  else if (FAVONLY && B.fav > 0) l = all.filter(it => isFavCfg(favs, it.cfg));
+  return l.slice().sort((a, b) => (isFavCfg(favs, b.cfg) ? 1 : 0) - (isFavCfg(favs, a.cfg) ? 1 : 0));   // ★ float to the top
+}
+function spActive(B){ return SP_FILT || ((FAVONLY && B.fav > 0) ? 'fav' : 'all'); }
+function spChipName(k){ return k === 'fav' ? '★ Favourites' : k === 'mark' ? (SIDE === 'sell' ? '✓ Sold today' : '✓ Bought today') : k === 'priv' ? 'Private' : 'All'; }
+/* footer label for a totals row: "Total" on All, else "Total · ★ Favourites 8 of 45" */
+function spTotLbl(list){
+  const all = uniqStrategies(), k = spActive(spBuckets(all, loadFavs()));
+  return k === 'all' ? 'Total' : 'Total · ' + spChipName(k) + ' ' + list.length + ' of ' + all.length;
+}
+function spChipsRender(all, B, list){
+  const act = spActive(B);
+  const defs = [['all', 'All', B.all], ['fav', spChipName('fav'), B.fav], ['mark', spChipName('mark'), B.mark], ['priv', 'Private', B.priv]].filter(d => d[2] > 0);
+  const el = $('spChips'); if (el) el.innerHTML = defs.map(d => '<button data-spf="' + d[0] + '" class="' + (act === d[0] ? 'on' : '') + '">' + esc(d[1]) + '<span class="n">' + d[2] + '</span></button>').join('');
+  const c = $('spCnt'); if (c) c.textContent = list.length + (list.length !== all.length ? ' / ' + all.length : '');
+}
 /* terminal.html loads no theme.js/sw-sync, so pull the synced favourites once here — remote-newer-wins
    with the SAME swset_ts stamp sw-sync uses, so the two never fight. Fail-silent offline. */
 async function refreshFavsFromSettings(){
@@ -162,7 +196,7 @@ $('btnLoadAll').onclick = async () => {
   const favs = loadFavs();
   const all = uniqStrategies();
   const nFav = all.filter(it => isFavCfg(favs, it.cfg)).length;
-  const list = (FAVONLY && nFav > 0) ? all.filter(it => isFavCfg(favs, it.cfg)) : all;
+  const list = spList(all, favs);   // the LISTED strategies — the chips narrow this too
   if (!list.length) return;
   $('btnLoadAll').disabled = true;
   if (!await ensureEngine()){ $('btnLoadAll').disabled = false; ktoast('Could not load market data'); return; }
@@ -259,16 +293,10 @@ function renderCards(){
   const favOrder = (function(){ try { return JSON.parse(localStorage.getItem('bt_fav_strategies') || '[]'); } catch(e){ return []; } })();
   const favNum = cfg => { let i = favOrder.indexOf(identityKey(cfg)); if (i < 0 && typeof ruleKey === 'function') i = favOrder.indexOf(ruleKey(cfg)); return i + 1; };
   const all = uniqStrategies();
-  // favourites float to the top; the toggle narrows to just them (default on when stars exist)
-  const nFav = all.filter(it => isFavCfg(favs, it.cfg)).length;
-  const tg = $('spFavToggle');
-  if (tg){ tg.style.display = nFav ? '' : 'none';
-    tg.textContent = FAVONLY ? ('★ Favourites (' + nFav + ')') : ('All (' + all.length + ')');
-    tg.classList.toggle('on', FAVONLY && !!nFav); }
-  const useFav = FAVONLY && nFav > 0;
-  const list = (useFav ? all.filter(it => isFavCfg(favs, it.cfg)) : all)
-    .slice().sort((a, b) => (isFavCfg(favs, b.cfg) ? 1 : 0) - (isFavCfg(favs, a.cfg) ? 1 : 0));
-  if (!list.length){ $('cards').innerHTML = '<div class="empty">No saved strategies found.</div>'; return; }
+  // favourites float to the top; the chips narrow the list (★ on by default when stars exist)
+  const list = spList(all, favs);
+  spChipsRender(all, spBuckets(all, favs), list);
+  if (!list.length){ $('cards').innerHTML = '<div class="empty">No saved strategies found.</div>'; renderBuyAll(list); return; }
   const bought = zbBoughtSet();
   const RW = rebalWindow();
   const h = list.map(it => {
@@ -358,12 +386,12 @@ function buyAllAgg(list){
 }
 function renderBuyAll(list){
   const box = $('buyall'); if (!box) return;
-  if (SIDE === 'sell'){ box.innerHTML = '<div class="khelp" style="margin:6px 4px 10px">Adopted timing (backtested \u2248+10pp/yr vs buying next morning): <b>sell the exits near the close of T\u22121</b> \u2014 the session BEFORE month-end, on that day\u2019s near-final \u26a1 live picks \u00b7 <b>buy the entries near the month-end close</b>, sized from the sell proceeds.</div>'; return; }
+  if (SIDE === 'sell'){ box.innerHTML = renderSellAll(list) + '<div class="khelp" style="margin:6px 4px 10px">Adopted timing (backtested \u2248+10pp/yr vs buying next morning): <b>sell the exits near the close of T\u22121</b> \u2014 the session BEFORE month-end, on that day\u2019s near-final \u26a1 live picks \u00b7 <b>buy the entries near the month-end close</b>, sized from the sell proceeds.</div>'; return; }
   const residHTML = renderResidual();
   const withPicks = list.filter(it => PICKS[it.id] && PICKS[it.id].rows.length);
   if (!withPicks.length){ box.innerHTML = residHTML; wireResidGo(); return; }
   const agg = buyAllAgg(list), rows = agg.rows;
-  const totAmt = rows.reduce((s, r) => s + r.amt, 0);
+  const totAmt = rows.reduce((s, r) => s + r.amt, 0), totQty = rows.reduce((s, r) => s + (r.qty || 0), 0);
   const anyQty = rows.some(r => r.qty > 0);
   const B = BUYSLICER['__all__'];
   box.innerHTML = residHTML + '<div class="bal"><div class="bal-h"><b>This rebalance · ' + rows.length + ' stocks to buy</b>' +
@@ -377,7 +405,8 @@ function renderBuyAll(list){
       '<td>₹' + (+r.px).toFixed(2) + '</td>' +
       '<td>' + (r.qty ? r.qty.toLocaleString('en-IN') : '—') + '</td>' +
       '<td>' + (r.amt ? zinr(r.amt) : '—') + (r.capped ? ' <span class="sym" title="capped per basket">cap</span>' : '') + '</td></tr>').join('') +
-    '</tbody></table></div>' +
+    '</tbody><tfoot><tr><td>' + esc(spTotLbl(list)) + '</td><td class="sym">' + rows.length + ' stock' + (rows.length === 1 ? '' : 's') + '</td><td></td>' +
+    '<td>' + (totQty ? totQty.toLocaleString('en-IN') : '—') + '</td><td>' + (totAmt ? zinr(totAmt) : '—') + '</td></tr></tfoot></table></div>' +
     '<div class="khelp">Numbered by the strategy blocks below. Amounts are the engine’s rebalance sizing — each new entry funded by its strategy’s EXIT proceeds (value of the holds it drops), estimated at live prices; a first-ever buy with no holdings falls back to the ₹ amount in its ⚡ dialog. A stock several strategies want is bought once, for the combined amount.</div></div>';
   const lg = $('levGo'); if (lg) lg.onclick = () => zbLevSweep(rows);
   const go = $('balGo');
@@ -776,26 +805,38 @@ function rebalWindow(){
   const lab = d => new Date(d).toLocaleDateString('en-GB', { day: 'numeric', month: 'short', timeZone: 'UTC' });
   return { in: d0 >= +t1 && d0 <= +t, t1lab: lab(+t1), tlab: lab(+t) };
 }
-function sellCardHTML(it, disp, favNum){
-  const sold = zbSoldSet();
-  const held = heldFor(it.cfg);
-  const p = PICKS[it.id];
+/* exit rows for one strategy: the card's table AND the sell-side summary read this */
+function sellExits(it){
+  const held = heldFor(it.cfg), p = PICKS[it.id];
   const isReset = !!(held && held.method === 'reset');
   const pickSet = (p && p.rows.length) ? new Set(p.rows.map(r => r.sym)) : null;
-  let body = '', btn = '';
-  if (!held) body = '<div class="khelp">No holdings feed in this browser yet (needs the pf token) — or this strategy has no live book.</div>';
-  else if (!held.rows.length) body = '<div class="khelp">Nothing held under this strategy.</div>';
-  else {
-    const rows = held.rows.map(h => {
+  const rows = (held && held.rows.length) ? held.rows.map(h => {
       const q = liveQ(h.sym), px = (q && q.ltp != null) ? +q.ltp : null;
       const zh = Z.connected ? Z.hold[h.sym] : null;
       const zt = zh ? (zh.mtf + zh.cnc + (zh.coll || 0)) : null;
       const lt = (FEED.symTot || {})[h.sym];
       const mism = (zt != null && lt != null && zt !== lt) ? (zt - lt) : null;   // demat vs strategy-ledger, both ways
       return { h: h, px: px, mism: mism, stays: !isReset && !!(pickSet && pickSet.has(h.sym)), val: px != null ? h.qty * px : null };
-    });
-    const exits = rows.filter(r => !r.stays);
-    const est = exits.reduce((s, r) => s + (r.val || 0), 0);
+    }) : [];
+  const exits = rows.filter(r => !r.stays);
+  return { held, p, isReset, pickSet, rows, exits, est: exits.reduce((s, r) => s + (r.val || 0), 0), known: !!(pickSet || isReset) };
+}
+function renderSellAll(list){
+  let nEx = 0, est = 0, nKnown = 0, nUnknown = 0, nBook = 0;
+  list.forEach(it => { const x = sellExits(it); if (!x.held || !x.rows.length) return; nBook++;
+    if (x.known){ nKnown++; nEx += x.exits.length; est += x.est; } else nUnknown++; });
+  return '<div class="bal"><div class="bal-h"><b>This rebalance · ' + nEx + ' exit' + (nEx === 1 ? '' : 's') + ' to sell</b>' +
+    '<span class="sub">' + (nBook ? ('across ' + nKnown + ' of ' + nBook + ' strateg' + (nBook === 1 ? 'y' : 'ies') + ' with a book' + (est ? ' · ≈ ' + zinr(est) : '') +
+      (nUnknown ? ' · ' + nUnknown + ' need picks loaded' : '')) : 'no strategy book in this browser yet') + ' · ' + esc(spTotLbl(list)) + '</span></div></div>';
+}
+function sellCardHTML(it, disp, favNum){
+  const sold = zbSoldSet();
+  const X = sellExits(it), held = X.held, p = X.p, isReset = X.isReset, pickSet = X.pickSet;
+  let body = '', btn = '';
+  if (!held) body = '<div class="khelp">No holdings feed in this browser yet (needs the pf token) — or this strategy has no live book.</div>';
+  else if (!held.rows.length) body = '<div class="khelp">Nothing held under this strategy.</div>';
+  else {
+    const rows = X.rows, exits = X.exits, est = X.est;
     const liveOk = isReset || !marketOpen() || livePicksOk(p);
     const rt = (pickSet || isReset) && exits.length ? sellRuntime(exits) : null;
     const rtTxt = rt ? ' \u00b7 \u2248 ' + rt.tot + ' slice' + (rt.tot === 1 ? '' : 's') + ', ~' + rt.mins + ' min at ' + sliceGap() + 's gap' + (rt.startBy ? ' \u2014 start by ' + rt.startBy + ' for a 3:28 finish' : '') : '';
@@ -1029,8 +1070,12 @@ function kiteSend(orders){
 
 /* ---------- boot ---------- */
 (async function boot(){
-  const tg = $('spFavToggle');
-  if (tg) tg.onclick = () => { FAVONLY = !FAVONLY; try { localStorage.setItem('sp_fav_only', FAVONLY ? '1' : '0'); } catch(e){} renderCards(); };
+  const ch = $('spChips');
+  if (ch) ch.onclick = e => { const b = e.target.closest('[data-spf]'); if (!b) return;
+    const k = b.dataset.spf;
+    if (k === 'fav'){ FAVONLY = true; SP_FILT = ''; } else if (k === 'all'){ FAVONLY = false; SP_FILT = ''; } else SP_FILT = k;
+    try { localStorage.setItem('sp_fav_only', FAVONLY ? '1' : '0'); } catch(e){}
+    renderCards(); };
   const mb = $('spMode');
   const mLbl = () => { if (mb){ mb.textContent = PICKMODE === 'live' ? 'Live picks' : 'Rebalance picks'; mb.classList.toggle('on', PICKMODE === 'live'); } };
   if (mb) mb.onclick = async () => {
