@@ -210,11 +210,12 @@ svg.ic{width:16px;height:16px;flex:none;display:block}
 .ofilt.act{border-color:color-mix(in srgb,var(--accent) 45%,transparent);color:var(--accent);background:color-mix(in srgb,var(--accent) 16%,transparent)}
 .ofilt .ocount{font-size:10px;color:var(--text-3);font-weight:800}
 .ofilt.act .ocount{color:var(--accent)}
-.ordtbl .osub{font-size:10px;color:var(--text-3);margin-top:1px;font-weight:600;max-width:220px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
-.ordtbl .osub.down{color:var(--down)}
-.ordtbl .omono{font-variant-numeric:tabular-nums}
-.ordtbl .obuy{color:var(--buy);font-weight:800}
-.ordtbl .osell{color:var(--sell);font-weight:800}
+#ordView .osub{font-size:10px;color:var(--text-3);margin-top:1px;font-weight:600;max-width:220px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+#ordView .osub.down{color:var(--down)}
+#ordView .omono{font-variant-numeric:tabular-nums}
+#ordView .obuy{color:var(--buy);font-weight:800}
+#ordView .osell{color:var(--sell);font-weight:800}
+.otot{display:none}   /* phone-only totals line under the order cards (the table's tfoot is hidden there) */
 .ochip{display:inline-block;font-size:9px;font-weight:800;letter-spacing:.05em;text-transform:uppercase;padding:2.5px 7px;border-radius:5px;border:1px solid transparent;white-space:nowrap}
 .ochip.ok{color:var(--up);border-color:color-mix(in srgb,var(--up) 38%,transparent);background:color-mix(in srgb,var(--up) 13%,transparent)}
 .ochip.open{color:var(--accent);border-color:color-mix(in srgb,var(--accent) 38%,transparent);background:color-mix(in srgb,var(--accent) 13%,transparent)}
@@ -278,6 +279,7 @@ body.blur-secret .secret{filter:blur(7px);-webkit-user-select:none;user-select:n
      sideways table, Holdings | Positions tabs, and a sticky Day's P&L bar above the footer. */
   .atbl-wrap{display:none}
   .kcards{display:block}
+  .otot{display:flex;justify-content:space-between;gap:8px 12px;flex-wrap:wrap;padding:10px 12px;margin-top:4px;border-top:1px solid var(--border);font-size:12px;font-weight:700;color:var(--text-2)}
   .kcard{position:relative;padding:12px 2px 11px 12px;border-bottom:1px solid var(--border-2)}
   .kcard:before{content:'';position:absolute;left:0;top:10px;bottom:10px;width:3px;border-radius:3px;background:var(--text-3);opacity:.5}
   .kcard.up:before{background:var(--up);opacity:1} .kcard.down:before{background:var(--down);opacity:1}
@@ -1021,10 +1023,24 @@ body.blur-secret .secret{filter:blur(7px);-webkit-user-select:none;user-select:n
       drawOrdersView();
     });
   }
+  /* the bits both the table row and the phone card show for one order */
+  function ordRowInfo(r){
+    var st=r.status||'';
+    return { st:st, cls:ordChipCls(st), live:ordLive(r), side:(r.transaction_type||'').toUpperCase(),
+      time:(r.order_timestamp||'').slice(11,16)||'—',
+      qf:(r.filled_quantity!=null?r.filled_quantity:0), qt:(r.quantity!=null?r.quantity:0),
+      px:(+r.average_price>0)?('₹'+(+r.average_price).toFixed(2)):((+r.price>0)?('₹'+(+r.price).toFixed(2)):'MKT'),
+      trg:(+r.trigger_price>0)?'<div class="osub">trg ₹'+(+r.trigger_price).toFixed(2)+'</div>':'',
+      typ:[(r.order_type||''),(r.product||'')].filter(Boolean).join(' · '),
+      rej:(st.toUpperCase()==='REJECTED'&&r.status_message)?r.status_message:'',
+      cancel:ordLive(r)?'<button class="ocancel" data-oc="'+esc(r.order_id)+'" data-ov="'+esc(r.variety||'regular')+'" data-osy="'+esc(r.tradingsymbol||'')+'" title="Cancel this order">✕</button>':'' };
+  }
   function drawOrdersView(){
     var ov=document.getElementById('ordView'); if(!ov) return;
     var list=ACCT.ord||[];
-    var head='<div class="av-head"><span class="av-title">Today’s orders</span>'+
+    var shown=list.filter(function(r){ return ORD_FILTER==='all'?true:ordBucket(r)===ORD_FILTER; });
+    var fName=({open:'Open',done:'Completed',rej:'Rejected'})[ORD_FILTER]||'';
+    var head='<div class="av-head"><span class="av-title">Today’s orders'+(list.length?' · '+shown.length+(ORD_FILTER!=='all'?' of '+list.length:''):'')+'</span>'+
       (ACCT.connected?'<span class="livetag">● '+esc(ACCT.user||'live')+'</span>':'')+
       '<span class="av-upd">as of '+istTime(Date.now())+' · <a href="#" data-oact="refresh">refresh</a></span></div>';
     updateOrdCardSum();
@@ -1032,26 +1048,47 @@ body.blur-secret .secret{filter:blur(7px);-webkit-user-select:none;user-select:n
     var c=ordCounts(list);
     var chips=[['all','All',list.length],['open','Open',c.open],['done','Completed',c.done],['rej','Rejected',c.rej]];
     var frow='<div class="ofilters">'+chips.map(function(x){ return '<button class="ofilt'+(ORD_FILTER===x[0]?' act':'')+'" data-of="'+x[0]+'">'+x[1]+' <span class="ocount">'+x[2]+'</span></button>'; }).join('')+'</div>';
-    var shown=list.filter(function(r){ return ORD_FILTER==='all'?true:ordBucket(r)===ORD_FILTER; });
-    var rows=shown.slice().reverse().map(function(r){
-      var st=r.status||'', cls=ordChipCls(st), live=ordLive(r), buy=(r.transaction_type||'').toUpperCase()==='BUY';
-      var qf=(r.filled_quantity!=null?r.filled_quantity:0), qt=(r.quantity!=null?r.quantity:0);
-      var px=(+r.average_price>0)?('₹'+(+r.average_price).toFixed(2)):((+r.price>0)?('₹'+(+r.price).toFixed(2)):'MKT');
-      var typ=[(r.order_type||''),(r.product||'')].filter(Boolean).join(' · ');
-      var rej=(st.toUpperCase()==='REJECTED'&&r.status_message);
+    var rows=shown.slice().reverse().map(function(r){ var i=ordRowInfo(r);
       return '<tr data-sy="'+esc(r.tradingsymbol||'')+'">'+
-        '<td class="omono">'+esc((r.order_timestamp||'').slice(11,16)||'—')+'</td>'+
-        '<td><span class="nm">'+esc(r.tradingsymbol||'')+'</span><span class="xtag">'+esc(r.exchange||'NSE')+'</span>'+(typ?'<div class="osub">'+esc(typ)+'</div>':'')+'</td>'+
-        '<td class="'+(buy?'obuy':'osell')+'">'+esc(r.transaction_type||'')+'</td>'+
-        '<td class="secret omono">'+qf+'/'+qt+'</td>'+
-        '<td class="omono">'+px+((+r.trigger_price>0)?'<div class="osub">trg ₹'+(+r.trigger_price).toFixed(2)+'</div>':'')+'</td>'+
-        '<td><span class="ochip '+cls+'">'+esc(st)+'</span>'+(rej?'<div class="osub down" title="'+esc(r.status_message)+'">'+esc(r.status_message)+'</div>':'')+'</td>'+
-        '<td>'+(live?'<button class="ocancel" data-oc="'+esc(r.order_id)+'" data-ov="'+esc(r.variety||'regular')+'" data-osy="'+esc(r.tradingsymbol||'')+'" title="Cancel this order">✕</button>':'')+'</td>'+
+        '<td class="omono">'+esc(i.time)+'</td>'+
+        '<td><span class="nm">'+esc(r.tradingsymbol||'')+'</span><span class="xtag">'+esc(r.exchange||'NSE')+'</span>'+(i.typ?'<div class="osub">'+esc(i.typ)+'</div>':'')+'</td>'+
+        '<td class="'+(i.side==='BUY'?'obuy':'osell')+'">'+esc(i.side)+'</td>'+
+        '<td class="secret omono">'+i.qf+'/'+i.qt+'</td>'+
+        '<td class="omono">'+i.px+i.trg+'</td>'+
+        '<td><span class="ochip '+i.cls+'">'+esc(i.st)+'</span>'+(i.rej?'<div class="osub down" title="'+esc(i.rej)+'">'+esc(i.rej)+'</div>':'')+'</td>'+
+        '<td>'+i.cancel+'</td>'+
         '</tr>';
     }).join('');
-    ov.innerHTML=head+frow+'<div class="atbl-wrap"><table class="atbl ordtbl"><thead><tr>'+
+    /* Kite-style cards for a phone — the table above is display:none there and, until 2026-09-02,
+       the Orders tab showed its chips and nothing else on a phone (measured at 375px) */
+    var cards=shown.slice().reverse().map(function(r){ var i=ordRowInfo(r);
+      return '<div class="kcard '+(i.cls==='ok'?'up':i.cls==='bad'?'down':'')+'">'+
+        '<div class="khead"><span class="knm">'+esc(r.tradingsymbol||'')+'</span><span class="mchip">'+esc(r.exchange||'NSE')+'</span>'+
+          '<span class="'+(i.side==='BUY'?'obuy':'osell')+'" style="font-size:11px">'+esc(i.side)+'</span>'+
+          '<span class="kday omono" style="color:var(--text-3)">'+esc(i.time)+'</span></div>'+
+        '<div class="kpnl">'+
+          '<div class="kpl"><div class="lbl">Qty</div><div class="v secret omono">'+i.qf+'/'+i.qt+'</div></div>'+
+          '<div class="kpl"><div class="lbl">Price</div><div class="v omono">'+i.px+'</div>'+i.trg+'</div>'+
+          '<div class="act"><span class="ochip '+i.cls+'">'+esc(i.st)+'</span>'+(i.cancel?' '+i.cancel:'')+'</div></div>'+
+        '<div class="kfoot">'+esc(i.typ||'')+(i.rej?(i.typ?' · ':'')+'<span class="down">'+esc(i.rej)+'</span>':'')+'</div></div>';
+    }).join('');
+    /* footer sums the orders LISTED under the active chip, like the holdings / positions tables:
+       buys · sells, filled/placed quantity, and the value actually traded (Σ filled × average) */
+    var nBuy=0,nSell=0,tFill=0,tQty=0,tVal=0;
+    shown.forEach(function(r){ var sd=(r.transaction_type||'').toUpperCase(); if(sd==='BUY') nBuy++; else if(sd==='SELL') nSell++;
+      var qf=+r.filled_quantity||0; tFill+=qf; tQty+=(+r.quantity||0); tVal+=qf*(+r.average_price||0); });
+    var tLbl=(ORD_FILTER!=='all')?'Total · '+fName+' '+shown.length+' of '+list.length:'Total';
+    var tSide='<span class="obuy">'+nBuy+' buy</span> · <span class="osell">'+nSell+' sell</span>';
+    var tQ=tFill.toLocaleString('en-IN')+'/'+tQty.toLocaleString('en-IN'), tV=tVal>0?zinr(tVal):'—';
+    var empty='No '+esc((fName||'').toLowerCase())+' orders.';
+    ov.innerHTML=head+frow+
+      '<div class="kcards">'+(cards||'<div class="acct-msg">'+empty+'</div>')+'</div>'+
+      '<div class="otot"><span>'+tLbl+'</span><span>'+tSide+' · <span class="secret omono">'+tQ+'</span>'+(tVal>0?' · <span class="secret">'+tV+' traded</span>':'')+'</span></div>'+
+      '<div class="atbl-wrap"><table class="atbl ordtbl"><thead><tr>'+
       '<th>Time</th><th>Order</th><th>Side</th><th>Qty</th><th>Price</th><th>Status</th><th></th>'+
-      '</tr></thead><tbody>'+(rows||'<tr><td colspan="7" style="text-align:center;color:var(--text-3);padding:18px">No '+esc(ORD_FILTER)+' orders.</td></tr>')+'</tbody></table></div>';
+      '</tr></thead><tbody>'+(rows||'<tr><td colspan="7" style="text-align:center;color:var(--text-3);padding:18px">'+empty+'</td></tr>')+'</tbody>'+
+      '<tfoot><tr><td>'+tLbl+'</td><td></td><td>'+tSide+'</td><td class="secret omono">'+tQ+'</td><td class="secret omono">'+(tVal>0?tV+'<div class="osub">traded</div>':'—')+'</td><td></td><td></td></tr></tfoot>'+
+      '</table></div>';
   }
   function openOrders(){ showView('orders'); if(!ACCT.ord) ordMsg('Loading your orders…'); renderOrders(false); }
   /* center view switch: stock chart <-> account */

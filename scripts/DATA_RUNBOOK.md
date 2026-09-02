@@ -3924,6 +3924,13 @@ nothing saved yet · first visit with no localStorage · a strategy that returns
 stay put (that exact drift shipped 2026-07-28); tables must cardify ≤640px with **colspan cells set
 `display:block`**, else the card collapses. Then check **dark AND light**.
 
+- **★ A PHONE RULE THAT HIDES TABLES GLOBALLY NEEDS A CARD TWIN FOR EVERY TABLE** (added 2026-09-02,
+  terminal orders). `.atbl-wrap{display:none}` in the phone media query gave holdings and positions
+  their Kite cards — and silently blanked the Orders tab on a phone (chips, then nothing; measured
+  at 375px: table height 0, cards 0). When a surface is hidden by an unscoped rule, list every
+  element that rule matches and open each of them at 375px — a new table added later inherits
+  the hide without anyone noticing.
+
 **5. Cache.** Any changed `docs/*.js|css|html` asset ⇒ **bump the service-worker CACHE version**, or
 returning users keep running the old broken file (the Android SW cache even survives a reinstall).
 ⚠️ **Read the CURRENT version off ORIGIN, never off your checkout** —
