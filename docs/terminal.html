@@ -867,6 +867,15 @@ body.blur-secret .secret{filter:blur(7px);-webkit-user-select:none;user-select:n
     /* Kite-style tabs (mobile): Holdings | Positions side by side, one section shown at a time.
        Desktop CSS ignores them and keeps both sections stacked. */
     var hlist=holdRows();
+    var nMtf=ACCT.hold.filter(function(r){ return (r.mq||0)>0; }).length,
+        nDel=ACCT.hold.filter(function(r){ return (r.qty-(r.mq||0)-(r.cq||0))>0; }).length,
+        nPl =ACCT.hold.filter(function(r){ return (r.cq||0)>0; }).length;
+    var filtDefs=[['','All',ACCT.hold.length],['mtf','MTF',nMtf],['del','Delivery',nDel],['pl','Pledged',nPl]]
+      .filter(function(f){ return f[2]>0; });
+    /* a refresh can empty the active filter's bucket (last MTF row sold) — its chip vanishes, so
+       fall back to All rather than leave an empty list with no chip lit. Decided BEFORE the tab
+       count below is built, so the Holdings tab, the section title and the footer agree. */
+    if(HOLD_FILT && !filtDefs.some(function(f){ return f[0]===HOLD_FILT; })){ HOLD_FILT=''; hlist=holdRows(); }
     h+='<div class="ktabs"><button data-sec="hold" class="'+(KSEC==='hold'?'on':'')+'">Holdings<span class="cnt">'+hlist.length+(HOLD_FILT?' / '+ACCT.hold.length:'')+'</span></button>'+
       '<button data-sec="pos" class="'+(KSEC==='pos'?'on':'')+'">Positions<span class="cnt">'+ACCT.pos.length+'</span></button></div>';
     if(ACCT.pos.length){
@@ -906,12 +915,14 @@ body.blur-secret .secret{filter:blur(7px);-webkit-user-select:none;user-select:n
         '</tfoot></table></div></div>';
     }
     if(ACCT.hold.length){
-      var nMtf=ACCT.hold.filter(function(r){ return (r.mq||0)>0; }).length,
-          nDel=ACCT.hold.filter(function(r){ return (r.qty-(r.mq||0)-(r.cq||0))>0; }).length,
-          nPl =ACCT.hold.filter(function(r){ return (r.cq||0)>0; }).length;
-      var filts=[['','All',ACCT.hold.length],['mtf','MTF',nMtf],['del','Delivery',nDel],['pl','Pledged',nPl]]
-        .filter(function(f){ return f[2]>0; })
+      var filts=filtDefs
         .map(function(f){ return '<button data-filt="'+f[0]+'" class="'+(HOLD_FILT===f[0]?'on':'')+'">'+f[1]+' '+f[2]+'</button>'; }).join('');
+      /* the footer totals sum the rows LISTED — with MTF / Delivery / Pledged selected they used to
+         keep showing the all-holdings figures from drawAcct (user 2026-09-02). Unfiltered, this sums
+         the same rows in the same order, so it equals ACCT.holdDay/holdTot/curVal exactly. */
+      var fDay=0,fTot=0,fVal=0; hlist.forEach(function(r){ fDay+=r.dayPnl; fTot+=r.totPnl; fVal+=r.val; });
+      var fName=({mtf:'MTF',del:'Delivery',pl:'Pledged'})[HOLD_FILT]||'';
+      var fLbl=HOLD_FILT?'Total · '+fName+' '+hlist.length+' of '+ACCT.hold.length:'Total';
       var sorts=[['totPnl','P&L'],['totPct','P&L %'],['dayPct','% Chg'],['val','Value'],['inv','Invested'],['ltp','LTP'],['sym','A-Z']]
         .map(function(c){ return chipSort(c[0],c[1],'hold',HOLD_SORT); }).join('');
       var htools='<div class="ktools">'+filts+'</div><div class="ktools"><span class="tlbl">Sort</span>'+sorts+'</div>';
@@ -943,7 +954,7 @@ body.blur-secret .secret{filter:blur(7px);-webkit-user-select:none;user-select:n
       }).join('');
       h+='<div class="ksec" data-sec="hold"><div class="av-sec">Holdings · '+hlist.length+(HOLD_FILT?' of '+ACCT.hold.length:'')+'</div>'+htools+'<div class="kcards">'+hcards+'</div><div class="atbl-wrap"><table class="atbl holdtbl"><thead><tr>'+
         ths('Stock','sym',HOLD_SORT)+ths('Qty','qty',HOLD_SORT)+ths('Avg','avg',HOLD_SORT)+ths('LTP','ltp',HOLD_SORT)+ths2("Day's P&amp;L",'dayPnl','dayPct',HOLD_SORT)+ths2('Total P&amp;L','totPnl','totPct',HOLD_SORT)+ths('Value','val',HOLD_SORT)+'<th></th>'+
-        '</tr></thead><tbody>'+hrows+'</tbody><tfoot><tr><td>Total</td><td></td><td></td><td></td><td class="secret '+(ACCT.holdDay>=0?'up':'down')+'">'+inrSigned(ACCT.holdDay)+'</td><td class="secret '+(ACCT.holdTot>=0?'up':'down')+'">'+inrSigned(ACCT.holdTot)+'</td><td class="secret">'+zinr(ACCT.curVal)+'</td><td></td></tr></tfoot></table></div></div>';
+        '</tr></thead><tbody>'+hrows+'</tbody><tfoot><tr><td>'+fLbl+'</td><td></td><td></td><td></td><td class="secret '+(fDay>=0?'up':'down')+'">'+inrSigned(fDay)+'</td><td class="secret '+(fTot>=0?'up':'down')+'">'+inrSigned(fTot)+'</td><td class="secret">'+zinr(fVal)+'</td><td></td></tr></tfoot></table></div></div>';
     }
     if(!ACCT.pos.length && !ACCT.hold.length) h+='<div class="acct-msg">No open positions or holdings.</div>';
     h+='<div class="kdppl"><span>Day&#39;s P&amp;L</span><span class="secret '+(acctDay>=0?'up':'down')+'">'+inrSigned(acctDay)+' <span style="font-weight:600">'+signed(dayPctAll)+'</span></span></div>';

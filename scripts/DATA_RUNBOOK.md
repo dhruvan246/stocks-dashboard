@@ -3911,6 +3911,13 @@ Empty array · exactly 1 row · all-null column · missing key · stock with no 
 string-vs-number filter compare · empty basket · divide-by-zero · **negative year-ago base**
 (feedback-negative-base-growth) · a renamed ticker whose price bin still lags (§30) · a user with
 nothing saved yet · first visit with no localStorage · a strategy that returns 0 picks.
+- **★ A FILTERED TABLE HAS THREE NUMBERS THAT MUST AGREE — the tab count, the section title and the
+  totals row** (added 2026-09-02, terminal holdings). The MTF / Delivery / Pledged chips narrowed the
+  ROWS but the footer kept summing the account-wide accumulators from `drawAcct`, so "Total" under
+  three MTF rows showed all 28 holdings' P&L. Any table with a filter: sum the LIST YOU RENDER, and
+  click every chip reading the footer against a hand-computed sum (mock worker, §39 step 1). Then
+  empty the active bucket through the feed (sell the last MTF row) — the chip vanishes; the filter
+  must fall back to All, and the tab count must be decided AFTER that fallback, not before.
 
 **4. Mobile + theme (a UI change is not verified until both are).**
 `resize_window` mobile (375px): the **`<body>` must not scroll sideways** and the fixed bottom bar must
