@@ -20,7 +20,11 @@ ROOT = os.path.dirname(HERE)
 SERIES = ("EQ", "BE", "BZ")
 
 def load_bin():
-    D = json.loads(gzip.decompress(open(os.path.join(ROOT, "docs", "sf_stock_data.bin"), "rb").read()))
+    # MTO_BIN env = path of the bin to validate against. The in-repo docs/sf_stock_data.bin is a
+    # FROZEN slim snapshot (weekly bars pre-2018, §103) — point this at the live release asset
+    # (build_coverage_matrix.js caches it at $TMPDIR/sf_stock_data_live.bin) for any real sweep.
+    D = json.loads(gzip.decompress(open(os.environ.get("MTO_BIN") or
+                                        os.path.join(ROOT, "docs", "sf_stock_data.bin"), "rb").read()))
     data = D["data"]
     pos = {}  # sym -> {ymd:int -> idx}
     for sym, e in data.items():
@@ -42,6 +46,27 @@ def old_to_current():
         while cur in m and cur not in seen:
             seen.add(cur); cur = m[cur]
         out[old] = cur
+    return out
+
+def rename_chain():
+    """old -> [hop1, hop2, ..., terminal]: EVERY key on the rename chain, nearest first.
+    The bin keeps history under whichever hop it merged to, not necessarily the terminal —
+    TELCO -> TATAMOTORS -> TMPV, and the 2002 bars live under TATAMOTORS. old_to_current()
+    (terminal only) sent TELCO's MTO rows to TMPV, found no bar there, and dropped them as
+    'unmatched' (WP3 2026-09-02: 79 Nifty-500 member-day cells behind that one gap). Callers
+    must try each hop and take the first key with a bar on that date."""
+    m = dict(json.load(open(os.path.join(HERE, "_rename_map.json"))))
+    src = open(os.path.join(HERE, "update_sf_data.py")).read()
+    blk = src[src.index("MANUAL_MERGE = {"):]
+    blk = blk[:blk.index("merged = 0")]
+    for new, old in re.findall(r'"([A-Z0-9&\-]+)":\s*"([A-Z0-9&\-]+)"', blk):
+        m.setdefault(old, new)
+    out = {}
+    for old in m:
+        cur, seen, hops = old, set(), []
+        while cur in m and cur not in seen:
+            seen.add(cur); cur = m[cur]; hops.append(cur)
+        out[old] = hops
     return out
 
 def parse_file(path):
@@ -66,7 +91,7 @@ def parse_file(path):
 
 def main():
     data, pos = load_bin()
-    o2c = old_to_current()
+    chain = rename_chain()
     files = sorted(f for f in os.listdir(CACHE) if f.endswith(".DAT"))
     print("cached MTO files:", len(files), flush=True)
 
@@ -91,9 +116,9 @@ def main():
         for sym, byser in rows.items():
             tgt = None
             if sym in pos and ymd in pos[sym]: tgt = sym
-            else:
-                c = o2c.get(sym)
-                if c and c in pos and ymd in pos[c]: tgt = c
+            else:  # walk EVERY hop of the rename chain, nearest first (see rename_chain)
+                for c in chain.get(sym, ()):
+                    if c in pos and ymd in pos[c]: tgt = c; break
             if tgt is None:
                 unmatched[sym] += 1; continue
             for ser, (t, q, pct) in byser.items():
