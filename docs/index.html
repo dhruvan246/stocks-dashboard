@@ -603,6 +603,11 @@
   var GWORKER = 'https://stocksworld-quotes.dhruvan2510.workers.dev';
   var gGrid = document.getElementById('globalGrid');
   var gSeed = {};   // id -> { spark, dp, d1, val, _date } from committed global.json
+  var gLiveTs = '';                                 // HH:MM IST of the last live quotes refresh
+  function hmIST(ms) {
+    try { return new Date(ms).toLocaleTimeString('en-GB', { hour: '2-digit', minute: '2-digit', timeZone: 'Asia/Kolkata' }); }
+    catch (e) { return ''; }
+  }
 
   function gTile(p, chg, up, val, sp) {
     var chgHtml = (chg == null)
@@ -626,8 +631,9 @@
       return gTile(p, null, false, null, '');
     }).join('');
     var ts = document.getElementById('globalTs');
-    if (ts) ts.innerHTML = live ? '<span style="color:var(--up)">● live</span> →'
-                                : (gSeed._date ? gSeed._date + ' →' : 'global cues →');
+    if (ts) ts.innerHTML = live
+      ? '<span style="color:var(--up)">● live</span>' + (gLiveTs ? ' <span style="color:var(--text-faint)">· ' + gLiveTs + ' IST</span>' : '') + ' →'
+      : (gSeed._date ? gSeed._date + ' →' : 'global cues →');
   }
   // 1) seed from committed global.json — instant, always available, gives the sparklines
   function seedGlobal() {
@@ -661,6 +667,7 @@
           any = true;
         });
         if (!any) throw 0;
+        gLiveTs = hmIST(j.asOf || Date.now());
         return liveById;
       });
   }
