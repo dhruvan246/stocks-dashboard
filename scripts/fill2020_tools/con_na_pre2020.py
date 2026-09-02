@@ -66,6 +66,29 @@ RUNG4 = {
                   "quarter / half year ended 30th September 2012, analytical ratios, assets and liabilities, segment reporting, notes, "
                   "R K Kumar limited review report. No consolidated statement on any page.",
 }
+# CONFLICT-MC-DIFFERS names adjudicated by reading the filer's own BSE result packs for every conflicting
+# quarter (2026-09-02, second pass): the differing Moneycontrol figure is an ANNUAL consolidated number in a
+# quarterly slot, a press-release headline, an Ind-AS restatement of standalone, or a "combined information"
+# table -- never a filed consolidated quarterly statement. FEL and M&M are NOT here: their packs DID carry a
+# consolidated quarterly statement and those quarters were filled (con_pat_filing reports), which caps their
+# runs through the store's own earliest consolidated announce date.
+CONFLICT_RESOLVED = {
+    "BHARATFORG": "BSE packs QE Sep-2008 / Dec-2008 / Mar-2009 (500493, filed 2008-10-25 / 2009-01-22 / 2009-05-20, scans read page by page): standalone results (Sep-2008 net profit 1,125 lakh = 11.25 == stored std) plus a page headed 'INFORMATION IN ADDITION TO LISTING REQUIREMENTS - COMBINED unaudited financial information of Bharat Forge Ltd and its wholly owned subsidiaries' (excludes the JV; 414 lakh = 4.14 = Moneycontrol's 'consolidated' 4.14 for Sep-2008; Dec-2008 (3,656) = -36.56 = MC's -36.56). A combined supplementary table is not a consolidated financial result under Clause 41; no consolidated statement in any pack.",
+    "BIRLACORPN": "BSE packs QE Sep-2008 / Jun-2009 / Sep-2009 (500335, filed 2008-10-30 / 2009-07-28 / 2009-10-23, scans read): single standalone statement each (net profit 5,970 / 15,534 / 15,205 lakh = 59.70 / 155.34 / 152.05 == stored std to the paisa); no consolidated statement. MC's differing figures (49.87 / 61.51 / 69.11) appear in no filing.",
+    "CANBK": "BSE pack filed 2012-05-23 (532483, 5 pages, scan read): 'Consolidated Financial Results for the YEAR ended 31 March 2012' only (consolidated PAT attributable 3,341.69 cr = MC's Mar-2012 'quarterly' figure); no consolidated quarter column. Annual placed in a quarterly slot.",
+    "COFORGE": "BSE packs QE Jun/Sep/Dec-2011 and Mar-2012 (NIIT Technologies 532541): the filed result statements are STANDALONE (Jun-2011 net profit 1,722 lakh = 17.22 vs stored 17.23; Sep-2011 2,810 = 28.10; Dec-2011 'Statement of Unaudited Financial Results (Standalone)' 3,762 = 37.62; Mar-2012 audited with consolidated ANNUAL columns only). The consolidated quarterly PAT (41.2 / 46 / 64 cr = Moneycontrol's figures) exists only as a press-release headline with no owners row, no minority line and no EPS to gate it against - refused as a fill, and recorded here as press-release-only disclosure.",
+    "FLFL": "BSE packs QE Jun-2016 .. Dec-2017 (536507, filed 2016-08-08 / 2016-11-11 / 2017-02-13 / 2017-05-15 / 2017-09-12 / 2017-11-01 / 2018-02-02, read page by page): every quarterly statement is STANDALONE (Sep/Dec-2017 add a 'combined incl. Lee Cooper division' comparability table); consolidated appears only as audited ANNUAL columns (Mar-2017, Mar-2018). Moneycontrol's differing 2016-17 'consolidated' figures (18.27 / 29.33 / 35.85) are the Ind-AS RESTATED STANDALONE comparatives printed in the FY18 packs' reconciliation notes (Jun-2016 restated 18.27, Dec-2016 restated 35.85) - a restated vintage of standalone, not a consolidated statement.",
+    "IPCALAB": "BSE pack filed 2009-05-28 (524494, audited FY09, scan read): standalone Q4 net profit 790 lakh = 7.90 == stored std; consolidated presented as YEAR-ended columns only (FY09 consolidated PAT 10,080 lakh). MC's Mar-2009 'con' 95.07 / 99.45 is the annual figure in a quarterly slot.",
+    "NIITLTD": "BSE packs filed 2012-05-09 (500304, audited FY12, scans read): standalone quarterly columns plus consolidated ANNUAL columns only (FY12 consolidated net profit attributable 11,016 lakh = 110.16 = MC's 'own' figure for Mar-2012); the Q4 consolidated PAT (26.2 cr) exists only as a press-release headline without an owners row or EPS - refused as a fill.",
+    "OBEROIRLTY": "BSE announcements for scrip 533273 begin 2010-11-08 ('Financial Results for Sep 30, 2010'): the company listed in October 2010, so no quarterly result of any basis was filed for Jun-2009; MC's Jun-2009 'consolidated' figure comes from the prospectus/annual accounts, not a quarterly filing.",
+    "RALLIS": "BSE record QE Mar-2008 (500355): the only attachment in the window is the Q1 FY09 press release (2008-07-15, scan read) quoting FY08 annual PAT 125.19 cr; MC's Mar-2008 'consolidated' 125.31 is that annual figure in a quarterly slot. NSE index: first consolidated quarterly row 2011-06.",
+    "RAYMOND": "BSE pack QE Jun-2010 (500330, filed 2010-08-06, scan read): single standalone statement, net profit/(loss) after tax (2,488) lakh = -24.88 == stored std; no consolidated statement. MC's 35.59 appears in no filing.",
+    "SIEMENS": "BSE pack QE Sep-2008 (500550, FY-end, filed 2008-11-25, scan read): standalone quarter + year columns and consolidated YEAR columns only (FY08 consolidated PAT 5,995.48 million = 599.55 = MC's 'own' figure); standalone Q4 2,251.94 mn = 225.19 == stored std. Annual in a quarterly slot.",
+    "SUPREMEIND": "BSE pack QE Sep-2009 (509930, filed 2009-10-15, scan read): single standalone statement, net profit after tax 1,985.80 lakh = 19.86 == stored std; no consolidated statement.",
+    "TATASTLBSL": "BSE packs QE Jun-2009 (Bhushan Steel 500055, filed 2009-07-30, scans read): Annexure I = audited FY09 with STAND ALONE and CONSOLIDATED year columns (consolidated net profit 42,475 lakh = 424.75 = MC's Jun-2009 'quarterly' figure); Annexure II = Q1 FY10 standalone quarter (17,187 lakh = 171.87 == stored std). Annual in a quarterly slot.",
+    "FEL": "BSE packs (Pantaloon Retail 523574) read page by page: Mar-2010 (filed 2010-04-24) = standalone results (net profit 32.50 == stored std) plus a 'combined with Future Value Retail' comparability table - no consolidated statement (MC's 37.49 appears in neither); Jun-2010 (FY-end, filed 2010-08-30) = standalone audited + 'Consolidated Audited Financial Results for the YEAR ended 30 June 2010' (annual only, 67.49) - no consolidated quarter (MC's -32.26 / -41.12 is a derived residue). Sep-2010 and Dec-2010 DID carry a consolidated quarterly statement and were FILLED (23.64 / 12.40), so the never-filed run ends the day before 2010-11-15.",
+    "AJMERA": "BSE record QE Mar-2008 (Shree Precoated Steels 513349): headlines 'announces Consolidated FY 08 results' (2008-07-01) and 'announces Q1 results' (2008-07-30) with NO attachments served for 2008; the only consolidated announcement in the window is the ANNUAL one, and NSE's first consolidated quarterly row is Jun-2009. Document not readable - closed on the announcement record only (weakest evidence in this set; MC's Mar-2008 29.45 vs std 84.47 is consistent with an annual-derived residue).",
+}
 RUNG4_NOTE = ("Rung 4 sample (2026-09-02): the BSE result packs for QE 30-Sep-2012 of six of the largest N/A candidates (COLPAL, NMDC, "
               "HINDZINC, SKFINDIA, CUB, KARURVYSYA) were rendered page by page and read - every pack carries a single standalone "
               "statement and no consolidated one; the positive control (Tata Motors Q2 FY13) shows 'Consolidated Financial Results'. "
@@ -209,8 +232,11 @@ def main():
         # year-ago base AFTER it (the filing's comparative column; not this reader's route).
         comp_lo = (first_con - 10000) if first_con else None
         comp_win = [qe for qe in lead if comp_lo is not None and qe >= comp_lo]
+        # a quarter that now HOLDS a consolidated value (filled from a document this campaign) is not
+        # a conflict any more, whatever MC says about it
+        held_con = {r[0] for r in fund.get(key, []) if len(r) > 3 and r[3] is not None}
         lead_mc_diff = [qe for qe in lead if facts[qe]["mc"] == "differs"
-                        and (comp_lo is None or qe < comp_lo)]
+                        and (comp_lo is None or qe < comp_lo) and qe not in held_con]
         comp_mc_diff = [qe for qe in comp_win if facts[qe]["mc"] == "differs"]
         # classification
         if sym not in nse:
@@ -226,7 +252,7 @@ def main():
         elif not (mrec["anchor"]["hits"] >= 2 and mrec["anchor"]["hits"] * 2 >= mrec["anchor"]["tries"]):
             cls = "ONE-READER(Moneycontrol standalone series does not anchor to ours: %d/%d gap quarters reproduce our stored std)" % (
                 mrec["anchor"]["hits"], mrec["anchor"]["tries"])
-        elif lead_mc_diff:
+        elif lead_mc_diff and sym not in CONFLICT_RESOLVED and key not in CONFLICT_RESOLVED:
             cls = "CONFLICT-MC-DIFFERS(%d leading-run quarters OLDER than the comparative year where MC's con differs from its std while NSE lists no con row)" % len(lead_mc_diff)
         elif lead_std == 0:
             cls = "NSE-NO-STD-ROWS-FOR-GAP-QUARTERS(silence not meaningful)"
@@ -254,6 +280,12 @@ def main():
             hard_to = min(hard_to, day_before(iso(first_con_filed)))
         elif first_con:
             hard_to = min(hard_to, iso(first_con))          # conservative: filing date unknown
+        # the STORE's own earliest consolidated announce date caps the run too: a consolidated
+        # quarter landed from a document the exchange index never listed (FEL Sep-2010 from the
+        # BSE pack, M&M Dec-2011 from its group-results statement) ends the never-filed run there.
+        store_ann = [r[4] for r in fund.get(key, []) if len(r) > 4 and r[3] is not None and r[4] and r[4] > 0]
+        if store_ann:
+            hard_to = min(hard_to, day_before(iso(min(store_ann))))
         n_std_lead = lead_std
         for p in CON_PARAMS:
             dates = [d for d in explain_dates if d <= hard_to and key in set(explain[d].get(p) or [])]
@@ -294,7 +326,7 @@ def main():
                              "(corroboration only - never the basis of the verdict). %d cell(s) of this symbol landed from NSE "
                              "consolidated pages this campaign (all after the cap), %d refused."
                              % (len(gaps), len(landed), len(refused))),
-                "reader_3": RUNG4.get(key) or RUNG4.get(sym) or ("not read for this name; " + RUNG4_NOTE),
+                "reader_3": RUNG4.get(key) or RUNG4.get(sym) or CONFLICT_RESOLVED.get(sym) or CONFLICT_RESOLVED.get(key) or ("not read for this name; " + RUNG4_NOTE),
                 "user_approved": "2026-09-02 (campaign brief PLAN_CON_GAP_PRE2020 step 3: close the never-filed rest as N/A with evidence)",
                 "adjudicated": TODAY,
                 "campaign": "CON-GAP PRE-2020",
@@ -337,6 +369,10 @@ def main():
             if old is None:
                 L[key] = e
                 added += 1
+                continue
+            if old.get("campaign") == "CON-GAP PRE-2020":
+                L[key] = e                                  # our own earlier entry: refresh in place
+                merged += 1
                 continue
             # an existing verdict for the same filer: widen only a compatible C-basis window
             if str(old.get("class", "")).startswith("C-basis") and old.get("from") and old.get("from") > e["to"]:

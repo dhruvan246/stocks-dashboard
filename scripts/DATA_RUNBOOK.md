@@ -13867,6 +13867,35 @@ from that filing's year-ago column — a PDF read), DCMSHRIRAM's 8 404s, and the
 
 ---
 
+### 123g. The 16 CONFLICT names, settled from their own packs — 5 cells filled, 14 names closed, 2 left visible  (2026-09-02, second pass)
+User: *"fix the 16 conflict names next."* 35 conflicting quarters (Moneycontrol serving a consolidated figure that differs from
+standalone for a quarter OLDER than the comparative year, while NSE's index lists no consolidated row). For every one of them the
+BSE result pack was fetched (three attachment bases + the `AnnPdfOpen` resolver; `&` in an attachment name must be %26-quoted or all
+three bases 404 — M&M) and read page by page (pre-2016 packs are scans; NIIT Tech's are text but only the press release is text).
+**What Moneycontrol's "consolidated" was, in every case except two:**
+| class | names | what the pack shows |
+|---|---|---|
+| annual figure in a quarterly slot | CANBK, IPCALAB, SIEMENS, TATASTLBSL, RALLIS, NIITLTD (110.16), COFORGE (Mar-12) | audited FY pack with consolidated YEAR columns only; the standalone quarter reconciles to stored std to the paisa |
+| press-release headline, no owners row / EPS | COFORGE 2011 (41.2 / 46 / 64), NIITLTD Q4 (26.2) | filed statements are standalone; the group number exists only in the press release |
+| "combined information in addition to listing requirements" | BHARATFORG 2008-09 (4.14, −36.56), FEL Mar-2010 | parent + wholly-owned subs, excludes the JV, unaudited supplementary table — not a Clause-41 consolidated result |
+| Ind-AS restated STANDALONE comparative | FLFL 2016-17 (18.27, 29.33, 35.85) | the FY18 packs' Ind-AS reconciliation notes print exactly these as restated standalone |
+| no filing behind the number at all | BIRLACORPN, RAYMOND, SUPREMEIND | single standalone statement; the MC figure appears nowhere |
+| company not yet listed | OBEROIRLTY Jun-2009 | first BSE announcement 2010-11-08 |
+**Filled (5 cells, `conpat_filing_fills.json` via `apply_con_fill_L4.py`, annCon = the document's filing date):** FEL Sep-2010 23.64
+and Dec-2010 12.40 — Pantaloon Retail filed a real "Consolidated Unaudited Financial Results" table beside the standalone one
+(note 8: "the company was following standalone reporting till FY 2009-10"), standalone control 17.58 / 19.91 == stored EXACT,
+on-page identity period − MI − associate closes to the paisa, revenue twins 2,750.76 / 3,061.85 taken from the same tables; M&M
+Dec-2011 831.80 (+ Sep-2011 681.98 and Dec-2010 834.01 from the same statement's comparative columns) — the "Group Consolidated
+Results Q3 F2012" filing of 2012-02-21 is a statement with 'PAT after Minority Interest' and EPS (recon 0.04 / 0.1 / 0.6%);
+GATE S' through the 2012-02-07 standalone pack (66,215 lakh = 662.15 EXACT). Moneycontrol's 705.94 for that quarter matches no row
+of the filing. NSE's index had no consolidated row for either company then (M&M's detail pages are the '&' shell anyway).
+**Rule the pass settled on:** a document fills a cell only when it is a filed STATEMENT with an owners row (or MI + associate rows that
+close the identity) and a gate (standalone control to the paisa, or EPS recon) — a press-release headline, a combined table and an
+annual column do not, however close their numbers sit to Moneycontrol's. `con_na_pre2020.py` now (a) caps a never-filed run at the
+STORE's own earliest consolidated announce date as well as NSE's first consolidated row, (b) ignores MC-differs quarters that now hold
+a filled value, (c) carries `CONFLICT_RESOLVED` — per-name reader-3 text from the packs — so 14 of the 16 became NA-LEADING-RUN.
+AJMERA and OBEROIRLTY resolve to NSE-NO-STD-ROWS (their gap quarters have no standalone row on NSE either) and stay visible.
+
 ## 125. ★★ ANN-DATE RESIDUE SWEEP — the classes §119 could not judge, plus the 2014 band  (2026-09-02, chunk 1)
 
 **Trigger:** the quantmac walk-back found three results dated LATER in our store than BSE's own filing: KTKBANK
