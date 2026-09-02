@@ -682,18 +682,28 @@ function profitMetrics(sym, dateInt, basis) {
       if (ok) { const s1 = last4.reduce((a, b) => a + b, 0), s0 = prev4.reduce((a, b) => a + b, 0); ttm = s0 !== 0 ? (s1 - s0) / Math.abs(s0) * 100 : null; } }
     // Consecutive +YoY quarters walked by CALENDAR (mi-=3), breaking on a missing quarter too — an
     // array walk counts a "streak" straight across a gap. (Sync: stock-backtest.html)
-    let streak = 0; for (let mi = monthIdx(cur[0]); ; mi -= 3) { const q = arr.find(x => monthIdx(x[0]) === mi); const y = q ? yoyOf(q) : null; if (y != null && y > 0) streak++; else break; }
+    // e15: the walk records WHY it stopped. A stop on a quarter with NO evidence (row or year-ago
+    // base missing → y == null) makes con's count a LOWER BOUND, not the streak — names whose con
+    // column starts Mar-2025 read streak=1 from the May-2026 screen (HOMEFIRST 19→1, GVT&D 16→1)
+    // and failed "≥2" that both bases actually pass. A stop on a real ≤0 YoY is con's answer, kept.
+    let streak = 0, brokeOnMissing = false; for (let mi = monthIdx(cur[0]); ; mi -= 3) { const q = arr.find(x => monthIdx(x[0]) === mi); const y = q ? yoyOf(q) : null; if (y != null && y > 0) streak++; else { brokeOnMissing = (y == null); break; } }
     // con answered, but not completely -> stash it and let std try. `ni === 3` gates this to the
     // consolidated pass, so a std-only request can never fall through to anything.
-    if ((ttm == null || accel == null) && ni === 3) { _pmPending = { yoy, base, accel, ttm, streak, resultDate: cur[ai] }; continue; }
+    if ((ttm == null || accel == null || brokeOnMissing) && ni === 3) { _pmPending = { yoy, base, accel, ttm, streak, brokeOnMissing, resultDate: cur[ai] }; continue; }
     if (_pmPending) { const p = _pmPending; _pmPending = null;
-      // con wins every field it filled; std supplies only the ones con left null
-      return { yoy: p.yoy, base: p.base, streak: p.streak, resultDate: p.resultDate,
+      // con wins every field it filled; std supplies only the ones con left null — and, when con's
+      // streak walk broke on missing evidence, the LONGER standalone streak (quantmac walk-back
+      // 2026-09-02, FIX-1 A/B on the N=20 d52 strategy 2009→2026: CAGR 13.29→13.96, maxDD −75.28→−74.55,
+      // 33/212 baskets change, May-2026 basket = quantmac 20/20; 'conOnly' and 'std' requests are
+      // untouched — runbook §121). (Sync: stock-backtest.html)
+      return { yoy: p.yoy, base: p.base, resultDate: p.resultDate,
+               streak: p.brokeOnMissing ? Math.max(p.streak, streak) : p.streak,
                accel: p.accel != null ? p.accel : accel,
                ttm: p.ttm != null ? p.ttm : ttm }; }
     return { yoy, base, accel, ttm, streak, resultDate: cur[ai] };
   }
-  return _pmPending;   // con answered partially and std could not be reached — keep the con result
+  // con answered partially and std could not be reached — keep the con result (marker dropped)
+  return _pmPending ? { yoy: _pmPending.yoy, base: _pmPending.base, accel: _pmPending.accel, ttm: _pmPending.ttm, streak: _pmPending.streak, resultDate: _pmPending.resultDate } : null;
 }
 // postDrift = (price / priceAt(lastResultDate) - 1) * 100 — it consumes ONLY the announce date,
 // never the YoY. profitMetrics() bails on `yoy == null`, which threw resultDate away with it, so a

@@ -13535,3 +13535,63 @@ trading calendar, day-of-week validated): across ALL 56 Jan/Apr/Jul/Oct month-en
 session ran (7/8 refs traded). Day 28 is therefore strictly before every screen these stamps can
 ever meet (closed era = census, not probability). Lag cost of 28 vs 30 is ~0.2pp (2014) / ~3pp
 (2015) of filings uncovered — accepted for determinism. Engine e13, both twins, sw v129.
+
+---
+
+## 121. ★★ THE STREAK THAT STOPPED ON A HOLE — con→std fallback now covers `profitStreak` too  (2026-09-02, engine e15)
+
+**Found by the quantmac walk-back** (user rule: "always consider us as wrong"; memory
+`project-stocks-quantmac-walkback-2026-09-02`), checking July-2026 first and walking back. Their May-26
+basket held HOMEFIRST (d52 29.87, would be our #2); ours held CEATLTD (#20) instead. Our HOMEFIRST
+`profitStreak` read **1** — standalone said 19, quantmac 12 (their cap).
+
+**The defect (live e14, both twins).** `profitMetrics` walks the streak by CALENDAR quarter and breaks on
+the first quarter whose YoY is null. For a company whose consolidated column only starts Mar-2025, the con
+walk at the May-2026 screen goes Mar-26 ✓ → Dec-25 (year-ago Dec-24 con missing) → stop → streak 1. The
+con→std pending-merge (§97b) then filled ONLY accel/TTM from standalone and kept con's yoy/base/**streak**
+(`streak: p.streak`). So the basis fallback had THREE distinct paths and only two of them fell back for the
+streak — measured on the live page, Nifty 500 members at the screen:
+
+| path | condition | engine result | 2009-01 | 2015-01 | 2019-01 | 2026-05 |
+|---|---|---|---|---|---|---|
+| A | no con quarter visible at all (`_conFreshEnough` false) | standalone for EVERY field | 500 | 384 | 60 | 0 |
+| C | con visible, its year-ago con missing (`yoy==null`) | standalone for EVERY field | 1 | 27 | 182 | 3 |
+| B | con current + year-ago resolve, 8-qtr window has a hole (`_pmPending`) | con's yoy/base/**streak** kept; std fills accel/ttm only | 0 | 36 | 29 | 32 |
+| D | dead-con guard (§ e9) | standalone for every field | 0 | 2 | 9 | 3 |
+
+HOMEFIRST at the Feb-2026 screen is path C (streak 18); at May-2026 it is path B (streak 1) — nothing about
+the company changed, its con column merely gained its fifth quarter and the YoY started resolving on con.
+The same wording trap caught the user: "we don't fall back to std" was true of the streak on path B,
+"we fell back to std" was true of paths A/C — say WHICH path.
+
+**The fix (e15, both twins, whitespace-normalised bodies identical).** The walk records WHY it stopped:
+`brokeOnMissing = (y == null)`. A con pass that stopped on missing evidence stashes `_pmPending` like a
+missing accel/ttm does; the merge returns `streak: p.brokeOnMissing ? Math.max(p.streak, streak) : p.streak`.
+A stop on a real ≤0 YoY is con's answer and is kept exactly as before. `'std'` requests never enter the
+pending path (`ni === 3` gate); `'conOnly'` (coverage-matrix measurement basis) still returns con's own
+count (HOMEFIRST conOnly = 1 before and after). The marker is dropped from the returned object.
+
+**Measured (§39 gate, worktree page served from origin/main + this change, data end 2026-09-01):**
+- Same-page A/B, old e14 function monkeypatched vs the shipped e15 on the N=20 d52 strategy 2009→2026
+  (Nifty 500 · monthly · d52 desc · con · hold · NP-YoY>0, streak≥2, FII≥15): CAGR **13.29 → 13.96**,
+  final ₹9,06,307 → ₹10,05,678, maxDD −75.28 → −74.55, vol 30.31 → 30.22, win 55.5 → 56.9%;
+  **33 of 212 baskets change** (2013:4 2014:5 2015:2 2016:5 2017:3 2018:2 2019:6 2020:3 2026:3).
+  The old function reproduced the live baseline card exactly; all 212 e15 baskets are identical to the
+  in-page FIX-1 A/B run on the live site earlier the same day.
+- May-2026: CEATLTD → HOMEFIRST, basket = quantmac **20/20**; Jun-2026: BPCL → HOMEFIRST;
+  Jul-2026: VBL → GVT&D (their basket). vs quantmac run #1847: 2026 identical months 1 → 2 of 7,
+  overlap 2023 79% · 2024 82% · 2025 87% · 2026 94%. The remaining gap is the loss-base YoY convention
+  (FIX-2, decision pending) and their coverage.
+- Point checks: HOMEFIRST @20260529 con streak 1→19 (std 19, conOnly 1); GVT&D @20260731 1→16;
+  HOMEFIRST @20260227, AXISBANK/MPHASIS @20090130, VBL/MCX @20260731 byte-identical.
+- Console: zero errors; `node --check` both twins + sw.js; inline script block parses.
+- **Blast radius (measured from the user's own saved strategies):** every saved strategy on `con` basis
+  with a `profitStreak` rule re-ranks — 5 saved + **2 of the 8 ⭐ favourites**
+  (`diiPct low · con · fiiPct>15,profitStreak>2,profitTTM>0` and `d52 high · con · fiiPct>15,
+  profitStreak>2,profitYoyPct>0`). Terminal/strategies-panel picks are computed LIVE from
+  `backtest-engine.js`, so those two favourites' current picks can change on this deploy. Standalone
+  strategies are byte-identical. sw cache v133 so old tabs drop the e14 shell.
+
+**Lesson (added to the golden rules by reference):** a "fallback" is per FIELD, not per function. When a
+blend keeps one basis's answer for some fields and borrows another's for the rest, name the fields, and
+test the borrowed set against a case where the two bases disagree in LENGTH, not only in value.
