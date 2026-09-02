@@ -124,6 +124,7 @@ def parse(xml, basis_hint=None):
         if any(x is not None for x in v):
             out['con' if 'consol' in one_nat else 'std'] = dict(zip(('rev', 'op', 'ebit', 'pat', 'owners'), v))
             out['con' if 'consol' in one_nat else 'std']['_end'] = period_end(xml, 'OneD')
+            out['con' if 'consol' in one_nat else 'std']['_insurer'] = ('NetPremiumIncome' in xml or 'PremiumEarned' in xml)
     four_nat = nat.get('FourD', '')
     if four_nat and four_nat != one_nat and B.is_quarter_ctx(xml, 'FourD'):
         v = B.metrics_for(xml, 'FourD')
@@ -131,6 +132,7 @@ def parse(xml, basis_hint=None):
         if any(x is not None for x in v) and b not in out:
             out[b] = dict(zip(('rev', 'op', 'ebit', 'pat', 'owners'), v))
             out[b]['_end'] = period_end(xml, 'FourD')
+            out[b]['_insurer'] = ('NetPremiumIncome' in xml or 'PremiumEarned' in xml)
     return out
 
 
@@ -272,6 +274,16 @@ def main():
                 stats['field_none_by_format'] += 1
                 refusals.append({'sym': sym, 'qe': qe, 'basis': b, 'field': f,
                                  'why': 'parsed OK but %s is None — filing format does not yield it via metrics_for' % f})
+                continue
+            if f == 'rev' and m.get(f) is not None and round(m[f], 2) <= 0 and not m.get('_insurer'):
+                # <= 0, on the ROUNDED value: HBSL Mar-2022 carried a sub-paisa revenue that `== 0` let
+                # through as 0.0, and DHRUV Dec-2025 / DHARAN Sep-2023 landed NEGATIVE revenue from an
+                # industrial XBRL. Only insurer formats may legitimately be negative (runbook §55, MTM).
+                # §58c: a printed 0.00 is a BLANK row, not a result. KSL Mar-2024 tagged RevenueFromOperations
+                # 0 (neighbours ~488), MANGALAM Sep-2023 0 (~90) -- 6 such cells landed on 2026-09-02 and were
+                # retracted before the push. Refuse; never publish a zero revenue from an XBRL tag.
+                stats['zero_rev'] = stats.get('zero_rev', 0) + 1
+                refusals.append({'sym': sym, 'qe': qe, 'basis': b, 'field': f, 'why': 'rev==0 in the XBRL (blank row, §58c)', 'url': filed_at.get(b, ('?', '?'))[1]})
                 continue
             pok, perr = period_ok(m, filed_at.get(b, ('?', '?'))[0], qe)
             if not pok:
