@@ -225,7 +225,7 @@
       <div class="foot">provisional daily net · flows page →</div>
     </a>
 
-    <!-- overnight world markets: committed global.json (EOD last-close, CORS-free, CI-refreshed) -->
+    <!-- overnight world markets: global.json seed + LIVE 1-day move via the quotes Worker (?quotes=) -->
     <a class="bt" id="tGlobal" href="./global.html">
       <div class="bt-h"><span>OVERNIGHT · WORLD MARKETS</span><span class="to" id="globalTs">global cues →</span></div>
       <div class="gxg" id="globalGrid"></div>
@@ -581,55 +581,97 @@
     }).catch(function () { document.getElementById('brNums').innerHTML = '<b style="color:var(--text-faint)">—</b>'; });
   }, 600);
 
-  // Overnight world markets: committed global.json (24 KB, EOD last-close, CORS-free,
-  // CI-refreshed). Ten most-watched pre-market cues for India — US majors, Asia,
-  // gold/crude, Bitcoin and the dollar. Name + 1-day % + a recent-trend sparkline;
-  // the absolute last value rides in each tile's hover title.
+  // Overnight world markets — ten most-watched pre-market cues for India (US majors,
+  // Asia, gold/crude, Bitcoin, the dollar). The committed global.json (CI-refreshed)
+  // seeds the tiles instantly and supplies each symbol's recent-trend sparkline, then
+  // the 1-day move is made LIVE via the quotes Worker: one ?quotes= call batches all
+  // ten VERBATIM Yahoo symbols (incl. futures GC=F / FX INR=X) and returns ltp +
+  // prevClose, so the headline number and its direction are current — not a day-old
+  // snapshot. Refreshes every 60 s while the tab is visible. Live value on hover.
   var G_PICK = [
-    { id: 'spx',    lbl: 'S&P 500' },
-    { id: 'ndq',    lbl: 'Nasdaq' },
-    { id: 'dji',    lbl: 'Dow Jones' },
-    { id: 'nkx',    lbl: 'Nikkei 225' },
-    { id: 'hsi',    lbl: 'Hang Seng' },
-    { id: 'gold',   lbl: 'Gold' },
-    { id: 'brent',  lbl: 'Brent Crude' },
-    { id: 'btc',    lbl: 'Bitcoin' },
-    { id: 'dxy',    lbl: 'Dollar (DXY)' },
-    { id: 'usdinr', lbl: 'USD/INR' }
+    { id: 'spx',    y: '^GSPC',    lbl: 'S&P 500' },
+    { id: 'ndq',    y: '^IXIC',    lbl: 'Nasdaq' },
+    { id: 'dji',    y: '^DJI',     lbl: 'Dow Jones' },
+    { id: 'nkx',    y: '^N225',    lbl: 'Nikkei 225' },
+    { id: 'hsi',    y: '^HSI',     lbl: 'Hang Seng' },
+    { id: 'gold',   y: 'GC=F',     lbl: 'Gold' },
+    { id: 'brent',  y: 'BZ=F',     lbl: 'Brent Crude' },
+    { id: 'btc',    y: 'BTC-USD',  lbl: 'Bitcoin' },
+    { id: 'dxy',    y: 'DX-Y.NYB', lbl: 'Dollar (DXY)' },
+    { id: 'usdinr', y: 'INR=X',    lbl: 'USD/INR' }
   ];
+  var GWORKER = 'https://stocksworld-quotes.dhruvan2510.workers.dev';
   var gGrid = document.getElementById('globalGrid');
+  var gSeed = {};   // id -> { spark, dp, d1, val, _date } from committed global.json
+
+  function gTile(p, chg, up, val, sp) {
+    var chgHtml = (chg == null)
+      ? '<div class="gchg" style="color:var(--text-faint)">—</div>'
+      : '<div class="gchg ' + (up ? 'up' : 'down') + '">' + (up ? '▲' : '▼') + ' ' + Math.abs(chg).toFixed(2) + '%</div>';
+    return '<div class="gx"' + (val ? ' title="' + p.lbl + ' · ' + val + '"' : '') + '>' +
+      '<div class="gnm">' + p.lbl + '</div>' + chgHtml + (sp || '') + '</div>';
+  }
   if (gGrid) {   // skeleton straight away so the card never paints empty
     gGrid.innerHTML = G_PICK.map(function (p) {
       return '<div class="gx"><div class="gnm">' + p.lbl + '</div><div class="gchg skel">0.00%</div></div>';
     }).join('');
   }
-  lazy(function () {
+  function paintGlobal(liveById) {
     if (!gGrid) return;
-    fetch('./global.json', { cache: 'no-store' }).then(function (r) { return r.json(); }).then(function (j) {
+    var live = false;
+    gGrid.innerHTML = G_PICK.map(function (p) {
+      var seed = gSeed[p.id] || {}, lv = liveById && liveById[p.id];
+      if (lv) { live = true; return gTile(p, lv.chg, lv.up, lv.val, spark(seed.spark || [], lv.up)); }
+      if (seed.d1 != null) { var up = seed.d1 >= 0; return gTile(p, seed.d1, up, seed.val, spark(seed.spark || [], up)); }
+      return gTile(p, null, false, null, '');
+    }).join('');
+    var ts = document.getElementById('globalTs');
+    if (ts) ts.innerHTML = live ? '<span style="color:var(--up)">● live</span> →'
+                                : (gSeed._date ? gSeed._date + ' →' : 'global cues →');
+  }
+  // 1) seed from committed global.json — instant, always available, gives the sparklines
+  function seedGlobal() {
+    return fetch('./global.json', { cache: 'no-store' }).then(function (r) { return r.json(); }).then(function (j) {
       var byId = {}, grp = j.groups || {};
       Object.keys(grp).forEach(function (k) { (grp[k] || []).forEach(function (r) { if (r && r.id) byId[r.id] = r; }); });
       (j.fx || []).forEach(function (r) { if (r && r.id) byId[r.id] = r; });
-      var any = false;
-      gGrid.innerHTML = G_PICK.map(function (p) {
-        var r = byId[p.id];
-        if (!r || r.last == null) return '<div class="gx"><div class="gnm">' + p.lbl +
-          '</div><div class="gchg" style="color:var(--text-faint)">—</div></div>';
-        any = true;
-        var d1 = r.d1 == null ? 0 : r.d1, up = d1 >= 0, dp = r.dp == null ? 2 : r.dp;
-        var val = r.last.toLocaleString('en-IN', { minimumFractionDigits: dp, maximumFractionDigits: dp });
-        return '<div class="gx" title="' + p.lbl + ' · ' + val + '">' +
-          '<div class="gnm">' + p.lbl + '</div>' +
-          '<div class="gchg ' + (up ? 'up' : 'down') + '">' + (up ? '▲' : '▼') + ' ' + Math.abs(d1).toFixed(2) + '%</div>' +
-          spark(r.spark || [], up) + '</div>';
-      }).join('');
-      if (!any) throw 0;
-      // as-of badge: "2026-08-14" -> "14 Aug →"
+      G_PICK.forEach(function (p) {
+        var r = byId[p.id]; if (!r) return;
+        var dp = r.dp == null ? 2 : r.dp;
+        gSeed[p.id] = { spark: r.spark || [], dp: dp, d1: r.d1,
+          val: r.last != null ? r.last.toLocaleString('en-IN', { minimumFractionDigits: dp, maximumFractionDigits: dp }) : null };
+      });
       var m = /^(\d{4})-(\d{2})-(\d{2})/.exec(String(j.as_of || ''));
-      if (m) document.getElementById('globalTs').textContent = (+m[3]) + ' ' + MONS[(+m[2]) - 1] + ' →';
-    }).catch(function () {
-      gGrid.innerHTML = '<div class="gx" style="grid-column:1/-1;background:transparent;border:0">' +
-        '<div class="gnm" style="color:var(--text-muted)">World-market snapshot unavailable</div>' +
-        '<div class="gchg" style="color:var(--text-faint);font-weight:600">open Global cues →</div></div>';
+      if (m) gSeed._date = (+m[3]) + ' ' + MONS[(+m[2]) - 1];
+    }).catch(function () { /* leave skeletons; live may still fill */ });
+  }
+  // 2) LIVE 1-day move via the quotes Worker (batched; verbatim symbols incl. =)
+  function liveGlobal() {
+    var q = G_PICK.map(function (p) { return p.y; }).join(',');
+    return fetch(GWORKER + '/?quotes=' + encodeURIComponent(q), { cache: 'no-store' })
+      .then(function (r) { if (!r.ok) throw 0; return r.json(); })
+      .then(function (j) {
+        var d = j.data || {}, liveById = {}, any = false;
+        G_PICK.forEach(function (p) {
+          var row = d[p.y]; if (!row || row.ltp == null || !row.prevClose) return;
+          var chg = (row.ltp - row.prevClose) / row.prevClose * 100;
+          var dp = (gSeed[p.id] && gSeed[p.id].dp != null) ? gSeed[p.id].dp : 2;
+          liveById[p.id] = { chg: chg, up: chg >= 0,
+            val: row.ltp.toLocaleString('en-IN', { minimumFractionDigits: dp, maximumFractionDigits: dp }) };
+          any = true;
+        });
+        if (!any) throw 0;
+        return liveById;
+      });
+  }
+  lazy(function () {
+    if (!gGrid) return;
+    seedGlobal().then(function () {
+      paintGlobal(null);                    // committed values + sparklines (never blank)
+      function go() { liveGlobal().then(paintGlobal).catch(function () { /* keep last good paint */ }); }
+      go();                                 // live top-up now …
+      setInterval(function () { if (!document.hidden) go(); }, 60000);   // … and every 60 s while visible
+      document.addEventListener('visibilitychange', function () { if (!document.hidden) go(); });
     });
   }, 250);
 
