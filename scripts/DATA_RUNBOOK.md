@@ -13641,3 +13641,85 @@ test the borrowed set against a case where the two bases disagree in LENGTH, not
 **Verify (§39):** local preview of the worktree → dropdown shows "Momentum acceleration — 3 month %"; a top-20
 dma200 run reproduces quantmac's `pxVs200dma` baskets far above the pre-e16 79.6 % overlap; value check on 10 names ×
 7 dates: our dma200 == their pxVs200dma to 3 dp (except VEDL). Live: `ENGINE_VER='e16'` in the deployed HTML, sw v134.
+
+---
+
+## 122. ★★★ THE PHANTOM-ACTION SWEEP — every adjustment the bake ever applied, checked against the raw tape  (2026-09-02)
+
+**Trigger:** the quantmac walk-back found YESBANK's whole pre-Sep-2018 history at ×0.667 (BSE 01-Aug-2018
+close 366.00, ours 243.91): the −29% crash of 21-Sep-2018 (RBI curtailed the CEO's term; 20-Sep was a
+holiday, raw 319.20 → 226.50 = 0.7096) sat within 8% of 2/3, `ca_factor()` divided it out, and no ledger
+knew — the real 5:1 split (2017-09-21) and the *April-2019* crash were ledgered, this one was not, and the
+weekly `audit_phantom_ca.py` only looks back 120 days. User: "fix yesbank and check if any such more stocks
+exist with this issue or some other issue".
+
+### 122a. The tool — `scripts/ca_sweep_tools/sweep_applied_steps.py` (100 s for the whole bin)
+Live release bin (adjusted closes) × the raw NSE bhavcopy cache (`_bhav_cache`, 1996→2026-08, 10,548 day
+files, era names bridged through `_rename_map.json`). For every symbol `f = raw/adj`; every STEP in `f`
+between consecutive bars is an adjustment the bake applied on that boundary (`applied = f[j]/f[j-1]`).
+Each step is matched to the ledgers by BAR INDEX (corp_actions + corp_actions_hist factors, demerger_adj,
+rights_terp + MANUAL_RIGHTS, noadjust + phantom_crashes + LEGACY_FALSE_CA) and, when nothing explains it,
+arbitrated by the ex-day RAW OPEN (§87c: `(open/prev)/applied` ≥ 1.18 = crash-like, ≤ 1.12 = CA-like).
+The mirror class (big raw move matching a fraction, NOT adjusted) is reported too. Calibration: YESBANK
+2018-09-21 flagged crash-like (open-gap 1.35), its 2017-09-21 split `official` 0.2.
+**Measured:** 4,575 symbols · 9.21M raw rows matched · 32,386 applied steps = 1,410 official · 183 rights ·
+93 demergers · 4 official-wrong-factor · 22 keep-drop-not-honoured (21 are sub-₹0.25 penny series the heal
+deliberately skips — BIRLACOT/FARMAXIND/VKSPL/VISUINTL/RASOYPR — plus YESBANK) · 30,674 inferred.
+⚠️ Pre-2002 bars are SAMPLED (`dailyFrom` 2002-01-02), so consecutive-bar tests are meaningless there —
+only 2002+ is judged: 9,641 inferred = 8,053 CA-like (real splits the ledgers never carried, correctly
+applied) · 507 ambiguous · 1,077 crash-like, of which **69 are non-quantised** and **1,008 sit on sub-₹0.25
+penny series** (40 symbols; the quantisation guard means the heal cannot act on them by design).
+
+### 122b. What was ledgered (31 + 2), and the two-reader standard each met
+`phantom_crashes.json` (→ `noadjust` + `LEGACY_FALSE_CA`, reconciled by `self_heal` on EVERY run) plus both
+boundary raw closes in `crash_raw_prices.json` so CI needs no NSE archive fetch. Reader 1: absent from every
+action ledger (and for 2016+ the NSE corporate-actions feed re-queried live, ±10 d, empty for all). Reader 2:
+crash-like open-gap ≥ 1.18. Not ETFs, not rights entitlements, single-fraction factors only.
+YESBANK 2018-09-21 · **DHFL 2018-09-21 (same IL&FS day, 0.6) + 2019-07-15** · SATYAMCOMP 2008-12-17 /
+2009-01-09 / 2009-01-15 · RANBAXY 2013-09-16 · JETAIRWAYS 2019-04-18 + 06-18 · PCJEWELLER 2018-07-16 ·
+IDEA 2019-07-29 · AMTEKAUTO 2015-08-19/20 · CGPOWER 2019-02-13 · RPOWER + RCOM 2019-02-04/05 · JISLJALEQS
+2019-06-19 · CCAVENUE 2018-10-22 · RUCHISOYA 2010-12-08 · COREEDUTEC 2008-10-13 · HCC 2018-05-03 ·
+OPTOCIRCUI 2013-05-31 · IPCL 2002-08-29 · KSOILS 2011-08-16 · UNIWESTBNK 2006-09-04 · UTVSOF 2008-11-06 ·
+RANEHOLDIN 2005-05-11 · GLOBLTRUST 2004-07-28 · CASTEXTECH 2020-09-29. 26 of the 30 were Nifty-500 members
+on the day; each had mis-scaled its ENTIRE prior history (346–4,543 bars).
+Two more after the live check (122d): **JETAIRWAYS 2019-06-20** (+90% rescue rally two days after the
+crash, open 29.95 / high 82.75, read as a 1:2 consolidation → every earlier bar DOUBLED) and **AMTEKAUTO
+2015-09-04** (the second −35% crash of 2015-09-03; the cache's 20150903 day file is EMPTY, so the bake chained
+02→04-Sep = 0.677 → 2/3 on the 04-Sep boundary — ledgered on that boundary with both raw closes).
+
+### 122c. Live verification (§39) — commits cceb6a271, 7f27cf94a, 90af1ac8a; runs 33607967094, 33608951978
+YESBANK: `SELF-HEAL YESBANK ex 20180921: was f=0.6667 -> keep-drop (rescaled 3262 pre-ex points x1.4999)`,
+sf_meta rev af0f356f46 → 77765c1e1d, served deep part: 20180801 close **365.85** (tape 365.85), 20180919
+319.20, 20180921 226.50. The 30: `Self-heal corrected 30`, rev → cb028d1ae9; all 30 boundaries checked in the
+served parts — the crash ratio equals the raw ratio on every one, and 24 sit exactly on the raw tape; 6 sit on a
+constant multiple that LATER ledgered actions explain (PCJEWELLER 10:1 split 2024-12-16; CCAVENUE two 1:1
+bonuses + two rights TERPs; HCC three rights TERPs) and 2 did not (JETAIRWAYS ×2, AMTEKAUTO ×0.667) — those
+became 122b's last two entries.
+★ **Verify a heal by the BOUNDARY RATIO and explain the level by the later ledger** — a raw-vs-adjusted level
+test flags every legitimately adjusted bar as "still wrong".
+
+### 122d. Queues left open (all in `scripts/ca_sweep_2026-09-02.json` with reasons)
+- **Up-moves read as reverse splits — 82 inferred steps with factor ≥ 1.8 (2002+), and the ledgers hold ZERO
+  official consolidations**, so ledger absence cannot arbitrate them and the open-gap is calibrated for
+  FALLS. Jet was the liquid one; the rest are relistings after suspension, penny re-basings and a few real
+  face-value consolidations (SIGIND 2018-08-29 opens exactly at the new basis). Needs its own arbiter
+  (announcement + open at the new basis) before anything is written.
+- Manual queue (10): BSOFT 2007-01-04 (looks like a real 5:1 — KPIT era), ELDERPHARM + CLASSIC 2013-05-13
+  (0.75 on a −10% day: an official 1:3 bonus whose ledger date maps to a neighbouring bar?), CENTUM 2007
+  (0.699, not a single fraction), HELIOSMATH 2005 (open-gap 1.19), CHETTINAD/BELLCERATL/DSKULKARNI (up-moves),
+  ARENTERP 2017 (×2.99 raw with 0.6 applied), **PRAXIS 2023-05-30 = a RIGHTS ex-date** (NSE feed: "Rights 13:20
+  @ Premium Rs 5") the bake divided out as 2/3 — a rights-policy case (raw tape vs TERP), not a crash.
+- Ambiguous open-gap 1.12–1.18 (24; WELCORP 2010-12-03 0.75, BALLARPUR 2008-03-31 0.2, OUDHSUG 2005…).
+- Official-wrong-factor (4, all penny): FCSSOFT ×2, BIRLAPOWER 2009 (0.565 applied vs 0.1 ledgered),
+  KMSUGAR 2010-08-30 (tape 1/3 vs ledger 1/5).
+- Unadjusted CA-like moves 2002+: only 4 tiny 2002-era names — the ITC/JINDALSTEL class is closed.
+- 187 symbols have NO raw coverage (BSE-only / unbridged era names) — invisible to this sweep.
+- The `_bhav_cache` has EMPTY day files (20150903 = 0 rows on a trading day): a cache gap silently turns a
+  two-day chain into a phantom on the NEXT boundary. Worth a census.
+
+### 122e. Lessons
+1. A weekly detector with a 120-day window never revisits history; a full-history sweep is 100 s — run it after
+   every ledger change and keep the output next to the ledger.
+2. The open arbitrates FALLS; up-moves need their own calibration (there are no official consolidations to
+   learn from in our ledgers).
+3. Boundary-ratio, then level-by-later-ledger — never level alone (122c).
