@@ -12,7 +12,8 @@
   "2026-08-26 \u00a7116c SCREEN: ran the owners-vs-total check over ALL 60,768 con cells in sf_fundamentals against their own cached consolidated XBRL (38,668 filings indexed). 52 further cells healed total->owners, on top of the 53 from \u00a7116. THE GATE IS THE IDENTITY, not the comparison: 872 cells store the total while the owners tag differs, but only these reconcile as owners+NCI==total. The other 762 are REFUSED and NOT healed -- 302 have NCI=0 (so owners MUST equal total; the owners TAG is wrong and the store is right), 24 are sign flips, 13 are filer power-of-ten scale errors, and 460 have a real NCI that still does not reconcile and need per-cell documents. Also measured: coverage in _reattr_owners.json is per-CELL not per-SYMBOL -- 864 of 869 defect cells sit in symbols the cache covers but quarters it does not.",
   "2026-08-27 \u00a7116e: 48 more cells healed total->owners, resolving part of the 460-cell \u00a7116d residue that the XBRL identity could NOT close. Each was read from the company's OWN BSE-filed consolidated result PDF (owners_total_verify.py): the filing's profit-attribution block gives owners + NCI == ProfitLossForPeriod EXACTLY (<=0.02cr), the column pinned by total==stored. Gate beyond \u00a7116d: an EXPLICIT profit-total row is required (a reconstructed owners+nci total can be the Total-Comprehensive-Income attribution, off by OCI -- that dropped MANINFRA/JAYAGROGN 0.05-0.08cr). 34 symbols incl. ADANIENT 20210331 332.53->233.95 (NCI 98.58), CHOLAHLDNG 20200331 79.57->39.91 (the exact cell \u00a7116d named unresolvable via XBRL), INDHOTEL/LUPIN/TECHM/RAIN/JINDALSAW. Deferred: the ~324 cells whose BSE P&L is a SCANNED image (free OCR mis-reads the owners line) and the older 'profit for period / less NCI / profit after NCI' format (GOLDIAM class) -- need vision or extractor work.",
   "2026-08-27 \u00a7116e-vision: 8 more cells from SCANNED-image filings the text pass could not read, read by vision from the rendered consolidated P&L page and gated identically (owners+NCI==total exactly, total==stored). JINDALSTEL 20201231 2566.68->2254.66 (owners=continuing+discontinuing attribution, 312cr), LLOYDSENT 20251231 37.93->-7.86 (owners LOSS, minority took the profit), WAAREEENER 20251231 1106.79->1062.46, ADANIPORTS 20250630 3310.60->3314.59, KANORICHEM x4 (row cleared). NOTE: several high-proxy scanned cells were REFUSED as a DIFFERENT defect class -- their stored value does not match the filing total at all (ADANIENT 20250331 stored 1382.17 vs filed total 4014.90/owners 3844.91; AARTIIND 20210331 stored 692.34 vs 139.34; RAYMOND 20211231 stored 266.67 vs 101.07) -- flagged for separate investigation, NOT owners-vs-total.",
-  "2026-08-27 \u00a7116e Nifty-500 pass: worked the 88 unhealed 460-residue cells in current Nifty-500 members. 45 healed (1 text + 44 vision from scanned filings via render_pl.py): BIOCON x3 (Syngene NCI, ~30cr), NAVA 338.99->298.61 (Zambia power), IFCI 20241231 -8.74->-30.66, NMDC x5, BLUESTARCO x7 (row cleared), KANORICHEM x4 (row cleared), NCC, GPIL, WOCKPHARMA x2, ZENTEC x3, PIDILITIND x2, POLYCAB x2, TIINDIA, ULTRACEMCO... Not healed: NMDC 20240930/INFY/AJANTPHARM/NUVOCO/AFCONS already store owners (no-op); KAYNES x4 have NO NCI (in the residue only via XBRL power-of-ten garbage); ASIANPAINT/KAYNES 20230331 are STORED-VALUE anomalies (stored != filing total, logged in owners_total_stored_anomalies.json); GLENMARK x3/PHOENIXLTD/ONESOURCE/IFCI 20220331/CHOICEIN/PVRINOX/BEML/VBL/HINDCOPPER deferred (complex continuing+discontinuing, restatements, TCI-only, or extract-only pages). ~11 more file image P&Ls the OCR page-finder cannot key (mostly nil/tiny NCI)."
+  "2026-08-27 \u00a7116e Nifty-500 pass: worked the 88 unhealed 460-residue cells in current Nifty-500 members. 45 healed (1 text + 44 vision from scanned filings via render_pl.py): BIOCON x3 (Syngene NCI, ~30cr), NAVA 338.99->298.61 (Zambia power), IFCI 20241231 -8.74->-30.66, NMDC x5, BLUESTARCO x7 (row cleared), KANORICHEM x4 (row cleared), NCC, GPIL, WOCKPHARMA x2, ZENTEC x3, PIDILITIND x2, POLYCAB x2, TIINDIA, ULTRACEMCO... Not healed: NMDC 20240930/INFY/AJANTPHARM/NUVOCO/AFCONS already store owners (no-op); KAYNES x4 have NO NCI (in the residue only via XBRL power-of-ten garbage); ASIANPAINT/KAYNES 20230331 are STORED-VALUE anomalies (stored != filing total, logged in owners_total_stored_anomalies.json); GLENMARK x3/PHOENIXLTD/ONESOURCE/IFCI 20220331/CHOICEIN/PVRINOX/BEML/VBL/HINDCOPPER deferred (complex continuing+discontinuing, restatements, TCI-only, or extract-only pages). ~11 more file image P&Ls the OCR page-finder cannot key (mostly nil/tiny NCI).",
+  "2026-09-03 (G1): GFLLIMITED 20170331/20170930/20171231 con PAT held the TOTAL 'Profit for the period' where every neighbouring quarter stores owners; healed to owners from each quarter's OWN BSE consolidated attribution block (Owners (12,220)/7,149/7,019 L). Identity owners+NCI==total and GATE S' (std 52.43/88.74/94.66) both close. 2012Q1-2013Q1 filed no quarterly con statement -> LEFT."
  ],
  "cells": {
   "20MICRONS|20190630|patC": {
@@ -3425,6 +3426,30 @@
    "owners": 54.77,
    "src": "vision, BSE consolidated P&L Q3FY26 (Rs lakhs 5570.69 total, owners 5476.71)",
    "total_was": 55.71
+  },
+  "GFLLIMITED|20170331|patC": {
+   "found_by": "G1 GFL owners-basis heal 2026-09-03 (Ind-AS attribution block, explicit owners line)",
+   "nci": 47.11,
+   "owners": -122.2,
+   "total_was": -75.09,
+   "note": "Q4FY17 audited consolidated P&L (BSE 21cf451d...): Owners (12,220)L + NCI 4,711L = (7,509)L total; std 52.43 reproduced.",
+   "src": "GFLLIMITED own consolidated result PDF filed to BSE, explicit 'Profit for the period attributable to: Owners of the Company' line (G1 heal 2026-09-03)"
+  },
+  "GFLLIMITED|20170930|patC": {
+   "found_by": "G1 GFL owners-basis heal 2026-09-03 (Ind-AS attribution block, explicit owners line)",
+   "nci": -11.73,
+   "owners": 71.49,
+   "total_was": 59.77,
+   "note": "Q2FY18 consolidated P&L (BSE 0d3ef425...): Owners 7,149L + NCI (1,173)L = 5,976L total; std 88.74 reproduced.",
+   "src": "GFLLIMITED own consolidated result PDF filed to BSE, explicit 'Profit for the period attributable to: Owners of the Company' line (G1 heal 2026-09-03)"
+  },
+  "GFLLIMITED|20171231|patC": {
+   "found_by": "G1 GFL owners-basis heal 2026-09-03 (Ind-AS attribution block, explicit owners line)",
+   "nci": -10.74,
+   "owners": 70.19,
+   "total_was": 59.47,
+   "note": "Q3FY18 consolidated P&L (BSE 7b04de95...): Owners 7,019L + NCI (1,074)L = 5,945L total; std 94.66 reproduced.",
+   "src": "GFLLIMITED own consolidated result PDF filed to BSE, explicit 'Profit for the period attributable to: Owners of the Company' line (G1 heal 2026-09-03)"
   }
  },
  "generated": "2026-08-27 \u00a7116e-n500"
