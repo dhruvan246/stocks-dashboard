@@ -60,16 +60,12 @@
         <div id="chartCum"></div>
       </div>
       <div class="card p-4">
-        <div class="text-sm font-semibold text-slate-700 mb-2">Daily table <span class="text-[11px] font-normal text-slate-400">(click a header to sort)</span></div>
+        <div class="text-sm font-semibold text-slate-700 mb-2">Daily table <span class="text-[11px] font-normal text-slate-400">(click a header to sort · hover a row for the buy/sell breakdown)</span></div>
         <div class="overflow-x-auto tscroll rounded-lg border border-slate-100" style="--tscroll-h:20rem">
           <table class="w-full text-sm" id="tbl">
             <thead class="text-[11px] uppercase text-slate-500 border-b border-slate-200"><tr>
               <th data-s="date" class="text-left py-2 px-1">Date</th>
-              <th data-s="fiiBuy" class="text-right px-1">FII buy</th>
-              <th data-s="fiiSell" class="text-right px-1">FII sell</th>
               <th data-s="fiiNet" class="text-right px-1">FII net</th>
-              <th data-s="diiBuy" class="text-right px-1">DII buy</th>
-              <th data-s="diiSell" class="text-right px-1">DII sell</th>
               <th data-s="diiNet" class="text-right px-1">DII net</th>
               <th data-s="nifty" class="text-right px-1">Nifty 50</th>
               <th data-s="chg" class="text-right px-1">Chg%</th>
@@ -78,7 +74,7 @@
           </table>
         </div>
       </div>
-      <p class="text-[11px] text-slate-500 mt-5">Cash-segment provisional figures (₹ crore). <b>Net</b> = buy − sell; positive = net buying. Buy/sell breakdown shown when available (latest day from NSE). Source: NSE + NiftyTrader.</p>
+      <p class="text-[11px] text-slate-500 mt-5">Cash-segment provisional figures (₹ crore). <b>Net</b> = buy − sell; positive = net buying. Hover a row for the buy/sell breakdown (shown when NSE has published it). Source: NSE + NiftyTrader.</p>
       </div><!-- /view-daily -->
 
       <!-- ---------- MONTHLY ---------- -->
@@ -408,17 +404,53 @@ function renderCumChart(){
 }
 function renderTable(){
   const r=ROWS.slice().sort((a,b)=>{const A=a[sortKey],B=b[sortKey];let c;if(sortKey==='date')c=(A<B?-1:A>B?1:0);else c=(A||0)-(B||0);return sortAsc?c:-c;});
-  $('tbody').innerHTML=r.map(x=>`<tr class="border-b border-slate-50">
+  const at=v=>v==null?'':v;   // data-attr value ('' = not available)
+  $('tbody').innerHTML=r.map(x=>`<tr class="dtr border-b border-slate-50 hover:bg-slate-50 cursor-default" data-date="${x.date}" data-fb="${at(x.fiiBuy)}" data-fs="${at(x.fiiSell)}" data-fn="${at(x.fiiNet)}" data-db="${at(x.diiBuy)}" data-ds="${at(x.diiSell)}" data-dn="${at(x.diiNet)}">
      <td class="py-1 px-1 font-medium">${x.date}</td>
-     <td class="text-right px-1 text-slate-500">${fmt(x.fiiBuy)}</td><td class="text-right px-1 text-slate-500">${fmt(x.fiiSell)}</td>
      <td class="text-right px-1 ${(x.fiiNet||0)>=0?'pos':'neg'}">${fmtSigned(x.fiiNet)}</td>
-     <td class="text-right px-1 text-slate-500">${fmt(x.diiBuy)}</td><td class="text-right px-1 text-slate-500">${fmt(x.diiSell)}</td>
      <td class="text-right px-1 ${(x.diiNet||0)>=0?'pos':'neg'}">${fmtSigned(x.diiNet)}</td>
      <td class="text-right px-1">${x.nifty!=null?x.nifty.toLocaleString('en-IN'):'·'}</td>
      <td class="text-right px-1 ${(x.chg||0)>=0?'pos':'neg'}">${x.chg!=null?(x.chg>=0?'+':'')+x.chg.toFixed(2)+'%':'·'}</td></tr>`).join('');
+  attachDailyTip();
 }
 document.querySelectorAll('th[data-s]').forEach(th=>th.addEventListener('click',()=>{
   const k=th.dataset.s; if(sortKey===k)sortAsc=!sortAsc; else {sortKey=k;sortAsc=(k==='date');} renderTable();}));
+
+/* Row-hover tooltip: FII/DII net + (when NSE has published it) the buy/sell split.
+   Uses a position:fixed node so it isn't clipped by the table's scroll box. */
+function attachDailyTip(){
+  let tip=$('dtip');
+  if(!tip){
+    tip=document.createElement('div'); tip.id='dtip';
+    tip.className='fixed hidden pointer-events-none bg-slate-800 text-white text-[11px] leading-tight px-2.5 py-1.5 rounded-md shadow-lg whitespace-nowrap';
+    tip.style.zIndex='60';
+    document.body.appendChild(tip);
+  }
+  const tb=$('tbody');
+  if(tb.__tipWired) return;                 // delegate once; survives re-renders
+  tb.__tipWired=true;
+  const num=v=>(v===''||v==null)?null:+v;
+  const show=e=>{
+    const tr=e.target.closest('tr.dtr'); if(!tr){ tip.classList.add('hidden'); return; }
+    const d=tr.dataset, fn=num(d.fn), dn=num(d.dn), fb=num(d.fb), db=num(d.db);
+    const row=(lbl,col,b,s,net)=>`<div><span style="color:${col}">●</span> ${lbl} net <b>${fmtSigned(net)}</b>`
+      +(b!=null?` <span style="opacity:.75">· buy ${fmt(b)} / sell ${fmt(s)}</span>`:'')+`</div>`;
+    tip.innerHTML=`<div class="font-semibold mb-0.5">${d.date}</div>`
+      +row('FII','#60a5fa',fb,num(d.fs),fn)+row('DII','#fbbf24',db,num(d.ds),dn)
+      +((fb==null&&db==null)?`<div style="opacity:.6;font-size:10px;margin-top:2px">buy/sell not published for this day</div>`:'');
+    tip.classList.remove('hidden');
+    const px=(e.touches?e.touches[0].clientX:e.clientX), py=(e.touches?e.touches[0].clientY:e.clientY);
+    const tw=tip.offsetWidth, th=tip.offsetHeight;
+    let left=px+14, top=py+14;
+    if(left+tw>innerWidth-8) left=px-tw-14;
+    if(top+th>innerHeight-8) top=py-th-14;
+    tip.style.left=Math.max(8,left)+'px'; tip.style.top=Math.max(8,top)+'px';
+  };
+  tb.addEventListener('mousemove',show);
+  tb.addEventListener('mouseleave',()=>tip.classList.add('hidden'));
+  tb.addEventListener('touchstart',show,{passive:true});
+  document.addEventListener('touchstart',e=>{ if(!e.target.closest('#tbody')) tip.classList.add('hidden'); },{passive:true});
+}
 
 /* ================= MONTHLY / YEARLY / DEEP DIVES ================= */
 const fmtLc = v => v==null ? '·' : (v>=0?'+':'−')+'₹'+Math.abs(v/1e5).toFixed(2)+' L cr';   // ₹ lakh crore
