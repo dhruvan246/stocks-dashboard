@@ -22,6 +22,7 @@ import os, json, time, datetime, urllib.request
 HERE = os.path.dirname(os.path.abspath(__file__))
 ROOT = os.path.dirname(HERE)
 OUT = os.path.join(ROOT, "docs", "fii_dii.json")       # cash segment (recent + grows)
+OUT_MON = os.path.join(ROOT, "docs", "fii_dii_monthly.json")  # monthly aggregates 2014-07 -> today
 OUT_FO = os.path.join(ROOT, "docs", "fii_fo.json")     # derivatives net positions (2012 -> today)
 OUT_NIFTY = os.path.join(ROOT, "docs", "nifty.json")   # Nifty 50 close history (for chart overlays)
 OUT_NIFTY500 = os.path.join(ROOT, "docs", "nifty500.json")  # Nifty 500 close history (backtest calendar-year benchmark)
@@ -153,6 +154,60 @@ def fetch_nse():
         return {}
 
 
+def fetch_monthly_year(year):
+    """One calendar year of monthly cash aggregates from NiftyTrader.
+    Returns {"YYYY-MM": {fiiNet, diiNet, close(=EOM Nifty), open(=SOM Nifty)}} or {}.
+    The endpoint carries history back to 2014-07; empty years return {}.
+    """
+    try:
+        raw = _get("https://webapi.niftytrader.in/webapi/Resource/fii-dii-monthly-aggregate?year=%d" % year,
+                   headers={"User-Agent": UA, "Referer": "https://www.niftytrader.in/",
+                            "Accept": "application/json"})
+        ma = (json.loads(raw).get("resultData") or {}).get("monthly_aggregates") or []
+        out = {}
+        for r in ma:
+            yr, mo = r.get("yr"), r.get("mo")
+            if not yr or not mo:
+                continue
+            out["%04d-%02d" % (yr, mo)] = {
+                "fiiNet": r.get("fii_net"), "diiNet": r.get("dii_net"),
+                "close": r.get("nifty_eom_close"), "open": r.get("nifty_som_close")}
+        return out
+    except Exception as e:
+        print("  ! monthly %d fetch failed: %s" % (year, e))
+        return None   # None = fetch error (keep old); {} = a genuinely empty year
+
+
+def update_monthly():
+    """Rebuild docs/fii_dii_monthly.json — precise monthly FII/DII net + Nifty
+    start/end close per month, 2014-07 -> current. Re-fetches every year each run
+    so the running (partial) current month and any late restatements stay fresh.
+    On a total fetch failure the existing file is left untouched (feed only grows)."""
+    try:
+        old = {r["ym"]: r for r in json.load(open(OUT_MON, encoding="utf-8")).get("rows", [])}
+    except Exception:
+        old = {}
+    merged = dict(old)
+    this_year = datetime.date.today().year
+    got_any = False
+    for year in range(2014, this_year + 1):
+        ym = fetch_monthly_year(year)
+        if ym is None:               # fetch error for this year — keep whatever we had
+            continue
+        got_any = True
+        for k, v in ym.items():
+            merged[k] = {"ym": k, **v}
+        time.sleep(0.25)
+    if not got_any:
+        print("  ! monthly: all fetches failed — keeping existing untouched")
+        return
+    rows = [merged[k] for k in sorted(merged)]
+    json.dump({"updated": time.strftime("%Y-%m-%dT%H:%M:%S"), "rows": rows},
+              open(OUT_MON, "w", encoding="utf-8"), separators=(",", ":"))
+    print("  fii_dii_monthly.json: %d months, %s -> %s" %
+          (len(rows), rows[0]["ym"] if rows else "-", rows[-1]["ym"] if rows else "-"))
+
+
 def _load_rows(path):
     try:
         return {r["date"]: r for r in json.load(open(path, encoding="utf-8")).get("rows", [])}
@@ -255,6 +310,7 @@ def update_yahoo_index(out_path, yahoo_symbol, label):
 
 def main():
     dates = update_cash()
+    update_monthly()
     update_fo(dates)
     update_nifty()
     update_yahoo_index(OUT_NIFTY500, "%5ECRSLDX", "nifty500.json")   # ^CRSLDX  — Nifty 500

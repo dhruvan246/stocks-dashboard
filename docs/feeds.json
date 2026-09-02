@@ -251,6 +251,18 @@
       ]
     },
     {
+      "file": "fii_dii_monthly.json",
+      "name": "FII/DII monthly aggregates (2014+)",
+      "workflow": "refresh-fii-dii.yml",
+      "cadence": "weekdays 20:15 IST",
+      "max_age_hours": 110,
+      "min_bytes": 6000,
+      "min_ratio": 0.8,
+      "pages": [
+        "fii-dii.html"
+      ]
+    },
+    {
       "file": "fii_fo.json",
       "name": "FII derivatives stats",
       "workflow": "refresh-fii-dii.yml",
