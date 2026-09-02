@@ -30,7 +30,8 @@ const FIELDS = [
   { v: 'ret3m', g: G_MOM, l: 'Return — 3 month %' },
   { v: 'ret6m', g: G_MOM, l: 'Return — 6 month %' },
   { v: 'ret12m', g: G_MOM, l: 'Return — 12 month %' },
-  { v: 'accel', g: G_MOM, l: 'Momentum acceleration %' },
+  { v: 'accel', g: G_MOM, l: 'Momentum acceleration % (1 month: 1m return minus prior 1m)' },
+  { v: 'accel3m', g: G_MOM, l: 'Momentum acceleration — 3 month % (3m return minus prior 3m)' },
   { v: 'riskMom', g: G_MOM, l: 'Risk-adjusted momentum (3m ÷ vol)' },
   { v: 'postDrift', g: G_MOM, l: 'Post-result drift % (return since last earnings date)' },
   { v: 'composite', g: G_MOM, l: 'Quality-Momentum composite (z: TTM growth + 12m return − volatility)' },
@@ -516,7 +517,8 @@ function retPctAt(tkr, off, days) {
   return p0 > 0 ? (p / p0 - 1) * 100 : null;
 }
 function winCloses(tkr, off, days) { const s = SERIES[tkr]; if (!s) return null; const lo = off - days; let i = idxLE(s.d, off); if (i < 0) return null; const out = []; for (let k = i; k >= 0 && s.d[k] >= lo; k--) out.push(s.p[k] / 100); out.reverse(); return out; }
-function smaAt(tkr, off, days) { const v = winCloses(tkr, off, days); if (!v || !v.length) return null; return v.reduce((a, b) => a + b, 0) / v.length; }
+function smaAt(tkr, off, days) { const v = winCloses(tkr, off, days); if (!v || !v.length) return null; return v.reduce((a, b) => a + b, 0) / v.length; }   // calendar-day window (legacy; dma50/dma200 use smaBarsAt since e16)
+function smaBarsAt(tkr, off, n) { const s = SERIES[tkr]; if (!s) return null; const i = idxLE(s.d, off); if (i < 0 || i - n + 1 < 0) return null; let sum = 0; for (let k = i - n + 1; k <= i; k++) sum += s.p[k]; return sum / n / 100; }   // SMA of the last n TRADING sessions; null until n exist (quantmac pxVs200dma rule). (Sync: stock-backtest.html)
 function retsOf(v) { const r = []; for (let i = 1; i < v.length; i++) if (v[i - 1] > 0) r.push(v[i] / v[i - 1] - 1); return r; }
 function stdOf(a) { if (a.length < 2) return 0; const m = a.reduce((x, y) => x + y, 0) / a.length; return Math.sqrt(a.reduce((x, y) => x + (y - m) ** 2, 0) / (a.length - 1)); }
 function niftyRetAt(off, days) { const a = nearestNifty(isoOff(off)), b = nearestNifty(isoOff(off - days)); return (a && b) ? (a / b - 1) * 100 : null; }
@@ -524,8 +526,8 @@ function turnAvgAt(tkr, off, days) { const s = TURN[tkr]; if (!s) return 0; cons
 function emaSeries(arr, p) { const k = 2 / (p + 1); let e = arr[0]; const out = [e]; for (let i = 1; i < arr.length; i++) { e = arr[i] * k + e * (1 - k); out.push(e); } return out; }
 function computeTech(tkr, off, px) {
   const r1 = retPctAt(tkr, off, 30), r1p = retPctAt(tkr, off - 30, 30);
-  const r3 = retPctAt(tkr, off, 91), r6 = retPctAt(tkr, off, 182), r12 = retPctAt(tkr, off, 365);
-  const nr6 = niftyRetAt(off, 182), s50 = smaAt(tkr, off, 50), s200 = smaAt(tkr, off, 200), hl = hl52(tkr, off);
+  const r3 = retPctAt(tkr, off, 91), r3p = retPctAt(tkr, off - 91, 91), r6 = retPctAt(tkr, off, 182), r12 = retPctAt(tkr, off, 365);   // r3p: the 3m window before that (t−182 → t−91) → accel3m
+  const nr6 = niftyRetAt(off, 182), s50 = smaBarsAt(tkr, off, 50), s200 = smaBarsAt(tkr, off, 200), hl = hl52(tkr, off);   // e16: DMAs count TRADING sessions (50/200 bars), not calendar days (were ≈36/136 bars)
   const w90 = winCloses(tkr, off, 90), rets90 = w90 ? retsOf(w90) : [];
   const vol = rets90.length > 2 ? stdOf(rets90) * Math.sqrt(252) * 100 : null;
   let daysHigh = null; { const s = SERIES[tkr]; if (s) { const lo = off - 365; let i = idxLE(s.d, off), hi = -1, hidx = -1; for (let k = i; k >= 0 && s.d[k] >= lo; k--) if (s.p[k] > hi) { hi = s.p[k]; hidx = s.d[k]; } if (hidx >= 0) daysHigh = off - hidx; } }
@@ -545,6 +547,7 @@ function computeTech(tkr, off, px) {
     ret1m: r1, ret3m: r3, ret6m: r6, ret12m: r12,
     rsNifty: (r6 != null && nr6 != null) ? r6 - nr6 : null,
     accel: (r1 != null && r1p != null) ? r1 - r1p : null,
+    accel3m: (r3 != null && r3p != null) ? r3 - r3p : null,   // 3-month momentum acceleration (calendar 91/182-day windows, same clock as accel) (Sync: stock-backtest.html)
     dma50: (s50 && px) ? (px / s50 - 1) * 100 : null,
     dma200: (s200 && px) ? (px / s200 - 1) * 100 : null,
     rangePos: (hl && hl.hi > hl.low) ? (px - hl.low) / (hl.hi - hl.low) * 100 : null,
@@ -554,7 +557,7 @@ function computeTech(tkr, off, px) {
   };
 }
 // extended factors are EXPENSIVE — only compute them when the strategy actually uses one
-const EXT_FIELDS = new Set(['ret1m','ret3m','ret6m','ret12m','rsNifty','accel','dma50','dma200','rangePos','daysHigh','vol','riskMom','beta','mdd6','upPct','turnover','turnSurge','volSurge','delivPct','macd','stoch','bollB','composite']);
+const EXT_FIELDS = new Set(['ret1m','ret3m','ret6m','ret12m','rsNifty','accel','accel3m','dma50','dma200','rangePos','daysHigh','vol','riskMom','beta','mdd6','upPct','turnover','turnSurge','volSurge','delivPct','macd','stoch','bollB','composite']);
 function needsTech(cfg) { return EXT_FIELDS.has(cfg.sortBy) || (cfg.filters || []).some(f => EXT_FIELDS.has(f.field)); }
 
 // ---- Fundamentals: point-in-time quarterly net profit (StockView's profitYoyPct/profitBase) ----
@@ -1032,7 +1035,7 @@ function maxDrawdown(eq) { let peak = -1, mdd = 0; for (const [, v] of eq) { if 
 // longer FIELD_LABEL used in dropdowns/tables. Keep in sync with FIELDS (each page's own copy).
 const SHORT_FIELD = { changePercent: 'Chg%', rsi: 'RSI', d52: '52wHi%', d52_low_pct: '52wLo%', indRank: 'IndRank', mcap: 'Mcap', hist_mcap: 'HMcap',
   profitYoyPct: 'NP-YoY%', profitBase: 'NP-base', fiiPct: 'FII%', fiiChgPp: 'FII Δpp', diiPct: 'DII%', diiChgPp: 'DII Δpp',
-  ret1m: 'Ret-1m%', ret3m: 'Ret-3m%', ret6m: 'Ret-6m%', ret12m: 'Ret-12m%', accel: 'MomAccel%', dma50: '50DMA%', dma200: '200DMA%',
+  ret1m: 'Ret-1m%', ret3m: 'Ret-3m%', ret6m: 'Ret-6m%', ret12m: 'Ret-12m%', accel: 'MomAccel%', accel3m: 'MomAccel3m%', dma50: '50DMA%', dma200: '200DMA%',
   rangePos: 'RangePos', daysHigh: 'DaysSinceHi', vol: 'Vol%', riskMom: 'RiskMom', beta: 'Beta', mdd6: 'MDD-6m%', upPct: 'UpDay%',
   turnover: 'Turnover', turnSurge: 'TurnSurge', volSurge: 'VolSurge', delivPct: 'Deliv%', macd: 'MACD', stoch: 'Stoch%K', bollB: 'BollB',
   profitAccel: 'ProfitAccel', profitTTM: 'ProfitTTM%', profitStreak: 'ProfitStreak', postDrift: 'PostDrift%', composite: 'QM-Composite' };

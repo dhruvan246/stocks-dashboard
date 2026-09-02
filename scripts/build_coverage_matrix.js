@@ -92,8 +92,8 @@ const FAMILIES = [
     { k: 'rsNifty', rule: '6m return minus Nifty\'s 6m return — needs nifty.json to reach back that far.' },
   ] },
   { id: 'trend', label: 'Trend', note: 'Moving averages and the industry ranking built from them.', params: [
-    { k: 'dma50', rule: 'Distance from the 50-day SMA %.' },
-    { k: 'dma200', rule: 'Distance from the 200-day SMA %.' },
+    { k: 'dma50', rule: 'Distance from the 50-session SMA % (needs 50 bars).' },
+    { k: 'dma200', rule: 'Distance from the 200-session SMA % (needs 200 bars).' },
     { k: 'indRank', rule: 'Industry momentum rank 1-10 — assigned to every screened row, so this tracks Price.' },
   ] },
   { id: 'risk', label: 'Risk', note: 'Volatility, beta and drawdown over 90-180 day windows.', params: [

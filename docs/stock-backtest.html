@@ -132,7 +132,8 @@ const FIELDS=[
   {v:'ret3m',        g:G_MOM,  l:'Return — 3 month %'},
   {v:'ret6m',        g:G_MOM,  l:'Return — 6 month %'},
   {v:'ret12m',       g:G_MOM,  l:'Return — 12 month %'},
-  {v:'accel',        g:G_MOM,  l:'Momentum acceleration %'},
+  {v:'accel',        g:G_MOM,  l:'Momentum acceleration % (1 month: 1m return minus prior 1m)'},
+  {v:'accel3m',      g:G_MOM,  l:'Momentum acceleration — 3 month % (3m return minus prior 3m)'},
   {v:'riskMom',      g:G_MOM,  l:'Risk-adjusted momentum (3m ÷ vol)'},
   {v:'postDrift',    g:G_MOM,  l:'Post-result drift % (return since last earnings date)'},
   {v:'composite',    g:G_MOM,  l:'Quality-Momentum composite (z: TTM growth + 12m return − volatility)'},
@@ -623,7 +624,7 @@ document.querySelectorAll('#presetRow [data-preset]').forEach(b=>b.onclick=()=>f
 // own engine copy rather than loading backtest-engine.js — see the "keep in sync" comments above).
 const SHORT_FIELD={changePercent:'Chg%',rsi:'RSI',d52:'52wHi%',d52_low_pct:'52wLo%',indRank:'IndRank',mcap:'Mcap',hist_mcap:'HMcap',
   profitYoyPct:'NP-YoY%',profitBase:'NP-base',fiiPct:'FII%',fiiChgPp:'FII Δpp',diiPct:'DII%',diiChgPp:'DII Δpp',
-  ret1m:'Ret-1m%',ret3m:'Ret-3m%',ret6m:'Ret-6m%',ret12m:'Ret-12m%',accel:'MomAccel%',dma50:'50DMA%',dma200:'200DMA%',
+  ret1m:'Ret-1m%',ret3m:'Ret-3m%',ret6m:'Ret-6m%',ret12m:'Ret-12m%',accel:'MomAccel%',accel3m:'MomAccel3m%',dma50:'50DMA%',dma200:'200DMA%',
   rangePos:'RangePos',daysHigh:'DaysSinceHi',vol:'Vol%',riskMom:'RiskMom',beta:'Beta',mdd6:'MDD-6m%',upPct:'UpDay%',
   turnover:'Turnover',turnSurge:'TurnSurge',volSurge:'VolSurge',delivPct:'Deliv%',macd:'MACD',stoch:'Stoch%K',bollB:'BollB',
   profitAccel:'ProfitAccel',profitTTM:'ProfitTTM%',profitStreak:'ProfitStreak',postDrift:'PostDrift%',composite:'QM-Composite'};
@@ -673,7 +674,7 @@ function isAlreadySaved(cfg){
 // every key changes → the old snapshot is no longer found → the next view recomputes with the CURRENT
 // code + data and re-caches. Without this stamp a changed engine or a refreshed dataset would keep
 // serving a stale pre-computed result forever.
-const ENGINE_VER='e15';       // ⬆️ BUMP this whenever simulate()/engine logic changes → invalidates all snapshots  (e15 2026-09-02: streak fallback — profitMetrics' con streak walk that stops on MISSING evidence (not a ≤0 YoY) takes the longer standalone streak in the pending-merge, both twins; con columns starting Mar-2025 read streak=1 from May-2026 (HOMEFIRST 19→1, GVT&D 16→1) and failed "≥2" both bases pass — quantmac walk-back FIX-1 (runbook §121), N=20 d52 strategy 2009→2026 CAGR 13.29→13.96, maxDD −75.28→−74.55, 33/212 baskets change, May-26 basket = quantmac 20/20; e14 2026-09-01: membersAsOf FUND_ALIAS fold — rosters/fno_history carry traded-then names, price series are stitched under current names; 9.9% of F&O membership slots were silently dropped (audit 2026-09-01, both twins). AND profitAccel/profitStreak now step by CALENDAR quarter not array index — the class the TTM fix closed, missed in these two factors (accel 1,516 cells, streak 495); e13 2026-08-31: §120 fallback 30d→28d — day 28 is strictly before every 2003-16 stamp-month screen (census min day 29), so a clockless synthetic date can never collide with a rebalance screen; e12 2026-08-31: §120 SHP +30d fallback — rows still un-dated after §105 recovery (≈pre-2014) become PIT-visible at quarter-end+30d, the measured-conservative floor, both twins; e11 2026-08-30: end-date rebalance guard — simulate() never OPENS a basket on cfg.end, both twins, StockView R5 F-03; e10 2026-08-30: SW-1 un-dated pre-Jun-2016 SHP rows — feed serves sub=99999999 for unevidenced visibility dates, alias-merge prefers dated rows; DII/FII strategies hold nothing before ~Feb-2014 by design; e9 2026-08-27: dead-con guard — profitAt/profitMetrics skip a con series >12 months staler than std, BANDHANBNK class; e8 2026-08-23: foldFundAliases — old-key fundamentals folded under the merged key, §105)
+const ENGINE_VER='e16';       // ⬆️ BUMP this whenever simulate()/engine logic changes → invalidates all snapshots  (e16 2026-09-02: dma50/dma200 = SMA of the last 50/200 TRADING sessions, null until that many exist (were 50/200 CALENDAR days ≈ 36/136 bars — the label overstated the window; quantmac pxVs200dma = 200 bars, runbook §122), both twins; new factor accel3m (3-month momentum acceleration, calendar 91/182-day windows like accel) — adds a field, no existing result changes; e15 2026-09-02: streak fallback — profitMetrics' con streak walk that stops on MISSING evidence (not a ≤0 YoY) takes the longer standalone streak in the pending-merge, both twins; con columns starting Mar-2025 read streak=1 from May-2026 (HOMEFIRST 19→1, GVT&D 16→1) and failed "≥2" both bases pass — quantmac walk-back FIX-1 (runbook §121), N=20 d52 strategy 2009→2026 CAGR 13.29→13.96, maxDD −75.28→−74.55, 33/212 baskets change, May-26 basket = quantmac 20/20; e14 2026-09-01: membersAsOf FUND_ALIAS fold — rosters/fno_history carry traded-then names, price series are stitched under current names; 9.9% of F&O membership slots were silently dropped (audit 2026-09-01, both twins). AND profitAccel/profitStreak now step by CALENDAR quarter not array index — the class the TTM fix closed, missed in these two factors (accel 1,516 cells, streak 495); e13 2026-08-31: §120 fallback 30d→28d — day 28 is strictly before every 2003-16 stamp-month screen (census min day 29), so a clockless synthetic date can never collide with a rebalance screen; e12 2026-08-31: §120 SHP +30d fallback — rows still un-dated after §105 recovery (≈pre-2014) become PIT-visible at quarter-end+30d, the measured-conservative floor, both twins; e11 2026-08-30: end-date rebalance guard — simulate() never OPENS a basket on cfg.end, both twins, StockView R5 F-03; e10 2026-08-30: SW-1 un-dated pre-Jun-2016 SHP rows — feed serves sub=99999999 for unevidenced visibility dates, alias-merge prefers dated rows; DII/FII strategies hold nothing before ~Feb-2014 by design; e9 2026-08-27: dead-con guard — profitAt/profitMetrics skip a con series >12 months staler than std, BANDHANBNK class; e8 2026-08-23: foldFundAliases — old-key fundamentals folded under the merged key, §105)
                               // e7 (2026-08-20): TTM contiguity check strengthened to pairwise
                               // gaps (each of 4 quarters exactly 3mo apart) — the e6 endpoint-only
                               // check let a duplicate qe row through uncaught (APOLLOTYRE/
@@ -930,7 +931,8 @@ function retPctAt(tkr, off, days){
   return p0>0 ? (p/p0-1)*100 : null;
 }
 function winCloses(tkr, off, days){ const s=SERIES[tkr]; if(!s)return null; const lo=off-days; let i=idxLE(s.d,off); if(i<0)return null; const out=[]; for(let k=i;k>=0&&s.d[k]>=lo;k--) out.push(s.p[k]/100); out.reverse(); return out; }
-function smaAt(tkr, off, days){ const v=winCloses(tkr,off,days); if(!v||!v.length)return null; return v.reduce((a,b)=>a+b,0)/v.length; }
+function smaAt(tkr, off, days){ const v=winCloses(tkr,off,days); if(!v||!v.length)return null; return v.reduce((a,b)=>a+b,0)/v.length; }   // calendar-day window (legacy; dma50/dma200 use smaBarsAt since e16)
+function smaBarsAt(tkr, off, n){ const s=SERIES[tkr]; if(!s)return null; const i=idxLE(s.d,off); if(i<0||i-n+1<0)return null; let sum=0; for(let k=i-n+1;k<=i;k++) sum+=s.p[k]; return sum/n/100; }   // SMA of the last n TRADING sessions; null until n exist (quantmac rule). (Sync: backtest-engine.js)
 function retsOf(v){ const r=[]; for(let i=1;i<v.length;i++) if(v[i-1]>0) r.push(v[i]/v[i-1]-1); return r; }
 function stdOf(a){ if(a.length<2)return 0; const m=a.reduce((x,y)=>x+y,0)/a.length; return Math.sqrt(a.reduce((x,y)=>x+(y-m)**2,0)/(a.length-1)); }
 function niftyRetAt(off, days){ const a=nearestNifty(isoOff(off)), b=nearestNifty(isoOff(off-days)); return (a&&b)?(a/b-1)*100:null; }
@@ -938,8 +940,8 @@ function turnAvgAt(tkr, off, days){ const s=TURN[tkr]; if(!s)return 0; const lo=
 function emaSeries(arr, p){ const k=2/(p+1); let e=arr[0]; const out=[e]; for(let i=1;i<arr.length;i++){ e=arr[i]*k+e*(1-k); out.push(e); } return out; }
 function computeTech(tkr, off, px){
   const r1=retPctAt(tkr,off,30), r1p=retPctAt(tkr,off-30,30);
-  const r3=retPctAt(tkr,off,91), r6=retPctAt(tkr,off,182), r12=retPctAt(tkr,off,365);
-  const nr6=niftyRetAt(off,182), s50=smaAt(tkr,off,50), s200=smaAt(tkr,off,200), hl=hl52(tkr,off);
+  const r3=retPctAt(tkr,off,91), r3p=retPctAt(tkr,off-91,91), r6=retPctAt(tkr,off,182), r12=retPctAt(tkr,off,365);   // r3p: the 3m window before that → accel3m (Sync: backtest-engine.js)
+  const nr6=niftyRetAt(off,182), s50=smaBarsAt(tkr,off,50), s200=smaBarsAt(tkr,off,200), hl=hl52(tkr,off);   // e16: DMAs count TRADING sessions (50/200 bars), not calendar days
   const w90=winCloses(tkr,off,90), rets90=w90?retsOf(w90):[];
   const vol=rets90.length>2?stdOf(rets90)*Math.sqrt(252)*100:null;
   let daysHigh=null; { const s=SERIES[tkr]; if(s){ const lo=off-365; let i=idxLE(s.d,off),hi=-1,hidx=-1; for(let k=i;k>=0&&s.d[k]>=lo;k--) if(s.p[k]>hi){hi=s.p[k];hidx=s.d[k];} if(hidx>=0) daysHigh=off-hidx; } }
@@ -955,7 +957,7 @@ function computeTech(tkr, off, px){
     if(s&&s.v){ const avg=(days)=>{ const lo=off-days; let i=idxLE(s.d,off),sum=0,n=0; for(let k=i;k>=0&&s.d[k]>=lo;k--){ sum+=s.v[k]; n++; } return n?sum/n:0; };
       const v5=avg(7), v90=avg(90); volSurge=v90>0?v5/v90:null; }
     if(s&&s.dv){ const lo=off-28; let i=idxLE(s.d,off),sum=0,n=0; for(let k=i;k>=0&&s.d[k]>=lo;k--){ if(s.dv[k]>0){ sum+=s.dv[k]; n++; } } delivPct=n?sum/n:null; } }
-  return { ret1m:r1, ret3m:r3, ret6m:r6, ret12m:r12, rsNifty:(r6!=null&&nr6!=null)?r6-nr6:null, accel:(r1!=null&&r1p!=null)?r1-r1p:null,
+  return { ret1m:r1, ret3m:r3, ret6m:r6, ret12m:r12, rsNifty:(r6!=null&&nr6!=null)?r6-nr6:null, accel:(r1!=null&&r1p!=null)?r1-r1p:null, accel3m:(r3!=null&&r3p!=null)?r3-r3p:null,
     dma50:(s50&&px)?(px/s50-1)*100:null, dma200:(s200&&px)?(px/s200-1)*100:null,
     rangePos:(hl&&hl.hi>hl.low)?(px-hl.low)/(hl.hi-hl.low)*100:null, daysHigh, vol,
     riskMom:(r3!=null&&vol)?r3/vol:null, beta, mdd6:mdd,
@@ -963,7 +965,7 @@ function computeTech(tkr, off, px){
     turnover:turnAvgAt(tkr,off,20), turnSurge:t90>0?t5/t90:null, volSurge, delivPct, macd, stoch, bollB };
 }
 // extended factors are EXPENSIVE — only compute them when the strategy actually uses one
-const EXT_FIELDS=new Set(['ret1m','ret3m','ret6m','ret12m','rsNifty','accel','dma50','dma200','rangePos','daysHigh','vol','riskMom','beta','mdd6','upPct','turnover','turnSurge','volSurge','delivPct','macd','stoch','bollB','composite']);
+const EXT_FIELDS=new Set(['ret1m','ret3m','ret6m','ret12m','rsNifty','accel','accel3m','dma50','dma200','rangePos','daysHigh','vol','riskMom','beta','mdd6','upPct','turnover','turnSurge','volSurge','delivPct','macd','stoch','bollB','composite']);
 function needsTech(cfg){ return EXT_FIELDS.has(cfg.sortBy) || (cfg.filters||[]).some(f=>EXT_FIELDS.has(f.field)); }
 
 // ---- Fundamentals: point-in-time quarterly net profit (StockView's profitYoyPct/profitBase) ----
@@ -1492,6 +1494,8 @@ function csvMetaRows(r){
     ['# final_period','open','the last rebalance opens positions with no exit (live current picks, marked to the end date, never liquidated)'],
     ['# date_labels','calendar month-end','rebalances labelled at calendar month-end, priced at the last trading day at or before it; join cross-platform comparisons on month'],
     ['# accel_definition','ret30cd minus prior ret30cd','30-CALENDAR-day close-over-close return ending at the screen date D, minus the same ending at D-30; each endpoint uses the last trading close at or before it; corporate-action-adjusted closes, ordinary dividends not reinvested'],
+    ['# dma_definition','SMA of the last N trading sessions','50-DMA / 200-DMA = simple average of the last 50 / 200 daily corporate-action-adjusted closes (trading sessions, not calendar days); null until N sessions exist; distance = close ÷ SMA − 1'],
+    ['# accel3m_definition','ret91cd minus prior ret91cd','91-CALENDAR-day close-over-close return ending at the screen date D, minus the same ending at D-91; each endpoint uses the last trading close at or before it; corporate-action-adjusted closes, ordinary dividends not reinvested'],
     ['# rsi_definition','Wilder RSI(14) daily','14-period Wilder smoothing on daily corporate-action-adjusted closes, seeded with a simple 14-change average starting at most 100 bars back'],
     ['#']
   ];

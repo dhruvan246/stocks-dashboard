@@ -13618,3 +13618,26 @@ count (HOMEFIRST conOnly = 1 before and after). The marker is dropped from the r
 **Lesson (added to the golden rules by reference):** a "fallback" is per FIELD, not per function. When a
 blend keeps one basis's answer for some fields and borrows another's for the rest, name the fields, and
 test the borrowed set against a case where the two bases disagree in LENGTH, not only in value.
+
+
+## 122. ★ DMA WINDOWS COUNT TRADING SESSIONS + accel3m factor  (2026-09-02, engine e16)
+
+**What changed (both engine twins — `docs/backtest-engine.js`, inline `docs/stock-backtest.html`):**
+1. `dma50` / `dma200` = simple average of the last **50 / 200 trading sessions** (`smaBarsAt`), **null until that many
+   sessions exist**. Before e16 they were `smaAt(off, 50|200)` = the closes inside the last 50/200 **calendar days** —
+   measured on the live page 2026-07-31 as **36 / 136 bars**, so "200-DMA" was not a 200-DMA. quantmac's
+   `pxVs200dma` was brute-forced to SMA(200 bars) (47/50 exact; the 3 misses were VEDL's broken adjusted series).
+   A young listing with < N sessions now reads null (quantmac's rule) instead of an average over the few bars it has.
+   Every saved strategy that sorts/filters on dma50/dma200 changes → ENGINE_VER e15→e16 (snapshots re-bake).
+2. New factor **`accel3m`** = ret91cd − prior ret91cd (3-month momentum acceleration; calendar 91/182-day windows,
+   the same clock as `accel`). quantmac's equivalent is their bare `accel` (63/126 trading bars). Adds a field only;
+   no existing result changes. Also: `accel`'s dropdown label now says "(1 month)" — the user mapped it to quantmac's
+   3-month `accel` once (27.9 % overlap) before the 1-month `accel1m` was found (60.5 %).
+3. Still calendar-day by design (unchanged): ret1m/3m/6m/12m, accel, d52*, rangePos, daysHigh, vol, beta, mdd6,
+   upPct, turnover, surge, delivPct, stoch, bollB. The full cross-engine convention table (25 shared fields,
+   values + single-factor backtests) is in memory `project-stocks-factor-window-audit` and the 2026-09-02 scratch
+   record `SUMMARY_for_fable.md`.
+
+**Verify (§39):** local preview of the worktree → dropdown shows "Momentum acceleration — 3 month %"; a top-20
+dma200 run reproduces quantmac's `pxVs200dma` baskets far above the pre-e16 79.6 % overlap; value check on 10 names ×
+7 dates: our dma200 == their pxVs200dma to 3 dp (except VEDL). Live: `ENGINE_VER='e16'` in the deployed HTML, sw v134.

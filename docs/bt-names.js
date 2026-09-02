@@ -31,7 +31,7 @@ function nameWithBasis(name, c) {
 // '%' so the appended one never doubles up. Keep the key set aligned with stock-backtest.html FIELDS.
 const EN_FIELD = {
   ret1m: { l: '1-month return', p: 1 }, ret3m: { l: '3-month return', p: 1 }, ret6m: { l: '6-month return', p: 1 }, ret12m: { l: '12-month return', p: 1 },
-  accel: { l: 'momentum acceleration', p: 1 }, riskMom: { l: 'risk-adjusted momentum' }, postDrift: { l: 'post-result drift', p: 1 }, composite: { l: 'quality-momentum score' },
+  accel: { l: 'momentum acceleration', p: 1 }, accel3m: { l: '3-month momentum acceleration', p: 1 }, riskMom: { l: 'risk-adjusted momentum' }, postDrift: { l: 'post-result drift', p: 1 }, composite: { l: 'quality-momentum score' },
   d52: { l: '% below 52-week high', p: 1 }, d52_low_pct: { l: '% above 52-week low', p: 1 }, rangePos: { l: '52-week range position' }, daysHigh: { l: 'days since 52-week high' },
   dma50: { l: '% from 50-DMA', p: 1 }, dma200: { l: '% from 200-DMA', p: 1 }, indRank: { l: 'industry momentum rank' },
   vol: { l: 'annualised volatility', p: 1 }, beta: { l: 'beta vs Nifty' }, mdd6: { l: '6-month max drawdown', p: 1 }, upPct: { l: 'up-day consistency', p: 1 },
@@ -66,6 +66,7 @@ function enSortShort(c) {
     case 'profitYoyPct': return (d ? 'Top' : 'Lowest') + ' profit growth';
     case 'profitAccel': return (d ? 'Top' : 'Lowest') + ' profit accel';
     case 'accel': return (d ? 'Top' : 'Lowest') + ' momentum accel';
+    case 'accel3m': return (d ? 'Top' : 'Lowest') + ' 3m momentum accel';
     case 'profitTTM': return (d ? 'Top' : 'Lowest') + ' TTM profit growth';
     case 'mcap': case 'hist_mcap': return d ? 'Largest mcap' : 'Smallest mcap';
     case 'vol': return d ? 'Most volatile' : 'Least volatile';
@@ -83,6 +84,7 @@ function enFilterShort(f) {
     case 'profitTTM': return (up && v === 0) ? 'TTM profit +ve' : 'TTM profit ' + op + v + '%';
     case 'profitAccel': return (up && v === 0) ? 'profit accel' : 'profit accel ' + op + v;
     case 'accel': return (up && v === 0) ? 'momentum accel' : 'momentum accel ' + op + v + '%';
+    case 'accel3m': return (up && v === 0) ? '3m momentum accel' : '3m momentum accel ' + op + v + '%';
     case 'fiiPct': return 'FII ' + op + v + '%';
     case 'diiPct': return 'DII ' + op + v + '%';
     case 'ret1m': case 'ret3m': case 'ret6m': case 'ret12m': {
