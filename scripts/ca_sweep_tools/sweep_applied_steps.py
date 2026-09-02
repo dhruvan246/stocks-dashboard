@@ -1,6 +1,6 @@
 # -*- coding: utf-8 -*-
 """Full-history sweep of the price-adjustment layer: which adjustments did the bake APPLY, and
-which of those are phantoms (crashes divided out as splits)?  2026-09-02, runbook §122.
+which of those are phantoms (crashes divided out as splits)?  2026-09-02, runbook §124.
 
 Reads the LIVE release bin (adjusted closes) against the raw NSE bhavcopy cache (raw closes/opens),
 so for every symbol the cumulative applied factor is f = raw/adj, and every STEP in f is an
