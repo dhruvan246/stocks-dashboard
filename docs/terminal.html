@@ -802,8 +802,12 @@ body.blur-secret .secret{filter:blur(7px);-webkit-user-select:none;user-select:n
      there are no table headers to click, and a 25-row list is unusable without both. Filtering
      applies to the tables too, so desktop and mobile can never show a different set. */
   var HOLD_FILT='', POS_FILT='', KSEC='hold';
-  /* one derivative test for the F&O chip AND the 'Futures total' row, so they can never disagree */
-  function isFo(r){ return r.exch==='NFO'||/FUT$|CE$|PE$/.test(r.sym); }
+  /* one derivative test for the F&O chip, the 'Futures total' row AND the position Sell button, so they
+     can never disagree. Exchange is authoritative (NFO/BFO = NSE/BSE F&O, MCX commodities, CDS/BCD
+     currency); the symbol fallback (for a missing exchange) needs BOTH an expiry/strike digit and a
+     FUT/CE/PE tail, so an equity whose NAME merely ends in those letters (RELIANCE → 'CE', 'SCOPE' →
+     'PE') is never mistaken for a derivative. */
+  function isFo(r){ var s=r.sym||''; return r.exch==='NFO'||r.exch==='BFO'||r.exch==='MCX'||r.exch==='CDS'||r.exch==='BCD'||(/\d/.test(s)&&/(FUT|CE|PE)$/.test(s)); }
   /* positions filter: '' all · 'fo' derivative legs · 'p:<PRODUCT>' equity legs of that product */
   function posRows(){
     var l=ACCT.pos||[];
@@ -910,7 +914,7 @@ body.blur-secret .secret{filter:blur(7px);-webkit-user-select:none;user-select:n
           '<td>₹'+r.ltp.toFixed(2)+(r.movePct==null?'':'<div class="sub '+(r.movePct>=0?'up':'down')+'">'+signed(r.movePct)+'</div>')+'</td>'+
           '<td class="secret '+((r.dayPnl||0)>=0?'up':'down')+'">'+(r.dayPnl==null?'—':inrSigned(r.dayPnl))+(r.dayPct==null?'':'<div class="sub '+(r.dayPct>=0?'up':'down')+'">'+signed(r.dayPct)+'</div>')+'</td>'+
           '<td class="secret '+(r.pnl>=0?'up':'down')+'">'+inrSigned(r.pnl)+(r.pnlPct==null?'':'<div class="sub '+(r.pnlPct>=0?'up':'down')+'">'+signed(r.pnlPct)+'</div>')+'</td>'+
-          '<td>'+((r.qty>0 && !/FUT$|CE$|PE$/.test(r.sym))?'<button class="abtn s" data-sell="pos" data-sy="'+esc(r.sym)+'" title="Sell this position at market">Sell</button>':'')+'</td></tr>';
+          '<td>'+((r.qty>0 && !isFo(r))?'<button class="abtn s" data-sell="pos" data-sy="'+esc(r.sym)+'" title="Sell this position at market">Sell</button>':'')+'</td></tr>';
       }).join('');
       var pcards=sortRows(plist,POS_SORT).map(function(r){
         return '<div class="kcard '+(r.pnl>=0?'up':'down')+'">'+
@@ -921,7 +925,7 @@ body.blur-secret .secret{filter:blur(7px);-webkit-user-select:none;user-select:n
               (r.dayPct==null?'':'<div class="p '+(r.dayPct>=0?'up':'down')+'">'+signed(r.dayPct)+'</div>')+'</div>'+
             '<div class="kpl"><div class="lbl">Total</div><div class="v secret '+(r.pnl>=0?'up':'down')+'">'+inrSigned(r.pnl)+'</div>'+
               (r.pnlPct==null?'':'<div class="p '+(r.pnlPct>=0?'up':'down')+'">'+signed(r.pnlPct)+'</div>')+'</div>'+
-            '<div class="act">'+((r.qty>0 && !/FUT$|CE$|PE$/.test(r.sym))?'<button class="abtn s" data-sell="pos" data-sy="'+esc(r.sym)+'">Sell</button>':'')+'</div></div>'+
+            '<div class="act">'+((r.qty>0 && !isFo(r))?'<button class="abtn s" data-sell="pos" data-sy="'+esc(r.sym)+'">Sell</button>':'')+'</div></div>'+
           '<div class="kfoot"><span class="secret">'+Math.abs(r.qty).toLocaleString('en-IN')+'</span> @ '+r.avg.toFixed(2)+' · LTP '+r.ltp.toFixed(2)+(r.movePct==null?'':' <span class="'+(r.movePct>=0?'up':'down')+'">'+signed(r.movePct)+'</span>')+'</div></div>';
       }).join('');
       var pfilts=pfiltDefs
