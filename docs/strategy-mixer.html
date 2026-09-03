@@ -304,8 +304,14 @@ function loadState(){ try { return JSON.parse(localStorage.getItem('mix_state_v1
  * here (e.g. "⭐ 8 favourites") is one click away on every device. Same label re-saves over. */
 function loadPresets(){ try { const v = JSON.parse(localStorage.getItem('mix_presets_v1') || '[]'); return Array.isArray(v) ? v.filter(p => p && p.label && Array.isArray(p.sel)) : []; } catch(e){ return []; } }
 function savePresets(list){ try { localStorage.setItem('mix_presets_v1', JSON.stringify(list)); } catch(e){} }
+function isMixOwner(){ try { return !!localStorage.getItem('bt_owner_key'); } catch(e){ return false; } }
 function renderPresets(){
-  const ps = loadPresets(), box = $('mixPresets'), canSave = SEL.size >= 2;
+  const box = $('mixPresets');
+  /* Saved mixes are the owner's personal groupings — WHICH strategies they actually play. Show them
+     only on a browser unlocked with the owner key (the same client-side curtain the site's private
+     pages use). Everyone else gets the mixer in full, minus the saved-mix chips + Save button. */
+  if (!isMixOwner()){ box.classList.add('hidden'); box.innerHTML = ''; return; }
+  const ps = loadPresets(), canSave = SEL.size >= 2;
   box.classList.toggle('hidden', !ps.length && !canSave);
   box.innerHTML = (ps.length ? '<span class="text-[11px] font-semibold text-slate-400 mr-0.5">Saved mixes:</span>' : '')
     + ps.map((p, i) => `<span class="chip text-slate-600 bg-slate-50 inline-flex items-center gap-1">
@@ -1213,7 +1219,7 @@ $('bFav').onclick = () => {
     if (st.mode === 'pool') MODE = 'pool';
     if (st.start) $('dFrom').value = st.start;
     if (st.end && sfEnd && st.end <= sfEnd) $('dTo').value = st.end; else if (sfEnd) $('dTo').value = sfEnd;
-    (st.sel || []).forEach(k => {
+    if (isMixOwner()) (st.sel || []).forEach(k => {   // non-owners open blank — the synced selection is the owner's
       const s = ALL.find(x => identityKey(x.cfg) === k);
       // a saved 0 is a deliberate "park it" — keep it 0, don't silently refill to ₹1L
       const a = +((st.alloc || {})[k]);
