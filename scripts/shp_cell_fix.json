@@ -46739,6 +46739,30 @@
     "src": "bseaspx:533228:qtrid86",
     "why": "SW-2 phase-2 2026-08-30: pre-2016 family convention is dii = mf+banks+ins(+vcf); this cell's dii equals that PLUS the institutions Any-Other row (3.57pp) folded in by a minority route. Healed to the page's own domestic rows (14.8338). fii left as authored (block nationality not adjudicated here). Census: _shp_oth_p2_census.jsonl"
    }
+  },
+  "HAL": {
+   "2021-09-30": {
+    "cell": [
+     75.15,
+     2.2878,
+     19.2999,
+     4.9463,
+     14.2229,
+     "2021-10-12",
+     187581
+    ],
+    "src": "bsexbrl:541154:541154_1210202110515_SHP.xml (LIC row-identity across Jun/Sep/Dec-2021)",
+    "was": [
+     75.15,
+     2.2878,
+     5.4059,
+     4.9463,
+     0.3289,
+     "2021-10-12",
+     187581
+    ],
+    "why": "FILER MISCLASSIFICATION in HAL's Sep-2021 SHP filing. Life Insurance Corporation of India (46,459,712 sh = 13.894% of 334,387,500) was tagged D_OtherNonInstitutions (Public->Non-Institutions) instead of a domestic-institution category. Row-identity proof: the SAME named holder LIC is D_InsuranceCompanies in Jun-2021 (14.47%, dii 20.54) and D_OtherInstitutions in Dec-2021 (11.65%, dii 18.25); only Sep-2021 files it as non-institutional, dropping dii to 5.4059 (a ~15pp dip between ~18-20% neighbours). Every source that parses the filing (ours, quantmac, trendlyne) reads 5.41 because the filing itself reports it - not a parse bug. Heal moves LIC back into dii+ins: dii 5.4059->19.2999, ins 0.3289->14.2229. fii/prom/mf/nsh unchanged. Verified 2026-09-03."
+   }
   }
  }
 }
