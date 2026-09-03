@@ -11468,6 +11468,28 @@
      87286
     ],
     "why": "BSE revision 2024-01-24 supersedes stored (sub 2023-10-07); diffs {'nsh': [87286, 86260]}; corroboration=SITES_BACK_REVISION (revision sweep 2026-08-09)"
+   },
+   "2021-09-30": {
+    "cell": [
+     49.57,
+     0.0009,
+     2.168,
+     0.0,
+     2.0885,
+     "2021-10-20",
+     84204
+    ],
+    "src": "bsexbrl:500193:500193_19102021143411_SHP.xml (row-identity; neighbour-band verified)",
+    "was": [
+     49.57,
+     0.0009,
+     0.1765,
+     0.0,
+     0.097,
+     "2021-10-20",
+     84204
+    ],
+    "why": "FILER MISCLASSIFICATION in HLVLTD's 2021-09-30 SHP filing (500193_19102021143411_SHP.xml): institutional holder(s) [LIFE INSURANCE CORPORATION OF INDI 1.9915%] tagged D_OtherNonInstitutions (Public->Non-Institutions) instead of domestic institutions, dropping dii to 0.1765 (outlier vs neighbours 2.2668/2.168). Same class as HAL Sep-2021 [[project-stocks-hal-sep2021-dii-heal]]. Heal restores the block to dii/ins: dii 0.1765->2.168, ins 0.097->2.0885. Named holder(s) counted once (QIB category row deduped against LIC). Neighbour-band verified. 2026-09-03."
    }
   },
   "ICDSLTD": {
@@ -44634,6 +44656,28 @@
     ],
     "src": "bseaspx:532218:qtrid89",
     "why": "SW-2 phase-2 2026-08-30: pre-2016 family convention is dii = mf+banks+ins(+vcf); this cell's dii equals that PLUS the institutions Any-Other row (5.60pp) folded in by a minority route. Healed to the page's own domestic rows (13.0667). fii left as authored (block nationality not adjudicated here). Census: _shp_oth_p2_census.jsonl"
+   },
+   "2020-09-30": {
+    "cell": [
+     0.0,
+     8.6377,
+     4.3298,
+     0.8708,
+     3.2226,
+     "2020-10-09",
+     550957
+    ],
+    "src": "bsexbrl:532218:532218_8102020191037_SHP.xml (row-identity; neighbour-band verified)",
+    "was": [
+     0.0,
+     8.6377,
+     1.1072,
+     0.8708,
+     0.0,
+     "2020-10-09",
+     550957
+    ],
+    "why": "FILER MISCLASSIFICATION in SOUTHBANK's 2020-09-30 SHP filing (532218_8102020191037_SHP.xml): institutional holder(s) [LIFE INSURANCE CORPORATION OF INDI 3.2226%] tagged D_OtherNonInstitutions (Public->Non-Institutions) instead of domestic institutions, dropping dii to 1.1072 (outlier vs neighbours 4.6271/4.5564). Same class as HAL Sep-2021 [[project-stocks-hal-sep2021-dii-heal]]. Heal restores the block to dii/ins: dii 1.1072->4.3298, ins 0.0->3.2226. Named holder(s) counted once (QIB category row deduped against LIC). Neighbour-band verified. 2026-09-03."
    }
   },
   "CASTROLIND": {
@@ -45522,6 +45566,28 @@
     ],
     "src": "bseaspx:532977:qtrid86",
     "why": "SW-2 phase-2 2026-08-30: pre-2016 family convention is dii = mf+banks+ins(+vcf); this cell's dii equals that PLUS the institutions Any-Other row (2.69pp) folded in by a minority route. Healed to the page's own domestic rows (8.3600). fii left as authored (block nationality not adjudicated here). Census: _shp_oth_p2_census.jsonl"
+   },
+   "2020-03-31": {
+    "cell": [
+     53.66,
+     13.9361,
+     9.817,
+     3.0474,
+     0.0,
+     "2020-07-15",
+     125263
+    ],
+    "src": "bsexbrl:532977:532977_562020155433_SHP.xml (row-identity; neighbour-band verified)",
+    "was": [
+     53.66,
+     13.9361,
+     8.7662,
+     3.0474,
+     0.0,
+     "2020-07-15",
+     125263
+    ],
+    "why": "FILER MISCLASSIFICATION in BAJAJ-AUTO's 2020-03-31 SHP filing (532977_562020155433_SHP.xml): institutional holder(s) [ALTERNATIVE INVESTMENT FUND 0.0285%; Qualified Institutional Buyer 1.0222%] tagged D_OtherNonInstitutions (Public->Non-Institutions) instead of domestic institutions, dropping dii to 8.7662 (outlier vs neighbours 10.1025/9.1202). Same class as HAL Sep-2021 [[project-stocks-hal-sep2021-dii-heal]]. Heal restores the block to dii/ins: dii 8.7662->9.817, ins 0.0->0.0. Named holder(s) counted once (QIB category row deduped against LIC). Neighbour-band verified. 2026-09-03."
    }
   },
   "WHIRLPOOL": {
@@ -46762,6 +46828,102 @@
      187581
     ],
     "why": "FILER MISCLASSIFICATION in HAL's Sep-2021 SHP filing. Life Insurance Corporation of India (46,459,712 sh = 13.894% of 334,387,500) was tagged D_OtherNonInstitutions (Public->Non-Institutions) instead of a domestic-institution category. Row-identity proof: the SAME named holder LIC is D_InsuranceCompanies in Jun-2021 (14.47%, dii 20.54) and D_OtherInstitutions in Dec-2021 (11.65%, dii 18.25); only Sep-2021 files it as non-institutional, dropping dii to 5.4059 (a ~15pp dip between ~18-20% neighbours). Every source that parses the filing (ours, quantmac, trendlyne) reads 5.41 because the filing itself reports it - not a parse bug. Heal moves LIC back into dii+ins: dii 5.4059->19.2999, ins 0.3289->14.2229. fii/prom/mf/nsh unchanged. Verified 2026-09-03."
+   }
+  },
+  "OIL": {
+   "2020-09-30": {
+    "cell": [
+     56.66,
+     7.0567,
+     19.7027,
+     5.4015,
+     12.0456,
+     "2020-10-16",
+     184798
+    ],
+    "src": "bsexbrl:533106:533106_1610202015143_SHP.xml (row-identity; neighbour-band verified)",
+    "was": [
+     56.66,
+     7.0567,
+     6.1748,
+     5.4015,
+     0.0,
+     "2020-10-16",
+     184798
+    ],
+    "why": "FILER MISCLASSIFICATION in OIL's 2020-09-30 SHP filing (533106_1610202015143_SHP.xml): institutional holder(s) [LIFE INSURANCE CORPORATION OF INDI 12.0456%; Qualified Institutional Buyer 1.4823%] tagged D_OtherNonInstitutions (Public->Non-Institutions) instead of domestic institutions, dropping dii to 6.1748 (outlier vs neighbours 18.7501/19.5987). Same class as HAL Sep-2021 [[project-stocks-hal-sep2021-dii-heal]]. Heal restores the block to dii/ins: dii 6.1748->19.7027, ins 0.0->12.0456. Named holder(s) counted once (QIB category row deduped against LIC). Neighbour-band verified. 2026-09-03."
+   }
+  },
+  "IOC": {
+   "2021-09-30": {
+    "cell": [
+     51.5,
+     7.2081,
+     12.7702,
+     3.9191,
+     8.8378,
+     "2021-10-14",
+     955410
+    ],
+    "src": "bsexbrl:530965:530965_14102021121055_SHP.xml (row-identity; neighbour-band verified)",
+    "was": [
+     51.5,
+     7.2081,
+     4.5771,
+     3.9191,
+     0.6447,
+     "2021-10-14",
+     955410
+    ],
+    "why": "FILER MISCLASSIFICATION in IOC's 2021-09-30 SHP filing (530965_14102021121055_SHP.xml): institutional holder(s) [LIFE INSURANCE CORPORATION OF INDI 8.1931%] tagged D_OtherNonInstitutions (Public->Non-Institutions) instead of domestic institutions, dropping dii to 4.5771 (outlier vs neighbours 12.371/12.5125). Same class as HAL Sep-2021 [[project-stocks-hal-sep2021-dii-heal]]. Heal restores the block to dii/ins: dii 4.5771->12.7702, ins 0.6447->8.8378. Named holder(s) counted once (QIB category row deduped against LIC). Neighbour-band verified. 2026-09-03."
+   }
+  },
+  "GICHSGFIN": {
+   "2021-09-30": {
+    "cell": [
+     42.41,
+     0.3584,
+     6.8087,
+     0.0,
+     6.804,
+     "2021-10-13",
+     68818
+    ],
+    "src": "bsexbrl:511676:511676_13102021144217_SHP.xml (row-identity; neighbour-band verified)",
+    "was": [
+     42.41,
+     0.3584,
+     0.0047,
+     0.0,
+     0.0,
+     "2021-10-13",
+     68818
+    ],
+    "why": "FILER MISCLASSIFICATION in GICHSGFIN's 2021-09-30 SHP filing (511676_13102021144217_SHP.xml): institutional holder(s) [LIFE INSURANCE CORPORATION OF INDI 6.804%] tagged D_OtherNonInstitutions (Public->Non-Institutions) instead of domestic institutions, dropping dii to 0.0047 (outlier vs neighbours 6.898/6.3364). Same class as HAL Sep-2021 [[project-stocks-hal-sep2021-dii-heal]]. Heal restores the block to dii/ins: dii 0.0047->6.8087, ins 0.0->6.804. Named holder(s) counted once (QIB category row deduped against LIC). Neighbour-band verified. 2026-09-03."
+   }
+  },
+  "STLTECH": {
+   "2021-12-31": {
+    "cell": [
+     54.2,
+     7.0132,
+     10.3558,
+     7.0434,
+     0.0,
+     "2022-01-13",
+     180085
+    ],
+    "src": "bsexbrl:532374:532374_1212022195451_SHP.xml (row-identity; neighbour-band verified)",
+    "was": [
+     54.2,
+     7.0132,
+     7.0749,
+     7.0434,
+     0.0,
+     "2022-01-13",
+     180085
+    ],
+    "why": "FILER MISCLASSIFICATION in STLTECH's 2021-12-31 SHP filing (532374_1212022195451_SHP.xml): institutional holder(s) [Qualified institutional Buyers 3.2809%] tagged D_OtherNonInstitutions (Public->Non-Institutions) instead of domestic institutions, dropping dii to 7.0749 (outlier vs neighbours 10.0897/7.9739). Same class as HAL Sep-2021 [[project-stocks-hal-sep2021-dii-heal]]. Heal restores the block to dii/ins: dii 7.0749->10.3558, ins 0.0->0.0. Named holder(s) counted once (QIB category row deduped against LIC). Neighbour-band verified. 2026-09-03."
    }
   }
  }
