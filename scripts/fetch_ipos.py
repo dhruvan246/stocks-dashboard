@@ -22,7 +22,7 @@ Output docs/ipos.json:
    "listed":  [[sym,name,board,listISO,issuePrice,lastPx|null,mcapCr|null],...]}  # last LISTED_DAYS
 Run: python -X utf8 scripts/fetch_ipos.py
 """
-import os, sys, json, gzip, re, datetime
+import os, sys, json, gzip, re, datetime, time, urllib.parse
 sys.path.insert(0, os.path.dirname(os.path.abspath(__file__)))
 import build_fundamentals as B  # _get / nse_jar / UA
 
@@ -30,6 +30,7 @@ HERE = os.path.dirname(os.path.abspath(__file__))
 DOCS = os.path.join(HERE, "..", "docs")
 OUT = os.path.join(DOCS, "ipos.json")
 SLIM = os.path.join(DOCS, "dash_slim.bin")
+WORKER = "https://stocksworld-quotes.dhruvan2510.workers.dev"  # live NSE quotes (Yahoo feed) — same source the page uses
 LISTED_DAYS = 180
 MIN_PAST = 100
 MON = {"jan":1,"feb":2,"mar":3,"apr":4,"may":5,"jun":6,"jul":7,"aug":8,"sep":9,"oct":10,"nov":11,"dec":12}
@@ -54,6 +55,37 @@ def get(jar, ep, ref):
     hdr = {"User-Agent": B.UA, "Accept": "application/json, text/plain, */*", "Referer": ref}
     j = json.loads(B._get("https://www.nseindia.com/api/" + ep, headers=hdr, jar=jar, timeout=60))
     return j.get("data") if isinstance(j, dict) else j
+
+def worker_quotes(syms):
+    """Live LTP for NSE symbols via our Cloudflare Worker (Yahoo NSE feed) — the SAME
+    source the IPO page uses at runtime, so the baked snapshot matches what viewers see.
+    Freshly-listed names sit in dash_slim meta (they carry an mcap) but not its price
+    series yet, so `latest` is null; this backfills their current price. Best-effort,
+    batched ≤30/call (worker cap). URL-encoded so '&' symbols (M&M, J&KBANK) don't
+    truncate the query (runbook: always url-encode symbol queries). Yahoo drops the odd
+    symbol on a transient non-200, so still-missing names are retried (the ?symbols=
+    route isn't cached, unlike ?quotes=) — a symbol absent after 3 passes is genuinely
+    not on the feed (most SME). Returns {SYM: ltp}."""
+    out = {}
+    pending = list(dict.fromkeys(str(s).upper() for s in syms if s))
+    for attempt in range(3):
+        if not pending:
+            break
+        for i in range(0, len(pending), 30):
+            grp = pending[i:i + 30]
+            try:
+                url = WORKER + "/?symbols=" + urllib.parse.quote(",".join(grp), safe="")
+                j = json.loads(B._get(url, headers={"User-Agent": B.UA, "Accept": "application/json"}, timeout=30))
+                for k, v in ((j or {}).get("data") or {}).items():
+                    ltp = to_num(v.get("ltp"))
+                    if ltp is not None:
+                        out[str(k).upper()] = ltp
+            except Exception as e:
+                print("worker quotes batch failed (%s..): %s" % (grp[:2], e), flush=True)
+        pending = [s for s in pending if s not in out]
+        if pending and attempt < 2:
+            time.sleep(2)
+    return out
 
 def main():
     jar = B.nse_jar()
@@ -114,6 +146,19 @@ def main():
                            ld, to_num(r.get("issuePrice")),
                            m.get("latest"), round(m["mcap"], 1) if m.get("mcap") else None])
         listed.sort(key=lambda r: r[3], reverse=True)
+
+        # Freshly-listed names are in dash_slim meta (mcap) but not its daily price series
+        # yet, so `now` bakes null and the page shows a blank Now / Since-issue until the
+        # runtime JS fills it. Backfill those from the same live NSE feed so the EOD
+        # snapshot isn't blank on load. (mcap stays as dash_slim provides it.)
+        missing = [r[0] for r in listed if r[5] is None]
+        if missing:
+            live = worker_quotes(missing)
+            n = 0
+            for r in listed:
+                if r[5] is None and live.get(r[0]) is not None:
+                    r[5] = live[r[0]]; n += 1
+            print("filled %d/%d missing listed prices from live feed" % (n, len(missing)), flush=True)
 
     ist = datetime.datetime.now(datetime.timezone.utc) + datetime.timedelta(hours=5, minutes=30)
     out = {"updated": ist.strftime("%Y-%m-%d %H:%M"), "upcoming": upcoming, "listed": listed}

@@ -68,10 +68,10 @@
         </tr></thead>
         <tbody id="tBody"></tbody>
       </table>
-      <div class="p-3 text-xs text-slate-500"><span id="count"></span></div>
+      <div class="p-3 text-xs text-slate-500"><span id="count"></span><span id="liveNote"></span></div>
     </div>
 
-    <p class="text-[11px] text-slate-500 mt-5">Source: NSE public-issues data, refreshed twice daily (mornings + weekday evenings, when subscription numbers update). "×" on an open issue = total bids ÷ shares offered so far. Mainboard includes stocks that start trading in the trade-for-trade (BE) series. Current prices come from the site's daily price data, so a stock listed in the last day or two may briefly show "—". SME stocks aren't in the site's price universe and show issue details only. Educational only — not investment advice.</p>
+    <p class="text-[11px] text-slate-500 mt-5">Source: NSE public-issues data, refreshed twice daily (mornings + weekday evenings, when subscription numbers update). "×" on an open issue = total bids ÷ shares offered so far. Mainboard includes stocks that start trading in the trade-for-trade (BE) series. Current prices &amp; market caps update live from the NSE feed while markets are open, and are baked into the daily snapshot each evening. A row shows "—" only when the feed has no quote for it yet (common for the newest SME listings). SME names show a live price where available but don't get a dedicated stock page. Educational only — not investment advice.</p>
   </div>
 </main>
 
@@ -89,6 +89,7 @@ const slink = (sym, name, board) => (board === 'Main' ? '<span class="sw-star" d
   '<div class="text-[11px] text-slate-400 font-normal max-w-[220px] truncate">' + esc(name) + '</div>';
 
 let DATA = null;
+let SHARES = {};   // sym -> shares outstanding (cr), derived from baked mcap÷price, for live mcap
 const todayISO = new Date().toISOString().slice(0,10);
 
 async function load(){
@@ -97,8 +98,11 @@ async function load(){
   if (!DATA){ $('status').textContent = 'No IPO data yet.'; return; }
   $('updated').textContent = '· updated ' + DATA.updated + ' IST';
   $('status').classList.add('hidden'); $('content').classList.remove('hidden');
+  SHARES = {};
+  for (const r of (DATA.listed || [])) if (r[4] && r[5] && r[6]) SHARES[r[0]] = r[6] / r[5];  // mcap(cr)÷price = shares(cr)
   renderIssues(); renderListed();
-  liveSubs();
+  liveSubs(); liveListed();
+  setTimeout(() => { if (!document.hidden) liveListed(); }, 20000);   // 2nd pass fills symbols Yahoo dropped transiently
   ['q','fBoard','fSort'].forEach(id => $(id).addEventListener(id==='q'?'input':'change', renderListed));
 }
 
@@ -152,7 +156,43 @@ async function liveSubs(){
   const t = /(\d{1,2}:\d{2})/.exec(ut);
   $('updated').innerHTML = ' · <span style="color:#16a34a;font-weight:800">● LIVE</span> subscription' + (t ? ' as of ' + t[1] + ' IST' : '') + ' · refreshes every few minutes';
 }
-setInterval(() => { if (!document.hidden) liveSubs(); }, 180000);
+setInterval(() => { if (!document.hidden){ liveSubs(); liveListed(); } }, 180000);
+
+/* ---- live CURRENT PRICE for listed names via the Worker (?symbols=SYM -> Yahoo's
+   NSE feed). Freshly-listed mainboard stocks aren't in the baked price universe
+   yet, so their "Now"/"Since issue" render blank until the daily price pipeline
+   ingests them — this fills them live and keeps every row current intraday. Mcap
+   is rescaled from the live price using shares derived at load (SHARES); names
+   with no baked mcap keep whatever the feed can't improve. Fails silently per
+   symbol (rows keep their baked values). ---- */
+const chunk = (a, n) => { const o = []; for (let i = 0; i < a.length; i += n) o.push(a.slice(i, i + n)); return o; };
+async function liveListed(){
+  const rows = (DATA && DATA.listed) || [];
+  if (!rows.length) return;
+  const byId = {}; for (const r of rows) byId[r[0]] = r;
+  let any = false, asOf = null;
+  await Promise.all(chunk(rows.map(r => r[0]).filter(Boolean), 30).map(async grp => {
+    try {
+      const j = await (await fetch(WORKER + '/?symbols=' + encodeURIComponent(grp.join(',')), {cache:'no-store'})).json();
+      const d = j && j.data; if (!d) return;
+      asOf = j.asOf || asOf;
+      for (const sym in d){
+        const q = d[sym], r = byId[sym];
+        if (!r || !q || q.ltp == null || !isFinite(q.ltp)) continue;
+        r[5] = q.ltp;
+        if (SHARES[sym] != null) r[6] = Math.round(SHARES[sym] * q.ltp * 10) / 10;   // live mcap = shares × price
+        any = true;
+      }
+    } catch (e) { /* keep baked values for this batch */ }
+  }));
+  if (!any) return;
+  renderListed();
+  if (asOf){
+    const t = new Date(asOf + 330 * 60000);   // -> IST
+    const hh = String(t.getUTCHours()).padStart(2,'0'), mm = String(t.getUTCMinutes()).padStart(2,'0');
+    $('liveNote').innerHTML = ' · <span style="color:#16a34a;font-weight:800">● LIVE</span> prices as of ' + hh + ':' + mm + ' IST';
+  }
+}
 
 function renderListed(){
   const q = $('q').value.trim().toLowerCase(), board = $('fBoard').value, sort = $('fSort').value;
