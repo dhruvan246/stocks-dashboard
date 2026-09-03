@@ -1,0 +1,104 @@
+name: Refresh pre-IPO history
+
+# Daily backfill of PRE-IPO ANNUAL financials (revenue + net profit) for recently-listed names,
+# into docs/ipo_prehistory.json — read only by the stock page's "Pre-IPO financials" card, NEVER
+# by the backtest engine (its point-in-time fundamentals stay BSE-PDF+vision sourced, runbook §2).
+#
+# build_ipo_prehistory.py keeps a self-clearing ledger: every IPO of the last ~3 years is retried
+# each run until its MoneyControl annual series is fetched + identity-checked ('filled'), then left
+# alone; names the feed can't serve yet stay 'pending' and are retried; long-empty names go
+# 'dormant' (checked occasionally). So the job naturally works down the backlog and then idles.
+
+on:
+  schedule:
+    - cron: "30 14 * * *"     # 20:00 IST daily — after the fundamentals refresh, so anchors are current
+  workflow_dispatch: {}
+  # Bootstrap/self-test: also run when the builder or this workflow changes.
+  push:
+    paths:
+      - "scripts/build_ipo_prehistory.py"
+      - ".github/workflows/refresh-ipo-prehistory.yml"
+
+permissions:
+  contents: write
+  actions: write            # dispatch pages.yml after a bot commit (loop guard blocks auto-trigger)
+
+concurrency:
+  group: refresh-ipo-prehistory
+  cancel-in-progress: false
+
+jobs:
+  refresh-ipo-prehistory:
+    runs-on: ubuntu-latest
+    timeout-minutes: 20
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v5
+
+      - name: Set up Python
+        uses: actions/setup-python@v6
+        with:
+          python-version: "3.11"
+
+      # curl_cffi = the Chrome-TLS transport agg_sources uses for MoneyControl (same as the
+      # fundamentals refresh). Everything else build_ipo_prehistory needs is stdlib.
+      - name: Install deps
+        run: pip install -q curl_cffi
+
+      - name: Backfill pre-IPO annual history (one pass over the pending backlog)
+        run: python3 -X utf8 scripts/build_ipo_prehistory.py --limit 130
+
+      - name: Guard — refuse to commit a broken or empty ledger
+        run: |
+          python3 - <<'PY'
+          import json, sys
+          d = json.load(open("docs/ipo_prehistory.json", encoding="utf-8"))
+          data = d.get("data")
+          assert isinstance(data, dict) and len(data) >= 50, "ledger missing/too small"
+          filled = [k for k, e in data.items() if e.get("status") == "filled"]
+          # every filled entry must carry real annual rows (guards a malformed write)
+          bad = [k for k in filled if not (isinstance(data[k].get("rows"), list) and data[k]["rows"])]
+          assert not bad, "filled entries without rows: %s" % bad[:5]
+          print("guard OK: %d names, %d filled" % (len(data), len(filled)))
+          PY
+
+      - name: Commit updated pre-IPO history (only if changed)
+        id: commit
+        run: |
+          git config user.name  "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          cp docs/ipo_prehistory.json /tmp/ipo_prehistory.json
+          for attempt in 1 2 3 4 5; do
+            git fetch origin main
+            git reset --hard origin/main
+            cp /tmp/ipo_prehistory.json docs/ipo_prehistory.json
+            git add docs/ipo_prehistory.json
+            if git diff --cached --quiet; then
+              echo "pre-IPO history unchanged — nothing to commit"
+              echo "changed=false" >> "$GITHUB_OUTPUT"
+              exit 0
+            fi
+            git commit -m "Pre-IPO history refresh $(TZ=Asia/Kolkata date +'%Y-%m-%d %H:%M IST')"
+            if git push origin HEAD:main; then
+              echo "Pushed on attempt #$attempt"
+              echo "changed=true" >> "$GITHUB_OUTPUT"
+              exit 0
+            fi
+            echo "Push attempt #$attempt rejected; resetting and retrying"
+            sleep $(( attempt * 3 ))
+          done
+          echo "Failed to push after 5 attempts"; exit 1
+
+      # Bot commits can't auto-trigger pages.yml — dispatch it explicitly on change (retry, never fail
+      # the run on a GitHub-side hiccup: the data is already pushed; the next push/ci-janitor publishes).
+      - name: Publish to Pages (only when the ledger changed)
+        if: steps.commit.outputs.changed == 'true'
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          for i in 1 2 3; do
+            gh workflow run pages.yml && exit 0
+            echo "::warning::pages dispatch attempt $i failed (GitHub-side); retrying in 15s"
+            sleep 15
+          done
+          echo "::warning::pages dispatch failed 3x — payload is committed; next push or ci-janitor publishes it"

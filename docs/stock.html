@@ -141,6 +141,15 @@
     <div id="fundNote" class="text-[11px] text-slate-400 mt-2"></div>
   </div>
 
+  <!-- pre-IPO annual history (from the prospectus era, via MoneyControl) — DISPLAY ONLY, never the backtest -->
+  <div class="card p-4" id="preipoCard" style="display:none">
+    <div class="flex items-center justify-between flex-wrap gap-2 mb-2">
+      <div class="text-sm font-semibold text-slate-700">🏛️ Pre-IPO financials <span id="preipoBadge" class="text-slate-400 font-normal"></span></div>
+    </div>
+    <div id="preipo" class="sw-scrollx overflow-x-auto text-sm" style="font-variant-numeric:tabular-nums">—</div>
+    <div id="preipoNote" class="text-[11px] text-slate-400 mt-2"></div>
+  </div>
+
   <!-- deep financial detail (XBRL re-parse: EPS, P&L breakdown, balance sheet, cash flow, segments, bank health) -->
   <div class="card p-4" id="deepCard" style="display:none">
     <div class="flex items-center justify-between flex-wrap gap-2 mb-2">
@@ -1284,10 +1293,55 @@ function renderDelivSpark(){
     `<path d="${pts.map((v,i)=>(i?'L':'M')+X(i).toFixed(1)+' '+Y(v).toFixed(1)).join(' ')}" fill="none" stroke="#0ea5e9" stroke-width="1.5"/></svg>`;
 }
 
+/* ---------- pre-IPO annual financials (docs/ipo_prehistory.json) ---------------------------------
+   Annual revenue + net profit from the company's prospectus era, via MoneyControl's yearly feed —
+   the multi-year history a freshly-listed name has before it ever filed a quarter with the exchange.
+   DISPLAY ONLY: this file is never read by the backtest engine (whose point-in-time fundamentals stay
+   filing-sourced). Shown standalone; a "matches filed results" badge appears once a filed quarter
+   cross-checks it. In rewind, years ending after the as-of date are dropped (point-in-time honesty). */
+let PREIPO_DATA=null, PREIPO_P=null;
+function loadPreIPO(){
+  return PREIPO_P||(PREIPO_P=fetch('./ipo_prehistory.json').then(r=>r.ok?r.json():null).then(j=>{
+    PREIPO_DATA=j; try{ renderPreIPO(); }catch(e){ console.error(e); }
+  }).catch(()=>{}));
+}
+function renderPreIPO(){
+  const card=$('preipoCard'); if(!card) return;
+  const hide=()=>{ card.style.display='none'; };
+  const j=PREIPO_DATA, key=(typeof FUND_ALIAS!=='undefined'&&FUND_ALIAS[SYM])||SYM;
+  const e=j&&j.data&&(j.data[SYM]||j.data[key]);
+  if(!e||e.status!=='filled'||!Array.isArray(e.rows)||!e.rows.length) return hide();
+  let rows=e.rows.filter(r=>Array.isArray(r)&&r[0]);            // [fyYear, revenue, netProfit]
+  if(typeof ASOF!=='undefined'&&ASOF!=null&&typeof isoOff==='function'){   // rewind: no future years
+    const d=isoOff(ASOF), asFY=(+d.slice(5,7)>=4)?(+d.slice(0,4)+1):+d.slice(0,4);
+    rows=rows.filter(r=>r[0]<=asFY);
+  }
+  if(!rows.length) return hide();
+  const listedFY=e.listed?((+e.listed.slice(5,7)>=4)?(+e.listed.slice(0,4)+1):+e.listed.slice(0,4)):9999;
+  const inr=v=>v==null?'<span class="text-slate-300">—</span>':Number(v).toLocaleString('en-IN',{maximumFractionDigits:0});
+  let h='<table class="w-full text-sm"><thead class="text-[11px] uppercase text-slate-500 border-b border-slate-200">'
+    +'<tr><th class="text-left py-1.5 pr-3">FY</th><th class="text-right px-3">Revenue (₹ cr)</th><th class="text-right px-3">Net profit (₹ cr)</th></tr></thead><tbody>';
+  for(const r of rows){
+    const pre=r[0]<listedFY;
+    h+='<tr class="border-b border-slate-50"><td class="py-1.5 pr-3 font-semibold text-slate-700">FY'+String(r[0]).slice(2)
+      +(pre?' <span class="text-[9px] font-extrabold text-indigo-500 align-middle">PRE-IPO</span>':'')+'</td>'
+      +'<td class="px-3 text-right">'+inr(r[1])+'</td>'
+      +'<td class="px-3 text-right'+(r[2]!=null&&r[2]<0?' neg':'')+'">'+inr(r[2])+'</td></tr>';
+  }
+  $('preipo').innerHTML=h+'</tbody></table>';
+  $('preipoBadge').innerHTML=e.verified
+    ? '<span style="color:#16a34a;font-weight:700">✓ matches filed results</span>'
+    : '— annual, as reported to MoneyControl';
+  $('preipoNote').innerHTML='Annual figures (standalone) from the company’s prospectus era via MoneyControl — the years before it began filing quarterly results with the exchange. Shown for context; <b>not used in the backtest</b> (which uses only point-in-time filed data).'
+    +(e.verified?' The ✓ badge means at least one year here reproduces a quarter the company has since filed.':'');
+  card.style.display='';
+}
+
 /* ---------- rewind wiring ---------------------------------------------------------------- */
 function rerenderAll(){
   try{ render(); }catch(e){ console.error(e); }
   try{ renderFunds(); }catch(e){ console.error(e); }
+  try{ renderPreIPO(); }catch(e){ console.error(e); }
   if(SHP_HIST){ try{ shpTrendChart(shpHistView()); renderSHPdeep(); wireShpToggle(); }catch(e){ console.error(e); } }
 }
 function applyRewind(iso){
@@ -1400,6 +1454,7 @@ async function liveQuote(){
     try{ buildEvents(); if(LW) lwRefreshMarkers(); else drawChart(); }catch(e){ console.error(e); }     // engine FUND has the ann dates
   }
   renderClass().catch(e=>console.error(e));   // sector chain: after first paint, never blocking it
+  loadPreIPO();                                // pre-IPO annual history card (recent listings only)
   // rewind controls: date bounds follow this stock's actual history
   const s0=SERIES[TKR];
   if(s0&&s0.d.length){
