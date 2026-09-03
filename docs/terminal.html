@@ -841,8 +841,14 @@ body.blur-secret .secret{filter:blur(7px);-webkit-user-select:none;user-select:n
     var posTot=0,posDay=0;
     ACCT.pos=(D.pos||[]).filter(function(r){return r.quantity!==0;}).map(function(r){
       var pnl=+r.pnl||0,m2m=(r.m2m!=null?+r.m2m:null); posTot+=pnl; posDay+=(m2m||0);
-      return {sym:r.tradingsymbol,exch:r.exchange||'NSE',product:r.product||'',qty:r.quantity,avg:+r.average_price||0,
-        ltp:+r.last_price||0,dayPnl:m2m,pnl:pnl};
+      var avg=+r.average_price||0,qty=r.quantity,ltp=+r.last_price||0,close=+r.close_price||0,cost=Math.abs(avg*qty);
+      /* dayPct / pnlPct = P&L over the position's cost (|avg×qty|) — same convention as the holdings
+         tab and the position cards, so the % always tracks the ₹ amount's sign (reads correctly for
+         shorts & F&O). movePct is the instrument's own day move (LTP vs prev close), shown under LTP;
+         null when Kite omits close_price so we never print a fabricated 0 %. */
+      return {sym:r.tradingsymbol,exch:r.exchange||'NSE',product:r.product||'',qty:qty,avg:avg,ltp:ltp,
+        dayPnl:m2m,pnl:pnl,dayPct:(cost&&m2m!=null)?m2m/cost*100:null,pnlPct:cost?pnl/cost*100:null,
+        movePct:close?(ltp-close)/close*100:null};
     });
     var posFutDay=0,posFutTot=0;   // derivative legs only — the 'Futures total' row
     ACCT.pos.forEach(function(r){ if(isFo(r)){ posFutDay+=(r.dayPnl||0); posFutTot+=(r.pnl||0); } });
@@ -900,22 +906,23 @@ body.blur-secret .secret{filter:blur(7px);-webkit-user-select:none;user-select:n
     if(ACCT.pos.length){
       var prows=sortRows(plist,POS_SORT).map(function(r){
         return '<tr data-sy="'+esc(r.sym)+'"><td><span class="nm">'+esc(r.sym)+'</span><span class="xtag">'+esc(r.product)+'</span></td>'+
-          '<td class="secret">'+r.qty+'</td><td>₹'+r.avg.toFixed(2)+'</td><td>₹'+r.ltp.toFixed(2)+'</td>'+
-          '<td class="secret '+((r.dayPnl||0)>=0?'up':'down')+'">'+(r.dayPnl==null?'—':inrSigned(r.dayPnl))+'</td>'+
-          '<td class="secret '+(r.pnl>=0?'up':'down')+'">'+inrSigned(r.pnl)+'</td>'+
+          '<td class="secret">'+r.qty+'</td><td>₹'+r.avg.toFixed(2)+'</td>'+
+          '<td>₹'+r.ltp.toFixed(2)+(r.movePct==null?'':'<div class="sub '+(r.movePct>=0?'up':'down')+'">'+signed(r.movePct)+'</div>')+'</td>'+
+          '<td class="secret '+((r.dayPnl||0)>=0?'up':'down')+'">'+(r.dayPnl==null?'—':inrSigned(r.dayPnl))+(r.dayPct==null?'':'<div class="sub '+(r.dayPct>=0?'up':'down')+'">'+signed(r.dayPct)+'</div>')+'</td>'+
+          '<td class="secret '+(r.pnl>=0?'up':'down')+'">'+inrSigned(r.pnl)+(r.pnlPct==null?'':'<div class="sub '+(r.pnlPct>=0?'up':'down')+'">'+signed(r.pnlPct)+'</div>')+'</td>'+
           '<td>'+((r.qty>0 && !/FUT$|CE$|PE$/.test(r.sym))?'<button class="abtn s" data-sell="pos" data-sy="'+esc(r.sym)+'" title="Sell this position at market">Sell</button>':'')+'</td></tr>';
       }).join('');
       var pcards=sortRows(plist,POS_SORT).map(function(r){
-        var ppct=(r.avg&&r.qty)?(r.pnl/Math.abs(r.avg*r.qty)*100):null;
         return '<div class="kcard '+(r.pnl>=0?'up':'down')+'">'+
           '<div class="khead"><span class="knm">'+esc(r.sym)+'</span><span class="mchip">'+esc(r.product)+'</span>'+
             '<span class="kday '+(r.qty>0?'up':'down')+'">'+(r.qty>0?'LONG':'SHORT')+'</span></div>'+
           '<div class="kpnl">'+
-            '<div class="kpl"><div class="lbl">Today (M2M)</div><div class="v secret '+((r.dayPnl||0)>=0?'up':'down')+'">'+(r.dayPnl==null?'—':inrSigned(r.dayPnl))+'</div></div>'+
+            '<div class="kpl"><div class="lbl">Today (M2M)</div><div class="v secret '+((r.dayPnl||0)>=0?'up':'down')+'">'+(r.dayPnl==null?'—':inrSigned(r.dayPnl))+'</div>'+
+              (r.dayPct==null?'':'<div class="p '+(r.dayPct>=0?'up':'down')+'">'+signed(r.dayPct)+'</div>')+'</div>'+
             '<div class="kpl"><div class="lbl">Total</div><div class="v secret '+(r.pnl>=0?'up':'down')+'">'+inrSigned(r.pnl)+'</div>'+
-              (ppct==null?'':'<div class="p '+(ppct>=0?'up':'down')+'">'+signed(ppct)+'</div>')+'</div>'+
+              (r.pnlPct==null?'':'<div class="p '+(r.pnlPct>=0?'up':'down')+'">'+signed(r.pnlPct)+'</div>')+'</div>'+
             '<div class="act">'+((r.qty>0 && !/FUT$|CE$|PE$/.test(r.sym))?'<button class="abtn s" data-sell="pos" data-sy="'+esc(r.sym)+'">Sell</button>':'')+'</div></div>'+
-          '<div class="kfoot"><span class="secret">'+Math.abs(r.qty).toLocaleString('en-IN')+'</span> @ '+r.avg.toFixed(2)+' · LTP '+r.ltp.toFixed(2)+'</div></div>';
+          '<div class="kfoot"><span class="secret">'+Math.abs(r.qty).toLocaleString('en-IN')+'</span> @ '+r.avg.toFixed(2)+' · LTP '+r.ltp.toFixed(2)+(r.movePct==null?'':' <span class="'+(r.movePct>=0?'up':'down')+'">'+signed(r.movePct)+'</span>')+'</div></div>';
       }).join('');
       var pfilts=pfiltDefs
         .map(function(f){ return '<button data-filt="'+esc(f[0])+'" data-for="pos" class="'+(POS_FILT===f[0]?'on':'')+'">'+esc(f[1])+' '+f[2]+'</button>'; }).join('');
@@ -928,7 +935,7 @@ body.blur-secret .secret{filter:blur(7px);-webkit-user-select:none;user-select:n
       var pName=POS_FILT==='fo'?'F&O':POS_FILT.slice(2);
       var pLbl=POS_FILT?'Total · '+esc(pName)+' '+plist.length+' of '+ACCT.pos.length:'Total';
       h+='<div class="ksec" data-sec="pos"><div class="av-sec">Open positions · '+plist.length+(POS_FILT?' of '+ACCT.pos.length:'')+'</div>'+ptools+'<div class="kcards">'+pcards+'</div><div class="atbl-wrap"><table class="atbl postbl"><thead><tr>'+
-        ths('Contract','sym',POS_SORT)+ths('Qty','qty',POS_SORT)+ths('Avg','avg',POS_SORT)+ths('LTP','ltp',POS_SORT)+ths('Day P&amp;L','dayPnl',POS_SORT)+ths('P&amp;L','pnl',POS_SORT)+'<th></th>'+
+        ths('Contract','sym',POS_SORT)+ths('Qty','qty',POS_SORT)+ths('Avg','avg',POS_SORT)+ths('LTP','ltp',POS_SORT)+ths2('Day P&amp;L','dayPnl','dayPct',POS_SORT)+ths2('P&amp;L','pnl','pnlPct',POS_SORT)+'<th></th>'+
         '</tr></thead><tbody>'+prows+'</tbody>'+
         '<tfoot><tr><td>'+pLbl+'</td><td></td><td></td><td></td>'+
         '<td class="secret '+(pDay>=0?'up':'down')+'">'+inrSigned(pDay)+'</td>'+
