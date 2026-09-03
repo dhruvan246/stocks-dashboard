@@ -71,7 +71,7 @@
       <div class="p-3 text-xs text-slate-500"><span id="count"></span><span id="liveNote"></span></div>
     </div>
 
-    <p class="text-[11px] text-slate-500 mt-5">Source: NSE public-issues data, refreshed twice daily (mornings + weekday evenings, when subscription numbers update). "×" on an open issue = total bids ÷ shares offered so far. Mainboard includes stocks that start trading in the trade-for-trade (BE) series. Current prices &amp; market caps update live from the NSE feed while markets are open, and are baked into the daily snapshot each evening. A row shows "—" only when the feed has no quote for it yet (common for the newest SME listings). SME names show a live price where available but don't get a dedicated stock page. Educational only — not investment advice.</p>
+    <p class="text-[11px] text-slate-500 mt-5">Source: NSE public-issues data, refreshed twice daily (mornings + weekday evenings, when subscription numbers update). "×" on an open issue = total bids ÷ shares offered so far. Mainboard includes stocks that start trading in the trade-for-trade (BE) series. Current prices &amp; market caps update live from the NSE feed while markets are open, and are baked into the daily snapshot each evening. A row shows "—" only when the feed has no quote for it yet (common for the newest SME listings). SME names show a live price where available but don't get a dedicated stock page. Click any listing with a <span class="text-slate-400">▸</span> to unfold its pre-IPO annual financials (revenue &amp; profit from the prospectus era). Educational only — not investment advice.</p>
   </div>
 </main>
 
@@ -90,6 +90,7 @@ const slink = (sym, name, board) => (board === 'Main' ? '<span class="sw-star" d
 
 let DATA = null;
 let SHARES = {};   // sym -> shares outstanding (cr), derived from baked mcap÷price, for live mcap
+let PRE = {};      // sym -> pre-IPO annual history entry (docs/ipo_prehistory.json), for the expandable row
 const todayISO = new Date().toISOString().slice(0,10);
 
 async function load(){
@@ -101,9 +102,11 @@ async function load(){
   SHARES = {};
   for (const r of (DATA.listed || [])) if (r[4] && r[5] && r[6]) SHARES[r[0]] = r[6] / r[5];  // mcap(cr)÷price = shares(cr)
   renderIssues(); renderListed();
+  loadPre();                                                          // pre-IPO annual history -> expandable rows
   liveSubs(); liveListed();
   setTimeout(() => { if (!document.hidden) liveListed(); }, 20000);   // 2nd pass fills symbols Yahoo dropped transiently
   ['q','fBoard','fSort'].forEach(id => $(id).addEventListener(id==='q'?'input':'change', renderListed));
+  $('tBody').addEventListener('click', onListedClick);               // delegated: survives renderListed() re-renders
 }
 
 function issueCard(r){
@@ -205,18 +208,53 @@ function renderListed(){
   let h = '';
   for (const r of rows){
     const g = gain(r);
-    h += '<tr class="border-b border-slate-50 align-top hover:bg-slate-50">' +
+    const pe = PRE[r[0]];
+    const canExp = pe && pe.status === 'filled' && pe.rows && pe.rows.length;
+    h += '<tr class="ipo-row border-b border-slate-50 align-top hover:bg-slate-50' + (canExp ? ' cursor-pointer' : '') + '">' +
       '<td class="py-2.5 px-3 whitespace-nowrap text-slate-600">' + fmtD(r[3]) + '</td>' +
-      '<td class="py-2.5 px-3">' + slink(r[0], r[1], r[2]) + '</td>' +
+      '<td class="py-2.5 px-3">' + (canExp ? '<span class="pre-caret text-slate-400 mr-1 select-none">▸</span>' : '') + slink(r[0], r[1], r[2]) + '</td>' +
       '<td class="py-2.5 px-3 text-center"><span class="chip ' + (r[2]==='SME'?'sme">SME':'main">Main') + '</span></td>' +
       '<td class="py-2.5 px-3 text-right">' + inr(r[4]) + '</td>' +
       '<td class="py-2.5 px-3 text-right">' + inr(r[5]) + '</td>' +
       '<td class="py-2.5 px-3 text-right font-semibold">' + pctc(g) + '</td>' +
       '<td class="py-2.5 px-3 text-right text-slate-600">' + inr(r[6]) + '</td></tr>';
+    if (canExp) h += '<tr class="pre-row" hidden><td colspan="7" class="px-3 pb-3 pt-0">' + preTable(pe) + '</td></tr>';
   }
   $('tBody').innerHTML = h || '<tr><td colspan="7" class="py-10 text-center text-sm text-slate-400">Nothing matches.</td></tr>';
   if (window.swWatch) swWatch.paintAll($('tBody'));
   $('count').textContent = rows.length.toLocaleString('en-IN') + ' listings in the last 6 months';
+}
+
+/* ---- pre-IPO annual history (docs/ipo_prehistory.json): the DRHP-era revenue+PAT a name shows
+   before it ever filed a quarter. Mainboard names also carry it on their stock page; SME names
+   have no stock page, so this expandable row is where their history lives. Display-only — the
+   backtest never reads this file. Loads after first paint and re-renders the table in place. ---- */
+function loadPre(){
+  fetch('./ipo_prehistory.json?t=' + Date.now()).then(r => r.ok ? r.json() : null)
+    .then(j => { PRE = (j && j.data) || {}; renderListed(); }).catch(() => {});
+}
+function onListedClick(e){
+  if (e.target.closest('a, .sw-star')) return;            // let the stock link / watchlist star do their thing
+  const tr = e.target.closest('tr.ipo-row'); if (!tr) return;
+  const det = tr.nextElementSibling;
+  if (!det || !det.classList.contains('pre-row')) return;
+  det.hidden = !det.hidden;
+  const c = tr.querySelector('.pre-caret'); if (c) c.textContent = det.hidden ? '▸' : '▾';
+}
+function preTable(pe){
+  const src = pe.source === 'screener' ? 'Screener' : 'MoneyControl';
+  const badge = pe.verified ? '<span style="color:#16a34a;font-weight:700">✓ matches filed results</span>'
+                            : 'as reported to ' + src;
+  let t = '<div class="text-[11px] font-semibold text-slate-500 mb-1">🏛️ Pre-IPO financials · ' + badge + '</div>' +
+    '<table class="text-xs" style="font-variant-numeric:tabular-nums"><thead class="text-[10px] uppercase text-slate-400"><tr>' +
+    '<th class="text-left pr-5 pb-1">FY</th><th class="text-right px-3 pb-1">Revenue (₹ cr)</th><th class="text-right px-3 pb-1">Net profit (₹ cr)</th></tr></thead><tbody>';
+  for (const row of pe.rows){
+    t += '<tr><td class="pr-5 font-semibold text-slate-600">FY' + String(row[0]).slice(2) + '</td>' +
+      '<td class="px-3 text-right">' + (row[1] == null ? '—' : Number(row[1]).toLocaleString('en-IN', {maximumFractionDigits:0})) + '</td>' +
+      '<td class="px-3 text-right' + (row[2] != null && row[2] < 0 ? ' neg' : '') + '">' + (row[2] == null ? '—' : Number(row[2]).toLocaleString('en-IN', {maximumFractionDigits:0})) + '</td></tr>';
+  }
+  return t + '</tbody></table><div class="text-[10px] text-slate-400 mt-1.5 max-w-xl">Annual figures from the company’s prospectus era, via ' + src +
+    ' — the years before it began filing quarterly results with the exchange. Context only; <b>not used in the backtest</b>.</div>';
 }
 
 load();

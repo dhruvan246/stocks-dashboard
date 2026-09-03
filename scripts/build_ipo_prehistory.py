@@ -32,7 +32,7 @@ scale: at least one quarter MC reports must reproduce a quarter WE already hold 
 Run:  python -X utf8 scripts/build_ipo_prehistory.py            # one pass over the pending backlog
       python -X utf8 scripts/build_ipo_prehistory.py --limit 40 # cap names touched this run
 """
-import os, sys, json, re, datetime, argparse
+import os, sys, json, re, datetime, argparse, time, html, urllib.request, urllib.error, urllib.parse
 
 HERE = os.path.dirname(os.path.abspath(__file__))
 DOCS = os.path.join(HERE, "..", "docs")
@@ -114,6 +114,57 @@ def fy_rows(mc_a):
     return rows
 
 
+SCR_UA = "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/120 Safari/537.36"
+_SCR_LAST = [0.0]
+
+def screener_annuals(sym):
+    """FALLBACK annual source: revenue (Sales) + net profit from Screener's P&L section, keyed by
+    our NSE ticker in the URL (no id map — reaches the SME names MoneyControl has no page for).
+    -> ([[fyYear, rev, pat], ...] Mar-year-end, company_name, note). Screener occasionally prints an
+    implausible pre-IPO figure, so a net profit whose |value| >> sales is dropped (screener_prefund's
+    guard). Paced ~3s; a 429/blk leaves the name pending for the next run. Display-only, same as MC."""
+    wait = 4.0 - (time.time() - _SCR_LAST[0])
+    if wait > 0:
+        time.sleep(wait)
+    _SCR_LAST[0] = time.time()
+    url = "https://www.screener.in/company/%s/" % urllib.parse.quote(sym, safe="")
+    try:
+        req = urllib.request.Request(url, headers={"User-Agent": SCR_UA})
+        t = urllib.request.urlopen(req, timeout=25).read().decode("utf-8", "replace")
+    except urllib.error.HTTPError as ex:
+        return [], "", "screener: HTTP %s" % ex.code            # 404 = no page; 429 = rate-limited (retry next run)
+    except Exception as ex:
+        return [], "", "screener: %s" % ex
+    m = re.search(r'id="profit-loss".*?</section>', t, re.S)
+    if not m:
+        return [], "", "screener: no P&L section"
+    sec = m.group(0)
+    yrs = re.findall(r'<th[^>]*>\s*([A-Za-z]{3} \d{4})\s*</th>', sec)      # year columns (TTM has no 'Mon YYYY' -> excluded)
+    def row(lbl):
+        mm = re.search(r'<td[^>]*class="text"[^>]*>\s*(?:<button[^>]*>)?\s*' + re.escape(lbl) +
+                       r'.*?</td>(.*?)</tr>', sec, re.S)
+        if not mm:
+            return []
+        return [html.unescape(re.sub(r"<[^>]+>", "", c)).strip().replace(",", "")
+                for c in re.findall(r"<td[^>]*>(.*?)</td>", mm.group(1), re.S)]
+    sales, nps = row("Sales"), row("Net Profit")
+    nm = re.search(r"<h1[^>]*>\s*([^<]+?)\s*</h1>", t)
+    name = nm.group(1).strip() if nm else ""
+    rows = []
+    for i, y in enumerate(yrs):
+        mon, yr = y.split()
+        if mon != "Mar":                                          # keep the March fiscal-year columns
+            continue
+        rev = _num(sales[i]) if i < len(sales) else None
+        pat = _num(nps[i]) if i < len(nps) else None
+        if rev is None and pat is None:
+            continue
+        if rev is not None and pat is not None and abs(pat) > max(3 * abs(rev), 50):   # outlier guard
+            pat = None
+        rows.append([int(yr), rev, pat])
+    return rows, name, "screener: %d FYs %s..%s" % (len(rows), rows[0][0] if rows else "-", rows[-1][0] if rows else "-")
+
+
 def seed_universe():
     """Recently-listed names from NSE public-past-issues, listed within LOOKBACK_DAYS.
     -> {sym: {"name","listed","board"}}. Empty on fetch failure (we then just work the ledger)."""
@@ -170,31 +221,38 @@ def main():
     for sym in todo:
         e = led[sym]; e["tries"] = e.get("tries", 0) + 1; e["last"] = today
         try:
+            rows = source = disp_name = None; note = ""; ok = False; hit = None
+            # 1) MoneyControl — deep annual, id-gated (identity via exact-symbol autosuggest + name).
             ident = AG.mc_id(sym)
-            if not ident:
-                e["note"] = "no exact symbol match on MoneyControl yet"
+            if ident and name_ok(ident.get("name"), e.get("name")):
+                mc_a, na = AG.mc_annuals(sym, False)
+                r = fy_rows(mc_a)
+                if r:
+                    rows, source, disp_name, note = r, "mc", ident.get("name"), na
+                    # Upgrade to a "matches filed results" badge when a quarter MC reports reproduces
+                    # one we already hold (proves scale on real filed data); not required to show.
+                    mc_q, _ = AG.mc_quarters(sym, False)
+                    ok, hit = anchored(mc_q, our_std_pat(sym))
+                else:
+                    note = na
+            else:
+                note = "MC id name mismatch (%s)" % ident.get("name") if ident else "no MoneyControl page"
+            # 2) Screener FALLBACK — keyed by ticker, reaches the SME names MoneyControl lacks.
+            if rows is None:
+                sr, sname, sn = screener_annuals(sym)
+                if sr and name_ok(sname, e.get("name")):
+                    rows, source, disp_name, note = sr, "screener", sname, sn
+                elif sr:
+                    note = "screener id name mismatch (%s)" % sname
+                else:
+                    note = "%s; %s" % (note, sn)
+            if rows is None:
                 if e["tries"] >= DORMANT_AFTER: e["status"] = "dormant"
-                pending += 1; continue
-            if not name_ok(ident.get("name"), e.get("name")):
-                e["note"] = "identity guard: MC '%s' != listed '%s'" % (ident.get("name"), e.get("name"))
-                e["status"] = "dormant"                       # wrong id won't self-heal — stop pinging
-                pending += 1; continue
-            mc_a, na = AG.mc_annuals(sym, False)
-            rows = fy_rows(mc_a)
-            if not rows:
-                e["note"] = na
-                if e["tries"] >= DORMANT_AFTER: e["status"] = "dormant"
-                pending += 1; continue
-            # Upgrade to a "matches filed results" badge when a quarter MC reports reproduces one
-            # we already hold from the exchange (proves scale on real filed data). Not required to
-            # show — mc_id + name already fix identity — so fresh names appear immediately.
-            mc_q, _ = AG.mc_quarters(sym, False)
-            ok, hit = anchored(mc_q, our_std_pat(sym))
-            e.update(status="filled", basis="std", source="mc", asof=today, rows=rows,
-                     verified=bool(ok), mc_name=ident.get("name"))
+                e["note"] = note; pending += 1; continue
+            e.update(status="filled", basis=("std" if source == "mc" else "reported"),
+                     source=source, asof=today, rows=rows, verified=bool(ok), mc_name=disp_name)
             e["anchor"] = {"qe": hit[0], "mc": hit[1], "ours": hit[2]} if ok else None
-            e["note"] = ("✓ matches filed %d (MC %.2f vs %.2f); " % (hit[0], hit[1], hit[2]) if ok else
-                         "annual only, awaiting a filed quarter to cross-check; ") + na
+            e["note"] = ("✓ matches filed %d; " % hit[0] if ok else "") + note
             e.pop("tries", None)
             filled += 1
         except Exception as ex:
