@@ -52,7 +52,11 @@ def norm_name(s):
 
 
 # ---------------------------------------------------------------- frontier
-def cmd_frontier(dirp):
+def cmd_frontier(dirp, q_from="2002-12-31", q_to="2016-03-31"):
+    """Missing N500 member-quarter cells in [q_from, q_to] x scripcode -> frontier.json.
+    Default window = the original 2002-12-31..2016-03-31 (byte-identical behaviour). The floor was a
+    hard constant for 4 weeks and IS why shp_history starts Dec-2002: Flag=Old serves Mar-2001 on
+    (runbook §22f RIL, §127b pilot 54/56). WP-S1 runs --from 2001-03-31 --to 2002-09-30."""
     ih = gitshow("scripts/indices_history.json")
     rmap = gitshow("scripts/_rename_map.json")
     hist = gitshow("scripts/shp_history.json")
@@ -85,8 +89,8 @@ def cmd_frontier(dirp):
             else: break
         return best
 
-    qes = ["%d%s" % (y, s) for y in range(2002, 2017) for s in ("-03-31", "-06-30", "-09-30", "-12-31")]
-    qes = [q for q in qes if "2002-12-31" <= q <= "2016-03-31"]
+    qes = ["%d%s" % (y, s) for y in range(2001, 2017) for s in ("-03-31", "-06-30", "-09-30", "-12-31")]
+    qes = [q for q in qes if q_from <= q <= q_to]
     missing = []
     for qe in qes:
         if qe in ("2015-12-31", "2016-03-31"):
@@ -107,7 +111,7 @@ def cmd_frontier(dirp):
                 missing.append((s, qe))
     # the two named post-window holes this route was measured to serve
     for s, qe in (("MONSANTO", "2016-09-30"), ("JMTAUTOLTD", "2016-09-30")):
-        if qe not in have.get(s, {}):
+        if q_to >= "2016-03-31" and qe not in have.get(s, {}):
             missing.append((s, qe))
 
     # scripcode resolution: full master incl. Delisted/Suspended (status BLANK — §22f), + override
@@ -580,6 +584,8 @@ def main():
     ap.add_argument("--workers", type=int, default=4)
     ap.add_argument("--cache-only", action="store_true",
                     help="re-parse pages already on disk; never fetch (recovery passes)")
+    ap.add_argument("--from", dest="q_from", default="2002-12-31", help="frontier window start (quarter-end ISO)")
+    ap.add_argument("--to", dest="q_to", default="2016-03-31", help="frontier window end (quarter-end ISO)")
     ap.add_argument("--frontier", default="frontier.json",
                     help="frontier file inside --dir (e.g. frontier_unres.json)")
     a = ap.parse_args()
@@ -587,7 +593,7 @@ def main():
     CACHE_ONLY = a.cache_only
     os.makedirs(os.path.join(a.dir, "cache"), exist_ok=True)
     if a.cmd == "frontier":
-        cmd_frontier(a.dir); return
+        cmd_frontier(a.dir, a.q_from, a.q_to); return
     front = json.load(open(os.path.join(a.dir, a.frontier)))
     if a.cmd == "pilot":
         # stratified: spread across years, plus deliberate OVERLAP cells (already-stored) as the gate

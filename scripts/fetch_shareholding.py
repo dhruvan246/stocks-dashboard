@@ -228,7 +228,14 @@ BSE_HIST_LEDGERS = [os.path.join(HERE, "shp_fill_thirdparty.json.gz"),
                     # PLAN_FAV14 P2 (2026-08-24): SHP-level fill for 3 delisted N500 members
                     # (MVL/SHLAKSHMI/INNOIND) — BSE ShareholdingPattern.aspx, reconciled <0.15pp.
                     # Fill-only like the rest; these symbols had NO prior SHP cell.
-                    os.path.join(HERE, "shp_fill_fav14.json.gz")]
+                    os.path.join(HERE, "shp_fill_fav14.json.gz"),
+                    # WP-S1 (2026-09-05, PLAN_STDPAT_SHP_COVERAGE_2002 / runbook §127b): the SAME
+                    # ShareholdingPattern.aspx route, Flag=Old (1997 format), for the quarters the
+                    # frontier had floored out — Mar-2001..Sep-2002, N500 point-in-time members.
+                    # ins is None (inside the Banks/FI/Insurance lump); sub = QE+21d convention, so
+                    # build_engine_feed serves these rows UN-DATED (engine qe+28d fallback, §120).
+                    # Fill-only; no quarter here overlaps any earlier ledger (all < Dec-2002).
+                    os.path.join(HERE, "shp_fill_bse_aspx_2001.json.gz")]
 def apply_bse_hist_ledger(h):
     n_total = 0
     for path in BSE_HIST_LEDGERS:
