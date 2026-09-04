@@ -470,7 +470,7 @@ body.blur-secret .secret{filter:blur(7px);-webkit-user-select:none;user-select:n
   function istTimeSec(ms){ var d=new Date((ms||Date.now())+330*60000); var p=function(n){return String(n).padStart(2,'0');}; return p(d.getUTCHours())+':'+p(d.getUTCMinutes())+':'+p(d.getUTCSeconds()); }
 
   /* ---------------- indices (direct NSE CDN, CORS-open) ---------------- */
-  var IDX_WANT=[["NIFTY 50","NIFTY 50"],["NIFTY BANK","BANK NIFTY"],["NIFTY FINANCIAL SERVICES","FINNIFTY"],["NIFTY 500","NIFTY 500"],["NIFTY NEXT 50","NIFTY NEXT 50"],["INDIA VIX","INDIA VIX"],["NIFTY IT","NIFTY IT"]];
+  var IDX_WANT=[["NIFTY 50","NIFTY 50"],["NIFTY BANK","BANK NIFTY"],["NIFTY FINANCIAL SERVICES","FINNIFTY"],["NIFTY 500","NIFTY 500"],["NIFTY NEXT 50","NIFTY NEXT 50"],["NIFTY MIDCAP 100","NIFTY MIDCAP 100"],["NIFTY SMLCAP 100","NIFTY SMALLCAP 100"],["INDIA VIX","INDIA VIX"],["NIFTY IT","NIFTY IT"]];
   function renderIdxLoading(){
     document.getElementById('idxWrap').innerHTML=IDX_WANT.slice(0,5).map(function(x){
       return '<div class="idx load"><span class="n">'+x[1]+'</span><span class="v mono">—</span></div>';
