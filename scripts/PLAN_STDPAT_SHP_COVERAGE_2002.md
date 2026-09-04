@@ -275,3 +275,26 @@ print(F.parse_old(F.fetch_page('/tmp/aspx',500116,33,'Old')[0]))"` (IDBI Mar-200
    fiiPct N/A into visible holes, i.e. honest numbers). Page-changing — needs explicit approval.
 4. **Ownership of WP-S1** if an SHP session is live (its files were dirty in the shared checkout on
    2026-09-05).
+
+---
+
+## 8. EXECUTION LOG — std-PAT packages (2026-09-05, session b391e819, worktree `~/stocks-wt/stdpat-2002`)
+
+Runbook **§128** carries the full record; this block is the plan's state so the next session resumes from it.
+
+| WP | state | what landed | where the record is |
+|---|---|---|---|
+| P0 hygiene | **CLOSED, reframed** | the 40 "in-a-fill-ledger-but-absent" cells were not absent: **229 root cells sit under a RETIRED store key** (HIMACHLFUT/SUPPETRO/HINDMOTOR/COLGATE/ASIANHOTEL/CASTROL/LGBROS/MANDHANA + BBOX/PENINLAND/TMPV/NDLVENTURE) that the engine folds and the coverage BUILDER read raw. Builder fixed (commit `5dbe45857`): patStd +597 mm, na −597, exactly those 8 symbols. The 26 "null-std rows" are 2015+ IPO comparatives (out of this scope). 5 cells are stored with a late real ann (BRFL/JAGRAN/MCLEODRUSS/PROVOGUE 2007-03, EIHOTEL 2005-03) — not fetch targets | §128a |
+| P1 1999-2001 | **PARTIAL** | MC E2b 766 cells 1999-2001 (+ 11 WB 2001); residue by tag in `stdpat_2002_residue_2026-09-05.json`'s method (those years not in the file — regenerate with the §6 recipe) | `agg_pat_cell_fills.json` applied `2026-09-05` |
+| P2 2002-2004 | **PARTIAL** | WB 154 (2002:116) + MC E2b 119 + adjudicated 7; 130 held-under-alias | §128b/c |
+| P3 2005-2008 | **PARTIAL** | NEW NSE-archive standalone reader `scripts/nse_std_pat_read.py` 175 cells (2005:72, 2006:85, 2007:10); MC 41 | §128d |
+| P4 2009+ | touched only where MC's table reached (see ledger) | | |
+| P5 no-row / price-orphan | **UNTOUCHED** | 10 WB passes on no-key symbols were all alias-held corroborations (TATAMOTORS→TMPV, MORAREALTY→PENINLAND, match to the paisa) | |
+
+**Residue 2002-07 (2,954 root cells, every one with its rung status): `scripts/stdpat_2002_residue_2026-09-05.json`.**
+Dominant classes: MC REJECT-GATE-E with NO archived NSE page (1,436 in 2002-04) · MC NOT-FOUND, no page (409) ·
+2005-07 MC-rejected with no Non-Consolidated row in the cached NSE list (281) · WB page is a cumulative/H1/annual page,
+not a quarter (222+62+31). Next rungs, in order: BSE pre-2018 announcement PDFs via `CorpAttachment` resolver
+(§reference-bse-attachment-resolver) · the BSE ARCHIVED WEBSITE (PRE2015 STEP B, still never built) · NSE list API
+for the 26 symbols with no cached list (fragile endpoint, cookie jar) · annual reports for March quarters · vision (§17b,
+ask first). **Suspects of OURS** (176, reported not patched): `scripts/stdpat2002_suspects.json`.

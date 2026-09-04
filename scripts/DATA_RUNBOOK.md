@@ -76,6 +76,7 @@ loads every session. (README.md is just a short pointer here — this file is th
 - **§108** ★★★ RESTATED-COMPARATIVE VINTAGE — an Ind-AS restated value wearing the as-filed ann date is a LOOK-AHEAD no scale/identity gate can see; SYNGENE's whole FY16 row healed (PAT ×4, op ×2, rev/op fills ×4, con-copy retraction, 4 ann dates); NEW `ann_cell_fix.json` moves a populated ann LATER — the direction §104 refuses (**read before trusting any FY16-FY17 transition-era cell an aggregator scrape filled, and whenever detres+MC agree against the store**)
 - **§109** ★★★ THE §108 SWEEP RAN — the class was ONE 2026-07-27 backfill pass with no vintage rule; **NSE's archive keeps BOTH vintages of a quarter** (earliest `filingDate` = as-filed), so the restated comparative is structured data, not a scanned PDF; 326 wrong-vintage reads enumerated from our own provenance; 260 cells + 1,233 rev/op/mirror slots healed, detres agreement 53.5%→100% (**read before touching any 2015-17 cell, and before trusting a single as-filed reader — no available reader may CONTRADICT the heal**)
 - **§113** ★★★ A RUNG IS ELIMINATED BY MEASURING THE DOCUMENT SET, NOT ONE DOCUMENT PER CELL — §112b closed the text route on "the Mar-2017 filing is a scan" (true) and so declared vision; the quarter is ALSO printed in the next quarter's and next year's filings, which are digital, and 30 of 59 cells read cleanly off a comparative column. **33 of 33 primary reads back the pre-heal store, 0 back the heal.** Also: MC `pat_own` is sometimes the TOTAL (4 of 308, 2 proven against filings) — it is a label, not a guarantee (**read before sending anything to a vision budget, and before letting an aggregator's owners field veto a document**) · **§113f-h**: a CANDIDATE LOCATOR IS BLIND TO A THIRD VALUE (P2 is named after them) — read FORWARD; and a FIXED y-GRID SPLITS ROWS 0.9pt apart, cluster by baseline instead
+- **§128** ★★★ STD-PAT 2002-07 EXECUTED — 229 "missing" cells HELD under a retired key the coverage BUILDER read past (fixed, +597 mm); WB 172 + MC E2b 1,191 + NEW NSE-archive EPS-identity reader 175 = 1,538 cells; residue ledger with rungs per cell (**read before any pre-2015 std-PAT work or a coverage claim on a renamed symbol**)
 
 ---
 
@@ -14351,3 +14352,112 @@ MCDOWELL, TIMEXWATCH, PARKEDAVIS, RHONEPOULN, INDOGULF, JCT…) — ISIN rung, `
 its regeneration carried only the `updated` stamp + 2 refine-ledger cells CI applies itself.
 `audit_shp_coverage.py` still starts at 2002-12-31 — extend its window before quoting it for this era.
 **VERIFIED LIVE 2026-09-05 ~03:05 IST:** Pages serves `shp_engine.json` with the 2,409 rows (CESC 20010331 fii 0.2111 / dii 22.3354, sub 99999999); the dispatched coverage bake committed `a74ccba3e` (02:52 IST) and, after a manual `pages.yml` dispatch (bot commits never deploy — §41), the live payload reads fiiPct/diiPct 2002 = 3,882 have / 789 N/A / 5,331 members = **85.5%**, fiiChgPp 2003 **86.8%** — identical to the local bake.
+
+---
+
+## 128. ★★★ STD-PAT 2002-07 EXECUTED — 229 "missing" cells were HELD under a retired key the coverage builder could not see; four gated routes landed 1,538 cells; the NSE results ARCHIVE reads standalone PAT with the page's own EPS identity  (2026-09-05)
+
+**Trigger:** execute the std-PAT packages of §127 / `PLAN_STDPAT_SHP_COVERAGE_2002.md` (plan §8 = state table).
+Worktree `~/stocks-wt/stdpat-2002` off origin/main 943a43e89; commits `5dbe45857` (builder) + `9286e9527` (data),
+pushed ~03:05 IST. Every number below was measured this session; bakes are bake-vs-bake on ONE bin (the cached
+live bin, end 2026-08-31), and the baseline bake reproduced the LIVE payload with **0 diffs on all 296 dates**.
+
+### 128a. ★★★ The "in-a-fill-ledger-but-absent" class was never absent — and the coverage BUILDER measured the RAW file
+The plan's WP-P0 listed 40 cells a fill ledger claimed but the store lacked. Measured: **229 root cells sit in
+`sf_fundamentals.json` under the RETIRED key** — SPLPETRO←SUPPETRO 40, HFCL←HIMACHLFUT 39, HINDMOTORS←HINDMOTOR 35,
+AGCNET→BBOX 24, COLPAL←COLGATE 23, ASIANHOTNR←ASIANHOTEL 17, CASTROLIND←CASTROL 14, LGBBROSLTD←LGBROS 12,
+GBGLOBAL←MANDHANA 9, MORAREALTY→PENINLAND 7, TATAMOTORS→TMPV 6, NXTDIGITAL→NDLVENTURE 3. The engine folds them
+(`foldFundAliases`, §106b.4) and every backtest screens on them. **`build_coverage_matrix.js` built BASIS_IDX /
+FUND_BY_QE / FIRSTREAL from `readJSON(sf_fundamentals.json)` — the raw file — so the basis family (patStd…) and the
+`nothingPublicYet` N/A rule never saw a folded row.** HFCL read 143 N/A member-months, SPLPETRO 159, HINDMOTORS 115.
+Fix: the builder now takes the vm's folded `FUND` (one fold, owned by the engine). Bake-vs-bake: **patStd have +597
+mm / na −597, exactly 8 symbols** (HFCL −130, SPLPETRO −119, HINDMOTORS −114, COLPAL −69, ASIANHOTNR −57,
+CASTROLIND −46, LGBBROSLTD −36, GBGLOBAL −26); profitYoyStd / profitTTMStd `have` unchanged (they were already
+measured in-vm), only their N/A withdrawn. Do NOT key-move the rows (§106b.4: their ledgers are keyed to the old
+symbol and would re-create them nightly).
+★ Still N/A by rule after the fix: AGCNET/MORAREALTY/TATAMOTORS/NXTDIGITAL — the roster key has no store key, the
+FUND_ALIAS target's FIRST BAR is a tape seam (BBOX 2010-06-08, PENINLAND 2004-10, TMPV 2003-12, NDLVENTURE 2019),
+and `firstRealAnn` floors the target's anns at that bar (§99 applied to a seam). Builder rule question, not data.
+★ The archived NSE page corroborates the alias-held values to the paisa: TATAMOTORS→TMPV 2002-06/12, 2003-06
+(28.03 / 75.71 / 100.31) and MORAREALTY→PENINLAND ×7 (−16.16 … −12.09) — 10/10 MATCH.
+
+### 128b. Wayback `results.jsp` — 662 of the 836 indexed root pages had never been requested by any ledger
+Only 174 of the 836 WB-indexed root cells are in STEP W's `pre2015_attempted_w.json`; 265 were already cached by
+the FAV14 pass. Read all 836 through `wbgate.judge` (serial keep-alive, ~13 min): **182 PASS** (2001: 11, 2002: 119,
+2003: 24, 2004: 21, 2005: 5, 2006: 2) → **172 landed** (10 were alias-held corroborations above). Refusals: G2 not
+a true quarter 435 (cumulative H1/9M/annual pages), G5 EPS untestable 120, G5 EPS fails 47, banking template 27,
+G3 basis 12, empty shell 11. StepW-refused cells: 2 PASS / 172 refused — consistent with STEP W.
+
+### 128c. Moneycontrol GATE E2b over all 7,782 roots — reach 46%, 1,165 + 26 landed, archive as the reader in front
+`mc_era.py` (cached, 6 min): 943/1,003 symbols resolve; 3,587 gap quarters carry an MC std PAT. **Two rungs added
+for the 60 unresolved:** the rename-map TARGET as the exact MC token, and the CONFIRMED-seam ISIN
+(`_isin_seam_verdicts.json`) — +20 symbols (GESHIPPING→GESHIP, MONNETISPA→JSWISPL, KIRLOSOIL→KIRLOSIND, ORCHIDPHAR,
+VINYLCHEM, NOVAPETRO, KBL, PROVOGUE, HTMT, SABTN, NAHAREXP, NAHARSPG, SUNDRMCLAY, ESSARSHIP, FUTUREVENT…). **7 roster
+keys with no store key** (TATAMOTORS, AGCNET, AREVA, MORAREALTY, L&T, NXTDIGITAL, NTL) were gated and landed under
+their FUND_ALIAS store key (TMPV, BBOX, GVT&D, PENINLAND, LT, NDLVENTURE, NEUEON) — the engine's `fundFor` reaches
+them. GATE E2b: 1,197 pass / 4,856 REJECT (site has no value 2,319 · FY restated 989 · near-target disagreement 727 ·
+global disagreements 325 · <8 anchors 142 · no FY identity 252) / 1,126 NOT-FOUND / 701 UNRESOLVED. §90d
+`agg_era_adjudicate.py` (caps enforced) lifted 26 more; **172 cells of OURS indicted → `scripts/stdpat2002_suspects.json`,
+none patched**. WB as the reader in front (§FAV14 2e): 3 overlaps, 3 agree; the other 1,194 journalled as
+*unevidenced by the archive*, never as agreement. `--seam-syms` = only the 10 targets whose OLD key demonstrably traded
+before the new key's first bar (BBOX, CASTROLIND, SPLPETRO, TMPV, PENINLAND, NDLVENTURE, GVT&D, HEXT, AVANTIFEED,
+REIAGROLTD). ⚠️ "older stored rows carry real-looking anns" is NOT seam evidence — IPO comparatives (ANGELONE,
+ETERNAL, ALIVUS…) carry qe+45d dates that pass that test; prove the seam by the old key's tape.
+
+### 128d. ★★ NEW ROUTE — NSE results ARCHIVE standalone page + the page's own EPS identity (`scripts/nse_std_pat_read.py`)
+§57 rung 2 for 2005+. The CON-GAP campaign's cache (`_nsearch_cache`, 2,374 list files, reused read-only) DECLARES
+per list row basis / cumulative / audited / bank / fromDate / toDate; the detail page prints Net Profit, Face Value,
+Paid-up Equity and Basic EPS with the unit declared. Gates G1-G6 on the DOCUMENT (nothing anchors on us): symbol ∈ era
+aliases · period == qe · Non-Consolidated · Non-cumulative (list row AND page) · Net Profit row present, not the
+all-zero template · **EPS × Paid-up / Face Value == Net Profit within max(3%, EPS-rounding, 0.02 cr)** (parsed units,
+the lakh divisor cancels). **Hold-out first:** 250 stored 2005-14 cells of the same symbols → 143 readable, **4
+disagree with the store (2.8%) — and Moneycontrol sides with the ARCHIVE on 3 of the 4** (MTNL 2009-03 −83.82,
+FMGOETZE 2009-09 23.68, ACLGATI 2012-03 8.05; ANDHRSUGAR 2007-09 26.47 vs stored 5.92 unresolved, no MC value), so
+the reader's error on known cells is ≤ 0.7% and the 4 are store suspects (same file). Residue 2005-14: 951 cells →
+**185 PASS, 175 landed** (2005: 72, 2006: 85, 2007: 10). Refusals: no Non-Consolidated Quarterly row in the list 499 ·
+EPS untestable (eps 0 / missing) 33 · EPS fails 25 · **detail 404 = era FILENAME the alias list lacks** (DCMSHRIRAM 12,
+SUMMIT 12, TATASTLBSL 5, BIRLACABLE 4) · 26 symbols with no cached list (list API not called — fragile, §nse-api-lockdown).
+`nsearchives.nseindia.com` served ~10 pages/s with the `bse_fetch.nse_jar()` cookie; the LIST endpoint was not touched.
+
+### 128e. Effect — bake-vs-bake, one bin, `have` per §112
+| year | patStd have / N-A / members — BEFORE (= LIVE 2026-09-05 02:02) | AFTER (bake3) | % of members before → after | Δhave | profitTTMStd % of members before → after |
+|---|---|---|---|---|---|
+| 2002 | 2,667 / 1,885 / 5,331 | 3,369 / 1,183 | 50.0 → **63.2** | +702 | 17.1 → 26.0 |
+| 2003 | 4,575 / 1,127 / 5,990 | 4,950 / 752 | 76.4 → **82.6** | +375 | 25.5 → 29.6 |
+| 2004 | 5,175 / 706 / 5,979 | 5,401 / 480 | 86.6 → **90.3** | +226 | 35.4 → 39.0 |
+| 2005 | 5,557 / 419 / 6,004 | 5,741 / 235 | 92.6 → **95.6** | +184 | 44.9 → 45.8 |
+| 2006 | 5,736 / 221 / 5,977 | 5,896 / 61 | 96.0 → **98.6** | +160 | 48.1 → 49.2 |
+| 2007 | 5,815 / 171 / 6,005 | 5,921 / 65 | 96.8 → **98.6** | +106 | 79.6 → 83.7 |
+| 2008 | 5,954 / 106 / 6,089 | 6,017 / 43 | 97.8 → 98.8 | +63 | 84.4 → 89.4 |
+| 2009-14 | 97.8-99.5 | 99.4-100 | | +294 | |
+| **all 296 dates** | 141,202 / 5,067 | 143,328 / 2,941 | | **+2,126** | profitYoyStd +2,179 · profitTTMStd +1,820 |
+
+Of the +2,126: **+597 from the builder fold (§128a, no data change)** and **+1,529 from the 1,538 landed cells**
+(bake2→bake3 shows the last 201 cells, adjudicated + NSE, added +132 mm). "missing" moved on **0 symbols** — every
+member-month gained came out of the N/A column (156 symbols; SPLPETRO −159, HFCL −130, HINDMOTORS −114, COLPAL −69,
+THOMASCOOK −64 …). Of members−N/A the page will read 2002 77.4→81.2%, 2003 94.1→94.5% — the denominator moves
+with the fill, which is why `have` is the metric (§112b).
+Every gain is an N/A → have conversion (the §112 mechanism run forward: `firstRealAnn` moved earlier, no new
+holes appeared). Ledger guard: `verify_fills_live` checked 17,741 → **19,279 (+1,538 = every cell)**, MISSING 0,
+REVERTED 0; `fund_dup_guard` 0; `phantom_key_guard` clean. LIVE re-verify: see the session recap / memory.
+
+### 128f. Residue, per cell, with the rungs walked — `scripts/stdpat_2002_residue_2026-09-05.json` (2,954 cells 2002-07)
+Key = `MC:<state> | WB:<verdict> | NSE:<verdict>`. Dominant: MC REJECT-GATE-E with NO archived page and NSE out of
+scope (<2005) **1,436** · MC NOT-FOUND, no page 409 · 2005-07 MC-rejected with no Non-Consolidated list row 281 · WB
+page is cumulative, not a quarter 315. **Rungs NOT yet walked for these:** BSE pre-2018 announcement PDFs via
+`CorpAttachment` (§reference-bse-attachment-resolver), the BSE ARCHIVED WEBSITE (PRE2015 STEP B, never built), the
+NSE list API for the 26 no-list symbols, annual reports (March quarters), vision (§17b, ask first). Per §57d no cell
+here may be called unfillable; the ledger names N rungs remaining per class.
+
+### 128g. Lessons (each cost a loop)
+1. **A coverage instrument that reads a different object than the engine reports a different world.** §92 says
+   "measure THROUGH the engine"; the basis family measured the raw file. Diff the instrument's inputs against the
+   engine's before believing a coverage number for a renamed symbol.
+2. **A ledger tag is a claim about the ledger, not the store.** "in-a-fill-ledger-but-absent" was true of the key and
+   false of the company. Resolve the alias before enumerating a gap (§106, §93).
+3. **A hold-out mismatch names two cells (§disagreement-names-no-side).** 2.8% became ≤0.7% once a second reader
+   adjudicated the four; land with the adjudicated number in the ledger, report the store's suspects separately.
+4. **Prove a tape seam by the OLD key's bar, never by the look of the old rows.** IPO comparatives carry convention
+   dates that look real.
+5. **Reuse a sibling campaign's cache read-only** (`_nsearch_cache` from `~/stocks-wt/con-gap-pre2020`) before
+   touching a fragile endpoint — the whole 2005-14 residue was measured without one list-API call.
