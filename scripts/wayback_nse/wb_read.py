@@ -34,7 +34,10 @@ def parse(t):
     out['from'],out['to'],out['period_role']=m.group(1),m.group(2),m.group(3).strip()
     m=re.search(r'Result Type\s+(.+?)\s+(?:Non\s+)?Banking Financial Results', txt)
     out['result_type']=m.group(1).strip() if m else None
-    out['cumulative']= bool(out['result_type'] and 'Cumulative' in out['result_type'])
+    # 'Non-Cumulative' CONTAINS 'Cumulative' -- a bare substring test flagged every true quarter as
+    # cumulative (found 2026-09-05 by wb_rev.py; wbgate never used this field, it tests the token itself).
+    rt_ = out['result_type'] or ''
+    out['cumulative']= bool('Cumulative' in rt_ and 'Non-Cumulative' not in rt_)
     out['bank']= ('Non Banking Financial Results' not in txt) and ('Banking Financial Results' in txt)
     m=re.search(r'Financial Results\s+\(Rs\.\s*([a-zA-Z]+)\)', txt)
     out['scale']=m.group(1).lower() if m else None

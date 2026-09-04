@@ -37,6 +37,10 @@ SRC_FILES.append(("_bsedet_reads.json", None))      # BSE detailed-results JSON 
 # Reg-33/52 obligations alive): their results never appear under the equity scrip code, so the
 # equity-side routes all report "no filing". Look the issuer up in ListofScripData?segment=Debt.
 SRC_FILES.append(("_debt_reads.json", None))
+# Wayback-archived NSE results.jsp revenue (rev-parity 2026-09-05, scripts/wayback_nse/wb_rev.py): the same as-filed
+# exchange page that produced the std-PAT cell; every cell carries pat_seen = the page's own Net Profit and is
+# re-anchored here again. Provenance ledger scripts/wayback_nse/wb_rev_fills.json (registered in verify_fills_live).
+SRC_FILES.append(("_wbrev_reads.json", None))
 for _p in sorted(glob.glob(os.path.join(HERE, "_nsexbrl_reads_*.json"))):
     SRC_FILES.append((os.path.basename(_p), None))
 for _p in sorted(glob.glob(os.path.join(HERE, "_nsearch_reads_*.json"))):
