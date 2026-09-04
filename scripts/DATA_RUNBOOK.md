@@ -14321,3 +14321,25 @@ than the symbol's first stored row, 1,196 holes inside a series, 564 on ~50 symb
 Committed-ledger tags: 6,529 no record (the FAV14 pre-2009 MC verdicts were scratch-only — re-run
 `mc_era.py`, it is cached), 885 with an archived NSE `results.jsp` page (213 in 2000-01 never requested),
 338 MC-closed, 40 claimed by a fill ledger yet absent from the store (check first).
+
+### 127e. ★★ WP-S1 LANDED — 2,409 FII/DII cells Mar-2001..Sep-2002 (commit bd094aeea, 2026-09-05 02:45 IST)
+Route exactly as §127b: `fetch_shp_bse_aspx.py frontier --from 2001-03-31 --to 2002-09-30` (new
+`--from/--to`; default window unchanged) → `pilot 40` (35/36 parsed; overlap gate 24/24 exact vs stored,
+0 beyond 0.11pp) → `harvest --workers 4` (2,863 fetched in 2,297 s; **2,409 ok · 438 absent · 16
+no-prom**) → ledger `scripts/shp_fill_bse_aspx_2001.json.gz` wired LAST in `BSE_HIST_LEDGERS` →
+`fetch_shareholding.py --apply-ledgers` (run twice: history and engine feed byte-identical). History
++2,409 / 0 changed by this ledger / 0 removed; engine +2,409 rows, ALL served `sub=99999999` (§120 qe+28d
+fallback at load). Coverage bake on the new feed, N500: **fiiPct/diiPct 2002 0% → 85.5%** (have 0 →
+3,882; N/A 4,630 → 789), **fiiChgPp 2003 69.3% → 86.8%**, +4,502 / +5,165 member-months overall, no
+date fell, patStd/price untouched.
+**Residue, with the rung each needs (plan WP-S2):** 438 `absent` over 99 symbols — 43 of them absent on all
+7 quarters and they are MODERN roster keys that did not exist in 2001 (ASTERDM 2018, ASTRAL 2007,
+BAJAJ-AUTO 2008 = the 2002 member is BAJAJHLDNG, DCBBANK, DBREALTY, DHANI…): the §93/§95 era-orphan
+roster class, not an SHP gap — needs the era key, not a refetch. 16 `no-prom` = promoter-less pages
+(EVEREADY, RIIL, SOUTHBANK) where the two non-promoter sub-totals do not close to 100 — per-page read.
+112 cells / 21 era names with no BSE code (AVERY, BANKPUNJAB, CADBURY, ICICI, LUPINLAB, PHILIPS,
+MCDOWELL, TIMEXWATCH, PARKEDAVIS, RHONEPOULN, INDOGULF, JCT…) — ISIN rung, `_shp_scripcode_override`.
+`docs/shareholding.json` (8-quarter page feed) deliberately NOT committed: the era cannot appear in it;
+its regeneration carried only the `updated` stamp + 2 refine-ledger cells CI applies itself.
+`audit_shp_coverage.py` still starts at 2002-12-31 — extend its window before quoting it for this era.
+**VERIFIED LIVE 2026-09-05 ~03:05 IST:** Pages serves `shp_engine.json` with the 2,409 rows (CESC 20010331 fii 0.2111 / dii 22.3354, sub 99999999); the dispatched coverage bake committed `a74ccba3e` (02:52 IST) and, after a manual `pages.yml` dispatch (bot commits never deploy — §41), the live payload reads fiiPct/diiPct 2002 = 3,882 have / 789 N/A / 5,331 members = **85.5%**, fiiChgPp 2003 **86.8%** — identical to the local bake.

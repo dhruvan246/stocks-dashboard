@@ -185,6 +185,12 @@ provenance in a ledger, never a direct store edit (§38/5) · bake-and-measure w
 · file-scoped adds from a fresh worktree · push recipe (CLAUDE.md) · LIVE re-verify ~20 min after push.
 
 ### WP-S1 — SHP Mar-2001 → Sep-2002 via aspx `Flag=Old` (≈1,617 root filings; whole-era ≈3,500 member-quarters)
+**✅ DONE 2026-09-05 02:45 IST — commit `bd094aeea` (runbook §127e).** Frontier 2,863 member-quarters / 479
+symbols (112 cells on 21 era names unresolved); harvest 2,409 ok · 438 absent · 16 no-prom; ledger
+`scripts/shp_fill_bse_aspx_2001.json.gz`; applied twice = identical; bake: fiiPct/diiPct 2002 0% → 85.5%,
+fiiChgPp 2003 69.3% → 86.8%, no date down. Residue → WP-S2 (43 modern-key roster orphans absent on all 7
+quarters = §93 class; 56 other absent symbols; 16 promoter-less pages; 21 unresolved era names). The steps
+below are the record of what was run.
 1. `fetch_shp_bse_aspx.py`: lower the frontier floor to `2001-03-31` (L88-89) and let `cmd_frontier` take
    the point-in-time roster for those quarters (all N500 members, not just the root list — the era is empty).
 2. Harvest into an ISOLATED ledger (`shp_fill_2001_aspx.json.gz`, wired into `fetch_shareholding`
