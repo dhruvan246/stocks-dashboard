@@ -372,7 +372,17 @@ function main() {
 
   return ctx.__loaded.then(([nf, ns]) => {
     log(`engine ready · ${Object.keys(vm.runInContext('META', ctx)).length} symbols · FUND ${nf} · SHPD ${ns}`);
-    run(ctx, { IDXH, FNOH, START_TS, REVOP, FUNDJ, end: RAW.end, t0, naLedgerHit });
+    /* ★ Measure the basis / raw-PAT families THROUGH the engine's FUND, not the raw file (§92,
+     * §127e). loadFund() runs foldFundAliases(): quarters filed under a retired key (HIMACHLFUT →
+     * HFCL, SUPPETRO → SPLPETRO, COLGATE → COLPAL …) are merged under the current key, and every
+     * profit screen sees them. The raw FUNDJ read above never did, so patStd / firstRealAnn called
+     * 229 root cells "missing" that the engine already screens on (measured 2026-09-05). One fold,
+     * owned by the engine — no second copy of the merge to keep in sync. */
+    const FUNDF = vm.runInContext('FUND', ctx);
+    let folded = 0;
+    for (const sym in FUNDF) if ((FUNDF[sym] || []).length !== (FUNDJ[sym] || []).length) folded++;
+    log(`fundamentals: using the engine's alias-folded FUND (${folded} symbols differ from the raw file)`);
+    run(ctx, { IDXH, FNOH, START_TS, REVOP, FUNDJ: FUNDF, end: RAW.end, t0, naLedgerHit });
   });
 }
 
