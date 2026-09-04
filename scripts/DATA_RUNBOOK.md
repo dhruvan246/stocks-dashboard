@@ -14355,6 +14355,63 @@ its regeneration carried only the `updated` stamp + 2 refine-ledger cells CI app
 
 ---
 
+### 127f. ★★ WP-S2 — the Dec-2002→Sep-2015 aspx residue: 768 cells, 12 era names resolved by NSE's own archived pages  (2026-09-05, ~03:00 IST)
+
+**Scope (plan §5 WP-S2), run from `~/stocks-wt/shp-2002` while the SHP session ran WP-S1 in `wps1-shp2001`
+(plan §7.4: WP-S1 stays with the live SHP session; this session took the in-frontier residue so the two
+never shared a ledger).** Ledger **`scripts/shp_fill_wps2_aspx.json.gz`** (last in `BSE_HIST_LEDGERS`), fill-only.
+
+**The frontier was not 636 cells — it was 732 + 105.** Re-running `cmd_frontier` against origin/main
+(`bd094aeea`, WP-S1 landed) gave 1,410 missing member-quarters Dec-2002..Mar-2016, 1,168 with a scripcode,
+700 of them already journalled in `_shp_aspx_rejects.json` → **468 never requested** (roster/rename drift
+since the 2026-08-11 run; 148 symbols; 2007-08 hold 200 of them). The plan's 636 "in-frontier untried" only
+overlapped 235 of those: its other 401 are **fiiChgPp PRIOR-quarter roots on symbols that were NOT members
+at that quarter-end** (320) + seam quarters (74, route-excluded) + 2 already stored — `cmd_frontier` walks
+`members(qe)` so it can never list a prior-quarter root. 264 of the 401 were resolvable and harvested.
+Lesson: **the coverage root set and the tool's frontier are different populations; derive the harvest list
+from the ROOTS, then subtract the journal** (feedback-a-wall-is-a-population-not-an-era).
+
+**Harvest (4 workers, 301 s, pilot 48/52 + overlap gate 0 disagreements >0.11pp):** 732 cells → **665 ok**
+(Old 250 / New 415), 58 absent (both Flags), 5 zero-vs-neighbour (GODAVRFERT/NAVA/STCINDIA/RAJTV/CEMPRO —
+the §22f seam-class fabricated 0.00, refused), 3 recon (BALLARPUR 2007), 1 no-fii (KITEX 2014-03: residual
+44.62 unanchored). 4dp active on 659/665 (parse_old + parse_new share-count recompute, commits 93d9a13c3 /
+ae6503d4e — the shared checkout's "dirty" copies of both tools were an Aug-16 leftover of exactly those
+commits, not live work). Every Old cell `ins=None`; every `sub` = QE+21d → served UN-DATED (§120 fallback).
+
+**Era names (the 50 unresolved of this frontier, 242 cells):** 28 were already in
+`_shp_aspx_resolved_era_syms.json` — `cmd_frontier` does NOT read that file, only the 12-entry
+`_shp_scripcode_override.json`, so their cells sat unresolved for 4 weeks (22 harvested now; the rest were
+journalled absent). For the other 22 the decisive second reader was **NSE's own Wayback page**: the CDX
+rows for `shareholding1.jsp?symbol=X&comp_name=…` carry the exchange's name for the era symbol (12 symbols),
+and the page's `>1%` table gives a share-count/pct pair → **share capital = shares ÷ pct**. The BSE aspx
+page for the same quarter prints Grand Total shares → the two bases must agree: **9 MATCH to ≤0.02%**
+(NIPPONDENR→500305 JSW Ispat, NIIT→500304, MUKAND→500460, UNIONCARBI→531508 Eveready, RAMANEWSPR→500356,
+ESSARGUJ→500627, SURYCOTMIL→521200, MUNJALAUTO→520059, SHYAMTELE→517411) and **1 REFUTED at 61%**
+(VARDHMNSPG ≠ 502986 Vardhman Textiles: 25.75M vs 15.96M shares at Dec-2003 — VSGM was a separate listed
+company whose promoter list names *Mahavir Spinning Mills 15.91%*, i.e. the entity 502986 then was). Three
+more by exact name (STDIND→530017 from NSE's date-list page, ELGIRUBCO→590023 ledger name, INDORAMSYN→500207
+sole master hit) — 12 accepted, 82 cells harvested. **Price-handoff (bin successor key) found nothing for any
+of the 22** — the successors carry their whole history under the modern key.
+
+**Still OPEN — 10 symbols / 52 cells, journalled as `unresolved-scripcode:` in `_shp_aspx_rejects.json` with the
+evidence:** VARDHMNSPG (refuted), INDOGULF (500723 Indo Gulf Corporation AND 506945 Indo Gulf Industries both
+serve Dec-2002 — a tie, no holders page), AGREVOIND (530415 and 506285 both serve), JINDALFOTO (500227 Jindal
+Poly Films serves, lineage unmeasured), WELSPUNGUJ/UNITEDPHOS/VXL (532144/512070/503796 serve, no second
+reader), JINDVIJSTL/JINDLSTRIP (no page), SEARCHEMIN (no master name). Rule kept: a page that serves is not
+identity; a name that matches is not identity; the share-capital pair IS (feedback-row-identity-proof).
+
+**Result:** fiiPct/diiPct member-months (N500 point-in-time, `build_coverage_matrix` bake vs the pre-apply bake, same live bin) **143,422 → 144,555 (+1,133), N/A 2,961 → 2,068, 0 dates down**; fiiChgPp/diiChgPp **139,332 → 140,776 (+1,444), N/A 4,620 → 3,731**. By year (% of members−N/A): fiiPct 2003 96.5→98.1 · 2004 97.8→99.0 · 2005 98.7→99.7 · 2006 99.6→99.8 · 2007/2008 flat at 99.5/99.3 because their 198/246 new cells came out of the N/A column into `have` one-for-one while the remaining N/A turned into visible holes (§112b — judge by `have`); fiiChgPp 2003 86.8→88.0 · 2004 94.7→95.8 · 2005 94.6→95.8 · 2008 94.3→96.9 · 2009-15 +0.2-1.1pp each. **3 dates DOWN by one symbol** (fiiChgPp 2003-01..03: MUNJALSHOW/VTL gained Dec-2002 while its Sep-2002 is absent with no journal record — the new latest filing has no prior, §112 "a fill raises missing"; MUNJALSHOW and VTL both carry that shape). Quarter-level `audit_shp_coverage --year`: 2002-12 85.9→91.3 · 2003 87.4→91.3 · 2004 87.0→91.4 · 2005 90.6→94.2 · 2006 90.3→93.6 · 2007 89.8→95.3 · 2008 93.3→97.2 · 2009+ unchanged (those cells are prior-quarter roots on non-members, outside the audit's denominator). patStd / profitTTMStd / price byte-identical (control). `--apply-ledgers` twice: history and engine feed identical; +768 history cells, 0 changed, 0 removed; 768 engine rows all UN-DATED; 762/768 carry a >2dp institutional slot.
+
+**Coverage counts for Mar-2001..Sep-2002 (WP-S1's cells) did not move** — the two ledgers share no quarter.
+**VERIFIED LIVE 2026-09-05 03:06 IST** (Pages deploy of `a7d5f225c` completed): `shp_engine.json` serves the new rows
+un-dated — ABBOTINDIA 20021231 fii 0.0009 / dii 15.7468, NIIT 20021231 36.9716 / 7.8942, NIPPONDENR 20031231,
+MUKAND 20021231, SHYAMTELE 20040630, all `sub 99999999`. The live coverage payload re-bakes on CI's next hourly
+run. ⚠️ Own defect caught on read-back: the first share-capital run for NIIT/MUKAND/UNIONCARBI compared the NSE
+page against aspx qtrid 32/33 = Dec-2001/Mar-2002 (one year EARLIER — `qtrid = (year−2001)×4 + {Mar:29…Dec:32}`,
+so Dec-2002 is 36, not 32). Re-run at q36/q37: still MATCH (0.00000 / 0.00023 / 0.00001 — the share count did not
+change across the year); `_shp_aspx_resolved_era_syms.json` now carries the correct quarter and a note. Lesson: a
+qtrid is an absolute index, print the quarter it decodes to beside every probe.
+
 ## 128. ★★★ STD-PAT 2002-07 EXECUTED — 229 "missing" cells were HELD under a retired key the coverage builder could not see; four gated routes landed 1,538 cells; the NSE results ARCHIVE reads standalone PAT with the page's own EPS identity  (2026-09-05)
 
 **Trigger:** execute the std-PAT packages of §127 / `PLAN_STDPAT_SHP_COVERAGE_2002.md` (plan §8 = state table).
@@ -14461,52 +14518,3 @@ here may be called unfillable; the ledger names N rungs remaining per class.
    dates that look real.
 5. **Reuse a sibling campaign's cache read-only** (`_nsearch_cache` from `~/stocks-wt/con-gap-pre2020`) before
    touching a fragile endpoint — the whole 2005-14 residue was measured without one list-API call.
-
-### 127f. ★★ WP-S2 — the Dec-2002→Sep-2015 aspx residue: 768 cells, 12 era names resolved by NSE's own archived pages  (2026-09-05, ~03:00 IST)
-
-**Scope (plan §5 WP-S2), run from `~/stocks-wt/shp-2002` while the SHP session ran WP-S1 in `wps1-shp2001`
-(plan §7.4: WP-S1 stays with the live SHP session; this session took the in-frontier residue so the two
-never shared a ledger).** Ledger **`scripts/shp_fill_wps2_aspx.json.gz`** (last in `BSE_HIST_LEDGERS`), fill-only.
-
-**The frontier was not 636 cells — it was 732 + 105.** Re-running `cmd_frontier` against origin/main
-(`bd094aeea`, WP-S1 landed) gave 1,410 missing member-quarters Dec-2002..Mar-2016, 1,168 with a scripcode,
-700 of them already journalled in `_shp_aspx_rejects.json` → **468 never requested** (roster/rename drift
-since the 2026-08-11 run; 148 symbols; 2007-08 hold 200 of them). The plan's 636 "in-frontier untried" only
-overlapped 235 of those: its other 401 are **fiiChgPp PRIOR-quarter roots on symbols that were NOT members
-at that quarter-end** (320) + seam quarters (74, route-excluded) + 2 already stored — `cmd_frontier` walks
-`members(qe)` so it can never list a prior-quarter root. 264 of the 401 were resolvable and harvested.
-Lesson: **the coverage root set and the tool's frontier are different populations; derive the harvest list
-from the ROOTS, then subtract the journal** (feedback-a-wall-is-a-population-not-an-era).
-
-**Harvest (4 workers, 301 s, pilot 48/52 + overlap gate 0 disagreements >0.11pp):** 732 cells → **665 ok**
-(Old 250 / New 415), 58 absent (both Flags), 5 zero-vs-neighbour (GODAVRFERT/NAVA/STCINDIA/RAJTV/CEMPRO —
-the §22f seam-class fabricated 0.00, refused), 3 recon (BALLARPUR 2007), 1 no-fii (KITEX 2014-03: residual
-44.62 unanchored). 4dp active on 659/665 (parse_old + parse_new share-count recompute, commits 93d9a13c3 /
-ae6503d4e — the shared checkout's "dirty" copies of both tools were an Aug-16 leftover of exactly those
-commits, not live work). Every Old cell `ins=None`; every `sub` = QE+21d → served UN-DATED (§120 fallback).
-
-**Era names (the 50 unresolved of this frontier, 242 cells):** 28 were already in
-`_shp_aspx_resolved_era_syms.json` — `cmd_frontier` does NOT read that file, only the 12-entry
-`_shp_scripcode_override.json`, so their cells sat unresolved for 4 weeks (22 harvested now; the rest were
-journalled absent). For the other 22 the decisive second reader was **NSE's own Wayback page**: the CDX
-rows for `shareholding1.jsp?symbol=X&comp_name=…` carry the exchange's name for the era symbol (12 symbols),
-and the page's `>1%` table gives a share-count/pct pair → **share capital = shares ÷ pct**. The BSE aspx
-page for the same quarter prints Grand Total shares → the two bases must agree: **9 MATCH to ≤0.02%**
-(NIPPONDENR→500305 JSW Ispat, NIIT→500304, MUKAND→500460, UNIONCARBI→531508 Eveready, RAMANEWSPR→500356,
-ESSARGUJ→500627, SURYCOTMIL→521200, MUNJALAUTO→520059, SHYAMTELE→517411) and **1 REFUTED at 61%**
-(VARDHMNSPG ≠ 502986 Vardhman Textiles: 25.75M vs 15.96M shares at Dec-2003 — VSGM was a separate listed
-company whose promoter list names *Mahavir Spinning Mills 15.91%*, i.e. the entity 502986 then was). Three
-more by exact name (STDIND→530017 from NSE's date-list page, ELGIRUBCO→590023 ledger name, INDORAMSYN→500207
-sole master hit) — 12 accepted, 82 cells harvested. **Price-handoff (bin successor key) found nothing for any
-of the 22** — the successors carry their whole history under the modern key.
-
-**Still OPEN — 10 symbols / 52 cells, journalled as `unresolved-scripcode:` in `_shp_aspx_rejects.json` with the
-evidence:** VARDHMNSPG (refuted), INDOGULF (500723 Indo Gulf Corporation AND 506945 Indo Gulf Industries both
-serve Dec-2002 — a tie, no holders page), AGREVOIND (530415 and 506285 both serve), JINDALFOTO (500227 Jindal
-Poly Films serves, lineage unmeasured), WELSPUNGUJ/UNITEDPHOS/VXL (532144/512070/503796 serve, no second
-reader), JINDVIJSTL/JINDLSTRIP (no page), SEARCHEMIN (no master name). Rule kept: a page that serves is not
-identity; a name that matches is not identity; the share-capital pair IS (feedback-row-identity-proof).
-
-**Result:** fiiPct/diiPct member-months (N500 point-in-time, `build_coverage_matrix` bake vs the pre-apply bake, same live bin) **143,422 → 144,555 (+1,133), N/A 2,961 → 2,068, 0 dates down**; fiiChgPp/diiChgPp **139,332 → 140,776 (+1,444), N/A 4,620 → 3,731**. By year (% of members−N/A): fiiPct 2003 96.5→98.1 · 2004 97.8→99.0 · 2005 98.7→99.7 · 2006 99.6→99.8 · 2007/2008 flat at 99.5/99.3 because their 198/246 new cells came out of the N/A column into `have` one-for-one while the remaining N/A turned into visible holes (§112b — judge by `have`); fiiChgPp 2003 86.8→88.0 · 2004 94.7→95.8 · 2005 94.6→95.8 · 2008 94.3→96.9 · 2009-15 +0.2-1.1pp each. **3 dates DOWN by one symbol** (fiiChgPp 2003-01..03: MUNJALSHOW/VTL gained Dec-2002 while its Sep-2002 is absent with no journal record — the new latest filing has no prior, §112 "a fill raises missing"; MUNJALSHOW and VTL both carry that shape). Quarter-level `audit_shp_coverage --year`: 2002-12 85.9→91.3 · 2003 87.4→91.3 · 2004 87.0→91.4 · 2005 90.6→94.2 · 2006 90.3→93.6 · 2007 89.8→95.3 · 2008 93.3→97.2 · 2009+ unchanged (those cells are prior-quarter roots on non-members, outside the audit's denominator). patStd / profitTTMStd / price byte-identical (control). `--apply-ledgers` twice: history and engine feed identical; +768 history cells, 0 changed, 0 removed; 768 engine rows all UN-DATED; 762/768 carry a >2dp institutional slot.
-
-**Coverage counts for Mar-2001..Sep-2002 (WP-S1's cells) did not move** — the two ledgers share no quarter.
