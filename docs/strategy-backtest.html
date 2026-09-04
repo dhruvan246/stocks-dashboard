@@ -521,8 +521,8 @@ function renderNotFound(all, hadId) {
       <p class="text-xs text-slate-500 max-w-md mx-auto mb-5">${hadId ? 'It may have been renamed or deleted. ' : ''}Every saved strategy gets a page like this — its 🎯 live picks, 📈 backtest history and 🕘 rewind all live here.${strats.length ? '' : ' Build one in the strategy builder and it shows up in Saved Strategies.'}</p>
       ${strats.length ? `<div class="grid sm:grid-cols-2 lg:grid-cols-3 gap-3 text-left mb-6">${rows}</div>` : ''}
       <div class="flex items-center justify-center gap-2 flex-wrap">
-        <a href="./saved-strategies.html" class="inline-flex items-center gap-2 bg-indigo-600 text-white text-sm font-semibold px-5 py-2.5 rounded-xl hover:bg-indigo-700 transition">⭐ Saved Strategies</a>
-        <a href="./stock-backtest.html" class="inline-flex items-center gap-2 border border-slate-300 text-sm font-semibold px-5 py-2.5 rounded-xl text-slate-700 hover:bg-slate-100 transition">🧪 Create a strategy</a>
+        <a href="./saved-strategies.html" class="inline-flex items-center gap-2 bg-indigo-600 text-white text-sm font-semibold px-5 py-2.5 rounded-xl hover:bg-indigo-700 transition"><svg class="sw-i" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/></svg> Saved Strategies</a>
+        <a href="./stock-backtest.html" class="inline-flex items-center gap-2 border border-slate-300 text-sm font-semibold px-5 py-2.5 rounded-xl text-slate-700 hover:bg-slate-100 transition"><svg class="sw-i" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M10 2v7.527a2 2 0 0 1-.211.896L4.72 20.55a1 1 0 0 0 .9 1.45h12.76a1 1 0 0 0 .9-1.45l-5.069-10.127A2 2 0 0 1 14 9.527V2"/><path d="M8.5 2h7"/><path d="M7 16h10"/></svg> Create a strategy</a>
       </div></div>`;
 }
 
@@ -563,7 +563,7 @@ function renderBootFailure(err) {
       <p class="text-[11px] text-slate-400 mono max-w-md mx-auto mb-5">${esc(String((err && err.message) || err || 'Unknown error'))}</p>
       <div class="flex items-center justify-center gap-2 flex-wrap">
         <button id="sbReload" class="inline-flex items-center gap-2 bg-indigo-600 text-white text-sm font-semibold px-5 py-2.5 rounded-xl hover:bg-indigo-700 transition">↻ Refresh the page</button>
-        <a href="./saved-strategies.html" class="inline-flex items-center gap-2 border border-slate-300 text-sm font-semibold px-5 py-2.5 rounded-xl text-slate-700 hover:bg-slate-100 transition">⭐ Saved Strategies</a>
+        <a href="./saved-strategies.html" class="inline-flex items-center gap-2 border border-slate-300 text-sm font-semibold px-5 py-2.5 rounded-xl text-slate-700 hover:bg-slate-100 transition"><svg class="sw-i" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/></svg> Saved Strategies</a>
       </div></div>`;
   const btn = $('sbReload'); if (btn) btn.onclick = sbBustAndReload;
 }

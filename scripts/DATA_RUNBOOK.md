@@ -14213,6 +14213,14 @@ was `index-chart.html`'s twelve `<h2>`s, each read first).
 5. **`node --check` on extracted `<script>` blocks flags data blocks** — mutual-funds' base64
    `type="application/octet-stream"` block is not JS; skip `type=` scripts.
 
+**Pass 2 (found on LIVE, not locally — the harness renders empty states only when nothing is seeded):**
+the empty-state CTA links styled as buttons (`⭐ Saved Strategies` / `🧪 Create a strategy` on the
+strategy page, `🚀 Run the first backtest` on history), the Saved Strategies **favourite toggle** (`⭐`
+on / `☆` off → one Lucide star, `fill="currentColor"` amber when on, outline slate when off; the
+handler keys off `data-favtoggle`, never the label) and the Monthly-returns card icon on All Picks.
+Toggle exercised headlessly: outline → click → filled amber + title flips → Favourites tab shows the
+row → un-star → empty-state text. **Grep `<a>`s styled as buttons too**, not just `<button>`.
+
 **Verified (§39):** 27 inline script blocks `node --check` clean; headless sweep 24 pages × {dark, light} ×
 {1440, 390} = 96 renders, theme applied, nav 3 groups, **drift 0 everywhere**, console errors = only the
 pre-existing local ones (index-chart corsproxy 401; portfolio NO_TOKEN — identical on origin's copy, proved
