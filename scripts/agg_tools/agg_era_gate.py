@@ -82,6 +82,15 @@ FY_TOL_ABS = 0.5
 # largest addressable refusal (159 cells whose OWN target FY closes to the paisa while a neighbour
 # FY does not), and a neighbour restatement is evidence about the NEIGHBOUR, not about the target.
 NEIGHBOUR_FY_REQUIRED = True
+# ★ WHICH ROW CARRIES THE VINTAGE TEST FOR AN op CELL (2026-09-05). E2 asks "is the site's quarterly
+# row the same vintage as its annual?". Run on op_pre itself it refused 4,075 of 18,345 op cells --
+# and on 3,119 of those the site's OWN PAT still closed to the paisa for the same FY(s). PAT is the
+# line year-end reclassification cannot move; op is the line it moves first (other income vs other
+# operating income, excise, expense regrouping in the audited annual). So with E2_VINTAGE_FOR_OP =
+# "pat_total" the restatement test runs on PAT and the op identity is JOURNALLED, not enforced.
+# Calibrated by hold-out (era_calibrate_op.py --e2-pat) before any cell was written with it: the
+# numbers are in the runbook entry for this sweep. None = the original behaviour (op tests op).
+E2_VINTAGE_FOR_OP = None
 _LASTDAY = {3: 331, 6: 630, 9: 930, 12: 1231}
 _STEP = [3, 6, 9, 12]
 
@@ -209,13 +218,26 @@ def check(sym, qe, field="patS", site="mc", ident=None, excused=None):
         fem, femwhy = fy_end_month_near(ann, qe)
         _, fyend = fy_of(qe, fem)
         a5 = {}
+        vcand = cand
+        if field in ("opS", "opC") and E2_VINTAGE_FOR_OP:
+            vcand = E2_VINTAGE_FOR_OP
+            r["op_fy_identity"] = {t: dict(zip(("verdict", "detail"),
+                                               site_fy(series, ann, cand, qde(qord(fyend) + off))))
+                                   for t, off in (("target", 0), ("prev", -4), ("next", 4))}
         for tag, off in (("target", 0), ("prev", -4), ("next", 4)):
-            a5[tag] = site_fy(series, ann, cand, qde(qord(fyend) + off))
+            a5[tag] = site_fy(series, ann, vcand, qde(qord(fyend) + off))
+            # ★ A DERIVED subtotal has no printed row to be checked against in its own era (MC
+            # prints none before 2008), so it is held to BOTH identities: the PAT vintage test
+            # above AND its own quarter-sum closing on the derived annual. Either failing vetoes.
+            if cand == "op_der" and vcand != cand:
+                v2, d2 = site_fy(series, ann, cand, qde(qord(fyend) + off))
+                if a5[tag][0] == "OK" and v2 != "OK":
+                    a5[tag] = (v2, dict(d2, also="op_der identity %s" % v2))
         restated = [t for t, (v, _) in a5.items() if v == "RESTATED"]
         if not NEIGHBOUR_FY_REQUIRED:                    # E2b -- see the constant's note
             restated = [t for t in restated if t == "target"]
         notest = [t for t, (v, _) in a5.items() if v == "NO-TEST"]
-        r.update({"fy_end_month": fem, "fy_end_month_src": femwhy,
+        r.update({"fy_end_month": fem, "fy_end_month_src": femwhy, "vintage_row": vcand,
                   "A5": {t: {"verdict": v, **d} for t, (v, d) in a5.items()}})
         if restated:
             rep.setdefault("rejected", []).append(
@@ -279,14 +301,9 @@ def _era_annual(ident, con):
         qe = A.qe_from_label(r.get("yrc0"))
         if qe is None or qe in out:
             continue
-        vals = {}
-        for field, labels in A.MC_ROWS.items():
-            for lbl in labels:
-                if lbl in r:
-                    v = A._num(r[lbl])
-                    if v is not None:
-                        vals[field] = v
-                        break
+        # mirror agg_sources.mc_annuals: the derived op must exist in the ANNUAL table too, or E2's
+        # FY identity for an op cell is a silent NO-TEST on every ISIN-resolved symbol (2026-09-05)
+        vals = A.mc_row_values(r)
         if vals:
             out[qe] = vals
     return out, "mc: %d FYs" % len(out)
@@ -312,11 +329,11 @@ def _evidence(rep):
         "GATE E%s (pre-2015, runbook §90): E1 identity -- that site's own %s series reproduces "
         "%d of our stored quarters, worst anchor error %s, %d disagreement(s) anywhere and NONE "
         "within ±%dq; nearest anchor %d quarter(s) from the target. E2 the site's OWN FY "
-        "quarter-sum identity closes at the target FY (%s vs annual %s). E3 target and both "
-        "neighbour periods present. Precision %s.%s"
+        "quarter-sum identity on its %s row closes at the target FY (%s vs annual %s). E3 target "
+        "and both neighbour periods present. Precision %s.%s"
         % ("2b" if restated else "",
            c.get("cand"), d.get("anchors", 0), c.get("worst_anchor"), d.get("bad", 0),
-           NEAR_BAD_Q, c.get("nearest_anchor_q", -1),
+           NEAR_BAD_Q, c.get("nearest_anchor_q", -1), d.get("vintage_row", c.get("cand")),
            tgt.get("sum4Q"), tgt.get("annual"), c.get("precision"),
            (" E2b: the %s FY is RESTATED on the site and did NOT veto -- a neighbour restatement is "
             "evidence about the NEIGHBOUR; hold-out calibrated on stored pre-2009 cells, and our "
@@ -334,17 +351,30 @@ def main():
                     help="E2 judges the TARGET FY only; a restated neighbour FY no longer vetoes. "
                          "Calibrated by hold-out first (era_calibrate_e2.py) -- never flip it "
                          "without re-running that on the era you are filling.")
+    # ★ EXCUSED ANCHORS (2026-09-05, op sweep). {SYM: [qe, ...]} of stored cells ADJUDICATED as not
+    # holding this field's definition -- measured, per cell, against the site's own rows (the opS
+    # slot of 2008-2016 holds the after-depreciation figure = MC's ebit_pre row, not op_pre). They
+    # are dropped from the comparison entirely, never counted as agreement, and the list is
+    # journalled in every proposal (`excused`). Without this, a symbol's 8 defective 2015-16 cells
+    # read as 8 disagreements and E1's rate cap refuses a series whose identity is not in doubt.
+    ap.add_argument("--excuse", help="json {SYM: [qe,...]} of adjudicated non-comparable cells")
+    ap.add_argument("--e2-pat", action="store_true",
+                    help="op cells: run E2's vintage test on the site's own PAT row and journal "
+                         "the op identity (see E2_VINTAGE_FOR_OP). Hold-out calibrated first.")
     a = ap.parse_args()
 
-    global NEIGHBOUR_FY_REQUIRED
+    global NEIGHBOUR_FY_REQUIRED, E2_VINTAGE_FOR_OP
     if a.e2b:
         NEIGHBOUR_FY_REQUIRED = False
+    if a.e2_pat:
+        E2_VINTAGE_FOR_OP = "pat_total"
     cells = [tuple(c) for c in json.load(open(a.cells))]
     if a.syms:
         want = set(a.syms.split(","))
         cells = [c for c in cells if c[0] in want]
     reach = json.load(open(a.reach)) if a.reach else {}
     idcache = json.load(open(E._ISIN_CACHE)) if os.path.exists(E._ISIN_CACHE) else {}
+    excuse = {k: set(v) for k, v in json.load(open(a.excuse)).items()} if a.excuse else {}
 
     props, reports = {}, {}
     t0 = time.time()
@@ -354,7 +384,7 @@ def main():
             reports["%s|%d|%s" % (sym, qe, field)] = {"state": "UNRESOLVED",
                                                       "why": reach[sym].get("why")}
             continue
-        val, rep = check(sym, int(qe), field, ident=ident)
+        val, rep = check(sym, int(qe), field, ident=ident, excused=excuse.get(sym))
         key = "%s|%d|%s" % (sym, qe, field)
         reports[key] = rep
         if val is not None:
@@ -362,6 +392,9 @@ def main():
                           "corroborated_by": [], "resolved_via": rep.get("resolved_via"),
                           "fy_check": rep["detail"].get("A5"),
                           "our_fy_identity": rep["detail"].get("our_fy_identity"),
+                          "op_fy_identity": rep["detail"].get("op_fy_identity"),
+                          "vintage_row": rep["detail"].get("vintage_row"),
+                          "excused": rep["detail"].get("excused"),
                           "evidence": _evidence(rep),
                           "sites": {"mc": rep.get("site_note")}}
         if (i + 1) % 100 == 0:

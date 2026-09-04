@@ -92,22 +92,30 @@ def main():
             # and guards air. Both fields of the same quarter merge into one entry.
             jkey = "%s|%s" % (sym, qe)
             journal.setdefault(jkey, {})
-            journal[jkey].update({
+            # A proposal that carries its OWN evidence sentence (agg_era_gate.py writes one for
+            # every GATE-E pass) is journalled with THAT sentence. The template below describes a
+            # gate A/A2 pass and nothing else; stamping it on a gate-E cell records a gate that
+            # never ran -- the exact mislabelling agg_era_gate._evidence was written to end.
+            ent = {
                 field: p["value"],
                 "state": p["state"],
                 "precision": ch["precision"],
-                "src": "%s quarterly-results API (runbook §80)" % SITE_NAME.get(ch["site"],
+                "src": "%s quarterly-results API (runbook §81)" % SITE_NAME.get(ch["site"],
                                                                                ch["site"]),
                 "row_label": ch["row"],
-                "evidence": ("gate A/A2 passed: that site's own %s series reproduces %d of our "
-                             "stored quarters with zero disagreements, worst anchor error %.4f; "
-                             "nearest anchor within 4 quarters" %
-                             (field, ch["anchors"], ch["worst_anchor"])),
+                "evidence": p.get("evidence") or (
+                    "gate A/A2 passed: that site's own %s series reproduces %d of our stored "
+                    "quarters with zero disagreements, worst anchor error %.4f; nearest anchor "
+                    "within 4 quarters" % (field, ch["anchors"], ch["worst_anchor"])),
                 "corroborated_by": [SITE_NAME.get(s, s) for s in p.get("corroborated_by", [])],
                 "site_reach": p.get("sites", {}),
                 "fy_check": p.get("fy_check"),
                 "applied": "%s aggregator sweep" % a.stamp,
-            })
+            }
+            for extra in ("gate", "excused", "our_fy_identity", "resolved_via", "nearest_anchor_q"):
+                if p.get(extra) is not None:
+                    ent[extra] = p[extra]
+            journal[jkey].update(ent)
         if a.apply:
             json.dump(d, open(path, "w"), separators=(",", ":"))
         print("%-32s %s %d cells" % (base, "filled" if a.apply else "would fill", n))
@@ -120,9 +128,25 @@ def main():
 
     if a.apply and journal:
         led = json.load(open(LEDGER)) if os.path.exists(LEDGER) else {}
-        led.update(journal)
+        # ★ MERGE PER ENTRY, NEVER REPLACE (2026-09-05). `led.update(journal)` swapped the whole
+        # SYM|QE record for the new one, so an opS fill on a quarter that already carried a revS
+        # entry silently dropped the revS assertion (and its provenance) from the ledger -- and
+        # with it the clobber check on that revS cell. When the record already holds ANOTHER
+        # field's value, the new field lands with its provenance nested under `<field>_prov`.
+        nested = 0
+        for jkey, ent in journal.items():
+            cur = led.get(jkey)
+            fields_here = [f for f in SLOT if ent.get(f) is not None]
+            if cur and any(cur.get(f) is not None for f in SLOT if f not in fields_here):
+                for f in fields_here:
+                    cur[f] = ent[f]
+                    cur[f + "_prov"] = {k: v for k, v in ent.items() if k not in SLOT}
+                nested += 1
+            else:
+                led[jkey] = {**(cur or {}), **ent}
         json.dump(led, open(LEDGER, "w"), indent=1, sort_keys=True)
-        print("journalled %d -> %s" % (len(journal), os.path.basename(LEDGER)))
+        print("journalled %d -> %s (%d merged into records holding another field)"
+              % (len(journal), os.path.basename(LEDGER), nested))
     if created:
         print("  CREATED %d row(s) that did not exist: %s" % (len(created), "; ".join(created[:6])))
     if not a.apply:

@@ -129,15 +129,10 @@ def quarters(ident, con=False):
         if qe in out:
             dupes.add(qe)
             continue
-        vals = {}
-        for field, labels in A.MC_ROWS.items():
-            for lbl in labels:
-                if lbl in r:
-                    v = A._num(r[lbl])
-                    if v is not None:
-                        vals[field] = v
-                        vals[field + "_label"] = lbl
-                        break
+        # the same rows + derivations as agg_sources.mc_quarters -- the era reader used to skip
+        # MC_DERIVED, so an ISIN-resolved symbol had no op candidate and every op cell read as
+        # NOT-FOUND (found 2026-09-05)
+        vals = A.mc_row_values(r)
         if vals:
             out[qe] = vals
     for qe in dupes:

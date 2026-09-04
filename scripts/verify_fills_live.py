@@ -69,6 +69,14 @@ LEDGERS = [
     # sat unguarded for weeks (see the named_rev_cell_fills revC note above).
     ("agg_cell_fills.json",            "revop", "revS", 0),
     ("agg_cell_fills.json",            "revop", "revC", 1),
+    # ★ op / ebit on the SAME ledger were UNREGISTERED until 2026-09-05: the 2026-08-12 op/ebit
+    # sweep (commit 6b7c1a302) journalled opS/opC/ebitS/ebitC cells here and nothing re-checked
+    # them after a refresh — the exact "std"-only class described under agg_pat_cell_fills below.
+    # Checked-count delta at registration: measured and recorded in the commit that added these.
+    ("agg_cell_fills.json",            "revop", "opS",  2),
+    ("agg_cell_fills.json",            "revop", "opC",  3),
+    ("agg_cell_fills.json",            "revop", "ebitS", 7),
+    ("agg_cell_fills.json",            "revop", "ebitC", 8),
     # PRE-2015 standalone PAT from the same route (2026-08-12). Separate ledger because it writes a
     # different file (docs/sf_fundamentals.json slot 1) through its own applier, and because these
     # cells are the oldest in the dataset — the era CI never rebuilds, so a clobber here would be

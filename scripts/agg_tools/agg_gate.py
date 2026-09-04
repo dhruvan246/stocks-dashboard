@@ -93,8 +93,11 @@ FIELD_CANDS = {
     # std and 22/0/0 con, ZFCVINDIA 18/0/0 both, POWERINDIA 23/0/0, UNOMINDA con 29/0/0), so the
     # preference below is measured, not assumed -- and `*_post` stays a candidate because a tie or
     # a reversal on some company must show up as UNRESOLVED rather than be defined away.
-    "opS":   ("op_pre", "op_post"),
-    "opC":   ("op_pre", "op_post"),
+    # op_der (agg_sources.MC_TOPDOWN, 2026-09-05) comes LAST: it exists on every row, so it only
+    # decides a cell the printed subtotals could not (pre-2008 rows print `--` for them), and it is
+    # scored on the company's own stored quarters like any other candidate.
+    "opS":   ("op_pre", "op_post", "op_der"),
+    "opC":   ("op_pre", "op_post", "op_der"),
     "ebitS": ("ebit_pre", "ebit_post"),
     "ebitC": ("ebit_pre", "ebit_post"),
 }

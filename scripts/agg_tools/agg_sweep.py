@@ -84,6 +84,10 @@ def main():
     ap.add_argument("--lo", type=int, default=20191231)
     ap.add_argument("--hi", type=int, default=20260331)
     ap.add_argument("--out", default=os.path.join(HERE, "_agg_proposals.json"))
+    # suspects_for() used to read mc AND tl for every (sym, field) regardless of --sites, and the
+    # Trendlyne read is paced at 10 s (robots.txt) -- so a 432-symbol MC-only sweep spent >1 h on a
+    # site it was told not to use. Suspects now follow --sites; --no-suspects skips them outright.
+    ap.add_argument("--no-suspects", action="store_true")
     a = ap.parse_args()
 
     if a.cells:
@@ -108,9 +112,9 @@ def main():
             props[key] = {"value": val, "state": rep["state"], "chosen": rep["chosen"],
                           "corroborated_by": rep["corroborated_by"],
                           "sites": {s: v.get("note") for s, v in rep["sites"].items()}}
-        if (sym, field) not in seen_series:
+        if (sym, field) not in seen_series and not a.no_suspects:
             seen_series.add((sym, field))
-            susp.extend(suspects_for(sym, field))
+            susp.extend(suspects_for(sym, field, sites=sites))
         print("[%3d/%3d] %-11s %-8d %-4s %-24s %s"
               % (i + 1, len(cells), sym, qe, field, rep["state"],
                  rep.get("chosen", {}).get("site", "") or

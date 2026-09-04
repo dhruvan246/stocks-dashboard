@@ -246,7 +246,53 @@ MC_ROWS = {
 MC_DERIVED = {
     "op_pre":  ("ebit_pre", "dep"),
     "op_post": ("ebit_post", "dep"),
+    # ★ THE TOP-DOWN SUBTOTAL (2026-09-05). MC's rows before 2008 print `--` for every P/L subtotal
+    # ("P/L Before Other Inc...", "Total Income From Operations") while carrying every component
+    # line, so op_pre simply does not exist there (~1,400 quarterly rows per year 1998-2007, measured).
+    # ebit_der rebuilds that subtotal from the lines that ARE printed:
+    #     ebit_der = Net Profit + Tax + Interest - Other Income - Exceptional - Extraordinary - Prior-yr adj
+    # VALIDATED against MC's own printed subtotal wherever both exist: exact (<=0.011) on 49,526 of
+    # 49,898 quarterly rows (99.25%) and 15,387 of 15,525 annual rows (99.11%), 2008-2026, all
+    # resolved N500-era symbols. The bottom-up sum of expense lines scored 97.3%, adding the
+    # adjustments back instead of subtracting scored 91.5% -- so this is the measured form, not a
+    # guessed one. It is a CANDIDATE like the others: the gate still has to reproduce our stored
+    # values with it (E1 anchors on the company's own 2018+ rows) before a derived cell is written.
+    "op_der":  ("ebit_der", "dep"),
 }
+# Lines the top-down subtotal is built from (label -> sign). Absent lines count as 0 -- a `--` on
+# MC is "no such line in this filing", and the 99.25% above was measured with exactly that rule.
+MC_TOPDOWN = (("Net Profit/(Loss) For the Period", +1), ("Tax", +1), ("Interest", +1),
+              ("Other Income", -1), ("Exceptional Items", -1), ("Extra Ordinary Items", -1),
+              ("Prior Year Adjustments", -1))
+
+
+def mc_row_values(r):
+    """{field: value, field_label: label} for ONE MC row -- printed rows, then every derived field.
+    The single place the four MC readers (quarterly/annual x symbol/era) take their values from, so
+    a candidate added here exists in all of them at once (the era readers used to lack MC_DERIVED
+    entirely, which made every op cell on an ISIN-resolved symbol read as NOT-FOUND)."""
+    vals = {}
+    for field, labels in MC_ROWS.items():
+        for lbl in labels:
+            if lbl in r:
+                v = _num(r[lbl])
+                if v is not None:
+                    vals[field] = v
+                    vals[field + "_label"] = lbl
+                    break
+    pat = _num(r.get("Net Profit/(Loss) For the Period")) if "Net Profit/(Loss) For the Period" in r else None
+    if pat is not None:
+        tot = 0.0
+        for lbl, sign in MC_TOPDOWN:
+            v = _num(r[lbl]) if lbl in r else None
+            tot += sign * (v or 0.0)
+        vals["ebit_der"] = round(tot, 2)
+        vals["ebit_der_label"] = "derived: PAT+Tax+Interest-OtherInc-Exceptional-ExtraOrd-PriorYrAdj"
+    for field, (base, add) in MC_DERIVED.items():
+        if vals.get(base) is not None and vals.get(add) is not None:
+            vals[field] = round(vals[base] + vals[add], 2)
+            vals[field + "_label"] = "%s + %s" % (vals[base + "_label"], vals[add + "_label"])
+    return vals
 
 
 def mc_quarters(sym, con):
@@ -273,19 +319,7 @@ def mc_quarters(sym, con):
         if qe in out:
             dupes.add(qe)                       # restated duplicate column -> ambiguous, drop
             continue
-        vals = {}
-        for field, labels in MC_ROWS.items():
-            for lbl in labels:
-                if lbl in r:
-                    v = _num(r[lbl])
-                    if v is not None:
-                        vals[field] = v
-                        vals[field + "_label"] = lbl
-                        break
-        for field, (base, add) in MC_DERIVED.items():
-            if vals.get(base) is not None and vals.get(add) is not None:
-                vals[field] = round(vals[base] + vals[add], 2)
-                vals[field + "_label"] = "%s + %s" % (vals[base + "_label"], vals[add + "_label"])
+        vals = mc_row_values(r)
         if vals:
             out[qe] = vals
     for qe in dupes:
@@ -535,19 +569,9 @@ def mc_annuals(sym, con):
         qe = qe_from_label(r.get("yrc0"))
         if qe is None:
             continue
-        vals = {}
-        for field, labels in MC_ROWS.items():
-            for lbl in labels:
-                if lbl in r and _num(r[lbl]) is not None:
-                    vals[field] = _num(r[lbl])
-                    vals[field + "_label"] = lbl
-                    break
         # the same derivation as the quarterly table, so Gate A5's FY identity can be run on
         # op/ebit as well -- an annual table missing the derived field is a silent NO-TEST (§81e)
-        for field, (base, add) in MC_DERIVED.items():
-            if vals.get(base) is not None and vals.get(add) is not None:
-                vals[field] = round(vals[base] + vals[add], 2)
-                vals[field + "_label"] = "%s + %s" % (vals[base + "_label"], vals[add + "_label"])
+        vals = mc_row_values(r)
         if vals:
             out.setdefault(qe, vals)
     return out, "mc: %d FYs %s..%s" % (len(out), min(out, default="-"), max(out, default="-"))
