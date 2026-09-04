@@ -40,7 +40,7 @@
     </a>
     <div class="flex items-center gap-3 min-w-0">
       <nav></nav>
-      <a href="./backtest.html" class="hidden md:inline-flex items-center gap-1 px-2.5 py-1.5 rounded-lg text-xs font-semibold text-indigo-700 bg-indigo-50 hover:bg-indigo-100 transition whitespace-nowrap">📈 Backtest</a>
+      <a href="./backtest.html" class="hidden md:inline-flex items-center gap-1 px-2.5 py-1.5 rounded-lg text-xs font-semibold text-indigo-700 bg-indigo-50 hover:bg-indigo-100 transition whitespace-nowrap"><svg class="sw-i" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><polyline points="22 7 13.5 15.5 8.5 10.5 2 17"/><polyline points="16 7 22 7 22 13"/></svg> Backtest</a>
       <span class="text-[11px] text-slate-400 hidden xl:block shrink-0">Snapshot &middot; 04 Sep 2026 19:12</span>
     </div>
   </div>
@@ -391,9 +391,9 @@ function renderDetail(){
   const code=DETAIL_CODE; if(code==null) return;
   const win=+document.getElementById('detWin').value;
   document.getElementById('detTables').innerHTML =
-    '<div class="text-sm font-bold text-slate-800 mt-4 mb-1">📅 Monthly returns — each calendar month&apos;s gain</div>'+calMonthly(code)+
-    '<div class="text-sm font-bold text-slate-800 mt-5 mb-1">📉 Trailing '+win+'-year return — your '+win+'-year CAGR as of each month</div>'+calRolling(code,win,false)+
-    '<div class="text-sm font-bold text-slate-800 mt-5 mb-1">📈 Forward '+win+'-year return — invest at month-start &amp; hold '+win+' years</div>'+calRolling(code,win,true)+
+    '<div class="text-sm font-bold text-slate-800 mt-4 mb-1">Monthly returns — each calendar month&apos;s gain</div>'+calMonthly(code)+
+    '<div class="text-sm font-bold text-slate-800 mt-5 mb-1">Trailing '+win+'-year return — your '+win+'-year CAGR as of each month</div>'+calRolling(code,win,false)+
+    '<div class="text-sm font-bold text-slate-800 mt-5 mb-1">Forward '+win+'-year return — invest at month-start &amp; hold '+win+' years</div>'+calRolling(code,win,true)+
     '<div class="text-[10px] text-slate-400 mt-2">Monthly = each month&apos;s NAV return (right "Year" col = calendar-year return). Trailing = '+win+'-yr CAGR ending that month. Forward = '+win+'-yr CAGR if you invested that month. "·" = outside the fund&apos;s data window.</div>';
 }
 function closeFundDetail(){ document.getElementById('detailModal').classList.add('hidden'); document.body.style.overflow=''; DETAIL_CODE=null; }

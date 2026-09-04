@@ -1994,7 +1994,7 @@ function ensureKdlg(){
     '</div></div>';
   document.body.appendChild(w);
   const chip=document.createElement('div'); chip.id='kbasketChip';
-  chip.innerHTML='<button class="btn on" id="kbSend" title="Opens Zerodha with all collected orders for review">🧺 Send basket · <span id="kbN">0</span> ▸</button>'+
+  chip.innerHTML='<button class="btn on" id="kbSend" title="Opens Zerodha with all collected orders for review">Send basket · <span id="kbN">0</span> ▸</button>'+
                  '<button class="btn" id="kbClear" title="Empty the basket">✕</button>';
   document.body.appendChild(chip);
   /* wiring */
@@ -2116,7 +2116,7 @@ const zinr=v=>(v==null||!isFinite(v))?'—':'₹'+Math.round(v).toLocaleString('
 function zBtns(show){ $('zRefresh').style.display=show?'':'none';
   $('zAction').style.display=''; }
 function zSetup(msg){
-  zBtns(false); $('zAction').textContent='⚙ Setup';
+  zBtns(false); $('zAction').textContent='Setup';
   $('zAction').onclick=()=>zSetup();
   $('zBody').innerHTML=(msg?'<div class="khelp" style="color:var(--down)">'+msg+'</div>':'')+
     '<div class="khelp">One-time on this device: paste your Kite worker URL. (Deploying the worker itself is a one-time job — the walkthrough is <b>KITE_SETUP.md</b> in ~/stocks-portfolio.)</div>'+

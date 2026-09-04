@@ -66,7 +66,7 @@
   <div class="card p-3 space-y-2.5">
     <div class="flex flex-wrap items-center gap-2">
       <div class="relative flex-1 min-w-[180px] max-w-xs">
-        <span class="absolute left-2.5 top-1/2 -translate-y-1/2 text-slate-400 text-sm">🔎</span>
+        <span class="absolute left-2.5 top-1/2 -translate-y-1/2 text-slate-400 text-sm"><svg class="sw-i" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="11" cy="11" r="8"/><path d="m21 21-4.3-4.3"/></svg></span>
         <input id="search" placeholder="Search indexes…" class="w-full border border-slate-300 rounded-lg pl-8 pr-2.5 py-1.5 text-sm bg-white" />
       </div>
       <!-- five rungs don't fit one phone line: wrap instead of hiding NSE Indices off the right edge -->
@@ -106,7 +106,7 @@
           <option value="peD">Median P/E ▼</option>
         </select>
       </label>
-      <button id="csv" class="ml-auto px-2.5 py-1 rounded-lg border border-slate-300 text-slate-600 hover:bg-slate-100 font-semibold">⬇ CSV</button>
+      <button id="csv" class="ml-auto px-2.5 py-1 rounded-lg border border-slate-300 text-slate-600 hover:bg-slate-100 font-semibold"><svg class="sw-i" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg> CSV</button>
     </div>
   </div>
 
@@ -289,8 +289,8 @@ function renderBreadth(){
   $('breadth').innerHTML=
     `<span class="font-semibold text-slate-700">${ST.period} market breadth</span>`+
     `<span><b class="pos">${up}</b> advancing · <b class="neg">${dn}</b> declining <span class="text-slate-400">of ${valid.length} ${lvLabel}</span></span>`+
-    (lead?`<span>🚀 Leading: <b>${esc(lead.name)}</b> <span class="pos font-semibold">${fmtPct(lead.ret)}</span></span>`:'')+
-    (lag?`<span>🧊 Lagging: <b>${esc(lag.name)}</b> <span class="neg font-semibold">${fmtPct(lag.ret)}</span></span>`:'');
+    (lead?`<span>Leading: <b>${esc(lead.name)}</b> <span class="pos font-semibold">${fmtPct(lead.ret)}</span></span>`:'')+
+    (lag?`<span>Lagging: <b>${esc(lag.name)}</b> <span class="neg font-semibold">${fmtPct(lag.ret)}</span></span>`:'');
 }
 function card(row){
   const ser=indexSeries(row.members,row.startOff,row.endOff);

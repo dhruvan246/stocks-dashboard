@@ -69,7 +69,6 @@
     <div class="relative flex flex-wrap items-end justify-between gap-4">
       <div class="max-w-2xl">
         <div class="flex items-center gap-2 mb-1">
-          <span class="text-2xl">⚡</span>
           <h1 class="text-xl sm:text-2xl font-extrabold tracking-tight" style="color:var(--text)">Volume Shockers</h1>
         </div>
         <p class="text-sm" style="color:var(--text-muted)">Stocks trading <b style="color:var(--text)">many times their own 20-session average volume</b> today — often the first sign someone is suddenly interested. We pair every spike with <b style="color:var(--text)">delivery %</b> (real accumulation vs intraday churn), sector, F&amp;O status and distance from the 52-week high, so you can tell a breakout from a blow-off.</p>
@@ -202,11 +201,11 @@ function renderTiles(){
   const s=DATA.stats;
   const tile=(lab,val,sub,ic,cls)=>'<div class="tile"><span class="ic">'+ic+'</span><div class="lab">'+lab+'</div><div class="val '+(cls||'')+'">'+val+'</div><div class="sub">'+sub+'</div></div>';
   $('tiles').innerHTML =
-     tile('Shockers today', s.n, fmtD8(+DATA.date), '⚡')
-   + tile('Median ratio', s.medRatio+'×', 'typical spike vs 20-sess avg', '📊')
-   + tile('Top spike', esc(s.maxSym||'—'), s.maxRatio+'× average volume', '🚀')
-   + tile('Delivery-confirmed', s.delivConf, 'delivery % ≥ 50 — real accumulation', '📦','pos')
-   + tile('Direction', '<span class="pos">'+s.up+'</span> / <span class="neg">'+s.down+'</span>', 'up-day vs down-day spikes · '+s.fno+' in F&O', '⚖️');
+     tile('Shockers today', s.n, fmtD8(+DATA.date), '<svg class="sw-i" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><polygon points="13 2 3 14 12 14 11 22 21 10 12 10 13 2"/></svg>')
+   + tile('Median ratio', s.medRatio+'×', 'typical spike vs 20-sess avg', '<svg class="sw-i" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M3 3v18h18"/><path d="M18 17V9"/><path d="M13 17V5"/><path d="M8 17v-3"/></svg>')
+   + tile('Top spike', esc(s.maxSym||'—'), s.maxRatio+'× average volume', '<svg class="sw-i" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M4.5 16.5c-1.5 1.26-2 5-2 5s3.74-.5 5-2c.71-.84.7-2.13-.09-2.91a2.18 2.18 0 0 0-2.91-.09z"/><path d="m12 15-3-3a22 22 0 0 1 2-3.95A12.88 12.88 0 0 1 22 2c0 2.72-.78 7.5-6 11a22.35 22.35 0 0 1-4 2z"/><path d="M9 12H4s.55-3.03 2-4c1.62-1.08 5 0 5 0"/><path d="M12 15v5s3.03-.55 4-2c1.08-1.62 0-5 0-5"/></svg>')
+   + tile('Delivery-confirmed', s.delivConf, 'delivery % ≥ 50 — real accumulation', '<svg class="sw-i" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 18H3c-.6 0-1-.4-1-1V7c0-.6.4-1 1-1h10c.6 0 1 .4 1 1v11"/><path d="M14 9h4l4 4v4c0 .6-.4 1-1 1h-2"/><circle cx="7" cy="18" r="2"/><path d="M15 18H9"/><circle cx="17" cy="18" r="2"/></svg>','pos')
+   + tile('Direction', '<span class="pos">'+s.up+'</span> / <span class="neg">'+s.down+'</span>', 'up-day vs down-day spikes · '+s.fno+' in F&O', '<svg class="sw-i" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="m16 16 3-8 3 8c-.87.65-1.92 1-3 1s-2.13-.35-3-1Z"/><path d="m2 16 3-8 3 8c-.87.65-1.92 1-3 1s-2.13-.35-3-1Z"/><path d="M7 21h10"/><path d="M12 3v18"/><path d="M3 7h2c2 0 5-1 7-2 2 1 5 2 7 2h2"/></svg>');
 }
 
 function renderSectors(){

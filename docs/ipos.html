@@ -49,11 +49,11 @@
   <div id="status" class="text-sm text-slate-500 py-10 text-center">Loading IPO data…</div>
 
   <div id="content" class="hidden">
-    <h2 class="text-base font-extrabold text-slate-800 mb-2">🪔 Open &amp; upcoming issues</h2>
+    <h2 class="text-base font-extrabold text-slate-800 mb-2">Open &amp; upcoming issues</h2>
     <div id="issues" class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-3 mb-7"></div>
 
     <div class="flex items-center justify-between flex-wrap gap-2 mb-2">
-      <h2 class="text-base font-extrabold text-slate-800">📈 Recently listed <span class="text-[11px] font-semibold text-slate-400">(last 6 months)</span></h2>
+      <h2 class="text-base font-extrabold text-slate-800">Recently listed <span class="text-[11px] font-semibold text-slate-400">(last 6 months)</span></h2>
       <div class="flex flex-wrap items-center gap-2">
         <input id="q" type="text" placeholder="Search…" autocomplete="off" class="w-40" />
         <select id="fBoard"><option value="all">Mainboard + SME</option><option value="Main">Mainboard only</option><option value="SME">SME only</option></select>
@@ -245,7 +245,7 @@ function preTable(pe){
   const src = pe.source === 'screener' ? 'Screener' : 'MoneyControl';
   const badge = pe.verified ? '<span style="color:#16a34a;font-weight:700">✓ matches filed results</span>'
                             : 'as reported to ' + src;
-  let t = '<div class="text-[11px] font-semibold text-slate-500 mb-1">🏛️ Pre-IPO financials · ' + badge + '</div>' +
+  let t = '<div class="text-[11px] font-semibold text-slate-500 mb-1">Pre-IPO financials · ' + badge + '</div>' +
     '<table class="text-xs" style="font-variant-numeric:tabular-nums"><thead class="text-[10px] uppercase text-slate-400"><tr>' +
     '<th class="text-left pr-5 pb-1">FY</th><th class="text-right px-3 pb-1">Revenue (₹ cr)</th><th class="text-right px-3 pb-1">Net profit (₹ cr)</th></tr></thead><tbody>';
   for (const row of pe.rows){

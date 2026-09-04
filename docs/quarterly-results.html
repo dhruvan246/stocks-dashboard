@@ -99,11 +99,11 @@
 
     <!-- Tab bar -->
     <div class="flex items-center gap-1.5 mb-3 overflow-x-auto pb-1" id="tabs">
-      <button class="tabbtn" data-tab="overview">📊 Season Overview</button>
-      <button class="tabbtn" data-tab="results">📋 All Results</button>
-      <button class="tabbtn" data-tab="feed">⚡ Just Declared</button>
-      <button class="tabbtn" data-tab="calendar">📅 Calendar</button>
-      <button class="tabbtn" data-tab="season">📈 Season Trends</button>
+      <button class="tabbtn" data-tab="overview"><svg class="sw-i" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M3 3v18h18"/><path d="M18 17V9"/><path d="M13 17V5"/><path d="M8 17v-3"/></svg> Season Overview</button>
+      <button class="tabbtn" data-tab="results"><svg class="sw-i" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><line x1="8" y1="6" x2="21" y2="6"/><line x1="8" y1="12" x2="21" y2="12"/><line x1="8" y1="18" x2="21" y2="18"/><line x1="3" y1="6" x2="3.01" y2="6"/><line x1="3" y1="12" x2="3.01" y2="12"/><line x1="3" y1="18" x2="3.01" y2="18"/></svg> All Results</button>
+      <button class="tabbtn" data-tab="feed"><svg class="sw-i" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><polygon points="13 2 3 14 12 14 11 22 21 10 12 10 13 2"/></svg> Just Declared</button>
+      <button class="tabbtn" data-tab="calendar"><svg class="sw-i" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="3" y="4" width="18" height="18" rx="2"/><line x1="16" y1="2" x2="16" y2="6"/><line x1="8" y1="2" x2="8" y2="6"/><line x1="3" y1="10" x2="21" y2="10"/></svg> Calendar</button>
+      <button class="tabbtn" data-tab="season"><svg class="sw-i" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><polyline points="22 7 13.5 15.5 8.5 10.5 2 17"/><polyline points="16 7 22 7 22 13"/></svg> Season Trends</button>
     </div>
 
     <!-- Controls -->
@@ -214,7 +214,7 @@
         </div>
         <div class="flex items-center justify-between px-4 py-3">
           <button id="bMore" class="hidden px-5 py-2 rounded-lg bg-slate-100 hover:bg-slate-200 text-slate-700 text-sm font-semibold transition">Load more ↓</button>
-          <button id="bCsv" class="ml-auto px-4 py-2 rounded-lg bg-slate-100 hover:bg-slate-200 text-slate-700 text-xs font-bold transition">⬇ Export CSV</button>
+          <button id="bCsv" class="ml-auto px-4 py-2 rounded-lg bg-slate-100 hover:bg-slate-200 text-slate-700 text-xs font-bold transition"><svg class="sw-i" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg> Export CSV</button>
         </div>
       </div>
       <p class="text-[11px] text-slate-500 mt-2">₹ crore · YoY/QoQ computed on the same reporting basis both periods (consolidated preferred) · when the year-ago quarter was a <b>loss</b>, growth is measured against its absolute value (so a turnaround reads positive, e.g. BHEL −455 → +377 = +182.7%) · <b>LP</b> = loss→profit, <b>PL</b> = profit→loss, <b>LL</b> = still loss-making (an <b>LL</b> counts as profit-<i>down</i> however small its loss got) · banks/NBFCs show total income &amp; PAT only.</p>
@@ -276,7 +276,7 @@
         <div class="rounded-xl shadow-sm border border-slate-700 bg-slate-900 text-slate-100 overflow-hidden">
           <div class="px-6 py-4 border-b border-slate-700 flex flex-wrap items-start justify-between gap-3">
             <div>
-              <h2 class="text-sm font-bold uppercase tracking-wide text-white flex items-center gap-2">📊 <span id="rsChartTitle">Total YoY growth by quarter</span></h2>
+              <h2 class="text-sm font-bold uppercase tracking-wide text-white flex items-center gap-2"><span id="rsChartTitle">Total YoY growth by quarter</span></h2>
               <p class="text-[11px] text-slate-400 mt-1" id="rsAsOf"></p>
               <p class="text-[11px] text-slate-500 mt-0.5 flex items-center gap-1.5" id="rsRefreshed"></p>
             </div>
@@ -316,6 +316,7 @@
 
 <script>
 'use strict';
+var SWI={trend:'<svg class="sw-i" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><polyline points="22 7 13.5 15.5 8.5 10.5 2 17"/><polyline points="16 7 22 7 22 13"/></svg>',rocket:'<svg class="sw-i" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M4.5 16.5c-1.5 1.26-2 5-2 5s3.74-.5 5-2c.71-.84.7-2.13-.09-2.91a2.18 2.18 0 0 0-2.91-.09z"/><path d="m12 15-3-3a22 22 0 0 1 2-3.95A12.88 12.88 0 0 1 22 2c0 2.72-.78 7.5-6 11a22.35 22.35 0 0 1-4 2z"/><path d="M9 12H4s.55-3.03 2-4c1.62-1.08 5 0 5 0"/><path d="M12 15v5s3.03-.55 4-2c1.08-1.62 0-5 0-5"/></svg>',repeat:'<svg class="sw-i" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="m17 2 4 4-4 4"/><path d="M3 11v-1a4 4 0 0 1 4-4h14"/><path d="m7 22-4-4 4-4"/><path d="M21 13v1a4 4 0 0 1-4 4H3"/></svg>',alert:'<svg class="sw-i" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="m21.73 18-8-14a2 2 0 0 0-3.48 0l-8 14A2 2 0 0 0 4 21h16a2 2 0 0 0 1.73-3Z"/><path d="M12 9v4"/><path d="M12 17h.01"/></svg>',bars:'<svg class="sw-i" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M3 3v18h18"/><path d="M18 17V9"/><path d="M13 17V5"/><path d="M8 17v-3"/></svg>',trophy:'<svg class="sw-i" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M6 9H4.5a2.5 2.5 0 0 1 0-5H6"/><path d="M18 9h1.5a2.5 2.5 0 0 0 0-5H18"/><path d="M4 22h16"/><path d="M10 14.66V17c0 .55-.47.98-.97 1.21C7.85 18.75 7 20.24 7 22"/><path d="M14 14.66V17c0 .55.47.98.97 1.21C16.15 18.75 17 20.24 17 22"/><path d="M18 2H6v7a6 6 0 0 0 12 0V2Z"/></svg>',flame:'<svg class="sw-i" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M8.5 14.5A2.5 2.5 0 0 0 11 12c0-1.38-.5-2-1-3-1.072-2.143-.224-4.054 2-6 .5 2.5 2 4.9 4 6.5 2 1.6 3 3.5 3 5.5a7 7 0 1 1-14 0c0-1.153.433-2.294 1-3a2.5 2.5 0 0 0 2.5 2.5z"/></svg>',thumbsup:'<svg class="sw-i" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M7 10v12"/><path d="M15 5.88 14 10h5.83a2 2 0 0 1 1.92 2.56l-2.33 8A2 2 0 0 1 17.5 22H4a2 2 0 0 1-2-2v-8a2 2 0 0 1 2-2h2.76a2 2 0 0 0 1.79-1.11L12 2a3.13 3.13 0 0 1 3 3.88Z"/></svg>',thumbsdown:'<svg class="sw-i" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M17 14V2"/><path d="M9 18.12 10 14H4.17a2 2 0 0 1-1.92-2.56l2.33-8A2 2 0 0 1 6.5 2H20a2 2 0 0 1 2 2v8a2 2 0 0 1-2 2h-2.76a2 2 0 0 0-1.79 1.11L12 22a3.13 3.13 0 0 1-3-3.88Z"/></svg>',refresh:'<svg class="sw-i" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M3 12a9 9 0 0 1 9-9 9.75 9.75 0 0 1 6.74 2.74L21 8"/><path d="M21 3v5h-5"/><path d="M21 12a9 9 0 0 1-9 9 9.75 9.75 0 0 1-6.74-2.74L3 16"/><path d="M8 16H3v5"/></svg>'};
 const $ = id => document.getElementById(id);
 const esc = s => String(s).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;');
 const PDF_PREFIX = 'https://nsearchives.nseindia.com/corporate/';
@@ -704,19 +705,19 @@ function renderOverview(){
   const rbest=rxr.filter(r=>r.rx>0).sort((a,b)=>b.rx-a.rx).slice(0,10).map(r=>[r,r.rx]);
   const rworst=rxr.filter(r=>r.rx<0).sort((a,b)=>a.rx-b.rx).slice(0,10).map(r=>[r,r.rx]);
   $('movers').innerHTML=
-    mv('🚀 Top PAT growers ('+ST.mode.toUpperCase()+')',grow,v=>fmtPct(v,0))+
-    mv('📉 Top PAT decliners',fall,v=>fmtPct(v,0))+
-    mv('💚 Market loved it (result-day move)',rbest,v=>fmtPct(v))+
-    mv('💔 Market hated it',rworst,v=>fmtPct(v));
+    mv('Top PAT growers ('+ST.mode.toUpperCase()+')',grow,v=>fmtPct(v,0))+
+    mv('Top PAT decliners',fall,v=>fmtPct(v,0))+
+    mv('Market loved it (result-day move)',rbest,v=>fmtPct(v))+
+    mv('Market hated it',rworst,v=>fmtPct(v));
   $('movers').querySelectorAll('[data-open]').forEach(el=>el.onclick=()=>openModal(el.getAttribute('data-open')));
   $('fCount').textContent=declared.toLocaleString('en-IN')+' declared'+(pending?' ('+rows.length+' with numbers)':'')+' · '+qlabel(QTRS[qi],true);
 }
 
 /* ---------- render: results table ---------- */
 const SCREENS=[
-  ['all','All'],['grow','📈 PAT growers'],['rocket','🚀 Rev & PAT >20%'],['turn','🔁 Loss → Profit'],
-  ['slump','⚠️ Profit → Loss'],['marginup','📊 Margin +200bps'],['record','🏆 Record PAT'],
-  ['streak','🔥 4-qtr growth streak'],['loved','💚 Reacted +5%'],['hated','💔 Reacted −5%']
+  ['all','All'],['grow',SWI.trend+' PAT growers'],['rocket',SWI.rocket+' Rev & PAT >20%'],['turn',SWI.repeat+' Loss → Profit'],
+  ['slump',SWI.alert+' Profit → Loss'],['marginup',SWI.bars+' Margin +200bps'],['record',SWI.trophy+' Record PAT'],
+  ['streak',SWI.flame+' 4-qtr growth streak'],['loved',SWI.thumbsup+' Reacted +5%'],['hated',SWI.thumbsdown+' Reacted −5%']
 ];
 function screenPass(r){
   const gKey=ST.mode==='yoy'?'py':'pq', fKey=ST.mode==='yoy'?'pfY':'pfQ';
@@ -933,7 +934,7 @@ function renderFeed(){
     '<span class="mx-1" style="color:var(--border-strong,#cbd5e1)">|</span>'+
     [['latest','Latest'],['sales','Sales growth'],['profit','Profit growth'],['rx','Reaction']]
       .map(([k,l])=>'<button class="chip'+(feedSort===k?' on':'')+'" data-fs="'+k+'">'+l+'</button>').join('')+
-    '<button class="chip'+(feedTurn?' on':'')+'" data-ft="1" title="Only loss→profit turnarounds (PAT)">🔄 Turnarounds</button>'+
+    '<button class="chip'+(feedTurn?' on':'')+'" data-ft="1" title="Only loss→profit turnarounds (PAT)">'+SWI.refresh+' Turnarounds</button>'+
     '<span class="text-[11px] text-slate-500 ml-2" id="feedCount"></span>'+
     '<span id="feedLive" class="hidden text-[11px] font-bold ml-auto" style="color:var(--pos,#15803d)"></span>';
   $('feedChips').querySelectorAll('[data-fd]').forEach(b=>b.onclick=()=>{ feedDays=b.getAttribute('data-fd'); feedDay='all'; feedShown=24; renderFeed(); });

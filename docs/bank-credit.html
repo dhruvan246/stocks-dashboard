@@ -187,7 +187,7 @@ const RANGES={'1y':365,'2y':730,'5y':1825,'max':1e9};
 function wireControls(){
   $('rangeBtns').innerHTML=Object.keys(RANGES).map(k=>`<button data-r="${k}" class="rbtn px-2 py-1 rounded font-semibold ${range===k?'bg-blue-600 text-white':'bg-slate-100 text-slate-600'}">${k.toUpperCase()}</button>`).join('');
   $('rangeBtns').querySelectorAll('button').forEach(b=>b.onclick=()=>{range=b.dataset.r; wireControls(); renderChart();});
-  $('typeBtns').innerHTML=[['bars','▊ Bars'],['line','〰 Line']].map(([k,l])=>`<button data-t="${k}" class="px-2.5 py-1 rounded font-semibold ${chartType===k?'bg-slate-800 text-white':'bg-slate-100 text-slate-600'}">${l}</button>`).join('');
+  $('typeBtns').innerHTML=[['bars','<svg class="sw-i" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><line x1="18" y1="20" x2="18" y2="10"/><line x1="12" y1="20" x2="12" y2="4"/><line x1="6" y1="20" x2="6" y2="14"/></svg> Bars'],['line','<svg class="sw-i" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M22 12h-4l-3 9L9 3l-3 9H2"/></svg> Line']].map(([k,l])=>`<button data-t="${k}" class="px-2.5 py-1 rounded font-semibold ${chartType===k?'bg-slate-800 text-white':'bg-slate-100 text-slate-600'}">${l}</button>`).join('');
   $('typeBtns').querySelectorAll('button').forEach(b=>b.onclick=()=>{chartType=b.dataset.t; wireControls(); renderChart();});
   const nb=$('niftyBtn'); nb.className='px-2.5 py-1 rounded font-semibold '+(showNifty?'bg-amber-500 text-white':'bg-slate-100 text-slate-600');
   nb.onclick=()=>{showNifty=!showNifty; wireControls(); renderChart();};

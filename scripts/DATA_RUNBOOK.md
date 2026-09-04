@@ -14174,6 +14174,56 @@ purpose because several labels are rewritten by page JS (a blind sweep would lea
 page with a render check. `stock.html` could not be rendered locally (needs the `stk/` slices) —
 checked on LIVE only. Terminal / pf-glance / private-import don't load theme.css and are out of scope.
 
+### 127 (UI) · follow-up (2026-09-05, same day): the page-level emoji are gone too — 24 pages, per page, with a render check
+The "open follow-up" above is closed. Measured before: 100 `<button>`s whose label starts non-ASCII (the
+grep in the ask), 18 `h2/h3`, plus in-page tab strips, chip rows, `.secttl`/card-title `<div>`s and the
+labels page JS rewrites after a click. Worktree `~/stocks-wt/ui-emoji`, preview `wt-ui-emoji` on :8851,
+sw-shell **v137**. Tool: a one-off script of **explicit `(file, old, new, expected_count)` edits — 233
+replacements, every count asserted, abort on any mismatch** — not a regex over the tree (the only regex
+was `index-chart.html`'s twelve `<h2>`s, each read first).
+
+**The rules applied (so the next page follows the same ones):**
+- **Section headings → plain text**, the same treatment §127 gave every `h1` (`h2/h3`, the
+  `text-sm font-semibold` card-title `<div>`s on stock / mixer / backtest-result cards, `.secttl`, the
+  `mv()` h4s on Quarterly Results). Headings carry no icon.
+- **In-page tabs, chip rows and action buttons → inline Lucide SVG** — the same `<svg class="sw-i" …>`
+  markup `theme.js`'s `ic()` emits (`.sw-i` = 1em, sized by the button's font-size; a `style="font-size:12px"`
+  where the host chip is 10px). `ic()` stays private: **nothing new was hung on `window`**, because a page
+  calling a helper an older cached `theme.js` lacks throws on the first line (the §39 "moved helper" class);
+  a page that needs an icon inside JS gets a `var SWI={…}` map at the top of its first script instead
+  (stock-backtest, strategy-backtest, quarterly-results, stock, shareholding).
+- **Typographic glyphs stay**: × ✕ ↻ ← ↑ ▸ ₹ ＋ ▦ ▤ ☰ ☆/★ (the favourite toggle) — the ask's grep still
+  counts 35 of them; they are not emoji and read fine in Geist. `portfolio.html` loads no `theme.css`, so
+  its two labels went plain text rather than `.sw-i`.
+- **Transient states → plain text** ("Screening…", "Fetching…"), then the button gets its icon back.
+
+**Gotchas that cost a loop:**
+1. **`textContent` round-trips wipe an icon.** `prev = btn.textContent; … btn.textContent = prev` (Go Live
+   on saved-strategies + stock-backtest) restores the label WITHOUT the SVG. Capture and restore
+   `innerHTML`; write transient labels with `textContent`, final labels with `innerHTML = SWI.x + ' …'`
+   (`▶ Run Backtest` / `💾 Update Strategy` / the `📈 Backtests (n)` tab count all did this).
+2. **A saved-state test must chase the redirect.** Clicking Save Strategy navigates to Saved Strategies,
+   so the harness's next `$eval('#runMsg')` "found nothing" — the page was a different page. Seed
+   `bt_load {view:'edit'}` and `goto` the builder again; never `reload` and assume.
+3. **puppeteer `setViewport` that flips `isMobile` RELOADS the page** — one-shot state (`bt_load` is
+   consumed on read) is gone in the 390px shot. Open a fresh page per width for state-dependent views.
+4. **Emoji-era CSS assumed a coloured glyph**: discovery's `.tribtn` dimmed 👍/👎 with
+   `filter:grayscale(1)`, a no-op on `currentColor` SVG — the on-state needed an explicit colour rule
+   (`.tribtn.on[data-v=in]` green / `[data-v=out]` red).
+5. **`node --check` on extracted `<script>` blocks flags data blocks** — mutual-funds' base64
+   `type="application/octet-stream"` block is not JS; skip `type=` scripts.
+
+**Verified (§39):** 27 inline script blocks `node --check` clean; headless sweep 24 pages × {dark, light} ×
+{1440, 390} = 96 renders, theme applied, nav 3 groups, **drift 0 everywhere**, console errors = only the
+pre-existing local ones (index-chart corsproxy 401; portfolio NO_TOKEN — identical on origin's copy, proved
+by serving origin's file through request interception); interaction pass on every JS-rewritten label
+(template chips → Save → strategy page tabs/chips → Backtests (n) count keeps its icon → edit mode
+"Update Strategy" with icon; Quarterly tabs + both chip rows; discovery bucket = 200 SVG thumbs, on-state
+green; shareholding chips; volume tiles; bank-credit toggles). `stock.html`'s two JS tab strips need the
+`stk/` slices → LIVE only. **Left as-is on purpose** (content markers, not controls): ⭐ top-N marks and
+🆕/🟢 LIVE/🔥×n badges in tables, `<option>` labels, big empty-state glyphs (🔒 📡 ⭐ 🎯), index-chart's
+"Go deeper" link list, `global.html` flag icons, and terminal / pf-glance / private-import (no theme.css).
+
 ## 126. ★★ THE PERSISTENCE / STRADDLE ARBITER — the up-move queue is not a bug queue, and a universe scan finds no live phantom  (2026-09-02)
 
 **Trigger:** §124d left 81 inferred UP-moves (factor >= 1.8) unarbitrated, and I had loosely called them

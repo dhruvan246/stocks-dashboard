@@ -43,30 +43,30 @@
   <div class="flex items-center justify-between flex-wrap gap-2 mb-1">
     <h1 class="text-xl md:text-2xl font-bold text-slate-900">Backtest a Strategy</h1>
     <div class="flex gap-3 text-sm">
-      <a href="./backtest-history.html" class="text-indigo-600 hover:underline font-semibold">📜 History</a>
-      <a href="./saved-strategies.html" class="text-amber-600 hover:underline font-semibold">⭐ Saved Strategies</a>
+      <a href="./backtest-history.html" class="text-indigo-600 hover:underline font-semibold"><svg class="sw-i" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M3 12a9 9 0 1 0 9-9 9.75 9.75 0 0 0-6.74 2.74L3 8"/><path d="M3 3v5h5"/><path d="M12 7v5l4 2"/></svg> History</a>
+      <a href="./saved-strategies.html" class="text-amber-600 hover:underline font-semibold"><svg class="sw-i" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/></svg> Saved Strategies</a>
     </div>
   </div>
   <p id="introP" class="text-xs text-slate-500 mb-2">Screen the whole market by momentum/technical factors, hold the top picks, rebalance, and compare to Nifty 500. Filter &amp; rank like a quant screener.</p>
   <div class="flex flex-wrap gap-x-5 gap-y-1 text-[11px] text-slate-400 mb-4">
     <span><b class="text-slate-500">1 · Build</b> — pick universe, ranking &amp; filters</span>
-    <span><b class="text-slate-500">2 · Save</b> — 💾 adds it to ⭐ Saved Strategies</span>
-    <span><b class="text-slate-500">3 · Run</b> — backtest vs Nifty 500; 🎯 live picks &amp; 🕘 rewind on its page</span>
+    <span><b class="text-slate-500">2 · Save</b> — adds it to Saved Strategies</span>
+    <span><b class="text-slate-500">3 · Run</b> — backtest vs Nifty 500; live picks &amp; rewind on its page</span>
   </div>
 
   <!-- one-click starting points: fill the form only (no market-data load) — tweak, then save -->
   <div id="presetRow" class="flex items-center gap-2 flex-wrap mb-3">
     <span class="text-[11px] font-bold uppercase tracking-wide text-slate-500">Start from a template</span>
-    <button data-preset="momentum" class="px-3 py-1.5 rounded-lg text-xs font-semibold bg-slate-100 text-slate-600 hover:bg-slate-200 transition">🚀 Momentum rider</button>
-    <button data-preset="quality" class="px-3 py-1.5 rounded-lg text-xs font-semibold bg-slate-100 text-slate-600 hover:bg-slate-200 transition">💎 Quality compounders</button>
-    <button data-preset="lowvol" class="px-3 py-1.5 rounded-lg text-xs font-semibold bg-slate-100 text-slate-600 hover:bg-slate-200 transition">🛡️ Low-volatility</button>
-    <button data-preset="smart" class="px-3 py-1.5 rounded-lg text-xs font-semibold bg-slate-100 text-slate-600 hover:bg-slate-200 transition">🏦 Smart-money follow</button>
+    <button data-preset="momentum" class="px-3 py-1.5 rounded-lg text-xs font-semibold bg-slate-100 text-slate-600 hover:bg-slate-200 transition"><svg class="sw-i" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M4.5 16.5c-1.5 1.26-2 5-2 5s3.74-.5 5-2c.71-.84.7-2.13-.09-2.91a2.18 2.18 0 0 0-2.91-.09z"/><path d="m12 15-3-3a22 22 0 0 1 2-3.95A12.88 12.88 0 0 1 22 2c0 2.72-.78 7.5-6 11a22.35 22.35 0 0 1-4 2z"/><path d="M9 12H4s.55-3.03 2-4c1.62-1.08 5 0 5 0"/><path d="M12 15v5s3.03-.55 4-2c1.08-1.62 0-5 0-5"/></svg> Momentum rider</button>
+    <button data-preset="quality" class="px-3 py-1.5 rounded-lg text-xs font-semibold bg-slate-100 text-slate-600 hover:bg-slate-200 transition"><svg class="sw-i" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M6 3h12l4 6-10 13L2 9Z"/><path d="M11 3 8 9l4 13 4-13-3-6"/><path d="M2 9h20"/></svg> Quality compounders</button>
+    <button data-preset="lowvol" class="px-3 py-1.5 rounded-lg text-xs font-semibold bg-slate-100 text-slate-600 hover:bg-slate-200 transition"><svg class="sw-i" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M20 13c0 5-3.5 7.5-7.66 8.95a1 1 0 0 1-.67-.01C7.5 20.5 4 18 4 13V6a1 1 0 0 1 1-1c2 0 4.5-1.2 6.24-2.72a1.17 1.17 0 0 1 1.52 0C14.51 3.81 17 5 19 5a1 1 0 0 1 1 1z"/></svg> Low-volatility</button>
+    <button data-preset="smart" class="px-3 py-1.5 rounded-lg text-xs font-semibold bg-slate-100 text-slate-600 hover:bg-slate-200 transition"><svg class="sw-i" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><line x1="3" y1="22" x2="21" y2="22"/><line x1="6" y1="18" x2="6" y2="11"/><line x1="10" y1="18" x2="10" y2="11"/><line x1="14" y1="18" x2="14" y2="11"/><line x1="18" y1="18" x2="18" y2="11"/><polygon points="12 2 20 7 4 7"/></svg> Smart-money follow</button>
   </div>
 
   <!-- controls -->
   <div id="cfgCard" class="card p-4 mb-4">
     <div class="flex items-center gap-2 mb-3 flex-wrap">
-      <span class="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-lg text-xs font-semibold bg-emerald-600 text-white shadow-sm shrink-0">✅ Survivorship-free</span>
+      <span class="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-lg text-xs font-semibold bg-emerald-600 text-white shadow-sm shrink-0"><svg class="sw-i" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"/><polyline points="22 4 12 14.01 9 11.01"/></svg> Survivorship-free</span>
       <span id="modeNote" class="text-[11px] text-slate-500 flex-1 min-w-[200px]"></span>
     </div>
     <div class="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-4 gap-3">
@@ -90,11 +90,11 @@
       <div id="filters" class="space-y-2"></div>
     </div>
     <div class="mt-4 flex items-center gap-3 flex-wrap">
-      <button id="run" class="bg-blue-600 hover:bg-blue-700 text-white rounded-lg px-5 py-2 text-sm font-semibold shadow-sm">▶ Run Backtest</button>
-      <button id="saveStratBtn" class="bg-amber-500 hover:bg-amber-600 text-white rounded-lg px-5 py-2 text-sm font-semibold shadow-sm">💾 Save Strategy</button>
+      <button id="run" class="bg-blue-600 hover:bg-blue-700 text-white rounded-lg px-5 py-2 text-sm font-semibold shadow-sm"><svg class="sw-i" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><polygon points="6 3 20 12 6 21 6 3"/></svg> Run Backtest</button>
+      <button id="saveStratBtn" class="bg-amber-500 hover:bg-amber-600 text-white rounded-lg px-5 py-2 text-sm font-semibold shadow-sm"><svg class="sw-i" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M19 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11l5 5v11a2 2 0 0 1-2 2z"/><polyline points="17 21 17 13 7 13 7 21"/><polyline points="7 3 7 8 15 8"/></svg> Save Strategy</button>
       <span id="runMsg" class="text-xs text-slate-500"></span>
     </div>
-    <p id="saveHint" class="mt-2 text-xs text-slate-500">Set up your filters &amp; settings, then <b>▶ Run Backtest</b> to see the equity curve, rebalance log &amp; today’s picks — the result is saved to your <a href="./backtest-history.html" class="text-indigo-600 hover:underline">📜 Backtest History</a>. Like the strategy? Use <b>⭐ Save as Strategy</b> on the results (or <b>💾 Save Strategy</b> here) to add it to <a href="./saved-strategies.html" class="text-indigo-600 hover:underline">⭐ Saved Strategies</a>.</p>
+    <p id="saveHint" class="mt-2 text-xs text-slate-500">Set up your filters &amp; settings, then <b>Run Backtest</b> to see the equity curve, rebalance log &amp; today’s picks — the result is saved to your <a href="./backtest-history.html" class="text-indigo-600 hover:underline">Backtest History</a>. Like the strategy? Use <b>Save as Strategy</b> on the results (or <b>Save Strategy</b> here) to add it to <a href="./saved-strategies.html" class="text-indigo-600 hover:underline">Saved Strategies</a>.</p>
   </div>
 
   <div id="out"></div>
@@ -106,6 +106,7 @@
 
 <script>
 'use strict';
+var SWI={play:'<svg class="sw-i" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><polygon points="6 3 20 12 6 21 6 3"/></svg>',save:'<svg class="sw-i" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M19 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11l5 5v11a2 2 0 0 1-2 2z"/><polyline points="17 21 17 13 7 13 7 21"/><polyline points="7 3 7 8 15 8"/></svg>'};
 const $=id=>document.getElementById(id);
 const DAY=86400;
 let META={}, SERIES={}, IDXH={}, FNOH=[], START_TS=0, NIFTY={}, NIFTY500={};
@@ -479,15 +480,15 @@ async function initUI(){
     window.__runSid = raw && raw.sid ? raw.sid : null;    // strategy id this run belongs to — the run records with it and NEVER creates a new strategy
     await applyCfg(c);
     // "Run" mode: primary button → ▶ Run Backtest, heading reflects it, create-hint hidden. We do NOT auto-run.
-    const rb=$('run'); rb.textContent='▶ Run Backtest'; rb.className='bg-blue-600 hover:bg-blue-700 text-white rounded-lg px-5 py-2 text-sm font-semibold shadow-sm'; rb.onclick=run;
-    const h1=document.querySelector('h1'); if(h1) h1.textContent='📈 Backtest'; const hint=$('saveHint'); if(hint) hint.style.display='none';
+    const rb=$('run'); rb.innerHTML=SWI.play+' Run Backtest'; rb.className='bg-blue-600 hover:bg-blue-700 text-white rounded-lg px-5 py-2 text-sm font-semibold shadow-sm'; rb.onclick=run;
+    const h1=document.querySelector('h1'); if(h1) h1.textContent='Backtest'; const hint=$('saveHint'); if(hint) hint.style.display='none';
     { const _sb=$('saveStratBtn'); if(_sb) _sb.style.display='none'; }   // loaded from a card/history — save is offered on the result (⭐ Save as Strategy), not the form
     if(resultOnly){
       // Opened just to VIEW a run → hide the builder/config + intro, then auto-run so ONLY the result sections render.
       window.__viewOnly = true;   // don't republish this view to the shared public history/strategies
       const cc=$('cfgCard'); if(cc) cc.style.display='none';
       const ip=$('introP'); if(ip) ip.style.display='none';
-      if(h1) h1.textContent='📊 Backtest result';
+      if(h1) h1.textContent='Backtest result';
       run();
     }
     else if(runNow){ run(); }   // auto-run AND save to History (NOT view-only) — the run then nests under its strategy
@@ -616,7 +617,7 @@ function fillPreset(name){
   document.querySelectorAll('.fRow').forEach(r=>r.remove());
   p.filters.forEach(f=>{ addFilter(); const rows=document.querySelectorAll('.fRow'); const r=rows[rows.length-1];
     r.querySelector('.f-field').value=f.field; r.querySelector('.f-op').value=f.op; r.querySelector('.f-val').value=f.val; });
-  $('runMsg').textContent='Template applied — tweak anything, then 💾 Save Strategy.';
+  $('runMsg').textContent='Template applied — tweak anything, then Save Strategy.';
 }
 document.querySelectorAll('#presetRow [data-preset]').forEach(b=>b.onclick=()=>fillPreset(b.dataset.preset));
 // Short field labels for the filter fingerprint below — distinct from the longer FIELD_LABEL used
@@ -702,7 +703,7 @@ function renderSnapshotPage(snap, cfg){
   LAST_RUN={cfg, res:snap};
   const cc=$('cfgCard'); if(cc) cc.style.display='none';
   const ip=$('introP'); if(ip) ip.style.display='none';
-  const h1=document.querySelector('h1'); if(h1) h1.textContent='📊 Backtest result';
+  const h1=document.querySelector('h1'); if(h1) h1.textContent='Backtest result';
   const hint=$('saveHint'); if(hint) hint.style.display='none';
   render(snap, cfg);   // nothing to un-hide: this path never showed a loading state, because it never loads
 }
@@ -895,13 +896,13 @@ async function saveStrategyFromForm(){
 //      NEVER a duplicate. Its backtest history stays attached (runs link by sid). ----
 function enterEditMode(raw){
   window.__editSid=raw.sid; window.__editName=raw.name||'';
-  const rb=$('run'); rb.textContent='💾 Update Strategy';
+  const rb=$('run'); rb.innerHTML=SWI.save+' Update Strategy';
   rb.className='bg-emerald-600 hover:bg-emerald-700 text-white rounded-lg px-5 py-2 text-sm font-semibold shadow-sm';
   rb.onclick=updateStrategyInPlace;
   { const _sb=$('saveStratBtn'); if(_sb) _sb.style.display='none'; }   // editing an existing strategy — the form Save-as-new button doesn't apply
-  const h1=document.querySelector('h1'); if(h1) h1.textContent='✏️ Edit Strategy';
+  const h1=document.querySelector('h1'); if(h1) h1.textContent='Edit Strategy';
   const hint=$('saveHint'); if(hint){ hint.textContent=''; const b=document.createElement('b'); b.textContent=raw.name||'strategy';
-    hint.append('Editing '); hint.append(b); hint.append(' — change anything, then 💾 Update Strategy. It updates the SAME strategy (no duplicate is created) and its backtest history stays attached.'); }
+    hint.append('Editing '); hint.append(b); hint.append(' — change anything, then Update Strategy. It updates the SAME strategy (no duplicate is created) and its backtest history stays attached.'); }
 }
 async function updateStrategyInPlace(){
   const sid=window.__editSid; if(!sid) return;
@@ -1329,8 +1330,8 @@ function renderSaved(saved, cfg){
   const card=(t,v,sub,cls)=>`<div class="card p-3"><div class="text-[10px] uppercase text-slate-500">${t}</div><div class="text-lg font-bold ${cls||''}">${v}</div><div class="text-[11px] text-slate-400">${sub||''}</div></div>`;
   const beat=m.benchCagr!=null && m.cagr!=null && m.cagr>=m.benchCagr;
   let html=`<div class="card p-3 mb-4 flex flex-wrap items-center gap-2" style="background:#fffbeb;border-color:#fde68a">
-      <span class="text-sm font-semibold text-amber-800">📁 Saved result</span>
-      <span class="text-xs text-amber-700">stored numbers shown — not re-run. Click <b>▶ Run Backtest</b> for the live equity curve, rebalance log &amp; today's picks.</span>
+      <span class="text-sm font-semibold text-amber-800">Saved result</span>
+      <span class="text-xs text-amber-700">stored numbers shown — not re-run. Click <b>Run Backtest</b> for the live equity curve, rebalance log &amp; today's picks.</span>
     </div>`;
   html+=`<div class="grid grid-cols-2 md:grid-cols-4 lg:grid-cols-6 gap-3 mb-4">
     ${card('Final value', m.finalV!=null?fmtINR(m.finalV):'—', 'from '+fmtINR(cfg.capital), (m.finalV!=null&&m.finalV>=cfg.capital)?'pos':'neg')}
@@ -1341,7 +1342,7 @@ function renderSaved(saved, cfg){
     ${card('Win rate', m.winRate!=null?(+m.winRate).toFixed(0)+'%':'—', m.rebs!=null?m.rebs+' rebalances':'','')}
   </div>`;
   if(yby&&yby.length){
-    html+=`<div class="card p-4 mb-4"><div class="text-sm font-semibold text-slate-700 mb-2">📅 Calendar-year returns <span class="text-slate-400 font-normal">— saved (Strategy vs Nifty 500)</span></div>
+    html+=`<div class="card p-4 mb-4"><div class="text-sm font-semibold text-slate-700 mb-2">Calendar-year returns <span class="text-slate-400 font-normal">— saved (Strategy vs Nifty 500)</span></div>
       <div class="overflow-x-auto"><table class="w-full text-sm"><thead class="text-[11px] uppercase text-slate-500 border-b"><tr><th class="text-left py-1 px-2 sticky left-0 bg-white">&nbsp;</th>${yby.map(y=>`<th class="text-right px-2">${y[0]}</th>`).join('')}</tr></thead><tbody>
         <tr class="border-b border-slate-50"><td class="px-2 py-1 font-medium text-blue-700 sticky left-0 bg-white">Strategy</td>${yby.map(y=>`<td class="text-right px-2 font-semibold ${y[1]>=0?'pos':'neg'}">${pct(y[1])}</td>`).join('')}</tr>
         <tr><td class="px-2 py-1 font-medium text-amber-600 sticky left-0 bg-white">Nifty 500</td>${yby.map(y=>{const n=y[2];return `<td class="text-right px-2 text-xs ${n!=null&&n>=0?'pos':'neg'}">${n!=null?pct(n):'—'}</td>`;}).join('')}</tr>
@@ -1362,23 +1363,23 @@ function render(r,cfg){
   </div>`;
   html+=`<div class="card p-3 mb-4 flex flex-wrap items-center gap-2">
       <span class="text-xs text-slate-500 mr-1" title="Code-name: ${esc(strategyLabel(cfg))}">${esc(strategyEnglish(cfg) || strategyLabel(cfg))}</span>
-      ${window.__snapshotMode?'<span class="inline-flex items-center gap-1 text-xs font-semibold text-emerald-700">⚡ Instant saved result</span>':''}
+      ${window.__snapshotMode?'<span class="inline-flex items-center gap-1 text-xs font-semibold text-emerald-700"><svg class="sw-i" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><polygon points="13 2 3 14 12 14 11 22 21 10 12 10 13 2"/></svg> Instant saved result</span>':''}
       ${(window.__snapshotMode||window.__viewOnly)?'':'<span class="inline-flex items-center gap-1 text-xs font-semibold text-green-700">✓ Auto-saved to History</span>'}
       ${(window.__snapshotMode||window.__viewOnly)?'' : (window.__loadedSaved
         ? '<span class="inline-flex items-center gap-1 text-xs font-semibold text-emerald-700" title="This window is recorded under the strategy in Saved Strategies">✓ In Saved Strategies</span><a href="./saved-strategies.html" class="inline-flex items-center gap-1 px-3 py-1.5 rounded-lg text-xs font-semibold bg-emerald-600 text-white hover:bg-emerald-700">⭐ View strategy →</a>'
-        : '<button id="btSaveStrat" class="inline-flex items-center gap-1 px-3 py-1.5 rounded-lg text-xs font-semibold bg-amber-500 text-white hover:bg-amber-600">⭐ Save as Strategy</button>')}
+        : '<button id="btSaveStrat" class="inline-flex items-center gap-1 px-3 py-1.5 rounded-lg text-xs font-semibold bg-amber-500 text-white hover:bg-amber-600"><svg class="sw-i" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/></svg> Save as Strategy</button>')}
       <span id="saveMsg" class="text-xs text-green-700"></span>
       <a href="./backtest-history.html" class="text-xs text-indigo-600 hover:underline ml-auto">View history →</a>
     </div>`;
   html+=`<div class="card p-4 mb-4"><div class="text-sm font-semibold text-slate-700 mb-2"><span class="text-blue-700">Strategy</span> vs <span class="text-amber-600">Nifty 500</span> — ₹${cfg.capital.toLocaleString('en-IN')} grows to… <span class="text-slate-400 font-normal">(hover for values)</span></div><div id="eqc"></div></div>`;
   // ----- drawdown (underwater) curve: % below the running peak, strategy vs benchmark -----
-  html+=`<div class="card p-4 mb-4"><div class="text-sm font-semibold text-slate-700 mb-2">📉 Drawdown — <span class="text-blue-700">Strategy</span> vs <span class="text-amber-600">Nifty 500</span> <span class="text-slate-400 font-normal">— % below the running peak; 0% = at a new high, the deepest dip = max drawdown (hover for values)</span></div><div id="ddc"></div></div>`;
+  html+=`<div class="card p-4 mb-4"><div class="text-sm font-semibold text-slate-700 mb-2">Drawdown — <span class="text-blue-700">Strategy</span> vs <span class="text-amber-600">Nifty 500</span> <span class="text-slate-400 font-normal">— % below the running peak; 0% = at a new high, the deepest dip = max drawdown (hover for values)</span></div><div id="ddc"></div></div>`;
   // ----- returns over the backtest period (per-rebalance bar chart) -----
-  html+=`<div class="card p-4 mb-4"><div class="text-sm font-semibold text-slate-700 mb-2">📊 Returns over the backtest period <span class="text-slate-400 font-normal">— each rebalance period's return (blue = up, red = down)</span></div><div id="prc" class="overflow-x-auto"></div></div>`;
+  html+=`<div class="card p-4 mb-4"><div class="text-sm font-semibold text-slate-700 mb-2">Returns over the backtest period <span class="text-slate-400 font-normal">— each rebalance period's return (blue = up, red = down)</span></div><div id="prc" class="overflow-x-auto"></div></div>`;
   // ----- qualifying universe over time (count of ALL stocks meeting the strategy's filters) -----
   html+=`<div class="card p-4 mb-4">
     <div class="flex flex-wrap items-center gap-2 mb-2">
-      <div class="text-sm font-semibold text-slate-700">🎯 Qualifying stocks over time <span class="text-slate-400 font-normal">— how many stocks meet your filters each period (the pool your top-${cfg.topN} is picked from)</span></div>
+      <div class="text-sm font-semibold text-slate-700">Qualifying stocks over time <span class="text-slate-400 font-normal">— how many stocks meet your filters each period (the pool your top-${cfg.topN} is picked from)</span></div>
       <div id="qsTog" class="ml-auto inline-flex rounded-lg border border-slate-200 overflow-hidden text-xs font-semibold">
         <button data-g="week" class="px-2.5 py-1 hover:bg-slate-50">Weekly</button>
         <button data-g="month" class="px-2.5 py-1 border-l border-slate-200 hover:bg-slate-50">Monthly</button>
@@ -1389,7 +1390,7 @@ function render(r,cfg){
     <div id="qsc"></div></div>`;
   // ----- calendar-year returns (strategy vs Nifty 500) -----
   { const sy=yByY(r.equity), nm={}; yByY((r.bench500&&r.bench500.length?r.bench500:r.bench)||[]).forEach(x=>{nm[x[0]]=x[1];});
-    html+=`<div class="card p-4 mb-4"><div class="text-sm font-semibold text-slate-700 mb-2">📅 Calendar-year returns <span class="text-slate-400 font-normal">— each year Jan→Dec (first/last year partial)</span></div>
+    html+=`<div class="card p-4 mb-4"><div class="text-sm font-semibold text-slate-700 mb-2">Calendar-year returns <span class="text-slate-400 font-normal">— each year Jan→Dec (first/last year partial)</span></div>
       <div class="overflow-x-auto"><table class="w-full text-sm"><thead class="text-[11px] uppercase text-slate-500 border-b"><tr><th class="text-left py-1 px-2 sticky left-0 bg-white">&nbsp;</th>${sy.map(y=>`<th class="text-right px-2">${y[0]}</th>`).join('')}</tr></thead><tbody>
         <tr class="border-b border-slate-50"><td class="px-2 py-1 font-medium text-blue-700 sticky left-0 bg-white">Strategy</td>${sy.map(y=>`<td class="text-right px-2 font-semibold ${y[1]>=0?'pos':'neg'}">${pct(y[1])}</td>`).join('')}</tr>
         <tr><td class="px-2 py-1 font-medium text-amber-600 sticky left-0 bg-white">Nifty 500</td>${sy.map(y=>{const n=nm[y[0]];return `<td class="text-right px-2 text-xs ${n>=0?'pos':'neg'}">${n!=null?pct(n):'—'}</td>`;}).join('')}</tr>
@@ -1399,9 +1400,9 @@ function render(r,cfg){
   // simulation ended on, clearly stamped with its date so the two are never confused.
   html+=`<div class="card p-4 mb-4">
     <div class="flex flex-wrap items-center gap-2 mb-2">
-      <div class="text-sm font-semibold text-slate-700">🎯 Live picks — what qualifies right now <span class="text-slate-400 font-normal">(the whole screen re-run on today's prices &amp; today's filings — top ${cfg.topN} ⭐ = the basket)</span></div>
-      <button id="btGoLive" class="ml-auto px-2.5 py-1 rounded-lg text-xs font-semibold bg-rose-600 text-white hover:bg-rose-700">⚡ Go Live</button>
-      <button id="btLiveCfg" class="text-slate-400 hover:text-slate-700 text-sm px-1" title="Set live-feed Worker URL">⚙</button>
+      <div class="text-sm font-semibold text-slate-700">Live picks — what qualifies right now <span class="text-slate-400 font-normal">(the whole screen re-run on today's prices &amp; today's filings — top ${cfg.topN} ⭐ = the basket)</span></div>
+      <button id="btGoLive" class="ml-auto px-2.5 py-1 rounded-lg text-xs font-semibold bg-rose-600 text-white hover:bg-rose-700"><svg class="sw-i" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><polygon points="13 2 3 14 12 14 11 22 21 10 12 10 13 2"/></svg> Go Live</button>
+      <button id="btLiveCfg" class="text-slate-400 hover:text-slate-700 text-sm px-1" title="Set live-feed Worker URL"><svg class="sw-i" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12.22 2h-.44a2 2 0 0 0-2 2v.18a2 2 0 0 1-1 1.73l-.43.25a2 2 0 0 1-2 0l-.15-.08a2 2 0 0 0-2.73.73l-.22.38a2 2 0 0 0 .73 2.73l.15.1a2 2 0 0 1 1 1.72v.51a2 2 0 0 1-1 1.74l-.15.09a2 2 0 0 0-.73 2.73l.22.38a2 2 0 0 0 2.73.73l.15-.08a2 2 0 0 1 2 0l.43.25a2 2 0 0 1 1 1.73V20a2 2 0 0 0 2 2h.44a2 2 0 0 0 2-2v-.18a2 2 0 0 1 1-1.73l.43-.25a2 2 0 0 1 2 0l.15.08a2 2 0 0 0 2.73-.73l.22-.39a2 2 0 0 0-.73-2.73l-.15-.08a2 2 0 0 1-1-1.74v-.5a2 2 0 0 1 1-1.74l.15-.09a2 2 0 0 0 .73-2.73l-.22-.38a2 2 0 0 0-2.73-.73l-.15.08a2 2 0 0 1-2 0l-.43-.25a2 2 0 0 1-1-1.73V4a2 2 0 0 0-2-2z"/><circle cx="12" cy="12" r="3"/></svg></button>
     </div>
     <div id="liveMsg" class="text-[11px] text-slate-500 mb-1"></div>
     <div id="liveOut"><div class="overflow-x-auto tscroll"><table class="w-full text-sm"><thead class="text-[11px] uppercase text-slate-500 border-b"><tr><th class="text-left py-1 px-2">#</th><th class="text-left px-2">Stock</th><th class="text-left px-2">Industry</th><th class="text-right px-2">Weight</th><th class="text-right px-2">Value</th><th class="text-right px-2">Chg%(lb)</th><th class="text-right px-2">RSI</th><th class="text-right px-2">52wHi%</th></tr></thead><tbody>
@@ -1410,8 +1411,8 @@ function render(r,cfg){
     </tbody></table></div></div>
     <div id="liveNote" class="text-[11px] text-slate-400 mt-2">Held basket as of the last rebalance (${r.rebs.length?r.rebs[r.rebs.length-1].date:cfg.end}) — click <b>⚡ Go Live</b> to re-screen on today's prices and filings.</div></div>`;
   // ----- rebalance log (expandable, with per-rebalance holdings: weight, NEW, factor) -----
-  html+=`<div class="card p-4 mb-4"><div class="flex flex-wrap items-center justify-between gap-2 mb-2"><div class="text-sm font-semibold text-slate-700">🔄 Rebalance log <span class="text-slate-400 font-normal">(${r.rebs.length} rebalances — click any to see that period's basket, weights &amp; new entries)</span></div>
-      <button id="dlRebalCsv" class="shrink-0 inline-flex items-center gap-1 px-3 py-1.5 rounded-lg text-xs font-semibold bg-emerald-600 text-white hover:bg-emerald-700">⬇️ Download CSV</button></div>
+  html+=`<div class="card p-4 mb-4"><div class="flex flex-wrap items-center justify-between gap-2 mb-2"><div class="text-sm font-semibold text-slate-700">Rebalance log <span class="text-slate-400 font-normal">(${r.rebs.length} rebalances — click any to see that period's basket, weights &amp; new entries)</span></div>
+      <button id="dlRebalCsv" class="shrink-0 inline-flex items-center gap-1 px-3 py-1.5 rounded-lg text-xs font-semibold bg-emerald-600 text-white hover:bg-emerald-700"><svg class="sw-i" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg> Download CSV</button></div>
     ${r.rebs.slice().reverse().map((rb,ri)=>{const idx=r.rebs.length-ri;
       return `<details class="border border-slate-200 rounded-lg mb-2"><summary class="px-3 py-2 cursor-pointer select-none text-sm hover:bg-slate-50 rounded-lg flex flex-wrap items-center gap-x-3">
         <span class="font-semibold text-slate-700">#${idx} · ${rb.date}</span>
@@ -1426,8 +1427,8 @@ function render(r,cfg){
   // ----- trade log (moved to the very end) -----
   const tr=r.trades; const winsT=tr.filter(t=>t.retPct>0).length;
   const avgT=tr.length?tr.reduce((s,t)=>s+t.retPct,0)/tr.length:0;
-  html+=`<div class="card p-4"><div class="flex flex-wrap items-center justify-between gap-2 mb-2"><div class="text-sm font-semibold text-slate-700">📒 Trade log <span class="text-slate-400 font-normal">— ${tr.length} round-trips · ${tr.length?Math.round(100*winsT/tr.length):0}% winners · avg ${pct(avgT)} · shows the ${r.fLabel} at entry (why it was picked)</span></div>
-      <button id="dlTradeCsv" class="shrink-0 inline-flex items-center gap-1 px-3 py-1.5 rounded-lg text-xs font-semibold bg-emerald-600 text-white hover:bg-emerald-700">⬇️ Download CSV</button></div>
+  html+=`<div class="card p-4"><div class="flex flex-wrap items-center justify-between gap-2 mb-2"><div class="text-sm font-semibold text-slate-700">Trade log <span class="text-slate-400 font-normal">— ${tr.length} round-trips · ${tr.length?Math.round(100*winsT/tr.length):0}% winners · avg ${pct(avgT)} · shows the ${r.fLabel} at entry (why it was picked)</span></div>
+      <button id="dlTradeCsv" class="shrink-0 inline-flex items-center gap-1 px-3 py-1.5 rounded-lg text-xs font-semibold bg-emerald-600 text-white hover:bg-emerald-700"><svg class="sw-i" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg> Download CSV</button></div>
     <div class="overflow-x-auto"><table class="w-full text-sm"><thead class="text-[11px] uppercase text-slate-500 border-b bg-white"><tr>
       <th class="text-left py-1 px-2">#</th><th class="text-left px-2">Stock</th><th class="text-left px-2">Entry</th><th class="text-right px-2">Entry ₹</th><th class="text-left px-2">Exit</th><th class="text-right px-2">Exit ₹</th><th class="text-right px-2">Return</th><th class="text-right px-2">${r.fLabel}@entry</th><th class="text-right px-2">RSI@entry</th></tr></thead><tbody id="tradeBody"></tbody></table></div>
     <div id="tradePager" class="flex flex-wrap items-center justify-center gap-1 mt-3 text-xs"></div></div>`;
@@ -1658,8 +1659,8 @@ async function goLive(silent){
   const cfg=LAST_RUN.cfg, held=new Set((LAST_RUN.res.latest||[]).map(p=>p.sym));
   const btn=$('btGoLive'), msg=$('liveMsg'), out=$('liveOut'), note=$('liveNote');
   if(!out) return;
-  const prevLbl=btn?btn.textContent:'';
-  if(btn){ btn.disabled=true; btn.textContent='⏳ Screening…'; }
+  const prevLbl=btn?btn.innerHTML:'';
+  if(btn){ btn.disabled=true; btn.textContent='Screening…'; }
   try{
     if(!await ensureLiveData(cfg, m=>{ if(msg) msg.textContent=m; })) throw new Error('market data unavailable');
     let live={date:liveScreenDate(), n:0, quoted:0, tried:0, skipped:true, unbounded:true};
@@ -1727,7 +1728,7 @@ async function goLive(silent){
   }catch(e){
     if(msg) msg.textContent='';
     if(!silent) alert('Live screen failed: '+e.message+'\n\nIf you use a custom quotes Worker (⚙), check that opening its URL in a browser returns JSON. See scripts/LIVE_FEED_SETUP.md.');
-    if(btn) btn.textContent=prevLbl;
+    if(btn) btn.innerHTML=prevLbl;
   }
   finally{ if(btn) btn.disabled=false; }
 }
@@ -1847,7 +1848,7 @@ let QUAL_CACHE={};
 function setupQual(cfg){ QUAL_CACHE={}; const tog=$('qsTog'); if(!tog) return;
   // snapshot mode: raw prices aren't loaded, so this live-recomputed chart isn't available
   if(window.__snapshotMode || typeof SERIES==='undefined' || !Object.keys(SERIES).length){
-    tog.style.display='none'; const q=$('qsc'); if(q) q.innerHTML='<div class="text-xs text-slate-400 py-4">Open ▶ Run backtest for the live qualifying-stocks chart.</div>'; return;
+    tog.style.display='none'; const q=$('qsc'); if(q) q.innerHTML='<div class="text-xs text-slate-400 py-4">Run the backtest for the live qualifying-stocks chart.</div>'; return;
   }
   tog.querySelectorAll('button').forEach(b=>b.onclick=()=>drawQual(cfg,b.dataset.g));
   drawQual(cfg, cfg.freq>=3?'quarter':'month');   // default to the rebalance granularity (always cheap)
@@ -1885,7 +1886,7 @@ function drawQual(cfg, gran){
 //      baked snapshots are identical to what the 👁 renders. One-off maintenance run. ----
 function bakeProg(done,total,ok,skip,fail,cfg,state){
   const lbl=(typeof strategyLabel==='function')?strategyLabel(cfg):(cfg.sortBy||'');
-  return `<div class="card p-4"><div class="text-sm font-semibold text-slate-700 mb-2">🍪 Baking snapshots — ${done}/${total}</div>
+  return `<div class="card p-4"><div class="text-sm font-semibold text-slate-700 mb-2">Baking snapshots — ${done}/${total}</div>
     <div class="w-full bg-slate-100 rounded-full h-2 mb-2"><div class="bg-indigo-600 h-2 rounded-full transition-all" style="width:${total?Math.round(100*done/total):0}%"></div></div>
     <div class="text-xs text-slate-500">✅ ${ok} baked · ♻️ ${skip} already cached · ⚠️ ${fail} failed</div>
     <div class="text-[11px] text-slate-400 mt-1 truncate">${state}: ${lbl} · ${cfg.start||'?'} → ${cfg.end||'latest'}</div></div>`;
@@ -1894,7 +1895,7 @@ async function bakeAll(){
   const out=$('out'); const log=h=>{ if(out) out.innerHTML=h; };
   const cc=$('cfgCard'); if(cc) cc.style.display='none';
   const ip=$('introP'); if(ip) ip.style.display='none';
-  const h1=document.querySelector('h1'); if(h1) h1.textContent='🍪 Baking snapshots';
+  const h1=document.querySelector('h1'); if(h1) h1.textContent='Baking snapshots';
   try{
     await ensureSnapVer();                                   // guarantee the version stamp is set before any snapKey()
     try{ await btSync.pullStrategies(); }catch(e){}

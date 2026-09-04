@@ -73,7 +73,7 @@
     </div>
     <div id="sChips" class="flex flex-wrap gap-1.5 mt-3"></div>
     <div class="mt-3 flex flex-wrap items-center gap-2">
-      <a id="sBt" class="text-xs font-semibold text-indigo-600 hover:underline" href="#">🧪 Backtest a strategy →</a>
+      <a id="sBt" class="text-xs font-semibold text-indigo-600 hover:underline" href="#">Backtest a strategy →</a>
       <span class="text-slate-300">·</span>
       <form id="sForm" class="flex items-center gap-1">
         <input id="sSearch" placeholder="Look up another symbol…" class="border border-slate-300 rounded-lg px-2.5 py-1 text-xs w-44" />
@@ -84,7 +84,7 @@
 
   <!-- rewind banner -->
   <div id="rwBanner" class="hidden rounded-xl border border-indigo-200 bg-indigo-50/70 px-4 py-2.5 text-sm text-indigo-900 flex flex-wrap items-center gap-x-3 gap-y-1">
-    <span>🕰️ <b>Rewind:</b> viewing this page as the market saw it on <b id="rwDate">—</b> — financials and shareholding show only what had been <i>filed</i> by then; current-only sections (activity, peers, strategies, technicals) are hidden.</span>
+    <span><svg class="sw-i" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M3 12a9 9 0 1 0 9-9 9.75 9.75 0 0 0-6.74 2.74L3 8"/><path d="M3 3v5h5"/><path d="M12 7v5l4 2"/></svg> <b>Rewind:</b> viewing this page as the market saw it on <b id="rwDate">—</b> — financials and shareholding show only what had been <i>filed</i> by then; current-only sections (activity, peers, strategies, technicals) are hidden.</span>
     <button id="rwExit" class="ml-auto px-2.5 py-1 rounded-lg text-xs font-bold bg-indigo-600 text-white">Back to today</button>
   </div>
 
@@ -95,7 +95,7 @@
   <div class="card p-4">
     <div class="flex items-center justify-between flex-wrap gap-2 mb-2">
       <div class="flex items-center gap-2 flex-wrap min-w-0">
-        <div class="text-sm font-semibold text-slate-700">📈 Price</div>
+        <div class="text-sm font-semibold text-slate-700">Price</div>
         <span class="text-slate-400 text-[11px] font-normal">split/bonus-adjusted close · drag to pan · scroll to zoom · hover for values</span>
       </div>
       <div class="flex items-center gap-2 flex-wrap">
@@ -103,7 +103,7 @@
         <a id="tvLink" class="tvlink hidden" target="_blank" rel="noopener" title="Open the full TradingView chart (candles, indicators, drawing tools) in a new tab">TradingView ↗</a>
         <span class="text-slate-300">·</span>
         <input id="rwPick" type="date" class="border border-slate-300 rounded-lg px-1.5 py-0.5 text-[11px] text-slate-600" title="Rewind: view the page as of a past date" />
-        <button id="rwGo" class="px-2 py-1 rounded-md text-[11px] font-semibold border border-indigo-300 text-indigo-600 hover:bg-indigo-50">🕰️ Rewind</button>
+        <button id="rwGo" class="px-2 py-1 rounded-md text-[11px] font-semibold border border-indigo-300 text-indigo-600 hover:bg-indigo-50"><svg class="sw-i" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M3 12a9 9 0 1 0 9-9 9.75 9.75 0 0 0-6.74 2.74L3 8"/><path d="M3 3v5h5"/><path d="M12 7v5l4 2"/></svg> Rewind</button>
       </div>
     </div>
     <div id="chartWrap"><div id="chart"></div><div id="tip"></div></div>
@@ -113,12 +113,12 @@
   <div class="grid lg:grid-cols-2 gap-4">
     <!-- returns -->
     <div class="card p-4">
-      <div class="text-sm font-semibold text-slate-700 mb-2">📅 Returns <span class="text-slate-400 font-normal">— stock vs Nifty 500</span></div>
+      <div class="text-sm font-semibold text-slate-700 mb-2">Returns <span class="text-slate-400 font-normal">— stock vs Nifty 500</span></div>
       <div id="returns" class="overflow-x-auto"></div>
     </div>
     <!-- technicals -->
     <div class="card p-4">
-      <div class="text-sm font-semibold text-slate-700 mb-2">📊 Technicals <span class="text-slate-400 font-normal">— as of latest close</span></div>
+      <div class="text-sm font-semibold text-slate-700 mb-2">Technicals <span class="text-slate-400 font-normal">— as of latest close</span></div>
       <div id="tech" class="grid grid-cols-2 gap-x-4 gap-y-1.5 text-sm"></div>
       <div id="delivSpark" class="mt-3"></div>
     </div>
@@ -127,7 +127,7 @@
   <!-- fundamentals -->
   <div class="card p-4">
     <div class="flex items-center justify-between flex-wrap gap-2 mb-2">
-      <div class="text-sm font-semibold text-slate-700">💰 Quarterly financials <span id="fundHdrSub" class="text-slate-400 font-normal">— point-in-time (₹ cr), consolidated where filed, YoY growth</span></div>
+      <div class="text-sm font-semibold text-slate-700">Quarterly financials <span id="fundHdrSub" class="text-slate-400 font-normal">— point-in-time (₹ cr), consolidated where filed, YoY growth</span></div>
       <a href="./quarterly-results.html" class="text-xs font-semibold text-indigo-600 hover:underline">All companies' results →</a>
     </div>
     <div id="lastReact" class="text-xs text-slate-500 mb-2 hidden"></div>
@@ -144,7 +144,7 @@
   <!-- pre-IPO annual history (from the prospectus era, via MoneyControl) — DISPLAY ONLY, never the backtest -->
   <div class="card p-4" id="preipoCard" style="display:none">
     <div class="flex items-center justify-between flex-wrap gap-2 mb-2">
-      <div class="text-sm font-semibold text-slate-700">🏛️ Pre-IPO financials <span id="preipoBadge" class="text-slate-400 font-normal"></span></div>
+      <div class="text-sm font-semibold text-slate-700">Pre-IPO financials <span id="preipoBadge" class="text-slate-400 font-normal"></span></div>
     </div>
     <div id="preipo" class="sw-scrollx overflow-x-auto text-sm" style="font-variant-numeric:tabular-nums">—</div>
     <div id="preipoNote" class="text-[11px] text-slate-400 mt-2"></div>
@@ -153,7 +153,7 @@
   <!-- deep financial detail (XBRL re-parse: EPS, P&L breakdown, balance sheet, cash flow, segments, bank health) -->
   <div class="card p-4" id="deepCard" style="display:none">
     <div class="flex items-center justify-between flex-wrap gap-2 mb-2">
-      <div class="text-sm font-semibold text-slate-700">🧾 Financial detail <span class="text-slate-400 font-normal">— from the company's own XBRL filings</span></div>
+      <div class="text-sm font-semibold text-slate-700">Financial detail <span class="text-slate-400 font-normal">— from the company's own XBRL filings</span></div>
     </div>
     <div id="deepTabs" class="flex gap-1.5 overflow-x-auto whitespace-nowrap pb-1"></div>
     <div id="deepBody" class="mt-2 text-sm"></div>
@@ -163,7 +163,7 @@
   <!-- strategy exposure -->
   <div class="card p-4" id="stratCard" style="display:none">
     <div class="flex items-center justify-between flex-wrap gap-2 mb-2">
-      <div class="text-sm font-semibold text-slate-700">🎯 Strategy exposure <span id="stratN" class="text-slate-400 font-normal"></span></div>
+      <div class="text-sm font-semibold text-slate-700">Strategy exposure <span id="stratN" class="text-slate-400 font-normal"></span></div>
       <a href="./all-picks.html" class="text-xs font-semibold text-indigo-600 hover:underline">All strategies' picks →</a>
     </div>
     <div id="strat" class="text-sm"></div>
@@ -173,7 +173,7 @@
   <!-- peer comparison -->
   <div class="card p-4" id="peersCard" style="display:none">
     <div class="flex items-center justify-between flex-wrap gap-2 mb-2">
-      <div class="text-sm font-semibold text-slate-700">🏭 Peer comparison <span id="peersInd" class="text-slate-400 font-normal"></span></div>
+      <div class="text-sm font-semibold text-slate-700">Peer comparison <span id="peersInd" class="text-slate-400 font-normal"></span></div>
     </div>
     <div id="peers" class="sw-scrollx overflow-x-auto text-sm"></div>
     <div class="text-[11px] text-slate-400 mt-2">Same-industry companies, this stock first and the rest by market cap — <b>click any column heading to re-rank them</b> (P/E, size or 1-year return); this stock stays bold wherever it lands. P/E uses point-in-time owners-attributable TTM profit (last 4 contiguous quarters); 1Y is the price return. Tap a name to open it. The median above covers <b>only the companies listed here</b> — the industry's biggest — so it can differ from the whole industry's median (measured across the 86 industries with more members than this table shows: higher in 55%, identical in 41%, lower in 5%). The industry-wide figure, over every listed member, is on the <a class="text-indigo-600 hover:underline" href="./sectors.html">sector page</a>.</div>
@@ -182,7 +182,7 @@
   <!-- shareholding pattern -->
   <div class="card p-4">
     <div class="flex items-center justify-between flex-wrap gap-2 mb-2">
-      <div class="text-sm font-semibold text-slate-700">🏛️ Shareholding pattern <span class="text-slate-400 font-normal">— quarterly filings, % of total shares</span></div>
+      <div class="text-sm font-semibold text-slate-700">Shareholding pattern <span class="text-slate-400 font-normal">— quarterly filings, % of total shares</span></div>
       <div class="flex items-center gap-3">
         <button id="shpAll" class="text-xs font-semibold text-indigo-600 hover:underline" style="display:none">Full history</button>
         <a href="./shareholding.html" class="text-xs font-semibold text-indigo-600 hover:underline">Compare all stocks →</a>
@@ -194,7 +194,7 @@
 
   <!-- company activity -->
   <div class="card p-4" id="actCard" style="display:none">
-    <div class="text-sm font-semibold text-slate-700 mb-2">🗞️ Company activity <span class="text-slate-400 font-normal">— rolling windows, refreshed daily</span></div>
+    <div class="text-sm font-semibold text-slate-700 mb-2">Company activity <span class="text-slate-400 font-normal">— rolling windows, refreshed daily</span></div>
     <div id="actTabs" class="flex gap-1.5 overflow-x-auto whitespace-nowrap pb-1"></div>
     <div id="actBody" class="mt-2 text-sm"></div>
   </div>
@@ -202,7 +202,7 @@
   <!-- seasonality -->
   <div class="card p-4">
     <div class="flex items-center justify-between flex-wrap gap-2 mb-2">
-      <div class="text-sm font-semibold text-slate-700">🗓️ Seasonality <span class="text-slate-400 font-normal">— monthly returns, %</span></div>
+      <div class="text-sm font-semibold text-slate-700">Seasonality <span class="text-slate-400 font-normal">— monthly returns, %</span></div>
       <button id="seasAll" class="text-xs font-semibold text-indigo-600 hover:underline" style="display:none">All years</button>
     </div>
     <div id="season" class="sw-scrollx overflow-x-auto text-sm"><span class="text-slate-400">—</span></div>
@@ -216,6 +216,7 @@
 <script src="https://cdn.jsdelivr.net/npm/lightweight-charts@5.2.1/dist/lightweight-charts.standalone.production.js"></script>
 <script>
 'use strict';
+var SWI={file:'<svg class="sw-i" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M14.5 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V7.5L14.5 2z"/><polyline points="14 2 14 8 20 8"/><line x1="16" y1="13" x2="8" y2="13"/><line x1="16" y1="17" x2="8" y2="17"/></svg>',book:'<svg class="sw-i" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M2 3h6a4 4 0 0 1 4 4v14a3 3 0 0 0-3-3H2z"/><path d="M22 3h-6a4 4 0 0 0-4 4v14a3 3 0 0 1 3-3h7z"/></svg>',layers:'<svg class="sw-i" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="m12.83 2.18a2 2 0 0 0-1.66 0L2.6 6.08a1 1 0 0 0 0 1.83l8.58 3.91a2 2 0 0 0 1.66 0l8.58-3.9a1 1 0 0 0 0-1.83Z"/><path d="m22 12.5-8.58 3.91a2 2 0 0 1-1.66 0L2.6 12.5"/><path d="m22 17.5-8.58 3.91a2 2 0 0 1-1.66 0L2.6 17.5"/></svg>',landmark:'<svg class="sw-i" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><line x1="3" y1="22" x2="21" y2="22"/><line x1="6" y1="18" x2="6" y2="11"/><line x1="10" y1="18" x2="10" y2="11"/><line x1="14" y1="18" x2="14" y2="11"/><line x1="18" y1="18" x2="18" y2="11"/><polygon points="12 2 20 7 4 7"/></svg>',megaphone:'<svg class="sw-i" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="m3 11 18-5v12L3 14v-3z"/><path d="M11.6 16.8a3 3 0 1 1-5.8-1.6"/></svg>',compass:'<svg class="sw-i" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="12" r="10"/><polygon points="16.24 7.76 14.12 14.12 7.76 16.24 9.88 9.88 16.24 7.76"/></svg>',user:'<svg class="sw-i" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M19 21v-2a4 4 0 0 0-4-4H9a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/></svg>',briefcase:'<svg class="sw-i" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="2" y="7" width="20" height="14" rx="2"/><path d="M16 21V5a2 2 0 0 0-2-2h-4a2 2 0 0 0-2 2v16"/></svg>',calendar:'<svg class="sw-i" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="3" y="4" width="18" height="18" rx="2"/><line x1="16" y1="2" x2="16" y2="6"/><line x1="8" y1="2" x2="8" y2="6"/><line x1="3" y1="10" x2="21" y2="10"/></svg>'};
 const $=id=>document.getElementById(id);
 const esc=s=>String(s==null?'':s).replace(/[&<>"]/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c]));
 const qs=new URLSearchParams(location.search);
@@ -558,7 +559,7 @@ function render(){
   if(!m.alive) $('sDead').classList.remove('hidden');
   $('sPrice').textContent='₹'+(rawLast>=1000?Math.round(rawLast).toLocaleString('en-IN'):rawLast.toFixed(2));
   $('sChg').innerHTML=`<span class="${dayChg>=0?'pos':'neg'}">${pct(dayChg)}</span> <span class="text-slate-400 text-xs">1-day</span>`;
-  $('sAsof').textContent=(rw?'🕰️ rewound to ':'as of ')+isoOff(off);
+  $('sAsof').textContent=(rw?'rewound to ':'as of ')+isoOff(off);
   $('sBt').href='./stock-backtest.html';
   // chips: index memberships + F&O. The slice carries them precomputed — resolving membership from
   // indicesHistory was the ONLY thing the page still wanted the 17 MB stock_data.bin for.
@@ -905,7 +906,7 @@ function renderDeep(ends,patFn,revFn,opFn,isFin){
   const fys=Object.keys(byFy).map(Number).sort((a,b)=>b-a)
     .filter(fy=>byFy[fy].length===4&&byFy[fy].every(e=>patFn(e)!=null));
   has.a=fys.length>0;
-  const tabs=[['q','📄 Quarterly detail'],['a','📚 Annual'],['seg','🧩 Segments'],['bank','🏦 Bank health']].filter(([k])=>has[k]);
+  const tabs=[['q',SWI.file+' Quarterly detail'],['a',SWI.book+' Annual'],['seg',SWI.layers+' Segments'],['bank',SWI.landmark+' Bank health']].filter(([k])=>has[k]);
   // keep the open tab across a re-render (flipping the basis switch re-runs this whole card)
   let cur=(DEEP_TAB&&tabs.some(([k])=>k===DEEP_TAB))?DEEP_TAB:tabs[0][0];
   const draw=()=>{
@@ -1203,7 +1204,7 @@ const INS_SIDE={B:['Buy','pos'],S:['Sell','neg'],P:['Pledge','neg'],R:['Pledge r
 function renderActivity(){
   const el=$('actCard'); if(!el) return;
   const S=SLICE||{};
-  const tabs=[['ann','📢 Announcements'],['dsc','🧭 Triggers'],['ins','👤 Insider'],['dls','🤝 Deals'],['act','📅 Corp actions']]
+  const tabs=[['ann',SWI.megaphone+' Announcements'],['dsc',SWI.compass+' Triggers'],['ins',SWI.user+' Insider'],['dls',SWI.briefcase+' Deals'],['act',SWI.calendar+' Corp actions']]
     .map(([k,l])=>({k,l,n:(S[k]||[]).length}));
   if(!tabs.some(t=>t.n)){ el.style.display='none'; return; }
   el.style.display='';
@@ -1287,7 +1288,7 @@ function renderDelivSpark(){
   const W=300,H=44,hi=Math.max(...pts,1);
   const X=i=>i/(pts.length-1)*(W-2)+1, Y=v=>H-4-(v/hi)*(H-14);
   const avg=pts.reduce((t,v)=>t+v,0)/pts.length;
-  el.innerHTML=`<div class="text-[11px] text-slate-500 mb-1">🚚 Delivery % — last ${pts.length} sessions <span class="text-slate-400">(latest ${pts[pts.length-1].toFixed(1)}% · avg ${avg.toFixed(1)}%)</span></div>`+
+  el.innerHTML=`<div class="text-[11px] text-slate-500 mb-1">Delivery % — last ${pts.length} sessions <span class="text-slate-400">(latest ${pts[pts.length-1].toFixed(1)}% · avg ${avg.toFixed(1)}%)</span></div>`+
     `<svg viewBox="0 0 ${W} ${H}" width="100%" preserveAspectRatio="none" style="display:block">`+
     `<line x1="1" x2="${W-1}" y1="${Y(avg).toFixed(1)}" y2="${Y(avg).toFixed(1)}" stroke="var(--text-faint,#94a3b8)" stroke-dasharray="3 3" stroke-width="1"/>`+
     `<path d="${pts.map((v,i)=>(i?'L':'M')+X(i).toFixed(1)+' '+Y(v).toFixed(1)).join(' ')}" fill="none" stroke="#0ea5e9" stroke-width="1.5"/></svg>`;

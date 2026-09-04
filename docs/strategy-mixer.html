@@ -80,7 +80,7 @@
       <div id="mixBtns" class="hidden flex-wrap gap-1.5 mt-2 flex">
         <button id="bEq" class="chip text-slate-600 bg-slate-50 hover:border-indigo-300" title="Same ₹ into every selected strategy, keeping the current total">Equal split</button>
         <button id="bLakh" class="chip text-slate-600 bg-slate-50 hover:border-indigo-300" title="₹1,00,000 into every selected strategy">₹1L each</button>
-        <button id="bFav" class="chip text-slate-600 bg-slate-50 hover:border-indigo-300" title="Tick every ⭐ favourite">⭐ Add favourites</button>
+        <button id="bFav" class="chip text-slate-600 bg-slate-50 hover:border-indigo-300" title="Tick every ⭐ favourite"><svg class="sw-i" style="font-size:12px" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/></svg> Add favourites</button>
         <button id="bClear" class="chip text-slate-600 bg-slate-50 hover:border-rose-300">Clear all</button>
       </div>
       <div id="mixPresets" class="hidden flex-wrap items-center gap-1.5 mt-2 flex"></div>
@@ -102,7 +102,7 @@
         <div><label class="lbl" for="dTo">To</label><input id="dTo" type="date" class="inp"></div>
       </div>
       <div class="text-[11px] text-slate-400 mt-1.5">Every strategy in the mix runs over this one window, so the numbers here can differ from a strategy's own saved backtest (which may use a different window). Dates before 2019 load extra history once.</div>
-      <button id="runBtn" class="w-full mt-3 bg-indigo-600 hover:bg-indigo-700 disabled:opacity-50 text-white rounded-lg px-5 py-2.5 text-sm font-semibold shadow-sm transition">▶ Run the mix</button>
+      <button id="runBtn" class="w-full mt-3 bg-indigo-600 hover:bg-indigo-700 disabled:opacity-50 text-white rounded-lg px-5 py-2.5 text-sm font-semibold shadow-sm transition"><svg class="sw-i" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><polygon points="6 3 20 12 6 21 6 3"/></svg> Run the mix</button>
       <div id="runMsg" class="text-xs text-slate-500 mt-2 min-h-[1rem]"></div>
     </section>
   </div>
@@ -113,7 +113,7 @@
 
     <section class="card p-4 mb-4">
       <div class="flex items-center justify-between flex-wrap gap-2 mb-1">
-        <div class="text-sm font-bold text-slate-900">📈 Growth of the mix</div>
+        <div class="text-sm font-bold text-slate-900">Growth of the mix</div>
         <div class="text-[11px] text-slate-400">click a name to hide/show its line · hover for values</div>
       </div>
       <div id="legend" class="flex flex-wrap gap-1.5 mb-2"></div>
@@ -121,32 +121,32 @@
     </section>
 
     <section class="card p-4 mb-4">
-      <div class="text-sm font-bold text-slate-900 mb-1">🌊 Drawdown — how far below its peak the mix was</div>
+      <div class="text-sm font-bold text-slate-900 mb-1">Drawdown — how far below its peak the mix was</div>
       <div class="text-[11px] text-slate-400 mb-2">0% = at an all-time high. The deepest dip is the max drawdown. Hover for the date.</div>
       <div id="ddWrap"></div>
     </section>
 
     <section class="card p-4 mb-4">
-      <div class="text-sm font-bold text-slate-900 mb-1">📊 Month by month — the mix's return each month</div>
+      <div class="text-sm font-bold text-slate-900 mb-1">Month by month — the mix's return each month</div>
       <div class="text-[11px] text-slate-400 mb-2">Blue = the mix ended the month higher, red = lower. Hover a bar for the exact move.</div>
       <div id="mrWrap" style="overflow-x:auto"></div>
     </section>
 
     <section class="card p-4 mb-4">
-      <div class="text-sm font-bold text-slate-900 mb-2">🧩 Each strategy inside the mix</div>
+      <div class="text-sm font-bold text-slate-900 mb-2">Each strategy inside the mix</div>
       <div class="overflow-x-auto"><table class="w-full text-sm border-collapse" id="perStrat"></table></div>
       <div class="text-[11px] text-slate-400 mt-2">Profit = final value minus what was put in. Win % = that strategy's own positive rebalance periods. This table always shows each strategy run <b>on its own</b> with that money, so in <b>one combined portfolio</b> mode it is the comparison rather than what the mix did.</div>
     </section>
 
     <section class="card p-4 mb-4">
-      <div class="text-sm font-bold text-slate-900 mb-1">🔁 Stock overlap — are you buying the same stocks twice?</div>
+      <div class="text-sm font-bold text-slate-900 mb-1">Stock overlap — are you buying the same stocks twice?</div>
       <div class="text-[11px] text-slate-400 mb-3">Each strategy's basket as of its last rebalance in the window. The diagonal is the basket size; every other cell = stocks the two share (and what share of the smaller basket that is). Hover a cell to see which stocks.</div>
       <div class="overflow-x-auto"><table class="border-collapse" id="ovMatrix"></table></div>
       <div id="sharedChips" class="mt-3"></div>
     </section>
 
     <section class="card p-4 mb-4">
-      <div class="text-sm font-bold text-slate-900 mb-1">💼 The combined portfolio</div>
+      <div class="text-sm font-bold text-slate-900 mb-1">The combined portfolio</div>
       <div class="text-[11px] text-slate-400 mb-2" id="holdSub"></div>
       <div id="splitMath" class="hidden text-[12px] mb-3 rounded-lg px-3 py-2" style="background:var(--surface-2,#f8fafc)"></div>
       <div class="overflow-x-auto tscroll"><table class="w-full text-sm border-collapse" id="holdTbl"></table></div>
@@ -154,20 +154,20 @@
 
     <!-- pooled mode only: how the split moved from one rebalance to the next -->
     <section class="card p-4 mb-4 hidden" id="poolRebCard">
-      <div class="text-sm font-bold text-slate-900 mb-1">⚖️ How the split changed each rebalance</div>
+      <div class="text-sm font-bold text-slate-900 mb-1">How the split changed each rebalance</div>
       <div class="text-[11px] text-slate-400 mb-2">Newest first. Every time any strategy reshuffles, the whole portfolio is re-spread across the new set of picks. <span class="kx">×2</span> means two strategies were picking that stock that month, so it got two shares of the money. 🆕 = wasn't held the previous rebalance.</div>
       <div id="poolRebOut"></div>
       <div id="poolRebMore" class="mt-2"></div>
     </section>
 
     <section class="card p-4 mb-4" id="corrCard">
-      <div class="text-sm font-bold text-slate-900 mb-1">🔗 Do the strategies move together? (correlation of monthly returns)</div>
+      <div class="text-sm font-bold text-slate-900 mb-1">Do the strategies move together? (correlation of monthly returns)</div>
       <div class="text-[11px] text-slate-400 mb-3">1 = they swing together (mixing adds little) · near 0 = unrelated (good diversification) · negative = one zigs when the other zags (best). <span class="font-semibold">Green ≤ 0.4 · amber 0.4–0.7 · red &gt; 0.7.</span></div>
       <div class="overflow-x-auto"><table class="border-collapse" id="corrTbl"></table></div>
     </section>
 
     <section class="card p-4 mb-4">
-      <div class="text-sm font-bold text-slate-900 mb-2">🗓️ Year by year</div>
+      <div class="text-sm font-bold text-slate-900 mb-2">Year by year</div>
       <div class="overflow-x-auto"><table class="w-full text-sm border-collapse" id="yearTbl"></table></div>
       <div class="text-[11px] text-slate-400 mt-2">* partial year (the window starts or ends inside it).</div>
     </section>
@@ -176,7 +176,7 @@
          with which strategy it belongs to and the picker narrows to one at a time. -->
     <section class="card p-4 mb-4">
       <div class="flex items-center justify-between flex-wrap gap-2 mb-1">
-        <div class="text-sm font-bold text-slate-900">🔄 Rebalance log — every reshuffle in the mix</div>
+        <div class="text-sm font-bold text-slate-900">Rebalance log — every reshuffle in the mix</div>
         <select id="rbWho" class="inp" style="width:auto;padding:.3rem .5rem;font-size:12px"></select>
       </div>
       <div class="text-[11px] text-slate-400 mb-2">Newest first. Each row is one strategy's rebalance day: what its bucket was worth, how it moved since its previous rebalance, how many names it swapped in, and the basket it then held (🆕 = new that day). Weights are of that strategy's own bucket.</div>
@@ -186,10 +186,10 @@
 
     <section class="card p-4 mb-4">
       <div class="flex items-center justify-between flex-wrap gap-2 mb-1">
-        <div class="text-sm font-bold text-slate-900">📒 Trade log — every position the mix took</div>
+        <div class="text-sm font-bold text-slate-900">Trade log — every position the mix took</div>
         <div class="flex items-center gap-1.5 flex-wrap">
           <select id="tdWho" class="inp" style="width:auto;padding:.3rem .5rem;font-size:12px"></select>
-          <button id="tdCsv" class="bg-emerald-600 hover:bg-emerald-700 text-white rounded-lg px-3 py-1.5 text-xs font-semibold shadow-sm">⬇ CSV</button>
+          <button id="tdCsv" class="bg-emerald-600 hover:bg-emerald-700 text-white rounded-lg px-3 py-1.5 text-xs font-semibold shadow-sm"><svg class="sw-i" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg> CSV</button>
         </div>
       </div>
       <div id="tdStats" class="flex flex-wrap gap-1.5 mb-2"></div>
@@ -317,7 +317,7 @@ function renderPresets(){
     + ps.map((p, i) => `<span class="chip text-slate-600 bg-slate-50 inline-flex items-center gap-1">
         <button data-ld="${i}" class="font-semibold hover:text-indigo-600" title="Load this mix — ${p.sel.length} strategies">${esc(p.label)}</button>
         <button data-del="${i}" class="text-slate-300 hover:text-rose-500" title="Delete this saved mix">✕</button></span>`).join('')
-    + (canSave ? '<button id="bSaveMix" class="chip text-indigo-600 bg-indigo-50 hover:border-indigo-300" title="Save the current selection (strategies + ₹ + mode) under a name">💾 Save mix as…</button>' : '');
+    + (canSave ? '<button id="bSaveMix" class="chip text-indigo-600 bg-indigo-50 hover:border-indigo-300" title="Save the current selection (strategies + ₹ + mode) under a name"><svg class="sw-i" style="font-size:12px" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M19 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11l5 5v11a2 2 0 0 1-2 2z"/><polyline points="17 21 17 13 7 13 7 21"/><polyline points="7 3 7 8 15 8"/></svg> Save mix as…</button>' : '');
   box.querySelectorAll('button[data-ld]').forEach(b => b.onclick = () => applyPreset(loadPresets()[+b.dataset.ld]));
   box.querySelectorAll('button[data-del]').forEach(b => b.onclick = () => {
     const ps2 = loadPresets(), p = ps2[+b.dataset.del];

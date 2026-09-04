@@ -67,7 +67,7 @@
       <span class="font-bold text-slate-900 tracking-tight hidden sm:block">STOCKS<span class="text-indigo-600">WORLD</span></span>
     </a>
     <div class="flex items-center gap-3 min-w-0"><nav></nav>
-      <span class="text-[11px] font-semibold text-indigo-600 hidden md:block shrink-0">🎯 Options Backtest</span>
+      <span class="text-[11px] font-semibold text-indigo-600 hidden md:block shrink-0">Options Backtest</span>
     </div>
   </div>
 </header>
@@ -202,10 +202,10 @@
         <span class="chip" data-r="5y">5Y</span><span class="chip" data-r="max">Max</span>
       </div>
       <label>Slippage %<br><input id="slip" type="number" step="0.05" value="0.5"></label>
-      <button id="settingsBtn" class="chip">⚙ Settings</button>
+      <button id="settingsBtn" class="chip"><svg class="sw-i" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12.22 2h-.44a2 2 0 0 0-2 2v.18a2 2 0 0 1-1 1.73l-.43.25a2 2 0 0 1-2 0l-.15-.08a2 2 0 0 0-2.73.73l-.22.38a2 2 0 0 0 .73 2.73l.15.1a2 2 0 0 1 1 1.72v.51a2 2 0 0 1-1 1.74l-.15.09a2 2 0 0 0-.73 2.73l.22.38a2 2 0 0 0 2.73.73l.15-.08a2 2 0 0 1 2 0l.43.25a2 2 0 0 1 1 1.73V20a2 2 0 0 0 2 2h.44a2 2 0 0 0 2-2v-.18a2 2 0 0 1 1-1.73l.43-.25a2 2 0 0 1 2 0l.15.08a2 2 0 0 0 2.73-.73l.22-.39a2 2 0 0 0-.73-2.73l-.15-.08a2 2 0 0 1-1-1.74v-.5a2 2 0 0 1 1-1.74l.15-.09a2 2 0 0 0 .73-2.73l-.22-.38a2 2 0 0 0-2.73-.73l-.15.08a2 2 0 0 1-2 0l-.43-.25a2 2 0 0 1-1-1.73V4a2 2 0 0 0-2-2z"/><circle cx="12" cy="12" r="3"/></svg> Settings</button>
       <span class="flex-1"></span>
-      <button id="saveStrat" class="bg-slate-200 hover:bg-slate-300 rounded-lg px-3 py-1.5 font-semibold">💾 Save</button>
-      <button id="shareStrat" class="bg-slate-200 hover:bg-slate-300 rounded-lg px-3 py-1.5 font-semibold">🔗 Share</button>
+      <button id="saveStrat" class="bg-slate-200 hover:bg-slate-300 rounded-lg px-3 py-1.5 font-semibold"><svg class="sw-i" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M19 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11l5 5v11a2 2 0 0 1-2 2z"/><polyline points="17 21 17 13 7 13 7 21"/><polyline points="7 3 7 8 15 8"/></svg> Save</button>
+      <button id="shareStrat" class="bg-slate-200 hover:bg-slate-300 rounded-lg px-3 py-1.5 font-semibold"><svg class="sw-i" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="18" cy="5" r="3"/><circle cx="6" cy="12" r="3"/><circle cx="18" cy="19" r="3"/><line x1="8.59" y1="13.51" x2="15.42" y2="17.49"/><line x1="15.41" y1="6.51" x2="8.59" y2="10.49"/></svg> Share</button>
       <button id="runBtn" class="bg-green-600 hover:bg-green-700 text-white rounded-lg px-5 py-2 font-bold">START BACKTEST</button>
     </div>
     <div id="loadBar" class="hidden mt-3 text-xs text-slate-500"><div class="h-1.5 bg-slate-200 rounded overflow-hidden mb-1"><div id="loadFill" class="h-full bg-blue-500" style="width:0%"></div></div><span id="loadTxt"></span></div>
@@ -219,7 +219,7 @@
         <h3 class="font-bold text-slate-700 text-sm">RESULTS <span id="resMeta" class="font-normal text-slate-400 text-[11.5px]"></span></h3>
         <div class="flex items-center gap-2 text-[11.5px]">
           <label class="flex items-center gap-1"><input type="checkbox" id="roiPct"> Show ROI %</label>
-          <button id="csvBtn" class="chip">⬇ Export CSV</button>
+          <button id="csvBtn" class="chip"><svg class="sw-i" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg> Export CSV</button>
         </div>
       </div>
       <div id="statCards" class="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-5 gap-2"></div>
@@ -263,8 +263,8 @@
       <div id="basketList" class="space-y-0.5 text-[12.5px] mb-2"></div>
       <div class="flex gap-1">
         <button id="newBasket" class="chip">+ Basket</button>
-        <button id="delBasket" class="chip">🗑</button>
-        <button id="renBasket" class="chip">✏️</button>
+        <button id="delBasket" class="chip"><svg class="sw-i" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><polyline points="3 6 5 6 21 6"/><path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"/><line x1="10" y1="11" x2="10" y2="17"/><line x1="14" y1="11" x2="14" y2="17"/></svg></button>
+        <button id="renBasket" class="chip"><svg class="sw-i" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M17 3a2.85 2.83 0 1 1 4 4L7.5 20.5 2 22l1.5-5.5Z"/><path d="m15 5 4 4"/></svg></button>
       </div>
     </aside>
     <div class="min-w-0">
@@ -381,7 +381,7 @@ function renderLegs(){
       +'Hedge <select data-f="hcmp"><option value="">—</option><option value="~"'+(l.hedge&&l.hedge.cmp==='~'?' selected':'')+'>CP ~</option><option value=">="'+(l.hedge&&l.hedge.cmp==='>='?' selected':'')+'>CP ≥</option><option value="<="'+(l.hedge&&l.hedge.cmp==='<='?' selected':'')+'>CP ≤</option></select>'
       +'<input type="number" data-f="hprem" value="'+(l.hedge?l.hedge.prem:'')+'" placeholder="₹" style="width:3.4rem">'
       +'<span class="flex-1"></span>'
-      +'<span class="icon-btn" data-act="copy">⧉</span><span class="icon-btn" data-act="del">🗑</span>'
+      +'<span class="icon-btn" data-act="copy">⧉</span><span class="icon-btn" data-act="del"><svg class="sw-i" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><polyline points="3 6 5 6 21 6"/><path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"/><line x1="10" y1="11" x2="10" y2="17"/><line x1="14" y1="11" x2="14" y2="17"/></svg></span>'
       +'</div>';
   });
   $('#legList').innerHTML=h||'<div class="text-xs text-slate-400 text-center py-2">No positions yet — add one above.</div>';
@@ -818,7 +818,7 @@ function renderBkRows(){
       +'<span class="font-semibold flex-1">'+s.name+'</span>'
       +'<span class="text-slate-400">'+(s.cfg.index||'')+'</span>'
       +'<label>× <input type="number" min="1" value="'+(s.mult||1)+'" data-f="mult" style="width:3rem"></label>'
-      +'<span class="icon-btn" data-act="del">🗑</span></div>';
+      +'<span class="icon-btn" data-act="del"><svg class="sw-i" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><polyline points="3 6 5 6 21 6"/><path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"/><line x1="10" y1="11" x2="10" y2="17"/><line x1="14" y1="11" x2="14" y2="17"/></svg></span></div>';
   }).join('')||'<div class="text-slate-400 text-center py-2">Add saved strategies to this basket.</div>';
 }
 $('#basketList').addEventListener('click',function(e){var b=e.target.closest('[data-b]');if(b){curBasket=decodeURIComponent(b.dataset.b);renderBaskets();}});

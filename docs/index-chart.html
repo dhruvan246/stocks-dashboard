@@ -155,7 +155,7 @@
   <!-- chart -->
   <section class="card">
     <div class="card-h">
-      <h2>📈 Chart <span class="mut" id="rngNote"></span></h2>
+      <h2>Chart <span class="mut" id="rngNote"></span></h2>
       <div class="ctrls">
         <div class="rngs" id="rngs"></div>
         <div class="tgls" id="tgls"></div>
@@ -171,64 +171,64 @@
   <div class="grid2">
     <!-- returns -->
     <section class="card">
-      <h2>📅 Returns <span class="mut">— absolute &amp; annualised</span></h2>
+      <h2>Returns <span class="mut">— absolute &amp; annualised</span></h2>
       <div id="returns" class="faint" style="font-size:12px">Loading…</div>
       <div class="note" id="retNote"></div>
     </section>
     <!-- technicals -->
     <section class="card">
-      <h2>📊 Technicals <span class="mut">— at last close</span></h2>
+      <h2>Technicals <span class="mut">— at last close</span></h2>
       <div id="tech" class="faint" style="font-size:12px">Loading…</div>
     </section>
   </div>
 
   <!-- month-by-month -->
   <section class="card">
-    <h2>🗓️ Month-by-month <span class="mut" id="mhNote"></span></h2>
+    <h2>Month-by-month <span class="mut" id="mhNote"></span></h2>
     <div id="monthly" class="faint" style="font-size:12px">Loading…</div>
   </section>
 
   <!-- seasonality -->
   <section class="card">
-    <h2>🌤️ Seasonality <span class="mut" id="seasNote"></span></h2>
+    <h2>Seasonality <span class="mut" id="seasNote"></span></h2>
     <div id="season" class="faint" style="font-size:12px">Loading…</div>
   </section>
 
   <!-- rolling returns -->
   <section class="card" id="rollCard">
-    <h2>📐 Rolling returns <span class="mut">— every possible holding period, annualised (CAGR)</span></h2>
+    <h2>Rolling returns <span class="mut">— every possible holding period, annualised (CAGR)</span></h2>
     <div id="rolling" class="faint" style="font-size:12px">Loading…</div>
     <div class="note">Every start month in the history is tested. “% positive” is the share of those windows that ended in profit — the practical answer to “what if I had bought at the worst possible time?”</div>
   </section>
 
   <!-- calendar years -->
   <section class="card">
-    <h2>📊 Calendar-year returns</h2>
+    <h2>Calendar-year returns</h2>
     <div id="yearly" class="faint" style="font-size:12px">Loading…</div>
   </section>
 
   <!-- drawdowns -->
   <section class="card" id="ddCard">
-    <h2>📉 Biggest falls <span class="mut">— peak-to-trough drawdowns &amp; recovery</span></h2>
+    <h2>Biggest falls <span class="mut">— peak-to-trough drawdowns &amp; recovery</span></h2>
     <div id="dd" class="faint" style="font-size:12px">Loading…</div>
   </section>
 
   <!-- VIX-only extras -->
   <section class="card hidden" id="vixCard">
-    <h2>🌪️ Where volatility sits today</h2>
+    <h2>Where volatility sits today</h2>
     <div id="vixBody"></div>
   </section>
 
   <!-- constituents -->
   <section class="card hidden" id="memCard">
-    <h2>🏢 Constituents <span class="mut" id="memNote"></span></h2>
+    <h2>Constituents <span class="mut" id="memNote"></span></h2>
     <div id="members" class="chips"></div>
     <div class="note"><button class="tgl" id="memMore" type="button">Show all</button></div>
   </section>
 
   <!-- related -->
   <section class="card">
-    <h2>🔗 Go deeper</h2>
+    <h2>Go deeper</h2>
     <div class="chips" id="links" style="margin-top:6px"></div>
     <div class="note" id="srcNote"></div>
   </section>
@@ -1067,7 +1067,7 @@ function renderVix() {
   spikes.sort(function (a, b) { return b.v - a.v; });
   $('vixBody').innerHTML =
     '<table><thead><tr><th>Regime</th><th>VIX</th><th>Days since 2012</th><th>Last year</th><th>What it means</th></tr></thead><tbody>' + rows + '</tbody></table>' +
-    '<h2 style="margin-top:16px">⚡ Biggest one-day spikes</h2>' +
+    '<h2 style="margin-top:16px">Biggest one-day spikes</h2>' +
     '<table><thead><tr><th>Date</th><th>Jump</th><th>Closed at</th><th>Nifty that day</th></tr></thead><tbody>' +
     spikes.slice(0, 6).map(function (s) {
       return '<tr><td>' + prettyDate(s.d) + '</td><td class="num up">' + pct(s.v) + '</td><td class="num">' + fmt(s.lvl) + '</td>' +

@@ -63,13 +63,13 @@
     <h1 class="text-xl md:text-2xl font-bold text-slate-900">Saved Strategies</h1>
     <button id="clearAll" class="text-xs text-red-600 hover:underline font-semibold">Clear all</button>
   </div>
-  <p class="text-xs text-slate-500 mb-4">Strategies you saved, ranked by survivorship-free CAGR. Click a strategy to open its page — 🎯 live picks, 📈 backtests &amp; 🕘 rewind live there. <a href="./stock-backtest.html" class="text-indigo-600 hover:underline">← back to Backtest</a></p>
+  <p class="text-xs text-slate-500 mb-4">Strategies you saved, ranked by survivorship-free CAGR. Click a strategy to open its page — live picks, backtests &amp; rewind live there. <a href="./stock-backtest.html" class="text-indigo-600 hover:underline">← back to Backtest</a></p>
   <div id="ssStats" class="hidden grid-cols-2 lg:grid-cols-4 gap-3 mb-4"></div>
   <div class="flex items-center gap-1.5 mb-3 flex-wrap">
-    <button id="tabBest" class="px-3 py-1.5 rounded-lg text-xs font-semibold transition">🏆 Best return</button>
-    <button id="tabNew" class="px-3 py-1.5 rounded-lg text-xs font-semibold transition">🆕 New</button>
-    <button id="tabCustom" class="px-3 py-1.5 rounded-lg text-xs font-semibold transition">🗓️ Custom period</button>
-    <button id="tabFav" class="px-3 py-1.5 rounded-lg text-xs font-semibold transition">⭐ Favourites</button>
+    <button id="tabBest" class="px-3 py-1.5 rounded-lg text-xs font-semibold transition"><svg class="sw-i" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M6 9H4.5a2.5 2.5 0 0 1 0-5H6"/><path d="M18 9h1.5a2.5 2.5 0 0 0 0-5H18"/><path d="M4 22h16"/><path d="M10 14.66V17c0 .55-.47.98-.97 1.21C7.85 18.75 7 20.24 7 22"/><path d="M14 14.66V17c0 .55.47.98.97 1.21C16.15 18.75 17 20.24 17 22"/><path d="M18 2H6v7a6 6 0 0 0 12 0V2Z"/></svg> Best return</button>
+    <button id="tabNew" class="px-3 py-1.5 rounded-lg text-xs font-semibold transition"><svg class="sw-i" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="m12 3 1.9 5.8a2 2 0 0 0 1.3 1.3L21 12l-5.8 1.9a2 2 0 0 0-1.3 1.3L12 21l-1.9-5.8a2 2 0 0 0-1.3-1.3L3 12l5.8-1.9a2 2 0 0 0 1.3-1.3Z"/></svg> New</button>
+    <button id="tabCustom" class="px-3 py-1.5 rounded-lg text-xs font-semibold transition"><svg class="sw-i" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="3" y="4" width="18" height="18" rx="2"/><path d="M16 2v4M8 2v4M3 10h18"/><path d="M8 14h.01M12 14h.01M16 14h.01M8 18h.01M12 18h.01M16 18h.01"/></svg> Custom period</button>
+    <button id="tabFav" class="px-3 py-1.5 rounded-lg text-xs font-semibold transition"><svg class="sw-i" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/></svg> Favourites</button>
     <!-- Membership (universe) picker — applies to EVERY tab: pick Nifty 500 and the list shows only
          Nifty-500 strategies, pick F&O and only F&O ones. Options are built from the universes the
          saved strategies actually use, with per-tab counts. -->
@@ -82,13 +82,13 @@
        stored as a Supabase snapshot, so clicking a wave loads instantly. -->
   <div id="waveRow" class="hidden items-center gap-2 flex-wrap mb-3">
     <span class="text-[11px] font-bold uppercase tracking-wide text-slate-500">Best return over</span>
-    <button data-preset="w1" class="preset px-3 py-1.5 rounded-lg text-xs font-semibold bg-slate-100 text-slate-600 hover:bg-slate-200">🌊 Wave 1 <span class="opacity-60">Mar’20–Sep’21</span></button>
-    <button data-preset="w2" class="preset px-3 py-1.5 rounded-lg text-xs font-semibold bg-slate-100 text-slate-600 hover:bg-slate-200">🌊 Wave 2 <span class="opacity-60">Mar’23–Sep’24</span></button>
-    <button data-preset="w3" class="preset px-3 py-1.5 rounded-lg text-xs font-semibold bg-slate-100 text-slate-600 hover:bg-slate-200">🌊 Wave 3 <span class="opacity-60">Mar’26–date</span></button>
-    <button data-preset="cycle" class="preset px-3 py-1.5 rounded-lg text-xs font-semibold bg-slate-100 text-slate-600 hover:bg-slate-200">🔄 Entire cycle <span class="opacity-60">Mar’20–date</span></button>
+    <button data-preset="w1" class="preset px-3 py-1.5 rounded-lg text-xs font-semibold bg-slate-100 text-slate-600 hover:bg-slate-200"><svg class="sw-i" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M2 6c.6.5 1.2 1 2.5 1C7 7 7 5 9.5 5c2.6 0 2.4 2 5 2 2.5 0 2.5-2 5-2 1.3 0 1.9.5 2.5 1"/><path d="M2 12c.6.5 1.2 1 2.5 1 2.5 0 2.5-2 5-2 2.6 0 2.4 2 5 2 2.5 0 2.5-2 5-2 1.3 0 1.9.5 2.5 1"/><path d="M2 18c.6.5 1.2 1 2.5 1 2.5 0 2.5-2 5-2 2.6 0 2.4 2 5 2 2.5 0 2.5-2 5-2 1.3 0 1.9.5 2.5 1"/></svg> Wave 1 <span class="opacity-60">Mar’20–Sep’21</span></button>
+    <button data-preset="w2" class="preset px-3 py-1.5 rounded-lg text-xs font-semibold bg-slate-100 text-slate-600 hover:bg-slate-200"><svg class="sw-i" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M2 6c.6.5 1.2 1 2.5 1C7 7 7 5 9.5 5c2.6 0 2.4 2 5 2 2.5 0 2.5-2 5-2 1.3 0 1.9.5 2.5 1"/><path d="M2 12c.6.5 1.2 1 2.5 1 2.5 0 2.5-2 5-2 2.6 0 2.4 2 5 2 2.5 0 2.5-2 5-2 1.3 0 1.9.5 2.5 1"/><path d="M2 18c.6.5 1.2 1 2.5 1 2.5 0 2.5-2 5-2 2.6 0 2.4 2 5 2 2.5 0 2.5-2 5-2 1.3 0 1.9.5 2.5 1"/></svg> Wave 2 <span class="opacity-60">Mar’23–Sep’24</span></button>
+    <button data-preset="w3" class="preset px-3 py-1.5 rounded-lg text-xs font-semibold bg-slate-100 text-slate-600 hover:bg-slate-200"><svg class="sw-i" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M2 6c.6.5 1.2 1 2.5 1C7 7 7 5 9.5 5c2.6 0 2.4 2 5 2 2.5 0 2.5-2 5-2 1.3 0 1.9.5 2.5 1"/><path d="M2 12c.6.5 1.2 1 2.5 1 2.5 0 2.5-2 5-2 2.6 0 2.4 2 5 2 2.5 0 2.5-2 5-2 1.3 0 1.9.5 2.5 1"/><path d="M2 18c.6.5 1.2 1 2.5 1 2.5 0 2.5-2 5-2 2.6 0 2.4 2 5 2 2.5 0 2.5-2 5-2 1.3 0 1.9.5 2.5 1"/></svg> Wave 3 <span class="opacity-60">Mar’26–date</span></button>
+    <button data-preset="cycle" class="preset px-3 py-1.5 rounded-lg text-xs font-semibold bg-slate-100 text-slate-600 hover:bg-slate-200"><svg class="sw-i" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M3 12a9 9 0 0 1 9-9 9.75 9.75 0 0 1 6.74 2.74L21 8"/><path d="M21 3v5h-5"/><path d="M21 12a9 9 0 0 1-9 9 9.75 9.75 0 0 1-6.74-2.74L3 16"/><path d="M8 16H3v5"/></svg> Entire cycle <span class="opacity-60">Mar’20–date</span></button>
     <!-- 📈 Today's topper — the one preset that is NOT a baked window: it ranks every strategy by what
          it is doing right now, on the basket it actually holds, so it computes on click. -->
-    <button data-preset="live" class="preset px-3 py-1.5 rounded-lg text-xs font-semibold bg-slate-100 text-slate-600 hover:bg-slate-200">📈 Today’s topper <span class="opacity-60">live</span></button>
+    <button data-preset="live" class="preset px-3 py-1.5 rounded-lg text-xs font-semibold bg-slate-100 text-slate-600 hover:bg-slate-200"><svg class="sw-i" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><polyline points="22 7 13.5 15.5 8.5 10.5 2 17"/><polyline points="16 7 22 7 22 13"/></svg> Today’s topper <span class="opacity-60">live</span></button>
     <span id="waveSnapInfo" class="text-[11px] text-slate-400 ml-auto"></span>
     <button id="liveRefresh" class="hidden text-[11px] font-semibold text-indigo-600 hover:underline">↻ Refresh quotes</button>
     <button id="waveUpdate" class="hidden text-[11px] font-semibold text-indigo-600 hover:underline">↻ Update snapshot</button>
@@ -121,7 +121,7 @@
      synchronous blocks anyway). -->
 <div id="cOverlay" class="hidden fixed inset-0 z-40 bg-slate-900/25 backdrop-blur-[1px] flex items-start justify-center pt-32 pointer-events-none">
   <div class="bg-white shadow-xl rounded-xl border border-slate-200 px-5 py-4 text-center w-72">
-    <div class="text-2xl mb-1">⏳</div>
+    <div class="text-2xl mb-1 text-slate-400"><svg class="sw-i" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 22h14"/><path d="M5 2h14"/><path d="M17 22v-4.172a2 2 0 0 0-.586-1.414L12 12l-4.414 4.414A2 2 0 0 0 7 17.828V22"/><path d="M7 2v4.172a2 2 0 0 0 .586 1.414L12 12l4.414-4.414A2 2 0 0 0 17 6.172V2"/></svg></div>
     <div id="cOvText" class="text-sm font-semibold text-slate-800">Computing…</div>
     <div class="w-full h-1.5 bg-slate-100 rounded overflow-hidden mt-2.5"><div id="cOvBar" class="h-full bg-indigo-500 transition-all" style="width:0%"></div></div>
     <div id="cOvNote" class="text-[11px] text-slate-400 mt-1.5">running a real backtest for each strategy</div>
@@ -134,7 +134,7 @@
   <div class="max-w-5xl mx-auto card shadow-2xl">
     <div class="flex items-start justify-between gap-3 p-4 border-b border-slate-200">
       <div>
-        <h2 id="mTitle" class="text-base sm:text-lg font-bold text-slate-900 flex items-center gap-2">🎯 Today's Picks</h2>
+        <h2 id="mTitle" class="text-base sm:text-lg font-bold text-slate-900 flex items-center gap-2">Today's Picks</h2>
         <p id="mSub" class="text-[11px] text-slate-500 mt-0.5"></p>
       </div>
       <button id="mClose" class="text-slate-400 hover:text-slate-700 text-xl leading-none px-1">×</button>
@@ -142,22 +142,22 @@
     <div class="p-4 space-y-4">
       <!-- controls -->
       <div class="flex flex-wrap items-end gap-3">
-        <div><label class="block text-[11px] font-semibold text-slate-500 mb-1">📅 As of date</label><input id="mDate" type="date" class="border border-slate-300 rounded-lg px-2.5 py-1.5 text-sm"/></div>
+        <div><label class="block text-[11px] font-semibold text-slate-500 mb-1">As of date</label><input id="mDate" type="date" class="border border-slate-300 rounded-lg px-2.5 py-1.5 text-sm"/></div>
         <div><label class="block text-[11px] font-semibold text-slate-500 mb-1">Capital ₹</label><input id="mCap" type="number" value="100000" class="border border-slate-300 rounded-lg px-2.5 py-1.5 text-sm w-32"/></div>
         <button id="mRefresh" class="px-3 py-1.5 rounded-lg text-sm font-semibold bg-blue-600 text-white hover:bg-blue-700">↻ Refresh / Re-allocate</button>
-        <button id="mLive" class="px-3 py-1.5 rounded-lg text-sm font-semibold bg-rose-600 text-white hover:bg-rose-700">⚡ Go Live</button>
-        <button id="mLiveCfg" class="text-slate-400 hover:text-slate-700 text-base px-1" title="Set live-feed Worker URL">⚙</button>
-        <button id="mCsv" class="px-3 py-1.5 rounded-lg text-sm font-semibold bg-emerald-600 text-white hover:bg-emerald-700">⬇ Download CSV</button>
+        <button id="mLive" class="px-3 py-1.5 rounded-lg text-sm font-semibold bg-rose-600 text-white hover:bg-rose-700"><svg class="sw-i" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><polygon points="13 2 3 14 12 14 11 22 21 10 12 10 13 2"/></svg> Go Live</button>
+        <button id="mLiveCfg" class="text-slate-400 hover:text-slate-700 text-base px-1" title="Set live-feed Worker URL"><svg class="sw-i" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12.22 2h-.44a2 2 0 0 0-2 2v.18a2 2 0 0 1-1 1.73l-.43.25a2 2 0 0 1-2 0l-.15-.08a2 2 0 0 0-2.73.73l-.22.38a2 2 0 0 0 .73 2.73l.15.1a2 2 0 0 1 1 1.72v.51a2 2 0 0 1-1 1.74l-.15.09a2 2 0 0 0-.73 2.73l.22.38a2 2 0 0 0 2.73.73l.15-.08a2 2 0 0 1 2 0l.43.25a2 2 0 0 1 1 1.73V20a2 2 0 0 0 2 2h.44a2 2 0 0 0 2-2v-.18a2 2 0 0 1 1-1.73l.43-.25a2 2 0 0 1 2 0l.15.08a2 2 0 0 0 2.73-.73l.22-.39a2 2 0 0 0-.73-2.73l-.15-.08a2 2 0 0 1-1-1.74v-.5a2 2 0 0 1 1-1.74l.15-.09a2 2 0 0 0 .73-2.73l-.22-.38a2 2 0 0 0-2.73-.73l-.15.08a2 2 0 0 1-2 0l-.43-.25a2 2 0 0 1-1-1.73V4a2 2 0 0 0-2-2z"/><circle cx="12" cy="12" r="3"/></svg></button>
+        <button id="mCsv" class="px-3 py-1.5 rounded-lg text-sm font-semibold bg-emerald-600 text-white hover:bg-emerald-700"><svg class="sw-i" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg> Download CSV</button>
         <span id="mSort" class="text-[11px] text-slate-400 ml-auto"></span>
       </div>
       <div id="mFilters" class="text-[11px] text-slate-500 bg-slate-50 border border-slate-200 rounded-lg px-3 py-2"></div>
 
       <!-- hold calculator -->
       <div class="bg-violet-50 border border-violet-200 rounded-lg px-3 py-2.5 flex flex-wrap items-end gap-3">
-        <span class="text-xs font-semibold text-violet-700">📐 Hold (buy once, no churn)</span>
+        <span class="text-xs font-semibold text-violet-700">Hold (buy once, no churn)</span>
         <div><label class="block text-[10px] text-slate-500 mb-0.5">From</label><input id="hFrom" type="date" class="border border-slate-300 rounded px-2 py-1 text-xs"/></div>
         <div><label class="block text-[10px] text-slate-500 mb-0.5">To</label><input id="hTo" type="date" class="border border-slate-300 rounded px-2 py-1 text-xs"/></div>
-        <button id="hCompute" class="px-2.5 py-1 rounded-lg text-xs font-semibold bg-violet-600 text-white hover:bg-violet-700">✅ Compute hold</button>
+        <button id="hCompute" class="px-2.5 py-1 rounded-lg text-xs font-semibold bg-violet-600 text-white hover:bg-violet-700"><svg class="sw-i" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"/><polyline points="22 4 12 14.01 9 11.01"/></svg> Compute hold</button>
         <span id="hOut" class="text-[11px] text-slate-600"></span>
       </div>
 
@@ -279,15 +279,15 @@ function detailCard(b) {
   const meth = c.method ? `<span class="text-[10px] font-semibold text-slate-500 bg-slate-100 rounded px-1.5 py-0.5 ml-1">${c.method === 'hold' ? 'hold' : 'reset'}</span>` : '';
   const nTag = c.topN != null ? `<span class="text-[10px] font-semibold text-indigo-600 bg-indigo-50 rounded px-1.5 py-0.5 ml-1">top-${c.topN}</span>` : '';
   return `<div class="bg-white border border-slate-200 rounded-lg p-3" data-variant="${esc(b.id)}">
-    <div class="text-[11px] font-semibold text-slate-700">📅 ${esc(c.start)} → ${esc(windowEnd(c))}${nTag}${meth}</div>
+    <div class="text-[11px] font-semibold text-slate-700">${esc(c.start)} → ${esc(windowEnd(c))}${nTag}${meth}</div>
     <div class="flex items-center justify-between mt-1.5">
       <div class="text-sm">CAGR: ${cagr}</div>
       <div class="text-sm">MaxDD: ${dd}</div>
     </div>
     <div class="text-[10px] text-slate-400 mt-0.5">${fin}</div>
     <div class="grid grid-cols-2 gap-2 mt-2">
-      <button class="px-2 py-1.5 rounded-lg text-[11px] font-semibold bg-blue-600 text-white hover:bg-blue-700" data-picks="${esc(b.id)}">🎯 Today's Picks</button>
-      <button class="px-2 py-1.5 rounded-lg text-[11px] font-semibold bg-slate-800 text-white hover:bg-slate-900" data-bt="${esc(b.id)}">📈 Backtest</button>
+      <button class="px-2 py-1.5 rounded-lg text-[11px] font-semibold bg-blue-600 text-white hover:bg-blue-700" data-picks="${esc(b.id)}"><svg class="sw-i" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="12" r="10"/><circle cx="12" cy="12" r="6"/><circle cx="12" cy="12" r="2"/></svg> Today's Picks</button>
+      <button class="px-2 py-1.5 rounded-lg text-[11px] font-semibold bg-slate-800 text-white hover:bg-slate-900" data-bt="${esc(b.id)}"><svg class="sw-i" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><polyline points="22 7 13.5 15.5 8.5 10.5 2 17"/><polyline points="16 7 22 7 22 13"/></svg> Backtest</button>
     </div>
   </div>`;
 }
@@ -707,7 +707,7 @@ function render() {
     $('list').innerHTML = `<div class="card p-10 text-center">
       <div class="text-4xl mb-3">⭐</div>
       <div class="font-bold text-slate-900 mb-1">No saved strategies yet</div>
-      <p class="text-xs text-slate-500 max-w-md mx-auto mb-5">Build a screen in the strategy builder, run it, and hit “⭐ Save as Strategy” — it lands here ranked by survivorship-free CAGR, with 🎯 live picks and 🕘 rewind on its own page.</p>
+      <p class="text-xs text-slate-500 max-w-md mx-auto mb-5">Build a screen in the strategy builder, run it, and hit “Save as Strategy” — it lands here ranked by survivorship-free CAGR, with live picks and rewind on its own page.</p>
       <a href="./stock-backtest.html" class="inline-flex items-center gap-2 bg-indigo-600 text-white text-sm font-semibold px-5 py-2.5 rounded-xl hover:bg-indigo-700 transition">🧪 Create a strategy</a>
     </div>`;
     return;
@@ -813,7 +813,7 @@ function render() {
     return `<tr class="border-b border-slate-100 hover:bg-slate-50 cursor-pointer" data-openrow="${esc(it.id)}" title="Open strategy page">
       <td class="px-4 py-3" data-label="">
         <div class="flex items-center gap-3">
-          <span class="w-8 h-8 rounded-lg bg-indigo-50 text-indigo-600 flex items-center justify-center shrink-0">📈</span>
+          <span class="w-8 h-8 rounded-lg bg-indigo-50 text-indigo-600 flex items-center justify-center shrink-0"><svg class="sw-i" style="font-size:16px" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><polyline points="22 7 13.5 15.5 8.5 10.5 2 17"/><polyline points="16 7 22 7 22 13"/></svg></span>
           <span class="min-w-0">
             <span class="block font-semibold text-indigo-700 leading-snug"><span data-yrs="${esc(it.id)}" title="Code-name: ${esc(nameWithBasis(it.name, c))}">${esc(strategyEnglish(c))}</span></span>
             <span class="block text-[11px] text-slate-500 truncate"><span class="sw-sn" title="Save serial — DDMMYY plus the order saved that day">${esc(SERIAL.get(identityKey(c)) || '—')}</span>${esc(universeLabel(c))} · ${FREQ[c.freq] || c.freq + 'mo'} · ${countLabel} · ${SORTL[c.sortBy] || c.sortBy} ${c.dir === 'high' ? '↓' : '↑'} · ${n} backtest${n > 1 ? 's' : ''}</span>
@@ -822,7 +822,7 @@ function render() {
         </div>
       </td>
       ${lmode ? liveCells(c) : wcols ? WAVE_ORDER.map(k => waveCell(k, c)).join('') : `<td class="px-3 py-3 text-right text-sm whitespace-nowrap">${cagrCell}</td>`}
-      <td class="sw-actcell px-2 py-3 text-center whitespace-nowrap"><button class="text-base leading-none transition align-middle" data-favtoggle="${esc(identityKey(c))}" title="${isFav(favs, c) ? 'Remove from favourites' : 'Add to favourites'}">${isFav(favs, c) ? '⭐' : '☆'}</button>${OWNER ? `<button class="text-slate-300 hover:text-red-500 text-sm align-middle ml-3" data-delgroup="${esc(identityKey(c))}" title="Delete strategy">🗑️</button>` : ''}</td>
+      <td class="sw-actcell px-2 py-3 text-center whitespace-nowrap"><button class="text-base leading-none transition align-middle" data-favtoggle="${esc(identityKey(c))}" title="${isFav(favs, c) ? 'Remove from favourites' : 'Add to favourites'}">${isFav(favs, c) ? '⭐' : '☆'}</button>${OWNER ? `<button class="text-slate-300 hover:text-red-500 text-sm align-middle ml-3" data-delgroup="${esc(identityKey(c))}" title="Delete strategy"><svg class="sw-i" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><polyline points="3 6 5 6 21 6"/><path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"/><line x1="10" y1="11" x2="10" y2="17"/><line x1="14" y1="11" x2="14" y2="17"/></svg></button>` : ''}</td>
     </tr>`;
   }).join('');
   $('list').innerHTML = `<table class="w-full text-sm border-collapse sw-cards">${header}<tbody>${body}</tbody></table>`;
@@ -1038,7 +1038,7 @@ async function computeAndSaveWaves(headless) {
   }
   const complete = waves.every(freshDone);
   setComputeUI(false, '', 1);
-  setMsg(complete ? `✅ snapshot ${payload.date}` : `partial snapshot ${payload.date}`);
+  setMsg(complete ? `snapshot ${payload.date}` : `partial snapshot ${payload.date}`);
   if (headless) setOut(complete ? '✅ Done · waves baked ' + payload.date : 'partial — re-run to finish (' + waves.filter(freshDone).length + '/' + waves.length + ' waves)');
   if (VIEW === 'best') { highlightWave(BEST_WAVE); applyBestWave(); render(); }
   return complete;
@@ -1050,7 +1050,7 @@ let ENGINE_READY = false, ENGINE_LOADING = null;
 async function ensureEngine() {
   if (ENGINE_READY) return true;
   if (!ENGINE_LOADING) ENGINE_LOADING = loadEngineData(m => { $('status').textContent = m || ''; })
-    .then(() => { ENGINE_READY = true; $('status').textContent = `✅ Survivorship-free data ${SF.start} → ${SF.end} · ${SF.nTot} stocks (${SF.nDead} delisted).`; })
+    .then(() => { ENGINE_READY = true; $('status').textContent = `Survivorship-free data ${SF.start} → ${SF.end} · ${SF.nTot} stocks (${SF.nDead} delisted).`; })
     .catch(() => { ENGINE_LOADING = null; });
   await ENGINE_LOADING;
   return ENGINE_READY;
@@ -1060,7 +1060,7 @@ async function ensureEngine() {
 async function openPicks(id) {
   const it = DETAIL[id] || strategies().find(x => x.id === id); if (!it) return;
   CUR = it;
-  $('mTitle').innerHTML = `🎯 Today's Picks · ${esc(strategyEnglish(it.cfg))}`;
+  $('mTitle').innerHTML = `Today's Picks · ${esc(strategyEnglish(it.cfg))}`;
   $('mFilters').innerHTML = '<span class="text-slate-500">Loading market data…</span>';
   $('modal').classList.remove('hidden');
   if (!await ensureEngine()) { $('mFilters').innerHTML = '<span class="text-amber-600">Couldn’t load market data — try again.</span>'; return; }
@@ -1234,7 +1234,7 @@ async function goLive(silent) {
   if (!wurl) { if (silent) return; wurl = setWorkerUrl(); if (!wurl) return; }
   const syms = LAST_BASKET.rows.map(r => r.sym);
   if (!syms.length) { alert('No stocks in the basket to fetch.'); return; }
-  const btn = $('mLive'); const prev = btn.textContent; btn.textContent = '⏳ Fetching…'; btn.disabled = true;
+  const btn = $('mLive'); const prev = btn.innerHTML; btn.textContent = 'Fetching…'; btn.disabled = true;
   try {
     const sep = wurl.includes('?') ? '&' : '?';
     const res = await fetch(wurl + sep + 'symbols=' + encodeURIComponent(syms.join(',')));
@@ -1246,7 +1246,7 @@ async function goLive(silent) {
   } catch (e) {
     if (!silent) alert('Live fetch failed: ' + e.message + '\n\nCheck the Worker URL (⚙ button) and that opening it in a browser returns JSON.\nSee scripts/LIVE_FEED_SETUP.md.');
     else { const s = $('mSub'); if (s) s.innerHTML += ' · <span class="text-orange-500 text-[10px]">⚠ live: ' + e.message + '</span>'; }
-  } finally { btn.textContent = prev; btn.disabled = false; }
+  } finally { btn.innerHTML = prev; btn.disabled = false; }
 }
 function runHold() {
   if (!CUR) return;

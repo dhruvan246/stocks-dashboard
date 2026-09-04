@@ -140,7 +140,7 @@
     <!-- quarterly heat grid -->
     <div class="card p-4 mt-5">
       <div class="mb-3">
-        <div class="secttl">🗓️ Twelve quarters at a glance</div>
+        <div class="secttl">Twelve quarters at a glance</div>
         <div class="sectsub">Each row shaded against its own 12-quarter range — green favourable, red adverse (CPI inverted: cooling inflation reads green). Blank = no reading that quarter. GDP feed paused Nov-24.</div>
       </div>
       <div class="hm-scroll"><div class="hm" id="hm"></div></div>
@@ -150,7 +150,7 @@
     <div class="card p-4 mt-5">
       <div class="mb-3 flex items-start justify-between gap-3 flex-wrap">
         <div>
-          <div class="secttl">🔄 Sector rotation</div>
+          <div class="secttl">Sector rotation</div>
           <div class="sectsub">NSE sector &amp; thematic indices, price returns from monthly closes. Dashed line = Nifty 50 — bars past it are beating the market.</div>
         </div>
         <div id="rotseg" class="flex items-center gap-1.5"></div>
@@ -555,7 +555,7 @@ function buildRegime(){
   const score=Math.round(comps.reduce((s,c)=>s+c[1],0)/comps.length);
   const band= score>=70?['Risk-on','pos']: score>=55?['Constructive','pos']: score>=45?['Neutral','']: score>=30?['Cautious','neg']: ['Risk-off','neg'];
   $('regime').innerHTML =
-    '<div class="secttl">🧭 Market regime</div>'+
+    '<div class="secttl">Market regime</div>'+
     '<div class="sectsub">Our blend of five percentile gauges — a compass, not investment advice.</div>'+
     '<div class="rg-head"><span class="rg-score">'+score+'</span><span class="rg-band '+band[1]+'">'+band[0]+'</span><span class="sectsub">/ 100</span></div>'+
     '<div class="rg-meter"><i style="left:'+score+'%"></i></div>'+
@@ -583,7 +583,7 @@ function buildMovers(){
   const top=rows.slice(0,6);
   if(!top.length) return;
   $('movers').innerHTML =
-    '<div class="secttl">⚡ What moved this week</div>'+
+    '<div class="secttl">What moved this week</div>'+
     '<div class="sectsub" style="margin-bottom:4px">'+"Biggest 7-day jumps in each indicator's percentile-in-history."+'</div>'+
     top.map(r=>{
       const good=r.cfg.inv? r.d<0 : r.d>0;

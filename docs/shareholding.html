@@ -51,7 +51,7 @@
       <h1 class="text-xl font-bold text-slate-900">FII / DII holdings — who's raising stake in which stock</h1>
       <p class="text-sm text-slate-500 mt-0.5">Foreign &amp; domestic institutional holding per stock from quarterly shareholding-pattern filings — refreshed daily as companies file (new filings land here every day during season). <span id="updated" class="text-slate-400"></span></p>
     </div>
-    <a href="./fii-dii.html" class="chip shrink-0">🌐 Daily FII/DII buy-sell flows →</a>
+    <a href="./fii-dii.html" class="chip shrink-0"><svg class="sw-i" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="12" r="10"/><path d="M12 2a14.5 14.5 0 0 0 0 20 14.5 14.5 0 0 0 0-20"/><path d="M2 12h20"/></svg> Daily FII/DII buy-sell flows →</a>
   </div>
 
   <div id="status" class="text-sm text-slate-500">Loading shareholding data…</div>
@@ -77,7 +77,7 @@
         <select id="index" class="border border-slate-200 rounded-lg px-2 py-1.5 text-xs bg-white" title="Filter to the current members of an NSE index"><option value="">All indices</option></select>
         <select id="sector" class="border border-slate-200 rounded-lg px-2 py-1.5 text-xs bg-white"><option value="">All sectors</option></select>
         <span id="count" class="text-xs text-slate-400 ml-auto"></span>
-        <button id="csv" class="chip">⬇ CSV</button>
+        <button id="csv" class="chip"><svg class="sw-i" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg> CSV</button>
       </div>
     </div>
 
@@ -228,10 +228,11 @@ function buildCards(){
          card('Top FII add','—','awaiting filings'));
 }
 
+const SWI={trend:'<svg class="sw-i" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><polyline points="22 7 13.5 15.5 8.5 10.5 2 17"/><polyline points="16 7 22 7 22 13"/></svg>',trenddown:'<svg class="sw-i" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><polyline points="22 17 13.5 8.5 8.5 13.5 2 7"/><polyline points="16 17 22 17 22 11"/></svg>',home:'<svg class="sw-i" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="m3 9 9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"/><polyline points="9 22 9 12 15 12 15 22"/></svg>',sparkles:'<svg class="sw-i" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="m12 3 1.9 5.8a2 2 0 0 0 1.3 1.3L21 12l-5.8 1.9a2 2 0 0 0-1.3 1.3L12 21l-1.9-5.8a2 2 0 0 0-1.3-1.3L3 12l5.8-1.9a2 2 0 0 0 1.3-1.3Z"/></svg>'};
 const CHIP_DEFS = [
-  ['all','All stocks'], ['fiiup','🟢 FII raising'], ['fiidn','🔴 FII cutting'],
-  ['diiup','🟢 DII raising'], ['diidn','🔴 DII cutting'], ['bothup','💪 Both raising'],
-  ['promup','🏠 Promoter raising'], ['fresh','🆕 Filed this week']
+  ['all','All stocks'], ['fiiup',SWI.trend+' FII raising'], ['fiidn',SWI.trenddown+' FII cutting'],
+  ['diiup',SWI.trend+' DII raising'], ['diidn',SWI.trenddown+' DII cutting'], ['bothup',SWI.trend+' Both raising'],
+  ['promup',SWI.home+' Promoter raising'], ['fresh',SWI.sparkles+' Filed this week']
 ];
 function buildChips(){
   $('chips').innerHTML = CHIP_DEFS.map(c=>'<button class="chip'+(mode===c[0]?' on':'')+'" data-m="'+c[0]+'">'+c[1]+'</button>').join('');

@@ -45,16 +45,16 @@
       <a href="./saved-strategies.html" class="text-slate-400 hover:text-slate-600 text-sm" title="Back to Saved Strategies">←</a>
       <h1 id="title" class="text-xl md:text-2xl font-bold text-slate-900 truncate">Strategy</h1>
     </div>
-    <button id="editBtn" class="hidden items-center gap-1.5 px-3.5 py-2 rounded-lg text-xs font-semibold bg-slate-800 text-white hover:bg-slate-900 shadow-sm transition">✏️ Edit Strategy</button>
+    <button id="editBtn" class="hidden items-center gap-1.5 px-3.5 py-2 rounded-lg text-xs font-semibold bg-slate-800 text-white hover:bg-slate-900 shadow-sm transition"><svg class="sw-i" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M17 3a2.85 2.83 0 1 1 4 4L7.5 20.5 2 22l1.5-5.5Z"/><path d="m15 5 4 4"/></svg> Edit Strategy</button>
   </div>
   <div id="subtitle" class="flex flex-wrap items-center gap-1.5 mb-4"></div>
   <div id="stratStats" class="hidden grid-cols-2 lg:grid-cols-4 gap-3 mb-4"></div>
 
   <!-- Trendlyne-style action tabs: the strategy IS a live screen; backtests & rewind hang off it -->
   <div id="tabs" class="hidden items-center gap-1.5 mb-4 flex-wrap">
-    <button id="tabPicks" class="tabbtn">🎯 Live Picks</button>
-    <button id="tabBt" class="tabbtn">📈 Backtests</button>
-    <button id="tabRw" class="tabbtn">🕘 Rewind</button>
+    <button id="tabPicks" class="tabbtn"><svg class="sw-i" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="12" r="10"/><circle cx="12" cy="12" r="6"/><circle cx="12" cy="12" r="2"/></svg> Live Picks</button>
+    <button id="tabBt" class="tabbtn"><svg class="sw-i" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><polyline points="22 7 13.5 15.5 8.5 10.5 2 17"/><polyline points="16 7 22 7 22 13"/></svg> Backtests</button>
+    <button id="tabRw" class="tabbtn"><svg class="sw-i" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M3 12a9 9 0 1 0 9-9 9.75 9.75 0 0 0-6.74 2.74L3 8"/><path d="M3 3v5h5"/><path d="M12 7v5l4 2"/></svg> Rewind</button>
   </div>
 
   <div id="body"></div>
@@ -62,6 +62,7 @@
 
 <script>
 'use strict';
+var SWI={trend:'<svg class="sw-i" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><polyline points="22 7 13.5 15.5 8.5 10.5 2 17"/><polyline points="16 7 22 7 22 13"/></svg>',globe:'<svg class="sw-i" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="12" r="10"/><path d="M12 2a14.5 14.5 0 0 0 0 20 14.5 14.5 0 0 0 0-20"/><path d="M2 12h20"/></svg>',repeat:'<svg class="sw-i" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="m17 2 4 4-4 4"/><path d="M3 11v-1a4 4 0 0 1 4-4h14"/><path d="m7 22-4-4 4-4"/><path d="M21 13v1a4 4 0 0 1-4 4H3"/></svg>',basket:'<svg class="sw-i" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="m5 11 4-7"/><path d="m19 11-4-7"/><path d="M2 11h20"/><path d="m3.5 11 1.6 7.4a2 2 0 0 0 2 1.6h9.8a2 2 0 0 0 2-1.6l1.7-7.4"/><path d="m9 11 1 9"/><path d="M4.5 15.5h15"/><path d="m15 11-1 9"/></svg>',bars:'<svg class="sw-i" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M3 3v18h18"/><path d="M18 17V9"/><path d="M13 17V5"/><path d="M8 17v-3"/></svg>',search:'<svg class="sw-i" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="11" cy="11" r="8"/><path d="m21 21-4.3-4.3"/></svg>'};
 const $ = id => document.getElementById(id);
 const FREQ = { 1: 'Monthly', 3: 'Quarterly', 6: 'Half-yearly', 12: 'Yearly' };
 const SORTL = { changePercent: 'Change % desc', rsi: 'RSI', d52: '% from 52w High', d52_low_pct: '% from 52w Low', indRank: 'Industry rank', mcap: 'Mcap', hist_mcap: 'Hist mcap', profitYoyPct: 'Net Profit Qtr Growth YoY %', profitBase: 'Net Profit (year-ago Q)', profitAccel: 'Profit-growth acceleration', profitTTM: 'Profit growth TTM %', profitStreak: 'Profit-growth streak', postDrift: 'Post-result drift %', composite: 'Quality-Momentum composite' };
@@ -152,9 +153,9 @@ function paramsCard(c) {
     </div>
     <div class="flex items-center justify-between flex-wrap gap-2 border-t border-slate-100 pt-3">
       <div class="text-[12px] text-slate-600 min-w-0"><span class="font-semibold text-slate-500">Filters:</span> <span class="mono break-words">${esc(filt)}</span> <a href="./stock-backtest.html" id="editFilters" class="text-indigo-600 hover:underline whitespace-nowrap">edit filters →</a></div>
-      <button id="runBtn" class="bg-blue-600 hover:bg-blue-700 text-white rounded-lg px-5 py-2.5 text-sm font-semibold shadow-sm transition shrink-0">▶ Run Backtest</button>
+      <button id="runBtn" class="bg-blue-600 hover:bg-blue-700 text-white rounded-lg px-5 py-2.5 text-sm font-semibold shadow-sm transition shrink-0"><svg class="sw-i" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><polygon points="6 3 20 12 6 21 6 3"/></svg> Run Backtest</button>
     </div>
-    <div id="runNote" class="text-[11px] text-slate-400 mt-2">Market data loads only when you run. To change the strategy itself, use ✏️ Edit Strategy (top-right) — it updates in place, never a duplicate.</div>
+    <div id="runNote" class="text-[11px] text-slate-400 mt-2">Market data loads only when you run. To change the strategy itself, use Edit Strategy (top-right) — it updates in place, never a duplicate.</div>
   </div>`;
 }
 // Fill the form controls from the strategy config (called after the HTML is inserted).
@@ -201,7 +202,7 @@ function historyTable(list) {
       <td class="px-3 py-3 text-right text-sm">${cagr}</td>
       <td class="px-3 py-3 text-right text-sm">${dd}</td>
       <td class="px-3 py-3 text-right text-xs text-slate-500 whitespace-nowrap">${fin}</td>
-      <td class="px-3 py-3 text-right"><button class="text-slate-400 hover:text-indigo-600 text-base" data-eye="${esc(b.id)}" title="View result">👁</button></td>
+      <td class="px-3 py-3 text-right"><button class="text-slate-400 hover:text-indigo-600 text-base" data-eye="${esc(b.id)}" title="View result"><svg class="sw-i" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M2 12s3-7 10-7 10 7 10 7-3 7-10 7-10-7-10-7Z"/><circle cx="12" cy="12" r="3"/></svg></button></td>
     </tr>`;
   }).join('');
   return `<div class="text-base font-bold text-slate-900 mb-2 flex items-center justify-between">
@@ -239,11 +240,11 @@ let BAKED = null;        // { day, picks:[{s,p}], updated } from live_tracking.j
 function picksCard(c) {
   return `<div class="card p-5 mb-6" id="picksCard">
     <div class="flex items-center justify-between flex-wrap gap-2 mb-3">
-      <div><div class="text-base font-bold text-slate-900">🎯 Live Picks — current basket</div>
+      <div><div class="text-base font-bold text-slate-900">Live Picks — current basket</div>
         <div class="text-[12px] text-slate-500">The stocks this strategy selects right now — its filters + <b>${esc(SORTL[c.sortBy] || c.sortBy)}</b> (${c.dir === 'high' ? 'prefer high' : 'prefer low'}) ranking. Top ${c.topN} ⭐ = the basket.</div></div>
       <div class="flex items-end gap-2 flex-wrap">
-        <button id="pkFull" class="bg-indigo-600 hover:bg-indigo-700 text-white rounded-lg px-4 py-2 text-sm font-semibold shadow-sm shrink-0">⚡ Full details</button>
-        <button id="pkCsv" class="bg-emerald-600 hover:bg-emerald-700 text-white rounded-lg px-3 py-2 text-sm font-semibold shadow-sm shrink-0">⬇ CSV</button>
+        <button id="pkFull" class="bg-indigo-600 hover:bg-indigo-700 text-white rounded-lg px-4 py-2 text-sm font-semibold shadow-sm shrink-0"><svg class="sw-i" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><polygon points="13 2 3 14 12 14 11 22 21 10 12 10 13 2"/></svg> Full details</button>
+        <button id="pkCsv" class="bg-emerald-600 hover:bg-emerald-700 text-white rounded-lg px-3 py-2 text-sm font-semibold shadow-sm shrink-0"><svg class="sw-i" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg> CSV</button>
       </div>
     </div>
     <div id="pkMsg" class="text-xs text-slate-500"></div>
@@ -369,7 +370,7 @@ function downloadPicksCSV() {
 function rewindCard(c) {
   return `<div class="card p-5 mb-6" id="rewindCard">
     <div class="flex items-center justify-between flex-wrap gap-2 mb-3">
-      <div><div class="text-base font-bold text-slate-900">🕘 Rewind — qualifying stocks on a date</div>
+      <div><div class="text-base font-bold text-slate-900">Rewind — qualifying stocks on a date</div>
         <div class="text-[12px] text-slate-500">Every stock that passed this strategy's filters on the chosen day, ranked. The Top ${c.topN} ⭐ are the picks.</div></div>
       <div class="flex items-end gap-2">
         <div><label class="lbl">As of date</label><input id="rwDate" type="date" class="inp" style="width:auto"></div>
@@ -432,11 +433,11 @@ function renderStrategy(strat, list) {
   const chip = (t, title) => `<span class="sw-chip" ${title ? `title="${esc(title)}"` : ''} style="max-width:360px;overflow:hidden;text-overflow:ellipsis">${t}</span>`;
   $('subtitle').innerHTML = [
     STRAT_SERIAL ? `<span class="sw-sn" title="Save serial — DDMMYY plus the order saved that day">${esc(STRAT_SERIAL)}</span>` : '',
-    chip('🌐 ' + esc(universeLabel(c))),
-    chip('🔁 ' + esc(FREQ[c.freq] || c.freq + 'mo')),
-    chip('🧺 Top ' + (+c.topN || '?')),
-    chip('📊 ' + esc(SORTL[c.sortBy] || c.sortBy) + (c.dir === 'high' ? ' · prefer high' : ' · prefer low')),
-    chip('🔍 ' + esc(fx || 'no filters'), fx),
+    chip(SWI.globe + ' ' + esc(universeLabel(c))),
+    chip(SWI.repeat + ' ' + esc(FREQ[c.freq] || c.freq + 'mo')),
+    chip(SWI.basket + ' Top ' + (+c.topN || '?')),
+    chip(SWI.bars + ' ' + esc(SORTL[c.sortBy] || c.sortBy) + (c.dir === 'high' ? ' · prefer high' : ' · prefer low')),
+    chip(SWI.search + ' ' + esc(fx || 'no filters'), fx),
   ].join('');
   // at-a-glance record from this strategy's saved runs
   let best = null, beat = 0, scored = 0, worstDD = null;
@@ -454,7 +455,7 @@ function renderStrategy(strat, list) {
   }
   $('tabs').classList.remove('hidden'); $('tabs').classList.add('flex');
   $('editBtn').classList.remove('hidden'); $('editBtn').classList.add('inline-flex');
-  $('tabBt').textContent = `📈 Backtests (${list.length})`;
+  $('tabBt').innerHTML = SWI.trend + ` Backtests (${list.length})`;
   $('body').innerHTML =
     `<div id="secPicks">${picksCard(c)}</div>
      <div id="secBt" class="hidden">${paramsCard(c)}${historyTable(list)}</div>
