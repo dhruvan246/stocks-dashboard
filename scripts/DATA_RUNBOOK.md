@@ -14075,3 +14075,50 @@ ASIANTILES / NEULANDLAB demergers. 36 of 48 sit on a clean bonus ratio. **Net co
 **Bottom line: the price-adjustment layer is sound for live/liquid stocks.** No data change shipped. The
 one genuinely open item this corroborates is the §86/§95 orphan-stub class (dead keys carrying junk), a
 separate campaign.
+
+---
+
+## 127. ★★ STD-PAT + FII/DII COVERAGE 2002→date, N500 — the N/A layer is 96% our own capture gap, and BSE's aspx `Flag=Old` serves the SHP era we never asked for  (2026-09-05)
+
+**Plan + queues:** `scripts/PLAN_STDPAT_SHP_COVERAGE_2002.md`, `scripts/stdpat_shp_cov_queue_2026-09-05.json`
+(7,782 std-PAT root cells / 1,003 symbols · 3,110 SHP root filings / 900 symbols, every row tagged with the
+committed-ledger record found for it). Measured off the LIVE coverage payload (bake 2026-09-04 03:30 IST;
+local `--explain` bake 0 diffs; roster reproduction 0 mismatches on 296 dates).
+
+**Headline (member-months, have/N-A/holes):** patStd 141,702/5,067/1,266 (99.1%) · profitTTMStd
+124,892/5,073/18,070 (87.4%) · fiiPct/diiPct 139,420/7,422/1,193 (99.2%) · fiiChgPp/diiChgPp
+134,667/9,081/4,287 (96.9%). Thin years: fiiPct **2002 = 0%** (store starts 2002-12-31), TTMStd 2002-06
+26-50%, patStd 2002 77%.
+
+### 127a. ★★★ The N/A cells on these columns are OUR gap — classify them by the TAPE, not by the store
+The basis/std families' only N/A rule (`nothingPublicYet`, builder ~L975-1007) and fiiPct's
+first-submission rule both read our own oldest row. Classified against each symbol's first traded bar:
+patStd N/A 5,067 → **4,868** trading ≥365 d before the date (2002-08: 4,451); fiiPct N/A 7,422 → **7,043**;
+fiiChgPp 9,081 → ~7,078 after removing the Sep-2022 suppression + pre-listing priors. Only 199 / 379 / 545
+are plausibly "nothing public yet". Same class as §112: a fill converts these N/A into holes before it
+converts them into `have`. **Judge the campaign by `have`.** Builder now names N/A symbols per date in the
+explain output (`na:<param>` keys; payload counts unchanged, verified bake-vs-bake).
+
+### 127b. ★★★ `fetch_shp_bse_aspx.py` floors its frontier at 2002-12-31 — the aspx serves Mar-2001 → Sep-2002
+`cmd_frontier` L88-89 (`"2002-12-31" <= q`) is the only reason `shp_history.json`'s earliest row is
+Dec-2002. §22f recorded RIL Mar-2001 under `Flag=Old` and the floor was never moved. Pilot 8 symbols × 7
+quarters (qtrid 29-35): **54/56 pages served a 1997-format table** (47 with an FII row, 7 FIIS-absent =
+proven-zero), 2 transient fetch fails. 1,617 root filings + the whole era's ~3,500 member-quarters are
+one frontier edit away (plan WP-S1). Root-cause lesson: a frontier constant is a negative verdict nobody
+recorded — grep the tool's window before believing a store's floor.
+
+### 127c. ★ NSE's archived shareholding pages (Wayback) are a `>1% holders` list — a floor reader, not a source
+`marketinfo/companyinfo/eod/shareholding1.jsp?symbol=&date=`: 7,043 captures, 3,920 (symbol, as-on) pages
+2002-2006, 433 overlap our SHP roots. The page lists entities holding >1% with category sub-totals
+(ESSARGUJ 30-Sep-2002: FIIs 1.89, Banks/FIs/Ins 3.07, grand total 29.16) — sub-totals are FLOORS of the
+filed category totals. Use it to refute a fabricated `FII 0.00` (§22f seam class) or corroborate an aspx
+read; never to fill a percentage. `shareholding.jsp?symbol=` is only the date list. Wayback CDX 503s
+intermittently — retry with back-off before concluding.
+
+### 127d. Std-PAT root enumeration must include the N/A cells and run to a fix-point
+Fix-point over missing + N/A member-months (N/A → the quarter a compliant filer would have published)
+converged in 4 iterations: 7,782 cells, **3,363 in 1999-2001** (TTM reach-back, §112c). 5,753 are older
+than the symbol's first stored row, 1,196 holes inside a series, 564 on ~50 symbols with no row at all.
+Committed-ledger tags: 6,529 no record (the FAV14 pre-2009 MC verdicts were scratch-only — re-run
+`mc_era.py`, it is cached), 885 with an archived NSE `results.jsp` page (213 in 2000-01 never requested),
+338 MC-closed, 40 claimed by a fill ledger yet absent from the store (check first).

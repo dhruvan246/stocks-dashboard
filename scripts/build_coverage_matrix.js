@@ -1024,28 +1024,28 @@ function run(ctx, C) {
         if (seen) seen.add(r.sym);
         for (let j = 0; j < engineCols.length; j++) {
           if (r.flags[j]) cnt[engineCols[j]]++;
-          else if (r.na && r.na[j]) nac[engineCols[j]]++;   // inapplicable, not missing
+          else if (r.na && r.na[j]) { nac[engineCols[j]]++; if (ex) (ex['na:' + PARAMS[engineCols[j]].k] ||= []).push(r.sym); }   // inapplicable, not missing
           else if (ex) (ex[PARAMS[engineCols[j]].k] ||= []).push(r.sym);   // missing, not N/A
         }
         if (r.indKnown) cnt[iIndustry]++; else if (ex) (ex.industry ||= []).push(r.sym);
         for (let j = 0; j < revCols.length; j++) {
           if (r.rv[j]) cnt[revCols[j]]++;
-          else if (r.rvna && r.rvna[j]) nac[revCols[j]]++;   // inapplicable, not missing
+          else if (r.rvna && r.rvna[j]) { nac[revCols[j]]++; if (ex) (ex['na:' + PARAMS[revCols[j]].k] ||= []).push(r.sym); }   // inapplicable, not missing
           else if (ex) (ex[PARAMS[revCols[j]].k] ||= []).push(r.sym);
         }
         for (let j = 0; j < 4; j++) {
           if (r.bs[j]) cnt[basisCols[j]]++;
-          else if (r.bsna && r.bsna[j]) nac[basisCols[j]]++;   // nothing was public yet (§99)
+          else if (r.bsna && r.bsna[j]) { nac[basisCols[j]]++; if (ex) (ex['na:' + PARAMS[basisCols[j]].k] ||= []).push(r.sym); }   // nothing was public yet (§99)
           else if (ex) (ex[PARAMS[basisCols[j]].k] ||= []).push(r.sym);   // otherwise no N/A by design
         }
         for (let j = 0; j < stdCols.length; j++) {
           if (r.es[j]) cnt[stdCols[j]]++;
-          else if (r.esna && r.esna[j]) nac[stdCols[j]]++;     // nothing was public yet (§99)
+          else if (r.esna && r.esna[j]) { nac[stdCols[j]]++; if (ex) (ex['na:' + PARAMS[stdCols[j]].k] ||= []).push(r.sym); }     // nothing was public yet (§99)
           else if (ex) (ex[PARAMS[stdCols[j]].k] ||= []).push(r.sym);   // otherwise RAW — no N/A
         }
         for (let j = 0; j < conCols.length; j++) {
           if (r.ec[j]) cnt[conCols[j]]++;
-          else if (r.ecna && r.ecna[j]) nac[conCols[j]]++;     // nothing was public yet (§99)
+          else if (r.ecna && r.ecna[j]) { nac[conCols[j]]++; if (ex) (ex['na:' + PARAMS[conCols[j]].k] ||= []).push(r.sym); }     // nothing was public yet (§99)
           else if (ex) (ex[PARAMS[conCols[j]].k] ||= []).push(r.sym);   // otherwise RAW — no N/A
         }
       }
