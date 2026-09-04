@@ -7,12 +7,11 @@
 <meta name="description" content="Live dashboards for Indian stocks, sectors and mutual funds, plus a strategy backtester over 25+ years of data." />
 <link rel="stylesheet" href="./theme.css" />
 <script src="./theme.js"></script>
-<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
 <style>
   :root{ --up:#059669; --up-soft:rgba(5,150,105,.10); --down:#dc2626; --down-soft:rgba(220,38,38,.10); }
   html[data-theme="dark"]{ --up:#34d399; --up-soft:rgba(52,211,153,.14); --down:#f87171; --down-soft:rgba(248,113,113,.14); }
   *{box-sizing:border-box;}
-  body{font-family:'Inter',system-ui,-apple-system,'Segoe UI',sans-serif;margin:0;color:var(--text);-webkit-font-smoothing:antialiased;overflow-x:hidden;
+  body{font-family:var(--font);margin:0;color:var(--text);-webkit-font-smoothing:antialiased;overflow-x:hidden;
     font-feature-settings:"tnum" 1;}
   body::before{content:"";position:fixed;inset:0;z-index:-1;pointer-events:none;
     background:
@@ -28,9 +27,10 @@
   header.sw-scrolled{box-shadow:var(--shadow);}
   .hd{display:flex;align-items:center;gap:12px;height:60px;}
   .logo{display:flex;align-items:center;gap:10px;font-weight:800;letter-spacing:-.02em;font-size:18px;color:var(--text);}
-  .logo .mark{width:30px;height:30px;border-radius:9px;display:grid;place-items:center;color:#fff;font-size:12px;font-weight:800;
-    background:linear-gradient(135deg,var(--accent),var(--accent-2));box-shadow:0 6px 16px -6px var(--glow);}
-  .logo em{font-style:normal;color:var(--accent);}
+  .logo .mark{width:30px;height:30px;border-radius:9px;display:grid;place-items:center;color:#fff;font-size:11px;font-weight:800;letter-spacing:.04em;
+    background:linear-gradient(150deg,color-mix(in srgb,var(--accent) 82%,#fff),var(--accent) 55%,color-mix(in srgb,var(--accent) 72%,#000));
+    box-shadow:inset 0 1px 0 rgba(255,255,255,.28),0 4px 12px -5px var(--glow);}
+  .logo em{font-style:normal;color:var(--accent-text);}
   /* narrow phones: keep just the SW mark, like every other page (their Tailwind
      header hides the wordmark under 640px). With the full wordmark the ☰ menu and
      the theme pill ran into each other on a 360-400px screen. */
@@ -147,7 +147,7 @@
   .tile{display:flex;gap:13px;align-items:flex-start;background:var(--surface);border:1px solid var(--border);border-radius:var(--radius);
     padding:16px;box-shadow:var(--shadow);transition:transform var(--tr),box-shadow var(--tr),border-color var(--tr);}
   .tile:hover{transform:translateY(-3px);box-shadow:var(--shadow-lg);border-color:color-mix(in srgb,var(--accent) 40%,var(--border));}
-  .tile .ic{flex:none;width:42px;height:42px;border-radius:11px;display:grid;place-items:center;font-size:20px;background:var(--accent-soft);}
+  .tile .ic{flex:none;width:42px;height:42px;border-radius:11px;display:grid;place-items:center;font-size:20px;background:var(--accent-soft);color:var(--accent-text);}
   .tile .tt{font-size:15px;font-weight:700;letter-spacing:-.01em;display:flex;align-items:center;gap:6px;color:var(--text);}
   .tile .tt .arrow{color:var(--text-faint);font-size:13px;transition:transform var(--tr);}
   .tile:hover .tt .arrow{transform:translate(3px,-3px);color:var(--accent);}

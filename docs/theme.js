@@ -4,11 +4,66 @@
  * remembered per browser (localStorage 'sw_theme') and shared across all pages. */
 (function () {
   'use strict';
+  // ---- inline SVG icon set (Lucide-style 24px strokes) — ONE place, used by the nav,
+  // page tabs, footer, bottom bar, theme switch, search palette and the home tiles.
+  // Emoji used to sit in these slots; they rendered differently on every OS. ----
+  var ICONS = {
+    candle: '<path d="M9 4v3"/><rect x="7" y="7" width="4" height="8" rx="1"/><path d="M9 15v5"/><path d="M15 3v4"/><rect x="13" y="7" width="4" height="10" rx="1"/><path d="M15 17v4"/>',
+    trend: '<polyline points="22 7 13.5 15.5 8.5 10.5 2 17"/><polyline points="16 7 22 7 22 13"/>',
+    gauge: '<path d="m12 14 4-4"/><path d="M3.34 19a10 10 0 1 1 17.32 0"/>',
+    pie: '<path d="M21.21 15.89A10 10 0 1 1 8 2.83"/><path d="M22 12A10 10 0 0 0 12 2v10z"/>',
+    calendar: '<rect x="3" y="4" width="18" height="18" rx="2"/><line x1="16" y1="2" x2="16" y2="6"/><line x1="8" y1="2" x2="8" y2="6"/><line x1="3" y1="10" x2="21" y2="10"/>',
+    caldays: '<rect x="3" y="4" width="18" height="18" rx="2"/><path d="M16 2v4M8 2v4M3 10h18"/><path d="M8 14h.01M12 14h.01M16 14h.01M8 18h.01M12 18h.01M16 18h.01"/>',
+    thermo: '<path d="M14 4v10.54a4 4 0 1 1-4 0V4a2 2 0 0 1 4 0Z"/>',
+    activity: '<path d="M22 12h-4l-3 9L9 3l-3 9H2"/>',
+    globe: '<circle cx="12" cy="12" r="10"/><path d="M12 2a14.5 14.5 0 0 0 0 20 14.5 14.5 0 0 0 0-20"/><path d="M2 12h20"/>',
+    bookmark: '<path d="m19 21-7-4-7 4V5a2 2 0 0 1 2-2h10a2 2 0 0 1 2 2v16z"/>',
+    star: '<polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/>',
+    swap: '<path d="M8 3 4 7l4 4"/><path d="M4 7h16"/><path d="m16 21 4-4-4-4"/><path d="M20 17H4"/>',
+    landmark: '<line x1="3" y1="22" x2="21" y2="22"/><line x1="6" y1="18" x2="6" y2="11"/><line x1="10" y1="18" x2="10" y2="11"/><line x1="14" y1="18" x2="14" y2="11"/><line x1="18" y1="18" x2="18" y2="11"/><polygon points="12 2 20 7 4 7"/>',
+    briefcase: '<rect x="2" y="7" width="20" height="14" rx="2"/><path d="M16 21V5a2 2 0 0 0-2-2h-4a2 2 0 0 0-2 2v16"/>',
+    eye: '<path d="M2 12s3-7 10-7 10 7 10 7-3 7-10 7-10-7-10-7Z"/><circle cx="12" cy="12" r="3"/>',
+    truck: '<path d="M5 18H3c-.6 0-1-.4-1-1V7c0-.6.4-1 1-1h10c.6 0 1 .4 1 1v11"/><path d="M14 9h4l4 4v4c0 .6-.4 1-1 1h-2"/><circle cx="7" cy="18" r="2"/><path d="M15 18H9"/><circle cx="17" cy="18" r="2"/>',
+    zap: '<polygon points="13 2 3 14 12 14 11 22 21 10 12 10 13 2"/>',
+    banknote: '<rect x="2" y="6" width="20" height="12" rx="2"/><circle cx="12" cy="12" r="2"/><path d="M6 12h.01M18 12h.01"/>',
+    sparkles: '<path d="m12 3 1.9 5.8a2 2 0 0 0 1.3 1.3L21 12l-5.8 1.9a2 2 0 0 0-1.3 1.3L12 21l-1.9-5.8a2 2 0 0 0-1.3-1.3L3 12l5.8-1.9a2 2 0 0 0 1.3-1.3Z"/>',
+    file: '<path d="M14.5 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V7.5L14.5 2z"/><polyline points="14 2 14 8 20 8"/><line x1="16" y1="13" x2="8" y2="13"/><line x1="16" y1="17" x2="8" y2="17"/>',
+    megaphone: '<path d="m3 11 18-5v12L3 14v-3z"/><path d="M11.6 16.8a3 3 0 1 1-5.8-1.6"/>',
+    rocket: '<path d="M4.5 16.5c-1.5 1.26-2 5-2 5s3.74-.5 5-2c.71-.84.7-2.13-.09-2.91a2.18 2.18 0 0 0-2.91-.09z"/><path d="m12 15-3-3a22 22 0 0 1 2-3.95A12.88 12.88 0 0 1 22 2c0 2.72-.78 7.5-6 11a22.35 22.35 0 0 1-4 2z"/><path d="M9 12H4s.55-3.03 2-4c1.62-1.08 5 0 5 0"/><path d="M12 15v5s3.03-.55 4-2c1.08-1.62 0-5 0-5"/>',
+    wallet: '<path d="M21 12V7H5a2 2 0 0 1 0-4h14v4"/><path d="M3 5v14a2 2 0 0 0 2 2h16v-5"/><path d="M18 12a2 2 0 0 0 0 4h4v-4Z"/>',
+    calc: '<rect x="4" y="2" width="16" height="20" rx="2"/><line x1="8" y1="6" x2="16" y2="6"/><line x1="16" y1="14" x2="16" y2="18"/><path d="M16 10h.01M12 10h.01M8 10h.01M12 14h.01M8 14h.01M12 18h.01M8 18h.01"/>',
+    target: '<circle cx="12" cy="12" r="10"/><circle cx="12" cy="12" r="6"/><circle cx="12" cy="12" r="2"/>',
+    coins: '<circle cx="8" cy="8" r="6"/><path d="M18.09 10.37A6 6 0 1 1 10.34 18"/><path d="M7 6h1v4"/><path d="m16.71 13.88.7.71-2.82 2.82"/>',
+    layers: '<path d="m12.83 2.18a2 2 0 0 0-1.66 0L2.6 6.08a1 1 0 0 0 0 1.83l8.58 3.91a2 2 0 0 0 1.66 0l8.58-3.9a1 1 0 0 0 0-1.83Z"/><path d="m22 12.5-8.58 3.91a2 2 0 0 1-1.66 0L2.6 12.5"/><path d="m22 17.5-8.58 3.91a2 2 0 0 1-1.66 0L2.6 17.5"/>',
+    sliders: '<line x1="21" y1="4" x2="14" y2="4"/><line x1="10" y1="4" x2="3" y2="4"/><line x1="21" y1="12" x2="12" y2="12"/><line x1="8" y1="12" x2="3" y2="12"/><line x1="21" y1="20" x2="16" y2="20"/><line x1="12" y1="20" x2="3" y2="20"/><line x1="14" y1="2" x2="14" y2="6"/><line x1="8" y1="10" x2="8" y2="14"/><line x1="16" y1="18" x2="16" y2="22"/>',
+    history: '<path d="M3 12a9 9 0 1 0 9-9 9.75 9.75 0 0 0-6.74 2.74L3 8"/><path d="M3 3v5h5"/><path d="M12 7v5l4 2"/>',
+    radio: '<circle cx="12" cy="12" r="2"/><path d="M4.93 19.07a10 10 0 0 1 0-14.14"/><path d="M7.76 16.24a6 6 0 0 1 0-8.49"/><path d="M16.24 7.76a6 6 0 0 1 0 8.49"/><path d="M19.07 4.93a10 10 0 0 1 0 14.14"/>',
+    pulse: '<path d="M19 14c1.49-1.46 3-3.21 3-5.5A5.5 5.5 0 0 0 16.5 3c-1.76 0-3 .5-4.5 2-1.5-1.5-2.74-2-4.5-2A5.5 5.5 0 0 0 2 8.5c0 2.3 1.5 4.05 3 5.5l7 7Z"/><path d="M3.22 12H9.5l.5-1 2 4.5 2-7 1.5 3.5h5.27"/>',
+    check: '<path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"/><polyline points="22 4 12 14.01 9 11.01"/>',
+    bars: '<path d="M3 3v18h18"/><path d="M18 17V9"/><path d="M13 17V5"/><path d="M8 17v-3"/>',
+    bars2: '<line x1="18" y1="20" x2="18" y2="10"/><line x1="12" y1="20" x2="12" y2="4"/><line x1="6" y1="20" x2="6" y2="14"/>',
+    compass: '<circle cx="12" cy="12" r="10"/><polygon points="16.24 7.76 14.12 14.12 7.76 16.24 9.88 9.88 16.24 7.76"/>',
+    inbox: '<polyline points="22 12 16 12 14 15 10 15 8 12 2 12"/><path d="M5.45 5.11 2 12v6a2 2 0 0 0 2 2h16a2 2 0 0 0 2-2v-6l-3.45-6.89A2 2 0 0 0 16.76 4H7.24a2 2 0 0 0-1.79 1.11z"/>',
+    flask: '<path d="M10 2v7.527a2 2 0 0 1-.211.896L4.72 20.55a1 1 0 0 0 .9 1.45h12.76a1 1 0 0 0 .9-1.45l-5.069-10.127A2 2 0 0 1 14 9.527V2"/><path d="M8.5 2h7"/><path d="M7 16h10"/>',
+    home: '<path d="m3 9 9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"/><polyline points="9 22 9 12 15 12 15 22"/>',
+    menu: '<line x1="4" y1="6" x2="20" y2="6"/><line x1="4" y1="12" x2="20" y2="12"/><line x1="4" y1="18" x2="20" y2="18"/>',
+    search: '<circle cx="11" cy="11" r="8"/><path d="m21 21-4.3-4.3"/>',
+    sun: '<circle cx="12" cy="12" r="4"/><path d="M12 2v2M12 20v2M4.93 4.93l1.41 1.41M17.66 17.66l1.41 1.41M2 12h2M20 12h2M6.34 17.66l-1.41 1.41M19.07 4.93l-1.41 1.41"/>',
+    moon: '<path d="M12 3a6 6 0 0 0 9 9 9 9 0 1 1-9-9Z"/>',
+    palette: '<circle cx="13.5" cy="6.5" r=".8" fill="currentColor"/><circle cx="17.5" cy="10.5" r=".8" fill="currentColor"/><circle cx="8.5" cy="7.5" r=".8" fill="currentColor"/><circle cx="6.5" cy="12.5" r=".8" fill="currentColor"/><path d="M12 2C6.5 2 2 6.5 2 12s4.5 10 10 10c.926 0 1.648-.746 1.648-1.688 0-.437-.18-.835-.437-1.125-.29-.289-.438-.652-.438-1.125a1.64 1.64 0 0 1 1.668-1.668h1.996c3.051 0 5.555-2.503 5.555-5.554C21.965 6.012 17.461 2 12 2z"/>',
+    chev: '<path d="m6 9 6 6 6-6"/>',
+    book: '<path d="M2 3h6a4 4 0 0 1 4 4v14a3 3 0 0 0-3-3H2z"/><path d="M22 3h-6a4 4 0 0 0-4 4v14a3 3 0 0 1 3-3h7z"/>',
+    phone: '<rect x="5" y="2" width="14" height="20" rx="2"/><path d="M12 18h.01"/>',
+    ext: '<path d="M7 7h10v10"/><path d="M7 17 17 7"/>'
+  };
+  function ic(name, cls) {
+    return '<svg class="sw-i' + (cls ? ' ' + cls : '') + '" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">' + (ICONS[name] || '') + '</svg>';
+  }
   var KEY = 'sw_theme';
   var META = [
-    { k: 'light', ic: '☀️', lb: 'Light' },
-    { k: 'dark',  ic: '🌙', lb: 'Dark'  },
-    { k: 'soft',  ic: '🎨', lb: 'Soft'  }
+    { k: 'light', ic: ic('sun'),     lb: 'Light' },
+    { k: 'dark',  ic: ic('moon'),    lb: 'Dark'  },
+    { k: 'soft',  ic: ic('palette'), lb: 'Soft'  }
   ];
   var KEYS = META.map(function (m) { return m.k; });
 
@@ -129,56 +184,56 @@
     if (document.getElementById('sw-nav-css')) return;
     var st = document.createElement('style'); st.id = 'sw-nav-css';
     st.textContent =
-      '.sw-nav{display:flex;align-items:center;gap:8px;margin-left:auto;overflow:visible!important;}' +
-      '.sw-cta{display:inline-flex;align-items:center;gap:6px;white-space:nowrap;font-size:13px;font-weight:600;padding:7px 12px;border-radius:var(--radius-sm);background:linear-gradient(120deg,var(--accent),var(--accent-2));background-size:180% 180%;color:#fff;text-decoration:none;box-shadow:0 6px 16px -6px var(--glow);transition:transform var(--tr),box-shadow var(--tr),background-position .4s ease;}' +
-      '.sw-cta:hover,.sw-cta.active{background-position:100% 50%;transform:translateY(-1px);box-shadow:0 10px 24px -8px var(--glow);}' +
+      '.sw-nav{display:flex;align-items:center;gap:4px;margin-left:auto;overflow:visible!important;}' +
+      '.sw-cta{display:inline-flex;align-items:center;gap:7px;white-space:nowrap;font-size:13px;font-weight:600;padding:7px 13px;margin-left:6px;border-radius:9px;background:var(--accent);color:#fff;text-decoration:none;box-shadow:inset 0 1px 0 rgba(255,255,255,.18),0 1px 2px rgba(0,0,0,.25);transition:filter var(--tr),transform var(--tr),box-shadow var(--tr);}' +
+      '.sw-cta .sw-i{font-size:15px;}' +
+      '.sw-cta:hover{filter:brightness(1.08);}' +
+      '.sw-cta.active{box-shadow:0 0 0 3px var(--accent-soft);}' +
       '.sw-group{position:relative;}' +
-      '.sw-group-btn{display:inline-flex;align-items:center;gap:5px;font-size:13.5px;font-weight:600;padding:7px 11px;border-radius:var(--radius-sm);border:1px solid transparent;background:transparent;color:var(--text-muted);cursor:pointer;transition:var(--tr);white-space:nowrap;}' +
-      '.sw-group-btn:hover,.sw-group.open>.sw-group-btn{color:var(--accent);background:var(--accent-soft);}' +
-      '.sw-group-btn.active{color:var(--accent);}' +
-      '.sw-caret{font-size:9px;opacity:.75;transition:transform .18s ease;}' +
+      '.sw-group-btn{display:inline-flex;align-items:center;gap:4px;font-size:13.5px;font-weight:500;padding:7px 10px;border-radius:8px;border:0;background:transparent;color:var(--text-muted);cursor:pointer;transition:var(--tr);white-space:nowrap;font-family:inherit;}' +
+      '.sw-group-btn:hover,.sw-group.open>.sw-group-btn{color:var(--text);background:var(--surface-3);}' +
+      '.sw-group-btn.active{color:var(--text);font-weight:600;}' +
+      '.sw-caret{font-size:12px;opacity:.6;transition:transform .18s ease;}' +
       '.sw-group.open .sw-caret,.sw-menu-gbtn.open .sw-caret{transform:rotate(180deg);}' +
-      '.sw-group-panel{position:absolute;left:0;top:calc(100% + 8px);min-width:238px;max-width:84vw;background:color-mix(in srgb,var(--surface) 88%,transparent);-webkit-backdrop-filter:blur(12px);backdrop-filter:blur(12px);border:1px solid var(--border);border-radius:var(--radius-sm);box-shadow:var(--shadow-lg);padding:7px;display:none;z-index:60;max-height:78vh;overflow:auto;}' +
-      '.sw-group-panel::before{content:"";position:absolute;left:0;right:0;top:-10px;height:10px;}' +
+      '.sw-group-panel{position:absolute;left:0;top:calc(100% + 10px);min-width:244px;max-width:84vw;background:var(--surface);border:1px solid var(--border-strong);border-radius:12px;box-shadow:var(--shadow-lg);padding:6px;display:none;z-index:60;max-height:78vh;overflow:auto;}' +
+      '.sw-group-panel::before{content:"";position:absolute;left:0;right:0;top:-12px;height:12px;}' +
       '.sw-group.open>.sw-group-panel{display:block;animation:sw-pop .16s ease;}' +
       '.sw-group.align-r .sw-group-panel{left:auto;right:0;}' +
-      '.sw-group-panel--mega{flex-wrap:wrap;gap:2px 12px;min-width:0;width:612px;max-width:88vw;}' +
+      '.sw-group-panel--mega{flex-wrap:wrap;gap:4px 10px;min-width:0;width:660px;max-width:88vw;padding:8px;}' +
       '.sw-group.open>.sw-group-panel--mega{display:flex;}' +
       '.sw-mega-col{display:flex;flex-direction:column;flex:1 1 190px;min-width:186px;}' +
-      '.sw-mega-h{font-size:10px;font-weight:700;letter-spacing:.06em;text-transform:uppercase;color:var(--accent);padding:8px 10px 5px;}' +
+      '.sw-mega-h{font-size:10.5px;font-weight:600;letter-spacing:.07em;text-transform:uppercase;color:var(--text-faint);padding:8px 10px 6px;}' +
       '.sw-menu{position:relative;display:none;}' +
-      '.sw-menu-btn{display:inline-flex;align-items:center;gap:6px;font-size:13px;font-weight:600;padding:7px 12px;border-radius:var(--radius-sm);border:1px solid var(--border-strong);background:var(--surface);color:var(--text);cursor:pointer;transition:var(--tr);}' +
-      '.sw-menu-btn:hover{border-color:var(--accent);color:var(--accent);background:var(--accent-soft);}' +
-      '.sw-menu-panel{position:absolute;right:0;top:calc(100% + 8px);min-width:252px;max-width:84vw;background:color-mix(in srgb,var(--surface) 88%,transparent);-webkit-backdrop-filter:blur(12px);backdrop-filter:blur(12px);border:1px solid var(--border);border-radius:var(--radius-sm);box-shadow:var(--shadow-lg);padding:7px;display:none;z-index:60;max-height:78vh;overflow:auto;}' +
+      '.sw-menu-btn{display:inline-flex;align-items:center;gap:7px;font-size:13px;font-weight:600;padding:7px 12px;border-radius:9px;border:1px solid var(--border-strong);background:var(--surface);color:var(--text);cursor:pointer;transition:var(--tr);font-family:inherit;}' +
+      '.sw-menu-btn .sw-i{font-size:16px;}' +
+      '.sw-menu-btn:hover{border-color:var(--accent);color:var(--accent-text);}' +
+      '.sw-menu-panel{position:absolute;right:0;top:calc(100% + 10px);min-width:264px;max-width:84vw;background:var(--surface);border:1px solid var(--border-strong);border-radius:12px;box-shadow:var(--shadow-lg);padding:6px;display:none;z-index:60;max-height:78vh;overflow:auto;}' +
       '.sw-menu-panel.open{display:block;animation:sw-pop .16s ease;}' +
-      '.sw-menu-gbtn{display:flex;width:100%;align-items:center;gap:8px;font-size:10px;font-weight:700;letter-spacing:.06em;text-transform:uppercase;color:var(--text-faint);padding:9px 10px 6px;background:none;border:0;cursor:pointer;text-align:left;}' +
-      '.sw-menu-gbtn:hover{color:var(--accent);}' +
-      '.sw-menu-gbtn .sw-caret{margin-left:auto;font-size:8px;}' +
+      '.sw-menu-gbtn{display:flex;width:100%;align-items:center;gap:8px;font-size:10.5px;font-weight:600;letter-spacing:.07em;text-transform:uppercase;color:var(--text-faint);padding:10px 10px 6px;background:none;border:0;cursor:pointer;text-align:left;font-family:inherit;}' +
+      '.sw-menu-gbtn:hover{color:var(--text);}' +
+      '.sw-menu-gbtn .sw-caret{margin-left:auto;}' +
       '.sw-menu-sec{display:none;}' +
       '.sw-menu-sec.open{display:block;}' +
-      '.sw-menu-link{display:flex;align-items:center;gap:9px;font-size:14px;font-weight:500;padding:8px 10px;border-radius:9px;color:var(--text);text-decoration:none;transition:var(--tr);}' +
+      '.sw-menu-link{display:flex;align-items:center;gap:10px;font-size:13.5px;font-weight:500;padding:6px 8px;border-radius:8px;color:var(--text);text-decoration:none;transition:var(--tr);}' +
       '.sw-menu-link:hover{background:var(--surface-2);}' +
-      '.sw-menu-link.active{background:var(--accent-soft);color:var(--accent);}' +
-      '.sw-mi-ic{font-size:15px;width:20px;text-align:center;display:inline-block;}' +
-      '.sw-mi-ext{margin-left:auto;color:var(--text-faint);font-size:12px;}' +
-      '.sw-tabs{margin:0 0 14px;}' +
-      '.sw-tabs-in{display:flex;align-items:center;gap:6px;overflow-x:auto;scrollbar-width:none;-webkit-overflow-scrolling:touch;}' +
+      '.sw-menu-link.active{background:var(--accent-soft);color:var(--accent-text);}' +
+      '.sw-mi-ic{width:26px;height:26px;border-radius:7px;display:inline-flex;align-items:center;justify-content:center;background:var(--surface-2);color:var(--text-muted);flex:none;font-size:14px;transition:var(--tr);}' +
+      '.sw-menu-link:hover .sw-mi-ic,.sw-menu-link.active .sw-mi-ic{color:var(--accent-text);background:var(--accent-soft);}' +
+      '.sw-mi-ext{margin-left:auto;color:var(--text-faint);font-size:12px;display:inline-flex;}' +
+      '.sw-tabs{margin:0 0 16px;}' +
+      '.sw-tabs-in{display:inline-flex;max-width:100%;align-items:center;gap:2px;padding:3px;border:1px solid var(--border);border-radius:11px;background:var(--surface-2);overflow-x:auto;scrollbar-width:none;-webkit-overflow-scrolling:touch;}' +
       '.sw-tabs-in::-webkit-scrollbar{display:none;}' +
-      '.sw-tab{display:inline-flex;align-items:center;gap:6px;white-space:nowrap;padding:8px 15px;border-radius:.65rem;font-size:13.5px;font-weight:800;color:var(--text-muted);text-decoration:none;border:1px solid transparent;transition:var(--tr);}' +
-      '.sw-tab:hover{background:var(--surface-2);color:var(--text);}' +
-      '.sw-tab.on{background:var(--accent-soft);color:var(--accent);border-color:var(--border-strong);}' +
-      '@media (max-width:640px){.sw-tab{padding:7px 11px;font-size:12.5px;}}' +
+      '.sw-tab{display:inline-flex;align-items:center;gap:7px;white-space:nowrap;padding:6px 13px;border-radius:8px;font-size:13px;font-weight:600;color:var(--text-muted);text-decoration:none;transition:var(--tr);}' +
+      '.sw-tab .sw-i{font-size:14px;opacity:.8;}' +
+      '.sw-tab:hover{color:var(--text);}' +
+      '.sw-tab.on{background:var(--surface);color:var(--text);box-shadow:0 1px 2px rgba(0,0,0,.18),inset 0 0 0 1px var(--border-strong);}' +
+      '.sw-tab.on .sw-i{opacity:1;color:var(--accent-text);}' +
+      '@media (max-width:640px){.sw-tab{padding:6px 10px;font-size:12.5px;}}' +
       '@media (max-width:760px){.sw-group{display:none;}.sw-menu{display:block;}}' +
-      '@media (max-width:430px){.sw-cta .sw-cta-lb{display:none;}}' +
+      '@media (max-width:430px){.sw-cta{padding:7px 9px;}.sw-cta .sw-cta-lb{display:none;}}' +
       '@media (max-width:520px){.sw-menu-panel{position:fixed;left:10px;right:10px;top:60px;min-width:0;max-width:none;}}' +
       '.sw-bbar{display:none;}' +
-      '@media (max-width:760px){' +
-        '.sw-bbar{position:fixed;bottom:0;left:0;right:0;z-index:55;display:flex;background:color-mix(in srgb,var(--surface) 92%,transparent);-webkit-backdrop-filter:saturate(170%) blur(14px);backdrop-filter:saturate(170%) blur(14px);border-top:1px solid var(--border);padding-bottom:env(safe-area-inset-bottom);}' +
-        '.sw-bbar-it{flex:1;display:flex;flex-direction:column;align-items:center;gap:2px;padding:7px 0 8px;font-size:10.5px;font-weight:600;color:var(--text-muted);text-decoration:none;background:none;border:0;cursor:pointer;transition:var(--tr);}' +
-        '.sw-bbar-it .ic{font-size:17px;line-height:1;}' +
-        '.sw-bbar-it.on{color:var(--accent);}' +
-        'body{padding-bottom:calc(56px + env(safe-area-inset-bottom));}' +
-      '}' +
+      '@media (max-width:760px){.sw-bbar{position:fixed;bottom:0;left:0;right:0;z-index:55;display:flex;background:color-mix(in srgb,var(--surface) 94%,transparent);-webkit-backdrop-filter:saturate(170%) blur(14px);backdrop-filter:saturate(170%) blur(14px);border-top:1px solid var(--border);padding-bottom:env(safe-area-inset-bottom);}.sw-bbar-it{flex:1;display:flex;flex-direction:column;align-items:center;gap:3px;padding:8px 0 7px;font-size:10.5px;font-weight:600;color:var(--text-faint);text-decoration:none;background:none;border:0;cursor:pointer;transition:var(--tr);font-family:inherit;}.sw-bbar-it .ic{font-size:20px;line-height:1;display:flex;}.sw-bbar-it.on{color:var(--accent-text);}body{padding-bottom:calc(58px + env(safe-area-inset-bottom));}}' +
       'header nav:not(.sw-nav){visibility:hidden;}';
     document.head.appendChild(st);
   })();
@@ -191,54 +246,54 @@
   var NAV_GROUPS = [
     { g: 'Markets', cols: [
       { sub: 'Overview', items: [
-        ['./nse-bse-dashboard.html', '📈', 'Stocks'],
-        ['./movers.html',            '📊', 'Top Movers'],
-        ['./indices.html',           '📇', 'Indices'],
-        ['./sectors.html',           '🔥', 'Sectors'],
-        ['./monthly-returns.html',   '🗓️', 'Monthly Returns'],
-        ['./market-mood.html',       '🌡️', 'Market Mood'],
-        ['./macro.html',             '🌍', 'Macro'],
-        ['./global.html',            '🌏', 'Global Markets'],
-        ['./watchlist.html',         '📌', 'Watchlist']
+        ['./nse-bse-dashboard.html',  ic('candle'), 'Stocks'],
+        ['./movers.html',             ic('trend'), 'Top Movers'],
+        ['./indices.html',            ic('gauge'), 'Indices'],
+        ['./sectors.html',            ic('pie'), 'Sectors'],
+        ['./monthly-returns.html',    ic('calendar'), 'Monthly Returns'],
+        ['./market-mood.html',        ic('thermo'), 'Market Mood'],
+        ['./macro.html',              ic('activity'), 'Macro'],
+        ['./global.html',             ic('globe'), 'Global Markets'],
+        ['./watchlist.html',          ic('bookmark'), 'Watchlist']
       ] },
       { sub: 'Flows & Ownership', items: [
-        ['./fii-dii.html',           '🌐', 'FII/DII Flows'],
-        ['./shareholding.html',      '🏛️', 'Stock Holdings'],
-        ['./deals.html',             '🐋', 'Bulk/Block Deals'],
-        ['./insider.html',           '🕵️', 'Insider Trades'],
-        ['./delivery.html',          '📦', 'Delivery Spikes'],
-        ['./volume.html',            '⚡', 'Volume Shockers'],
-        ['./bank-credit.html',       '🏦', 'Banking Growth']
+        ['./fii-dii.html',            ic('swap'), 'FII/DII Flows'],
+        ['./shareholding.html',       ic('landmark'), 'Stock Holdings'],
+        ['./deals.html',              ic('briefcase'), 'Bulk/Block Deals'],
+        ['./insider.html',            ic('eye'), 'Insider Trades'],
+        ['./delivery.html',           ic('truck'), 'Delivery Spikes'],
+        ['./volume.html',             ic('zap'), 'Volume Shockers'],
+        ['./bank-credit.html',        ic('banknote'), 'Banking Growth']
       ] },
       { sub: 'Discovery & Filings', items: [
-        ['./discovery.html',         '💸', 'Smart Money Picks'],
-        ['./quarterly-results.html', '🧾', 'Quarterly Results'],
-        ['./announcements.html',     '📢', 'Announcements'],
-        ['./ipos.html',              '🚀', 'IPOs & Listings'],
-        ['./actions.html',           '📅', 'Ex-Dates Calendar']
+        ['./discovery.html',          ic('sparkles'), 'Smart Money Picks'],
+        ['./quarterly-results.html',  ic('file'), 'Quarterly Results'],
+        ['./announcements.html',      ic('megaphone'), 'Announcements'],
+        ['./ipos.html',               ic('rocket'), 'IPOs & Listings'],
+        ['./actions.html',            ic('caldays'), 'Ex-Dates Calendar']
       ] }
     ] },
     { g: 'Funds', items: [
-      ['./mutual-funds.html',                       '💰', 'Mutual Funds'],
-      ['./backtest.html',                           '🧮', 'MF Backtest'],
-      ['https://dhruvan246.github.io/fno-dashboard/', '🎯', 'F&O']
+      ['./mutual-funds.html',                        ic('wallet'), 'Mutual Funds'],
+      ['./backtest.html',                            ic('calc'), 'MF Backtest'],
+      ['https://dhruvan246.github.io/fno-dashboard/',  ic('target'), 'F&O']
     ] },
     { g: 'Tools', items: [
-      ['./options-backtest.html', '🪙', 'Options Backtest'],
-      ['./saved-strategies.html', '⭐', 'Saved Strategies'],
-      ['./all-picks.html',        '🎯', 'All Picks'],
-      ['./strategy-mixer.html',   '🎛️', 'Strategy Mixer'],
-      ['./backtest-history.html', '🕘', 'Backtest History'],
-      ['./live-tracking.html',    '📡', 'Live Tracking'],
-      ['./status.html',           '🩺', 'Data Health'],
-      ['./results-coverage.html', '✅', 'Results Coverage'],
-      ['./fill-coverage.html',    '📊', 'Fill Coverage'],
-      ['./coverage.html',         '🧭', 'Coverage Matrix'],
-      ['./analytics.html',        '👀', 'Page Stats'],
-      ['./insurer-inbox.html',    '📥', 'Insurer Inbox']
+      ['./options-backtest.html',  ic('coins'), 'Options Backtest'],
+      ['./saved-strategies.html',  ic('star'), 'Saved Strategies'],
+      ['./all-picks.html',         ic('layers'), 'All Picks'],
+      ['./strategy-mixer.html',    ic('sliders'), 'Strategy Mixer'],
+      ['./backtest-history.html',  ic('history'), 'Backtest History'],
+      ['./live-tracking.html',     ic('radio'), 'Live Tracking'],
+      ['./status.html',            ic('pulse'), 'Data Health'],
+      ['./results-coverage.html',  ic('check'), 'Results Coverage'],
+      ['./fill-coverage.html',     ic('bars'), 'Fill Coverage'],
+      ['./coverage.html',          ic('compass'), 'Coverage Matrix'],
+      ['./analytics.html',         ic('bars2'), 'Page Stats'],
+      ['./insurer-inbox.html',     ic('inbox'), 'Insurer Inbox']
     ] }
   ];
-  var NAV_CTA = ['./stock-backtest.html', '🧪', 'Create a strategy'];
+  var NAV_CTA = ['./stock-backtest.html',  ic('flask'), 'Create a strategy'];
 
   // ---- PAGE GROUPS: sibling pages presented as ONE tabbed section. Each member
   // page keeps its own URL, payload and data pipeline (so deep links, feeds.json
@@ -249,37 +304,37 @@
   // hidden from non-owners.
   var PAGE_GROUPS = [
     { g: 'Market Analytics', tabs: [
-      ['./movers.html',          '📊', 'Top Movers'],
-      ['./indices.html',         '📇', 'Indices'],
-      ['./monthly-returns.html', '🗓️', 'Monthly Returns'],
-      ['./market-mood.html',     '🌡️', 'Market Mood']
+      ['./movers.html',           ic('trend'), 'Top Movers'],
+      ['./indices.html',          ic('gauge'), 'Indices'],
+      ['./monthly-returns.html',  ic('calendar'), 'Monthly Returns'],
+      ['./market-mood.html',      ic('thermo'), 'Market Mood']
     ] },
     { g: 'FII/DII', tabs: [
-      ['./fii-dii.html',      '🌐', 'Daily Flows'],
-      ['./shareholding.html', '🏛️', 'Stock Holdings']
+      ['./fii-dii.html',       ic('swap'), 'Daily Flows'],
+      ['./shareholding.html',  ic('landmark'), 'Stock Holdings']
     ] },
     { g: 'Deals & Insiders', tabs: [
-      ['./deals.html',    '🐋', 'Bulk/Block Deals'],
-      ['./insider.html',  '🕵️', 'Insider Trades'],
-      ['./delivery.html', '📦', 'Delivery Spikes'],
-      ['./volume.html',   '⚡', 'Volume Shockers']
+      ['./deals.html',     ic('briefcase'), 'Bulk/Block Deals'],
+      ['./insider.html',   ic('eye'), 'Insider Trades'],
+      ['./delivery.html',  ic('truck'), 'Delivery Spikes'],
+      ['./volume.html',    ic('zap'), 'Volume Shockers']
     ] },
     { g: 'Corporate Calendar', tabs: [
-      ['./ipos.html',    '🚀', 'IPOs & Listings'],
-      ['./actions.html', '📅', 'Ex-Dates']
+      ['./ipos.html',     ic('rocket'), 'IPOs & Listings'],
+      ['./actions.html',  ic('caldays'), 'Ex-Dates']
     ] },
     { g: 'Strategies', tabs: [
-      ['./saved-strategies.html', '⭐', 'Saved Strategies'],
-      ['./backtest-history.html', '🕘', 'Backtest History'],
-      ['./live-tracking.html',    '📡', 'Live Tracking']
+      ['./saved-strategies.html',  ic('star'), 'Saved Strategies'],
+      ['./backtest-history.html',  ic('history'), 'Backtest History'],
+      ['./live-tracking.html',     ic('radio'), 'Live Tracking']
     ] },
     { g: 'Owner console', tabs: [
-      ['./status.html',           '🩺', 'Data Health'],
-      ['./results-coverage.html', '✅', 'Results Coverage'],
-      ['./fill-coverage.html',    '📊', 'Fill Coverage'],
-      ['./coverage.html',         '🧭', 'Coverage Matrix'],
-      ['./analytics.html',        '👀', 'Page Stats'],
-      ['./insurer-inbox.html',    '📥', 'Insurer Inbox']
+      ['./status.html',            ic('pulse'), 'Data Health'],
+      ['./results-coverage.html',  ic('check'), 'Results Coverage'],
+      ['./fill-coverage.html',     ic('bars'), 'Fill Coverage'],
+      ['./coverage.html',          ic('compass'), 'Coverage Matrix'],
+      ['./analytics.html',         ic('bars2'), 'Page Stats'],
+      ['./insurer-inbox.html',     ic('inbox'), 'Insurer Inbox']
     ] }
   ];
   // (Every member page is listed individually in NAV_GROUPS, so each one
@@ -322,13 +377,13 @@
       var here = (location.pathname.split('/').pop() || '').toLowerCase();
       var isActive = function (href) { return href.indexOf('http') !== 0 && href.replace('./', '').toLowerCase() === here; };
       var link = function (it) {
-        var href = it[0], ic = it[1], lb = it[2], ext = href.indexOf('http') === 0;
+        var href = it[0], icn = it[1], lb = it[2], ext = href.indexOf('http') === 0;
         return '<a class="sw-menu-link' + (isActive(href) ? ' active' : '') + '" href="' + esc(href) + '"' +
           (ext ? ' target="_blank" rel="noopener"' : '') + ' role="menuitem">' +
-          '<span class="sw-mi-ic" aria-hidden="true">' + ic + '</span>' + esc(lb) +
-          (ext ? '<span class="sw-mi-ext" aria-hidden="true">↗</span>' : '') + '</a>';
+          '<span class="sw-mi-ic" aria-hidden="true">' + icn + '</span>' + esc(lb) +
+          (ext ? '<span class="sw-mi-ext" aria-hidden="true">' + ic('ext') + '</span>' : '') + '</a>';
       };
-      var caret = '<span class="sw-caret" aria-hidden="true">▾</span>';
+      var caret = ic('chev', 'sw-caret');
       var activeGi = -1; // which group holds the current page (for highlight / default-open)
       NAV_GROUPS.forEach(function (grp, gi) {
         if (activeGi < 0 && grp.items.some(function (it) { return isActive(it[0]); })) activeGi = gi;
@@ -364,7 +419,7 @@
       nav.innerHTML = groupsHtml + cta +
         '<div class="sw-menu">' +
           '<button class="sw-menu-btn" type="button" aria-haspopup="true" aria-expanded="false" aria-label="Open sections menu">' +
-            '<span aria-hidden="true">☰</span><span class="sw-menu-btn-lb">Menu</span></button>' +
+            ic('menu') + '<span class="sw-menu-btn-lb">Menu</span></button>' +
           '<div class="sw-menu-panel" role="menu">' + mobHtml + '</div>' +
         '</div>';
 
@@ -415,7 +470,7 @@
       });
       document.addEventListener('click', function (e) { if (!nav.contains(e.target)) { close(); closeGroups(); } });
       document.addEventListener('keydown', function (e) { if (e.key === 'Escape') { close(); closeGroups(); } });
-    } catch (e) { nav.style.visibility = 'visible'; }
+    } catch (e) { nav.style.visibility = 'visible'; try { console.error('[theme] nav build failed:', e); } catch (_) {} }
   }
 
   // =========================================================================
@@ -438,44 +493,36 @@
     if (document.getElementById('sw-srch-css')) return;
     var st = document.createElement('style'); st.id = 'sw-srch-css';
     st.textContent =
-      '.sw-srch-btn{display:inline-flex;align-items:center;gap:8px;margin-left:14px;padding:7px 11px;min-width:216px;border:1px solid var(--border-strong);border-radius:var(--radius-sm);background:var(--surface-2);color:var(--text-faint);font-size:13px;font-weight:500;cursor:pointer;transition:var(--tr);}' +
-      '.sw-srch-btn:hover{border-color:var(--accent);color:var(--text-muted);background:var(--accent-soft);}' +
-      '.sw-srch-btn .sw-srch-kbd{margin-left:auto;font-size:10.5px;font-weight:700;padding:2px 6px;border:1px solid var(--border-strong);border-radius:6px;color:var(--text-faint);background:var(--surface);}' +
+      '.sw-srch-btn{display:inline-flex;align-items:center;gap:9px;margin-left:12px;padding:0 10px;height:34px;min-width:232px;border:1px solid var(--border);border-radius:9px;background:var(--surface-2);color:var(--text-faint);font-size:13px;font-weight:500;cursor:pointer;transition:var(--tr);font-family:inherit;}' +
+      '.sw-srch-btn .sw-srch-ic{display:inline-flex;font-size:15px;color:var(--text-faint);}' +
+      '.sw-srch-btn:hover{border-color:var(--border-strong);color:var(--text-muted);background:var(--surface-3);}' +
+      '.sw-srch-btn .sw-srch-kbd{margin-left:auto;font-family:var(--mono);font-size:10.5px;font-weight:500;padding:1px 6px;border:1px solid var(--border-strong);border-radius:5px;color:var(--text-faint);background:var(--surface);}' +
       '@media (max-width:1040px){.sw-srch-btn{min-width:0;margin-left:8px;}.sw-srch-btn .sw-srch-lb,.sw-srch-btn .sw-srch-kbd{display:none;}}' +
-      // Phones: the header has no room left (logo + ☰ + theme pill already fill it),
-      // so search moves to the bottom bar's 🔍 tab instead.
       '@media (max-width:520px){.sw-srch-btn{display:none;}}' +
-      '.sw-srch-ov{position:fixed;inset:0;z-index:90;display:none;justify-content:center;align-items:flex-start;padding:10vh 14px 14px;background:rgba(4,7,14,.58);-webkit-backdrop-filter:blur(4px);backdrop-filter:blur(4px);}' +
+      '.sw-srch-ov{position:fixed;inset:0;z-index:90;display:none;justify-content:center;align-items:flex-start;padding:10vh 14px 14px;background:rgba(5,7,12,.6);-webkit-backdrop-filter:blur(5px);backdrop-filter:blur(5px);}' +
       '.sw-srch-ov.open{display:flex;animation:sw-pop .14s ease;}' +
-      '.sw-srch-box{width:100%;max-width:620px;background:var(--surface);border:1px solid var(--border-strong);border-radius:var(--radius);box-shadow:var(--shadow-lg);overflow:hidden;display:flex;flex-direction:column;max-height:80vh;}' +
-      '.sw-srch-top{display:flex;align-items:center;gap:9px;padding:12px 14px;border-bottom:1px solid var(--border);}' +
-      '.sw-srch-in{flex:1;min-width:0;border:0;outline:0;background:transparent;color:var(--text);font-size:16px;font-weight:600;}' +
-      '.sw-srch-in::placeholder{color:var(--text-faint);font-weight:500;}' +
+      '.sw-srch-box{width:100%;max-width:640px;background:var(--surface);border:1px solid var(--border-strong);border-radius:14px;box-shadow:var(--shadow-lg);overflow:hidden;display:flex;flex-direction:column;max-height:80vh;}' +
+      '.sw-srch-top{display:flex;align-items:center;gap:10px;padding:13px 16px;border-bottom:1px solid var(--border);}' +
+      '.sw-srch-top .sw-srch-ic{display:inline-flex;font-size:17px;color:var(--text-faint);}' +
+      '.sw-srch-in{flex:1;min-width:0;border:0;outline:0;background:transparent!important;color:var(--text);font-size:16px;font-weight:500;font-family:inherit;box-shadow:none!important;}' +
+      '.sw-srch-in::placeholder{color:var(--text-faint);font-weight:400;}' +
       '.sw-srch-in::-webkit-search-cancel-button{display:none;}' +
-      '.sw-srch-x{border:1px solid var(--border-strong);background:var(--surface-2);color:var(--text-faint);border-radius:7px;font-size:10.5px;font-weight:700;padding:3px 7px;cursor:pointer;}' +
+      '.sw-srch-x{border:1px solid var(--border-strong);background:var(--surface-2);color:var(--text-faint);border-radius:6px;font-family:var(--mono);font-size:10.5px;font-weight:500;padding:2px 7px;cursor:pointer;}' +
       '.sw-srch-x:hover{color:var(--text);border-color:var(--accent);}' +
       '.sw-srch-list{overflow-y:auto;padding:6px;-webkit-overflow-scrolling:touch;}' +
-      '.sw-srch-h{font-size:10px;font-weight:700;letter-spacing:.06em;text-transform:uppercase;color:var(--text-faint);padding:9px 10px 5px;}' +
-      '.sw-srch-it{display:flex;align-items:center;gap:9px;padding:8px 10px;border-radius:9px;text-decoration:none;color:var(--text);cursor:pointer;}' +
-      '.sw-srch-it:hover,.sw-srch-it.on{background:var(--accent-soft);}' +
+      '.sw-srch-h{font-size:10.5px;font-weight:600;letter-spacing:.07em;text-transform:uppercase;color:var(--text-faint);padding:10px 10px 5px;}' +
+      '.sw-srch-it{display:flex;align-items:center;gap:10px;padding:8px 10px;border-radius:8px;text-decoration:none;color:var(--text);cursor:pointer;}' +
+      '.sw-srch-it:hover,.sw-srch-it.on{background:var(--surface-2);}' +
       '.sw-srch-it.on{box-shadow:inset 0 0 0 1px var(--border-strong);}' +
-      '.sw-srch-sym{font-size:13.5px;font-weight:800;letter-spacing:.01em;white-space:nowrap;}' +
-      '.sw-srch-it.on .sw-srch-sym{color:var(--accent);}' +
-      '.sw-srch-nm{font-size:12.5px;color:var(--text-muted);overflow:hidden;text-overflow:ellipsis;white-space:nowrap;min-width:0;flex:1;}' +
-      '.sw-srch-it b{color:var(--accent);font-weight:800;}' +
-      '.sw-srch-meta{margin-left:auto;font-size:11px;color:var(--text-faint);white-space:nowrap;}' +
-      '.sw-srch-tag{font-size:9.5px;font-weight:800;text-transform:uppercase;letter-spacing:.04em;padding:2px 6px;border-radius:999px;background:var(--surface-3);color:var(--text-faint);white-space:nowrap;}' +
-      '.sw-srch-empty{padding:20px 12px;text-align:center;font-size:13px;color:var(--text-faint);}' +
-      '.sw-srch-foot{display:flex;gap:12px;flex-wrap:wrap;padding:8px 14px;border-top:1px solid var(--border);font-size:10.5px;color:var(--text-faint);background:var(--surface-2);}' +
-      // Phones: a sheet near the top (so the on-screen keyboard doesn't cover the
-      // results), hugging its content, with finger-sized rows and no desk-only chrome.
-      '@media (max-width:640px){' +
-        '.sw-srch-ov{padding:8px;}' +
-        '.sw-srch-box{max-height:calc(100% - 16px);border-radius:var(--radius);}' +
-        '.sw-srch-top{padding:11px 12px;}' +
-        '.sw-srch-it{padding:11px 10px;min-height:44px;}' +
-        '.sw-srch-meta{display:none;}.sw-srch-foot{display:none;}' +
-      '}';
+      '.sw-srch-sym{font-family:var(--mono);font-size:13px;font-weight:600;letter-spacing:0;white-space:nowrap;display:inline-flex;align-items:center;}' +
+      '.sw-srch-it.on .sw-srch-sym{color:var(--accent-text);}' +
+      '.sw-srch-nm{font-size:13px;color:var(--text-muted);overflow:hidden;text-overflow:ellipsis;white-space:nowrap;min-width:0;flex:1;}' +
+      '.sw-srch-it b{color:var(--accent-text);font-weight:600;}' +
+      '.sw-srch-meta{margin-left:auto;font-size:11px;color:var(--text-faint);white-space:nowrap;font-variant-numeric:tabular-nums;}' +
+      '.sw-srch-tag{font-size:9.5px;font-weight:600;text-transform:uppercase;letter-spacing:.05em;padding:2px 6px;border-radius:999px;background:var(--surface-3);color:var(--text-faint);white-space:nowrap;}' +
+      '.sw-srch-empty{padding:22px 12px;text-align:center;font-size:13px;color:var(--text-faint);}' +
+      '.sw-srch-foot{display:flex;gap:14px;flex-wrap:wrap;padding:8px 16px;border-top:1px solid var(--border);font-size:10.5px;color:var(--text-faint);background:var(--surface-2);}' +
+      '@media (max-width:640px){.sw-srch-ov{padding:8px;}.sw-srch-box{max-height:calc(100% - 16px);border-radius:12px;}.sw-srch-top{padding:11px 12px;}.sw-srch-it{padding:11px 10px;min-height:44px;}.sw-srch-meta{display:none;}.sw-srch-foot{display:none;}}';
     document.head.appendChild(st);
   })();
 
@@ -655,7 +702,7 @@
     ov.innerHTML =
       '<div class="sw-srch-box">' +
         '<div class="sw-srch-top">' +
-          '<span aria-hidden="true">🔍</span>' +
+          '<span class="sw-srch-ic" aria-hidden="true">' + ic('search') + '</span>' +
           '<input class="sw-srch-in" type="search" autocomplete="off" autocorrect="off" spellcheck="false" ' +
             'role="combobox" aria-expanded="true" aria-autocomplete="list" aria-controls="sw-srch-list" ' +
             'aria-label="Search stocks by name or symbol" placeholder="Search a stock — name or symbol…" />' +
@@ -678,7 +725,7 @@
       btn.type = 'button';
       btn.className = 'sw-srch-btn';
       btn.setAttribute('aria-label', 'Search stocks');
-      btn.innerHTML = '<span aria-hidden="true">🔍</span>' +
+      btn.innerHTML = '<span class="sw-srch-ic" aria-hidden="true">' + ic('search') + '</span>' +
         '<span class="sw-srch-lb">Search a stock…</span><span class="sw-srch-kbd">/</span>';
       btn.addEventListener('click', function () { srchOpen(''); });
       if (host.children.length > 1) host.insertBefore(btn, host.children[1]);
@@ -747,7 +794,7 @@
 
     var d = document.createElement('details');
     d.className = 'sw-gloss';
-    d.innerHTML = '<summary>📖 Glossary <span>— every term on this page, spelled out</span></summary>' +
+    d.innerHTML = '<summary>' + ic('book') + ' Glossary <span>— every term on this page, spelled out</span></summary>' +
       '<div class="sw-gloss-body"><p class="sw-gloss-wait">Loading…</p></div>';
 
     var host = document.querySelector('main');
@@ -820,25 +867,24 @@
     if (document.getElementById('sw-gloss-css')) return;
     var st = document.createElement('style'); st.id = 'sw-gloss-css';
     st.textContent =
-      '.sw-gloss{margin:26px 0 8px;background:var(--surface);border:1px solid var(--border);border-radius:var(--radius);}' +
-      '.sw-gloss>summary{cursor:pointer;padding:13px 16px;font-size:13.5px;font-weight:800;color:var(--text);list-style:none;user-select:none;}' +
+      '.sw-gloss{margin:28px 0 8px;background:var(--surface);border:1px solid var(--border);border-radius:var(--radius);}' +
+      '.sw-gloss>summary{cursor:pointer;padding:13px 16px;font-size:13.5px;font-weight:600;color:var(--text);list-style:none;user-select:none;display:flex;align-items:center;gap:8px;}' +
       '.sw-gloss>summary::-webkit-details-marker{display:none;}' +
-      '.sw-gloss>summary::before{content:"\\25B8";display:inline-block;width:15px;color:var(--text-faint);}' +
-      '.sw-gloss[open]>summary::before{content:"\\25BE";}' +
-      '.sw-gloss>summary:hover{color:var(--accent);}' +
-      '.sw-gloss>summary span{font-weight:500;color:var(--text-muted);}' +
+      '.sw-gloss>summary .sw-i{font-size:15px;color:var(--text-faint);}' +
+      '.sw-gloss>summary::after{content:"";margin-left:auto;width:7px;height:7px;border-right:1.5px solid var(--text-faint);border-bottom:1.5px solid var(--text-faint);transform:rotate(45deg);transition:transform .18s ease;flex:none;}' +
+      '.sw-gloss[open]>summary::after{transform:rotate(-135deg);}' +
+      '.sw-gloss>summary:hover{color:var(--accent-text);}' +
+      '.sw-gloss>summary span{font-weight:400;color:var(--text-muted);}' +
       '.sw-gloss-body{padding:4px 16px 20px;border-top:1px solid var(--border);}' +
-      '.sw-gloss-body h4{font-size:10.5px;font-weight:800;letter-spacing:.06em;text-transform:uppercase;color:var(--text-faint);margin:17px 0 7px;}' +
+      '.sw-gloss-body h4{font-size:10.5px;font-weight:600;letter-spacing:.07em;text-transform:uppercase;color:var(--text-faint);margin:17px 0 7px;}' +
       '.sw-gloss-body p{font-size:12.5px;color:var(--text-muted);margin:8px 0;line-height:1.55;}' +
       '.sw-gloss-body p b{color:var(--text);}' +
-      '.sw-gloss-body code{font-family:ui-monospace,Consolas,monospace;font-size:12px;color:var(--accent);word-break:break-word;}' +
+      '.sw-gloss-body code{font-family:var(--mono);font-size:12px;color:var(--accent-text);word-break:break-word;}' +
       '.sw-gloss-wait{font-size:12.5px;color:var(--text-muted);}' +
       '.sw-gl{display:grid;grid-template-columns:150px 1fr;gap:7px 14px;font-size:12.5px;line-height:1.55;}' +
       '.sw-gl>div:nth-child(even){color:var(--text-muted);}' +
-      '.sw-gl b{color:var(--text);font-weight:700;}' +
-      /* phones: one column, each term stacked above its definition */
-      '@media(max-width:700px){.sw-gl{grid-template-columns:1fr;gap:0;}' +
-      '.sw-gl>div:nth-child(odd){margin-top:12px;}.sw-gl>div:nth-child(even){margin-top:2px;}}';
+      '.sw-gl b{color:var(--text);font-weight:600;}' +
+      '@media(max-width:700px){.sw-gl{grid-template-columns:1fr;gap:0;}.sw-gl>div:nth-child(odd){margin-top:12px;}.sw-gl>div:nth-child(even){margin-top:2px;}}';
     document.head.appendChild(st);
   })();
 
@@ -886,7 +932,7 @@
         (credits ? '<span>' + esc(credits) + '</span>' : '') +
         // permanent way back to the install sheet, for anyone who dismissed it
         // or is reading on a desktop and wants it on their phone later
-        (appInstalled() ? '' : '<button type="button" class="sw-f-app" id="sw-f-app">📲 Get the app</button>') +
+        (appInstalled() ? '' : '<button type="button" class="sw-f-app" id="sw-f-app">' + ic('phone') + ' Get the app</button>') +
       '</div></div>';
     var getapp = f.querySelector('#sw-f-app');
     if (getapp) getapp.addEventListener('click', function () { appOpen(true); });
@@ -911,11 +957,11 @@
     bar.className = 'sw-bbar';
     bar.setAttribute('aria-label', 'Quick sections');
     bar.innerHTML =
-      '<a class="' + cls(here === 'index.html') + '" href="./index.html"><span class="ic" aria-hidden="true">🏠</span>Home</a>' +
-      '<button type="button" class="' + cls(inMarkets) + '" data-sw="menu" aria-haspopup="true"><span class="ic" aria-hidden="true">📊</span>Markets</button>' +
-      '<button type="button" class="sw-bbar-it" data-sw="search" aria-label="Search stocks"><span class="ic" aria-hidden="true">🔍</span>Search</button>' +
-      '<a class="' + cls(here === 'stock-backtest.html') + '" href="./stock-backtest.html"><span class="ic" aria-hidden="true">🧪</span>Backtest</a>' +
-      '<a class="' + cls(here === 'mutual-funds.html' || here === 'backtest.html') + '" href="./mutual-funds.html"><span class="ic" aria-hidden="true">💰</span>Funds</a>';
+      '<a class="' + cls(here === 'index.html') + '" href="./index.html"><span class="ic" aria-hidden="true">' + ic('home') + '</span>Home</a>' +
+      '<button type="button" class="' + cls(inMarkets) + '" data-sw="menu" aria-haspopup="true"><span class="ic" aria-hidden="true">' + ic('candle') + '</span>Markets</button>' +
+      '<button type="button" class="sw-bbar-it" data-sw="search" aria-label="Search stocks"><span class="ic" aria-hidden="true">' + ic('search') + '</span>Search</button>' +
+      '<a class="' + cls(here === 'stock-backtest.html') + '" href="./stock-backtest.html"><span class="ic" aria-hidden="true">' + ic('flask') + '</span>Backtest</a>' +
+      '<a class="' + cls(here === 'mutual-funds.html' || here === 'backtest.html') + '" href="./mutual-funds.html"><span class="ic" aria-hidden="true">' + ic('wallet') + '</span>Funds</a>';
     document.body.appendChild(bar);
     bar.querySelector('[data-sw="menu"]').addEventListener('click', function (e) {
       e.stopPropagation();   // keep the document outside-click closer from instantly re-closing it

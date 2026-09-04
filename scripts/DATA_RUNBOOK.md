@@ -14025,6 +14025,66 @@ look-ahead candidates (§119d evidence needed). Ledger 7,464 → 9,422 entries.
 
 ---
 
+## 127. ★★ UI v4 "OBSIDIAN" — the whole site restyled through the shared layer only  (2026-09-05)
+
+**Ask:** "change the UI of entire site … from you i expect the best one." **Delivered** as a shared-layer
+redesign — every one of the ~45 pages changed look without touching its own markup, because the site's
+visual layer is centralised (§34): `docs/theme.css` (tokens + the Tailwind remap) and `docs/theme.js`
+(nav, tabs, search palette, footer, bottom bar, theme pill, glossary). Commit on `origin/main`, sw-shell
+**v136**. Worktree used: `~/stocks-wt/ui-redesign` (preview `wt-ui-redesign` on :8847).
+
+**What changed (files):**
+- `docs/theme.css` — rewritten. Type: `--font` **Geist** + `--mono` **Geist Mono** (Google Fonts, both
+  verified HTTP 200 with @font-face before use); tabular figures on tables / `.mono` / `.num` / big
+  numerals. Tokens per theme (dark default, light, soft): neutral near-black base `#0b0d12`, surfaces
+  `#12151c/#171b23/#1e232d`, hairline borders `#242a35/#323a49`, ONE accent (`--accent #4f86f7`,
+  `--accent-text #8fb5ff` for text on dark; light `#2f6be6/#2458c9`), new `--pos-soft/--neg-soft/--warn`.
+  Animated aurora blobs + gradient logo animation removed; one static top glow. Cards flat + hairline.
+  **Accent remap:** `text-blue/indigo-600/700` → `--accent-text`; `bg-blue-600`/`bg-indigo-600` → the
+  primary button (solid accent, white text); `bg-gradient-to-r/br` → accent gradient (logo tiles only).
+  Page-title system: `main h1` 22–27px/700/-.025em, the `· subtitle` span (`.text-slate-400/500`) muted.
+  Header: frosted backdrop moved to `header::before` (see gotcha 4). Everything functional was kept
+  verbatim: cardify (§ mobile), `.sw-scrollx` pin, `.tscroll`, `.fRow`, `.sw-sn`, `.sw-stat/.sw-chip/.sw-gh`.
+- `docs/theme.js` — `ICONS` map + `ic(name, cls)` (Lucide-style inline SVG, `class="sw-i"`, sized by
+  font-size) at the top of the IIFE; NAV_GROUPS / PAGE_GROUPS / NAV_CTA / theme pill / ☰ / caret / search
+  / glossary / footer "Get the app" / bottom bar all use it — **no emoji left in the chrome** (the
+  Android/iPhone install sheet keeps 🤖🍎). Injected nav / search / glossary CSS rewritten (segmented
+  `.sw-tabs`, opaque 12px-radius panels, mono `kbd` hints). `buildNav`'s catch now `console.error`s.
+- `docs/index.html` — body font → `var(--font)`, Inter `<link>` dropped, logo mark + tile icon colour.
+- 13 pages — leading emoji stripped from `<h1>` (perl, verified 1-line diff each).
+- `docs/sw.js` — CACHE v135 → v136.  `scripts/ui_shots.js` — NEW headless screenshot/smoke harness.
+
+**Verification record (§39 gate):** `node --check theme.js`; CSS braces balanced; headless Chrome sweep
+of **43 pages × {1440, 390}px dark** + 10 pages × light + soft spot-check: theme applied, nav built
+(3 groups; the only 0s are bull-runs / strategy-phases which have never had a `<header>`), Geist active,
+**horizontal drift 0 on every page at 390px** (the §mobile-audit detector), zero console errors caused
+by the change (only pre-existing local-only 401s from corsproxy.io / the missing `stk/*.json` per-stock
+slices, which the live Worker serves). Interaction shots: mega menu, search palette with results,
+mobile ☰ accordion + bottom bar, glossary open, footer. LIVE re-verified after the Pages deploy (below).
+
+**Gotchas — each one cost a loop, all written down so the next restyle doesn't pay again:**
+1. **Shadowed helper, silent catch.** `buildNav`'s `link()` declared `var …, ic = it[1], …` — the new
+   `ic()` function was shadowed, `ic('ext')` threw *TypeError*, and the `try/catch` around buildNav set
+   `visibility:visible` and said nothing: every page rendered with **no nav at all**, console empty.
+   Rule: a catch around chrome-building code must log; grep for local names before adding a helper.
+2. **puppeteer `clip` screenshots lie about composited layers.** The open mega menu looked ~40%
+   transparent in `page.screenshot({clip})` while `getComputedStyle` said opacity 1 / opaque bg. A
+   full-viewport screenshot of the same state was perfect. Never diagnose an overlay from a clipped shot.
+3. **Hidden Browser pane + synced theme.** The pane was hidden all session (`document.hidden=true`,
+   screenshots blank, viewport 560px) and sw-sync pulled the user's synced `sw_theme=light`, so the
+   "dark default" never showed there. `scripts/ui_shots.js` seeds the theme, blocks supabase/worker
+   requests, snoozes the install sheet, and reports per page — use it whenever the pane is hidden.
+4. `backdrop-filter` on `<header>` makes it the compositing root of its children (and the containing
+   block of fixed descendants); the blur now sits on `header::before` with `isolation:isolate` on the
+   header so dropdowns are plain opaque children. Pages with their own header CSS (index, index-chart,
+   portfolio) were re-rendered and are fine.
+
+**Open follow-ups (not regressions):** emoji remain in page-level controls — ~100 `<button>`s, 18
+`h2/h3`, in-page tab strips (quarterly-results, fii-dii, stock-backtest templates) — left alone on
+purpose because several labels are rewritten by page JS (a blind sweep would leave a mix); do it per
+page with a render check. `stock.html` could not be rendered locally (needs the `stk/` slices) —
+checked on LIVE only. Terminal / pf-glance / private-import don't load theme.css and are out of scope.
+
 ## 126. ★★ THE PERSISTENCE / STRADDLE ARBITER — the up-move queue is not a bug queue, and a universe scan finds no live phantom  (2026-09-02)
 
 **Trigger:** §124d left 81 inferred UP-moves (factor >= 1.8) unarbitrated, and I had loosely called them

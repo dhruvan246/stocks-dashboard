@@ -1,120 +1,185 @@
 /* =============================================================================
- * STOCKSWORLD — shared theme (Light / Dark / Soft)
+ * STOCKSWORLD — shared theme v4 "Obsidian" (Dark default · Light · Soft)
  *
- * Loaded on every page alongside the Tailwind CDN. Strategy:
+ * Loaded on every page alongside the Tailwind CDN. Strategy (unchanged since v1):
  *   1. Each theme defines a set of CSS-variable TOKENS (--surface, --text, …).
- *   2. The neutral Tailwind classes the pages already use (bg-white, bg-slate-50,
- *      text-slate-*, border-slate-*, hover:bg-slate-*) are re-routed onto those
- *      tokens — so switching theme transforms the existing markup with no HTML
- *      changes. Dark also brightens the accent colours so nothing goes muddy.
+ *   2. The Tailwind classes the pages already use (bg-white, text-slate-*,
+ *      border-slate-*, bg-indigo-600, …) are re-routed onto those tokens, so one
+ *      stylesheet restyles all ~45 pages with no HTML changes.
  *   3. theme.js sets <html data-theme="…"> before first paint (no flash) and
- *      injects the header pill.
+ *      injects the header chrome (nav, search, tabs, footer, bottom bar).
  * Selectors use html[data-theme] for specificity so they win over Tailwind
  * without fighting load order; the remap layer uses !important on purpose.
+ *
+ * v4 (2026-09-05): new type system (Geist + Geist Mono, tabular figures),
+ * neutral near-black base with hairline borders instead of glowing navy,
+ * one accent used sparingly, flat cards, calmer motion, SVG icons in the
+ * chrome (theme.js), segmented tab strip, quieter footer.
  * ========================================================================== */
-@import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Geist:wght@400;500;600;700;800&family=Geist+Mono:wght@400;500;600&display=swap');
 
 :root{
-  --radius: 14px;
-  --radius-sm: 10px;
-  --radius-lg: 20px;
-  --tr: .18s cubic-bezier(.4, 0, .2, 1);
+  --radius: 12px;
+  --radius-sm: 9px;
+  --radius-lg: 16px;
+  --tr: .16s cubic-bezier(.4, 0, .2, 1);
+  --font: 'Geist', 'Inter', system-ui, -apple-system, 'Segoe UI', Roboto, sans-serif;
+  --mono: 'Geist Mono', ui-monospace, SFMono-Regular, Menlo, Consolas, monospace;
 }
 
-/* ----------------------------- LIGHT (default) ---------------------------- */
-html[data-theme="light"]{
-  --app-bg:
-    radial-gradient(1100px 560px at 12% -12%, #e8edff 0%, transparent 55%),
-    radial-gradient(900px 520px at 112% -6%, #f3ecff 0%, transparent 52%),
-    #f6f8fc;
-  --surface:#ffffff;
-  --surface-2:#f5f8fd;
-  --surface-3:#eceff7;
-  --border:#e7eaf2;
-  --border-strong:#d6dbe8;
-  --text:#0f172a;
-  --text-muted:#586173;
-  --text-faint:#8b94a6;
-  --accent:#4f46e5; --accent-2:#7c3aed;
-  --accent-soft: rgba(79, 70, 229, .10);
-  --shadow: 0 1px 2px rgba(16, 24, 40, .04), 0 10px 26px -14px rgba(16, 24, 40, .22);
-  --shadow-lg: 0 16px 44px -18px rgba(16, 24, 40, .34);
-  --header-bg: rgba(255, 255, 255, .72);
-  --pos:#15803d; --neg:#b91c1c;
-  --glow: rgba(79, 70, 229, .45);
-}
-
-/* ------------------------- SOFT (light, pastel/warm) ---------------------- */
-html[data-theme="soft"]{
-  --app-bg:
-    radial-gradient(1000px 560px at 0% -6%, #ffe6f0 0%, transparent 50%),
-    radial-gradient(960px 560px at 102% -4%, #e3f7ee 0%, transparent 50%),
-    radial-gradient(880px 600px at 50% 118%, #ece8ff 0%, transparent 55%),
-    #fbf7f5;
-  --surface:#fffdfb;
-  --surface-2:#f9f1f5;
-  --surface-3:#f1eafa;
-  --border:#f0e3ec;
-  --border-strong:#e6d4e2;
-  --text:#3b2f44;
-  --text-muted:#776a7e;
-  --text-faint:#a597ac;
-  --accent:#db2777; --accent-2:#8b5cf6;
-  --accent-soft: rgba(219, 39, 119, .10);
-  --shadow: 0 2px 10px rgba(140, 90, 120, .08), 0 16px 42px -18px rgba(150, 90, 130, .30);
-  --shadow-lg: 0 20px 54px -18px rgba(150, 90, 130, .38);
-  --header-bg: rgba(255, 253, 251, .74);
-  --pos:#0f9d58; --neg:#e11d62;
-  --glow: rgba(219, 39, 119, .42);
-}
-
-/* -------------------------------- DARK ------------------------------------ */
-/* v3 "modern analytics" palette (ValuePicker-grade): near-black navy, blue/violet
- * accents, calmer surfaces. Rolled out 2026-07-16 as the DEFAULT theme. */
+/* -------------------------------- DARK (default) -------------------------- */
 html[data-theme="dark"]{
   --app-bg:
-    radial-gradient(1100px 560px at 14% -12%, rgba(59, 130, 246, .10) 0%, transparent 60%),
-    radial-gradient(900px 540px at 96% -8%, rgba(139, 92, 246, .09) 0%, transparent 55%),
-    #070b14;
-  --surface:#0d1322;
-  --surface-2:#111930;
-  --surface-3:#182138;
-  --border:#1d2740;
-  --border-strong:#2b3757;
-  --text:#e7ecf7;
-  --text-muted:#93a0bb;
-  --text-faint:#5f6d8a;
-  --accent:#3b82f6; --accent-2:#8b5cf6;
-  --accent-soft: rgba(59, 130, 246, .14);
-  --shadow: 0 1px 2px rgba(0, 0, 0, .45), 0 14px 36px -16px rgba(0, 0, 0, .75);
-  --shadow-lg: 0 24px 64px -22px rgba(0, 0, 0, .85);
-  --header-bg: rgba(9, 13, 23, .78);
-  --pos:#34d399; --neg:#f87171;
-  --glow: rgba(59, 130, 246, .50);
+    radial-gradient(1000px 460px at 50% -160px, rgba(79, 134, 247, .13) 0%, transparent 70%),
+    #0b0d12;
+  --surface:#12151c;
+  --surface-2:#171b23;
+  --surface-3:#1e232d;
+  --border:#242a35;
+  --border-strong:#323a49;
+  --text:#eceef3;
+  --text-muted:#9aa3b3;
+  --text-faint:#687184;
+  --accent:#4f86f7; --accent-text:#8fb5ff; --accent-2:#22d3ee;
+  --accent-soft: rgba(79, 134, 247, .14);
+  --pos:#31d17e; --neg:#ff5d6c; --warn:#f5b73f;
+  --pos-soft: rgba(49, 209, 126, .13); --neg-soft: rgba(255, 93, 108, .13); --warn-soft: rgba(245, 183, 63, .13);
+  --shadow: inset 0 1px 0 rgba(255, 255, 255, .03), 0 1px 2px rgba(0, 0, 0, .35);
+  --shadow-lg: inset 0 1px 0 rgba(255, 255, 255, .04), 0 24px 56px -20px rgba(0, 0, 0, .8);
+  --header-bg: rgba(11, 13, 18, .78);
+  --glow: rgba(79, 134, 247, .45);
+}
+
+/* -------------------------------- LIGHT ----------------------------------- */
+html[data-theme="light"]{
+  --app-bg:
+    radial-gradient(1000px 460px at 50% -160px, rgba(47, 107, 230, .09) 0%, transparent 70%),
+    #f4f5f8;
+  --surface:#ffffff;
+  --surface-2:#f7f8fa;
+  --surface-3:#eef0f4;
+  --border:#e5e8ee;
+  --border-strong:#d2d7e0;
+  --text:#0f1319;
+  --text-muted:#5b6474;
+  --text-faint:#8a93a3;
+  --accent:#2f6be6; --accent-text:#2458c9; --accent-2:#0ea5e9;
+  --accent-soft: rgba(47, 107, 230, .10);
+  --pos:#0f8a4d; --neg:#d9313f; --warn:#b7791f;
+  --pos-soft: rgba(15, 138, 77, .10); --neg-soft: rgba(217, 49, 63, .10); --warn-soft: rgba(183, 121, 31, .12);
+  --shadow: 0 1px 2px rgba(16, 24, 40, .05), 0 1px 1px rgba(16, 24, 40, .03);
+  --shadow-lg: 0 16px 40px -16px rgba(16, 24, 40, .28);
+  --header-bg: rgba(255, 255, 255, .82);
+  --glow: rgba(47, 107, 230, .35);
+}
+
+/* --------------------------- SOFT (warm paper) ---------------------------- */
+html[data-theme="soft"]{
+  --app-bg:
+    radial-gradient(1000px 460px at 50% -160px, rgba(211, 55, 111, .08) 0%, transparent 70%),
+    #f8f5f1;
+  --surface:#fffdfa;
+  --surface-2:#f7f2ec;
+  --surface-3:#efe8e0;
+  --border:#eae2d9;
+  --border-strong:#d8cdc1;
+  --text:#2a2420;
+  --text-muted:#6f655c;
+  --text-faint:#9b9086;
+  --accent:#d3376f; --accent-text:#b8285c; --accent-2:#8b5cf6;
+  --accent-soft: rgba(211, 55, 111, .10);
+  --pos:#0f9d58; --neg:#e11d48; --warn:#b45309;
+  --pos-soft: rgba(15, 157, 88, .11); --neg-soft: rgba(225, 29, 72, .10); --warn-soft: rgba(180, 83, 9, .12);
+  --shadow: 0 1px 2px rgba(80, 60, 50, .06), 0 1px 1px rgba(80, 60, 50, .03);
+  --shadow-lg: 0 18px 44px -18px rgba(120, 80, 90, .30);
+  --header-bg: rgba(255, 253, 250, .84);
+  --glow: rgba(211, 55, 111, .35);
 }
 
 /* ------------------------------- base ------------------------------------- */
-html{ scroll-behavior:smooth; }
+html{ scroll-behavior:smooth; -webkit-text-size-adjust:100%; }
 html[data-theme] body{
-  font-family:'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+  font-family: var(--font);
   background: var(--app-bg) !important;
   background-attachment: fixed;
   color: var(--text);
   -webkit-font-smoothing:antialiased;
   text-rendering:optimizeLegibility;
+  overflow-x:hidden;                                        /* belt-and-suspenders against side-scroll */
+  display:flex; flex-direction:column; min-height:100vh;    /* injected footer sits at the bottom */
 }
 html[data-theme] ::selection{ background:var(--accent-soft); }
+html[data-theme] h1, html[data-theme] h2, html[data-theme] h3{ letter-spacing:-.02em; }
+html[data-theme] code, html[data-theme] kbd, html[data-theme] pre{ font-family: var(--mono); }
+html[data-theme] table{ -webkit-overflow-scrolling:touch; }
 
-/* color transition so theme switches feel smooth (not on layout props) */
+/* numbers line up in columns everywhere they are read as a column */
+html[data-theme] table, html[data-theme] .mono, html[data-theme] .num, html[data-theme] .tabular,
+html[data-theme] .text-2xl, html[data-theme] .text-3xl, html[data-theme] .text-4xl{
+  font-variant-numeric: tabular-nums; font-feature-settings: "tnum" 1;
+}
+html[data-theme] .mono{ font-family: var(--mono); font-size:.94em; }
+html[data-theme] .text-2xl, html[data-theme] .text-3xl, html[data-theme] .text-4xl{ letter-spacing:-.025em; }
+
+/* colour transition so theme switches feel smooth (not on layout props) */
 html[data-theme] body, html[data-theme] .card, html[data-theme] header,
 html[data-theme] input, html[data-theme] select, html[data-theme] textarea, html[data-theme] button{
   transition: background-color var(--tr), border-color var(--tr), color var(--tr), box-shadow var(--tr);
 }
 
-/* webkit scrollbar */
-html[data-theme] ::-webkit-scrollbar{ width:11px; height:11px; }
+/* webkit scrollbar — thin, quiet */
+html[data-theme] ::-webkit-scrollbar{ width:10px; height:10px; }
 html[data-theme] ::-webkit-scrollbar-thumb{ background:var(--border-strong); border-radius:999px; border:3px solid transparent; background-clip:content-box; }
 html[data-theme] ::-webkit-scrollbar-thumb:hover{ background:var(--text-faint); background-clip:content-box; }
+
+/* keyboard focus ring (accessibility) */
+html[data-theme] :focus-visible{ outline:2px solid var(--accent); outline-offset:2px; }
+
+/* inline SVG icons injected by theme.js size off the parent font-size */
+.sw-i{ width:1em; height:1em; flex:none; display:inline-block; vertical-align:-.15em; }
+
+/* ------------------------------ header ------------------------------------ */
+/* The frosted backdrop lives on a ::before layer, NOT on <header> itself: a backdrop-filter
+   on the header makes it the compositing root for its children, and the absolutely-positioned
+   nav dropdowns (which hang below the header box) then paint semi-transparent / clipped in
+   Chrome. With the filter on a pseudo-element the dropdowns are ordinary opaque children. */
+html[data-theme] header{
+  position:sticky; top:0; isolation:isolate;
+  background: transparent !important;
+  -webkit-backdrop-filter: none; backdrop-filter: none;
+  border-bottom:1px solid var(--border) !important;
+  box-shadow:none !important;
+}
+html[data-theme] header::before{
+  content:''; position:absolute; inset:0; z-index:-1; pointer-events:none;
+  background: var(--header-bg);
+  -webkit-backdrop-filter: saturate(160%) blur(14px);
+  backdrop-filter: saturate(160%) blur(14px);
+}
+html[data-theme] header.sw-scrolled{ box-shadow:0 10px 30px -18px rgba(0, 0, 0, .5) !important; }
+html[data-theme] header > div{ gap:10px; }
+html[data-theme] header nav{ min-width:0; }
+/* logo mark: flat accent tile with a soft inner highlight (no animated gradient) */
+html[data-theme] header .group > span:first-child{
+  width:30px; height:30px; border-radius:9px;
+  background: linear-gradient(150deg, color-mix(in srgb, var(--accent) 82%, #fff) 0%, var(--accent) 55%, color-mix(in srgb, var(--accent) 72%, #000) 100%) !important;
+  box-shadow: inset 0 1px 0 rgba(255, 255, 255, .28), 0 4px 12px -5px var(--glow) !important;
+  font-size:11px; font-weight:800; letter-spacing:.04em; color:#fff;
+  animation:none;
+}
+html[data-theme] header .group:hover > span:first-child{ transform:none; }
+html[data-theme] header .group > span:last-child{ font-size:15px; font-weight:700; letter-spacing:-.02em; color:var(--text); }
+html[data-theme] header .tracking-tight > .text-indigo-600{
+  color:var(--accent-text) !important; background:none; -webkit-background-clip:initial; background-clip:initial;
+}
+
+/* --------------------------- page title system ---------------------------- */
+html[data-theme] main h1{
+  font-size: clamp(22px, 1.4vw + 14px, 27px); font-weight:700; letter-spacing:-.025em; line-height:1.15; color:var(--text);
+}
+html[data-theme] main h1 > span.text-slate-400,
+html[data-theme] main h1 > span.text-slate-500{ font-size:14px; font-weight:500; letter-spacing:0; color:var(--text-muted) !important; }
+html[data-theme] main h2{ font-weight:700; }
 
 /* ----------------------------- components --------------------------------- */
 html[data-theme] .card{
@@ -122,54 +187,45 @@ html[data-theme] .card{
   border:1px solid var(--border) !important;
   border-radius: var(--radius);
   box-shadow: var(--shadow);
+  transition: border-color var(--tr), box-shadow var(--tr), background-color var(--tr), transform var(--tr);
 }
-html[data-theme] .card:hover{ box-shadow: var(--shadow-lg); }
+html[data-theme] .card:hover{ border-color: var(--border-strong) !important; }
+html[data-theme] a.card:hover{ transform:translateY(-1px); box-shadow: var(--shadow-lg); }
+/* Tailwind shadow utilities → the theme's two depths */
+html[data-theme] .shadow-sm, html[data-theme] .shadow{ box-shadow: var(--shadow) !important; }
+html[data-theme] .shadow-md, html[data-theme] .shadow-lg, html[data-theme] .shadow-xl{ box-shadow: var(--shadow-lg) !important; }
 
 /* Save serial (DDMMYY-NN) — the small monospace tag that identifies a saved strategy, shown
-   identically on Saved Strategies, All Picks, the strategy page and the Mixer. Tabular figures so
-   the digits line up down a column; theme vars keep it readable on light / soft / dark. */
+   identically on Saved Strategies, All Picks, the strategy page and the Mixer. */
 html[data-theme] .sw-sn{
-  font-family: ui-monospace, SFMono-Regular, Menlo, Consolas, monospace;
-  font-variant-numeric: tabular-nums; font-size:10.5px; font-weight:600; letter-spacing:.02em;
+  font-family: var(--mono);
+  font-variant-numeric: tabular-nums; font-size:10.5px; font-weight:500; letter-spacing:.02em;
   color: var(--text-muted); background: var(--surface-2); border:1px solid var(--border);
-  border-radius:4px; padding:0 5px; margin-right:7px; white-space:nowrap;
+  border-radius:5px; padding:0 5px; margin-right:7px; white-space:nowrap;
 }
 
-html[data-theme] header{
-  background: var(--header-bg) !important;
-  -webkit-backdrop-filter: saturate(170%) blur(14px);
-  backdrop-filter: saturate(170%) blur(14px);
-  border-bottom:1px solid var(--border) !important;
-}
-
-/* inputs/selects pick up the theme surface (esp. important for dark) */
+/* inputs / selects pick up the theme surface */
 html[data-theme] input, html[data-theme] select, html[data-theme] textarea{
-  background-color: var(--surface) !important;
+  background-color: var(--surface-2) !important;
   color: var(--text) !important;
   border-color: var(--border-strong) !important;
+  font-family: inherit;
 }
 html[data-theme] input::placeholder, html[data-theme] textarea::placeholder{ color:var(--text-faint) !important; }
 html[data-theme] input:focus, html[data-theme] select:focus, html[data-theme] textarea:focus{
   outline:none; border-color:var(--accent) !important; box-shadow:0 0 0 3px var(--accent-soft) !important;
 }
+html[data-theme] input[type="checkbox"], html[data-theme] input[type="radio"]{ accent-color: var(--accent); }
 /* native date-picker icon is invisible on dark — invert it */
 html[data-theme="dark"] input[type="date"]::-webkit-calendar-picker-indicator{ filter: invert(1) brightness(1.6); opacity:.65; }
 
-/* primary / gradient buttons get a soft coloured glow + lift on all themes */
-html[data-theme] .bg-gradient-to-r, html[data-theme] .bg-gradient-to-br,
-html[data-theme] .bg-blue-600, html[data-theme] .bg-indigo-600,
-html[data-theme] .bg-emerald-600, html[data-theme] .bg-rose-600,
-html[data-theme] .bg-violet-600, html[data-theme] .bg-amber-600{
-  box-shadow: 0 8px 20px -8px var(--glow);
-}
-html[data-theme] button{ transition: transform var(--tr), box-shadow var(--tr), background-color var(--tr), color var(--tr); }
+html[data-theme] button{ font-family: inherit; transition: transform var(--tr), box-shadow var(--tr), background-color var(--tr), border-color var(--tr), color var(--tr); }
 html[data-theme] button:active{ transform: translateY(1px); }
 
 /* =========================================================================
  * NEUTRAL REMAP LAYER — routes the Tailwind palette the pages use onto tokens.
  * Applies to ALL themes (near-identity for Light; warm for Soft; inverted for
- * Dark). NOTE: bg-slate-800/900 and text-white are intentionally NOT remapped
- * — those are dark CTA buttons that must stay dark-with-white-text everywhere.
+ * Dark).
  * ========================================================================= */
 html[data-theme] .bg-white{ background-color: var(--surface) !important; }
 html[data-theme] .bg-white\/90{ background-color: var(--header-bg) !important; }
@@ -183,46 +239,78 @@ html[data-theme] .text-slate-400, html[data-theme] .text-slate-300{ color: var(-
 
 html[data-theme] .border-slate-200, html[data-theme] .border-slate-100, html[data-theme] .border-slate-50{ border-color: var(--border) !important; }
 html[data-theme] .border-slate-300{ border-color: var(--border-strong) !important; }
-html[data-theme] .divide-slate-100 > :not([hidden]) ~ :not([hidden]){ border-color: var(--border) !important; }
+html[data-theme] .divide-slate-100 > :not([hidden]) ~ :not([hidden]),
+html[data-theme] .divide-slate-200 > :not([hidden]) ~ :not([hidden]){ border-color: var(--border) !important; }
 
 html[data-theme] .hover\:bg-slate-50:hover, html[data-theme] .hover\:bg-slate-100:hover, html[data-theme] .hover\:bg-slate-200:hover{ background-color: var(--surface-3) !important; }
 html[data-theme] .hover\:text-slate-900:hover, html[data-theme] .hover\:text-slate-700:hover{ color: var(--text) !important; }
 
 /* =========================================================================
- * DARK-ONLY ACCENT FIXES — light tint chips → translucent dark tints; dark
- * accent text → brighter; pastel borders → subtle. Solid -600 accent buttons
- * are left alone (they pop on dark).
+ * ACCENT REMAP — the pages' blue/indigo "primary" colours follow ONE accent:
+ * text links/labels → --accent-text, solid buttons → --accent, the gradient
+ * tiles → accent gradient. Green/red/amber stay semantic and are left alone.
  * ========================================================================= */
-html[data-theme="dark"] .text-indigo-600, html[data-theme="dark"] .text-indigo-700{ color:#93c5fd !important; }
-html[data-theme="dark"] .text-blue-600, html[data-theme="dark"] .text-blue-700{ color:#93c5fd !important; }
-html[data-theme="dark"] .text-violet-700{ color:#c4b5fd !important; }
-html[data-theme="dark"] .text-emerald-600, html[data-theme="dark"] .text-emerald-700{ color:#6ee7b7 !important; }
-html[data-theme="dark"] .text-green-700{ color:#86efac !important; }
-html[data-theme="dark"] .text-amber-600, html[data-theme="dark"] .text-amber-700{ color:#fcd34d !important; }
-html[data-theme="dark"] .text-red-600, html[data-theme="dark"] .text-red-700{ color:#fca5a5 !important; }
-html[data-theme="dark"] .text-rose-600{ color:#fda4af !important; }
-html[data-theme="dark"] .text-orange-700{ color:#fdba74 !important; }
+html[data-theme] .text-indigo-600, html[data-theme] .text-indigo-700,
+html[data-theme] .text-blue-600, html[data-theme] .text-blue-700{ color: var(--accent-text) !important; }
+html[data-theme] .hover\:text-indigo-700:hover, html[data-theme] .hover\:text-blue-700:hover,
+html[data-theme] .hover\:text-indigo-600:hover, html[data-theme] .hover\:text-blue-600:hover{ color: var(--accent-text) !important; text-decoration:underline; text-underline-offset:3px; }
+html[data-theme] .bg-blue-600, html[data-theme] .bg-indigo-600{
+  background-color: var(--accent) !important; color:#fff !important;
+  box-shadow: inset 0 1px 0 rgba(255, 255, 255, .18), 0 1px 2px rgba(0, 0, 0, .25);
+}
+html[data-theme] .hover\:bg-blue-700:hover, html[data-theme] .hover\:bg-indigo-700:hover,
+html[data-theme] .hover\:bg-blue-500:hover, html[data-theme] .hover\:bg-indigo-500:hover{
+  background-color: color-mix(in srgb, var(--accent) 86%, #000) !important;
+}
+html[data-theme] .bg-gradient-to-r, html[data-theme] .bg-gradient-to-br{
+  background-image: linear-gradient(120deg, var(--accent), color-mix(in srgb, var(--accent) 55%, var(--accent-2))) !important;
+  box-shadow: inset 0 1px 0 rgba(255, 255, 255, .18), 0 6px 16px -8px var(--glow);
+}
+html[data-theme] .bg-emerald-600, html[data-theme] .bg-rose-600, html[data-theme] .bg-amber-600, html[data-theme] .bg-violet-600{
+  box-shadow: inset 0 1px 0 rgba(255, 255, 255, .16), 0 1px 2px rgba(0, 0, 0, .22);
+}
+html[data-theme] .border-indigo-600, html[data-theme] .border-blue-600, html[data-theme] .border-indigo-500, html[data-theme] .border-blue-500{ border-color: var(--accent) !important; }
+html[data-theme] .ring-indigo-500, html[data-theme] .ring-blue-500, html[data-theme] .focus\:ring-indigo-500:focus, html[data-theme] .focus\:ring-blue-500:focus{ --tw-ring-color: var(--accent-soft); }
 
-html[data-theme="dark"] .bg-blue-50{ background-color: rgba(59, 130, 246, .15) !important; }
-html[data-theme="dark"] .bg-blue-100{ background-color: rgba(59, 130, 246, .20) !important; }
-html[data-theme="dark"] .bg-indigo-50{ background-color: rgba(99, 102, 241, .16) !important; }
+/* =========================================================================
+ * DARK-ONLY TINT FIXES — light tint chips → translucent dark tints; dark
+ * accent text → brighter; pastel borders → subtle; the "selected" slate pills
+ * and tooltips lift a step so they still read as raised on a dark surface.
+ * ========================================================================= */
+html[data-theme="dark"] .text-violet-700, html[data-theme="dark"] .text-violet-600{ color:#c4b5fd !important; }
+html[data-theme="dark"] .text-emerald-600, html[data-theme="dark"] .text-emerald-700{ color:var(--pos) !important; }
+html[data-theme="dark"] .text-green-700, html[data-theme="dark"] .text-green-600{ color:var(--pos) !important; }
+html[data-theme="dark"] .text-amber-600, html[data-theme="dark"] .text-amber-700{ color:var(--warn) !important; }
+html[data-theme="dark"] .text-red-600, html[data-theme="dark"] .text-red-700{ color:var(--neg) !important; }
+html[data-theme="dark"] .text-rose-600, html[data-theme="dark"] .text-rose-700{ color:var(--neg) !important; }
+html[data-theme="dark"] .text-orange-700, html[data-theme="dark"] .text-orange-600{ color:#fdba74 !important; }
+
+html[data-theme="dark"] .bg-blue-50{ background-color: var(--accent-soft) !important; }
+html[data-theme="dark"] .bg-blue-100{ background-color: rgba(79, 134, 247, .22) !important; }
+html[data-theme="dark"] .bg-indigo-50{ background-color: var(--accent-soft) !important; }
+html[data-theme="dark"] .bg-indigo-100{ background-color: rgba(79, 134, 247, .22) !important; }
 html[data-theme="dark"] .bg-violet-50{ background-color: rgba(139, 92, 246, .16) !important; }
-html[data-theme="dark"] .bg-amber-50, html[data-theme="dark"] .bg-amber-50\/40{ background-color: rgba(245, 158, 11, .14) !important; }
-html[data-theme="dark"] .bg-amber-100{ background-color: rgba(245, 158, 11, .20) !important; }
-html[data-theme="dark"] .bg-emerald-100{ background-color: rgba(16, 185, 129, .16) !important; }
-html[data-theme="dark"] .bg-green-50{ background-color: rgba(34, 197, 94, .14) !important; }
-html[data-theme="dark"] .bg-red-50{ background-color: rgba(239, 68, 68, .14) !important; }
+html[data-theme="dark"] .bg-amber-50, html[data-theme="dark"] .bg-amber-50\/40{ background-color: var(--warn-soft) !important; }
+html[data-theme="dark"] .bg-amber-100{ background-color: rgba(245, 183, 63, .20) !important; }
+html[data-theme="dark"] .bg-emerald-50, html[data-theme="dark"] .bg-emerald-100{ background-color: var(--pos-soft) !important; }
+html[data-theme="dark"] .bg-green-50, html[data-theme="dark"] .bg-green-100{ background-color: var(--pos-soft) !important; }
+html[data-theme="dark"] .bg-red-50, html[data-theme="dark"] .bg-red-100{ background-color: var(--neg-soft) !important; }
+html[data-theme="dark"] .bg-rose-50, html[data-theme="dark"] .bg-rose-100{ background-color: var(--neg-soft) !important; }
 html[data-theme="dark"] .bg-orange-50{ background-color: rgba(249, 115, 22, .14) !important; }
+html[data-theme="dark"] .bg-slate-800{ background-color:#2a3242 !important; }
+html[data-theme="dark"] .bg-slate-900{ background-color:#1a1f2a !important; }
+html[data-theme="dark"] .border-slate-800, html[data-theme="dark"] .border-slate-700{ border-color:#3a4457 !important; }
 
-html[data-theme="dark"] .hover\:bg-blue-50:hover{ background-color: rgba(59, 130, 246, .20) !important; }
-html[data-theme="dark"] .hover\:bg-indigo-100:hover{ background-color: rgba(99, 102, 241, .24) !important; }
+html[data-theme="dark"] .hover\:bg-blue-50:hover{ background-color: rgba(79, 134, 247, .20) !important; }
+html[data-theme="dark"] .hover\:bg-indigo-100:hover{ background-color: rgba(79, 134, 247, .24) !important; }
 
-html[data-theme="dark"] .border-blue-200{ border-color: rgba(59, 130, 246, .38) !important; }
-html[data-theme="dark"] .border-amber-200, html[data-theme="dark"] .border-amber-300{ border-color: rgba(245, 158, 11, .38) !important; }
+html[data-theme="dark"] .border-blue-200, html[data-theme="dark"] .border-indigo-200{ border-color: rgba(79, 134, 247, .38) !important; }
+html[data-theme="dark"] .border-amber-200, html[data-theme="dark"] .border-amber-300{ border-color: rgba(245, 183, 63, .38) !important; }
 html[data-theme="dark"] .border-violet-200{ border-color: rgba(139, 92, 246, .38) !important; }
-html[data-theme="dark"] .border-emerald-200{ border-color: rgba(16, 185, 129, .38) !important; }
+html[data-theme="dark"] .border-emerald-200, html[data-theme="dark"] .border-green-200{ border-color: rgba(49, 209, 126, .38) !important; }
+html[data-theme="dark"] .border-red-200, html[data-theme="dark"] .border-rose-200{ border-color: rgba(255, 93, 108, .38) !important; }
 
-/* page-defined .pos/.neg helpers (in each page's <style>) → themed + brighter on dark */
+/* page-defined .pos/.neg helpers (in each page's <style>) → themed */
 html[data-theme] .pos{ color: var(--pos) !important; }
 html[data-theme] .neg{ color: var(--neg) !important; }
 
@@ -232,54 +320,54 @@ html[data-theme] .neg{ color: var(--neg) !important; }
  * ========================================================================= */
 /* full-screen loading overlays (backtest / stock-backtest / mutual-funds) */
 html[data-theme] #overlay, html[data-theme] #ov, html[data-theme] #loadingOverlay{ background: var(--app-bg) !important; }
-/* sticky table headers that hardcode a light bg → themed (opaque so rows don't bleed through) */
-html[data-theme] table thead th{ background: var(--surface-2) !important; }
 /* custom input + label classes on the backtest builder */
-html[data-theme] .inp{ background-color: var(--surface) !important; color: var(--text) !important; border-color: var(--border-strong) !important; }
+html[data-theme] .inp{ background-color: var(--surface-2) !important; color: var(--text) !important; border-color: var(--border-strong) !important; }
 html[data-theme] .lbl{ color: var(--text-muted) !important; }
-/* active-tab / sortable-header colours that are too dark on the dark theme */
-html[data-theme="dark"] .tab.active{ color:#93c5fd !important; border-color:#60a5fa !important; }
-html[data-theme="dark"] th[data-s]:hover{ color:#93c5fd !important; }
+/* active-tab / sortable-header colours */
+html[data-theme] .tab.active{ color:var(--accent-text) !important; border-color:var(--accent) !important; }
+html[data-theme] th[data-s]:hover{ color:var(--accent-text) !important; }
+
+/* ------------------------------- tables ----------------------------------- */
+/* sticky table headers that hardcode a light bg → themed (opaque so rows don't bleed through) */
+html[data-theme] table thead th{
+  background: var(--surface-2) !important;
+  color: var(--text-faint); font-weight:600; letter-spacing:.04em;
+}
+html[data-theme] table thead th.sw-gh{ letter-spacing:.12em; }
+html[data-theme] tbody tr{ transition:background-color .12s ease; }
+html[data-theme] tbody tr:hover{ background-color:color-mix(in srgb, var(--accent) 6%, transparent); }
 
 /* =============================== theme pill =============================== */
 .sw-theme-switch{
   display:inline-flex; gap:2px; padding:3px; margin-left:auto; flex:0 0 auto;
-  border-radius:999px; background:var(--surface-2); border:1px solid var(--border); box-shadow:var(--shadow);
+  border-radius:10px; background:var(--surface-2); border:1px solid var(--border);
 }
-/* header: let the page-nav shrink & scroll instead of overflowing; pill stays pinned right */
-html[data-theme] header > div{ gap:8px; }
-html[data-theme] header nav{ min-width:0; }
 .sw-theme-switch.floating{ position:fixed; top:10px; right:10px; z-index:60; }
 .sw-theme-switch button{
-  width:30px; height:28px; padding:0; border:0; background:transparent; border-radius:999px;
+  width:28px; height:26px; padding:0; border:0; background:transparent; border-radius:7px;
   cursor:pointer; font-size:14px; line-height:1; display:inline-flex; align-items:center; justify-content:center;
-  color:var(--text-muted); transition:all var(--tr);
+  color:var(--text-faint); transition:all var(--tr);
 }
-.sw-theme-switch button:hover{ background:var(--surface-3); color:var(--text); }
+.sw-theme-switch button:hover{ color:var(--text); }
 .sw-theme-switch button[aria-pressed="true"]{
-  background:linear-gradient(135deg, var(--accent), var(--accent-2)); color:#fff;
-  box-shadow:0 3px 10px -3px var(--glow);
+  background:var(--surface); color:var(--text);
+  box-shadow: 0 1px 2px rgba(0, 0, 0, .18), inset 0 0 0 1px var(--border-strong);
 }
 
 /* ============================== mobile polish ============================= */
-html{ -webkit-text-size-adjust:100%; }
-html[data-theme] body{ overflow-x:hidden; }                 /* belt-and-suspenders against side-scroll */
-html[data-theme] table{ -webkit-overflow-scrolling:touch; }
-/* …and the cause that line was papering over: body is a flex COLUMN (see the v2
- * section below), so each page's <main> is a flex item that sizes itself to its
- * widest child. One wide table and <main> grows to ~900px on a 375px phone, the
- * document pans sideways under your finger, and everything fixed (the bottom
- * bar) or sticky (the header) is left behind — which is why only the home page,
- * with no wide content, kept its bottom bar. Clamp the top-level blocks to the
- * screen; the .overflow-x-auto wrappers inside them then scroll on their own,
- * as they were always meant to. Phones only, so the desktop max-w-screen-*
- * caps are untouched. theme.js:fitViewport() mops up any leftover wide row. */
+/* body is a flex COLUMN (see base), so each page's <main> is a flex item that
+ * sizes itself to its widest child. One wide table and <main> grows to ~900px
+ * on a 375px phone, the document pans sideways and everything fixed (the
+ * bottom bar) or sticky (the header) is left behind. Clamp the top-level
+ * blocks to the screen; the .overflow-x-auto wrappers inside them then scroll
+ * on their own. Phones only, so the desktop max-w-screen-* caps are untouched.
+ * theme.js:fitViewport() mops up any leftover wide row. */
 @media (max-width:760px){
   html[data-theme] body > *{ min-width:0; max-width:100%; }
 }
 @media (max-width:640px){
   html[data-theme] header > div{ padding-left:12px; padding-right:12px; }
-  html[data-theme] .sw-theme-switch button{ width:32px; height:30px; font-size:15px; }  /* comfier tap targets */
+  html[data-theme] .sw-theme-switch button{ width:30px; height:28px; font-size:15px; }  /* comfier tap targets */
   /* comfortable minimum height for tappable controls */
   html[data-theme] button, html[data-theme] select,
   html[data-theme] input:not([type="checkbox"]):not([type="radio"]){ min-height:38px; }
@@ -296,9 +384,7 @@ html[data-theme] table{ -webkit-overflow-scrolling:touch; }
   /* min-width:0 — pages guard their DESKTOP table against crushed columns with a
      Tailwind min-w-[840px] and friends. Harmless while it is a table; fatal once
      each row becomes a card, because the card inherits that width, the 41% label
-     eats ~340px of it and the value lands past the right edge of the phone. Six
-     pages shipped that pairing (deals, insider, announcements, actions,
-     discovery, delivery), so drop it here rather than page by page. */
+     eats ~340px of it and the value lands past the right edge of the phone. */
   html[data-theme] table.sw-cardify{ display:block; width:100%; border:0; min-width:0 !important; }
   /* keep the header for screen-readers but take it out of the visual flow */
   html[data-theme] table.sw-cardify thead{
@@ -313,8 +399,7 @@ html[data-theme] table{ -webkit-overflow-scrolling:touch; }
   }
   html[data-theme] table.sw-cardify tbody tr:hover{ background:var(--surface) !important; }
   /* cardify's display:block must NOT un-hide collapsed rows/cells: Tailwind
-   * .hidden has lower specificity than the tr/td rules above, so re-assert it.
-   * Keeps expand/detail rows (Saved Strategies etc.) collapsed until tapped. */
+   * .hidden has lower specificity than the tr/td rules above, so re-assert it. */
   html[data-theme] table.sw-cardify .hidden,
   html[data-theme] table.sw-cardify [hidden]{ display:none !important; }
   html[data-theme] table.sw-cardify tbody td,
@@ -330,10 +415,7 @@ html[data-theme] table{ -webkit-overflow-scrolling:touch; }
   }
   /* The cell's content is a FLEX ITEM of that label/value row, so it keeps the
      default min-width:auto and refuses to shrink below its longest unbreakable
-     line. A single nowrap/`truncate` span inside (Saved Strategies stacks a name,
-     a meta line and "Filters: …" in one cell) is then enough to drag the card
-     hundreds of px past the screen edge instead of ellipsizing — measured 734px
-     of content in a 328px card. Let it shrink; truncate only works once it can. */
+     line. Let it shrink; truncate only works once it can. */
   html[data-theme] table.sw-cardify tbody td > *,
   html[data-theme] table.sw-cardify tbody th > *{ min-width:0; }
   html[data-theme] table.sw-cardify tbody td::before,
@@ -357,20 +439,12 @@ html[data-theme] table{ -webkit-overflow-scrolling:touch; }
 }
 
 /* ----------- wide tables stay TABLES on phones (.sw-scrollx) — THE DEFAULT ---
- * A data table reads as a GRID: you compare a number against the one beside it.
- * One-card-per-row destroys that, so since 2026-07-28 this is what every wide
- * table does on a phone, and cards are the explicit opt-in (.sw-cards, below).
- *
- * screener.in's pattern, measured from their quarterly table at 375px: the
- * holder scrolls sideways (overflow-x:auto), the table keeps its NATURAL width
- * (theirs is 1126px in a 375px viewport — it never shrinks), cells stop
- * wrapping, type drops a notch, and the first column is position:sticky;left:0
- * over an opaque background so you never lose the row you're reading. The page
- * itself must not pan, so the scroll stays inside the holder.
- *
- * theme.js applies the holder + the pin class; --sw-pin-head/--sw-pin-body are
- * the resolved backgrounds of the header row and the body rows on THAT page, so
- * the pinned cell matches its own table instead of guessing a token.
+ * The holder scrolls sideways (overflow-x:auto), the table keeps its NATURAL
+ * width, cells stop wrapping, type drops a notch, and the first column is
+ * position:sticky;left:0 over an opaque background so you never lose the row
+ * you're reading. The page itself must not pan, so the scroll stays inside the
+ * holder. theme.js applies the holder + the pin class; --sw-pin-head/--sw-pin-body
+ * are the resolved backgrounds of the header row and the body rows on THAT page.
  * Desktop untouched — every rule here is phone-only. */
 @media (max-width:640px){
   html[data-theme] .sw-scrollx{
@@ -386,9 +460,7 @@ html[data-theme] table{ -webkit-overflow-scrolling:touch; }
   }
   html[data-theme] .sw-scrollx table th,
   html[data-theme] .sw-scrollx table td{ white-space:nowrap; padding:7px 9px; }
-  /* pinned column — 1st by default, 2nd when the 1st is a rank/blank gutter
-   * (movers, the screeners and every backtest holdings table lead with "#",
-   * and pinning a row number tells you nothing) */
+  /* pinned column — 1st by default, 2nd when the 1st is a rank/blank gutter */
   html[data-theme] .sw-scrollx table thead th:first-child,
   html[data-theme] .sw-scrollx table tbody td:first-child,
   html[data-theme] .sw-scrollx table tbody th:first-child{
@@ -412,13 +484,11 @@ html[data-theme] table{ -webkit-overflow-scrolling:touch; }
   html[data-theme] .sw-scrollx table.sw-pin2 thead th:nth-child(2){ background:var(--sw-pin-head,var(--surface)); }
   html[data-theme] .sw-scrollx table.sw-pin2 tbody td:nth-child(2),
   html[data-theme] .sw-scrollx table.sw-pin2 tbody th:nth-child(2){ background:var(--sw-pin-body,var(--surface)); }
-  /* a cell holding prose (an announcement caption, "what happened") wraps
-   * inside a sane width instead of stretching the row off to the horizon */
+  /* a cell holding prose wraps inside a sane width */
   html[data-theme] .sw-scrollx table td.sw-wrap{
     white-space:normal; min-width:180px; max-width:290px;
   }
-  /* full-width colspan cells (group headings, expand rows, empty states) are
-   * never the pinned column — theme.js tags them .sw-span */
+  /* full-width colspan cells are never the pinned column — theme.js tags them .sw-span */
   html[data-theme] .sw-scrollx table tbody td.sw-span{
     position:static !important; box-shadow:none !important; background:none !important;
     white-space:normal;
@@ -426,20 +496,11 @@ html[data-theme] table{ -webkit-overflow-scrolling:touch; }
 }
 
 /* -------- tall tables scroll INSIDE their card (.tscroll) — OPT-IN ---------
- * A screener result / holdings / rebalance list has no natural row limit: one
- * loose filter and Live Picks is 300 rows, the page runs hundreds of screens
- * tall and everything below it is out of reach. .tscroll keeps the table's box
- * a sane height and scrolls the ROWS in place under a pinned header instead.
- *
  * Use it on the div that DIRECTLY wraps the <table> (the same .overflow-x-auto
- * holder pages already have) — theme.js re-uses that node as its phone
- * .sw-scrollx holder, so both treatments must land on ONE element or the two
- * scroll boxes nest and the sticky header resolves against the wrong one.
- * Per-table height: style="--tscroll-h:20rem".
- * Small lists are untouched — max-height only bites once the rows exceed it. */
+ * holder pages already have). Per-table height: style="--tscroll-h:20rem". */
 html[data-theme] .tscroll{
   max-height: var(--tscroll-h, clamp(300px, 62vh, 720px));
-  overflow-y:auto; overscroll-behavior:contain;   /* the page doesn't lurch on when the list ends */
+  overflow-y:auto; overscroll-behavior:contain;
   -webkit-overflow-scrolling:touch;
 }
 /* border-collapse hands a sticky header's own border to the collapsed grid, so
@@ -450,131 +511,63 @@ html[data-theme] .tscroll table thead th{
   box-shadow:inset 0 -1px 0 var(--border);
 }
 @media (max-width:640px){
-  /* .sw-scrollx pins overflow-y:hidden for its sideways scroll — keep the
-   * vertical axis alive, and let the pinned first COLUMN (z-index:2) pass
-   * under the pinned header ROW at the corner cell. */
   html[data-theme] .sw-scrollx.tscroll{ overflow-y:auto; }
   html[data-theme] .sw-scrollx.tscroll table thead th{ z-index:4; }
-  /* .sw-pin2 turns the rank gutter position:static so it scrolls away sideways
-   * UNDER the pinned name column — which also drops that cell out of the pinned
-   * header ROW, leaving a hole the rows scroll through. Pin it on the TOP axis
-   * only (left stays free, so it still slides away horizontally). */
   html[data-theme] .sw-scrollx.tscroll table.sw-pin2 thead th:first-child{
     position:sticky; top:0; left:auto; z-index:4;
   }
-  /* the CORNER cell (pinned column × pinned header) is the one both axes cross,
-   * so it outranks both — .sw-pin2 leaves it on the body column's own z-index:2,
-   * and a tie is broken by DOM order, i.e. the ROWS would paint over the header. */
   html[data-theme] .sw-scrollx.tscroll table.sw-pin2 thead th:nth-child(2){ z-index:5; }
 }
 
 /* =========================================================================
- * V2 VISUAL OVERHAUL — aurora background, entrance animations, hover lifts,
- * animated logo, header scroll shadow, and the uniform injected footer
- * (theme.js builds the footer markup on every page). All motion is killed
- * under prefers-reduced-motion at the bottom of this section.
+ * MOTION — a short rise-in for content, nothing that loops. Killed under
+ * prefers-reduced-motion at the bottom of this section.
  * ========================================================================= */
+@keyframes sw-rise{ from{ opacity:0; transform:translateY(6px); } to{ opacity:1; transform:none; } }
+@keyframes sw-pop{ from{ opacity:0; transform:translateY(-6px) scale(.985); } to{ opacity:1; transform:none; } }
 
-/* ------------------------------ keyframes -------------------------------- */
-@keyframes sw-rise{ from{ opacity:0; transform:translateY(12px); } to{ opacity:1; transform:none; } }
-@keyframes sw-grad{ 0%{ background-position:0% 50%; } 50%{ background-position:100% 50%; } 100%{ background-position:0% 50%; } }
-@keyframes sw-float-a{ from{ transform:translate3d(0,0,0) scale(1); } to{ transform:translate3d(7vw,5vh,0) scale(1.18); } }
-@keyframes sw-float-b{ from{ transform:translate3d(0,0,0) scale(1.12); } to{ transform:translate3d(-6vw,-4vh,0) scale(.94); } }
-@keyframes sw-pop{ from{ opacity:0; transform:translateY(-8px) scale(.97); } to{ opacity:1; transform:none; } }
-
-/* full-height column so the injected footer always sits at the page bottom */
-html[data-theme] body{ display:flex; flex-direction:column; min-height:100vh; }
-
-/* --------------- aurora: two accent blobs drifting behind content --------- */
-html[data-theme]{ --aurora:.13; }
-html[data-theme="soft"]{ --aurora:.16; }
-html[data-theme="dark"]{ --aurora:.14; }   /* v3: calmer — the app-bg radials already glow */
-html[data-theme] body::before, html[data-theme] body::after{
-  content:''; position:fixed; z-index:-1; width:46vw; height:46vw; min-width:340px; min-height:340px;
-  border-radius:50%; pointer-events:none; filter:blur(80px); opacity:var(--aurora);
-}
-html[data-theme] body::before{
-  left:-14vw; top:-16vh;
-  background:radial-gradient(circle at 32% 32%, var(--accent), transparent 66%);
-  animation:sw-float-a 26s ease-in-out infinite alternate;
-}
-html[data-theme] body::after{
-  right:-12vw; top:34vh;
-  background:radial-gradient(circle at 68% 40%, var(--accent-2), transparent 66%);
-  animation:sw-float-b 34s ease-in-out infinite alternate;
-}
-
-/* --------- entrance: content + cards rise in with a gentle stagger -------- */
 html[data-theme] main > *, html[data-theme] section, html[data-theme] .card{
-  animation:sw-rise .5s cubic-bezier(.22,1,.36,1) backwards;
+  animation:sw-rise .38s cubic-bezier(.2, .7, .2, 1) backwards;
 }
-html[data-theme] main > *:nth-child(2), html[data-theme] .card:nth-child(2){ animation-delay:.05s; }
-html[data-theme] main > *:nth-child(3), html[data-theme] .card:nth-child(3){ animation-delay:.1s; }
-html[data-theme] main > *:nth-child(4), html[data-theme] .card:nth-child(4){ animation-delay:.15s; }
-html[data-theme] main > *:nth-child(5), html[data-theme] .card:nth-child(5){ animation-delay:.2s; }
-html[data-theme] main > *:nth-child(n+6), html[data-theme] .card:nth-child(n+6){ animation-delay:.25s; }
+html[data-theme] main > *:nth-child(2), html[data-theme] .card:nth-child(2){ animation-delay:.04s; }
+html[data-theme] main > *:nth-child(3), html[data-theme] .card:nth-child(3){ animation-delay:.08s; }
+html[data-theme] main > *:nth-child(4), html[data-theme] .card:nth-child(4){ animation-delay:.12s; }
+html[data-theme] main > *:nth-child(5), html[data-theme] .card:nth-child(5){ animation-delay:.16s; }
+html[data-theme] main > *:nth-child(n+6), html[data-theme] .card:nth-child(n+6){ animation-delay:.2s; }
 
-/* --------------- cards: lift + accent-tinted border on hover -------------- */
-html[data-theme] .card{ transition:transform var(--tr), box-shadow var(--tr), border-color var(--tr), background-color var(--tr); }
-html[data-theme] .card:hover{
-  transform:translateY(-2px);
-  border-color:color-mix(in srgb, var(--accent) 28%, var(--border)) !important;
+@media (prefers-reduced-motion:reduce){
+  html[data-theme] *, html[data-theme] *::before, html[data-theme] *::after{
+    animation:none !important; transition:none !important;
+  }
 }
-
-/* ------ header: animated gradient logo badge + wordmark, scroll shadow ---- */
-html[data-theme] header .group > span:first-child{
-  background:linear-gradient(120deg, var(--accent), var(--accent-2), var(--accent)) !important;
-  background-size:220% 220% !important;
-  animation:sw-grad 7s ease infinite;
-  box-shadow:0 6px 18px -6px var(--glow);
-}
-html[data-theme] header .tracking-tight > .text-indigo-600{
-  background:linear-gradient(90deg, var(--accent), var(--accent-2));
-  -webkit-background-clip:text; background-clip:text; color:transparent !important;
-}
-html[data-theme] header.sw-scrolled{ box-shadow:0 12px 32px -18px rgba(8, 12, 30, .38) !important; }
-
-/* ------------------------- tables: soft row hover ------------------------- */
-html[data-theme] tbody tr{ transition:background-color .14s ease; }
-html[data-theme] tbody tr:hover{ background-color:color-mix(in srgb, var(--accent) 5%, transparent); }
-
-/* -------------------- keyboard focus ring (accessibility) ----------------- */
-html[data-theme] :focus-visible{ outline:2px solid var(--accent); outline-offset:2px; }
 
 /* ---------------- uniform footer (markup injected by theme.js) ------------ */
 html[data-theme] .sw-footer{
   margin-top:auto; position:relative; border-top:1px solid var(--border);
-  background:color-mix(in srgb, var(--surface) 72%, transparent);
-  -webkit-backdrop-filter:blur(10px); backdrop-filter:blur(10px);
+  background:var(--surface);
   animation:none;   /* footer is below the fold; entrance anim would be wasted */
 }
-html[data-theme] .sw-footer::before{
-  content:''; position:absolute; top:-1px; left:0; right:0; height:2px;
-  background:linear-gradient(90deg, transparent, var(--accent), var(--accent-2), transparent); opacity:.7;
-}
-.sw-footer-in{ max-width:80rem; margin:0 auto; padding:34px 24px 20px; display:flex; flex-wrap:wrap; gap:28px 56px; }
+.sw-footer-in{ max-width:80rem; margin:0 auto; padding:36px 24px 24px; display:flex; flex-wrap:wrap; gap:28px 56px; }
 .sw-f-brand{ display:flex; gap:12px; align-items:flex-start; max-width:340px; }
 .sw-f-logo{
-  width:38px; height:38px; border-radius:12px; flex:0 0 auto;
+  width:32px; height:32px; border-radius:9px; flex:0 0 auto;
   display:inline-flex; align-items:center; justify-content:center;
-  color:#fff; font-weight:800; font-size:13px;
-  background:linear-gradient(120deg, var(--accent), var(--accent-2)); background-size:200% 200%;
-  animation:sw-grad 7s ease infinite; box-shadow:0 6px 18px -6px var(--glow);
+  color:#fff; font-weight:800; font-size:11px; letter-spacing:.04em;
+  background:linear-gradient(150deg, color-mix(in srgb, var(--accent) 82%, #fff), var(--accent) 55%, color-mix(in srgb, var(--accent) 72%, #000));
+  box-shadow: inset 0 1px 0 rgba(255, 255, 255, .28);
 }
-.sw-f-name{ font-weight:800; letter-spacing:-.02em; color:var(--text); }
-html[data-theme] .sw-f-name span{
-  background:linear-gradient(90deg, var(--accent), var(--accent-2));
-  -webkit-background-clip:text; background-clip:text; color:transparent;
-}
-.sw-f-tag{ font-size:12.5px; color:var(--text-muted); margin-top:4px; line-height:1.55; }
+.sw-f-name{ font-weight:700; letter-spacing:-.02em; color:var(--text); font-size:15px; }
+html[data-theme] .sw-f-name span{ color:var(--accent-text); }
+.sw-f-tag{ font-size:12.5px; color:var(--text-muted); margin-top:5px; line-height:1.55; }
 .sw-f-cols{ display:flex; flex-wrap:wrap; gap:8px 44px; }
 .sw-f-col{ min-width:132px; }
-.sw-f-h{ font-size:10.5px; font-weight:700; letter-spacing:.08em; text-transform:uppercase; color:var(--text-faint); margin-bottom:8px; }
+.sw-f-h{ font-size:10.5px; font-weight:600; letter-spacing:.08em; text-transform:uppercase; color:var(--text-faint); margin-bottom:8px; }
 .sw-f-link{
-  display:flex; align-items:center; gap:8px; font-size:13.5px; color:var(--text-muted);
-  text-decoration:none; padding:4.5px 0; transition:color var(--tr), transform var(--tr);
+  display:flex; align-items:center; gap:8px; font-size:13px; color:var(--text-muted);
+  text-decoration:none; padding:4.5px 0; transition:color var(--tr);
 }
-.sw-f-link:hover{ color:var(--accent); transform:translateX(3px); }
+.sw-f-link .sw-i{ font-size:14px; opacity:.75; }
+.sw-f-link:hover{ color:var(--text); }
 .sw-f-bar{ border-top:1px solid var(--border); }
 .sw-f-bar-in{
   max-width:80rem; margin:0 auto; padding:14px 24px; display:flex; flex-wrap:wrap;
@@ -582,65 +575,54 @@ html[data-theme] .sw-f-name span{
   font-size:11.5px; color:var(--text-faint);
 }
 
-/* --------------------------- motion guards ------------------------------- */
-@media (max-width:640px){
-  /* battery: park the aurora on phones */
-  html[data-theme] body::before, html[data-theme] body::after{ animation:none; }
-}
-@media (prefers-reduced-motion:reduce){
-  html[data-theme] *, html[data-theme] *::before, html[data-theme] *::after{
-    animation:none !important; transition:none !important;
-  }
-}
-
 /* =========================================================================
- * V3 SHARED COMPONENTS — modern-analytics building blocks (stat cards, pill
+ * SHARED COMPONENTS — modern-analytics building blocks (stat cards, pill
  * chips, verdict badges, grouped-header bands, mini bars, stacked cells).
- * Token-driven, so they work on every theme; designed on dark. Pages adopt
- * them by using the class names — nothing renders until markup opts in.
+ * Token-driven, so they work on every theme. Pages adopt them by using the
+ * class names — nothing renders until markup opts in.
  * ========================================================================= */
 /* KPI stat card: <div class="sw-stat"><div class="sw-lb">Label</div>
    <div class="sw-v pos">1,204</div><div class="sw-d">detail</div></div> */
 html[data-theme] .sw-stat{
-  background:linear-gradient(180deg, var(--surface-2), var(--surface));
-  border:1px solid var(--border); border-radius:var(--radius-lg);
-  padding:18px 20px; box-shadow:var(--shadow);
+  background:var(--surface);
+  border:1px solid var(--border); border-radius:var(--radius);
+  padding:16px 18px; box-shadow:var(--shadow);
 }
 html[data-theme] .sw-stat .sw-lb{
-  font-size:10.5px; font-weight:700; letter-spacing:.1em; text-transform:uppercase; color:var(--text-faint);
+  font-size:10.5px; font-weight:600; letter-spacing:.08em; text-transform:uppercase; color:var(--text-faint);
 }
 html[data-theme] .sw-stat .sw-v{
-  font-size:30px; font-weight:800; letter-spacing:-.03em; margin-top:9px;
-  font-variant-numeric:tabular-nums; color:var(--text);
+  font-size:27px; font-weight:700; letter-spacing:-.03em; margin-top:8px; line-height:1.1;
+  font-variant-numeric: tabular-nums; color:var(--text);
 }
 html[data-theme] .sw-stat .sw-v.pos{ color:var(--pos) !important; }
 html[data-theme] .sw-stat .sw-v.neg{ color:var(--neg) !important; }
-html[data-theme] .sw-stat .sw-d{ font-size:11px; color:var(--text-faint); margin-top:7px; }
+html[data-theme] .sw-stat .sw-d{ font-size:11.5px; color:var(--text-faint); margin-top:7px; }
 
 /* pill chip / verdict badge: <span class="sw-chip pos"><span class="sw-dot"></span>Beat</span>
    variants: pos (green) · neg (red) · warn (amber) · mut (neutral) */
 html[data-theme] .sw-chip{
   display:inline-flex; align-items:center; gap:6px;
-  font-size:11px; font-weight:700; padding:4px 11px; border-radius:999px;
+  font-size:11px; font-weight:600; padding:3px 9px; border-radius:999px;
   color:var(--text-muted); background:var(--surface-2); border:1px solid var(--border);
   white-space:nowrap;
 }
 html[data-theme] .sw-chip .sw-dot{ width:6px; height:6px; border-radius:50%; background:currentColor; flex:none; }
-html[data-theme] .sw-chip.pos{ color:var(--pos); background:color-mix(in srgb, var(--pos) 12%, transparent); border-color:color-mix(in srgb, var(--pos) 30%, transparent); }
-html[data-theme] .sw-chip.neg{ color:var(--neg); background:color-mix(in srgb, var(--neg) 12%, transparent); border-color:color-mix(in srgb, var(--neg) 30%, transparent); }
-html[data-theme] .sw-chip.warn{ color:#fbbf24; background:rgba(251,191,36,.13); border-color:rgba(251,191,36,.3); }
+html[data-theme] .sw-chip.pos{ color:var(--pos); background:var(--pos-soft); border-color:color-mix(in srgb, var(--pos) 30%, transparent); }
+html[data-theme] .sw-chip.neg{ color:var(--neg); background:var(--neg-soft); border-color:color-mix(in srgb, var(--neg) 30%, transparent); }
+html[data-theme] .sw-chip.warn{ color:var(--warn); background:var(--warn-soft); border-color:color-mix(in srgb, var(--warn) 30%, transparent); }
 
 /* grouped table-header band: <th colspan="2" class="sw-gh sw-gh-b">REVENUE</th>
    colours: -b blue · -g green · -v violet */
 html[data-theme] th.sw-gh{
   position:relative; padding:10px 14px 4px; text-align:left;
-  font-size:9.5px; font-weight:800; letter-spacing:.12em; text-transform:uppercase;
+  font-size:9.5px; font-weight:700; letter-spacing:.12em; text-transform:uppercase;
 }
 html[data-theme] th.sw-gh::before{
   content:''; position:absolute; top:0; left:10px; right:10px; height:2px; border-radius:2px;
 }
-html[data-theme] th.sw-gh-b{ color:#60a5fa; } html[data-theme] th.sw-gh-b::before{ background:linear-gradient(90deg, rgba(96,165,250,.7), transparent); }
-html[data-theme] th.sw-gh-g{ color:var(--pos); } html[data-theme] th.sw-gh-g::before{ background:linear-gradient(90deg, rgba(52,211,153,.7), transparent); }
+html[data-theme] th.sw-gh-b{ color:var(--accent-text); } html[data-theme] th.sw-gh-b::before{ background:linear-gradient(90deg, color-mix(in srgb, var(--accent) 70%, transparent), transparent); }
+html[data-theme] th.sw-gh-g{ color:var(--pos); } html[data-theme] th.sw-gh-g::before{ background:linear-gradient(90deg, color-mix(in srgb, var(--pos) 70%, transparent), transparent); }
 html[data-theme] th.sw-gh-v{ color:#a78bfa; } html[data-theme] th.sw-gh-v::before{ background:linear-gradient(90deg, rgba(167,139,250,.7), transparent); }
 
 /* mini progress bar under a number: <div class="sw-minibar"><i style="width:64%"></i></div> */
@@ -651,7 +633,7 @@ html[data-theme] .sw-minibar{
 html[data-theme] .sw-minibar i{ display:block; height:100%; border-radius:3px; background:var(--accent); }
 
 /* stacked table cell: <div class="sw-cellmain">TCS</div><div class="sw-cellsub">Tata Consultancy…</div> */
-html[data-theme] .sw-cellmain{ font-weight:700; font-size:13.5px; color:var(--text); }
+html[data-theme] .sw-cellmain{ font-weight:600; font-size:13.5px; color:var(--text); }
 html[data-theme] .sw-cellsub{ font-size:11px; color:var(--text-faint); margin-top:2px; font-weight:500; }
 
 /* backtest "Filter criteria" rows: the factor <select> has very long option labels, and a
