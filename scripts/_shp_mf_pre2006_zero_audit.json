@@ -1,0 +1,1635 @@
+{
+ "_meta": {
+  "built": "2026-09-05 02:42 IST",
+  "runbook": "22l",
+  "what": "Every stored pre-Jun-2006 cell with mf==0.0 in shp_history.json, re-read from BSE's own ShareholdingPattern.aspx (fetch_shp_bse_aspx.fetch_page/parse_old, live 2026-09-05). Row shape [prom,fii,dii,mf,ins,sub,nsh]: cell[3]=mf, cell[4]=ins. Pre-Jun-2006 `ins` is None BY DESIGN (Flag=Old lumps Banks/FI/Insurance; Flag=New q<=49 is a 4,708-byte shell) - not a gap to fill, and never 0.0.",
+  "counts": {
+   "proven-zero": 240,
+   "sub-0.005pct": 39,
+   "proven-zero-orphan": 8
+  },
+  "unproven": 0,
+  "pages_missing": 0,
+  "cells_changed_in_history": 0
+ },
+ "cells": {
+  "ACCELYA|2003-03-31": {
+   "src": "bseaspx:532268:37:Old",
+   "verdict": "proven-zero",
+   "why": "no MF row; institutions Sub Total closes as lump+FIIS (resid 0.0000)"
+  },
+  "ACCELYA|2003-06-30": {
+   "src": "bseaspx:532268:38:Old",
+   "verdict": "proven-zero",
+   "why": "no MF row; institutions Sub Total closes as lump+FIIS (resid 0.0000)"
+  },
+  "ACCELYA|2003-09-30": {
+   "src": "bseaspx:532268:39:Old",
+   "verdict": "proven-zero",
+   "why": "no MF row; institutions Sub Total closes as lump+FIIS (resid 0.0000)"
+  },
+  "ACCELYA|2003-12-31": {
+   "src": "bseaspx:532268:40:Old",
+   "verdict": "proven-zero",
+   "why": "no MF row; institutions Sub Total closes as lump+FIIS (resid 0.0000)"
+  },
+  "ACCELYA|2004-03-31": {
+   "src": "bseaspx:532268:41:Old",
+   "verdict": "proven-zero",
+   "why": "no MF row; institutions Sub Total closes as lump+FIIS (resid 0.0000)"
+  },
+  "ACCELYA|2004-06-30": {
+   "src": "bseaspx:532268:42:Old",
+   "verdict": "proven-zero",
+   "why": "no MF row; institutions Sub Total closes as lump+FIIS (resid 0.0000)"
+  },
+  "ACCELYA|2004-09-30": {
+   "src": "bseaspx:532268:43:Old",
+   "verdict": "proven-zero",
+   "why": "no MF row; institutions Sub Total closes as lump+FIIS (resid 0.0000)"
+  },
+  "ACCELYA|2004-12-31": {
+   "src": "bseaspx:532268:44:Old",
+   "verdict": "proven-zero",
+   "why": "no MF row; institutions Sub Total closes as lump+FIIS (resid 0.0000)"
+  },
+  "ADANIENT|2004-12-31": {
+   "src": "bseaspx:512599:44:Old",
+   "verdict": "proven-zero",
+   "why": "no MF row; institutions Sub Total closes as lump+FIIS (resid 0.0000)"
+  },
+  "ADANIENT|2005-03-31": {
+   "src": "bseaspx:512599:45:Old",
+   "verdict": "proven-zero",
+   "why": "no MF row; institutions Sub Total closes as lump+FIIS (resid 0.0000)"
+  },
+  "ADANIENT|2005-06-30": {
+   "src": "bseaspx:512599:46:Old",
+   "verdict": "proven-zero",
+   "why": "no MF row; institutions Sub Total closes as lump+FIIS (resid -0.0000)"
+  },
+  "ADANIENT|2005-09-30": {
+   "src": "bseaspx:512599:47:Old",
+   "verdict": "proven-zero",
+   "why": "no MF row; institutions Sub Total closes as lump+FIIS (resid 0.0000)"
+  },
+  "ADANIENT|2005-12-31": {
+   "src": "bseaspx:512599:48:Old",
+   "verdict": "proven-zero",
+   "why": "no MF row; institutions Sub Total closes as lump+FIIS (resid 0.0000)"
+  },
+  "ADANIENT|2006-03-31": {
+   "src": "bseaspx:512599:49:Old",
+   "verdict": "proven-zero",
+   "why": "no MF row; institutions Sub Total closes as lump+FIIS (resid 0.0000)"
+  },
+  "ADANIENT|2006-06-30": {
+   "src": "bseaspx:512599:50:New",
+   "verdict": "proven-zero",
+   "why": "Clause-35 block has no MF row; inst_sub printed: {'prom': [56.65, 56.64593155165577], 'pubtot': [43.35, 43.35406844834423], 'banks': [14.34, 14.339218959505468], 'ins': [0.08, 0.07865567768350627], 'fii': [7.53, 7.530919560749609], 'inst_sub': [21.95, 21.948794197938586]}"
+  },
+  "AJANTPHARM|2003-09-30": {
+   "src": "bseaspx:532331:39:Old",
+   "verdict": "proven-zero",
+   "why": "no MF row; institutions Sub Total closes as lump+FIIS (resid -0.0000)"
+  },
+  "AJANTPHARM|2003-12-31": {
+   "src": "bseaspx:532331:40:Old",
+   "verdict": "proven-zero",
+   "why": "no MF row; institutions Sub Total closes as lump+FIIS (resid -0.0000)"
+  },
+  "AJANTPHARM|2004-03-31": {
+   "src": "bseaspx:532331:41:Old",
+   "verdict": "proven-zero",
+   "why": "no MF row; institutions Sub Total closes as lump+FIIS (resid 0.0000)"
+  },
+  "AJANTPHARM|2004-06-30": {
+   "src": "bseaspx:532331:42:Old",
+   "verdict": "proven-zero",
+   "why": "no MF row; institutions Sub Total closes as lump+FIIS (resid 0.0000)"
+  },
+  "AJANTPHARM|2004-09-30": {
+   "src": "bseaspx:532331:43:Old",
+   "verdict": "proven-zero",
+   "why": "no MF row; institutions Sub Total closes as lump+FIIS (resid 0.0000)"
+  },
+  "AJANTPHARM|2004-12-31": {
+   "src": "bseaspx:532331:44:Old",
+   "verdict": "proven-zero",
+   "why": "no MF row; institutions Sub Total closes as lump+FIIS (resid -0.0000)"
+  },
+  "AJANTPHARM|2005-03-31": {
+   "src": "bseaspx:532331:45:Old",
+   "verdict": "proven-zero",
+   "why": "no MF row; institutions Sub Total closes as lump+FIIS (resid -0.0000)"
+  },
+  "AJANTPHARM|2005-06-30": {
+   "src": "bseaspx:532331:46:Old",
+   "verdict": "proven-zero",
+   "why": "no MF row; institutions Sub Total closes as lump+FIIS (resid 0.0000)"
+  },
+  "AJANTPHARM|2005-09-30": {
+   "src": "bseaspx:532331:47:Old",
+   "verdict": "proven-zero",
+   "why": "no MF row; institutions Sub Total closes as lump+FIIS (resid 0.0000)"
+  },
+  "AJANTPHARM|2005-12-31": {
+   "src": "bseaspx:532331:48:Old",
+   "verdict": "proven-zero",
+   "why": "no MF row; institutions Sub Total closes as lump+FIIS (resid 0.0000)"
+  },
+  "AJANTPHARM|2006-03-31": {
+   "src": "bseaspx:532331:49:Old",
+   "verdict": "proven-zero",
+   "why": "no MF row; institutions Sub Total closes as lump+FIIS (resid 0.0000)"
+  },
+  "AJANTPHARM|2006-06-30": {
+   "src": "bseaspx:532331:50:New",
+   "verdict": "proven-zero",
+   "why": "Clause-35 block has no MF row; inst_sub printed: {'prom': [61.86, 61.86397061963531], 'pubtot': [38.14, 38.1360293803647], 'banks': [3.59, 3.5862834692744587], 'govt': [0.0, 0.0017081607379254389], 'inst_sub': [3.59, 3.587991630012384]}"
+  },
+  "AKSHOPTFBR|2002-12-31": {
+   "src": "bseaspx:532351:36:Old",
+   "verdict": "proven-zero",
+   "why": "no MF row; institutions Sub Total closes as lump+FIIS (resid 0.0000)"
+  },
+  "AKSHOPTFBR|2003-03-31": {
+   "src": "bseaspx:532351:37:Old",
+   "verdict": "proven-zero",
+   "why": "no MF row; institutions Sub Total closes as lump+FIIS (resid 0.0000)"
+  },
+  "AKSHOPTFBR|2003-06-30": {
+   "src": "bseaspx:532351:38:Old",
+   "verdict": "proven-zero",
+   "why": "no MF row; institutions Sub Total closes as lump+FIIS (resid 0.0000)"
+  },
+  "AKSHOPTFBR|2003-09-30": {
+   "src": "bseaspx:532351:39:Old",
+   "verdict": "proven-zero",
+   "why": "no MF row; institutions Sub Total closes as lump+FIIS (resid 0.0000)"
+  },
+  "AKSHOPTFBR|2003-12-31": {
+   "src": "bseaspx:532351:40:Old",
+   "verdict": "proven-zero",
+   "why": "no MF row; institutions Sub Total closes as lump+FIIS (resid 0.0000)"
+  },
+  "AKSHOPTFBR|2004-03-31": {
+   "src": "bseaspx:532351:41:Old",
+   "verdict": "proven-zero",
+   "why": "no MF row; institutions Sub Total closes as lump+FIIS (resid 0.0000)"
+  },
+  "AKSHOPTFBR|2004-06-30": {
+   "src": "bseaspx:532351:42:Old",
+   "verdict": "proven-zero",
+   "why": "no MF row; institutions Sub Total closes as lump+FIIS (resid 0.0000)"
+  },
+  "AKSHOPTFBR|2004-09-30": {
+   "src": "bseaspx:532351:43:Old",
+   "verdict": "proven-zero",
+   "why": "no MF row; institutions Sub Total closes as lump+FIIS (resid 0.0000)"
+  },
+  "AKSHOPTFBR|2004-12-31": {
+   "src": "bseaspx:532351:44:Old",
+   "verdict": "proven-zero",
+   "why": "no MF row; institutions Sub Total closes as lump+FIIS (resid 0.0000)"
+  },
+  "AKSHOPTFBR|2005-03-31": {
+   "src": "bseaspx:532351:45:Old",
+   "verdict": "proven-zero",
+   "why": "no MF row; institutions Sub Total closes as lump+FIIS (resid 0.0000)"
+  },
+  "AKSHOPTFBR|2005-06-30": {
+   "src": "bseaspx:532351:46:Old",
+   "verdict": "proven-zero",
+   "why": "no MF row; institutions Sub Total closes as lump+FIIS (resid 0.0000)"
+  },
+  "AKSHOPTFBR|2005-09-30": {
+   "src": "bseaspx:532351:47:Old",
+   "verdict": "proven-zero",
+   "why": "no MF row; institutions Sub Total closes as lump+FIIS (resid 0.0000)"
+  },
+  "ALBK|2004-09-30": {
+   "src": "bseaspx:532480:43:Old",
+   "verdict": "proven-zero",
+   "why": "no MF row; institutions Sub Total closes as lump+FIIS (resid 0.0000)"
+  },
+  "ALEMBICLTD|2003-09-30": {
+   "src": "bseaspx:506235:Old",
+   "verdict": "proven-zero-orphan",
+   "page": {
+    "prom": 58.0621,
+    "fii": null,
+    "mf": 0.0018,
+    "lump": 3.9656,
+    "inst_sub": 3.9673
+   },
+   "stored": [
+    58.06,
+    0.0,
+    3.97,
+    0.0,
+    null
+   ],
+   "neigh_fii": [
+    0.0,
+    1.389
+   ],
+   "why": "written by round-1 harvest 8b26fb2f7; rebuilt ledger rejects it (zero-vs-neighbour guard); page proves BOTH fii=0 and mf~0: FIIS row absent, inst_sub == MF+lump. Stored cell is right."
+  },
+  "ARCHIES|2005-03-31": {
+   "src": "bseaspx:532212:45:Old",
+   "verdict": "proven-zero",
+   "why": "no MF row; institutions Sub Total closes as lump+FIIS (resid 0.0000)"
+  },
+  "ARCHIES|2005-06-30": {
+   "src": "bseaspx:532212:46:Old",
+   "verdict": "proven-zero",
+   "why": "no MF row; institutions Sub Total closes as lump+FIIS (resid -0.0000)"
+  },
+  "ARCHIES|2005-09-30": {
+   "src": "bseaspx:532212:47:Old",
+   "verdict": "proven-zero",
+   "why": "no MF row; institutions Sub Total closes as lump+FIIS (resid -0.0000)"
+  },
+  "ARCHIES|2005-12-31": {
+   "src": "bseaspx:532212:48:Old",
+   "verdict": "proven-zero",
+   "why": "no MF row; institutions Sub Total closes as lump+FIIS (resid 0.0000)"
+  },
+  "ARCHIES|2006-03-31": {
+   "src": "bseaspx:532212:49:Old",
+   "verdict": "proven-zero",
+   "why": "no MF row; institutions Sub Total closes as lump+FIIS (resid 0.0000)"
+  },
+  "ASHKLEYFIN|2003-06-30": {
+   "src": "bseaspx:500062:38:Old",
+   "verdict": "sub-0.005pct",
+   "page_mf_4dp": 0.0035,
+   "why": "page prints an MF row the filer rounded to 0 at 2dp (22j class); stored 0.0 kept - precision, not coverage"
+  },
+  "ASHKLEYFIN|2003-09-30": {
+   "src": "bseaspx:500062:39:Old",
+   "verdict": "sub-0.005pct",
+   "page_mf_4dp": 0.0032,
+   "why": "page prints an MF row the filer rounded to 0 at 2dp (22j class); stored 0.0 kept - precision, not coverage"
+  },
+  "ATCOM|2003-06-30": {
+   "src": "bseaspx:527007:Old",
+   "verdict": "proven-zero-orphan",
+   "page": {
+    "prom": 40.7768,
+    "fii": null,
+    "mf": 0.0026,
+    "lump": 0.9713,
+    "inst_sub": 0.9739
+   },
+   "stored": [
+    40.78,
+    0.0,
+    0.97,
+    0.0,
+    null
+   ],
+   "neigh_fii": [
+    2.9557,
+    null
+   ],
+   "why": "written by round-1 harvest 8b26fb2f7; rebuilt ledger rejects it (zero-vs-neighbour guard); page proves BOTH fii=0 and mf~0: FIIS row absent, inst_sub == MF+lump. Stored cell is right."
+  },
+  "ATCOM|2003-12-31": {
+   "src": "bseaspx:527007:Old",
+   "verdict": "proven-zero-orphan",
+   "page": {
+    "prom": 36.1866,
+    "fii": null,
+    "mf": 0.0026,
+    "lump": 0.9687,
+    "inst_sub": 0.9713
+   },
+   "stored": [
+    36.19,
+    0.0,
+    0.97,
+    0.0,
+    null
+   ],
+   "neigh_fii": [
+    null,
+    2.9557
+   ],
+   "why": "written by round-1 harvest 8b26fb2f7; rebuilt ledger rejects it (zero-vs-neighbour guard); page proves BOTH fii=0 and mf~0: FIIS row absent, inst_sub == MF+lump. Stored cell is right."
+  },
+  "ATCOM|2004-06-30": {
+   "src": "bseaspx:527007:Old",
+   "verdict": "proven-zero-orphan",
+   "page": {
+    "prom": 32.2752,
+    "fii": null,
+    "mf": 0.0026,
+    "lump": 1.3331,
+    "inst_sub": 1.3357
+   },
+   "stored": [
+    32.28,
+    0.0,
+    1.33,
+    0.0,
+    null
+   ],
+   "neigh_fii": [
+    2.9557,
+    0.0
+   ],
+   "why": "written by round-1 harvest 8b26fb2f7; rebuilt ledger rejects it (zero-vs-neighbour guard); page proves BOTH fii=0 and mf~0: FIIS row absent, inst_sub == MF+lump. Stored cell is right."
+  },
+  "AZTECSOFT|2004-09-30": {
+   "src": "bseaspx:532385:43:Old",
+   "verdict": "proven-zero",
+   "why": "no MF row; institutions Sub Total closes as lump+FIIS (resid -0.0000)"
+  },
+  "BLUESTINFO|2006-06-30": {
+   "src": "bseaspx:532346:50:New",
+   "verdict": "proven-zero",
+   "why": "Clause-35 block has no MF row; inst_sub printed: {'prom': [54.62, 54.62], 'pubtot': [45.38, 45.38], 'mf': [0.0, 0.0], 'banks': [0.01, 0.01], 'ins': [5.53, 5.53], 'anyoth': [0.0, 0.0], 'inst_sub': [5.55, 5.55]}"
+  },
+  "CAROLINFO|2004-06-30": {
+   "src": "bseaspx:500446:42:Old",
+   "verdict": "sub-0.005pct",
+   "page_mf_4dp": 0.0037,
+   "why": "page prints an MF row the filer rounded to 0 at 2dp (22j class); stored 0.0 kept - precision, not coverage"
+  },
+  "CAROLINFO|2004-09-30": {
+   "src": "bseaspx:500446:43:Old",
+   "verdict": "sub-0.005pct",
+   "page_mf_4dp": 0.0037,
+   "why": "page prints an MF row the filer rounded to 0 at 2dp (22j class); stored 0.0 kept - precision, not coverage"
+  },
+  "CAROLINFO|2005-03-31": {
+   "src": "bseaspx:500446:45:Old",
+   "verdict": "sub-0.005pct",
+   "page_mf_4dp": 0.0037,
+   "why": "page prints an MF row the filer rounded to 0 at 2dp (22j class); stored 0.0 kept - precision, not coverage"
+  },
+  "CAROLINFO|2005-06-30": {
+   "src": "bseaspx:500446:46:Old",
+   "verdict": "sub-0.005pct",
+   "page_mf_4dp": 0.0037,
+   "why": "page prints an MF row the filer rounded to 0 at 2dp (22j class); stored 0.0 kept - precision, not coverage"
+  },
+  "CAROLINFO|2005-09-30": {
+   "src": "bseaspx:500446:47:Old",
+   "verdict": "sub-0.005pct",
+   "page_mf_4dp": 0.0037,
+   "why": "page prints an MF row the filer rounded to 0 at 2dp (22j class); stored 0.0 kept - precision, not coverage"
+  },
+  "CAROLINFO|2005-12-31": {
+   "src": "bseaspx:500446:48:Old",
+   "verdict": "sub-0.005pct",
+   "page_mf_4dp": 0.0037,
+   "why": "page prints an MF row the filer rounded to 0 at 2dp (22j class); stored 0.0 kept - precision, not coverage"
+  },
+  "CAROLINFO|2006-03-31": {
+   "src": "bseaspx:500446:49:Old",
+   "verdict": "sub-0.005pct",
+   "page_mf_4dp": 0.0037,
+   "why": "page prints an MF row the filer rounded to 0 at 2dp (22j class); stored 0.0 kept - precision, not coverage"
+  },
+  "CAROLINFO|2006-06-30": {
+   "src": "bseaspx:500446:50:New",
+   "verdict": "sub-0.005pct",
+   "page_mf_4dp": 0.0037,
+   "why": "page prints an MF row the filer rounded to 0 at 2dp (22j class); stored 0.0 kept - precision, not coverage"
+  },
+  "CINEVISTA|2002-12-31": {
+   "src": "bseaspx:532324:36:Old",
+   "verdict": "proven-zero",
+   "why": "no MF row; institutions Sub Total closes as lump+FIIS (resid -0.0000)"
+  },
+  "CINEVISTA|2003-03-31": {
+   "src": "bseaspx:532324:37:Old",
+   "verdict": "proven-zero",
+   "why": "no MF row; institutions Sub Total closes as lump+FIIS (resid -0.0000)"
+  },
+  "CINEVISTA|2003-06-30": {
+   "src": "bseaspx:532324:38:Old",
+   "verdict": "proven-zero",
+   "why": "no MF row; institutions Sub Total closes as lump+FIIS (resid -0.0000)"
+  },
+  "CINEVISTA|2003-09-30": {
+   "src": "bseaspx:532324:39:Old",
+   "verdict": "proven-zero",
+   "why": "no MF row; institutions Sub Total closes as lump+FIIS (resid -0.0000)"
+  },
+  "CINEVISTA|2003-12-31": {
+   "src": "bseaspx:532324:40:Old",
+   "verdict": "proven-zero",
+   "why": "no MF row; institutions Sub Total closes as lump+FIIS (resid -0.0000)"
+  },
+  "CINEVISTA|2004-03-31": {
+   "src": "bseaspx:532324:41:Old",
+   "verdict": "proven-zero",
+   "why": "no MF row; institutions Sub Total closes as lump+FIIS (resid -0.0000)"
+  },
+  "CINEVISTA|2004-06-30": {
+   "src": "bseaspx:532324:42:Old",
+   "verdict": "proven-zero",
+   "why": "no MF row; institutions Sub Total closes as lump+FIIS (resid -0.0000)"
+  },
+  "CINEVISTA|2004-09-30": {
+   "src": "bseaspx:532324:43:Old",
+   "verdict": "proven-zero",
+   "why": "no MF row; institutions Sub Total closes as lump+FIIS (resid -0.0000)"
+  },
+  "CINEVISTA|2004-12-31": {
+   "src": "bseaspx:532324:44:Old",
+   "verdict": "proven-zero",
+   "why": "no MF row; institutions Sub Total closes as lump+FIIS (resid 0.0000)"
+  },
+  "CINEVISTA|2005-03-31": {
+   "src": "bseaspx:532324:45:Old",
+   "verdict": "proven-zero",
+   "why": "no MF row; institutions Sub Total closes as lump+FIIS (resid 0.0000)"
+  },
+  "CINEVISTA|2005-06-30": {
+   "src": "bseaspx:532324:46:Old",
+   "verdict": "proven-zero",
+   "why": "no MF row; institutions Sub Total closes as lump+FIIS (resid 0.0000)"
+  },
+  "CINEVISTA|2005-09-30": {
+   "src": "bseaspx:532324:47:Old",
+   "verdict": "proven-zero",
+   "why": "no MF row; institutions Sub Total closes as lump+FIIS (resid 0.0000)"
+  },
+  "CINEVISTA|2005-12-31": {
+   "src": "bseaspx:532324:48:Old",
+   "verdict": "proven-zero",
+   "why": "no MF row; institutions Sub Total closes as lump+FIIS (resid 0.0000)"
+  },
+  "CINEVISTA|2006-03-31": {
+   "src": "bseaspx:532324:49:Old",
+   "verdict": "proven-zero",
+   "why": "no MF row; institutions Sub Total closes as lump+FIIS (resid 0.0000)"
+  },
+  "CINEVISTA|2006-06-30": {
+   "src": "bseaspx:532324:50:New",
+   "verdict": "proven-zero",
+   "why": "Clause-35 block has no MF row; inst_sub printed: {'prom': [69.27, 69.27392312626436], 'pubtot': [30.73, 30.72607687373563], 'fii': [0.05, 0.049341293728721564], 'inst_sub': [0.05, 0.049341293728721564]}"
+  },
+  "COMPUDYNE|2003-03-31": {
+   "src": "bseaspx:532306:37:Old",
+   "verdict": "proven-zero",
+   "why": "no MF row; institutions Sub Total closes as lump+FIIS (resid 0.0000)"
+  },
+  "COMPUDYNE|2003-06-30": {
+   "src": "bseaspx:532306:38:Old",
+   "verdict": "proven-zero",
+   "why": "no MF row; institutions Sub Total closes as lump+FIIS (resid 0.0000)"
+  },
+  "COMPUDYNE|2003-09-30": {
+   "src": "bseaspx:532306:39:Old",
+   "verdict": "proven-zero",
+   "why": "no MF row; institutions Sub Total closes as lump+FIIS (resid 0.0000)"
+  },
+  "COMPUDYNE|2003-12-31": {
+   "src": "bseaspx:532306:40:Old",
+   "verdict": "proven-zero",
+   "why": "no MF row; institutions Sub Total closes as lump+FIIS (resid 0.0000)"
+  },
+  "COMPUDYNE|2004-03-31": {
+   "src": "bseaspx:532306:41:Old",
+   "verdict": "proven-zero",
+   "why": "no MF row; institutions Sub Total closes as lump+FIIS (resid 0.0000)"
+  },
+  "COMPUDYNE|2004-06-30": {
+   "src": "bseaspx:532306:42:Old",
+   "verdict": "proven-zero",
+   "why": "no MF row; institutions Sub Total closes as lump+FIIS (resid 0.0000)"
+  },
+  "COMPUDYNE|2004-09-30": {
+   "src": "bseaspx:532306:43:Old",
+   "verdict": "proven-zero",
+   "why": "no MF row; institutions Sub Total closes as lump+FIIS (resid 0.0000)"
+  },
+  "CUB|2004-12-31": {
+   "src": "bseaspx:532210:44:Old",
+   "verdict": "proven-zero",
+   "why": "no MF row; institutions Sub Total closes as lump+FIIS (resid -0.0000)"
+  },
+  "CUB|2006-03-31": {
+   "src": "bseaspx:532210:49:Old",
+   "verdict": "proven-zero",
+   "why": "no MF row; institutions Sub Total closes as lump+FIIS (resid -0.0000)"
+  },
+  "CUB|2006-06-30": {
+   "src": "bseaspx:532210:50:New",
+   "verdict": "proven-zero",
+   "why": "Clause-35 block has no MF row; inst_sub printed: {'pubtot': [100.0, 100.0], 'banks': [0.45, 0.45416249999999997], 'ins': [2.07, 2.068929166666667], 'fii': [0.26, 0.25761249999999997], 'inst_sub': [2.78, 2.7807041666666668]}"
+  },
+  "CYBERTECH|2003-12-31": {
+   "src": "bseaspx:532173:40:Old",
+   "verdict": "proven-zero",
+   "why": "no MF row; institutions Sub Total closes as lump+FIIS (resid -0.0000)"
+  },
+  "CYBERTECH|2004-03-31": {
+   "src": "bseaspx:532173:41:Old",
+   "verdict": "proven-zero",
+   "why": "no MF row; institutions Sub Total closes as lump+FIIS (resid 0.0000)"
+  },
+  "CYBERTECH|2004-06-30": {
+   "src": "bseaspx:532173:42:Old",
+   "verdict": "proven-zero",
+   "why": "no MF row; institutions Sub Total closes as lump+FIIS (resid 0.0000)"
+  },
+  "CYBERTECH|2004-09-30": {
+   "src": "bseaspx:532173:43:Old",
+   "verdict": "proven-zero",
+   "why": "no MF row; institutions Sub Total closes as lump+FIIS (resid 0.0000)"
+  },
+  "CYBERTECH|2004-12-31": {
+   "src": "bseaspx:532173:44:Old",
+   "verdict": "proven-zero",
+   "why": "no MF row; institutions Sub Total closes as lump+FIIS (resid 0.0000)"
+  },
+  "CYBERTECH|2005-03-31": {
+   "src": "bseaspx:532173:45:Old",
+   "verdict": "proven-zero",
+   "why": "no MF row; institutions Sub Total closes as lump+FIIS (resid 0.0000)"
+  },
+  "CYBERTECH|2005-06-30": {
+   "src": "bseaspx:532173:46:Old",
+   "verdict": "proven-zero",
+   "why": "no MF row; institutions Sub Total closes as lump+FIIS (resid 0.0000)"
+  },
+  "CYBERTECH|2005-09-30": {
+   "src": "bseaspx:532173:47:Old",
+   "verdict": "proven-zero",
+   "why": "no MF row; institutions Sub Total closes as lump+FIIS (resid 0.0000)"
+  },
+  "DENABANK|2004-09-30": {
+   "src": "bseaspx:532121:Old",
+   "verdict": "proven-zero-orphan",
+   "page": {
+    "prom": 70.9882,
+    "fii": null,
+    "mf": 0.0002,
+    "lump": 5.5029,
+    "inst_sub": 5.5031
+   },
+   "stored": [
+    70.99,
+    0.0,
+    5.5,
+    0.0,
+    null
+   ],
+   "neigh_fii": [
+    0.0,
+    2.3946
+   ],
+   "why": "written by round-1 harvest 8b26fb2f7; rebuilt ledger rejects it (zero-vs-neighbour guard); page proves BOTH fii=0 and mf~0: FIIS row absent, inst_sub == MF+lump. Stored cell is right."
+  },
+  "E-SERVEINT|2004-09-30": {
+   "src": "bseaspx:509028:43:Old",
+   "verdict": "sub-0.005pct",
+   "page_mf_4dp": 0.004,
+   "why": "page prints an MF row the filer rounded to 0 at 2dp (22j class); stored 0.0 kept - precision, not coverage"
+  },
+  "EICHER|2006-06-30": {
+   "src": "bseaspx:531835:50:New",
+   "verdict": "sub-0.005pct",
+   "page_mf_4dp": 0.0032,
+   "why": "page prints an MF row the filer rounded to 0 at 2dp (22j class); stored 0.0 kept - precision, not coverage"
+  },
+  "ELDERPHARM|2003-09-30": {
+   "src": "bseaspx:532322:39:Old",
+   "verdict": "proven-zero",
+   "why": "no MF row; institutions Sub Total closes as lump+FIIS (resid 0.0000)"
+  },
+  "ELDERPHARM|2005-06-30": {
+   "src": "bseaspx:532322:46:Old",
+   "verdict": "proven-zero",
+   "why": "no MF row; institutions Sub Total closes as lump+FIIS (resid 0.0000)"
+  },
+  "ELECTCAST|2005-03-31": {
+   "src": "bseaspx:500128:45:Old",
+   "verdict": "proven-zero",
+   "why": "no MF row; institutions Sub Total closes as lump+FIIS (resid -0.0000)"
+  },
+  "ELECTCAST|2005-06-30": {
+   "src": "bseaspx:500128:46:Old",
+   "verdict": "proven-zero",
+   "why": "no MF row; institutions Sub Total closes as lump+FIIS (resid -0.0000)"
+  },
+  "ELECTCAST|2005-09-30": {
+   "src": "bseaspx:500128:47:Old",
+   "verdict": "proven-zero",
+   "why": "no MF row; institutions Sub Total closes as lump+FIIS (resid 0.0000)"
+  },
+  "ELECTCAST|2005-12-31": {
+   "src": "bseaspx:500128:48:Old",
+   "verdict": "proven-zero",
+   "why": "no MF row; institutions Sub Total closes as lump+FIIS (resid 0.0000)"
+  },
+  "FLEXCHEM|2006-06-30": {
+   "src": "bseaspx:524600:50:New",
+   "verdict": "proven-zero",
+   "why": "Clause-35 block has no MF row; inst_sub printed: {'prom': [74.19, 74.18813388026871], 'pubtot': [25.81, 25.811866119731285], 'banks': [0.0, 0.0011889899530348968], 'fii': [0.01, 0.013673384459901315], 'inst_sub': [0.01, 0.014862374412936209]}"
+  },
+  "GAMMONIND|2003-09-30": {
+   "src": "bseaspx:509550:Old",
+   "verdict": "proven-zero-orphan",
+   "page": {
+    "prom": 49.8542,
+    "fii": null,
+    "mf": 0.0006,
+    "lump": 0.2393,
+    "inst_sub": 0.24
+   },
+   "stored": [
+    49.85,
+    0.0,
+    0.24,
+    0.0,
+    null
+   ],
+   "neigh_fii": [
+    0.0,
+    5.7563
+   ],
+   "why": "written by round-1 harvest 8b26fb2f7; rebuilt ledger rejects it (zero-vs-neighbour guard); page proves BOTH fii=0 and mf~0: FIIS row absent, inst_sub == MF+lump. Stored cell is right."
+  },
+  "GLOBLTRUST|2002-12-31": {
+   "src": "bseaspx:500161:36:Old",
+   "verdict": "sub-0.005pct",
+   "page_mf_4dp": 0.0019,
+   "why": "page prints an MF row the filer rounded to 0 at 2dp (22j class); stored 0.0 kept - precision, not coverage"
+  },
+  "GLOBLTRUST|2003-03-31": {
+   "src": "bseaspx:500161:37:Old",
+   "verdict": "sub-0.005pct",
+   "page_mf_4dp": 0.005,
+   "why": "page prints an MF row the filer rounded to 0 at 2dp (22j class); stored 0.0 kept - precision, not coverage"
+  },
+  "GLOBLTRUST|2003-06-30": {
+   "src": "bseaspx:500161:38:Old",
+   "verdict": "sub-0.005pct",
+   "page_mf_4dp": 0.0038,
+   "why": "page prints an MF row the filer rounded to 0 at 2dp (22j class); stored 0.0 kept - precision, not coverage"
+  },
+  "GLOBLTRUST|2003-09-30": {
+   "src": "bseaspx:500161:39:Old",
+   "verdict": "sub-0.005pct",
+   "page_mf_4dp": 0.0019,
+   "why": "page prints an MF row the filer rounded to 0 at 2dp (22j class); stored 0.0 kept - precision, not coverage"
+  },
+  "GLOBLTRUST|2003-12-31": {
+   "src": "bseaspx:500161:40:Old",
+   "verdict": "sub-0.005pct",
+   "page_mf_4dp": 0.0019,
+   "why": "page prints an MF row the filer rounded to 0 at 2dp (22j class); stored 0.0 kept - precision, not coverage"
+  },
+  "GLOBLTRUST|2004-03-31": {
+   "src": "bseaspx:500161:41:Old",
+   "verdict": "sub-0.005pct",
+   "page_mf_4dp": 0.0019,
+   "why": "page prints an MF row the filer rounded to 0 at 2dp (22j class); stored 0.0 kept - precision, not coverage"
+  },
+  "GLOBLTRUST|2004-06-30": {
+   "src": "bseaspx:500161:42:Old",
+   "verdict": "sub-0.005pct",
+   "page_mf_4dp": 0.0019,
+   "why": "page prints an MF row the filer rounded to 0 at 2dp (22j class); stored 0.0 kept - precision, not coverage"
+  },
+  "HAVELLS|2003-09-30": {
+   "src": "bseaspx:517354:39:Old",
+   "verdict": "proven-zero",
+   "why": "no MF row; institutions Sub Total closes as lump+FIIS (resid 0.0000)"
+  },
+  "HAVELLS|2003-12-31": {
+   "src": "bseaspx:517354:40:Old",
+   "verdict": "proven-zero",
+   "why": "no MF row; institutions Sub Total closes as lump+FIIS (resid 0.0000)"
+  },
+  "HAVELLS|2004-03-31": {
+   "src": "bseaspx:517354:41:Old",
+   "verdict": "proven-zero",
+   "why": "no MF row; institutions Sub Total closes as lump+FIIS (resid 0.0000)"
+  },
+  "IDBIBANK|2003-06-30": {
+   "src": "bseaspx:532235:Old",
+   "verdict": "proven-zero-orphan",
+   "page": {
+    "prom": 71.3209,
+    "fii": null,
+    "mf": 0.0,
+    "lump": 7.596,
+    "inst_sub": 7.596
+   },
+   "stored": [
+    71.32,
+    0.0,
+    7.6,
+    0.0,
+    null
+   ],
+   "neigh_fii": [
+    1.0601,
+    null
+   ],
+   "why": "written by round-1 harvest 8b26fb2f7; rebuilt ledger rejects it (zero-vs-neighbour guard); page proves BOTH fii=0 and mf~0: FIIS row absent, inst_sub == MF+lump. Stored cell is right."
+  },
+  "IGS|2005-06-30": {
+   "src": "bseaspx:532337:46:Old",
+   "verdict": "proven-zero",
+   "why": "no MF row; institutions Sub Total closes as lump+FIIS (resid 0.0000)"
+  },
+  "IGS|2005-09-30": {
+   "src": "bseaspx:532337:47:Old",
+   "verdict": "proven-zero",
+   "why": "no MF row; institutions Sub Total closes as lump+FIIS (resid -0.0000)"
+  },
+  "INDIAPHOTO|2002-12-31": {
+   "src": "bseaspx:509704:36:Old",
+   "verdict": "sub-0.005pct",
+   "page_mf_4dp": 0.0009,
+   "why": "page prints an MF row the filer rounded to 0 at 2dp (22j class); stored 0.0 kept - precision, not coverage"
+  },
+  "INDIAPHOTO|2003-03-31": {
+   "src": "bseaspx:509704:37:Old",
+   "verdict": "sub-0.005pct",
+   "page_mf_4dp": 0.0009,
+   "why": "page prints an MF row the filer rounded to 0 at 2dp (22j class); stored 0.0 kept - precision, not coverage"
+  },
+  "INDNIPPON|2005-06-30": {
+   "src": "bseaspx:532240:46:Old",
+   "verdict": "proven-zero",
+   "why": "no MF row; institutions Sub Total closes as lump+FIIS (resid 0.0000)"
+  },
+  "INDNIPPON|2005-09-30": {
+   "src": "bseaspx:532240:47:Old",
+   "verdict": "proven-zero",
+   "why": "no MF row; institutions Sub Total closes as lump+FIIS (resid 0.0000)"
+  },
+  "INDNIPPON|2005-12-31": {
+   "src": "bseaspx:532240:48:Old",
+   "verdict": "proven-zero",
+   "why": "no MF row; institutions Sub Total closes as lump+FIIS (resid 0.0000)"
+  },
+  "INDRAMEDCO|2005-03-31": {
+   "src": "bseaspx:532150:45:Old",
+   "verdict": "proven-zero",
+   "why": "no MF row; institutions Sub Total closes as lump+FIIS (resid 0.0000)"
+  },
+  "INDSWFTLAB|2006-06-30": {
+   "src": "bseaspx:532305:50:New",
+   "verdict": "proven-zero",
+   "why": "Clause-35 block has no MF row; inst_sub printed: {'prom': [30.53, 29.00273960216998], 'pubtot': [69.47, 65.99776220614828], 'banks': [0.4, 0.3824231464737794], 'fii': [11.05, 10.499312839059675], 'inst_sub': [11.45, 10.881735985533455]}"
+  },
+  "IOB|2003-03-31": {
+   "src": "bseaspx:532388:37:Old",
+   "verdict": "proven-zero",
+   "why": "no MF row; institutions Sub Total closes as lump+FIIS (resid 0.0000)"
+  },
+  "IOB|2003-06-30": {
+   "src": "bseaspx:532388:38:Old",
+   "verdict": "proven-zero",
+   "why": "no MF row; institutions Sub Total closes as lump+FIIS (resid 0.0000)"
+  },
+  "IOB|2003-09-30": {
+   "src": "bseaspx:532388:39:Old",
+   "verdict": "proven-zero",
+   "why": "no MF row; institutions Sub Total closes as lump+FIIS (resid 0.0000)"
+  },
+  "IVRCLINFRA|2003-12-31": {
+   "src": "bseaspx:530773:Old",
+   "verdict": "proven-zero-orphan",
+   "page": {
+    "prom": 21.5932,
+    "fii": null,
+    "mf": 0.0028,
+    "lump": 0.0085,
+    "inst_sub": 0.0113
+   },
+   "stored": [
+    21.59,
+    0.0,
+    0.01,
+    0.0,
+    null
+   ],
+   "neigh_fii": [
+    0.0,
+    1.9305
+   ],
+   "why": "written by round-1 harvest 8b26fb2f7; rebuilt ledger rejects it (zero-vs-neighbour guard); page proves BOTH fii=0 and mf~0: FIIS row absent, inst_sub == MF+lump. Stored cell is right."
+  },
+  "JINDALPOLY|2005-03-31": {
+   "src": "bseaspx:500227:45:Old",
+   "verdict": "proven-zero",
+   "why": "no MF row; institutions Sub Total closes as lump+FIIS (resid 0.0000)"
+  },
+  "KOTHARIPRO|2002-12-31": {
+   "src": "bseaspx:530299:36:Old",
+   "verdict": "proven-zero",
+   "why": "no MF row; institutions Sub Total closes as lump+FIIS (resid 0.0000)"
+  },
+  "KOTHARIPRO|2003-06-30": {
+   "src": "bseaspx:530299:38:Old",
+   "verdict": "proven-zero",
+   "why": "no MF row; institutions Sub Total closes as lump+FIIS (resid 0.0000)"
+  },
+  "KOTHARIPRO|2003-09-30": {
+   "src": "bseaspx:530299:39:Old",
+   "verdict": "proven-zero",
+   "why": "no MF row; institutions Sub Total closes as lump+FIIS (resid 0.0000)"
+  },
+  "KOTHARIPRO|2003-12-31": {
+   "src": "bseaspx:530299:40:Old",
+   "verdict": "proven-zero",
+   "why": "no MF row; institutions Sub Total closes as lump+FIIS (resid 0.0000)"
+  },
+  "KOTHARIPRO|2004-03-31": {
+   "src": "bseaspx:530299:41:Old",
+   "verdict": "proven-zero",
+   "why": "no MF row; institutions Sub Total closes as lump+FIIS (resid 0.0000)"
+  },
+  "KOTHARIPRO|2004-06-30": {
+   "src": "bseaspx:530299:42:Old",
+   "verdict": "proven-zero",
+   "why": "no MF row; institutions Sub Total closes as lump+FIIS (resid 0.0000)"
+  },
+  "KOTHARIPRO|2004-09-30": {
+   "src": "bseaspx:530299:43:Old",
+   "verdict": "proven-zero",
+   "why": "no MF row; institutions Sub Total closes as lump+FIIS (resid 0.0000)"
+  },
+  "MAARSOFTW|2004-12-31": {
+   "src": "bseaspx:531528:44:Old",
+   "verdict": "proven-zero",
+   "why": "no MF row; institutions Sub Total closes as lump+FIIS (resid -0.0000)"
+  },
+  "MAARSOFTW|2005-03-31": {
+   "src": "bseaspx:531528:45:Old",
+   "verdict": "proven-zero",
+   "why": "no MF row; institutions Sub Total closes as lump+FIIS (resid 0.0000)"
+  },
+  "MAARSOFTW|2005-06-30": {
+   "src": "bseaspx:531528:46:Old",
+   "verdict": "proven-zero",
+   "why": "no MF row; institutions Sub Total closes as lump+FIIS (resid 0.0000)"
+  },
+  "MAARSOFTW|2005-09-30": {
+   "src": "bseaspx:531528:47:Old",
+   "verdict": "proven-zero",
+   "why": "no MF row; institutions Sub Total closes as lump+FIIS (resid -0.0000)"
+  },
+  "MAARSOFTW|2005-12-31": {
+   "src": "bseaspx:531528:48:Old",
+   "verdict": "proven-zero",
+   "why": "no MF row; institutions Sub Total closes as lump+FIIS (resid 0.0000)"
+  },
+  "MAARSOFTW|2006-03-31": {
+   "src": "bseaspx:531528:49:Old",
+   "verdict": "proven-zero",
+   "why": "no MF row; institutions Sub Total closes as lump+FIIS (resid 0.0000)"
+  },
+  "MADURACOAT|2002-12-31": {
+   "src": "bseaspx:500090:36:Old",
+   "verdict": "sub-0.005pct",
+   "page_mf_4dp": 0.0018,
+   "why": "page prints an MF row the filer rounded to 0 at 2dp (22j class); stored 0.0 kept - precision, not coverage"
+  },
+  "MADURACOAT|2003-03-31": {
+   "src": "bseaspx:500090:37:Old",
+   "verdict": "sub-0.005pct",
+   "page_mf_4dp": 0.0018,
+   "why": "page prints an MF row the filer rounded to 0 at 2dp (22j class); stored 0.0 kept - precision, not coverage"
+  },
+  "MELSTAR|2003-09-30": {
+   "src": "bseaspx:532307:39:Old",
+   "verdict": "proven-zero",
+   "why": "no MF row; institutions Sub Total closes as lump+FIIS (resid 0.0000)"
+  },
+  "MELSTAR|2003-12-31": {
+   "src": "bseaspx:532307:40:Old",
+   "verdict": "proven-zero",
+   "why": "no MF row; institutions Sub Total closes as lump+FIIS (resid 0.0000)"
+  },
+  "MELSTAR|2004-03-31": {
+   "src": "bseaspx:532307:41:Old",
+   "verdict": "proven-zero",
+   "why": "no MF row; institutions Sub Total closes as lump+FIIS (resid 0.0000)"
+  },
+  "MELSTAR|2004-06-30": {
+   "src": "bseaspx:532307:42:Old",
+   "verdict": "proven-zero",
+   "why": "no MF row; institutions Sub Total closes as lump+FIIS (resid -0.0000)"
+  },
+  "MELSTAR|2004-09-30": {
+   "src": "bseaspx:532307:43:Old",
+   "verdict": "proven-zero",
+   "why": "no MF row; institutions Sub Total closes as lump+FIIS (resid -0.0000)"
+  },
+  "MELSTAR|2004-12-31": {
+   "src": "bseaspx:532307:44:Old",
+   "verdict": "proven-zero",
+   "why": "no MF row; institutions Sub Total closes as lump+FIIS (resid -0.0000)"
+  },
+  "MELSTAR|2005-03-31": {
+   "src": "bseaspx:532307:45:Old",
+   "verdict": "proven-zero",
+   "why": "no MF row; institutions Sub Total closes as lump+FIIS (resid -0.0000)"
+  },
+  "MELSTAR|2005-06-30": {
+   "src": "bseaspx:532307:46:Old",
+   "verdict": "proven-zero",
+   "why": "no MF row; institutions Sub Total closes as lump+FIIS (resid -0.0000)"
+  },
+  "MELSTAR|2006-06-30": {
+   "src": "bseaspx:532307:50:New",
+   "verdict": "proven-zero",
+   "why": "Clause-35 block has no MF row; inst_sub printed: {'prom': [23.45, 23.452757828653773], 'pubtot': [76.55, 76.54724217134623], 'ins': [0.7, 0.7001262117521926], 'inst_sub': [0.7, 0.7001262117521926]}"
+  },
+  "MUKTAARTS|2005-03-31": {
+   "src": "bseaspx:532357:45:Old",
+   "verdict": "proven-zero",
+   "why": "no MF row; institutions Sub Total closes as lump+FIIS (resid -0.0000)"
+  },
+  "MUKTAARTS|2006-03-31": {
+   "src": "bseaspx:532357:49:Old",
+   "verdict": "proven-zero",
+   "why": "no MF row; institutions Sub Total closes as lump+FIIS (resid -0.0000)"
+  },
+  "MUKTAARTS|2006-06-30": {
+   "src": "bseaspx:532357:50:New",
+   "verdict": "proven-zero",
+   "why": "Clause-35 block has no MF row; inst_sub printed: {'prom': [70.25, 70.25441517722707], 'pubtot': [29.75, 29.745584822772926], 'banks': [0.01, 0.005757001399394186], 'ins': [0.45, 0.4451269197385436], 'fii': [0.22, 0.22142313074593026], 'inst_sub': [0.67, 0.672307051883868]}"
+  },
+  "NARMDCHEMA|2005-12-31": {
+   "src": "bseaspx:524650:48:Old",
+   "verdict": "sub-0.005pct",
+   "page_mf_4dp": 0.0011,
+   "why": "page prints an MF row the filer rounded to 0 at 2dp (22j class); stored 0.0 kept - precision, not coverage"
+  },
+  "NARMDCHEMA|2006-03-31": {
+   "src": "bseaspx:524650:49:Old",
+   "verdict": "sub-0.005pct",
+   "page_mf_4dp": 0.0011,
+   "why": "page prints an MF row the filer rounded to 0 at 2dp (22j class); stored 0.0 kept - precision, not coverage"
+  },
+  "NARMDCHEMA|2006-06-30": {
+   "src": "bseaspx:524650:50:New",
+   "verdict": "sub-0.005pct",
+   "page_mf_4dp": 0.0011,
+   "why": "page prints an MF row the filer rounded to 0 at 2dp (22j class); stored 0.0 kept - precision, not coverage"
+  },
+  "NEPCMICON|2003-06-30": {
+   "src": "bseaspx:500301:38:Old",
+   "verdict": "proven-zero",
+   "why": "no MF row; institutions Sub Total closes as lump+FIIS (resid -0.0000)"
+  },
+  "NEPCMICON|2003-09-30": {
+   "src": "bseaspx:500301:39:Old",
+   "verdict": "proven-zero",
+   "why": "no MF row; institutions Sub Total closes as lump+FIIS (resid 0.0000)"
+  },
+  "NEPCMICON|2003-12-31": {
+   "src": "bseaspx:500301:40:Old",
+   "verdict": "proven-zero",
+   "why": "no MF row; institutions Sub Total closes as lump+FIIS (resid 0.0000)"
+  },
+  "NEPCMICON|2004-03-31": {
+   "src": "bseaspx:500301:41:Old",
+   "verdict": "proven-zero",
+   "why": "no MF row; institutions Sub Total closes as lump+FIIS (resid 0.0000)"
+  },
+  "NEPCMICON|2004-06-30": {
+   "src": "bseaspx:500301:42:Old",
+   "verdict": "proven-zero",
+   "why": "no MF row; institutions Sub Total closes as lump+FIIS (resid 0.0000)"
+  },
+  "NEPCMICON|2004-09-30": {
+   "src": "bseaspx:500301:43:Old",
+   "verdict": "proven-zero",
+   "why": "no MF row; institutions Sub Total closes as lump+FIIS (resid 0.0000)"
+  },
+  "NEPCMICON|2004-12-31": {
+   "src": "bseaspx:500301:44:Old",
+   "verdict": "proven-zero",
+   "why": "no MF row; institutions Sub Total closes as lump+FIIS (resid -0.0000)"
+  },
+  "NEPCMICON|2005-03-31": {
+   "src": "bseaspx:500301:45:Old",
+   "verdict": "proven-zero",
+   "why": "no MF row; institutions Sub Total closes as lump+FIIS (resid -0.0000)"
+  },
+  "NEPCMICON|2005-06-30": {
+   "src": "bseaspx:500301:46:Old",
+   "verdict": "proven-zero",
+   "why": "no MF row; institutions Sub Total closes as lump+FIIS (resid 0.0000)"
+  },
+  "NEPCMICON|2005-09-30": {
+   "src": "bseaspx:500301:47:Old",
+   "verdict": "proven-zero",
+   "why": "no MF row; institutions Sub Total closes as lump+FIIS (resid 0.0000)"
+  },
+  "NEPCMICON|2005-12-31": {
+   "src": "bseaspx:500301:48:Old",
+   "verdict": "proven-zero",
+   "why": "no MF row; institutions Sub Total closes as lump+FIIS (resid 0.0000)"
+  },
+  "NEPCMICON|2006-03-31": {
+   "src": "bseaspx:500301:49:Old",
+   "verdict": "proven-zero",
+   "why": "no MF row; institutions Sub Total closes as lump+FIIS (resid -0.0000)"
+  },
+  "NOVAPETRO|2006-06-30": {
+   "src": "bseaspx:530605:50:New",
+   "verdict": "proven-zero",
+   "why": "Clause-35 block has no MF row; inst_sub printed: {'prom': [65.2, 65.19520740740741], 'pubtot': [34.8, 34.80479259259259], 'banks': [0.0, 0.0044444444444444444], 'inst_sub': [0.0, 0.0044444444444444444]}"
+  },
+  "ORIENTHOT|2004-03-31": {
+   "src": "bseaspx:500314:41:Old",
+   "verdict": "sub-0.005pct",
+   "page_mf_4dp": 0.0,
+   "why": "page prints an MF row the filer rounded to 0 at 2dp (22j class); stored 0.0 kept - precision, not coverage"
+  },
+  "ORIENTHOT|2004-06-30": {
+   "src": "bseaspx:500314:42:Old",
+   "verdict": "sub-0.005pct",
+   "page_mf_4dp": 0.0,
+   "why": "page prints an MF row the filer rounded to 0 at 2dp (22j class); stored 0.0 kept - precision, not coverage"
+  },
+  "ORIENTHOT|2004-09-30": {
+   "src": "bseaspx:500314:43:Old",
+   "verdict": "sub-0.005pct",
+   "page_mf_4dp": 0.0,
+   "why": "page prints an MF row the filer rounded to 0 at 2dp (22j class); stored 0.0 kept - precision, not coverage"
+  },
+  "OTIS|2003-03-31": {
+   "src": "bseaspx:504130:37:Old",
+   "verdict": "sub-0.005pct",
+   "page_mf_4dp": 0.0002,
+   "why": "page prints an MF row the filer rounded to 0 at 2dp (22j class); stored 0.0 kept - precision, not coverage"
+  },
+  "PANACEABIO|2002-12-31": {
+   "src": "bseaspx:531349:36:Old",
+   "verdict": "proven-zero",
+   "why": "no MF row; institutions Sub Total closes as lump+FIIS (resid 0.0000)"
+  },
+  "PANACEABIO|2003-03-31": {
+   "src": "bseaspx:531349:37:Old",
+   "verdict": "proven-zero",
+   "why": "no MF row; institutions Sub Total closes as lump+FIIS (resid 0.0000)"
+  },
+  "PANACEABIO|2003-06-30": {
+   "src": "bseaspx:531349:38:Old",
+   "verdict": "proven-zero",
+   "why": "no MF row; institutions Sub Total closes as lump+FIIS (resid 0.0000)"
+  },
+  "PANACEABIO|2003-09-30": {
+   "src": "bseaspx:531349:39:Old",
+   "verdict": "proven-zero",
+   "why": "no MF row; institutions Sub Total closes as lump+FIIS (resid 0.0000)"
+  },
+  "PANACEABIO|2003-12-31": {
+   "src": "bseaspx:531349:40:Old",
+   "verdict": "proven-zero",
+   "why": "no MF row; institutions Sub Total closes as lump+FIIS (resid 0.0000)"
+  },
+  "PANACEABIO|2004-03-31": {
+   "src": "bseaspx:531349:41:Old",
+   "verdict": "proven-zero",
+   "why": "no MF row; institutions Sub Total closes as lump+FIIS (resid 0.0000)"
+  },
+  "PANACEABIO|2004-06-30": {
+   "src": "bseaspx:531349:42:Old",
+   "verdict": "proven-zero",
+   "why": "no MF row; institutions Sub Total closes as lump+FIIS (resid 0.0000)"
+  },
+  "PANACEABIO|2004-09-30": {
+   "src": "bseaspx:531349:43:Old",
+   "verdict": "proven-zero",
+   "why": "no MF row; institutions Sub Total closes as lump+FIIS (resid 0.0000)"
+  },
+  "PANACEABIO|2004-12-31": {
+   "src": "bseaspx:531349:44:Old",
+   "verdict": "proven-zero",
+   "why": "no MF row; institutions Sub Total closes as lump+FIIS (resid -0.0000)"
+  },
+  "PENTACOMMU|2003-03-31": {
+   "src": "bseaspx:531492:37:Old",
+   "verdict": "proven-zero",
+   "why": "no MF row; institutions Sub Total closes as lump+FIIS (resid 0.0000)"
+  },
+  "PENTACOMMU|2003-06-30": {
+   "src": "bseaspx:531492:38:Old",
+   "verdict": "proven-zero",
+   "why": "no MF row; institutions Sub Total closes as lump+FIIS (resid 0.0000)"
+  },
+  "PENTACOMMU|2003-12-31": {
+   "src": "bseaspx:531492:40:Old",
+   "verdict": "proven-zero",
+   "why": "no MF row; institutions Sub Total closes as lump+FIIS (resid 0.0000)"
+  },
+  "PENTACOMMU|2004-03-31": {
+   "src": "bseaspx:531492:41:Old",
+   "verdict": "proven-zero",
+   "why": "no MF row; institutions Sub Total closes as lump+FIIS (resid 0.0000)"
+  },
+  "PENTACOMMU|2004-12-31": {
+   "src": "bseaspx:531492:44:Old",
+   "verdict": "proven-zero",
+   "why": "no MF row; institutions Sub Total closes as lump+FIIS (resid 0.0000)"
+  },
+  "PENTACOMMU|2005-06-30": {
+   "src": "bseaspx:531492:46:Old",
+   "verdict": "proven-zero",
+   "why": "no MF row; institutions Sub Total closes as lump+FIIS (resid 0.0000)"
+  },
+  "PENTACOMMU|2005-09-30": {
+   "src": "bseaspx:531492:47:Old",
+   "verdict": "proven-zero",
+   "why": "no MF row; institutions Sub Total closes as lump+FIIS (resid 0.0000)"
+  },
+  "PENTACOMMU|2005-12-31": {
+   "src": "bseaspx:531492:48:Old",
+   "verdict": "proven-zero",
+   "why": "no MF row; institutions Sub Total closes as lump+FIIS (resid -0.0000)"
+  },
+  "PETRONET|2006-06-30": {
+   "src": "bseaspx:532522:50:New",
+   "verdict": "proven-zero",
+   "why": "Clause-35 block has no MF row; inst_sub printed: {'prom': [50.0, 49.99999706666684], 'pubtot': [50.0, 50.000002933333164], 'banks': [0.58, 0.5787744993785626], 'fii': [13.56, 13.557594537954454], 'inst_sub': [14.14, 14.136369037333015]}"
+  },
+  "PHARMACIA|2004-12-31": {
+   "src": "bseaspx:506817:44:Old",
+   "verdict": "sub-0.005pct",
+   "page_mf_4dp": 0.0038,
+   "why": "page prints an MF row the filer rounded to 0 at 2dp (22j class); stored 0.0 kept - precision, not coverage"
+  },
+  "PNBGILTS|2006-06-30": {
+   "src": "bseaspx:532366:50:New",
+   "verdict": "proven-zero",
+   "why": "Clause-35 block has no MF row; inst_sub printed: {'prom': [74.07, 74.06990421279987], 'pubtot': [25.93, 25.93009578720013], 'banks': [7.04, 7.039251864339489], 'ins': [1.56, 1.560616587510629], 'inst_sub': [8.6, 8.599868451850117]}"
+  },
+  "PNC|2003-03-31": {
+   "src": "bseaspx:532387:37:Old",
+   "verdict": "proven-zero",
+   "why": "no MF row; institutions Sub Total closes as lump+FIIS (resid 0.0000)"
+  },
+  "RAJESHEXPO|2006-03-31": {
+   "src": "bseaspx:531500:49:Old",
+   "verdict": "proven-zero",
+   "why": "no MF row; institutions Sub Total closes as lump+FIIS (resid 0.0000)"
+  },
+  "RECKCOLMAN|2002-12-31": {
+   "src": "bseaspx:500750:36:Old",
+   "verdict": "sub-0.005pct",
+   "page_mf_4dp": 0.0008,
+   "why": "page prints an MF row the filer rounded to 0 at 2dp (22j class); stored 0.0 kept - precision, not coverage"
+  },
+  "RELMEDIA|2003-09-30": {
+   "src": "bseaspx:532399:39:Old",
+   "verdict": "proven-zero",
+   "why": "no MF row; institutions Sub Total closes as lump+FIIS (resid -0.0000)"
+  },
+  "RICOAUTO|2003-09-30": {
+   "src": "bseaspx:520008:39:Old",
+   "verdict": "proven-zero",
+   "why": "no MF row; institutions Sub Total closes as lump+FIIS (resid 0.0000)"
+  },
+  "RICOAUTO|2003-12-31": {
+   "src": "bseaspx:520008:40:Old",
+   "verdict": "proven-zero",
+   "why": "no MF row; institutions Sub Total closes as lump+FIIS (resid 0.0000)"
+  },
+  "RICOAUTO|2004-03-31": {
+   "src": "bseaspx:520008:41:Old",
+   "verdict": "proven-zero",
+   "why": "no MF row; institutions Sub Total closes as lump+FIIS (resid 0.0000)"
+  },
+  "ROLTA|2002-12-31": {
+   "src": "bseaspx:500366:36:Old",
+   "verdict": "proven-zero",
+   "why": "no MF row; institutions Sub Total closes as lump+FIIS (resid 0.0000)"
+  },
+  "ROLTA|2003-03-31": {
+   "src": "bseaspx:500366:37:Old",
+   "verdict": "proven-zero",
+   "why": "no MF row; institutions Sub Total closes as lump+FIIS (resid 0.0000)"
+  },
+  "ROLTA|2003-06-30": {
+   "src": "bseaspx:500366:38:Old",
+   "verdict": "proven-zero",
+   "why": "no MF row; institutions Sub Total closes as lump+FIIS (resid -0.0000)"
+  },
+  "ROLTA|2003-09-30": {
+   "src": "bseaspx:500366:39:Old",
+   "verdict": "proven-zero",
+   "why": "no MF row; institutions Sub Total closes as lump+FIIS (resid 0.0000)"
+  },
+  "ROLTA|2004-03-31": {
+   "src": "bseaspx:500366:41:Old",
+   "verdict": "proven-zero",
+   "why": "no MF row; institutions Sub Total closes as lump+FIIS (resid 0.0000)"
+  },
+  "ROLTA|2004-06-30": {
+   "src": "bseaspx:500366:42:Old",
+   "verdict": "proven-zero",
+   "why": "no MF row; institutions Sub Total closes as lump+FIIS (resid -0.0000)"
+  },
+  "ROLTA|2004-09-30": {
+   "src": "bseaspx:500366:43:Old",
+   "verdict": "proven-zero",
+   "why": "no MF row; institutions Sub Total closes as lump+FIIS (resid 0.0000)"
+  },
+  "ROLTA|2004-12-31": {
+   "src": "bseaspx:500366:44:Old",
+   "verdict": "proven-zero",
+   "why": "no MF row; institutions Sub Total closes as lump+FIIS (resid -0.0000)"
+  },
+  "ROLTA|2005-03-31": {
+   "src": "bseaspx:500366:45:Old",
+   "verdict": "proven-zero",
+   "why": "no MF row; institutions Sub Total closes as lump+FIIS (resid 0.0000)"
+  },
+  "SHREERAMA|2004-06-30": {
+   "src": "bseaspx:532310:42:Old",
+   "verdict": "proven-zero",
+   "why": "no MF row; institutions Sub Total closes as lump+FIIS (resid -0.0000)"
+  },
+  "SHREERAMA|2004-12-31": {
+   "src": "bseaspx:532310:44:Old",
+   "verdict": "proven-zero",
+   "why": "no MF row; institutions Sub Total closes as lump+FIIS (resid -0.0000)"
+  },
+  "SHREERAMA|2005-03-31": {
+   "src": "bseaspx:532310:45:Old",
+   "verdict": "proven-zero",
+   "why": "no MF row; institutions Sub Total closes as lump+FIIS (resid 0.0000)"
+  },
+  "SHREERAMA|2005-06-30": {
+   "src": "bseaspx:532310:46:Old",
+   "verdict": "proven-zero",
+   "why": "no MF row; institutions Sub Total closes as lump+FIIS (resid 0.0000)"
+  },
+  "SHREERAMA|2005-09-30": {
+   "src": "bseaspx:532310:47:Old",
+   "verdict": "proven-zero",
+   "why": "no MF row; institutions Sub Total closes as lump+FIIS (resid 0.0000)"
+  },
+  "SHREERAMA|2005-12-31": {
+   "src": "bseaspx:532310:48:Old",
+   "verdict": "proven-zero",
+   "why": "no MF row; institutions Sub Total closes as lump+FIIS (resid -0.0000)"
+  },
+  "SKUMARSYNF|2004-12-31": {
+   "src": "bseaspx:514304:44:Old",
+   "verdict": "sub-0.005pct",
+   "page_mf_4dp": 0.0036,
+   "why": "page prints an MF row the filer rounded to 0 at 2dp (22j class); stored 0.0 kept - precision, not coverage"
+  },
+  "SKUMARSYNF|2005-03-31": {
+   "src": "bseaspx:514304:45:Old",
+   "verdict": "sub-0.005pct",
+   "page_mf_4dp": 0.0034,
+   "why": "page prints an MF row the filer rounded to 0 at 2dp (22j class); stored 0.0 kept - precision, not coverage"
+  },
+  "SONATSOFTW|2003-12-31": {
+   "src": "bseaspx:532221:40:Old",
+   "verdict": "proven-zero",
+   "why": "no MF row; institutions Sub Total closes as lump+FIIS (resid 0.0000)"
+  },
+  "SONATSOFTW|2004-03-31": {
+   "src": "bseaspx:532221:41:Old",
+   "verdict": "proven-zero",
+   "why": "no MF row; institutions Sub Total closes as lump+FIIS (resid 0.0000)"
+  },
+  "SONATSOFTW|2004-06-30": {
+   "src": "bseaspx:532221:42:Old",
+   "verdict": "proven-zero",
+   "why": "no MF row; institutions Sub Total closes as lump+FIIS (resid -0.0000)"
+  },
+  "SONATSOFTW|2004-09-30": {
+   "src": "bseaspx:532221:43:Old",
+   "verdict": "proven-zero",
+   "why": "no MF row; institutions Sub Total closes as lump+FIIS (resid 0.0000)"
+  },
+  "SONATSOFTW|2004-12-31": {
+   "src": "bseaspx:532221:44:Old",
+   "verdict": "proven-zero",
+   "why": "no MF row; institutions Sub Total closes as lump+FIIS (resid 0.0000)"
+  },
+  "SONATSOFTW|2005-03-31": {
+   "src": "bseaspx:532221:45:Old",
+   "verdict": "proven-zero",
+   "why": "no MF row; institutions Sub Total closes as lump+FIIS (resid 0.0000)"
+  },
+  "SONATSOFTW|2005-06-30": {
+   "src": "bseaspx:532221:46:Old",
+   "verdict": "proven-zero",
+   "why": "no MF row; institutions Sub Total closes as lump+FIIS (resid 0.0000)"
+  },
+  "SONATSOFTW|2005-09-30": {
+   "src": "bseaspx:532221:47:Old",
+   "verdict": "proven-zero",
+   "why": "no MF row; institutions Sub Total closes as lump+FIIS (resid 0.0000)"
+  },
+  "SONATSOFTW|2005-12-31": {
+   "src": "bseaspx:532221:48:Old",
+   "verdict": "proven-zero",
+   "why": "no MF row; institutions Sub Total closes as lump+FIIS (resid 0.0000)"
+  },
+  "SONATSOFTW|2006-03-31": {
+   "src": "bseaspx:532221:49:Old",
+   "verdict": "proven-zero",
+   "why": "no MF row; institutions Sub Total closes as lump+FIIS (resid 0.0000)"
+  },
+  "SONATSOFTW|2006-06-30": {
+   "src": "bseaspx:532221:50:New",
+   "verdict": "proven-zero",
+   "why": "Clause-35 block has no MF row; inst_sub printed: {'prom': [45.35, 45.35295240537248], 'pubtot': [54.65, 54.64704759462753], 'banks': [0.0, 0.0005182613129835604], 'fii': [0.93, 0.9327096548164743], 'inst_sub': [0.93, 0.9332279161294579]}"
+  },
+  "STERLINBIO|2003-09-30": {
+   "src": "bseaspx:512299:39:Old",
+   "verdict": "proven-zero",
+   "why": "no MF row; institutions Sub Total closes as lump+FIIS (resid 0.0000)"
+  },
+  "STERLINBIO|2003-12-31": {
+   "src": "bseaspx:512299:40:Old",
+   "verdict": "proven-zero",
+   "why": "no MF row; institutions Sub Total closes as lump+FIIS (resid 0.0000)"
+  },
+  "STERLINBIO|2004-03-31": {
+   "src": "bseaspx:512299:41:Old",
+   "verdict": "proven-zero",
+   "why": "no MF row; institutions Sub Total closes as lump+FIIS (resid 0.0000)"
+  },
+  "STERLINBIO|2004-06-30": {
+   "src": "bseaspx:512299:42:Old",
+   "verdict": "proven-zero",
+   "why": "no MF row; institutions Sub Total closes as lump+FIIS (resid 0.0000)"
+  },
+  "STERLINBIO|2004-09-30": {
+   "src": "bseaspx:512299:43:Old",
+   "verdict": "proven-zero",
+   "why": "no MF row; institutions Sub Total closes as lump+FIIS (resid 0.0000)"
+  },
+  "STERLINBIO|2004-12-31": {
+   "src": "bseaspx:512299:44:Old",
+   "verdict": "proven-zero",
+   "why": "no MF row; institutions Sub Total closes as lump+FIIS (resid 0.0000)"
+  },
+  "SYNDIBANK|2003-06-30": {
+   "src": "bseaspx:532276:38:Old",
+   "verdict": "proven-zero",
+   "why": "no MF row; institutions Sub Total closes as lump+FIIS (resid 0.0000)"
+  },
+  "TATAELXSI|2003-06-30": {
+   "src": "bseaspx:500408:38:Old",
+   "verdict": "proven-zero",
+   "why": "no MF row; institutions Sub Total closes as lump+FIIS (resid 0.0000)"
+  },
+  "TATAFIN|2003-12-31": {
+   "src": "bseaspx:511231:40:Old",
+   "verdict": "proven-zero",
+   "why": "no MF row; institutions Sub Total closes as lump+FIIS (resid 0.0000)"
+  },
+  "TATAFIN|2004-03-31": {
+   "src": "bseaspx:511231:41:Old",
+   "verdict": "proven-zero",
+   "why": "no MF row; institutions Sub Total closes as lump+FIIS (resid -0.0000)"
+  },
+  "TATAINFO|2004-06-30": {
+   "src": "bseaspx:504290:42:Old",
+   "verdict": "sub-0.005pct",
+   "page_mf_4dp": 0.0012,
+   "why": "page prints an MF row the filer rounded to 0 at 2dp (22j class); stored 0.0 kept - precision, not coverage"
+  },
+  "TATAINFO|2004-12-31": {
+   "src": "bseaspx:504290:44:Old",
+   "verdict": "sub-0.005pct",
+   "page_mf_4dp": 0.0012,
+   "why": "page prints an MF row the filer rounded to 0 at 2dp (22j class); stored 0.0 kept - precision, not coverage"
+  },
+  "TATAINFO|2005-03-31": {
+   "src": "bseaspx:504290:45:Old",
+   "verdict": "sub-0.005pct",
+   "page_mf_4dp": 0.0012,
+   "why": "page prints an MF row the filer rounded to 0 at 2dp (22j class); stored 0.0 kept - precision, not coverage"
+  },
+  "TATAINFO|2005-06-30": {
+   "src": "bseaspx:504290:46:Old",
+   "verdict": "sub-0.005pct",
+   "page_mf_4dp": 0.0012,
+   "why": "page prints an MF row the filer rounded to 0 at 2dp (22j class); stored 0.0 kept - precision, not coverage"
+  },
+  "TIPSMUSIC|2002-12-31": {
+   "src": "bseaspx:532375:36:Old",
+   "verdict": "proven-zero",
+   "why": "no MF row; institutions Sub Total closes as lump+FIIS (resid 0.0000)"
+  },
+  "TIPSMUSIC|2003-03-31": {
+   "src": "bseaspx:532375:37:Old",
+   "verdict": "proven-zero",
+   "why": "no MF row; institutions Sub Total closes as lump+FIIS (resid 0.0000)"
+  },
+  "TIPSMUSIC|2003-06-30": {
+   "src": "bseaspx:532375:38:Old",
+   "verdict": "proven-zero",
+   "why": "no MF row; institutions Sub Total closes as lump+FIIS (resid 0.0000)"
+  },
+  "TIPSMUSIC|2003-09-30": {
+   "src": "bseaspx:532375:39:Old",
+   "verdict": "proven-zero",
+   "why": "no MF row; institutions Sub Total closes as lump+FIIS (resid 0.0000)"
+  },
+  "TIPSMUSIC|2003-12-31": {
+   "src": "bseaspx:532375:40:Old",
+   "verdict": "proven-zero",
+   "why": "no MF row; institutions Sub Total closes as lump+FIIS (resid 0.0000)"
+  },
+  "TIPSMUSIC|2004-03-31": {
+   "src": "bseaspx:532375:41:Old",
+   "verdict": "proven-zero",
+   "why": "no MF row; institutions Sub Total closes as lump+FIIS (resid 0.0000)"
+  },
+  "TIPSMUSIC|2004-06-30": {
+   "src": "bseaspx:532375:42:Old",
+   "verdict": "proven-zero",
+   "why": "no MF row; institutions Sub Total closes as lump+FIIS (resid 0.0000)"
+  },
+  "TIPSMUSIC|2004-09-30": {
+   "src": "bseaspx:532375:43:Old",
+   "verdict": "proven-zero",
+   "why": "no MF row; institutions Sub Total closes as lump+FIIS (resid 0.0000)"
+  },
+  "TIPSMUSIC|2004-12-31": {
+   "src": "bseaspx:532375:44:Old",
+   "verdict": "proven-zero",
+   "why": "no MF row; institutions Sub Total closes as lump+FIIS (resid 0.0000)"
+  },
+  "TIPSMUSIC|2005-03-31": {
+   "src": "bseaspx:532375:45:Old",
+   "verdict": "proven-zero",
+   "why": "no MF row; institutions Sub Total closes as lump+FIIS (resid 0.0000)"
+  },
+  "TIPSMUSIC|2005-06-30": {
+   "src": "bseaspx:532375:46:Old",
+   "verdict": "proven-zero",
+   "why": "no MF row; institutions Sub Total closes as lump+FIIS (resid 0.0000)"
+  },
+  "TIPSMUSIC|2005-09-30": {
+   "src": "bseaspx:532375:47:Old",
+   "verdict": "proven-zero",
+   "why": "no MF row; institutions Sub Total closes as lump+FIIS (resid 0.0000)"
+  },
+  "TIPSMUSIC|2005-12-31": {
+   "src": "bseaspx:532375:48:Old",
+   "verdict": "proven-zero",
+   "why": "no MF row; institutions Sub Total closes as lump+FIIS (resid 0.0000)"
+  },
+  "TIPSMUSIC|2006-03-31": {
+   "src": "bseaspx:532375:49:Old",
+   "verdict": "proven-zero",
+   "why": "no MF row; institutions Sub Total closes as lump+FIIS (resid 0.0000)"
+  },
+  "TIPSMUSIC|2006-06-30": {
+   "src": "bseaspx:532375:50:New",
+   "verdict": "proven-zero",
+   "why": "Clause-35 block has no MF row; inst_sub printed: {'prom': [49.18, 49.180258696809766], 'pubtot': [50.82, 50.819741303190234], 'fii': [7.01, 7.009672483637663], 'inst_sub': [7.01, 7.009672483637663]}"
+  },
+  "TODAYS|2005-06-30": {
+   "src": "bseaspx:531830:46:Old",
+   "verdict": "proven-zero",
+   "why": "no MF row; institutions Sub Total closes as lump+FIIS (resid 0.0000)"
+  },
+  "TODAYS|2005-09-30": {
+   "src": "bseaspx:531830:47:Old",
+   "verdict": "proven-zero",
+   "why": "no MF row; institutions Sub Total closes as lump+FIIS (resid 0.0000)"
+  },
+  "TODAYS|2005-12-31": {
+   "src": "bseaspx:531830:48:Old",
+   "verdict": "proven-zero",
+   "why": "no MF row; institutions Sub Total closes as lump+FIIS (resid 0.0000)"
+  },
+  "TODAYS|2006-03-31": {
+   "src": "bseaspx:531830:49:Old",
+   "verdict": "proven-zero",
+   "why": "no MF row; institutions Sub Total closes as lump+FIIS (resid -0.0000)"
+  },
+  "TODAYS|2006-06-30": {
+   "src": "bseaspx:531830:50:New",
+   "verdict": "proven-zero",
+   "why": "Clause-35 block has no MF row; inst_sub printed: {'prom': [59.25, 59.25372854768093], 'pubtot': [40.75, 40.74627145231908], 'banks': [2.91, 2.914323398343908], 'ins': [3.38, 3.3789421928777132], 'fii': [0.12, 0.12096805662865928], 'inst_sub': [6.41, 6.41423364785028]}"
+  },
+  "UCOBANK|2005-06-30": {
+   "src": "bseaspx:532505:46:Old",
+   "verdict": "proven-zero",
+   "why": "no MF row; institutions Sub Total closes as lump+FIIS (resid 0.0000)"
+  },
+  "UCOBANK|2005-09-30": {
+   "src": "bseaspx:532505:47:Old",
+   "verdict": "proven-zero",
+   "why": "no MF row; institutions Sub Total closes as lump+FIIS (resid 0.0000)"
+  },
+  "UCOBANK|2005-12-31": {
+   "src": "bseaspx:532505:48:Old",
+   "verdict": "proven-zero",
+   "why": "no MF row; institutions Sub Total closes as lump+FIIS (resid 0.0000)"
+  },
+  "UCOBANK|2006-03-31": {
+   "src": "bseaspx:532505:49:Old",
+   "verdict": "proven-zero",
+   "why": "no MF row; institutions Sub Total closes as lump+FIIS (resid 0.0000)"
+  },
+  "UCOBANK|2006-06-30": {
+   "src": "bseaspx:532505:50:New",
+   "verdict": "proven-zero",
+   "why": "Clause-35 block has no MF row; inst_sub printed: {'prom': [74.98, 74.97998398718974], 'pubtot': [25.02, 25.02001601281025], 'banks': [0.24, 0.23890324759807843], 'ins': [4.96, 4.959019465572458], 'fii': [2.38, 2.376900520416333], 'inst_sub': [7.57, 7.574823233586869]}"
+  },
+  "UMIYA-MRO|2006-06-30": {
+   "src": "bseaspx:532376:50:New",
+   "verdict": "proven-zero",
+   "why": "Clause-35 block has no MF row; inst_sub printed: {'prom': [35.78, 35.7758600435592], 'pubtot': [64.22, 64.22413995644081], 'banks': [0.46, 0.4576574361159167], 'fii': [1.95, 1.9457832080151432], 'inst_sub': [2.4, 2.40344064413106]}"
+  },
+  "UNIWESTBNK|2002-12-31": {
+   "src": "bseaspx:500430:36:Old",
+   "verdict": "sub-0.005pct",
+   "page_mf_4dp": 0.0033,
+   "why": "page prints an MF row the filer rounded to 0 at 2dp (22j class); stored 0.0 kept - precision, not coverage"
+  },
+  "UNIWESTBNK|2006-03-31": {
+   "src": "bseaspx:500430:49:Old",
+   "verdict": "proven-zero",
+   "why": "no MF row; institutions Sub Total closes as lump+FIIS (resid 0.0000)"
+  },
+  "UNIWESTBNK|2006-06-30": {
+   "src": "bseaspx:500430:50:New",
+   "verdict": "proven-zero",
+   "why": "Clause-35 block has no MF row; inst_sub printed: {'prom': [0.02, 0.021142726815492643], 'pubtot': [99.98, 99.9788572731845], 'banks': [12.39, 12.385057113725049], 'govt': [0.0, 0.0004463629869562134], 'ins': [1.82, 1.8237833693297185], 'fii': [2.03, 2.0272318990928024], 'inst_sub': [16.24, 16.236518745134525]}"
+  },
+  "VISHALEXPO|2005-12-31": {
+   "src": "bseaspx:532618:48:Old",
+   "verdict": "proven-zero",
+   "why": "no MF row; institutions Sub Total closes as lump+FIIS (resid -0.0000)"
+  },
+  "VISHALEXPO|2006-06-30": {
+   "src": "bseaspx:532618:50:New",
+   "verdict": "proven-zero",
+   "why": "Clause-35 block has no MF row; inst_sub printed: {'prom': [55.51, 55.512975], 'pubtot': [44.49, 44.487025], 'banks': [1.19, 1.190625], 'inst_sub': [1.19, 1.190625]}"
+  },
+  "ZANDUREALT|2006-06-30": {
+   "src": "bseaspx:506720:50:New",
+   "verdict": "proven-zero",
+   "why": "Clause-35 block has no MF row; inst_sub printed: {'prom': [41.85, 41.854993386243386], 'pubtot': [58.15, 58.145006613756614], 'banks': [0.32, 0.32473544973544977], 'inst_sub': [0.32, 0.32473544973544977]}"
+  },
+  "ZODIACLOTH|2004-06-30": {
+   "src": "bseaspx:521163:42:Old",
+   "verdict": "proven-zero",
+   "why": "no MF row; institutions Sub Total closes as lump+FIIS (resid 0.0000)"
+  },
+  "ZODIACLOTH|2004-09-30": {
+   "src": "bseaspx:521163:43:Old",
+   "verdict": "proven-zero",
+   "why": "no MF row; institutions Sub Total closes as lump+FIIS (resid 0.0000)"
+  },
+  "ZODIACLOTH|2004-12-31": {
+   "src": "bseaspx:521163:44:Old",
+   "verdict": "proven-zero",
+   "why": "no MF row; institutions Sub Total closes as lump+FIIS (resid -0.0000)"
+  },
+  "ZODIACLOTH|2005-03-31": {
+   "src": "bseaspx:521163:45:Old",
+   "verdict": "proven-zero",
+   "why": "no MF row; institutions Sub Total closes as lump+FIIS (resid 0.0000)"
+  },
+  "ZODIACLOTH|2005-06-30": {
+   "src": "bseaspx:521163:46:Old",
+   "verdict": "proven-zero",
+   "why": "no MF row; institutions Sub Total closes as lump+FIIS (resid 0.0000)"
+  },
+  "ZODIACLOTH|2005-09-30": {
+   "src": "bseaspx:521163:47:Old",
+   "verdict": "proven-zero",
+   "why": "no MF row; institutions Sub Total closes as lump+FIIS (resid 0.0000)"
+  },
+  "ZODIACLOTH|2005-12-31": {
+   "src": "bseaspx:521163:48:Old",
+   "verdict": "proven-zero",
+   "why": "no MF row; institutions Sub Total closes as lump+FIIS (resid 0.0000)"
+  },
+  "ZODIACLOTH|2006-03-31": {
+   "src": "bseaspx:521163:49:Old",
+   "verdict": "proven-zero",
+   "why": "no MF row; institutions Sub Total closes as lump+FIIS (resid 0.0000)"
+  },
+  "ZODIACLOTH|2006-06-30": {
+   "src": "bseaspx:521163:50:New",
+   "verdict": "proven-zero",
+   "why": "Clause-35 block has no MF row; inst_sub printed: {'prom': [60.86, 60.86028479570891], 'pubtot': [39.14, 39.13971520429109], 'banks': [0.02, 0.01674115283883316], 'fii': [12.0, 11.995825234800646], 'inst_sub': [12.01, 12.012566387639481]}"
+  }
+ }
+}

@@ -31,7 +31,8 @@ loads every session. (README.md is just a short pointer here — this file is th
 - **§20** RESULTS COVERAGE DASHBOARD
 - **§21** MARKET BREADTH
 - **§22** FII/DII HOLDINGS PER STOCK  (22h = verification vs external sites + cross-exchange, 2026-08-09;
-  **22i = the swallowed foreign block — 162 stored fii=0.0 cells healed, 2026-08-12**)
+  **22i = the swallowed foreign block — 162 stored fii=0.0 cells healed, 2026-08-12**;
+  22l = "MF 0% before 2006" was a slot mislabel (cell[4]=ins, by-design None) — 287 MF zeros document-proven, 2026-09-05)
 - **§23** BULK & BLOCK DEALS
 - **§24** INSIDER TRADES
 - **§25** NEW-LISTING (IPO) YEAR-AGO BASE BACKFILL
@@ -3036,6 +3037,54 @@ still 0.05 (the event row is invisible until its own submission date — no look
   copies).
 - Run: `fetch_shareholding.py --events [--backfill N | --quarters ...]`. The window is
   `(quarter end, next quarter end]` so every filing is claimed by exactly one quarter.
+
+### 22l. ★★ "MF IS 0% BEFORE 2006" WAS A SLOT MISLABEL — the pre-2006 hole is `ins`, by design, and every stored MF zero there is document-proven  (2026-09-05)
+
+A 2026-09-05 measurement reported **mf coverage 2002-05 = 0%, 2006 68%, 2007 93%** on the point-in-time
+N500 with "6,233 member-quarters carrying FII but no MF", and asked for a fill campaign. **Reproduced per
+slot (same membership logic as `audit_shp_coverage.py`): those are the `ins` numbers.** Row shape is
+`[prom, fii, dii, mf, ins, sub, nsh]` — **cell[3] = mf, cell[4] = ins** — and the measurement read index 4
+as mf. Measured on origin/main 943a43e89:
+
+| year | N500 member-qtrs | cell | prom/fii/dii/**mf** | **ins** |
+|---|---|---|---|---|
+| 2002 | 497 | 85.9% | 85.9% | **0.0%** |
+| 2003 | 1,997 | 87.4% | 87.4% | 0.0% |
+| 2004 | 1,992 | 87.0% | 87.0% | 0.0% |
+| 2005 | 2,000 | 90.6% | 90.6% | 0.0% |
+| 2006 | 1,992 | 90.3% | 90.3% | 67.4% (Mar-06 = Flag=Old) |
+| 2007 | 2,005 | 89.8% | 89.8% | 89.8% |
+
+Member-quarters with FII but no **ins**: 6,177. With FII but no **mf**: **3** — BSE Ltd Jun-24/Dec-24/Mar-25,
+the §22 third-party cells that carry no sub-slots by design. Whole-history: 5,769/5,769 cells 2002-2005
+have mf set; `ins` is None on all of them plus all 461 Mar-2006 cells = 6,230. Confirmed at every layer:
+ledger (`shp_fill_bse_aspx.json.gz`, provenance `bseaspx:<code>:<qtrid>:Old`, 6,622 pre-Jun-06 cells all
+mf-set) → `shp_history.json` (worktree AND the shared checkout) → `docs/fin/<SYM>.json` shpH (builder
+copies the seven slots positionally) → the LIVE stock page (RELIANCE full history: Dec-2003 renders
+**Mutual funds 1.85%, Insurance —**). **Nothing was written; there was nothing to fill.**
+- **The rows' source is the 1997-format aspx table (Flag=Old) and it ITEMISES "Mutual Funds and UTI".**
+  Re-fetched live: RELIANCE q40 prints MF 25,793,654 sh / 1.85% (stored 1.8472 = the §22j 4dp recompute),
+  ITC q40 13.30 (stored 13.3021). Insurance sits inside the "Banks, Financial Institutions, Insurance
+  Companies" lump on every Flag=Old page, and **Flag=New at q ≤ 49 is a 4,708-byte shell** ("Click here
+  for", no table — RELIANCE q40 and q49 measured; q50 serves the full Clause-35 table with an itemised
+  ins row). So `ins` before Jun-2006 is unreachable from BSE under either flag: **None is the correct
+  value, never 0.0** (`fetch_shp_bse_aspx.py` L503 already says so).
+- **The `mf = mf or 0.0` sentinel (L499) was audited, not trusted.** All **287** stored pre-Jun-2006 cells
+  with mf == 0.0 were re-read from their own page: **240 proven** (no MF row and the block's printed
+  Sub Total closes as lump + FIIS to ≤ 0.15 — ZODIACLOTH Jun-04: 0.02 + 0.29 = 0.32 printed), **39
+  sub-0.005% holdings** the filer printed as "0" at 2dp (§22j class — CAROLINFO 0.0037, GLOBLTRUST
+  0.0019, ORIENTHOT ×3 < 0.00005; 36 of them are unrefined 2dp cells), **0 unproven** (every page prints
+  inst_sub), 0 pages missing. Journal with per-cell verdicts: `scripts/_shp_mf_pre2006_zero_audit.json`.
+  The 36 are precision, not coverage — left at 0.0; the refine ledger's five-slot agreement route owns
+  them (a one-slot patch would be a cell heal).
+- **8 cells the current ledger no longer vouches for** — GAMMONIND + ALEMBICLTD Sep-03, ATCOM ×3,
+  IVRCLINFRA Dec-03, DENABANK Sep-04, IDBIBANK Jun-03: written by the round-1 harvest (8b26fb2f7),
+  dropped from the rebuilt ledger by the **zero-vs-neighbour guard** (fii 0.00 beside a stored 1-6%),
+  kept in history because fill-only never shrinks. Their pages prove BOTH zeros (FIIS row absent AND
+  inst_sub == MF + lump, all 8): the stored values are RIGHT and the guard is over-cautious for a page
+  whose own subtotal closes. Not in §22i's journal; recorded in the audit file above.
+- **Lesson: quote a coverage number WITH its slot index.** A by-design None in cell[4] read as cell[3]
+  became a 6,233-cell fill campaign. Before any fill: print one stored row next to its slot names.
 
 ## 23. BULK & BLOCK DEALS  (docs/deals.html — "Bulk/Block Deals" nav, built 2026-07-16, SELF-UPDATING)
 <!-- renumbered from 22 (two sections were both born §22 the same day; FII/DII holdings kept it) -->
