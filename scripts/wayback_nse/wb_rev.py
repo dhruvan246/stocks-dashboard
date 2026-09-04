@@ -96,9 +96,14 @@ def prev_qe(qe):
     return {331: (y - 1) * 10000 + 1231, 630: y * 10000 + 331, 930: y * 10000 + 630, 1231: y * 10000 + 930}[md]
 
 
-def stage(cells, orig, idx, fund, fetch=False):
+def stage(cells, orig, idx, fund, fetch=False, aliases=None):
     """cells: [[sym, qe, npStd, npCon], ...]; orig: {'SYM|QE': [fund keys holding that row]}.
+    aliases: {fund_key: [page_symbol, ...]} -- pages captured under a PREDECESSOR NSE symbol (the repo's
+    ISIN-merged rename map, scripts/_rename_map.json) that the index keys under that old symbol. The page's
+    OWN declared symbol must equal the alias (G1) and its PAT must still equal the stored npStd under the
+    fund key, so a wrong alias fails identity twice before anything is written.
     -> (proposals {key: {...}}, refusals {key: why})"""
+    aliases = aliases or {}
     std = {}
     for s, rows in fund.items():
         for r in rows:
@@ -106,13 +111,17 @@ def stage(cells, orig, idx, fund, fetch=False):
                 std[(s, r[0])] = r[1]
     props, refs = {}, {}
     for sym, qe, ps, pc in cells:
-        keys = orig.get("%s|%d" % (sym, qe)) or [sym]
+        fkeys = orig.get("%s|%d" % (sym, qe)) or [sym]
+        keys = []
+        for fk in fkeys:
+            keys.append((fk, fk))
+            keys += [(fk, a) for a in aliases.get(fk, []) if a != fk]
         why = []
         done = False
-        for k in keys:
-            stored = std.get((k, qe))
+        for fk, k in keys:
+            stored = std.get((fk, qe))
             if stored is None:
-                why.append("%s: no stored npStd" % k); continue
+                why.append("%s: no stored npStd" % fk); continue
             e = idx.get("%s|%d" % (k, qe))
             if not e:
                 why.append("%s: no archived page ends on this quarter" % k); continue
@@ -127,8 +136,8 @@ def stage(cells, orig, idx, fund, fetch=False):
             if r["months"] == 3 and not r["cumulative"]:
                 if abs(r["pat"] - stored) > TOL:
                     why.append("%s: ANCHOR-FAIL page PAT %.2f vs stored %.2f (finding, not a fill)" % (k, r["pat"], stored)); continue
-                props["%s|%d" % (k, qe)] = {
-                    "sym": k, "qe": qe, "rev": round(r["rev"], 2), "fin": 1 if r["bank"] else 0, "mode": "direct",
+                props["%s|%d" % (fk, qe)] = {
+                    "sym": fk, "page_symbol": k, "qe": qe, "rev": round(r["rev"], 2), "fin": 1 if r["bank"] else 0, "mode": "direct",
                     "pat_seen": stored, "page_pat": r["pat"], "rev_label": r["rev_label"], "scale": r["scale"],
                     "period": "%d..%d (%s) %s" % (r["from"], r["to"], r["role"], r["type"]),
                     "wayback": [ts, url]}
@@ -177,8 +186,8 @@ def stage(cells, orig, idx, fund, fetch=False):
             dpat = round(r["pat"] - pr["pat"], 4)
             if abs(dpat - stored) > TOL:
                 why.append("%s: CUMDIFF PAT %.2f-%.2f=%.2f vs stored %.2f (identity fails)" % (k, r["pat"], pr["pat"], dpat, stored)); continue
-            props["%s|%d" % (k, qe)] = {
-                "sym": k, "qe": qe, "rev": round(r["rev"] - pr["rev"], 2), "fin": 1 if r["bank"] else 0, "mode": "cumdiff",
+            props["%s|%d" % (fk, qe)] = {
+                "sym": fk, "page_symbol": k, "qe": qe, "rev": round(r["rev"] - pr["rev"], 2), "fin": 1 if r["bank"] else 0, "mode": "cumdiff",
                 "pat_seen": stored, "page_pat": dpat, "rev_label": r["rev_label"], "scale": r["scale"],
                 "period": "%d..%d (%s) %s  MINUS  %d..%d (%s) %s" % (r["from"], r["to"], r["role"], r["type"], pr["from"], pr["to"], pr["role"], pr["type"]),
                 "legs": {"cum": {"rev": r["rev"], "pat": r["pat"]}, "prev": {"rev": pr["rev"], "pat": pr["pat"]}},
@@ -190,7 +199,10 @@ def stage(cells, orig, idx, fund, fetch=False):
 
 
 def evidence(p):
-    base = ("WAYBACK-ARCHIVED NSE results.jsp (web.archive.org/%s), exchange-native and AS-FILED. Row '%s' "
+    alias = ("" if p.get("page_symbol", p["sym"]) == p["sym"] else
+             "PAGE FILED UNDER PREDECESSOR NSE SYMBOL %s (scripts/_rename_map.json maps it to %s; the page's own "
+             "declared symbol == %s and its PAT == the stored npStd under %s). " % (p["page_symbol"], p["sym"], p["page_symbol"], p["sym"]))
+    base = alias + ("WAYBACK-ARCHIVED NSE results.jsp (web.archive.org/%s), exchange-native and AS-FILED. Row '%s' "
             "on the %s template, scale Rs.%s declared on the page; period declared %s. ANCHOR: the page's "
             "own Net Profit %.2f cr == stored sf_fundamentals npStd %.2f (<=0.011). "
             % (p["wayback"][0], p["rev_label"], "Banking" if p["fin"] else "Non-Banking", p["scale"], p["period"],
@@ -216,6 +228,7 @@ def emit(props, stamp):
             "src": "wayback NSE results.jsp %s %s=%s pat=%s (%s) [rev-parity %s]" % (
                 p["mode"], p["rev_label"], p["rev"], p["page_pat"], p["wayback"][0], stamp)}
         led[key] = {"revS": p["rev"], "fin": p["fin"], "mode": p["mode"], "row_label": p["rev_label"],
+                    "page_symbol": p.get("page_symbol", p["sym"]),
                     "anchor": {"stored_npStd": p["pat_seen"], "page_pat": p["page_pat"]},
                     "wayback": p["wayback"], "wayback_prev": p.get("wayback_prev"), "period": p["period"],
                     "evidence": evidence(p), "applied": "%s rev-parity wayback route" % stamp}
@@ -225,8 +238,58 @@ def emit(props, stamp):
     print("emitted %d new cells -> %s (+ ledger %s, now %d entries)" % (n, os.path.basename(READS), os.path.basename(LEDGER), len(led)))
 
 
+def calib():
+    """HOLD-OUT: cells we ALREADY hold a revStd for, with an archived true-quarter page whose PAT anchors to the
+    stored npStd -- does the page's revenue reproduce the stored value? Truth side EXCLUDES aggregator-derived
+    cells by provenance (agg_cell_fills, mc_*_fills, vision_rev_fills entries naming moneycontrol/screener/
+    trendlyne/tickertape), so the reader is never scored against its own vendor class (README section 4)."""
+    import glob
+    fund = json.load(open(os.path.join(ROOT, "docs", "sf_fundamentals.json")))
+    revop = json.load(open(os.path.join(ROOT, "docs", "sf_revop.json")))
+    idx = json.load(open(os.path.join(HERE, "_wb_index.json")))
+    excl = set()
+    for path in glob.glob(os.path.join(SCRIPTS, "agg_cell_fills.json")) + glob.glob(os.path.join(SCRIPTS, "mc_*_fills.json")):
+        for k in json.load(open(path)):
+            if "|" in k:
+                a, b = k.split("|")[:2]; excl.add((a, int(b)))
+    for k, v in json.load(open(os.path.join(SCRIPTS, "vision_rev_fills.json"))).items():
+        if "|" in k and any(w in json.dumps(v).lower() for w in ("moneycontrol", "screener", "trendlyne", "tickertape")):
+            a, b = k.split("|")[:2]; excl.add((a, int(b)))
+    # ... AND this campaign's own landed cells (README section 4: a hold-out is only a hold-out if the truth
+    # side is independent of the work being validated -- these cells came from these very pages)
+    if os.path.exists(LEDGER):
+        for k in json.load(open(LEDGER)):
+            a, b = k.split("|")[:2]; excl.add((a, int(b)))
+    std = {(s, r[0]): r[1] for s, rows in fund.items() for r in rows if r[1] is not None}
+    res, mism = collections.Counter(), []
+    for k, (ts, url) in idx.items():
+        s, q = k.split("|"); q = int(q)
+        rr = (revop.get(s) or {}).get(str(q))
+        if not rr or rr[0] is None or (s, q) in excl:
+            continue
+        raw = wbcache.cached(ts, url)
+        if raw is None:
+            res["uncached"] += 1; continue
+        r = read_page(raw, s)
+        if "refuse" in r or r["months"] != 3 or r["cumulative"] or r["to"] != q:
+            res["not-a-true-quarter-or-refused"] += 1; continue
+        sp = std.get((s, q))
+        if sp is None or abs(r["pat"] - sp) > TOL:
+            res["pat-anchor-miss"] += 1; continue
+        kind = "bank" if r["bank"] else "non-bank"
+        ok = abs(r["rev"] - rr[0]) <= TOL
+        res["%s:%s" % (kind, "MATCH" if ok else "MISMATCH")] += 1
+        if not ok:
+            mism.append((s, q, rr[0], r["rev"], r["tot"]))
+    for k, v in sorted(res.items()):
+        print("%6d %s" % (v, k))
+    print("mismatches:", mism[:40])
+
+
 def main():
     av = sys.argv
+    if "--calib" in av:
+        return calib()
     if "--emit" in av:
         props = json.load(open(av[av.index("--emit") + 1]))["proposals"]
         import time
@@ -236,7 +299,22 @@ def main():
     orig = json.load(open(av[av.index("--orig") + 1])) if "--orig" in av else {}
     idx = json.load(open(os.path.join(HERE, "_wb_index.json")))
     fund = json.load(open(os.path.join(ROOT, "docs", "sf_fundamentals.json")))
-    props, refs = stage(cells, orig, idx, fund, fetch="--fetch" in av)
+    aliases = json.load(open(av[av.index("--aliases") + 1])) if "--aliases" in av else {}
+    if aliases:
+        # pages the index builder could not key (symbol not in the store) live in _wb_unresolved.json; key the
+        # ones whose URL symbol is a wanted alias, one page per (alias, period-end), earliest capture first
+        want = set(a for v in aliases.values() for a in v)
+        pat = re.compile(r'results\.jsp\?(\d{2}-[A-Z]{3}-\d{4})(\d{2}-[A-Z]{3}-\d{4})(Q[1-4]|H[12]|AN|OT)([AU][A-Z]{0,5}E)([A-Z0-9&_-]+)$')
+        added = 0
+        for ts, url in sorted(json.load(open(os.path.join(HERE, "_wb_unresolved.json")))):
+            m = pat.search(url)
+            if not m or m.group(5) not in want:
+                continue
+            key = "%s|%d" % (m.group(5), _ymd(m.group(2)))
+            if key not in idx:
+                idx[key] = [ts, url]; added += 1
+        print("alias pages keyed from _wb_unresolved.json: %d" % added)
+    props, refs = stage(cells, orig, idx, fund, fetch="--fetch" in av, aliases=aliases)
     modes = collections.Counter(p["mode"] + ("/bank" if p["fin"] else "") for p in props.values())
     byyear = collections.Counter(p["qe"] // 10000 for p in props.values())
     print("proposals: %d  %s  by year %s" % (len(props), dict(modes), dict(sorted(byyear.items()))))
