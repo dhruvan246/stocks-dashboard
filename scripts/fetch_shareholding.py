@@ -235,7 +235,15 @@ BSE_HIST_LEDGERS = [os.path.join(HERE, "shp_fill_thirdparty.json.gz"),
                     # ins is None (inside the Banks/FI/Insurance lump); sub = QE+21d convention, so
                     # build_engine_feed serves these rows UN-DATED (engine qe+28d fallback, §120).
                     # Fill-only; no quarter here overlaps any earlier ledger (all < Dec-2002).
-                    os.path.join(HERE, "shp_fill_bse_aspx_2001.json.gz")]
+                    os.path.join(HERE, "shp_fill_bse_aspx_2001.json.gz"),
+                    # WP-S2 (2026-09-05, PLAN_STDPAT_SHP_COVERAGE_2002 §5 / runbook §127f): the SAME
+                    # ShareholdingPattern.aspx route over the Dec-2002..Sep-2015 cells the 2026-08-11
+                    # frontier never requested (roster/rename drift since + the fiiChgPp PRIOR-quarter
+                    # roots that fall outside the point-in-time membership) plus era names resolved by
+                    # NSE's own archived pages (share-capital identity test, §127f). Flag=Old cells carry
+                    # ins=None (inside the lump); sub = QE+21d convention, so build_engine_feed serves
+                    # every row UN-DATED (engine qe+28d fallback, §120). Fill-only, LAST in the list.
+                    os.path.join(HERE, "shp_fill_wps2_aspx.json.gz")]
 def apply_bse_hist_ledger(h):
     n_total = 0
     for path in BSE_HIST_LEDGERS:

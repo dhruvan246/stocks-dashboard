@@ -185,7 +185,7 @@ provenance in a ledger, never a direct store edit (§38/5) · bake-and-measure w
 · file-scoped adds from a fresh worktree · push recipe (CLAUDE.md) · LIVE re-verify ~20 min after push.
 
 ### WP-S1 — SHP Mar-2001 → Sep-2002 via aspx `Flag=Old` (≈1,617 root filings; whole-era ≈3,500 member-quarters)
-**✅ DONE 2026-09-05 02:45 IST — commit `bd094aeea` (runbook §127e).** Frontier 2,863 member-quarters / 479
+**✅ DONE 2026-09-05 02:45 IST — commit `bd094aeea` (runbook §127f).** Frontier 2,863 member-quarters / 479
 symbols (112 cells on 21 era names unresolved); harvest 2,409 ok · 438 absent · 16 no-prom; ledger
 `scripts/shp_fill_bse_aspx_2001.json.gz`; applied twice = identical; bake: fiiPct/diiPct 2002 0% → 85.5%,
 fiiChgPp 2003 69.3% → 86.8%, no date down. Residue → WP-S2 (43 modern-key roster orphans absent on all 7
@@ -214,6 +214,19 @@ Owner: the SHP session if one is live (`fetch_shp_bse_aspx.py` was dirty in the 
   `not-found-via:<rungs>` in `_shp_aspx_rejects.json` — never "no filing".
 * 114 recon/zero/no-prom/no-fii: per-page read with §22i (swallowed foreign block), §22j (2dp literal zero),
   §118 (Any-Other block) rules; the NSE `>1%` FII sub-total refutes a fabricated 0.00.
+
+**WP-S2 STATUS (2026-09-05 ~03:00 IST, session trusting-lewin, worktree `~/stocks-wt/shp-2002`, runbook §127f):
+DONE for the untried + unresolved classes.** Ledger `scripts/shp_fill_wps2_aspx.json.gz` = **768 cells / 339
+symbols** (Flag=Old 340 · Flag=New 428): 468 point-in-time member-quarters the 2026-08-11 frontier never requested +
+264 prior-quarter roots (non-members at that QE — `cmd_frontier` cannot list them; derive from the roots) +
+22 cells on names already in `_shp_aspx_resolved_era_syms` (cmd_frontier never reads it) + 82 cells on 12 era
+names resolved by the NSE-archived-page share-capital test (9 MATCH ≤0.02%, VARDHMNSPG REFUTED). Refused and
+journalled: 58 absent, 5 zero-vs-neighbour, 3 recon, 1 no-fii, **52 `unresolved-scripcode` on 10 names**
+(INDOGULF/AGREVOIND ties, WELSPUNGUJ/UNITEDPHOS/VXL/JINDALFOTO no second reader, JINDVIJSTL/JINDLSTRIP no
+page, SEARCHEMIN no name, VARDHMNSPG refuted). Quarter-level audit (`audit_shp_coverage --year`): 2002-12
+85.9→91.3 · 2003 87.4→91.3 · 2004 87.0→91.4 · 2005 90.6→94.2 · 2006 90.3→93.6 · 2007 89.8→95.3 · 2008
+93.3→97.2 · 2009+ unchanged. Coverage-matrix bake: fiiPct +1,133 member-months (N/A −893, 0 dates down), fiiChgPp +1,444 (N/A −889; 3 dates −1 = MUNJALSHOW/VTL's Dec-2002 with no Sep-2002 prior, §112); 2003 fiiPct 96.5→98.1, 2004 97.8→99.0, 2005 98.7→99.7; patStd/price unchanged. Left for WP-S2's next pass: the 535 `absent`
+(rung 3 = NSE `>1%` floor page, rung 4 = annual report) and the 114 per-page adjudications.
 
 ### WP-S3 — SHP 2016+ residue (86) — XBRL/NSE routes; start from WP6's held-160 list (coverage-fill memory).
 
