@@ -2145,6 +2145,46 @@ advancers/decliners — all in one hover tooltip + 4 stat cards.
   (6M/1Y/3Y/5Y/All → 126/250/750/1250/all sessions); section hides itself silently if the json is missing.
   Editing market-mood.html = bump `docs/sw.js` CACHE (did v24→v25).
 
+
+### 21a. ★ POINT-IN-TIME BREADTH 2002→date, N500 + F&O — the backtest REGIME input  (2026-09-05)
+**Builder:** `scripts/build_market_breadth_pit.py` → `docs/market_breadth_pit.json` (~474 KB, 6,133 days
+2002-01-02→date; fetch it like `shp_engine.json` — `fetch('./market_breadth_pit.json')`; nothing in
+`simulate()` reads it yet, the regime-gate decision is a separate measurement). Runs in
+`refresh-market-mood.yml` right after §21's builder, from the same fresh release-asset bin; feed guarded
+in `feeds.json` (min 400 KB, ratio 0.9). Locally: `python3 scripts/fetch_live_sf.py` first (§0 — the
+committed bin is frozen), then `python3 -X utf8 scripts/build_market_breadth_pit.py` (~18 s).
+- **Shape:** shared `dates` axis (YYYYMMDD ints) + one block per universe (`n500`, `fno`), ten INTEGER
+  arrays each — `nMem nObs n200 a200 nAD adv dec n52 hi lo`. Ratios are the reader's job:
+  `pct200 = 100*a200/n200`, **null while n200 == 0** (the engine's e16 `smaBarsAt` rule lifted to the
+  universe — SMA of the last 200 TRADING sessions incl. today, null until 200 exist, daily-era bars only).
+  `nMem` = point-in-time roster size, `nObs` = members with a positive close that day; `nMem−nObs` =
+  unresolved + not-traded + zero-close. A `conventions` object inside the file restates every rule.
+- **Membership = the engine's own objects:** `docs/dash_slim.bin` `indicesHistory["Nifty 500"]` (329
+  snapshots 1998-08-01→) and `fnoHistory` (188, 2001-11-29→), latest effectiveDate ≤ day, NO floor to the
+  first snapshot (§48). Verified byte-identical to `scripts/indices_history.json` / `fno_history.json`
+  and to the LIVE Pages copy on 2026-09-05. `DUMMY*` and DVR lines dropped (engine `rowsAt` parity).
+  Rename fold = engine `membersAsOf` rule: a roster name that IS a bin key stays (old names keep their
+  own era tape); one with NO series folds through `_rename_map.json` chained to its end. Measured on the
+  2026-09-04 bin: N500 rosters 0 folds / 5 unresolved names pre-2004 (ADCINDIA ASIIL ITHL TCIIND ATVPR);
+  F&O 3,165 fold slots (95 distinct names), 0 unresolved.
+- **Validation vs `docs/market_breadth.json` (§21) on the 5,882-day overlap 2003-01-02→2026-09-04:**
+  with the old builder's exact conventions (DVR kept) **100.000% agreement on every key** (n200, adv, dec,
+  hi, lo, n52, pct200 1dp) — same bin, same snapshots, same arithmetic. The SHIPPED file drops DVR lines,
+  so it differs from §21's file by exactly one member on the 2,431 days TATAMTRDVR/JISLDVREQS were N500
+  members (2011-12→2024): pct200 within 0.20pp, hi/lo differ on 127/108 days by ±1. Deliberate — the
+  regime input counts the universe the engine screens.
+- **Coverage (per-year means, N500):** 2002 nMem 443 / nObs 390 (88%; pre-Oct-2002 rosters are the
+  ~425-name precursor lists) and **n200 = 0 until 2002-10-17** (200 sessions after dailyFrom), ≥90% of
+  members DMA-eligible from 2002-10-24, 52w-eligible (n52) fills through Jan-2003; every year 2003→2026
+  reads nObs ≥ 98.6% of nMem, n200 ≥ 98.0% of nObs, n52 ≥ 96.7%. **F&O:** 30 names in 2002 (nObs 96.5%),
+  DMA-eligible from the same 2002-10-17, 43→52→94→118→180→239 names 2003-08, 135-224 since; nObs ≥ 96.5%
+  of nMem every year, n200 ≥ 94.6% of nObs. Zero-close member-days skipped: N500 16 (all 2015), F&O 0.
+- **Sanity anchors (2026-09-04 bin):** N500 pct200 min 0.4% on 2008-10-24 (373 new 52w lows that day),
+  max 99.8% on 2003-12-29, most new highs 223 on 2014-06-09; F&O min 0.0% / max 100.0% on the same
+  regime days, 194 new lows on 2008-10-24. Latest 2026-09-04: N500 271/495 above (54.7%), F&O 113/210.
+- **What it is NOT:** `hi`/`lo` follow §21 (252-session CLOSE window, ties count), not the engine's `hl52`
+  (365 calendar days over exact intraday highs/lows) — a different quantity, kept out on purpose.
+
 ---
 
 ## 22. FII/DII HOLDINGS PER STOCK  (docs/shareholding.html — "FII/DII Holdings" nav, built 2026-07-16)

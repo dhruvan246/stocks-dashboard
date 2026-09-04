@@ -18,6 +18,7 @@ on:
     paths:
       - "scripts/build_nifty500_turnover.py"
       - "scripts/build_market_breadth.py"
+      - "scripts/build_market_breadth_pit.py"
       - ".github/workflows/refresh-market-mood.yml"
 
 permissions:
@@ -59,6 +60,11 @@ jobs:
       - name: Rebuild Nifty 500 market breadth
         run: python3 -X utf8 scripts/build_market_breadth.py
 
+      # Point-in-time breadth 2002->date for BOTH universes (Nifty 500 + F&O) as a backtest
+      # regime input (runbook section 21a). Same fresh bin; membership from docs/dash_slim.bin.
+      - name: Rebuild point-in-time breadth (N500 + F&O regime series)
+        run: python3 -X utf8 scripts/build_market_breadth_pit.py
+
       # Commit BOTH built feeds (the freshly downloaded bin is discarded by the
       # reset). ⚠️ reset-and-replay gotcha (runbook §18): every file the build
       # steps write MUST ride the cp-to-/tmp + cp-back + git-add lists below,
@@ -73,12 +79,14 @@ jobs:
           git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
           cp docs/nifty500_turnover.json /tmp/nifty500_turnover.json
           cp docs/market_breadth.json    /tmp/market_breadth.json
+          cp docs/market_breadth_pit.json /tmp/market_breadth_pit.json
           for attempt in 1 2 3 4 5; do
             git fetch origin main
             git reset --hard origin/main
             cp /tmp/nifty500_turnover.json docs/nifty500_turnover.json
             cp /tmp/market_breadth.json    docs/market_breadth.json
-            git add docs/nifty500_turnover.json docs/market_breadth.json
+            cp /tmp/market_breadth_pit.json docs/market_breadth_pit.json
+            git add docs/nifty500_turnover.json docs/market_breadth.json docs/market_breadth_pit.json
             if git diff --cached --quiet; then
               echo "Turnover + breadth series unchanged — nothing to commit"
               echo "changed=false" >> "$GITHUB_OUTPUT"

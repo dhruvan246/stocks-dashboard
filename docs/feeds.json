@@ -352,6 +352,16 @@
       ]
     },
     {
+      "file": "market_breadth_pit.json",
+      "name": "Point-in-time breadth N500 + F&O (backtest regime input)",
+      "workflow": "refresh-market-mood.yml",
+      "cadence": "weekdays 21:35 IST",
+      "max_age_hours": 110,
+      "min_bytes": 400000,
+      "min_ratio": 0.9,
+      "pages": []
+    },
+    {
       "file": "shareholding.json",
       "name": "FII/DII holdings per stock (SHP)",
       "workflow": "refresh-shareholding.yml",
