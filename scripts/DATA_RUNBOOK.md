@@ -15292,6 +15292,21 @@ the whole calibration + proposal run cost ~700 fetches; (2) provenance-filter th
 to contradict become your "truth"; (3) an anchor test on our own held quarters doubles as a store audit — the 24 conflicts are a
 free suspect list.
 
+### 134f. The anchor test as a store audit — 24 aggregator cells contradicted; 3 adjudicated (1 heal, 1 store-confirmed, 1 open); the no-row era symbols need a decision
+The BSE-archive anchor test disagreed with 24 stored standalone cells 2000-03, every one aggregator-derived
+(`scripts/stdpat_bsearchive_suspects.json`). Only 3 have any second as-filed reader for the quarter — NSE's archived
+`results.jsp` — and all three are ANNUAL cumulatives, so the §45 FY quarter-sum identity decides: **ABB Dec-2001: NSE FY2001
+65.3259 − (4.72 + 9.68 + 14.72) = 36.21 == BSE page 36.20 ≠ stored 30.73 → HEALED via `fund_cell_fix.json`** (two
+documents against the store); **KOTAKBANK Mar-2002: 54.5211 − siblings = 19.31 == stored 19.30 → store confirmed, the BSE
+page's 19.967 is the odd figure** (the anchor conflict was against a correct cell — a conflict names no side); **ITC Mar-2002:
+implied 292.77 matches neither 286.37 (stored) nor 296.21 (BSE) → open, a sibling is on another vintage.** 21 remain suspects
+with no second reader in 2000-02.
+**Decision needed (plan §7.5): 66 era symbols with NO fundamentals row at all (881 root cells; 48 have a BSE code, 30 have a BSE
+archived page on a target quarter, only 2 share a period with an NSE page).** They cannot be anchored by any held quarter and
+almost never by NSE. The page gives ScripCode == repo code, the company name, a 3-month period, a declared scale and a closing
+P&L chain — but NOT the basis. Landing them would rest on the era argument (no consolidated quarterly filings existed in
+2000-01; NSE's template prints 'Consolidated' when a statement is) — an inference §0 forbids without the user's call. Not landed.
+
 ## 135. ★★★ ANNOUNCE-DATE + SHP-DATE AUDIT — "can we get the missing dates, and are the saved ones right"  (2026-09-05, worktree ~/stocks-wt/anndates)
 
 **Ask:** recover the FII/DII (SHP visibility) and PAT announce dates we lack, then audit every date we already hold.
