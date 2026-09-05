@@ -15372,3 +15372,18 @@ on 265 (113 at/before it, 152 within 2 d — NSE-first filers); **25 rows have B
 - 570 (NSE) / 89 (BSE) observed-earlier-than-reader PAT cells 2002-2011: look-ahead candidates; only the
   two-reader-agreement subset may be moved (§119e-2 standard).
 - SHP 2022+ "early" rows vs NSE broadcast; SHP 2014-16 sentinel residue re-probe; 25 both-BSE-later rows.
+
+### 134e. Passes 2-3 (same day, ~13:30 IST): cumulative differencing +6, cross-source anchor +12
+* **Cumulative differencing** (`read_quarter_cumdiff`): a quarter whose only BSE capture is year-to-date (MC/DC/SC) is
+  read as the cumulative page minus a chain of ≤3 legs that abut back to its `from` (wb_rev's rule ported), every leg
+  passing G1 + the arithmetic gate. Reach was small — when a cumulative page exists, the 3-month page usually does too:
+  **+2** cells (E-SERVEINT, NILKAMAL Mar-2001) + 4 direct that a re-run reached.
+* **Cross-source anchor** (`cross_anchor`) for the 240 symbols with NO held quarter on the archive: where NSE's archived
+  `results.jsp` and BSE's archived page exist for the SAME period, the two exchanges' Net Profit must agree to the paisa
+  (3-month vs 3-month, or cumulative vs the BSE capture with identical from/to). A declared-Consolidated NSE page never
+  anchors; an NSE page that omits the basis token is accepted and RECORDED as `basis-undeclared` — that template prints
+  'Consolidated' when a statement is consolidated (ALFALAVAL Dec-2002), so silence is the filer's ordinary results. Only 24
+  of the 240 share a period with an NSE page; **8 anchored, 2 conflicted** (MOREPENLAB Dec-2001 24.66 vs 24.68 — a print-
+  precision or revision difference, held; NAHARSPG Dec-2001 2.44 vs 1.64, held) → **+12** cells (2000: 7, 2001: 5).
+* Remaining 1999-2001 residue after passes 1-3: **1,587 cells** on symbols with no anchor of either kind (216 of the 240
+  have NO NSE page on any common quarter), 605 with no capture at all for the quarter, 103 without a BSE code.

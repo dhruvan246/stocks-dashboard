@@ -184,6 +184,48 @@ def read_quarter_cumdiff(idx, code, qe, fetch):
     return out
 
 
+def cross_anchor(keys, code, idx, nse_idx, fetch, max_pages=8):
+    """CROSS-SOURCE ANCHOR (WP-P1 pass 3): a symbol with no HELD quarter on the archive can still be anchored
+    when NSE's archived results.jsp page and BSE's archived page exist for the SAME quarter: the NSE page
+    DECLARES Non-Consolidated + 3 months + Non-Cumulative and prints Net Profit in a declared scale; if that
+    equals BSE's 3-month page to the paisa, the BSE page family is proven to be this company's standalone
+    series (two exchanges, two documents, one number). NSE pages that wbgate refused for its own landing
+    gate (EPS untestable etc.) are still valid as a SECOND READER here — nothing is landed from them.
+    Returns (exact, conflict, used)."""
+    import wb_read
+    exact = conflict = 0; used = []
+    qs = set()
+    for k in keys:
+        for key in nse_idx:
+            if key.startswith(k + "|"):
+                q = int(key.split("|")[1])
+                if "%s|%d" % (code, q) in idx: qs.add((q, key))
+    for q, key in sorted(qs)[:max_pages]:
+        ts, url = nse_idx[key][0], nse_idx[key][1]
+        raw = wbcache.fetch_cached(ts, url) if fetch else wbcache.cached(ts, url)
+        n = wb_read.parse(raw) if raw else None
+        if not n or n.get("pat_cr") is None: continue
+        rt = (n.get("result_type") or "")
+        if "Consolidated" in rt and "Non-Consolidated" not in rt: continue      # a declared consolidated page never anchors
+        basis = "NC-declared" if "Non-Consolidated" in rt else "basis-undeclared"
+        # the NSE template PRINTS 'Consolidated' when a statement is consolidated (ALFALAVAL Dec-2002 does), so a
+        # page that omits the token is the filer's ordinary (standalone) results — recorded per anchor, never silent.
+        nf = int(n["from"][7:11]) * 10000 + wb_read.MON[n["from"][3:6]] * 100 + int(n["from"][0:2])
+        if n["months"] == 3 and not n["cumulative"]:
+            b = read_quarter(idx, code, q, fetch)
+            if "refuse" in b or b["from"] != nf: continue
+        else:
+            cands = [c for c in _read_ending(idx, code, q, fetch) if c["months"] == n["months"] and c["from"] == nf]
+            if not cands: continue
+            b = cands[0]
+        tol = max(b["tol"], 0.011)
+        agree = abs(b["pat"] - n["pat_cr"]) <= tol
+        if agree: exact += 1
+        else: conflict += 1
+        used.append([q, round(n["pat_cr"], 4), b["pat"], "ok" if agree else "CONFLICT", "nse %dm %s %s" % (n["months"], basis, url[-50:])])
+    return exact, conflict, used
+
+
 def main():
     ap = argparse.ArgumentParser()
     ap.add_argument("--cells", required=True, help="json [[SYM, qeInt], ...]")
@@ -196,6 +238,8 @@ def main():
     a = ap.parse_args()
 
     idx = load_json(bse_rev.INDEX)
+    global NSE_IDX
+    NSE_IDX = load_json(os.path.join(HERE, "_wb_index.json"))
     fund = load_json(os.path.join(ROOT, "docs", "sf_fundamentals.json"))
     eng = open(os.path.join(ROOT, "docs", "backtest-engine.js"), encoding="utf-8").read()
     fund_alias = json.loads(re.search(r"const FUND_ALIAS = (\{.*?\});\n", eng).group(1))
@@ -273,7 +317,14 @@ def main():
                 report["per_cell"]["%s|%d" % (sym, q)] = "no-indexed-anchor-page"
             continue
         _, exact, conflict, used, via = best
-        report["anchors"][sym] = {"code": best_code, "via": via, "exact": exact, "conflict": conflict, "used": used}
+        xmode = ""
+        if exact == 0 and conflict == 0 and not a.calib:
+            for code, cvia in codes.items():
+                xe, xc, xu = cross_anchor(keys, code, idx, NSE_IDX, a.fetch)
+                if xe > 0 or xc > 0:
+                    best_code, exact, conflict, used, via = code, xe, xc, xu, cvia + " | cross-anchored on NSE results.jsp (same quarter, both archives)"
+                    xmode = "X"; break
+        report["anchors"][sym] = {"code": best_code, "via": via, "exact": exact, "conflict": conflict, "used": used, "cross": bool(xmode)}
         if a.calib:
             continue
         if conflict > 0 or exact < a.min_anchors:
@@ -299,13 +350,14 @@ def main():
             if not r["arith_ok"]:
                 report["refused"]["G5-arith"] += 1; report["per_cell"][k] = "G5 " + r["arith"]; continue
             props["%s|%d|patS" % (sym, q)] = {
-                "value": round(r["pat"], 4), "state": "BSE-archive:A%d/G1/G2/G4/G5%s" % (exact, "/CUMDIFF" if r.get("mode") == "cumdiff" else ""),
+                "value": round(r["pat"], 4), "state": "BSE-archive:%s%d/G1/G2/G4/G5%s" % (xmode or "A", exact, "/CUMDIFF" if r.get("mode") == "cumdiff" else ""),
                 "src": "bseindia.com/qresann/result.asp (Wayback %s) scripcd=%s quarter=%s — %s" % (r["ts"], best_code, r["qc"], r["url"]),
                 "resolved_via": via,
                 "evidence": ("BSE archived results page: ScripCode %s == repo code (%s); period %d..%d = 3 months; "
                              "scale %s (÷%g); Net Profit raw %s; page arithmetic %s. ANCHORS: this code's pages reproduce "
-                             "%d of the symbol's held standalone quarters exactly with 0 conflicts (%s)."
+                             "%d %s exactly with 0 conflicts (%s)."
                              % (best_code, via, r["from"], r["to"], r["scale"], r["div"], r["raw_pat"], r["arith"], exact,
+                                ("of the symbol's held standalone quarters" if not xmode else "quarters where NSE's archived results.jsp (declared Non-Consolidated, 3 months) prints the SAME Net Profit"),
                                 ", ".join("%d=%s" % (u[0], u[1]) for u in used[:6]))),
                 "page": {"name": r["name"], "equity_mn": r["equity_mn"], "role": r["role"], "prec": r["prec"], "legs": r.get("legs")},
             }
