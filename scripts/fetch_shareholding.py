@@ -1003,8 +1003,12 @@ def build_engine_feed():
         k = "%s|%d" % (sym, qi)
         e = lag_led.get(k)
         if isinstance(e, dict) and isinstance(e.get("sub"), int):
-            if "days_earlier" in e and sub != UNDATED_SUB and sub > e["sub"]:
-                n_reassert[0] += 1; return e["sub"]
+            if "days_earlier" in e:
+                if sub != UNDATED_SUB and sub > e["sub"]:
+                    n_reassert[0] += 1; return e["sub"]
+                if sub == e["sub"]:
+                    return sub          # already at the healed (earliest-disclosure) date: an older BSE-only
+                                        # shp_sub_dates entry must not move it later again
             if "days_later" in e and sub == e.get("was"):
                 n_reassert[0] += 1; return e["sub"]
         e = sub_led.get(k)
