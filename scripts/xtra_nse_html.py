@@ -4,7 +4,7 @@ employee cost, materials, bank ratios, audited flag) for PRE-2018 quarters, read
 ARCHIVED financial-results HTML and written into the SAME ledger the XBRL re-parse feeds
 (scripts/xbrl_extra.json[.gz], served as docs/fin/<sym>.json 'x').
 
-WHY THIS ROUTE (measured 2026-09-05, runbook §128):
+WHY THIS ROUTE (measured 2026-09-05, runbook §130):
   * The results-list API (`corporates-financial-results?symbol=X&period=Quarterly`) carries a real
     XBRL URL only from the Mar-2018 quarter on (2018: 4,784 of 5,712 cached rows; 2017: 374; 2016: 2).
     Every 2005-2017 row instead carries `resultDetailedDataLink` -> the archived HTML detail page,

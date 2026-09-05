@@ -1,7 +1,7 @@
 # PLAN — the per-quarter LINE-ITEM block (EPS, other income, interest, depreciation, tax, exceptional, PBT, employee cost, materials) before 2018
 
 **NO ASSUMPTIONS, NO GUESSWORK (runbook §0).** Every number here was measured on 2026-09-05 in worktree
-`~/stocks-wt/eps-block` (own worktree, never the shared checkout). Procedure lives in DATA_RUNBOOK §128.
+`~/stocks-wt/eps-block` (own worktree, never the shared checkout). Procedure lives in DATA_RUNBOOK §130.
 
 ## What the block is
 `scripts/xbrl_extra.json.gz` → `docs/fin/<sym>.json` key `x` = `{qe: {s|c: {oi, fc, dep, tax, exc, pbt, emp, mat,
