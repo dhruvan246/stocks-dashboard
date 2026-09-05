@@ -400,5 +400,9 @@
    "evidence": "BSE aspx Flag=Old Mar-2004 (qtrid 41) prints RBI's block as 'Persons acting in Concert 314,338,700 = 59.73%' with Sub Total 59.73 before 'Non Promoter's Holding' (institutions: MF 5.63 + Banks/FI/Ins 6.00 + FIIS 11.46 = 23.09). The Dec-2003 page (qtrid 40) re-read 2026-09-05 with the fixed parser reproduces the STORED cell exactly (prom 0.0, dii 70.93), i.e. that filing places the RBI 59.73% inside 'Banks, Financial Institutions, Insurance Companies'. Filer-side classification change between Dec-2003 and Mar-2004, same class as the HAL Sep-2021 LIC misfiling (runbook \u00a722, memory project-stocks-hal-sep2021-dii-heal) with the direction reversed: a PROMOTER block sitting in dii. A DII screen sees SBIN at ~71% DII in 2003.",
    "next_rung": "read the page's 'greater than 1% Shareholding' sub-page for Jun/Sep/Dec-2003 to get RBI's exact share count, then heal dii = lump - RBI and prom = RBI via shp_cell_fix.json (row-identity proof per quarter); the Mar-2004 cell held here is consistent with that convention and can land once the neighbours are healed."
   }
+ },
+ "_wrong_entity_2026-09-05": {
+  "LUPINLAB": "code 500257 (era index name LUPIN) prints Lupin Ltd \u2014 the ex-Lupin Chemicals entity into which Lupin Laboratories merged in 2001; the 2001 SHP under 500257 is not Lupin Laboratories. 2 cells refused.",
+  "AGREVOIND": "code 506285 (era index name BAYER INDIA) prints Bayer CropScience Ltd today; in 2002-03 that code was Bayer (India) Ltd, not Agrevo India (renamed Bayer CropScience 2003; index shows 530415 BAYER CROPSC). 4 cells refused; 530415 not fetched in this run."
  }
 }

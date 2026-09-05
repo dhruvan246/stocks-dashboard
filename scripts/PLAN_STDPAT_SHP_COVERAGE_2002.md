@@ -233,7 +233,8 @@ classes.** The 114 per-page adjudications were four parser blind spots (header-l
 1997 pages, foreign-note proven zero, Foreign MF / Foreign FI rows) — fixed in `fetch_shp_bse_aspx.py`, re-parsed cache-only:
 residue 750 → 317 ok, WP-S1 refusals 454 → 87 ok, + 51 cells on 9 resolved era names 2001-02, + 43 BSE-XBRL cells 2016-2023.
 Ledgers `shp_fill_wps2b_aspx.json.gz` (431) + `shp_fill_n500_gaps.json.gz` (+43); 25 continuity holds in `_shp_wps2b_holds.json`
-(SBIN 2003 RBI-in-dii suspect journalled). Bake: fiiPct +604, fiiChgPp +884 member-months, 0 dates down. **Left:** 434 quarters BSE
+(SBIN 2003 RBI-in-dii suspect journalled). Bake: fiiPct +604, fiiChgPp +884 member-months, 0 dates down.
+**WP-S2 PASS 3 (~14:45 IST, runbook §127i): 14 era names with no BSE code resolved from the archived-results index scripnames (6 by page name, 8 by same-entity lineage with cutoffs) → ledger `shp_fill_wps2d_aspx.json.gz` 93 cells; LUPINLAB/AGREVOIND refused as wrong entity. Bake: fiiPct +182, fiiChgPp +161 member-months, 0 dates down (2003 98.2→99.3%, 2004 99.0→99.9%). Peer §127h found NSE's archived FULL pattern page (`shareholdingdetails.jsp`, tool `fetch_shp_nse_shpdetails.py`) — the route for the 434 no-BSE-filing quarters; its harvest runs in that session.** **Left:** 434 quarters BSE
 lists no filing for (2001-08 mostly; NSE `>1%` floor / annual reports), 374 roster-orphan modern keys (roster job), 328 api-failed
 classifier retries, 40 recon + 26 zero + 7 no-fii refusals (per page), 25 holds, 22 era names without a BSE code.
 
@@ -299,7 +300,7 @@ print(F.parse_old(F.fetch_page('/tmp/aspx',500116,33,'Old')[0]))"` (IDBI Mar-200
 
 ## 7. Decisions for the user
 
-1. **Scope order:** N500 first (this plan), then re-derive for `all` (39k patStd / 44k fiiPct holes plus
+1. **Scope order — SETTLED 2026-09-05 13:30 IST by the user (relayed from session stocks-dashboard-e8): Nifty 500 point-in-time members ONLY; no all-listed pass.** Original text: N500 first (this plan), then re-derive for `all` (39k patStd / 44k fiiPct holes plus
    ~100k N/A each)? Recommended: N500 first — every favourite strategy screens it.
 2. **N/A = queue:** confirmed by the user ("they may be fillable"); recorded here. Nothing is being marked
    N/A by this plan.

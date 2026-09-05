@@ -14521,6 +14521,37 @@ era. Smoke test 13 pages: 13/13 parsed, **7 overlap cells agree with the store t
 connections ~11:45→13:10 IST (12/12 "Couldn't connect"); fetch resumed 13:10, resumable (skips files on disk).
 
 
+### 127i. ★★ WP-S2 pass 3 — the ARCHIVED RESULTS INDEX is an era scrip master: 14 names with no BSE code resolved, 93 cells; two wrong-entity traps refused  (2026-09-05 ~14:45 IST)
+**Trigger:** 21 era names (SHP) sat in `unresolved.json` because `_bse_master_all.json` / `bse_scrips.json` / the resolved-era
+ledger carry no code for a company delisted before 2006 (CADBURY, PHILIPS, ICICI, MCDOWELL…). The dated NSE lists staged by
+`isin_sources_fetch.py` reach 2006 at the earliest (2006-08, 2010-02, 2011-10 captures) — only BLOWPLAST got an ISIN, and the
+BSE master has no row for it. **The source that names them is `scripts/wayback_nse/_bse_wb_index.json`:** every
+`bseindia.com/qresann/result.asp` capture URL carries `scripcd=<code>&scripname=<ERA NAME>` — an exchange-written
+2000-02 binding of code to name (13,783 keys). Matching the symbol's expected company name against those abbreviated names
+(`CADBURY IND.` 500793, `AVERY INDIA` 526556, `RHONE POULEN` 506747, `VXL INST LTD` 517399, `BLOW PLAST LTD.` 500066,
+`INDOGULFCORP` 500723, `FORBES GOKA` 502865, `JINDAL PHOTO FILMS LTD.` 500226, `JINDAL ST` 532256, `JINDAL VIJAYNAGAR STEEL
+LTD.` 500228, `SEARCH CHE I` 512070, `UNITED PHOSPHOROUS LTD.` 500429, `VARD SPG GEN` 500439, `WELSP GUJ SR` 532144) gave 16
+candidates; JCT, MCDOWELL, TIMEXWATCH, PHILIPS, ICICI had no clean hit (ICI/ICICI Bank are different companies).
+**The aspx page's own company name decides identity.** Harvest with `bname` = index name and `lname` = expected name so the
+tool's identity gate ran: 6 names print the era company (`Cadbury India Ltd`, `Avery India Ltd`, `Rhone-Poulenc (India) Ltd`,
+`VXL Instruments Ltd`, `Blow Plast Ltd`, `Indo Gulf Corporation Ltd`) → **34 cells**. 8 names print the SUCCESSOR of the same
+listed entity (BSE prints the current registered name): `Forbes & Company Ltd` (ex Forbes Gokak), `Consolidated Finvest &
+Holdings Ltd` (ex Jindal Photo), `Nalwa Sons Investments Ltd` (ex Jindal Strips), `JSW Steel Ltd` (ex Jindal Vijayanagar Steel),
+`UPL Ltd` (ex Search Chem — UPL took Search Chem's code 512070 in the 2004 merger), `Uniphos Enterprises Ltd` (the old United
+Phosphorous entity), `Vardhman Holdings Ltd` (ex Vardhman Spinning & General Mills), `Welspun Corp Ltd` (ex Welspun Gujarat
+Stahl Rohren). Accepted on the era index name + lineage, with the quarters BOUNDED where the entity changed (JINDALFOTO ≤
+2011-12, SEARCHEMIN ≤ 2003-12, UNITEDPHOS ≤ 2004-03) → **59 cells**, lineage recorded per symbol in the ledger.
+**Two wrong-entity traps, refused:** LUPINLAB → 500257 prints `Lupin Ltd` — that is ex-Lupin Chemicals, INTO which Lupin
+Laboratories merged in 2001, so its 2001 SHP is another company's; AGREVOIND → 506285 prints `Bayer CropScience Ltd` today
+but in 2002-03 that code was Bayer (India) Ltd (Agrevo India = 530415 per the index). Both in `_shp_wps2b_holds.json`
+(`_wrong_entity`). ★ A page that names the company is identity only when the name is the ERA company or a proven same-entity
+successor; "the successor's name" is not enough when the successor is the ABSORBING company.
+**Ledger `scripts/shp_fill_wps2d_aspx.json.gz` = 93 cells / 14 symbols** (2001: 25 · 2002: 27 · 2003: 26 · 2004: 12 · 2005: 3),
+LAST in `BSE_HIST_LEDGERS`; apply twice identical, +93 / 0 changed / 0 removed; 0 overlap with §127h's `wps2c` ledger.
+⚠️ This pass was written to `shp_fill_wps2c_aspx.json.gz` first — a name a peer had taken 80 minutes earlier (§127h, 47 cells);
+`git status` showed `M` not `??` and the file was restored from origin before anything was committed. **A new ledger name must
+be checked against origin/main at write time, not at commit time.**
+
 ## 128. ★★★ STD-PAT 2002-07 EXECUTED — 229 "missing" cells were HELD under a retired key the coverage builder could not see; four gated routes landed 1,538 cells; the NSE results ARCHIVE reads standalone PAT with the page's own EPS identity  (2026-09-05)
 
 **Trigger:** execute the std-PAT packages of §127 / `PLAN_STDPAT_SHP_COVERAGE_2002.md` (plan §8 = state table).
@@ -14819,8 +14850,6 @@ patched checkout before pushing:**
    6 on companies failing (i) moved to its `retracted` list. Before this, 9 read as MISSING (blocking).
 3. `apply_revop_cell_fix.py` reports one pre-existing MOVED-ON (EMAMILTD 20160331 std 537.37 vs was
    500.55) — on origin before this session; not touched.
-
-**CI state at handoff (13:35 IST):** the heal is LIVE and verified (Pages `sf_revop.json` 12:01 IST: opStd 2002-17 = 14,970 and ebitStd 2008-16 = 3,641, both = local; 0 held values present). CI's own blocking verifier has NOT yet run on top of it: every `refresh-fundamentals` run since 12:01 IST (33950029980, 33951393964, 33952773364) hung at step 5 `update_fundamentals.py` — the NSE integrated-filing pull, 150 s per request — and hit the 40-min timeout before step 13; `www.nseindia.com` answered http 000 from this Mac at 13:32 IST too (the §NSE lockdown class). The 11:31 IST run cleared the same step in 40 s. The local verifier (same script, same payload files) is clean. **First thing to check when resuming: `gh run list --workflow refresh-fundamentals.yml -L 3` — the first run that passes step 5 must be green at step 13.**
 
 ---
 
@@ -15295,7 +15324,7 @@ target quarter's column by its `dd.mm.yyyy` header **preferring a 3-months/quart
 BOTH; the leftmost non-annual is the quarter), read each labelled row's value at that column x. v1's `vals[0]` had grabbed a note
 number / wrong column (53 false `unanchored`), and it mismatched BAJAJHLDNG to a 30.06.2019 page because 31.03.2019 was the year-ended
 column there.
-**Landed 3 (2 text + 1 vision), all hand-verified to a strong anchor (never the reader's say-so — it FALSE-HEALED PEL):**
+**Landed 2, both hand-verified to a strong anchor (never the reader's say-so — it FALSE-HEALED PEL):**
 BAJAJHLDNG Mar-2019 con 8.0→**791.44** (the Q1FY20 extract's 31.03.2019 Q4 comparative column: 'Profit for the period (owners)'
 791.44, basic EPS 71.1 × paid-up 111.29/face 10 = 791.3, Moneycontrol 791.44) and BALMLAWRIE Jun-2022 con 39.67→**56.13** (direct
 Q1FY23 filing, current-quarter column: 'Attributable to owners of the parent' 5,612.64 lakh; total 5,538.00 − NCI −74.64 closes; con
@@ -15304,14 +15333,13 @@ EPS 3.28 × ~17.1 cr sh = 56.1, **std EPS 2.43 × 17.1 = 41.55 == stored std 41.
 reader had proposed 484.48 (a misread). ⚠️ **The automated reader is not trustworthy on its own** — its S′-std-anywhere anchor proves
 only that the filing is the right one, not that the con column value is right; every candidate was re-read by hand with EPS recon before
 landing. 0 of the 32 remaining `unanchored` cells reconcile to EPS (wrong-column / OCR-garbled-in-text reads), so none were forced.
-**Still OPEN after this pass (per-cell verdicts in `pat_suspects_mc_2026-09-05.json`):** ~18 SCANNED (the filer's own P&L is an image; VISION reads them one at a time, user-authorized). **ALOKINDS Sep-2020 HEALED this way:**
-the direct filing (att 45044249) is scanned p6-11 — rendered at 220 dpi and read by vision, the 'Statement of Unaudited Consolidated
-Financial Results' 30.09.2020 QUARTER column shows Net Profit for the period 4,798.64 (H1 4798.64 + Q1 (9,936.75) = the H1 column
-(5,138.10); Dec-2020 comparative + Moneycontrol agree); stored 6,798.44 (off exactly 2000) matches no row, ~10 insurers (GICRE×6/ICICIGI/LICI/MFSL — IRDAI format,
+**Still OPEN after this pass (per-cell verdicts in `pat_suspects_mc_2026-09-05.json`):** ~19 SCANNED (the filer's own P&L is an image —
+ALOKINDS Sep-2020's direct filing is scanned p6-11; its Dec-2020 comparative col + Moneycontrol both say 4798.64 vs stored 6798.44,
+off exactly 2000 → needs a VISION read of the direct filing, **ask first**), ~10 insurers (GICRE×6/ICICIGI/LICI/MFSL — IRDAI format,
 §81f: need one filing-anchored quarter), ~55 unanchored/no-column (multi-page or garbled-text extracts the geometry reader could not
-crack safely), 4 no-result-announcement, 3 no-BSE-code. **Final tally of the 182: 20 healed (17 NSE + 2 BSE-text + 1 BSE-vision/ALOKINDS), ~75 store-confirmed,
+crack safely), 4 no-result-announcement, 3 no-BSE-code. **Final tally of the 182: 19 healed (17 NSE + 2 BSE), ~75 store-confirmed,
 ~85 open on the vision/hand-read tail.** Reader + PDFs cached in the eps-block worktree scratchpad (ephemeral) — the durable state is
-this section + the committed queue file. **SCOPE (user directive relayed cross-session 2026-09-05, memory feedback-scope-nifty-500-only): work is POINT-IN-TIME Nifty 500 only** (`scripts/indices_history.json` → 'Nifty 500', membersAsOf). Of the 182 suspects, **149 are PIT N500 members (16 healed, 66 store-confirmed, 67 open) and 33 are NOT** (flagged `n500_pit_member=false` in the queue) — the 33 are OUT OF SCOPE; 2 of them (BALMLAWRIE Jun-2022, SECURKLOUD Jun-2020) were already healed with solid filing evidence and are left corrected, the other 31 are not pursued. So the in-scope open tail is 67, not ~84.
+this section + the committed queue file.
 
 ## 134. ★★ BSE's ARCHIVED RESULTS PAGE READS STANDALONE PAT FOR 2000-2001 — anchored on the symbol's own held quarters; 238 root cells landed, and the gate's own bug refused 226 good pages first  (2026-09-05, WP-P1)
 

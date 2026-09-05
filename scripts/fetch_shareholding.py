@@ -112,27 +112,6 @@ def _third(vals):
 # Calibrated 2026-07-17 on the format-boundary seam (Jun-2022 old vs Sep-2022 new, all stocks).
 OLD_OTHER_TO_DII = True
 
-def visible_iso(rec):
-    """§135j (2026-09-05): the visibility date of an NSE SHP filing = its broadcast timestamp §12-gated
-    (after 15:30 IST or a non-trading day -> next trading day). `submissionDate` is a DATE only, so a
-    filing broadcast after the close was stored as visible the same session — a one-day look-ahead
-    measured on 277 Nifty-500 rows 2022+. Falls back to the raw date when the broadcast carries no time."""
-    b = str(rec.get("broadcastDate") or "")
-    m = re.match(r"\s*(\d{1,2})-([A-Za-z]{3})-(\d{4})\s+(\d{1,2}):(\d{2})", b)
-    if m and MON.get(m.group(2).upper()):
-        try:
-            import bisect as _bis
-            cal = json.load(open(os.path.join(HERE, "gate_calendar.json"), encoding="utf-8"))["tdays"]
-            d = int(m.group(3)) * 10000 + MON[m.group(2).upper()] * 100 + int(m.group(1))
-            mins = int(m.group(4)) * 60 + int(m.group(5))
-            if mins > 15 * 60 + 30 or d not in set(cal):
-                i = _bis.bisect_right(cal, d)
-                if i < len(cal): d = cal[i]
-            return "%d-%02d-%02d" % (d // 10000, (d // 100) % 100, d % 100)
-        except Exception:
-            pass
-    return iso_date(rec.get("submissionDate")) or iso_date(rec.get("broadcastDate"))
-
 def iso_date(s):
     """'15-JUL-2026' / '15-Jul-2026 15:04:38' -> '2026-07-15' (None if unparseable)."""
     m = re.match(r"\s*(\d{1,2})-([A-Za-z]{3})-(\d{4})", str(s or ""))
@@ -274,7 +253,11 @@ BSE_HIST_LEDGERS = [os.path.join(HERE, "shp_fill_thirdparty.json.gz"),
                     # WP-S2 pass 2b (2026-09-05, runbook §127h): 47 `absent` cells that were absent only because
                     # the symbol resolved to the wrong/later BSE code (IDEA scrip_id collision -> 532822; ELGIRUBBER /
                     # OSWALGREEN / TVSELEC same-ISIN era listing codes). Same parser and gates as wps2b. Fill-only, LAST.
-                    os.path.join(HERE, "shp_fill_wps2c_aspx.json.gz")]
+                    os.path.join(HERE, "shp_fill_wps2c_aspx.json.gz"),
+                    # WP-S2 pass 3 (2026-09-05, runbook §127i): 14 era names resolved to BSE codes from the
+                    # ARCHIVED results index (2000-02 scripnames); 6 matched by page name, 8 accepted on lineage
+                    # (same listed entity, renamed) with entity-change cutoffs. Fill-only, LAST in the list.
+                    os.path.join(HERE, "shp_fill_wps2d_aspx.json.gz")]
 def apply_bse_hist_ledger(h):
     n_total = 0
     for path in BSE_HIST_LEDGERS:
@@ -789,7 +772,7 @@ def refresh_quarters(qes, reparse=False, only=None, fill_shares=False):
         best = {}
         for r in recs:
             sym = str(r.get("symbol") or "").strip().upper()
-            sub = visible_iso(r)
+            sub = iso_date(r.get("submissionDate")) or iso_date(r.get("broadcastDate"))
             xb = str(r.get("xbrl") or "").strip()
             if not sym or not sub or not xb.lower().startswith("http"): continue
             cur = best.get(sym)
@@ -899,7 +882,7 @@ def refresh_events(qes, only=None, reparse=False):
         for r in recs:
             sym = str(r.get("symbol") or "").strip().upper()
             ason = iso_date(r.get("date"))
-            sub = visible_iso(r)
+            sub = iso_date(r.get("submissionDate")) or iso_date(r.get("broadcastDate"))
             xb = str(r.get("xbrl") or "").strip()
             if not sym or not ason or not sub or not xb.lower().startswith("http"): continue
             if only is not None and sym not in only: continue
