@@ -11,6 +11,9 @@
   body { font-feature-settings: "tnum" 1; }
   .pos{color:#15803d;font-weight:600} .neg{color:#b91c1c;font-weight:600}
   .card{background:#fff;border:1px solid #e2e8f0;border-radius:.75rem}
+  .seg{display:inline-flex;background:var(--surface-2,#f1f5f9);border:1px solid var(--border,#e2e8f0);border-radius:9999px;padding:2px}
+  .seg span{padding:5px 12px;border-radius:9999px;font-size:12px;font-weight:700;cursor:pointer;color:var(--text-muted,#475569);transition:var(--tr,.15s)}
+  .seg span.on{background:var(--accent,#2563eb);color:#fff}
 </style>
 </head>
 <body class="bg-slate-50 min-h-screen text-slate-800">
@@ -48,9 +51,12 @@
       <div id="chart"></div>
     </div>
 
-    <div class="mt-6 mb-4">
-      <h2 class="text-lg font-bold text-slate-900">Market breadth — how many stocks are joining the move</h2>
-      <p class="text-sm text-slate-500 mt-0.5">Computed daily across the point-in-time Nifty 500. Broad participation confirms a trend; a rally with narrow breadth is fragile, and washed-out breadth has historically marked bottoms. <span id="bupdated" class="text-slate-400"></span></p>
+    <div class="mt-6 mb-4 flex items-start justify-between gap-3 flex-wrap">
+      <div class="min-w-0 flex-1">
+        <h2 class="text-lg font-bold text-slate-900">Market breadth — how many stocks are joining the move</h2>
+        <p class="text-sm text-slate-500 mt-0.5"><span id="buniDesc">Computed daily across the point-in-time Nifty 500.</span> Broad participation confirms a trend; a rally with narrow breadth is fragile, and washed-out breadth has historically marked bottoms. <span id="bupdated" class="text-slate-400"></span></p>
+      </div>
+      <div id="buni" class="seg hidden shrink-0" role="tablist" aria-label="Breadth universe"><span data-u="n500" role="tab" class="on">Nifty 500</span><span data-u="fno" role="tab">F&amp;O</span></div>
     </div>
 
     <div id="bwrap" class="hidden">
@@ -58,11 +64,12 @@
 
       <div class="card p-4 mb-4">
         <div class="flex items-center justify-between mb-2 flex-wrap gap-2">
-          <div class="text-sm font-semibold text-slate-700">% of Nifty 500 stocks above their 200-day average <span class="text-slate-400 font-normal">(hover for values)</span></div>
+          <div class="text-sm font-semibold text-slate-700">% of <span id="buniName">Nifty 500</span> stocks above their 200-day average <span class="text-slate-400 font-normal">(hover for values)</span></div>
           <div id="brangeBtns" class="flex flex-wrap items-center gap-1 text-xs"></div>
         </div>
         <div id="bchart200"></div>
-        <p class="text-[11px] text-slate-400 mt-1">Above 80% = broadly overheated · below 20% = washed out (Mar-2020 bottom: 2.9%). Dashed line = 50%.</p>
+        <p id="bnote" class="text-[11px] text-slate-400 mt-1"></p>
+        <p id="bcov" class="text-[11px] text-slate-400 mt-0.5"></p>
       </div>
 
       <div class="card p-4 mb-4">
@@ -87,7 +94,7 @@
       </div>
     </div>
 
-    <p class="text-[11px] text-slate-500 mt-5">Each point = sum of the month's traded value (turnover) across that month's Nifty 500 constituents (point-in-time membership), from NSE bhavcopy. Pre-2018 turnover is sampled weekly, so those months are scaled to a full-month estimate (average daily turnover × trading days). The <b>12-month moving average</b> smooths seasonality to show the underlying trend. <b>Breadth</b> uses the same dataset's corp-action-adjusted daily closes (daily data begins 2018, so the series starts once every stock's 52-week window fills, Jan-2019): % above 200-day average and new 52-week highs/lows count each day's point-in-time members against their own trailing 200 / 252 trading sessions. Educational only — not investment advice.</p>
+    <p class="text-[11px] text-slate-500 mt-5">Each point = sum of the month's traded value (turnover) across that month's Nifty 500 constituents (point-in-time membership), from NSE bhavcopy. Pre-2018 turnover is sampled weekly, so those months are scaled to a full-month estimate (average daily turnover × trading days). The <b>12-month moving average</b> smooths seasonality to show the underlying trend. <b>Breadth</b> uses the same dataset's corp-action-adjusted daily closes (daily data begins Jan-2002, so the series starts once most members' 52-week window has filled, Jan-2003): % above 200-day average and new 52-week highs/lows count each day's point-in-time members against their own trailing 200 / 252 trading sessions. The <b>Nifty 500 / F&amp;O</b> toggle switches the universe — the F&amp;O list is the stocks with listed futures &amp; options on that day (from ~30 names in 2002); DVR share classes are not counted twice, and the coverage line shows how many members traded and had enough history that day. Educational only — not investment advice.</p>
   </div>
 </main>
 
@@ -98,7 +105,7 @@ const MON=['Jan','Feb','Mar','Apr','May','Jun','Jul','Aug','Sep','Oct','Nov','De
 const RANGES={'1y':12,'3y':36,'5y':60,'10y':120,'all':1e9};
 const BRANGES={'6m':126,'1y':250,'3y':750,'5y':1250,'all':1e9};
 let DATA=null, range='all', CHART={};
-let BR=null, brange='1y';
+let BRP=null, BR=null, brange='1y', buni='n500';        // BRP = market_breadth_pit.json; BR = the selected universe, normalised
 
 const lc = cr => cr/1e5;                                  // ₹ crore → ₹ lakh crore
 const fmtLc = cr => '₹'+lc(cr).toFixed(2)+' L cr';
@@ -116,30 +123,68 @@ async function load(){
   $('updated').textContent = DATA.updated ? '· data through '+fmtDateLong(DATA.updated)+(DATA.partialLast?' (current month still updating)':'') : '';
   $('status').classList.add('hidden'); $('content').classList.remove('hidden');
   renderRangeBtns(); renderCards(); renderChart(); renderTable();
-  try { BR = await (await fetch('./market_breadth.json?t='+Date.now())).json(); } catch(e){ BR=null; }
+  try { BRP = await (await fetch('./market_breadth_pit.json?t='+Date.now())).json(); } catch(e){ BRP=null; }
+  $('buni').querySelectorAll('[data-u]').forEach(el=>el.onclick=()=>{ buni=el.dataset.u; renderBreadth(); });
   renderBreadth();
 }
 
 /* ---------------- market breadth (daily) ---------------- */
+// Source: market_breadth_pit.json (runbook §21a) — point-in-time breadth for TWO universes (Nifty 500 and
+// F&O) as INTEGER counts per day; the ratios are derived here. One file for both views so the toggle
+// compares like with like: same bars, same rules (engine membership objects, DVR lines dropped).
 const fmtD8      = d => { const s=''+d; return (+s.slice(6))+' '+MON[+s.slice(4,6)-1]+" '"+s.slice(2,4); };
 const fmtD8Long  = d => { const s=''+d; return (+s.slice(6))+' '+MON[+s.slice(4,6)-1]+' '+s.slice(0,4); };
+const BKEYS=['nMem','nObs','n200','a200','nAD','adv','dec','n52','hi','lo'];
+const UNI={
+  n500:{ name:'Nifty 500', desc:d=>'Computed daily across the point-in-time Nifty 500.' },
+  fno: { name:'F&O',       desc:d=>'Computed daily across the point-in-time F&O universe — the stocks with listed futures & options that day ('+d.nMem[0]+' names on '+fmtD8(d.dates[0])+', '+d.nMem[d.nMem.length-1]+' today).' },
+};
+// Normalise one universe block: shape-guard every array, start the display once the 52-week window has
+// filled for the MAJORITY of traded members (a young window would print near-zero new-high/low bars), and
+// derive pct200 = 100*a200/n200 — null while n200 == 0 (the engine's "null until 200 sessions" rule).
+function normUni(P,u){
+  const B=P&&P[u], D=P&&P.dates; if(!B||!Array.isArray(D)||!D.length) return null;
+  for(const k of BKEYS){ if(!Array.isArray(B[k])||B[k].length!==D.length) return null; }
+  let st=-1; for(let i=0;i<D.length;i++){ if(B.nObs[i]>0 && B.n52[i]>=0.5*B.nObs[i]){ st=i; break; } }
+  if(st<0) return null;
+  const out={dates:D.slice(st)}; for(const k of BKEYS) out[k]=B[k].slice(st);
+  out.pct200=out.n200.map((m,i)=>m?100*out.a200[i]/m:null);
+  return out;
+}
 
 function renderBreadth(){
-  if(!BR || !BR.dates || !BR.dates.length) return;   // feed missing — section stays hidden
+  if(!BRP) return;                                             // feed missing — section stays hidden
+  const views={n500:normUni(BRP,'n500'), fno:normUni(BRP,'fno')};
+  if(!views[buni]) buni = views.n500 ? 'n500' : (views.fno ? 'fno' : buni);   // selected universe absent → fall back
+  BR=views[buni]; if(!BR) return;
+  const both=!!(views.n500&&views.fno);
+  $('buni').classList.toggle('hidden',!both);
+  $('buni').querySelectorAll('[data-u]').forEach(el=>{ el.classList.toggle('on',el.dataset.u===buni); el.setAttribute('aria-selected',el.dataset.u===buni?'true':'false'); });
+  $('buniName').textContent=UNI[buni].name;
+  $('buniDesc').textContent=UNI[buni].desc(BR);
   $('bupdated').textContent = '· data through '+fmtD8Long(BR.dates[BR.dates.length-1]);
   $('bwrap').classList.remove('hidden');
-  renderBCards(); renderBRangeBtns(); renderB200(); renderBHL();
+  renderBCards(); renderBRangeBtns(); renderB200(); renderBHL(); renderBNote();
 }
 
 function renderBCards(){
-  const i=BR.dates.length-1, p=BR.pct200[i], above=Math.round(p*BR.n200[i]/100);
+  const i=BR.dates.length-1, p=BR.pct200[i], above=BR.a200[i];
   const adv=BR.adv[i], dec=BR.dec[i], hi=BR.hi[i], lo=BR.lo[i];
   const card=(t,val,sub,cls)=>`<div class="card p-3"><div class="text-[10px] uppercase text-slate-500">${t}</div><div class="text-lg font-bold ${cls||''}">${val}</div><div class="text-[11px] text-slate-400">${sub||''}</div></div>`;
   $('bcards').innerHTML =
-     card('Above 200-day avg', p.toFixed(1)+'%', above+' of '+BR.n200[i]+' stocks', p>=50?'pos':'neg')
+     card('Above 200-day avg', p==null?'·':p.toFixed(1)+'%', above+' of '+BR.n200[i]+' stocks', p==null?'':(p>=50?'pos':'neg'))
     +card('Advancers / decliners', adv+' ▲ / '+dec+' ▼', 'latest session · '+fmtD8(BR.dates[i]), adv>=dec?'pos':'neg')
     +card('New 52-week highs', hi, 'of '+BR.n52[i]+' stocks today', 'pos')
     +card('New 52-week lows', lo, 'of '+BR.n52[i]+' stocks today', lo>hi?'neg':'');
+}
+
+// Record low is READ from the series (the old hard-coded "Mar-2020 bottom: 2.9%" had drifted to 3.4%
+// once the series was rebuilt) and the coverage line says what the latest day's counts stand on.
+function renderBNote(){
+  let lo=null, li=-1; BR.pct200.forEach((v,i)=>{ if(v!=null&&(lo==null||v<lo)){lo=v;li=i;} });
+  $('bnote').textContent='Above 80% = broadly overheated · below 20% = washed out'+(lo!=null?' (record low: '+lo.toFixed(1)+'% on '+fmtD8Long(BR.dates[li])+')':'')+'. Dashed line = 50%.';
+  const i=BR.dates.length-1;
+  $('bcov').textContent='Coverage on '+fmtD8Long(BR.dates[i])+': '+BR.nMem[i]+' members · '+BR.nObs[i]+' traded · '+BR.n200[i]+' with 200 sessions of history · '+BR.n52[i]+' with a full 52-week window.';
 }
 
 function renderBRangeBtns(){
@@ -150,8 +195,8 @@ function renderBRangeBtns(){
 
 function bsliced(){
   const n=BR.dates.length, k=BRANGES[brange], s=k>=1e9?0:Math.max(0,n-k);
-  const cut=a=>a.slice(s);
-  return { dates:cut(BR.dates), pct200:cut(BR.pct200), n200:cut(BR.n200), adv:cut(BR.adv), dec:cut(BR.dec), hi:cut(BR.hi), lo:cut(BR.lo), n52:cut(BR.n52) };
+  const out={dates:BR.dates.slice(s), pct200:BR.pct200.slice(s)}; for(const kk of BKEYS) out[kk]=BR[kk].slice(s);
+  return out;
 }
 
 /* shared hover: crosshair + dot + tooltip over an svg built by the renderers */
@@ -183,9 +228,13 @@ function renderB200(){
     grid+=`<line x1="${PL}" y1="${yy.toFixed(1)}" x2="${W-PR}" y2="${yy.toFixed(1)}" stroke="${g===0?'#cbd5e1':'#f1f5f9'}"/><text x="${PL-4}" y="${(yy+3).toFixed(1)}" font-size="9" fill="#94a3b8" text-anchor="end">${g}%</text>`; }
   let xl=''; const step=Math.max(1,Math.ceil(n/7));
   d.dates.forEach((dt,i)=>{ if(i%step && i!==n-1) return; xl+=`<text x="${x(i).toFixed(1)}" y="${H-8}" font-size="9" fill="#94a3b8" text-anchor="middle">${fmtD8(dt)}</text>`; });
-  const line=d.pct200.map((v,i)=>(i?'L':'M')+x(i).toFixed(1)+' '+y(v).toFixed(1)).join(' ');
-  const area=`M ${x(0).toFixed(1)} ${y(0).toFixed(1)} `+d.pct200.map((v,i)=>'L'+x(i).toFixed(1)+' '+y(v).toFixed(1)).join(' ')+` L ${x(n-1).toFixed(1)} ${y(0).toFixed(1)} Z`;
-  const pts=d.dates.map((dt,i)=>({px:x(i),py:y(d.pct200[i]),i,dt}));
+  // null-safe: a null pct200 (n200 == 0) breaks the line and is skipped by the hover; the area spans the plotted points
+  let line='', area='', open=false, x0=null, x1=null;
+  d.pct200.forEach((v,i)=>{ if(v==null){ open=false; return; } const X=x(i).toFixed(1), Y=y(v).toFixed(1);
+    line+=(open?' L':' M')+X+' '+Y; area+=' L'+X+' '+Y; if(x0==null) x0=X; x1=X; open=true; });
+  if(x0!=null) area=`M ${x0} ${y(0).toFixed(1)}`+area+` L ${x1} ${y(0).toFixed(1)} Z`;
+  const pts=[]; d.dates.forEach((dt,i)=>{ if(d.pct200[i]!=null) pts.push({px:x(i),py:y(d.pct200[i]),i,dt}); });
+  if(!pts.length){ $('bchart200').innerHTML='<div class="text-xs text-slate-400 py-8 text-center">Too few stocks with 200 sessions of history in this range.</div>'; return; }
   $('bchart200').innerHTML=`<div class="relative">
     <svg viewBox="0 0 ${W} ${H}" class="w-full block">
       <rect x="${PL}" y="${y(100).toFixed(1)}" width="${(W-PL-PR).toFixed(1)}" height="${(y(80)-y(100)).toFixed(1)}" fill="#b91c1c" opacity="0.05"/>
@@ -201,11 +250,12 @@ function renderB200(){
     <div class="tip absolute hidden pointer-events-none -translate-x-1/2 -translate-y-[135%] bg-slate-800 text-white text-[11px] leading-tight px-2 py-1 rounded-md shadow-lg whitespace-nowrap z-10"></div>
   </div>`;
   bHover('bchart200', pts, p=>{
-    const i=p.i, above=Math.round(d.pct200[i]*d.n200[i]/100);
+    const i=p.i;
     return `<div class="font-semibold">${fmtD8Long(p.dt)}</div>`
-      +`<div><span style="color:#818cf8">●</span> Above 200-DMA: ${d.pct200[i].toFixed(1)}% (${above}/${d.n200[i]})</div>`
+      +`<div><span style="color:#818cf8">●</span> Above 200-DMA: ${d.pct200[i].toFixed(1)}% (${d.a200[i]}/${d.n200[i]})</div>`
       +`<div><span style="color:#34d399">▲</span> ${d.adv[i]} advanced · <span style="color:#fb7185">▼</span> ${d.dec[i]} declined</div>`
-      +`<div>52-wk: <span style="color:#34d399">${d.hi[i]} new highs</span> · <span style="color:#fb7185">${d.lo[i]} new lows</span></div>`;
+      +`<div>52-wk: <span style="color:#34d399">${d.hi[i]} new highs</span> · <span style="color:#fb7185">${d.lo[i]} new lows</span> (of ${d.n52[i]})</div>`
+      +`<div class="text-slate-300">${d.nObs[i]} of ${d.nMem[i]} members traded</div>`;
   });
 }
 

@@ -2148,6 +2148,13 @@ advancers/decliners — all in one hover tooltip + 4 stat cards.
 - **Page:** breadth section between the turnover chart and the monthly-history table; separate range state
   (6M/1Y/3Y/5Y/All → 126/250/750/1250/all sessions); section hides itself silently if the json is missing.
   Editing market-mood.html = bump `docs/sw.js` CACHE (did v24→v25).
+  **2026-09-05 — the page now reads `market_breadth_pit.json` (§21a), not this file:** a Nifty 500 / F&O
+  pill toggle (page-local `.seg`, same as volume.html) switches cards + both charts + the note; `normUni()`
+  shape-guards every array, starts the display once n52 ≥ 50% of nObs (both universes → 2003-01-02, same
+  start as before), derives pct200 and renders null-safe; the record-low note is READ from the series (the
+  hard-coded "Mar-2020 bottom: 2.9%" had drifted to 3.4%) and a coverage line shows the latest day's
+  nMem/nObs/n200/n52. `market_breadth.json` stays for index.html + macro.html (feeds.json pages updated).
+  sw v138→v139.
 
 
 ### 21a. ★ POINT-IN-TIME BREADTH 2002→date, N500 + F&O — the backtest REGIME input  (2026-09-05)
@@ -2177,6 +2184,8 @@ committed bin is frozen), then `python3 -X utf8 scripts/build_market_breadth_pit
   so it differs from §21's file by exactly one member on the 2,431 days TATAMTRDVR/JISLDVREQS were N500
   members (2011-12→2024): pct200 within 0.20pp, hi/lo differ on 127/108 days by ±1. Deliberate — the
   regime input counts the universe the engine screens.
+- **Consumer (2026-09-05):** `docs/market-mood.html` breadth section reads this file for BOTH universes
+  (Nifty 500 / F&O toggle) — see the §21 note. Changing this file's shape = check that page first.
 - **Coverage (per-year means, N500):** 2002 nMem 443 / nObs 390 (88%; pre-Oct-2002 rosters are the
   ~425-name precursor lists) and **n200 = 0 until 2002-10-17** (200 sessions after dailyFrom), ≥90% of
   members DMA-eligible from 2002-10-24, 52w-eligible (n52) fills through Jan-2003; every year 2003→2026
