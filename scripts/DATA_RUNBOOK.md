@@ -14602,7 +14602,13 @@ closes to 0.4%), so the switch restores reach without raising the error rate; th
 suspects of OURS (BOSCHLTD Mar-12 577.69 vs 477.53, UPL Sep-12 202.38 vs 144.52, IPCALAB Jun-12 141.78 vs
 82.93 …), reported, not patched.
 
-### 129d. What landed — LIVE after the push, re-verified (see the commit for the exact hashes)
+### 129d. What landed — LIVE, verified (commits 02c038082 tooling · a5562b612 runbook · 810259b9a data · 5481aa26e ledger retractions)
+Live re-read 2026-09-05 11:04 IST: `sf_revop.json` on Pages holds **15,280 opStd cells 2002-2017 = local**;
+`verify_fills_live.py` checked 27,101 ledgered cells (17,958 before the op/ebit registration), MISSING 0,
+REVERTED 0, RESURRECTED 0. ⚠️ The push turned the 11:00 IST `refresh-fundamentals` run RED for one cycle: its
+blocking verify step found 3 lender-ebit assertions (SAMMAANCAP ebitC) that the local baseline had hidden —
+**the verifier prints at most 15 MISSING detail lines under an 18-cell summary**, so the count and the list
+disagree and the list must never be trusted as complete. Fixed by 5481aa26e (all 18 retracted).
 `apply_agg_fills.py` (fill-only), 7,163 cells into existing rows + 197 into rows created with
 `--create-rows` where MC's PAT at the target reproduces `sf_fundamentals` npStd (tol max(0.5, 1%)) — the
 "company demonstrably filed it" evidence the applier asks for. Blast radius vs origin/main: slot 2 only,
@@ -14656,5 +14662,8 @@ COX&KINGS (one stray fin row each) — use per-cell or majority, and read the in
   and `stored_under_alias` says so.
 * **zsh eats `$h:scripts/...` as a `:s` modifier** ("bad substitution") and `echo ====` as a `=cmd`
   expansion — brace the variable, quote the separator.
+* **`verify_fills_live.py` caps the MISSING detail list** (summary 18, 15 lines printed). Retracting only the
+  listed cells left 3 standing and CI, which blocks on the COUNT, went red for a cycle. Fix by class, not by
+  list: every ledger assertion on a `LENDER_EBIT_NA` symbol whose slot is null.
 * The id caches `_agg_ids_mc.json` / `_mc_era_ids.json` conflict on rebase whenever two sessions resolve
   symbols; they are symbol-keyed maps — union them (`git show :2:` / `:3:`), never pick a side.
