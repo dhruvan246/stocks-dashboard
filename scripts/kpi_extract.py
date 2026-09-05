@@ -390,10 +390,27 @@ def norm_num_text(t):
 
 
 # ------------------------------------------------------------------ backends
+GEMINI = {"dead": False, "calls": 0, "prompt_tokens": 0, "last": 0.0}
+GEMINI_MIN_GAP = float(os.environ.get("GEMINI_MIN_GAP", "6"))
+
+
+def quota_dead():
+    return GEMINI["dead"]
+
+
 def gemini_answer(prompt):
-    import gemini_vision as GV
-    if not os.environ.get("GEMINI_API_KEY"):
+    """One structured-JSON call to Gemini with quota handling measured for THIS job (2026-09-06):
+    a 429 RESOURCE_EXHAUSTED came after a single ~20k-token prompt and gemini_vision._post()'s
+    15-second retry declared the DAY dead. Google's 429 body carries `retryDelay` and the quota id
+    (…PerMinute… / …PerDay…): honour the delay (up to 120 s, 6 attempts), log the body so the real
+    limit is visible in the run log, and mark the day dead only when the id says PerDay."""
+    import urllib.request
+    import urllib.error
+    key = os.environ.get("GEMINI_API_KEY")
+    if not key or GEMINI["dead"]:
         return None
+    model = os.environ.get("GEMINI_MODEL", "gemini-3.6-flash")
+    url = "https://generativelanguage.googleapis.com/v1beta/models/%s:generateContent?key=%s" % (model, key)
     schema = {"type": "OBJECT", "properties": {
         "company_matches": {"type": "BOOLEAN"}, "doc_title": {"type": "STRING"}, "note": {"type": "STRING"},
         "metrics": {"type": "ARRAY", "items": {"type": "OBJECT", "properties": {
@@ -405,9 +422,49 @@ def gemini_answer(prompt):
                 "required": ["period", "period_type", "period_end", "value", "as_printed", "page", "label"]}}},
             "required": ["name", "unit", "kind", "values"]}}},
         "required": ["company_matches", "doc_title", "note", "metrics"]}
-    body = {"contents": [{"role": "user", "parts": [{"text": prompt}]}],
-            "generationConfig": {"temperature": 0, "response_mime_type": "application/json", "response_schema": schema}}
-    return GV._post(body)
+    body = json.dumps({"contents": [{"role": "user", "parts": [{"text": prompt}]}],
+                       "generationConfig": {"temperature": 0, "response_mime_type": "application/json",
+                                            "response_schema": schema}}).encode()
+    for attempt in range(6):
+        gap = GEMINI_MIN_GAP - (time.time() - GEMINI["last"])
+        if gap > 0:
+            time.sleep(gap)
+        GEMINI["last"] = time.time()
+        req = urllib.request.Request(url, data=body, headers={"Content-Type": "application/json"}, method="POST")
+        try:
+            resp = json.loads(urllib.request.urlopen(req, timeout=240).read())
+            GEMINI["calls"] += 1
+            um = resp.get("usageMetadata") or {}
+            GEMINI["prompt_tokens"] += int(um.get("promptTokenCount") or 0)
+            txt = resp["candidates"][0]["content"]["parts"][0]["text"]
+            print("    gemini ok: %s prompt tokens (run total %s over %d calls)" % (um.get("promptTokenCount"), GEMINI["prompt_tokens"], GEMINI["calls"]))
+            return json.loads(txt)
+        except urllib.error.HTTPError as ex:
+            try:
+                body_txt = ex.read().decode("utf-8", "replace")
+            except Exception:
+                body_txt = ""
+            flat = " ".join(body_txt.split())
+            if ex.code == 429:
+                m = re.search(r'"retryDelay":\s*"(\d+)s"', body_txt)
+                delay = min(int(m.group(1)) + 3, 120) if m else 45
+                print("    gemini 429 attempt %d/6 — wait %ds — %s" % (attempt + 1, delay, flat[:500]))
+                if re.search(r"PerDay|per_day|daily", flat, re.I):
+                    GEMINI["dead"] = True
+                    print("    gemini DAILY quota exhausted — no more reads this run")
+                    return None
+                time.sleep(delay)
+                continue
+            if ex.code in (500, 502, 503, 504):
+                print("    gemini HTTP %d attempt %d/6 — %s" % (ex.code, attempt + 1, flat[:200]))
+                time.sleep(20 * (attempt + 1))
+                continue
+            print("    gemini HTTP %d — %s" % (ex.code, flat[:300]))
+            return None
+        except Exception as ex:
+            print("    gemini err attempt %d/6: %s" % (attempt + 1, str(ex)[:160]))
+            time.sleep(15)
+    return None
 
 
 _NAMES = None
@@ -485,7 +542,6 @@ def walk(a, by):
     """Unattended pass (CI): read the newest unread documents of the symbols most in need.
     Never-checked symbols first, then the longest-unchecked; a symbol is re-listed on BSE at most
     once per --recheck-days. Stops at --max-docs reads, --max-syms listings, or a dead quota."""
-    import gemini_vision as GV
     if not a.dry and not os.environ.get("GEMINI_API_KEY"):
         sys.exit("walk: GEMINI_API_KEY is not set — refusing to mark symbols checked without reading anything")
     syms = universe_symbols(a.universe)
@@ -501,7 +557,7 @@ def walk(a, by):
     for sym in syms:
         if read >= a.max_docs or listed >= a.max_syms:
             break
-        if GV.quota_dead():
+        if quota_dead():
             print("quota dead — stopping"); break
         L = load_ledger(sym) if os.path.exists(ledger_path(sym)) else None
         chk = (L or {}).get("checked")
@@ -565,20 +621,13 @@ def run(sym, docs, backend, by, limit=None, dry=False):
             print("  would read %s %s %s (%d pages, %d chars)" % (sym, doc["kind"], doc["date"], len(sel), len(prompt)))
             done += 1
             continue
-        ans = None
-        for attempt in range(3):                     # 503 "high demand" is transient (measured run 33988143164)
-            ans = gemini_answer(prompt)
-            if ans is not None:
-                break
-            import gemini_vision as _GV
-            if _GV.quota_dead() or not os.environ.get("GEMINI_API_KEY"):
-                break
-            time.sleep(20 * (attempt + 1))
+        ans = gemini_answer(prompt)               # retries 429/5xx internally (up to 6 attempts)
         if ans is None:
-            import gemini_vision as _GV
-            if _GV.quota_dead():
-                print("  %s: quota exhausted — stopping this symbol" % sym); break
-            print("  %s %s: model returned nothing after 3 attempts — skipped (unread, retried next run)" % (sym, doc["att"])); continue
+            if quota_dead():
+                print("  %s: Gemini daily quota exhausted — stopping" % sym); break
+            if not os.environ.get("GEMINI_API_KEY"):
+                print("  %s: GEMINI_API_KEY missing" % sym); break
+            print("  %s %s: model returned nothing after retries — skipped (unread, retried next run)" % (sym, doc["att"])); continue
         w, h, r = ingest(sym, doc, ans, sel, by=by)
         print("  %s %s %s: written %d, held %d, rejected %d" % (sym, doc["kind"], doc["date"], w, h, r))
         done += 1
