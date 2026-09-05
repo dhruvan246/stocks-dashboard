@@ -14518,3 +14518,141 @@ here may be called unfillable; the ledger names N rungs remaining per class.
    dates that look real.
 5. **Reuse a sibling campaign's cache read-only** (`_nsearch_cache` from `~/stocks-wt/con-gap-pre2020`) before
    touching a fragile endpoint — the whole 2005-14 residue was measured without one list-API call.
+
+---
+
+## 129. ★★★ OPERATING PROFIT 2002→2017 ON THE POINT-IN-TIME N500 — 7,360 cells from Moneycontrol, and the 3,797 stored cells that were never operating profit  (2026-09-05)
+
+**★ NO ASSUMPTIONS, NO GUESSWORK (§0).** Every number here was measured this session; the scripts and
+artefacts are named so it can be re-measured. Worktree `~/stocks-wt/op-sweep`.
+
+### 129a. What was measured before a single cell was written
+`sf_revop` slot 2/3 (`opStd`/`opCon`) on the point-in-time Nifty 500 (`docs/dash_slim.bin` indicesHistory,
+329 snapshots, rename-folded through `_rename_map.json`; scratch script `measure_op.py`):
+opStd 2002 0% · 2003 3% · 2004 1% · 2005-07 6% · 2008 18% · 2009 25% · 2010 26% · 2011 19% · 2012 27% ·
+2013 14% · 2014 11% · **2015 93% · 2016 84% · 2017 17%** · 2018 90% · 2020+ 98%. opCon is 0% before 2012.
+
+**Where the existing cells came from** (ledger history, `git show <commit>:scripts/revop_fundamentals.json`
+counted per year): the 2015-16 block (1,884 / 1,697 cells) landed on **2026-07-30** in the "Rev recovery"
+BSE-PDF OCR/vision batches (be57ae1be → 4367e5f06); every pre-2015 op cell landed on **2026-08-04** in
+PRE2015 STEP D (detres harvest) and STEP N; 2017 is 285 Mar-2017 XBRL cells plus ~450 Rev-recovery reads
+and never had an op pass of its own (memory: project-stocks-revop-extraction-eras).
+
+### 129b. ★★★ THE DEFECT — the op slot of 2008-2016 holds the AFTER-depreciation figure
+The route's own era control (§90c pattern, `op_control.py`): MC's derived `op_pre` (= its printed
+"P/L Before Other Inc., Int., Excpt. Items & Tax" + depreciation, the §81 candidate that scored 24/24 on
+2018+ cells) disagreed with our stored opS on **~100% of 2008-11 and 2015-16 cells**, 26% of 2012, 44% of 2017.
+Classifying every stored opS ≤ 2017 on the 777 resolved non-lender symbols against MC's RAW rows
+(`_op_slot_ebit_class.json`):
+
+| class | cells | what it is |
+|---|---|---|
+| `EBIT-IN-OP-SLOT` | **3,797** | stored opS == MC's after-depreciation row to the paisa, ≠ op_pre; **ebitS empty on every one** |
+| correct (`op_pre`) | 440 | 2012 (282), 2017 (120), a few 2013 |
+| `none` | 911 | matches neither row: 196 within 1% of the EBIT row, 270 within 1-5%, 348 far |
+| `ours-zero` | 39 | stored 0.0 (38 at Mar-2017) where MC prints a real magnitude — the §37a/feedback zero sentinel |
+
+So the 2026-07-30 and 2026-08-04 campaigns read the SEBI format's "Profit from operations before other
+income, finance costs and exceptional items" (after depreciation) and stored it as `op`, whose definition
+here is BEFORE depreciation (op = PBET + FC + Dep − OI, Trendlyne "Oper Profit"; ebit = op − Dep, L1051).
+Those cells are our own **ebit**, sitting in the wrong slot, with the ebit slot empty. 566 symbols.
+**Not corrected in this session** — it is a §2b correction of ~3,800 live values, the user's call. The
+ready proposal is `agg_tools/_op_slot_heal_proposals.json`: `ebitS_new` = the stored value (doubly
+evidenced: our read + MC's row), `opS_new` = MC op_pre where GATE E passed (897 cells), else null
+(2,900 ebit-move-only). `apply_agg_fills.py` is fill-only and cannot write it; it needs a correction
+applier in the `rev_defects.json` shape.
+
+### 129c. The gate, and what had to change to run it on op
+`agg_era_gate.py` (§90 GATE E) with four additions, each measured before use:
+1. **Excused anchors** (`--excuse`, `_op_excused_anchors.json`, 4,032 cells on 568 symbols = the three
+   classes above ≤1%). They are dropped from the comparison — never counted as agreement — and the count
+   is journalled per fill. Without it a symbol's 8 defective 2015-16 cells read as 8 disagreements and E1's
+   15% cap refused series whose identity was not in doubt (first pass: 2,841 fills; with it: 7,163).
+2. **The era readers derived nothing.** `mc_era.quarters` and `_era_annual` copied MC_ROWS only, so every
+   ISIN-resolved symbol had no op candidate at all (NOT-FOUND) and E2 was a silent NO-TEST. One helper
+   now feeds all four readers: `agg_sources.mc_row_values`.
+3. **The top-down subtotal `op_der`.** MC prints `--` for every P/L subtotal before 2008 (~1,400 quarterly
+   rows a year, measured) while carrying every component line. `ebit_der = PAT + Tax + Interest − Other
+   Income − Exceptional − Extraordinary − Prior-yr adj` reproduces the PRINTED subtotal exactly on
+   **49,526 / 49,898 quarterly rows (99.25%) and 15,387 / 15,525 annual rows (99.11%)** wherever both
+   exist; the bottom-up expense sum scored 97.3%, adding the adjustments back 91.5%. It is the LAST
+   candidate (only decides rows the printed ones cannot), it is anchored on the company's own 2018+ rows
+   against OUR stored op like any candidate, and it is held to BOTH FY identities (PAT and its own).
+   ⚠️ It has no in-era validation set of ours: the only stored pre-2008 op cells are bank pre-provision
+   figures. 1,391 fills carry it (all 2002-2008); they are labelled `derived:` in `row_label`.
+4. **E2's vintage test runs on PAT for op cells** (`--e2-pat`, `E2_VINTAGE_FOR_OP`). On op itself E2
+   refused 4,075 cells; on **3,119 of them MC's own PAT still closed for the same FY(s)** — year-end
+   reclassification (other income vs other operating income, excise, regrouping) moves op, not PAT.
+   The op identity is journalled (`op_fy_identity`), not enforced, except for `op_der`.
+
+**Hold-out calibration** (`era_calibrate_op.py`, `_era_calib_op.json`; `strict` = every stored opS ≤ 2017
+excused, i.e. anchors only from 2018+, the real geometry of the queue):
+
+| population | E2 row | filled / held-out | mismatch |
+|---|---|---|---|
+| 2018-19 stored (XBRL, as-filed) | op | 343 / 700 | **0** (self-variant 2 / 319) |
+| 2018-19 stored | **PAT** | 432 / 700 | **0** (self-variant 3 / 405) |
+| 2008-14 non-defective stored | op | 106 / 511 | 14 — every 2008-11/14 hold-out is in the `none` class |
+| 2008-14 non-defective stored | PAT | 282 / 511 | 53 — 2012 alone: 230 filled, 15 mismatch |
+
+The 2012-13 mismatches do **not** concentrate at large op-identity gaps (6 of 18 sit where MC's op identity
+closes to 0.4%), so the switch restores reach without raising the error rate; the 18 are §61a mode-6
+suspects of OURS (BOSCHLTD Mar-12 577.69 vs 477.53, UPL Sep-12 202.38 vs 144.52, IPCALAB Jun-12 141.78 vs
+82.93 …), reported, not patched.
+
+### 129d. What landed — LIVE after the push, re-verified (see the commit for the exact hashes)
+`apply_agg_fills.py` (fill-only), 7,163 cells into existing rows + 197 into rows created with
+`--create-rows` where MC's PAT at the target reproduces `sf_fundamentals` npStd (tol max(0.5, 1%)) — the
+"company demonstrably filed it" evidence the applier asks for. Blast radius vs origin/main: slot 2 only,
+0 rows lost, 0 other slots touched; every ledger opS entry reproduces in both files.
+
+| year | opStd before → after | year | before → after |
+|---|---|---|---|
+| 2002 | 0% → **12%** | 2010 | 26% → **63%** |
+| 2003 | 3% → **18%** | 2011 | 19% → **61%** |
+| 2004 | 1% → **17%** | 2012 | 27% → **56%** (either basis 73%) |
+| 2005 | 6% → **24%** | 2013 | 14% → **51%** (71%) |
+| 2006 | 6% → **23%** | 2014 | 11% → **39%** (59%) |
+| 2007 | 6% → **19%** | 2015 | 93% → 95% |
+| 2008 | 18% → **49%** | 2016 | 84% → 89% |
+| 2009 | 25% → **60%** | 2017 | 17% → **48%** |
+
+**Lenders were excluded up front, not left to the gate**: 114 symbols (`coverage_na_ledger` ebit names
+widened through FUND_ALIAS, symbols whose rows are majority `fin=1`, per-cell `fin=1`). Measured why:
+MC's standalone BANK table prints "Operating Profit before Provisions and contingencies" and no
+industrial subtotal (SBIN, KTKBANK), while NBFCs and insurers get MC's INDUSTRIAL layout (BAJFINANCE,
+HDFCLIFE) — so for them the industrial row is reachable and wrong. Bank op from MC's bank row is a
+separate, unattempted route. Also ⚠️ a symbol-level "any row fin=1" rule flagged ATUL, BALRAMCHIN,
+COX&KINGS (one stray fin row each) — use per-cell or majority, and read the industry of what you exclude.
+
+### 129e. Residue, by tag (`_op_sweep_residue.json`; 18,345 queued cells, 7,163 filled)
+| tag | cells | meaning / next rung |
+|---|---|---|
+| `mc-quarter-hole` | 2,389 | MC has the company, the quarter row lacks PAT or depreciation (derivation impossible) |
+| `E2-site-FY-restated` | 1,515 | PAT identity fails on the site (a genuine restated vintage) — filing read |
+| `E1-disagreement-near-target` | 1,469 | a stored cell of OURS in the `none` class within ±6q vetoes — adjudicate those cells (§61a mode 6) |
+| `E1-too-many-disagreements` | 1,320 | >10 or >15% of anchors disagree — mostly `none`-class 2015-16 cells |
+| `mc-quarter-older-than-table` | 1,220 | reach |
+| `E1-anchors<8` + no op anchors at all | 1,081 + 918 | companies delisted before 2018 hold no correct-definition op — a **PAT-anchored** variant (§90 identity on npStd, row by MC's structure) would reach them; not calibrated, not run |
+| `mc-no-std-table` / unresolved | 501 / 187 | reach; §90j rung 4 for the unresolved |
+| `E3`, `our-FY-mismatch`, `E2-no-FY` | 322 / 125 / 134 | as named |
+| no-row cells | 3,041 → 197 filled | the rest lack a PAT anchor at the target or fail the gate |
+
+### 129f. Traps found this session
+* **`verify_fills_live.py` had never registered `opS/opC/ebitS/ebitC` on `agg_cell_fills.json`** — the
+  2026-08-12 op/ebit sweep's 250 cells were unguarded for three weeks (§90h class). Registering them
+  surfaced 15 MISSING: all lender ebit nulled by the 2026-08-16 alignment; the ledger now records them as
+  `<field>_retracted` with the reason instead of asserting a value the data no longer holds.
+* **`apply_agg_fills.py` replaced a SYM|QE ledger record wholesale** (`led.update(journal)`), so an op fill on
+  a quarter carrying a revS entry dropped the revS assertion. Now merged per entry, other-field provenance
+  nested under `<field>_prov`. It also stamped a "gate A/A2 passed" sentence on gate-E cells; it now
+  journals the proposal's own evidence.
+* **agg_era_gate counts a stored 0.0 as a disagreement** (agg_gate treats it as "we hold nothing"); the 39
+  zero-sentinel cells went into the excusal, class-labelled.
+* **Rows for a roster symbol can live under its OLD ticker**: 105 gated cells were "no row" under the roster
+  symbol and present under the pre-rename key (`_rename_map.json`); the fill is keyed where the row lives
+  and `stored_under_alias` says so.
+* **zsh eats `$h:scripts/...` as a `:s` modifier** ("bad substitution") and `echo ====` as a `=cmd`
+  expansion — brace the variable, quote the separator.
+* The id caches `_agg_ids_mc.json` / `_mc_era_ids.json` conflict on rebase whenever two sessions resolve
+  symbols; they are symbol-keyed maps — union them (`git show :2:` / `:3:`), never pick a side.

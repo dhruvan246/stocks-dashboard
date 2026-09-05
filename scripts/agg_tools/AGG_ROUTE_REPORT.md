@@ -240,3 +240,23 @@ These are NOT absences. The quarterly series matched ours on 27-40 anchors; the 
 | WELCORP 20180630 revC | 2023.37 | mc=1641.89 | mc 37/39 |
 | WELCORP 20180930 revC | 2354.71 | mc=2152.45 | mc 37/39 |
 | WESTLIFE 20250331 revS | 0.29 | tl=0.39 | tl 12/13 |
+
+
+---
+
+# op sweep 2002→2017 (standalone operating profit) — 2026-09-05
+
+Full write-up: runbook §129. Per-cell provenance: `scripts/agg_cell_fills.json` (7,360 new `opS` entries,
+`gate: E` / `E+derived-subtotal`, `excused: n=…`, `op_fy_identity`, `vintage_row`). Artefacts in this folder:
+`_op_slot_ebit_class.json` (3,797 stored opS cells hold the after-depreciation EBIT, ebitS empty),
+`_op_excused_anchors.json` (4,032 excused anchors, by class), `_op_slot_heal_proposals.json` (NOT applied),
+`_op_sweep_residue.json` (residue by year × tag), `_era_calib_op.json` (hold-out calibration, 4 runs).
+
+| queue | cells | filled | route |
+|---|---|---|---|
+| open opS, row exists, non-lender, 2002-2017 | 18,345 | 7,163 | GATE E (§90) + excused anchors + PAT-vintage E2; 1,391 via the derived subtotal |
+| open opS, NO row, MC PAT reproduces stored npStd at the target | 592 | 197 | same gate, `--create-rows` |
+| lenders (banks / NBFCs / insurers) | 114 symbols | 0 | excluded by rule — MC's bank table carries the bank op row, NBFC/insurer get the industrial layout |
+
+Calibration (strict hold-out, anchors 2018+ only): 2018-19 stored cells 432 filled / 0 mismatch; 2012 stored
+cells 230 filled / 15 mismatch (the 15 are our own mode-6 suspects, listed in §129c).
