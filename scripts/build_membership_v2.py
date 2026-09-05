@@ -230,7 +230,13 @@ def load_inclexcl_register():
         return {}, []
     by_sym = {}
     by_date = {}
+    # Keys live in canon() space (2026-09-05, DATA_RUNBOOK §132): every lookup below compares against
+    # canon()-ed checkpoint symbols (register_state(canon(_s)), _wb_canon), but the register file carries
+    # the ERA symbol NSE printed (MIRCELECTR, GATI, WABCOINDIA …). A raw key never matched its canon twin,
+    # so an exclusion recorded on MIRCELECTR could not scrub ONIDA off a stale Moneycontrol page (measured
+    # 2026-09-05: ONIDA still a member at 2012-12-31 after NSE excluded Mirc on 2012-09-28).
     for d, s, k in reg["events"]:
+        s = canon(s)
         by_sym.setdefault(s, []).append((d, k))
         e = by_date.setdefault(d, {"eff": d, "included": [], "excluded": [], "src": "IndexInclExcl"})
         e["included" if k == "inc" else "excluded"].append(s)

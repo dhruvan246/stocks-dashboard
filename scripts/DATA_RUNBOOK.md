@@ -78,6 +78,7 @@ loads every session. (README.md is just a short pointer here — this file is th
 - **§113** ★★★ A RUNG IS ELIMINATED BY MEASURING THE DOCUMENT SET, NOT ONE DOCUMENT PER CELL — §112b closed the text route on "the Mar-2017 filing is a scan" (true) and so declared vision; the quarter is ALSO printed in the next quarter's and next year's filings, which are digital, and 30 of 59 cells read cleanly off a comparative column. **33 of 33 primary reads back the pre-heal store, 0 back the heal.** Also: MC `pat_own` is sometimes the TOTAL (4 of 308, 2 proven against filings) — it is a label, not a guarantee (**read before sending anything to a vision budget, and before letting an aggregator's owners field veto a document**) · **§113f-h**: a CANDIDATE LOCATOR IS BLIND TO A THIRD VALUE (P2 is named after them) — read FORWARD; and a FIXED y-GRID SPLITS ROWS 0.9pt apart, cluster by baseline instead
 - **§128** ★★★ STD-PAT 2002-07 EXECUTED — 229 "missing" cells HELD under a retired key the coverage BUILDER read past (fixed, +597 mm); WB 172 + MC E2b 1,191 + NEW NSE-archive EPS-identity reader 175 = 1,538 cells; residue ledger with rungs per cell (**read before any pre-2015 std-PAT work or a coverage claim on a renamed symbol**)
 - **§130** ★★★ LINE-ITEM BLOCK BEFORE 2018 — archive HTML (2005-17) + Moneycontrol; bank taxonomy has no context block; local rebuild must union the committed .gz
+- **§132** ★★★ POINT-IN-TIME NIFTY 500 — the NSE register was already the day-level ledger; 316 names unmapped, register keys off canon-space, 3 changelog entries bled LIX15 rows; A/B on the 8 favourites (**read before any membership rebuild, roster claim, or press-release parse**)
 
 ---
 
@@ -14886,3 +14887,115 @@ rows had `fin` 0→1). Commits 127ee88ae · 845c461f3 · 375bc3387 · 966d88298 
    is necessary, not sufficient.
 4. A ledger filter on `"applied": "2026-09-05"` swept up the sibling op-cell campaign's 7,365 entries that day —
    filter by FIELD (`revS`) and symbol set, never by date alone.
+
+## 132. ★★★ POINT-IN-TIME NIFTY 500 — the register WAS already the ledger; the gap was 316 UNMAPPED NAMES, one symbol-space mismatch and 3 BLED changelog entries  (2026-09-05)
+
+**NO ASSUMPTIONS, NO GUESSWORK (§0).** Every number below was measured this session in `~/stocks-wt/index-history`
+(origin/main 943a43e89); scratch evidence lives in the session scratchpad, the durable evidence in
+`scripts/_staleness_fix/`.
+
+### 128a. The premise was a STALE LOCAL FILE — measure LIVE first (§0, memory feedback-analyze-live-not-local-bin)
+The task arrived as "`docs/dash_slim.bin` = 121 Nifty 500 snapshots 2002-10-02→, gaps of 355/340/257 days". That file
+was the SHARED CHECKOUT's copy (commit 5315ee6a2, 2026-08-14; the checkout's main is 2,617 commits behind origin).
+**LIVE** `https://dhruvan246.github.io/stocks-dashboard/dash_slim.bin` and origin/main both carry **329 snapshots from
+1998-08-01** (the IndexInclExcl register merge of 2026-08-23, §102e); the largest 2002-2015 gaps live are 117/111/105 d,
+every one of them an event-free stretch of NSE's own register. `build_membership_v2.py` re-run on origin/main's inputs
+reproduces the 329 snapshots with **0 differing rosters** — the builder is deterministic, so every delta below is the
+change itself.
+
+### 128b. F&O needs nothing — the engine only ever asks at month-ends
+`simulate()` rebalances on the last trading day ≤ each calendar month-end (`monthsBetween` + `snapTD`), never inside a
+month; `fnoHistory` = the last F&O session of each month (188 deduped snapshots, 298 months walked, §8). Six dedup-gap
+months re-fetched from `nsearchives.nseindia.com/content/historical/DERIVATIVES/…` (curl + `Referer: nseindia.com`;
+plain urllib gets 403): 2005-01 (52), 2005-07 (118), 2008-01 (224), 2008-11 (265), 2010-06 (200), 2013-05 (143) — each
+IDENTICAL to the snapshot the file carries forward. Intra-month F&O dating would change no rebalance.
+
+### 128c. Source reach, measured
+| source | reach | what it gives |
+|---|---|---|
+| `archives.nseindia.com/content/indices/IndexInclExcl.xls` | live, 820,736 B, byte-identical to `scripts/_staleness_fix/IndexInclExcl.xls`; Nifty 500 sheet still ends **2020-09-14** (frozen on NSE's side) | 2,495 dated inc/exc rows, 1,280 company NAMES, no symbols |
+| `niftyindices.com/Press_Release/ind_prsDDMMYYYY.pdf` | python-reachable with a Mozilla UA; brute-forced every WEEKDAY 2002-01-01→2015-03-31 = 3,456 stems → **270 PDFs** (+3 `_1/_2` variants), all downloaded. ⚠️ 6 workers get throttled to ~1.2 s/request within minutes (SYN_SENT stalls); 3 workers hold ~5/s. A missing stem answers 200 with an HTML shell — detect by `Content-Type: application/pdf`, never by status | tables of **Company Name + Symbol** back to 2002 (checked: 2011 and 2015 docs); 180 of 273 mention the 500 index |
+| Wayback `nseindia.com/content/indices/ind_cnx500list.{csv,htm,xls}` (CDX `matchType=prefix`, the `*` form returns 0) | 39 captures 2002-08→2015-03, 33 parse to 500 name→symbol pairs; the 2006-11-08 csv has a TITLE row before the header (find the row containing "Symbol"); `.htm` rows are `[name, industry, symbol, series]` — take cells[2], the first-uppercase-cell heuristic returned the INDUSTRY ("TRADING") | era name→symbol bindings + full rosters |
+| Wayback `nseindia.com/content/equities/EQUITY_L.csv` | 2006-08-24, 2010-02-05, 2013-04-24, 2014-01-22 fetched (2011-10-30 refused the connection) | era name→symbol→ISIN masters (837…1,535 rows) |
+
+**Verdict on datability:** NSE's register already dates every inclusion/exclusion to the day, and it is complete at the
+NAME level — walking its 2,495 rows implies EXACTLY 500 members at every year-end 1998-2014 (501-515 from 2015 once the
+index went to a free count), with only 16 arc violations (inc-after-inc etc.) in 1,280 names. The 2002-2015 gap-months
+were never undatable; **273 of the 1,108 events in 2002-2015 were being DROPPED because the company name had no symbol**
+(316 unmapped names, 618 events overall), and 21 more auto-mappings had landed on a LATER, DIFFERENT listing under the
+same name (Gateway Distriparks → GATEWAY, the 2022 relisting, not GDL 2005-2022; Mirc Electronics → MICEL, not
+MIRCELECTR; Pricol → PRICOLLTD not PRICOL; Sundaram Clayton → SUNCLAY, the 2023 demerged entity, not SUNDRMCLAY; ITC
+Hotels → ITCHOTELS, listed 2025, not ITCHOTEL 1998-2005 …). Symptom in the data: official-list-to-official-list diffs
+2002-2015 were explained by mapped register events for 82% of joins but only **59% of leaves**.
+
+### 128d. The fix — an ERA-DATED name→symbol map from NSE's own documents (never a guess)
+- `scripts/_staleness_fix/build_register_names.py` (args: `<scratch> <scripts>`; needs `era_dict_strict.json`,
+  `register_raw.json`, `sf_span.json` in scratch — rebuild them from the sources in 128c) → `register_names_era.json`
+  `{register name: [[from_date, SYMBOL], …]}` + `seam_twins.json`. Rules: STRICT normalised-name match (legal suffixes and
+  punctuation only; `-Old/-Delisted/-Sus` suffixes stripped) against `_era_names_evidence.json` (2,899 names; lists +
+  EQUITY_L + symchg + press tables); a LOOSE match only when it resolves to ONE current-symbol family (the loose key
+  "bank" collided Corporation Bank / Bank of India / Indian Bank — the same §106e collision); a symbol is assigned to an
+  EVENT only if its tape (or a rename-chain successor) has bars within ±60 d, ties → nearest evidence date; an OLD symbol
+  renamed (symchg date) BEFORE the event is skipped when another candidate exists (Bajaj Auto 2008: BAJAJAUTO became
+  BAJAJHLDNG on the demerger; the 2008-09-10 inclusion is the NEW listing BAJAJ-AUTO); scope = events before the
+  changelog era (2015-03-23), later events keep the ordinary mapping unless the era symbol's tape covers them.
+  MANUAL names and the builder's ERA_OVERRIDES targets (FRETAIL, DALBHARAT…) are never touched. Same-company symbol
+  breaks with sequential tapes and no rename chain become SEAM TWINS (mirrored events, the SUMMIT/SUMMITSEC pattern):
+  BAJAJAUTO→BAJAJ-AUTO, ESSARGUJ→ESTL, KELVINATOR→WHIRLPOOL, EICHERLTD→EICHER.
+- `gen_inclexcl_events.py`: precedence **MANUAL > ERA (per event date) > exact > fuzzy**; output gains `era_map`.
+  Register: 1,877 → **2,269 mapped events**, unmapped names 316 → 125 (77 of them only ever had pre-2002 events, 31 only
+  post-2015; 52 pre-2015 events stay unmapped — names no NSE list of the era carries, e.g. companies dead before the
+  first archived list of 2002-10-02).
+- `build_membership_v2.py::load_inclexcl_register` keys the register in **`canon()` space**. Every lookup in the builder
+  compares `canon()`-ed checkpoint symbols, but the register carried the ERA symbol NSE printed, so a raw key never met
+  its canon twin: Mirc's exclusion sat on MIRCELECTR while the stale Moneycontrol page kept ONIDA → ONIDA still a member
+  at 2012-12-31 (excluded 2012-09-28). 109 register symbols change under canon().
+- **Measured effect** (baseline = origin/main rebuilt, candidate = this): official-list diffs explained **97% joins /
+  95% leaves** (was 82/59; the 30 still-unexplained rows are 2002-2005 seams like NIPPONDENR/TATAINFO/VXL and
+  ZANDUREALT); against the register-implied name-level roster at 14 year-ends 2002-2015, extra members 85 → 59 and
+  missing members 77 → 37 (the residual "extras" are mostly comparison artifacts where the era symbol and the bin key do
+  not chain — FEL/COLPAL/CEATLTD — plus JISLDVREQS, a DVR the Moneycontrol pages list, and EVEREADY 2006-07 / PROVOGE
+  2012-13, OPEN); year-end sizes 2006/2007 495/506 → 504/510 (a few stale-page joins the pre-2010 official-list guard
+  cannot refute, OPEN); all 39 archived pins still 100%; 329 → **339 snapshots**; 208 dates differ (+4,348/−2,567
+  member-slots, 3,900 of them 1998-2002). Spot cases: AGRODUTCH leaves after 2009-10-22 ✔, KOUTONS/TULIP members
+  2010-06-30 ✔, SUNDRMCLAY member 2007-12-31 ✔, ONIDA gone 2012-12-31 ✔, GDL 2005-2019 unchanged ✔.
+
+### 128e. A second defect the press releases exposed — 3 CHANGELOG ENTRIES BLED LIX15 ROWS INTO NIFTY 500
+Cross-checking the 30 review PDFs with parseable "CNX 500" sections against the register: 138 rows agree ±3 d, 8
+disagree — 2 are parser noise (an industry word read as the symbol), **6 are rows of `ind_prs20022015` that sit in its
+LIX15 / LIX15 Midcap sections**. The 2026-07-02 hunt parser (`_n500_hunt_prs.json`, which `build_changelog.py` overlays
+and which WINS over its own parse) had attributed them to the 500 section. Verified against the PDF section headings:
+`20022015` −HCLTECH/TECHM/ADANIENT/ADANIPORTS +ADANIPORTS/BPCL/IOC/MRF; `12082015` −BHEL/VEDL/IOC/LICHSGFIN/MRF/SAIL
++LUPIN/TECHM/BEL/EXIDEIND/VOLTAS; `24082015` +HAVELLS — **20 rows, none a Nifty 500 change** (NSE's register has none of
+them). Live cost: TECHM read as NOT a Nifty 500 member from 2015-03-27 until the Sep-2015 review re-"included" it.
+Removed from BOTH `_n500_hunt_prs.json` (the durable ledger — the weekly rebuild regenerates `_changelog.json` from it)
+and `_changelog.json`. The same audit over every changelog entry ≤2020-09-14 found no other bleed: the other 31
+"no register match" rows are date shifts (SBI associates 2017-03-16 vs 2017-03-31, RELCAPITAL 2017-09-05 vs -29,
+VIDEOIND/ERIS 2018-03-13 vs 04-02) or the register's own last-rows thinness in 2020.
+
+### 128f. Blast radius — the 8 ⭐ favourites, before/after (live engine e16, live data end 2026-09-04)
+Harness: `scripts/ab_favs.js` — loads `docs/backtest-engine.js` + `bt-identity.js` under Node `vm`, resolves
+`bt_fav_strategies` (sw_kv SETTINGS) against `bt_strats_public` via `bakeGroups`, `await ensureHistoryFor(cfg.start)`
+(pre-2019 starts throw "pre-2019 history not loaded" without it), runs `simulate()` twice with `IDXH['Nifty 500']`
+swapped. Baskets are `rebs[].holds[].sym` (there is no `picks` field — a first pass compared empty lists and reported
+"0 differing" while CAGRs had moved; §39 lesson: diff the FIELD you can see in a sample row).
+
+| # | favourite (all Nifty 500 · monthly · top 3) | CAGR before → after | maxDD | basket-months ≠ |
+|---|---|---|---|---|
+| 1 | DII% low · std · d52<10, 52wLo%>100, NP-YoY>25 (start 2004) | 39.48 → 39.45 | −50.8 → −52.2 | 6/269 (2007-05…2007-12, 2010-05) |
+| 5 | DII% low · std · d52<10, TTM>0, NP-YoY>25 (start 2004) | 60.85 → 60.37 | −50.3 (same) | 1/211 (2019-05: GFLLIMITED replaces MANAPPURAM — Gujarat Fluorochemicals was a member until its 2019-06-28 exclusion; it had been invisible because the name mapped to FLUOROCHEM, listed 2019-10) |
+| 6 | DII% low · con · accel>0, d52<10, 52wLo%>100 (start 2004) | 42.31 → 42.29 | −46.2 (same) | 4/269 (2007-05…2007-12) |
+| 2,3,4,7,8 | the five 2020-start favourites | identical | identical | 0 |
+Total **11 of 1,097 basket-months**; the 2007 swaps are TIPSMUSIC out (excluded by NSE in 2007, previously unmapped) and
+MOSERBAER/OENCONNECT/ASIANELEC/SANDESH in (newly mapped joiners). The three long-history favourites' Supabase-baked
+snapshots must be invalidated → `ENGINE_VER e16 → e17` in BOTH twins + sw `v137`, engine code otherwise untouched.
+
+### 128g. Ship / verify list
+- Commit = `_staleness_fix/{gen_inclexcl_events.py, build_register_names.py, register_names_era.json, seam_twins.json,
+  _era_names_evidence.json (force-added, `scripts/_*` is ignored)}`, `_n500_inclexcl_events.json`, `_n500_hunt_prs.json`,
+  `_changelog.json`, `build_membership_v2.py`, `indices_history.json`, `docs/stock_data.bin`, both engine twins, `sw.js`.
+- `docs/dash_slim.bin` is NOT written by the membership builder — `refresh.yml` → `build_compressed.py` derives it from
+  `stock_data.bin` daily (guarded by `dash_slim_same.py`). After the push, verify LIVE next day:
+  `indicesHistory['Nifty 500'].length == 339` in `dash_slim.bin`, TECHM ∈ members at 2015-06-30, ONIDA ∉ at 2012-12-31.
+- OPEN: 125 unmapped register names (list in `_n500_inclexcl_events.json.unmapped`), the 2006-07 size over-count,
+  JISLDVREQS/EVEREADY/PROVOGE extras, the register's 2020-09-14 end (post-2020 rides the changelog only).

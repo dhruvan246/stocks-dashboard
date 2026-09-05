@@ -217,6 +217,39 @@ def main():
             for f in ('Scrip_Name', 'Issuer_Name'):
                 feed(r.get(f), sid, 'bse_master')
 
+    # --- ERA-DATED MAP (2026-09-05, DATA_RUNBOOK §132): NSE's OWN name->symbol bindings for the register's
+    # names, read off the archived official CNX 500 constituent lists (2002-2015, csv/xls/htm), wayback
+    # EQUITY_L masters (2006/2010/2013/2014) and symchg.csv — evidence in _era_names_evidence.json, map built by
+    # scripts/_staleness_fix/build_register_names.py. Fixes the two defects of the current-name passes above:
+    # (a) 316 names never mapped because the company no longer lists under that name (Gateway Distriparks
+    # = GDL 2005-2022, not the 2022 relisting GATEWAY; Mirc Electronics = MIRCELECTR, not MICEL) — 273 of
+    # their 1,108 events 2002-2015 were silently dropped, which is why the official-list diffs were only
+    # 82%/59% explained (joins/leaves); (b) auto mappings that landed on a later, different listing.
+    # Precedence: MANUAL (hand-verified) > ERA (per-event date) > exact > fuzzy. An ERA symbol is used for an
+    # event only if it is the segment in force at that date AND (pre-changelog event OR its tape covers the
+    # date ±60d); otherwise the name's ordinary mapping applies. Nothing here guesses: every symbol comes
+    # from an NSE document that names both the company and the symbol.
+    try:
+        ERA = json.load(open(os.path.join(HERE, 'register_names_era.json')))
+    except Exception as _e:
+        ERA = {}; print(f'(register_names_era.json not loaded: {_e})')
+    ERA_CUTOFF = '2015-03-23'
+    _rev = {}
+    for _o, _n in RENAME.items(): _rev.setdefault(to_current(_o), set()).add(_o)
+    def _covers(sym, d):
+        ks = {sym, to_current(sym)} | _rev.get(to_current(sym), set())
+        lo = (datetime.date.fromisoformat(d) - datetime.timedelta(days=60)).strftime('%Y%m%d')
+        hi = (datetime.date.fromisoformat(d) + datetime.timedelta(days=60)).strftime('%Y%m%d')
+        return any(k in SPAN and str(SPAN[k][0]) <= hi and str(SPAN[k][1]) >= lo for k in ks)
+    def era_sym(n, d):
+        segs = ERA.get(n)
+        if not segs: return None
+        best = None
+        for f, sym in segs:
+            if f <= d: best = sym
+        if best is None: best = segs[0][1]
+        return best if (d < ERA_CUTOFF or _covers(best, d)) else None
+
     keys = [k for k, v in cand.items() if v is not None]          # fuzzy never lands on an ambiguous key
     ambiguous_keys = {k for k, v in cand.items() if v is None}
     names = sorted({x[1] for x in raw})
@@ -239,7 +272,20 @@ def main():
     print(f'names: {len(names)}  mapped: {len(name_map)} ({len(fuzzy_used)} fuzzy)  unmapped: {len(unmapped)}  '
           f'(of which ambiguous-key, refused: {len(ambiguous)}: {ambiguous[:12]})')
 
-    events = sorted([d, name_map[n], k] for d, n, k in raw if n in name_map)
+    def _sym_for(n, d):
+        if n in MANUAL: return MANUAL[n]
+        e = era_sym(n, d)
+        return e if e else name_map.get(n)
+    era_used = collections.Counter()
+    for d, n, k in raw:
+        if n not in MANUAL and era_sym(n, d): era_used['events'] += 1; era_used[n] += 0
+    events = sorted([d, _sym_for(n, d), k] for d, n, k in raw if _sym_for(n, d))
+    era_names = sorted(n for n in names if n not in MANUAL and n in ERA)
+    for n in era_names:
+        if n not in name_map: name_map[n] = ERA[n][-1][1]
+    unmapped = [n for n in unmapped if n not in name_map]
+    print(f'ERA map: {len(era_names)} names, {era_used["events"]} events resolved by era segments; '
+          f'now mapped {len(name_map)} names, unmapped {len(unmapped)}')
     # SEAM TWINS (2026-08-24, PLAN_FAV14 P1): two bin keys that are ONE company across an ISIN seam the
     # price build deliberately does not join (SUMMIT 1996..2010-02-02 closed at Rs 16.6; SUMMITSEC relisted
     # 2011-01-28 at Rs 192 — an 11-month gap and a ~12x step, runbook §106). The register's single row
@@ -248,6 +294,13 @@ def main():
     # a phantom SUMMITSEC (no bars until 2011) on 30 snapshots. Mirroring the events onto the twin
     # makes both keys follow the one arc; era emission then picks whichever tape was alive.
     SEAM_TWINS = {'SUMMIT': 'SUMMITSEC'}
+    # + the pairs build_register_names.py derived from NSE's own lists (same company name bound to two
+    # symbols whose tapes are sequential and that no rename chain joins: CEAT->CEATLTD, MUKAND->MUKANDLTD …)
+    try:
+        SEAM_TWINS.update(json.load(open(os.path.join(HERE, 'seam_twins.json'))))
+    except Exception as _e:
+        print(f'(seam_twins.json not loaded: {_e})')
+    print(f'seam twins mirrored: {len(SEAM_TWINS)}')
     for a, b in SEAM_TWINS.items():
         events += [[d, b, k] for d, sym, k in list(events) if sym == a]
     events.sort()
@@ -258,7 +311,7 @@ def main():
         if len(ks) > 1:
             print(f'  ⚠️ CONFLICT same-day inc+exc: {s} {d} — dropping both (ambiguous)')
             events = [e for e in events if not (e[0] == d and e[1] == s)]
-    json.dump({'events': events, 'name_map': name_map, 'unmapped': unmapped, 'ambiguous': ambiguous,
+    json.dump({'events': events, 'name_map': name_map, 'era_map': {n: ERA[n] for n in era_names}, 'unmapped': unmapped, 'ambiguous': ambiguous,
                'source': 'NSE IndexInclExcl.xls (saved 2020-09-22), Nifty 500 sheet, parsed 2026-08-23'},
               open(OUT, 'w'), indent=0)
     print(f'wrote {OUT}: {len(events)} mapped events')
