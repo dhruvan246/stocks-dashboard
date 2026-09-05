@@ -1437,13 +1437,22 @@
    "source": "bse-detres scrip 532636 qtr 96",
    "stored_pat": 23.44
   },
+  "20180630": {
+   "applied": "2026-09-05",
+   "correct_pat_con": 266.28,
+   "defect": "stored con was the TOTAL; corrected to owners (\u00a7116/vintage audit): IIFL full-series owners+vintage audit 2026-09-05 (runbook \u00a7133): the as-filed Q1FY19 consolidated statement (BSE 4b4c594f p... / Q2FY19 25b271a0 p14 comparative col) prints owners 26,628.15 lakh = 266.28 (total 34,454.62 = 344.55 = our stored); the whole rest of the IIFL con series is OWNERS (XBRL-verified Dec-2018+, MC-matched pre-2018), so 344.55 (TOTAL) was a mixed-basis outlier. MC's 164.03 is the post-demerger RESTATED continuing-ops figure, not point-in-time; PIT as-filed owners is 266.28",
+   "source": "BSE PDF, vision, see defect",
+   "stored_pat_con": 344.55
+  },
   "20180930": {
    "correct_pat": 7.14,
-   "correct_pat_con": 303.95,
+   "correct_pat_con": 231.68,
    "defect": "stored std Sep-2018 = the DEC-2018 quarter value (detres Dec page = 23.44) mis-slotted from the Feb-2019 filing; stored con = restated continuing-ops comparative. As-originally-filed Sep-2018: std 7.14 (detres Sep page AND original Nov-2018 filing, H1 identity 12.66+7.14=19.80 EXACT), con 303.95 (original filing p13, H1 identity 344.55+303.95=648.49 EXACT)",
+   "defect_2026_09_05": "IIFL full-series owners+vintage audit 2026-09-05 (runbook \u00a7133): as-filed Q2FY19 consolidated statement (BSE 25b271a0 p14, IIFL Holdings, Rs lakh) Sep-2018 QUARTER 'Profit attributable to Owners of the company' 23,167.83 lakh = 231.68 (total 30,394.65 = 303.95 = prior stored); H1 owners 497.96 = 266.28+231.68 EXACT; EPS 7.20 x 319.06m sh (FV2) = 229.7. Corrects the prior pat_defects entry that stored the TOTAL 303.95; MC's 136.42 is the post-demerger restatement, not PIT",
+   "prior_correct_pat_con_303.95": "superseded 2026-09-05: 303.95 was the TOTAL; the series convention is owners",
    "source": "IIFL_Q2FY19_nse.pdf (listcontract1_01112018171750_IIFL_911) p2+p13 + bse-detres qtr 98/99 pages",
    "stored_pat": 23.44,
-   "stored_pat_con": 223.49
+   "stored_pat_con": 303.95
   }
  },
  "INDIQUBE": {

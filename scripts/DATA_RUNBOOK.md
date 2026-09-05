@@ -15415,6 +15415,23 @@ series (§116b). GMRAIRPORT Mar-2017 con — a DERIVED Q4 balancing figure in a 
 ⚠️ **The queue's `ours` value can be STALE** — CARERATING read 1388.84 in the eps-block working file but the live store is 42.03; always
 re-read the live store before adjudicating (which is why 3 "suspects" turned out store-confirmed and 3 store-plausible).
 
+### 133h. THE FULL-SERIES OWNERS+VINTAGE AUDIT for IIFL  (2026-09-05)
+User: *"do the full-series owners+vintage audit for IIFL."* Parsed OWNERS vs TOTAL from EVERY IIFL consolidated XBRL in the cache and
+cross-checked pre-2018 against Moneycontrol. Result — **the IIFL con series is owners-attributable throughout EXCEPT two cells**:
+* Dec-2018 -> Jun-2026 (28 quarters): stored con == the filing's OWNERS figure to the paisa (XBRL `ProfitOrLossAttributableToOwnersOfParent`;
+  the 2020-2022 quarters have NCI~0 so owners==total there anyway).
+* 2016-2017: stored con == Moneycontrol's owners column exactly (179.07/198.08/229.13...), i.e. already owners.
+* **Jun-2018 (344.55) and Sep-2018 (303.95) were stored on the TOTAL basis** — the mixed-basis outliers, set by an earlier H1-identity
+  pass that used totals (344.55+303.95=648.49). The AS-FILED consolidated statements (BSE 25b271a0 p14) print owners **266.28** and
+  **231.68** (totals 34,454.62 / 30,394.65 lakh; H1 owners 497.96 = 266.28+231.68 EXACT). Healed to owners.
+⚠️ **The VINTAGE point:** IIFL Holdings demerged (IIFL Securities, IIFL Wealth/360 ONE) with the scheme effective 2019, and the code 532636
+became IIFL Finance. Moneycontrol's Jun/Sep-2018 con (164.03 / 136.42) is the SUCCESSOR's RESTATED continuing-ops history, NOT
+point-in-time — a backtest in Aug/Nov-2018 saw the full IIFL Holdings group (owners 266.28 / 231.68). So the heal is to the AS-FILED PIT
+owners, never to MC's restatement; the rest of the series is already as-filed PIT (each quarter's own XBRL). This is why a single-cell
+read was refused earlier (§133g) and only the whole-series parse settled it. Pins in `owners_basis_heals.json` (apply_owners_full has no
+`_reattr_owners` entry for these two pre-2021 quarters); the prior `pat_defects` Sep-2018 entry (303.95=total) was corrected in place to
+231.68 with the superseded value kept inline.
+
 ## 134. ★★ BSE's ARCHIVED RESULTS PAGE READS STANDALONE PAT FOR 2000-2001 — anchored on the symbol's own held quarters; 238 root cells landed, and the gate's own bug refused 226 good pages first  (2026-09-05, WP-P1)
 
 **Trigger:** §128 left the 1999-2001 std-PAT roots with every walked rung exhausted (MC E2b, Wayback NSE `results.jsp`, NSE
