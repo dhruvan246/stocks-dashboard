@@ -32,6 +32,7 @@ loads every session. (README.md is just a short pointer here — this file is th
 - **§21** MARKET BREADTH
 - **§22** FII/DII HOLDINGS PER STOCK  (22h = verification vs external sites + cross-exchange, 2026-08-09;
   **22i = the swallowed foreign block — 162 stored fii=0.0 cells healed, 2026-08-12**;
+  22m = pre-2006 ins slot filled where a doc proves it (479 cells, N500) — the rest is structural, 2026-09-06;
   22l = "MF 0% before 2006" was a slot mislabel (cell[4]=ins, by-design None) — 287 MF zeros document-proven, 2026-09-05)
 - **§23** BULK & BLOCK DEALS
 - **§24** INSIDER TRADES
@@ -3100,6 +3101,74 @@ copies the seven slots positionally) → the LIVE stock page (RELIANCE full hist
   whose own subtotal closes. Not in §22i's journal; recorded in the audit file above.
 - **Lesson: quote a coverage number WITH its slot index.** A by-design None in cell[4] read as cell[3]
   became a 6,233-cell fill campaign. Before any fill: print one stored row next to its slot names.
+
+### 22m. ★★ THE PRE-JUN-2006 `ins` SLOT — filled only where a document PROVES it; the rest is structural  (2026-09-05/06)
+
+Follow-up to §22l: the user asked to fill the pre-2006 insurance slot "from another source". Target
+(point-in-time Nifty 500 members only — 2026-09-05 scope rule): **9,479 cells / 658 symbols
+Mar-2001..Mar-2006 with `ins = None`**. The 1997 SEBI format prints insurance INSIDE the "Banks,
+Financial Institutions, Insurance Companies" lump on BOTH exchanges' era tables (BSE Flag=Old aspx;
+NSE `shareholdingdetails.jsp`, the §127k full-pattern route — its parser folds banks/FI/insurance to
+one `lump`), and Flag=New at q ≤ 49 is a 4.7KB shell. **No 1997-format FILING itemises insurance.**
+The only holder-level source that names insurers recovers the slot arithmetically:
+
+- **Route A — `lump-absent` (BSE page alone): ins = 0.0.** The format omits empty rows; when the lump
+  row is absent AND the institutions Sub Total closes as MF + FIIS (≤ 0.15), the whole category is 0,
+  so insurance is 0. Candidates = stored cells with dii == mf; every page re-fetched live
+  (`fetch_shp_bse_aspx.parse_old`): **177 proven**, 280 refused (page DOES print a ≤ 0.005% lump — a
+  sub-2dp holding, §22j class — whose insurer share is unknowable, so the cell stays None; writing 0.0
+  there would be MY rounding, not the filer's).
+- **Route B — `nse-closes` (NSE's era ">1% holders" page, Wayback).** §127 §4.2 found
+  `nseindia.com/marketinfo/companyinfo/eod/shareholding1.jsp?symbol=&date=` (3,921 distinct
+  symbol×as-on pages 2002-2006, CDX list in the plan session's scratchpad) and correctly called its
+  category sub-totals FLOORS. **A floor becomes exact when it equals the total.** The page lists every
+  >1% holder in the "Banks, FIs, Insurance Co.s, Govt./Non-Govt. Inst." block BY NAME with a Sub
+  Total; when that Sub Total equals the BSE lump (dii − mf) to print rounding, nobody in the category
+  holds < 1%, so every insurer is listed and **ins = Σ(insurer rows)** — 0 when none is an insurer.
+  Overlap with the target: **2,514 cells**. Harvest 2,509/2,514 pages (5 Wayback-dead, resumable).
+  Verdicts: **72 closed** (block closes, all entities classified) + **288 proven-zero** (no block on
+  the page and BSE lump ≤ 0.03) = 360 provable; held: **1,539 open-residual** (a < 1% holder sits
+  inside the lump — median gap 1.39pp, unlistable), **603 open-no-block** (every category holder < 1%),
+  **4 open-unclassified** (a genuine "Others" catch-all row I will not attribute), 3 no-subtotal, 5 nopage.
+  - **Tolerance is print rounding ONLY** — 0.03pp vs a 4dp stored lump, 0.06 vs an unrefined 2dp cell.
+    A first cut at 0.15 "closed" DHAMPURSUG Sep-03 at a 0.12 gap two 2dp rows cannot produce; that gap
+    is a < 1% holder, exactly the case the proof must refuse.
+  - **Every entity name must classify.** Insurer whitelist LIC/GIC (incl. spaced "G I C")/ECGC/
+    *insurance*/*assurance*/New India/United India/Oriental; non-insurer = banks, UTI/SUUTI, IDBI/ICICI/
+    IFCI/IDFC/SBI, any "…Ltd/Corporation/Trust/Fund/Govt". One unknown → cell held, never guessed.
+    "LIC"/"GIC" appear bare on ~1 in 4 pages; the first classifier missed them and had to be widened.
+  - **Identity** compares `norm(page_sym)` to the folded key, not the raw string (8/60 sample cells were
+    renames). Wayback refuses ~40% of connections under load — retry after 4-20s, not 25s.
+- **★ THE ANCHOR GUARD — a proof is only as good as the cell it rests on.** Both routes anchor ins to
+  the stored fii/dii (lump = dii − mf; the block Sub Total is checked against it). The §127k
+  shpdetails route journalled 16 cells where NSE's own full page DISAGREES with the stored fii/dii
+  (`scripts/shp_nse_shpdetails_open.json`): ELDERPHARM Jun-04 stored fii 0.00 vs NSE 30.23, CEAT,
+  MAARSOFTW… **Those anchors are under dispute, so their ins verdict cannot stand** — 3 overlapping
+  cells were DROPPED from the ledger (ELDERPHARM 2004-06, CEAT 2004-03, MAARSOFTW 2003-06), stored
+  cells untouched. This is the [[feedback-detect-is-not-confirm]] rule applied across sessions.
+- **Ledger `scripts/shp_fill_ins_pre2006.json.gz`** → `fetch_shareholding.apply_ins_fill_ledger()` (in
+  `refresh_quarters` and `--apply-ledgers`): patches **cell[4] only**, only when None, never creates a
+  cell, and a **0.0 is accepted ONLY with a proof tag** (`lump-absent` | `nse-closes`) — an untagged
+  zero is refused as "not found". Each record carries the prom/fii/dii/mf it was measured against
+  (±0.5 drift → left alone). After N500-member filter + disputed-anchor drop: **479 cells / 99 symbols
+  (171 lump-absent + 308 nse-closes; 38 non-zero, median 4.58%, max LMW Dec-03 25.53%; 441 proven
+  zeros).** Blast radius: 479 slot-4 changes, 0 added/dropped, 2nd apply identical. Adjacent-quarter
+  continuity on closed cells: 232 pairs, median |Δins| 0.00pp, 0 jumps > 5pp. Sample CARBORUNIV Mar-03
+  = GIC 1.67 + LIC 10.24 + National 1.32 + New India 4.42 + Oriental 1.44 + United India 3.56 = 22.65
+  == BSE lump 22.68.
+- **Per-year N500 `ins` coverage, before → after:** 2001 0 → 0.5% · 2002 0 → 4.4% · 2003 0 → 9.8% ·
+  2004 0 → 7.3% · 2005 0 → 2.7% · 2006 0 → 2.1%.
+- **RESIDUE ~9,000 cells, STRUCTURAL not a route left unwalked:** the filing lumps the category, and
+  the only holder-level source (NSE's >1% page) lists holders ABOVE 1% only, so a cell closes solely
+  when the category has no sub-1% holder AND a Wayback capture exists. Captures are a 2002-04
+  phenomenon (2005-06 sparse, most 2001 absent). Routes measured empty for itemised insurance: BSE
+  Flag=Old (0/265 pages), page notes (0/265), NSE full page (§127k, lumped by construction), Flag=New
+  q ≤ 49 (shell), MC/Trendlyne/Screener (no pre-2010 SHP, §22h). Floors (NSE Sub Total < lump) are
+  NOT written — a lower bound is not a value. Untested: company annual reports (March quarters only,
+  no scalable pre-Oct-2018 fetch, §84) and per-company IR archives. Journal:
+  `scripts/_shp_ins_pre2006_audit.json` (479 filled + held-class counts).
+- Applied fill-only; slice rebuild picks the cells up via `refresh-stock-fin.yml` (triggers on
+  `scripts/shp_history.json`). LIVE verification pending the refresh-stock-fin CI slice rebuild after push — re-check ~20 min later on a nonzero cell (CARBORUNIV 2003-03 ins 22.66, LMW 2003-12 ins 25.53).
 
 ## 23. BULK & BLOCK DEALS  (docs/deals.html — "Bulk/Block Deals" nav, built 2026-07-16, SELF-UPDATING)
 <!-- renumbered from 22 (two sections were both born §22 the same day; FII/DII holdings kept it) -->

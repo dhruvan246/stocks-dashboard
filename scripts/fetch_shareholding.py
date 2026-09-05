@@ -411,6 +411,50 @@ def apply_mf_heal_ledger(h):
               % (n, " (%d stale, left alone)" % stale if stale else ""))
     return n
 
+# The pre-Jun-2006 `ins` slot (runbook §22m). Every cell parsed from the era 1997-format tables
+# (BSE Flag=Old aspx, NSE shareholdingdetails.jsp — Mar-2001..Mar-2006) stores ins = None because
+# that format prints insurance INSIDE the "Banks, Financial Institutions, Insurance Companies" lump.
+# No 1997-format FILING itemises it. Two document proofs recover the slot from holder-level data:
+#   lump-absent  — BSE Flag=Old page has NO lump row (the format omits empty rows) AND the
+#                  institutions Sub Total closes as MF + FIIS (<=0.15) -> the whole category is 0
+#                  -> ins = 0.
+#   nse-closes   — NSE's era ">1% holders" page (shareholding1.jsp) lists every holder in that
+#                  category BY NAME with a Sub Total; when that Sub Total equals the BSE lump
+#                  (dii - mf) to print rounding, nobody in the category is <1% -> every insurer is
+#                  listed -> ins = sum of the insurer rows exactly (0 when none is an insurer).
+# PATCHES ONE SLOT: never creates a cell, never overwrites a set ins, and a zero is written ONLY
+# when the record carries one of those proof tags (a "not found" is never a 0.0). The record also
+# carries the prom/fii/dii/mf the proof was measured against; if the stored cell has moved since
+# (a revision), the proof no longer describes it and the cell is left alone.
+INS_FILL_LEDGER = os.path.join(HERE, "shp_fill_ins_pre2006.json.gz")
+INS_PROOFS = ("lump-absent", "nse-closes")
+def apply_ins_fill_ledger(h):
+    if not os.path.exists(INS_FILL_LEDGER): return 0
+    try:
+        with gzip.open(INS_FILL_LEDGER, "rt", encoding="utf-8") as fh:
+            fills = json.load(fh).get("fills", {})
+    except Exception as e:
+        print("shp_fill_ins_pre2006.json.gz unreadable (%s) — skipped" % e); return 0
+    n = stale = unproven = 0
+    for sym, qs in fills.items():
+        dest = h.get(sym)
+        if not isinstance(dest, dict): continue
+        for qe, rec in qs.items():
+            cell = dest.get(qe)
+            if not cell or len(cell) < 6 or cell[4] is not None: continue   # gone, malformed, or already set
+            ins, proof = rec.get("ins"), rec.get("proof")
+            if ins is None or ins < 0 or proof not in INS_PROOFS:
+                unproven += 1; continue
+            ref = rec.get("ref") or []
+            if len(ref) < 4 or any(abs((cell[i] or 0.0) - (ref[i] or 0.0)) > 0.5 for i in range(4)) or ins > (cell[2] or 0.0) + 0.05:
+                stale += 1; continue
+            cell[4] = ins
+            n += 1
+    if n or stale or unproven:
+        print("shp_fill_ins_pre2006 applied: %d ins cells%s%s"
+              % (n, " (%d stale, left alone)" % stale if stale else "", " (%d unproven, refused)" % unproven if unproven else ""))
+    return n
+
 # ---- per-cell correction ledger + the write-time scale gate (runbook §22g) ---------------
 # A handful of filings do not describe the company's ordinary equity at all — a different
 # share class, or a stub. GHCL 2022-12-31 is the type specimen: NSE serves exactly ONE
@@ -769,6 +813,7 @@ def refresh_quarters(qes, reparse=False, only=None, fill_shares=False):
     apply_bse_hist_ledger(hist)   # STEP 5 2016-2019 backfill — fill-only, no-ops once applied
     apply_refine_ledger(hist)     # §22j 4dp precision refresh — refine-only, no-ops once applied
     apply_mf_heal_ledger(hist)    # mf-slot repair — patch-only, no-ops once applied
+    apply_ins_fill_ledger(hist)   # §22m pre-2006 ins slot — patch-only, document-proven, no-ops once applied
     cellfix = load_cell_fix()     # load_hist already applied it; re-applied post-fetch below
     names = hist.setdefault("_names", {})
     shares = load_shares()
@@ -1094,6 +1139,7 @@ if __name__ == "__main__":
         n = apply_bse_hist_ledger(h)
         apply_refine_ledger(h)
         apply_mf_heal_ledger(h)
+        apply_ins_fill_ledger(h)
         apply_cell_fix(h)             # §22g per-cell corrections (load_hist applied them too)
         after = cells_of(h)
         if after < before:
