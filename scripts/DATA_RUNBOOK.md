@@ -15360,6 +15360,25 @@ crack safely), 4 no-result-announcement, 3 no-BSE-code. **Final tally of the 182
 ~85 open on the vision/hand-read tail.** Reader + PDFs cached in the eps-block worktree scratchpad (ephemeral) — the durable state is
 this section + the committed queue file.
 
+### 133g. THE VISION ROUTE on the 13 scanned in-scope cells  (2026-09-05, same session)
+User: *"take the vision route on the remaining scanned in-scope cells."* Each scanned BSE result PDF was rendered at ~200-220 dpi and READ
+BY VISION page by page; every heal was re-anchored (owners+NCI identity, EPS x shares, or a standalone control) before landing.
+**A systematic defect surfaced: the Sep-2025 (Q2FY26) quarters held the HALF-YEAR figure in the quarter slot** — the filer moved from
+lakh to crore reporting and the pipeline picked the H1 column. Healed: HBLENGINE std 521.93->382.20 + con owners 530.54->387.27,
+COHANCE con owners 122.96->74.08 (all H1-as-quarter); EDELWEISS con Jun-2022 35.40->26.38 (owners-vs-total, §116; the press release's
+"post MI Consolidated PAT 26 Cr" corroborated). With ALOKINDS Sep-2020 (§133 earlier) that is **5 vision heals**.
+**Store CONFIRMED by the filing (MC was the outlier), not healed:** TATASTLBSL Mar-2017 std -1130.65 (EPS 49.92x22.65), ICICIGI Jun-2021
+std 151.63 (PAT 15,163 lakh), M&MFIN Jun-2017 std 47.39 (4,738.58 lakh). **CON QUARTER NOT FILED (con annual only, §51a) -> stored is a
+plausible derived value, left as-is:** CARERATING Mar-2018 (con annual net 147cr; stored 42.03 ~ std 39.92), BAJAJELEC Mar-2019 (NCI nil,
+std Q4 28.54), SECURKLOUD/8K Miles Mar-2018 (con annual owners 171.62cr).
+**Left OPEN, needs a full-series audit not a single read:** IIFL Holdings Jun-2018 + Sep-2018 con — the as-filed Q1FY19 statement shows
+owners 266.28 (total 344.55 = our stored, NCI 78.26), but IIFL demerged (Securities+Wealth) in 2019 and the con series mixes as-filed
+full-group and post-demerger restated-IIFL-Finance vintages (MC's 164.03 = the restatement); healing one cell would make a mixed-basis
+series (§116b). GMRAIRPORT Mar-2017 con — a DERIVED Q4 balancing figure in a loss-making conglomerate with a qualified opinion
+(stored +120.71 vs MC -89.58); unsafe from one read.
+⚠️ **The queue's `ours` value can be STALE** — CARERATING read 1388.84 in the eps-block working file but the live store is 42.03; always
+re-read the live store before adjudicating (which is why 3 "suspects" turned out store-confirmed and 3 store-plausible).
+
 ## 134. ★★ BSE's ARCHIVED RESULTS PAGE READS STANDALONE PAT FOR 2000-2001 — anchored on the symbol's own held quarters; 238 root cells landed, and the gate's own bug refused 226 good pages first  (2026-09-05, WP-P1)
 
 **Trigger:** §128 left the 1999-2001 std-PAT roots with every walked rung exhausted (MC E2b, Wayback NSE `results.jsp`, NSE
