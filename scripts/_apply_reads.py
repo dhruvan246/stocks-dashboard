@@ -41,6 +41,9 @@ SRC_FILES.append(("_debt_reads.json", None))
 # exchange page that produced the std-PAT cell; every cell carries pat_seen = the page's own Net Profit and is
 # re-anchored here again. Provenance ledger scripts/wayback_nse/wb_rev_fills.json (registered in verify_fills_live).
 SRC_FILES.append(("_wbrev_reads.json", None))
+# BSE's archived results page (Wayback, bseindia.com/qresann/result.asp; scripts/wayback_nse/bse_rev.py) -- the STEP B
+# candidate, built 2026-09-05; PAT-anchored, revenue line chosen by reproduction. Ledger wayback_nse/bse_rev_fills.json.
+SRC_FILES.append(("_bserev_reads.json", None))
 for _p in sorted(glob.glob(os.path.join(HERE, "_nsexbrl_reads_*.json"))):
     SRC_FILES.append((os.path.basename(_p), None))
 for _p in sorted(glob.glob(os.path.join(HERE, "_nsearch_reads_*.json"))):

@@ -100,6 +100,9 @@ LEDGERS = [
     # as-filed document that produced the std-PAT cell), direct quarter or cumulative-differenced, both
     # anchored on the page's own Net Profit == stored npStd to the paisa. Registered at creation.
     ("wayback_nse/wb_rev_fills.json",  "revop", "revS", 0),
+    # rev-parity 2026-09-05: the BSE sibling -- Wayback capture of bseindia.com/qresann/result.asp, PAT anchored,
+    # revenue line chosen by reproduction against the symbol's own held quarters (bse_rev.py). Registered at creation.
+    ("wayback_nse/bse_rev_fills.json", "revop", "revS", 0),
 ]
 # BASIS-IN-KEY ledgers: "SYM|QE|basis", not "SYM|QE" — the flat loop above would rsplit the BASIS
 # off as the quarter and check nothing. These were UNGUARDED until 2026-08-10: nse_xbrl_rev_fills
