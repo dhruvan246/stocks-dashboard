@@ -14867,6 +14867,9 @@ patched checkout before pushing:**
 3. `apply_revop_cell_fix.py` reports one pre-existing MOVED-ON (EMAMILTD 20160331 std 537.37 vs was
    500.55) — on origin before this session; not touched.
 
+**CI CLOSED GREEN (13:54 IST, 2026-09-05):** `refresh-fundamentals` run 33952773364 cleared the NSE pull (step 5, 32 min — three earlier runs since 12:01 IST had hung there and hit the 40-min timeout; `www.nseindia.com` answered http 000 from this Mac too, NSE-side not the push), then its blocking verifier checked **35,075 ledgered cells — MISSING 0, RESURRECTED 0, DRIFT 25 (all pre-existing)** — and committed its rebuild (60cb8eb04). Live payload re-read after that commit: opStd 2002-17 = 14,970, ebitStd 2008-16 = 3,641, 0 held values present — the heal survived CI's own rebuild. Scope note (user rule 13:30 IST, PIT N500 only): 256 corrected + 47 held cells sit on non-member quarters of member companies; left in place, reverting restores a wrong-line value.
+
+
 ---
 
 ## 130. ★★★ THE LINE-ITEM BLOCK BEFORE 2018 — "XBRL only" meant "2018 only"; the archive HTML + Moneycontrol carry it back to 2002  (2026-09-05, worktree ~/stocks-wt/eps-block)
