@@ -15534,21 +15534,67 @@ Plus 14 §119 look-ahead reversions replaced by the earlier NSE filing (NETWEB M
 16-Dec → 1-Nov: §119d asserted "nothing public at stored" from BSE alone; NSE's archive is never earlier than a real
 declaration, so those quarters were public 12-45 d before the reverted date) — 17 cells.
 
-### 135i. What is still undated or unverified (measured after every pass above)
-- **PAT placeholders pre-2008: 7,479 cells** (1999-2001: 2,121 — no source anywhere; 2002-2007: 5,358 — no result row
-  in either reader: 198 symbols have no BSE code at all (2,018 cells), the rest have index windows with no parseable
-  result sentence). Next rung, if ever: the 1,649 un-parsed result-like rows, then NSE's Wayback `results.jsp` pages
-  (they carry no filing date, §134) — i.e. likely a permanent convention there.
-- **PAT ann=0: 334 cells** (no-candidates 74, no-scrip 39, ambiguous 34, SME windows without a covering row 6, the rest
-  other-period pairs that are not covering filings).
-- **PAT look-ahead candidates, one reader only:** 70 (BSE index) + ~300 (NSE archive, 2005-11 observed cells earlier
-  than the archive by >7 d) — never moved on one reader; the 2002-05 "stored earlier than BSE" 205 cells come from a
-  pre-ledger writer whose source is unknown and cannot be adjudicated without a third reader.
-- **PAT observed later than BSE's index row:** 16 + RELIGARE — the BSE pass only handles look-ahead and gate cases.
-- **SHP:** 25,691 rows ≤2013 un-dated by design (§120 fallback); 2014-16: 306 rows whose only ann-stream row is the NEXT
-  quarter's (the Dec-2013 hard start), 21 no scrip; 2022+: 1,820 rows earlier than the only exchange that has them;
-  2019-21: 25 rows later on BOTH BSE feeds (8-103 d lead) with no NSE reader (`shp_early_adjudication.json`); 44 rows
-  with no ann-stream row.
-- `shp_dates.visible_date` keeps a pre-15:30 weekend/holiday filing on the raw date — harmless to the engine (the next
-  screen is the following trading day) but every ledger comparison must roll it first.
+### 135j. USER RULE (13:30 IST): Nifty 500 only — and the SHP one-day look-ahead at NSE ingestion (commit 2ee1e235c)
+**"work only on nifty 500 stocks and inform other sessions as well."** Every count and fix from here on is scoped to
+point-in-time Nifty 500 members (`indices_history.json` → 'Nifty 500', last snapshot at or before the date); the rule
+was sent to the nine active repo sessions and saved as memory `feedback-scope-nifty-500-only`. On that universe the
+open list shrinks to: pre-2008 PAT placeholders 6,369 cells (1999: 165 · 2000: 685 · 2001: 787 · 2002: 586 · 2003: 925 ·
+2004: 807 · 2005: 1,190 · 2006: 1,121 · 2007: 103), ann=0 4 cells, one-reader PAT look-ahead candidates 298 (NSE
+archive) + 67 (BSE index), SHP one-reader early rows >7 d 24, SHP both-BSE-later rows 2019-21 8.
+**SHP ingestion gate.** `fetch_shareholding` stored NSE's `submissionDate` (a date) although the master's
+`broadcastDate` carries the time: a filing broadcast after 15:30 IST was visible the same session. Measured on Nifty 500
+2022+ against the NSE master: 3,079 rows pre-close (fine), **277 after-close on the stored day → one-day look-aheads**,
+gated now (`days_later` entries, stored == was), and `visible_iso()` gates both capture sites at ingestion on
+`gate_calendar.json` (falls back to the raw date when the broadcast has no time). Feed diff 277 rows, holdings
+byte-equal.
+
+### 135k. Readers found for the pre-2012 residue (measured 13:40-14:00 IST)
+- **BSE announcement index reaches Jul-2001** (RELIANCE/HDFCBANK/HDFC/INFY 'has posted a net profit' rows from
+  2001-07; Apr-2000..Mar-2001 windows return 0 rows) → windows 2001-04..2002-03 harvested for the 223 Nifty 500
+  symbols holding 2001 placeholders (648 cells).
+- **151 Nifty 500 symbols had no BSE code in `scrip_map()`** (1,376 placeholder cells): 114 resolved by EXACT ISIN
+  (NSE list-cache `isin` → `_bse_master_all.json`, one code per ISIN; delisted/suspended codes included), 37 more
+  from the §127f share-capital-tested era identities (`_shp_aspx_resolved_era_syms.json`) + `_shp_scripcode_override`
+  (CEAT 500878, GESHIPPING 500620, ALOKTEXT 521070…); 23 still unresolved (CORPBANK, EICHERLTD, TATACOFFEE, TV18,
+  SINTEX, WARTSILA, VARDHMNSPG… — no ISIN in any list we hold, or ISIN absent from BSE's all-status master).
+- **NSE corporate-announcements feed** (`/api/corporate-announcements?symbol&from_date&to_date`) is live and reaches
+  ~2005 (dates only, `an_dt` 00:00:00, desc 'Outcome of Board Meeting' / 'Press Release … Financial Results for the
+  quarter ended …') and carries timestamps from ~2007 ('Standalone Results Update, Quarter ended, 30-SEP-2007',
+  12:47:00). It is the SECOND reader for the one-reader look-ahead candidates; SHP submissions are NOT in it.
+- **Moneycontrol board-meetings page** renders only the last 4 meetings, no API behind it → not a reader.
+- The BSE reader's 1,649 un-parsed result-like rows are year/half-year/outlook sentences, not missed quarters
+  (1,211 carry no period word at all) — recall is not the gap; BSE simply wrote no summary for most 2002-07 quarters
+  (Nifty 500 diagnosis: 2,966 cells whose windows hold rows but no result row, 360 empty windows).
+
+### 135l. The one-reader look-ahead candidates, adjudicated with NSE's announcements feed (Nifty 500)
+364 candidates (298 NSE-archive + 67 BSE-index, observed stored date > 7 d before the reader) fetched on
+`corporate-announcements` [qe+1, qe+120]: 235 windows carry a period-matching results-family row, 81 none, 48 only
+other periods. **Poison class found before writing: 176 of the 235 earliest rows are 'Publish Audited Results' —
+Clause-41 INTIMATIONS that audited results will follow (IOB Mar-2008 dated 01-Apr-2008, one day after the quarter
+end), not results** — vetoed with intimation/notice/delay/'to consider' descs (the §119b notice class, NSE flavour).
+On the real rows: **40 candidates CORROBORATED** (NSE's own dissemination within ±1 d of the stored date — the other
+reader was the late one; candidate cleared), **24 two-reader look-aheads → exact later moves** (NSE announcement and
+the other reader agree to ±1 d; BRITANNIA Mar-2008 04-Apr → 29-May, APOLLOHOSP Mar-2008 04-Apr → 25-Jun, GAMMONIND
+Mar-2007 26-Apr → 02-Jul), 30 within 7 d (NSE-first tolerance), 29 the two readers disagree (left), 7 basis-split
+(left), 145 only notice rows (no evidence either way, left). 0 earlier-only overrides survived the veto — every
+"NSE disseminated earlier" row had been a notice.
+
+### 135i. What is still undated or unverified on Nifty 500 (measured after every pass above, 2026-09-05 14:15 IST)
+- **PAT placeholders pre-2008: 5,890 cells** (1999: 165 · 2000: 685 · 2001: 485 · 2002: 548 · 2003: 897 · 2004: 784 ·
+  2005: 1,145 · 2006: 1,089 · 2007: 92). Every reader we have was walked: BSE's index (Jul-2001 →, harvested for every
+  Nifty 500 symbol with a code incl. 151 ISIN/era-resolved ones), NSE's archive (2005 →), NSE's announcements (2005 →,
+  dates only pre-2008). Pre-Jul-2001 has no source; 2001-07 has BSE summaries only for part of the market; 23 symbols
+  still have no BSE code (CORPBANK, EICHERLTD, TATACOFFEE, TV18, SINTEX, WARTSILA, VARDHMNSPG, KBL, LML…). What is left
+  is a documented convention (qe+45/60 d), not a measurement — treat pre-2008 announce-date screens as approximate.
+- **PAT ann=0: 4 cells.**
+- **One-reader look-ahead candidates: 107** (BSE-index reader only, after the NSE-announcements pass cleared 40 and
+  moved 24); 145 more carry only notice rows on NSE. Never moved on one reader.
+- **PAT observed dates 2002-05 earlier than BSE's row (unknown pre-ledger writer): ~200** — the NSE announcements
+  feed does not reach 2002-04, so a third reader does not exist.
+- **SHP:** 25,691 rows ≤2013 un-dated by design (§120 fallback); 2014-16: 306 rows whose only ann-stream row is the
+  NEXT quarter's; 2022+: 24 Nifty 500 rows >7 d earlier than the only exchange that has them (the NSE master row is a
+  later re-submission; the stored date is our own earlier NSE capture — left); 2019-21: 8 Nifty 500 rows later on
+  BOTH BSE feeds, no NSE reader (`shp_early_adjudication.json`).
+- `shp_dates.visible_date` keeps a pre-15:30 weekend/holiday filing on the raw date — harmless to the engine but roll
+  it before any ledger comparison.
 
