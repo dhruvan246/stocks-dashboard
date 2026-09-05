@@ -15379,63 +15379,59 @@ on 265 (113 at/before it, 152 within 2 d — NSE-first filers); **25 rows have B
 ⚠️ Tool trap: `_shp_dates/apply_shp_dates.py`'s default DRY RUN rewrites `shp_sub_dates.json` from scratch
 (8,326 → 21 entries here) — it is the P2 ledger BUILDER, not an applier. Snapshot ledgers before unfamiliar tools.
 
-### 135f. Open (measured, not guessed)
-- 2002-2011 placeholders via the BSE index (harvest of 540 codes in flight at the time of writing; reader
-  `bse_result_dates.py` calibrated 84% same-day vs observed 2002-05 dates, 89 observed dates sit 2-30 d EARLIER
-  than BSE's row — those come from a pre-ledger reader and cannot be adjudicated without a third source).
-- 1999-2001: 1,878 std placeholders, no route (BSE index starts 2002, NSE archive 2005).
-- 570 (NSE) / 89 (BSE) observed-earlier-than-reader PAT cells 2002-2011: look-ahead candidates; only the
-  two-reader-agreement subset may be moved (§119e-2 standard).
-- SHP 2022+ "early" rows vs NSE broadcast; SHP 2014-16 sentinel residue re-probe; 25 both-BSE-later rows.
+### 135g. SHP 2022+ with TWO exchange readers (commit 3c720e74d)
+NSE `corporate-share-holdings-master` (broadcastDate to the second) was live and fetched for all 2,488 engine
+symbols (`nse_shp/` in the session scratchpad); its reach is **Dec-2021+ only**. Truth = the EARLIER first
+disclosure of the two exchanges, §12-gated on the trading calendar; an NSE row counts only when 0-120 d after the
+quarter-end (years-later re-broadcasts — RESPONIND Dec-2021 broadcast 2023-12-06 — are not first disclosures) and
+not flagged revised. 47,596 rows: **35,912 agree to the day**; 292 stored LATER than the earliest disclosure (mostly
+1 d: NSE broadcast pre-close, BSE after — VHL Dec-2021 NSE 14:40 / BSE 15:33) → 144 heals; 192 stored EARLIER than
+BOTH exchanges — every one a raw after-close/holiday date served the same day (PREMIER Mar-2025 stored on Good
+Friday) → 200 `days_later` gate shifts (stored == was); 1,820 rows earlier than the ONLY reader that has them left
+alone (one reader cannot prove a look-ahead). Two traps: (1) `shp_dates.visible_date` does NOT roll a pre-15:30
+filing on a weekend/holiday to the next trading day — 23 ledger dates were rolled by hand, 17 "heals" turned out
+to be no-ops once rolled (a Saturday date and the following Monday are the same visibility); (2) a row already at
+its lag-heal date was being re-latered by the older BSE-only `shp_sub_dates` entry — precedence fixed in
+`_reassert_sub`. cell_fix lockstep for 5 pinned cells. Feed vs HEAD: 344 rows, holdings byte-equal.
 
-### 134e. Passes 2-3 (same day, ~13:30 IST): cumulative differencing +6, cross-source anchor +12
-* **Cumulative differencing** (`read_quarter_cumdiff`): a quarter whose only BSE capture is year-to-date (MC/DC/SC) is
-  read as the cumulative page minus a chain of ≤3 legs that abut back to its `from` (wb_rev's rule ported), every leg
-  passing G1 + the arithmetic gate. Reach was small — when a cumulative page exists, the 3-month page usually does too:
-  **+2** cells (E-SERVEINT, NILKAMAL Mar-2001) + 4 direct that a re-run reached.
-* **Cross-source anchor** (`cross_anchor`) for the 240 symbols with NO held quarter on the archive: where NSE's archived
-  `results.jsp` and BSE's archived page exist for the SAME period, the two exchanges' Net Profit must agree to the paisa
-  (3-month vs 3-month, or cumulative vs the BSE capture with identical from/to). A declared-Consolidated NSE page never
-  anchors; an NSE page that omits the basis token is accepted and RECORDED as `basis-undeclared` — that template prints
-  'Consolidated' when a statement is consolidated (ALFALAVAL Dec-2002), so silence is the filer's ordinary results. Only 24
-  of the 240 share a period with an NSE page; **8 anchored, 2 conflicted** (MOREPENLAB Dec-2001 24.66 vs 24.68 — a print-
-  precision or revision difference, held; NAHARSPG Dec-2001 2.44 vs 1.64, held) → **+12** cells (2000: 7, 2001: 5).
-* Remaining 1999-2001 residue after passes 1-3: **1,587 cells** on symbols with no anchor of either kind (216 of the 240
-  have NO NSE page on any common quarter), 605 with no capture at all for the quarter, 103 without a BSE code.
+### 135h. SME half-yearly filers: ann=0 quarters dated to the covering filing (commit 3c720e74d)
+Of the 305 ann=0 skips, ~114 were 'other-period' where the only result filing in the window states the COVERING
+period (Jun quarter → Sep H1; Dec quarter → Mar FY). The quarter's number first became public with that filing, so
+it is dated to it (the §104b seq-audit convention, conservative-late; fill-only entries, apply_ledger's `exact`
+kind never fills an ann=0 cell). 108 dated, 6 windows hold no such row; 197 cells filled.
 
-### 131g. ★★★ THE 13 HELD CELLS RESOLVED — fresh CDX finds the direct pages the index hid; 5 healed, 5 not-defects, 3 held  (2026-09-05, same day)
-§131f held 13 cells for lack of a printed quarter. The block was the index, not the archive: `_wb_index.json`
-keys ONE page per (symbol, quarter-end) and had kept the ANNUAL over the direct Q4 page. Querying Wayback CDX
-FRESH, per symbol (`filter=original:.*E<SYM>$`) AND per BSE scrip code (`filter=original:.*scripcd=<code>.*`),
-surfaced the direct pages. **5 of the 13 stored values were already the printed quarter** — the finding had
-differenced a restated/merged cumulative page:
-- RELIANCE Q4-FY02 672 (direct Q4 page) · RELIANCE Q2-FY03 1002 (direct Q2 page; the finding used merged-H1 1920
-  − standalone-Q1 720) · ORIENTBANK Q4-FY04 228.68 (direct Q4 page) · ANDHRABANK Q4-FY03 140.59 (direct Q4 page) ·
-  BANKINDIA Q2-FY02 135.16 (direct BSE Q2 page; the NSE H1 231.65 is a restated cumulative, ≠ BSE Q1+Q2 255.54).
+### 135f. The BSE announcement-index pass, 2002-2011 (this commit)
+Harvest: 540 BSE codes × the half-year windows covering each target quarter's filing window (5,053 windows, 1 fetch
+error, ~85 min, scratchpad `bse/cache/`), targets = every placeholder/ann=0 std cell 2002-2011Q1 plus the Audit A
+early/late cells. Reader `bse_result_dates.py`: 42,009 rows → 2,273 result-declaration rows → **2,230 dated
+(code, quarter) cells**; 1,649 result-like rows carry no parseable quarter (year/half-year sentences, odd phrasing —
+the reader's recall gap, un-mined). Calibration before writing: vs OBSERVED stored 2002-11 dates 982 agree to the
+day + 64 within ±1, 108 stored EARLIER >7 d, 97 earlier 2-7 d, 16 later; vs the NSE-archive proposals 33 agree, 3 ±1,
+1 outlier (RELIGARE Mar-2011: BSE 16-May vs NSE 30-May — the NSE override left it 15 d late; open).
+**Landed 390 `exact` entries → 407 cells:** 344 placeholders (2002: 190, 2003: 50, 2004: 54, 2005-11: 50; 280 earlier,
+64 later — a later move from a BSE summary row is the conservative direction), 30 two-reader look-aheads (observed date
+>7 d before BSE's row AND the NSE archive agrees with BSE to ±1 d — the §119e-2 standard; one-reader candidates, 70
+BSE + ~300 NSE, are LEFT), 16 month-end after-close gate shifts (stored == BSE raw date on a month-end, broadcast after
+15:30 → next trading day; the nightly gate_1530 cannot see pre-2011 because it queries `strCat=Result`).
+Plus 14 §119 look-ahead reversions replaced by the earlier NSE filing (NETWEB Mar-2024 14-May → 2-May, HITECH Sep-2021
+16-Dec → 1-Nov: §119d asserted "nothing public at stored" from BSE alone; NSE's archive is never earlier than a real
+declaration, so those quarters were public 12-45 d before the reverted date) — 17 cells.
 
-**★ THE STORE CONVENTION, PROVEN: npStd = the exchange "Net Profit" line AFTER extraordinary items.** ELGIEQUIP
-FY02 Q2 stored 1.94 == BSE net 1.941 (after a −3.116 extraordinary), Q3 3.18 == BSE net 3.173 (after −2.12) — so
-the store is unambiguously the after-extraordinary bottom line, not PAT-before-exceptional. That settled the rest.
+### 135i. What is still undated or unverified (measured after every pass above)
+- **PAT placeholders pre-2008: 7,479 cells** (1999-2001: 2,121 — no source anywhere; 2002-2007: 5,358 — no result row
+  in either reader: 198 symbols have no BSE code at all (2,018 cells), the rest have index windows with no parseable
+  result sentence). Next rung, if ever: the 1,649 un-parsed result-like rows, then NSE's Wayback `results.jsp` pages
+  (they carry no filing date, §134) — i.e. likely a permanent convention there.
+- **PAT ann=0: 334 cells** (no-candidates 74, no-scrip 39, ambiguous 34, SME windows without a covering row 6, the rest
+  other-period pairs that are not covering filings).
+- **PAT look-ahead candidates, one reader only:** 70 (BSE index) + ~300 (NSE archive, 2005-11 observed cells earlier
+  than the archive by >7 d) — never moved on one reader; the 2002-05 "stored earlier than BSE" 205 cells come from a
+  pre-ledger writer whose source is unknown and cannot be adjudicated without a third reader.
+- **PAT observed later than BSE's index row:** 16 + RELIGARE — the BSE pass only handles look-ahead and gate cases.
+- **SHP:** 25,691 rows ≤2013 un-dated by design (§120 fallback); 2014-16: 306 rows whose only ann-stream row is the NEXT
+  quarter's (the Dec-2013 hard start), 21 no scrip; 2022+: 1,820 rows earlier than the only exchange that has them;
+  2019-21: 25 rows later on BOTH BSE feeds (8-103 d lead) with no NSE reader (`shp_early_adjudication.json`); 44 rows
+  with no ann-stream row.
+- `shp_dates.visible_date` keeps a pre-15:30 weekend/holiday filing on the raw date — harmless to the engine (the next
+  screen is the following trading day) but every ledger comparison must roll it first.
 
-**5 healed** (fund_cell_fix.json, net-after-extraordinary, each with two documents):
-- UMIYA-MRO Sep-03 1.17→1.33 and Mar-04 0.10→0.16 — NSE and BSE quarter pages agree to the paisa (1.3341/1.334;
-  0.157/0.157); Moneycontrol was the outlier.
-- ELGIEQUIP Q1-FY02 1.98→2.73 (BSE Q1 net 2.735; NSE H1 − Q2 = 2.734) and Q4-FY02 3.25→2.86 (BSE Q4 net 2.86 ==
-  NSE annual − H1 − Q3). The FY tiles 2.735+1.941+3.173+2.86 = 10.71.
-- CENTENKA Q4-FY02 3.67→**−11.67**. ★ THE ONE THAT NEEDED THE CONVENTION: Q1 net 26.32 carries a +17.67 cr
-  one-time extraordinary GAIN, but the audited annual net (34.52) carries NO extraordinary, so the gain reverses by
-  year-end and Q4 = annual 34.52 − as-filed 9M 46.19 = −11.67 (a real net loss quarter: Q4 PAT 6.00 − reversal
-  17.67). All three legs are as-filed BSE pages, so this balancing figure IS the as-reported Q4.
-
-**★ THE §131f REFINEMENT (131g rule):** "only printed quarters" has an era exception. Pre-2009 there was NO
-separate audited Q4 filing — Q4 was disclosed as **audited annual − as-filed 9M**. So that balancing figure IS the
-as-reported quarter WHEN all three 9M legs are as-filed exchange pages and the annual did not restate them. §131f's
-opposite case still holds: where a direct Q4 page EXISTS and differs from annual−9M (ORIENTBANK Mar-03: page 119.49
-≠ derived 119.63), the page wins because a leg was restated. Test which case you are in by looking for the page.
-
-**3 still held:** RELIANCE Q1-FY03 (merger vintage: standalone 720 vs merged 918=stored, a user entity call — store
-stays merged for a coherent FY03); UMIYA-MRO Dec-03 (NSE shows Net Profit 2.77 with no extraordinary, BSE shows 1.04
-after a −1.66 extraordinary — the two filings disagree whether the exceptional is in Q3; stored 1.11 sits on the
-after-extra basis and is plausible); BANKINDIA Q4-FY02 (no direct page; stored 94.02 ≈ annual − BSE-9M 94.52, but the
-NSE-H1-vs-BSE-quarters fork leaves the 9M ambiguous). Every verdict is in `wb_rev_findings.json`. Net over §131f+g:
-of the original 16 findings + 10 siblings, **16 healed, 7 not-defects, 3 held.**
