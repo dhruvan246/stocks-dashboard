@@ -15910,3 +15910,22 @@ The Gemini workflow stays as a 20-a-day trickle and as the BSE-catalog builder.
 - Non-March fiscal years: `fy_end_month` per ledger defaults to 3 — set by hand when a company's
   labels say otherwise (the parser and the card both honour it).
 - The card shows at most the last 12 periods per view.
+
+### Session hand-read batch, 2026-09-06 02:00–02:45 IST (measured, all LIVE-verified by bake run + fin JSON)
+27 packets read by hand (`--by claude-session`), one commit per 3–7 symbols, each push triggered
+`refresh-stock-fin.yml` (4/4 runs green) and the `kpi` key was seen LIVE in `docs/fin/<SLUG>.json`
+for AXISBANK (16 metrics) and TATASTEEL (16) within ~3 min of the push. Ledger totals after the
+batch: **44 symbols, 396 metrics, 1,513 cells, 74 filings read, 2 held.** Per stock (metrics/cells):
+COALINDIA 9/18, POWERGRID 8/10, M&M 12/65, ADANIPORTS 12/22, ITC 1/1, BAJAJ-AUTO 9/28, AXISBANK 16/61,
+INFY 15/41, HINDZINC 14/43 (+annual silver), SUNPHARMA 16/42, BEL 1/1, BAJAJFINSV 16/69, ETERNAL 4/11,
+TATASTEEL 16/57, ADANIENT 16/39, SHRIRAMFIN 16/49, ADANIPOWER 13/47. **Zero-metric reads are honest
+"nothing printed", not failures:** ULTRACEMCO (deck pages carry no text layer — vision route),
+JSWSTEEL (one-page letter linking to the website deck), HAL / NTPC / DIVISLAB / ETERNAL-results
+(results + auditor report only; the KPI deck or shareholder letter is a *separate* filing the
+walker will reach later). Parser labels added this batch: `F27` / `Q1 F27` / `Q1F25` (Mahindra),
+`Q1 26-27` (Coal India), `30th June'26`, `Jun 30, 2026`, `Q1 27`. Gates that fired correctly:
+`as_printed` ≠ value on OCR'd tokens (`13.232` for 13,232 in Eternal's results — cell dropped, not
+"fixed"), target/guidance label on Adani Power "Target Capacity", period parse on BEL's order book
+"as on 1st October, 2025" (re-labelled Q2 FY26 = the Sept-quarter close, label keeps the printed
+phrase). Two in-document contradictions were skipped rather than adjudicated: Bajaj General FY25 AUM
+(33,122 p26 vs 33,112 p87) and Adani Power FY26 availability (89% p30 vs 88% p15).
