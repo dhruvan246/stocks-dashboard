@@ -16,7 +16,9 @@ Public: read_insurer(company, cur_label, yago_label, pngs, with_subsidiary)
 """
 import os, json, base64, urllib.request, urllib.error, time, re
 
-_MODEL = os.environ.get("GEMINI_MODEL", "gemini-2.0-flash")
+# 2026-09-05: models/gemini-2.0-flash answers HTTP 404 "no longer available … use models/gemini-3.6-flash"
+# (measured in refresh-kpi-insights run 33988019640) — every caller was silently falling back to text-only.
+_MODEL = os.environ.get("GEMINI_MODEL", "gemini-3.6-flash")
 _PACE = {"last": 0.0}          # min spacing between calls to stay under the free-tier per-minute limit
 _MIN_INTERVAL = 5.0
 _URL = "https://generativelanguage.googleapis.com/v1beta/models/%s:generateContent?key=%s"
