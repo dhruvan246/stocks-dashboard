@@ -77,6 +77,16 @@ LEDGERS = [
     ("agg_cell_fills.json",            "revop", "opC",  3),
     ("agg_cell_fills.json",            "revop", "ebitS", 7),
     ("agg_cell_fills.json",            "revop", "ebitC", 8),
+    # EBIT-IN-OP-SLOT corrections (runbook §129g, apply_op_slot_heal.py, user decision 2026-09-05):
+    # ebitS = the after-dep value moved out of the op slot; opS = gated or derived op. Entries whose op
+    # could not be re-derived carry `opS_refused` + `held`, so the old value RESURRECTING in slot 2 is
+    # the failure (a fill-only replay of the original OCR/detres reads would do exactly that).
+    ("op_slot_corrections.json",       "revop", "ebitS", 7),
+    ("op_slot_corrections.json",       "revop", "opS",   2),
+    # the ABSENCE half lives in its own file: `held` is read per ENTRY across every key registered for a
+    # ledger, so a record asserting ebitS present AND opS_refused absent flagged its own ebit as
+    # RESURRECTED (166 false alarms on the first local run, 2026-09-05)
+    ("op_slot_refused.json",           "revop", "opS_refused", 2),
     # PRE-2015 standalone PAT from the same route (2026-08-12). Separate ledger because it writes a
     # different file (docs/sf_fundamentals.json slot 1) through its own applier, and because these
     # cells are the oldest in the dataset — the era CI never rebuilds, so a clobber here would be
