@@ -194,6 +194,14 @@ ROW_LABELS = {   # ported verbatim from fetch_shp_wayback_mc (same Clause-35 tab
     "fpi": r"Foreign Portfolio Invest",          # 2014-15: SEBI's FPI category, printed either as
     "anyoth": r"^Any Others?\s*\(Specify\)|^Any Others?$",   # its own row or under "Any Others"
     "pubtot": r"Total Public shareholding\s*\(B\)",
+    # WP-S2 pass 2 (2026-09-05, §127g): rows some 2006-13 filers itemise INSIDE the institutions block.
+    # Foreign Mutual Fund / Foreign Financial Institutions-Banks are foreign institutional holders -> fii.
+    # The rest are non-institutional or strategic categories mis-filed into the block (DR holders, OCBs,
+    # NRIs, FDI, trusts, clearing members, market makers): neither fii nor dii under the family
+    # convention, but they ARE part of the block's Sub Total, so the recon gate must see them.
+    "fmf": r"^Foreign Mutual Funds?$",
+    "ffi": r"^Foreign Financial Institutions?\s*/?\s*Banks?$",
+    "excl": r"Foreign Bodies\s*DR|Overseas Corporate Bod|Non[- ]Resident Indian|^Foreign Compan|Foreign Corporate Bod|\bFDI\b|^Trusts?$|Clearing Members?|^Others$|Market Makers?|Nominated investors|Foreign Nationals?",
 }
 
 
@@ -288,9 +296,16 @@ def parse_new(html):
         if blk_lo is not None: break
     if blk_lo is not None:
         hi = blk_hi if blk_hi is not None else min(blk_lo + 160, len(cells))
-        for slot in ("mf", "banks", "govt", "ins", "fii", "qfi", "vcf", "fvci", "fpi", "anyoth"):
+        for slot in ("mf", "banks", "govt", "ins", "fii", "qfi", "vcf", "fvci", "fpi", "anyoth", "fmf", "ffi"):
             p = find_row(ROW_LABELS[slot], blk_lo, hi)
             if p: out[slot] = p
+        # every excluded-category row in the block, summed (there can be several)
+        _ex = 0.0; _rx = re.compile(ROW_LABELS["excl"], re.I)
+        for _i in range(blk_lo, hi):
+            if _islabel(_i) and _rx.search(cells[_i]):
+                _pp = pair(row_nums(_i))
+                if _pp: _ex += (_pp[1] if _pp[1] is not None else _pp[0]) or 0.0
+        if _ex: out["excl"] = (_ex, _ex)
         if blk_hi is not None:
             p = pair(row_nums(blk_hi - 1))
             if p: out["inst_sub"] = p
@@ -365,6 +380,26 @@ def parse_old(html):
                 if len(nums) >= 2: subs.append(nums[1])
         if len(subs) >= 2 and 99.5 <= subs[0] + subs[1] <= 100.5:
             out["prom"] = round(max(0.0, 100.0 - subs[0] - subs[1]), 2)
+    # PROMOTER BLOCK WITHOUT ITS HEADER (WP-S2 2026-09-05, runbook §127g): some 1997-format pages print
+    # the promoter rows ("Persons acting in Concert" / "Indian Promoters") and their "Sub Total" directly,
+    # with NO "Promoter's Holding" label row — SOUTHBANK Mar-2003: `Persons acting in Concert 1708000 4.77 |
+    # Sub Total 1708000 4.77 | Non Promoter's Holding …`. The header search above leaves prom None and the
+    # promoter-less fallback cannot fire (16.65 + 78.58 = 95.23, not ~100), so the cell was refused
+    # "no-prom" although the page states the figure. Take the LAST "Sub Total" BEFORE the Non-Promoter
+    # header as the promoter total — and accept it ONLY when the page's own arithmetic closes:
+    # prom + every non-promoter Sub Total == Grand Total (100) within 0.5pp. Strictly additive: pages that
+    # carried the header are untouched.
+    # (`ip` can equal `inp`: the header regex is unanchored and "Non Promoter's Holding" matches it too.)
+    if out.get("prom") is None and inp is not None and (ip is None or ip >= inp):
+        pre = [i for i in range(0, inp) if re.fullmatch(r"Sub\s*Total", cells[i].strip(), re.I) and len(_nums_at(i)) >= 2]
+        if pre:
+            cand = _nums_at(pre[-1])[1]
+            post = [_nums_at(i)[1] for i in range(inp, len(cells))
+                    if re.fullmatch(r"Sub\s*Total", cells[i].strip(), re.I) and len(_nums_at(i)) >= 2]
+            gt = next((_nums_at(i)[1] for i in range(len(cells))
+                       if re.fullmatch(r"Grand\s*Total", cells[i].strip(), re.I) and len(_nums_at(i)) >= 2), None)
+            if post and gt is not None and 99.5 <= gt <= 100.5 and abs(cand + sum(post) - gt) <= 0.5:
+                out["prom"] = (_nums_at(pre[-1])[0] / _base * 100.0) if (_base and _nums_at(pre[-1])[0]) else cand
     _, v = val_after(r"^FIIS?\b", lo);                                out["fii"] = v
     _, v = val_after(r"Mutual Funds? and UTI", lo);                   out["mf"] = v
     _, v = val_after(r"Banks\s*,?\s*Financial Institutions?\s*,?\s*Insurance", lo); out["lump"] = v
@@ -372,7 +407,47 @@ def parse_old(html):
     if ii is not None:
         _, v = val_after(r"^Sub\s*Total$", ii)
         if v is not None: out["inst_sub"] = v
-    if out.get("fii") is None and out.get("mf") is None:
+    # The filer's own NOTE on the 1997-format page: "Total Foreign Shareholding is N equity shares
+    # representing x% ... held by NRIs/OCBs". When that N equals the NRIs/OCBs row's share count, the
+    # document itself states that NO other foreign holder (i.e. no FII) exists — a second, in-document
+    # reader for an absent FIIS row (WP-S2 2026-09-05, runbook §127g). Captured here, judged in _attempt.
+    m_note = None
+    for c in cells:
+        mm = re.search(r"Total Foreign Shareholding is\s*([\d,]+)\s*equity shares", c, re.I)
+        if mm:
+            try: m_note = float(mm.group(1).replace(",", "")); break
+            except ValueError: pass
+    # the Others block's Sub Total and the Grand Total pct — a page with NO institutional block proves
+    # "institutions = 0" only when promoter + others close to the grand total (ELDERPHARM Dec-2002).
+    _io = next((i for i, c in enumerate(cells) if re.fullmatch(r"Others", c.strip(), re.I) and i > (inp or 0)), None)
+    if _io is not None:
+        for i in range(_io + 1, len(cells)):
+            if re.fullmatch(r"Sub\s*Total", cells[i].strip(), re.I) and len(_nums_at(i)) >= 2:
+                out["others_sub"] = (_nums_at(i)[0] / _base * 100.0) if (_base and _nums_at(i)[0]) else _nums_at(i)[1]; break
+    _gt = next((_nums_at(i)[1] for i, c in enumerate(cells) if re.fullmatch(r"Grand\s*Total", c.strip(), re.I) and len(_nums_at(i)) >= 2), None)
+    if _gt is not None: out["grand_total_pct"] = _gt
+    # every FOREIGN row outside the institutional block (NRIs/OCBs, GDR/ADR custodians, foreign bodies):
+    # their share counts summed, to be matched against the filer's own foreign-holding note.
+    _fx = 0.0
+    for i, c in enumerate(cells):
+        if _islabel_o(i) and re.search(r"NRIs?\s*/\s*OCBs?|\bGDR|\bADR|Overseas Corporate|Foreign (?!Institutional|Promoter)", c, re.I) and not re.search(r"Total Foreign Shareholding", c, re.I):
+            _n = _nums_at(i)
+            if _n: _fx += _n[0]
+    if _fx: out["foreign_rows_shares"] = _fx
+    if m_note is not None:
+        out["foreign_note_shares"] = m_note
+        inr = next((i for i, c in enumerate(cells) if re.search(r"NRIs?\s*/\s*OCBs?", c, re.I)), None)
+        if inr is not None:
+            nums = _nums_at(inr)
+            if nums: out["nri_shares"] = nums[0]
+    # A 1997-format page whose institutional block prints ONLY the Banks/FI/Insurance lump (or nothing at
+    # all) has neither an FIIS nor an MF row — ASTRAZEN Dec-2002 (lump 0.01, Grand Total 100), CUB Dec-2002
+    # (lump 5.10, no promoter block). 216 such pages were refused "no category rows" and journalled absent
+    # (WP-S2 2026-09-05, runbook §127g) although the table is complete: the caller's proven-zero rule
+    # (inst_sub == mf + lump) decides fii, mf defaults to 0, prom via the two-subtotal fallback. So refuse
+    # only when NOTHING of the table parsed: no promoter, no lump, no institutional sub-total, no Grand Total.
+    _has_gt = any(re.fullmatch(r"Grand\s*Total", c.strip(), re.I) and len(_nums_at(i)) >= 2 for i, c in enumerate(cells))
+    if out.get("fii") is None and out.get("mf") is None and not (_has_gt and (out.get("lump") is not None or out.get("inst_sub") is not None or out.get("prom") is not None)):
         return None, nm
     return out, nm
 
@@ -455,11 +530,12 @@ def _attempt(fr, dirp, neigh, used):
         dii = dii_base
         inst = val("inst_sub")
         derived = False
+        excl = val("excl") or 0.0
         if fii is not None:
-            fii = round(fii + fpi_add + (val("fvci") or 0.0), 4)
+            fii = round(fii + fpi_add + (val("fvci") or 0.0) + (val("fmf") or 0.0) + (val("ffi") or 0.0), 4)
             if inst is not None and oth_add:
-                gap0 = abs(fii + dii_base + (val("govt") or 0.0) + (val("qfi") or 0.0) - inst)
-                gap1 = abs(fii + dii_base + oth_add + (val("govt") or 0.0) + (val("qfi") or 0.0) - inst)
+                gap0 = abs(fii + dii_base + excl + (val("govt") or 0.0) + (val("qfi") or 0.0) - inst)
+                gap1 = abs(fii + dii_base + excl + oth_add + (val("govt") or 0.0) + (val("qfi") or 0.0) - inst)
                 if gap0 > 1.0 and gap1 <= 1.0:
                     dii = round(dii_base + oth_add, 4)
         else:
@@ -473,7 +549,7 @@ def _attempt(fr, dirp, neigh, used):
             # into dii FIRST (the calibrated direction) and let the remainder be foreign.
             if oth_add:
                 dii = round(dii_base + oth_add, 4)
-            r = inst - (dii + (val("govt") or 0.0) + (val("qfi") or 0.0) + fpi_add)
+            r = inst - (dii + excl + (val("govt") or 0.0) + (val("qfi") or 0.0) + fpi_add + (val("fmf") or 0.0) + (val("ffi") or 0.0))
             if -0.15 <= r <= 0.15:
                 fii = round(max(0.0, r) + fpi_add, 4); derived = True
             elif r > 0.15:
@@ -486,11 +562,19 @@ def _attempt(fr, dirp, neigh, used):
             else:
                 return ("recon", None, "negative residual %.2f" % r)
         if inst is not None and not derived:
-            if abs(fii + dii + (val("govt") or 0.0) + (val("qfi") or 0.0) - inst) > 1.0:
+            if abs(fii + dii + excl + (val("govt") or 0.0) + (val("qfi") or 0.0) - inst) > 1.0:
                 return ("recon", None, "inst recon fail")
         ins = round(val("ins") or 0.0, 4)
     else:
         fii, mf, lump, prom, inst = cols.get("fii"), cols.get("mf"), cols.get("lump"), cols.get("prom"), cols.get("inst_sub")
+        # NO institutional block at all (WP-S2 pass 2, §127g): the 1997 format omits an empty block entirely
+        # (ELDERPHARM Dec-2002: Promoter 44.46 + Others 55.54 = Grand Total 100). The page's own arithmetic
+        # then proves institutions = 0 — fii, mf and the lump are all zero. Fires only when NOTHING of the
+        # block parsed and the two printed totals close to the grand total within 0.5pp.
+        if fii is None and mf is None and lump is None and inst is None and prom is not None \
+                and cols.get("others_sub") is not None and cols.get("grand_total_pct") is not None \
+                and abs(prom + cols["others_sub"] - cols["grand_total_pct"]) <= 0.5 and 99.5 <= cols["grand_total_pct"] <= 100.5:
+            fii, mf, lump, inst = 0.0, 0.0, 0.0, 0.0
         if fii is None:
             # 1997 format omits empty rows. Absent FIIS = fii 0 ONLY when the block's own
             # arithmetic proves it: inst_sub == mf + lump to a print unit. Else refuse (§57).
@@ -512,7 +596,19 @@ def _attempt(fr, dirp, neigh, used):
     if fii == 0.0 and neigh:
         nb = [neigh[k] for k in ((sym, _adj(qe, -1)), (sym, _adj(qe, +1))) if k in neigh]
         if any(v > 1.0 for v in nb):
-            return ("zero-vs-neighbour", None, "fii 0.00 beside stored %.2f" % max(nb))
+            # 1997-format exception (WP-S2 2026-09-05, §127g): the FIIS row is ABSENT, the institutional
+            # sub-total proves mf+lump (so no hidden FII line), AND the filer's own note states the total
+            # foreign holding == the NRIs/OCBs row — the document says twice that no FII holds anything.
+            # GODAVRFERT Mar-2003 (inst 0.04%, note 3.71% = NRI row) beside a stored Jun-2003 of 1.57 is an
+            # FII ENTERING the next quarter, not a fabricated zero. The seam-class fabricated "FII 0.00"
+            # (qtrid 88/89, Clause-35 format) prints an explicit FII row and has no such note — unaffected.
+            fn = cols.get("foreign_note_shares"); nr = cols.get("foreign_rows_shares") or cols.get("nri_shares")
+            # the note must equal the sum of EVERY foreign row printed outside the institutional block
+            # (NEPCMICON Mar-2003: NRIs 865,182 + "GDR - Bankers Trust" 3,176,375 = note 4,041,557)
+            if used == "Old" and cols.get("fii") is None and fn is not None and nr is not None and abs(fn - nr) <= max(1.0, 0.001 * fn):
+                pass    # accept the proven zero
+            else:
+                return ("zero-vs-neighbour", None, "fii 0.00 beside stored %.2f" % max(nb))
     return ("ok", [round(prom, 4), round(fii, 4), round(dii, 4), round(mf, 4), ins, sub, None, src],
             used)
 

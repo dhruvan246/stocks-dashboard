@@ -243,7 +243,13 @@ BSE_HIST_LEDGERS = [os.path.join(HERE, "shp_fill_thirdparty.json.gz"),
                     # NSE's own archived pages (share-capital identity test, §127f). Flag=Old cells carry
                     # ins=None (inside the lump); sub = QE+21d convention, so build_engine_feed serves
                     # every row UN-DATED (engine qe+28d fallback, §120). Fill-only, LAST in the list.
-                    os.path.join(HERE, "shp_fill_wps2_aspx.json.gz")]
+                    os.path.join(HERE, "shp_fill_wps2_aspx.json.gz"),
+                    # WP-S2 pass 2 (2026-09-05, runbook §127g): the same aspx route re-read with the four
+                    # parser fixes (header-less promoter block, lump-only 1997 pages, foreign-note proven
+                    # zero, Foreign MF / Foreign FI rows) over the residue + WP-S1 refusals, plus 9 era
+                    # names (2001-02) resolved via _shp_aspx_resolved_era_syms. Fill-only, LAST in the list;
+                    # 25 continuity-flagged cells are HELD in _shp_wps2b_holds.json, not here.
+                    os.path.join(HERE, "shp_fill_wps2b_aspx.json.gz")]
 def apply_bse_hist_ledger(h):
     n_total = 0
     for path in BSE_HIST_LEDGERS:
