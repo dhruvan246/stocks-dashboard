@@ -15189,3 +15189,54 @@ series campaign); NAVA Sep-21 / TATACONSUM Mar-19 / HFCL Mar-20 / ZENSARTECH Sep
 **88 OPEN** with no NSE filing reachable: 62 list holes (2018-2022 con/std quarters NSE's list never carried, PEL/IOC/PETRONET/SUNTV…),
 11 no-list symbols (GICRE 6, ICICIGI, LICI, KIRLFER, SPICEJET), 102 XBRL URLs that 404, 3 archive pages that 404 → the BSE announcement
 route (§17c resolver + text layer, §2c) is the next rung.
+
+---
+
+## 133. ★★ BSE's ARCHIVED RESULTS PAGE READS STANDALONE PAT FOR 2000-2001 — anchored on the symbol's own held quarters; 238 root cells landed, and the gate's own bug refused 226 good pages first  (2026-09-05, WP-P1)
+
+**Trigger:** §128 left the 1999-2001 std-PAT roots with every walked rung exhausted (MC E2b, Wayback NSE `results.jsp`, NSE
+archive <2005 out of scope) and named BSE's archived website as unwalked. The rev-parity campaign (§131) had just built
+`scripts/wayback_nse/bse_rev.py` over `bseindia.com/qresann/result.asp` in the Wayback Machine (`_bse_wb_index.json`: 13,783
+`<scripcd>|<qe>` keys, **5,644 for 2000 periods, 2,322 for 2001**). The page declares period and scale and prints Net Profit,
+Equity Capital and the P&L chain — but NOT the basis, and a root cell has no stored value to anchor on.
+
+### 133a. The gate — identity, basis and scale proven PER SYMBOL on the same page family (`scripts/wayback_nse/bse_pat.py`)
+* **A — anchors:** the symbol's own HELD std-PAT quarters (1999-2008) that have an indexed 3-month capture must be reproduced by
+  the page's Net Profit (tol = half the printed grid); ≥1 exact AND zero conflicts (bounded to 6 pages per code). A wrong company,
+  a consolidated page family or a scale slip cannot reproduce a standalone series to the paisa.
+* G1 ScripCode on the page == the repo's BSE code (`bse_scrips.json` by_id, `_bse_master_all` scrip_id, `_shp_aspx_resolved_era_syms`
+  era codes) · G2 capture ends ON the quarter and covers exactly 3 months (cumulative MC/DC/SC pages refused, not differenced) ·
+  G4 scale declared · G5 the page's own SIGNED chain closes: Gross Profit + Depreciation == PBT; PBT + Tax + Provisions == Profit
+  after Tax; PAT + Extraordinary/Prior-period == Net Profit.
+* Output = `apply_agg_pat_fills.py` props (fill-only, row-creating, journalled in `agg_pat_cell_fills.json` with
+  `--gate "BSE-archive A/G1/G2/G4/G5 (bse_pat.py)"`); ann = qe+45d floored at first bar (TMPV kept at qe+45d — §128c seam).
+
+### 133b. ★★★ Hold-out FIRST, provenance-filtered — and the calibration caught the gate's own bug
+`--calib`: every held std cell of the 449 target symbols with an indexed 3-month page, read blind, aggregator-derived stored
+cells EXCLUDED from the truth side → **170 exchange-derived cells, 0 mismatches (2002: 11, 2003: 90, 2004: 38, 2005: 31)**.
+The first proposal run then produced only **15** proposals with **226 "G5-arith" refusals** — `bse_rev._num("Tax")` matched the
+"Tax" inside "Profit before Tax 245.00" (its lookbehind only excludes letters), so PBT − Tax never equalled NP. Fixed with
+row-anchored labels (a label must follow the previous row's number) and the signed chain above → **238 proposals**, 3 G5 left.
+★ A gate that refuses 90% of pages it just calibrated clean is measuring itself — read the refused page before trusting the refusal.
+
+### 133c. Result — 238 cells / 111 symbols (2000: 125, 2001: 113), by anchor depth A1: 86 · A2: 10 · A3: 18 · A4: 21 · A5: 30 · A6: 73
+Applied twice = idempotent (238 new rows, 0 changed, 0 removed); `fund_dup_guard` 0 conflicts; `phantom_key_guard` clean.
+TATAMOTORS 2001-12 landed under the store key TMPV (engine `fundFor` reaches it). Bake-vs-bake, one tree, one bin, N500:
+**patStd have +472** member-months (N/A −472; 2002 61.2 → 66.8% of members, 2003 82.4 → 84.1%), **profitYoyStd +843** (2002
+37.4 → 47.1%, 2003 48.1 → 52.0%), **profitTTMStd −21 with 11 dates down** — a newly visible 2001-12 quarter whose 2001-09 sits
+in a HOLE moves the 8-quarter window onto the hole (§112 shape); those holes are the next roots, not a regression. fiiPct / price
+byte-identical.
+
+### 133d. Residue of the 2,576 still-open 1999-2001 roots, by rung
+| class | cells | next |
+|---|---|---|
+| symbol has NO indexed held quarter → no anchor possible | 1,648 | another identity reader: NSE archive paid-up equity vs the page's Equity Capital; or the era argument + ScripName only (NOT accepted alone) |
+| only CUMULATIVE captures for the quarter (MC/DC/SC codes) | 560 | differencing against the previous cumulative page (wb_rev's chain), not built |
+| no BSE code (era names) | 103 | ISIN rung |
+| symbol whose held quarters CONFLICT with the page | 84 | 24 conflicting stored cells are ALL aggregator-derived → `scripts/stdpat_bsearchive_suspects.json` (ABB 2001-12 stored 30.73 vs page 36.20, BAJAJHIND, BASF, BIRLACORPN, CENTENKA, CASTROLIND…): §108 says the exchange page outranks MC, but a disagreement names no side — read a second as-filed page before healing |
+| 3 G5 failures, 16 empty-shell captures, 6 period / 2 G2a | 27 | per page |
+
+**Lessons:** (1) reuse a sibling route's reader and cache read-only (bse_rev's `read_page/_read_any`, the shared Wayback cache) —
+the whole calibration + proposal run cost ~700 fetches; (2) provenance-filter the hold-out or the aggregator cells you are about
+to contradict become your "truth"; (3) an anchor test on our own held quarters doubles as a store audit — the 24 conflicts are a
+free suspect list.

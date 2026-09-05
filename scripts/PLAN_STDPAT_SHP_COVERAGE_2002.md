@@ -307,7 +307,7 @@ Runbook **§128** carries the full record; this block is the plan's state so the
 | WP | state | what landed | where the record is |
 |---|---|---|---|
 | P0 hygiene | **CLOSED, reframed** | the 40 "in-a-fill-ledger-but-absent" cells were not absent: **229 root cells sit under a RETIRED store key** (HIMACHLFUT/SUPPETRO/HINDMOTOR/COLGATE/ASIANHOTEL/CASTROL/LGBROS/MANDHANA + BBOX/PENINLAND/TMPV/NDLVENTURE) that the engine folds and the coverage BUILDER read raw. Builder fixed (commit `5dbe45857`): patStd +597 mm, na −597, exactly those 8 symbols. The 26 "null-std rows" are 2015+ IPO comparatives (out of this scope). 5 cells are stored with a late real ann (BRFL/JAGRAN/MCLEODRUSS/PROVOGUE 2007-03, EIHOTEL 2005-03) — not fetch targets | §128a |
-| P1 1999-2001 | **PARTIAL** | MC E2b 766 cells 1999-2001 (+ 11 WB 2001); residue by tag in `stdpat_2002_residue_2026-09-05.json`'s method (those years not in the file — regenerate with the §6 recipe) | `agg_pat_cell_fills.json` applied `2026-09-05` |
+| P1 1999-2001 | **PARTIAL → +238 (runbook §133, BSE archived results page, this session 12:30 IST)** | MC E2b 766 cells 1999-2001 (+ 11 WB 2001); residue by tag in `stdpat_2002_residue_2026-09-05.json`'s method (those years not in the file — regenerate with the §6 recipe) | `agg_pat_cell_fills.json` applied `2026-09-05` |
 | P2 2002-2004 | **PARTIAL** | WB 154 (2002:116) + MC E2b 119 + adjudicated 7; 130 held-under-alias | §128b/c |
 | P3 2005-2008 | **PARTIAL** | NEW NSE-archive standalone reader `scripts/nse_std_pat_read.py` 175 cells (2005:72, 2006:85, 2007:10); MC 41 | §128d |
 | P4 2009+ | touched only where MC's table reached (see ledger) | | |
