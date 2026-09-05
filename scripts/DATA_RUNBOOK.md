@@ -3168,7 +3168,7 @@ The only holder-level source that names insurers recovers the slot arithmeticall
   no scalable pre-Oct-2018 fetch, §84) and per-company IR archives. Journal:
   `scripts/_shp_ins_pre2006_audit.json` (479 filled + held-class counts).
 - Applied fill-only; slice rebuild picks the cells up via `refresh-stock-fin.yml` (triggers on
-  `scripts/shp_history.json`). LIVE verification pending the refresh-stock-fin CI slice rebuild after push — re-check ~20 min later on a nonzero cell (CARBORUNIV 2003-03 ins 22.66, LMW 2003-12 ins 25.53).
+  `scripts/shp_history.json`). Verified LIVE (fin slice + stock page, 2026-09-06): CARBORUNIV 2003-03 renders Insurance 22.66%, 2003-06 20.14%; LMW 2003-12 25.53%; RELINFRA 2004-03 22.86% — all via the refresh-stock-fin slice rebuild + pages deploy.
 
 ## 23. BULK & BLOCK DEALS  (docs/deals.html — "Bulk/Block Deals" nav, built 2026-07-16, SELF-UPDATING)
 <!-- renumbered from 22 (two sections were both born §22 the same day; FII/DII holdings kept it) -->
