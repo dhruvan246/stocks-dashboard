@@ -14428,6 +14428,57 @@ so Dec-2002 is 36, not 32). Re-run at q36/q37: still MATCH (0.00000 / 0.00023 / 
 change across the year); `_shp_aspx_resolved_era_syms.json` now carries the correct quarter and a note. Lesson: a
 qtrid is an absolute index, print the quarter it decodes to beside every probe.
 
+### 127g. ★★ WP-S2 PASS 2 — the aspx refusals were mostly PARSER blind spots, not missing filings: 431 cells landed (commits c1556631c / 5a5629902, 2026-09-05 ~12:00 IST)
+**Trigger:** the residue the WP-S2 pass-1 session (§127f) left open — 750 in-frontier member-quarters Dec-2002..Sep-2015
+(392 already journalled `absent`, 58 `recon`, 18 `no-prom`, 18 `zero-vs-neighbour`, 7 `no-fii` + 240 new) and WP-S1's 454
+refusals for 2001-02. Re-fetched all 750 (2,513 s, 4 workers), then READ THE PAGES behind every refusal class. Four classes
+were the reader's, not the filer's — each fix is additive, hold-out regression on IDBI/SOUTHBANK/GODAVRFERT/ASTRAZEN/CUB byte-identical:
+1. **`no-prom`** — 1997-format pages print the promoter rows and their `Sub Total` with NO "Promoter's Holding" header (SOUTHBANK
+   Mar-2003 `Persons acting in Concert 1,708,000 4.77 | Sub Total 4.77 | Non Promoter's Holding …`), and the unanchored header
+   regex ALSO matched "Non Promoter's Holding", so `ip == inp` and the promoter-less fallback (two sub-totals ≈ 100) could not
+   fire (16.65 + 78.58 = 95.23). Fix: the last `Sub Total` BEFORE the Non-Promoter header is the promoter total, accepted only
+   when prom + every non-promoter Sub Total == Grand Total within 0.5pp.
+2. **`absent: no category rows`** — 216 of the "absent" pages (classifier: BSE lists the quarter) HAVE the full table but the
+   institutional block prints only the Banks/FI/Insurance lump, or no block at all (ASTRAZEN Dec-2002 lump 0.01; CUB Dec-2002 lump
+   5.10 and no promoter block; ELDERPHARM Dec-2002 no institutions at all, Promoter 44.46 + Others 55.54 = 100). `parse_old`
+   refused when both FIIS and MF were missing. Fix: refuse only when nothing of the table parsed; fii = proven zero
+   (inst_sub == mf + lump), no-block pages prove institutions = 0 when promoter + others close to the Grand Total.
+3. **`zero-vs-neighbour`** on 1997 pages — FIIS absent, block arithmetic proves 0, but a stored neighbour holds >1%. The filer's own
+   NOTE ("Total Foreign Shareholding is N equity shares") equals the sum of every foreign row OUTSIDE the block (NRIs/OCBs, GDR
+   custodians: NEPCMICON Mar-2003 865,182 + 3,176,375 = 4,041,557) — the document states twice that no FII holds anything. Calibrated:
+   GODAVRFERT/NAVA/SOUTHBANK's >1% neighbours are the SAME page family's next quarter with an explicit FIIS row (an FII entering),
+   provenance `bseaspx:…:Old`. The seam-class fabricated "FII 0.00" (qtrid 88/89, Clause-35) prints an FII row and has no note — untouched.
+4. **`recon`** on Clause-35 pages — rows some 2006-13 filers itemise inside the institutions block: `Foreign Mutual Fund` (22 pages),
+   `Foreign Financial Institutions / Banks` → foreign institutional → fii; `Foreign Bodies DR`, OCBs, NRIs, FDI, Trusts, Clearing
+   Members, Market Makers, Nominated investors → mis-filed non-institutional categories, neither fii nor dii under the family
+   convention but part of the block Sub Total, so the recon gate now counts them. 89 recon → 40.
+**Result of the re-parse (cache-only, no new fetch):** residue 750 → **317 ok** (was 78); WP-S1 refusals 454 → **87 ok**; plus **51
+cells on 9 era names for 2001-02** whose codes sat in `_shp_aspx_resolved_era_syms.json` (which `cmd_frontier` never reads —
+BANKPUNJAB 500070, CAROLINFO 500446, EICHER 531835, KINETICMOT 505190, MADURACOAT 500090, MICRO 523886, PARKEDAVIS 500677, RPGCABLES
+517056; page name == ledger name on all 52, ELGIRUBCO 590023 absent ×4). **Continuity gate added before landing:** 25 gate-passing
+cells sit >5pp fii / >10pp dii from every stored neighbour → HELD in `scripts/_shp_wps2b_holds.json` (SBIN Mar-2004 is right — RBI
+59.73% as promoter — and its stored Jun..Dec-2003 neighbours carry that block INSIDE dii, prom 0.00: a filer-side classification
+change, journalled as `_suspects`, heal via the >1% sub-page; BAJFINANCE Jun-2006 folds Foreign FI 11.74 — definitional; the rest
+unadjudicated). Disagreement names no side (memory feedback-disagreement-does-not-name-the-wrong-side).
+**Ledger `scripts/shp_fill_wps2b_aspx.json.gz` = 431 cells / 88 symbols** (2001: 68 · 2002: 87 · 2003: 67 · 2004: 60 · 2005: 48 · 2006: 45 ·
+2007: 41 · 2008: 15), LAST in `BSE_HIST_LEDGERS`. **Plus 43 BSE `SHPQNewFormat` XBRL cells 2016-2023 with real filing dates** into
+`shp_fill_n500_gaps.json.gz`: 27 member gaps `fetch_shp_bse_hist.py --years 2016,2017,2018,2023` found (ARVIND, COX&KINGS, TATAMTRDVR,
+SECURKLOUD) + 16 fiiChgPp PRIOR-quarter roots on NON-members the tool cannot list (CROMPTON, FRETAIL, MAXINDIA, UJJIVAN, DHANI,
+JSLHISAR, UNITEDBNK, RELCAPITAL, SPTL, EXCELCROP, MONSANTO 2018-06, CORPBANK, COX&KINGS, ORIENTELEC, TCNSBRANDS, KIRLFER) via the
+tool's own `quarter_list/row_for/parse_shp` chain. Not fillable at BSE: JMTAUTOLTD & MONSANTO Sep-2016 (list has no row), CDSL 2018-03
+(NSE-only listing).
+**Apply (rebased tree, run twice = byte-identical):** history 93,300 → 93,774 (+474, 0 changed, 0 removed), engine +474 rows. Bake-vs-bake
+same tree same bin: fiiPct/diiPct **+604** member-months (N/A −604, 0 dates down); fiiChgPp/diiChgPp **+884** (N/A −618; 3 dates −2:
+Jun-2016 XBRL rows whose Mar-2016 prior is absent — §112 shape); 2003 fiiChgPp 87.8 → 89.1%, 2004 95.9 → 96.5%, 2006 97.0 → 98.0%,
+2008 96.7 → 97.5%. patStd/price byte-identical.
+**Residue, classified (`absent_classify.py` over 1,352 journalled absent cells, BSE `SHPQNewFormat` list per code):** **434 "BSE lists NO
+filing for the quarter"** (2001-08: 353 — next rung = NSE archived `>1%` page as floor, annual report for March quarters) · **374
+roster-orphan** (no tape under the roster key at the quarter — modern keys, §93 class, out of SHP scope) · **216 "listed but no rows"** (the
+parser class fixed above; the re-parse landed most) · **328 api-failed** (rate-limited list calls, retry gently). Still refused after the
+fixes: 360 + 367 absent, 40 recon, 26 zero-vs-neighbour, 7 no-fii, all journalled in `_shp_aspx_rejects.json` with the classifier verdict.
+`audit_shp_coverage.py` still starts at 2002-12-31.
+**VERIFIED LIVE 2026-09-05 12:04 IST bake (dispatched after push `5a5629902`):** coverage payload fiiPct 2002 = 3,992 have / 1,520 N/A = **90.3%** (was 85.5 after WP-S1), 2003 **98.1%**, 2004 99.0%; fiiChgPp 2002 85.1%, 2003 **89.1%**, 2004 96.5%, 2008 97.5% — identical to the local bake-vs-bake; `shp_engine.json` on Pages serves ELDERPHARM 20021231 [0.0, 0.0, undated], SOUTHBANK 20030331 [0.0, 16.6522, undated], CROMPTON 20160630 [19.5327, 26.3148, real date].
+
 ## 128. ★★★ STD-PAT 2002-07 EXECUTED — 229 "missing" cells were HELD under a retired key the coverage builder could not see; four gated routes landed 1,538 cells; the NSE results ARCHIVE reads standalone PAT with the page's own EPS identity  (2026-09-05)
 
 **Trigger:** execute the std-PAT packages of §127 / `PLAN_STDPAT_SHP_COVERAGE_2002.md` (plan §8 = state table).

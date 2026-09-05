@@ -228,6 +228,15 @@ page, SEARCHEMIN no name, VARDHMNSPG refuted). Quarter-level audit (`audit_shp_c
 93.3→97.2 · 2009+ unchanged. Coverage-matrix bake: fiiPct +1,133 member-months (N/A −893, 0 dates down), fiiChgPp +1,444 (N/A −889; 3 dates −1 = MUNJALSHOW/VTL's Dec-2002 with no Sep-2002 prior, §112); 2003 fiiPct 96.5→98.1, 2004 97.8→99.0, 2005 98.7→99.7; patStd/price unchanged. Left for WP-S2's next pass: the 535 `absent`
 (rung 3 = NSE `>1%` floor page, rung 4 = annual report) and the 114 per-page adjudications.
 
+**WP-S2 PASS 2 (2026-09-05 ~12:00 IST, this session, worktree `~/stocks-wt/wps2-shp`, runbook §127g): DONE for the parser
+classes.** The 114 per-page adjudications were four parser blind spots (header-less promoter block, lump-only / no-institution
+1997 pages, foreign-note proven zero, Foreign MF / Foreign FI rows) — fixed in `fetch_shp_bse_aspx.py`, re-parsed cache-only:
+residue 750 → 317 ok, WP-S1 refusals 454 → 87 ok, + 51 cells on 9 resolved era names 2001-02, + 43 BSE-XBRL cells 2016-2023.
+Ledgers `shp_fill_wps2b_aspx.json.gz` (431) + `shp_fill_n500_gaps.json.gz` (+43); 25 continuity holds in `_shp_wps2b_holds.json`
+(SBIN 2003 RBI-in-dii suspect journalled). Bake: fiiPct +604, fiiChgPp +884 member-months, 0 dates down. **Left:** 434 quarters BSE
+lists no filing for (2001-08 mostly; NSE `>1%` floor / annual reports), 374 roster-orphan modern keys (roster job), 328 api-failed
+classifier retries, 40 recon + 26 zero + 7 no-fii refusals (per page), 25 holds, 22 era names without a BSE code.
+
 ### WP-S3 — SHP 2016+ residue (86) — XBRL/NSE routes; start from WP6's held-160 list (coverage-fill memory).
 
 ### WP-P0 — std-PAT hygiene first (cheap, 66 cells)
