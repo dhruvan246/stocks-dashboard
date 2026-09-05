@@ -84,6 +84,7 @@ loads every session. (README.md is just a short pointer here — this file is th
 - **§136** ★★★ THE "BSE PDF RUNG" FOR 2002-05 IS BSE's OWN SUMMARY SENTENCE — index reaches 2002, 0 attachments; locks L1/L2/L3; 398 cells; hold-out 1,590/1,620 (**read before any BSE-based fill older than 2006**)
 
 ---
+- **§137** ★★ INSIGHTS CARD — per-company OPERATING KPIs (stores, subscribers, ARPU, order book, NIM, GNPA…) read from the company's OWN presentations on BSE; screener's card is login-gated and is only a calibration holdout; every cell carries filing+page; Gemini walker 2× daily over Nifty 500 back to 2020 (**read before touching kpi_extract.py / the Insights card, and before reading any KPI off a deck by hand**)
 
 ## 0. GOLDEN RULES (the things that bite if forgotten)
 - **§114** ★★★ THE HTML-ESCAPED PHANTOM SYMBOLS WERE NOT INVISIBLE — `M&AMP;M` was RENDERING in docs/discovery.json (47 rows / 21 buckets), and the fundamentals rows were NOT all duplicates (4 unique, 46 contested, both sides filing-sourced). Fundamentals stores retracted to zero + guarded; the Trendlyne sitemap escape was writing off all 10 ampersand tickers (**read before trusting any recorded coverage/absence claim, and before deleting a phantom key**)
@@ -15782,3 +15783,96 @@ The push loop `git rebase ... 2>&1 | tail -1 && git push` masked the rebase's no
 conflict on the two minified stores left a half-rebase and push ran anyway. Recovery: `git rebase --abort`,
 `git reset --hard origin/main` (own worktree only), then RE-APPLY the fill-only appliers on the fresh origin base (the
 §81h rebase-race recipe, a 1-second ledger replay wins) rather than resolving a minified-JSON conflict by hand.
+
+---
+
+## 137. ★★ INSIGHTS CARD — operating KPIs read from the company's OWN presentations  (built 2026-09-06)
+
+**What the user asked for (2026-09-06):** the screener.in "Insights" card — a per-company table of
+business metrics that differs by company (Reliance: stores / subscribers / ARPU / KG-D6 output;
+Karnataka Bank: branches / CASA / CD ratio / business per employee; Sterlite: order book / OFC market
+share / patents; CP Plus: capacity / utilisation / distributors) — *"not copy screener but understand
+this and build it for us"*, *"find common things in all the presentations of a stock and present it
+in tabular format"*, for **every Nifty 500 stock, 2020 → date**.
+
+**Why it is built from filings, not from screener (measured):** screener's card is login-gated —
+the public HTML ships a blurred `x,xxx` placeholder table (`rowspan=8 colspan=11`) and the quarterly
+tab is a gated endpoint (`/insights/company/<id>/quarter/`). It cannot be a source. The user's five
+logged-in screenshots (RELIANCE, STLTECH, KTKBANK, ACUTAAS, CPPLUS) are kept ONLY as a calibration
+holdout in `scripts/kpi_calibration_screener.json` — never written to a ledger or a page.
+
+### Pipeline (all new files)
+| piece | file | role |
+|---|---|---|
+| document ladder | `scripts/kpi_docs.py` | BSE per-scrip announcement listing → `ip` Investor Presentation / `pr` press release / `res` results packet / `ar` annual report (`AnnualReport_New` index, back to 1997); download with `%PDF-` + size validation; `page_texts()` via PyMuPDF |
+| extractor | `scripts/kpi_extract.py` | page scoring, the prompt, deterministic period parser, validation gates, ledger merge; backends `packet` (a Claude session reads and answers) and `gemini`; `--walk` (CI), `--report`, `--show`, `--ingest` |
+| ledger | `scripts/kpi_insights/<SYM>.json` | `metrics[{name, unit, kind, y{YYYYMMDD:v}, q{…}, src{"y:…"/"q:…": [att, page, label, as_printed]}, restated[]}]`, `docs{att:{kind,date,title,read,by}}`, `held[]`, `catalog` (cached BSE listing), `checked` |
+| bake | `scripts/build_stock_fin.py` → `docs/fin/<SLUG>.json` key `kpi` | verbatim values + provenance; `refresh-stock-fin.yml` now triggers on `scripts/kpi_insights/*.json` |
+| card | `docs/stock.html` `renderKPI()` (`#kpiCard`) | Yearly / Quarterly, ⓘ = filing + page + printed token + BSE link (`AnnPdfOpen.aspx?Pname=`), rewind hides cells whose filing is dated after as-of; phones open on the newest column |
+| walker | `.github/workflows/refresh-kpi-insights.yml` | 03:00 + 14:00 IST, Gemini free tier (`GEMINI_API_KEY`), ≤500 docs / ≤200 symbols per run, dispatches the fin-slice rebuild (§41b) |
+| scope | `scripts/indices_history.json` "Nifty 500" latest snapshot + `scripts/kpi_insights/_extra_symbols.json` | largest market cap first |
+
+### The gates — nothing is written on the model's word alone
+1. **Period**: the printed label is parsed by OUR parser (`parse_period`: `Q1 FY27`, `4Q FY26`,
+   `FY 2025-26`, `Jun-26`, `30.06.2026`, `as on 31st March 2026` …) and must agree with the
+   model's own `period_end`; H1/9M/TTM/months are refused. Disagreement = `held`, never a write.
+2. **Printed token**: `as_printed` (digits/commas/dot only) must occur in THAT page's text with
+   commas stripped (`1,10,396` ≡ `110396`). A number the page does not contain is rejected. A page
+   with no text layer (scanned deck) holds the cell for a vision read.
+3. **No derived numbers**: YoY/QoQ/bps, mix %, targets, guidance and industry data are refused by
+   the prompt; company-level P&L lines are excluded (they live in the Quarterly financials card).
+4. **kind = level | flow** (model-tagged): a *level* (count, balance, ratio as at a date) may show
+   its Q4 value in the Yearly view — it IS the FY-end figure; a *flow* (production, volumes, ARPU)
+   never borrows Q4 as the year. That is the only "yearly from quarterly" the card ever does.
+5. **Merge**: same value re-printed → the EARLIEST filing stays the source (rewind fidelity);
+   different value → the NEWEST filing wins and `restated[]` records the older print.
+   Measured case: STLTECH FY26 open order book — Q4 deck 7,309 (= screener), Q1 FY27 deck 7,687.
+6. **Metric identity across filings**: the prompt carries the company's KNOWN METRICS and asks for
+   the same name/unit when the quantity matches; `find_metric` matches on a normalised name; a
+   different printed unit becomes a separate row rather than a mixed one.
+
+### BSE facts measured while building (re-measure if a call returns 0 rows)
+- `AnnSubCategoryGetData … strScrip=<code>` answers only inside a bounded window: 217 days OK,
+  12 months → **0 rows with no error**. `list_docs` walks 180-day windows (50 rows/page).
+- Board-meeting *intimations* and *outcomes* mention "financial results" without carrying any —
+  category `Board Meeting` / "intimation" is dropped, else 1-page PDFs get classified as `res`.
+- Prolific filers bury the results-day press release among unrelated "Media Release" rows
+  (RIL: TIME100, Rolls-Royce). `select_docs` clusters filings around each results day (−1..+3 d):
+  the deck supersedes the press releases; with no deck every release of the cluster is read; with
+  neither, the results packet itself (STLTECH bundles PR + deck inside it).
+- `AnnualReport_New/w?scripcode=` lists annual reports back to 1997; the 2023 RIL row carried a
+  stray `\b` in its URL.
+- The text layer of decks is clean but **chart text loses geometry**: values and axis labels come
+  as two runs, sometimes in swapped order (STLTECH p24: `FY25 FY26 / 15% 22%` where FY25 = 22%).
+  The printed-token gate cannot see a pairing swap — corroborate with a second filing (the Q1 FY27
+  deck fixed it) before trusting a chart-only series.
+
+### Pilot, measured (2026-09-06, this machine, reader = Claude session via packets)
+RELIANCE / KTKBANK / STLTECH, 6 filings (Q1 FY27 + Q4 FY26 each): **39 metrics, 181 cells,
+0 rejected, 0 held.** Calibration against the user's screener screenshots: every overlapping
+(metric, period) agrees to the printed precision (RIL Mar-26 subscribers 524.4 / ARPU 214.0 / data
+42.3 GB / KG D6 248.8 BCFe / stores 20,160 / Jio-bp 2,199; KTKBANK Mar-26 CASA 33.61 / CD 76.61 /
+staff 9,047 / branches 975 / BPE 21.2 and Mar-25 8,750 / 74.38 / 31.75; STLTECH FY26 share 8 /
+attach 15 / patents 780 / STL Digital customers 35), the ONE exception being the STLTECH order book
+restatement above. Card verified locally (§39): console clean on KTKBANK/RELIANCE/STLTECH/INFY
+(no data → card hidden), mobile 375 px no sideways pan + pinned metric column, dark + light via
+the page's own theme, rewind hides later filings, headless PNGs in `/tmp/uishots/shots/kpi_*`.
+
+### How to read by hand (second reader / anything Gemini holds)
+```
+python3 scripts/kpi_extract.py SYM --backend packet --since 2020-01-01 --limit 3   # writes _packets/SYM__<att8>.prompt.txt
+# read the packet, write _packets/SYM__<att8>.answer.json in the shape the prompt shows, then
+python3 scripts/kpi_extract.py --ingest SYM <att8> scripts/kpi_insights/_packets/SYM__<att8>.answer.json
+python3 scripts/kpi_extract.py --show SYM ; python3 scripts/kpi_extract.py --report
+```
+`_packets/` is git-ignored (regenerable); the ledger is the record.
+
+### Open (as of 2026-09-06)
+- Gemini's reads are UNMEASURED until the first CI run lands — compare `by: gemini:*` ledgers
+  against the calibration file (ACUTAAS / CPPLUS were left unread by hand for exactly this) and
+  spot-read a few decks by packet before trusting the walker's output at scale.
+- Annual-report pass (`ar`, yearly rows like export share / capacity that never appear in decks)
+  is listed but not read yet; scanned decks (no text layer) need the vision route.
+- Non-March fiscal years: `fy_end_month` per ledger defaults to 3 — set by hand when a company's
+  labels say otherwise (the parser and the card both honour it).
+- The card shows at most the last 12 periods per view.

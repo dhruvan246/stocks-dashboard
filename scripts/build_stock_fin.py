@@ -135,6 +135,37 @@ def main():
     else:
         print("WARN: xbrl_extra.json[.gz] missing — deep detail absent from every slice")
 
+    # Insights card — operating KPIs read from the company's own presentations (runbook §137).
+    # scripts/kpi_insights/<SLUG>.json is the ledger; the slice carries it compacted, verbatim
+    # values, with the per-cell provenance [attachment, page, label, as_printed] the ⓘ shows.
+    kpi = {}
+    kpi_dir = os.path.join(os.path.dirname(os.path.abspath(__file__)), "kpi_insights")
+    if os.path.isdir(kpi_dir):
+        for fn in sorted(os.listdir(kpi_dir)):
+            if not fn.endswith(".json") or fn.startswith("_"):
+                continue
+            try:
+                L = json.load(open(os.path.join(kpi_dir, fn), encoding="utf-8"))
+            except Exception as e:
+                print("WARN: kpi ledger %s unreadable (%s) — skipped" % (fn, e))
+                continue
+            mets = []
+            for m in L.get("metrics") or []:
+                if not (m.get("y") or m.get("q")):
+                    continue
+                mets.append({"n": m.get("name", ""), "u": m.get("unit", ""), "k": m.get("kind", "level"),
+                             "y": m.get("y") or {}, "q": m.get("q") or {}, "src": m.get("src") or {}})
+            if not mets or not L.get("sym"):
+                continue
+            docs = {}
+            for att, d in (L.get("docs") or {}).items():
+                e = {"d": d.get("date"), "t": d.get("title", ""), "k": d.get("kind")}
+                if d.get("url"):
+                    e["u"] = d["url"]
+                docs[att] = e
+            kpi[L["sym"]] = {"fy": L.get("fy_end_month", 3), "u": L.get("updated"), "m": mets, "docs": docs}
+        print("insights (kpi): %d symbols" % len(kpi))
+
     aliases = {}
     if os.path.exists(RENAME):
         try:
@@ -183,6 +214,9 @@ def main():
         xt = resolve(xtra, sym)
         if xt:
             payload["x"] = xt
+        kp = resolve(kpi, sym)
+        if kp:
+            payload["kpi"] = kp
         if len(payload) == 1:
             continue                   # nothing on file for this ticker
 

@@ -160,6 +160,19 @@
     <div id="deepNote" class="text-[11px] text-slate-400 mt-2"></div>
   </div>
 
+  <!-- insights: business/operating KPIs read from the company's OWN presentations & press releases
+       (scripts/kpi_insights/<SYM>.json → docs/fin/<SLUG>.json "kpi", runbook §137). Yearly / Quarterly
+       toggle; every cell is the number exactly as printed in a filing, ⓘ = that filing + page. -->
+  <div class="card p-4" id="kpiCard" style="display:none">
+    <div class="flex items-center justify-between flex-wrap gap-2 mb-2">
+      <div class="text-sm font-semibold text-slate-700">Insights <span id="kpiSub" class="text-slate-400 font-normal">— business metrics the company reports about itself, from its own filings</span></div>
+      <div id="kpiTabs" class="flex items-center gap-1.5"></div>
+    </div>
+    <div id="kpiBody" class="sw-scrollx overflow-x-auto text-sm"></div>
+    <div id="kpiSrc" class="text-[11px] text-slate-500 mt-2 rounded-lg border border-slate-200 px-2.5 py-1.5" style="display:none"></div>
+    <div id="kpiNote" class="text-[11px] text-slate-400 mt-2"></div>
+  </div>
+
   <!-- strategy exposure -->
   <div class="card p-4" id="stratCard" style="display:none">
     <div class="flex items-center justify-between flex-wrap gap-2 mb-2">
@@ -980,6 +993,67 @@ function renderDeep(ends,patFn,revFn,opFn,isFin){
   draw();
 }
 
+/* ---------- Insights: operating KPIs from the company's OWN filings (runbook §137) ----------
+   docs/fin/<SLUG>.json → kpi = {fy, m:[{n,u,k,y,q,src}], docs:{att:{d,t,k,u?}}}. Rows are the
+   business metrics the company itself reports in its investor presentations / press releases
+   (stores, subscribers, ARPU, order book, NIM, GNPA…); every cell is the number exactly as PRINTED
+   there, and ⓘ names the filing and page it came from. Nothing is derived: a yearly column shows a
+   value only when a filing printed it for that FY, or — for a "level" metric (a count, balance or
+   ratio AS AT a date) — printed it for the FY-end quarter, which is the same date. Flow metrics
+   (production, volumes, ARPU) never borrow their Q4 value as the year. In rewind, a cell whose
+   source filing is dated after the as-of date is hidden — the market had not seen it yet. */
+let KPI=null, KPI_TAB='y';
+const KPI_MON=['Jan','Feb','Mar','Apr','May','Jun','Jul','Aug','Sep','Oct','Nov','Dec'];
+const kpiLbl=k=>KPI_MON[+k.slice(4,6)-1]+' '+k.slice(0,4);
+const KPI_I='<svg class="sw-i" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="12" r="10"/><line x1="12" y1="16" x2="12" y2="12"/><line x1="12" y1="8" x2="12.01" y2="8"/></svg>';
+function renderKPI(K){
+  const card=$('kpiCard'); if(!card) return;
+  if(K!==undefined) KPI=K; K=KPI;
+  const body=$('kpiBody'), srcEl=$('kpiSrc'); srcEl.style.display='none';
+  if(!K||!Array.isArray(K.m)||!K.m.length){ card.style.display='none'; return; }
+  const docs=K.docs||{}, fyEnd=String(K.fy||3).padStart(2,'0'), asof=asofYmd();
+  const docYmd=att=>{ const d=docs[att]&&docs[att].d; return d?+String(d).replace(/-/g,''):0; };
+  const visible=s=>!s||docYmd(s[0])<=asof;
+  // cells of one metric for a view: {periodKey:{v,s}} — s = [attachment, page, label, as_printed]
+  const cells=(m,tab)=>{ const out={}, S=m.src||{};
+    if(tab==='q'){ for(const k in (m.q||{})){ const s=S['q:'+k]; if(visible(s)) out[k]={v:m.q[k],s}; } }
+    else{ for(const k in (m.y||{})){ const s=S['y:'+k]; if(visible(s)) out[k]={v:m.y[k],s}; }
+      if(m.k!=='flow') for(const k in (m.q||{})){ if(k.slice(4,6)!==fyEnd||out[k]) continue; const s=S['q:'+k]; if(visible(s)) out[k]={v:m.q[k],s}; } }
+    return out; };
+  const has=tab=>K.m.some(m=>Object.keys(cells(m,tab)).length>0);
+  const tabs=[['y','Yearly'],['q','Quarterly']].filter(([k])=>has(k));
+  if(!tabs.length){ card.style.display='none'; return; }
+  if(!tabs.some(([k])=>k===KPI_TAB)) KPI_TAB=tabs[0][0];
+  card.style.display='';
+  $('kpiTabs').innerHTML=tabs.map(([k,l])=>`<button data-k="${k}" class="px-2.5 py-1 rounded-lg text-xs font-semibold border shrink-0 ${k===KPI_TAB?'bg-slate-800 text-white border-slate-800':'text-slate-500 border-slate-200 hover:bg-slate-50'}">${l}</button>`).join('');
+  $('kpiTabs').querySelectorAll('[data-k]').forEach(b=>b.onclick=()=>{ if(b.dataset.k!==KPI_TAB){ KPI_TAB=b.dataset.k; renderKPI(); } });
+  const rows=K.m.map(m=>({m,c:cells(m,KPI_TAB)})).filter(r=>Object.keys(r.c).length>0);
+  const all=[...new Set(rows.flatMap(r=>Object.keys(r.c)))].sort();
+  const MAXC=12, cols=all.slice(-MAXC);
+  const fmt=(v,s)=>{ if(v==null||!Number.isFinite(v)) return ''; const ap=s&&s[3]!=null?String(s[3]):''; const dec=Math.min(3,(ap.split('.')[1]||'').length);
+    return v.toLocaleString('en-IN',{minimumFractionDigits:dec,maximumFractionDigits:dec}); };
+  const srcTitle=s=>{ if(!s) return ''; const d=docs[s[0]]||{}; return `${d.t||'filing'} (${d.d||'?'}) · page ${s[1]} · “${s[2]}” printed as ${s[3]}`; };
+  body.innerHTML=`<table class="w-full text-sm"><thead class="text-[11px] uppercase text-slate-500 border-b border-slate-200"><tr><th class="text-left py-1 pr-2">Metric</th>`+
+    cols.map(k=>`<th class="text-right px-2 whitespace-nowrap">${kpiLbl(k)}</th>`).join('')+`</tr></thead><tbody>`+
+    rows.map(({m,c},ri)=>`<tr class="border-b border-slate-50"><td class="py-1.5 pr-3 whitespace-nowrap"><div class="font-medium">${esc(m.n)}</div><div class="text-[11px] text-slate-400">${esc(m.u||'')}</div></td>`+
+      cols.map(k=>{ const x=c[k]; if(!x) return '<td class="text-right px-2"></td>';
+        return `<td class="text-right px-2 whitespace-nowrap">${fmt(x.v,x.s)}${x.s?` <button class="kpi-i text-slate-400 hover:text-slate-600 align-middle" data-r="${ri}" data-k="${k}" title="${esc(srcTitle(x.s))}" aria-label="Source of this number">${KPI_I}</button>`:''}</td>`; }).join('')+`</tr>`).join('')+
+    `</tbody></table>`;
+  // phones: the holder scrolls sideways (sw-scrollx) and opens on the OLDEST column — start on the newest
+  if(body.scrollWidth>body.clientWidth) body.scrollLeft=body.scrollWidth;
+  body.querySelectorAll('.kpi-i').forEach(b=>b.onclick=()=>{
+    const r=rows[+b.dataset.r], x=r&&r.c[b.dataset.k]; if(!x||!x.s) return;
+    const d=docs[x.s[0]]||{}, url=d.u||('https://www.bseindia.com/stockinfo/AnnPdfOpen.aspx?Pname='+encodeURIComponent(x.s[0]));
+    srcEl.innerHTML=`<span class="font-semibold text-slate-700">${esc(r.m.n)}</span> · ${kpiLbl(b.dataset.k)}: <b>${fmt(x.v,x.s)}</b>${r.m.u?' '+esc(r.m.u):''} — read from <i>${esc(d.t||'filing')}</i> filed ${esc(d.d||'?')}, page ${x.s[1]}, row “${esc(x.s[2])}”, printed as <b>${esc(x.s[3])}</b> · <a class="text-indigo-600 hover:underline font-semibold" href="${url}" target="_blank" rel="noopener">Open the filing on BSE →</a>`;
+    srcEl.style.display='';
+  });
+  const used=new Set(rows.flatMap(r=>Object.values(r.c).map(x=>x.s&&x.s[0]).filter(Boolean)));
+  const latest=[...used].map(a=>docs[a]||{}).sort((a,b)=>String(b.d||'').localeCompare(String(a.d||'')))[0];
+  $('kpiNote').innerHTML=`Read from ${used.size} filing${used.size===1?'':'s'} on BSE`+(latest?` (latest: ${esc(latest.t||'')}, ${esc(latest.d||'')})`:'')+
+    `. Every value is exactly as printed in that filing — nothing is estimated or derived; a yearly cell for a point-in-time metric (a count, balance or ratio) is its FY-end figure. `+
+    (all.length>MAXC?`Showing the last ${MAXC} of ${all.length} periods. `:'')+`Tap ${KPI_I} for the page.`;
+}
+
 /* ---------- shareholding pattern (NSE quarterly SHP filings) ----------------------------------
    Rows normally arrive inside this stock's fin slice; loadSHP() below is the fallback that reads
    the whole-market shareholding.json (0.9 MB) when no slice exists. -------------------------- */
@@ -1345,6 +1419,7 @@ function renderPreIPO(){
 
 /* ---------- rewind wiring ---------------------------------------------------------------- */
 function rerenderAll(){
+  try{ renderKPI(); }catch(e){ console.error(e); }   // Insights: rewind hides filings dated after as-of
   try{ render(); }catch(e){ console.error(e); }
   try{ renderFunds(); }catch(e){ console.error(e); }
   try{ renderPreIPO(); }catch(e){ console.error(e); }
@@ -1434,6 +1509,7 @@ async function liveQuote(){
       REVOP={}; if(F&&F.revop) REVOP[TKR]=F.revop;
       FIN_X=(F&&F.x)||null;
       try{ renderFunds(); }catch(e){ console.error(e); }
+      try{ renderKPI((F&&F.kpi)||null); }catch(e){ console.error(e); }   // Insights card (runbook §137)
       if(F&&F.shpH&&F.shpH.length){
         SHP_HIST=F.shpH;
         try{ shpTrendChart(F.shpH); renderSHPdeep(); wireShpToggle(); }

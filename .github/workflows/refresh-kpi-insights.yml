@@ -1,0 +1,96 @@
+name: Insights — read operating KPIs from company filings
+
+# Nightly walker for the stock page's "Insights" card (runbook §137): for the Nifty 500 (plus
+# scripts/kpi_insights/_extra_symbols.json) it downloads each company's newest unread investor
+# presentation / results-day press release from BSE, asks Gemini (free tier, GEMINI_API_KEY) for
+# the business metrics printed there, validates every value mechanically (period parse agrees,
+# the printed token exists on that page, no derived numbers) and merges it into
+# scripts/kpi_insights/<SYM>.json. refresh-stock-fin.yml then bakes the ledgers into
+# docs/fin/<SLUG>.json — dispatched explicitly below because a GITHUB_TOKEN push never triggers
+# another workflow (runbook §41b).
+#
+# Scope (user, 2026-09-06): every Nifty 500 name, history from 2020 to date. Budget per run:
+# up to 500 documents (Gemini free tier ~1,500 req/day, paced 5 s apart ≈ 42 min) and up to 200
+# symbols; the BSE listing is cached in each ledger (`catalog`), so after a symbol's first full
+# 2020→date listing (~14 windows) a re-check costs one BSE window. Two runs a day → the first
+# pass over 500 names × ~25 filings each (~12,500 documents) takes roughly two weeks.
+
+on:
+  schedule:
+    - cron: "30 21 * * *"      # 03:00 IST — BSE quiet, after every results workflow of the day
+    - cron: "30 8 * * *"       # 14:00 IST — second daily pass while the 2020→date backfill runs
+  workflow_dispatch:
+    inputs:
+      symbols:
+        description: "Only these symbols (space-separated); empty = walk the universe"
+        required: false
+        default: ""
+      max_docs:
+        description: "Max documents to read this run"
+        required: false
+        default: "500"
+      since:
+        description: "Earliest filing date to consider (YYYY-MM-DD)"
+        required: false
+        default: "2020-01-01"
+
+permissions:
+  contents: write
+  actions: write
+
+concurrency:
+  group: refresh-kpi-insights
+  cancel-in-progress: false
+
+jobs:
+  read:
+    runs-on: ubuntu-latest
+    timeout-minutes: 150
+    steps:
+      - uses: actions/checkout@v5
+
+      - uses: actions/setup-python@v6
+        with:
+          python-version: "3.11"
+
+      - name: Install PyMuPDF
+        run: pip install --quiet pymupdf
+
+      - name: Read filings
+        env:
+          GEMINI_API_KEY: ${{ secrets.GEMINI_API_KEY }}
+          KPI_DOC_CACHE: /tmp/kpi_docs
+        run: |
+          set -e
+          if [ -z "$GEMINI_API_KEY" ]; then echo "GEMINI_API_KEY secret missing — nothing can be read"; exit 1; fi
+          SINCE="${{ github.event.inputs.since || '2020-01-01' }}"
+          MAXD="${{ github.event.inputs.max_docs || '500' }}"
+          SYMS="${{ github.event.inputs.symbols }}"
+          if [ -n "$SYMS" ]; then
+            python3 scripts/kpi_extract.py $SYMS --backend gemini --since "$SINCE" --limit "$MAXD"
+          else
+            python3 scripts/kpi_extract.py --walk --backend gemini --since "$SINCE" --max-docs "$MAXD" --max-syms 200 --per-sym 4
+          fi
+          python3 scripts/kpi_extract.py --report || true
+
+      - name: Commit ledgers
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          git config user.name  "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          rm -rf /tmp/kpi_led && mkdir -p /tmp/kpi_led && cp scripts/kpi_insights/*.json /tmp/kpi_led/ 2>/dev/null || true
+          for attempt in 1 2 3 4 5; do
+            git fetch origin main && git reset --hard origin/main
+            mkdir -p scripts/kpi_insights && cp /tmp/kpi_led/*.json scripts/kpi_insights/ 2>/dev/null || true
+            git add -- scripts/kpi_insights/*.json
+            if git diff --cached --quiet; then echo "no ledger changes"; exit 0; fi
+            git commit -q -m "Insights: KPI ledgers $(TZ=Asia/Kolkata date +'%Y-%m-%d %H:%M IST')"
+            if git push origin HEAD:main; then
+              echo "pushed (attempt #$attempt)"
+              gh workflow run refresh-stock-fin.yml || echo "(fin-slice rebuild dispatch failed — the next results commit will rebuild)"
+              exit 0
+            fi
+            sleep $(( attempt * 5 ))
+          done
+          echo "ledger push failed after 5 attempts"; exit 1
