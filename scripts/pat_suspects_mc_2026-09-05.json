@@ -1,1097 +1,1461 @@
 {
- "_about": "Stored PAT (docs/sf_fundamentals.json, 2026-09-05 origin/main 943a43e89) vs Moneycontrol's quarterly feed, disagreeing by >=20%, surfaced by xtra_mc.py's gate T while filling the line-item block (runbook \u00a7128). Moneycontrol is ONE vendor and restates (\u00a781c/\u00a785): each row needs a FILING read before anything is healed; known-right-side examples: SBIN 20181231 std (filed 3,955 cr), UNIONBANK 20231231 std (3,590), IOB 20230331 std (650), LICI 20221231 con (6,334). SHYAMMETL 20250930 con -1.31 is the attr-swap class memory says was healed 2026-07-30 and is back.",
+ "_about": "Stored PAT (docs/sf_fundamentals.json, 2026-09-05 origin/main 943a43e89) vs Moneycontrol's quarterly feed, disagreeing by >=20%, surfaced by xtra_mc.py's gate T while filling the line-item block (runbook \u00a7128). Moneycontrol is ONE vendor and restates (\u00a781c/\u00a785): each row needs a FILING read before anything is healed; known-right-side examples: SBIN 20181231 std (filed 3,955 cr), UNIONBANK 20231231 std (3,590), IOB 20230331 std (650), LICI 20221231 con (6,334). SHYAMMETL 20250930 con -1.31 is the attr-swap class memory says was healed 2026-07-30 and is back. || ADJUDICATED 2026-09-05 (runbook \u00a7131): every cell with a reachable filing was read from the quarter's OWN filing (NSE XBRL 2018+, archive page pre-2018, EPS x shares as the owners arbiter). 15 cells healed here + 2 more found by the row screen (CARERATING Jun-2023, APLLTD Mar-2019); 69 store-confirmed; 88 remain OPEN for the BSE PDF route; the rest are journalled per cell.",
  "cells": {
   "TMPV|20180331|c": {
    "ours": 2175.16,
    "mc": 14990.28,
    "rel": 0.855,
-   "how": "target-quarter anchor"
+   "how": "target-quarter anchor",
+   "verdict": "row-level basis issue: store holds the TOTAL 2,175.16 (whole TMPV series is un-reattributed); owners = total - NCI = 2,112.08 (EPS 2,119); healing one cell would mix bases (\u00a7116b) -> series-level campaign",
+   "filing": 2112.08
   },
   "PEL|20220630|s": {
    "ours": 28.08,
    "mc": 11548.53,
    "rel": 0.998,
-   "how": "series anchor"
+   "how": "series anchor",
+   "verdict": "OPEN: no NSE filing reachable (index hole / no list / integrated era) -> BSE announcement PDF route",
+   "filing": null
   },
   "PEL|20220630|c": {
    "ours": 496.09,
    "mc": 8155.47,
    "rel": 0.939,
-   "how": "series anchor"
+   "how": "series anchor",
+   "verdict": "OPEN: no NSE filing reachable (index hole / no list / integrated era) -> BSE announcement PDF route",
+   "filing": null
   },
   "RELCAPITAL|20180331|c": {
    "ours": -4178.0,
    "mc": 428.0,
    "rel": 1.102,
-   "how": "target-quarter anchor"
+   "how": "target-quarter anchor",
+   "verdict": "OPEN: no NSE filing reachable (index hole / no list / integrated era) -> BSE announcement PDF route",
+   "filing": null
   },
   "SBIN|20181231|s": {
    "ours": 6618.73,
    "mc": 3954.81,
    "rel": 0.402,
-   "how": "series anchor"
+   "how": "series anchor",
+   "verdict": "store-confirmed by the quarter's own filing (BANKING_42097_79278_01022019052007_WEB_xml)",
+   "filing": 6618.73
   },
   "PETRONET|20211231|c": {
    "ours": 3438.11,
    "mc": 1159.46,
    "rel": 0.663,
-   "how": "target-quarter anchor"
+   "how": "target-quarter anchor",
+   "verdict": "OPEN: no NSE filing reachable (index hole / no list / integrated era) -> BSE announcement PDF route",
+   "filing": null
   },
   "LICI|20221231|c": {
    "ours": 8348.71,
    "mc": 6348.71,
    "rel": 0.24,
-   "how": "series anchor"
+   "how": "series anchor",
+   "verdict": "OPEN: no NSE filing reachable (index hole / no list / integrated era) -> BSE announcement PDF route",
+   "filing": null
   },
   "ALOKINDS|20200930|c": {
    "ours": 6798.44,
    "mc": 4798.64,
    "rel": 0.294,
-   "how": "target-quarter anchor"
+   "how": "target-quarter anchor",
+   "verdict": "OPEN: no NSE filing reachable (index hole / no list / integrated era) -> BSE announcement PDF route",
+   "filing": null
   },
   "UNIONBANK|20231231|s": {
    "ours": 5529.76,
    "mc": 3589.91,
    "rel": 0.351,
-   "how": "series anchor"
+   "how": "series anchor",
+   "verdict": "store-confirmed by the quarter's own filing (BANKING_101235_1031747_20012024034222_xml)",
+   "filing": 5529.76
   },
   "GMRAIRPORT|20190331|s": {
    "ours": -2300.48,
    "mc": -582.38,
    "rel": 0.747,
-   "how": "series anchor"
+   "how": "series anchor",
+   "verdict": "store-confirmed by the quarter's own filing (INDAS_45381_106535_30052019014506_WEB_xml)",
+   "filing": -2300.48
   },
   "LTF|20221231|s": {
    "ours": 2136.29,
    "mc": 423.83,
    "rel": 0.802,
-   "how": "series anchor"
+   "how": "series anchor",
+   "verdict": "store-confirmed by the quarter's own filing (NBFC_INDAS_87434_766613_13012023082046_WEB_xml)",
+   "filing": 2136.29
   },
   "AIIL|20260630|c": {
    "ours": 2593.58,
    "mc": 1110.51,
    "rel": 0.572,
-   "how": "series anchor"
+   "how": "series anchor",
+   "verdict": "HEALED 2026-09-05 -> 1105.93 (pat_defects.json + owners_basis_heals.json)",
+   "filing": 1105.93
   },
   "RELCAPITAL|20200930|c": {
    "ours": -2598.0,
    "mc": -1156.0,
    "rel": 0.555,
-   "how": "series anchor"
+   "how": "series anchor",
+   "verdict": "store-confirmed by the quarter's own filing (INDAS_63410_355950_06112020074144_WEB_xml)",
+   "filing": -2598.0
   },
   "EMAMILTD|20230331|s": {
    "ours": 1423.71,
    "mc": 108.64,
    "rel": 0.924,
-   "how": "series anchor"
+   "how": "series anchor",
+   "verdict": "store-confirmed by the quarter's own filing (INDAS_92805_853040_26052023022600_xml)",
+   "filing": 1423.71
   },
   "IOC|20220630|c": {
    "ours": 882.96,
    "mc": -279.38,
    "rel": 1.316,
-   "how": "target-quarter anchor"
+   "how": "target-quarter anchor",
+   "verdict": "OPEN: no NSE filing reachable (index hole / no list / integrated era) -> BSE announcement PDF route",
+   "filing": null
   },
   "IOB|20230331|s": {
    "ours": 1677.86,
    "mc": 650.07,
    "rel": 0.613,
-   "how": "series anchor"
+   "how": "series anchor",
+   "verdict": "store-confirmed by the quarter's own filing (BANKING_91646_841904_12052023084322_xml)",
+   "filing": 1677.86
   },
   "SUNTV|20211231|c": {
    "ours": 1308.71,
    "mc": 471.0,
    "rel": 0.64,
-   "how": "target-quarter anchor"
+   "how": "target-quarter anchor",
+   "verdict": "OPEN: no NSE filing reachable (index hole / no list / integrated era) -> BSE announcement PDF route",
+   "filing": null
   },
   "BAJAJHLDNG|20190331|c": {
    "ours": 8.0,
    "mc": 791.44,
    "rel": 0.99,
-   "how": "series anchor"
+   "how": "series anchor",
+   "verdict": "OPEN: no NSE filing reachable (index hole / no list / integrated era) -> BSE announcement PDF route",
+   "filing": null
   },
   "JINDALSTEL|20220331|c": {
    "ours": 1510.9,
    "mc": 2206.97,
    "rel": 0.315,
-   "how": "series anchor"
+   "how": "series anchor",
+   "verdict": "store-confirmed by the quarter's own filing (INDAS_87013_670605_31052022054650_WEB_xml)",
+   "filing": 1510.9
   },
   "COFFEEDAY|20200331|c": {
    "ours": 574.04,
    "mc": -80.06,
    "rel": 1.139,
-   "how": "series anchor"
+   "how": "series anchor",
+   "verdict": "OPEN: no NSE filing reachable (index hole / no list / integrated era) -> BSE announcement PDF route",
+   "filing": null
   },
   "COX&KINGS|20190331|c": {
    "ours": 1388.84,
    "mc": 823.64,
    "rel": 0.407,
-   "how": "target-quarter anchor"
+   "how": "target-quarter anchor",
+   "verdict": "OPEN: no NSE filing reachable (index hole / no list / integrated era) -> BSE announcement PDF route",
+   "filing": null
   },
   "LTF|20230930|s": {
    "ours": 29.79,
    "mc": 581.38,
    "rel": 0.949,
-   "how": "series anchor"
+   "how": "series anchor",
+   "verdict": "store-confirmed by the quarter's own filing (NBFC_INDAS_97783_964245_20102023075803_xml)",
+   "filing": 29.79
   },
   "LTM|20220930|s": {
    "ours": 619.6,
    "mc": 1128.9,
    "rel": 0.451,
-   "how": "series anchor"
+   "how": "series anchor",
+   "verdict": "store-confirmed by the quarter's own filing (INDAS_807567_6025_28102022185902_WEB_xml)",
+   "filing": 619.6
   },
   "LTM|20220930|c": {
    "ours": 679.3,
    "mc": 1188.5,
    "rel": 0.428,
-   "how": "series anchor"
+   "how": "series anchor",
+   "verdict": "store-confirmed by the quarter's own filing (INDAS_807568_6025_28102022185902_WEB_xml)",
+   "filing": 679.3
   },
   "FRETAIL|20200331|c": {
    "ours": 11.57,
    "mc": -479.2,
    "rel": 1.024,
-   "how": "series anchor"
+   "how": "series anchor",
+   "verdict": "store-confirmed by the quarter's own filing (INDAS_61042_313830_04092020075942_WEB_xml)",
+   "filing": 11.57
   },
   "LTM|20220630|c": {
    "ours": 633.5,
    "mc": 1105.6,
    "rel": 0.427,
-   "how": "series anchor"
+   "how": "series anchor",
+   "verdict": "store-confirmed by the quarter's own filing (INDAS_584616_3670_14072022172026_WEB_xml)",
+   "filing": 633.5
   },
   "LTM|20220630|s": {
    "ours": 599.3,
    "mc": 1068.3,
    "rel": 0.439,
-   "how": "series anchor"
+   "how": "series anchor",
+   "verdict": "store-confirmed by the quarter's own filing (INDAS_584590_3670_14072022171916_WEB_xml)",
+   "filing": 599.3
   },
   "TATAPOWER|20220331|s": {
    "ours": 1820.47,
    "mc": 2288.3,
    "rel": 0.204,
-   "how": "series anchor"
+   "how": "series anchor",
+   "verdict": "store-confirmed by the quarter's own filing (INDAS_84050_651705_06052022061925_WEB_xml)",
+   "filing": 1820.47
   },
   "LTM|20211231|c": {
    "ours": 612.0,
    "mc": 1049.6,
    "rel": 0.417,
-   "how": "series anchor"
+   "how": "series anchor",
+   "verdict": "store-confirmed by the quarter's own filing (INDAS_80206_594823_20012022124104_WEB_xml)",
+   "filing": 612.0
   },
   "LTM|20211231|s": {
    "ours": 589.2,
    "mc": 1026.8,
    "rel": 0.426,
-   "how": "series anchor"
+   "how": "series anchor",
+   "verdict": "store-confirmed by the quarter's own filing (INDAS_80207_594827_20012022124222_WEB_xml)",
+   "filing": 589.2
   },
   "TATASTLBSL|20170331|s": {
    "ours": -1130.65,
    "mc": -756.76,
    "rel": 0.331,
-   "how": "series anchor"
+   "how": "series anchor",
+   "verdict": "OPEN: no NSE filing reachable (index hole / no list / integrated era) -> BSE announcement PDF route",
+   "filing": null
   },
   "PAYTM|20221231|c": {
    "ours": -39.2,
    "mc": -392.0,
    "rel": 0.9,
-   "how": "series anchor"
+   "how": "series anchor",
+   "verdict": "store-confirmed by the quarter's own filing (INDAS_88584_785466_03022023103749_WEB_xml)",
+   "filing": -39.2
   },
   "GICRE|20210930|c": {
    "ours": 1010.55,
    "mc": 1348.15,
    "rel": 0.25,
-   "how": "target-quarter anchor"
+   "how": "target-quarter anchor",
+   "verdict": "OPEN: no NSE filing reachable (index hole / no list / integrated era) -> BSE announcement PDF route",
+   "filing": null
   },
   "AIIL|20231231|s": {
    "ours": 603.0,
    "mc": 294.98,
    "rel": 0.511,
-   "how": "series anchor"
+   "how": "series anchor",
+   "verdict": "OPEN: no NSE filing reachable (index hole / no list / integrated era) -> BSE announcement PDF route",
+   "filing": null
   },
   "GICRE|20190331|c": {
    "ours": 603.37,
    "mc": 888.88,
    "rel": 0.321,
-   "how": "target-quarter anchor"
+   "how": "target-quarter anchor",
+   "verdict": "OPEN: no NSE filing reachable (index hole / no list / integrated era) -> BSE announcement PDF route",
+   "filing": null
   },
   "IDFC|20190930|c": {
    "ours": -680.0,
    "mc": -407.78,
    "rel": 0.4,
-   "how": "series anchor"
+   "how": "series anchor",
+   "verdict": "OPEN: no NSE filing reachable (index hole / no list / integrated era) -> BSE announcement PDF route",
+   "filing": null
   },
   "GICRE|20210630|c": {
    "ours": -771.73,
    "mc": -1039.69,
    "rel": 0.258,
-   "how": "target-quarter anchor"
+   "how": "target-quarter anchor",
+   "verdict": "OPEN: no NSE filing reachable (index hole / no list / integrated era) -> BSE announcement PDF route",
+   "filing": null
   },
   "AMBUJACEM|20231231|c": {
    "ours": 1089.55,
    "mc": 823.05,
    "rel": 0.245,
-   "how": "series anchor"
+   "how": "series anchor",
+   "verdict": "store-confirmed by the quarter's own filing (INDAS_101893_1040562_31012024060355_xml)",
+   "filing": 1089.55
   },
   "SHYAMMETL|20250930|c": {
    "ours": -1.31,
    "mc": 261.76,
    "rel": 1.005,
-   "how": "series anchor"
+   "how": "series anchor",
+   "verdict": "HEALED 2026-09-05 -> 261.76 (pat_defects.json + owners_basis_heals.json)",
+   "filing": 261.76
   },
   "PVRINOX|20230331|s": {
    "ours": -88.8,
    "mc": -335.75,
    "rel": 0.736,
-   "how": "series anchor"
+   "how": "series anchor",
+   "verdict": "store-confirmed by the quarter's own filing (INDAS_91750_843367_16052023123500_xml)",
+   "filing": -88.8
   },
   "APLLTD|20190930|c": {
    "ours": 4.18,
    "mc": 250.45,
    "rel": 0.983,
-   "how": "series anchor"
+   "how": "series anchor",
+   "verdict": "HEALED 2026-09-05 -> 246.27 (pat_defects.json + owners_basis_heals.json)",
+   "filing": 246.27
   },
   "AMBUJACEM|20230630|c": {
    "ours": 1135.46,
    "mc": 905.61,
    "rel": 0.202,
-   "how": "series anchor"
+   "how": "series anchor",
+   "verdict": "store-confirmed by the quarter's own filing (INDAS_95059_905850_02082023113244_xml)",
+   "filing": 1135.46
   },
   "MCLEODRUSS|20181231|c": {
    "ours": -38.23,
    "mc": 185.36,
    "rel": 1.206,
-   "how": "series anchor"
+   "how": "series anchor",
+   "verdict": "OPEN: no NSE filing reachable (index hole / no list / integrated era) -> BSE announcement PDF route",
+   "filing": null
   },
   "GSPL|20180630|c": {
    "ours": 439.03,
    "mc": 216.16,
    "rel": 0.508,
-   "how": "target-quarter anchor"
+   "how": "target-quarter anchor",
+   "verdict": "OPEN: no NSE filing reachable (index hole / no list / integrated era) -> BSE announcement PDF route",
+   "filing": null
   },
   "M&MFIN|20210331|c": {
    "ours": 2.16,
    "mc": 216.34,
    "rel": 0.99,
-   "how": "series anchor"
+   "how": "series anchor",
+   "verdict": "store-confirmed by the quarter's own filing (NBFC_INDAS_69431_443485_24042021062751_WEB_xml)",
+   "filing": 2.16
   },
   "GICRE|20180930|c": {
    "ours": 513.84,
    "mc": 727.5,
    "rel": 0.294,
-   "how": "target-quarter anchor"
+   "how": "target-quarter anchor",
+   "verdict": "OPEN: no NSE filing reachable (index hole / no list / integrated era) -> BSE announcement PDF route",
+   "filing": null
   },
   "GMRAIRPORT|20170331|c": {
    "ours": 120.71,
    "mc": -89.58,
    "rel": 1.742,
-   "how": "series anchor"
+   "how": "series anchor",
+   "verdict": "OPEN: no NSE filing reachable (index hole / no list / integrated era) -> BSE announcement PDF route",
+   "filing": null
   },
   "DLF|20181231|s": {
    "ours": 2.04,
    "mc": 204.22,
    "rel": 0.99,
-   "how": "series anchor"
+   "how": "series anchor",
+   "verdict": "store-confirmed by the quarter's own filing (INDAS_43548_86379_29032019025335_WEB_xml)",
+   "filing": 2.04
   },
   "IOC|20181231|c": {
    "ours": 965.0,
    "mc": 767.66,
    "rel": 0.204,
-   "how": "series anchor"
+   "how": "series anchor",
+   "verdict": "store-confirmed by the quarter's own filing (INDAS_41910_78701_30012019053319_WEB_xml)",
+   "filing": 965.0
   },
   "NLCINDIA|20170930|s": {
    "ours": 509.22,
    "mc": 326.88,
    "rel": 0.358,
-   "how": "series anchor"
+   "how": "series anchor",
+   "verdict": "store-confirmed by the quarter's own filing (financial_res_NLCINDIA_1033445.html)",
+   "filing": 509.22
   },
   "IIFL|20180630|c": {
    "ours": 344.55,
    "mc": 164.03,
    "rel": 0.524,
-   "how": "target-quarter anchor"
+   "how": "target-quarter anchor",
+   "verdict": "OPEN: no NSE filing reachable (index hole / no list / integrated era) -> BSE announcement PDF route",
+   "filing": null
   },
   "DHFL|20180331|s": {
    "ours": 312.4,
    "mc": 134.35,
    "rel": 0.57,
-   "how": "target-quarter anchor"
+   "how": "target-quarter anchor",
+   "verdict": "OPEN: no NSE filing reachable (index hole / no list / integrated era) -> BSE announcement PDF route",
+   "filing": null
   },
   "BALKRISIND|20260630|c": {
    "ours": 628.55,
    "mc": 450.77,
    "rel": 0.283,
-   "how": "series anchor"
+   "how": "series anchor",
+   "verdict": "HEALED 2026-09-05 -> 450.77 (pat_defects.json + owners_basis_heals.json)",
+   "filing": 450.77
   },
   "COFORGE|20210930|s": {
    "ours": 126.3,
    "mc": -45.4,
    "rel": 1.359,
-   "how": "series anchor"
+   "how": "series anchor",
+   "verdict": "store-confirmed by the quarter's own filing (INDAS_76728_545905_26102021120845_WEB_xml)",
+   "filing": 126.3
   },
   "GICRE|20211231|c": {
    "ours": -28.48,
    "mc": 141.8,
    "rel": 1.201,
-   "how": "target-quarter anchor"
+   "how": "target-quarter anchor",
+   "verdict": "OPEN: no NSE filing reachable (index hole / no list / integrated era) -> BSE announcement PDF route",
+   "filing": null
   },
   "IIFL|20180930|c": {
    "ours": 303.95,
    "mc": 136.42,
    "rel": 0.551,
-   "how": "target-quarter anchor"
+   "how": "target-quarter anchor",
+   "verdict": "OPEN: no NSE filing reachable (index hole / no list / integrated era) -> BSE announcement PDF route",
+   "filing": null
   },
   "TVSHLTD|20220630|c": {
    "ours": 326.0,
    "mc": 160.0,
    "rel": 0.509,
-   "how": "series anchor"
+   "how": "series anchor",
+   "verdict": "OPEN: no NSE filing reachable (index hole / no list / integrated era) -> BSE announcement PDF route",
+   "filing": null
   },
   "UBL|20220331|c": {
    "ours": 1.63,
    "mc": 163.4,
    "rel": 0.99,
-   "how": "series anchor"
+   "how": "series anchor",
+   "verdict": "store-confirmed by the quarter's own filing (INDAS_83647_648491_27042022035502_WEB_xml)",
+   "filing": 1.63
   },
   "JINDALSAW|20180930|c": {
    "ours": 256.77,
    "mc": 97.18,
    "rel": 0.622,
-   "how": "series anchor"
+   "how": "series anchor",
+   "verdict": "OPEN: no NSE filing reachable (index hole / no list / integrated era) -> BSE announcement PDF route",
+   "filing": null
   },
   "BEML|20210331|c": {
    "ours": 0.0,
    "mc": 157.81,
    "rel": 1.0,
-   "how": "series anchor"
+   "how": "series anchor",
+   "verdict": "store-confirmed by the quarter's own filing (INDAS_71209_458330_11062021103021_WEB_xml)",
+   "filing": 0.0
   },
   "M&MFIN|20170630|s": {
    "ours": 47.39,
    "mc": 201.36,
    "rel": 0.765,
-   "how": "series anchor"
+   "how": "series anchor",
+   "verdict": "OPEN: no NSE filing reachable (index hole / no list / integrated era) -> BSE announcement PDF route",
+   "filing": null
   },
   "M&MFIN|20210331|s": {
    "ours": 1.5,
    "mc": 149.97,
    "rel": 0.99,
-   "how": "series anchor"
+   "how": "series anchor",
+   "verdict": "store-confirmed by the quarter's own filing (NBFC_INDAS_69428_443474_24042021053156_WEB_xml)",
+   "filing": 1.5
   },
   "LTF|20220930|c": {
    "ours": 262.0,
    "mc": 406.43,
    "rel": 0.355,
-   "how": "series anchor"
+   "how": "series anchor",
+   "verdict": "OPEN: no NSE filing reachable (index hole / no list / integrated era) -> BSE announcement PDF route",
+   "filing": null
   },
   "HBLENGINE|20250930|c": {
    "ours": 530.54,
    "mc": 387.27,
    "rel": 0.27,
-   "how": "series anchor"
+   "how": "series anchor",
+   "verdict": "OPEN: no NSE filing reachable (index hole / no list / integrated era) -> BSE announcement PDF route",
+   "filing": null
   },
   "HBLENGINE|20250930|s": {
    "ours": 521.93,
    "mc": 382.2,
    "rel": 0.268,
-   "how": "series anchor"
+   "how": "series anchor",
+   "verdict": "OPEN: no NSE filing reachable (index hole / no list / integrated era) -> BSE announcement PDF route",
+   "filing": null
   },
   "CHENNPETRO|20180630|c": {
    "ours": 23.61,
    "mc": 158.94,
    "rel": 0.851,
-   "how": "series anchor"
+   "how": "series anchor",
+   "verdict": "OPEN: no NSE filing reachable (index hole / no list / integrated era) -> BSE announcement PDF route",
+   "filing": null
   },
   "MFSL|20181231|c": {
    "ours": 39.22,
    "mc": -94.97,
    "rel": 1.413,
-   "how": "series anchor"
+   "how": "series anchor",
+   "verdict": "OPEN: no NSE filing reachable (index hole / no list / integrated era) -> BSE announcement PDF route",
+   "filing": null
   },
   "MOTILALOFS|20180331|c": {
    "ours": 13.91,
    "mc": 147.85,
    "rel": 0.906,
-   "how": "target-quarter anchor"
+   "how": "target-quarter anchor",
+   "verdict": "OPEN: no NSE filing reachable (index hole / no list / integrated era) -> BSE announcement PDF route",
+   "filing": null
   },
   "SUVEN|20190331|c": {
    "ours": 86.94,
    "mc": -39.43,
    "rel": 1.454,
-   "how": "target-quarter anchor"
+   "how": "target-quarter anchor",
+   "verdict": "OPEN: no NSE filing reachable (index hole / no list / integrated era) -> BSE announcement PDF route",
+   "filing": null
   },
   "TITAN|20170331|c": {
    "ours": 304.41,
    "mc": 184.32,
    "rel": 0.395,
-   "how": "series anchor"
+   "how": "series anchor",
+   "verdict": "OPEN: no NSE filing reachable (index hole / no list / integrated era) -> BSE announcement PDF route",
+   "filing": null
   },
   "BHARATFORG|20230331|c": {
    "ours": 135.5,
    "mc": 250.62,
    "rel": 0.459,
-   "how": "series anchor"
+   "how": "series anchor",
+   "verdict": "store-confirmed by the quarter's own filing (INDAS_91265_838141_05052023082150_xml)",
+   "filing": 135.53
   },
   "POLYPLEX|20221231|c": {
    "ours": 147.51,
    "mc": 38.67,
    "rel": 0.738,
-   "how": "target-quarter anchor"
+   "how": "target-quarter anchor",
+   "verdict": "OPEN: no NSE filing reachable (index hole / no list / integrated era) -> BSE announcement PDF route",
+   "filing": null
   },
   "RPOWER|20180930|c": {
    "ours": 252.92,
    "mc": 147.37,
    "rel": 0.417,
-   "how": "series anchor"
+   "how": "series anchor",
+   "verdict": "store-confirmed by the quarter's own filing (INDAS_40135_57475_02112018080341_WEB_xml)",
+   "filing": 252.92
   },
   "SWANCORP|20231231|c": {
    "ours": 219.99,
    "mc": 115.11,
    "rel": 0.477,
-   "how": "series anchor"
+   "how": "series anchor",
+   "verdict": "store-confirmed by the quarter's own filing (INDAS_101922_1040758_31012024065010_xml)",
+   "filing": 219.99
   },
   "SFL|20201231|c": {
    "ours": 0.99,
    "mc": 99.28,
    "rel": 0.99,
-   "how": "series anchor"
+   "how": "series anchor",
+   "verdict": "store-confirmed by the quarter's own filing (INDAS_66930_401601_03022021052154_WEB_xml)",
+   "filing": 0.99
   },
   "ALIVUS|20210331|s": {
    "ours": 104.68,
    "mc": 10.47,
    "rel": 0.9,
-   "how": "series anchor"
+   "how": "series anchor",
+   "verdict": "OPEN: no NSE filing reachable (index hole / no list / integrated era) -> BSE announcement PDF route",
+   "filing": null
   },
   "GSPL|20191231|c": {
    "ours": 408.75,
    "mc": 318.32,
    "rel": 0.221,
-   "how": "series anchor"
+   "how": "series anchor",
+   "verdict": "store-confirmed by the quarter's own filing (INDAS_54049_221137_14022020115936_WEB_xml)",
+   "filing": 408.75
   },
   "GICRE|20190630|c": {
    "ours": 108.59,
    "mc": 192.07,
    "rel": 0.435,
-   "how": "target-quarter anchor"
+   "how": "target-quarter anchor",
+   "verdict": "OPEN: no NSE filing reachable (index hole / no list / integrated era) -> BSE announcement PDF route",
+   "filing": null
   },
   "SUNDARMFIN|20190930|c": {
    "ours": 269.0,
    "mc": 187.09,
    "rel": 0.304,
-   "how": "series anchor"
+   "how": "series anchor",
+   "verdict": "OPEN: no NSE filing reachable (index hole / no list / integrated era) -> BSE announcement PDF route",
+   "filing": null
   },
   "GODREJPROP|20171231|c": {
    "ours": -54.75,
    "mc": 25.94,
    "rel": 1.474,
-   "how": "series anchor"
+   "how": "series anchor",
+   "verdict": "HEALED 2026-09-05 -> 25.94 (pat_defects.json + owners_basis_heals.json)",
+   "filing": 25.94
   },
   "ZENSARTECH|20200930|c": {
    "ours": 78.6,
    "mc": 0.49,
    "rel": 0.994,
-   "how": "series anchor"
+   "how": "series anchor",
+   "verdict": "needs-pdf: the XBRL is internally inconsistent (OneD total 2.29 / owners 0.5 while FourD H1 owners 73.8; std 63.54); store 78.6 kept",
+   "filing": 0.5
   },
   "DBL|20211231|c": {
    "ours": -96.89,
    "mc": -19.16,
    "rel": 0.802,
-   "how": "series anchor"
+   "how": "series anchor",
+   "verdict": "store-confirmed by the quarter's own filing (INDAS_82669_609275_12022022052817_WEB_xml)",
+   "filing": -96.89
   },
   "SFL|20201231|s": {
    "ours": 0.78,
    "mc": 77.99,
    "rel": 0.99,
-   "how": "series anchor"
+   "how": "series anchor",
+   "verdict": "store-confirmed by the quarter's own filing (INDAS_66927_401589_03022021051909_WEB_xml)",
+   "filing": 0.78
   },
   "BAYERCROP|20190630|s": {
    "ours": 59.3,
    "mc": 135.3,
    "rel": 0.562,
-   "how": "series anchor"
+   "how": "series anchor",
+   "verdict": "OPEN: no NSE filing reachable (index hole / no list / integrated era) -> BSE announcement PDF route",
+   "filing": null
   },
   "KIRLFER|20240930|s": {
    "ours": 160.47,
    "mc": 84.91,
    "rel": 0.471,
-   "how": "series anchor"
+   "how": "series anchor",
+   "verdict": "OPEN: no NSE filing reachable (index hole / no list / integrated era) -> BSE announcement PDF route",
+   "filing": null
   },
   "IIFL|20191231|s": {
    "ours": -5.72,
    "mc": 65.12,
    "rel": 1.088,
-   "how": "series anchor"
+   "how": "series anchor",
+   "verdict": "store-confirmed by the quarter's own filing (NBFC_INDAS_51779_211519_28012020112806_WEB_xml)",
+   "filing": -5.72
   },
   "IIFL|20190331|s": {
    "ours": 126.64,
    "mc": 196.27,
    "rel": 0.355,
-   "how": "series anchor"
+   "how": "series anchor",
+   "verdict": "store-confirmed by the quarter's own filing (INDAS_44212_102122_15052019074300_WEB_xml)",
+   "filing": 126.64
   },
   "SFL|20200930|c": {
    "ours": 0.69,
    "mc": 68.97,
    "rel": 0.99,
-   "how": "series anchor"
+   "how": "series anchor",
+   "verdict": "store-confirmed by the quarter's own filing (INDAS_62833_353488_01112020035213_WEB_xml)",
+   "filing": 0.69
   },
   "JETAIRWAYS|20200930|s": {
    "ours": 152.41,
    "mc": 84.23,
    "rel": 0.447,
-   "how": "series anchor"
+   "how": "series anchor",
+   "verdict": "OPEN: no NSE filing reachable (index hole / no list / integrated era) -> BSE announcement PDF route",
+   "filing": null
   },
   "ZYDUSLIFE|20191231|s": {
    "ours": 281.6,
    "mc": 213.6,
    "rel": 0.241,
-   "how": "series anchor"
+   "how": "series anchor",
+   "verdict": "store-confirmed by the quarter's own filing (INDAS_52505_215126_05022020061411_WEB_xml)",
+   "filing": 281.6
   },
   "CGPOWER|20180630|s": {
    "ours": 101.22,
    "mc": 36.81,
    "rel": 0.636,
-   "how": "target-quarter anchor"
+   "how": "target-quarter anchor",
+   "verdict": "OPEN: no NSE filing reachable (index hole / no list / integrated era) -> BSE announcement PDF route",
+   "filing": null
   },
   "ASHOKLEY|20220630|c": {
    "ours": 5.33,
    "mc": 68.05,
    "rel": 0.922,
-   "how": "target-quarter anchor"
+   "how": "target-quarter anchor",
+   "verdict": "OPEN: no NSE filing reachable (index hole / no list / integrated era) -> BSE announcement PDF route",
+   "filing": null
   },
   "KIRLFER|20240331|s": {
    "ours": 95.12,
    "mc": 34.06,
    "rel": 0.642,
-   "how": "series anchor"
+   "how": "series anchor",
+   "verdict": "OPEN: no NSE filing reachable (index hole / no list / integrated era) -> BSE announcement PDF route",
+   "filing": null
   },
   "SYNDIBANK|20181231|c": {
    "ours": 171.68,
    "mc": 117.43,
    "rel": 0.316,
-   "how": "target-quarter anchor"
+   "how": "target-quarter anchor",
+   "verdict": "OPEN: no NSE filing reachable (index hole / no list / integrated era) -> BSE announcement PDF route",
+   "filing": null
   },
   "CAPLIPOINT|20200630|c": {
    "ours": 0.55,
    "mc": 54.53,
    "rel": 0.99,
-   "how": "series anchor"
+   "how": "series anchor",
+   "verdict": "store-confirmed by the quarter's own filing (INDAS_59822_305040_11082020025358_WEB_xml)",
+   "filing": 0.55
   },
   "JMFINANCIL|20171231|c": {
    "ours": 221.09,
    "mc": 168.1,
    "rel": 0.24,
-   "how": "series anchor"
+   "how": "series anchor",
+   "verdict": "OPEN: no NSE filing reachable (index hole / no list / integrated era) -> BSE announcement PDF route",
+   "filing": null
   },
   "RAMCOCEM|20180930|c": {
    "ours": 173.08,
    "mc": 120.31,
    "rel": 0.305,
-   "how": "series anchor"
+   "how": "series anchor",
+   "verdict": "OPEN: no NSE filing reachable (index hole / no list / integrated era) -> BSE announcement PDF route",
+   "filing": null
   },
   "COHANCE|20250930|s": {
    "ours": 146.86,
    "mc": 94.29,
    "rel": 0.358,
-   "how": "series anchor"
+   "how": "series anchor",
+   "verdict": "OPEN: no NSE filing reachable (index hole / no list / integrated era) -> BSE announcement PDF route",
+   "filing": null
   },
   "SCHAEFFLER|20180630|s": {
    "ours": 61.25,
    "mc": 111.44,
    "rel": 0.45,
-   "how": "series anchor"
+   "how": "series anchor",
+   "verdict": "store-confirmed by the quarter's own filing (INDAS_37345_29723_27072018121151_WEB_xml)",
+   "filing": 61.25
   },
   "RPOWER|20180630|c": {
    "ours": 237.33,
    "mc": 187.48,
    "rel": 0.21,
-   "how": "series anchor"
+   "how": "series anchor",
+   "verdict": "OPEN: no NSE filing reachable (index hole / no list / integrated era) -> BSE announcement PDF route",
+   "filing": null
   },
   "NAM-INDIA|20180331|c": {
    "ours": 112.61,
    "mc": 162.0,
    "rel": 0.305,
-   "how": "series anchor"
+   "how": "series anchor",
+   "verdict": "OPEN: no NSE filing reachable (index hole / no list / integrated era) -> BSE announcement PDF route",
+   "filing": null
   },
   "COHANCE|20250930|c": {
    "ours": 122.96,
    "mc": 74.08,
    "rel": 0.398,
-   "how": "series anchor"
+   "how": "series anchor",
+   "verdict": "OPEN: no NSE filing reachable (index hole / no list / integrated era) -> BSE announcement PDF route",
+   "filing": null
   },
   "TATACONSUM|20191231|s": {
    "ours": 94.22,
    "mc": 142.99,
    "rel": 0.341,
-   "how": "series anchor"
+   "how": "series anchor",
+   "verdict": "store-confirmed by the quarter's own filing (INDAS_52471_214979_05022020042014_WEB_xml)",
+   "filing": 94.22
   },
   "TATACONSUM|20191231|c": {
    "ours": 120.59,
    "mc": 169.35,
    "rel": 0.288,
-   "how": "series anchor"
+   "how": "series anchor",
+   "verdict": "store-confirmed by the quarter's own filing (INDAS_52474_214985_05022020042522_WEB_xml)",
+   "filing": 120.59
   },
   "LAURUSLABS|20161231|c": {
    "ours": 45.02,
    "mc": 93.3,
    "rel": 0.517,
-   "how": "series anchor"
+   "how": "series anchor",
+   "verdict": "store-confirmed by the quarter's own filing (financial_res_LAURUSLABS_1035668.html)",
+   "filing": 45.02
   },
   "TATACOFFEE|20171231|c": {
    "ours": 84.61,
    "mc": 36.6,
    "rel": 0.567,
-   "how": "series anchor"
+   "how": "series anchor",
+   "verdict": "HEALED 2026-09-05 -> 42.88 (pat_defects.json + owners_basis_heals.json)",
+   "filing": 42.88
   },
   "NAVA|20210930|c": {
    "ours": -15.75,
    "mc": 31.1,
    "rel": 1.506,
-   "how": "series anchor"
+   "how": "series anchor",
+   "verdict": "needs-pdf: XBRL owners 24.59 / NCI -48.49 / total -15.75 do not close; EPS implies 31.06 (= feed); store holds the total",
+   "filing": 24.59
   },
   "SFL|20200930|s": {
    "ours": 0.47,
    "mc": 47.18,
    "rel": 0.99,
-   "how": "series anchor"
+   "how": "series anchor",
+   "verdict": "store-confirmed by the quarter's own filing (INDAS_62832_353485_01112020034948_WEB_xml)",
+   "filing": 0.47
   },
   "NAVA|20201231|c": {
    "ours": 161.79,
    "mc": 118.45,
    "rel": 0.268,
-   "how": "series anchor"
+   "how": "series anchor",
+   "verdict": "store-confirmed by the quarter's own filing (INDAS_67371_403549_08022021041650_WEB_xml)",
+   "filing": 161.79
   },
   "NAVA|20180930|c": {
    "ours": 140.51,
    "mc": 97.21,
    "rel": 0.308,
-   "how": "series anchor"
+   "how": "series anchor",
+   "verdict": "store-confirmed by the quarter's own filing (INDAS_40228_57780_03112018055544_WEB_2_xml)",
+   "filing": 140.51
   },
   "TTKPRESTIG|20170930|c": {
    "ours": 0.43,
    "mc": 43.28,
    "rel": 0.99,
-   "how": "series anchor"
+   "how": "series anchor",
+   "verdict": "store-confirmed by the quarter's own filing (financial_res_TTKPRESTIG_1031812.html)",
+   "filing": 0.43
   },
   "ICICIGI|20210630|s": {
    "ours": 151.63,
    "mc": 194.3,
    "rel": 0.22,
-   "how": "series anchor"
+   "how": "series anchor",
+   "verdict": "OPEN: no NSE filing reachable (index hole / no list / integrated era) -> BSE announcement PDF route",
+   "filing": null
   },
   "CARERATING|20180331|c": {
    "ours": 42.03,
    "mc": -0.02,
    "rel": 1.0,
-   "how": "target-quarter anchor"
+   "how": "target-quarter anchor",
+   "verdict": "OPEN: no NSE filing reachable (index hole / no list / integrated era) -> BSE announcement PDF route",
+   "filing": null
   },
   "CIEINDIA|20190930|s": {
    "ours": -32.59,
    "mc": 9.41,
    "rel": 1.289,
-   "how": "series anchor"
+   "how": "series anchor",
+   "verdict": "store-confirmed by the quarter's own filing (INDAS_48859_157464_24102019023647_WEB_xml)",
+   "filing": -32.59
   },
   "CAPLIPOINT|20200630|s": {
    "ours": 0.42,
    "mc": 42.02,
    "rel": 0.99,
-   "how": "series anchor"
+   "how": "series anchor",
+   "verdict": "store-confirmed by the quarter's own filing (INDAS_59807_304994_11082020124849_WEB_xml)",
+   "filing": 0.42
   },
   "ASHOKLEY|20220630|s": {
    "ours": 68.05,
    "mc": 28.02,
    "rel": 0.588,
-   "how": "target-quarter anchor"
+   "how": "target-quarter anchor",
+   "verdict": "OPEN: no NSE filing reachable (index hole / no list / integrated era) -> BSE announcement PDF route",
+   "filing": null
   },
   "3MINDIA|20180930|c": {
    "ours": 110.19,
    "mc": 70.29,
    "rel": 0.362,
-   "how": "target-quarter anchor"
+   "how": "target-quarter anchor",
+   "verdict": "OPEN: no NSE filing reachable (index hole / no list / integrated era) -> BSE announcement PDF route",
+   "filing": null
   },
   "MFSL|20190930|c": {
    "ours": 2.78,
    "mc": 42.16,
    "rel": 0.934,
-   "how": "series anchor"
+   "how": "series anchor",
+   "verdict": "OPEN: no NSE filing reachable (index hole / no list / integrated era) -> BSE announcement PDF route",
+   "filing": null
   },
   "RELIGARE|20170930|s": {
    "ours": -30.5,
    "mc": 7.73,
    "rel": 1.253,
-   "how": "series anchor"
+   "how": "series anchor",
+   "verdict": "store-confirmed by the quarter's own filing (financial_res_RELIGARE_1033466.html)",
+   "filing": -30.5
   },
   "CARERATING|20200930|c": {
    "ours": 0.38,
    "mc": 35.46,
    "rel": 0.989,
-   "how": "series anchor"
+   "how": "series anchor",
+   "verdict": "HEALED 2026-09-05 -> 35.46 (pat_defects.json + owners_basis_heals.json)",
+   "filing": 35.46
   },
   "ACC|20161231|c": {
    "ours": 56.34,
    "mc": 90.87,
    "rel": 0.38,
-   "how": "series anchor"
+   "how": "series anchor",
+   "verdict": "store-confirmed by the quarter's own filing (financial_res_ACC_1019041.html)",
+   "filing": 56.34
   },
   "SECURKLOUD|20180331|c": {
    "ours": 47.75,
    "mc": 81.44,
    "rel": 0.414,
-   "how": "target-quarter anchor"
+   "how": "target-quarter anchor",
+   "verdict": "OPEN: no NSE filing reachable (index hole / no list / integrated era) -> BSE announcement PDF route",
+   "filing": null
   },
   "MHRIL|20190630|c": {
    "ours": 36.79,
    "mc": 3.68,
    "rel": 0.9,
-   "how": "series anchor"
+   "how": "series anchor",
+   "verdict": "store-confirmed by the quarter's own filing (INDAS_46483_126858_31072019054434_WEB_xml)",
+   "filing": 36.79
   },
   "BASF|20240930|c": {
    "ours": 95.68,
    "mc": 127.93,
    "rel": 0.252,
-   "how": "series anchor"
+   "how": "series anchor",
+   "verdict": "HEALED 2026-09-05 -> 127.93 (pat_defects.json + owners_basis_heals.json)",
+   "filing": 127.93
   },
   "SWANCORP|20210331|c": {
    "ours": -28.41,
    "mc": -59.24,
    "rel": 0.52,
-   "how": "series anchor"
+   "how": "series anchor",
+   "verdict": "store-confirmed: owners -28.41 + NCI -30.69 = total -59.24 closes; filer EPS computed on the total (SAGCEM class); feed prints the total",
+   "filing": -59.24
   },
   "ADANIGREEN|20250331|s": {
    "ours": 113.0,
    "mc": 83.0,
    "rel": 0.265,
-   "how": "target-quarter anchor"
+   "how": "target-quarter anchor",
+   "verdict": "OPEN: no NSE filing reachable (index hole / no list / integrated era) -> BSE announcement PDF route",
+   "filing": null
   },
   "NCC|20180331|c": {
    "ours": 46.4,
    "mc": 17.13,
    "rel": 0.631,
-   "how": "target-quarter anchor"
+   "how": "target-quarter anchor",
+   "verdict": "OPEN: no NSE filing reachable (index hole / no list / integrated era) -> BSE announcement PDF route",
+   "filing": null
   },
   "VBL|20161231|c": {
    "ours": -119.22,
    "mc": -90.61,
    "rel": 0.24,
-   "how": "series anchor"
+   "how": "series anchor",
+   "verdict": "OPEN: no NSE filing reachable (index hole / no list / integrated era) -> BSE announcement PDF route",
+   "filing": null
   },
   "3MINDIA|20180630|c": {
    "ours": 99.61,
    "mc": 125.38,
    "rel": 0.206,
-   "how": "target-quarter anchor"
+   "how": "target-quarter anchor",
+   "verdict": "OPEN: no NSE filing reachable (index hole / no list / integrated era) -> BSE announcement PDF route",
+   "filing": null
   },
   "ASHOKLEY|20190930|c": {
    "ours": 69.95,
    "mc": 44.6,
    "rel": 0.362,
-   "how": "series anchor"
+   "how": "series anchor",
+   "verdict": "store-confirmed by the quarter's own filing (INDAS_49641_162942_08112019082445_WEB_xml)",
+   "filing": 69.95
   },
   "CARERATING|20180630|c": {
    "ours": 25.03,
    "mc": 0.13,
    "rel": 0.995,
-   "how": "target-quarter anchor"
+   "how": "target-quarter anchor",
+   "verdict": "OPEN: no NSE filing reachable (index hole / no list / integrated era) -> BSE announcement PDF route",
+   "filing": null
   },
   "PRESTIGE|20170331|c": {
    "ours": 89.25,
    "mc": 113.57,
    "rel": 0.214,
-   "how": "series anchor"
+   "how": "series anchor",
+   "verdict": "store-confirmed: page EPS recon reproduces the stored 89.25 (0.0%); the feed's 113.57 is the period row before minority",
+   "filing": 113.57
   },
   "SAPPHIRE|20210930|c": {
    "ours": -5.0,
    "mc": -28.48,
    "rel": 0.824,
-   "how": "series anchor"
+   "how": "series anchor",
+   "verdict": "OPEN: no NSE filing reachable (index hole / no list / integrated era) -> BSE announcement PDF route",
+   "filing": null
   },
   "SAPPHIRE|20210630|c": {
    "ours": -26.09,
    "mc": -2.61,
    "rel": 0.9,
-   "how": "series anchor"
+   "how": "series anchor",
+   "verdict": "OPEN: no NSE filing reachable (index hole / no list / integrated era) -> BSE announcement PDF route",
+   "filing": null
   },
   "VBL|20160930|s": {
    "ours": 4.51,
    "mc": 27.93,
    "rel": 0.839,
-   "how": "series anchor"
+   "how": "series anchor",
+   "verdict": "OPEN: no NSE filing reachable (index hole / no list / integrated era) -> BSE announcement PDF route",
+   "filing": null
   },
   "SPLPETRO|20180331|s": {
    "ours": 64.52,
    "mc": 41.16,
    "rel": 0.362,
-   "how": "target-quarter anchor"
+   "how": "target-quarter anchor",
+   "verdict": "OPEN: no NSE filing reachable (index hole / no list / integrated era) -> BSE announcement PDF route",
+   "filing": null
   },
   "VBL|20161231|s": {
    "ours": -92.08,
    "mc": -68.84,
    "rel": 0.252,
-   "how": "series anchor"
+   "how": "series anchor",
+   "verdict": "OPEN: no NSE filing reachable (index hole / no list / integrated era) -> BSE announcement PDF route",
+   "filing": null
   },
   "CAPLIPOINT|20201231|c": {
    "ours": 41.48,
    "mc": 64.46,
    "rel": 0.357,
-   "how": "series anchor"
+   "how": "series anchor",
+   "verdict": "HEALED 2026-09-05 -> 66.14 (pat_defects.json + owners_basis_heals.json)",
+   "filing": 66.14
   },
   "KSB|20181231|s": {
    "ours": 2.53,
    "mc": 25.3,
    "rel": 0.9,
-   "how": "series anchor"
+   "how": "series anchor",
+   "verdict": "store-confirmed by the quarter's own filing (INDAS_43545_86354_29032019124934_WEB_xml)",
+   "filing": 2.53
   },
   "WELCORP|20211231|s": {
    "ours": 65.96,
    "mc": 88.5,
    "rel": 0.255,
-   "how": "target-quarter anchor"
+   "how": "target-quarter anchor",
+   "verdict": "OPEN: no NSE filing reachable (index hole / no list / integrated era) -> BSE announcement PDF route",
+   "filing": null
   },
   "SWANCORP|20220331|c": {
    "ours": -19.13,
    "mc": -41.52,
    "rel": 0.539,
-   "how": "series anchor"
+   "how": "series anchor",
+   "verdict": "store-confirmed by the quarter's own filing (INDAS_87033_670664_31052022055642_WEB_xml)",
+   "filing": -19.13
   },
   "RBLBANK|20210930|c": {
    "ours": 30.8,
    "mc": 9.72,
    "rel": 0.684,
-   "how": "series anchor"
+   "how": "series anchor",
+   "verdict": "OPEN: no NSE filing reachable (index hole / no list / integrated era) -> BSE announcement PDF route",
+   "filing": null
   },
   "CREDITACC|20210331|c": {
    "ours": 56.28,
    "mc": 76.87,
    "rel": 0.268,
-   "how": "series anchor"
+   "how": "series anchor",
+   "verdict": "store-confirmed by the quarter's own filing (NBFC_INDAS_69752_446370_07052021045134_WEB_xml)",
+   "filing": 56.28
   },
   "IFBIND|20170331|c": {
    "ours": 19.75,
    "mc": -0.53,
    "rel": 1.027,
-   "how": "series anchor"
+   "how": "series anchor",
+   "verdict": "OPEN: no NSE filing reachable (index hole / no list / integrated era) -> BSE announcement PDF route",
+   "filing": null
   },
   "GMRAIRPORT|20241231|s": {
    "ours": -49.43,
    "mc": -29.5,
    "rel": 0.403,
-   "how": "series anchor"
+   "how": "series anchor",
+   "verdict": "store-confirmed by the quarter's own filing (INDAS_118035_1364830_29012025054005_xml)",
+   "filing": -49.43
   },
   "SPICEJET|20211231|s": {
    "ours": 23.28,
    "mc": 42.45,
    "rel": 0.452,
-   "how": "series anchor"
+   "how": "series anchor",
+   "verdict": "OPEN: no NSE filing reachable (index hole / no list / integrated era) -> BSE announcement PDF route",
+   "filing": null
   },
   "SFL|20210630|s": {
    "ours": 0.19,
    "mc": 19.22,
    "rel": 0.99,
-   "how": "series anchor"
+   "how": "series anchor",
+   "verdict": "store-confirmed by the quarter's own filing (INDAS_76067_508045_14082021062733_WEB_xml)",
+   "filing": 0.19
   },
   "ADANIENSOL|20220630|s": {
    "ours": -0.17,
    "mc": -16.96,
    "rel": 0.99,
-   "how": "series anchor"
+   "how": "series anchor",
+   "verdict": "store-confirmed by the quarter's own filing (INDAS_627672_3586_04082022124035_WEB_xml)",
+   "filing": -0.17
   },
   "BALMLAWRIE|20220630|c": {
    "ours": 39.67,
    "mc": 56.13,
    "rel": 0.293,
-   "how": "series anchor"
+   "how": "series anchor",
+   "verdict": "OPEN: no NSE filing reachable (index hole / no list / integrated era) -> BSE announcement PDF route",
+   "filing": null
   },
   "DEEPAKFERT|20190331|s": {
    "ours": 5.25,
    "mc": -10.42,
    "rel": 1.504,
-   "how": "target-quarter anchor"
+   "how": "target-quarter anchor",
+   "verdict": "OPEN: no NSE filing reachable (index hole / no list / integrated era) -> BSE announcement PDF route",
+   "filing": null
   },
   "BFUTILITIE|20180630|c": {
    "ours": 26.85,
    "mc": 11.63,
    "rel": 0.567,
-   "how": "target-quarter anchor"
+   "how": "target-quarter anchor",
+   "verdict": "OPEN: no NSE filing reachable (index hole / no list / integrated era) -> BSE announcement PDF route",
+   "filing": null
   },
   "JSL|20180930|c": {
    "ours": -44.02,
    "mc": -59.02,
    "rel": 0.254,
-   "how": "series anchor"
+   "how": "series anchor",
+   "verdict": "OPEN: no NSE filing reachable (index hole / no list / integrated era) -> BSE announcement PDF route",
+   "filing": null
   },
   "IFCI|20200930|c": {
    "ours": -43.3,
    "mc": -58.09,
    "rel": 0.255,
-   "how": "series anchor"
+   "how": "series anchor",
+   "verdict": "store-confirmed by the quarter's own filing (INDAS_64680_360317_12112020035350_WEB_xml)",
+   "filing": -43.3
   },
   "KOLTEPATIL|20200331|c": {
    "ours": -2.18,
    "mc": -16.47,
    "rel": 0.868,
-   "how": "series anchor"
+   "how": "series anchor",
+   "verdict": "store-confirmed by the quarter's own filing (INDAS_56263_267650_23062020030153_WEB_xml)",
+   "filing": -2.18
   },
   "UJJIVAN|20181231|c": {
    "ours": 31.81,
    "mc": 45.2,
    "rel": 0.296,
-   "how": "series anchor"
+   "how": "series anchor",
+   "verdict": "OPEN: no NSE filing reachable (index hole / no list / integrated era) -> BSE announcement PDF route",
+   "filing": null
   },
   "TATACONSUM|20190331|c": {
    "ours": 35.99,
    "mc": 22.9,
    "rel": 0.364,
-   "how": "series anchor"
+   "how": "series anchor",
+   "verdict": "needs-pdf: XBRL owners 59.68 / NCI 7.2 / total 35.99 do not close; EPS implies 22.72 (= feed 22.9); store holds the total",
+   "filing": 59.68
   },
   "GAYAPROJ|20181231|c": {
    "ours": 37.87,
    "mc": 50.38,
    "rel": 0.248,
-   "how": "series anchor"
+   "how": "series anchor",
+   "verdict": "OPEN: no NSE filing reachable (index hole / no list / integrated era) -> BSE announcement PDF route",
+   "filing": null
   },
   "TATACOFFEE|20170930|c": {
    "ours": 35.08,
    "mc": 22.82,
    "rel": 0.349,
-   "how": "series anchor"
+   "how": "series anchor",
+   "verdict": "HEALED 2026-09-05 -> 22.82 (pat_defects.json + owners_basis_heals.json)",
+   "filing": 22.82
   },
   "KESORAMIND|20190331|c": {
    "ours": -1.7,
    "mc": -13.65,
    "rel": 0.875,
-   "how": "series anchor"
+   "how": "series anchor",
+   "verdict": "OPEN: no NSE filing reachable (index hole / no list / integrated era) -> BSE announcement PDF route",
+   "filing": null
   },
   "SWANCORP|20210930|c": {
    "ours": -25.56,
    "mc": -37.34,
    "rel": 0.315,
-   "how": "series anchor"
+   "how": "series anchor",
+   "verdict": "store-confirmed: owners -25.56 + NCI -11.77 = total -37.34 closes; filer EPS on the total; feed prints the total",
+   "filing": -37.34
   },
   "TIINDIA|20170331|c": {
    "ours": 39.32,
    "mc": 50.85,
    "rel": 0.227,
-   "how": "series anchor"
+   "how": "series anchor",
+   "verdict": "OPEN: no NSE filing reachable (index hole / no list / integrated era) -> BSE announcement PDF route",
+   "filing": null
   },
   "TVSHLTD|20210630|c": {
    "ours": -8.0,
    "mc": 1.61,
    "rel": 1.201,
-   "how": "series anchor"
+   "how": "series anchor",
+   "verdict": "store-confirmed by the quarter's own filing (INDAS_73764_497967_30072021043636_WEB_xml)",
+   "filing": -8.0
   },
   "PRSMJOHNSN|20230331|c": {
    "ours": -2.65,
    "mc": 6.9,
    "rel": 1.384,
-   "how": "series anchor"
+   "how": "series anchor",
+   "verdict": "HEALED 2026-09-05 -> 6.9 (pat_defects.json + owners_basis_heals.json)",
+   "filing": 6.9
   },
   "EDELWEISS|20220630|c": {
    "ours": 35.4,
    "mc": 26.38,
    "rel": 0.255,
-   "how": "target-quarter anchor"
+   "how": "target-quarter anchor",
+   "verdict": "OPEN: no NSE filing reachable (index hole / no list / integrated era) -> BSE announcement PDF route",
+   "filing": null
   },
   "VALIANTORG|20200331|s": {
    "ours": 21.85,
    "mc": 29.36,
    "rel": 0.256,
-   "how": "series anchor"
+   "how": "series anchor",
+   "verdict": "OPEN: no NSE filing reachable (index hole / no list / integrated era) -> BSE announcement PDF route",
+   "filing": null
   },
   "IGARASHI|20180630|s": {
    "ours": 13.89,
    "mc": 20.89,
    "rel": 0.335,
-   "how": "series anchor"
+   "how": "series anchor",
+   "verdict": "store-confirmed by the quarter's own filing (INDAS_38040_32502_08082018025120_WEB_xml)",
+   "filing": 13.89
   },
   "BAJAJELEC|20190331|c": {
    "ours": 24.73,
    "mc": 17.93,
    "rel": 0.275,
-   "how": "series anchor"
+   "how": "series anchor",
+   "verdict": "OPEN: no NSE filing reachable (index hole / no list / integrated era) -> BSE announcement PDF route",
+   "filing": null
   },
   "TEXRAIL|20180930|c": {
    "ours": 9.49,
    "mc": 15.43,
    "rel": 0.385,
-   "how": "target-quarter anchor"
+   "how": "target-quarter anchor",
+   "verdict": "OPEN: no NSE filing reachable (index hole / no list / integrated era) -> BSE announcement PDF route",
+   "filing": null
   },
   "WESTLIFE|20190331|c": {
    "ours": 7.14,
    "mc": 1.28,
    "rel": 0.821,
-   "how": "series anchor"
+   "how": "series anchor",
+   "verdict": "OPEN: no NSE filing reachable (index hole / no list / integrated era) -> BSE announcement PDF route",
+   "filing": null
   },
   "ABREL|20200930|s": {
    "ours": -5.16,
    "mc": 0.36,
    "rel": 1.07,
-   "how": "series anchor"
+   "how": "series anchor",
+   "verdict": "store-confirmed by the quarter's own filing (INDAS_62172_345683_19102020071639_WEB_xml)",
+   "filing": -5.16
   },
   "DEN|20170630|c": {
    "ours": -15.22,
    "mc": -10.11,
    "rel": 0.336,
-   "how": "series anchor"
+   "how": "series anchor",
+   "verdict": "store-confirmed: page EPS recon reproduces -15.49 vs stored -15.22; the feed's -10.11 is the row after the deduction identity",
+   "filing": -10.11
   },
   "ITDC|20171231|s": {
    "ours": 13.38,
    "mc": 17.65,
    "rel": 0.242,
-   "how": "series anchor"
+   "how": "series anchor",
+   "verdict": "store-confirmed by the quarter's own filing (financial_res_ITDC_1037538.html)",
+   "filing": 13.38
   },
   "SECURKLOUD|20200630|c": {
    "ours": -6.36,
    "mc": -2.8,
    "rel": 0.56,
-   "how": "series anchor"
+   "how": "series anchor",
+   "verdict": "HEALED 2026-09-05 -> -2.8 (pat_defects.json + owners_basis_heals.json)",
+   "filing": -2.8
   },
   "HFCL|20200331|c": {
    "ours": 8.7,
    "mc": 5.76,
    "rel": 0.338,
-   "how": "series anchor"
+   "how": "series anchor",
+   "verdict": "needs-pdf: XBRL owners 6.87 / NCI 2.84 / total 8.7 do not close; EPS implies 6.42; feed 5.76; store holds the total",
+   "filing": 6.87
   },
   "RALLIS|20190331|c": {
    "ours": 1.52,
    "mc": -0.18,
    "rel": 1.118,
-   "how": "series anchor"
+   "how": "series anchor",
+   "verdict": "store-confirmed by the quarter's own filing (INDAS_43650_99483_26042019052813_WEB_xml)",
+   "filing": 1.52
   },
   "SHILPAMED|20220630|c": {
    "ours": 2.34,
    "mc": 0.85,
    "rel": 0.637,
-   "how": "series anchor"
+   "how": "series anchor",
+   "verdict": "HEALED 2026-09-05 -> 0.85 (pat_defects.json + owners_basis_heals.json)",
+   "filing": 0.85
   },
   "BHARATFORG|20200930|c": {
    "ours": 0.03,
    "mc": -1.32,
    "rel": 1.023,
-   "how": "series anchor"
+   "how": "series anchor",
+   "verdict": "store-confirmed: prior PDF-proven owners heal (pat_defects + owners_basis_heals: owners 0.03, NCI -1.35, total -1.32); the XBRL carries only the total",
+   "filing": -1.32
   },
   "STARCEMENT|20161231|s": {
    "ours": -0.61,
    "mc": -1.74,
    "rel": 0.649,
-   "how": "series anchor"
+   "how": "series anchor",
+   "verdict": "OPEN: no NSE filing reachable (index hole / no list / integrated era) -> BSE announcement PDF route",
+   "filing": null
   },
   "ITDC|20190930|c": {
    "ours": 0.71,
    "mc": 0.07,
    "rel": 0.901,
-   "how": "series anchor"
+   "how": "series anchor",
+   "verdict": "store-confirmed by the quarter's own filing (INDAS_50643_168325_14112019054602_WEB_xml)",
+   "filing": 0.71
   },
   "MAXINDIA|20171231|s": {
    "ours": 0.55,
    "mc": 1.02,
    "rel": 0.461,
-   "how": "series anchor"
+   "how": "series anchor",
+   "verdict": "HEALED 2026-09-05 -> 1.02 (pat_defects.json + owners_basis_heals.json)",
+   "filing": 1.02
   },
   "WESTLIFE|20240930|c": {
    "ours": 0.0,
    "mc": 0.36,
    "rel": 1.0,
-   "how": "series anchor"
+   "how": "series anchor",
+   "verdict": "HEALED 2026-09-05 -> 0.36 (pat_defects.json + owners_basis_heals.json)",
+   "filing": 0.36
   },
   "WESTLIFE|20180630|s": {
    "ours": -0.05,
    "mc": -0.15,
    "rel": 0.667,
-   "how": "series anchor"
+   "how": "series anchor",
+   "verdict": "OPEN: no NSE filing reachable (index hole / no list / integrated era) -> BSE announcement PDF route",
+   "filing": null
   }
  }
 }

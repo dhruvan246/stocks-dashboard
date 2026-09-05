@@ -79,6 +79,7 @@ loads every session. (README.md is just a short pointer here — this file is th
 - **§128** ★★★ STD-PAT 2002-07 EXECUTED — 229 "missing" cells HELD under a retired key the coverage BUILDER read past (fixed, +597 mm); WB 172 + MC E2b 1,191 + NEW NSE-archive EPS-identity reader 175 = 1,538 cells; residue ledger with rungs per cell (**read before any pre-2015 std-PAT work or a coverage claim on a renamed symbol**)
 - **§130** ★★★ LINE-ITEM BLOCK BEFORE 2018 — archive HTML (2005-17) + Moneycontrol; bank taxonomy has no context block; local rebuild must union the committed .gz
 - **§132** ★★★ POINT-IN-TIME NIFTY 500 — the NSE register was already the day-level ledger; 316 names unmapped, register keys off canon-space, 3 changelog entries bled LIX15 rows; A/B on the 8 favourites (**read before any membership rebuild, roster claim, or press-release parse**)
+- **§133** ★★★ 182 STORED-PAT SUSPECTS adjudicated from each quarter's own filing — EPS arbitrates the owners tag; con heals need pat_defects + owners_basis_heals in one commit
 
 ---
 
@@ -15086,3 +15087,54 @@ Q4, ELGIEQUIP Q1-split/Q4, ORIENTBANK Mar-04, ANDHRABANK Q4 (no printed page). *
 Mar-03 (page = stored), THERMAX Sep-03 (printed with restated Q1). All 26 verdicts in `wb_rev_findings.json`.
 Store diff exactly 11 cells; `verify_fills_live` MISSING 0 / RESURRECTED 0; 10 `agg_pat_cell_fills` entries
 superseded (`std` nulled, value kept as `superseded_std`).
+
+## 133. ★★★ THE 182 STORED-PAT SUSPECTS, ADJUDICATED FROM EACH QUARTER'S OWN FILING — 17 healed, 74 store-confirmed, 88 wait on BSE PDFs  (2026-09-05, worktree ~/stocks-wt/eps-block)
+
+**NO ASSUMPTIONS, NO GUESSWORK (§0).** Queue = `scripts/pat_suspects_mc_2026-09-05.json` (§130d: stored PAT vs Moneycontrol's quarterly feed,
+≥20% apart). User: *"fix the 182 stored-PAT suspects via filing reads."* Every cell now carries a per-cell `verdict` in that file.
+
+### 131a. The reader: the quarter's OWN filing, and the filing's EPS as the owners arbiter
+* 2018+ → the NSE XBRL of that quarter (cache file named by the list row's `xbrl` URL; when the list has no row — NSE index holes like
+  PEL Jun-2022, and every 2025+ integrated filing — the cache is searched by symbol over filenames dated qe+1..+160 d, matching BOTH
+  `NSESymbol">SYM<` and `:Symbol contextRef="OneD">SYM<` — the integrated taxonomy uses the second and a grep for the first alone
+  misses every 2025+ file). Quarter validated with `build_xbrl_extra.parse_file` (so the §130a bank derivation applies), `scale_fix`
+  honoured. Pre-2018 → the archive HTML page; con PAT via `read_con_pat_nse.owners_pat` (§123b modes) + `eps_gate`.
+* **Consolidated owners figure = the candidate the filing's own EPS supports** (basic EPS × paid-up ÷ face value, ±3%), tried in the
+  order owners-tag · bank bottom line · NCI-tag (a §2d swap) · total−NCI (a broken owners tag) · total. Measured on this queue the tags
+  lie in FOUR ways: swapped owners/NCI (CARERATING Sep-20 + Jun-23, PRSMJOHNSN Mar-23, APLLTD Mar-19 + Sep-19, SHYAMMETL Sep-25 —
+  all close on owners+NCI==total and all match EPS on the NCI tag); owners tag > total (TMPV Mar-18 14,990 vs total 2,175;
+  AIIL Jun-26 2,593.58; BALKRISIND Jun-26 628.55 — EPS sits on total−NCI); owners AND NCI tagged 0.00 (WESTLIFE Sep-24, the ELECON/
+  TRU class, total 0.36 = EPS); a sign-flipped NCI (SHILPAMED Jun-22). Without the EPS test the first pass had called BHARATFORG
+  Mar-23 a heal — its EPS reproduces the STORED 135.5, the owners tag 250.62 is the garbage.
+* **The filing can lie to the feed too:** ZENSARTECH Sep-2020's XBRL prints a 2.29 cr quarter beside a 77.18 cr half-year and a
+  63.54 standalone; Moneycontrol copied the 0.49. Store (78.6, Trendlyne-era) kept, cell marked needs-pdf. An "EPS computed on the
+  total" filer (SWANCORP Mar/Sep-2021, SAGCEM class) is NOT a swap when owners+NCI==total closes on the tags — store kept.
+
+### 131b. Ledgers that already owned three of the cells (memory feedback-check-heal-ledgers-that-outrank-you)
+BHARATFORG Sep-2020: `pat_defects` + `owners_basis_heals` hold a PDF-read owners heal (owners 0.03 / NCI −1.35 / total −1.32) — the XBRL
+carries only the total, so the store is RIGHT and the cell was dropped from the heal set. GODREJPROP Dec-2017: a vision-read
+`pat_defects` entry (con 25.94) existed but the served con slot had REVERTED to −54.75 — `_reattr_owners` holds −54.75 and the entry was
+never pinned in `owners_basis_heals.json`, so `apply_owners_full` undid it nightly (the mirror still showed 25.94). SHYAMMETL Sep-2025:
+the 2026-07-30 swap heal sits in `attr_swap_fixes.json`, a ledger NO applier replays and the verifier does not register — reverted the
+same way. **Rule: every con heal is written to `pat_defects.json` (verifier-registered) AND pinned in `owners_basis_heals.json` (outranks
+the cache) in the same commit; then prove it by running `apply_owners_full.py` and `settle_stale_holds.py` locally — both reported 0.**
+
+### 131c. Row screen (§116b) before writing
+Every consolidated quarter of the 15 symbols being healed was re-read from its own filing (one grep pass maps 104,538 cache files →
+symbol): 2 more swap cells surfaced (CARERATING Jun-2023 0.55→17.81, APLLTD Mar-2019 −0.30→124.00), the rest of those series agree or
+differ by <1% (BHARATFORG 2019-20 vintage rounding — left), and two inconsistent-tag cells were journalled (CAPLIPOINT Sep-2018,
+SHILPAMED Mar-2018).
+
+### 131d. Landed
+**17 cells** via `pat_defect_fix.py --apply` (docs + mirror) with the sf_revop/revop_fundamentals PAT mirrors patched only where they
+held the old value (28 slots): AIIL Jun-26 2,593.58→1,105.93 · APLLTD Mar-19 −0.30→124.00, Sep-19 4.18→246.27 · BALKRISIND Jun-26
+628.55→450.77 · BASF Sep-24 95.68→127.93 · CAPLIPOINT Dec-20 41.48→64.46 · CARERATING Sep-20 0.38→35.46, Jun-23 0.55→17.81 ·
+GODREJPROP Dec-17 −54.75→25.94 · MAXINDIA Dec-17 std 0.55→1.02 · PRSMJOHNSN Mar-23 −2.65→6.90 · SECURKLOUD Jun-20 −6.36→−2.80 ·
+SHILPAMED Jun-22 2.34→0.85 · SHYAMMETL Sep-25 −1.31→261.76 · TATACOFFEE Sep-17 35.08→22.82, Dec-17 84.61→42.88 · WESTLIFE Sep-24
+0.00→0.36. Blast radius: exactly those 17 rows differ from HEAD; `verify_fills_live` MISSING/REVERTED/RESURRECTED 0.
+**Not healed, journalled:** 74 store-confirmed (Moneycontrol's number is a later vintage, the period row before minority, or a copied
+broken tag); TMPV Mar-2018 (store = total for the WHOLE un-reattributed series — a one-cell owners heal would mix bases, §116b; needs a
+series campaign); NAVA Sep-21 / TATACONSUM Mar-19 / HFCL Mar-20 / ZENSARTECH Sep-20 (tags do not close, need the PDF).
+**88 OPEN** with no NSE filing reachable: 62 list holes (2018-2022 con/std quarters NSE's list never carried, PEL/IOC/PETRONET/SUNTV…),
+11 no-list symbols (GICRE 6, ICICIGI, LICI, KIRLFER, SPICEJET), 102 XBRL URLs that 404, 3 archive pages that 404 → the BSE announcement
+route (§17c resolver + text layer, §2c) is the next rung.
