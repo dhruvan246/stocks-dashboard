@@ -184,7 +184,9 @@ def parse_period(label, fy_end_month=3):
             if d == end and (mo - fy_end_month) % 3 == 0:
                 return "q", dt.date(y, mo, d).strftime("%Y%m%d")
             return None, None
-    m = re.search(r"\b([a-z]{3})[a-z]*\.?[-\s']*(\d{4}|\d{2})\b", low) or re.search(r"\b\d{1,2}[-\s]*([a-z]{3})[a-z]*,?[-\s']*(\d{4}|\d{2})\b", low)
+    # "30th June, 2025" / "31st Mar, 2026" / "June 30, 2026" / "Jun-26" / "Mar’26"
+    m = re.search(r"\b\d{1,2}(?:st|nd|rd|th)?[-\s]*([a-z]{3})[a-z]*\.?[-\s',]*(\d{4}|\d{2})\b", low) or \
+        re.search(r"\b([a-z]{3})[a-z]*\.?[-\s',]*(?:\d{1,2}(?:st|nd|rd|th)?[-\s',]+)?(\d{4}|\d{2})\b", low)
     if m and m.group(1) in MON:
         mo, y = MON[m.group(1)], _yy(m.group(2))
         if (mo - fy_end_month) % 3 == 0:
