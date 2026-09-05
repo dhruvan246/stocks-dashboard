@@ -374,5 +374,31 @@
   "why": "continuity-hold: dii 21.6157 vs stored neighbours [('2002-12-31', 0.76)]",
   "rule": "held for a per-page second read (\u00a757d); a step >5pp fii / >10pp dii against every stored neighbour can be a real stake move, a definitional fold (Foreign Mutual Fund / Foreign FI rows, \u00a7127g) on THIS page, or a defect in the NEIGHBOUR (SBIN Dec-2003 stores prom 0.00 / dii 70.93 for a bank whose RBI block is 59.73 promoter) \u2014 the disagreement names no side, so neither cell is written from it.",
   "part": "wps2-era-names-2001-02"
+ },
+ "_suspects": {
+  "SBIN|2003-06-30..2003-12-31": {
+   "stored": {
+    "2003-06-30": [
+     0.0,
+     11.434,
+     70.8652,
+     5.3233
+    ],
+    "2003-09-30": [
+     0.0,
+     11.434,
+     70.6506,
+     5.1901
+    ],
+    "2003-12-31": [
+     0.0,
+     11.4624,
+     70.9345,
+     5.3597
+    ]
+   },
+   "evidence": "BSE aspx Flag=Old Mar-2004 (qtrid 41) prints RBI's block as 'Persons acting in Concert 314,338,700 = 59.73%' with Sub Total 59.73 before 'Non Promoter's Holding' (institutions: MF 5.63 + Banks/FI/Ins 6.00 + FIIS 11.46 = 23.09). The Dec-2003 page (qtrid 40) re-read 2026-09-05 with the fixed parser reproduces the STORED cell exactly (prom 0.0, dii 70.93), i.e. that filing places the RBI 59.73% inside 'Banks, Financial Institutions, Insurance Companies'. Filer-side classification change between Dec-2003 and Mar-2004, same class as the HAL Sep-2021 LIC misfiling (runbook \u00a722, memory project-stocks-hal-sep2021-dii-heal) with the direction reversed: a PROMOTER block sitting in dii. A DII screen sees SBIN at ~71% DII in 2003.",
+   "next_rung": "read the page's 'greater than 1% Shareholding' sub-page for Jun/Sep/Dec-2003 to get RBI's exact share count, then heal dii = lump - RBI and prom = RBI via shp_cell_fix.json (row-identity proof per quarter); the Mar-2004 cell held here is consistent with that convention and can land once the neighbours are healed."
+  }
  }
 }
