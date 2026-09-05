@@ -14596,7 +14596,12 @@ BSE-derived cell wins where both hold a quarter); provenance `nsewb:<ts>:<seg_nu
 capture, the 16 disagreements and 18 zero-vs-neighbour pages (adjudicate per document; the BSE `>1%` sub-page and NSE's
 `shareholding1.jsp` are the floor readers), and the second-reader audit of the whole BSE-derived 2001-06 store (6,674 captures /
 488 symbols — this run read 2,265 of them: 98.6%).
-**VERIFIED LIVE:** read back after the Pages deploy of this commit (line appended below).
+**VERIFIED LIVE 2026-09-05 16:17 IST** (Pages deploy of `76413b517`): `shp_engine.json` serves BPCL 20020331 fii 14.3174 / dii
+15.0972, KTKBANK 20030331, KARURVYSYA 20030630 0.3211 / 5.255, FLEXCHEM 20030331, NIIT 20020630 41.2469 / 7.0715 — all `sub 99999999`.
+**Retry pass (16:30 IST):** 260 of the 320 failed captures recovered (2,525 / 2,585 on disk; 60 still refused by Wayback after 8
+attempts each — resumable, the fetcher skips files on disk) → 2,455 pages parsed, 1,793 cells, overlap gate **1,565 shared / 16
+disagree (99.0%)**, **+12 member cells** (2001: 4 · 2002: 5 · 2003: 1 · 2004: 2), 1 continuity hold → ledger 303 cells / 100 symbols;
+quarter audit 2002-12 97.2 → 97.6 · 2003 98.0 → 98.1 · 2004 97.1 → 97.2. Bake (vs the 76413b517 after-bake, same bin; the two intervening commits were refresh jobs — patStd/TTM/price byte-identical): fiiPct/diiPct **+21** member-months (N/A −21, 0 dates down), fiiChgPp/diiChgPp **+45** (N/A −21).
 
 
 ## 128. ★★★ STD-PAT 2002-07 EXECUTED — 229 "missing" cells were HELD under a retired key the coverage builder could not see; four gated routes landed 1,538 cells; the NSE results ARCHIVE reads standalone PAT with the page's own EPS identity  (2026-09-05)

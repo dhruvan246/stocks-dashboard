@@ -254,7 +254,7 @@ the 313 symbols still missing a 2001-06 quarter (1,740 cells) and is a second re
 shared with the store, **98.6% agree ≤0.11pp**, 16 disagreements journalled in `shp_nse_shpdetails_open.json` (stored cells kept;
 ELDERPHARM Jun-2004 flags §127g's no-block ⇒ 0 rule). **291 point-in-time N500 member cells landed** (2001: 80 · 2002: 131 ·
 2003: 41 · 2004: 37), 195 non-member cells skipped by the 13:30 IST scope rule. Ledger `shp_fill_nse_shpdetails.json.gz`, LAST.
-Coverage (bake vs bake): fiiPct/diiPct +780 member-months (N/A −768, 0 dates down; 2002 90.7→91.9%), fiiChgPp +819; quarter audit 2002-12 95.8→97.2, 2003 96.0→98.0, 2004 95.3→97.1. Open: 320 unfetched captures, 107 symbols with no capture, 16 + 18 adjudications, the whole-era second-reader audit.
+Coverage (bake vs bake): fiiPct/diiPct +780 member-months (N/A −768, 0 dates down; 2002 90.7→91.9%), fiiChgPp +819; quarter audit 2002-12 95.8→97.2, 2003 96.0→98.0, 2004 95.3→97.1. Retry pass 16:30 IST: 260 more captures → +12 member cells (ledger 303 / 100 symbols; 60 captures still refused, resumable). VERIFIED LIVE 16:17 IST (BPCL/KTKBANK/KARURVYSYA/FLEXCHEM/NIIT rows served). Open: 60 unfetched captures, 107 symbols with no capture, 16 + 20 adjudications, the whole-era second-reader audit.
 
 ### WP-S3 — SHP 2016+ residue (86) — XBRL/NSE routes; start from WP6's held-160 list (coverage-fill memory).
 
