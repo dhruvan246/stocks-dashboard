@@ -237,6 +237,17 @@ Ledgers `shp_fill_wps2b_aspx.json.gz` (431) + `shp_fill_n500_gaps.json.gz` (+43)
 lists no filing for (2001-08 mostly; NSE `>1%` floor / annual reports), 374 roster-orphan modern keys (roster job), 328 api-failed
 classifier retries, 40 recon + 26 zero + 7 no-fii refusals (per page), 25 holds, 22 era names without a BSE code.
 
+**WP-S2 PASS 2b (2026-09-05 11:25→13:50 IST, session trusting-lewin, worktree `~/stocks-wt/shp-2002b`, runbook §127h).** Worked
+the same residue in parallel with pass 2 above; at push time 73 of 146 cells were already in `shp_fill_wps2b_aspx.json.gz` and a
+value comparison showed my rule-based adjudication (77 cells) mis-sided "Foreign Mutual Fund"/FDI rows — WITHDRAWN, §127g's
+parser stands. Landed: `shp_fill_wps2c_aspx.json.gz` = **47 cells** reachable only via corrected BSE codes (IDEA scrip_id
+collision → 532822: 32 cells 2007-15, now in `_shp_scripcode_override.json`; ELGIRUBBER→500131, OSWALGREEN→500063,
+TVSELEC→500423 same-ISIN era listing codes). Off-by-one qtrid refuted 12/12; 386 same-code absents re-confirmed identical.
+Coverage (bake vs bake): fiiPct/diiPct +165 member-months (N/A −145, 0 dates down), fiiChgPp +156; quarter audit 2002-12 94.4→95.0, 2003 94.7→95.2, 2008 97.9→98.1. **NEXT (tool committed, harvest running from scratch):** `scripts/fetch_shp_nse_shpdetails.py` — NSE's own archived
+FULL category pattern (`shareholdingdetails.jsp`, 9,191 captures / 740 symbols 2002-06, `nse_shpdetails_cdx.json`) covers 206 of
+the 313 symbols still missing a 2001-06 quarter (1,740 cells) and is a second reader for the whole era; smoke test 13/13 parsed,
+7/7 overlap cells 0.00pp. Run `plan → fetch → apply --dir D`; overlap gate ≤0.11pp before any fill.
+
 ### WP-S3 — SHP 2016+ residue (86) — XBRL/NSE routes; start from WP6's held-160 list (coverage-fill memory).
 
 ### WP-P0 — std-PAT hygiene first (cheap, 66 cells)

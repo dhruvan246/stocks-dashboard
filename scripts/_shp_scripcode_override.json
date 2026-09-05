@@ -1,25 +1,29 @@
 {
-  "_note": "symbol -> BSE scripcode, for names the live scrip master cannot resolve by scrip_id because the company was renamed or demerged. Each entry is evidence-backed (ISIN or an unambiguous name+code match in BSE's full status= listing); never guess one.",
-  "RNAVAL": 533107,
-  "RUCHISOYA": 500368,
-  "TUBEINVEST": 504973,
-  "MONSANTO": 524084,
-  "CAPF": 532938,
-  "GLOBOFFS": 501848,
-  "_evidence": {
-    "RNAVAL": "533107 = Pipavav Defence -> Reliance Naval & Engineering -> Swan Defence & Heavy Industries; same code throughout",
-    "RUCHISOYA": "500368 = Ruchi Soya -> Patanjali Foods, ISIN INE619A01035, code unchanged across the rename",
-    "TUBEINVEST": "504973 = the PRE-demerger Tube Investments of India, which renamed to Cholamandalam Financial Holdings in 2017. The 2017 manufacturing spin-off is a DIFFERENT entity (540762/TIINDIA) \u2014 do not use it for pre-2017 quarters",
-    "MONSANTO": "524084 Monsanto India Ltd (delisted) \u2014 only in the full listing, not the Active one",
-    "CAPF": "532938 Capital First Ltd (delisted into IDFC First Bank)",
-    "GLOBOFFS": "501848 = Garware Offshore Services -> Global Offshore Services, ISIN INE446C01013",
-    "MVL": "532991 = BSE ComHeadernew ISIN INE744I01034 == MVL Ltd ISIN (2026-08-24); delisted real-estate co, N500 2011-12..2013-03",
-    "SHLAKSHMI": "526049 = ComHeadernew ISIN INE851B01016 == Shri Lakshmi Cotsyn (2026-08-24); N500 2012-09..2013-03",
-    "INNOIND": "533402 = ComHeadernew ISIN INE549I01011 == Innoventive Industries (2026-08-24); first guess 533632 was a DIFFERENT ISIN, rejected; N500 2013-09..2013-12",
-    "SUMMIT": "504807 = ComHeadernew ISIN INE852A01016 == Summit Securities (old, 2026-08-24); N500 2009-01..2009-02 via SUMMIT era tape; delisted ~2010"
-  },
-  "MVL": 532991,
-  "SHLAKSHMI": 526049,
-  "INNOIND": 533402,
-  "SUMMIT": 504807
+ "_note": "symbol -> BSE scripcode, for names the live scrip master cannot resolve by scrip_id because the company was renamed or demerged. Each entry is evidence-backed (ISIN or an unambiguous name+code match in BSE's full status= listing); never guess one.",
+ "RNAVAL": 533107,
+ "RUCHISOYA": 500368,
+ "TUBEINVEST": 504973,
+ "MONSANTO": 524084,
+ "CAPF": 532938,
+ "GLOBOFFS": 501848,
+ "_evidence": {
+  "RNAVAL": "533107 = Pipavav Defence -> Reliance Naval & Engineering -> Swan Defence & Heavy Industries; same code throughout",
+  "RUCHISOYA": "500368 = Ruchi Soya -> Patanjali Foods, ISIN INE619A01035, code unchanged across the rename",
+  "TUBEINVEST": "504973 = the PRE-demerger Tube Investments of India, which renamed to Cholamandalam Financial Holdings in 2017. The 2017 manufacturing spin-off is a DIFFERENT entity (540762/TIINDIA) \u2014 do not use it for pre-2017 quarters",
+  "MONSANTO": "524084 Monsanto India Ltd (delisted) \u2014 only in the full listing, not the Active one",
+  "CAPF": "532938 Capital First Ltd (delisted into IDFC First Bank)",
+  "GLOBOFFS": "501848 = Garware Offshore Services -> Global Offshore Services, ISIN INE446C01013",
+  "MVL": "532991 = BSE ComHeadernew ISIN INE744I01034 == MVL Ltd ISIN (2026-08-24); delisted real-estate co, N500 2011-12..2013-03",
+  "SHLAKSHMI": "526049 = ComHeadernew ISIN INE851B01016 == Shri Lakshmi Cotsyn (2026-08-24); N500 2012-09..2013-03",
+  "INNOIND": "533402 = ComHeadernew ISIN INE549I01011 == Innoventive Industries (2026-08-24); first guess 533632 was a DIFFERENT ISIN, rejected; N500 2013-09..2013-12",
+  "SUMMIT": "504807 = ComHeadernew ISIN INE852A01016 == Summit Securities (old, 2026-08-24); N500 2009-01..2009-02 via SUMMIT era tape; delisted ~2010"
+ },
+ "MVL": 532991,
+ "SHLAKSHMI": 526049,
+ "INNOIND": 533402,
+ "SUMMIT": 504807,
+ "IDEA": {
+  "scripcode": 532822,
+  "evidence": "2026-09-05 WP-S2 pass 2b: BSE master carries two scrip_id=IDEA rows (530297 Ideaspace Solutions delisted, 532822 Vodafone Idea); bin meta isin INE669E01016 == master 532822; 32 pages served 2007-12..2015-09"
+ }
 }

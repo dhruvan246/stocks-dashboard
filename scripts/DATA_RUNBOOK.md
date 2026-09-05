@@ -14479,6 +14479,48 @@ fixes: 360 + 367 absent, 40 recon, 26 zero-vs-neighbour, 7 no-fii, all journalle
 `audit_shp_coverage.py` still starts at 2002-12-31.
 **VERIFIED LIVE 2026-09-05 12:04 IST bake (dispatched after push `5a5629902`):** coverage payload fiiPct 2002 = 3,992 have / 1,520 N/A = **90.3%** (was 85.5 after WP-S1), 2003 **98.1%**, 2004 99.0%; fiiChgPp 2002 85.1%, 2003 **89.1%**, 2004 96.5%, 2008 97.5% — identical to the local bake-vs-bake; `shp_engine.json` on Pages serves ELDERPHARM 20021231 [0.0, 0.0, undated], SOUTHBANK 20030331 [0.0, 16.6522, undated], CROMPTON 20160630 [19.5327, 26.3148, real date].
 
+### 127h. ★★ WP-S2 pass 2b — two sessions worked the same residue; the code-resolution cells (47) land, the rule-based adjudication is WITHDRAWN in favour of §127g's parser; NSE's own archived FULL pattern page is a committed route  (2026-09-05, 11:25→13:50 IST)
+
+**Concurrency, measured.** This session (trusting-lewin, `~/stocks-wt/shp-2002b`) and the §127g session worked the WP-S2 residue
+in parallel from 11:25 IST. At rebase time the push conflicted on SEVEN files including a same-named ledger
+(`shp_fill_wps2b_aspx.json.gz`, add/add) and both minified stores. Rule kept: **never merge a minified store** — reset to
+origin/main, re-derive, land only what is not already there. 73 of this session's 146 cells were already in §127g's ledger.
+**35 of those 73 DIFFER in value, and the difference names MY side wrong:** my page-adjudication classified unlabelled
+institutions-block rows by regex ("foreign|fii|overseas…" → fii, "bank|insurance|mutual…" → dii), so **"Foreign Mutual Fund"
+matched `mutual` and went to dii** — OFSS Sep-2006 fii 3.82/dii 13.97 (mine) vs 14.95/2.84 (§127g), ORIENTHOT Sep-2007 the same
+swap; FDI rows went to fii (HINDOILEXP Jun-2006 9.33 vs 3.01). §127g's explicit label rules (Foreign MF / Foreign FI → fii;
+FDI, OCB, NRI, trusts, clearing members → neither, but counted in the block Sub Total) are the right reading. **All 77 of my
+rule-adjudicated cells are withdrawn** (the 26 not in §127g's ledger sit in its journal as `recon`/`no-fii` — its verdict
+stands). Lesson (memory feedback-a-private-regex-is-a-silent-filter): a side-assignment regex is a classifier; a classifier is
+code and needs the document's own label set, not a keyword list.
+
+**What lands — `scripts/shp_fill_wps2c_aspx.json.gz` = 47 cells / 4 symbols**, absent in every earlier pass ONLY because the
+symbol resolved to the wrong or a later BSE code, re-parsed with §127g's parser cache-only (47/47 ok, identical values, no
+continuity holds):
+- **IDEA → 532822 (32 cells 2007-12..2015-09).** BSE's master carries TWO `scrip_id=IDEA` rows; `cmd_frontier.by_id` keeps
+  the first — 530297 "Ideaspace Solutions" (delisted) — so §127g's classifier read "BSE lists NO filing" for a company that
+  filed every quarter. bin meta ISIN INE669E01016 == master 532822 (Vodafone Idea, ex Idea Cellular). In
+  `_shp_scripcode_override.json`. **A scrip_id join must check for duplicates.**
+- Same-ISIN era listing codes (delisted duplicates in the full master): ELGIRUBBER 590023→**500131** Elgitread (India)
+  (Dec-2002..Jun-2004, 7), OSWALGREEN 539290→**500063** Oswal Chemicals & Fertilizers (Dec-2002..Dec-2003, 5), TVSELEC
+  532513→**500423** (3). FACT 524244/590024 share INE188A01015 and neither serves 2003-05.
+  Evidence in `_shp_aspx_resolved_era_syms.json` (`@era` keys). Off-by-one qtrid hypothesis REFUTED on 12/12 samples
+  (neighbouring qtrids print their own "Quarter Ending"). **Result (bake vs bake at origin/main 3c720e74d, same live bin):** fiiPct/diiPct member-months **145,539 → 145,704 (+165), N/A 2,419 → 2,274, 0 dates down** (2014/2015 N/A → 0: IDEA was the last); fiiChgPp/diiChgPp **141,970 → 142,126 (+156), N/A 4,081 → 3,936, 0 down**. Quarter-level audit: 2002-12 94.4→95.0 · 2003 94.7→95.2 · 2004 94.2→94.3 · 2007 96.3→96.4 · 2008 97.9→98.1 · 2009-15 +0.2 each. `--apply-ledgers` twice identical; +47 history cells, 0 changed; 47 engine rows UN-DATED.
+
+**★★★ NEW ROUTE, measured, tool committed, harvest in progress: NSE's own archived FULL category-wise pattern.** §127c had
+enumerated `shareholding.jsp` (date list) and `shareholding1.jsp` (>1% holders) only. A prefix CDX query on
+`marketinfo/companyinfo/eod/` lists **`shareholdingdetails.jsp` — 9,191 captures / 740 symbols** (`scripts/nse_shpdetails_cdx.json`).
+Fetched KARURVYSYA (seg_num 10012): "As on 30-Jun-2003", Promoter's Holding (Indian/Foreign/PAC + Sub Total), Institutional
+Investors (MF&UTI / Banks-FIs-Insurance-Govt / FIIs + Sub Total), Others, GRAND TOTAL — shares AND % per row: the 1997 format
+from the exchange that listed the companies BSE never carried (LAKSHVILAS, the 590xxx cohort, KTKBANK, CUB, FACT…). Tool
+**`scripts/fetch_shp_nse_shpdetails.py plan|fetch|apply --dir D`** (parser + the aspx-Old gates; 4dp from the GRAND TOTAL
+shares; provenance `nsewb:<ts>:<seg_num>`; era symbol in the URL → norm through `_rename_map`, MIRCELECTR→ONIDA). The period
+is only INSIDE the page, so every capture is fetched: **2,585 captures cover 206 of the 313 symbols still missing a
+2001-06 member-quarter (1,740 cells)**; 6,674 cover 488 of all 714 era members — a second reader for the whole BSE-derived
+era. Smoke test 13 pages: 13/13 parsed, **7 overlap cells agree with the store to 0.00pp** (WIMCO 2003-04). Wayback refused
+connections ~11:45→13:10 IST (12/12 "Couldn't connect"); fetch resumed 13:10, resumable (skips files on disk).
+
+
 ## 128. ★★★ STD-PAT 2002-07 EXECUTED — 229 "missing" cells were HELD under a retired key the coverage builder could not see; four gated routes landed 1,538 cells; the NSE results ARCHIVE reads standalone PAT with the page's own EPS identity  (2026-09-05)
 
 **Trigger:** execute the std-PAT packages of §127 / `PLAN_STDPAT_SHP_COVERAGE_2002.md` (plan §8 = state table).

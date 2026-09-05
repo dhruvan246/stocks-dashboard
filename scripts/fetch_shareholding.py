@@ -249,7 +249,11 @@ BSE_HIST_LEDGERS = [os.path.join(HERE, "shp_fill_thirdparty.json.gz"),
                     # zero, Foreign MF / Foreign FI rows) over the residue + WP-S1 refusals, plus 9 era
                     # names (2001-02) resolved via _shp_aspx_resolved_era_syms. Fill-only, LAST in the list;
                     # 25 continuity-flagged cells are HELD in _shp_wps2b_holds.json, not here.
-                    os.path.join(HERE, "shp_fill_wps2b_aspx.json.gz")]
+                    os.path.join(HERE, "shp_fill_wps2b_aspx.json.gz"),
+                    # WP-S2 pass 2b (2026-09-05, runbook §127h): 47 `absent` cells that were absent only because
+                    # the symbol resolved to the wrong/later BSE code (IDEA scrip_id collision -> 532822; ELGIRUBBER /
+                    # OSWALGREEN / TVSELEC same-ISIN era listing codes). Same parser and gates as wps2b. Fill-only, LAST.
+                    os.path.join(HERE, "shp_fill_wps2c_aspx.json.gz")]
 def apply_bse_hist_ledger(h):
     n_total = 0
     for path in BSE_HIST_LEDGERS:
