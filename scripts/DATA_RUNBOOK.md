@@ -80,6 +80,7 @@ loads every session. (README.md is just a short pointer here — this file is th
 - **§130** ★★★ LINE-ITEM BLOCK BEFORE 2018 — archive HTML (2005-17) + Moneycontrol; bank taxonomy has no context block; local rebuild must union the committed .gz
 - **§132** ★★★ POINT-IN-TIME NIFTY 500 — the NSE register was already the day-level ledger; 316 names unmapped, register keys off canon-space, 3 changelog entries bled LIX15 rows; A/B on the 8 favourites (**read before any membership rebuild, roster claim, or press-release parse**)
 - **§133** ★★★ 182 STORED-PAT SUSPECTS adjudicated from each quarter's own filing — EPS arbitrates the owners tag; con heals need pat_defects + owners_basis_heals in one commit
+- **§136** ★★★ THE "BSE PDF RUNG" FOR 2002-05 IS BSE's OWN SUMMARY SENTENCE — index reaches 2002, 0 attachments; locks L1/L2/L3; 398 cells; hold-out 1,590/1,620 (**read before any BSE-based fill older than 2006**)
 
 ---
 
@@ -15617,3 +15618,46 @@ Mar-2007 26-Apr → 02-Jul), 30 within 7 d (NSE-first tolerance), 29 the two rea
 - `shp_dates.visible_date` keeps a pre-15:30 weekend/holiday filing on the raw date — harmless to the engine but roll
   it before any ledger comparison.
 
+---
+
+## 136. ★★★ THE "BSE PDF RUNG" FOR 2002-2005 IS BSE's OWN SUMMARY SENTENCE — the announcement index reaches 2002 with no attachments  (2026-09-05, worktree ~/stocks-wt/stdpat-2002)
+
+**Trigger:** user "walk the BSE PDF rung on the 2002-04 residue" then "land it and push, verify live" (the §128f residue).
+Tools (tracked): `scripts/bse_ann_harvest.py`, `scripts/bse_ann_summary_read.py`. Sibling to the STEP-B archived-page
+route (§134); different source — that reads `qresann/result.asp`, this reads the announcement index.
+
+### 136a. What BSE serves for the era
+`AnnSubCategoryGetData/w?strCat=-1&strScrip=<code>` (UA+Referer, no cookie) returns rows back to 2002. CATEGORYNAME is
+"Others", and ATTACHMENTNAME is empty on every 2002-05 row (0 of ~19,000 harvested) — no PDF, nothing to render for
+vision. The result is BSE's summary sentence in MORE: "X Ltd has posted a net profit of Rs 470 million for the quarter
+ended December 31, 2003 as compared to Rs 400 million for the quarter ended ...". Sign, unit, period kind, period end,
+year-ago comparative and often total income are all DECLARED. NEWS_DT is a real dissemination date (written as the
+announce date, floored at first bar). Empty windows are genuine (6/6 re-probed on fresh sessions, §55a).
+
+### 136b. Gates — a summary is not the filing, so a cell lands only with an independent lock
+Refuse half-year/nine-month/year sentences, any "consolidated" word, a comparative that is itself a year figure, and a
+comparative clause outside the result sentence. Then ONE of: L1 year-ago comparative reproduces our stored std PAT; L2
+the quarter's own announcement equals the year-later announcement's comparative; L3 total income equals stored revS.
+Hold-out FIRST: 1,620 stored 2001-05 cells re-read, 1,590 match, 30 disagree (1.85 percent) — store defects
+(TATAELXSI/BHARTIARTL 100x, SAIL) and two-reader disputes, journalled in scripts/stdpat2002_suspects.json, none patched.
+Comparatives are RESTATED in ~9 percent of year-later announcements (§108): L2 fails there, the as-filed OWN reading is kept.
+
+### 136c. What landed
+398 cells (batch 1: 164 for 2001-06; batch 2: 234 over the full residue incl. TTM reach-back; on push, 18 of batch 2 had
+been filled by a peer session, 0 disagreeing, re-applied fill-only). By quarter-year 2001: 86, 2002: 134, 2003: 68,
+2004: 102, 2005: 8. Symbol-to-BSE-code by the ISIN-gated ladder (scrip_id / NSE-list ISIN / rename target / wayback
+EQUITY_L.csv 2006 and 2010), 520/612 residue symbols resolved. Rename predecessors (Bharat Earth Movers to BEML, VSNL to
+TATACOMM, McDowell to UNITDSPR, Madras Cements to RAMCOCEM, Aptech to HEXAWARE) verified continuous by the lock
+reproducing our stored value to the paisa.
+
+Coverage effect, whole 4-rung std-PAT campaign, N500 members (pre-campaign bake0 to final):
+patStd 2002 50.0 to 73.6 percent, 2003 76.4 to 86.0, 2004 86.6 to 92.7, 2005 92.6 to 96.4, 2006 96.0 to 99.5,
+2007 96.8 to 99.5. All years: patStd +3,056 have / -2,472 N/A; profitYoyStd +3,414; profitTTMStd +2,899. The BSE rung
+alone added patStd +593 have and CLOSED the batch-1 2002 TTM dip (the reach-back quarters landed). Every gain is
+N/A-to-have; 0 symbols moved on "missing" (§112).
+
+### 136d. Recovery lesson — a pipe hides a rebase conflict, and minified JSON is never hand-merged
+The push loop `git rebase ... 2>&1 | tail -1 && git push` masked the rebase's non-zero exit (tail returns 0), so a
+conflict on the two minified stores left a half-rebase and push ran anyway. Recovery: `git rebase --abort`,
+`git reset --hard origin/main` (own worktree only), then RE-APPLY the fill-only appliers on the fresh origin base (the
+§81h rebase-race recipe, a 1-second ledger replay wins) rather than resolving a minified-JSON conflict by hand.
