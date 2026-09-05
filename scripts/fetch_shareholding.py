@@ -983,6 +983,34 @@ def build_engine_feed():
         led_keys = set()
         print("WARN shp_sub_dates.json unreadable (%s) — every convention-dated pre-2016 row "
               "will be served UN-DATED (conservative direction)" % e)
+    # §135 (2026-09-05): RE-ASSERT the SHP visibility-date ledgers at serve time — rebuild-proof, the same
+    # contract ann_date_fills.json has via --reapply. The Aug-23 P4 reconcile (shp_lag_fix.json, 26,018
+    # entries) was written into history slot 5 ONLY; a later NSE re-capture of the same quarter rewrote 71
+    # of those slots with NSE's LATER submissionDate (measured 2026-09-05, all 2025-26 quarters). Rules:
+    #   lag heal ('days_earlier')   -> earlier-only: serve the ledger date when the stored one is later;
+    #   gate shift ('days_later')   -> raw->gated of the SAME filing: serve it only when stored == its 'was';
+    #   shp_sub_dates entry         -> serve it when the stored date regressed to the convention it replaced.
+    # A stored date EARLIER than a lag-heal ledger date is left alone (a possibly-genuine earlier disclosure).
+    lag_led, sub_led = {}, {}
+    try:
+        lag_led = json.load(open(os.path.join(HERE, "shp_lag_fix.json"), encoding="utf-8"))
+        sub_led = {k: v for k, v in json.load(open(os.path.join(HERE, "shp_sub_dates.json"),
+                                                   encoding="utf-8")).items() if not k.startswith("_")}
+    except Exception as e:
+        print("WARN SHP date ledgers unreadable (%s) — visibility dates served as stored" % e)
+    n_reassert = [0]
+    def _reassert_sub(sym, qi, sub):
+        k = "%s|%d" % (sym, qi)
+        e = lag_led.get(k)
+        if isinstance(e, dict) and isinstance(e.get("sub"), int):
+            if "days_earlier" in e and sub != UNDATED_SUB and sub > e["sub"]:
+                n_reassert[0] += 1; return e["sub"]
+            if "days_later" in e and sub == e.get("was"):
+                n_reassert[0] += 1; return e["sub"]
+        e = sub_led.get(k)
+        if isinstance(e, dict) and isinstance(e.get("sub"), int) and sub != e["sub"] and sub == e.get("was"):
+            n_reassert[0] += 1; return e["sub"]
+        return sub
     n_undated = [0]
     def rows_of(qs, sym):
         rows = []
@@ -994,6 +1022,7 @@ def build_engine_feed():
                         and "%s|%d" % (sym, qi) not in led_keys):
                     sub = UNDATED_SUB
                     n_undated[0] += 1
+                sub = _reassert_sub(sym, qi, sub)
                 rows.append([qi, c[1], c[2], sub])
             except (ValueError, TypeError, IndexError):
                 continue
@@ -1010,6 +1039,8 @@ def build_engine_feed():
         if rows: out[sym] = sorted(rows)
     print("  engine feed: %d pre-Jun-2016 rows served UN-DATED (no evidenced visibility date)"
           % n_undated[0])
+    print("  engine feed: %d visibility dates re-asserted from shp_lag_fix.json / shp_sub_dates.json (§135)"
+          % n_reassert[0])
     n_ev = sum(len(v) for v in events.values())
     if n_ev: print("  engine feed: merged %d event rows from %d symbols" % (n_ev, len(events)))
     ep = os.path.join(HERE, "..", "docs", "shp_engine.json")
