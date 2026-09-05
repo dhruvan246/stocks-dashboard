@@ -1336,7 +1336,12 @@
         if (c0 && (c0.colSpan || 1) > 1) c0.classList.add('sw-span');
       }
     }
-    // resolve the pinned cell's background from this page's own table
+    // resolve the pinned cell's background from this page's own table. The pinned cell PAINTS
+    // the previous answer itself (theme.css: background:var(--sw-pin-body,…)), so a second
+    // pass — the re-resolve apply() schedules after a theme switch — read its own stale copy
+    // and froze the OLD theme's colour on the column (white date cells in dark, found by the
+    // 2026-09-05 audit). Drop both first so every pass resolves exactly like a fresh load.
+    table.style.removeProperty('--sw-pin-head'); table.style.removeProperty('--sw-pin-body');
     var hcell = hrow && hrow.cells.length ? hrow.cells[0] : null;
     var bcell = table.tBodies.length && table.tBodies[0].rows.length ? table.tBodies[0].rows[0].cells[0] : null;
     if (hcell) { var hb = paintedBg(hcell); if (hb) table.style.setProperty('--sw-pin-head', hb); }
