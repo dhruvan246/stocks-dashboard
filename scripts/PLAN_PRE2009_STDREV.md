@@ -396,3 +396,8 @@ is a PAT-side one (a filing read) or a new publisher, none known.** The 16 findi
 Traps: `wb_read.parse` cumulative substring bug (fixed); BSE `Gross Sales` vs `Net Sales` per symbol; BSE
 integers-in-million → half-grid tolerance; 81 cells under OLD fund keys; a parallel measurement overwrote the gap
 file; rebase conflicts on the store JSONs → reset + replay, never hand-merge.
+
+**PAT-side follow-up (same day, runbook §131f):** the 16 contradictions were adjudicated — 11 healed to the PRINTED
+as-filed quarter via `fund_cell_fix.json`, 13 held (RELIANCE merger-entity ×3, UMIYA-MRO single-document ×3, 7 with no
+printed quarter page), 2 not defects. Rule: a cumulative-minus-legs derivation is NOT the as-filed quarter when the later
+filing restated a leg (ORIENTBANK Mar-03 Q4 page 119.49 vs derived 119.63) — only printed quarters are written.

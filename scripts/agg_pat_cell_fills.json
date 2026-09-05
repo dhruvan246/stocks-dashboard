@@ -7085,7 +7085,9 @@
   },
   "src": "moneycontrol quarterly-results API (runbook \u00a781)",
   "state": "FILLED-EXACT",
-  "std": 68.4
+  "std": null,
+  "superseded": "2026-09-05 fund_cell_fix.json: the as-filed exchange filing (Wayback NSE results.jsp / BSE qresann) prints a different quarter; this Moneycontrol value is a restated vintage. Store now holds 66.76 (runbook 131f). Kept for history; std nulled so verify_fills_live does not assert it.",
+  "superseded_std": 68.4
  },
  "ANDHRABANK|20180630": {
   "ann_basis": "bse-broadcast 2018-08-10T18:51:27.803 [result] (staleness campaign 2026-08-20 v3, was CONVENTION quarter-end+45d)",
@@ -20201,7 +20203,9 @@
   },
   "src": "moneycontrol quarterly-results API (runbook \u00a781)",
   "state": "FILLED-ROUNDED",
-  "std": 124.38
+  "std": null,
+  "superseded": "2026-09-05 fund_cell_fix.json: the as-filed exchange filing (Wayback NSE results.jsp / BSE qresann) prints a different quarter; this Moneycontrol value is a restated vintage. Store now holds 120.38 (runbook 131f). Kept for history; std nulled so verify_fills_live does not assert it.",
+  "superseded_std": 124.38
  },
  "BANKINDIA|20010930": {
   "ann_basis": "CONVENTION, not a filing date: quarter-end+45d, the default 20,818 of the 21,515 dated pre-2015 cells already carry (runbook \u00a752), FLOORED at the symbol's first traded bar so a pre-listing quarter cannot claim it was public before the company had a tape (\u00a799). Moneycontrol's feed carries no filing date.",
@@ -32687,7 +32691,9 @@
   },
   "src": "moneycontrol quarterly-results API (runbook \u00a781)",
   "state": "FILLED-EXACT",
-  "std": 21.27
+  "std": null,
+  "superseded": "2026-09-05 fund_cell_fix.json: the as-filed exchange filing (Wayback NSE results.jsp / BSE qresann) prints a different quarter; this Moneycontrol value is a restated vintage. Store now holds 26.32 (runbook 131f). Kept for history; std nulled so verify_fills_live does not assert it.",
+  "superseded_std": 21.27
  },
  "CENTENKA|20010930": {
   "ann_basis": "CONVENTION, not a filing date: quarter-end+45d, the default 20,818 of the 21,515 dated pre-2015 cells already carry (runbook \u00a752), FLOORED at the symbol's first traded bar so a pre-listing quarter cannot claim it was public before the company had a tape (\u00a799). Moneycontrol's feed carries no filing date.",
@@ -32728,7 +32734,9 @@
   },
   "src": "moneycontrol quarterly-results API (runbook \u00a781)",
   "state": "FILLED-EXACT",
-  "std": 7.0
+  "std": null,
+  "superseded": "2026-09-05 fund_cell_fix.json: the as-filed exchange filing (Wayback NSE results.jsp / BSE qresann) prints a different quarter; this Moneycontrol value is a restated vintage. Store now holds 12.5 (runbook 131f). Kept for history; std nulled so verify_fills_live does not assert it.",
+  "superseded_std": 7.0
  },
  "CENTENKA|20011231": {
   "ann_basis": "CONVENTION, not a filing date: quarter-end+45d, the default 20,818 of the 21,515 dated pre-2015 cells already carry (runbook \u00a752), FLOORED at the symbol's first traded bar so a pre-listing quarter cannot claim it was public before the company had a tape (\u00a799). Moneycontrol's feed carries no filing date.",
@@ -32769,7 +32777,9 @@
   },
   "src": "moneycontrol quarterly-results API (runbook \u00a781)",
   "state": "FILLED-EXACT",
-  "std": 2.58
+  "std": null,
+  "superseded": "2026-09-05 fund_cell_fix.json: the as-filed exchange filing (Wayback NSE results.jsp / BSE qresann) prints a different quarter; this Moneycontrol value is a restated vintage. Store now holds 7.37 (runbook 131f). Kept for history; std nulled so verify_fills_live does not assert it.",
+  "superseded_std": 2.58
  },
  "CENTENKA|20020331": {
   "ann_basis": "CONVENTION, not a filing date: quarter-end+45d, the default 20,818 of the 21,515 dated pre-2015 cells already carry (runbook \u00a752), FLOORED at the symbol's first traded bar so a pre-listing quarter cannot claim it was public before the company had a tape (\u00a799). Moneycontrol's feed carries no filing date.",
@@ -56860,7 +56870,9 @@
   },
   "src": "moneycontrol quarterly-results API (runbook \u00a781)",
   "state": "FILLED-ROUNDED",
-  "std": 11.99
+  "std": null,
+  "superseded": "2026-09-05 fund_cell_fix.json: the as-filed exchange filing (Wayback NSE results.jsp / BSE qresann) prints a different quarter; this Moneycontrol value is a restated vintage. Store now holds 12.06 (runbook 131f). Kept for history; std nulled so verify_fills_live does not assert it.",
+  "superseded_std": 11.99
  },
  "FDC|20040630": {
   "ann_basis": "CONVENTION, not a filing date: quarter-end+45d, the default 20,818 of the 21,515 dated pre-2015 cells already carry (runbook \u00a752), FLOORED at the symbol's first traded bar so a pre-listing quarter cannot claim it was public before the company had a tape (\u00a799). Moneycontrol's feed carries no filing date.",
@@ -62513,9 +62525,10 @@
   "skip": true,
   "src": "moneycontrol quarterly-results API (runbook \u00a781)",
   "state": "FILLED-EXACT",
-  "std": 2.45,
+  "std": null,
   "superseded": "2026-08-26: SUPERSEDED. This entry recorded std=2.45 from the Moneycontrol rendition; the AS-FILED archived NSE results.jsp page for the same quarter prints 3.07 and closes its own EPS and P&L identities, so the store was healed to 3.07 (\u00a7108, peer commit 32baa68f7 via fund_cell_fix.json). The entry is KEPT rather than re-authored so the provenance trail stays readable -- but the value below is no longer what the store holds, and a retract-and-replay of this ledger must not reinstate it.",
   "superseded_by": "fund_cell_fix.json GEOMETRIC|20020630 -> 3.07 (wayback NSE results.jsp 20030507152751)",
+  "superseded_std": 2.45,
   "superseded_value": 2.45
  },
  "GEOMETRIC|20020930": {
@@ -73048,7 +73061,9 @@
   },
   "src": "moneycontrol quarterly-results API (runbook \u00a781)",
   "state": "FILLED-ROUNDED",
-  "std": 24.98
+  "std": null,
+  "superseded": "2026-09-05 fund_cell_fix.json: the as-filed exchange filing (Wayback NSE results.jsp / BSE qresann) prints a different quarter; this Moneycontrol value is a restated vintage. Store now holds 24.92 (runbook 131f). Kept for history; std nulled so verify_fills_live does not assert it.",
+  "superseded_std": 24.98
  },
  "HCL-INSYS|20041231": {
   "ann_basis": "bse-broadcast 2005-01-18T14:38:11 [result] (staleness campaign 2026-08-20 v3, was CONVENTION quarter-end+45d)",
@@ -103082,7 +103097,9 @@
   },
   "src": "moneycontrol quarterly-results API (runbook \u00a781)",
   "state": "FILLED-ROUNDED",
-  "std": 13.5
+  "std": null,
+  "superseded": "2026-09-05 fund_cell_fix.json: the as-filed exchange filing (Wayback NSE results.jsp / BSE qresann) prints a different quarter; this Moneycontrol value is a restated vintage. Store now holds 12.9 (runbook 131f). Kept for history; std nulled so verify_fills_live does not assert it.",
+  "superseded_std": 13.5
  },
  "JUBLPHARMA|20021231": {
   "ann_basis": "CONVENTION, not a filing date: quarter-end+45d, the default 20,818 of the 21,515 dated pre-2015 cells already carry (runbook \u00a752), FLOORED at the symbol's first traded bar so a pre-listing quarter cannot claim it was public before the company had a tape (\u00a799). Moneycontrol's feed carries no filing date.",
@@ -103123,7 +103140,9 @@
   },
   "src": "moneycontrol quarterly-results API (runbook \u00a781)",
   "state": "FILLED-ROUNDED",
-  "std": 12.5
+  "std": null,
+  "superseded": "2026-09-05 fund_cell_fix.json: the as-filed exchange filing (Wayback NSE results.jsp / BSE qresann) prints a different quarter; this Moneycontrol value is a restated vintage. Store now holds 13.1 (runbook 131f). Kept for history; std nulled so verify_fills_live does not assert it.",
+  "superseded_std": 12.5
  },
  "JUBLPHARMA|20030331": {
   "ann_basis": "CONVENTION, not a filing date: quarter-end+45d, the default 20,818 of the 21,515 dated pre-2015 cells already carry (runbook \u00a752), FLOORED at the symbol's first traded bar so a pre-listing quarter cannot claim it was public before the company had a tape (\u00a799). Moneycontrol's feed carries no filing date.",
@@ -139770,7 +139789,9 @@
   },
   "src": "moneycontrol quarterly-results API (runbook \u00a781)",
   "state": "FILLED-ROUNDED",
-  "std": 113.15
+  "std": null,
+  "superseded": "2026-09-05 fund_cell_fix.json: the as-filed exchange filing (Wayback NSE results.jsp / BSE qresann) prints a different quarter; this Moneycontrol value is a restated vintage. Store now holds 113.01 (runbook 131f). Kept for history; std nulled so verify_fills_live does not assert it.",
+  "superseded_std": 113.15
  },
  "ORIENTBANK|20021231": {
   "ann_basis": "CONVENTION, not a filing date: quarter-end+45d, the default 20,818 of the 21,515 dated pre-2015 cells already carry (runbook \u00a752), FLOORED at the symbol's first traded bar so a pre-listing quarter cannot claim it was public before the company had a tape (\u00a799). Moneycontrol's feed carries no filing date.",

@@ -15000,3 +15000,42 @@ snapshots must be invalidated → `ENGINE_VER e16 → e17` in BOTH twins + sw `v
   `indicesHistory['Nifty 500'].length == 339` in `dash_slim.bin`, TECHM ∈ members at 2015-06-30, ONIDA ∉ at 2012-12-31.
 - OPEN: 125 unmapped register names (list in `_n500_inclexcl_events.json.unmapped`), the 2006-07 size over-count,
   JISLDVREQS/EVEREADY/PROVOGE extras, the register's 2020-09-14 end (post-2020 rides the changelog only).
+
+### 131f. ★★★ THE 16 PAT CONTRADICTIONS ADJUDICATED — 11 healed, and the rule that withdrew 7 heals before they landed  (2026-09-05, same day)
+Every stored value in the 16 came from Moneycontrol (`agg_pat_cell_fills`, 2026-08-12/26). Method: lay out the
+WHOLE fiscal year — stored vs MC quarters, MC's own annual, every archived NSE page (Q1/H1/Q3/annual) with the
+page's own arithmetic (bank: Operating Profit − Provisions − Tax = Net Profit; other: PBT − Tax − provisions = NP;
+all 27 pages relied on CLOSE), every BSE `qresann` page for the year (Profit after Tax / Extraordinary / Net Profit /
+EPS rows). Then heal only where a SECOND document agrees, through `fund_cell_fix.json` (CI re-applies it).
+
+**Pattern found:** MC's quarters are the LATEST-RESTATED split — its four quarters sum exactly to the audited
+annual, with the restatement pushed into one quarter (ANDHRABANK Q2 68.40 vs as-filed 66.76; ORIENTBANK Q2
+113.15 vs 113.01; THERMAX Q1 5.70 vs 7.15; CENTENKA every FY02 quarter ~5 cr lower, deferred-tax adoption;
+JUBLPHARMA 0.6 cr moved Q2↔Q3). Where MC and the exchange page disagree and MC's own quarters do not even tile
+MC's own annual, MC's quarterly figure is simply the odd one (FDC 11.99 vs 12.06, HCL-INSYS 24.98 vs 24.92 — MC's
+OWN annual reproduces the page value both times; BANKINDIA/ELGIEQUIP tile nothing).
+
+**★ THE RULE, learned from a page STEP W had read and my index had not keyed:** the ORIENTBANK Mar-03 direct Q4
+page prints **119.49** (= stored), while audited annual − as-filed 9M = **119.63** — because the Q4 filing
+RESTATED Q2 to 113.15 so that the four quarters tile the audited annual. Likewise THERMAX's audited H1 filing
+restated Q1 to 5.70 and printed Q2 15.42 (5.70 + 15.42 = the H1 page exactly). So **a derived quarter is the
+as-filed quarter ONLY when no later filing restated the legs.** Test: MC's leg equals the as-filed page (MC
+carries restated legs where they exist). Annual-minus-9M "balancing figures" were therefore NOT written: 7 heals
+withdrawn before landing (BANKINDIA Sep-01 / Mar-02, CENTENKA Mar-02, ELGIEQUIP Mar-02, ORIENTBANK Mar-03 /
+Mar-04, THERMAX Sep-03). This is also WHY the revenue cumdiff route in 131b is safe: its PAT-identity gate
+(cum − legs == stored PAT to the paisa) fails exactly when a leg was restated, and refused ORIENTBANK Sep-02 /
+THERMAX Sep-03 / BANKINDIA Mar-02 on that ground.
+
+**Healed 11** (fund_cell_fix.json, each with both documents): ANDHRABANK 20020930 66.76 · BANKINDIA 20010630
+120.38 · CENTENKA 20010630/0930/1231 26.32/12.50/7.37 · FDC 20040331 12.06 · HCL-INSYS 20040930 24.92 ·
+JUBLPHARMA 20020930/1231 12.90/13.10 · ORIENTBANK 20020930 113.01 · THERMAX 20030630 7.15 (this REVERSES a
+§90g gate-H correction of 2026-08-12 that had overwritten STEP W's exchange read with MC's restated figure — the
+entry's own caveat said a filing read outranks it; `era_pat_corrections.json` entry annotated, not deleted).
+**Held 13:** RELIANCE 2002 ×3 (FY02 series is RIL-only as filed and consistent; the audited annual 3,243 and
+the FY03 H1 are the MERGED entity — the Q1 FY03 page prints 720 RIL-only with pre-merger paid-up, stored 918 is
+merged basis; a merger-year entity decision, not a data defect); UMIYA-MRO ×3 (single document, EPS prints 0.00
+so G5 untestable, and the four exchange quarters 5.41 do not tile the audited 3.68); BANKINDIA Q2/Q4, CENTENKA
+Q4, ELGIEQUIP Q1-split/Q4, ORIENTBANK Mar-04, ANDHRABANK Q4 (no printed page). **Not defects 2:** ORIENTBANK
+Mar-03 (page = stored), THERMAX Sep-03 (printed with restated Q1). All 26 verdicts in `wb_rev_findings.json`.
+Store diff exactly 11 cells; `verify_fills_live` MISSING 0 / RESURRECTED 0; 10 `agg_pat_cell_fills` entries
+superseded (`std` nulled, value kept as `superseded_std`).
