@@ -15884,7 +15884,11 @@ python3 scripts/kpi_extract.py --show SYM ; python3 scripts/kpi_extract.py --rep
   document, not the symbol). The holdout metrics it MISSED (installed capacity units/year,
   utilisation, production volume, Galaxy stores, distributors) are DRHP / annual-report figures
   that the quarterly decks do not print — the `ar` pass is what closes them.
-- Gemini's reads at scale are still unmeasured beyond that sample — run `kpi_calibrate.py` and
+- **ACUTAAS (run 33988387451, 4 decks, 18 cells, 0 held): 9/9 overlapping holdout cells exact** —
+  pharma-intermediates revenue share FY19→FY26 (8 years, from the corporate deck) and FY26 capacity;
+  two 9MFY26 cells correctly refused by the period gate. Its five missing holdout rows (export
+  share, countries, customers, products invoiced, patents) are annual-report / DRHP figures.
+- Gemini's reads at scale are still unmeasured beyond those two samples — run `kpi_calibrate.py` and
   spot-read a few decks after the first full walks land — compare `by: gemini:*` ledgers
   against the calibration file (ACUTAAS / CPPLUS were left unread by hand for exactly this) and
   spot-read a few decks by packet before trusting the walker's output at scale.
