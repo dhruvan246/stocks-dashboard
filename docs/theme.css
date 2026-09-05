@@ -231,7 +231,7 @@ html[data-theme] .bg-white{ background-color: var(--surface) !important; }
 html[data-theme] .bg-white\/90{ background-color: var(--header-bg) !important; }
 html[data-theme] .bg-slate-50{ background-color: var(--surface-2) !important; }
 html[data-theme] .bg-slate-50\/40{ background-color: color-mix(in srgb, var(--surface-2) 60%, transparent) !important; }
-html[data-theme] .bg-slate-100{ background-color: var(--surface-3) !important; }
+html[data-theme] .bg-slate-100, html[data-theme] .bg-slate-200{ background-color: var(--surface-3) !important; }
 
 html[data-theme] .text-slate-900, html[data-theme] .text-slate-800, html[data-theme] .text-slate-700{ color: var(--text) !important; }
 html[data-theme] .text-slate-600, html[data-theme] .text-slate-500{ color: var(--text-muted) !important; }
@@ -242,7 +242,7 @@ html[data-theme] .border-slate-300{ border-color: var(--border-strong) !importan
 html[data-theme] .divide-slate-100 > :not([hidden]) ~ :not([hidden]),
 html[data-theme] .divide-slate-200 > :not([hidden]) ~ :not([hidden]){ border-color: var(--border) !important; }
 
-html[data-theme] .hover\:bg-slate-50:hover, html[data-theme] .hover\:bg-slate-100:hover, html[data-theme] .hover\:bg-slate-200:hover{ background-color: var(--surface-3) !important; }
+html[data-theme] .hover\:bg-slate-50:hover, html[data-theme] .hover\:bg-slate-100:hover, html[data-theme] .hover\:bg-slate-200:hover, html[data-theme] .hover\:bg-slate-300:hover{ background-color: var(--surface-3) !important; }
 html[data-theme] .hover\:text-slate-900:hover, html[data-theme] .hover\:text-slate-700:hover{ color: var(--text) !important; }
 
 /* =========================================================================

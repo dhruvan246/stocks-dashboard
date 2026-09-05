@@ -540,9 +540,14 @@ function wireHover(){
 
 /* ---------- stats / returns / technicals / fundamentals ---------- */
 function statCard(lbl,val,cls){ return `<div class="card p-3"><div class="lbl text-slate-500">${lbl}</div><div class="text-lg font-bold ${cls||'text-slate-900'} mt-0.5">${val}</div></div>`; }
+/* The page's "now" for THIS stock is its own last bar, never later. SF_END_OFF is the bin's end
+   date and is the same for every symbol; a delisted or suspended series stops years earlier, and
+   anchoring every window on the bin date made them end past the data — MINDTREE (last bar
+   Nov-2022) read "as of 2026-09-04", 1M…3Y "+0.00%", 52w high/low ±100% (2026-09-05 audit). */
+function stkEndOff(){ const s=SERIES[TKR]; const last=(s&&s.d&&s.d.length)?s.d[s.d.length-1]:SF_END_OFF; return Math.min(SF_END_OFF,last); }
 function render(){
   const rw=ASOF!=null, s=SERIES[TKR], m=META[TKR];
-  const off=rw?ASOF:SF_END_OFF;
+  const off=rw?ASOF:stkEndOff();
   const n=s.p.length;
   const bi=Math.min(Math.max(lbound(s.d,off+1)-1,0),n-1);      // last bar on/before the as-of date
   const adjLast=s.p[bi]/100, adjPrev=bi>0?s.p[bi-1]/100:adjLast;
@@ -559,7 +564,7 @@ function render(){
   if(!m.alive) $('sDead').classList.remove('hidden');
   $('sPrice').textContent='₹'+(rawLast>=1000?Math.round(rawLast).toLocaleString('en-IN'):rawLast.toFixed(2));
   $('sChg').innerHTML=`<span class="${dayChg>=0?'pos':'neg'}">${pct(dayChg)}</span> <span class="text-slate-400 text-xs">1-day</span>`;
-  $('sAsof').textContent=(rw?'rewound to ':'as of ')+isoOff(off);
+  $('sAsof').textContent=(rw?'rewound to ':(off<SF_END_OFF?'last traded ':'as of '))+isoOff(off);
   $('sBt').href='./stock-backtest.html';
   // chips: index memberships + F&O. The slice carries them precomputed — resolving membership from
   // indicesHistory was the ONLY thing the page still wanted the 17 MB stock_data.bin for.
@@ -824,7 +829,7 @@ function renderFunds(){
   const withAnn=ends.filter(e=>fundBy[e]&&annOf(fundBy[e])!=null);
   const lr=$('lastReact'); lr.classList.add('hidden');
   // newest quarter whose reaction is computable — the very latest can announce after the last price bar
-  const li=s2?Math.min(Math.max(lbound(s2.d,(rw?ASOF:SF_END_OFF)+1)-1,0),s2.p.length-1):0;
+  const li=s2?Math.min(Math.max(lbound(s2.d,(rw?ASOF:stkEndOff())+1)-1,0),s2.p.length-1):0;
   for(let i=withAnn.length-1;i>=0&&s2;i--){
     const e=withAnn[i], a=annOf(fundBy[e]), rct=reactionAt(a);
     if(!rct||rct.j>li) continue;                    // reaction bar must be inside the rewound window
@@ -1347,7 +1352,7 @@ function rerenderAll(){
 }
 function applyRewind(iso){
   const s=SERIES[TKR]; if(!s) return;
-  const o=Math.min(Math.max(dayOff(iso),s.d[0]),SF_END_OFF);
+  const o=Math.min(Math.max(dayOff(iso),s.d[0]),stkEndOff());
   ASOF=o;
   $('rwBanner').classList.remove('hidden');
   $('rwDate').textContent=isoOff(o);
@@ -1411,7 +1416,9 @@ async function liveQuote(){
 
   // A renamed ticker's old symbol has no slice of its own — hop to the current name
   // instead of booting the 17 MB engine just to fail (GUJGASLTD→GUJENERGY class, §30).
-  if(!slice && typeof FUND_ALIAS!=='undefined' && FUND_ALIAS[SYM]){
+  // An old name that still ships a DEAD stub slice (3IINFOTECH→3IINFOLTD) would otherwise
+  // render that stub as the company, so hop whenever the old name is not alive (2026-09-05).
+  if(typeof FUND_ALIAS!=='undefined' && FUND_ALIAS[SYM] && (!slice || !slice.alive)){
     location.replace('stock.html?sym='+encodeURIComponent(FUND_ALIAS[SYM])); return;
   }
 
@@ -1459,7 +1466,7 @@ async function liveQuote(){
   // rewind controls: date bounds follow this stock's actual history
   const s0=SERIES[TKR];
   if(s0&&s0.d.length){
-    $('rwPick').min=isoOff(s0.d[0]); $('rwPick').max=isoOff(SF_END_OFF);
+    $('rwPick').min=isoOff(s0.d[0]); $('rwPick').max=isoOff(stkEndOff());
     $('rwGo').onclick=()=>{ const v=$('rwPick').value; if(v) applyRewind(v); };
     $('rwExit').onclick=exitRewind;
   }
