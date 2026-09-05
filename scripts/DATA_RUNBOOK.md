@@ -14820,6 +14820,8 @@ patched checkout before pushing:**
 3. `apply_revop_cell_fix.py` reports one pre-existing MOVED-ON (EMAMILTD 20160331 std 537.37 vs was
    500.55) — on origin before this session; not touched.
 
+**CI state at handoff (13:35 IST):** the heal is LIVE and verified (Pages `sf_revop.json` 12:01 IST: opStd 2002-17 = 14,970 and ebitStd 2008-16 = 3,641, both = local; 0 held values present). CI's own blocking verifier has NOT yet run on top of it: every `refresh-fundamentals` run since 12:01 IST (33950029980, 33951393964, 33952773364) hung at step 5 `update_fundamentals.py` — the NSE integrated-filing pull, 150 s per request — and hit the 40-min timeout before step 13; `www.nseindia.com` answered http 000 from this Mac at 13:32 IST too (the §NSE lockdown class). The 11:31 IST run cleared the same step in 40 s. The local verifier (same script, same payload files) is clean. **First thing to check when resuming: `gh run list --workflow refresh-fundamentals.yml -L 3` — the first run that passes step 5 must be green at step 13.**
+
 ---
 
 ## 130. ★★★ THE LINE-ITEM BLOCK BEFORE 2018 — "XBRL only" meant "2018 only"; the archive HTML + Moneycontrol carry it back to 2002  (2026-09-05, worktree ~/stocks-wt/eps-block)
