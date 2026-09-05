@@ -593,8 +593,8 @@ def run(sym, docs, backend, by, limit=None, dry=False):
     for doc in docs:
         if limit and done >= limit:
             break
-        if doc["att"] in L.get("docs", {}) and backend != "packet":
-            continue
+        if doc["att"] in L.get("docs", {}) and not getattr(run, "force", False):
+            continue                                   # already read (packet mode too — a packet is for UNREAD filings)
         path = kpi_docs.fetch(doc, sym)
         if not path:
             print("  %s %s: download FAILED" % (sym, doc["att"])); continue
@@ -662,10 +662,34 @@ def main():
     ap.add_argument("--ingest", nargs=3, metavar=("SYM", "ATT8", "ANSWER_JSON"))
     ap.add_argument("--show", metavar="SYM")
     ap.add_argument("--forget", nargs=2, metavar=("SYM", "ATT8"), help="drop a read document so it is read again")
+    ap.add_argument("--next", type=int, metavar="N", help="print the N symbols most in need of reading (priority order) with unread counts")
+    ap.add_argument("--force", action="store_true", help="re-emit packets even for documents already read")
     ap.add_argument("--report", action="store_true", help="one line per ledger: metrics, cells, docs, held")
     a = ap.parse_args()
     if a.ingest:
         ingest_answer(a.ingest[0], a.ingest[1], a.ingest[2], a.by or "claude-session"); return
+    if a.next:
+        # priority: no ledger first (largest market cap first), then ledgers with unread catalog entries,
+        # oldest `checked` first. Symbols without a cached catalog are listed on BSE (≈15-25 s each).
+        syms = universe_symbols(a.universe)
+        rows = []
+        for sym in syms:
+            if len(rows) >= a.next:
+                break
+            if not kpi_docs.scripcode(sym):
+                continue
+            L = load_ledger(sym) if os.path.exists(ledger_path(sym)) else None
+            if L and L.get("catalog") and L.get("catalog_ver") == kpi_docs.CATALOG_VER:
+                cat = L["catalog"]
+            else:
+                cat = catalog(sym, a.since, tuple(a.kinds.split(",")))
+                L = load_ledger(sym)
+            unread = [d for d in cat if d["att"] not in (L or {}).get("docs", {})]
+            if unread:
+                rows.append((sym, len(unread), len(cat), unread[0]["date"]))
+        for sym, n, tot, newest in rows:
+            print("%-12s unread %3d of %3d (newest %s)" % (sym, n, tot, newest))
+        return
     if a.forget:
         L = load_ledger(a.forget[0])
         atts = [k for k in L["docs"] if k.startswith(a.forget[1])]
@@ -696,6 +720,7 @@ def main():
     by = a.by or ("gemini:" + os.environ.get("GEMINI_MODEL", "gemini-3.6-flash") if a.backend == "gemini" else "claude-session")
     if a.walk:
         walk(a, by); return
+    run.force = a.force
     for sym in a.syms:
         docs = select_docs(sym, a.since, tuple(a.kinds.split(",")))
         print("%s: %d documents selected" % (sym, len(docs)))
