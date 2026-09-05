@@ -205,6 +205,17 @@ def main():
             continue
         row[i] = p["value"]
         ann, floor_from = ann_for(qe, sym, first_bar, seam_syms)
+        # A proposal may carry a REAL public date (`ann`, YYYYMMDD int) -- e.g. the BSE announcement index's
+        # NEWS_DT, the exchange's own dissemination timestamp of the result summary (runbook §129). It
+        # replaces the qe+45d convention but is still floored at the first traded bar (§99): a real date
+        # cannot precede the tape either. The ledger says which basis was written per cell.
+        real_ann = p.get("ann")
+        if isinstance(real_ann, int) and real_ann > 19900101:
+            fb = first_bar.get(sym)
+            if fb and sym not in seam_syms and fb > real_ann:
+                ann, floor_from = fb, real_ann
+            else:
+                ann, floor_from = real_ann, None
         if row[ai] in (None, 0):
             row[ai] = ann
             if floor_from == "NO-TAPE":
@@ -240,7 +251,7 @@ def main():
             "row_label": ch.get("row"),
             "resolved_via": p.get("resolved_via", "symbol"),
             "ann_written": row[ai],
-            "ann_basis": ANN_BASIS,
+            "ann_basis": (p.get("ann_basis") or "REAL public date supplied by the proposal (see src), floored at the first traded bar (§99)") if isinstance(p.get("ann"), int) else ANN_BASIS,
             "ann_floor": ("qe+45d was %d, FLOORED UP to the first traded bar %d -- a pre-listing "
                           "quarter (§99)" % (floor_from, row[ai])) if isinstance(floor_from, int)
                          else ("no tape for this symbol in sf_stock_data.bin, so qe+45d stands "
