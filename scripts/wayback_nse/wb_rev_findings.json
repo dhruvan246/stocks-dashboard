@@ -9,7 +9,7 @@
   "campaign": "rev-parity 2026-09-05",
   "class": "derived only from Moneycontrol's annual",
   "finding": "as-filed 9M (H1 148.08 + Q3 112.68) + MC annual 402.99 imply Q4 142.23 vs stored 140.59 (MC); no exchange annual/Q4 page",
-  "verdict": "HELD: the only annual figure is one vendor's; no exchange document"
+  "verdict": "NOT A DEFECT (\u00a7131g): the direct Q4 FY03 NSE page (cap 20031018113924, Audited Non-Cumulative, Non-Consolidated) prints 140.59 = stored. Two annual pages exist (consolidated 382.70, standalone 402.99); the store's standalone Q4 140.59 is the printed value."
  },
  "BANKINDIA|20010630": {
   "campaign": "rev-parity 2026-09-05",
@@ -21,13 +21,13 @@
   "campaign": "rev-parity 2026-09-05",
   "class": "same FY as an original finding; Moneycontrol restated split vs as-filed exchange filing",
   "finding": "found while adjudicating the row (runbook 68): Q2 135.16 -> 111.27",
-  "verdict": "HELD: H1 page 231.65 - as-filed Q1 120.38 = 111.27 only if the H1 filing did not restate Q1; Moneycontrol's Q1 (124.38) != the Q1 page shows a Q1 restatement happened somewhere, so the printed Q2 is undeterminable. Stored 135.16 (MC) kept. RULE 131f: only a quarter a filing PRINTS is as-filed; annual-minus-legs / cumulative-minus-restated-leg derivations are not (ORIENTBANK Mar-03 Q4 page prints 119.49, not annual - as-filed 9M = 119.63, because the Q4 filing restated Q2)."
+  "verdict": "NOT A DEFECT (\u00a7131g): the direct BSE Q2 page (cap 20030907053445) prints 135.16 = stored. The finding used NSE-H1 231.65 - Q1 120.38 = 111.27, but the NSE H1 is a restated cumulative figure (NSE H1 231.65 != BSE Q1+Q2 255.54); the direct BSE quarter page is 135.16 and the stored series (120.38/135.16/155.16/94.02) tiles the audited annual 505.22."
  },
  "BANKINDIA|20020331": {
   "campaign": "rev-parity 2026-09-05",
   "class": "as-filed page PAT != stored npStd (restated vintage / wrong stored PAT / merger entity) -- REPORTED, not healed (needs a second reader per runbook)",
   "finding": "BANKINDIA: CUMDIFF PAT 505.22-386.81=118.41 vs stored 94.02 (identity fails)",
-  "verdict": "HELD: no Q4 page; audited annual 505.22 - as-filed 9M 386.81 = 118.41 is a derivation, not a printed quarter; MC's 94.02 tiles no annual either. RULE 131f: only a quarter a filing PRINTS is as-filed; annual-minus-legs / cumulative-minus-restated-leg derivations are not (ORIENTBANK Mar-03 Q4 page prints 119.49, not annual - as-filed 9M = 119.63, because the Q4 filing restated Q2)."
+  "verdict": "HELD (\u00a7131g): no direct Q4 page. Stored 94.02 (Moneycontrol) is consistent with audited annual 505.22 - as-filed BSE 9M 410.70 = 94.52 (within 0.5), but the NSE-H1-vs-BSE-quarters fork (231.65 vs 255.54) leaves the 9M ambiguous, so a heal is not clean. Store stays."
  },
  "CENTENKA|20010630": {
   "campaign": "rev-parity 2026-09-05",
@@ -51,19 +51,19 @@
   "campaign": "rev-parity 2026-09-05",
   "class": "as-filed page PAT != stored npStd (restated vintage / wrong stored PAT / merger entity) -- REPORTED, not healed (needs a second reader per runbook)",
   "finding": "BSE archive: 500280: CUMDIFF PAT 34.520-46.190=-11.670 vs stored 3.67 (identity fails)",
-  "verdict": "HELD: no Q4 page; annual 34.52 - as-filed 9M 46.19 = -11.67 is a derivation; the Q4 filing most likely printed 3.67 against the restated 9M (30.85), which is what MC carries. Q1-Q3 healed to the printed BSE pages. RULE 131f: only a quarter a filing PRINTS is as-filed; annual-minus-legs / cumulative-minus-restated-leg derivations are not (ORIENTBANK Mar-03 Q4 page prints 119.49, not annual - as-filed 9M = 119.63, because the Q4 filing restated Q2)."
+  "verdict": "HEALED 2026-09-05 (\u00a7131g) -> -11.67 via fund_cell_fix.json: audited BSE annual 34.52 - as-filed BSE 9M 46.19 (Q1 26.32 incl +17.67 extraordinary gain, Q2 12.50, Q3 7.37); the gain reverses by year-end (annual carries no extraordinary), so Q4 is a net loss. The four now tile the annual. Stored 3.67 was Moneycontrol's restated split."
  },
  "ELGIEQUIP|20010630": {
   "campaign": "rev-parity 2026-09-05",
   "class": "H1 identity fails; Q1/Q2 split undeterminable",
   "finding": "NSE H1 FY02 page 4.6753 (Audited, Cumulative) vs stored Q1+Q2 1.98+1.94 = 3.92 (Moneycontrol); no Q1 page to split the 0.755 difference",
-  "verdict": "HELD: no document determines the individual quarters"
+  "verdict": "HEALED 2026-09-05 (\u00a7131g) -> 2.73 via fund_cell_fix.json: BSE Q1 page Net Profit 2.735 (after -1.34 extraordinary); NSE H1 4.6753 - Q2 1.941 = 2.734 corroborates. Convention = net after extraordinary (Q2/Q3 match BSE net to the paisa). Stored 1.98 was Moneycontrol's."
  },
  "ELGIEQUIP|20020331": {
   "campaign": "rev-parity 2026-09-05",
   "class": "as-filed page PAT != stored npStd (restated vintage / wrong stored PAT / merger entity) -- REPORTED, not healed (needs a second reader per runbook)",
   "finding": "ELGIEQUIP: CUMDIFF PAT 10.71-7.85=2.86 vs stored 3.25 (identity fails)",
-  "verdict": "HELD: no Q4 page; annual 10.7101 - H1 4.6753 - Q3 3.1739 = 2.86 is a derivation; MC's 3.25 is unexplained by any identity (MC's own quarters 10.35 != MC annual 10.71). RULE 131f: only a quarter a filing PRINTS is as-filed; annual-minus-legs / cumulative-minus-restated-leg derivations are not (ORIENTBANK Mar-03 Q4 page prints 119.49, not annual - as-filed 9M = 119.63, because the Q4 filing restated Q2)."
+  "verdict": "HEALED 2026-09-05 (\u00a7131g) -> 2.86 via fund_cell_fix.json: BSE Q4 page Net Profit 2.86 == NSE annual 10.7101 - H1 4.6753 - Q3 3.1739 = 2.86. Stored 3.25 was Moneycontrol's."
  },
  "FDC|20040331": {
   "campaign": "rev-parity 2026-09-05",
@@ -105,25 +105,25 @@
   "campaign": "rev-parity 2026-09-05",
   "class": "as-filed page PAT != stored npStd (restated vintage / wrong stored PAT / merger entity) -- REPORTED, not healed (needs a second reader per runbook)",
   "finding": "ORIENTBANK: CUMDIFF PAT 686.07-457.28=228.79 vs stored 228.68 (identity fails)",
-  "verdict": "HELD: no Q4 page; annual 686.07 - H1 305.06 - Q3 152.22 = 228.79 is a derivation; MC 228.68 (0.11 apart, audit-adjustment class). RULE 131f: only a quarter a filing PRINTS is as-filed; annual-minus-legs / cumulative-minus-restated-leg derivations are not (ORIENTBANK Mar-03 Q4 page prints 119.49, not annual - as-filed 9M = 119.63, because the Q4 filing restated Q2)."
+  "verdict": "NOT A DEFECT (\u00a7131g): the direct Q4 FY04 NSE page (cap 20040618082513, Audited Non-Cumulative) prints 228.68 = stored. The finding differenced annual 686.07 - 9M 457.28 = 228.79 (off 0.11); the direct Q4 page confirms 228.68."
  },
  "RELIANCE|20020331": {
   "campaign": "rev-parity 2026-09-05",
   "class": "as-filed page PAT != stored npStd (restated vintage / wrong stored PAT / merger entity) -- REPORTED, not healed (needs a second reader per runbook)",
   "finding": "RELIANCE: CUMDIFF PAT 3243.00-2142.00=1101.00 vs stored 672.00 (identity fails)",
-  "verdict": "HELD: FY02 stored series (618/702/822/672 = 2,814) is RIL-only AS FILED and internally consistent; the audited annual page 3,243 is the MERGED entity (RPL appointed date 1-Apr-2001; EPS identity fails 23.4 vs 30.77 because paid-up changed). Differencing across entities is invalid; stored 672 stands."
+  "verdict": "NOT A DEFECT (\u00a7131g): the direct Q4 FY02 page (BSE-side/NSE Wayback cap 20021019003056) prints 672.0 = stored. The finding differenced the AUDITED/merged annual 3243 minus 9M; the direct as-filed Q4 page confirms 672."
  },
  "RELIANCE|20020630": {
   "campaign": "rev-parity 2026-09-05",
   "class": "as-filed page PAT != stored npStd (restated vintage / wrong stored PAT / merger entity) -- REPORTED, not healed (needs a second reader per runbook)",
   "finding": "RELIANCE: ANCHOR-FAIL page PAT 720.00 vs stored 918.00 (finding, not a fill)",
-  "verdict": "HELD: as-filed Q1 FY03 page 720 (RIL-only, paid-up 105,400 lakhs, EPS 6.8 == 6.83) vs stored 918 (merged basis, consistent with the merged H1 page 1,920 and MC's FY03 4,104). Changing Q1 alone makes FY03 mixed-entity; the entity basis for the merger year is a user decision (PLAN_PRE2009_STDREV left it open)."
+  "verdict": "HELD (\u00a7131g, entity vintage - USER decision): the direct Q1 FY03 page prints 720.0 (RIL STANDALONE, pre-RPL-merger, paid-up 105,400 lakhs); stored 918.0 is the MERGED basis (= printed H1 1920 - printed Q2 1002), consistent with the rest of merged FY03 (Q2 1002 / Q3 1083 / Q4 1101 / annual 4104). Changing Q1 to 720 makes FY03 mixed-entity; the merger-year basis is a user call. Store stays 918."
  },
  "RELIANCE|20020930": {
   "campaign": "rev-parity 2026-09-05",
   "class": "as-filed page PAT != stored npStd (restated vintage / wrong stored PAT / merger entity) -- REPORTED, not healed (needs a second reader per runbook)",
   "finding": "RELIANCE: CUMDIFF PAT 1920.00-720.00=1200.00 vs stored 1002.00 (identity fails)",
-  "verdict": "HELD: H1 page 1,920 is merged-entity; minus the RIL-only Q1 720 is not a quarter of any one entity. Stored 1,002 = merged H1 - merged Q1 918 is consistent; stands."
+  "verdict": "NOT A DEFECT (\u00a7131g): the direct Q2 FY03 NSE page (cap 20030319002754) prints 1002.0 = stored. The finding differenced the merged H1 1920 minus the STANDALONE Q1 720 (mixed basis); the direct Q2 page confirms 1002."
  },
  "THERMAX|20030630": {
   "campaign": "rev-parity 2026-09-05",
@@ -141,18 +141,18 @@
   "campaign": "rev-parity 2026-09-05",
   "class": "as-filed page PAT != stored npStd (restated vintage / wrong stored PAT / merger entity) -- REPORTED, not healed (needs a second reader per runbook)",
   "finding": "MRO-TEK: ANCHOR-FAIL page PAT 1.33 vs stored 1.17 (finding, not a fill)",
-  "verdict": "HELD: as-filed NSE Q2 page 1.3341 (4 identical captures, in-page closes) vs MC 1.17, but EPS prints 0.00 (G5 untestable), no BSE capture, and the four exchange quarters (5.41) do not tile the audited annual 3.6786 (audit adjustments incl. 154.87 lakhs misc write-off) -- single document, no second reader."
+  "verdict": "HEALED 2026-09-05 (\u00a7131g) -> 1.33 via fund_cell_fix.json: NSE Q2 page 1.3341 == BSE Q2 page 1.334 (two publishers, printed quarter). Stored 1.17 was Moneycontrol's."
  },
  "UMIYA-MRO|20031231": {
   "campaign": "rev-parity 2026-09-05",
   "class": "as-filed page PAT != stored npStd (restated vintage / wrong stored PAT / merger entity) -- REPORTED, not healed (needs a second reader per runbook)",
   "finding": "MRO-TEK: ANCHOR-FAIL page PAT 2.77 vs stored 1.11 (finding, not a fill)",
-  "verdict": "HELD: as-filed NSE Q3 page 2.7701 (tax credit -62.29 lakhs) vs MC 1.11; same reasons as 20030930 -- single document."
+  "verdict": "HELD (\u00a7131g, unresolved extraordinary): NSE Q3 page prints Net Profit 2.7701 with NO extraordinary line; BSE Q3 page (cap 20040602164934) prints Net Profit 1.042 after a -1.658 extraordinary. The two exchange filings disagree on whether the exceptional item belongs in Q3, and stored 1.11 (== BSE PAT 2.77 - extra 1.66) sits on the after-extraordinary basis. Store (1.11) is plausible and stays; needs the filing note to settle 1.04 vs 1.11."
  },
  "UMIYA-MRO|20040331": {
   "campaign": "rev-parity 2026-09-05",
   "class": "as-filed page PAT != stored npStd (restated vintage / wrong stored PAT / merger entity) -- REPORTED, not healed (needs a second reader per runbook)",
   "finding": "MRO-TEK: CUMDIFF PAT 3.68-5.25=-1.57 vs stored 0.10 (identity fails)",
-  "verdict": "HELD: NSE Q4 page 0.157 vs MC 0.10; annual 3.6786 - the three exchange quarters = -1.57 contradicts the Q4 page itself, so the as-filed quarters and the audited annual disagree -- unresolvable without the audit-adjustment note."
+  "verdict": "HEALED 2026-09-05 (\u00a7131g) -> 0.16 via fund_cell_fix.json: NSE Q4 page 0.157 == BSE Q4 page 0.157. Stored 0.10 was Moneycontrol's."
  }
 }

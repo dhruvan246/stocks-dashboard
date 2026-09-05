@@ -5214,6 +5214,56 @@
    "why": "AS-FILED Q1 FY04 WAYBACK-archived NSE results.jsp page 01-Apr..30-Jun-2003 (Unaudited, Non-Cumulative, Non-Consolidated, lakhs; captures 20031212223123 / 20050104180151) Net Profit 715.00 = 7.15; in-page PBT 833 - Tax 118 = 715 CLOSES and printed Basic EPS 3.00 == implied 3.00 (wbgate G5). SECOND DOCUMENT: STEP W's own read of that page (pre2015_reads_w.json THERMAX 20030630 pat 7.15, EPS-recon OK) which the sf_revop PAT mirror still holds; the era_pat_corrections.json 2026-08-12 pass had overwritten it with Moneycontrol's 5.70 on MC's own annual identity -- its entry's own caveat says a filing read outranks it. MC's 5.70 + 15.42 = 21.12 = the audited H1 page: the H1 filing restated Q1 to 5.70 and printed Q2 15.42, so Q2 stays 15.42 (printed) and Q1 returns to the as-filed 7.15. RULE (131f): only a quarter a filing PRINTS is as-filed -- a direct quarter page, or a cumulative page minus a leg that no later filing restated (Moneycontrol's leg equals the as-filed page). Audited-annual-minus-9M derivations were NOT written: the ORIENTBANK Mar-03 Q4 page prints 119.49 while annual - as-filed 9M = 119.63, because the Q4 filing restated Q2.",
    "vintage": "as-filed exchange filing replaces a Moneycontrol restated split",
    "found": "rev-parity 2026-09-05: the as-filed exchange page that gave the revenue CONTRADICTED the stored PAT (scripts/wayback_nse/wb_rev_findings.json); adjudicated 2026-09-05 with a second document, runbook §131f"
+  },
+  {
+   "sym": "UMIYA-MRO",
+   "qe": "20030930",
+   "basis": "std",
+   "was": 1.17,
+   "fixed": 1.33,
+   "why": "AS-FILED Q2 FY04, TWO independent publishers agree: NSE results.jsp page 01-Jul..30-Sep-2003 (Unaudited, Non-Cumulative, Non-Consolidated) Net Profit 133.41 lakhs = 1.3341 cr, in-page PBT 198.75 - Tax 77.04 + misc-writeback 11.70 = 133.41 CLOSES; AND BSE qresann/result.asp scripcd=532376 SQ2003-2004 (cap 20031228071604) Net Profit 1.334 cr (extraordinary only -0.044). Both exchange filings print 1.33 to the paisa. Stored 1.17 is Moneycontrol's and matches neither exchange net-profit line. CONVENTION: store npStd = the exchange 'Net Profit' line AFTER extraordinary items (ELGIEQUIP Q2 stored 1.94 == BSE net 1.941 after a -3.116 extraordinary; Q3 3.18 == BSE net 3.173 after -2.12). RULE 131g: where NO direct Q4 page exists, the pre-2009 Q4 was reported as audited-annual minus the as-filed 9M, so that balancing figure IS the as-reported quarter WHEN all three legs are as-filed exchange pages and the annual did not restate them (the opposite case, a Q4 page that differs from annual-9M, is §131f/ORIENTBANK).",
+   "vintage": "as-filed exchange filing (net after extraordinary) replaces a Moneycontrol value/restated split",
+   "found": "rev-parity 2026-09-05: adjudicating the 13 HELD PAT contradictions (runbook §131g); the as-filed exchange page found via fresh Wayback CDX per symbol+scripcode, store convention = Net Profit AFTER extraordinary items (proven by ELGIEQUIP Q2/Q3 matching the BSE Net Profit line to the paisa)"
+  },
+  {
+   "sym": "UMIYA-MRO",
+   "qe": "20040331",
+   "basis": "std",
+   "was": 0.1,
+   "fixed": 0.16,
+   "why": "AS-FILED Q4 FY04, TWO publishers agree: NSE results.jsp 01-Jan..31-Mar-2004 (Unaudited, Non-Cumulative) Net Profit 15.70 lakhs = 0.157 cr AND BSE qresann scripcd=532376 MQ2003-2004 (cap 20040602165523) Net Profit 0.157 cr (extraordinary -0.001). Both print 0.16. Stored 0.10 is Moneycontrol's. CONVENTION: store npStd = the exchange 'Net Profit' line AFTER extraordinary items (ELGIEQUIP Q2 stored 1.94 == BSE net 1.941 after a -3.116 extraordinary; Q3 3.18 == BSE net 3.173 after -2.12). RULE 131g: where NO direct Q4 page exists, the pre-2009 Q4 was reported as audited-annual minus the as-filed 9M, so that balancing figure IS the as-reported quarter WHEN all three legs are as-filed exchange pages and the annual did not restate them (the opposite case, a Q4 page that differs from annual-9M, is §131f/ORIENTBANK).",
+   "vintage": "as-filed exchange filing (net after extraordinary) replaces a Moneycontrol value/restated split",
+   "found": "rev-parity 2026-09-05: adjudicating the 13 HELD PAT contradictions (runbook §131g); the as-filed exchange page found via fresh Wayback CDX per symbol+scripcode, store convention = Net Profit AFTER extraordinary items (proven by ELGIEQUIP Q2/Q3 matching the BSE Net Profit line to the paisa)"
+  },
+  {
+   "sym": "CENTENKA",
+   "qe": "20020331",
+   "basis": "std",
+   "was": 3.67,
+   "fixed": -11.67,
+   "why": "AS-REPORTED Q4 FY02 = audited annual minus as-filed 9M, all BSE qresann scripcd=500280 pages (Rs. million): audited annual MC2001-2002 (cap 20050510081016) Net Profit 345.20 = 34.52 cr, MINUS Q1 JQ 263.20=26.32 (Profit after Tax 86.50 + Extraordinary +176.70 gain) - Q2 SQ 125.00=12.50 - Q3 DQ 73.70=7.37 (9M net = 46.19) = -11.67. The Q1 +17.67 cr one-time extraordinary GAIN is reversed by year-end (the audited annual carries NO extraordinary: annual net 34.52 == annual PAT 34.52), so Q4 absorbs it as a net loss: Q4 PAT 6.00 - 17.67 = -11.67. Q1-Q3 are the as-filed BSE quarter pages this campaign already landed (2026-09-05); the four now tile the audited annual exactly (26.32+12.50+7.37-11.67=34.52). Stored 3.67 is Moneycontrol's Q4 of a restated split whose four quarters (21.27/7.00/2.58/3.67) tile the same annual but match no BSE quarter page (BSE Q2=12.50 vs MC 7.00, Q3=7.37 vs 2.58). CONVENTION: store npStd = the exchange 'Net Profit' line AFTER extraordinary items (ELGIEQUIP Q2 stored 1.94 == BSE net 1.941 after a -3.116 extraordinary; Q3 3.18 == BSE net 3.173 after -2.12). RULE 131g: where NO direct Q4 page exists, the pre-2009 Q4 was reported as audited-annual minus the as-filed 9M, so that balancing figure IS the as-reported quarter WHEN all three legs are as-filed exchange pages and the annual did not restate them (the opposite case, a Q4 page that differs from annual-9M, is §131f/ORIENTBANK).",
+   "vintage": "as-filed exchange filing (net after extraordinary) replaces a Moneycontrol value/restated split",
+   "found": "rev-parity 2026-09-05: adjudicating the 13 HELD PAT contradictions (runbook §131g); the as-filed exchange page found via fresh Wayback CDX per symbol+scripcode, store convention = Net Profit AFTER extraordinary items (proven by ELGIEQUIP Q2/Q3 matching the BSE Net Profit line to the paisa)"
+  },
+  {
+   "sym": "ELGIEQUIP",
+   "qe": "20010630",
+   "basis": "std",
+   "was": 1.98,
+   "fixed": 2.73,
+   "why": "AS-FILED Q1 FY02 BSE qresann scripcd=522074 JQ2001-2002 (cap 20040907133359, Rs. million): Profit after Tax 40.75 + Extraordinary Items -13.40 = Net Profit 27.35 = 2.735 cr. SECOND DOCUMENT: NSE results.jsp H1 FY02 page Net Profit 4.6753 cr (Audited, Cumulative; its own EPS identity closes 0.77==0.77) minus this quarter 2.735 = 1.94 = the stored Q2 (which == BSE Q2 net 1.941). The FY tiles: 2.735 + 1.941 + 3.173 + 2.86 = 10.71 = the NSE annual. Stored 1.98 is Moneycontrol's and matches neither the BSE net (2.735) nor the BSE PAT-before-extraordinary (4.075). Stored 2.73 (NSE-derived 4.6753-1.941=2.7343; BSE-printed 2.735 -- immaterial 0.005). CONVENTION: store npStd = the exchange 'Net Profit' line AFTER extraordinary items (ELGIEQUIP Q2 stored 1.94 == BSE net 1.941 after a -3.116 extraordinary; Q3 3.18 == BSE net 3.173 after -2.12). RULE 131g: where NO direct Q4 page exists, the pre-2009 Q4 was reported as audited-annual minus the as-filed 9M, so that balancing figure IS the as-reported quarter WHEN all three legs are as-filed exchange pages and the annual did not restate them (the opposite case, a Q4 page that differs from annual-9M, is §131f/ORIENTBANK).",
+   "vintage": "as-filed exchange filing (net after extraordinary) replaces a Moneycontrol value/restated split",
+   "found": "rev-parity 2026-09-05: adjudicating the 13 HELD PAT contradictions (runbook §131g); the as-filed exchange page found via fresh Wayback CDX per symbol+scripcode, store convention = Net Profit AFTER extraordinary items (proven by ELGIEQUIP Q2/Q3 matching the BSE Net Profit line to the paisa)"
+  },
+  {
+   "sym": "ELGIEQUIP",
+   "qe": "20020331",
+   "basis": "std",
+   "was": 3.25,
+   "fixed": 2.86,
+   "why": "AS-FILED Q4 FY02, TWO documents: BSE qresann scripcd=522074 MQ2001-2002 (cap 20040907133414, Rs. million) Profit after Tax 53.10 + Extraordinary -24.50 = Net Profit 28.60 = 2.86 cr, AND independently the NSE results.jsp annual 10.7101 - H1 4.6753 - Q3 3.1739 = 2.8609 = 2.86. Stored 3.25 is Moneycontrol's (its own four quarters 10.35 do not even sum to its own annual 10.71). Convention confirmed by stored Q2 1.94 == BSE net 1.941 and Q3 3.18 == BSE net 3.173. CONVENTION: store npStd = the exchange 'Net Profit' line AFTER extraordinary items (ELGIEQUIP Q2 stored 1.94 == BSE net 1.941 after a -3.116 extraordinary; Q3 3.18 == BSE net 3.173 after -2.12). RULE 131g: where NO direct Q4 page exists, the pre-2009 Q4 was reported as audited-annual minus the as-filed 9M, so that balancing figure IS the as-reported quarter WHEN all three legs are as-filed exchange pages and the annual did not restate them (the opposite case, a Q4 page that differs from annual-9M, is §131f/ORIENTBANK).",
+   "vintage": "as-filed exchange filing (net after extraordinary) replaces a Moneycontrol value/restated split",
+   "found": "rev-parity 2026-09-05: adjudicating the 13 HELD PAT contradictions (runbook §131g); the as-filed exchange page found via fresh Wayback CDX per symbol+scripcode, store convention = Net Profit AFTER extraordinary items (proven by ELGIEQUIP Q2/Q3 matching the BSE Net Profit line to the paisa)"
   }
  ],
  "retracted": [

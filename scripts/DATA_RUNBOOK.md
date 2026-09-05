@@ -15387,3 +15387,40 @@ on 265 (113 at/before it, 152 within 2 d — NSE-first filers); **25 rows have B
   precision or revision difference, held; NAHARSPG Dec-2001 2.44 vs 1.64, held) → **+12** cells (2000: 7, 2001: 5).
 * Remaining 1999-2001 residue after passes 1-3: **1,587 cells** on symbols with no anchor of either kind (216 of the 240
   have NO NSE page on any common quarter), 605 with no capture at all for the quarter, 103 without a BSE code.
+
+### 131g. ★★★ THE 13 HELD CELLS RESOLVED — fresh CDX finds the direct pages the index hid; 5 healed, 5 not-defects, 3 held  (2026-09-05, same day)
+§131f held 13 cells for lack of a printed quarter. The block was the index, not the archive: `_wb_index.json`
+keys ONE page per (symbol, quarter-end) and had kept the ANNUAL over the direct Q4 page. Querying Wayback CDX
+FRESH, per symbol (`filter=original:.*E<SYM>$`) AND per BSE scrip code (`filter=original:.*scripcd=<code>.*`),
+surfaced the direct pages. **5 of the 13 stored values were already the printed quarter** — the finding had
+differenced a restated/merged cumulative page:
+- RELIANCE Q4-FY02 672 (direct Q4 page) · RELIANCE Q2-FY03 1002 (direct Q2 page; the finding used merged-H1 1920
+  − standalone-Q1 720) · ORIENTBANK Q4-FY04 228.68 (direct Q4 page) · ANDHRABANK Q4-FY03 140.59 (direct Q4 page) ·
+  BANKINDIA Q2-FY02 135.16 (direct BSE Q2 page; the NSE H1 231.65 is a restated cumulative, ≠ BSE Q1+Q2 255.54).
+
+**★ THE STORE CONVENTION, PROVEN: npStd = the exchange "Net Profit" line AFTER extraordinary items.** ELGIEQUIP
+FY02 Q2 stored 1.94 == BSE net 1.941 (after a −3.116 extraordinary), Q3 3.18 == BSE net 3.173 (after −2.12) — so
+the store is unambiguously the after-extraordinary bottom line, not PAT-before-exceptional. That settled the rest.
+
+**5 healed** (fund_cell_fix.json, net-after-extraordinary, each with two documents):
+- UMIYA-MRO Sep-03 1.17→1.33 and Mar-04 0.10→0.16 — NSE and BSE quarter pages agree to the paisa (1.3341/1.334;
+  0.157/0.157); Moneycontrol was the outlier.
+- ELGIEQUIP Q1-FY02 1.98→2.73 (BSE Q1 net 2.735; NSE H1 − Q2 = 2.734) and Q4-FY02 3.25→2.86 (BSE Q4 net 2.86 ==
+  NSE annual − H1 − Q3). The FY tiles 2.735+1.941+3.173+2.86 = 10.71.
+- CENTENKA Q4-FY02 3.67→**−11.67**. ★ THE ONE THAT NEEDED THE CONVENTION: Q1 net 26.32 carries a +17.67 cr
+  one-time extraordinary GAIN, but the audited annual net (34.52) carries NO extraordinary, so the gain reverses by
+  year-end and Q4 = annual 34.52 − as-filed 9M 46.19 = −11.67 (a real net loss quarter: Q4 PAT 6.00 − reversal
+  17.67). All three legs are as-filed BSE pages, so this balancing figure IS the as-reported Q4.
+
+**★ THE §131f REFINEMENT (131g rule):** "only printed quarters" has an era exception. Pre-2009 there was NO
+separate audited Q4 filing — Q4 was disclosed as **audited annual − as-filed 9M**. So that balancing figure IS the
+as-reported quarter WHEN all three 9M legs are as-filed exchange pages and the annual did not restate them. §131f's
+opposite case still holds: where a direct Q4 page EXISTS and differs from annual−9M (ORIENTBANK Mar-03: page 119.49
+≠ derived 119.63), the page wins because a leg was restated. Test which case you are in by looking for the page.
+
+**3 still held:** RELIANCE Q1-FY03 (merger vintage: standalone 720 vs merged 918=stored, a user entity call — store
+stays merged for a coherent FY03); UMIYA-MRO Dec-03 (NSE shows Net Profit 2.77 with no extraordinary, BSE shows 1.04
+after a −1.66 extraordinary — the two filings disagree whether the exceptional is in Q3; stored 1.11 sits on the
+after-extra basis and is plausible); BANKINDIA Q4-FY02 (no direct page; stored 94.02 ≈ annual − BSE-9M 94.52, but the
+NSE-H1-vs-BSE-quarters fork leaves the 9M ambiguous). Every verdict is in `wb_rev_findings.json`. Net over §131f+g:
+of the original 16 findings + 10 siblings, **16 healed, 7 not-defects, 3 held.**
