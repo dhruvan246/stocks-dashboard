@@ -69,14 +69,14 @@ def scripcode(sym):
     return int(v) if v else None
 
 
-CATALOG_VER = 2      # bump when KIND_RULES / classify() change — cached ledger catalogs are rebuilt
+CATALOG_VER = 3      # bump when KIND_RULES / classify() change — cached ledger catalogs are rebuilt
 
 KIND_RULES = [
     # (kind, regex over "SUBCATNAME | NEWSSUB | HEADLINE") — first match wins, so the noise kinds
     # come first: HDFC Bank's "Transcript of Earnings Call in relation to the … financial results"
     # matched `res` and a 1-page audio-recording notice was queued as a results packet (2026-09-06)
     ("tr",  r"transcript|audio recording|video recording|webcast|audio/video|recording of"),
-    ("news", r"newspaper|advertisement|publication of"),
+    ("news", r"newspaper|advertisement|publication of|trading window|closure of"),
     ("ip",  r"investor presentation|earnings presentation|analyst presentation|investor deck"),
     ("pr",  r"press release|media release|press meet"),
     ("ar",  r"annual report"),

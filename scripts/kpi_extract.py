@@ -34,6 +34,7 @@ import json
 import os
 import re
 import sys
+import time
 
 HERE = os.path.dirname(os.path.abspath(__file__))
 sys.path.insert(0, HERE)
@@ -152,11 +153,12 @@ def parse_period(label, fy_end_month=3):
     """Printed period label → ('q'|'y'|None, 'YYYYMMDD'|None). None = not a quarter/FY we store."""
     s = str(label or "").strip().replace("’", "'").replace("–", "-")
     low = s.lower()
-    m = re.search(r"\bq\s*([1-4])\s*(?:of\s*)?fy\s*'?\s*(\d{4})\s*-\s*(\d{2,4})\b", low)   # Q1 FY 2026-27 → FY27
+    SEP = r"[\s,\-–/]*"                      # "Q2, FY 26", "Q1-FY27", "Q4/FY26" all mean the same
+    m = re.search(r"\bq\s*([1-4])" + SEP + r"(?:of\s*)?fy\s*'?\s*(\d{4})\s*-\s*(\d{2,4})\b", low)   # Q1 FY 2026-27 → FY27
     if m:
         return "q", _q_end(_yy(m.group(3)), int(m.group(1)), fy_end_month).strftime("%Y%m%d")
-    m = re.search(r"\bq\s*([1-4])\s*(?:of\s*)?fy\s*'?\s*(\d{4}|\d{2})\b", low) or \
-        re.search(r"\b([1-4])\s*q\s*fy\s*'?\s*(\d{4}|\d{2})\b", low)
+    m = re.search(r"\bq\s*([1-4])" + SEP + r"(?:of\s*)?fy\s*'?\s*(\d{4}|\d{2})\b", low) or \
+        re.search(r"\b([1-4])\s*q" + SEP + r"fy\s*'?\s*(\d{4}|\d{2})\b", low)
     if m:
         return "q", _q_end(_yy(m.group(2)), int(m.group(1)), fy_end_month).strftime("%Y%m%d")
     m = re.search(r"\bq\s*([1-4])\s*'?\s*(\d{4}|\d{2})\b", low)        # "Q1'27", "Q4 2026"
@@ -323,7 +325,9 @@ def ingest(sym, doc, answer, pages_text, by="?", verbose=True):
             per = str(v.get("period") or "")
             ptype, pend = parse_period(per, fy_end_month)
             why = None
-            if val is None or not asp:
+            if re.search(r"target|guidance|projection|projected|outlook|ambition|aspiration|\bplan\b|planned|expected|estimate", (label + " " + name).lower()):
+                why = "target/guidance, not a reported figure (label %r)" % label[:40]   # CPPLUS p11 'Production Capacity Targets' slipped past the prompt
+            elif val is None or not asp:
                 why = "no value"
             elif ptype is None:
                 why = "period not q/y: %r" % per
@@ -557,9 +561,20 @@ def run(sym, docs, backend, by, limit=None, dry=False):
             print("  would read %s %s %s (%d pages, %d chars)" % (sym, doc["kind"], doc["date"], len(sel), len(prompt)))
             done += 1
             continue
-        ans = gemini_answer(prompt)
+        ans = None
+        for attempt in range(3):                     # 503 "high demand" is transient (measured run 33988143164)
+            ans = gemini_answer(prompt)
+            if ans is not None:
+                break
+            import gemini_vision as _GV
+            if _GV.quota_dead() or not os.environ.get("GEMINI_API_KEY"):
+                break
+            time.sleep(20 * (attempt + 1))
         if ans is None:
-            print("  %s %s: model returned nothing (quota/key?)" % (sym, doc["att"])); break
+            import gemini_vision as _GV
+            if _GV.quota_dead():
+                print("  %s: quota exhausted — stopping this symbol" % sym); break
+            print("  %s %s: model returned nothing after 3 attempts — skipped (unread, retried next run)" % (sym, doc["att"])); continue
         w, h, r = ingest(sym, doc, ans, sel, by=by)
         print("  %s %s %s: written %d, held %d, rejected %d" % (sym, doc["kind"], doc["date"], w, h, r))
         done += 1
@@ -593,10 +608,18 @@ def main():
     ap.add_argument("--recheck-days", type=int, default=2)
     ap.add_argument("--ingest", nargs=3, metavar=("SYM", "ATT8", "ANSWER_JSON"))
     ap.add_argument("--show", metavar="SYM")
+    ap.add_argument("--forget", nargs=2, metavar=("SYM", "ATT8"), help="drop a read document so it is read again")
     ap.add_argument("--report", action="store_true", help="one line per ledger: metrics, cells, docs, held")
     a = ap.parse_args()
     if a.ingest:
         ingest_answer(a.ingest[0], a.ingest[1], a.ingest[2], a.by or "claude-session"); return
+    if a.forget:
+        L = load_ledger(a.forget[0])
+        atts = [k for k in L["docs"] if k.startswith(a.forget[1])]
+        for k in atts:
+            del L["docs"][k]
+        L["held"] = [h for h in L.get("held", []) if not h.get("doc", "").startswith(a.forget[1])]
+        save_ledger(L); print("%s: forgot %d document(s) %s" % (a.forget[0], len(atts), atts)); return
     if a.report:
         tot = {"syms": 0, "metrics": 0, "cells": 0, "docs": 0, "held": 0}
         for fn in sorted(os.listdir(LEDGER_DIR)) if os.path.isdir(LEDGER_DIR) else []:

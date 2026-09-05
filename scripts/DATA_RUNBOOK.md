@@ -15873,7 +15873,19 @@ python3 scripts/kpi_extract.py --show SYM ; python3 scripts/kpi_extract.py --rep
   `gemini-3.6-flash` and the workflow pins `GEMINI_MODEL`; NOTE this means the insurer/IPO vision
   fallbacks in refresh-fundamentals / refresh-bse had been silently text-only until then
   (feedback-preferred-source-needs-liveness-check).
-- Gemini's reads are UNMEASURED until the first CI run lands — compare `by: gemini:*` ledgers
+- **Gemini `gemini-3.6-flash` measured on CPPLUS (run 33988143164, 4 decks, 20 cells written, 2 held):**
+  every cell spot-read against the PDF text (inventory/debtor/creditor/cash-conversion days
+  Q1 FY27 + year-ago, Kadapa capacity 2.5 M/month, 38.9% market share, 48 branch offices, 13 RMA
+  centres) was exact, and it honoured a footnote ("All data as of Q2FY26") for the period. Two
+  defects seen: it lifted *Production Capacity TARGETS* (p11) — held only because "Q2, FY 26"
+  failed the parser; now refused mechanically (label/name matching target|guidance|projection|
+  outlook|plan|expected|estimate) and the parser accepts the comma form — and a 503 "high demand"
+  on ACUTAAS's first deck ended that symbol's pass (now: 3 attempts per document, then skip the
+  document, not the symbol). The holdout metrics it MISSED (installed capacity units/year,
+  utilisation, production volume, Galaxy stores, distributors) are DRHP / annual-report figures
+  that the quarterly decks do not print — the `ar` pass is what closes them.
+- Gemini's reads at scale are still unmeasured beyond that sample — run `kpi_calibrate.py` and
+  spot-read a few decks after the first full walks land — compare `by: gemini:*` ledgers
   against the calibration file (ACUTAAS / CPPLUS were left unread by hand for exactly this) and
   spot-read a few decks by packet before trusting the walker's output at scale.
 - Annual-report pass (`ar`, yearly rows like export share / capacity that never appear in decks)
