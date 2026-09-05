@@ -153,7 +153,7 @@ def parse_period(label, fy_end_month=3):
     """Printed period label → ('q'|'y'|None, 'YYYYMMDD'|None). None = not a quarter/FY we store."""
     s = str(label or "").strip().replace("’", "'").replace("–", "-")
     low = s.lower()
-    low = re.sub(r"\bf\s?'?(\d{2})\b", r"fy\1", low)          # Mahindra's "F27" / "Q1 F27" = FY27
+    low = re.sub(r"(?<![a-z])f\s?'?(\d{2})\b", r"fy\1", low)   # Mahindra's "F27" / "Q1 F27" / "Q1F25" = FY27
     low = re.sub(r"\bq\s*([1-4])\s*(\d{2})-(\d{2})\b", r"q\1 fy\3", low)   # Coal India's "Q1 26-27" = Q1 FY27
     SEP = r"[\s,\-–/]*"                      # "Q2, FY 26", "Q1-FY27", "Q4/FY26" all mean the same
     m = re.search(r"\bq\s*([1-4])" + SEP + r"(?:of\s*)?(?:fy\s*'?\s*)?(\d{4})\s*-\s*(\d{2,4})\b", low)   # Q1 FY 2026-27 / Q1 2026-27 → FY27
