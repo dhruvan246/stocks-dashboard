@@ -506,7 +506,11 @@ def walk(a, by):
         L = load_ledger(sym) if os.path.exists(ledger_path(sym)) else None
         chk = (L or {}).get("checked")
         if chk and (today - dt.date.fromisoformat(chk)).days < a.recheck_days:
-            continue
+            # recently listed — but keep reading while its cached catalog still holds unread filings
+            # (the 2020→date backfill must not pause for --recheck-days after every pass)
+            have_docs = (L or {}).get("docs", {})
+            if not [d for d in (L or {}).get("catalog") or [] if d["att"] not in have_docs]:
+                continue
         if not kpi_docs.scripcode(sym):
             mark_checked(sym, "no BSE scrip code in bse_scrips.json"); continue
         docs = catalog(sym, a.since, tuple(a.kinds.split(",")))
