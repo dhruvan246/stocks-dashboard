@@ -114,6 +114,76 @@ def read_quarter(idx, code, qe, fetch):
     return r
 
 
+def _read_ending(idx, code, qe, fetch):
+    """Every capture under (code, qe) that parses with G1, as (r) dicts — cumulative pages included."""
+    out = []
+    for ts, url, qc in idx.get("%s|%d" % (code, qe), []):
+        raw = wbcache.fetch_cached(ts, url) if fetch else wbcache.cached(ts, url)
+        r = bse_rev.read_page(raw, code)
+        if "refuse" in r or r["to"] != qe:
+            continue
+        r["ts"], r["url"], r["qc"] = ts, url, qc
+        out.append(r)
+    return out
+
+
+def prev_qe(qe):
+    y, m = qe // 10000, (qe // 100) % 100 - 3
+    if m <= 0: y, m = y - 1, m + 12
+    return y * 10000 + m * 100 + {3: 31, 6: 30, 9: 30, 12: 31}[m]
+
+
+def read_quarter_cumdiff(idx, code, qe, fetch):
+    """CUMULATIVE DIFFERENCING (WP-P1 pass 2): the quarter's only capture is a year-to-date page (BSE's MC/DC/SC
+    codes: Apr..Dec, Apr..Sep, Apr..Mar). Quarter PAT = cumulative page − the page(s) covering exactly the
+    cumulative period minus this quarter: a single prior cumulative page with the SAME 'from', or a chain of
+    ≤3 legs walking back from the previous quarter-end that abut and start at the cumulative page's 'from'
+    (wb_rev.py's rule, ported). Every leg passes G1 (ScripCode) and the arithmetic gate; the sum of leg
+    months must equal cumulative months − 3."""
+    cums = [r for r in _read_ending(idx, code, qe, fetch) if r["months"] in (6, 9, 12)]
+    if not cums:
+        return {"refuse": "no cumulative capture ends on this quarter"}
+    r = cums[0]
+    raw = wbcache.cached(r["ts"], r["url"]) or ""
+    ok, det = arith_ok(bse_rev._txt(raw), 10 ** -r["prec"] if r["prec"] else 1.0)
+    if not ok:
+        return {"refuse": "G5 (cumulative page) " + det}
+    chain, cur, bad = [], prev_qe(qe), None
+    while True:
+        legs = [c for c in _read_ending(idx, code, cur, fetch) if c["from"] >= r["from"] and c["to"] == cur]
+        # prefer the leg whose 'from' equals the cumulative start (closes the chain in one step)
+        legs.sort(key=lambda c: (c["from"] != r["from"], -c["months"]))
+        if not legs:
+            bad = "no page ends on %d" % cur; break
+        c = legs[0]
+        craw = wbcache.cached(c["ts"], c["url"]) or ""
+        cok, cdet = arith_ok(bse_rev._txt(craw), 10 ** -c["prec"] if c["prec"] else 1.0)
+        if not cok:
+            bad = "leg ending %d fails G5 %s" % (cur, cdet); break
+        chain.append(c)
+        if c["from"] == r["from"]:
+            break
+        if len(chain) >= 3:
+            bad = "chain longer than 3 legs"; break
+        cur = prev_qe(cur)
+        if cur < r["from"]:
+            bad = "chain walked past the period start"; break
+    if bad:
+        return {"refuse": "cumdiff: " + bad}
+    months = sum(c["months"] for c in chain)
+    if months != r["months"] - 3:
+        return {"refuse": "cumdiff: legs cover %dm, expected %dm" % (months, r["months"] - 3)}
+    pat = round(r["pat"] - sum(c["pat"] for c in chain), 4)
+    tol = max(r["tol"], max(c["tol"] for c in chain))
+    out = dict(r)
+    out.update({"pat": pat, "raw_pat": "%s - (%s)" % (r["raw_pat"], " + ".join(str(c["raw_pat"]) for c in chain)),
+                "mode": "cumdiff", "arith": det, "arith_ok": True, "tol": tol,
+                "legs": [{"from": c["from"], "to": c["to"], "months": c["months"], "pat": c["pat"], "qc": c["qc"], "url": c["url"]} for c in chain],
+                "equity_mn": bse_rev._num(bse_rev._txt(raw), "Equity Capital"), "from": r["from"], "to": r["to"], "months": 3,
+                "role": "%s (%dm cumulative) minus %s" % (r["role"], r["months"], " + ".join("%d..%d" % (c["from"], c["to"]) for c in chain))})
+    return out
+
+
 def main():
     ap = argparse.ArgumentParser()
     ap.add_argument("--cells", required=True, help="json [[SYM, qeInt], ...]")
@@ -218,12 +288,18 @@ def main():
             if q in held:
                 report["refused"]["already-held"] += 1; report["per_cell"][k] = "already-held"; continue
             r = read_quarter(idx, best_code, q, a.fetch)
+            if "refuse" in r and (r["refuse"].startswith("no BSE capture") or r["refuse"].startswith("period") or r["refuse"].startswith("G2a")):
+                r2 = read_quarter_cumdiff(idx, best_code, q, a.fetch)
+                if "refuse" not in r2:
+                    r = r2
+                else:
+                    r = {"refuse": r["refuse"] + " | " + r2["refuse"]}
             if "refuse" in r:
                 report["refused"][r["refuse"].split(" ")[0][:24]] += 1; report["per_cell"][k] = r["refuse"]; continue
             if not r["arith_ok"]:
                 report["refused"]["G5-arith"] += 1; report["per_cell"][k] = "G5 " + r["arith"]; continue
             props["%s|%d|patS" % (sym, q)] = {
-                "value": round(r["pat"], 4), "state": "BSE-archive:A%d/G1/G2/G4/G5" % exact,
+                "value": round(r["pat"], 4), "state": "BSE-archive:A%d/G1/G2/G4/G5%s" % (exact, "/CUMDIFF" if r.get("mode") == "cumdiff" else ""),
                 "src": "bseindia.com/qresann/result.asp (Wayback %s) scripcd=%s quarter=%s — %s" % (r["ts"], best_code, r["qc"], r["url"]),
                 "resolved_via": via,
                 "evidence": ("BSE archived results page: ScripCode %s == repo code (%s); period %d..%d = 3 months; "
@@ -231,7 +307,7 @@ def main():
                              "%d of the symbol's held standalone quarters exactly with 0 conflicts (%s)."
                              % (best_code, via, r["from"], r["to"], r["scale"], r["div"], r["raw_pat"], r["arith"], exact,
                                 ", ".join("%d=%s" % (u[0], u[1]) for u in used[:6]))),
-                "page": {"name": r["name"], "equity_mn": r["equity_mn"], "role": r["role"], "prec": r["prec"]},
+                "page": {"name": r["name"], "equity_mn": r["equity_mn"], "role": r["role"], "prec": r["prec"], "legs": r.get("legs")},
             }
             report["per_cell"][k] = "PROPOSE %.4f" % r["pat"]
         if si % 20 == 0:
