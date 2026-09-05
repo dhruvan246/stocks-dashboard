@@ -15192,7 +15192,7 @@ route (§17c resolver + text layer, §2c) is the next rung.
 
 ---
 
-## 133. ★★ BSE's ARCHIVED RESULTS PAGE READS STANDALONE PAT FOR 2000-2001 — anchored on the symbol's own held quarters; 238 root cells landed, and the gate's own bug refused 226 good pages first  (2026-09-05, WP-P1)
+## 134. ★★ BSE's ARCHIVED RESULTS PAGE READS STANDALONE PAT FOR 2000-2001 — anchored on the symbol's own held quarters; 238 root cells landed, and the gate's own bug refused 226 good pages first  (2026-09-05, WP-P1)
 
 **Trigger:** §128 left the 1999-2001 std-PAT roots with every walked rung exhausted (MC E2b, Wayback NSE `results.jsp`, NSE
 archive <2005 out of scope) and named BSE's archived website as unwalked. The rev-parity campaign (§131) had just built
@@ -15200,7 +15200,7 @@ archive <2005 out of scope) and named BSE's archived website as unwalked. The re
 `<scripcd>|<qe>` keys, **5,644 for 2000 periods, 2,322 for 2001**). The page declares period and scale and prints Net Profit,
 Equity Capital and the P&L chain — but NOT the basis, and a root cell has no stored value to anchor on.
 
-### 133a. The gate — identity, basis and scale proven PER SYMBOL on the same page family (`scripts/wayback_nse/bse_pat.py`)
+### 134a. The gate — identity, basis and scale proven PER SYMBOL on the same page family (`scripts/wayback_nse/bse_pat.py`)
 * **A — anchors:** the symbol's own HELD std-PAT quarters (1999-2008) that have an indexed 3-month capture must be reproduced by
   the page's Net Profit (tol = half the printed grid); ≥1 exact AND zero conflicts (bounded to 6 pages per code). A wrong company,
   a consolidated page family or a scale slip cannot reproduce a standalone series to the paisa.
@@ -15211,7 +15211,7 @@ Equity Capital and the P&L chain — but NOT the basis, and a root cell has no s
 * Output = `apply_agg_pat_fills.py` props (fill-only, row-creating, journalled in `agg_pat_cell_fills.json` with
   `--gate "BSE-archive A/G1/G2/G4/G5 (bse_pat.py)"`); ann = qe+45d floored at first bar (TMPV kept at qe+45d — §128c seam).
 
-### 133b. ★★★ Hold-out FIRST, provenance-filtered — and the calibration caught the gate's own bug
+### 134b. ★★★ Hold-out FIRST, provenance-filtered — and the calibration caught the gate's own bug
 `--calib`: every held std cell of the 449 target symbols with an indexed 3-month page, read blind, aggregator-derived stored
 cells EXCLUDED from the truth side → **170 exchange-derived cells, 0 mismatches (2002: 11, 2003: 90, 2004: 38, 2005: 31)**.
 The first proposal run then produced only **15** proposals with **226 "G5-arith" refusals** — `bse_rev._num("Tax")` matched the
@@ -15219,7 +15219,7 @@ The first proposal run then produced only **15** proposals with **226 "G5-arith"
 row-anchored labels (a label must follow the previous row's number) and the signed chain above → **238 proposals**, 3 G5 left.
 ★ A gate that refuses 90% of pages it just calibrated clean is measuring itself — read the refused page before trusting the refusal.
 
-### 133c. Result — 238 cells / 111 symbols (2000: 125, 2001: 113), by anchor depth A1: 86 · A2: 10 · A3: 18 · A4: 21 · A5: 30 · A6: 73
+### 134c. Result — 238 cells / 111 symbols (2000: 125, 2001: 113), by anchor depth A1: 86 · A2: 10 · A3: 18 · A4: 21 · A5: 30 · A6: 73
 Applied twice = idempotent (238 new rows, 0 changed, 0 removed); `fund_dup_guard` 0 conflicts; `phantom_key_guard` clean.
 TATAMOTORS 2001-12 landed under the store key TMPV (engine `fundFor` reaches it). Bake-vs-bake, one tree, one bin, N500:
 **patStd have +472** member-months (N/A −472; 2002 61.2 → 66.8% of members, 2003 82.4 → 84.1%), **profitYoyStd +843** (2002
@@ -15227,7 +15227,7 @@ TATAMOTORS 2001-12 landed under the store key TMPV (engine `fundFor` reaches it)
 in a HOLE moves the 8-quarter window onto the hole (§112 shape); those holes are the next roots, not a regression. fiiPct / price
 byte-identical.
 
-### 133d. Residue of the 2,576 still-open 1999-2001 roots, by rung
+### 134d. Residue of the 2,576 still-open 1999-2001 roots, by rung
 | class | cells | next |
 |---|---|---|
 | symbol has NO indexed held quarter → no anchor possible | 1,648 | another identity reader: NSE archive paid-up equity vs the page's Equity Capital; or the era argument + ScripName only (NOT accepted alone) |
