@@ -14552,6 +14552,22 @@ LAST in `BSE_HIST_LEDGERS`; apply twice identical, +93 / 0 changed / 0 removed; 
 `git status` showed `M` not `??` and the file was restored from origin before anything was committed. **A new ledger name must
 be checked against origin/main at write time, not at commit time.**
 
+### 127j. ★ WP-S2 pass 4 — 15 of the 25 continuity holds released by the NEIGHBOUR RE-PARSE test; 10 stay held  (2026-09-05 ~15:15 IST)
+A continuity flag (§127g: >5pp fii / >10pp dii from every stored neighbour) names two cells and no side. The test that
+decides it without a third source: **re-read the stored neighbour's OWN aspx page with the current parser.** If it
+reproduces the stored neighbour exactly, both cells come from the same page family under the same reading rules, so the
+step is the filer's, not the reader's; the held cell is then landed when it sits within 5pp fii / 10pp dii of at least one
+neighbour (chained — STAR Sep-2006 63.92 sits beside Dec-2006 65.60, and Jun-2006 62.99 then sits beside Sep). 24 of 25
+neighbour pages re-parsed to the stored value (23 AGREE; MADURACOAT Sep-2002 has no frontier page). **Released 15** (ledger
+`scripts/shp_fill_wps2e_aspx.json.gz`, wired LAST): BLUESTARCO Dec-06/Mar-07, DHAMPURSUG Sep-06, HINVDIR Sep-06, JSL
+Dec-06/Mar-07/Dec-07, PUNJLLOYD Dec-06/Mar-07/Mar-08, SBIN Mar-04 (dii 11.64 beside Jun-04 12.32 — its Dec-03 neighbour with
+RBI inside dii stays a suspect), STAR Jun/Sep-06, ZENSARTECH Jun/Sep-06. **Kept held 10:** BAJFINANCE Jun-06 (Foreign FI fold,
+definitional), IDFC Jun-06 (44.4 → 18.3), KOPRAN Jun-06 (1.9 → 17.5), MOSERBAER Jun-06 (28.4 → 41.9), ERAINFRA Dec-06/Mar-07,
+GEOMETRIC Jun-08 (one-quarter dip 13.3 → 3.9 → 13.3), KOHINOOR Jun-08 (one-quarter spike), JSL Mar-08, MADURACOAT Sep-02.
+★ **The test found a store defect:** JSL Jun-2008's stored 9.01 / 16.07 re-parses as 15.17 / 9.91 from the same page — a pre-fix
+read (the Foreign MF / Foreign FI rows); journalled in `_shp_wps2b_holds.json` `_suspects` for a heal via `shp_cell_fix.json`.
+Apply twice identical, +15 / 0 changed / 0 removed.
+
 ## 128. ★★★ STD-PAT 2002-07 EXECUTED — 229 "missing" cells were HELD under a retired key the coverage builder could not see; four gated routes landed 1,538 cells; the NSE results ARCHIVE reads standalone PAT with the page's own EPS identity  (2026-09-05)
 
 **Trigger:** execute the std-PAT packages of §127 / `PLAN_STDPAT_SHP_COVERAGE_2002.md` (plan §8 = state table).

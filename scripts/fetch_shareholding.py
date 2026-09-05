@@ -257,7 +257,10 @@ BSE_HIST_LEDGERS = [os.path.join(HERE, "shp_fill_thirdparty.json.gz"),
                     # WP-S2 pass 3 (2026-09-05, runbook §127i): 14 era names resolved to BSE codes from the
                     # ARCHIVED results index (2000-02 scripnames); 6 matched by page name, 8 accepted on lineage
                     # (same listed entity, renamed) with entity-change cutoffs. Fill-only, LAST in the list.
-                    os.path.join(HERE, "shp_fill_wps2d_aspx.json.gz")]
+                    os.path.join(HERE, "shp_fill_wps2d_aspx.json.gz"),
+                    # WP-S2 pass 4 (2026-09-05, runbook §127j): continuity holds released after the neighbour re-parse
+                    # test (same page family, current parser). Fill-only, LAST in the list.
+                    os.path.join(HERE, "shp_fill_wps2e_aspx.json.gz")]
 def apply_bse_hist_ledger(h):
     n_total = 0
     for path in BSE_HIST_LEDGERS:
