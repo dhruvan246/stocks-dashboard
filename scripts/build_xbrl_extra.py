@@ -37,7 +37,7 @@ Output: scripts/xbrl_extra.json = { SYM: { "QE": {"s": {...}, "c": {...}}, ... }
 Run:  python -X utf8 scripts/build_xbrl_extra.py [--limit N] [--fresh]
 Resumable: checkpoints to scripts/_xtra_progress.json every 10k files.
 """
-import os, re, sys, json, datetime, concurrent.futures
+import os, re, sys, json, datetime, concurrent.futures, html as html_lib
 sys.path.insert(0, os.path.dirname(os.path.abspath(__file__)))
 import scale_fix
 
@@ -50,9 +50,19 @@ PROG = os.path.join(HERE, "_xtra_progress.json")
 SEEN = os.path.join(HERE, "_xtra_seen.json")
 REVOP = os.path.join(HERE, "revop_fundamentals.json")
 
-MIN_QE, MAX_QE = 20180101, 20261231
+# MIN_QE was 20180101 — but a filing uses the taxonomy current when it was SUBMITTED, and the
+# results list carries real XBRL URLs for 374 quarters of 2017 and 2 of 2016 (late / revised
+# filings submitted in 2018+). Scoping by period threw those away (memory:
+# feedback-xbrl-taxonomy-follows-submission). The cache itself starts at 2018 filenames.
+MIN_QE, MAX_QE = 20160101, 20261231
 CR = 1e7
 NS = r"in-(?:bse-fin|capmkt)"
+# Provenance: a basis-cell WITHOUT a `src` key is XBRL-parsed by this builder. Cells written by
+# the archive-HTML route (xtra_nse_html.py, `src: nse-html:…`) or the Moneycontrol route
+# (xtra_mc.py, `src: mc:…`) carry one; this builder outranks both and replaces such a cell whole
+# when the same (symbol, quarter, basis) shows up in a cache file, and a full rebuild seeds itself
+# from them so a --fresh run cannot drop the pre-2018 block.
+SRC_KEY = "src"
 
 RE_SYM = re.compile(r'<xbrli:identifier scheme="http://www\.nseindia\.com/NSESymbol">([^<]+)</xbrli:identifier>')
 RE_SYM2 = re.compile(r'<' + NS + r':Symbol contextRef="OneD"[^>]*>([^<]+)<')
@@ -64,6 +74,9 @@ RE_STARTEND = re.compile(r"<xbrli:startDate>(\d{4}-\d{2}-\d{2})</xbrli:startDate
 RE_DATE = {c: {b: re.compile(r"DateOf" + b + r'OfReportingPeriod contextRef="' + c + r'"[^>]*>(\d{4}-\d{2}-\d{2})')
                for b in ("Start", "End")} for c in ("OneD", "FourD")}
 RE_NAT = re.compile(r'NatureOfReportStandaloneConsolidated contextRef="([^"]+)"[^>]*>([^<]+)<')
+# BANKING-taxonomy period declaration (no context block, no start date — see parse_file)
+RE_RQ = re.compile(r'ReportingQuarter contextRef="OneD"[^>]*>([^<]+)<')
+RE_FYSTART = re.compile(r'DateOfStartOfFinancialYear contextRef="OneD"[^>]*>(\d{4}-\d{2}-\d{2})<')
 RE_AUD = re.compile(r'WhetherResultsAreAuditedOrUnaudited contextRef="[^"]+"[^>]*>([^<]+)<')
 RE_QUAL = re.compile(r"DeclarationOfUnmodifiedOpinionOrStatementOnImpactOfAuditQualification[^>]*>[^<]{0,300}?[Qq]ualif")
 # Segment facts live in per-segment contexts named (One|Four)Reportable<seg><col>D (or
@@ -76,10 +89,14 @@ PNL = {  # quarter money, ₹ -> cr
     "oi": ["OtherIncome"], "fc": ["FinanceCosts"],
     "dep": ["DepreciationDepletionAndAmortisationExpense"],
     "tax": ["TaxExpense"], "tax_c": ["CurrentTax"], "tax_d": ["DeferredTax"],
-    "exc": ["ExceptionalItemsBeforeTax"],
-    "pbt": ["ProfitBeforeTax", "ProfitLossBeforeTax", "ProfitOrLossBeforeTax"],
+    # trailing names are the BANKING-taxonomy spellings (measured on KTKBANK/HDFCBANK files
+    # 2026-09-05); facts_by_ctx takes the first name that has any facts, so they only apply
+    # where the Ind-AS tag is absent
+    "exc": ["ExceptionalItemsBeforeTax", "ExceptionalItems"],
+    "pbt": ["ProfitBeforeTax", "ProfitLossBeforeTax", "ProfitOrLossBeforeTax",
+            "ProfitLossFromOrdinaryActivitiesBeforeTax"],
     "pbet": ["ProfitBeforeExceptionalItemsAndTax"],
-    "emp": ["EmployeeBenefitExpense"], "mat": ["CostOfMaterialsConsumed"],
+    "emp": ["EmployeeBenefitExpense", "EmployeesCost"], "mat": ["CostOfMaterialsConsumed"],
     "oci": ["OtherComprehensiveIncomeNetOfTaxes"],
     "dep_amt": ["Deposits"], "adv": ["Advances"], "int_exp": ["InterestExpended"],
 }
@@ -158,7 +175,9 @@ def parse_file(path, fname):
     sm = RE_SYM.search(xml) or RE_SYM2.search(xml)
     if not sm:
         return None
-    sym = sm.group(1).strip().upper()
+    # XBRL escapes '&' — upper-casing the RAW capture keyed M&M as "M&AMP;M" (13 ledger keys, 267
+    # Nifty-500 quarters invisible; the §115 phantom class, fixed in build_revop but not here).
+    sym = html_lib.unescape(sm.group(1).strip()).upper()
 
     # ---- contexts --------------------------------------------------------------------------
     ctx = {}  # cid -> ('I', date) | ('D', start, end)
@@ -177,6 +196,38 @@ def parse_file(path, fname):
             e = RE_DATE[cid]["End"].search(xml)
             if s and e:
                 ctx[cid] = ("D", s.group(1), e.group(1))
+    # BANKING taxonomy 2018-2022 (measured 2026-09-05 on BANDHANBNK/SBIN/HDFCBANK/KTKBANK files):
+    # NO <xbrli:context> block at all and NO DateOfStartOfReportingPeriod. The quarter is declared
+    # by ReportingQuarter ("Third quarter") + DateOfEndOfReportingPeriod, and OneD holds the
+    # QUARTER (HDFCBANK Dec-2020 OneD PAT 8,758 cr = the quarter; FourD 22,930 cr = the 9-month
+    # YTD, same basis — FourD is YTD in this taxonomy, not the other basis, and has no start date
+    # so the 3-month rule below leaves it out). Every bank quarter through 2022 was missing from
+    # the ledger because of this (1,500 Nifty-500 quarter-holes, SBIN/HDFCBANK/… 20+ each).
+    if "OneD" not in ctx:
+        rq = RE_RQ.search(xml)
+        e = RE_DATE["OneD"]["End"].search(xml)
+        fy = RE_FYSTART.search(xml)
+        if rq and e and fy:
+            # ReportingQuarter names the FILING, not the slot: "Half yearly" (Sep) and "Yearly"
+            # (Mar) files still carry the QUARTER in OneD — KTKBANK Mar-2019 OneD 61.73 = stored
+            # std, FourD 477.24 = FY; BANKBARODA Sep-2019 con OneD 853.82 = stored 853.41,
+            # FourD 1,679.95 = H1 (measured 2026-09-05).
+            q_n = {"first": 1, "second": 2, "half": 2, "third": 3, "fourth": 4,
+                   "yearly": 4, "annual": 4}.get(rq.group(1).strip().lower().split()[0])
+            end = e.group(1)
+            fys = fy.group(1)
+            # the end date must sit exactly q_n quarters after the FY start (Apr-1 -> Jun-30 / Sep-30 / Dec-31 / Mar-31)
+            if q_n:
+                fy_y, fy_m = int(fys[:4]), int(fys[5:7])
+                em = fy_m + 3 * q_n - 1
+                ey = fy_y + (em - 1) // 12
+                em = (em - 1) % 12 + 1
+                last = {1: 31, 2: 29 if ey % 4 == 0 else 28, 3: 31, 4: 30, 5: 31, 6: 30, 7: 31, 8: 31, 9: 30, 10: 31, 11: 30, 12: 31}[em]
+                if end == "%04d-%02d-%02d" % (ey, em, last):
+                    sm_ = em - 2
+                    sy = ey + (sm_ - 1) // 12
+                    sm_ = (sm_ - 1) % 12 + 1
+                    ctx["OneD"] = ("D", "%04d-%02d-01" % (sy, sm_), end)
 
     # ---- current-quarter bases (OneD/FourD ONLY — everything else is a comparative) --------
     nat = {cid: v.strip().lower() for cid, v in RE_NAT.findall(xml)}
@@ -345,6 +396,70 @@ def _worker(fname):
         return None
 
 
+def seed_from_sources():
+    """Non-XBRL basis-cells (those carrying `src`) of the committed ledger — the pre-2018 block
+    written by xtra_nse_html.py / xtra_mc.py. Read from the raw file, else the .gz."""
+    import gzip
+    try:
+        if os.path.exists(OUT):
+            old = json.load(open(OUT))
+        elif os.path.exists(OUT + ".gz"):
+            old = json.loads(gzip.decompress(open(OUT + ".gz", "rb").read()))
+        else:
+            return {}
+    except Exception:
+        return {}
+    data, n = {}, 0
+    for sym, qs in old.items():
+        for qe, cell in qs.items():
+            keep = {b: d for b, d in cell.items() if isinstance(d, dict) and SRC_KEY in d}
+            if keep:
+                data.setdefault(sym, {})[qe] = keep
+                n += len(keep)
+    print("seeded %d sourced basis-cells (%d symbols) from the existing ledger" % (n, len(data)))
+    return data
+
+
+def union_committed(data):
+    """A FULL rebuild reads only THIS machine's cache. The committed .gz also carries cells the
+    cloud nightly (§50) extracted from filings that never reached this cache — measured
+    2026-09-05: 2,593 basis-cells, all Jul-Aug 2026 filings, i.e. the newest quarter dropped
+    from 97% to 81% Nifty-500 coverage on a local rebuild. Add back every (symbol, quarter,
+    basis) the parse did not produce; a cell the parse DID produce keeps the fresh value."""
+    import gzip
+    p = OUT + ".gz"
+    if not os.path.exists(p):
+        return
+    try:
+        old = json.loads(gzip.decompress(open(p, "rb").read()))
+    except Exception as e:
+        print("union-committed: could not read %s (%s)" % (os.path.basename(p), e))
+        return
+    migrate_keys(old)
+    n = 0
+    for sym, qs in old.items():
+        for qe, cell in qs.items():
+            tgt = data.setdefault(sym, {}).setdefault(qe, {})
+            for b, d in cell.items():
+                if isinstance(d, dict) and b not in tgt:
+                    tgt[b] = d
+                    n += 1
+    print("union-committed: +%d basis-cells present only in the committed ledger" % n)
+
+
+def migrate_keys(data):
+    """Fold HTML-escaped keys ("M&AMP;M", the §115 phantom class) into their real symbol."""
+    for k in [k for k in data if "&AMP;" in k.upper()]:
+        real = html_lib.unescape(k.replace("&AMP;", "&amp;")).upper()
+        tgt = data.setdefault(real, {})
+        for qe, cell in data.pop(k).items():
+            tc = tgt.setdefault(qe, {})
+            for b, d in cell.items():
+                if b not in tc or (SRC_KEY in tc[b] and SRC_KEY not in d):
+                    tc[b] = d
+        print("migrated ledger key %s -> %s" % (k, real))
+
+
 def main():
     args = sys.argv[1:]
     limit = int(args[args.index("--limit") + 1]) if "--limit" in args else None
@@ -385,6 +500,11 @@ def main():
                 print("resuming from %d/%d" % (start_i, total))
             except Exception:
                 data, start_i = {}, 0
+        if not data and not limit:
+            # a FULL rebuild starts from the non-XBRL cells of the existing ledger (gz fallback), so
+            # the archive-HTML / Moneycontrol block survives a --fresh re-parse of the cache
+            data = seed_from_sources()
+    migrate_keys(data)
 
     def accumulate(r):
         if not r:
@@ -392,7 +512,17 @@ def main():
         cell = data.setdefault(r["sym"], {}).setdefault(str(r["qe"]), {})
         for b in ("s", "c"):
             if r[b]:
+                if SRC_KEY in cell.get(b, {}):
+                    cell[b] = {}                   # XBRL outranks an archive-HTML / MC cell: replace whole
                 cell.setdefault(b, {}).update(r[b])   # per-field latest-wins (non-null only, by construction)
+                # fields Moneycontrol added into an XBRL cell (`src_mc`, xtra_mc.py) yield to the
+                # filing once the XBRL supplies them; the list shrinks, and goes when empty
+                if "src_mc" in cell[b]:
+                    left = [f for f in cell[b]["src_mc"] if f not in r[b]]
+                    if left:
+                        cell[b]["src_mc"] = left
+                    else:
+                        del cell[b]["src_mc"]
 
     todo = files[start_i:]
     processed = 0
@@ -410,6 +540,8 @@ def main():
                     json.dump({"done": start_i + processed}, open(PROG, "w"))
                     print("  %d/%d files, %d symbols" % (start_i + processed, total, len(data)), flush=True)
 
+    if not incremental and not limit:
+        union_committed(data)
     json.dump(data, open(OUT, "w"), separators=(",", ":"))
     if incremental:
         seen.update(files)

@@ -77,6 +77,7 @@ loads every session. (README.md is just a short pointer here — this file is th
 - **§109** ★★★ THE §108 SWEEP RAN — the class was ONE 2026-07-27 backfill pass with no vintage rule; **NSE's archive keeps BOTH vintages of a quarter** (earliest `filingDate` = as-filed), so the restated comparative is structured data, not a scanned PDF; 326 wrong-vintage reads enumerated from our own provenance; 260 cells + 1,233 rev/op/mirror slots healed, detres agreement 53.5%→100% (**read before touching any 2015-17 cell, and before trusting a single as-filed reader — no available reader may CONTRADICT the heal**)
 - **§113** ★★★ A RUNG IS ELIMINATED BY MEASURING THE DOCUMENT SET, NOT ONE DOCUMENT PER CELL — §112b closed the text route on "the Mar-2017 filing is a scan" (true) and so declared vision; the quarter is ALSO printed in the next quarter's and next year's filings, which are digital, and 30 of 59 cells read cleanly off a comparative column. **33 of 33 primary reads back the pre-heal store, 0 back the heal.** Also: MC `pat_own` is sometimes the TOTAL (4 of 308, 2 proven against filings) — it is a label, not a guarantee (**read before sending anything to a vision budget, and before letting an aggregator's owners field veto a document**) · **§113f-h**: a CANDIDATE LOCATOR IS BLIND TO A THIRD VALUE (P2 is named after them) — read FORWARD; and a FIXED y-GRID SPLITS ROWS 0.9pt apart, cluster by baseline instead
 - **§128** ★★★ STD-PAT 2002-07 EXECUTED — 229 "missing" cells HELD under a retired key the coverage BUILDER read past (fixed, +597 mm); WB 172 + MC E2b 1,191 + NEW NSE-archive EPS-identity reader 175 = 1,538 cells; residue ledger with rungs per cell (**read before any pre-2015 std-PAT work or a coverage claim on a renamed symbol**)
+- **§130** ★★★ LINE-ITEM BLOCK BEFORE 2018 — archive HTML (2005-17) + Moneycontrol; bank taxonomy has no context block; local rebuild must union the committed .gz
 
 ---
 
@@ -85,6 +86,7 @@ loads every session. (README.md is just a short pointer here — this file is th
 - **§115** ★★★ THE PHANTOM CLASS IS CLOSED — root cause was `build_revop.py` upper-casing a RAW XML capture (XBRL escapes `&`), still firing in a 2026 filing; closing sf_revop ADDED +784 values / +63 quarters. FOUR gate defects: a retraction that RAISED a score, a derived flag voting, "target has no row" read as nothing-to-do, and the resume-cache treated as a mirror. A filing's own ScripCode OUTRANKS the overlap proxy (**read before trusting any agreement gate, and before retracting anything a gate could still harvest**)
 - **§116** ★★★ THE 46 CONTESTED con CELLS ADJUDICATED — the phantom read the OWNERS tag and WE had stored the TOTAL, so the phantom was RIGHT on 16 of 23; the other 7 are the filer's owners=0 mis-tag where the store was right. Swept the rest of each series: **53 cells healed** total→owners, 2018-2026. sf_revop's un-rendered mirror already held the owners figure on 45 of 53. **1,417 symbols / 18,175 con cells share the exposure — sized, not swept** (**read before trusting a con-PAT value for any symbol absent from _reattr_owners.json**)
 - **§116d** ★★★ THE SCREEN RUN OVER ALL 60,768 con CELLS — 52 more healed, **762 REFUSED because `owners+NCI==total` does NOT close** (302 have NCI=0 so the TAG is wrong not the store; 24 sign flips; 13 filer power-of-ten; 460 unreconciled → `owners_basis_unreconciled.json`). `_reattr_owners` coverage is per-CELL not per-SYMBOL. A hand-rolled context regex silently dropped every pre-2021 filing — use `build_revop.ctx_period`. **29,998 cells are older than the cache and remain UNSCREENED**
+- **§130** ★★★ THE LINE-ITEM BLOCK (EPS/OI/interest/dep/tax) BEFORE 2018 — NSE lists an XBRL URL only from Mar-2018; 2005-2017 come from the archive HTML pages (PAT-anchored, GATE E) and 2002-04/residue from Moneycontrol (gate T/C/R). BANKING XBRL 2018-22 has NO context block (OneD = quarter, FourD = YTD, 'Half yearly'/'Yearly' name the filing). A LOCAL `--fresh` rebuild DROPS the cloud nightly's newest cells unless unioned with the committed .gz (**read before touching build_xbrl_extra.py or judging pre-2018 coverage**)
 - **★★★ NO ASSUMPTIONS. NO GUESSWORK. EVER.** User-mandated 2026-08-10; standing rule across
   this runbook AND every campaign/playbook doc (each carries the same line). Every value written
   and every claim made ("exists", "absent", "fixed", "live", "matches") must trace to something
@@ -14667,3 +14669,102 @@ COX&KINGS (one stray fin row each) — use per-cell or majority, and read the in
   list: every ledger assertion on a `LENDER_EBIT_NA` symbol whose slot is null.
 * The id caches `_agg_ids_mc.json` / `_mc_era_ids.json` conflict on rebase whenever two sessions resolve
   symbols; they are symbol-keyed maps — union them (`git show :2:` / `:3:`), never pick a side.
+
+## 130. ★★★ THE LINE-ITEM BLOCK BEFORE 2018 — "XBRL only" meant "2018 only"; the archive HTML + Moneycontrol carry it back to 2002  (2026-09-05, worktree ~/stocks-wt/eps-block)
+
+**NO ASSUMPTIONS, NO GUESSWORK (§0).** Every number below was measured this session; plan `scripts/PLAN_EPS_BLOCK_PRE2018.md`.
+The block = `scripts/xbrl_extra.json.gz` → `docs/fin/<sym>.json` key `x` `{qe: {s|c: {eps_b, eps_d, oi, fc, dep, tax, exc, pbt, emp, mat, …}}}`,
+read by `docs/stock.html` (Quarterly detail: last 12 quarters; Annual: EPS summed per complete FY, last 8 FYs). Before this pass the
+ledger held nothing before 2018: `build_xbrl_extra.py` floored at `MIN_QE = 20180101` and the local XBRL cache starts at May-2018.
+
+### 128a. Reach, measured first (PIT Nifty-500 member-quarters with a stored PAT, rename-folded, `_n500_member_bin`)
+* **NSE's results list carries a real XBRL URL only from the Mar-2018 quarter** — over 109,762 cached list rows: 2018 4,784/5,712,
+  2017 374, 2016 2, earlier 0. Every 2005-2017 row carries `resultDetailedDataLink` → the archived HTML page (§52/§53/§123's pages),
+  which prints the whole P&L **including the EPS rows, paid-up capital and face value**. 24,529 of the 29,390 pre-2018 holes had such a
+  page (2005 86%, 2008-2017 94-99%); 4,247 pages were already cached from earlier campaigns. The archive starts 2005.
+* **Post-2018 holes (1,827) were parser classes, not missing filings:** (a) the BANKING taxonomy 2018-2022 has **no `<xbrli:context>`
+  block and no `DateOfStartOfReportingPeriod`** — it declares `ReportingQuarter` + `DateOfEndOfReportingPeriod` + `DateOfStartOfFinancialYear`;
+  OneD is the QUARTER and FourD the YTD of the SAME basis (HDFCBANK Dec-2020 OneD 8,758 cr / FourD 22,930 cr), and `ReportingQuarter`
+  names the FILING ("Half yearly", "Yearly") not the slot (KTKBANK Mar-2019 OneD 61.73 = stored std, FourD 477.24 = FY; BANKBARODA
+  Sep-2019 con OneD 853.82 = stored 853.41). Every bank quarter through 2022 was absent for this (SBIN/HDFCBANK/… 20+ each).
+  (b) 13 ledger keys were HTML-escaped (`M&AMP;M`, the §115 class — build_revop was fixed, this builder was not). (c) Insurers' IRDAI
+  XBRL has no per-share tag at all (two LI files grep'd: none). (d) BAYERCROP / ABBOTINDIA / MCX / KENNAMET: NSE's results list holds
+  0-1 rows for them (live re-check: MCX 0 rows), so no XBRL was ever listed.
+* **A local full rebuild LOSES the newest quarter:** the committed .gz carried 2,593 basis-cells (Jul-Aug 2026 filings) the cloud
+  nightly (§50) extracted from files that never reached this Mac's cache — 2026 coverage fell 97% → 81% on a plain `--fresh`.
+  `union_committed()` now adds back every cell the parse did not produce.
+
+### 128b. The three writers, one ledger, one precedence (per basis-cell: XBRL > nse-html > mc)
+* `build_xbrl_extra.py` — `html.unescape` on the symbol + `migrate_keys()`; bank quarter derived from ReportingQuarter/period-end/FY-start
+  with an end-date consistency check (Apr-1 → Jun-30/Sep-30/Dec-31/Mar-31); `MIN_QE` 20160101 (taxonomy follows submission — 374 2017 rows
+  have XBRL); bank tag spellings `ProfitLossFromOrdinaryActivitiesBeforeTax` / `EmployeesCost` / `ExceptionalItems`; a full rebuild seeds
+  from every `src` cell, unions the committed .gz, and an XBRL parse REPLACES a sourced cell whole (pruning `src_mc`). Op-identity
+  validation after the rebuild: 89,858/89,888 within 1% (100.0%).
+* `xtra_nse_html.py` (`src: nse-html:<file>`) — identity (page Symbol ∈ era names, Period Ended == qe, Non-Cumulative, declared basis) →
+  **PAT anchor** vs the stored PAT of that basis (max 2 cr / 3%, same as `_nse_archive_revop`) → fields by template → **GATE E** (eps ×
+  paid-up / face value == PAT within 6%, §53e; refuses the EPS fields only). Templates (census over 9,609 pages): 2005-2012 "Interest" /
+  "Depreciation" / "Tax Expense" / "Basic EPS after Extraordinary items (in Rs.)"; **2012-2014: EPS is a HEADER "Earnings per share (before|
+  after extraordinary items)" + "(a) Basic"/"(b) Diluted" sub-rows** — the label alone says nothing (3,188 cells read no EPS until the
+  section parse); 2013-2016 "Finance costs" / "(e) Depreciation and amortisation expense" / "(d) Employee benefits expense"; Ind-AS 2016-17
+  has NO "Other income" row (derived = Total Income − Total income from operations, journalled) and prints "Basic EPS for continued and
+  discontinued operations 0.00" as a placeholder beside the continuing-ops figure on 321/378 pages; Banking pages: "Interest Expended" →
+  `int_exp`, "% of Gross/Net NPA" is ONE label followed by TWO numbers. A 0.00 preferred EPS row against a non-zero PAT tries the other rows
+  before refusing (ATLASCYCLE Mar-2005: basic-after 0.00, diluted-after 2.12). **Template limits, not misses:** the 2005-2006 template
+  prints no depreciation / exceptional row (7 of 1,927 pages), the 2008-2012 one prints "Exceptional items" only when present, and 242
+  Ind-AS 2017 pages print "-" for every EPS row.
+  `_nse_archive_revop.parse_detail()` scales EVERY value by the declared unit — Face Value 2 becomes 0.02 under lakhs — so this reader keeps
+  raw values and scales money rows only. Run: `--universe n500 --years 2005-2017 --shard i/N` (journal), `--apply` (merges every
+  `_xtra_html_reads*.json`), `--refresh --no-fetch` (re-journal every cached page after a parser change — apply THAT journal alone).
+* `xtra_mc.py` (`src: mc:<sc_id>:<table>`, lowest) — labels read off live payloads (§81b feed): Other Income · Interest · Interest Expended ·
+  depreciat/Depreciation · Tax · P/L Before Tax · Exceptional Items · Employees Cost · Consumption of Raw Materials · **"Basic EPS." /
+  "Diluted EPS." with a trailing dot = after extraordinary** (preferred), "Basic EPS" = before. Gate **T** (feed PAT == stored PAT at the
+  target within max 0.06 cr / 0.5% — §123d's tolerance, AND `agg_gate.check_series` around it at that tolerance; at agg_gate's 0.02 a
+  stored -2.6 vs feed -2.62 read as a disagreement and vetoed six quarters) · **C** con-copy (§85) · **R** the feed ROW must reproduce ≥2 of
+  OUR ledger values for that field with zero disagreements (`row-unproven` when there is no overlap — the insurers) · **Z** 0.00 held except
+  exceptional. Into an XBRL / nse-html cell it may only ADD missing fields, listed under `src_mc`. Standalone reach to Jun-1997, but the
+  2002-2004 rows print no EPS ("--"), so those years got the money rows only.
+Second reader on one cell: RELIANCE Dec-2010 std from the archive page == the feed to the rupee (OI 741 · Interest 549 · Dep 3,359 ·
+Tax 1,242 · PBT 6,378 · EPS 15.70). `docs/fin` slices carry no provenance (XTRA_KEEP unchanged); raw 49.7 → 53.9 MB over 4,634 slices.
+
+### 128c. Landed / refused (2026-09-05)
+| route | basis-cells written | EPS cells | refusals, with reason in the journal |
+|---|---|---|---|
+| XBRL rebuild (bank + `&` + 2016-17 fixes) | 2018+ holes 1,827 → 1,214 | — | 102 hole XBRL URLs 404 on nsearchives (both transports) |
+| archive HTML, 31,068 pages, 916 symbols, ~0.13 s/page | **31,068** (2005-2017) | 29,553 basic / 29,5xx diluted | 500 pat-anchor (2016-17 con restated vintages, §108) · 352 `&`-name empty shells (M&MFIN 58, J&KBANK 51, M&M 48, LTF 47, COX&KINGS 34, GVT&D, IL&FSTRANS, IL&FSENGG — the archive serves a 2,910-byte shell for `&` filenames even %26-escaped, verified live) · 150 404s (TATASTLBSL 47, KSB 46, DCMSHRIRAM 38, SMLMAH 16 — era names tried, the files are not there) · 19 symbol-mismatch (COX shell) · EPS recon refused 2,137 (7%: share-count quirks, inputs correct) · 367 no EPS row |
+| Moneycontrol | 3,384 whole cells pre-2018 (2002-04 2,218) + 2,700 whole cells 2018+ + `src_mc` fields (1,098 pre-2018 EPS into archive cells) | 800 + 1,098 + 2,564 | T-series 1,588 + T 536 pre-2018, 1,016 + 280 post-2018 (stored PAT ≠ feed — see 128d) · 666 no column · 116 no table · row-unproven (insurers) |
+
+**Coverage, PIT Nifty-500 member-quarters with a stored PAT (any-basis reading; per-basis in brackets):**
+| year | before | after | | year | before | after |
+|---|---|---|---|---|---|---|
+| 2002-2004 | 0% | 0-2% EPS (money rows 37-74%) | | 2013 | 0% | 97% [96%] |
+| 2005 | 0% | 76% dil / 90% basic [76%] | | 2014 | 0% | 97% [95%] |
+| 2006 | 0% | 79% / 90% [78%] | | 2015 | 0% | 95% [91%] |
+| 2007 | 0% | 82% / 89% [81%] | | 2016 | 0% | 96% [91%] |
+| 2008 | 0% | 87% [86%] | | 2017 | 0% | 94% [82%] |
+| 2009 | 0% | 87% [87%] | | 2018 | 78% [65%] | 96% [86%] |
+| 2010 | 0% | 90% [89%] | | 2019 | 79% [75%] | 97% [91%] |
+| 2011 | 0% | 97% [96%] | | 2020 | 90% [90%] | 98% [96%] |
+| 2012 | 0% | 98% [96%] | | 2021-2026 | 88-97% | 97-98% [94-97%] |
+Holes (PAT stored, no `eps_d`): **pre-2018 29,390 → 6,080** (per-basis 36,759 → 7,185); **2018+ 1,827 → 467** (4,413 → 1,838).
+Ledger 2,862 → 3,020 symbols, 59,293 → 89,864 symbol-quarters, gz 6.0 → 7.5 MB. Other fields 2005-2017: oi 90-99%, tax 94-99%, pbt 96-99%,
+emp 94-99%, fc 86-93%, mat 73-93%, dep 91-93% from 2008 (4% 2005-06, 48% 2007 — template), exc 15-20% 2008-12 / 96%+ from 2013 (template).
+Page check (§39): `docs/stock.html` from a local static server with scratch slices — RELIANCE 98 quarters in `FIN_X` (64 pre-2018), ACC 98,
+GRUH's Annual tab now prints FY17 EPS 8.15 / FY16 6.69 from archive reads; zero console errors on the loads (the only 404 was the local
+`stk/` price slice before it was fetched from the sf-data host). Data-only change: no UI file touched, no SW bump.
+
+### 128d. Side-finding — the feed disagrees with our STORED PAT on 182 cells by ≥20% → `scripts/pat_suspects_mc_2026-09-05.json`
+Gate T surfaced them; several are OUR defects with the filing on the feed's side: SBIN Dec-2018 std stored 6,618.73 (filed 3,954.81),
+UNIONBANK Dec-2023 std 5,529.76 (3,589.91), IOB Mar-2023 std 1,677.86 (650.07 — an FY figure), LICI Dec-2022 con 8,348.71 (6,348.71),
+EMAMILTD Mar-2023 std 1,423.71 (108.64), BAJAJHLDNG Mar-2019 con 8.0 (791.44), **SHYAMMETL Sep-2025 con −1.31 — the attr-swap heal memory
+records (2026-07-30) is NOT in the store and `attr_swap_fixes.json` has no SHYAMMETL entry**. Each needs a filing read through the proper
+heal ledger (§2b/§116); Moneycontrol is one vendor and restates (§81c/§85), so the list is a QUEUE, not a verdict.
+
+### 128e. Left open (ladder, §57d)
+| class | cells | rungs tried | next rung |
+|---|---|---|---|
+| 2002-2004 EPS | ~3,100 | archive (starts 2005) · MC (rows print "--") | BSE has no filings pre-2014; annual-report PDFs (vision, ask first) |
+| insurers 2018+ EPS | ~220 | XBRL (no tag) · MC (row-unproven: no overlap to anchor) | one filing-read anchor per insurer, then MC's row can be proven (§81f) |
+| `&`-name pages 2005-2017 | 352 | archive (shell, live) · MC (T-series refusals on several) | BSE packs via AnnPdfOpen (%26-quoted, §123g) |
+| archive EPS recon refusals | 2,137 | archive (6% gate) | MC row agreement where the feed carries the quarter; else the filing |
+| stored-PAT disagreements | 182 | see 128d | filing read + heal ledger |
+| 404 XBRL urls / 404 archive pages | 102 / 150 | nsearchives both transports | BSE packs |
