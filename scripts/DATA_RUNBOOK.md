@@ -15868,6 +15868,11 @@ python3 scripts/kpi_extract.py --show SYM ; python3 scripts/kpi_extract.py --rep
 `_packets/` is git-ignored (regenerable); the ledger is the record.
 
 ### Open (as of 2026-09-06)
+- **`gemini-2.0-flash` is RETIRED** — the first CI run (33988019640) got HTTP 404 *"no longer
+  available … use models/gemini-3.6-flash"* on every call. `gemini_vision.py` now defaults to
+  `gemini-3.6-flash` and the workflow pins `GEMINI_MODEL`; NOTE this means the insurer/IPO vision
+  fallbacks in refresh-fundamentals / refresh-bse had been silently text-only until then
+  (feedback-preferred-source-needs-liveness-check).
 - Gemini's reads are UNMEASURED until the first CI run lands — compare `by: gemini:*` ledgers
   against the calibration file (ACUTAAS / CPPLUS were left unread by hand for exactly this) and
   spot-read a few decks by packet before trusting the walker's output at scale.
