@@ -15285,6 +15285,31 @@ route (§17c resolver + text layer, §2c) is the next rung.
 
 ---
 
+### 133f. BSE announcement route for the 88, and why only 2 more landed  (2026-09-05, same session)
+The 88 OPEN cells (no reachable NSE filing) were run through the BSE announcement PDFs — `AnnSubCategoryGetData?strCat=Result`
+per scrip (codes from the Moneycontrol id cache, `scratchpad/bse_codes.json`) → `AttachLive/AttachHis`/`AnnPdfOpen` → a
+COLUMN-GEOMETRY text-layer reader (`scratchpad/bse_pat_read2.py`): cluster words into rows keeping each token's x-centre, find the
+target quarter's column by its `dd.mm.yyyy` header **preferring a 3-months/quarter column over a year-ended one** (a Mar date sits in
+BOTH; the leftmost non-annual is the quarter), read each labelled row's value at that column x. v1's `vals[0]` had grabbed a note
+number / wrong column (53 false `unanchored`), and it mismatched BAJAJHLDNG to a 30.06.2019 page because 31.03.2019 was the year-ended
+column there.
+**Landed 2, both hand-verified to a strong anchor (never the reader's say-so — it FALSE-HEALED PEL):**
+BAJAJHLDNG Mar-2019 con 8.0→**791.44** (the Q1FY20 extract's 31.03.2019 Q4 comparative column: 'Profit for the period (owners)'
+791.44, basic EPS 71.1 × paid-up 111.29/face 10 = 791.3, Moneycontrol 791.44) and BALMLAWRIE Jun-2022 con 39.67→**56.13** (direct
+Q1FY23 filing, current-quarter column: 'Attributable to owners of the parent' 5,612.64 lakh; total 5,538.00 − NCI −74.64 closes; con
+EPS 3.28 × ~17.1 cr sh = 56.1, **std EPS 2.43 × 17.1 = 41.55 == stored std 41.54, GATE S'**; Moneycontrol 56.13).
+**PEL Jun-2022 con is STORE-CONFIRMED, not a heal:** its basic EPS 20.79 × 23.865 cr shares = 496.16 == our stored **496.09**; the
+reader had proposed 484.48 (a misread). ⚠️ **The automated reader is not trustworthy on its own** — its S′-std-anywhere anchor proves
+only that the filing is the right one, not that the con column value is right; every candidate was re-read by hand with EPS recon before
+landing. 0 of the 32 remaining `unanchored` cells reconcile to EPS (wrong-column / OCR-garbled-in-text reads), so none were forced.
+**Still OPEN after this pass (per-cell verdicts in `pat_suspects_mc_2026-09-05.json`):** ~19 SCANNED (the filer's own P&L is an image —
+ALOKINDS Sep-2020's direct filing is scanned p6-11; its Dec-2020 comparative col + Moneycontrol both say 4798.64 vs stored 6798.44,
+off exactly 2000 → needs a VISION read of the direct filing, **ask first**), ~10 insurers (GICRE×6/ICICIGI/LICI/MFSL — IRDAI format,
+§81f: need one filing-anchored quarter), ~55 unanchored/no-column (multi-page or garbled-text extracts the geometry reader could not
+crack safely), 4 no-result-announcement, 3 no-BSE-code. **Final tally of the 182: 19 healed (17 NSE + 2 BSE), ~75 store-confirmed,
+~85 open on the vision/hand-read tail.** Reader + PDFs cached in the eps-block worktree scratchpad (ephemeral) — the durable state is
+this section + the committed queue file.
+
 ## 134. ★★ BSE's ARCHIVED RESULTS PAGE READS STANDALONE PAT FOR 2000-2001 — anchored on the symbol's own held quarters; 238 root cells landed, and the gate's own bug refused 226 good pages first  (2026-09-05, WP-P1)
 
 **Trigger:** §128 left the 1999-2001 std-PAT roots with every walked rung exhausted (MC E2b, Wayback NSE `results.jsp`, NSE
