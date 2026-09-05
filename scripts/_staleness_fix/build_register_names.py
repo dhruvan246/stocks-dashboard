@@ -57,8 +57,11 @@ out={}; rep=collections.Counter(); unm=[]; how={}
 for name,events in seq.items():
     if name in MANUAL: rep['manual-skipped']+=1; continue
     if name in OVERRIDE_NAMES: rep['era-override-skipped']+=1; continue
-    pre=[(d,k) for d,k in events if d<CUTOFF]
-    if not pre: rep['no-pre-changelog-events']+=1; continue
+    # scope: pre-changelog events unconditionally (the changelog has nothing there); post-cutoff events too
+    # (2026-09-05 pass 2, the 33 post-2015-only names) — gen_inclexcl_events.era_sym() applies a post-cutoff
+    # segment only when its tape covers the event date, so a wrong-era symbol cannot land there.
+    pre=[(d,k) for d,k in events]
+    if not pre: rep['no-events']+=1; continue
     k=strict(name); cands=ES.get(k); h='strict'
     if not cands:
         lc=LO.get(loose(name))

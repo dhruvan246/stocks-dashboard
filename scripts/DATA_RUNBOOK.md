@@ -15139,6 +15139,57 @@ Mar-03 (page = stored), THERMAX Sep-03 (printed with restated Q1). All 26 verdic
 Store diff exactly 11 cells; `verify_fills_live` MISSING 0 / RESURRECTED 0; 10 `agg_pat_cell_fills` entries
 superseded (`std` nulled, value kept as `superseded_std`).
 
+### 132h. PASS 2 — the 125 names the era map left unmapped: 65 bound from NSE documents, 59 open with routes recorded  (2026-09-05)
+User asked "map the 125 remaining unmapped names". Same rule: a symbol is written only when a document names both the
+company and the symbol and the symbol's tape covers the event (inc ±60 d; exc up to 400 d after the last bar — a dead
+stock is dropped at the next review). Every binding and its evidence is in `_staleness_fix/register_names_pass2.json`.
+
+**Classes (by event dates):** 33 post-2015-only, 30 with 2002-2015 events (28 of them 1998→early-2002 arcs), 62 pre-2002-only.
+
+**Sources that worked (all NSE-native unless marked):**
+| source | reach | names it bound |
+|---|---|---|
+| niftyindices `ind_prsDDMMYYYY.pdf` 2015-04→2020-09 (weekday probe, 316 more PDFs) + wayback `ind_nifty500list.csv` 2018/2019/2020/2021 with names | tables carry Company Name + Symbol | all 33 post-2015 names |
+| `archives.nseindia.com/content/equities/delisted.csv` — LIVE, 328 rows, delistings from 2002-04-15 (Symbol, Company, date, type) | the delisted-company register NSE still serves | Cabot, Hoganas, Alpic, HAMCO (HINDALLOYS), Hindustan Development, NEPC Agro, Patheja, Rajinder Steels, Sri Vishnu Cement, Synthetics & Chemicals, BIL Industries (BHUPENIND), GKN Driveshafts (INVELTRANS — NSE's row says "(India)", the register drops it; loose match accepted only because every hit folds to ONE symbol family) |
+| wayback `content/equities/*eq_secsuspension.htm` 2002-06→2005-11 (23 captures, 177 names) | suspended securities with symbol | Krebs Biochemicals, Krishna Filaments, Information Technologies India (ITIL) … |
+| wayback `content/equities/{A..Z,Others}EQUITY_L.htm` 2003-03→2004-12 (140 letter-pages, 1,055 names; ~55 fetches refused at 4 workers — retry at 1 worker with 1.5 s spacing succeeded 56/56) | the 2003 listed-securities master | Core Healthcare (COREPARENT), Mardia Chemicals, JCT Electronics (JCTELEC), Soundcraft, Vision Organics (VISIONLTD), Bayer CropScience-erstwhile (AGREVOIND), PHIL Corp |
+| archived `results.jsp` pages ("Company … NSE Symbol …") — only 17 dead-era keys have one | | Reliance Petroleum-Merge (RELPETRO), Search Chem (SEARCHEMIN), Origin Agrostar (SQUAREDBIO — the page prints that name under that symbol) |
+| NSE's 1996-2002 Nifty / Nifty Junior change pages (`indices/changes.htm`, `ind_jrniftychanges.htm`: symbols by date) JOINED to the register's Nifty 50 / Next 50 sheets (names by date) on (date, direction) — no name resemblance involved | 136 symbol-events | Andhra Valley → ANDRAVALLY (the 1998-10-07 cell had 7 symbols/7 names; 6 already mapped; PONDS eliminated because its tape ended 1999-01-18, 22 months before the register's 2000-11-29 exclusion; ANDRAVALLY's last bar 2000-11-27) |
+| BSE master `scrip_id` == an NSE tape key covering the events (grade B: two exchanges' codes coincide for the same era) | | CCI, Insilco, Lok Housing, Malwa Cotton, Textool, Usha (India) |
+| register typo "Sanghi Polysters" → one-edit match to NSE's "Sanghi Polyesters" (SANGHIPOLY); rule restricted to keys ≥ 8 chars with the same first word after "IDI Ltd." wrongly matched ITI | | Sanghi |
+
+**Sources that carry no symbol (measured, don't re-try):** press releases 1998-2002 (21 + 14 PDFs: Company Name + INDUSTRY
+only), wayback `indices/equi.htm|xls` 2000 and `CNX500.htm` 2001 (names + industry), `ConstNifty.htm` 2002 (names),
+companyinfo `action.jsp|address.jsp?symbol=` pages ≤2004 (678 symbols, none of the open candidates), the changes-page
+join for every other cell (all other Nifty/Junior cells were fully mapped already).
+
+**Result:** register 2,269 → **2,385 mapped events**, unmapped names 125 → **59** (44 pre-2002-only, 15 with 1998→2002
+arcs). Rosters rebuilt on the LIVE bin (⚠️ the first pass-2 rebuild ran on the restored COMMITTED bin and differed from
+live on 333 dates with symmetric ±slots on every year — the era-key emission reads tape spans from that bin; always
+`fetch_live_sf.py` before measuring a roster change): 48 dates differ, **+522/−45 slots**, 1998-2002 sizes +9…+22 per
+year (447→469 at 1999-06-30), plus SHILPI 2017-03→11 in, IIFL out 2017-06-23→2018-04-02, TVSHLTD out at 2019-03-29
+(the register dates Sundaram Clayton's inclusion 2019-04-15, 17 d after the changelog's 2019-03-29 — the ±10 d gap rule
+lets both stand), and **ASTERDM removed from every 1998-2010 snapshot**: the changelog has no row for its 2018-06-29
+inclusion, so the anchor walk had carried a 2018 IPO back to 1998; the register's inc (now mapped) rolls it out.
+Favourites A/B (live engine, data 2026-09-04): **2 of 1,097 basket-months** (both 2017-06-30, IIFL → EMBDL), CAGR
++0.25 / +0.33 pp on strategies 1 and 6, six identical → ENGINE_VER e17→e18, sw v141→v142.
+
+**OPEN — 59 names, `register_names_pass2.json["open"]`:** mostly 1998-2001 exits of companies that died before NSE's
+online lists begin (2002-04). `register_names_open_census.json` holds, per name, the NSE tape keys that STOPPED trading
+in the 45 days before its exclusion (TATAHYDRO for Tata Hydro-Electric, CHICAGPNUM, PUNJABWIRE, MODIXEROX, RAASICEM,
+ARVINDPOLY, GARWARPOLY, INDIANORG, ITWSIGNODE, ITCBHADRA, HITECDRIL, SANDVIKAS, PUNANDLAMP, DCLPOLY, DRBECK …). They
+are not applied: a symbol that resembles a name and stopped trading the same week is a candidate, not a document.
+Applying them is the user's call; each would need the same tape gate.
+
+**NEW DEFECT FOUND, NOT FIXED — symchg-only rename chains are invisible to era-key emission.** 2,137 pre-2011 member-slots
+on 53 keys in the LIVE rosters belong to a key whose first bar is ≥1 year AFTER the snapshot (COLPAL 131 slots — Colgate
+traded as COLGATE until 2008; CASTROLIND 86 / CASTROL; BALLARPUR 146 / BILT; SPLPETRO, HFCL, HINDMOTORS 194 each;
+ASIANHOTNR 179; LGBBROSLTD 70; ABBOTINDIA 42; BAJAJ-AUTO 38; DIGJAMLMTD 38; JKLAKSHMI 36). `era_key()` redirects a
+bar-less current key to an old key only through `_rename_map.json` (`_REV`); the symchg chain (`BACK`) the same file
+already loads is not consulted, so the company is un-screenable for those years. 2,103 of the slots remain after pass 2.
+Fix = walk `BACK` as well in `era_key()`; measure the roster delta and the favourites before pushing (the 2004-start
+strategies will move).
+
 ## 133. ★★★ THE 182 STORED-PAT SUSPECTS, ADJUDICATED FROM EACH QUARTER'S OWN FILING — 17 healed, 74 store-confirmed, 88 wait on BSE PDFs  (2026-09-05, worktree ~/stocks-wt/eps-block)
 
 **NO ASSUMPTIONS, NO GUESSWORK (§0).** Queue = `scripts/pat_suspects_mc_2026-09-05.json` (§130d: stored PAT vs Moneycontrol's quarterly feed,
