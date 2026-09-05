@@ -260,3 +260,8 @@ Full write-up: runbook §129. Per-cell provenance: `scripts/agg_cell_fills.json`
 
 Calibration (strict hold-out, anchors 2018+ only): 2018-19 stored cells 432 filled / 0 mismatch; 2012 stored
 cells 230 filled / 15 mismatch (the 15 are our own mode-6 suspects, listed in §129c).
+
+**Heal applied (same day, user decision, §129g):** `apply_op_slot_heal.py --derive-op --apply` — 2,579 cells op derived
+(stored ebit + MC depreciation, both per-company checks pass), 895 gated, 321 op nulled + held (`op_slot_refused.json`),
+155 of those with the ebit left unplaced (company fails the ebit-convention check). 217 `revop_cell_fix.json` op_std
+corrections retargeted to ebit_std, 6 retracted.

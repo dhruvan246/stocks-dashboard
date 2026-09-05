@@ -14681,6 +14681,53 @@ COX&KINGS (one stray fin row each) — use per-cell or majority, and read the in
 * The id caches `_agg_ids_mc.json` / `_mc_era_ids.json` conflict on rebase whenever two sessions resolve
   symbols; they are symbol-keyed maps — union them (`git show :2:` / `:3:`), never pick a side.
 
+### 129g. ★★★ THE HEAL, APPLIED — 3,795 cells re-slotted, and the two premises it had to prove per company  (2026-09-05, user decision "Apply the heal")
+Applier: `agg_tools/apply_op_slot_heal.py --derive-op --apply` (dry run by default; `was`-guarded; blast-radius
+diff aborts on anything but slots 2/7 of the listed cells; second run writes 0). Ledgers, both registered in
+`verify_fills_live.py`: `scripts/op_slot_corrections.json` (ebitS slot 7, opS slot 2) and
+`scripts/op_slot_refused.json` (opS_refused slot 2, `held`).
+
+**Two premises, each measured PER COMPANY on its own 2018+ rows, never assumed:**
+* **(i) ebit convention** — the company's XBRL-era `ebitS` must equal MC's after-dep subtotal, else the
+  moved value would join a series of a different definition. Rule = the calibrated identity rule (≥2
+  agreeing rows, ≤10 and ≤15% disagreeing; a stale ebit from another filing — the 2026-09-01 audit's
+  169-cell class — is one bad row, not a convention). ⚠️ With ZERO tolerance it refused 162 companies;
+  under the calibrated rule 25. Result: 505 pass, 25 REFUSE, 35 have no 2018+ ebit (their whole ebit
+  series becomes this definition — self-consistent, labelled).
+* **(ii) depreciation** — `ebitS + MC dep == opS` on the same rows, so `op = stored + MC dep` may be
+  derived from the cell's own row (the subtotal that matched to the paisa). 470 exact, 23 rounded (MC
+  prints integer depreciation for them, ≤0.51), 11 REFUSE (worst 787 cr: MC's depreciation row is a
+  different quantity from the XBRL tag), 35 no triple. **Derivation needs BOTH (i) and (ii)** — 72
+  companies passed (ii) and failed (i) under the strict rule, and for them stored + dep is MC's op_pre,
+  which by the same arithmetic does not reproduce our op. Global calibration first: 15,994 / 16,230
+  XBRL-era cells exact (98.55%).
+
+| outcome | cells |
+|---|---|
+| ebit moved + op DERIVED (stored + MC dep, both checks pass) | 2,579 |
+| ebit moved + op GATED (the §129c GATE-E value) | 895 |
+| ebit moved, op nulled + HELD (derivation refused / no triple) | 166 |
+| ebit NOT placed (company fails (i)), op nulled + HELD, value kept as `ebit_unplaced_value` | 155 |
+| skipped: gated op < ebit | 2 |
+
+PIT N500 after the heal: opStd 2015 94→92%, 2016 88→85%, 2008-11 −2pp each (the 321 nulled cells were
+never operating profit); **ebitStd 2015 0→52%, 2016 0→56%, 2008-11 0→8-16%.**
+
+**Three ledger interactions that would have turned CI red, found by running the verifier against the
+patched checkout before pushing:**
+1. `verify_fills_live.py` reads `held` per ENTRY across every key registered for a ledger, so one record
+   asserting ebitS PRESENT and opS_refused ABSENT flagged its own ebit as RESURRECTED — 166 false alarms.
+   The absence assertions therefore live in their own file (`op_slot_refused.json`).
+2. **223 reviewed corrections in `revop_cell_fix.json` targeted `op_std` on healed cells** — the §108
+   restated-vintage heals of 2026-08-24 had corrected the VALUE of the wrong-line cell (SYNGENE Dec-15
+   78.0→68.7 is "profit from operations before other income and finance costs", i.e. ebit). CI re-applies
+   that ledger nightly and the verifier checks it: 217 retargeted to `ebit_std` (`retargeted` note, was=None),
+   6 on companies failing (i) moved to its `retracted` list. Before this, 9 read as MISSING (blocking).
+3. `apply_revop_cell_fix.py` reports one pre-existing MOVED-ON (EMAMILTD 20160331 std 537.37 vs was
+   500.55) — on origin before this session; not touched.
+
+---
+
 ## 130. ★★★ THE LINE-ITEM BLOCK BEFORE 2018 — "XBRL only" meant "2018 only"; the archive HTML + Moneycontrol carry it back to 2002  (2026-09-05, worktree ~/stocks-wt/eps-block)
 
 **NO ASSUMPTIONS, NO GUESSWORK (§0).** Every number below was measured this session; plan `scripts/PLAN_EPS_BLOCK_PRE2018.md`.
