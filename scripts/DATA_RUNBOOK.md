@@ -15240,3 +15240,84 @@ byte-identical.
 the whole calibration + proposal run cost ~700 fetches; (2) provenance-filter the hold-out or the aggregator cells you are about
 to contradict become your "truth"; (3) an anchor test on our own held quarters doubles as a store audit — the 24 conflicts are a
 free suspect list.
+
+## 135. ★★★ ANNOUNCE-DATE + SHP-DATE AUDIT — "can we get the missing dates, and are the saved ones right"  (2026-09-05, worktree ~/stocks-wt/anndates)
+
+**Ask:** recover the FII/DII (SHP visibility) and PAT announce dates we lack, then audit every date we already hold.
+Worked from a fresh worktree at origin/main (the shared checkout was 2,667 commits behind, §107). Everything below
+was MEASURED this session; the offline readers used are listed so nobody re-fetches them.
+
+### 135a. What is missing (origin/main f6818807e, before this section)
+- **PAT** (`docs/sf_fundamentals.json`, 175,918 np cells): 538 cells with ann=0 (146 symbols, SME-ish, 2017-25);
+  **8,634 pre-2008 std cells at EXACTLY qe+45d** — a pure convention spike (neighbours 13 / 5). From 2008 on the
+  45-/60-day counts are NOT a spike (2018+: d44 > d45 > d46) — deadline-day filings are real, so delta alone
+  cannot classify a placeholder there; only a second reader can.
+- **SHP** (`docs/shp_engine.json`, 97,291 rows): 25,928 rows served `sub=99999999` — 25,691 of them ≤2013 (the
+  §105/§120 hardened negative; re-verified: the archived NSE shareholding LIST page (Wayback 2005 capture) lists
+  only "as on" dates, no submission date) + 237 in 2014-16 (ann-stream refusals) — and 6,648 rows 2016+ sitting on
+  exactly qe+21d that turned out to be real deadline-day filings (BSE ts agrees), not convention.
+
+### 135b. Offline second readers (all pre-existing caches — use them first)
+| reader | where | reach | used for |
+|---|---|---|---|
+| NSE results-archive LIST (`filingDate` to the minute, basis per row) | `~/stocks-wt/eps-block/scripts/_nsearch_cache/list_*.json` → copied to this worktree | 2005 → Dec-2024, 1,649 non-empty symbols, 120k (sym,qe,basis) | PAT audit A + proposals |
+| BSE SHPQNewFormat raw shards (`filing_date_time`, New/Revised) | `~/stocks-wt/staleness-fix/scripts/_shp_dates/{full,rest}_shard{0,1}.json` | 2016+ , 77,539 cells | SHP audit B |
+| BSE announcement INDEX (`strCat=-1`, result-declaration sentences with NEWS_DT) | session scratchpad `bse/cache/<code>_<F>_<T>.json`, seeded from session b391e819 (181 codes 2001-06), extended to 540 codes / 2002-2011 | 2002-2011 (the era before the Result category and before NSE's archive) | PAT pre-2012 pass (135f) |
+| BSE announcement STREAM, "Company Update / Shareholding" rows | live (`_shp_dates/fetch_ann_2014.py` pattern) | Jan-2014+ | SHP early-class adjudication |
+| NSE `corporate-share-holdings-master` (`broadcastDate` with time) | live today (0.2 s/symbol); cached to scratchpad `nse_shp/` | **Dec-2021+ only** (RELIANCE from 08-DEC-2021, HAL from Jun-2022) | SHP 2022+ second reader |
+Trading calendar for every gate: `scripts/_trading_days.json` (gitignored — copy from `~/stocks-wt/con-gap-pre2020`) or
+`shp_dates.tdays()` (`gate_calendar.json`). **A weekday-only gate false-alarmed ~1,800 SHP rows as 1-4 d late**
+(Good Friday 2025-04-18 alone) — gate on the real calendar before calling any date wrong.
+
+### 135c. Audit A — stored PAT dates vs the NSE archive (calendar-gated)
+Rule (feedback-nse-archive-filingdate-lags): the archive is never EARLIER than the true declaration, and LAGS it from
+~2012 (calibrated in-run per quarter-end on observed std cells: 1-9% 2007Q2-2010, 10-16% 2011, 19-95% 2012-2018,
+≤11% 2020+). So "stored later than archive+4d" is a PROVEN lag; "stored earlier than archive" is a look-ahead
+candidate only in the low-lag era.
+| era | ok (0-4d) | stored LATE >4d | stored EARLY >7d | no archive row |
+|---|---|---|---|---|
+| 2005-2011 std | 6,816 | **1,252** (413 / 813 / 26 by 5-14 / 15-45 / >45 d; 1,156 are qe+45/60 placeholders) | 560 | 5,027 |
+| 2012-2014 std | 880 | 22 | 1,616 (lag era — uninformative) | 349 |
+| 2015-2017 std+con | 759 | 117 | (lag era) | 1,474 |
+| 2018+ std+con | 16,488 | 95 | (lag era) | 69,930 (cache ends Dec-2024; 2025-26 came from NSE live) |
+1999-2004: 6,216 std cells, NO archive row at all (archive starts 2005).
+
+### 135d. What landed for PAT (commit 0f80a1675) — `scripts/ann_date_fills.json` +2,484 entries
+`propose_pat_dates_nse.py` (scratchpad; contract documented in its docstring): placeholder / ann=0 rows → `exact`
+(gated archive first filing, both directions; a LATER move only where that quarter-end's lag rate ≤ 10%);
+observed rows later than archive+4d → `override` (earlier-only). Guards: §12 real-calendar gate, §99 first-bar
+floor over era names, qe < date ≤ qe+200d, basis split refused (2,157: archive std ≠ con day), 30 collisions
+with hand-adjudicated `exact` entries left on review, 2,223 later-moves in the lag era refused, 607 no-ops
+dropped. **2,479 entries → 3,012 cells re-dated (1,492 in the master mirror), np/qe byte-equal, every changed cell
+explained by a key; 1,554 keys are N500 members at the quarter-end.** By year: 2007 = 1,105 (the pre-2008
+placeholder block), 2019-24 = 1,000+ (placeholders on no-scrip symbols the BSE sweeps could not reach).
+Plus 5 of the 538 ann=0 cells from `backfill_ann_dates_bse.py`; the other 305 skipped: no-candidates 74, no-scrip 39,
+**other-period ~130 (SME half-yearly filers — the covering H1/FY filing is the only row; dating to it is the
+§104b conservative-late convention, not done here), ambiguous 34.**
+Cross-check of the reader itself: on the 2006-11 overlap with the BSE index, 14 agree to the day, 3 within ±1 d, 0 further.
+
+### 135e. Audit B — stored SHP dates vs BSE SHPQNewFormat (calendar-gated) and what landed (commit 5880936b9)
+2016+ rows: ~49,000 agree to the day; **71 of the Aug-23 P4 heals had REGRESSED** — `shp_lag_fix.json` (26,018
+entries) was applied into history slot 5 once and never re-read, and the capture path re-parses a row whenever
+NSE's `submissionDate` is newer than the stored sub, so every re-broadcast quarter got its lag back (all 2025-26).
+**Fix:** `build_engine_feed._reassert_sub` re-asserts both date ledgers on every feed build — earlier-only for lag
+heals, raw→gated only when stored == the entry's `was` (same filing), ledger date where a P2 cell regressed to its
+convention. Baseline rebuild from history was byte-identical to HEAD; after the patch exactly the 92 ledgered rows
+moved. Also landed: 40 Mar-2016 rows served UN-DATED although BSE holds a 'New' timestamp (13-22 d lag) → dated;
+1 fresh lag heal; 24 after-close gate shifts (the BSE announcement-stream SHP row is on the stored day but after
+15:30 → next trading day). Feed vs origin: 157 rows (93 earlier / 40 undated→dated / 24 gate), holdings untouched.
+**The "stored earlier than BSE" class (363 rows >7 d):** BSE's own announcement stream corroborates the stored date
+on 265 (113 at/before it, 152 within 2 d — NSE-first filers); **25 rows have BOTH BSE feeds later than us
+(look-ahead 8-103 d; 23 are 2019-21 where no NSE reader reaches — left, listed in the session's
+`shp_early_adjudication.json`)**; 44 have no ann-stream row. Pre-2016 sentinel rows: unchanged, by design (§120).
+⚠️ Tool trap: `_shp_dates/apply_shp_dates.py`'s default DRY RUN rewrites `shp_sub_dates.json` from scratch
+(8,326 → 21 entries here) — it is the P2 ledger BUILDER, not an applier. Snapshot ledgers before unfamiliar tools.
+
+### 135f. Open (measured, not guessed)
+- 2002-2011 placeholders via the BSE index (harvest of 540 codes in flight at the time of writing; reader
+  `bse_result_dates.py` calibrated 84% same-day vs observed 2002-05 dates, 89 observed dates sit 2-30 d EARLIER
+  than BSE's row — those come from a pre-ledger reader and cannot be adjudicated without a third source).
+- 1999-2001: 1,878 std placeholders, no route (BSE index starts 2002, NSE archive 2005).
+- 570 (NSE) / 89 (BSE) observed-earlier-than-reader PAT cells 2002-2011: look-ahead candidates; only the
+  two-reader-agreement subset may be moved (§119e-2 standard).
+- SHP 2022+ "early" rows vs NSE broadcast; SHP 2014-16 sentinel residue re-probe; 25 both-BSE-later rows.
