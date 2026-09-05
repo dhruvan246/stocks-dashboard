@@ -161,3 +161,41 @@ measured mismatch rate is a lower bound on the rate that matters.
   KTKBANK, SOUTHBANK are all top-25 gap symbols). STEP W's feasibility block names bank-template
   rows plus a shorter 2002-vintage URL grammar (1-char audit flag) as a large share of its unparsed
   residual. Teaching the parser that schema probably returns more than the quarter-page set does.
+
+## 6. REVENUE from the same archived page — `wb_rev.py`, and BSE's archived results page — `bse_rev.py`  (2026-09-05, rev-parity campaign)
+
+The campaign question was "every N500 member-quarter that holds a std PAT but no revenue": the PAT came from
+a document, and that document prints revenue too. Two readers, one discipline:
+
+| | `wb_rev.py` (NSE `results.jsp`, Wayback) | `bse_rev.py` (BSE `qresann/result.asp`, Wayback) |
+|---|---|---|
+| index | `_wb_index.json` (+ `_wb_unresolved.json` pages re-keyed through `--aliases`, i.e. PREDECESSOR NSE symbols from `scripts/_rename_map.json`: UTIBANK→AXISBANK, VYSYABANK→INGVYSYABK, TATATEA→TATACONSUM, IOL/BOC→LINDEINDIA, BHARTI→BHARTIARTL …) | `_bse_wb_index.json` — 24,449 captures / 13,783 (scripcd, quarter-end) keys, from the CDX pull cached in `~/stocks-wt/pre2015-stepw-harvest/scripts/_wb_cache` (`--build-index`) |
+| identity | G1 page's own NSE Symbol == the (alias) symbol; the fund row lives under the successor key | G1 page ScripCode == the repo's BSE code (`scripts/bse_scrips.json`, predecessors via the rename map) |
+| period | declared "Result Period … (role)"; 3 months + Non-Cumulative = direct; otherwise CUMULATIVE DIFFERENCING against a chain of ≤3 legs whose declared periods abut back to the cumulative page's own start | declared "Date Begin / Date End" (two date grammars: `01 Oct 2000` and `10/1/2000`); same differencing |
+| basis | G3 only when the page prints the axis (README §4) | NOT declared — the PAT anchor carries it |
+| scale | declared `(Rs.lakhs)` | declared `Value(Rs. million)`; values print with or without decimals, so the tolerance is HALF the printed grid (an integer million = 0.05 cr), never a flat 0.011 |
+| revenue row | `Net Sales` (Non-Banking) / `Interest Earned` (Banking) | the page prints BOTH `Gross Sales` and `Net Sales` (and `Total Income`); banks `Interest Earned,Operating Income`. **The line is CHOSEN BY REPRODUCTION** against the symbol's own held quarters (≥2 exact, 0 conflicts within ±8 quarters); a tie that differs on the target page is refused |
+| anchor | the page's own Net Profit == stored `npStd` to the paisa (both quantities close on a differenced quarter) | same |
+| hold-out (aggregator-derived AND this campaign's own cells excluded from the truth side) | **464 held cells (447 non-bank / 17 bank) reproduce, 0 mismatch** | **91 held cells (86 / 5) reproduce, 0 mismatch; 34 refused as definition-unverifiable** — the same gate that, run blind on `Net Sales`, had 13 of 125 wrong (ACC/APOLLOTYRE/SANOFI/CGPOWER are stored GROSS of excise: the NSE page's "Net Sales" line for them is BSE's "Gross Sales") |
+| ledger (registered in `verify_fills_live.py`) | `wb_rev_fills.json` | `bse_rev_fills.json` |
+| reads file → `_apply_reads.py` (re-anchors on PAT again at apply time) | `scripts/_wbrev_reads.json` | `scripts/_bserev_reads.json` |
+
+Findings the pages produced that are NOT fills — the as-filed page contradicts the stored PAT — are journalled in
+`wb_rev_findings.json` (16 cells: RELIANCE 2002 ×3 [RPL-merger entity], UMIYA-MRO 2003-04 ×3, ORIENTBANK ×2,
+BANKINDIA, ANDHRABANK, ELGIEQUIP, THERMAX, CENTENKA, FDC, HCL-INSYS, JUBLPHARMA). Reported for the PAT side; never healed
+on one reader.
+
+⚠️ **Bug fixed 2026-09-05 in `wb_read.parse`:** `cumulative` was `'Cumulative' in result_type`, and `Non-Cumulative`
+CONTAINS `Cumulative`, so every true quarter read as cumulative. `wbgate` never used the field (it tests the token
+itself), so the PAT route was never affected; `wb_rev.py`'s first run routed all 114 direct quarters into the
+differencing branch and refused them as "does not nest". Grep the behaviour, not the idiom.
+
+Run order for a gap set (`cells` = `[[sym, qe, npStd, npCon], …]`, `orig` = `{"SYM|QE": [fund keys holding the row]}`):
+```
+python3 -X utf8 scripts/wayback_nse/wb_rev.py  --calib                         # hold-out first
+python3 -X utf8 scripts/wayback_nse/wb_rev.py  --cells C --orig O --aliases A --out P1 --fetch
+python3 -X utf8 scripts/wayback_nse/bse_rev.py --calib --n 250 --fetch
+python3 -X utf8 scripts/wayback_nse/bse_rev.py --cells C --orig O --out P2 --fetch
+python3 -X utf8 scripts/wayback_nse/wb_rev.py  --emit P1 ; python3 -X utf8 scripts/wayback_nse/bse_rev.py --emit P2
+python3 -X utf8 scripts/_apply_reads.py        # then the cell-level diff vs origin: exactly N, 0 strays, 0 overwrites
+```

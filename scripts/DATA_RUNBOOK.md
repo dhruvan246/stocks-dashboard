@@ -14777,3 +14777,112 @@ heal ledger (§2b/§116); Moneycontrol is one vendor and restates (§81c/§85), 
 | archive EPS recon refusals | 2,137 | archive (6% gate) | MC row agreement where the feed carries the quarter; else the filing |
 | stored-PAT disagreements | 182 | see 128d | filing read + heal ledger |
 | 404 XBRL urls / 404 archive pages | 102 / 150 | nsearchives both transports | BSE packs |
+
+## 131. ★★★ REVENUE TO NET-PROFIT PARITY, N500 2002→date — the SAME as-filed page that gave the PAT gives the revenue; BSE's archived results page (STEP B) finally built  (2026-09-05)
+
+**NO ASSUMPTIONS, NO GUESSWORK (§0).** Every count below was measured this session; the fund file each count is
+against is named, because a PAT-side fill RAISES this gap (§112).
+
+### 131a. The bounded problem, and why the first number was wrong
+User's brief: N500 point-in-time member-quarters with a PAT cell in `docs/sf_fundamentals.json` but no revenue
+cell in `docs/sf_revop.json` = **1,304**. Reproduced to the cell for 2003-2014 — **against the shared checkout**,
+whose `docs/sf_revop.json` was dated Aug-16 (before the 2026-08-26 pre-2009 campaign landed 1,662 cells) and whose
+`dash_slim.bin` (Aug-16) has no 1998 N500 snapshot (so 2002 Q1-Q3 had no members). Against `origin/main
+943a43e89` the gap was **863** (2002: 312 · 2003: 191 · 2004: 262 · 2005: 25 · 2006: 21 · 2007: 21 · 2008: 11 ·
+2009-14: 20). Measure against origin, never the shared checkout (§107). Scratch measurer: roster = the bin's
+`indicesHistory["Nifty 500"]` snapshot at-or-before each quarter-end, renames folded via `_rename_map.json`
+on BOTH stores; 81 of the 863 rows live under OLD fund keys (HIMACHLFUT, KIRLOSOIL, RUCHISOYA, TUBEINVEST,
+HEXAWARE, COLGATE …) — every ledger/index lookup must try the ORIGINAL key or 80 cells read as "no provenance".
+
+### 131b. Route (1): the document that produced the PAT — two exchange readers, one discipline
+735 of the 863 PAT cells came from Moneycontrol (`agg_pat_cell_fills.json`); 243 had an archived NSE
+`results.jsp` page in `wayback_nse/_wb_index.json`. The exchange page prints revenue beside the PAT it gave us,
+with scale and period DECLARED, so it is route (1) for those cells and an as-filed adjudicator for the rest.
+
+* **`scripts/wayback_nse/wb_rev.py`** — `Net Sales` (Non-Banking template) / `Interest Earned` (Banking), page
+  Net Profit == stored `npStd` to the paisa, G1-G4 of `wbgate`, G2a (declared period END == quarter). Two modes:
+  **direct** true quarter, and **cumulative differencing** — the H1/9M/annual page minus a CHAIN of ≤3 legs whose
+  declared periods abut back to the cumulative page's own start; the PAT difference must reproduce the stored
+  quarter before the revenue difference is trusted (both-quantities rule, §45). **`--aliases`** re-keys pages the
+  index builder could not attribute (`_wb_unresolved.json`) under PREDECESSOR NSE symbols from the rename map
+  (UTIBANK→AXISBANK, VYSYABANK→INGVYSYABK, TATATEA→TATACONSUM, IOL/BOC→LINDEINDIA, BHARTI→BHARTIARTL, BSES→RELINFRA
+  …); the page's own symbol must equal the alias AND its PAT the stored value under the successor key.
+  **Hold-out (`--calib`, aggregator-derived AND this campaign's own cells excluded from the truth side): 464 held
+  cells (447 non-bank / 17 bank) reproduce, 0 mismatch.** Caveat that travels with it: the truth side is mostly
+  STEP W's own reads of these pages, so the number proves the READER and the store's CONVENTION, and the page is
+  the primary document.
+* **`scripts/wayback_nse/bse_rev.py`** — the "STEP B candidate" (PRE2015_CAMPAIGN.md, scoped 2026-08-07, never
+  built). Wayback captures of `bseindia.com/qresann/result.asp` — 28,550 200-captures 2001-2008 from the CDX a peer
+  had already pulled (`~/stocks-wt/pre2015-stepw-harvest/scripts/_wb_cache`) → `_bse_wb_index.json`, 13,783
+  (scripcd, quarter-end) keys. The URL names `scripcd` + `quarter=<DQ|MQ|JQ|SQ|MC|DC|…><FY>`; the page declares
+  `Date Begin/End` (two grammars, `01 Oct 2000` and `10/1/2000`) and `Value(Rs. million)`, values with or
+  without decimals → **tolerance = half the printed grid** (an integer million is 0.05 cr), not a flat 0.011.
+  G1 = page ScripCode == the repo's BSE code (`bse_scrips.json`, predecessors via the rename map). Basis is NOT
+  declared — the PAT anchor carries it.
+  **★ THE PAGE PRINTS TWO REVENUE LINES AND THE STORE FOLLOWS EITHER, PER SYMBOL.** `Gross Sales` and `Net Sales`
+  both print; read blind as `Net Sales` the reader was wrong on **13 of 125** held cells — ACC Dec-03 stored 905.77
+  == BSE Gross Sales 9,057.70 mn (Net 7,599.70); APOLLOTYRE, SANOFI, CGPOWER the same, while CENTENKA and HEROMOTOCO
+  are stored NET. Our pre-2009 store follows whichever line the NSE page carried, which differs by filer. So the
+  line is **CHOSEN BY REPRODUCTION** against the symbol's own held quarters within ±8 quarters (≥2 exact, 0
+  conflicts; a tie that differs on the target page is refused) — the §81e rule D, memory
+  `feedback-aggregator-two-revenue-definitions`, now proven on an exchange page. **Leave-one-out hold-out with that
+  gate: 91 held cells (86 / 5 bank) reproduce, 0 mismatch, 34 refused as definition-unverifiable.**
+* Both ledgers (`wb_rev_fills.json`, `bse_rev_fills.json`) registered in `verify_fills_live.py` at creation and
+  proven by negative control (null a cell on a sandbox COPY → the detector names the ledger, exit 1). Reads files
+  `_wbrev_reads.json` / `_bserev_reads.json` go through `_apply_reads.py`, which re-anchors on PAT again.
+* **Bug fixed:** `wb_read.parse` set `cumulative = 'Cumulative' in result_type` — and `Non-Cumulative` CONTAINS
+  `Cumulative`. `wbgate` never used the field (it tests the token), so the PAT route was unaffected; `wb_rev.py`'s
+  first run sent all 114 direct quarters into the differencing branch and refused them as "does not nest". Grep the
+  behaviour, not the idiom.
+
+### 131c. Routes (2)-(3): Moneycontrol under §81e, and NSE's archive for 2005+
+* Moneycontrol std feed (`agg_sources.mc_quarters`), evidence restricted to EXCHANGE-DERIVED stored revStd
+  (aggregator ledgers excluded so MC never confirms MC), gates A/A2/A3/A4 of §81e + A5 on MC's own annual table +
+  per-cell PAT anchor (≤0.06) + wayback adjudication where a page exists. The user's summary gate (symbol-wide
+  ≥2 exact, 0 conflicts) passes 4 symbols / 5 cells; §81e passes **15 cells** (HIMACHLFUT ×10 with the 6 global
+  conflicts all in the 2016-17 GST era, GBGLOBAL ×4, MADRASFERT); 2 held because MC's annual table has no FY row
+  for A5. **433 open cells are MC gate refusals** (A false: MC's line does not reproduce exchange values within ±6
+  quarters — the excise/definition class of PLAN_PRE2009_STDREV.md). Re-running MC after each exchange batch
+  (more anchors) yielded +1, +1: the route is converged, not under-anchored.
+* `_nse_archive_revop.py` (2005+; `_nsearch_cache` is a symlink to `~/stocks-wt/con-gap-pre2020/scripts/_nsearch_cache`
+  from several worktrees): 73 cells. Its residue is measurable: 14 cells whose detail page is an empty
+  "No data available" shell or 404s live (J&KBANK/M&M 2005-06, TATASTLBSL 2005-07) — `source-closed`; the tool
+  `continue`s without a skip record when the list row lacks a detail link (§38b class), so classify its residue from
+  the list cache, not its skips file.
+
+### 131d. What landed, what stayed open — and against which fund file
+| | start fund (943a43e89) | today's fund (+1,538 std-PAT cells from 9286e9527 landed 02:56) |
+|---|---|---|
+| gap at start | **863** | — |
+| gap after | **535** | **577** (the sibling's PAT cells opened 170 new gaps; 128 of them were then filled) |
+| revenue coverage 2002 / 2003 / 2004 | 27.3→39.0% / 65.3→68.5% / 54.5→59.4% | PAT ceiling 2002 = 50.9%, so revenue is at 77% of its ceiling there |
+| 2005-2008 | 92.6→93.8 / 94.6→95.9 / 96.5→96.8 / 98.3→98.3 | 2011 99.6 · 2012 98.8 · 2013 99.1 · 2014 100.0 |
+
+**456 cells landed** (457 ledger entries; ESCORTS Jun-05 read by both exchange pages, equal): wayback-NSE 331
+(2002: 189, 2003: 56, 2004: 80, 2005-06: 6; direct 216 / differenced 115; 110 bank; 53 via predecessor pages;
+BHARTI 2003-04 ×6 and TATAVASHIS Dec-04 are FILED NILs — full holding-company P&L, Net Sales 0.00, PAT == stored),
+NSE archive 73 (2005-14), BSE archive 38 (2002-04; 30 Net Sales, 8 Interest Earned), Moneycontrol 15. Five
+pushes, each verified by content on origin and LIVE (`sf_revop.json?cb=`), 0 strays / 0 value overwrites (3 bank
+rows had `fin` 0→1). Commits 127ee88ae · 845c461f3 · 375bc3387 · 966d88298 · 9d0e1c416.
+
+**577 open, one tag per cell in `scripts/wayback_nse/rev_parity_open_2026-09-05.json`:**
+| cells | tag | why |
+|---|---|---|
+| 433 | gate-refused | MC's revenue line fails §81e anchors AND no NSE/BSE capture ends on the quarter. 2002: 168 · 2003: 96 · 2004: 132 · 2005-09: 37. The publisher set for 2002-04 is now exhausted (NSE archive floors 2005-03; both archived exchange sites indexed). |
+| 68 | source-closed | banks 2002-04: MC's feed has PAT only (no bank revenue row pre-2009), no archived page. |
+| 16 | gate-refused (PAT side) | an as-filed page CONTRADICTS the stored PAT — `wb_rev_findings.json`: RELIANCE 2002 ×3 (RPL merger entity), UMIYA-MRO 2003-04 ×3, ORIENTBANK ×2, BANKINDIA, ANDHRABANK, ELGIEQUIP, THERMAX, CENTENKA, FDC, HCL-INSYS, JUBLPHARMA. Reported, not healed (one reader). |
+| 16 | source-closed | only a CONSOLIDATED capture exists for the quarter. |
+| 14 | source-closed | NSE archive detail page empty/404 live, no other route (2005-08). |
+| 11 | gate-refused | bank with a BSE capture but <2 held neighbours to fix the revenue line. |
+| 19 | misc | 4 not-indexed anywhere; 15 page-shell / 6m-not-cumulative / list-row-absent singles (tags in the file). |
+
+### 131e. Process traps this campaign hit
+1. A parallel Bash re-running the measurement OVERWROTE the shared gap file mid-run → a route re-run reported
+   "0 proposals" for the wrong cell set. One writer per scratch file, or suffix per run.
+2. Rebase conflict on the single-line store JSONs: `git rebase --abort` → `reset --hard origin/main` (own worktree)
+   → re-apply the two code patches onto upstream's versions → replay the fill-only applier → cell-level diff vs
+   origin = exactly N, 0 strays → commit → push. Never hand-merge minified JSON (§38b, feedback-minified-json).
+3. `verify_fills_live`'s registered ledger must be proven by a NEGATIVE CONTROL on a sandbox copy; "checked N" moving
+   is necessary, not sufficient.
+4. A ledger filter on `"applied": "2026-09-05"` swept up the sibling op-cell campaign's 7,365 entries that day —
+   filter by FIELD (`revS`) and symbol set, never by date alone.

@@ -367,3 +367,32 @@ generalises to the 1,278 of my cells the archive cannot reach, roughly **270 mor
 still in the store and only 26 have been found**. That is an assumption, not a measurement — the
 adjudicable subset skews to large, well-archived companies — but it is the right assumption to plan
 against, and it is why the audit belongs in front of the batch rather than behind it.
+
+---
+
+# ✅ REV-PARITY RUN 2026-09-05 — 456 cells landed; the BSE archive (STEP B) is BUILT; routes for 2002-04 are exhausted. Runbook §131.
+
+Target restated as **N500 point-in-time member-quarters holding a std PAT but no revenue** (not root cells).
+Against origin/main 943a43e89: **863 → 535** on the same fund file; the concurrent std-PAT landing (9286e9527,
++1,538 PAT cells) opened 170 new gaps, of which 128 were filled → **577 open on the day's fund**.
+
+| route | cells | gate / calibration |
+|---|---|---|
+| wayback NSE `results.jsp` — `wayback_nse/wb_rev.py` (direct + cumulative differencing + predecessor-symbol aliases) | **331** | page PAT == stored to the paisa; hold-out 464 / 0 mismatch |
+| NSE archive `_nse_archive_revop.py` (2005+) | **73** | PAT anchored; residue = empty/404 detail pages |
+| **BSE archived results `qresann/result.asp` — `wayback_nse/bse_rev.py` (NEW)** | **38** | PAT anchored; revenue line CHOSEN BY REPRODUCTION (Gross vs Net Sales); LOO hold-out 91 / 0, 34 refused |
+| Moneycontrol under §81e A-A5, exchange-derived anchors only | **15** | 433 open cells refused — the excise class; converged (+1/+1 after new anchors) |
+
+**Coverage after (N500, revenue / PAT ceiling, today's fund):** 2002 39.0 / 50.9 · 2003 68.5 / 74.9 · 2004 59.4 /
+68.0 · 2005 93.8 / 94.5 · 2006 95.9 / 96.6 · 2007 96.8 / 97.8 · 2008 98.3 / 98.9 · 2009+ ≥98.8.
+
+**What is left (577), tagged per cell in `scripts/wayback_nse/rev_parity_open_2026-09-05.json`:** 433 MC-gate-refused
+with no archived exchange page (2002: 168, 2003: 96, 2004: 132) · 68 pre-2009 banks (MC has no bank revenue row, no
+page) · 16 PAT-side contradictions (`wb_rev_findings.json`) · 16 consolidated-only captures · 14 NSE-archive dead
+pages · 11 bank cells with a BSE page but no neighbour to fix the line · 19 misc.
+**Do not re-grind MC for these; the archived-exchange publishers are indexed and read. The next lever for the 433
+is a PAT-side one (a filing read) or a new publisher, none known.** The 16 findings are the PAT campaign's queue.
+
+Traps: `wb_read.parse` cumulative substring bug (fixed); BSE `Gross Sales` vs `Net Sales` per symbol; BSE
+integers-in-million → half-grid tolerance; 81 cells under OLD fund keys; a parallel measurement overwrote the gap
+file; rebase conflicts on the store JSONs → reset + replay, never hand-merge.
