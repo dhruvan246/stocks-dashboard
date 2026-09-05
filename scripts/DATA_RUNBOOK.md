@@ -15311,7 +15311,7 @@ Financial Results' 30.09.2020 QUARTER column shows Net Profit for the period 4,7
 §81f: need one filing-anchored quarter), ~55 unanchored/no-column (multi-page or garbled-text extracts the geometry reader could not
 crack safely), 4 no-result-announcement, 3 no-BSE-code. **Final tally of the 182: 20 healed (17 NSE + 2 BSE-text + 1 BSE-vision/ALOKINDS), ~75 store-confirmed,
 ~85 open on the vision/hand-read tail.** Reader + PDFs cached in the eps-block worktree scratchpad (ephemeral) — the durable state is
-this section + the committed queue file.
+this section + the committed queue file. **SCOPE (user directive relayed cross-session 2026-09-05, memory feedback-scope-nifty-500-only): work is POINT-IN-TIME Nifty 500 only** (`scripts/indices_history.json` → 'Nifty 500', membersAsOf). Of the 182 suspects, **149 are PIT N500 members (16 healed, 66 store-confirmed, 67 open) and 33 are NOT** (flagged `n500_pit_member=false` in the queue) — the 33 are OUT OF SCOPE; 2 of them (BALMLAWRIE Jun-2022, SECURKLOUD Jun-2020) were already healed with solid filing evidence and are left corrected, the other 31 are not pursued. So the in-scope open tail is 67, not ~84.
 
 ## 134. ★★ BSE's ARCHIVED RESULTS PAGE READS STANDALONE PAT FOR 2000-2001 — anchored on the symbol's own held quarters; 238 root cells landed, and the gate's own bug refused 226 good pages first  (2026-09-05, WP-P1)
 
