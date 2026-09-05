@@ -154,7 +154,7 @@ def parse_period(label, fy_end_month=3):
     s = str(label or "").strip().replace("’", "'").replace("–", "-")
     low = s.lower()
     SEP = r"[\s,\-–/]*"                      # "Q2, FY 26", "Q1-FY27", "Q4/FY26" all mean the same
-    m = re.search(r"\bq\s*([1-4])" + SEP + r"(?:of\s*)?fy\s*'?\s*(\d{4})\s*-\s*(\d{2,4})\b", low)   # Q1 FY 2026-27 → FY27
+    m = re.search(r"\bq\s*([1-4])" + SEP + r"(?:of\s*)?(?:fy\s*'?\s*)?(\d{4})\s*-\s*(\d{2,4})\b", low)   # Q1 FY 2026-27 / Q1 2026-27 → FY27
     if m:
         return "q", _q_end(_yy(m.group(3)), int(m.group(1)), fy_end_month).strftime("%Y%m%d")
     m = re.search(r"\bq\s*([1-4])" + SEP + r"(?:of\s*)?fy\s*'?\s*(\d{4}|\d{2})\b", low) or \
@@ -169,6 +169,9 @@ def parse_period(label, fy_end_month=3):
     m = re.search(r"\bfy\s*'?\s*(\d{4})\s*-\s*(\d{2,4})\b", low)           # FY2025-26 → FY26
     if m:
         return "y", _fy_end(_yy(m.group(2)) if len(m.group(2)) == 2 else int(m.group(2)), fy_end_month).strftime("%Y%m%d")
+    m = re.search(r"\bfy\s*'?\s*(\d{2})\s*-\s*(\d{2})\b", low)                       # FY 25-26 → FY26
+    if m:
+        return "y", _fy_end(_yy(m.group(2)), fy_end_month).strftime("%Y%m%d")
     m = re.search(r"\bfy\s*'?\s*(\d{4}|\d{2})\b", low)
     if m:
         return "y", _fy_end(_yy(m.group(1)), fy_end_month).strftime("%Y%m%d")

@@ -15867,6 +15867,19 @@ python3 scripts/kpi_extract.py --show SYM ; python3 scripts/kpi_extract.py --rep
 ```
 `_packets/` is git-ignored (regenerable); the ledger is the record.
 
+### The FREE reader — cloud routine `insights-kpi-reader` (user's choice, 2026-09-06 ~02:00 IST)
+Google's free tier for `gemini-3.6-flash` is **20 requests/day** (429 body: `generate_content_free_tier_requests,
+limit: 20`, run 33989028584) — useless for ~12,500 reads; the user declined API billing ("i want free one"). So
+the reader is a **Claude Code cloud routine** on the user's plan, exactly the vision-fill pattern (§17b):
+`insights-kpi-reader`, id `trig_01FKdkyDi5US7gnaEMdu7oec`, cron `15 */2 * * *` UTC (every 2 h at :15),
+model claude-sonnet-5, env `env_01Pb6Vujaf9FQ9m1kZXYJN9c`, no MCP connectors. Each run: `--next 6` →
+`--backend packet --limit 4` per symbol → the routine READS each packet and writes the answer JSON →
+`--ingest --by claude-routine` → commit per symbol → `claude/kpi-insights-<ts>` branch → PR →
+`gh pr merge --squash --delete-branch --admin` (direct push to main is 403 for cloud sessions). Budget
+~24 packets / 45 min per run ≈ 250–300 filings a day → the 2020→date backfill (~12,500) takes ~6–7 weeks;
+the prompt lives in the trigger config (update via the /schedule skill → RemoteTrigger), not in the repo.
+The Gemini workflow stays as a 20-a-day trickle and as the BSE-catalog builder.
+
 ### Open (as of 2026-09-06)
 - **`gemini-2.0-flash` is RETIRED** — the first CI run (33988019640) got HTTP 404 *"no longer
   available … use models/gemini-3.6-flash"* on every call. `gemini_vision.py` now defaults to
