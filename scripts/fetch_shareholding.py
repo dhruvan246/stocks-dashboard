@@ -254,13 +254,19 @@ BSE_HIST_LEDGERS = [os.path.join(HERE, "shp_fill_thirdparty.json.gz"),
                     # the symbol resolved to the wrong/later BSE code (IDEA scrip_id collision -> 532822; ELGIRUBBER /
                     # OSWALGREEN / TVSELEC same-ISIN era listing codes). Same parser and gates as wps2b. Fill-only, LAST.
                     os.path.join(HERE, "shp_fill_wps2c_aspx.json.gz"),
-                    # WP-S2 pass 3 (2026-09-05, runbook §127i): 14 era names resolved to BSE codes from the
+                    # WP-S2 pass 3 (2026-09-05, runbook §127k): 14 era names resolved to BSE codes from the
                     # ARCHIVED results index (2000-02 scripnames); 6 matched by page name, 8 accepted on lineage
                     # (same listed entity, renamed) with entity-change cutoffs. Fill-only, LAST in the list.
                     os.path.join(HERE, "shp_fill_wps2d_aspx.json.gz"),
                     # WP-S2 pass 4 (2026-09-05, runbook §127j): continuity holds released after the neighbour re-parse
                     # test (same page family, current parser). Fill-only, LAST in the list.
-                    os.path.join(HERE, "shp_fill_wps2e_aspx.json.gz")]
+                    os.path.join(HERE, "shp_fill_wps2e_aspx.json.gz"),
+                    # NSE's OWN archived full category-wise pattern (Wayback shareholdingdetails.jsp, 2002-06;
+                    # fetch_shp_nse_shpdetails.py, runbook §127k): the 1997 format from the exchange that listed the
+                    # companies BSE never carried. Overlap-gated against the BSE-derived cells (98.6% agree ≤0.11pp),
+                    # point-in-time N500 member quarters only, ins=None (lump), sub=QE+21d -> served UN-DATED (§120).
+                    # Fill-only, LAST: every BSE-derived cell wins where both hold a quarter.
+                    os.path.join(HERE, "shp_fill_nse_shpdetails.json.gz")]
 def apply_bse_hist_ledger(h):
     n_total = 0
     for path in BSE_HIST_LEDGERS:

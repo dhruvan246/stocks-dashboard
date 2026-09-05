@@ -249,6 +249,13 @@ FULL category pattern (`shareholdingdetails.jsp`, 9,191 captures / 740 symbols 2
 the 313 symbols still missing a 2001-06 quarter (1,740 cells) and is a second reader for the whole era; smoke test 13/13 parsed,
 7/7 overlap cells 0.00pp. Run `plan → fetch → apply --dir D`; overlap gate ≤0.11pp before any fill.
 
+**WP-S2 PASS 2c — NSE ROUTE HARVESTED (2026-09-05 13:10→16:40 IST, trusting-lewin, `~/stocks-wt/shp-2002b`, runbook §127k).**
+`fetch_shp_nse_shpdetails.py` fetch 2,265/2,585 captures (320 Wayback failures, resumable) → 1,654 cells; overlap gate 1,168
+shared with the store, **98.6% agree ≤0.11pp**, 16 disagreements journalled in `shp_nse_shpdetails_open.json` (stored cells kept;
+ELDERPHARM Jun-2004 flags §127g's no-block ⇒ 0 rule). **291 point-in-time N500 member cells landed** (2001: 80 · 2002: 131 ·
+2003: 41 · 2004: 37), 195 non-member cells skipped by the 13:30 IST scope rule. Ledger `shp_fill_nse_shpdetails.json.gz`, LAST.
+Coverage (bake vs bake): fiiPct/diiPct +780 member-months (N/A −768, 0 dates down; 2002 90.7→91.9%), fiiChgPp +819; quarter audit 2002-12 95.8→97.2, 2003 96.0→98.0, 2004 95.3→97.1. Open: 320 unfetched captures, 107 symbols with no capture, 16 + 18 adjudications, the whole-era second-reader audit.
+
 ### WP-S3 — SHP 2016+ residue (86) — XBRL/NSE routes; start from WP6's held-160 list (coverage-fill memory).
 
 ### WP-P0 — std-PAT hygiene first (cheap, 66 cells)

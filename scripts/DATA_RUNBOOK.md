@@ -14569,6 +14569,36 @@ GEOMETRIC Jun-08 (one-quarter dip 13.3 → 3.9 → 13.3), KOHINOOR Jun-08 (one-q
 read (the Foreign MF / Foreign FI rows); journalled in `_shp_wps2b_holds.json` `_suspects` for a heal via `shp_cell_fix.json`.
 Apply twice identical, +15 / 0 changed / 0 removed.
 
+### 127k. ★★★ NSE's OWN archived full category-wise pattern HARVESTED — 291 member cells 2001-05 from `shareholdingdetails.jsp`, 98.6% agreement with the BSE-derived store on 1,168 shared cells  (2026-09-05, 13:10→16:40 IST)
+
+**Route (§127h):** `scripts/fetch_shp_nse_shpdetails.py plan → fetch → apply --dir D`, captures in `scripts/nse_shpdetails_cdx.json`.
+Fetch: 2,585 captures for the 206 symbols missing a 2001-06 point-in-time member-quarter → **2,265 on disk** (2,000 fetched + 265
+from the first attempt; 320 failed after 8 retries each — Wayback was refusing connections ~11:45→13:10 IST and stayed lossy; a
+retry pass is resumable, it skips files on disk). 8 workers ≈ 22 pages/min.
+**Parse:** 2,211 of 2,265 pages parsed (43 no as-on/table, 18 `zero-vs-neighbour` = the page prints no FIIs row and the block
+arithmetic proves 0 beside a stored >1% neighbour — refused, same rule as the aspx route; 1 off-cycle as-on; 6 symbol
+mismatches = Wayback served another symbol's page; 3 duplicate captures disagreeing) → **1,654 distinct (symbol, as-on) cells**.
+**Overlap gate BEFORE any fill (feedback-calibrate-gate-by-holdout):** 1,168 of those cells are already in the store from BSE's
+aspx / XBRL routes — **1,152 agree within 0.11pp on both fii and dii (98.6%); 16 disagree**, all journalled in
+`scripts/shp_nse_shpdetails_open.json` with the stored cell UNTOUCHED (disagreement names no side): SBIN 2002 ×3 (NSE FII 19.6 vs
+stored 11.7 — a 7.9pp block, GDR-in-FII class), BAJFINANCE Mar-2006 (23.47 vs 11.73 — the Foreign-FI fold §127g holds),
+MAARSOFTW Dec-2003 (75.65 vs 0.07), **ELDERPHARM Jun-2004 (NSE FIIs 30.23 vs stored 0.00 — the stored 0.00 came from §127g's
+"no institutions block ⇒ institutions = 0" rule; the NSE filing prints an FII row, so that rule needs a per-page second look)**,
+CEAT 2004 ×3 (0.03 vs 1.04), ABAN Mar-2004 (dii 20.99 vs 3.77), VOLTAS ×2 / HLVLTD (dii), RSSOFTWARE.
+**Fills:** 486 parsed cells were missing in the store; **195 were on quarters where the symbol was NOT a point-in-time N500 member
+— skipped (user scope rule, relayed 13:30 IST: Nifty 500 only)**; **291 member cells / 98 symbols landed** (2001: 80 · 2002: 131 ·
+2003: 41 · 2004: 37 · 2005: 2), continuity gate (§127g: >5pp fii / >10pp dii from every stored neighbour) held 0. Top: FLEXCHEM 11,
+NIIT 8, KTKBANK 8, BPCL 7, BAJAJHLDNG 7, SATYAMCOMP 7, RANBAXY 7, IPCL 7, INDRAMEDCO 7, KARURVYSYA 7 — exactly the NSE-only-era
+and code-less names BSE could never serve. Ledger **`scripts/shp_fill_nse_shpdetails.json.gz`**, LAST in `BSE_HIST_LEDGERS` (every
+BSE-derived cell wins where both hold a quarter); provenance `nsewb:<ts>:<seg_num>`; ins=None (lump); sub=QE+21d → UN-DATED.
+**Result (bake vs bake at origin/main e87b3294b, same live bin):** fiiPct/diiPct member-months **145,886 → 146,666 (+780), N/A 2,290 → 1,522, 0 dates down** — 2002 have 4,055 → 4,586 (90.7% → 91.9%), 2003-06 N/A roughly halved; fiiChgPp/diiChgPp **142,320 → 143,139 (+819), N/A 3,952 → 3,184, 0 dates down** — 2002 have 3,828 → 4,170 while its % reads 85.6 → 83.6 because 519 N/A cells became visible holes (§112b: judge by `have`); 2003 90.0 → 92.8%, 2004 97.4 → 98.2%. Quarter-level audit: 2002-12 **95.8 → 97.2** · 2003 **96.0 → 98.0** · 2004 **95.3 → 97.1** · 2005 96.7 → 96.8. `--apply-ledgers` twice identical; +291 history cells, 0 changed, 0 removed, every new cell ins=None and 6 fields; 291 engine rows UN-DATED.
+**Still open on this route:** the 320 unfetched captures (retry), the 107 symbols with a missing 2001-06 member-quarter and NO
+capture, the 16 disagreements and 18 zero-vs-neighbour pages (adjudicate per document; the BSE `>1%` sub-page and NSE's
+`shareholding1.jsp` are the floor readers), and the second-reader audit of the whole BSE-derived 2001-06 store (6,674 captures /
+488 symbols — this run read 2,265 of them: 98.6%).
+**VERIFIED LIVE:** read back after the Pages deploy of this commit (line appended below).
+
+
 ## 128. ★★★ STD-PAT 2002-07 EXECUTED — 229 "missing" cells were HELD under a retired key the coverage builder could not see; four gated routes landed 1,538 cells; the NSE results ARCHIVE reads standalone PAT with the page's own EPS identity  (2026-09-05)
 
 **Trigger:** execute the std-PAT packages of §127 / `PLAN_STDPAT_SHP_COVERAGE_2002.md` (plan §8 = state table).

@@ -194,11 +194,24 @@ def cmd_apply(D):
     ov.sort(reverse=True); bad=[d for d in ov if d[0]>0.11 or d[1]>0.11]
     print('OVERLAP GATE: %d stored too, %d disagree beyond 0.11pp'%(len(ov),len(bad)))
     for d in (bad or ov[:5])[:12]: print('   dFII=%.2f dDII=%.2f %s %s nse=%.2f stored=%.2f | dii %.2f vs %.2f'%d)
-    fills={}
+    # SCOPE (user instruction 2026-09-05 ~13:30 IST, relayed to every session: "work only on nifty 500 stocks"):
+    # fill ONLY point-in-time Nifty 500 member-quarters — the engine's membersAsOf rule (last snapshot at or
+    # before the quarter-end). A parsed cell on a non-member quarter is kept in nse_result.json for the record
+    # but never written to the ledger.
+    ih=json.load(open(os.path.join(HERE,'indices_history.json')))
+    snaps=sorted((x['effectiveDate'],set(norm(y) for y in x['symbols'] if not y.startswith('DUMMY'))) for x in ih['Nifty 500'])
+    def members(qe):
+        best=set()
+        for ed,syms in snaps:
+            if ed<=qe: best=syms
+            else: break
+        return best
+    fills={}; skipped_nonmember=0
     for (s,qe),c in cells.items():
         if qe in have.get(s,{}): continue
+        if s not in members(qe): skipped_nonmember+=1; continue
         fills.setdefault(s,{})[qe]=c
-    n=sum(len(v) for v in fills.values()); print('FILLS (missing in store):',n,'syms',len(fills))
+    n=sum(len(v) for v in fills.values()); print('FILLS (missing in store, N500 member at the quarter-end):',n,'syms',len(fills),'| parsed-but-non-member skipped',skipped_nonmember)
     json.dump({'overlap':ov,'rejects':rej},open(os.path.join(D,'nse_result.json'),'w'),indent=0,default=str)
     with gzip.open(os.path.join(D,'shp_fill_nse_shpdetails.json.gz'),'wt',encoding='utf-8') as fh:
         json.dump({'_built':'fetch_shp_nse_shpdetails apply (NSE Wayback shareholdingdetails.jsp, runbook §127g)','fills':fills},fh)
