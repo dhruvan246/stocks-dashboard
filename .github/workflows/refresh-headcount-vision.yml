@@ -1,0 +1,83 @@
+name: Employees — vision fallback for imaged BRSR tables
+
+# The text parser (headcount_extract.py) can't read the ~60 Nifty-500 names whose BRSR
+# "Employees and workers" table has its numbers detached from the row labels in the PDF text stream,
+# or is a scanned image. This job renders the BRSR employees page to PNG and asks Gemini (free tier,
+# GEMINI_API_KEY — the same reader the Insights card uses) to read the table; every value is validated
+# structurally (male+female reconciles to the total, permanent<=total, a plausible people count) before
+# it lands in scripts/headcount/<SYM>.json with basis "vision". --uncovered only reads names that still
+# have no data, so it self-limits and is safe to re-run daily as the Gemini quota refreshes.
+
+on:
+  schedule:
+    - cron: "45 20 * * *"      # 02:15 IST — after the text fill, before the day's other jobs
+  workflow_dispatch:
+    inputs:
+      symbols:
+        description: "Only these symbols (space-separated); empty = all uncovered names"
+        required: false
+        default: ""
+      limit:
+        description: "Max symbols this run"
+        required: false
+        default: "70"
+
+permissions:
+  contents: write
+  actions: write            # to dispatch pages.yml (a github-actions push does not auto-trigger it)
+
+concurrency:
+  group: refresh-headcount     # share the lock with the text fill so they never race on the ledgers
+  cancel-in-progress: false
+
+jobs:
+  read:
+    runs-on: ubuntu-latest
+    timeout-minutes: 150
+    steps:
+      - uses: actions/checkout@v5
+      - uses: actions/setup-python@v6
+        with:
+          python-version: "3.11"
+      - name: Install PyMuPDF
+        run: pip install --quiet pymupdf
+
+      - name: Read imaged BRSR tables with vision
+        env:
+          GEMINI_API_KEY: ${{ secrets.GEMINI_API_KEY }}
+          GEMINI_MODEL: gemini-3.6-flash
+          HC_DOC_CACHE: /tmp/hc_docs
+        run: |
+          set -e
+          if [ -z "$GEMINI_API_KEY" ]; then echo "GEMINI_API_KEY secret missing — nothing to read"; exit 1; fi
+          LIM="${{ github.event.inputs.limit || '70' }}"
+          SYMS="${{ github.event.inputs.symbols }}"
+          if [ -n "$SYMS" ]; then
+            python3 scripts/headcount_vision.py $SYMS --max-reports 3 --save
+          else
+            python3 scripts/headcount_vision.py --uncovered --limit "$LIM" --max-reports 3 --save
+          fi
+          python3 scripts/build_headcount.py
+
+      - name: Commit + deploy
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          git config user.name  "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          rm -rf /tmp/hc_led && mkdir -p /tmp/hc_led && cp scripts/headcount/*.json /tmp/hc_led/ 2>/dev/null || true
+          for attempt in 1 2 3 4 5; do
+            git fetch origin main && git reset --hard origin/main
+            mkdir -p scripts/headcount && cp /tmp/hc_led/*.json scripts/headcount/ 2>/dev/null || true
+            python3 scripts/build_headcount.py
+            git add -- scripts/headcount/*.json docs/employee_headcount.json
+            if git diff --cached --quiet; then echo "no vision changes"; exit 0; fi
+            git commit -q -m "Employees: vision-read BRSR tables $(TZ=Asia/Kolkata date +'%Y-%m-%d %H:%M IST')"
+            if git push origin HEAD:main; then
+              echo "pushed (attempt #$attempt)"
+              gh workflow run pages.yml || echo "(pages dispatch failed — next human push deploys)"
+              exit 0
+            fi
+            sleep $(( attempt * 5 ))
+          done
+          echo "vision push failed after 5 attempts"; exit 1
