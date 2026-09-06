@@ -1,0 +1,63 @@
+# Annual balance-sheet / cash-flow fill from each company's OWN audited-result PDF.
+# Fills the ~45% of FY-end balance sheets / ~19% of cash-flows that the quarterly-result XBRL omits
+# (SEBI lets a filer put the full BS/CF only in the annual result's PDF). fetch_annual_bscf.py reads
+# those pages — text-parse where the PDF allows, Claude-Haiku vision otherwise — and HOLDOUT-GATES
+# every filer against the years we already hold from XBRL, so a bad read never lands. Resumable: each
+# run processes a bounded batch of not-yet-processed symbols and commits scripts/annual_bscf.json.
+name: Annual BS/CF fill
+
+on:
+  schedule:
+    - cron: "20 */6 * * *"       # every 6h — grinds the survivorship-free N500 over a few days
+  workflow_dispatch:
+    inputs:
+      limit:
+        description: "symbols to process this run"
+        default: "50"
+
+permissions:
+  contents: write
+
+concurrency:
+  group: annual-bscf
+  cancel-in-progress: false      # never interrupt a batch mid-commit
+
+jobs:
+  fill:
+    runs-on: ubuntu-latest
+    timeout-minutes: 55
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v5
+
+      - name: Set up Python
+        uses: actions/setup-python@v6
+        with:
+          python-version: "3.11"
+
+      - name: Install deps
+        run: pip install --quiet anthropic PyMuPDF
+
+      - name: Fill annual BS/CF
+        env:
+          ANTHROPIC_API_KEY: ${{ secrets.ANTHROPIC_API_KEY }}
+          BSE_VISION_MODEL: claude-haiku-4-5
+        run: python3 -X utf8 scripts/fetch_annual_bscf.py --limit "${{ github.event.inputs.limit || 50 }}"
+
+      - name: Commit ledger
+        run: |
+          git config user.name  "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          # reset-replay: stash this run's outputs, rebase onto latest main, copy back, commit (runbook §18)
+          mkdir -p /tmp/abscf
+          for f in annual_bscf.json _annual_bscf_gate.json; do [ -f scripts/$f ] && cp scripts/$f /tmp/abscf/ || true; done
+          for attempt in 1 2 3 4 5; do
+            git fetch origin main -q && git reset --hard origin/main -q
+            for f in annual_bscf.json _annual_bscf_gate.json; do [ -f /tmp/abscf/$f ] && cp /tmp/abscf/$f scripts/$f || true; done
+            git add scripts/annual_bscf.json scripts/_annual_bscf_gate.json 2>/dev/null || true
+            if git diff --cached --quiet; then echo "no new annual BS/CF this run"; exit 0; fi
+            git commit -q -m "Annual BS/CF fill $(TZ=Asia/Kolkata date +'%Y-%m-%d %H:%M IST')"
+            if git push origin HEAD:main; then echo "pushed (attempt #$attempt)"; exit 0; fi
+            sleep $(( attempt * 5 ))
+          done
+          echo "push failed after retries"; exit 1

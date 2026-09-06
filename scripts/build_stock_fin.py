@@ -150,6 +150,32 @@ def main():
     else:
         print("WARN: xbrl_extra.json[.gz] missing — deep detail absent from every slice")
 
+    # Annual balance-sheet / cash-flow fills read from each company's OWN audited-result PDF
+    # (scripts/annual_bscf.json, built by fetch_annual_bscf.py; every filer holdout-gated against the
+    # years we already hold from XBRL). GAP-FILL ONLY — never overwrites an XBRL value; the cell is
+    # marked 'pdf' so the page can attribute it to the annual report rather than the XBRL filing.
+    abscf_p = os.path.join(HERE, "annual_bscf.json")
+    if os.path.exists(abscf_p):
+        try:
+            abscf = json.load(open(abscf_p))
+            PDF_FIELDS = {"assets", "sc", "oeq", "borr", "blt", "bst", "ppe", "cwip", "gw", "intg",
+                          "invst", "rec", "pay", "invnt", "cfo", "cfi", "cff", "capex", "cf_tax"}
+            nfill = 0
+            for sym, qs in abscf.items():
+                if sym.startswith("_") or not isinstance(qs, dict): continue
+                for qe, cell in qs.items():
+                    if not isinstance(cell, dict): continue
+                    b = cell.get("b") or "c"
+                    tgt = xtra.setdefault(sym, {}).setdefault(qe, {}).setdefault(b, {})
+                    added = False
+                    for k, v in cell.items():
+                        if k in PDF_FIELDS and v is not None and tgt.get(k) is None:
+                            tgt[k] = v; added = True
+                    if added: tgt["pdf"] = 1; nfill += 1
+            print("annual BS/CF PDF fills: %d cells gap-filled (from %s)" % (nfill, os.path.basename(abscf_p)))
+        except Exception as e:
+            print("WARN: annual_bscf.json unreadable (%s) — skipped" % e)
+
     # Insights card — operating KPIs read from the company's own presentations (runbook §137).
     # scripts/kpi_insights/<SLUG>.json is the ledger; the slice carries it compacted, verbatim
     # values, with the per-cell provenance [attachment, page, label, as_printed] the ⓘ shows.
