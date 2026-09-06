@@ -1,8 +1,709 @@
 {
  "sym": "BANKBARODA",
  "fy_end_month": 3,
- "docs": {},
- "metrics": [],
+ "docs": {
+  "822e1cd4-7ab0-4b94-bff0-7fca8a4ee083.pdf": {
+   "kind": "ip",
+   "date": "2026-07-24",
+   "title": "Q1 FY27 Investor Presentation",
+   "read": "2026-09-06",
+   "by": "claude-routine"
+  },
+  "406503da-297b-4c0f-95e8-e40c642cf125.pdf": {
+   "kind": "ip",
+   "date": "2026-06-20",
+   "title": "Investor Engagement Meeting Presentation, June 2026",
+   "read": "2026-09-06",
+   "by": "claude-routine"
+  }
+ },
+ "metrics": [
+  {
+   "name": "Capital Adequacy Ratio (CRAR)",
+   "unit": "%",
+   "kind": "level",
+   "y": {},
+   "q": {
+    "20250331": 17.19,
+    "20250630": 17.61,
+    "20250930": 16.54,
+    "20251231": 15.29,
+    "20260331": 15.82,
+    "20260630": 16.3
+   },
+   "src": {
+    "q:20250630": [
+     "822e1cd4-7ab0-4b94-bff0-7fca8a4ee083.pdf",
+     27,
+     "CRAR",
+     "17.61"
+    ],
+    "q:20250930": [
+     "822e1cd4-7ab0-4b94-bff0-7fca8a4ee083.pdf",
+     27,
+     "CRAR",
+     "16.54"
+    ],
+    "q:20251231": [
+     "822e1cd4-7ab0-4b94-bff0-7fca8a4ee083.pdf",
+     27,
+     "CRAR",
+     "15.29"
+    ],
+    "q:20260331": [
+     "822e1cd4-7ab0-4b94-bff0-7fca8a4ee083.pdf",
+     27,
+     "CRAR",
+     "15.82"
+    ],
+    "q:20260630": [
+     "822e1cd4-7ab0-4b94-bff0-7fca8a4ee083.pdf",
+     27,
+     "CRAR",
+     "16.30"
+    ],
+    "q:20250331": [
+     "406503da-297b-4c0f-95e8-e40c642cf125.pdf",
+     5,
+     "Capital Adequacy Ratio",
+     "17.19"
+    ]
+   }
+  },
+  {
+   "name": "Credit Cost",
+   "unit": "%",
+   "kind": "flow",
+   "y": {
+    "20250331": 0.47,
+    "20260331": 0.46
+   },
+   "q": {
+    "20250630": 0.55,
+    "20260331": 0.76,
+    "20260630": 0.29
+   },
+   "src": {
+    "q:20250630": [
+     "822e1cd4-7ab0-4b94-bff0-7fca8a4ee083.pdf",
+     22,
+     "Credit cost (%)",
+     "0.55"
+    ],
+    "q:20260331": [
+     "822e1cd4-7ab0-4b94-bff0-7fca8a4ee083.pdf",
+     22,
+     "Credit cost (%)",
+     "0.76"
+    ],
+    "q:20260630": [
+     "822e1cd4-7ab0-4b94-bff0-7fca8a4ee083.pdf",
+     22,
+     "Credit cost (%)",
+     "0.29"
+    ],
+    "y:20250331": [
+     "406503da-297b-4c0f-95e8-e40c642cf125.pdf",
+     18,
+     "Credit cost (%)",
+     "0.47"
+    ],
+    "y:20260331": [
+     "406503da-297b-4c0f-95e8-e40c642cf125.pdf",
+     18,
+     "Credit cost (%)",
+     "0.46"
+    ]
+   }
+  },
+  {
+   "name": "Domestic CASA",
+   "unit": "%",
+   "kind": "level",
+   "y": {},
+   "q": {
+    "20250331": 39.97,
+    "20250630": 39.33,
+    "20251231": 38.45,
+    "20260331": 38.9,
+    "20260630": 37.72
+   },
+   "src": {
+    "q:20250630": [
+     "822e1cd4-7ab0-4b94-bff0-7fca8a4ee083.pdf",
+     13,
+     "Domestic CASA(%)",
+     "39.33"
+    ],
+    "q:20260331": [
+     "822e1cd4-7ab0-4b94-bff0-7fca8a4ee083.pdf",
+     13,
+     "Domestic CASA(%)",
+     "38.90"
+    ],
+    "q:20260630": [
+     "822e1cd4-7ab0-4b94-bff0-7fca8a4ee083.pdf",
+     13,
+     "Domestic CASA(%)",
+     "37.72"
+    ],
+    "q:20250331": [
+     "406503da-297b-4c0f-95e8-e40c642cf125.pdf",
+     13,
+     "Domestic CASA(%)",
+     "39.97"
+    ],
+    "q:20251231": [
+     "406503da-297b-4c0f-95e8-e40c642cf125.pdf",
+     13,
+     "Domestic CASA(%)",
+     "38.45"
+    ]
+   }
+  },
+  {
+   "name": "Gross NPA",
+   "unit": "%",
+   "kind": "level",
+   "y": {
+    "20250331": 2.26,
+    "20260331": 1.89
+   },
+   "q": {
+    "20250630": 2.28,
+    "20260331": 1.89,
+    "20260630": 1.99
+   },
+   "src": {
+    "q:20250630": [
+     "822e1cd4-7ab0-4b94-bff0-7fca8a4ee083.pdf",
+     22,
+     "Gross NPA Ratio (%)",
+     "2.28"
+    ],
+    "q:20260331": [
+     "822e1cd4-7ab0-4b94-bff0-7fca8a4ee083.pdf",
+     22,
+     "Gross NPA Ratio (%)",
+     "1.89"
+    ],
+    "q:20260630": [
+     "822e1cd4-7ab0-4b94-bff0-7fca8a4ee083.pdf",
+     22,
+     "Gross NPA Ratio (%)",
+     "1.99"
+    ],
+    "y:20250331": [
+     "406503da-297b-4c0f-95e8-e40c642cf125.pdf",
+     18,
+     "Gross NPA Ratio (%)",
+     "2.26"
+    ],
+    "y:20260331": [
+     "406503da-297b-4c0f-95e8-e40c642cf125.pdf",
+     18,
+     "Gross NPA Ratio (%)",
+     "1.89"
+    ]
+   }
+  },
+  {
+   "name": "Net NPA",
+   "unit": "%",
+   "kind": "level",
+   "y": {
+    "20250331": 0.58,
+    "20260331": 0.45
+   },
+   "q": {
+    "20250630": 0.6,
+    "20260331": 0.45,
+    "20260630": 0.5
+   },
+   "src": {
+    "q:20250630": [
+     "822e1cd4-7ab0-4b94-bff0-7fca8a4ee083.pdf",
+     22,
+     "Net NPA Ratio (%)",
+     "0.60"
+    ],
+    "q:20260331": [
+     "822e1cd4-7ab0-4b94-bff0-7fca8a4ee083.pdf",
+     22,
+     "Net NPA Ratio (%)",
+     "0.45"
+    ],
+    "q:20260630": [
+     "822e1cd4-7ab0-4b94-bff0-7fca8a4ee083.pdf",
+     22,
+     "Net NPA Ratio (%)",
+     "0.50"
+    ],
+    "y:20250331": [
+     "406503da-297b-4c0f-95e8-e40c642cf125.pdf",
+     18,
+     "Net NPA Ratio (%)",
+     "0.58"
+    ],
+    "y:20260331": [
+     "406503da-297b-4c0f-95e8-e40c642cf125.pdf",
+     18,
+     "Net NPA Ratio (%)",
+     "0.45"
+    ]
+   }
+  },
+  {
+   "name": "Provision Coverage Ratio (Excluding TWO)",
+   "unit": "%",
+   "kind": "level",
+   "y": {
+    "20250331": 74.87,
+    "20260331": 76.66
+   },
+   "q": {
+    "20250630": 74.04,
+    "20260331": 76.66,
+    "20260630": 75.07
+   },
+   "src": {
+    "q:20250630": [
+     "822e1cd4-7ab0-4b94-bff0-7fca8a4ee083.pdf",
+     22,
+     "Provision Coverage Ratio (Excluding TWO) (%)",
+     "74.04"
+    ],
+    "q:20260331": [
+     "822e1cd4-7ab0-4b94-bff0-7fca8a4ee083.pdf",
+     22,
+     "Provision Coverage Ratio (Excluding TWO) (%)",
+     "76.66"
+    ],
+    "q:20260630": [
+     "822e1cd4-7ab0-4b94-bff0-7fca8a4ee083.pdf",
+     22,
+     "Provision Coverage Ratio (Excluding TWO) (%)",
+     "75.07"
+    ],
+    "y:20250331": [
+     "406503da-297b-4c0f-95e8-e40c642cf125.pdf",
+     18,
+     "Provision Coverage Ratio (Excluding TWO) (%)",
+     "74.87"
+    ],
+    "y:20260331": [
+     "406503da-297b-4c0f-95e8-e40c642cf125.pdf",
+     18,
+     "Provision Coverage Ratio (Excluding TWO) (%)",
+     "76.66"
+    ]
+   }
+  },
+  {
+   "name": "Provision Coverage Ratio (Including TWO)",
+   "unit": "%",
+   "kind": "level",
+   "y": {
+    "20250331": 93.29,
+    "20260331": 93.94
+   },
+   "q": {
+    "20250630": 93.18,
+    "20260331": 93.94,
+    "20260630": 93.28
+   },
+   "src": {
+    "q:20250630": [
+     "822e1cd4-7ab0-4b94-bff0-7fca8a4ee083.pdf",
+     22,
+     "Provision Coverage Ratio (Including TWO) (%)",
+     "93.18"
+    ],
+    "q:20260331": [
+     "822e1cd4-7ab0-4b94-bff0-7fca8a4ee083.pdf",
+     22,
+     "Provision Coverage Ratio (Including TWO) (%)",
+     "93.94"
+    ],
+    "q:20260630": [
+     "822e1cd4-7ab0-4b94-bff0-7fca8a4ee083.pdf",
+     22,
+     "Provision Coverage Ratio (Including TWO) (%)",
+     "93.28"
+    ],
+    "y:20250331": [
+     "406503da-297b-4c0f-95e8-e40c642cf125.pdf",
+     18,
+     "Provision Coverage Ratio (Including TWO) (%)",
+     "93.29"
+    ],
+    "y:20260331": [
+     "406503da-297b-4c0f-95e8-e40c642cf125.pdf",
+     18,
+     "Provision Coverage Ratio (Including TWO) (%)",
+     "93.94"
+    ]
+   }
+  },
+  {
+   "name": "Slippage Ratio",
+   "unit": "%",
+   "kind": "flow",
+   "y": {
+    "20250331": 0.78,
+    "20260331": 0.72
+   },
+   "q": {
+    "20250630": 1.16,
+    "20260331": 0.89,
+    "20260630": 0.91
+   },
+   "src": {
+    "q:20250630": [
+     "822e1cd4-7ab0-4b94-bff0-7fca8a4ee083.pdf",
+     22,
+     "Slippage Ratio (%)",
+     "1.16"
+    ],
+    "q:20260331": [
+     "822e1cd4-7ab0-4b94-bff0-7fca8a4ee083.pdf",
+     22,
+     "Slippage Ratio (%)",
+     "0.89"
+    ],
+    "q:20260630": [
+     "822e1cd4-7ab0-4b94-bff0-7fca8a4ee083.pdf",
+     22,
+     "Slippage Ratio (%)",
+     "0.91"
+    ],
+    "y:20250331": [
+     "406503da-297b-4c0f-95e8-e40c642cf125.pdf",
+     18,
+     "Slippage Ratio (%)",
+     "0.78"
+    ],
+    "y:20260331": [
+     "406503da-297b-4c0f-95e8-e40c642cf125.pdf",
+     18,
+     "Slippage Ratio (%)",
+     "0.72"
+    ]
+   }
+  },
+  {
+   "name": "Domestic Gross Advances",
+   "unit": "INR Cr",
+   "kind": "level",
+   "y": {},
+   "q": {
+    "20250630": 991363.0,
+    "20260331": 1169458.0,
+    "20260630": 1150906.0
+   },
+   "src": {
+    "q:20250630": [
+     "822e1cd4-7ab0-4b94-bff0-7fca8a4ee083.pdf",
+     14,
+     "Gross Domestic Advances",
+     "9,91,363"
+    ],
+    "q:20260331": [
+     "822e1cd4-7ab0-4b94-bff0-7fca8a4ee083.pdf",
+     14,
+     "Gross Domestic Advances",
+     "11,69,458"
+    ],
+    "q:20260630": [
+     "822e1cd4-7ab0-4b94-bff0-7fca8a4ee083.pdf",
+     14,
+     "Gross Domestic Advances",
+     "11,50,906"
+    ]
+   }
+  },
+  {
+   "name": "Global Deposits",
+   "unit": "INR Cr",
+   "kind": "level",
+   "y": {},
+   "q": {
+    "20250630": 1435634.0,
+    "20260331": 1648487.0,
+    "20260630": 1633559.0
+   },
+   "src": {
+    "q:20250630": [
+     "822e1cd4-7ab0-4b94-bff0-7fca8a4ee083.pdf",
+     13,
+     "Total Deposits",
+     "14,35,634"
+    ],
+    "q:20260331": [
+     "822e1cd4-7ab0-4b94-bff0-7fca8a4ee083.pdf",
+     13,
+     "Total Deposits",
+     "16,48,487"
+    ],
+    "q:20260630": [
+     "822e1cd4-7ab0-4b94-bff0-7fca8a4ee083.pdf",
+     13,
+     "Total Deposits",
+     "16,33,559"
+    ]
+   }
+  },
+  {
+   "name": "Global Gross Advances",
+   "unit": "INR Cr",
+   "kind": "level",
+   "y": {},
+   "q": {
+    "20250630": 1207056.0,
+    "20260331": 1429879.0,
+    "20260630": 1416898.0
+   },
+   "src": {
+    "q:20250630": [
+     "822e1cd4-7ab0-4b94-bff0-7fca8a4ee083.pdf",
+     14,
+     "Global Gross Advances",
+     "12,07,056"
+    ],
+    "q:20260331": [
+     "822e1cd4-7ab0-4b94-bff0-7fca8a4ee083.pdf",
+     14,
+     "Global Gross Advances",
+     "14,29,879"
+    ],
+    "q:20260630": [
+     "822e1cd4-7ab0-4b94-bff0-7fca8a4ee083.pdf",
+     14,
+     "Global Gross Advances",
+     "14,16,898"
+    ]
+   }
+  },
+  {
+   "name": "Retail Advances (Organic)",
+   "unit": "INR Cr",
+   "kind": "level",
+   "y": {},
+   "q": {
+    "20250630": 261479.0,
+    "20260331": 302598.0,
+    "20260630": 309674.0
+   },
+   "src": {
+    "q:20250630": [
+     "822e1cd4-7ab0-4b94-bff0-7fca8a4ee083.pdf",
+     14,
+     "Retail*",
+     "2,61,479"
+    ],
+    "q:20260331": [
+     "822e1cd4-7ab0-4b94-bff0-7fca8a4ee083.pdf",
+     14,
+     "Retail*",
+     "3,02,598"
+    ],
+    "q:20260630": [
+     "822e1cd4-7ab0-4b94-bff0-7fca8a4ee083.pdf",
+     14,
+     "Retail*",
+     "3,09,674"
+    ]
+   }
+  },
+  {
+   "name": "Total Financial Inclusion Accounts",
+   "unit": "Lakh",
+   "kind": "level",
+   "y": {},
+   "q": {
+    "20250630": 726.0,
+    "20260331": 736.0,
+    "20260630": 741.0
+   },
+   "src": {
+    "q:20250630": [
+     "822e1cd4-7ab0-4b94-bff0-7fca8a4ee083.pdf",
+     18,
+     "Total Financial Inclusion Accounts",
+     "726"
+    ],
+    "q:20260331": [
+     "822e1cd4-7ab0-4b94-bff0-7fca8a4ee083.pdf",
+     18,
+     "Total Financial Inclusion Accounts",
+     "736"
+    ],
+    "q:20260630": [
+     "822e1cd4-7ab0-4b94-bff0-7fca8a4ee083.pdf",
+     18,
+     "Total Financial Inclusion Accounts",
+     "741"
+    ]
+   }
+  },
+  {
+   "name": "AUM - Baroda BNP Paribas AMC",
+   "unit": "INR Cr",
+   "kind": "level",
+   "y": {},
+   "q": {
+    "20250630": 32496.0,
+    "20260630": 36479.0
+   },
+   "src": {
+    "q:20250630": [
+     "822e1cd4-7ab0-4b94-bff0-7fca8a4ee083.pdf",
+     41,
+     "AUM",
+     "32,496"
+    ],
+    "q:20260630": [
+     "822e1cd4-7ab0-4b94-bff0-7fca8a4ee083.pdf",
+     41,
+     "AUM",
+     "36,479"
+    ]
+   }
+  },
+  {
+   "name": "Active Cards - BOBCARD",
+   "unit": "lacs",
+   "kind": "level",
+   "y": {},
+   "q": {
+    "20250630": 30.25,
+    "20260630": 32.12
+   },
+   "src": {
+    "q:20250630": [
+     "822e1cd4-7ab0-4b94-bff0-7fca8a4ee083.pdf",
+     41,
+     "Number of active Cards",
+     "30.25"
+    ],
+    "q:20260630": [
+     "822e1cd4-7ab0-4b94-bff0-7fca8a4ee083.pdf",
+     41,
+     "Number of active Cards",
+     "32.12"
+    ]
+   }
+  },
+  {
+   "name": "Total Business",
+   "unit": "INR Cr",
+   "kind": "level",
+   "y": {},
+   "q": {
+    "20250630": 2642690.0,
+    "20260630": 3050457.0
+   },
+   "src": {
+    "q:20250630": [
+     "822e1cd4-7ab0-4b94-bff0-7fca8a4ee083.pdf",
+     4,
+     "Total Business",
+     "26,42,690"
+    ],
+    "q:20260630": [
+     "822e1cd4-7ab0-4b94-bff0-7fca8a4ee083.pdf",
+     4,
+     "Total Business",
+     "30,50,457"
+    ]
+   }
+  },
+  {
+   "name": "Branch Network",
+   "unit": "count",
+   "kind": "level",
+   "y": {
+    "20260331": 8648.0
+   },
+   "q": {},
+   "src": {
+    "y:20260331": [
+     "406503da-297b-4c0f-95e8-e40c642cf125.pdf",
+     4,
+     "Strong domestic presence through 8,648 branches (doc period)",
+     "8,648"
+    ]
+   }
+  },
+  {
+   "name": "Countries (International Presence)",
+   "unit": "count",
+   "kind": "level",
+   "y": {
+    "20260331": 15.0
+   },
+   "q": {},
+   "src": {
+    "y:20260331": [
+     "406503da-297b-4c0f-95e8-e40c642cf125.pdf",
+     4,
+     "spanning 15 countries (doc period)",
+     "15"
+    ]
+   }
+  },
+  {
+   "name": "Overseas Offices",
+   "unit": "count",
+   "kind": "level",
+   "y": {
+    "20260331": 80.0
+   },
+   "q": {},
+   "src": {
+    "y:20260331": [
+     "406503da-297b-4c0f-95e8-e40c642cf125.pdf",
+     4,
+     "Global presence across 80 overseas offices (doc period)",
+     "80"
+    ]
+   }
+  },
+  {
+   "name": "Permanent Employees",
+   "unit": "count",
+   "kind": "level",
+   "y": {
+    "20260331": 76693.0
+   },
+   "q": {},
+   "src": {
+    "y:20260331": [
+     "406503da-297b-4c0f-95e8-e40c642cf125.pdf",
+     4,
+     "Committed Workforce of 76,693 (doc period)",
+     "76,693"
+    ]
+   }
+  },
+  {
+   "name": "Total Customer Base",
+   "unit": "million",
+   "kind": "level",
+   "y": {
+    "20260331": 183.0
+   },
+   "q": {},
+   "src": {
+    "y:20260331": [
+     "406503da-297b-4c0f-95e8-e40c642cf125.pdf",
+     4,
+     "Customer base of ~183 million (doc period)",
+     "183"
+    ]
+   }
+  }
+ ],
  "held": [],
  "catalog": [
   {
