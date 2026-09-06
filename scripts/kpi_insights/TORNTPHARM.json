@@ -5,62 +5,111 @@
   "9afcc666-9e2f-45f7-ac60-2d18c25e2326.pdf": {
    "kind": "ar",
    "date": "2026-06-03",
-   "title": "AGM Notice letter re: Integrated Annual Report FY26 web-link",
+   "title": "AGM Notice / Regulation 30 Disclosure Letter",
    "read": "2026-09-06",
    "by": "claude-routine"
   },
   "8cff3798-967d-44b8-a6d1-8a17e7795c07.pdf": {
    "kind": "ip",
    "date": "2026-05-22",
-   "title": "Q4 FY26 Results Presentation to Analysts",
+   "title": "Q4 FY26 / FY26 Analyst Presentation (revenue-only)",
    "read": "2026-09-06",
    "by": "claude-routine"
   },
   "6e94e952-be35-4092-b775-7b3ece9ecce0.pdf": {
    "kind": "ip",
    "date": "2025-11-07",
-   "title": "Q2/H1 FY26 Results Presentation to Analysts",
+   "title": "Q2 FY26 / H1 FY26 Analyst Presentation (revenue-only)",
    "read": "2026-09-06",
    "by": "claude-routine"
   },
   "f40893d7-5b78-43c0-b37c-50d1a127a763.pdf": {
    "kind": "ip",
    "date": "2025-07-28",
-   "title": "Q1 FY26 Results Presentation to Analysts",
+   "title": "Q1 FY26 Analyst Presentation (revenue-only)",
    "read": "2026-09-06",
    "by": "claude-routine"
   },
   "ef8a0c31-bbc6-4baf-81e9-210d47cb9801.pdf": {
    "kind": "ar",
    "date": "2025-07-07",
-   "title": "AGM Notice letter re: Integrated Annual Report FY25 web-link",
+   "title": "AGM Notice / Regulation 30 Disclosure Letter (FY24-25 AR weblink)",
    "read": "2026-09-06",
    "by": "claude-routine"
   },
   "6314da61-f7f2-42a3-a461-607c3a8f44ad.pdf": {
    "kind": "ip",
    "date": "2025-06-30",
-   "title": "JB Chemicals & Pharmaceuticals acquisition presentation",
+   "title": "JB Pharma Acquisition - Investor Presentation",
    "read": "2026-09-06",
    "by": "claude-routine",
-   "note": "company_matches=false: Deck is about JB Pharma, the acquisition target (not yet part of Torrent at filing date), with figures sourced from IQVIA and peer market-share comparisons (industry/peer data, excluded) rather than T"
+   "note": "company_matches=false: All operating metrics on these pages (plants, employees, countries presence, market share, revenue mix) describe J.B. Chemicals & Pharmaceuticals Limited, the acquisition TARGET, as a standalone compa"
   },
   "db7e5e01-7e8b-4e02-99b5-76d6a2b8ec1e.pdf": {
    "kind": "res",
    "date": "2026-07-30",
-   "title": "Q1 FY27 Results (financial statements + press release)",
+   "title": "Q1 FY27 Results (Standalone+Consolidated) + Press Release",
    "read": "2026-09-06",
    "by": "claude-routine"
   },
   "ff8314b3-63f3-4741-871f-83b50a44e1d9.pdf": {
    "kind": "ar",
    "date": "2026-03-31",
-   "title": "Integrated Annual Report FY26 (Board's Report + BRSR extracts)",
+   "title": "Annual Report FY26 (Integrated Annual Report 2025-26)",
    "read": "2026-09-06",
    "by": "claude-routine"
   }
  },
  "metrics": [
+  {
+   "name": "Brazil Products Under ANVISA Review",
+   "unit": "count",
+   "kind": "level",
+   "y": {
+    "20260331": 58.0
+   },
+   "q": {
+    "20260630": 58.0
+   },
+   "src": {
+    "q:20260630": [
+     "db7e5e01-7e8b-4e02-99b5-76d6a2b8ec1e.pdf",
+     18,
+     "Torrent has 58 products under ANVISA review (doc period)",
+     "58"
+    ],
+    "y:20260331": [
+     "ff8314b3-63f3-4741-871f-83b50a44e1d9.pdf",
+     54,
+     "Overall, the Company has 58 products under approval at ANVISA",
+     "58"
+    ]
+   }
+  },
+  {
+   "name": "Employee Headcount (Total Employees)",
+   "unit": "count",
+   "kind": "level",
+   "y": {
+    "20250331": 15563.0,
+    "20260331": 16735.0
+   },
+   "q": {},
+   "src": {
+    "y:20260331": [
+     "ff8314b3-63f3-4741-871f-83b50a44e1d9.pdf",
+     85,
+     "Total Employees (D+E)",
+     "16,735"
+    ],
+    "y:20250331": [
+     "ff8314b3-63f3-4741-871f-83b50a44e1d9.pdf",
+     96,
+     "Total Employees (Skill training table, previous FY column)",
+     "15,563"
+    ]
+   }
+  },
   {
    "name": "Number of Dealers/Distributors",
    "unit": "count",
@@ -231,6 +280,30 @@
    }
   },
   {
+   "name": "Worker Headcount (Total Workers)",
+   "unit": "count",
+   "kind": "level",
+   "y": {
+    "20250331": 3226.0,
+    "20260331": 3606.0
+   },
+   "q": {},
+   "src": {
+    "y:20260331": [
+     "ff8314b3-63f3-4741-871f-83b50a44e1d9.pdf",
+     85,
+     "Total Workers (F+G)",
+     "3,606"
+    ],
+    "y:20250331": [
+     "ff8314b3-63f3-4741-871f-83b50a44e1d9.pdf",
+     96,
+     "Total Workers (Skill training table, previous FY column)",
+     "3,226"
+    ]
+   }
+  },
+  {
    "name": "ANDA Filings (US)",
    "unit": "count",
    "kind": "flow",
@@ -244,6 +317,23 @@
      54,
      "The Company filed 2 ANDAs during the year",
      "2"
+    ]
+   }
+  },
+  {
+   "name": "Brazil Medical Representatives",
+   "unit": "count",
+   "kind": "level",
+   "y": {
+    "20260331": 320.0
+   },
+   "q": {},
+   "src": {
+    "y:20260331": [
+     "ff8314b3-63f3-4741-871f-83b50a44e1d9.pdf",
+     54,
+     "As of 31st March 2026, the total number of medical representatives stood at arou",
+     "320"
     ]
    }
   },
@@ -291,6 +381,40 @@
    },
    "src": {
     "q:20260331": [
+     "ff8314b3-63f3-4741-871f-83b50a44e1d9.pdf",
+     54,
+     "As of 31st March 2026, the field force stands at around 7,000 medical representa",
+     "7,000"
+    ]
+   }
+  },
+  {
+   "name": "Germany Generics Market Share",
+   "unit": "%",
+   "kind": "level",
+   "y": {
+    "20260331": 4.9
+   },
+   "q": {},
+   "src": {
+    "y:20260331": [
+     "ff8314b3-63f3-4741-871f-83b50a44e1d9.pdf",
+     54,
+     "market share of 4.9% (IQVIA MAT March 2026) in the German generics market",
+     "4.9"
+    ]
+   }
+  },
+  {
+   "name": "India Field Force (Medical Representatives)",
+   "unit": "count",
+   "kind": "level",
+   "y": {
+    "20260331": 7000.0
+   },
+   "q": {},
+   "src": {
+    "y:20260331": [
      "ff8314b3-63f3-4741-871f-83b50a44e1d9.pdf",
      54,
      "As of 31st March 2026, the field force stands at around 7,000 medical representa",
@@ -431,6 +555,23 @@
      54,
      "21 products under development to be filed over the next 3 years (doc period)",
      "21"
+    ]
+   }
+  },
+  {
+   "name": "USFDA Approved Facilities",
+   "unit": "count",
+   "kind": "level",
+   "y": {},
+   "q": {
+    "20260630": 8.0
+   },
+   "src": {
+    "q:20260630": [
+     "db7e5e01-7e8b-4e02-99b5-76d6a2b8ec1e.pdf",
+     20,
+     "of which 8 are USFDA approved (doc period)",
+     "8"
     ]
    }
   },
