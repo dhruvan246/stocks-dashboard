@@ -13,7 +13,7 @@ on:
     inputs:
       limit:
         description: "symbols to process this run"
-        default: "50"
+        default: "150"
 
 permissions:
   contents: write
@@ -42,7 +42,7 @@ jobs:
         env:
           ANTHROPIC_API_KEY: ${{ secrets.ANTHROPIC_API_KEY }}
           BSE_VISION_MODEL: claude-haiku-4-5
-        run: python3 -X utf8 scripts/fetch_annual_bscf.py --limit "${{ github.event.inputs.limit || 50 }}"
+        run: python3 -X utf8 scripts/fetch_annual_bscf.py --limit "${{ github.event.inputs.limit || 150 }}"
 
       - name: Commit ledger
         run: |
@@ -50,11 +50,11 @@ jobs:
           git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
           # reset-replay: stash this run's outputs, rebase onto latest main, copy back, commit (runbook §18)
           mkdir -p /tmp/abscf
-          for f in annual_bscf.json _annual_bscf_gate.json; do [ -f scripts/$f ] && cp scripts/$f /tmp/abscf/ || true; done
+          for f in annual_bscf.json annual_bscf_gate.json; do [ -f scripts/$f ] && cp scripts/$f /tmp/abscf/ || true; done
           for attempt in 1 2 3 4 5; do
             git fetch origin main -q && git reset --hard origin/main -q
-            for f in annual_bscf.json _annual_bscf_gate.json; do [ -f /tmp/abscf/$f ] && cp /tmp/abscf/$f scripts/$f || true; done
-            git add scripts/annual_bscf.json scripts/_annual_bscf_gate.json 2>/dev/null || true
+            for f in annual_bscf.json annual_bscf_gate.json; do [ -f /tmp/abscf/$f ] && cp /tmp/abscf/$f scripts/$f || true; done
+            git add scripts/annual_bscf.json scripts/annual_bscf_gate.json 2>/dev/null || true
             if git diff --cached --quiet; then echo "no new annual BS/CF this run"; exit 0; fi
             git commit -q -m "Annual BS/CF fill $(TZ=Asia/Kolkata date +'%Y-%m-%d %H:%M IST')"
             if git push origin HEAD:main; then echo "pushed (attempt #$attempt)"; exit 0; fi

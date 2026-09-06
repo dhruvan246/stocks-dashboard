@@ -34,7 +34,7 @@ import fitz  # PyMuPDF
 HERE = os.path.dirname(os.path.abspath(__file__))
 DOCS = os.path.join(HERE, "..", "docs")
 LEDGER = os.path.join(HERE, "annual_bscf.json")
-GATE_REPORT = os.path.join(HERE, "_annual_bscf_gate.json")
+GATE_REPORT = os.path.join(HERE, "annual_bscf_gate.json")   # TRACKED (not scripts/_*, which is gitignored) so resume persists in CI
 UA = "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/124 Safari/537.36"
 
 # ---- BSE fetch (narrow window + strCat=Result — BSE now rejects wide ranges) ------------------
