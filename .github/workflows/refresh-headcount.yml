@@ -1,0 +1,79 @@
+name: Employees — read headcount from annual reports
+
+# Fills the Employee-Headcount dashboard (docs/employees.html). For the survivorship-free Nifty 500
+# it downloads each company's newest annual reports from BSE and reads the headcount out of the BRSR
+# 'Employees and workers' table (permanent employees + permanent workers = on-roll), validating every
+# number structurally — a filing whose layout can't be parsed cleanly is left blank, never guessed.
+# Ledgers land in scripts/headcount/<SYM>.json; build_headcount.py bakes docs/employee_headcount.json
+# which the page reads. India does not report headcount quarterly, so this is annual (FY ending March).
+#
+# --skip-existing means each run advances only the not-yet-read names, so the first pass completes over
+# a few days (twice daily x ~150 names) and then settles into cheap no-op runs until next year's reports
+# land. Re-reading a name for a new fiscal year: delete its ledger (or run workflow_dispatch with symbols).
+
+on:
+  schedule:
+    - cron: "15 22 * * *"     # 03:45 IST — BSE quiet
+    - cron: "15 9 * * *"      # 14:45 IST — second daily pass during the first-fill
+  workflow_dispatch:
+    inputs:
+      symbols:
+        description: "Only these symbols (space-separated); empty = sweep the universe"
+        required: false
+        default: ""
+      limit:
+        description: "Max symbols to read this run"
+        required: false
+        default: "150"
+
+permissions:
+  contents: write
+
+concurrency:
+  group: refresh-headcount
+  cancel-in-progress: false
+
+jobs:
+  read:
+    runs-on: ubuntu-latest
+    timeout-minutes: 150
+    steps:
+      - uses: actions/checkout@v5
+
+      - uses: actions/setup-python@v6
+        with:
+          python-version: "3.11"
+
+      - name: Install PyMuPDF
+        run: pip install --quiet pymupdf
+
+      - name: Read annual reports
+        env:
+          HC_DOC_CACHE: /tmp/hc_docs
+        run: |
+          set -e
+          LIM="${{ github.event.inputs.limit || '150' }}"
+          SYMS="${{ github.event.inputs.symbols }}"
+          if [ -n "$SYMS" ]; then
+            python3 scripts/headcount_extract.py $SYMS --max-reports 4 --save
+          else
+            python3 scripts/headcount_extract.py --universe --skip-existing --limit "$LIM" --max-reports 4 --save
+          fi
+          python3 scripts/build_headcount.py
+
+      - name: Commit ledgers + baked payload
+        run: |
+          git config user.name  "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          rm -rf /tmp/hc_led && mkdir -p /tmp/hc_led && cp scripts/headcount/*.json /tmp/hc_led/ 2>/dev/null || true
+          for attempt in 1 2 3 4 5; do
+            git fetch origin main && git reset --hard origin/main
+            mkdir -p scripts/headcount && cp /tmp/hc_led/*.json scripts/headcount/ 2>/dev/null || true
+            python3 scripts/build_headcount.py
+            git add -- scripts/headcount/*.json docs/employee_headcount.json
+            if git diff --cached --quiet; then echo "no headcount changes"; exit 0; fi
+            git commit -q -m "Employees: headcount ledgers $(TZ=Asia/Kolkata date +'%Y-%m-%d %H:%M IST')"
+            if git push origin HEAD:main; then echo "pushed (attempt #$attempt)"; exit 0; fi
+            sleep $(( attempt * 5 ))
+          done
+          echo "headcount push failed after 5 attempts"; exit 1

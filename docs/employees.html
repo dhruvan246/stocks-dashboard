@@ -1,0 +1,199 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>STOCKSWORLD · Employee Headcount</title>
+<meta name="description" content="Annual employee headcount for Nifty-500 companies, survivorship-free, 2020 to date — read from each company's own annual report (BRSR) on BSE." />
+<script src="https://cdn.tailwindcss.com"></script>
+<link rel="stylesheet" href="./theme.css" />
+<script src="./theme.js"></script>
+<style>
+  body { font-feature-settings: "tnum" 1; }
+  .card{background:var(--surface,#fff);border:1px solid var(--border,#e2e8f0);border-radius:.75rem}
+  .pos{color:#15803d;font-weight:600}.neg{color:#b91c1c;font-weight:600}
+  html[data-theme="dark"] .pos{color:#6ee7b7}html[data-theme="dark"] .neg{color:#fca5a5}
+  .chip{display:inline-block;font-size:10px;font-weight:800;padding:2px 7px;border-radius:9999px;white-space:nowrap;letter-spacing:.02em}
+  .chip.now{background:#dcfce7;color:#15803d}.chip.left{background:#f1f5f9;color:#64748b}
+  html[data-theme="dark"] .chip.now{background:rgba(16,185,129,.18);color:#6ee7b7}
+  html[data-theme="dark"] .chip.left{background:rgba(148,163,184,.14);color:#cbd5e1}
+  .vbtn{padding:6px 12px;border-radius:9999px;font-size:12px;font-weight:700;cursor:pointer;user-select:none;
+        background:var(--surface-2,#f1f5f9);color:var(--text-muted,#334155);border:1px solid var(--border,#e2e8f0)}
+  .vbtn.on{background:var(--accent,#2563eb);color:#fff;border-color:var(--accent,#2563eb)}
+  select,input[type=text]{background:var(--surface,#fff);border:1px solid var(--border,#cbd5e1);border-radius:.5rem;font-size:13px;padding:7px 10px;color:inherit}
+  table{border-collapse:separate;border-spacing:0}
+  th,td{white-space:nowrap}
+  thead th{position:sticky;top:0;background:var(--surface,#fff);z-index:5;font-size:11px;text-transform:uppercase;letter-spacing:.04em;color:var(--text-muted,#64748b)}
+  tbody tr{cursor:pointer;border-top:1px solid var(--border,#eef2f7)}
+  tbody tr:hover{background:var(--surface-2,#f8fafc)}
+  .fy{ text-align:right; font-variant-numeric:tabular-nums }
+  .miss{color:var(--text-faint,#cbd5e1)}
+  .exp{background:var(--surface-2,#f8fafc)}
+  .tscroll{overflow-x:auto;-webkit-overflow-scrolling:touch}
+  .spark rect{fill:var(--accent,#6366f1)}
+  .subnote{font-size:12px;color:var(--text-muted,#64748b)}
+</style>
+</head>
+<body class="min-h-screen" style="background:var(--bg,#f8fafc);color:var(--text,#0f172a)">
+
+<header class="sticky top-0 z-40 backdrop-blur-md border-b" style="background:color-mix(in srgb, var(--surface,#fff) 90%, transparent);border-color:var(--border,#e2e8f0)">
+  <div class="max-w-screen-xl mx-auto px-4 h-14 flex items-center justify-between gap-4">
+    <a href="./index.html" class="flex items-center gap-2.5 shrink-0 group">
+      <span class="w-9 h-9 rounded-xl bg-gradient-to-br from-blue-600 via-indigo-600 to-violet-600 text-white flex items-center justify-center font-extrabold text-[13px] shadow-md group-hover:scale-105 transition">SW</span>
+      <span class="font-bold tracking-tight hidden sm:block">STOCKS<span class="text-indigo-600">WORLD</span></span>
+    </a>
+    <nav></nav>
+  </div>
+</header>
+
+<main class="max-w-screen-xl mx-auto px-4 py-6">
+  <div class="mb-4">
+    <h1 class="text-xl sm:text-2xl font-extrabold tracking-tight">Employee Headcount <span class="font-semibold text-base" style="color:var(--text-muted,#94a3b8)">· how many people each company employs</span></h1>
+    <p class="subnote mt-1 max-w-3xl">Permanent on-roll employees for the <b>Nifty-500</b>, survivorship-free (includes names that have since left the index), read from each company's own <b>annual report / BRSR</b> filed on BSE. <b>Annual</b> figures (fiscal year ending March) — India does not report headcount quarterly. <span id="updated"></span></p>
+  </div>
+
+  <div id="status" class="subnote py-10 text-center">Loading headcount data…</div>
+
+  <div id="content" class="hidden">
+    <!-- coverage + controls -->
+    <div class="card p-3 mb-4">
+      <div class="flex flex-wrap items-center gap-2 justify-between">
+        <div class="flex flex-wrap items-center gap-2">
+          <input id="q" type="text" placeholder="Search company…" autocomplete="off" class="w-44" />
+          <select id="fSector"><option value="">All sectors</option></select>
+          <select id="fMember">
+            <option value="all">All (survivorship-free)</option>
+            <option value="now">In Nifty-500 now</option>
+            <option value="left">Has left Nifty-500</option>
+          </select>
+        </div>
+        <div class="flex flex-wrap items-center gap-2">
+          <span class="subnote hidden sm:inline">Metric</span>
+          <span id="mEmp" class="vbtn on">On-roll (permanent)</span>
+          <span id="mTot" class="vbtn">Total workforce</span>
+          <select id="fSort">
+            <option value="latest">Largest workforce</option>
+            <option value="growth">Fastest growing (YoY)</option>
+            <option value="shrink">Shrinking (YoY)</option>
+            <option value="name">Name (A–Z)</option>
+          </select>
+        </div>
+      </div>
+      <div id="cov" class="subnote mt-2"></div>
+    </div>
+
+    <div class="card tscroll">
+      <table class="w-full text-sm">
+        <thead><tr id="head"></tr></thead>
+        <tbody id="rows"></tbody>
+      </table>
+    </div>
+    <p class="subnote mt-3" id="foot"></p>
+  </div>
+</main>
+
+<script>
+const IN = n => (n==null ? '' : Number(n).toLocaleString('en-IN'));
+const state = { metric:'emp', q:'', sector:'', member:'all', sort:'latest' };
+let DATA=null, FYS=[];
+
+function sparkline(vals){
+  const xs = FYS.map(fy=>vals[fy]).map(v=> v==null?null:v);
+  const present = xs.filter(v=>v!=null);
+  if(present.length<2) return '';
+  const mx=Math.max(...present), mn=Math.min(...present), rng=(mx-mn)||1;
+  const w=7,g=2,h=22;
+  let bars='';
+  xs.forEach((v,i)=>{ if(v==null) return;
+    const bh = 4 + 16*(v-mn)/rng;
+    bars += `<rect x="${i*(w+g)}" y="${h-bh}" width="${w}" height="${bh}" rx="1"/>`;
+  });
+  return `<svg class="spark" width="${FYS.length*(w+g)}" height="${h}" viewBox="0 0 ${FYS.length*(w+g)} ${h}">${bars}</svg>`;
+}
+
+function seriesOf(r){ return state.metric==='emp' ? r.emp : (Object.keys(r.total||{}).length? r.total : r.emp); }
+
+function yoyOf(r){
+  const s=seriesOf(r); const ys=Object.keys(s).map(Number).sort((a,b)=>a-b);
+  if(ys.length<2) return null;
+  const a=s[ys[ys.length-2]], b=s[ys[ys.length-1]];
+  return (a&&b)? (b-a)/a : null;
+}
+
+function render(){
+  const rowsEl=document.getElementById('rows'), headEl=document.getElementById('head');
+  headEl.innerHTML = `<th class="text-left px-3 py-2">#</th><th class="text-left px-3 py-2">Company</th>`
+    + FYS.map(fy=>`<th class="fy px-2 py-2">FY${String(fy).slice(2)}</th>`).join('')
+    + `<th class="fy px-3 py-2">YoY</th><th class="px-3 py-2 text-center">Trend</th>`;
+
+  let rows = DATA.rows.filter(r=>Object.keys(r.emp).length>0);
+  if(state.q){ const q=state.q.toLowerCase(); rows=rows.filter(r=>r.name.toLowerCase().includes(q)||r.sym.toLowerCase().includes(q)); }
+  if(state.sector) rows=rows.filter(r=>r.sector===state.sector);
+  if(state.member==='now') rows=rows.filter(r=>r.now);
+  if(state.member==='left') rows=rows.filter(r=>!r.now);
+
+  const latest=r=>{const s=seriesOf(r);const ys=Object.keys(s).map(Number);return ys.length?s[Math.max(...ys)]:0;};
+  if(state.sort==='latest') rows.sort((a,b)=>latest(b)-latest(a));
+  else if(state.sort==='name') rows.sort((a,b)=>a.name.localeCompare(b.name));
+  else if(state.sort==='growth') rows.sort((a,b)=>(yoyOf(b)??-9)-(yoyOf(a)??-9));
+  else if(state.sort==='shrink') rows.sort((a,b)=>(yoyOf(a)??9)-(yoyOf(b)??9));
+
+  rowsEl.innerHTML = rows.map((r,i)=>{
+    const s=seriesOf(r);
+    const cells = FYS.map(fy=> s[fy]!=null ? `<td class="fy px-2 py-2">${IN(s[fy])}</td>` : `<td class="fy px-2 py-2 miss">·</td>`).join('');
+    const y=yoyOf(r);
+    const yc = y==null?'<td class="fy px-3 py-2 miss">·</td>':`<td class="fy px-3 py-2 ${y>=0?'pos':'neg'}">${(y*100).toFixed(1)}%</td>`;
+    const badge = r.now?'<span class="chip now">N500</span>':'<span class="chip left">left</span>';
+    return `<tr data-i="${i}">
+      <td class="px-3 py-2 miss">${i+1}</td>
+      <td class="px-3 py-2"><div class="flex items-center gap-2"><span class="font-semibold">${r.name}</span> ${badge}</div>
+          <div class="subnote">${r.sector||''}</div></td>
+      ${cells}${yc}
+      <td class="px-3 py-2 text-center">${sparkline(s)}</td></tr>`;
+  }).join('') || `<tr><td colspan="99" class="px-3 py-8 text-center subnote">No companies match.</td></tr>`;
+
+  // row expand
+  [...rowsEl.querySelectorAll('tr[data-i]')].forEach(tr=>{
+    tr.onclick=()=>{
+      const r=rows[+tr.dataset.i]; const nx=tr.nextElementSibling;
+      if(nx && nx.classList.contains('exp')){ nx.remove(); return; }
+      const det=document.createElement('tr'); det.className='exp';
+      const yrs=Object.keys(r.emp).map(Number).sort((a,b)=>b-a);
+      const lines=yrs.map(fy=>{
+        const mf=r.mf&&r.mf[fy]; const tot=r.total&&r.total[fy];
+        return `<div class="flex flex-wrap gap-x-4 gap-y-1 py-0.5">
+          <span style="min-width:64px" class="font-semibold">FY${String(fy).slice(2)}</span>
+          <span>on-roll <b>${IN(r.emp[fy])}</b></span>
+          ${tot?`<span class="subnote">total workforce ${IN(tot)}</span>`:''}
+          ${mf?`<span class="subnote">♂ ${IN(mf[0])} · ♀ ${IN(mf[1])}</span>`:''}
+          <span class="subnote">src: ${r.src&&r.src[fy]||'—'}</span></div>`;
+      }).join('');
+      det.innerHTML=`<td colspan="99" class="px-4 py-3">
+        <div class="text-xs font-bold uppercase tracking-wide mb-1" style="color:var(--text-muted)">${r.name} · ${r.sym} · BSE headcount by year</div>
+        ${lines}
+        <div class="subnote mt-1">On-roll = permanent employees + permanent workers. Total workforce includes contractual/other. Source: annual report on BSE (page &amp; method shown).</div></td>`;
+      tr.after(det);
+    };
+  });
+  document.getElementById('cov').innerHTML =
+    `Showing <b>${rows.length}</b> companies · dataset covers <b>${DATA.covered}</b> of ${DATA.universe} survivorship-free Nifty-500 names`
+    + ` · <span class="subnote">the rest are being read from their filings</span>`;
+}
+
+fetch('./employee_headcount.json?v='+Date.now()).then(r=>r.json()).then(d=>{
+  DATA=d; FYS=d.fys;
+  document.getElementById('status').classList.add('hidden');
+  document.getElementById('content').classList.remove('hidden');
+  document.getElementById('updated').textContent = 'Updated '+ (d.updated||'');
+  document.getElementById('foot').innerHTML = d.basis + ' &nbsp;·&nbsp; ' + (d.note||'');
+  const secs=[...new Set(d.rows.filter(r=>Object.keys(r.emp).length).map(r=>r.sector).filter(Boolean))].sort();
+  document.getElementById('fSector').insertAdjacentHTML('beforeend', secs.map(s=>`<option>${s}</option>`).join(''));
+  const bind=(id,fn)=>document.getElementById(id).addEventListener('input',e=>{fn(e.target.value);render();});
+  bind('q',v=>state.q=v); bind('fSector',v=>state.sector=v); bind('fMember',v=>state.member=v); bind('fSort',v=>state.sort=v);
+  document.getElementById('mEmp').onclick=()=>{state.metric='emp';mEmp.classList.add('on');mTot.classList.remove('on');render();};
+  document.getElementById('mTot').onclick=()=>{state.metric='tot';mTot.classList.add('on');mEmp.classList.remove('on');render();};
+  render();
+}).catch(e=>{ document.getElementById('status').textContent='Could not load headcount data: '+e; });
+</script>
+</body>
+</html>
