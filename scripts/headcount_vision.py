@@ -104,8 +104,8 @@ WORKERS section:
   wrk_total = row "Total workers (F + G)", Total (A)
 
 A cell printed as "-", "NA", "Nil", "0" for a whole section, or blank -> null. Every value is an INTEGER
-count of people — never a money amount, never a percentage (ignore the % columns). If these images do not
-contain that table, or are not %(company)s, set ok=false and null everything. Return ONLY the JSON."""
+count of people — never a money amount, never a percentage (ignore the percent columns). If these images
+do not contain that table, or are not %(company)s, set ok=false and null everything. Return ONLY the JSON."""
 
 
 def _int(v):
