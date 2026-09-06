@@ -6,7 +6,8 @@
    "stored_fii": 0.0714,
    "nse_dii": 1.9841,
    "stored_dii": 1.9841,
-   "note": "NSE archived shareholdingdetails.jsp disagrees with the stored (BSE-derived) cell beyond 0.11pp; disagreement names no side \u2014 stored cell untouched, adjudicate per document (GDR/FDI-in-FII class suspected for SBIN/BAJFINANCE; ELDERPHARM Jun-2004 stored 0.00 came from the no-institutions-block rule of s127g and the NSE page prints FIIs 30.23 \u2014 that rule needs a second look)"
+   "note": "NSE archived shareholdingdetails.jsp disagrees with the stored (BSE-derived) cell beyond 0.11pp; disagreement names no side \u2014 stored cell untouched, adjudicate per document (GDR/FDI-in-FII class suspected for SBIN/BAJFINANCE; ELDERPHARM Jun-2004 stored 0.00 came from the no-institutions-block rule of s127g and the NSE page prints FIIs 30.23 \u2014 that rule needs a second look)",
+   "verdict": "STORED CORRECT \u2014 ADR/GDR MISLABEL (same class as ELDERPHARM). Same filing (grand 66,160,200 both). BSE files GDR 50,000,000 (75.57%) under Others \u2192 Any Other; NSE folds it into FIIs (NSE FIIs 50,047,250 = 47,250 real FII + 50,000,000 GDR). Store fii 0.07 excludes the GDR per convention and is right; NSE mislabels the GDR block as FIIs. dii agrees."
   },
   "ELDERPHARM|2004-06-30": {
    "nse_fii": 30.2338,
@@ -48,35 +49,40 @@
    "stored_fii": 0.0,
    "nse_dii": 13.9114,
    "stored_dii": 16.2481,
-   "note": "NSE archived shareholdingdetails.jsp disagrees with the stored (BSE-derived) cell beyond 0.11pp; disagreement names no side \u2014 stored cell untouched, adjudicate per document (GDR/FDI-in-FII class suspected for SBIN/BAJFINANCE; ELDERPHARM Jun-2004 stored 0.00 came from the no-institutions-block rule of s127g and the NSE page prints FIIs 30.23 \u2014 that rule needs a second look)"
+   "note": "NSE archived shareholdingdetails.jsp disagrees with the stored (BSE-derived) cell beyond 0.11pp; disagreement names no side \u2014 stored cell untouched, adjudicate per document (GDR/FDI-in-FII class suspected for SBIN/BAJFINANCE; ELDERPHARM Jun-2004 stored 0.00 came from the no-institutions-block rule of s127g and the NSE page prints FIIs 30.23 \u2014 that rule needs a second look)",
+   "verdict": "STORED WRONG \u2014 WRONG-ENTITY DEFECT, HEALED. The stored VXL series (2002-12..2005-03, provenance bseaspx:517399, wps2d ledger) is VXL Instruments Ltd (517399); the N500 member NSE symbol VXL is Birla VXL Ltd (later Digjam) = BSE 503796. Both the 503796 BSE page and the NSE shareholdingdetails.jsp page agree (prom 43.93, fii 3.08, dii 13.91; grand 65,071,465) against the stored VXL-Instruments cell (prom 47.48, fii 0.00, dii 16.25). All 9 cells healed to 503796 via scripts/shp_cell_fix.json; VXL pinned to 503796 in _shp_scripcode_override.json. Runbook \u00a7127m."
   },
   "ABAN|2004-03-31": {
    "nse_fii": 8.7366,
    "stored_fii": 6.7006,
    "nse_dii": 20.9907,
    "stored_dii": 3.7723,
-   "note": "NSE archived shareholdingdetails.jsp disagrees with the stored (BSE-derived) cell beyond 0.11pp; disagreement names no side \u2014 stored cell untouched, adjudicate per document (GDR/FDI-in-FII class suspected for SBIN/BAJFINANCE; ELDERPHARM Jun-2004 stored 0.00 came from the no-institutions-block rule of s127g and the NSE page prints FIIs 30.23 \u2014 that rule needs a second look)"
+   "note": "NSE archived shareholdingdetails.jsp disagrees with the stored (BSE-derived) cell beyond 0.11pp; disagreement names no side \u2014 stored cell untouched, adjudicate per document (GDR/FDI-in-FII class suspected for SBIN/BAJFINANCE; ELDERPHARM Jun-2004 stored 0.00 came from the no-institutions-block rule of s127g and the NSE page prints FIIs 30.23 \u2014 that rule needs a second look)",
+   "verdict": "STORED KEPT \u2014 RESTATED VINTAGE (not the ADR/GDR class). The two documents are DIFFERENT snapshots: BSE aspx 523204 q41 (as-filed 31 Mar 2004) has grand total 7,377,319 shares; the NSE capture (taken 2005) shows a restated 42,381,675-share base and a wholly different composition (Foreign Promoter 52.11 vs BSE Indian 34.86 + Foreign 22.58; Banks 15.77 vs 0.31). ABAN had corporate actions between; the NSE page back-dates the post-action structure. The point-in-time store keeps the BSE as-filed cell (prom 57.5, fii 6.70, dii 3.77). NSE not usable here."
   },
   "CEAT|2004-06-30": {
    "nse_fii": 0.033,
    "stored_fii": 1.04,
    "nse_dii": 24.4585,
    "stored_dii": 24.46,
-   "note": "NSE archived shareholdingdetails.jsp disagrees with the stored (BSE-derived) cell beyond 0.11pp; disagreement names no side \u2014 stored cell untouched, adjudicate per document (GDR/FDI-in-FII class suspected for SBIN/BAJFINANCE; ELDERPHARM Jun-2004 stored 0.00 came from the no-institutions-block rule of s127g and the NSE page prints FIIs 30.23 \u2014 that rule needs a second look)"
+   "note": "NSE archived shareholdingdetails.jsp disagrees with the stored (BSE-derived) cell beyond 0.11pp; disagreement names no side \u2014 stored cell untouched, adjudicate per document (GDR/FDI-in-FII class suspected for SBIN/BAJFINANCE; ELDERPHARM Jun-2004 stored 0.00 came from the no-institutions-block rule of s127g and the NSE page prints FIIs 30.23 \u2014 that rule needs a second look)",
+   "verdict": "STORED KEPT \u2014 same CEAT FII-vs-NRI cross-exchange classification (BSE FII 364,892 vs NSE 11,618; the difference sits in NRI/OCB). dii identical."
   },
   "CEAT|2004-09-30": {
    "nse_fii": 0.0332,
    "stored_fii": 1.04,
    "nse_dii": 22.0471,
    "stored_dii": 22.05,
-   "note": "NSE archived shareholdingdetails.jsp disagrees with the stored (BSE-derived) cell beyond 0.11pp; disagreement names no side \u2014 stored cell untouched, adjudicate per document (GDR/FDI-in-FII class suspected for SBIN/BAJFINANCE; ELDERPHARM Jun-2004 stored 0.00 came from the no-institutions-block rule of s127g and the NSE page prints FIIs 30.23 \u2014 that rule needs a second look)"
+   "note": "NSE archived shareholdingdetails.jsp disagrees with the stored (BSE-derived) cell beyond 0.11pp; disagreement names no side \u2014 stored cell untouched, adjudicate per document (GDR/FDI-in-FII class suspected for SBIN/BAJFINANCE; ELDERPHARM Jun-2004 stored 0.00 came from the no-institutions-block rule of s127g and the NSE page prints FIIs 30.23 \u2014 that rule needs a second look)",
+   "verdict": "STORED KEPT \u2014 same CEAT FII-vs-NRI cross-exchange classification. dii identical."
   },
   "CEAT|2004-03-31": {
    "nse_fii": 0.6685,
    "stored_fii": 1.67,
    "nse_dii": 24.552,
    "stored_dii": 24.55,
-   "note": "NSE archived shareholdingdetails.jsp disagrees with the stored (BSE-derived) cell beyond 0.11pp; disagreement names no side \u2014 stored cell untouched, adjudicate per document (GDR/FDI-in-FII class suspected for SBIN/BAJFINANCE; ELDERPHARM Jun-2004 stored 0.00 came from the no-institutions-block rule of s127g and the NSE page prints FIIs 30.23 \u2014 that rule needs a second look)"
+   "note": "NSE archived shareholdingdetails.jsp disagrees with the stored (BSE-derived) cell beyond 0.11pp; disagreement names no side \u2014 stored cell untouched, adjudicate per document (GDR/FDI-in-FII class suspected for SBIN/BAJFINANCE; ELDERPHARM Jun-2004 stored 0.00 came from the no-institutions-block rule of s127g and the NSE page prints FIIs 30.23 \u2014 that rule needs a second look)",
+   "verdict": "STORED KEPT \u2014 CROSS-EXCHANGE FILER CLASSIFICATION (FII vs NRI/OCB). Same filing (grand 35,213,320 both). BSE files 588,670 shares as FIIs; NSE files 235,396 as FIIs and puts the remaining 353,274 under NRI/OCB (BSE FII \u2212 NSE FII = NSE NRI \u2212 BSE NRI = 353,274 exactly). dii identical (24.55). The ~1pp fii gap is the filer classing the same block differently on the two exchanges; neither is authoritative. Store keeps its BSE reading."
   },
   "SBIN|2002-06-30": {
    "nse_fii": 19.361,
@@ -92,35 +98,40 @@
    "stored_fii": 0.0151,
    "nse_dii": 1.4806,
    "stored_dii": 0.9253,
-   "note": "NSE archived shareholdingdetails.jsp disagrees with the stored (BSE-derived) cell beyond 0.11pp; disagreement names no side \u2014 stored cell untouched, adjudicate per document (GDR/FDI-in-FII class suspected for SBIN/BAJFINANCE; ELDERPHARM Jun-2004 stored 0.00 came from the no-institutions-block rule of s127g and the NSE page prints FIIs 30.23 \u2014 that rule needs a second look)"
+   "note": "NSE archived shareholdingdetails.jsp disagrees with the stored (BSE-derived) cell beyond 0.11pp; disagreement names no side \u2014 stored cell untouched, adjudicate per document (GDR/FDI-in-FII class suspected for SBIN/BAJFINANCE; ELDERPHARM Jun-2004 stored 0.00 came from the no-institutions-block rule of s127g and the NSE page prints FIIs 30.23 \u2014 that rule needs a second look)",
+   "verdict": "STORED KEPT \u2014 CROSS-EXCHANGE SUB-BREAKDOWN. Same filing (grand 60,369,554 both), but NSE moves 335,307 shares from Others into the institutional block (BSE inst 0.94% vs NSE 1.50%; the exact 335,307 also separates the two Others sub-totals). fii agrees (0.02). ~0.55pp dii, a filer sub-classification difference; store keeps BSE."
   },
   "VOLTAS|2002-12-31": {
    "nse_fii": 0.3184,
    "stored_fii": 0.3184,
    "nse_dii": 25.8547,
    "stored_dii": 23.1994,
-   "note": "NSE archived shareholdingdetails.jsp disagrees with the stored (BSE-derived) cell beyond 0.11pp; disagreement names no side \u2014 stored cell untouched, adjudicate per document (GDR/FDI-in-FII class suspected for SBIN/BAJFINANCE; ELDERPHARM Jun-2004 stored 0.00 came from the no-institutions-block rule of s127g and the NSE page prints FIIs 30.23 \u2014 that rule needs a second look)"
+   "note": "NSE archived shareholdingdetails.jsp disagrees with the stored (BSE-derived) cell beyond 0.11pp; disagreement names no side \u2014 stored cell untouched, adjudicate per document (GDR/FDI-in-FII class suspected for SBIN/BAJFINANCE; ELDERPHARM Jun-2004 stored 0.00 came from the no-institutions-block rule of s127g and the NSE page prints FIIs 30.23 \u2014 that rule needs a second look)",
+   "verdict": "STORED CORRECT \u2014 GOVERNMENT-HOLDING CONVENTION. Same filing (grand 33,088,474 both). The \"Governer of Andhra Pradesh\" holding (878,603 = 2.66%) is a state-government block: BSE files it under Others \u2192 Any Other (excluded from dii, correct \u2014 the store keeps government in its own slot, not dii); NSE folds it into its \"Banks/FIs/Insurance/Central-State Govt\" lump (NSE dii 25.85 vs stored 23.20). fii agrees (0.32). Store convention-correct."
   },
   "VOLTAS|2003-03-31": {
    "nse_fii": 0.3184,
    "stored_fii": 0.3184,
    "nse_dii": 26.679,
    "stored_dii": 24.0237,
-   "note": "NSE archived shareholdingdetails.jsp disagrees with the stored (BSE-derived) cell beyond 0.11pp; disagreement names no side \u2014 stored cell untouched, adjudicate per document (GDR/FDI-in-FII class suspected for SBIN/BAJFINANCE; ELDERPHARM Jun-2004 stored 0.00 came from the no-institutions-block rule of s127g and the NSE page prints FIIs 30.23 \u2014 that rule needs a second look)"
+   "note": "NSE archived shareholdingdetails.jsp disagrees with the stored (BSE-derived) cell beyond 0.11pp; disagreement names no side \u2014 stored cell untouched, adjudicate per document (GDR/FDI-in-FII class suspected for SBIN/BAJFINANCE; ELDERPHARM Jun-2004 stored 0.00 came from the no-institutions-block rule of s127g and the NSE page prints FIIs 30.23 \u2014 that rule needs a second look)",
+   "verdict": "STORED CORRECT \u2014 same VOLTAS state-government-holding convention (Governer of A.P. 878,603 = 2.66% in Others on BSE, in the institutional lump on NSE). fii agrees."
   },
   "MAARSOFTW|2003-06-30": {
    "nse_fii": 0.3343,
    "stored_fii": 0.3343,
    "nse_dii": 10.2869,
    "stored_dii": 9.1363,
-   "note": "NSE archived shareholdingdetails.jsp disagrees with the stored (BSE-derived) cell beyond 0.11pp; disagreement names no side \u2014 stored cell untouched, adjudicate per document (GDR/FDI-in-FII class suspected for SBIN/BAJFINANCE; ELDERPHARM Jun-2004 stored 0.00 came from the no-institutions-block rule of s127g and the NSE page prints FIIs 30.23 \u2014 that rule needs a second look)"
+   "note": "NSE archived shareholdingdetails.jsp disagrees with the stored (BSE-derived) cell beyond 0.11pp; disagreement names no side \u2014 stored cell untouched, adjudicate per document (GDR/FDI-in-FII class suspected for SBIN/BAJFINANCE; ELDERPHARM Jun-2004 stored 0.00 came from the no-institutions-block rule of s127g and the NSE page prints FIIs 30.23 \u2014 that rule needs a second look)",
+   "verdict": "STORED KEPT \u2014 CROSS-EXCHANGE SUB-BREAKDOWN (BSE inst 9.47% vs NSE 10.62%; MF 1,092,330 vs 1,207,868, Banks 219,657 vs 269,357). fii agrees (0.33). ~1.15pp dii; store keeps BSE."
   },
   "RSSOFTWARE|2004-03-31": {
    "nse_fii": 0.0366,
    "stored_fii": 0.0366,
    "nse_dii": 1.4711,
    "stored_dii": 0.4496,
-   "note": "NSE archived shareholdingdetails.jsp disagrees with the stored (BSE-derived) cell beyond 0.11pp; disagreement names no side \u2014 stored cell untouched, adjudicate per document (GDR/FDI-in-FII class suspected for SBIN/BAJFINANCE; ELDERPHARM Jun-2004 stored 0.00 came from the no-institutions-block rule of s127g and the NSE page prints FIIs 30.23 \u2014 that rule needs a second look)"
+   "note": "NSE archived shareholdingdetails.jsp disagrees with the stored (BSE-derived) cell beyond 0.11pp; disagreement names no side \u2014 stored cell untouched, adjudicate per document (GDR/FDI-in-FII class suspected for SBIN/BAJFINANCE; ELDERPHARM Jun-2004 stored 0.00 came from the no-institutions-block rule of s127g and the NSE page prints FIIs 30.23 \u2014 that rule needs a second look)",
+   "verdict": "STORED KEPT \u2014 PROMOTER-vs-BANK CROSS-EXCHANGE CLASSIFICATION. Same filing (grand 4,915,500 both). 50,210 shares are Indian Promoter on BSE and Banks/FI on NSE (BSE prom \u2212 NSE prom = NSE Banks \u2212 BSE Banks = 50,210 exactly). fii agrees (0.04). ~1pp dii; store keeps BSE."
   }
  },
  "holds": [
@@ -209,5 +220,6 @@
   "LLOYDFIN|None|20060719024150": "absent: no as-on date",
   "LLOYDFIN|None|20060719024215": "absent: no as-on date"
  },
- "_adjudication_2026-09-06": "NSE shareholdingdetails.jsp files ADR/GDR (depository receipts) under the \"FIIs\" heading; the BSE-derived store excludes DR from the fii slot per the project convention (excl regex, \u00a7127g, \u00a722 \u2014 a DR block folding into FII is a RECLASSIFICATION, not a stake change). Every disagreement whose BSE page carries an ADR/GDR row is therefore the STORE being right and NSE mislabelling \u2014 confirmed on ELDERPHARM 2004-06 and SBIN 2002. This is a systematic taxonomy difference in the NSE route, not random error; it does NOT lower confidence in the 291 fills (those are quarters the store had NO cell, so no ADR/GDR double-count is possible \u2014 and the overlap gate already kept these 16 out). OPEN CONVENTION QUESTION for the user: a company holding ~30% foreign via ADR/GDR reads fii=0 while the same money reads fii~24% once converted to direct FII (ELDERPHARM 2004-06 vs 2005-03) \u2014 a fiiChgPp discontinuity that is faithful per-cell but not a real inflow. Folding DR into fii would be a site-wide convention change (same class as the Sep-2022 DR dissolution, \u00a722) \u2014 not made here."
+ "_adjudication_2026-09-06": "NSE shareholdingdetails.jsp files ADR/GDR (depository receipts) under the \"FIIs\" heading; the BSE-derived store excludes DR from the fii slot per the project convention (excl regex, \u00a7127g, \u00a722 \u2014 a DR block folding into FII is a RECLASSIFICATION, not a stake change). Every disagreement whose BSE page carries an ADR/GDR row is therefore the STORE being right and NSE mislabelling \u2014 confirmed on ELDERPHARM 2004-06 and SBIN 2002. This is a systematic taxonomy difference in the NSE route, not random error; it does NOT lower confidence in the 291 fills (those are quarters the store had NO cell, so no ADR/GDR double-count is possible \u2014 and the overlap gate already kept these 16 out). OPEN CONVENTION QUESTION for the user: a company holding ~30% foreign via ADR/GDR reads fii=0 while the same money reads fii~24% once converted to direct FII (ELDERPHARM 2004-06 vs 2005-03) \u2014 a fiiChgPp discontinuity that is faithful per-cell but not a real inflow. Folding DR into fii would be a site-wide convention change (same class as the Sep-2022 DR dissolution, \u00a722) \u2014 not made here.",
+ "_audit_2026-09-07": "All 16 \u00a7127k disagreements adjudicated by reading BOTH documents (BSE aspx + NSE shareholdingdetails.jsp). Classes: (a) ADR/GDR mislabel \u2014 NSE files depository receipts under FIIs, store excludes per convention, STORE RIGHT (ELDERPHARM, SBIN\u00d73, MAARSOFTW 2003-12); (b) state-government holding NSE folds into its institutional lump but the store keeps in the govt slot, STORE convention-correct (VOLTAS\u00d72); (c) cross-exchange filer classification of a boundary block \u2014 FII vs NRI/OCB (CEAT\u00d73), promoter vs bank (RSSOFTWARE), or a different institutional sub-breakdown (HLVLTD, MAARSOFTW 2003-06) \u2014 small (<1.2pp), neither exchange authoritative, STORE KEEPS ITS BSE READING; (d) restated vintage \u2014 the NSE capture back-dates a post-corporate-action structure onto an old quarter (ABAN, grand total 7.38M as-filed vs 42.38M in the 2005 capture), STORE KEEPS as-filed; (e) ONE genuine defect \u2014 VXL is the wrong entity (VXL Instruments 517399 instead of Birla VXL 503796), HEALED. So of 16 disagreements, 15 confirm the store and 1 was a wrong-entity defect now fixed; none required accepting an NSE value over the store."
 }

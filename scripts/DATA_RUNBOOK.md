@@ -14699,6 +14699,42 @@ out). BAJFINANCE 2006-03 is a DIFFERENT mechanism (no DR row; §127g Foreign-FI 
 That is a faithful per-cell reading but a `fiiChgPp` discontinuity that is not a real inflow. Folding DR into fii would
 be a site-wide convention change (identical in kind to the 2022 DR dissolution) and is left to the user.
 
+### 127m. ★★ The §127k NSE-route disagreements audited to the last cell — 15 confirm the store, 1 was a wrong-entity defect (VXL) now healed  (2026-09-07)
+
+Read BOTH documents (BSE aspx + NSE `shareholdingdetails.jsp`) for every one of the 16 overlap disagreements
+(>0.11pp) the §127k harvest journalled in `scripts/shp_nse_shpdetails_open.json`. Verdicts recorded per cell.
+Five distinct classes, and in only ONE was the store wrong:
+
+- **ADR/GDR mislabel (STORE RIGHT) — ELDERPHARM 2004-06, SBIN 2002 ×3, MAARSOFTW 2003-12.** NSE files depository
+  receipts under the "FIIs" heading; the store excludes DR from fii per convention (§127l). MAARSOFTW 2003-12 is
+  the textbook case: GDR 50,000,000 (75.57%) under Others on BSE, folded into NSE's FIIs line as
+  50,047,250 = 47,250 real FII + 50,000,000 GDR.
+- **State-government holding (STORE convention-correct) — VOLTAS 2002-12, 2003-03.** The "Governer of Andhra
+  Pradesh" block (878,603 = 2.66%) is filed under Others on BSE (kept out of dii — government has its own slot);
+  NSE's institutional lump explicitly includes "Central/State Govt", so its dii runs 2.66pp higher.
+- **Cross-exchange filer classification of a boundary block (STORE KEEPS BSE; neither authoritative, <1.2pp) —
+  CEAT 2004 ×3** (353,274 shares are FIIs on BSE, NRI/OCB on NSE — the difference reconciles to the share),
+  **RSSOFTWARE 2004-03** (50,210 shares promoter on BSE, Banks/FI on NSE), **HLVLTD 2002-09 / MAARSOFTW 2003-06**
+  (a different institutional sub-breakdown of the same total). fii or dii agrees on the untouched slot.
+- **Restated vintage (STORE KEEPS as-filed) — ABAN 2004-03.** The two documents are different snapshots: BSE
+  as-filed grand total 7,377,319 shares vs the NSE capture (taken 2005) at 42,381,675 with a wholly different
+  composition — the NSE page back-dates a post-corporate-action structure. The point-in-time store wants the
+  contemporaneous BSE filing.
+- **★ Wrong entity (STORE WRONG — HEALED) — VXL 2002-12..2005-03 (9 cells).** The stored VXL series (provenance
+  `bseaspx:517399`, wps2d ledger) is **VXL Instruments Ltd (517399)**; the Nifty 500 member NSE symbol VXL is
+  **Birla VXL Ltd (later Digjam) = BSE 503796**. Both the 503796 BSE page and the NSE page agree (prom 43.93,
+  fii 3.08, dii 13.91; grand total 65,071,465) against the stored VXL-Instruments cell (prom 47.48, fii 0.00,
+  dii 16.25). Two readers vs the wrong one — a name-prefix resolution ("VXL" → VXLINSTR) that skipped the entity
+  check. **Healed:** all 9 cells corrected to 503796 in `scripts/shp_cell_fix.json` (the per-cell override that
+  outranks the fill ledgers, so the committed wps2d cells cannot re-poison them); VXL pinned to 503796 in
+  `_shp_scripcode_override.json` so future frontiers resolve the right company. `--apply-ledgers` twice identical;
+  0 cells added/removed (value-only heal, so coverage presence counts are unchanged).
+
+**Bottom line: the NSE route never overturned a store value — 15 of 16 disagreements are the store being right
+(taxonomy/classification/vintage differences in NSE's looser era template), and the 16th was our own
+wrong-entity resolution, now fixed.** Lesson (memory feedback-row-identity-proof): a symbol-prefix name match is
+not identity; confirm the entity by share capital / grand total before trusting a resolved scripcode.
+
 ## 128. ★★★ STD-PAT 2002-07 EXECUTED — 229 "missing" cells were HELD under a retired key the coverage builder could not see; four gated routes landed 1,538 cells; the NSE results ARCHIVE reads standalone PAT with the page's own EPS identity  (2026-09-05)
 
 **Trigger:** execute the std-PAT packages of §127 / `PLAN_STDPAT_SHP_COVERAGE_2002.md` (plan §8 = state table).
