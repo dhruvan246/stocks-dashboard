@@ -10,7 +10,8 @@ name: Employees — vision fallback for imaged BRSR tables
 
 on:
   schedule:
-    - cron: "45 20 * * *"      # 02:15 IST — after the text fill, before the day's other jobs
+    - cron: "20 7 * * *"       # ~12:50 IST — right after Gemini's daily free-tier quota resets
+    #                            (00:00 PT), in the window before the KPI reader / 14:00 IST job drains it
   workflow_dispatch:
     inputs:
       symbols:
