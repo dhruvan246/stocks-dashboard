@@ -14673,6 +14673,31 @@ attempts each — resumable, the fetcher skips files on disk) → 2,455 pages pa
 disagree (99.0%)**, **+12 member cells** (2001: 4 · 2002: 5 · 2003: 1 · 2004: 2), 1 continuity hold → ledger 303 cells / 100 symbols;
 quarter audit 2002-12 97.2 → 97.6 · 2003 98.0 → 98.1 · 2004 97.1 → 97.2. Bake (vs the 76413b517 after-bake, same bin; the two intervening commits were refresh jobs — patStd/TTM/price byte-identical): fiiPct/diiPct **+21** member-months (N/A −21, 0 dates down), fiiChgPp/diiChgPp **+45** (N/A −21).
 
+### 127l. ★★ ELDERPHARM Jun-2004 adjudicated — the §127k NSE route files ADR/GDR under "FIIs"; the store is right to exclude it  (2026-09-06)
+
+The §127k harvest left 16 NSE-vs-store disagreements (>0.11pp) journalled in `scripts/shp_nse_shpdetails_open.json`,
+the flagged one being ELDERPHARM 2004-06 (NSE fii 30.23 vs stored 0.00). Both documents read live this session:
+- **BSE aspx 532322 q42** (the stored source): institutional block = `Mutual Funds and UTI 0.33 | Sub Total 0.33`,
+  **no FIIs row** (Sub Total == MF, so fii=0 is proven, not a parser miss). The 30.23% is `ADR/ GDR 4,351,467` filed
+  under `Others → Any Other`. Filer note: *"Total Foreign Shareholding is 4,624,802 equity shares representing 32.13%
+  (including ADR and GDR holding)"*. Neighbours confirm it is a real DR→direct conversion, not our artefact:
+  2004-03 real `FIIS 3.86` (no DR), 2005-03 real `FIIS 23.65` (no DR), 2005-06 `FIIS 27.68`.
+- **NSE `shareholdingdetails.jsp`** labels that same ADR/GDR block **"FIIs"** → 30.23.
+
+**Verdict: the stored `fii = 0.00` is CORRECT; NSE mislabels ADR/GDR.** The project convention excludes depository
+receipts from the fii slot — `ROW_LABELS["excl"]` (fetch_shp_bse_aspx L204), §127g's GDR/ADR-custodian handling
+(L429, counted for recon only, never slotted), and §22's rule that a DR block folding into FII is a **reclassification,
+not a stake change** (the Sep-2022 DR-dissolution precedent). dii already agreed (0.33 vs 0.3335 = 2dp/4dp rounding).
+**Same class, same verdict — SBIN 2002** (page carries an ADR/GDR row; stored fii 11.7375 + GDR 7.89 = NSE's 19.63 to
+the paisa). **Every disagreement whose BSE page has an ADR/GDR row is the store being right and NSE using a looser
+label** — this is a systematic taxonomy difference in the NSE route, journalled per cell. It does NOT touch the 291
+§127k fills (those are quarters the store had no cell, so no double-count is possible; the overlap gate kept these 16
+out). BAJFINANCE 2006-03 is a DIFFERENT mechanism (no DR row; §127g Foreign-FI fold) and stays OPEN.
+
+**Open convention question for the user (not decided here):** a company holding ~30% foreign via ADR/GDR reads
+`fii = 0` while the same money reads `fii ≈ 24%` once converted to a direct FII holding (ELDERPHARM 2004-06 → 2005-03).
+That is a faithful per-cell reading but a `fiiChgPp` discontinuity that is not a real inflow. Folding DR into fii would
+be a site-wide convention change (identical in kind to the 2022 DR dissolution) and is left to the user.
 
 ## 128. ★★★ STD-PAT 2002-07 EXECUTED — 229 "missing" cells were HELD under a retired key the coverage builder could not see; four gated routes landed 1,538 cells; the NSE results ARCHIVE reads standalone PAT with the page's own EPS identity  (2026-09-05)
 
