@@ -28,6 +28,7 @@ on:
 
 permissions:
   contents: write
+  actions: write        # to dispatch pages.yml (a github-actions push does NOT auto-trigger it)
 
 concurrency:
   group: refresh-headcount
@@ -62,6 +63,8 @@ jobs:
           python3 scripts/build_headcount.py
 
       - name: Commit ledgers + baked payload
+        env:
+          GH_TOKEN: ${{ github.token }}
         run: |
           git config user.name  "github-actions[bot]"
           git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
@@ -73,7 +76,12 @@ jobs:
             git add -- scripts/headcount/*.json docs/employee_headcount.json
             if git diff --cached --quiet; then echo "no headcount changes"; exit 0; fi
             git commit -q -m "Employees: headcount ledgers $(TZ=Asia/Kolkata date +'%Y-%m-%d %H:%M IST')"
-            if git push origin HEAD:main; then echo "pushed (attempt #$attempt)"; exit 0; fi
+            if git push origin HEAD:main; then
+              echo "pushed (attempt #$attempt)"
+              # a GITHUB_TOKEN push does not trigger pages.yml — dispatch it so the site actually updates
+              gh workflow run pages.yml || echo "(pages dispatch failed — will deploy on the next human push)"
+              exit 0
+            fi
             sleep $(( attempt * 5 ))
           done
           echo "headcount push failed after 5 attempts"; exit 1
