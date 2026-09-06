@@ -69,7 +69,7 @@ def scripcode(sym):
     return int(v) if v else None
 
 
-CATALOG_VER = 4      # bump when KIND_RULES / classify() change — cached ledger catalogs are rebuilt
+CATALOG_VER = 5      # bump when KIND_RULES / classify() change — cached ledger catalogs are rebuilt
 #                      v4 (2026-09-06): annual reports (kind `ar`) pulled into the ladder for the depth
 #                      pass — every cached catalog rebuilds so already-read stocks resurface their unread
 #                      annual reports (the multi-year business-profile series) for re-deepening.
@@ -152,8 +152,12 @@ def list_docs(sym, since="2015-04-01", until=None, kinds=("ip", "pr", "res", "ar
             page += 1
         T = F - timedelta(days=1)
     if "ar" in kinds:
+        # AnnualReport_New lists 30+ years; keep only the recent window (FY >= since-year - 1). The
+        # 5/10-year highlights tables in these recent reports already reach back a decade, so this
+        # gives the depth without letting a megacap's 30 old reports hog the --next queue forever.
+        ar_lo_fy = lo.year - 1
         for a in annual_reports(sym):
-            if a["att"] not in seen:
+            if a["att"] not in seen and a.get("fy", 0) >= ar_lo_fy:
                 seen.add(a["att"])
                 out.append(a)
     out.sort(key=lambda d: d["date"], reverse=True)
