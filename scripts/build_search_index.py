@@ -34,6 +34,9 @@ ROOT = os.path.dirname(HERE)
 SF   = os.environ.get("SF_BIN") or os.path.join(ROOT, "docs", "sf_stock_data.bin")
 SLIM = os.path.join(ROOT, "docs", "dash_slim.bin")
 OUT  = os.path.join(ROOT, "docs", "search_index.json")
+BSE_UNIV  = os.path.join(ROOT, "docs", "bse_universe.json")   # BSE-only universe rows (name/mcap/sector)
+BSE_SCRIP = os.path.join(HERE, "bse_scrips.json")             # {by_id:{SYM:scripcode}}
+BSE_PX    = os.path.join(ROOT, "docs", "bse_prices.bin")      # who actually has a price series
 
 CHUNK = 1 << 22   # 4 MB of decompressed text per read
 
@@ -301,6 +304,36 @@ def main():
             ind_ix[ind] = len(inds); inds.append(ind)
         rows.append([sym, name, 1 if m.get("alive") else 0,
                      int(round(mcap.get(sym, 0))), ind_ix[ind]])
+
+    # --- BSE-ONLY names (not in the sf payload) that build_bse_slices.py now makes renderable -------
+    # Their price slice lives on the sf-data host and their fin slice in docs/fin, so the stock page
+    # opens — but without a row here the search box can't offer them. Include only scrips that actually
+    # carry a price series (docs/bse_prices.bin), i.e. exactly the set that got a stk slice.
+    if os.path.exists(BSE_UNIV) and os.path.exists(BSE_SCRIP) and os.path.exists(BSE_PX):
+        try:
+            bu = {str(r[0]): r for r in json.load(open(BSE_UNIV, encoding="utf-8"))["rows"]}
+            code2sym = {str(v): k for k, v in json.load(open(BSE_SCRIP, encoding="utf-8"))["by_id"].items()}
+            bpx = json.loads(gzip.decompress(open(BSE_PX, "rb").read()))["px"]
+            existing = {r[0] for r in rows}
+            added = 0
+            for code in bpx:
+                if len(bpx[code].get("d") or ()) < 20:      # matches build_bse_slices --min-days:
+                    continue                                 # fewer bars → no stk slice → would 404
+                sym = code2sym.get(str(code)); row = bu.get(str(code))
+                if not sym or not row or sym in existing:
+                    continue
+                existing.add(sym)
+                name = ((row[2] if len(row) > 2 else "") or sym).strip()
+                ind = ((row[7] if len(row) > 7 else "") or "").strip()
+                if ind not in ind_ix:
+                    ind_ix[ind] = len(inds); inds.append(ind)
+                mc = row[6] if len(row) > 6 and isinstance(row[6], (int, float)) else 0
+                rows.append([sym, name, 1, int(round(mc)), ind_ix[ind]])
+                added += 1
+            print("  + %d BSE-only names appended to the search index" % added)
+        except Exception as e:
+            print("WARN: could not append BSE-only names to search index (%s)" % e)
+
     # Rank once, here: live before delisted, named before nameless (the payload has
     # no company name for long-dead or obscure listings — those are noise in a
     # suggestion list), then biggest first. The client keeps this order within each

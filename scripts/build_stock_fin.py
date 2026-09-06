@@ -57,6 +57,8 @@ GOV_J   = os.path.join(DOCS, "shp_gov.json")   # Government holding sidecar {SYM
 XTRA_J  = os.path.join(HERE, "xbrl_extra.json")      # local build output…
 XTRA_GZ = XTRA_J + ".gz"                             # …the committed copy CI reads
 RENAME  = os.path.join(HERE, "_rename_map.json")
+BSEFUND_J = os.path.join(DOCS, "bse_fundamentals.json")   # BSE-ONLY rev/PAT, keyed by scripcode
+BSESCRIP_J = os.path.join(HERE, "bse_scrips.json")        # {by_id:{SYM:scripcode}} → sym lookup
 
 # per-quarter detail fields the PAGE consumes — the rest of the ledger stays local-only
 XTRA_KEEP = {"eps_b", "eps_d", "oi", "fc", "dep", "tax", "exc", "pbt", "emp", "mat",
@@ -185,6 +187,47 @@ def main():
             aliases = json.load(open(RENAME, "r", encoding="utf-8"))
         except Exception as e:
             print("WARN: could not read _rename_map.json (%s) — renamed tickers will show no financials" % e)
+
+    # --- BSE-ONLY names: fold docs/bse_fundamentals.json (keyed by scripcode) into fund/revop so a
+    #     fin slice is emitted for them too. build_bse_slices.py cuts their PRICE slice; without this
+    #     their page shows a chart but "no quarterly earnings on file". Rev+PAT only (the BSE OCR route
+    #     has no EBITDA/EPS); basis S|C routes pat into the std or con slot; ann is the announce date
+    #     (0 → unknown). Never overwrites a symbol that already has NSE data, and skips any ticker whose
+    #     slug clashes with an existing name (recycled tickers) so the collision guard never trips. ----
+    bse_added = 0
+    if os.path.exists(BSEFUND_J) and os.path.exists(BSESCRIP_J):
+        try:
+            bfin = json.load(open(BSEFUND_J, encoding="utf-8")).get("px", {})
+            code2sym = {str(v): k for k, v in json.load(open(BSESCRIP_J, encoding="utf-8")).get("by_id", {}).items()}
+            taken = {slug(s) for s in (set(fund) | set(revop) | set(shp_rows) | set(hist_rows))}
+            for code, qmap in bfin.items():
+                sym = code2sym.get(str(code))
+                if not sym or sym in fund or sym in revop or not isinstance(qmap, dict):
+                    continue                                    # already have real data, or unmappable
+                if slug(sym) in taken:
+                    continue                                    # ticker-string clash with an NSE name
+                frows, rv = [], {}
+                for qe, cell in qmap.items():
+                    if not isinstance(cell, dict) or not qe.isdigit():
+                        continue
+                    pat, rev = cell.get("pat"), cell.get("rev")
+                    ann = cell.get("ann") or None               # 0 → unknown announce date
+                    con = (cell.get("basis") == "C")
+                    qei = int(qe)
+                    if pat is not None:                         # fund: [qEnd, npStd, annStd, npCon, annCon]
+                        frows.append([qei, None, None, pat, ann] if con else [qei, pat, ann, None, None])
+                    # revop: [revStd, revCon, opStd, opCon, patStd, patCon, fin, ebitStd, ebitCon]
+                    rv[qe] = ([None, rev, None, None, None, pat, 0, None, None] if con
+                              else [rev, None, None, None, pat, None, 0, None, None])
+                if frows:
+                    fund[sym] = sorted(frows, key=lambda r: r[0])
+                if rv:
+                    revop[sym] = rv
+                if frows or rv:
+                    taken.add(slug(sym)); bse_added += 1
+            print("BSE-only fundamentals folded in: %d symbols" % bse_added)
+        except Exception as e:
+            print("WARN: could not fold bse_fundamentals.json (%s) — BSE-only names get no fin slice" % e)
 
     # every symbol that has data, plus each old name that resolves into one
     syms = set(fund) | set(revop) | set(shp_rows) | set(hist_rows)

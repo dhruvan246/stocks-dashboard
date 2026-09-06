@@ -126,6 +126,10 @@ jobs:
         run: |
           python3 scripts/split_sf_data.py
           python3 scripts/build_stock_slices.py
+          # BSE-only names (not in sf_stock_data.bin) get their price slice from docs/bse_prices.bin
+          # into the SAME stk/ dir — runs AFTER build_stock_slices so it never clobbers an NSE slice.
+          # 2026-09-06 universe-fill: gives BSE-only listings a working stock page + cards.
+          python3 scripts/build_bse_slices.py --out scripts/_sfsplit/stk || echo "(BSE slice build failed — NSE slices still push)"
           cd scripts/_sfsplit
           git init -q -b main
           git config user.name  "github-actions[bot]"
