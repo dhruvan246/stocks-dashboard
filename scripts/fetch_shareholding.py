@@ -1020,7 +1020,9 @@ def _is_conv21(qi, sub):
 
 def build_engine_feed():
     """docs/shp_engine.json — the backtest engines' point-in-time FII/DII series:
-    {SYM: [[qeInt, fii, dii, subInt], ...] sorted by quarter}. ALL quarters (not the page's 8);
+    {SYM: [[qeInt, fii, dii, subInt, prom, mf], ...] sorted by quarter}. ALL quarters (not the page's 8);
+    (prom/mf added 2026-09-06 — promoter & mutual-fund holding %, source shp_history cols 0 & 3;
+     may be null on old rows, e.g. mf None pre-2006 — the engine drops a null-factor stock, correct);
     the engines gate on subInt <= rebalance date so there is no look-ahead.
 
     ★ UN-DATED PRE-JUN-2016 ROWS (SW-1 quantmac round 5, 2026-08-30 — supersedes §105's
@@ -1089,7 +1091,7 @@ def build_engine_feed():
                     sub = UNDATED_SUB
                     n_undated[0] += 1
                 sub = _reassert_sub(sym, qi, sub)
-                rows.append([qi, c[1], c[2], sub])
+                rows.append([qi, c[1], c[2], sub, c[0], c[3]])
             except (ValueError, TypeError, IndexError):
                 continue
         return rows

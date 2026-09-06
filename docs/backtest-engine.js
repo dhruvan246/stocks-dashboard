@@ -23,7 +23,7 @@ const G_RISK = 'Risk';
 const G_LIQ = 'Liquidity & participation';
 const G_OSC = 'Oscillators';
 const G_FUND = 'Fundamentals — point-in-time';
-const OWN_GRP = 'Ownership — FII/DII (latest filed qtr)';
+const OWN_GRP = 'Ownership — FII/DII/Promoter/MF (latest filed qtr)';
 const G_SIZE = 'Size — ⚠ always 0, use Turnover';
 const FIELDS = [
   { v: 'ret1m', g: G_MOM, l: 'Return — 1 month %' },
@@ -71,6 +71,10 @@ const FIELDS = [
   { v: 'fiiChgPp', g: OWN_GRP, l: 'FII holding change QoQ (pp)' },
   { v: 'diiPct', g: OWN_GRP, l: 'DII holding %' },
   { v: 'diiChgPp', g: OWN_GRP, l: 'DII holding change QoQ (pp)' },
+  { v: 'promPct', g: OWN_GRP, l: 'Promoter holding %' },
+  { v: 'promChgPp', g: OWN_GRP, l: 'Promoter holding change QoQ (pp)' },
+  { v: 'mfPct', g: OWN_GRP, l: 'Mutual-fund holding %' },
+  { v: 'mfChgPp', g: OWN_GRP, l: 'Mutual-fund holding change QoQ (pp)' },
 
   // Dead in survivorship-free mode (the only mode) — kept so old saved strategies still resolve.
   { v: 'mcap', g: G_SIZE, l: 'Market Cap (₹Cr)' },
@@ -758,7 +762,7 @@ function foldFundAliases() {
 // filing's ACTUAL submission date; a quarter is only visible once filed (no look-ahead).
 // Keep in sync with stock-backtest.html (self-contained copy). Data: docs/shp_engine.json (runbook §22d).
 let SHPD = {};
-const SHP_FIELDS = new Set(['fiiPct', 'fiiChgPp', 'diiPct', 'diiChgPp']);
+const SHP_FIELDS = new Set(['fiiPct', 'fiiChgPp', 'diiPct', 'diiChgPp', 'promPct', 'promChgPp', 'mfPct', 'mfChgPp']);
 function needsShp(cfg) { return SHP_FIELDS.has(cfg.sortBy) || (cfg.filters || []).some(f => SHP_FIELDS.has(f.field)); }
 async function loadShp() {
   if (Object.keys(SHPD).length) return;
@@ -808,21 +812,29 @@ function shpAt(sym, dateInt) {
   const cur = arr[ci];
   // QoQ change vs the CALENDAR-previous quarter only (gaps break it), and NEVER across the
   // Sep-2022 SEBI format change (DR blocks were reclassified into FII/DII — not a stake change).
-  let dfii = null, ddii = null;
+  // rows are [qe, fii, dii, sub, prom, mf] (prom/mf added 2026-09-06); prom/mf may be null (mf None
+  // pre-2006) so their deltas are guarded — an unguarded null-minus-number is NaN, which typeof calls
+  // a number and would sneak past fieldVal's numeric gate.
+  let dfii = null, ddii = null, dprom = null, dmf = null;
+  const setDeltas = q => {
+    dfii = +(cur[1] - q[1]).toFixed(2); ddii = +(cur[2] - q[2]).toFixed(2);
+    dprom = (cur[4] != null && q[4] != null) ? +(cur[4] - q[4]).toFixed(2) : null;
+    dmf   = (cur[5] != null && q[5] != null) ? +(cur[5] - q[5]).toFixed(2) : null;
+  };
   if (cur[0] !== 20220930) {
     if (isQuarterEnd(cur[0])) {
       const pq = prevQeInt(cur[0]);
-      for (let i = ci - 1; i >= 0; i--) { const q = arr[i]; if (q[0] === pq) { if (q[3] <= dateInt) { dfii = +(cur[1] - q[1]).toFixed(2); ddii = +(cur[2] - q[2]).toFixed(2); } break; } if (q[0] < pq) break; }
+      for (let i = ci - 1; i >= 0; i--) { const q = arr[i]; if (q[0] === pq) { if (q[3] <= dateInt) setDeltas(q); break; } if (q[0] < pq) break; }
     } else {
       // EVENT row (mid-quarter as-on date, §22k): it has no calendar-previous quarter, so the
       // QoQ walk above would leave the deltas null — and a null factor is FILTERED OUT of the
       // screen, silently dropping the stock from every diiChgPp/fiiChgPp strategy in exactly the
       // month its stake actually moved. Measure the change against the latest ALREADY-VISIBLE
       // reading instead, which is what "change since we last knew" means for an event filing.
-      for (let i = ci - 1; i >= 0; i--) { const q = arr[i]; if (q[3] <= dateInt) { dfii = +(cur[1] - q[1]).toFixed(2); ddii = +(cur[2] - q[2]).toFixed(2); break; } }
+      for (let i = ci - 1; i >= 0; i--) { const q = arr[i]; if (q[3] <= dateInt) { setDeltas(q); break; } }
     }
   }
-  return { fii: cur[1], dii: cur[2], dfii, ddii };
+  return { fii: cur[1], dii: cur[2], prom: cur[4] ?? null, mf: cur[5] ?? null, dfii, ddii, dprom, dmf };
 }
 
 function factorsAt(off, cfg) {
@@ -864,7 +876,9 @@ function factorsAt(off, cfg) {
       if (rd) { const ds = '' + rd, ro = dayOff(ds.slice(0, 4) + '-' + ds.slice(4, 6) + '-' + ds.slice(6, 8)); const pr = priceAt(tkr, ro); r.postDrift = (pr != null && pr > 0) ? (price / pr - 1) * 100 : null; } else r.postDrift = null; }
     if (useShp) { const sh = shpAt(m.symbol, shpDate);
       r.fiiPct = sh ? sh.fii : null; r.fiiChgPp = sh ? sh.dfii : null;
-      r.diiPct = sh ? sh.dii : null; r.diiChgPp = sh ? sh.ddii : null; }
+      r.diiPct = sh ? sh.dii : null; r.diiChgPp = sh ? sh.ddii : null;
+      r.promPct = sh ? sh.prom : null; r.promChgPp = sh ? sh.dprom : null;
+      r.mfPct = sh ? sh.mf : null; r.mfChgPp = sh ? sh.dmf : null; }
     rows.push(r);
   }
   const byInd = {}; rows.forEach(r => { (byInd[r.ind] = byInd[r.ind] || []).push(r.chg); });
@@ -1034,7 +1048,7 @@ function maxDrawdown(eq) { let peak = -1, mdd = 0; for (const [, v] of eq) { if 
 // Short field labels for the filter fingerprint in strategyLabel() below — distinct from the
 // longer FIELD_LABEL used in dropdowns/tables. Keep in sync with FIELDS (each page's own copy).
 const SHORT_FIELD = { changePercent: 'Chg%', rsi: 'RSI', d52: '52wHi%', d52_low_pct: '52wLo%', indRank: 'IndRank', mcap: 'Mcap', hist_mcap: 'HMcap',
-  profitYoyPct: 'NP-YoY%', profitBase: 'NP-base', fiiPct: 'FII%', fiiChgPp: 'FII Δpp', diiPct: 'DII%', diiChgPp: 'DII Δpp',
+  profitYoyPct: 'NP-YoY%', profitBase: 'NP-base', fiiPct: 'FII%', fiiChgPp: 'FII Δpp', diiPct: 'DII%', diiChgPp: 'DII Δpp', promPct: 'Prom%', promChgPp: 'Prom Δpp', mfPct: 'MF%', mfChgPp: 'MF Δpp',
   ret1m: 'Ret-1m%', ret3m: 'Ret-3m%', ret6m: 'Ret-6m%', ret12m: 'Ret-12m%', accel: 'MomAccel%', accel3m: 'MomAccel3m%', dma50: '50DMA%', dma200: '200DMA%',
   rangePos: 'RangePos', daysHigh: 'DaysSinceHi', vol: 'Vol%', riskMom: 'RiskMom', beta: 'Beta', mdd6: 'MDD-6m%', upPct: 'UpDay%',
   turnover: 'Turnover', turnSurge: 'TurnSurge', volSurge: 'VolSurge', delivPct: 'Deliv%', macd: 'MACD', stoch: 'Stoch%K', bollB: 'BollB',
