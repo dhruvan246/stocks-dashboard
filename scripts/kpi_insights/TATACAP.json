@@ -29,6 +29,34 @@
    "title": "Annual Report FY26 - Standalone Financial Statement Notes",
    "read": "2026-09-06",
    "by": "claude-routine"
+  },
+  "970d118b-2d5d-4076-a637-5e547a01abab.pdf": {
+   "kind": "ip",
+   "date": "2026-07-03",
+   "title": "Global Investor Roadshow Presentation (USD-denominated, as of Mar 31 2026)",
+   "read": "2026-09-06",
+   "by": "claude-routine"
+  },
+  "d96285c8-0f30-4fc1-a13f-eaea2af47e34.pdf": {
+   "kind": "ip",
+   "date": "2026-04-23",
+   "title": "Q4 FY26 Investor Presentation",
+   "read": "2026-09-06",
+   "by": "claude-routine"
+  },
+  "1f3d3ef5-da34-4b00-a2a3-6e5bb5f97450.pdf": {
+   "kind": "ip",
+   "date": "2026-01-19",
+   "title": "Q3 FY26 Investor Presentation",
+   "read": "2026-09-06",
+   "by": "claude-routine"
+  },
+  "9f207e38-47dc-4e25-8b33-1b8aea5d68e5.pdf": {
+   "kind": "ip",
+   "date": "2025-12-04",
+   "title": "Q2 FY26 Investor Presentation",
+   "read": "2026-09-06",
+   "by": "claude-routine"
   }
  },
  "metrics": [
@@ -150,6 +178,7 @@
     "20260331": 2.0
    },
    "q": {
+    "20251231": 2.2,
     "20260630": 1.9
    },
    "src": {
@@ -212,6 +241,12 @@
      4,
      "GNPA at 1.9% in Q1FY27",
      "1.9"
+    ],
+    "q:20251231": [
+     "1f3d3ef5-da34-4b00-a2a3-6e5bb5f97450.pdf",
+     5,
+     "Including Motor Finance: GNPA stood at 2.2%, as of Dec-25",
+     "2.2"
     ]
    }
   },
@@ -231,6 +266,7 @@
     "20260331": 0.9
    },
    "q": {
+    "20251231": 1.0,
     "20260630": 0.8
    },
    "src": {
@@ -293,6 +329,12 @@
      4,
      "NNPA at 0.8% in Q1FY27",
      "0.8"
+    ],
+    "q:20251231": [
+     "1f3d3ef5-da34-4b00-a2a3-6e5bb5f97450.pdf",
+     5,
+     "Including Motor Finance: NNPA stood at 1.0%, as of Dec-25",
+     "1.0"
     ]
    }
   },
@@ -765,27 +807,47 @@
    }
   },
   {
-   "name": "Customer Franchise",
-   "unit": "mn",
+   "name": "Branch Locations",
+   "unit": "count",
    "kind": "level",
-   "y": {
-    "20260331": 8.4
-   },
+   "y": {},
    "q": {
-    "20260630": 8.8
+    "20230331": 539.0,
+    "20250930": 1479.0,
+    "20251231": 1505.0,
+    "20260331": 1477.0,
+    "20260630": 1491.0
    },
    "src": {
     "q:20260630": [
      "e0759bcc-9c53-4d6b-a45f-6cef03046f02.pdf",
      6,
-     "customer franchise stood at 8.8mn",
-     "8.8"
+     "branch locations across 27 states and union territories (doc period)",
+     "1,491"
     ],
-    "y:20260331": [
-     "4f44edc0-eef9-4c40-80d8-ef0066e734a1.pdf",
-     3,
-     "served 8.4 million customers up to 31 March 2026 (doc period)",
-     "8.4"
+    "q:20260331": [
+     "d96285c8-0f30-4fc1-a13f-eaea2af47e34.pdf",
+     6,
+     "branch locations across 27 states and union territories",
+     "1,477"
+    ],
+    "q:20251231": [
+     "1f3d3ef5-da34-4b00-a2a3-6e5bb5f97450.pdf",
+     6,
+     "branch locations across 27 states and union territories",
+     "1,505"
+    ],
+    "q:20230331": [
+     "9f207e38-47dc-4e25-8b33-1b8aea5d68e5.pdf",
+     22,
+     "# of branches",
+     "539"
+    ],
+    "q:20250930": [
+     "9f207e38-47dc-4e25-8b33-1b8aea5d68e5.pdf",
+     22,
+     "1,479 Branches",
+     "1,479"
     ]
    }
   },
@@ -797,6 +859,8 @@
     "20260331": 29812.0
    },
    "q": {
+    "20251231": 29725.0,
+    "20260331": 29816.0,
     "20260630": 30170.0
    },
    "src": {
@@ -811,23 +875,84 @@
      3,
      "Total Employees (D+E)",
      "29812"
+    ],
+    "q:20260331": [
+     "d96285c8-0f30-4fc1-a13f-eaea2af47e34.pdf",
+     6,
+     "On-roll employees count stood at 29,816",
+     "29,816"
+    ],
+    "q:20251231": [
+     "1f3d3ef5-da34-4b00-a2a3-6e5bb5f97450.pdf",
+     6,
+     "On-roll employees count stood at 29,725",
+     "29,725"
     ]
    }
   },
   {
-   "name": "Branch Locations",
-   "unit": "count",
+   "name": "Customer Franchise",
+   "unit": "mn",
    "kind": "level",
-   "y": {},
+   "y": {
+    "20260331": 8.4
+   },
    "q": {
-    "20260630": 1491.0
+    "20251231": 8.1,
+    "20260630": 8.8
    },
    "src": {
     "q:20260630": [
      "e0759bcc-9c53-4d6b-a45f-6cef03046f02.pdf",
      6,
-     "branch locations across 27 states and union territories (doc period)",
-     "1,491"
+     "customer franchise stood at 8.8mn",
+     "8.8"
+    ],
+    "y:20260331": [
+     "4f44edc0-eef9-4c40-80d8-ef0066e734a1.pdf",
+     3,
+     "served 8.4 million customers up to 31 March 2026 (doc period)",
+     "8.4"
+    ],
+    "q:20251231": [
+     "1f3d3ef5-da34-4b00-a2a3-6e5bb5f97450.pdf",
+     6,
+     "customer franchise stood at 8.1mn",
+     "8.1"
+    ]
+   }
+  },
+  {
+   "name": "Gross NPA (excl Motor Finance)",
+   "unit": "%",
+   "kind": "level",
+   "y": {},
+   "q": {
+    "20251231": 1.6
+   },
+   "src": {
+    "q:20251231": [
+     "1f3d3ef5-da34-4b00-a2a3-6e5bb5f97450.pdf",
+     5,
+     "Excluding Motor Finance: GNPA stood at 1.6%, as of Dec-25",
+     "1.6"
+    ]
+   }
+  },
+  {
+   "name": "Net NPA (excl Motor Finance)",
+   "unit": "%",
+   "kind": "level",
+   "y": {},
+   "q": {
+    "20251231": 0.6
+   },
+   "src": {
+    "q:20251231": [
+     "1f3d3ef5-da34-4b00-a2a3-6e5bb5f97450.pdf",
+     5,
+     "Excluding Motor Finance: NNPA stood at 0.6%, as of Dec-25",
+     "0.6"
     ]
    }
   },
