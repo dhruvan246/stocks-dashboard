@@ -26,7 +26,7 @@ sys.path.insert(0, os.path.dirname(os.path.abspath(__file__)))
 import bse_fetch as B
 
 HERE = os.path.dirname(os.path.abspath(__file__))
-OUT = os.path.join(HERE, "..", "docs", "bse_prices.bin")
+OUT = os.environ.get("BSE_PX_OUT") or os.path.join(HERE, "..", "docs", "bse_prices.bin")
 UNIV = os.path.join(HERE, "..", "docs", "bse_universe.json")
 BHAV = "https://www.bseindia.com/download/BhavCopy/Equity/BhavCopy_BSE_CM_0_0_0_%s_F_0000.CSV"
 GROSS = "https://www.bseindia.com/BSEDATA/gross/%d/SCBSEALL%s.zip"   # % (year, DDMM)
@@ -232,6 +232,43 @@ def main():
             have.setdefault(code, set()).add(di); ins += 1
         print("  weekend %s: inserted %d scrips" % (wd, ins))
         time.sleep(0.15)
+
+    # --- bounded backward history backfill (optional, resumable) ------------------------------
+    # The forward walk only extends `end` toward today, so a store that begins in (say) 2025 never
+    # reaches 2020. With --backfill-floor YYYYMMDD, fetch up to --backfill-days N calendar days
+    # BELOW the current earliest stored date, down to the floor. Bounded per run (fits the CI
+    # timeout, ~N bhavcopy fetches) and resumable: the floor drops each run, so scheduled runs
+    # converge to the floor over time WITHOUT re-fetching the days already stored above it.
+    if "--backfill-floor" in sys.argv:
+        bf_floor = int(sys.argv[sys.argv.index("--backfill-floor") + 1])
+        bf_days = int(sys.argv[sys.argv.index("--backfill-days") + 1]) if "--backfill-days" in sys.argv else 90
+        floor_date = datetime.date(bf_floor // 10000, bf_floor // 100 % 100, bf_floor % 100)
+        cur = min((s["d"][0] for s in px.values() if s["d"]), default=None)
+        if cur is None or cur <= bf_floor:
+            print("  backfill: nothing to do (floor %d already reached; earliest=%s)" % (bf_floor, cur))
+        else:
+            d = datetime.date(cur // 10000, cur // 100 % 100, cur % 100) - datetime.timedelta(days=1)
+            scanned = added = 0
+            while d >= floor_date and scanned < bf_days:
+                scanned += 1
+                cl = day_closes(op, d)                      # dated URL → holiday/no-file returns empty
+                if cl:
+                    di = int(d.strftime("%Y%m%d")); ins = 0
+                    for code in codes:
+                        t = cl.get(code)
+                        if not t: continue
+                        s = px.get(code)
+                        if s is None: s = px[code] = {"d": [], "c": [], "v": []}; have[code] = set()
+                        if di in have.get(code, ()): continue
+                        s["d"].append(di); s["c"].append(t[0]); s["v"].append(t[1]); have.setdefault(code, set()).add(di)
+                        ins += 1
+                    if ins:
+                        added += 1
+                        if added % 20 == 0:
+                            save_prices(data); print("  backfill …%d days added, at %d" % (added, di)); time.sleep(0.2)
+                time.sleep(0.15)
+                d -= datetime.timedelta(days=1)
+            print("  backfill: scanned %d calendar days below %d, added %d trading days" % (scanned, cur, added))
 
     data["end"] = last
     save_prices(data)   # closes are safe on disk before the delivery pass touches anything

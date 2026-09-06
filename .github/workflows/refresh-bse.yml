@@ -52,8 +52,12 @@ jobs:
             python3 -X utf8 scripts/build_bse_universe.py --sector-budget 400 || echo "(universe refresh failed — keeping existing)"
           fi
 
-      - name: Append today's BSE closes (bhavcopy)
-        run: python3 -X utf8 scripts/fetch_bse_bhav.py || echo "(bhavcopy append failed — keeping existing)"
+      - name: Append today's BSE closes + backfill history toward 2020 (bounded, resumable)
+        # Forward-appends new sessions AND, via --backfill-floor/-days, fetches up to 90 more calendar
+        # days BELOW the store's earliest date each run — converging to 2020-01-01 over ~2 weeks without
+        # re-fetching days already stored (the floor drops each run). 2020→date is the user's ask
+        # (2026-09-06 universe-fill). Bounded so it fits the 90-min timeout ahead of the fund grind.
+        run: python3 -X utf8 scripts/fetch_bse_bhav.py --backfill-floor 20200101 --backfill-days 90 || echo "(bhavcopy append/backfill failed — keeping existing)"
 
       - name: OCR + vision quarterly numbers (bounded, resumable)
         env:
