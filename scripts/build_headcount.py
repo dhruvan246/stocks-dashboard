@@ -25,7 +25,8 @@ RENAME = os.path.join(HERE, "_rename_map.json")
 START_FY = 2020
 
 
-CLIFF = 1.8   # a >1.8x step between consecutive FYs is a "cliff"
+CLIFF = 1.8    # a >1.8x step between consecutive FYs marks a basis flip worth resolving
+CLUSTER = 1.6  # once flagged, group same-basis years within this ratio (tighter, to isolate outliers)
 
 
 def implausible_years(emp):
@@ -46,7 +47,7 @@ def implausible_years(emp):
         return set()
     best = None
     for anchor in v:
-        grp = [y for y in ys if anchor and 1 / CLIFF <= emp[y] / anchor <= CLIFF]
+        grp = [y for y in ys if anchor and 1 / CLUSTER <= emp[y] / anchor <= CLUSTER]
         key = (len(grp), max(int(y) for y in grp))     # most years, then most recent
         if best is None or key > best[0]:
             best = (key, set(grp))
@@ -114,6 +115,9 @@ def main():
                 src[yi] = "%s p%s" % (s.get("method", "?"), s.get("page", "?"))
         for y in implausible_years(emp):        # drop spikes rather than ship a wrong headcount
             emp.pop(y, None); total.pop(y, None); mf.pop(y, None); src.pop(y, None)
+        for y in list(total):                   # total workforce can never be below on-roll; when the
+            if y in emp and total[y] < emp[y]:  # workers subtotal didn't parse, floor it at on-roll
+                total[y] = emp[y]
         if emp:
             covered += 1
         yrs = sorted(emp)
