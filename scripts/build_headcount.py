@@ -12,6 +12,7 @@ contractual. Every FY value keeps a source tag (filing FY, page, method) for pro
 import json
 import os
 import re
+import statistics
 from datetime import date, datetime
 
 HERE = os.path.dirname(os.path.abspath(__file__))
@@ -22,6 +23,27 @@ MASTER = os.path.join(HERE, "_bse_master_all.json")
 SECTORS = os.path.join(HERE, "_bse_sectors.json")
 RENAME = os.path.join(HERE, "_rename_map.json")
 START_FY = 2020
+
+
+def implausible_years(emp):
+    """FYs whose on-roll value is a spike — far (>2.5x) from BOTH the series median AND every temporal
+    neighbour. Real headcount moves gradually; a lone 2.5x jump/dip is an extraction error, not a hire
+    wave, so we drop it rather than ship it (a merger would move neighbours too and survive). <3 pts:
+    can't tell, keep all."""
+    ys = sorted(emp)
+    if len(ys) < 3:
+        return set()
+    vals = [emp[y] for y in ys]
+    med = statistics.median(vals)
+    bad = set()
+    for i, y in enumerate(ys):
+        v = emp[y]
+        nb = [vals[j] for j in (i - 1, i + 1) if 0 <= j < len(ys)]
+        far_med = v > 2.5 * med or v < med / 2.5
+        far_all_nb = nb and all(v > 2.5 * n or v < n / 2.5 for n in nb)
+        if far_med and far_all_nb:
+            bad.add(y)
+    return bad
 
 
 def fy_of(iso):
@@ -83,6 +105,8 @@ def main():
                     mf[yi] = [b["male"], b["female"]]
                 s = c.get("src", {})
                 src[yi] = "%s p%s" % (s.get("method", "?"), s.get("page", "?"))
+        for y in implausible_years(emp):        # drop spikes rather than ship a wrong headcount
+            emp.pop(y, None); total.pop(y, None); mf.pop(y, None); src.pop(y, None)
         if emp:
             covered += 1
         yrs = sorted(emp)

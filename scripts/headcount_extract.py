@@ -230,10 +230,13 @@ BRSR_ANCHOR = re.compile(r"Employees\s+and\s+workers", re.I)
 # won't match → that FY ships nothing and is queued for the LLM/vision reader, never guessed.
 _L = r"[A-H]"
 _ROW = r"([\d,]{2,})\s+([\d,]{2,})\s+[\d.]+\s*%?\s+([\d,]{2,})"
-BRSR_PERM = re.compile(r"Permanent\s*\(\s*" + _L + r"\s*\)\s+" + _ROW, re.I)
+# (?<!than ) so the "Permanent" inside "Other than Permanent" never matches a permanent row — else a
+# dash in "Permanent (F) -" lets the regex fall through to "Other than Permanent (G) 63,297" and read
+# contractual workers as permanent, inflating on-roll (Bharti Airtel: 14,322 → 77,619).
+BRSR_PERM = re.compile(r"(?<!than )Permanent\s*\(\s*" + _L + r"\s*\)\s+" + _ROW, re.I)
 BRSR_OTHER = re.compile(r"Other\s+than\s+[Pp]ermanent\s*\(\s*" + _L + r"\s*\)\s+([\d,]{2,})", re.I)
 BRSR_TOTE = re.compile(r"Total\s+employees\s*\(\s*" + _L + r"\s*\+\s*" + _L + r"\s*\)\s+" + _ROW, re.I)
-BRSR_WPERM = re.compile(r"Permanent\s*\(\s*" + _L + r"\s*\)\s+([\d,]{2,})", re.I)
+BRSR_WPERM = re.compile(r"(?<!than )Permanent\s*\(\s*" + _L + r"\s*\)\s+([\d,]{2,})", re.I)
 BRSR_WTOT = re.compile(r"Total\s+workers\s*\(\s*" + _L + r"\s*\+\s*" + _L + r"\s*\)\s+([\d,]{2,})", re.I)
 
 
