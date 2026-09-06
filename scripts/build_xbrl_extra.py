@@ -98,6 +98,9 @@ PNL = {  # quarter money, ₹ -> cr
     "pbet": ["ProfitBeforeExceptionalItemsAndTax"],
     "emp": ["EmployeeBenefitExpense", "EmployeesCost"], "mat": ["CostOfMaterialsConsumed"],
     "oci": ["OtherComprehensiveIncomeNetOfTaxes"],
+    "assoc": ["ShareOfProfitLossOfAssociatesAndJointVenturesAccountedForUsingEquityMethod"],
+    "nci": ["ProfitOrLossAttributableToNonControllingInterests",
+            "ProfitLossAttributableToNonControllingInterests"],
     "dep_amt": ["Deposits"], "adv": ["Advances"], "int_exp": ["InterestExpended"],
 }
 EPS = {  # quarter, ₹ per share — NOT crore-scaled
@@ -114,11 +117,17 @@ RATIO = {  # quarter, % / ratio as filed
 }
 BS = {  # instant, ₹ -> cr; tuple entries are summed when at least one part is present
     "assets": ["Assets"], "eq": ["EquityAttributableToOwnersOfParent", "Equity"],
+    "sc": ["EquityShareCapital", "ShareCapital"],        # Screener "Equity Capital"
+    "oeq": ["OtherEquity"],                              # Screener "Reserves"
     "cash": ["CashAndCashEquivalents"], "invnt": ["Inventories"],
     "ppe": ["PropertyPlantAndEquipment"], "cwip": ["CapitalWorkInProgress"],
+    "gw": ["Goodwill"], "intg": ["OtherIntangibleAssets"],
+    "iuad": ["IntangibleAssetsUnderDevelopment"],
 }
 BS_SUM = {
     "borr": ["BorrowingsCurrent", "BorrowingsNoncurrent"],
+    "blt": ["BorrowingsNoncurrent"],                     # Screener "Long term Borrowings"
+    "bst": ["BorrowingsCurrent"],                        # Screener "Short term Borrowings"
     "rec": ["TradeReceivablesCurrent", "TradeReceivablesNoncurrent"],
     "pay": ["TradePayablesCurrent", "TradePayablesNoncurrent",
             "TradePayablesCurrentMicroAndSmallEnterprises", "TradePayablesCurrentOtherThanMicroAndSmallEnterprises"],
@@ -129,6 +138,7 @@ CF = {  # duration ending at the quarter end; ₹ -> cr
     "cfi": ["CashFlowsFromUsedInInvestingActivities"],
     "cff": ["CashFlowsFromUsedInFinancingActivities"],
     "divp": ["DividendsPaidClassifiedAsFinancingActivities"],
+    "cf_tax": ["IncomeTaxesPaidRefundClassifiedAsOperatingActivities"],
 }
 RE_CAPEX = re.compile(r"<" + NS + r':(PurchaseOfPropertyPlantAndEquipment\w*) contextRef="([^"]+)"[^>]*>([-0-9.eE+]+)<')
 

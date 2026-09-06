@@ -59,8 +59,10 @@ RENAME  = os.path.join(HERE, "_rename_map.json")
 
 # per-quarter detail fields the PAGE consumes — the rest of the ledger stays local-only
 XTRA_KEEP = {"eps_b", "eps_d", "oi", "fc", "dep", "tax", "exc", "pbt", "emp", "mat",
-             "assets", "eq", "borr", "cash", "invnt", "rec", "pay", "ppe", "cwip", "invst",
-             "cfo", "cfi", "cff", "capex", "divp", "cf_d", "seg",
+             "assoc", "nci",
+             "assets", "eq", "sc", "oeq", "borr", "blt", "bst", "cash", "invnt", "rec", "pay",
+             "ppe", "cwip", "iuad", "gw", "intg", "invst",
+             "cfo", "cfi", "cff", "capex", "divp", "cf_tax", "cf_d", "seg",
              "gnpa_pct", "nnpa_pct", "cet1", "car", "roa", "dep_amt", "adv", "int_exp",
              "aud", "qual"}
 
