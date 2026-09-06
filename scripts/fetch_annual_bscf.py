@@ -283,7 +283,10 @@ def main():
         if limit and processed >= limit: break
         code = byid.get(sym)
         if not code: continue
-        if sym in gate and not redo and only is None: continue        # resume (skip any processed sym)
+        if not redo and only is None:
+            gv = gate.get(sym)
+            if gv and (gv.get('verdict') in ('trusted', 'no-xbrl-year-to-validate') or gv.get('vtry')):
+                continue                                                  # settled; a text-only gate-fail is retried once a vision key exists
         x = slice_x(sym)
         # which FYs do we already hold (validation) vs miss (fill)?
         held = {fy: held_bs(x, '%d0331' % fy) for fy in FYS}
@@ -309,7 +312,8 @@ def main():
             v = vision_read(pdf, bs_pi, cf_pi, sym, val_fy)          # None locally (no key) / on CI reads
             if v and gate_ok(v[1], held[val_fy]): trusted, basis, method = True, v[0], 'vision'; break
         gate[sym] = {'verdict': 'trusted' if trusted else 'gate-failed', 'val_fy': val_fy,
-                     'basis': basis, 'method': method, 'note': note}
+                     'basis': basis, 'method': method, 'note': note,
+                     'vtry': bool(os.environ.get('ANTHROPIC_API_KEY'))}
         json.dump(gate, open(GATE_REPORT, 'w'), separators=(',', ':'), sort_keys=True)
         if not trusted:
             processed += 1; print('%-11s GATE-FAILED (val FY%d) %s' % (sym, val_fy, note or '')); continue
