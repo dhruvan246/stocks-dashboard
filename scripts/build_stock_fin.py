@@ -53,6 +53,7 @@ FUND_J  = os.path.join(DOCS, "sf_fundamentals.json")
 REVOP_J = os.path.join(DOCS, "sf_revop.json")
 SHP_J   = os.path.join(DOCS, "shareholding.json")
 SHPH_J  = os.path.join(HERE, "shp_history.json")
+GOV_J   = os.path.join(DOCS, "shp_gov.json")   # Government holding sidecar {SYM:{QE:[gov%,sub]}}
 XTRA_J  = os.path.join(HERE, "xbrl_extra.json")      # local build output…
 XTRA_GZ = XTRA_J + ".gz"                             # …the committed copy CI reads
 RENAME  = os.path.join(HERE, "_rename_map.json")
@@ -92,6 +93,16 @@ def main():
     revop = load(REVOP_J, "revenue/margins")
     shpj  = load(SHP_J,   "shareholding")
     shph  = load(SHPH_J,  "shareholding history")
+    govj  = load(GOV_J,   "government holding")
+    # {SYM: {QE: gov%}} — the sidecar stores [gov%, sub]; the page only needs the percentage
+    gov_rows = {}
+    for sym, qmap in (govj or {}).items():
+        if sym.startswith("_") or not isinstance(qmap, dict):
+            continue
+        g = {qe: (v[0] if isinstance(v, list) else v) for qe, v in qmap.items()
+             if (v[0] if isinstance(v, list) else v) is not None}
+        if g:
+            gov_rows[sym] = g
     if not fund and not revop:
         sys.exit("ABORT: neither sf_fundamentals.json nor sf_revop.json could be read")
     if fund and len(fund) < 2000:
@@ -213,6 +224,9 @@ def main():
         h = resolve(hist_rows, sym)
         if h:
             payload["shpH"] = h
+        gv = resolve(gov_rows, sym)
+        if gv:
+            payload["shpGov"] = gv          # {QE: gov%} — Screener's separate Government row
         xt = resolve(xtra, sym)
         if xt:
             payload["x"] = xt

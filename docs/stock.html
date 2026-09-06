@@ -1208,7 +1208,12 @@ function renderSHP(quarters,cells){
     while(idx.length&&!cells[idx[0]]) idx.shift();
     if(!idx.length){ el.innerHTML='<span class="text-slate-400">No parsed shareholding filings yet for this stock.</span>'; return; }
     const v=(i,k)=>{ const c=cells[i]; return (c&&c[k]!=null)?c[k]:null; };
-    const pubO=i=>{ const c=cells[i]; return c?Math.max(0,+(100-c[0]-c[1]-c[2]).toFixed(2)):null; };
+    // Government holding (Screener's separate row) — a public sub-category from the SHP filing's
+    // GovernmentsMember, looked up by quarter from the slice's shpGov sidecar. Removed from the
+    // Public & others residual so the column still sums to ~100.
+    const govAt=i=>{ const g=(SHP_GOV&&SHP_GOV[quarters[i]]); return (g==null)?null:+g; };
+    const hasGov=idx.some(i=>govAt(i)!=null);
+    const pubO=i=>{ const c=cells[i]; if(!c) return null; const g=govAt(i)||0; return Math.max(0,+(100-c[0]-c[1]-c[2]-g).toFixed(2)); };
     const tr=(lbl,get,cls,raw)=>'<tr class="border-b border-slate-50 '+(cls||'')+'"><td class="py-1.5 pr-2 font-medium whitespace-nowrap">'+lbl+'</td>'+
       idx.map(i=>{ const x=get(i); return '<td class="text-right px-2 py-1.5 whitespace-nowrap">'+(x==null?'<span class="text-slate-300">—</span>':(raw?x:x.toFixed(2)+'%'))+'</td>'; }).join('')+'</tr>';
     let h='<table class="w-full text-sm"><thead class="text-[11px] uppercase text-slate-500 border-b border-slate-200"><tr><th class="text-left py-1 pr-2">Holder</th>'+
@@ -1218,13 +1223,14 @@ function renderSHP(quarters,cells){
     h+=tr('DIIs <button id="diiTg" class="ml-1 w-4 h-4 inline-flex items-center justify-center rounded border border-slate-300 text-slate-500 text-[10px] leading-none align-middle" title="Show mutual fund / insurance split">+</button>',i=>v(i,2));
     h+=tr('<span class="pl-4">Mutual funds</span>',i=>v(i,3),'shp-sub hidden text-slate-500');
     h+=tr('<span class="pl-4">Insurance</span>',i=>v(i,4),'shp-sub hidden text-slate-500');
+    if(hasGov) h+=tr('Government',i=>govAt(i));
     h+=tr('Public &amp; others',i=>pubO(i));
     if(idx.some(i=>v(i,6)!=null))
       h+=tr('No. of shareholders',i=>{ const n=v(i,6); return n==null?null:(+n).toLocaleString('en-IN'); },'text-slate-500',true);
     h+='</tbody></table>';
     let sub=null; for(let k=idx.length-1;k>=0&&!sub;k--){ const c=cells[idx[k]]; if(c&&c[5]) sub=c[5]; }
     el.innerHTML=h+'<div class="text-[11px] text-slate-400 mt-2">'+(sub?('Latest filing submitted '+sub+' · '):'')+
-      'Source: NSE quarterly shareholding-pattern (SHP) XBRL. FII = foreign institutions (FPI, FDI); DII = domestic institutions (MF, insurance, banks, PF, AIF); Public &amp; others = balance incl. employee trusts. <a class="text-indigo-500 hover:underline" href="./fii-dii.html">Daily FII/DII flows →</a></div>';
+      'Source: NSE quarterly shareholding-pattern (SHP) XBRL. FII = foreign institutions (FPI, FDI); DII = domestic institutions (MF, insurance, banks, PF, AIF); '+(hasGov?'Government = Central/State/President of India holding (as filed); ':'')+'Public &amp; others = balance incl. employee trusts. <a class="text-indigo-500 hover:underline" href="./fii-dii.html">Daily FII/DII flows →</a></div>';
     const tg=$('diiTg');
     if(tg) tg.onclick=()=>{ const open=tg.textContent.trim()==='−'; tg.textContent=open?'+':'−';
       el.querySelectorAll('.shp-sub').forEach(r=>r.classList.toggle('hidden',open)); };
@@ -1244,7 +1250,7 @@ async function loadSHP(){
    Rows [qeISO, prom, fii, dii, mf, ins, subDate, nsh] oldest first. The table reuses renderSHP
    by reshaping to its (quarters newest-first, cells) contract; the trend chart and the
    shareholder-count band are drawn from the full history regardless of the table window. */
-let SHP_HIST=null, SHP_FULL=false;
+let SHP_HIST=null, SHP_FULL=false, SHP_GOV=null;   // SHP_GOV = {qeISO: gov%} from the slice
 function shpHistView(){
   // rewind: only filings SUBMITTED by the as-of date (submission date, else quarter end + a
   // filing-lag cushion of 45 days when the submission date is missing)
@@ -1643,6 +1649,7 @@ async function liveQuote(){
       installStockFin(TKR,F);
       REVOP={}; if(F&&F.revop) REVOP[TKR]=F.revop;
       FIN_X=(F&&F.x)||null;
+      SHP_GOV=(F&&F.shpGov)||null;                                       // Government row lookup
       try{ renderFunds(); }catch(e){ console.error(e); }
       try{ renderKPI((F&&F.kpi)||null); }catch(e){ console.error(e); }   // Insights card (runbook §137)
       if(F&&F.shpH&&F.shpH.length){

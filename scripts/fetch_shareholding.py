@@ -52,6 +52,9 @@ HIST = os.path.join(HERE, "shp_history.json")
 EVENTS = os.path.join(HERE, "shp_events.json")
 OUT = os.path.join(HERE, "..", "docs", "shareholding.json")
 META_OUT = os.path.join(HERE, "..", "docs", "shp_meta.json")
+# Government holding sidecar {SYM: {QE: gov%}} — kept OUT of the shp_history cell so none of the
+# cell merge/heal/backtest passes are touched. Joined into the per-stock slice by build_stock_fin.
+GOV_OUT = os.path.join(HERE, "..", "docs", "shp_gov.json")
 SLIM = os.path.join(HERE, "..", "docs", "dash_slim.bin")
 CLASSIF = os.path.join(HERE, "..", "docs", "sector_classification.json")
 
@@ -101,6 +104,13 @@ MEMBERS = {
     # so it is the npnp bucket under another label, not a public sub-category. Parent row only: its
     # children (CorporateTradingMember, IndividualTradingMember, …) sum back to it and would double-count.
     "TradingMembersAndAssociatesOfTradingMembers": "npnp2",
+    # Government (Central/State/President of India) — a PUBLIC sub-category, so it never enters the
+    # promoter/public/npnp partition; captured only to surface Screener's separate "Government" row.
+    # Real filings spell it four ways (incl. the "Goverments" typo). Written to a sidecar, NOT the cell.
+    "CentralGovernmentOrStateGovernmentSOrPresidentOfIndiaMember": "gov",
+    "CentralGovernmentOrStateGovernmentSMember": "gov",
+    "GovernmentsMember": "gov",
+    "GovermentsMember": "gov",
 }
 def _third(vals):
     """The SEBI partition's third bucket (neither promoter nor public), whichever label the filer
@@ -798,6 +808,18 @@ def parse_shp(txt, qe_iso):
         for key, slots in groups.items():
             n = _sum(slots)
             if n is not None: out[key] = n / tot_sh * 100.0
+    # Government row (public sub-category) for the sidecar — share-count precision where available,
+    # else the filer's own 2dp percentage. Present only when the filing carried the member AND the
+    # value is a genuine PUBLIC government holding. In a PSU the SAME GovernmentsMember tag carries the
+    # PROMOTER government stake (President of India owns e.g. UCOBANK 90.95% = the promoter row); that
+    # must not surface as a public "Government" row. A public government holding is part of Public &
+    # others, so it can never exceed 100 − promoter − FII − DII.
+    if "gov" in vals:
+        gov_raw = (shares["gov"] / tot_sh * 100.0) if (tot_sh and "gov" in shares) \
+            else (vals["gov"] or 0.0) * scale
+        pub_noninst = 100.0 - out.get("prom", 0.0) - out.get("fii", 0.0) - out.get("dii", 0.0)
+        if gov_raw <= pub_noninst + 0.5:
+            out["gov"] = gov_raw
     out = {k: round(v, 4) for k, v in out.items()}
     # nsh is OPTIONAL, so an implausible one gets dropped rather than published: the grand total
     # can never be below the public-shareholder count. BSE Ltd Sep-2024 files 248 against 539,914
@@ -817,6 +839,10 @@ def refresh_quarters(qes, reparse=False, only=None, fill_shares=False):
     cellfix = load_cell_fix()     # load_hist already applied it; re-applied post-fetch below
     names = hist.setdefault("_names", {})
     shares = load_shares()
+    gov = {}                      # Government sidecar, fill-or-newer-submission-wins
+    if os.path.exists(GOV_OUT):
+        try: gov = json.load(open(GOV_OUT, encoding="utf-8"))
+        except Exception: gov = {}
     before = cells_of(hist)
     stats = []
 
@@ -876,6 +902,12 @@ def refresh_quarters(qes, reparse=False, only=None, fill_shares=False):
                     cell = [res["prom"], res["fii"], res["dii"], res["mf"], res["ins"], r["sub"]]
                     if res.get("nsh"): cell.append(res["nsh"])
                     hist.setdefault(sym, {})[qe] = cell
+                    # Government sidecar (separate file, never in the cell): newest submission wins.
+                    if res.get("gov") is not None:
+                        g = gov.setdefault(sym, {})
+                        prev = g.get(qe)
+                        if not (isinstance(prev, list) and len(prev) > 1 and str(prev[1]) > r["sub"]):
+                            g[qe] = [res["gov"], r["sub"]]
                     if r["name"]: names[sym] = r["name"]
                     done += 1
                     if done % FLUSH_EVERY == 0:
@@ -896,6 +928,10 @@ def refresh_quarters(qes, reparse=False, only=None, fill_shares=False):
         sys.exit(1)
     apply_cell_fix(hist, cellfix)
     save_hist(hist)
+    tmp = GOV_OUT + ".tmp"
+    json.dump(gov, open(tmp, "w", encoding="utf-8"), ensure_ascii=False, separators=(",", ":"), sort_keys=True)
+    os.replace(tmp, GOV_OUT)
+    print("government sidecar: %d symbols -> %s" % (sum(1 for k in gov if not k.startswith("_")), os.path.basename(GOV_OUT)))
     if QUARANTINE:
         json.dump(QUARANTINE, open(os.path.join(HERE, "shp_quarantine.json"), "w"),
                   ensure_ascii=False, indent=1)
