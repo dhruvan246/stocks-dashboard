@@ -184,6 +184,35 @@ def uncovered_syms():
     return out
 
 
+def prep(syms, want_fys, outdir, max_reports=3, verbose=True):
+    """NATIVE-VISION mode (no API key, no quota): render each name's BRSR employees page(s) to PNG in
+    `outdir` and write manifest.json [{sym, fy, page, png}]. A Claude session (interactive now, or the
+    scheduled routine at scale) then Reads the PNGs with its own vision and lands the numbers — the
+    repo's bse-vision-fill pattern (cross-session handoff 2026-09-07). Renders NOTHING when the page
+    can't be located, so no blind guesses reach the reader."""
+    os.makedirs(outdir, exist_ok=True)
+    manifest = []
+    for sym in syms:
+        for a in H.annual_reports(sym)[:max_reports]:
+            if a["fy"] not in want_fys:
+                continue
+            p = H.fetch(a, sym)
+            if not p:
+                continue
+            doc = fitz.open(p)
+            pgs = brsr_pages(doc)
+            for pi in pgs:
+                fn = "%s_FY%d_p%d.png" % (sym, a["fy"], pi + 1)
+                with open(os.path.join(outdir, fn), "wb") as fh:
+                    fh.write(render(doc, pi))
+                manifest.append({"sym": sym, "fy": a["fy"], "page": pi + 1, "png": fn})
+            doc.close()
+            if verbose:
+                print("  %s FY%d -> pages %s" % (sym, a["fy"], [x + 1 for x in pgs]), flush=True)
+    json.dump(manifest, open(os.path.join(outdir, "manifest.json"), "w"), indent=1)
+    print("PREP DONE: %d PNG pages for %d symbols -> %s" % (len(manifest), len(syms), outdir), flush=True)
+
+
 def main():
     ap = argparse.ArgumentParser()
     ap.add_argument("syms", nargs="*")
@@ -192,11 +221,15 @@ def main():
     ap.add_argument("--since-fy", type=int, default=2020)
     ap.add_argument("--max-reports", type=int, default=4)
     ap.add_argument("--save", action="store_true")
+    ap.add_argument("--prep", metavar="DIR", help="native-vision: render BRSR pages to PNGs + manifest (no Gemini)")
     a = ap.parse_args()
     want = set(range(a.since_fy, date.today().year + 1))
     syms = uncovered_syms() if a.uncovered else list(a.syms)
     if a.limit:
         syms = syms[:a.limit]
+    if a.prep:
+        prep(syms, want, a.prep, max_reports=a.max_reports)
+        return
     print("vision: %d symbols, model %s, key=%s" % (
         len(syms), os.environ.get("GEMINI_MODEL", "gemini-3.6-flash"), "set" if GV._key() else "MISSING"), flush=True)
     os.makedirs(H.LEDGER_DIR, exist_ok=True)
