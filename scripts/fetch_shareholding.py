@@ -921,6 +921,10 @@ def refresh_quarters(qes, reparse=False, only=None, fill_shares=False):
               % (qe, done, skip, quar, nsh_new))
         save_hist(hist)
         save_shares(shares)
+        # persist the Government sidecar per-quarter too, so a long backfill survives an interruption
+        _gtmp = GOV_OUT + ".tmp"
+        json.dump(gov, open(_gtmp, "w", encoding="utf-8"), ensure_ascii=False, separators=(",", ":"), sort_keys=True)
+        os.replace(_gtmp, GOV_OUT)
 
     after = cells_of(hist)
     if after < before:
