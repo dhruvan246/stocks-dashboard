@@ -147,7 +147,7 @@ function render(){
     return `<tr data-i="${i}">
       <td class="px-3 py-2 miss">${i+1}</td>
       <td class="px-3 py-2"><div class="flex items-center gap-2"><span class="font-semibold">${r.name}</span> ${badge}</div>
-          <div class="subnote">${r.sector||''}</div></td>
+          <div class="subnote">${r.sector||''}${(r.aliases&&r.aliases.length)?` · formerly ${r.aliases.join(', ')}`:''}</div></td>
       ${cells}${yc}
       <td class="px-3 py-2 text-center">${sparkline(s)}</td></tr>`;
   }).join('') || `<tr><td colspan="99" class="px-3 py-8 text-center subnote">No companies match.</td></tr>`;

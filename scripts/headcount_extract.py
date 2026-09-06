@@ -62,11 +62,26 @@ def _get(url, timeout=60, binary=False):
 _SCRIPS = None
 
 
+_MASTER = None
+
+
 def scripcode(sym):
-    global _SCRIPS
+    """BSE scrip code: bse_scrips.json first, then _bse_master_all.json (delisted/merged names such
+    as HDFC, MINDTREE, IDFC, PEL keep their code there and their FY20-23 reports still exist on BSE)."""
+    global _SCRIPS, _MASTER
     if _SCRIPS is None:
         _SCRIPS = json.load(open(SCRIPS, encoding="utf-8")).get("by_id", {})
     v = _SCRIPS.get(sym)
+    if v:
+        return int(v)
+    if _MASTER is None:
+        mp = os.path.join(HERE, "_bse_master_all.json")
+        _MASTER = {}
+        if os.path.exists(mp):
+            for x in json.load(open(mp, encoding="utf-8")):
+                if x.get("scrip_id") and x.get("SCRIP_CD"):
+                    _MASTER.setdefault(x["scrip_id"], x["SCRIP_CD"])
+    v = _MASTER.get(sym)
     return int(v) if v else None
 
 
@@ -229,15 +244,16 @@ BRSR_ANCHOR = re.compile(r"Employees\s+and\s+workers", re.I)
 # column shifts D/E/(D+E) → E/F/(E+F) (HCLTech). A table whose text layout separates label from number
 # won't match → that FY ships nothing and is queued for the LLM/vision reader, never guessed.
 _L = r"[A-H]"
-_ROW = r"([\d,]{2,})\s+([\d,]{2,})\s+[\d.]+\s*%?\s+([\d,]{2,})"
+_N = r"(\d[\d,]*)"     # a count cell — 1+ digits (a holding company can have 6 employees: MFSL "10 6 60% 4 40%")
+_ROW = _N + r"\s+" + _N + r"\s+[\d.]+\s*%?\s+" + _N
 # (?<!than ) so the "Permanent" inside "Other than Permanent" never matches a permanent row — else a
 # dash in "Permanent (F) -" lets the regex fall through to "Other than Permanent (G) 63,297" and read
 # contractual workers as permanent, inflating on-roll (Bharti Airtel: 14,322 → 77,619).
 BRSR_PERM = re.compile(r"(?<!than )Permanent\s*\(\s*" + _L + r"\s*\)\s+" + _ROW, re.I)
-BRSR_OTHER = re.compile(r"Other\s+than\s+[Pp]ermanent\s*\(\s*" + _L + r"\s*\)\s+([\d,]{2,})", re.I)
+BRSR_OTHER = re.compile(r"Other\s+than\s+[Pp]ermanent\s*\(\s*" + _L + r"\s*\)\s+" + _N, re.I)
 BRSR_TOTE = re.compile(r"Total\s+employees\s*\(\s*" + _L + r"\s*\+\s*" + _L + r"\s*\)\s+" + _ROW, re.I)
-BRSR_WPERM = re.compile(r"(?<!than )Permanent\s*\(\s*" + _L + r"\s*\)\s+([\d,]{2,})", re.I)
-BRSR_WTOT = re.compile(r"Total\s+workers\s*\(\s*" + _L + r"\s*\+\s*" + _L + r"\s*\)\s+([\d,]{2,})", re.I)
+BRSR_WPERM = re.compile(r"(?<!than )Permanent\s*\(\s*" + _L + r"\s*\)\s+" + _N, re.I)
+BRSR_WTOT = re.compile(r"Total\s+workers\s*\(\s*" + _L + r"\s*\+\s*" + _L + r"\s*\)\s+" + _N, re.I)
 
 
 def _parse_brsr_zone(zone):
@@ -274,24 +290,43 @@ def _parse_brsr_zone(zone):
         rec["wrk_perm"] = _int(wp.group(1))
     if rec.get("emp_perm") is not None:
         rec["onroll_perm"] = rec["emp_perm"] + (rec.get("wrk_perm") or 0)
-    # sanity: total >= permanent (total = permanent + other), and a real N500 entity has >= 50 people
+    # sanity: total >= permanent (total = permanent + other). Floor is tiny on purpose — a listed
+    # holding company can genuinely run on a handful of staff (Max Financial: 10). The differently-abled
+    # sub-table is kept out by extract_brsr's heading check, not by size.
     et, ep = rec.get("emp_total"), rec.get("emp_perm")
     if et and ep and et < ep:                       # a half-parsed row → distrust
         return None
-    if (et or 0) < 50 and (ep or 0) < 50:
+    if (et or 0) < 3 and (ep or 0) < 3:
         return None
     return rec
 
 
+# The differently-abled sub-table's heading starts "Differently abled employees…"; the MAIN table's
+# standard heading is "Employees and workers (including differently abled)" — so only a "differently"
+# NOT preceded by "including " marks the sub-table.
+_SUBTABLE = re.compile(r"(?<!including )(?<!including\n)differently|disabilit|disabled", re.I)
+
+
 def extract_brsr(pages):
-    """Best 'Employees and workers' table across the report → (record, page). Among all occurrences
-    (excluding the small differently-abled sub-table) the main workforce table has the largest total."""
+    """Best BRSR employees table across the report → (record, page). ANCHOR-FREE: the table is found by
+    its own row signature ("Permanent (D) n n % n" / "Total employees (D+E) …"), because the heading
+    varies — TCS writes "Employees (including differently abled)", never "Employees and workers", and
+    the old anchor missed it entirely (perfect rows, zero matches). Among candidates (differently-abled
+    sub-table excluded by its heading) the main workforce table has the largest total."""
     cands = []
     for pno, txt in pages:
-        for m0 in BRSR_ANCHOR.finditer(txt):
-            if re.search(r"differently|disabilit|disabled", txt[max(0, m0.start() - 40):m0.start()], re.I):
+        seeds = sorted({m.start() for m in BRSR_TOTE.finditer(txt)} | {m.start() for m in BRSR_PERM.finditer(txt)})
+        last = -10_000
+        for s in seeds:
+            if s - last < 400:                      # same table, already seeded
                 continue
-            rec = _parse_brsr_zone(txt[m0.start():m0.start() + 2600])
+            last = s
+            zone = txt[max(0, s - 900): s + 1600]
+            pm = BRSR_PERM.search(zone)
+            head = zone[max(0, (pm.start() if pm else 0) - 260):(pm.start() if pm else 0)]
+            if _SUBTABLE.search(head):
+                continue
+            rec = _parse_brsr_zone(zone)
             if rec:
                 cands.append((rec.get("emp_total") or rec.get("emp_perm") or 0, rec, pno))
     if not cands:

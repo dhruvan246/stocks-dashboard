@@ -101,11 +101,30 @@ def main():
     per, latest_date = load_membership()
     name, sector = load_names()
     fys = list(range(START_FY, date.today().year + 1))
+    # Rename-orphans: an old ticker in an early snapshot and its current ticker in a later one are the
+    # SAME company (CADILAHC→ZYDUSLIFE, ADANIGAS→ATGL…). Fold the old name into the current row (carry
+    # its membership, list it as an alias) rather than listing one company twice. An old name whose
+    # current ticker sits outside the universe keeps its own row but reads the current ticker's ledger.
+    rmap = json.load(open(RENAME)) if os.path.exists(RENAME) else {}
+    fold, aliases, ledger_of = set(), {}, {}
+    for sym in list(per):
+        if sym.startswith("DUMMY") or os.path.exists(os.path.join(LEDGERS, sym + ".json")):
+            continue
+        tgt = rmap.get(sym)
+        if not tgt or tgt == sym:
+            continue
+        if tgt in per:
+            fold.add(sym)
+            aliases.setdefault(tgt, []).append(sym)
+            per[tgt]["now"] = per[tgt]["now"] or per[sym]["now"]
+            per[tgt]["snaps"] = sorted(set(per[tgt]["snaps"]) | set(per[sym]["snaps"]))
+        elif os.path.exists(os.path.join(LEDGERS, tgt + ".json")):
+            ledger_of[sym] = tgt
     rows, covered = [], 0
     for sym in sorted(per):
-        if sym.startswith("DUMMY"):
+        if sym.startswith("DUMMY") or sym in fold:
             continue
-        led_path = os.path.join(LEDGERS, sym + ".json")
+        led_path = os.path.join(LEDGERS, ledger_of.get(sym, sym) + ".json")
         emp, total, mf, src = {}, {}, {}, {}
         onroll, etot = {}, {}
         if os.path.exists(led_path):
@@ -145,6 +164,7 @@ def main():
             yoy = round((emp[latest_fy] - emp[prev_fy]) / emp[prev_fy], 4)
         rows.append({
             "sym": sym, "name": name.get(sym, sym), "sector": sector.get(sym, ""),
+            "aliases": aliases.get(sym, []), "alias_of": ledger_of.get(sym),
             "now": per[sym]["now"], "emp": emp, "total": total, "mf": mf, "src": src,
             "latest": emp.get(latest_fy), "latest_fy": latest_fy, "yoy": yoy,
         })
