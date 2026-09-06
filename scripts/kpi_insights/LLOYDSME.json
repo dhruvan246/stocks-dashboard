@@ -1,8 +1,568 @@
 {
  "sym": "LLOYDSME",
  "fy_end_month": 3,
- "docs": {},
- "metrics": [],
+ "docs": {
+  "54807dea-bee2-4650-b582-d5dbb9e2f2c2.pdf": {
+   "kind": "ip",
+   "date": "2026-08-10",
+   "title": "Q1 FY27 Investor Presentation",
+   "read": "2026-09-06",
+   "by": "claude-routine"
+  },
+  "c69649dc-d183-4420-881a-2af285df6e9f.pdf": {
+   "kind": "ar",
+   "date": "2026-05-25",
+   "title": "Integrated Annual Report FY 2025-26",
+   "read": "2026-09-06",
+   "by": "claude-routine"
+  }
+ },
+ "metrics": [
+  {
+   "name": "TEIPL Baryte Mining Volume",
+   "unit": "Mn Cubic meters",
+   "kind": "flow",
+   "y": {
+    "20250331": 9.02,
+    "20260331": 8.6
+   },
+   "q": {
+    "20250630": 2.43,
+    "20260630": 2.14
+   },
+   "src": {
+    "q:20250630": [
+     "54807dea-bee2-4650-b582-d5dbb9e2f2c2.pdf",
+     16,
+     "Baryte - Incl. OB (Mn Cubic meters)",
+     "2.43"
+    ],
+    "y:20250331": [
+     "54807dea-bee2-4650-b582-d5dbb9e2f2c2.pdf",
+     16,
+     "Baryte - Incl. OB (Mn Cubic meters)",
+     "9.02"
+    ],
+    "y:20260331": [
+     "54807dea-bee2-4650-b582-d5dbb9e2f2c2.pdf",
+     16,
+     "Baryte - Incl. OB (Mn Cubic meters)",
+     "8.60"
+    ],
+    "q:20260630": [
+     "54807dea-bee2-4650-b582-d5dbb9e2f2c2.pdf",
+     16,
+     "Baryte - Incl. OB (Mn Cubic meters)",
+     "2.14"
+    ]
+   }
+  },
+  {
+   "name": "TEIPL Iron Ore Mining Volume",
+   "unit": "Mn Tonnes",
+   "kind": "flow",
+   "y": {
+    "20250331": 35.44,
+    "20260331": 54.94
+   },
+   "q": {
+    "20250630": 9.87,
+    "20260630": 19.09
+   },
+   "src": {
+    "q:20250630": [
+     "54807dea-bee2-4650-b582-d5dbb9e2f2c2.pdf",
+     16,
+     "Iron Ore (Mn Tonnes) - Incl BHQ",
+     "9.87"
+    ],
+    "y:20250331": [
+     "54807dea-bee2-4650-b582-d5dbb9e2f2c2.pdf",
+     16,
+     "Iron Ore (Mn Tonnes) - Incl BHQ",
+     "35.44"
+    ],
+    "y:20260331": [
+     "54807dea-bee2-4650-b582-d5dbb9e2f2c2.pdf",
+     16,
+     "Iron Ore (Mn Tonnes) - Incl BHQ",
+     "54.94"
+    ],
+    "q:20260630": [
+     "54807dea-bee2-4650-b582-d5dbb9e2f2c2.pdf",
+     16,
+     "Iron Ore (Mn Tonnes) - Incl BHQ",
+     "19.09"
+    ]
+   }
+  },
+  {
+   "name": "DRI (Sponge Iron) Production",
+   "unit": "Tonnes",
+   "kind": "flow",
+   "y": {
+    "20240331": 261984.0,
+    "20250331": 308243.0,
+    "20260331": 484046.0
+   },
+   "q": {},
+   "src": {
+    "y:20240331": [
+     "c69649dc-d183-4420-881a-2af285df6e9f.pdf",
+     70,
+     "Sponge Iron Production (Tonnes)",
+     "2,61,984"
+    ],
+    "y:20250331": [
+     "c69649dc-d183-4420-881a-2af285df6e9f.pdf",
+     70,
+     "Sponge Iron Production (Tonnes)",
+     "3,08,243"
+    ],
+    "y:20260331": [
+     "c69649dc-d183-4420-881a-2af285df6e9f.pdf",
+     70,
+     "Sponge Iron Production (Tonnes)",
+     "4,84,046"
+    ]
+   }
+  },
+  {
+   "name": "DRI Sales Volume",
+   "unit": "'000 MT",
+   "kind": "flow",
+   "y": {},
+   "q": {
+    "20250630": 78.93,
+    "20260331": 188.38,
+    "20260630": 183.92
+   },
+   "src": {
+    "q:20250630": [
+     "54807dea-bee2-4650-b582-d5dbb9e2f2c2.pdf",
+     10,
+     "Sales ('000 MT) - DRI",
+     "78.93"
+    ],
+    "q:20260331": [
+     "54807dea-bee2-4650-b582-d5dbb9e2f2c2.pdf",
+     10,
+     "Sales ('000 MT) - DRI",
+     "188.38"
+    ],
+    "q:20260630": [
+     "54807dea-bee2-4650-b582-d5dbb9e2f2c2.pdf",
+     10,
+     "Sales ('000 MT) - DRI",
+     "183.92"
+    ]
+   }
+  },
+  {
+   "name": "Iron Ore Production",
+   "unit": "MnT",
+   "kind": "flow",
+   "y": {
+    "20250331": 10.0,
+    "20260331": 21.96
+   },
+   "q": {
+    "20260630": 6.05
+   },
+   "src": {
+    "y:20260331": [
+     "c69649dc-d183-4420-881a-2af285df6e9f.pdf",
+     67,
+     "Iron ore production for the year stood at 21.96 MnT",
+     "21.96"
+    ],
+    "q:20260630": [
+     "54807dea-bee2-4650-b582-d5dbb9e2f2c2.pdf",
+     9,
+     "Iron ore production volume for Q1FY27",
+     "6.05"
+    ],
+    "y:20250331": [
+     "c69649dc-d183-4420-881a-2af285df6e9f.pdf",
+     70,
+     "120% year-on-year increase over 10 MnT in FY 2024-25",
+     "10"
+    ]
+   }
+  },
+  {
+   "name": "Iron Ore Sales Volume",
+   "unit": "MMT",
+   "kind": "flow",
+   "y": {},
+   "q": {
+    "20250630": 3.45,
+    "20260331": 6.16,
+    "20260630": 5.46
+   },
+   "src": {
+    "q:20250630": [
+     "54807dea-bee2-4650-b582-d5dbb9e2f2c2.pdf",
+     10,
+     "Sales (MMT) - Iron Ore",
+     "3.45"
+    ],
+    "q:20260331": [
+     "54807dea-bee2-4650-b582-d5dbb9e2f2c2.pdf",
+     10,
+     "Sales (MMT) - Iron Ore",
+     "6.16"
+    ],
+    "q:20260630": [
+     "54807dea-bee2-4650-b582-d5dbb9e2f2c2.pdf",
+     10,
+     "Sales (MMT) - Iron Ore",
+     "5.46"
+    ]
+   }
+  },
+  {
+   "name": "Power Production",
+   "unit": "MW",
+   "kind": "flow",
+   "y": {
+    "20240331": 26.42,
+    "20250331": 29.01,
+    "20260331": 30.5
+   },
+   "q": {},
+   "src": {
+    "y:20240331": [
+     "c69649dc-d183-4420-881a-2af285df6e9f.pdf",
+     70,
+     "Power Production (MW)",
+     "26.42"
+    ],
+    "y:20250331": [
+     "c69649dc-d183-4420-881a-2af285df6e9f.pdf",
+     70,
+     "Power Production (MW)",
+     "29.01"
+    ],
+    "y:20260331": [
+     "c69649dc-d183-4420-881a-2af285df6e9f.pdf",
+     70,
+     "Power Production (MW)",
+     "30.50"
+    ]
+   }
+  },
+  {
+   "name": "DRI EBITDA per Tonne",
+   "unit": "INR/tonne",
+   "kind": "flow",
+   "y": {
+    "20260331": 6643.0
+   },
+   "q": {
+    "20260630": 6273.0
+   },
+   "src": {
+    "q:20260630": [
+     "54807dea-bee2-4650-b582-d5dbb9e2f2c2.pdf",
+     9,
+     "EBITDA/tonne for Q1FY27 (DRI)",
+     "6,273"
+    ],
+    "y:20260331": [
+     "c69649dc-d183-4420-881a-2af285df6e9f.pdf",
+     70,
+     "EBITDA per tonne of INR 6,643 (DRI, FY26)",
+     "6,643"
+    ]
+   }
+  },
+  {
+   "name": "DRI Realisation",
+   "unit": "INR/tonne",
+   "kind": "flow",
+   "y": {
+    "20260331": 27009.0
+   },
+   "q": {
+    "20260630": 27376.0
+   },
+   "src": {
+    "q:20260630": [
+     "54807dea-bee2-4650-b582-d5dbb9e2f2c2.pdf",
+     9,
+     "DRI Realisations for Q1FY27",
+     "27,376"
+    ],
+    "y:20260331": [
+     "c69649dc-d183-4420-881a-2af285df6e9f.pdf",
+     70,
+     "realisation of INR 27,009 per tonne (DRI, FY26)",
+     "27,009"
+    ]
+   }
+  },
+  {
+   "name": "Pellet Production",
+   "unit": "MnT",
+   "kind": "flow",
+   "y": {
+    "20260331": 3.03
+   },
+   "q": {
+    "20260630": 1.69
+   },
+   "src": {
+    "y:20260331": [
+     "54807dea-bee2-4650-b582-d5dbb9e2f2c2.pdf",
+     13,
+     "Pellet Production FY26 Actual",
+     "3.03"
+    ],
+    "q:20260630": [
+     "54807dea-bee2-4650-b582-d5dbb9e2f2c2.pdf",
+     9,
+     "Pellets Production for Q1FY27",
+     "1.69"
+    ]
+   }
+  },
+  {
+   "name": "Total Employees Count",
+   "unit": "count",
+   "kind": "level",
+   "y": {
+    "20250331": 1371.0,
+    "20260331": 2591.0
+   },
+   "q": {},
+   "src": {
+    "y:20250331": [
+     "c69649dc-d183-4420-881a-2af285df6e9f.pdf",
+     156,
+     "Total Employees",
+     "1371"
+    ],
+    "y:20260331": [
+     "c69649dc-d183-4420-881a-2af285df6e9f.pdf",
+     156,
+     "Total Employees",
+     "2591"
+    ]
+   }
+  },
+  {
+   "name": "Total Workers Count",
+   "unit": "count",
+   "kind": "level",
+   "y": {
+    "20250331": 999.0,
+    "20260331": 2275.0
+   },
+   "q": {},
+   "src": {
+    "y:20250331": [
+     "c69649dc-d183-4420-881a-2af285df6e9f.pdf",
+     156,
+     "Total Workers",
+     "999"
+    ],
+    "y:20260331": [
+     "c69649dc-d183-4420-881a-2af285df6e9f.pdf",
+     156,
+     "Total Workers",
+     "2275"
+    ]
+   }
+  },
+  {
+   "name": "Copper Production",
+   "unit": "KT",
+   "kind": "flow",
+   "y": {
+    "20260331": 2.5
+   },
+   "q": {},
+   "src": {
+    "y:20260331": [
+     "54807dea-bee2-4650-b582-d5dbb9e2f2c2.pdf",
+     13,
+     "Copper FY26 Actual",
+     "2.5"
+    ]
+   }
+  },
+  {
+   "name": "DRI Production",
+   "unit": "KT",
+   "kind": "flow",
+   "y": {
+    "20260331": 484.0
+   },
+   "q": {},
+   "src": {
+    "y:20260331": [
+     "54807dea-bee2-4650-b582-d5dbb9e2f2c2.pdf",
+     13,
+     "DRI Production FY26 Actual",
+     "484"
+    ]
+   }
+  },
+  {
+   "name": "DRI Sales Volume (Annual)",
+   "unit": "MT",
+   "kind": "flow",
+   "y": {
+    "20260331": 479690.0
+   },
+   "q": {},
+   "src": {
+    "y:20260331": [
+     "c69649dc-d183-4420-881a-2af285df6e9f.pdf",
+     70,
+     "DRI sales volume for FY 2025-26 stood at 479,690 MT",
+     "479,690"
+    ]
+   }
+  },
+  {
+   "name": "Iron Ore EBITDA per Tonne",
+   "unit": "INR/tonne",
+   "kind": "flow",
+   "y": {},
+   "q": {
+    "20260630": 2230.0
+   },
+   "src": {
+    "q:20260630": [
+     "54807dea-bee2-4650-b582-d5dbb9e2f2c2.pdf",
+     9,
+     "EBITDA per tonne for Q1FY27 (Iron Ore)",
+     "2,230"
+    ]
+   }
+  },
+  {
+   "name": "Iron Ore Realisation per Tonne",
+   "unit": "INR/tonne",
+   "kind": "flow",
+   "y": {},
+   "q": {
+    "20260630": 6068.0
+   },
+   "src": {
+    "q:20260630": [
+     "54807dea-bee2-4650-b582-d5dbb9e2f2c2.pdf",
+     9,
+     "Realisation per tonne for Q1FY27 (Iron Ore)",
+     "6,068"
+    ]
+   }
+  },
+  {
+   "name": "Iron Ore Sales Volume",
+   "unit": "Million Tonnes",
+   "kind": "flow",
+   "y": {
+    "20260331": 16.18
+   },
+   "q": {},
+   "src": {
+    "y:20260331": [
+     "c69649dc-d183-4420-881a-2af285df6e9f.pdf",
+     70,
+     "Iron Ore Sales Quantity (Million Tonnes)",
+     "16.18"
+    ]
+   }
+  },
+  {
+   "name": "Pellet Capacity Utilisation",
+   "unit": "%",
+   "kind": "level",
+   "y": {},
+   "q": {
+    "20260630": 100.0
+   },
+   "src": {
+    "q:20260630": [
+     "54807dea-bee2-4650-b582-d5dbb9e2f2c2.pdf",
+     9,
+     "Achieved 100% Capacity Utilisation within 4 months (Pellets)",
+     "100"
+    ]
+   }
+  },
+  {
+   "name": "Pellet EBITDA per Tonne",
+   "unit": "INR/tonne",
+   "kind": "flow",
+   "y": {},
+   "q": {
+    "20260630": 5803.0
+   },
+   "src": {
+    "q:20260630": [
+     "54807dea-bee2-4650-b582-d5dbb9e2f2c2.pdf",
+     9,
+     "EBITDA per tonne for Q1FY27 (Pellets)",
+     "5,803"
+    ]
+   }
+  },
+  {
+   "name": "Pellet Plant Production",
+   "unit": "Million Tonnes",
+   "kind": "flow",
+   "y": {
+    "20260331": 3.03
+   },
+   "q": {},
+   "src": {
+    "y:20260331": [
+     "c69649dc-d183-4420-881a-2af285df6e9f.pdf",
+     70,
+     "Pellet Plant Production (Million Tonnes)",
+     "3.03"
+    ]
+   }
+  },
+  {
+   "name": "Pellet Realisation per Tonne",
+   "unit": "INR/tonne",
+   "kind": "flow",
+   "y": {},
+   "q": {
+    "20260630": 11783.0
+   },
+   "src": {
+    "q:20260630": [
+     "54807dea-bee2-4650-b582-d5dbb9e2f2c2.pdf",
+     9,
+     "Realisation per tonne for Q1FY27 (Pellets)",
+     "11,783"
+    ]
+   }
+  },
+  {
+   "name": "Total Copper Produced",
+   "unit": "tonnes",
+   "kind": "flow",
+   "y": {},
+   "q": {
+    "20260630": 2754.0
+   },
+   "src": {
+    "q:20260630": [
+     "54807dea-bee2-4650-b582-d5dbb9e2f2c2.pdf",
+     17,
+     "Total Copper Produced (in tonnes)",
+     "2,754"
+    ]
+   }
+  }
+ ],
  "held": [],
  "catalog": [
   {
