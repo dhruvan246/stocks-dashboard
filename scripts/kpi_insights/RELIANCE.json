@@ -155,6 +155,20 @@
    "title": "Integrated Annual Report FY 2025-26 (RIL)",
    "read": "2026-09-06",
    "by": "claude-routine"
+  },
+  "468b09a3-a212-4066-bbaa-4b0ba524d2ce.pdf": {
+   "kind": "ar",
+   "date": "2025-08-07",
+   "title": "Integrated Annual Report FY 2024-25 (RIL)",
+   "read": "2026-09-06",
+   "by": "claude-routine"
+  },
+  "23ad7a63-fb83-41c9-80e2-b93da1b28f14.pdf": {
+   "kind": "ar",
+   "date": "2024-08-07",
+   "title": "Integrated Annual Report FY 2023-24 (RIL)",
+   "read": "2026-09-06",
+   "by": "claude-routine"
   }
  },
  "metrics": [
@@ -379,8 +393,8 @@
    "y": {
     "20210331": 4.14,
     "20220331": 6.82,
-    "20230331": 21.63,
-    "20240331": 14.43,
+    "20230331": 21.6,
+    "20240331": 14.4,
     "20250331": 10.95,
     "20260331": 9.43
    },
@@ -458,16 +472,16 @@
      "11.59"
     ],
     "y:20240331": [
-     "0501df4e-7d64-455d-bbb0-4b2118067e51.pdf",
-     38,
-     "Price Realisation - CBM (GCV - $/MMBTU)",
-     "14.43"
+     "23ad7a63-fb83-41c9-80e2-b93da1b28f14.pdf",
+     37,
+     "CBM Gas (US$/mmbtu)",
+     "14.4"
     ],
     "y:20230331": [
-     "7c228ccc-99ad-4bd9-be72-0a746c30ebee.pdf",
-     49,
-     "Price Realisation ($/MMBTU) - CBM (GCV)",
-     "21.63"
+     "23ad7a63-fb83-41c9-80e2-b93da1b28f14.pdf",
+     37,
+     "CBM Gas (US$/mmbtu)",
+     "21.6"
     ],
     "q:20240331": [
      "0501df4e-7d64-455d-bbb0-4b2118067e51.pdf",
@@ -577,7 +591,23 @@
      "CBM Gas (US$/mmbtu)",
      "9.43"
     ]
-   }
+   },
+   "restated": [
+    [
+     "y:20240331",
+     "0501df4e-7d64-455d-bbb0-4b2118067e51.pdf",
+     14.43,
+     "23ad7a63-fb83-41c9-80e2-b93da1b28f14.pdf",
+     14.4
+    ],
+    [
+     "y:20230331",
+     "7c228ccc-99ad-4bd9-be72-0a746c30ebee.pdf",
+     21.63,
+     "23ad7a63-fb83-41c9-80e2-b93da1b28f14.pdf",
+     21.6
+    ]
+   ]
   },
   {
    "name": "CBM Gas Production (RIL share)",
@@ -3291,7 +3321,7 @@
    "unit": "$/barrel",
    "kind": "flow",
    "y": {
-    "20240331": 81.17,
+    "20240331": 81.2,
     "20250331": 79.8,
     "20260331": 71.96
    },
@@ -3308,10 +3338,10 @@
      "83.00"
     ],
     "y:20240331": [
-     "0501df4e-7d64-455d-bbb0-4b2118067e51.pdf",
-     38,
-     "Price Realisation - Condensate ($/barrel)",
-     "81.17"
+     "23ad7a63-fb83-41c9-80e2-b93da1b28f14.pdf",
+     37,
+     "Condensate (US$/bbl)",
+     "81.2"
     ],
     "q:20240331": [
      "0501df4e-7d64-455d-bbb0-4b2118067e51.pdf",
@@ -3337,7 +3367,16 @@
      "Condensate (US$/bbl)",
      "79.80"
     ]
-   }
+   },
+   "restated": [
+    [
+     "y:20240331",
+     "0501df4e-7d64-455d-bbb0-4b2118067e51.pdf",
+     81.17,
+     "23ad7a63-fb83-41c9-80e2-b93da1b28f14.pdf",
+     81.2
+    ]
+   ]
   },
   {
    "name": "Jio Subscriber Market Share",
@@ -3431,6 +3470,44 @@
    }
   },
   {
+   "name": "Average Total Gas Production (RIL share)",
+   "unit": "MMSCMD",
+   "kind": "flow",
+   "y": {
+    "20210331": 6.5,
+    "20220331": 18.2,
+    "20230331": 20.2,
+    "20240331": 27.8
+   },
+   "q": {},
+   "src": {
+    "y:20240331": [
+     "23ad7a63-fb83-41c9-80e2-b93da1b28f14.pdf",
+     37,
+     "AVERAGE GAS PRODUCTION",
+     "27.8"
+    ],
+    "y:20230331": [
+     "23ad7a63-fb83-41c9-80e2-b93da1b28f14.pdf",
+     37,
+     "AVERAGE GAS PRODUCTION",
+     "20.2"
+    ],
+    "y:20220331": [
+     "23ad7a63-fb83-41c9-80e2-b93da1b28f14.pdf",
+     37,
+     "AVERAGE GAS PRODUCTION",
+     "18.2"
+    ],
+    "y:20210331": [
+     "23ad7a63-fb83-41c9-80e2-b93da1b28f14.pdf",
+     37,
+     "AVERAGE GAS PRODUCTION",
+     "6.5"
+    ]
+   }
+  },
+  {
    "name": "JioHotstar Platform MAUs",
    "unit": "Mn",
    "kind": "level",
@@ -3465,6 +3542,69 @@
      44,
      "Platform MAUs (Mn)",
      "529"
+    ]
+   }
+  },
+  {
+   "name": "O2C Production Meant for Sale (Total)",
+   "unit": "MMT",
+   "kind": "flow",
+   "y": {
+    "20240331": 67.8,
+    "20250331": 71.2,
+    "20260331": 70.9
+   },
+   "q": {},
+   "src": {
+    "y:20260331": [
+     "cc08294f-ec68-4f15-aaa4-c14a3c4bdfb2.pdf",
+     52,
+     "Total (Production Meant for Sale)",
+     "70.9"
+    ],
+    "y:20250331": [
+     "468b09a3-a212-4066-bbaa-4b0ba524d2ce.pdf",
+     39,
+     "TOTAL (Production Meant for Sale)",
+     "71.2"
+    ],
+    "y:20240331": [
+     "468b09a3-a212-4066-bbaa-4b0ba524d2ce.pdf",
+     39,
+     "TOTAL (Production Meant for Sale)",
+     "67.8"
+    ]
+   }
+  },
+  {
+   "name": "Reliance Retail Employee Base",
+   "unit": "Number",
+   "kind": "level",
+   "y": {
+    "20220331": 361000.0,
+    "20240331": 207552.0
+   },
+   "q": {
+    "20220630": 379000.0
+   },
+   "src": {
+    "q:20220630": [
+     "9e81c058-6b85-4f18-ba5a-bbdd72156edf.pdf",
+     32,
+     "employee base now at ~379,000 people (doc period)",
+     "379,000"
+    ],
+    "y:20220331": [
+     "bf7646f7-940a-429b-b3eb-0625715f6aeb.pdf",
+     32,
+     "employee base now at 361,000 (doc period)",
+     "361,000"
+    ],
+    "y:20240331": [
+     "23ad7a63-fb83-41c9-80e2-b93da1b28f14.pdf",
+     48,
+     "Number of employees - Reliance Retail",
+     "2,07,552"
     ]
    }
   },
@@ -3531,59 +3671,11 @@
    }
   },
   {
-   "name": "O2C Production Meant for Sale (Total)",
-   "unit": "MMT",
-   "kind": "flow",
-   "y": {
-    "20250331": 71.2,
-    "20260331": 70.9
-   },
-   "q": {},
-   "src": {
-    "y:20260331": [
-     "cc08294f-ec68-4f15-aaa4-c14a3c4bdfb2.pdf",
-     52,
-     "Total (Production Meant for Sale)",
-     "70.9"
-    ],
-    "y:20250331": [
-     "cc08294f-ec68-4f15-aaa4-c14a3c4bdfb2.pdf",
-     52,
-     "Total (Production Meant for Sale)",
-     "71.2"
-    ]
-   }
-  },
-  {
-   "name": "Reliance Retail Employee Base",
-   "unit": "Number",
-   "kind": "level",
-   "y": {
-    "20220331": 361000.0
-   },
-   "q": {
-    "20220630": 379000.0
-   },
-   "src": {
-    "q:20220630": [
-     "9e81c058-6b85-4f18-ba5a-bbdd72156edf.pdf",
-     32,
-     "employee base now at ~379,000 people (doc period)",
-     "379,000"
-    ],
-    "y:20220331": [
-     "bf7646f7-940a-429b-b3eb-0625715f6aeb.pdf",
-     32,
-     "employee base now at 361,000 (doc period)",
-     "361,000"
-    ]
-   }
-  },
-  {
    "name": "Average CBM Gas Production",
    "unit": "MMSCMD",
    "kind": "flow",
    "y": {
+    "20240331": 0.64,
     "20260331": 0.88
    },
    "q": {},
@@ -3593,6 +3685,84 @@
      53,
      "CBM average output",
      "0.88"
+    ],
+    "y:20240331": [
+     "23ad7a63-fb83-41c9-80e2-b93da1b28f14.pdf",
+     38,
+     "CBM average output gas during the year",
+     "0.64"
+    ]
+   }
+  },
+  {
+   "name": "Jio-bp Pulse EV Charging Sites",
+   "unit": "Number",
+   "kind": "level",
+   "y": {
+    "20250331": 701.0,
+    "20260331": 1071.0
+   },
+   "q": {},
+   "src": {
+    "y:20260331": [
+     "cc08294f-ec68-4f15-aaa4-c14a3c4bdfb2.pdf",
+     52,
+     "Jio-bp Pulse charging points across sites",
+     "1,071"
+    ],
+    "y:20250331": [
+     "468b09a3-a212-4066-bbaa-4b0ba524d2ce.pdf",
+     39,
+     "Jio-bp Pulse unique charging sites (doc period)",
+     "701"
+    ]
+   }
+  },
+  {
+   "name": "Oil and Condensate Production (RIL share)",
+   "unit": "MMBBLs",
+   "kind": "flow",
+   "y": {
+    "20240331": 4.43,
+    "20260331": 4.42
+   },
+   "q": {},
+   "src": {
+    "y:20260331": [
+     "cc08294f-ec68-4f15-aaa4-c14a3c4bdfb2.pdf",
+     53,
+     "OIL AND CONDENSATE PRODUCTION (RIL's share)",
+     "4.42"
+    ],
+    "y:20240331": [
+     "23ad7a63-fb83-41c9-80e2-b93da1b28f14.pdf",
+     37,
+     "Oil & Condensate Production (RIL's share)",
+     "4.43"
+    ]
+   }
+  },
+  {
+   "name": "Total Gas Production (RIL share)",
+   "unit": "BCF",
+   "kind": "flow",
+   "y": {
+    "20240331": 242.0,
+    "20260331": 234.0
+   },
+   "q": {},
+   "src": {
+    "y:20260331": [
+     "cc08294f-ec68-4f15-aaa4-c14a3c4bdfb2.pdf",
+     53,
+     "GAS PRODUCTION (RIL's share)",
+     "234"
+    ],
+    "y:20240331": [
+     "23ad7a63-fb83-41c9-80e2-b93da1b28f14.pdf",
+     37,
+     "Gas Production (RIL's share)",
+     "242"
     ]
    }
   },
@@ -3610,6 +3780,57 @@
      14,
      "FY26 Data traffic",
      "241"
+    ]
+   }
+  },
+  {
+   "name": "Jio Patents Filed (Annual)",
+   "unit": "Number",
+   "kind": "flow",
+   "y": {
+    "20250331": 1654.0
+   },
+   "q": {},
+   "src": {
+    "y:20250331": [
+     "468b09a3-a212-4066-bbaa-4b0ba524d2ce.pdf",
+     48,
+     "patents filed by Jio in FY 2024-25",
+     "1,654"
+    ]
+   }
+  },
+  {
+   "name": "Jio Patents Held (Cumulative)",
+   "unit": "Number",
+   "kind": "level",
+   "y": {
+    "20250331": 485.0
+   },
+   "q": {},
+   "src": {
+    "y:20250331": [
+     "468b09a3-a212-4066-bbaa-4b0ba524d2ce.pdf",
+     48,
+     "Jio patents held (as of March 31, 2025)",
+     "485"
+    ]
+   }
+  },
+  {
+   "name": "Jio Platforms Patents Granted (Annual)",
+   "unit": "Number",
+   "kind": "flow",
+   "y": {
+    "20250331": 154.0
+   },
+   "q": {},
+   "src": {
+    "y:20250331": [
+     "468b09a3-a212-4066-bbaa-4b0ba524d2ce.pdf",
+     48,
+     "patents granted to Jio Platforms and its subsidiaries in FY 2024-25",
+     "154"
     ]
    }
   },
@@ -3648,23 +3869,6 @@
    }
   },
   {
-   "name": "Jio-bp Pulse EV Charging Sites",
-   "unit": "Number",
-   "kind": "level",
-   "y": {
-    "20260331": 1071.0
-   },
-   "q": {},
-   "src": {
-    "y:20260331": [
-     "cc08294f-ec68-4f15-aaa4-c14a3c4bdfb2.pdf",
-     52,
-     "Jio-bp Pulse charging points across sites",
-     "1,071"
-    ]
-   }
-  },
-  {
    "name": "KG D6 Oil Production (RIL share)",
    "unit": "bbl/day",
    "kind": "flow",
@@ -3678,6 +3882,23 @@
      53,
      "KG D6 average oil production",
      "18,170"
+    ]
+   }
+  },
+  {
+   "name": "O2C and E&P Employee Headcount",
+   "unit": "Number",
+   "kind": "level",
+   "y": {
+    "20240331": 29467.0
+   },
+   "q": {},
+   "src": {
+    "y:20240331": [
+     "23ad7a63-fb83-41c9-80e2-b93da1b28f14.pdf",
+     48,
+     "Number of employees - O2C and E&P",
+     "29,467"
     ]
    }
   },
@@ -3699,36 +3920,70 @@
    }
   },
   {
-   "name": "Oil and Condensate Production (RIL share)",
-   "unit": "MMBBLs",
-   "kind": "flow",
+   "name": "RIL O2C Patents Granted (Cumulative)",
+   "unit": "Number",
+   "kind": "level",
    "y": {
-    "20260331": 4.42
+    "20250331": 1156.0
    },
    "q": {},
    "src": {
-    "y:20260331": [
-     "cc08294f-ec68-4f15-aaa4-c14a3c4bdfb2.pdf",
-     53,
-     "OIL AND CONDENSATE PRODUCTION (RIL's share)",
-     "4.42"
+    "y:20250331": [
+     "468b09a3-a212-4066-bbaa-4b0ba524d2ce.pdf",
+     48,
+     "total patents granted to RIL (as of March 31, 2025)",
+     "1,156"
     ]
    }
   },
   {
-   "name": "Total Gas Production (RIL share)",
-   "unit": "BCF",
-   "kind": "flow",
+   "name": "Reliance Group Employee Headcount",
+   "unit": "Number",
+   "kind": "level",
    "y": {
-    "20260331": 234.0
+    "20240331": 347362.0
    },
    "q": {},
    "src": {
-    "y:20260331": [
-     "cc08294f-ec68-4f15-aaa4-c14a3c4bdfb2.pdf",
-     53,
-     "GAS PRODUCTION (RIL's share)",
-     "234"
+    "y:20240331": [
+     "23ad7a63-fb83-41c9-80e2-b93da1b28f14.pdf",
+     48,
+     "Number of employees - Reliance Group",
+     "3,47,362"
+    ]
+   }
+  },
+  {
+   "name": "Reliance Jio Employee Headcount",
+   "unit": "Number",
+   "kind": "level",
+   "y": {
+    "20240331": 90067.0
+   },
+   "q": {},
+   "src": {
+    "y:20240331": [
+     "23ad7a63-fb83-41c9-80e2-b93da1b28f14.pdf",
+     48,
+     "Number of employees - Reliance Jio",
+     "90,067"
+    ]
+   }
+  },
+  {
+   "name": "Reliance Retail New Stores Opened (Annual)",
+   "unit": "Number",
+   "kind": "flow",
+   "y": {
+    "20240331": 1840.0
+   },
+   "q": {},
+   "src": {
+    "y:20240331": [
+     "23ad7a63-fb83-41c9-80e2-b93da1b28f14.pdf",
+     32,
+     "new stores opened",
+     "1,840"
     ]
    }
   }
