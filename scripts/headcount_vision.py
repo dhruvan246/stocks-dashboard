@@ -51,13 +51,17 @@ def brsr_pages(doc):
         if re.search(r"Total\s+employees", t, re.I) and re.search(r"Permanent", t):
             a += 3
         b = 0
-        if re.search(r"employees\s+and\s+workers", t, re.I):
-            b += 6
+        if re.search(r"details\s+as\s+at\s+the\s+end\s+of\s+(the\s+)?financial\s+year", t, re.I):
+            b += 8       # the BRSR Q18/20 heading — the strongest, most specific signal
+        b += 3 * len(re.findall(r"other\s+than\s+permanent", t, re.I))
         if re.search(r"differently\s+abled\s+employees", t, re.I):
             b += 5
-        if re.search(r"details\s+as\s+at\s+the\s+end\s+of\s+(the\s+)?financial\s+year", t, re.I):
-            b += 4
-        b += 3 * len(re.findall(r"other\s+than\s+permanent", t, re.I))
+        if re.search(r"employees\s+and\s+workers", t, re.I):
+            b += 2       # generic — also appears in GRI injury tables / prose, so needs corroboration
+        # demote governance / GRI / well-being pages that merely mention "employees and workers"
+        if re.search(r"corporate\s+governance|board\s+of\s+directors|GRI\s+30|work[- ]related\s+injur|"
+                     r"well[- ]being\s+measures\s+of|acknowledgement", t, re.I):
+            b -= 6
         s = max(a, b)
         if s >= 4:
             scored.append((s, i))
@@ -138,8 +142,12 @@ def validate(d):
         return None
     if ep and et and ep > et * 1.02:                 # permanent can't exceed total employees
         return None
-    if m and f and abs((m + f) - et) > max(5, et * 0.03):   # male+female must reconcile to total
-        m = f = None                                 # keep the count, drop an inconsistent split
+    if m and f:
+        diff = abs((m + f) - et)
+        if diff > max(20, et * 0.10):                # gross male+female mismatch = a mis-read → reject
+            return None
+        if diff > max(5, et * 0.03):                 # minor (an "Others" gender column) → drop the split
+            m = f = None
     onroll = (ep or et) + (wp or 0)
     total_wf = et + (wt or 0)
     detail = {"emp_perm": ep, "emp_other": eo, "emp_total": et, "wrk_perm": wp, "wrk_total": wt,
@@ -184,15 +192,31 @@ def uncovered_syms():
     return out
 
 
+_NAME = {}
+
+
+def _load_names():
+    if _NAME:
+        return
+    try:
+        for x in json.load(open(os.path.join(H.HERE, "_bse_master_all.json"), encoding="utf-8")):
+            if x.get("scrip_id"):
+                _NAME.setdefault(x["scrip_id"], re.sub(r"\s+(Ltd|Limited)\.?$", "", (x.get("Scrip_Name") or "").strip()))
+    except Exception:
+        pass
+
+
 def prep(syms, want_fys, outdir, max_reports=3, verbose=True):
+    _load_names()
     """NATIVE-VISION mode (no API key, no quota): render each name's BRSR employees page(s) to PNG in
     `outdir` and write manifest.json [{sym, fy, page, png}]. A Claude session (interactive now, or the
     scheduled routine at scale) then Reads the PNGs with its own vision and lands the numbers — the
     repo's bse-vision-fill pattern (cross-session handoff 2026-09-07). Renders NOTHING when the page
     can't be located, so no blind guesses reach the reader."""
     os.makedirs(outdir, exist_ok=True)
-    manifest = []
+    manifest, npng = [], 0
     for sym in syms:
+        name = _NAME.get(sym, sym)
         for a in H.annual_reports(sym)[:max_reports]:
             if a["fy"] not in want_fys:
                 continue
@@ -201,16 +225,48 @@ def prep(syms, want_fys, outdir, max_reports=3, verbose=True):
                 continue
             doc = fitz.open(p)
             pgs = brsr_pages(doc)
+            pngs = []
             for pi in pgs:
                 fn = "%s_FY%d_p%d.png" % (sym, a["fy"], pi + 1)
                 with open(os.path.join(outdir, fn), "wb") as fh:
                     fh.write(render(doc, pi))
-                manifest.append({"sym": sym, "fy": a["fy"], "page": pi + 1, "png": fn})
+                pngs.append(fn)
+                npng += 1
             doc.close()
+            if pngs:                                  # one manifest entry per (sym, fy): all candidate pages
+                manifest.append({"sym": sym, "name": name, "fy": a["fy"],
+                                 "page": pgs[0] + 1, "pngs": pngs})
             if verbose:
                 print("  %s FY%d -> pages %s" % (sym, a["fy"], [x + 1 for x in pgs]), flush=True)
     json.dump(manifest, open(os.path.join(outdir, "manifest.json"), "w"), indent=1)
-    print("PREP DONE: %d PNG pages for %d symbols -> %s" % (len(manifest), len(syms), outdir), flush=True)
+    print("PREP DONE: %d entries / %d PNG pages for %d symbols -> %s" % (len(manifest), npng, len(syms), outdir), flush=True)
+
+
+def merge(reads_path):
+    """Land subagent vision reads into the per-symbol ledgers, gate-enforced. reads.json = a list of
+    {sym, fy, page, emp_perm, emp_other, emp_total, wrk_perm, wrk_total, male, female} (a subagent's read
+    of one BRSR employees table). validate() drops anything where male+female doesn't reconcile to the
+    total, permanent>total, or the count is implausible — so a mis-read never lands."""
+    reads = json.load(open(reads_path))
+    landed = 0
+    for r in reads:
+        if not r.get("sym") or r.get("fy") is None:
+            continue
+        d = {"ok": True, "company_matches": True}
+        d.update({k: r.get(k) for k in ("emp_perm", "emp_other", "emp_total", "wrk_perm", "wrk_total", "male", "female")})
+        rec = validate(d)
+        if not rec:
+            print("  REJECT %s FY%s (failed gate)" % (r["sym"], r["fy"]), flush=True)
+            continue
+        rec["src"] = {"fy": int(r["fy"]), "page": r.get("page"), "method": "vision"}
+        p = os.path.join(H.LEDGER_DIR, r["sym"] + ".json")
+        led = json.load(open(p)) if os.path.exists(p) else {"sym": r["sym"], "bse": H.scripcode(r["sym"])}
+        led.setdefault("fy", {})[str(int(r["fy"]))] = rec
+        led["by"] = "vision"
+        json.dump(led, open(p, "w"), indent=1, default=str)
+        landed += 1
+        print("  landed %s FY%s onroll=%s" % (r["sym"], r["fy"], rec["count"]), flush=True)
+    print("MERGE: landed %d of %d reads" % (landed, len(reads)), flush=True)
 
 
 def main():
@@ -222,8 +278,12 @@ def main():
     ap.add_argument("--max-reports", type=int, default=4)
     ap.add_argument("--save", action="store_true")
     ap.add_argument("--prep", metavar="DIR", help="native-vision: render BRSR pages to PNGs + manifest (no Gemini)")
+    ap.add_argument("--merge", metavar="READS_JSON", help="land subagent vision reads (gate-enforced) into the ledgers")
     a = ap.parse_args()
     want = set(range(a.since_fy, date.today().year + 1))
+    if a.merge:
+        merge(a.merge)
+        return
     syms = uncovered_syms() if a.uncovered else list(a.syms)
     if a.limit:
         syms = syms[:a.limit]
