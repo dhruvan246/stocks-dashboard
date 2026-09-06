@@ -15911,6 +15911,16 @@ The Gemini workflow stays as a 20-a-day trickle and as the BSE-catalog builder.
   labels say otherwise (the parser and the card both honour it).
 - The card shows at most the last 12 periods per view.
 
+### DEPTH PASS 2026-09-06 (user: "i want more deeper than screener … for every stock check what screener has, all those params + new ones screener doesn't")
+Root cause of the thin cards: we read only the LATEST quarterly investor deck per stock, the page-scorer dropped the 'at a glance' business-profile slide (30-page cap), and ANNUAL REPORTS were not in the ladder at all — so the multi-year business-profile series (customers/countries/patents/capacity/network by year, export share, geo split) that aggregators mine from annual reports never landed. Screener is login-gated and is our CALIBRATION HOLDOUT, never a source — a user screenshot is a checklist, not data. Fixes shipped (kpi_extract.py):
+- select_docs now includes kind `ar` (annual reports, 10+ yr, direct-URL via AnnualReport_New); loose (non-results) docs keep ip AND ar. `--kinds` default = ip,pr,res,ar.
+- score_page: PROFILE_TOKENS boost (customers/countries/patents/facilities/dealers/stores/branches/msf…) + PROFILE_MARKERS +40 ('at a glance', 'N-year highlights', 'our reach/footprint/journey', 'financial highlights') so the profile & multi-year-highlights pages are never dropped.
+- MAX_PAGES 30→45, MAX_CHARS 60k→90k.
+- Routine prompt (trig_01FKdkyDi5US7gnaEMdu7oec) rewritten: GOAL = deeper than any aggregator; `--next 4 --limit 8` (fewer stocks, deeper each, ARs included); DEPTH MANDATE = every distinct metric AND every period printed; a deck 'as of 31 Mar 20XX' / an AR FOR FYxx gives that FY column even as a single value.
+Proof on ACUTAAS (holdout name, hand-read this session): card 4→11 rows.
+- FY26 profile (from the 16-May-2026 Corporate Presentation, att f01fe607, 'as of 31 Mar 2026'): Countries 55, Customers 600, Products 610, Patents 26, Manufacturing Facilities 5 — MATCH the user's screener FY26 column exactly (calibration passes).
+- FY20-25 export series (from the FY24-25 ANNUAL REPORT, att 9073249d, p7 'Scaling Global Horizons'): Export Share % 46/52/58/59/56/74 AND Export Revenue ₹Mn 1,100/1,757/3,010/3,644/3,997/7,426. The ₹ revenue row is one screener does NOT have (deeper). NOTE a one-year LABEL OFFSET vs screener: the AR labels 46% as FY2020, screener labels it Mar-2019 — the company's own AR is authoritative, so ours is the more accurate label. Annual reports are the primary source; aggregators are neither source nor ceiling.
+
 ### Session hand-read batch, 2026-09-06 02:00–02:45 IST (measured, all LIVE-verified by bake run + fin JSON)
 27 packets read by hand (`--by claude-session`), one commit per 3–7 symbols, each push triggered
 `refresh-stock-fin.yml` (4/4 runs green) and the `kpi` key was seen LIVE in `docs/fin/<SLUG>.json`
