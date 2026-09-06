@@ -69,7 +69,10 @@ def scripcode(sym):
     return int(v) if v else None
 
 
-CATALOG_VER = 3      # bump when KIND_RULES / classify() change — cached ledger catalogs are rebuilt
+CATALOG_VER = 4      # bump when KIND_RULES / classify() change — cached ledger catalogs are rebuilt
+#                      v4 (2026-09-06): annual reports (kind `ar`) pulled into the ladder for the depth
+#                      pass — every cached catalog rebuilds so already-read stocks resurface their unread
+#                      annual reports (the multi-year business-profile series) for re-deepening.
 
 KIND_RULES = [
     # (kind, regex over "SUBCATNAME | NEWSSUB | HEADLINE") — first match wins, so the noise kinds
