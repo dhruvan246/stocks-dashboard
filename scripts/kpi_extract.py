@@ -696,15 +696,26 @@ def main():
     if a.ingest:
         ingest_answer(a.ingest[0], a.ingest[1], a.ingest[2], a.by or "claude-session"); return
     if a.next:
-        # priority: no ledger first (largest market cap first), then ledgers with unread catalog entries,
-        # oldest `checked` first. Symbols without a cached catalog are listed on BSE (≈15-25 s each).
+        # BREADTH-FIRST priority: fewest filings already read first (never-started & thin stocks ahead
+        # of already-deep megacaps), tie-broken by universe order (market cap). This spreads the deep
+        # pass across the whole roster instead of exhausting the top few names' back-catalogue before
+        # anyone else is touched. Ranking reads only the on-disk ledger (no BSE call); catalogs are
+        # built lazily in that order until N stocks with unread filings are found.
         syms = universe_symbols(a.universe)
+        rank = {s: i for i, s in enumerate(syms)}
+
+        def reads_of(sym):
+            if not os.path.exists(ledger_path(sym)):
+                return 0
+            L = load_ledger(sym) or {}
+            return sum(1 for d in L.get("docs", {}).values() if d.get("read"))
+
+        ranked = sorted((s for s in syms if kpi_docs.scripcode(s)),
+                        key=lambda s: (reads_of(s), rank[s]))
         rows = []
-        for sym in syms:
+        for sym in ranked:
             if len(rows) >= a.next:
                 break
-            if not kpi_docs.scripcode(sym):
-                continue
             L = load_ledger(sym) if os.path.exists(ledger_path(sym)) else None
             if L and L.get("catalog") and L.get("catalog_ver") == kpi_docs.CATALOG_VER:
                 cat = L["catalog"]
