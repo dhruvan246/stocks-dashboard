@@ -25,6 +25,14 @@ RENAME = os.path.join(HERE, "_rename_map.json")
 START_FY = 2020
 
 
+def _max_ratio(series):
+    """Largest ratio between consecutive-FY values (>=1). 1.0 for <2 points."""
+    ys = sorted(series, key=int)
+    v = [series[y] for y in ys]
+    return max((max(v[i], v[i - 1]) / min(v[i], v[i - 1]) for i in range(1, len(v)) if v[i - 1] and v[i]),
+               default=1.0)
+
+
 CLIFF = 1.8    # a >1.8x step between consecutive FYs marks a basis flip worth resolving
 CLUSTER = 1.6  # once flagged, group same-basis years within this ratio (tighter, to isolate outliers)
 
@@ -99,20 +107,29 @@ def main():
             continue
         led_path = os.path.join(LEDGERS, sym + ".json")
         emp, total, mf, src = {}, {}, {}, {}
+        onroll, etot = {}, {}
         if os.path.exists(led_path):
             led = json.load(open(led_path))
             for y, c in led.get("fy", {}).items():
                 yi = int(y)
                 if yi < START_FY or not isinstance(c.get("count"), int):
                     continue
-                emp[yi] = c["count"]
+                b = c.get("brsr") or {}
+                onroll[yi] = c["count"]                          # perm employees + perm workers
+                etot[yi] = b["emp_total"] if isinstance(b.get("emp_total"), int) else c["count"]  # BRSR D+E
                 if isinstance(c.get("total_workforce"), int):
                     total[yi] = c["total_workforce"]
-                b = c.get("brsr") or {}
                 if isinstance(b.get("male"), int) and isinstance(b.get("female"), int):
                     mf[yi] = [b["male"], b["female"]]
                 s = c.get("src", {})
                 src[yi] = "%s p%s" % (s.get("method", "?"), s.get("page", "?"))
+            # Basis per company: on-roll by default (matches companies' own "Number of Employees"),
+            # BUT on-roll silently switches to total-employees whenever the "Permanent"/workers row
+            # fails to parse in a year, faking a cliff (Whirlpool, TMPV, NMDC…). When that makes the
+            # on-roll series jumpy AND total-employees (the summary row) is smoother, use total-employees
+            # — a single consistent basis for that company. Clean series (INFY, Asian Paints, Bharti,
+            # banks) keep on-roll untouched.
+            emp = etot if (_max_ratio(onroll) > 1.8 and _max_ratio(etot) < _max_ratio(onroll)) else onroll
         for y in implausible_years(emp):        # drop spikes rather than ship a wrong headcount
             emp.pop(y, None); total.pop(y, None); mf.pop(y, None); src.pop(y, None)
         for y in list(total):                   # total workforce can never be below on-roll; when the
@@ -133,9 +150,10 @@ def main():
         })
     payload = {
         "updated": datetime.now().strftime("%Y-%m-%d %H:%M IST"),
-        "basis": "Permanent on-roll employees (permanent employees + permanent workers). "
-                 "Source: company annual reports on BSE — BRSR 'Employees and workers' table (FY2023+) "
-                 "or the Board's-Report line. 'Total workforce' includes contractual/other.",
+        "basis": "Employee headcount — permanent on-roll employees (permanent employees + permanent "
+                 "workers), or total reported employees where that gives a consistent year-on-year series. "
+                 "Source: company annual reports on BSE (BRSR 'Employees and workers' table). "
+                 "'Total workforce' additionally includes contractual/other.",
         "note": "India does not report employee count quarterly — this is annual (fiscal year ending March).",
         "fys": fys, "universe": len(rows), "covered": covered,
         "as_of_snapshot": latest_date, "rows": rows,

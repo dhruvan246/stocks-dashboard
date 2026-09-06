@@ -49,7 +49,7 @@
 <main class="max-w-screen-xl mx-auto px-4 py-6">
   <div class="mb-4">
     <h1 class="text-xl sm:text-2xl font-extrabold tracking-tight">Employee Headcount <span class="font-semibold text-base" style="color:var(--text-muted,#94a3b8)">· how many people each company employs</span></h1>
-    <p class="subnote mt-1 max-w-3xl">Permanent on-roll employees for the <b>Nifty-500</b>, survivorship-free (includes names that have since left the index), read from each company's own <b>annual report / BRSR</b> filed on BSE. <b>Annual</b> figures (fiscal year ending March) — India does not report headcount quarterly. <span id="updated"></span></p>
+    <p class="subnote mt-1 max-w-3xl">Employee headcount for the <b>Nifty-500</b>, survivorship-free (includes names that have since left the index), read from each company's own <b>annual report / BRSR</b> filed on BSE. <b>Annual</b> figures (fiscal year ending March) — India does not report headcount quarterly. <span id="updated"></span></p>
   </div>
 
   <div id="status" class="subnote py-10 text-center">Loading headcount data…</div>
@@ -69,7 +69,7 @@
         </div>
         <div class="flex flex-wrap items-center gap-2">
           <span class="subnote hidden sm:inline">Metric</span>
-          <span id="mEmp" class="vbtn on">On-roll (permanent)</span>
+          <span id="mEmp" class="vbtn on">Employees</span>
           <span id="mTot" class="vbtn">Total workforce</span>
           <select id="fSort">
             <option value="latest">Largest workforce</option>
@@ -163,7 +163,7 @@ function render(){
         const mf=r.mf&&r.mf[fy]; const tot=r.total&&r.total[fy];
         return `<div class="flex flex-wrap gap-x-4 gap-y-1 py-0.5">
           <span style="min-width:64px" class="font-semibold">FY${String(fy).slice(2)}</span>
-          <span>on-roll <b>${IN(r.emp[fy])}</b></span>
+          <span>employees <b>${IN(r.emp[fy])}</b></span>
           ${tot?`<span class="subnote">total workforce ${IN(tot)}</span>`:''}
           ${mf?`<span class="subnote">♂ ${IN(mf[0])} · ♀ ${IN(mf[1])}</span>`:''}
           <span class="subnote">src: ${r.src&&r.src[fy]||'—'}</span></div>`;
@@ -171,7 +171,7 @@ function render(){
       det.innerHTML=`<td colspan="99" class="px-4 py-3">
         <div class="text-xs font-bold uppercase tracking-wide mb-1" style="color:var(--text-muted)">${r.name} · ${r.sym} · BSE headcount by year</div>
         ${lines}
-        <div class="subnote mt-1">On-roll = permanent employees + permanent workers. Total workforce includes contractual/other. Source: annual report on BSE (page &amp; method shown).</div></td>`;
+        <div class="subnote mt-1">Employees = permanent on-roll (permanent employees + permanent workers), or total reported employees where that gives a consistent series. Total workforce additionally includes contractual/other. Source: annual report on BSE (page &amp; method shown).</div></td>`;
       tr.after(det);
     };
   });
