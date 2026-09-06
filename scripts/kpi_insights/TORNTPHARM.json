@@ -1,8 +1,457 @@
 {
  "sym": "TORNTPHARM",
  "fy_end_month": 3,
- "docs": {},
- "metrics": [],
+ "docs": {
+  "9afcc666-9e2f-45f7-ac60-2d18c25e2326.pdf": {
+   "kind": "ar",
+   "date": "2026-06-03",
+   "title": "AGM Notice letter re: Integrated Annual Report FY26 web-link",
+   "read": "2026-09-06",
+   "by": "claude-routine"
+  },
+  "8cff3798-967d-44b8-a6d1-8a17e7795c07.pdf": {
+   "kind": "ip",
+   "date": "2026-05-22",
+   "title": "Q4 FY26 Results Presentation to Analysts",
+   "read": "2026-09-06",
+   "by": "claude-routine"
+  },
+  "6e94e952-be35-4092-b775-7b3ece9ecce0.pdf": {
+   "kind": "ip",
+   "date": "2025-11-07",
+   "title": "Q2/H1 FY26 Results Presentation to Analysts",
+   "read": "2026-09-06",
+   "by": "claude-routine"
+  },
+  "f40893d7-5b78-43c0-b37c-50d1a127a763.pdf": {
+   "kind": "ip",
+   "date": "2025-07-28",
+   "title": "Q1 FY26 Results Presentation to Analysts",
+   "read": "2026-09-06",
+   "by": "claude-routine"
+  },
+  "ef8a0c31-bbc6-4baf-81e9-210d47cb9801.pdf": {
+   "kind": "ar",
+   "date": "2025-07-07",
+   "title": "AGM Notice letter re: Integrated Annual Report FY25 web-link",
+   "read": "2026-09-06",
+   "by": "claude-routine"
+  },
+  "6314da61-f7f2-42a3-a461-607c3a8f44ad.pdf": {
+   "kind": "ip",
+   "date": "2025-06-30",
+   "title": "JB Chemicals & Pharmaceuticals acquisition presentation",
+   "read": "2026-09-06",
+   "by": "claude-routine",
+   "note": "company_matches=false: Deck is about JB Pharma, the acquisition target (not yet part of Torrent at filing date), with figures sourced from IQVIA and peer market-share comparisons (industry/peer data, excluded) rather than T"
+  },
+  "db7e5e01-7e8b-4e02-99b5-76d6a2b8ec1e.pdf": {
+   "kind": "res",
+   "date": "2026-07-30",
+   "title": "Q1 FY27 Results (financial statements + press release)",
+   "read": "2026-09-06",
+   "by": "claude-routine"
+  },
+  "ff8314b3-63f3-4741-871f-83b50a44e1d9.pdf": {
+   "kind": "ar",
+   "date": "2026-03-31",
+   "title": "Integrated Annual Report FY26 (Board's Report + BRSR extracts)",
+   "read": "2026-09-06",
+   "by": "claude-routine"
+  }
+ },
+ "metrics": [
+  {
+   "name": "Number of Dealers/Distributors",
+   "unit": "count",
+   "kind": "level",
+   "y": {
+    "20250331": 5700.0,
+    "20260331": 5800.0
+   },
+   "q": {},
+   "src": {
+    "y:20260331": [
+     "ff8314b3-63f3-4741-871f-83b50a44e1d9.pdf",
+     93,
+     "Number of dealers / distributors to whom sales are made",
+     "5800"
+    ],
+    "y:20250331": [
+     "ff8314b3-63f3-4741-871f-83b50a44e1d9.pdf",
+     93,
+     "Number of dealers / distributors to whom sales are made",
+     "5700"
+    ]
+   }
+  },
+  {
+   "name": "Number of Trading Houses (Suppliers)",
+   "unit": "count",
+   "kind": "level",
+   "y": {
+    "20250331": 850.0,
+    "20260331": 850.0
+   },
+   "q": {},
+   "src": {
+    "y:20260331": [
+     "ff8314b3-63f3-4741-871f-83b50a44e1d9.pdf",
+     93,
+     "Number of trading houses where purchases are made from",
+     "850"
+    ],
+    "y:20250331": [
+     "ff8314b3-63f3-4741-871f-83b50a44e1d9.pdf",
+     93,
+     "Number of trading houses where purchases are made from",
+     "850"
+    ]
+   }
+  },
+  {
+   "name": "Products Under ANVISA Review (Brazil)",
+   "unit": "count",
+   "kind": "level",
+   "y": {
+    "20260331": 58.0
+   },
+   "q": {
+    "20260630": 58.0
+   },
+   "src": {
+    "q:20260630": [
+     "db7e5e01-7e8b-4e02-99b5-76d6a2b8ec1e.pdf",
+     18,
+     "Torrent has 58 products under ANVISA review (doc period)",
+     "58"
+    ],
+    "y:20260331": [
+     "ff8314b3-63f3-4741-871f-83b50a44e1d9.pdf",
+     54,
+     "the Company has 58 products under approval at ANVISA (doc period)",
+     "58"
+    ]
+   }
+  },
+  {
+   "name": "Purchases from Top 10 Trading Houses (% of Trading House Purchases)",
+   "unit": "%",
+   "kind": "level",
+   "y": {
+    "20250331": 51.0,
+    "20260331": 41.0
+   },
+   "q": {},
+   "src": {
+    "y:20260331": [
+     "ff8314b3-63f3-4741-871f-83b50a44e1d9.pdf",
+     93,
+     "Purchases from top 10 trading houses as % of total purchases from trading houses",
+     "41"
+    ],
+    "y:20250331": [
+     "ff8314b3-63f3-4741-871f-83b50a44e1d9.pdf",
+     93,
+     "Purchases from top 10 trading houses as % of total purchases from trading houses",
+     "51"
+    ]
+   }
+  },
+  {
+   "name": "Purchases from Trading Houses (% of Total Purchases)",
+   "unit": "%",
+   "kind": "level",
+   "y": {
+    "20250331": 17.0,
+    "20260331": 14.0
+   },
+   "q": {},
+   "src": {
+    "y:20260331": [
+     "ff8314b3-63f3-4741-871f-83b50a44e1d9.pdf",
+     93,
+     "Purchases from trading houses as % of total Purchases",
+     "14"
+    ],
+    "y:20250331": [
+     "ff8314b3-63f3-4741-871f-83b50a44e1d9.pdf",
+     93,
+     "Purchases from trading houses as % of total Purchases",
+     "17"
+    ]
+   }
+  },
+  {
+   "name": "Sales to Dealers/Distributors (% of Total Sales)",
+   "unit": "%",
+   "kind": "level",
+   "y": {
+    "20250331": 74.0,
+    "20260331": 75.0
+   },
+   "q": {},
+   "src": {
+    "y:20260331": [
+     "ff8314b3-63f3-4741-871f-83b50a44e1d9.pdf",
+     93,
+     "Sales to dealers / distributors as % of total sales",
+     "75"
+    ],
+    "y:20250331": [
+     "ff8314b3-63f3-4741-871f-83b50a44e1d9.pdf",
+     93,
+     "Sales to dealers / distributors as % of total sales",
+     "74"
+    ]
+   }
+  },
+  {
+   "name": "Sales to Top 10 Dealers/Distributors (% of Dealer Sales)",
+   "unit": "%",
+   "kind": "level",
+   "y": {
+    "20250331": 9.0,
+    "20260331": 9.0
+   },
+   "q": {},
+   "src": {
+    "y:20260331": [
+     "ff8314b3-63f3-4741-871f-83b50a44e1d9.pdf",
+     93,
+     "Sales to top 10 dealers / distributors as % of total sales to dealers / distribu",
+     "9"
+    ],
+    "y:20250331": [
+     "ff8314b3-63f3-4741-871f-83b50a44e1d9.pdf",
+     93,
+     "Sales to top 10 dealers / distributors as % of total sales to dealers / distribu",
+     "9"
+    ]
+   }
+  },
+  {
+   "name": "ANDA Filings (US)",
+   "unit": "count",
+   "kind": "flow",
+   "y": {
+    "20260331": 2.0
+   },
+   "q": {},
+   "src": {
+    "y:20260331": [
+     "ff8314b3-63f3-4741-871f-83b50a44e1d9.pdf",
+     54,
+     "The Company filed 2 ANDAs during the year",
+     "2"
+    ]
+   }
+  },
+  {
+   "name": "Chemist Outlets (Direct Distribution)",
+   "unit": "count",
+   "kind": "level",
+   "y": {
+    "20260331": 75000.0
+   },
+   "q": {},
+   "src": {
+    "y:20260331": [
+     "ff8314b3-63f3-4741-871f-83b50a44e1d9.pdf",
+     54,
+     "direct distribution network covering approximately 75,000 chemist outlets (doc p",
+     "75,000"
+    ]
+   }
+  },
+  {
+   "name": "Countries Presence",
+   "unit": "count",
+   "kind": "level",
+   "y": {},
+   "q": {
+    "20260630": 50.0
+   },
+   "src": {
+    "q:20260630": [
+     "db7e5e01-7e8b-4e02-99b5-76d6a2b8ec1e.pdf",
+     20,
+     "presence in 50+ countries (doc period)",
+     "50"
+    ]
+   }
+  },
+  {
+   "name": "Field Force / Medical Representatives (India)",
+   "unit": "count",
+   "kind": "level",
+   "y": {},
+   "q": {
+    "20260331": 7000.0
+   },
+   "src": {
+    "q:20260331": [
+     "ff8314b3-63f3-4741-871f-83b50a44e1d9.pdf",
+     54,
+     "As of 31st March 2026, the field force stands at around 7,000 medical representa",
+     "7,000"
+    ]
+   }
+  },
+  {
+   "name": "Manufacturing Facilities",
+   "unit": "count",
+   "kind": "level",
+   "y": {},
+   "q": {
+    "20260630": 16.0
+   },
+   "src": {
+    "q:20260630": [
+     "db7e5e01-7e8b-4e02-99b5-76d6a2b8ec1e.pdf",
+     20,
+     "Torrent Pharma has 16 manufacturing facilities (doc period)",
+     "16"
+    ]
+   }
+  },
+  {
+   "name": "Medical Representatives (Brazil)",
+   "unit": "count",
+   "kind": "level",
+   "y": {},
+   "q": {
+    "20260331": 320.0
+   },
+   "src": {
+    "q:20260331": [
+     "ff8314b3-63f3-4741-871f-83b50a44e1d9.pdf",
+     54,
+     "As of 31st March 2026, the total number of medical representatives stood at arou",
+     "320"
+    ]
+   }
+  },
+  {
+   "name": "Modern Trade Pharmacy Chains Reach",
+   "unit": "count",
+   "kind": "level",
+   "y": {
+    "20260331": 4500.0
+   },
+   "q": {},
+   "src": {
+    "y:20260331": [
+     "ff8314b3-63f3-4741-871f-83b50a44e1d9.pdf",
+     54,
+     "deepening reach in approximately 4500 Modern Trade pharmacy chains (doc period)",
+     "4500"
+    ]
+   }
+  },
+  {
+   "name": "R&D Scientists",
+   "unit": "count",
+   "kind": "level",
+   "y": {},
+   "q": {
+    "20260630": 900.0
+   },
+   "src": {
+    "q:20260630": [
+     "db7e5e01-7e8b-4e02-99b5-76d6a2b8ec1e.pdf",
+     20,
+     "employing approximately 900+ scientists (doc period)",
+     "900"
+    ]
+   }
+  },
+  {
+   "name": "Total Employees",
+   "unit": "count",
+   "kind": "level",
+   "y": {
+    "20260331": 16735.0
+   },
+   "q": {},
+   "src": {
+    "y:20260331": [
+     "ff8314b3-63f3-4741-871f-83b50a44e1d9.pdf",
+     85,
+     "Total Employees (D+E)",
+     "16,735"
+    ]
+   }
+  },
+  {
+   "name": "Total Workers",
+   "unit": "count",
+   "kind": "level",
+   "y": {
+    "20260331": 3606.0
+   },
+   "q": {},
+   "src": {
+    "y:20260331": [
+     "ff8314b3-63f3-4741-871f-83b50a44e1d9.pdf",
+     85,
+     "Total Workers (F+G)",
+     "3,606"
+    ]
+   }
+  },
+  {
+   "name": "US ANDA Approvals Pipeline",
+   "unit": "count",
+   "kind": "level",
+   "y": {
+    "20260331": 16.0
+   },
+   "q": {},
+   "src": {
+    "y:20260331": [
+     "ff8314b3-63f3-4741-871f-83b50a44e1d9.pdf",
+     54,
+     "The US pipeline consists of 16 ANDA approvals (doc period)",
+     "16"
+    ]
+   }
+  },
+  {
+   "name": "US Products Under Development Pipeline",
+   "unit": "count",
+   "kind": "level",
+   "y": {
+    "20260331": 21.0
+   },
+   "q": {},
+   "src": {
+    "y:20260331": [
+     "ff8314b3-63f3-4741-871f-83b50a44e1d9.pdf",
+     54,
+     "21 products under development to be filed over the next 3 years (doc period)",
+     "21"
+    ]
+   }
+  },
+  {
+   "name": "USFDA-Approved Manufacturing Facilities",
+   "unit": "count",
+   "kind": "level",
+   "y": {},
+   "q": {
+    "20260630": 8.0
+   },
+   "src": {
+    "q:20260630": [
+     "db7e5e01-7e8b-4e02-99b5-76d6a2b8ec1e.pdf",
+     20,
+     "of which 8 are USFDA approved (doc period)",
+     "8"
+    ]
+   }
+  }
+ ],
  "held": [],
  "catalog": [
   {
