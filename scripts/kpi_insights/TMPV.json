@@ -2,13 +2,6 @@
  "sym": "TMPV",
  "fy_end_month": 3,
  "docs": {
-  "0a68c514-96c1-4dc5-a628-3eda55a7b541.pdf": {
-   "kind": "ip",
-   "date": "2026-08-13",
-   "title": "Q1 FY27 Investor Presentation",
-   "read": "2026-09-06",
-   "by": "claude-routine"
-  },
   "014847b7-57ec-4743-8aa6-9cc27be5d081.pdf": {
    "kind": "ip",
    "date": "2026-06-23",
@@ -27,6 +20,27 @@
    "kind": "ar",
    "date": "2026-06-15",
    "title": "Integrated Annual Report FY26",
+   "read": "2026-09-06",
+   "by": "claude-routine"
+  },
+  "10059fad-ae2a-4feb-acc2-09659bc3eb1f.pdf": {
+   "kind": "ip",
+   "date": "2026-06-17",
+   "title": "JLR Investor Day Presentation, June 2026",
+   "read": "2026-09-06",
+   "by": "claude-routine"
+  },
+  "ee5addb0-24c8-45de-9071-c06bf3ba6daa.pdf": {
+   "kind": "ip",
+   "date": "2026-05-14",
+   "title": "Q4 FY26 Investor Presentation",
+   "read": "2026-09-06",
+   "by": "claude-routine"
+  },
+  "0a68c514-96c1-4dc5-a628-3eda55a7b541.pdf": {
+   "kind": "ip",
+   "date": "2026-08-13",
+   "title": "Q1 FY27 Investor Presentation",
    "read": "2026-09-06",
    "by": "claude-routine"
   }
@@ -107,6 +121,306 @@
    }
   },
   {
+   "name": "JLR Wholesale Volumes",
+   "unit": "kunits",
+   "kind": "flow",
+   "y": {
+    "20250331": 400.9,
+    "20260331": 307.9
+   },
+   "q": {
+    "20250331": 111.4,
+    "20250630": 87.3,
+    "20250930": 66.2,
+    "20251231": 59.1,
+    "20260331": 95.3,
+    "20260630": 79.3
+   },
+   "src": {
+    "q:20250630": [
+     "ee5addb0-24c8-45de-9071-c06bf3ba6daa.pdf",
+     10,
+     "Wholesale (K units)",
+     "87.3"
+    ],
+    "q:20260331": [
+     "ee5addb0-24c8-45de-9071-c06bf3ba6daa.pdf",
+     10,
+     "Wholesale (K units)",
+     "95.3"
+    ],
+    "q:20260630": [
+     "0a68c514-96c1-4dc5-a628-3eda55a7b541.pdf",
+     10,
+     "Total wholesales",
+     "79.3"
+    ],
+    "q:20250930": [
+     "ee5addb0-24c8-45de-9071-c06bf3ba6daa.pdf",
+     10,
+     "Wholesale (K units)",
+     "66.2"
+    ],
+    "q:20251231": [
+     "ee5addb0-24c8-45de-9071-c06bf3ba6daa.pdf",
+     10,
+     "Wholesale (K units)",
+     "59.1"
+    ],
+    "q:20250331": [
+     "ee5addb0-24c8-45de-9071-c06bf3ba6daa.pdf",
+     10,
+     "Wholesale (K units)",
+     "111.4"
+    ],
+    "y:20260331": [
+     "ee5addb0-24c8-45de-9071-c06bf3ba6daa.pdf",
+     10,
+     "Wholesale (K units)",
+     "307.9"
+    ],
+    "y:20250331": [
+     "ee5addb0-24c8-45de-9071-c06bf3ba6daa.pdf",
+     10,
+     "Wholesale (K units)",
+     "400.9"
+    ]
+   }
+  },
+  {
+   "name": "JLR Retail Volumes",
+   "unit": "kunits",
+   "kind": "flow",
+   "y": {
+    "20250331": 428.9,
+    "20260331": 352.4
+   },
+   "q": {
+    "20250331": 108.2,
+    "20250630": 94.4,
+    "20251231": 79.8,
+    "20260331": 92.8,
+    "20260630": 79.9
+   },
+   "src": {
+    "q:20250630": [
+     "0a68c514-96c1-4dc5-a628-3eda55a7b541.pdf",
+     10,
+     "Total retails",
+     "94.4"
+    ],
+    "q:20260331": [
+     "0a68c514-96c1-4dc5-a628-3eda55a7b541.pdf",
+     10,
+     "Total retails",
+     "92.8"
+    ],
+    "q:20260630": [
+     "0a68c514-96c1-4dc5-a628-3eda55a7b541.pdf",
+     10,
+     "Total retails",
+     "79.9"
+    ],
+    "q:20250331": [
+     "ee5addb0-24c8-45de-9071-c06bf3ba6daa.pdf",
+     44,
+     "Retail volumes",
+     "108.2"
+    ],
+    "q:20251231": [
+     "ee5addb0-24c8-45de-9071-c06bf3ba6daa.pdf",
+     44,
+     "Retail volumes",
+     "79.8"
+    ],
+    "y:20250331": [
+     "ee5addb0-24c8-45de-9071-c06bf3ba6daa.pdf",
+     44,
+     "Total",
+     "428.9"
+    ],
+    "y:20260331": [
+     "ee5addb0-24c8-45de-9071-c06bf3ba6daa.pdf",
+     44,
+     "Total",
+     "352.4"
+    ]
+   }
+  },
+  {
+   "name": "TMPV Domestic Market Share (PV, Vahan)",
+   "unit": "%",
+   "kind": "level",
+   "y": {
+    "20250331": 13.2,
+    "20260331": 13.6
+   },
+   "q": {
+    "20250630": 12.5,
+    "20250930": 13.0,
+    "20251231": 14.0,
+    "20260331": 14.2,
+    "20260630": 14.3
+   },
+   "src": {
+    "y:20250331": [
+     "b37e4ca4-826d-4b6c-b250-fcdf423e6bc4.pdf",
+     266,
+     "Passenger Vehicles (Including Electric Vehicles)",
+     "13.2"
+    ],
+    "y:20260331": [
+     "b37e4ca4-826d-4b6c-b250-fcdf423e6bc4.pdf",
+     266,
+     "Passenger Vehicles (Including Electric Vehicles)",
+     "13.6"
+    ],
+    "q:20260630": [
+     "0a68c514-96c1-4dc5-a628-3eda55a7b541.pdf",
+     20,
+     "Vahan Domestic Market Share",
+     "14.3"
+    ],
+    "q:20250630": [
+     "ee5addb0-24c8-45de-9071-c06bf3ba6daa.pdf",
+     25,
+     "Vahan MS",
+     "12.5"
+    ],
+    "q:20250930": [
+     "ee5addb0-24c8-45de-9071-c06bf3ba6daa.pdf",
+     25,
+     "Vahan MS",
+     "13.0"
+    ],
+    "q:20251231": [
+     "ee5addb0-24c8-45de-9071-c06bf3ba6daa.pdf",
+     25,
+     "Vahan MS",
+     "14.0"
+    ],
+    "q:20260331": [
+     "ee5addb0-24c8-45de-9071-c06bf3ba6daa.pdf",
+     25,
+     "Vahan MS",
+     "14.2"
+    ]
+   }
+  },
+  {
+   "name": "TMPV Group Total Wholesales",
+   "unit": "K units",
+   "kind": "flow",
+   "y": {
+    "20250331": 957.3,
+    "20260331": 949.5
+   },
+   "q": {
+    "20250331": 258.4,
+    "20250630": 212.0,
+    "20250930": 210.7,
+    "20251231": 229.7,
+    "20260331": 297.1
+   },
+   "src": {
+    "q:20250630": [
+     "ee5addb0-24c8-45de-9071-c06bf3ba6daa.pdf",
+     6,
+     "Global wholesales (K units)",
+     "212.0"
+    ],
+    "q:20250930": [
+     "ee5addb0-24c8-45de-9071-c06bf3ba6daa.pdf",
+     6,
+     "Global wholesales (K units)",
+     "210.7"
+    ],
+    "q:20251231": [
+     "ee5addb0-24c8-45de-9071-c06bf3ba6daa.pdf",
+     6,
+     "Global wholesales (K units)",
+     "229.7"
+    ],
+    "q:20260331": [
+     "ee5addb0-24c8-45de-9071-c06bf3ba6daa.pdf",
+     6,
+     "Global wholesales (K units)",
+     "297.1"
+    ],
+    "q:20250331": [
+     "ee5addb0-24c8-45de-9071-c06bf3ba6daa.pdf",
+     6,
+     "Global wholesales (K units)",
+     "258.4"
+    ],
+    "y:20260331": [
+     "ee5addb0-24c8-45de-9071-c06bf3ba6daa.pdf",
+     6,
+     "Global wholesales (K units)",
+     "949.5"
+    ],
+    "y:20250331": [
+     "ee5addb0-24c8-45de-9071-c06bf3ba6daa.pdf",
+     6,
+     "Global wholesales (K units)",
+     "957.3"
+    ]
+   }
+  },
+  {
+   "name": "TMPV EV Domestic Market Share (Vahan)",
+   "unit": "%",
+   "kind": "level",
+   "y": {
+    "20250331": 55.4,
+    "20260331": 40.2
+   },
+   "q": {
+    "20250331": 43.3,
+    "20250630": 35.9,
+    "20260331": 40.9,
+    "20260630": 39.0
+   },
+   "src": {
+    "q:20250630": [
+     "0a68c514-96c1-4dc5-a628-3eda55a7b541.pdf",
+     21,
+     "Vahan Domestic Market Share",
+     "35.9"
+    ],
+    "q:20260331": [
+     "ee5addb0-24c8-45de-9071-c06bf3ba6daa.pdf",
+     26,
+     "EV Vahan Domestic Market Share",
+     "40.9"
+    ],
+    "q:20260630": [
+     "0a68c514-96c1-4dc5-a628-3eda55a7b541.pdf",
+     21,
+     "Vahan Domestic Market Share",
+     "39.0"
+    ],
+    "y:20260331": [
+     "ee5addb0-24c8-45de-9071-c06bf3ba6daa.pdf",
+     26,
+     "EV Vahan Domestic Market Share",
+     "40.2"
+    ],
+    "y:20250331": [
+     "ee5addb0-24c8-45de-9071-c06bf3ba6daa.pdf",
+     26,
+     "EV Vahan Domestic Market Share",
+     "55.4"
+    ],
+    "q:20250331": [
+     "ee5addb0-24c8-45de-9071-c06bf3ba6daa.pdf",
+     26,
+     "EV Vahan Domestic Market Share",
+     "43.3"
+    ]
+   }
+  },
+  {
    "name": "TMPV EV Parc (Cumulative EVs on Road)",
    "unit": "'000",
    "kind": "level",
@@ -159,48 +473,138 @@
    }
   },
   {
-   "name": "TMPV EV Domestic Market Share (Vahan)",
+   "name": "JLR Residual Value",
    "unit": "%",
    "kind": "level",
    "y": {
-    "20250331": 55.4,
-    "20260331": 40.2
+    "20250331": 92.7
    },
    "q": {
-    "20250630": 35.9,
-    "20260331": 40.9,
-    "20260630": 39.0
+    "20250630": 93.4,
+    "20250930": 94.0,
+    "20251231": 94.0,
+    "20260331": 94.0
+   },
+   "src": {
+    "y:20250331": [
+     "10059fad-ae2a-4feb-acc2-09659bc3eb1f.pdf",
+     23,
+     "Best in class residual value %",
+     "92.7"
+    ],
+    "q:20250630": [
+     "10059fad-ae2a-4feb-acc2-09659bc3eb1f.pdf",
+     23,
+     "Best in class residual value %",
+     "93.4"
+    ],
+    "q:20250930": [
+     "10059fad-ae2a-4feb-acc2-09659bc3eb1f.pdf",
+     23,
+     "Best in class residual value %",
+     "94"
+    ],
+    "q:20251231": [
+     "10059fad-ae2a-4feb-acc2-09659bc3eb1f.pdf",
+     23,
+     "Best in class residual value %",
+     "94"
+    ],
+    "q:20260331": [
+     "10059fad-ae2a-4feb-acc2-09659bc3eb1f.pdf",
+     23,
+     "Best in class residual value %",
+     "94"
+    ]
+   }
+  },
+  {
+   "name": "TMPV EV Annual Volumes",
+   "unit": "'000s",
+   "kind": "flow",
+   "y": {
+    "20200331": 1.3,
+    "20220331": 19.0,
+    "20240331": 74.0,
+    "20250331": 64.3,
+    "20260331": 92.0
+   },
+   "q": {},
+   "src": {
+    "y:20200331": [
+     "014847b7-57ec-4743-8aa6-9cc27be5d081.pdf",
+     11,
+     "Tata EV Annual Volumes",
+     "1.3"
+    ],
+    "y:20220331": [
+     "014847b7-57ec-4743-8aa6-9cc27be5d081.pdf",
+     11,
+     "Tata EV Annual Volumes",
+     "19"
+    ],
+    "y:20240331": [
+     "014847b7-57ec-4743-8aa6-9cc27be5d081.pdf",
+     11,
+     "Tata EV Annual Volumes",
+     "74"
+    ],
+    "y:20260331": [
+     "014847b7-57ec-4743-8aa6-9cc27be5d081.pdf",
+     11,
+     "Tata EV Annual Volumes",
+     "92"
+    ],
+    "y:20250331": [
+     "ee5addb0-24c8-45de-9071-c06bf3ba6daa.pdf",
+     26,
+     "EV Offtake Volumes (incl. IB)",
+     "64.3"
+    ]
+   }
+  },
+  {
+   "name": "Tata Passenger Vehicles Wholesales",
+   "unit": "K units",
+   "kind": "flow",
+   "y": {},
+   "q": {
+    "20250630": 124.7,
+    "20250930": 144.5,
+    "20251231": 170.5,
+    "20260331": 201.8,
+    "20260630": 182.3
    },
    "src": {
     "q:20250630": [
      "0a68c514-96c1-4dc5-a628-3eda55a7b541.pdf",
-     21,
-     "Vahan Domestic Market Share",
-     "35.9"
+     22,
+     "Wholesales (K units)",
+     "124.7"
     ],
     "q:20260331": [
      "0a68c514-96c1-4dc5-a628-3eda55a7b541.pdf",
-     21,
-     "Vahan Domestic Market Share",
-     "40.9"
+     22,
+     "Wholesales (K units)",
+     "201.8"
     ],
     "q:20260630": [
      "0a68c514-96c1-4dc5-a628-3eda55a7b541.pdf",
-     21,
-     "Vahan Domestic Market Share",
-     "39.0"
+     22,
+     "Wholesales (K units)",
+     "182.3"
     ],
-    "y:20260331": [
-     "b37e4ca4-826d-4b6c-b250-fcdf423e6bc4.pdf",
-     266,
-     "Electric Vehicles",
-     "40.2"
+    "q:20250930": [
+     "ee5addb0-24c8-45de-9071-c06bf3ba6daa.pdf",
+     25,
+     "Wholesale (incl. IB) K units",
+     "144.5"
     ],
-    "y:20250331": [
-     "b37e4ca4-826d-4b6c-b250-fcdf423e6bc4.pdf",
-     266,
-     "Electric Vehicles",
-     "55.4"
+    "q:20251231": [
+     "ee5addb0-24c8-45de-9071-c06bf3ba6daa.pdf",
+     25,
+     "Wholesale (incl. IB) K units",
+     "170.5"
     ]
    }
   },
@@ -243,40 +647,41 @@
    }
   },
   {
-   "name": "TMPV EV Annual Volumes",
-   "unit": "'000s",
-   "kind": "flow",
+   "name": "TMPV EV Charging Network",
+   "unit": "count",
+   "kind": "level",
    "y": {
-    "20200331": 1.3,
-    "20220331": 19.0,
-    "20240331": 74.0,
-    "20260331": 92.0
+    "20240331": 10065.0,
+    "20250331": 10065.0,
+    "20260331": 32640.0
    },
-   "q": {},
+   "q": {
+    "20260630": 33947.0
+   },
    "src": {
-    "y:20200331": [
-     "014847b7-57ec-4743-8aa6-9cc27be5d081.pdf",
-     11,
-     "Tata EV Annual Volumes",
-     "1.3"
-    ],
-    "y:20220331": [
-     "014847b7-57ec-4743-8aa6-9cc27be5d081.pdf",
-     11,
-     "Tata EV Annual Volumes",
-     "19"
-    ],
-    "y:20240331": [
-     "014847b7-57ec-4743-8aa6-9cc27be5d081.pdf",
-     11,
-     "Tata EV Annual Volumes",
-     "74"
+    "y:20250331": [
+     "0a68c514-96c1-4dc5-a628-3eda55a7b541.pdf",
+     21,
+     "Charging Network",
+     "10,065"
     ],
     "y:20260331": [
-     "014847b7-57ec-4743-8aa6-9cc27be5d081.pdf",
-     11,
-     "Tata EV Annual Volumes",
-     "92"
+     "ee5addb0-24c8-45de-9071-c06bf3ba6daa.pdf",
+     26,
+     "Charging Network",
+     "32,640"
+    ],
+    "q:20260630": [
+     "0a68c514-96c1-4dc5-a628-3eda55a7b541.pdf",
+     21,
+     "Charging Network",
+     "33,947"
+    ],
+    "y:20240331": [
+     "ee5addb0-24c8-45de-9071-c06bf3ba6daa.pdf",
+     26,
+     "Charging Network",
+     "10,065"
     ]
    }
   },
@@ -396,6 +801,162 @@
    }
   },
   {
+   "name": "TMPV Powertrain Mix - CNG",
+   "unit": "%",
+   "kind": "level",
+   "y": {
+    "20240331": 16.0,
+    "20250331": 25.0,
+    "20260331": 27.0
+   },
+   "q": {
+    "20260630": 27.0
+   },
+   "src": {
+    "y:20250331": [
+     "0a68c514-96c1-4dc5-a628-3eda55a7b541.pdf",
+     20,
+     "Powertrain Mix - CNG",
+     "25"
+    ],
+    "y:20260331": [
+     "0a68c514-96c1-4dc5-a628-3eda55a7b541.pdf",
+     20,
+     "Powertrain Mix - CNG",
+     "27"
+    ],
+    "q:20260630": [
+     "0a68c514-96c1-4dc5-a628-3eda55a7b541.pdf",
+     20,
+     "Powertrain Mix - CNG",
+     "27"
+    ],
+    "y:20240331": [
+     "ee5addb0-24c8-45de-9071-c06bf3ba6daa.pdf",
+     25,
+     "Powertrain Mix - CNG",
+     "16"
+    ]
+   }
+  },
+  {
+   "name": "TMPV Powertrain Mix - Diesel",
+   "unit": "%",
+   "kind": "level",
+   "y": {
+    "20240331": 14.0,
+    "20250331": 13.0,
+    "20260331": 13.0
+   },
+   "q": {
+    "20260630": 12.0
+   },
+   "src": {
+    "y:20250331": [
+     "0a68c514-96c1-4dc5-a628-3eda55a7b541.pdf",
+     20,
+     "Powertrain Mix - Diesel",
+     "13"
+    ],
+    "y:20260331": [
+     "0a68c514-96c1-4dc5-a628-3eda55a7b541.pdf",
+     20,
+     "Powertrain Mix - Diesel",
+     "13"
+    ],
+    "q:20260630": [
+     "0a68c514-96c1-4dc5-a628-3eda55a7b541.pdf",
+     20,
+     "Powertrain Mix - Diesel",
+     "12"
+    ],
+    "y:20240331": [
+     "ee5addb0-24c8-45de-9071-c06bf3ba6daa.pdf",
+     25,
+     "Powertrain Mix - Diesel",
+     "14"
+    ]
+   }
+  },
+  {
+   "name": "TMPV Powertrain Mix - EV",
+   "unit": "%",
+   "kind": "level",
+   "y": {
+    "20240331": 12.0,
+    "20250331": 11.0,
+    "20260331": 14.0
+   },
+   "q": {
+    "20260630": 19.0
+   },
+   "src": {
+    "y:20250331": [
+     "0a68c514-96c1-4dc5-a628-3eda55a7b541.pdf",
+     20,
+     "Powertrain Mix - EV",
+     "11"
+    ],
+    "y:20260331": [
+     "0a68c514-96c1-4dc5-a628-3eda55a7b541.pdf",
+     20,
+     "Powertrain Mix - EV",
+     "14"
+    ],
+    "q:20260630": [
+     "0a68c514-96c1-4dc5-a628-3eda55a7b541.pdf",
+     20,
+     "Powertrain Mix - EV",
+     "19"
+    ],
+    "y:20240331": [
+     "ee5addb0-24c8-45de-9071-c06bf3ba6daa.pdf",
+     25,
+     "Powertrain Mix - EV",
+     "12"
+    ]
+   }
+  },
+  {
+   "name": "TMPV Powertrain Mix - Petrol",
+   "unit": "%",
+   "kind": "level",
+   "y": {
+    "20240331": 58.0,
+    "20250331": 51.0,
+    "20260331": 46.0
+   },
+   "q": {
+    "20260630": 42.0
+   },
+   "src": {
+    "y:20250331": [
+     "0a68c514-96c1-4dc5-a628-3eda55a7b541.pdf",
+     20,
+     "Powertrain Mix - Petrol",
+     "51"
+    ],
+    "y:20260331": [
+     "0a68c514-96c1-4dc5-a628-3eda55a7b541.pdf",
+     20,
+     "Powertrain Mix - Petrol",
+     "46"
+    ],
+    "q:20260630": [
+     "0a68c514-96c1-4dc5-a628-3eda55a7b541.pdf",
+     20,
+     "Powertrain Mix - Petrol",
+     "42"
+    ],
+    "y:20240331": [
+     "ee5addb0-24c8-45de-9071-c06bf3ba6daa.pdf",
+     25,
+     "Powertrain Mix - Petrol",
+     "58"
+    ]
+   }
+  },
+  {
    "name": "TMPV Total Nameplates",
    "unit": "count",
    "kind": "level",
@@ -434,132 +995,6 @@
    }
   },
   {
-   "name": "JLR Retail Volumes",
-   "unit": "kunits",
-   "kind": "flow",
-   "y": {},
-   "q": {
-    "20250630": 94.4,
-    "20260331": 92.8,
-    "20260630": 79.9
-   },
-   "src": {
-    "q:20250630": [
-     "0a68c514-96c1-4dc5-a628-3eda55a7b541.pdf",
-     10,
-     "Total retails",
-     "94.4"
-    ],
-    "q:20260331": [
-     "0a68c514-96c1-4dc5-a628-3eda55a7b541.pdf",
-     10,
-     "Total retails",
-     "92.8"
-    ],
-    "q:20260630": [
-     "0a68c514-96c1-4dc5-a628-3eda55a7b541.pdf",
-     10,
-     "Total retails",
-     "79.9"
-    ]
-   }
-  },
-  {
-   "name": "JLR Wholesale Volumes",
-   "unit": "kunits",
-   "kind": "flow",
-   "y": {},
-   "q": {
-    "20250630": 87.3,
-    "20260331": 95.3,
-    "20260630": 79.3
-   },
-   "src": {
-    "q:20250630": [
-     "0a68c514-96c1-4dc5-a628-3eda55a7b541.pdf",
-     10,
-     "Total wholesales",
-     "87.3"
-    ],
-    "q:20260331": [
-     "0a68c514-96c1-4dc5-a628-3eda55a7b541.pdf",
-     10,
-     "Total wholesales",
-     "95.3"
-    ],
-    "q:20260630": [
-     "0a68c514-96c1-4dc5-a628-3eda55a7b541.pdf",
-     10,
-     "Total wholesales",
-     "79.3"
-    ]
-   }
-  },
-  {
-   "name": "TMPV Domestic Market Share (PV, Vahan)",
-   "unit": "%",
-   "kind": "level",
-   "y": {
-    "20250331": 13.2,
-    "20260331": 13.6
-   },
-   "q": {
-    "20260630": 14.3
-   },
-   "src": {
-    "y:20250331": [
-     "b37e4ca4-826d-4b6c-b250-fcdf423e6bc4.pdf",
-     266,
-     "Passenger Vehicles (Including Electric Vehicles)",
-     "13.2"
-    ],
-    "y:20260331": [
-     "b37e4ca4-826d-4b6c-b250-fcdf423e6bc4.pdf",
-     266,
-     "Passenger Vehicles (Including Electric Vehicles)",
-     "13.6"
-    ],
-    "q:20260630": [
-     "0a68c514-96c1-4dc5-a628-3eda55a7b541.pdf",
-     20,
-     "Vahan Domestic Market Share",
-     "14.3"
-    ]
-   }
-  },
-  {
-   "name": "TMPV EV Charging Network",
-   "unit": "count",
-   "kind": "level",
-   "y": {
-    "20250331": 10065.0,
-    "20260331": 32640.0
-   },
-   "q": {
-    "20260630": 33947.0
-   },
-   "src": {
-    "y:20250331": [
-     "0a68c514-96c1-4dc5-a628-3eda55a7b541.pdf",
-     21,
-     "Charging Network",
-     "10,065"
-    ],
-    "y:20260331": [
-     "0a68c514-96c1-4dc5-a628-3eda55a7b541.pdf",
-     21,
-     "Charging Network",
-     "32,640"
-    ],
-    "q:20260630": [
-     "0a68c514-96c1-4dc5-a628-3eda55a7b541.pdf",
-     21,
-     "Charging Network",
-     "33,947"
-    ]
-   }
-  },
-  {
    "name": "TMPV EV Offtake Volumes (Avg Monthly)",
    "unit": "'000s",
    "kind": "flow",
@@ -588,134 +1023,6 @@
      21,
      "EV Offtake Volumes (incl. IB)",
      "11.5"
-    ]
-   }
-  },
-  {
-   "name": "TMPV Powertrain Mix - CNG",
-   "unit": "%",
-   "kind": "level",
-   "y": {
-    "20250331": 25.0,
-    "20260331": 27.0
-   },
-   "q": {
-    "20260630": 27.0
-   },
-   "src": {
-    "y:20250331": [
-     "0a68c514-96c1-4dc5-a628-3eda55a7b541.pdf",
-     20,
-     "Powertrain Mix - CNG",
-     "25"
-    ],
-    "y:20260331": [
-     "0a68c514-96c1-4dc5-a628-3eda55a7b541.pdf",
-     20,
-     "Powertrain Mix - CNG",
-     "27"
-    ],
-    "q:20260630": [
-     "0a68c514-96c1-4dc5-a628-3eda55a7b541.pdf",
-     20,
-     "Powertrain Mix - CNG",
-     "27"
-    ]
-   }
-  },
-  {
-   "name": "TMPV Powertrain Mix - Diesel",
-   "unit": "%",
-   "kind": "level",
-   "y": {
-    "20250331": 13.0,
-    "20260331": 13.0
-   },
-   "q": {
-    "20260630": 12.0
-   },
-   "src": {
-    "y:20250331": [
-     "0a68c514-96c1-4dc5-a628-3eda55a7b541.pdf",
-     20,
-     "Powertrain Mix - Diesel",
-     "13"
-    ],
-    "y:20260331": [
-     "0a68c514-96c1-4dc5-a628-3eda55a7b541.pdf",
-     20,
-     "Powertrain Mix - Diesel",
-     "13"
-    ],
-    "q:20260630": [
-     "0a68c514-96c1-4dc5-a628-3eda55a7b541.pdf",
-     20,
-     "Powertrain Mix - Diesel",
-     "12"
-    ]
-   }
-  },
-  {
-   "name": "TMPV Powertrain Mix - EV",
-   "unit": "%",
-   "kind": "level",
-   "y": {
-    "20250331": 11.0,
-    "20260331": 14.0
-   },
-   "q": {
-    "20260630": 19.0
-   },
-   "src": {
-    "y:20250331": [
-     "0a68c514-96c1-4dc5-a628-3eda55a7b541.pdf",
-     20,
-     "Powertrain Mix - EV",
-     "11"
-    ],
-    "y:20260331": [
-     "0a68c514-96c1-4dc5-a628-3eda55a7b541.pdf",
-     20,
-     "Powertrain Mix - EV",
-     "14"
-    ],
-    "q:20260630": [
-     "0a68c514-96c1-4dc5-a628-3eda55a7b541.pdf",
-     20,
-     "Powertrain Mix - EV",
-     "19"
-    ]
-   }
-  },
-  {
-   "name": "TMPV Powertrain Mix - Petrol",
-   "unit": "%",
-   "kind": "level",
-   "y": {
-    "20250331": 51.0,
-    "20260331": 46.0
-   },
-   "q": {
-    "20260630": 42.0
-   },
-   "src": {
-    "y:20250331": [
-     "0a68c514-96c1-4dc5-a628-3eda55a7b541.pdf",
-     20,
-     "Powertrain Mix - Petrol",
-     "51"
-    ],
-    "y:20260331": [
-     "0a68c514-96c1-4dc5-a628-3eda55a7b541.pdf",
-     20,
-     "Powertrain Mix - Petrol",
-     "46"
-    ],
-    "q:20260630": [
-     "0a68c514-96c1-4dc5-a628-3eda55a7b541.pdf",
-     20,
-     "Powertrain Mix - Petrol",
-     "42"
     ]
    }
   },
@@ -751,37 +1058,6 @@
    }
   },
   {
-   "name": "Tata Passenger Vehicles Wholesales",
-   "unit": "K units",
-   "kind": "flow",
-   "y": {},
-   "q": {
-    "20250630": 124.7,
-    "20260331": 201.8,
-    "20260630": 182.3
-   },
-   "src": {
-    "q:20250630": [
-     "0a68c514-96c1-4dc5-a628-3eda55a7b541.pdf",
-     22,
-     "Wholesales (K units)",
-     "124.7"
-    ],
-    "q:20260331": [
-     "0a68c514-96c1-4dc5-a628-3eda55a7b541.pdf",
-     22,
-     "Wholesales (K units)",
-     "201.8"
-    ],
-    "q:20260630": [
-     "0a68c514-96c1-4dc5-a628-3eda55a7b541.pdf",
-     22,
-     "Wholesales (K units)",
-     "182.3"
-    ]
-   }
-  },
-  {
    "name": "JLR Total Vehicle Sales (Wholesale, excl. CJLR)",
    "unit": "units",
    "kind": "flow",
@@ -802,6 +1078,54 @@
      265,
      "JLR",
      "400,898"
+    ]
+   }
+  },
+  {
+   "name": "Jaguar Retail Volumes",
+   "unit": "kunits",
+   "kind": "flow",
+   "y": {
+    "20250331": 48.4,
+    "20260331": 21.6
+   },
+   "q": {},
+   "src": {
+    "y:20250331": [
+     "ee5addb0-24c8-45de-9071-c06bf3ba6daa.pdf",
+     44,
+     "Jaguar",
+     "48.4"
+    ],
+    "y:20260331": [
+     "ee5addb0-24c8-45de-9071-c06bf3ba6daa.pdf",
+     44,
+     "Jaguar",
+     "21.6"
+    ]
+   }
+  },
+  {
+   "name": "Jaguar Wholesale Volumes",
+   "unit": "kunits",
+   "kind": "flow",
+   "y": {
+    "20250331": 26.9,
+    "20260331": 6.5
+   },
+   "q": {},
+   "src": {
+    "y:20250331": [
+     "ee5addb0-24c8-45de-9071-c06bf3ba6daa.pdf",
+     12,
+     "Jaguar",
+     "26.9"
+    ],
+    "y:20260331": [
+     "ee5addb0-24c8-45de-9071-c06bf3ba6daa.pdf",
+     12,
+     "Jaguar",
+     "6.5"
     ]
    }
   },
