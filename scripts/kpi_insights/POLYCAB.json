@@ -1,8 +1,521 @@
 {
  "sym": "POLYCAB",
  "fy_end_month": 3,
- "docs": {},
- "metrics": [],
+ "docs": {
+  "52abf6f5-8a9d-4914-8ed1-725361e6832b.pdf": {
+   "kind": "ip",
+   "date": "2026-07-16",
+   "title": "Q1 FY27 Earnings Presentation",
+   "read": "2026-09-06",
+   "by": "claude-routine"
+  },
+  "c615f652-57d2-4025-8bad-44ff8329a298.pdf": {
+   "kind": "ar",
+   "date": "2026-06-09",
+   "title": "AGM Notice Web-link Letter (FY26)",
+   "read": "2026-09-06",
+   "by": "claude-routine"
+  },
+  "ff6bcced-1327-449f-8a82-6fd651a0124f.pdf": {
+   "kind": "ar",
+   "date": "2026-06-09",
+   "title": "Integrated Annual Report FY26",
+   "read": "2026-09-06",
+   "by": "claude-routine"
+  },
+  "1e95b41f-12c7-4f97-b47b-c3abfce9efc5.pdf": {
+   "kind": "ar",
+   "date": "2026-06-08",
+   "title": "30th AGM Notice with Integrated Annual Report FY26",
+   "read": "2026-09-06",
+   "by": "claude-routine"
+  },
+  "0f586954-cf4c-4a5c-b179-8fb4a3cf55a9.pdf": {
+   "kind": "ip",
+   "date": "2026-05-06",
+   "title": "Q4 & FY26 Earnings Presentation",
+   "read": "2026-09-06",
+   "by": "claude-routine"
+  }
+ },
+ "metrics": [
+  {
+   "name": "Exports Contribution",
+   "unit": "%",
+   "kind": "flow",
+   "y": {
+    "20250331": 6.0,
+    "20260331": 5.4
+   },
+   "q": {
+    "20250331": 4.7,
+    "20250630": 5.2,
+    "20251231": 5.7,
+    "20260331": 4.4,
+    "20260630": 3.3
+   },
+   "src": {
+    "q:20260630": [
+     "52abf6f5-8a9d-4914-8ed1-725361e6832b.pdf",
+     17,
+     "Exports Contribution (%)",
+     "3.3"
+    ],
+    "q:20260331": [
+     "0f586954-cf4c-4a5c-b179-8fb4a3cf55a9.pdf",
+     28,
+     "Exports Contribution (%)",
+     "4.4"
+    ],
+    "q:20250630": [
+     "52abf6f5-8a9d-4914-8ed1-725361e6832b.pdf",
+     17,
+     "Exports Contribution (%)",
+     "5.2"
+    ],
+    "q:20251231": [
+     "0f586954-cf4c-4a5c-b179-8fb4a3cf55a9.pdf",
+     28,
+     "Exports Contribution (%)",
+     "5.7"
+    ],
+    "q:20250331": [
+     "0f586954-cf4c-4a5c-b179-8fb4a3cf55a9.pdf",
+     28,
+     "Exports Contribution (%)",
+     "4.7"
+    ],
+    "y:20260331": [
+     "0f586954-cf4c-4a5c-b179-8fb4a3cf55a9.pdf",
+     28,
+     "Exports Contribution (%) (Year to Date)",
+     "5.4"
+    ],
+    "y:20250331": [
+     "0f586954-cf4c-4a5c-b179-8fb4a3cf55a9.pdf",
+     28,
+     "Exports Contribution (%) (Year to Date)",
+     "6.0"
+    ]
+   }
+  },
+  {
+   "name": "Inventory Days (Closing)",
+   "unit": "days",
+   "kind": "level",
+   "y": {
+    "20240331": 91.0,
+    "20250331": 80.0,
+    "20260331": 78.0
+   },
+   "q": {
+    "20251231": 94.0,
+    "20260331": 78.0,
+    "20260630": 83.0
+   },
+   "src": {
+    "q:20260630": [
+     "52abf6f5-8a9d-4914-8ed1-725361e6832b.pdf",
+     18,
+     "Inventory Days (Closing)",
+     "83"
+    ],
+    "y:20260331": [
+     "52abf6f5-8a9d-4914-8ed1-725361e6832b.pdf",
+     18,
+     "Inventory Days (Closing)",
+     "78"
+    ],
+    "y:20250331": [
+     "52abf6f5-8a9d-4914-8ed1-725361e6832b.pdf",
+     18,
+     "Inventory Days (Closing)",
+     "80"
+    ],
+    "y:20240331": [
+     "52abf6f5-8a9d-4914-8ed1-725361e6832b.pdf",
+     18,
+     "Inventory Days (Closing)",
+     "91"
+    ],
+    "q:20260331": [
+     "0f586954-cf4c-4a5c-b179-8fb4a3cf55a9.pdf",
+     29,
+     "Inventory Days (Closing)",
+     "78"
+    ],
+    "q:20251231": [
+     "0f586954-cf4c-4a5c-b179-8fb4a3cf55a9.pdf",
+     29,
+     "Inventory Days (Closing)",
+     "94"
+    ]
+   }
+  },
+  {
+   "name": "Net Working Capital Days (Closing)",
+   "unit": "days",
+   "kind": "level",
+   "y": {
+    "20240331": 44.0,
+    "20250331": 44.0,
+    "20260331": 25.0
+   },
+   "q": {
+    "20251231": 51.0,
+    "20260331": 25.0,
+    "20260630": 15.0
+   },
+   "src": {
+    "q:20260630": [
+     "52abf6f5-8a9d-4914-8ed1-725361e6832b.pdf",
+     18,
+     "Net Working Capital (Closing)",
+     "15"
+    ],
+    "y:20260331": [
+     "52abf6f5-8a9d-4914-8ed1-725361e6832b.pdf",
+     18,
+     "Net Working Capital (Closing)",
+     "25"
+    ],
+    "y:20250331": [
+     "52abf6f5-8a9d-4914-8ed1-725361e6832b.pdf",
+     18,
+     "Net Working Capital (Closing)",
+     "44"
+    ],
+    "y:20240331": [
+     "52abf6f5-8a9d-4914-8ed1-725361e6832b.pdf",
+     18,
+     "Net Working Capital (Closing)",
+     "44"
+    ],
+    "q:20260331": [
+     "0f586954-cf4c-4a5c-b179-8fb4a3cf55a9.pdf",
+     29,
+     "Net Working Capital (Closing)",
+     "25"
+    ],
+    "q:20251231": [
+     "0f586954-cf4c-4a5c-b179-8fb4a3cf55a9.pdf",
+     29,
+     "Net Working Capital (Closing)",
+     "51"
+    ]
+   }
+  },
+  {
+   "name": "Payable Days (Closing)",
+   "unit": "days",
+   "kind": "level",
+   "y": {
+    "20240331": 81.0,
+    "20250331": 73.0,
+    "20260331": 93.0
+   },
+   "q": {
+    "20251231": 77.0,
+    "20260331": 93.0,
+    "20260630": 103.0
+   },
+   "src": {
+    "q:20260630": [
+     "52abf6f5-8a9d-4914-8ed1-725361e6832b.pdf",
+     18,
+     "Payable Days (Closing)",
+     "103"
+    ],
+    "y:20260331": [
+     "52abf6f5-8a9d-4914-8ed1-725361e6832b.pdf",
+     18,
+     "Payable Days (Closing)",
+     "93"
+    ],
+    "y:20250331": [
+     "52abf6f5-8a9d-4914-8ed1-725361e6832b.pdf",
+     18,
+     "Payable Days (Closing)",
+     "73"
+    ],
+    "y:20240331": [
+     "52abf6f5-8a9d-4914-8ed1-725361e6832b.pdf",
+     18,
+     "Payable Days (Closing)",
+     "81"
+    ],
+    "q:20260331": [
+     "0f586954-cf4c-4a5c-b179-8fb4a3cf55a9.pdf",
+     29,
+     "Payable Days (Closing)",
+     "93"
+    ],
+    "q:20251231": [
+     "0f586954-cf4c-4a5c-b179-8fb4a3cf55a9.pdf",
+     29,
+     "Payable Days (Closing)",
+     "77"
+    ]
+   }
+  },
+  {
+   "name": "Receivable Days (Closing)",
+   "unit": "days",
+   "kind": "level",
+   "y": {
+    "20240331": 33.0,
+    "20250331": 38.0,
+    "20260331": 40.0
+   },
+   "q": {
+    "20251231": 34.0,
+    "20260331": 40.0,
+    "20260630": 35.0
+   },
+   "src": {
+    "q:20260630": [
+     "52abf6f5-8a9d-4914-8ed1-725361e6832b.pdf",
+     18,
+     "Receivable Days (Closing)",
+     "35"
+    ],
+    "y:20260331": [
+     "52abf6f5-8a9d-4914-8ed1-725361e6832b.pdf",
+     18,
+     "Receivable Days (Closing)",
+     "40"
+    ],
+    "y:20250331": [
+     "52abf6f5-8a9d-4914-8ed1-725361e6832b.pdf",
+     18,
+     "Receivable Days (Closing)",
+     "38"
+    ],
+    "y:20240331": [
+     "52abf6f5-8a9d-4914-8ed1-725361e6832b.pdf",
+     18,
+     "Receivable Days (Closing)",
+     "33"
+    ],
+    "q:20260331": [
+     "0f586954-cf4c-4a5c-b179-8fb4a3cf55a9.pdf",
+     29,
+     "Receivable Days (Closing)",
+     "40"
+    ],
+    "q:20251231": [
+     "0f586954-cf4c-4a5c-b179-8fb4a3cf55a9.pdf",
+     29,
+     "Receivable Days (Closing)",
+     "34"
+    ]
+   }
+  },
+  {
+   "name": "Countries Present",
+   "unit": "count",
+   "kind": "level",
+   "y": {
+    "20260331": 94.0
+   },
+   "q": {},
+   "src": {
+    "y:20260331": [
+     "1e95b41f-12c7-4f97-b47b-c3abfce9efc5.pdf",
+     151,
+     "diversified presence across 94 countries (doc period)",
+     "94"
+    ]
+   }
+  },
+  {
+   "name": "Customer Satisfaction %",
+   "unit": "%",
+   "kind": "level",
+   "y": {
+    "20260331": 96.0
+   },
+   "q": {},
+   "src": {
+    "y:20260331": [
+     "1e95b41f-12c7-4f97-b47b-c3abfce9efc5.pdf",
+     12,
+     "Customer satisfaction (doc period)",
+     "96"
+    ]
+   }
+  },
+  {
+   "name": "Dealers and Distributors",
+   "unit": "count",
+   "kind": "level",
+   "y": {
+    "20260331": 3900.0
+   },
+   "q": {},
+   "src": {
+    "y:20260331": [
+     "1e95b41f-12c7-4f97-b47b-c3abfce9efc5.pdf",
+     12,
+     "Dealers and distributors (doc period)",
+     "3,900"
+    ]
+   }
+  },
+  {
+   "name": "Employees Associated 5+ Years %",
+   "unit": "%",
+   "kind": "level",
+   "y": {
+    "20260331": 51.0
+   },
+   "q": {},
+   "src": {
+    "y:20260331": [
+     "1e95b41f-12c7-4f97-b47b-c3abfce9efc5.pdf",
+     12,
+     "Employees associated with us for 5+ years (doc period)",
+     "51"
+    ]
+   }
+  },
+  {
+   "name": "IPR Registered (Annual)",
+   "unit": "count",
+   "kind": "flow",
+   "y": {
+    "20260331": 79.0
+   },
+   "q": {},
+   "src": {
+    "y:20260331": [
+     "1e95b41f-12c7-4f97-b47b-c3abfce9efc5.pdf",
+     12,
+     "IPR registered in FY 2025-26",
+     "79"
+    ]
+   }
+  },
+  {
+   "name": "Manufacturing Units",
+   "unit": "count",
+   "kind": "level",
+   "y": {
+    "20260331": 26.0
+   },
+   "q": {},
+   "src": {
+    "y:20260331": [
+     "1e95b41f-12c7-4f97-b47b-c3abfce9efc5.pdf",
+     12,
+     "Manufacturing units (doc period)",
+     "26"
+    ]
+   }
+  },
+  {
+   "name": "People Employed on Contract",
+   "unit": "count",
+   "kind": "level",
+   "y": {
+    "20260331": 13642.0
+   },
+   "q": {},
+   "src": {
+    "y:20260331": [
+     "1e95b41f-12c7-4f97-b47b-c3abfce9efc5.pdf",
+     12,
+     "People employed on contract (doc period)",
+     "13,642"
+    ]
+   }
+  },
+  {
+   "name": "People Employed on Roll",
+   "unit": "count",
+   "kind": "level",
+   "y": {
+    "20260331": 4574.0
+   },
+   "q": {},
+   "src": {
+    "y:20260331": [
+     "1e95b41f-12c7-4f97-b47b-c3abfce9efc5.pdf",
+     12,
+     "People employed on roll (doc period)",
+     "4,574"
+    ]
+   }
+  },
+  {
+   "name": "Retail Outlets",
+   "unit": "count",
+   "kind": "level",
+   "y": {
+    "20260331": 190000.0
+   },
+   "q": {},
+   "src": {
+    "y:20260331": [
+     "1e95b41f-12c7-4f97-b47b-c3abfce9efc5.pdf",
+     12,
+     "Retail outlets (doc period)",
+     "190,000"
+    ]
+   }
+  },
+  {
+   "name": "Sales from In-house Manufactured C&W Products",
+   "unit": "%",
+   "kind": "level",
+   "y": {
+    "20260331": 100.0
+   },
+   "q": {},
+   "src": {
+    "y:20260331": [
+     "1e95b41f-12c7-4f97-b47b-c3abfce9efc5.pdf",
+     12,
+     "Sales from C&W products manufactured in-house (doc period)",
+     "100"
+    ]
+   }
+  },
+  {
+   "name": "Total Registered IPR",
+   "unit": "count",
+   "kind": "level",
+   "y": {
+    "20260331": 712.0
+   },
+   "q": {},
+   "src": {
+    "y:20260331": [
+     "1e95b41f-12c7-4f97-b47b-c3abfce9efc5.pdf",
+     12,
+     "Total registered IPR (doc period)",
+     "712"
+    ]
+   }
+  },
+  {
+   "name": "Warehouses and Depots",
+   "unit": "count",
+   "kind": "level",
+   "y": {
+    "20260331": 35.0
+   },
+   "q": {},
+   "src": {
+    "y:20260331": [
+     "1e95b41f-12c7-4f97-b47b-c3abfce9efc5.pdf",
+     12,
+     "Warehouses and depots (doc period)",
+     "35"
+    ]
+   }
+  }
+ ],
  "held": [],
  "catalog": [
   {
