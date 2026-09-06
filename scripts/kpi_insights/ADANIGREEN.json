@@ -43,6 +43,20 @@
    "title": "Equity Investor Presentation, November 2025",
    "read": "2026-09-06",
    "by": "claude-routine"
+  },
+  "27f54649-fff5-4f30-8556-bdfca3e92866.pdf": {
+   "kind": "res",
+   "date": "2025-10-28",
+   "title": "Q2 & H1 FY26 Results + Press Release",
+   "read": "2026-09-06",
+   "by": "claude-routine"
+  },
+  "6ad709a3-9831-4918-8fda-cdb33cbbe8bb.pdf": {
+   "kind": "ar",
+   "date": "2025-03-31",
+   "title": "Integrated Annual Report FY 2024-25",
+   "read": "2026-09-06",
+   "by": "claude-routine"
   }
  },
  "metrics": [
@@ -60,8 +74,10 @@
     "20260331": 19294.0
    },
    "q": {
+    "20240930": 11184.0,
     "20241231": 11609.0,
     "20250630": 15816.0,
+    "20250930": 16680.0,
     "20251231": 17238.0,
     "20260630": 20142.0
    },
@@ -131,6 +147,18 @@
      32,
      "AGEL: Operational Performance — Operational Capacity (MW AC – PPA capacity) Tota",
      "2,545"
+    ],
+    "q:20250930": [
+     "27f54649-fff5-4f30-8556-bdfca3e92866.pdf",
+     23,
+     "The Group has renewable generation operational capacity of 16,680 MW as at 30th ",
+     "16,680"
+    ],
+    "q:20240930": [
+     "27f54649-fff5-4f30-8556-bdfca3e92866.pdf",
+     23,
+     "the same was 11,184 MW as at 30th September, 2024",
+     "11,184"
     ]
    }
   },
@@ -655,6 +683,45 @@
    }
   },
   {
+   "name": "Energy Sales",
+   "unit": "mn units",
+   "kind": "flow",
+   "y": {
+    "20240331": 21878.0,
+    "20250331": 27969.0,
+    "20260331": 37567.0
+   },
+   "q": {
+    "20260630": 13657.0
+   },
+   "src": {
+    "q:20260630": [
+     "508a8ca4-1b33-41c8-a9a7-fa0b1b018f92.pdf",
+     27,
+     "Sale of Energy increased by 30% YoY at 13,657 mn units in Q1 FY27",
+     "13,657"
+    ],
+    "y:20260331": [
+     "4a83854c-4424-4bd9-8a7a-b4a81bd198ee.pdf",
+     49,
+     "Energy sales: Increased by 34% YoY to 37,567 million units in FY26",
+     "37,567"
+    ],
+    "y:20250331": [
+     "eaef9306-36d2-4437-9e41-f08d08b9d104.pdf",
+     118,
+     "Sale of Energy (mn units) FY25",
+     "27,969"
+    ],
+    "y:20240331": [
+     "6ad709a3-9831-4918-8fda-cdb33cbbe8bb.pdf",
+     109,
+     "Sale of Energy (mn units) total FY24",
+     "21,878"
+    ]
+   }
+  },
+  {
    "name": "Hybrid CUF",
    "unit": "%",
    "kind": "flow",
@@ -807,38 +874,6 @@
    }
   },
   {
-   "name": "Energy Sales",
-   "unit": "mn units",
-   "kind": "flow",
-   "y": {
-    "20250331": 27969.0,
-    "20260331": 37567.0
-   },
-   "q": {
-    "20260630": 13657.0
-   },
-   "src": {
-    "q:20260630": [
-     "508a8ca4-1b33-41c8-a9a7-fa0b1b018f92.pdf",
-     27,
-     "Sale of Energy increased by 30% YoY at 13,657 mn units in Q1 FY27",
-     "13,657"
-    ],
-    "y:20260331": [
-     "4a83854c-4424-4bd9-8a7a-b4a81bd198ee.pdf",
-     49,
-     "Energy sales: Increased by 34% YoY to 37,567 million units in FY26",
-     "37,567"
-    ],
-    "y:20250331": [
-     "eaef9306-36d2-4437-9e41-f08d08b9d104.pdf",
-     118,
-     "Sale of Energy (mn units) FY25",
-     "27,969"
-    ]
-   }
-  },
-  {
    "name": "Hybrid Avg Realisation",
    "unit": "Rs/kwh",
    "kind": "flow",
@@ -866,6 +901,38 @@
      30,
      "Average Realization (Rs/kwh) — Hybrid Avg. Realisation FY25",
      "2.80"
+    ]
+   }
+  },
+  {
+   "name": "Khavda Operational Capacity",
+   "unit": "GW",
+   "kind": "level",
+   "y": {
+    "20260331": 9.4
+   },
+   "q": {
+    "20250930": 7.1,
+    "20251231": 7.7
+   },
+   "src": {
+    "y:20260331": [
+     "4a83854c-4424-4bd9-8a7a-b4a81bd198ee.pdf",
+     51,
+     "the operational portfolio at Khavda stands at 9.4 GW3 (doc period)",
+     "9.4"
+    ],
+    "q:20251231": [
+     "241a5629-68f0-462b-9d91-c99282d9e1d9.pdf",
+     33,
+     "the operational portfolio at Khavda stands at 7.7 GW4 (doc period)",
+     "7.7"
+    ],
+    "q:20250930": [
+     "27f54649-fff5-4f30-8556-bdfca3e92866.pdf",
+     34,
+     "the operational portfolio at Khavda stands at 7.1 GW3 (doc period)",
+     "7.1"
     ]
    }
   },
@@ -915,31 +982,6 @@
      27,
      "score improving from 66 to 69",
      "66"
-    ]
-   }
-  },
-  {
-   "name": "Khavda Operational Capacity",
-   "unit": "GW",
-   "kind": "level",
-   "y": {
-    "20260331": 9.4
-   },
-   "q": {
-    "20251231": 7.7
-   },
-   "src": {
-    "y:20260331": [
-     "4a83854c-4424-4bd9-8a7a-b4a81bd198ee.pdf",
-     51,
-     "the operational portfolio at Khavda stands at 9.4 GW3 (doc period)",
-     "9.4"
-    ],
-    "q:20251231": [
-     "241a5629-68f0-462b-9d91-c99282d9e1d9.pdf",
-     33,
-     "the operational portfolio at Khavda stands at 7.7 GW4 (doc period)",
-     "7.7"
     ]
    }
   },
