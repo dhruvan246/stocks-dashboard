@@ -1,8 +1,479 @@
 {
  "sym": "APOLLOHOSP",
  "fy_end_month": 3,
- "docs": {},
- "metrics": [],
+ "docs": {
+  "0a967b34-eaeb-44d0-82d8-5ff46e9b171f.pdf": {
+   "kind": "ip",
+   "date": "2026-08-12",
+   "title": "Q1 FY27 Investor Presentation",
+   "read": "2026-09-06",
+   "by": "claude-routine"
+  },
+  "f9b40997-8116-48ba-949a-ca2e7775e3c2.pdf": {
+   "kind": "ar",
+   "date": "2026-08-01",
+   "title": "Annual Report FY26",
+   "read": "2026-09-06",
+   "by": "claude-routine"
+  },
+  "df740957-5277-4434-9808-189da93447aa.pdf": {
+   "kind": "ar",
+   "date": "2026-08-28",
+   "title": "Updated Annual Report FY26",
+   "read": "2026-09-06",
+   "by": "claude-routine"
+  }
+ },
+ "metrics": [
+  {
+   "name": "ALOS",
+   "unit": "days",
+   "kind": "flow",
+   "y": {
+    "20250331": 3.32,
+    "20260331": 3.17
+   },
+   "q": {
+    "20250630": 3.14,
+    "20260630": 3.09
+   },
+   "src": {
+    "q:20260630": [
+     "0a967b34-eaeb-44d0-82d8-5ff46e9b171f.pdf",
+     13,
+     "ALOS",
+     "3.09"
+    ],
+    "q:20250630": [
+     "0a967b34-eaeb-44d0-82d8-5ff46e9b171f.pdf",
+     13,
+     "ALOS",
+     "3.14"
+    ],
+    "y:20260331": [
+     "f9b40997-8116-48ba-949a-ca2e7775e3c2.pdf",
+     108,
+     "ALOS",
+     "3.17"
+    ],
+    "y:20250331": [
+     "f9b40997-8116-48ba-949a-ca2e7775e3c2.pdf",
+     108,
+     "ALOS",
+     "3.32"
+    ]
+   }
+  },
+  {
+   "name": "Avg Revenue per In-Patient",
+   "unit": "₹",
+   "kind": "flow",
+   "y": {
+    "20250331": 162902.0,
+    "20260331": 178434.0
+   },
+   "q": {
+    "20250630": 172328.0,
+    "20260630": 186630.0
+   },
+   "src": {
+    "q:20260630": [
+     "0a967b34-eaeb-44d0-82d8-5ff46e9b171f.pdf",
+     13,
+     "Avg revenue per In Patient",
+     "186,630"
+    ],
+    "q:20250630": [
+     "0a967b34-eaeb-44d0-82d8-5ff46e9b171f.pdf",
+     13,
+     "Avg revenue per In Patient",
+     "172,328"
+    ],
+    "y:20260331": [
+     "f9b40997-8116-48ba-949a-ca2e7775e3c2.pdf",
+     108,
+     "Revenue per Inpatient",
+     "178,434"
+    ],
+    "y:20250331": [
+     "f9b40997-8116-48ba-949a-ca2e7775e3c2.pdf",
+     108,
+     "Revenue per Inpatient",
+     "162,902"
+    ]
+   }
+  },
+  {
+   "name": "Bed Occupancy Rate",
+   "unit": "%",
+   "kind": "level",
+   "y": {
+    "20250331": 68.0,
+    "20260331": 67.0
+   },
+   "q": {
+    "20250630": 65.0,
+    "20260630": 70.0
+   },
+   "src": {
+    "q:20260630": [
+     "0a967b34-eaeb-44d0-82d8-5ff46e9b171f.pdf",
+     13,
+     "Occupancy",
+     "70"
+    ],
+    "q:20250630": [
+     "0a967b34-eaeb-44d0-82d8-5ff46e9b171f.pdf",
+     13,
+     "Occupancy",
+     "65"
+    ],
+    "y:20260331": [
+     "f9b40997-8116-48ba-949a-ca2e7775e3c2.pdf",
+     108,
+     "Occupancy",
+     "67"
+    ],
+    "y:20250331": [
+     "f9b40997-8116-48ba-949a-ca2e7775e3c2.pdf",
+     108,
+     "Occupancy",
+     "68"
+    ]
+   }
+  },
+  {
+   "name": "IP Discharges",
+   "unit": "count",
+   "kind": "flow",
+   "y": {
+    "20250331": 604250.0,
+    "20260331": 628998.0
+   },
+   "q": {
+    "20250630": 151517.0,
+    "20260630": 171662.0
+   },
+   "src": {
+    "q:20260630": [
+     "0a967b34-eaeb-44d0-82d8-5ff46e9b171f.pdf",
+     13,
+     "IP Discharges",
+     "171,662"
+    ],
+    "q:20250630": [
+     "0a967b34-eaeb-44d0-82d8-5ff46e9b171f.pdf",
+     13,
+     "IP Discharges",
+     "151,517"
+    ],
+    "y:20260331": [
+     "f9b40997-8116-48ba-949a-ca2e7775e3c2.pdf",
+     108,
+     "IP Discharges",
+     "628,998"
+    ],
+    "y:20250331": [
+     "f9b40997-8116-48ba-949a-ca2e7775e3c2.pdf",
+     108,
+     "IP Discharges",
+     "604,250"
+    ]
+   }
+  },
+  {
+   "name": "No of Hospitals",
+   "unit": "count",
+   "kind": "level",
+   "y": {
+    "20260331": 78.0
+   },
+   "q": {
+    "20250630": 45.0,
+    "20260630": 48.0
+   },
+   "src": {
+    "q:20260630": [
+     "0a967b34-eaeb-44d0-82d8-5ff46e9b171f.pdf",
+     13,
+     "No of Hospitals",
+     "48"
+    ],
+    "q:20250630": [
+     "0a967b34-eaeb-44d0-82d8-5ff46e9b171f.pdf",
+     13,
+     "No of Hospitals",
+     "45"
+    ],
+    "y:20260331": [
+     "f9b40997-8116-48ba-949a-ca2e7775e3c2.pdf",
+     104,
+     "Hospitals (Apollo at a Glance) (doc period)",
+     "78"
+    ]
+   }
+  },
+  {
+   "name": "Apollo 247 Registered Users",
+   "unit": "Mn",
+   "kind": "level",
+   "y": {
+    "20260331": 47.0
+   },
+   "q": {
+    "20260630": 49.0
+   },
+   "src": {
+    "q:20260630": [
+     "0a967b34-eaeb-44d0-82d8-5ff46e9b171f.pdf",
+     8,
+     "Registered Users (doc period)",
+     "49"
+    ],
+    "y:20260331": [
+     "f9b40997-8116-48ba-949a-ca2e7775e3c2.pdf",
+     104,
+     "Apollo 24|7 Registered users (doc period)",
+     "47"
+    ]
+   }
+  },
+  {
+   "name": "Operating Beds",
+   "unit": "count",
+   "kind": "level",
+   "y": {},
+   "q": {
+    "20250630": 8030.0,
+    "20260630": 8352.0
+   },
+   "src": {
+    "q:20260630": [
+     "0a967b34-eaeb-44d0-82d8-5ff46e9b171f.pdf",
+     13,
+     "Operating beds",
+     "8,352"
+    ],
+    "q:20250630": [
+     "0a967b34-eaeb-44d0-82d8-5ff46e9b171f.pdf",
+     13,
+     "Operating beds",
+     "8,030"
+    ]
+   }
+  },
+  {
+   "name": "Pharmacy Operating Stores",
+   "unit": "count",
+   "kind": "level",
+   "y": {
+    "20260331": 7289.0
+   },
+   "q": {
+    "20260630": 7440.0
+   },
+   "src": {
+    "q:20260630": [
+     "0a967b34-eaeb-44d0-82d8-5ff46e9b171f.pdf",
+     8,
+     "Serving Operating Stores as on 30th June 2026",
+     "7,440"
+    ],
+    "y:20260331": [
+     "f9b40997-8116-48ba-949a-ca2e7775e3c2.pdf",
+     104,
+     "Pharmacies Stores (Apollo at a Glance) (doc period)",
+     "7,289"
+    ]
+   }
+  },
+  {
+   "name": "Total Capacity Census Beds",
+   "unit": "count",
+   "kind": "level",
+   "y": {
+    "20260331": 10970.0
+   },
+   "q": {
+    "20260630": 11147.0
+   },
+   "src": {
+    "q:20260630": [
+     "0a967b34-eaeb-44d0-82d8-5ff46e9b171f.pdf",
+     6,
+     "Overall Total Capacity Census Beds (doc period)",
+     "11,147"
+    ],
+    "y:20260331": [
+     "f9b40997-8116-48ba-949a-ca2e7775e3c2.pdf",
+     104,
+     "Beds (Apollo at a Glance) (doc period)",
+     "10,970"
+    ]
+   }
+  },
+  {
+   "name": "Total Operating Census Beds",
+   "unit": "count",
+   "kind": "level",
+   "y": {
+    "20260331": 9620.0
+   },
+   "q": {
+    "20260630": 9857.0
+   },
+   "src": {
+    "q:20260630": [
+     "0a967b34-eaeb-44d0-82d8-5ff46e9b171f.pdf",
+     15,
+     "Current Beds (Total Census, incl. Owned, Managed and AHLL)",
+     "9,857"
+    ],
+    "y:20260331": [
+     "f9b40997-8116-48ba-949a-ca2e7775e3c2.pdf",
+     105,
+     "Operational Beds (Total)",
+     "9,620"
+    ]
+   }
+  },
+  {
+   "name": "AHLL Dental Centers",
+   "unit": "count",
+   "kind": "level",
+   "y": {},
+   "q": {
+    "20260630": 294.0
+   },
+   "src": {
+    "q:20260630": [
+     "0a967b34-eaeb-44d0-82d8-5ff46e9b171f.pdf",
+     7,
+     "Dental Centers (doc period)",
+     "294"
+    ]
+   }
+  },
+  {
+   "name": "AHLL Diagnostics Centers",
+   "unit": "count",
+   "kind": "level",
+   "y": {},
+   "q": {
+    "20260630": 299.0
+   },
+   "src": {
+    "q:20260630": [
+     "0a967b34-eaeb-44d0-82d8-5ff46e9b171f.pdf",
+     7,
+     "Diagnostics Centers — Clinics (doc period)",
+     "299"
+    ]
+   }
+  },
+  {
+   "name": "AHLL Dialysis Centers",
+   "unit": "count",
+   "kind": "level",
+   "y": {},
+   "q": {
+    "20260630": 172.0
+   },
+   "src": {
+    "q:20260630": [
+     "0a967b34-eaeb-44d0-82d8-5ff46e9b171f.pdf",
+     7,
+     "Dialysis Centers (doc period)",
+     "172"
+    ]
+   }
+  },
+  {
+   "name": "Apollo 247 Daily Active Users",
+   "unit": "Lacs",
+   "kind": "level",
+   "y": {},
+   "q": {
+    "20260630": 8.0
+   },
+   "src": {
+    "q:20260630": [
+     "0a967b34-eaeb-44d0-82d8-5ff46e9b171f.pdf",
+     8,
+     "Daily Active Users (doc period)",
+     "8"
+    ]
+   }
+  },
+  {
+   "name": "Apollo 247 Platform GMV",
+   "unit": "₹ Cr",
+   "kind": "flow",
+   "y": {},
+   "q": {
+    "20260630": 535.0
+   },
+   "src": {
+    "q:20260630": [
+     "0a967b34-eaeb-44d0-82d8-5ff46e9b171f.pdf",
+     8,
+     "Platform GMV",
+     "535"
+    ]
+   }
+  },
+  {
+   "name": "Diagnostics Centres (Network)",
+   "unit": "count",
+   "kind": "level",
+   "y": {
+    "20260331": 2501.0
+   },
+   "q": {},
+   "src": {
+    "y:20260331": [
+     "f9b40997-8116-48ba-949a-ca2e7775e3c2.pdf",
+     104,
+     "Diagnostics Centres (Apollo at a Glance) (doc period)",
+     "2,501"
+    ]
+   }
+  },
+  {
+   "name": "HealthCo Hospitals Network (Consultation)",
+   "unit": "count",
+   "kind": "level",
+   "y": {},
+   "q": {
+    "20260630": 240.0
+   },
+   "src": {
+    "q:20260630": [
+     "0a967b34-eaeb-44d0-82d8-5ff46e9b171f.pdf",
+     8,
+     "Hospitals (Virtual Doctor Consultation / Online Booking) (doc period)",
+     "240"
+    ]
+   }
+  },
+  {
+   "name": "NABH Accredited Hospitals",
+   "unit": "count",
+   "kind": "level",
+   "y": {
+    "20260331": 33.0
+   },
+   "q": {},
+   "src": {
+    "y:20260331": [
+     "f9b40997-8116-48ba-949a-ca2e7775e3c2.pdf",
+     104,
+     "NABH accredited hospitals (doc period)",
+     "33"
+    ]
+   }
+  }
+ ],
  "held": [],
  "catalog": [
   {
