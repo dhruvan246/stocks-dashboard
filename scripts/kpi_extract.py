@@ -43,8 +43,8 @@ import kpi_docs  # noqa: E402
 LEDGER_DIR = os.path.join(HERE, "kpi_insights")
 PACKET_DIR = os.path.join(LEDGER_DIR, "_packets")
 MAX_METRICS = 16
-MAX_PAGES = 30          # pages sent per document (top-scored)
-MAX_CHARS = 60000       # prompt text budget per document
+MAX_PAGES = 45          # pages sent per document (top-scored); raised so the business-profile /
+MAX_CHARS = 90000       # multi-year-highlights slide is never dropped for a rich deck or annual report
 
 KPI_WORDS = re.compile(
     r"operating metric|key metric|kpi|operational|highlights|volume|capacity|utili[sz]ation|"
@@ -59,11 +59,28 @@ PERIOD_WORDS = re.compile(r"\bQ[1-4]\s*FY|\b[1-4]Q\s*FY|\bFY\s*'?\d{2}|\bH[12]\s
 MON = {m.lower(): i for i, m in enumerate(calendar.month_abbr) if m}
 
 
+# business-profile infographic tokens: "610+ Products", "~600 Customers", "55 Countries", "26 Patents",
+# "5 Manufacturing Facilities", "2,937 branches", "13.2 Mn customers" — the "at a glance" slide screener
+# mines and our page-scorer used to drop. Also the multi-year "10-year highlights / financial record" pages.
+PROFILE_TOKENS = re.compile(
+    r"\d[\d,]*\+?\s*(customers?|clients?|countr(?:y|ies)|patents?|manufacturing|facilit(?:y|ies)|plants?|"
+    r"dealers?|distributors?|stores?|outlets?|branches?|products?|markets?|cities|towns|subscribers?|"
+    r"employees?|scientists?|msf|units|beds|rooms|warehouses?|touchpoints?)", re.I)
+PROFILE_MARKERS = re.compile(
+    r"since inception|at a glance|company overview|business overview|our (?:reach|footprint|presence|journey)|"
+    r"key highlights|10[- ]?year|ten[- ]?year|five[- ]?year|5[- ]?year|decade|financial highlights|"
+    r"performance (?:highlights|record|trends)|historical (?:financials|performance)|milestones", re.I)
+
+
 def score_page(text):
     nums = len(re.findall(r"\d[\d,]*\.?\d*", text))
     if nums < 6:
         return 0
     s = nums * 0.4 + 6 * len(KPI_WORDS.findall(text)) + 10 * min(len(PERIOD_WORDS.findall(text)), 6)
+    # business-profile & multi-year-highlights boost — these pages carry the rows screener shows and more
+    s += 8 * min(len(PROFILE_TOKENS.findall(text)), 8)
+    if PROFILE_MARKERS.search(text):
+        s += 40
     if re.search(r"disclaimer|safe harbour|forward.looking statements|cautionary", text, re.I):
         s *= 0.2
     return s
@@ -84,7 +101,7 @@ def select_pages(pages):
 
 
 # ------------------------------------------------------------------ document selection
-def select_docs(sym, since, kinds=("ip", "pr", "res")):
+def select_docs(sym, since, kinds=("ip", "pr", "res", "ar")):
     """Documents worth reading, newest first. Filings are clustered around each results day
     (-1..+3 days of a `res` filing): the Investor Presentation is the primary carrier and supersedes
     the press releases of that day; with no deck, every press release of the cluster is read (they
@@ -108,7 +125,10 @@ def select_docs(sym, since, kinds=("ip", "pr", "res")):
             loose.append(d)
         else:
             clusters.setdefault(c, []).append(d)
-    chosen = [d for d in loose if d["kind"] == "ip" and "ip" in kinds]
+    # loose (non-results-clustered) docs: investor decks AND annual reports. Annual reports carry the
+    # 10+ year business-profile record (customers, countries, patents, capacity by year) that screener
+    # mines and quarterly decks never print — they are the depth this card was missing.
+    chosen = [d for d in loose if d["kind"] in ("ip", "ar") and d["kind"] in kinds]
     for c, ds in clusters.items():
         ips = [d for d in ds if d["kind"] == "ip"]
         prs = [d for d in ds if d["kind"] == "pr"]
@@ -654,7 +674,7 @@ def main():
     ap = argparse.ArgumentParser()
     ap.add_argument("syms", nargs="*")
     ap.add_argument("--since", default="2020-01-01")
-    ap.add_argument("--kinds", default="ip,pr,res")
+    ap.add_argument("--kinds", default="ip,pr,res,ar")
     ap.add_argument("--backend", default="gemini", choices=["gemini", "packet"])
     ap.add_argument("--by", default=None, help="reader tag stored in provenance")
     ap.add_argument("--limit", type=int, default=None, help="max documents per symbol this run")
