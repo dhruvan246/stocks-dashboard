@@ -1,8 +1,576 @@
 {
  "sym": "HYUNDAI",
  "fy_end_month": 3,
- "docs": {},
- "metrics": [],
+ "docs": {
+  "9d5bc448-b247-4e94-95e2-ebd2134ccbb2.pdf": {
+   "kind": "ar",
+   "date": "2026-08-04",
+   "title": "AGM Notice letter re: Annual Report FY26 web-link",
+   "read": "2026-09-06",
+   "by": "claude-routine"
+  },
+  "4d1a4dbf-b854-45a5-9053-f0576bd60587.pdf": {
+   "kind": "ip",
+   "date": "2025-10-15",
+   "title": "Investor Day Presentation cover letter (link only, deck not uploaded)",
+   "read": "2026-09-06",
+   "by": "claude-routine"
+  },
+  "55ce762f-fc5c-4c22-82fa-e421efd18091.pdf": {
+   "kind": "ip",
+   "date": "2026-07-30",
+   "title": "Q1 FY27 Investor Presentation",
+   "read": "2026-09-06",
+   "by": "claude-routine"
+  },
+  "72ea7bbd-4616-4ce4-b3bc-58e823ae50ef.pdf": {
+   "kind": "ip",
+   "date": "2026-05-08",
+   "title": "Q4/FY26 Investor Presentation (Mar 31, 2026)",
+   "read": "2026-09-06",
+   "by": "claude-routine"
+  }
+ },
+ "metrics": [
+  {
+   "name": "Domestic Sales Volume",
+   "unit": "units",
+   "kind": "flow",
+   "y": {
+    "20240331": 614721.0,
+    "20250331": 598666.0,
+    "20260331": 584906.0
+   },
+   "q": {
+    "20250331": 153550.0,
+    "20250630": 132259.0,
+    "20251231": 146548.0,
+    "20260331": 166578.0,
+    "20260630": 139374.0
+   },
+   "src": {
+    "q:20250630": [
+     "55ce762f-fc5c-4c22-82fa-e421efd18091.pdf",
+     6,
+     "Domestic",
+     "132,259"
+    ],
+    "q:20260331": [
+     "72ea7bbd-4616-4ce4-b3bc-58e823ae50ef.pdf",
+     20,
+     "Domestic",
+     "166,578"
+    ],
+    "q:20260630": [
+     "55ce762f-fc5c-4c22-82fa-e421efd18091.pdf",
+     6,
+     "Domestic",
+     "139,374"
+    ],
+    "q:20250331": [
+     "72ea7bbd-4616-4ce4-b3bc-58e823ae50ef.pdf",
+     20,
+     "Domestic",
+     "153,550"
+    ],
+    "q:20251231": [
+     "72ea7bbd-4616-4ce4-b3bc-58e823ae50ef.pdf",
+     20,
+     "Domestic",
+     "146,548"
+    ],
+    "y:20240331": [
+     "72ea7bbd-4616-4ce4-b3bc-58e823ae50ef.pdf",
+     20,
+     "Domestic",
+     "614,721"
+    ],
+    "y:20250331": [
+     "72ea7bbd-4616-4ce4-b3bc-58e823ae50ef.pdf",
+     20,
+     "Domestic",
+     "598,666"
+    ],
+    "y:20260331": [
+     "72ea7bbd-4616-4ce4-b3bc-58e823ae50ef.pdf",
+     20,
+     "Domestic",
+     "584,906"
+    ]
+   }
+  },
+  {
+   "name": "Export Sales Volume",
+   "unit": "units",
+   "kind": "flow",
+   "y": {
+    "20240331": 163155.0,
+    "20250331": 163386.0,
+    "20260331": 190125.0
+   },
+   "q": {
+    "20250331": 38100.0,
+    "20250630": 48140.0,
+    "20251231": 48888.0,
+    "20260331": 41697.0,
+    "20260630": 38708.0
+   },
+   "src": {
+    "q:20250630": [
+     "55ce762f-fc5c-4c22-82fa-e421efd18091.pdf",
+     6,
+     "Exports",
+     "48,140"
+    ],
+    "q:20260331": [
+     "72ea7bbd-4616-4ce4-b3bc-58e823ae50ef.pdf",
+     20,
+     "Exports",
+     "41,697"
+    ],
+    "q:20260630": [
+     "55ce762f-fc5c-4c22-82fa-e421efd18091.pdf",
+     6,
+     "Exports",
+     "38,708"
+    ],
+    "q:20250331": [
+     "72ea7bbd-4616-4ce4-b3bc-58e823ae50ef.pdf",
+     20,
+     "Exports",
+     "38,100"
+    ],
+    "q:20251231": [
+     "72ea7bbd-4616-4ce4-b3bc-58e823ae50ef.pdf",
+     20,
+     "Exports",
+     "48,888"
+    ],
+    "y:20240331": [
+     "72ea7bbd-4616-4ce4-b3bc-58e823ae50ef.pdf",
+     20,
+     "Exports",
+     "163,155"
+    ],
+    "y:20250331": [
+     "72ea7bbd-4616-4ce4-b3bc-58e823ae50ef.pdf",
+     20,
+     "Exports",
+     "163,386"
+    ],
+    "y:20260331": [
+     "72ea7bbd-4616-4ce4-b3bc-58e823ae50ef.pdf",
+     20,
+     "Exports",
+     "190,125"
+    ]
+   }
+  },
+  {
+   "name": "Total Sales Volume",
+   "unit": "units",
+   "kind": "flow",
+   "y": {
+    "20240331": 777876.0,
+    "20250331": 762052.0,
+    "20260331": 775031.0
+   },
+   "q": {
+    "20250331": 191650.0,
+    "20250630": 180399.0,
+    "20251231": 195436.0,
+    "20260331": 208275.0,
+    "20260630": 178082.0
+   },
+   "src": {
+    "q:20250630": [
+     "55ce762f-fc5c-4c22-82fa-e421efd18091.pdf",
+     6,
+     "Total Sales",
+     "180,399"
+    ],
+    "q:20260331": [
+     "72ea7bbd-4616-4ce4-b3bc-58e823ae50ef.pdf",
+     20,
+     "Total Sales Volume",
+     "208,275"
+    ],
+    "q:20260630": [
+     "55ce762f-fc5c-4c22-82fa-e421efd18091.pdf",
+     6,
+     "Total Sales",
+     "178,082"
+    ],
+    "q:20250331": [
+     "72ea7bbd-4616-4ce4-b3bc-58e823ae50ef.pdf",
+     20,
+     "Total Sales Volume",
+     "191,650"
+    ],
+    "q:20251231": [
+     "72ea7bbd-4616-4ce4-b3bc-58e823ae50ef.pdf",
+     20,
+     "Total Sales Volume",
+     "195,436"
+    ],
+    "y:20240331": [
+     "72ea7bbd-4616-4ce4-b3bc-58e823ae50ef.pdf",
+     20,
+     "Total Sales Volume",
+     "777,876"
+    ],
+    "y:20250331": [
+     "72ea7bbd-4616-4ce4-b3bc-58e823ae50ef.pdf",
+     20,
+     "Total Sales Volume",
+     "762,052"
+    ],
+    "y:20260331": [
+     "72ea7bbd-4616-4ce4-b3bc-58e823ae50ef.pdf",
+     20,
+     "Total Sales Volume",
+     "775,031"
+    ]
+   }
+  },
+  {
+   "name": "Hatchback Sales Volume (Domestic)",
+   "unit": "units",
+   "kind": "flow",
+   "y": {
+    "20250331": 117928.0,
+    "20260331": 107346.0
+   },
+   "q": {
+    "20250331": 28061.0,
+    "20250630": 24118.0,
+    "20251231": 25134.0,
+    "20260331": 35474.0,
+    "20260630": 24135.0
+   },
+   "src": {
+    "q:20250630": [
+     "55ce762f-fc5c-4c22-82fa-e421efd18091.pdf",
+     7,
+     "Hatchback",
+     "24,118"
+    ],
+    "q:20260331": [
+     "72ea7bbd-4616-4ce4-b3bc-58e823ae50ef.pdf",
+     9,
+     "Hatchback",
+     "35,474"
+    ],
+    "q:20260630": [
+     "55ce762f-fc5c-4c22-82fa-e421efd18091.pdf",
+     7,
+     "Hatchback",
+     "24,135"
+    ],
+    "q:20250331": [
+     "72ea7bbd-4616-4ce4-b3bc-58e823ae50ef.pdf",
+     9,
+     "Hatchback",
+     "28,061"
+    ],
+    "q:20251231": [
+     "72ea7bbd-4616-4ce4-b3bc-58e823ae50ef.pdf",
+     9,
+     "Hatchback",
+     "25,134"
+    ],
+    "y:20250331": [
+     "72ea7bbd-4616-4ce4-b3bc-58e823ae50ef.pdf",
+     9,
+     "Hatchback",
+     "117,928"
+    ],
+    "y:20260331": [
+     "72ea7bbd-4616-4ce4-b3bc-58e823ae50ef.pdf",
+     9,
+     "Hatchback",
+     "107,346"
+    ]
+   }
+  },
+  {
+   "name": "SUV Sales Volume (Domestic)",
+   "unit": "units",
+   "kind": "flow",
+   "y": {
+    "20250331": 410200.0,
+    "20260331": 399569.0
+   },
+   "q": {
+    "20250331": 106182.0,
+    "20250630": 90531.0,
+    "20251231": 103004.0,
+    "20260331": 106814.0,
+    "20260630": 97456.0
+   },
+   "src": {
+    "q:20250630": [
+     "55ce762f-fc5c-4c22-82fa-e421efd18091.pdf",
+     7,
+     "SUV",
+     "90,531"
+    ],
+    "q:20260331": [
+     "72ea7bbd-4616-4ce4-b3bc-58e823ae50ef.pdf",
+     9,
+     "SUV",
+     "106,814"
+    ],
+    "q:20260630": [
+     "55ce762f-fc5c-4c22-82fa-e421efd18091.pdf",
+     7,
+     "SUV",
+     "97,456"
+    ],
+    "q:20250331": [
+     "72ea7bbd-4616-4ce4-b3bc-58e823ae50ef.pdf",
+     9,
+     "SUV",
+     "106,182"
+    ],
+    "q:20251231": [
+     "72ea7bbd-4616-4ce4-b3bc-58e823ae50ef.pdf",
+     9,
+     "SUV",
+     "103,004"
+    ],
+    "y:20250331": [
+     "72ea7bbd-4616-4ce4-b3bc-58e823ae50ef.pdf",
+     9,
+     "SUV",
+     "410,200"
+    ],
+    "y:20260331": [
+     "72ea7bbd-4616-4ce4-b3bc-58e823ae50ef.pdf",
+     9,
+     "SUV",
+     "399,569"
+    ]
+   }
+  },
+  {
+   "name": "Sedan Sales Volume (Domestic)",
+   "unit": "units",
+   "kind": "flow",
+   "y": {
+    "20250331": 70538.0,
+    "20260331": 77991.0
+   },
+   "q": {
+    "20250331": 19307.0,
+    "20250630": 17610.0,
+    "20251231": 18410.0,
+    "20260331": 24290.0,
+    "20260630": 17783.0
+   },
+   "src": {
+    "q:20250630": [
+     "55ce762f-fc5c-4c22-82fa-e421efd18091.pdf",
+     7,
+     "Sedan",
+     "17,610"
+    ],
+    "q:20260331": [
+     "72ea7bbd-4616-4ce4-b3bc-58e823ae50ef.pdf",
+     9,
+     "Sedan",
+     "24,290"
+    ],
+    "q:20260630": [
+     "55ce762f-fc5c-4c22-82fa-e421efd18091.pdf",
+     7,
+     "Sedan",
+     "17,783"
+    ],
+    "q:20250331": [
+     "72ea7bbd-4616-4ce4-b3bc-58e823ae50ef.pdf",
+     9,
+     "Sedan",
+     "19,307"
+    ],
+    "q:20251231": [
+     "72ea7bbd-4616-4ce4-b3bc-58e823ae50ef.pdf",
+     9,
+     "Sedan",
+     "18,410"
+    ],
+    "y:20250331": [
+     "72ea7bbd-4616-4ce4-b3bc-58e823ae50ef.pdf",
+     9,
+     "Sedan",
+     "70,538"
+    ],
+    "y:20260331": [
+     "72ea7bbd-4616-4ce4-b3bc-58e823ae50ef.pdf",
+     9,
+     "Sedan",
+     "77,991"
+    ]
+   }
+  },
+  {
+   "name": "Sales Outlets",
+   "unit": "count",
+   "kind": "level",
+   "y": {
+    "20240331": 1363.0,
+    "20250331": 1419.0,
+    "20260331": 1508.0
+   },
+   "q": {
+    "20250331": 1419.0,
+    "20251231": 1501.0,
+    "20260331": 1508.0
+   },
+   "src": {
+    "q:20250331": [
+     "72ea7bbd-4616-4ce4-b3bc-58e823ae50ef.pdf",
+     20,
+     "Sales Outlets",
+     "1,419"
+    ],
+    "q:20251231": [
+     "72ea7bbd-4616-4ce4-b3bc-58e823ae50ef.pdf",
+     20,
+     "Sales Outlets",
+     "1,501"
+    ],
+    "q:20260331": [
+     "72ea7bbd-4616-4ce4-b3bc-58e823ae50ef.pdf",
+     20,
+     "Sales Outlets",
+     "1,508"
+    ],
+    "y:20240331": [
+     "72ea7bbd-4616-4ce4-b3bc-58e823ae50ef.pdf",
+     20,
+     "Sales Outlets",
+     "1,363"
+    ],
+    "y:20250331": [
+     "72ea7bbd-4616-4ce4-b3bc-58e823ae50ef.pdf",
+     20,
+     "Sales Outlets",
+     "1,419"
+    ],
+    "y:20260331": [
+     "72ea7bbd-4616-4ce4-b3bc-58e823ae50ef.pdf",
+     20,
+     "Sales Outlets",
+     "1,508"
+    ]
+   }
+  },
+  {
+   "name": "Service Outlets",
+   "unit": "count",
+   "kind": "level",
+   "y": {
+    "20240331": 1549.0,
+    "20250331": 1606.0,
+    "20260331": 1671.0
+   },
+   "q": {
+    "20250331": 1606.0,
+    "20251231": 1662.0,
+    "20260331": 1671.0
+   },
+   "src": {
+    "q:20250331": [
+     "72ea7bbd-4616-4ce4-b3bc-58e823ae50ef.pdf",
+     20,
+     "Service Outlets",
+     "1,606"
+    ],
+    "q:20251231": [
+     "72ea7bbd-4616-4ce4-b3bc-58e823ae50ef.pdf",
+     20,
+     "Service Outlets",
+     "1,662"
+    ],
+    "q:20260331": [
+     "72ea7bbd-4616-4ce4-b3bc-58e823ae50ef.pdf",
+     20,
+     "Service Outlets",
+     "1,671"
+    ],
+    "y:20240331": [
+     "72ea7bbd-4616-4ce4-b3bc-58e823ae50ef.pdf",
+     20,
+     "Service Outlets",
+     "1,549"
+    ],
+    "y:20250331": [
+     "72ea7bbd-4616-4ce4-b3bc-58e823ae50ef.pdf",
+     20,
+     "Service Outlets",
+     "1,606"
+    ],
+    "y:20260331": [
+     "72ea7bbd-4616-4ce4-b3bc-58e823ae50ef.pdf",
+     20,
+     "Service Outlets",
+     "1,671"
+    ]
+   }
+  },
+  {
+   "name": "Chennai Plant Capacity",
+   "unit": "'000 units",
+   "kind": "level",
+   "y": {
+    "20260331": 824.0
+   },
+   "q": {},
+   "src": {
+    "y:20260331": [
+     "72ea7bbd-4616-4ce4-b3bc-58e823ae50ef.pdf",
+     15,
+     "Chennai Plant existing capacity (doc period)",
+     "824"
+    ]
+   }
+  },
+  {
+   "name": "Pune Plant Capacity",
+   "unit": "'000 units",
+   "kind": "level",
+   "y": {
+    "20260331": 170.0
+   },
+   "q": {},
+   "src": {
+    "y:20260331": [
+     "72ea7bbd-4616-4ce4-b3bc-58e823ae50ef.pdf",
+     15,
+     "Pune Plant existing capacity (doc period)",
+     "170"
+    ]
+   }
+  },
+  {
+   "name": "Total Installed Manufacturing Capacity",
+   "unit": "'000 units",
+   "kind": "level",
+   "y": {
+    "20260331": 994.0
+   },
+   "q": {},
+   "src": {
+    "y:20260331": [
+     "72ea7bbd-4616-4ce4-b3bc-58e823ae50ef.pdf",
+     15,
+     "Existing capacity, Chennai + Pune (doc period)",
+     "994"
+    ]
+   }
+  }
+ ],
  "held": [],
  "catalog": [
   {
