@@ -35,6 +35,7 @@ HERE = os.path.dirname(os.path.abspath(__file__))
 DOCS = os.path.join(HERE, "..", "docs")
 LEDGER = os.path.join(HERE, "annual_bscf.json")
 GATE_REPORT = os.path.join(HERE, "annual_bscf_gate.json")   # TRACKED (not scripts/_*, which is gitignored) so resume persists in CI
+FYS = [2025, 2024, 2023, 2022, 2021, 2020]      # FY-ends to fill, newest first
 UA = "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/124 Safari/537.36"
 
 # ---- BSE fetch (narrow window + strCat=Result — BSE now rejects wide ranges) ------------------
@@ -262,8 +263,73 @@ def gate_ok(parsed, key):
         if abs(p - k) / abs(k) > 0.01: return False
     return True
 
+def _n500():
+    m = json.load(open(os.path.join(DOCS, "nifty500_members_2025.json")))
+    out = []
+    for k in ('current_504', 'union_652'):
+        for s in (m.get(k) or []):
+            s = (s[0] if isinstance(s, (list, tuple)) else s); s = str(s).upper().replace('.NS', '')
+            if s not in out: out.append(s)
+    return out
+
+def prep(outdir, limit, only):
+    """NO-API vision prep (the repo's render -> Claude-reads -> merge pattern). For each vision-needed
+    filer (gate-failed on text, not yet landed), render its consolidated balance-sheet + cash-flow
+    pages for the newest HELD year (the gate) and every MISSING year, and append to a manifest a
+    Claude reader consumes. Writes <outdir>/manifest.json = [{sym,fy,role,basis,pngs,src,key?}]."""
+    os.makedirs(outdir, exist_ok=True)
+    byid = json.load(open(os.path.join(HERE, "bse_scrips.json")))['by_id']
+    gate = json.load(open(GATE_REPORT)) if os.path.exists(GATE_REPORT) else {}
+    ledger = json.load(open(LEDGER)) if os.path.exists(LEDGER) else {}
+    mp = os.path.join(outdir, "manifest.json")
+    manifest = json.load(open(mp)) if os.path.exists(mp) else []
+    done = {e['sym'] for e in manifest}
+    o = session(); n = 0
+    for sym in _n500():
+        if limit and n >= limit: break
+        if only is not None and sym not in only: continue
+        if only is None:
+            gv = gate.get(sym)
+            if not gv or gv.get('verdict') != 'gate-failed' or gv.get('vtry'): continue   # only vision-needed
+            if sym in ledger or sym in done: continue
+        code = byid.get(sym)
+        if not code: continue
+        x = slice_x(sym)
+        held = {fy: k for fy in FYS if (k := held_bs(x, '%d0331' % fy))}
+        if not held: continue
+        val_fy = max(held); miss = [fy for fy in FYS if fy not in held]
+        entries = []
+        for role, fy in [('validate', val_fy)] + [('fill', f) for f in miss]:
+            try: fl = result_filings(o, code, '%d0401' % fy, '%d0901' % fy)
+            except Exception: continue
+            for ann, att in fl[:8]:
+                pdf = download(o, att)
+                if not pdf: continue
+                loc = locate(pdf, fy)
+                if not loc: continue
+                b, bs_pi, cf_pi = loc
+                bs_fn = '%s_%d_bs.png' % (sym, fy); open(os.path.join(outdir, bs_fn), 'wb').write(render(pdf, bs_pi))
+                pngs = [bs_fn]
+                if cf_pi is not None:
+                    cf_fn = '%s_%d_cf.png' % (sym, fy); open(os.path.join(outdir, cf_fn), 'wb').write(render(pdf, cf_pi)); pngs.append(cf_fn)
+                e = {'sym': sym, 'fy': fy, 'role': role, 'basis': b, 'pngs': pngs, 'src': 'bse:' + att}
+                if role == 'validate':
+                    e['key'] = {f: held[val_fy].get(f) for f in ('assets', 'ppe', 'eq', 'borr')}
+                entries.append(e); break
+            time.sleep(0.2)
+        if any(e['role'] == 'validate' for e in entries):
+            manifest.extend(entries); n += 1
+            json.dump(manifest, open(mp, 'w'), indent=0)
+            print('%-11s prepped: val FY%d + %d fill-years (%d pages)' % (sym, val_fy, len(entries) - 1, sum(len(e['pngs']) for e in entries)))
+    print('PREP DONE: %d symbols, %d manifest entries -> %s' % (n, len(manifest), mp))
+
 def main():
     args = sys.argv[1:]
+    if '--prep' in args:
+        outdir = args[args.index('--prep') + 1]
+        limit = int(args[args.index('--limit') + 1]) if '--limit' in args else None
+        only = set(s.strip().upper() for s in args[args.index('--only') + 1].split(',')) if '--only' in args else None
+        prep(outdir, limit, only); return
     only = None; limit = None; redo = '--redo' in args
     if '--only' in args: only = set(s.strip().upper() for s in args[args.index('--only') + 1].split(','))
     if '--limit' in args: limit = int(args[args.index('--limit') + 1])

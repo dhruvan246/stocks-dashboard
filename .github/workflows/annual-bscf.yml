@@ -36,12 +36,12 @@ jobs:
           python-version: "3.11"
 
       - name: Install deps
-        run: pip install --quiet anthropic PyMuPDF
+        run: pip install --quiet PyMuPDF
 
-      - name: Fill annual BS/CF
-        env:
-          ANTHROPIC_API_KEY: ${{ secrets.ANTHROPIC_API_KEY }}
-          BSE_VISION_MODEL: claude-haiku-4-5
+      # TEXT pass only (free): lands the ~7% of filers whose PDF has a clean text layer and marks the
+      # rest gate-failed. The ~93% that shade the current-year column are read by the Claude vision
+      # routine (prep -> native-vision read -> merge_annual_bscf.py), which needs no API key.
+      - name: Fill annual BS/CF (text pass)
         run: python3 -X utf8 scripts/fetch_annual_bscf.py --limit "${{ github.event.inputs.limit || 150 }}"
 
       - name: Commit ledger
