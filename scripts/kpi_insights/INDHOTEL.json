@@ -1,8 +1,442 @@
 {
  "sym": "INDHOTEL",
  "fy_end_month": 3,
- "docs": {},
- "metrics": [],
+ "docs": {
+  "4afc8793-d744-41db-bb49-8b93c05a5056.pdf": {
+   "kind": "ip",
+   "date": "2026-08-24",
+   "title": "OHL Merger Investor Presentation (Aug 2026)",
+   "read": "2026-09-06",
+   "by": "claude-routine"
+  },
+  "3f1ebe40-08ee-4b72-8189-af5150fd018e.pdf": {
+   "kind": "ip",
+   "date": "2026-07-21",
+   "title": "Q1 FY27 Investor Presentation",
+   "read": "2026-09-06",
+   "by": "claude-routine"
+  }
+ },
+ "metrics": [
+  {
+   "name": "Consol RevPAR",
+   "unit": "INR/Night",
+   "kind": "flow",
+   "y": {},
+   "q": {
+    "20220630": 5700.0,
+    "20230630": 6600.0,
+    "20240630": 6700.0,
+    "20250630": 7300.0,
+    "20260630": 8400.0
+   },
+   "src": {
+    "q:20220630": [
+     "3f1ebe40-08ee-4b72-8189-af5150fd018e.pdf",
+     6,
+     "CONSOL REVPAR (Rs/Night)",
+     "5,700"
+    ],
+    "q:20230630": [
+     "3f1ebe40-08ee-4b72-8189-af5150fd018e.pdf",
+     6,
+     "CONSOL REVPAR (Rs/Night)",
+     "6,600"
+    ],
+    "q:20240630": [
+     "3f1ebe40-08ee-4b72-8189-af5150fd018e.pdf",
+     6,
+     "CONSOL REVPAR (Rs/Night)",
+     "6,700"
+    ],
+    "q:20250630": [
+     "3f1ebe40-08ee-4b72-8189-af5150fd018e.pdf",
+     6,
+     "CONSOL REVPAR (Rs/Night)",
+     "7,300"
+    ],
+    "q:20260630": [
+     "3f1ebe40-08ee-4b72-8189-af5150fd018e.pdf",
+     6,
+     "CONSOL REVPAR (Rs/Night)",
+     "8,400"
+    ]
+   }
+  },
+  {
+   "name": "Consol TRevPAR",
+   "unit": "INR/Night",
+   "kind": "flow",
+   "y": {},
+   "q": {
+    "20220630": 10900.0,
+    "20230630": 12600.0,
+    "20240630": 12600.0,
+    "20250630": 13800.0,
+    "20260630": 15800.0
+   },
+   "src": {
+    "q:20220630": [
+     "3f1ebe40-08ee-4b72-8189-af5150fd018e.pdf",
+     6,
+     "CONSOL TREVPAR (Rs/Night)",
+     "10,900"
+    ],
+    "q:20230630": [
+     "3f1ebe40-08ee-4b72-8189-af5150fd018e.pdf",
+     6,
+     "CONSOL TREVPAR (Rs/Night)",
+     "12,600"
+    ],
+    "q:20240630": [
+     "3f1ebe40-08ee-4b72-8189-af5150fd018e.pdf",
+     6,
+     "CONSOL TREVPAR (Rs/Night)",
+     "12,600"
+    ],
+    "q:20250630": [
+     "3f1ebe40-08ee-4b72-8189-af5150fd018e.pdf",
+     6,
+     "CONSOL TREVPAR (Rs/Night)",
+     "13,800"
+    ],
+    "q:20260630": [
+     "3f1ebe40-08ee-4b72-8189-af5150fd018e.pdf",
+     6,
+     "CONSOL TREVPAR (Rs/Night)",
+     "15,800"
+    ]
+   }
+  },
+  {
+   "name": "OHL Average Room Rate (ARR)",
+   "unit": "INR 000's",
+   "kind": "flow",
+   "y": {
+    "20240331": 10.2,
+    "20250331": 10.8,
+    "20260331": 11.6
+   },
+   "q": {},
+   "src": {
+    "y:20240331": [
+     "4afc8793-d744-41db-bb49-8b93c05a5056.pdf",
+     9,
+     "ARR (Rs 000's)",
+     "10.2"
+    ],
+    "y:20250331": [
+     "4afc8793-d744-41db-bb49-8b93c05a5056.pdf",
+     9,
+     "ARR (Rs 000's)",
+     "10.8"
+    ],
+    "y:20260331": [
+     "4afc8793-d744-41db-bb49-8b93c05a5056.pdf",
+     9,
+     "ARR (Rs 000's)",
+     "11.6"
+    ]
+   }
+  },
+  {
+   "name": "OHL Occupancy",
+   "unit": "%",
+   "kind": "level",
+   "y": {
+    "20240331": 71.0,
+    "20250331": 73.0,
+    "20260331": 75.0
+   },
+   "q": {},
+   "src": {
+    "y:20240331": [
+     "4afc8793-d744-41db-bb49-8b93c05a5056.pdf",
+     9,
+     "Occupancy (%)",
+     "71"
+    ],
+    "y:20250331": [
+     "4afc8793-d744-41db-bb49-8b93c05a5056.pdf",
+     9,
+     "Occupancy (%)",
+     "73"
+    ],
+    "y:20260331": [
+     "4afc8793-d744-41db-bb49-8b93c05a5056.pdf",
+     9,
+     "Occupancy (%)",
+     "75"
+    ]
+   }
+  },
+  {
+   "name": "Domestic Hotels Occupancy (LFL)",
+   "unit": "%",
+   "kind": "level",
+   "y": {},
+   "q": {
+    "20250630": 76.0,
+    "20260630": 82.0
+   },
+   "src": {
+    "q:20250630": [
+     "3f1ebe40-08ee-4b72-8189-af5150fd018e.pdf",
+     10,
+     "Occupancy - Domestic Hotels",
+     "76"
+    ],
+    "q:20260630": [
+     "3f1ebe40-08ee-4b72-8189-af5150fd018e.pdf",
+     10,
+     "Occupancy - Domestic Hotels",
+     "82"
+    ]
+   }
+  },
+  {
+   "name": "Domestic Hotels RevPAR (LFL)",
+   "unit": "INR/Night",
+   "kind": "flow",
+   "y": {},
+   "q": {
+    "20250630": 10350.0,
+    "20260630": 11800.0
+   },
+   "src": {
+    "q:20250630": [
+     "3f1ebe40-08ee-4b72-8189-af5150fd018e.pdf",
+     10,
+     "Domestic Hotels RevPAR",
+     "10,350"
+    ],
+    "q:20260630": [
+     "3f1ebe40-08ee-4b72-8189-af5150fd018e.pdf",
+     10,
+     "Domestic Hotels RevPAR",
+     "11,800"
+    ]
+   }
+  },
+  {
+   "name": "Full Service Managed Hotel Rooms",
+   "unit": "count",
+   "kind": "level",
+   "y": {},
+   "q": {
+    "20250630": 13400.0,
+    "20260630": 15500.0
+   },
+   "src": {
+    "q:20250630": [
+     "3f1ebe40-08ee-4b72-8189-af5150fd018e.pdf",
+     16,
+     "No. of Managed Hotel Rooms - Full Service",
+     "13,400"
+    ],
+    "q:20260630": [
+     "3f1ebe40-08ee-4b72-8189-af5150fd018e.pdf",
+     16,
+     "No. of Managed Hotel Rooms - Full Service",
+     "15,500"
+    ]
+   }
+  },
+  {
+   "name": "Select Service Managed Hotel Rooms",
+   "unit": "count",
+   "kind": "level",
+   "y": {},
+   "q": {
+    "20250630": 1500.0,
+    "20260630": 4700.0
+   },
+   "src": {
+    "q:20250630": [
+     "3f1ebe40-08ee-4b72-8189-af5150fd018e.pdf",
+     16,
+     "No. of Managed Hotel Rooms - Select Service",
+     "1,500"
+    ],
+    "q:20260630": [
+     "3f1ebe40-08ee-4b72-8189-af5150fd018e.pdf",
+     16,
+     "No. of Managed Hotel Rooms - Select Service",
+     "4,700"
+    ]
+   }
+  },
+  {
+   "name": "Capital Light Lease Keys",
+   "unit": "count",
+   "kind": "level",
+   "y": {},
+   "q": {
+    "20260630": 4300.0
+   },
+   "src": {
+    "q:20260630": [
+     "3f1ebe40-08ee-4b72-8189-af5150fd018e.pdf",
+     15,
+     "Capital Light Lease Keys (doc period)",
+     "4,300"
+    ]
+   }
+  },
+  {
+   "name": "Growth Brands Hotels Operating",
+   "unit": "count",
+   "kind": "level",
+   "y": {},
+   "q": {
+    "20260630": 260.0
+   },
+   "src": {
+    "q:20260630": [
+     "3f1ebe40-08ee-4b72-8189-af5150fd018e.pdf",
+     17,
+     "Growth Brands - Hotels Operating (doc period)",
+     "260"
+    ]
+   }
+  },
+  {
+   "name": "Growth Brands Hotels Pipeline",
+   "unit": "count",
+   "kind": "level",
+   "y": {},
+   "q": {
+    "20260630": 165.0
+   },
+   "src": {
+    "q:20260630": [
+     "3f1ebe40-08ee-4b72-8189-af5150fd018e.pdf",
+     17,
+     "Growth Brands - Hotels Pipeline (doc period)",
+     "165"
+    ]
+   }
+  },
+  {
+   "name": "Managed Keys",
+   "unit": "count",
+   "kind": "level",
+   "y": {},
+   "q": {
+    "20260630": 26000.0
+   },
+   "src": {
+    "q:20260630": [
+     "3f1ebe40-08ee-4b72-8189-af5150fd018e.pdf",
+     15,
+     "Managed Keys (doc period)",
+     "26,000"
+    ]
+   }
+  },
+  {
+   "name": "Midscale Segment Properties Operating",
+   "unit": "count",
+   "kind": "level",
+   "y": {},
+   "q": {
+    "20260630": 196.0
+   },
+   "src": {
+    "q:20260630": [
+     "3f1ebe40-08ee-4b72-8189-af5150fd018e.pdf",
+     17,
+     "Midscale Segment - Operating Properties (doc period)",
+     "196"
+    ]
+   }
+  },
+  {
+   "name": "Midscale Segment Properties Pipeline",
+   "unit": "count",
+   "kind": "level",
+   "y": {},
+   "q": {
+    "20260630": 186.0
+   },
+   "src": {
+    "q:20260630": [
+     "3f1ebe40-08ee-4b72-8189-af5150fd018e.pdf",
+     17,
+     "Midscale Segment - Pipeline Properties (doc period)",
+     "186"
+    ]
+   }
+  },
+  {
+   "name": "Operational Hotels Count",
+   "unit": "count",
+   "kind": "level",
+   "y": {},
+   "q": {
+    "20260630": 382.0
+   },
+   "src": {
+    "q:20260630": [
+     "3f1ebe40-08ee-4b72-8189-af5150fd018e.pdf",
+     14,
+     "Operational Hotels (doc period)",
+     "382"
+    ]
+   }
+  },
+  {
+   "name": "Pipeline Hotels Count",
+   "unit": "count",
+   "kind": "level",
+   "y": {},
+   "q": {
+    "20260630": 263.0
+   },
+   "src": {
+    "q:20260630": [
+     "3f1ebe40-08ee-4b72-8189-af5150fd018e.pdf",
+     14,
+     "Pipeline Hotels (doc period)",
+     "263"
+    ]
+   }
+  },
+  {
+   "name": "Pipeline Keys",
+   "unit": "count",
+   "kind": "level",
+   "y": {},
+   "q": {
+    "20260630": 32500.0
+   },
+   "src": {
+    "q:20260630": [
+     "3f1ebe40-08ee-4b72-8189-af5150fd018e.pdf",
+     15,
+     "Pipeline Keys (doc period)",
+     "32,500"
+    ]
+   }
+  },
+  {
+   "name": "Tata Neu Loyalty Total Members",
+   "unit": "Mn",
+   "kind": "level",
+   "y": {},
+   "q": {
+    "20260630": 19.0
+   },
+   "src": {
+    "q:20260630": [
+     "3f1ebe40-08ee-4b72-8189-af5150fd018e.pdf",
+     24,
+     "Total Members (doc period)",
+     "19"
+    ]
+   }
+  }
+ ],
  "held": [],
  "catalog": [
   {
