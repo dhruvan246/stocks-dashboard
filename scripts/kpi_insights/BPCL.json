@@ -50,6 +50,13 @@
    "title": "Annual Report FY 2025-26",
    "read": "2026-09-06",
    "by": "claude-routine"
+  },
+  "8a1a41c8-5bb8-4458-ac11-d43fb927ed61.pdf": {
+   "kind": "ar",
+   "date": "2025-07-31",
+   "title": "Annual Report FY 2024-25",
+   "read": "2026-09-06",
+   "by": "claude-routine"
   }
  },
  "metrics": [
@@ -1672,6 +1679,30 @@
    }
   },
   {
+   "name": "CNG Retail Outlets (BPCL)",
+   "unit": "count",
+   "kind": "level",
+   "y": {
+    "20250331": 2370.0,
+    "20260331": 2575.0
+   },
+   "q": {},
+   "src": {
+    "y:20260331": [
+     "bc601ffe-f7af-421d-a32e-d6c2ea3f4454.pdf",
+     71,
+     "CNG network to 2,575 retail outlets nationwide",
+     "2,575"
+    ],
+    "y:20250331": [
+     "8a1a41c8-5bb8-4458-ac11-d43fb927ed61.pdf",
+     70,
+     "bringing the total to 2,370 retail outlets offering CNG",
+     "2,370"
+    ]
+   }
+  },
+  {
    "name": "Crude Oil Processed (Bina Refinery)",
    "unit": "MMT",
    "kind": "flow",
@@ -1764,6 +1795,54 @@
      54,
      "Crude Oil Processed (MMT) - Total",
      "40.99"
+    ]
+   }
+  },
+  {
+   "name": "EV Fast Chargers (BPCL)",
+   "unit": "count",
+   "kind": "level",
+   "y": {
+    "20250331": 4256.0,
+    "20260331": 4516.0
+   },
+   "q": {},
+   "src": {
+    "y:20260331": [
+     "bc601ffe-f7af-421d-a32e-d6c2ea3f4454.pdf",
+     71,
+     "network of EV fast chargers reached 4,516",
+     "4,516"
+    ],
+    "y:20250331": [
+     "8a1a41c8-5bb8-4458-ac11-d43fb927ed61.pdf",
+     71,
+     "4,256 EV fast chargers",
+     "4,256"
+    ]
+   }
+  },
+  {
+   "name": "New Retail Outlets Added (BPCL)",
+   "unit": "count",
+   "kind": "flow",
+   "y": {
+    "20250331": 1805.0,
+    "20260331": 1691.0
+   },
+   "q": {},
+   "src": {
+    "y:20260331": [
+     "bc601ffe-f7af-421d-a32e-d6c2ea3f4454.pdf",
+     71,
+     "addition of 1,691 new retail outlets (NROs)",
+     "1,691"
+    ],
+    "y:20250331": [
+     "8a1a41c8-5bb8-4458-ac11-d43fb927ed61.pdf",
+     70,
+     "adding 1,805 New Retail Outlets (NROs)",
+     "1,805"
     ]
    }
   },
@@ -1864,19 +1943,84 @@
    }
   },
   {
-   "name": "CNG Retail Outlets (BPCL)",
+   "name": "Retail Outlets (BPCL)",
    "unit": "count",
    "kind": "level",
    "y": {
-    "20260331": 2575.0
+    "20250331": 23642.0,
+    "20260331": 25323.0
    },
    "q": {},
    "src": {
     "y:20260331": [
      "bc601ffe-f7af-421d-a32e-d6c2ea3f4454.pdf",
      71,
-     "CNG network to 2,575 retail outlets nationwide",
-     "2,575"
+     "reach 25,323 retail outlets",
+     "25,323"
+    ],
+    "y:20250331": [
+     "8a1a41c8-5bb8-4458-ac11-d43fb927ed61.pdf",
+     70,
+     "expanded its retail network to 23,642 outlets",
+     "23,642"
+    ]
+   }
+  },
+  {
+   "name": "Total Gas Volume Handled",
+   "unit": "TMT",
+   "kind": "flow",
+   "y": {
+    "20250331": 1829.0,
+    "20260331": 2289.0
+   },
+   "q": {},
+   "src": {
+    "y:20260331": [
+     "bc601ffe-f7af-421d-a32e-d6c2ea3f4454.pdf",
+     74,
+     "Total gas volume handled during the year stood at 2,289 TMT",
+     "2,289"
+    ],
+    "y:20250331": [
+     "8a1a41c8-5bb8-4458-ac11-d43fb927ed61.pdf",
+     72,
+     "a total of 1,829 TMT of gas was supplied",
+     "1,829"
+    ]
+   }
+  },
+  {
+   "name": "Aviation ATF Sales (BPCL)",
+   "unit": "TMT",
+   "kind": "flow",
+   "y": {
+    "20250331": 1968.1
+   },
+   "q": {},
+   "src": {
+    "y:20250331": [
+     "8a1a41c8-5bb8-4458-ac11-d43fb927ed61.pdf",
+     73,
+     "Aviation SBU achieved ATF sales of 1,968.1 TMT",
+     "1,968.1"
+    ]
+   }
+  },
+  {
+   "name": "Aviation Market Share (BPCL)",
+   "unit": "%",
+   "kind": "level",
+   "y": {
+    "20250331": 24.7
+   },
+   "q": {},
+   "src": {
+    "y:20250331": [
+     "8a1a41c8-5bb8-4458-ac11-d43fb927ed61.pdf",
+     73,
+     "market share of 24.7%",
+     "24.7"
     ]
    }
   },
@@ -1898,19 +2042,104 @@
    }
   },
   {
-   "name": "EV Fast Chargers (BPCL)",
-   "unit": "count",
+   "name": "HSD Retail Market Share (BPCL)",
+   "unit": "%",
    "kind": "level",
    "y": {
-    "20260331": 4516.0
+    "20250331": 30.0
    },
    "q": {},
    "src": {
-    "y:20260331": [
-     "bc601ffe-f7af-421d-a32e-d6c2ea3f4454.pdf",
+    "y:20250331": [
+     "8a1a41c8-5bb8-4458-ac11-d43fb927ed61.pdf",
+     70,
+     "market share in the HSD retail business ... reached 30.0% among PSU OMCs",
+     "30.0"
+    ]
+   }
+  },
+  {
+   "name": "I&C Sales Volume (BPCL)",
+   "unit": "MMT",
+   "kind": "flow",
+   "y": {
+    "20250331": 7.32
+   },
+   "q": {},
+   "src": {
+    "y:20250331": [
+     "8a1a41c8-5bb8-4458-ac11-d43fb927ed61.pdf",
      71,
-     "network of EV fast chargers reached 4,516",
-     "4,516"
+     "the I&C SBU achieved record sales of 7.32 MMT in volume",
+     "7.32"
+    ]
+   }
+  },
+  {
+   "name": "LPG Bottling Volume",
+   "unit": "TMT",
+   "kind": "flow",
+   "y": {
+    "20250331": 8348.0
+   },
+   "q": {},
+   "src": {
+    "y:20250331": [
+     "8a1a41c8-5bb8-4458-ac11-d43fb927ed61.pdf",
+     73,
+     "highest-ever bottling volume of 8,348 TMT",
+     "8,348"
+    ]
+   }
+  },
+  {
+   "name": "LPG Distributors (BPCL)",
+   "unit": "count",
+   "kind": "level",
+   "y": {
+    "20250331": 6269.0
+   },
+   "q": {},
+   "src": {
+    "y:20250331": [
+     "8a1a41c8-5bb8-4458-ac11-d43fb927ed61.pdf",
+     73,
+     "taking the total to 6,269 distributors as on March 31, 2025",
+     "6,269"
+    ]
+   }
+  },
+  {
+   "name": "LPG Domestic Customer Base (BPCL)",
+   "unit": "crore",
+   "kind": "level",
+   "y": {
+    "20250331": 9.46
+   },
+   "q": {},
+   "src": {
+    "y:20250331": [
+     "8a1a41c8-5bb8-4458-ac11-d43fb927ed61.pdf",
+     73,
+     "total of BPCL's domestic LPG customer base to 9.46 crore",
+     "9.46"
+    ]
+   }
+  },
+  {
+   "name": "MS Retail Market Share (BPCL)",
+   "unit": "%",
+   "kind": "level",
+   "y": {
+    "20250331": 29.7
+   },
+   "q": {},
+   "src": {
+    "y:20250331": [
+     "8a1a41c8-5bb8-4458-ac11-d43fb927ed61.pdf",
+     70,
+     "MS retail market share rose ... reaching 29.7% among PSU OMCs",
+     "29.7"
     ]
    }
   },
@@ -1932,23 +2161,6 @@
    }
   },
   {
-   "name": "New Retail Outlets Added (BPCL)",
-   "unit": "count",
-   "kind": "flow",
-   "y": {
-    "20260331": 1691.0
-   },
-   "q": {},
-   "src": {
-    "y:20260331": [
-     "bc601ffe-f7af-421d-a32e-d6c2ea3f4454.pdf",
-     71,
-     "addition of 1,691 new retail outlets (NROs)",
-     "1,691"
-    ]
-   }
-  },
-  {
    "name": "PSU OMC Market Share",
    "unit": "%",
    "kind": "level",
@@ -1966,36 +2178,53 @@
    }
   },
   {
-   "name": "Retail Outlets (BPCL)",
-   "unit": "count",
+   "name": "Packed LPG Market Share (BPCL)",
+   "unit": "%",
    "kind": "level",
    "y": {
-    "20260331": 25323.0
+    "20250331": 27.49
    },
    "q": {},
    "src": {
-    "y:20260331": [
-     "bc601ffe-f7af-421d-a32e-d6c2ea3f4454.pdf",
-     71,
-     "reach 25,323 retail outlets",
-     "25,323"
+    "y:20250331": [
+     "8a1a41c8-5bb8-4458-ac11-d43fb927ed61.pdf",
+     73,
+     "highest ever market share of packed LPG, i.e. 27.49%",
+     "27.49"
     ]
    }
   },
   {
-   "name": "Total Gas Volume Handled",
+   "name": "Packed LPG Sales",
    "unit": "TMT",
    "kind": "flow",
    "y": {
-    "20260331": 2289.0
+    "20250331": 8339.0
    },
    "q": {},
    "src": {
-    "y:20260331": [
-     "bc601ffe-f7af-421d-a32e-d6c2ea3f4454.pdf",
-     74,
-     "Total gas volume handled during the year stood at 2,289 TMT",
-     "2,289"
+    "y:20250331": [
+     "8a1a41c8-5bb8-4458-ac11-d43fb927ed61.pdf",
+     73,
+     "highest-ever packed LPG sales of 8,339 TMT",
+     "8,339"
+    ]
+   }
+  },
+  {
+   "name": "Retail Segment Sales Volume (BPCL)",
+   "unit": "MMT",
+   "kind": "flow",
+   "y": {
+    "20250331": 33.52
+   },
+   "q": {},
+   "src": {
+    "y:20250331": [
+     "8a1a41c8-5bb8-4458-ac11-d43fb927ed61.pdf",
+     70,
+     "total sales volumes reaching 33.52 MMT",
+     "33.52"
     ]
    }
   }
