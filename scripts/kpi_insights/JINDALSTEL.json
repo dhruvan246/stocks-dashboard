@@ -36,6 +36,20 @@
    "title": "Q2 FY26 Earnings Presentation",
    "read": "2026-09-06",
    "by": "claude-routine"
+  },
+  "15ac073f-0c00-4f3c-a465-5686549bab2a.pdf": {
+   "kind": "res",
+   "date": "2025-08-12",
+   "title": "Q1 FY26 Financial Results",
+   "read": "2026-09-06",
+   "by": "claude-routine"
+  },
+  "b42f68dd-31c6-4093-89c7-25e2f7361904.pdf": {
+   "kind": "ar",
+   "date": "2025-08-08",
+   "title": "Integrated Report 2024-25 (46th AGM Notice)",
+   "read": "2026-09-06",
+   "by": "claude-routine"
   }
  },
  "metrics": [
@@ -48,6 +62,7 @@
     "20260331": 9.25
    },
    "q": {
+    "20240630": 2.05,
     "20240930": 1.97,
     "20241231": 1.99,
     "20250331": 2.11,
@@ -117,6 +132,12 @@
      16,
      "Crude Steel Production (mt)",
      "1.97"
+    ],
+    "q:20240630": [
+     "15ac073f-0c00-4f3c-a465-5686549bab2a.pdf",
+     15,
+     "Steel (CONSOLIDATED PRODUCTION)",
+     "2.05"
     ]
    }
   },
@@ -129,6 +150,7 @@
     "20260331": 8.68
    },
    "q": {
+    "20240630": 2.09,
     "20240930": 1.85,
     "20241231": 1.9,
     "20250331": 2.13,
@@ -198,6 +220,12 @@
      16,
      "Sales (mt)",
      "1.85"
+    ],
+    "q:20240630": [
+     "15ac073f-0c00-4f3c-a465-5686549bab2a.pdf",
+     15,
+     "Steel (CONSOLIDATED SALES)",
+     "2.09"
     ]
    }
   },
@@ -211,6 +239,7 @@
    },
    "q": {
     "20240930": 9.0,
+    "20250331": 3.0,
     "20250630": 7.0,
     "20250930": 10.0,
     "20260331": 5.0,
@@ -258,6 +287,12 @@
      16,
      "Export as a % of total sales volume",
      "10"
+    ],
+    "q:20250331": [
+     "15ac073f-0c00-4f3c-a465-5686549bab2a.pdf",
+     13,
+     "Share of exports",
+     "3"
     ]
    }
   },
@@ -266,6 +301,7 @@
    "unit": "%",
    "kind": "level",
    "y": {
+    "20250331": 61.0,
     "20260331": 68.0
    },
    "q": {
@@ -318,6 +354,12 @@
      17,
      "Share of VAS",
      "73"
+    ],
+    "y:20250331": [
+     "b42f68dd-31c6-4093-89c7-25e2f7361904.pdf",
+     77,
+     "share of value-added products in total sales",
+     "61"
     ]
    }
   },
@@ -361,6 +403,107 @@
    }
   },
   {
+   "name": "Flats Share of Sales Volume",
+   "unit": "%",
+   "kind": "level",
+   "y": {
+    "20250331": 43.0
+   },
+   "q": {
+    "20240930": 48.0,
+    "20250630": 44.0,
+    "20250930": 49.0
+   },
+   "src": {
+    "q:20240930": [
+     "18069a36-bc47-4836-b3da-4ed02332836d.pdf",
+     16,
+     "Flats as a % of total sales volume",
+     "48"
+    ],
+    "q:20250630": [
+     "18069a36-bc47-4836-b3da-4ed02332836d.pdf",
+     16,
+     "Flats as a % of total sales volume",
+     "44"
+    ],
+    "q:20250930": [
+     "18069a36-bc47-4836-b3da-4ed02332836d.pdf",
+     16,
+     "Flats as a % of total sales volume",
+     "49"
+    ],
+    "y:20250331": [
+     "b42f68dd-31c6-4093-89c7-25e2f7361904.pdf",
+     77,
+     "flat products (share of total sales)",
+     "43"
+    ]
+   }
+  },
+  {
+   "name": "Blast Furnace Capacity",
+   "unit": "MTPA",
+   "kind": "level",
+   "y": {
+    "20210331": 6.25,
+    "20250331": 7.3,
+    "20260331": 11.9
+   },
+   "q": {},
+   "src": {
+    "y:20210331": [
+     "ae30910d-b69d-4a4d-833a-dea9e56530d0.pdf",
+     7,
+     "Blast furnace capacity, 5 years ago (FY 2020-21)",
+     "6.25"
+    ],
+    "y:20260331": [
+     "ae30910d-b69d-4a4d-833a-dea9e56530d0.pdf",
+     7,
+     "Blast furnace capacity, today (FY 2025-26)",
+     "11.9"
+    ],
+    "y:20250331": [
+     "b42f68dd-31c6-4093-89c7-25e2f7361904.pdf",
+     76,
+     "Blast Furnace capacity (doc period)",
+     "7.30"
+    ]
+   }
+  },
+  {
+   "name": "Crude Steel Capacity",
+   "unit": "MTPA",
+   "kind": "level",
+   "y": {
+    "20210331": 8.6,
+    "20250331": 9.6,
+    "20260331": 15.6
+   },
+   "q": {},
+   "src": {
+    "y:20210331": [
+     "ae30910d-b69d-4a4d-833a-dea9e56530d0.pdf",
+     7,
+     "Crude steel capacity, 5 years ago (FY 2020-21)",
+     "8.6"
+    ],
+    "y:20260331": [
+     "ae30910d-b69d-4a4d-833a-dea9e56530d0.pdf",
+     7,
+     "Crude steel capacity, today (FY 2025-26)",
+     "15.6"
+    ],
+    "y:20250331": [
+     "b42f68dd-31c6-4093-89c7-25e2f7361904.pdf",
+     76,
+     "Steel Melting Shop (Liquid Steel Capacity) (doc period)",
+     "9.60"
+    ]
+   }
+  },
+  {
    "name": "Domestic Steel Sales Volume",
    "unit": "MT",
    "kind": "flow",
@@ -388,37 +531,6 @@
      16,
      "Domestic Sales (mt)",
      "1.69"
-    ]
-   }
-  },
-  {
-   "name": "Flats Share of Sales Volume",
-   "unit": "%",
-   "kind": "level",
-   "y": {},
-   "q": {
-    "20240930": 48.0,
-    "20250630": 44.0,
-    "20250930": 49.0
-   },
-   "src": {
-    "q:20240930": [
-     "18069a36-bc47-4836-b3da-4ed02332836d.pdf",
-     16,
-     "Flats as a % of total sales volume",
-     "48"
-    ],
-    "q:20250630": [
-     "18069a36-bc47-4836-b3da-4ed02332836d.pdf",
-     16,
-     "Flats as a % of total sales volume",
-     "44"
-    ],
-    "q:20250930": [
-     "18069a36-bc47-4836-b3da-4ed02332836d.pdf",
-     16,
-     "Flats as a % of total sales volume",
-     "49"
     ]
    }
   },
@@ -516,50 +628,101 @@
    }
   },
   {
-   "name": "Blast Furnace Capacity",
+   "name": "Coking Coal Capacity",
    "unit": "MTPA",
    "kind": "level",
    "y": {
-    "20210331": 6.25,
-    "20260331": 11.9
+    "20250331": 2.4
    },
-   "q": {},
+   "q": {
+    "20260331": 2.4
+   },
    "src": {
-    "y:20210331": [
+    "q:20260331": [
      "ae30910d-b69d-4a4d-833a-dea9e56530d0.pdf",
-     7,
-     "Blast furnace capacity, 5 years ago (FY 2020-21)",
-     "6.25"
+     94,
+     "Coking coal (raw material capacities as on 31 March 2026)",
+     "2.4"
     ],
-    "y:20260331": [
-     "ae30910d-b69d-4a4d-833a-dea9e56530d0.pdf",
-     7,
-     "Blast furnace capacity, today (FY 2025-26)",
-     "11.9"
+    "y:20250331": [
+     "b42f68dd-31c6-4093-89c7-25e2f7361904.pdf",
+     76,
+     "Coking Coal (raw material processing capabilities) (doc period)",
+     "2.4"
     ]
    }
   },
   {
-   "name": "Crude Steel Capacity",
+   "name": "Cumulative Capital Expenditure",
+   "unit": "₹ crore",
+   "kind": "level",
+   "y": {},
+   "q": {
+    "20250331": 25924.0,
+    "20260331": 35498.0
+   },
+   "src": {
+    "q:20260331": [
+     "ae30910d-b69d-4a4d-833a-dea9e56530d0.pdf",
+     95,
+     "cumulative capital expenditure",
+     "35,498"
+    ],
+    "q:20250331": [
+     "b42f68dd-31c6-4093-89c7-25e2f7361904.pdf",
+     77,
+     "cumulative capex incurred towards the Angul expansion project",
+     "25,924"
+    ]
+   }
+  },
+  {
+   "name": "DRI Capacity",
    "unit": "MTPA",
    "kind": "level",
    "y": {
-    "20210331": 8.6,
-    "20260331": 15.6
+    "20250331": 3.12
    },
-   "q": {},
+   "q": {
+    "20260331": 3.12
+   },
    "src": {
-    "y:20210331": [
+    "q:20260331": [
      "ae30910d-b69d-4a4d-833a-dea9e56530d0.pdf",
-     7,
-     "Crude steel capacity, 5 years ago (FY 2020-21)",
-     "8.6"
+     94,
+     "Direct Reduced Iron (DRI) capacity",
+     "3.12"
     ],
-    "y:20260331": [
+    "y:20250331": [
+     "b42f68dd-31c6-4093-89c7-25e2f7361904.pdf",
+     76,
+     "Direct Reduced Iron capacity (doc period)",
+     "3.12"
+    ]
+   }
+  },
+  {
+   "name": "Iron Ore Capacity",
+   "unit": "MTPA",
+   "kind": "level",
+   "y": {
+    "20250331": 10.6
+   },
+   "q": {
+    "20260331": 13.6
+   },
+   "src": {
+    "q:20260331": [
      "ae30910d-b69d-4a4d-833a-dea9e56530d0.pdf",
-     7,
-     "Crude steel capacity, today (FY 2025-26)",
-     "15.6"
+     94,
+     "Iron ore capacity (raw material capacities as on 31 March 2026)",
+     "13.6"
+    ],
+    "y:20250331": [
+     "b42f68dd-31c6-4093-89c7-25e2f7361904.pdf",
+     76,
+     "Iron Ore (raw material processing capabilities) (doc period)",
+     "10.6"
     ]
    }
   },
@@ -636,53 +799,61 @@
    }
   },
   {
-   "name": "Coking Coal Capacity",
+   "name": "Non-Coking Coal Capacity",
    "unit": "MTPA",
    "kind": "level",
-   "y": {},
+   "y": {
+    "20250331": 20.4
+   },
    "q": {
-    "20260331": 2.4
+    "20260331": 20.4
    },
    "src": {
     "q:20260331": [
      "ae30910d-b69d-4a4d-833a-dea9e56530d0.pdf",
      94,
-     "Coking coal (raw material capacities as on 31 March 2026)",
+     "Non-coking coal (raw material capacities as on 31 March 2026)",
+     "20.4"
+    ],
+    "y:20250331": [
+     "b42f68dd-31c6-4093-89c7-25e2f7361904.pdf",
+     76,
+     "Non-Coking Coal (raw material processing capabilities) (doc period)",
+     "20.4"
+    ]
+   }
+  },
+  {
+   "name": "Bar Rod Mill Capacity",
+   "unit": "MTPA",
+   "kind": "level",
+   "y": {
+    "20250331": 2.4
+   },
+   "q": {},
+   "src": {
+    "y:20250331": [
+     "b42f68dd-31c6-4093-89c7-25e2f7361904.pdf",
+     76,
+     "Bar Rod Mills (finishing mill capacities) (doc period)",
      "2.4"
     ]
    }
   },
   {
-   "name": "Cumulative Capital Expenditure",
-   "unit": "₹ crore",
+   "name": "Captive Power Capacity",
+   "unit": "MW",
    "kind": "level",
-   "y": {},
-   "q": {
-    "20260331": 35498.0
+   "y": {
+    "20250331": 1634.0
    },
+   "q": {},
    "src": {
-    "q:20260331": [
-     "ae30910d-b69d-4a4d-833a-dea9e56530d0.pdf",
-     95,
-     "cumulative capital expenditure",
-     "35,498"
-    ]
-   }
-  },
-  {
-   "name": "DRI Capacity",
-   "unit": "MTPA",
-   "kind": "level",
-   "y": {},
-   "q": {
-    "20260331": 3.12
-   },
-   "src": {
-    "q:20260331": [
-     "ae30910d-b69d-4a4d-833a-dea9e56530d0.pdf",
-     94,
-     "Direct Reduced Iron (DRI) capacity",
-     "3.12"
+    "y:20250331": [
+     "b42f68dd-31c6-4093-89c7-25e2f7361904.pdf",
+     76,
+     "captive power capacity (doc period)",
+     "1,634"
     ]
    }
   },
@@ -704,36 +875,104 @@
    }
   },
   {
-   "name": "Iron Ore Capacity",
+   "name": "Hot Strip Mill Capacity",
    "unit": "MTPA",
    "kind": "level",
-   "y": {},
-   "q": {
-    "20260331": 13.6
+   "y": {
+    "20250331": 6.0
    },
+   "q": {},
    "src": {
-    "q:20260331": [
-     "ae30910d-b69d-4a4d-833a-dea9e56530d0.pdf",
-     94,
-     "Iron ore capacity (raw material capacities as on 31 March 2026)",
-     "13.6"
+    "y:20250331": [
+     "b42f68dd-31c6-4093-89c7-25e2f7361904.pdf",
+     76,
+     "HR Coil (finishing mill capacities) (doc period)",
+     "6.0"
     ]
    }
   },
   {
-   "name": "Non-Coking Coal Capacity",
+   "name": "Longs Share of Sales Volume",
+   "unit": "%",
+   "kind": "level",
+   "y": {
+    "20250331": 57.0
+   },
+   "q": {},
+   "src": {
+    "y:20250331": [
+     "b42f68dd-31c6-4093-89c7-25e2f7361904.pdf",
+     77,
+     "long products (share of total sales)",
+     "57"
+    ]
+   }
+  },
+  {
+   "name": "Plate Mill Capacity",
    "unit": "MTPA",
    "kind": "level",
-   "y": {},
-   "q": {
-    "20260331": 20.4
+   "y": {
+    "20250331": 2.5
    },
+   "q": {},
    "src": {
-    "q:20260331": [
-     "ae30910d-b69d-4a4d-833a-dea9e56530d0.pdf",
-     94,
-     "Non-coking coal (raw material capacities as on 31 March 2026)",
-     "20.4"
+    "y:20250331": [
+     "b42f68dd-31c6-4093-89c7-25e2f7361904.pdf",
+     76,
+     "Plate Mills (finishing mill capacities) (doc period)",
+     "2.5"
+    ]
+   }
+  },
+  {
+   "name": "Rail & Universal Beam Mill Capacity",
+   "unit": "MTPA",
+   "kind": "level",
+   "y": {
+    "20250331": 1.0
+   },
+   "q": {},
+   "src": {
+    "y:20250331": [
+     "b42f68dd-31c6-4093-89c7-25e2f7361904.pdf",
+     76,
+     "Rail Mills (finishing mill capacities) (doc period)",
+     "1.0"
+    ]
+   }
+  },
+  {
+   "name": "Special Profiling Mill Capacity",
+   "unit": "MTPA",
+   "kind": "level",
+   "y": {
+    "20250331": 0.75
+   },
+   "q": {},
+   "src": {
+    "y:20250331": [
+     "b42f68dd-31c6-4093-89c7-25e2f7361904.pdf",
+     76,
+     "Special Profile (finishing mill capacities) (doc period)",
+     "0.75"
+    ]
+   }
+  },
+  {
+   "name": "Wire Rod Mill Capacity",
+   "unit": "MTPA",
+   "kind": "level",
+   "y": {
+    "20250331": 0.6
+   },
+   "q": {},
+   "src": {
+    "y:20250331": [
+     "b42f68dd-31c6-4093-89c7-25e2f7361904.pdf",
+     76,
+     "Wire Rod Mills (finishing mill capacities) (doc period)",
+     "0.6"
     ]
    }
   }
