@@ -25,25 +25,32 @@ RENAME = os.path.join(HERE, "_rename_map.json")
 START_FY = 2020
 
 
+CLIFF = 1.8   # a >1.8x step between consecutive FYs is a "cliff"
+
+
 def implausible_years(emp):
-    """FYs whose on-roll value is a spike — far (>2.5x) from BOTH the series median AND every temporal
-    neighbour. Real headcount moves gradually; a lone 2.5x jump/dip is an extraction error, not a hire
-    wave, so we drop it rather than ship it (a merger would move neighbours too and survive). <3 pts:
-    can't tell, keep all."""
-    ys = sorted(emp)
+    """FYs to DROP because the series mixes reporting bases across years (a company that files a
+    standalone BRSR one year and a consolidated one the next — Apollo 82,786↔42,497, Biocon
+    9,805↔4,204). Signature = a NON-monotonic series with a >1.8x cliff (a real hiring/attrition trend
+    is monotonic and survives untouched: BLS 357→737→1,747, BEL 11,444→11,199→9,420). When a basis
+    flip is detected we keep the largest same-basis cluster, tie-broken toward the most recent year
+    (the current basis), and drop the rest. <3 points: can't judge, keep all."""
+    ys = sorted(emp, key=int)
     if len(ys) < 3:
         return set()
-    vals = [emp[y] for y in ys]
-    med = statistics.median(vals)
-    bad = set()
-    for i, y in enumerate(ys):
-        v = emp[y]
-        nb = [vals[j] for j in (i - 1, i + 1) if 0 <= j < len(ys)]
-        far_med = v > 2.5 * med or v < med / 2.5
-        far_all_nb = nb and all(v > 2.5 * n or v < n / 2.5 for n in nb)
-        if far_med and far_all_nb:
-            bad.add(y)
-    return bad
+    v = [emp[y] for y in ys]
+    monotonic = all(v[i] >= v[i - 1] for i in range(1, len(v))) or \
+                all(v[i] <= v[i - 1] for i in range(1, len(v)))
+    has_cliff = any(max(v[i], v[i - 1]) / min(v[i], v[i - 1]) > CLIFF for i in range(1, len(v)) if v[i - 1])
+    if monotonic or not has_cliff:
+        return set()
+    best = None
+    for anchor in v:
+        grp = [y for y in ys if anchor and 1 / CLIFF <= emp[y] / anchor <= CLIFF]
+        key = (len(grp), max(int(y) for y in grp))     # most years, then most recent
+        if best is None or key > best[0]:
+            best = (key, set(grp))
+    return set(ys) - best[1]
 
 
 def fy_of(iso):
