@@ -1,8 +1,780 @@
 {
  "sym": "PNBHOUSING",
  "fy_end_month": 3,
- "docs": {},
- "metrics": [],
+ "docs": {
+  "c0d0f5ef-33f4-4330-9828-e1921e6124b4.pdf": {
+   "kind": "ip",
+   "date": "2026-08-04",
+   "title": "Q1 FY27 Investor Presentation",
+   "read": "2026-09-07",
+   "by": "claude-routine"
+  },
+  "a8820756-ad66-43c9-b871-cfc8631f0cb8.pdf": {
+   "kind": "ip",
+   "date": "2026-04-20",
+   "title": "Q4/FY26 Revised Investor Presentation",
+   "read": "2026-09-07",
+   "by": "claude-routine"
+  },
+  "8fb19272-7bca-470e-a0bf-d106a1f937f8.pdf": {
+   "kind": "ip",
+   "date": "2026-04-20",
+   "title": "Q4/FY26 Investor Presentation (original, superseded)",
+   "read": "2026-09-07",
+   "by": "claude-routine"
+  },
+  "867ed6b2-6038-4c21-92c7-d3d900dc26cd.pdf": {
+   "kind": "ar",
+   "date": "2026-07-23",
+   "title": "Annual Report FY 2025-26",
+   "read": "2026-09-07",
+   "by": "claude-routine"
+  }
+ },
+ "metrics": [
+  {
+   "name": "Net NPA",
+   "unit": "%",
+   "kind": "level",
+   "y": {},
+   "q": {
+    "20250331": 0.69,
+    "20250630": 0.69,
+    "20251231": 0.68,
+    "20260331": 0.57,
+    "20260630": 0.58
+   },
+   "src": {
+    "q:20250630": [
+     "c0d0f5ef-33f4-4330-9828-e1921e6124b4.pdf",
+     5,
+     "NNPA",
+     "0.69"
+    ],
+    "q:20260331": [
+     "c0d0f5ef-33f4-4330-9828-e1921e6124b4.pdf",
+     5,
+     "NNPA",
+     "0.57"
+    ],
+    "q:20260630": [
+     "c0d0f5ef-33f4-4330-9828-e1921e6124b4.pdf",
+     5,
+     "NNPA",
+     "0.58"
+    ],
+    "q:20251231": [
+     "a8820756-ad66-43c9-b871-cfc8631f0cb8.pdf",
+     6,
+     "Net NPA (31-Dec-25)",
+     "0.68"
+    ],
+    "q:20250331": [
+     "a8820756-ad66-43c9-b871-cfc8631f0cb8.pdf",
+     6,
+     "Net NPA (31-Mar-25)",
+     "0.69"
+    ]
+   }
+  },
+  {
+   "name": "Retail Collection Efficiency",
+   "unit": "%",
+   "kind": "level",
+   "y": {},
+   "q": {
+    "20250630": 99.2,
+    "20250930": 99.9,
+    "20251231": 99.4,
+    "20260331": 99.4,
+    "20260630": 99.1
+   },
+   "src": {
+    "q:20250630": [
+     "c0d0f5ef-33f4-4330-9828-e1921e6124b4.pdf",
+     24,
+     "Collection Efficiency",
+     "99.2"
+    ],
+    "q:20250930": [
+     "c0d0f5ef-33f4-4330-9828-e1921e6124b4.pdf",
+     24,
+     "Collection Efficiency",
+     "99.9"
+    ],
+    "q:20251231": [
+     "c0d0f5ef-33f4-4330-9828-e1921e6124b4.pdf",
+     24,
+     "Collection Efficiency",
+     "99.4"
+    ],
+    "q:20260331": [
+     "c0d0f5ef-33f4-4330-9828-e1921e6124b4.pdf",
+     24,
+     "Collection Efficiency",
+     "99.4"
+    ],
+    "q:20260630": [
+     "c0d0f5ef-33f4-4330-9828-e1921e6124b4.pdf",
+     24,
+     "Collection Efficiency",
+     "99.1"
+    ]
+   }
+  },
+  {
+   "name": "Disbursement",
+   "unit": "INR Crore",
+   "kind": "flow",
+   "y": {
+    "20260331": 26548.0
+   },
+   "q": {
+    "20250630": 4980.0,
+    "20260331": 9355.0,
+    "20260630": 5882.0
+   },
+   "src": {
+    "q:20250630": [
+     "c0d0f5ef-33f4-4330-9828-e1921e6124b4.pdf",
+     5,
+     "Disbursement",
+     "4,980"
+    ],
+    "q:20260331": [
+     "c0d0f5ef-33f4-4330-9828-e1921e6124b4.pdf",
+     5,
+     "Disbursement",
+     "9,355"
+    ],
+    "q:20260630": [
+     "c0d0f5ef-33f4-4330-9828-e1921e6124b4.pdf",
+     5,
+     "Disbursement",
+     "5,882"
+    ],
+    "y:20260331": [
+     "a8820756-ad66-43c9-b871-cfc8631f0cb8.pdf",
+     5,
+     "Disbursement (FY26)",
+     "26,548"
+    ]
+   }
+  },
+  {
+   "name": "Gross NPA",
+   "unit": "%",
+   "kind": "level",
+   "y": {},
+   "q": {
+    "20250630": 1.06,
+    "20251231": 1.04,
+    "20260331": 0.93,
+    "20260630": 0.95
+   },
+   "src": {
+    "q:20250630": [
+     "c0d0f5ef-33f4-4330-9828-e1921e6124b4.pdf",
+     5,
+     "GNPA",
+     "1.06"
+    ],
+    "q:20260331": [
+     "c0d0f5ef-33f4-4330-9828-e1921e6124b4.pdf",
+     5,
+     "GNPA",
+     "0.93"
+    ],
+    "q:20260630": [
+     "c0d0f5ef-33f4-4330-9828-e1921e6124b4.pdf",
+     5,
+     "GNPA",
+     "0.95"
+    ],
+    "q:20251231": [
+     "a8820756-ad66-43c9-b871-cfc8631f0cb8.pdf",
+     5,
+     "GNPA (31-Dec-25)",
+     "1.04"
+    ]
+   }
+  },
+  {
+   "name": "NIM",
+   "unit": "%",
+   "kind": "level",
+   "y": {
+    "20260331": 3.68
+   },
+   "q": {
+    "20250630": 3.74,
+    "20260331": 3.69,
+    "20260630": 3.5
+   },
+   "src": {
+    "q:20250630": [
+     "c0d0f5ef-33f4-4330-9828-e1921e6124b4.pdf",
+     5,
+     "NIM",
+     "3.74"
+    ],
+    "q:20260331": [
+     "c0d0f5ef-33f4-4330-9828-e1921e6124b4.pdf",
+     5,
+     "NIM",
+     "3.69"
+    ],
+    "q:20260630": [
+     "c0d0f5ef-33f4-4330-9828-e1921e6124b4.pdf",
+     5,
+     "NIM",
+     "3.50"
+    ],
+    "y:20260331": [
+     "a8820756-ad66-43c9-b871-cfc8631f0cb8.pdf",
+     6,
+     "NIM (FY26)",
+     "3.68"
+    ]
+   }
+  },
+  {
+   "name": "Spread",
+   "unit": "%",
+   "kind": "level",
+   "y": {
+    "20260331": 2.2
+   },
+   "q": {
+    "20250630": 2.23,
+    "20260331": 2.12,
+    "20260630": 2.12
+   },
+   "src": {
+    "q:20250630": [
+     "c0d0f5ef-33f4-4330-9828-e1921e6124b4.pdf",
+     5,
+     "Spread",
+     "2.23"
+    ],
+    "q:20260331": [
+     "c0d0f5ef-33f4-4330-9828-e1921e6124b4.pdf",
+     5,
+     "Spread",
+     "2.12"
+    ],
+    "q:20260630": [
+     "c0d0f5ef-33f4-4330-9828-e1921e6124b4.pdf",
+     5,
+     "Spread",
+     "2.12"
+    ],
+    "y:20260331": [
+     "a8820756-ad66-43c9-b871-cfc8631f0cb8.pdf",
+     6,
+     "Spread (FY26)",
+     "2.20"
+    ]
+   }
+  },
+  {
+   "name": "AUM",
+   "unit": "INR Crore",
+   "kind": "level",
+   "y": {},
+   "q": {
+    "20250630": 82100.0,
+    "20260331": 90921.0,
+    "20260630": 93021.0
+   },
+   "src": {
+    "q:20250630": [
+     "c0d0f5ef-33f4-4330-9828-e1921e6124b4.pdf",
+     5,
+     "AUM",
+     "82,100"
+    ],
+    "q:20260331": [
+     "c0d0f5ef-33f4-4330-9828-e1921e6124b4.pdf",
+     5,
+     "AUM",
+     "90,921"
+    ],
+    "q:20260630": [
+     "c0d0f5ef-33f4-4330-9828-e1921e6124b4.pdf",
+     5,
+     "AUM",
+     "93,021"
+    ]
+   }
+  },
+  {
+   "name": "Affordable Segment Branches",
+   "unit": "count",
+   "kind": "level",
+   "y": {},
+   "q": {
+    "20250630": 200.0,
+    "20260331": 229.0,
+    "20260630": 232.0
+   },
+   "src": {
+    "q:20250630": [
+     "c0d0f5ef-33f4-4330-9828-e1921e6124b4.pdf",
+     12,
+     "No. of Branches - Affordable",
+     "200"
+    ],
+    "q:20260331": [
+     "c0d0f5ef-33f4-4330-9828-e1921e6124b4.pdf",
+     12,
+     "No. of Branches - Affordable",
+     "229"
+    ],
+    "q:20260630": [
+     "c0d0f5ef-33f4-4330-9828-e1921e6124b4.pdf",
+     12,
+     "No. of Branches - Affordable",
+     "232"
+    ]
+   }
+  },
+  {
+   "name": "Cost of Borrowing",
+   "unit": "%",
+   "kind": "level",
+   "y": {},
+   "q": {
+    "20250630": 7.76,
+    "20260331": 7.35,
+    "20260630": 7.36
+   },
+   "src": {
+    "q:20250630": [
+     "c0d0f5ef-33f4-4330-9828-e1921e6124b4.pdf",
+     6,
+     "CoB",
+     "7.76"
+    ],
+    "q:20260331": [
+     "c0d0f5ef-33f4-4330-9828-e1921e6124b4.pdf",
+     6,
+     "CoB",
+     "7.35"
+    ],
+    "q:20260630": [
+     "c0d0f5ef-33f4-4330-9828-e1921e6124b4.pdf",
+     6,
+     "CoB",
+     "7.36"
+    ]
+   }
+  },
+  {
+   "name": "Emerging Markets Segment Branches",
+   "unit": "count",
+   "kind": "level",
+   "y": {},
+   "q": {
+    "20250630": 78.0,
+    "20260331": 85.0,
+    "20260630": 89.0
+   },
+   "src": {
+    "q:20250630": [
+     "c0d0f5ef-33f4-4330-9828-e1921e6124b4.pdf",
+     12,
+     "No. of Branches - Emerging Markets",
+     "78"
+    ],
+    "q:20260331": [
+     "c0d0f5ef-33f4-4330-9828-e1921e6124b4.pdf",
+     12,
+     "No. of Branches - Emerging Markets",
+     "85"
+    ],
+    "q:20260630": [
+     "c0d0f5ef-33f4-4330-9828-e1921e6124b4.pdf",
+     12,
+     "No. of Branches - Emerging Markets",
+     "89"
+    ]
+   }
+  },
+  {
+   "name": "Loan Book",
+   "unit": "INR Crore",
+   "kind": "level",
+   "y": {},
+   "q": {
+    "20250630": 77732.0,
+    "20260331": 87347.0,
+    "20260630": 89670.0
+   },
+   "src": {
+    "q:20250630": [
+     "c0d0f5ef-33f4-4330-9828-e1921e6124b4.pdf",
+     5,
+     "Loan Book",
+     "77,732"
+    ],
+    "q:20260331": [
+     "c0d0f5ef-33f4-4330-9828-e1921e6124b4.pdf",
+     5,
+     "Loan Book",
+     "87,347"
+    ],
+    "q:20260630": [
+     "c0d0f5ef-33f4-4330-9828-e1921e6124b4.pdf",
+     5,
+     "Loan Book",
+     "89,670"
+    ]
+   }
+  },
+  {
+   "name": "Prime Segment Branches",
+   "unit": "count",
+   "kind": "level",
+   "y": {},
+   "q": {
+    "20250630": 76.0,
+    "20260331": 77.0,
+    "20260630": 82.0
+   },
+   "src": {
+    "q:20250630": [
+     "c0d0f5ef-33f4-4330-9828-e1921e6124b4.pdf",
+     12,
+     "No. of Branches - Prime",
+     "76"
+    ],
+    "q:20260331": [
+     "c0d0f5ef-33f4-4330-9828-e1921e6124b4.pdf",
+     12,
+     "No. of Branches - Prime",
+     "77"
+    ],
+    "q:20260630": [
+     "c0d0f5ef-33f4-4330-9828-e1921e6124b4.pdf",
+     12,
+     "No. of Branches - Prime",
+     "82"
+    ]
+   }
+  },
+  {
+   "name": "Yield",
+   "unit": "%",
+   "kind": "level",
+   "y": {},
+   "q": {
+    "20250630": 9.99,
+    "20260331": 9.47,
+    "20260630": 9.48
+   },
+   "src": {
+    "q:20250630": [
+     "c0d0f5ef-33f4-4330-9828-e1921e6124b4.pdf",
+     6,
+     "Yield",
+     "9.99"
+    ],
+    "q:20260331": [
+     "c0d0f5ef-33f4-4330-9828-e1921e6124b4.pdf",
+     6,
+     "Yield",
+     "9.47"
+    ],
+    "q:20260630": [
+     "c0d0f5ef-33f4-4330-9828-e1921e6124b4.pdf",
+     6,
+     "Yield",
+     "9.48"
+    ]
+   }
+  },
+  {
+   "name": "Retail Disbursement",
+   "unit": "INR Crore",
+   "kind": "flow",
+   "y": {
+    "20260331": 26213.0
+   },
+   "q": {
+    "20260331": 9020.0
+   },
+   "src": {
+    "q:20260331": [
+     "a8820756-ad66-43c9-b871-cfc8631f0cb8.pdf",
+     5,
+     "Total (Retail Segment Disbursement)",
+     "9,020"
+    ],
+    "y:20260331": [
+     "a8820756-ad66-43c9-b871-cfc8631f0cb8.pdf",
+     5,
+     "Total (Retail Segment Disbursement)",
+     "26,213"
+    ]
+   }
+  },
+  {
+   "name": "Average Ticket Size - Individual Housing Loan",
+   "unit": "INR lac",
+   "kind": "level",
+   "y": {},
+   "q": {
+    "20260630": 29.0
+   },
+   "src": {
+    "q:20260630": [
+     "c0d0f5ef-33f4-4330-9828-e1921e6124b4.pdf",
+     10,
+     "Average ticket size for Individual Housing loan",
+     "29"
+    ]
+   }
+  },
+  {
+   "name": "CRAR",
+   "unit": "%",
+   "kind": "level",
+   "y": {},
+   "q": {
+    "20260331": 27.26
+   },
+   "src": {
+    "q:20260331": [
+     "a8820756-ad66-43c9-b871-cfc8631f0cb8.pdf",
+     6,
+     "Capital Adequacy",
+     "27.26"
+    ]
+   }
+  },
+  {
+   "name": "Deposits",
+   "unit": "INR Crore",
+   "kind": "level",
+   "y": {},
+   "q": {
+    "20260331": 18055.0
+   },
+   "src": {
+    "q:20260331": [
+     "a8820756-ad66-43c9-b871-cfc8631f0cb8.pdf",
+     6,
+     "Deposit",
+     "18,055"
+    ]
+   }
+  },
+  {
+   "name": "Gearing Ratio",
+   "unit": "x",
+   "kind": "level",
+   "y": {},
+   "q": {
+    "20260331": 3.7
+   },
+   "src": {
+    "q:20260331": [
+     "a8820756-ad66-43c9-b871-cfc8631f0cb8.pdf",
+     6,
+     "Gearing Ratio",
+     "3.70"
+    ]
+   }
+  },
+  {
+   "name": "Live Loan Accounts",
+   "unit": "count",
+   "kind": "level",
+   "y": {},
+   "q": {
+    "20260630": 387000.0
+   },
+   "src": {
+    "q:20260630": [
+     "c0d0f5ef-33f4-4330-9828-e1921e6124b4.pdf",
+     10,
+     "Live loan accounts serviced by the Company",
+     "3,87,000"
+    ]
+   }
+  },
+  {
+   "name": "North Region Disbursement",
+   "unit": "INR Crore",
+   "kind": "flow",
+   "y": {
+    "20260331": 9863.0
+   },
+   "q": {},
+   "src": {
+    "y:20260331": [
+     "867ed6b2-6038-4c21-92c7-d3d900dc26cd.pdf",
+     6,
+     "North region delivered strong performance with disbursements growing by 26% to `",
+     "9,863"
+    ]
+   }
+  },
+  {
+   "name": "North Region Loan Assets",
+   "unit": "INR Crore",
+   "kind": "level",
+   "y": {
+    "20260331": 28357.0
+   },
+   "q": {},
+   "src": {
+    "y:20260331": [
+     "867ed6b2-6038-4c21-92c7-d3d900dc26cd.pdf",
+     6,
+     "Its loan asset portfolio increased by 16% to `28,357 crore",
+     "28,357"
+    ]
+   }
+  },
+  {
+   "name": "South Region Branches",
+   "unit": "count",
+   "kind": "level",
+   "y": {
+    "20260331": 139.0
+   },
+   "q": {},
+   "src": {
+    "y:20260331": [
+     "867ed6b2-6038-4c21-92c7-d3d900dc26cd.pdf",
+     6,
+     "across 139 branches",
+     "139"
+    ]
+   }
+  },
+  {
+   "name": "South Region Loan Assets",
+   "unit": "INR Crore",
+   "kind": "level",
+   "y": {
+    "20260331": 30717.0
+   },
+   "q": {},
+   "src": {
+    "y:20260331": [
+     "867ed6b2-6038-4c21-92c7-d3d900dc26cd.pdf",
+     6,
+     "South region emerged as the top performer, expanding its loan asset base by 18% ",
+     "30,717"
+    ]
+   }
+  },
+  {
+   "name": "Tier 1 Capital Ratio",
+   "unit": "%",
+   "kind": "level",
+   "y": {},
+   "q": {
+    "20260331": 26.89
+   },
+   "src": {
+    "q:20260331": [
+     "a8820756-ad66-43c9-b871-cfc8631f0cb8.pdf",
+     6,
+     "Tier I",
+     "26.89"
+    ]
+   }
+  },
+  {
+   "name": "Tier 2 Capital Ratio",
+   "unit": "%",
+   "kind": "level",
+   "y": {},
+   "q": {
+    "20260331": 0.37
+   },
+   "src": {
+    "q:20260331": [
+     "a8820756-ad66-43c9-b871-cfc8631f0cb8.pdf",
+     6,
+     "Tier II",
+     "0.37"
+    ]
+   }
+  },
+  {
+   "name": "Total Branches",
+   "unit": "count",
+   "kind": "level",
+   "y": {
+    "20260331": 392.0
+   },
+   "q": {},
+   "src": {
+    "y:20260331": [
+     "867ed6b2-6038-4c21-92c7-d3d900dc26cd.pdf",
+     10,
+     "total network to 392 branches (doc period)",
+     "392"
+    ]
+   }
+  },
+  {
+   "name": "Total Sanctions",
+   "unit": "INR Crore",
+   "kind": "flow",
+   "y": {},
+   "q": {
+    "20260630": 12019.0
+   },
+   "src": {
+    "q:20260630": [
+     "c0d0f5ef-33f4-4330-9828-e1921e6124b4.pdf",
+     23,
+     "Total sanctions",
+     "12,019"
+    ]
+   }
+  },
+  {
+   "name": "West Region Disbursement",
+   "unit": "INR Crore",
+   "kind": "flow",
+   "y": {
+    "20260331": 7400.0
+   },
+   "q": {},
+   "src": {
+    "y:20260331": [
+     "867ed6b2-6038-4c21-92c7-d3d900dc26cd.pdf",
+     6,
+     "Disbursements increased by 21% to `7,400 crore",
+     "7,400"
+    ]
+   }
+  },
+  {
+   "name": "West Region Loan Assets",
+   "unit": "INR Crore",
+   "kind": "level",
+   "y": {
+    "20260331": 28273.0
+   },
+   "q": {},
+   "src": {
+    "y:20260331": [
+     "867ed6b2-6038-4c21-92c7-d3d900dc26cd.pdf",
+     6,
+     "the loan asset portfolio grew by 11% to `28,273 crore",
+     "28,273"
+    ]
+   }
+  }
+ ],
  "held": [],
  "catalog": [
   {
