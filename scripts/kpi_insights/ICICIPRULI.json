@@ -50,6 +50,13 @@
    "title": "Annual Report 2025-26",
    "read": "2026-09-07",
    "by": "claude-routine"
+  },
+  "f10475dc-bcf8-4b61-bcd1-9cfc02f3d611.pdf": {
+   "kind": "ip",
+   "date": "2026-04-14",
+   "title": "FY2026 Earnings Presentation",
+   "read": "2026-09-07",
+   "by": "claude-routine"
   }
  },
  "metrics": [
@@ -89,6 +96,45 @@
      3,
      "APE",
      "25.25"
+    ]
+   }
+  },
+  {
+   "name": "Annuity APE",
+   "unit": "INR Bn",
+   "kind": "flow",
+   "y": {
+    "20220331": 3.0,
+    "20260331": 6.13
+   },
+   "q": {
+    "20230630": 0.91,
+    "20260630": 1.33
+   },
+   "src": {
+    "q:20260630": [
+     "adb08743-54cf-4380-ae6a-324a8e4ced7b.pdf",
+     11,
+     "Annuity APE",
+     "1.33"
+    ],
+    "q:20230630": [
+     "adb08743-54cf-4380-ae6a-324a8e4ced7b.pdf",
+     11,
+     "Annuity APE",
+     "0.91"
+    ],
+    "y:20220331": [
+     "f10475dc-bcf8-4b61-bcd1-9cfc02f3d611.pdf",
+     11,
+     "Annuity APE",
+     "3.00"
+    ],
+    "y:20260331": [
+     "f10475dc-bcf8-4b61-bcd1-9cfc02f3d611.pdf",
+     11,
+     "Annuity APE",
+     "6.13"
     ]
    }
   },
@@ -366,6 +412,38 @@
    }
   },
   {
+   "name": "13M Persistency",
+   "unit": "%",
+   "kind": "level",
+   "y": {
+    "20250331": 89.1,
+    "20260331": 84.5
+   },
+   "q": {
+    "20260630": 84.0
+   },
+   "src": {
+    "q:20260630": [
+     "adb08743-54cf-4380-ae6a-324a8e4ced7b.pdf",
+     27,
+     "13M: 84.0% (12 month rolling persistency as on June 30, 2026)",
+     "84.0"
+    ],
+    "y:20260331": [
+     "f10475dc-bcf8-4b61-bcd1-9cfc02f3d611.pdf",
+     6,
+     "March 31, 2026: 84.5%",
+     "84.5"
+    ],
+    "y:20250331": [
+     "f10475dc-bcf8-4b61-bcd1-9cfc02f3d611.pdf",
+     6,
+     "March 31, 2025: 89.1%",
+     "89.1"
+    ]
+   }
+  },
+  {
    "name": "Solvency Ratio",
    "unit": "%",
    "kind": "level",
@@ -467,30 +545,6 @@
      118,
      "At March 31, 2026, the Company has 242,074 advisors",
      "242,074"
-    ]
-   }
-  },
-  {
-   "name": "Annuity APE",
-   "unit": "INR Bn",
-   "kind": "flow",
-   "y": {},
-   "q": {
-    "20230630": 0.91,
-    "20260630": 1.33
-   },
-   "src": {
-    "q:20260630": [
-     "adb08743-54cf-4380-ae6a-324a8e4ced7b.pdf",
-     11,
-     "Annuity APE",
-     "1.33"
-    ],
-    "q:20230630": [
-     "adb08743-54cf-4380-ae6a-324a8e4ced7b.pdf",
-     11,
-     "Annuity APE",
-     "0.91"
     ]
    }
   },
@@ -737,23 +791,6 @@
    }
   },
   {
-   "name": "13M Persistency",
-   "unit": "%",
-   "kind": "level",
-   "y": {},
-   "q": {
-    "20260630": 84.0
-   },
-   "src": {
-    "q:20260630": [
-     "adb08743-54cf-4380-ae6a-324a8e4ced7b.pdf",
-     27,
-     "13M: 84.0% (12 month rolling persistency as on June 30, 2026)",
-     "84.0"
-    ]
-   }
-  },
-  {
    "name": "Claims Settlement Ratio (Group)",
    "unit": "%",
    "kind": "level",
@@ -801,6 +838,23 @@
      24,
      "1,500+ partnerships (doc period)",
      "1,500"
+    ]
+   }
+  },
+  {
+   "name": "Return on Embedded Value (ROEV)",
+   "unit": "%",
+   "kind": "flow",
+   "y": {
+    "20260331": 11.9
+   },
+   "q": {},
+   "src": {
+    "y:20260331": [
+     "f10475dc-bcf8-4b61-bcd1-9cfc02f3d611.pdf",
+     6,
+     "11.9% ROEV",
+     "11.9"
     ]
    }
   }
