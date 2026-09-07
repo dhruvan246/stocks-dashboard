@@ -64,13 +64,15 @@ jobs:
         run: |
           set -e
           if [ -z "$GEMINI_API_KEY" ]; then echo "GEMINI_API_KEY secret missing — nothing can be read"; exit 1; fi
+          rm -rf /tmp/kpi_answers && mkdir -p /tmp/kpi_answers   # each read's answer is saved here so the
+          #   commit step can RE-INGEST it onto origin instead of overwriting the ledger dir (§137 clobber fix)
           SINCE="${{ github.event.inputs.since || '2020-01-01' }}"
           MAXD="${{ github.event.inputs.max_docs || '500' }}"
           SYMS="${{ github.event.inputs.symbols }}"
           if [ -n "$SYMS" ]; then
-            python3 scripts/kpi_extract.py $SYMS --backend gemini --since "$SINCE" --limit "$MAXD"
+            python3 scripts/kpi_extract.py $SYMS --backend gemini --since "$SINCE" --limit "$MAXD" --save-answers /tmp/kpi_answers
           else
-            python3 scripts/kpi_extract.py --walk --backend gemini --since "$SINCE" --max-docs "$MAXD" --max-syms 200 --per-sym 4
+            python3 scripts/kpi_extract.py --walk --backend gemini --since "$SINCE" --max-docs "$MAXD" --max-syms 200 --per-sym 4 --save-answers /tmp/kpi_answers
           fi
           python3 scripts/kpi_extract.py --report || true
 
@@ -80,10 +82,13 @@ jobs:
         run: |
           git config user.name  "github-actions[bot]"
           git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
-          rm -rf /tmp/kpi_led && mkdir -p /tmp/kpi_led && cp scripts/kpi_insights/*.json /tmp/kpi_led/ 2>/dev/null || true
+          # §137 CLOBBER FIX: never cp this job's whole ledger snapshot over origin (that silently
+          # reverted every ledger the sharded routines landed during this run). Instead, on each
+          # attempt sync to the latest main and RE-INGEST this run's saved answers onto it — the
+          # same validated merge every other writer uses — so only THIS run's cells are added.
           for attempt in 1 2 3 4 5; do
             git fetch origin main && git reset --hard origin/main
-            mkdir -p scripts/kpi_insights && cp /tmp/kpi_led/*.json scripts/kpi_insights/ 2>/dev/null || true
+            python3 scripts/kpi_extract.py --reapply-answers /tmp/kpi_answers
             git add -- scripts/kpi_insights/*.json
             if git diff --cached --quiet; then echo "no ledger changes"; exit 0; fi
             git commit -q -m "Insights: KPI ledgers $(TZ=Asia/Kolkata date +'%Y-%m-%d %H:%M IST')"

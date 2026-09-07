@@ -45,6 +45,10 @@ PACKET_DIR = os.path.join(LEDGER_DIR, "_packets")
 MAX_METRICS = 16
 MAX_PAGES = 45          # pages sent per document (top-scored); raised so the business-profile /
 MAX_CHARS = 90000       # multi-year-highlights slide is never dropped for a rich deck or annual report
+SAVE_ANSWERS_DIR = None  # --save-answers DIR: gemini reads also persist their answer+meta here so a
+#                          later --reapply-answers can RE-INGEST them onto the CURRENT ledger. The CI
+#                          walker uses this to merge onto origin at commit time instead of overwriting
+#                          the whole ledger dir (which silently reverted concurrent writers — §137).
 
 KPI_WORDS = re.compile(
     r"operating metric|key metric|kpi|operational|highlights|volume|capacity|utili[sz]ation|"
@@ -655,6 +659,14 @@ def run(sym, docs, backend, by, limit=None, dry=False):
             if not os.environ.get("GEMINI_API_KEY"):
                 print("  %s: GEMINI_API_KEY missing" % sym); break
             print("  %s %s: model returned nothing after retries — skipped (unread, retried next run)" % (sym, doc["att"])); continue
+        if SAVE_ANSWERS_DIR:
+            # persist the raw answer so the commit step can re-ingest it onto origin (§137 clobber fix)
+            os.makedirs(SAVE_ANSWERS_DIR, exist_ok=True)
+            stem = os.path.join(SAVE_ANSWERS_DIR, "%s__%s" % (kpi_docs_slug(sym), doc["att"][:8]))
+            with open(stem + ".answer.json", "w", encoding="utf-8") as fh:
+                json.dump(ans, fh, ensure_ascii=False)
+            with open(stem + ".meta.json", "w", encoding="utf-8") as fh:
+                json.dump({"sym": sym, "doc": doc, "pages": [pp for pp, _ in sel], "path": path, "by": by}, fh)
         w, h, r = ingest(sym, doc, ans, sel, by=by)
         print("  %s %s %s: written %d, held %d, rejected %d" % (sym, doc["kind"], doc["date"], w, h, r))
         done += 1
@@ -668,6 +680,30 @@ def ingest_answer(sym, att8, answer_path, by):
     ans = json.load(open(answer_path, encoding="utf-8"))
     w, h, r = ingest(sym, meta["doc"], ans, pages, by=by)
     print("%s %s: written %d, held %d, rejected %d" % (sym, att8, w, h, r))
+
+
+def reapply_answers(dirpath):
+    """Re-ingest every saved gemini answer in `dirpath` onto the CURRENT on-disk ledgers.
+    The CI walker calls this AFTER `git reset --hard origin/main`, so gemini's cells MERGE onto
+    whatever other writers landed (through the same validated ingest path) instead of the old
+    whole-file overwrite that silently reverted them (§137). Re-reads each PDF from the cached
+    path recorded in the meta; a missing PDF is skipped (the ledger simply keeps origin's cells,
+    never a clobber). Idempotent: an answer already merged re-ingests to the same result."""
+    metas = sorted(f for f in os.listdir(dirpath) if f.endswith(".meta.json")) if os.path.isdir(dirpath) else []
+    n = tw = th = tr = 0
+    for mf in metas:
+        meta = json.load(open(os.path.join(dirpath, mf), encoding="utf-8"))
+        af = os.path.join(dirpath, mf.replace(".meta.json", ".answer.json"))
+        if not os.path.exists(af):
+            continue
+        ans = json.load(open(af, encoding="utf-8"))
+        try:
+            pages = [pt for pt in kpi_docs.page_texts(meta["path"]) if pt[0] in set(meta["pages"])]
+        except Exception as ex:
+            print("  reapply %s: page read FAILED (%s) — skipped" % (mf, str(ex)[:80])); continue
+        w, h, r = ingest(meta["sym"], meta["doc"], ans, pages, by=meta.get("by", "gemini"), verbose=False)
+        n += 1; tw += w; th += h; tr += r
+    print("reapply: %d answers re-ingested onto current ledgers — written %d, held %d, rejected %d" % (n, tw, th, tr))
 
 
 def main():
@@ -693,7 +729,11 @@ def main():
     ap.add_argument("--shard", metavar="K/N", help="with --next: only symbols whose roster index %% N == K, so N parallel routines read disjoint slices")
     ap.add_argument("--force", action="store_true", help="re-emit packets even for documents already read")
     ap.add_argument("--report", action="store_true", help="one line per ledger: metrics, cells, docs, held")
+    ap.add_argument("--save-answers", metavar="DIR", help="gemini backend: also write each answer+meta to DIR for a later --reapply-answers (concurrency-safe commit)")
+    ap.add_argument("--reapply-answers", metavar="DIR", help="re-ingest every saved answer in DIR onto the current on-disk ledgers (CI commit step, after reset --hard origin/main)")
     a = ap.parse_args()
+    if a.reapply_answers:
+        reapply_answers(a.reapply_answers); return
     if a.ingest:
         ingest_answer(a.ingest[0], a.ingest[1], a.ingest[2], a.by or "claude-session"); return
     if a.next:
@@ -759,6 +799,8 @@ def main():
             print("%-48s %-10s y=%s q=%s" % (m["name"][:48], m["unit"][:10], m["y"], m["q"]))
         print("held:", len(L.get("held", [])))
         return
+    if a.save_answers:
+        globals()["SAVE_ANSWERS_DIR"] = a.save_answers
     by = a.by or ("gemini:" + os.environ.get("GEMINI_MODEL", "gemini-3.6-flash") if a.backend == "gemini" else "claude-session")
     if a.walk:
         walk(a, by); return
