@@ -1,8 +1,322 @@
 {
  "sym": "TBOTEK",
  "fy_end_month": 3,
- "docs": {},
- "metrics": [],
+ "docs": {
+  "06fdd7a5-bff0-4e85-b79b-cd3ddd11752e.pdf": {
+   "kind": "ar",
+   "date": "2026-08-10",
+   "title": "Letter Dispatched to Members - Annual Report FY2025-26",
+   "read": "2026-09-07",
+   "by": "claude-routine"
+  },
+  "52e5dcab-b627-4ffd-9b1a-c4b79f8dcb04.pdf": {
+   "kind": "pr",
+   "date": "2026-07-29",
+   "title": "Press Release - Q1 FY27 Results",
+   "read": "2026-09-07",
+   "by": "claude-routine"
+  },
+  "c7e76dbf-1c75-4ab2-8c65-c36559d8e9e0.pdf": {
+   "kind": "pr",
+   "date": "2026-05-28",
+   "title": "Press Release - FY2026 and Q4 FY2026 Results",
+   "read": "2026-09-07",
+   "by": "claude-routine"
+  },
+  "eb9cbc77-a004-44af-a748-2e04cc953b31.pdf": {
+   "kind": "ip",
+   "date": "2026-03-05",
+   "title": "Investor Presentation - March 2026",
+   "read": "2026-09-07",
+   "by": "claude-routine"
+  }
+ },
+ "metrics": [
+  {
+   "name": "Gross Transaction Value (GTV)",
+   "unit": "₹ Cr",
+   "kind": "flow",
+   "y": {
+    "20260331": 36809.0
+   },
+   "q": {
+    "20250331": 7788.0,
+    "20250630": 8119.0,
+    "20260331": 10079.0,
+    "20260630": 11154.0
+   },
+   "src": {
+    "q:20260630": [
+     "52e5dcab-b627-4ffd-9b1a-c4b79f8dcb04.pdf",
+     2,
+     "GTV for the quarter stood at ₹11,154 Cr",
+     "11,154"
+    ],
+    "q:20250630": [
+     "52e5dcab-b627-4ffd-9b1a-c4b79f8dcb04.pdf",
+     2,
+     "GTV of ₹11,154 Cr v/s ₹8,119 Cr",
+     "8,119"
+    ],
+    "y:20260331": [
+     "c7e76dbf-1c75-4ab2-8c65-c36559d8e9e0.pdf",
+     2,
+     "GTV for the full year reached ₹36,809 Cr",
+     "36,809"
+    ],
+    "q:20260331": [
+     "c7e76dbf-1c75-4ab2-8c65-c36559d8e9e0.pdf",
+     2,
+     "GTV for the quarter reached ₹10,079 Cr",
+     "10,079"
+    ],
+    "q:20250331": [
+     "c7e76dbf-1c75-4ab2-8c65-c36559d8e9e0.pdf",
+     2,
+     "GTV of ₹10,079 Cr v/s ₹7,788 Cr",
+     "7,788"
+    ]
+   }
+  },
+  {
+   "name": "Airlines in Supply Network",
+   "unit": "count",
+   "kind": "level",
+   "y": {
+    "20250331": 750.0
+   },
+   "q": {},
+   "src": {
+    "y:20250331": [
+     "eb9cbc77-a004-44af-a748-2e04cc953b31.pdf",
+     12,
+     "750+ Airlines",
+     "750"
+    ]
+   }
+  },
+  {
+   "name": "Annual Transacting Agents",
+   "unit": "count",
+   "kind": "level",
+   "y": {
+    "20250331": 50000.0
+   },
+   "q": {},
+   "src": {
+    "y:20250331": [
+     "eb9cbc77-a004-44af-a748-2e04cc953b31.pdf",
+     12,
+     "50,000+ Transacting Agents",
+     "50,000"
+    ]
+   }
+  },
+  {
+   "name": "Commercial Team Nationalities",
+   "unit": "count",
+   "kind": "level",
+   "y": {
+    "20250331": 67.0
+   },
+   "q": {},
+   "src": {
+    "y:20250331": [
+     "eb9cbc77-a004-44af-a748-2e04cc953b31.pdf",
+     12,
+     "with 67 nationalities",
+     "67"
+    ]
+   }
+  },
+  {
+   "name": "Countries with Commercial Teams",
+   "unit": "count",
+   "kind": "level",
+   "y": {
+    "20250331": 55.0
+   },
+   "q": {},
+   "src": {
+    "y:20250331": [
+     "eb9cbc77-a004-44af-a748-2e04cc953b31.pdf",
+     12,
+     "55 Countries with commercial teams",
+     "55"
+    ]
+   }
+  },
+  {
+   "name": "Destinations Sold",
+   "unit": "count",
+   "kind": "level",
+   "y": {
+    "20250331": 30000.0
+   },
+   "q": {},
+   "src": {
+    "y:20250331": [
+     "eb9cbc77-a004-44af-a748-2e04cc953b31.pdf",
+     12,
+     "30,000+ Destinations Sold",
+     "30,000"
+    ]
+   }
+  },
+  {
+   "name": "GTV - Airlines",
+   "unit": "₹ Cr",
+   "kind": "flow",
+   "y": {},
+   "q": {
+    "20260630": 3577.0
+   },
+   "src": {
+    "q:20260630": [
+     "52e5dcab-b627-4ffd-9b1a-c4b79f8dcb04.pdf",
+     2,
+     "GTV for Airlines business reached ₹3,577 Cr",
+     "3,577"
+    ]
+   }
+  },
+  {
+   "name": "GTV - Hotels + Ancillary",
+   "unit": "₹ Cr",
+   "kind": "flow",
+   "y": {},
+   "q": {
+    "20260630": 7578.0
+   },
+   "src": {
+    "q:20260630": [
+     "52e5dcab-b627-4ffd-9b1a-c4b79f8dcb04.pdf",
+     2,
+     "GTV for the Hotels + Ancillary business reached ₹7,578 Cr",
+     "7,578"
+    ]
+   }
+  },
+  {
+   "name": "Global Hotels Inventory",
+   "unit": "Million",
+   "kind": "level",
+   "y": {
+    "20250331": 1.0
+   },
+   "q": {},
+   "src": {
+    "y:20250331": [
+     "eb9cbc77-a004-44af-a748-2e04cc953b31.pdf",
+     12,
+     "1 Million+ Global Hotels",
+     "1"
+    ]
+   }
+  },
+  {
+   "name": "Monthly Transacting Buyers (MTBs)",
+   "unit": "count",
+   "kind": "flow",
+   "y": {},
+   "q": {
+    "20260630": 33736.0
+   },
+   "src": {
+    "q:20260630": [
+     "52e5dcab-b627-4ffd-9b1a-c4b79f8dcb04.pdf",
+     2,
+     "Monthly Transacting Buyers (MTBs) for the quarter reached 33,736",
+     "33,736"
+    ]
+   }
+  },
+  {
+   "name": "Payment Rail Currencies",
+   "unit": "count",
+   "kind": "level",
+   "y": {
+    "20250331": 88.0
+   },
+   "q": {},
+   "src": {
+    "y:20250331": [
+     "eb9cbc77-a004-44af-a748-2e04cc953b31.pdf",
+     12,
+     "payment rails operating across 88 currencies",
+     "88"
+    ]
+   }
+  },
+  {
+   "name": "Source Markets",
+   "unit": "count",
+   "kind": "level",
+   "y": {
+    "20250331": 140.0
+   },
+   "q": {},
+   "src": {
+    "y:20250331": [
+     "eb9cbc77-a004-44af-a748-2e04cc953b31.pdf",
+     12,
+     "140 Source Markets",
+     "140"
+    ]
+   }
+  },
+  {
+   "name": "Source-Destination Pairs",
+   "unit": "count",
+   "kind": "level",
+   "y": {
+    "20250331": 425000.0
+   },
+   "q": {},
+   "src": {
+    "y:20250331": [
+     "eb9cbc77-a004-44af-a748-2e04cc953b31.pdf",
+     12,
+     "4,25,000+ Source-Destination Pairs",
+     "4,25,000"
+    ]
+   }
+  },
+  {
+   "name": "Support Languages",
+   "unit": "count",
+   "kind": "level",
+   "y": {
+    "20250331": 16.0
+   },
+   "q": {},
+   "src": {
+    "y:20250331": [
+     "eb9cbc77-a004-44af-a748-2e04cc953b31.pdf",
+     12,
+     "round the clock servicing support delivered in 16 languages",
+     "16"
+    ]
+   }
+  },
+  {
+   "name": "Take Rate",
+   "unit": "%",
+   "kind": "flow",
+   "y": {},
+   "q": {
+    "20251231": 24.9
+   },
+   "src": {
+    "q:20251231": [
+     "eb9cbc77-a004-44af-a748-2e04cc953b31.pdf",
+     8,
+     "Take Rate (Q3'FY26)",
+     "24.9"
+    ]
+   }
+  }
+ ],
  "held": [],
  "catalog": [
   {
