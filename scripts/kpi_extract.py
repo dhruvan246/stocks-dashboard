@@ -690,6 +690,7 @@ def main():
     ap.add_argument("--show", metavar="SYM")
     ap.add_argument("--forget", nargs=2, metavar=("SYM", "ATT8"), help="drop a read document so it is read again")
     ap.add_argument("--next", type=int, metavar="N", help="print the N symbols most in need of reading (priority order) with unread counts")
+    ap.add_argument("--shard", metavar="K/N", help="with --next: only symbols whose roster index %% N == K, so N parallel routines read disjoint slices")
     ap.add_argument("--force", action="store_true", help="re-emit packets even for documents already read")
     ap.add_argument("--report", action="store_true", help="one line per ledger: metrics, cells, docs, held")
     a = ap.parse_args()
@@ -710,8 +711,11 @@ def main():
             L = load_ledger(sym) or {}
             return sum(1 for d in L.get("docs", {}).values() if d.get("read"))
 
-        ranked = sorted((s for s in syms if kpi_docs.scripcode(s)),
-                        key=lambda s: (reads_of(s), rank[s]))
+        cand = [s for s in syms if kpi_docs.scripcode(s)]
+        if a.shard:                       # "K/N": disjoint slice of the roster for parallel routines
+            k, n = (int(x) for x in a.shard.split("/"))
+            cand = [s for s in cand if rank[s] % n == k]
+        ranked = sorted(cand, key=lambda s: (reads_of(s), rank[s]))
         rows = []
         for sym in ranked:
             if len(rows) >= a.next:
