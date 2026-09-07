@@ -1,0 +1,707 @@
+{
+ "sym": "ZENTEC",
+ "fy_end_month": 3,
+ "docs": {
+  "75a5280b-90c2-479f-aa9d-890f52712cf9.pdf": {
+   "kind": "ar",
+   "date": "2026-08-06",
+   "title": "Annual Report FY26",
+   "read": "2026-09-07",
+   "by": "claude-routine"
+  },
+  "112d61fd-d4c8-4343-aef4-fc9961aee2b8.pdf": {
+   "kind": "ip",
+   "date": "2026-07-26",
+   "title": "Q1 FY27 Investor Presentation",
+   "read": "2026-09-07",
+   "by": "claude-routine"
+  },
+  "b433e3a0-0ec1-4be1-b19a-d68e6a81f6d1.pdf": {
+   "kind": "ip",
+   "date": "2026-05-03",
+   "title": "Q4 & FY26 Investor Presentation",
+   "read": "2026-09-07",
+   "by": "claude-routine"
+  },
+  "eee9d89f-26be-48d8-9ca7-22d7806e3b96.pdf": {
+   "kind": "ip",
+   "date": "2026-01-31",
+   "title": "Q3 & 9M FY26 Investor Presentation",
+   "read": "2026-09-07",
+   "by": "claude-routine"
+  }
+ },
+ "metrics": [
+  {
+   "name": "Consolidated Order Book",
+   "unit": "INR Cr",
+   "kind": "level",
+   "y": {
+    "20260331": 1336.04
+   },
+   "q": {
+    "20251231": 1082.76,
+    "20260331": 1336.04,
+    "20260630": 1239.02
+   },
+   "src": {
+    "y:20260331": [
+     "75a5280b-90c2-479f-aa9d-890f52712cf9.pdf",
+     6,
+     "consolidated order book (doc period)",
+     "1,336.04"
+    ],
+    "q:20260331": [
+     "b433e3a0-0ec1-4be1-b19a-d68e6a81f6d1.pdf",
+     9,
+     "Order Book as at 31st March 2026",
+     "1336.04"
+    ],
+    "q:20260630": [
+     "112d61fd-d4c8-4343-aef4-fc9961aee2b8.pdf",
+     11,
+     "Order Book as at 30th June 2026",
+     "1,239.02"
+    ],
+    "q:20251231": [
+     "eee9d89f-26be-48d8-9ca7-22d7806e3b96.pdf",
+     12,
+     "Order Book as at 31 December 2025",
+     "1,082.76"
+    ]
+   }
+  },
+  {
+   "name": "New Order Inflow",
+   "unit": "INR Cr",
+   "kind": "flow",
+   "y": {},
+   "q": {
+    "20251231": 585.55,
+    "20260331": 431.36,
+    "20260630": 44.62
+   },
+   "src": {
+    "q:20260331": [
+     "b433e3a0-0ec1-4be1-b19a-d68e6a81f6d1.pdf",
+     9,
+     "New Order bagged in Q4FY26",
+     "431.36"
+    ],
+    "q:20260630": [
+     "112d61fd-d4c8-4343-aef4-fc9961aee2b8.pdf",
+     11,
+     "New Order bagged in Q1FY27",
+     "44.62"
+    ],
+    "q:20251231": [
+     "eee9d89f-26be-48d8-9ca7-22d7806e3b96.pdf",
+     12,
+     "New Order bagged in Q3FY26",
+     "585.55"
+    ]
+   }
+  },
+  {
+   "name": "Order Book - Domestic",
+   "unit": "INR Cr",
+   "kind": "level",
+   "y": {},
+   "q": {
+    "20251231": 987.38,
+    "20260331": 1247.26,
+    "20260630": 1153.77
+   },
+   "src": {
+    "q:20260630": [
+     "112d61fd-d4c8-4343-aef4-fc9961aee2b8.pdf",
+     12,
+     "Domestic",
+     "1,153.77"
+    ],
+    "q:20260331": [
+     "b433e3a0-0ec1-4be1-b19a-d68e6a81f6d1.pdf",
+     10,
+     "Domestic (doc period)",
+     "1247.26"
+    ],
+    "q:20251231": [
+     "eee9d89f-26be-48d8-9ca7-22d7806e3b96.pdf",
+     12,
+     "Closing order book includes domestic orders",
+     "987.38"
+    ]
+   }
+  },
+  {
+   "name": "Order Book - Export",
+   "unit": "INR Cr",
+   "kind": "level",
+   "y": {},
+   "q": {
+    "20251231": 95.38,
+    "20260331": 88.78,
+    "20260630": 85.25
+   },
+   "src": {
+    "q:20260630": [
+     "112d61fd-d4c8-4343-aef4-fc9961aee2b8.pdf",
+     12,
+     "Export",
+     "85.25"
+    ],
+    "q:20260331": [
+     "b433e3a0-0ec1-4be1-b19a-d68e6a81f6d1.pdf",
+     10,
+     "Export (doc period)",
+     "88.78"
+    ],
+    "q:20251231": [
+     "eee9d89f-26be-48d8-9ca7-22d7806e3b96.pdf",
+     12,
+     "export orders",
+     "95.38"
+    ]
+   }
+  },
+  {
+   "name": "Orders Executed",
+   "unit": "INR Cr",
+   "kind": "flow",
+   "y": {},
+   "q": {
+    "20251231": 177.83,
+    "20260331": 178.08,
+    "20260630": 141.64
+   },
+   "src": {
+    "q:20260630": [
+     "112d61fd-d4c8-4343-aef4-fc9961aee2b8.pdf",
+     11,
+     "Orders executed in Q1FY27",
+     "141.64"
+    ],
+    "q:20260331": [
+     "b433e3a0-0ec1-4be1-b19a-d68e6a81f6d1.pdf",
+     9,
+     "Orders executed in Q4FY26",
+     "178.08"
+    ],
+    "q:20251231": [
+     "eee9d89f-26be-48d8-9ca7-22d7806e3b96.pdf",
+     12,
+     "Orders executed in Q3FY26",
+     "177.83"
+    ]
+   }
+  },
+  {
+   "name": "Number of Dealers/Distributors",
+   "unit": "count",
+   "kind": "level",
+   "y": {
+    "20250331": 0.0,
+    "20260331": 2.0
+   },
+   "q": {},
+   "src": {
+    "y:20260331": [
+     "75a5280b-90c2-479f-aa9d-890f52712cf9.pdf",
+     101,
+     "Number of dealers/distributors to whom sales are made",
+     "2"
+    ],
+    "y:20250331": [
+     "75a5280b-90c2-479f-aa9d-890f52712cf9.pdf",
+     101,
+     "Number of dealers/distributors to whom sales are made",
+     "0"
+    ]
+   }
+  },
+  {
+   "name": "Sales to Dealers/Distributors (% of Total Sales)",
+   "unit": "%",
+   "kind": "level",
+   "y": {
+    "20250331": 0.0,
+    "20260331": 0.24
+   },
+   "q": {},
+   "src": {
+    "y:20260331": [
+     "75a5280b-90c2-479f-aa9d-890f52712cf9.pdf",
+     101,
+     "Sales to dealers/distributors as % of total sales",
+     "0.24"
+    ],
+    "y:20250331": [
+     "75a5280b-90c2-479f-aa9d-890f52712cf9.pdf",
+     101,
+     "Sales to dealers/distributors as % of total sales",
+     "0"
+    ]
+   }
+  },
+  {
+   "name": "Total Permanent Employees",
+   "unit": "count",
+   "kind": "level",
+   "y": {
+    "20250331": 395.0,
+    "20260331": 421.0
+   },
+   "q": {},
+   "src": {
+    "y:20260331": [
+     "75a5280b-90c2-479f-aa9d-890f52712cf9.pdf",
+     105,
+     "Total Permanent Employees",
+     "421"
+    ],
+    "y:20250331": [
+     "75a5280b-90c2-479f-aa9d-890f52712cf9.pdf",
+     105,
+     "Total Permanent Employees",
+     "395"
+    ]
+   }
+  },
+  {
+   "name": "Order Book - AMC",
+   "unit": "INR Cr",
+   "kind": "level",
+   "y": {},
+   "q": {
+    "20260630": 318.43
+   },
+   "src": {
+    "q:20260630": [
+     "112d61fd-d4c8-4343-aef4-fc9961aee2b8.pdf",
+     11,
+     "AMC",
+     "318.43"
+    ]
+   }
+  },
+  {
+   "name": "Order Book - Equipment",
+   "unit": "INR Cr",
+   "kind": "level",
+   "y": {},
+   "q": {
+    "20260630": 920.59
+   },
+   "src": {
+    "q:20260630": [
+     "112d61fd-d4c8-4343-aef4-fc9961aee2b8.pdf",
+     11,
+     "Equipment",
+     "920.59"
+    ]
+   }
+  },
+  {
+   "name": "Standalone Order Book",
+   "unit": "INR Cr",
+   "kind": "level",
+   "y": {
+    "20260331": 1222.6
+   },
+   "q": {},
+   "src": {
+    "y:20260331": [
+     "75a5280b-90c2-479f-aa9d-890f52712cf9.pdf",
+     6,
+     "standalone order book (doc period)",
+     "1,222.6"
+    ]
+   }
+  }
+ ],
+ "held": [],
+ "catalog": [
+  {
+   "kind": "ar",
+   "date": "2026-08-06",
+   "att": "75a5280b-90c2-479f-aa9d-890f52712cf9.pdf",
+   "title": "Reg. 34 (1) Annual Report.",
+   "size": 11243869,
+   "cat": "Others",
+   "sub": "Reg. 34 (1) Annual Report"
+  },
+  {
+   "kind": "ip",
+   "date": "2026-07-26",
+   "att": "112d61fd-d4c8-4343-aef4-fc9961aee2b8.pdf",
+   "title": "Announcement under Regulation 30 (LODR)-Investor Presentation",
+   "size": 1946324,
+   "cat": "Company Update",
+   "sub": "Investor Presentation"
+  },
+  {
+   "kind": "ip",
+   "date": "2026-05-03",
+   "att": "b433e3a0-0ec1-4be1-b19a-d68e6a81f6d1.pdf",
+   "title": "Announcement under Regulation 30 (LODR)-Investor Presentation",
+   "size": 1533378,
+   "cat": "Company Update",
+   "sub": "Investor Presentation"
+  },
+  {
+   "kind": "ip",
+   "date": "2026-01-31",
+   "att": "eee9d89f-26be-48d8-9ca7-22d7806e3b96.pdf",
+   "title": "Announcement under Regulation 30 (LODR)-Investor Presentation",
+   "size": 4386806,
+   "cat": "Company Update",
+   "sub": "Investor Presentation"
+  },
+  {
+   "kind": "ip",
+   "date": "2025-10-26",
+   "att": "b0130ffc-d119-4618-9638-e235ac09d314.pdf",
+   "title": "Announcement under Regulation 30 (LODR)-Investor Presentation",
+   "size": 1352400,
+   "cat": "Company Update",
+   "sub": "Investor Presentation"
+  },
+  {
+   "kind": "ar",
+   "date": "2025-07-31",
+   "att": "aae21387-2735-4f70-a1c9-ffa620689494.pdf",
+   "title": "Reg. 34 (1) Annual Report.",
+   "size": 19145495,
+   "cat": "Others",
+   "sub": "Reg. 34 (1) Annual Report"
+  },
+  {
+   "kind": "ip",
+   "date": "2025-07-27",
+   "att": "e10a2b2b-e08d-493e-a3c1-70e82a5eec7b.pdf",
+   "title": "Announcement under Regulation 30 (LODR)-Investor Presentation",
+   "size": 1717884,
+   "cat": "Company Update",
+   "sub": "Investor Presentation"
+  },
+  {
+   "kind": "ip",
+   "date": "2025-05-18",
+   "att": "942259fd-3661-4d9d-ae09-1599f188bbd9.pdf",
+   "title": "Announcement under Regulation 30 (LODR)-Investor Presentation",
+   "size": 1754316,
+   "cat": "Company Update",
+   "sub": "Investor Presentation"
+  },
+  {
+   "kind": "ip",
+   "date": "2025-02-15",
+   "att": "a50a79d1-315f-417f-8130-785322bffc29.pdf",
+   "title": "Announcement under Regulation 30 (LODR)-Investor Presentation",
+   "size": 1139717,
+   "cat": "Company Update",
+   "sub": "Investor Presentation"
+  },
+  {
+   "kind": "ip",
+   "date": "2024-11-08",
+   "att": "464ce595-755b-47cb-af85-456d1768333a.pdf",
+   "title": "Announcement under Regulation 30 (LODR)-Investor Presentation",
+   "size": 3066932,
+   "cat": "Company Update",
+   "sub": "Investor Presentation"
+  },
+  {
+   "kind": "pr",
+   "date": "2024-11-02",
+   "att": "42a1e902-3b4e-4682-a8b6-72499ce04e3f.pdf",
+   "title": "Announcement under Regulation 30 (LODR)-Press Release / Media Release",
+   "size": 465194,
+   "cat": "Company Update",
+   "sub": "Press Release / Media Release"
+  },
+  {
+   "kind": "ar",
+   "date": "2024-08-23",
+   "att": "22d44399-c0d5-4edd-bea0-c58acd59653f.pdf",
+   "title": "Please find enclosed copy of Annual Report of the Company for FY 2023-24, together with notice for the 31st AGM to be held on\r\nSaturday, September 14, 2024, at ",
+   "size": 17589996,
+   "cat": "Others",
+   "sub": "Reg. 34 (1) Annual Report"
+  },
+  {
+   "kind": "ip",
+   "date": "2024-07-28",
+   "att": "d9e3eaa4-a63a-45fb-b1b2-52e314ae8589.pdf",
+   "title": "Announcement under Regulation 30 (LODR)-Investor Presentation",
+   "size": 3673874,
+   "cat": "Company Update",
+   "sub": "Investor Presentation"
+  },
+  {
+   "kind": "ip",
+   "date": "2024-05-05",
+   "att": "da068c2b-5237-4b7f-b135-0ab336423c00.pdf",
+   "title": "Please find the attached Investor Presentation related to Audited financial results for the quarter and year ended 31.03.2024.",
+   "size": 3774612,
+   "cat": "Company Update",
+   "sub": "Investor Presentation"
+  },
+  {
+   "kind": "ip",
+   "date": "2024-01-29",
+   "att": "ad9e52cb-9f23-4767-a501-78287813e869.pdf",
+   "title": "Please find the attached Investor presentation on the UFR of the Company for the quarter and nine months ended 31.12.2023",
+   "size": 3724038,
+   "cat": "Company Update",
+   "sub": "Investor Presentation"
+  },
+  {
+   "kind": "ip",
+   "date": "2023-10-28",
+   "att": "22f57ed0-5a32-4101-9eee-94a4435e758f.pdf",
+   "title": "Announcement under Regulation 30 (LODR)-Investor Presentation",
+   "size": 2076725,
+   "cat": "Company Update",
+   "sub": "Investor Presentation"
+  },
+  {
+   "kind": "ip",
+   "date": "2023-09-05",
+   "att": "61b76aec-0aa2-46ce-90f4-d7d523ca7125.pdf",
+   "title": "Announcement under Regulation 30 (LODR)-Investor Presentation",
+   "size": 4221632,
+   "cat": "Company Update",
+   "sub": "Investor Presentation"
+  },
+  {
+   "kind": "ar",
+   "date": "2023-08-24",
+   "att": "3d36c18d-726d-462d-981e-73ce59939ade.pdf",
+   "title": "Please find the enclosed Annual Report for FY 2022-23",
+   "size": 6924380,
+   "cat": "Others",
+   "sub": "Reg. 34 (1) Annual Report"
+  },
+  {
+   "kind": "ip",
+   "date": "2023-08-07",
+   "att": "b9026173-4b2b-4a7e-a179-03cf9f33bb1c.pdf",
+   "title": "Announcement under Regulation 30 (LODR)-Investor Presentation",
+   "size": 9853362,
+   "cat": "Company Update",
+   "sub": "Investor Presentation"
+  },
+  {
+   "kind": "ip",
+   "date": "2023-05-07",
+   "att": "3257931c-20b1-4cf9-a9e7-8a32eb402fb5.pdf",
+   "title": "Please find attached Investor Presentation for the quarter & year ended March 31, 2023.\r\n\r\nThe above information is also available on the website of the Company",
+   "size": 9614122,
+   "cat": "Company Update",
+   "sub": "Investor Presentation"
+  },
+  {
+   "kind": "ip",
+   "date": "2023-01-30",
+   "att": "08d1d897-7daf-4ece-9220-04ec275a6182.pdf",
+   "title": "Please find attached earnings presentation for the quarter ended 31st December 2022.\r\n\r\nThe above information is also available on the website of the Company: h",
+   "size": 6817453,
+   "cat": "Company Update",
+   "sub": "Investor Presentation"
+  },
+  {
+   "kind": "ip",
+   "date": "2022-11-13",
+   "att": "38247232-a991-43e7-93b2-74556f843c0d.pdf",
+   "title": "Please find attached earnings presentation for the quarter ended 30th September 2022.\r\n\r\nThe above information is also available on the website of the Company: ",
+   "size": 3157217,
+   "cat": "Company Update",
+   "sub": "Investor Presentation"
+  },
+  {
+   "kind": "ar",
+   "date": "2022-09-07",
+   "att": "4c1b4dff-cd11-4476-9ef1-9d23aa6c0eb3.pdf",
+   "title": "We hereby inform you that the Twenty-Ninth (29th) Annual General Meeting (\"AGM\") of the members of the Company will be held on Thursday, 29th September 2022 at ",
+   "size": 19350888,
+   "cat": "Others",
+   "sub": "Reg. 34 (1) Annual Report"
+  },
+  {
+   "kind": "ip",
+   "date": "2022-07-31",
+   "att": "919f74ef-f4ab-41b6-8b95-02507c98f65f.pdf",
+   "title": "Please find attached earnings presentation for the quarter ended 30th June 2022.\r\n\r\nThe above information is also available on the website of the Company: https",
+   "size": 15116387,
+   "cat": "Company Update",
+   "sub": "Investor Presentation"
+  },
+  {
+   "kind": "ip",
+   "date": "2022-05-08",
+   "att": "8b3097f7-c823-49ab-a3e7-0f7b36bfbe6a.pdf",
+   "title": "Please find attached earnings presentation for the quarter and year ended 31st March 2022.\r\n\r\nThe above information is also available on the website of the Comp",
+   "size": 3332511,
+   "cat": "Company Update",
+   "sub": "General"
+  },
+  {
+   "kind": "ar",
+   "fy": 2022,
+   "date": "2022-03-31",
+   "url": "https://www.bseindia.com/bseplus/AnnualReport/533339/76651533339.pdf",
+   "att": "76651533339.pdf",
+   "title": "Annual Report FY22",
+   "size": 0
+  },
+  {
+   "kind": "ip",
+   "date": "2022-01-29",
+   "att": "3a9164e4-587d-48a4-9d95-dd84978fcab1.pdf",
+   "title": "Please find attached earnings presentation for the quarter ended 31st December 2021.\r\n\r\nThe above information is also available on the website of the Company: h",
+   "size": 3048696,
+   "cat": "Company Update",
+   "sub": "General"
+  },
+  {
+   "kind": "pr",
+   "date": "2021-12-01",
+   "att": "70b16983-a619-4ce6-ab03-cef712e041e4.pdf",
+   "title": "Announcement under Regulation 30 (LODR)-Press Release / Media Release",
+   "size": 896941,
+   "cat": "Company Update",
+   "sub": "Press Release / Media Release"
+  },
+  {
+   "kind": "ip",
+   "date": "2021-11-01",
+   "att": "662d4456-9183-4f17-8deb-bf484ba7008c.pdf",
+   "title": "Please find attached earnings presentation for the quarter ended 30th September 2021.<BR> <BR> The above information is also available on the website of the Com",
+   "size": 0,
+   "cat": "Company Update",
+   "sub": "General"
+  },
+  {
+   "kind": "ar",
+   "date": "2021-08-03",
+   "att": "aa6bf7fd-8eb2-4942-891b-94558288f049.pdf",
+   "title": "Reg. 34 (1) Annual Report",
+   "size": 8955132,
+   "cat": "Others",
+   "sub": "Reg. 34 (1) Annual Report"
+  },
+  {
+   "kind": "ip",
+   "date": "2021-07-24",
+   "att": "5172eaf0-bb33-4679-8696-9394040cbf8f.pdf",
+   "title": "Please find attached earnings presentation for the quarter ended 30th June 2021.<BR> <BR> The above information is also available on the website of the Company:",
+   "size": 3871768,
+   "cat": "Company Update",
+   "sub": "General"
+  },
+  {
+   "kind": "ip",
+   "date": "2021-05-03",
+   "att": "c83cabac-ac30-4583-b73b-746b704a8544.pdf",
+   "title": "Please find attached earnings presentation for the quarter ended 31st March 2021.<BR> <BR> The above information is also available on the website of the Company",
+   "size": 0,
+   "cat": "Company Update",
+   "sub": "General"
+  },
+  {
+   "kind": "ar",
+   "fy": 2021,
+   "date": "2021-03-31",
+   "url": "https://www.bseindia.com/bseplus/AnnualReport/533339/69261533339.pdf",
+   "att": "69261533339.pdf",
+   "title": "Annual Report FY21",
+   "size": 0
+  },
+  {
+   "kind": "ip",
+   "date": "2021-01-30",
+   "att": "c197e102-4256-4deb-ade7-7f62e6aeabaa.pdf",
+   "title": "Please find attached earnings presentation for the quarter ended Dec 31, 2020.<BR> <BR> The above information is also available on the website of the Company: h",
+   "size": 0,
+   "cat": "Company Update",
+   "sub": "General"
+  },
+  {
+   "kind": "res",
+   "date": "2020-10-31",
+   "att": "f25fa677-81ca-4d23-9cac-0d49553e127b.pdf",
+   "title": "Unaudited Financial Results (Standalone & Consolidated) For The Second Quarter & Half Year Ended 30 September 2020",
+   "size": 0,
+   "cat": "Result",
+   "sub": "Financial Results"
+  },
+  {
+   "kind": "ar",
+   "date": "2020-08-27",
+   "att": "27c6c7fe-c85a-4596-b653-a876cd2bbe4d.pdf",
+   "title": "Reg. 34 (1) Annual Report",
+   "size": 0,
+   "cat": "Others",
+   "sub": "Reg. 34 (1) Annual Report"
+  },
+  {
+   "kind": "ip",
+   "date": "2020-08-12",
+   "att": "b49bb618-a617-4628-b2df-c03eade5e622.pdf",
+   "title": "With reference to the above captioned subject, please find attached the updated Investor Presentation - August, 2020.<BR> <BR> This is for your kind information",
+   "size": 0,
+   "cat": "Company Update",
+   "sub": "Investor Presentation"
+  },
+  {
+   "kind": "pr",
+   "date": "2020-08-10",
+   "att": "658cfc56-f2f0-4e21-aff9-a63ecea062c0.pdf",
+   "title": "Dear Sir/Madam,<BR> <BR> Sub: Media release on operational updates<BR> <BR> We are enclosing herewith a copy of Media Release dated 10 August 2020.<BR> <BR> Thi",
+   "size": 0,
+   "cat": "Company Update",
+   "sub": "Press Release / Media Release"
+  },
+  {
+   "kind": "res",
+   "date": "2020-06-06",
+   "att": "007aa6a0-0a5d-475b-a6c7-267fe6e6acc5.pdf",
+   "title": "This is to inform you that the Board of Directors of the Company at its meeting held today i.e., on Saturday, 06 June 2020, inter-alia, considered and approved ",
+   "size": 0,
+   "cat": "Company Update",
+   "sub": "Reg. 32 (1), (3) - Statement of Deviation & Variation"
+  },
+  {
+   "kind": "ar",
+   "fy": 2020,
+   "date": "2020-03-31",
+   "url": "https://www.bseindia.com/bseplus/AnnualReport/533339/65092533339.pdf",
+   "att": "65092533339.pdf",
+   "title": "Annual Report FY20",
+   "size": 0
+  },
+  {
+   "kind": "res",
+   "date": "2020-02-01",
+   "att": "ecf29c5c-eb6e-4b02-a40b-2c4943038625.pdf",
+   "title": "This is to inform you that the Board of Directors of the Company at its meeting held today i.e., on Saturday, 01 Feb 2020, inter-alia, considered and approved t",
+   "size": 0,
+   "cat": "Result",
+   "sub": "Financial Results"
+  },
+  {
+   "kind": "ar",
+   "fy": 2019,
+   "date": "2019-03-31",
+   "url": "https://www.bseindia.com/bseplus/AnnualReport/533339/5333390319.pdf",
+   "att": "5333390319.pdf",
+   "title": "Annual Report FY19",
+   "size": 0
+  }
+ ],
+ "catalog_since": "2020-01-01",
+ "catalog_until": "2026-09-07",
+ "catalog_ver": 5,
+ "updated": "2026-09-07"
+}
