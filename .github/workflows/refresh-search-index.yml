@@ -1,0 +1,55 @@
+name: Refresh search index
+
+# The site-wide 🔍 search index (docs/search_index.json, behind theme.js's header search box).
+# It USED to be committed ONLY by refresh-backtest-data's version-marker step, gated on
+# docs/.sf_updated (i.e. a fresh NSE price day). When the price bin goes stale (as it did 2026-09-04→)
+# that gate never fires, so the index freezes and newly-covered names never become searchable — e.g.
+# the ~2,000 BSE-only listings wired up in Sept 2026 render by URL but can't be searched.
+# This rebuilds and commits the index on its OWN daily schedule, independent of the price-day gate.
+# build_search_index.py is cheap (streams the bin's meta) and its own guards refuse a truncated/unstamped
+# index, so an off day is a safe no-op.
+
+on:
+  schedule:
+    - cron: "37 1 * * *"   # 07:07 IST daily — off-peak, off the :00/:30 marks
+  workflow_dispatch: {}
+
+permissions:
+  contents: write
+
+concurrency:
+  group: refresh-search-index
+  cancel-in-progress: false
+
+jobs:
+  refresh:
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    steps:
+      - uses: actions/checkout@v5
+      - uses: actions/setup-python@v6
+        with:
+          python-version: "3.11"
+
+      - name: Rebuild + commit the search index (file-scoped, reset-safe)
+        run: |
+          git config user.name  "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          for attempt in 1 2 3 4 5; do
+            git fetch origin main -q && git reset --hard origin/main -q
+            # build_search_index reads docs/sf_stock_data.bin (NSE + delisted) and appends the BSE-only
+            # names that carry a price series — it ABORTs on a truncated meta or an unstamped `end`, so a
+            # bad build never commits. Re-run after reset each attempt (it's a fresh, deterministic cut).
+            python3 scripts/build_search_index.py
+            git add docs/search_index.json
+            if git diff --cached --quiet; then echo "search index unchanged"; exit 0; fi
+            git commit -m "Search index refresh $(TZ=Asia/Kolkata date +'%Y-%m-%d %H:%M IST')"
+            if git push origin HEAD:main; then echo "pushed (attempt #$attempt)"; exit 0; fi
+            echo "push #$attempt rejected; re-fetch + rebuild"; sleep $((attempt * 3))
+          done
+          echo "push failed after retries"; exit 1
+
+      - name: Publish to Pages
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: gh workflow run pages.yml || echo "(pages dispatch failed — next push republishes)"
