@@ -1,8 +1,239 @@
 {
  "sym": "NLCINDIA",
  "fy_end_month": 3,
- "docs": {},
- "metrics": [],
+ "docs": {
+  "a5ca1db7-c3ea-4cb8-a0a6-84d6cddc6224.pdf": {
+   "kind": "pr",
+   "date": "2026-08-07",
+   "title": "Q1 FY27 Financial Results Press Release",
+   "read": "2026-09-07",
+   "by": "claude-routine"
+  },
+  "b9804365-8f1d-4a29-8609-2c95ecb4f0b7.pdf": {
+   "kind": "pr",
+   "date": "2026-05-13",
+   "title": "FY2025-26 Annual Physical & Financial Performance Press Release",
+   "read": "2026-09-07",
+   "by": "claude-routine"
+  }
+ },
+ "metrics": [
+  {
+   "name": "Coal Production (Standalone)",
+   "unit": "LT",
+   "kind": "flow",
+   "y": {},
+   "q": {
+    "20250630": 37.88,
+    "20260630": 40.85
+   },
+   "src": {
+    "q:20260630": [
+     "a5ca1db7-c3ea-4cb8-a0a6-84d6cddc6224.pdf",
+     2,
+     "Coal production of 40.85 LT compared to 37.88 LT in Q1 2025-26",
+     "40.85"
+    ],
+    "q:20250630": [
+     "a5ca1db7-c3ea-4cb8-a0a6-84d6cddc6224.pdf",
+     2,
+     "compared to 37.88 LT in Q1 2025-26",
+     "37.88"
+    ]
+   }
+  },
+  {
+   "name": "Coal Production (Standalone)",
+   "unit": "MT",
+   "kind": "flow",
+   "y": {
+    "20250331": 17.2,
+    "20260331": 19.14
+   },
+   "q": {},
+   "src": {
+    "y:20260331": [
+     "b9804365-8f1d-4a29-8609-2c95ecb4f0b7.pdf",
+     3,
+     "Achieved Coal production of 19.14 MT compared to 17.20 MT of previous year",
+     "19.14"
+    ],
+    "y:20250331": [
+     "b9804365-8f1d-4a29-8609-2c95ecb4f0b7.pdf",
+     3,
+     "compared to 17.20 MT of previous year",
+     "17.20"
+    ]
+   }
+  },
+  {
+   "name": "Group Gross Power Generation",
+   "unit": "MU",
+   "kind": "flow",
+   "y": {},
+   "q": {
+    "20250630": 6609.4,
+    "20260630": 8262.06
+   },
+   "src": {
+    "q:20260630": [
+     "a5ca1db7-c3ea-4cb8-a0a6-84d6cddc6224.pdf",
+     2,
+     "Gross Power Generation of 8,262.06 MU compared to 6,609.40 MU in Q1 2025-26",
+     "8,262.06"
+    ],
+    "q:20250630": [
+     "a5ca1db7-c3ea-4cb8-a0a6-84d6cddc6224.pdf",
+     2,
+     "compared to 6,609.40 MU in Q1 2025-26",
+     "6,609.40"
+    ]
+   }
+  },
+  {
+   "name": "NLCIL Thermal Power Gross Generation (Standalone)",
+   "unit": "MU",
+   "kind": "flow",
+   "y": {},
+   "q": {
+    "20250630": 3988.98,
+    "20260630": 4318.85
+   },
+   "src": {
+    "q:20260630": [
+     "a5ca1db7-c3ea-4cb8-a0a6-84d6cddc6224.pdf",
+     2,
+     "NLCIL Thermal Power Gross Generation of 4,318.85 MU as against 3,988.98 MU",
+     "4,318.85"
+    ],
+    "q:20250630": [
+     "a5ca1db7-c3ea-4cb8-a0a6-84d6cddc6224.pdf",
+     2,
+     "as against 3,988.98 MU",
+     "3,988.98"
+    ]
+   }
+  },
+  {
+   "name": "Capacity Additions (Renewables)",
+   "unit": "MW",
+   "kind": "flow",
+   "y": {
+    "20260331": 303.0
+   },
+   "q": {},
+   "src": {
+    "y:20260331": [
+     "b9804365-8f1d-4a29-8609-2c95ecb4f0b7.pdf",
+     2,
+     "Renewables 303 MW (300 MW Solar at Rajasthan, 3 MW Rooftop in Tuticorin, Ghatamp",
+     "303"
+    ]
+   }
+  },
+  {
+   "name": "Capacity Additions (Thermal)",
+   "unit": "MW",
+   "kind": "flow",
+   "y": {
+    "20260331": 660.0
+   },
+   "q": {},
+   "src": {
+    "y:20260331": [
+     "b9804365-8f1d-4a29-8609-2c95ecb4f0b7.pdf",
+     2,
+     "Thermals 660 MW (Unit 2 of GTPP)",
+     "660"
+    ]
+   }
+  },
+  {
+   "name": "Capacity Additions (Total)",
+   "unit": "MW",
+   "kind": "flow",
+   "y": {
+    "20260331": 1013.0
+   },
+   "q": {},
+   "src": {
+    "y:20260331": [
+     "b9804365-8f1d-4a29-8609-2c95ecb4f0b7.pdf",
+     2,
+     "Capacity Additions made to the tune of 1,013 MW including Thermals 660 MW ... an",
+     "1,013"
+    ]
+   }
+  },
+  {
+   "name": "Coal Dispatch (Standalone, Talabira II & III OCP)",
+   "unit": "MT",
+   "kind": "flow",
+   "y": {
+    "20260331": 17.69
+   },
+   "q": {},
+   "src": {
+    "y:20260331": [
+     "b9804365-8f1d-4a29-8609-2c95ecb4f0b7.pdf",
+     2,
+     "Annual Coal Dispatch of 17.69 MT from Talabira II & III OCP",
+     "17.69"
+    ]
+   }
+  },
+  {
+   "name": "Collection Efficiency of Power Debtors",
+   "unit": "%",
+   "kind": "level",
+   "y": {},
+   "q": {
+    "20260630": 100.0
+   },
+   "src": {
+    "q:20260630": [
+     "a5ca1db7-c3ea-4cb8-a0a6-84d6cddc6224.pdf",
+     2,
+     "Collection efficiency of Power Debtors till 30.06.2026 stood at 100%",
+     "100"
+    ]
+   }
+  },
+  {
+   "name": "Group Gross Power Generation",
+   "unit": "BU",
+   "kind": "flow",
+   "y": {
+    "20260331": 28.95
+   },
+   "q": {},
+   "src": {
+    "y:20260331": [
+     "b9804365-8f1d-4a29-8609-2c95ecb4f0b7.pdf",
+     3,
+     "Achieved Gross Power Generation of 28.95 BU in FY 2025-26",
+     "28.95"
+    ]
+   }
+  },
+  {
+   "name": "Renewable Energy Power Generation",
+   "unit": "BU",
+   "kind": "flow",
+   "y": {
+    "20260331": 2.26
+   },
+   "q": {},
+   "src": {
+    "y:20260331": [
+     "b9804365-8f1d-4a29-8609-2c95ecb4f0b7.pdf",
+     2,
+     "Renewable Energy Power Generation of 2.26 BU",
+     "2.26"
+    ]
+   }
+  }
+ ],
  "held": [],
  "catalog": [
   {
