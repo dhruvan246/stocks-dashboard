@@ -52,7 +52,14 @@ def gate_ok(read, key):
     ka, kp = key.get("assets"), key.get("ppe")
     ra, rp = read.get("assets"), read.get("ppe")
     if ra is None or not ka or abs(ra - ka) / abs(ka) > 0.01:
-        return False, False
+        return False, False                              # Total Assets is the mandatory anchor
+    if kp is not None and abs(kp) < 1e-9:
+        # ZERO-PP&E holding/investment company (JSWHL): the PP&E anchor is degenerate (0 == 0
+        # tells us nothing). Fall back to Total-Assets-only, but require the reader's PP&E to be
+        # consistently ~0 (tiny vs assets) so a reader that hallucinated a real PP&E is still caught.
+        if rp is None:
+            return False, False
+        return (abs(rp) <= max(1.0, 0.005 * abs(ka))), False
     if not kp or rp is None:
         return False, False
     if abs(rp - kp) / abs(kp) <= 0.01:

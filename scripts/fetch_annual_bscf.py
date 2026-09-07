@@ -179,16 +179,33 @@ def locate(pdf, want_year):
         if CF_PAGE.search(t) and CF_REAL.search(t):
             if con and cf_con is None: cf_con = i
             elif not con and cf_std is None: cf_std = i
+    def bs_pages(i):
+        # A balance sheet can span TWO pages: the matched page (found via the trade-payables
+        # marker) is the equity-&-liabilities half and carries NO "Total Assets" line, while the
+        # assets side sits on the PREVIOUS page. Return both so PP&E/Total-Assets aren't lost
+        # (HAL, GLAXO, TATACOMM, TIINDIA). Otherwise a single page. bs_pi is always a LIST.
+        if i is None:
+            return None
+        if not BS_ASSET.search(texts[i]) and i > 0 and BS_ASSET.search(texts[i - 1]) and not BS_LIAB.search(texts[i - 1]):
+            return [i - 1, i]
+        return [i]
     if bs_con is not None:
-        return 'c', bs_con, (cf_con if cf_con is not None else cf_std)
+        return 'c', bs_pages(bs_con), (cf_con if cf_con is not None else cf_std)
     if bs_std is not None:
-        return 's', bs_std, (cf_std if cf_std is not None else cf_con)
+        return 's', bs_pages(bs_std), (cf_std if cf_std is not None else cf_con)
     return None
 
+def _as_list(x):
+    return list(x) if isinstance(x, (list, tuple)) else [x]
+
 def text_read(pdf, bs_pi, cf_pi):
-    """Word-grid text parse (free, exact — but fails on filers who shade the current-year column)."""
+    """Word-grid text parse (free, exact — but fails on filers who shade the current-year column).
+    bs_pi may be one page or a two-page [assets, liabilities] split."""
     doc = fitz.open(stream=pdf, filetype="pdf")
-    fields = parse_rows(rows_of(doc[bs_pi]), BS_ONE, BS_SUM)
+    fields = {}
+    for pi in _as_list(bs_pi):
+        for k, v in parse_rows(rows_of(doc[pi]), BS_ONE, BS_SUM).items():
+            fields.setdefault(k, v)          # first page (assets side) wins any shared key
     if cf_pi is not None:
         fields.update(parse_rows(rows_of(doc[cf_pi]), CF_ONE, []))
     doc.close()
@@ -232,7 +249,7 @@ def vision_read(pdf, bs_pi, cf_pi, name, want_year):
         cli = anthropic.Anthropic()
     except Exception:
         return None
-    pngs = [render(pdf, bs_pi)]
+    pngs = [render(pdf, pi) for pi in _as_list(bs_pi)]
     if cf_pi is not None: pngs.append(render(pdf, cf_pi))
     content = [{"type": "image", "source": {"type": "base64", "media_type": "image/png",
                "data": base64.standard_b64encode(p).decode()}} for p in pngs]
@@ -317,8 +334,10 @@ def prep(outdir, limit, only):
                 loc = locate(pdf, fy)
                 if not loc: continue
                 b, bs_pi, cf_pi = loc
-                bs_fn = '%s_%d_bs.png' % (sym, fy); open(os.path.join(outdir, bs_fn), 'wb').write(render(pdf, bs_pi))
-                pngs = [bs_fn]
+                pngs = []
+                for j, pi in enumerate(_as_list(bs_pi)):        # 1 page, or a 2-page [assets, liabilities] split
+                    fn = '%s_%d_bs%s.png' % (sym, fy, '' if j == 0 else str(j + 1))
+                    open(os.path.join(outdir, fn), 'wb').write(render(pdf, pi)); pngs.append(fn)
                 if cf_pi is not None:
                     cf_fn = '%s_%d_cf.png' % (sym, fy); open(os.path.join(outdir, cf_fn), 'wb').write(render(pdf, cf_pi)); pngs.append(cf_fn)
                 e = {'sym': sym, 'fy': fy, 'role': role, 'basis': b, 'pngs': pngs, 'src': 'bse:' + att}
