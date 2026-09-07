@@ -1,8 +1,387 @@
 {
  "sym": "DEEPAKNTR",
  "fy_end_month": 3,
- "docs": {},
- "metrics": [],
+ "docs": {
+  "44bf51f8-1dc4-46da-a35b-d397a5aea85c.pdf": {
+   "kind": "ip",
+   "date": "2026-08-04",
+   "title": "Q1 FY2027 Results Presentation",
+   "read": "2026-09-07",
+   "by": "claude-routine"
+  },
+  "e9576f6d-6ec3-4f36-b0e0-2af594782e65.pdf": {
+   "kind": "ar",
+   "date": "2026-07-14",
+   "title": "55th Annual Integrated Report FY 2025-26",
+   "read": "2026-09-07",
+   "by": "claude-routine"
+  },
+  "fd384b8a-6290-4afa-a5dd-1c0f89c862a9.pdf": {
+   "kind": "res",
+   "date": "2026-05-15",
+   "title": "Results - Financial Result For The Year Ended 31St March, 2026",
+   "read": "2026-09-07",
+   "by": "claude-routine"
+  },
+  "22a637d0-d675-4ac9-a67d-63946a010146.pdf": {
+   "kind": "ip",
+   "date": "2026-02-12",
+   "title": "Q3 & 9M FY26 Investor Presentation",
+   "read": "2026-09-07",
+   "by": "claude-routine"
+  },
+  "40c09afc-0218-48aa-9c21-819d82a32adf.pdf": {
+   "kind": "res",
+   "date": "2025-11-12",
+   "title": "Results - Financial Result For The Quarter Ended 30th September, 2025",
+   "read": "2026-09-07",
+   "by": "claude-routine"
+  },
+  "1384b3c5-2bdc-4a78-9fa9-84d3bdc6c3e5.pdf": {
+   "kind": "ip",
+   "date": "2025-08-13",
+   "title": "Q1 FY26 Investor Presentation",
+   "read": "2026-09-07",
+   "by": "claude-routine"
+  },
+  "b98232b9-c32a-4a66-9523-93930a6c919c.pdf": {
+   "kind": "ar",
+   "date": "2025-07-23",
+   "title": "54th Annual Integrated Report FY 2024-25",
+   "read": "2026-09-07",
+   "by": "claude-routine"
+  },
+  "68af19dd-7ba0-4ab2-8bb1-baccb6eff560.pdf": {
+   "kind": "res",
+   "date": "2025-05-28",
+   "title": "Results - Financial Result For The Year Ended 31st March, 2025",
+   "read": "2026-09-07",
+   "by": "claude-routine"
+  }
+ },
+ "metrics": [
+  {
+   "name": "Manufacturing Facilities Count",
+   "unit": "count",
+   "kind": "level",
+   "y": {},
+   "q": {
+    "20250630": 5.0,
+    "20251231": 5.0,
+    "20260630": 5.0
+   },
+   "src": {
+    "q:20260630": [
+     "44bf51f8-1dc4-46da-a35b-d397a5aea85c.pdf",
+     3,
+     "Facilities at 5 strategic locations (doc period)",
+     "5"
+    ],
+    "q:20251231": [
+     "22a637d0-d675-4ac9-a67d-63946a010146.pdf",
+     3,
+     "Facilities at 5 strategic locations (doc period)",
+     "5"
+    ],
+    "q:20250630": [
+     "1384b3c5-2bdc-4a78-9fa9-84d3bdc6c3e5.pdf",
+     3,
+     "Facilities at 5 strategic locations (doc period)",
+     "5"
+    ]
+   }
+  },
+  {
+   "name": "Total Permanent Employees",
+   "unit": "count",
+   "kind": "level",
+   "y": {
+    "20240331": 1503.0,
+    "20250331": 1545.0,
+    "20260331": 1288.0
+   },
+   "q": {},
+   "src": {
+    "y:20260331": [
+     "e9576f6d-6ec3-4f36-b0e0-2af594782e65.pdf",
+     252,
+     "Total Permanent Employees",
+     "1288"
+    ],
+    "y:20250331": [
+     "b98232b9-c32a-4a66-9523-93930a6c919c.pdf",
+     219,
+     "Total Permanent Employees",
+     "1,545"
+    ],
+    "y:20240331": [
+     "b98232b9-c32a-4a66-9523-93930a6c919c.pdf",
+     219,
+     "Total Permanent Employees",
+     "1,503"
+    ]
+   }
+  },
+  {
+   "name": "Application Count",
+   "unit": "count",
+   "kind": "level",
+   "y": {},
+   "q": {
+    "20251231": 34.0,
+    "20260630": 36.0
+   },
+   "src": {
+    "q:20260630": [
+     "44bf51f8-1dc4-46da-a35b-d397a5aea85c.pdf",
+     3,
+     "Applications (doc period)",
+     "36"
+    ],
+    "q:20251231": [
+     "22a637d0-d675-4ac9-a67d-63946a010146.pdf",
+     3,
+     "Applications (doc period)",
+     "34"
+    ]
+   }
+  },
+  {
+   "name": "IPA Plant Utilisation",
+   "unit": "%",
+   "kind": "level",
+   "y": {
+    "20250331": 134.0,
+    "20260331": 150.0
+   },
+   "q": {},
+   "src": {
+    "y:20260331": [
+     "e9576f6d-6ec3-4f36-b0e0-2af594782e65.pdf",
+     20,
+     "IPA plant at 150% utilisation",
+     "150"
+    ],
+    "y:20250331": [
+     "b98232b9-c32a-4a66-9523-93930a6c919c.pdf",
+     20,
+     "IPA plant utilisation level",
+     "134"
+    ]
+   }
+  },
+  {
+   "name": "Product Count",
+   "unit": "count",
+   "kind": "level",
+   "y": {},
+   "q": {
+    "20251231": 7.0,
+    "20260630": 7.0
+   },
+   "src": {
+    "q:20260630": [
+     "44bf51f8-1dc4-46da-a35b-d397a5aea85c.pdf",
+     3,
+     "Products (doc period)",
+     "7"
+    ],
+    "q:20251231": [
+     "22a637d0-d675-4ac9-a67d-63946a010146.pdf",
+     3,
+     "Products (doc period)",
+     "7"
+    ]
+   }
+  },
+  {
+   "name": "Countries Served",
+   "unit": "count",
+   "kind": "level",
+   "y": {
+    "20260331": 50.0
+   },
+   "q": {},
+   "src": {
+    "y:20260331": [
+     "e9576f6d-6ec3-4f36-b0e0-2af594782e65.pdf",
+     113,
+     "Countries served (doc period)",
+     "50"
+    ]
+   }
+  },
+  {
+   "name": "Cumene Plant Utilisation",
+   "unit": "%",
+   "kind": "level",
+   "y": {
+    "20250331": 172.0
+   },
+   "q": {},
+   "src": {
+    "y:20250331": [
+     "b98232b9-c32a-4a66-9523-93930a6c919c.pdf",
+     20,
+     "Cumene plant utilisation level",
+     "172"
+    ]
+   }
+  },
+  {
+   "name": "Customer Count",
+   "unit": "count",
+   "kind": "level",
+   "y": {
+    "20260331": 1500.0
+   },
+   "q": {},
+   "src": {
+    "y:20260331": [
+     "e9576f6d-6ec3-4f36-b0e0-2af594782e65.pdf",
+     113,
+     "Customers (doc period)",
+     "1,500"
+    ]
+   }
+  },
+  {
+   "name": "DPL Acetone Production Capacity",
+   "unit": "KTPA",
+   "kind": "level",
+   "y": {
+    "20250331": 210.0
+   },
+   "q": {},
+   "src": {
+    "y:20250331": [
+     "b98232b9-c32a-4a66-9523-93930a6c919c.pdf",
+     35,
+     "210 KTPA for Acetone (doc period)",
+     "210"
+    ]
+   }
+  },
+  {
+   "name": "DPL IPA Production Capacity",
+   "unit": "KTPA",
+   "kind": "level",
+   "y": {
+    "20250331": 65.0
+   },
+   "q": {},
+   "src": {
+    "y:20250331": [
+     "b98232b9-c32a-4a66-9523-93930a6c919c.pdf",
+     35,
+     "65 KTPA for Isopropyl Alcohol (IPA) (doc period)",
+     "65"
+    ]
+   }
+  },
+  {
+   "name": "DPL Phenol Production Capacity",
+   "unit": "KTPA",
+   "kind": "level",
+   "y": {
+    "20250331": 345.0
+   },
+   "q": {},
+   "src": {
+    "y:20250331": [
+     "b98232b9-c32a-4a66-9523-93930a6c919c.pdf",
+     35,
+     "production capacity of 345 KTPA for Phenol (doc period)",
+     "345"
+    ]
+   }
+  },
+  {
+   "name": "High-Value Product Count",
+   "unit": "count",
+   "kind": "level",
+   "y": {
+    "20260331": 36.0
+   },
+   "q": {},
+   "src": {
+    "y:20260331": [
+     "e9576f6d-6ec3-4f36-b0e0-2af594782e65.pdf",
+     113,
+     "High-valued products (doc period)",
+     "36"
+    ]
+   }
+  },
+  {
+   "name": "Phenol & Cumene Plant Utilisation",
+   "unit": "%",
+   "kind": "level",
+   "y": {
+    "20260331": 175.0
+   },
+   "q": {},
+   "src": {
+    "y:20260331": [
+     "e9576f6d-6ec3-4f36-b0e0-2af594782e65.pdf",
+     20,
+     "Phenol and Cumene plants operating at over 175% utilisation",
+     "175"
+    ]
+   }
+  },
+  {
+   "name": "Phenol Plant Utilisation",
+   "unit": "%",
+   "kind": "level",
+   "y": {
+    "20250331": 165.0
+   },
+   "q": {},
+   "src": {
+    "y:20250331": [
+     "b98232b9-c32a-4a66-9523-93930a6c919c.pdf",
+     20,
+     "Phenol plant operated at an average utilisation rate exceeding 165%",
+     "165"
+    ]
+   }
+  },
+  {
+   "name": "Phenol Production Volume",
+   "unit": "tonnes",
+   "kind": "flow",
+   "y": {
+    "20250331": 333000.0
+   },
+   "q": {},
+   "src": {
+    "y:20250331": [
+     "b98232b9-c32a-4a66-9523-93930a6c919c.pdf",
+     20,
+     "record 3,33,000+ tonnes of Phenol during the year",
+     "3,33,000"
+    ]
+   }
+  },
+  {
+   "name": "Product Applications Count",
+   "unit": "count",
+   "kind": "level",
+   "y": {
+    "20260331": 56.0
+   },
+   "q": {},
+   "src": {
+    "y:20260331": [
+     "e9576f6d-6ec3-4f36-b0e0-2af594782e65.pdf",
+     113,
+     "Product applications (doc period)",
+     "56"
+    ]
+   }
+  }
+ ],
  "held": [],
  "catalog": [
   {
