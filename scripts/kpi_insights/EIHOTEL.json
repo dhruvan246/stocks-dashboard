@@ -1,8 +1,202 @@
 {
  "sym": "EIHOTEL",
  "fy_end_month": 3,
- "docs": {},
- "metrics": [],
+ "docs": {
+  "b3c298c2-5f64-4b49-93ee-008cead79989.pdf": {
+   "kind": "ip",
+   "date": "2026-08-12",
+   "title": "Q1 FY27 Investor Presentation",
+   "read": "2026-09-07",
+   "by": "claude-routine"
+  },
+  "d907e7e0-0b54-40a0-a9e0-5f2b7537bdaa.pdf": {
+   "kind": "pr",
+   "date": "2026-08-06",
+   "title": "Q1 FY27 Press Release",
+   "read": "2026-09-07",
+   "by": "claude-routine"
+  }
+ },
+ "metrics": [
+  {
+   "name": "ARR (All Domestic Hotels incl. Managed)",
+   "unit": "INR",
+   "kind": "flow",
+   "y": {},
+   "q": {
+    "20250630": 16268.0,
+    "20260630": 17868.0
+   },
+   "src": {
+    "q:20250630": [
+     "b3c298c2-5f64-4b49-93ee-008cead79989.pdf",
+     8,
+     "Quarterly Occupancy, ARR & RevPAR - ARR",
+     "16,268"
+    ],
+    "q:20260630": [
+     "b3c298c2-5f64-4b49-93ee-008cead79989.pdf",
+     8,
+     "Quarterly Occupancy, ARR & RevPAR - ARR",
+     "17,868"
+    ]
+   }
+  },
+  {
+   "name": "ARR (EIH Owned Hotels)",
+   "unit": "INR",
+   "kind": "flow",
+   "y": {},
+   "q": {
+    "20250630": 17941.0,
+    "20260630": 19950.0
+   },
+   "src": {
+    "q:20250630": [
+     "b3c298c2-5f64-4b49-93ee-008cead79989.pdf",
+     9,
+     "Quarterly Occupancy, ARR & RevPAR - ARR",
+     "17,941"
+    ],
+    "q:20260630": [
+     "b3c298c2-5f64-4b49-93ee-008cead79989.pdf",
+     9,
+     "Quarterly Occupancy, ARR & RevPAR - ARR",
+     "19,950"
+    ]
+   }
+  },
+  {
+   "name": "Occupancy (All Domestic Hotels incl. Managed)",
+   "unit": "%",
+   "kind": "flow",
+   "y": {},
+   "q": {
+    "20250630": 70.0,
+    "20260630": 72.0
+   },
+   "src": {
+    "q:20250630": [
+     "b3c298c2-5f64-4b49-93ee-008cead79989.pdf",
+     8,
+     "Quarterly Occupancy, ARR & RevPAR - Occupancy",
+     "70"
+    ],
+    "q:20260630": [
+     "b3c298c2-5f64-4b49-93ee-008cead79989.pdf",
+     8,
+     "Quarterly Occupancy, ARR & RevPAR - Occupancy",
+     "72"
+    ]
+   }
+  },
+  {
+   "name": "Occupancy (EIH Owned Hotels)",
+   "unit": "%",
+   "kind": "flow",
+   "y": {},
+   "q": {
+    "20250630": 73.0,
+    "20260630": 75.0
+   },
+   "src": {
+    "q:20250630": [
+     "b3c298c2-5f64-4b49-93ee-008cead79989.pdf",
+     9,
+     "Quarterly Occupancy, ARR & RevPAR - Occupancy",
+     "73"
+    ],
+    "q:20260630": [
+     "b3c298c2-5f64-4b49-93ee-008cead79989.pdf",
+     9,
+     "Quarterly Occupancy, ARR & RevPAR - Occupancy",
+     "75"
+    ]
+   }
+  },
+  {
+   "name": "RevPAR (All Domestic Hotels incl. Managed)",
+   "unit": "INR",
+   "kind": "flow",
+   "y": {},
+   "q": {
+    "20250630": 11352.0,
+    "20260630": 12801.0
+   },
+   "src": {
+    "q:20250630": [
+     "b3c298c2-5f64-4b49-93ee-008cead79989.pdf",
+     8,
+     "Quarterly Occupancy, ARR & RevPAR - RevPAR",
+     "11,352"
+    ],
+    "q:20260630": [
+     "b3c298c2-5f64-4b49-93ee-008cead79989.pdf",
+     8,
+     "Quarterly Occupancy, ARR & RevPAR - RevPAR",
+     "12,801"
+    ]
+   }
+  },
+  {
+   "name": "RevPAR (EIH Owned Hotels)",
+   "unit": "INR",
+   "kind": "flow",
+   "y": {},
+   "q": {
+    "20250630": 13082.0,
+    "20260630": 14972.0
+   },
+   "src": {
+    "q:20250630": [
+     "b3c298c2-5f64-4b49-93ee-008cead79989.pdf",
+     9,
+     "Quarterly Occupancy, ARR & RevPAR - RevPAR",
+     "13,082"
+    ],
+    "q:20260630": [
+     "b3c298c2-5f64-4b49-93ee-008cead79989.pdf",
+     9,
+     "Quarterly Occupancy, ARR & RevPAR - RevPAR",
+     "14,972"
+    ]
+   }
+  },
+  {
+   "name": "Total Keys - International",
+   "unit": "count",
+   "kind": "level",
+   "y": {},
+   "q": {
+    "20260630": 408.0
+   },
+   "src": {
+    "q:20260630": [
+     "b3c298c2-5f64-4b49-93ee-008cead79989.pdf",
+     26,
+     "Total keys - International (doc period)",
+     "408"
+    ]
+   }
+  },
+  {
+   "name": "Total Keys - National (India)",
+   "unit": "count",
+   "kind": "level",
+   "y": {},
+   "q": {
+    "20260630": 3801.0
+   },
+   "src": {
+    "q:20260630": [
+     "b3c298c2-5f64-4b49-93ee-008cead79989.pdf",
+     26,
+     "Total keys in India (doc period)",
+     "3,801"
+    ]
+   }
+  }
+ ],
  "held": [],
  "catalog": [
   {
