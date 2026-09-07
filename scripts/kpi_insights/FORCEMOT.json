@@ -1,8 +1,415 @@
 {
  "sym": "FORCEMOT",
  "fy_end_month": 3,
- "docs": {},
- "metrics": [],
+ "docs": {
+  "19b6fafd-0986-4370-870e-15cdbf11c1e7.pdf": {
+   "kind": "res",
+   "date": "2026-07-29",
+   "title": "Q1 FY27 Financial Results (Standalone & Consolidated)",
+   "read": "2026-09-07",
+   "by": "claude-routine"
+  },
+  "b35665cc-4dbf-4e6a-88ca-95ee8c1dbdb6.pdf": {
+   "kind": "res",
+   "date": "2026-04-29",
+   "title": "FY26 Q4/Annual Standalone & Consolidated Financial Results",
+   "read": "2026-09-07",
+   "by": "claude-routine"
+  },
+  "9ae09ce6-e917-4720-80a3-8779c7486773.pdf": {
+   "kind": "res",
+   "date": "2026-02-04",
+   "title": "Q3 FY26 / 9M FY26 Financial Results",
+   "read": "2026-09-07",
+   "by": "claude-routine"
+  },
+  "e6784858-f585-41b6-8643-4ef6cca7384a.pdf": {
+   "kind": "res",
+   "date": "2025-11-07",
+   "title": "Q2 FY26 Unaudited Standalone and Consolidated Financial Results",
+   "read": "2026-09-07",
+   "by": "claude-routine"
+  },
+  "89f339be-c0ce-4b0a-b267-9e352c44a8af.pdf": {
+   "kind": "ip",
+   "date": "2026-02-12",
+   "title": "Q3/9M FY26 Investor Presentation",
+   "read": "2026-09-07",
+   "by": "claude-routine"
+  },
+  "01851d61-29d3-4f62-a3dd-41bc21b22484.pdf": {
+   "kind": "ip",
+   "date": "2026-06-26",
+   "title": "Q4 FY26 Investor Presentation",
+   "read": "2026-09-07",
+   "by": "claude-routine"
+  },
+  "ff03b586-7592-4e55-baf8-e0c00b5b4c55.pdf": {
+   "kind": "ip",
+   "date": "2026-08-07",
+   "title": "Q1 FY27 Investor Presentation",
+   "read": "2026-09-07",
+   "by": "claude-routine"
+  },
+  "1d366b90-a4b0-48f6-bd90-3a28890cb8eb.pdf": {
+   "kind": "ar",
+   "date": "2026-08-25",
+   "title": "67th Annual Report FY2025-26",
+   "read": "2026-09-07",
+   "by": "claude-routine"
+  }
+ },
+ "metrics": [
+  {
+   "name": "Days Payable Outstanding",
+   "unit": "days",
+   "kind": "flow",
+   "y": {
+    "20250331": 35.0,
+    "20260331": 33.0
+   },
+   "q": {},
+   "src": {
+    "y:20260331": [
+     "1d366b90-a4b0-48f6-bd90-3a28890cb8eb.pdf",
+     107,
+     "Number of days of accounts payable",
+     "33"
+    ],
+    "y:20250331": [
+     "1d366b90-a4b0-48f6-bd90-3a28890cb8eb.pdf",
+     107,
+     "Number of days of accounts payable",
+     "35"
+    ]
+   }
+  },
+  {
+   "name": "Dealer/Distributor Count",
+   "unit": "count",
+   "kind": "flow",
+   "y": {
+    "20250331": 640.0,
+    "20260331": 388.0
+   },
+   "q": {},
+   "src": {
+    "y:20260331": [
+     "1d366b90-a4b0-48f6-bd90-3a28890cb8eb.pdf",
+     107,
+     "Number of dealers / distributors to whom sales are made",
+     "388"
+    ],
+    "y:20250331": [
+     "1d366b90-a4b0-48f6-bd90-3a28890cb8eb.pdf",
+     107,
+     "Number of dealers / distributors to whom sales are made",
+     "640"
+    ]
+   }
+  },
+  {
+   "name": "Dealership Count",
+   "unit": "count",
+   "kind": "level",
+   "y": {},
+   "q": {
+    "20260331": 200.0,
+    "20260630": 200.0
+   },
+   "src": {
+    "q:20260331": [
+     "01851d61-29d3-4f62-a3dd-41bc21b22484.pdf",
+     30,
+     "200+ dealerships (doc period)",
+     "200"
+    ],
+    "q:20260630": [
+     "ff03b586-7592-4e55-baf8-e0c00b5b4c55.pdf",
+     31,
+     "Seamless integration across 200+ dealerships (doc period)",
+     "200"
+    ]
+   }
+  },
+  {
+   "name": "Purchases from Top 10 Trading Houses Share",
+   "unit": "%",
+   "kind": "flow",
+   "y": {
+    "20250331": 33.7,
+    "20260331": 51.75
+   },
+   "q": {},
+   "src": {
+    "y:20260331": [
+     "1d366b90-a4b0-48f6-bd90-3a28890cb8eb.pdf",
+     107,
+     "Purchases from top 10 trading houses as % of total purchases from trading houses",
+     "51.75"
+    ],
+    "y:20250331": [
+     "1d366b90-a4b0-48f6-bd90-3a28890cb8eb.pdf",
+     107,
+     "Purchases from top 10 trading houses as % of total purchases from trading houses",
+     "33.70"
+    ]
+   }
+  },
+  {
+   "name": "Purchases from Trading Houses Share",
+   "unit": "%",
+   "kind": "flow",
+   "y": {
+    "20250331": 0.55,
+    "20260331": 0.94
+   },
+   "q": {},
+   "src": {
+    "y:20260331": [
+     "1d366b90-a4b0-48f6-bd90-3a28890cb8eb.pdf",
+     107,
+     "Purchases from trading houses as a % of total purchases",
+     "0.94"
+    ],
+    "y:20250331": [
+     "1d366b90-a4b0-48f6-bd90-3a28890cb8eb.pdf",
+     107,
+     "Purchases from trading houses as a % of total purchases",
+     "0.55"
+    ]
+   }
+  },
+  {
+   "name": "Sales to Dealers/Distributors Share",
+   "unit": "%",
+   "kind": "flow",
+   "y": {
+    "20250331": 55.02,
+    "20260331": 60.55
+   },
+   "q": {},
+   "src": {
+    "y:20260331": [
+     "1d366b90-a4b0-48f6-bd90-3a28890cb8eb.pdf",
+     107,
+     "Sales to dealers/ distributors as % of total sales",
+     "60.55"
+    ],
+    "y:20250331": [
+     "1d366b90-a4b0-48f6-bd90-3a28890cb8eb.pdf",
+     107,
+     "Sales to dealers/ distributors as % of total sales",
+     "55.02"
+    ]
+   }
+  },
+  {
+   "name": "Sales to Top 10 Dealers/Distributors Share",
+   "unit": "%",
+   "kind": "flow",
+   "y": {
+    "20250331": 21.55,
+    "20260331": 25.48
+   },
+   "q": {},
+   "src": {
+    "y:20260331": [
+     "1d366b90-a4b0-48f6-bd90-3a28890cb8eb.pdf",
+     107,
+     "Sales to top 10 dealers / distributors as % of total sales to dealers / distribu",
+     "25.48"
+    ],
+    "y:20250331": [
+     "1d366b90-a4b0-48f6-bd90-3a28890cb8eb.pdf",
+     107,
+     "Sales to top 10 dealers / distributors as % of total sales to dealers / distribu",
+     "21.55"
+    ]
+   }
+  },
+  {
+   "name": "Service Center Count",
+   "unit": "count",
+   "kind": "level",
+   "y": {},
+   "q": {
+    "20260331": 70.0,
+    "20260630": 70.0
+   },
+   "src": {
+    "q:20260331": [
+     "01851d61-29d3-4f62-a3dd-41bc21b22484.pdf",
+     30,
+     "70 service centers (doc period)",
+     "70"
+    ],
+    "q:20260630": [
+     "ff03b586-7592-4e55-baf8-e0c00b5b4c55.pdf",
+     31,
+     "70 service centers (doc period)",
+     "70"
+    ]
+   }
+  },
+  {
+   "name": "Total Permanent Employees",
+   "unit": "count",
+   "kind": "level",
+   "y": {
+    "20250331": 4244.0,
+    "20260331": 4487.0
+   },
+   "q": {},
+   "src": {
+    "y:20260331": [
+     "1d366b90-a4b0-48f6-bd90-3a28890cb8eb.pdf",
+     110,
+     "Total Permanent Employees",
+     "4,487"
+    ],
+    "y:20250331": [
+     "1d366b90-a4b0-48f6-bd90-3a28890cb8eb.pdf",
+     110,
+     "Total Permanent Employees",
+     "4,244"
+    ]
+   }
+  },
+  {
+   "name": "Total Permanent Workers",
+   "unit": "count",
+   "kind": "level",
+   "y": {
+    "20250331": 396.0,
+    "20260331": 345.0
+   },
+   "q": {},
+   "src": {
+    "y:20260331": [
+     "1d366b90-a4b0-48f6-bd90-3a28890cb8eb.pdf",
+     110,
+     "Total Permanent Workers#",
+     "345"
+    ],
+    "y:20250331": [
+     "1d366b90-a4b0-48f6-bd90-3a28890cb8eb.pdf",
+     110,
+     "Total Permanent Workers#",
+     "396"
+    ]
+   }
+  },
+  {
+   "name": "Trading House Count (Purchasing)",
+   "unit": "count",
+   "kind": "flow",
+   "y": {
+    "20250331": 740.0,
+    "20260331": 612.0
+   },
+   "q": {},
+   "src": {
+    "y:20260331": [
+     "1d366b90-a4b0-48f6-bd90-3a28890cb8eb.pdf",
+     107,
+     "Number of trading houses where purchases are made from",
+     "612"
+    ],
+    "y:20250331": [
+     "1d366b90-a4b0-48f6-bd90-3a28890cb8eb.pdf",
+     107,
+     "Number of trading houses where purchases are made from",
+     "740"
+    ]
+   }
+  },
+  {
+   "name": "Cumulative Engines Manufactured for BMW India",
+   "unit": "count",
+   "kind": "level",
+   "y": {
+    "20260331": 100000.0
+   },
+   "q": {},
+   "src": {
+    "y:20260331": [
+     "1d366b90-a4b0-48f6-bd90-3a28890cb8eb.pdf",
+     62,
+     "100,000th engine manufactured for BMW India (doc period)",
+     "100,000"
+    ]
+   }
+  },
+  {
+   "name": "Cumulative Engines Manufactured for Mercedes-Benz India",
+   "unit": "count",
+   "kind": "level",
+   "y": {
+    "20260331": 200000.0
+   },
+   "q": {},
+   "src": {
+    "y:20260331": [
+     "1d366b90-a4b0-48f6-bd90-3a28890cb8eb.pdf",
+     62,
+     "200,000th engine manufactured for Mercedes-Benz India (doc period)",
+     "200,000"
+    ]
+   }
+  },
+  {
+   "name": "LCV Segment Market Share",
+   "unit": "%",
+   "kind": "level",
+   "y": {},
+   "q": {
+    "20260630": 70.0
+   },
+   "src": {
+    "q:20260630": [
+     "ff03b586-7592-4e55-baf8-e0c00b5b4c55.pdf",
+     13,
+     "Market leader in the segment with over 70% market share (doc period)",
+     "70"
+    ]
+   }
+  },
+  {
+   "name": "Total Employee Count",
+   "unit": "count",
+   "kind": "level",
+   "y": {
+    "20260331": 6610.0
+   },
+   "q": {},
+   "src": {
+    "y:20260331": [
+     "1d366b90-a4b0-48f6-bd90-3a28890cb8eb.pdf",
+     92,
+     "Total employees (D + E) (doc period)",
+     "6,610"
+    ]
+   }
+  },
+  {
+   "name": "Total Worker Count",
+   "unit": "count",
+   "kind": "level",
+   "y": {
+    "20260331": 2088.0
+   },
+   "q": {},
+   "src": {
+    "y:20260331": [
+     "1d366b90-a4b0-48f6-bd90-3a28890cb8eb.pdf",
+     92,
+     "Total workers (F + G) (doc period)",
+     "2,088"
+    ]
+   }
+  }
+ ],
  "held": [],
  "catalog": [
   {
