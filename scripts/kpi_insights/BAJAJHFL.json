@@ -5,7 +5,7 @@
   "f39394e8-05b9-467b-94f6-d979dc847140.pdf": {
    "kind": "ip",
    "date": "2026-08-18",
-   "title": "Investor Day Presentation - Aug 2026 (updated till Jun'26)",
+   "title": "Investor Day Presentation - Aug 2026 (correction pass)",
    "read": "2026-09-07",
    "by": "claude-routine"
   },
@@ -1300,14 +1300,14 @@
     "20260331": 15191.0
    },
    "q": {
-    "20260630": 34604.0
+    "20260630": 15445.0
    },
    "src": {
     "q:20260630": [
      "f39394e8-05b9-467b-94f6-d979dc847140.pdf",
      16,
-     "AUM (Loans Against Property, as of 30th Jun'26)",
-     "34,604"
+     "AUM (Loans Against Property, as of 30th Jun'26) [corrected: was mismapped to LRD",
+     "15,445"
     ],
     "y:20260331": [
      "04c9c155-cdce-4552-b193-2c3d791a5735.pdf",
@@ -1332,14 +1332,14 @@
     "20260331": 31531.0
    },
    "q": {
-    "20260630": 15445.0
+    "20260630": 34604.0
    },
    "src": {
     "q:20260630": [
      "f39394e8-05b9-467b-94f6-d979dc847140.pdf",
      16,
-     "AUM (Lease Rental Discounting, as of 30th Jun'26)",
-     "15,445"
+     "AUM (Lease Rental Discounting, as of 30th Jun'26) [corrected: was mismapped to L",
+     "34,604"
     ],
     "y:20260331": [
      "04c9c155-cdce-4552-b193-2c3d791a5735.pdf",
@@ -1381,6 +1381,31 @@
    }
   },
   {
+   "name": "LAP Locations Count",
+   "unit": "count",
+   "kind": "level",
+   "y": {
+    "20260331": 74.0
+   },
+   "q": {
+    "20260630": 74.0
+   },
+   "src": {
+    "y:20260331": [
+     "04c9c155-cdce-4552-b193-2c3d791a5735.pdf",
+     53,
+     "LAP offered across locations",
+     "74"
+    ],
+    "q:20260630": [
+     "f39394e8-05b9-467b-94f6-d979dc847140.pdf",
+     16,
+     "Locations (Loans Against Property, as of 30th Jun'26)",
+     "74"
+    ]
+   }
+  },
+  {
    "name": "LRD Locations Count",
    "unit": "count",
    "kind": "level",
@@ -1388,14 +1413,14 @@
     "20260331": 17.0
    },
    "q": {
-    "20260630": 74.0
+    "20260630": 17.0
    },
    "src": {
     "q:20260630": [
      "f39394e8-05b9-467b-94f6-d979dc847140.pdf",
      16,
-     "Locations (Lease Rental Discounting, as of 30th Jun'26)",
-     "74"
+     "Locations (Lease Rental Discounting, as of 30th Jun'26) [corrected: was mismappe",
+     "17"
     ],
     "y:20260331": [
      "04c9c155-cdce-4552-b193-2c3d791a5735.pdf",
@@ -1566,23 +1591,6 @@
    }
   },
   {
-   "name": "LAP Active Customers",
-   "unit": "count",
-   "kind": "level",
-   "y": {},
-   "q": {
-    "20260630": 332.0
-   },
-   "src": {
-    "q:20260630": [
-     "f39394e8-05b9-467b-94f6-d979dc847140.pdf",
-     16,
-     "Active Customers (Loans Against Property, as of 30th Jun'26)",
-     "332"
-    ]
-   }
-  },
-  {
    "name": "LAP Average Ticket Size (at origination)",
    "unit": "₹ Lakh",
    "kind": "level",
@@ -1600,19 +1608,19 @@
    }
   },
   {
-   "name": "LAP Locations Count",
+   "name": "LRD Active Customers",
    "unit": "count",
    "kind": "level",
-   "y": {
-    "20260331": 74.0
+   "y": {},
+   "q": {
+    "20260630": 332.0
    },
-   "q": {},
    "src": {
-    "y:20260331": [
-     "04c9c155-cdce-4552-b193-2c3d791a5735.pdf",
-     53,
-     "LAP offered across locations",
-     "74"
+    "q:20260630": [
+     "f39394e8-05b9-467b-94f6-d979dc847140.pdf",
+     16,
+     "Active Customers (Lease Rental Discounting, as of 30th Jun'26) [corrected: was m",
+     "332"
     ]
    }
   },
