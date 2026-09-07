@@ -5,7 +5,21 @@
   "2a358926-2b70-4761-9a90-2c6ea6265103.pdf": {
    "kind": "ip",
    "date": "2026-07-24",
-   "title": "Q1 FY27 Earnings Presentation",
+   "title": "Q1 FY27 Earnings Presentation (correction: Samples/Patients were swapped)",
+   "read": "2026-09-07",
+   "by": "claude-routine"
+  },
+  "c5a19268-920d-4aea-ab34-1f70d8f0a847.pdf": {
+   "kind": "ar",
+   "date": "2026-07-01",
+   "title": "Integrated Annual Report FY 2025-26",
+   "read": "2026-09-07",
+   "by": "claude-routine"
+  },
+  "9a53ff6f-9262-4321-93bf-485a34b894a7.pdf": {
+   "kind": "ar",
+   "date": "2026-07-01",
+   "title": "Letter to Members - Annual Report FY2025-26 weblink",
    "read": "2026-09-07",
    "by": "claude-routine"
   }
@@ -13,52 +27,6 @@
  "metrics": [
   {
    "name": "No. of Patients Serviced",
-   "unit": "Mn",
-   "kind": "flow",
-   "y": {
-    "20230331": 72.3,
-    "20240331": 78.2,
-    "20250331": 85.6,
-    "20260331": 94.5
-   },
-   "q": {
-    "20260630": 25.9
-   },
-   "src": {
-    "y:20230331": [
-     "2a358926-2b70-4761-9a90-2c6ea6265103.pdf",
-     9,
-     "No. of Patients (Mn)",
-     "72.3"
-    ],
-    "y:20240331": [
-     "2a358926-2b70-4761-9a90-2c6ea6265103.pdf",
-     9,
-     "No. of Patients (Mn)",
-     "78.2"
-    ],
-    "y:20250331": [
-     "2a358926-2b70-4761-9a90-2c6ea6265103.pdf",
-     9,
-     "No. of Patients (Mn)",
-     "85.6"
-    ],
-    "y:20260331": [
-     "2a358926-2b70-4761-9a90-2c6ea6265103.pdf",
-     9,
-     "No. of Patients (Mn)",
-     "94.5"
-    ],
-    "q:20260630": [
-     "2a358926-2b70-4761-9a90-2c6ea6265103.pdf",
-     6,
-     "Patients(Mn)",
-     "25.9"
-    ]
-   }
-  },
-  {
-   "name": "No. of Samples Processed",
    "unit": "Mn",
    "kind": "flow",
    "y": {
@@ -74,32 +42,78 @@
     "y:20230331": [
      "2a358926-2b70-4761-9a90-2c6ea6265103.pdf",
      9,
-     "No. of Samples (Mn)",
+     "No. of Patients (Mn)",
      "26.9"
     ],
     "y:20240331": [
      "2a358926-2b70-4761-9a90-2c6ea6265103.pdf",
      9,
-     "No. of Samples (Mn)",
+     "No. of Patients (Mn)",
      "27.6"
     ],
     "y:20250331": [
      "2a358926-2b70-4761-9a90-2c6ea6265103.pdf",
      9,
-     "No. of Samples (Mn)",
+     "No. of Patients (Mn)",
      "28.8"
     ],
     "y:20260331": [
      "2a358926-2b70-4761-9a90-2c6ea6265103.pdf",
      9,
-     "No. of Samples (Mn)",
+     "No. of Patients (Mn)",
      "30.3"
     ],
     "q:20260630": [
      "2a358926-2b70-4761-9a90-2c6ea6265103.pdf",
      6,
-     "Samples(Mn)",
+     "Patients(Mn)",
      "8.2"
+    ]
+   }
+  },
+  {
+   "name": "No. of Samples Processed",
+   "unit": "Mn",
+   "kind": "flow",
+   "y": {
+    "20230331": 72.3,
+    "20240331": 78.2,
+    "20250331": 85.6,
+    "20260331": 94.5
+   },
+   "q": {
+    "20260630": 25.9
+   },
+   "src": {
+    "y:20230331": [
+     "2a358926-2b70-4761-9a90-2c6ea6265103.pdf",
+     9,
+     "No. of Samples (Mn)",
+     "72.3"
+    ],
+    "y:20240331": [
+     "2a358926-2b70-4761-9a90-2c6ea6265103.pdf",
+     9,
+     "No. of Samples (Mn)",
+     "78.2"
+    ],
+    "y:20250331": [
+     "2a358926-2b70-4761-9a90-2c6ea6265103.pdf",
+     9,
+     "No. of Samples (Mn)",
+     "85.6"
+    ],
+    "y:20260331": [
+     "2a358926-2b70-4761-9a90-2c6ea6265103.pdf",
+     9,
+     "No. of Samples (Mn)",
+     "94.5"
+    ],
+    "q:20260630": [
+     "2a358926-2b70-4761-9a90-2c6ea6265103.pdf",
+     6,
+     "Samples(Mn)",
+     "25.9"
     ]
    }
   },
@@ -256,6 +270,30 @@
    }
   },
   {
+   "name": "Revenue per Patient",
+   "unit": "Rs.",
+   "kind": "flow",
+   "y": {
+    "20250331": 855.0,
+    "20260331": 912.0
+   },
+   "q": {},
+   "src": {
+    "y:20250331": [
+     "c5a19268-920d-4aea-ab34-1f70d8f0a847.pdf",
+     130,
+     "Revenue per patient (Rs)",
+     "855"
+    ],
+    "y:20260331": [
+     "c5a19268-920d-4aea-ab34-1f70d8f0a847.pdf",
+     130,
+     "Revenue per patient (Rs)",
+     "912"
+    ]
+   }
+  },
+  {
    "name": "SwasthFit Contribution to Revenue",
    "unit": "%",
    "kind": "level",
@@ -276,6 +314,30 @@
      6,
      "SwasthFitTM Contribution",
      "27"
+    ]
+   }
+  },
+  {
+   "name": "Test per Patient",
+   "unit": "units",
+   "kind": "flow",
+   "y": {
+    "20250331": 3.0,
+    "20260331": 3.1
+   },
+   "q": {},
+   "src": {
+    "y:20250331": [
+     "c5a19268-920d-4aea-ab34-1f70d8f0a847.pdf",
+     130,
+     "Test per patient (units)",
+     "3.0"
+    ],
+    "y:20260331": [
+     "c5a19268-920d-4aea-ab34-1f70d8f0a847.pdf",
+     130,
+     "Test per patient (units)",
+     "3.1"
     ]
    }
   },
@@ -327,6 +389,125 @@
      5,
      "53 NABL & 2 CAP accredited Labs (doc period)",
      "53"
+    ]
+   }
+  },
+  {
+   "name": "New Clinical Laboratories Added (net)",
+   "unit": "count",
+   "kind": "flow",
+   "y": {
+    "20260331": 14.0
+   },
+   "q": {},
+   "src": {
+    "y:20260331": [
+     "c5a19268-920d-4aea-ab34-1f70d8f0a847.pdf",
+     130,
+     "adding 14 new laboratories (net)",
+     "14"
+    ]
+   }
+  },
+  {
+   "name": "New Collection Centres Added",
+   "unit": "count",
+   "kind": "flow",
+   "y": {
+    "20260331": 1100.0
+   },
+   "q": {},
+   "src": {
+    "y:20260331": [
+     "c5a19268-920d-4aea-ab34-1f70d8f0a847.pdf",
+     130,
+     "over 1,100 collection centres during FY 2026",
+     "1,100"
+    ]
+   }
+  },
+  {
+   "name": "States Covered (National)",
+   "unit": "count",
+   "kind": "level",
+   "y": {
+    "20260331": 27.0
+   },
+   "q": {},
+   "src": {
+    "y:20260331": [
+     "c5a19268-920d-4aea-ab34-1f70d8f0a847.pdf",
+     137,
+     "National (No. of states)",
+     "27"
+    ]
+   }
+  },
+  {
+   "name": "Total Employees (Standalone)",
+   "unit": "count",
+   "kind": "level",
+   "y": {
+    "20260331": 1981.0
+   },
+   "q": {},
+   "src": {
+    "y:20260331": [
+     "c5a19268-920d-4aea-ab34-1f70d8f0a847.pdf",
+     137,
+     "Total employees (D+E)",
+     "1,981"
+    ]
+   }
+  },
+  {
+   "name": "Total Workers (Standalone)",
+   "unit": "count",
+   "kind": "level",
+   "y": {
+    "20260331": 3630.0
+   },
+   "q": {},
+   "src": {
+    "y:20260331": [
+     "c5a19268-920d-4aea-ab34-1f70d8f0a847.pdf",
+     137,
+     "Total workers (F+G)",
+     "3,630"
+    ]
+   }
+  },
+  {
+   "name": "Union Territories Covered",
+   "unit": "count",
+   "kind": "level",
+   "y": {
+    "20260331": 4.0
+   },
+   "q": {},
+   "src": {
+    "y:20260331": [
+     "c5a19268-920d-4aea-ab34-1f70d8f0a847.pdf",
+     137,
+     "National (No. of states) - 4 Union Territories",
+     "4"
+    ]
+   }
+  },
+  {
+   "name": "Workforce (Group)",
+   "unit": "count",
+   "kind": "level",
+   "y": {
+    "20260331": 6200.0
+   },
+   "q": {},
+   "src": {
+    "y:20260331": [
+     "c5a19268-920d-4aea-ab34-1f70d8f0a847.pdf",
+     42,
+     "Workforce (Group) (doc period)",
+     "6,200"
     ]
    }
   }
