@@ -22,9 +22,62 @@
    "title": "Q4 and FY2026 Investor Presentation",
    "read": "2026-09-07",
    "by": "claude-routine"
+  },
+  "72b59bc9-f080-4758-a1b5-011cba783b2f.pdf": {
+   "kind": "ip",
+   "date": "2026-02-13",
+   "title": "Q3 and 9M FY26 Investor Presentation",
+   "read": "2026-09-07",
+   "by": "claude-routine"
+  },
+  "bf3953dd-4192-4e75-bb18-ef12c6218972.pdf": {
+   "kind": "ip",
+   "date": "2025-11-12",
+   "title": "Q2 FY26 Investor Presentation",
+   "read": "2026-09-07",
+   "by": "claude-routine"
   }
  },
  "metrics": [
+  {
+   "name": "Insulin (RHI + Glargine) Market Share",
+   "unit": "%",
+   "kind": "level",
+   "y": {
+    "20260331": 16.0
+   },
+   "q": {
+    "20250930": 13.0,
+    "20251231": 16.0,
+    "20260630": 16.0
+   },
+   "src": {
+    "y:20260331": [
+     "dd6b6273-5f56-493a-85f8-324a5eea3c82.pdf",
+     18,
+     "market share nearly doubled from 9% to 16% since acquisition (doc period)",
+     "16"
+    ],
+    "q:20260630": [
+     "d4e16e31-9436-4e64-af1c-aee43dc3134d.pdf",
+     6,
+     "Eris share · significant headroom ahead",
+     "16"
+    ],
+    "q:20250930": [
+     "72b59bc9-f080-4758-a1b5-011cba783b2f.pdf",
+     7,
+     "Total RHI + Glargine - Eris Market Shares",
+     "13"
+    ],
+    "q:20251231": [
+     "72b59bc9-f080-4758-a1b5-011cba783b2f.pdf",
+     7,
+     "Total RHI + Glargine - Eris Market Shares",
+     "16"
+    ]
+   }
+  },
   {
    "name": "Dealers / Distributors Count",
    "unit": "count",
@@ -50,27 +103,50 @@
    }
   },
   {
-   "name": "Insulin (RHI + Glargine) Market Share",
+   "name": "RHI Cartridges Market Share by Rx",
    "unit": "%",
    "kind": "level",
-   "y": {
-    "20260331": 16.0
-   },
+   "y": {},
    "q": {
-    "20260630": 16.0
+    "20250930": 23.0,
+    "20251231": 28.0
    },
    "src": {
-    "y:20260331": [
-     "dd6b6273-5f56-493a-85f8-324a5eea3c82.pdf",
-     18,
-     "market share nearly doubled from 9% to 16% since acquisition (doc period)",
-     "16"
-    ],
-    "q:20260630": [
-     "d4e16e31-9436-4e64-af1c-aee43dc3134d.pdf",
+    "q:20250930": [
+     "72b59bc9-f080-4758-a1b5-011cba783b2f.pdf",
      6,
-     "Eris share · significant headroom ahead",
-     "16"
+     "RHI Cartridges - Eris market share by Rx",
+     "23"
+    ],
+    "q:20251231": [
+     "72b59bc9-f080-4758-a1b5-011cba783b2f.pdf",
+     6,
+     "RHI Cartridges - Eris market share by Rx",
+     "28"
+    ]
+   }
+  },
+  {
+   "name": "RHI Cartridges Market Share by Sales",
+   "unit": "%",
+   "kind": "level",
+   "y": {},
+   "q": {
+    "20250930": 15.0,
+    "20251231": 25.0
+   },
+   "src": {
+    "q:20250930": [
+     "72b59bc9-f080-4758-a1b5-011cba783b2f.pdf",
+     6,
+     "RHI Cartridges - Eris market share by Sales",
+     "15"
+    ],
+    "q:20251231": [
+     "72b59bc9-f080-4758-a1b5-011cba783b2f.pdf",
+     6,
+     "RHI Cartridges - Eris market share by Sales",
+     "25"
     ]
    }
   },
@@ -459,6 +535,74 @@
      9,
      "Vials priced at Rs. 1,290/ unit (doc period)",
      "1,290"
+    ]
+   }
+  },
+  {
+   "name": "Swiss Parenterals Approved Dossiers",
+   "unit": "count",
+   "kind": "level",
+   "y": {},
+   "q": {
+    "20250930": 1000.0
+   },
+   "src": {
+    "q:20250930": [
+     "bf3953dd-4192-4e75-bb18-ef12c6218972.pdf",
+     11,
+     "Large Dossier Bank - 1,000+ approved (doc period)",
+     "1,000"
+    ]
+   }
+  },
+  {
+   "name": "Swiss Parenterals Markets Served",
+   "unit": "count",
+   "kind": "level",
+   "y": {},
+   "q": {
+    "20250930": 80.0
+   },
+   "src": {
+    "q:20250930": [
+     "bf3953dd-4192-4e75-bb18-ef12c6218972.pdf",
+     11,
+     "well diversified across 80+ markets (doc period)",
+     "80"
+    ]
+   }
+  },
+  {
+   "name": "Swiss Parenterals Pipeline Dossiers",
+   "unit": "count",
+   "kind": "level",
+   "y": {},
+   "q": {
+    "20250930": 1000.0
+   },
+   "src": {
+    "q:20250930": [
+     "bf3953dd-4192-4e75-bb18-ef12c6218972.pdf",
+     11,
+     "Large Dossier Bank - 1,000+ in pipeline (doc period)",
+     "1,000"
+    ]
+   }
+  },
+  {
+   "name": "Swiss Parenterals R&D Team Headcount",
+   "unit": "count",
+   "kind": "level",
+   "y": {},
+   "q": {
+    "20250930": 80.0
+   },
+   "src": {
+    "q:20250930": [
+     "bf3953dd-4192-4e75-bb18-ef12c6218972.pdf",
+     12,
+     "Expanded R&D team by 60% (50 to 80 FTEs) (doc period)",
+     "80"
     ]
    }
   }
