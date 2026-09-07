@@ -1,8 +1,133 @@
 {
  "sym": "GRAPHITE",
  "fy_end_month": 3,
- "docs": {},
- "metrics": [],
+ "docs": {
+  "1f01b616-4c65-4cfe-aa9f-35b224cba470.pdf": {
+   "kind": "ip",
+   "date": "2026-08-04",
+   "title": "Q1 FY2027 Earnings Presentation",
+   "read": "2026-09-07",
+   "by": "claude-routine"
+  }
+ },
+ "metrics": [
+  {
+   "name": "Capacity Utilization (Standalone)",
+   "unit": "%",
+   "kind": "level",
+   "y": {},
+   "q": {
+    "20250630": 82.0,
+    "20260331": 104.0,
+    "20260630": 97.0
+   },
+   "src": {
+    "q:20250630": [
+     "1f01b616-4c65-4cfe-aa9f-35b224cba470.pdf",
+     12,
+     "Capacity Utilization (Standalone)",
+     "82"
+    ],
+    "q:20260331": [
+     "1f01b616-4c65-4cfe-aa9f-35b224cba470.pdf",
+     12,
+     "Capacity Utilization (Standalone)",
+     "104"
+    ],
+    "q:20260630": [
+     "1f01b616-4c65-4cfe-aa9f-35b224cba470.pdf",
+     12,
+     "Capacity Utilization (Standalone)",
+     "97"
+    ]
+   }
+  },
+  {
+   "name": "Hydro Power Capacity",
+   "unit": "MW",
+   "kind": "level",
+   "y": {},
+   "q": {
+    "20260630": 23.0
+   },
+   "src": {
+    "q:20260630": [
+     "1f01b616-4c65-4cfe-aa9f-35b224cba470.pdf",
+     15,
+     "installed capacity of 23 MW of hydro electric power generation (doc period)",
+     "23"
+    ]
+   }
+  },
+  {
+   "name": "Manufacturing Capacity (Graphite Electrodes)",
+   "unit": "tonnes per annum",
+   "kind": "level",
+   "y": {},
+   "q": {
+    "20260630": 80000.0
+   },
+   "src": {
+    "q:20260630": [
+     "1f01b616-4c65-4cfe-aa9f-35b224cba470.pdf",
+     15,
+     "manufacturing capacity of 80,000 tonnes per annum (doc period)",
+     "80,000"
+    ]
+   }
+  },
+  {
+   "name": "Manufacturing Facilities (Total)",
+   "unit": "count",
+   "kind": "level",
+   "y": {},
+   "q": {
+    "20260630": 2.0
+   },
+   "src": {
+    "q:20260630": [
+     "1f01b616-4c65-4cfe-aa9f-35b224cba470.pdf",
+     15,
+     "spread over two plants at Durgapur and Nashik (doc period)",
+     "2"
+    ]
+   }
+  },
+  {
+   "name": "Solar Power Capacity",
+   "unit": "MWp",
+   "kind": "level",
+   "y": {},
+   "q": {
+    "20260630": 13.8
+   },
+   "src": {
+    "q:20260630": [
+     "1f01b616-4c65-4cfe-aa9f-35b224cba470.pdf",
+     15,
+     "13.8 MWp of installed solar power plants (doc period)",
+     "13.8"
+    ]
+   }
+  },
+  {
+   "name": "Wind Power Capacity",
+   "unit": "MW",
+   "kind": "level",
+   "y": {},
+   "q": {
+    "20260630": 18.9
+   },
+   "src": {
+    "q:20260630": [
+     "1f01b616-4c65-4cfe-aa9f-35b224cba470.pdf",
+     15,
+     "wind power plants with an installed capacity of 18.9 MW (doc period)",
+     "18.9"
+    ]
+   }
+  }
+ ],
  "held": [],
  "catalog": [
   {
