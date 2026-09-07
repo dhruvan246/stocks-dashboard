@@ -1,8 +1,327 @@
 {
  "sym": "CARTRADE",
  "fy_end_month": 3,
- "docs": {},
- "metrics": [],
+ "docs": {
+  "98d8c82b-f26d-491f-bff0-e4c2fa186958.pdf": {
+   "kind": "ip",
+   "date": "2026-07-29",
+   "title": "Q1 FY27 Investor Presentation",
+   "read": "2026-09-07",
+   "by": "claude-routine"
+  },
+  "13f0329c-63c1-420f-8b20-64456f34622c.pdf": {
+   "kind": "ip",
+   "date": "2026-06-30",
+   "title": "Corporate/Investor Positioning Presentation (June 2026)",
+   "read": "2026-09-07",
+   "by": "claude-routine"
+  },
+  "4ba9eea6-0854-48eb-b960-09eec60ea962.pdf": {
+   "kind": "ar",
+   "date": "2026-09-03",
+   "title": "Annual Report FY 2025-26",
+   "read": "2026-09-07",
+   "by": "claude-routine"
+  }
+ },
+ "metrics": [
+  {
+   "name": "Lost Time Injury Frequency Rate",
+   "unit": "LTIFR",
+   "kind": "level",
+   "y": {
+    "20250331": 0.0,
+    "20260331": 0.0
+   },
+   "q": {},
+   "src": {
+    "y:20260331": [
+     "4ba9eea6-0854-48eb-b960-09eec60ea962.pdf",
+     80,
+     "LTIFR - Employees",
+     "0.00"
+    ],
+    "y:20250331": [
+     "4ba9eea6-0854-48eb-b960-09eec60ea962.pdf",
+     80,
+     "LTIFR - Employees",
+     "0.00"
+    ]
+   }
+  },
+  {
+   "name": "Active Retail Suppliers",
+   "unit": "count",
+   "kind": "level",
+   "y": {
+    "20260331": 15000.0
+   },
+   "q": {},
+   "src": {
+    "y:20260331": [
+     "4ba9eea6-0854-48eb-b960-09eec60ea962.pdf",
+     36,
+     "~15,000 active retail suppliers (doc period)",
+     "15,000"
+    ]
+   }
+  },
+  {
+   "name": "Annual Unique Users",
+   "unit": "Mn",
+   "kind": "level",
+   "y": {
+    "20260331": 150.0
+   },
+   "q": {},
+   "src": {
+    "y:20260331": [
+     "4ba9eea6-0854-48eb-b960-09eec60ea962.pdf",
+     36,
+     "attracting over 150 million annual users",
+     "150"
+    ]
+   }
+  },
+  {
+   "name": "App Downloads (Cumulative)",
+   "unit": "Mn",
+   "kind": "level",
+   "y": {},
+   "q": {
+    "20260630": 100.0
+   },
+   "src": {
+    "q:20260630": [
+     "98d8c82b-f26d-491f-bff0-e4c2fa186958.pdf",
+     6,
+     "~100 Mn+ App Downloads (doc period)",
+     "100"
+    ]
+   }
+  },
+  {
+   "name": "Auction Listings (Remarketing)",
+   "unit": "Mn",
+   "kind": "flow",
+   "y": {},
+   "q": {
+    "20260630": 1.48
+   },
+   "src": {
+    "q:20260630": [
+     "98d8c82b-f26d-491f-bff0-e4c2fa186958.pdf",
+     6,
+     "FY27 auction listing for Remarketing business is 1.48 Mn",
+     "1.48"
+    ]
+   }
+  },
+  {
+   "name": "Auction Volume (Remarketing)",
+   "unit": "lakhs",
+   "kind": "flow",
+   "y": {},
+   "q": {
+    "20260630": 2.25
+   },
+   "src": {
+    "q:20260630": [
+     "98d8c82b-f26d-491f-bff0-e4c2fa186958.pdf",
+     6,
+     "FY27 auction volume for Remarketing business is 2.25 lakhs",
+     "2.25"
+    ]
+   }
+  },
+  {
+   "name": "Automalls",
+   "unit": "count",
+   "kind": "level",
+   "y": {
+    "20260331": 135.0
+   },
+   "q": {},
+   "src": {
+    "y:20260331": [
+     "4ba9eea6-0854-48eb-b960-09eec60ea962.pdf",
+     36,
+     "135 Automalls across India (doc period)",
+     "135"
+    ]
+   }
+  },
+  {
+   "name": "Monthly Active Users - CarWale/BikeWale/CarTrade",
+   "unit": "Mn",
+   "kind": "level",
+   "y": {},
+   "q": {
+    "20260630": 47.0
+   },
+   "src": {
+    "q:20260630": [
+     "98d8c82b-f26d-491f-bff0-e4c2fa186958.pdf",
+     6,
+     "across Carwale, Bikewale and CarTrade ~47 Mn MAU",
+     "47"
+    ]
+   }
+  },
+  {
+   "name": "Monthly Active Users - OLX India",
+   "unit": "Mn",
+   "kind": "level",
+   "y": {},
+   "q": {
+    "20260630": 32.0
+   },
+   "src": {
+    "q:20260630": [
+     "98d8c82b-f26d-491f-bff0-e4c2fa186958.pdf",
+     6,
+     "on OLX India ~32 Mn MAU for FY27 Q1",
+     "32"
+    ]
+   }
+  },
+  {
+   "name": "Monthly Active Users - Total",
+   "unit": "Mn",
+   "kind": "level",
+   "y": {},
+   "q": {
+    "20260630": 80.0
+   },
+   "src": {
+    "q:20260630": [
+     "98d8c82b-f26d-491f-bff0-e4c2fa186958.pdf",
+     6,
+     "~80 Mn MAU Across Platforms",
+     "80"
+    ]
+   }
+  },
+  {
+   "name": "National Offices",
+   "unit": "count",
+   "kind": "level",
+   "y": {
+    "20260331": 4.0
+   },
+   "q": {},
+   "src": {
+    "y:20260331": [
+     "4ba9eea6-0854-48eb-b960-09eec60ea962.pdf",
+     68,
+     "Number of locations where plants and/or operations/offices - National",
+     "4"
+    ]
+   }
+  },
+  {
+   "name": "Organic Traffic Share",
+   "unit": "%",
+   "kind": "level",
+   "y": {
+    "20260331": 95.0
+   },
+   "q": {},
+   "src": {
+    "y:20260331": [
+     "4ba9eea6-0854-48eb-b960-09eec60ea962.pdf",
+     36,
+     "organic traffic maintaining a share of over 95%",
+     "95"
+    ]
+   }
+  },
+  {
+   "name": "Organic Unique Visitors Share",
+   "unit": "%",
+   "kind": "level",
+   "y": {},
+   "q": {
+    "20260630": 95.0
+   },
+   "src": {
+    "q:20260630": [
+     "98d8c82b-f26d-491f-bff0-e4c2fa186958.pdf",
+     6,
+     "Organic Unique Visitors in Q1 FY27",
+     "95"
+    ]
+   }
+  },
+  {
+   "name": "Permanent Employees",
+   "unit": "count",
+   "kind": "level",
+   "y": {
+    "20260331": 789.0
+   },
+   "q": {},
+   "src": {
+    "y:20260331": [
+     "4ba9eea6-0854-48eb-b960-09eec60ea962.pdf",
+     68,
+     "Permanent Employees (D)",
+     "789"
+    ]
+   }
+  },
+  {
+   "name": "Permanent Workers",
+   "unit": "count",
+   "kind": "level",
+   "y": {
+    "20260331": 363.0
+   },
+   "q": {},
+   "src": {
+    "y:20260331": [
+     "4ba9eea6-0854-48eb-b960-09eec60ea962.pdf",
+     68,
+     "Permanent (F) - Workers",
+     "363"
+    ]
+   }
+  },
+  {
+   "name": "Physical Locations",
+   "unit": "count",
+   "kind": "level",
+   "y": {},
+   "q": {
+    "20260630": 500.0
+   },
+   "src": {
+    "q:20260630": [
+     "98d8c82b-f26d-491f-bff0-e4c2fa186958.pdf",
+     6,
+     "500+ Physical Locations - Automall, abSure & OLX India outlets (doc period)",
+     "500"
+    ]
+   }
+  },
+  {
+   "name": "States and UTs Served",
+   "unit": "count",
+   "kind": "level",
+   "y": {
+    "20260331": 36.0
+   },
+   "q": {},
+   "src": {
+    "y:20260331": [
+     "4ba9eea6-0854-48eb-b960-09eec60ea962.pdf",
+     68,
+     "National (No. of States & UTs)",
+     "36"
+    ]
+   }
+  }
+ ],
  "held": [],
  "catalog": [
   {
