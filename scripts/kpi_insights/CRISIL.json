@@ -1,8 +1,130 @@
 {
  "sym": "CRISIL",
- "fy_end_month": 3,
- "docs": {},
- "metrics": [],
+ "fy_end_month": 12,
+ "docs": {
+  "cf05d927-5658-44e8-bdf9-babd009b78fe.pdf": {
+   "kind": "ip",
+   "date": "2026-07-21",
+   "title": "Corporate Presentation Q2 2026",
+   "read": "2026-09-07",
+   "by": "claude-routine"
+  },
+  "c4ff4589-aea5-42c1-aaf6-cca43746cabf.pdf": {
+   "kind": "ip",
+   "date": "2026-04-17",
+   "title": "Corporate Presentation Q1 2026",
+   "read": "2026-09-07",
+   "by": "claude-routine"
+  },
+  "5ca06d60-aff0-4016-981c-caf1990aecad.pdf": {
+   "kind": "ar",
+   "date": "2026-03-23",
+   "title": "Integrated Annual Report 2025",
+   "read": "2026-09-07",
+   "by": "claude-routine"
+  }
+ },
+ "metrics": [
+  {
+   "name": "Total Employee Headcount (incl. Exits, FY Total)",
+   "unit": "count",
+   "kind": "flow",
+   "y": {
+    "20231231": 7227.0,
+    "20241231": 7078.0,
+    "20251231": 7557.0
+   },
+   "q": {},
+   "src": {
+    "y:20251231": [
+     "5ca06d60-aff0-4016-981c-caf1990aecad.pdf",
+     150,
+     "16(b) Employees - Total, Current FY (2025)",
+     "7557"
+    ],
+    "y:20241231": [
+     "5ca06d60-aff0-4016-981c-caf1990aecad.pdf",
+     150,
+     "16(b) Employees - Total, Previous FY (2024)",
+     "7,078"
+    ],
+    "y:20231231": [
+     "5ca06d60-aff0-4016-981c-caf1990aecad.pdf",
+     150,
+     "16(b) Employees - Total, FY (2023)",
+     "7,227"
+    ]
+   }
+  },
+  {
+   "name": "Companies Rated",
+   "unit": "count",
+   "kind": "level",
+   "y": {},
+   "q": {
+    "20260331": 7200.0
+   },
+   "src": {
+    "q:20260331": [
+     "c4ff4589-aea5-42c1-aaf6-cca43746cabf.pdf",
+     6,
+     "Rated 7,200+ companies (doc period)",
+     "7,200"
+    ]
+   }
+  },
+  {
+   "name": "Countries Served",
+   "unit": "count",
+   "kind": "level",
+   "y": {},
+   "q": {
+    "20260331": 40.0
+   },
+   "src": {
+    "q:20260331": [
+     "c4ff4589-aea5-42c1-aaf6-cca43746cabf.pdf",
+     6,
+     "Serving 11,400 clients across 40 countries (doc period)",
+     "40"
+    ]
+   }
+  },
+  {
+   "name": "Total Clients Served",
+   "unit": "count",
+   "kind": "level",
+   "y": {},
+   "q": {
+    "20260331": 11400.0
+   },
+   "src": {
+    "q:20260331": [
+     "c4ff4589-aea5-42c1-aaf6-cca43746cabf.pdf",
+     6,
+     "Serving 11,400 clients across 40 countries (doc period)",
+     "11,400"
+    ]
+   }
+  },
+  {
+   "name": "Total Employees (Year-End Headcount)",
+   "unit": "count",
+   "kind": "level",
+   "y": {
+    "20251231": 6157.0
+   },
+   "q": {},
+   "src": {
+    "y:20251231": [
+     "5ca06d60-aff0-4016-981c-caf1990aecad.pdf",
+     147,
+     "9(a) Employees - Total",
+     "6157"
+    ]
+   }
+  }
+ ],
  "held": [],
  "catalog": [
   {
