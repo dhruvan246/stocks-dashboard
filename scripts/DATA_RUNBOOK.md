@@ -16000,3 +16000,70 @@ walker will reach later). Parser labels added this batch: `F27` / `Q1 F27` / `Q1
 "as on 1st October, 2025" (re-labelled Q2 FY26 = the Sept-quarter close, label keeps the printed
 phrase). Two in-document contradictions were skipped rather than adjudicated: Bajaj General FY25 AUM
 (33,122 p26 vs 33,112 p87) and Adani Power FY26 availability (89% p30 vs 88% p15).
+
+---
+
+## 138. ★★ CAPEX TRACKER — government vs India Inc capex, with a reality check against the press  (docs/capex.html, built 2026-09-07, worktree ~/stocks-wt/capex)
+
+**Ask (user, 2026-09-07):** *"I see private capex numbers and govt capex numbers in India a lot — can we have a
+page for that"*, then *"not just CNBC, search the internet for all private capex articles and check our data
+matches them."* Nav: Markets → Overview → Capex Tracker (`ic('factory')`, new ICONS key); home tile + blurb;
+sw-shell v146; feeds.json `capex.json` (60 h staleness, 60 KB floor, ratio 0.9).
+
+**Feed = `scripts/fetch_capex.py` → `docs/capex.json`** (refresh-capex.yml daily 21:10 IST; needs `pymupdf`):
+- **A. Budget at a Glance PDFs** (indiabudget.gov.in): capital expenditure = the "On Capital Account" /
+  "Capital Expenditure" row, plus Total Expenditure, Effective Capex (from the 2022-23 document), Fiscal
+  Deficit, Revenue Expenditure and the GDP the document assumes. Columns are [Actuals FY-2, BE FY-1, RE FY-1,
+  BE FY] (five columns when a July full budget follows an interim one — 2024-25 carries "Actuals 2023-24
+  provisional"). **A year's Actuals only appear in the budget two years later**, so `build_annual` chains
+  documents; `scripts/capex_budget_ledger.json` holds every document's rows with URL + fetched date
+  (seed: `--seed-budget`; a normal run re-reads only the current `/doc/Budget_at_Glance/bag1.pdf`).
+  Archive URL shapes differ by era (`budget2018-2019/ub2018-19/bag/bag1.pdf`, and **2016-17 is `bag11.pdf`**,
+  reached from `budget2016-2017/glance.asp`); older docs carry Plan/Non-Plan "On Capital Account" sub-rows,
+  so the parser prefers `19. Capital Expenditure` / `On Capital Account (11+15)` before `13. On Capital Account`.
+  Series chained FY2012-13 → BE 2026-27; every value in the ledger was cross-read against the PDF text on
+  2026-09-07 (consecutive documents agree on the shared BE column in all 13 overlaps).
+- **B. CGA monthly accounts** `https://cga.nic.in/writereaddata/MonthAccount/{M}{YYYY}/DATA{yy}{yy+1}.htm`
+  (Word-generated HTML; rows = `[serial, label, BE, actual-to-date, %BE, (%COPPY)]`; header switches to
+  "Revised Estimates" from January and the March file is "Provisional" full-year). **Files exist from Apr-2017;
+  Apr-2016 and older 404** (measured). `parse_cga` keys 13 rows (revenue receipts … primary deficit); the page
+  recomputes every percentage from the amounts because the CGA's printed % is occasionally wrong (Jun-2023 prints
+  8.0% for 27.8%). Cumulative merge, newest 3 months re-fetched; a shrinking series aborts the write.
+- **C. Listed-company capex** from `scripts/xbrl_extra.json.gz`: `capex` = PurchaseOfPropertyPlantAndEquipment
+  of the year-end cash-flow column, con where filed else std; Dec/Sep/Jun year-ends use the ≥300-day filing that
+  ends inside the FY. **Year-on-year only on SAME-BASIS pairs** — 35–52 symbols per year switch con↔std and would
+  fake a fall. Universes: all filers ex `macro == 'Financial Services'`, Nifty 500 (latest `stock_data.bin`
+  snapshot) ex-fin, fixed five-year panels (287 N500 / 1,324 all), point-in-time Nifty 50, BSE macro sectors,
+  top-40 spenders, ≥₹1,000 cr counts, H1 (Sep half-year cells; validated as half-years: median H1/FY = 0.46),
+  promoter groups (Adani list). Measured 2026-09-07: FY26 all ex-fin ₹11.65 L cr (2,059 cos, +10.0% same-basis);
+  N500 fixed panel ₹3.78 → 8.24 L cr FY22→FY26.
+- **D. `scripts/capex_official.json`** — hand-read with URL + read date: RBI August bulletins (Ids 21995 / 22791 /
+  **23582** — the Id was found by bisecting `BS_ViewBulletin.aspx?Id=` on the "Date :" field, the site search
+  is broken and rbidocs PDFs sit behind a JS captcha), MoSPI capex survey rounds (Apr-2025 booklet, Mar-2026
+  press note), MoSPI GDP press notes for GFCF (new 2022-23 series; the Aug-2026 Q1 note revises two quarters of
+  the Jun-2026 note, latest vintage kept), and the press figures for the reality check. **MoSPI's site is a JS
+  app with no discoverable links** (`/press-release`, `/latest-releases`, homepage all 2.6 KB shells;
+  `api.mospi.gov.in` is a Swagger UI whose spec URL is not exposed) — GFCF cannot self-update yet; new press
+  notes have to be found by search and read into the ledger.
+- **E. GDP** = `docs/macro.json series.gdpn.d` (FY-end dated, lakh cr) for capex/GDP; the budget's own GDP
+  assumption is the fallback (flagged in the hover).
+
+**RBI's two capex concepts (Table A4).** The headline "capex envisaged in year Y" = phasing of projects sanctioned
+BEFORE Y (Aug-2025: ₹2,20,132 cr for 2024-25 = grand total 4,14,923 − same-year sanctions 1,94,791); the grand
+total including Y's own sanctions is what earlier years settle to (2023-24: 1,71,568 → 4,03,186 → 4,15,583 across
+three vintages). The ledger keeps both (`envisaged` per vintage, `outlook`).
+
+**Reality check (page section; user-mandated).** 16 published figures, each with what it measures and our nearest
+equivalent computed live from the filings data. Same-concept figures land within 8–13% (CNBC's 341 N500 cos ₹7.61
+L cr vs our 287-co panel ₹8.24; I-Sec ₹11 trn FY25 vs ₹9.99; UBI ₹8.5 L cr FY24 vs ₹9.15; ₹12.6 L cr FY26 vs
+₹11.65; 168 vs 147 cos ≥₹1,000 cr). Definition gaps are named, not hidden: Nifty 50 "capex −20.7% FY24" is
+gross-block formation (capitalisation timing — cash PP&E rose 19.9% on the PIT index); Adani/Reliance group
+figures add unlisted arms, acquisitions and intangibles; I-Sec's +20% FY25 vs our +10% cannot be attributed
+(their definition is unpublished; ex-Reliance we read +13.9%). Announcements (CMIE/SBI), NAS private-corporate
+GFCF (₹30.3 L cr FY25), the MoSPI survey and RBI pipelines are "not comparable" by construction.
+
+**Gate run (§39):** py_compile + node --check + json.tool on every touched file; page loaded on the worktree
+preview (port 8853): zero console errors, real values in all six pulse tiles / tables / charts; segment buttons,
+hover tooltips, dark + light (palette re-stepped for dark and validated with the dataviz checker), 375 px
+(body 375 = viewport, no sideways scroll); home + macro pages re-opened after the theme.js/sw.js edits.
+Live verification after push is recorded in the commit/memory.

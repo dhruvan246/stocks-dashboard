@@ -8,6 +8,7 @@
   // page tabs, footer, bottom bar, theme switch, search palette and the home tiles.
   // Emoji used to sit in these slots; they rendered differently on every OS. ----
   var ICONS = {
+    factory: '<path d="M2 20a2 2 0 0 0 2 2h16a2 2 0 0 0 2-2V8l-7 5V8l-7 5V4a2 2 0 0 0-2-2H4a2 2 0 0 0-2 2Z"/><path d="M17 18h1"/><path d="M12 18h1"/><path d="M7 18h1"/>',
     candle: '<path d="M9 4v3"/><rect x="7" y="7" width="4" height="8" rx="1"/><path d="M9 15v5"/><path d="M15 3v4"/><rect x="13" y="7" width="4" height="10" rx="1"/><path d="M15 17v4"/>',
     trend: '<polyline points="22 7 13.5 15.5 8.5 10.5 2 17"/><polyline points="16 7 22 7 22 13"/>',
     gauge: '<path d="m12 14 4-4"/><path d="M3.34 19a10 10 0 1 1 17.32 0"/>',
@@ -254,6 +255,7 @@
         ['./monthly-returns.html',    ic('calendar'), 'Monthly Returns'],
         ['./market-mood.html',        ic('thermo'), 'Market Mood'],
         ['./macro.html',              ic('activity'), 'Macro'],
+        ['./capex.html',              ic('factory'), 'Capex Tracker'],
         ['./global.html',             ic('globe'), 'Global Markets'],
         ['./watchlist.html',          ic('bookmark'), 'Watchlist']
       ] },

@@ -426,6 +426,18 @@
       ]
     },
     {
+      "file": "capex.json",
+      "name": "Capex tracker (Budget + CGA monthly + filings)",
+      "workflow": "refresh-capex.yml",
+      "cadence": "daily 21:10 IST",
+      "max_age_hours": 60,
+      "min_bytes": 60000,
+      "min_ratio": 0.9,
+      "pages": [
+        "capex.html"
+      ]
+    },
+    {
       "file": "global.json",
       "name": "Global markets (overnight indices/commodities/FX)",
       "workflow": "refresh-global.yml",

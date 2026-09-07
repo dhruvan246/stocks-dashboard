@@ -1,0 +1,77 @@
+name: Refresh Capex tracker
+
+on:
+  schedule:
+    # 15:40 UTC = 21:10 IST daily — after the fundamentals/results refreshes so the day's
+    # XBRL cash-flow cells are in scripts/xbrl_extra.json.gz, and after CGA's usual
+    # month-end publication window. Cumulative feed (CGA months + budget ledger only grow),
+    # so a failed run simply leaves yesterday's file live.
+    - cron: "40 15 * * *"
+  repository_dispatch:
+    types: [capex-refresh]
+  workflow_dispatch: {}
+
+permissions:
+  contents: write
+  actions: write   # dispatch pages.yml after a change so the data publishes itself
+
+concurrency:
+  group: refresh-capex
+  cancel-in-progress: false
+
+jobs:
+  refresh-capex:
+    runs-on: ubuntu-latest
+    timeout-minutes: 20
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v5
+
+      - name: Set up Python
+        uses: actions/setup-python@v6
+        with:
+          python-version: "3.11"
+
+      - name: Install PyMuPDF (reads the Budget-at-a-Glance PDF)
+        run: pip install pymupdf==1.24.10
+
+      - name: Fetch capex data (CGA monthly + current budget + listed-company filings)
+        run: python3 scripts/fetch_capex.py
+
+      - name: Guard — refuse to commit a broken or shrunken feed
+        run: python3 scripts/guard_feed.py
+
+      - name: Commit updated capex data
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          git config user.name  "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+
+          mkdir -p /tmp/cx/docs /tmp/cx/scripts
+          cp docs/capex.json /tmp/cx/docs/
+          cp scripts/capex_budget_ledger.json /tmp/cx/scripts/
+
+          for attempt in 1 2 3 4 5; do
+            git fetch origin main
+            git reset --hard origin/main
+            cp /tmp/cx/docs/capex.json docs/capex.json
+            cp /tmp/cx/scripts/capex_budget_ledger.json scripts/capex_budget_ledger.json
+            git add docs/capex.json scripts/capex_budget_ledger.json
+
+            if git diff --cached --quiet; then
+              echo "No new capex data — nothing to commit"
+              exit 0
+            fi
+
+            git commit -m "Capex tracker refresh $(TZ=Asia/Kolkata date +'%Y-%m-%d %H:%M IST')"
+            if git push origin HEAD:main; then
+              echo "Pushed on attempt #$attempt"
+              gh workflow run pages.yml || echo "(pages deploy dispatch failed — will publish on next push)"
+              exit 0
+            fi
+            echo "Push attempt #$attempt rejected; resetting and retrying"
+            sleep $(( attempt * 3 ))
+          done
+          echo "Failed to push after 5 attempts"
+          exit 1
