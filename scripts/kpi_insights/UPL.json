@@ -1,8 +1,485 @@
 {
  "sym": "UPL",
  "fy_end_month": 3,
- "docs": {},
- "metrics": [],
+ "docs": {
+  "2f0f3bf4-eb2a-4b8e-85a4-fa1b252aa4f1.pdf": {
+   "kind": "ip",
+   "date": "2026-08-03",
+   "title": "Q1 FY27 Investor Presentation",
+   "read": "2026-09-07",
+   "by": "claude-routine"
+  },
+  "eb12d677-50d7-4495-9f5f-1921ef482847.pdf": {
+   "kind": "ar",
+   "date": "2026-07-15",
+   "title": "UPL Ltd Annual Report FY 2025-26 (AGM Notice)",
+   "read": "2026-09-07",
+   "by": "claude-routine"
+  },
+  "423093cb-ab1a-4288-abdc-894653fabf37.pdf": {
+   "kind": "ip",
+   "date": "2026-05-11",
+   "title": "FY26 Investor Presentation",
+   "read": "2026-09-07",
+   "by": "claude-routine"
+  },
+  "ed2fe91d-1586-4389-a24f-d64a4e6975d8.pdf": {
+   "kind": "ip",
+   "date": "2026-02-20",
+   "title": "Investor Presentation - Strategic Group Reorganization (Feb 2026)",
+   "read": "2026-09-07",
+   "by": "claude-routine"
+  },
+  "6bcd0819-5ddb-4516-a762-f7a1141762db.pdf": {
+   "kind": "ip",
+   "date": "2026-02-02",
+   "title": "Q3 and 9M FY26 Investor Presentation",
+   "read": "2026-09-07",
+   "by": "claude-routine"
+  },
+  "0f944762-33b2-41d9-9bc3-aab7d950cfc9.pdf": {
+   "kind": "ip",
+   "date": "2025-11-06",
+   "title": "Q2 and H1 FY26 Investor Presentation",
+   "read": "2026-09-07",
+   "by": "claude-routine"
+  },
+  "199792f5-db4d-43f8-bca8-9fc46e15e9b3.pdf": {
+   "kind": "ip",
+   "date": "2025-08-01",
+   "title": "Q1 FY26 Investor Presentation",
+   "read": "2026-09-07",
+   "by": "claude-routine"
+  },
+  "16ebc6c3-a363-4437-b10d-8e0dfedb9483.pdf": {
+   "kind": "ar",
+   "date": "2025-07-03",
+   "title": "UPL Ltd - Notice convening 41st AGM and Annual Report FY 2024-25",
+   "read": "2026-09-07",
+   "by": "claude-routine"
+  }
+ },
+ "metrics": [
+  {
+   "name": "Total Recordable Frequency Rate (TRFR)",
+   "unit": "per 2,00,000 man-hours",
+   "kind": "flow",
+   "y": {
+    "20230331": 0.29,
+    "20240331": 0.24,
+    "20250331": 0.22
+   },
+   "q": {},
+   "src": {
+    "y:20250331": [
+     "0f944762-33b2-41d9-9bc3-aab7d950cfc9.pdf",
+     40,
+     "TRFR",
+     "0.22"
+    ],
+    "y:20240331": [
+     "0f944762-33b2-41d9-9bc3-aab7d950cfc9.pdf",
+     40,
+     "TRFR",
+     "0.24"
+    ],
+    "y:20230331": [
+     "0f944762-33b2-41d9-9bc3-aab7d950cfc9.pdf",
+     40,
+     "TRFR",
+     "0.29"
+    ]
+   }
+  },
+  {
+   "name": "Product Registrations",
+   "unit": "count",
+   "kind": "level",
+   "y": {
+    "20250331": 15000.0,
+    "20260331": 16000.0
+   },
+   "q": {},
+   "src": {
+    "y:20260331": [
+     "423093cb-ab1a-4288-abdc-894653fabf37.pdf",
+     8,
+     ">16,000 product registrations (doc period)",
+     "16,000"
+    ],
+    "y:20250331": [
+     "199792f5-db4d-43f8-bca8-9fc46e15e9b3.pdf",
+     28,
+     "Products registered",
+     "15,000"
+    ]
+   }
+  },
+  {
+   "name": "SUPERFORM Non-Agchem Revenue Share",
+   "unit": "%",
+   "kind": "level",
+   "y": {},
+   "q": {
+    "20240930": 20.0,
+    "20250930": 25.0
+   },
+   "src": {
+    "q:20250930": [
+     "0f944762-33b2-41d9-9bc3-aab7d950cfc9.pdf",
+     31,
+     "Non-agchem revenue share",
+     "25"
+    ],
+    "q:20240930": [
+     "0f944762-33b2-41d9-9bc3-aab7d950cfc9.pdf",
+     31,
+     "Non-agchem revenue share (LY)",
+     "20"
+    ]
+   }
+  },
+  {
+   "name": "Advanta Crop Types Covered",
+   "unit": "count",
+   "kind": "level",
+   "y": {
+    "20260331": 40.0
+   },
+   "q": {},
+   "src": {
+    "y:20260331": [
+     "423093cb-ab1a-4288-abdc-894653fabf37.pdf",
+     48,
+     "900+ hybrid varieties across 40 crops",
+     "40"
+    ]
+   }
+  },
+  {
+   "name": "Advanta Hybrid Varieties",
+   "unit": "count",
+   "kind": "level",
+   "y": {
+    "20260331": 900.0
+   },
+   "q": {},
+   "src": {
+    "y:20260331": [
+     "423093cb-ab1a-4288-abdc-894653fabf37.pdf",
+     48,
+     "900+ hybrid varieties across 40 crops",
+     "900"
+    ]
+   }
+  },
+  {
+   "name": "Agchem Platform Innovation Rate",
+   "unit": "%",
+   "kind": "level",
+   "y": {
+    "20260331": 16.0
+   },
+   "q": {},
+   "src": {
+    "y:20260331": [
+     "423093cb-ab1a-4288-abdc-894653fabf37.pdf",
+     8,
+     "~16% innovation rate in agchem platform (doc period)",
+     "16"
+    ]
+   }
+  },
+  {
+   "name": "Agchem Portfolio IP Protected Share",
+   "unit": "%",
+   "kind": "level",
+   "y": {
+    "20260331": 30.0
+   },
+   "q": {},
+   "src": {
+    "y:20260331": [
+     "423093cb-ab1a-4288-abdc-894653fabf37.pdf",
+     8,
+     ">30% agchem portfolio is IP protected (doc period)",
+     "30"
+    ]
+   }
+  },
+  {
+   "name": "Countries Outreach",
+   "unit": "count",
+   "kind": "level",
+   "y": {
+    "20260331": 140.0
+   },
+   "q": {},
+   "src": {
+    "y:20260331": [
+     "423093cb-ab1a-4288-abdc-894653fabf37.pdf",
+     8,
+     ">140 countries outreach (doc period)",
+     "140"
+    ]
+   }
+  },
+  {
+   "name": "Crop Protection Manufacturing Sites",
+   "unit": "count",
+   "kind": "level",
+   "y": {
+    "20260331": 43.0
+   },
+   "q": {},
+   "src": {
+    "y:20260331": [
+     "423093cb-ab1a-4288-abdc-894653fabf37.pdf",
+     8,
+     "43 crop protection mfg. sites (doc period)",
+     "43"
+    ]
+   }
+  },
+  {
+   "name": "Employee Engagement Score",
+   "unit": "score",
+   "kind": "level",
+   "y": {
+    "20250331": 89.0
+   },
+   "q": {},
+   "src": {
+    "y:20250331": [
+     "199792f5-db4d-43f8-bca8-9fc46e15e9b3.pdf",
+     40,
+     "UPL's engagement score",
+     "89"
+    ]
+   }
+  },
+  {
+   "name": "Employees",
+   "unit": "count",
+   "kind": "level",
+   "y": {
+    "20250331": 12000.0
+   },
+   "q": {},
+   "src": {
+    "y:20250331": [
+     "199792f5-db4d-43f8-bca8-9fc46e15e9b3.pdf",
+     28,
+     "Employees",
+     "12,000"
+    ]
+   }
+  },
+  {
+   "name": "Patents",
+   "unit": "count",
+   "kind": "level",
+   "y": {
+    "20260331": 3200.0
+   },
+   "q": {},
+   "src": {
+    "y:20260331": [
+     "423093cb-ab1a-4288-abdc-894653fabf37.pdf",
+     8,
+     ">3,200 patents (doc period)",
+     "3,200"
+    ]
+   }
+  },
+  {
+   "name": "Patents Granted (cumulative)",
+   "unit": "count",
+   "kind": "level",
+   "y": {},
+   "q": {
+    "20250930": 3000.0
+   },
+   "src": {
+    "q:20250930": [
+     "0f944762-33b2-41d9-9bc3-aab7d950cfc9.pdf",
+     43,
+     "Patent Granted >3,000",
+     "3,000"
+    ]
+   }
+  },
+  {
+   "name": "R&D Crop Protection Centres",
+   "unit": "count",
+   "kind": "level",
+   "y": {
+    "20260331": 57.0
+   },
+   "q": {},
+   "src": {
+    "y:20260331": [
+     "423093cb-ab1a-4288-abdc-894653fabf37.pdf",
+     8,
+     "57 R&D crop protection centres (doc period)",
+     "57"
+    ]
+   }
+  },
+  {
+   "name": "R&D Facilities",
+   "unit": "count",
+   "kind": "level",
+   "y": {
+    "20250331": 57.0
+   },
+   "q": {},
+   "src": {
+    "y:20250331": [
+     "199792f5-db4d-43f8-bca8-9fc46e15e9b3.pdf",
+     28,
+     "R&D facilities",
+     "57"
+    ]
+   }
+  },
+  {
+   "name": "R&D Seeds Centres",
+   "unit": "count",
+   "kind": "level",
+   "y": {
+    "20260331": 39.0
+   },
+   "q": {},
+   "src": {
+    "y:20260331": [
+     "423093cb-ab1a-4288-abdc-894653fabf37.pdf",
+     8,
+     "39 R&D seeds centres (doc period)",
+     "39"
+    ]
+   }
+  },
+  {
+   "name": "R&D Team Headcount",
+   "unit": "count",
+   "kind": "level",
+   "y": {},
+   "q": {
+    "20250930": 262.0
+   },
+   "src": {
+    "q:20250930": [
+     "0f944762-33b2-41d9-9bc3-aab7d950cfc9.pdf",
+     43,
+     "Strong R&D Team of 262 Employees",
+     "262"
+    ]
+   }
+  },
+  {
+   "name": "SUPERFORM Industries Served",
+   "unit": "count",
+   "kind": "level",
+   "y": {
+    "20260331": 15.0
+   },
+   "q": {},
+   "src": {
+    "y:20260331": [
+     "423093cb-ab1a-4288-abdc-894653fabf37.pdf",
+     55,
+     "Strong coverage across 15+ industries",
+     "15"
+    ]
+   }
+  },
+  {
+   "name": "Seeds Innovation Index",
+   "unit": "%",
+   "kind": "level",
+   "y": {
+    "20260331": 20.0
+   },
+   "q": {},
+   "src": {
+    "y:20260331": [
+     "423093cb-ab1a-4288-abdc-894653fabf37.pdf",
+     8,
+     "~20% innovation index in seeds (doc period)",
+     "20"
+    ]
+   }
+  },
+  {
+   "name": "Seeds Processing Sites",
+   "unit": "count",
+   "kind": "level",
+   "y": {
+    "20260331": 32.0
+   },
+   "q": {},
+   "src": {
+    "y:20260331": [
+     "423093cb-ab1a-4288-abdc-894653fabf37.pdf",
+     8,
+     "32 seeds processing sites (doc period)",
+     "32"
+    ]
+   }
+  },
+  {
+   "name": "UPL Corp New Product Launches",
+   "unit": "count",
+   "kind": "flow",
+   "y": {
+    "20260331": 300.0
+   },
+   "q": {},
+   "src": {
+    "y:20260331": [
+     "423093cb-ab1a-4288-abdc-894653fabf37.pdf",
+     35,
+     "Launched >300 new products",
+     "300"
+    ]
+   }
+  },
+  {
+   "name": "UPL Corp Regulatory Approvals",
+   "unit": "count",
+   "kind": "flow",
+   "y": {
+    "20260331": 2700.0
+   },
+   "q": {},
+   "src": {
+    "y:20260331": [
+     "423093cb-ab1a-4288-abdc-894653fabf37.pdf",
+     35,
+     "~2,700 approvals",
+     "2,700"
+    ]
+   }
+  },
+  {
+   "name": "UPL Corp Regulatory Dossier Submissions",
+   "unit": "count",
+   "kind": "flow",
+   "y": {
+    "20260331": 2500.0
+   },
+   "q": {},
+   "src": {
+    "y:20260331": [
+     "423093cb-ab1a-4288-abdc-894653fabf37.pdf",
+     35,
+     ">2,500 dossier submissions",
+     "2,500"
+    ]
+   }
+  }
+ ],
  "held": [],
  "catalog": [
   {
