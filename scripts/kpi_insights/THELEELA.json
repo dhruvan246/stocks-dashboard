@@ -15,6 +15,13 @@
    "title": "Q4 & FY26 (year ended 31 Mar 2026) Results Press Release",
    "read": "2026-09-07",
    "by": "claude-routine"
+  },
+  "5aef88a2-453c-49ff-9d2f-53e1e247faac.pdf": {
+   "kind": "pr",
+   "date": "2026-01-16",
+   "title": "Q3 FY26 (quarter ended 31 Dec 2025) Results Press Release",
+   "read": "2026-09-07",
+   "by": "claude-routine"
   }
  },
  "metrics": [
@@ -26,6 +33,7 @@
     "20260331": 25375.0
    },
    "q": {
+    "20251231": 30337.0,
     "20260331": 32059.0,
     "20260630": 20722.0
    },
@@ -47,6 +55,12 @@
      3,
      "ADR up 13% to ₹25,375 (FY26, same-store)",
      "25,375"
+    ],
+    "q:20251231": [
+     "5aef88a2-453c-49ff-9d2f-53e1e247faac.pdf",
+     2,
+     "ADR Q3 FY26",
+     "30,337"
     ]
    }
   },
@@ -58,6 +72,7 @@
     "20260331": 17460.0
    },
    "q": {
+    "20251231": 21551.0,
     "20260331": 23028.0,
     "20260630": 13982.0
    },
@@ -79,6 +94,140 @@
      3,
      "Same-store RevPAR grew 14% to ₹17,460 (FY26)",
      "17,460"
+    ],
+    "q:20251231": [
+     "5aef88a2-453c-49ff-9d2f-53e1e247faac.pdf",
+     2,
+     "RevPAR Q3 FY26",
+     "21,551"
+    ]
+   }
+  },
+  {
+   "name": "Occupancy",
+   "unit": "%",
+   "kind": "flow",
+   "y": {
+    "20260331": 69.0
+   },
+   "q": {
+    "20251231": 71.0,
+    "20260630": 67.5
+   },
+   "src": {
+    "q:20260630": [
+     "83b8117c-82f1-4346-9ae7-99d1d94ace6c.pdf",
+     2,
+     "Occupancy (Owned Domestic Hotels incl. Coorg)",
+     "67.5"
+    ],
+    "y:20260331": [
+     "9bd8ecac-5072-4cd4-a823-3faffa5e6648.pdf",
+     3,
+     "1 percentage improvement in occupancy to 69% (FY26)",
+     "69"
+    ],
+    "q:20251231": [
+     "5aef88a2-453c-49ff-9d2f-53e1e247faac.pdf",
+     2,
+     "Occupancy Q3 FY26",
+     "71"
+    ]
+   }
+  },
+  {
+   "name": "Operational Hotels",
+   "unit": "count",
+   "kind": "level",
+   "y": {
+    "20260331": 15.0
+   },
+   "q": {
+    "20251231": 14.0,
+    "20260630": 15.0
+   },
+   "src": {
+    "q:20260630": [
+     "83b8117c-82f1-4346-9ae7-99d1d94ace6c.pdf",
+     3,
+     "15 operational hotels (doc period)",
+     "15"
+    ],
+    "y:20260331": [
+     "9bd8ecac-5072-4cd4-a823-3faffa5e6648.pdf",
+     4,
+     "15 operational hotels (4,162 keys)",
+     "15"
+    ],
+    "q:20251231": [
+     "5aef88a2-453c-49ff-9d2f-53e1e247faac.pdf",
+     4,
+     "operates 14 properties with 4,090 keys (doc period)",
+     "14"
+    ]
+   }
+  },
+  {
+   "name": "Operational Keys",
+   "unit": "count",
+   "kind": "level",
+   "y": {
+    "20260331": 4162.0
+   },
+   "q": {
+    "20251231": 4090.0,
+    "20260630": 4162.0
+   },
+   "src": {
+    "q:20260630": [
+     "83b8117c-82f1-4346-9ae7-99d1d94ace6c.pdf",
+     3,
+     "15 operational hotels (4,162 keys) (doc period)",
+     "4,162"
+    ],
+    "y:20260331": [
+     "9bd8ecac-5072-4cd4-a823-3faffa5e6648.pdf",
+     4,
+     "15 operational hotels (4,162 keys)",
+     "4,162"
+    ],
+    "q:20251231": [
+     "5aef88a2-453c-49ff-9d2f-53e1e247faac.pdf",
+     4,
+     "operates 14 properties with 4,090 keys (doc period)",
+     "4,090"
+    ]
+   }
+  },
+  {
+   "name": "Pipeline Hotels",
+   "unit": "count",
+   "kind": "level",
+   "y": {
+    "20260331": 9.0
+   },
+   "q": {
+    "20251231": 9.0,
+    "20260630": 10.0
+   },
+   "src": {
+    "q:20260630": [
+     "83b8117c-82f1-4346-9ae7-99d1d94ace6c.pdf",
+     3,
+     "pipeline of 10 hotels (doc period)",
+     "10"
+    ],
+    "y:20260331": [
+     "9bd8ecac-5072-4cd4-a823-3faffa5e6648.pdf",
+     4,
+     "9 hotels in the pipeline (1,065 keys)",
+     "9"
+    ],
+    "q:20251231": [
+     "5aef88a2-453c-49ff-9d2f-53e1e247faac.pdf",
+     4,
+     "9 hotels now in the pipeline (doc period)",
+     "9"
     ]
    }
   },
@@ -104,106 +253,6 @@
      4,
      "NPS leadership with a score of 86 in FY26",
      "86"
-    ]
-   }
-  },
-  {
-   "name": "Occupancy",
-   "unit": "%",
-   "kind": "flow",
-   "y": {
-    "20260331": 69.0
-   },
-   "q": {
-    "20260630": 67.5
-   },
-   "src": {
-    "q:20260630": [
-     "83b8117c-82f1-4346-9ae7-99d1d94ace6c.pdf",
-     2,
-     "Occupancy (Owned Domestic Hotels incl. Coorg)",
-     "67.5"
-    ],
-    "y:20260331": [
-     "9bd8ecac-5072-4cd4-a823-3faffa5e6648.pdf",
-     3,
-     "1 percentage improvement in occupancy to 69% (FY26)",
-     "69"
-    ]
-   }
-  },
-  {
-   "name": "Operational Hotels",
-   "unit": "count",
-   "kind": "level",
-   "y": {
-    "20260331": 15.0
-   },
-   "q": {
-    "20260630": 15.0
-   },
-   "src": {
-    "q:20260630": [
-     "83b8117c-82f1-4346-9ae7-99d1d94ace6c.pdf",
-     3,
-     "15 operational hotels (doc period)",
-     "15"
-    ],
-    "y:20260331": [
-     "9bd8ecac-5072-4cd4-a823-3faffa5e6648.pdf",
-     4,
-     "15 operational hotels (4,162 keys)",
-     "15"
-    ]
-   }
-  },
-  {
-   "name": "Operational Keys",
-   "unit": "count",
-   "kind": "level",
-   "y": {
-    "20260331": 4162.0
-   },
-   "q": {
-    "20260630": 4162.0
-   },
-   "src": {
-    "q:20260630": [
-     "83b8117c-82f1-4346-9ae7-99d1d94ace6c.pdf",
-     3,
-     "15 operational hotels (4,162 keys) (doc period)",
-     "4,162"
-    ],
-    "y:20260331": [
-     "9bd8ecac-5072-4cd4-a823-3faffa5e6648.pdf",
-     4,
-     "15 operational hotels (4,162 keys)",
-     "4,162"
-    ]
-   }
-  },
-  {
-   "name": "Pipeline Hotels",
-   "unit": "count",
-   "kind": "level",
-   "y": {
-    "20260331": 9.0
-   },
-   "q": {
-    "20260630": 10.0
-   },
-   "src": {
-    "q:20260630": [
-     "83b8117c-82f1-4346-9ae7-99d1d94ace6c.pdf",
-     3,
-     "pipeline of 10 hotels (doc period)",
-     "10"
-    ],
-    "y:20260331": [
-     "9bd8ecac-5072-4cd4-a823-3faffa5e6648.pdf",
-     4,
-     "9 hotels in the pipeline (1,065 keys)",
-     "9"
     ]
    }
   },
