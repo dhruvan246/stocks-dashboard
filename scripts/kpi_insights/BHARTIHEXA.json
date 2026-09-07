@@ -8,6 +8,13 @@
    "title": "Q1 FY27 Press Release",
    "read": "2026-09-07",
    "by": "claude-routine"
+  },
+  "1c3c780a-30e2-429b-8214-92c8f16f8175.pdf": {
+   "kind": "ar",
+   "date": "2026-07-18",
+   "title": "FY2025-26 Annual Report",
+   "read": "2026-09-07",
+   "by": "claude-routine"
   }
  },
  "metrics": [
@@ -15,7 +22,9 @@
    "name": "Customer Base – Homes, Offices and Other Services",
    "unit": "'000s",
    "kind": "level",
-   "y": {},
+   "y": {
+    "20240331": 305.0
+   },
    "q": {
     "20250630": 502.0,
     "20260331": 843.0,
@@ -39,6 +48,12 @@
      3,
      "Homes, Offices and Other Services",
      "502"
+    ],
+    "y:20240331": [
+     "1c3c780a-30e2-429b-8214-92c8f16f8175.pdf",
+     30,
+     "Customer Base, 2023-24",
+     "305"
     ]
    }
   },
@@ -105,6 +120,38 @@
    }
   },
   {
+   "name": "Mobile ARPU",
+   "unit": "₹",
+   "kind": "flow",
+   "y": {
+    "20260331": 252.0
+   },
+   "q": {
+    "20250630": 246.0,
+    "20260630": 259.0
+   },
+   "src": {
+    "q:20260630": [
+     "a64145da-9773-40c1-a66f-523655ebea1d.pdf",
+     2,
+     "Mobile ARPU increased to Rs 259 in Q1'27",
+     "259"
+    ],
+    "q:20250630": [
+     "a64145da-9773-40c1-a66f-523655ebea1d.pdf",
+     2,
+     "from Rs 246 in Q1'26",
+     "246"
+    ],
+    "y:20260331": [
+     "1c3c780a-30e2-429b-8214-92c8f16f8175.pdf",
+     9,
+     "Mobile ARPU increased by 4.5% to ₹252",
+     "252"
+    ]
+   }
+  },
+  {
    "name": "Fiber Network Footprint (Cities)",
    "unit": "count",
    "kind": "level",
@@ -129,26 +176,26 @@
    }
   },
   {
-   "name": "Mobile ARPU",
-   "unit": "₹",
-   "kind": "flow",
-   "y": {},
-   "q": {
-    "20250630": 246.0,
-    "20260630": 259.0
+   "name": "Mobile Broadband Base Stations (incl. 5G)",
+   "unit": "count",
+   "kind": "level",
+   "y": {
+    "20250331": 90740.0,
+    "20260331": 94397.0
    },
+   "q": {},
    "src": {
-    "q:20260630": [
-     "a64145da-9773-40c1-a66f-523655ebea1d.pdf",
-     2,
-     "Mobile ARPU increased to Rs 259 in Q1'27",
-     "259"
+    "y:20260331": [
+     "1c3c780a-30e2-429b-8214-92c8f16f8175.pdf",
+     30,
+     "base stations totalled 94,397 at year-end",
+     "94,397"
     ],
-    "q:20250630": [
-     "a64145da-9773-40c1-a66f-523655ebea1d.pdf",
-     2,
-     "from Rs 246 in Q1'26",
-     "246"
+    "y:20250331": [
+     "1c3c780a-30e2-429b-8214-92c8f16f8175.pdf",
+     30,
+     "compared with 90,740 in FY2024-25",
+     "90,740"
     ]
    }
   },
@@ -156,7 +203,9 @@
    "name": "Mobile Data Traffic",
    "unit": "PB",
    "kind": "flow",
-   "y": {},
+   "y": {
+    "20260331": 7983.0
+   },
    "q": {
     "20260630": 2381.0
    },
@@ -166,6 +215,12 @@
      2,
      "Mobile data traffic for the quarter surged to 2,381 PBs",
      "2,381"
+    ],
+    "y:20260331": [
+     "1c3c780a-30e2-429b-8214-92c8f16f8175.pdf",
+     30,
+     "total network data usage grew by 28.0% to 7,983 petabytes",
+     "7,983"
     ]
    }
   },
@@ -173,7 +228,9 @@
    "name": "Mobile Data Usage per Customer",
    "unit": "GB",
    "kind": "flow",
-   "y": {},
+   "y": {
+    "20260331": 34.2
+   },
    "q": {
     "20260630": 36.2
    },
@@ -183,6 +240,36 @@
      2,
      "average monthly usage per customer reaching to 36.2 GB",
      "36.2"
+    ],
+    "y:20260331": [
+     "1c3c780a-30e2-429b-8214-92c8f16f8175.pdf",
+     23,
+     "average data usage per customer per month growing to 34.2 GB",
+     "34.2"
+    ]
+   }
+  },
+  {
+   "name": "Network Towers Count",
+   "unit": "count",
+   "kind": "level",
+   "y": {
+    "20250331": 26497.0,
+    "20260331": 26742.0
+   },
+   "q": {},
+   "src": {
+    "y:20260331": [
+     "1c3c780a-30e2-429b-8214-92c8f16f8175.pdf",
+     30,
+     "operated 26,742 network towers as at March 31, 2026",
+     "26,742"
+    ],
+    "y:20250331": [
+     "1c3c780a-30e2-429b-8214-92c8f16f8175.pdf",
+     30,
+     "up from 26,497 in the previous year",
+     "26,497"
     ]
    }
   },
@@ -190,7 +277,9 @@
    "name": "Smartphone Data Customers Share of Mobile",
    "unit": "%",
    "kind": "level",
-   "y": {},
+   "y": {
+    "20260331": 79.0
+   },
    "q": {
     "20260630": 80.0
    },
@@ -200,6 +289,114 @@
      2,
      "now accounting for 80% of total mobile customers",
      "80"
+    ],
+    "y:20260331": [
+     "1c3c780a-30e2-429b-8214-92c8f16f8175.pdf",
+     9,
+     "now account for 79% of our mobile base",
+     "79"
+    ]
+   }
+  },
+  {
+   "name": "Green Sites Share",
+   "unit": "%",
+   "kind": "level",
+   "y": {
+    "20260331": 75.0
+   },
+   "q": {},
+   "src": {
+    "y:20260331": [
+     "1c3c780a-30e2-429b-8214-92c8f16f8175.pdf",
+     23,
+     "achieved 75% green sites as of March 31, 2026",
+     "75"
+    ]
+   }
+  },
+  {
+   "name": "Net Additions – Homes, Offices and Other Services",
+   "unit": "'000",
+   "kind": "flow",
+   "y": {
+    "20260331": 395.0
+   },
+   "q": {},
+   "src": {
+    "y:20260331": [
+     "1c3c780a-30e2-429b-8214-92c8f16f8175.pdf",
+     9,
+     "robust net additions of ~395K",
+     "395"
+    ]
+   }
+  },
+  {
+   "name": "Net Additions – Mobile Customers",
+   "unit": "'000",
+   "kind": "flow",
+   "y": {
+    "20260331": 645.0
+   },
+   "q": {},
+   "src": {
+    "y:20260331": [
+     "1c3c780a-30e2-429b-8214-92c8f16f8175.pdf",
+     9,
+     "with ~645K net additions during the year",
+     "645"
+    ]
+   }
+  },
+  {
+   "name": "Revenue Market Share (Rajasthan + North-East)",
+   "unit": "%",
+   "kind": "level",
+   "y": {
+    "20260331": 46.0
+   },
+   "q": {},
+   "src": {
+    "y:20260331": [
+     "1c3c780a-30e2-429b-8214-92c8f16f8175.pdf",
+     9,
+     "our revenue market share improved by 925 basis points to reach 46%",
+     "46"
+    ]
+   }
+  },
+  {
+   "name": "Smartphone Data Customers",
+   "unit": "Mn",
+   "kind": "level",
+   "y": {
+    "20260331": 22.7
+   },
+   "q": {},
+   "src": {
+    "y:20260331": [
+     "1c3c780a-30e2-429b-8214-92c8f16f8175.pdf",
+     9,
+     "smartphone data customers grew to 22.7 million",
+     "22.7"
+    ]
+   }
+  },
+  {
+   "name": "Solar Sites",
+   "unit": "count",
+   "kind": "level",
+   "y": {
+    "20260331": 1896.0
+   },
+   "q": {},
+   "src": {
+    "y:20260331": [
+     "1c3c780a-30e2-429b-8214-92c8f16f8175.pdf",
+     23,
+     "the Company expanded its solar energy access to 1,896 sites",
+     "1,896"
     ]
    }
   }
