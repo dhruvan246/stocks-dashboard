@@ -1,8 +1,247 @@
 {
  "sym": "ACC",
  "fy_end_month": 3,
- "docs": {},
- "metrics": [],
+ "docs": {
+  "bb112d1b-2987-4cf5-9c88-4ccac862a4a8.pdf": {
+   "kind": "ip",
+   "date": "2026-07-28",
+   "title": "Q1 FY27 Adani Cement Group Investor Presentation (filed by ACC)",
+   "read": "2026-09-07",
+   "by": "claude-routine"
+  },
+  "4519d477-4c19-4782-a90e-4eab4d6eb95c.pdf": {
+   "kind": "pr",
+   "date": "2026-07-24",
+   "title": "Q1 FY27 Media Release",
+   "read": "2026-09-07",
+   "by": "claude-routine"
+  }
+ },
+ "metrics": [
+  {
+   "name": "Cement Sales Volume",
+   "unit": "MnT",
+   "kind": "flow",
+   "y": {},
+   "q": {
+    "20250630": 10.8,
+    "20260331": 12.2,
+    "20260630": 10.2
+   },
+   "src": {
+    "q:20250630": [
+     "bb112d1b-2987-4cf5-9c88-4ccac862a4a8.pdf",
+     25,
+     "ACC (Incl Rajpura) Jun'25 Q",
+     "10.8"
+    ],
+    "q:20260331": [
+     "bb112d1b-2987-4cf5-9c88-4ccac862a4a8.pdf",
+     25,
+     "ACC (Incl Rajpura) Mar'26 Q",
+     "12.2"
+    ],
+    "q:20260630": [
+     "bb112d1b-2987-4cf5-9c88-4ccac862a4a8.pdf",
+     25,
+     "ACC (Incl Rajpura) Jun'26 Q",
+     "10.2"
+    ]
+   }
+  },
+  {
+   "name": "Direct Dispatch",
+   "unit": "%",
+   "kind": "level",
+   "y": {},
+   "q": {
+    "20250630": 51.0,
+    "20260331": 50.0,
+    "20260630": 52.0
+   },
+   "src": {
+    "q:20260630": [
+     "4519d477-4c19-4782-a90e-4eab4d6eb95c.pdf",
+     3,
+     "Direct Dispatch (%) Q1 FY27",
+     "52"
+    ],
+    "q:20250630": [
+     "4519d477-4c19-4782-a90e-4eab4d6eb95c.pdf",
+     3,
+     "Direct Dispatch (%) Q1 FY26",
+     "51"
+    ],
+    "q:20260331": [
+     "4519d477-4c19-4782-a90e-4eab4d6eb95c.pdf",
+     3,
+     "Direct Dispatch (%) Q4 FY26",
+     "50"
+    ]
+   }
+  },
+  {
+   "name": "Green Power Share",
+   "unit": "%",
+   "kind": "level",
+   "y": {},
+   "q": {
+    "20250630": 26.0,
+    "20260331": 31.0,
+    "20260630": 31.0
+   },
+   "src": {
+    "q:20260630": [
+     "4519d477-4c19-4782-a90e-4eab4d6eb95c.pdf",
+     3,
+     "Green Power share Q1 FY27",
+     "31"
+    ],
+    "q:20250630": [
+     "4519d477-4c19-4782-a90e-4eab4d6eb95c.pdf",
+     3,
+     "Green Power share Q1 FY26",
+     "26"
+    ],
+    "q:20260331": [
+     "4519d477-4c19-4782-a90e-4eab4d6eb95c.pdf",
+     3,
+     "Green Power share Q4 FY26",
+     "31"
+    ]
+   }
+  },
+  {
+   "name": "Premium Products (% of Trade Sale)",
+   "unit": "%",
+   "kind": "level",
+   "y": {},
+   "q": {
+    "20250630": 41.0,
+    "20260331": 45.0,
+    "20260630": 44.0
+   },
+   "src": {
+    "q:20260630": [
+     "4519d477-4c19-4782-a90e-4eab4d6eb95c.pdf",
+     3,
+     "Premium Products (% of trade sale) Q1 FY'27",
+     "44"
+    ],
+    "q:20250630": [
+     "4519d477-4c19-4782-a90e-4eab4d6eb95c.pdf",
+     3,
+     "Premium Products (% of trade sale) Q1 FY'26",
+     "41"
+    ],
+    "q:20260331": [
+     "4519d477-4c19-4782-a90e-4eab4d6eb95c.pdf",
+     3,
+     "Premium Products (% of trade sale) Q4 FY'26",
+     "45"
+    ]
+   }
+  },
+  {
+   "name": "Primary Lead Distance",
+   "unit": "kms",
+   "kind": "flow",
+   "y": {},
+   "q": {
+    "20250630": 290.0,
+    "20260331": 273.0,
+    "20260630": 254.0
+   },
+   "src": {
+    "q:20260630": [
+     "4519d477-4c19-4782-a90e-4eab4d6eb95c.pdf",
+     3,
+     "Primary Lead Q1 FY27",
+     "254"
+    ],
+    "q:20250630": [
+     "4519d477-4c19-4782-a90e-4eab4d6eb95c.pdf",
+     3,
+     "Primary Lead Q1 FY26",
+     "290"
+    ],
+    "q:20260331": [
+     "4519d477-4c19-4782-a90e-4eab4d6eb95c.pdf",
+     3,
+     "Primary Lead Q4 FY26",
+     "273"
+    ]
+   }
+  },
+  {
+   "name": "Cement Manufacturing Sites",
+   "unit": "count",
+   "kind": "level",
+   "y": {},
+   "q": {
+    "20260630": 20.0
+   },
+   "src": {
+    "q:20260630": [
+     "4519d477-4c19-4782-a90e-4eab4d6eb95c.pdf",
+     5,
+     "ACC operates 20 cement manufacturing sites (doc period)",
+     "20"
+    ]
+   }
+  },
+  {
+   "name": "RMX Plant Count",
+   "unit": "count",
+   "kind": "level",
+   "y": {},
+   "q": {
+    "20260630": 119.0
+   },
+   "src": {
+    "q:20260630": [
+     "4519d477-4c19-4782-a90e-4eab4d6eb95c.pdf",
+     3,
+     "Concrete business footprint increased to 119 plants (doc period)",
+     "119"
+    ]
+   }
+  },
+  {
+   "name": "RMX Volume",
+   "unit": "Mn m3",
+   "kind": "flow",
+   "y": {},
+   "q": {
+    "20260630": 0.97
+   },
+   "src": {
+    "q:20260630": [
+     "4519d477-4c19-4782-a90e-4eab4d6eb95c.pdf",
+     3,
+     "Concrete business Volume up 17% at 0.97 Mn m3 YoY",
+     "0.97"
+    ]
+   }
+  },
+  {
+   "name": "Trade Cement Sale Share",
+   "unit": "%",
+   "kind": "level",
+   "y": {},
+   "q": {
+    "20260630": 81.0
+   },
+   "src": {
+    "q:20260630": [
+     "4519d477-4c19-4782-a90e-4eab4d6eb95c.pdf",
+     2,
+     "YoY Trade Share up by 5 pp at 81%",
+     "81"
+    ]
+   }
+  }
+ ],
  "held": [],
  "catalog": [
   {
