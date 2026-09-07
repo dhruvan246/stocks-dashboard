@@ -1,8 +1,241 @@
 {
  "sym": "WAAREEENER",
  "fy_end_month": 3,
- "docs": {},
- "metrics": [],
+ "docs": {
+  "db2e0387-cc51-48b9-9737-d7e7f68807d8.pdf": {
+   "kind": "ip",
+   "date": "2025-07-28",
+   "title": "Q1 FY26 Investor Presentation",
+   "read": "2026-09-07",
+   "by": "claude-routine"
+  },
+  "5e65ca40-b9d5-49ce-b89e-08666311f772.pdf": {
+   "kind": "ip",
+   "date": "2025-10-16",
+   "title": "Q2 FY26 Investor Presentation",
+   "read": "2026-09-07",
+   "by": "claude-routine"
+  }
+ },
+ "metrics": [
+  {
+   "name": "Module Production",
+   "unit": "GW",
+   "kind": "flow",
+   "y": {},
+   "q": {
+    "20240630": 1.4,
+    "20240930": 1.9,
+    "20250630": 2.3,
+    "20250930": 2.6
+   },
+   "src": {
+    "q:20240630": [
+     "db2e0387-cc51-48b9-9737-d7e7f68807d8.pdf",
+     6,
+     "Module Production (GW)",
+     "1.4"
+    ],
+    "q:20250630": [
+     "db2e0387-cc51-48b9-9737-d7e7f68807d8.pdf",
+     6,
+     "Module Production (GW)",
+     "2.3"
+    ],
+    "q:20240930": [
+     "5e65ca40-b9d5-49ce-b89e-08666311f772.pdf",
+     6,
+     "Module Production (GW)",
+     "1.9"
+    ],
+    "q:20250930": [
+     "5e65ca40-b9d5-49ce-b89e-08666311f772.pdf",
+     6,
+     "Module Production (GW)",
+     "2.6"
+    ]
+   }
+  },
+  {
+   "name": "Order Book",
+   "unit": "₹ Cr",
+   "kind": "level",
+   "y": {
+    "20250331": 47000.0
+   },
+   "q": {
+    "20250630": 49000.0,
+    "20250930": 47000.0
+   },
+   "src": {
+    "y:20250331": [
+     "db2e0387-cc51-48b9-9737-d7e7f68807d8.pdf",
+     5,
+     "Order Book",
+     "47,000"
+    ],
+    "q:20250630": [
+     "db2e0387-cc51-48b9-9737-d7e7f68807d8.pdf",
+     5,
+     "Order Book (doc period)",
+     "49,000"
+    ],
+    "q:20250930": [
+     "5e65ca40-b9d5-49ce-b89e-08666311f772.pdf",
+     5,
+     "Order Book (doc period)",
+     "47,000"
+    ]
+   }
+  },
+  {
+   "name": "Cell Capacity",
+   "unit": "GW",
+   "kind": "level",
+   "y": {},
+   "q": {
+    "20250630": 5.4,
+    "20250930": 5.4
+   },
+   "src": {
+    "q:20250630": [
+     "db2e0387-cc51-48b9-9737-d7e7f68807d8.pdf",
+     5,
+     "Cell Capacity (doc period)",
+     "5.4"
+    ],
+    "q:20250930": [
+     "5e65ca40-b9d5-49ce-b89e-08666311f772.pdf",
+     5,
+     "Cell Capacity (doc period)",
+     "5.4"
+    ]
+   }
+  },
+  {
+   "name": "Module Capacity",
+   "unit": "GW",
+   "kind": "level",
+   "y": {},
+   "q": {
+    "20250630": 15.0,
+    "20250930": 18.7
+   },
+   "src": {
+    "q:20250630": [
+     "db2e0387-cc51-48b9-9737-d7e7f68807d8.pdf",
+     5,
+     "Module Capacity (doc period)",
+     "15"
+    ],
+    "q:20250930": [
+     "5e65ca40-b9d5-49ce-b89e-08666311f772.pdf",
+     5,
+     "Module Capacity (doc period)",
+     "18.7"
+    ]
+   }
+  },
+  {
+   "name": "Order Book (GW)",
+   "unit": "GW",
+   "kind": "level",
+   "y": {},
+   "q": {
+    "20250630": 25.0,
+    "20250930": 24.0
+   },
+   "src": {
+    "q:20250630": [
+     "db2e0387-cc51-48b9-9737-d7e7f68807d8.pdf",
+     6,
+     "Order Book (doc period)",
+     "25"
+    ],
+    "q:20250930": [
+     "5e65ca40-b9d5-49ce-b89e-08666311f772.pdf",
+     6,
+     "Order Book (doc period)",
+     "24"
+    ]
+   }
+  },
+  {
+   "name": "Order Pipeline",
+   "unit": "GW",
+   "kind": "level",
+   "y": {},
+   "q": {
+    "20250630": 100.0,
+    "20250930": 100.0
+   },
+   "src": {
+    "q:20250630": [
+     "db2e0387-cc51-48b9-9737-d7e7f68807d8.pdf",
+     6,
+     "Order Pipeline (doc period)",
+     "100"
+    ],
+    "q:20250930": [
+     "5e65ca40-b9d5-49ce-b89e-08666311f772.pdf",
+     6,
+     "Order Pipeline (doc period)",
+     "100"
+    ]
+   }
+  },
+  {
+   "name": "Cell Production",
+   "unit": "GW",
+   "kind": "flow",
+   "y": {},
+   "q": {
+    "20250930": 0.6
+   },
+   "src": {
+    "q:20250930": [
+     "5e65ca40-b9d5-49ce-b89e-08666311f772.pdf",
+     6,
+     "Cell Production (doc period)",
+     "0.6"
+    ]
+   }
+  },
+  {
+   "name": "Order Flow",
+   "unit": "GW",
+   "kind": "flow",
+   "y": {},
+   "q": {
+    "20250630": 2.23
+   },
+   "src": {
+    "q:20250630": [
+     "db2e0387-cc51-48b9-9737-d7e7f68807d8.pdf",
+     8,
+     "Order flow (doc period)",
+     "2.23"
+    ]
+   }
+  },
+  {
+   "name": "Retail Touch Points",
+   "unit": "count",
+   "kind": "level",
+   "y": {},
+   "q": {
+    "20250930": 2800.0
+   },
+   "src": {
+    "q:20250930": [
+     "5e65ca40-b9d5-49ce-b89e-08666311f772.pdf",
+     23,
+     "Widest retail network with over 2,800 touch points (doc period)",
+     "2,800"
+    ]
+   }
+  }
+ ],
  "held": [],
  "catalog": [
   {
