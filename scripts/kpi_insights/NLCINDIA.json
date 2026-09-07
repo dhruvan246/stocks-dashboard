@@ -36,6 +36,13 @@
    "title": "Institutional Investors Meet Presentation (H1 FY26)",
    "read": "2026-09-07",
    "by": "claude-routine"
+  },
+  "ae523ca7-e933-4ec4-af04-6c514eccddbb.pdf": {
+   "kind": "ip",
+   "date": "2026-05-27",
+   "title": "FY2026 Annual Corporate Presentation",
+   "read": "2026-09-07",
+   "by": "claude-routine"
   }
  },
  "metrics": [
@@ -148,6 +155,110 @@
      21,
      "Group gross generation (In BU)",
      "27.87"
+    ]
+   }
+  },
+  {
+   "name": "Output per Man Shift - Lignite",
+   "unit": "Tonne",
+   "kind": "flow",
+   "y": {
+    "20210331": 14.07,
+    "20220331": 18.09,
+    "20230331": 16.53,
+    "20240331": 17.33,
+    "20250331": 17.6,
+    "20260331": 18.5
+   },
+   "q": {},
+   "src": {
+    "y:20210331": [
+     "ae523ca7-e933-4ec4-af04-6c514eccddbb.pdf",
+     48,
+     "Standalone Efficiency – Output per Man Shift, Lignite (Tonne)",
+     "14.07"
+    ],
+    "y:20220331": [
+     "ae523ca7-e933-4ec4-af04-6c514eccddbb.pdf",
+     48,
+     "Standalone Efficiency – Output per Man Shift, Lignite (Tonne)",
+     "18.09"
+    ],
+    "y:20230331": [
+     "ae523ca7-e933-4ec4-af04-6c514eccddbb.pdf",
+     48,
+     "Standalone Efficiency – Output per Man Shift, Lignite (Tonne)",
+     "16.53"
+    ],
+    "y:20240331": [
+     "ae523ca7-e933-4ec4-af04-6c514eccddbb.pdf",
+     48,
+     "Standalone Efficiency – Output per Man Shift, Lignite (Tonne)",
+     "17.33"
+    ],
+    "y:20250331": [
+     "ae523ca7-e933-4ec4-af04-6c514eccddbb.pdf",
+     48,
+     "Standalone Efficiency – Output per Man Shift, Lignite (Tonne)",
+     "17.60"
+    ],
+    "y:20260331": [
+     "ae523ca7-e933-4ec4-af04-6c514eccddbb.pdf",
+     48,
+     "Standalone Efficiency – Output per Man Shift, Lignite (Tonne)",
+     "18.50"
+    ]
+   }
+  },
+  {
+   "name": "Output per Man Shift - Power",
+   "unit": "KWhr",
+   "kind": "flow",
+   "y": {
+    "20210331": 25054.0,
+    "20220331": 39662.0,
+    "20230331": 39532.0,
+    "20240331": 36478.0,
+    "20250331": 36929.0,
+    "20260331": 37200.0
+   },
+   "q": {},
+   "src": {
+    "y:20210331": [
+     "ae523ca7-e933-4ec4-af04-6c514eccddbb.pdf",
+     48,
+     "Standalone Efficiency – Output per Man Shift, Power (KWhr)",
+     "25,054"
+    ],
+    "y:20220331": [
+     "ae523ca7-e933-4ec4-af04-6c514eccddbb.pdf",
+     48,
+     "Standalone Efficiency – Output per Man Shift, Power (KWhr)",
+     "39,662"
+    ],
+    "y:20230331": [
+     "ae523ca7-e933-4ec4-af04-6c514eccddbb.pdf",
+     48,
+     "Standalone Efficiency – Output per Man Shift, Power (KWhr)",
+     "39,532"
+    ],
+    "y:20240331": [
+     "ae523ca7-e933-4ec4-af04-6c514eccddbb.pdf",
+     48,
+     "Standalone Efficiency – Output per Man Shift, Power (KWhr)",
+     "36,478"
+    ],
+    "y:20250331": [
+     "ae523ca7-e933-4ec4-af04-6c514eccddbb.pdf",
+     48,
+     "Standalone Efficiency – Output per Man Shift, Power (KWhr)",
+     "36,929"
+    ],
+    "y:20260331": [
+     "ae523ca7-e933-4ec4-af04-6c514eccddbb.pdf",
+     48,
+     "Standalone Efficiency – Output per Man Shift, Power (KWhr)",
+     "37,200"
     ]
    }
   },
@@ -470,6 +581,56 @@
    }
   },
   {
+   "name": "Installed Renewable Generation Capacity (Group)",
+   "unit": "MW",
+   "kind": "level",
+   "y": {
+    "20260331": 1734.0
+   },
+   "q": {
+    "20250930": 1599.0
+   },
+   "src": {
+    "q:20250930": [
+     "09957902-9af7-4f6d-896a-89e23f8d33eb.pdf",
+     22,
+     "Renewable Capacity 1599 MW (Consolidated As on 30.09.2025)",
+     "1599"
+    ],
+    "y:20260331": [
+     "ae523ca7-e933-4ec4-af04-6c514eccddbb.pdf",
+     29,
+     "Renewable Capacity",
+     "1,734"
+    ]
+   }
+  },
+  {
+   "name": "Installed Thermal Generation Capacity (Group)",
+   "unit": "MW",
+   "kind": "level",
+   "y": {
+    "20260331": 5960.0
+   },
+   "q": {
+    "20250930": 5960.0
+   },
+   "src": {
+    "q:20250930": [
+     "09957902-9af7-4f6d-896a-89e23f8d33eb.pdf",
+     22,
+     "Thermal Capacity 5960 MW (Consolidated As on 30.09.2025)",
+     "5960"
+    ],
+    "y:20260331": [
+     "ae523ca7-e933-4ec4-af04-6c514eccddbb.pdf",
+     29,
+     "Thermal Capacity",
+     "5,960"
+    ]
+   }
+  },
+  {
    "name": "NLCIL Thermal Power Gross Generation (Standalone)",
    "unit": "MU",
    "kind": "flow",
@@ -532,17 +693,26 @@
    "unit": "MW",
    "kind": "flow",
    "y": {
-    "20260331": 1013.0
+    "20260331": 963.0
    },
    "q": {},
    "src": {
     "y:20260331": [
-     "b9804365-8f1d-4a29-8609-2c95ecb4f0b7.pdf",
-     2,
-     "Capacity Additions made to the tune of 1,013 MW including Thermals 660 MW ... an",
-     "1,013"
+     "ae523ca7-e933-4ec4-af04-6c514eccddbb.pdf",
+     6,
+     "Capacity Additions",
+     "963"
     ]
-   }
+   },
+   "restated": [
+    [
+     "y:20260331",
+     "b9804365-8f1d-4a29-8609-2c95ecb4f0b7.pdf",
+     1013.0,
+     "ae523ca7-e933-4ec4-af04-6c514eccddbb.pdf",
+     963.0
+    ]
+   ]
   },
   {
    "name": "Coal Dispatch (Standalone, Talabira II & III OCP)",
@@ -579,36 +749,19 @@
    }
   },
   {
-   "name": "Installed Renewable Generation Capacity (Group)",
-   "unit": "MW",
+   "name": "Pachwara South Coal Mine Capacity",
+   "unit": "MTPA",
    "kind": "level",
-   "y": {},
-   "q": {
-    "20250930": 1599.0
+   "y": {
+    "20260331": 9.0
    },
+   "q": {},
    "src": {
-    "q:20250930": [
-     "09957902-9af7-4f6d-896a-89e23f8d33eb.pdf",
-     22,
-     "Renewable Capacity 1599 MW (Consolidated As on 30.09.2025)",
-     "1599"
-    ]
-   }
-  },
-  {
-   "name": "Installed Thermal Generation Capacity (Group)",
-   "unit": "MW",
-   "kind": "level",
-   "y": {},
-   "q": {
-    "20250930": 5960.0
-   },
-   "src": {
-    "q:20250930": [
-     "09957902-9af7-4f6d-896a-89e23f8d33eb.pdf",
-     22,
-     "Thermal Capacity 5960 MW (Consolidated As on 30.09.2025)",
-     "5960"
+    "y:20260331": [
+     "ae523ca7-e933-4ec4-af04-6c514eccddbb.pdf",
+     6,
+     "Pachwara South Coal Mine 9 MTPA, Coal Production Commenced in March 2026 (doc pe",
+     "9"
     ]
    }
   },
@@ -626,6 +779,40 @@
      2,
      "Renewable Energy Power Generation of 2.26 BU",
      "2.26"
+    ]
+   }
+  },
+  {
+   "name": "Total Workforce",
+   "unit": "count",
+   "kind": "level",
+   "y": {
+    "20260331": 9735.0
+   },
+   "q": {},
+   "src": {
+    "y:20260331": [
+     "ae523ca7-e933-4ec4-af04-6c514eccddbb.pdf",
+     48,
+     "Total Workforce (doc period)",
+     "9,735"
+    ]
+   }
+  },
+  {
+   "name": "Women in Workforce",
+   "unit": "count",
+   "kind": "level",
+   "y": {
+    "20260331": 757.0
+   },
+   "q": {},
+   "src": {
+    "y:20260331": [
+     "ae523ca7-e933-4ec4-af04-6c514eccddbb.pdf",
+     48,
+     "Women in Workforce (doc period)",
+     "757"
     ]
    }
   }
