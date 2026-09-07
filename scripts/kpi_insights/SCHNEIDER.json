@@ -1,8 +1,444 @@
 {
  "sym": "SCHNEIDER",
  "fy_end_month": 3,
- "docs": {},
- "metrics": [],
+ "docs": {
+  "01c88ed7-c450-4a2a-8875-27a1a2e478ee.pdf": {
+   "kind": "ip",
+   "date": "2026-08-17",
+   "title": "Q1 FY27 Investor Presentation",
+   "read": "2026-09-07",
+   "by": "claude-routine"
+  },
+  "9078fd0d-210b-4887-b6b1-26827b1a7acb.pdf": {
+   "kind": "ip",
+   "date": "2026-05-29",
+   "title": "Q4 FY26 Investor Presentation",
+   "read": "2026-09-07",
+   "by": "claude-routine"
+  },
+  "8b703649-abf3-4c40-bb45-41b6c2874a6c.pdf": {
+   "kind": "ip",
+   "date": "2026-02-12",
+   "title": "Q3 FY26 Investor Presentation",
+   "read": "2026-09-07",
+   "by": "claude-routine"
+  },
+  "cfa62b44-bcea-4b0a-97ba-edee5008c85e.pdf": {
+   "kind": "ip",
+   "date": "2025-08-07",
+   "title": "Q1 FY26 Investor Presentation",
+   "read": "2026-09-07",
+   "by": "claude-routine"
+  },
+  "55aecce4-5bc0-4c9a-b733-60356febc822.pdf": {
+   "kind": "ip",
+   "date": "2025-11-10",
+   "title": "Q2 FY26 Investor Presentation (Q2 & H1 FY25-26 Results)",
+   "read": "2026-09-07",
+   "by": "claude-routine"
+  },
+  "9238b901-7545-4087-9238-adb6875aad45.pdf": {
+   "kind": "ar",
+   "date": "2026-08-18",
+   "title": "Annual Report FY 2025-26",
+   "read": "2026-09-07",
+   "by": "claude-routine"
+  },
+  "c6a98eef-4573-49aa-a2d3-e0b549974e55.pdf": {
+   "kind": "ip",
+   "date": "2025-05-27",
+   "title": "Q4 FY25 Investor Presentation",
+   "read": "2026-09-07",
+   "by": "claude-routine"
+  },
+  "ece4a9e3-2dac-4e40-b779-df112b59c50e.pdf": {
+   "kind": "ar",
+   "date": "2025-08-12",
+   "title": "Annual Report 2024-25",
+   "read": "2026-09-07",
+   "by": "claude-routine"
+  }
+ },
+ "metrics": [
+  {
+   "name": "Order Intake",
+   "unit": "INR Cr",
+   "kind": "flow",
+   "y": {
+    "20240331": 2375.0,
+    "20250331": 2693.0,
+    "20260331": 3430.0
+   },
+   "q": {
+    "20240331": 686.0,
+    "20250331": 762.0,
+    "20260331": 772.0
+   },
+   "src": {
+    "y:20260331": [
+     "9078fd0d-210b-4887-b6b1-26827b1a7acb.pdf",
+     20,
+     "Orders",
+     "3430"
+    ],
+    "q:20260331": [
+     "9078fd0d-210b-4887-b6b1-26827b1a7acb.pdf",
+     20,
+     "Orders",
+     "772"
+    ],
+    "y:20240331": [
+     "c6a98eef-4573-49aa-a2d3-e0b549974e55.pdf",
+     18,
+     "12M FY 24",
+     "2,375"
+    ],
+    "y:20250331": [
+     "c6a98eef-4573-49aa-a2d3-e0b549974e55.pdf",
+     18,
+     "12M FY 25",
+     "2,693"
+    ],
+    "q:20240331": [
+     "c6a98eef-4573-49aa-a2d3-e0b549974e55.pdf",
+     18,
+     "Q4 FY 24",
+     "686"
+    ],
+    "q:20250331": [
+     "c6a98eef-4573-49aa-a2d3-e0b549974e55.pdf",
+     18,
+     "Q4 FY 25",
+     "762"
+    ]
+   }
+  },
+  {
+   "name": "Order Inflow",
+   "unit": "INR Cr",
+   "kind": "flow",
+   "y": {},
+   "q": {
+    "20240630": 640.0,
+    "20240930": 725.0,
+    "20250630": 910.0,
+    "20250930": 838.0,
+    "20251231": 909.0
+   },
+   "src": {
+    "q:20251231": [
+     "8b703649-abf3-4c40-bb45-41b6c2874a6c.pdf",
+     15,
+     "Orders Q3",
+     "909"
+    ],
+    "q:20240630": [
+     "cfa62b44-bcea-4b0a-97ba-edee5008c85e.pdf",
+     13,
+     "Orders",
+     "640"
+    ],
+    "q:20250630": [
+     "cfa62b44-bcea-4b0a-97ba-edee5008c85e.pdf",
+     13,
+     "Orders",
+     "910"
+    ],
+    "q:20240930": [
+     "55aecce4-5bc0-4c9a-b733-60356febc822.pdf",
+     12,
+     "Q2' FY25 (Orders)",
+     "725"
+    ],
+    "q:20250930": [
+     "55aecce4-5bc0-4c9a-b733-60356febc822.pdf",
+     12,
+     "Q2' FY26 (Orders)",
+     "838"
+    ]
+   }
+  },
+  {
+   "name": "Order Backlog",
+   "unit": "INR Cr",
+   "kind": "level",
+   "y": {},
+   "q": {
+    "20250331": 1253.0,
+    "20250630": 1635.0,
+    "20250930": 1805.0,
+    "20251231": 1707.0
+   },
+   "src": {
+    "q:20251231": [
+     "8b703649-abf3-4c40-bb45-41b6c2874a6c.pdf",
+     15,
+     "sustainable backlog (doc period)",
+     "1,707"
+    ],
+    "q:20250630": [
+     "cfa62b44-bcea-4b0a-97ba-edee5008c85e.pdf",
+     12,
+     "Backlog",
+     "1635"
+    ],
+    "q:20250930": [
+     "55aecce4-5bc0-4c9a-b733-60356febc822.pdf",
+     11,
+     "Order Backlog on 30th Sep'25",
+     "1,805"
+    ],
+    "q:20250331": [
+     "c6a98eef-4573-49aa-a2d3-e0b549974e55.pdf",
+     18,
+     "Order Backlog on 31st Mar'25",
+     "1,253"
+    ]
+   }
+  },
+  {
+   "name": "Number of Dealers/Distributors",
+   "unit": "count",
+   "kind": "level",
+   "y": {
+    "20240331": 96.0,
+    "20250331": 107.0
+   },
+   "q": {},
+   "src": {
+    "y:20250331": [
+     "ece4a9e3-2dac-4e40-b779-df112b59c50e.pdf",
+     145,
+     "Number of dealers / distributors to whom sales are made",
+     "107"
+    ],
+    "y:20240331": [
+     "ece4a9e3-2dac-4e40-b779-df112b59c50e.pdf",
+     145,
+     "Number of dealers / distributors to whom sales are made",
+     "96"
+    ]
+   }
+  },
+  {
+   "name": "Total Employees",
+   "unit": "count",
+   "kind": "level",
+   "y": {
+    "20240331": 993.0,
+    "20250331": 1076.0
+   },
+   "q": {},
+   "src": {
+    "y:20250331": [
+     "ece4a9e3-2dac-4e40-b779-df112b59c50e.pdf",
+     160,
+     "Total Employees",
+     "1,076"
+    ],
+    "y:20240331": [
+     "ece4a9e3-2dac-4e40-b779-df112b59c50e.pdf",
+     160,
+     "Total Employees",
+     "993"
+    ]
+   }
+  },
+  {
+   "name": "Total Workers",
+   "unit": "count",
+   "kind": "level",
+   "y": {
+    "20240331": 757.0,
+    "20250331": 940.0
+   },
+   "q": {},
+   "src": {
+    "y:20250331": [
+     "ece4a9e3-2dac-4e40-b779-df112b59c50e.pdf",
+     160,
+     "Total Workers",
+     "940"
+    ],
+    "y:20240331": [
+     "ece4a9e3-2dac-4e40-b779-df112b59c50e.pdf",
+     160,
+     "Total Workers",
+     "757"
+    ]
+   }
+  },
+  {
+   "name": "Closing Order Backlog",
+   "unit": "INR Cr",
+   "kind": "level",
+   "y": {
+    "20260331": 1911.0
+   },
+   "q": {},
+   "src": {
+    "y:20260331": [
+     "9078fd0d-210b-4887-b6b1-26827b1a7acb.pdf",
+     20,
+     "closing backlog",
+     "1911"
+    ]
+   }
+  },
+  {
+   "name": "Countries Served",
+   "unit": "count",
+   "kind": "level",
+   "y": {
+    "20250331": 44.0
+   },
+   "q": {},
+   "src": {
+    "y:20250331": [
+     "ece4a9e3-2dac-4e40-b779-df112b59c50e.pdf",
+     136,
+     "International (No. of Countries) (doc period)",
+     "44"
+    ]
+   }
+  },
+  {
+   "name": "Kolkata Plant Breaker Capacity",
+   "unit": "Breakers",
+   "kind": "level",
+   "y": {
+    "20250331": 5000.0
+   },
+   "q": {},
+   "src": {
+    "y:20250331": [
+     "c6a98eef-4573-49aa-a2d3-e0b549974e55.pdf",
+     17,
+     "Existing capacity - Kolkata Plant (doc period)",
+     "5000"
+    ]
+   }
+  },
+  {
+   "name": "Kolkata Plant Capacity Utilization",
+   "unit": "%",
+   "kind": "level",
+   "y": {
+    "20250331": 90.0
+   },
+   "q": {},
+   "src": {
+    "y:20250331": [
+     "c6a98eef-4573-49aa-a2d3-e0b549974e55.pdf",
+     17,
+     "Existing capacity utilization - Kolkata Plant (doc period)",
+     "90"
+    ]
+   }
+  },
+  {
+   "name": "Manufacturing Plants Count",
+   "unit": "count",
+   "kind": "level",
+   "y": {
+    "20250331": 4.0
+   },
+   "q": {},
+   "src": {
+    "y:20250331": [
+     "ece4a9e3-2dac-4e40-b779-df112b59c50e.pdf",
+     136,
+     "National plants (doc period)",
+     "4"
+    ]
+   }
+  },
+  {
+   "name": "Office Locations Count",
+   "unit": "count",
+   "kind": "level",
+   "y": {
+    "20250331": 19.0
+   },
+   "q": {},
+   "src": {
+    "y:20250331": [
+     "ece4a9e3-2dac-4e40-b779-df112b59c50e.pdf",
+     136,
+     "National offices (doc period)",
+     "19"
+    ]
+   }
+  },
+  {
+   "name": "Order Intake",
+   "unit": "₹ Crore",
+   "kind": "flow",
+   "y": {
+    "20260331": 3430.0
+   },
+   "q": {},
+   "src": {
+    "y:20260331": [
+     "9238b901-7545-4087-9238-adb6875aad45.pdf",
+     49,
+     "Order intake",
+     "3,430"
+    ]
+   }
+  },
+  {
+   "name": "Total Employee and Workforce Strength",
+   "unit": "count",
+   "kind": "level",
+   "y": {
+    "20260331": 2255.0
+   },
+   "q": {},
+   "src": {
+    "y:20260331": [
+     "9238b901-7545-4087-9238-adb6875aad45.pdf",
+     176,
+     "Total employee and workforce strength",
+     "2,255"
+    ]
+   }
+  },
+  {
+   "name": "Vadodara Plant Capacity Utilization",
+   "unit": "%",
+   "kind": "level",
+   "y": {
+    "20250331": 90.0
+   },
+   "q": {},
+   "src": {
+    "y:20250331": [
+     "c6a98eef-4573-49aa-a2d3-e0b549974e55.pdf",
+     17,
+     "Existing capacity utilization - Vadodara Plant (doc period)",
+     "90"
+    ]
+   }
+  },
+  {
+   "name": "Vadodara Plant Panel Capacity",
+   "unit": "Panels",
+   "kind": "level",
+   "y": {
+    "20250331": 8000.0
+   },
+   "q": {},
+   "src": {
+    "y:20250331": [
+     "c6a98eef-4573-49aa-a2d3-e0b549974e55.pdf",
+     17,
+     "Existing capacity - Switchgear Plant, Vadodara (doc period)",
+     "8000"
+    ]
+   }
+  }
+ ],
  "held": [],
  "catalog": [
   {
