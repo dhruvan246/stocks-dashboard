@@ -15,9 +15,72 @@
    "title": "Q1 FY27 Investor Presentation",
    "read": "2026-09-07",
    "by": "claude-routine"
+  },
+  "592024ea-8fa3-4b96-acb2-b9fac84b3044.pdf": {
+   "kind": "ar",
+   "date": "2025-08-20",
+   "title": "Annual Report FY 2024-25",
+   "read": "2026-09-07",
+   "by": "claude-routine"
   }
  },
  "metrics": [
+  {
+   "name": "Installed Fertiliser Capacity (Total)",
+   "unit": "MMTPA",
+   "kind": "level",
+   "y": {
+    "20250331": 3.0,
+    "20260331": 3.9
+   },
+   "q": {
+    "20260630": 3.7
+   },
+   "src": {
+    "y:20260331": [
+     "07d55008-83af-4431-be24-19b9fddce9d4.pdf",
+     28,
+     "Company's growth to 3.9 MMTPA installed capacity (doc period)",
+     "3.9"
+    ],
+    "q:20260630": [
+     "44e04b77-cbb8-49d0-8b79-f83ccca536fe.pdf",
+     3,
+     "capacity of 3.7 MMTPA (doc period)",
+     "3.7"
+    ],
+    "y:20250331": [
+     "592024ea-8fa3-4b96-acb2-b9fac84b3044.pdf",
+     49,
+     "total installed capacity (doc period)",
+     "3.0"
+    ]
+   }
+  },
+  {
+   "name": "DAP Production",
+   "unit": "'000 MT",
+   "kind": "flow",
+   "y": {
+    "20240331": 734.0,
+    "20250331": 670.0
+   },
+   "q": {},
+   "src": {
+    "y:20250331": [
+     "592024ea-8fa3-4b96-acb2-b9fac84b3044.pdf",
+     49,
+     "DAP Production",
+     "670"
+    ],
+    "y:20240331": [
+     "592024ea-8fa3-4b96-acb2-b9fac84b3044.pdf",
+     49,
+     "DAP Production",
+     "734"
+    ]
+   }
+  },
   {
    "name": "DAP Sales (incl. traded)",
    "unit": "MT",
@@ -44,27 +107,51 @@
    }
   },
   {
-   "name": "Installed Fertiliser Capacity (Total)",
-   "unit": "MMTPA",
+   "name": "Farmers Covered",
+   "unit": "Mn",
    "kind": "level",
    "y": {
-    "20260331": 3.9
+    "20250331": 9.5
    },
    "q": {
-    "20260630": 3.7
+    "20260630": 12.0
    },
    "src": {
-    "y:20260331": [
-     "07d55008-83af-4431-be24-19b9fddce9d4.pdf",
-     28,
-     "Company's growth to 3.9 MMTPA installed capacity (doc period)",
-     "3.9"
-    ],
     "q:20260630": [
      "44e04b77-cbb8-49d0-8b79-f83ccca536fe.pdf",
-     3,
-     "capacity of 3.7 MMTPA (doc period)",
-     "3.7"
+     11,
+     "Farmers Covered (doc period)",
+     "12"
+    ],
+    "y:20250331": [
+     "592024ea-8fa3-4b96-acb2-b9fac84b3044.pdf",
+     49,
+     "trusted by over 9.5 million farmers (doc period)",
+     "9.5"
+    ]
+   }
+  },
+  {
+   "name": "N-20 Production",
+   "unit": "'000 MT",
+   "kind": "flow",
+   "y": {
+    "20240331": 712.0,
+    "20250331": 1021.0
+   },
+   "q": {},
+   "src": {
+    "y:20250331": [
+     "592024ea-8fa3-4b96-acb2-b9fac84b3044.pdf",
+     49,
+     "N-20 Production",
+     "1,021"
+    ],
+    "y:20240331": [
+     "592024ea-8fa3-4b96-acb2-b9fac84b3044.pdf",
+     49,
+     "N-20 Production",
+     "712"
     ]
    }
   },
@@ -94,6 +181,80 @@
    }
   },
   {
+   "name": "No. of Retailers",
+   "unit": "count",
+   "kind": "level",
+   "y": {
+    "20250331": 95000.0
+   },
+   "q": {
+    "20260630": 100000.0
+   },
+   "src": {
+    "q:20260630": [
+     "44e04b77-cbb8-49d0-8b79-f83ccca536fe.pdf",
+     11,
+     "No. of Retailers (doc period)",
+     "1,00,000"
+    ],
+    "y:20250331": [
+     "592024ea-8fa3-4b96-acb2-b9fac84b3044.pdf",
+     49,
+     "Distribution network (doc period)",
+     "95,000"
+    ]
+   }
+  },
+  {
+   "name": "Other Fertilizers Production",
+   "unit": "'000 MT",
+   "kind": "flow",
+   "y": {
+    "20240331": 859.0,
+    "20250331": 944.0
+   },
+   "q": {},
+   "src": {
+    "y:20250331": [
+     "592024ea-8fa3-4b96-acb2-b9fac84b3044.pdf",
+     49,
+     "Other fertilizers Production",
+     "944"
+    ],
+    "y:20240331": [
+     "592024ea-8fa3-4b96-acb2-b9fac84b3044.pdf",
+     49,
+     "Other fertilizers Production",
+     "859"
+    ]
+   }
+  },
+  {
+   "name": "States Covered",
+   "unit": "count",
+   "kind": "level",
+   "y": {
+    "20250331": 16.0
+   },
+   "q": {
+    "20260630": 18.0
+   },
+   "src": {
+    "q:20260630": [
+     "44e04b77-cbb8-49d0-8b79-f83ccca536fe.pdf",
+     11,
+     "States Covered (doc period)",
+     "18"
+    ],
+    "y:20250331": [
+     "592024ea-8fa3-4b96-acb2-b9fac84b3044.pdf",
+     49,
+     "distribution footprint across 16 Indian states (doc period)",
+     "16"
+    ]
+   }
+  },
+  {
    "name": "TSP Sales",
    "unit": "MT",
    "kind": "flow",
@@ -115,6 +276,54 @@
      5,
      "TSP",
      "23,905"
+    ]
+   }
+  },
+  {
+   "name": "Total Production",
+   "unit": "MT",
+   "kind": "flow",
+   "y": {
+    "20240331": 2304970.0,
+    "20250331": 2635409.0
+   },
+   "q": {},
+   "src": {
+    "y:20250331": [
+     "592024ea-8fa3-4b96-acb2-b9fac84b3044.pdf",
+     49,
+     "Production (MT)",
+     "2,635,409"
+    ],
+    "y:20240331": [
+     "592024ea-8fa3-4b96-acb2-b9fac84b3044.pdf",
+     49,
+     "Production (MT)",
+     "2,304,970"
+    ]
+   }
+  },
+  {
+   "name": "Total Sales Volume",
+   "unit": "MT",
+   "kind": "flow",
+   "y": {
+    "20240331": 2527591.0,
+    "20250331": 3033966.0
+   },
+   "q": {},
+   "src": {
+    "y:20250331": [
+     "592024ea-8fa3-4b96-acb2-b9fac84b3044.pdf",
+     49,
+     "Sales Volume (MT)",
+     "3,033,966"
+    ],
+    "y:20240331": [
+     "592024ea-8fa3-4b96-acb2-b9fac84b3044.pdf",
+     49,
+     "Sales Volume (MT)",
+     "2,527,591"
     ]
    }
   },
@@ -161,23 +370,6 @@
    }
   },
   {
-   "name": "Farmers Covered",
-   "unit": "Mn",
-   "kind": "level",
-   "y": {},
-   "q": {
-    "20260630": 12.0
-   },
-   "src": {
-    "q:20260630": [
-     "44e04b77-cbb8-49d0-8b79-f83ccca536fe.pdf",
-     11,
-     "Farmers Covered (doc period)",
-     "12"
-    ]
-   }
-  },
-  {
    "name": "Goa Unit Installed Fertiliser Capacity",
    "unit": "MMTPA",
    "kind": "level",
@@ -191,6 +383,23 @@
      28,
      "Installed Fertiliser Capacity (doc period)",
      "1.2"
+    ]
+   }
+  },
+  {
+   "name": "Goa Unit Urea Capacity",
+   "unit": "MMTPA",
+   "kind": "level",
+   "y": {
+    "20250331": 0.4
+   },
+   "q": {},
+   "src": {
+    "y:20250331": [
+     "592024ea-8fa3-4b96-acb2-b9fac84b3044.pdf",
+     49,
+     "urea capacity (doc period)",
+     "0.4"
     ]
    }
   },
@@ -276,23 +485,6 @@
      11,
      "No. of Dealers (doc period)",
      "7,000"
-    ]
-   }
-  },
-  {
-   "name": "No. of Retailers",
-   "unit": "count",
-   "kind": "level",
-   "y": {},
-   "q": {
-    "20260630": 100000.0
-   },
-   "src": {
-    "q:20260630": [
-     "44e04b77-cbb8-49d0-8b79-f83ccca536fe.pdf",
-     11,
-     "No. of Retailers (doc period)",
-     "1,00,000"
     ]
    }
   },
@@ -395,23 +587,6 @@
      26,
      "Retailer Meetings",
      "365"
-    ]
-   }
-  },
-  {
-   "name": "States Covered",
-   "unit": "count",
-   "kind": "level",
-   "y": {},
-   "q": {
-    "20260630": 18.0
-   },
-   "src": {
-    "q:20260630": [
-     "44e04b77-cbb8-49d0-8b79-f83ccca536fe.pdf",
-     11,
-     "States Covered (doc period)",
-     "18"
     ]
    }
   },
