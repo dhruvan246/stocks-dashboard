@@ -1,0 +1,749 @@
+{
+ "sym": "RAINBOW",
+ "fy_end_month": 3,
+ "docs": {
+  "bb803ec1-af0b-4134-a12d-4892a60d2233.pdf": {
+   "kind": "ip",
+   "date": "2026-07-30",
+   "title": "Q1 FY27 Investor Presentation",
+   "read": "2026-09-07",
+   "by": "claude-routine"
+  },
+  "1d4c3958-27c7-49a3-b062-c8481c6d6279.pdf": {
+   "kind": "ar",
+   "date": "2026-07-04",
+   "title": "Integrated Annual Report FY2025-26",
+   "read": "2026-09-07",
+   "by": "claude-routine"
+  }
+ },
+ "metrics": [
+  {
+   "name": "Clinic Count (Network)",
+   "unit": "count",
+   "kind": "level",
+   "y": {
+    "20240331": 4.0,
+    "20250331": 5.0,
+    "20260331": 5.0
+   },
+   "q": {
+    "20260630": 5.0
+   },
+   "src": {
+    "q:20260630": [
+     "bb803ec1-af0b-4134-a12d-4892a60d2233.pdf",
+     36,
+     "5 clinics (doc period)",
+     "5"
+    ],
+    "y:20240331": [
+     "1d4c3958-27c7-49a3-b062-c8481c6d6279.pdf",
+     369,
+     "Number of Clinics",
+     "4"
+    ],
+    "y:20250331": [
+     "1d4c3958-27c7-49a3-b062-c8481c6d6279.pdf",
+     369,
+     "Number of Clinics",
+     "5"
+    ],
+    "y:20260331": [
+     "1d4c3958-27c7-49a3-b062-c8481c6d6279.pdf",
+     369,
+     "Number of Clinics",
+     "5"
+    ]
+   }
+  },
+  {
+   "name": "Hospital Count (Network)",
+   "unit": "count",
+   "kind": "level",
+   "y": {
+    "20240331": 19.0,
+    "20250331": 19.0,
+    "20260331": 24.0
+   },
+   "q": {
+    "20260630": 24.0
+   },
+   "src": {
+    "q:20260630": [
+     "bb803ec1-af0b-4134-a12d-4892a60d2233.pdf",
+     36,
+     "Rainbow network comprises of 24 hospitals (doc period)",
+     "24"
+    ],
+    "y:20240331": [
+     "1d4c3958-27c7-49a3-b062-c8481c6d6279.pdf",
+     369,
+     "Number of Hospitals",
+     "19"
+    ],
+    "y:20250331": [
+     "1d4c3958-27c7-49a3-b062-c8481c6d6279.pdf",
+     369,
+     "Number of Hospitals",
+     "19"
+    ],
+    "y:20260331": [
+     "1d4c3958-27c7-49a3-b062-c8481c6d6279.pdf",
+     369,
+     "Number of Hospitals",
+     "24"
+    ]
+   }
+  },
+  {
+   "name": "ALOS (excl. New Delhi Madhukar)",
+   "unit": "days",
+   "kind": "flow",
+   "y": {},
+   "q": {
+    "20250630": 2.66,
+    "20260331": 2.71,
+    "20260630": 2.6
+   },
+   "src": {
+    "q:20260630": [
+     "bb803ec1-af0b-4134-a12d-4892a60d2233.pdf",
+     19,
+     "ALOS#",
+     "2.60"
+    ],
+    "q:20250630": [
+     "bb803ec1-af0b-4134-a12d-4892a60d2233.pdf",
+     19,
+     "ALOS#",
+     "2.66"
+    ],
+    "q:20260331": [
+     "bb803ec1-af0b-4134-a12d-4892a60d2233.pdf",
+     19,
+     "ALOS#",
+     "2.71"
+    ]
+   }
+  },
+  {
+   "name": "ARPOB (excl. New Delhi Madhukar)",
+   "unit": "INR",
+   "kind": "flow",
+   "y": {},
+   "q": {
+    "20250630": 63323.0,
+    "20260331": 62464.0,
+    "20260630": 67256.0
+   },
+   "src": {
+    "q:20260630": [
+     "bb803ec1-af0b-4134-a12d-4892a60d2233.pdf",
+     19,
+     "ARPOB*",
+     "67,256"
+    ],
+    "q:20250630": [
+     "bb803ec1-af0b-4134-a12d-4892a60d2233.pdf",
+     19,
+     "ARPOB*",
+     "63,323"
+    ],
+    "q:20260331": [
+     "bb803ec1-af0b-4134-a12d-4892a60d2233.pdf",
+     19,
+     "ARPOB*",
+     "62,464"
+    ]
+   }
+  },
+  {
+   "name": "Capacity Beds",
+   "unit": "count",
+   "kind": "level",
+   "y": {},
+   "q": {
+    "20250630": 1550.0,
+    "20260331": 1550.0,
+    "20260630": 1550.0
+   },
+   "src": {
+    "q:20260630": [
+     "bb803ec1-af0b-4134-a12d-4892a60d2233.pdf",
+     20,
+     "Capacity Beds",
+     "1,550"
+    ],
+    "q:20250630": [
+     "bb803ec1-af0b-4134-a12d-4892a60d2233.pdf",
+     20,
+     "Capacity Beds",
+     "1,550"
+    ],
+    "q:20260331": [
+     "bb803ec1-af0b-4134-a12d-4892a60d2233.pdf",
+     20,
+     "Capacity Beds",
+     "1,550"
+    ]
+   }
+  },
+  {
+   "name": "Occupancy (excl. New Delhi Madhukar)",
+   "unit": "%",
+   "kind": "level",
+   "y": {},
+   "q": {
+    "20250630": 40.2,
+    "20260331": 45.3,
+    "20260630": 41.2
+   },
+   "src": {
+    "q:20260630": [
+     "bb803ec1-af0b-4134-a12d-4892a60d2233.pdf",
+     19,
+     "Occupancy$",
+     "41.2"
+    ],
+    "q:20250630": [
+     "bb803ec1-af0b-4134-a12d-4892a60d2233.pdf",
+     19,
+     "Occupancy$",
+     "40.2"
+    ],
+    "q:20260331": [
+     "bb803ec1-af0b-4134-a12d-4892a60d2233.pdf",
+     19,
+     "Occupancy$",
+     "45.3"
+    ]
+   }
+  },
+  {
+   "name": "Operational Beds",
+   "unit": "count",
+   "kind": "level",
+   "y": {},
+   "q": {
+    "20250630": 1202.0,
+    "20260331": 1202.0,
+    "20260630": 1202.0
+   },
+   "src": {
+    "q:20260630": [
+     "bb803ec1-af0b-4134-a12d-4892a60d2233.pdf",
+     20,
+     "Operational Beds",
+     "1,202"
+    ],
+    "q:20250630": [
+     "bb803ec1-af0b-4134-a12d-4892a60d2233.pdf",
+     20,
+     "Operational Beds",
+     "1,202"
+    ],
+    "q:20260331": [
+     "bb803ec1-af0b-4134-a12d-4892a60d2233.pdf",
+     20,
+     "Operational Beds",
+     "1,202"
+    ]
+   }
+  },
+  {
+   "name": "ALOS",
+   "unit": "# days",
+   "kind": "flow",
+   "y": {
+    "20250331": 2.85,
+    "20260331": 2.71
+   },
+   "q": {},
+   "src": {
+    "y:20260331": [
+     "1d4c3958-27c7-49a3-b062-c8481c6d6279.pdf",
+     88,
+     "ALOS",
+     "2.71"
+    ],
+    "y:20250331": [
+     "1d4c3958-27c7-49a3-b062-c8481c6d6279.pdf",
+     88,
+     "ALOS",
+     "2.85"
+    ]
+   }
+  },
+  {
+   "name": "ARPOB",
+   "unit": "per day",
+   "kind": "flow",
+   "y": {
+    "20250331": 53962.0,
+    "20260331": 60141.0
+   },
+   "q": {},
+   "src": {
+    "y:20260331": [
+     "1d4c3958-27c7-49a3-b062-c8481c6d6279.pdf",
+     88,
+     "ARPOB",
+     "60,141"
+    ],
+    "y:20250331": [
+     "1d4c3958-27c7-49a3-b062-c8481c6d6279.pdf",
+     88,
+     "ARPOB",
+     "53,962"
+    ]
+   }
+  },
+  {
+   "name": "Cash Payor Mix (IP Income)",
+   "unit": "%",
+   "kind": "flow",
+   "y": {},
+   "q": {
+    "20250630": 48.3,
+    "20260630": 48.3
+   },
+   "src": {
+    "q:20260630": [
+     "bb803ec1-af0b-4134-a12d-4892a60d2233.pdf",
+     22,
+     "Cash",
+     "48.3"
+    ],
+    "q:20250630": [
+     "bb803ec1-af0b-4134-a12d-4892a60d2233.pdf",
+     22,
+     "Cash",
+     "48.3"
+    ]
+   }
+  },
+  {
+   "name": "Delivery Volume",
+   "unit": "#",
+   "kind": "flow",
+   "y": {
+    "20250331": 17349.0,
+    "20260331": 19228.0
+   },
+   "q": {},
+   "src": {
+    "y:20260331": [
+     "1d4c3958-27c7-49a3-b062-c8481c6d6279.pdf",
+     88,
+     "Delivery volume",
+     "19,228"
+    ],
+    "y:20250331": [
+     "1d4c3958-27c7-49a3-b062-c8481c6d6279.pdf",
+     88,
+     "Delivery volume",
+     "17,349"
+    ]
+   }
+  },
+  {
+   "name": "In-patient (IP) Volume",
+   "unit": "#",
+   "kind": "flow",
+   "y": {
+    "20250331": 98395.0,
+    "20260331": 104514.0
+   },
+   "q": {},
+   "src": {
+    "y:20260331": [
+     "1d4c3958-27c7-49a3-b062-c8481c6d6279.pdf",
+     88,
+     "In-patient (IP) volume",
+     "1,04,514"
+    ],
+    "y:20250331": [
+     "1d4c3958-27c7-49a3-b062-c8481c6d6279.pdf",
+     88,
+     "In-patient (IP) volume",
+     "98,395"
+    ]
+   }
+  },
+  {
+   "name": "Insurance Payor Mix (IP Income)",
+   "unit": "%",
+   "kind": "flow",
+   "y": {},
+   "q": {
+    "20250630": 51.8,
+    "20260630": 51.7
+   },
+   "src": {
+    "q:20260630": [
+     "bb803ec1-af0b-4134-a12d-4892a60d2233.pdf",
+     22,
+     "Insurance",
+     "51.7"
+    ],
+    "q:20250630": [
+     "bb803ec1-af0b-4134-a12d-4892a60d2233.pdf",
+     22,
+     "Insurance",
+     "51.8"
+    ]
+   }
+  },
+  {
+   "name": "Occupancy",
+   "unit": "%",
+   "kind": "level",
+   "y": {
+    "20250331": 50.53,
+    "20260331": 46.3
+   },
+   "q": {},
+   "src": {
+    "y:20260331": [
+     "1d4c3958-27c7-49a3-b062-c8481c6d6279.pdf",
+     88,
+     "Occupancy",
+     "46.30"
+    ],
+    "y:20250331": [
+     "1d4c3958-27c7-49a3-b062-c8481c6d6279.pdf",
+     88,
+     "Occupancy",
+     "50.53"
+    ]
+   }
+  },
+  {
+   "name": "Out-patient (OP) Volume",
+   "unit": "#",
+   "kind": "flow",
+   "y": {
+    "20250331": 1426733.0,
+    "20260331": 1598970.0
+   },
+   "q": {},
+   "src": {
+    "y:20260331": [
+     "1d4c3958-27c7-49a3-b062-c8481c6d6279.pdf",
+     88,
+     "Out-patient (OP) volume",
+     "15,98,970"
+    ],
+    "y:20250331": [
+     "1d4c3958-27c7-49a3-b062-c8481c6d6279.pdf",
+     88,
+     "Out-patient (OP) volume",
+     "14,26,733"
+    ]
+   }
+  },
+  {
+   "name": "Cities Present",
+   "unit": "count",
+   "kind": "level",
+   "y": {},
+   "q": {
+    "20260630": 9.0
+   },
+   "src": {
+    "q:20260630": [
+     "bb803ec1-af0b-4134-a12d-4892a60d2233.pdf",
+     36,
+     "in 9 cities (doc period)",
+     "9"
+    ]
+   }
+  },
+  {
+   "name": "Total Bed Capacity",
+   "unit": "count",
+   "kind": "level",
+   "y": {},
+   "q": {
+    "20260630": 2565.0
+   },
+   "src": {
+    "q:20260630": [
+     "bb803ec1-af0b-4134-a12d-4892a60d2233.pdf",
+     36,
+     "total bed capacity of 2,565 beds",
+     "2,565"
+    ]
+   }
+  }
+ ],
+ "held": [],
+ "catalog": [
+  {
+   "kind": "ip",
+   "date": "2026-07-30",
+   "att": "bb803ec1-af0b-4134-a12d-4892a60d2233.pdf",
+   "title": "Announcement under Regulation 30 (LODR)-Investor Presentation",
+   "size": 5390952,
+   "cat": "Company Update",
+   "sub": "Investor Presentation"
+  },
+  {
+   "kind": "ar",
+   "date": "2026-07-04",
+   "att": "1d4c3958-27c7-49a3-b062-c8481c6d6279.pdf",
+   "title": "Notice Convening The 28Th Annual General Meeting And Integrated Annual Report For The Financial Year 2025-26",
+   "size": 14000114,
+   "cat": "AGM/EGM",
+   "sub": "AGM"
+  },
+  {
+   "kind": "ar",
+   "date": "2026-07-04",
+   "att": "f768a857-d043-405e-9fa0-da47ed96aabf.pdf",
+   "title": "Integrated Annual Report for the Financial Year 2025-26",
+   "size": 13973430,
+   "cat": "Others",
+   "sub": "Reg. 34 (1) Annual Report"
+  },
+  {
+   "kind": "res",
+   "date": "2026-05-27",
+   "att": "f5d6c739-6297-44c1-8c2f-e4b6e53354df.pdf",
+   "title": "Financial Results approved in the Board Meeting dated March 23, 2026.",
+   "size": 3464713,
+   "cat": "Result",
+   "sub": "Financial Results"
+  },
+  {
+   "kind": "ip",
+   "date": "2026-05-23",
+   "att": "1e2d6456-83ef-4799-b053-94ffe50d1b7a.pdf",
+   "title": "Investor Presentation on Audited Financial Results (Standalone & Consolidated) for the quarter and financial year ended March 31, 2026.",
+   "size": 4825279,
+   "cat": "Company Update",
+   "sub": "Investor Presentation"
+  },
+  {
+   "kind": "ip",
+   "date": "2026-01-28",
+   "att": "032ce313-d359-4e1a-9e74-6f03111689b4.pdf",
+   "title": "Earnings Presentation on Unaudited Financial Results (Standalone and Consolidated) for the Quarter and Nine months ended December 31, 2025.",
+   "size": 5712662,
+   "cat": "Company Update",
+   "sub": "Investor Presentation"
+  },
+  {
+   "kind": "ip",
+   "date": "2025-11-13",
+   "att": "101ae4ea-97d3-4af1-b0a0-27de988dd09a.pdf",
+   "title": "Earnings Presentation on Unaudited Financial Results (Standalone and Consolidated) for the Quarter and Half year ended September 30, 2025.",
+   "size": 5326717,
+   "cat": "Company Update",
+   "sub": "Investor Presentation"
+  },
+  {
+   "kind": "ip",
+   "date": "2025-07-26",
+   "att": "2b162b8c-e023-45c6-bef1-64c795280197.pdf",
+   "title": "Announcement under Regulation 30 (LODR)-Investor Presentation",
+   "size": 5160615,
+   "cat": "Company Update",
+   "sub": "Investor Presentation"
+  },
+  {
+   "kind": "ar",
+   "date": "2025-06-13",
+   "att": "327a28a5-24ea-4672-81e7-85631103aabc.pdf",
+   "title": "Please find attached the Integrated Annual Report of the Company for the Financial Year 2024-25",
+   "size": 15814207,
+   "cat": "Others",
+   "sub": "Reg. 34 (1) Annual Report"
+  },
+  {
+   "kind": "ar",
+   "date": "2025-06-13",
+   "att": "baf71f1f-ceb9-4430-a68b-9f98d8a4e664.pdf",
+   "title": "Disclosure Under Regulation 30 Of The SEBI (Listing Obligations And Disclosure Requirements) Regulations, 2015",
+   "size": 819240,
+   "cat": "Company Update",
+   "sub": "General"
+  },
+  {
+   "kind": "ip",
+   "date": "2025-05-24",
+   "att": "01e10600-be84-4086-835a-bc0aee61bdc6.pdf",
+   "title": "Earnings Presentation on Audited Financial Results (Standalone and Consolidated) for the quarter and financial year ended March 31, 2025",
+   "size": 5830652,
+   "cat": "Company Update",
+   "sub": "Investor Presentation"
+  },
+  {
+   "kind": "ip",
+   "date": "2025-02-09",
+   "att": "644542b5-b3a3-4dd1-af12-0917a4759872.pdf",
+   "title": "Earnings Presentation on Un-Audited Financials Results (Standalone and Consolidated) for the quarter and nine months ended December 31, 2024",
+   "size": 6348880,
+   "cat": "Company Update",
+   "sub": "Investor Presentation"
+  },
+  {
+   "kind": "ip",
+   "date": "2024-10-27",
+   "att": "54a60e73-780b-436a-847a-f348c52d3310.pdf",
+   "title": "Earning Presentation on Unaudited Financial Results ( Standalone & Conosolidated) for the quarter and half year ended September 30, 2024",
+   "size": 5753655,
+   "cat": "Company Update",
+   "sub": "Investor Presentation"
+  },
+  {
+   "kind": "ip",
+   "date": "2024-08-13",
+   "att": "2ac4f39a-5363-4553-8d04-223e444b3d96.pdf",
+   "title": "Earnings presentation on Unaudited Financial Results for the quarter ended June 30, 2024",
+   "size": 5969543,
+   "cat": "Company Update",
+   "sub": "Investor Presentation"
+  },
+  {
+   "kind": "ar",
+   "date": "2024-07-08",
+   "att": "524c672a-a8c8-4bd1-add0-1d63859bd503.pdf",
+   "title": "Please find attached the Integrated Annual Report of the Company for the Financial Year 2023-24",
+   "size": 24381598,
+   "cat": "Others",
+   "sub": "Reg. 34 (1) Annual Report"
+  },
+  {
+   "kind": "ip",
+   "date": "2024-05-19",
+   "att": "f9a6cd21-784f-49d8-8b75-f43897f04d98.pdf",
+   "title": "Earnings Presentation of the Company on Audited Financial Results (Standalone and Consolidated) for the Quarter and Financial year ended March 31, 2024",
+   "size": 7451081,
+   "cat": "Company Update",
+   "sub": "Investor Presentation"
+  },
+  {
+   "kind": "ip",
+   "date": "2024-01-24",
+   "att": "18d31887-135a-4af6-b1e8-4371ef83f841.pdf",
+   "title": "Earning presentation on Un-Audited Financial Results (Standalone and Consolidated) for Q3 & 9 Months ended December 31, 2023",
+   "size": 7748183,
+   "cat": "Company Update",
+   "sub": "Investor Presentation"
+  },
+  {
+   "kind": "ip",
+   "date": "2023-10-30",
+   "att": "4434b0db-4d82-47af-897b-4a7d9b7caf13.pdf",
+   "title": "Earnings presentation on Un-Audited Financial Results (Standalone & Consolidated) for the quarter and half year ended September 30, 2023",
+   "size": 7042724,
+   "cat": "Company Update",
+   "sub": "Investor Presentation"
+  },
+  {
+   "kind": "ip",
+   "date": "2023-08-07",
+   "att": "37f1f5ec-b0b3-4e82-b121-23f0368e8ef1.pdf",
+   "title": "Investor Presentation with regard to Un-Audited Financial Results for the quarter ended June 30, 2023",
+   "size": 6478657,
+   "cat": "Company Update",
+   "sub": "Investor Presentation"
+  },
+  {
+   "kind": "ar",
+   "date": "2023-06-07",
+   "att": "eaebdde2-2dab-4729-9ce2-5bcfa67c39bd.pdf",
+   "title": "Pursuant to the provisions of Regulation 34(1) of the Listing Regulation, please find attached copy of Integrated Annual Report of the Company for the Financial",
+   "size": 23501353,
+   "cat": "Others",
+   "sub": "Reg. 34 (1) Annual Report"
+  },
+  {
+   "kind": "ip",
+   "date": "2023-05-14",
+   "att": "a8710070-0059-4f66-9ce5-e9d304e7f831.pdf",
+   "title": "Please find enclosed herewith the Earnings Presentation of the Company on Audited Financial Results (Standalone and Consolidated) for the Quarter and Financial ",
+   "size": 4368589,
+   "cat": "Company Update",
+   "sub": "Investor Presentation"
+  },
+  {
+   "kind": "ip",
+   "date": "2023-02-09",
+   "att": "e89193a1-e495-45c6-9154-624232c4a95e.pdf",
+   "title": "Pursuant to Regulation 30 of SEBI (Listing Obligations and Disclosure Requirements) Regulations, 2015, please find attached herewith Earnings Presentation of th",
+   "size": 5118964,
+   "cat": "Company Update",
+   "sub": "Investor Presentation"
+  },
+  {
+   "kind": "res",
+   "date": "2022-11-17",
+   "att": "5758482e-7ad3-4451-9ccc-db225c6f51ce.pdf",
+   "title": "Please find the enclosed herewith Related Party Transactions of the Company for the half year ended September 30, 2022.",
+   "size": 938308,
+   "cat": "Result",
+   "sub": "Financial Results"
+  },
+  {
+   "kind": "ip",
+   "date": "2022-11-03",
+   "att": "10e28393-4f5d-4e0e-8cc7-3877c2a10801.pdf",
+   "title": "Pursuant to Regulation 30 of SEBI (Listing Obligations and Disclosure Requirements) Regulations, 2015 (the Listing Regulations), please find attached herewith E",
+   "size": 5795597,
+   "cat": "Company Update",
+   "sub": "Investor Presentation"
+  },
+  {
+   "kind": "ar",
+   "date": "2022-08-24",
+   "att": "17f1df13-d8f4-4a02-a407-8a1ba31b70d2.pdf",
+   "title": "Pursuant to the provisions of Regulation 34 of the SEBI (Listing Obligations and Disclosure Requirements) Regulations, 2015, please find enclosed herewith the A",
+   "size": 8051002,
+   "cat": "Others",
+   "sub": "Reg. 34 (1) Annual Report"
+  },
+  {
+   "kind": "ip",
+   "date": "2022-08-08",
+   "att": "cdee6110-ecdb-4b27-b394-8be457989ff9.pdf",
+   "title": "Please find herewith a revised earnings presentation on unaudited financial results (standalone and consolidated) for the quarter ended June 30, 2022. The prese",
+   "size": 10315484,
+   "cat": "Company Update",
+   "sub": "Investor Presentation"
+  },
+  {
+   "kind": "ip",
+   "date": "2022-08-08",
+   "att": "f2ee8ce9-fdd9-4c64-a243-05c74d6dc2ff.pdf",
+   "title": "Please find attached herewith Earnings Presentation of the Company on Unaudited Financial Results (Standalone and Consolidated) for the Quarter ended June 30, 2",
+   "size": 3785741,
+   "cat": "Company Update",
+   "sub": "Investor Presentation"
+  },
+  {
+   "kind": "ip",
+   "date": "2022-05-27",
+   "att": "fbdc473b-0808-4b96-87fb-6a34eb57d074.pdf",
+   "title": "Pursuant to Regulation 30 of SEBI (Listing Obligations and Disclosure Requirements) Regulations, 2015 (the Listing Regulations), please find attached herewith E",
+   "size": 3740373,
+   "cat": "Company Update",
+   "sub": "Investor Presentation"
+  },
+  {
+   "kind": "ar",
+   "fy": 2022,
+   "date": "2022-03-31",
+   "url": "https://www.bseindia.com/bseplus/AnnualReport/543524/74634543524.pdf",
+   "att": "74634543524.pdf",
+   "title": "Annual Report FY22",
+   "size": 0
+  }
+ ],
+ "catalog_since": "2020-01-01",
+ "catalog_until": "2026-09-07",
+ "catalog_ver": 5,
+ "updated": "2026-09-07"
+}
