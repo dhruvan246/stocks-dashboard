@@ -43,6 +43,13 @@
    "title": "Q4 & FY25 Investor Presentation (year ended 31 Mar 2025)",
    "read": "2026-09-07",
    "by": "claude-routine"
+  },
+  "5d179c83-6a35-4feb-be6d-a5c61dd0bc7b.pdf": {
+   "kind": "ar",
+   "date": "2025-07-31",
+   "title": "Annual Report FY2024-25 (year ended 31 Mar 2025)",
+   "read": "2026-09-07",
+   "by": "claude-routine"
   }
  },
  "metrics": [
@@ -51,6 +58,7 @@
    "unit": "count",
    "kind": "flow",
    "y": {
+    "20240331": 329618.0,
     "20250331": 359221.0
    },
    "q": {
@@ -117,6 +125,12 @@
      3,
      "FY25 Deliveries",
      "3,59,221"
+    ],
+    "y:20240331": [
+     "5d179c83-6a35-4feb-be6d-a5c61dd0bc7b.pdf",
+     76,
+     "Deliveries (Units) FY24",
+     "3,29,618"
     ]
    }
   },
@@ -124,7 +138,10 @@
    "name": "Vehicle Deliveries (Mass Segment)",
    "unit": "count",
    "kind": "flow",
-   "y": {},
+   "y": {
+    "20240331": 53152.0,
+    "20250331": 196123.0
+   },
    "q": {
     "20240630": 49221.0,
     "20240930": 56545.0,
@@ -169,6 +186,18 @@
      4,
      "Mass deliveries Q1 FY25",
      "49221"
+    ],
+    "y:20240331": [
+     "5d179c83-6a35-4feb-be6d-a5c61dd0bc7b.pdf",
+     76,
+     "Mass deliveries FY24",
+     "53,152"
+    ],
+    "y:20250331": [
+     "5d179c83-6a35-4feb-be6d-a5c61dd0bc7b.pdf",
+     76,
+     "Mass deliveries FY25 (~4x FY24)",
+     "1,96,123"
     ]
    }
   },
@@ -176,7 +205,10 @@
    "name": "Vehicle Deliveries (Premium Segment)",
    "unit": "count",
    "kind": "flow",
-   "y": {},
+   "y": {
+    "20240331": 276466.0,
+    "20250331": 163098.0
+   },
    "q": {
     "20240630": 75977.0,
     "20240930": 42074.0,
@@ -221,6 +253,71 @@
      4,
      "Premium deliveries Q1 FY25",
      "75,977"
+    ],
+    "y:20240331": [
+     "5d179c83-6a35-4feb-be6d-a5c61dd0bc7b.pdf",
+     76,
+     "Premium deliveries FY24",
+     "2,76,466"
+    ],
+    "y:20250331": [
+     "5d179c83-6a35-4feb-be6d-a5c61dd0bc7b.pdf",
+     76,
+     "Premium deliveries FY25 (45% of total sales)",
+     "1,63,098"
+    ]
+   }
+  },
+  {
+   "name": "E2W Market Share",
+   "unit": "%",
+   "kind": "level",
+   "y": {
+    "20220331": 6.0,
+    "20230331": 21.0,
+    "20240331": 35.0,
+    "20250331": 30.0
+   },
+   "q": {
+    "20260331": 5.1,
+    "20260630": 8.4
+   },
+   "src": {
+    "q:20260630": [
+     "7dc128e7-8fd8-475c-b9ed-11fe16e49cc3.pdf",
+     5,
+     "market share from 5.1% in Q4 FY26 to 8.4% in Q1 FY27",
+     "8.4"
+    ],
+    "q:20260331": [
+     "7dc128e7-8fd8-475c-b9ed-11fe16e49cc3.pdf",
+     5,
+     "market share 5.1% in Q4 FY26",
+     "5.1"
+    ],
+    "y:20250331": [
+     "545b888a-ee6f-461f-8559-da96a4d43a7f.pdf",
+     3,
+     "30% market share (VAHAN) in FY25",
+     "30"
+    ],
+    "y:20220331": [
+     "5d179c83-6a35-4feb-be6d-a5c61dd0bc7b.pdf",
+     74,
+     "Ola Market Share (Vahan) FY22 chart",
+     "6"
+    ],
+    "y:20230331": [
+     "5d179c83-6a35-4feb-be6d-a5c61dd0bc7b.pdf",
+     74,
+     "Ola Market Share (Vahan) FY23 chart",
+     "21"
+    ],
+    "y:20240331": [
+     "5d179c83-6a35-4feb-be6d-a5c61dd0bc7b.pdf",
+     74,
+     "Ola Market Share (Vahan) FY24 chart",
+     "35"
     ]
    }
   },
@@ -294,38 +391,6 @@
    }
   },
   {
-   "name": "E2W Market Share",
-   "unit": "%",
-   "kind": "level",
-   "y": {
-    "20250331": 30.0
-   },
-   "q": {
-    "20260331": 5.1,
-    "20260630": 8.4
-   },
-   "src": {
-    "q:20260630": [
-     "7dc128e7-8fd8-475c-b9ed-11fe16e49cc3.pdf",
-     5,
-     "market share from 5.1% in Q4 FY26 to 8.4% in Q1 FY27",
-     "8.4"
-    ],
-    "q:20260331": [
-     "7dc128e7-8fd8-475c-b9ed-11fe16e49cc3.pdf",
-     5,
-     "market share 5.1% in Q4 FY26",
-     "5.1"
-    ],
-    "y:20250331": [
-     "545b888a-ee6f-461f-8559-da96a4d43a7f.pdf",
-     3,
-     "30% market share (VAHAN) in FY25",
-     "30"
-    ]
-   }
-  },
-  {
    "name": "Auto Manufacturing Capacity",
    "unit": "Mn",
    "kind": "level",
@@ -394,6 +459,30 @@
      6,
      "completing 80% of service tickets on the same day (doc period)",
      "80"
+    ]
+   }
+  },
+  {
+   "name": "Vehicle Deliveries",
+   "unit": "K",
+   "kind": "flow",
+   "y": {
+    "20220331": 21.0,
+    "20230331": 156.0
+   },
+   "q": {},
+   "src": {
+    "y:20220331": [
+     "5d179c83-6a35-4feb-be6d-a5c61dd0bc7b.pdf",
+     74,
+     "Ola Deliveries FY22 chart",
+     "21"
+    ],
+    "y:20230331": [
+     "5d179c83-6a35-4feb-be6d-a5c61dd0bc7b.pdf",
+     74,
+     "Ola Deliveries FY23 chart",
+     "156"
     ]
    }
   },
@@ -585,6 +674,40 @@
    }
   },
   {
+   "name": "New Employees Onboarded (Retail Expansion)",
+   "unit": "count",
+   "kind": "flow",
+   "y": {
+    "20250331": 2800.0
+   },
+   "q": {},
+   "src": {
+    "y:20250331": [
+     "5d179c83-6a35-4feb-be6d-a5c61dd0bc7b.pdf",
+     85,
+     "over 2,800 employees were inducted in 45 days (doc period)",
+     "2,800"
+    ]
+   }
+  },
+  {
+   "name": "New Employees Recruited (Skilled Professionals)",
+   "unit": "count",
+   "kind": "flow",
+   "y": {
+    "20250331": 1500.0
+   },
+   "q": {},
+   "src": {
+    "y:20250331": [
+     "5d179c83-6a35-4feb-be6d-a5c61dd0bc7b.pdf",
+     85,
+     "recruited 1,500 skilled professionals within 30 days (doc period)",
+     "1,500"
+    ]
+   }
+  },
+  {
    "name": "Product Models (S1 Franchise)",
    "unit": "count",
    "kind": "level",
@@ -598,6 +721,23 @@
      3,
      "S1 franchise continued to lead the electric scooter segment with 14 models",
      "14"
+    ]
+   }
+  },
+  {
+   "name": "R&D Employees",
+   "unit": "count",
+   "kind": "level",
+   "y": {
+    "20250331": 763.0
+   },
+   "q": {},
+   "src": {
+    "y:20250331": [
+     "5d179c83-6a35-4feb-be6d-a5c61dd0bc7b.pdf",
+     85,
+     "763 employees are currently engaged in advancing [R&D] (doc period)",
+     "763"
     ]
    }
   },
@@ -666,6 +806,23 @@
      7,
      "Average service TAT nearly 1 day in March 2026",
      "1"
+    ]
+   }
+  },
+  {
+   "name": "Total Employees",
+   "unit": "count",
+   "kind": "level",
+   "y": {},
+   "q": {
+    "20250331": 12396.0
+   },
+   "src": {
+    "q:20250331": [
+     "5d179c83-6a35-4feb-be6d-a5c61dd0bc7b.pdf",
+     85,
+     "As of March 31, 2025, the Company had a total of 12,396 employees",
+     "12,396"
     ]
    }
   },
