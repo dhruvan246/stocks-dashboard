@@ -43,6 +43,20 @@
    "title": "FY2026 Annual Corporate Presentation",
    "read": "2026-09-07",
    "by": "claude-routine"
+  },
+  "6a3f888f-374f-451a-9424-46f60c77c1aa.pdf": {
+   "kind": "res",
+   "date": "2026-03-06",
+   "title": "Q4/FY26 Financial Results Packet (statements, notes, auditor report)",
+   "read": "2026-09-07",
+   "by": "claude-routine"
+  },
+  "3820278f-a17a-467b-b3dd-aca7902cc966.pdf": {
+   "kind": "ar",
+   "date": "2025-09-05",
+   "title": "69th Integrated Annual Report FY 2024-25",
+   "read": "2026-09-07",
+   "by": "claude-routine"
   }
  },
  "metrics": [
@@ -533,6 +547,30 @@
    }
   },
   {
+   "name": "Coal Dispatch (Standalone, Talabira II & III OCP)",
+   "unit": "MT",
+   "kind": "flow",
+   "y": {
+    "20250331": 16.7,
+    "20260331": 17.69
+   },
+   "q": {},
+   "src": {
+    "y:20260331": [
+     "b9804365-8f1d-4a29-8609-2c95ecb4f0b7.pdf",
+     2,
+     "Annual Coal Dispatch of 17.69 MT from Talabira II & III OCP",
+     "17.69"
+    ],
+    "y:20250331": [
+     "3820278f-a17a-467b-b3dd-aca7902cc966.pdf",
+     98,
+     "Talabira-II & III OCP mines achieved record Coal production of 17.2 MT and Coal ",
+     "16.7"
+    ]
+   }
+  },
+  {
    "name": "Coal Production (Standalone)",
    "unit": "MT",
    "kind": "flow",
@@ -655,6 +693,30 @@
    }
   },
   {
+   "name": "Renewable Energy Power Generation",
+   "unit": "BU",
+   "kind": "flow",
+   "y": {
+    "20250331": 2.1,
+    "20260331": 2.26
+   },
+   "q": {},
+   "src": {
+    "y:20260331": [
+     "b9804365-8f1d-4a29-8609-2c95ecb4f0b7.pdf",
+     2,
+     "Renewable Energy Power Generation of 2.26 BU",
+     "2.26"
+    ],
+    "y:20250331": [
+     "3820278f-a17a-467b-b3dd-aca7902cc966.pdf",
+     98,
+     "including 2.1 BU from green energy",
+     "2.1"
+    ]
+   }
+  },
+  {
    "name": "Capacity Additions (Renewables)",
    "unit": "MW",
    "kind": "flow",
@@ -715,19 +777,53 @@
    ]
   },
   {
-   "name": "Coal Dispatch (Standalone, Talabira II & III OCP)",
-   "unit": "MT",
-   "kind": "flow",
+   "name": "Coal Mining Capacity (Standalone)",
+   "unit": "MTPA",
+   "kind": "level",
    "y": {
-    "20260331": 17.69
+    "20250331": 20.0
    },
    "q": {},
    "src": {
-    "y:20260331": [
-     "b9804365-8f1d-4a29-8609-2c95ecb4f0b7.pdf",
-     2,
-     "Annual Coal Dispatch of 17.69 MT from Talabira II & III OCP",
-     "17.69"
+    "y:20250331": [
+     "3820278f-a17a-467b-b3dd-aca7902cc966.pdf",
+     97,
+     "Coal: 20.00 MTPA (Current Capacities, doc period)",
+     "20.00"
+    ]
+   }
+  },
+  {
+   "name": "Coal and Lignite Production (Combined, Standalone)",
+   "unit": "MT",
+   "kind": "flow",
+   "y": {
+    "20250331": 41.0
+   },
+   "q": {},
+   "src": {
+    "y:20250331": [
+     "3820278f-a17a-467b-b3dd-aca7902cc966.pdf",
+     98,
+     "achieved record-breaking performance with over 41 Million Tonnes of coal and lig",
+     "41"
+    ]
+   }
+  },
+  {
+   "name": "Coal-based Power Generation Capacity (incl. JVs)",
+   "unit": "MW",
+   "kind": "level",
+   "y": {
+    "20250331": 1660.0
+   },
+   "q": {},
+   "src": {
+    "y:20250331": [
+     "3820278f-a17a-467b-b3dd-aca7902cc966.pdf",
+     97,
+     "Coal Based: 1,660 MW, Current Capacities (doc period)",
+     "1,660"
     ]
    }
   },
@@ -749,6 +845,40 @@
    }
   },
   {
+   "name": "Installed Renewable Generation Capacity",
+   "unit": "MW",
+   "kind": "level",
+   "y": {
+    "20250331": 1431.0
+   },
+   "q": {},
+   "src": {
+    "y:20250331": [
+     "3820278f-a17a-467b-b3dd-aca7902cc966.pdf",
+     69,
+     "enhance its installed capacity from the current 1,431 MW to 10,110 MW by 2030 (d",
+     "1,431"
+    ]
+   }
+  },
+  {
+   "name": "Lignite Mining Capacity (Standalone)",
+   "unit": "MTPA",
+   "kind": "level",
+   "y": {
+    "20250331": 30.1
+   },
+   "q": {},
+   "src": {
+    "y:20250331": [
+     "3820278f-a17a-467b-b3dd-aca7902cc966.pdf",
+     68,
+     "combined lignite mining capacity of 30.10 MTPA (doc period)",
+     "30.10"
+    ]
+   }
+  },
+  {
    "name": "Pachwara South Coal Mine Capacity",
    "unit": "MTPA",
    "kind": "level",
@@ -766,19 +896,70 @@
    }
   },
   {
-   "name": "Renewable Energy Power Generation",
-   "unit": "BU",
-   "kind": "flow",
+   "name": "Solar Power Installed Capacity",
+   "unit": "MW",
+   "kind": "level",
    "y": {
-    "20260331": 2.26
+    "20250331": 1432.0
    },
    "q": {},
    "src": {
-    "y:20260331": [
-     "b9804365-8f1d-4a29-8609-2c95ecb4f0b7.pdf",
-     2,
-     "Renewable Energy Power Generation of 2.26 BU",
-     "2.26"
+    "y:20250331": [
+     "3820278f-a17a-467b-b3dd-aca7902cc966.pdf",
+     97,
+     "Solar: 1,432 MW, Current Capacities (doc period)",
+     "1,432"
+    ]
+   }
+  },
+  {
+   "name": "Thermal Generation Capacity (Standalone)",
+   "unit": "MW",
+   "kind": "level",
+   "y": {
+    "20250331": 3640.0
+   },
+   "q": {},
+   "src": {
+    "y:20250331": [
+     "3820278f-a17a-467b-b3dd-aca7902cc966.pdf",
+     68,
+     "operating five lignite based thermal power stations with an aggregate capacity o",
+     "3,640"
+    ]
+   }
+  },
+  {
+   "name": "Total Mining Capacity (Standalone, incl. JVs)",
+   "unit": "MTPA",
+   "kind": "level",
+   "y": {
+    "20250331": 50.1
+   },
+   "q": {},
+   "src": {
+    "y:20250331": [
+     "3820278f-a17a-467b-b3dd-aca7902cc966.pdf",
+     97,
+     "Mining Capacity (50.10 MTPA), Current Capacities (doc period)",
+     "50.10"
+    ]
+   }
+  },
+  {
+   "name": "Total Power Generation Capacity (Standalone, incl. JVs)",
+   "unit": "MW",
+   "kind": "level",
+   "y": {
+    "20250331": 6731.0
+   },
+   "q": {},
+   "src": {
+    "y:20250331": [
+     "3820278f-a17a-467b-b3dd-aca7902cc966.pdf",
+     97,
+     "Power Generation (6,731 MW) (Including JVs), Current Capacities (doc period)",
+     "6,731"
     ]
    }
   },
@@ -796,6 +977,23 @@
      48,
      "Total Workforce (doc period)",
      "9,735"
+    ]
+   }
+  },
+  {
+   "name": "Wind Power Installed Capacity",
+   "unit": "MW",
+   "kind": "level",
+   "y": {
+    "20250331": 51.0
+   },
+   "q": {},
+   "src": {
+    "y:20250331": [
+     "3820278f-a17a-467b-b3dd-aca7902cc966.pdf",
+     97,
+     "Wind: 51 MW, Current Capacities (doc period)",
+     "51"
     ]
    }
   },
