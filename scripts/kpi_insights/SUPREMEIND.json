@@ -43,6 +43,20 @@
    "title": "Q4 & FY25 Investor Presentation (quarter/year ended 31 Mar 2025)",
    "read": "2026-09-07",
    "by": "claude-routine"
+  },
+  "2fff9f50-86c5-4045-b4d8-afc16b252bbc.pdf": {
+   "kind": "ar",
+   "date": "2026-06-01",
+   "title": "Annual Report FY2025-26",
+   "read": "2026-09-07",
+   "by": "claude-routine"
+  },
+  "604b2939-2da2-4a59-96e1-49d5860e63c0.pdf": {
+   "kind": "ar",
+   "date": "2025-05-22",
+   "title": "Annual Report FY2024-25",
+   "read": "2026-09-07",
+   "by": "claude-routine"
   }
  },
  "metrics": [
@@ -658,7 +672,10 @@
    "name": "Distributors",
    "unit": "count",
    "kind": "level",
-   "y": {},
+   "y": {
+    "20250331": 5104.0,
+    "20260331": 7045.0
+   },
    "q": {
     "20241231": 6000.0,
     "20250331": 5500.0,
@@ -703,6 +720,78 @@
      17,
      "5500+ Distributors (doc period)",
      "5500"
+    ],
+    "y:20260331": [
+     "2fff9f50-86c5-4045-b4d8-afc16b252bbc.pdf",
+     125,
+     "Number of dealers / distributors to whom sales are made",
+     "7045"
+    ],
+    "y:20250331": [
+     "604b2939-2da2-4a59-96e1-49d5860e63c0.pdf",
+     123,
+     "Number of dealers / distributors to whom sales are made",
+     "5104"
+    ]
+   }
+  },
+  {
+   "name": "Manufacturing Plants",
+   "unit": "count",
+   "kind": "level",
+   "y": {
+    "20260331": 35.0
+   },
+   "q": {
+    "20241231": 30.0,
+    "20250331": 30.0,
+    "20250630": 30.0,
+    "20250930": 35.0,
+    "20251231": 35.0,
+    "20260630": 35.0
+   },
+   "src": {
+    "q:20260630": [
+     "ab3571ba-e06a-4385-a041-c1d1962896e0.pdf",
+     8,
+     "35 Manufacturing Plants (doc period)",
+     "35"
+    ],
+    "q:20250630": [
+     "71e7c712-7ebb-4c36-8055-36d4ffdd07c7.pdf",
+     8,
+     "30 Manufacturing Plants (doc period)",
+     "30"
+    ],
+    "q:20250930": [
+     "fa48aca4-cb65-4b46-b0e5-0ca834a123b1.pdf",
+     10,
+     "35 Manufacturing Plants (doc period)",
+     "35"
+    ],
+    "q:20241231": [
+     "c5d95934-1dad-4832-b2c4-28dea48c1499.pdf",
+     9,
+     "30 Manufacturing Plants (doc period)",
+     "30"
+    ],
+    "q:20251231": [
+     "4a647268-f6bf-4319-80f9-feac9e561179.pdf",
+     9,
+     "35 Manufacturing Plants (doc period)",
+     "35"
+    ],
+    "q:20250331": [
+     "6d199128-bcc9-4863-a9f0-626b56c0aadc.pdf",
+     17,
+     "30 Manufacturing Plants (doc period)",
+     "30"
+    ],
+    "y:20260331": [
+     "2fff9f50-86c5-4045-b4d8-afc16b252bbc.pdf",
+     125,
+     "35 manufacturing plants (assurance boundary, FY 25-26)",
+     "35"
     ]
    }
   },
@@ -1071,58 +1160,6 @@
    }
   },
   {
-   "name": "Manufacturing Plants",
-   "unit": "count",
-   "kind": "level",
-   "y": {},
-   "q": {
-    "20241231": 30.0,
-    "20250331": 30.0,
-    "20250630": 30.0,
-    "20250930": 35.0,
-    "20251231": 35.0,
-    "20260630": 35.0
-   },
-   "src": {
-    "q:20260630": [
-     "ab3571ba-e06a-4385-a041-c1d1962896e0.pdf",
-     8,
-     "35 Manufacturing Plants (doc period)",
-     "35"
-    ],
-    "q:20250630": [
-     "71e7c712-7ebb-4c36-8055-36d4ffdd07c7.pdf",
-     8,
-     "30 Manufacturing Plants (doc period)",
-     "30"
-    ],
-    "q:20250930": [
-     "fa48aca4-cb65-4b46-b0e5-0ca834a123b1.pdf",
-     10,
-     "35 Manufacturing Plants (doc period)",
-     "35"
-    ],
-    "q:20241231": [
-     "c5d95934-1dad-4832-b2c4-28dea48c1499.pdf",
-     9,
-     "30 Manufacturing Plants (doc period)",
-     "30"
-    ],
-    "q:20251231": [
-     "4a647268-f6bf-4319-80f9-feac9e561179.pdf",
-     9,
-     "35 Manufacturing Plants (doc period)",
-     "35"
-    ],
-    "q:20250331": [
-     "6d199128-bcc9-4863-a9f0-626b56c0aadc.pdf",
-     17,
-     "30 Manufacturing Plants (doc period)",
-     "30"
-    ]
-   }
-  },
-  {
    "name": "Business Verticals",
    "unit": "count",
    "kind": "level",
@@ -1168,6 +1205,118 @@
    }
   },
   {
+   "name": "Permanent Employees",
+   "unit": "count",
+   "kind": "level",
+   "y": {
+    "20240331": 3864.0,
+    "20250331": 4269.0,
+    "20260331": 5015.0
+   },
+   "q": {},
+   "src": {
+    "y:20260331": [
+     "2fff9f50-86c5-4045-b4d8-afc16b252bbc.pdf",
+     99,
+     "Total Permanent Employees",
+     "5,015"
+    ],
+    "y:20250331": [
+     "2fff9f50-86c5-4045-b4d8-afc16b252bbc.pdf",
+     99,
+     "Total Permanent Employees",
+     "4,269"
+    ],
+    "y:20240331": [
+     "604b2939-2da2-4a59-96e1-49d5860e63c0.pdf",
+     99,
+     "Total Permanent Employees",
+     "3864"
+    ]
+   }
+  },
+  {
+   "name": "Permanent Workers",
+   "unit": "count",
+   "kind": "level",
+   "y": {
+    "20240331": 1144.0,
+    "20250331": 1105.0,
+    "20260331": 1066.0
+   },
+   "q": {},
+   "src": {
+    "y:20260331": [
+     "2fff9f50-86c5-4045-b4d8-afc16b252bbc.pdf",
+     99,
+     "Total Permanent Workers",
+     "1,066"
+    ],
+    "y:20250331": [
+     "2fff9f50-86c5-4045-b4d8-afc16b252bbc.pdf",
+     99,
+     "Total Permanent Workers",
+     "1,105"
+    ],
+    "y:20240331": [
+     "604b2939-2da2-4a59-96e1-49d5860e63c0.pdf",
+     99,
+     "Total Permanent Workers",
+     "1144"
+    ]
+   }
+  },
+  {
+   "name": "Branch Offices",
+   "unit": "count",
+   "kind": "level",
+   "y": {
+    "20260331": 20.0
+   },
+   "q": {
+    "20241231": 20.0
+   },
+   "src": {
+    "q:20241231": [
+     "c5d95934-1dad-4832-b2c4-28dea48c1499.pdf",
+     18,
+     "Branch offices (20) (doc period)",
+     "20"
+    ],
+    "y:20260331": [
+     "2fff9f50-86c5-4045-b4d8-afc16b252bbc.pdf",
+     125,
+     "20 offices (assurance boundary, FY 25-26)",
+     "20"
+    ]
+   }
+  },
+  {
+   "name": "Depots",
+   "unit": "count",
+   "kind": "level",
+   "y": {
+    "20260331": 32.0
+   },
+   "q": {
+    "20241231": 32.0
+   },
+   "src": {
+    "q:20241231": [
+     "c5d95934-1dad-4832-b2c4-28dea48c1499.pdf",
+     18,
+     "Depots (32) (doc period)",
+     "32"
+    ],
+    "y:20260331": [
+     "2fff9f50-86c5-4045-b4d8-afc16b252bbc.pdf",
+     125,
+     "32 Depots (assurance boundary, FY 25-26)",
+     "32"
+    ]
+   }
+  },
+  {
    "name": "Specialty Business Revenue Share",
    "unit": "%",
    "kind": "level",
@@ -1192,36 +1341,19 @@
    }
   },
   {
-   "name": "Branch Offices",
+   "name": "Fabrication Units",
    "unit": "count",
    "kind": "level",
-   "y": {},
-   "q": {
-    "20241231": 20.0
+   "y": {
+    "20260331": 9.0
    },
+   "q": {},
    "src": {
-    "q:20241231": [
-     "c5d95934-1dad-4832-b2c4-28dea48c1499.pdf",
-     18,
-     "Branch offices (20) (doc period)",
-     "20"
-    ]
-   }
-  },
-  {
-   "name": "Depots",
-   "unit": "count",
-   "kind": "level",
-   "y": {},
-   "q": {
-    "20241231": 32.0
-   },
-   "src": {
-    "q:20241231": [
-     "c5d95934-1dad-4832-b2c4-28dea48c1499.pdf",
-     18,
-     "Depots (32) (doc period)",
-     "32"
+    "y:20260331": [
+     "2fff9f50-86c5-4045-b4d8-afc16b252bbc.pdf",
+     125,
+     "9 fabrication units (assurance boundary, FY 25-26)",
+     "9"
     ]
    }
   }
