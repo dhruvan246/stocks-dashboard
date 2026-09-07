@@ -148,8 +148,10 @@ CF_ONE = [
     ('cf_tax', r'(?:income\s+)?tax(?:es)?\s+paid\b|direct\s+taxes\s+paid', -1),
 ]
 
-BS_PAGE = re.compile(r'(balance sheet|assets and liabilities|statement of assets)', re.I)
-BS_REAL = re.compile(r'total\s+(non.?current|current)?\s*assets|total\s+equity', re.I)
+BS_PAGE  = re.compile(r'(balance sheet|assets and liabilities|statement of assets)', re.I)
+BS_REAL  = re.compile(r'(total\s+equity|equity\s+share\s+capital|other\s+equity)', re.I)  # equity marker
+BS_ASSET = re.compile(r'total[\s\-–—:.]{0,4}assets', re.I)  # the real BS foots to a Total Assets line; a P&L results page / notes page does not
+BS_LIAB  = re.compile(r'trade\s+payables|total[\s\-–—:.]{0,4}equity\s+and\s+liabilit', re.I)  # POSITIVE liabilities-side marker: a real BS/statement-of-assets-and-liabilities always has it; a P&L results page, a notes page, or a per-segment "assets & liabilities" schedule does NOT (so this excludes the decoys without over-excluding a real BS page that merely shares a page with segment text)
 CF_PAGE = re.compile(r'cash\s*flow', re.I)
 CF_REAL = re.compile(r'operating\s+activit|investing\s+activit|financing\s+activit', re.I)
 CONSOL  = re.compile(r'consolidated', re.I)
@@ -167,7 +169,11 @@ def locate(pdf, want_year):
     bs_con = bs_std = cf_con = cf_std = None
     for i, t in enumerate(texts):
         con = bool(CONSOL.search(t))
-        if BS_PAGE.search(t) and BS_REAL.search(t):
+        # real BS = the A&L/balance-sheet TITLE + the robust "trade payables" liabilities marker
+        # + at least ONE of the equity/assets total markers. Consolidated pages often have a
+        # CORRUPTED text layer ("TOT AL ASSETS", "EQUITY A~D LIABILITIES"), so we anchor on
+        # trade-payables (survives) and tolerate corruption in either total line, but not both.
+        if BS_PAGE.search(t) and BS_LIAB.search(t) and (BS_REAL.search(t) or BS_ASSET.search(t)):
             if con and bs_con is None: bs_con = i
             elif not con and bs_std is None: bs_std = i
         if CF_PAGE.search(t) and CF_REAL.search(t):
