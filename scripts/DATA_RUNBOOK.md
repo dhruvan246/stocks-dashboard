@@ -14735,6 +14735,37 @@ Five distinct classes, and in only ONE was the store wrong:
 wrong-entity resolution, now fixed.** Lesson (memory feedback-row-identity-proof): a symbol-prefix name match is
 not identity; confirm the entity by share capital / grand total before trusting a resolved scripcode.
 
+### 127n. ★★★ Whole-era second-reader audit — NSE's archived pattern checked against the ENTIRE 2001-06 BSE-derived store: 98.87% agree, and every one of the 44 disagreements is explained (0 new defects)  (2026-09-07)
+
+Ran `fetch_shp_nse_shpdetails.py` over ALL 494 point-in-time N500 members with an NSE capture (not just the 206 gap
+symbols): 6,717 captures, **6,271 fetched** (446 Wayback refusals, resumable), 6,156 parsed. **3,890 stored cells were
+also read by NSE — 3,846 agree within 0.11pp on both fii and dii (98.87%); 44 disagree.** Every disagreement was read
+against its BSE page. 15 are the store-right cases from §127m's 16 (VXL, the one true defect, was healed in §127m and now
+agrees). The **29 NEW disagreements ALL confirm the store** — no new defect anywhere in the era:
+- **ADR/GDR/ADS/"shares in transit" folded into fii or dii by NSE (store right, 9):** GAIL 2002-03/06 (GDR 14.85/14.70→fii),
+  TATACOMM 2002-06/09 (ADR 10.84/11.51→fii), CHOLAHLDNG 2003-03 (GDR 9.92→fii), ICICIBANK 2002-09 (Shares-in-Transit
+  16.54→dii), EIDPARRY 2004-06 (GDR 3.10→fii), WIPRO 2004-03 (ADR 1.38→fii), GNFC 2002-09 (GDR 0.90→fii). Same class as §127l.
+- **Government holding folded into the NSE institutional lump (store convention-correct, 1):** GVPIL 2002-12 (President of
+  India 1.00→dii). Same class as VOLTAS §127m.
+- **NSE parse mis-slot (store right, 3):** GAMMONIND 2003-03/06 (NSE shows the Banks/FI 0.47 as FII), CINEVISTA 2004-03 (NSE
+  shows Private Corporate 2.21 as institutional).
+- **Cross-exchange classification of a boundary block, store keeps its BSE reader (14):** INGVYSYABK ×4 (a Multilateral
+  Institutions 5.01 block that BSE files under Any-Other and NSE under FII), ESSAROIL 2003-09 (13,108,641 shares Private
+  Corporate on BSE vs Banks/FI on NSE), and small (<4pp, the untouched slot agrees) sub-breakdown differences on NEPCMICON,
+  ITC, JINDALSAW, IFCI, AXISBANK, NAVNETEDUL and AJANTPHARM ×3.
+- **Restated vintage — the NSE capture back-dates a post-corporate-action structure onto an old quarter, store keeps
+  as-filed (2):** ASAHIINDIA 2002-09 (BSE base 7.4M vs NSE 64.2M) and GSFC 2004-03 (BSE base 79.7M vs NSE 89.1M, and NSE
+  lumps the LIC/GIC/bank holding into "Indian Promoters" 83.95% where BSE splits promoter 37.84 / institutional 30.51 — the
+  standard PSU classification). Same class as ABAN §127m.
+
+**Bottom line: across 45 distinct disagreements this NSE route has ever surfaced, 44 confirm the store and exactly 1 (VXL)
+was our own wrong-entity defect, now fixed — the BSE-derived 2001-06 FII/DII store reads true to 99.97% of the cells a
+second exchange could check.** The route's systematic gap is taxonomy, not accuracy: NSE's older template folds depository
+receipts, government, "shares in transit", multilateral institutions and even private corporates into fii/dii, which the
+store's convention (correctly) keeps out. Verdicts per cell + the residual list (446 unfetched captures; 238 members with no
+capture at all, resting on the BSE reader alone) in `scripts/shp_nse_shpdetails_open.json`. No store value changed by this
+audit — it is a verification pass, and it passed.
+
 ## 128. ★★★ STD-PAT 2002-07 EXECUTED — 229 "missing" cells were HELD under a retired key the coverage builder could not see; four gated routes landed 1,538 cells; the NSE results ARCHIVE reads standalone PAT with the page's own EPS identity  (2026-09-05)
 
 **Trigger:** execute the std-PAT packages of §127 / `PLAN_STDPAT_SHP_COVERAGE_2002.md` (plan §8 = state table).

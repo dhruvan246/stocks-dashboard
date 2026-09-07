@@ -221,5 +221,54 @@
   "LLOYDFIN|None|20060719024215": "absent: no as-on date"
  },
  "_adjudication_2026-09-06": "NSE shareholdingdetails.jsp files ADR/GDR (depository receipts) under the \"FIIs\" heading; the BSE-derived store excludes DR from the fii slot per the project convention (excl regex, \u00a7127g, \u00a722 \u2014 a DR block folding into FII is a RECLASSIFICATION, not a stake change). Every disagreement whose BSE page carries an ADR/GDR row is therefore the STORE being right and NSE mislabelling \u2014 confirmed on ELDERPHARM 2004-06 and SBIN 2002. This is a systematic taxonomy difference in the NSE route, not random error; it does NOT lower confidence in the 291 fills (those are quarters the store had NO cell, so no ADR/GDR double-count is possible \u2014 and the overlap gate already kept these 16 out). OPEN CONVENTION QUESTION for the user: a company holding ~30% foreign via ADR/GDR reads fii=0 while the same money reads fii~24% once converted to direct FII (ELDERPHARM 2004-06 vs 2005-03) \u2014 a fiiChgPp discontinuity that is faithful per-cell but not a real inflow. Folding DR into fii would be a site-wide convention change (same class as the Sep-2022 DR dissolution, \u00a722) \u2014 not made here.",
- "_audit_2026-09-07": "All 16 \u00a7127k disagreements adjudicated by reading BOTH documents (BSE aspx + NSE shareholdingdetails.jsp). Classes: (a) ADR/GDR mislabel \u2014 NSE files depository receipts under FIIs, store excludes per convention, STORE RIGHT (ELDERPHARM, SBIN\u00d73, MAARSOFTW 2003-12); (b) state-government holding NSE folds into its institutional lump but the store keeps in the govt slot, STORE convention-correct (VOLTAS\u00d72); (c) cross-exchange filer classification of a boundary block \u2014 FII vs NRI/OCB (CEAT\u00d73), promoter vs bank (RSSOFTWARE), or a different institutional sub-breakdown (HLVLTD, MAARSOFTW 2003-06) \u2014 small (<1.2pp), neither exchange authoritative, STORE KEEPS ITS BSE READING; (d) restated vintage \u2014 the NSE capture back-dates a post-corporate-action structure onto an old quarter (ABAN, grand total 7.38M as-filed vs 42.38M in the 2005 capture), STORE KEEPS as-filed; (e) ONE genuine defect \u2014 VXL is the wrong entity (VXL Instruments 517399 instead of Birla VXL 503796), HEALED. So of 16 disagreements, 15 confirm the store and 1 was a wrong-entity defect now fixed; none required accepting an NSE value over the store."
+ "_audit_2026-09-07": "All 16 \u00a7127k disagreements adjudicated by reading BOTH documents (BSE aspx + NSE shareholdingdetails.jsp). Classes: (a) ADR/GDR mislabel \u2014 NSE files depository receipts under FIIs, store excludes per convention, STORE RIGHT (ELDERPHARM, SBIN\u00d73, MAARSOFTW 2003-12); (b) state-government holding NSE folds into its institutional lump but the store keeps in the govt slot, STORE convention-correct (VOLTAS\u00d72); (c) cross-exchange filer classification of a boundary block \u2014 FII vs NRI/OCB (CEAT\u00d73), promoter vs bank (RSSOFTWARE), or a different institutional sub-breakdown (HLVLTD, MAARSOFTW 2003-06) \u2014 small (<1.2pp), neither exchange authoritative, STORE KEEPS ITS BSE READING; (d) restated vintage \u2014 the NSE capture back-dates a post-corporate-action structure onto an old quarter (ABAN, grand total 7.38M as-filed vs 42.38M in the 2005 capture), STORE KEEPS as-filed; (e) ONE genuine defect \u2014 VXL is the wrong entity (VXL Instruments 517399 instead of Birla VXL 503796), HEALED. So of 16 disagreements, 15 confirm the store and 1 was a wrong-entity defect now fixed; none required accepting an NSE value over the store.",
+ "_whole_era_audit_2026-09-07": {
+  "summary": "Whole-era second-reader audit: NSE shareholdingdetails.jsp vs the stored BSE-derived cell for EVERY overlap 2001-06 (not just gap symbols). 6,271 of 6,717 captures fetched (446 Wayback failures, resumable), 6,156 parsed. 3,890 stored cells also read by NSE; 3,846 agree within 0.11pp on both fii and dii (98.87%); 44 disagree. Of the 44, 15 are store-right cases from the earlier 16-cell audit (VXL, the one true defect, was healed and now agrees). The 29 NEW disagreements were each read against the BSE page \u2014 ALL confirm the store; no new defect. Classes below. Net: across 45 distinct disagreements ever surfaced by this route, 44 confirm the store and 1 (VXL) was our wrong-entity defect, now fixed.",
+  "classes": {
+   "ADR/GDR/ADS/transit folded into fii or dii by NSE (STORE RIGHT \u2014 DR/transit excluded per convention)": [
+    "GAIL|2002-03-31 GDR 14.85\u2192fii",
+    "GAIL|2002-06-30 GDR 14.70\u2192fii",
+    "TATACOMM|2002-06-30 ADR 10.84\u2192fii",
+    "TATACOMM|2002-09-30 ADR 11.51\u2192fii",
+    "CHOLAHLDNG|2003-03-31 GDR 9.92\u2192fii",
+    "ICICIBANK|2002-09-30 Shares-in-Transit 16.54\u2192dii",
+    "EIDPARRY|2004-06-30 GDR 3.10\u2192fii",
+    "WIPRO|2004-03-31 ADR 1.38\u2192fii",
+    "GNFC|2002-09-30 GDR 0.90\u2192fii"
+   ],
+   "government holding folded into NSE institutional lump (STORE convention-correct \u2014 govt is its own slot)": [
+    "GVPIL|2002-12-31 President of India 1.00\u2192dii"
+   ],
+   "NSE parse mis-slot (STORE RIGHT)": [
+    "GAMMONIND|2003-03-31 Banks/FI 0.47 shown as fii by NSE",
+    "GAMMONIND|2003-06-30 Banks/FI 0.47 as fii",
+    "CINEVISTA|2004-03-31 Private Corp 2.21 shown as dii by NSE"
+   ],
+   "multilateral-institution in Any-Other (BSE) vs FII (NSE) \u2014 cross-exchange, STORE keeps BSE": [
+    "INGVYSYABK|2002-09-30 Multilateral Inst 5.01",
+    "INGVYSYABK|2002-12-31",
+    "INGVYSYABK|2003-06-30",
+    "INGVYSYABK|2004-03-31"
+   ],
+   "private-corp vs bank/FI cross-exchange classification (STORE keeps BSE)": [
+    "ESSAROIL|2003-09-30 13,108,641 sh Private Corp(BSE) vs Banks/FI(NSE)"
+   ],
+   "restated vintage / different share base \u2014 NSE capture back-dates a post-corporate-action structure (STORE keeps as-filed)": [
+    "ASAHIINDIA|2002-09-30 base 7.4M(BSE) vs 64.2M(NSE)",
+    "GSFC|2004-03-31 base 79.7M vs 89.1M + PSU promoter-vs-institutional lumping (BSE prom 37.84/dii 30.51 vs NSE prom 83.95/dii 10.58)"
+   ],
+   "small cross-exchange sub-breakdown <4pp, the other slot agrees (STORE keeps BSE)": [
+    "NEPCMICON|2003-03-31 0.15",
+    "ITC|2002-09-30 0.36",
+    "JINDALSAW|2003-06-30 0.11",
+    "IFCI|2004-12-31 1.31",
+    "AXISBANK|2001-06-30 2.16",
+    "NAVNETEDUL|2003-03-31 2.68",
+    "AJANTPHARM|2002-09-30",
+    "AJANTPHARM|2002-12-31",
+    "AJANTPHARM|2003-09-30 up to 3.96"
+   ]
+  },
+  "residual": "446 captures unfetched (Wayback refusals, resumable via fetch_shp_nse_shpdetails.py fetch); 238 era N500 members have NO NSE capture at all \u2014 those cells rest on the BSE reader alone."
+ }
 }
