@@ -16062,6 +16062,13 @@ figures add unlisted arms, acquisitions and intangibles; I-Sec's +20% FY25 vs ou
 (their definition is unpublished; ex-Reliance we read +13.9%). Announcements (CMIE/SBI), NAS private-corporate
 GFCF (₹30.3 L cr FY25), the MoSPI survey and RBI pipelines are "not comparable" by construction.
 
+**Growth views (user: "i want charts to see growth or fall", same day, sw v147):** every level chart has a
+y/y sibling — Centre capex `y/y growth` (Actuals vs prior Actuals; the open BE year shown hollow as BE vs last
+RE), monthly tracker `y/y growth` (cumulative Apr→month vs the same months last year, last year's growth as
+ticks), India Inc `₹ amount / y/y growth` (same-basis panel growth; fixed panels plain y/y), sectors
+`₹ amount / y/y growth` (diverging bars from zero, sorted), and a "Who stepped up, who pulled back" card
+(₹ change among the 40 biggest spenders with a same-basis prior year). Colours = `--pos/--neg` tokens.
+
 **Gate run (§39):** py_compile + node --check + json.tool on every touched file; page loaded on the worktree
 preview (port 8853): zero console errors, real values in all six pulse tiles / tables / charts; segment buttons,
 hover tooltips, dark + light (palette re-stepped for dark and validated with the dataviz checker), 375 px
