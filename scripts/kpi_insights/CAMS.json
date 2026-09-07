@@ -1,8 +1,571 @@
 {
  "sym": "CAMS",
  "fy_end_month": 3,
- "docs": {},
- "metrics": [],
+ "docs": {
+  "66294c6e-a788-44c2-aa33-79ab03e9663d.pdf": {
+   "kind": "ar",
+   "date": "2026-07-01",
+   "title": "Addendum to Annual Report (e-voting schedule correction)",
+   "read": "2026-09-07",
+   "by": "claude-routine"
+  },
+  "fb3eeb5d-1c18-4c05-aa1d-cfc89a1c39dd.pdf": {
+   "kind": "pr",
+   "date": "2026-08-03",
+   "title": "Q1 FY27 Media Release - Financial Results",
+   "read": "2026-09-07",
+   "by": "claude-routine"
+  },
+  "afb3d176-812d-4416-8672-49ca986ee51a.pdf": {
+   "kind": "ar",
+   "date": "2026-06-15",
+   "title": "Intimation - Annual Report FY26 weblink dispatch",
+   "read": "2026-09-07",
+   "by": "claude-routine"
+  },
+  "9404e4ec-f6f9-45bd-8933-63227dcd5f4e.pdf": {
+   "kind": "ar",
+   "date": "2026-06-15",
+   "title": "Annual Report FY 2025-26",
+   "read": "2026-09-07",
+   "by": "claude-routine"
+  }
+ },
+ "metrics": [
+  {
+   "name": "CAMS Market Share in MF AuM",
+   "unit": "%",
+   "kind": "level",
+   "y": {
+    "20260331": 68.0
+   },
+   "q": {
+    "20260630": 67.2
+   },
+   "src": {
+    "q:20260630": [
+     "fb3eeb5d-1c18-4c05-aa1d-cfc89a1c39dd.pdf",
+     2,
+     "dominant market position with a 67.2% share",
+     "67.2"
+    ],
+    "y:20260331": [
+     "9404e4ec-f6f9-45bd-8933-63227dcd5f4e.pdf",
+     159,
+     "aggregate mutual fund share of approximately 68% (doc period)",
+     "68"
+    ]
+   }
+  },
+  {
+   "name": "Live SIP Accounts",
+   "unit": "Cr",
+   "kind": "level",
+   "y": {
+    "20260331": 6.7
+   },
+   "q": {
+    "20260630": 6.72
+   },
+   "src": {
+    "q:20260630": [
+     "fb3eeb5d-1c18-4c05-aa1d-cfc89a1c39dd.pdf",
+     2,
+     "Live SIP accounts grew to 6.72 Cr.",
+     "6.72"
+    ],
+    "y:20260331": [
+     "9404e4ec-f6f9-45bd-8933-63227dcd5f4e.pdf",
+     160,
+     "Live SIP has grown by 17% at 6.7 Cr in FY'26",
+     "6.7"
+    ]
+   }
+  },
+  {
+   "name": "SIP Market Share",
+   "unit": "%",
+   "kind": "level",
+   "y": {},
+   "q": {
+    "20250630": 61.5,
+    "20260630": 63.9
+   },
+   "src": {
+    "q:20260630": [
+     "fb3eeb5d-1c18-4c05-aa1d-cfc89a1c39dd.pdf",
+     2,
+     "Market share improved to 63.9%",
+     "63.9"
+    ],
+    "q:20250630": [
+     "fb3eeb5d-1c18-4c05-aa1d-cfc89a1c39dd.pdf",
+     2,
+     "from 61.5% a year ago",
+     "61.5"
+    ]
+   }
+  },
+  {
+   "name": "Bima Central Unique Users Added",
+   "unit": "Lakh",
+   "kind": "flow",
+   "y": {
+    "20260331": 12.6
+   },
+   "q": {},
+   "src": {
+    "y:20260331": [
+     "9404e4ec-f6f9-45bd-8933-63227dcd5f4e.pdf",
+     160,
+     "Bima Central added 12.6 lakh unique users for the full year",
+     "12.6"
+    ]
+   }
+  },
+  {
+   "name": "CAMS Alternatives AuM",
+   "unit": "Lakh Cr",
+   "kind": "level",
+   "y": {},
+   "q": {
+    "20260630": 3.2
+   },
+   "src": {
+    "q:20260630": [
+     "fb3eeb5d-1c18-4c05-aa1d-cfc89a1c39dd.pdf",
+     3,
+     "With AuM crossing 3.2 Lakh Cr. (doc period)",
+     "3.2"
+    ]
+   }
+  },
+  {
+   "name": "CAMS AuM",
+   "unit": "Lakh Cr",
+   "kind": "level",
+   "y": {},
+   "q": {
+    "20260630": 56.0
+   },
+   "src": {
+    "q:20260630": [
+     "fb3eeb5d-1c18-4c05-aa1d-cfc89a1c39dd.pdf",
+     2,
+     "CAMS AuM record ₹56 Lakh Cr. in Q1 FY'27",
+     "56"
+    ]
+   }
+  },
+  {
+   "name": "CAMS KRA Repository",
+   "unit": "Cr",
+   "kind": "level",
+   "y": {
+    "20260331": 2.07
+   },
+   "q": {},
+   "src": {
+    "y:20260331": [
+     "9404e4ec-f6f9-45bd-8933-63227dcd5f4e.pdf",
+     160,
+     "CAMS KRA manages a repository of 2.07 Cr KYC records",
+     "2.07"
+    ]
+   }
+  },
+  {
+   "name": "CAMSFIS Operational Licensees",
+   "unit": "count",
+   "kind": "level",
+   "y": {
+    "20260331": 17.0
+   },
+   "q": {},
+   "src": {
+    "y:20260331": [
+     "9404e4ec-f6f9-45bd-8933-63227dcd5f4e.pdf",
+     160,
+     "currently 17 operational licensee (doc period)",
+     "17"
+    ]
+   }
+  },
+  {
+   "name": "CAMSFinserv Billed Clients",
+   "unit": "count",
+   "kind": "level",
+   "y": {
+    "20260331": 140.0
+   },
+   "q": {},
+   "src": {
+    "y:20260331": [
+     "9404e4ec-f6f9-45bd-8933-63227dcd5f4e.pdf",
+     160,
+     "140 billed clients",
+     "140"
+    ]
+   }
+  },
+  {
+   "name": "CAMSFinserv Live Clients",
+   "unit": "count",
+   "kind": "level",
+   "y": {
+    "20260331": 235.0
+   },
+   "q": {},
+   "src": {
+    "y:20260331": [
+     "9404e4ec-f6f9-45bd-8933-63227dcd5f4e.pdf",
+     160,
+     "CAMSFinserv exited FY26 with 235 live clients",
+     "235"
+    ]
+   }
+  },
+  {
+   "name": "Equity AuM",
+   "unit": "Lakh Cr",
+   "kind": "level",
+   "y": {},
+   "q": {
+    "20260630": 31.4
+   },
+   "src": {
+    "q:20260630": [
+     "fb3eeb5d-1c18-4c05-aa1d-cfc89a1c39dd.pdf",
+     2,
+     "Equity AuM record ₹31.4 Lakh Cr.",
+     "31.4"
+    ]
+   }
+  },
+  {
+   "name": "Equity Net Sales",
+   "unit": "₹ Cr",
+   "kind": "flow",
+   "y": {},
+   "q": {
+    "20260630": 86026.0
+   },
+   "src": {
+    "q:20260630": [
+     "fb3eeb5d-1c18-4c05-aa1d-cfc89a1c39dd.pdf",
+     2,
+     "Equity net sales at ₹86,026 Cr.",
+     "86,026"
+    ]
+   }
+  },
+  {
+   "name": "Equity Net Sales",
+   "unit": "Lakh Cr",
+   "kind": "flow",
+   "y": {
+    "20260331": 3.4
+   },
+   "q": {},
+   "src": {
+    "y:20260331": [
+     "9404e4ec-f6f9-45bd-8933-63227dcd5f4e.pdf",
+     160,
+     "Equity net sales stood at ₹3.4 Lakh Crore in FY'26",
+     "3.4"
+    ]
+   }
+  },
+  {
+   "name": "GIFT City AuM",
+   "unit": "₹ Cr",
+   "kind": "level",
+   "y": {},
+   "q": {
+    "20260630": 750.0
+   },
+   "src": {
+    "q:20260630": [
+     "fb3eeb5d-1c18-4c05-aa1d-cfc89a1c39dd.pdf",
+     2,
+     "AuM of ₹750 Cr. (doc period)",
+     "750"
+    ]
+   }
+  },
+  {
+   "name": "GIFT City Monthly Gross Sales",
+   "unit": "₹ Cr",
+   "kind": "flow",
+   "y": {},
+   "q": {
+    "20260630": 200.0
+   },
+   "src": {
+    "q:20260630": [
+     "fb3eeb5d-1c18-4c05-aa1d-cfc89a1c39dd.pdf",
+     2,
+     "monthly gross sales of ₹200 Cr. (doc period)",
+     "200"
+    ]
+   }
+  },
+  {
+   "name": "GIFT City Retail Funds Investors",
+   "unit": "count",
+   "kind": "level",
+   "y": {},
+   "q": {
+    "20260630": 10000.0
+   },
+   "src": {
+    "q:20260630": [
+     "fb3eeb5d-1c18-4c05-aa1d-cfc89a1c39dd.pdf",
+     2,
+     "GIFT City Retail Funds crossed 10,000 investors (doc period)",
+     "10,000"
+    ]
+   }
+  },
+  {
+   "name": "GOCorp AuM",
+   "unit": "Trillion",
+   "kind": "level",
+   "y": {
+    "20260331": 3.32
+   },
+   "q": {},
+   "src": {
+    "y:20260331": [
+     "9404e4ec-f6f9-45bd-8933-63227dcd5f4e.pdf",
+     61,
+     "AuM serviced by GOCorp",
+     "3.32"
+    ]
+   }
+  },
+  {
+   "name": "GOCorp Market Share of Institutional AuM",
+   "unit": "%",
+   "kind": "level",
+   "y": {
+    "20260331": 15.33
+   },
+   "q": {},
+   "src": {
+    "y:20260331": [
+     "9404e4ec-f6f9-45bd-8933-63227dcd5f4e.pdf",
+     61,
+     "Market share of institutional AuM (in value)",
+     "15.33"
+    ]
+   }
+  },
+  {
+   "name": "GOCorp Registered Users",
+   "unit": "count",
+   "kind": "level",
+   "y": {
+    "20260331": 9000.0
+   },
+   "q": {},
+   "src": {
+    "y:20260331": [
+     "9404e4ec-f6f9-45bd-8933-63227dcd5f4e.pdf",
+     61,
+     "9,000+ Registered Users (doc period)",
+     "9,000"
+    ]
+   }
+  },
+  {
+   "name": "New SIP Registrations",
+   "unit": "Cr",
+   "kind": "flow",
+   "y": {
+    "20260331": 4.7
+   },
+   "q": {},
+   "src": {
+    "y:20260331": [
+     "9404e4ec-f6f9-45bd-8933-63227dcd5f4e.pdf",
+     160,
+     "New SIP registrations reached 4.7 Cr in FY'26",
+     "4.7"
+    ]
+   }
+  },
+  {
+   "name": "SIF AuM",
+   "unit": "₹ Cr",
+   "kind": "level",
+   "y": {},
+   "q": {
+    "20260630": 10000.0
+   },
+   "src": {
+    "q:20260630": [
+     "fb3eeb5d-1c18-4c05-aa1d-cfc89a1c39dd.pdf",
+     2,
+     "collectively crossing ₹10,000 Cr. in AuM (doc period)",
+     "10,000"
+    ]
+   }
+  },
+  {
+   "name": "SIF Count",
+   "unit": "count",
+   "kind": "level",
+   "y": {},
+   "q": {
+    "20260630": 11.0
+   },
+   "src": {
+    "q:20260630": [
+     "fb3eeb5d-1c18-4c05-aa1d-cfc89a1c39dd.pdf",
+     2,
+     "CAMS has launched 11 SIFs to date (doc period)",
+     "11"
+    ]
+   }
+  },
+  {
+   "name": "SIF Distributors",
+   "unit": "count",
+   "kind": "level",
+   "y": {},
+   "q": {
+    "20260630": 8000.0
+   },
+   "src": {
+    "q:20260630": [
+     "fb3eeb5d-1c18-4c05-aa1d-cfc89a1c39dd.pdf",
+     2,
+     "over 8,000 distributors (doc period)",
+     "8,000"
+    ]
+   }
+  },
+  {
+   "name": "SIF Investors",
+   "unit": "count",
+   "kind": "level",
+   "y": {},
+   "q": {
+    "20260630": 45000.0
+   },
+   "src": {
+    "q:20260630": [
+     "fb3eeb5d-1c18-4c05-aa1d-cfc89a1c39dd.pdf",
+     2,
+     "45,000 investors participating (doc period)",
+     "45,000"
+    ]
+   }
+  },
+  {
+   "name": "SIP Collections",
+   "unit": "₹ Cr",
+   "kind": "flow",
+   "y": {},
+   "q": {
+    "20260630": 59681.0
+   },
+   "src": {
+    "q:20260630": [
+     "fb3eeb5d-1c18-4c05-aa1d-cfc89a1c39dd.pdf",
+     2,
+     "SIP collections grew to ₹59,681 Cr. for the quarter",
+     "59,681"
+    ]
+   }
+  },
+  {
+   "name": "SIP Gross Sales",
+   "unit": "Lakh Cr",
+   "kind": "flow",
+   "y": {
+    "20260331": 2.2
+   },
+   "q": {},
+   "src": {
+    "y:20260331": [
+     "9404e4ec-f6f9-45bd-8933-63227dcd5f4e.pdf",
+     160,
+     "SIP gross sales were at ₹.2.2 Lakh Crore in FY'26",
+     "2.2"
+    ]
+   }
+  },
+  {
+   "name": "Total Transaction Volumes",
+   "unit": "Cr",
+   "kind": "flow",
+   "y": {
+    "20260331": 107.0
+   },
+   "q": {},
+   "src": {
+    "y:20260331": [
+     "9404e4ec-f6f9-45bd-8933-63227dcd5f4e.pdf",
+     160,
+     "Total transaction volumes for FY'26 recorded 107 Cr",
+     "107"
+    ]
+   }
+  },
+  {
+   "name": "Unique Investor Base",
+   "unit": "Cr",
+   "kind": "level",
+   "y": {},
+   "q": {
+    "20260630": 4.85
+   },
+   "src": {
+    "q:20260630": [
+     "fb3eeb5d-1c18-4c05-aa1d-cfc89a1c39dd.pdf",
+     2,
+     "unique investor base expanded to over 4.85 Cr.",
+     "4.85"
+    ]
+   }
+  },
+  {
+   "name": "edge360 Registered Distributors",
+   "unit": "Lakh",
+   "kind": "level",
+   "y": {
+    "20260331": 1.1
+   },
+   "q": {},
+   "src": {
+    "y:20260331": [
+     "9404e4ec-f6f9-45bd-8933-63227dcd5f4e.pdf",
+     61,
+     "1.1 Lakhs Registered distributors (doc period)",
+     "1.1"
+    ]
+   }
+  },
+  {
+   "name": "myCAMS Registered Users",
+   "unit": "million",
+   "kind": "level",
+   "y": {
+    "20260331": 8.3
+   },
+   "q": {},
+   "src": {
+    "y:20260331": [
+     "9404e4ec-f6f9-45bd-8933-63227dcd5f4e.pdf",
+     161,
+     "myCAMS ... over 8.3 million registered users (doc period)",
+     "8.3"
+    ]
+   }
+  }
+ ],
  "held": [],
  "catalog": [
   {
