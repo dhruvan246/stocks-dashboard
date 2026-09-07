@@ -304,6 +304,9 @@ def prep(outdir, limit, only):
         held = {fy: k for fy in FYS if (k := held_bs(x, '%d0331' % fy))}
         if not held: continue
         val_fy = max(held); miss = [fy for fy in FYS if fy not in held]
+        if not miss: continue   # 0-fill "jammer": every FY-end already held, nothing to fill —
+        # skip it BEFORE any BSE fetch/render and WITHOUT counting it against --limit, so each
+        # batch spends its whole limit on symbols that can actually land (was ~42% wasted).
         entries = []
         for role, fy in [('validate', val_fy)] + [('fill', f) for f in miss]:
             try: fl = result_filings(o, code, '%d0401' % fy, '%d0901' % fy)
