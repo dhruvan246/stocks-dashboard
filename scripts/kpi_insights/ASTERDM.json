@@ -22,6 +22,13 @@
    "title": "FY26 Investor Presentation (Merger)",
    "read": "2026-09-07",
    "by": "claude-routine"
+  },
+  "ace7e196-b0e8-4a27-93f9-9479f755ae29.pdf": {
+   "kind": "ip",
+   "date": "2026-04-30",
+   "title": "Q4 FY26 Investor Presentation",
+   "read": "2026-09-07",
+   "by": "claude-routine"
   }
  },
  "metrics": [
@@ -464,6 +471,7 @@
    },
    "q": {
     "20250630": 131805.0,
+    "20260331": 134733.0,
     "20260630": 144064.0
    },
    "src": {
@@ -490,6 +498,51 @@
      40,
      "ARPP IP FY25",
      "1,22,112"
+    ],
+    "q:20260331": [
+     "ace7e196-b0e8-4a27-93f9-9479f755ae29.pdf",
+     7,
+     "ARPP IP (INR) QCIL column",
+     "1,34,733"
+    ]
+   }
+  },
+  {
+   "name": "ARPP IP (Aster)",
+   "unit": "INR",
+   "kind": "flow",
+   "y": {
+    "20260331": 121016.0
+   },
+   "q": {
+    "20250630": 118011.0,
+    "20260331": 125234.0,
+    "20260630": 130352.0
+   },
+   "src": {
+    "q:20260630": [
+     "29910f35-9ac7-4f00-8094-f9b63da6cad6.pdf",
+     21,
+     "ARPP IP Q1FY27",
+     "1,30,352"
+    ],
+    "q:20250630": [
+     "29910f35-9ac7-4f00-8094-f9b63da6cad6.pdf",
+     21,
+     "ARPP IP Q1FY26",
+     "1,18,011"
+    ],
+    "y:20260331": [
+     "3f450d98-249a-427f-8388-39c76d338862.pdf",
+     11,
+     "ARPP IP FY26",
+     "121,016"
+    ],
+    "q:20260331": [
+     "ace7e196-b0e8-4a27-93f9-9479f755ae29.pdf",
+     7,
+     "ARPP IP (INR) Aster column",
+     "1,25,234"
     ]
    }
   },
@@ -533,44 +586,13 @@
    }
   },
   {
-   "name": "ARPP IP (Aster)",
-   "unit": "INR",
-   "kind": "flow",
-   "y": {
-    "20260331": 121016.0
-   },
-   "q": {
-    "20250630": 118011.0,
-    "20260630": 130352.0
-   },
-   "src": {
-    "q:20260630": [
-     "29910f35-9ac7-4f00-8094-f9b63da6cad6.pdf",
-     21,
-     "ARPP IP Q1FY27",
-     "1,30,352"
-    ],
-    "q:20250630": [
-     "29910f35-9ac7-4f00-8094-f9b63da6cad6.pdf",
-     21,
-     "ARPP IP Q1FY26",
-     "1,18,011"
-    ],
-    "y:20260331": [
-     "3f450d98-249a-427f-8388-39c76d338862.pdf",
-     11,
-     "ARPP IP FY26",
-     "121,016"
-    ]
-   }
-  },
-  {
    "name": "Occupancy (Quality Care)",
    "unit": "%",
    "kind": "flow",
    "y": {},
    "q": {
     "20250630": 58.9,
+    "20260331": 64.0,
     "20260630": 65.4
    },
    "src": {
@@ -585,6 +607,43 @@
      27,
      "Occupancy improved by 656 bps (from 58.9% to 65.4%)",
      "58.9"
+    ],
+    "q:20260331": [
+     "ace7e196-b0e8-4a27-93f9-9479f755ae29.pdf",
+     7,
+     "Occupancy (%) QCIL column",
+     "64"
+    ]
+   }
+  },
+  {
+   "name": "Total Patient Volume (Quality Care)",
+   "unit": "Mn",
+   "kind": "flow",
+   "y": {},
+   "q": {
+    "20250630": 0.89,
+    "20260331": 0.95,
+    "20260630": 0.98
+   },
+   "src": {
+    "q:20260630": [
+     "29910f35-9ac7-4f00-8094-f9b63da6cad6.pdf",
+     28,
+     "Total Patients Q1FY27",
+     "0.98"
+    ],
+    "q:20250630": [
+     "29910f35-9ac7-4f00-8094-f9b63da6cad6.pdf",
+     28,
+     "Total Patients Q1FY26",
+     "0.89"
+    ],
+    "q:20260331": [
+     "ace7e196-b0e8-4a27-93f9-9479f755ae29.pdf",
+     7,
+     "Total Patient Volume (Mn) QCIL column",
+     "0.95"
     ]
    }
   },
@@ -633,30 +692,6 @@
      28,
      "Operational Beds Q1FY26",
      "5,174"
-    ]
-   }
-  },
-  {
-   "name": "Total Patient Volume (Quality Care)",
-   "unit": "Mn",
-   "kind": "flow",
-   "y": {},
-   "q": {
-    "20250630": 0.89,
-    "20260630": 0.98
-   },
-   "src": {
-    "q:20260630": [
-     "29910f35-9ac7-4f00-8094-f9b63da6cad6.pdf",
-     28,
-     "Total Patients Q1FY27",
-     "0.98"
-    ],
-    "q:20250630": [
-     "29910f35-9ac7-4f00-8094-f9b63da6cad6.pdf",
-     28,
-     "Total Patients Q1FY26",
-     "0.89"
     ]
    }
   },
