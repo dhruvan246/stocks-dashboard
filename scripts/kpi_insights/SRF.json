@@ -22,6 +22,27 @@
    "title": "Q3 FY26 Investor Presentation",
    "read": "2026-09-07",
    "by": "claude-routine"
+  },
+  "bd3ce98f-79a1-4f1c-abb7-6f6dd56ba073.pdf": {
+   "kind": "ar",
+   "date": "2025-06-10",
+   "title": "Notice of AGM and Annual Report weblink letter FY24-25 (email not registered)",
+   "read": "2026-09-07",
+   "by": "claude-routine"
+  },
+  "c501aa78-cb1b-4108-9dff-852146ed3765.pdf": {
+   "kind": "ip",
+   "date": "2025-07-24",
+   "title": "Q1 FY26 Investor Presentation",
+   "read": "2026-09-07",
+   "by": "claude-routine"
+  },
+  "720e915d-3fc3-40a7-a9ea-0f60e4e0c987.pdf": {
+   "kind": "ip",
+   "date": "2025-10-28",
+   "title": "Q2 FY26 Investor Presentation",
+   "read": "2026-09-07",
+   "by": "claude-routine"
   }
  },
  "metrics": [
@@ -33,6 +54,8 @@
     "20260331": 156.0
    },
    "q": {
+    "20250630": 153.0,
+    "20250930": 153.0,
     "20251231": 153.0,
     "20260630": 159.0
    },
@@ -54,6 +77,18 @@
      20,
      "Patents granted (doc period)",
      "153"
+    ],
+    "q:20250630": [
+     "c501aa78-cb1b-4108-9dff-852146ed3765.pdf",
+     20,
+     "Global Patents granted (doc period)",
+     "153"
+    ],
+    "q:20250930": [
+     "720e915d-3fc3-40a7-a9ea-0f60e4e0c987.pdf",
+     20,
+     "Patents granted (doc period)",
+     "153"
     ]
    }
   },
@@ -65,6 +100,8 @@
     "20260331": 521.0
    },
    "q": {
+    "20250630": 494.0,
+    "20250930": 501.0,
     "20251231": 506.0,
     "20260630": 528.0
    },
@@ -86,6 +123,50 @@
      20,
      "Patents applied (doc period)",
      "506"
+    ],
+    "q:20250630": [
+     "c501aa78-cb1b-4108-9dff-852146ed3765.pdf",
+     20,
+     "Patents applied (doc period)",
+     "494"
+    ],
+    "q:20250930": [
+     "720e915d-3fc3-40a7-a9ea-0f60e4e0c987.pdf",
+     20,
+     "Patents applied (doc period)",
+     "501"
+    ]
+   }
+  },
+  {
+   "name": "New Process Patents Granted",
+   "unit": "count",
+   "kind": "flow",
+   "y": {
+    "20260331": 5.0
+   },
+   "q": {
+    "20250630": 2.0,
+    "20260630": 3.0
+   },
+   "src": {
+    "q:20260630": [
+     "095628fe-2c9b-4ee3-afbd-d7557432a7dc.pdf",
+     19,
+     "3 new process patents granted in Q1 FY27",
+     "3"
+    ],
+    "y:20260331": [
+     "110be928-8d59-42e2-9dd7-90c8fab04597.pdf",
+     19,
+     "5 new process patents granted in FY26",
+     "5"
+    ],
+    "q:20250630": [
+     "c501aa78-cb1b-4108-9dff-852146ed3765.pdf",
+     20,
+     "2 new process patents granted in Q1 FY26",
+     "2"
     ]
    }
   },
@@ -182,31 +263,6 @@
      6,
      "Manufacturing Facilities",
      "16"
-    ]
-   }
-  },
-  {
-   "name": "New Process Patents Granted",
-   "unit": "count",
-   "kind": "flow",
-   "y": {
-    "20260331": 5.0
-   },
-   "q": {
-    "20260630": 3.0
-   },
-   "src": {
-    "q:20260630": [
-     "095628fe-2c9b-4ee3-afbd-d7557432a7dc.pdf",
-     19,
-     "3 new process patents granted in Q1 FY27",
-     "3"
-    ],
-    "y:20260331": [
-     "110be928-8d59-42e2-9dd7-90c8fab04597.pdf",
-     19,
-     "5 new process patents granted in FY26",
-     "5"
     ]
    }
   },
