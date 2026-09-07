@@ -15,6 +15,13 @@
    "title": "Annual Report 2025-26",
    "read": "2026-09-07",
    "by": "claude-routine"
+  },
+  "09463756-ab9c-438e-8924-2d5ebaa76fce.pdf": {
+   "kind": "ip",
+   "date": "2026-05-25",
+   "title": "Q4 FY26 & FY26 Investor Presentation (Consolidated Results)",
+   "read": "2026-09-07",
+   "by": "claude-routine"
   }
  },
  "metrics": [
@@ -87,6 +94,31 @@
      11,
      "Production Capacity ~1.9 Bn Units Annually",
      "1.9"
+    ]
+   }
+  },
+  {
+   "name": "R&D Professionals",
+   "unit": "count",
+   "kind": "level",
+   "y": {
+    "20260331": 90.0
+   },
+   "q": {
+    "20260630": 90.0
+   },
+   "src": {
+    "q:20260630": [
+     "3d2b03da-7262-404e-99d3-e81859b263b0.pdf",
+     6,
+     "90+ R&D professionals (doc period)",
+     "90"
+    ],
+    "y:20260331": [
+     "09463756-ab9c-438e-8924-2d5ebaa76fce.pdf",
+     8,
+     "R&D team strength of ~90 across India, Italy and Netherlands (doc period)",
+     "90"
     ]
    }
   },
@@ -276,6 +308,57 @@
    }
   },
   {
+   "name": "DES Clinical Registry Patients Enrolled",
+   "unit": "count",
+   "kind": "level",
+   "y": {
+    "20260331": 650.0
+   },
+   "q": {},
+   "src": {
+    "y:20260331": [
+     "09463756-ab9c-438e-8924-2d5ebaa76fce.pdf",
+     8,
+     "PACIFIER Clinical Registry of 2000 patients - 650+ Patients enrolled (doc period",
+     "650"
+    ]
+   }
+  },
+  {
+   "name": "Dialysis Machines Installed Base (Cumulative)",
+   "unit": "count",
+   "kind": "level",
+   "y": {
+    "20260331": 1000.0
+   },
+   "q": {},
+   "src": {
+    "y:20260331": [
+     "09463756-ab9c-438e-8924-2d5ebaa76fce.pdf",
+     8,
+     "total installed base of ~1000 machines",
+     "1000"
+    ]
+   }
+  },
+  {
+   "name": "Dialysis Machines Sold (FY)",
+   "unit": "count",
+   "kind": "flow",
+   "y": {
+    "20260331": 450.0
+   },
+   "q": {},
+   "src": {
+    "y:20260331": [
+     "09463756-ab9c-438e-8924-2d5ebaa76fce.pdf",
+     8,
+     "Successfully achieved sales of 450 dialysis machines during FY26",
+     "450"
+    ]
+   }
+  },
+  {
    "name": "Distributors (Global)",
    "unit": "count",
    "kind": "level",
@@ -310,6 +393,23 @@
    }
   },
   {
+   "name": "New Products Launched (FY)",
+   "unit": "count",
+   "kind": "flow",
+   "y": {
+    "20260331": 35.0
+   },
+   "q": {},
+   "src": {
+    "y:20260331": [
+     "09463756-ab9c-438e-8924-2d5ebaa76fce.pdf",
+     8,
+     "35 products launched in FY26",
+     "35"
+    ]
+   }
+  },
+  {
    "name": "Patents Granted",
    "unit": "count",
    "kind": "level",
@@ -327,19 +427,36 @@
    }
   },
   {
-   "name": "R&D Professionals",
+   "name": "Patents Granted (Consolidated)",
    "unit": "count",
    "kind": "level",
    "y": {},
    "q": {
-    "20260630": 90.0
+    "20260331": 399.0
    },
    "src": {
-    "q:20260630": [
-     "3d2b03da-7262-404e-99d3-e81859b263b0.pdf",
+    "q:20260331": [
+     "09463756-ab9c-438e-8924-2d5ebaa76fce.pdf",
      6,
-     "90+ R&D professionals (doc period)",
-     "90"
+     "No of Patents (Consolidated summary)",
+     "399"
+    ]
+   }
+  },
+  {
+   "name": "Patents Granted (Standalone)",
+   "unit": "count",
+   "kind": "level",
+   "y": {},
+   "q": {
+    "20260331": 348.0
+   },
+   "src": {
+    "q:20260331": [
+     "09463756-ab9c-438e-8924-2d5ebaa76fce.pdf",
+     5,
+     "No of Patents (Standalone summary)",
+     "348"
     ]
    }
   },
@@ -361,7 +478,19 @@
    }
   }
  ],
- "held": [],
+ "held": [
+  {
+   "doc": "09463756-ab9c-438e-8924-2d5ebaa76fce.pdf",
+   "metric": "Cumulative Stent Deployments",
+   "unit": "K units",
+   "period": "Q4FY26",
+   "value": 11.0,
+   "as_printed": "11",
+   "page": 8,
+   "label": "cumulative stent deployments surpassed ~11K units (as of 30th April 2026)",
+   "why": "period_end disagrees: ours 20260331 model 20260430 for 'Q4FY26'"
+  }
+ ],
  "catalog": [
   {
    "kind": "ar",
