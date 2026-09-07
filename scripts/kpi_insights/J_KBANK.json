@@ -22,6 +22,13 @@
    "title": "Press Release — Q3 FY25-26 Results",
    "read": "2026-09-07",
    "by": "claude-routine"
+  },
+  "094e5919-8a76-4845-a3e0-1c34fd513bc4.pdf": {
+   "kind": "pr",
+   "date": "2025-10-18",
+   "title": "Press Release — Q2 FY25-26 / H1 Results",
+   "read": "2026-09-07",
+   "by": "claude-routine"
   }
  },
  "metrics": [
@@ -33,8 +40,10 @@
     "20250331": 3.37
    },
    "q": {
+    "20240930": 3.95,
     "20241231": 4.08,
     "20250630": 3.5,
+    "20250930": 3.32,
     "20251231": 3.0,
     "20260331": 2.5,
     "20260630": 2.37
@@ -75,6 +84,130 @@
      2,
      "down by 108 basis points (bps) from 4.08%",
      "4.08"
+    ],
+    "q:20250930": [
+     "094e5919-8a76-4845-a3e0-1c34fd513bc4.pdf",
+     2,
+     "Gross NPA Ratio has declined 18 basis-points QoQ to 3.32%",
+     "3.32"
+    ],
+    "q:20240930": [
+     "094e5919-8a76-4845-a3e0-1c34fd513bc4.pdf",
+     2,
+     "decreased by 63 bps YoY from 3.95% recorded in September, 2024",
+     "3.95"
+    ]
+   }
+  },
+  {
+   "name": "Net NPA (NNPA)",
+   "unit": "%",
+   "kind": "level",
+   "y": {},
+   "q": {
+    "20240930": 0.85,
+    "20241231": 0.94,
+    "20250630": 0.82,
+    "20250930": 0.76,
+    "20251231": 0.68,
+    "20260331": 0.64,
+    "20260630": 0.6
+   },
+   "src": {
+    "q:20260630": [
+     "0a825344-21d9-4943-8bf9-73c9a6a5cf37.pdf",
+     3,
+     "NNPA also improved sequentially to 0.60%",
+     "0.60"
+    ],
+    "q:20260331": [
+     "0a825344-21d9-4943-8bf9-73c9a6a5cf37.pdf",
+     3,
+     "from 0.64% recorded in the previous quarter",
+     "0.64"
+    ],
+    "q:20251231": [
+     "ead6ba39-3225-4547-b8ba-826e95513b18.pdf",
+     2,
+     "Net NPA reduced by 26 bps YoY to 0.68%",
+     "0.68"
+    ],
+    "q:20241231": [
+     "ead6ba39-3225-4547-b8ba-826e95513b18.pdf",
+     2,
+     "from 0.94%",
+     "0.94"
+    ],
+    "q:20250930": [
+     "ead6ba39-3225-4547-b8ba-826e95513b18.pdf",
+     2,
+     "and 8 bps QoQ from 0.76%",
+     "0.76"
+    ],
+    "q:20240930": [
+     "094e5919-8a76-4845-a3e0-1c34fd513bc4.pdf",
+     2,
+     "Net NPA ratio has also moderated by 9 bps YoY to 0.76% from 0.85%",
+     "0.85"
+    ],
+    "q:20250630": [
+     "094e5919-8a76-4845-a3e0-1c34fd513bc4.pdf",
+     2,
+     "declining 6 bps from 0.82% recorded for the June quarter of current financial ye",
+     "0.82"
+    ]
+   }
+  },
+  {
+   "name": "Capital Adequacy Ratio (CRAR)",
+   "unit": "%",
+   "kind": "level",
+   "y": {
+    "20250331": 14.99,
+    "20260331": 16.55
+   },
+   "q": {
+    "20250630": 15.98,
+    "20250930": 15.27,
+    "20251231": 15.0,
+    "20260630": 16.67
+   },
+   "src": {
+    "q:20260630": [
+     "0a825344-21d9-4943-8bf9-73c9a6a5cf37.pdf",
+     3,
+     "Capital Adequacy Ratio (CRAR) improved to 16.67% YoY",
+     "16.67"
+    ],
+    "q:20250630": [
+     "0a825344-21d9-4943-8bf9-73c9a6a5cf37.pdf",
+     3,
+     "as against 15.98% recorded last year",
+     "15.98"
+    ],
+    "y:20260331": [
+     "37fb1319-4acc-4344-854f-3c848c037f9b.pdf",
+     3,
+     "Bank's CRAR stood at 16.55% as on March 31, 2026",
+     "16.55"
+    ],
+    "q:20251231": [
+     "ead6ba39-3225-4547-b8ba-826e95513b18.pdf",
+     3,
+     "Capital Adequacy Ratio (CAR) under Basel III stood at 15%",
+     "15"
+    ],
+    "q:20250930": [
+     "094e5919-8a76-4845-a3e0-1c34fd513bc4.pdf",
+     3,
+     "Capital Adequacy Ratio (CAR) for the July-September quarter stood at 15.27%",
+     "15.27"
+    ],
+    "y:20250331": [
+     "094e5919-8a76-4845-a3e0-1c34fd513bc4.pdf",
+     3,
+     "as against 14.99% recorded last FY",
+     "14.99"
     ]
    }
   },
@@ -125,86 +258,80 @@
    }
   },
   {
-   "name": "Net NPA (NNPA)",
-   "unit": "%",
+   "name": "Advances (Net)",
+   "unit": "₹ Cr",
    "kind": "level",
-   "y": {},
+   "y": {
+    "20250331": 104198.0,
+    "20260331": 122641.0
+   },
    "q": {
-    "20241231": 0.94,
-    "20250930": 0.76,
-    "20251231": 0.68,
-    "20260331": 0.64,
-    "20260630": 0.6
+    "20240930": 96139.0,
+    "20250930": 105153.0
    },
    "src": {
-    "q:20260630": [
-     "0a825344-21d9-4943-8bf9-73c9a6a5cf37.pdf",
+    "y:20260331": [
+     "37fb1319-4acc-4344-854f-3c848c037f9b.pdf",
      3,
-     "NNPA also improved sequentially to 0.60%",
-     "0.60"
+     "net advances expanded sharply ... to Rs 122641 Cr",
+     "122641"
     ],
-    "q:20260331": [
-     "0a825344-21d9-4943-8bf9-73c9a6a5cf37.pdf",
+    "y:20250331": [
+     "37fb1319-4acc-4344-854f-3c848c037f9b.pdf",
      3,
-     "from 0.64% recorded in the previous quarter",
-     "0.64"
-    ],
-    "q:20251231": [
-     "ead6ba39-3225-4547-b8ba-826e95513b18.pdf",
-     2,
-     "Net NPA reduced by 26 bps YoY to 0.68%",
-     "0.68"
-    ],
-    "q:20241231": [
-     "ead6ba39-3225-4547-b8ba-826e95513b18.pdf",
-     2,
-     "from 0.94%",
-     "0.94"
+     "from Rs 104198 Cr recorded last year",
+     "104198"
     ],
     "q:20250930": [
-     "ead6ba39-3225-4547-b8ba-826e95513b18.pdf",
+     "094e5919-8a76-4845-a3e0-1c34fd513bc4.pdf",
      2,
-     "and 8 bps QoQ from 0.76%",
-     "0.76"
+     "net advances increased ... to Rs 105153 Cr",
+     "105153"
+    ],
+    "q:20240930": [
+     "094e5919-8a76-4845-a3e0-1c34fd513bc4.pdf",
+     2,
+     "from Rs 96139 Cr recorded last year",
+     "96139"
     ]
    }
   },
   {
-   "name": "Capital Adequacy Ratio (CRAR)",
+   "name": "CASA Ratio",
    "unit": "%",
    "kind": "level",
    "y": {
-    "20260331": 16.55
+    "20260331": 45.65
    },
    "q": {
-    "20250630": 15.98,
-    "20251231": 15.0,
-    "20260630": 16.67
+    "20250630": 45.71,
+    "20250930": 45.89,
+    "20251231": 44.1
    },
    "src": {
-    "q:20260630": [
-     "0a825344-21d9-4943-8bf9-73c9a6a5cf37.pdf",
-     3,
-     "Capital Adequacy Ratio (CRAR) improved to 16.67% YoY",
-     "16.67"
-    ],
-    "q:20250630": [
-     "0a825344-21d9-4943-8bf9-73c9a6a5cf37.pdf",
-     3,
-     "as against 15.98% recorded last year",
-     "15.98"
-    ],
     "y:20260331": [
      "37fb1319-4acc-4344-854f-3c848c037f9b.pdf",
      3,
-     "Bank's CRAR stood at 16.55% as on March 31, 2026",
-     "16.55"
+     "CASA Ratio increasing to 45.65%",
+     "45.65"
     ],
     "q:20251231": [
-     "ead6ba39-3225-4547-b8ba-826e95513b18.pdf",
+     "37fb1319-4acc-4344-854f-3c848c037f9b.pdf",
      3,
-     "Capital Adequacy Ratio (CAR) under Basel III stood at 15%",
-     "15"
+     "from 44.10% recorded last quarter",
+     "44.10"
+    ],
+    "q:20250930": [
+     "094e5919-8a76-4845-a3e0-1c34fd513bc4.pdf",
+     2,
+     "CASA stood at 45.89% for the Q2",
+     "45.89"
+    ],
+    "q:20250630": [
+     "094e5919-8a76-4845-a3e0-1c34fd513bc4.pdf",
+     2,
+     "from 45.71% recorded in Q1",
+     "45.71"
     ]
    }
   },
@@ -216,6 +343,7 @@
     "20260331": 165354.0
    },
    "q": {
+    "20250930": 152030.0,
     "20251231": 155861.0,
     "20260630": 173420.0
    },
@@ -237,6 +365,50 @@
      2,
      "total deposits reached Rs 155861 Cr",
      "155861"
+    ],
+    "q:20250930": [
+     "094e5919-8a76-4845-a3e0-1c34fd513bc4.pdf",
+     2,
+     "deposits ... reaching Rs 152030 Cr",
+     "152030"
+    ]
+   }
+  },
+  {
+   "name": "Provision Coverage Ratio (PCR)",
+   "unit": "%",
+   "kind": "level",
+   "y": {},
+   "q": {
+    "20250630": 90.09,
+    "20250930": 90.39,
+    "20251231": 90.46,
+    "20260630": 90.53
+   },
+   "src": {
+    "q:20260630": [
+     "0a825344-21d9-4943-8bf9-73c9a6a5cf37.pdf",
+     3,
+     "healthy Provision Coverage Ratio (PCR) of 90.53%",
+     "90.53"
+    ],
+    "q:20250630": [
+     "0a825344-21d9-4943-8bf9-73c9a6a5cf37.pdf",
+     3,
+     "as against 90.09% recorded last year",
+     "90.09"
+    ],
+    "q:20251231": [
+     "ead6ba39-3225-4547-b8ba-826e95513b18.pdf",
+     2,
+     "Provision Coverage Ratio (PCR) for the quarter is above 90% at 90.46%",
+     "90.46"
+    ],
+    "q:20250930": [
+     "094e5919-8a76-4845-a3e0-1c34fd513bc4.pdf",
+     2,
+     "our PCR is also healthy at 90.39%",
+     "90.39"
     ]
    }
   },
@@ -273,37 +445,6 @@
    }
   },
   {
-   "name": "Provision Coverage Ratio (PCR)",
-   "unit": "%",
-   "kind": "level",
-   "y": {},
-   "q": {
-    "20250630": 90.09,
-    "20251231": 90.46,
-    "20260630": 90.53
-   },
-   "src": {
-    "q:20260630": [
-     "0a825344-21d9-4943-8bf9-73c9a6a5cf37.pdf",
-     3,
-     "healthy Provision Coverage Ratio (PCR) of 90.53%",
-     "90.53"
-    ],
-    "q:20250630": [
-     "0a825344-21d9-4943-8bf9-73c9a6a5cf37.pdf",
-     3,
-     "as against 90.09% recorded last year",
-     "90.09"
-    ],
-    "q:20251231": [
-     "ead6ba39-3225-4547-b8ba-826e95513b18.pdf",
-     2,
-     "Provision Coverage Ratio (PCR) for the quarter is above 90% at 90.46%",
-     "90.46"
-    ]
-   }
-  },
-  {
    "name": "Advances (Gross)",
    "unit": "₹ Cr",
    "kind": "level",
@@ -324,55 +465,6 @@
      2,
      "gross Advances surged to Rs 116248 Cr",
      "116248"
-    ]
-   }
-  },
-  {
-   "name": "Advances (Net)",
-   "unit": "₹ Cr",
-   "kind": "level",
-   "y": {
-    "20250331": 104198.0,
-    "20260331": 122641.0
-   },
-   "q": {},
-   "src": {
-    "y:20260331": [
-     "37fb1319-4acc-4344-854f-3c848c037f9b.pdf",
-     3,
-     "net advances expanded sharply ... to Rs 122641 Cr",
-     "122641"
-    ],
-    "y:20250331": [
-     "37fb1319-4acc-4344-854f-3c848c037f9b.pdf",
-     3,
-     "from Rs 104198 Cr recorded last year",
-     "104198"
-    ]
-   }
-  },
-  {
-   "name": "CASA Ratio",
-   "unit": "%",
-   "kind": "level",
-   "y": {
-    "20260331": 45.65
-   },
-   "q": {
-    "20251231": 44.1
-   },
-   "src": {
-    "y:20260331": [
-     "37fb1319-4acc-4344-854f-3c848c037f9b.pdf",
-     3,
-     "CASA Ratio increasing to 45.65%",
-     "45.65"
-    ],
-    "q:20251231": [
-     "37fb1319-4acc-4344-854f-3c848c037f9b.pdf",
-     3,
-     "from 44.10% recorded last quarter",
-     "44.10"
     ]
    }
   },
