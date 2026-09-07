@@ -29,6 +29,13 @@
    "title": "Q3 & 9M FY26 Investor Presentation",
    "read": "2026-09-07",
    "by": "claude-routine"
+  },
+  "b0130ffc-d119-4618-9638-e235ac09d314.pdf": {
+   "kind": "ip",
+   "date": "2025-10-26",
+   "title": "Q2 & H1 FY26 Investor Presentation",
+   "read": "2026-09-07",
+   "by": "claude-routine"
   }
  },
  "metrics": [
@@ -40,6 +47,7 @@
     "20260331": 1336.04
    },
    "q": {
+    "20250930": 675.04,
     "20251231": 1082.76,
     "20260331": 1336.04,
     "20260630": 1239.02
@@ -68,6 +76,12 @@
      12,
      "Order Book as at 31 December 2025",
      "1,082.76"
+    ],
+    "q:20250930": [
+     "b0130ffc-d119-4618-9638-e235ac09d314.pdf",
+     11,
+     "Order Book as at 30th September 2025",
+     "675.04"
     ]
    }
   },
@@ -77,6 +91,7 @@
    "kind": "flow",
    "y": {},
    "q": {
+    "20250930": 94.05,
     "20251231": 585.55,
     "20260331": 431.36,
     "20260630": 44.62
@@ -99,6 +114,50 @@
      12,
      "New Order bagged in Q3FY26",
      "585.55"
+    ],
+    "q:20250930": [
+     "b0130ffc-d119-4618-9638-e235ac09d314.pdf",
+     11,
+     "New Order bagged in Q2FY26",
+     "94.05"
+    ]
+   }
+  },
+  {
+   "name": "Orders Executed",
+   "unit": "INR Cr",
+   "kind": "flow",
+   "y": {},
+   "q": {
+    "20250930": 173.57,
+    "20251231": 177.83,
+    "20260331": 178.08,
+    "20260630": 141.64
+   },
+   "src": {
+    "q:20260630": [
+     "112d61fd-d4c8-4343-aef4-fc9961aee2b8.pdf",
+     11,
+     "Orders executed in Q1FY27",
+     "141.64"
+    ],
+    "q:20260331": [
+     "b433e3a0-0ec1-4be1-b19a-d68e6a81f6d1.pdf",
+     9,
+     "Orders executed in Q4FY26",
+     "178.08"
+    ],
+    "q:20251231": [
+     "eee9d89f-26be-48d8-9ca7-22d7806e3b96.pdf",
+     12,
+     "Orders executed in Q3FY26",
+     "177.83"
+    ],
+    "q:20250930": [
+     "b0130ffc-d119-4618-9638-e235ac09d314.pdf",
+     11,
+     "Orders executed in Q2FY26",
+     "173.57"
     ]
    }
   },
@@ -161,37 +220,6 @@
      12,
      "export orders",
      "95.38"
-    ]
-   }
-  },
-  {
-   "name": "Orders Executed",
-   "unit": "INR Cr",
-   "kind": "flow",
-   "y": {},
-   "q": {
-    "20251231": 177.83,
-    "20260331": 178.08,
-    "20260630": 141.64
-   },
-   "src": {
-    "q:20260630": [
-     "112d61fd-d4c8-4343-aef4-fc9961aee2b8.pdf",
-     11,
-     "Orders executed in Q1FY27",
-     "141.64"
-    ],
-    "q:20260331": [
-     "b433e3a0-0ec1-4be1-b19a-d68e6a81f6d1.pdf",
-     9,
-     "Orders executed in Q4FY26",
-     "178.08"
-    ],
-    "q:20251231": [
-     "eee9d89f-26be-48d8-9ca7-22d7806e3b96.pdf",
-     12,
-     "Orders executed in Q3FY26",
-     "177.83"
     ]
    }
   },
