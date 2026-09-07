@@ -8,6 +8,13 @@
    "title": "Q1 FY27 Press Release and Investor Presentation",
    "read": "2026-09-07",
    "by": "claude-routine"
+  },
+  "0f702c2e-0453-488f-abca-75b7d5e7b35b.pdf": {
+   "kind": "ar",
+   "date": "2026-05-29",
+   "title": "Integrated Annual Report FY 2025-26",
+   "read": "2026-09-07",
+   "by": "claude-routine"
   }
  },
  "metrics": [
@@ -132,7 +139,9 @@
    "name": "CBG Sales Volume",
    "unit": "MT",
    "kind": "flow",
-   "y": {},
+   "y": {
+    "20260331": 1654.0
+   },
    "q": {
     "20260630": 323.0
    },
@@ -142,6 +151,12 @@
      3,
      "CBG sold",
      "323"
+    ],
+    "y:20260331": [
+     "0f702c2e-0453-488f-abca-75b7d5e7b35b.pdf",
+     147,
+     "Compressed Biogas (CBG)",
+     "1,654"
     ]
    }
   },
@@ -149,7 +164,9 @@
    "name": "CNG Stations (Standalone)",
    "unit": "count",
    "kind": "level",
-   "y": {},
+   "y": {
+    "20260331": 705.0
+   },
    "q": {
     "20260630": 707.0
    },
@@ -159,6 +176,12 @@
      4,
      "CNG Stations",
      "707"
+    ],
+    "y:20260331": [
+     "0f702c2e-0453-488f-abca-75b7d5e7b35b.pdf",
+     147,
+     "CNG stations",
+     "705"
     ]
    }
   },
@@ -166,7 +189,9 @@
    "name": "CNG Stations (incl JV)",
    "unit": "count",
    "kind": "level",
-   "y": {},
+   "y": {
+    "20260331": 1169.0
+   },
    "q": {
     "20260630": 1167.0
    },
@@ -176,6 +201,104 @@
      2,
      "Combined network of CNG Stations",
      "1,167"
+    ],
+    "y:20260331": [
+     "0f702c2e-0453-488f-abca-75b7d5e7b35b.pdf",
+     147,
+     "operates CNG stations (with IOAGPL)",
+     "1169"
+    ]
+   }
+  },
+  {
+   "name": "EV Charge Points",
+   "unit": "count",
+   "kind": "level",
+   "y": {
+    "20260331": 5100.0
+   },
+   "q": {
+    "20260630": 5306.0
+   },
+   "src": {
+    "q:20260630": [
+     "b4a1c2b0-19a5-4449-b17c-fc48fe1c55a6.pdf",
+     3,
+     "Installed EV Charge Points",
+     "5,306"
+    ],
+    "y:20260331": [
+     "0f702c2e-0453-488f-abca-75b7d5e7b35b.pdf",
+     147,
+     "charge points (installed)",
+     "5,100"
+    ]
+   }
+  },
+  {
+   "name": "EV Installed Capacity",
+   "unit": "MW",
+   "kind": "level",
+   "y": {
+    "20260331": 54.0
+   },
+   "q": {
+    "20260630": 58.0
+   },
+   "src": {
+    "q:20260630": [
+     "b4a1c2b0-19a5-4449-b17c-fc48fe1c55a6.pdf",
+     3,
+     "Installed capacity",
+     "58"
+    ],
+    "y:20260331": [
+     "0f702c2e-0453-488f-abca-75b7d5e7b35b.pdf",
+     147,
+     "overall capacity",
+     "54"
+    ]
+   }
+  },
+  {
+   "name": "Steel Pipeline Network (Standalone)",
+   "unit": "Inch Km",
+   "kind": "level",
+   "y": {
+    "20260331": 15576.0
+   },
+   "q": {
+    "20260630": 15987.0
+   },
+   "src": {
+    "q:20260630": [
+     "b4a1c2b0-19a5-4449-b17c-fc48fe1c55a6.pdf",
+     4,
+     "MSN (IK)",
+     "15,987"
+    ],
+    "y:20260331": [
+     "0f702c2e-0453-488f-abca-75b7d5e7b35b.pdf",
+     147,
+     "Steel pipeline",
+     "15,576"
+    ]
+   }
+  },
+  {
+   "name": "City Gas Stations (CGS)",
+   "unit": "count",
+   "kind": "level",
+   "y": {
+    "20260331": 26.0
+   },
+   "q": {},
+   "src": {
+    "y:20260331": [
+     "0f702c2e-0453-488f-abca-75b7d5e7b35b.pdf",
+     147,
+     "total CGS",
+     "26"
     ]
    }
   },
@@ -214,40 +337,6 @@
    }
   },
   {
-   "name": "EV Charge Points",
-   "unit": "count",
-   "kind": "level",
-   "y": {},
-   "q": {
-    "20260630": 5306.0
-   },
-   "src": {
-    "q:20260630": [
-     "b4a1c2b0-19a5-4449-b17c-fc48fe1c55a6.pdf",
-     3,
-     "Installed EV Charge Points",
-     "5,306"
-    ]
-   }
-  },
-  {
-   "name": "EV Installed Capacity",
-   "unit": "MW",
-   "kind": "level",
-   "y": {},
-   "q": {
-    "20260630": 58.0
-   },
-   "src": {
-    "q:20260630": [
-     "b4a1c2b0-19a5-4449-b17c-fc48fe1c55a6.pdf",
-     3,
-     "Installed capacity",
-     "58"
-    ]
-   }
-  },
-  {
    "name": "FOM Sales Volume",
    "unit": "tons",
    "kind": "flow",
@@ -282,6 +371,23 @@
    }
   },
   {
+   "name": "Geographical Areas (Standalone)",
+   "unit": "count",
+   "kind": "level",
+   "y": {
+    "20260331": 34.0
+   },
+   "q": {},
+   "src": {
+    "y:20260331": [
+     "0f702c2e-0453-488f-abca-75b7d5e7b35b.pdf",
+     147,
+     "Geographical Areas",
+     "34"
+    ]
+   }
+  },
+  {
    "name": "Industrial PNG Connections (Standalone)",
    "unit": "count",
    "kind": "level",
@@ -299,19 +405,70 @@
    }
   },
   {
-   "name": "Steel Pipeline Network (Standalone)",
-   "unit": "Inch Km",
+   "name": "LCNG Plants",
+   "unit": "count",
    "kind": "level",
-   "y": {},
-   "q": {
-    "20260630": 15987.0
+   "y": {
+    "20260331": 5.0
    },
+   "q": {},
    "src": {
-    "q:20260630": [
-     "b4a1c2b0-19a5-4449-b17c-fc48fe1c55a6.pdf",
-     4,
-     "MSN (IK)",
-     "15,987"
+    "y:20260331": [
+     "0f702c2e-0453-488f-abca-75b7d5e7b35b.pdf",
+     147,
+     "LCNG",
+     "5"
+    ]
+   }
+  },
+  {
+   "name": "Mechanical Gas Meters Sold",
+   "unit": "count",
+   "kind": "flow",
+   "y": {
+    "20260331": 183675.0
+   },
+   "q": {},
+   "src": {
+    "y:20260331": [
+     "0f702c2e-0453-488f-abca-75b7d5e7b35b.pdf",
+     147,
+     "Mechanical Gas Meters",
+     "1,83,675"
+    ]
+   }
+  },
+  {
+   "name": "Organic Manure Sales Volume",
+   "unit": "MT",
+   "kind": "flow",
+   "y": {
+    "20260331": 4620.0
+   },
+   "q": {},
+   "src": {
+    "y:20260331": [
+     "0f702c2e-0453-488f-abca-75b7d5e7b35b.pdf",
+     147,
+     "Organic Manure (Digestate + Fermented Organic Manure)",
+     "4620"
+    ]
+   }
+  },
+  {
+   "name": "PNG Home Connections (Standalone)",
+   "unit": "Lakh",
+   "kind": "level",
+   "y": {
+    "20260331": 10.99
+   },
+   "q": {},
+   "src": {
+    "y:20260331": [
+     "0f702c2e-0453-488f-abca-75b7d5e7b35b.pdf",
+     147,
+     "PNG network",
+     "10.99"
     ]
    }
   },
