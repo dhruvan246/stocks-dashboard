@@ -22,6 +22,20 @@
    "title": "Annual Report FY 2025-26",
    "read": "2026-09-07",
    "by": "claude-routine"
+  },
+  "65945fff-94c1-4f73-88e5-afebff5b29de.pdf": {
+   "kind": "ip",
+   "date": "2026-05-30",
+   "title": "Q4 FY26 / FY26 Investor Presentation",
+   "read": "2026-09-07",
+   "by": "claude-routine"
+  },
+  "0ac1f812-5b2c-4b1d-8024-0c3b483552ae.pdf": {
+   "kind": "ip",
+   "date": "2026-01-30",
+   "title": "Q3 FY26 Investor Presentation",
+   "read": "2026-09-07",
+   "by": "claude-routine"
   }
  },
  "metrics": [
@@ -30,9 +44,12 @@
    "unit": "mn MT",
    "kind": "flow",
    "y": {
+    "20250331": 1.8,
     "20260331": 3.9
    },
    "q": {
+    "20251231": 0.67,
+    "20260331": 1.0,
     "20260630": 0.9
    },
    "src": {
@@ -47,6 +64,79 @@
      12,
      "Q1 FY27 Gas Throughput",
      "0.9"
+    ],
+    "q:20260331": [
+     "65945fff-94c1-4f73-88e5-afebff5b29de.pdf",
+     16,
+     "Q4 FY26 Gas Throughput",
+     "1.0"
+    ],
+    "y:20250331": [
+     "0ac1f812-5b2c-4b1d-8024-0c3b483552ae.pdf",
+     13,
+     "FY25 Gas Throughput",
+     "1.8"
+    ],
+    "q:20251231": [
+     "0ac1f812-5b2c-4b1d-8024-0c3b483552ae.pdf",
+     13,
+     "Q3 FY26 Gas Throughput",
+     "0.67"
+    ]
+   }
+  },
+  {
+   "name": "Total LPG Static Capacity",
+   "unit": "MT",
+   "kind": "level",
+   "y": {},
+   "q": {
+    "20251231": 278100.0,
+    "20260331": 303100.0,
+    "20260630": 355100.0
+   },
+   "src": {
+    "q:20260630": [
+     "1a253599-0dc0-4ffb-87b6-df05270b7298.pdf",
+     12,
+     "Static Capacity LPG (including announced capex) (doc period)",
+     "355,100"
+    ],
+    "q:20260331": [
+     "65945fff-94c1-4f73-88e5-afebff5b29de.pdf",
+     16,
+     "Static Capacity LPG (including announced capex) (doc period)",
+     "303,100"
+    ],
+    "q:20251231": [
+     "0ac1f812-5b2c-4b1d-8024-0c3b483552ae.pdf",
+     13,
+     "Static Capacity LPG (including announced capex) (doc period)",
+     "278,100"
+    ]
+   }
+  },
+  {
+   "name": "Number of Liquid Terminals",
+   "unit": "count",
+   "kind": "level",
+   "y": {},
+   "q": {
+    "20260331": 21.0,
+    "20260630": 22.0
+   },
+   "src": {
+    "q:20260630": [
+     "1a253599-0dc0-4ffb-87b6-df05270b7298.pdf",
+     12,
+     "22 Terminals across 6 Ports (doc period)",
+     "22"
+    ],
+    "q:20260331": [
+     "65945fff-94c1-4f73-88e5-afebff5b29de.pdf",
+     16,
+     "21 Terminals across 6 Ports (doc period)",
+     "21"
     ]
    }
   },
@@ -102,23 +192,6 @@
    }
   },
   {
-   "name": "Number of Liquid Terminals",
-   "unit": "count",
-   "kind": "level",
-   "y": {},
-   "q": {
-    "20260630": 22.0
-   },
-   "src": {
-    "q:20260630": [
-     "1a253599-0dc0-4ffb-87b6-df05270b7298.pdf",
-     12,
-     "22 Terminals across 6 Ports (doc period)",
-     "22"
-    ]
-   }
-  },
-  {
    "name": "Number of Subsidiaries",
    "unit": "count",
    "kind": "level",
@@ -149,23 +222,6 @@
      26,
      "The number of permanent employees on the rolls of company were about 477",
      "477"
-    ]
-   }
-  },
-  {
-   "name": "Total LPG Static Capacity",
-   "unit": "MT",
-   "kind": "level",
-   "y": {},
-   "q": {
-    "20260630": 355100.0
-   },
-   "src": {
-    "q:20260630": [
-     "1a253599-0dc0-4ffb-87b6-df05270b7298.pdf",
-     12,
-     "Static Capacity LPG (including announced capex) (doc period)",
-     "355,100"
     ]
    }
   },
