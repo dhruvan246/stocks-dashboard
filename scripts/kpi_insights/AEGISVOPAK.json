@@ -36,6 +36,27 @@
    "title": "Q3 FY26 Investor Presentation",
    "read": "2026-09-07",
    "by": "claude-routine"
+  },
+  "ea8c5d63-b2a5-47ea-b7a7-2f01f7415fae.pdf": {
+   "kind": "ip",
+   "date": "2025-11-07",
+   "title": "Q2 FY26 Investor Presentation (Revised/Errata)",
+   "read": "2026-09-07",
+   "by": "claude-routine"
+  },
+  "a916415e-4810-437c-8cf5-8f0ef14e3f41.pdf": {
+   "kind": "ip",
+   "date": "2025-11-06",
+   "title": "Q2 FY26 Investor Presentation (original, superseded by errata)",
+   "read": "2026-09-07",
+   "by": "claude-routine"
+  },
+  "5bfd4883-1436-4ef4-90aa-2c5efe0e236a.pdf": {
+   "kind": "ip",
+   "date": "2025-08-07",
+   "title": "Q1 FY26 Investor Presentation",
+   "read": "2026-09-07",
+   "by": "claude-routine"
   }
  },
  "metrics": [
@@ -48,6 +69,8 @@
     "20260331": 3.9
    },
    "q": {
+    "20250630": 0.52,
+    "20250930": 0.68,
     "20251231": 0.67,
     "20260331": 1.0,
     "20260630": 0.9
@@ -82,6 +105,18 @@
      13,
      "Q3 FY26 Gas Throughput",
      "0.67"
+    ],
+    "q:20250930": [
+     "ea8c5d63-b2a5-47ea-b7a7-2f01f7415fae.pdf",
+     11,
+     "Q2 FY26 Gas Throughput",
+     "0.68"
+    ],
+    "q:20250630": [
+     "5bfd4883-1436-4ef4-90aa-2c5efe0e236a.pdf",
+     8,
+     "Q1 FY26 Gas Throughput",
+     "0.52"
     ]
    }
   },
@@ -113,6 +148,30 @@
      13,
      "Static Capacity LPG (including announced capex) (doc period)",
      "278,100"
+    ]
+   }
+  },
+  {
+   "name": "Number of Gas Terminals",
+   "unit": "count",
+   "kind": "level",
+   "y": {},
+   "q": {
+    "20250930": 4.0,
+    "20260630": 5.0
+   },
+   "src": {
+    "q:20260630": [
+     "1a253599-0dc0-4ffb-87b6-df05270b7298.pdf",
+     12,
+     "5 Terminals across 5 Ports (doc period)",
+     "5"
+    ],
+    "q:20250930": [
+     "ea8c5d63-b2a5-47ea-b7a7-2f01f7415fae.pdf",
+     11,
+     "4 Terminals across 4 Ports (doc period)",
+     "4"
     ]
    }
   },
@@ -171,23 +230,6 @@
      12,
      "1 Terminal across 1 Port (doc period)",
      "1"
-    ]
-   }
-  },
-  {
-   "name": "Number of Gas Terminals",
-   "unit": "count",
-   "kind": "level",
-   "y": {},
-   "q": {
-    "20260630": 5.0
-   },
-   "src": {
-    "q:20260630": [
-     "1a253599-0dc0-4ffb-87b6-df05270b7298.pdf",
-     12,
-     "5 Terminals across 5 Ports (doc period)",
-     "5"
     ]
    }
   },
