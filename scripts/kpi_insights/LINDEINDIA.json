@@ -50,6 +50,13 @@
    "title": "Annual Report FY 2025-26",
    "read": "2026-09-07",
    "by": "claude-routine"
+  },
+  "535bbf01-b7c6-4b6d-84ea-5522f31978ad.pdf": {
+   "kind": "ar",
+   "date": "2025-07-21",
+   "title": "Annual Report FY 2024-25",
+   "read": "2026-09-07",
+   "by": "claude-routine"
   }
  },
  "metrics": [
@@ -58,6 +65,7 @@
    "unit": "count",
    "kind": "level",
    "y": {
+    "20240331": 164.0,
     "20250331": 139.0,
     "20260331": 145.0
    },
@@ -74,6 +82,12 @@
      73,
      "Number of dealers/distributors to whom sales are made",
      "139"
+    ],
+    "y:20240331": [
+     "535bbf01-b7c6-4b6d-84ea-5522f31978ad.pdf",
+     87,
+     "Number of dealers/distributors to whom sales are made",
+     "164"
     ]
    }
   },
@@ -82,6 +96,7 @@
    "unit": "count",
    "kind": "flow",
    "y": {
+    "20250331": 2.0,
     "20260331": 3.0
    },
    "q": {},
@@ -91,6 +106,132 @@
      39,
      "successfully delivered and operationalised... 3 Air Separation Units (ASUs)",
      "3"
+    ],
+    "y:20250331": [
+     "535bbf01-b7c6-4b6d-84ea-5522f31978ad.pdf",
+     55,
+     "successful commissioning of several key projects, including 2 ASUs",
+     "2"
+    ]
+   }
+  },
+  {
+   "name": "Customer Effort Score",
+   "unit": "score",
+   "kind": "level",
+   "y": {
+    "20250331": 4.0,
+    "20260331": 4.2
+   },
+   "q": {},
+   "src": {
+    "y:20260331": [
+     "c5e59091-6d00-4ee8-a1d6-5ea4315f0fcb.pdf",
+     38,
+     "Customer Effort Score (CES): 4.2 (doc period)",
+     "4.2"
+    ],
+    "y:20250331": [
+     "535bbf01-b7c6-4b6d-84ea-5522f31978ad.pdf",
+     54,
+     "Customer Effort Score (CES) stands at 4.0 (doc period)",
+     "4.0"
+    ]
+   }
+  },
+  {
+   "name": "Customer Satisfaction Index",
+   "unit": "score",
+   "kind": "level",
+   "y": {
+    "20250331": 4.0,
+    "20260331": 4.3
+   },
+   "q": {},
+   "src": {
+    "y:20260331": [
+     "c5e59091-6d00-4ee8-a1d6-5ea4315f0fcb.pdf",
+     38,
+     "Customer Satisfaction Index (CSI): 4.3 (doc period)",
+     "4.3"
+    ],
+    "y:20250331": [
+     "535bbf01-b7c6-4b6d-84ea-5522f31978ad.pdf",
+     54,
+     "Customer Satisfaction Index (CSI) is standing at 4.0 (doc period)",
+     "4.0"
+    ]
+   }
+  },
+  {
+   "name": "Net Promoter Score",
+   "unit": "score",
+   "kind": "level",
+   "y": {
+    "20250331": 28.0,
+    "20260331": 40.0
+   },
+   "q": {},
+   "src": {
+    "y:20260331": [
+     "c5e59091-6d00-4ee8-a1d6-5ea4315f0fcb.pdf",
+     38,
+     "Net Promoter Score (NPS): +40 (doc period)",
+     "40"
+    ],
+    "y:20250331": [
+     "535bbf01-b7c6-4b6d-84ea-5522f31978ad.pdf",
+     54,
+     "Net Promoter Score (NPS) stands at +28 (doc period)",
+     "28"
+    ]
+   }
+  },
+  {
+   "name": "Net Promoter Score (Decision Makers)",
+   "unit": "score",
+   "kind": "level",
+   "y": {
+    "20250331": 32.0,
+    "20260331": 43.0
+   },
+   "q": {},
+   "src": {
+    "y:20260331": [
+     "c5e59091-6d00-4ee8-a1d6-5ea4315f0fcb.pdf",
+     38,
+     "Decision Makers rating the Company at +43 (doc period)",
+     "43"
+    ],
+    "y:20250331": [
+     "535bbf01-b7c6-4b6d-84ea-5522f31978ad.pdf",
+     54,
+     "Decision Makers have given us a score of +32 (doc period)",
+     "32"
+    ]
+   }
+  },
+  {
+   "name": "PED Order Backlog",
+   "unit": "INR Million",
+   "kind": "level",
+   "y": {},
+   "q": {
+    "20250331": 20207.21,
+    "20260331": 24653.0
+   },
+   "src": {
+    "q:20260331": [
+     "c5e59091-6d00-4ee8-a1d6-5ea4315f0fcb.pdf",
+     39,
+     "total order backlog as at the end of March 2026 stood at INR 24,653 million",
+     "24,653"
+    ],
+    "q:20250331": [
+     "535bbf01-b7c6-4b6d-84ea-5522f31978ad.pdf",
+     55,
+     "PED's total order book as of 31 March 2025, stands at INR 20,207.21 million",
+     "20,207.21"
     ]
    }
   },
@@ -112,36 +253,53 @@
    }
   },
   {
-   "name": "Customer Effort Score",
-   "unit": "score",
-   "kind": "level",
+   "name": "Cryogenic Vessels Dispatched (PMW Jamshedpur)",
+   "unit": "count",
+   "kind": "flow",
    "y": {
-    "20260331": 4.2
+    "20250331": 7.0
    },
    "q": {},
    "src": {
-    "y:20260331": [
-     "c5e59091-6d00-4ee8-a1d6-5ea4315f0fcb.pdf",
-     38,
-     "Customer Effort Score (CES): 4.2 (doc period)",
-     "4.2"
+    "y:20250331": [
+     "535bbf01-b7c6-4b6d-84ea-5522f31978ad.pdf",
+     55,
+     "successfully dispatching 7 vessels by 31 March 2025",
+     "7"
     ]
    }
   },
   {
-   "name": "Customer Satisfaction Index",
-   "unit": "score",
-   "kind": "level",
+   "name": "Cryogenic Vessels Ordered (PMW Jamshedpur)",
+   "unit": "count",
+   "kind": "flow",
    "y": {
-    "20260331": 4.3
+    "20250331": 39.0
    },
    "q": {},
    "src": {
-    "y:20260331": [
-     "c5e59091-6d00-4ee8-a1d6-5ea4315f0fcb.pdf",
-     38,
-     "Customer Satisfaction Index (CSI): 4.3 (doc period)",
-     "4.3"
+    "y:20250331": [
+     "535bbf01-b7c6-4b6d-84ea-5522f31978ad.pdf",
+     55,
+     "securing orders for a total of 39 vessels",
+     "39"
+    ]
+   }
+  },
+  {
+   "name": "Customer Effort Score (Purchasers)",
+   "unit": "score",
+   "kind": "level",
+   "y": {
+    "20250331": 4.1
+   },
+   "q": {},
+   "src": {
+    "y:20250331": [
+     "535bbf01-b7c6-4b6d-84ea-5522f31978ad.pdf",
+     54,
+     "Purchasers have given us a score of 4.1 (doc period)",
+     "4.1"
     ]
    }
   },
@@ -163,53 +321,36 @@
    }
   },
   {
-   "name": "Net Promoter Score",
-   "unit": "score",
-   "kind": "level",
+   "name": "LIV Cylinders Deployed",
+   "unit": "count",
+   "kind": "flow",
    "y": {
-    "20260331": 40.0
+    "20250331": 400.0
    },
    "q": {},
    "src": {
-    "y:20260331": [
-     "c5e59091-6d00-4ee8-a1d6-5ea4315f0fcb.pdf",
-     38,
-     "Net Promoter Score (NPS): +40 (doc period)",
-     "40"
+    "y:20250331": [
+     "535bbf01-b7c6-4b6d-84ea-5522f31978ad.pdf",
+     52,
+     "introduced approximately 400 LIV cylinders across various hospitals",
+     "400"
     ]
    }
   },
   {
-   "name": "Net Promoter Score (Decision Makers)",
-   "unit": "score",
-   "kind": "level",
-   "y": {
-    "20260331": 43.0
-   },
-   "q": {},
-   "src": {
-    "y:20260331": [
-     "c5e59091-6d00-4ee8-a1d6-5ea4315f0fcb.pdf",
-     38,
-     "Decision Makers rating the Company at +43 (doc period)",
-     "43"
-    ]
-   }
-  },
-  {
-   "name": "PED Order Backlog",
+   "name": "PED Order Intake - In-house Projects",
    "unit": "INR Million",
-   "kind": "level",
-   "y": {},
-   "q": {
-    "20260331": 24653.0
+   "kind": "flow",
+   "y": {
+    "20250331": 3370.88
    },
+   "q": {},
    "src": {
-    "q:20260331": [
-     "c5e59091-6d00-4ee8-a1d6-5ea4315f0fcb.pdf",
-     39,
-     "total order backlog as at the end of March 2026 stood at INR 24,653 million",
-     "24,653"
+    "y:20250331": [
+     "535bbf01-b7c6-4b6d-84ea-5522f31978ad.pdf",
+     55,
+     "in-house project orders amounting to INR 3,370.88 million",
+     "3,370.88"
     ]
    }
   },
@@ -248,6 +389,23 @@
    }
   },
   {
+   "name": "PED Order Intake - Third Party & Inter-company",
+   "unit": "INR Million",
+   "kind": "flow",
+   "y": {
+    "20250331": 7044.67
+   },
+   "q": {},
+   "src": {
+    "y:20250331": [
+     "535bbf01-b7c6-4b6d-84ea-5522f31978ad.pdf",
+     55,
+     "secured INR 7,044.67 million in orders from both third-party clients and inter c",
+     "7,044.67"
+    ]
+   }
+  },
+  {
    "name": "Permanent Employees",
    "unit": "count",
    "kind": "level",
@@ -261,6 +419,57 @@
      54,
      "number of permanent employees on the rolls of the Company as on 31 March 2026",
      "252"
+    ]
+   }
+  },
+  {
+   "name": "Renewable Energy Sourcing",
+   "unit": "MU pa",
+   "kind": "flow",
+   "y": {
+    "20250331": 98.0
+   },
+   "q": {},
+   "src": {
+    "y:20250331": [
+     "535bbf01-b7c6-4b6d-84ea-5522f31978ad.pdf",
+     52,
+     "sourcing of renewable energy (RE) at 98 Million Units per annum (doc period)",
+     "98"
+    ]
+   }
+  },
+  {
+   "name": "Rooftop Solar Capacity",
+   "unit": "KW-peak",
+   "kind": "level",
+   "y": {
+    "20250331": 914.0
+   },
+   "q": {},
+   "src": {
+    "y:20250331": [
+     "535bbf01-b7c6-4b6d-84ea-5522f31978ad.pdf",
+     52,
+     "Rooftop Solar Power Plants of total capacity 914 KW-peak across 8 sites (doc per",
+     "914"
+    ]
+   }
+  },
+  {
+   "name": "Solar RE Sourcing (ISTS)",
+   "unit": "MU pa",
+   "kind": "flow",
+   "y": {
+    "20250331": 19.0
+   },
+   "q": {},
+   "src": {
+    "y:20250331": [
+     "535bbf01-b7c6-4b6d-84ea-5522f31978ad.pdf",
+     52,
+     "started to source 19 MU pa Solar RE under ISTS",
+     "19"
     ]
    }
   }
