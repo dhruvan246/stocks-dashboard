@@ -3,12 +3,15 @@
 parser (headcount_extract.py) can't read — the numbers are detached from their row labels in the PDF
 text stream (column-major layout) or the table is an image. Regex AND word-geometry both fail on these.
 
-For each uncovered symbol this locates the BRSR employees page by its ROW LABELS (which survive in the
-text even when the numbers don't), renders that page to PNG, and asks Gemini (the same free-tier reader
-the Insights card uses, via gemini_vision._post) to read the table. Every value is validated
-structurally — male+female must reconcile to the total, permanent<=total, a plausible people count —
-before it lands, and the model is told to set ok=false if the image is not that table. GEMINI_API_KEY
-is a CI secret, so this runs in refresh-headcount-vision.yml, not locally.
+For each uncovered symbol this locates the count page(s) — the BRSR employees grid by its ROW LABELS
+(which survive in the text even when the numbers don't), AND/OR the Directors'-Report Section 197(12)
+"permanent employees on the rolls of the Company" prose line (added 2026-09-07: the reliable fallback that
+cracked the hard tail — banks, PSUs, recent IPOs — when the grid is column-major or imaged) — renders them
+to PNG, and asks Gemini (the same free-tier reader the Insights card uses, via gemini_vision._post) to read
+whichever is present, preferring the grid. Every value is validated structurally — male+female must
+reconcile to the total, permanent<=total, a plausible people count — before it lands, and the model is told
+to set ok=false if the image is neither. GEMINI_API_KEY is a CI secret, so the Gemini path runs in
+refresh-headcount-vision.yml; the same locator feeds --prep, the native-vision (no-key) path.
 """
 import argparse
 import base64
@@ -74,6 +77,59 @@ def brsr_pages(doc):
     return keep
 
 
+# Section 197(12) fallback locator. Every Directors'/Board's Report carries a Rule 5(1)(iii) line stating
+# "the number of permanent employees on the rolls of the Company was N" — the SAME on-roll permanent count
+# the BRSR grid gives, but as one prose sentence that survives in the text layer when the grid is
+# column-major or imaged. Public-sector banks give it as an Officers/Clerks/Subordinate-staff cadre table;
+# old (pre-2023) BRR reports as "Total number of employees: N". This one line cracked the 2026-09-07 hard
+# tail (banks, PSUs, recent IPOs, distressed names) — see [[project-stocks-employee-headcount]].
+_ROLLS = re.compile(r"on\s+the\s+rolls\s+of\s+(?:the\s+)?(?:compan|bank)|"
+                    r"employees?\s+(?:were\s+|are\s+)?on\s+the\s+roll", re.I)
+_CADRE = (re.compile(r"\bofficers?\b", re.I), re.compile(r"\bclerk", re.I),
+          re.compile(r"sub[\s-]*staff|subordinate\s+staff", re.I))
+_BRRTOT = re.compile(r"total\s+number\s+of\s+employees", re.I)
+_REFONLY = re.compile(r"available\s+for\s+inspection|forms?\s+part\s+of\s+this\s+report|"
+                      r"excluding\s+the\s+aforesaid", re.I)
+
+
+def s197_pages(doc):
+    """0-based indices of page(s) that state the on-roll permanent count as PROSE — the Section 197(12)
+    'permanent employees on the rolls of the Company' line, a PSU-bank cadre table (Officers + Clerks +
+    Subordinate staff), or an old BRR 'Total number of employees' sentence. High precision (the phrasing is
+    specific), so this is the reliable fallback when brsr_pages() can't find the grid. Never a blind guess:
+    a page scores only when a signal is actually present; a page that merely REFERS the §197 statement to
+    inspection (no number printed) is demoted."""
+    scored = []
+    for i in range(len(doc)):
+        t = doc[i].get_text("text")
+        if not t.strip():
+            continue
+        s = 8 * len(_ROLLS.findall(t))                       # the §197 count line — strongest, most specific
+        if _CADRE[0].search(t) and _CADRE[1].search(t) and _CADRE[2].search(t):
+            s += 6                                           # PSU-bank Officers/Clerks/Subordinate table
+        if _BRRTOT.search(t):
+            s += 3                                           # old BRR 'total number of employees'
+        if s and _REFONLY.search(t) and not _ROLLS.search(t):
+            s -= 4                                           # a page that only points to the inspection copy
+        if s >= 3:
+            scored.append((s, i))
+    scored.sort(reverse=True)
+    return [i for _, i in scored[:2]]
+
+
+def locate(doc):
+    """All candidate pages for a name: the BRSR 'Employees and workers' grid (richest — carries workers and
+    the gender split) FIRST so the reader prefers it, then the Section 197(12) 'on the rolls' prose line as
+    the fallback. §197 pages are always kept when present (so a name whose grid is unlocatable is still
+    rendered), and the whole list is capped so a Gemini call stays within its 4-image budget."""
+    b, s = brsr_pages(doc), s197_pages(doc)
+    out = []
+    for p in b[:2] + s + b[2:]:                              # 2 best grid pages, then §197, then grid spillover
+        if p not in out:
+            out.append(p)
+    return out[:4]
+
+
 def render(doc, pno, dpi=170):
     return doc[pno].get_pixmap(dpi=dpi).tobytes("png")
 
@@ -108,8 +164,19 @@ WORKERS section:
   wrk_total = row "Total workers (F + G)", Total (A)
 
 A cell printed as "-", "NA", "Nil", "0" for a whole section, or blank -> null. Every value is an INTEGER
-count of people — never a money amount, never a percentage (ignore the percent columns). If these images
-do not contain that table, or are not %(company)s, set ok=false and null everything. Return ONLY the JSON."""
+count of people — never a money amount, never a percentage (ignore the percent columns).
+
+If that grid is NOT present but one of the images is a Directors'/Board's Report disclosure under
+Section 197(12) (Rule 5(1)) that states in words the number of PERMANENT employees ON THE ROLLS of the
+company as at the year-end — e.g. "there were 3,103 permanent employees on the rolls of the Company", or a
+public-sector bank's Officers + Clerks + Subordinate-staff cadre total, or an old BRR "Total number of
+employees: N" — then set emp_perm = emp_total = that number and leave emp_other, wrk_perm, wrk_total, male,
+female null. Read the count of PERMANENT / on-roll employees ONLY: never a demographic breakdown cell (age
+band, social category), never a "trained"/"covered"/attrition/new-joiner figure, and never the
+contractual/temporary count. If BOTH the grid and this line are present, use the grid.
+
+If none of the images contain either, or are not %(company)s, set ok=false and null everything.
+Return ONLY the JSON."""
 
 
 def _int(v):
@@ -166,7 +233,7 @@ def process(sym, want_fys, max_reports=4, verbose=True):
         if not p:
             continue
         doc = fitz.open(p)
-        pgs = brsr_pages(doc)
+        pgs = locate(doc)
         led["reports_read"].append({"fy": a["fy"], "att": a["att"], "pages": len(doc),
                                     "brsr_pages": [x + 1 for x in pgs]})
         if not pgs:
@@ -224,7 +291,7 @@ def prep(syms, want_fys, outdir, max_reports=3, verbose=True):
             if not p:
                 continue
             doc = fitz.open(p)
-            pgs = brsr_pages(doc)
+            pgs = locate(doc)
             pngs = []
             for pi in pgs:
                 fn = "%s_FY%d_p%d.png" % (sym, a["fy"], pi + 1)
