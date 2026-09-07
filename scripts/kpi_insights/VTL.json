@@ -15,9 +15,78 @@
    "title": "Q4 & FY26 Investor Presentation",
    "read": "2026-09-07",
    "by": "claude-routine"
+  },
+  "c891dc46-6e33-412a-8ae7-96ee6fd9fc24.pdf": {
+   "kind": "ar",
+   "date": "2026-08-25",
+   "title": "Integrated Annual Report 2025-26",
+   "read": "2026-09-07",
+   "by": "claude-routine"
   }
  },
  "metrics": [
+  {
+   "name": "Yarn Production",
+   "unit": "MT",
+   "kind": "flow",
+   "y": {
+    "20240331": 262291.0,
+    "20250331": 267552.0,
+    "20260331": 278775.0
+   },
+   "q": {
+    "20250630": 68639.0,
+    "20260331": 69330.0,
+    "20260630": 70046.0
+   },
+   "src": {
+    "q:20250630": [
+     "258727f1-adb3-462c-92fd-d2cbd4fa5657.pdf",
+     15,
+     "Yarn Production (MT)",
+     "68,639"
+    ],
+    "q:20260331": [
+     "258727f1-adb3-462c-92fd-d2cbd4fa5657.pdf",
+     15,
+     "Yarn Production (MT)",
+     "69,330"
+    ],
+    "q:20260630": [
+     "258727f1-adb3-462c-92fd-d2cbd4fa5657.pdf",
+     15,
+     "Yarn Production (MT)",
+     "70,046"
+    ],
+    "y:20250331": [
+     "fb59da1a-5141-4d23-a39a-d8f0cbf1607f.pdf",
+     15,
+     "Yarn Production (MT)",
+     "2,67,552"
+    ],
+    "y:20260331": [
+     "c891dc46-6e33-412a-8ae7-96ee6fd9fc24.pdf",
+     17,
+     "Production (MT)",
+     "2,78,775"
+    ],
+    "y:20240331": [
+     "c891dc46-6e33-412a-8ae7-96ee6fd9fc24.pdf",
+     17,
+     "Production (MT)",
+     "2,62,291"
+    ]
+   },
+   "restated": [
+    [
+     "y:20260331",
+     "fb59da1a-5141-4d23-a39a-d8f0cbf1607f.pdf",
+     277072.0,
+     "c891dc46-6e33-412a-8ae7-96ee6fd9fc24.pdf",
+     278775.0
+    ]
+   ]
+  },
   {
    "name": "Grey Fabric Production",
    "unit": "Lac Mtrs",
@@ -203,52 +272,6 @@
    }
   },
   {
-   "name": "Yarn Production",
-   "unit": "MT",
-   "kind": "flow",
-   "y": {
-    "20250331": 267552.0,
-    "20260331": 277072.0
-   },
-   "q": {
-    "20250630": 68639.0,
-    "20260331": 69330.0,
-    "20260630": 70046.0
-   },
-   "src": {
-    "q:20250630": [
-     "258727f1-adb3-462c-92fd-d2cbd4fa5657.pdf",
-     15,
-     "Yarn Production (MT)",
-     "68,639"
-    ],
-    "q:20260331": [
-     "258727f1-adb3-462c-92fd-d2cbd4fa5657.pdf",
-     15,
-     "Yarn Production (MT)",
-     "69,330"
-    ],
-    "q:20260630": [
-     "258727f1-adb3-462c-92fd-d2cbd4fa5657.pdf",
-     15,
-     "Yarn Production (MT)",
-     "70,046"
-    ],
-    "y:20250331": [
-     "fb59da1a-5141-4d23-a39a-d8f0cbf1607f.pdf",
-     15,
-     "Yarn Production (MT)",
-     "2,67,552"
-    ],
-    "y:20260331": [
-     "fb59da1a-5141-4d23-a39a-d8f0cbf1607f.pdf",
-     15,
-     "Yarn Production (MT)",
-     "2,77,072"
-    ]
-   }
-  },
-  {
    "name": "Yarn Sales",
    "unit": "MT",
    "kind": "flow",
@@ -291,6 +314,76 @@
      15,
      "Yarn Sales (MT) (Incl. Internal Transfer)",
      "2,78,205"
+    ]
+   }
+  },
+  {
+   "name": "Installed Spindle Capacity",
+   "unit": "Mn Spindles",
+   "kind": "level",
+   "y": {
+    "20240331": 1.23,
+    "20250331": 1.23,
+    "20260331": 1.25
+   },
+   "q": {
+    "20260630": 1.25
+   },
+   "src": {
+    "q:20260630": [
+     "258727f1-adb3-462c-92fd-d2cbd4fa5657.pdf",
+     10,
+     "Yarn Installed Capacity (doc period)",
+     "1.25"
+    ],
+    "y:20260331": [
+     "fb59da1a-5141-4d23-a39a-d8f0cbf1607f.pdf",
+     10,
+     "Yarn Installed Capacity (doc period)",
+     "1.25"
+    ],
+    "y:20240331": [
+     "c891dc46-6e33-412a-8ae7-96ee6fd9fc24.pdf",
+     17,
+     "Spindle Count (MN)",
+     "1.23"
+    ],
+    "y:20250331": [
+     "c891dc46-6e33-412a-8ae7-96ee6fd9fc24.pdf",
+     17,
+     "Spindle Count (MN)",
+     "1.23"
+    ]
+   }
+  },
+  {
+   "name": "Garment Production",
+   "unit": "Million Shirts",
+   "kind": "flow",
+   "y": {
+    "20240331": 1.5,
+    "20250331": 1.9,
+    "20260331": 2.17
+   },
+   "q": {},
+   "src": {
+    "y:20240331": [
+     "c891dc46-6e33-412a-8ae7-96ee6fd9fc24.pdf",
+     21,
+     "Production (Million Shirts)",
+     "1.5"
+    ],
+    "y:20250331": [
+     "c891dc46-6e33-412a-8ae7-96ee6fd9fc24.pdf",
+     21,
+     "Production (Million Shirts)",
+     "1.9"
+    ],
+    "y:20260331": [
+     "c891dc46-6e33-412a-8ae7-96ee6fd9fc24.pdf",
+     21,
+     "Production (Million Shirts)",
+     "2.17"
     ]
    }
   },
@@ -366,31 +459,6 @@
      10,
      "Grey Fabric Capacity (doc period)",
      "1,500"
-    ]
-   }
-  },
-  {
-   "name": "Installed Spindle Capacity",
-   "unit": "Mn Spindles",
-   "kind": "level",
-   "y": {
-    "20260331": 1.25
-   },
-   "q": {
-    "20260630": 1.25
-   },
-   "src": {
-    "q:20260630": [
-     "258727f1-adb3-462c-92fd-d2cbd4fa5657.pdf",
-     10,
-     "Yarn Installed Capacity (doc period)",
-     "1.25"
-    ],
-    "y:20260331": [
-     "fb59da1a-5141-4d23-a39a-d8f0cbf1607f.pdf",
-     10,
-     "Yarn Installed Capacity (doc period)",
-     "1.25"
     ]
    }
   },
