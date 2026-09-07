@@ -50,6 +50,13 @@
    "title": "Integrated Annual Report 2025-26",
    "read": "2026-09-07",
    "by": "claude-routine"
+  },
+  "d3d9d423-7fbb-48bc-a0a0-c4e10b26ad56.pdf": {
+   "kind": "ar",
+   "date": "2025-09-06",
+   "title": "Integrated Annual Report 2024-25",
+   "read": "2026-09-07",
+   "by": "claude-routine"
   }
  },
  "metrics": [
@@ -294,6 +301,7 @@
    "unit": "Rs. Cr",
    "kind": "flow",
    "y": {
+    "20240331": 11344.0,
     "20250331": 13750.0,
     "20260331": 16587.0
    },
@@ -339,6 +347,65 @@
      49,
      "Consumption FY25",
      "13,750"
+    ],
+    "y:20240331": [
+     "d3d9d423-7fbb-48bc-a0a0-c4e10b26ad56.pdf",
+     68,
+     "Consumption FY2024",
+     "11,344"
+    ]
+   }
+  },
+  {
+   "name": "St. Regis Mumbai Occupancy",
+   "unit": "%",
+   "kind": "level",
+   "y": {
+    "20250331": 86.0
+   },
+   "q": {
+    "20240630": 85.0,
+    "20250630": 83.0,
+    "20250930": 85.0,
+    "20251231": 86.0,
+    "20260630": 85.0
+   },
+   "src": {
+    "q:20250630": [
+     "03137a67-142f-4d6a-be07-8f0e0c808030.pdf",
+     19,
+     "Occupancy Q1 FY26",
+     "83"
+    ],
+    "q:20260630": [
+     "03137a67-142f-4d6a-be07-8f0e0c808030.pdf",
+     19,
+     "Occupancy Q1 FY27",
+     "85"
+    ],
+    "q:20251231": [
+     "39817a66-06b4-4490-81cd-a746ea3b925b.pdf",
+     21,
+     "Occupancy Q3 FY26",
+     "86"
+    ],
+    "q:20250930": [
+     "082612ab-e4fd-4b7b-ba86-2185f688d0ca.pdf",
+     19,
+     "Occupancy Q2 FY26",
+     "85"
+    ],
+    "q:20240630": [
+     "36573447-b0b2-43ad-a144-e5bbc13be957.pdf",
+     22,
+     "Occupancy Q1 FY25",
+     "85"
+    ],
+    "y:20250331": [
+     "d3d9d423-7fbb-48bc-a0a0-c4e10b26ad56.pdf",
+     69,
+     "occupancy rate (doc period)",
+     "86"
     ]
    }
   },
@@ -388,51 +455,6 @@
    }
   },
   {
-   "name": "St. Regis Mumbai Occupancy",
-   "unit": "%",
-   "kind": "level",
-   "y": {},
-   "q": {
-    "20240630": 85.0,
-    "20250630": 83.0,
-    "20250930": 85.0,
-    "20251231": 86.0,
-    "20260630": 85.0
-   },
-   "src": {
-    "q:20250630": [
-     "03137a67-142f-4d6a-be07-8f0e0c808030.pdf",
-     19,
-     "Occupancy Q1 FY26",
-     "83"
-    ],
-    "q:20260630": [
-     "03137a67-142f-4d6a-be07-8f0e0c808030.pdf",
-     19,
-     "Occupancy Q1 FY27",
-     "85"
-    ],
-    "q:20251231": [
-     "39817a66-06b4-4490-81cd-a746ea3b925b.pdf",
-     21,
-     "Occupancy Q3 FY26",
-     "86"
-    ],
-    "q:20250930": [
-     "082612ab-e4fd-4b7b-ba86-2185f688d0ca.pdf",
-     19,
-     "Occupancy Q2 FY26",
-     "85"
-    ],
-    "q:20240630": [
-     "36573447-b0b2-43ad-a144-e5bbc13be957.pdf",
-     22,
-     "Occupancy Q1 FY25",
-     "85"
-    ]
-   }
-  },
-  {
    "name": "Office Portfolio Leasable Area",
    "unit": "msft",
    "kind": "level",
@@ -468,6 +490,84 @@
      14,
      "Operational Office GLA (doc period)",
      "4.8"
+    ]
+   }
+  },
+  {
+   "name": "Residential Collections",
+   "unit": "Rs. Cr",
+   "kind": "flow",
+   "y": {
+    "20250331": 219.0
+   },
+   "q": {
+    "20250930": 116.0,
+    "20251231": 100.0,
+    "20260630": 51.0
+   },
+   "src": {
+    "q:20260630": [
+     "03137a67-142f-4d6a-be07-8f0e0c808030.pdf",
+     21,
+     "Collections",
+     "51"
+    ],
+    "q:20251231": [
+     "39817a66-06b4-4490-81cd-a746ea3b925b.pdf",
+     24,
+     "Collections Q3 FY26",
+     "100"
+    ],
+    "q:20250930": [
+     "082612ab-e4fd-4b7b-ba86-2185f688d0ca.pdf",
+     22,
+     "Collections Q2 FY26",
+     "116"
+    ],
+    "y:20250331": [
+     "d3d9d423-7fbb-48bc-a0a0-c4e10b26ad56.pdf",
+     69,
+     "collections of ...crore (doc period)",
+     "219"
+    ]
+   }
+  },
+  {
+   "name": "Residential Gross Sales",
+   "unit": "Rs. Cr",
+   "kind": "flow",
+   "y": {
+    "20250331": 212.0
+   },
+   "q": {
+    "20250930": 139.0,
+    "20251231": 140.0,
+    "20260630": 64.0
+   },
+   "src": {
+    "q:20260630": [
+     "03137a67-142f-4d6a-be07-8f0e0c808030.pdf",
+     21,
+     "Gross Sales",
+     "64"
+    ],
+    "q:20251231": [
+     "39817a66-06b4-4490-81cd-a746ea3b925b.pdf",
+     24,
+     "Gross Sales Q3 FY26",
+     "140"
+    ],
+    "q:20250930": [
+     "082612ab-e4fd-4b7b-ba86-2185f688d0ca.pdf",
+     22,
+     "Gross Sales Q2 FY26",
+     "139"
+    ],
+    "y:20250331": [
+     "d3d9d423-7fbb-48bc-a0a0-c4e10b26ad56.pdf",
+     69,
+     "gross sales of ...crore (doc period)",
+     "212"
     ]
    }
   },
@@ -542,33 +642,65 @@
    }
   },
   {
-   "name": "Residential Collections",
-   "unit": "Rs. Cr",
-   "kind": "flow",
+   "name": "Operational Office Portfolio Gross Rent",
+   "unit": "Rs. psfpm",
+   "kind": "level",
    "y": {},
    "q": {
-    "20250930": 116.0,
-    "20251231": 100.0,
-    "20260630": 51.0
+    "20250331": 125.0,
+    "20250630": 116.0,
+    "20251231": 120.0
    },
    "src": {
-    "q:20260630": [
-     "03137a67-142f-4d6a-be07-8f0e0c808030.pdf",
-     21,
-     "Collections",
-     "51"
-    ],
     "q:20251231": [
      "39817a66-06b4-4490-81cd-a746ea3b925b.pdf",
-     24,
-     "Collections Q3 FY26",
-     "100"
+     50,
+     "Total - Gross Rent (psfpm)",
+     "120"
     ],
-    "q:20250930": [
-     "082612ab-e4fd-4b7b-ba86-2185f688d0ca.pdf",
-     22,
-     "Collections Q2 FY26",
+    "q:20250630": [
+     "36573447-b0b2-43ad-a144-e5bbc13be957.pdf",
+     18,
+     "Total - Gross Rent (psfpm)",
      "116"
+    ],
+    "q:20250331": [
+     "d3d9d423-7fbb-48bc-a0a0-c4e10b26ad56.pdf",
+     68,
+     "average gross rentals as of March 2025",
+     "125"
+    ]
+   }
+  },
+  {
+   "name": "Residential Average Selling Price",
+   "unit": "Rs. per sq. ft.",
+   "kind": "flow",
+   "y": {
+    "20250331": 26000.0
+   },
+   "q": {
+    "20200331": 16000.0,
+    "20240331": 24000.0
+   },
+   "src": {
+    "q:20200331": [
+     "d3d9d423-7fbb-48bc-a0a0-c4e10b26ad56.pdf",
+     69,
+     "average selling price, March 2020",
+     "16,000"
+    ],
+    "q:20240331": [
+     "d3d9d423-7fbb-48bc-a0a0-c4e10b26ad56.pdf",
+     69,
+     "average selling price, March 2024",
+     "24,000"
+    ],
+    "y:20250331": [
+     "d3d9d423-7fbb-48bc-a0a0-c4e10b26ad56.pdf",
+     69,
+     "average selling price for FY2025",
+     "26,000"
     ]
    }
   },
@@ -635,37 +767,6 @@
    }
   },
   {
-   "name": "Residential Gross Sales",
-   "unit": "Rs. Cr",
-   "kind": "flow",
-   "y": {},
-   "q": {
-    "20250930": 139.0,
-    "20251231": 140.0,
-    "20260630": 64.0
-   },
-   "src": {
-    "q:20260630": [
-     "03137a67-142f-4d6a-be07-8f0e0c808030.pdf",
-     21,
-     "Gross Sales",
-     "64"
-    ],
-    "q:20251231": [
-     "39817a66-06b4-4490-81cd-a746ea3b925b.pdf",
-     24,
-     "Gross Sales Q3 FY26",
-     "140"
-    ],
-    "q:20250930": [
-     "082612ab-e4fd-4b7b-ba86-2185f688d0ca.pdf",
-     22,
-     "Gross Sales Q2 FY26",
-     "139"
-    ]
-   }
-  },
-  {
    "name": "Office Portfolio % Area Leased",
    "unit": "%",
    "kind": "level",
@@ -714,30 +815,6 @@
    }
   },
   {
-   "name": "Operational Office Portfolio Gross Rent",
-   "unit": "Rs. psfpm",
-   "kind": "level",
-   "y": {},
-   "q": {
-    "20250630": 116.0,
-    "20251231": 120.0
-   },
-   "src": {
-    "q:20251231": [
-     "39817a66-06b4-4490-81cd-a746ea3b925b.pdf",
-     50,
-     "Total - Gross Rent (psfpm)",
-     "120"
-    ],
-    "q:20250630": [
-     "36573447-b0b2-43ad-a144-e5bbc13be957.pdf",
-     18,
-     "Total - Gross Rent (psfpm)",
-     "116"
-    ]
-   }
-  },
-  {
    "name": "Operational Office Portfolio Net Leasable Area",
    "unit": "msft",
    "kind": "level",
@@ -758,6 +835,71 @@
      18,
      "Total - Net Leasable Area (msft)",
      "1.99"
+    ]
+   }
+  },
+  {
+   "name": "Operational Retail GLA",
+   "unit": "msft",
+   "kind": "level",
+   "y": {
+    "20250331": 11.5,
+    "20260331": 11.0
+   },
+   "q": {},
+   "src": {
+    "y:20260331": [
+     "a3d03a2e-a694-4fc7-94b0-2dfa9feec3db.pdf",
+     14,
+     "Operational Retail GLA (12 Malls) (doc period)",
+     "11"
+    ],
+    "y:20250331": [
+     "d3d9d423-7fbb-48bc-a0a0-c4e10b26ad56.pdf",
+     67,
+     "Retail portfolio total (doc period)",
+     "11.5"
+    ]
+   }
+  },
+  {
+   "name": "Retail Portfolio Trading Occupancy",
+   "unit": "%",
+   "kind": "level",
+   "y": {},
+   "q": {
+    "20240331": 87.0,
+    "20250331": 91.0
+   },
+   "src": {
+    "q:20240331": [
+     "d3d9d423-7fbb-48bc-a0a0-c4e10b26ad56.pdf",
+     68,
+     "Trading occupancy across the portfolio, March 2024",
+     "87"
+    ],
+    "q:20250331": [
+     "d3d9d423-7fbb-48bc-a0a0-c4e10b26ad56.pdf",
+     68,
+     "Trading occupancy across the portfolio, March 2025",
+     "91"
+    ]
+   }
+  },
+  {
+   "name": "Courtyard by Marriott Agra Room Keys",
+   "unit": "count",
+   "kind": "level",
+   "y": {
+    "20250331": 193.0
+   },
+   "q": {},
+   "src": {
+    "y:20250331": [
+     "d3d9d423-7fbb-48bc-a0a0-c4e10b26ad56.pdf",
+     69,
+     "Courtyard by Marriott, Agra (193 keys) (doc period)",
+     "193"
     ]
    }
   },
@@ -830,23 +972,6 @@
    }
   },
   {
-   "name": "Operational Retail GLA",
-   "unit": "msft",
-   "kind": "level",
-   "y": {
-    "20260331": 11.0
-   },
-   "q": {},
-   "src": {
-    "y:20260331": [
-     "a3d03a2e-a694-4fc7-94b0-2dfa9feec3db.pdf",
-     14,
-     "Operational Retail GLA (12 Malls) (doc period)",
-     "11"
-    ]
-   }
-  },
-  {
    "name": "Permanent Employees",
    "unit": "count",
    "kind": "level",
@@ -894,6 +1019,40 @@
      49,
      "Phoenix MarketCity Bangalore trading density",
      "2,987"
+    ]
+   }
+  },
+  {
+   "name": "Residential Ready-to-Sell Inventory",
+   "unit": "sq. ft.",
+   "kind": "level",
+   "y": {},
+   "q": {
+    "20250331": 340000.0
+   },
+   "src": {
+    "q:20250331": [
+     "d3d9d423-7fbb-48bc-a0a0-c4e10b26ad56.pdf",
+     69,
+     "ready-to-sell inventory, as of March 2025",
+     "340,000"
+    ]
+   }
+  },
+  {
+   "name": "St. Regis Mumbai Room Keys",
+   "unit": "count",
+   "kind": "level",
+   "y": {
+    "20250331": 395.0
+   },
+   "q": {},
+   "src": {
+    "y:20250331": [
+     "d3d9d423-7fbb-48bc-a0a0-c4e10b26ad56.pdf",
+     69,
+     "The St. Regis, Mumbai (395 keys) (doc period)",
+     "395"
     ]
    }
   },
