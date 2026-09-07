@@ -531,7 +531,8 @@ def main():
         filings = build_filings()
         log.append("filings: all n=%s capex=%s" % (filings["all"]["n"], filings["all"]["capex"]))
 
-    out = {"updated": datetime.datetime.now().strftime("%Y-%m-%dT%H:%M"),
+    ist = datetime.datetime.now(datetime.timezone(datetime.timedelta(hours=5, minutes=30)))   # CI runners are UTC
+    out = {"updated": ist.strftime("%Y-%m-%dT%H:%M IST"),
            "govt": {"annual": annual, "monthly": monthly,
                     "src": {"budget": "indiabudget.gov.in Budget at a Glance (per-document provenance in scripts/capex_budget_ledger.json)",
                             "monthly": "cga.nic.in Union Government Accounts at a Glance (unaudited provisional, cumulative from April)"}},
