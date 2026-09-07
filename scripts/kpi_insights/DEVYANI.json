@@ -1,8 +1,920 @@
 {
  "sym": "DEVYANI",
  "fy_end_month": 3,
- "docs": {},
- "metrics": [],
+ "docs": {
+  "97e18429-0ea2-4c8f-b288-e14a54bba561.pdf": {
+   "kind": "ip",
+   "date": "2026-01-01",
+   "title": "Merger Announcement Presentation (DIL-Sapphire Foods)",
+   "read": "2026-09-07",
+   "by": "claude-routine"
+  },
+  "9a65629f-47fa-41f5-b043-d22b5f06075e.pdf": {
+   "kind": "ip",
+   "date": "2025-08-13",
+   "title": "Q1 FY26 Investor Presentation (correction pass)",
+   "read": "2026-09-07",
+   "by": "claude-routine"
+  },
+  "70cfaade-05d9-4a72-94ad-9dbf662f3ef1.pdf": {
+   "kind": "ip",
+   "date": "2025-11-06",
+   "title": "Q2 & H1 FY26 Investor Presentation",
+   "read": "2026-09-07",
+   "by": "claude-routine"
+  },
+  "596dff46-7ef0-413c-808c-e53947178b0f.pdf": {
+   "kind": "ip",
+   "date": "2026-02-04",
+   "title": "Q3 & 9M FY26 Investor Presentation",
+   "read": "2026-09-07",
+   "by": "claude-routine"
+  }
+ },
+ "metrics": [
+  {
+   "name": "Total Store Count",
+   "unit": "count",
+   "kind": "level",
+   "y": {
+    "20250331": 3002.0
+   },
+   "q": {
+    "20240630": 1836.0,
+    "20240930": 1921.0,
+    "20241231": 2032.0,
+    "20250331": 2039.0,
+    "20250630": 2145.0,
+    "20250930": 2184.0,
+    "20251231": 2279.0
+   },
+   "src": {
+    "y:20250331": [
+     "97e18429-0ea2-4c8f-b288-e14a54bba561.pdf",
+     10,
+     "Store Count (as of Mar 31, 2025) (doc period)",
+     "3,002"
+    ],
+    "q:20240630": [
+     "9a65629f-47fa-41f5-b043-d22b5f06075e.pdf",
+     7,
+     "Store Count (DIL Consolidated)",
+     "1,836"
+    ],
+    "q:20250331": [
+     "9a65629f-47fa-41f5-b043-d22b5f06075e.pdf",
+     7,
+     "Store Count (DIL Consolidated)",
+     "2,039"
+    ],
+    "q:20250630": [
+     "9a65629f-47fa-41f5-b043-d22b5f06075e.pdf",
+     7,
+     "Store Count (DIL Consolidated)",
+     "2,145"
+    ],
+    "q:20240930": [
+     "70cfaade-05d9-4a72-94ad-9dbf662f3ef1.pdf",
+     8,
+     "Store Count (DIL Consolidated)",
+     "1,921"
+    ],
+    "q:20250930": [
+     "70cfaade-05d9-4a72-94ad-9dbf662f3ef1.pdf",
+     8,
+     "Store Count (DIL Consolidated)",
+     "2,184"
+    ],
+    "q:20241231": [
+     "596dff46-7ef0-413c-808c-e53947178b0f.pdf",
+     8,
+     "Store Count (DIL Consolidated)",
+     "2,032"
+    ],
+    "q:20251231": [
+     "596dff46-7ef0-413c-808c-e53947178b0f.pdf",
+     8,
+     "Store Count (DIL Consolidated)",
+     "2,279"
+    ]
+   }
+  },
+  {
+   "name": "DIL International Store Count",
+   "unit": "count",
+   "kind": "level",
+   "y": {},
+   "q": {
+    "20240630": 363.0,
+    "20240930": 364.0,
+    "20241231": 374.0,
+    "20250331": 375.0,
+    "20250630": 378.0,
+    "20250930": 382.0,
+    "20251231": 402.0
+   },
+   "src": {
+    "q:20240630": [
+     "9a65629f-47fa-41f5-b043-d22b5f06075e.pdf",
+     18,
+     "Store Count (DIL International)",
+     "363"
+    ],
+    "q:20250331": [
+     "9a65629f-47fa-41f5-b043-d22b5f06075e.pdf",
+     18,
+     "Store Count (DIL International)",
+     "375"
+    ],
+    "q:20250630": [
+     "9a65629f-47fa-41f5-b043-d22b5f06075e.pdf",
+     18,
+     "Store Count (DIL International)",
+     "378"
+    ],
+    "q:20240930": [
+     "70cfaade-05d9-4a72-94ad-9dbf662f3ef1.pdf",
+     22,
+     "Store Count (DIL International)",
+     "364"
+    ],
+    "q:20250930": [
+     "70cfaade-05d9-4a72-94ad-9dbf662f3ef1.pdf",
+     22,
+     "Store Count (DIL International)",
+     "382"
+    ],
+    "q:20241231": [
+     "596dff46-7ef0-413c-808c-e53947178b0f.pdf",
+     10,
+     "Store Count (DIL International)",
+     "374"
+    ],
+    "q:20251231": [
+     "596dff46-7ef0-413c-808c-e53947178b0f.pdf",
+     10,
+     "Store Count (DIL International)",
+     "402"
+    ]
+   }
+  },
+  {
+   "name": "KFC India ADS",
+   "unit": "'000",
+   "kind": "flow",
+   "y": {},
+   "q": {
+    "20240630": 104.0,
+    "20240930": 96.0,
+    "20241231": 96.0,
+    "20250331": 83.0,
+    "20250630": 98.0,
+    "20250930": 89.0,
+    "20251231": 90.0
+   },
+   "src": {
+    "q:20240630": [
+     "9a65629f-47fa-41f5-b043-d22b5f06075e.pdf",
+     11,
+     "ADS AND SSSG (KFC India)",
+     "104"
+    ],
+    "q:20250331": [
+     "9a65629f-47fa-41f5-b043-d22b5f06075e.pdf",
+     11,
+     "ADS AND SSSG (KFC India)",
+     "83"
+    ],
+    "q:20250630": [
+     "9a65629f-47fa-41f5-b043-d22b5f06075e.pdf",
+     11,
+     "ADS AND SSSG (KFC India)",
+     "98"
+    ],
+    "q:20240930": [
+     "70cfaade-05d9-4a72-94ad-9dbf662f3ef1.pdf",
+     12,
+     "ADS AND SSSG (KFC India)",
+     "96"
+    ],
+    "q:20250930": [
+     "70cfaade-05d9-4a72-94ad-9dbf662f3ef1.pdf",
+     12,
+     "ADS AND SSSG (KFC India)",
+     "89"
+    ],
+    "q:20241231": [
+     "596dff46-7ef0-413c-808c-e53947178b0f.pdf",
+     13,
+     "ADS'000 AND SSSG (KFC India)",
+     "96"
+    ],
+    "q:20251231": [
+     "596dff46-7ef0-413c-808c-e53947178b0f.pdf",
+     13,
+     "ADS'000 AND SSSG (KFC India)",
+     "90"
+    ]
+   }
+  },
+  {
+   "name": "KFC India Store Count",
+   "unit": "count",
+   "kind": "level",
+   "y": {},
+   "q": {
+    "20240630": 617.0,
+    "20240930": 645.0,
+    "20241231": 689.0,
+    "20250331": 696.0,
+    "20250630": 704.0,
+    "20250930": 734.0,
+    "20251231": 788.0
+   },
+   "src": {
+    "q:20240630": [
+     "9a65629f-47fa-41f5-b043-d22b5f06075e.pdf",
+     11,
+     "Stores (KFC India)",
+     "617"
+    ],
+    "q:20250331": [
+     "9a65629f-47fa-41f5-b043-d22b5f06075e.pdf",
+     11,
+     "Stores (KFC India)",
+     "696"
+    ],
+    "q:20250630": [
+     "9a65629f-47fa-41f5-b043-d22b5f06075e.pdf",
+     11,
+     "Stores (KFC India)",
+     "704"
+    ],
+    "q:20240930": [
+     "70cfaade-05d9-4a72-94ad-9dbf662f3ef1.pdf",
+     12,
+     "Stores (KFC India)",
+     "645"
+    ],
+    "q:20250930": [
+     "70cfaade-05d9-4a72-94ad-9dbf662f3ef1.pdf",
+     12,
+     "Stores (KFC India)",
+     "734"
+    ],
+    "q:20241231": [
+     "596dff46-7ef0-413c-808c-e53947178b0f.pdf",
+     13,
+     "Stores (KFC India)",
+     "689"
+    ],
+    "q:20251231": [
+     "596dff46-7ef0-413c-808c-e53947178b0f.pdf",
+     13,
+     "Stores (KFC India)",
+     "788"
+    ]
+   }
+  },
+  {
+   "name": "Nepal ADS",
+   "unit": "NPR '000",
+   "kind": "flow",
+   "y": {},
+   "q": {
+    "20240630": 126.0,
+    "20240930": 129.0,
+    "20241231": 152.0,
+    "20250331": 134.0,
+    "20250630": 145.0,
+    "20250930": 162.0,
+    "20251231": 180.0
+   },
+   "src": {
+    "q:20240630": [
+     "9a65629f-47fa-41f5-b043-d22b5f06075e.pdf",
+     18,
+     "Nepal (NPR)",
+     "126"
+    ],
+    "q:20250331": [
+     "70cfaade-05d9-4a72-94ad-9dbf662f3ef1.pdf",
+     22,
+     "Nepal (NPR)",
+     "134"
+    ],
+    "q:20250630": [
+     "70cfaade-05d9-4a72-94ad-9dbf662f3ef1.pdf",
+     22,
+     "Nepal (NPR)",
+     "145"
+    ],
+    "q:20240930": [
+     "70cfaade-05d9-4a72-94ad-9dbf662f3ef1.pdf",
+     22,
+     "Nepal (NPR)",
+     "129"
+    ],
+    "q:20241231": [
+     "70cfaade-05d9-4a72-94ad-9dbf662f3ef1.pdf",
+     22,
+     "Nepal (NPR)",
+     "152"
+    ],
+    "q:20250930": [
+     "70cfaade-05d9-4a72-94ad-9dbf662f3ef1.pdf",
+     22,
+     "Nepal (NPR)",
+     "162"
+    ],
+    "q:20251231": [
+     "596dff46-7ef0-413c-808c-e53947178b0f.pdf",
+     10,
+     "Nepal (NPR)",
+     "180"
+    ]
+   },
+   "restated": [
+    [
+     "q:20250331",
+     "9a65629f-47fa-41f5-b043-d22b5f06075e.pdf",
+     109.0,
+     "70cfaade-05d9-4a72-94ad-9dbf662f3ef1.pdf",
+     134.0
+    ],
+    [
+     "q:20250630",
+     "9a65629f-47fa-41f5-b043-d22b5f06075e.pdf",
+     113.0,
+     "70cfaade-05d9-4a72-94ad-9dbf662f3ef1.pdf",
+     145.0
+    ]
+   ]
+  },
+  {
+   "name": "Nigeria ADS",
+   "unit": "Naira '000",
+   "kind": "flow",
+   "y": {},
+   "q": {
+    "20240630": 1064.0,
+    "20240930": 1008.0,
+    "20241231": 1064.0,
+    "20250331": 962.0,
+    "20250630": 1006.0,
+    "20250930": 1029.0,
+    "20251231": 1061.0
+   },
+   "src": {
+    "q:20240630": [
+     "9a65629f-47fa-41f5-b043-d22b5f06075e.pdf",
+     18,
+     "Nigeria (Naira)",
+     "1,064"
+    ],
+    "q:20250331": [
+     "9a65629f-47fa-41f5-b043-d22b5f06075e.pdf",
+     18,
+     "Nigeria (Naira)",
+     "962"
+    ],
+    "q:20250630": [
+     "9a65629f-47fa-41f5-b043-d22b5f06075e.pdf",
+     18,
+     "Nigeria (Naira)",
+     "1,006"
+    ],
+    "q:20240930": [
+     "70cfaade-05d9-4a72-94ad-9dbf662f3ef1.pdf",
+     22,
+     "Nigeria (Naira)",
+     "1,008"
+    ],
+    "q:20241231": [
+     "70cfaade-05d9-4a72-94ad-9dbf662f3ef1.pdf",
+     22,
+     "Nigeria (Naira)",
+     "1,064"
+    ],
+    "q:20250930": [
+     "70cfaade-05d9-4a72-94ad-9dbf662f3ef1.pdf",
+     22,
+     "Nigeria (Naira)",
+     "1,029"
+    ],
+    "q:20251231": [
+     "596dff46-7ef0-413c-808c-e53947178b0f.pdf",
+     10,
+     "Nigeria (Naira)",
+     "1,061"
+    ]
+   }
+  },
+  {
+   "name": "Thailand ADS",
+   "unit": "THB '000",
+   "kind": "flow",
+   "y": {},
+   "q": {
+    "20240630": 59.0,
+    "20240930": 55.0,
+    "20241231": 58.0,
+    "20250331": 55.0,
+    "20250630": 56.0,
+    "20250930": 54.0,
+    "20251231": 54.0
+   },
+   "src": {
+    "q:20240630": [
+     "9a65629f-47fa-41f5-b043-d22b5f06075e.pdf",
+     18,
+     "Thailand (THB)",
+     "59"
+    ],
+    "q:20250331": [
+     "9a65629f-47fa-41f5-b043-d22b5f06075e.pdf",
+     18,
+     "Thailand (THB)",
+     "55"
+    ],
+    "q:20250630": [
+     "9a65629f-47fa-41f5-b043-d22b5f06075e.pdf",
+     18,
+     "Thailand (THB)",
+     "56"
+    ],
+    "q:20240930": [
+     "70cfaade-05d9-4a72-94ad-9dbf662f3ef1.pdf",
+     22,
+     "Thailand (THB)",
+     "55"
+    ],
+    "q:20241231": [
+     "70cfaade-05d9-4a72-94ad-9dbf662f3ef1.pdf",
+     22,
+     "Thailand (THB)",
+     "58"
+    ],
+    "q:20250930": [
+     "70cfaade-05d9-4a72-94ad-9dbf662f3ef1.pdf",
+     22,
+     "Thailand (THB)",
+     "54"
+    ],
+    "q:20251231": [
+     "596dff46-7ef0-413c-808c-e53947178b0f.pdf",
+     10,
+     "Thailand (THB)",
+     "54"
+    ]
+   }
+  },
+  {
+   "name": "Costa Store Count",
+   "unit": "count",
+   "kind": "level",
+   "y": {},
+   "q": {
+    "20240630": 28.0,
+    "20240930": 27.0,
+    "20241231": 26.0,
+    "20250331": 27.0,
+    "20250630": 26.0,
+    "20250930": 24.0
+   },
+   "src": {
+    "q:20240630": [
+     "9a65629f-47fa-41f5-b043-d22b5f06075e.pdf",
+     16,
+     "Costa",
+     "28"
+    ],
+    "q:20250331": [
+     "9a65629f-47fa-41f5-b043-d22b5f06075e.pdf",
+     16,
+     "Costa",
+     "27"
+    ],
+    "q:20250630": [
+     "9a65629f-47fa-41f5-b043-d22b5f06075e.pdf",
+     16,
+     "Costa",
+     "26"
+    ],
+    "q:20240930": [
+     "70cfaade-05d9-4a72-94ad-9dbf662f3ef1.pdf",
+     18,
+     "Costa",
+     "27"
+    ],
+    "q:20241231": [
+     "70cfaade-05d9-4a72-94ad-9dbf662f3ef1.pdf",
+     18,
+     "Costa",
+     "26"
+    ],
+    "q:20250930": [
+     "70cfaade-05d9-4a72-94ad-9dbf662f3ef1.pdf",
+     18,
+     "Costa",
+     "24"
+    ]
+   }
+  },
+  {
+   "name": "DIL India Store Count",
+   "unit": "count",
+   "kind": "level",
+   "y": {},
+   "q": {
+    "20240630": 1473.0,
+    "20240930": 1557.0,
+    "20250331": 1664.0,
+    "20250630": 1767.0,
+    "20250930": 1802.0,
+    "20251231": 1877.0
+   },
+   "src": {
+    "q:20240630": [
+     "9a65629f-47fa-41f5-b043-d22b5f06075e.pdf",
+     8,
+     "Store Count (DIL India)",
+     "1,473"
+    ],
+    "q:20250331": [
+     "9a65629f-47fa-41f5-b043-d22b5f06075e.pdf",
+     8,
+     "Store Count (DIL India)",
+     "1,664"
+    ],
+    "q:20250630": [
+     "9a65629f-47fa-41f5-b043-d22b5f06075e.pdf",
+     8,
+     "Store Count (DIL India)",
+     "1,767"
+    ],
+    "q:20240930": [
+     "70cfaade-05d9-4a72-94ad-9dbf662f3ef1.pdf",
+     9,
+     "Store Count (DIL India)",
+     "1,557"
+    ],
+    "q:20250930": [
+     "70cfaade-05d9-4a72-94ad-9dbf662f3ef1.pdf",
+     9,
+     "Store Count (DIL India)",
+     "1,802"
+    ],
+    "q:20251231": [
+     "596dff46-7ef0-413c-808c-e53947178b0f.pdf",
+     7,
+     "Total India",
+     "1,877"
+    ]
+   }
+  },
+  {
+   "name": "PH India Store Count",
+   "unit": "count",
+   "kind": "level",
+   "y": {},
+   "q": {
+    "20240630": 570.0,
+    "20240930": 593.0,
+    "20250331": 630.0,
+    "20250630": 618.0,
+    "20250930": 621.0,
+    "20251231": 639.0
+   },
+   "src": {
+    "q:20240630": [
+     "9a65629f-47fa-41f5-b043-d22b5f06075e.pdf",
+     14,
+     "Stores (PH India)",
+     "570"
+    ],
+    "q:20250331": [
+     "9a65629f-47fa-41f5-b043-d22b5f06075e.pdf",
+     14,
+     "Stores (PH India)",
+     "630"
+    ],
+    "q:20250630": [
+     "9a65629f-47fa-41f5-b043-d22b5f06075e.pdf",
+     14,
+     "Stores (PH India)",
+     "618"
+    ],
+    "q:20240930": [
+     "70cfaade-05d9-4a72-94ad-9dbf662f3ef1.pdf",
+     16,
+     "Stores (PH India)",
+     "593"
+    ],
+    "q:20250930": [
+     "70cfaade-05d9-4a72-94ad-9dbf662f3ef1.pdf",
+     16,
+     "Stores (PH India)",
+     "621"
+    ],
+    "q:20251231": [
+     "596dff46-7ef0-413c-808c-e53947178b0f.pdf",
+     7,
+     "PH",
+     "639"
+    ]
+   }
+  },
+  {
+   "name": "Vaango Store Count",
+   "unit": "count",
+   "kind": "level",
+   "y": {},
+   "q": {
+    "20240630": 30.0,
+    "20240930": 28.0,
+    "20241231": 24.0,
+    "20250331": 23.0,
+    "20250630": 24.0,
+    "20250930": 23.0
+   },
+   "src": {
+    "q:20240630": [
+     "9a65629f-47fa-41f5-b043-d22b5f06075e.pdf",
+     17,
+     "Vaango",
+     "30"
+    ],
+    "q:20250331": [
+     "9a65629f-47fa-41f5-b043-d22b5f06075e.pdf",
+     17,
+     "Vaango",
+     "23"
+    ],
+    "q:20250630": [
+     "9a65629f-47fa-41f5-b043-d22b5f06075e.pdf",
+     17,
+     "Vaango",
+     "24"
+    ],
+    "q:20240930": [
+     "70cfaade-05d9-4a72-94ad-9dbf662f3ef1.pdf",
+     20,
+     "Vaango",
+     "28"
+    ],
+    "q:20241231": [
+     "70cfaade-05d9-4a72-94ad-9dbf662f3ef1.pdf",
+     20,
+     "Vaango",
+     "24"
+    ],
+    "q:20250930": [
+     "70cfaade-05d9-4a72-94ad-9dbf662f3ef1.pdf",
+     20,
+     "Vaango",
+     "23"
+    ]
+   }
+  },
+  {
+   "name": "PH India ADS",
+   "unit": "'000",
+   "kind": "flow",
+   "y": {},
+   "q": {
+    "20240630": 36.0,
+    "20240930": 35.0,
+    "20250331": 31.0,
+    "20250630": 33.0,
+    "20250930": 33.0
+   },
+   "src": {
+    "q:20240630": [
+     "9a65629f-47fa-41f5-b043-d22b5f06075e.pdf",
+     14,
+     "ADS and SSSG (PH India)",
+     "36"
+    ],
+    "q:20250331": [
+     "9a65629f-47fa-41f5-b043-d22b5f06075e.pdf",
+     14,
+     "ADS and SSSG (PH India)",
+     "31"
+    ],
+    "q:20250630": [
+     "9a65629f-47fa-41f5-b043-d22b5f06075e.pdf",
+     14,
+     "ADS and SSSG (PH India)",
+     "33"
+    ],
+    "q:20240930": [
+     "70cfaade-05d9-4a72-94ad-9dbf662f3ef1.pdf",
+     16,
+     "ADS and SSSG (PH India)",
+     "35"
+    ],
+    "q:20250930": [
+     "70cfaade-05d9-4a72-94ad-9dbf662f3ef1.pdf",
+     16,
+     "ADS and SSSG (PH India)",
+     "33"
+    ]
+   }
+  },
+  {
+   "name": "BBK+ Store Count",
+   "unit": "count",
+   "kind": "level",
+   "y": {},
+   "q": {
+    "20250630": 70.0,
+    "20250930": 70.0
+   },
+   "src": {
+    "q:20250630": [
+     "9a65629f-47fa-41f5-b043-d22b5f06075e.pdf",
+     17,
+     "BBK+ (doc period)",
+     "70"
+    ],
+    "q:20250930": [
+     "70cfaade-05d9-4a72-94ad-9dbf662f3ef1.pdf",
+     20,
+     "BBK+",
+     "70"
+    ]
+   }
+  },
+  {
+   "name": "Food-Courts/Airports Store Count",
+   "unit": "count",
+   "kind": "level",
+   "y": {},
+   "q": {
+    "20250331": 22.0,
+    "20251231": 21.0
+   },
+   "src": {
+    "q:20250331": [
+     "596dff46-7ef0-413c-808c-e53947178b0f.pdf",
+     7,
+     "Food-Courts/ Airports",
+     "22"
+    ],
+    "q:20251231": [
+     "596dff46-7ef0-413c-808c-e53947178b0f.pdf",
+     7,
+     "Food-Courts/ Airports",
+     "21"
+    ]
+   }
+  },
+  {
+   "name": "Franchisee Brands Store Count",
+   "unit": "count",
+   "kind": "level",
+   "y": {},
+   "q": {
+    "20250331": 220.0,
+    "20251231": 211.0
+   },
+   "src": {
+    "q:20250331": [
+     "596dff46-7ef0-413c-808c-e53947178b0f.pdf",
+     7,
+     "FRANCHISEE BRANDS",
+     "220"
+    ],
+    "q:20251231": [
+     "596dff46-7ef0-413c-808c-e53947178b0f.pdf",
+     7,
+     "FRANCHISEE BRANDS",
+     "211"
+    ]
+   }
+  },
+  {
+   "name": "Nepal Store Count",
+   "unit": "count",
+   "kind": "level",
+   "y": {},
+   "q": {
+    "20250331": 29.0,
+    "20251231": 36.0
+   },
+   "src": {
+    "q:20250331": [
+     "596dff46-7ef0-413c-808c-e53947178b0f.pdf",
+     7,
+     "Nepal",
+     "29"
+    ],
+    "q:20251231": [
+     "596dff46-7ef0-413c-808c-e53947178b0f.pdf",
+     7,
+     "Nepal",
+     "36"
+    ]
+   }
+  },
+  {
+   "name": "Nigeria Store Count",
+   "unit": "count",
+   "kind": "level",
+   "y": {},
+   "q": {
+    "20250331": 40.0,
+    "20251231": 40.0
+   },
+   "src": {
+    "q:20250331": [
+     "596dff46-7ef0-413c-808c-e53947178b0f.pdf",
+     7,
+     "Nigeria",
+     "40"
+    ],
+    "q:20251231": [
+     "596dff46-7ef0-413c-808c-e53947178b0f.pdf",
+     7,
+     "Nigeria",
+     "40"
+    ]
+   }
+  },
+  {
+   "name": "Own Brands Store Count",
+   "unit": "count",
+   "kind": "level",
+   "y": {},
+   "q": {
+    "20250331": 96.0,
+    "20251231": 218.0
+   },
+   "src": {
+    "q:20250331": [
+     "596dff46-7ef0-413c-808c-e53947178b0f.pdf",
+     7,
+     "OWN BRANDS",
+     "96"
+    ],
+    "q:20251231": [
+     "596dff46-7ef0-413c-808c-e53947178b0f.pdf",
+     7,
+     "OWN BRANDS",
+     "218"
+    ]
+   }
+  },
+  {
+   "name": "Thailand Store Count",
+   "unit": "count",
+   "kind": "level",
+   "y": {},
+   "q": {
+    "20250331": 306.0,
+    "20251231": 326.0
+   },
+   "src": {
+    "q:20250331": [
+     "596dff46-7ef0-413c-808c-e53947178b0f.pdf",
+     7,
+     "Thailand",
+     "306"
+    ],
+    "q:20251231": [
+     "596dff46-7ef0-413c-808c-e53947178b0f.pdf",
+     7,
+     "Thailand",
+     "326"
+    ]
+   }
+  },
+  {
+   "name": "YUM Brands Store Count (India)",
+   "unit": "count",
+   "kind": "level",
+   "y": {},
+   "q": {
+    "20250331": 1326.0,
+    "20251231": 1427.0
+   },
+   "src": {
+    "q:20250331": [
+     "596dff46-7ef0-413c-808c-e53947178b0f.pdf",
+     7,
+     "YUM BRANDS",
+     "1,326"
+    ],
+    "q:20251231": [
+     "596dff46-7ef0-413c-808c-e53947178b0f.pdf",
+     7,
+     "YUM BRANDS",
+     "1,427"
+    ]
+   }
+  }
+ ],
  "held": [],
  "catalog": [
   {
