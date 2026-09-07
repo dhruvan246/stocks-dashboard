@@ -1,8 +1,632 @@
 {
  "sym": "ANGELONE",
  "fy_end_month": 3,
- "docs": {},
- "metrics": [],
+ "docs": {
+  "8b252168-53d9-4534-bfe9-78ad30a37bf1.pdf": {
+   "kind": "ip",
+   "date": "2026-07-15",
+   "title": "Q1 FY27 Investor Presentation",
+   "read": "2026-09-07",
+   "by": "claude-routine"
+  }
+ },
+ "metrics": [
+  {
+   "name": "Credit Distributed",
+   "unit": "Rs Bn",
+   "kind": "flow",
+   "y": {},
+   "q": {
+    "20240630": 1.2,
+    "20240930": 1.9,
+    "20241231": 2.4,
+    "20250331": 1.0,
+    "20250630": 2.3,
+    "20250930": 4.6,
+    "20251231": 7.1,
+    "20260331": 6.1,
+    "20260630": 5.3
+   },
+   "src": {
+    "q:20240630": [
+     "8b252168-53d9-4534-bfe9-78ad30a37bf1.pdf",
+     19,
+     "Credit Distributed",
+     "1.2"
+    ],
+    "q:20240930": [
+     "8b252168-53d9-4534-bfe9-78ad30a37bf1.pdf",
+     19,
+     "Credit Distributed",
+     "1.9"
+    ],
+    "q:20241231": [
+     "8b252168-53d9-4534-bfe9-78ad30a37bf1.pdf",
+     19,
+     "Credit Distributed",
+     "2.4"
+    ],
+    "q:20250331": [
+     "8b252168-53d9-4534-bfe9-78ad30a37bf1.pdf",
+     19,
+     "Credit Distributed",
+     "1.0"
+    ],
+    "q:20250630": [
+     "8b252168-53d9-4534-bfe9-78ad30a37bf1.pdf",
+     19,
+     "Credit Distributed",
+     "2.3"
+    ],
+    "q:20250930": [
+     "8b252168-53d9-4534-bfe9-78ad30a37bf1.pdf",
+     19,
+     "Credit Distributed",
+     "4.6"
+    ],
+    "q:20251231": [
+     "8b252168-53d9-4534-bfe9-78ad30a37bf1.pdf",
+     19,
+     "Credit Distributed",
+     "7.1"
+    ],
+    "q:20260331": [
+     "8b252168-53d9-4534-bfe9-78ad30a37bf1.pdf",
+     19,
+     "Credit Distributed",
+     "6.1"
+    ],
+    "q:20260630": [
+     "8b252168-53d9-4534-bfe9-78ad30a37bf1.pdf",
+     19,
+     "Credit Distributed",
+     "5.3"
+    ]
+   }
+  },
+  {
+   "name": "Mutual Fund AUM",
+   "unit": "Rs Bn",
+   "kind": "level",
+   "y": {},
+   "q": {
+    "20230331": 19.0,
+    "20240331": 45.0,
+    "20250331": 111.0,
+    "20260331": 167.0,
+    "20260630": 206.0
+   },
+   "src": {
+    "q:20230331": [
+     "8b252168-53d9-4534-bfe9-78ad30a37bf1.pdf",
+     18,
+     "Building scale in MF AUM",
+     "19"
+    ],
+    "q:20240331": [
+     "8b252168-53d9-4534-bfe9-78ad30a37bf1.pdf",
+     18,
+     "Building scale in MF AUM",
+     "45"
+    ],
+    "q:20250331": [
+     "8b252168-53d9-4534-bfe9-78ad30a37bf1.pdf",
+     18,
+     "Building scale in MF AUM",
+     "111"
+    ],
+    "q:20260331": [
+     "8b252168-53d9-4534-bfe9-78ad30a37bf1.pdf",
+     18,
+     "Building scale in MF AUM",
+     "167"
+    ],
+    "q:20260630": [
+     "8b252168-53d9-4534-bfe9-78ad30a37bf1.pdf",
+     18,
+     "Building scale in MF AUM",
+     "206"
+    ]
+   }
+  },
+  {
+   "name": "Orders - Cash",
+   "unit": "Mn",
+   "kind": "flow",
+   "y": {},
+   "q": {
+    "20250630": 75.0,
+    "20250930": 73.0,
+    "20251231": 68.0,
+    "20260331": 67.0,
+    "20260630": 67.0
+   },
+   "src": {
+    "q:20250630": [
+     "8b252168-53d9-4534-bfe9-78ad30a37bf1.pdf",
+     33,
+     "Cash Orders",
+     "75"
+    ],
+    "q:20250930": [
+     "8b252168-53d9-4534-bfe9-78ad30a37bf1.pdf",
+     33,
+     "Cash Orders",
+     "73"
+    ],
+    "q:20251231": [
+     "8b252168-53d9-4534-bfe9-78ad30a37bf1.pdf",
+     33,
+     "Cash Orders",
+     "68"
+    ],
+    "q:20260331": [
+     "8b252168-53d9-4534-bfe9-78ad30a37bf1.pdf",
+     33,
+     "Cash Orders",
+     "67"
+    ],
+    "q:20260630": [
+     "8b252168-53d9-4534-bfe9-78ad30a37bf1.pdf",
+     33,
+     "Cash Orders",
+     "67"
+    ]
+   }
+  },
+  {
+   "name": "Orders - Commodity",
+   "unit": "Mn",
+   "kind": "flow",
+   "y": {},
+   "q": {
+    "20250630": 27.0,
+    "20250930": 29.0,
+    "20251231": 35.0,
+    "20260331": 43.0,
+    "20260630": 40.0
+   },
+   "src": {
+    "q:20250630": [
+     "8b252168-53d9-4534-bfe9-78ad30a37bf1.pdf",
+     33,
+     "Commodity Orders",
+     "27"
+    ],
+    "q:20250930": [
+     "8b252168-53d9-4534-bfe9-78ad30a37bf1.pdf",
+     33,
+     "Commodity Orders",
+     "29"
+    ],
+    "q:20251231": [
+     "8b252168-53d9-4534-bfe9-78ad30a37bf1.pdf",
+     33,
+     "Commodity Orders",
+     "35"
+    ],
+    "q:20260331": [
+     "8b252168-53d9-4534-bfe9-78ad30a37bf1.pdf",
+     33,
+     "Commodity Orders",
+     "43"
+    ],
+    "q:20260630": [
+     "8b252168-53d9-4534-bfe9-78ad30a37bf1.pdf",
+     33,
+     "Commodity Orders",
+     "40"
+    ]
+   }
+  },
+  {
+   "name": "Orders - F&O",
+   "unit": "Mn",
+   "kind": "flow",
+   "y": {},
+   "q": {
+    "20250630": 241.0,
+    "20250930": 258.0,
+    "20251231": 277.0,
+    "20260331": 320.0,
+    "20260630": 300.0
+   },
+   "src": {
+    "q:20250630": [
+     "8b252168-53d9-4534-bfe9-78ad30a37bf1.pdf",
+     33,
+     "F&O Orders",
+     "241"
+    ],
+    "q:20250930": [
+     "8b252168-53d9-4534-bfe9-78ad30a37bf1.pdf",
+     33,
+     "F&O Orders",
+     "258"
+    ],
+    "q:20251231": [
+     "8b252168-53d9-4534-bfe9-78ad30a37bf1.pdf",
+     33,
+     "F&O Orders",
+     "277"
+    ],
+    "q:20260331": [
+     "8b252168-53d9-4534-bfe9-78ad30a37bf1.pdf",
+     33,
+     "F&O Orders",
+     "320"
+    ],
+    "q:20260630": [
+     "8b252168-53d9-4534-bfe9-78ad30a37bf1.pdf",
+     33,
+     "F&O Orders",
+     "300"
+    ]
+   }
+  },
+  {
+   "name": "Orders - Overall",
+   "unit": "Mn",
+   "kind": "flow",
+   "y": {},
+   "q": {
+    "20250630": 343.0,
+    "20250930": 360.0,
+    "20251231": 380.0,
+    "20260331": 431.0,
+    "20260630": 406.0
+   },
+   "src": {
+    "q:20250630": [
+     "8b252168-53d9-4534-bfe9-78ad30a37bf1.pdf",
+     33,
+     "Overall Orders",
+     "343"
+    ],
+    "q:20250930": [
+     "8b252168-53d9-4534-bfe9-78ad30a37bf1.pdf",
+     33,
+     "Overall Orders",
+     "360"
+    ],
+    "q:20251231": [
+     "8b252168-53d9-4534-bfe9-78ad30a37bf1.pdf",
+     33,
+     "Overall Orders",
+     "380"
+    ],
+    "q:20260331": [
+     "8b252168-53d9-4534-bfe9-78ad30a37bf1.pdf",
+     33,
+     "Overall Orders",
+     "431"
+    ],
+    "q:20260630": [
+     "8b252168-53d9-4534-bfe9-78ad30a37bf1.pdf",
+     33,
+     "Overall Orders",
+     "406"
+    ]
+   }
+  },
+  {
+   "name": "Overall Retail Equity Turnover Market Share",
+   "unit": "%",
+   "kind": "flow",
+   "y": {},
+   "q": {
+    "20250630": 19.7,
+    "20250930": 20.5,
+    "20251231": 20.4,
+    "20260331": 20.4,
+    "20260630": 20.2
+   },
+   "src": {
+    "q:20250630": [
+     "8b252168-53d9-4534-bfe9-78ad30a37bf1.pdf",
+     33,
+     "Overall Retail equity turnover market share",
+     "19.7"
+    ],
+    "q:20250930": [
+     "8b252168-53d9-4534-bfe9-78ad30a37bf1.pdf",
+     33,
+     "Overall Retail equity turnover market share",
+     "20.5"
+    ],
+    "q:20251231": [
+     "8b252168-53d9-4534-bfe9-78ad30a37bf1.pdf",
+     33,
+     "Overall Retail equity turnover market share",
+     "20.4"
+    ],
+    "q:20260331": [
+     "8b252168-53d9-4534-bfe9-78ad30a37bf1.pdf",
+     33,
+     "Overall Retail equity turnover market share",
+     "20.4"
+    ],
+    "q:20260630": [
+     "8b252168-53d9-4534-bfe9-78ad30a37bf1.pdf",
+     33,
+     "Overall Retail equity turnover market share",
+     "20.2"
+    ]
+   }
+  },
+  {
+   "name": "Retail Turnover Market Share - Cash",
+   "unit": "%",
+   "kind": "flow",
+   "y": {},
+   "q": {
+    "20250630": 18.0,
+    "20250930": 18.7,
+    "20251231": 18.3,
+    "20260331": 17.2,
+    "20260630": 17.4
+   },
+   "src": {
+    "q:20250630": [
+     "8b252168-53d9-4534-bfe9-78ad30a37bf1.pdf",
+     33,
+     "Cash Retail turnover market share",
+     "18.0"
+    ],
+    "q:20250930": [
+     "8b252168-53d9-4534-bfe9-78ad30a37bf1.pdf",
+     33,
+     "Cash Retail turnover market share",
+     "18.7"
+    ],
+    "q:20251231": [
+     "8b252168-53d9-4534-bfe9-78ad30a37bf1.pdf",
+     33,
+     "Cash Retail turnover market share",
+     "18.3"
+    ],
+    "q:20260331": [
+     "8b252168-53d9-4534-bfe9-78ad30a37bf1.pdf",
+     33,
+     "Cash Retail turnover market share",
+     "17.2"
+    ],
+    "q:20260630": [
+     "8b252168-53d9-4534-bfe9-78ad30a37bf1.pdf",
+     33,
+     "Cash Retail turnover market share",
+     "17.4"
+    ]
+   }
+  },
+  {
+   "name": "Retail Turnover Market Share - Commodity",
+   "unit": "%",
+   "kind": "flow",
+   "y": {},
+   "q": {
+    "20250630": 57.0,
+    "20250930": 65.1,
+    "20251231": 53.1,
+    "20260331": 54.1,
+    "20260630": 52.3
+   },
+   "src": {
+    "q:20250630": [
+     "8b252168-53d9-4534-bfe9-78ad30a37bf1.pdf",
+     33,
+     "Commodity Retail turnover market share",
+     "57.0"
+    ],
+    "q:20250930": [
+     "8b252168-53d9-4534-bfe9-78ad30a37bf1.pdf",
+     33,
+     "Commodity Retail turnover market share",
+     "65.1"
+    ],
+    "q:20251231": [
+     "8b252168-53d9-4534-bfe9-78ad30a37bf1.pdf",
+     33,
+     "Commodity Retail turnover market share",
+     "53.1"
+    ],
+    "q:20260331": [
+     "8b252168-53d9-4534-bfe9-78ad30a37bf1.pdf",
+     33,
+     "Commodity Retail turnover market share",
+     "54.1"
+    ],
+    "q:20260630": [
+     "8b252168-53d9-4534-bfe9-78ad30a37bf1.pdf",
+     33,
+     "Commodity Retail turnover market share",
+     "52.3"
+    ]
+   }
+  },
+  {
+   "name": "Retail Turnover Market Share - F&O",
+   "unit": "%",
+   "kind": "flow",
+   "y": {},
+   "q": {
+    "20250630": 21.0,
+    "20250930": 21.7,
+    "20251231": 21.7,
+    "20260331": 22.2,
+    "20260630": 22.2
+   },
+   "src": {
+    "q:20250630": [
+     "8b252168-53d9-4534-bfe9-78ad30a37bf1.pdf",
+     33,
+     "F&O Retail turnover market share",
+     "21.0"
+    ],
+    "q:20250930": [
+     "8b252168-53d9-4534-bfe9-78ad30a37bf1.pdf",
+     33,
+     "F&O Retail turnover market share",
+     "21.7"
+    ],
+    "q:20251231": [
+     "8b252168-53d9-4534-bfe9-78ad30a37bf1.pdf",
+     33,
+     "F&O Retail turnover market share",
+     "21.7"
+    ],
+    "q:20260331": [
+     "8b252168-53d9-4534-bfe9-78ad30a37bf1.pdf",
+     33,
+     "F&O Retail turnover market share",
+     "22.2"
+    ],
+    "q:20260630": [
+     "8b252168-53d9-4534-bfe9-78ad30a37bf1.pdf",
+     33,
+     "F&O Retail turnover market share",
+     "22.2"
+    ]
+   }
+  },
+  {
+   "name": "Unique SIPs Registered",
+   "unit": "Mn",
+   "kind": "level",
+   "y": {},
+   "q": {
+    "20250630": 1.9,
+    "20250930": 2.4,
+    "20251231": 2.3,
+    "20260331": 2.1,
+    "20260630": 1.7
+   },
+   "src": {
+    "q:20250630": [
+     "8b252168-53d9-4534-bfe9-78ad30a37bf1.pdf",
+     18,
+     "Unique SIPs Registered",
+     "1.9"
+    ],
+    "q:20250930": [
+     "8b252168-53d9-4534-bfe9-78ad30a37bf1.pdf",
+     18,
+     "Unique SIPs Registered",
+     "2.4"
+    ],
+    "q:20251231": [
+     "8b252168-53d9-4534-bfe9-78ad30a37bf1.pdf",
+     18,
+     "Unique SIPs Registered",
+     "2.3"
+    ],
+    "q:20260331": [
+     "8b252168-53d9-4534-bfe9-78ad30a37bf1.pdf",
+     18,
+     "Unique SIPs Registered",
+     "2.1"
+    ],
+    "q:20260630": [
+     "8b252168-53d9-4534-bfe9-78ad30a37bf1.pdf",
+     18,
+     "Unique SIPs Registered",
+     "1.7"
+    ]
+   }
+  },
+  {
+   "name": "Client Funding Book (Period Ending)",
+   "unit": "Rs Mn",
+   "kind": "level",
+   "y": {},
+   "q": {
+    "20260331": 54494.0,
+    "20260630": 71525.0
+   },
+   "src": {
+    "q:20260630": [
+     "8b252168-53d9-4534-bfe9-78ad30a37bf1.pdf",
+     30,
+     "Client Funding Book",
+     "71,525"
+    ],
+    "q:20260331": [
+     "8b252168-53d9-4534-bfe9-78ad30a37bf1.pdf",
+     30,
+     "Client Funding Book",
+     "54,494"
+    ]
+   }
+  },
+  {
+   "name": "Asset Management AUM",
+   "unit": "Rs Bn",
+   "kind": "level",
+   "y": {},
+   "q": {
+    "20260630": 6.2
+   },
+   "src": {
+    "q:20260630": [
+     "8b252168-53d9-4534-bfe9-78ad30a37bf1.pdf",
+     21,
+     "AUM as on 30th June 2026",
+     "6.2"
+    ]
+   }
+  },
+  {
+   "name": "Average Client Funding Book",
+   "unit": "Rs Bn",
+   "kind": "flow",
+   "y": {},
+   "q": {
+    "20260630": 61.4
+   },
+   "src": {
+    "q:20260630": [
+     "8b252168-53d9-4534-bfe9-78ad30a37bf1.pdf",
+     17,
+     "Q1 '27 Average Client Funding Book",
+     "61.4"
+    ]
+   }
+  },
+  {
+   "name": "Demat Market Share",
+   "unit": "%",
+   "kind": "level",
+   "y": {},
+   "q": {
+    "20260630": 16.7
+   },
+   "src": {
+    "q:20260630": [
+     "8b252168-53d9-4534-bfe9-78ad30a37bf1.pdf",
+     16,
+     "demat market share as of June 2026",
+     "16.7"
+    ]
+   }
+  },
+  {
+   "name": "Wealth Management AUM",
+   "unit": "Rs Bn",
+   "kind": "level",
+   "y": {},
+   "q": {
+    "20260630": 134.4
+   },
+   "src": {
+    "q:20260630": [
+     "8b252168-53d9-4534-bfe9-78ad30a37bf1.pdf",
+     20,
+     "Total AUM",
+     "134.4"
+    ]
+   }
+  }
+ ],
  "held": [],
  "catalog": [
   {
