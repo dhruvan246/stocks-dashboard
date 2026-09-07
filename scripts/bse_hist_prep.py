@@ -44,6 +44,17 @@ def main():
     data = json.loads(open(bf.OUT, encoding="utf-8").read()).get("px", {}) if os.path.exists(bf.OUT) else {}
     hist = json.load(open(HIST)) if os.path.exists(HIST) else {}
     code2sym = {str(v): k for k, v in json.load(open(SCRIP))["by_id"].items()}
+    # SEED: dual-listed names NSE doesn't serve + not in the BSE-only universe (routed in 2026-09-07,
+    # scripts/_bse_hist_seed.json). Prepended so they're processed FIRST; a seed with no data yet is
+    # seeded from the last year, then deepens toward 2020 like any other name. The wiring's BSE merge
+    # folds bse_fundamentals[scripcode]→symbol, so these surface on their (NSE) pages once filled.
+    seed_codes = set()
+    seed_path = os.path.join(HERE, "_bse_hist_seed.json")
+    if os.path.exists(seed_path):
+        seed = json.load(open(seed_path, encoding="utf-8"))
+        seed_codes = {str(row[0]) for row in seed}
+        univ = [[row[0], row[1], (row[2] if len(row) > 2 else row[1]), "", "", "", 10 ** 9, ""]
+                for row in seed] + univ
     op = B.session(); time.sleep(1)
 
     manifest, spent = [], 0
@@ -54,12 +65,10 @@ def main():
         if (hist.get(code) or {}).get("done") or (only is None and mc < min_mcap):
             continue
         cur = data.get(code) or {}
-        if not cur:                                         # only deepen names that already have data
-            continue
         stored = [int(q) for q in cur if str(q).isdigit() and floor <= int(q) <= today_i]
-        if not stored:
+        if not stored and code not in seed_codes:           # deepen names with data; seeds start fresh
             continue
-        oldest = (hist.get(code) or {}).get("oldest") or min(stored)
+        oldest = (hist.get(code) or {}).get("oldest") or (min(stored) if stored else today_i)
         if oldest <= floor:
             hist[code] = {"oldest": oldest, "fails": 0, "done": True}
             continue
