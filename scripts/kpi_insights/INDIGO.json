@@ -29,9 +29,48 @@
    "title": "Letter to Shareholders - AGM Notice FY2025-26",
    "read": "2026-09-08",
    "by": "claude-routine"
+  },
+  "d05124f6-ba88-4d74-84a1-b7f9a2f12f9c.pdf": {
+   "kind": "ip",
+   "date": "2026-06-08",
+   "title": "Analyst Day 2026 Presentation",
+   "read": "2026-09-08",
+   "by": "claude-routine"
   }
  },
  "metrics": [
+  {
+   "name": "Available Seat Kilometres",
+   "unit": "billion",
+   "kind": "flow",
+   "y": {
+    "20260331": 172.0
+   },
+   "q": {
+    "20250630": 42.3,
+    "20260630": 43.5
+   },
+   "src": {
+    "q:20260630": [
+     "5ef23ca3-3a1f-43a2-a48c-eb962aec82f2.pdf",
+     8,
+     "ASK (billion) - Jun'26",
+     "43.5"
+    ],
+    "q:20250630": [
+     "5ef23ca3-3a1f-43a2-a48c-eb962aec82f2.pdf",
+     8,
+     "ASK (billion) - Jun'25",
+     "42.3"
+    ],
+    "y:20260331": [
+     "d05124f6-ba88-4d74-84a1-b7f9a2f12f9c.pdf",
+     61,
+     "Capacity (in ASK) 172 billion",
+     "172"
+    ]
+   }
+  },
   {
    "name": "Closing Fleet",
    "unit": "count",
@@ -60,30 +99,6 @@
      5,
      "Closing Fleet 30th June 2025",
      "416"
-    ]
-   }
-  },
-  {
-   "name": "Available Seat Kilometres",
-   "unit": "billion",
-   "kind": "flow",
-   "y": {},
-   "q": {
-    "20250630": 42.3,
-    "20260630": 43.5
-   },
-   "src": {
-    "q:20260630": [
-     "5ef23ca3-3a1f-43a2-a48c-eb962aec82f2.pdf",
-     8,
-     "ASK (billion) - Jun'26",
-     "43.5"
-    ],
-    "q:20250630": [
-     "5ef23ca3-3a1f-43a2-a48c-eb962aec82f2.pdf",
-     8,
-     "ASK (billion) - Jun'25",
-     "42.3"
     ]
    }
   },
@@ -352,6 +367,31 @@
    }
   },
   {
+   "name": "Total Fleet Size",
+   "unit": "count",
+   "kind": "level",
+   "y": {
+    "20260331": 400.0
+   },
+   "q": {
+    "20260331": 441.0
+   },
+   "src": {
+    "y:20260331": [
+     "ba413b59-e9da-425f-926d-dc39c71cc368.pdf",
+     45,
+     "fleet exceeding 400 aircraft",
+     "400"
+    ],
+    "q:20260331": [
+     "d05124f6-ba88-4d74-84a1-b7f9a2f12f9c.pdf",
+     61,
+     "Fleet 441",
+     "441"
+    ]
+   }
+  },
+  {
    "name": "Yield",
    "unit": "INR",
    "kind": "flow",
@@ -376,6 +416,40 @@
    }
   },
   {
+   "name": "A321 Freighter Fleet",
+   "unit": "count",
+   "kind": "level",
+   "y": {},
+   "q": {
+    "20260331": 3.0
+   },
+   "src": {
+    "q:20260331": [
+     "d05124f6-ba88-4d74-84a1-b7f9a2f12f9c.pdf",
+     44,
+     "A321 Freighter - IndiGo operated fleet",
+     "3"
+    ]
+   }
+  },
+  {
+   "name": "Airbus A320 CEO Fleet",
+   "unit": "count",
+   "kind": "level",
+   "y": {},
+   "q": {
+    "20260331": 26.0
+   },
+   "src": {
+    "q:20260331": [
+     "d05124f6-ba88-4d74-84a1-b7f9a2f12f9c.pdf",
+     44,
+     "A320 CEO - IndiGo operated fleet",
+     "26"
+    ]
+   }
+  },
+  {
    "name": "Airbus A320 Neo Fleet",
    "unit": "count",
    "kind": "level",
@@ -393,6 +467,23 @@
    }
   },
   {
+   "name": "Airbus A321 Neo (Stretch) Fleet",
+   "unit": "count",
+   "kind": "level",
+   "y": {},
+   "q": {
+    "20260331": 47.0
+   },
+   "src": {
+    "q:20260331": [
+     "d05124f6-ba88-4d74-84a1-b7f9a2f12f9c.pdf",
+     44,
+     "A321 NEO (Stretch) - IndiGo operated fleet",
+     "47"
+    ]
+   }
+  },
+  {
    "name": "Airbus A321 Neo Fleet",
    "unit": "count",
    "kind": "level",
@@ -406,6 +497,23 @@
      59,
      "168 Airbus A321 neo",
      "168"
+    ]
+   }
+  },
+  {
+   "name": "Aircraft Order Book",
+   "unit": "count",
+   "kind": "level",
+   "y": {},
+   "q": {
+    "20260331": 901.0
+   },
+   "src": {
+    "q:20260331": [
+     "d05124f6-ba88-4d74-84a1-b7f9a2f12f9c.pdf",
+     44,
+     "901 aircraft yet to be delivered",
+     "901"
     ]
    }
   },
@@ -529,6 +637,23 @@
    }
   },
   {
+   "name": "Fleet Age",
+   "unit": "years",
+   "kind": "level",
+   "y": {},
+   "q": {
+    "20260331": 4.9
+   },
+   "src": {
+    "q:20260331": [
+     "d05124f6-ba88-4d74-84a1-b7f9a2f12f9c.pdf",
+     61,
+     "Fleet age 4.9 years",
+     "4.9"
+    ]
+   }
+  },
+  {
    "name": "International Destinations",
    "unit": "count",
    "kind": "level",
@@ -593,23 +718,6 @@
      54,
      "IndiGo's workforce comprised 41,907 employees",
      "41,907"
-    ]
-   }
-  },
-  {
-   "name": "Total Fleet Size",
-   "unit": "count",
-   "kind": "level",
-   "y": {
-    "20260331": 400.0
-   },
-   "q": {},
-   "src": {
-    "y:20260331": [
-     "ba413b59-e9da-425f-926d-dc39c71cc368.pdf",
-     45,
-     "fleet exceeding 400 aircraft",
-     "400"
     ]
    }
   }
