@@ -71,6 +71,13 @@
    "title": "Q3 & 9M FY25 Investor Presentation",
    "read": "2026-09-08",
    "by": "claude-routine"
+  },
+  "33b7fb4d-ac78-47a5-9afb-926ea738b5fc.pdf": {
+   "kind": "ip",
+   "date": "2024-11-04",
+   "title": "Q2 & H1 FY25 Investor Presentation",
+   "read": "2026-09-08",
+   "by": "claude-routine"
   }
  },
  "metrics": [
@@ -82,6 +89,7 @@
     "20260331": 337.0
    },
    "q": {
+    "20240930": 304.0,
     "20241231": 312.0,
     "20250331": 318.0,
     "20250630": 325.0,
@@ -138,6 +146,12 @@
      10,
      "Cumulative ANDAs - Approved",
      "312"
+    ],
+    "q:20240930": [
+     "33b7fb4d-ac78-47a5-9afb-926ea738b5fc.pdf",
+     12,
+     "of which 304 were approved",
+     "304"
     ]
    }
   },
@@ -149,6 +163,7 @@
     "20260331": 388.0
    },
    "q": {
+    "20240930": 363.0,
     "20241231": 366.0,
     "20250331": 371.0,
     "20250630": 372.0,
@@ -205,6 +220,12 @@
      10,
      "Cumulative ANDAs - Filed",
      "366"
+    ],
+    "q:20240930": [
+     "33b7fb4d-ac78-47a5-9afb-926ea738b5fc.pdf",
+     12,
+     "As of September 30th, 2024 ... 363 ANDA filings in the United States",
+     "363"
     ]
    }
   },
@@ -214,6 +235,7 @@
    "kind": "flow",
    "y": {},
    "q": {
+    "20240930": 8.0,
     "20241231": 8.0,
     "20250331": 7.0,
     "20250630": 9.0,
@@ -264,6 +286,12 @@
      10,
      "Approved",
      "8"
+    ],
+    "q:20240930": [
+     "33b7fb4d-ac78-47a5-9afb-926ea738b5fc.pdf",
+     12,
+     "ANDA Approved",
+     "8"
     ]
    }
   },
@@ -273,6 +301,7 @@
    "kind": "flow",
    "y": {},
    "q": {
+    "20240930": 7.0,
     "20241231": 4.0,
     "20250331": 5.0,
     "20250630": 1.0,
@@ -323,6 +352,12 @@
      10,
      "Filed",
      "4"
+    ],
+    "q:20240930": [
+     "33b7fb4d-ac78-47a5-9afb-926ea738b5fc.pdf",
+     12,
+     "ANDA Filed",
+     "7"
     ]
    }
   },
@@ -332,6 +367,7 @@
    "kind": "level",
    "y": {},
    "q": {
+    "20240930": 59.0,
     "20241231": 54.0,
     "20250331": 53.0,
     "20250630": 47.0,
@@ -382,6 +418,12 @@
      7,
      "Total filings: 366 ANDAs in the U.S. (312 approved, 54 pending) (doc period)",
      "54"
+    ],
+    "q:20240930": [
+     "33b7fb4d-ac78-47a5-9afb-926ea738b5fc.pdf",
+     12,
+     "and 59 pending approval",
+     "59"
     ]
    }
   },
@@ -570,6 +612,37 @@
    }
   },
   {
+   "name": "New Molecule Launches (US, Quarterly)",
+   "unit": "count",
+   "kind": "flow",
+   "y": {},
+   "q": {
+    "20240930": 4.0,
+    "20241231": 13.0,
+    "20260630": 4.0
+   },
+   "src": {
+    "q:20260630": [
+     "86f0ddbe-989b-4b65-8986-545f092e94f9.pdf",
+     11,
+     "The company launched 4 molecules in the USA this quarter",
+     "4"
+    ],
+    "q:20241231": [
+     "f364bfc8-c127-40b4-a9a1-280ae7101498.pdf",
+     10,
+     "we launched 13 new molecules",
+     "13"
+    ],
+    "q:20240930": [
+     "33b7fb4d-ac78-47a5-9afb-926ea738b5fc.pdf",
+     12,
+     "Q2 FY25 : 4 Product SKUs (4 Molecules)",
+     "4"
+    ]
+   }
+  },
+  {
    "name": "Total Permanent Employees",
    "unit": "count",
    "kind": "level",
@@ -728,6 +801,30 @@
    }
   },
   {
+   "name": "Global Product Registrations",
+   "unit": "count",
+   "kind": "level",
+   "y": {},
+   "q": {
+    "20240930": 1726.0,
+    "20241231": 1736.0
+   },
+   "src": {
+    "q:20241231": [
+     "f364bfc8-c127-40b4-a9a1-280ae7101498.pdf",
+     7,
+     "Global product registrations: 1,736 (doc period)",
+     "1,736"
+    ],
+    "q:20240930": [
+     "33b7fb4d-ac78-47a5-9afb-926ea738b5fc.pdf",
+     9,
+     "Global product registrations: 1,726",
+     "1,726"
+    ]
+   }
+  },
+  {
    "name": "New Molecule Launches (US, Annual)",
    "unit": "count",
    "kind": "flow",
@@ -752,43 +849,19 @@
    }
   },
   {
-   "name": "New Molecule Launches (US, Quarterly)",
+   "name": "DMFs Filed (Quarterly)",
    "unit": "count",
    "kind": "flow",
    "y": {},
    "q": {
-    "20241231": 13.0,
-    "20260630": 4.0
+    "20240930": 1.0
    },
    "src": {
-    "q:20260630": [
-     "86f0ddbe-989b-4b65-8986-545f092e94f9.pdf",
-     11,
-     "The company launched 4 molecules in the USA this quarter",
-     "4"
-    ],
-    "q:20241231": [
-     "f364bfc8-c127-40b4-a9a1-280ae7101498.pdf",
-     10,
-     "we launched 13 new molecules",
-     "13"
-    ]
-   }
-  },
-  {
-   "name": "Global Product Registrations",
-   "unit": "count",
-   "kind": "level",
-   "y": {},
-   "q": {
-    "20241231": 1736.0
-   },
-   "src": {
-    "q:20241231": [
-     "f364bfc8-c127-40b4-a9a1-280ae7101498.pdf",
-     7,
-     "Global product registrations: 1,736 (doc period)",
-     "1,736"
+    "q:20240930": [
+     "33b7fb4d-ac78-47a5-9afb-926ea738b5fc.pdf",
+     12,
+     "DMFs Filed",
+     "1"
     ]
    }
   },
