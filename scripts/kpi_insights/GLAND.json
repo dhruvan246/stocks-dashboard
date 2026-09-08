@@ -64,6 +64,13 @@
    "title": "Q4 FY25 & FY25 Investor Presentation",
    "read": "2026-09-08",
    "by": "claude-routine"
+  },
+  "f364bfc8-c127-40b4-a9a1-280ae7101498.pdf": {
+   "kind": "ip",
+   "date": "2025-02-03",
+   "title": "Q3 & 9M FY25 Investor Presentation",
+   "read": "2026-09-08",
+   "by": "claude-routine"
   }
  },
  "metrics": [
@@ -75,6 +82,7 @@
     "20260331": 337.0
    },
    "q": {
+    "20241231": 312.0,
     "20250331": 318.0,
     "20250630": 325.0,
     "20250930": 329.0,
@@ -124,6 +132,12 @@
      15,
      "Cumulative ANDAs - Approved",
      "318"
+    ],
+    "q:20241231": [
+     "f364bfc8-c127-40b4-a9a1-280ae7101498.pdf",
+     10,
+     "Cumulative ANDAs - Approved",
+     "312"
     ]
    }
   },
@@ -135,6 +149,7 @@
     "20260331": 388.0
    },
    "q": {
+    "20241231": 366.0,
     "20250331": 371.0,
     "20250630": 372.0,
     "20250930": 378.0,
@@ -184,6 +199,12 @@
      15,
      "Cumulative ANDAs - Filed",
      "371"
+    ],
+    "q:20241231": [
+     "f364bfc8-c127-40b4-a9a1-280ae7101498.pdf",
+     10,
+     "Cumulative ANDAs - Filed",
+     "366"
     ]
    }
   },
@@ -193,6 +214,7 @@
    "kind": "flow",
    "y": {},
    "q": {
+    "20241231": 8.0,
     "20250331": 7.0,
     "20250630": 9.0,
     "20250930": 5.0,
@@ -236,6 +258,12 @@
      15,
      "Approved",
      "7"
+    ],
+    "q:20241231": [
+     "f364bfc8-c127-40b4-a9a1-280ae7101498.pdf",
+     10,
+     "Approved",
+     "8"
     ]
    }
   },
@@ -245,6 +273,7 @@
    "kind": "flow",
    "y": {},
    "q": {
+    "20241231": 4.0,
     "20250331": 5.0,
     "20250630": 1.0,
     "20250930": 6.0,
@@ -288,6 +317,12 @@
      15,
      "Filed",
      "5"
+    ],
+    "q:20241231": [
+     "f364bfc8-c127-40b4-a9a1-280ae7101498.pdf",
+     10,
+     "Filed",
+     "4"
     ]
    }
   },
@@ -297,6 +332,7 @@
    "kind": "level",
    "y": {},
    "q": {
+    "20241231": 54.0,
     "20250331": 53.0,
     "20250630": 47.0,
     "20250930": 49.0,
@@ -340,6 +376,12 @@
      12,
      "cumulative total of 371 ANDA filings in the U.S. (318 approved, 53 pending) (doc",
      "53"
+    ],
+    "q:20241231": [
+     "f364bfc8-c127-40b4-a9a1-280ae7101498.pdf",
+     7,
+     "Total filings: 366 ANDAs in the U.S. (312 approved, 54 pending) (doc period)",
+     "54"
     ]
    }
   },
@@ -710,6 +752,47 @@
    }
   },
   {
+   "name": "New Molecule Launches (US, Quarterly)",
+   "unit": "count",
+   "kind": "flow",
+   "y": {},
+   "q": {
+    "20241231": 13.0,
+    "20260630": 4.0
+   },
+   "src": {
+    "q:20260630": [
+     "86f0ddbe-989b-4b65-8986-545f092e94f9.pdf",
+     11,
+     "The company launched 4 molecules in the USA this quarter",
+     "4"
+    ],
+    "q:20241231": [
+     "f364bfc8-c127-40b4-a9a1-280ae7101498.pdf",
+     10,
+     "we launched 13 new molecules",
+     "13"
+    ]
+   }
+  },
+  {
+   "name": "Global Product Registrations",
+   "unit": "count",
+   "kind": "level",
+   "y": {},
+   "q": {
+    "20241231": 1736.0
+   },
+   "src": {
+    "q:20241231": [
+     "f364bfc8-c127-40b4-a9a1-280ae7101498.pdf",
+     7,
+     "Global product registrations: 1,736 (doc period)",
+     "1,736"
+    ]
+   }
+  },
+  {
    "name": "New Molecule Launches (All Regulated Markets, Quarterly)",
    "unit": "count",
    "kind": "flow",
@@ -723,23 +806,6 @@
      12,
      "The company launched 12 new molecules in regulated markets",
      "12"
-    ]
-   }
-  },
-  {
-   "name": "New Molecule Launches (US, Quarterly)",
-   "unit": "count",
-   "kind": "flow",
-   "y": {},
-   "q": {
-    "20260630": 4.0
-   },
-   "src": {
-    "q:20260630": [
-     "86f0ddbe-989b-4b65-8986-545f092e94f9.pdf",
-     11,
-     "The company launched 4 molecules in the USA this quarter",
-     "4"
     ]
    }
   }
