@@ -8,6 +8,34 @@
    "title": "Q1 FY27 Investor Handout (results)",
    "read": "2026-09-06",
    "by": "claude-session"
+  },
+  "1f26d8d3-83d0-402f-87d1-8c9aad405031.pdf": {
+   "kind": "ar",
+   "date": "2026-08-07",
+   "title": "Integrated Annual Report 2025-26",
+   "read": "2026-09-08",
+   "by": "claude-routine"
+  },
+  "079d0455-3f8d-4ec4-8aa5-c73a4d0c691e.pdf": {
+   "kind": "ip",
+   "date": "2026-05-19",
+   "title": "Q4 & FY 2025-26 Investor Handout",
+   "read": "2026-09-08",
+   "by": "claude-routine"
+  },
+  "f5cf4ba9-efdd-4484-8bb1-f2421846dcae.pdf": {
+   "kind": "res",
+   "date": "2026-02-05",
+   "title": "Q3 & 9M FY 2025-26 Investor Handout",
+   "read": "2026-09-08",
+   "by": "claude-routine"
+  },
+  "7c61b690-9c99-447b-8489-5b5e206e463a.pdf": {
+   "kind": "ip",
+   "date": "2025-10-27",
+   "title": "Q2 & H1 FY 2025-26 Investor Handout",
+   "read": "2026-09-08",
+   "by": "claude-routine"
   }
  },
  "metrics": [
@@ -15,8 +43,13 @@
    "name": "Petroleum Products Inland Sales",
    "unit": "MMT",
    "kind": "flow",
-   "y": {},
+   "y": {
+    "20250331": 84.96,
+    "20260331": 88.97
+   },
    "q": {
+    "20250630": 22.397,
+    "20250930": 20.192,
     "20260331": 23.267,
     "20260630": 22.542
    },
@@ -28,34 +61,34 @@
      "22.542"
     ],
     "q:20260331": [
-     "e42a109f-8a55-47ae-a0e9-a97e4730db81.pdf",
-     5,
-     "Marketing - Inland Sales (MMT)",
+     "079d0455-3f8d-4ec4-8aa5-c73a4d0c691e.pdf",
+     6,
+     "(a) Inland Sales",
      "23.267"
-    ]
-   }
-  },
-  {
-   "name": "Pipeline Capacity Utilization",
-   "unit": "%",
-   "kind": "flow",
-   "y": {},
-   "q": {
-    "20260331": 78.3,
-    "20260630": 79.9
-   },
-   "src": {
-    "q:20260630": [
-     "e42a109f-8a55-47ae-a0e9-a97e4730db81.pdf",
-     4,
-     "Pipelines - capacity utilization (%)",
-     "79.9"
     ],
-    "q:20260331": [
-     "e42a109f-8a55-47ae-a0e9-a97e4730db81.pdf",
-     4,
-     "Pipelines - capacity utilization (%)",
-     "78.3"
+    "y:20260331": [
+     "1f26d8d3-83d0-402f-87d1-8c9aad405031.pdf",
+     105,
+     "achieving a total domestic petroleum sales volume of 88.97 MMT",
+     "88.97"
+    ],
+    "y:20250331": [
+     "1f26d8d3-83d0-402f-87d1-8c9aad405031.pdf",
+     105,
+     "as compared to 84.96 MMT during 2024-25",
+     "84.96"
+    ],
+    "q:20250930": [
+     "7c61b690-9c99-447b-8489-5b5e206e463a.pdf",
+     5,
+     "(a) Inland Sales",
+     "20.192"
+    ],
+    "q:20250630": [
+     "7c61b690-9c99-447b-8489-5b5e206e463a.pdf",
+     5,
+     "(a) Inland Sales",
+     "22.397"
     ]
    }
   },
@@ -63,8 +96,13 @@
    "name": "Pipeline Throughput",
    "unit": "MMT",
    "kind": "flow",
-   "y": {},
+   "y": {
+    "20250331": 96.92,
+    "20260331": 102.52
+   },
    "q": {
+    "20250630": 26.3,
+    "20250930": 24.1,
     "20260331": 27.7,
     "20260630": 28.5
    },
@@ -76,10 +114,470 @@
      "28.5"
     ],
     "q:20260331": [
+     "079d0455-3f8d-4ec4-8aa5-c73a4d0c691e.pdf",
+     5,
+     "Pipeline Operations Throughput (MMT)",
+     "27.7"
+    ],
+    "y:20250331": [
+     "1f26d8d3-83d0-402f-87d1-8c9aad405031.pdf",
+     19,
+     "surpassing the previous record of 96.92 MMT achieved in 2024–25",
+     "96.92"
+    ],
+    "y:20260331": [
+     "1f26d8d3-83d0-402f-87d1-8c9aad405031.pdf",
+     104,
+     "liquid pipelines ... recorded the highest ever annual throughput of 102.52 MMT",
+     "102.52"
+    ],
+    "q:20250930": [
+     "7c61b690-9c99-447b-8489-5b5e206e463a.pdf",
+     4,
+     "Pipeline Operations Throughput (MMT)",
+     "24.1"
+    ],
+    "q:20250630": [
+     "7c61b690-9c99-447b-8489-5b5e206e463a.pdf",
+     4,
+     "Pipeline Operations Throughput (MMT)",
+     "26.3"
+    ]
+   }
+  },
+  {
+   "name": "Pipeline Capacity Utilization",
+   "unit": "%",
+   "kind": "flow",
+   "y": {
+    "20260331": 73.7
+   },
+   "q": {
+    "20250630": 73.5,
+    "20250930": 66.7,
+    "20260331": 78.3,
+    "20260630": 79.9
+   },
+   "src": {
+    "q:20260630": [
      "e42a109f-8a55-47ae-a0e9-a97e4730db81.pdf",
      4,
-     "Pipelines - Throughput (MMT)",
-     "27.7"
+     "Pipelines - capacity utilization (%)",
+     "79.9"
+    ],
+    "q:20260331": [
+     "079d0455-3f8d-4ec4-8aa5-c73a4d0c691e.pdf",
+     5,
+     "Pipeline Operations Capacity utilization (%)",
+     "78.3"
+    ],
+    "y:20260331": [
+     "079d0455-3f8d-4ec4-8aa5-c73a4d0c691e.pdf",
+     5,
+     "Pipeline Operations Capacity utilization (%)",
+     "73.7"
+    ],
+    "q:20250930": [
+     "7c61b690-9c99-447b-8489-5b5e206e463a.pdf",
+     4,
+     "Pipeline Operations Capacity utilization (%)",
+     "66.7"
+    ],
+    "q:20250630": [
+     "7c61b690-9c99-447b-8489-5b5e206e463a.pdf",
+     4,
+     "Pipeline Operations Capacity utilization (%)",
+     "73.5"
+    ]
+   }
+  },
+  {
+   "name": "Refinery Crude Throughput",
+   "unit": "MMT",
+   "kind": "flow",
+   "y": {
+    "20250331": 71.56,
+    "20260331": 75.45
+   },
+   "q": {
+    "20250630": 18.7,
+    "20250930": 17.6,
+    "20260331": 19.7
+   },
+   "src": {
+    "y:20260331": [
+     "1f26d8d3-83d0-402f-87d1-8c9aad405031.pdf",
+     19,
+     "Refineries achieved the highest-ever crude throughput of 75.45 MMT",
+     "75.45"
+    ],
+    "y:20250331": [
+     "1f26d8d3-83d0-402f-87d1-8c9aad405031.pdf",
+     19,
+     "up from 71.56 MMT in the previous year",
+     "71.56"
+    ],
+    "q:20260331": [
+     "079d0455-3f8d-4ec4-8aa5-c73a4d0c691e.pdf",
+     5,
+     "Refinery Operations Throughput (MMT)",
+     "19.7"
+    ],
+    "q:20250930": [
+     "7c61b690-9c99-447b-8489-5b5e206e463a.pdf",
+     4,
+     "Refinery Operations Throughput (MMT)",
+     "17.6"
+    ],
+    "q:20250630": [
+     "7c61b690-9c99-447b-8489-5b5e206e463a.pdf",
+     4,
+     "Refinery Operations Throughput (MMT)",
+     "18.7"
+    ]
+   }
+  },
+  {
+   "name": "Aviation Fuel Sales Volume",
+   "unit": "MMT",
+   "kind": "flow",
+   "y": {
+    "20260331": 4.91
+   },
+   "q": {
+    "20250630": 1.217,
+    "20250930": 1.158,
+    "20260331": 1.279
+   },
+   "src": {
+    "y:20260331": [
+     "1f26d8d3-83d0-402f-87d1-8c9aad405031.pdf",
+     105,
+     "domestic sales of 4.91 MMT out of industry volume of 9.15 MMT",
+     "4.91"
+    ],
+    "q:20260331": [
+     "079d0455-3f8d-4ec4-8aa5-c73a4d0c691e.pdf",
+     6,
+     "- ATF",
+     "1.279"
+    ],
+    "q:20250930": [
+     "7c61b690-9c99-447b-8489-5b5e206e463a.pdf",
+     5,
+     "- ATF",
+     "1.158"
+    ],
+    "q:20250630": [
+     "7c61b690-9c99-447b-8489-5b5e206e463a.pdf",
+     5,
+     "- ATF",
+     "1.217"
+    ]
+   }
+  },
+  {
+   "name": "Natural Gas Sales Volume",
+   "unit": "MMT",
+   "kind": "flow",
+   "y": {
+    "20260331": 9.01
+   },
+   "q": {
+    "20250630": 1.685,
+    "20250930": 1.84,
+    "20260331": 1.814
+   },
+   "src": {
+    "y:20260331": [
+     "1f26d8d3-83d0-402f-87d1-8c9aad405031.pdf",
+     106,
+     "handling a total volume of 9.01 MMT (including captive refinery consumption)",
+     "9.01"
+    ],
+    "q:20260331": [
+     "079d0455-3f8d-4ec4-8aa5-c73a4d0c691e.pdf",
+     6,
+     "Gas",
+     "1.814"
+    ],
+    "q:20250930": [
+     "7c61b690-9c99-447b-8489-5b5e206e463a.pdf",
+     5,
+     "Gas",
+     "1.840"
+    ],
+    "q:20250630": [
+     "7c61b690-9c99-447b-8489-5b5e206e463a.pdf",
+     5,
+     "Gas",
+     "1.685"
+    ]
+   }
+  },
+  {
+   "name": "Petroleum Products Exports",
+   "unit": "MMT",
+   "kind": "flow",
+   "y": {
+    "20260331": 5.111
+   },
+   "q": {
+    "20250630": 1.323,
+    "20250930": 1.385,
+    "20260331": 1.26
+   },
+   "src": {
+    "q:20260331": [
+     "079d0455-3f8d-4ec4-8aa5-c73a4d0c691e.pdf",
+     6,
+     "(b) Exports Petroleum",
+     "1.260"
+    ],
+    "y:20260331": [
+     "079d0455-3f8d-4ec4-8aa5-c73a4d0c691e.pdf",
+     6,
+     "(b) Exports Petroleum",
+     "5.111"
+    ],
+    "q:20250930": [
+     "7c61b690-9c99-447b-8489-5b5e206e463a.pdf",
+     5,
+     "(b) Exports Petroleum",
+     "1.385"
+    ],
+    "q:20250630": [
+     "7c61b690-9c99-447b-8489-5b5e206e463a.pdf",
+     5,
+     "(b) Exports Petroleum",
+     "1.323"
+    ]
+   }
+  },
+  {
+   "name": "Refinery Capacity Utilization",
+   "unit": "%",
+   "kind": "flow",
+   "y": {
+    "20260331": 107.4
+   },
+   "q": {
+    "20250630": 106.7,
+    "20250930": 99.5,
+    "20260331": 113.9
+   },
+   "src": {
+    "y:20260331": [
+     "079d0455-3f8d-4ec4-8aa5-c73a4d0c691e.pdf",
+     5,
+     "Refinery Operations Capacity utilization (%)",
+     "107.4"
+    ],
+    "q:20260331": [
+     "079d0455-3f8d-4ec4-8aa5-c73a4d0c691e.pdf",
+     5,
+     "Refinery Operations Capacity utilization (%)",
+     "113.9"
+    ],
+    "q:20250930": [
+     "7c61b690-9c99-447b-8489-5b5e206e463a.pdf",
+     4,
+     "Refinery Operations Capacity utilization (%)",
+     "99.5"
+    ],
+    "q:20250630": [
+     "7c61b690-9c99-447b-8489-5b5e206e463a.pdf",
+     4,
+     "Refinery Operations Capacity utilization (%)",
+     "106.7"
+    ]
+   }
+  },
+  {
+   "name": "Refinery Fuel & Loss",
+   "unit": "%",
+   "kind": "flow",
+   "y": {
+    "20260331": 8.5
+   },
+   "q": {
+    "20250630": 8.5,
+    "20250930": 8.7,
+    "20260331": 8.1
+   },
+   "src": {
+    "q:20260331": [
+     "079d0455-3f8d-4ec4-8aa5-c73a4d0c691e.pdf",
+     5,
+     "Fuel & Loss (%)",
+     "8.1"
+    ],
+    "y:20260331": [
+     "079d0455-3f8d-4ec4-8aa5-c73a4d0c691e.pdf",
+     5,
+     "Fuel & Loss (%)",
+     "8.5"
+    ],
+    "q:20250930": [
+     "7c61b690-9c99-447b-8489-5b5e206e463a.pdf",
+     4,
+     "Fuel & Loss (%)",
+     "8.7"
+    ],
+    "q:20250630": [
+     "7c61b690-9c99-447b-8489-5b5e206e463a.pdf",
+     4,
+     "Fuel & Loss (%)",
+     "8.5"
+    ]
+   }
+  },
+  {
+   "name": "Refinery High Sulphur Crude Utilization",
+   "unit": "%",
+   "kind": "flow",
+   "y": {
+    "20260331": 56.2
+   },
+   "q": {
+    "20250630": 53.2,
+    "20250930": 54.0,
+    "20260331": 61.3
+   },
+   "src": {
+    "q:20260331": [
+     "079d0455-3f8d-4ec4-8aa5-c73a4d0c691e.pdf",
+     5,
+     "Utilization of High Sulphur crude (%)",
+     "61.3"
+    ],
+    "y:20260331": [
+     "079d0455-3f8d-4ec4-8aa5-c73a4d0c691e.pdf",
+     5,
+     "Utilization of High Sulphur crude (%)",
+     "56.2"
+    ],
+    "q:20250930": [
+     "7c61b690-9c99-447b-8489-5b5e206e463a.pdf",
+     4,
+     "Utilization of High Sulphur (%)",
+     "54.0"
+    ],
+    "q:20250630": [
+     "7c61b690-9c99-447b-8489-5b5e206e463a.pdf",
+     4,
+     "Utilization of High Sulphur (%)",
+     "53.2"
+    ]
+   }
+  },
+  {
+   "name": "Total Petroleum Products Sales (Inland+Export)",
+   "unit": "MMT",
+   "kind": "flow",
+   "y": {
+    "20260331": 94.078
+   },
+   "q": {
+    "20250630": 23.72,
+    "20250930": 21.577,
+    "20260331": 24.527
+   },
+   "src": {
+    "q:20260331": [
+     "079d0455-3f8d-4ec4-8aa5-c73a4d0c691e.pdf",
+     6,
+     "Sub-Total (a+b)",
+     "24.527"
+    ],
+    "y:20260331": [
+     "079d0455-3f8d-4ec4-8aa5-c73a4d0c691e.pdf",
+     6,
+     "Sub-Total (a+b)",
+     "94.078"
+    ],
+    "q:20250930": [
+     "7c61b690-9c99-447b-8489-5b5e206e463a.pdf",
+     5,
+     "Sub-Total (a+b)",
+     "21.577"
+    ],
+    "q:20250630": [
+     "7c61b690-9c99-447b-8489-5b5e206e463a.pdf",
+     5,
+     "Sub-Total (a+b)",
+     "23.720"
+    ]
+   }
+  },
+  {
+   "name": "Total Sales Volume",
+   "unit": "MMT",
+   "kind": "flow",
+   "y": {
+    "20260331": 105.117
+   },
+   "q": {
+    "20250630": 26.328,
+    "20250930": 24.262,
+    "20260331": 27.343
+   },
+   "src": {
+    "q:20260331": [
+     "079d0455-3f8d-4ec4-8aa5-c73a4d0c691e.pdf",
+     6,
+     "Total Sales (a+b+c)",
+     "27.343"
+    ],
+    "y:20260331": [
+     "079d0455-3f8d-4ec4-8aa5-c73a4d0c691e.pdf",
+     6,
+     "Total Sales (a+b+c)",
+     "105.117"
+    ],
+    "q:20250930": [
+     "7c61b690-9c99-447b-8489-5b5e206e463a.pdf",
+     5,
+     "Total Sales (a+b+c)",
+     "24.262"
+    ],
+    "q:20250630": [
+     "7c61b690-9c99-447b-8489-5b5e206e463a.pdf",
+     5,
+     "Total Sales (a+b+c)",
+     "26.328"
+    ]
+   }
+  },
+  {
+   "name": "LPG Sales Volume",
+   "unit": "MMT",
+   "kind": "flow",
+   "y": {
+    "20260331": 15.85
+   },
+   "q": {
+    "20250630": 3.664,
+    "20250930": 3.932
+   },
+   "src": {
+    "y:20260331": [
+     "1f26d8d3-83d0-402f-87d1-8c9aad405031.pdf",
+     105,
+     "total LPG sales of 15.85 MMT",
+     "15.85"
+    ],
+    "q:20250930": [
+     "7c61b690-9c99-447b-8489-5b5e206e463a.pdf",
+     5,
+     "- LPG",
+     "3.932"
+    ],
+    "q:20250630": [
+     "7c61b690-9c99-447b-8489-5b5e206e463a.pdf",
+     5,
+     "- LPG",
+     "3.664"
     ]
    }
   },
@@ -87,7 +585,9 @@
    "name": "Capex Incurred",
    "unit": "₹ crore",
    "kind": "flow",
-   "y": {},
+   "y": {
+    "20260331": 32405.0
+   },
    "q": {
     "20260630": 6461.0
    },
@@ -97,27 +597,599 @@
      7,
      "Segment-wise Capex incurred during Q1 FY 26-27 - Total",
      "6,461"
+    ],
+    "y:20260331": [
+     "079d0455-3f8d-4ec4-8aa5-c73a4d0c691e.pdf",
+     8,
+     "Total Capex incurred during FY 25-26 (Provisional)",
+     "32,405"
     ]
    }
   },
   {
-   "name": "Petroleum Products Exports",
+   "name": "E&P Production (Company Share)",
+   "unit": "MMToe",
+   "kind": "flow",
+   "y": {
+    "20250331": 4.45,
+    "20260331": 4.49
+   },
+   "q": {},
+   "src": {
+    "y:20260331": [
+     "1f26d8d3-83d0-402f-87d1-8c9aad405031.pdf",
+     106,
+     "your Company's share of production increased to 4.49 MMToe",
+     "4.49"
+    ],
+    "y:20250331": [
+     "1f26d8d3-83d0-402f-87d1-8c9aad405031.pdf",
+     106,
+     "compared to 4.45 MMToe in the previous year",
+     "4.45"
+    ]
+   }
+  },
+  {
+   "name": "Other Products Sales (Gas+Petrochemicals)",
    "unit": "MMT",
    "kind": "flow",
    "y": {},
    "q": {
-    "20260331": 1.26
+    "20250630": 2.608,
+    "20250930": 2.685
+   },
+   "src": {
+    "q:20250930": [
+     "7c61b690-9c99-447b-8489-5b5e206e463a.pdf",
+     5,
+     "Sub-Total (c)",
+     "2.685"
+    ],
+    "q:20250630": [
+     "7c61b690-9c99-447b-8489-5b5e206e463a.pdf",
+     5,
+     "Sub-Total (c)",
+     "2.608"
+    ]
+   }
+  },
+  {
+   "name": "Aviation Fuel Market Share",
+   "unit": "%",
+   "kind": "level",
+   "y": {
+    "20260331": 53.7
+   },
+   "q": {},
+   "src": {
+    "y:20260331": [
+     "1f26d8d3-83d0-402f-87d1-8c9aad405031.pdf",
+     105,
+     "with a domestic market share of 53.7%",
+     "53.7"
+    ]
+   }
+  },
+  {
+   "name": "CNG Stations Count",
+   "unit": "count",
+   "kind": "level",
+   "y": {},
+   "q": {
+    "20260331": 2641.0
    },
    "src": {
     "q:20260331": [
-     "e42a109f-8a55-47ae-a0e9-a97e4730db81.pdf",
-     5,
-     "Marketing - Exports Petroleum (MMT)",
-     "1.260"
+     "1f26d8d3-83d0-402f-87d1-8c9aad405031.pdf",
+     105,
+     "taking the total network to 2,641 stations",
+     "2,641"
+    ]
+   }
+  },
+  {
+   "name": "EV Charging & Battery Swapping Stations",
+   "unit": "count",
+   "kind": "level",
+   "y": {},
+   "q": {
+    "20260331": 15040.0
+   },
+   "src": {
+    "q:20260331": [
+     "1f26d8d3-83d0-402f-87d1-8c9aad405031.pdf",
+     105,
+     "cumulative network of eVCS and battery swapping facilities to 15,040 as on 31st ",
+     "15,040"
+    ]
+   }
+  },
+  {
+   "name": "Effective Patent Portfolio",
+   "unit": "count",
+   "kind": "level",
+   "y": {},
+   "q": {
+    "20260331": 1729.0
+   },
+   "src": {
+    "q:20260331": [
+     "1f26d8d3-83d0-402f-87d1-8c9aad405031.pdf",
+     107,
+     "strengthening the effective patent portfolio to 1,729 as on 31st March 2026",
+     "1,729"
+    ]
+   }
+  },
+  {
+   "name": "Highway Retail Outlets Commissioned",
+   "unit": "count",
+   "kind": "flow",
+   "y": {
+    "20260331": 909.0
+   },
+   "q": {},
+   "src": {
+    "y:20260331": [
+     "079d0455-3f8d-4ec4-8aa5-c73a4d0c691e.pdf",
+     3,
+     "Record Retail Outlet commissioning on National Highways 909 ROs",
+     "909"
+    ]
+   }
+  },
+  {
+   "name": "LPG Distributorship Count",
+   "unit": "count",
+   "kind": "level",
+   "y": {},
+   "q": {
+    "20260331": 12940.0
+   },
+   "src": {
+    "q:20260331": [
+     "1f26d8d3-83d0-402f-87d1-8c9aad405031.pdf",
+     44,
+     "12,940 LPG Distributorship (doc period)",
+     "12,940"
+    ]
+   }
+  },
+  {
+   "name": "LPG Market Share",
+   "unit": "%",
+   "kind": "level",
+   "y": {
+    "20260331": 46.09
+   },
+   "q": {},
+   "src": {
+    "y:20260331": [
+     "1f26d8d3-83d0-402f-87d1-8c9aad405031.pdf",
+     105,
+     "with domestic market share of 46.09%",
+     "46.09"
+    ]
+   }
+  },
+  {
+   "name": "Lubricants Sales",
+   "unit": "TMT",
+   "kind": "flow",
+   "y": {
+    "20260331": 905.0
+   },
+   "q": {},
+   "src": {
+    "y:20260331": [
+     "079d0455-3f8d-4ec4-8aa5-c73a4d0c691e.pdf",
+     3,
+     "Record Total Lube Sales 905 TMT",
+     "905"
+    ]
+   }
+  },
+  {
+   "name": "Petrochemical Sales Volume",
+   "unit": "MMT",
+   "kind": "flow",
+   "y": {
+    "20260331": 3.4
+   },
+   "q": {},
+   "src": {
+    "y:20260331": [
+     "079d0455-3f8d-4ec4-8aa5-c73a4d0c691e.pdf",
+     3,
+     "Highest ever Petchem sales 3.4 MMT",
+     "3.4"
+    ]
+   }
+  },
+  {
+   "name": "Retail Outlet Count",
+   "unit": "count",
+   "kind": "level",
+   "y": {},
+   "q": {
+    "20260331": 42818.0
+   },
+   "src": {
+    "q:20260331": [
+     "1f26d8d3-83d0-402f-87d1-8c9aad405031.pdf",
+     105,
+     "taking the total number to 42,818 as on 31st March 2026",
+     "42,818"
     ]
    }
   }
  ],
  "held": [],
- "updated": "2026-09-06"
+ "updated": "2026-09-08",
+ "catalog": [
+  {
+   "kind": "ar",
+   "date": "2026-08-07",
+   "att": "1f26d8d3-83d0-402f-87d1-8c9aad405031.pdf",
+   "title": "Integrated Annual Report 2025-26",
+   "size": 23732335,
+   "cat": "Others",
+   "sub": "Reg. 34 (1) Annual Report"
+  },
+  {
+   "kind": "res",
+   "date": "2026-07-31",
+   "att": "e42a109f-8a55-47ae-a0e9-a97e4730db81.pdf",
+   "title": "Investors Handout For Unaudited Financial Results For The Quarter Ended 30Th June 2026.",
+   "size": 7839137,
+   "cat": "Company Update",
+   "sub": "General"
+  },
+  {
+   "kind": "ip",
+   "date": "2026-05-19",
+   "att": "079d0455-3f8d-4ec4-8aa5-c73a4d0c691e.pdf",
+   "title": "Announcement under Regulation 30 (LODR)-Investor Presentation",
+   "size": 1584903,
+   "cat": "Company Update",
+   "sub": "Investor Presentation"
+  },
+  {
+   "kind": "res",
+   "date": "2026-02-05",
+   "att": "f5cf4ba9-efdd-4484-8bb1-f2421846dcae.pdf",
+   "title": "Investors Handout For Unaudited Financial Results For The Quarter And Nine Months Ended 31St December 2025.",
+   "size": 6390734,
+   "cat": "Company Update",
+   "sub": "General"
+  },
+  {
+   "kind": "ip",
+   "date": "2025-10-27",
+   "att": "7c61b690-9c99-447b-8489-5b5e206e463a.pdf",
+   "title": "Investor Handouts with regard to Analyst/Institutional Investor Meet",
+   "size": 1686832,
+   "cat": "Company Update",
+   "sub": "Investor Presentation"
+  },
+  {
+   "kind": "ip",
+   "date": "2025-09-26",
+   "att": "52b45f10-90de-42c7-82de-65e75a640f72.pdf",
+   "title": "Announcement under Regulation 30 (LODR)-Investor Presentation",
+   "size": 2013086,
+   "cat": "Company Update",
+   "sub": "Investor Presentation"
+  },
+  {
+   "kind": "ip",
+   "date": "2025-08-14",
+   "att": "82f9f751-8b20-4c11-a62a-365394c17371.pdf",
+   "title": "Investor handouts with regard to Analyst/Institutional Investor Meet.",
+   "size": 9829683,
+   "cat": "Company Update",
+   "sub": "Investor Presentation"
+  },
+  {
+   "kind": "ar",
+   "date": "2025-08-07",
+   "att": "3cffd48a-1c5c-4d50-a59a-bb7465967d3f.pdf",
+   "title": "Integrated Annual Report 2024-25",
+   "size": 28453987,
+   "cat": "Others",
+   "sub": "Reg. 34 (1) Annual Report"
+  },
+  {
+   "kind": "ip",
+   "date": "2025-06-02",
+   "att": "e59774f0-ce7c-4f7c-804e-3ef56a8f42ea.pdf",
+   "title": "Investor handout with regards to Analyst/Institutional Investor Meet.",
+   "size": 1921453,
+   "cat": "Company Update",
+   "sub": "Investor Presentation"
+  },
+  {
+   "kind": "ip",
+   "date": "2025-04-30",
+   "att": "06d64951-1a57-4559-8070-72dbd1e19925.pdf",
+   "title": "Announcement under Regulation 30 (LODR)-Investor Presentation",
+   "size": 606607,
+   "cat": "Company Update",
+   "sub": "Investor Presentation"
+  },
+  {
+   "kind": "ip",
+   "date": "2025-01-28",
+   "att": "568f6740-198e-498e-871a-ef1e22dd5a4a.pdf",
+   "title": "Announcement under Regulation 30 (LODR)-Investor Presentation",
+   "size": 627208,
+   "cat": "Company Update",
+   "sub": "Investor Presentation"
+  },
+  {
+   "kind": "res",
+   "date": "2024-10-28",
+   "att": "920cc0e0-01ba-4f54-91ee-755668846d4c.pdf",
+   "title": "Unaudited Financial Results (Standalone and Consolidated) for the quarter and half-year ended 30th September 2024.",
+   "size": 8151715,
+   "cat": "Result",
+   "sub": "Financial Results"
+  },
+  {
+   "kind": "res",
+   "date": "2024-07-30",
+   "att": "8087ed44-3eda-45ff-b239-d641d1ad88f6.pdf",
+   "title": "Unaudited Financial Results (Standalone And Consolidated) For The Quarter Ended 30Th June 2024.",
+   "size": 6602481,
+   "cat": "Result",
+   "sub": "Financial Results"
+  },
+  {
+   "kind": "ar",
+   "date": "2024-07-18",
+   "att": "24a0940c-fa5a-4e36-a404-9dab3637ea0c.pdf",
+   "title": "Integrated Annual Report 2023-24",
+   "size": 24467690,
+   "cat": "Others",
+   "sub": "Reg. 34 (1) Annual Report"
+  },
+  {
+   "kind": "pr",
+   "date": "2024-05-01",
+   "att": "d5edea54-4017-4461-a7b6-5defcf92e753.pdf",
+   "title": "Please find attached a copy of the press release, being issued by the Company titled \"IndianOil Achieves Historic High with best-ever Financial and Operational ",
+   "size": 688805,
+   "cat": "Company Update",
+   "sub": "Press Release / Media Release"
+  },
+  {
+   "kind": "res",
+   "date": "2024-01-24",
+   "att": "f700d2a9-90b8-4e3e-8327-1a9f0d60a330.pdf",
+   "title": "Unaudited Financial results for quarter ended 31st December 2023.",
+   "size": 1892860,
+   "cat": "Result",
+   "sub": "Financial Results"
+  },
+  {
+   "kind": "res",
+   "date": "2023-10-31",
+   "att": "3aad80e6-12ab-4c92-bc03-15d6da019f00.pdf",
+   "title": "Unaudited Financial Results For The Quarter And Half Year Ended 30Th September 2023",
+   "size": 13677699,
+   "cat": "Result",
+   "sub": "Financial Results"
+  },
+  {
+   "kind": "ar",
+   "date": "2023-08-01",
+   "att": "ae413f27-7b30-4cdb-8f1b-8d82e5914e54.pdf",
+   "title": "Integrated Annual Report 2022-23",
+   "size": 22461453,
+   "cat": "Others",
+   "sub": "Reg. 34 (1) Annual Report"
+  },
+  {
+   "kind": "res",
+   "date": "2023-07-28",
+   "att": "c13d144b-8674-4dfc-94e5-bec6ab2ec54c.pdf",
+   "title": "Unaudited Financial Results (Standalone And Consolidated) For The Quarter Ended 30Th June 2023",
+   "size": 3150636,
+   "cat": "Result",
+   "sub": "Financial Results"
+  },
+  {
+   "kind": "res",
+   "date": "2023-05-16",
+   "att": "66a3ceea-2d21-4cb2-84dc-b0e139b455e8.pdf",
+   "title": "Audited Financial Results (Standalone And Consolidated) For The Quarter And Year Ended 31St March 2023",
+   "size": 0,
+   "cat": "Result",
+   "sub": "Financial Results"
+  },
+  {
+   "kind": "res",
+   "date": "2023-01-31",
+   "att": "852a4c92-07be-4023-8fb0-44a0026c1fc0.pdf",
+   "title": "This is in continuation of our earlier communication dated 13th January 2023 intimating the date of the Board Meeting for consideration of Unaudited Financial R",
+   "size": 0,
+   "cat": "Result",
+   "sub": "Financial Results"
+  },
+  {
+   "kind": "res",
+   "date": "2022-10-29",
+   "att": "80c0ab8b-398a-421c-a7a3-3a51b96439f2.pdf",
+   "title": "Board Meeting Outcome for Board Meeting Outcome For Standalone And Consolidated Unaudited Financial Results For The Quarter And Half Year Ended 30Th September 2",
+   "size": 0,
+   "cat": "Result",
+   "sub": "Financial Results"
+  },
+  {
+   "kind": "ar",
+   "date": "2022-08-02",
+   "att": "3d05b702-b9cb-41e2-aa21-a79517dda804.pdf",
+   "title": "Please find enclosed Integrated Annual Report for the year 2021-22 including Notice of 63rd Annual General  Meeting of the Company.",
+   "size": 19176855,
+   "cat": "Others",
+   "sub": "Reg. 34 (1) Annual Report"
+  },
+  {
+   "kind": "ar",
+   "date": "2022-08-02",
+   "att": "6683446d-e81c-462e-ba07-a8ae3dc9e576.pdf",
+   "title": "Resubmission of Integrated Annual Report for the year 2021-22 including Notice of 63rd Annual General  Meeting of the Company",
+   "size": 27487494,
+   "cat": "Others",
+   "sub": "Reg. 34 (1) Annual Report"
+  },
+  {
+   "kind": "res",
+   "date": "2022-07-29",
+   "att": "1028292f-76f7-4184-ab8c-0ecb6cb64eb2.pdf",
+   "title": "Board Meeting Outcome for Standalone And Consolidated Unaudited Financial Results For The Quarter Ended 30Th June 2022",
+   "size": 0,
+   "cat": "Result",
+   "sub": "Financial Results"
+  },
+  {
+   "kind": "res",
+   "date": "2022-05-19",
+   "att": "cc2b1760-7015-4dc7-b432-9675ecb6d4f2.pdf",
+   "title": "Please find enclosed Corrigendum: on submission of Audited Financial Results (Standalone and Consolidated) for the quarter and year ended 31st March 2022",
+   "size": 2229023,
+   "cat": "Result",
+   "sub": "Financial Results"
+  },
+  {
+   "kind": "ar",
+   "fy": 2022,
+   "date": "2022-03-31",
+   "url": "https://www.bseindia.com/bseplus/AnnualReport/530965/74097530965.pdf",
+   "att": "74097530965.pdf",
+   "title": "Annual Report FY22",
+   "size": 0
+  },
+  {
+   "kind": "res",
+   "date": "2022-01-31",
+   "att": "87b76024-e318-4859-8e41-82948fed9b04.pdf",
+   "title": "Board Meeting Outcome for Outcome Of The Board Meeting : <BR> (I) Unaudited Financial Results (Standalone And Consolidated) For The Quarter Ended 31St December ",
+   "size": 0,
+   "cat": "Result",
+   "sub": "Financial Results"
+  },
+  {
+   "kind": "res",
+   "date": "2021-10-30",
+   "att": "2a713c7f-89dc-4d8d-bbee-821a6fea746c.pdf",
+   "title": "Please find enclosed Related Party Transactions under Regulation 23(9) Of SEBI (LODR), for half year ended 30th September 2021<BR> <BR> The above is for your in",
+   "size": 1722279,
+   "cat": "Result",
+   "sub": "Financial Results"
+  },
+  {
+   "kind": "res",
+   "date": "2021-07-30",
+   "att": "b870ced9-ea05-43f4-98d2-b6127007c504.pdf",
+   "title": "This is further to our letter dated 19th July 2021 intimating the date of the Board Meeting of Indian Oil Corporation Limited. Pursuant to regulation 33 of the ",
+   "size": 0,
+   "cat": "Result",
+   "sub": "Financial Results"
+  },
+  {
+   "kind": "res",
+   "date": "2021-05-19",
+   "att": "0d7754c1-91c1-40d0-bede-a68d3f756cbe.pdf",
+   "title": "In accordance with the Regulation 30 read with Part A of Schedule III and Regulation 43 of SEBI (LODR) Regulations 2015, it is further notified that the Board h",
+   "size": 0,
+   "cat": "Result",
+   "sub": "Financial Results"
+  },
+  {
+   "kind": "ar",
+   "fy": 2021,
+   "date": "2021-03-31",
+   "url": "https://www.bseindia.com/bseplus/AnnualReport/530965/69218530965.pdf",
+   "att": "69218530965.pdf",
+   "title": "Annual Report FY21",
+   "size": 0
+  },
+  {
+   "kind": "res",
+   "date": "2021-01-29",
+   "att": "75de0428-87dd-4460-8eaa-5122d8a13aca.pdf",
+   "title": "Outcome Of The Board Meeting : <BR> (I) Unaudited Financial Results (Standalone And Consolidated) For The Quarter Ended 31St December 2020<BR> (Ii) Interim Divi",
+   "size": 0,
+   "cat": "Result",
+   "sub": "Financial Results"
+  },
+  {
+   "kind": "res",
+   "date": "2020-10-30",
+   "att": "8db48c8f-c5ea-471f-ab00-44512e769e74.pdf",
+   "title": "It is hereby notified that the Board of Directors at its meeting held today, have approved the Unaudited Financial Results (Standalone and Consolidated) for the",
+   "size": 0,
+   "cat": "Result",
+   "sub": "Financial Results"
+  },
+  {
+   "kind": "ar",
+   "date": "2020-08-29",
+   "att": "e57fe474-b625-46ee-bc43-332b7ec0639e.pdf",
+   "title": "This is further to our letter dated 27th August 2020 intimating about the date of Annual General Meeting ('AGM') of the Company. <BR> <BR> In accordance with th",
+   "size": 0,
+   "cat": "Others",
+   "sub": "Reg. 34 (1) Annual Report"
+  },
+  {
+   "kind": "pr",
+   "date": "2020-07-31",
+   "att": "e106a43b-8a00-48ce-bafc-507a492504d6.pdf",
+   "title": "Please find attached a copy of the media release issued by the Company titled 'IndianOil Board gives go-ahead for Rs. 13,805 crore integrated PX-PTA complex at ",
+   "size": 0,
+   "cat": "Company Update",
+   "sub": "Press Release / Media Release"
+  },
+  {
+   "kind": "res",
+   "date": "2020-06-24",
+   "att": "ede3c495-739f-45d7-8534-e5f75898bf20.pdf",
+   "title": "<BR> Pursuant to Regulation 30 of SEBI (LODR),  it is further notified that Board of Directors has also approved the proposal  for seeking approval of the share",
+   "size": 0,
+   "cat": "Company Update",
+   "sub": "Raising of Funds"
+  },
+  {
+   "kind": "ar",
+   "fy": 2020,
+   "date": "2020-03-31",
+   "url": "https://www.bseindia.com/bseplus/AnnualReport/530965/65205530965.pdf",
+   "att": "65205530965.pdf",
+   "title": "Annual Report FY20",
+   "size": 0
+  },
+  {
+   "kind": "res",
+   "date": "2020-01-30",
+   "att": "56d0a204-1cba-4bc7-ac89-7923d62e4f64.pdf",
+   "title": "In continuation of our earlier communication dated 8th January 2020 and pursuant to Regulation 33(3) of the SEBI (LODR), please find attached herewith at Annexu",
+   "size": 0,
+   "cat": "Result",
+   "sub": "Financial Results"
+  },
+  {
+   "kind": "ar",
+   "fy": 2019,
+   "date": "2019-03-31",
+   "url": "https://www.bseindia.com/bseplus/AnnualReport/530965/5309650319.pdf",
+   "att": "5309650319.pdf",
+   "title": "Annual Report FY19",
+   "size": 0
+  }
+ ],
+ "catalog_since": "2020-01-01",
+ "catalog_until": "2026-09-08",
+ "catalog_ver": 5
 }
