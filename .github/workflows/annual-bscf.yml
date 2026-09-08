@@ -8,7 +8,7 @@ name: Annual BS/CF fill
 
 on:
   schedule:
-    - cron: "20 */6 * * *"       # every 6h — grinds the survivorship-free N500 over a few days
+    - cron: "20 2 * * *"         # once daily — paced dial-down 2026-09-08 (bulk of N500 already filled); text pass costs no Anthropic tokens, still feeds the vision queue + lands the clean-text ones for free
   workflow_dispatch:
     inputs:
       limit:
