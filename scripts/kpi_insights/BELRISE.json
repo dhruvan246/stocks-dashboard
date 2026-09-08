@@ -26,7 +26,7 @@
   "650ab187-0f3f-4787-b6a0-606d4a9906d7.pdf": {
    "kind": "ip",
    "date": "2026-05-24",
-   "title": "Q4 & FY26 Investor Presentation",
+   "title": "Q4 & FY26 Investor Presentation (correction)",
    "read": "2026-09-08",
    "by": "claude-routine"
   },
@@ -41,6 +41,20 @@
    "kind": "ip",
    "date": "2025-11-11",
    "title": "Q2 FY26 / H1 FY26 Investor Presentation",
+   "read": "2026-09-08",
+   "by": "claude-routine"
+  },
+  "f3a98d58-06c2-4140-a016-bfa7c2a92dcd.pdf": {
+   "kind": "ar",
+   "date": "2025-11-20",
+   "title": "Integrated Annual Report FY2024-25",
+   "read": "2026-09-08",
+   "by": "claude-routine"
+  },
+  "4250bace-abf5-475c-9cf3-20b9f1d6cc86.pdf": {
+   "kind": "ar",
+   "date": "2025-09-01",
+   "title": "Integrated Annual Report FY2024-25",
    "read": "2026-09-08",
    "by": "claude-routine"
   }
@@ -509,6 +523,7 @@
    "unit": "MTPA",
    "kind": "level",
    "y": {
+    "20250331": 60000.0,
     "20260331": 60000.0
    },
    "q": {
@@ -540,6 +555,12 @@
      21,
      "Annual Production Capacity (doc period)",
      "60,000"
+    ],
+    "y:20250331": [
+     "4250bace-abf5-475c-9cf3-20b9f1d6cc86.pdf",
+     6,
+     "Annual Production Capacity",
+     "60,000"
     ]
    }
   },
@@ -548,6 +569,7 @@
    "unit": "count",
    "kind": "level",
    "y": {
+    "20250331": 30.0,
     "20260331": 38.0
    },
    "q": {
@@ -579,6 +601,12 @@
      17,
      "31 OEMs (doc period)",
      "31"
+    ],
+    "y:20250331": [
+     "4250bace-abf5-475c-9cf3-20b9f1d6cc86.pdf",
+     25,
+     "supplied products to 30 OEMs worldwide, As of 31st March 2025",
+     "30"
     ]
    }
   },
@@ -587,6 +615,7 @@
    "unit": "machines",
    "kind": "level",
    "y": {
+    "20250331": 100.0,
     "20260331": 100.0
    },
    "q": {
@@ -618,6 +647,58 @@
      21,
      "Plastic Processing Capacity 100+ machines (doc period)",
      "100"
+    ],
+    "y:20250331": [
+     "4250bace-abf5-475c-9cf3-20b9f1d6cc86.pdf",
+     6,
+     "Plastic Processing Capacity 100+ Machines up to 1,800 T",
+     "100"
+    ]
+   }
+  },
+  {
+   "name": "Stamping Capacity",
+   "unit": "machines",
+   "kind": "level",
+   "y": {
+    "20250331": 450.0,
+    "20260331": 450.0
+   },
+   "q": {
+    "20250930": 450.0,
+    "20251231": 450.0,
+    "20260630": 450.0
+   },
+   "src": {
+    "q:20260630": [
+     "8ab91834-aad2-480d-a54e-7b6b8b5c0540.pdf",
+     17,
+     "Stamping Capacity - 450+ machines up to 1,200 T (doc period)",
+     "450"
+    ],
+    "y:20260331": [
+     "650ab187-0f3f-4787-b6a0-606d4a9906d7.pdf",
+     24,
+     "Stamping Capacity 450+ machines (Figures as of FY26)",
+     "450"
+    ],
+    "q:20251231": [
+     "7a80f758-6ecd-4041-82a4-2f14bbb2c6f5.pdf",
+     25,
+     "Stamping Capacity 450+ machines (doc period)",
+     "450"
+    ],
+    "q:20250930": [
+     "e9daa50c-a91b-436e-ac77-151c733c18d7.pdf",
+     21,
+     "Stamping Capacity 450+ machines (doc period)",
+     "450"
+    ],
+    "y:20250331": [
+     "4250bace-abf5-475c-9cf3-20b9f1d6cc86.pdf",
+     6,
+     "Stamping Capacity 450+ Machines up to 1,200 T",
+     "450"
     ]
    }
   },
@@ -661,50 +742,12 @@
    }
   },
   {
-   "name": "Stamping Capacity",
-   "unit": "machines",
-   "kind": "level",
-   "y": {
-    "20260331": 450.0
-   },
-   "q": {
-    "20250930": 450.0,
-    "20251231": 450.0,
-    "20260630": 450.0
-   },
-   "src": {
-    "q:20260630": [
-     "8ab91834-aad2-480d-a54e-7b6b8b5c0540.pdf",
-     17,
-     "Stamping Capacity - 450+ machines up to 1,200 T (doc period)",
-     "450"
-    ],
-    "y:20260331": [
-     "650ab187-0f3f-4787-b6a0-606d4a9906d7.pdf",
-     24,
-     "Stamping Capacity 450+ machines (Figures as of FY26)",
-     "450"
-    ],
-    "q:20251231": [
-     "7a80f758-6ecd-4041-82a4-2f14bbb2c6f5.pdf",
-     25,
-     "Stamping Capacity 450+ machines (doc period)",
-     "450"
-    ],
-    "q:20250930": [
-     "e9daa50c-a91b-436e-ac77-151c733c18d7.pdf",
-     21,
-     "Stamping Capacity 450+ machines (doc period)",
-     "450"
-    ]
-   }
-  },
-  {
    "name": "Employees",
    "unit": "count",
    "kind": "level",
    "y": {
-    "20260331": 5500.0
+    "20250331": 2000.0,
+    "20260331": 2000.0
    },
    "q": {
     "20260630": 5500.0
@@ -719,8 +762,46 @@
     "y:20260331": [
      "650ab187-0f3f-4787-b6a0-606d4a9906d7.pdf",
      24,
-     "No. of Employees (doc period, Figures as of FY26)",
-     "5,500"
+     "No. of Employees (doc period, Figures as of FY26; corrected pairing per FY25 AR)",
+     "2,000"
+    ],
+    "y:20250331": [
+     "4250bace-abf5-475c-9cf3-20b9f1d6cc86.pdf",
+     6,
+     "2,000+ Employees",
+     "2,000"
+    ]
+   }
+  },
+  {
+   "name": "Sheet Metal Fabrication Robots",
+   "unit": "count",
+   "kind": "level",
+   "y": {
+    "20250331": 800.0,
+    "20260331": 800.0
+   },
+   "q": {
+    "20260630": 890.0
+   },
+   "src": {
+    "q:20260630": [
+     "8ab91834-aad2-480d-a54e-7b6b8b5c0540.pdf",
+     17,
+     "890+ Robots for Fabrication (doc period)",
+     "890"
+    ],
+    "y:20260331": [
+     "650ab187-0f3f-4787-b6a0-606d4a9906d7.pdf",
+     24,
+     "800+ Robots for Fabrication (Figures as of FY26)",
+     "800"
+    ],
+    "y:20250331": [
+     "4250bace-abf5-475c-9cf3-20b9f1d6cc86.pdf",
+     6,
+     "800+ Robots for Welding (Sheet Metal Fabrication Capability)",
+     "800"
     ]
    }
   },
@@ -749,27 +830,53 @@
    }
   },
   {
-   "name": "Sheet Metal Fabrication Robots",
+   "name": "Aggregate Capacity Utilization",
+   "unit": "%",
+   "kind": "level",
+   "y": {
+    "20250331": 64.0
+   },
+   "q": {},
+   "src": {
+    "y:20250331": [
+     "4250bace-abf5-475c-9cf3-20b9f1d6cc86.pdf",
+     6,
+     "Aggregate Capacity Utilization",
+     "64"
+    ]
+   }
+  },
+  {
+   "name": "Exports (% of Manufacturing Revenue)",
+   "unit": "%",
+   "kind": "level",
+   "y": {
+    "20250331": 5.8
+   },
+   "q": {},
+   "src": {
+    "y:20250331": [
+     "4250bace-abf5-475c-9cf3-20b9f1d6cc86.pdf",
+     6,
+     "Revenue from Exports",
+     "5.8"
+    ]
+   }
+  },
+  {
+   "name": "Job Workers",
    "unit": "count",
    "kind": "level",
    "y": {
-    "20260331": 800.0
+    "20250331": 5500.0
    },
-   "q": {
-    "20260630": 890.0
-   },
+   "q": {},
    "src": {
-    "q:20260630": [
-     "8ab91834-aad2-480d-a54e-7b6b8b5c0540.pdf",
-     17,
-     "890+ Robots for Fabrication (doc period)",
-     "890"
-    ],
-    "y:20260331": [
-     "650ab187-0f3f-4787-b6a0-606d4a9906d7.pdf",
-     24,
-     "800+ Robots for Fabrication (Figures as of FY26)",
-     "800"
+    "y:20250331": [
+     "4250bace-abf5-475c-9cf3-20b9f1d6cc86.pdf",
+     6,
+     "5,500+ Job workers",
+     "5,500"
     ]
    }
   },
