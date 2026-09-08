@@ -29,6 +29,13 @@
    "title": "Q2 FY26 Investor Presentation",
    "read": "2026-09-08",
    "by": "claude-routine"
+  },
+  "5794704f-102b-40d1-a6c1-0daae7683aed.pdf": {
+   "kind": "ar",
+   "date": "2026-08-04",
+   "title": "Annual Report FY 2025-26",
+   "read": "2026-09-08",
+   "by": "claude-routine"
   }
  },
  "metrics": [
@@ -260,7 +267,7 @@
     "20230331": 4.37,
     "20240331": 3.31,
     "20250331": 2.47,
-    "20260331": 2.16
+    "20260331": 2.15
    },
    "q": {
     "20240930": 3.06,
@@ -296,10 +303,10 @@
      "2.47"
     ],
     "y:20260331": [
-     "b8608b70-fa78-4066-aaae-e85347ff7a28.pdf",
-     8,
-     "Stage 3- EAD%",
-     "2.16"
+     "5794704f-102b-40d1-a6c1-0daae7683aed.pdf",
+     60,
+     "gross Non-Performing Assets (NPAs) ... is 2.15 percent",
+     "2.15"
     ],
     "q:20250630": [
      "b8608b70-fa78-4066-aaae-e85347ff7a28.pdf",
@@ -343,7 +350,16 @@
      "as against ... as on 30.09.2024",
      "3.06"
     ]
-   }
+   },
+   "restated": [
+    [
+     "y:20260331",
+     "b8608b70-fa78-4066-aaae-e85347ff7a28.pdf",
+     2.16,
+     "5794704f-102b-40d1-a6c1-0daae7683aed.pdf",
+     2.15
+    ]
+   ]
   },
   {
    "name": "Outstanding Loan Portfolio",
@@ -844,6 +860,52 @@
    }
   },
   {
+   "name": "Individual Home Loan Portfolio",
+   "unit": "Rs Cr",
+   "kind": "level",
+   "y": {
+    "20250331": 261562.0,
+    "20260331": 270893.0
+   },
+   "q": {
+    "20250930": 264096.0,
+    "20251231": 265890.0,
+    "20260630": 271979.0
+   },
+   "src": {
+    "q:20260630": [
+     "b8608b70-fa78-4066-aaae-e85347ff7a28.pdf",
+     6,
+     "Individual Home Loan Portfolio (doc period)",
+     "271979"
+    ],
+    "q:20251231": [
+     "63ea8eab-49e2-4a2b-94fc-b6ad1533afb0.pdf",
+     6,
+     "Individual Home Loan Portfolio up by 4% to (doc period)",
+     "265890"
+    ],
+    "q:20250930": [
+     "6f3f0e7f-e14d-44a0-adca-776bf57d6043.pdf",
+     6,
+     "Individual Home Loan Portfolio up by 5% to (doc period)",
+     "264096"
+    ],
+    "y:20260331": [
+     "5794704f-102b-40d1-a6c1-0daae7683aed.pdf",
+     56,
+     "gross IHL portfolio grew ... to as on March 31, 2026",
+     "2,70,893"
+    ],
+    "y:20250331": [
+     "5794704f-102b-40d1-a6c1-0daae7683aed.pdf",
+     56,
+     "gross IHL portfolio grew ... from as on March 31, 2025",
+     "2,61,562"
+    ]
+   }
+  },
+  {
    "name": "Marketing Offices",
    "unit": "count",
    "kind": "level",
@@ -1003,33 +1065,74 @@
    }
   },
   {
-   "name": "Individual Home Loan Portfolio",
+   "name": "Individual Housing Loan Disbursements",
    "unit": "Rs Cr",
-   "kind": "level",
-   "y": {},
-   "q": {
-    "20250930": 264096.0,
-    "20251231": 265890.0,
-    "20260630": 271979.0
+   "kind": "flow",
+   "y": {
+    "20250331": 51614.0,
+    "20260331": 54503.0
    },
+   "q": {},
    "src": {
-    "q:20260630": [
-     "b8608b70-fa78-4066-aaae-e85347ff7a28.pdf",
-     6,
-     "Individual Home Loan Portfolio (doc period)",
-     "271979"
+    "y:20260331": [
+     "5794704f-102b-40d1-a6c1-0daae7683aed.pdf",
+     56,
+     "disbursed 1,73,131 loans aggregating to (IHL)",
+     "54,503"
     ],
-    "q:20251231": [
-     "63ea8eab-49e2-4a2b-94fc-b6ad1533afb0.pdf",
-     6,
-     "Individual Home Loan Portfolio up by 4% to (doc period)",
-     "265890"
+    "y:20250331": [
+     "5794704f-102b-40d1-a6c1-0daae7683aed.pdf",
+     56,
+     "showing an increase from ... in the same period of the previous year",
+     "51,614"
+    ]
+   }
+  },
+  {
+   "name": "Net NPA %",
+   "unit": "%",
+   "kind": "level",
+   "y": {
+    "20250331": 1.22,
+    "20260331": 1.08
+   },
+   "q": {},
+   "src": {
+    "y:20260331": [
+     "5794704f-102b-40d1-a6c1-0daae7683aed.pdf",
+     60,
+     "net NPA as of March 31, 2026 was ... i.e. 1.08 percent",
+     "1.08"
     ],
-    "q:20250930": [
-     "6f3f0e7f-e14d-44a0-adca-776bf57d6043.pdf",
-     6,
-     "Individual Home Loan Portfolio up by 5% to (doc period)",
-     "264096"
+    "y:20250331": [
+     "5794704f-102b-40d1-a6c1-0daae7683aed.pdf",
+     60,
+     "1.22 percent of the loan portfolio as at 31st March, 2025",
+     "1.22"
+    ]
+   }
+  },
+  {
+   "name": "Non-Housing Individual Disbursements",
+   "unit": "Rs Cr",
+   "kind": "flow",
+   "y": {
+    "20250331": 8060.0,
+    "20260331": 9636.0
+   },
+   "q": {},
+   "src": {
+    "y:20260331": [
+     "5794704f-102b-40d1-a6c1-0daae7683aed.pdf",
+     56,
+     "disbursed 31,092 loans amounting to (NHI)",
+     "9,636"
+    ],
+    "y:20250331": [
+     "5794704f-102b-40d1-a6c1-0daae7683aed.pdf",
+     56,
+     "an increase from ... in the same period of the previous year",
+     "8060"
     ]
    }
   }
