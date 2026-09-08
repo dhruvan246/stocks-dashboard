@@ -15,6 +15,13 @@
    "title": "Annual Report FY 2025-26",
    "read": "2026-09-07",
    "by": "claude-routine"
+  },
+  "60c3f9db-1701-4d1d-adb2-2a30b7818775.pdf": {
+   "kind": "ip",
+   "date": "2026-05-28",
+   "title": "Q4 & FY2026 Earnings Presentation",
+   "read": "2026-09-08",
+   "by": "claude-routine"
   }
  },
  "metrics": [
@@ -24,7 +31,9 @@
    "kind": "level",
    "y": {},
    "q": {
+    "20250331": 81.0,
     "20250630": 82.0,
+    "20251231": 87.0,
     "20260331": 104.0,
     "20260630": 97.0
    },
@@ -36,8 +45,8 @@
      "82"
     ],
     "q:20260331": [
-     "1f01b616-4c65-4cfe-aa9f-35b224cba470.pdf",
-     12,
+     "60c3f9db-1701-4d1d-adb2-2a30b7818775.pdf",
+     13,
      "Capacity Utilization (Standalone)",
      "104"
     ],
@@ -46,6 +55,18 @@
      12,
      "Capacity Utilization (Standalone)",
      "97"
+    ],
+    "q:20250331": [
+     "60c3f9db-1701-4d1d-adb2-2a30b7818775.pdf",
+     13,
+     "Capacity Utilization (Standalone)",
+     "81"
+    ],
+    "q:20251231": [
+     "60c3f9db-1701-4d1d-adb2-2a30b7818775.pdf",
+     13,
+     "Capacity Utilization (Standalone)",
+     "87"
     ]
    }
   },
@@ -119,6 +140,31 @@
      25,
      "Hydel Power plant at CCKT of 18 MW capacity",
      "18"
+    ]
+   }
+  },
+  {
+   "name": "Manufacturing Capacity (Graphite Electrodes)",
+   "unit": "tonnes per annum",
+   "kind": "level",
+   "y": {
+    "20260331": 80000.0
+   },
+   "q": {
+    "20260630": 80000.0
+   },
+   "src": {
+    "q:20260630": [
+     "1f01b616-4c65-4cfe-aa9f-35b224cba470.pdf",
+     15,
+     "manufacturing capacity of 80,000 tonnes per annum (doc period)",
+     "80,000"
+    ],
+    "y:20260331": [
+     "60c3f9db-1701-4d1d-adb2-2a30b7818775.pdf",
+     17,
+     "Manufacturing capacity of 80,000 tonnes per annum (doc period)",
+     "80,000"
     ]
    }
   },
@@ -267,19 +313,52 @@
    }
   },
   {
-   "name": "Manufacturing Capacity (Graphite Electrodes)",
-   "unit": "tonnes per annum",
+   "name": "Solar Power Capacity",
+   "unit": "MWp",
    "kind": "level",
-   "y": {},
+   "y": {
+    "20260331": 13.8
+   },
    "q": {
-    "20260630": 80000.0
+    "20260630": 13.8
    },
    "src": {
     "q:20260630": [
      "1f01b616-4c65-4cfe-aa9f-35b224cba470.pdf",
      15,
-     "manufacturing capacity of 80,000 tonnes per annum (doc period)",
-     "80,000"
+     "13.8 MWp of installed solar power plants (doc period)",
+     "13.8"
+    ],
+    "y:20260331": [
+     "60c3f9db-1701-4d1d-adb2-2a30b7818775.pdf",
+     17,
+     "Installed solar power plants (doc period)",
+     "13.8"
+    ]
+   }
+  },
+  {
+   "name": "Wind Power Capacity",
+   "unit": "MW",
+   "kind": "level",
+   "y": {
+    "20260331": 18.9
+   },
+   "q": {
+    "20260630": 18.9
+   },
+   "src": {
+    "q:20260630": [
+     "1f01b616-4c65-4cfe-aa9f-35b224cba470.pdf",
+     15,
+     "wind power plants with an installed capacity of 18.9 MW (doc period)",
+     "18.9"
+    ],
+    "y:20260331": [
+     "60c3f9db-1701-4d1d-adb2-2a30b7818775.pdf",
+     17,
+     "Wind power plants installed capacity (doc period)",
+     "18.9"
     ]
    }
   },
@@ -301,23 +380,6 @@
    }
   },
   {
-   "name": "Solar Power Capacity",
-   "unit": "MWp",
-   "kind": "level",
-   "y": {},
-   "q": {
-    "20260630": 13.8
-   },
-   "src": {
-    "q:20260630": [
-     "1f01b616-4c65-4cfe-aa9f-35b224cba470.pdf",
-     15,
-     "13.8 MWp of installed solar power plants (doc period)",
-     "13.8"
-    ]
-   }
-  },
-  {
    "name": "Standalone Permanent Employees",
    "unit": "count",
    "kind": "level",
@@ -331,23 +393,6 @@
      28,
      "total number of permanent employees in the Company is 1,672 as on 31st March, 20",
      "1,672"
-    ]
-   }
-  },
-  {
-   "name": "Wind Power Capacity",
-   "unit": "MW",
-   "kind": "level",
-   "y": {},
-   "q": {
-    "20260630": 18.9
-   },
-   "src": {
-    "q:20260630": [
-     "1f01b616-4c65-4cfe-aa9f-35b224cba470.pdf",
-     15,
-     "wind power plants with an installed capacity of 18.9 MW (doc period)",
-     "18.9"
     ]
    }
   }
@@ -736,5 +781,5 @@
  "catalog_since": "2020-01-01",
  "catalog_until": "2026-09-07",
  "catalog_ver": 5,
- "updated": "2026-09-07"
+ "updated": "2026-09-08"
 }
