@@ -29,6 +29,13 @@
    "title": "Graphite India Annual Report FY 2024-25",
    "read": "2026-09-08",
    "by": "claude-routine"
+  },
+  "83d920b2-cbd3-44ec-b58c-cd9f08a57d63.pdf": {
+   "kind": "ip",
+   "date": "2026-02-09",
+   "title": "Q3 FY2026 Earnings Presentation",
+   "read": "2026-09-08",
+   "by": "claude-routine"
   }
  },
  "metrics": [
@@ -38,8 +45,10 @@
    "kind": "level",
    "y": {},
    "q": {
+    "20241231": 81.0,
     "20250331": 81.0,
     "20250630": 82.0,
+    "20250930": 99.0,
     "20251231": 87.0,
     "20260331": 104.0,
     "20260630": 97.0
@@ -70,10 +79,100 @@
      "81"
     ],
     "q:20251231": [
-     "60c3f9db-1701-4d1d-adb2-2a30b7818775.pdf",
+     "83d920b2-cbd3-44ec-b58c-cd9f08a57d63.pdf",
      13,
      "Capacity Utilization (Standalone)",
      "87"
+    ],
+    "q:20241231": [
+     "83d920b2-cbd3-44ec-b58c-cd9f08a57d63.pdf",
+     13,
+     "Capacity Utilization (Standalone)",
+     "81"
+    ],
+    "q:20250930": [
+     "83d920b2-cbd3-44ec-b58c-cd9f08a57d63.pdf",
+     13,
+     "Capacity Utilization (Standalone)",
+     "99"
+    ]
+   }
+  },
+  {
+   "name": "Hydro Power Capacity",
+   "unit": "MW",
+   "kind": "level",
+   "y": {
+    "20250331": 18.0,
+    "20260331": 18.0
+   },
+   "q": {
+    "20251231": 18.0,
+    "20260630": 23.0
+   },
+   "src": {
+    "q:20260630": [
+     "1f01b616-4c65-4cfe-aa9f-35b224cba470.pdf",
+     15,
+     "installed capacity of 23 MW of hydro electric power generation (doc period)",
+     "23"
+    ],
+    "y:20260331": [
+     "05906612-3e23-4372-a823-6772a01ba067.pdf",
+     25,
+     "Hydel Power plant at CCKT of 18 MW capacity",
+     "18"
+    ],
+    "y:20250331": [
+     "cb302b24-c783-45eb-922d-171c926608c7.pdf",
+     22,
+     "Installed capacity of Hydel power generation at Chunchunkatte (CCKT), near Mysor",
+     "18"
+    ],
+    "q:20251231": [
+     "83d920b2-cbd3-44ec-b58c-cd9f08a57d63.pdf",
+     16,
+     "Installed capacity of hydro electric power generation (doc period)",
+     "18"
+    ]
+   }
+  },
+  {
+   "name": "Wind Power Capacity",
+   "unit": "MW",
+   "kind": "level",
+   "y": {
+    "20250331": 18.9,
+    "20260331": 18.9
+   },
+   "q": {
+    "20251231": 18.9,
+    "20260630": 18.9
+   },
+   "src": {
+    "q:20260630": [
+     "1f01b616-4c65-4cfe-aa9f-35b224cba470.pdf",
+     15,
+     "wind power plants with an installed capacity of 18.9 MW (doc period)",
+     "18.9"
+    ],
+    "y:20260331": [
+     "60c3f9db-1701-4d1d-adb2-2a30b7818775.pdf",
+     17,
+     "Wind power plants installed capacity (doc period)",
+     "18.9"
+    ],
+    "y:20250331": [
+     "cb302b24-c783-45eb-922d-171c926608c7.pdf",
+     22,
+     "Installed capacity of wind power plant at Nandurbar, Maharashtra (doc period)",
+     "18.9"
+    ],
+    "q:20251231": [
+     "83d920b2-cbd3-44ec-b58c-cd9f08a57d63.pdf",
+     16,
+     "Installed capacity of wind power plants (doc period)",
+     "18.9"
     ]
    }
   },
@@ -140,34 +239,34 @@
    }
   },
   {
-   "name": "Hydro Power Capacity",
-   "unit": "MW",
+   "name": "Manufacturing Capacity (Graphite Electrodes)",
+   "unit": "tonnes per annum",
    "kind": "level",
    "y": {
-    "20250331": 18.0,
-    "20260331": 18.0
+    "20260331": 80000.0
    },
    "q": {
-    "20260630": 23.0
+    "20251231": 98000.0,
+    "20260630": 80000.0
    },
    "src": {
     "q:20260630": [
      "1f01b616-4c65-4cfe-aa9f-35b224cba470.pdf",
      15,
-     "installed capacity of 23 MW of hydro electric power generation (doc period)",
-     "23"
+     "manufacturing capacity of 80,000 tonnes per annum (doc period)",
+     "80,000"
     ],
     "y:20260331": [
-     "05906612-3e23-4372-a823-6772a01ba067.pdf",
-     25,
-     "Hydel Power plant at CCKT of 18 MW capacity",
-     "18"
+     "60c3f9db-1701-4d1d-adb2-2a30b7818775.pdf",
+     17,
+     "Manufacturing capacity of 80,000 tonnes per annum (doc period)",
+     "80,000"
     ],
-    "y:20250331": [
-     "cb302b24-c783-45eb-922d-171c926608c7.pdf",
-     22,
-     "Installed capacity of Hydel power generation at Chunchunkatte (CCKT), near Mysor",
-     "18"
+    "q:20251231": [
+     "83d920b2-cbd3-44ec-b58c-cd9f08a57d63.pdf",
+     16,
+     "Manufacturing capacity of graphite electrodes across three plants (doc period)",
+     "98,000"
     ]
    }
   },
@@ -358,63 +457,6 @@
    }
   },
   {
-   "name": "Wind Power Capacity",
-   "unit": "MW",
-   "kind": "level",
-   "y": {
-    "20250331": 18.9,
-    "20260331": 18.9
-   },
-   "q": {
-    "20260630": 18.9
-   },
-   "src": {
-    "q:20260630": [
-     "1f01b616-4c65-4cfe-aa9f-35b224cba470.pdf",
-     15,
-     "wind power plants with an installed capacity of 18.9 MW (doc period)",
-     "18.9"
-    ],
-    "y:20260331": [
-     "60c3f9db-1701-4d1d-adb2-2a30b7818775.pdf",
-     17,
-     "Wind power plants installed capacity (doc period)",
-     "18.9"
-    ],
-    "y:20250331": [
-     "cb302b24-c783-45eb-922d-171c926608c7.pdf",
-     22,
-     "Installed capacity of wind power plant at Nandurbar, Maharashtra (doc period)",
-     "18.9"
-    ]
-   }
-  },
-  {
-   "name": "Manufacturing Capacity (Graphite Electrodes)",
-   "unit": "tonnes per annum",
-   "kind": "level",
-   "y": {
-    "20260331": 80000.0
-   },
-   "q": {
-    "20260630": 80000.0
-   },
-   "src": {
-    "q:20260630": [
-     "1f01b616-4c65-4cfe-aa9f-35b224cba470.pdf",
-     15,
-     "manufacturing capacity of 80,000 tonnes per annum (doc period)",
-     "80,000"
-    ],
-    "y:20260331": [
-     "60c3f9db-1701-4d1d-adb2-2a30b7818775.pdf",
-     17,
-     "Manufacturing capacity of 80,000 tonnes per annum (doc period)",
-     "80,000"
-    ]
-   }
-  },
-  {
    "name": "Solar Power Capacity",
    "unit": "MWp",
    "kind": "level",
@@ -422,6 +464,7 @@
     "20260331": 13.8
    },
    "q": {
+    "20251231": 13.8,
     "20260630": 13.8
    },
    "src": {
@@ -435,6 +478,12 @@
      "60c3f9db-1701-4d1d-adb2-2a30b7818775.pdf",
      17,
      "Installed solar power plants (doc period)",
+     "13.8"
+    ],
+    "q:20251231": [
+     "83d920b2-cbd3-44ec-b58c-cd9f08a57d63.pdf",
+     16,
+     "Installed capacity of solar power plants (doc period)",
      "13.8"
     ]
    }
