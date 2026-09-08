@@ -14766,6 +14766,31 @@ store's convention (correctly) keeps out. Verdicts per cell + the residual list 
 capture at all, resting on the BSE reader alone) in `scripts/shp_nse_shpdetails_open.json`. No store value changed by this
 audit — it is a verification pass, and it passed.
 
+### 127o. ★★ Second-reader re-audit after recovering the missing captures — 306 of 446 refetched, 2 new disagreements, still 0 wrong-entity defects; one notable co-promoter flag (LICHSGFIN)  (2026-09-08)
+
+Refetched the 446 Wayback-refused captures from §127n with 12 attempts each: **306 recovered (6,577 of 6,717 pages now;
+140 permanently gone).** Overlap grew to **4,010 cells, 98.85% agree**, 46 disagree — 44 as before plus **2 genuinely new**:
+- **TATACOMM 2002-03 — STORE RIGHT (ADR mislabel).** NSE folds ADR 21.00% + Foreign Banks into FIIs (29.49 = 8.47 + 21.0 +
+  0.02); dii agrees. Same class as its 2002-06/09 siblings.
+- **LICHSGFIN 2002-09 — FLAGGED, store kept, convention question for the user.** The NSE `>1% holders` page (a THIRD
+  reader) names IFCI (11.59%), LIC (38.5%) and UTI (12.03%) ALL as "Indian Promoters" (sub-total 62.12%), and the NSE full
+  page agrees (prom 64.55%). The BSE-derived store counts ONLY LIC as promoter (38.50%) and files IFCI+UTI as institutional,
+  so stored **dii 29.08 vs NSE 1.97** on the same base (74,932,600). The store's own LICHSGFIN series carries the
+  reclassification signature — prom 64.55 / dii 1.97 through 2002-06, then prom 38.50 / dii ~29 from 2002-09 onward — the
+  ~24% IFCI+UTI block moving from promoter to institutional in the BSE filing while the holding itself never changed. IFCI
+  and UTI were co-sponsors of LIC Housing Finance, so "promoter" (NSE) is defensible; but the company filed it both ways, so
+  this is a filer classification difference, NOT a wrong-entity defect (unlike VXL) — the values trace to real BSE filings.
+  Healing would mean deciding a convention (do co-sponsor FIs count as promoter or DII?) across every IFCI/UTI/IDBI-promoted
+  name and re-deriving, so it is surfaced, not applied. **Consequence to know:** a DII-accumulation screen sees a spurious
+  +27pp DII step for LICHSGFIN at 2002-09 that is a reclassification, not an inflow — the same shape as the Sep-2022 DR
+  dissolution (§22) and the ELDERPHARM DR question (§127l).
+
+**Net across the whole route (now 47 distinct disagreements ever surfaced): 46 confirm the store, 1 (VXL) was our
+wrong-entity defect and was healed (§127m). No store value changed by the re-audit.** Residual: 140 captures unfetched
+(Wayback), 238 era members with no capture — those cells rest on the BSE reader alone. The 2001-06 FII/DII store stands
+verified to 98.85% against NSE's independent era pages; the only systematic caveat is co-promoter/DR/govt taxonomy, which
+the store's convention handles deliberately and consistently.
+
 ## 128. ★★★ STD-PAT 2002-07 EXECUTED — 229 "missing" cells were HELD under a retired key the coverage builder could not see; four gated routes landed 1,538 cells; the NSE results ARCHIVE reads standalone PAT with the page's own EPS identity  (2026-09-05)
 
 **Trigger:** execute the std-PAT packages of §127 / `PLAN_STDPAT_SHP_COVERAGE_2002.md` (plan §8 = state table).

@@ -270,5 +270,13 @@
    ]
   },
   "residual": "446 captures unfetched (Wayback refusals, resumable via fetch_shp_nse_shpdetails.py fetch); 238 era N500 members have NO NSE capture at all \u2014 those cells rest on the BSE reader alone."
+ },
+ "_reaudit_2026-09-08": {
+  "summary": "Re-audit after recovering 306 of the 446 previously-failed Wayback captures (6,577 of 6,717 pages; 140 permanently gone). Overlap grew 3,890 -> 4,010 cells, agreement 98.85%, 46 disagree. Only 2 are genuinely NEW vs the 29 of 2026-09-07:",
+  "new": {
+   "TATACOMM|2002-03-31": "STORE RIGHT \u2014 ADR mislabel (same class as TATACOMM 2002-06/09). NSE folds ADR 21.00 + Foreign Banks into FIIs (29.49 = FII 8.47 + ADR 21.00 + 0.02); dii agrees. Store excludes ADR per convention.",
+   "LICHSGFIN|2002-09-30": "FLAGGED (store kept; convention question for the user) \u2014 CO-PROMOTER CLASSIFICATION. The NSE >1% holders page names IFCI (11.59%), LIC (38.5%), UTI (12.03%) ALL as \"Indian Promoters\" (sub total 62.12%); the NSE full page agrees (prom 64.55%). The BSE-derived store counts ONLY LIC as promoter (38.50%) and puts IFCI+UTI in the institutional block, so stored dii=29.08 vs NSE 1.97. Same base (74,932,600), so not vintage. The store's LICHSGFIN series shows the reclassification signature: prom 64.55 / dii 1.97 through 2002-06, then prom 38.50 / dii ~29 from 2002-09 \u2014 IFCI+UTI (co-sponsors of LIC Housing Finance) moved from promoter to institutional in the BSE filing while their ~24% holding did not change. Two NSE readers place them in promoter; BSE places them in institutional. NOT a wrong-entity defect (values trace to real BSE filings) \u2014 a filer classification difference on co-sponsor financial institutions. Healing would require a convention decision (do co-sponsor FIs count as promoter or DII?) across every IFCI/UTI/IDBI-promoted name, so it is surfaced, not applied. Impact: a DII-accumulation screen sees a spurious +27pp DII step at 2002-09 for LICHSGFIN."
+  },
+  "residual": "140 captures still unfetched (Wayback refusals after 12 attempts each \u2014 likely gone); 238 era members had no NSE capture to begin with."
  }
 }
