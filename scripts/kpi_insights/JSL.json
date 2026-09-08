@@ -57,6 +57,20 @@
    "title": "Q4 & FY25 Earnings Presentation (Updated)",
    "read": "2026-09-08",
    "by": "claude-routine"
+  },
+  "4ca72584-2de7-473e-a0f9-ed2f6564199e.pdf": {
+   "kind": "ip",
+   "date": "2025-05-08",
+   "title": "Q4 & FY25 Earnings Presentation",
+   "read": "2026-09-08",
+   "by": "claude-routine"
+  },
+  "8374a988-49e4-4223-92ac-e23a2d0c93fc.pdf": {
+   "kind": "ip",
+   "date": "2025-01-29",
+   "title": "Q3 & 9M FY25 Earnings Presentation",
+   "read": "2026-09-08",
+   "by": "claude-routine"
   }
  },
  "metrics": [
@@ -70,6 +84,7 @@
     "20260331": 2566.0
    },
    "q": {
+    "20231231": 512.0,
     "20240331": 570.0,
     "20240630": 578.0,
     "20240930": 565.0,
@@ -152,6 +167,12 @@
      5,
      "Sales Volume ('000 MT*), Standalone",
      "2,175"
+    ],
+    "q:20231231": [
+     "8374a988-49e4-4223-92ac-e23a2d0c93fc.pdf",
+     5,
+     "Sales Volume ('000 MT*), Standalone",
+     "512"
     ]
    }
   },
@@ -164,6 +185,7 @@
     "20260331": 92.0
    },
    "q": {
+    "20241231": 92.0,
     "20250331": 92.0,
     "20250630": 91.0,
     "20250930": 91.0,
@@ -212,6 +234,12 @@
      5,
      "Sales Composition – Q4 FY25, Domestic",
      "92"
+    ],
+    "q:20241231": [
+     "8374a988-49e4-4223-92ac-e23a2d0c93fc.pdf",
+     5,
+     "Sales Composition – Q3 FY25, Domestic",
+     "92"
     ]
    }
   },
@@ -224,6 +252,7 @@
     "20260331": 8.0
    },
    "q": {
+    "20241231": 8.0,
     "20250331": 8.0,
     "20250630": 9.0,
     "20250930": 9.0,
@@ -272,6 +301,105 @@
      5,
      "Sales Composition – Q4 FY25, Export",
      "8"
+    ],
+    "q:20241231": [
+     "8374a988-49e4-4223-92ac-e23a2d0c93fc.pdf",
+     5,
+     "Sales Composition – Q3 FY25, Export",
+     "8"
+    ]
+   }
+  },
+  {
+   "name": "Countries Reach",
+   "unit": "count",
+   "kind": "level",
+   "y": {
+    "20240331": 12.0,
+    "20250331": 12.0,
+    "20260331": 12.0
+   },
+   "q": {},
+   "src": {
+    "y:20260331": [
+     "63f08539-8e0a-44e2-98bb-c0d0bc571111.pdf",
+     17,
+     "a worldwide network in 12 countries (as of March 2026)",
+     "12"
+    ],
+    "y:20250331": [
+     "4b9716d5-a95f-4c1b-8fa1-894ab1c502e2.pdf",
+     17,
+     "a worldwide network in 12 countries (as of March 2025)",
+     "12"
+    ],
+    "y:20240331": [
+     "8374a988-49e4-4223-92ac-e23a2d0c93fc.pdf",
+     16,
+     "a worldwide network in 12 countries (as of March 2024)",
+     "12"
+    ]
+   }
+  },
+  {
+   "name": "EBITDA per Tonne (Consolidated)",
+   "unit": "₹/MT",
+   "kind": "flow",
+   "y": {},
+   "q": {
+    "20231231": 24339.0,
+    "20240930": 21014.0,
+    "20241231": 20548.0
+   },
+   "src": {
+    "q:20241231": [
+     "8374a988-49e4-4223-92ac-e23a2d0c93fc.pdf",
+     14,
+     "EBITDA/ton, Consolidated",
+     "20,548"
+    ],
+    "q:20240930": [
+     "8374a988-49e4-4223-92ac-e23a2d0c93fc.pdf",
+     14,
+     "EBITDA/ton, Consolidated",
+     "21,014"
+    ],
+    "q:20231231": [
+     "8374a988-49e4-4223-92ac-e23a2d0c93fc.pdf",
+     14,
+     "EBITDA/ton, Consolidated",
+     "24,339"
+    ]
+   }
+  },
+  {
+   "name": "EBITDA per Tonne (Standalone)",
+   "unit": "₹/MT",
+   "kind": "flow",
+   "y": {},
+   "q": {
+    "20231231": 19937.0,
+    "20240930": 17833.0,
+    "20241231": 17075.0
+   },
+   "src": {
+    "q:20241231": [
+     "8374a988-49e4-4223-92ac-e23a2d0c93fc.pdf",
+     13,
+     "EBITDA/ton, Standalone",
+     "17,075"
+    ],
+    "q:20240930": [
+     "8374a988-49e4-4223-92ac-e23a2d0c93fc.pdf",
+     13,
+     "EBITDA/ton, Standalone",
+     "17,833"
+    ],
+    "q:20231231": [
+     "8374a988-49e4-4223-92ac-e23a2d0c93fc.pdf",
+     13,
+     "EBITDA/ton, Standalone",
+     "19,937"
     ]
    }
   },
@@ -307,34 +435,11 @@
    }
   },
   {
-   "name": "Countries Reach",
-   "unit": "count",
-   "kind": "level",
-   "y": {
-    "20250331": 12.0,
-    "20260331": 12.0
-   },
-   "q": {},
-   "src": {
-    "y:20260331": [
-     "63f08539-8e0a-44e2-98bb-c0d0bc571111.pdf",
-     17,
-     "a worldwide network in 12 countries (as of March 2026)",
-     "12"
-    ],
-    "y:20250331": [
-     "4b9716d5-a95f-4c1b-8fa1-894ab1c502e2.pdf",
-     17,
-     "a worldwide network in 12 countries (as of March 2025)",
-     "12"
-    ]
-   }
-  },
-  {
    "name": "Manufacturing Locations",
    "unit": "count",
    "kind": "level",
    "y": {
+    "20240331": 16.0,
     "20250331": 16.0,
     "20260331": 16.0
    },
@@ -350,6 +455,12 @@
      "4b9716d5-a95f-4c1b-8fa1-894ab1c502e2.pdf",
      17,
      "16 stainless steel manufacturing and processing facilities (as of March 2025)",
+     "16"
+    ],
+    "y:20240331": [
+     "8374a988-49e4-4223-92ac-e23a2d0c93fc.pdf",
+     16,
+     "16 stainless steel manufacturing and processing facilities (as of March 2024)",
      "16"
     ]
    }
