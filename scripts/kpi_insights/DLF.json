@@ -43,6 +43,13 @@
    "title": "Annual Report FY 2025-26",
    "read": "2026-09-08",
    "by": "claude-routine"
+  },
+  "3bc3c50d-f5d6-41eb-bba8-8aee5b7978a4.pdf": {
+   "kind": "ar",
+   "date": "2025-07-13",
+   "title": "Annual Report FY 2024-25",
+   "read": "2026-09-08",
+   "by": "claude-routine"
   }
  },
  "metrics": [
@@ -188,6 +195,66 @@
    }
   },
   {
+   "name": "Operational Rental Portfolio",
+   "unit": "msf",
+   "kind": "level",
+   "y": {
+    "20220331": 37.6
+   },
+   "q": {
+    "20250331": 45.0,
+    "20250630": 46.2,
+    "20250930": 48.7,
+    "20251231": 49.1,
+    "20260331": 49.6,
+    "20260630": 50.0
+   },
+   "src": {
+    "q:20260630": [
+     "64970c46-2d4a-426c-92a9-463631bb194d.pdf",
+     18,
+     "Strong operational portfolio ~50 msf of rental assets",
+     "50"
+    ],
+    "q:20260331": [
+     "123b40d8-d195-4991-9ddf-f576dbf28d8f.pdf",
+     22,
+     "Total Leasable Area (Operational Rental Portfolio Snapshot)",
+     "49.6"
+    ],
+    "y:20220331": [
+     "123b40d8-d195-4991-9ddf-f576dbf28d8f.pdf",
+     6,
+     "Rental Portfolio (5-Year Performance Summary)",
+     "37.6"
+    ],
+    "q:20251231": [
+     "ffb78cba-9dde-47e7-8e3a-eafb36c323cd.pdf",
+     20,
+     "Total Leasable Area (Operational Rental Portfolio Snapshot)",
+     "49.1"
+    ],
+    "q:20250930": [
+     "92387abd-1251-4812-a480-34c21d8ffbff.pdf",
+     20,
+     "Total Leasable Area (Operational Rental Portfolio Snapshot)",
+     "48.7"
+    ],
+    "q:20250630": [
+     "9708b40c-d3a4-4c09-91fc-1ddb2bf8baef.pdf",
+     20,
+     "Total Leasable Area (Operational Rental Portfolio Snapshot)",
+     "46.2"
+    ],
+    "q:20250331": [
+     "3bc3c50d-f5d6-41eb-bba8-8aee5b7978a4.pdf",
+     67,
+     "operational portfolio stood at ~4.18 msm (~45 msf)",
+     "45"
+    ]
+   }
+  },
+  {
    "name": "Rental Income (Office)",
    "unit": "₹ crore",
    "kind": "flow",
@@ -306,55 +373,54 @@
    }
   },
   {
-   "name": "Operational Rental Portfolio",
-   "unit": "msf",
+   "name": "Rental Occupancy",
+   "unit": "%",
    "kind": "level",
-   "y": {
-    "20220331": 37.6
-   },
+   "y": {},
    "q": {
-    "20250630": 46.2,
-    "20250930": 48.7,
-    "20251231": 49.1,
-    "20260331": 49.6,
-    "20260630": 50.0
+    "20250331": 94.0,
+    "20250630": 94.0,
+    "20250930": 94.0,
+    "20251231": 94.0,
+    "20260331": 95.0,
+    "20260630": 95.0
    },
    "src": {
     "q:20260630": [
      "64970c46-2d4a-426c-92a9-463631bb194d.pdf",
      18,
-     "Strong operational portfolio ~50 msf of rental assets",
-     "50"
+     "operating at high occupancy levels [95%]",
+     "95"
     ],
     "q:20260331": [
      "123b40d8-d195-4991-9ddf-f576dbf28d8f.pdf",
      22,
-     "Total Leasable Area (Operational Rental Portfolio Snapshot)",
-     "49.6"
-    ],
-    "y:20220331": [
-     "123b40d8-d195-4991-9ddf-f576dbf28d8f.pdf",
-     6,
-     "Rental Portfolio (5-Year Performance Summary)",
-     "37.6"
+     "Occupancy at 95% (by area)",
+     "95"
     ],
     "q:20251231": [
      "ffb78cba-9dde-47e7-8e3a-eafb36c323cd.pdf",
      20,
-     "Total Leasable Area (Operational Rental Portfolio Snapshot)",
-     "49.1"
+     "Total Leased Area (%)",
+     "94"
     ],
     "q:20250930": [
      "92387abd-1251-4812-a480-34c21d8ffbff.pdf",
      20,
-     "Total Leasable Area (Operational Rental Portfolio Snapshot)",
-     "48.7"
+     "Total Leased Area (%)",
+     "94"
     ],
     "q:20250630": [
      "9708b40c-d3a4-4c09-91fc-1ddb2bf8baef.pdf",
      20,
-     "Total Leasable Area (Operational Rental Portfolio Snapshot)",
-     "46.2"
+     "Total Leased Area (%)",
+     "94"
+    ],
+    "q:20250331": [
+     "3bc3c50d-f5d6-41eb-bba8-8aee5b7978a4.pdf",
+     67,
+     "occupancy of ~94% at the end of the year",
+     "94"
     ]
    }
   },
@@ -400,51 +466,6 @@
      5,
      "DCCDL Rental income grew to Rs 1,326 crore",
      "1,326"
-    ]
-   }
-  },
-  {
-   "name": "Rental Occupancy",
-   "unit": "%",
-   "kind": "level",
-   "y": {},
-   "q": {
-    "20250630": 94.0,
-    "20250930": 94.0,
-    "20251231": 94.0,
-    "20260331": 95.0,
-    "20260630": 95.0
-   },
-   "src": {
-    "q:20260630": [
-     "64970c46-2d4a-426c-92a9-463631bb194d.pdf",
-     18,
-     "operating at high occupancy levels [95%]",
-     "95"
-    ],
-    "q:20260331": [
-     "123b40d8-d195-4991-9ddf-f576dbf28d8f.pdf",
-     22,
-     "Occupancy at 95% (by area)",
-     "95"
-    ],
-    "q:20251231": [
-     "ffb78cba-9dde-47e7-8e3a-eafb36c323cd.pdf",
-     20,
-     "Total Leased Area (%)",
-     "94"
-    ],
-    "q:20250930": [
-     "92387abd-1251-4812-a480-34c21d8ffbff.pdf",
-     20,
-     "Total Leased Area (%)",
-     "94"
-    ],
-    "q:20250630": [
-     "9708b40c-d3a4-4c09-91fc-1ddb2bf8baef.pdf",
-     20,
-     "Total Leased Area (%)",
-     "94"
     ]
    }
   },
@@ -708,6 +729,37 @@
    }
   },
   {
+   "name": "Total Employees",
+   "unit": "count",
+   "kind": "level",
+   "y": {
+    "20240331": 2507.0,
+    "20250331": 3103.0,
+    "20260331": 4310.0
+   },
+   "q": {},
+   "src": {
+    "y:20260331": [
+     "7ecef16f-7888-4fed-9be5-77aa26834bd4.pdf",
+     54,
+     "Total Employees (BRSR workforce table)",
+     "4,310"
+    ],
+    "y:20250331": [
+     "3bc3c50d-f5d6-41eb-bba8-8aee5b7978a4.pdf",
+     50,
+     "Total Employees (BRSR workforce table)",
+     "3,103"
+    ],
+    "y:20240331": [
+     "3bc3c50d-f5d6-41eb-bba8-8aee5b7978a4.pdf",
+     50,
+     "Total Employees (BRSR workforce table)",
+     "2,507"
+    ]
+   }
+  },
+  {
    "name": "Exit Rental Run-Rate",
    "unit": "₹ crore",
    "kind": "level",
@@ -800,30 +852,6 @@
      6,
      "RoE (DLF Limited), 5-year summary",
      "10"
-    ]
-   }
-  },
-  {
-   "name": "Total Employees",
-   "unit": "count",
-   "kind": "level",
-   "y": {
-    "20250331": 3103.0,
-    "20260331": 4310.0
-   },
-   "q": {},
-   "src": {
-    "y:20260331": [
-     "7ecef16f-7888-4fed-9be5-77aa26834bd4.pdf",
-     54,
-     "Total Employees (BRSR workforce table)",
-     "4,310"
-    ],
-    "y:20250331": [
-     "7ecef16f-7888-4fed-9be5-77aa26834bd4.pdf",
-     54,
-     "Total Employees (BRSR workforce table)",
-     "3,103"
     ]
    }
   },
