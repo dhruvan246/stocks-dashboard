@@ -22,6 +22,13 @@
    "title": "Q3 FY26 Investor Presentation",
    "read": "2026-09-08",
    "by": "claude-routine"
+  },
+  "086e2fca-6c59-490c-a1e3-6c4782dd8517.pdf": {
+   "kind": "ip",
+   "date": "2025-11-10",
+   "title": "Q2 FY26 Investor Presentation",
+   "read": "2026-09-08",
+   "by": "claude-routine"
   }
  },
  "metrics": [
@@ -177,6 +184,44 @@
   },
   {
    "name": "Production",
+   "unit": "MT",
+   "kind": "flow",
+   "y": {},
+   "q": {
+    "20250630": 84955.0,
+    "20250930": 92826.0,
+    "20251231": 82493.0,
+    "20260331": 79443.0
+   },
+   "src": {
+    "q:20260331": [
+     "58738ca1-b6d0-4a01-8a71-81ae68bf459d.pdf",
+     12,
+     "Production - MT",
+     "79,443"
+    ],
+    "q:20251231": [
+     "58738ca1-b6d0-4a01-8a71-81ae68bf459d.pdf",
+     12,
+     "Production - MT",
+     "82,493"
+    ],
+    "q:20250930": [
+     "bda2e0ff-c7e0-469a-bfd4-90881d4a5ca1.pdf",
+     11,
+     "Production - MT",
+     "92,826"
+    ],
+    "q:20250630": [
+     "086e2fca-6c59-490c-a1e3-6c4782dd8517.pdf",
+     10,
+     "Production - MT",
+     "84,955"
+    ]
+   }
+  },
+  {
+   "name": "Production",
    "unit": "KT",
    "kind": "flow",
    "y": {},
@@ -207,33 +252,26 @@
    }
   },
   {
-   "name": "Production",
-   "unit": "MT",
+   "name": "Avg Realisation per Tonne",
+   "unit": "₹/MT",
    "kind": "flow",
    "y": {},
    "q": {
-    "20250930": 92826.0,
-    "20251231": 82493.0,
-    "20260331": 79443.0
+    "20250630": 74317.0,
+    "20250930": 73237.0
    },
    "src": {
-    "q:20260331": [
-     "58738ca1-b6d0-4a01-8a71-81ae68bf459d.pdf",
-     12,
-     "Production - MT",
-     "79,443"
-    ],
-    "q:20251231": [
-     "58738ca1-b6d0-4a01-8a71-81ae68bf459d.pdf",
-     12,
-     "Production - MT",
-     "82,493"
-    ],
     "q:20250930": [
-     "bda2e0ff-c7e0-469a-bfd4-90881d4a5ca1.pdf",
-     11,
-     "Production - MT",
-     "92,826"
+     "086e2fca-6c59-490c-a1e3-6c4782dd8517.pdf",
+     10,
+     "Avg realisation/MT",
+     "73,237"
+    ],
+    "q:20250630": [
+     "086e2fca-6c59-490c-a1e3-6c4782dd8517.pdf",
+     10,
+     "Avg realisation/MT",
+     "74,317"
     ]
    }
   },
@@ -268,6 +306,23 @@
      32,
      "Global Customers (doc period)",
      "75"
+    ]
+   }
+  },
+  {
+   "name": "Production Plants",
+   "unit": "count",
+   "kind": "level",
+   "y": {},
+   "q": {
+    "20250930": 8.0
+   },
+   "src": {
+    "q:20250930": [
+     "086e2fca-6c59-490c-a1e3-6c4782dd8517.pdf",
+     28,
+     "Production Plants (doc period)",
+     "8"
     ]
    }
   },
