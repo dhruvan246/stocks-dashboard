@@ -15,6 +15,13 @@
    "title": "Investor Presentation, September 2026",
    "read": "2026-09-08",
    "by": "claude-routine"
+  },
+  "b1ca162c-2fad-4687-80a8-51b9b84da501.pdf": {
+   "kind": "ar",
+   "date": "2026-05-29",
+   "title": "Integrated Annual Report FY 2025-26",
+   "read": "2026-09-08",
+   "by": "claude-routine"
   }
  },
  "metrics": [
@@ -402,6 +409,37 @@
    }
   },
   {
+   "name": "India Thermal Capacity Market Share",
+   "unit": "%",
+   "kind": "level",
+   "y": {
+    "20240331": 5.6,
+    "20250331": 6.6,
+    "20260331": 8.0
+   },
+   "q": {},
+   "src": {
+    "y:20240331": [
+     "b1ca162c-2fad-4687-80a8-51b9b84da501.pdf",
+     35,
+     "Growing share in India's overall thermal generation capacity",
+     "5.6"
+    ],
+    "y:20250331": [
+     "b1ca162c-2fad-4687-80a8-51b9b84da501.pdf",
+     35,
+     "Growing share in India's overall thermal generation capacity",
+     "6.6"
+    ],
+    "y:20260331": [
+     "b1ca162c-2fad-4687-80a8-51b9b84da501.pdf",
+     35,
+     "Growing share in India's overall thermal generation capacity",
+     "8.0"
+    ]
+   }
+  },
+  {
    "name": "Net Debt",
    "unit": "$ Mn",
    "kind": "level",
@@ -434,6 +472,56 @@
    }
   },
   {
+   "name": "Fly Ash Utilisation",
+   "unit": "%",
+   "kind": "flow",
+   "y": {
+    "20260331": 113.0
+   },
+   "q": {
+    "20260630": 93.0
+   },
+   "src": {
+    "q:20260630": [
+     "5d581e22-8aa0-4465-a088-6bba6fc4bfdd.pdf",
+     26,
+     "ash utilization in Q1 FY27",
+     "93"
+    ],
+    "y:20260331": [
+     "b1ca162c-2fad-4687-80a8-51b9b84da501.pdf",
+     35,
+     "113% ash utilisation",
+     "113"
+    ]
+   }
+  },
+  {
+   "name": "Water Intensity (all plants)",
+   "unit": "m3/MWh",
+   "kind": "flow",
+   "y": {
+    "20260331": 2.13
+   },
+   "q": {
+    "20260630": 2.24
+   },
+   "src": {
+    "q:20260630": [
+     "5d581e22-8aa0-4465-a088-6bba6fc4bfdd.pdf",
+     26,
+     "Water Intensity for all plants, Q1 FY27",
+     "2.24"
+    ],
+    "y:20260331": [
+     "b1ca162c-2fad-4687-80a8-51b9b84da501.pdf",
+     35,
+     "Water intensity (Specific water consumption) of 2.13 m3/MWh",
+     "2.13"
+    ]
+   }
+  },
+  {
    "name": "Emission Intensity",
    "unit": "tCO2e/MWh",
    "kind": "flow",
@@ -447,23 +535,6 @@
      26,
      "Average Emission intensity for FY26",
      "0.86"
-    ]
-   }
-  },
-  {
-   "name": "Fly Ash Utilisation",
-   "unit": "%",
-   "kind": "flow",
-   "y": {},
-   "q": {
-    "20260630": 93.0
-   },
-   "src": {
-    "q:20260630": [
-     "5d581e22-8aa0-4465-a088-6bba6fc4bfdd.pdf",
-     26,
-     "ash utilization in Q1 FY27",
-     "93"
     ]
    }
   },
@@ -515,23 +586,6 @@
      8,
      "Operating Capacity (13 Assets)",
      "18,330"
-    ]
-   }
-  },
-  {
-   "name": "Water Intensity (all plants)",
-   "unit": "m3/MWh",
-   "kind": "flow",
-   "y": {},
-   "q": {
-    "20260630": 2.24
-   },
-   "src": {
-    "q:20260630": [
-     "5d581e22-8aa0-4465-a088-6bba6fc4bfdd.pdf",
-     26,
-     "Water Intensity for all plants, Q1 FY27",
-     "2.24"
     ]
    }
   }
