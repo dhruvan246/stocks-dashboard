@@ -22,6 +22,27 @@
    "title": "Management Meet Presentation (Analyst/Institutional Investors), Jan 2026",
    "read": "2026-09-06",
    "by": "claude-routine"
+  },
+  "583adc15-a080-48d7-924e-7d8b44b0a851.pdf": {
+   "kind": "res",
+   "date": "2025-11-10",
+   "title": "Q2 & H1 FY26 Results / Media Release",
+   "read": "2026-09-08",
+   "by": "claude-routine"
+  },
+  "24a4492b-892c-457f-904a-ace6b215caf6.pdf": {
+   "kind": "res",
+   "date": "2025-08-14",
+   "title": "Q1 FY26 Results / Media Release",
+   "read": "2026-09-08",
+   "by": "claude-routine"
+  },
+  "fec0083d-97dd-49f6-9650-f10706e1b947.pdf": {
+   "kind": "ar",
+   "date": "2025-08-01",
+   "title": "Annual Report FY 2024-25",
+   "read": "2026-09-08",
+   "by": "claude-routine"
   }
  },
  "metrics": [
@@ -29,18 +50,23 @@
    "name": "4G/5G Subscribers",
    "unit": "mn",
    "kind": "level",
-   "y": {},
+   "y": {
+    "20250331": 126.4
+   },
    "q": {
+    "20240630": 126.7,
+    "20240930": 125.9,
     "20250331": 126.4,
     "20250630": 127.4,
+    "20250930": 127.8,
     "20260331": 128.9,
     "20260630": 130.1
    },
    "src": {
     "q:20250630": [
-     "f1abd18a-0c02-44ae-8234-2105efe7e976.pdf",
-     14,
-     "4G/5G Subscribers",
+     "24a4492b-892c-457f-904a-ace6b215caf6.pdf",
+     13,
+     "4G/5G subscriber base increased to 127.4 million",
      "127.4"
     ],
     "q:20260331": [
@@ -60,6 +86,30 @@
      23,
      "4G/5G subscriber base of 128.9 million vs 126.4 million in Q4FY25",
      "126.4"
+    ],
+    "q:20250930": [
+     "583adc15-a080-48d7-924e-7d8b44b0a851.pdf",
+     19,
+     "4G/5G subscriber base of 127.8 million",
+     "127.8"
+    ],
+    "q:20240930": [
+     "583adc15-a080-48d7-924e-7d8b44b0a851.pdf",
+     19,
+     "vs 125.9 million in Q2FY25",
+     "125.9"
+    ],
+    "q:20240630": [
+     "24a4492b-892c-457f-904a-ace6b215caf6.pdf",
+     13,
+     "vs 126.7 million in Q1FY25",
+     "126.7"
+    ],
+    "y:20250331": [
+     "fec0083d-97dd-49f6-9650-f10706e1b947.pdf",
+     38,
+     "of which 126.4 Mn are 4G subscribers",
+     "126.4"
     ]
    }
   },
@@ -69,16 +119,19 @@
    "kind": "flow",
    "y": {},
    "q": {
+    "20240630": 154.0,
+    "20240930": 166.0,
     "20250331": 175.0,
     "20250630": 177.0,
+    "20250930": 180.0,
     "20260331": 190.0,
     "20260630": 195.0
    },
    "src": {
     "q:20250630": [
-     "f1abd18a-0c02-44ae-8234-2105efe7e976.pdf",
-     14,
-     "Customer ARPU (excluding M2M)",
+     "24a4492b-892c-457f-904a-ace6b215caf6.pdf",
+     13,
+     "Customer ARPU for the quarter stood at Rs. 177",
      "177"
     ],
     "q:20260331": [
@@ -98,6 +151,70 @@
      23,
      "Customer ARPU at Rs. 190 vs Rs. 175 in Q4FY25",
      "175"
+    ],
+    "q:20250930": [
+     "583adc15-a080-48d7-924e-7d8b44b0a851.pdf",
+     19,
+     "Customer ARPU (ex M2M) at Rs. 180",
+     "180"
+    ],
+    "q:20240930": [
+     "583adc15-a080-48d7-924e-7d8b44b0a851.pdf",
+     19,
+     "vs Rs. 166 in Q2FY25",
+     "166"
+    ],
+    "q:20240630": [
+     "24a4492b-892c-457f-904a-ace6b215caf6.pdf",
+     13,
+     "vs Rs. 154 in Q1FY25",
+     "154"
+    ]
+   }
+  },
+  {
+   "name": "4G Population Coverage",
+   "unit": "%",
+   "kind": "level",
+   "y": {
+    "20240331": 77.0
+   },
+   "q": {
+    "20250630": 84.0,
+    "20250930": 84.4,
+    "20260331": 86.3,
+    "20260630": 87.0
+   },
+   "src": {
+    "q:20260630": [
+     "f1abd18a-0c02-44ae-8234-2105efe7e976.pdf",
+     13,
+     "4G population coverage increased to 87.0% as of June, 2026",
+     "87.0"
+    ],
+    "q:20260331": [
+     "371e1465-3081-4e60-b2ce-cbcf27a77f13.pdf",
+     24,
+     "4G population coverage increased to 86.3% as of March, 2026",
+     "86.3"
+    ],
+    "q:20250930": [
+     "583adc15-a080-48d7-924e-7d8b44b0a851.pdf",
+     19,
+     "4G network coverage expanded to 84.4% of population",
+     "84.4"
+    ],
+    "y:20240331": [
+     "583adc15-a080-48d7-924e-7d8b44b0a851.pdf",
+     20,
+     "compared to ~77% as of March, 2024",
+     "77"
+    ],
+    "q:20250630": [
+     "24a4492b-892c-457f-904a-ace6b215caf6.pdf",
+     13,
+     "4G population coverage increased to ~84% of population",
+     "84"
     ]
    }
   },
@@ -107,6 +224,8 @@
    "kind": "level",
    "y": {},
    "q": {
+    "20250630": 22.0,
+    "20250930": 29.0,
     "20251231": 43.0,
     "20260331": 80.0,
     "20260630": 200.0
@@ -129,6 +248,102 @@
      13,
      "Cities with 5G (doc period)",
      "43"
+    ],
+    "q:20250930": [
+     "583adc15-a080-48d7-924e-7d8b44b0a851.pdf",
+     20,
+     "Vi 5G services are available in 29 cities (doc period)",
+     "29"
+    ],
+    "q:20250630": [
+     "24a4492b-892c-457f-904a-ace6b215caf6.pdf",
+     14,
+     "5G services now available in 22 cities (doc period)",
+     "22"
+    ]
+   }
+  },
+  {
+   "name": "Subscriber Base (EoP)",
+   "unit": "mn",
+   "kind": "level",
+   "y": {
+    "20250331": 198.2
+   },
+   "q": {
+    "20250630": 197.7,
+    "20250930": 196.7,
+    "20260331": 192.8,
+    "20260630": 193.1
+   },
+   "src": {
+    "q:20250630": [
+     "24a4492b-892c-457f-904a-ace6b215caf6.pdf",
+     15,
+     "base stood at 197.7 million",
+     "197.7"
+    ],
+    "q:20260331": [
+     "f1abd18a-0c02-44ae-8234-2105efe7e976.pdf",
+     14,
+     "Subscriber Base (EoP)",
+     "192.8"
+    ],
+    "q:20260630": [
+     "f1abd18a-0c02-44ae-8234-2105efe7e976.pdf",
+     14,
+     "Subscriber Base (EoP)",
+     "193.1"
+    ],
+    "q:20250930": [
+     "583adc15-a080-48d7-924e-7d8b44b0a851.pdf",
+     21,
+     "Our total subscriber base stood at 196.7 million",
+     "196.7"
+    ],
+    "y:20250331": [
+     "fec0083d-97dd-49f6-9650-f10706e1b947.pdf",
+     38,
+     "your Company has 198.2 Mn subscribers as of March 31, 2025",
+     "198.2"
+    ]
+   }
+  },
+  {
+   "name": "Total Unique Broadband Towers",
+   "unit": "count",
+   "kind": "level",
+   "y": {},
+   "q": {
+    "20250630": 189229.0,
+    "20250930": 527000.0,
+    "20260331": 202008.0,
+    "20260630": 204893.0
+   },
+   "src": {
+    "q:20250630": [
+     "f1abd18a-0c02-44ae-8234-2105efe7e976.pdf",
+     14,
+     "Total Unique Broadband Towers (EoP)",
+     "189,229"
+    ],
+    "q:20260331": [
+     "f1abd18a-0c02-44ae-8234-2105efe7e976.pdf",
+     14,
+     "Total Unique Broadband Towers (EoP)",
+     "202,008"
+    ],
+    "q:20260630": [
+     "f1abd18a-0c02-44ae-8234-2105efe7e976.pdf",
+     14,
+     "Total Unique Broadband Towers (EoP)",
+     "204,893"
+    ],
+    "q:20250930": [
+     "583adc15-a080-48d7-924e-7d8b44b0a851.pdf",
+     20,
+     "our total broadband site count stood at ~527,000",
+     "527,000"
     ]
    }
   },
@@ -164,88 +379,68 @@
    }
   },
   {
-   "name": "Subscriber Base (EoP)",
-   "unit": "mn",
-   "kind": "level",
-   "y": {},
-   "q": {
-    "20250630": 197.7,
-    "20260331": 192.8,
-    "20260630": 193.1
-   },
-   "src": {
-    "q:20250630": [
-     "f1abd18a-0c02-44ae-8234-2105efe7e976.pdf",
-     14,
-     "Subscriber Base (EoP)",
-     "197.7"
-    ],
-    "q:20260331": [
-     "f1abd18a-0c02-44ae-8234-2105efe7e976.pdf",
-     14,
-     "Subscriber Base (EoP)",
-     "192.8"
-    ],
-    "q:20260630": [
-     "f1abd18a-0c02-44ae-8234-2105efe7e976.pdf",
-     14,
-     "Subscriber Base (EoP)",
-     "193.1"
-    ]
-   }
-  },
-  {
-   "name": "Total Unique Broadband Towers",
-   "unit": "count",
-   "kind": "level",
-   "y": {},
-   "q": {
-    "20250630": 189229.0,
-    "20260331": 202008.0,
-    "20260630": 204893.0
-   },
-   "src": {
-    "q:20250630": [
-     "f1abd18a-0c02-44ae-8234-2105efe7e976.pdf",
-     14,
-     "Total Unique Broadband Towers (EoP)",
-     "189,229"
-    ],
-    "q:20260331": [
-     "f1abd18a-0c02-44ae-8234-2105efe7e976.pdf",
-     14,
-     "Total Unique Broadband Towers (EoP)",
-     "202,008"
-    ],
-    "q:20260630": [
-     "f1abd18a-0c02-44ae-8234-2105efe7e976.pdf",
-     14,
-     "Total Unique Broadband Towers (EoP)",
-     "204,893"
-    ]
-   }
-  },
-  {
-   "name": "4G Population Coverage",
+   "name": "4G Subscriber Penetration (% of Subscribers)",
    "unit": "%",
    "kind": "level",
-   "y": {},
+   "y": {
+    "20240331": 59.4,
+    "20250331": 63.8
+   },
+   "q": {},
+   "src": {
+    "y:20240331": [
+     "fec0083d-97dd-49f6-9650-f10706e1b947.pdf",
+     36,
+     "increasing from 59.4% as of March 31, 2024 to 63.8% as of March 31, 2025",
+     "59.4"
+    ],
+    "y:20250331": [
+     "fec0083d-97dd-49f6-9650-f10706e1b947.pdf",
+     36,
+     "increasing from 59.4% as of March 31, 2024 to 63.8% as of March 31, 2025",
+     "63.8"
+    ]
+   }
+  },
+  {
+   "name": "Population Covered",
+   "unit": "Bn",
+   "kind": "level",
+   "y": {
+    "20250331": 1.1
+   },
    "q": {
-    "20260331": 86.3,
-    "20260630": 87.0
+    "20251231": 1.2
    },
    "src": {
-    "q:20260630": [
-     "f1abd18a-0c02-44ae-8234-2105efe7e976.pdf",
-     13,
-     "4G population coverage increased to 87.0% as of June, 2026",
-     "87.0"
+    "q:20251231": [
+     "e3731301-b329-4ca4-a779-bc7b830c1f76.pdf",
+     20,
+     "1.2Bn population covered (doc period)",
+     "1.2"
     ],
-    "q:20260331": [
-     "371e1465-3081-4e60-b2ce-cbcf27a77f13.pdf",
-     24,
-     "4G population coverage increased to 86.3% as of March, 2026",
-     "86.3"
+    "y:20250331": [
+     "fec0083d-97dd-49f6-9650-f10706e1b947.pdf",
+     36,
+     "population coverage on 4G is more than 1.1 Bn",
+     "1.1"
+    ]
+   }
+  },
+  {
+   "name": "ApGR Market Share",
+   "unit": "%",
+   "kind": "level",
+   "y": {
+    "20250331": 16.2
+   },
+   "q": {},
+   "src": {
+    "y:20250331": [
+     "fec0083d-97dd-49f6-9650-f10706e1b947.pdf",
+     38,
+     "The Applicable Gross Revenue (ApGR) market share was 16.2%",
+     "16.2"
     ]
    }
   },
@@ -301,23 +496,6 @@
    }
   },
   {
-   "name": "Population Covered",
-   "unit": "Bn",
-   "kind": "level",
-   "y": {},
-   "q": {
-    "20251231": 1.2
-   },
-   "src": {
-    "q:20251231": [
-     "e3731301-b329-4ca4-a779-bc7b830c1f76.pdf",
-     20,
-     "1.2Bn population covered (doc period)",
-     "1.2"
-    ]
-   }
-  },
-  {
    "name": "Retail Outlets",
    "unit": "Lakh",
    "kind": "level",
@@ -352,6 +530,23 @@
    }
   },
   {
+   "name": "Subscriber Market Share",
+   "unit": "%",
+   "kind": "level",
+   "y": {
+    "20250331": 17.7
+   },
+   "q": {},
+   "src": {
+    "y:20250331": [
+     "fec0083d-97dd-49f6-9650-f10706e1b947.pdf",
+     38,
+     "the subscriber market share was 17.7% as of March 31, 2025",
+     "17.7"
+    ]
+   }
+  },
+  {
    "name": "Towns & Villages Covered",
    "unit": "Lakh",
    "kind": "level",
@@ -365,6 +560,40 @@
      20,
      "4.87L towns & villages (doc period)",
      "4.87"
+    ]
+   }
+  },
+  {
+   "name": "Towns & Villages Covered (Broadband)",
+   "unit": "count",
+   "kind": "level",
+   "y": {
+    "20250331": 389600.0
+   },
+   "q": {},
+   "src": {
+    "y:20250331": [
+     "fec0083d-97dd-49f6-9650-f10706e1b947.pdf",
+     36,
+     "broadband coverage is available in over 389,600 Census towns and villages",
+     "389,600"
+    ]
+   }
+  },
+  {
+   "name": "Towns & Villages Covered (Voice)",
+   "unit": "count",
+   "kind": "level",
+   "y": {
+    "20250331": 487000.0
+   },
+   "q": {},
+   "src": {
+    "y:20250331": [
+     "fec0083d-97dd-49f6-9650-f10706e1b947.pdf",
+     36,
+     "covers more than 1.2 Bn Indians in over 487,000 census towns and villages with i",
+     "487,000"
     ]
    }
   }
@@ -834,5 +1063,5 @@
  "catalog_since": "2020-01-01",
  "catalog_until": "2026-09-06",
  "catalog_ver": 5,
- "updated": "2026-09-06"
+ "updated": "2026-09-08"
 }
