@@ -22,16 +22,107 @@
    "title": "Annual Report FY 2025 (year ended 30 September 2025)",
    "read": "2026-09-06",
    "by": "claude-routine"
+  },
+  "ff75729d-0c96-469f-9261-8c771c19ec86.pdf": {
+   "kind": "res",
+   "date": "2026-05-14",
+   "title": "Q2 FY2026 Results (quarter ended 31 March 2026)",
+   "read": "2026-09-08",
+   "by": "claude-routine"
+  },
+  "5644ac03-5fe8-4404-bd1f-5a6679b5f2ea.pdf": {
+   "kind": "res",
+   "date": "2026-02-13",
+   "title": "Q1 FY2026 Results (quarter ended 31 December 2025)",
+   "read": "2026-09-08",
+   "by": "claude-routine"
+  },
+  "736e2c6f-4731-4464-8b38-896b8e348cb7.pdf": {
+   "kind": "res",
+   "date": "2025-11-24",
+   "title": "Q4 FY2025 / FY2025 Results (year ended 30 September 2025)",
+   "read": "2026-09-08",
+   "by": "claude-routine"
+  },
+  "4fcf32a4-c2e4-4bc7-9419-ce37b6dc44d2.pdf": {
+   "kind": "res",
+   "date": "2025-08-04",
+   "title": "Q3 FY2025 Results (quarter ended 30 June 2025)",
+   "read": "2026-09-08",
+   "by": "claude-routine"
+  },
+  "8ba47e1d-aef4-4f22-8101-2934e75838ca.pdf": {
+   "kind": "res",
+   "date": "2025-07-07",
+   "title": "Q2 FY2025 Results (half-year ended 31 March 2025)",
+   "read": "2026-09-08",
+   "by": "claude-routine"
   }
  },
  "metrics": [
+  {
+   "name": "New Orders",
+   "unit": "INR crore",
+   "kind": "flow",
+   "y": {},
+   "q": {
+    "20240630": 1693.0,
+    "20240930": 2331.0,
+    "20241231": 3225.0,
+    "20250630": 10765.0,
+    "20250930": 2351.0,
+    "20251231": 3343.0
+   },
+   "src": {
+    "q:20251231": [
+     "5644ac03-5fe8-4404-bd1f-5a6679b5f2ea.pdf",
+     8,
+     "New Orders",
+     "3,343"
+    ],
+    "q:20241231": [
+     "5644ac03-5fe8-4404-bd1f-5a6679b5f2ea.pdf",
+     8,
+     "New Orders",
+     "3,225"
+    ],
+    "q:20250930": [
+     "736e2c6f-4731-4464-8b38-896b8e348cb7.pdf",
+     13,
+     "New Orders",
+     "2,351"
+    ],
+    "q:20240930": [
+     "736e2c6f-4731-4464-8b38-896b8e348cb7.pdf",
+     13,
+     "New Orders",
+     "2,331"
+    ],
+    "q:20250630": [
+     "4fcf32a4-c2e4-4bc7-9419-ce37b6dc44d2.pdf",
+     7,
+     "New Orders (Nine months ended June 25)",
+     "10,765"
+    ],
+    "q:20240630": [
+     "4fcf32a4-c2e4-4bc7-9419-ce37b6dc44d2.pdf",
+     7,
+     "New Orders",
+     "1,693"
+    ]
+   }
+  },
   {
    "name": "Order Backlog",
    "unit": "INR crore",
    "kind": "level",
    "y": {},
    "q": {
+    "20250331": 15080.0,
     "20250630": 16601.0,
+    "20250930": 16205.0,
+    "20251231": 17599.0,
+    "20260331": 18433.0,
     "20260630": 19331.0
    },
    "src": {
@@ -46,6 +137,30 @@
      7,
      "Order backlog",
      "16,601"
+    ],
+    "q:20260331": [
+     "ff75729d-0c96-469f-9261-8c771c19ec86.pdf",
+     9,
+     "Order backlog",
+     "18,433"
+    ],
+    "q:20250331": [
+     "ff75729d-0c96-469f-9261-8c771c19ec86.pdf",
+     9,
+     "Order backlog",
+     "15,080"
+    ],
+    "q:20251231": [
+     "5644ac03-5fe8-4404-bd1f-5a6679b5f2ea.pdf",
+     8,
+     "Order backlog up 37.6% to INR 17,599 crore (doc period)",
+     "17,599"
+    ],
+    "q:20250930": [
+     "736e2c6f-4731-4464-8b38-896b8e348cb7.pdf",
+     12,
+     "Order Backlog up 47% to INR 16,205 crore (doc period)",
+     "16,205"
     ]
    }
   },
@@ -448,5 +563,5 @@
  "catalog_since": "2020-01-01",
  "catalog_until": "2026-09-06",
  "catalog_ver": 5,
- "updated": "2026-09-06"
+ "updated": "2026-09-08"
 }
