@@ -15,6 +15,20 @@
    "title": "Q1 FY27 Investor Presentation",
    "read": "2026-09-08",
    "by": "claude-routine"
+  },
+  "e18fb6fb-e0dc-47d4-bb13-950610079466.pdf": {
+   "kind": "ip",
+   "date": "2026-04-21",
+   "title": "Q4 FY26 / FY26 Investor Presentation",
+   "read": "2026-09-08",
+   "by": "claude-routine"
+  },
+  "2ed369ed-da65-449e-89a0-97faa6b11254.pdf": {
+   "kind": "ip",
+   "date": "2026-01-08",
+   "title": "Q3 FY26 Investor Presentation",
+   "read": "2026-09-08",
+   "by": "claude-routine"
   }
  },
  "metrics": [
@@ -31,6 +45,7 @@
    },
    "q": {
     "20250630": 5246.0,
+    "20251231": 5450.0,
     "20260630": 6630.0
    },
    "src": {
@@ -59,9 +74,9 @@
      "5,132"
     ],
     "y:20260331": [
-     "1650f0ea-1a86-4a60-9b8a-600e4fc8f637.pdf",
-     21,
-     "Product-wise Order Book (₹. Cr) total, FY26",
+     "e18fb6fb-e0dc-47d4-bb13-950610079466.pdf",
+     14,
+     "Unexecuted Order Book – 31.03.26",
      "5,005"
     ],
     "q:20250630": [
@@ -75,6 +90,83 @@
      21,
      "Product-wise Order Book (₹. Cr) total, Un-executed OB as on Q1FY27",
      "6,630"
+    ],
+    "q:20251231": [
+     "2ed369ed-da65-449e-89a0-97faa6b11254.pdf",
+     10,
+     "Unexecuted Order Book",
+     "5,450"
+    ]
+   }
+  },
+  {
+   "name": "Order Inflow",
+   "unit": "INR Cr",
+   "kind": "flow",
+   "y": {
+    "20260331": 2374.0
+   },
+   "q": {
+    "20251231": 665.0,
+    "20260331": 244.0,
+    "20260630": 2114.0
+   },
+   "src": {
+    "y:20260331": [
+     "e18fb6fb-e0dc-47d4-bb13-950610079466.pdf",
+     14,
+     "New Order Inflow – FY26",
+     "2,374"
+    ],
+    "q:20260630": [
+     "1650f0ea-1a86-4a60-9b8a-600e4fc8f637.pdf",
+     10,
+     "New Order Inflow during the Quarter",
+     "2,114"
+    ],
+    "q:20260331": [
+     "e18fb6fb-e0dc-47d4-bb13-950610079466.pdf",
+     5,
+     "Order Inflow Q4",
+     "244"
+    ],
+    "q:20251231": [
+     "2ed369ed-da65-449e-89a0-97faa6b11254.pdf",
+     10,
+     "New Order Inflow",
+     "665"
+    ]
+   }
+  },
+  {
+   "name": "Bid Pipeline (Inquiries under Negotiation)",
+   "unit": "INR Cr",
+   "kind": "level",
+   "y": {
+    "20260331": 23000.0
+   },
+   "q": {
+    "20251231": 16500.0,
+    "20260630": 23000.0
+   },
+   "src": {
+    "q:20260630": [
+     "1650f0ea-1a86-4a60-9b8a-600e4fc8f637.pdf",
+     10,
+     "Inquiries under Negotiation (doc period)",
+     "23,000"
+    ],
+    "y:20260331": [
+     "e18fb6fb-e0dc-47d4-bb13-950610079466.pdf",
+     14,
+     "Inquiries under Negotiation (doc period)",
+     "23,000"
+    ],
+    "q:20251231": [
+     "2ed369ed-da65-449e-89a0-97faa6b11254.pdf",
+     10,
+     "Inquiries under Negotiation (doc period)",
+     "16,500"
     ]
    }
   },
@@ -90,9 +182,9 @@
    },
    "src": {
     "y:20260331": [
-     "a2c9ff7a-43ae-4cb0-a4c7-4acf5cd1b7e1.pdf",
-     25,
-     "total production capacity beyond the 75,000 MVA mark already achieved in install",
+     "e18fb6fb-e0dc-47d4-bb13-950610079466.pdf",
+     5,
+     "installed capacity across units of ~75,000MVA (doc period)",
      "75,000"
     ],
     "q:20260630": [
@@ -100,31 +192,6 @@
      19,
      "manufacturing capacity of 75,000+ MVA (doc period)",
      "75,000"
-    ]
-   }
-  },
-  {
-   "name": "Order Inflow",
-   "unit": "INR Cr",
-   "kind": "flow",
-   "y": {
-    "20260331": 2374.0
-   },
-   "q": {
-    "20260630": 2114.0
-   },
-   "src": {
-    "y:20260331": [
-     "a2c9ff7a-43ae-4cb0-a4c7-4acf5cd1b7e1.pdf",
-     25,
-     "our actual order inflow was ₹2,374 crore",
-     "2,374"
-    ],
-    "q:20260630": [
-     "1650f0ea-1a86-4a60-9b8a-600e4fc8f637.pdf",
-     10,
-     "New Order Inflow during the Quarter",
-     "2,114"
     ]
    }
   },
@@ -149,23 +216,6 @@
      30,
      "up from 29,118 MVA in FY25",
      "29,118"
-    ]
-   }
-  },
-  {
-   "name": "Bid Pipeline (Inquiries under Negotiation)",
-   "unit": "INR Cr",
-   "kind": "level",
-   "y": {},
-   "q": {
-    "20260630": 23000.0
-   },
-   "src": {
-    "q:20260630": [
-     "1650f0ea-1a86-4a60-9b8a-600e4fc8f637.pdf",
-     10,
-     "Inquiries under Negotiation (doc period)",
-     "23,000"
     ]
    }
   },
