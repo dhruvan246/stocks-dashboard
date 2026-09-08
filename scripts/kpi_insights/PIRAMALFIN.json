@@ -15,9 +15,109 @@
    "title": "Q1 FY27 Investor Presentation (Analyst Meeting)",
    "read": "2026-09-07",
    "by": "claude-routine"
+  },
+  "56fb2a6d-6134-4887-a022-d0fb84437100.pdf": {
+   "kind": "ip",
+   "date": "2026-08-10",
+   "title": "Q1 FY27 Investor Presentation",
+   "read": "2026-09-08",
+   "by": "claude-routine"
   }
  },
  "metrics": [
+  {
+   "name": "Gross NPA (GNPA)",
+   "unit": "%",
+   "kind": "level",
+   "y": {},
+   "q": {
+    "20250630": 2.8,
+    "20260331": 2.3,
+    "20260630": 2.4
+   },
+   "src": {
+    "q:20260630": [
+     "56fb2a6d-6134-4887-a022-d0fb84437100.pdf",
+     44,
+     "GNPA ratio (%)",
+     "2.4"
+    ],
+    "q:20250630": [
+     "56fb2a6d-6134-4887-a022-d0fb84437100.pdf",
+     44,
+     "GNPA ratio (%)",
+     "2.8"
+    ],
+    "q:20260331": [
+     "56fb2a6d-6134-4887-a022-d0fb84437100.pdf",
+     44,
+     "GNPA ratio (%)",
+     "2.3"
+    ]
+   }
+  },
+  {
+   "name": "Net NPA (NNPA)",
+   "unit": "%",
+   "kind": "level",
+   "y": {},
+   "q": {
+    "20250630": 2.0,
+    "20260331": 1.6,
+    "20260630": 1.6
+   },
+   "src": {
+    "q:20260630": [
+     "56fb2a6d-6134-4887-a022-d0fb84437100.pdf",
+     44,
+     "NNPA ratio (%)",
+     "1.6"
+    ],
+    "q:20260331": [
+     "56fb2a6d-6134-4887-a022-d0fb84437100.pdf",
+     44,
+     "NNPA ratio (%)",
+     "1.6"
+    ],
+    "q:20250630": [
+     "56fb2a6d-6134-4887-a022-d0fb84437100.pdf",
+     44,
+     "NNPA ratio (%)",
+     "2.0"
+    ]
+   }
+  },
+  {
+   "name": "Total AUM (excl. DA & Co-lending)",
+   "unit": "INR Cr",
+   "kind": "level",
+   "y": {},
+   "q": {
+    "20250630": 77572.0,
+    "20260331": 90018.0,
+    "20260630": 95369.0
+   },
+   "src": {
+    "q:20260630": [
+     "56fb2a6d-6134-4887-a022-d0fb84437100.pdf",
+     44,
+     "Total AUM*",
+     "95,369"
+    ],
+    "q:20260331": [
+     "56fb2a6d-6134-4887-a022-d0fb84437100.pdf",
+     44,
+     "Total AUM*",
+     "90,018"
+    ],
+    "q:20250630": [
+     "56fb2a6d-6134-4887-a022-d0fb84437100.pdf",
+     44,
+     "Total AUM*",
+     "77,572"
+    ]
+   }
+  },
   {
    "name": "Cost-to-Income Ratio",
    "unit": "%",
@@ -29,9 +129,9 @@
    },
    "src": {
     "q:20260630": [
-     "12650319-b819-4729-bb08-076727f3a722.pdf",
+     "56fb2a6d-6134-4887-a022-d0fb84437100.pdf",
      10,
-     "Company cost-to-income 52.5%",
+     "Company cost-to-income (doc period)",
      "52.5"
     ],
     "q:20250630": [
@@ -43,26 +143,50 @@
    }
   },
   {
-   "name": "Gross NPA (GNPA)",
-   "unit": "%",
-   "kind": "level",
+   "name": "Disbursements per Branch (TTM)",
+   "unit": "₹ Cr",
+   "kind": "flow",
    "y": {},
    "q": {
-    "20250630": 2.8,
-    "20260630": 2.4
+    "20250630": 2.5,
+    "20260630": 2.9
    },
    "src": {
-    "q:20260630": [
-     "12650319-b819-4729-bb08-076727f3a722.pdf",
-     10,
-     "GNPA 2.4%",
-     "2.4"
-    ],
     "q:20250630": [
-     "12650319-b819-4729-bb08-076727f3a722.pdf",
-     10,
-     "vs 2.8% in Q1 FY26",
-     "2.8"
+     "56fb2a6d-6134-4887-a022-d0fb84437100.pdf",
+     8,
+     "Disb. per branch",
+     "2.5"
+    ],
+    "q:20260630": [
+     "56fb2a6d-6134-4887-a022-d0fb84437100.pdf",
+     8,
+     "Disb. per branch",
+     "2.9"
+    ]
+   }
+  },
+  {
+   "name": "Disbursements per Employee (TTM)",
+   "unit": "₹ Cr",
+   "kind": "flow",
+   "y": {},
+   "q": {
+    "20250630": 71.0,
+    "20260630": 87.0
+   },
+   "src": {
+    "q:20250630": [
+     "56fb2a6d-6134-4887-a022-d0fb84437100.pdf",
+     8,
+     "Disb. per employee",
+     "71"
+    ],
+    "q:20260630": [
+     "56fb2a6d-6134-4887-a022-d0fb84437100.pdf",
+     8,
+     "Disb. per employee",
+     "87"
     ]
    }
   },
@@ -101,9 +225,9 @@
    },
    "src": {
     "q:20260630": [
-     "12650319-b819-4729-bb08-076727f3a722.pdf",
+     "56fb2a6d-6134-4887-a022-d0fb84437100.pdf",
      10,
-     "RoAUM 1.9% (Growth business)",
+     "RoAUM (Growth business) (doc period)",
      "1.9"
     ],
     "q:20250630": [
@@ -148,9 +272,9 @@
    },
    "src": {
     "q:20260630": [
-     "12650319-b819-4729-bb08-076727f3a722.pdf",
+     "56fb2a6d-6134-4887-a022-d0fb84437100.pdf",
      10,
-     "AUM/E 3.7x",
+     "AUM/E (doc period)",
      "3.7"
     ]
    }
@@ -165,9 +289,9 @@
    },
    "src": {
     "q:20260630": [
-     "12650319-b819-4729-bb08-076727f3a722.pdf",
+     "56fb2a6d-6134-4887-a022-d0fb84437100.pdf",
      10,
-     "Average LCR 553%",
+     "Average LCR (doc period)",
      "553"
     ]
    }
@@ -182,9 +306,9 @@
    },
    "src": {
     "q:20260630": [
-     "12650319-b819-4729-bb08-076727f3a722.pdf",
+     "56fb2a6d-6134-4887-a022-d0fb84437100.pdf",
      10,
-     "COB 8.8%, stable QoQ",
+     "COB (doc period)",
      "8.8"
     ]
    }
@@ -199,9 +323,9 @@
    },
    "src": {
     "q:20260630": [
-     "12650319-b819-4729-bb08-076727f3a722.pdf",
+     "56fb2a6d-6134-4887-a022-d0fb84437100.pdf",
      10,
-     "stable Growth business credit cost 1.6%",
+     "Growth business credit cost (doc period)",
      "1.6"
     ]
    }
@@ -216,9 +340,9 @@
    },
    "src": {
     "q:20260630": [
-     "12650319-b819-4729-bb08-076727f3a722.pdf",
+     "56fb2a6d-6134-4887-a022-d0fb84437100.pdf",
      10,
-     "NIM 6.5%, up 47bps YoY and stable QoQ",
+     "NIM (doc period)",
      "6.5"
     ]
    }
@@ -233,9 +357,9 @@
    },
    "src": {
     "q:20260630": [
-     "12650319-b819-4729-bb08-076727f3a722.pdf",
+     "56fb2a6d-6134-4887-a022-d0fb84437100.pdf",
      10,
-     "Retail AUM ₹91,249 Cr, up 32% YoY",
+     "Retail AUM (doc period)",
      "91,249"
     ]
    }
@@ -250,9 +374,9 @@
    },
    "src": {
     "q:20260630": [
-     "12650319-b819-4729-bb08-076727f3a722.pdf",
+     "56fb2a6d-6134-4887-a022-d0fb84437100.pdf",
      10,
-     "Retail opex-to-AUM 3.5%, continues to decline",
+     "Retail opex-to-AUM (doc period)",
      "3.5"
     ]
    }
@@ -267,9 +391,9 @@
    },
    "src": {
     "q:20260630": [
-     "12650319-b819-4729-bb08-076727f3a722.pdf",
+     "56fb2a6d-6134-4887-a022-d0fb84437100.pdf",
      10,
-     "AUM ₹1,06,940 Cr, up 25% YoY",
+     "AUM (doc period)",
      "1,06,940"
     ]
    }
@@ -407,5 +531,5 @@
  "catalog_since": "2020-01-01",
  "catalog_until": "2026-09-07",
  "catalog_ver": 5,
- "updated": "2026-09-07"
+ "updated": "2026-09-08"
 }
