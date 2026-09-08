@@ -15,6 +15,13 @@
    "title": "Corporate Investor Presentation (July 2026)",
    "read": "2026-09-08",
    "by": "claude-routine"
+  },
+  "b51e814a-5720-4a9a-80e8-96c590075601.pdf": {
+   "kind": "ar",
+   "date": "2026-07-06",
+   "title": "Integrated Annual Report FY 2025-26",
+   "read": "2026-09-08",
+   "by": "claude-routine"
   }
  },
  "metrics": [
@@ -23,6 +30,8 @@
    "unit": "₹ mn",
    "kind": "flow",
    "y": {
+    "20200331": 19736.0,
+    "20210331": 21499.0,
     "20220331": 22194.0,
     "20230331": 23676.0,
     "20240331": 31776.0,
@@ -82,6 +91,85 @@
      48,
      "R&D Spend",
      "32,484"
+    ],
+    "y:20200331": [
+     "b51e814a-5720-4a9a-80e8-96c590075601.pdf",
+     8,
+     "R&D expenditure",
+     "19,736"
+    ],
+    "y:20210331": [
+     "b51e814a-5720-4a9a-80e8-96c590075601.pdf",
+     8,
+     "R&D expenditure",
+     "21,499"
+    ]
+   }
+  },
+  {
+   "name": "R&D as % of Sales",
+   "unit": "%",
+   "kind": "flow",
+   "y": {
+    "20200331": 6.1,
+    "20210331": 6.5,
+    "20220331": 5.8,
+    "20230331": 5.5,
+    "20240331": 6.7,
+    "20250331": 6.2,
+    "20260331": 6.1
+   },
+   "q": {
+    "20260630": 5.4
+   },
+   "src": {
+    "q:20260630": [
+     "cc8f321b-b5b9-4f47-883d-28790c0650e3.pdf",
+     12,
+     "R&D investment ... at 5.4% of sales",
+     "5.4"
+    ],
+    "y:20220331": [
+     "e6f00b4f-5f46-44d8-a2d2-db50b7cc28ff.pdf",
+     52,
+     "R&D Spend % of Net Sales - Revenue",
+     "5.8"
+    ],
+    "y:20230331": [
+     "e6f00b4f-5f46-44d8-a2d2-db50b7cc28ff.pdf",
+     52,
+     "R&D Spend % of Net Sales - Revenue",
+     "5.5"
+    ],
+    "y:20240331": [
+     "e6f00b4f-5f46-44d8-a2d2-db50b7cc28ff.pdf",
+     52,
+     "R&D Spend % of Net Sales - Revenue",
+     "6.7"
+    ],
+    "y:20250331": [
+     "e6f00b4f-5f46-44d8-a2d2-db50b7cc28ff.pdf",
+     52,
+     "R&D Spend % of Net Sales - Revenue",
+     "6.2"
+    ],
+    "y:20260331": [
+     "e6f00b4f-5f46-44d8-a2d2-db50b7cc28ff.pdf",
+     52,
+     "R&D Spend % of Net Sales - Revenue",
+     "6.1"
+    ],
+    "y:20200331": [
+     "b51e814a-5720-4a9a-80e8-96c590075601.pdf",
+     8,
+     "R&D expenditure % of sales",
+     "6.1"
+    ],
+    "y:20210331": [
+     "b51e814a-5720-4a9a-80e8-96c590075601.pdf",
+     8,
+     "R&D expenditure % of sales",
+     "6.5"
     ]
    }
   },
@@ -538,59 +626,6 @@
    }
   },
   {
-   "name": "R&D as % of Sales",
-   "unit": "%",
-   "kind": "flow",
-   "y": {
-    "20220331": 5.8,
-    "20230331": 5.5,
-    "20240331": 6.7,
-    "20250331": 6.2,
-    "20260331": 6.1
-   },
-   "q": {
-    "20260630": 5.4
-   },
-   "src": {
-    "q:20260630": [
-     "cc8f321b-b5b9-4f47-883d-28790c0650e3.pdf",
-     12,
-     "R&D investment ... at 5.4% of sales",
-     "5.4"
-    ],
-    "y:20220331": [
-     "e6f00b4f-5f46-44d8-a2d2-db50b7cc28ff.pdf",
-     52,
-     "R&D Spend % of Net Sales - Revenue",
-     "5.8"
-    ],
-    "y:20230331": [
-     "e6f00b4f-5f46-44d8-a2d2-db50b7cc28ff.pdf",
-     52,
-     "R&D Spend % of Net Sales - Revenue",
-     "5.5"
-    ],
-    "y:20240331": [
-     "e6f00b4f-5f46-44d8-a2d2-db50b7cc28ff.pdf",
-     52,
-     "R&D Spend % of Net Sales - Revenue",
-     "6.7"
-    ],
-    "y:20250331": [
-     "e6f00b4f-5f46-44d8-a2d2-db50b7cc28ff.pdf",
-     52,
-     "R&D Spend % of Net Sales - Revenue",
-     "6.2"
-    ],
-    "y:20260331": [
-     "e6f00b4f-5f46-44d8-a2d2-db50b7cc28ff.pdf",
-     52,
-     "R&D Spend % of Net Sales - Revenue",
-     "6.1"
-    ]
-   }
-  },
-  {
    "name": "Rest of World Formulations Sales",
    "unit": "₹ mn",
    "kind": "flow",
@@ -887,6 +922,91 @@
      23,
      "US Formulations Sales (US$ mn)",
      "473"
+    ]
+   }
+  },
+  {
+   "name": "ANDAs Pending USFDA Approval",
+   "unit": "count",
+   "kind": "level",
+   "y": {
+    "20260331": 122.0
+   },
+   "q": {},
+   "src": {
+    "y:20260331": [
+     "b51e814a-5720-4a9a-80e8-96c590075601.pdf",
+     37,
+     "ANDAs pending USFDA approval as on March 31, 2026",
+     "122"
+    ]
+   }
+  },
+  {
+   "name": "Brands in India Top 300",
+   "unit": "count",
+   "kind": "level",
+   "y": {
+    "20260331": 30.0
+   },
+   "q": {},
+   "src": {
+    "y:20260331": [
+     "b51e814a-5720-4a9a-80e8-96c590075601.pdf",
+     39,
+     "Brands among India's top 300 brands (doc period)",
+     "30"
+    ]
+   }
+  },
+  {
+   "name": "NDAs Pending USFDA Approval",
+   "unit": "count",
+   "kind": "level",
+   "y": {
+    "20260331": 13.0
+   },
+   "q": {},
+   "src": {
+    "y:20260331": [
+     "b51e814a-5720-4a9a-80e8-96c590075601.pdf",
+     37,
+     "NDAs pending USFDA approval as on March 31, 2026",
+     "13"
+    ]
+   }
+  },
+  {
+   "name": "Standalone Employee Count",
+   "unit": "count",
+   "kind": "level",
+   "y": {
+    "20260331": 17259.0
+   },
+   "q": {},
+   "src": {
+    "y:20260331": [
+     "b51e814a-5720-4a9a-80e8-96c590075601.pdf",
+     109,
+     "Total employees",
+     "17,259"
+    ]
+   }
+  },
+  {
+   "name": "Standalone Worker Count",
+   "unit": "count",
+   "kind": "level",
+   "y": {
+    "20260331": 11666.0
+   },
+   "q": {},
+   "src": {
+    "y:20260331": [
+     "b51e814a-5720-4a9a-80e8-96c590075601.pdf",
+     109,
+     "Permanent Total workers",
+     "11,666"
     ]
    }
   },
