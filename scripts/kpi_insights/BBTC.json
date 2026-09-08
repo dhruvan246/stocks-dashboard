@@ -1,8 +1,202 @@
 {
  "sym": "BBTC",
  "fy_end_month": 3,
- "docs": {},
- "metrics": [],
+ "docs": {
+  "01d7fb29-230f-4ff1-8316-ca862e830818.pdf": {
+   "kind": "res",
+   "date": "2026-08-13",
+   "title": "Q1 FY27 Financial Results (Standalone & Consolidated)",
+   "read": "2026-09-08",
+   "by": "claude-routine"
+  },
+  "28b2e4e6-065c-4637-a2fc-a1ec965b9cfb.pdf": {
+   "kind": "ar",
+   "date": "2026-07-17",
+   "title": "Annual Report FY 2025-26",
+   "read": "2026-09-08",
+   "by": "claude-routine"
+  }
+ },
+ "metrics": [
+  {
+   "name": "Tea Exports Share of Sales",
+   "unit": "%",
+   "kind": "flow",
+   "y": {
+    "20250331": 19.0,
+    "20260331": 14.0
+   },
+   "q": {},
+   "src": {
+    "y:20260331": [
+     "28b2e4e6-065c-4637-a2fc-a1ec965b9cfb.pdf",
+     52,
+     "Exports % APR '25-26",
+     "14"
+    ],
+    "y:20250331": [
+     "28b2e4e6-065c-4637-a2fc-a1ec965b9cfb.pdf",
+     52,
+     "Exports % APR '24-25",
+     "19"
+    ]
+   }
+  },
+  {
+   "name": "Tea Production (Bought)",
+   "unit": "lk kgs",
+   "kind": "flow",
+   "y": {
+    "20250331": 1.25,
+    "20260331": 1.67
+   },
+   "q": {},
+   "src": {
+    "y:20260331": [
+     "28b2e4e6-065c-4637-a2fc-a1ec965b9cfb.pdf",
+     52,
+     "Production Bought lk kgs APR '25-26",
+     "1.67"
+    ],
+    "y:20250331": [
+     "28b2e4e6-065c-4637-a2fc-a1ec965b9cfb.pdf",
+     52,
+     "Production Bought lk kgs APR '24-25",
+     "1.25"
+    ]
+   }
+  },
+  {
+   "name": "Tea Production (Own)",
+   "unit": "lk kgs",
+   "kind": "flow",
+   "y": {
+    "20250331": 34.48,
+    "20260331": 28.49
+   },
+   "q": {},
+   "src": {
+    "y:20260331": [
+     "28b2e4e6-065c-4637-a2fc-a1ec965b9cfb.pdf",
+     52,
+     "Production Own lk kgs APR '25-26",
+     "28.49"
+    ],
+    "y:20250331": [
+     "28b2e4e6-065c-4637-a2fc-a1ec965b9cfb.pdf",
+     52,
+     "Production Own lk kgs APR '24-25",
+     "34.48"
+    ]
+   }
+  },
+  {
+   "name": "Tea Sale Price",
+   "unit": "Rs/kg",
+   "kind": "flow",
+   "y": {
+    "20250331": 160.74,
+    "20260331": 172.12
+   },
+   "q": {},
+   "src": {
+    "y:20260331": [
+     "28b2e4e6-065c-4637-a2fc-a1ec965b9cfb.pdf",
+     52,
+     "Sale Price Rs/kg APR '25-26",
+     "172.12"
+    ],
+    "y:20250331": [
+     "28b2e4e6-065c-4637-a2fc-a1ec965b9cfb.pdf",
+     52,
+     "Sale Price Rs/kg APR '24-25",
+     "160.74"
+    ]
+   }
+  },
+  {
+   "name": "Tea Sales Volume",
+   "unit": "lk kgs",
+   "kind": "flow",
+   "y": {
+    "20250331": 40.26,
+    "20260331": 37.74
+   },
+   "q": {},
+   "src": {
+    "y:20260331": [
+     "28b2e4e6-065c-4637-a2fc-a1ec965b9cfb.pdf",
+     52,
+     "Sales lk kgs APR '25-26",
+     "37.74"
+    ],
+    "y:20250331": [
+     "28b2e4e6-065c-4637-a2fc-a1ec965b9cfb.pdf",
+     52,
+     "Sales lk kgs APR '24-25",
+     "40.26"
+    ]
+   }
+  },
+  {
+   "name": "Total Tea Production",
+   "unit": "lk kgs",
+   "kind": "flow",
+   "y": {
+    "20250331": 35.74,
+    "20260331": 30.16
+   },
+   "q": {},
+   "src": {
+    "y:20260331": [
+     "28b2e4e6-065c-4637-a2fc-a1ec965b9cfb.pdf",
+     52,
+     "Total Production lk kgs APR '25-26",
+     "30.16"
+    ],
+    "y:20250331": [
+     "28b2e4e6-065c-4637-a2fc-a1ec965b9cfb.pdf",
+     52,
+     "Total Production lk kgs APR '24-25",
+     "35.74"
+    ]
+   }
+  },
+  {
+   "name": "Total Permanent Employees",
+   "unit": "count",
+   "kind": "level",
+   "y": {
+    "20260331": 226.0
+   },
+   "q": {},
+   "src": {
+    "y:20260331": [
+     "28b2e4e6-065c-4637-a2fc-a1ec965b9cfb.pdf",
+     78,
+     "Permanent Employees Total",
+     "226"
+    ]
+   }
+  },
+  {
+   "name": "Total Permanent Workers",
+   "unit": "count",
+   "kind": "level",
+   "y": {
+    "20260331": 1516.0
+   },
+   "q": {},
+   "src": {
+    "y:20260331": [
+     "28b2e4e6-065c-4637-a2fc-a1ec965b9cfb.pdf",
+     78,
+     "Permanent workers Total",
+     "1516"
+    ]
+   }
+  }
+ ],
  "held": [],
  "catalog": [
   {
