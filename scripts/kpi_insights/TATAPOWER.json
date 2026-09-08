@@ -29,6 +29,34 @@
    "title": "Q3 FY26 Investor Presentation",
    "read": "2026-09-08",
    "by": "claude-routine"
+  },
+  "027fdb3c-db1d-4830-9a4c-22ef29bff3f1.pdf": {
+   "kind": "ip",
+   "date": "2025-11-11",
+   "title": "Q2 FY26 Investor Presentation",
+   "read": "2026-09-08",
+   "by": "claude-routine"
+  },
+  "ca9b804f-b78e-4394-9576-dbcd3f962d48.pdf": {
+   "kind": "ip",
+   "date": "2024-12-06",
+   "title": "Site-visit Investor Presentation (TP Solar plant)",
+   "read": "2026-09-08",
+   "by": "claude-routine"
+  },
+  "0244b36e-7dfd-4767-b58b-3ec07b1a47d1.pdf": {
+   "kind": "ip",
+   "date": "2025-12-15",
+   "title": "Institutional Investor Site Visit - Power Distribution Technology Centre, Bhubaneswar",
+   "read": "2026-09-08",
+   "by": "claude-routine"
+  },
+  "0e1e3b92-6418-498e-9213-e8813818d464.pdf": {
+   "kind": "ar",
+   "date": "2025-06-10",
+   "title": "Integrated Annual Report FY 2024-25",
+   "read": "2026-09-08",
+   "by": "claude-routine"
   }
  },
  "metrics": [
@@ -37,9 +65,11 @@
    "unit": "GW",
    "kind": "level",
    "y": {
+    "20250331": 4.9,
     "20260331": 4.9
    },
    "q": {
+    "20250930": 4.9,
     "20251231": 4.9,
     "20260630": 4.9
    },
@@ -61,38 +91,18 @@
      6,
      "Integrated cell & module manufacturing capacity (doc period)",
      "4.9"
-    ]
-   }
-  },
-  {
-   "name": "Clean & Green Capacity",
-   "unit": "GW",
-   "kind": "level",
-   "y": {
-    "20260331": 17.5
-   },
-   "q": {
-    "20251231": 17.5,
-    "20260630": 17.7
-   },
-   "src": {
-    "q:20260630": [
-     "696ad0f6-42b3-4bf5-a9b5-39a9cf2a1cee.pdf",
-     6,
-     "Clean & Green Energy ~17.7GW (incl 9.8 GW under construction)",
-     "17.7"
     ],
-    "y:20260331": [
-     "82094dae-583e-4198-9afc-1fd078a9d0e6.pdf",
+    "q:20250930": [
+     "027fdb3c-db1d-4830-9a4c-22ef29bff3f1.pdf",
      6,
-     "Clean & Green Energy (Including 9.6 GW Under Construction) (doc period)",
-     "17.5"
+     "Integrated cell & module manufacturing capacity (doc period)",
+     "4.9"
     ],
-    "q:20251231": [
-     "f54cb27f-ac25-4170-854a-aad8f5c47731.pdf",
-     6,
-     "Clean & Green Energy (Including 10 GW Under Construction) (doc period)",
-     "17.5"
+    "y:20250331": [
+     "0e1e3b92-6418-498e-9213-e8813818d464.pdf",
+     9,
+     "Integrated solar cell and module manufacturing plant",
+     "4.9"
     ]
    }
   },
@@ -101,9 +111,11 @@
    "unit": "Mn",
    "kind": "level",
    "y": {
+    "20250331": 12.8,
     "20260331": 13.1
    },
    "q": {
+    "20250930": 13.0,
     "20251231": 13.0,
     "20260630": 13.2
    },
@@ -125,6 +137,285 @@
      6,
      "Customers in Distribution (doc period)",
      "13"
+    ],
+    "q:20250930": [
+     "027fdb3c-db1d-4830-9a4c-22ef29bff3f1.pdf",
+     6,
+     "Customers in Distribution (doc period)",
+     "13"
+    ],
+    "y:20250331": [
+     "0e1e3b92-6418-498e-9213-e8813818d464.pdf",
+     9,
+     "distribution customer base",
+     "12.8"
+    ]
+   }
+  },
+  {
+   "name": "AGM Coal Production",
+   "unit": "MT",
+   "kind": "flow",
+   "y": {},
+   "q": {
+    "20240930": 4.5,
+    "20250331": 2.8,
+    "20250930": 3.2,
+    "20260331": 2.1
+   },
+   "src": {
+    "q:20260331": [
+     "82094dae-583e-4198-9afc-1fd078a9d0e6.pdf",
+     7,
+     "AGM Production",
+     "2.1"
+    ],
+    "q:20250331": [
+     "82094dae-583e-4198-9afc-1fd078a9d0e6.pdf",
+     7,
+     "AGM Production",
+     "2.8"
+    ],
+    "q:20250930": [
+     "027fdb3c-db1d-4830-9a4c-22ef29bff3f1.pdf",
+     8,
+     "Production - AGM",
+     "3.2"
+    ],
+    "q:20240930": [
+     "027fdb3c-db1d-4830-9a4c-22ef29bff3f1.pdf",
+     8,
+     "Production - AGM",
+     "4.5"
+    ]
+   }
+  },
+  {
+   "name": "AGM Coal Sales",
+   "unit": "MT",
+   "kind": "flow",
+   "y": {},
+   "q": {
+    "20240930": 4.3,
+    "20250331": 2.7,
+    "20250930": 3.5,
+    "20260331": 2.5
+   },
+   "src": {
+    "q:20260331": [
+     "82094dae-583e-4198-9afc-1fd078a9d0e6.pdf",
+     7,
+     "AGM Sales",
+     "2.5"
+    ],
+    "q:20250331": [
+     "82094dae-583e-4198-9afc-1fd078a9d0e6.pdf",
+     7,
+     "AGM Sales",
+     "2.7"
+    ],
+    "q:20250930": [
+     "027fdb3c-db1d-4830-9a4c-22ef29bff3f1.pdf",
+     8,
+     "Sales - AGM",
+     "3.5"
+    ],
+    "q:20240930": [
+     "027fdb3c-db1d-4830-9a4c-22ef29bff3f1.pdf",
+     8,
+     "Sales - AGM",
+     "4.3"
+    ]
+   }
+  },
+  {
+   "name": "BSSR Coal Production",
+   "unit": "MT",
+   "kind": "flow",
+   "y": {},
+   "q": {
+    "20240930": 1.2,
+    "20250331": 1.1,
+    "20250930": 1.6,
+    "20260331": 1.3
+   },
+   "src": {
+    "q:20260331": [
+     "82094dae-583e-4198-9afc-1fd078a9d0e6.pdf",
+     7,
+     "BSSR Production",
+     "1.3"
+    ],
+    "q:20250331": [
+     "82094dae-583e-4198-9afc-1fd078a9d0e6.pdf",
+     7,
+     "BSSR Production",
+     "1.1"
+    ],
+    "q:20250930": [
+     "027fdb3c-db1d-4830-9a4c-22ef29bff3f1.pdf",
+     8,
+     "Production - BSSR",
+     "1.6"
+    ],
+    "q:20240930": [
+     "027fdb3c-db1d-4830-9a4c-22ef29bff3f1.pdf",
+     8,
+     "Production - BSSR",
+     "1.2"
+    ]
+   }
+  },
+  {
+   "name": "BSSR Coal Sales",
+   "unit": "MT",
+   "kind": "flow",
+   "y": {},
+   "q": {
+    "20240930": 1.2,
+    "20250331": 1.1,
+    "20250930": 1.6,
+    "20260331": 1.2
+   },
+   "src": {
+    "q:20260331": [
+     "82094dae-583e-4198-9afc-1fd078a9d0e6.pdf",
+     7,
+     "BSSR Sales",
+     "1.2"
+    ],
+    "q:20250331": [
+     "82094dae-583e-4198-9afc-1fd078a9d0e6.pdf",
+     7,
+     "BSSR Sales",
+     "1.1"
+    ],
+    "q:20250930": [
+     "027fdb3c-db1d-4830-9a4c-22ef29bff3f1.pdf",
+     8,
+     "Sales - BSSR",
+     "1.6"
+    ],
+    "q:20240930": [
+     "027fdb3c-db1d-4830-9a4c-22ef29bff3f1.pdf",
+     8,
+     "Sales - BSSR",
+     "1.2"
+    ]
+   }
+  },
+  {
+   "name": "Clean & Green Capacity",
+   "unit": "GW",
+   "kind": "level",
+   "y": {
+    "20260331": 17.5
+   },
+   "q": {
+    "20250930": 17.5,
+    "20251231": 17.5,
+    "20260630": 17.7
+   },
+   "src": {
+    "q:20260630": [
+     "696ad0f6-42b3-4bf5-a9b5-39a9cf2a1cee.pdf",
+     6,
+     "Clean & Green Energy ~17.7GW (incl 9.8 GW under construction)",
+     "17.7"
+    ],
+    "y:20260331": [
+     "82094dae-583e-4198-9afc-1fd078a9d0e6.pdf",
+     6,
+     "Clean & Green Energy (Including 9.6 GW Under Construction) (doc period)",
+     "17.5"
+    ],
+    "q:20251231": [
+     "f54cb27f-ac25-4170-854a-aad8f5c47731.pdf",
+     6,
+     "Clean & Green Energy (Including 10 GW Under Construction) (doc period)",
+     "17.5"
+    ],
+    "q:20250930": [
+     "027fdb3c-db1d-4830-9a4c-22ef29bff3f1.pdf",
+     6,
+     "Clean & Green Energy (Including 10.4 GW Under Construction) (doc period)",
+     "17.5"
+    ]
+   }
+  },
+  {
+   "name": "KPC Coal Production",
+   "unit": "MT",
+   "kind": "flow",
+   "y": {},
+   "q": {
+    "20240930": 14.4,
+    "20250331": 12.4,
+    "20250930": 14.4,
+    "20260331": 12.4
+   },
+   "src": {
+    "q:20260331": [
+     "82094dae-583e-4198-9afc-1fd078a9d0e6.pdf",
+     7,
+     "KPC Production",
+     "12.4"
+    ],
+    "q:20250331": [
+     "82094dae-583e-4198-9afc-1fd078a9d0e6.pdf",
+     7,
+     "KPC Production",
+     "12.4"
+    ],
+    "q:20250930": [
+     "027fdb3c-db1d-4830-9a4c-22ef29bff3f1.pdf",
+     8,
+     "Production - KPC",
+     "14.4"
+    ],
+    "q:20240930": [
+     "027fdb3c-db1d-4830-9a4c-22ef29bff3f1.pdf",
+     8,
+     "Production - KPC",
+     "14.4"
+    ]
+   }
+  },
+  {
+   "name": "KPC Coal Sales",
+   "unit": "MT",
+   "kind": "flow",
+   "y": {},
+   "q": {
+    "20240930": 14.3,
+    "20250331": 11.9,
+    "20250930": 14.6,
+    "20260331": 12.5
+   },
+   "src": {
+    "q:20260331": [
+     "82094dae-583e-4198-9afc-1fd078a9d0e6.pdf",
+     7,
+     "KPC Sales",
+     "12.5"
+    ],
+    "q:20250331": [
+     "82094dae-583e-4198-9afc-1fd078a9d0e6.pdf",
+     7,
+     "KPC Sales",
+     "11.9"
+    ],
+    "q:20250930": [
+     "027fdb3c-db1d-4830-9a4c-22ef29bff3f1.pdf",
+     8,
+     "Sales - KPC",
+     "14.6"
+    ],
+    "q:20240930": [
+     "027fdb3c-db1d-4830-9a4c-22ef29bff3f1.pdf",
+     8,
+     "Sales - KPC",
+     "14.3"
     ]
    }
   },
@@ -136,6 +427,7 @@
     "20260331": 5562.0
    },
    "q": {
+    "20250930": 4659.0,
     "20251231": 4738.0,
     "20260630": 5562.0
    },
@@ -157,6 +449,12 @@
      6,
      "Operational Transmission lines (doc period)",
      "4,738"
+    ],
+    "q:20250930": [
+     "027fdb3c-db1d-4830-9a4c-22ef29bff3f1.pdf",
+     6,
+     "Operational Transmission lines (doc period)",
+     "4,659"
     ]
    }
   },
@@ -168,6 +466,7 @@
     "20260331": 5804.0
    },
    "q": {
+    "20250930": 5613.0,
     "20251231": 5743.0,
     "20260630": 5970.0
    },
@@ -189,6 +488,12 @@
      6,
      "Public EV charging points energized (doc period)",
      "5,743"
+    ],
+    "q:20250930": [
+     "027fdb3c-db1d-4830-9a4c-22ef29bff3f1.pdf",
+     6,
+     "Public EV charging points energized (doc period)",
+     "5,613"
     ]
    }
   },
@@ -200,6 +505,7 @@
     "20260331": 2.8
    },
    "q": {
+    "20250930": 2.8,
     "20251231": 2.8,
     "20260630": 2.8
    },
@@ -221,6 +527,12 @@
      6,
      "MoU signed for Pumped Hydro Project (PSP) (doc period)",
      "2.8"
+    ],
+    "q:20250930": [
+     "027fdb3c-db1d-4830-9a4c-22ef29bff3f1.pdf",
+     6,
+     "MoU signed for Pumped Hydro Project (PSP) (doc period)",
+     "2.8"
     ]
    }
   },
@@ -232,6 +544,7 @@
     "20260331": 8.9
    },
    "q": {
+    "20250930": 8.9,
     "20251231": 8.9,
     "20260630": 8.8
    },
@@ -253,6 +566,12 @@
      6,
      "Thermal energy generation (Installed capacity) (doc period)",
      "8.9"
+    ],
+    "q:20250930": [
+     "027fdb3c-db1d-4830-9a4c-22ef29bff3f1.pdf",
+     6,
+     "Thermal energy generation (Installed capacity) (doc period)",
+     "8.9"
     ]
    }
   },
@@ -264,6 +583,7 @@
     "20260331": 26.3
    },
    "q": {
+    "20250930": 26.3,
     "20251231": 26.3,
     "20260630": 26.6
    },
@@ -285,6 +605,12 @@
      6,
      "Total Capacity (doc period)",
      "26.3"
+    ],
+    "q:20250930": [
+     "027fdb3c-db1d-4830-9a4c-22ef29bff3f1.pdf",
+     6,
+     "Total Capacity (Operational + Under construction) (doc period)",
+     "26.3"
     ]
    }
   },
@@ -296,6 +622,7 @@
     "20260331": 1841.0
    },
    "q": {
+    "20250930": 2426.0,
     "20251231": 2573.0,
     "20260630": 2332.0
    },
@@ -317,102 +644,12 @@
      6,
      "Transmission lines under construction (doc period)",
      "2,573"
-    ]
-   }
-  },
-  {
-   "name": "AGM Coal Production",
-   "unit": "MT",
-   "kind": "flow",
-   "y": {},
-   "q": {
-    "20250331": 2.8,
-    "20260331": 2.1
-   },
-   "src": {
-    "q:20260331": [
-     "82094dae-583e-4198-9afc-1fd078a9d0e6.pdf",
-     7,
-     "AGM Production",
-     "2.1"
     ],
-    "q:20250331": [
-     "82094dae-583e-4198-9afc-1fd078a9d0e6.pdf",
-     7,
-     "AGM Production",
-     "2.8"
-    ]
-   }
-  },
-  {
-   "name": "AGM Coal Sales",
-   "unit": "MT",
-   "kind": "flow",
-   "y": {},
-   "q": {
-    "20250331": 2.7,
-    "20260331": 2.5
-   },
-   "src": {
-    "q:20260331": [
-     "82094dae-583e-4198-9afc-1fd078a9d0e6.pdf",
-     7,
-     "AGM Sales",
-     "2.5"
-    ],
-    "q:20250331": [
-     "82094dae-583e-4198-9afc-1fd078a9d0e6.pdf",
-     7,
-     "AGM Sales",
-     "2.7"
-    ]
-   }
-  },
-  {
-   "name": "BSSR Coal Production",
-   "unit": "MT",
-   "kind": "flow",
-   "y": {},
-   "q": {
-    "20250331": 1.1,
-    "20260331": 1.3
-   },
-   "src": {
-    "q:20260331": [
-     "82094dae-583e-4198-9afc-1fd078a9d0e6.pdf",
-     7,
-     "BSSR Production",
-     "1.3"
-    ],
-    "q:20250331": [
-     "82094dae-583e-4198-9afc-1fd078a9d0e6.pdf",
-     7,
-     "BSSR Production",
-     "1.1"
-    ]
-   }
-  },
-  {
-   "name": "BSSR Coal Sales",
-   "unit": "MT",
-   "kind": "flow",
-   "y": {},
-   "q": {
-    "20250331": 1.1,
-    "20260331": 1.2
-   },
-   "src": {
-    "q:20260331": [
-     "82094dae-583e-4198-9afc-1fd078a9d0e6.pdf",
-     7,
-     "BSSR Sales",
-     "1.2"
-    ],
-    "q:20250331": [
-     "82094dae-583e-4198-9afc-1fd078a9d0e6.pdf",
-     7,
-     "BSSR Sales",
-     "1.1"
+    "q:20250930": [
+     "027fdb3c-db1d-4830-9a4c-22ef29bff3f1.pdf",
+     6,
+     "Transmission lines under construction (doc period)",
+     "2,426"
     ]
    }
   },
@@ -424,6 +661,7 @@
     "20260331": 706.0
    },
    "q": {
+    "20250930": 620.0,
     "20251231": 667.0
    },
    "src": {
@@ -438,54 +676,436 @@
      6,
      "Public EV charging points energized across 667 cities and towns (doc period)",
      "667"
+    ],
+    "q:20250930": [
+     "027fdb3c-db1d-4830-9a4c-22ef29bff3f1.pdf",
+     6,
+     "energized across 620 cities and towns (doc period)",
+     "620"
     ]
    }
   },
   {
-   "name": "KPC Coal Production",
-   "unit": "MT",
+   "name": "Mumbai Hydro Plant Availability",
+   "unit": "%",
    "kind": "flow",
-   "y": {},
-   "q": {
-    "20250331": 12.4,
-    "20260331": 12.4
+   "y": {
+    "20230331": 98.0,
+    "20240331": 99.0,
+    "20250331": 99.0
    },
+   "q": {},
    "src": {
-    "q:20260331": [
-     "82094dae-583e-4198-9afc-1fd078a9d0e6.pdf",
-     7,
-     "KPC Production",
-     "12.4"
+    "y:20230331": [
+     "0244b36e-7dfd-4767-b58b-3ec07b1a47d1.pdf",
+     17,
+     "Plant Availability - Mumbai Hydro",
+     "98"
     ],
-    "q:20250331": [
-     "82094dae-583e-4198-9afc-1fd078a9d0e6.pdf",
-     7,
-     "KPC Production",
-     "12.4"
+    "y:20240331": [
+     "0244b36e-7dfd-4767-b58b-3ec07b1a47d1.pdf",
+     17,
+     "Plant Availability - Mumbai Hydro",
+     "99"
+    ],
+    "y:20250331": [
+     "0244b36e-7dfd-4767-b58b-3ec07b1a47d1.pdf",
+     17,
+     "Plant Availability - Mumbai Hydro",
+     "99"
     ]
    }
   },
   {
-   "name": "KPC Coal Sales",
-   "unit": "MT",
+   "name": "Mumbai Hydro Plant PLF",
+   "unit": "%",
    "kind": "flow",
-   "y": {},
-   "q": {
-    "20250331": 11.9,
-    "20260331": 12.5
+   "y": {
+    "20230331": 40.0,
+    "20240331": 40.0,
+    "20250331": 40.0
    },
+   "q": {},
    "src": {
-    "q:20260331": [
-     "82094dae-583e-4198-9afc-1fd078a9d0e6.pdf",
-     7,
-     "KPC Sales",
-     "12.5"
+    "y:20230331": [
+     "0244b36e-7dfd-4767-b58b-3ec07b1a47d1.pdf",
+     17,
+     "Plant PLFs - Mumbai Hydro",
+     "40"
     ],
-    "q:20250331": [
-     "82094dae-583e-4198-9afc-1fd078a9d0e6.pdf",
-     7,
-     "KPC Sales",
-     "11.9"
+    "y:20240331": [
+     "0244b36e-7dfd-4767-b58b-3ec07b1a47d1.pdf",
+     17,
+     "Plant PLFs - Mumbai Hydro",
+     "40"
+    ],
+    "y:20250331": [
+     "0244b36e-7dfd-4767-b58b-3ec07b1a47d1.pdf",
+     17,
+     "Plant PLFs - Mumbai Hydro",
+     "40"
+    ]
+   }
+  },
+  {
+   "name": "Mundra Plant Generation Availability",
+   "unit": "%",
+   "kind": "flow",
+   "y": {
+    "20230331": 66.0,
+    "20240331": 70.0,
+    "20250331": 80.0
+   },
+   "q": {},
+   "src": {
+    "y:20230331": [
+     "0244b36e-7dfd-4767-b58b-3ec07b1a47d1.pdf",
+     18,
+     "Mundra Plant Operational Parameters - Generation Availability",
+     "66"
+    ],
+    "y:20240331": [
+     "0244b36e-7dfd-4767-b58b-3ec07b1a47d1.pdf",
+     18,
+     "Mundra Plant Operational Parameters - Generation Availability",
+     "70"
+    ],
+    "y:20250331": [
+     "0244b36e-7dfd-4767-b58b-3ec07b1a47d1.pdf",
+     18,
+     "Mundra Plant Operational Parameters - Generation Availability",
+     "80"
+    ]
+   }
+  },
+  {
+   "name": "Mundra Plant PLF",
+   "unit": "%",
+   "kind": "flow",
+   "y": {
+    "20230331": 32.0,
+    "20240331": 56.0,
+    "20250331": 65.0
+   },
+   "q": {},
+   "src": {
+    "y:20230331": [
+     "0244b36e-7dfd-4767-b58b-3ec07b1a47d1.pdf",
+     18,
+     "Mundra Plant Operational Parameters - PLF",
+     "32"
+    ],
+    "y:20240331": [
+     "0244b36e-7dfd-4767-b58b-3ec07b1a47d1.pdf",
+     18,
+     "Mundra Plant Operational Parameters - PLF",
+     "56"
+    ],
+    "y:20250331": [
+     "0244b36e-7dfd-4767-b58b-3ec07b1a47d1.pdf",
+     18,
+     "Mundra Plant Operational Parameters - PLF",
+     "65"
+    ]
+   }
+  },
+  {
+   "name": "Thermal Ex-Mundra Plant Availability",
+   "unit": "%",
+   "kind": "flow",
+   "y": {
+    "20230331": 88.0,
+    "20240331": 90.0,
+    "20250331": 87.0
+   },
+   "q": {},
+   "src": {
+    "y:20230331": [
+     "0244b36e-7dfd-4767-b58b-3ec07b1a47d1.pdf",
+     17,
+     "Plant Availability - Thermal Ex Mundra",
+     "88"
+    ],
+    "y:20240331": [
+     "0244b36e-7dfd-4767-b58b-3ec07b1a47d1.pdf",
+     17,
+     "Plant Availability - Thermal Ex Mundra",
+     "90"
+    ],
+    "y:20250331": [
+     "0244b36e-7dfd-4767-b58b-3ec07b1a47d1.pdf",
+     17,
+     "Plant Availability - Thermal Ex Mundra",
+     "87"
+    ]
+   }
+  },
+  {
+   "name": "Thermal Ex-Mundra Plant PLF",
+   "unit": "%",
+   "kind": "flow",
+   "y": {
+    "20230331": 73.0,
+    "20240331": 76.0,
+    "20250331": 74.0
+   },
+   "q": {},
+   "src": {
+    "y:20230331": [
+     "0244b36e-7dfd-4767-b58b-3ec07b1a47d1.pdf",
+     17,
+     "Plant PLFs - Thermal Ex Mundra",
+     "73"
+    ],
+    "y:20240331": [
+     "0244b36e-7dfd-4767-b58b-3ec07b1a47d1.pdf",
+     17,
+     "Plant PLFs - Thermal Ex Mundra",
+     "76"
+    ],
+    "y:20250331": [
+     "0244b36e-7dfd-4767-b58b-3ec07b1a47d1.pdf",
+     17,
+     "Plant PLFs - Thermal Ex Mundra",
+     "74"
+    ]
+   }
+  },
+  {
+   "name": "EV Home Chargers Installed",
+   "unit": "count",
+   "kind": "level",
+   "y": {
+    "20250331": 135000.0
+   },
+   "q": {},
+   "src": {
+    "y:20250331": [
+     "0e1e3b92-6418-498e-9213-e8813818d464.pdf",
+     9,
+     "Total no. of home chargers installed",
+     "1,35,000"
+    ]
+   }
+  },
+  {
+   "name": "Electricity Supplied to Consumers",
+   "unit": "billion units",
+   "kind": "flow",
+   "y": {
+    "20250331": 47.0
+   },
+   "q": {},
+   "src": {
+    "y:20250331": [
+     "0e1e3b92-6418-498e-9213-e8813818d464.pdf",
+     9,
+     "Units of electricity supplied to its consumers",
+     "47"
+    ]
+   }
+  },
+  {
+   "name": "Electricity Supplied to Grid",
+   "unit": "billion units",
+   "kind": "flow",
+   "y": {
+    "20250331": 64.7
+   },
+   "q": {},
+   "src": {
+    "y:20250331": [
+     "0e1e3b92-6418-498e-9213-e8813818d464.pdf",
+     9,
+     "Units of electricity supplied to the grid",
+     "64.7"
+    ]
+   }
+  },
+  {
+   "name": "Patents Granted",
+   "unit": "count",
+   "kind": "flow",
+   "y": {
+    "20250331": 11.0
+   },
+   "q": {},
+   "src": {
+    "y:20250331": [
+     "0e1e3b92-6418-498e-9213-e8813818d464.pdf",
+     9,
+     "patents granted",
+     "11"
+    ]
+   }
+  },
+  {
+   "name": "Smart Meters Installed",
+   "unit": "lakh",
+   "kind": "level",
+   "y": {
+    "20250331": 26.0
+   },
+   "q": {},
+   "src": {
+    "y:20250331": [
+     "0e1e3b92-6418-498e-9213-e8813818d464.pdf",
+     9,
+     "smart meters installed",
+     "26"
+    ]
+   }
+  },
+  {
+   "name": "Solar Cell Production",
+   "unit": "MW",
+   "kind": "flow",
+   "y": {
+    "20250331": 846.0
+   },
+   "q": {},
+   "src": {
+    "y:20250331": [
+     "0e1e3b92-6418-498e-9213-e8813818d464.pdf",
+     9,
+     "Production of cells in FY25",
+     "846"
+    ]
+   }
+  },
+  {
+   "name": "Solar Module Production",
+   "unit": "MW",
+   "kind": "flow",
+   "y": {
+    "20250331": 3291.0
+   },
+   "q": {},
+   "src": {
+    "y:20250331": [
+     "0e1e3b92-6418-498e-9213-e8813818d464.pdf",
+     9,
+     "Production of modules in FY25",
+     "3,291"
+    ]
+   }
+  },
+  {
+   "name": "Solar Utility-Scale EPC Order Book",
+   "unit": "₹ Cr",
+   "kind": "level",
+   "y": {
+    "20250331": 4000.0
+   },
+   "q": {},
+   "src": {
+    "y:20250331": [
+     "0e1e3b92-6418-498e-9213-e8813818d464.pdf",
+     9,
+     "solar Utility Scale EPC order book",
+     "4,000"
+    ]
+   }
+  },
+  {
+   "name": "Third Party Solar Rooftop Installed",
+   "unit": "GW",
+   "kind": "level",
+   "y": {
+    "20250331": 3.0
+   },
+   "q": {},
+   "src": {
+    "y:20250331": [
+     "0e1e3b92-6418-498e-9213-e8813818d464.pdf",
+     9,
+     "Total Third Party Solar Rooftop project installed",
+     "3"
+    ]
+   }
+  },
+  {
+   "name": "Third Party Utility-Scale Solar (Executed + Pipeline)",
+   "unit": "GWp",
+   "kind": "level",
+   "y": {
+    "20250331": 7.5
+   },
+   "q": {},
+   "src": {
+    "y:20250331": [
+     "0e1e3b92-6418-498e-9213-e8813818d464.pdf",
+     9,
+     "Cumulative third party utility-scale solar projects executed and under pipeline",
+     "7.5"
+    ]
+   }
+  },
+  {
+   "name": "Total Capacity",
+   "unit": "MW",
+   "kind": "level",
+   "y": {
+    "20250331": 15733.0
+   },
+   "q": {},
+   "src": {
+    "y:20250331": [
+     "0e1e3b92-6418-498e-9213-e8813818d464.pdf",
+     9,
+     "total installed/managed capacity",
+     "15,733"
+    ]
+   }
+  },
+  {
+   "name": "Total EV Charging Points Energised",
+   "unit": "count",
+   "kind": "level",
+   "y": {
+    "20250331": 6700.0
+   },
+   "q": {},
+   "src": {
+    "y:20250331": [
+     "0e1e3b92-6418-498e-9213-e8813818d464.pdf",
+     9,
+     "Total charging points energised",
+     "6,700"
+    ]
+   }
+  },
+  {
+   "name": "Total Employees",
+   "unit": "count",
+   "kind": "level",
+   "y": {
+    "20250331": 23668.0
+   },
+   "q": {},
+   "src": {
+    "y:20250331": [
+     "0e1e3b92-6418-498e-9213-e8813818d464.pdf",
+     9,
+     "total employees",
+     "23,668"
+    ]
+   }
+  },
+  {
+   "name": "Total Transmission Lines Length",
+   "unit": "ckm",
+   "kind": "level",
+   "y": {
+    "20250331": 4633.0
+   },
+   "q": {},
+   "src": {
+    "y:20250331": [
+     "0e1e3b92-6418-498e-9213-e8813818d464.pdf",
+     9,
+     "total length of transmission lines",
+     "4,633"
     ]
    }
   }
