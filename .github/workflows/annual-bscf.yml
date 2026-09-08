@@ -8,7 +8,7 @@ name: Annual BS/CF fill
 
 on:
   schedule:
-    - cron: "20 2 * * *"         # once daily — paced dial-down 2026-09-08 (bulk of N500 already filled); text pass costs no Anthropic tokens, still feeds the vision queue + lands the clean-text ones for free
+    - cron: "20 */6 * * *"       # every 6h — this text pass uses NO Anthropic tokens, so run it at full speed: it lands the clean-text filers for free and feeds the vision queue. (Only the token-spending nightly vision routine is paced down.)
   workflow_dispatch:
     inputs:
       limit:
