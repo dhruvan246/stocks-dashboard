@@ -22,23 +22,303 @@
    "title": "Q3 FY26 Financial Results (Standalone/Consolidated Statements)",
    "read": "2026-09-07",
    "by": "claude-routine"
+  },
+  "c403b1d0-c2ff-48a6-8192-2ca1c879d18a.pdf": {
+   "kind": "ip",
+   "date": "2026-02-10",
+   "title": "Q3 FY26 Investor Presentation (Feb 2026)",
+   "read": "2026-09-08",
+   "by": "claude-routine"
+  },
+  "3e20e8ca-7d68-430b-9ec1-d9865ebc922d.pdf": {
+   "kind": "ip",
+   "date": "2026-05-12",
+   "title": "Q4 FY26 / FY26 Investor Presentation (May 2026, period ended Mar 31, 2026)",
+   "read": "2026-09-08",
+   "by": "claude-routine"
+  },
+  "6dd99cd7-9a84-45cf-a346-a372e4171faa.pdf": {
+   "kind": "ip",
+   "date": "2025-11-11",
+   "title": "Q2 FY26 Investor Presentation (Nov 2025, period ended Sep 30, 2025)",
+   "read": "2026-09-08",
+   "by": "claude-routine"
   }
  },
  "metrics": [
+  {
+   "name": "Coal-based Thermal Generation Capacity",
+   "unit": "MW",
+   "kind": "level",
+   "y": {
+    "20260331": 362.0
+   },
+   "q": {
+    "20250930": 362.0,
+    "20251231": 362.0,
+    "20260630": 1762.0
+   },
+   "src": {
+    "q:20260630": [
+     "a6cf2dab-ceb2-4475-bd48-5122427fd66a.pdf",
+     8,
+     "Coal based plants: 1,762 MW – Operational (incl. Nabha 1,400 MW, as on 30.06.202",
+     "1,762"
+    ],
+    "q:20251231": [
+     "c403b1d0-c2ff-48a6-8192-2ca1c879d18a.pdf",
+     10,
+     "Coal (Installed Capacity, as on 31.12.2025)",
+     "362"
+    ],
+    "y:20260331": [
+     "3e20e8ca-7d68-430b-9ec1-d9865ebc922d.pdf",
+     10,
+     "Coal (Installed Capacity, as on 31.03.2026)",
+     "362"
+    ],
+    "q:20250930": [
+     "6dd99cd7-9a84-45cf-a346-a372e4171faa.pdf",
+     10,
+     "Coal (Installed Capacity, as on 30.09.2025)",
+     "362"
+    ]
+   }
+  },
+  {
+   "name": "Gas-based Thermal Generation Capacity",
+   "unit": "MW",
+   "kind": "level",
+   "y": {
+    "20260331": 2730.0
+   },
+   "q": {
+    "20250930": 2730.0,
+    "20251231": 2730.0,
+    "20260630": 2730.0
+   },
+   "src": {
+    "q:20260630": [
+     "a6cf2dab-ceb2-4475-bd48-5122427fd66a.pdf",
+     8,
+     "Gas based plants: 2,730 MW – Operational (doc period, as on 30.06.2026)",
+     "2,730"
+    ],
+    "q:20251231": [
+     "c403b1d0-c2ff-48a6-8192-2ca1c879d18a.pdf",
+     10,
+     "Gas (Installed Capacity, as on 31.12.2025)",
+     "2,730"
+    ],
+    "y:20260331": [
+     "3e20e8ca-7d68-430b-9ec1-d9865ebc922d.pdf",
+     10,
+     "Gas (Installed Capacity, as on 31.03.2026)",
+     "2,730"
+    ],
+    "q:20250930": [
+     "6dd99cd7-9a84-45cf-a346-a372e4171faa.pdf",
+     10,
+     "Gas (Installed Capacity, as on 30.09.2025)",
+     "2,730"
+    ]
+   }
+  },
+  {
+   "name": "Solar Generation Capacity",
+   "unit": "MWp",
+   "kind": "level",
+   "y": {
+    "20260331": 1081.0
+   },
+   "q": {
+    "20250930": 949.0,
+    "20251231": 1026.0,
+    "20260630": 1092.0
+   },
+   "src": {
+    "q:20260630": [
+     "a6cf2dab-ceb2-4475-bd48-5122427fd66a.pdf",
+     8,
+     "Solar: 1,092 MWp - Operational (doc period, as on 30.06.2026)",
+     "1,092"
+    ],
+    "q:20251231": [
+     "c403b1d0-c2ff-48a6-8192-2ca1c879d18a.pdf",
+     10,
+     "Solar (Installed Capacity, as on 31.12.2025)",
+     "1,026"
+    ],
+    "y:20260331": [
+     "3e20e8ca-7d68-430b-9ec1-d9865ebc922d.pdf",
+     10,
+     "Solar (Installed Capacity, as on 31.03.2026)",
+     "1,081"
+    ],
+    "q:20250930": [
+     "6dd99cd7-9a84-45cf-a346-a372e4171faa.pdf",
+     10,
+     "Solar (Installed Capacity, as on 30.09.2025)",
+     "949"
+    ]
+   }
+  },
+  {
+   "name": "Wind Generation Capacity",
+   "unit": "MW",
+   "kind": "level",
+   "y": {
+    "20260331": 921.0
+   },
+   "q": {
+    "20250930": 921.0,
+    "20251231": 921.0,
+    "20260630": 980.0
+   },
+   "src": {
+    "q:20260630": [
+     "a6cf2dab-ceb2-4475-bd48-5122427fd66a.pdf",
+     8,
+     "Wind: 980 MW – Operational (doc period, as on 30.06.2026)",
+     "980"
+    ],
+    "q:20251231": [
+     "c403b1d0-c2ff-48a6-8192-2ca1c879d18a.pdf",
+     10,
+     "Wind (Installed Capacity, as on 31.12.2025)",
+     "921"
+    ],
+    "y:20260331": [
+     "3e20e8ca-7d68-430b-9ec1-d9865ebc922d.pdf",
+     10,
+     "Wind (Installed Capacity, as on 31.03.2026)",
+     "921"
+    ],
+    "q:20250930": [
+     "6dd99cd7-9a84-45cf-a346-a372e4171faa.pdf",
+     10,
+     "Wind (Installed Capacity, as on 30.09.2025)",
+     "921"
+    ]
+   }
+  },
   {
    "name": "AT&C Loss - Agra Franchise",
    "unit": "%",
    "kind": "level",
    "y": {
+    "20250331": 7.0,
     "20260331": 5.4
    },
    "q": {},
    "src": {
     "y:20260331": [
-     "a6cf2dab-ceb2-4475-bd48-5122427fd66a.pdf",
+     "3e20e8ca-7d68-430b-9ec1-d9865ebc922d.pdf",
      14,
-     "Reduction in AT&C losses from 58.77% at the time of takeover to ~5.4% in FY26",
+     "reduction ... to ~5.4% in FY 26",
      "5.4"
+    ],
+    "y:20250331": [
+     "c403b1d0-c2ff-48a6-8192-2ca1c879d18a.pdf",
+     14,
+     "reduction ... to ~7% in FY25",
+     "7"
+    ]
+   }
+  },
+  {
+   "name": "AT&C Loss - SMK Franchise",
+   "unit": "%",
+   "kind": "level",
+   "y": {
+    "20250331": 29.0,
+    "20260331": 23.1
+   },
+   "q": {},
+   "src": {
+    "y:20260331": [
+     "3e20e8ca-7d68-430b-9ec1-d9865ebc922d.pdf",
+     14,
+     "reduced to ~23.1% in FY26",
+     "23.1"
+    ],
+    "y:20250331": [
+     "c403b1d0-c2ff-48a6-8192-2ca1c879d18a.pdf",
+     14,
+     "reduced to ~29% in FY25",
+     "29"
+    ]
+   }
+  },
+  {
+   "name": "Peak Demand - Agra Franchise",
+   "unit": "MVA",
+   "kind": "level",
+   "y": {
+    "20250331": 572.0,
+    "20260331": 588.0
+   },
+   "q": {},
+   "src": {
+    "y:20260331": [
+     "3e20e8ca-7d68-430b-9ec1-d9865ebc922d.pdf",
+     14,
+     "Peak Demand (FY26), Agra",
+     "588"
+    ],
+    "y:20250331": [
+     "c403b1d0-c2ff-48a6-8192-2ca1c879d18a.pdf",
+     14,
+     "Peak Demand (FY25), Agra",
+     "572"
+    ]
+   }
+  },
+  {
+   "name": "Peak Demand - Bhiwandi Franchise",
+   "unit": "MVA",
+   "kind": "level",
+   "y": {
+    "20250331": 609.0,
+    "20260331": 634.0
+   },
+   "q": {},
+   "src": {
+    "y:20260331": [
+     "3e20e8ca-7d68-430b-9ec1-d9865ebc922d.pdf",
+     14,
+     "Peak Demand (FY26), Bhiwandi",
+     "634"
+    ],
+    "y:20250331": [
+     "c403b1d0-c2ff-48a6-8192-2ca1c879d18a.pdf",
+     14,
+     "Peak Demand (FY25), Bhiwandi",
+     "609"
+    ]
+   }
+  },
+  {
+   "name": "Peak Demand - SMK Franchise",
+   "unit": "MVA",
+   "kind": "level",
+   "y": {
+    "20250331": 167.0,
+    "20260331": 165.0
+   },
+   "q": {},
+   "src": {
+    "y:20260331": [
+     "3e20e8ca-7d68-430b-9ec1-d9865ebc922d.pdf",
+     14,
+     "Peak Demand (FY26), Shil Mumbra Kalwa",
+     "165"
+    ],
+    "y:20250331": [
+     "c403b1d0-c2ff-48a6-8192-2ca1c879d18a.pdf",
+     14,
+     "Peak Demand (FY25), Shil Mumbra Kalwa",
+     "167"
     ]
    }
   },
@@ -52,146 +332,10 @@
    "q": {},
    "src": {
     "y:20260331": [
-     "a6cf2dab-ceb2-4475-bd48-5122427fd66a.pdf",
+     "3e20e8ca-7d68-430b-9ec1-d9865ebc922d.pdf",
      14,
-     "Reduction in AT&C losses from 58% at the time of takeover to ~9.1% in FY26",
+     "reduction ... to ~9.1% in FY26",
      "9.1"
-    ]
-   }
-  },
-  {
-   "name": "AT&C Loss - SMK Franchise",
-   "unit": "%",
-   "kind": "level",
-   "y": {
-    "20260331": 23.1
-   },
-   "q": {},
-   "src": {
-    "y:20260331": [
-     "a6cf2dab-ceb2-4475-bd48-5122427fd66a.pdf",
-     14,
-     "Reported AT&C losses of 48% at the time of takeover, reduced to ~23.1% in FY26",
-     "23.1"
-    ]
-   }
-  },
-  {
-   "name": "Coal-based Thermal Generation Capacity",
-   "unit": "MW",
-   "kind": "level",
-   "y": {},
-   "q": {
-    "20260630": 1762.0
-   },
-   "src": {
-    "q:20260630": [
-     "a6cf2dab-ceb2-4475-bd48-5122427fd66a.pdf",
-     8,
-     "Coal based plants: 1,762 MW – Operational (incl. Nabha 1,400 MW, as on 30.06.202",
-     "1,762"
-    ]
-   }
-  },
-  {
-   "name": "Gas-based Thermal Generation Capacity",
-   "unit": "MW",
-   "kind": "level",
-   "y": {},
-   "q": {
-    "20260630": 2730.0
-   },
-   "src": {
-    "q:20260630": [
-     "a6cf2dab-ceb2-4475-bd48-5122427fd66a.pdf",
-     8,
-     "Gas based plants: 2,730 MW – Operational (doc period, as on 30.06.2026)",
-     "2,730"
-    ]
-   }
-  },
-  {
-   "name": "Peak Demand - Agra Franchise",
-   "unit": "MVA",
-   "kind": "level",
-   "y": {
-    "20260331": 588.0
-   },
-   "q": {},
-   "src": {
-    "y:20260331": [
-     "a6cf2dab-ceb2-4475-bd48-5122427fd66a.pdf",
-     14,
-     "Peak Demand (FY26) Agra",
-     "588"
-    ]
-   }
-  },
-  {
-   "name": "Peak Demand - Bhiwandi Franchise",
-   "unit": "MVA",
-   "kind": "level",
-   "y": {
-    "20260331": 634.0
-   },
-   "q": {},
-   "src": {
-    "y:20260331": [
-     "a6cf2dab-ceb2-4475-bd48-5122427fd66a.pdf",
-     14,
-     "Peak Demand (FY26) Bhiwandi",
-     "634"
-    ]
-   }
-  },
-  {
-   "name": "Peak Demand - SMK Franchise",
-   "unit": "MVA",
-   "kind": "level",
-   "y": {
-    "20260331": 165.0
-   },
-   "q": {},
-   "src": {
-    "y:20260331": [
-     "a6cf2dab-ceb2-4475-bd48-5122427fd66a.pdf",
-     14,
-     "Peak Demand (FY26) SMK",
-     "165"
-    ]
-   }
-  },
-  {
-   "name": "Solar Generation Capacity",
-   "unit": "MWp",
-   "kind": "level",
-   "y": {},
-   "q": {
-    "20260630": 1092.0
-   },
-   "src": {
-    "q:20260630": [
-     "a6cf2dab-ceb2-4475-bd48-5122427fd66a.pdf",
-     8,
-     "Solar: 1,092 MWp - Operational (doc period, as on 30.06.2026)",
-     "1,092"
-    ]
-   }
-  },
-  {
-   "name": "Wind Generation Capacity",
-   "unit": "MW",
-   "kind": "level",
-   "y": {},
-   "q": {
-    "20260630": 980.0
-   },
-   "src": {
-    "q:20260630": [
-     "a6cf2dab-ceb2-4475-bd48-5122427fd66a.pdf",
-     8,
-     "Wind: 980 MW – Operational (doc period, as on 30.06.2026)",
-     "980"
     ]
    }
   }
@@ -598,5 +742,5 @@
  "catalog_since": "2020-01-01",
  "catalog_until": "2026-09-07",
  "catalog_ver": 5,
- "updated": "2026-09-07"
+ "updated": "2026-09-08"
 }
