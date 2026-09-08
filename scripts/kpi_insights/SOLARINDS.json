@@ -15,6 +15,34 @@
    "title": "Q1 FY27 Results Presentation (Fact Sheet)",
    "read": "2026-09-06",
    "by": "claude-routine"
+  },
+  "c2f4986e-0080-441f-8874-d4b5b3745341.pdf": {
+   "kind": "ar",
+   "date": "2026-07-21",
+   "title": "Letter to Shareholders re: Annual Report FY2025-26",
+   "read": "2026-09-08",
+   "by": "claude-routine"
+  },
+  "5370aa89-a590-4e87-9528-8bf0af051548.pdf": {
+   "kind": "ip",
+   "date": "2026-05-15",
+   "title": "Investor Presentation Q4 FY26 / FY26 Results",
+   "read": "2026-09-08",
+   "by": "claude-routine"
+  },
+  "574cb030-a990-41ca-9030-f4d798365dc1.pdf": {
+   "kind": "ar",
+   "date": "2025-03-31",
+   "title": "Annual Report FY2024-25",
+   "read": "2026-09-08",
+   "by": "claude-routine"
+  },
+  "f903ad7e-3141-4f74-bfa2-53869cfef786.pdf": {
+   "kind": "ip",
+   "date": "2026-02-03",
+   "title": "Investor Presentation Q3 FY26 / 9M FY26 Results",
+   "read": "2026-09-08",
+   "by": "claude-routine"
   }
  },
  "metrics": [
@@ -22,17 +50,24 @@
    "name": "Defence Revenue Share (Quarterly Customer Mix)",
    "unit": "%",
    "kind": "level",
-   "y": {},
+   "y": {
+    "20250331": 18.0,
+    "20260331": 27.0
+   },
    "q": {
+    "20241231": 21.0,
+    "20250331": 20.0,
     "20250630": 19.0,
+    "20250930": 24.0,
+    "20251231": 28.0,
     "20260331": 33.0,
     "20260630": 26.0
    },
    "src": {
     "q:20260331": [
-     "fdc843e7-8b8f-4c0b-ab89-ee0d5aa5f020.pdf",
+     "5370aa89-a590-4e87-9528-8bf0af051548.pdf",
      5,
-     "QUARTERLY CUSTOMERS — Defence % of Sales Q4FY26",
+     "Defence",
      "33"
     ],
     "q:20260630": [
@@ -46,6 +81,282 @@
      5,
      "QUARTERLY CUSTOMERS — Defence % of sales Q1FY26",
      "19"
+    ],
+    "q:20251231": [
+     "f903ad7e-3141-4f74-bfa2-53869cfef786.pdf",
+     5,
+     "Defence",
+     "28"
+    ],
+    "q:20250331": [
+     "5370aa89-a590-4e87-9528-8bf0af051548.pdf",
+     5,
+     "Defence",
+     "20"
+    ],
+    "y:20260331": [
+     "5370aa89-a590-4e87-9528-8bf0af051548.pdf",
+     7,
+     "Defence",
+     "27"
+    ],
+    "y:20250331": [
+     "5370aa89-a590-4e87-9528-8bf0af051548.pdf",
+     7,
+     "Defence",
+     "18"
+    ],
+    "q:20250930": [
+     "f903ad7e-3141-4f74-bfa2-53869cfef786.pdf",
+     5,
+     "Defence",
+     "24"
+    ],
+    "q:20241231": [
+     "f903ad7e-3141-4f74-bfa2-53869cfef786.pdf",
+     5,
+     "Defence",
+     "21"
+    ]
+   }
+  },
+  {
+   "name": "CIL Revenue Share (Customer Mix)",
+   "unit": "%",
+   "kind": "flow",
+   "y": {
+    "20250331": 13.0,
+    "20260331": 9.0
+   },
+   "q": {
+    "20241231": 13.0,
+    "20250331": 13.0,
+    "20250930": 8.0,
+    "20251231": 10.0,
+    "20260331": 9.0
+   },
+   "src": {
+    "q:20251231": [
+     "f903ad7e-3141-4f74-bfa2-53869cfef786.pdf",
+     5,
+     "CIL",
+     "10"
+    ],
+    "q:20260331": [
+     "5370aa89-a590-4e87-9528-8bf0af051548.pdf",
+     5,
+     "CIL",
+     "09"
+    ],
+    "q:20250331": [
+     "5370aa89-a590-4e87-9528-8bf0af051548.pdf",
+     5,
+     "CIL",
+     "13"
+    ],
+    "y:20260331": [
+     "5370aa89-a590-4e87-9528-8bf0af051548.pdf",
+     7,
+     "CIL",
+     "09"
+    ],
+    "y:20250331": [
+     "5370aa89-a590-4e87-9528-8bf0af051548.pdf",
+     7,
+     "CIL",
+     "13"
+    ],
+    "q:20250930": [
+     "f903ad7e-3141-4f74-bfa2-53869cfef786.pdf",
+     5,
+     "CIL",
+     "8"
+    ],
+    "q:20241231": [
+     "f903ad7e-3141-4f74-bfa2-53869cfef786.pdf",
+     5,
+     "CIL",
+     "13"
+    ]
+   }
+  },
+  {
+   "name": "Housing & Infra Revenue Share (Customer Mix)",
+   "unit": "%",
+   "kind": "flow",
+   "y": {
+    "20250331": 15.0,
+    "20260331": 12.0
+   },
+   "q": {
+    "20241231": 13.0,
+    "20250331": 16.0,
+    "20250930": 8.0,
+    "20251231": 10.0,
+    "20260331": 15.0
+   },
+   "src": {
+    "q:20251231": [
+     "f903ad7e-3141-4f74-bfa2-53869cfef786.pdf",
+     5,
+     "Housing & Infra",
+     "10"
+    ],
+    "q:20260331": [
+     "5370aa89-a590-4e87-9528-8bf0af051548.pdf",
+     5,
+     "Housing & Infra",
+     "15"
+    ],
+    "q:20250331": [
+     "5370aa89-a590-4e87-9528-8bf0af051548.pdf",
+     5,
+     "Housing & Infra",
+     "16"
+    ],
+    "y:20260331": [
+     "5370aa89-a590-4e87-9528-8bf0af051548.pdf",
+     7,
+     "Housing & Infra",
+     "12"
+    ],
+    "y:20250331": [
+     "5370aa89-a590-4e87-9528-8bf0af051548.pdf",
+     7,
+     "Housing & Infra",
+     "15"
+    ],
+    "q:20250930": [
+     "f903ad7e-3141-4f74-bfa2-53869cfef786.pdf",
+     5,
+     "Housing & Infra",
+     "8"
+    ],
+    "q:20241231": [
+     "f903ad7e-3141-4f74-bfa2-53869cfef786.pdf",
+     5,
+     "Housing & Infra",
+     "13"
+    ]
+   }
+  },
+  {
+   "name": "International Revenue Share (Customer Mix)",
+   "unit": "%",
+   "kind": "flow",
+   "y": {
+    "20250331": 38.0,
+    "20260331": 39.0
+   },
+   "q": {
+    "20241231": 38.0,
+    "20250331": 36.0,
+    "20250930": 46.0,
+    "20251231": 40.0,
+    "20260331": 33.0
+   },
+   "src": {
+    "q:20251231": [
+     "f903ad7e-3141-4f74-bfa2-53869cfef786.pdf",
+     5,
+     "International",
+     "40"
+    ],
+    "q:20260331": [
+     "5370aa89-a590-4e87-9528-8bf0af051548.pdf",
+     5,
+     "International",
+     "33"
+    ],
+    "q:20250331": [
+     "5370aa89-a590-4e87-9528-8bf0af051548.pdf",
+     5,
+     "International",
+     "36"
+    ],
+    "y:20260331": [
+     "5370aa89-a590-4e87-9528-8bf0af051548.pdf",
+     7,
+     "International",
+     "39"
+    ],
+    "y:20250331": [
+     "5370aa89-a590-4e87-9528-8bf0af051548.pdf",
+     7,
+     "International",
+     "38"
+    ],
+    "q:20250930": [
+     "f903ad7e-3141-4f74-bfa2-53869cfef786.pdf",
+     5,
+     "International",
+     "46"
+    ],
+    "q:20241231": [
+     "f903ad7e-3141-4f74-bfa2-53869cfef786.pdf",
+     5,
+     "International",
+     "38"
+    ]
+   }
+  },
+  {
+   "name": "Non-CIL & Institutional Revenue Share (Customer Mix)",
+   "unit": "%",
+   "kind": "flow",
+   "y": {
+    "20250331": 15.0,
+    "20260331": 12.0
+   },
+   "q": {
+    "20241231": 14.0,
+    "20250331": 14.0,
+    "20250930": 13.0,
+    "20251231": 11.0,
+    "20260331": 10.0
+   },
+   "src": {
+    "q:20251231": [
+     "f903ad7e-3141-4f74-bfa2-53869cfef786.pdf",
+     5,
+     "Non-CIL & Institutional",
+     "11"
+    ],
+    "q:20260331": [
+     "5370aa89-a590-4e87-9528-8bf0af051548.pdf",
+     5,
+     "Non-CIL & Institutional",
+     "10"
+    ],
+    "q:20250331": [
+     "5370aa89-a590-4e87-9528-8bf0af051548.pdf",
+     5,
+     "Non-CIL & Institutional",
+     "14"
+    ],
+    "y:20260331": [
+     "5370aa89-a590-4e87-9528-8bf0af051548.pdf",
+     7,
+     "Non-CIL & Institutional",
+     "12"
+    ],
+    "y:20250331": [
+     "5370aa89-a590-4e87-9528-8bf0af051548.pdf",
+     7,
+     "Non-CIL & Institutional",
+     "15"
+    ],
+    "q:20250930": [
+     "f903ad7e-3141-4f74-bfa2-53869cfef786.pdf",
+     5,
+     "Non-CIL & Institutional",
+     "13"
+    ],
+    "q:20241231": [
+     "f903ad7e-3141-4f74-bfa2-53869cfef786.pdf",
+     5,
+     "Non-CIL & Institutional",
+     "14"
     ]
    }
   },
@@ -184,6 +495,30 @@
    }
   },
   {
+   "name": "Renewable Energy Share (Energy Mix)",
+   "unit": "%",
+   "kind": "level",
+   "y": {
+    "20250331": 20.0,
+    "20260331": 16.0
+   },
+   "q": {},
+   "src": {
+    "y:20260331": [
+     "83d2a209-44e0-4b21-8585-4905541a7832.pdf",
+     38,
+     "Renewable energy share (GJ) in total energy mix (doc period)",
+     "16"
+    ],
+    "y:20250331": [
+     "574cb030-a990-41ca-9030-f4d798365dc1.pdf",
+     14,
+     "energy usage is from the renewable sources",
+     "20"
+    ]
+   }
+  },
+  {
    "name": "Defence Order Book",
    "unit": "INR Cr",
    "kind": "level",
@@ -197,6 +532,23 @@
      55,
      "The Company has built a robust defence order book of over ₹18,000 crore (doc per",
      "18,000"
+    ]
+   }
+  },
+  {
+   "name": "Explosives Volume Supplied (Annual)",
+   "unit": "MT",
+   "kind": "flow",
+   "y": {
+    "20250331": 600000.0
+   },
+   "q": {},
+   "src": {
+    "y:20250331": [
+     "574cb030-a990-41ca-9030-f4d798365dc1.pdf",
+     14,
+     "MT of Explosives supplied",
+     "6,00,000"
     ]
    }
   },
@@ -218,19 +570,36 @@
    }
   },
   {
-   "name": "Renewable Energy Share (Energy Mix)",
-   "unit": "%",
+   "name": "Manufacturing Facilities Count",
+   "unit": "count",
    "kind": "level",
    "y": {
-    "20260331": 16.0
+    "20250331": 40.0
    },
    "q": {},
    "src": {
-    "y:20260331": [
-     "83d2a209-44e0-4b21-8585-4905541a7832.pdf",
-     38,
-     "Renewable energy share (GJ) in total energy mix (doc period)",
-     "16"
+    "y:20250331": [
+     "574cb030-a990-41ca-9030-f4d798365dc1.pdf",
+     14,
+     "Manufacturing facilities worldwide",
+     "40"
+    ]
+   }
+  },
+  {
+   "name": "Total Workforce",
+   "unit": "count",
+   "kind": "level",
+   "y": {
+    "20250331": 11245.0
+   },
+   "q": {},
+   "src": {
+    "y:20250331": [
+     "574cb030-a990-41ca-9030-f4d798365dc1.pdf",
+     14,
+     "Total workforce",
+     "11,245"
     ]
    }
   }
@@ -610,5 +979,5 @@
  "catalog_since": "2020-01-01",
  "catalog_until": "2026-09-06",
  "catalog_ver": 5,
- "updated": "2026-09-06"
+ "updated": "2026-09-08"
 }
