@@ -29,6 +29,13 @@
    "title": "Investor Presentation, May 2026 (Q4 & FY26)",
    "read": "2026-09-06",
    "by": "claude-routine"
+  },
+  "590d5aad-c9ac-46b8-8915-8f8481422683.pdf": {
+   "kind": "ip",
+   "date": "2026-02-10",
+   "title": "Q3 FY26 Investor Presentation (P&L annexure)",
+   "read": "2026-09-08",
+   "by": "claude-routine"
   }
  },
  "metrics": [
@@ -37,6 +44,8 @@
    "unit": "count",
    "kind": "flow",
    "y": {
+    "20190331": 822724.0,
+    "20200331": 697582.0,
     "20210331": 609403.0,
     "20220331": 595474.0,
     "20230331": 824066.0,
@@ -49,28 +58,28 @@
    },
    "src": {
     "y:20220331": [
-     "983f08ea-f89c-4bba-9fc3-d4cb03d9fa19.pdf",
-     73,
-     "PROFIT & LOSS STATEMENT (Consolidated) — Sales Volume FY22",
-     "595,474.0"
+     "590d5aad-c9ac-46b8-8915-8f8481422683.pdf",
+     75,
+     "Sales Volume: Two Wheelers (Nos.)",
+     "595,474"
     ],
     "y:20230331": [
-     "983f08ea-f89c-4bba-9fc3-d4cb03d9fa19.pdf",
-     73,
-     "PROFIT & LOSS STATEMENT (Consolidated) — Sales Volume FY23",
-     "824,066.0"
+     "590d5aad-c9ac-46b8-8915-8f8481422683.pdf",
+     75,
+     "Sales Volume: Two Wheelers (Nos.)",
+     "824,066"
     ],
     "y:20240331": [
-     "983f08ea-f89c-4bba-9fc3-d4cb03d9fa19.pdf",
-     73,
-     "PROFIT & LOSS STATEMENT (Consolidated) — Sales Volume FY24",
-     "912,003.0"
+     "590d5aad-c9ac-46b8-8915-8f8481422683.pdf",
+     75,
+     "Sales Volume: Two Wheelers (Nos.)",
+     "912,003"
     ],
     "y:20250331": [
-     "983f08ea-f89c-4bba-9fc3-d4cb03d9fa19.pdf",
-     73,
-     "PROFIT & LOSS STATEMENT (Consolidated) — Sales Volume FY25",
-     "1,002,893.0"
+     "590d5aad-c9ac-46b8-8915-8f8481422683.pdf",
+     75,
+     "Sales Volume: Two Wheelers (Nos.)",
+     "1,002,893"
     ],
     "y:20260331": [
      "983f08ea-f89c-4bba-9fc3-d4cb03d9fa19.pdf",
@@ -85,10 +94,22 @@
      "332,940.0"
     ],
     "y:20210331": [
-     "f98fbebb-dddb-4be5-9b7d-75810cdd1a16.pdf",
-     78,
-     "PROFIT & LOSS STATEMENT (Consolidated) — Sales Volume FY21",
-     "609,403.0"
+     "590d5aad-c9ac-46b8-8915-8f8481422683.pdf",
+     75,
+     "Sales Volume: Two Wheelers (Nos.)",
+     "609,403"
+    ],
+    "y:20190331": [
+     "590d5aad-c9ac-46b8-8915-8f8481422683.pdf",
+     75,
+     "Sales Volume: Two Wheelers (Nos.)",
+     "822,724"
+    ],
+    "y:20200331": [
+     "590d5aad-c9ac-46b8-8915-8f8481422683.pdf",
+     75,
+     "Sales Volume: Two Wheelers (Nos.)",
+     "697,582"
     ]
    }
   },
@@ -103,7 +124,9 @@
     "20260331": 103404.0
    },
    "q": {
+    "20241231": 21010.0,
     "20250331": 28690.0,
+    "20251231": 26086.0,
     "20260331": 33976.0,
     "20260630": 24815.0
    },
@@ -149,6 +172,382 @@
      69,
      "Q4 & YTD SALES & MARKET-SHARE — VECV Volumes Q4'FY25",
      "28,690"
+    ],
+    "q:20251231": [
+     "590d5aad-c9ac-46b8-8915-8f8481422683.pdf",
+     68,
+     "VECV - Volumes",
+     "26,086"
+    ],
+    "q:20241231": [
+     "590d5aad-c9ac-46b8-8915-8f8481422683.pdf",
+     68,
+     "VECV - Volumes",
+     "21,010"
+    ]
+   }
+  },
+  {
+   "name": "VECV Export Volume",
+   "unit": "count",
+   "kind": "flow",
+   "y": {},
+   "q": {
+    "20241231": 1192.0,
+    "20250331": 1682.0,
+    "20250630": 1436.0,
+    "20251231": 2056.0,
+    "20260331": 1787.0,
+    "20260630": 1450.0
+   },
+   "src": {
+    "q:20260630": [
+     "983f08ea-f89c-4bba-9fc3-d4cb03d9fa19.pdf",
+     66,
+     "Q1 FY27 & Q1 FY26 SALES & MARKET-SHARE — Exports Volumes Q1'FY27",
+     "1,450"
+    ],
+    "q:20250630": [
+     "983f08ea-f89c-4bba-9fc3-d4cb03d9fa19.pdf",
+     66,
+     "Q1 FY27 & Q1 FY26 SALES & MARKET-SHARE — Exports Volumes Q1'FY26",
+     "1,436"
+    ],
+    "q:20260331": [
+     "f98fbebb-dddb-4be5-9b7d-75810cdd1a16.pdf",
+     69,
+     "Exports Volumes Q4'FY26",
+     "1,787"
+    ],
+    "q:20250331": [
+     "f98fbebb-dddb-4be5-9b7d-75810cdd1a16.pdf",
+     69,
+     "Exports Volumes Q4'FY25",
+     "1,682"
+    ],
+    "q:20251231": [
+     "590d5aad-c9ac-46b8-8915-8f8481422683.pdf",
+     68,
+     "Exports - Volumes",
+     "2,056"
+    ],
+    "q:20241231": [
+     "590d5aad-c9ac-46b8-8915-8f8481422683.pdf",
+     68,
+     "Exports - Volumes",
+     "1,192"
+    ]
+   }
+  },
+  {
+   "name": "VECV HD Truck Market Share",
+   "unit": "%",
+   "kind": "level",
+   "y": {},
+   "q": {
+    "20241231": 8.9,
+    "20250331": 9.1,
+    "20250630": 8.8,
+    "20251231": 8.6,
+    "20260331": 9.5,
+    "20260630": 8.8
+   },
+   "src": {
+    "q:20260630": [
+     "983f08ea-f89c-4bba-9fc3-d4cb03d9fa19.pdf",
+     66,
+     "Q1 FY27 & Q1 FY26 SALES & MARKET-SHARE — HD Market share Q1'FY27",
+     "8.8"
+    ],
+    "q:20250630": [
+     "983f08ea-f89c-4bba-9fc3-d4cb03d9fa19.pdf",
+     66,
+     "Q1 FY27 & Q1 FY26 SALES & MARKET-SHARE — HD Market share Q1'FY26",
+     "8.8"
+    ],
+    "q:20260331": [
+     "f98fbebb-dddb-4be5-9b7d-75810cdd1a16.pdf",
+     69,
+     "HD Market share Q4'FY26",
+     "9.5"
+    ],
+    "q:20250331": [
+     "f98fbebb-dddb-4be5-9b7d-75810cdd1a16.pdf",
+     69,
+     "HD Market share Q4'FY25",
+     "9.1"
+    ],
+    "q:20251231": [
+     "590d5aad-c9ac-46b8-8915-8f8481422683.pdf",
+     68,
+     "HD - Market share",
+     "8.6"
+    ],
+    "q:20241231": [
+     "590d5aad-c9ac-46b8-8915-8f8481422683.pdf",
+     68,
+     "HD - Market share",
+     "8.9"
+    ]
+   }
+  },
+  {
+   "name": "VECV HD Truck Volume",
+   "unit": "count",
+   "kind": "flow",
+   "y": {},
+   "q": {
+    "20241231": 5428.0,
+    "20250331": 6765.0,
+    "20250630": 4580.0,
+    "20251231": 6303.0,
+    "20260331": 8891.0,
+    "20260630": 5275.0
+   },
+   "src": {
+    "q:20260630": [
+     "983f08ea-f89c-4bba-9fc3-d4cb03d9fa19.pdf",
+     66,
+     "Q1 FY27 & Q1 FY26 SALES & MARKET-SHARE — HD Volumes Q1'FY27",
+     "5,275"
+    ],
+    "q:20250630": [
+     "983f08ea-f89c-4bba-9fc3-d4cb03d9fa19.pdf",
+     66,
+     "Q1 FY27 & Q1 FY26 SALES & MARKET-SHARE — HD Volumes Q1'FY26",
+     "4,580"
+    ],
+    "q:20260331": [
+     "f98fbebb-dddb-4be5-9b7d-75810cdd1a16.pdf",
+     69,
+     "HD Volumes Q4'FY26",
+     "8,891"
+    ],
+    "q:20250331": [
+     "f98fbebb-dddb-4be5-9b7d-75810cdd1a16.pdf",
+     69,
+     "HD Volumes Q4'FY25",
+     "6,765"
+    ],
+    "q:20251231": [
+     "590d5aad-c9ac-46b8-8915-8f8481422683.pdf",
+     68,
+     "HD - Volumes",
+     "6,303"
+    ],
+    "q:20241231": [
+     "590d5aad-c9ac-46b8-8915-8f8481422683.pdf",
+     68,
+     "HD - Volumes",
+     "5,428"
+    ]
+   }
+  },
+  {
+   "name": "VECV LMD Truck Market Share",
+   "unit": "%",
+   "kind": "level",
+   "y": {},
+   "q": {
+    "20241231": 36.0,
+    "20250331": 37.1,
+    "20250630": 34.8,
+    "20251231": 34.5,
+    "20260331": 35.3,
+    "20260630": 33.2
+   },
+   "src": {
+    "q:20260630": [
+     "983f08ea-f89c-4bba-9fc3-d4cb03d9fa19.pdf",
+     66,
+     "Q1 FY27 & Q1 FY26 SALES & MARKET-SHARE — LMD Market share Q1'FY27",
+     "33.2"
+    ],
+    "q:20250630": [
+     "983f08ea-f89c-4bba-9fc3-d4cb03d9fa19.pdf",
+     66,
+     "Q1 FY27 & Q1 FY26 SALES & MARKET-SHARE — LMD Market share Q1'FY26",
+     "34.8"
+    ],
+    "q:20260331": [
+     "f98fbebb-dddb-4be5-9b7d-75810cdd1a16.pdf",
+     69,
+     "LMD Market share Q4'FY26",
+     "35.3"
+    ],
+    "q:20250331": [
+     "f98fbebb-dddb-4be5-9b7d-75810cdd1a16.pdf",
+     69,
+     "LMD Market share Q4'FY25",
+     "37.1"
+    ],
+    "q:20251231": [
+     "590d5aad-c9ac-46b8-8915-8f8481422683.pdf",
+     68,
+     "LMD - Market share",
+     "34.5"
+    ],
+    "q:20241231": [
+     "590d5aad-c9ac-46b8-8915-8f8481422683.pdf",
+     68,
+     "LMD - Market share",
+     "36.0"
+    ]
+   }
+  },
+  {
+   "name": "VECV LMD Truck Volume",
+   "unit": "count",
+   "kind": "flow",
+   "y": {},
+   "q": {
+    "20241231": 9702.0,
+    "20250331": 11603.0,
+    "20250630": 8610.0,
+    "20251231": 12447.0,
+    "20260331": 15037.0,
+    "20260630": 9993.0
+   },
+   "src": {
+    "q:20260630": [
+     "983f08ea-f89c-4bba-9fc3-d4cb03d9fa19.pdf",
+     66,
+     "Q1 FY27 & Q1 FY26 SALES & MARKET-SHARE — LMD Volumes Q1'FY27",
+     "9,993"
+    ],
+    "q:20250630": [
+     "983f08ea-f89c-4bba-9fc3-d4cb03d9fa19.pdf",
+     66,
+     "Q1 FY27 & Q1 FY26 SALES & MARKET-SHARE — LMD Volumes Q1'FY26",
+     "8,610"
+    ],
+    "q:20260331": [
+     "f98fbebb-dddb-4be5-9b7d-75810cdd1a16.pdf",
+     69,
+     "LMD Volumes Q4'FY26",
+     "15,037"
+    ],
+    "q:20250331": [
+     "f98fbebb-dddb-4be5-9b7d-75810cdd1a16.pdf",
+     69,
+     "LMD Volumes Q4'FY25",
+     "11,603"
+    ],
+    "q:20251231": [
+     "590d5aad-c9ac-46b8-8915-8f8481422683.pdf",
+     68,
+     "LMD - Volumes",
+     "12,447"
+    ],
+    "q:20241231": [
+     "590d5aad-c9ac-46b8-8915-8f8481422683.pdf",
+     68,
+     "LMD - Volumes",
+     "9,702"
+    ]
+   }
+  },
+  {
+   "name": "VECV Total Bus Market Share",
+   "unit": "%",
+   "kind": "level",
+   "y": {},
+   "q": {
+    "20241231": 19.4,
+    "20250331": 22.8,
+    "20250630": 21.0,
+    "20251231": 18.0,
+    "20260331": 19.3,
+    "20260630": 22.5
+   },
+   "src": {
+    "q:20260630": [
+     "983f08ea-f89c-4bba-9fc3-d4cb03d9fa19.pdf",
+     66,
+     "Q1 FY27 & Q1 FY26 SALES & MARKET-SHARE — Total Bus Market share Q1'FY27",
+     "22.5"
+    ],
+    "q:20250630": [
+     "983f08ea-f89c-4bba-9fc3-d4cb03d9fa19.pdf",
+     66,
+     "Q1 FY27 & Q1 FY26 SALES & MARKET-SHARE — Total Bus Market share Q1'FY26",
+     "21.0"
+    ],
+    "q:20260331": [
+     "f98fbebb-dddb-4be5-9b7d-75810cdd1a16.pdf",
+     69,
+     "Total Bus Market share Q4'FY26",
+     "19.3"
+    ],
+    "q:20250331": [
+     "f98fbebb-dddb-4be5-9b7d-75810cdd1a16.pdf",
+     69,
+     "Total Bus Market share Q4'FY25",
+     "22.8"
+    ],
+    "q:20251231": [
+     "590d5aad-c9ac-46b8-8915-8f8481422683.pdf",
+     68,
+     "Total Bus - Market share",
+     "18.0"
+    ],
+    "q:20241231": [
+     "590d5aad-c9ac-46b8-8915-8f8481422683.pdf",
+     68,
+     "Total Bus - Market share",
+     "19.4"
+    ]
+   }
+  },
+  {
+   "name": "VECV Total Bus Volume",
+   "unit": "count",
+   "kind": "flow",
+   "y": {},
+   "q": {
+    "20241231": 3578.0,
+    "20250331": 7397.0,
+    "20250630": 6005.0,
+    "20251231": 3458.0,
+    "20260331": 5971.0,
+    "20260630": 6126.0
+   },
+   "src": {
+    "q:20260630": [
+     "983f08ea-f89c-4bba-9fc3-d4cb03d9fa19.pdf",
+     66,
+     "Q1 FY27 & Q1 FY26 SALES & MARKET-SHARE — Total Bus Volumes Q1'FY27",
+     "6,126"
+    ],
+    "q:20250630": [
+     "983f08ea-f89c-4bba-9fc3-d4cb03d9fa19.pdf",
+     66,
+     "Q1 FY27 & Q1 FY26 SALES & MARKET-SHARE — Total Bus Volumes Q1'FY26",
+     "6,005"
+    ],
+    "q:20260331": [
+     "f98fbebb-dddb-4be5-9b7d-75810cdd1a16.pdf",
+     69,
+     "Total Bus Volumes Q4'FY26",
+     "5,971"
+    ],
+    "q:20250331": [
+     "f98fbebb-dddb-4be5-9b7d-75810cdd1a16.pdf",
+     69,
+     "Total Bus Volumes Q4'FY25",
+     "7,397"
+    ],
+    "q:20251231": [
+     "590d5aad-c9ac-46b8-8915-8f8481422683.pdf",
+     68,
+     "Total Bus - Volumes",
+     "3,458"
+    ],
+    "q:20241231": [
+     "590d5aad-c9ac-46b8-8915-8f8481422683.pdf",
+     68,
+     "Total Bus - Volumes",
+     "3,578"
     ]
    }
   },
@@ -378,268 +777,57 @@
    }
   },
   {
-   "name": "VECV Export Volume",
-   "unit": "count",
-   "kind": "flow",
-   "y": {},
-   "q": {
-    "20250331": 1682.0,
-    "20250630": 1436.0,
-    "20260331": 1787.0,
-    "20260630": 1450.0
-   },
-   "src": {
-    "q:20260630": [
-     "983f08ea-f89c-4bba-9fc3-d4cb03d9fa19.pdf",
-     66,
-     "Q1 FY27 & Q1 FY26 SALES & MARKET-SHARE — Exports Volumes Q1'FY27",
-     "1,450"
-    ],
-    "q:20250630": [
-     "983f08ea-f89c-4bba-9fc3-d4cb03d9fa19.pdf",
-     66,
-     "Q1 FY27 & Q1 FY26 SALES & MARKET-SHARE — Exports Volumes Q1'FY26",
-     "1,436"
-    ],
-    "q:20260331": [
-     "f98fbebb-dddb-4be5-9b7d-75810cdd1a16.pdf",
-     69,
-     "Exports Volumes Q4'FY26",
-     "1,787"
-    ],
-    "q:20250331": [
-     "f98fbebb-dddb-4be5-9b7d-75810cdd1a16.pdf",
-     69,
-     "Exports Volumes Q4'FY25",
-     "1,682"
-    ]
-   }
-  },
-  {
-   "name": "VECV HD Truck Market Share",
+   "name": "VECV Overall Market Share (>3.5T)",
    "unit": "%",
    "kind": "level",
    "y": {},
    "q": {
-    "20250331": 9.1,
-    "20250630": 8.8,
-    "20260331": 9.5,
-    "20260630": 8.8
+    "20241231": 17.9,
+    "20251231": 18.2,
+    "20260630": 18.5
    },
    "src": {
     "q:20260630": [
      "983f08ea-f89c-4bba-9fc3-d4cb03d9fa19.pdf",
-     66,
-     "Q1 FY27 & Q1 FY26 SALES & MARKET-SHARE — HD Market share Q1'FY27",
-     "8.8"
+     58,
+     "Overall market share (in >3.5T) at 18.5% (doc period)",
+     "18.5"
     ],
-    "q:20250630": [
-     "983f08ea-f89c-4bba-9fc3-d4cb03d9fa19.pdf",
-     66,
-     "Q1 FY27 & Q1 FY26 SALES & MARKET-SHARE — HD Market share Q1'FY26",
-     "8.8"
+    "q:20251231": [
+     "590d5aad-c9ac-46b8-8915-8f8481422683.pdf",
+     68,
+     "VECV - Market share",
+     "18.2"
     ],
-    "q:20260331": [
-     "f98fbebb-dddb-4be5-9b7d-75810cdd1a16.pdf",
-     69,
-     "HD Market share Q4'FY26",
-     "9.5"
-    ],
-    "q:20250331": [
-     "f98fbebb-dddb-4be5-9b7d-75810cdd1a16.pdf",
-     69,
-     "HD Market share Q4'FY25",
-     "9.1"
+    "q:20241231": [
+     "590d5aad-c9ac-46b8-8915-8f8481422683.pdf",
+     68,
+     "VECV - Market share",
+     "17.9"
     ]
    }
   },
   {
-   "name": "VECV HD Truck Volume",
+   "name": "Manufacturing Facilities",
    "unit": "count",
-   "kind": "flow",
-   "y": {},
-   "q": {
-    "20250331": 6765.0,
-    "20250630": 4580.0,
-    "20260331": 8891.0,
-    "20260630": 5275.0
-   },
-   "src": {
-    "q:20260630": [
-     "983f08ea-f89c-4bba-9fc3-d4cb03d9fa19.pdf",
-     66,
-     "Q1 FY27 & Q1 FY26 SALES & MARKET-SHARE — HD Volumes Q1'FY27",
-     "5,275"
-    ],
-    "q:20250630": [
-     "983f08ea-f89c-4bba-9fc3-d4cb03d9fa19.pdf",
-     66,
-     "Q1 FY27 & Q1 FY26 SALES & MARKET-SHARE — HD Volumes Q1'FY26",
-     "4,580"
-    ],
-    "q:20260331": [
-     "f98fbebb-dddb-4be5-9b7d-75810cdd1a16.pdf",
-     69,
-     "HD Volumes Q4'FY26",
-     "8,891"
-    ],
-    "q:20250331": [
-     "f98fbebb-dddb-4be5-9b7d-75810cdd1a16.pdf",
-     69,
-     "HD Volumes Q4'FY25",
-     "6,765"
-    ]
-   }
-  },
-  {
-   "name": "VECV LMD Truck Market Share",
-   "unit": "%",
    "kind": "level",
    "y": {},
    "q": {
-    "20250331": 37.1,
-    "20250630": 34.8,
-    "20260331": 35.3,
-    "20260630": 33.2
+    "20251231": 4.0,
+    "20260630": 4.0
    },
    "src": {
     "q:20260630": [
      "983f08ea-f89c-4bba-9fc3-d4cb03d9fa19.pdf",
-     66,
-     "Q1 FY27 & Q1 FY26 SALES & MARKET-SHARE — LMD Market share Q1'FY27",
-     "33.2"
+     25,
+     "ROYAL ENFIELD GLOBAL FOOTPRINT — MANUFACTURING - 04 (doc period)",
+     "04"
     ],
-    "q:20250630": [
-     "983f08ea-f89c-4bba-9fc3-d4cb03d9fa19.pdf",
-     66,
-     "Q1 FY27 & Q1 FY26 SALES & MARKET-SHARE — LMD Market share Q1'FY26",
-     "34.8"
-    ],
-    "q:20260331": [
-     "f98fbebb-dddb-4be5-9b7d-75810cdd1a16.pdf",
-     69,
-     "LMD Market share Q4'FY26",
-     "35.3"
-    ],
-    "q:20250331": [
-     "f98fbebb-dddb-4be5-9b7d-75810cdd1a16.pdf",
-     69,
-     "LMD Market share Q4'FY25",
-     "37.1"
-    ]
-   }
-  },
-  {
-   "name": "VECV LMD Truck Volume",
-   "unit": "count",
-   "kind": "flow",
-   "y": {},
-   "q": {
-    "20250331": 11603.0,
-    "20250630": 8610.0,
-    "20260331": 15037.0,
-    "20260630": 9993.0
-   },
-   "src": {
-    "q:20260630": [
-     "983f08ea-f89c-4bba-9fc3-d4cb03d9fa19.pdf",
-     66,
-     "Q1 FY27 & Q1 FY26 SALES & MARKET-SHARE — LMD Volumes Q1'FY27",
-     "9,993"
-    ],
-    "q:20250630": [
-     "983f08ea-f89c-4bba-9fc3-d4cb03d9fa19.pdf",
-     66,
-     "Q1 FY27 & Q1 FY26 SALES & MARKET-SHARE — LMD Volumes Q1'FY26",
-     "8,610"
-    ],
-    "q:20260331": [
-     "f98fbebb-dddb-4be5-9b7d-75810cdd1a16.pdf",
-     69,
-     "LMD Volumes Q4'FY26",
-     "15,037"
-    ],
-    "q:20250331": [
-     "f98fbebb-dddb-4be5-9b7d-75810cdd1a16.pdf",
-     69,
-     "LMD Volumes Q4'FY25",
-     "11,603"
-    ]
-   }
-  },
-  {
-   "name": "VECV Total Bus Market Share",
-   "unit": "%",
-   "kind": "level",
-   "y": {},
-   "q": {
-    "20250331": 22.8,
-    "20250630": 21.0,
-    "20260331": 19.3,
-    "20260630": 22.5
-   },
-   "src": {
-    "q:20260630": [
-     "983f08ea-f89c-4bba-9fc3-d4cb03d9fa19.pdf",
-     66,
-     "Q1 FY27 & Q1 FY26 SALES & MARKET-SHARE — Total Bus Market share Q1'FY27",
-     "22.5"
-    ],
-    "q:20250630": [
-     "983f08ea-f89c-4bba-9fc3-d4cb03d9fa19.pdf",
-     66,
-     "Q1 FY27 & Q1 FY26 SALES & MARKET-SHARE — Total Bus Market share Q1'FY26",
-     "21.0"
-    ],
-    "q:20260331": [
-     "f98fbebb-dddb-4be5-9b7d-75810cdd1a16.pdf",
-     69,
-     "Total Bus Market share Q4'FY26",
-     "19.3"
-    ],
-    "q:20250331": [
-     "f98fbebb-dddb-4be5-9b7d-75810cdd1a16.pdf",
-     69,
-     "Total Bus Market share Q4'FY25",
-     "22.8"
-    ]
-   }
-  },
-  {
-   "name": "VECV Total Bus Volume",
-   "unit": "count",
-   "kind": "flow",
-   "y": {},
-   "q": {
-    "20250331": 7397.0,
-    "20250630": 6005.0,
-    "20260331": 5971.0,
-    "20260630": 6126.0
-   },
-   "src": {
-    "q:20260630": [
-     "983f08ea-f89c-4bba-9fc3-d4cb03d9fa19.pdf",
-     66,
-     "Q1 FY27 & Q1 FY26 SALES & MARKET-SHARE — Total Bus Volumes Q1'FY27",
-     "6,126"
-    ],
-    "q:20250630": [
-     "983f08ea-f89c-4bba-9fc3-d4cb03d9fa19.pdf",
-     66,
-     "Q1 FY27 & Q1 FY26 SALES & MARKET-SHARE — Total Bus Volumes Q1'FY26",
-     "6,005"
-    ],
-    "q:20260331": [
-     "f98fbebb-dddb-4be5-9b7d-75810cdd1a16.pdf",
-     69,
-     "Total Bus Volumes Q4'FY26",
-     "5,971"
-    ],
-    "q:20250331": [
-     "f98fbebb-dddb-4be5-9b7d-75810cdd1a16.pdf",
-     69,
-     "Total Bus Volumes Q4'FY25",
-     "7,397"
+    "q:20251231": [
+     "590d5aad-c9ac-46b8-8915-8f8481422683.pdf",
+     24,
+     "MANUFACTURING - 04",
+     "04"
     ]
    }
   },
@@ -664,6 +852,54 @@
      86,
      "RE's market share in mid-size (250cc & above) FY 2025-26",
      "86.8"
+    ]
+   }
+  },
+  {
+   "name": "Subsidiaries",
+   "unit": "count",
+   "kind": "level",
+   "y": {},
+   "q": {
+    "20251231": 5.0,
+    "20260630": 5.0
+   },
+   "src": {
+    "q:20260630": [
+     "983f08ea-f89c-4bba-9fc3-d4cb03d9fa19.pdf",
+     25,
+     "ROYAL ENFIELD GLOBAL FOOTPRINT — SUBSIDIARIES - 05 (doc period)",
+     "05"
+    ],
+    "q:20251231": [
+     "590d5aad-c9ac-46b8-8915-8f8481422683.pdf",
+     24,
+     "SUBSIDIARIES - 05",
+     "05"
+    ]
+   }
+  },
+  {
+   "name": "Tech Centres",
+   "unit": "count",
+   "kind": "level",
+   "y": {},
+   "q": {
+    "20251231": 2.0,
+    "20260630": 2.0
+   },
+   "src": {
+    "q:20260630": [
+     "983f08ea-f89c-4bba-9fc3-d4cb03d9fa19.pdf",
+     25,
+     "ROYAL ENFIELD GLOBAL FOOTPRINT — TECH CENTRES - 02 (doc period)",
+     "02"
+    ],
+    "q:20251231": [
+     "590d5aad-c9ac-46b8-8915-8f8481422683.pdf",
+     24,
+     "TECH CENTRES - 02",
+     "02"
     ]
    }
   },
@@ -736,23 +972,6 @@
    }
   },
   {
-   "name": "Manufacturing Facilities",
-   "unit": "count",
-   "kind": "level",
-   "y": {},
-   "q": {
-    "20260630": 4.0
-   },
-   "src": {
-    "q:20260630": [
-     "983f08ea-f89c-4bba-9fc3-d4cb03d9fa19.pdf",
-     25,
-     "ROYAL ENFIELD GLOBAL FOOTPRINT — MANUFACTURING - 04 (doc period)",
-     "04"
-    ]
-   }
-  },
-  {
    "name": "Net Water Positivity Index",
    "unit": "ratio",
    "kind": "level",
@@ -800,6 +1019,74 @@
      49,
      "600+ dedicated R&D engineers (doc period)",
      "600"
+    ]
+   }
+  },
+  {
+   "name": "R&D Team - Chennai",
+   "unit": "count",
+   "kind": "level",
+   "y": {
+    "20250331": 1000.0
+   },
+   "q": {},
+   "src": {
+    "y:20250331": [
+     "590d5aad-c9ac-46b8-8915-8f8481422683.pdf",
+     35,
+     "Team comprises of 1,000+ members - Chennai, India",
+     "1,000"
+    ]
+   }
+  },
+  {
+   "name": "RE Market Share - APAC",
+   "unit": "%",
+   "kind": "level",
+   "y": {
+    "20250331": 9.0
+   },
+   "q": {},
+   "src": {
+    "y:20250331": [
+     "590d5aad-c9ac-46b8-8915-8f8481422683.pdf",
+     25,
+     "APAC Market Share",
+     "9"
+    ]
+   }
+  },
+  {
+   "name": "RE Market Share - Americas",
+   "unit": "%",
+   "kind": "level",
+   "y": {
+    "20250331": 8.0
+   },
+   "q": {},
+   "src": {
+    "y:20250331": [
+     "590d5aad-c9ac-46b8-8915-8f8481422683.pdf",
+     25,
+     "Americas Market Share",
+     "8"
+    ]
+   }
+  },
+  {
+   "name": "RE Market Share - EMEA",
+   "unit": "%",
+   "kind": "level",
+   "y": {
+    "20250331": 9.0
+   },
+   "q": {},
+   "src": {
+    "y:20250331": [
+     "590d5aad-c9ac-46b8-8915-8f8481422683.pdf",
+     25,
+     "EMEA Market Share",
+     "9"
     ]
    }
   },
@@ -872,40 +1159,6 @@
    }
   },
   {
-   "name": "Subsidiaries",
-   "unit": "count",
-   "kind": "level",
-   "y": {},
-   "q": {
-    "20260630": 5.0
-   },
-   "src": {
-    "q:20260630": [
-     "983f08ea-f89c-4bba-9fc3-d4cb03d9fa19.pdf",
-     25,
-     "ROYAL ENFIELD GLOBAL FOOTPRINT — SUBSIDIARIES - 05 (doc period)",
-     "05"
-    ]
-   }
-  },
-  {
-   "name": "Tech Centres",
-   "unit": "count",
-   "kind": "level",
-   "y": {},
-   "q": {
-    "20260630": 2.0
-   },
-   "src": {
-    "q:20260630": [
-     "983f08ea-f89c-4bba-9fc3-d4cb03d9fa19.pdf",
-     25,
-     "ROYAL ENFIELD GLOBAL FOOTPRINT — TECH CENTRES - 02 (doc period)",
-     "02"
-    ]
-   }
-  },
-  {
    "name": "Total Employees",
    "unit": "count",
    "kind": "level",
@@ -919,23 +1172,6 @@
      49,
      "23,455 total employees (doc period)",
      "23,455"
-    ]
-   }
-  },
-  {
-   "name": "VECV Overall Market Share (>3.5T)",
-   "unit": "%",
-   "kind": "level",
-   "y": {},
-   "q": {
-    "20260630": 18.5
-   },
-   "src": {
-    "q:20260630": [
-     "983f08ea-f89c-4bba-9fc3-d4cb03d9fa19.pdf",
-     58,
-     "Overall market share (in >3.5T) at 18.5% (doc period)",
-     "18.5"
     ]
    }
   },
@@ -1368,5 +1604,5 @@
  "catalog_since": "2020-01-01",
  "catalog_until": "2026-09-06",
  "catalog_ver": 5,
- "updated": "2026-09-06"
+ "updated": "2026-09-08"
 }
