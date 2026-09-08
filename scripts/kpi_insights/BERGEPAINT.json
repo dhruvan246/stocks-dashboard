@@ -64,6 +64,20 @@
    "title": "JP Morgan Investor Fireside Chat Presentation, June 2025",
    "read": "2026-09-08",
    "by": "claude-routine"
+  },
+  "c36ed3eb-2f7f-4c49-bd82-3b88f78d736c.pdf": {
+   "kind": "ip",
+   "date": "2025-05-14",
+   "title": "Q4 FY25 Investor Presentation",
+   "read": "2026-09-08",
+   "by": "claude-routine"
+  },
+  "1134e39e-1c7a-4d1f-a08e-48b6c1da2d68.pdf": {
+   "kind": "ip",
+   "date": "2025-02-11",
+   "title": "Q3 FY25 Investor Presentation",
+   "read": "2026-09-08",
+   "by": "claude-routine"
   }
  },
  "metrics": [
@@ -89,26 +103,26 @@
      "20"
     ],
     "y:20220331": [
-     "8c5dce86-58ee-44f4-b444-015cf7dc384f.pdf",
-     10,
+     "c36ed3eb-2f7f-4c49-bd82-3b88f78d736c.pdf",
+     5,
      "Consistently gaining Market Share",
      "18.9"
     ],
     "y:20230331": [
-     "8c5dce86-58ee-44f4-b444-015cf7dc384f.pdf",
-     10,
+     "c36ed3eb-2f7f-4c49-bd82-3b88f78d736c.pdf",
+     5,
      "Consistently gaining Market Share",
      "19.3"
     ],
     "y:20240331": [
-     "8c5dce86-58ee-44f4-b444-015cf7dc384f.pdf",
-     10,
+     "c36ed3eb-2f7f-4c49-bd82-3b88f78d736c.pdf",
+     5,
      "Consistently gaining Market Share",
      "19.5"
     ],
     "y:20250331": [
-     "8c5dce86-58ee-44f4-b444-015cf7dc384f.pdf",
-     10,
+     "c36ed3eb-2f7f-4c49-bd82-3b88f78d736c.pdf",
+     5,
      "Consistently gaining Market Share",
      "20.3"
     ],
@@ -125,6 +139,7 @@
    "unit": "count",
    "kind": "level",
    "y": {
+    "20250331": 1000.0,
     "20260331": 1900.0
    },
    "q": {
@@ -149,6 +164,75 @@
      10,
      "store network now exceeds 1,600 outlets (doc period)",
      "1,600"
+    ],
+    "y:20250331": [
+     "c36ed3eb-2f7f-4c49-bd82-3b88f78d736c.pdf",
+     12,
+     "Retail footprint expanded to 1,000+ stores as of FY25",
+     "1,000"
+    ]
+   }
+  },
+  {
+   "name": "Tinting Machine Installations",
+   "unit": "count",
+   "kind": "level",
+   "y": {},
+   "q": {
+    "20250331": 2500.0,
+    "20260331": 2600.0,
+    "20260630": 2100.0
+   },
+   "src": {
+    "q:20260630": [
+     "27c99433-f4b1-44d9-aa61-7c8e85f8fd80.pdf",
+     8,
+     "Tinting machine installations crossed 2100++ for the quarter",
+     "2100"
+    ],
+    "q:20260331": [
+     "da336d01-80ae-4b61-bf5c-a6fe1de93929.pdf",
+     9,
+     "tinting machine installations crossed 10,000 units with 2,600+ deployments in Q4",
+     "2,600"
+    ],
+    "q:20250331": [
+     "c36ed3eb-2f7f-4c49-bd82-3b88f78d736c.pdf",
+     12,
+     "2,500+ machines deployed in Q4 alone",
+     "2,500"
+    ]
+   }
+  },
+  {
+   "name": "Tinting Machines Installed (Cumulative)",
+   "unit": "count",
+   "kind": "level",
+   "y": {
+    "20250331": 8000.0,
+    "20260331": 10000.0
+   },
+   "q": {
+    "20250930": 5500.0
+   },
+   "src": {
+    "y:20260331": [
+     "dac69983-6a70-4c34-b3c0-5f14b95b4054.pdf",
+     23,
+     "installed more than 10,000 tinting machines across India",
+     "10,000"
+    ],
+    "q:20250930": [
+     "4b6d1ca9-ecaf-4b6e-a89d-21b92c3180ae.pdf",
+     10,
+     "over 5500++ machines installed so far (doc period)",
+     "5500"
+    ],
+    "y:20250331": [
+     "c36ed3eb-2f7f-4c49-bd82-3b88f78d736c.pdf",
+     12,
+     "Tinting machine installations exceeded 8,000 units",
+     "8,000"
     ]
    }
   },
@@ -215,51 +299,26 @@
    }
   },
   {
-   "name": "Tinting Machine Installations",
+   "name": "Store Net Additions",
    "unit": "count",
-   "kind": "level",
-   "y": {},
-   "q": {
-    "20260331": 2600.0,
-    "20260630": 2100.0
-   },
-   "src": {
-    "q:20260630": [
-     "27c99433-f4b1-44d9-aa61-7c8e85f8fd80.pdf",
-     8,
-     "Tinting machine installations crossed 2100++ for the quarter",
-     "2100"
-    ],
-    "q:20260331": [
-     "da336d01-80ae-4b61-bf5c-a6fe1de93929.pdf",
-     9,
-     "tinting machine installations crossed 10,000 units with 2,600+ deployments in Q4",
-     "2,600"
-    ]
-   }
-  },
-  {
-   "name": "Tinting Machines Installed (Cumulative)",
-   "unit": "count",
-   "kind": "level",
+   "kind": "flow",
    "y": {
-    "20260331": 10000.0
+    "20250331": 550.0,
+    "20260331": 700.0
    },
-   "q": {
-    "20250930": 5500.0
-   },
+   "q": {},
    "src": {
     "y:20260331": [
-     "dac69983-6a70-4c34-b3c0-5f14b95b4054.pdf",
-     23,
-     "installed more than 10,000 tinting machines across India",
-     "10,000"
+     "da336d01-80ae-4b61-bf5c-a6fe1de93929.pdf",
+     9,
+     "with over ~700 additions during the Year",
+     "700"
     ],
-    "q:20250930": [
-     "4b6d1ca9-ecaf-4b6e-a89d-21b92c3180ae.pdf",
-     10,
-     "over 5500++ machines installed so far (doc period)",
-     "5500"
+    "y:20250331": [
+     "c36ed3eb-2f7f-4c49-bd82-3b88f78d736c.pdf",
+     12,
+     "over 550 stores added during the year",
+     "550"
     ]
    }
   },
@@ -345,23 +404,6 @@
      25,
      "We operate 30 fixed training centres and 25 mobile training units",
      "25"
-    ]
-   }
-  },
-  {
-   "name": "Store Net Additions",
-   "unit": "count",
-   "kind": "flow",
-   "y": {
-    "20260331": 700.0
-   },
-   "q": {},
-   "src": {
-    "y:20260331": [
-     "da336d01-80ae-4b61-bf5c-a6fe1de93929.pdf",
-     9,
-     "with over ~700 additions during the Year",
-     "700"
     ]
    }
   },
