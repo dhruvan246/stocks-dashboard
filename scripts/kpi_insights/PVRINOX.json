@@ -1,8 +1,361 @@
 {
  "sym": "PVRINOX",
  "fy_end_month": 3,
- "docs": {},
- "metrics": [],
+ "docs": {
+  "0c38ab27-2bbe-426d-8cc4-a821561c5856.pdf": {
+   "kind": "ip",
+   "date": "2026-07-23",
+   "title": "Q1 FY27 Investor Presentation",
+   "read": "2026-09-08",
+   "by": "claude-routine"
+  },
+  "946659ab-92a0-4f90-8525-ad855f1386f1.pdf": {
+   "kind": "ip",
+   "date": "2026-05-11",
+   "title": "Q4 & 12M FY26 Investor Presentation",
+   "read": "2026-09-08",
+   "by": "claude-routine"
+  }
+ },
+ "metrics": [
+  {
+   "name": "ATP",
+   "unit": "INR",
+   "kind": "flow",
+   "y": {
+    "20250331": 259.0,
+    "20260331": 280.0
+   },
+   "q": {
+    "20250331": 258.0,
+    "20250630": 254.0,
+    "20260331": 315.0,
+    "20260630": 273.0
+   },
+   "src": {
+    "q:20250630": [
+     "0c38ab27-2bbe-426d-8cc4-a821561c5856.pdf",
+     13,
+     "ATP(INR)",
+     "254"
+    ],
+    "q:20260630": [
+     "0c38ab27-2bbe-426d-8cc4-a821561c5856.pdf",
+     13,
+     "ATP(INR)",
+     "273"
+    ],
+    "q:20260331": [
+     "946659ab-92a0-4f90-8525-ad855f1386f1.pdf",
+     13,
+     "Avg. Ticket Price (ATP)",
+     "315"
+    ],
+    "q:20250331": [
+     "946659ab-92a0-4f90-8525-ad855f1386f1.pdf",
+     13,
+     "Avg. Ticket Price (ATP)",
+     "258"
+    ],
+    "y:20260331": [
+     "946659ab-92a0-4f90-8525-ad855f1386f1.pdf",
+     13,
+     "Avg. Ticket Price (ATP), 12M",
+     "280"
+    ],
+    "y:20250331": [
+     "946659ab-92a0-4f90-8525-ad855f1386f1.pdf",
+     13,
+     "Avg. Ticket Price (ATP), 12M",
+     "259"
+    ]
+   }
+  },
+  {
+   "name": "Admits",
+   "unit": "Mn",
+   "kind": "flow",
+   "y": {
+    "20250331": 136.9,
+    "20260331": 150.1
+   },
+   "q": {
+    "20250331": 30.5,
+    "20250630": 34.0,
+    "20260331": 31.0,
+    "20260630": 36.6
+   },
+   "src": {
+    "q:20250630": [
+     "0c38ab27-2bbe-426d-8cc4-a821561c5856.pdf",
+     13,
+     "Admits(Mn) & Occupancy %",
+     "34.0"
+    ],
+    "q:20260630": [
+     "0c38ab27-2bbe-426d-8cc4-a821561c5856.pdf",
+     13,
+     "Admits(Mn) & Occupancy %",
+     "36.6"
+    ],
+    "q:20260331": [
+     "946659ab-92a0-4f90-8525-ad855f1386f1.pdf",
+     13,
+     "Admissions",
+     "31.0"
+    ],
+    "q:20250331": [
+     "946659ab-92a0-4f90-8525-ad855f1386f1.pdf",
+     13,
+     "Admissions",
+     "30.5"
+    ],
+    "y:20260331": [
+     "946659ab-92a0-4f90-8525-ad855f1386f1.pdf",
+     13,
+     "Admissions, 12M",
+     "150.1"
+    ],
+    "y:20250331": [
+     "946659ab-92a0-4f90-8525-ad855f1386f1.pdf",
+     13,
+     "Admissions, 12M",
+     "136.9"
+    ]
+   }
+  },
+  {
+   "name": "SPH",
+   "unit": "INR",
+   "kind": "flow",
+   "y": {
+    "20250331": 134.0,
+    "20260331": 147.0
+   },
+   "q": {
+    "20250331": 125.0,
+    "20250630": 148.0,
+    "20260331": 165.0,
+    "20260630": 161.0
+   },
+   "src": {
+    "q:20250630": [
+     "0c38ab27-2bbe-426d-8cc4-a821561c5856.pdf",
+     13,
+     "SPH(INR)",
+     "148"
+    ],
+    "q:20260630": [
+     "0c38ab27-2bbe-426d-8cc4-a821561c5856.pdf",
+     13,
+     "SPH(INR)",
+     "161"
+    ],
+    "q:20260331": [
+     "946659ab-92a0-4f90-8525-ad855f1386f1.pdf",
+     13,
+     "F&B Spend per Head (SPH)",
+     "165"
+    ],
+    "q:20250331": [
+     "946659ab-92a0-4f90-8525-ad855f1386f1.pdf",
+     13,
+     "F&B Spend per Head (SPH)",
+     "125"
+    ],
+    "y:20260331": [
+     "946659ab-92a0-4f90-8525-ad855f1386f1.pdf",
+     13,
+     "F&B Spend per Head (SPH), 12M",
+     "147"
+    ],
+    "y:20250331": [
+     "946659ab-92a0-4f90-8525-ad855f1386f1.pdf",
+     13,
+     "F&B Spend per Head (SPH), 12M",
+     "134"
+    ]
+   }
+  },
+  {
+   "name": "Weighted Average Screens",
+   "unit": "count",
+   "kind": "level",
+   "y": {
+    "20250331": 1701.0,
+    "20260331": 1703.0
+   },
+   "q": {
+    "20250331": 1688.0,
+    "20250630": 1689.0,
+    "20260331": 1721.0,
+    "20260630": 1718.0
+   },
+   "src": {
+    "q:20250630": [
+     "0c38ab27-2bbe-426d-8cc4-a821561c5856.pdf",
+     15,
+     "Weighted Average Screens",
+     "1,689"
+    ],
+    "q:20260630": [
+     "0c38ab27-2bbe-426d-8cc4-a821561c5856.pdf",
+     15,
+     "Weighted Average Screens",
+     "1,718"
+    ],
+    "q:20260331": [
+     "946659ab-92a0-4f90-8525-ad855f1386f1.pdf",
+     17,
+     "Weighted Average Screens",
+     "1,721"
+    ],
+    "q:20250331": [
+     "946659ab-92a0-4f90-8525-ad855f1386f1.pdf",
+     17,
+     "Weighted Average Screens",
+     "1,688"
+    ],
+    "y:20260331": [
+     "946659ab-92a0-4f90-8525-ad855f1386f1.pdf",
+     17,
+     "Weighted Average Screens, 12M",
+     "1,703"
+    ],
+    "y:20250331": [
+     "946659ab-92a0-4f90-8525-ad855f1386f1.pdf",
+     17,
+     "Weighted Average Screens, 12M",
+     "1,701"
+    ]
+   }
+  },
+  {
+   "name": "Occupancy",
+   "unit": "%",
+   "kind": "flow",
+   "y": {
+    "20250331": 23.0,
+    "20260331": 26.2
+   },
+   "q": {
+    "20250331": 20.5,
+    "20260331": 23.9
+   },
+   "src": {
+    "q:20260331": [
+     "946659ab-92a0-4f90-8525-ad855f1386f1.pdf",
+     13,
+     "Occupancy",
+     "23.9"
+    ],
+    "q:20250331": [
+     "946659ab-92a0-4f90-8525-ad855f1386f1.pdf",
+     13,
+     "Occupancy",
+     "20.5"
+    ],
+    "y:20260331": [
+     "946659ab-92a0-4f90-8525-ad855f1386f1.pdf",
+     13,
+     "Occupancy, 12M",
+     "26.2"
+    ],
+    "y:20250331": [
+     "946659ab-92a0-4f90-8525-ad855f1386f1.pdf",
+     13,
+     "Occupancy, 12M",
+     "23.0"
+    ]
+   }
+  },
+  {
+   "name": "Screen Count",
+   "unit": "count",
+   "kind": "level",
+   "y": {},
+   "q": {
+    "20250331": 1723.0,
+    "20250630": 1743.0,
+    "20260331": 1798.0,
+    "20260630": 1779.0
+   },
+   "src": {
+    "q:20250630": [
+     "0c38ab27-2bbe-426d-8cc4-a821561c5856.pdf",
+     15,
+     "Screen Count (at the end of the period)",
+     "1,743"
+    ],
+    "q:20260630": [
+     "0c38ab27-2bbe-426d-8cc4-a821561c5856.pdf",
+     15,
+     "Screen Count (at the end of the period)",
+     "1,779"
+    ],
+    "q:20260331": [
+     "946659ab-92a0-4f90-8525-ad855f1386f1.pdf",
+     13,
+     "Screen Count (at the end of period)",
+     "1,798"
+    ],
+    "q:20250331": [
+     "946659ab-92a0-4f90-8525-ad855f1386f1.pdf",
+     13,
+     "Screen Count (at the end of period)",
+     "1,723"
+    ]
+   }
+  },
+  {
+   "name": "Cinema Count",
+   "unit": "count",
+   "kind": "level",
+   "y": {},
+   "q": {
+    "20250331": 349.0,
+    "20260331": 359.0
+   },
+   "src": {
+    "q:20260331": [
+     "946659ab-92a0-4f90-8525-ad855f1386f1.pdf",
+     13,
+     "Cinema Count (at the end of period)",
+     "359"
+    ],
+    "q:20250331": [
+     "946659ab-92a0-4f90-8525-ad855f1386f1.pdf",
+     13,
+     "Cinema Count (at the end of period)",
+     "349"
+    ]
+   }
+  },
+  {
+   "name": "Online Ticket Penetration",
+   "unit": "%",
+   "kind": "level",
+   "y": {},
+   "q": {
+    "20250630": 63.4,
+    "20260630": 68.8
+   },
+   "src": {
+    "q:20250630": [
+     "0c38ab27-2bbe-426d-8cc4-a821561c5856.pdf",
+     15,
+     "increase in online penetration from 63.4% in Q1 FY'26",
+     "63.4"
+    ],
+    "q:20260630": [
+     "0c38ab27-2bbe-426d-8cc4-a821561c5856.pdf",
+     15,
+     "to 68.8% in Q1 FY'27",
+     "68.8"
+    ]
+   }
+  }
+ ],
  "held": [],
  "catalog": [
   {
@@ -396,5 +749,5 @@
  "catalog_since": "2020-01-01",
  "catalog_until": "2026-09-07",
  "catalog_ver": 5,
- "updated": "2026-09-07"
+ "updated": "2026-09-08"
 }
