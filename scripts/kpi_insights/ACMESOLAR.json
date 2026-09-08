@@ -15,9 +15,122 @@
    "title": "Annual Report 2025-26",
    "read": "2026-09-07",
    "by": "claude-routine"
+  },
+  "8a0415b4-342b-441b-a1d4-a553c965407e.pdf": {
+   "kind": "ip",
+   "date": "2026-05-08",
+   "title": "Q4 FY2026 / FY2026 Investor Presentation",
+   "read": "2026-09-08",
+   "by": "claude-routine"
   }
  },
  "metrics": [
+  {
+   "name": "Capacity Utilization Factor (CUF)",
+   "unit": "%",
+   "kind": "flow",
+   "y": {
+    "20250331": 25.6,
+    "20260331": 25.9
+   },
+   "q": {
+    "20250331": 27.9,
+    "20250630": 28.5,
+    "20260331": 26.9,
+    "20260630": 30.9
+   },
+   "src": {
+    "q:20250630": [
+     "bec2f929-44f7-4a48-8169-4868dff771f1.pdf",
+     9,
+     "Capacity Utilization Factor (CUF %)",
+     "28.5"
+    ],
+    "q:20260630": [
+     "bec2f929-44f7-4a48-8169-4868dff771f1.pdf",
+     9,
+     "Capacity Utilization Factor (CUF %)",
+     "30.9"
+    ],
+    "y:20250331": [
+     "8a0415b4-342b-441b-a1d4-a553c965407e.pdf",
+     13,
+     "Capacity Utilization Factor (CUF %)",
+     "25.6"
+    ],
+    "y:20260331": [
+     "8a0415b4-342b-441b-a1d4-a553c965407e.pdf",
+     13,
+     "Capacity Utilization Factor (CUF %)",
+     "25.9"
+    ],
+    "q:20250331": [
+     "8a0415b4-342b-441b-a1d4-a553c965407e.pdf",
+     12,
+     "Capacity Utilization Factor (CUF %)",
+     "27.9"
+    ],
+    "q:20260331": [
+     "8a0415b4-342b-441b-a1d4-a553c965407e.pdf",
+     12,
+     "Capacity Utilization Factor (CUF %)",
+     "26.9"
+    ]
+   }
+  },
+  {
+   "name": "Power Generation",
+   "unit": "Million Units",
+   "kind": "flow",
+   "y": {
+    "20250331": 4013.0,
+    "20260331": 6464.0
+   },
+   "q": {
+    "20250331": 1513.0,
+    "20250630": 1636.0,
+    "20260331": 1720.0,
+    "20260630": 2020.0
+   },
+   "src": {
+    "q:20250630": [
+     "bec2f929-44f7-4a48-8169-4868dff771f1.pdf",
+     9,
+     "Generation (in Million Units)",
+     "1,636"
+    ],
+    "q:20260630": [
+     "bec2f929-44f7-4a48-8169-4868dff771f1.pdf",
+     9,
+     "Generation (in Million Units)",
+     "2,020"
+    ],
+    "y:20250331": [
+     "8a0415b4-342b-441b-a1d4-a553c965407e.pdf",
+     13,
+     "Generation (in Million Units)",
+     "4,013"
+    ],
+    "y:20260331": [
+     "8a0415b4-342b-441b-a1d4-a553c965407e.pdf",
+     13,
+     "Generation (in Million Units)",
+     "6,464"
+    ],
+    "q:20250331": [
+     "8a0415b4-342b-441b-a1d4-a553c965407e.pdf",
+     12,
+     "Generation (in Million Units)",
+     "1,513"
+    ],
+    "q:20260331": [
+     "8a0415b4-342b-441b-a1d4-a553c965407e.pdf",
+     12,
+     "Generation (in Million Units)",
+     "1,720"
+    ]
+   }
+  },
   {
    "name": "Days Sales Outstanding (DSO)",
    "unit": "days",
@@ -65,80 +178,34 @@
    }
   },
   {
-   "name": "Capacity Utilization Factor (CUF)",
-   "unit": "%",
-   "kind": "flow",
+   "name": "Operational Generation Capacity",
+   "unit": "MW",
+   "kind": "level",
    "y": {
-    "20250331": 25.6,
-    "20260331": 25.9
+    "20250331": 2540.0,
+    "20260331": 2982.0
    },
    "q": {
-    "20250630": 28.5,
-    "20260630": 30.9
+    "20260630": 2990.0
    },
    "src": {
-    "q:20250630": [
-     "bec2f929-44f7-4a48-8169-4868dff771f1.pdf",
-     9,
-     "Capacity Utilization Factor (CUF %)",
-     "28.5"
-    ],
     "q:20260630": [
      "bec2f929-44f7-4a48-8169-4868dff771f1.pdf",
-     9,
-     "Capacity Utilization Factor (CUF %)",
-     "30.9"
+     29,
+     "Total (A) capacity",
+     "2,990"
     ],
     "y:20250331": [
-     "1a9755be-4053-438a-aa9c-3caee6971658.pdf",
-     46,
-     "Capacity Utilisation Factor (CUF)",
-     "25.6"
+     "8a0415b4-342b-441b-a1d4-a553c965407e.pdf",
+     7,
+     "Operational Capacity - Generation Capacity",
+     "2,540"
     ],
     "y:20260331": [
-     "1a9755be-4053-438a-aa9c-3caee6971658.pdf",
-     46,
-     "Capacity Utilisation Factor (CUF)",
-     "25.9"
-    ]
-   }
-  },
-  {
-   "name": "Power Generation",
-   "unit": "Million Units",
-   "kind": "flow",
-   "y": {
-    "20250331": 4013.0,
-    "20260331": 6464.0
-   },
-   "q": {
-    "20250630": 1636.0,
-    "20260630": 2020.0
-   },
-   "src": {
-    "q:20250630": [
-     "bec2f929-44f7-4a48-8169-4868dff771f1.pdf",
-     9,
-     "Generation (in Million Units)",
-     "1,636"
-    ],
-    "q:20260630": [
-     "bec2f929-44f7-4a48-8169-4868dff771f1.pdf",
-     9,
-     "Generation (in Million Units)",
-     "2,020"
-    ],
-    "y:20250331": [
-     "1a9755be-4053-438a-aa9c-3caee6971658.pdf",
-     46,
-     "Power Generation from Operational Portfolio",
-     "4,013"
-    ],
-    "y:20260331": [
-     "1a9755be-4053-438a-aa9c-3caee6971658.pdf",
-     46,
-     "Power Generation from Operational Portfolio",
-     "6,464"
+     "8a0415b4-342b-441b-a1d4-a553c965407e.pdf",
+     7,
+     "Operational Portfolio as of 31st Mar 2026",
+     "2,982"
     ]
    }
   },
@@ -224,6 +291,98 @@
    }
   },
   {
+   "name": "PPA Signed Capacity",
+   "unit": "MW",
+   "kind": "level",
+   "y": {
+    "20260331": 3280.0
+   },
+   "q": {
+    "20260630": 3880.0
+   },
+   "src": {
+    "q:20260630": [
+     "bec2f929-44f7-4a48-8169-4868dff771f1.pdf",
+     26,
+     "PPA Signed",
+     "3,880"
+    ],
+    "y:20260331": [
+     "8a0415b4-342b-441b-a1d4-a553c965407e.pdf",
+     7,
+     "Cumulative FY26 PPA signed capacity",
+     "3,280"
+    ]
+   }
+  },
+  {
+   "name": "Total Portfolio Capacity",
+   "unit": "MW",
+   "kind": "level",
+   "y": {
+    "20260331": 8071.0
+   },
+   "q": {
+    "20260630": 8070.0
+   },
+   "src": {
+    "q:20260630": [
+     "bec2f929-44f7-4a48-8169-4868dff771f1.pdf",
+     26,
+     "Total portfolio",
+     "8,070"
+    ],
+    "y:20260331": [
+     "8a0415b4-342b-441b-a1d4-a553c965407e.pdf",
+     7,
+     "Total portfolio of 8,071 MW (doc period)",
+     "8,071"
+    ]
+   }
+  },
+  {
+   "name": "Under Construction Capacity",
+   "unit": "MW",
+   "kind": "level",
+   "y": {
+    "20260331": 5081.0
+   },
+   "q": {
+    "20260630": 5080.0
+   },
+   "src": {
+    "q:20260630": [
+     "bec2f929-44f7-4a48-8169-4868dff771f1.pdf",
+     26,
+     "Under construction",
+     "5080"
+    ],
+    "y:20260331": [
+     "8a0415b4-342b-441b-a1d4-a553c965407e.pdf",
+     7,
+     "taking total under construction capacity to 5,081 MW",
+     "5,081"
+    ]
+   }
+  },
+  {
+   "name": "BESS Commissioned Capacity",
+   "unit": "MWh",
+   "kind": "level",
+   "y": {
+    "20250331": 0.0
+   },
+   "q": {},
+   "src": {
+    "y:20250331": [
+     "8a0415b4-342b-441b-a1d4-a553c965407e.pdf",
+     7,
+     "Operational Capacity - BESS Capacity",
+     "0"
+    ]
+   }
+  },
+  {
    "name": "BESS Depth of Discharge (DoD)",
    "unit": "%",
    "kind": "level",
@@ -292,40 +451,6 @@
    }
   },
   {
-   "name": "Operational Generation Capacity",
-   "unit": "MW",
-   "kind": "level",
-   "y": {},
-   "q": {
-    "20260630": 2990.0
-   },
-   "src": {
-    "q:20260630": [
-     "bec2f929-44f7-4a48-8169-4868dff771f1.pdf",
-     29,
-     "Total (A) capacity",
-     "2,990"
-    ]
-   }
-  },
-  {
-   "name": "PPA Signed Capacity",
-   "unit": "MW",
-   "kind": "level",
-   "y": {},
-   "q": {
-    "20260630": 3880.0
-   },
-   "src": {
-    "q:20260630": [
-     "bec2f929-44f7-4a48-8169-4868dff771f1.pdf",
-     26,
-     "PPA Signed",
-     "3,880"
-    ]
-   }
-  },
-  {
    "name": "Renewable Capacity Commissioned During Year",
    "unit": "MW",
    "kind": "flow",
@@ -356,40 +481,6 @@
      59,
      "Solar Modules cleaned robotically",
      "699"
-    ]
-   }
-  },
-  {
-   "name": "Total Portfolio Capacity",
-   "unit": "MW",
-   "kind": "level",
-   "y": {},
-   "q": {
-    "20260630": 8070.0
-   },
-   "src": {
-    "q:20260630": [
-     "bec2f929-44f7-4a48-8169-4868dff771f1.pdf",
-     26,
-     "Total portfolio",
-     "8,070"
-    ]
-   }
-  },
-  {
-   "name": "Under Construction Capacity",
-   "unit": "MW",
-   "kind": "level",
-   "y": {},
-   "q": {
-    "20260630": 5080.0
-   },
-   "src": {
-    "q:20260630": [
-     "bec2f929-44f7-4a48-8169-4868dff771f1.pdf",
-     26,
-     "Under construction",
-     "5080"
     ]
    }
   },
@@ -551,5 +642,5 @@
  "catalog_since": "2020-01-01",
  "catalog_until": "2026-09-07",
  "catalog_ver": 5,
- "updated": "2026-09-07"
+ "updated": "2026-09-08"
 }
