@@ -50,6 +50,13 @@
    "title": "Annual Report FY 2024-25",
    "read": "2026-09-08",
    "by": "claude-routine"
+  },
+  "278096b7-4387-4893-a160-e13679ad5331.pdf": {
+   "kind": "res",
+   "date": "2025-11-04",
+   "title": "Q2 FY26 Results - Press Release & Investor Presentation",
+   "read": "2026-09-08",
+   "by": "claude-routine"
   }
  },
  "metrics": [
@@ -65,7 +72,9 @@
    },
    "q": {
     "20240630": 274.0,
+    "20240930": 256.0,
     "20250630": 444.0,
+    "20250930": 565.0,
     "20260630": 506.0
    },
    "src": {
@@ -94,9 +103,9 @@
      "274"
     ],
     "q:20250630": [
-     "e7b047f0-cfdd-4b64-9a3b-99df74c4f67a.pdf",
-     37,
-     "Deliveries (MW) Q1 FY26",
+     "278096b7-4387-4893-a160-e13679ad5331.pdf",
+     16,
+     "Net Volumes (MW)",
      "444"
     ],
     "q:20260630": [
@@ -110,6 +119,18 @@
      42,
      "Deliveries & Installations by Suzlon (in MW) - Deliveries, FY23",
      "664"
+    ],
+    "q:20250930": [
+     "278096b7-4387-4893-a160-e13679ad5331.pdf",
+     16,
+     "Net Volumes (MW)",
+     "565"
+    ],
+    "q:20240930": [
+     "278096b7-4387-4893-a160-e13679ad5331.pdf",
+     16,
+     "Net Volumes (MW)",
+     "256"
     ]
    },
    "restated": [
@@ -135,6 +156,72 @@
      2456.0
     ]
    ]
+  },
+  {
+   "name": "Order Book",
+   "unit": "MW",
+   "kind": "level",
+   "y": {},
+   "q": {
+    "20220331": 788.0,
+    "20230331": 652.0,
+    "20240331": 2929.0,
+    "20250331": 5025.0,
+    "20250630": 5361.0,
+    "20250930": 6222.0,
+    "20260331": 5697.0,
+    "20260630": 5933.0
+   },
+   "src": {
+    "q:20250331": [
+     "e7b047f0-cfdd-4b64-9a3b-99df74c4f67a.pdf",
+     32,
+     "Order Book trend, Mar'25",
+     "5,025"
+    ],
+    "q:20260331": [
+     "e7b047f0-cfdd-4b64-9a3b-99df74c4f67a.pdf",
+     32,
+     "Order Book trend, Mar'26",
+     "5,697"
+    ],
+    "q:20260630": [
+     "e7b047f0-cfdd-4b64-9a3b-99df74c4f67a.pdf",
+     32,
+     "Order Book trend, Jun'26",
+     "5,933"
+    ],
+    "q:20220331": [
+     "b3f426be-6b96-4a2e-855b-2e4937080064.pdf",
+     41,
+     "Wind Order Book",
+     "788"
+    ],
+    "q:20230331": [
+     "b3f426be-6b96-4a2e-855b-2e4937080064.pdf",
+     41,
+     "Wind Order Book",
+     "652"
+    ],
+    "q:20240331": [
+     "b3f426be-6b96-4a2e-855b-2e4937080064.pdf",
+     41,
+     "Wind Order Book",
+     "2,929"
+    ],
+    "q:20250630": [
+     "278096b7-4387-4893-a160-e13679ad5331.pdf",
+     31,
+     "Wind order book (in MW)",
+     "5,361"
+    ],
+    "q:20250930": [
+     "278096b7-4387-4893-a160-e13679ad5331.pdf",
+     31,
+     "Wind order book (in MW)",
+     "6,222"
+    ]
+   }
   },
   {
    "name": "Installations",
@@ -190,62 +277,12 @@
    }
   },
   {
-   "name": "Order Book",
-   "unit": "MW",
-   "kind": "level",
-   "y": {},
-   "q": {
-    "20220331": 788.0,
-    "20230331": 652.0,
-    "20240331": 2929.0,
-    "20250331": 5025.0,
-    "20260331": 5697.0,
-    "20260630": 5933.0
-   },
-   "src": {
-    "q:20250331": [
-     "e7b047f0-cfdd-4b64-9a3b-99df74c4f67a.pdf",
-     32,
-     "Order Book trend, Mar'25",
-     "5,025"
-    ],
-    "q:20260331": [
-     "e7b047f0-cfdd-4b64-9a3b-99df74c4f67a.pdf",
-     32,
-     "Order Book trend, Mar'26",
-     "5,697"
-    ],
-    "q:20260630": [
-     "e7b047f0-cfdd-4b64-9a3b-99df74c4f67a.pdf",
-     32,
-     "Order Book trend, Jun'26",
-     "5,933"
-    ],
-    "q:20220331": [
-     "b3f426be-6b96-4a2e-855b-2e4937080064.pdf",
-     41,
-     "Wind Order Book",
-     "788"
-    ],
-    "q:20230331": [
-     "b3f426be-6b96-4a2e-855b-2e4937080064.pdf",
-     41,
-     "Wind Order Book",
-     "652"
-    ],
-    "q:20240331": [
-     "b3f426be-6b96-4a2e-855b-2e4937080064.pdf",
-     41,
-     "Wind Order Book",
-     "2,929"
-    ]
-   }
-  },
-  {
    "name": "Renom AUM",
    "unit": "GW",
    "kind": "level",
-   "y": {},
+   "y": {
+    "20230331": 1.7
+   },
    "q": {
     "20240331": 2.5,
     "20250331": 3.0,
@@ -276,6 +313,139 @@
      31,
      "Renom AUM trend, Jun'26",
      "3.6"
+    ],
+    "y:20230331": [
+     "278096b7-4387-4893-a160-e13679ad5331.pdf",
+     30,
+     "Asset under Management (GW)",
+     "1.7"
+    ]
+   }
+  },
+  {
+   "name": "EPC Share %",
+   "unit": "%",
+   "kind": "level",
+   "y": {},
+   "q": {
+    "20250630": 22.0,
+    "20250930": 20.0,
+    "20260630": 32.0
+   },
+   "src": {
+    "q:20250630": [
+     "e7b047f0-cfdd-4b64-9a3b-99df74c4f67a.pdf",
+     36,
+     "EPC share Q1 FY26",
+     "22"
+    ],
+    "q:20260630": [
+     "e7b047f0-cfdd-4b64-9a3b-99df74c4f67a.pdf",
+     36,
+     "EPC share Q1 FY27",
+     "32"
+    ],
+    "q:20250930": [
+     "278096b7-4387-4893-a160-e13679ad5331.pdf",
+     31,
+     "Scope mix: EPC 20%",
+     "20"
+    ]
+   }
+  },
+  {
+   "name": "O&M Installed Base",
+   "unit": "GW",
+   "kind": "level",
+   "y": {
+    "20260331": 15.5
+   },
+   "q": {
+    "20250930": 15.4,
+    "20260630": 16.0
+   },
+   "src": {
+    "q:20260630": [
+     "e7b047f0-cfdd-4b64-9a3b-99df74c4f67a.pdf",
+     30,
+     "16+ GW Installed base (doc period)",
+     "16"
+    ],
+    "y:20260331": [
+     "50d60865-a9cc-4edd-97f0-d75ce57f709f.pdf",
+     73,
+     "managing ~15.5 GW of assets in India",
+     "15.5"
+    ],
+    "q:20250930": [
+     "278096b7-4387-4893-a160-e13679ad5331.pdf",
+     29,
+     "15.4+ GW Installed base",
+     "15.4"
+    ]
+   }
+  },
+  {
+   "name": "RE Order Book",
+   "unit": "GW",
+   "kind": "level",
+   "y": {
+    "20250331": 5.6,
+    "20260331": 5.5
+   },
+   "q": {
+    "20250930": 6.2
+   },
+   "src": {
+    "y:20260331": [
+     "1b1b9fbb-55f9-4f1d-a70b-32f4ebdf2d7a.pdf",
+     32,
+     "RE Order Book, FROM (doc period)",
+     "5.5"
+    ],
+    "y:20250331": [
+     "b3f426be-6b96-4a2e-855b-2e4937080064.pdf",
+     29,
+     "Suzlon's firm order book stands at 5.6 GW",
+     "5.6"
+    ],
+    "q:20250930": [
+     "278096b7-4387-4893-a160-e13679ad5331.pdf",
+     15,
+     "Orderbook crosses 6 GW; 2+ GW additions in H1 FY26 taking it to 6.2 GW",
+     "6.2"
+    ]
+   }
+  },
+  {
+   "name": "Wind Market Share (India)",
+   "unit": "%",
+   "kind": "level",
+   "y": {
+    "20250331": 30.0,
+    "20260331": 33.0
+   },
+   "q": {
+    "20250930": 29.0
+   },
+   "src": {
+    "y:20260331": [
+     "1b1b9fbb-55f9-4f1d-a70b-32f4ebdf2d7a.pdf",
+     21,
+     "33% share, 18 GW fleet (doc period)",
+     "33"
+    ],
+    "y:20250331": [
+     "b3f426be-6b96-4a2e-855b-2e4937080064.pdf",
+     41,
+     "installed base of 15.1 GW, representing a 30% market share of India's total wind",
+     "30"
+    ],
+    "q:20250930": [
+     "278096b7-4387-4893-a160-e13679ad5331.pdf",
+     25,
+     "29% Cumulative market share in India",
+     "29"
     ]
    }
   },
@@ -304,75 +474,157 @@
    }
   },
   {
-   "name": "EPC Share %",
-   "unit": "%",
+   "name": "Cumulative Installations Worldwide",
+   "unit": "GW",
    "kind": "level",
-   "y": {},
+   "y": {
+    "20260331": 21.5
+   },
    "q": {
-    "20250630": 22.0,
-    "20260630": 32.0
+    "20250930": 21.0
    },
    "src": {
-    "q:20250630": [
-     "e7b047f0-cfdd-4b64-9a3b-99df74c4f67a.pdf",
-     36,
-     "EPC share Q1 FY26",
-     "22"
+    "y:20260331": [
+     "50d60865-a9cc-4edd-97f0-d75ce57f709f.pdf",
+     73,
+     "global installed base of approximately 21.5 GW across 17 countries",
+     "21.5"
     ],
-    "q:20260630": [
-     "e7b047f0-cfdd-4b64-9a3b-99df74c4f67a.pdf",
-     36,
-     "EPC share Q1 FY27",
-     "32"
+    "q:20250930": [
+     "278096b7-4387-4893-a160-e13679ad5331.pdf",
+     25,
+     "21+ GW Global installed Wind energy capacity",
+     "21"
+    ]
+   },
+   "restated": [
+    [
+     "y:20260331",
+     "1b1b9fbb-55f9-4f1d-a70b-32f4ebdf2d7a.pdf",
+     20.0,
+     "50d60865-a9cc-4edd-97f0-d75ce57f709f.pdf",
+     21.5
+    ]
+   ]
+  },
+  {
+   "name": "Customer Base",
+   "unit": "count",
+   "kind": "level",
+   "y": {
+    "20260331": 1900.0
+   },
+   "q": {
+    "20250930": 1900.0
+   },
+   "src": {
+    "y:20260331": [
+     "1b1b9fbb-55f9-4f1d-a70b-32f4ebdf2d7a.pdf",
+     21,
+     "1,900 customers, 100 wind clusters (doc period)",
+     "1,900"
+    ],
+    "q:20250930": [
+     "278096b7-4387-4893-a160-e13679ad5331.pdf",
+     29,
+     "1,900+ Customers",
+     "1,900"
     ]
    }
   },
   {
-   "name": "O&M Installed Base",
-   "unit": "GW",
+   "name": "O&M Assets Under Management",
+   "unit": "USD Bn",
    "kind": "level",
-   "y": {
-    "20260331": 15.5
-   },
+   "y": {},
    "q": {
-    "20260630": 16.0
+    "20250930": 10.0,
+    "20260630": 10.0
    },
    "src": {
     "q:20260630": [
      "e7b047f0-cfdd-4b64-9a3b-99df74c4f67a.pdf",
      30,
-     "16+ GW Installed base (doc period)",
-     "16"
+     "USD 10+ Bn Assets under management (doc period)",
+     "10"
     ],
-    "y:20260331": [
-     "50d60865-a9cc-4edd-97f0-d75ce57f709f.pdf",
-     73,
-     "managing ~15.5 GW of assets in India",
-     "15.5"
+    "q:20250930": [
+     "278096b7-4387-4893-a160-e13679ad5331.pdf",
+     29,
+     "USD 10 Bn Assets under management",
+     "10"
     ]
    }
   },
   {
-   "name": "RE Order Book",
-   "unit": "GW",
+   "name": "O&M Sites",
+   "unit": "count",
    "kind": "level",
-   "y": {
-    "20250331": 5.6,
-    "20260331": 5.5
+   "y": {},
+   "q": {
+    "20250930": 99.0,
+    "20260630": 110.0
    },
-   "q": {},
    "src": {
-    "y:20260331": [
-     "1b1b9fbb-55f9-4f1d-a70b-32f4ebdf2d7a.pdf",
-     32,
-     "RE Order Book, FROM (doc period)",
-     "5.5"
+    "q:20260630": [
+     "e7b047f0-cfdd-4b64-9a3b-99df74c4f67a.pdf",
+     30,
+     "110+ Sites (doc period)",
+     "110"
     ],
-    "y:20250331": [
-     "b3f426be-6b96-4a2e-855b-2e4937080064.pdf",
+    "q:20250930": [
+     "278096b7-4387-4893-a160-e13679ad5331.pdf",
      29,
-     "Suzlon's firm order book stands at 5.6 GW",
-     "5.6"
+     "99 Sites",
+     "99"
+    ]
+   }
+  },
+  {
+   "name": "O&M Team Size",
+   "unit": "count",
+   "kind": "level",
+   "y": {},
+   "q": {
+    "20250930": 3900.0,
+    "20260630": 3600.0
+   },
+   "src": {
+    "q:20260630": [
+     "e7b047f0-cfdd-4b64-9a3b-99df74c4f67a.pdf",
+     30,
+     "3,600+ Team (doc period)",
+     "3,600"
+    ],
+    "q:20250930": [
+     "278096b7-4387-4893-a160-e13679ad5331.pdf",
+     29,
+     "3,900+ Team",
+     "3,900"
+    ]
+   }
+  },
+  {
+   "name": "O&M Turbines Serviced",
+   "unit": "count",
+   "kind": "level",
+   "y": {},
+   "q": {
+    "20250930": 10000.0,
+    "20260630": 10000.0
+   },
+   "src": {
+    "q:20260630": [
+     "e7b047f0-cfdd-4b64-9a3b-99df74c4f67a.pdf",
+     30,
+     "10,000+ Turbines (doc period)",
+     "10,000"
+    ],
+    "q:20250930": [
+     "278096b7-4387-4893-a160-e13679ad5331.pdf",
+     29,
+     "10,000+ Turbines",
+     "10,000"
     ]
    }
   },
@@ -397,73 +649,6 @@
      24,
      "ramped up its annual manufacturing capacity from 3,500 MW to 4,500 MW in FY25",
      "3,500"
-    ]
-   }
-  },
-  {
-   "name": "Wind Market Share (India)",
-   "unit": "%",
-   "kind": "level",
-   "y": {
-    "20250331": 30.0,
-    "20260331": 33.0
-   },
-   "q": {},
-   "src": {
-    "y:20260331": [
-     "1b1b9fbb-55f9-4f1d-a70b-32f4ebdf2d7a.pdf",
-     21,
-     "33% share, 18 GW fleet (doc period)",
-     "33"
-    ],
-    "y:20250331": [
-     "b3f426be-6b96-4a2e-855b-2e4937080064.pdf",
-     41,
-     "installed base of 15.1 GW, representing a 30% market share of India's total wind",
-     "30"
-    ]
-   }
-  },
-  {
-   "name": "Cumulative Installations Worldwide",
-   "unit": "GW",
-   "kind": "level",
-   "y": {
-    "20260331": 21.5
-   },
-   "q": {},
-   "src": {
-    "y:20260331": [
-     "50d60865-a9cc-4edd-97f0-d75ce57f709f.pdf",
-     73,
-     "global installed base of approximately 21.5 GW across 17 countries",
-     "21.5"
-    ]
-   },
-   "restated": [
-    [
-     "y:20260331",
-     "1b1b9fbb-55f9-4f1d-a70b-32f4ebdf2d7a.pdf",
-     20.0,
-     "50d60865-a9cc-4edd-97f0-d75ce57f709f.pdf",
-     21.5
-    ]
-   ]
-  },
-  {
-   "name": "Customer Base",
-   "unit": "count",
-   "kind": "level",
-   "y": {
-    "20260331": 1900.0
-   },
-   "q": {},
-   "src": {
-    "y:20260331": [
-     "1b1b9fbb-55f9-4f1d-a70b-32f4ebdf2d7a.pdf",
-     21,
-     "1,900 customers, 100 wind clusters (doc period)",
-     "1,900"
     ]
    }
   },
@@ -502,74 +687,6 @@
    }
   },
   {
-   "name": "O&M Assets Under Management",
-   "unit": "USD Bn",
-   "kind": "level",
-   "y": {},
-   "q": {
-    "20260630": 10.0
-   },
-   "src": {
-    "q:20260630": [
-     "e7b047f0-cfdd-4b64-9a3b-99df74c4f67a.pdf",
-     30,
-     "USD 10+ Bn Assets under management (doc period)",
-     "10"
-    ]
-   }
-  },
-  {
-   "name": "O&M Sites",
-   "unit": "count",
-   "kind": "level",
-   "y": {},
-   "q": {
-    "20260630": 110.0
-   },
-   "src": {
-    "q:20260630": [
-     "e7b047f0-cfdd-4b64-9a3b-99df74c4f67a.pdf",
-     30,
-     "110+ Sites (doc period)",
-     "110"
-    ]
-   }
-  },
-  {
-   "name": "O&M Team Size",
-   "unit": "count",
-   "kind": "level",
-   "y": {},
-   "q": {
-    "20260630": 3600.0
-   },
-   "src": {
-    "q:20260630": [
-     "e7b047f0-cfdd-4b64-9a3b-99df74c4f67a.pdf",
-     30,
-     "3,600+ Team (doc period)",
-     "3,600"
-    ]
-   }
-  },
-  {
-   "name": "O&M Turbines Serviced",
-   "unit": "count",
-   "kind": "level",
-   "y": {},
-   "q": {
-    "20260630": 10000.0
-   },
-   "src": {
-    "q:20260630": [
-     "e7b047f0-cfdd-4b64-9a3b-99df74c4f67a.pdf",
-     30,
-     "10,000+ Turbines (doc period)",
-     "10,000"
-    ]
-   }
-  },
-  {
    "name": "RE AUM (Cumulative Installed Fleet)",
    "unit": "GW",
    "kind": "level",
@@ -600,6 +717,40 @@
      32,
      "RE Sales, FROM (doc period)",
      "2.5"
+    ]
+   }
+  },
+  {
+   "name": "Total Employees",
+   "unit": "count",
+   "kind": "level",
+   "y": {},
+   "q": {
+    "20250930": 8300.0
+   },
+   "src": {
+    "q:20250930": [
+     "278096b7-4387-4893-a160-e13679ad5331.pdf",
+     25,
+     "8,300+ Experienced workforce",
+     "8,300"
+    ]
+   }
+  },
+  {
+   "name": "WTG Annual Manufacturing Capacity",
+   "unit": "GW",
+   "kind": "level",
+   "y": {},
+   "q": {
+    "20250930": 4.5
+   },
+   "src": {
+    "q:20250930": [
+     "278096b7-4387-4893-a160-e13679ad5331.pdf",
+     15,
+     "India's largest domestic wind manufacturing capacity at 4.5 GW",
+     "4.5"
     ]
    }
   },
