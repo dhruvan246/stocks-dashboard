@@ -8,9 +8,172 @@
    "title": "Q1 FY27 media release + investor presentation",
    "read": "2026-09-06",
    "by": "claude-session"
+  },
+  "91c957be-578e-49e6-8858-a0f8bfdf64ae.pdf": {
+   "kind": "ip",
+   "date": "2026-08-05",
+   "title": "Novelis Q1 FY27 Earnings Presentation & Release",
+   "read": "2026-09-08",
+   "by": "claude-routine"
+  },
+  "7eac4e60-34bd-4de1-a502-48a1c4c108a2.pdf": {
+   "kind": "ar",
+   "date": "2026-06-30",
+   "title": "Letter to Shareholders - AGM Notice FY2025-26",
+   "read": "2026-09-08",
+   "by": "claude-routine"
+  },
+  "bb3b7080-855f-4cde-b688-d97575a72f3f.pdf": {
+   "kind": "ar",
+   "date": "2026-06-30",
+   "title": "Integrated Annual Report FY 2025-26",
+   "read": "2026-09-08",
+   "by": "claude-routine"
   }
  },
  "metrics": [
+  {
+   "name": "Novelis Shipments",
+   "unit": "Kt",
+   "kind": "flow",
+   "y": {
+    "20260331": 3557.0
+   },
+   "q": {
+    "20250630": 963.0,
+    "20250930": 941.0,
+    "20251231": 809.0,
+    "20260331": 844.0,
+    "20260630": 916.0
+   },
+   "src": {
+    "q:20250630": [
+     "91c957be-578e-49e6-8858-a0f8bfdf64ae.pdf",
+     10,
+     "Total rolled products",
+     "963"
+    ],
+    "q:20260630": [
+     "91c957be-578e-49e6-8858-a0f8bfdf64ae.pdf",
+     10,
+     "Total rolled products",
+     "916"
+    ],
+    "q:20250930": [
+     "91c957be-578e-49e6-8858-a0f8bfdf64ae.pdf",
+     16,
+     "FRP Shipments (kt) chart",
+     "941"
+    ],
+    "q:20251231": [
+     "91c957be-578e-49e6-8858-a0f8bfdf64ae.pdf",
+     16,
+     "FRP Shipments (kt) chart",
+     "809"
+    ],
+    "q:20260331": [
+     "91c957be-578e-49e6-8858-a0f8bfdf64ae.pdf",
+     16,
+     "FRP Shipments (kt) chart",
+     "844"
+    ],
+    "y:20260331": [
+     "bb3b7080-855f-4cde-b688-d97575a72f3f.pdf",
+     194,
+     "Overall shipments in Novelis",
+     "3,557"
+    ]
+   }
+  },
+  {
+   "name": "Copper CCR Sales",
+   "unit": "Kt",
+   "kind": "flow",
+   "y": {
+    "20260331": 373.0
+   },
+   "q": {
+    "20250630": 104.0,
+    "20260630": 96.0
+   },
+   "src": {
+    "q:20250630": [
+     "ced6169a-dd22-4b23-abbb-c07d313569a3.pdf",
+     5,
+     "Copper - Of which CCR Sales (Kt)",
+     "104"
+    ],
+    "q:20260630": [
+     "ced6169a-dd22-4b23-abbb-c07d313569a3.pdf",
+     5,
+     "Copper - Of which CCR Sales (Kt)",
+     "96"
+    ],
+    "y:20260331": [
+     "bb3b7080-855f-4cde-b688-d97575a72f3f.pdf",
+     194,
+     "Copper Continuous Cast Rods ... Sales",
+     "373"
+    ]
+   }
+  },
+  {
+   "name": "Copper Metal Sales",
+   "unit": "Kt",
+   "kind": "flow",
+   "y": {
+    "20260331": 487.0
+   },
+   "q": {
+    "20250630": 124.0,
+    "20260630": 105.0
+   },
+   "src": {
+    "q:20250630": [
+     "ced6169a-dd22-4b23-abbb-c07d313569a3.pdf",
+     5,
+     "Copper - Total Metal sales (Kt)",
+     "124"
+    ],
+    "q:20260630": [
+     "ced6169a-dd22-4b23-abbb-c07d313569a3.pdf",
+     5,
+     "Copper - Total Metal sales (Kt)",
+     "105"
+    ],
+    "y:20260331": [
+     "bb3b7080-855f-4cde-b688-d97575a72f3f.pdf",
+     194,
+     "Copper Metal Sales",
+     "487"
+    ]
+   }
+  },
+  {
+   "name": "Aluminium Downstream Sales",
+   "unit": "Kt",
+   "kind": "flow",
+   "y": {
+    "20260331": 446.0
+   },
+   "q": {
+    "20260630": 104.0
+   },
+   "src": {
+    "q:20260630": [
+     "ced6169a-dd22-4b23-abbb-c07d313569a3.pdf",
+     4,
+     "Sales of Aluminium Downstream stood at 104 KT",
+     "104"
+    ],
+    "y:20260331": [
+     "bb3b7080-855f-4cde-b688-d97575a72f3f.pdf",
+     194,
+     "Aluminium Downstream Sales",
+     "446"
+    ]
+   }
+  },
   {
    "name": "Aluminium Upstream EBITDA",
    "unit": "₹ crore",
@@ -84,30 +247,6 @@
    }
   },
   {
-   "name": "Copper CCR Sales",
-   "unit": "Kt",
-   "kind": "flow",
-   "y": {},
-   "q": {
-    "20250630": 104.0,
-    "20260630": 96.0
-   },
-   "src": {
-    "q:20250630": [
-     "ced6169a-dd22-4b23-abbb-c07d313569a3.pdf",
-     5,
-     "Copper - Of which CCR Sales (Kt)",
-     "104"
-    ],
-    "q:20260630": [
-     "ced6169a-dd22-4b23-abbb-c07d313569a3.pdf",
-     5,
-     "Copper - Of which CCR Sales (Kt)",
-     "96"
-    ]
-   }
-  },
-  {
    "name": "Copper EBITDA",
    "unit": "₹ crore",
    "kind": "flow",
@@ -128,30 +267,6 @@
      5,
      "Copper - EBITDA (₹ Cr)",
      "918"
-    ]
-   }
-  },
-  {
-   "name": "Copper Metal Sales",
-   "unit": "Kt",
-   "kind": "flow",
-   "y": {},
-   "q": {
-    "20250630": 124.0,
-    "20260630": 105.0
-   },
-   "src": {
-    "q:20250630": [
-     "ced6169a-dd22-4b23-abbb-c07d313569a3.pdf",
-     5,
-     "Copper - Total Metal sales (Kt)",
-     "124"
-    ],
-    "q:20260630": [
-     "ced6169a-dd22-4b23-abbb-c07d313569a3.pdf",
-     5,
-     "Copper - Total Metal sales (Kt)",
-     "105"
     ]
    }
   },
@@ -204,26 +319,115 @@
    }
   },
   {
-   "name": "Novelis Shipments",
+   "name": "Novelis Shipments - Asia",
    "unit": "Kt",
    "kind": "flow",
    "y": {},
    "q": {
-    "20250630": 963.0,
-    "20260630": 916.0
+    "20250630": 215.0,
+    "20260630": 232.0
    },
    "src": {
     "q:20250630": [
-     "ced6169a-dd22-4b23-abbb-c07d313569a3.pdf",
-     4,
-     "Novelis - Shipments (Kt)",
-     "963"
+     "91c957be-578e-49e6-8858-a0f8bfdf64ae.pdf",
+     10,
+     "Total rolled products - Asia",
+     "215"
     ],
     "q:20260630": [
-     "ced6169a-dd22-4b23-abbb-c07d313569a3.pdf",
-     4,
-     "Novelis - Shipments (Kt)",
-     "916"
+     "91c957be-578e-49e6-8858-a0f8bfdf64ae.pdf",
+     10,
+     "Total rolled products - Asia",
+     "232"
+    ]
+   }
+  },
+  {
+   "name": "Novelis Shipments - Europe",
+   "unit": "Kt",
+   "kind": "flow",
+   "y": {},
+   "q": {
+    "20250630": 262.0,
+    "20260630": 275.0
+   },
+   "src": {
+    "q:20250630": [
+     "91c957be-578e-49e6-8858-a0f8bfdf64ae.pdf",
+     10,
+     "Total rolled products - Europe",
+     "262"
+    ],
+    "q:20260630": [
+     "91c957be-578e-49e6-8858-a0f8bfdf64ae.pdf",
+     10,
+     "Total rolled products - Europe",
+     "275"
+    ]
+   }
+  },
+  {
+   "name": "Novelis Shipments - North America",
+   "unit": "Kt",
+   "kind": "flow",
+   "y": {},
+   "q": {
+    "20250630": 389.0,
+    "20260630": 376.0
+   },
+   "src": {
+    "q:20250630": [
+     "91c957be-578e-49e6-8858-a0f8bfdf64ae.pdf",
+     10,
+     "Total rolled products - North America",
+     "389"
+    ],
+    "q:20260630": [
+     "91c957be-578e-49e6-8858-a0f8bfdf64ae.pdf",
+     10,
+     "Total rolled products - North America",
+     "376"
+    ]
+   }
+  },
+  {
+   "name": "Novelis Shipments - South America",
+   "unit": "Kt",
+   "kind": "flow",
+   "y": {},
+   "q": {
+    "20250630": 156.0,
+    "20260630": 167.0
+   },
+   "src": {
+    "q:20250630": [
+     "91c957be-578e-49e6-8858-a0f8bfdf64ae.pdf",
+     10,
+     "Total rolled products - South America",
+     "156"
+    ],
+    "q:20260630": [
+     "91c957be-578e-49e6-8858-a0f8bfdf64ae.pdf",
+     10,
+     "Total rolled products - South America",
+     "167"
+    ]
+   }
+  },
+  {
+   "name": "Alumina Production",
+   "unit": "Kt",
+   "kind": "flow",
+   "y": {
+    "20260331": 3784.0
+   },
+   "q": {},
+   "src": {
+    "y:20260331": [
+     "bb3b7080-855f-4cde-b688-d97575a72f3f.pdf",
+     194,
+     "Alumina production",
+     "3,784"
     ]
    }
   },
@@ -262,19 +466,104 @@
    }
   },
   {
-   "name": "Aluminium Downstream Sales",
+   "name": "Aluminium Downstream Production",
    "unit": "Kt",
    "kind": "flow",
+   "y": {
+    "20260331": 458.0
+   },
+   "q": {},
+   "src": {
+    "y:20260331": [
+     "bb3b7080-855f-4cde-b688-d97575a72f3f.pdf",
+     194,
+     "Aluminium Downstream production",
+     "458"
+    ]
+   }
+  },
+  {
+   "name": "Aluminium Metal Production",
+   "unit": "Kt",
+   "kind": "flow",
+   "y": {
+    "20260331": 1336.0
+   },
+   "q": {},
+   "src": {
+    "y:20260331": [
+     "bb3b7080-855f-4cde-b688-d97575a72f3f.pdf",
+     194,
+     "Aluminium metal production",
+     "1,336"
+    ]
+   }
+  },
+  {
+   "name": "Aluminium Metal Sales (All Forms)",
+   "unit": "Kt",
+   "kind": "flow",
+   "y": {
+    "20260331": 1367.0
+   },
+   "q": {},
+   "src": {
+    "y:20260331": [
+     "bb3b7080-855f-4cde-b688-d97575a72f3f.pdf",
+     194,
+     "Aluminium third party metal sales (in all forms)",
+     "1,367"
+    ]
+   }
+  },
+  {
+   "name": "Copper Cathode Production",
+   "unit": "Kt",
+   "kind": "flow",
+   "y": {
+    "20260331": 420.0
+   },
+   "q": {},
+   "src": {
+    "y:20260331": [
+     "bb3b7080-855f-4cde-b688-d97575a72f3f.pdf",
+     194,
+     "Copper Cathode Production",
+     "420"
+    ]
+   }
+  },
+  {
+   "name": "Copper Continuous Cast Rods Production",
+   "unit": "Kt",
+   "kind": "flow",
+   "y": {
+    "20260331": 467.0
+   },
+   "q": {},
+   "src": {
+    "y:20260331": [
+     "bb3b7080-855f-4cde-b688-d97575a72f3f.pdf",
+     194,
+     "Copper Continuous Cast Rods production",
+     "467"
+    ]
+   }
+  },
+  {
+   "name": "Renewable Installed Capacity",
+   "unit": "MW",
+   "kind": "level",
    "y": {},
    "q": {
-    "20260630": 104.0
+    "20260331": 470.0
    },
    "src": {
-    "q:20260630": [
-     "ced6169a-dd22-4b23-abbb-c07d313569a3.pdf",
-     4,
-     "Sales of Aluminium Downstream stood at 104 KT",
-     "104"
+    "q:20260331": [
+     "bb3b7080-855f-4cde-b688-d97575a72f3f.pdf",
+     121,
+     "cumulative renewable installed capacity",
+     "470"
     ]
    }
   }
