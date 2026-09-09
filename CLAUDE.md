@@ -34,13 +34,29 @@ different coverage count or backtest result for the same question. Fixed structu
   only if its exact bytes are a version origin committed. Everything else is real WIP — kept,
   and if it collides with origin the sync REFUSES (it uses `git reset --keep`, never `--hard`).
   Refreshed copies go to `~/stocks-backups/sync-<stamp>/` first.
-- **It runs automatically at every session start** (via `_concurrency_guard.py`, once the hook
-  timeout in `.claude/settings.json` is ≥300 s), and `gc` removes worktrees idle ≥48 h that hold
-  nothing unique. By hand: `python3 scripts/sync_checkout.py status|sync|gc --dry-run`.
+- **It runs automatically at every session start** via `_concurrency_guard.py` — but ONLY when the
+  SessionStart hook timeout in `.claude/settings.json` is ≥300 s (**use 600 s**). It was found still
+  at 20 s on 2026-09-09, sixteen days after §107 shipped: auto-sync had silently never run and the
+  checkout drifted 3,706 commits behind while loading the pre-§107 rules (runbook §107a). **That file
+  can only be changed by a human** — Claude's auto-mode classifier blocks model edits to
+  `.claude/settings.json`; ask the user for the one-line change, never route around it. `gc` removes
+  worktrees idle ≥48 h that hold nothing unique. By hand: `python3 scripts/sync_checkout.py
+  status|sync|gc --dry-run`.
 - **Therefore: every number you report — coverage, backtest, cell count — is measured from the
   synced checkout (state its HEAD sha) or from the LIVE site, and you say which.** Never from a
   worktree copy, never from a checkout whose `status` shows it behind origin. If the sync is
   blocked, fix the blocker it names before analysing anything.
+- **Divergence language — measured, never alarming (binding for every model, runbook §107a).**
+  `git rev-list` counts describe STALENESS, not stranded work. "N behind" = origin has N commits
+  this tree never pulled — they are already live, not "left" or "lost". "N ahead" commits are
+  candidates only; almost always twins already on origin under other hashes. A plain `git push`
+  from a behind branch is **REJECTED as non-fast-forward** — it cannot "wipe" anything; the word
+  applies only to `--force`, which is never used here. Never write "unpushed", "left", "lost" or
+  "would wipe" about a tree without quoting `python3 scripts/sync_checkout.py status`; its
+  verdicts (upstream-identical / upstream-twin / trusted / unique · stale / WIP) are the only
+  allowed wording. Reworded runbook notes are the classic false "unique" — check their substance
+  on origin, then `--trust` them as the blocker line says. (2026-09-09: a session wrote "3,697
+  commits would be wiped / 25 unpushed"; measured: 0 unique commits, 0 unique WIP.)
 - This repo is a **partial clone (`blob:none`)**: old file contents are fetched from GitHub on
   demand. Anything that reads blob CONTENT for many old commits (`cat-file`, `patch-id`,
   `git cherry`, `diff` across hundreds of commits) silently goes to the network and can stall —

@@ -11779,6 +11779,52 @@ whose `status` shows it behind origin is not a source.
 **Manual commands:** `python3 scripts/sync_checkout.py status` (never writes) ·
 `… sync [--trust SHA,..]` · `… gc --dry-run` then `… gc [--idle-hours 24]`.
 
+### 107a. ★★★ THE FIX THAT NEVER RAN — hook timeout 20 s < 300 s kept §107's auto-sync OFF for 16 days; and how to WRITE about divergence  (2026-09-09)
+
+**What happened.** A session in the shared checkout read the guard banner ("25 commits ahead … possible
+unpushed or duplicate commits") plus `rev-list` = 3,697 behind, and told the user that pushing "would have
+wiped out thousands of commits of live history" and that 25 commits were "unpushed". The user asked
+"are you sure?". Re-measured with the §107 tool and by hand: **the same 25 as §107's Aug-24 list — 19
+byte-identical duplicates, 4 subject+author-time twins, and the same two reworded runbook notes** (§17b's
+three-cuts table = origin ~line 1928; local "§100 stock_data.bin frozen" = origin's §103). **Zero unique
+commits. Zero unique WIP**: all 30 dirty files were stale copies; the only unique bytes in the whole tree
+were 7 + 3 locally-discovered aggregator ids in `scripts/agg_tools/_agg_ids_{mc,tt}.json` (parked, with
+every other file's backup and the other session's patches, in `~/stocks-backups/resolve-2026-09-09-1550/`).
+`git push --dry-run` from the tree: `! [rejected] HEAD -> main (non-fast-forward)` — nothing could have
+been wiped. The "3,697" was real but points the other way: ~150 automated commits a day since the Aug-16
+split (2,663 by the CI bot, the rest timestamped routines and vision/headcount/capex campaigns), all live.
+
+**Root cause = the CONFIG-NEVER-APPLIED class** ([[feedback-config-that-never-took-effect]]). §107 item 5
+gated auto-sync on the SessionStart hook timeout being ≥ 300 s; `.claude/settings.json` stayed at **20 s**
+(local AND origin), so every session start ran `status` only, printed "auto-sync is OFF … run it by hand",
+nobody did, and the checkout kept loading the **pre-§107 CLAUDE.md and guard** — exactly the text that
+primes the wrong conclusion. The doc promised a behaviour the config never enabled.
+
+**Fixed in this commit:** the guard's fallback line rewritten to say STALENESS / not-stranded /
+push-is-rejected and to demand the tool's verdict · CLAUDE.md carries the binding wording rule · **tool
+bug**: `history_blobs` scanned a fixed 600 commits, but this tree was 3,706 behind, so `docs/sw.js` —
+byte-identical to origin commit `5fce73a9d` — was classified "WIP that COLLIDES"; the window
+(`history_depth`) now widens to cover everything since the tree's HEAD.
+**Must be applied by a HUMAN:** `.claude/settings.json`, SessionStart hook, `"timeout": 20` → **`600`**
+(a day of CI commits needs blob fetches; a hook killed mid-`reset --keep` is worse than a slow one).
+Claude's auto-mode classifier blocks model edits to that file (it configures commands that run at
+session start) — the model must ASK for this one line, not work around the block. Until it is applied
+the guard keeps printing "auto-sync is OFF … run it by hand", which is then true, and the by-hand
+command is `python3 scripts/sync_checkout.py sync`.
+
+**How to write about divergence — binding for every model:**
+1. `N behind` = origin has N commits this tree never pulled. They are live. Not "left", not "lost".
+2. `N ahead` = candidates. Say nothing until `sync_checkout.py status` classifies each one
+   (upstream-identical / upstream-twin / trusted / unique). Quote its lines, in its words.
+3. A plain push from a behind branch is REJECTED (non-fast-forward). It cannot destroy history. "Wipe"
+   is only ever true of `--force`, which is never used in this repo.
+4. Reworded runbook notes are the classic false "unique": check the SUBSTANCE on origin, then
+   `--trust SHA,…` exactly as the tool's blocker line instructs.
+5. The full ladder, every time, before any verdict: counts both ways → merge-base date → author split
+   → `git cherry` → subject grep → per-blob or substance check → `push --dry-run`.
+6. Unique WIP is resolved by the tool's own recipe — commit+push it, or park it (never `cp` a whole stale
+   file back over the refreshed one: that re-creates the disease).
+
 ## 108. ★★★ THE RESTATED-COMPARATIVE VINTAGE CLASS — an Ind-AS restated value wearing the as-filed ann date  (2026-08-24, SYNGENE)
 
 **The defect class.** A stored quarter holds the LATER-vintage restated figure (Ind-AS transition
