@@ -71,6 +71,13 @@
    "title": "Annual Report FY 2023-24 (sampled pages)",
    "read": "2026-09-09",
    "by": "claude-routine"
+  },
+  "b56236d7-1cbe-4f07-b4e0-0f41cd3128ca.pdf": {
+   "kind": "ip",
+   "date": "2025-02-05",
+   "title": "Webinar Presentation (Q3 FY25)",
+   "read": "2026-09-09",
+   "by": "claude-routine"
   }
  },
  "metrics": [
@@ -368,6 +375,7 @@
     "20260331": 99.84
    },
    "q": {
+    "20241231": 99.81,
     "20250630": 99.84,
     "20250930": 99.83,
     "20251231": 99.84,
@@ -433,6 +441,12 @@
      7,
      "System Availability",
      "99.84"
+    ],
+    "q:20241231": [
+     "b56236d7-1cbe-4f07-b4e0-0f41cd3128ca.pdf",
+     6,
+     "System Availability (As on 31.01.2025)",
+     "99.81"
     ]
    }
   },
@@ -497,6 +511,7 @@
     "20250331": 1533.0
    },
    "q": {
+    "20241231": 1518.0,
     "20250630": 1548.0,
     "20250930": 1553.0,
     "20260331": 291.0,
@@ -532,6 +547,12 @@
      7,
      "Sub-Stations",
      "1,533"
+    ],
+    "q:20241231": [
+     "b56236d7-1cbe-4f07-b4e0-0f41cd3128ca.pdf",
+     6,
+     "Sub-Stations",
+     "1,518"
     ]
    }
   },
@@ -543,6 +564,7 @@
     "20250331": 564961.0
    },
    "q": {
+    "20241231": 552961.0,
     "20250630": 571331.0,
     "20250930": 582516.0,
     "20260331": 624016.0,
@@ -578,6 +600,12 @@
      7,
      "Transformation Capacity",
      "5,64,961"
+    ],
+    "q:20241231": [
+     "b56236d7-1cbe-4f07-b4e0-0f41cd3128ca.pdf",
+     6,
+     "Transformation Capacity",
+     "5,52,961"
     ]
    }
   },
@@ -589,6 +617,7 @@
     "20250331": 180239.0
    },
    "q": {
+    "20241231": 179594.0,
     "20250630": 180849.0,
     "20250930": 181054.0,
     "20260331": 184960.0,
@@ -624,6 +653,12 @@
      7,
      "Transmission Lines",
      "1,80,239"
+    ],
+    "q:20241231": [
+     "b56236d7-1cbe-4f07-b4e0-0f41cd3128ca.pdf",
+     6,
+     "Transmission Lines",
+     "1,79,594"
     ]
    }
   },
@@ -636,6 +671,7 @@
     "20260331": 101180.0
    },
    "q": {
+    "20241231": 99580.0,
     "20250630": 101180.0
    },
    "src": {
@@ -656,6 +692,12 @@
      7,
      "IR capacity",
      "99,580"
+    ],
+    "q:20241231": [
+     "b56236d7-1cbe-4f07-b4e0-0f41cd3128ca.pdf",
+     6,
+     "IR capacity",
+     "99,580"
     ]
    }
   },
@@ -667,6 +709,7 @@
     "20250331": 84.0
    },
    "q": {
+    "20241231": 84.0,
     "20250630": 84.0,
     "20250930": 84.0
    },
@@ -688,6 +731,107 @@
      7,
      "84% of total IR",
      "84"
+    ],
+    "q:20241231": [
+     "b56236d7-1cbe-4f07-b4e0-0f41cd3128ca.pdf",
+     6,
+     "84% of total IR",
+     "84"
+    ]
+   }
+  },
+  {
+   "name": "Transformation Capacity Added",
+   "unit": "MVA",
+   "kind": "flow",
+   "y": {
+    "20250331": 32819.0,
+    "20260331": 72055.0
+   },
+   "q": {
+    "20241231": 9185.0
+   },
+   "src": {
+    "y:20260331": [
+     "139ed5ad-da21-4cee-8495-64c26452c2d7.pdf",
+     9,
+     "Transformation capacity",
+     "72,055"
+    ],
+    "y:20250331": [
+     "139ed5ad-da21-4cee-8495-64c26452c2d7.pdf",
+     9,
+     "Transformation capacity",
+     "32,819"
+    ],
+    "q:20241231": [
+     "b56236d7-1cbe-4f07-b4e0-0f41cd3128ca.pdf",
+     12,
+     "Transformation Capacity added during the quarter",
+     "9,185"
+    ]
+   }
+  },
+  {
+   "name": "Transmission Lines Added",
+   "unit": "ckm",
+   "kind": "flow",
+   "y": {
+    "20250331": 4054.0,
+    "20260331": 4765.0
+   },
+   "q": {
+    "20241231": 1399.0
+   },
+   "src": {
+    "y:20260331": [
+     "139ed5ad-da21-4cee-8495-64c26452c2d7.pdf",
+     9,
+     "Transmission lines added",
+     "4,765"
+    ],
+    "y:20250331": [
+     "139ed5ad-da21-4cee-8495-64c26452c2d7.pdf",
+     9,
+     "Transmission lines added",
+     "4,054"
+    ],
+    "q:20241231": [
+     "b56236d7-1cbe-4f07-b4e0-0f41cd3128ca.pdf",
+     12,
+     "Transmission Line added during the quarter",
+     "1,399"
+    ]
+   }
+  },
+  {
+   "name": "Works in Hand",
+   "unit": "₹ crore",
+   "kind": "level",
+   "y": {},
+   "q": {
+    "20241231": 143749.0,
+    "20260331": 170518.0,
+    "20260630": 175700.0
+   },
+   "src": {
+    "q:20260630": [
+     "188c1f55-7aa7-4ca5-9677-0214d1cb674a.pdf",
+     13,
+     "Total works in hand",
+     "1,75,700"
+    ],
+    "q:20260331": [
+     "139ed5ad-da21-4cee-8495-64c26452c2d7.pdf",
+     19,
+     "Total works in hand",
+     "1,70,518"
+    ],
+    "q:20241231": [
+     "b56236d7-1cbe-4f07-b4e0-0f41cd3128ca.pdf",
+     26,
+     "Works in Hand (As on 31.01.2025)",
+     "1,43,749"
     ]
    }
   },
@@ -764,6 +908,31 @@
    }
   },
   {
+   "name": "TBCB Project Wins",
+   "unit": "count",
+   "kind": "flow",
+   "y": {
+    "20250331": 24.0
+   },
+   "q": {
+    "20241231": 7.0
+   },
+   "src": {
+    "y:20250331": [
+     "ce8e0ba3-1d51-4304-87fc-b29c4fdaa7d6.pdf",
+     8,
+     "Record-breaking TBCB project wins (24) in POWERGRID's history",
+     "24"
+    ],
+    "q:20241231": [
+     "b56236d7-1cbe-4f07-b4e0-0f41cd3128ca.pdf",
+     7,
+     "Emerged L1 bidder in 07 ISTS TBCB projects during Q3FY25",
+     "07"
+    ]
+   }
+  },
+  {
    "name": "Telecom Network Backbone Availability",
    "unit": "%",
    "kind": "level",
@@ -788,30 +957,6 @@
    }
   },
   {
-   "name": "Transformation Capacity Added",
-   "unit": "MVA",
-   "kind": "flow",
-   "y": {
-    "20250331": 32819.0,
-    "20260331": 72055.0
-   },
-   "q": {},
-   "src": {
-    "y:20260331": [
-     "139ed5ad-da21-4cee-8495-64c26452c2d7.pdf",
-     9,
-     "Transformation capacity",
-     "72,055"
-    ],
-    "y:20250331": [
-     "139ed5ad-da21-4cee-8495-64c26452c2d7.pdf",
-     9,
-     "Transformation capacity",
-     "32,819"
-    ]
-   }
-  },
-  {
    "name": "Transmission Lines (number)",
    "unit": "count",
    "kind": "level",
@@ -832,54 +977,6 @@
      6,
      "nos. lines",
      "1,584"
-    ]
-   }
-  },
-  {
-   "name": "Transmission Lines Added",
-   "unit": "ckm",
-   "kind": "flow",
-   "y": {
-    "20250331": 4054.0,
-    "20260331": 4765.0
-   },
-   "q": {},
-   "src": {
-    "y:20260331": [
-     "139ed5ad-da21-4cee-8495-64c26452c2d7.pdf",
-     9,
-     "Transmission lines added",
-     "4,765"
-    ],
-    "y:20250331": [
-     "139ed5ad-da21-4cee-8495-64c26452c2d7.pdf",
-     9,
-     "Transmission lines added",
-     "4,054"
-    ]
-   }
-  },
-  {
-   "name": "Works in Hand",
-   "unit": "₹ crore",
-   "kind": "level",
-   "y": {},
-   "q": {
-    "20260331": 170518.0,
-    "20260630": 175700.0
-   },
-   "src": {
-    "q:20260630": [
-     "188c1f55-7aa7-4ca5-9677-0214d1cb674a.pdf",
-     13,
-     "Total works in hand",
-     "1,75,700"
-    ],
-    "q:20260331": [
-     "139ed5ad-da21-4cee-8495-64c26452c2d7.pdf",
-     19,
-     "Total works in hand",
-     "1,70,518"
     ]
    }
   },
@@ -1067,23 +1164,6 @@
      8,
      "Market Share# 54.55% in terms of Project Wins",
      "54.55"
-    ]
-   }
-  },
-  {
-   "name": "TBCB Project Wins",
-   "unit": "count",
-   "kind": "flow",
-   "y": {
-    "20250331": 24.0
-   },
-   "q": {},
-   "src": {
-    "y:20250331": [
-     "ce8e0ba3-1d51-4304-87fc-b29c4fdaa7d6.pdf",
-     8,
-     "Record-breaking TBCB project wins (24) in POWERGRID's history",
-     "24"
     ]
    }
   },
