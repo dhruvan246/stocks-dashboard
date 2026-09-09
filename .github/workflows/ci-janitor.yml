@@ -99,6 +99,10 @@ jobs:
         run: |
           set -uo pipefail
           # "Still red" = its most recent FAILURE is newer than its most recent SUCCESS.
+          # margin-watch is excluded on purpose: its FAILURE IS THE ALERT (net margin below the
+          # floor). Re-running it does not clear anything — it re-mails the same shortfall every
+          # sweep (2026-09-08: attempts 2-4 at 22:52, 01:38, 04:24 IST) and then flips the run
+          # GREEN overnight once Kite has logged out ("no margin data - skip"), hiding the alert.
           # Bounded deliberately, so a genuinely broken workflow does not get re-run forever:
           #   - only failures from the last 12 h
           #   - skip anything with an active run (do not fight auto-rerun.yml mid-retry)

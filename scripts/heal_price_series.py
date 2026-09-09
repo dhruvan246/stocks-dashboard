@@ -104,19 +104,31 @@ def main():
             print(f"heal: committed dash_slim startTs={slim.get('startTs')} != fresh {start_ts} "
                   "— FLOOR PASS SKIPPED (offsets would not align)", flush=True)
         elif slim is not None:
+            # The committed copy's NEWEST session was still filling when it was committed
+            # (refresh.yml runs 3-4x through the close; the 15:30 IST snapshot carries
+            # last-traded prices, not the official closes). It may be floored like any other
+            # bar, but it is NOT a basis anchor: on 2026-09-08 Yahoo wiped 2026-09-07 (an
+            # all-null bar) for ~1,650 tickers and 834 re-adds were refused as "basis
+            # mismatch" only because the nearest shared session was the intraday 09-08
+            # snapshot, which differs from the final close by design — the guard then
+            # blocked every refresh for two days. Anchors come from sessions that were
+            # complete when committed. DATA_RUNBOOK 1b (2026-09-09).
+            slim_newest = max((max(cs["d"]) for cs in slim["series"].values() if cs["d"]),
+                              default=None)
             for tkr, cs in slim["series"].items():
                 mine = fresh.get(tkr)
                 if not mine:
                     stat["ticker_absent_from_fetch"] += 1
                     continue
                 theirs = dict(zip(cs["d"], cs["p"]))
+                anchors = {o: p for o, p in theirs.items() if o != slim_newest}
                 floor_from = min(mine)
                 gaps = [o for o in theirs if o not in mine and floor_from <= o < newest]
                 for o in gaps:
                     if o not in off2ts:
                         stat["skip_no_session_ts"] += 1
                         continue
-                    if not basis_ok(mine, theirs, o):
+                    if not basis_ok(mine, anchors, o):
                         continue
                     added.setdefault(tkr, {})[o] = round(theirs[o] / 100, 2)
                     stat["floor_restored"] += 1

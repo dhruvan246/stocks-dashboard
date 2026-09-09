@@ -349,6 +349,54 @@ random sample against a live Yahoo fetch before committing. Never hand-write a c
   a symbol that vanishes entirely still vanishes for that build. Widening the floor to resurrect whole series
   would also resurrect genuinely delisted ones — needs its own adjudication.
 
+### 1b-ii. 2026-09-09 — Yahoo WIPED 2026-09-07 (an all-null bar) and the floor pass refused 834 re-adds because its anchor set held the STILL-FILLING session
+*(found + fixed 2026-09-09 from the "Run failed: Daily stock data refresh" mails — 10 consecutive reds from 2026-09-08 16:00 IST; the dashboard's Yahoo store was frozen at the 09-08 15:39 IST build for two sessions)*
+
+**What happened (every number measured this session):**
+- NSE bhavcopy 2026-09-07: **2,652 EQ symbols traded** (09-04: 2,633; 09-08: 2,650) — a normal full session.
+- Yahoo chart v8, the exact `fetch_all.py` request (2020→now, 1d): the 09-07 bar is PRESENT (ts 03:45 UTC) but
+  open/close/volume are all **null** — 34 of 40 sampled tickers that carried a 09-07 close in the committed copy
+  (57 of 80 on a short-range request). Not a missing bar this time: a present bar with no values.
+  `fetch_all.py` drops `close is None`, so it lands as a gap.
+- Committed `dash_slim.bin` (27dd5c21d, the 09-08 15:39 IST build): 09-07 = 4,448 bars. The 09-07 evening builds
+  had 4,533 on that day's wider 4,889-series universe; 266 tickers (265 `.BO`) had already lost 09-07 by 09-08 15:39.
+- Fresh builds since: the floor pass re-added 2,156 and refused **834 as `skip_basis_mismatch`**; 09-07 ended at
+  3,606–3,617 = 81% of the committed copy (floor 90%) and 77% of the trailing-20 median (floor 80%) → `guard_sessions`
+  FAIL on both checks, every run, and rightly so.
+- **Why 834 were refused:** `basis_ok` takes the 6 nearest shared sessions; for 09-07 that set includes 09-08, which in
+  the committed copy is the **15:30 IST intraday snapshot** (last-traded price, not the official close). Probe of 34
+  null-09-07 tickers: 11 mismatched, **all on 09-08 and on no other date**. `guard_sessions` exempts the newest session
+  as "still filling"; the heal's anchor rule did not. The two only disagree on the first day Yahoo drops the session
+  *adjacent* to the filling one — which is why this never showed in the 2026-08-19 calibration.
+
+**Fix (all three in one commit, see git log for `heal_price_series.py` 2026-09-09):**
+1. `scripts/heal_price_series.py` floor pass: the committed copy's newest session (`slim_newest`) is **excluded from the
+   anchor set**. It can still be floored like any bar; it can no longer veto a neighbour.
+2. `scripts/price_gap_fills.json` **+4,499 cells for 2026-09-07** (4,499 tickers): closes taken from the 27dd5c21d build
+   (+135 from 9c221ff9d for tickers that had already lost the bar), every one verified **to the paisa against the
+   exchange bhavcopy for 09-07** (NSE `BhavCopy_NSE_CM_0_0_0_20260907_F_0000`, BSE `BhavCopy_BSE_CM_0_0_0_20260907_F_0000`):
+   4,533 matched; 4 mismatched `.BO` and 46 not-in-either-bhavcopy excluded; 34 without a 09-04 anchor excluded; all
+   4,499 have bhavcopy volume > 0. Anchor = the 09-04 close only, `nextDate` deliberately empty (the committed 09-08 was
+   intraday). The ledger, not the committed copy, is what makes 09-07 survive a later universe churn.
+3. `.github/workflows/ci-janitor.yml` no longer re-runs **margin-watch**: its failure IS the alert; the sweep re-mailed
+   the same shortfall three times overnight (22:52 / 01:38 / 04:24 IST) and then turned the run GREEN at 06:36 IST once
+   Kite had logged out ("no margin data — skip"), hiding the alert history.
+
+**Local replay before the push** (private worktree, `TZ=UTC`, the same three scrip masters the workflow downloads):
+raw fetch 09-07 = **1,451** of 4,448 (Yahoo had wiped it for 67% of tickers by 18:50 IST, up from ~37% on 09-08) →
+patched heal re-added **2,990** (`skip_basis_mismatch` 0, was 834; `ledger_already_present` 8,438 because the floor
+now restores everything the ledger holds; `ledger_ticker_absent` 212 = ledger rows waiting for tickers this fetch did
+not return) → built 09-07 = **4,441** (99.8% of committed), 09-08 = 4,717 (final closes), 09-09 = 4,406 (filling) →
+`guard_feed` OK, `guard_sessions` "session bar counts sane".
+
+**Two rules this adds:**
+- **A value captured while still filling is exempt from EVERY equality check, not just the guard's.** Any new consumer of
+  the committed copy that compares closes (heal, guard, a future reconciler) must drop `max(d)` of the committed copy
+  from its anchor set — it is a snapshot, not a close.
+- **`close=null` on Yahoo is NOT proof the symbol did not trade.** The 2026-08-19 seeding refused 80 cells on that
+  reading and it was right *then*; here the exchange bhavcopy shows 2,652 traded symbols behind Yahoo's nulls. The
+  bhavcopy is the reader that adjudicates a null — never Yahoo alone (memory: `feedback-null-close-is-not-untraded`).
+
 ---
 
 ## 2. FUNDAMENTALS BACKFILL  (quarterly net-profit gaps)
