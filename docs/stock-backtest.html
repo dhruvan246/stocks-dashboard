@@ -1334,6 +1334,33 @@ function nearestIdx(map,dstr){ if(map[dstr])return map[dstr]; // step back up to
   let d=new Date(dstr+'T00:00:00Z'); for(let i=0;i<7;i++){ d.setUTCDate(d.getUTCDate()-1); const k=d.toISOString().slice(0,10); if(map[k])return map[k]; } return null; }
 function nearestNifty(dstr){ return nearestIdx(NIFTY,dstr); }
 function maxDrawdown(eq){ let peak=-1,mdd=0; for(const [,v] of eq){ if(v>peak)peak=v; else if(peak>0){const dd=(peak-v)/peak*100; if(dd>mdd)mdd=dd;} } return mdd; }
+/* ---- DAILY equity reconstruction (Daily view of the drawdown chart). simulate() marks equity only
+   at month-ends; a basket is fixed between monthly rebalances, so rebuild the SAME holdings from the
+   result's rebalances (shares = holds.val / price at that rebalance) and mark on every trading day.
+   Verified byte-exact against res.equity at each rebalance. KEEP IN SYNC with backtest-engine.js. */
+function _btTradingDays(){ const set=new Set();
+  for(const r of ['RELIANCE','TCS','HDFCBANK','INFY','ICICIBANK','ITC','SBIN','LT']){ const s=SERIES[r]; if(s&&s.d) for(const o of s.d) set.add(o); }
+  return [...set].sort((a,b)=>a-b); }
+function dailyEquity(rebs, capital, startIso, endIso, td){
+  td=td||_btTradingDays(); const snap=o=>{ const i=idxLE(td,o); return i<0?o:td[i]; };
+  const s2t={}; for(const t in META) s2t[META[t].symbol||t]=t;
+  const segs=(rebs||[]).map(rb=>{ const off=snap(dayOff(rb.date)); const sh={};
+    for(const h of rb.holds){ const tk=s2t[h.sym]; const p=markPrice(tk,off); sh[tk]=(p&&p>0)?h.val/p:0; }
+    return {off, cash:rb.cash||0, shares:sh}; }).sort((a,b)=>a.off-b.off);
+  const lo=snap(dayOff(startIso)), hi=snap(dayOff(endIso)); const out=[]; let si=0;
+  for(const day of td){ if(day<lo||day>hi) continue;
+    if(!segs.length||day<segs[0].off){ out.push([isoOff(day),capital]); continue; }
+    while(si+1<segs.length && segs[si+1].off<=day) si++;
+    const seg=segs[si]; let v=seg.cash;
+    for(const t in seg.shares){ const p=markPrice(t,day); if(p!=null) v+=seg.shares[t]*p; }
+    out.push([isoOff(day),v]); }
+  return out; }
+function dailyIndex(map, capital, startIso, endIso, td){
+  td=td||_btTradingDays(); const snap=o=>{ const i=idxLE(td,o); return i<0?o:td[i]; };
+  const lo=snap(dayOff(startIso)), hi=snap(dayOff(endIso));
+  const win=td.filter(o=>o>=lo&&o<=hi); if(!win.length) return [];
+  const base=nearestIdx(map, isoOff(win[0]));
+  return win.map(o=>{ const v=nearestIdx(map, isoOff(o)); return [isoOff(o), (base&&v)?capital*v/base:null]; }); }
 
 // ---- render ----
 // Show a SAVED backtest result (stored metrics + calendar-year table) WITHOUT recomputing. Used when a config
@@ -1387,7 +1414,15 @@ function render(r,cfg){
     </div>`;
   html+=`<div class="card p-4 mb-4"><div class="text-sm font-semibold text-slate-700 mb-2"><span class="text-blue-700">Strategy</span> vs <span class="text-amber-600">Nifty 500</span> — ₹${cfg.capital.toLocaleString('en-IN')} grows to… <span class="text-slate-400 font-normal">(hover for values)</span></div><div id="eqc"></div></div>`;
   // ----- drawdown (underwater) curve: % below the running peak, strategy vs benchmark -----
-  html+=`<div class="card p-4 mb-4"><div class="text-sm font-semibold text-slate-700 mb-2">Drawdown — <span class="text-blue-700">Strategy</span> vs <span class="text-amber-600">Nifty 500</span> <span class="text-slate-400 font-normal">— % below the running peak; 0% = at a new high, the deepest dip = max drawdown (hover for values)</span></div><div id="ddc"></div></div>`;
+  html+=`<div class="card p-4 mb-4">
+    <div class="flex flex-wrap items-center gap-2 mb-2">
+      <div class="text-sm font-semibold text-slate-700">Drawdown — <span class="text-blue-700">Strategy</span> vs <span class="text-amber-600">Nifty 500</span> <span class="text-slate-400 font-normal">— % below the running peak; 0% = at a new high, the deepest dip = max drawdown (hover for values)</span></div>
+      <div id="ddTog" class="ml-auto inline-flex rounded-lg border border-slate-200 overflow-hidden text-xs font-semibold shrink-0" title="Month-end marks miss intramonth lows; Daily marks every trading day's close">
+        <button data-dd="month" class="px-2.5 py-1 hover:bg-slate-50">Monthly</button>
+        <button data-dd="day" class="px-2.5 py-1 border-l border-slate-200 hover:bg-slate-50">Daily</button>
+      </div>
+    </div>
+    <div id="ddc"></div></div>`;
   // ----- returns over the backtest period (per-rebalance bar chart) -----
   html+=`<div class="card p-4 mb-4"><div class="text-sm font-semibold text-slate-700 mb-2">Returns over the backtest period <span class="text-slate-400 font-normal">— each rebalance period's return (blue = up, red = down)</span></div><div id="prc" class="overflow-x-auto"></div></div>`;
   // ----- qualifying universe over time (count of ALL stocks meeting the strategy's filters) -----
@@ -1779,9 +1814,25 @@ function drawEquity(r){
 }
 // underwater curve: % below the running peak at every point (0 = new high). The equity chart shows
 // growth; this shows the pain along the way — the deepest dip is the "Max drawdown" card's number.
+let DD_MODE='month';   // 'month' = month-end marks (as simulated) · 'day' = every trading-day close
 function drawDrawdown(r){
   const el=$('ddc'); if(!el) return;
-  const eq=r.equity, bn=((r.bench500&&r.bench500.length?r.bench500:r.bench)||[]); const n=eq.length; if(n<2)return;
+  const tog=$('ddTog');
+  if(tog){ tog.querySelectorAll('button').forEach(b=>{ const on=b.dataset.dd===DD_MODE;
+      // inline !important: the page's Tailwind-preflight `button{background:transparent}` otherwise wins
+      if(on){ b.style.setProperty('background-color','#4f46e5','important'); b.style.setProperty('color','#fff','important'); b.style.fontWeight='700'; }
+      else { b.style.removeProperty('background-color'); b.style.removeProperty('color'); b.style.fontWeight=''; }
+      b.onclick=()=>{ if(DD_MODE===b.dataset.dd) return; DD_MODE=b.dataset.dd; drawDrawdown(r); }; }); }
+  let eq, bn;
+  if(DD_MODE==='day' && r.rebs && r.rebs.length && r.cfg){
+    if(!r._ddDaily){ const s=(r.equity&&r.equity[0]&&r.equity[0][0])||r.cfg.start, e=r.cfg.end, td=_btTradingDays();
+      r._ddDaily={ eq:dailyEquity(r.rebs, r.cfg.capital, s, e, td),
+                   bn:dailyIndex((NIFTY500&&Object.keys(NIFTY500).length?NIFTY500:NIFTY), r.cfg.capital, s, e, td) }; }
+    eq=r._ddDaily.eq; bn=r._ddDaily.bn;
+  } else {
+    eq=r.equity; bn=((r.bench500&&r.bench500.length?r.bench500:r.bench)||[]);
+  }
+  const n=eq.length; if(n<2)return;
   const dd=arr=>{ let peak=null; return arr.map(p=>{ const v=p?p[1]:null; if(v==null) return null;
     if(peak==null||v>peak) peak=v; return peak>0?-(peak-v)/peak*100:0; }); };
   const ds=dd(eq), db=dd(bn);

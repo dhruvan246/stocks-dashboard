@@ -1044,6 +1044,46 @@ function nearestIdx(map, dstr) { if (map[dstr]) return map[dstr]; let d = new Da
 function nearestNifty(dstr) { return nearestIdx(NIFTY, dstr); }
 function maxDrawdown(eq) { let peak = -1, mdd = 0; for (const [, v] of eq) { if (v > peak) peak = v; else if (peak > 0) { const dd = (peak - v) / peak * 100; if (dd > mdd) mdd = dd; } } return mdd; }
 
+/* ---- DAILY equity reconstruction (for the drawdown chart's Daily view) ----
+   simulate() marks equity only at month-ends, so its drawdown misses intramonth lows. A basket is
+   fixed between monthly rebalances, so we rebuild the SAME holdings from a result's rebalances
+   (shares = holds.val / markPrice at that rebalance) and mark them on every trading day. Verified
+   byte-exact against res.equity at every rebalance (0.00000% error). dailyEquity works for any rebs
+   list carrying {date, holds:[{sym,val}], cash} — a single strategy OR the mixer's pooled portfolio.
+   KEEP IN SYNC with the twin copy in stock-backtest.html. */
+function _btTradingDays() {
+  const set = new Set();
+  for (const r of ['RELIANCE', 'TCS', 'HDFCBANK', 'INFY', 'ICICIBANK', 'ITC', 'SBIN', 'LT']) { const s = SERIES[r]; if (s && s.d) for (const o of s.d) set.add(o); }
+  return [...set].sort((a, b) => a - b);
+}
+function dailyEquity(rebs, capital, startIso, endIso, td) {
+  td = td || _btTradingDays(); const snap = o => { const i = idxLE(td, o); return i < 0 ? o : td[i]; };
+  const s2t = {}; for (const t in META) s2t[META[t].symbol || t] = t;
+  const segs = (rebs || []).map(rb => {
+    const off = snap(dayOff(rb.date)); const sh = {};
+    for (const h of rb.holds) { const tk = s2t[h.sym]; const p = markPrice(tk, off); sh[tk] = (p && p > 0) ? h.val / p : 0; }
+    return { off, cash: rb.cash || 0, shares: sh };
+  }).sort((a, b) => a.off - b.off);
+  const lo = snap(dayOff(startIso)), hi = snap(dayOff(endIso));
+  const out = []; let si = 0;
+  for (const day of td) {
+    if (day < lo || day > hi) continue;
+    if (!segs.length || day < segs[0].off) { out.push([isoOff(day), capital]); continue; }
+    while (si + 1 < segs.length && segs[si + 1].off <= day) si++;
+    const seg = segs[si]; let v = seg.cash;
+    for (const t in seg.shares) { const p = markPrice(t, day); if (p != null) v += seg.shares[t] * p; }
+    out.push([isoOff(day), v]);
+  }
+  return out;
+}
+function dailyIndex(map, capital, startIso, endIso, td) {
+  td = td || _btTradingDays(); const snap = o => { const i = idxLE(td, o); return i < 0 ? o : td[i]; };
+  const lo = snap(dayOff(startIso)), hi = snap(dayOff(endIso));
+  const win = td.filter(o => o >= lo && o <= hi); if (!win.length) return [];
+  const base = nearestIdx(map, isoOff(win[0]));
+  return win.map(o => { const v = nearestIdx(map, isoOff(o)); return [isoOff(o), (base && v) ? capital * v / base : null]; });
+}
+
 /* ---- config labels + localStorage ---- */
 // Short field labels for the filter fingerprint in strategyLabel() below — distinct from the
 // longer FIELD_LABEL used in dropdowns/tables. Keep in sync with FIELDS (each page's own copy).

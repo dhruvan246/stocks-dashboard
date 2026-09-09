@@ -121,8 +121,16 @@
     </section>
 
     <section class="card p-4 mb-4">
-      <div class="text-sm font-bold text-slate-900 mb-1">Drawdown — how far below its peak the mix was</div>
-      <div class="text-[11px] text-slate-400 mb-2">0% = at an all-time high. The deepest dip is the max drawdown. Hover for the date.</div>
+      <div class="flex items-start justify-between flex-wrap gap-2 mb-1">
+        <div>
+          <div class="text-sm font-bold text-slate-900">Drawdown — how far below its peak the mix was</div>
+          <div class="text-[11px] text-slate-400">0% = at an all-time high. The deepest dip is the max drawdown. Hover for the date.</div>
+        </div>
+        <div id="ddTog" class="inline-flex rounded-lg border border-slate-200 overflow-hidden text-xs font-semibold shrink-0" title="Monthly = month-end marks (as simulated); Daily marks every trading-day close, so it catches intramonth lows">
+          <button data-dd="month" class="px-2.5 py-1 hover:bg-slate-50">Monthly</button>
+          <button data-dd="day" class="px-2.5 py-1 border-l border-slate-200 hover:bg-slate-50">Daily</button>
+        </div>
+      </div>
       <div id="ddWrap"></div>
     </section>
 
@@ -576,11 +584,27 @@ function combine(sims, start, end){
   const benchLabel = (s0.r.bench500 && s0.r.bench500.length) ? 'Nifty 500' : 'Nifty 50';
   const benchFinal = bench ? bench[n - 1] : null;
   const years = (Date.parse(end) - Date.parse(start)) / (365.25 * 864e5);
+  // DAILY-marked mix curves (drawdown chart's Daily view): the SAME holdings, marked on every trading
+  // day instead of only month-ends. dailyEquity (backtest-engine.js) rebuilds shares from each set of
+  // rebalances, so split = Σ per-strategy daily, pool = the pooled portfolio's own rebalances daily.
+  let ddDates = null, splitDaily = null, poolDaily = null;
+  try {
+    if (typeof dailyEquity === 'function') {
+      const td = _btTradingDays();
+      const perD = sims.map(x => dailyEquity(x.r.rebs, x.alloc, start, end, td));
+      if (perD.length && perD[0].length) {
+        ddDates = perD[0].map(p => p[0]);
+        splitDaily = ddDates.map((d, i) => perD.reduce((a, pd) => a + (pd[i] ? pd[i][1] : 0), 0));
+        const pd = dailyEquity(pooled.rebs, totalCap, start, end, td);
+        poolDaily = (pd.length === ddDates.length) ? pd.map(p => p[1]) : null;
+      }
+    }
+  } catch (e) { ddDates = splitDaily = poolDaily = null; }   // daily view unavailable; monthly still works
   return {
-    start, end, dates, totalCap, years, bench, benchLabel,
+    start, end, dates, totalCap, years, bench, benchLabel, ddDates,
     benchCagr: (benchFinal && years > 0) ? (Math.pow(benchFinal / totalCap, 1 / years) - 1) * 100 : null,
-    split: statsOf(split, dates, totalCap, start, end),
-    pool: Object.assign(statsOf(pooled.equity, dates, totalCap, start, end), { rebs: pooled.rebs }),
+    split: Object.assign(statsOf(split, dates, totalCap, start, end), { combDaily: splitDaily }),
+    pool: Object.assign(statsOf(pooled.equity, dates, totalCap, start, end), { rebs: pooled.rebs, combDaily: poolDaily }),
     per: sims.map((x, i) => ({
       k: x.k, s: x.s, alloc: x.alloc, r: x.r, i,
       eq: x.r.equity.slice(0, n).map(p => p[1]),
@@ -673,9 +697,23 @@ function drawEq(M){
   hit.addEventListener('mousemove', at);
   svg.addEventListener('mouseleave', () => { tip.style.display = 'none'; gl.style.display = 'none'; S.forEach((s, si) => { $('eqd' + si).style.display = 'none'; }); });
 }
+let DD_MODE = 'month';   // 'month' = month-end marks (as simulated) · 'day' = every trading-day close
 function drawDD(M){
-  const n = M.dates.length; if (n < 2){ $('ddWrap').innerHTML = ''; return; }
-  let peak = -Infinity; const dd = M.cur.comb.map(v => { if (v > peak) peak = v; return peak > 0 ? (v / peak - 1) * 100 : 0; });
+  // toggle: reflect the active mode and (re)wire the buttons; Daily disabled if no daily curve baked
+  const tog = $('ddTog'), canDay = !!(M.ddDates && M.cur.combDaily);
+  if (tog) tog.querySelectorAll('button').forEach(b => {
+    const on = b.dataset.dd === DD_MODE, dis = b.dataset.dd === 'day' && !canDay;
+    // inline !important: the page's Tailwind-preflight `button{background:transparent}` otherwise wins
+    if (on && !dis){ b.style.setProperty('background-color','#4f46e5','important'); b.style.setProperty('color','#fff','important'); b.style.fontWeight='700'; }
+    else { b.style.removeProperty('background-color'); b.style.removeProperty('color'); b.style.fontWeight=''; }
+    b.disabled = dis; b.style.opacity = dis ? '0.4' : ''; b.style.cursor = dis ? 'not-allowed' : 'pointer';
+    b.onclick = () => { if (b.disabled || DD_MODE === b.dataset.dd) return; DD_MODE = b.dataset.dd; drawDD(M); };
+  });
+  const useDay = DD_MODE === 'day' && canDay;
+  const dates = useDay ? M.ddDates : M.dates;
+  const comb = useDay ? M.cur.combDaily : M.cur.comb;
+  const n = dates.length; if (n < 2){ $('ddWrap').innerHTML = ''; return; }
+  let peak = -Infinity; const dd = comb.map(v => { if (v > peak) peak = v; return peak > 0 ? (v / peak - 1) * 100 : 0; });
   const W = 940, H = 170, PL = 44, PR = 14, PT = 8, PB = 24;
   const mn = Math.min(-1, ...dd);
   const x = i => PL + (W - PL - PR) * i / (n - 1);
@@ -686,7 +724,7 @@ function drawDD(M){
     g += `<line x1="${PL}" y1="${yy.toFixed(1)}" x2="${W-PR}" y2="${yy.toFixed(1)}" stroke="var(--border,#f1f5f9)"/><text x="${PL-5}" y="${(yy+3).toFixed(1)}" font-size="9" fill="#94a3b8" text-anchor="end">${v.toFixed(0)}%</text>`;
   }
   const step = Math.ceil(n / 8);
-  M.dates.forEach((d, i) => { if (i % step) return; g += `<text x="${x(i).toFixed(1)}" y="${H-7}" font-size="9" fill="#94a3b8" text-anchor="middle">${d.slice(0,7)}</text>`; });
+  dates.forEach((d, i) => { if (i % step) return; g += `<text x="${x(i).toFixed(1)}" y="${H-7}" font-size="9" fill="#94a3b8" text-anchor="middle">${d.slice(0,7)}</text>`; });
   const line = dd.map((v, i) => (i ? 'L' : 'M') + x(i).toFixed(1) + ' ' + y(v).toFixed(1)).join(' ');
   const area = line + ` L ${x(n-1).toFixed(1)} ${y(0).toFixed(1)} L ${x(0).toFixed(1)} ${y(0).toFixed(1)} Z`;
   $('ddWrap').innerHTML = `<div style="position:relative"><svg id="ddsvg" viewBox="0 0 ${W} ${H}" class="w-full">${g}
@@ -703,7 +741,7 @@ function drawDD(M){
     const sx = x(i), sy = y(dd[i]);
     gl.setAttribute('x1', sx); gl.setAttribute('x2', sx); gl.style.display = '';
     dot.setAttribute('cx', sx); dot.setAttribute('cy', sy); dot.style.display = '';
-    tip.innerHTML = `<b>${M.dates[i]}</b> · ${dd[i].toFixed(1)}% below peak`;
+    tip.innerHTML = `<b>${dates[i]}</b> · ${dd[i].toFixed(1)}% below peak`;
     tip.style.display = ''; tip.style.left = (sx / W * rect.width) + 'px'; tip.style.top = (sy / H * rect.height) + 'px';
   });
   svg.addEventListener('mouseleave', () => { tip.style.display = 'none'; gl.style.display = 'none'; dot.style.display = 'none'; });
