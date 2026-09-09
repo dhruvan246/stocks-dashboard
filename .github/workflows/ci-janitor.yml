@@ -105,6 +105,7 @@ jobs:
           #   - skip runs already on attempt >= 5 (auto-rerun.yml had its go; a human is needed)
           since=$(date -u -d '12 hours ago' +%Y-%m-%dT%H:%M:%SZ)
 
+          # margin-watch is an INTENTIONAL-failure alarm (exit 1 = the alert e-mail): excluded below and must NEVER be re-run — a re-run only multiplies the alert.
           red=$(gh run list --repo "$REPO" --limit 200 \
                   --json name,conclusion,status,createdAt,databaseId \
                   --jq "
@@ -117,7 +118,7 @@ jobs:
                         okAt:   ([.[] | select(.conclusion==\"success\")] | if length>0 then (max_by(.createdAt).createdAt) else null end)
                       })
                     | map(select(.fail != null and .active == 0 and (.okAt == null or .okAt < .fail.createdAt)))
-                    | map(select(.wf != \"Auto-rerun failed workflows\" and .wf != \"CI janitor (unwedge Pages + resweep stragglers)\" and .wf != \"Deploy site to Pages\"))
+                    | map(select(.wf != \"Auto-rerun failed workflows\" and .wf != \"CI janitor (unwedge Pages + resweep stragglers)\" and .wf != \"Deploy site to Pages\" and .wf != \"margin-watch\"))
                     | .[] | \"\(.fail.databaseId)\t\(.wf)\"
                   ")
 
