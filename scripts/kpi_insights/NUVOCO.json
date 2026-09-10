@@ -71,6 +71,13 @@
    "title": "Q1 FY25 Investor Presentation",
    "read": "2026-09-10",
    "by": "claude-routine"
+  },
+  "37803676-2e10-4184-872f-11cc51fcb1f9.pdf": {
+   "kind": "ar",
+   "date": "2025-06-30",
+   "title": "Integrated Annual Report FY25",
+   "read": "2026-09-10",
+   "by": "claude-routine"
   }
  },
  "metrics": [
@@ -371,6 +378,7 @@
    "unit": "MMTPA",
    "kind": "level",
    "y": {
+    "20250331": 25.0,
     "20260331": 27.0
    },
    "q": {
@@ -416,6 +424,12 @@
      5,
      "Cement capacity - Current Capacity",
      "25.0"
+    ],
+    "y:20250331": [
+     "37803676-2e10-4184-872f-11cc51fcb1f9.pdf",
+     59,
+     "robust installed cement capacity",
+     "25"
     ]
    }
   },
@@ -632,6 +646,99 @@
    }
   },
   {
+   "name": "Cement Production",
+   "unit": "KT",
+   "kind": "flow",
+   "y": {
+    "20240331": 18841.0,
+    "20250331": 19491.0,
+    "20260331": 20221.0
+   },
+   "q": {},
+   "src": {
+    "y:20250331": [
+     "37803676-2e10-4184-872f-11cc51fcb1f9.pdf",
+     59,
+     "Cement of ... was produced (Consolidated)",
+     "19,491"
+    ],
+    "y:20260331": [
+     "c7539637-3a0c-40db-9eca-735e2dec23d7.pdf",
+     55,
+     "Cement of ... was produced (Consolidated)",
+     "20,221"
+    ],
+    "y:20240331": [
+     "37803676-2e10-4184-872f-11cc51fcb1f9.pdf",
+     59,
+     "Cement produced (Consolidated, previous year)",
+     "18,841"
+    ]
+   }
+  },
+  {
+   "name": "Cement Sales Volume",
+   "unit": "KT",
+   "kind": "flow",
+   "y": {
+    "20240331": 18773.0,
+    "20250331": 19411.0,
+    "20260331": 20379.0
+   },
+   "q": {},
+   "src": {
+    "y:20250331": [
+     "37803676-2e10-4184-872f-11cc51fcb1f9.pdf",
+     59,
+     "Cement sales volume (Consolidated)",
+     "19,411"
+    ],
+    "y:20260331": [
+     "c7539637-3a0c-40db-9eca-735e2dec23d7.pdf",
+     55,
+     "Cement sales volume (Consolidated)",
+     "20,379"
+    ],
+    "y:20240331": [
+     "37803676-2e10-4184-872f-11cc51fcb1f9.pdf",
+     59,
+     "Cement sales volume (Consolidated, previous year)",
+     "18,773"
+    ]
+   }
+  },
+  {
+   "name": "Clinker Production",
+   "unit": "KT",
+   "kind": "flow",
+   "y": {
+    "20240331": 10477.0,
+    "20250331": 11173.0,
+    "20260331": 11848.0
+   },
+   "q": {},
+   "src": {
+    "y:20250331": [
+     "37803676-2e10-4184-872f-11cc51fcb1f9.pdf",
+     59,
+     "Clinker production increased to (Consolidated)",
+     "11,173"
+    ],
+    "y:20260331": [
+     "c7539637-3a0c-40db-9eca-735e2dec23d7.pdf",
+     55,
+     "Clinker production increased to (Consolidated)",
+     "11,848"
+    ],
+    "y:20240331": [
+     "37803676-2e10-4184-872f-11cc51fcb1f9.pdf",
+     59,
+     "Clinker production (Consolidated, previous year)",
+     "10,477"
+    ]
+   }
+  },
+  {
    "name": "Specific CO2 Emissions",
    "unit": "kg/t",
    "kind": "flow",
@@ -728,82 +835,11 @@
    }
   },
   {
-   "name": "Cement Production",
-   "unit": "KT",
-   "kind": "flow",
-   "y": {
-    "20250331": 19491.0,
-    "20260331": 20221.0
-   },
-   "q": {},
-   "src": {
-    "y:20250331": [
-     "c7539637-3a0c-40db-9eca-735e2dec23d7.pdf",
-     55,
-     "Cement produced (Consolidated, previous year)",
-     "19,491"
-    ],
-    "y:20260331": [
-     "c7539637-3a0c-40db-9eca-735e2dec23d7.pdf",
-     55,
-     "Cement of ... was produced (Consolidated)",
-     "20,221"
-    ]
-   }
-  },
-  {
-   "name": "Cement Sales Volume",
-   "unit": "KT",
-   "kind": "flow",
-   "y": {
-    "20250331": 19411.0,
-    "20260331": 20379.0
-   },
-   "q": {},
-   "src": {
-    "y:20250331": [
-     "c7539637-3a0c-40db-9eca-735e2dec23d7.pdf",
-     55,
-     "Cement sales volume (Consolidated, previous year)",
-     "19,411"
-    ],
-    "y:20260331": [
-     "c7539637-3a0c-40db-9eca-735e2dec23d7.pdf",
-     55,
-     "Cement sales volume (Consolidated)",
-     "20,379"
-    ]
-   }
-  },
-  {
-   "name": "Clinker Production",
-   "unit": "KT",
-   "kind": "flow",
-   "y": {
-    "20250331": 11173.0,
-    "20260331": 11848.0
-   },
-   "q": {},
-   "src": {
-    "y:20250331": [
-     "c7539637-3a0c-40db-9eca-735e2dec23d7.pdf",
-     55,
-     "Clinker production (Consolidated, previous year)",
-     "11,173"
-    ],
-    "y:20260331": [
-     "c7539637-3a0c-40db-9eca-735e2dec23d7.pdf",
-     55,
-     "Clinker production increased to (Consolidated)",
-     "11,848"
-    ]
-   }
-  },
-  {
    "name": "Number of Cement Plants",
    "unit": "count",
    "kind": "level",
    "y": {
+    "20250331": 11.0,
     "20260331": 13.0
    },
    "q": {},
@@ -813,6 +849,60 @@
      55,
      "Nuvoco operates ... cement plants across India",
      "13"
+    ],
+    "y:20250331": [
+     "37803676-2e10-4184-872f-11cc51fcb1f9.pdf",
+     59,
+     "Nuvoco operates ... (eleven) cement plants across India",
+     "11"
+    ]
+   }
+  },
+  {
+   "name": "Solar Power Capacity",
+   "unit": "MWp",
+   "kind": "level",
+   "y": {
+    "20250331": 5.5,
+    "20260331": 5.5
+   },
+   "q": {},
+   "src": {
+    "y:20260331": [
+     "c7539637-3a0c-40db-9eca-735e2dec23d7.pdf",
+     55,
+     "Solar Power Plants generating",
+     "5.5"
+    ],
+    "y:20250331": [
+     "37803676-2e10-4184-872f-11cc51fcb1f9.pdf",
+     59,
+     "Solar Power Plants generating",
+     "5.5"
+    ]
+   }
+  },
+  {
+   "name": "Waste Heat Recovery Power Capacity",
+   "unit": "MW",
+   "kind": "level",
+   "y": {
+    "20250331": 49.0,
+    "20260331": 44.7
+   },
+   "q": {},
+   "src": {
+    "y:20260331": [
+     "c7539637-3a0c-40db-9eca-735e2dec23d7.pdf",
+     55,
+     "Waste Heat Recovery Systems (WHRS)",
+     "44.7"
+    ],
+    "y:20250331": [
+     "37803676-2e10-4184-872f-11cc51fcb1f9.pdf",
+     59,
+     "Waste Heat Recovery Systems (WHRS)",
+     "49"
     ]
    }
   },
@@ -830,40 +920,6 @@
      11,
      "generated ... tonnes of plastic credits",
      "42,545"
-    ]
-   }
-  },
-  {
-   "name": "Solar Power Capacity",
-   "unit": "MWp",
-   "kind": "level",
-   "y": {
-    "20260331": 5.5
-   },
-   "q": {},
-   "src": {
-    "y:20260331": [
-     "c7539637-3a0c-40db-9eca-735e2dec23d7.pdf",
-     55,
-     "Solar Power Plants generating",
-     "5.5"
-    ]
-   }
-  },
-  {
-   "name": "Waste Heat Recovery Power Capacity",
-   "unit": "MW",
-   "kind": "level",
-   "y": {
-    "20260331": 44.7
-   },
-   "q": {},
-   "src": {
-    "y:20260331": [
-     "c7539637-3a0c-40db-9eca-735e2dec23d7.pdf",
-     55,
-     "Waste Heat Recovery Systems (WHRS)",
-     "44.7"
     ]
    }
   }
