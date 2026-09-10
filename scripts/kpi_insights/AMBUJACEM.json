@@ -57,6 +57,13 @@
    "title": "Q1 & FY26 Investor Presentation",
    "read": "2026-09-10",
    "by": "claude-routine"
+  },
+  "4c9bf74f-931a-4ea2-8f9c-987f04673e11.pdf": {
+   "kind": "ar",
+   "date": "2025-05-31",
+   "title": "Integrated Annual Report FY 2024-25",
+   "read": "2026-09-10",
+   "by": "claude-routine"
   }
  },
  "metrics": [
@@ -65,6 +72,7 @@
    "unit": "MnT",
    "kind": "flow",
    "y": {
+    "20240331": 58.0,
     "20250331": 63.5,
     "20260331": 73.7
    },
@@ -138,6 +146,12 @@
      4,
      "Volume Cement1 - Ambuja Consolidated - Jun'24",
      "15.3"
+    ],
+    "y:20240331": [
+     "4c9bf74f-931a-4ea2-8f9c-987f04673e11.pdf",
+     13,
+     "Cement Sales Volume (MMT) - 2023-24",
+     "58"
     ]
    }
   },
@@ -212,6 +226,73 @@
      4,
      "EBITDA (PMT Cement) - Ambuja Consolidated - Jun'24",
      "835"
+    ]
+   }
+  },
+  {
+   "name": "Thermal Substitution Rate",
+   "unit": "%",
+   "kind": "level",
+   "y": {
+    "20240331": 7.76,
+    "20250331": 9.0,
+    "20260331": 5.7
+   },
+   "q": {
+    "20250630": 6.4,
+    "20250930": 6.0,
+    "20251231": 6.6,
+    "20260331": 7.3,
+    "20260630": 7.1
+   },
+   "src": {
+    "q:20260630": [
+     "21bda367-498d-4750-9b3e-fd8a70a5c4fa.pdf",
+     9,
+     "Thermal Substitution Rate, For the Quarter Ended June 30, 2026",
+     "7.1"
+    ],
+    "y:20260331": [
+     "fac93d55-1b5c-4ea4-a782-24f51e17ffe4.pdf",
+     51,
+     "Thermal Substitution Rate (TSR) Achieved (Manufacturing Highlights of FY 2025-26",
+     "5.7"
+    ],
+    "q:20260331": [
+     "f15cd7d8-3f63-4f88-88d2-54b66dedee73.pdf",
+     16,
+     "Thermal Substitution Rate",
+     "7.3"
+    ],
+    "q:20251231": [
+     "8ebc4518-7a00-46ed-890b-9e822426f6a5.pdf",
+     12,
+     "Thermal Substitution Rate",
+     "6.6"
+    ],
+    "q:20250930": [
+     "9ba858fb-70aa-4b03-9942-721f0a91860e.pdf",
+     15,
+     "Thermal Substitution Rate",
+     "6.0"
+    ],
+    "q:20250630": [
+     "42b6ed22-f16c-4685-acf1-b1e1e57ec581.pdf",
+     15,
+     "Thermal Substitution Rate",
+     "6.4"
+    ],
+    "y:20240331": [
+     "4c9bf74f-931a-4ea2-8f9c-987f04673e11.pdf",
+     48,
+     "Thermal Substitution Rate (%) - 2023-24",
+     "7.76"
+    ],
+    "y:20250331": [
+     "4c9bf74f-931a-4ea2-8f9c-987f04673e11.pdf",
+     48,
+     "Thermal Substitution Rate (%) - 2024-25",
+     "9.0"
     ]
    }
   },
@@ -317,59 +398,6 @@
      15,
      "Clinker factor",
      "67.0"
-    ]
-   }
-  },
-  {
-   "name": "Thermal Substitution Rate",
-   "unit": "%",
-   "kind": "level",
-   "y": {
-    "20260331": 5.7
-   },
-   "q": {
-    "20250630": 6.4,
-    "20250930": 6.0,
-    "20251231": 6.6,
-    "20260331": 7.3,
-    "20260630": 7.1
-   },
-   "src": {
-    "q:20260630": [
-     "21bda367-498d-4750-9b3e-fd8a70a5c4fa.pdf",
-     9,
-     "Thermal Substitution Rate, For the Quarter Ended June 30, 2026",
-     "7.1"
-    ],
-    "y:20260331": [
-     "fac93d55-1b5c-4ea4-a782-24f51e17ffe4.pdf",
-     51,
-     "Thermal Substitution Rate (TSR) Achieved (Manufacturing Highlights of FY 2025-26",
-     "5.7"
-    ],
-    "q:20260331": [
-     "f15cd7d8-3f63-4f88-88d2-54b66dedee73.pdf",
-     16,
-     "Thermal Substitution Rate",
-     "7.3"
-    ],
-    "q:20251231": [
-     "8ebc4518-7a00-46ed-890b-9e822426f6a5.pdf",
-     12,
-     "Thermal Substitution Rate",
-     "6.6"
-    ],
-    "q:20250930": [
-     "9ba858fb-70aa-4b03-9942-721f0a91860e.pdf",
-     15,
-     "Thermal Substitution Rate",
-     "6.0"
-    ],
-    "q:20250630": [
-     "42b6ed22-f16c-4685-acf1-b1e1e57ec581.pdf",
-     15,
-     "Thermal Substitution Rate",
-     "6.4"
     ]
    }
   },
@@ -867,6 +895,68 @@
    }
   },
   {
+   "name": "Cement Production",
+   "unit": "MMT",
+   "kind": "flow",
+   "y": {
+    "20240331": 57.4,
+    "20250331": 61.6,
+    "20260331": 37.37
+   },
+   "q": {},
+   "src": {
+    "y:20260331": [
+     "fac93d55-1b5c-4ea4-a782-24f51e17ffe4.pdf",
+     51,
+     "Cement Production (Manufacturing Highlights of FY 2025-26, Standalone)",
+     "37.37"
+    ],
+    "y:20240331": [
+     "4c9bf74f-931a-4ea2-8f9c-987f04673e11.pdf",
+     13,
+     "Cement Production Volume (MMT) - 2023-24",
+     "57.4"
+    ],
+    "y:20250331": [
+     "4c9bf74f-931a-4ea2-8f9c-987f04673e11.pdf",
+     13,
+     "Cement Production Volume (MMT) - 2024-25",
+     "61.6"
+    ]
+   }
+  },
+  {
+   "name": "Clinker Production",
+   "unit": "MMT",
+   "kind": "flow",
+   "y": {
+    "20240331": 17.5,
+    "20250331": 17.9,
+    "20260331": 27.42
+   },
+   "q": {},
+   "src": {
+    "y:20260331": [
+     "fac93d55-1b5c-4ea4-a782-24f51e17ffe4.pdf",
+     51,
+     "Clinker Production (Manufacturing Highlights of FY 2025-26, Standalone)",
+     "27.42"
+    ],
+    "y:20240331": [
+     "4c9bf74f-931a-4ea2-8f9c-987f04673e11.pdf",
+     48,
+     "Clinker Production Volume (MMT) - 2023-24",
+     "17.5"
+    ],
+    "y:20250331": [
+     "4c9bf74f-931a-4ea2-8f9c-987f04673e11.pdf",
+     48,
+     "Clinker Production Volume (MMT) - 2024-25",
+     "17.9"
+    ]
+   }
+  },
+  {
    "name": "WHRS Generation Capacity",
    "unit": "MW",
    "kind": "level",
@@ -919,40 +1009,6 @@
      5,
      "POWER AND FUEL (₹/ton) - Jun-25",
      "1,367"
-    ]
-   }
-  },
-  {
-   "name": "Cement Production",
-   "unit": "MMT",
-   "kind": "flow",
-   "y": {
-    "20260331": 37.37
-   },
-   "q": {},
-   "src": {
-    "y:20260331": [
-     "fac93d55-1b5c-4ea4-a782-24f51e17ffe4.pdf",
-     51,
-     "Cement Production (Manufacturing Highlights of FY 2025-26, Standalone)",
-     "37.37"
-    ]
-   }
-  },
-  {
-   "name": "Clinker Production",
-   "unit": "MMT",
-   "kind": "flow",
-   "y": {
-    "20260331": 27.42
-   },
-   "q": {},
-   "src": {
-    "y:20260331": [
-     "fac93d55-1b5c-4ea4-a782-24f51e17ffe4.pdf",
-     51,
-     "Clinker Production (Manufacturing Highlights of FY 2025-26, Standalone)",
-     "27.42"
     ]
    }
   },
