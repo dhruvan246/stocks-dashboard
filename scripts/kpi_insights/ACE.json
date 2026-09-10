@@ -36,6 +36,20 @@
    "title": "Annual Report FY 2025-26",
    "read": "2026-09-10",
    "by": "claude-routine"
+  },
+  "7ae31eeb-6b66-4661-bc7d-b1b9cb3ef45f.pdf": {
+   "kind": "res",
+   "date": "2026-07-20",
+   "title": "Unaudited Financial Results Q1 FY 2026-27 (quarter ended 30 June 2026)",
+   "read": "2026-09-10",
+   "by": "claude-routine"
+  },
+  "d7aad2a1-6f3e-42a1-b629-61d3b28485c7.pdf": {
+   "kind": "ip",
+   "date": "2025-11-17",
+   "title": "Corporate Presentation - November 2025 (H1 FY26)",
+   "read": "2026-09-10",
+   "by": "claude-routine"
   }
  },
  "metrics": [
@@ -216,6 +230,58 @@
    }
   },
   {
+   "name": "Total Sales Volume (Consolidated)",
+   "unit": "units",
+   "kind": "flow",
+   "y": {
+    "20200331": 9493.0,
+    "20210331": 10482.0,
+    "20220331": 11364.0,
+    "20230331": 12310.0,
+    "20240331": 14589.0,
+    "20250331": 16154.0
+   },
+   "q": {},
+   "src": {
+    "y:20200331": [
+     "d7aad2a1-6f3e-42a1-b629-61d3b28485c7.pdf",
+     31,
+     "Volume Growth - FY-20",
+     "9,493"
+    ],
+    "y:20210331": [
+     "d7aad2a1-6f3e-42a1-b629-61d3b28485c7.pdf",
+     31,
+     "Volume Growth - FY-21",
+     "10,482"
+    ],
+    "y:20220331": [
+     "d7aad2a1-6f3e-42a1-b629-61d3b28485c7.pdf",
+     31,
+     "Volume Growth - FY-22",
+     "11,364"
+    ],
+    "y:20230331": [
+     "d7aad2a1-6f3e-42a1-b629-61d3b28485c7.pdf",
+     31,
+     "Volume Growth - FY-23",
+     "12,310"
+    ],
+    "y:20240331": [
+     "d7aad2a1-6f3e-42a1-b629-61d3b28485c7.pdf",
+     31,
+     "Volume Growth - FY-24",
+     "14,589"
+    ],
+    "y:20250331": [
+     "d7aad2a1-6f3e-42a1-b629-61d3b28485c7.pdf",
+     31,
+     "Volume Growth - FY-25",
+     "16,154"
+    ]
+   }
+  },
+  {
    "name": "Dealer/Distributor Count",
    "unit": "count",
    "kind": "level",
@@ -236,6 +302,131 @@
      65,
      "Number of dealers / distributors to whom sales are made",
      "455"
+    ]
+   }
+  },
+  {
+   "name": "Export Countries",
+   "unit": "count",
+   "kind": "level",
+   "y": {
+    "20260331": 37.0
+   },
+   "q": {
+    "20250930": 37.0
+   },
+   "src": {
+    "y:20260331": [
+     "58b2a061-64d4-49a1-b340-e5f3f60340d2.pdf",
+     4,
+     "exports to over 37 countries (doc period)",
+     "37"
+    ],
+    "q:20250930": [
+     "d7aad2a1-6f3e-42a1-b629-61d3b28485c7.pdf",
+     6,
+     "exports to over 37 countries (doc period)",
+     "37"
+    ]
+   }
+  },
+  {
+   "name": "Market Share - Mobile Cranes",
+   "unit": "%",
+   "kind": "level",
+   "y": {
+    "20260331": 63.0
+   },
+   "q": {
+    "20250930": 63.0
+   },
+   "src": {
+    "y:20260331": [
+     "58b2a061-64d4-49a1-b340-e5f3f60340d2.pdf",
+     4,
+     "World's largest Pick & Carry cranes manufacturer with over 63% market share in M",
+     "63"
+    ],
+    "q:20250930": [
+     "d7aad2a1-6f3e-42a1-b629-61d3b28485c7.pdf",
+     6,
+     "over 63% market share in Mobile cranes segment (doc period)",
+     "63"
+    ]
+   }
+  },
+  {
+   "name": "Market Share - Tower Cranes",
+   "unit": "%",
+   "kind": "level",
+   "y": {
+    "20260331": 60.0
+   },
+   "q": {
+    "20250930": 60.0
+   },
+   "src": {
+    "y:20260331": [
+     "58b2a061-64d4-49a1-b340-e5f3f60340d2.pdf",
+     4,
+     "market share of around 60% in Tower Cranes segment domestically (doc period)",
+     "60"
+    ],
+    "q:20250930": [
+     "d7aad2a1-6f3e-42a1-b629-61d3b28485c7.pdf",
+     6,
+     "market share of around 60% in Tower Cranes segment domestically (doc period)",
+     "60"
+    ]
+   }
+  },
+  {
+   "name": "Regional Offices Count",
+   "unit": "count",
+   "kind": "level",
+   "y": {
+    "20260331": 13.0
+   },
+   "q": {
+    "20250930": 13.0
+   },
+   "src": {
+    "y:20260331": [
+     "58b2a061-64d4-49a1-b340-e5f3f60340d2.pdf",
+     4,
+     "supported by 13 regional offices in India (doc period)",
+     "13"
+    ],
+    "q:20250930": [
+     "d7aad2a1-6f3e-42a1-b629-61d3b28485c7.pdf",
+     6,
+     "supported by 13 regional offices in India (doc period)",
+     "13"
+    ]
+   }
+  },
+  {
+   "name": "Sales & Service Locations",
+   "unit": "count",
+   "kind": "level",
+   "y": {
+    "20260331": 125.0
+   },
+   "q": {
+    "20250930": 125.0
+   },
+   "src": {
+    "y:20260331": [
+     "58b2a061-64d4-49a1-b340-e5f3f60340d2.pdf",
+     4,
+     "over 125+ locations (doc period)",
+     "125"
+    ],
+    "q:20250930": [
+     "d7aad2a1-6f3e-42a1-b629-61d3b28485c7.pdf",
+     6,
+     "one of the widest Sales and Service network, with over 125+ locations (doc perio",
+     "125"
     ]
    }
   },
@@ -264,53 +455,138 @@
    }
   },
   {
-   "name": "Export Countries",
-   "unit": "count",
+   "name": "Installed Capacity - Agriculture Equipment",
+   "unit": "units",
    "kind": "level",
-   "y": {
-    "20260331": 37.0
+   "y": {},
+   "q": {
+    "20250930": 9000.0
    },
-   "q": {},
    "src": {
-    "y:20260331": [
-     "58b2a061-64d4-49a1-b340-e5f3f60340d2.pdf",
-     4,
-     "exports to over 37 countries (doc period)",
-     "37"
+    "q:20250930": [
+     "d7aad2a1-6f3e-42a1-b629-61d3b28485c7.pdf",
+     10,
+     "Agriculture Equipment - Total Capacity (Units) (doc period)",
+     "9,000"
     ]
    }
   },
   {
-   "name": "Market Share - Mobile Cranes",
-   "unit": "%",
+   "name": "Installed Capacity - Construction Equipment",
+   "unit": "units",
    "kind": "level",
-   "y": {
-    "20260331": 63.0
+   "y": {},
+   "q": {
+    "20250930": 1800.0
    },
-   "q": {},
    "src": {
-    "y:20260331": [
-     "58b2a061-64d4-49a1-b340-e5f3f60340d2.pdf",
-     4,
-     "World's largest Pick & Carry cranes manufacturer with over 63% market share in M",
-     "63"
+    "q:20250930": [
+     "d7aad2a1-6f3e-42a1-b629-61d3b28485c7.pdf",
+     10,
+     "Construction Equipment - Total Capacity (Units) (doc period)",
+     "1,800"
     ]
    }
   },
   {
-   "name": "Market Share - Tower Cranes",
+   "name": "Installed Capacity - Cranes",
+   "unit": "units",
+   "kind": "level",
+   "y": {},
+   "q": {
+    "20250930": 13200.0
+   },
+   "src": {
+    "q:20250930": [
+     "d7aad2a1-6f3e-42a1-b629-61d3b28485c7.pdf",
+     10,
+     "Cranes - Total Capacity (Units) (doc period)",
+     "13,200"
+    ]
+   }
+  },
+  {
+   "name": "Installed Capacity - Material Handling Equipment",
+   "unit": "units",
+   "kind": "level",
+   "y": {},
+   "q": {
+    "20250930": 2700.0
+   },
+   "src": {
+    "q:20250930": [
+     "d7aad2a1-6f3e-42a1-b629-61d3b28485c7.pdf",
+     10,
+     "Material Handling Equipment - Total Capacity (Units) (doc period)",
+     "2,700"
+    ]
+   }
+  },
+  {
+   "name": "Installed Capacity - Total",
+   "unit": "units",
+   "kind": "level",
+   "y": {},
+   "q": {
+    "20250930": 26700.0
+   },
+   "src": {
+    "q:20250930": [
+     "d7aad2a1-6f3e-42a1-b629-61d3b28485c7.pdf",
+     10,
+     "Total installed Capacity (doc period)",
+     "26,700"
+    ]
+   }
+  },
+  {
+   "name": "Manufacturing Land - Total",
+   "unit": "acres",
+   "kind": "level",
+   "y": {},
+   "q": {
+    "20250930": 123.0
+   },
+   "src": {
+    "q:20250930": [
+     "d7aad2a1-6f3e-42a1-b629-61d3b28485c7.pdf",
+     10,
+     "Total Area: ~123 acres (doc period)",
+     "123"
+    ]
+   }
+  },
+  {
+   "name": "Manufacturing Land - Utilized",
+   "unit": "acres",
+   "kind": "level",
+   "y": {},
+   "q": {
+    "20250930": 90.0
+   },
+   "src": {
+    "q:20250930": [
+     "d7aad2a1-6f3e-42a1-b629-61d3b28485c7.pdf",
+     10,
+     "Utilized Area: ~90 acres (doc period)",
+     "90"
+    ]
+   }
+  },
+  {
+   "name": "Market Share - Forklifts",
    "unit": "%",
    "kind": "level",
-   "y": {
-    "20260331": 60.0
+   "y": {},
+   "q": {
+    "20250930": 19.0
    },
-   "q": {},
    "src": {
-    "y:20260331": [
-     "58b2a061-64d4-49a1-b340-e5f3f60340d2.pdf",
-     4,
-     "market share of around 60% in Tower Cranes segment domestically (doc period)",
-     "60"
+    "q:20250930": [
+     "d7aad2a1-6f3e-42a1-b629-61d3b28485c7.pdf",
+     38,
+     "India's leading Forklift Manufacturer ... ~19% market share (doc period)",
+     "19"
     ]
    }
   },
@@ -332,36 +608,19 @@
    }
   },
   {
-   "name": "Regional Offices Count",
+   "name": "Tractor Dealer Count",
    "unit": "count",
    "kind": "level",
-   "y": {
-    "20260331": 13.0
+   "y": {},
+   "q": {
+    "20250930": 200.0
    },
-   "q": {},
    "src": {
-    "y:20260331": [
-     "58b2a061-64d4-49a1-b340-e5f3f60340d2.pdf",
-     4,
-     "supported by 13 regional offices in India (doc period)",
-     "13"
-    ]
-   }
-  },
-  {
-   "name": "Sales & Service Locations",
-   "unit": "count",
-   "kind": "level",
-   "y": {
-    "20260331": 125.0
-   },
-   "q": {},
-   "src": {
-    "y:20260331": [
-     "58b2a061-64d4-49a1-b340-e5f3f60340d2.pdf",
-     4,
-     "over 125+ locations (doc period)",
-     "125"
+    "q:20250930": [
+     "d7aad2a1-6f3e-42a1-b629-61d3b28485c7.pdf",
+     40,
+     "Around 200 dealers for tractor across India (doc period)",
+     "200"
     ]
    }
   }
