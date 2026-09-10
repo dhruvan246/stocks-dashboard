@@ -43,6 +43,13 @@
    "title": "Investor Conference Presentation - H1 FY26 / FY25 Business Performance",
    "read": "2026-09-10",
    "by": "claude-routine"
+  },
+  "e780d6bd-d05b-4198-9154-dd666984e7f4.pdf": {
+   "kind": "ip",
+   "date": "2025-11-06",
+   "title": "Analyst Call Presentation - H1 FY26 (distribution network focus)",
+   "read": "2026-09-10",
+   "by": "claude-routine"
   }
  },
  "metrics": [
@@ -148,6 +155,59 @@
      36,
      "Indian Embedded Value (IEV) - Sep-25",
      "8,13,230"
+    ]
+   }
+  },
+  {
+   "name": "Number of Agents",
+   "unit": "lacs",
+   "kind": "level",
+   "y": {
+    "20200331": 12.09,
+    "20230331": 13.47,
+    "20240331": 14.15,
+    "20250331": 14.87,
+    "20260331": 14.57
+   },
+   "q": {
+    "20250930": 14.85
+   },
+   "src": {
+    "y:20200331": [
+     "e780d6bd-d05b-4198-9154-dd666984e7f4.pdf",
+     23,
+     "LIC - # Agents in lacs",
+     "12.09"
+    ],
+    "y:20230331": [
+     "e780d6bd-d05b-4198-9154-dd666984e7f4.pdf",
+     23,
+     "LIC - # Agents in lacs",
+     "13.47"
+    ],
+    "y:20240331": [
+     "e780d6bd-d05b-4198-9154-dd666984e7f4.pdf",
+     23,
+     "LIC - # Agents in lacs",
+     "14.15"
+    ],
+    "y:20250331": [
+     "e780d6bd-d05b-4198-9154-dd666984e7f4.pdf",
+     23,
+     "LIC - # Agents in lacs",
+     "14.87"
+    ],
+    "y:20260331": [
+     "96dfcb3c-e7d5-4df8-ba27-64f4525f9659.pdf",
+     26,
+     "LIC agents (# Agents in lacs)",
+     "14.57"
+    ],
+    "q:20250930": [
+     "e780d6bd-d05b-4198-9154-dd666984e7f4.pdf",
+     23,
+     "LIC - # Agents in lacs (H1FY26)",
+     "14.85"
     ]
    }
   },
@@ -534,51 +594,6 @@
    }
   },
   {
-   "name": "Number of Agents",
-   "unit": "lacs",
-   "kind": "level",
-   "y": {
-    "20200331": 12.09,
-    "20230331": 13.47,
-    "20240331": 14.15,
-    "20250331": 14.87,
-    "20260331": 14.57
-   },
-   "q": {},
-   "src": {
-    "y:20200331": [
-     "96dfcb3c-e7d5-4df8-ba27-64f4525f9659.pdf",
-     26,
-     "LIC agents (# Agents in lacs)",
-     "12.09"
-    ],
-    "y:20230331": [
-     "96dfcb3c-e7d5-4df8-ba27-64f4525f9659.pdf",
-     26,
-     "LIC agents (# Agents in lacs)",
-     "13.47"
-    ],
-    "y:20240331": [
-     "96dfcb3c-e7d5-4df8-ba27-64f4525f9659.pdf",
-     26,
-     "LIC agents (# Agents in lacs)",
-     "14.15"
-    ],
-    "y:20250331": [
-     "96dfcb3c-e7d5-4df8-ba27-64f4525f9659.pdf",
-     26,
-     "LIC agents (# Agents in lacs)",
-     "14.87"
-    ],
-    "y:20260331": [
-     "96dfcb3c-e7d5-4df8-ba27-64f4525f9659.pdf",
-     26,
-     "LIC agents (# Agents in lacs)",
-     "14.57"
-    ]
-   }
-  },
-  {
    "name": "Number of Policies Sold (Individual)",
    "unit": "count",
    "kind": "flow",
@@ -910,6 +925,40 @@
    }
   },
   {
+   "name": "Branch Offices",
+   "unit": "count",
+   "kind": "level",
+   "y": {
+    "20260331": 2048.0
+   },
+   "q": {
+    "20250930": 2130.0
+   },
+   "src": {
+    "y:20260331": [
+     "c9b2d5c9-5973-4721-8949-92af63cdd933.pdf",
+     257,
+     "LIC has strong presence with 2048 Branch offices",
+     "2048"
+    ],
+    "q:20250930": [
+     "e780d6bd-d05b-4198-9154-dd666984e7f4.pdf",
+     27,
+     "2,130 Branch Office (doc period, as on 30.09.2025)",
+     "2,130"
+    ]
+   },
+   "restated": [
+    [
+     "y:20260331",
+     "96dfcb3c-e7d5-4df8-ba27-64f4525f9659.pdf",
+     2130.0,
+     "bbfc5caf-c294-4e5a-b33d-7cc543f0479d.pdf",
+     2048.0
+    ]
+   ]
+  },
+  {
    "name": "Group New Business Premium",
    "unit": "INR Cr",
    "kind": "flow",
@@ -1006,30 +1055,21 @@
    }
   },
   {
-   "name": "Branch Offices",
+   "name": "Divisional Offices",
    "unit": "count",
    "kind": "level",
-   "y": {
-    "20260331": 2048.0
+   "y": {},
+   "q": {
+    "20250930": 113.0
    },
-   "q": {},
    "src": {
-    "y:20260331": [
-     "c9b2d5c9-5973-4721-8949-92af63cdd933.pdf",
-     257,
-     "LIC has strong presence with 2048 Branch offices",
-     "2048"
+    "q:20250930": [
+     "e780d6bd-d05b-4198-9154-dd666984e7f4.pdf",
+     27,
+     "113 Divisional Office (doc period, as on 30.09.2025)",
+     "113"
     ]
-   },
-   "restated": [
-    [
-     "y:20260331",
-     "96dfcb3c-e7d5-4df8-ba27-64f4525f9659.pdf",
-     2130.0,
-     "bbfc5caf-c294-4e5a-b33d-7cc543f0479d.pdf",
-     2048.0
-    ]
-   ]
+   }
   },
   {
    "name": "Individual New Business Sum Assured",
