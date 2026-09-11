@@ -108,6 +108,7 @@
     </div>
     <div id="chartWrap"><div id="chart"></div><div id="tip"></div></div>
     <div id="evLegend" class="flex flex-wrap items-center gap-1.5 mt-2 text-[11px]"></div>
+    <div id="liveNote" class="mt-2 text-[11px] text-slate-500 hidden"></div>
   </div>
 
   <div class="grid lg:grid-cols-2 gap-4">
@@ -118,7 +119,7 @@
     </div>
     <!-- technicals -->
     <div class="card p-4">
-      <div class="text-sm font-semibold text-slate-700 mb-2">Technicals <span class="text-slate-400 font-normal">— as of latest close</span></div>
+      <div class="text-sm font-semibold text-slate-700 mb-2">Technicals <span id="techSub" class="text-slate-400 font-normal">— as of latest close</span></div>
       <div id="tech" class="grid grid-cols-2 gap-x-4 gap-y-1.5 text-sm"></div>
       <div id="delivSpark" class="mt-3"></div>
     </div>
@@ -239,6 +240,10 @@ let TKR=null, CHART=null, RANGE='Max';
    fell back to loading the whole-market engine, the old ~137 MB path — see boot(). FIN_STATE tracks
    the financials file so the quarterly table can say "loading" instead of "nothing on file". */
 let SLICE=null, FIN_STATE='pending';
+/* Provisional LIVE bar state — see the live-price block at the bottom of this file. LIVE_OFF is
+   the day offset of the spliced bar (null = none on the series); LIVE_END0 / LIVE_RAW0 hold the
+   pre-splice SF_END_OFF and META.raw so clearLiveBar() can put the series back exactly as baked. */
+let LIVE_OFF=null, LIVE_END0=null, LIVE_RAW0=null, LIVE_TURN_D=null;
 
 function fail(msg){ $('ov').style.display='none'; $('sSym').textContent=SYM||'?'; $('sName').innerHTML=`<span class="neg">${esc(msg)}</span>`; const sh=$('shp'); if(sh&&/Loading/.test(sh.textContent)) sh.textContent='—'; }
 // Full landing when the page is opened with no ?sym= at all (fail() is for real errors).
@@ -577,7 +582,10 @@ function render(){
   if(!m.alive) $('sDead').classList.remove('hidden');
   $('sPrice').textContent='₹'+(rawLast>=1000?Math.round(rawLast).toLocaleString('en-IN'):rawLast.toFixed(2));
   $('sChg').innerHTML=`<span class="${dayChg>=0?'pos':'neg'}">${pct(dayChg)}</span> <span class="text-slate-400 text-xs">1-day</span>`;
-  $('sAsof').textContent=(rw?'rewound to ':(off<SF_END_OFF?'last traded ':'as of '))+isoOff(off);
+  if(!rw&&LIVE_OFF!=null&&off===LIVE_OFF)
+    $('sAsof').innerHTML='<span style="color:#16a34a;font-weight:800">● LIVE</span> '+
+      (liveMarketOpen()?'':'(last traded) ')+isoOff(off)+' · Yahoo NSE, ~15-min delay';
+  else $('sAsof').textContent=(rw?'rewound to ':(off<SF_END_OFF?'last traded ':'as of '))+isoOff(off);
   $('sBt').href='./stock-backtest.html';
   // chips: index memberships + F&O. The slice carries them precomputed — resolving membership from
   // indicesHistory was the ONLY thing the page still wanted the 17 MB stock_data.bin for.
@@ -596,7 +604,7 @@ function render(){
   $('sMeta').innerHTML=meta2.join('');
   // quick stats
   $('stats').innerHTML=[
-    statCard(rw?'Close (adj.)':'Last close','₹'+(rawLast>=1000?Math.round(rawLast).toLocaleString('en-IN'):rawLast.toFixed(2))),
+    statCard(rw?'Close (adj.)':(LIVE_OFF!=null&&off===LIVE_OFF?'Live price':'Last close'),'₹'+(rawLast>=1000?Math.round(rawLast).toLocaleString('en-IN'):rawLast.toFixed(2))),
     statCard('1-year', r1y==null?'—':pct(r1y), r1y>=0?'pos':'neg'),
     statCard('% from 52w high', d52.toFixed(2)+'%','neg'),
     statCard('% above 52w low', pct(d52low), d52low>=0?'pos':'neg'),
@@ -632,7 +640,10 @@ function render(){
   $('returns').innerHTML=`<table class="w-full text-sm"><thead class="text-[11px] uppercase text-slate-500 border-b border-slate-200"><tr><th class="text-left py-1 pr-2">Period</th><th class="text-right px-2">Stock</th><th class="text-right px-2">Nifty 500</th></tr></thead><tbody>
     ${rows.map(([l,sr,nr])=>`<tr class="border-b border-slate-50"><td class="py-1 pr-2 font-medium">${l}</td><td class="text-right px-2 ${sr>=0?'pos':'neg'}">${sr==null?'—':pct(sr)}</td><td class="text-right px-2 text-xs ${nr>=0?'pos':'neg'}">${nr==null?'—':pct(nr)}</td></tr>`).join('')}
     <tr class="border-t border-slate-200"><td class="py-1 pr-2 font-semibold">CAGR (full)</td><td class="text-right px-2 font-semibold ${cagr>=0?'pos':'neg'}">${cagr==null?'—':pct(cagr)}</td><td class="text-right px-2"></td></tr>
-  </tbody></table>`;
+  </tbody></table>`+
+    // The benchmark series has no live bar of its own (nifty.json is baked by the evening run), so
+    // say so rather than let the two columns look like they end on the same day.
+    ((!rw&&LIVE_OFF!=null&&LIVE_END0!=null)?`<div class="text-[11px] text-slate-400 mt-1.5">Stock column includes today's live price; the Nifty column is as of ${isoOff(LIVE_END0)}.</div>`:'');
   // technicals — hidden in rewind: h/l/v/delivery ship only for the last 400 bars, so a past
   // date would read tail padding and lie with confidence
   $('tech').parentElement.style.display=rw?'none':'';
@@ -652,6 +663,16 @@ function render(){
     tline('Avg turnover (20d)', tech.turnover==null?'—':'₹'+Math.round(tech.turnover).toLocaleString('en-IN')+' L'),
     tline('Delivery % (20d)', tech.delivPct==null?'—':tech.delivPct.toFixed(1)+'%'),
   ].join('');
+  { const ts=$('techSub'); if(ts) ts.textContent=(!rw&&LIVE_OFF!=null&&off===LIVE_OFF)?'— live, today included':'— as of latest close'; }
+  // Say plainly that the last bar is provisional and what will replace it, so a live figure is
+  // never mistaken for a settled close.
+  { const ln=$('liveNote');
+    if(ln){ if(!rw&&LIVE_OFF!=null){
+        ln.innerHTML='<span style="color:#16a34a;font-weight:800">●</span> <b>'+isoOff(LIVE_OFF)+'</b> is a provisional live bar '+
+          '(Yahoo NSE, ~15-min delay). Volume and delivery % aren\'t published intraday, so that session carries neither. '+
+          'The official close replaces it after the evening bhavcopy run (~20:45 IST).';
+        ln.classList.remove('hidden');
+      } else ln.classList.add('hidden'); } }
   // fundamentals (quarterly net profit, point-in-time)
   renderFunds();
 }
@@ -800,7 +821,7 @@ function renderFunds(){
     `<div class="text-lg font-bold ${cls||'text-slate-900'} mt-0.5">${val}</div>${extra||''}</div>`;
   const gTag=g=>g==null?'':`<span class="${g>=0?'pos':'neg'}">${pct(g)}</span> <span class="text-slate-400">YoY</span>`;
   $('fundCards').innerHTML=[
-    card('Market cap', mcap==null?'—':crBig(mcap), sub(mcap==null?null:'at ₹'+(lastRaw>=1000?Math.round(lastRaw).toLocaleString('en-IN'):lastRaw.toFixed(2)))),
+    card('Market cap', mcap==null?'—':crBig(mcap), sub(mcap==null?null:'at ₹'+(lastRaw>=1000?Math.round(lastRaw).toLocaleString('en-IN'):lastRaw.toFixed(2))+((!rw&&LIVE_OFF!=null)?' · live':''))),
     card('Revenue (TTM)', revT==null?'—':crBig(revT), sub(gTag(revG))),
     card('Operating profit (TTM)', opT==null?'—':crBig(opT), sub(opmT==null?null:('OPM '+opmT.toFixed(1)+'%'))),
     card('Net profit (TTM)', patT==null?'—':crBig(patT), sub(gTag(patG)), patT<0?'neg':'text-slate-900'),
@@ -1590,15 +1611,88 @@ $('sSearch').addEventListener('focus',()=>{ if(window.swSearch){ $('sSearch').bl
 $('sForm').onsubmit=e=>{ e.preventDefault(); const v=$('sSearch').value.trim().toUpperCase();
   if(window.swSearch){ window.swSearch.open(v); return; }
   if(v) location.href='./stock.html?sym='+encodeURIComponent(v); };
-/* ---------- live price top-up (our Cloudflare Worker → Yahoo NSE, ~15-min delay).
-   Overwrites the header price + 1-day % only; chart, technicals and stats stay on
-   the baked EOD data (they're labelled "as of latest close"). Skips dead tickers,
-   fails silently for BSE-only names Yahoo doesn't carry. ---------- */
+/* ---------- live price top-up (our Cloudflare Worker → Yahoo NSE, ~15-min delay) --------------
+ * Splices today's quote onto this stock's price series as ONE PROVISIONAL BAR, so the chart and
+ * every derived number — 52-week band, RSI, SMA distances, MACD, stochastic, seasonality, the
+ * returns table, market cap, P/E, P/S, P/B — recompute through the very same engine maths the
+ * baked bars use. No second implementation to keep in sync: this mirrors applyLiveOverlay() in
+ * backtest-engine.js (the Live Picks path), with one improvement — the ?chart= route carries the
+ * session's TRUE day high/low, which the ?symbols= route used there does not.
+ *
+ * Why it exists: this function used to write the header price and the 1-day % and nothing else,
+ * so on 2026-09-11 PINELABS read ₹202.17 (+16.75%) in the header while the chart stopped at
+ * ₹173.17 and "Market cap … at ₹173.17" sat right below it.
+ *
+ * The evening bhavcopy append (20:45 IST, refresh-backtest-data.yml) publishes the official close.
+ * Once the slice itself carries the session, the guard in spliceLiveBar() declines to splice, so
+ * the settled close always wins over the provisional one — the page never shows both.
+ *
+ * Deliberate limits: volume and delivery % are not published intraday, so both are pushed as 0 —
+ * this codebase's existing "unknown" sentinel (lwData/lwTip skip v<=0; computeTech's delivery
+ * average skips dv<=0), which is why the provisional session draws no volume bar. Turnover (TURN)
+ * is never extended, so "Avg turnover (20d)" keeps averaging complete sessions only. Rewind is
+ * untouched: an as-of date in the past can never reach a bar dated after it.
+ * Skips dead tickers; fails silently for BSE-only names Yahoo doesn't carry. ---------- */
 const WORKER='https://stocksworld-quotes.dhruvan2510.workers.dev';
 function liveMarketOpen(){
   const n=new Date(Date.now()+330*60000);
   const d=n.getUTCDay(), h=n.getUTCHours()+n.getUTCMinutes()/60;
   return d>=1&&d<=5&&h>=9&&h<=15.75;
+}
+// Undo the provisional bar, restoring the exact pre-splice state. Idempotent, and called before
+// every re-quote: without it the 60-second refresh would stack a second synthetic bar on the
+// series. The tail check makes it a no-op if anything else re-installed the slice under us.
+function clearLiveBar(){
+  if(LIVE_OFF==null) return;
+  const s=SERIES[TKR], m=META[TKR];
+  if(s&&s.d&&s.d.length&&s.d[s.d.length-1]===LIVE_OFF)
+    for(const k of ['d','p','h','l','hb','lb','v','dv']) if(s[k]&&s[k].length) s[k].pop();
+  if(m) m.raw=LIVE_RAW0;
+  if(LIVE_END0!=null) SF_END_OFF=LIVE_END0;
+  { const tn=TURN[TKR]; if(tn&&LIVE_TURN_D) tn.d=LIVE_TURN_D; }   // re-share the date array
+  LIVE_TURN_D=null;
+  LIVE_OFF=null;
+}
+// Returns true when a provisional bar was added (so the caller re-renders off it).
+function spliceLiveBar(mt){
+  const ltp=mt.regularMarketPrice, tt=mt.regularMarketTime;
+  const s=SERIES[TKR], m=META[TKR];
+  if(!(ltp>0)||!(tt>0)||!m||!s||!s.d||!s.d.length||!s.p) return false;
+  // Date the bar by the EXCHANGE's own last-trade stamp in IST, never by the viewer's clock: on a
+  // Saturday, on a holiday, or from a browser in another timezone that stamp is still the last
+  // real session, so a bar is never invented for a day the market did not trade.
+  const off=dayOff(new Date((tt+19800)*1000).toISOString().slice(0,10));
+  const last=s.d.length-1;
+  if(s.d[last]>=off) return false;        // the slice already covers this session — official close wins
+  // Adjustment gate: Yahoo's previous close must be the close we hold. When it isn't, the two
+  // series sit on different split/bonus bases, or ours stops earlier (suspension, delisting), and
+  // splicing the quote in would draw a gap that never happened.
+  const pc=mt.chartPreviousClose!=null?mt.chartPreviousClose:mt.previousClose;
+  const prev=s.p[last]/100;
+  if(!(pc>0)||!(prev>0)||Math.abs(pc/prev-1)>0.01) return false;
+  if(LIVE_OFF==null){ LIVE_END0=SF_END_OFF; LIVE_RAW0=m.raw; }   // capture the un-spliced state once
+  // installStockSlice() hands TURN[sym].d and SERIES[sym].d the SAME array object, so pushing a bar
+  // below would silently extend the turnover series too — leaving its `t` one short and making
+  // turnAvgAt() read undefined ("Avg turnover (20d) ₹NaN L"). Give turnover its own copy: intraday
+  // turnover is a part-day figure that would drag a 20-session average down, so the live bar must
+  // stay out of it entirely. (Same reason applyLiveOverlay() never extends TURN.)
+  const tn=TURN[TKR];
+  if(tn&&tn.d===s.d){ LIVE_TURN_D=tn.d; tn.d=s.d.slice(); }
+  const cp=Math.round(ltp*100);
+  const dh=mt.regularMarketDayHigh, dl=mt.regularMarketDayLow;
+  const hi=(dh>0&&dh>=ltp)?dh:ltp, lo=(dl>0&&dl<=ltp)?dl:ltp;
+  s.d.push(off); s.p.push(cp);
+  if(s.h) s.h.push(Math.round(hi*100));         // absolute paise (slice hl:1)
+  if(s.l) s.l.push(Math.round(lo*100));
+  if(s.hb) s.hb.push(Math.round((hi/ltp-1)*1000));   // legacy per-mil offsets from the close
+  if(s.lb) s.lb.push(Math.round((1-lo/ltp)*1000));
+  if(s.v) s.v.push(0);                          // 0 = unknown; never carry a stale figure forward
+  if(s.dv) s.dv.push(0);
+  m.raw=ltp; m.latest=ltp;                      // market cap / P/E re-price off m.raw (renderFunds)
+  SF_END_OFF=off;                               // stkEndOff() clamps to this — without it the page stays on yesterday
+  LIVE_OFF=off;
+  const rp=$('rwPick'); if(rp) rp.max=isoOff(off);
+  return true;
 }
 async function liveQuote(){
   if(ASOF!=null) return;                    // rewound view: the header must stay at the past date
@@ -1607,6 +1701,13 @@ async function liveQuote(){
     const j=await (await fetch(WORKER+'/?chart='+encodeURIComponent(m.symbol+'.NS'),{cache:'no-store'})).json();
     const mt=j&&j.chart&&j.chart.result&&j.chart.result[0]&&j.chart.result[0].meta;
     if(!mt||mt.regularMarketPrice==null) return;
+    clearLiveBar();
+    // render() repaints the header, the stat cards, the chart, the technicals and (via its own
+    // tail call) the valuation cards — every one of them off the series we just extended.
+    if(spliceLiveBar(mt)){ try{ render(); }catch(e){ console.error(e); } return; }
+    // Quote arrived but no bar was added (the slice already covers the session, or the adjustment
+    // gate refused it): leave the baked bars alone and top up the header only, as the page did
+    // before. The percentage is Yahoo's own close-to-close, so it stays internally consistent.
     const ltp=mt.regularMarketPrice;
     const pc=mt.chartPreviousClose!=null?mt.chartPreviousClose:mt.previousClose;
     $('sPrice').textContent='₹'+(ltp>=1000?Math.round(ltp).toLocaleString('en-IN'):ltp.toFixed(2));
