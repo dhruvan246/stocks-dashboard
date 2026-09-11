@@ -1653,23 +1653,29 @@ function clearLiveBar(){
   LIVE_TURN_D=null;
   LIVE_OFF=null;
 }
-// Returns true when a provisional bar was added (so the caller re-renders off it).
+// 'ok' = a provisional bar was added (re-render off it) · 'covered' = we already hold the official
+// close for that session, which beats a quote · 'reject' = the quote can't be trusted onto this
+// series. The caller treats all three differently, which is the whole point of not returning a bool.
 function spliceLiveBar(mt){
   const ltp=mt.regularMarketPrice, tt=mt.regularMarketTime;
   const s=SERIES[TKR], m=META[TKR];
-  if(!(ltp>0)||!(tt>0)||!m||!s||!s.d||!s.d.length||!s.p) return false;
+  if(!(ltp>0)||!(tt>0)||!m||!s||!s.d||!s.d.length||!s.p) return 'reject';
   // Date the bar by the EXCHANGE's own last-trade stamp in IST, never by the viewer's clock: on a
   // Saturday, on a holiday, or from a browser in another timezone that stamp is still the last
   // real session, so a bar is never invented for a day the market did not trade.
   const off=dayOff(new Date((tt+19800)*1000).toISOString().slice(0,10));
   const last=s.d.length-1;
-  if(s.d[last]>=off) return false;        // the slice already covers this session — official close wins
+  // NSE's official close is a 30-minute weighted average, so it routinely differs from the last
+  // traded price Yahoo reports. Once the evening append has published it, that close is the better
+  // number for EVERY field - including the header, which used to be overwritten with the LTP and
+  // then disagreed with the stat card right beneath it.
+  if(s.d[last]>=off) return 'covered';
   // Adjustment gate: Yahoo's previous close must be the close we hold. When it isn't, the two
   // series sit on different split/bonus bases, or ours stops earlier (suspension, delisting), and
   // splicing the quote in would draw a gap that never happened.
   const pc=mt.chartPreviousClose!=null?mt.chartPreviousClose:mt.previousClose;
   const prev=s.p[last]/100;
-  if(!(pc>0)||!(prev>0)||Math.abs(pc/prev-1)>0.01) return false;
+  if(!(pc>0)||!(prev>0)||Math.abs(pc/prev-1)>0.01) return 'reject';
   if(LIVE_OFF==null){ LIVE_END0=SF_END_OFF; LIVE_RAW0=m.raw; }   // capture the un-spliced state once
   // installStockSlice() hands TURN[sym].d and SERIES[sym].d the SAME array object, so pushing a bar
   // below would silently extend the turnover series too — leaving its `t` one short and making
@@ -1692,7 +1698,7 @@ function spliceLiveBar(mt){
   SF_END_OFF=off;                               // stkEndOff() clamps to this — without it the page stays on yesterday
   LIVE_OFF=off;
   const rp=$('rwPick'); if(rp) rp.max=isoOff(off);
-  return true;
+  return 'ok';
 }
 async function liveQuote(){
   if(ASOF!=null) return;                    // rewound view: the header must stay at the past date
@@ -1701,13 +1707,24 @@ async function liveQuote(){
     const j=await (await fetch(WORKER+'/?chart='+encodeURIComponent(m.symbol+'.NS'),{cache:'no-store'})).json();
     const mt=j&&j.chart&&j.chart.result&&j.chart.result[0]&&j.chart.result[0].meta;
     if(!mt||mt.regularMarketPrice==null) return;
+    const had=LIVE_OFF!=null;
     clearLiveBar();
+    const how=spliceLiveBar(mt);
     // render() repaints the header, the stat cards, the chart, the technicals and (via its own
     // tail call) the valuation cards — every one of them off the series we just extended.
-    if(spliceLiveBar(mt)){ try{ render(); }catch(e){ console.error(e); } return; }
-    // Quote arrived but no bar was added (the slice already covers the session, or the adjustment
-    // gate refused it): leave the baked bars alone and top up the header only, as the page did
-    // before. The percentage is Yahoo's own close-to-close, so it stays internally consistent.
+    if(how==='ok'){ try{ render(); }catch(e){ console.error(e); } return; }
+    // A bar we HAD installed no longer qualifies (a corporate action landing mid-session moves
+    // Yahoo's previous close off ours, so the gate below starts refusing). clearLiveBar() has
+    // already pulled it off the series — repaint, or the page keeps the LIVE labels, the live
+    // stat-card values and the provisional-bar note for a bar it no longer holds.
+    if(had){ try{ render(); }catch(e){ console.error(e); } }
+    // The session is already baked: the page is showing the official close everywhere, so touch
+    // nothing. Overwriting the header with the LTP here is what made the header and the stat cards
+    // disagree in the first place.
+    if(how==='covered') return;
+    // Rejected (different split/bonus basis, or a series that stops earlier): the baked bars stay
+    // as they are, but the header still gets the quote - otherwise the page would show nothing at
+    // all about today. The percentage is Yahoo's own close-to-close, so it stays self-consistent.
     const ltp=mt.regularMarketPrice;
     const pc=mt.chartPreviousClose!=null?mt.chartPreviousClose:mt.previousClose;
     $('sPrice').textContent='₹'+(ltp>=1000?Math.round(ltp).toLocaleString('en-IN'):ltp.toFixed(2));
