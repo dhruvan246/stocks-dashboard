@@ -114,7 +114,7 @@
   <div class="grid lg:grid-cols-2 gap-4">
     <!-- returns -->
     <div class="card p-4">
-      <div class="text-sm font-semibold text-slate-700 mb-2">Returns <span class="text-slate-400 font-normal">— stock vs Nifty 500</span></div>
+      <div class="text-sm font-semibold text-slate-700 mb-2">Returns <span class="text-slate-400 font-normal">— stock vs Nifty 50</span></div>
       <div id="returns" class="overflow-x-auto"></div>
     </div>
     <!-- technicals -->
@@ -267,7 +267,7 @@ function noSymbol(){
     +'<div class="mt-6 text-[11px] uppercase tracking-wider text-slate-400 font-semibold">Popular</div>'
     +'<div id="heroChips" class="mt-2.5 flex flex-wrap justify-center gap-2 max-w-xl mx-auto"></div>'
     +'<div id="heroTiles" class="grid grid-cols-2 lg:grid-cols-4 gap-3 mt-10 text-left">'
-    +tile('📈','Price &amp; returns','Split-adjusted closes with 1D → 10Y returns vs the Nifty 500, plus a rewind to any past date.')
+    +tile('📈','Price &amp; returns','Split-adjusted closes with 1D → 10Y returns vs the Nifty 50, plus a rewind to any past date.')
     +tile('💰','Quarterly financials','Point-in-time revenue, PAT &amp; margins with YoY growth — the numbers as originally filed.')
     +tile('🏦','Shareholding','Promoter, FII, DII &amp; public stakes, quarter by quarter from the filings.')
     +tile('📅','Seasonality','Month-by-month returns across every year of history — which months this stock likes.')
@@ -637,7 +637,7 @@ function render(){
   rows.push(['YTD', retPctAt(TKR,off,off-yStart), niftyRetAt(off,off-yStart)]);
   rows.push(['Since '+isoOff(firstOff).slice(0,4), retPctAt(TKR,off,off-firstOff), niftyRetAt(off,off-firstOff)]);
   const years=(off-firstOff)/365.25; const p0=priceAt(TKR,firstOff); const cagr=(p0>0&&years>0)?(Math.pow(adjLast/p0,1/years)-1)*100:null;
-  $('returns').innerHTML=`<table class="w-full text-sm"><thead class="text-[11px] uppercase text-slate-500 border-b border-slate-200"><tr><th class="text-left py-1 pr-2">Period</th><th class="text-right px-2">Stock</th><th class="text-right px-2">Nifty 500</th></tr></thead><tbody>
+  $('returns').innerHTML=`<table class="w-full text-sm"><thead class="text-[11px] uppercase text-slate-500 border-b border-slate-200"><tr><th class="text-left py-1 pr-2">Period</th><th class="text-right px-2">Stock</th><th class="text-right px-2">Nifty 50</th></tr></thead><tbody>
     ${rows.map(([l,sr,nr])=>`<tr class="border-b border-slate-50"><td class="py-1 pr-2 font-medium">${l}</td><td class="text-right px-2 ${sr>=0?'pos':'neg'}">${sr==null?'—':pct(sr)}</td><td class="text-right px-2 text-xs ${nr>=0?'pos':'neg'}">${nr==null?'—':pct(nr)}</td></tr>`).join('')}
     <tr class="border-t border-slate-200"><td class="py-1 pr-2 font-semibold">CAGR (full)</td><td class="text-right px-2 font-semibold ${cagr>=0?'pos':'neg'}">${cagr==null?'—':pct(cagr)}</td><td class="text-right px-2"></td></tr>
   </tbody></table>`+
@@ -1744,6 +1744,13 @@ async function liveQuote(){
   if(!SYM){ noSymbol(); return; }
   // Nifty closes power the benchmark column, beta and RS — small, and shared with other pages'
   // cache. Started first so it overlaps the slice fetch instead of following it.
+  // nifty.json is the NIFTY 50 (fetch_fii_dii.py: OUT_NIFTY, "Nifty 50 close history"), NOT the
+  // Nifty 500 — the returns column claimed "Nifty 500" until 2026-09-11 while showing Nifty 50
+  // numbers, which understated the benchmark by 19.4pp over 5 years (measured: +34.71% vs the real
+  // Nifty 500's +54.12%). The label now names what is actually plotted. To genuinely benchmark
+  // against the Nifty 500, switch to docs/nifty500.json (^CRSLDX) — but it only starts 2012-01-02
+  // where this one starts 2002-01-01, so the long "Since <year>" rows would lose their comparison
+  // until that history is extended. Do not "fix" the label back without swapping the data first.
   const niftyP=fetch('./nifty.json').then(r=>r.json()).then(j=>{NIFTY=j.px||{};}).catch(()=>{NIFTY={};});
   let slice=null;
   try{ slice=await loadStockSlice(SYM); }catch(e){ console.warn('no slice for '+SYM+' ('+(e&&e.message||e)+') — falling back to the full engine'); }
