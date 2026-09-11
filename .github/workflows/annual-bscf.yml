@@ -48,12 +48,16 @@ jobs:
         run: |
           git config user.name  "github-actions[bot]"
           git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
-          # reset-replay: stash this run's outputs, rebase onto latest main, copy back, commit (runbook §18)
+          # reset-replay: snapshot this run's outputs, rebase onto latest main, MERGE back (not a blind
+          # copy — the copy discarded whatever the nightly vision routine landed since checkout: the
+          # 2026-09 clobber), commit (runbook §18).
           mkdir -p /tmp/abscf
           for f in annual_bscf.json annual_bscf_gate.json; do [ -f scripts/$f ] && cp scripts/$f /tmp/abscf/ || true; done
           for attempt in 1 2 3 4 5; do
             git fetch origin main -q && git reset --hard origin/main -q
-            for f in annual_bscf.json annual_bscf_gate.json; do [ -f /tmp/abscf/$f ] && cp /tmp/abscf/$f scripts/$f || true; done
+            python3 scripts/abscf_ci_merge.py \
+              --ledger-mine /tmp/abscf/annual_bscf.json --ledger-base scripts/annual_bscf.json \
+              --gate-mine   /tmp/abscf/annual_bscf_gate.json --gate-base scripts/annual_bscf_gate.json
             git add scripts/annual_bscf.json scripts/annual_bscf_gate.json 2>/dev/null || true
             if git diff --cached --quiet; then echo "no new annual BS/CF this run"; exit 0; fi
             git commit -q -m "Annual BS/CF fill $(TZ=Asia/Kolkata date +'%Y-%m-%d %H:%M IST')"

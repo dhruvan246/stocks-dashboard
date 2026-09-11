@@ -28,7 +28,7 @@ fields: assets, sc, oeq, borr, ppe, cwip, gw, intg, invst, rec, pay, invnt, cfo,
 Resumable: one symbol at a time, checkpoints after each; --only / --limit / --redo.
 Run: python -X utf8 scripts/fetch_annual_bscf.py [--only SYM,SYM] [--limit N] [--redo]
 """
-import urllib.request, json, gzip, re, http.cookiejar, os, sys, time, base64
+import urllib.request, json, gzip, re, http.cookiejar, os, sys, time, base64, datetime
 import fitz  # PyMuPDF
 
 HERE = os.path.dirname(os.path.abspath(__file__))
@@ -37,6 +37,21 @@ LEDGER = os.path.join(HERE, "annual_bscf.json")
 GATE_REPORT = os.path.join(HERE, "annual_bscf_gate.json")   # TRACKED (not scripts/_*, which is gitignored) so resume persists in CI
 FYS = [2025, 2024, 2023, 2022, 2021, 2020]      # FY-ends to fill, newest first
 UA = "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/124 Safari/537.36"
+
+# ---- queue-advance cooldowns (so the --limit walk moves past attempted-but-unfilled symbols) --
+TTRY_COOLDOWN_DAYS = 7    # a token-free text gate-fail is not re-attempted by main() for this long
+VNIL_COOLDOWN_DAYS = 30   # a prep that can't even RENDER a symbol's pages waits this long (x n) before retry
+def _today():
+    return datetime.date.today().isoformat()
+def _fresh(datestr, days):
+    """True if datestr (YYYY-MM-DD...) is within `days` of today — i.e. still under cooldown."""
+    if not datestr:
+        return False
+    try:
+        d = datetime.date.fromisoformat(str(datestr)[:10])
+    except Exception:
+        return False
+    return (datetime.date.today() - d).days < days
 
 # ---- BSE fetch (narrow window + strCat=Result — BSE now rejects wide ranges) ------------------
 def session():
@@ -157,14 +172,39 @@ CF_REAL = re.compile(r'operating\s+activit|investing\s+activit|financing\s+activ
 CONSOL  = re.compile(r'consolidated', re.I)
 STANDAL = re.compile(r'standalone', re.I)
 
+def fy_end_hit(text, want_year):
+    """True if `text` names the fiscal-year-end 31 March <want_year>, in ANY of the printed
+    forms these audited results use. STRICT SUPERSET of the old matcher, which had two bugs that
+    silently zeroed out most filers:
+      * r'(31st?\s+)?march' parsed as the literal '31s'+optional 't', so 'YEAR ENDED 31 MARCH 2024'
+        (a bare '31', no 'st') never matched — the '(31st?\s+)?' group failed and 'march' could
+        not follow 'ended '. Filers who wrote '31st March,' matched; '31 March' did not.
+      * "'31.03.%s' % yr[-2:] in text" tested the 2-digit '31.03.24', which is NOT a substring of
+        the 4-digit '31.03.2024' — so the numeric form was missed too.
+    Forms accepted: '[31[st]] March[,] 2024', 'March 31[st], 2024', 'ended March 2024',
+    '31.03.2024' / '31/03/2024' / '31-03-2024' (2- or 4-digit year, any of . / - separators)."""
+    yr = str(want_year); yy = yr[-2:]
+    if re.search(r'\b31\s*(?:st|nd|rd|th)?\s+march[,\s]+' + yr + r'\b', text, re.I):
+        return True
+    if re.search(r'\bmarch\s+31\s*(?:st|nd|rd|th)?\s*,?\s*' + yr + r'\b', text, re.I):
+        return True
+    if re.search(r'\bended\s+march[,\s]+' + yr + r'\b', text, re.I):
+        return True
+    ns = re.sub(r'\s+', '', text)
+    # numeric dd?mm?yyyy — 4-digit first (word-boundary via negative-lookahead so 2020 != 2024),
+    # then 2-digit '31.03.24' (also guarded so it can't match inside '31.03.2024').
+    if re.search(r'31[./-]0?3[./-]' + yr + r'(?!\d)', ns):
+        return True
+    if re.search(r'31[./-]0?3[./-]' + yy + r'(?!\d)', ns):
+        return True
+    return False
+
 def locate(pdf, want_year):
     """Confirm this PDF is the FY-end audited result and return (basis, bs_pi, cf_pi) — the
     consolidated BS + CF page indices (standalone fallback). None otherwise."""
     doc = fitz.open(stream=pdf, filetype="pdf")
     texts = [doc[i].get_text() for i in range(len(doc))]; doc.close()
-    yr = str(want_year)
-    if not any(re.search(r'(year ended|ended)\s+(31st?\s+)?march[,\s]+' + yr, t, re.I)
-               or ('31.03.%s' % yr[-2:]) in t.replace(' ', '') for t in texts):
+    if not any(fy_end_hit(t, want_year) for t in texts):
         return None
     bs_con = bs_std = cf_con = cf_std = None
     for i, t in enumerate(texts):
@@ -315,6 +355,8 @@ def prep(outdir, limit, only):
             gv = gate.get(sym)
             if not gv or gv.get('verdict') != 'gate-failed' or gv.get('vtry'): continue   # only vision-needed
             if sym in ledger or sym in done: continue
+            if isinstance(gv.get('vnil'), dict) and _fresh(gv['vnil'].get('d'), VNIL_COOLDOWN_DAYS * gv['vnil'].get('n', 1)):
+                continue                                                  # prep already failed to render this recently — don't re-fetch every night
         code = byid.get(sym)
         if not code: continue
         x = slice_x(sym)
@@ -349,6 +391,16 @@ def prep(outdir, limit, only):
             manifest.extend(entries); n += 1
             json.dump(manifest, open(mp, 'w'), indent=0)
             print('%-11s prepped: val FY%d + %d fill-years (%d pages)' % (sym, val_fy, len(entries) - 1, sum(len(e['pngs']) for e in entries)))
+        elif only is None:
+            # couldn't render even the validate page (no filings / no locatable BS): mark vnil so
+            # the queue ADVANCES — otherwise this symbol is re-fetched from BSE every single night.
+            # Not counted against --limit (that budget is for fill-bearing symbols); retried after
+            # VNIL_COOLDOWN_DAYS x n. Persist immediately so a mid-run crash doesn't lose it.
+            gv = gate.setdefault(sym, {})
+            prev = gv.get('vnil') if isinstance(gv.get('vnil'), dict) else {}
+            gv['vnil'] = {'d': _today(), 'n': prev.get('n', 0) + 1, 'why': 'no-validate-render'}
+            json.dump(gate, open(GATE_REPORT, 'w'), separators=(',', ':'), sort_keys=True)
+            print('%-11s NOT prepped: no validate render -> vnil (n=%d)' % (sym, gv['vnil']['n']))
     print('PREP DONE: %d symbols, %d manifest entries -> %s' % (n, len(manifest), mp))
 
 def main():
@@ -381,6 +433,13 @@ def main():
             gv = gate.get(sym)
             if gv and (gv.get('verdict') in ('trusted', 'no-xbrl-year-to-validate') or gv.get('vtry')):
                 continue                                                  # settled; a text-only gate-fail is retried once a vision key exists
+            # queue-advance: don't re-chew a symbol the token-free pass just tried, or one prep
+            # can't render. Without this the --limit window re-attempts the same head every run
+            # and never reaches the tail (the 2026-09 jam). Skips expire (TTRY/VNIL cooldowns).
+            if gv and not os.environ.get('ANTHROPIC_API_KEY') and _fresh(gv.get('ttry'), TTRY_COOLDOWN_DAYS):
+                continue
+            if gv and isinstance(gv.get('vnil'), dict) and _fresh(gv['vnil'].get('d'), VNIL_COOLDOWN_DAYS * gv['vnil'].get('n', 1)):
+                continue
         x = slice_x(sym)
         # which FYs do we already hold (validation) vs miss (fill)?
         held = {fy: held_bs(x, '%d0331' % fy) for fy in FYS}
@@ -388,7 +447,8 @@ def main():
         miss = [fy for fy in FYS if '%d0331' % fy not in [q for q in x if held_bs(x, q)]
                 and fy not in held]
         if not held:
-            gate[sym] = {'verdict': 'no-xbrl-year-to-validate'}; continue
+            gate.setdefault(sym, {}).update({'verdict': 'no-xbrl-year-to-validate'})
+            json.dump(gate, open(GATE_REPORT, 'w'), separators=(',', ':'), sort_keys=True); continue
         val_fy = max(held)                                            # newest held year = the gate
         got = {}; basis = None; trusted = False; method = None; note = None
         # 1) validate on the newest held year — text first (free), vision fallback (CI, needs key)
@@ -405,9 +465,14 @@ def main():
             if gate_ok(p, held[val_fy]): trusted, basis, method = True, b, 'text'; break
             v = vision_read(pdf, bs_pi, cf_pi, sym, val_fy)          # None locally (no key) / on CI reads
             if v and gate_ok(v[1], held[val_fy]): trusted, basis, method = True, v[0], 'vision'; break
-        gate[sym] = {'verdict': 'trusted' if trusted else 'gate-failed', 'val_fy': val_fy,
-                     'basis': basis, 'method': method, 'note': note,
-                     'vtry': bool(os.environ.get('ANTHROPIC_API_KEY'))}
+        entry = gate.setdefault(sym, {})     # UPDATE, don't replace: carry over vnil/na marks prep wrote
+        entry.update({'verdict': 'trusted' if trusted else 'gate-failed', 'val_fy': val_fy,
+                      'basis': basis, 'method': method, 'note': note,
+                      'vtry': bool(os.environ.get('ANTHROPIC_API_KEY'))})
+        if not trusted and not os.environ.get('ANTHROPIC_API_KEY'):
+            entry['ttry'] = _today()         # token-free text attempt -> cooldown so the walk advances
+        elif trusted:
+            entry.pop('ttry', None); entry.pop('vnil', None)   # settled clean
         json.dump(gate, open(GATE_REPORT, 'w'), separators=(',', ':'), sort_keys=True)
         if not trusted:
             processed += 1; print('%-11s GATE-FAILED (val FY%d) %s' % (sym, val_fy, note or '')); continue
