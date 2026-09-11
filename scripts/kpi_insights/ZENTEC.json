@@ -50,6 +50,13 @@
    "title": "Q1 FY26 Investor Presentation",
    "read": "2026-09-11",
    "by": "claude-routine"
+  },
+  "942259fd-3661-4d9d-ae09-1599f188bbd9.pdf": {
+   "kind": "ip",
+   "date": "2025-05-18",
+   "title": "Q4 FY25 / FY25 Investor Presentation",
+   "read": "2026-09-11",
+   "by": "claude-routine"
   }
  },
  "metrics": [
@@ -112,6 +119,7 @@
    "kind": "flow",
    "y": {},
    "q": {
+    "20250331": 168.52,
     "20250630": 64.26,
     "20250930": 94.05,
     "20251231": 585.55,
@@ -148,6 +156,12 @@
      7,
      "New Order bagged in Q1FY26",
      "64.26"
+    ],
+    "q:20250331": [
+     "942259fd-3661-4d9d-ae09-1599f188bbd9.pdf",
+     12,
+     "New Order bagged in Q4FY25 - Total",
+     "168.52"
     ]
    }
   },
@@ -157,6 +171,7 @@
    "kind": "flow",
    "y": {},
    "q": {
+    "20250331": 293.49,
     "20250630": 158.22,
     "20250930": 173.57,
     "20251231": 177.83,
@@ -193,6 +208,12 @@
      7,
      "Orders executed in Q1FY26",
      "158.22"
+    ],
+    "q:20250331": [
+     "942259fd-3661-4d9d-ae09-1599f188bbd9.pdf",
+     12,
+     "Orders executed in Q4FY25 - Total",
+     "293.49"
     ]
    }
   },
@@ -269,6 +290,100 @@
      8,
      "Export",
      "117.41"
+    ]
+   }
+  },
+  {
+   "name": "Order Book - AMC",
+   "unit": "INR Cr",
+   "kind": "level",
+   "y": {},
+   "q": {
+    "20241231": 279.68,
+    "20250331": 269.55,
+    "20260630": 318.43
+   },
+   "src": {
+    "q:20260630": [
+     "112d61fd-d4c8-4343-aef4-fc9961aee2b8.pdf",
+     11,
+     "AMC",
+     "318.43"
+    ],
+    "q:20241231": [
+     "942259fd-3661-4d9d-ae09-1599f188bbd9.pdf",
+     12,
+     "Order Book as on 31st December 2024 - AMC",
+     "279.68"
+    ],
+    "q:20250331": [
+     "942259fd-3661-4d9d-ae09-1599f188bbd9.pdf",
+     12,
+     "Total Order Book as on 31st March 2025 - AMC",
+     "269.55"
+    ]
+   }
+  },
+  {
+   "name": "Order Book - Equipment",
+   "unit": "INR Cr",
+   "kind": "level",
+   "y": {},
+   "q": {
+    "20241231": 537.23,
+    "20250331": 422.39,
+    "20260630": 920.59
+   },
+   "src": {
+    "q:20260630": [
+     "112d61fd-d4c8-4343-aef4-fc9961aee2b8.pdf",
+     11,
+     "Equipment",
+     "920.59"
+    ],
+    "q:20241231": [
+     "942259fd-3661-4d9d-ae09-1599f188bbd9.pdf",
+     12,
+     "Order Book as on 31st December 2024 - Equipment",
+     "537.23"
+    ],
+    "q:20250331": [
+     "942259fd-3661-4d9d-ae09-1599f188bbd9.pdf",
+     12,
+     "Total Order Book as on 31st March 2025 - Equipment",
+     "422.39"
+    ]
+   }
+  },
+  {
+   "name": "Standalone Order Book",
+   "unit": "INR Cr",
+   "kind": "level",
+   "y": {
+    "20260331": 1222.6
+   },
+   "q": {
+    "20241231": 816.91,
+    "20250331": 691.94
+   },
+   "src": {
+    "y:20260331": [
+     "75a5280b-90c2-479f-aa9d-890f52712cf9.pdf",
+     6,
+     "standalone order book (doc period)",
+     "1,222.6"
+    ],
+    "q:20241231": [
+     "942259fd-3661-4d9d-ae09-1599f188bbd9.pdf",
+     12,
+     "Order Book as on 31st December 2024 - Total",
+     "816.91"
+    ],
+    "q:20250331": [
+     "942259fd-3661-4d9d-ae09-1599f188bbd9.pdf",
+     12,
+     "Total Order Book as on 31st March 2025 - Total",
+     "691.94"
     ]
    }
   },
@@ -353,23 +468,6 @@
   },
   {
    "name": "Order Book - AMC",
-   "unit": "INR Cr",
-   "kind": "level",
-   "y": {},
-   "q": {
-    "20260630": 318.43
-   },
-   "src": {
-    "q:20260630": [
-     "112d61fd-d4c8-4343-aef4-fc9961aee2b8.pdf",
-     11,
-     "AMC",
-     "318.43"
-    ]
-   }
-  },
-  {
-   "name": "Order Book - AMC",
    "unit": "₹ Lakhs",
    "kind": "level",
    "y": {},
@@ -382,23 +480,6 @@
      19,
      "₹26,954.56 Lakhs in long-term service contracts",
      "26,954.56"
-    ]
-   }
-  },
-  {
-   "name": "Order Book - Equipment",
-   "unit": "INR Cr",
-   "kind": "level",
-   "y": {},
-   "q": {
-    "20260630": 920.59
-   },
-   "src": {
-    "q:20260630": [
-     "112d61fd-d4c8-4343-aef4-fc9961aee2b8.pdf",
-     11,
-     "Equipment",
-     "920.59"
     ]
    }
   },
@@ -450,23 +531,6 @@
      11,
      "~85 granted (doc period)",
      "85"
-    ]
-   }
-  },
-  {
-   "name": "Standalone Order Book",
-   "unit": "INR Cr",
-   "kind": "level",
-   "y": {
-    "20260331": 1222.6
-   },
-   "q": {},
-   "src": {
-    "y:20260331": [
-     "75a5280b-90c2-479f-aa9d-890f52712cf9.pdf",
-     6,
-     "standalone order book (doc period)",
-     "1,222.6"
     ]
    }
   },
