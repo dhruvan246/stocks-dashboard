@@ -40,11 +40,33 @@ const CLOUD = !OUT_FILE && !!HOLD_TOKEN;   // no local output path + a token →
    (absent here → its helpers catch and fall through to a plain fetch) and fetches by RELATIVE url. */
 globalThis.location = { hostname: 'dhruvan246.github.io', protocol: 'https:' };
 const _fetch = globalThis.fetch;
-globalThis.fetch = (url, opt) => {
-  const u = String(url); const o = Object.assign({}, opt || {}); delete o.cache;   // undici rejects cache:'reload'
-  return _fetch(u.startsWith('./') ? SITE + u.slice(2) : u, o);
-};
 const log = m => process.stderr.write(m + '\n');
+const _sleep = ms => new Promise(r => setTimeout(r, ms));
+// Transient-tolerant fetch shim -- same shape as scripts/monthly_returns_bake.js, where a single
+// "HTTP 503 sf_recent_1.bin" 37 s into loadEngineData() failed run 34604911126 and mailed a failure
+// notice (2026-09-11). This job is MORE exposed, not less: it runs once a weekday, so a blip here
+// leaves the phone on yesterday's picks for a full day instead of 30 minutes.
+// Retry only the TRANSIENT shapes -- a network throw, 429, or 5xx -- and only on idempotent GETs.
+// A 404/400 goes straight back to the caller so a REAL defect still fails fast and is never masked,
+// and exhausting the budget still surfaces the failure. Tune with BAKE_FETCH_RETRIES.
+const FETCH_RETRIES = process.env.BAKE_FETCH_RETRIES != null ? +process.env.BAKE_FETCH_RETRIES : 3;
+const RETRY_MS = [2000, 5000, 10000];
+globalThis.fetch = async (url, opt) => {
+  const u0 = String(url), o = Object.assign({}, opt || {}); delete o.cache;   // undici rejects cache:'reload'
+  const u = u0.startsWith('./') ? SITE + u0.slice(2) : u0;
+  const idempotent = !o.method || String(o.method).toUpperCase() === 'GET';
+  const name = u.split('?')[0].split('/').pop() || u;
+  for (let a = 0; ; a++) {
+    let resp = null, err = null;
+    try { resp = await _fetch(u, o); } catch (e) { err = e; }
+    if (!err && !(resp.status === 429 || resp.status >= 500)) return resp;   // 2xx/3xx, or a hard 4xx the caller must see
+    if (!idempotent || a >= FETCH_RETRIES) { if (err) throw err; return resp; }   // budget spent -> caller throws, run fails, mail is real
+    const why = err ? (err.code || err.message || 'network error') : ('HTTP ' + resp.status);
+    const wait = RETRY_MS[Math.min(a, RETRY_MS.length - 1)];
+    log('  \u26a0 ' + name + ': ' + why + ' - transient, retry ' + (a + 1) + '/' + FETCH_RETRIES + ' in ' + (wait / 1000) + 's');
+    await _sleep(wait);
+  }
+};
 const istNow = () => new Date().toLocaleString('en-GB', { timeZone: 'Asia/Kolkata', hour12: false })
   .replace(/(\d+)\/(\d+)\/(\d+),?\s+(\d+):(\d+):\d+/, '$3-$2-$1 $4:$5 IST');
 

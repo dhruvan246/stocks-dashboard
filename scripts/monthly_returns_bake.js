@@ -37,11 +37,37 @@ const LIMIT = arg('--limit') ? +arg('--limit') : null;
 /* ---- browser shims: the engine is DOM-free but reads location at load and fetches by RELATIVE url. */
 globalThis.location = { hostname: 'dhruvan246.github.io', protocol: 'https:' };
 const _fetch = globalThis.fetch;
-globalThis.fetch = (url, opt) => {
-  const u = String(url); const o = Object.assign({}, opt || {}); delete o.cache;   // undici rejects cache:'reload'
-  return _fetch(u.startsWith('./') ? SITE + u.slice(2) : u, o);
-};
 const log = m => process.stderr.write(m + '\n');
+const _sleep = ms => new Promise(r => setTimeout(r, ms));
+// Transient-tolerant fetch shim. loadEngineData() fans out over ~80 MB (dash_slim + the sf-data
+// parts + fundamentals + shareholding); ONE blip anywhere in that fan-out used to fail the whole
+// run and mail a failure notice -- even though this workflow's own header calls itself "not
+// correctness-critical" and every OTHER network step in it already retries (push x5, pages
+// dispatch x3). The data load was simply the path nobody revisited, so that is where the transients
+// landed: run 34604911126 (2026-09-11 19:02 IST) died 37 s in on a single "HTTP 503
+// sf_recent_1.bin"; the next scheduled run 30 min later succeeded, and 99 of the last 100 were green.
+// Retry only the TRANSIENT shapes -- a network throw, 429, or 5xx -- and only on idempotent GETs.
+// A 404/400 goes straight back to the caller so a REAL defect still fails fast and is never masked,
+// and exhausting the budget still surfaces the failure, so a dataset that is genuinely unreachable
+// keeps waking someone. Tune with BAKE_FETCH_RETRIES (same knob shape as bake_waves.mjs).
+const FETCH_RETRIES = process.env.BAKE_FETCH_RETRIES != null ? +process.env.BAKE_FETCH_RETRIES : 3;
+const RETRY_MS = [2000, 5000, 10000];
+globalThis.fetch = async (url, opt) => {
+  const u0 = String(url), o = Object.assign({}, opt || {}); delete o.cache;   // undici rejects cache:'reload'
+  const u = u0.startsWith('./') ? SITE + u0.slice(2) : u0;
+  const idempotent = !o.method || String(o.method).toUpperCase() === 'GET';
+  const name = u.split('?')[0].split('/').pop() || u;
+  for (let a = 0; ; a++) {
+    let resp = null, err = null;
+    try { resp = await _fetch(u, o); } catch (e) { err = e; }
+    if (!err && !(resp.status === 429 || resp.status >= 500)) return resp;   // 2xx/3xx, or a hard 4xx the caller must see
+    if (!idempotent || a >= FETCH_RETRIES) { if (err) throw err; return resp; }   // budget spent -> caller throws, run fails, mail is real
+    const why = err ? (err.code || err.message || 'network error') : ('HTTP ' + resp.status);
+    const wait = RETRY_MS[Math.min(a, RETRY_MS.length - 1)];
+    log('  \u26a0 ' + name + ': ' + why + ' - transient, retry ' + (a + 1) + '/' + FETCH_RETRIES + ' in ' + (wait / 1000) + 's');
+    await _sleep(wait);
+  }
+};
 const istNow = () => new Date().toLocaleString('en-GB', { timeZone: 'Asia/Kolkata', hour12: false })
   .replace(/(\d+)\/(\d+)\/(\d+),?\s+(\d+):(\d+):\d+/, '$3-$2-$1 $4:$5 IST');
 
