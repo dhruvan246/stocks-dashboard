@@ -36,6 +36,13 @@
    "title": "Analyst Day Investor Presentation (Feb 2026)",
    "read": "2026-09-09",
    "by": "claude-routine"
+  },
+  "2aad185c-60d6-4e7e-9355-daf00337ee01.pdf": {
+   "kind": "ip",
+   "date": "2026-05-04",
+   "title": "Investor Presentation Q4 & FY26 Results",
+   "read": "2026-09-11",
+   "by": "claude-routine"
   }
  },
  "metrics": [
@@ -48,7 +55,7 @@
     "20220331": 42.0,
     "20230331": 47.0,
     "20240331": 60.0,
-    "20250331": 89.0,
+    "20250331": 89.2,
     "20260331": 107.0
    },
    "q": {},
@@ -84,12 +91,21 @@
      "60"
     ],
     "y:20250331": [
-     "43d427c3-345f-4c55-b480-56022ccdcff8.pdf",
-     53,
-     "MF Transaction Count (in Cr)",
-     "89"
+     "2aad185c-60d6-4e7e-9355-daf00337ee01.pdf",
+     9,
+     "New highs in transaction volume",
+     "89.2"
     ]
-   }
+   },
+   "restated": [
+    [
+     "y:20250331",
+     "43d427c3-345f-4c55-b480-56022ccdcff8.pdf",
+     89.0,
+     "2aad185c-60d6-4e7e-9355-daf00337ee01.pdf",
+     89.2
+    ]
+   ]
   },
   {
    "name": "Call Centre Headcount",
@@ -133,6 +149,52 @@
      53,
      "Call Centre (headcount)",
      "899"
+    ]
+   }
+  },
+  {
+   "name": "Equity AuM",
+   "unit": "Trillion",
+   "kind": "level",
+   "y": {
+    "20250331": 24.2,
+    "20260331": 29.1
+   },
+   "q": {
+    "20241231": 25.6,
+    "20251231": 30.3,
+    "20260331": 30.5
+   },
+   "src": {
+    "q:20241231": [
+     "43d427c3-345f-4c55-b480-56022ccdcff8.pdf",
+     6,
+     "Equity AUM (in Trillion)",
+     "25.6"
+    ],
+    "q:20251231": [
+     "43d427c3-345f-4c55-b480-56022ccdcff8.pdf",
+     6,
+     "Equity AUM (in Trillion)",
+     "30.3"
+    ],
+    "q:20260331": [
+     "2aad185c-60d6-4e7e-9355-daf00337ee01.pdf",
+     10,
+     "Equity AAuM - CAMS",
+     "30.5"
+    ],
+    "y:20260331": [
+     "2aad185c-60d6-4e7e-9355-daf00337ee01.pdf",
+     12,
+     "Equity AAuM - CAMS",
+     "29.1"
+    ],
+    "y:20250331": [
+     "2aad185c-60d6-4e7e-9355-daf00337ee01.pdf",
+     9,
+     "Equity AuM (Rs. Tn.)",
+     "24.2"
     ]
    }
   },
@@ -317,6 +379,84 @@
    }
   },
   {
+   "name": "CAMS AuM",
+   "unit": "Trillion",
+   "kind": "level",
+   "y": {
+    "20260331": 52.7
+   },
+   "q": {
+    "20241231": 46.3,
+    "20251231": 54.7,
+    "20260331": 55.1
+   },
+   "src": {
+    "q:20241231": [
+     "43d427c3-345f-4c55-b480-56022ccdcff8.pdf",
+     6,
+     "CAMS AUM (in Trillion)",
+     "46.3"
+    ],
+    "q:20251231": [
+     "43d427c3-345f-4c55-b480-56022ccdcff8.pdf",
+     6,
+     "CAMS AUM (in Trillion)",
+     "54.7"
+    ],
+    "q:20260331": [
+     "2aad185c-60d6-4e7e-9355-daf00337ee01.pdf",
+     10,
+     "AAuM Serviced by CAMS",
+     "55.1"
+    ],
+    "y:20260331": [
+     "2aad185c-60d6-4e7e-9355-daf00337ee01.pdf",
+     12,
+     "AAuM Serviced by CAMS",
+     "52.7"
+    ]
+   }
+  },
+  {
+   "name": "CAMS Market Share in Equity AuM",
+   "unit": "%",
+   "kind": "level",
+   "y": {
+    "20250331": 65.9,
+    "20260331": 66.4
+   },
+   "q": {
+    "20241231": 65.7,
+    "20251231": 66.4
+   },
+   "src": {
+    "q:20241231": [
+     "43d427c3-345f-4c55-b480-56022ccdcff8.pdf",
+     6,
+     "65.7% Share",
+     "65.7"
+    ],
+    "q:20251231": [
+     "43d427c3-345f-4c55-b480-56022ccdcff8.pdf",
+     6,
+     "66.4% Share",
+     "66.4"
+    ],
+    "y:20250331": [
+     "2aad185c-60d6-4e7e-9355-daf00337ee01.pdf",
+     9,
+     "Equity AuM Share",
+     "65.9"
+    ],
+    "y:20260331": [
+     "2aad185c-60d6-4e7e-9355-daf00337ee01.pdf",
+     9,
+     "Equity AuM Share",
+     "66.4"
+    ]
+   }
+  },
+  {
    "name": "CAMS Market Share in MF AuM",
    "unit": "%",
    "kind": "level",
@@ -352,6 +492,37 @@
      6,
      "67.5% Share",
      "67.5"
+    ]
+   }
+  },
+  {
+   "name": "Unique Investor Base",
+   "unit": "Cr",
+   "kind": "level",
+   "y": {},
+   "q": {
+    "20250331": 4.04,
+    "20260331": 4.76,
+    "20260630": 4.85
+   },
+   "src": {
+    "q:20260630": [
+     "fb3eeb5d-1c18-4c05-aa1d-cfc89a1c39dd.pdf",
+     2,
+     "unique investor base expanded to over 4.85 Cr.",
+     "4.85"
+    ],
+    "q:20250331": [
+     "2aad185c-60d6-4e7e-9355-daf00337ee01.pdf",
+     9,
+     "Unique Investor Growth",
+     "4.04"
+    ],
+    "q:20260331": [
+     "2aad185c-60d6-4e7e-9355-daf00337ee01.pdf",
+     9,
+     "Unique Investor Growth",
+     "4.76"
     ]
    }
   },
@@ -405,30 +576,6 @@
    }
   },
   {
-   "name": "CAMS AuM",
-   "unit": "Trillion",
-   "kind": "level",
-   "y": {},
-   "q": {
-    "20241231": 46.3,
-    "20251231": 54.7
-   },
-   "src": {
-    "q:20241231": [
-     "43d427c3-345f-4c55-b480-56022ccdcff8.pdf",
-     6,
-     "CAMS AUM (in Trillion)",
-     "46.3"
-    ],
-    "q:20251231": [
-     "43d427c3-345f-4c55-b480-56022ccdcff8.pdf",
-     6,
-     "CAMS AUM (in Trillion)",
-     "54.7"
-    ]
-   }
-  },
-  {
    "name": "CAMS KRA Repository",
    "unit": "Cr",
    "kind": "level",
@@ -454,50 +601,50 @@
    }
   },
   {
-   "name": "CAMS Market Share in Equity AuM",
-   "unit": "%",
-   "kind": "level",
-   "y": {},
-   "q": {
-    "20241231": 65.7,
-    "20251231": 66.4
+   "name": "Equity Net Sales",
+   "unit": "₹ Tn",
+   "kind": "flow",
+   "y": {
+    "20250331": 3.59,
+    "20260331": 3.47
    },
+   "q": {},
    "src": {
-    "q:20241231": [
-     "43d427c3-345f-4c55-b480-56022ccdcff8.pdf",
-     6,
-     "65.7% Share",
-     "65.7"
+    "y:20250331": [
+     "2aad185c-60d6-4e7e-9355-daf00337ee01.pdf",
+     9,
+     "Equity Net Sales (Rs. Tn.)",
+     "3.59"
     ],
-    "q:20251231": [
-     "43d427c3-345f-4c55-b480-56022ccdcff8.pdf",
-     6,
-     "66.4% Share",
-     "66.4"
+    "y:20260331": [
+     "2aad185c-60d6-4e7e-9355-daf00337ee01.pdf",
+     9,
+     "Equity Net Sales (Rs. Tn.)",
+     "3.47"
     ]
    }
   },
   {
-   "name": "Equity AuM",
-   "unit": "Trillion",
+   "name": "Live Investor Folios",
+   "unit": "Mn",
    "kind": "level",
    "y": {},
    "q": {
-    "20241231": 25.6,
-    "20251231": 30.3
+    "20251231": 107.8,
+    "20260331": 114.1
    },
    "src": {
-    "q:20241231": [
-     "43d427c3-345f-4c55-b480-56022ccdcff8.pdf",
-     6,
-     "Equity AUM (in Trillion)",
-     "25.6"
-    ],
     "q:20251231": [
      "43d427c3-345f-4c55-b480-56022ccdcff8.pdf",
-     6,
-     "Equity AUM (in Trillion)",
-     "30.3"
+     7,
+     "Live Investor Folios",
+     "107.8"
+    ],
+    "q:20260331": [
+     "2aad185c-60d6-4e7e-9355-daf00337ee01.pdf",
+     11,
+     "Live Investor Folios (as on March 31, 2026)",
+     "114.1"
     ]
    }
   },
@@ -527,6 +674,103 @@
    }
   },
   {
+   "name": "Live SIP Accounts",
+   "unit": "Mn",
+   "kind": "level",
+   "y": {},
+   "q": {
+    "20251231": 63.8,
+    "20260331": 67.0
+   },
+   "src": {
+    "q:20251231": [
+     "43d427c3-345f-4c55-b480-56022ccdcff8.pdf",
+     7,
+     "SIP Book",
+     "63.8"
+    ],
+    "q:20260331": [
+     "2aad185c-60d6-4e7e-9355-daf00337ee01.pdf",
+     11,
+     "SIP Book (as on March 31, 2026)",
+     "67.0"
+    ]
+   }
+  },
+  {
+   "name": "New SIP Registrations",
+   "unit": "Cr",
+   "kind": "flow",
+   "y": {
+    "20260331": 4.7
+   },
+   "q": {
+    "20260331": 1.26
+   },
+   "src": {
+    "y:20260331": [
+     "9404e4ec-f6f9-45bd-8933-63227dcd5f4e.pdf",
+     160,
+     "New SIP registrations reached 4.7 Cr in FY'26",
+     "4.7"
+    ],
+    "q:20260331": [
+     "2aad185c-60d6-4e7e-9355-daf00337ee01.pdf",
+     6,
+     "New SIP registrations reached 1.26 Cr. in Q4FY'26",
+     "1.26"
+    ]
+   }
+  },
+  {
+   "name": "New SIP Registrations",
+   "unit": "Lakh",
+   "kind": "flow",
+   "y": {
+    "20250331": 400.0,
+    "20260331": 468.0
+   },
+   "q": {},
+   "src": {
+    "y:20250331": [
+     "2aad185c-60d6-4e7e-9355-daf00337ee01.pdf",
+     9,
+     "New SIP registrations",
+     "400"
+    ],
+    "y:20260331": [
+     "2aad185c-60d6-4e7e-9355-daf00337ee01.pdf",
+     9,
+     "New SIP registrations",
+     "468"
+    ]
+   }
+  },
+  {
+   "name": "SIP Collections",
+   "unit": "₹ Cr",
+   "kind": "flow",
+   "y": {},
+   "q": {
+    "20260331": 58889.0,
+    "20260630": 59681.0
+   },
+   "src": {
+    "q:20260630": [
+     "fb3eeb5d-1c18-4c05-aa1d-cfc89a1c39dd.pdf",
+     2,
+     "SIP collections grew to ₹59,681 Cr. for the quarter",
+     "59,681"
+    ],
+    "q:20260331": [
+     "2aad185c-60d6-4e7e-9355-daf00337ee01.pdf",
+     6,
+     "SIP collections ... to Rs.58,889 Cr. for Q4FY'26",
+     "58,889"
+    ]
+   }
+  },
+  {
    "name": "SIP Market Share",
    "unit": "%",
    "kind": "level",
@@ -547,6 +791,80 @@
      2,
      "from 61.5% a year ago",
      "61.5"
+    ]
+   }
+  },
+  {
+   "name": "Systematic Transactions Processed",
+   "unit": "Mn",
+   "kind": "flow",
+   "y": {
+    "20260331": 873.0
+   },
+   "q": {
+    "20260331": 233.8
+   },
+   "src": {
+    "q:20260331": [
+     "2aad185c-60d6-4e7e-9355-daf00337ee01.pdf",
+     11,
+     "Systematic Transactions Processed",
+     "233.8"
+    ],
+    "y:20260331": [
+     "2aad185c-60d6-4e7e-9355-daf00337ee01.pdf",
+     13,
+     "Systematic Transactions Processed",
+     "873.0"
+    ]
+   }
+  },
+  {
+   "name": "Total Transaction Volumes",
+   "unit": "Mn",
+   "kind": "flow",
+   "y": {
+    "20260331": 1069.9
+   },
+   "q": {
+    "20260331": 293.0
+   },
+   "src": {
+    "q:20260331": [
+     "2aad185c-60d6-4e7e-9355-daf00337ee01.pdf",
+     11,
+     "Transaction Volume",
+     "293.0"
+    ],
+    "y:20260331": [
+     "2aad185c-60d6-4e7e-9355-daf00337ee01.pdf",
+     13,
+     "Transaction Volume",
+     "1,069.9"
+    ]
+   }
+  },
+  {
+   "name": "Unique Investor Base",
+   "unit": "Mn",
+   "kind": "level",
+   "y": {},
+   "q": {
+    "20251231": 44.6,
+    "20260331": 47.6
+   },
+   "src": {
+    "q:20251231": [
+     "43d427c3-345f-4c55-b480-56022ccdcff8.pdf",
+     7,
+     "Unique Investors Serviced",
+     "44.6"
+    ],
+    "q:20260331": [
+     "2aad185c-60d6-4e7e-9355-daf00337ee01.pdf",
+     11,
+     "Unique Investors Serviced (as on March 31, 2026)",
+     "47.6"
     ]
    }
   },
@@ -789,53 +1107,19 @@
    }
   },
   {
-   "name": "Live Investor Folios",
-   "unit": "Mn",
+   "name": "MF RTA Clients (AMCs)",
+   "unit": "count",
    "kind": "level",
    "y": {},
    "q": {
-    "20251231": 107.8
+    "20260331": 31.0
    },
    "src": {
-    "q:20251231": [
-     "43d427c3-345f-4c55-b480-56022ccdcff8.pdf",
-     7,
-     "Live Investor Folios",
-     "107.8"
-    ]
-   }
-  },
-  {
-   "name": "Live SIP Accounts",
-   "unit": "Mn",
-   "kind": "level",
-   "y": {},
-   "q": {
-    "20251231": 63.8
-   },
-   "src": {
-    "q:20251231": [
-     "43d427c3-345f-4c55-b480-56022ccdcff8.pdf",
-     7,
-     "SIP Book",
-     "63.8"
-    ]
-   }
-  },
-  {
-   "name": "New SIP Registrations",
-   "unit": "Cr",
-   "kind": "flow",
-   "y": {
-    "20260331": 4.7
-   },
-   "q": {},
-   "src": {
-    "y:20260331": [
-     "9404e4ec-f6f9-45bd-8933-63227dcd5f4e.pdf",
-     160,
-     "New SIP registrations reached 4.7 Cr in FY'26",
-     "4.7"
+    "q:20260331": [
+     "2aad185c-60d6-4e7e-9355-daf00337ee01.pdf",
+     6,
+     "total number of MF RTA clients now stands at 31 AMCs (doc period)",
+     "31"
     ]
    }
   },
@@ -908,23 +1192,6 @@
    }
   },
   {
-   "name": "SIP Collections",
-   "unit": "₹ Cr",
-   "kind": "flow",
-   "y": {},
-   "q": {
-    "20260630": 59681.0
-   },
-   "src": {
-    "q:20260630": [
-     "fb3eeb5d-1c18-4c05-aa1d-cfc89a1c39dd.pdf",
-     2,
-     "SIP collections grew to ₹59,681 Cr. for the quarter",
-     "59,681"
-    ]
-   }
-  },
-  {
    "name": "SIP Gross Sales",
    "unit": "Lakh Cr",
    "kind": "flow",
@@ -938,40 +1205,6 @@
      160,
      "SIP gross sales were at ₹.2.2 Lakh Crore in FY'26",
      "2.2"
-    ]
-   }
-  },
-  {
-   "name": "Unique Investor Base",
-   "unit": "Cr",
-   "kind": "level",
-   "y": {},
-   "q": {
-    "20260630": 4.85
-   },
-   "src": {
-    "q:20260630": [
-     "fb3eeb5d-1c18-4c05-aa1d-cfc89a1c39dd.pdf",
-     2,
-     "unique investor base expanded to over 4.85 Cr.",
-     "4.85"
-    ]
-   }
-  },
-  {
-   "name": "Unique Investor Base",
-   "unit": "Mn",
-   "kind": "level",
-   "y": {},
-   "q": {
-    "20251231": 44.6
-   },
-   "src": {
-    "q:20251231": [
-     "43d427c3-345f-4c55-b480-56022ccdcff8.pdf",
-     7,
-     "Unique Investors Serviced",
-     "44.6"
     ]
    }
   },
@@ -1394,5 +1627,5 @@
  "catalog_since": "2020-01-01",
  "catalog_until": "2026-09-07",
  "catalog_ver": 5,
- "updated": "2026-09-09"
+ "updated": "2026-09-11"
 }
