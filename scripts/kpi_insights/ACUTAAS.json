@@ -36,6 +36,13 @@
    "title": "Annual Report FY2024-25",
    "read": "2026-09-06",
    "by": "claude-session"
+  },
+  "4bc7022a-41c4-416e-8d91-cb93a3e92a7e.pdf": {
+   "kind": "ar",
+   "date": "2026-08-29",
+   "title": "Integrated Annual Report 2025-26",
+   "read": "2026-09-11",
+   "by": "claude-routine"
   }
  },
  "metrics": [
@@ -172,6 +179,65 @@
    }
   },
   {
+   "name": "Export Share of Revenue",
+   "unit": "%",
+   "kind": "flow",
+   "y": {
+    "20200331": 46.0,
+    "20210331": 52.0,
+    "20220331": 58.0,
+    "20230331": 59.0,
+    "20240331": 56.0,
+    "20250331": 74.0,
+    "20260331": 77.0
+   },
+   "q": {},
+   "src": {
+    "y:20200331": [
+     "9073249d-3a42-4d03-8c1e-d348cdf59400.pdf",
+     7,
+     "Export Revenue FY2020 (46%)",
+     "46"
+    ],
+    "y:20210331": [
+     "9073249d-3a42-4d03-8c1e-d348cdf59400.pdf",
+     7,
+     "Export Revenue FY2021 (52%)",
+     "52"
+    ],
+    "y:20220331": [
+     "9073249d-3a42-4d03-8c1e-d348cdf59400.pdf",
+     7,
+     "Export Revenue FY2022 (58%)",
+     "58"
+    ],
+    "y:20230331": [
+     "9073249d-3a42-4d03-8c1e-d348cdf59400.pdf",
+     7,
+     "Export Revenue FY2023 (59%)",
+     "59"
+    ],
+    "y:20240331": [
+     "9073249d-3a42-4d03-8c1e-d348cdf59400.pdf",
+     7,
+     "Export Revenue FY2024 (56%)",
+     "56"
+    ],
+    "y:20250331": [
+     "9073249d-3a42-4d03-8c1e-d348cdf59400.pdf",
+     7,
+     "Export Revenue FY2025 (74%)",
+     "74"
+    ],
+    "y:20260331": [
+     "4bc7022a-41c4-416e-8d91-cb93a3e92a7e.pdf",
+     72,
+     "Exports contributed approximately 77% of total revenue",
+     "77"
+    ]
+   }
+  },
+  {
    "name": "Export Revenue",
    "unit": "₹ Mn",
    "kind": "flow",
@@ -224,54 +290,158 @@
    }
   },
   {
-   "name": "Export Share of Revenue",
-   "unit": "%",
-   "kind": "flow",
+   "name": "Number of Dealers/Distributors",
+   "unit": "count",
+   "kind": "level",
    "y": {
-    "20200331": 46.0,
-    "20210331": 52.0,
-    "20220331": 58.0,
-    "20230331": 59.0,
-    "20240331": 56.0,
-    "20250331": 74.0
+    "20250331": 24.0,
+    "20260331": 53.0
    },
    "q": {},
    "src": {
-    "y:20200331": [
-     "9073249d-3a42-4d03-8c1e-d348cdf59400.pdf",
-     7,
-     "Export Revenue FY2020 (46%)",
-     "46"
-    ],
-    "y:20210331": [
-     "9073249d-3a42-4d03-8c1e-d348cdf59400.pdf",
-     7,
-     "Export Revenue FY2021 (52%)",
-     "52"
-    ],
-    "y:20220331": [
-     "9073249d-3a42-4d03-8c1e-d348cdf59400.pdf",
-     7,
-     "Export Revenue FY2022 (58%)",
-     "58"
-    ],
-    "y:20230331": [
-     "9073249d-3a42-4d03-8c1e-d348cdf59400.pdf",
-     7,
-     "Export Revenue FY2023 (59%)",
-     "59"
-    ],
-    "y:20240331": [
-     "9073249d-3a42-4d03-8c1e-d348cdf59400.pdf",
-     7,
-     "Export Revenue FY2024 (56%)",
-     "56"
+    "y:20260331": [
+     "4bc7022a-41c4-416e-8d91-cb93a3e92a7e.pdf",
+     136,
+     "Number of dealers / distributors to whom sales are made",
+     "53"
     ],
     "y:20250331": [
-     "9073249d-3a42-4d03-8c1e-d348cdf59400.pdf",
-     7,
-     "Export Revenue FY2025 (74%)",
-     "74"
+     "4bc7022a-41c4-416e-8d91-cb93a3e92a7e.pdf",
+     136,
+     "Number of dealers / distributors to whom sales are made",
+     "24"
+    ]
+   }
+  },
+  {
+   "name": "Number of Trading Houses (Purchase Channel)",
+   "unit": "count",
+   "kind": "level",
+   "y": {
+    "20250331": 503.0,
+    "20260331": 560.0
+   },
+   "q": {},
+   "src": {
+    "y:20260331": [
+     "4bc7022a-41c4-416e-8d91-cb93a3e92a7e.pdf",
+     136,
+     "Number of trading houses where purchases are made",
+     "560"
+    ],
+    "y:20250331": [
+     "4bc7022a-41c4-416e-8d91-cb93a3e92a7e.pdf",
+     136,
+     "Number of trading houses where purchases are made",
+     "503"
+    ]
+   }
+  },
+  {
+   "name": "Total Installed Capacity",
+   "unit": "KL",
+   "kind": "level",
+   "y": {
+    "20260331": 1100.0
+   },
+   "q": {
+    "20260331": 1100.0
+   },
+   "src": {
+    "q:20260331": [
+     "f01fe607-5d15-45c1-a630-ad9b4ef4809b.pdf",
+     10,
+     "Total Installed Capacity (KL)",
+     "1,100"
+    ],
+    "y:20260331": [
+     "4bc7022a-41c4-416e-8d91-cb93a3e92a7e.pdf",
+     20,
+     "Total Installed Capacity (doc period)",
+     "1,100"
+    ]
+   }
+  },
+  {
+   "name": "Total Land Area",
+   "unit": "sq. mtrs.",
+   "kind": "level",
+   "y": {
+    "20260331": 92835.0
+   },
+   "q": {
+    "20260331": 92835.0
+   },
+   "src": {
+    "q:20260331": [
+     "f01fe607-5d15-45c1-a630-ad9b4ef4809b.pdf",
+     10,
+     "Total Land Area (sq. mtrs.)",
+     "92,835"
+    ],
+    "y:20260331": [
+     "4bc7022a-41c4-416e-8d91-cb93a3e92a7e.pdf",
+     20,
+     "Total Land Area (doc period)",
+     "92,835"
+    ]
+   }
+  },
+  {
+   "name": "Total Permanent Employees (BRSR, Standalone)",
+   "unit": "count",
+   "kind": "level",
+   "y": {
+    "20250331": 812.0,
+    "20260331": 940.0
+   },
+   "q": {},
+   "src": {
+    "y:20260331": [
+     "4bc7022a-41c4-416e-8d91-cb93a3e92a7e.pdf",
+     141,
+     "Total Permanent Employees",
+     "940"
+    ],
+    "y:20250331": [
+     "4bc7022a-41c4-416e-8d91-cb93a3e92a7e.pdf",
+     141,
+     "Total Permanent Employees",
+     "812"
+    ]
+   }
+  },
+  {
+   "name": "Battery Chemicals Installed Capacity (VC & FEC)",
+   "unit": "MT",
+   "kind": "level",
+   "y": {
+    "20260331": 2000.0
+   },
+   "q": {},
+   "src": {
+    "y:20260331": [
+     "4bc7022a-41c4-416e-8d91-cb93a3e92a7e.pdf",
+     16,
+     "2,000 MT Capacity, VC and FEC each (doc period)",
+     "2,000"
+    ]
+   }
+  },
+  {
+   "name": "Employee Headcount",
+   "unit": "count",
+   "kind": "level",
+   "y": {
+    "20260331": 1000.0
+   },
+   "q": {},
+   "src": {
+    "y:20260331": [
+     "4bc7022a-41c4-416e-8d91-cb93a3e92a7e.pdf",
+     4,
+     "1,000+ Employees (doc period)",
+     "1,000"
     ]
    }
   },
@@ -348,53 +518,320 @@
    "unit": "count",
    "kind": "level",
    "y": {
-    "20260331": 26.0
+    "20260331": 29.0
    },
    "q": {},
    "src": {
     "y:20260331": [
-     "f01fe607-5d15-45c1-a630-ad9b4ef4809b.pdf",
-     12,
-     "26 Process Patents (8 published, 10 granted, 8 under publication)",
-     "26"
+     "4bc7022a-41c4-416e-8d91-cb93a3e92a7e.pdf",
+     71,
+     "29 process patents, including 10 granted patents, 9 published patents and 10 pat",
+     "29"
     ]
-   }
+   },
+   "restated": [
+    [
+     "y:20260331",
+     "f01fe607-5d15-45c1-a630-ad9b4ef4809b.pdf",
+     26.0,
+     "4bc7022a-41c4-416e-8d91-cb93a3e92a7e.pdf",
+     29.0
+    ]
+   ]
   },
   {
-   "name": "Total Installed Capacity",
-   "unit": "KL",
+   "name": "R&D Team Members",
+   "unit": "count",
    "kind": "level",
-   "y": {},
-   "q": {
-    "20260331": 1100.0
+   "y": {
+    "20260331": 130.0
    },
+   "q": {},
    "src": {
-    "q:20260331": [
-     "f01fe607-5d15-45c1-a630-ad9b4ef4809b.pdf",
-     10,
-     "Total Installed Capacity (KL)",
-     "1,100"
-    ]
-   }
-  },
-  {
-   "name": "Total Land Area",
-   "unit": "sq. mtrs.",
-   "kind": "level",
-   "y": {},
-   "q": {
-    "20260331": 92835.0
-   },
-   "src": {
-    "q:20260331": [
-     "f01fe607-5d15-45c1-a630-ad9b4ef4809b.pdf",
-     10,
-     "Total Land Area (sq. mtrs.)",
-     "92,835"
+    "y:20260331": [
+     "4bc7022a-41c4-416e-8d91-cb93a3e92a7e.pdf",
+     4,
+     "130+ R&D team members (doc period)",
+     "130"
     ]
    }
   }
  ],
  "held": [],
- "updated": "2026-09-06"
+ "updated": "2026-09-11",
+ "catalog": [
+  {
+   "kind": "ar",
+   "date": "2026-08-29",
+   "att": "4bc7022a-41c4-416e-8d91-cb93a3e92a7e.pdf",
+   "title": "Annual Report for the FY 2025-26 is herewith enclosed.",
+   "size": 6849601,
+   "cat": "Others",
+   "sub": "Reg. 34 (1) Annual Report"
+  },
+  {
+   "kind": "ip",
+   "date": "2026-07-24",
+   "att": "4abd0291-38c8-472f-916c-bb450ca8ca24.pdf",
+   "title": "Investor Presentation on financial results for the first quarter ended June 30, 2026 is attached.",
+   "size": 1201165,
+   "cat": "Company Update",
+   "sub": "Investor Presentation"
+  },
+  {
+   "kind": "ip",
+   "date": "2026-05-16",
+   "att": "f01fe607-5d15-45c1-a630-ad9b4ef4809b.pdf",
+   "title": "Corporate Presentation which shall be discussed at the upcoming Investor Conferences/Meets is herewith enclosed.",
+   "size": 2702813,
+   "cat": "Company Update",
+   "sub": "Investor Presentation"
+  },
+  {
+   "kind": "ip",
+   "date": "2026-04-30",
+   "att": "a64b98a0-07ec-40de-b2b3-1951a5268396.pdf",
+   "title": "Investor Presentation on fourth quarter and year ended financial results as on March 31, 2026 is attached.",
+   "size": 1144800,
+   "cat": "Company Update",
+   "sub": "Investor Presentation"
+  },
+  {
+   "kind": "ip",
+   "date": "2026-01-28",
+   "att": "b2d8e948-faf3-460a-a9b6-50733ab37377.pdf",
+   "title": "Investor Presentation discussing the Q3FY26 financial results is herewith enclosed.",
+   "size": 1018406,
+   "cat": "Company Update",
+   "sub": "Investor Presentation"
+  },
+  {
+   "kind": "ip",
+   "date": "2025-10-17",
+   "att": "30ad017a-17e4-461d-8db5-428fecd374ae.pdf",
+   "title": "Investor presentation discussing the Q2FY 26 unaudited financial results is herewith enclosed",
+   "size": 1044591,
+   "cat": "Company Update",
+   "sub": "Investor Presentation"
+  },
+  {
+   "kind": "ar",
+   "date": "2025-09-01",
+   "att": "9073249d-3a42-4d03-8c1e-d348cdf59400.pdf",
+   "title": "Annual Report for the FY 2024-25 is enclosed.",
+   "size": 8262208,
+   "cat": "Others",
+   "sub": "Reg. 34 (1) Annual Report"
+  },
+  {
+   "kind": "ip",
+   "date": "2025-07-30",
+   "att": "1a14c5c5-0bc4-4c39-8ee0-7d53d8b37fee.pdf",
+   "title": "Investor Presentation discussing the Q1 FY26 financial results is enclosed.",
+   "size": 2692607,
+   "cat": "Company Update",
+   "sub": "Investor Presentation"
+  },
+  {
+   "kind": "ip",
+   "date": "2025-05-02",
+   "att": "b3e0f293-0d8d-428f-abbe-9350103a7159.pdf",
+   "title": "Investor presentation discussing the Q4 FY25 financial results is enclosed herewith.",
+   "size": 4816553,
+   "cat": "Company Update",
+   "sub": "Investor Presentation"
+  },
+  {
+   "kind": "ip",
+   "date": "2025-01-28",
+   "att": "89ce6e0b-0a50-4cdc-9f62-969c0d3c4c54.pdf",
+   "title": "Investor Presentation for the Quarter ended December 31, 2024 is herewith enclosed.",
+   "size": 27808258,
+   "cat": "Company Update",
+   "sub": "Investor Presentation"
+  },
+  {
+   "kind": "ip",
+   "date": "2024-10-29",
+   "att": "ba58ca59-c75e-4b59-828a-206727a5caa1.pdf",
+   "title": "Investor Presentation for the quarter and half year ended September 30, 2024 is attached herewith.",
+   "size": 4964816,
+   "cat": "Company Update",
+   "sub": "Investor Presentation"
+  },
+  {
+   "kind": "ar",
+   "date": "2024-08-29",
+   "att": "6c7f86d8-3ef3-4550-aaff-df9fdc171b44.pdf",
+   "title": "Annual Report for the FY 2023-24 is herewith enclosed",
+   "size": 7529336,
+   "cat": "Others",
+   "sub": "Reg. 34 (1) Annual Report"
+  },
+  {
+   "kind": "ip",
+   "date": "2024-08-12",
+   "att": "7e221215-7ed8-461c-813e-7fbc90551879.pdf",
+   "title": "Investor presentation on financial results for the first quarter ended on June 30, 2024 and other business matters is enclosed herewith.",
+   "size": 4921535,
+   "cat": "Company Update",
+   "sub": "Investor Presentation"
+  },
+  {
+   "kind": "ip",
+   "date": "2024-05-16",
+   "att": "747620c2-48be-43f8-8669-8b57bff19c17.pdf",
+   "title": "Announcement under Regulation 30 (LODR)-Investor Presentation",
+   "size": 3337339,
+   "cat": "Company Update",
+   "sub": "Investor Presentation"
+  },
+  {
+   "kind": "ip",
+   "date": "2024-05-11",
+   "att": "63be8a97-3408-4b57-9c67-20cba6a62be2.pdf",
+   "title": "Investor Presentation on fourth quarter and year ended financial results as on March 31, 2024 is attached",
+   "size": 4715352,
+   "cat": "Company Update",
+   "sub": "Investor Presentation"
+  },
+  {
+   "kind": "ip",
+   "date": "2024-02-12",
+   "att": "fada1183-d7e7-4bdc-9abf-2f5802e4b5fe.pdf",
+   "title": "Announcement under Regulation 30 (LODR)-Investor Presentation",
+   "size": 6288879,
+   "cat": "Company Update",
+   "sub": "Investor Presentation"
+  },
+  {
+   "kind": "ip",
+   "date": "2023-11-09",
+   "att": "09a2cb85-0720-4973-9d6a-d00fa22566cb.pdf",
+   "title": "Investor Presentation on financial results and other matters for the quarter and half year ended September 30, 2023 as attached.",
+   "size": 5072509,
+   "cat": "Company Update",
+   "sub": "Investor Presentation"
+  },
+  {
+   "kind": "ar",
+   "date": "2023-09-03",
+   "att": "4e9f1582-b221-4dbc-9692-6ead6ed09bb9.pdf",
+   "title": "Annual Report for the Financial Year 2022-23",
+   "size": 6339037,
+   "cat": "Others",
+   "sub": "Reg. 34 (1) Annual Report"
+  },
+  {
+   "kind": "ar",
+   "date": "2023-09-02",
+   "att": "429b0d50-1fed-41eb-a627-ea0a3a29e6eb.pdf",
+   "title": "Annual Report for FY 2022-23 is attached",
+   "size": 6104235,
+   "cat": "Others",
+   "sub": "Reg. 34 (1) Annual Report"
+  },
+  {
+   "kind": "ip",
+   "date": "2023-08-11",
+   "att": "ce93d03e-1487-46bd-b7f0-c72b40643311.pdf",
+   "title": "Investor Presentation on the first quarter ended financial results as on June 30, 2023 is attached.",
+   "size": 3856072,
+   "cat": "Company Update",
+   "sub": "Investor Presentation"
+  },
+  {
+   "kind": "ip",
+   "date": "2023-05-14",
+   "att": "a6bdb2e5-60eb-433f-a7bc-0483be11c40f.pdf",
+   "title": "In accordance with Regulation 30 of the SEBI (Listing Obligation and Disclosure Requirements) Regulations, 2015, we are enclosing herewith the Investor Presenta",
+   "size": 4078347,
+   "cat": "Company Update",
+   "sub": "Investor Presentation"
+  },
+  {
+   "kind": "ip",
+   "date": "2023-02-04",
+   "att": "b4a4526e-6f42-4790-a3ab-405ea93005d4.pdf",
+   "title": "We are enclosing herewith the Investor Presentation on third quarter & nine months ended financial results as on December 31, 2022 and other business matters.",
+   "size": 4033736,
+   "cat": "Company Update",
+   "sub": "Investor Presentation"
+  },
+  {
+   "kind": "ip",
+   "date": "2022-11-05",
+   "att": "2aa72cec-d195-461a-9c36-bc59251d20c5.pdf",
+   "title": "In accordance with Regulation 30 of the SEBI (Listing Obligation and Disclosure Requirements) Regulations, 2015, we are enclosing herewith the Investor Presenta",
+   "size": 3831415,
+   "cat": "Company Update",
+   "sub": "Investor Presentation"
+  },
+  {
+   "kind": "ip",
+   "date": "2022-08-10",
+   "att": "052ac7bf-9d59-46ca-9aa9-ddb955cdaf9a.pdf",
+   "title": "Revised Investor presentation on Q1 FY 23 results and other  business matters.",
+   "size": 3892252,
+   "cat": "Company Update",
+   "sub": "Investor Presentation"
+  },
+  {
+   "kind": "ip",
+   "date": "2022-08-10",
+   "att": "2d27d16a-1243-4973-96b6-488f82075a49.pdf",
+   "title": "In accordance with Regulation 30 of the SEBI (Listing Obligation and Disclosure Requirements) Regulations, 2015, we are enclosing herewith the Investor Presenta",
+   "size": 6525688,
+   "cat": "Company Update",
+   "sub": "Investor Presentation"
+  },
+  {
+   "kind": "ar",
+   "date": "2022-07-18",
+   "att": "bf4aaa36-77a6-4c42-b258-8d5749b5c059.pdf",
+   "title": "As required under Regulation 30 and Regulation 34(1) of the SEBI (Listing Obligations and Disclosure Requirements) Regulations, 2015, we herewith submit the Ann",
+   "size": 10180820,
+   "cat": "Others",
+   "sub": "Reg. 34 (1) Annual Report"
+  },
+  {
+   "kind": "ip",
+   "date": "2022-05-16",
+   "att": "747b2aee-57cb-4b7c-b05a-45bb0eb233b4.pdf",
+   "title": "In accordance with Regulation 30 of the SEBI (Listing Obligation and Disclosure Requirements) Regulations, 2015, we are enclosing herewith the Investor Presenta",
+   "size": 3788189,
+   "cat": "Company Update",
+   "sub": "Investor Presentation"
+  },
+  {
+   "kind": "ar",
+   "fy": 2022,
+   "date": "2022-03-31",
+   "url": "https://www.bseindia.com/bseplus/AnnualReport/543349/73777543349.pdf",
+   "att": "73777543349.pdf",
+   "title": "Annual Report FY22",
+   "size": 0
+  },
+  {
+   "kind": "ip",
+   "date": "2022-02-08",
+   "att": "89f56f06-d215-4de4-8bcd-ebb81c8c73a2.pdf",
+   "title": "In accordance with Regulation 30 of the SEBI (Listing Obligation and Disclosure Requirements) Regulations, 2015, we are enclosing herewith the Investor Presenta",
+   "size": 2250908,
+   "cat": "Company Update",
+   "sub": "Investor Presentation"
+  },
+  {
+   "kind": "ip",
+   "date": "2021-10-25",
+   "att": "2ed0197f-845f-4416-a716-258214c6a283.pdf",
+   "title": "In accordance with Regulation 30 of the SEBI (Listing Obligation and Disclosure Requirements) Regulations, 2015, we are enclosing  herewith the Investor Present",
+   "size": 3616089,
+   "cat": "Company Update",
+   "sub": "Investor Presentation"
+  }
+ ],
+ "catalog_since": "2020-01-01",
+ "catalog_until": "2026-09-11",
+ "catalog_ver": 5
 }
