@@ -1,0 +1,6 @@
+{
+ "_doc": "Per-symbol allowlist read by build_headcount.py: fiscal years that implausible_years() would drop as a suspected basis flip (>1.8x cliff in a non-monotonic series) but are REAL structural changes — mergers, demergers — verified against the filing. Key = symbol, value = {FY-end year: reason}. Add an entry only with the grid read that proves it (male+female reconciling to the total); never to silence a genuine mixed-basis series.",
+ "SEQUENT": {
+  "2026": "Sequent Scientific merged with Viyash Life Sciences in FY26 (BSE SecurityId now VIYASH). FY26 BRSR grid: permanent 2,568 + other 0 = emp_total 2,568 (M 2,286 + F 282 reconciles), permanent workers 332 -> on-roll 2,900. Prior years 1,301 / 1,195 / 1,244 are the pre-merger standalone entity: same basis, real jump."
+ }
+}
