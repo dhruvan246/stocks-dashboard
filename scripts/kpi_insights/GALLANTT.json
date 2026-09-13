@@ -43,6 +43,20 @@
    "title": "Q2 & H1 FY26 Financial Results filing",
    "read": "2026-09-07",
    "by": "claude-routine"
+  },
+  "e5793d34-3caa-419a-ad22-ed3de995529f.pdf": {
+   "kind": "ar",
+   "date": "2026-09-07",
+   "title": "Annual Report FY2025-26",
+   "read": "2026-09-13",
+   "by": "claude-routine"
+  },
+  "a294ff72-f379-4753-b926-a73624fefb48.pdf": {
+   "kind": "ar",
+   "date": "2025-09-04",
+   "title": "Annual Report FY2024-25",
+   "read": "2026-09-13",
+   "by": "claude-routine"
   }
  },
  "metrics": [
@@ -622,27 +636,14 @@
    }
   },
   {
-   "name": "Captive Power Capacity",
-   "unit": "MW",
-   "kind": "level",
-   "y": {},
-   "q": {
-    "20260630": 129.0
-   },
-   "src": {
-    "q:20260630": [
-     "2d262296-b422-42ef-9eaa-b87886566a19.pdf",
-     10,
-     "Existing Capacity - Thermal Power (doc period)",
-     "129"
-    ]
-   }
-  },
-  {
    "name": "Distributors Count",
    "unit": "count",
    "kind": "level",
-   "y": {},
+   "y": {
+    "20240331": 59.0,
+    "20250331": 67.0,
+    "20260331": 34.0
+   },
    "q": {
     "20260630": 34.0
    },
@@ -652,6 +653,49 @@
      21,
      "Distributors (doc period)",
      "34"
+    ],
+    "y:20260331": [
+     "e5793d34-3caa-419a-ad22-ed3de995529f.pdf",
+     10,
+     "34 distributors (doc period)",
+     "34"
+    ],
+    "y:20250331": [
+     "a294ff72-f379-4753-b926-a73624fefb48.pdf",
+     97,
+     "Number of dealers / distributors to whom sales are made",
+     "67"
+    ],
+    "y:20240331": [
+     "a294ff72-f379-4753-b926-a73624fefb48.pdf",
+     97,
+     "Number of dealers / distributors to whom sales are made",
+     "59"
+    ]
+   }
+  },
+  {
+   "name": "Captive Power Capacity",
+   "unit": "MW",
+   "kind": "level",
+   "y": {
+    "20260331": 129.0
+   },
+   "q": {
+    "20260630": 129.0
+   },
+   "src": {
+    "q:20260630": [
+     "2d262296-b422-42ef-9eaa-b87886566a19.pdf",
+     10,
+     "Existing Capacity - Thermal Power (doc period)",
+     "129"
+    ],
+    "y:20260331": [
+     "e5793d34-3caa-419a-ad22-ed3de995529f.pdf",
+     14,
+     "Captive power capacity (doc period)",
+     "129"
     ]
    }
   },
@@ -659,7 +703,9 @@
    "name": "Installed Steel Capacity",
    "unit": "MT",
    "kind": "level",
-   "y": {},
+   "y": {
+    "20260331": 993300.0
+   },
    "q": {
     "20260630": 993300.0
    },
@@ -669,6 +715,12 @@
      10,
      "Existing Capacity - Steel Plant (doc period)",
      "9,93,300"
+    ],
+    "y:20260331": [
+     "e5793d34-3caa-419a-ad22-ed3de995529f.pdf",
+     16,
+     "Post-expansion finished steel from existing 9,93,300 MT (doc period)",
+     "9,93,300"
     ]
    }
   },
@@ -676,7 +728,9 @@
    "name": "Pellet Capacity",
    "unit": "K",
    "kind": "level",
-   "y": {},
+   "y": {
+    "20260331": 792.0
+   },
    "q": {
     "20260630": 792.0
    },
@@ -686,6 +740,108 @@
      8,
      "Pellet Capacity MTPA backward integration (doc period)",
      "792"
+    ],
+    "y:20260331": [
+     "e5793d34-3caa-419a-ad22-ed3de995529f.pdf",
+     16,
+     "Pellet capacity, 792K MTPA (doc period)",
+     "792"
+    ]
+   }
+  },
+  {
+   "name": "Purchases from Top 10 Trading Houses (share of trading house purchases)",
+   "unit": "%",
+   "kind": "level",
+   "y": {
+    "20240331": 38.3,
+    "20250331": 32.3
+   },
+   "q": {},
+   "src": {
+    "y:20250331": [
+     "a294ff72-f379-4753-b926-a73624fefb48.pdf",
+     97,
+     "Purchases from top 10 trading houses as % of total purchases from trading houses",
+     "32.30"
+    ],
+    "y:20240331": [
+     "a294ff72-f379-4753-b926-a73624fefb48.pdf",
+     97,
+     "Purchases from top 10 trading houses as % of total purchases from trading houses",
+     "38.30"
+    ]
+   }
+  },
+  {
+   "name": "Purchases from Trading Houses (share of total purchases)",
+   "unit": "%",
+   "kind": "level",
+   "y": {
+    "20240331": 48.27,
+    "20250331": 48.19
+   },
+   "q": {},
+   "src": {
+    "y:20250331": [
+     "a294ff72-f379-4753-b926-a73624fefb48.pdf",
+     97,
+     "Purchases from trading houses as % of total purchases",
+     "48.19"
+    ],
+    "y:20240331": [
+     "a294ff72-f379-4753-b926-a73624fefb48.pdf",
+     97,
+     "Purchases from trading houses as % of total purchases",
+     "48.27"
+    ]
+   }
+  },
+  {
+   "name": "Sales to Dealers/Distributors (share of total sales)",
+   "unit": "%",
+   "kind": "level",
+   "y": {
+    "20240331": 79.2,
+    "20250331": 82.91
+   },
+   "q": {},
+   "src": {
+    "y:20250331": [
+     "a294ff72-f379-4753-b926-a73624fefb48.pdf",
+     97,
+     "Sales to dealer / distributors as % of total sales",
+     "82.91"
+    ],
+    "y:20240331": [
+     "a294ff72-f379-4753-b926-a73624fefb48.pdf",
+     97,
+     "Sales to dealer / distributors as % of total sales",
+     "79.20"
+    ]
+   }
+  },
+  {
+   "name": "Sales to Top 10 Dealers (share of dealer sales)",
+   "unit": "%",
+   "kind": "level",
+   "y": {
+    "20240331": 63.74,
+    "20250331": 66.6
+   },
+   "q": {},
+   "src": {
+    "y:20250331": [
+     "a294ff72-f379-4753-b926-a73624fefb48.pdf",
+     97,
+     "Sales to top 10 dealers / distributors as % of total sales to dealer / distribut",
+     "66.60"
+    ],
+    "y:20240331": [
+     "a294ff72-f379-4753-b926-a73624fefb48.pdf",
+     97,
+     "Sales to top 10 dealers / distributors as % of total sales to dealer / distribut",
+     "63.74"
     ]
    }
   },
@@ -693,7 +849,9 @@
    "name": "Serviceable Market Share",
    "unit": "%",
    "kind": "level",
-   "y": {},
+   "y": {
+    "20260331": 25.0
+   },
    "q": {
     "20260630": 25.0
    },
@@ -703,6 +861,12 @@
      21,
      "Serviceable Market Share (doc period)",
      "25"
+    ],
+    "y:20260331": [
+     "e5793d34-3caa-419a-ad22-ed3de995529f.pdf",
+     10,
+     "Gallantt commands about 25% market share (doc period)",
+     "25"
     ]
    }
   },
@@ -710,7 +874,9 @@
    "name": "Solar Power Capacity",
    "unit": "MW",
    "kind": "level",
-   "y": {},
+   "y": {
+    "20260331": 78.0
+   },
    "q": {
     "20260630": 7.0
    },
@@ -720,6 +886,53 @@
      10,
      "Existing Capacity - Solar (doc period)",
      "7"
+    ],
+    "y:20260331": [
+     "e5793d34-3caa-419a-ad22-ed3de995529f.pdf",
+     16,
+     "78 MW Solar Power Plant under development (doc period)",
+     "78"
+    ]
+   }
+  },
+  {
+   "name": "Trading Houses Count (Purchases)",
+   "unit": "count",
+   "kind": "level",
+   "y": {
+    "20240331": 224.0,
+    "20250331": 424.0
+   },
+   "q": {},
+   "src": {
+    "y:20250331": [
+     "a294ff72-f379-4753-b926-a73624fefb48.pdf",
+     97,
+     "Number of trading houses where purchases are made",
+     "424"
+    ],
+    "y:20240331": [
+     "a294ff72-f379-4753-b926-a73624fefb48.pdf",
+     97,
+     "Number of trading houses where purchases are made",
+     "224"
+    ]
+   }
+  },
+  {
+   "name": "Active Dealers Count",
+   "unit": "count",
+   "kind": "level",
+   "y": {
+    "20260331": 3000.0
+   },
+   "q": {},
+   "src": {
+    "y:20260331": [
+     "e5793d34-3caa-419a-ad22-ed3de995529f.pdf",
+     10,
+     "around 3,000 active dealers (doc period)",
+     "3,000"
     ]
    }
   }
@@ -1108,5 +1321,5 @@
  "catalog_since": "2020-01-01",
  "catalog_until": "2026-09-07",
  "catalog_ver": 5,
- "updated": "2026-09-07"
+ "updated": "2026-09-13"
 }
