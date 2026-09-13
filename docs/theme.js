@@ -56,7 +56,6 @@
     chev: '<path d="m6 9 6 6 6-6"/>',
     book: '<path d="M2 3h6a4 4 0 0 1 4 4v14a3 3 0 0 0-3-3H2z"/><path d="M22 3h-6a4 4 0 0 0-4 4v14a3 3 0 0 1 3-3h7z"/>',
     phone: '<rect x="5" y="2" width="14" height="20" rx="2"/><path d="M12 18h.01"/>',
-    mappin: '<path d="M20 10c0 6-8 12-8 12s-8-6-8-12a8 8 0 0 1 16 0Z"/><circle cx="12" cy="10" r="3"/>',
     ext: '<path d="M7 7h10v10"/><path d="M7 17 17 7"/>'
   };
   function ic(name, cls) {
@@ -295,8 +294,7 @@
       ['./fill-coverage.html',     ic('bars'), 'Fill Coverage'],
       ['./coverage.html',          ic('compass'), 'Coverage Matrix'],
       ['./analytics.html',         ic('bars2'), 'Page Stats'],
-      ['./insurer-inbox.html',     ic('inbox'), 'Insurer Inbox'],
-      ['./trip.html',              ic('mappin'), 'Trip Map']
+      ['./insurer-inbox.html',     ic('inbox'), 'Insurer Inbox']
     ] }
   ];
   var NAV_CTA = ['./stock-backtest.html',  ic('flask'), 'Create a strategy'];
@@ -363,7 +361,7 @@
     var _u = new URL(location.href), _ok = _u.searchParams.get('ownerkey');
     if (_ok) { localStorage.setItem('bt_owner_key', _ok); _u.searchParams.delete('ownerkey'); history.replaceState(null, '', _u.pathname + _u.search + _u.hash); }
   } catch (e) {}
-  var PRIVATE_PAGES = ['watchlist.html', 'live-tracking.html', 'insurer-inbox.html', 'analytics.html', 'status.html', 'results-coverage.html', 'fill-coverage.html', 'coverage.html', 'trip.html'];
+  var PRIVATE_PAGES = ['watchlist.html', 'live-tracking.html', 'insurer-inbox.html', 'analytics.html', 'status.html', 'results-coverage.html', 'fill-coverage.html', 'coverage.html'];
   var IS_OWNER = false; try { IS_OWNER = !!localStorage.getItem('bt_owner_key'); } catch (e) {}
   if (!IS_OWNER) NAV_GROUPS.forEach(function (g) {
     var keep = function (it) { return PRIVATE_PAGES.indexOf(it[0].replace('./', '')) < 0; };

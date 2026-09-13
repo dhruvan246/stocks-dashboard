@@ -16245,7 +16245,8 @@ the sample is generated at load and NEVER persisted; a user's own stops live in 
 `localStorage.tm_trip_v1` = `{name, sample:false, stops:[{id, day:'YYYY-MM-DD', time:'HH:MM', name,
 note, lat, lng}], updated}`, window in `tm_window_v1` = `{past, future}`. "Reset to sample" removes the
 key. Not a synced SETTINGS key (theme.js) on purpose — the doc is public-readable via sw-sync.
-Nav: 'Trip Map' under Tools, in `PRIVATE_PAGES` (owner browsers only); the direct URL works for anyone.
+Nav: NOT in the menu or the home tiles (user, 2026-09-13: "Remove trip map from app nav" — the entry
+shipped under Tools as owner-only for ~40 min, then came out with sw v150); reach it by direct URL only.
 
 **Build notes (the non-obvious bits).**
 - **No Tailwind CDN on this page.** The header keeps the shared class names so theme.css skins it, and
@@ -16258,7 +16259,7 @@ Nav: 'Trip Map' under Tools, in `PRIVATE_PAGES` (owner browsers only); the direc
   MutationObserver on `<html data-theme>`. Attribution (OSM + CARTO) is mandatory and stays visible
   above the phone sheet. Routes are Leaflet SVG polylines styled by CSS class (theme tokens work because
   CSS outranks SVG presentation attributes).
-- `theme.js`: `mappin` icon; `GLOSS_SKIP` includes trip.html (the glossary would otherwise be appended
+- `theme.js`: `GLOSS_SKIP` includes trip.html (the glossary would otherwise be appended
   INSIDE the map stage). The panel is `z-index:1100` — above Leaflet's controls (1000) so an expanded
   phone sheet covers zoom + attribution instead of being painted over.
 - Why not a claude.ai Artifact: the artifact CSP blocks tile images, so a raster map cannot render there.

@@ -162,10 +162,10 @@ function check(name, cond, detail) { const ok = !!cond; console.log((ok ? 'PASS 
   await page.screenshot({ path: path.join(SHOTS, '04-desktop-light.png') });
   await page.click('#sw-theme-switch button[data-theme="dark"]'); await page.waitForTimeout(300);
 
-  // ---------- 9. owner sees the nav entry ----------
+  // ---------- 9. the page is NOT in the nav, even for the owner ----------
   await page.evaluate(() => localStorage.setItem('bt_owner_key', 'test-owner'));
   await page.reload({ waitUntil: 'load' }); await page.waitForTimeout(600);
-  check('owner nav lists Trip Map', (await page.evaluate(() => document.querySelector('header nav').textContent)).includes('Trip Map'));
+  check('owner nav does NOT list Trip Map (removed from the nav 2026-09-13; direct URL only)', !(await page.evaluate(() => document.querySelector('header nav').textContent)).includes('Trip Map'));
   await page.evaluate(() => localStorage.removeItem('bt_owner_key'));
 
   // ---------- 10. phone (375px) ----------
