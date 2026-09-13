@@ -16227,52 +16227,66 @@ Live verification after push is recorded in the commit/memory.
 
 ---
 
-## 139. ★ TRIP MAP — a rolling itinerary on a map  (docs/trip.html, built 2026-09-13)
+## 139. ★ JAPAN GROUP-TOUR PAGE — a standalone traveller page on the map  (docs/trip.html, 2026-09-13)
 
-**What it is.** One page, the map IS the page: the days already done (grey pins, dotted route), today
-(pulsing accent pin) and the days ahead (numbered outlined pins, solid route; the leg leaving today's
-last stop "flows"), with a floating day-by-day panel (bottom sheet on phones), distance so-far / to-go,
-day chips that focus the map, a stop popup (Directions = Google Maps link, Edit, Delete) and an editor
-(add / edit / delete; location by Nominatim search or pick-on-map). Window defaults to 2 days back ·
-4 ahead and is adjustable. Built for the user's 2026-09-13 ask: "a trip itinerary on a map … the next
-4 days and … the past 2 days", then "make a sample itinerary — I just want to check out the modern map
-feature". Ships with a **sample Japan trip (22 stops, Tokyo → Hakone → Kyoto → Nara → Osaka → KIX)**
-whose days are OFFSETS from today, so it always renders as 2 done + today + 4 ahead.
+**Not part of the STOCKSWORLD app.** Built over one evening from a chain of user asks: a trip map → a
+sample → Indian restaurants near each stop with a restaurant icon → "instead of random itinerary,
+include this one" (the operator's Japan tour text) → "add as many advanced features as you can … my
+aim is to present a page with awesome features for my tour travellers" → "remove it from the
+STOCKSWORLD dashboard". So the page now:
+- **loads NO shared chrome** — no theme.js, theme.css, sw-sync or Tailwind; its own Manrope theme
+  (light default, dark toggle, saved in `jt_theme`; respects the OS preference on first visit) and its
+  own header. It is therefore NOT in `NAV_GROUPS`/`PRIVATE_PAGES`, NOT in `index.html`, and NOT in the
+  service-worker shell (sw v151 removed trip.html + vendor/leaflet from `SHELL`). Reached only by its
+  URL `…/trip.html`. Leaflet 1.9.4 stays vendored at `docs/vendor/leaflet/` and is loaded by this page.
 
-**Where the data lives — and why nothing personal is in the repo.** The repo and the Pages site are
-PUBLIC (GitHub API `visibility: public`, measured 2026-09-13). So the page never ships a real itinerary:
-the sample is generated at load and NEVER persisted; a user's own stops live in the browser only —
-`localStorage.tm_trip_v1` = `{name, sample:false, stops:[{id, day:'YYYY-MM-DD', time:'HH:MM', name,
-note, lat, lng}], updated}`, window in `tm_window_v1` = `{past, future}`. "Reset to sample" removes the
-key. Not a synced SETTINGS key (theme.js) on purpose — the doc is public-readable via sw-sync.
-Nav: NOT in the menu or the home tiles (user, 2026-09-13: "Remove trip map from app nav" — the entry
-shipped under Tools as owner-only for ~40 min, then came out with sw v150); reach it by direct URL only.
+**The tour = the operator's itinerary, transcribed verbatim (27 stops, 30 Oct – 6 Nov 2026).** Nothing
+invented: hotels are NOT mapped (never named in the text); stops without a clock time carry the text's
+own wording (`when`) and a `seq` for order; two internal conflicts in the source (1 Nov order, 3 Nov
+bus-vs-metro) are surfaced as ⚠ notes, not resolved. Per-day facts (title, transport modes, meals,
+walking level, free-time, the private-bus schedule), the price (early-bird vs current, dated on
+`PRICE.earlyUntil`), inclusions/exclusions, the "good to know" points and the "additional spots" list
+are all from the text. Coordinates cross-checked vs GeoNames city centres (npm cities.json) and the
+NRT/KIX records (npm airport-codes); landmark points are general knowledge, each within a few km of its
+town centre (Fuji 5th Station is 11.7 km up the mountain by design; Katsuo-ji/Minoh has no dataset ref).
 
-**Build notes (the non-obvious bits).**
-- **No Tailwind CDN on this page.** The header keeps the shared class names so theme.css skins it, and
-  the few layout utilities are written in the page. Consequence that BIT: without Tailwind's preflight
-  the UA's `body{margin:8px}` applies — the header sat 8 px in and the stage overflowed the viewport by
-  3 px. `body{margin:0}` is set explicitly, and the stage height uses the header's 57 px (56 + 1 px border).
-- **Leaflet 1.9.4 is vendored** at `docs/vendor/leaflet/` (the release zip from
-  github.com/Leaflet/Leaflet/releases, `dist/` unmodified) — no CDN, in the SW shell (v149). Tiles:
-  CARTO `dark_all` for the dark theme, `rastertiles/voyager` for light/soft, swapped by a
-  MutationObserver on `<html data-theme>`. Attribution (OSM + CARTO) is mandatory and stays visible
-  above the phone sheet. Routes are Leaflet SVG polylines styled by CSS class (theme tokens work because
-  CSS outranks SVG presentation attributes).
-- `theme.js`: `GLOSS_SKIP` includes trip.html (the glossary would otherwise be appended
-  INSIDE the map stage). The panel is `z-index:1100` — above Leaflet's controls (1000) so an expanded
-  phone sheet covers zoom + attribution instead of being painted over.
-- Why not a claude.ai Artifact: the artifact CSP blocks tile images, so a raster map cannot render there.
+**Panel = five tabs** (state in `jt_tab`): Itinerary · Extras · Prep · Trip info · Tools.
+- **Itinerary:** rolling window (2 back / 4 ahead) that rolls with today ONLY while it overlaps the
+  tour (`rollingNow`); before it starts / after it ends the WHOLE tour shows with a countdown. Day
+  strips show transport icons, meals, a 3-dot walking level and (in-horizon) that day's weather. Stops
+  → pins (grey done / pulsing today / outlined upcoming) + routes (dotted past, solid ahead, one
+  "flowing" next leg). Editable: add / edit / delete, Nominatim search or pick-on-map, `when`/`seq`.
+- **Restaurants nearby** (the icon the user asked for): one Overpass POST per (window stops, kind,
+  radius) to overpass-api.de (fallback overpass.kumi.systems), drawn as amber fork-and-knife pins
+  (green for veg) + a per-stop collapsible list; kind = Indian / vegetarian-friendly / both, radius
+  1–5 km; toggle+kind+radius persist (`tm_food_v1`), 6 h `sessionStorage` cache, `javascript:` sites
+  dropped, off = no request. Coverage is whatever OSM volunteers tagged — the status line says so.
+- **Extras:** the operator's 11 "additional spots" as a togglable dashed-star map layer + one-tap "Add
+  to my plan"; plus the free-time windows per day. **Prep:** 12-item checklist from the notes, saved in
+  `jt_prep_v1` with a progress bar. **Trip info:** price (early-bird auto-expires), inclusions,
+  exclusions, the day-by-day bus schedule, hotels note, good-to-know. **Tools:** JST/IST live clocks,
+  a ¥⇄₹ converter on the ECB rate via frankfurter.app, per-day weather via Open-Meteo (only inside its
+  16-day horizon; cached in `jt_wx_v1`), a "Where am I?" geolocate with distance to the nearest stop,
+  a Share button, and `?today=YYYY-MM-DD` preview links.
+- **`?today=` preview** overrides "today" so you can see the page as a traveller will on any tour day
+  (the header banner shows it); disables the midnight auto-roll while active.
+
+**Data stays on the device.** The built-in tour is never persisted; user edits live in `tm_trip_v1`
+(+ `tm_window_v1`, `tm_food_v1`, `jt_prep_v1`, `jt_extras_v1`, `jt_tab`, `jt_theme`). The repo/site are
+PUBLIC — the tour dates/places are public by URL, which the user asked for explicitly.
 
 **Verification (§39) — `scripts/verify_trip_map.js`.** Playwright + the pre-installed Chromium; serve
-`docs/` on 127.0.0.1:8765 (`python3 -m http.server 8765 --directory docs --bind 127.0.0.1`), then
-`node scripts/verify_trip_map.js`. 61 checks: counts of stops / pins / route classes / day chips, stats
-never NaN, popup + Directions link, day filter toggle, add-via-search (Nominatim answered with a canned
-jsonv2 payload), pick-on-map, edit, delete, persistence across reload, window change, reset / blank /
-load-sample, theme → tile-URL swap, owner-vs-public nav, 375 px sheet (no side-scroll, attribution
-visible, handle expands, selecting collapses), and index/global/capex still booting on the new theme.js.
-Sandbox limits on 2026-09-13: the egress proxy blocked cartocdn / cdnjs / unpkg / nominatim / the live
-Pages host, so tiles were blank in headless shots and the LIVE geocoder was not exercised (only the
-documented jsonv2 `{lat, lon, display_name}` shape). Sample coordinates were cross-checked against
-GeoNames-derived city centres (npm `cities.json`) and the KIX record in npm `airport-codes`; landmark
-positions themselves come from general knowledge, each within 8 km of its verified city centre.
+`docs/` (`python3 -m http.server 8765 --directory docs --bind 127.0.0.1`) then
+`node scripts/verify_trip_map.js`. **88 checks**, all passing 2026-09-13: standalone (no STOCKSWORLD
+chrome), counts of stops/pins/route-classes/day-chips/strips, stats never NaN, the restaurant layer end
+to end against a canned Overpass payload (query shape per kind, node+way/center, no-coordinate element
+skipped, VEG tag, per-stop lists, popup, javascript: dropped, toggle/kind/radius, both endpoints down →
+error+Retry recovers), add-via-search / pick-on-map / edit / delete / persistence, window change,
+reset/blank/load-tour, all five tabs (extras map layer + add-to-plan, prep ticks+persistence, info
+price logic, tools clocks + ¥⇄₹ math + weather-horizon + geolocate + share), theme toggle → tile-URL
+swap + persist, the `?today=2026-11-02` rolling window (25 in view / 2 outside, 8 done / 8 today / 9
+ahead, 15 dotted + 1 flowing legs, 5 weather requests), 375 px sheet, and index/global/capex still
+booting on the shared theme.js/sw.js edits. **Sections outside the preview assume a run date before
+2026-10-26.** Sandbox on 2026-09-13 blocked cartocdn / nominatim / overpass / open-meteo / frankfurter /
+the live Pages host, so tiles were blank in shots and NO live third-party endpoint was exercised — only
+their documented response shapes, mocked via Playwright routing.

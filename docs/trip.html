@@ -3,40 +3,78 @@
 <head>
 <meta charset="UTF-8" />
 <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover" />
-<title>STOCKSWORLD · Trip Map</title>
+<title>Japan Group Tour · 30 Oct – 6 Nov 2026</title>
+<meta name="description" content="Day-by-day map of the Japan group tour, 30 Oct – 6 Nov 2026: Tokyo, Mt Fuji, Kyoto, Nara and Osaka — with Indian restaurants near every stop, prep checklist, trip info and travel tools." />
 <link rel="stylesheet" href="./vendor/leaflet/leaflet.css" />
-<link rel="stylesheet" href="./theme.css" />
-<script src="./theme.js"></script>
+<link rel="preconnect" href="https://fonts.googleapis.com" />
+<link href="https://fonts.googleapis.com/css2?family=Manrope:wght@500;600;700;800&display=swap" rel="stylesheet" />
+<script>
+  /* theme before first paint (saved choice, else the OS preference) */
+  (function () { var t = null; try { t = localStorage.getItem('jt_theme'); } catch (e) {}
+    if (t !== 'dark' && t !== 'light') t = (window.matchMedia && window.matchMedia('(prefers-color-scheme: dark)').matches) ? 'dark' : 'light';
+    document.documentElement.setAttribute('data-theme', t); })();
+</script>
 <style>
-  /* Trip Map — a rolling itinerary on a map: the days already done, today, and the days ahead.
-   * This page does NOT load the Tailwind CDN (the map is the whole page and needs no utility
-   * grid); the header keeps the same class names as every other page so theme.css skins it
-   * identically, and the few layout utilities it relied on are written out below.
-   * Map: Leaflet 1.9.4 vendored under ./vendor/leaflet/ (no CDN, works offline via the SW shell);
-   * tiles: CARTO basemaps (dark_all / voyager) switched with the site theme. */
-  :root{ --tm-hdr:57px; --tm-bbar:0px; --tm-panel-w:384px; }   /* 56px header + its 1px bottom border */
-  body{ margin:0; }   /* Tailwind's preflight normally zeroes this; this page does not load Tailwind */
-  @media (max-width:760px){ :root{ --tm-bbar:calc(58px + env(safe-area-inset-bottom, 0px)); } }  /* theme.js bottom bar */
+  /* Japan Group Tour — a standalone page for the tour's travellers (no shared site chrome).
+   * Map: Leaflet 1.9.4 vendored under ./vendor/leaflet/; tiles: CARTO voyager (light) / dark_all (dark).
+   * Everything on this page is transcribed from the operator's itinerary text; live extras come from
+   * OpenStreetMap (Overpass), Open-Meteo (weather) and the ECB via frankfurter.app (exchange rate). */
+  :root{
+    --font:'Manrope', system-ui, -apple-system, 'Segoe UI', Roboto, sans-serif; --tr:.16s cubic-bezier(.4,0,.2,1);
+    --bg:#f6f3ee; --surface:#ffffff; --surface-2:#f3efe8; --surface-3:#e9e3da; --border:#e4ddd2; --border-strong:#cfc5b6;
+    --text:#1c1a17; --text-muted:#5f5a52; --text-faint:#8d8578;
+    --accent:#d9472f; --accent-text:#b93a25; --accent-soft:rgba(217,71,47,.10); --accent-2:#0f9d8a; --accent-2-soft:rgba(15,157,138,.12);
+    --warn:#b7791f; --warn-soft:rgba(183,121,31,.12); --pos:#0f8a4d; --neg:#d9313f; --neg-soft:rgba(217,49,63,.10);
+    --glow:rgba(217,71,47,.35); --shadow-lg:0 16px 40px -16px rgba(40,30,20,.32); --header-bg:rgba(246,243,238,.88);
+    --tm-hdr:57px; --tm-bbar:0px; --tm-panel-w:400px;
+  }
+  html[data-theme="dark"]{
+    --bg:#0f1114; --surface:#161a20; --surface-2:#1c2129; --surface-3:#242a34; --border:#2a313c; --border-strong:#3a4350;
+    --text:#eceef3; --text-muted:#a2aab8; --text-faint:#6f7888;
+    --accent:#ff6b4a; --accent-text:#ff8a6e; --accent-soft:rgba(255,107,74,.14); --accent-2:#2dd4bf; --accent-2-soft:rgba(45,212,191,.14);
+    --warn:#f5b73f; --warn-soft:rgba(245,183,63,.13); --pos:#31d17e; --neg:#ff5d6c; --neg-soft:rgba(255,93,108,.13);
+    --glow:rgba(255,107,74,.45); --shadow-lg:0 24px 56px -20px rgba(0,0,0,.8); --header-bg:rgba(15,17,20,.82);
+  }
+  *{ box-sizing:border-box; }
+  html{ -webkit-text-size-adjust:100%; }
+  body{ margin:0; background:var(--bg); color:var(--text); font-family:var(--font); -webkit-font-smoothing:antialiased; overflow-x:hidden; }
+  button, input, select, textarea{ font-family:inherit; }
   .hidden{ display:none !important; }
+  h1, h2, h3{ margin:0; letter-spacing:-.02em; }
+  a{ color:var(--accent-text); }
 
-  /* ---- header (Tailwind-free twin of the shared header) ---- */
-  header{ position:sticky; top:0; z-index:40; }
-  header .tm-hdr-in{ max-width:1280px; margin:0 auto; padding:0 16px; height:56px; display:flex; align-items:center; justify-content:space-between; gap:16px; }
-  header .group{ display:flex; align-items:center; gap:10px; flex:none; text-decoration:none; color:inherit; }
-  header .group > span:first-child{ display:inline-flex; align-items:center; justify-content:center; }
-  @media (max-width:639px){ header .group > .tm-wordmark{ display:none; } }
+  /* ---- header ---- */
+  .jt-hdr{ position:sticky; top:0; z-index:40; height:var(--tm-hdr); border-bottom:1px solid var(--border); background:var(--header-bg); -webkit-backdrop-filter:saturate(160%) blur(14px); backdrop-filter:saturate(160%) blur(14px); }
+  .jt-hdr-in{ max-width:1400px; margin:0 auto; padding:0 16px; height:56px; display:flex; align-items:center; justify-content:space-between; gap:12px; }
+  .jt-brand{ display:flex; align-items:center; gap:10px; min-width:0; flex:1; overflow:hidden; }
+  .jt-brand-t{ min-width:0; overflow:hidden; }
+  .jt-logo{ width:34px; height:34px; border-radius:10px; flex:none; display:inline-flex; align-items:center; justify-content:center; color:#fff; font-weight:800; font-size:12px; letter-spacing:.04em;
+    background:linear-gradient(150deg, color-mix(in srgb, var(--accent) 80%, #fff) 0%, var(--accent) 55%, color-mix(in srgb, var(--accent) 72%, #000) 100%); box-shadow:0 4px 12px -5px var(--glow); }
+  .jt-ttl{ font-size:15px; font-weight:800; letter-spacing:-.02em; line-height:1.1; white-space:nowrap; overflow:hidden; text-overflow:ellipsis; }
+  .jt-sub{ font-size:11px; color:var(--text-muted); white-space:nowrap; overflow:hidden; text-overflow:ellipsis; }
+  .jt-hdr-r{ display:flex; align-items:center; gap:8px; flex:none; }
+  .jt-clock{ font-size:11.5px; font-weight:700; color:var(--text-muted); font-variant-numeric:tabular-nums; white-space:nowrap; }
+  .jt-count{ font-size:11.5px; font-weight:800; color:var(--accent-text); padding:5px 10px; border-radius:999px; background:var(--accent-soft); white-space:nowrap; }
+  .jt-ib{ width:34px; height:34px; border-radius:10px; border:1px solid var(--border-strong); background:var(--surface); color:var(--text); cursor:pointer; display:inline-flex; align-items:center; justify-content:center; padding:0; }
+  .jt-ib:hover{ border-color:var(--accent); color:var(--accent-text); }
+  .jt-ib svg{ width:16px; height:16px; }
+  @media (max-width:760px){ .jt-sub, .jt-clock{ display:none; } .jt-count{ font-size:10.5px; padding:4px 8px; } }
 
   /* ---- stage ---- */
-  main.tm-stage{ position:relative; z-index:0; isolation:isolate; flex:none; width:100%;
-    height:calc(100vh - var(--tm-hdr) - var(--tm-bbar)); height:calc(100dvh - var(--tm-hdr) - var(--tm-bbar));
-    min-height:420px; overflow:hidden; }
+  main.tm-stage{ position:relative; z-index:0; isolation:isolate; width:100%;
+    height:calc(100vh - var(--tm-hdr)); height:calc(100dvh - var(--tm-hdr)); min-height:460px; overflow:hidden; }
   #map{ position:absolute; inset:0; background:var(--surface-2); }
   .leaflet-container{ font-family:var(--font); font-size:12px; background:var(--surface-2); }
+  .jt-preview{ position:absolute; top:12px; left:50%; transform:translateX(-50%); z-index:700; font-size:12px; font-weight:700; padding:7px 12px; border-radius:999px;
+    background:var(--warn-soft); color:var(--warn); border:1px solid color-mix(in srgb, var(--warn) 45%, transparent); box-shadow:var(--shadow-lg); white-space:nowrap; max-width:calc(100% - 24px); overflow:hidden; text-overflow:ellipsis; }
+  .jt-preview a{ color:inherit; }
+  @media (max-width:899px){ .jt-preview{ top:auto; bottom:calc(46% + 44px); } }
+  .jt-toast{ position:fixed; left:50%; bottom:24px; transform:translateX(-50%); z-index:1300; font-size:12.5px; font-weight:700; padding:9px 14px; border-radius:10px; background:var(--text); color:var(--bg); box-shadow:var(--shadow-lg); max-width:calc(100% - 32px); }
 
-  /* ---- floating itinerary panel (bottom sheet on phones) ---- */
-  .tm-panel{ position:absolute; top:14px; left:14px; bottom:14px; width:var(--tm-panel-w); max-width:calc(100% - 28px); z-index:1100;   /* above Leaflet's controls (1000): an expanded phone sheet covers zoom + attribution */
+  /* ---- floating panel (bottom sheet on phones) ---- */
+  .tm-panel{ position:absolute; top:14px; left:14px; bottom:14px; width:var(--tm-panel-w); max-width:calc(100% - 28px); z-index:1100;   /* above Leaflet's controls (1000) */
     display:flex; flex-direction:column;
-    background:color-mix(in srgb, var(--surface) 90%, transparent);
+    background:color-mix(in srgb, var(--surface) 92%, transparent);
     -webkit-backdrop-filter:saturate(160%) blur(16px); backdrop-filter:saturate(160%) blur(16px);
     border:1px solid var(--border-strong); border-radius:16px; box-shadow:var(--shadow-lg); overflow:hidden; }
   .tm-handle{ display:none; }
@@ -47,15 +85,44 @@
     .tm-handle span{ width:40px; height:4px; border-radius:999px; background:var(--border-strong); }
     .leaflet-bottom.leaflet-right{ bottom:calc(46% + 10px); }   /* attribution stays visible above the sheet */
   }
+  .jt-tabs{ display:flex; gap:2px; padding:8px 10px 0; flex:none; overflow-x:auto; scrollbar-width:none; }
+  .jt-tabs::-webkit-scrollbar{ display:none; }
+  .jt-tab{ flex:none; font-size:12px; font-weight:700; padding:7px 11px; border-radius:9px 9px 0 0; border:1px solid transparent; border-bottom:0; background:none; color:var(--text-muted); cursor:pointer; }
+  .jt-tab:hover{ color:var(--text); }
+  .jt-tab.on{ background:var(--surface); color:var(--accent-text); border-color:var(--border); }
+  .jt-pane{ display:none; flex:1; min-height:0; flex-direction:column; border-top:1px solid var(--border); }
+  .jt-pane.on{ display:flex; }
+  .jt-scroll{ flex:1; overflow:auto; padding:12px 14px 14px; overscroll-behavior:contain; }
+  .jt-h{ font-size:10.5px; font-weight:800; letter-spacing:.08em; text-transform:uppercase; color:var(--text-faint); margin:14px 0 6px; }
+  .jt-h:first-child{ margin-top:0; }
+  .jt-p{ font-size:12.5px; color:var(--text-muted); line-height:1.45; margin:0 0 8px; }
+  .jt-card{ border:1px solid var(--border); border-radius:12px; background:var(--surface); padding:10px 12px; margin-bottom:8px; }
+  .jt-card .t{ font-size:13px; font-weight:800; color:var(--text); }
+  .jt-card .s{ font-size:12px; color:var(--text-muted); margin-top:2px; line-height:1.4; }
+  .jt-list{ margin:0; padding:0 0 0 18px; font-size:12.5px; color:var(--text-muted); line-height:1.5; }
+  .jt-list li{ margin-bottom:3px; } .jt-list li b{ color:var(--text); }
+  .jt-price{ display:flex; gap:8px; margin-bottom:8px; }
+  .jt-price .jt-card{ flex:1; margin:0; }
+  .jt-price .v{ font-size:18px; font-weight:800; color:var(--text); font-variant-numeric:tabular-nums; }
+  .jt-price .k{ font-size:10.5px; font-weight:700; letter-spacing:.06em; text-transform:uppercase; color:var(--text-faint); }
+  .jt-price .jt-card.on{ border-color:var(--accent); background:var(--accent-soft); } .jt-price .jt-card.on .k{ color:var(--accent-text); }
+  .jt-price .jt-card.off .v{ text-decoration:line-through; color:var(--text-faint); }
+  .jt-row{ display:flex; align-items:center; gap:8px; flex-wrap:wrap; }
+  .jt-kv{ display:grid; grid-template-columns:auto 1fr; gap:4px 10px; font-size:12.5px; }
+  .jt-kv b{ color:var(--text-muted); font-weight:700; white-space:nowrap; }
+  .jt-kv span{ color:var(--text); }
+
   .tm-head{ padding:12px 16px 10px; border-bottom:1px solid var(--border); flex:none; }
   .tm-title-row{ display:flex; align-items:flex-start; justify-content:space-between; gap:10px; }
   .tm-kicker{ font-size:10.5px; font-weight:700; letter-spacing:.08em; text-transform:uppercase; color:var(--text-faint); display:flex; align-items:center; gap:8px; }
   .tm-badge{ font-size:9.5px; font-weight:800; letter-spacing:.06em; padding:2px 7px; border-radius:999px; text-transform:uppercase;
     color:var(--warn); background:var(--warn-soft); border:1px solid color-mix(in srgb, var(--warn) 35%, transparent); }
-  html[data-theme] main .tm-title{ font-size:17px; font-weight:800; letter-spacing:-.02em; color:var(--text); margin:3px 0 0; line-height:1.2; }
+  .tm-title{ font-size:17px; font-weight:800; letter-spacing:-.02em; color:var(--text); margin:3px 0 0; line-height:1.2; }
+  .tm-span{ font-size:11.5px; color:var(--text-muted); margin-top:3px; }
+  .tm-span b{ color:var(--accent-text); }
   .tm-actions{ display:flex; gap:6px; flex:none; }
   .tm-ib{ width:34px; height:34px; border-radius:10px; border:1px solid var(--border-strong); background:var(--surface); color:var(--text); cursor:pointer;
-    display:inline-flex; align-items:center; justify-content:center; font-family:inherit; }
+    display:inline-flex; align-items:center; justify-content:center; padding:0; }
   .tm-ib:hover{ border-color:var(--accent); color:var(--accent-text); }
   .tm-ib.primary{ background:var(--accent); border-color:transparent; color:#fff; box-shadow:0 4px 12px -4px var(--glow); }
   .tm-ib.primary:hover{ color:#fff; filter:brightness(1.08); }
@@ -68,7 +135,7 @@
   .tm-days{ display:flex; gap:6px; overflow-x:auto; scrollbar-width:none; margin-top:12px; padding-bottom:2px; }
   .tm-days::-webkit-scrollbar{ display:none; }
   .tm-day{ flex:none; display:flex; flex-direction:column; align-items:center; min-width:46px; padding:6px 8px; border-radius:10px; cursor:pointer;
-    border:1px solid var(--border); background:var(--surface-2); color:var(--text-muted); font-family:inherit; transition:var(--tr); }
+    border:1px solid var(--border); background:var(--surface-2); color:var(--text-muted); transition:var(--tr); }
   .tm-day small{ font-size:9.5px; font-weight:700; letter-spacing:.06em; text-transform:uppercase; }
   .tm-day b{ font-size:15px; font-weight:800; line-height:1.1; color:var(--text); }
   .tm-day i{ font-style:normal; font-size:9.5px; font-weight:700; margin-top:2px; }
@@ -79,11 +146,86 @@
   .tm-day.on{ box-shadow:0 0 0 2px var(--accent); opacity:1; }
   .tm-day:hover{ border-color:var(--border-strong); }
 
+  /* ---- restaurants nearby (OpenStreetMap via Overpass) ---- */
+  .tm-tools{ display:flex; align-items:center; gap:8px; margin-top:10px; flex-wrap:wrap; }
+  .tm-toggle{ display:inline-flex; align-items:center; gap:7px; font-size:12px; font-weight:700; padding:6px 11px; border-radius:999px; border:1px solid var(--border-strong); background:var(--surface-2); color:var(--text-muted); cursor:pointer; }
+  .tm-toggle svg{ width:14px; height:14px; }
+  .tm-toggle[aria-pressed="true"]{ color:var(--warn); border-color:color-mix(in srgb, var(--warn) 45%, transparent); background:var(--warn-soft); }
+  .tm-sel{ font-size:12px; font-weight:700; padding:5px 8px; border-radius:8px; border:1px solid var(--border-strong); background:var(--surface-2); color:var(--text); }
+  .tm-foodst{ font-size:11px; color:var(--text-faint); flex:1 1 100%; line-height:1.4; }
+  .tm-foodst:empty{ display:none; }
+  .tm-foodst b{ color:var(--text-muted); }
+  .jt-me-line{ font-size:11.5px; font-weight:600; color:var(--accent-2); margin-top:8px; }
+  .jt-me-line:empty{ display:none; }
+  .tm-foodlist{ margin-top:5px; }
+  .tm-foodlist summary{ cursor:pointer; font-size:11.5px; font-weight:700; color:var(--warn); list-style:none; display:flex; align-items:center; gap:5px; }
+  .tm-foodlist summary::-webkit-details-marker{ display:none; }
+  .tm-foodlist summary svg{ width:13px; height:13px; }
+  .tm-fitem{ display:flex; justify-content:space-between; gap:8px; width:100%; text-align:left; font-size:12px; padding:4px 0 4px 18px; background:none; border:0; color:var(--text); cursor:pointer; }
+  .tm-fitem:hover{ color:var(--accent-text); }
+  .tm-fitem small{ color:var(--text-faint); font-variant-numeric:tabular-nums; white-space:nowrap; }
+  .tm-fitem .veg{ font-size:9.5px; font-weight:800; color:var(--pos); margin-left:5px; }
+  .tm-food-none{ font-size:11.5px; color:var(--text-faint); margin-top:4px; }
+  .tm-food{ width:22px; height:22px; border-radius:50%; background:var(--warn); color:#1a1200; border:2px solid var(--surface); box-shadow:0 1px 5px rgba(0,0,0,.35); display:flex; align-items:center; justify-content:center; }
+  .tm-food.veg{ background:var(--pos); color:#06210f; }
+  .tm-food svg{ width:12px; height:12px; }
+  .tm-food-wrap{ background:none; border:0; }
+  .tm-pop-food .tm-pop-k{ color:var(--warn); }
+
+  /* ---- extras (optional spots) ---- */
+  .jt-extra{ width:22px; height:22px; border-radius:50%; background:var(--surface); color:var(--accent-2); border:2px dashed var(--accent-2); box-shadow:0 1px 5px rgba(0,0,0,.3); display:flex; align-items:center; justify-content:center; }
+  .jt-extra svg{ width:12px; height:12px; }
+  .jt-extra-wrap{ background:none; border:0; }
+  .tm-pop-extra .tm-pop-k{ color:var(--accent-2); }
+  .jt-xitem{ display:flex; align-items:center; justify-content:space-between; gap:8px; padding:8px 0; border-bottom:1px solid var(--border); }
+  .jt-xitem:last-child{ border-bottom:0; }
+  .jt-xitem .n{ font-size:13px; font-weight:700; color:var(--text); }
+  .jt-xitem .c{ font-size:11px; color:var(--text-faint); }
+  .jt-xitem .note{ font-size:11.5px; color:var(--text-muted); margin-top:1px; }
+
+  /* ---- "you are here" ---- */
+  .jt-me{ width:16px; height:16px; border-radius:50%; background:#2f6be6; border:3px solid #fff; box-shadow:0 0 0 4px rgba(47,107,230,.28), 0 2px 6px rgba(0,0,0,.4); }
+  .jt-me-wrap{ background:none; border:0; }
+  .jt-me-acc{ fill:#2f6be6; fill-opacity:.08; stroke:#2f6be6; stroke-opacity:.35; stroke-width:1; }
+
+  /* ---- prep checklist ---- */
+  .jt-prog{ height:8px; border-radius:999px; background:var(--surface-3); overflow:hidden; margin:6px 0 12px; }
+  .jt-prog i{ display:block; height:100%; background:linear-gradient(90deg, var(--accent), var(--accent-2)); transition:width .3s; }
+  .jt-check{ display:flex; gap:10px; align-items:flex-start; padding:8px 0; border-bottom:1px solid var(--border); cursor:pointer; }
+  .jt-check:last-child{ border-bottom:0; }
+  .jt-check input{ margin-top:3px; accent-color:var(--accent); width:16px; height:16px; flex:none; }
+  .jt-check span{ font-size:12.5px; color:var(--text); line-height:1.4; }
+  .jt-check.done span{ color:var(--text-faint); text-decoration:line-through; }
+
+  /* ---- tools ---- */
+  .jt-clocks{ display:grid; grid-template-columns:1fr 1fr; gap:8px; }
+  .jt-clocks .jt-card{ margin:0; text-align:center; }
+  .jt-clocks .v{ font-size:24px; font-weight:800; font-variant-numeric:tabular-nums; letter-spacing:-.02em; }
+  .jt-clocks .k{ font-size:10.5px; font-weight:700; letter-spacing:.06em; text-transform:uppercase; color:var(--text-faint); }
+  .jt-fx{ display:flex; gap:6px; align-items:center; }
+  .jt-fx input{ flex:1; min-width:0; font-size:14px; font-weight:700; padding:8px 10px; border-radius:9px; border:1px solid var(--border-strong); background:var(--surface-2); color:var(--text); }
+  .jt-fx-out{ font-size:20px; font-weight:800; margin:8px 0 2px; font-variant-numeric:tabular-nums; }
+  .jt-fx-note{ font-size:11px; color:var(--text-faint); }
+  .jt-fxq{ display:grid; grid-template-columns:repeat(3, 1fr); gap:6px; margin-top:8px; }
+  .jt-fxq .jt-card{ margin:0; text-align:center; padding:8px 6px; }
+  .jt-fxq .v{ font-size:13px; font-weight:800; font-variant-numeric:tabular-nums; } .jt-fxq .k{ font-size:10px; color:var(--text-faint); }
+  .jt-wxrow{ display:flex; align-items:center; justify-content:space-between; gap:8px; padding:7px 0; border-bottom:1px solid var(--border); font-size:12.5px; }
+  .jt-wxrow:last-child{ border-bottom:0; }
+  .jt-wxrow b{ color:var(--text); font-weight:700; } .jt-wxrow .d{ color:var(--text-faint); font-size:11px; }
+  .jt-wx{ font-size:11px; font-weight:700; color:var(--text-muted); white-space:nowrap; }
+  .jt-wx:empty{ display:none; }
+
+  /* ---- itinerary list ---- */
   .tm-list{ flex:1; overflow:auto; padding:4px 10px 10px; overscroll-behavior:contain; }
-  .tm-dayh{ display:flex; align-items:baseline; justify-content:space-between; gap:8px; padding:14px 6px 6px; font-size:11px; font-weight:700; letter-spacing:.06em; text-transform:uppercase; color:var(--text-faint); }
+  .tm-dayh{ display:flex; align-items:baseline; justify-content:space-between; gap:8px; padding:14px 6px 2px; font-size:11px; font-weight:700; letter-spacing:.06em; text-transform:uppercase; color:var(--text-faint); }
   .tm-dayh b{ color:var(--text-muted); }
   .tm-dayh.today b{ color:var(--accent-text); }
   .tm-dayh em{ font-style:normal; font-weight:600; letter-spacing:0; text-transform:none; }
+  .jt-strip{ display:flex; align-items:center; gap:6px 10px; flex-wrap:wrap; padding:2px 6px 6px; font-size:11.5px; color:var(--text-muted); }
+  .jt-strip .tt{ font-weight:800; color:var(--text); flex:1 1 100%; font-size:12.5px; }
+  .jt-strip .ic{ display:inline-flex; align-items:center; gap:4px; white-space:nowrap; }
+  .jt-strip .lvl{ letter-spacing:1px; color:var(--accent-text); }
+  .jt-strip .warn{ flex:1 1 100%; font-size:11px; color:var(--warn); }
   .tm-empty-day{ padding:6px 8px 4px 46px; font-size:12px; color:var(--text-faint); }
   .tm-group{ position:relative; }
   .tm-stop{ display:grid; grid-template-columns:28px 1fr; gap:10px; padding:8px 6px; border-radius:10px; cursor:pointer; position:relative; border:1px solid transparent; }
@@ -130,8 +272,8 @@
   .leaflet-bar a{ background:var(--surface) !important; color:var(--text) !important; border-bottom-color:var(--border) !important; width:34px !important; height:34px !important; line-height:34px !important; }
   .leaflet-bar a:hover{ background:var(--surface-2) !important; }
   .leaflet-bar a.leaflet-disabled{ color:var(--text-faint) !important; }
-  .leaflet-bar a.tm-fit{ display:flex; align-items:center; justify-content:center; }
-  .leaflet-bar a.tm-fit svg{ width:16px; height:16px; }
+  .leaflet-bar a.tm-ctl{ display:flex; align-items:center; justify-content:center; }
+  .leaflet-bar a.tm-ctl svg{ width:16px; height:16px; }
   .leaflet-control-attribution{ background:color-mix(in srgb, var(--surface) 82%, transparent) !important; color:var(--text-faint) !important; font-size:10px; padding:2px 6px; border-radius:6px 0 0 0; }
   .leaflet-control-attribution a{ color:var(--text-muted) !important; }
   .tm-pop .leaflet-popup-content-wrapper{ background:var(--surface); color:var(--text); border:1px solid var(--border-strong); border-radius:12px; box-shadow:var(--shadow-lg); padding:0; }
@@ -145,7 +287,7 @@
   .tm-pop-a{ display:flex; gap:6px; margin-top:10px; flex-wrap:wrap; }
 
   /* ---- buttons / forms ---- */
-  .tm-btn{ display:inline-flex; align-items:center; justify-content:center; gap:6px; font:inherit; font-size:12.5px; font-weight:700; padding:8px 14px; border-radius:9px;
+  .tm-btn{ display:inline-flex; align-items:center; justify-content:center; gap:6px; font-size:12.5px; font-weight:700; padding:8px 14px; border-radius:9px;
     border:1px solid transparent; background:var(--accent); color:#fff; cursor:pointer; text-decoration:none; white-space:nowrap; }
   .leaflet-container a.tm-btn{ color:#fff; }
   .tm-btn:hover{ filter:brightness(1.08); }
@@ -157,17 +299,17 @@
   .tm-dialog{ width:100%; max-width:440px; max-height:calc(100vh - 32px); overflow:auto; background:var(--surface); border:1px solid var(--border-strong); border-radius:16px; box-shadow:var(--shadow-lg); padding:18px; }
   .tm-dialog.sm{ max-width:360px; }
   .tm-dh{ display:flex; align-items:center; justify-content:space-between; margin-bottom:12px; }
-  html[data-theme] .tm-dh h2{ font-size:16px; font-weight:800; margin:0; color:var(--text); letter-spacing:-.02em; }
-  .tm-x{ width:30px; height:30px; border-radius:8px; border:1px solid var(--border); background:var(--surface-2); color:var(--text-muted); cursor:pointer; font-size:18px; line-height:1; font-family:inherit; }
+  .tm-dh h2{ font-size:16px; font-weight:800; margin:0; color:var(--text); letter-spacing:-.02em; }
+  .tm-x{ width:30px; height:30px; border-radius:8px; border:1px solid var(--border); background:var(--surface-2); color:var(--text-muted); cursor:pointer; font-size:18px; line-height:1; }
   .tm-f{ display:flex; flex-direction:column; gap:4px; margin-bottom:10px; min-width:0; }
   .tm-f label{ font-size:10.5px; font-weight:700; letter-spacing:.06em; text-transform:uppercase; color:var(--text-faint); }
-  .tm-f input, .tm-f textarea{ font:inherit; font-size:13.5px; padding:8px 10px; border-radius:9px; border:1px solid var(--border-strong); background:var(--surface-2); color:var(--text); width:100%; min-width:0; }
+  .tm-f input, .tm-f textarea{ font-size:13.5px; padding:8px 10px; border-radius:9px; border:1px solid var(--border-strong); background:var(--surface-2); color:var(--text); width:100%; min-width:0; }
   .tm-f textarea{ resize:vertical; }
   .tm-row{ display:grid; grid-template-columns:1fr 1fr; gap:10px; }
   .tm-search{ display:flex; gap:6px; }
   .tm-search input{ flex:1; }
   .tm-res{ border:1px solid var(--border); border-radius:9px; overflow:hidden; margin-top:6px; }
-  .tm-res button{ display:block; width:100%; text-align:left; padding:8px 10px; font:inherit; font-size:12.5px; background:var(--surface); border:0; border-bottom:1px solid var(--border); cursor:pointer; color:var(--text); line-height:1.3; }
+  .tm-res button{ display:block; width:100%; text-align:left; padding:8px 10px; font-size:12.5px; background:var(--surface); border:0; border-bottom:1px solid var(--border); cursor:pointer; color:var(--text); line-height:1.3; }
   .tm-res button:last-child{ border-bottom:0; }
   .tm-res button:hover{ background:var(--surface-2); }
   .tm-res .tm-res-note{ padding:8px 10px; font-size:12px; color:var(--text-muted); }
@@ -185,44 +327,73 @@
 </head>
 <body>
 
-<header class="sticky top-0 z-40 bg-white/90 backdrop-blur-md border-b border-slate-200 shadow-sm">
-  <div class="max-w-screen-xl mx-auto px-4 h-14 flex items-center justify-between gap-4 tm-hdr-in">
-    <a href="./index.html" class="flex items-center gap-2.5 shrink-0 group">
-      <span class="w-9 h-9 rounded-xl bg-gradient-to-br from-blue-600 via-indigo-600 to-violet-600 text-white flex items-center justify-center font-extrabold text-[13px] shadow-md group-hover:scale-105 transition">SW</span>
-      <span class="font-bold text-slate-900 tracking-tight tm-wordmark">STOCKS<span class="text-indigo-600">WORLD</span></span>
-    </a>
-    <nav></nav>
+<header class="jt-hdr">
+  <div class="jt-hdr-in">
+    <div class="jt-brand">
+      <span class="jt-logo" aria-hidden="true">JP</span>
+      <div class="jt-brand-t"><h1 class="jt-ttl">Japan · Group Tour</h1><div class="jt-sub">30 Oct – 6 Nov 2026 · Tokyo → Mt Fuji → Kyoto → Nara → Osaka</div></div>
+    </div>
+    <div class="jt-hdr-r">
+      <div class="jt-clock" id="clock" title="Japan time · India time"></div>
+      <div class="jt-count" id="count"></div>
+      <button class="jt-ib" id="themeBtn" type="button" aria-label="Switch light / dark"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 3a6 6 0 0 0 9 9 9 9 0 1 1-9-9Z"/></svg></button>
+    </div>
   </div>
 </header>
 
 <main class="tm-stage" id="stage">
   <div id="map" role="region" aria-label="Trip map"></div>
+  <div class="jt-preview hidden" id="preview"></div>
 
-  <aside class="tm-panel" id="panel" aria-label="Itinerary">
-    <button class="tm-handle" id="handle" type="button" aria-label="Expand or collapse the itinerary"><span></span></button>
-    <div class="tm-head">
-      <div class="tm-title-row">
-        <div style="min-width:0">
-          <div class="tm-kicker">Trip Map <span class="tm-badge" id="badge">Sample</span></div>
-          <h1 class="tm-title" id="tripName">—</h1>
+  <aside class="tm-panel" id="panel" aria-label="Tour panel">
+    <button class="tm-handle" id="handle" type="button" aria-label="Expand or collapse the panel"><span></span></button>
+    <div class="jt-tabs" role="tablist">
+      <button class="jt-tab on" type="button" role="tab" data-tab="plan" aria-selected="true">Itinerary</button>
+      <button class="jt-tab" type="button" role="tab" data-tab="extras" aria-selected="false">Extras</button>
+      <button class="jt-tab" type="button" role="tab" data-tab="prep" aria-selected="false">Prep</button>
+      <button class="jt-tab" type="button" role="tab" data-tab="info" aria-selected="false">Trip info</button>
+      <button class="jt-tab" type="button" role="tab" data-tab="tools" aria-selected="false">Tools</button>
+    </div>
+
+    <section class="jt-pane on" data-pane="plan">
+      <div class="tm-head">
+        <div class="tm-title-row">
+          <div style="min-width:0">
+            <div class="tm-kicker">Itinerary <span class="tm-badge" id="badge">Tour plan</span></div>
+            <h2 class="tm-title" id="tripName">—</h2>
+            <div class="tm-span" id="tripSpan"></div>
+          </div>
+          <div class="tm-actions">
+            <button class="tm-ib" id="btnRename" type="button" title="Rename trip" aria-label="Rename trip"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M17 3a2.85 2.83 0 1 1 4 4L7.5 20.5 2 22l1.5-5.5Z"/><path d="m15 5 4 4"/></svg></button>
+            <button class="tm-ib primary" id="btnAdd" type="button" title="Add a stop" aria-label="Add a stop"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"><path d="M12 5v14M5 12h14"/></svg></button>
+          </div>
         </div>
-        <div class="tm-actions">
-          <button class="tm-ib" id="btnRename" type="button" title="Rename trip" aria-label="Rename trip"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M17 3a2.85 2.83 0 1 1 4 4L7.5 20.5 2 22l1.5-5.5Z"/><path d="m15 5 4 4"/></svg></button>
-          <button class="tm-ib primary" id="btnAdd" type="button" title="Add a stop" aria-label="Add a stop"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"><path d="M12 5v14M5 12h14"/></svg></button>
+        <div class="tm-stats" id="stats"></div>
+        <div class="tm-days" id="days" role="tablist" aria-label="Days"></div>
+        <div class="tm-tools">
+          <button class="tm-toggle" id="foodToggle" type="button" aria-pressed="false"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 2v7c0 1.1.9 2 2 2h4a2 2 0 0 0 2-2V2"/><path d="M7 2v20"/><path d="M21 15V2a5 5 0 0 0-5 5v6c0 1.1.9 2 2 2h3Zm0 0v7"/></svg>Restaurants nearby</button>
+          <select class="tm-sel" id="foodKind" aria-label="What to look for"><option value="indian">Indian</option><option value="veg">Vegetarian-friendly</option><option value="both">Indian + veg</option></select>
+          <select class="tm-sel" id="foodRadius" aria-label="Search radius around each stop"><option value="1000">1 km</option><option value="1500">1.5 km</option><option value="3000">3 km</option><option value="5000">5 km</option></select>
+          <div class="tm-foodst" id="foodStatus" aria-live="polite"></div>
         </div>
+        <div class="jt-me-line" id="meLine" aria-live="polite"></div>
       </div>
-      <div class="tm-stats" id="stats"></div>
-      <div class="tm-days" id="days" role="tablist" aria-label="Days"></div>
-    </div>
-    <div class="tm-list" id="list"></div>
-    <div class="tm-foot">
-      <span id="winNote"></span>
-      <span><button class="tm-link" id="btnWin" type="button">Change days</button> · <button class="tm-link" id="btnMode" type="button">Start my own trip</button></span>
-    </div>
+      <div class="tm-list" id="list"></div>
+      <div class="tm-foot">
+        <span id="winNote"></span>
+        <span><button class="tm-link" id="btnWin" type="button">Change days</button> · <button class="tm-link" id="btnMode" type="button">Start a blank trip</button></span>
+      </div>
+    </section>
+
+    <section class="jt-pane" data-pane="extras"><div class="jt-scroll" id="extrasPane"></div></section>
+    <section class="jt-pane" data-pane="prep"><div class="jt-scroll" id="prepPane"></div></section>
+    <section class="jt-pane" data-pane="info"><div class="jt-scroll" id="infoPane"></div></section>
+    <section class="jt-pane" data-pane="tools"><div class="jt-scroll" id="toolsPane"></div></section>
   </aside>
 
   <div class="tm-pickbar hidden" id="pickbar"><span>Tap the map where this stop is</span><button class="tm-btn ghost sm" id="pickCancel" type="button">Cancel</button></div>
 </main>
+<div class="jt-toast hidden" id="toast" role="status"></div>
 
 <!-- add / edit a stop -->
 <div class="tm-modal hidden" id="modal" role="dialog" aria-modal="true" aria-labelledby="mTitle">
@@ -232,6 +403,10 @@
     <div class="tm-row">
       <div class="tm-f"><label for="fDay">Day</label><input id="fDay" type="date" /></div>
       <div class="tm-f"><label for="fTime">Time</label><input id="fTime" type="time" /></div>
+    </div>
+    <div class="tm-row">
+      <div class="tm-f"><label for="fWhen">When (if no exact time)</label><input id="fWhen" placeholder="e.g. morning, after lunch" autocomplete="off" /></div>
+      <div class="tm-f"><label for="fSeq">Order in the day</label><input id="fSeq" type="number" min="1" max="99" inputmode="numeric" placeholder="blank = end of day" /></div>
     </div>
     <div class="tm-f"><label for="fNote">Notes</label><textarea id="fNote" rows="2" placeholder="Tickets, timings, what to eat…"></textarea></div>
     <div class="tm-f">
@@ -257,7 +432,7 @@
       <div class="tm-f"><label for="wPast">Days back</label><input id="wPast" type="number" min="0" max="30" inputmode="numeric" /></div>
       <div class="tm-f"><label for="wFuture">Days ahead</label><input id="wFuture" type="number" min="0" max="60" inputmode="numeric" /></div>
     </div>
-    <p class="tm-help">Today is always shown. Stops outside the window stay saved and are listed at the bottom of the itinerary.</p>
+    <p class="tm-help">While the tour is under way the map rolls with today (today is always shown). Before it starts, and after it ends, the whole tour is shown. Stops outside the window stay saved and are listed at the bottom of the itinerary.</p>
     <div class="tm-dact"><span class="sp"></span><button class="tm-btn ghost" id="wCancel" type="button">Cancel</button><button class="tm-btn" id="wSave" type="button">Apply</button></div>
   </div>
 </div>
@@ -267,7 +442,7 @@
 (function () {
   'use strict';
   var $ = function (s, r) { return (r || document).querySelector(s); };
-  var KEY = 'tm_trip_v1', WKEY = 'tm_window_v1';
+  var KEY = 'tm_trip_v1', WKEY = 'tm_window_v1', TKEY = 'jt_theme', TABKEY = 'jt_tab', PREPKEY = 'jt_prep_v1', XKEY = 'jt_extras_v1';
   var DOW = ['Sun', 'Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat'];
   var MON = ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'];
   var TILES = {
@@ -294,79 +469,152 @@
     return 2 * R * Math.asin(Math.sqrt(h));
   }
   function fmtKm(v) { return v >= 100 ? Math.round(v) + '' : v >= 10 ? v.toFixed(0) : v.toFixed(1); }
+  function fmtM(d) { return d < 1000 ? Math.round(d / 10) * 10 + ' m' : (d / 1000).toFixed(1) + ' km'; }
   function clampInt(v, lo, hi, dflt) { v = parseInt(v, 10); if (!isFinite(v)) return dflt; return Math.max(lo, Math.min(hi, v)); }
+  function whenOf(s) { return s.time || s.when || ''; }
+  function lsGet(k) { try { return JSON.parse(localStorage.getItem(k) || 'null'); } catch (e) { return null; } }
+  function lsSet(k, v) { try { localStorage.setItem(k, JSON.stringify(v)); } catch (e) {} }
+  function toast(msg) { var t = $('#toast'); t.textContent = msg; t.classList.remove('hidden'); clearTimeout(toast.h); toast.h = setTimeout(function () { t.classList.add('hidden'); }, 2800); }
 
-  // ---- the sample trip: day offsets from TODAY, so it always shows 2 days done + today + 4 ahead ----
-  // [offset, time, place, note, lat, lng]
-  var SAMPLE = [
-    [-2, '09:30', 'Meiji Jingu', 'Forest shrine walk before the crowds; Harajuku and Omotesando after.', 35.6764, 139.6993],
-    [-2, '12:30', 'Shibuya Crossing', 'Lunch at Shibuya Scramble Square, then the crossing from the Sky deck.', 35.6595, 139.7005],
-    [-2, '16:00', 'teamLab Planets, Toyosu', 'Barefoot digital-art museum. Booked the 4 pm slot.', 35.6491, 139.7897],
-    [-1, '08:00', 'Tsukiji Outer Market', 'Tamagoyaki and tuna breakfast.', 35.6654, 139.7707],
-    [-1, '11:00', 'Senso-ji, Asakusa', 'Nakamise-dori snacks on the way to the temple.', 35.7148, 139.7967],
-    [-1, '15:30', 'Tokyo Skytree', 'Tembo Deck around sunset.', 35.7101, 139.8107],
-    [ 0, '09:12', 'Tokyo Station → Odawara', 'Hikari 505, car 7. Change to the Hakone Tozan line at Odawara.', 35.6812, 139.7671],
-    [ 0, '12:00', 'Owakudani (Hakone Ropeway)', 'Black eggs; Fuji is visible on a clear day.', 35.2437, 139.0197],
-    [ 0, '15:00', 'Lake Ashi cruise, Hakone-machi', 'Pirate ship to Moto-Hakone, then the Hakone Shrine torii.', 35.1985, 139.0253],
-    [ 0, '18:00', 'Ryokan, Hakone-Yumoto', 'Check-in, onsen, kaiseki dinner at 7.', 35.2323, 139.1069],
-    [ 1, '10:30', 'Fushimi Inari Taisha', 'Torii-gate hike up to the Yotsutsuji viewpoint (~45 min).', 34.9671, 135.7727],
-    [ 1, '14:00', 'Kiyomizu-dera', 'Walk down through Sannenzaka and Ninenzaka.', 34.9949, 135.7850],
-    [ 1, '18:30', 'Gion, Hanamikoji-dori', 'Dinner in Pontocho after.', 35.0037, 135.7751],
-    [ 2, '08:00', 'Arashiyama Bamboo Grove', 'Go early. Tenryu-ji is next door.', 35.0170, 135.6710],
-    [ 2, '13:00', 'Kinkaku-ji', 'The Golden Pavilion.', 35.0394, 135.7292],
-    [ 2, '17:00', 'Nishiki Market', '"Kyoto\'s kitchen" — graze for dinner.', 35.0050, 135.7649],
-    [ 3, '09:30', 'Todai-ji & Nara Park', 'Great Buddha hall; deer crackers.', 34.6890, 135.8398],
-    [ 3, '15:00', 'Osaka Castle', 'Park walk, then the keep.', 34.6873, 135.5262],
-    [ 3, '19:00', 'Dotonbori', 'Takoyaki, kushikatsu, the Glico sign.', 34.6687, 135.5013],
-    [ 4, '10:00', 'Kuromon Ichiba Market', 'Last market breakfast.', 34.6655, 135.5063],
-    [ 4, '13:00', 'Umeda Sky Building', 'Floating Garden Observatory.', 34.7053, 135.4903],
-    [ 4, '17:30', 'Kansai International Airport (KIX)', 'Flight home. Haruka express from Osaka Station.', 34.4347, 135.2442]
+  // =====================================================================================
+  // THE TOUR — transcribed from the operator's itinerary text (2026-09-13). Nothing invented:
+  // hotels are not mapped (never named), stops without a clock time carry the text's own wording.
+  // =====================================================================================
+  // [day, seq, time, when, place, note, lat, lng]
+  var TOUR = [
+    ['2026-10-30', 1, '07:55', '', 'Narita Airport (NRT)', 'Direct Delhi flight lands 7:55 am. Pick-up from the airport; luggage waits in the hotel lobby and we freshen up in the common washrooms — check-in is only from 3 pm.', 35.7647, 140.3864],
+    ['2026-10-30', 2, '', 'late morning', 'Senso-ji, Asakusa', 'One of Tokyo’s oldest temples, dedicated to Kannon. Then back to the hotel to check in at 3 pm; lunch out or from a Konbini. Free afternoon — we take it easy today on purpose.', 35.7148, 139.7967],
+    ['2026-10-31', 1, '', 'morning (bus)', 'Oshino Hakkai', 'Picture-postcard spring village — the classic Mt Fuji photos are taken from here.', 35.4600, 138.8320],
+    ['2026-10-31', 2, '', 'midday', 'Mt Fuji 5th Station (Subaru Line)', 'The highest point any vehicle can reach on Fuji. Lunch en route.', 35.3906, 138.7339],
+    ['2026-10-31', 3, '', 'afternoon', 'Kawaguchiko', 'Walk around the lake and the park; the famous Lawson photo spot. If you’re lucky, a halo over Fuji.', 35.4990, 138.7650],
+    ['2026-10-31', 4, '', 'evening', 'Shinjuku', 'The bus drops us here: floors of shops and eateries of every cuisine. Drinks and dinner, then the metro back to the hotel.', 35.6896, 139.7006],
+    ['2026-11-01', 1, '', 'morning (metro)', 'teamLab Planets, Toyosu', 'Interactive digital-art museum; lunch at the teamLab cafe or en route. (The bus schedule lists Meiji → Shibuya → teamLab instead — confirm the order with the guide.)', 35.6491, 139.7897],
+    ['2026-11-01', 2, '', 'midday', 'Meiji Jingu', 'Pay your respects at the shrine on the way to Shibuya.', 35.6764, 139.6993],
+    ['2026-11-01', 3, '', 'afternoon', 'Takeshita Street, Harajuku', 'If time permits: rainbow sandwiches, giant rainbow candy floss, strawberry candy.', 35.6716, 139.7030],
+    ['2026-11-01', 4, '', 'late afternoon', 'Shibuya Scramble Crossing & Hachiko', 'Then the shopping districts — Shinjuku / Ginza / Akihabara / Ikebukuro / Ueno — a hearty dinner and the metro back. Long walking day.', 35.6595, 139.7005],
+    ['2026-11-02', 1, '08:00', '', 'Tokyo Station', 'Bus to the station, then the Shinkansen to Kyoto (2–3 h). Carry your luggage, or ask reception for a paid hotel-to-hotel transfer.', 35.6812, 139.7671],
+    ['2026-11-02', 2, '', 'late morning', 'Kyoto Station', 'Walk to the hotel nearby, drop the bags, grab lunch. Kyoto by metro, bus and on foot — 5–6 km today, wear walking shoes.', 34.9858, 135.7588],
+    ['2026-11-02', 3, '', 'afternoon', 'Kiyomizu-dera', 'Hillside temple with the famous wooden stage.', 34.9949, 135.7850],
+    ['2026-11-02', 4, '', 'afternoon', 'Ryozen Kannon', 'The great white Kannon statue near Kodai-ji.', 35.0011, 135.7816],
+    ['2026-11-02', 5, '', 'afternoon', 'Sannenzaka & Ninenzaka', 'Stone-paved lanes of old Kyoto.', 34.9975, 135.7815],
+    ['2026-11-02', 6, '', 'afternoon', 'Yasaka Pagoda (Hokan-ji)', 'Japan’s ancient architecture, framed by the lanes.', 34.9985, 135.7794],
+    ['2026-11-02', 7, '', 'evening', 'Gion', 'The geisha district — with luck, geiko and maiko in kimono on these streets.', 35.0037, 135.7751],
+    ['2026-11-02', 8, '', 'evening', 'Nishiki Market', 'Free evening; dine out. Overnight in Kyoto.', 35.0050, 135.7649],
+    ['2026-11-03', 1, '06:00', '', 'Fushimi Inari Taisha', 'Packed breakfast; the torii gates before the crowds. Founded 711 AD, dedicated to Inari.', 34.9671, 135.7727],
+    ['2026-11-03', 2, '', 'late morning', 'Nara Park', 'Deer roam free — pet them, feed them deer biscuits.', 34.6851, 135.8430],
+    ['2026-11-03', 3, '', 'midday', 'Todai-ji', 'The Great Buddha hall; amazing ramen before heading back to Kyoto. Evening: Nishiki Market if not done yesterday.', 34.6890, 135.8398],
+    ['2026-11-04', 1, '', 'morning (bus)', 'Arashiyama Bamboo Grove', 'Check out of Kyoto; a pitstop on the bus to Osaka. Lunch: udon and sweet-potato brûlée in Arashiyama.', 35.0170, 135.6710],
+    ['2026-11-04', 2, '', 'evening', 'Dotonbori', 'Free evening in Osaka: okonomiyaki, takoyaki, kushikatsu; the Shinsaibashi and Kuromon markets. Overnight in Osaka.', 34.6687, 135.5013],
+    ['2026-11-05', 1, '', 'morning (bus)', 'Osaka Castle', 'The castle and its museum; a 15–20 min walk from the parking.', 34.6873, 135.5262],
+    ['2026-11-05', 2, '', 'midday', 'Katsuo-ji, Minoh', 'The “temple of luck” — make your own stamp. Late lunch back in Osaka.', 34.8703, 135.4460],
+    ['2026-11-05', 3, '', 'evening', 'Don Quijote Dotonbori (Ferris wheel)', 'Last night in Japan: Don Quijote / Kuromon / Shinsaibashi, a ride on the Ferris wheel — shop, eat, drink.', 34.6690, 135.5028],
+    ['2026-11-06', 1, '', 'morning (bus)', 'Kansai International Airport (KIX)', 'Airport drop after breakfast. Tour ends.', 34.4347, 135.2442]
   ];
-  function sampleTrip() {
-    var t = todayISO();
-    return { name: 'Japan · Tokyo → Kyoto → Osaka', sample: true,
-      stops: SAMPLE.map(function (r, i) { return { id: 'smp' + i, day: addDays(t, r[0]), time: r[1], name: r[2], note: r[3], lat: r[4], lng: r[5] }; }) };
+  // per-day facts from the itinerary + the private bus schedule + the meals lines
+  var DAYINFO = {
+    '2026-10-30': { title: 'Arrival in Tokyo', move: ['bus'], meals: 'No meals included', walk: 1, walkNote: 'Easy day on purpose — shed the overnight-flight fatigue.', free: 'Afternoon free after the 3 pm check-in: walk around, shop, museums, or sleep.' },
+    '2026-10-31': { title: 'Mount Fuji day trip', move: ['bus', 'metro'], meals: 'Breakfast', walk: 2, walkNote: 'Short walks at Oshino Hakkai, the 5th Station and Kawaguchiko.', free: 'Evening in Shinjuku — the bus drops us, we metro back.' },
+    '2026-11-01': { title: 'Local Tokyo sightseeing', move: ['metro', 'walk'], meals: 'Breakfast', walk: 3, walkNote: 'Long walking day: about 2–3 km between stops plus inside teamLab.', free: 'Evening: the shopping districts — Shinjuku / Ginza / Akihabara / Ikebukuro / Ueno.', conflict: 'The bus schedule says the bus takes us to Meiji, drops us at Shibuya and later to teamLab — confirm the order with the guide.' },
+    '2026-11-02': { title: 'Head to Kyoto + local sightseeing', move: ['bus', 'train', 'walk'], meals: 'Breakfast', walk: 3, walkNote: '3–4 km of old-town lanes, about 5–6 km in total — comfortable shoes.', free: 'Evening: Nishiki market.' },
+    '2026-11-03': { title: 'Fushimi Inari + Nara deer park', move: ['metro', 'bus'], meals: 'Packed breakfast (6 am start)', walk: 2, walkNote: 'The torii-gate walk up Mount Inari, then Nara park.', free: 'Evening: Nishiki market if not done yesterday.', conflict: 'The itinerary says we take the metro; the bus schedule says the whole day is by bus.' },
+    '2026-11-04': { title: 'Bamboo forest + head to Osaka', move: ['bus'], meals: 'Breakfast', walk: 2, walkNote: 'The bamboo-grove walk.', free: 'Free evening in Osaka: Dotonbori, Shinsaibashi, Kuromon.' },
+    '2026-11-05': { title: 'Explore Osaka', move: ['bus'], meals: 'Breakfast', walk: 2, walkNote: '15–20 min walk from the parking to the castle.', free: 'Late lunch, then the last evening free: Don Quijote / Kuromon / Shinsaibashi / the Ferris wheel.' },
+    '2026-11-06': { title: 'Departure', move: ['bus'], meals: 'Breakfast', walk: 1, walkNote: 'Airport drop after breakfast.', free: '' }
+  };
+  var MOVE = { bus: '🚌 Private bus', metro: '🚇 Metro (Suica)', train: '🚄 Shinkansen', walk: '🚶 On foot' };
+  var WALK = ['', 'Light walking', 'Moderate walking', 'Heavy walking'];
+  // the operator's "additional spots you can check out" (ticketed; prices on Klook)
+  var EXTRAS = [
+    ['Tokyo Tower', 35.6586, 139.7454, 'Tokyo', ''],
+    ['Tokyo Skytree', 35.7101, 139.8107, 'Tokyo', ''],
+    ['Ueno Park', 35.7146, 139.7733, 'Tokyo', ''],
+    ['Shinjuku Gyoen (Shinjuku park)', 35.6852, 139.7100, 'Tokyo', ''],
+    ['Tokyo Disneyland', 35.6329, 139.8804, 'Tokyo', 'Needs a whole day — come to Tokyo a day early.'],
+    ['Tokyo National Museum', 35.7188, 139.7765, 'Tokyo', ''],
+    ['Kyoto National Museum', 34.9900, 135.7730, 'Kyoto', ''],
+    ['Kyoto City KYOCERA Museum of Art', 35.0135, 135.7826, 'Kyoto', ''],
+    ['Tempozan Ferris Wheel', 34.6559, 135.4298, 'Osaka', ''],
+    ['Universal Studios Japan', 34.6654, 135.4323, 'Osaka', 'Needs a whole day — plan an extra day in Osaka.'],
+    ['Osaka Aquarium Kaiyukan', 34.6545, 135.4290, 'Osaka', '']
+  ];
+  // prep checklist — every line is from the operator's notes
+  var PREP = [
+    ['flights', 'Book your flights: fly out of India on <b>29 Oct</b> (Mumbai / Bangalore / Delhi / Kolkata). The direct Delhi flight lands at Narita 7:55 am on 30 Oct. Flights are not included.'],
+    ['visa', 'Visa: included in the tour price, at the visa rate current when you book.'],
+    ['pack', 'Pack light: hotel rooms are <b>150–180 sq ft</b> — barely one suitcase per person fits.'],
+    ['shoes', 'Comfortable walking shoes: <b>5–6k steps a day</b> minimum, 20–25k on the big days.'],
+    ['food', 'Want Indian food at every meal? Carry food packs from home — Indian food in Japan is expensive and tastes different. Veg and vegan options are otherwise abundant.'],
+    ['suica', 'Suica card: handed to you at the start with balance for the group travel. Top it up yourself if you use it for personal trips or shopping; if you lose it, re-buy and recharge it yourself.'],
+    ['luggage', 'Decide for 2 Nov: carry your luggage Tokyo → Kyoto on the Shinkansen, or pay the hotel reception for a hotel-to-hotel transfer.'],
+    ['checkin', '30 Oct: check-in is only from <b>3 pm</b> — bags in the lobby, freshen up in the hotel’s common washrooms.'],
+    ['early', '3 Nov: <b>6 am</b> start for Fushimi Inari — breakfast is packed.'],
+    ['transfers', 'Arriving before 30 Oct or leaving after 6 Nov? Airport transfers are not included — Uber or the metro.'],
+    ['konbini', 'Most lunches and dinners are not included: Konbini stores are the traveller’s friend.'],
+    ['extend', 'Want Disneyland, USJ or the museums? They need a whole day — come a day early or stay a day later; the operator will help plan it.']
+  ];
+  var PRICE = { early: '1,85,000', std: '2,05,000', earlyUntil: '2026-08-25' };
+  var INCL = ['All stays in 3/4-star hotels with good facilities', 'Breakfast everywhere as per the hotel plan (packed breakfast in Kyoto)', 'Meals as listed per day — breakfasts included everywhere', 'Visa (at the visa rate current at booking)', 'Group travel in a private bus on the days listed', 'Suica card topped up with the calculated balance for metro / public-bus travel in the itinerary', 'All tolls, taxes and driver allowance', 'Entry tickets for the sites marked in bold in the itinerary', 'Routed India guide and assistance on the trip', 'Government taxes and service charges'];
+  var EXCL = ['Extra meals not mentioned (some lunches and dinners)', 'Room upgrades, single-occupancy charges, room service, early check-in / late check-out', 'Extension of the trip for personal or natural reasons', 'Flights from and to India', 'Bus on days not mentioned in the itinerary', 'Minor cost changes from currency fluctuations', 'Alcohol, shopping, souvenirs — anything not clearly listed in the inclusions'];
+  var BUS = { '2026-10-30': 'Airport pick-up and sightseeing', '2026-10-31': 'Mt Fuji day trip and back; drops us at Shinjuku, we metro back', '2026-11-01': 'To Meiji shrine, then Shibuya; later to teamLab (about 2–3 km walking, plus inside teamLab)', '2026-11-02': 'Only to Tokyo Station; Kyoto Station → hotel and the sightseeing on foot (about 5–6 km)', '2026-11-03': 'The entire day’s sightseeing by bus', '2026-11-04': 'Bamboo forest, then on to Osaka', '2026-11-05': 'Osaka Castle, then Katsuo-ji temple', '2026-11-06': 'Airport drop' };
+  var POINTS = ['Hotel rooms are tiny — 150–180 sq ft on average, barely one suitcase per person.', 'Walking days average 3–4 km; every day is at least 5–6k steps, some go up to 20–25k.', 'Several days use Japan’s public transport — on those days it is more convenient than a private bus, and just as comfortable.', 'The Suica card carries enough balance for the itinerary; personal use is yours to top up, and a lost card is re-bought by you.', 'The itinerary is built for local culture and the essentials; extend by a day or two either side and the operator helps plan the extra.', 'Vegetarian and vegan food is abundant if you are smart about it; Indian food is expensive and tastes different — carry food packs if you want it every meal.', 'This is an active vacation. If you want a lazy holiday, this is not the trip.'];
+
+  function builtinTrip() {
+    return { name: 'Japan tour · 30 Oct – 6 Nov 2026', builtin: true,
+      stops: TOUR.map(function (r, i) { return { id: 'jp' + i, day: r[0], seq: r[1], time: r[2], when: r[3], name: r[4], note: r[5], lat: r[6], lng: r[7] }; }) };
   }
 
-  // ---- storage: the sample is never persisted (it re-anchors to today on every visit); an edited trip is ----
+  // ---- storage: the built-in plan is never persisted; an edited trip is ----
   function loadTrip() {
-    try { var j = JSON.parse(localStorage.getItem(KEY) || 'null'); if (j && Array.isArray(j.stops) && !j.sample) { j.stops = j.stops.filter(validStop); return j; } } catch (e) {}
-    return sampleTrip();
+    var j = lsGet(KEY);
+    if (j && Array.isArray(j.stops) && !j.builtin && !j.sample) { j.stops = j.stops.filter(validStop); return j; }
+    return builtinTrip();
   }
   function validStop(s) { return s && typeof s === 'object' && validISO(s.day) && isFinite(+s.lat) && isFinite(+s.lng) && String(s.name || '').length > 0; }
-  function saveTrip() { TRIP.sample = false; TRIP.updated = Date.now(); try { localStorage.setItem(KEY, JSON.stringify(TRIP)); } catch (e) {} }
-  function loadWin() {
-    try { var j = JSON.parse(localStorage.getItem(WKEY) || 'null'); if (j) return { past: clampInt(j.past, 0, 30, 2), future: clampInt(j.future, 0, 60, 4) }; } catch (e) {}
-    return { past: 2, future: 4 };
-  }
-  function saveWin() { try { localStorage.setItem(WKEY, JSON.stringify(WIN)); } catch (e) {} }
+  function saveTrip() { TRIP.builtin = false; TRIP.updated = Date.now(); lsSet(KEY, TRIP); }
+  function loadWin() { var j = lsGet(WKEY); if (j) return { past: clampInt(j.past, 0, 30, 2), future: clampInt(j.future, 0, 60, 4) }; return { past: 2, future: 4 }; }
+  function saveWin() { lsSet(WKEY, WIN); }
 
   // ---- state ----
-  var TRIP = loadTrip(), WIN = loadWin(), TODAY = todayISO();
-  var VIEW = [], OUT = [], SEL = null, DAYSEL = null;     // VIEW: [{s, n, state}] ordered stops inside the window
+  var PREVIEW = null; try { var _q = new URL(location.href).searchParams.get('today'); if (_q && validISO(_q)) PREVIEW = _q; } catch (e) {}
+  var TRIP = loadTrip(), WIN = loadWin(), TODAY = PREVIEW || todayISO();
+  var VIEW = [], OUT = [], WDAYS = [], ROLLING = true, SPAN = null, SEL = null, DAYSEL = null;   // VIEW: [{s, n, state}] ordered stops inside the window
   var map, tiles, tileKey, layer, MARK = {};
   var EDIT = null, PICK = false;
 
   function stateOf(day) { var d = dayDiff(day, TODAY); return d < 0 ? 'past' : d > 0 ? 'future' : 'today'; }
   function stateLabel(st) { return st === 'past' ? 'Visited' : st === 'today' ? 'Today' : 'Upcoming'; }
-  function inWindow(day) { var d = dayDiff(day, TODAY); return d >= -WIN.past && d <= WIN.future; }
+  function tripSpan() { var ds = TRIP.stops.map(function (s) { return s.day; }).filter(validISO).sort(); return ds.length ? { min: ds[0], max: ds[ds.length - 1] } : null; }
+  // The window rolls with today only while it overlaps the trip; before the trip starts (and after it
+  // ends) the whole trip is shown — a "2 back / 4 ahead" window 47 days early would show nothing.
+  function rollingNow(sp) { return !sp || (dayDiff(sp.min, TODAY) <= WIN.future && dayDiff(TODAY, sp.max) <= WIN.past); }
+  function windowDays() {
+    var out = [], d;
+    if (ROLLING) { for (d = -WIN.past; d <= WIN.future; d++) out.push(addDays(TODAY, d)); return out; }
+    var n = Math.min(60, dayDiff(SPAN.max, SPAN.min));
+    for (d = 0; d <= n; d++) out.push(addDays(SPAN.min, d));
+    return out;
+  }
+  function inWindow(day) { return WDAYS.indexOf(day) >= 0; }
   function ordered(stops) {
     return stops.slice().sort(function (a, b) {
       if (a.day !== b.day) return a.day < b.day ? -1 : 1;
+      var sa = (a.seq != null && isFinite(+a.seq)) ? +a.seq : Infinity, sb = (b.seq != null && isFinite(+b.seq)) ? +b.seq : Infinity;
+      if (sa !== sb) return sa < sb ? -1 : 1;
       var ta = a.time || '', tb = b.time || '';
       return ta < tb ? -1 : ta > tb ? 1 : 0;
     });
   }
   function compute() {
+    SPAN = tripSpan(); ROLLING = rollingNow(SPAN); WDAYS = windowDays();
     var all = ordered(TRIP.stops);
     VIEW = []; OUT = [];
     all.forEach(function (s) { if (inWindow(s.day)) VIEW.push({ s: s, n: VIEW.length + 1, state: stateOf(s.day) }); else OUT.push(s); });
   }
-  function windowDays() { var out = []; for (var d = -WIN.past; d <= WIN.future; d++) out.push(addDays(TODAY, d)); return out; }
   function relLabel(day) {
     var d = dayDiff(day, TODAY);
     return d === 0 ? 'Today' : d === -1 ? 'Yesterday' : d === 1 ? 'Tomorrow' : d < 0 ? (-d) + ' days ago' : 'In ' + d + ' days';
   }
+  function firstStopOf(day) { var o = ordered(TRIP.stops); for (var i = 0; i < o.length; i++) if (o[i].day === day) return o[i]; return null; }
 
   // ---- map ----
   function isMobile() { return window.matchMedia('(max-width:899px)').matches; }
@@ -392,7 +640,6 @@
     var b = L.latLngBounds(items.map(function (v) { return [v.s.lat, v.s.lng]; }));
     map.fitBounds(b, { paddingTopLeft: pd.tl, paddingBottomRight: pd.br, maxZoom: 15 });
   }
-  // a single point centred on the map sits under the panel / sheet — nudge it into the free space
   function shiftForPanel() {
     var pd = pads();
     var dx = isMobile() ? 0 : (pd.tl[0] - pd.br[0]) / 2, dy = isMobile() ? (pd.tl[1] - pd.br[1]) / 2 : 0;
@@ -400,11 +647,18 @@
   }
   function fitAll() { fitTo(VIEW); }
   function fitDay(day) { fitTo(VIEW.filter(function (v) { return v.s.day === day; })); }
+  function flyOpen(m, minZoom) {
+    var ll = m.getLatLng();
+    if (map.getBounds().pad(-0.15).contains(ll) && map.getZoom() >= (minZoom - 2)) { m.openPopup(); return; }
+    map.once('moveend', function () { m.openPopup(); });
+    map.flyTo(ll, Math.max(map.getZoom(), minZoom), { duration: .7 });
+    if (isMobile() && $('#panel').classList.contains('up')) $('#panel').classList.remove('up');
+  }
 
   function pinHTML(v, extra) { return '<div class="tm-pin ' + v.state + (extra || '') + '" title="' + esc(v.s.name) + '">' + v.n + '</div>'; }
   function popupFor(v) {
-    var s = v.s, el = document.createElement('div');
-    el.innerHTML = '<div class="tm-pop-k">Stop ' + v.n + ' · ' + esc(fmtDay(s.day)) + (s.time ? ' · ' + esc(s.time) : '') + ' · <span class="' + v.state + '">' + stateLabel(v.state) + '</span></div>' +
+    var s = v.s, el = document.createElement('div'), w = whenOf(s);
+    el.innerHTML = '<div class="tm-pop-k">Stop ' + v.n + ' · ' + esc(fmtDay(s.day)) + (w ? ' · ' + esc(w) : '') + ' · <span class="' + v.state + '">' + stateLabel(v.state) + '</span></div>' +
       '<div class="tm-pop-n">' + esc(s.name) + '</div>' + (s.note ? '<div class="tm-pop-note">' + esc(s.note) + '</div>' : '') +
       '<div class="tm-pop-a"><a class="tm-btn sm" target="_blank" rel="noopener" href="https://www.google.com/maps/dir/?api=1&amp;destination=' + (+s.lat).toFixed(5) + ',' + (+s.lng).toFixed(5) + '">Directions</a>' +
       '<button class="tm-btn ghost sm" type="button" data-act="edit">Edit</button><button class="tm-btn ghost sm" type="button" data-act="del">Delete</button></div>';
@@ -415,8 +669,6 @@
   function renderMap() {
     layer.clearLayers(); MARK = {};
     var pd = pads();
-    // routes first (under the pins): dashed & muted for legs already travelled, solid accent ahead,
-    // and the leg that leaves the last stop of today "flows" so the eye finds where the trip goes next.
     var lastDone = -1;
     VIEW.forEach(function (v, i) { if (v.state !== 'future') lastDone = i; });
     for (var i = 1; i < VIEW.length; i++) {
@@ -440,14 +692,39 @@
     });
   }
 
-  // ---- panel ----
+  // ---- header: countdown + clocks ----
+  function renderCount() {
+    var t = '';
+    if (SPAN) {
+      var nd = dayDiff(SPAN.max, SPAN.min) + 1, toStart = dayDiff(SPAN.min, TODAY), sinceEnd = dayDiff(TODAY, SPAN.max);
+      t = toStart > 0 ? 'Starts in ' + toStart + ' day' + (toStart === 1 ? '' : 's') : sinceEnd > 0 ? 'Tour completed' : 'Day ' + (dayDiff(TODAY, SPAN.min) + 1) + ' of ' + nd;
+    }
+    $('#count').textContent = t;
+  }
+  function clockText(tz) { try { return new Date().toLocaleTimeString('en-GB', { timeZone: tz, hour: '2-digit', minute: '2-digit' }); } catch (e) { return '--:--'; } }
+  function tick() {
+    var j = clockText('Asia/Tokyo'), i = clockText('Asia/Kolkata');
+    $('#clock').textContent = 'JST ' + j + ' · IST ' + i;
+    var a = $('#clkJST'), b = $('#clkIST'); if (a) a.textContent = j; if (b) b.textContent = i;
+  }
+
+  // ---- itinerary panel ----
   function renderHead() {
     $('#tripName').textContent = TRIP.name || 'My trip';
-    $('#badge').classList.toggle('hidden', !TRIP.sample);
-    $('#btnMode').textContent = TRIP.sample ? 'Start my own trip' : 'Reset to sample';
-    var done = 0, today = 0, ahead = 0, kmDone = 0, kmAhead = 0;
+    $('#badge').classList.toggle('hidden', !TRIP.builtin);
+    $('#btnMode').textContent = TRIP.builtin ? 'Start a blank trip' : 'Reset to the Japan tour';
+    var span = '';
+    if (SPAN) {
+      var nd = dayDiff(SPAN.max, SPAN.min) + 1, toStart = dayDiff(SPAN.min, TODAY), sinceEnd = dayDiff(TODAY, SPAN.max);
+      span = esc(fmtDay(SPAN.min)) + ' – ' + esc(fmtDay(SPAN.max)) + ' · ' + nd + ' day' + (nd === 1 ? '' : 's');
+      if (toStart > 0) span += ' · <b>starts in ' + toStart + ' day' + (toStart === 1 ? '' : 's') + '</b>';
+      else if (sinceEnd > 0) span += ' · ended ' + sinceEnd + ' day' + (sinceEnd === 1 ? '' : 's') + ' ago';
+      else span += ' · <b>day ' + (dayDiff(TODAY, SPAN.min) + 1) + ' of ' + nd + '</b>';
+    }
+    $('#tripSpan').innerHTML = span;
+    var done = 0, kmDone = 0, kmAhead = 0;
     VIEW.forEach(function (v, i) {
-      if (v.state === 'past') done++; else if (v.state === 'today') today++; else ahead++;
+      if (v.state === 'past') done++;
       if (i) { var d = km(VIEW[i - 1].s, v.s); if (v.state === 'past') kmDone += d; else kmAhead += d; }
     });
     $('#stats').innerHTML =
@@ -456,40 +733,56 @@
       '<div class="tm-stat"><b>' + fmtKm(kmAhead) + ' <small>km</small></b><span>To go</span></div>';
     var counts = {}; VIEW.forEach(function (v) { counts[v.s.day] = (counts[v.s.day] || 0) + 1; });
     $('#days').innerHTML = '<button class="tm-day' + (DAYSEL ? '' : ' on') + '" type="button" data-day="" role="tab" aria-selected="' + (DAYSEL ? 'false' : 'true') + '"><small>Trip</small><b>All</b><i>' + VIEW.length + ' stops</i></button>' +
-      windowDays().map(function (day) {
+      WDAYS.map(function (day) {
         var st = stateOf(day), d = parseISO(day), n = counts[day] || 0, off = dayDiff(day, TODAY);
+        var tag = st === 'today' ? 'today' : st === 'past' ? 'done' : (ROLLING ? '+' + off : MON[d.getMonth()]);
         return '<button class="tm-day ' + st + (n ? '' : ' empty') + (DAYSEL === day ? ' on' : '') + '" type="button" data-day="' + day + '" role="tab" aria-selected="' + (DAYSEL === day ? 'true' : 'false') + '" title="' + esc(fmtLong(day)) + ' · ' + n + ' stop' + (n === 1 ? '' : 's') + '">' +
-          '<small>' + DOW[d.getDay()] + '</small><b>' + d.getDate() + '</b><i>' + (st === 'today' ? 'today' : st === 'past' ? 'done' : '+' + off) + '</i></button>';
+          '<small>' + DOW[d.getDay()] + '</small><b>' + d.getDate() + '</b><i>' + tag + '</i></button>';
       }).join('');
-    $('#winNote').textContent = WIN.past + ' day' + (WIN.past === 1 ? '' : 's') + ' back · ' + WIN.future + ' day' + (WIN.future === 1 ? '' : 's') + ' ahead';
+    var w = WIN.past + ' day' + (WIN.past === 1 ? '' : 's') + ' back · ' + WIN.future + ' day' + (WIN.future === 1 ? '' : 's') + ' ahead';
+    $('#winNote').textContent = ROLLING ? w : 'Whole trip shown · rolls to ' + w + (SPAN && dayDiff(SPAN.min, TODAY) > 0 ? ' once it starts' : ' while it is on');
+    renderCount();
+  }
+  function stripHTML(day) {
+    var di = DAYINFO[day]; if (!di) return '';
+    var lvl = '●'.repeat(di.walk) + '○'.repeat(3 - di.walk);
+    return '<div class="jt-strip"><span class="tt">' + esc(di.title) + '</span>' +
+      di.move.map(function (m) { return '<span class="ic">' + MOVE[m] + '</span>'; }).join('') +
+      '<span class="ic">' + (di.meals === 'No meals included' ? '🥡 ' : '🍳 ') + esc(di.meals) + '</span>' +
+      '<span class="ic" title="' + esc(di.walkNote) + '"><span class="lvl">' + lvl + '</span> ' + WALK[di.walk] + '</span>' +
+      '<span class="jt-wx" data-day="' + day + '"></span>' +
+      (di.conflict ? '<span class="warn">⚠ ' + esc(di.conflict) + '</span>' : '') + '</div>';
   }
   function renderList() {
     var host = $('#list'), html = '';
     if (!TRIP.stops.length) {
-      html = '<div class="tm-blank"><b>Nothing planned yet</b>Add your first stop with the + button, or tap a day to start there.<br><button class="tm-btn ghost sm" type="button" id="blankSample">Load the sample trip instead</button></div>';
+      html = '<div class="tm-blank"><b>Nothing planned yet</b>Add your first stop with the + button, or tap a day to start there.<br><button class="tm-btn ghost sm" type="button" id="blankSample">Load the Japan tour plan instead</button></div>';
     } else {
       var byDay = {}; VIEW.forEach(function (v) { (byDay[v.s.day] = byDay[v.s.day] || []).push(v); });
-      var days = DAYSEL ? [DAYSEL] : windowDays();
+      var days = DAYSEL ? [DAYSEL] : WDAYS;
       days.forEach(function (day) {
         var st = stateOf(day), items = byDay[day] || [];
-        html += '<div class="tm-dayh ' + st + '"><b>' + esc(fmtLong(day)) + '</b><em>' + relLabel(day) + (items.length ? ' · ' + items.length + ' stop' + (items.length === 1 ? '' : 's') : '') + '</em></div>';
+        html += '<div class="tm-dayh ' + st + '"><b>' + esc(fmtLong(day)) + '</b><em>' + relLabel(day) + (items.length ? ' · ' + items.length + ' stop' + (items.length === 1 ? '' : 's') : '') + '</em></div>' + stripHTML(day);
         if (!items.length) { html += '<div class="tm-empty-day">Nothing planned' + (st === 'past' ? '.' : ' — <button class="tm-link" type="button" data-addday="' + day + '">add a stop</button>') + '</div>'; return; }
         html += '<div class="tm-group">' + items.map(function (v) {
+          var w = whenOf(v.s);
           return '<div class="tm-stop ' + v.state + (v.s.id === SEL ? ' on' : '') + '" data-id="' + esc(v.s.id) + '" role="button" tabindex="0">' + pinHTML(v) +
-            '<div><div class="tm-t">' + (v.s.time ? esc(v.s.time) : '—') + '</div><div class="tm-n">' + esc(v.s.name) + '</div>' + (v.s.note ? '<div class="tm-note">' + esc(v.s.note) + '</div>' : '') + '</div></div>';
+            '<div><div class="tm-t">' + (w ? esc(w) : '—') + '</div><div class="tm-n">' + esc(v.s.name) + '</div>' + (v.s.note ? '<div class="tm-note">' + esc(v.s.note) + '</div>' : '') + '</div></div>';
         }).join('') + '</div>';
       });
-      if (!VIEW.length) html = '<div class="tm-blank"><b>Nothing in this window</b>No stops between ' + esc(fmtDay(addDays(TODAY, -WIN.past))) + ' and ' + esc(fmtDay(addDays(TODAY, WIN.future))) + '. Add a stop, or change the days shown.</div>' + html;
+      if (!VIEW.length) html = '<div class="tm-blank"><b>Nothing in this window</b>No stops between ' + esc(fmtDay(WDAYS[0])) + ' and ' + esc(fmtDay(WDAYS[WDAYS.length - 1])) + '. Add a stop, or change the days shown.</div>' + html;
       if (OUT.length && !DAYSEL) {
         html += '<details class="tm-out"><summary>' + OUT.length + ' more stop' + (OUT.length === 1 ? '' : 's') + ' outside these days</summary>' + OUT.map(function (s) {
-          return '<div class="tm-stop ' + stateOf(s.day) + '"><div><div class="tm-t">' + esc(fmtDay(s.day)) + (s.time ? ' · ' + esc(s.time) : '') + '</div><div class="tm-n">' + esc(s.name) + '</div></div>' +
+          var w = whenOf(s);
+          return '<div class="tm-stop ' + stateOf(s.day) + '"><div><div class="tm-t">' + esc(fmtDay(s.day)) + (w ? ' · ' + esc(w) : '') + '</div><div class="tm-n">' + esc(s.name) + '</div></div>' +
             '<button class="tm-btn ghost sm" type="button" data-edit="' + esc(s.id) + '">Edit</button></div>';
         }).join('') + '</details>';
       }
     }
     host.innerHTML = html;
+    renderWx();
   }
-  function render(fit) { compute(); renderHead(); renderList(); renderMap(); if (fit) { if (DAYSEL) fitDay(DAYSEL); else fitAll(); } }
+  function render(fit) { compute(); renderHead(); renderList(); renderMap(); foodRefresh(false); weatherRefresh(); renderExtraPins(); if (fit) { if (DAYSEL) fitDay(DAYSEL); else fitAll(); } }
 
   function setSel(id, pan) {
     SEL = id;
@@ -498,11 +791,7 @@
     var m = MARK[id]; if (!m) return;
     var row = $('#list .tm-stop[data-id="' + id + '"]'); if (row && row.scrollIntoView && pan) row.scrollIntoView({ block: 'nearest' });
     if (!pan) return;
-    var ll = m.getLatLng();
-    if (map.getBounds().pad(-0.15).contains(ll) && map.getZoom() >= 12) { m.openPopup(); return; }
-    map.once('moveend', function () { m.openPopup(); });
-    map.flyTo(ll, Math.max(map.getZoom(), 14), { duration: .7 });
-    if (isMobile() && $('#panel').classList.contains('up')) $('#panel').classList.remove('up');
+    flyOpen(m, 14);
   }
 
   // ---- editing ----
@@ -512,33 +801,44 @@
     EDIT.lat = +lat; EDIT.lng = +lng;
     $('#fLoc').innerHTML = '<span class="ok">✓ ' + (+lat).toFixed(4) + ', ' + (+lng).toFixed(4) + '</span>' + (label ? ' <span>' + esc(label) + '</span>' : '');
   }
-  function openEditor(id, presetDay) {
-    var s = id ? findStop(id) : null;
-    EDIT = { id: s ? s.id : null, lat: s ? +s.lat : null, lng: s ? +s.lng : null };
+  function defaultDay() { return DAYSEL || (ROLLING || !SPAN ? TODAY : SPAN.min); }
+  function openEditor(id, presetDay, preset) {
+    var s = id ? findStop(id) : null; preset = preset || {};
+    EDIT = { id: s ? s.id : null, lat: s ? +s.lat : (preset.lat != null ? +preset.lat : null), lng: s ? +s.lng : (preset.lng != null ? +preset.lng : null) };
     $('#mTitle').textContent = s ? 'Edit stop' : 'Add stop';
-    $('#fName').value = s ? s.name : '';
-    $('#fDay').value = s ? s.day : (presetDay || TODAY);
+    $('#fName').value = s ? s.name : (preset.name || '');
+    $('#fDay').value = s ? s.day : (presetDay || defaultDay());
     $('#fTime').value = s ? (s.time || '') : '';
-    $('#fNote').value = s ? (s.note || '') : '';
+    $('#fWhen').value = s ? (s.when || '') : '';
+    $('#fSeq').value = (s && s.seq != null && isFinite(+s.seq)) ? String(s.seq) : '';
+    $('#fNote').value = s ? (s.note || '') : (preset.note || '');
     $('#fQ').value = ''; $('#fRes').classList.add('hidden'); $('#fRes').innerHTML = '';
     $('#fErr').classList.add('hidden');
     $('#fDel').classList.toggle('hidden', !s);
-    if (s) setLoc(s.lat, s.lng, ''); else $('#fLoc').textContent = 'No location yet';
+    if (EDIT.lat != null) setLoc(EDIT.lat, EDIT.lng, preset.name ? 'from the extras list' : ''); else $('#fLoc').textContent = 'No location yet';
     $('#modal').classList.remove('hidden');
     setTimeout(function () { $('#fName').focus(); }, 30);
   }
   function closeEditor() { $('#modal').classList.add('hidden'); EDIT = null; }
   function saveEditor() {
-    var name = $('#fName').value.trim(), day = $('#fDay').value, time = $('#fTime').value, note = $('#fNote').value.trim(), err = $('#fErr');
+    var name = $('#fName').value.trim(), day = $('#fDay').value, time = $('#fTime').value, when = $('#fWhen').value.trim(), note = $('#fNote').value.trim(), err = $('#fErr');
     var msg = !name ? 'Give the stop a name.' : !validISO(day) ? 'Pick a day.' : (EDIT.lat == null || !isFinite(EDIT.lat) || !isFinite(EDIT.lng)) ? 'Choose a location — search for it or pick it on the map.' : '';
     if (msg) { err.textContent = msg; err.classList.remove('hidden'); return; }
     var s = EDIT.id ? findStop(EDIT.id) : null;
     if (!s) { s = { id: uid() }; TRIP.stops.push(s); }
-    s.name = name; s.day = day; s.time = time; s.note = note; s.lat = EDIT.lat; s.lng = EDIT.lng;
+    s.name = name; s.day = day; s.time = time; s.when = when; s.note = note; s.lat = EDIT.lat; s.lng = EDIT.lng;
+    var sq = parseInt($('#fSeq').value, 10);
+    if (isFinite(sq) && sq > 0) s.seq = sq;
+    else {   // blank order: after the day's ordered stops (if the day uses an order at all)
+      delete s.seq;
+      var mx = 0; TRIP.stops.forEach(function (o) { if (o !== s && o.day === day && o.seq != null && isFinite(+o.seq)) mx = Math.max(mx, +o.seq); });
+      if (mx) s.seq = mx + 1;
+    }
     var id = s.id;
     closeEditor(); saveTrip();
-    SEL = id; render(false);
+    SEL = id; DAYSEL = null; render(false);
     if (MARK[id]) setSel(id, true); else fitAll();
+    if (isMobile()) switchTab('plan');
   }
   function geocode(q) {
     return fetch('https://nominatim.openstreetmap.org/search?format=jsonv2&limit=6&accept-language=en&q=' + encodeURIComponent(q), { headers: { Accept: 'application/json' } })
@@ -570,29 +870,328 @@
     if (EDIT) $('#modal').classList.remove('hidden');
   }
 
+  // ---- restaurants near every stop in the window (OpenStreetMap data via the Overpass API) ----
+  var FKEY = 'tm_food_v1', FCACHE = 'tm_food_cache_v1', FRADII = [1000, 1500, 3000, 5000], FKINDS = ['indian', 'veg', 'both'];
+  var OVERPASS = ['https://overpass-api.de/api/interpreter', 'https://overpass.kumi.systems/api/interpreter'];
+  var FOOD_SVG = '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 2v7c0 1.1.9 2 2 2h4a2 2 0 0 0 2-2V2"/><path d="M7 2v20"/><path d="M21 15V2a5 5 0 0 0-5 5v6c0 1.1.9 2 2 2h3Zm0 0v7"/></svg>';
+  var FOOD = loadFood(), FSTATE = { status: 'idle', items: [], byStop: {}, error: '', key: '', req: 0 };
+  var foodLayer, FMARK = {};
+  function loadFood() {
+    var j = lsGet(FKEY);
+    if (j) return { on: j.on !== false, radius: FRADII.indexOf(+j.radius) >= 0 ? +j.radius : 1500, kind: FKINDS.indexOf(j.kind) >= 0 ? j.kind : 'indian' };
+    return { on: true, radius: 1500, kind: 'indian' };
+  }
+  function saveFood() { lsSet(FKEY, FOOD); }
+  function kindLabel() { return FOOD.kind === 'veg' ? 'vegetarian-friendly' : FOOD.kind === 'both' ? 'Indian or vegetarian-friendly' : 'Indian'; }
+  function radiusLabel() { return (FOOD.radius / 1000).toFixed(FOOD.radius % 1000 ? 1 : 0) + ' km'; }
+  function foodKey() { return FOOD.kind + '|' + FOOD.radius + '|' + VIEW.map(function (v) { return (+v.s.lat).toFixed(4) + ',' + (+v.s.lng).toFixed(4); }).sort().join(';'); }
+  function cacheGet(k) { try { var c = JSON.parse(sessionStorage.getItem(FCACHE) || '{}'), e = c[k]; if (e && Date.now() - e.ts < 6 * 3600e3) return e.elements; } catch (e) {} return null; }
+  function cachePut(k, elements) { try { var c = {}; c[k] = { ts: Date.now(), elements: elements }; sessionStorage.setItem(FCACHE, JSON.stringify(c)); } catch (e) {} }
+  function foodQuery() {
+    var r = FOOD.radius, sels = [];
+    if (FOOD.kind !== 'veg') sels.push('["amenity"~"^(restaurant|fast_food)$"]["cuisine"~"indian",i]');
+    if (FOOD.kind !== 'indian') sels.push('["amenity"~"^(restaurant|fast_food|cafe)$"]["diet:vegetarian"~"^(yes|only)$"]');
+    var parts = VIEW.map(function (v) {
+      var p = '(around:' + r + ',' + (+v.s.lat).toFixed(5) + ',' + (+v.s.lng).toFixed(5) + ');';
+      return sels.map(function (sel) { return 'node' + sel + p + 'way' + sel + p; }).join('');
+    }).join('');
+    return '[out:json][timeout:25];(' + parts + ');out center tags;';
+  }
+  function fetchOverpass(q, i) {
+    i = i || 0;
+    return fetch(OVERPASS[i], { method: 'POST', headers: { 'Content-Type': 'application/x-www-form-urlencoded' }, body: 'data=' + encodeURIComponent(q) })
+      .then(function (r) { if (!r.ok) throw new Error('HTTP ' + r.status); return r.json(); })
+      .catch(function (e) { if (i + 1 < OVERPASS.length) return fetchOverpass(q, i + 1); throw e; });
+  }
+  function foodNormalize(els) {
+    var seen = {}, out = [];
+    (els || []).forEach(function (el) {
+      var lat = el.lat != null ? el.lat : (el.center && el.center.lat), lon = el.lon != null ? el.lon : (el.center && el.center.lon);
+      if (!isFinite(+lat) || !isFinite(+lon)) return;
+      var key = el.type + '/' + el.id; if (seen[key]) return; seen[key] = 1;
+      var t = el.tags || {}, en = t['name:en'] || '', nm = t.name || '';
+      var web = t.website || t['contact:website'] || ''; if (!/^https?:\/\//i.test(web)) web = '';
+      var veg = /^(yes|only)$/.test(t['diet:vegetarian'] || '') || /^(yes|only)$/.test(t['diet:vegan'] || '');
+      var indian = /indian/i.test(t.cuisine || '');
+      out.push({ key: key, lat: +lat, lng: +lon, name: en || nm || (indian ? 'Indian restaurant' : 'Restaurant') + ' (no name on OSM)', native: (en && nm && nm !== en) ? nm : '',
+        cuisine: t.cuisine || '', hours: t.opening_hours || '', phone: t.phone || t['contact:phone'] || '', web: web, veg: veg, indian: indian,
+        addr: [t['addr:housenumber'], t['addr:street'], t['addr:city']].filter(Boolean).join(' '), osm: 'https://www.openstreetmap.org/' + el.type + '/' + el.id });
+    });
+    return out;
+  }
+  function foodAssign(items) {   // each place hangs off its NEAREST stop in the window
+    var by = {};
+    items.forEach(function (it) {
+      var best = null;
+      VIEW.forEach(function (v) { var d = km(v.s, it) * 1000; if (!best || d < best.d) best = { v: v, d: d }; });
+      if (!best) return;
+      it.stopId = best.v.s.id; it.dist = best.d; (by[it.stopId] = by[it.stopId] || []).push(it);
+    });
+    Object.keys(by).forEach(function (k) { by[k].sort(function (a, b) { return a.dist - b.dist; }); });
+    FSTATE.byStop = by;
+  }
+  function foodRefresh(force) {
+    if (!FOOD.on || !VIEW.length) { FSTATE.status = FOOD.on ? 'idle' : 'off'; FSTATE.items = []; FSTATE.byStop = {}; FSTATE.key = ''; renderFood(); return; }
+    var k = foodKey();
+    if (!force && k === FSTATE.key && FSTATE.status === 'ok') { renderFood(); return; }
+    var cached = force ? null : cacheGet(k);
+    if (cached) { FSTATE.key = k; FSTATE.status = 'ok'; FSTATE.items = foodNormalize(cached); foodAssign(FSTATE.items); renderFood(); return; }
+    var req = ++FSTATE.req; FSTATE.key = k; FSTATE.status = 'loading'; FSTATE.error = ''; renderFood();
+    fetchOverpass(foodQuery()).then(function (j) {
+      if (req !== FSTATE.req) return;
+      var els = (j && j.elements) || []; cachePut(k, els);
+      FSTATE.status = 'ok'; FSTATE.items = foodNormalize(els); foodAssign(FSTATE.items); renderFood();
+    }).catch(function (e) {
+      if (req !== FSTATE.req) return;
+      FSTATE.status = 'error'; FSTATE.error = (e && e.message) || String(e); FSTATE.items = []; FSTATE.byStop = {}; renderFood();
+    });
+  }
+  function foodPopup(it) {
+    var s = findStop(it.stopId), el = document.createElement('div');
+    var kind = it.indian ? 'Indian' : 'Vegetarian-friendly';
+    el.innerHTML = '<div class="tm-pop-k">' + kind + ' · ' + fmtM(it.dist) + (s ? ' from ' + esc(s.name) : '') + '</div>' +
+      '<div class="tm-pop-n">' + esc(it.name) + '</div>' + (it.native ? '<div class="tm-pop-note">' + esc(it.native) + '</div>' : '') +
+      '<div class="tm-pop-note">' + [it.cuisine ? 'Cuisine: ' + esc(it.cuisine.replace(/;/g, ', ')) : '', it.veg ? 'Vegetarian options tagged on OSM' : '', it.hours ? 'Hours: ' + esc(it.hours) : '', esc(it.addr), esc(it.phone)].filter(Boolean).join('<br>') + '</div>' +
+      '<div class="tm-pop-a"><a class="tm-btn sm" target="_blank" rel="noopener" href="https://www.google.com/maps/dir/?api=1&amp;destination=' + it.lat.toFixed(5) + ',' + it.lng.toFixed(5) + '">Directions</a>' +
+      (it.web ? '<a class="tm-btn ghost sm" target="_blank" rel="noopener" href="' + esc(it.web) + '">Website</a>' : '') +
+      '<a class="tm-btn ghost sm" target="_blank" rel="noopener" href="' + esc(it.osm) + '">OSM</a></div>';
+    return el;
+  }
+  function renderFood() {
+    var st = $('#foodStatus'), R = radiusLabel(), n = FSTATE.items.length, K = kindLabel();
+    $('#foodToggle').setAttribute('aria-pressed', FOOD.on ? 'true' : 'false');
+    if (!FOOD.on) st.innerHTML = '';
+    else if (FSTATE.status === 'loading') st.innerHTML = 'Searching OpenStreetMap for ' + K + ' places within ' + R + ' of every stop…';
+    else if (FSTATE.status === 'error') st.innerHTML = 'Couldn’t reach OpenStreetMap’s Overpass API (' + esc(FSTATE.error) + '). <button class="tm-link" type="button" id="foodRetry">Retry</button>';
+    else if (FSTATE.status === 'ok') st.innerHTML = '<b>' + n + '</b> ' + K + ' place' + (n === 1 ? '' : 's') + ' within ' + R + ' of your stops · OpenStreetMap' + (n ? '' : ' — none tagged this close; try a wider radius');
+    else st.innerHTML = VIEW.length ? '' : 'No stops in this window to search around.';
+    foodLayer.clearLayers(); FMARK = {};
+    if (FOOD.on && FSTATE.status === 'ok') {
+      var pd = pads();
+      FSTATE.items.forEach(function (it) {
+        var m = L.marker([it.lat, it.lng], { icon: L.divIcon({ className: 'tm-food-wrap', html: '<div class="tm-food' + (it.indian ? '' : ' veg') + '" title="' + esc(it.name) + '">' + FOOD_SVG + '</div>', iconSize: [22, 22], iconAnchor: [11, 11], popupAnchor: [0, -13] }), zIndexOffset: -500, title: it.name }).addTo(foodLayer);
+        m.bindPopup(foodPopup(it), { className: 'tm-pop tm-pop-food', autoPanPaddingTopLeft: pd.tl, autoPanPaddingBottomRight: pd.br });
+        FMARK[it.key] = m;
+      });
+    }
+    document.querySelectorAll('#list .tm-stop[data-id]').forEach(function (row) {
+      var old = row.querySelector('.tm-foodlist, .tm-food-none'); if (old) old.remove();
+      if (!FOOD.on || FSTATE.status === 'error' || FSTATE.status === 'off' || FSTATE.status === 'idle') return;
+      var items = FSTATE.byStop[row.getAttribute('data-id')] || [], html;
+      if (FSTATE.status === 'loading') html = '<div class="tm-food-none">Searching for ' + K + ' places…</div>';
+      else if (!items.length) html = '<div class="tm-food-none">No ' + K + ' places tagged within ' + R + '</div>';
+      else html = '<details class="tm-foodlist"><summary>' + FOOD_SVG + items.length + ' ' + K + ' place' + (items.length === 1 ? '' : 's') + ' within ' + R + '</summary>' +
+        items.map(function (it) { return '<button class="tm-fitem" type="button" data-food="' + esc(it.key) + '"><span>' + esc(it.name) + (it.veg ? '<span class="veg">VEG</span>' : '') + '</span><small>' + fmtM(it.dist) + '</small></button>'; }).join('') + '</details>';
+      row.lastElementChild.insertAdjacentHTML('beforeend', html);
+    });
+  }
+  function foodSelect(key) { var m = FMARK[key]; if (m) flyOpen(m, 15); }
+
+  // ---- optional spots (the operator's "additional spots" list) as a map layer ----
+  var STAR_SVG = '<svg viewBox="0 0 24 24" fill="currentColor" stroke="currentColor" stroke-width="1.5" stroke-linejoin="round"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/></svg>';
+  var XSHOW = (function () { var j = lsGet(XKEY); return !!(j && j.on); })();
+  var extraLayer;
+  function renderExtras() {
+    var host = $('#extrasPane');
+    host.innerHTML = '<div class="jt-h">Optional spots from the operator</div>' +
+      '<p class="jt-p">Not in the plan — but you can fit them into free time or add a day either side. Mostly ticketed; prices change, so look them up on Klook or ask the operator.</p>' +
+      '<div class="jt-row" style="margin-bottom:8px"><button class="tm-toggle" id="extrasToggle" type="button" aria-pressed="' + (XSHOW ? 'true' : 'false') + '">' + STAR_SVG.replace('fill="currentColor"', 'fill="none"') + 'Show on the map</button><span class="jt-p" style="margin:0">' + EXTRAS.length + ' places</span></div>' +
+      EXTRAS.map(function (x, i) {
+        return '<div class="jt-xitem"><div><div class="n">' + esc(x[0]) + '</div><div class="c">' + esc(x[3]) + '</div>' + (x[4] ? '<div class="note">' + esc(x[4]) + '</div>' : '') + '</div>' +
+          '<div class="jt-row" style="flex:none"><button class="tm-btn ghost sm" type="button" data-xshow="' + i + '">Map</button><button class="tm-btn sm" type="button" data-xadd="' + i + '">Add to plan</button></div></div>';
+      }).join('') +
+      '<div class="jt-h">Free time in the plan</div>' +
+      Object.keys(DAYINFO).map(function (d) { return DAYINFO[d].free ? '<div class="jt-card"><div class="t">' + esc(fmtLong(d)) + '</div><div class="s">' + esc(DAYINFO[d].free) + '</div></div>' : ''; }).join('');
+  }
+  var XMARK = {};
+  function renderExtraPins() {
+    extraLayer.clearLayers(); XMARK = {};
+    if (!XSHOW) return;
+    var pd = pads();
+    EXTRAS.forEach(function (x, i) {
+      var m = L.marker([x[1], x[2]], { icon: L.divIcon({ className: 'jt-extra-wrap', html: '<div class="jt-extra" title="' + esc(x[0]) + '">' + STAR_SVG + '</div>', iconSize: [22, 22], iconAnchor: [11, 11], popupAnchor: [0, -13] }), zIndexOffset: -300, title: x[0] }).addTo(extraLayer);
+      var el = document.createElement('div');
+      el.innerHTML = '<div class="tm-pop-k">Optional · ' + esc(x[3]) + '</div><div class="tm-pop-n">' + esc(x[0]) + '</div>' + (x[4] ? '<div class="tm-pop-note">' + esc(x[4]) + '</div>' : '') +
+        '<div class="tm-pop-a"><button class="tm-btn sm" type="button" data-act="add">Add to my plan</button><a class="tm-btn ghost sm" target="_blank" rel="noopener" href="https://www.google.com/maps/dir/?api=1&amp;destination=' + x[1].toFixed(5) + ',' + x[2].toFixed(5) + '">Directions</a></div>';
+      el.querySelector('[data-act="add"]').addEventListener('click', function () { map.closePopup(); openEditor(null, defaultDay(), { name: x[0], lat: x[1], lng: x[2], note: x[4] }); });
+      m.bindPopup(el, { className: 'tm-pop tm-pop-extra', autoPanPaddingTopLeft: pd.tl, autoPanPaddingBottomRight: pd.br });
+      XMARK[i] = m;
+    });
+  }
+
+  // ---- prep checklist ----
+  function renderPrep() {
+    var ticks = lsGet(PREPKEY) || {}, done = PREP.filter(function (p) { return ticks[p[0]]; }).length;
+    $('#prepPane').innerHTML = '<div class="jt-h">Before you fly</div>' +
+      '<p class="jt-p"><b style="color:var(--text)">' + done + ' of ' + PREP.length + ' done</b> — ticks are saved on this device.</p>' +
+      '<div class="jt-prog"><i style="width:' + Math.round(100 * done / PREP.length) + '%"></i></div>' +
+      PREP.map(function (p) { return '<label class="jt-check' + (ticks[p[0]] ? ' done' : '') + '"><input type="checkbox" data-prep="' + p[0] + '"' + (ticks[p[0]] ? ' checked' : '') + ' /><span>' + p[1] + '</span></label>'; }).join('') +
+      '<div class="jt-row" style="margin-top:12px"><button class="tm-link" type="button" id="prepReset">Clear all ticks</button></div>';
+  }
+
+  // ---- trip info ----
+  function renderInfo() {
+    var earlyOn = TODAY <= PRICE.earlyUntil;
+    $('#infoPane').innerHTML = '<div class="jt-h">Price · per head, double occupancy</div>' +
+      '<div class="jt-price"><div class="jt-card ' + (earlyOn ? 'on' : 'off') + '"><div class="k">Early bird · till 25 Aug</div><div class="v">₹ ' + PRICE.early + '</div></div>' +
+      '<div class="jt-card ' + (earlyOn ? '' : 'on') + '"><div class="k">' + (earlyOn ? 'After 25 Aug' : 'Current price') + '</div><div class="v">₹ ' + PRICE.std + '</div></div></div>' +
+      '<p class="jt-p">' + (earlyOn ? 'Early-bird pricing applies until 25 Aug.' : 'The early-bird window closed on 25 Aug; bookings now are at ₹ ' + PRICE.std + '.') + ' Single occupancy and room upgrades are extra.</p>' +
+      '<div class="jt-h">Included</div><ul class="jt-list">' + INCL.map(function (x) { return '<li>' + esc(x) + '</li>'; }).join('') + '</ul>' +
+      '<div class="jt-h">Not included</div><ul class="jt-list">' + EXCL.map(function (x) { return '<li>' + esc(x) + '</li>'; }).join('') + '</ul>' +
+      '<div class="jt-h">Private bus, day by day</div><div class="jt-kv">' + Object.keys(BUS).map(function (d) { return '<b>' + esc(fmtDay(d)) + '</b><span>' + esc(BUS[d]) + '</span>'; }).join('') + '</div>' +
+      '<p class="jt-p" style="margin-top:8px">Airport transfers are included only on 30 Oct (pick-up) and 6 Nov (drop). Land earlier or leave later and it’s Uber or the metro.</p>' +
+      '<div class="jt-h">Hotels</div><p class="jt-p">3/4-star hotels with good facilities in Tokyo, Kyoto and Osaka — names to be shared by the operator, which is why they are not on the map yet. Kyoto’s hotel is a short walk from Kyoto Station.</p>' +
+      '<div class="jt-h">Good to know</div><ul class="jt-list">' + POINTS.map(function (x) { return '<li>' + esc(x) + '</li>'; }).join('') + '</ul>';
+  }
+
+  // ---- tools: clocks, flight helper, currency, weather, locate, share ----
+  var RATE = null, RATE_REQ = false;
+  function renderTools() {
+    $('#toolsPane').innerHTML =
+      '<div class="jt-h">Time</div><div class="jt-clocks"><div class="jt-card"><div class="v" id="clkJST">--:--</div><div class="k">Japan (JST)</div></div><div class="jt-card"><div class="v" id="clkIST">--:--</div><div class="k">India (IST)</div></div></div>' +
+      '<p class="jt-p" style="margin-top:8px">Japan is 3 h 30 min ahead of India. Fly out of India on <b style="color:var(--text)">29 Oct</b> to land on the morning of 30 Oct; the direct Delhi flight reaches Narita at 7:55 am.</p>' +
+      '<div class="jt-h">Yen ⇄ Rupee</div>' +
+      '<div class="jt-fx"><input id="fxAmt" type="number" inputmode="decimal" min="0" step="any" value="1000" aria-label="Amount" /><select class="tm-sel" id="fxDir" aria-label="Direction"><option value="JPY">¥ JPY → ₹ INR</option><option value="INR">₹ INR → ¥ JPY</option></select></div>' +
+      '<div class="jt-fx-out" id="fxOut">—</div><div class="jt-fx-note" id="fxNote">Loading the exchange rate…</div>' +
+      '<div class="jt-fxq" id="fxQuick"></div>' +
+      '<div class="jt-h">Weather, day by day</div><div id="wxList"></div>' +
+      '<div class="jt-h">On the trip</div>' +
+      '<div class="jt-row"><button class="tm-btn ghost sm" type="button" id="locateBtn">Where am I?</button><button class="tm-btn ghost sm" type="button" id="shareBtn">Share this page</button></div>' +
+      '<p class="jt-p" style="margin-top:8px">“Where am I?” puts you on the map and tells you how far you are from the day’s nearest stop. Location is only used on this device.</p>' +
+      '<div class="jt-h">Preview any tour day</div><p class="jt-p">See the page as travellers will see it on a given day: ' +
+      ['2026-10-30', '2026-11-02', '2026-11-05'].map(function (d) { return '<a href="?today=' + d + '">' + esc(fmtDay(d)) + '</a>'; }).join(' · ') + (PREVIEW ? ' · <a href="?">back to today</a>' : '') + '</p>';
+    tick(); renderFx(); renderWxList();
+  }
+  function fxLoad() {
+    if (RATE_REQ) return; RATE_REQ = true;
+    fetch('https://api.frankfurter.app/latest?from=JPY&to=INR').then(function (r) { if (!r.ok) throw new Error('HTTP ' + r.status); return r.json(); })
+      .then(function (j) { if (!j || !j.rates || !isFinite(+j.rates.INR)) throw new Error('no rate'); RATE = { v: +j.rates.INR, date: j.date || '' }; renderFx(); })
+      .catch(function (e) { RATE = { err: (e && e.message) || 'unavailable' }; renderFx(); });
+  }
+  function fmtN(v, dp) { return v.toLocaleString('en-IN', { maximumFractionDigits: dp, minimumFractionDigits: 0 }); }
+  function renderFx() {
+    var out = $('#fxOut'), note = $('#fxNote'), q = $('#fxQuick'); if (!out) return;
+    if (!RATE) { out.textContent = '—'; note.textContent = 'Loading the exchange rate…'; q.innerHTML = ''; return; }
+    if (RATE.err) { out.textContent = '—'; note.textContent = 'Live rate unavailable right now (' + RATE.err + '). Rough guide: ¥100 is roughly ₹55–60.'; q.innerHTML = ''; return; }
+    var amt = parseFloat($('#fxAmt').value) || 0, dir = $('#fxDir').value;
+    out.textContent = dir === 'JPY' ? '₹ ' + fmtN(amt * RATE.v, 0) : '¥ ' + fmtN(amt / RATE.v, 0);
+    note.textContent = '1 JPY = ₹ ' + RATE.v.toFixed(3) + ' · ECB reference rate' + (RATE.date ? ', ' + RATE.date : '') + ' · your card’s rate will differ a little.';
+    q.innerHTML = [1000, 5000, 10000].map(function (y) { return '<div class="jt-card"><div class="v">₹ ' + fmtN(y * RATE.v, 0) + '</div><div class="k">¥ ' + fmtN(y, 0) + '</div></div>'; }).join('');
+  }
+  // weather: Open-Meteo, per day, for the day's first stop — only inside the 16-day forecast horizon
+  var WX = {}, WXKEY = 'jt_wx_v1';
+  var WXCODE = [[0, '☀️', 'Clear'], [1, '🌤️', 'Mostly clear'], [2, '⛅', 'Partly cloudy'], [3, '☁️', 'Overcast'], [45, '🌫️', 'Fog'], [48, '🌫️', 'Fog'], [51, '🌦️', 'Drizzle'], [53, '🌦️', 'Drizzle'], [55, '🌦️', 'Drizzle'], [56, '🌧️', 'Freezing drizzle'], [57, '🌧️', 'Freezing drizzle'], [61, '🌧️', 'Rain'], [63, '🌧️', 'Rain'], [65, '🌧️', 'Heavy rain'], [66, '🌧️', 'Freezing rain'], [67, '🌧️', 'Freezing rain'], [71, '❄️', 'Snow'], [73, '❄️', 'Snow'], [75, '❄️', 'Heavy snow'], [77, '❄️', 'Snow grains'], [80, '🌦️', 'Showers'], [81, '🌦️', 'Showers'], [82, '🌧️', 'Heavy showers'], [85, '❄️', 'Snow showers'], [86, '❄️', 'Snow showers'], [95, '⛈️', 'Thunderstorm'], [96, '⛈️', 'Thunderstorm'], [99, '⛈️', 'Thunderstorm']];
+  function wxIcon(code) { for (var i = 0; i < WXCODE.length; i++) if (WXCODE[i][0] === code) return WXCODE[i]; return [code, '🌡️', 'Weather']; }
+  function wxHorizon(day) { var off = dayDiff(day, TODAY); return off >= 0 && off <= 15; }
+  function weatherRefresh() {
+    if (PREVIEW && !/preview_wx/.test(location.search) && false) return;
+    WDAYS.forEach(function (day) {
+      if (!wxHorizon(day) || WX[day]) return;
+      var s = firstStopOf(day); if (!s) return;
+      var ck = day + '|' + (+s.lat).toFixed(2) + ',' + (+s.lng).toFixed(2), cached = null;
+      try { var c = JSON.parse(sessionStorage.getItem(WXKEY) || '{}'); if (c[ck] && Date.now() - c[ck].ts < 3 * 3600e3) cached = c[ck].v; } catch (e) {}
+      if (cached) { WX[day] = cached; renderWx(); return; }
+      WX[day] = { loading: true };
+      var url = 'https://api.open-meteo.com/v1/forecast?latitude=' + (+s.lat).toFixed(4) + '&longitude=' + (+s.lng).toFixed(4) + '&daily=weather_code,temperature_2m_max,temperature_2m_min,precipitation_probability_max&timezone=Asia%2FTokyo&start_date=' + day + '&end_date=' + day;
+      fetch(url).then(function (r) { if (!r.ok) throw new Error('HTTP ' + r.status); return r.json(); }).then(function (j) {
+        var d = j && j.daily; if (!d || !d.time || !d.time.length) throw new Error('empty');
+        var v = { code: +d.weather_code[0], tmax: Math.round(+d.temperature_2m_max[0]), tmin: Math.round(+d.temperature_2m_min[0]), pop: d.precipitation_probability_max ? +d.precipitation_probability_max[0] : null, at: s.name };
+        WX[day] = v;
+        try { var c2 = JSON.parse(sessionStorage.getItem(WXKEY) || '{}'); c2[ck] = { ts: Date.now(), v: v }; sessionStorage.setItem(WXKEY, JSON.stringify(c2)); } catch (e) {}
+        renderWx();
+      }).catch(function (e) { WX[day] = { err: (e && e.message) || 'unavailable' }; renderWx(); });
+    });
+    renderWx();
+  }
+  function wxText(v) { if (!v || v.loading) return ''; if (v.err) return ''; var ic = wxIcon(v.code); return ic[1] + ' ' + v.tmax + '° / ' + v.tmin + '°' + (v.pop != null ? ' · ' + v.pop + '% rain' : ''); }
+  function renderWx() {
+    document.querySelectorAll('.jt-wx[data-day]').forEach(function (el) { el.textContent = wxText(WX[el.getAttribute('data-day')]); });
+    renderWxList();
+  }
+  function renderWxList() {
+    var host = $('#wxList'); if (!host) return;
+    var days = (SPAN ? (function () { var o = [], n = Math.min(60, dayDiff(SPAN.max, SPAN.min)); for (var d = 0; d <= n; d++) o.push(addDays(SPAN.min, d)); return o; })() : WDAYS);
+    host.innerHTML = days.map(function (day) {
+      var s = firstStopOf(day), v = WX[day], right;
+      if (!s) right = '<span class="d">no stops</span>';
+      else if (!wxHorizon(day)) right = '<span class="d">forecast opens ' + esc(fmtDay(addDays(day, -15))) + '</span>';
+      else if (!v || v.loading) right = '<span class="d">loading…</span>';
+      else if (v.err) right = '<span class="d">unavailable (' + esc(v.err) + ')</span>';
+      else { var ic = wxIcon(v.code); right = '<span>' + ic[1] + ' ' + esc(ic[2]) + ' · ' + v.tmax + '° / ' + v.tmin + '°' + (v.pop != null ? ' · ' + v.pop + '% rain' : '') + '</span>'; }
+      return '<div class="jt-wxrow"><span><b>' + esc(fmtDay(day)) + '</b> <span class="d">' + (s ? esc(s.name) : '') + '</span></span>' + right + '</div>';
+    }).join('') + '<p class="jt-p" style="margin-top:8px">Open-Meteo forecast for each day’s first stop; available from 15 days before each day.</p>';
+  }
+  // locate
+  var meLayer;
+  function setMe(t) { $('#meLine').textContent = t; }
+  function locateMe() {
+    if (!navigator.geolocation) { setMe('Location is not available in this browser.'); return; }
+    setMe('Finding you…'); switchTab('plan');
+    navigator.geolocation.getCurrentPosition(function (pos) {
+      var la = pos.coords.latitude, lo = pos.coords.longitude, acc = pos.coords.accuracy || 0;
+      meLayer.clearLayers();
+      L.circle([la, lo], { radius: Math.min(acc, 500), className: 'jt-me-acc', interactive: false }).addTo(meLayer);
+      L.marker([la, lo], { icon: L.divIcon({ className: 'jt-me-wrap', html: '<div class="jt-me" title="You are here"></div>', iconSize: [16, 16], iconAnchor: [8, 8] }), zIndexOffset: 2000, title: 'You are here' }).addTo(meLayer);
+      var cands = VIEW.filter(function (v) { return v.state === 'today'; }); if (!cands.length) cands = VIEW;
+      var best = null; cands.forEach(function (v) { var d = km(v.s, { lat: la, lng: lo }); if (!best || d < best.d) best = { v: v, d: d }; });
+      setMe(best ? 'You are here · ' + fmtM(best.d * 1000) + ' from stop ' + best.v.n + ' (' + best.v.s.name + ')' : 'You are here');
+      map.flyTo([la, lo], Math.max(map.getZoom(), 14), { duration: .7 });
+    }, function (err) { setMe('Location unavailable (' + ((err && err.message) || 'denied') + ').'); }, { enableHighAccuracy: true, timeout: 12000, maximumAge: 60000 });
+  }
+  function shareLink() {
+    var url = location.origin + location.pathname;
+    if (navigator.share) { navigator.share({ title: document.title, url: url }).catch(function () {}); return; }
+    var fallback = function () { toast('Copy this link: ' + url); };
+    if (navigator.clipboard && navigator.clipboard.writeText) navigator.clipboard.writeText(url).then(function () { toast('Link copied — send it to your travellers'); }, fallback);
+    else fallback();
+  }
+
+  // ---- tabs ----
+  function switchTab(name) {
+    document.querySelectorAll('.jt-tab').forEach(function (b) { var on = b.getAttribute('data-tab') === name; b.classList.toggle('on', on); b.setAttribute('aria-selected', on ? 'true' : 'false'); });
+    document.querySelectorAll('.jt-pane').forEach(function (p) { p.classList.toggle('on', p.getAttribute('data-pane') === name); });
+    lsSet(TABKEY, name);
+    if (name === 'tools') { tick(); fxLoad(); renderWxList(); }
+    if (name !== 'plan' && isMobile()) $('#panel').classList.add('up');
+  }
+
   // ---- boot ----
   map = L.map('map', { zoomControl: false, attributionControl: true, worldCopyJump: true, zoomSnap: .5 });
   map.attributionControl.setPrefix('<a href="https://leafletjs.com" target="_blank" rel="noopener">Leaflet</a>');
   L.control.zoom({ position: 'topright' }).addTo(map);
-  var Fit = L.Control.extend({ onAdd: function () {
-    var d = L.DomUtil.create('div', 'leaflet-bar'), a = L.DomUtil.create('a', 'tm-fit', d);
-    a.href = '#'; a.title = 'Fit the whole trip'; a.setAttribute('aria-label', 'Fit the whole trip'); a.setAttribute('role', 'button');
-    a.innerHTML = '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M8 3H5a2 2 0 0 0-2 2v3M21 8V5a2 2 0 0 0-2-2h-3M3 16v3a2 2 0 0 0 2 2h3M16 21h3a2 2 0 0 0 2-2v-3"/></svg>';
-    L.DomEvent.on(a, 'click', function (e) { L.DomEvent.stop(e); DAYSEL = null; render(true); });
+  var Ctl = L.Control.extend({ onAdd: function () {
+    var d = L.DomUtil.create('div', 'leaflet-bar');
+    var fit = L.DomUtil.create('a', 'tm-ctl tm-fit', d); fit.href = '#'; fit.title = 'Fit the whole trip'; fit.setAttribute('aria-label', 'Fit the whole trip'); fit.setAttribute('role', 'button');
+    fit.innerHTML = '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M8 3H5a2 2 0 0 0-2 2v3M21 8V5a2 2 0 0 0-2-2h-3M3 16v3a2 2 0 0 0 2 2h3M16 21h3a2 2 0 0 0 2-2v-3"/></svg>';
+    L.DomEvent.on(fit, 'click', function (e) { L.DomEvent.stop(e); DAYSEL = null; render(true); });
+    var me = L.DomUtil.create('a', 'tm-ctl tm-locate', d); me.href = '#'; me.title = 'Where am I?'; me.setAttribute('aria-label', 'Where am I?'); me.setAttribute('role', 'button');
+    me.innerHTML = '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="3"/><path d="M12 2v3M12 19v3M2 12h3M19 12h3"/><circle cx="12" cy="12" r="8"/></svg>';
+    L.DomEvent.on(me, 'click', function (e) { L.DomEvent.stop(e); locateMe(); });
     L.DomEvent.disableClickPropagation(d);
     return d;
   } });
-  new Fit({ position: 'topright' }).addTo(map);
+  new Ctl({ position: 'topright' }).addTo(map);
   layer = L.layerGroup().addTo(map);
+  foodLayer = L.layerGroup().addTo(map);
+  extraLayer = L.layerGroup().addTo(map);
+  meLayer = L.layerGroup().addTo(map);
   setTiles();
   new MutationObserver(setTiles).observe(document.documentElement, { attributes: true, attributeFilter: ['data-theme'] });
   map.on('click', function (e) { if (PICK) endPick(e.latlng); });
-  map.on('popupclose', function () { /* keep the list highlight: it still tells you which stop you were looking at */ });
 
+  if (PREVIEW) { $('#preview').innerHTML = 'Preview · as if today were <b>' + esc(fmtLong(PREVIEW)) + '</b> · <a href="?">back to today</a>'; $('#preview').classList.remove('hidden'); }
+  $('#foodToggle').setAttribute('aria-pressed', FOOD.on ? 'true' : 'false'); $('#foodRadius').value = String(FOOD.radius); $('#foodKind').value = FOOD.kind;
+  renderExtras(); renderPrep(); renderInfo(); renderTools();
   render(true);
-  window.TM = { trip: function () { return TRIP; }, view: function () { return VIEW; }, map: map };   // for the page's own smoke tests
+  tick(); setInterval(tick, 20000);
+  switchTab((function () { var t = lsGet(TABKEY); return ['plan', 'extras', 'prep', 'info', 'tools'].indexOf(t) >= 0 ? t : 'plan'; })());
+  window.TM = { trip: function () { return TRIP; }, view: function () { return VIEW; }, food: function () { return FSTATE; }, wx: function () { return WX; }, map: map };   // for the page's own smoke tests
 
-  // panel interactions
+  // header
+  $('#themeBtn').addEventListener('click', function () { var t = document.documentElement.getAttribute('data-theme') === 'dark' ? 'light' : 'dark'; document.documentElement.setAttribute('data-theme', t); try { localStorage.setItem(TKEY, t); } catch (e) {} });
+  document.querySelector('.jt-tabs').addEventListener('click', function (e) { var b = e.target.closest('.jt-tab'); if (b) switchTab(b.getAttribute('data-tab')); });
+
+  // itinerary panel
   $('#days').addEventListener('click', function (e) {
     var b = e.target.closest('.tm-day'); if (!b) return;
     var day = b.getAttribute('data-day') || null;
@@ -600,31 +1199,56 @@
     render(true);
   });
   $('#list').addEventListener('click', function (e) {
+    var fb = e.target.closest('[data-food]'); if (fb) { foodSelect(fb.getAttribute('data-food')); return; }
+    if (e.target.closest('.tm-foodlist')) return;   // the <details> toggles itself; not a stop selection
     var add = e.target.closest('[data-addday]'); if (add) { openEditor(null, add.getAttribute('data-addday')); return; }
     var ed = e.target.closest('[data-edit]'); if (ed) { openEditor(ed.getAttribute('data-edit')); return; }
-    if (e.target.id === 'blankSample') { TRIP = sampleTrip(); try { localStorage.removeItem(KEY); } catch (x) {} SEL = null; DAYSEL = null; render(true); return; }
+    if (e.target.id === 'blankSample') { TRIP = builtinTrip(); try { localStorage.removeItem(KEY); } catch (x) {} SEL = null; DAYSEL = null; render(true); return; }
     var row = e.target.closest('.tm-stop[data-id]'); if (row) setSel(row.getAttribute('data-id'), true);
   });
   $('#list').addEventListener('keydown', function (e) {
     if (e.key !== 'Enter' && e.key !== ' ') return;
+    if (e.target.closest && e.target.closest('.tm-foodlist')) return;
     var row = e.target.closest && e.target.closest('.tm-stop[data-id]'); if (row) { e.preventDefault(); setSel(row.getAttribute('data-id'), true); }
   });
   $('#handle').addEventListener('click', function () { $('#panel').classList.toggle('up'); });
-  $('#btnAdd').addEventListener('click', function () { openEditor(null, DAYSEL || TODAY); });
+  $('#btnAdd').addEventListener('click', function () { openEditor(null, defaultDay()); });
   $('#btnRename').addEventListener('click', function () {
     var v = prompt('Trip name', TRIP.name || 'My trip'); if (v == null) return;
     v = v.trim(); if (!v) return; TRIP.name = v; saveTrip(); renderHead();
   });
   $('#btnMode').addEventListener('click', function () {
-    if (TRIP.sample) {
-      if (!confirm('Start your own trip? The sample stops will be cleared (you can load them again any time).')) return;
-      TRIP = { name: 'My trip', sample: false, stops: [] }; saveTrip();
+    if (TRIP.builtin) {
+      if (!confirm('Start a blank trip? The Japan tour stops will be cleared from view (you can load them again any time).')) return;
+      TRIP = { name: 'My trip', builtin: false, stops: [] }; saveTrip();
     } else {
-      if (!confirm('Replace your trip with the sample? Your stops will be removed from this browser.')) return;
-      try { localStorage.removeItem(KEY); } catch (x) {} TRIP = sampleTrip();
+      if (!confirm('Replace your trip with the built-in Japan tour? Your stops will be removed from this browser.')) return;
+      try { localStorage.removeItem(KEY); } catch (x) {} TRIP = builtinTrip();
     }
     SEL = null; DAYSEL = null; render(true);
   });
+
+  // restaurants nearby
+  $('#foodToggle').addEventListener('click', function () { FOOD.on = !FOOD.on; saveFood(); foodRefresh(false); });
+  $('#foodRadius').addEventListener('change', function () { var r = +this.value; FOOD.radius = FRADII.indexOf(r) >= 0 ? r : 1500; saveFood(); foodRefresh(false); });
+  $('#foodKind').addEventListener('change', function () { FOOD.kind = FKINDS.indexOf(this.value) >= 0 ? this.value : 'indian'; saveFood(); foodRefresh(false); });
+  $('#foodStatus').addEventListener('click', function (e) { if (e.target && e.target.id === 'foodRetry') foodRefresh(true); });
+
+  // extras / prep / tools panes (delegated — their contents are re-rendered)
+  $('#extrasPane').addEventListener('click', function (e) {
+    var t = e.target.closest('#extrasToggle'); if (t) { XSHOW = !XSHOW; lsSet(XKEY, { on: XSHOW }); t.setAttribute('aria-pressed', XSHOW ? 'true' : 'false'); renderExtraPins(); if (XSHOW) fitTo(EXTRAS.map(function (x) { return { s: { lat: x[1], lng: x[2] } }; }).concat(VIEW)); return; }
+    var sh = e.target.closest('[data-xshow]'); if (sh) { var i = +sh.getAttribute('data-xshow'); if (!XSHOW) { XSHOW = true; lsSet(XKEY, { on: true }); var tb = $('#extrasToggle'); if (tb) tb.setAttribute('aria-pressed', 'true'); renderExtraPins(); } flyOpen(XMARK[i], 14); return; }
+    var ad = e.target.closest('[data-xadd]'); if (ad) { var x = EXTRAS[+ad.getAttribute('data-xadd')]; openEditor(null, defaultDay(), { name: x[0], lat: x[1], lng: x[2], note: x[4] }); }
+  });
+  $('#prepPane').addEventListener('change', function (e) {
+    var cb = e.target.closest('input[data-prep]'); if (!cb) return;
+    var ticks = lsGet(PREPKEY) || {}; if (cb.checked) ticks[cb.getAttribute('data-prep')] = true; else delete ticks[cb.getAttribute('data-prep')];
+    lsSet(PREPKEY, ticks); renderPrep();
+  });
+  $('#prepPane').addEventListener('click', function (e) { if (e.target.id === 'prepReset') { lsSet(PREPKEY, {}); renderPrep(); } });
+  $('#toolsPane').addEventListener('input', function (e) { if (e.target.id === 'fxAmt') renderFx(); });
+  $('#toolsPane').addEventListener('change', function (e) { if (e.target.id === 'fxDir') renderFx(); });
+  $('#toolsPane').addEventListener('click', function (e) { if (e.target.id === 'locateBtn') locateMe(); else if (e.target.id === 'shareBtn') shareLink(); });
 
   // editor
   $('#mClose').addEventListener('click', closeEditor);
@@ -653,9 +1277,9 @@
     if (!$('#wmodal').classList.contains('hidden')) closeWin();
   });
 
-  // keep "today" honest across midnight / a tab left open, and re-fit paddings after a resize
-  document.addEventListener('visibilitychange', function () { if (!document.hidden && todayISO() !== TODAY) { TODAY = todayISO(); TRIP = TRIP.sample ? sampleTrip() : TRIP; render(true); } });
-  var rz; window.addEventListener('resize', function () { clearTimeout(rz); rz = setTimeout(function () { map.invalidateSize(); renderMap(); }, 160); });
+  // keep "today" honest across midnight / a tab left open (not while previewing), and re-fit after a resize
+  document.addEventListener('visibilitychange', function () { if (!PREVIEW && !document.hidden && todayISO() !== TODAY) { TODAY = todayISO(); renderInfo(); render(true); } });
+  var rz; window.addEventListener('resize', function () { clearTimeout(rz); rz = setTimeout(function () { map.invalidateSize(); renderMap(); renderExtraPins(); }, 160); });
 })();
 </script>
 </body>

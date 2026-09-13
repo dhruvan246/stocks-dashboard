@@ -789,7 +789,7 @@
   // time a reader opens the panel, so a normal page load pays nothing for it.
   // Edit glossary.js to change any definition or to add a term to a page.
   // =========================================================================
-  var GLOSS_SKIP = ['results-season.html', 'private-import.html', 'trip.html'];   // redirect stub + one-off owner utility + the map page (no terms; <main> is the map)
+  var GLOSS_SKIP = ['results-season.html', 'private-import.html'];   // redirect stub + one-off owner utility
 
   function buildGlossary() {
     if (document.querySelector('.sw-gloss')) return;                 // a page shipping its own stays untouched
