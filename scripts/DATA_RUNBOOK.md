@@ -16224,3 +16224,54 @@ preview (port 8853): zero console errors, real values in all six pulse tiles / t
 hover tooltips, dark + light (palette re-stepped for dark and validated with the dataviz checker), 375 px
 (body 375 = viewport, no sideways scroll); home + macro pages re-opened after the theme.js/sw.js edits.
 Live verification after push is recorded in the commit/memory.
+
+---
+
+## 139. ★ TRIP MAP — a rolling itinerary on a map  (docs/trip.html, built 2026-09-13)
+
+**What it is.** One page, the map IS the page: the days already done (grey pins, dotted route), today
+(pulsing accent pin) and the days ahead (numbered outlined pins, solid route; the leg leaving today's
+last stop "flows"), with a floating day-by-day panel (bottom sheet on phones), distance so-far / to-go,
+day chips that focus the map, a stop popup (Directions = Google Maps link, Edit, Delete) and an editor
+(add / edit / delete; location by Nominatim search or pick-on-map). Window defaults to 2 days back ·
+4 ahead and is adjustable. Built for the user's 2026-09-13 ask: "a trip itinerary on a map … the next
+4 days and … the past 2 days", then "make a sample itinerary — I just want to check out the modern map
+feature". Ships with a **sample Japan trip (22 stops, Tokyo → Hakone → Kyoto → Nara → Osaka → KIX)**
+whose days are OFFSETS from today, so it always renders as 2 done + today + 4 ahead.
+
+**Where the data lives — and why nothing personal is in the repo.** The repo and the Pages site are
+PUBLIC (GitHub API `visibility: public`, measured 2026-09-13). So the page never ships a real itinerary:
+the sample is generated at load and NEVER persisted; a user's own stops live in the browser only —
+`localStorage.tm_trip_v1` = `{name, sample:false, stops:[{id, day:'YYYY-MM-DD', time:'HH:MM', name,
+note, lat, lng}], updated}`, window in `tm_window_v1` = `{past, future}`. "Reset to sample" removes the
+key. Not a synced SETTINGS key (theme.js) on purpose — the doc is public-readable via sw-sync.
+Nav: 'Trip Map' under Tools, in `PRIVATE_PAGES` (owner browsers only); the direct URL works for anyone.
+
+**Build notes (the non-obvious bits).**
+- **No Tailwind CDN on this page.** The header keeps the shared class names so theme.css skins it, and
+  the few layout utilities are written in the page. Consequence that BIT: without Tailwind's preflight
+  the UA's `body{margin:8px}` applies — the header sat 8 px in and the stage overflowed the viewport by
+  3 px. `body{margin:0}` is set explicitly, and the stage height uses the header's 57 px (56 + 1 px border).
+- **Leaflet 1.9.4 is vendored** at `docs/vendor/leaflet/` (the release zip from
+  github.com/Leaflet/Leaflet/releases, `dist/` unmodified) — no CDN, in the SW shell (v149). Tiles:
+  CARTO `dark_all` for the dark theme, `rastertiles/voyager` for light/soft, swapped by a
+  MutationObserver on `<html data-theme>`. Attribution (OSM + CARTO) is mandatory and stays visible
+  above the phone sheet. Routes are Leaflet SVG polylines styled by CSS class (theme tokens work because
+  CSS outranks SVG presentation attributes).
+- `theme.js`: `mappin` icon; `GLOSS_SKIP` includes trip.html (the glossary would otherwise be appended
+  INSIDE the map stage). The panel is `z-index:1100` — above Leaflet's controls (1000) so an expanded
+  phone sheet covers zoom + attribution instead of being painted over.
+- Why not a claude.ai Artifact: the artifact CSP blocks tile images, so a raster map cannot render there.
+
+**Verification (§39) — `scripts/verify_trip_map.js`.** Playwright + the pre-installed Chromium; serve
+`docs/` on 127.0.0.1:8765 (`python3 -m http.server 8765 --directory docs --bind 127.0.0.1`), then
+`node scripts/verify_trip_map.js`. 61 checks: counts of stops / pins / route classes / day chips, stats
+never NaN, popup + Directions link, day filter toggle, add-via-search (Nominatim answered with a canned
+jsonv2 payload), pick-on-map, edit, delete, persistence across reload, window change, reset / blank /
+load-sample, theme → tile-URL swap, owner-vs-public nav, 375 px sheet (no side-scroll, attribution
+visible, handle expands, selecting collapses), and index/global/capex still booting on the new theme.js.
+Sandbox limits on 2026-09-13: the egress proxy blocked cartocdn / cdnjs / unpkg / nominatim / the live
+Pages host, so tiles were blank in headless shots and the LIVE geocoder was not exercised (only the
+documented jsonv2 `{lat, lon, display_name}` shape). Sample coordinates were cross-checked against
+GeoNames-derived city centres (npm `cities.json`) and the KIX record in npm `airport-codes`; landmark
+positions themselves come from general knowledge, each within 8 km of its verified city centre.

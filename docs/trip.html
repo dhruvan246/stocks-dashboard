@@ -34,7 +34,7 @@
   .leaflet-container{ font-family:var(--font); font-size:12px; background:var(--surface-2); }
 
   /* ---- floating itinerary panel (bottom sheet on phones) ---- */
-  .tm-panel{ position:absolute; top:14px; left:14px; bottom:14px; width:var(--tm-panel-w); max-width:calc(100% - 28px); z-index:600;
+  .tm-panel{ position:absolute; top:14px; left:14px; bottom:14px; width:var(--tm-panel-w); max-width:calc(100% - 28px); z-index:1100;   /* above Leaflet's controls (1000): an expanded phone sheet covers zoom + attribution */
     display:flex; flex-direction:column;
     background:color-mix(in srgb, var(--surface) 90%, transparent);
     -webkit-backdrop-filter:saturate(160%) blur(16px); backdrop-filter:saturate(160%) blur(16px);
@@ -451,7 +451,7 @@
       if (i) { var d = km(VIEW[i - 1].s, v.s); if (v.state === 'past') kmDone += d; else kmAhead += d; }
     });
     $('#stats').innerHTML =
-      '<div class="tm-stat"><b>' + done + ' <small>/ ' + VIEW.length + '</small></b><span>Stops visited</span></div>' +
+      '<div class="tm-stat"><b>' + done + ' <small>/ ' + VIEW.length + '</small></b><span>Visited</span></div>' +
       '<div class="tm-stat"><b>' + fmtKm(kmDone) + ' <small>km</small></b><span>So far</span></div>' +
       '<div class="tm-stat"><b>' + fmtKm(kmAhead) + ' <small>km</small></b><span>To go</span></div>';
     var counts = {}; VIEW.forEach(function (v) { counts[v.s.day] = (counts[v.s.day] || 0) + 1; });
