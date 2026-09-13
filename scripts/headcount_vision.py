@@ -347,11 +347,15 @@ def process(sym, want_fys, max_reports=4, verbose=True):
 
 
 def uncovered_syms():
-    out = []
-    for f in sorted(glob.glob(os.path.join(H.LEDGER_DIR, "*.json"))):
-        if not json.load(open(f)).get("fy"):
-            out.append(os.path.basename(f)[:-5])
-    return out
+    """Every universe name with no headcount yet: an EMPTY ledger, or NO ledger file at all. The old
+    version only globbed existing ledgers, so a roster name the text sweep had never written (2026-09-13:
+    nine names whose BSE code the resolver missed — GEPIL/JCHAC/LAXMIMACH/SEQUENT/…) was invisible to
+    --uncovered forever and never retried. n500_universe() already drops names with no BSE code (nothing
+    to fetch), so BSE-less listings (BSE Ltd, CDSL) stay a documented external-source residue."""
+    have = {os.path.basename(f)[:-5]: f for f in glob.glob(os.path.join(H.LEDGER_DIR, "*.json"))}
+    out = {s for s, f in have.items() if not json.load(open(f)).get("fy")}
+    out |= {s for s in H.n500_universe() if s not in have}
+    return sorted(out)
 
 
 _NAME = {}
