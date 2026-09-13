@@ -57,9 +57,69 @@
    "title": "Q3 FY26 Investor Presentation (duplicate filing)",
    "read": "2026-09-13",
    "by": "claude-routine"
+  },
+  "01edf41c-0e66-4430-a433-ef5b85e0f252.pdf": {
+   "kind": "ip",
+   "date": "2025-10-28",
+   "title": "Q2 FY26 Investor Presentation",
+   "read": "2026-09-13",
+   "by": "claude-routine"
   }
  },
  "metrics": [
+  {
+   "name": "Equity AuM",
+   "unit": "Trillion",
+   "kind": "level",
+   "y": {
+    "20250331": 24.2,
+    "20260331": 29.1
+   },
+   "q": {
+    "20241231": 25.6,
+    "20250930": 28.7,
+    "20251231": 30.3,
+    "20260331": 30.5
+   },
+   "src": {
+    "q:20241231": [
+     "43d427c3-345f-4c55-b480-56022ccdcff8.pdf",
+     6,
+     "Equity AUM (in Trillion)",
+     "25.6"
+    ],
+    "q:20251231": [
+     "43d427c3-345f-4c55-b480-56022ccdcff8.pdf",
+     6,
+     "Equity AUM (in Trillion)",
+     "30.3"
+    ],
+    "q:20260331": [
+     "2aad185c-60d6-4e7e-9355-daf00337ee01.pdf",
+     10,
+     "Equity AAuM - CAMS",
+     "30.5"
+    ],
+    "y:20260331": [
+     "2aad185c-60d6-4e7e-9355-daf00337ee01.pdf",
+     12,
+     "Equity AAuM - CAMS",
+     "29.1"
+    ],
+    "y:20250331": [
+     "2aad185c-60d6-4e7e-9355-daf00337ee01.pdf",
+     9,
+     "Equity AuM (Rs. Tn.)",
+     "24.2"
+    ],
+    "q:20250930": [
+     "01edf41c-0e66-4430-a433-ef5b85e0f252.pdf",
+     9,
+     "Equity AAuM – CAMS",
+     "28.7"
+    ]
+   }
+  },
   {
    "name": "Total Transaction Volumes",
    "unit": "Cr",
@@ -174,6 +234,98 @@
    }
   },
   {
+   "name": "CAMS AuM",
+   "unit": "Trillion",
+   "kind": "level",
+   "y": {
+    "20260331": 52.7
+   },
+   "q": {
+    "20241231": 46.3,
+    "20250930": 52.1,
+    "20251231": 54.7,
+    "20260331": 55.1
+   },
+   "src": {
+    "q:20241231": [
+     "43d427c3-345f-4c55-b480-56022ccdcff8.pdf",
+     6,
+     "CAMS AUM (in Trillion)",
+     "46.3"
+    ],
+    "q:20251231": [
+     "93e41f40-9b8d-464d-a745-937f5dee1568.pdf",
+     9,
+     "AAuM Serviced by CAMS",
+     "54.7"
+    ],
+    "q:20260331": [
+     "2aad185c-60d6-4e7e-9355-daf00337ee01.pdf",
+     10,
+     "AAuM Serviced by CAMS",
+     "55.1"
+    ],
+    "y:20260331": [
+     "2aad185c-60d6-4e7e-9355-daf00337ee01.pdf",
+     12,
+     "AAuM Serviced by CAMS",
+     "52.7"
+    ],
+    "q:20250930": [
+     "01edf41c-0e66-4430-a433-ef5b85e0f252.pdf",
+     9,
+     "AAuM Serviced by CAMS",
+     "52.1"
+    ]
+   }
+  },
+  {
+   "name": "CAMS Market Share in MF AuM",
+   "unit": "%",
+   "kind": "level",
+   "y": {
+    "20260331": 68.0
+   },
+   "q": {
+    "20241231": 67.4,
+    "20250930": 68.0,
+    "20251231": 67.5,
+    "20260630": 67.2
+   },
+   "src": {
+    "q:20260630": [
+     "fb3eeb5d-1c18-4c05-aa1d-cfc89a1c39dd.pdf",
+     2,
+     "dominant market position with a 67.2% share",
+     "67.2"
+    ],
+    "y:20260331": [
+     "9404e4ec-f6f9-45bd-8933-63227dcd5f4e.pdf",
+     159,
+     "aggregate mutual fund share of approximately 68% (doc period)",
+     "68"
+    ],
+    "q:20241231": [
+     "43d427c3-345f-4c55-b480-56022ccdcff8.pdf",
+     6,
+     "67.4% Share",
+     "67.4"
+    ],
+    "q:20251231": [
+     "43d427c3-345f-4c55-b480-56022ccdcff8.pdf",
+     6,
+     "67.5% Share",
+     "67.5"
+    ],
+    "q:20250930": [
+     "01edf41c-0e66-4430-a433-ef5b85e0f252.pdf",
+     9,
+     "CAMS – Market Share (based on Quarterly AAuM)",
+     "68"
+    ]
+   }
+  },
+  {
    "name": "Call Centre Headcount",
    "unit": "count",
    "kind": "level",
@@ -215,52 +367,6 @@
      53,
      "Call Centre (headcount)",
      "899"
-    ]
-   }
-  },
-  {
-   "name": "Equity AuM",
-   "unit": "Trillion",
-   "kind": "level",
-   "y": {
-    "20250331": 24.2,
-    "20260331": 29.1
-   },
-   "q": {
-    "20241231": 25.6,
-    "20251231": 30.3,
-    "20260331": 30.5
-   },
-   "src": {
-    "q:20241231": [
-     "43d427c3-345f-4c55-b480-56022ccdcff8.pdf",
-     6,
-     "Equity AUM (in Trillion)",
-     "25.6"
-    ],
-    "q:20251231": [
-     "43d427c3-345f-4c55-b480-56022ccdcff8.pdf",
-     6,
-     "Equity AUM (in Trillion)",
-     "30.3"
-    ],
-    "q:20260331": [
-     "2aad185c-60d6-4e7e-9355-daf00337ee01.pdf",
-     10,
-     "Equity AAuM - CAMS",
-     "30.5"
-    ],
-    "y:20260331": [
-     "2aad185c-60d6-4e7e-9355-daf00337ee01.pdf",
-     12,
-     "Equity AAuM - CAMS",
-     "29.1"
-    ],
-    "y:20250331": [
-     "2aad185c-60d6-4e7e-9355-daf00337ee01.pdf",
-     9,
-     "Equity AuM (Rs. Tn.)",
-     "24.2"
     ]
    }
   },
@@ -445,45 +551,6 @@
    }
   },
   {
-   "name": "CAMS AuM",
-   "unit": "Trillion",
-   "kind": "level",
-   "y": {
-    "20260331": 52.7
-   },
-   "q": {
-    "20241231": 46.3,
-    "20251231": 54.7,
-    "20260331": 55.1
-   },
-   "src": {
-    "q:20241231": [
-     "43d427c3-345f-4c55-b480-56022ccdcff8.pdf",
-     6,
-     "CAMS AUM (in Trillion)",
-     "46.3"
-    ],
-    "q:20251231": [
-     "93e41f40-9b8d-464d-a745-937f5dee1568.pdf",
-     9,
-     "AAuM Serviced by CAMS",
-     "54.7"
-    ],
-    "q:20260331": [
-     "2aad185c-60d6-4e7e-9355-daf00337ee01.pdf",
-     10,
-     "AAuM Serviced by CAMS",
-     "55.1"
-    ],
-    "y:20260331": [
-     "2aad185c-60d6-4e7e-9355-daf00337ee01.pdf",
-     12,
-     "AAuM Serviced by CAMS",
-     "52.7"
-    ]
-   }
-  },
-  {
    "name": "CAMS Market Share in Equity AuM",
    "unit": "%",
    "kind": "level",
@@ -519,45 +586,6 @@
      9,
      "Equity AuM Share",
      "66.4"
-    ]
-   }
-  },
-  {
-   "name": "CAMS Market Share in MF AuM",
-   "unit": "%",
-   "kind": "level",
-   "y": {
-    "20260331": 68.0
-   },
-   "q": {
-    "20241231": 67.4,
-    "20251231": 67.5,
-    "20260630": 67.2
-   },
-   "src": {
-    "q:20260630": [
-     "fb3eeb5d-1c18-4c05-aa1d-cfc89a1c39dd.pdf",
-     2,
-     "dominant market position with a 67.2% share",
-     "67.2"
-    ],
-    "y:20260331": [
-     "9404e4ec-f6f9-45bd-8933-63227dcd5f4e.pdf",
-     159,
-     "aggregate mutual fund share of approximately 68% (doc period)",
-     "68"
-    ],
-    "q:20241231": [
-     "43d427c3-345f-4c55-b480-56022ccdcff8.pdf",
-     6,
-     "67.4% Share",
-     "67.4"
-    ],
-    "q:20251231": [
-     "43d427c3-345f-4c55-b480-56022ccdcff8.pdf",
-     6,
-     "67.5% Share",
-     "67.5"
     ]
    }
   },
@@ -600,6 +628,83 @@
    }
   },
   {
+   "name": "New SIP Registrations",
+   "unit": "Cr",
+   "kind": "flow",
+   "y": {
+    "20260331": 4.7
+   },
+   "q": {
+    "20250930": 1.14,
+    "20251231": 1.16,
+    "20260331": 1.26
+   },
+   "src": {
+    "y:20260331": [
+     "9404e4ec-f6f9-45bd-8933-63227dcd5f4e.pdf",
+     160,
+     "New SIP registrations reached 4.7 Cr in FY'26",
+     "4.7"
+    ],
+    "q:20260331": [
+     "2aad185c-60d6-4e7e-9355-daf00337ee01.pdf",
+     6,
+     "New SIP registrations reached 1.26 Cr. in Q4FY'26",
+     "1.26"
+    ],
+    "q:20251231": [
+     "93e41f40-9b8d-464d-a745-937f5dee1568.pdf",
+     6,
+     "New SIP registrations stood at a healthy 1.16 crore in Q3 FY26",
+     "1.16"
+    ],
+    "q:20250930": [
+     "01edf41c-0e66-4430-a433-ef5b85e0f252.pdf",
+     6,
+     "New SIP registrations were at a healthy 1.14 Cr. registrations in Q2 FY'26",
+     "1.14"
+    ]
+   }
+  },
+  {
+   "name": "SIP Market Share",
+   "unit": "%",
+   "kind": "level",
+   "y": {},
+   "q": {
+    "20250630": 61.5,
+    "20250930": 63.4,
+    "20251231": 65.2,
+    "20260630": 63.9
+   },
+   "src": {
+    "q:20260630": [
+     "fb3eeb5d-1c18-4c05-aa1d-cfc89a1c39dd.pdf",
+     2,
+     "Market share improved to 63.9%",
+     "63.9"
+    ],
+    "q:20250630": [
+     "01edf41c-0e66-4430-a433-ef5b85e0f252.pdf",
+     6,
+     "Live SIPs market share improved to 63.4% Q-o-Q from 61.5%",
+     "61.5"
+    ],
+    "q:20251231": [
+     "93e41f40-9b8d-464d-a745-937f5dee1568.pdf",
+     6,
+     "Live SIPs ... improving our market share to 65.2%",
+     "65.2"
+    ],
+    "q:20250930": [
+     "01edf41c-0e66-4430-a433-ef5b85e0f252.pdf",
+     6,
+     "Live SIPs market share improved to 63.4% Q-o-Q from 61.5%",
+     "63.4"
+    ]
+   }
+  },
+  {
    "name": "Equity AuM",
    "unit": "₹ Cr",
    "kind": "level",
@@ -631,34 +736,33 @@
    }
   },
   {
-   "name": "New SIP Registrations",
-   "unit": "Cr",
-   "kind": "flow",
-   "y": {
-    "20260331": 4.7
-   },
+   "name": "MF RTA Clients (AMCs)",
+   "unit": "count",
+   "kind": "level",
+   "y": {},
    "q": {
-    "20251231": 1.16,
-    "20260331": 1.26
+    "20250930": 28.0,
+    "20251231": 29.0,
+    "20260331": 31.0
    },
    "src": {
-    "y:20260331": [
-     "9404e4ec-f6f9-45bd-8933-63227dcd5f4e.pdf",
-     160,
-     "New SIP registrations reached 4.7 Cr in FY'26",
-     "4.7"
-    ],
     "q:20260331": [
      "2aad185c-60d6-4e7e-9355-daf00337ee01.pdf",
      6,
-     "New SIP registrations reached 1.26 Cr. in Q4FY'26",
-     "1.26"
+     "total number of MF RTA clients now stands at 31 AMCs (doc period)",
+     "31"
     ],
     "q:20251231": [
      "93e41f40-9b8d-464d-a745-937f5dee1568.pdf",
      6,
-     "New SIP registrations stood at a healthy 1.16 crore in Q3 FY26",
-     "1.16"
+     "taking the MF RTA client count to 29 AMCs",
+     "29"
+    ],
+    "q:20250930": [
+     "01edf41c-0e66-4430-a433-ef5b85e0f252.pdf",
+     6,
+     "This takes the MF RTA client count to 28",
+     "28"
     ]
    }
   },
@@ -690,37 +794,6 @@
      6,
      "SIP collections of CAMS-serviced funds ... ₹55,964 crore",
      "55,964"
-    ]
-   }
-  },
-  {
-   "name": "SIP Market Share",
-   "unit": "%",
-   "kind": "level",
-   "y": {},
-   "q": {
-    "20250630": 61.5,
-    "20251231": 65.2,
-    "20260630": 63.9
-   },
-   "src": {
-    "q:20260630": [
-     "fb3eeb5d-1c18-4c05-aa1d-cfc89a1c39dd.pdf",
-     2,
-     "Market share improved to 63.9%",
-     "63.9"
-    ],
-    "q:20250630": [
-     "fb3eeb5d-1c18-4c05-aa1d-cfc89a1c39dd.pdf",
-     2,
-     "from 61.5% a year ago",
-     "61.5"
-    ],
-    "q:20251231": [
-     "93e41f40-9b8d-464d-a745-937f5dee1568.pdf",
-     6,
-     "Live SIPs ... improving our market share to 65.2%",
-     "65.2"
     ]
    }
   },
@@ -956,30 +1029,6 @@
      11,
      "SIP Book (as on March 31, 2026)",
      "67.0"
-    ]
-   }
-  },
-  {
-   "name": "MF RTA Clients (AMCs)",
-   "unit": "count",
-   "kind": "level",
-   "y": {},
-   "q": {
-    "20251231": 29.0,
-    "20260331": 31.0
-   },
-   "src": {
-    "q:20260331": [
-     "2aad185c-60d6-4e7e-9355-daf00337ee01.pdf",
-     6,
-     "total number of MF RTA clients now stands at 31 AMCs (doc period)",
-     "31"
-    ],
-    "q:20251231": [
-     "93e41f40-9b8d-464d-a745-937f5dee1568.pdf",
-     6,
-     "taking the MF RTA client count to 29 AMCs",
-     "29"
     ]
    }
   },
