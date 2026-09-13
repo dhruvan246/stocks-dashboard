@@ -1,0 +1,662 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover" />
+<title>STOCKSWORLD · Trip Map</title>
+<link rel="stylesheet" href="./vendor/leaflet/leaflet.css" />
+<link rel="stylesheet" href="./theme.css" />
+<script src="./theme.js"></script>
+<style>
+  /* Trip Map — a rolling itinerary on a map: the days already done, today, and the days ahead.
+   * This page does NOT load the Tailwind CDN (the map is the whole page and needs no utility
+   * grid); the header keeps the same class names as every other page so theme.css skins it
+   * identically, and the few layout utilities it relied on are written out below.
+   * Map: Leaflet 1.9.4 vendored under ./vendor/leaflet/ (no CDN, works offline via the SW shell);
+   * tiles: CARTO basemaps (dark_all / voyager) switched with the site theme. */
+  :root{ --tm-hdr:57px; --tm-bbar:0px; --tm-panel-w:384px; }   /* 56px header + its 1px bottom border */
+  body{ margin:0; }   /* Tailwind's preflight normally zeroes this; this page does not load Tailwind */
+  @media (max-width:760px){ :root{ --tm-bbar:calc(58px + env(safe-area-inset-bottom, 0px)); } }  /* theme.js bottom bar */
+  .hidden{ display:none !important; }
+
+  /* ---- header (Tailwind-free twin of the shared header) ---- */
+  header{ position:sticky; top:0; z-index:40; }
+  header .tm-hdr-in{ max-width:1280px; margin:0 auto; padding:0 16px; height:56px; display:flex; align-items:center; justify-content:space-between; gap:16px; }
+  header .group{ display:flex; align-items:center; gap:10px; flex:none; text-decoration:none; color:inherit; }
+  header .group > span:first-child{ display:inline-flex; align-items:center; justify-content:center; }
+  @media (max-width:639px){ header .group > .tm-wordmark{ display:none; } }
+
+  /* ---- stage ---- */
+  main.tm-stage{ position:relative; z-index:0; isolation:isolate; flex:none; width:100%;
+    height:calc(100vh - var(--tm-hdr) - var(--tm-bbar)); height:calc(100dvh - var(--tm-hdr) - var(--tm-bbar));
+    min-height:420px; overflow:hidden; }
+  #map{ position:absolute; inset:0; background:var(--surface-2); }
+  .leaflet-container{ font-family:var(--font); font-size:12px; background:var(--surface-2); }
+
+  /* ---- floating itinerary panel (bottom sheet on phones) ---- */
+  .tm-panel{ position:absolute; top:14px; left:14px; bottom:14px; width:var(--tm-panel-w); max-width:calc(100% - 28px); z-index:600;
+    display:flex; flex-direction:column;
+    background:color-mix(in srgb, var(--surface) 90%, transparent);
+    -webkit-backdrop-filter:saturate(160%) blur(16px); backdrop-filter:saturate(160%) blur(16px);
+    border:1px solid var(--border-strong); border-radius:16px; box-shadow:var(--shadow-lg); overflow:hidden; }
+  .tm-handle{ display:none; }
+  @media (max-width:899px){
+    .tm-panel{ top:auto; left:8px; right:8px; bottom:8px; width:auto; max-width:none; height:46%; transition:height .28s cubic-bezier(.4,0,.2,1); }
+    .tm-panel.up{ height:calc(100% - 16px); }
+    .tm-handle{ display:flex; justify-content:center; padding:9px 0 3px; background:none; border:0; cursor:pointer; flex:none; width:100%; }
+    .tm-handle span{ width:40px; height:4px; border-radius:999px; background:var(--border-strong); }
+    .leaflet-bottom.leaflet-right{ bottom:calc(46% + 10px); }   /* attribution stays visible above the sheet */
+  }
+  .tm-head{ padding:12px 16px 10px; border-bottom:1px solid var(--border); flex:none; }
+  .tm-title-row{ display:flex; align-items:flex-start; justify-content:space-between; gap:10px; }
+  .tm-kicker{ font-size:10.5px; font-weight:700; letter-spacing:.08em; text-transform:uppercase; color:var(--text-faint); display:flex; align-items:center; gap:8px; }
+  .tm-badge{ font-size:9.5px; font-weight:800; letter-spacing:.06em; padding:2px 7px; border-radius:999px; text-transform:uppercase;
+    color:var(--warn); background:var(--warn-soft); border:1px solid color-mix(in srgb, var(--warn) 35%, transparent); }
+  html[data-theme] main .tm-title{ font-size:17px; font-weight:800; letter-spacing:-.02em; color:var(--text); margin:3px 0 0; line-height:1.2; }
+  .tm-actions{ display:flex; gap:6px; flex:none; }
+  .tm-ib{ width:34px; height:34px; border-radius:10px; border:1px solid var(--border-strong); background:var(--surface); color:var(--text); cursor:pointer;
+    display:inline-flex; align-items:center; justify-content:center; font-family:inherit; }
+  .tm-ib:hover{ border-color:var(--accent); color:var(--accent-text); }
+  .tm-ib.primary{ background:var(--accent); border-color:transparent; color:#fff; box-shadow:0 4px 12px -4px var(--glow); }
+  .tm-ib.primary:hover{ color:#fff; filter:brightness(1.08); }
+  .tm-ib svg{ width:16px; height:16px; }
+  .tm-stats{ display:grid; grid-template-columns:repeat(3, 1fr); gap:6px; margin-top:12px; }
+  .tm-stat{ padding:8px 10px; border-radius:10px; background:var(--surface-2); border:1px solid var(--border); min-width:0; }
+  .tm-stat b{ display:block; font-size:15px; font-weight:800; letter-spacing:-.02em; color:var(--text); font-variant-numeric:tabular-nums; white-space:nowrap; }
+  .tm-stat b small{ font-size:11px; font-weight:700; color:var(--text-muted); }
+  .tm-stat span{ font-size:9.5px; font-weight:700; color:var(--text-faint); text-transform:uppercase; letter-spacing:.06em; }
+  .tm-days{ display:flex; gap:6px; overflow-x:auto; scrollbar-width:none; margin-top:12px; padding-bottom:2px; }
+  .tm-days::-webkit-scrollbar{ display:none; }
+  .tm-day{ flex:none; display:flex; flex-direction:column; align-items:center; min-width:46px; padding:6px 8px; border-radius:10px; cursor:pointer;
+    border:1px solid var(--border); background:var(--surface-2); color:var(--text-muted); font-family:inherit; transition:var(--tr); }
+  .tm-day small{ font-size:9.5px; font-weight:700; letter-spacing:.06em; text-transform:uppercase; }
+  .tm-day b{ font-size:15px; font-weight:800; line-height:1.1; color:var(--text); }
+  .tm-day i{ font-style:normal; font-size:9.5px; font-weight:700; margin-top:2px; }
+  .tm-day.past{ opacity:.72; } .tm-day.past i{ color:var(--text-faint); }
+  .tm-day.today{ border-color:var(--accent); background:var(--accent-soft); } .tm-day.today b, .tm-day.today i{ color:var(--accent-text); }
+  .tm-day.future i{ color:var(--accent-text); }
+  .tm-day.empty b{ color:var(--text-faint); }
+  .tm-day.on{ box-shadow:0 0 0 2px var(--accent); opacity:1; }
+  .tm-day:hover{ border-color:var(--border-strong); }
+
+  .tm-list{ flex:1; overflow:auto; padding:4px 10px 10px; overscroll-behavior:contain; }
+  .tm-dayh{ display:flex; align-items:baseline; justify-content:space-between; gap:8px; padding:14px 6px 6px; font-size:11px; font-weight:700; letter-spacing:.06em; text-transform:uppercase; color:var(--text-faint); }
+  .tm-dayh b{ color:var(--text-muted); }
+  .tm-dayh.today b{ color:var(--accent-text); }
+  .tm-dayh em{ font-style:normal; font-weight:600; letter-spacing:0; text-transform:none; }
+  .tm-empty-day{ padding:6px 8px 4px 46px; font-size:12px; color:var(--text-faint); }
+  .tm-group{ position:relative; }
+  .tm-stop{ display:grid; grid-template-columns:28px 1fr; gap:10px; padding:8px 6px; border-radius:10px; cursor:pointer; position:relative; border:1px solid transparent; }
+  .tm-stop:hover{ background:var(--surface-2); }
+  .tm-stop.on{ background:var(--accent-soft); border-color:color-mix(in srgb, var(--accent) 35%, transparent); }
+  .tm-stop::before{ content:''; position:absolute; left:19px; top:40px; bottom:-8px; width:2px; background:var(--border); }
+  .tm-group .tm-stop:last-child::before{ display:none; }
+  .tm-stop .tm-t{ font-size:10.5px; font-weight:700; color:var(--text-faint); font-variant-numeric:tabular-nums; }
+  .tm-stop .tm-n{ font-size:13.5px; font-weight:700; color:var(--text); line-height:1.25; }
+  .tm-stop .tm-note{ font-size:12px; color:var(--text-muted); margin-top:2px; line-height:1.35; }
+  .tm-stop.past .tm-n{ color:var(--text-muted); }
+  .tm-out{ margin:12px 6px 4px; }
+  .tm-out summary{ cursor:pointer; font-size:12px; font-weight:700; color:var(--text-muted); padding:6px 0; }
+  .tm-out .tm-stop{ grid-template-columns:1fr auto; cursor:default; }
+  .tm-out .tm-stop::before{ display:none; }
+  .tm-blank{ padding:26px 12px; text-align:center; color:var(--text-muted); font-size:13px; line-height:1.5; }
+  .tm-blank b{ display:block; color:var(--text); font-size:14px; margin-bottom:4px; }
+  .tm-blank .tm-btn{ margin-top:12px; }
+  .tm-foot{ flex:none; display:flex; align-items:center; justify-content:space-between; gap:8px; flex-wrap:wrap; padding:8px 14px; border-top:1px solid var(--border); font-size:11.5px; color:var(--text-faint); }
+  .tm-link{ background:none; border:0; padding:0; font:inherit; font-weight:700; color:var(--accent-text); cursor:pointer; }
+  .tm-link:hover{ text-decoration:underline; }
+
+  /* ---- pins: one look on the map AND in the list ---- */
+  .tm-pin{ width:28px; height:28px; border-radius:50%; display:flex; align-items:center; justify-content:center; font-size:11.5px; font-weight:800; font-variant-numeric:tabular-nums;
+    border:2px solid var(--surface); box-shadow:0 2px 8px rgba(0,0,0,.35); color:#fff; background:var(--accent); font-family:var(--font); position:relative; transition:transform var(--tr); }
+  .tm-pin.past{ background:var(--text-faint); }
+  .tm-pin.future{ background:var(--surface); color:var(--accent-text); border-color:var(--accent); }
+  .tm-pin.today{ background:var(--accent); box-shadow:0 0 0 4px color-mix(in srgb, var(--accent) 28%, transparent), 0 2px 8px rgba(0,0,0,.35); }
+  .tm-pin-wrap{ background:none; border:0; }
+  .tm-pin-wrap .tm-pin.today::after{ content:''; position:absolute; inset:-7px; border-radius:50%; border:2px solid var(--accent); animation:tm-ping 1.7s cubic-bezier(0,0,.2,1) infinite; }
+  .tm-pin-wrap .tm-pin.on{ transform:scale(1.22); z-index:1; }
+  @keyframes tm-ping{ 0%{ transform:scale(.6); opacity:.9; } 100%{ transform:scale(1.5); opacity:0; } }
+
+  /* ---- routes (Leaflet draws SVG; CSS wins over its presentation attributes, so theme tokens work) ---- */
+  .tm-route{ fill:none; stroke-linecap:round; stroke-linejoin:round; }
+  .tm-route.past{ stroke:var(--text-faint); stroke-width:3; stroke-dasharray:2 7; }
+  .tm-route.future{ stroke:var(--accent); stroke-width:3.5; }
+  .tm-route.glow{ stroke:var(--accent); stroke-width:12; opacity:.16; }
+  .tm-route.next{ stroke:var(--accent); stroke-width:3.5; stroke-dasharray:7 9; animation:tm-flow 1.1s linear infinite; }
+  @keyframes tm-flow{ to{ stroke-dashoffset:-32; } }
+
+  /* ---- Leaflet chrome on the theme tokens ---- */
+  .leaflet-bar{ border:1px solid var(--border-strong) !important; box-shadow:var(--shadow-lg) !important; border-radius:10px !important; overflow:hidden; }
+  .leaflet-bar a{ background:var(--surface) !important; color:var(--text) !important; border-bottom-color:var(--border) !important; width:34px !important; height:34px !important; line-height:34px !important; }
+  .leaflet-bar a:hover{ background:var(--surface-2) !important; }
+  .leaflet-bar a.leaflet-disabled{ color:var(--text-faint) !important; }
+  .leaflet-bar a.tm-fit{ display:flex; align-items:center; justify-content:center; }
+  .leaflet-bar a.tm-fit svg{ width:16px; height:16px; }
+  .leaflet-control-attribution{ background:color-mix(in srgb, var(--surface) 82%, transparent) !important; color:var(--text-faint) !important; font-size:10px; padding:2px 6px; border-radius:6px 0 0 0; }
+  .leaflet-control-attribution a{ color:var(--text-muted) !important; }
+  .tm-pop .leaflet-popup-content-wrapper{ background:var(--surface); color:var(--text); border:1px solid var(--border-strong); border-radius:12px; box-shadow:var(--shadow-lg); padding:0; }
+  .tm-pop .leaflet-popup-content{ margin:12px 14px 12px; line-height:1.35; min-width:210px; max-width:280px; font-size:12.5px; }
+  .tm-pop .leaflet-popup-tip{ background:var(--surface); border:1px solid var(--border-strong); box-shadow:none; }
+  .tm-pop .leaflet-popup-close-button{ color:var(--text-faint) !important; }
+  .tm-pop-k{ font-size:10.5px; font-weight:700; letter-spacing:.06em; text-transform:uppercase; color:var(--text-faint); }
+  .tm-pop-k .today{ color:var(--accent-text); } .tm-pop-k .future{ color:var(--accent-text); }
+  .tm-pop-n{ font-size:14px; font-weight:800; color:var(--text); margin-top:2px; letter-spacing:-.01em; }
+  .tm-pop-note{ color:var(--text-muted); margin-top:4px; }
+  .tm-pop-a{ display:flex; gap:6px; margin-top:10px; flex-wrap:wrap; }
+
+  /* ---- buttons / forms ---- */
+  .tm-btn{ display:inline-flex; align-items:center; justify-content:center; gap:6px; font:inherit; font-size:12.5px; font-weight:700; padding:8px 14px; border-radius:9px;
+    border:1px solid transparent; background:var(--accent); color:#fff; cursor:pointer; text-decoration:none; white-space:nowrap; }
+  .leaflet-container a.tm-btn{ color:#fff; }
+  .tm-btn:hover{ filter:brightness(1.08); }
+  .tm-btn.ghost{ background:var(--surface-2); color:var(--text); border-color:var(--border-strong); }
+  .leaflet-container a.tm-btn.ghost, .tm-btn.ghost:hover{ color:var(--text); filter:none; border-color:var(--accent); }
+  .tm-btn.danger{ background:var(--neg-soft); color:var(--neg); border-color:color-mix(in srgb, var(--neg) 35%, transparent); }
+  .tm-btn.sm{ padding:5px 10px; font-size:11.5px; border-radius:7px; }
+  .tm-modal{ position:fixed; inset:0; z-index:1200; display:flex; align-items:center; justify-content:center; padding:16px; background:rgba(0,0,0,.45); -webkit-backdrop-filter:blur(4px); backdrop-filter:blur(4px); }
+  .tm-dialog{ width:100%; max-width:440px; max-height:calc(100vh - 32px); overflow:auto; background:var(--surface); border:1px solid var(--border-strong); border-radius:16px; box-shadow:var(--shadow-lg); padding:18px; }
+  .tm-dialog.sm{ max-width:360px; }
+  .tm-dh{ display:flex; align-items:center; justify-content:space-between; margin-bottom:12px; }
+  html[data-theme] .tm-dh h2{ font-size:16px; font-weight:800; margin:0; color:var(--text); letter-spacing:-.02em; }
+  .tm-x{ width:30px; height:30px; border-radius:8px; border:1px solid var(--border); background:var(--surface-2); color:var(--text-muted); cursor:pointer; font-size:18px; line-height:1; font-family:inherit; }
+  .tm-f{ display:flex; flex-direction:column; gap:4px; margin-bottom:10px; min-width:0; }
+  .tm-f label{ font-size:10.5px; font-weight:700; letter-spacing:.06em; text-transform:uppercase; color:var(--text-faint); }
+  .tm-f input, .tm-f textarea{ font:inherit; font-size:13.5px; padding:8px 10px; border-radius:9px; border:1px solid var(--border-strong); background:var(--surface-2); color:var(--text); width:100%; min-width:0; }
+  .tm-f textarea{ resize:vertical; }
+  .tm-row{ display:grid; grid-template-columns:1fr 1fr; gap:10px; }
+  .tm-search{ display:flex; gap:6px; }
+  .tm-search input{ flex:1; }
+  .tm-res{ border:1px solid var(--border); border-radius:9px; overflow:hidden; margin-top:6px; }
+  .tm-res button{ display:block; width:100%; text-align:left; padding:8px 10px; font:inherit; font-size:12.5px; background:var(--surface); border:0; border-bottom:1px solid var(--border); cursor:pointer; color:var(--text); line-height:1.3; }
+  .tm-res button:last-child{ border-bottom:0; }
+  .tm-res button:hover{ background:var(--surface-2); }
+  .tm-res .tm-res-note{ padding:8px 10px; font-size:12px; color:var(--text-muted); }
+  .tm-loc{ display:flex; align-items:center; justify-content:space-between; gap:8px; margin-top:6px; font-size:12px; color:var(--text-muted); }
+  .tm-loc .ok{ color:var(--pos); font-weight:700; font-variant-numeric:tabular-nums; }
+  .tm-err{ font-size:12px; font-weight:600; color:var(--neg); margin:2px 0 8px; }
+  .tm-help{ font-size:12px; color:var(--text-muted); margin:2px 0 12px; line-height:1.4; }
+  .tm-dact{ display:flex; align-items:center; gap:8px; margin-top:6px; }
+  .tm-dact .sp{ flex:1; }
+  .tm-pickbar{ position:absolute; top:14px; left:50%; transform:translateX(-50%); z-index:700; display:flex; align-items:center; gap:10px; padding:8px 8px 8px 14px;
+    background:var(--surface); border:1px solid var(--accent); border-radius:999px; box-shadow:var(--shadow-lg); font-size:12.5px; font-weight:700; color:var(--text); white-space:nowrap; max-width:calc(100% - 28px); }
+  main.tm-stage.picking #map{ cursor:crosshair; }
+  main.tm-stage.picking .tm-panel{ opacity:.35; pointer-events:none; }
+</style>
+</head>
+<body>
+
+<header class="sticky top-0 z-40 bg-white/90 backdrop-blur-md border-b border-slate-200 shadow-sm">
+  <div class="max-w-screen-xl mx-auto px-4 h-14 flex items-center justify-between gap-4 tm-hdr-in">
+    <a href="./index.html" class="flex items-center gap-2.5 shrink-0 group">
+      <span class="w-9 h-9 rounded-xl bg-gradient-to-br from-blue-600 via-indigo-600 to-violet-600 text-white flex items-center justify-center font-extrabold text-[13px] shadow-md group-hover:scale-105 transition">SW</span>
+      <span class="font-bold text-slate-900 tracking-tight tm-wordmark">STOCKS<span class="text-indigo-600">WORLD</span></span>
+    </a>
+    <nav></nav>
+  </div>
+</header>
+
+<main class="tm-stage" id="stage">
+  <div id="map" role="region" aria-label="Trip map"></div>
+
+  <aside class="tm-panel" id="panel" aria-label="Itinerary">
+    <button class="tm-handle" id="handle" type="button" aria-label="Expand or collapse the itinerary"><span></span></button>
+    <div class="tm-head">
+      <div class="tm-title-row">
+        <div style="min-width:0">
+          <div class="tm-kicker">Trip Map <span class="tm-badge" id="badge">Sample</span></div>
+          <h1 class="tm-title" id="tripName">—</h1>
+        </div>
+        <div class="tm-actions">
+          <button class="tm-ib" id="btnRename" type="button" title="Rename trip" aria-label="Rename trip"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M17 3a2.85 2.83 0 1 1 4 4L7.5 20.5 2 22l1.5-5.5Z"/><path d="m15 5 4 4"/></svg></button>
+          <button class="tm-ib primary" id="btnAdd" type="button" title="Add a stop" aria-label="Add a stop"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"><path d="M12 5v14M5 12h14"/></svg></button>
+        </div>
+      </div>
+      <div class="tm-stats" id="stats"></div>
+      <div class="tm-days" id="days" role="tablist" aria-label="Days"></div>
+    </div>
+    <div class="tm-list" id="list"></div>
+    <div class="tm-foot">
+      <span id="winNote"></span>
+      <span><button class="tm-link" id="btnWin" type="button">Change days</button> · <button class="tm-link" id="btnMode" type="button">Start my own trip</button></span>
+    </div>
+  </aside>
+
+  <div class="tm-pickbar hidden" id="pickbar"><span>Tap the map where this stop is</span><button class="tm-btn ghost sm" id="pickCancel" type="button">Cancel</button></div>
+</main>
+
+<!-- add / edit a stop -->
+<div class="tm-modal hidden" id="modal" role="dialog" aria-modal="true" aria-labelledby="mTitle">
+  <div class="tm-dialog">
+    <div class="tm-dh"><h2 id="mTitle">Add stop</h2><button class="tm-x" id="mClose" type="button" aria-label="Close">×</button></div>
+    <div class="tm-f"><label for="fName">Place</label><input id="fName" placeholder="e.g. Fushimi Inari Taisha" autocomplete="off" /></div>
+    <div class="tm-row">
+      <div class="tm-f"><label for="fDay">Day</label><input id="fDay" type="date" /></div>
+      <div class="tm-f"><label for="fTime">Time</label><input id="fTime" type="time" /></div>
+    </div>
+    <div class="tm-f"><label for="fNote">Notes</label><textarea id="fNote" rows="2" placeholder="Tickets, timings, what to eat…"></textarea></div>
+    <div class="tm-f">
+      <label for="fQ">Location</label>
+      <div class="tm-search"><input id="fQ" placeholder="Search a place or address" autocomplete="off" /><button class="tm-btn ghost" id="fSearch" type="button">Search</button></div>
+      <div id="fRes" class="tm-res hidden"></div>
+      <div class="tm-loc"><span id="fLoc">No location yet</span><button class="tm-btn ghost sm" id="fPick" type="button">Pick on map</button></div>
+    </div>
+    <div class="tm-err hidden" id="fErr"></div>
+    <div class="tm-dact">
+      <button class="tm-btn danger hidden" id="fDel" type="button">Delete</button><span class="sp"></span>
+      <button class="tm-btn ghost" id="fCancel" type="button">Cancel</button>
+      <button class="tm-btn" id="fSave" type="button">Save stop</button>
+    </div>
+  </div>
+</div>
+
+<!-- window (days back / ahead) -->
+<div class="tm-modal hidden" id="wmodal" role="dialog" aria-modal="true" aria-labelledby="wTitle">
+  <div class="tm-dialog sm">
+    <div class="tm-dh"><h2 id="wTitle">Days shown</h2><button class="tm-x" id="wClose" type="button" aria-label="Close">×</button></div>
+    <div class="tm-row">
+      <div class="tm-f"><label for="wPast">Days back</label><input id="wPast" type="number" min="0" max="30" inputmode="numeric" /></div>
+      <div class="tm-f"><label for="wFuture">Days ahead</label><input id="wFuture" type="number" min="0" max="60" inputmode="numeric" /></div>
+    </div>
+    <p class="tm-help">Today is always shown. Stops outside the window stay saved and are listed at the bottom of the itinerary.</p>
+    <div class="tm-dact"><span class="sp"></span><button class="tm-btn ghost" id="wCancel" type="button">Cancel</button><button class="tm-btn" id="wSave" type="button">Apply</button></div>
+  </div>
+</div>
+
+<script src="./vendor/leaflet/leaflet.js"></script>
+<script>
+(function () {
+  'use strict';
+  var $ = function (s, r) { return (r || document).querySelector(s); };
+  var KEY = 'tm_trip_v1', WKEY = 'tm_window_v1';
+  var DOW = ['Sun', 'Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat'];
+  var MON = ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'];
+  var TILES = {
+    dark:  'https://{s}.basemaps.cartocdn.com/dark_all/{z}/{x}/{y}{r}.png',
+    light: 'https://{s}.basemaps.cartocdn.com/rastertiles/voyager/{z}/{x}/{y}{r}.png'
+  };
+  var ATTR = '&copy; <a href="https://www.openstreetmap.org/copyright" target="_blank" rel="noopener">OpenStreetMap</a> contributors &copy; <a href="https://carto.com/attributions" target="_blank" rel="noopener">CARTO</a>';
+
+  // ---- dates (all local-time, ISO yyyy-mm-dd) ----
+  function pad(n) { return (n < 10 ? '0' : '') + n; }
+  function isoOf(d) { return d.getFullYear() + '-' + pad(d.getMonth() + 1) + '-' + pad(d.getDate()); }
+  function todayISO() { return isoOf(new Date()); }
+  function parseISO(s) { var p = String(s).split('-'); return new Date(+p[0], +p[1] - 1, +p[2]); }
+  function validISO(s) { return /^\d{4}-\d{2}-\d{2}$/.test(String(s)) && !isNaN(parseISO(s).getTime()); }
+  function addDays(iso, n) { var d = parseISO(iso); d.setDate(d.getDate() + n); return isoOf(d); }
+  function dayDiff(a, b) { return Math.round((parseISO(a) - parseISO(b)) / 864e5); }          // a − b, in days
+  function fmtDay(iso) { var d = parseISO(iso); return DOW[d.getDay()] + ' ' + d.getDate() + ' ' + MON[d.getMonth()]; }
+  function fmtLong(iso) { var d = parseISO(iso); return DOW[d.getDay()] + ', ' + d.getDate() + ' ' + MON[d.getMonth()]; }
+  function esc(s) { return String(s == null ? '' : s).replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;').replace(/"/g, '&quot;'); }
+  function uid() { return 's' + Date.now().toString(36) + Math.random().toString(36).slice(2, 7); }
+  function km(a, b) {
+    var R = 6371, r = Math.PI / 180, dLa = (b.lat - a.lat) * r, dLo = (b.lng - a.lng) * r;
+    var h = Math.sin(dLa / 2) * Math.sin(dLa / 2) + Math.cos(a.lat * r) * Math.cos(b.lat * r) * Math.sin(dLo / 2) * Math.sin(dLo / 2);
+    return 2 * R * Math.asin(Math.sqrt(h));
+  }
+  function fmtKm(v) { return v >= 100 ? Math.round(v) + '' : v >= 10 ? v.toFixed(0) : v.toFixed(1); }
+  function clampInt(v, lo, hi, dflt) { v = parseInt(v, 10); if (!isFinite(v)) return dflt; return Math.max(lo, Math.min(hi, v)); }
+
+  // ---- the sample trip: day offsets from TODAY, so it always shows 2 days done + today + 4 ahead ----
+  // [offset, time, place, note, lat, lng]
+  var SAMPLE = [
+    [-2, '09:30', 'Meiji Jingu', 'Forest shrine walk before the crowds; Harajuku and Omotesando after.', 35.6764, 139.6993],
+    [-2, '12:30', 'Shibuya Crossing', 'Lunch at Shibuya Scramble Square, then the crossing from the Sky deck.', 35.6595, 139.7005],
+    [-2, '16:00', 'teamLab Planets, Toyosu', 'Barefoot digital-art museum. Booked the 4 pm slot.', 35.6491, 139.7897],
+    [-1, '08:00', 'Tsukiji Outer Market', 'Tamagoyaki and tuna breakfast.', 35.6654, 139.7707],
+    [-1, '11:00', 'Senso-ji, Asakusa', 'Nakamise-dori snacks on the way to the temple.', 35.7148, 139.7967],
+    [-1, '15:30', 'Tokyo Skytree', 'Tembo Deck around sunset.', 35.7101, 139.8107],
+    [ 0, '09:12', 'Tokyo Station → Odawara', 'Hikari 505, car 7. Change to the Hakone Tozan line at Odawara.', 35.6812, 139.7671],
+    [ 0, '12:00', 'Owakudani (Hakone Ropeway)', 'Black eggs; Fuji is visible on a clear day.', 35.2437, 139.0197],
+    [ 0, '15:00', 'Lake Ashi cruise, Hakone-machi', 'Pirate ship to Moto-Hakone, then the Hakone Shrine torii.', 35.1985, 139.0253],
+    [ 0, '18:00', 'Ryokan, Hakone-Yumoto', 'Check-in, onsen, kaiseki dinner at 7.', 35.2323, 139.1069],
+    [ 1, '10:30', 'Fushimi Inari Taisha', 'Torii-gate hike up to the Yotsutsuji viewpoint (~45 min).', 34.9671, 135.7727],
+    [ 1, '14:00', 'Kiyomizu-dera', 'Walk down through Sannenzaka and Ninenzaka.', 34.9949, 135.7850],
+    [ 1, '18:30', 'Gion, Hanamikoji-dori', 'Dinner in Pontocho after.', 35.0037, 135.7751],
+    [ 2, '08:00', 'Arashiyama Bamboo Grove', 'Go early. Tenryu-ji is next door.', 35.0170, 135.6710],
+    [ 2, '13:00', 'Kinkaku-ji', 'The Golden Pavilion.', 35.0394, 135.7292],
+    [ 2, '17:00', 'Nishiki Market', '"Kyoto\'s kitchen" — graze for dinner.', 35.0050, 135.7649],
+    [ 3, '09:30', 'Todai-ji & Nara Park', 'Great Buddha hall; deer crackers.', 34.6890, 135.8398],
+    [ 3, '15:00', 'Osaka Castle', 'Park walk, then the keep.', 34.6873, 135.5262],
+    [ 3, '19:00', 'Dotonbori', 'Takoyaki, kushikatsu, the Glico sign.', 34.6687, 135.5013],
+    [ 4, '10:00', 'Kuromon Ichiba Market', 'Last market breakfast.', 34.6655, 135.5063],
+    [ 4, '13:00', 'Umeda Sky Building', 'Floating Garden Observatory.', 34.7053, 135.4903],
+    [ 4, '17:30', 'Kansai International Airport (KIX)', 'Flight home. Haruka express from Osaka Station.', 34.4347, 135.2442]
+  ];
+  function sampleTrip() {
+    var t = todayISO();
+    return { name: 'Japan · Tokyo → Kyoto → Osaka', sample: true,
+      stops: SAMPLE.map(function (r, i) { return { id: 'smp' + i, day: addDays(t, r[0]), time: r[1], name: r[2], note: r[3], lat: r[4], lng: r[5] }; }) };
+  }
+
+  // ---- storage: the sample is never persisted (it re-anchors to today on every visit); an edited trip is ----
+  function loadTrip() {
+    try { var j = JSON.parse(localStorage.getItem(KEY) || 'null'); if (j && Array.isArray(j.stops) && !j.sample) { j.stops = j.stops.filter(validStop); return j; } } catch (e) {}
+    return sampleTrip();
+  }
+  function validStop(s) { return s && typeof s === 'object' && validISO(s.day) && isFinite(+s.lat) && isFinite(+s.lng) && String(s.name || '').length > 0; }
+  function saveTrip() { TRIP.sample = false; TRIP.updated = Date.now(); try { localStorage.setItem(KEY, JSON.stringify(TRIP)); } catch (e) {} }
+  function loadWin() {
+    try { var j = JSON.parse(localStorage.getItem(WKEY) || 'null'); if (j) return { past: clampInt(j.past, 0, 30, 2), future: clampInt(j.future, 0, 60, 4) }; } catch (e) {}
+    return { past: 2, future: 4 };
+  }
+  function saveWin() { try { localStorage.setItem(WKEY, JSON.stringify(WIN)); } catch (e) {} }
+
+  // ---- state ----
+  var TRIP = loadTrip(), WIN = loadWin(), TODAY = todayISO();
+  var VIEW = [], OUT = [], SEL = null, DAYSEL = null;     // VIEW: [{s, n, state}] ordered stops inside the window
+  var map, tiles, tileKey, layer, MARK = {};
+  var EDIT = null, PICK = false;
+
+  function stateOf(day) { var d = dayDiff(day, TODAY); return d < 0 ? 'past' : d > 0 ? 'future' : 'today'; }
+  function stateLabel(st) { return st === 'past' ? 'Visited' : st === 'today' ? 'Today' : 'Upcoming'; }
+  function inWindow(day) { var d = dayDiff(day, TODAY); return d >= -WIN.past && d <= WIN.future; }
+  function ordered(stops) {
+    return stops.slice().sort(function (a, b) {
+      if (a.day !== b.day) return a.day < b.day ? -1 : 1;
+      var ta = a.time || '', tb = b.time || '';
+      return ta < tb ? -1 : ta > tb ? 1 : 0;
+    });
+  }
+  function compute() {
+    var all = ordered(TRIP.stops);
+    VIEW = []; OUT = [];
+    all.forEach(function (s) { if (inWindow(s.day)) VIEW.push({ s: s, n: VIEW.length + 1, state: stateOf(s.day) }); else OUT.push(s); });
+  }
+  function windowDays() { var out = []; for (var d = -WIN.past; d <= WIN.future; d++) out.push(addDays(TODAY, d)); return out; }
+  function relLabel(day) {
+    var d = dayDiff(day, TODAY);
+    return d === 0 ? 'Today' : d === -1 ? 'Yesterday' : d === 1 ? 'Tomorrow' : d < 0 ? (-d) + ' days ago' : 'In ' + d + ' days';
+  }
+
+  // ---- map ----
+  function isMobile() { return window.matchMedia('(max-width:899px)').matches; }
+  function themeTiles() { return document.documentElement.getAttribute('data-theme') === 'dark' ? 'dark' : 'light'; }
+  function setTiles() {
+    var k = themeTiles();
+    if (k === tileKey) return;
+    if (tiles) map.removeLayer(tiles);
+    tiles = L.tileLayer(TILES[k], { subdomains: 'abcd', maxZoom: 19, attribution: ATTR, crossOrigin: true }).addTo(map);
+    tileKey = k;
+  }
+  function pads() {
+    var m = $('#map').getBoundingClientRect(), p = $('#panel').getBoundingClientRect();
+    var tl = [28, 28], br = [28, 28];
+    if (isMobile()) br = [28, Math.min(m.height * .55, Math.max(28, m.bottom - p.top + 16))];
+    else tl = [Math.max(28, p.right - m.left + 20), 28];
+    return { tl: tl, br: br };
+  }
+  function fitTo(items) {
+    if (!items.length) { map.setView([20, 0], 2); return; }
+    var pd = pads();
+    if (items.length === 1) { map.setView([items[0].s.lat, items[0].s.lng], 14); shiftForPanel(); return; }
+    var b = L.latLngBounds(items.map(function (v) { return [v.s.lat, v.s.lng]; }));
+    map.fitBounds(b, { paddingTopLeft: pd.tl, paddingBottomRight: pd.br, maxZoom: 15 });
+  }
+  // a single point centred on the map sits under the panel / sheet — nudge it into the free space
+  function shiftForPanel() {
+    var pd = pads();
+    var dx = isMobile() ? 0 : (pd.tl[0] - pd.br[0]) / 2, dy = isMobile() ? (pd.tl[1] - pd.br[1]) / 2 : 0;
+    if (dx || dy) map.panBy([-dx, -dy], { animate: false });
+  }
+  function fitAll() { fitTo(VIEW); }
+  function fitDay(day) { fitTo(VIEW.filter(function (v) { return v.s.day === day; })); }
+
+  function pinHTML(v, extra) { return '<div class="tm-pin ' + v.state + (extra || '') + '" title="' + esc(v.s.name) + '">' + v.n + '</div>'; }
+  function popupFor(v) {
+    var s = v.s, el = document.createElement('div');
+    el.innerHTML = '<div class="tm-pop-k">Stop ' + v.n + ' · ' + esc(fmtDay(s.day)) + (s.time ? ' · ' + esc(s.time) : '') + ' · <span class="' + v.state + '">' + stateLabel(v.state) + '</span></div>' +
+      '<div class="tm-pop-n">' + esc(s.name) + '</div>' + (s.note ? '<div class="tm-pop-note">' + esc(s.note) + '</div>' : '') +
+      '<div class="tm-pop-a"><a class="tm-btn sm" target="_blank" rel="noopener" href="https://www.google.com/maps/dir/?api=1&amp;destination=' + (+s.lat).toFixed(5) + ',' + (+s.lng).toFixed(5) + '">Directions</a>' +
+      '<button class="tm-btn ghost sm" type="button" data-act="edit">Edit</button><button class="tm-btn ghost sm" type="button" data-act="del">Delete</button></div>';
+    el.querySelector('[data-act="edit"]').addEventListener('click', function () { map.closePopup(); openEditor(s.id); });
+    el.querySelector('[data-act="del"]').addEventListener('click', function () { if (confirm('Delete "' + s.name + '"?')) { map.closePopup(); removeStop(s.id); } });
+    return el;
+  }
+  function renderMap() {
+    layer.clearLayers(); MARK = {};
+    var pd = pads();
+    // routes first (under the pins): dashed & muted for legs already travelled, solid accent ahead,
+    // and the leg that leaves the last stop of today "flows" so the eye finds where the trip goes next.
+    var lastDone = -1;
+    VIEW.forEach(function (v, i) { if (v.state !== 'future') lastDone = i; });
+    for (var i = 1; i < VIEW.length; i++) {
+      var a = VIEW[i - 1], b = VIEW[i], ll = [[a.s.lat, a.s.lng], [b.s.lat, b.s.lng]];
+      if (b.state === 'past' || (b.state === 'today' && i <= lastDone)) {
+        L.polyline(ll, { className: 'tm-route past', interactive: false }).addTo(layer);
+      } else {
+        L.polyline(ll, { className: 'tm-route glow', interactive: false }).addTo(layer);
+        L.polyline(ll, { className: 'tm-route ' + (i === lastDone + 1 ? 'next' : 'future'), interactive: false }).addTo(layer);
+      }
+    }
+    VIEW.forEach(function (v) {
+      var m = L.marker([v.s.lat, v.s.lng], {
+        icon: L.divIcon({ className: 'tm-pin-wrap', html: pinHTML(v, v.s.id === SEL ? ' on' : ''), iconSize: [28, 28], iconAnchor: [14, 14], popupAnchor: [0, -16] }),
+        zIndexOffset: v.state === 'today' ? 1000 : v.state === 'future' ? 500 : 0,
+        title: v.s.name, riseOnHover: true
+      }).addTo(layer);
+      m.bindPopup(popupFor(v), { className: 'tm-pop', autoPanPaddingTopLeft: pd.tl, autoPanPaddingBottomRight: pd.br, closeButton: true });
+      m.on('click', function () { setSel(v.s.id, false); });
+      MARK[v.s.id] = m;
+    });
+  }
+
+  // ---- panel ----
+  function renderHead() {
+    $('#tripName').textContent = TRIP.name || 'My trip';
+    $('#badge').classList.toggle('hidden', !TRIP.sample);
+    $('#btnMode').textContent = TRIP.sample ? 'Start my own trip' : 'Reset to sample';
+    var done = 0, today = 0, ahead = 0, kmDone = 0, kmAhead = 0;
+    VIEW.forEach(function (v, i) {
+      if (v.state === 'past') done++; else if (v.state === 'today') today++; else ahead++;
+      if (i) { var d = km(VIEW[i - 1].s, v.s); if (v.state === 'past') kmDone += d; else kmAhead += d; }
+    });
+    $('#stats').innerHTML =
+      '<div class="tm-stat"><b>' + done + ' <small>/ ' + VIEW.length + '</small></b><span>Stops visited</span></div>' +
+      '<div class="tm-stat"><b>' + fmtKm(kmDone) + ' <small>km</small></b><span>So far</span></div>' +
+      '<div class="tm-stat"><b>' + fmtKm(kmAhead) + ' <small>km</small></b><span>To go</span></div>';
+    var counts = {}; VIEW.forEach(function (v) { counts[v.s.day] = (counts[v.s.day] || 0) + 1; });
+    $('#days').innerHTML = '<button class="tm-day' + (DAYSEL ? '' : ' on') + '" type="button" data-day="" role="tab" aria-selected="' + (DAYSEL ? 'false' : 'true') + '"><small>Trip</small><b>All</b><i>' + VIEW.length + ' stops</i></button>' +
+      windowDays().map(function (day) {
+        var st = stateOf(day), d = parseISO(day), n = counts[day] || 0, off = dayDiff(day, TODAY);
+        return '<button class="tm-day ' + st + (n ? '' : ' empty') + (DAYSEL === day ? ' on' : '') + '" type="button" data-day="' + day + '" role="tab" aria-selected="' + (DAYSEL === day ? 'true' : 'false') + '" title="' + esc(fmtLong(day)) + ' · ' + n + ' stop' + (n === 1 ? '' : 's') + '">' +
+          '<small>' + DOW[d.getDay()] + '</small><b>' + d.getDate() + '</b><i>' + (st === 'today' ? 'today' : st === 'past' ? 'done' : '+' + off) + '</i></button>';
+      }).join('');
+    $('#winNote').textContent = WIN.past + ' day' + (WIN.past === 1 ? '' : 's') + ' back · ' + WIN.future + ' day' + (WIN.future === 1 ? '' : 's') + ' ahead';
+  }
+  function renderList() {
+    var host = $('#list'), html = '';
+    if (!TRIP.stops.length) {
+      html = '<div class="tm-blank"><b>Nothing planned yet</b>Add your first stop with the + button, or tap a day to start there.<br><button class="tm-btn ghost sm" type="button" id="blankSample">Load the sample trip instead</button></div>';
+    } else {
+      var byDay = {}; VIEW.forEach(function (v) { (byDay[v.s.day] = byDay[v.s.day] || []).push(v); });
+      var days = DAYSEL ? [DAYSEL] : windowDays();
+      days.forEach(function (day) {
+        var st = stateOf(day), items = byDay[day] || [];
+        html += '<div class="tm-dayh ' + st + '"><b>' + esc(fmtLong(day)) + '</b><em>' + relLabel(day) + (items.length ? ' · ' + items.length + ' stop' + (items.length === 1 ? '' : 's') : '') + '</em></div>';
+        if (!items.length) { html += '<div class="tm-empty-day">Nothing planned' + (st === 'past' ? '.' : ' — <button class="tm-link" type="button" data-addday="' + day + '">add a stop</button>') + '</div>'; return; }
+        html += '<div class="tm-group">' + items.map(function (v) {
+          return '<div class="tm-stop ' + v.state + (v.s.id === SEL ? ' on' : '') + '" data-id="' + esc(v.s.id) + '" role="button" tabindex="0">' + pinHTML(v) +
+            '<div><div class="tm-t">' + (v.s.time ? esc(v.s.time) : '—') + '</div><div class="tm-n">' + esc(v.s.name) + '</div>' + (v.s.note ? '<div class="tm-note">' + esc(v.s.note) + '</div>' : '') + '</div></div>';
+        }).join('') + '</div>';
+      });
+      if (!VIEW.length) html = '<div class="tm-blank"><b>Nothing in this window</b>No stops between ' + esc(fmtDay(addDays(TODAY, -WIN.past))) + ' and ' + esc(fmtDay(addDays(TODAY, WIN.future))) + '. Add a stop, or change the days shown.</div>' + html;
+      if (OUT.length && !DAYSEL) {
+        html += '<details class="tm-out"><summary>' + OUT.length + ' more stop' + (OUT.length === 1 ? '' : 's') + ' outside these days</summary>' + OUT.map(function (s) {
+          return '<div class="tm-stop ' + stateOf(s.day) + '"><div><div class="tm-t">' + esc(fmtDay(s.day)) + (s.time ? ' · ' + esc(s.time) : '') + '</div><div class="tm-n">' + esc(s.name) + '</div></div>' +
+            '<button class="tm-btn ghost sm" type="button" data-edit="' + esc(s.id) + '">Edit</button></div>';
+        }).join('') + '</details>';
+      }
+    }
+    host.innerHTML = html;
+  }
+  function render(fit) { compute(); renderHead(); renderList(); renderMap(); if (fit) { if (DAYSEL) fitDay(DAYSEL); else fitAll(); } }
+
+  function setSel(id, pan) {
+    SEL = id;
+    document.querySelectorAll('#list .tm-stop').forEach(function (el) { el.classList.toggle('on', el.getAttribute('data-id') === id); });
+    Object.keys(MARK).forEach(function (k) { var el = MARK[k].getElement(); if (el) { var p = el.querySelector('.tm-pin'); if (p) p.classList.toggle('on', k === id); } });
+    var m = MARK[id]; if (!m) return;
+    var row = $('#list .tm-stop[data-id="' + id + '"]'); if (row && row.scrollIntoView && pan) row.scrollIntoView({ block: 'nearest' });
+    if (!pan) return;
+    var ll = m.getLatLng();
+    if (map.getBounds().pad(-0.15).contains(ll) && map.getZoom() >= 12) { m.openPopup(); return; }
+    map.once('moveend', function () { m.openPopup(); });
+    map.flyTo(ll, Math.max(map.getZoom(), 14), { duration: .7 });
+    if (isMobile() && $('#panel').classList.contains('up')) $('#panel').classList.remove('up');
+  }
+
+  // ---- editing ----
+  function findStop(id) { for (var i = 0; i < TRIP.stops.length; i++) if (TRIP.stops[i].id === id) return TRIP.stops[i]; return null; }
+  function removeStop(id) { TRIP.stops = TRIP.stops.filter(function (s) { return s.id !== id; }); if (SEL === id) SEL = null; saveTrip(); render(false); }
+  function setLoc(lat, lng, label) {
+    EDIT.lat = +lat; EDIT.lng = +lng;
+    $('#fLoc').innerHTML = '<span class="ok">✓ ' + (+lat).toFixed(4) + ', ' + (+lng).toFixed(4) + '</span>' + (label ? ' <span>' + esc(label) + '</span>' : '');
+  }
+  function openEditor(id, presetDay) {
+    var s = id ? findStop(id) : null;
+    EDIT = { id: s ? s.id : null, lat: s ? +s.lat : null, lng: s ? +s.lng : null };
+    $('#mTitle').textContent = s ? 'Edit stop' : 'Add stop';
+    $('#fName').value = s ? s.name : '';
+    $('#fDay').value = s ? s.day : (presetDay || TODAY);
+    $('#fTime').value = s ? (s.time || '') : '';
+    $('#fNote').value = s ? (s.note || '') : '';
+    $('#fQ').value = ''; $('#fRes').classList.add('hidden'); $('#fRes').innerHTML = '';
+    $('#fErr').classList.add('hidden');
+    $('#fDel').classList.toggle('hidden', !s);
+    if (s) setLoc(s.lat, s.lng, ''); else $('#fLoc').textContent = 'No location yet';
+    $('#modal').classList.remove('hidden');
+    setTimeout(function () { $('#fName').focus(); }, 30);
+  }
+  function closeEditor() { $('#modal').classList.add('hidden'); EDIT = null; }
+  function saveEditor() {
+    var name = $('#fName').value.trim(), day = $('#fDay').value, time = $('#fTime').value, note = $('#fNote').value.trim(), err = $('#fErr');
+    var msg = !name ? 'Give the stop a name.' : !validISO(day) ? 'Pick a day.' : (EDIT.lat == null || !isFinite(EDIT.lat) || !isFinite(EDIT.lng)) ? 'Choose a location — search for it or pick it on the map.' : '';
+    if (msg) { err.textContent = msg; err.classList.remove('hidden'); return; }
+    var s = EDIT.id ? findStop(EDIT.id) : null;
+    if (!s) { s = { id: uid() }; TRIP.stops.push(s); }
+    s.name = name; s.day = day; s.time = time; s.note = note; s.lat = EDIT.lat; s.lng = EDIT.lng;
+    var id = s.id;
+    closeEditor(); saveTrip();
+    SEL = id; render(false);
+    if (MARK[id]) setSel(id, true); else fitAll();
+  }
+  function geocode(q) {
+    return fetch('https://nominatim.openstreetmap.org/search?format=jsonv2&limit=6&accept-language=en&q=' + encodeURIComponent(q), { headers: { Accept: 'application/json' } })
+      .then(function (r) { if (!r.ok) throw new Error('HTTP ' + r.status); return r.json(); });
+  }
+  function doSearch() {
+    var q = $('#fQ').value.trim(), box = $('#fRes'); if (!q) return;
+    box.classList.remove('hidden'); box.innerHTML = '<div class="tm-res-note">Searching…</div>';
+    geocode(q).then(function (rows) {
+      if (!Array.isArray(rows) || !rows.length) { box.innerHTML = '<div class="tm-res-note">No match for “' + esc(q) + '”. Try adding the city, or pick it on the map.</div>'; return; }
+      box.innerHTML = rows.map(function (r, i) { return '<button type="button" data-i="' + i + '">' + esc(r.display_name || r.name) + '</button>'; }).join('');
+      box.querySelectorAll('button').forEach(function (b) {
+        b.addEventListener('click', function () {
+          var r = rows[+b.getAttribute('data-i')], first = String(r.display_name || r.name || '').split(',')[0].trim();
+          setLoc(r.lat, r.lon, first);
+          if (!$('#fName').value.trim()) $('#fName').value = first;
+          box.classList.add('hidden');
+        });
+      });
+    }).catch(function (e) { box.innerHTML = '<div class="tm-res-note">Search is unavailable right now (' + esc(e.message) + '). Pick the spot on the map instead.</div>'; });
+  }
+  function startPick() {
+    PICK = true; $('#modal').classList.add('hidden'); $('#pickbar').classList.remove('hidden'); $('#stage').classList.add('picking');
+    if (isMobile()) $('#panel').classList.remove('up');
+  }
+  function endPick(latlng) {
+    PICK = false; $('#pickbar').classList.add('hidden'); $('#stage').classList.remove('picking');
+    if (latlng && EDIT) setLoc(latlng.lat, latlng.lng, 'picked on the map');
+    if (EDIT) $('#modal').classList.remove('hidden');
+  }
+
+  // ---- boot ----
+  map = L.map('map', { zoomControl: false, attributionControl: true, worldCopyJump: true, zoomSnap: .5 });
+  map.attributionControl.setPrefix('<a href="https://leafletjs.com" target="_blank" rel="noopener">Leaflet</a>');
+  L.control.zoom({ position: 'topright' }).addTo(map);
+  var Fit = L.Control.extend({ onAdd: function () {
+    var d = L.DomUtil.create('div', 'leaflet-bar'), a = L.DomUtil.create('a', 'tm-fit', d);
+    a.href = '#'; a.title = 'Fit the whole trip'; a.setAttribute('aria-label', 'Fit the whole trip'); a.setAttribute('role', 'button');
+    a.innerHTML = '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M8 3H5a2 2 0 0 0-2 2v3M21 8V5a2 2 0 0 0-2-2h-3M3 16v3a2 2 0 0 0 2 2h3M16 21h3a2 2 0 0 0 2-2v-3"/></svg>';
+    L.DomEvent.on(a, 'click', function (e) { L.DomEvent.stop(e); DAYSEL = null; render(true); });
+    L.DomEvent.disableClickPropagation(d);
+    return d;
+  } });
+  new Fit({ position: 'topright' }).addTo(map);
+  layer = L.layerGroup().addTo(map);
+  setTiles();
+  new MutationObserver(setTiles).observe(document.documentElement, { attributes: true, attributeFilter: ['data-theme'] });
+  map.on('click', function (e) { if (PICK) endPick(e.latlng); });
+  map.on('popupclose', function () { /* keep the list highlight: it still tells you which stop you were looking at */ });
+
+  render(true);
+  window.TM = { trip: function () { return TRIP; }, view: function () { return VIEW; }, map: map };   // for the page's own smoke tests
+
+  // panel interactions
+  $('#days').addEventListener('click', function (e) {
+    var b = e.target.closest('.tm-day'); if (!b) return;
+    var day = b.getAttribute('data-day') || null;
+    DAYSEL = (day && DAYSEL === day) ? null : day;   // tap the active day again to go back to the whole trip
+    render(true);
+  });
+  $('#list').addEventListener('click', function (e) {
+    var add = e.target.closest('[data-addday]'); if (add) { openEditor(null, add.getAttribute('data-addday')); return; }
+    var ed = e.target.closest('[data-edit]'); if (ed) { openEditor(ed.getAttribute('data-edit')); return; }
+    if (e.target.id === 'blankSample') { TRIP = sampleTrip(); try { localStorage.removeItem(KEY); } catch (x) {} SEL = null; DAYSEL = null; render(true); return; }
+    var row = e.target.closest('.tm-stop[data-id]'); if (row) setSel(row.getAttribute('data-id'), true);
+  });
+  $('#list').addEventListener('keydown', function (e) {
+    if (e.key !== 'Enter' && e.key !== ' ') return;
+    var row = e.target.closest && e.target.closest('.tm-stop[data-id]'); if (row) { e.preventDefault(); setSel(row.getAttribute('data-id'), true); }
+  });
+  $('#handle').addEventListener('click', function () { $('#panel').classList.toggle('up'); });
+  $('#btnAdd').addEventListener('click', function () { openEditor(null, DAYSEL || TODAY); });
+  $('#btnRename').addEventListener('click', function () {
+    var v = prompt('Trip name', TRIP.name || 'My trip'); if (v == null) return;
+    v = v.trim(); if (!v) return; TRIP.name = v; saveTrip(); renderHead();
+  });
+  $('#btnMode').addEventListener('click', function () {
+    if (TRIP.sample) {
+      if (!confirm('Start your own trip? The sample stops will be cleared (you can load them again any time).')) return;
+      TRIP = { name: 'My trip', sample: false, stops: [] }; saveTrip();
+    } else {
+      if (!confirm('Replace your trip with the sample? Your stops will be removed from this browser.')) return;
+      try { localStorage.removeItem(KEY); } catch (x) {} TRIP = sampleTrip();
+    }
+    SEL = null; DAYSEL = null; render(true);
+  });
+
+  // editor
+  $('#mClose').addEventListener('click', closeEditor);
+  $('#fCancel').addEventListener('click', closeEditor);
+  $('#fSave').addEventListener('click', saveEditor);
+  $('#fDel').addEventListener('click', function () { var s = EDIT && findStop(EDIT.id); if (s && confirm('Delete "' + s.name + '"?')) { var id = s.id; closeEditor(); removeStop(id); } });
+  $('#fSearch').addEventListener('click', doSearch);
+  $('#fQ').addEventListener('keydown', function (e) { if (e.key === 'Enter') { e.preventDefault(); doSearch(); } });
+  $('#fPick').addEventListener('click', startPick);
+  $('#pickCancel').addEventListener('click', function () { endPick(null); });
+  $('#modal').addEventListener('click', function (e) { if (e.target === e.currentTarget) closeEditor(); });
+
+  // window
+  $('#btnWin').addEventListener('click', function () { $('#wPast').value = WIN.past; $('#wFuture').value = WIN.future; $('#wmodal').classList.remove('hidden'); });
+  var closeWin = function () { $('#wmodal').classList.add('hidden'); };
+  $('#wClose').addEventListener('click', closeWin); $('#wCancel').addEventListener('click', closeWin);
+  $('#wmodal').addEventListener('click', function (e) { if (e.target === e.currentTarget) closeWin(); });
+  $('#wSave').addEventListener('click', function () {
+    WIN = { past: clampInt($('#wPast').value, 0, 30, 2), future: clampInt($('#wFuture').value, 0, 60, 4) };
+    saveWin(); closeWin(); DAYSEL = null; render(true);
+  });
+  document.addEventListener('keydown', function (e) {
+    if (e.key !== 'Escape') return;
+    if (PICK) { endPick(null); return; }
+    if (!$('#modal').classList.contains('hidden')) closeEditor();
+    if (!$('#wmodal').classList.contains('hidden')) closeWin();
+  });
+
+  // keep "today" honest across midnight / a tab left open, and re-fit paddings after a resize
+  document.addEventListener('visibilitychange', function () { if (!document.hidden && todayISO() !== TODAY) { TODAY = todayISO(); TRIP = TRIP.sample ? sampleTrip() : TRIP; render(true); } });
+  var rz; window.addEventListener('resize', function () { clearTimeout(rz); rz = setTimeout(function () { map.invalidateSize(); renderMap(); }, 160); });
+})();
+</script>
+</body>
+</html>
