@@ -43,9 +43,79 @@
    "title": "Jayhawk Acquisition Announcement Investor Presentation",
    "read": "2026-09-08",
    "by": "claude-routine"
+  },
+  "953bb71a-da57-4a38-be1f-76156b6bbeaa.pdf": {
+   "kind": "ar",
+   "date": "2026-09-08",
+   "title": "Integrated Annual Report FY2025-26",
+   "read": "2026-09-13",
+   "by": "claude-routine"
   }
  },
  "metrics": [
+  {
+   "name": "Aggregate Manufacturing Capacity",
+   "unit": "metric tonnes",
+   "kind": "level",
+   "y": {
+    "20250331": 30000.0,
+    "20260331": 30000.0
+   },
+   "q": {
+    "20251231": 30000.0
+   },
+   "src": {
+    "y:20250331": [
+     "473fc2dc-ed09-4582-bcb4-16c7737fb492.pdf",
+     37,
+     "collective capacity exceeding 30,000 metric tonnes (doc period)",
+     "30,000"
+    ],
+    "q:20251231": [
+     "6e548bd5-c596-4544-acb3-7c9c9b6d8665.pdf",
+     12,
+     "~30,000 MT+ Manufacturing Capacity (doc period)",
+     "30,000"
+    ],
+    "y:20260331": [
+     "953bb71a-da57-4a38-be1f-76156b6bbeaa.pdf",
+     61,
+     "aggregate installed capacity of about 30,000 MT, as of March 31, 2026",
+     "30,000"
+    ]
+   }
+  },
+  {
+   "name": "Dealers/Distributors Count",
+   "unit": "count",
+   "kind": "level",
+   "y": {
+    "20240331": 48.0,
+    "20250331": 43.0,
+    "20260331": 37.0
+   },
+   "q": {},
+   "src": {
+    "y:20250331": [
+     "473fc2dc-ed09-4582-bcb4-16c7737fb492.pdf",
+     133,
+     "Number of dealers/distributors to whom sales are made",
+     "43"
+    ],
+    "y:20240331": [
+     "473fc2dc-ed09-4582-bcb4-16c7737fb492.pdf",
+     133,
+     "Number of dealers/distributors to whom sales are made",
+     "48"
+    ],
+    "y:20260331": [
+     "953bb71a-da57-4a38-be1f-76156b6bbeaa.pdf",
+     141,
+     "Number of dealers/distributors to whom sales are made",
+     "37"
+    ]
+   }
+  },
   {
    "name": "Global Clients (Consolidated)",
    "unit": "count",
@@ -111,27 +181,189 @@
    }
   },
   {
-   "name": "Aggregate Manufacturing Capacity",
-   "unit": "metric tonnes",
-   "kind": "level",
+   "name": "Purchases from Top 10 Trading Houses (share of trading house purchases)",
+   "unit": "%",
+   "kind": "flow",
    "y": {
-    "20250331": 30000.0
+    "20240331": 28.24,
+    "20250331": 94.69,
+    "20260331": 96.67
    },
-   "q": {
-    "20251231": 30000.0
-   },
+   "q": {},
    "src": {
     "y:20250331": [
      "473fc2dc-ed09-4582-bcb4-16c7737fb492.pdf",
-     37,
-     "collective capacity exceeding 30,000 metric tonnes (doc period)",
-     "30,000"
+     133,
+     "Purchases from top 10 trading houses as % of total purchases from trading houses",
+     "94.69"
+    ],
+    "y:20240331": [
+     "473fc2dc-ed09-4582-bcb4-16c7737fb492.pdf",
+     133,
+     "Purchases from top 10 trading houses as % of total purchases from trading houses",
+     "28.24"
+    ],
+    "y:20260331": [
+     "953bb71a-da57-4a38-be1f-76156b6bbeaa.pdf",
+     141,
+     "Purchases from top 10 trading houses as % of total purchases from trading houses",
+     "96.67"
+    ]
+   }
+  },
+  {
+   "name": "Purchases from Trading Houses (share of total purchases)",
+   "unit": "%",
+   "kind": "flow",
+   "y": {
+    "20240331": 33.36,
+    "20250331": 45.88,
+    "20260331": 45.84
+   },
+   "q": {},
+   "src": {
+    "y:20250331": [
+     "473fc2dc-ed09-4582-bcb4-16c7737fb492.pdf",
+     133,
+     "Purchases from trading houses as % of total purchases",
+     "45.88"
+    ],
+    "y:20240331": [
+     "473fc2dc-ed09-4582-bcb4-16c7737fb492.pdf",
+     133,
+     "Purchases from trading houses as % of total purchases",
+     "33.36"
+    ],
+    "y:20260331": [
+     "953bb71a-da57-4a38-be1f-76156b6bbeaa.pdf",
+     141,
+     "Purchases from trading houses as % of total purchases",
+     "45.84"
+    ]
+   }
+  },
+  {
+   "name": "R&D Team (Consolidated)",
+   "unit": "count",
+   "kind": "level",
+   "y": {
+    "20260331": 90.0
+   },
+   "q": {
+    "20251231": 90.0,
+    "20260630": 90.0
+   },
+   "src": {
+    "q:20260630": [
+     "d11ac05c-87b7-4753-8318-34f8e66e5c5b.pdf",
+     12,
+     "90+ Strong R&D Team of Professionals (doc period)",
+     "90"
     ],
     "q:20251231": [
      "6e548bd5-c596-4544-acb3-7c9c9b6d8665.pdf",
      12,
-     "~30,000 MT+ Manufacturing Capacity (doc period)",
-     "30,000"
+     "R&D team of 90+ professionals (doc period)",
+     "90"
+    ],
+    "y:20260331": [
+     "953bb71a-da57-4a38-be1f-76156b6bbeaa.pdf",
+     7,
+     "team of over 90 scientists and researchers (doc period)",
+     "90"
+    ]
+   }
+  },
+  {
+   "name": "Sales to Dealers/Distributors (share of total sales)",
+   "unit": "%",
+   "kind": "flow",
+   "y": {
+    "20240331": 44.19,
+    "20250331": 35.08,
+    "20260331": 47.13
+   },
+   "q": {},
+   "src": {
+    "y:20250331": [
+     "473fc2dc-ed09-4582-bcb4-16c7737fb492.pdf",
+     133,
+     "Sales to dealers/distributors as % of total sales",
+     "35.08"
+    ],
+    "y:20240331": [
+     "473fc2dc-ed09-4582-bcb4-16c7737fb492.pdf",
+     133,
+     "Sales to dealers/distributors as % of total sales",
+     "44.19"
+    ],
+    "y:20260331": [
+     "953bb71a-da57-4a38-be1f-76156b6bbeaa.pdf",
+     141,
+     "Sales to dealers/distributors as % of total sales",
+     "47.13"
+    ]
+   }
+  },
+  {
+   "name": "Sales to Top 10 Dealers (share of dealer sales)",
+   "unit": "%",
+   "kind": "flow",
+   "y": {
+    "20240331": 47.71,
+    "20250331": 97.96,
+    "20260331": 99.4
+   },
+   "q": {},
+   "src": {
+    "y:20250331": [
+     "473fc2dc-ed09-4582-bcb4-16c7737fb492.pdf",
+     133,
+     "Sales to top 10 dealers/Distributors as % of total sales to dealers/distributors",
+     "97.96"
+    ],
+    "y:20240331": [
+     "473fc2dc-ed09-4582-bcb4-16c7737fb492.pdf",
+     133,
+     "Sales to top 10 dealers/Distributors as % of total sales to dealers/distributors",
+     "47.71"
+    ],
+    "y:20260331": [
+     "953bb71a-da57-4a38-be1f-76156b6bbeaa.pdf",
+     141,
+     "Sales to top 10 dealers/Distributors as % of total sales to dealers/distributors",
+     "99.4"
+    ]
+   }
+  },
+  {
+   "name": "Trading Houses Count (Purchases)",
+   "unit": "count",
+   "kind": "level",
+   "y": {
+    "20240331": 96.0,
+    "20250331": 126.0,
+    "20260331": 107.0
+   },
+   "q": {},
+   "src": {
+    "y:20250331": [
+     "473fc2dc-ed09-4582-bcb4-16c7737fb492.pdf",
+     133,
+     "Number of trading houses where purchases are made from",
+     "126"
+    ],
+    "y:20240331": [
+     "473fc2dc-ed09-4582-bcb4-16c7737fb492.pdf",
+     133,
+     "Number of trading houses where purchases are made from",
+     "96"
+    ],
+    "y:20260331": [
+     "953bb71a-da57-4a38-be1f-76156b6bbeaa.pdf",
+     141,
+     "Number of trading houses where purchases are made from",
+     "107"
     ]
    }
   },
@@ -235,26 +467,27 @@
    }
   },
   {
-   "name": "Dealers/Distributors Count",
-   "unit": "count",
+   "name": "Jayhawk Fine Chemicals Employees",
+   "unit": "FTEs",
    "kind": "level",
    "y": {
-    "20240331": 48.0,
-    "20250331": 43.0
+    "20260331": 140.0
    },
-   "q": {},
+   "q": {
+    "20251231": 140.0
+   },
    "src": {
-    "y:20250331": [
-     "473fc2dc-ed09-4582-bcb4-16c7737fb492.pdf",
-     133,
-     "Number of dealers/distributors to whom sales are made",
-     "43"
+    "q:20251231": [
+     "bcd8c49d-0fab-49f5-a506-422ccf000e7d.pdf",
+     6,
+     "~140 FTEs (doc period)",
+     "140"
     ],
-    "y:20240331": [
-     "473fc2dc-ed09-4582-bcb4-16c7737fb492.pdf",
-     133,
-     "Number of dealers/distributors to whom sales are made",
-     "48"
+    "y:20260331": [
+     "953bb71a-da57-4a38-be1f-76156b6bbeaa.pdf",
+     9,
+     "Employees (Jayhawk acquisition at a glance) (doc period)",
+     "140"
     ]
    }
   },
@@ -308,6 +541,30 @@
    }
   },
   {
+   "name": "Permanent Employees",
+   "unit": "count",
+   "kind": "level",
+   "y": {
+    "20250331": 2349.0,
+    "20260331": 2501.0
+   },
+   "q": {},
+   "src": {
+    "y:20250331": [
+     "473fc2dc-ed09-4582-bcb4-16c7737fb492.pdf",
+     93,
+     "There were 2349 permanent employees on the payroll of the Company as on March 31",
+     "2349"
+    ],
+    "y:20260331": [
+     "953bb71a-da57-4a38-be1f-76156b6bbeaa.pdf",
+     30,
+     "Total Permanent employees (doc period)",
+     "2,501"
+    ]
+   }
+  },
+  {
    "name": "Products in Development Pipeline (Consolidated)",
    "unit": "count",
    "kind": "level",
@@ -329,150 +586,6 @@
      12,
      "90+ in pipeline (doc period)",
      "90"
-    ]
-   }
-  },
-  {
-   "name": "Purchases from Top 10 Trading Houses (share of trading house purchases)",
-   "unit": "%",
-   "kind": "flow",
-   "y": {
-    "20240331": 28.24,
-    "20250331": 94.69
-   },
-   "q": {},
-   "src": {
-    "y:20250331": [
-     "473fc2dc-ed09-4582-bcb4-16c7737fb492.pdf",
-     133,
-     "Purchases from top 10 trading houses as % of total purchases from trading houses",
-     "94.69"
-    ],
-    "y:20240331": [
-     "473fc2dc-ed09-4582-bcb4-16c7737fb492.pdf",
-     133,
-     "Purchases from top 10 trading houses as % of total purchases from trading houses",
-     "28.24"
-    ]
-   }
-  },
-  {
-   "name": "Purchases from Trading Houses (share of total purchases)",
-   "unit": "%",
-   "kind": "flow",
-   "y": {
-    "20240331": 33.36,
-    "20250331": 45.88
-   },
-   "q": {},
-   "src": {
-    "y:20250331": [
-     "473fc2dc-ed09-4582-bcb4-16c7737fb492.pdf",
-     133,
-     "Purchases from trading houses as % of total purchases",
-     "45.88"
-    ],
-    "y:20240331": [
-     "473fc2dc-ed09-4582-bcb4-16c7737fb492.pdf",
-     133,
-     "Purchases from trading houses as % of total purchases",
-     "33.36"
-    ]
-   }
-  },
-  {
-   "name": "R&D Team (Consolidated)",
-   "unit": "count",
-   "kind": "level",
-   "y": {},
-   "q": {
-    "20251231": 90.0,
-    "20260630": 90.0
-   },
-   "src": {
-    "q:20260630": [
-     "d11ac05c-87b7-4753-8318-34f8e66e5c5b.pdf",
-     12,
-     "90+ Strong R&D Team of Professionals (doc period)",
-     "90"
-    ],
-    "q:20251231": [
-     "6e548bd5-c596-4544-acb3-7c9c9b6d8665.pdf",
-     12,
-     "R&D team of 90+ professionals (doc period)",
-     "90"
-    ]
-   }
-  },
-  {
-   "name": "Sales to Dealers/Distributors (share of total sales)",
-   "unit": "%",
-   "kind": "flow",
-   "y": {
-    "20240331": 44.19,
-    "20250331": 35.08
-   },
-   "q": {},
-   "src": {
-    "y:20250331": [
-     "473fc2dc-ed09-4582-bcb4-16c7737fb492.pdf",
-     133,
-     "Sales to dealers/distributors as % of total sales",
-     "35.08"
-    ],
-    "y:20240331": [
-     "473fc2dc-ed09-4582-bcb4-16c7737fb492.pdf",
-     133,
-     "Sales to dealers/distributors as % of total sales",
-     "44.19"
-    ]
-   }
-  },
-  {
-   "name": "Sales to Top 10 Dealers (share of dealer sales)",
-   "unit": "%",
-   "kind": "flow",
-   "y": {
-    "20240331": 47.71,
-    "20250331": 97.96
-   },
-   "q": {},
-   "src": {
-    "y:20250331": [
-     "473fc2dc-ed09-4582-bcb4-16c7737fb492.pdf",
-     133,
-     "Sales to top 10 dealers/Distributors as % of total sales to dealers/distributors",
-     "97.96"
-    ],
-    "y:20240331": [
-     "473fc2dc-ed09-4582-bcb4-16c7737fb492.pdf",
-     133,
-     "Sales to top 10 dealers/Distributors as % of total sales to dealers/distributors",
-     "47.71"
-    ]
-   }
-  },
-  {
-   "name": "Trading Houses Count (Purchases)",
-   "unit": "count",
-   "kind": "level",
-   "y": {
-    "20240331": 96.0,
-    "20250331": 126.0
-   },
-   "q": {},
-   "src": {
-    "y:20250331": [
-     "473fc2dc-ed09-4582-bcb4-16c7737fb492.pdf",
-     133,
-     "Number of trading houses where purchases are made from",
-     "126"
-    ],
-    "y:20240331": [
-     "473fc2dc-ed09-4582-bcb4-16c7737fb492.pdf",
-     133,
-     "Number of trading houses where purchases are made from",
-     "96"
     ]
    }
   },
@@ -664,23 +777,6 @@
    }
   },
   {
-   "name": "Jayhawk Fine Chemicals Employees",
-   "unit": "FTEs",
-   "kind": "level",
-   "y": {},
-   "q": {
-    "20251231": 140.0
-   },
-   "src": {
-    "q:20251231": [
-     "bcd8c49d-0fab-49f5-a506-422ccf000e7d.pdf",
-     6,
-     "~140 FTEs (doc period)",
-     "140"
-    ]
-   }
-  },
-  {
    "name": "Jayhawk Fine Chemicals Manufacturing Capacity",
    "unit": "MT",
    "kind": "level",
@@ -728,23 +824,6 @@
      28,
      "Total (doc period)",
      "14,646"
-    ]
-   }
-  },
-  {
-   "name": "Permanent Employees",
-   "unit": "count",
-   "kind": "level",
-   "y": {
-    "20250331": 2349.0
-   },
-   "q": {},
-   "src": {
-    "y:20250331": [
-     "473fc2dc-ed09-4582-bcb4-16c7737fb492.pdf",
-     93,
-     "There were 2349 permanent employees on the payroll of the Company as on March 31",
-     "2349"
     ]
    }
   },
@@ -1171,5 +1250,5 @@
  "catalog_since": "2020-01-01",
  "catalog_until": "2026-09-07",
  "catalog_ver": 5,
- "updated": "2026-09-08"
+ "updated": "2026-09-13"
 }
