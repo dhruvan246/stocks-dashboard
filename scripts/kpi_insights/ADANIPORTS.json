@@ -64,6 +64,13 @@
    "title": "Investor Presentation cover letter (Nov 2024)",
    "read": "2026-09-14",
    "by": "claude-routine"
+  },
+  "b4809910-ef71-497a-b4a9-493984e2018e.pdf": {
+   "kind": "ip",
+   "date": "2025-04-17",
+   "title": "NQXT Acquisition Investor Presentation (Apr 2025)",
+   "read": "2026-09-14",
+   "by": "claude-routine"
   }
  },
  "metrics": [
@@ -72,6 +79,8 @@
    "unit": "MMT",
    "kind": "flow",
    "y": {
+    "20120331": 82.0,
+    "20130331": 106.0,
     "20220331": 312.0,
     "20230331": 339.2,
     "20240331": 419.9,
@@ -152,6 +161,18 @@
      47,
      "APSEZ volume",
      "112.5"
+    ],
+    "y:20120331": [
+     "b4809910-ef71-497a-b4a9-493984e2018e.pdf",
+     23,
+     "Cargo volume (MMT)",
+     "82"
+    ],
+    "y:20130331": [
+     "b4809910-ef71-497a-b4a9-493984e2018e.pdf",
+     23,
+     "Cargo volume (MMT)",
+     "106"
     ]
    },
    "restated": [
@@ -163,6 +184,94 @@
      450.2
     ]
    ]
+  },
+  {
+   "name": "All-India Cargo Market Share",
+   "unit": "%",
+   "kind": "flow",
+   "y": {
+    "20120331": 8.0,
+    "20130331": 10.0,
+    "20240331": 26.5,
+    "20250331": 27.0,
+    "20260331": 27.0
+   },
+   "q": {
+    "20241231": 27.0,
+    "20250331": 26.3,
+    "20250630": 27.8,
+    "20251231": 26.4,
+    "20260331": 26.0,
+    "20260630": 27.6
+   },
+   "src": {
+    "q:20260630": [
+     "28ee5493-d5bf-4bba-b34e-7b5022c6d663.pdf",
+     16,
+     "All-India cargo market share",
+     "27.6"
+    ],
+    "q:20250630": [
+     "28ee5493-d5bf-4bba-b34e-7b5022c6d663.pdf",
+     16,
+     "All-India cargo market share",
+     "27.8"
+    ],
+    "y:20260331": [
+     "aaa81a60-9ae5-42c6-870c-2abb13d032bb.pdf",
+     58,
+     "Share of India's total port volumes (doc period)",
+     "27"
+    ],
+    "y:20250331": [
+     "b4809910-ef71-497a-b4a9-493984e2018e.pdf",
+     23,
+     "Market share",
+     "27"
+    ],
+    "y:20240331": [
+     "f434460b-fc13-4cca-88ca-89d960a38b63.pdf",
+     172,
+     "~% of the country's total cargo handled, FY 2024",
+     "26.5"
+    ],
+    "q:20260331": [
+     "93044df8-18d9-4030-bf77-eff67a67e993.pdf",
+     3,
+     "All-India market share",
+     "26"
+    ],
+    "q:20250331": [
+     "93044df8-18d9-4030-bf77-eff67a67e993.pdf",
+     3,
+     "All-India market share",
+     "26.3"
+    ],
+    "q:20251231": [
+     "c9f3ad1a-a702-4e31-a4f0-56c7b818d47b.pdf",
+     2,
+     "All-India market share",
+     "26.4"
+    ],
+    "q:20241231": [
+     "c9f3ad1a-a702-4e31-a4f0-56c7b818d47b.pdf",
+     2,
+     "All-India market share",
+     "27.0"
+    ],
+    "y:20120331": [
+     "b4809910-ef71-497a-b4a9-493984e2018e.pdf",
+     23,
+     "Market share",
+     "8"
+    ],
+    "y:20130331": [
+     "b4809910-ef71-497a-b4a9-493984e2018e.pdf",
+     23,
+     "Market share",
+     "10"
+    ]
+   }
   },
   {
    "name": "Rail Container Volume",
@@ -242,80 +351,6 @@
      41,
      "Container volumes (MMLP linked)",
      "597,507"
-    ]
-   }
-  },
-  {
-   "name": "All-India Cargo Market Share",
-   "unit": "%",
-   "kind": "flow",
-   "y": {
-    "20240331": 26.5,
-    "20250331": 27.0,
-    "20260331": 27.0
-   },
-   "q": {
-    "20241231": 27.0,
-    "20250331": 26.3,
-    "20250630": 27.8,
-    "20251231": 26.4,
-    "20260331": 26.0,
-    "20260630": 27.6
-   },
-   "src": {
-    "q:20260630": [
-     "28ee5493-d5bf-4bba-b34e-7b5022c6d663.pdf",
-     16,
-     "All-India cargo market share",
-     "27.6"
-    ],
-    "q:20250630": [
-     "28ee5493-d5bf-4bba-b34e-7b5022c6d663.pdf",
-     16,
-     "All-India cargo market share",
-     "27.8"
-    ],
-    "y:20260331": [
-     "aaa81a60-9ae5-42c6-870c-2abb13d032bb.pdf",
-     58,
-     "Share of India's total port volumes (doc period)",
-     "27"
-    ],
-    "y:20250331": [
-     "f434460b-fc13-4cca-88ca-89d960a38b63.pdf",
-     172,
-     "% of the country's total cargo handled",
-     "27"
-    ],
-    "y:20240331": [
-     "f434460b-fc13-4cca-88ca-89d960a38b63.pdf",
-     172,
-     "~% of the country's total cargo handled, FY 2024",
-     "26.5"
-    ],
-    "q:20260331": [
-     "93044df8-18d9-4030-bf77-eff67a67e993.pdf",
-     3,
-     "All-India market share",
-     "26"
-    ],
-    "q:20250331": [
-     "93044df8-18d9-4030-bf77-eff67a67e993.pdf",
-     3,
-     "All-India market share",
-     "26.3"
-    ],
-    "q:20251231": [
-     "c9f3ad1a-a702-4e31-a4f0-56c7b818d47b.pdf",
-     2,
-     "All-India market share",
-     "26.4"
-    ],
-    "q:20241231": [
-     "c9f3ad1a-a702-4e31-a4f0-56c7b818d47b.pdf",
-     2,
-     "All-India market share",
-     "27.0"
     ]
    }
   },
@@ -745,6 +780,73 @@
    }
   },
   {
+   "name": "Multi-Modal Logistics Parks",
+   "unit": "count",
+   "kind": "level",
+   "y": {
+    "20200331": 5.0,
+    "20220331": 6.0,
+    "20230331": 9.0,
+    "20240331": 12.0,
+    "20250331": 12.0,
+    "20260331": 12.0
+   },
+   "q": {
+    "20241231": 12.0,
+    "20260630": 12.0
+   },
+   "src": {
+    "q:20260630": [
+     "28ee5493-d5bf-4bba-b34e-7b5022c6d663.pdf",
+     11,
+     "12 MMLPs (doc period)",
+     "12"
+    ],
+    "y:20250331": [
+     "47b7d194-2ee5-4f07-93d8-2a1f1b694991.pdf",
+     41,
+     "MMLP count",
+     "12"
+    ],
+    "y:20260331": [
+     "872a9876-e6af-4d7c-964a-3ccacf26f2d4.pdf",
+     7,
+     "Multi-Modal Logistics Parks (FY26A)",
+     "12"
+    ],
+    "y:20200331": [
+     "b4809910-ef71-497a-b4a9-493984e2018e.pdf",
+     9,
+     "5 MMLPs",
+     "5"
+    ],
+    "y:20220331": [
+     "47b7d194-2ee5-4f07-93d8-2a1f1b694991.pdf",
+     41,
+     "MMLP count",
+     "6"
+    ],
+    "y:20230331": [
+     "47b7d194-2ee5-4f07-93d8-2a1f1b694991.pdf",
+     41,
+     "MMLP count",
+     "9"
+    ],
+    "y:20240331": [
+     "47b7d194-2ee5-4f07-93d8-2a1f1b694991.pdf",
+     41,
+     "MMLP count",
+     "12"
+    ],
+    "q:20241231": [
+     "b4809910-ef71-497a-b4a9-493984e2018e.pdf",
+     9,
+     "12 MMLPs",
+     "12"
+    ]
+   }
+  },
+  {
    "name": "Mundra Cargo Volume",
    "unit": "MMT",
    "kind": "flow",
@@ -812,62 +914,48 @@
    }
   },
   {
-   "name": "Multi-Modal Logistics Parks",
-   "unit": "count",
+   "name": "Domestic Ports Capacity",
+   "unit": "MMT",
    "kind": "level",
    "y": {
-    "20200331": 5.0,
-    "20220331": 6.0,
-    "20230331": 9.0,
-    "20240331": 12.0,
-    "20250331": 12.0,
-    "20260331": 12.0
+    "20250331": 633.0,
+    "20260331": 653.0
    },
    "q": {
-    "20260630": 12.0
+    "20241231": 633.0,
+    "20251231": 653.0,
+    "20260630": 653.0
    },
    "src": {
     "q:20260630": [
      "28ee5493-d5bf-4bba-b34e-7b5022c6d663.pdf",
-     11,
-     "12 MMLPs (doc period)",
-     "12"
+     3,
+     "domestic ports capacity",
+     "653"
+    ],
+    "y:20260331": [
+     "93044df8-18d9-4030-bf77-eff67a67e993.pdf",
+     3,
+     "domestic ports capacity as of 31st March 2026",
+     "653"
+    ],
+    "q:20251231": [
+     "c9f3ad1a-a702-4e31-a4f0-56c7b818d47b.pdf",
+     17,
+     "15 ports in India with a total capacity of 653 MMT (doc period)",
+     "653"
     ],
     "y:20250331": [
      "47b7d194-2ee5-4f07-93d8-2a1f1b694991.pdf",
-     41,
-     "MMLP count",
-     "12"
+     10,
+     "15 ports with capacity of ~633 MMT (doc period)",
+     "633"
     ],
-    "y:20260331": [
-     "872a9876-e6af-4d7c-964a-3ccacf26f2d4.pdf",
-     7,
-     "Multi-Modal Logistics Parks (FY26A)",
-     "12"
-    ],
-    "y:20200331": [
-     "47b7d194-2ee5-4f07-93d8-2a1f1b694991.pdf",
-     9,
-     "MMLPs",
-     "5"
-    ],
-    "y:20220331": [
-     "47b7d194-2ee5-4f07-93d8-2a1f1b694991.pdf",
-     41,
-     "MMLP count",
-     "6"
-    ],
-    "y:20230331": [
-     "47b7d194-2ee5-4f07-93d8-2a1f1b694991.pdf",
-     41,
-     "MMLP count",
-     "9"
-    ],
-    "y:20240331": [
-     "47b7d194-2ee5-4f07-93d8-2a1f1b694991.pdf",
-     41,
-     "MMLP count",
-     "12"
+    "q:20241231": [
+     "b4809910-ef71-497a-b4a9-493984e2018e.pdf",
+     10,
+     "15 ports and 30 terminals with capacity of ~633 MMT",
+     "633"
     ]
    }
   },
@@ -955,41 +1043,73 @@
    }
   },
   {
-   "name": "Domestic Ports Capacity",
-   "unit": "MMT",
+   "name": "Warehouse Space",
+   "unit": "Mn sq.ft.",
    "kind": "level",
    "y": {
-    "20250331": 633.0,
-    "20260331": 653.0
+    "20200331": 0.4,
+    "20250331": 3.1,
+    "20260331": 3.1
    },
    "q": {
-    "20251231": 653.0,
-    "20260630": 653.0
+    "20241231": 3.1
    },
    "src": {
-    "q:20260630": [
-     "28ee5493-d5bf-4bba-b34e-7b5022c6d663.pdf",
-     3,
-     "domestic ports capacity",
-     "653"
-    ],
     "y:20260331": [
-     "93044df8-18d9-4030-bf77-eff67a67e993.pdf",
-     3,
-     "domestic ports capacity as of 31st March 2026",
-     "653"
+     "872a9876-e6af-4d7c-964a-3ccacf26f2d4.pdf",
+     7,
+     "Warehouses (FY26A)",
+     "3.1"
     ],
-    "q:20251231": [
-     "c9f3ad1a-a702-4e31-a4f0-56c7b818d47b.pdf",
-     17,
-     "15 ports in India with a total capacity of 653 MMT (doc period)",
-     "653"
+    "y:20200331": [
+     "b4809910-ef71-497a-b4a9-493984e2018e.pdf",
+     9,
+     "0.4 Mn Sq. ft.",
+     "0.4"
     ],
     "y:20250331": [
      "47b7d194-2ee5-4f07-93d8-2a1f1b694991.pdf",
-     10,
-     "15 ports with capacity of ~633 MMT (doc period)",
-     "633"
+     35,
+     "Warehouse",
+     "3.1"
+    ],
+    "q:20241231": [
+     "b4809910-ef71-497a-b4a9-493984e2018e.pdf",
+     9,
+     "3.1 Mn Sq. ft.",
+     "3.1"
+    ]
+   }
+  },
+  {
+   "name": "Port Count",
+   "unit": "count",
+   "kind": "level",
+   "y": {
+    "20200331": 10.0,
+    "20250331": 19.0
+   },
+   "q": {
+    "20241231": 15.0
+   },
+   "src": {
+    "y:20200331": [
+     "b4809910-ef71-497a-b4a9-493984e2018e.pdf",
+     9,
+     "10 Ports",
+     "10"
+    ],
+    "y:20250331": [
+     "47b7d194-2ee5-4f07-93d8-2a1f1b694991.pdf",
+     9,
+     "Ports",
+     "19"
+    ],
+    "q:20241231": [
+     "b4809910-ef71-497a-b4a9-493984e2018e.pdf",
+     9,
+     "15 Ports",
+     "15"
     ]
    }
   },
@@ -1025,33 +1145,34 @@
    }
   },
   {
-   "name": "Warehouse Space",
-   "unit": "Mn sq.ft.",
+   "name": "Total Rakes",
+   "unit": "count",
    "kind": "level",
    "y": {
-    "20200331": 0.4,
-    "20250331": 3.1,
-    "20260331": 3.1
+    "20200331": 58.0,
+    "20250331": 132.0
    },
-   "q": {},
+   "q": {
+    "20241231": 132.0
+   },
    "src": {
-    "y:20260331": [
-     "872a9876-e6af-4d7c-964a-3ccacf26f2d4.pdf",
-     7,
-     "Warehouses (FY26A)",
-     "3.1"
-    ],
     "y:20200331": [
-     "47b7d194-2ee5-4f07-93d8-2a1f1b694991.pdf",
+     "b4809910-ef71-497a-b4a9-493984e2018e.pdf",
      9,
-     "Warehouse",
-     "0.4"
+     "58 Rakes",
+     "58"
     ],
     "y:20250331": [
      "47b7d194-2ee5-4f07-93d8-2a1f1b694991.pdf",
      35,
-     "Warehouse",
-     "3.1"
+     "Rakes",
+     "132"
+    ],
+    "q:20241231": [
+     "b4809910-ef71-497a-b4a9-493984e2018e.pdf",
+     9,
+     "132 Rakes",
+     "132"
     ]
    }
   },
@@ -1224,30 +1345,6 @@
    }
   },
   {
-   "name": "Port Count",
-   "unit": "count",
-   "kind": "level",
-   "y": {
-    "20200331": 10.0,
-    "20250331": 19.0
-   },
-   "q": {},
-   "src": {
-    "y:20200331": [
-     "47b7d194-2ee5-4f07-93d8-2a1f1b694991.pdf",
-     9,
-     "Ports",
-     "10"
-    ],
-    "y:20250331": [
-     "47b7d194-2ee5-4f07-93d8-2a1f1b694991.pdf",
-     9,
-     "Ports",
-     "19"
-    ]
-   }
-  },
-  {
    "name": "Rake Count",
    "unit": "count",
    "kind": "level",
@@ -1292,30 +1389,6 @@
      47,
      "South coast volume (MMT) (% share)",
      "24.5"
-    ]
-   }
-  },
-  {
-   "name": "Total Rakes",
-   "unit": "count",
-   "kind": "level",
-   "y": {
-    "20200331": 58.0,
-    "20250331": 132.0
-   },
-   "q": {},
-   "src": {
-    "y:20200331": [
-     "47b7d194-2ee5-4f07-93d8-2a1f1b694991.pdf",
-     9,
-     "Rakes",
-     "58"
-    ],
-    "y:20250331": [
-     "47b7d194-2ee5-4f07-93d8-2a1f1b694991.pdf",
-     35,
-     "Rakes",
-     "132"
     ]
    }
   },
@@ -1521,6 +1594,23 @@
    }
   },
   {
+   "name": "East Coast Port Capacity",
+   "unit": "MMT",
+   "kind": "level",
+   "y": {},
+   "q": {
+    "20241231": 272.0
+   },
+   "src": {
+    "q:20241231": [
+     "b4809910-ef71-497a-b4a9-493984e2018e.pdf",
+     10,
+     "East Coast Capacity ~272 MMT",
+     "272"
+    ]
+   }
+  },
+  {
    "name": "Hazira Cargo Volume",
    "unit": "MMT",
    "kind": "flow",
@@ -1708,6 +1798,23 @@
    }
   },
   {
+   "name": "Truck Fleet",
+   "unit": "count",
+   "kind": "level",
+   "y": {},
+   "q": {
+    "20241231": 936.0
+   },
+   "src": {
+    "q:20241231": [
+     "b4809910-ef71-497a-b4a9-493984e2018e.pdf",
+     9,
+     "936 Trucks",
+     "936"
+    ]
+   }
+  },
+  {
    "name": "Truck Fleet (Owned)",
    "unit": "count",
    "kind": "level",
@@ -1721,6 +1828,23 @@
      35,
      "Trucks",
      "937"
+    ]
+   }
+  },
+  {
+   "name": "West Coast Port Capacity",
+   "unit": "MMT",
+   "kind": "level",
+   "y": {},
+   "q": {
+    "20241231": 361.0
+   },
+   "src": {
+    "q:20241231": [
+     "b4809910-ef71-497a-b4a9-493984e2018e.pdf",
+     10,
+     "West Coast Capacity ~361 MMT",
+     "361"
     ]
    }
   }
