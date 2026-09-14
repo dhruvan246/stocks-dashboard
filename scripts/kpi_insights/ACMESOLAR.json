@@ -57,6 +57,13 @@
    "title": "Q2 FY26 Investor Presentation (3-Nov-2025)",
    "read": "2026-09-14",
    "by": "claude-routine"
+  },
+  "d9956b7c-47b7-46a4-a993-43add6a798a6.pdf": {
+   "kind": "ip",
+   "date": "2025-07-25",
+   "title": "Q1 FY26 Investor Presentation (25-Jul-2025)",
+   "read": "2026-09-14",
+   "by": "claude-routine"
   }
  },
  "metrics": [
@@ -69,6 +76,7 @@
     "20260331": 25.9
    },
    "q": {
+    "20240630": 27.0,
     "20240930": 22.2,
     "20241231": 22.7,
     "20250331": 27.9,
@@ -80,7 +88,7 @@
    },
    "src": {
     "q:20250630": [
-     "bec2f929-44f7-4a48-8169-4868dff771f1.pdf",
+     "d9956b7c-47b7-46a4-a993-43add6a798a6.pdf",
      9,
      "Capacity Utilization Factor (CUF %)",
      "28.5"
@@ -138,6 +146,12 @@
      10,
      "Capacity Utilization Factor (CUF %)",
      "24.1"
+    ],
+    "q:20240630": [
+     "d9956b7c-47b7-46a4-a993-43add6a798a6.pdf",
+     9,
+     "Capacity Utilization Factor (CUF %)",
+     "27.0"
     ]
    }
   },
@@ -150,6 +164,7 @@
     "20260331": 6464.0
    },
    "q": {
+    "20240630": 790.0,
     "20240930": 658.0,
     "20241231": 1052.0,
     "20250331": 1513.0,
@@ -161,7 +176,7 @@
    },
    "src": {
     "q:20250630": [
-     "bec2f929-44f7-4a48-8169-4868dff771f1.pdf",
+     "d9956b7c-47b7-46a4-a993-43add6a798a6.pdf",
      9,
      "Generation (in Million Units)",
      "1,636"
@@ -219,6 +234,12 @@
      10,
      "Generation (in Million Units)",
      "1,539"
+    ],
+    "q:20240630": [
+     "d9956b7c-47b7-46a4-a993-43add6a798a6.pdf",
+     9,
+     "Generation (in Million Units)",
+     "790"
     ]
    }
   },
@@ -233,6 +254,7 @@
     "20260331": 14.0
    },
    "q": {
+    "20250630": 36.0,
     "20250930": 27.0,
     "20251231": 23.0,
     "20260630": 20.0
@@ -279,6 +301,138 @@
      19,
      "DSO (as Billed) as of Q2 FY26",
      "27"
+    ],
+    "q:20250630": [
+     "d9956b7c-47b7-46a4-a993-43add6a798a6.pdf",
+     16,
+     "DSO (as Billed) as of Q1 FY26",
+     "36"
+    ]
+   }
+  },
+  {
+   "name": "Plant Availability",
+   "unit": "%",
+   "kind": "flow",
+   "y": {
+    "20260331": 99.5
+   },
+   "q": {
+    "20240630": 99.4,
+    "20240930": 99.3,
+    "20241231": 99.8,
+    "20250630": 98.7,
+    "20250930": 99.5,
+    "20251231": 99.8,
+    "20260630": 98.8
+   },
+   "src": {
+    "q:20250630": [
+     "bec2f929-44f7-4a48-8169-4868dff771f1.pdf",
+     9,
+     "Plant Availability %",
+     "98.7"
+    ],
+    "q:20260630": [
+     "bec2f929-44f7-4a48-8169-4868dff771f1.pdf",
+     9,
+     "Plant Availability %",
+     "98.8"
+    ],
+    "y:20260331": [
+     "1a9755be-4053-438a-aa9c-3caee6971658.pdf",
+     46,
+     "Plant Availability (PA)",
+     "99.5"
+    ],
+    "q:20251231": [
+     "b6623072-e69d-4b12-8b8c-1c9bae70a6be.pdf",
+     12,
+     "Plant Availability %",
+     "99.8"
+    ],
+    "q:20241231": [
+     "b6623072-e69d-4b12-8b8c-1c9bae70a6be.pdf",
+     12,
+     "Plant Availability %",
+     "99.8"
+    ],
+    "q:20240930": [
+     "4b302b89-7126-4b3f-9264-b9af248e5bcd.pdf",
+     10,
+     "Plant Availability %",
+     "99.3"
+    ],
+    "q:20250930": [
+     "4b302b89-7126-4b3f-9264-b9af248e5bcd.pdf",
+     10,
+     "Plant Availability %",
+     "99.5"
+    ],
+    "q:20240630": [
+     "d9956b7c-47b7-46a4-a993-43add6a798a6.pdf",
+     9,
+     "Plant Availability %",
+     "99.4"
+    ]
+   }
+  },
+  {
+   "name": "Grid Availability",
+   "unit": "%",
+   "kind": "flow",
+   "y": {},
+   "q": {
+    "20240630": 99.5,
+    "20240930": 99.3,
+    "20241231": 99.5,
+    "20250630": 99.4,
+    "20250930": 99.4,
+    "20251231": 99.6,
+    "20260630": 99.2
+   },
+   "src": {
+    "q:20250630": [
+     "bec2f929-44f7-4a48-8169-4868dff771f1.pdf",
+     9,
+     "Grid Availability %",
+     "99.4"
+    ],
+    "q:20260630": [
+     "bec2f929-44f7-4a48-8169-4868dff771f1.pdf",
+     9,
+     "Grid Availability %",
+     "99.2"
+    ],
+    "q:20251231": [
+     "b6623072-e69d-4b12-8b8c-1c9bae70a6be.pdf",
+     12,
+     "Grid Availability %",
+     "99.6"
+    ],
+    "q:20241231": [
+     "b6623072-e69d-4b12-8b8c-1c9bae70a6be.pdf",
+     12,
+     "Grid Availability %",
+     "99.5"
+    ],
+    "q:20240930": [
+     "4b302b89-7126-4b3f-9264-b9af248e5bcd.pdf",
+     10,
+     "Grid Availability %",
+     "99.3"
+    ],
+    "q:20250930": [
+     "4b302b89-7126-4b3f-9264-b9af248e5bcd.pdf",
+     10,
+     "Grid Availability %",
+     "99.4"
+    ],
+    "q:20240630": [
+     "d9956b7c-47b7-46a4-a993-43add6a798a6.pdf",
+     9,
+     "Grid Availability %",
+     "99.5"
     ]
    }
   },
@@ -339,118 +493,6 @@
      7,
      "Operational Capacity (FY26 YTD)",
      "2,918"
-    ]
-   }
-  },
-  {
-   "name": "Plant Availability",
-   "unit": "%",
-   "kind": "flow",
-   "y": {
-    "20260331": 99.5
-   },
-   "q": {
-    "20240930": 99.3,
-    "20241231": 99.8,
-    "20250630": 98.7,
-    "20250930": 99.5,
-    "20251231": 99.8,
-    "20260630": 98.8
-   },
-   "src": {
-    "q:20250630": [
-     "bec2f929-44f7-4a48-8169-4868dff771f1.pdf",
-     9,
-     "Plant Availability %",
-     "98.7"
-    ],
-    "q:20260630": [
-     "bec2f929-44f7-4a48-8169-4868dff771f1.pdf",
-     9,
-     "Plant Availability %",
-     "98.8"
-    ],
-    "y:20260331": [
-     "1a9755be-4053-438a-aa9c-3caee6971658.pdf",
-     46,
-     "Plant Availability (PA)",
-     "99.5"
-    ],
-    "q:20251231": [
-     "b6623072-e69d-4b12-8b8c-1c9bae70a6be.pdf",
-     12,
-     "Plant Availability %",
-     "99.8"
-    ],
-    "q:20241231": [
-     "b6623072-e69d-4b12-8b8c-1c9bae70a6be.pdf",
-     12,
-     "Plant Availability %",
-     "99.8"
-    ],
-    "q:20240930": [
-     "4b302b89-7126-4b3f-9264-b9af248e5bcd.pdf",
-     10,
-     "Plant Availability %",
-     "99.3"
-    ],
-    "q:20250930": [
-     "4b302b89-7126-4b3f-9264-b9af248e5bcd.pdf",
-     10,
-     "Plant Availability %",
-     "99.5"
-    ]
-   }
-  },
-  {
-   "name": "Grid Availability",
-   "unit": "%",
-   "kind": "flow",
-   "y": {},
-   "q": {
-    "20240930": 99.3,
-    "20241231": 99.5,
-    "20250630": 99.4,
-    "20250930": 99.4,
-    "20251231": 99.6,
-    "20260630": 99.2
-   },
-   "src": {
-    "q:20250630": [
-     "bec2f929-44f7-4a48-8169-4868dff771f1.pdf",
-     9,
-     "Grid Availability %",
-     "99.4"
-    ],
-    "q:20260630": [
-     "bec2f929-44f7-4a48-8169-4868dff771f1.pdf",
-     9,
-     "Grid Availability %",
-     "99.2"
-    ],
-    "q:20251231": [
-     "b6623072-e69d-4b12-8b8c-1c9bae70a6be.pdf",
-     12,
-     "Grid Availability %",
-     "99.6"
-    ],
-    "q:20241231": [
-     "b6623072-e69d-4b12-8b8c-1c9bae70a6be.pdf",
-     12,
-     "Grid Availability %",
-     "99.5"
-    ],
-    "q:20240930": [
-     "4b302b89-7126-4b3f-9264-b9af248e5bcd.pdf",
-     10,
-     "Grid Availability %",
-     "99.3"
-    ],
-    "q:20250930": [
-     "4b302b89-7126-4b3f-9264-b9af248e5bcd.pdf",
-     10,
-     "Grid Availability %",
-     "99.4"
     ]
    }
   },
