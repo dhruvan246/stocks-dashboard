@@ -57,6 +57,13 @@
    "title": "Q1 FY26 Investor Presentation",
    "read": "2026-09-14",
    "by": "claude-routine"
+  },
+  "a2aeeb0a-2262-4067-8c23-565c76fffb85.pdf": {
+   "kind": "ar",
+   "date": "2025-07-09",
+   "title": "Annual Report FY2024-25",
+   "read": "2026-09-14",
+   "by": "claude-routine"
   }
  },
  "metrics": [
@@ -712,6 +719,37 @@
    }
   },
   {
+   "name": "DI Pipes Sales Volume",
+   "unit": "MT",
+   "kind": "flow",
+   "y": {
+    "20240331": 205833.0,
+    "20250331": 272244.0,
+    "20260331": 342904.0
+   },
+   "q": {},
+   "src": {
+    "y:20260331": [
+     "48508a3e-46c9-4b90-a709-ff296d12d829.pdf",
+     65,
+     "DI Pipes",
+     "3,42,904"
+    ],
+    "y:20250331": [
+     "48508a3e-46c9-4b90-a709-ff296d12d829.pdf",
+     65,
+     "DI Pipes",
+     "2,72,244"
+    ],
+    "y:20240331": [
+     "a2aeeb0a-2262-4067-8c23-565c76fffb85.pdf",
+     124,
+     "DI Pipes (Consolidated sales highlights)",
+     "2,05,833"
+    ]
+   }
+  },
+  {
    "name": "Global Order Book",
    "unit": "₹ Cr",
    "kind": "level",
@@ -744,34 +782,11 @@
    }
   },
   {
-   "name": "DI Pipes Sales Volume",
-   "unit": "MT",
-   "kind": "flow",
-   "y": {
-    "20250331": 272244.0,
-    "20260331": 342904.0
-   },
-   "q": {},
-   "src": {
-    "y:20260331": [
-     "48508a3e-46c9-4b90-a709-ff296d12d829.pdf",
-     65,
-     "DI Pipes",
-     "3,42,904"
-    ],
-    "y:20250331": [
-     "48508a3e-46c9-4b90-a709-ff296d12d829.pdf",
-     65,
-     "DI Pipes",
-     "2,72,244"
-    ]
-   }
-  },
-  {
    "name": "MS Pipes Sales Volume",
    "unit": "MT",
    "kind": "flow",
    "y": {
+    "20240331": 979865.0,
     "20250331": 851296.0,
     "20260331": 953991.0
    },
@@ -788,6 +803,12 @@
      65,
      "MS Pipes",
      "8,51,296"
+    ],
+    "y:20240331": [
+     "a2aeeb0a-2262-4067-8c23-565c76fffb85.pdf",
+     124,
+     "MS Pipes (Consolidated sales highlights)",
+     "9,79,865"
     ]
    }
   },
@@ -796,6 +817,7 @@
    "unit": "MT",
    "kind": "flow",
    "y": {
+    "20240331": 15903.0,
     "20250331": 18860.0,
     "20260331": 27245.0
    },
@@ -812,6 +834,12 @@
      65,
      "SS Bars",
      "18,860"
+    ],
+    "y:20240331": [
+     "a2aeeb0a-2262-4067-8c23-565c76fffb85.pdf",
+     124,
+     "SS Bars (Consolidated sales highlights)",
+     "15,903"
     ]
    }
   },
@@ -820,6 +848,7 @@
    "unit": "MT",
    "kind": "flow",
    "y": {
+    "20240331": 4785.0,
     "20250331": 4807.0,
     "20260331": 5236.0
    },
@@ -836,6 +865,67 @@
      65,
      "SS Pipes",
      "4,807"
+    ],
+    "y:20240331": [
+     "a2aeeb0a-2262-4067-8c23-565c76fffb85.pdf",
+     124,
+     "SS Pipes (Consolidated sales highlights)",
+     "4,785"
+    ]
+   }
+  },
+  {
+   "name": "TMT Bars Sales Volume",
+   "unit": "MT",
+   "kind": "flow",
+   "y": {
+    "20240331": 121757.0,
+    "20250331": 210664.0,
+    "20260331": 185356.0
+   },
+   "q": {},
+   "src": {
+    "y:20260331": [
+     "48508a3e-46c9-4b90-a709-ff296d12d829.pdf",
+     65,
+     "TMT Bars",
+     "1,85,356"
+    ],
+    "y:20250331": [
+     "48508a3e-46c9-4b90-a709-ff296d12d829.pdf",
+     65,
+     "TMT Bars",
+     "2,10,664"
+    ],
+    "y:20240331": [
+     "a2aeeb0a-2262-4067-8c23-565c76fffb85.pdf",
+     124,
+     "TMT Bars (Consolidated sales highlights)",
+     "1,21,757"
+    ]
+   }
+  },
+  {
+   "name": "Accounts Payable Days",
+   "unit": "days",
+   "kind": "level",
+   "y": {
+    "20240331": 84.0,
+    "20250331": 101.0
+   },
+   "q": {},
+   "src": {
+    "y:20250331": [
+     "a2aeeb0a-2262-4067-8c23-565c76fffb85.pdf",
+     208,
+     "Number of days of accounts payables",
+     "101"
+    ],
+    "y:20240331": [
+     "a2aeeb0a-2262-4067-8c23-565c76fffb85.pdf",
+     208,
+     "Number of days of accounts payables",
+     "84"
     ]
    }
   },
@@ -864,26 +954,50 @@
    }
   },
   {
-   "name": "TMT Bars Sales Volume",
-   "unit": "MT",
-   "kind": "flow",
+   "name": "Total Employees",
+   "unit": "count",
+   "kind": "level",
    "y": {
-    "20250331": 210664.0,
-    "20260331": 185356.0
+    "20250331": 1257.0,
+    "20260331": 1250.0
    },
    "q": {},
    "src": {
     "y:20260331": [
      "48508a3e-46c9-4b90-a709-ff296d12d829.pdf",
-     65,
-     "TMT Bars",
-     "1,85,356"
+     104,
+     "Total Employees (A+B)",
+     "1250"
     ],
     "y:20250331": [
+     "a2aeeb0a-2262-4067-8c23-565c76fffb85.pdf",
+     199,
+     "Total Employees (A+B), BRSR (standalone)",
+     "1257"
+    ]
+   }
+  },
+  {
+   "name": "Total Workers",
+   "unit": "count",
+   "kind": "level",
+   "y": {
+    "20250331": 3018.0,
+    "20260331": 2924.0
+   },
+   "q": {},
+   "src": {
+    "y:20260331": [
      "48508a3e-46c9-4b90-a709-ff296d12d829.pdf",
-     65,
-     "TMT Bars",
-     "2,10,664"
+     104,
+     "Total Workers (C+D)",
+     "2924"
+    ],
+    "y:20250331": [
+     "a2aeeb0a-2262-4067-8c23-565c76fffb85.pdf",
+     199,
+     "Total Workers (C+D), BRSR (standalone)",
+     "3018"
     ]
    }
   },
@@ -901,6 +1015,23 @@
      6,
      "Order Book - DI Pipes",
      "307"
+    ]
+   }
+  },
+  {
+   "name": "Export Contribution to Turnover",
+   "unit": "%",
+   "kind": "level",
+   "y": {
+    "20250331": 20.46
+   },
+   "q": {},
+   "src": {
+    "y:20250331": [
+     "a2aeeb0a-2262-4067-8c23-565c76fffb85.pdf",
+     199,
+     "Exports contribute to 20.46% of the total turnover (doc period)",
+     "20.46"
     ]
    }
   },
@@ -969,40 +1100,6 @@
      18,
      "unique billed outlets",
      "7,000"
-    ]
-   }
-  },
-  {
-   "name": "Total Employees",
-   "unit": "count",
-   "kind": "level",
-   "y": {
-    "20260331": 1250.0
-   },
-   "q": {},
-   "src": {
-    "y:20260331": [
-     "48508a3e-46c9-4b90-a709-ff296d12d829.pdf",
-     104,
-     "Total Employees (A+B)",
-     "1250"
-    ]
-   }
-  },
-  {
-   "name": "Total Workers",
-   "unit": "count",
-   "kind": "level",
-   "y": {
-    "20260331": 2924.0
-   },
-   "q": {},
-   "src": {
-    "y:20260331": [
-     "48508a3e-46c9-4b90-a709-ff296d12d829.pdf",
-     104,
-     "Total Workers (C+D)",
-     "2924"
     ]
    }
   }
