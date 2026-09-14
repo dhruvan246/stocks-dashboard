@@ -64,6 +64,13 @@
    "title": "Annual Report FY2024-25",
    "read": "2026-09-14",
    "by": "claude-routine"
+  },
+  "1a3084d8-a802-4a89-99a3-cbd537aa585c.pdf": {
+   "kind": "ip",
+   "date": "2025-05-28",
+   "title": "Q4 & FY25 Results Investor Presentation",
+   "read": "2026-09-14",
+   "by": "claude-routine"
   }
  },
  "metrics": [
@@ -719,6 +726,45 @@
    }
   },
   {
+   "name": "Global Order Book",
+   "unit": "₹ Cr",
+   "kind": "level",
+   "y": {
+    "20260331": 25350.0
+   },
+   "q": {
+    "20250331": 19553.0,
+    "20250630": 19000.0,
+    "20260630": 24750.0
+   },
+   "src": {
+    "q:20260630": [
+     "b5e4e9df-dcfb-4ec7-87cf-e0960b89f5a0.pdf",
+     12,
+     "Global Order Book",
+     "24,750"
+    ],
+    "y:20260331": [
+     "d4972016-6d1e-4eaa-8dd9-210436acf06c.pdf",
+     14,
+     "Global Consolidated Order Book Value",
+     "25,350"
+    ],
+    "q:20250630": [
+     "c7ec4fa4-5650-4342-8fb0-cca5585feaaf.pdf",
+     6,
+     "Order Book (Total value ~INR 19,000 Crore)",
+     "19,000"
+    ],
+    "q:20250331": [
+     "1a3084d8-a802-4a89-99a3-cbd537aa585c.pdf",
+     6,
+     "Order Book (Total value ~INR 19,553 Crore)",
+     "19,553"
+    ]
+   }
+  },
+  {
    "name": "DI Pipes Sales Volume",
    "unit": "MT",
    "kind": "flow",
@@ -746,38 +792,6 @@
      124,
      "DI Pipes (Consolidated sales highlights)",
      "2,05,833"
-    ]
-   }
-  },
-  {
-   "name": "Global Order Book",
-   "unit": "₹ Cr",
-   "kind": "level",
-   "y": {
-    "20260331": 25350.0
-   },
-   "q": {
-    "20250630": 19000.0,
-    "20260630": 24750.0
-   },
-   "src": {
-    "q:20260630": [
-     "b5e4e9df-dcfb-4ec7-87cf-e0960b89f5a0.pdf",
-     12,
-     "Global Order Book",
-     "24,750"
-    ],
-    "y:20260331": [
-     "d4972016-6d1e-4eaa-8dd9-210436acf06c.pdf",
-     14,
-     "Global Consolidated Order Book Value",
-     "25,350"
-    ],
-    "q:20250630": [
-     "c7ec4fa4-5650-4342-8fb0-cca5585feaaf.pdf",
-     6,
-     "Order Book (Total value ~INR 19,000 Crore)",
-     "19,000"
     ]
    }
   },
@@ -930,6 +944,78 @@
    }
   },
   {
+   "name": "DI Pipes Order Book",
+   "unit": "KMT",
+   "kind": "level",
+   "y": {},
+   "q": {
+    "20250331": 353.0,
+    "20250630": 307.0
+   },
+   "src": {
+    "q:20250630": [
+     "c7ec4fa4-5650-4342-8fb0-cca5585feaaf.pdf",
+     6,
+     "Order Book - DI Pipes",
+     "307"
+    ],
+    "q:20250331": [
+     "1a3084d8-a802-4a89-99a3-cbd537aa585c.pdf",
+     6,
+     "Order Book - DI Pipes",
+     "353"
+    ]
+   }
+  },
+  {
+   "name": "Line Pipes Order Book",
+   "unit": "KMT",
+   "kind": "level",
+   "y": {},
+   "q": {
+    "20250331": 1093.0,
+    "20250630": 1103.0
+   },
+   "src": {
+    "q:20250630": [
+     "c7ec4fa4-5650-4342-8fb0-cca5585feaaf.pdf",
+     6,
+     "Order Book - Line Pipes",
+     "1,103"
+    ],
+    "q:20250331": [
+     "1a3084d8-a802-4a89-99a3-cbd537aa585c.pdf",
+     6,
+     "Order Book - Line Pipes",
+     "1,093"
+    ]
+   }
+  },
+  {
+   "name": "SS Bars & Pipes Order Book",
+   "unit": "MT",
+   "kind": "level",
+   "y": {},
+   "q": {
+    "20250331": 9025.0,
+    "20250630": 9660.0
+   },
+   "src": {
+    "q:20250630": [
+     "c7ec4fa4-5650-4342-8fb0-cca5585feaaf.pdf",
+     6,
+     "Order Book - SS Bars & Pipes",
+     "9,660"
+    ],
+    "q:20250331": [
+     "1a3084d8-a802-4a89-99a3-cbd537aa585c.pdf",
+     6,
+     "Order Book - SS Bars & Pipes",
+     "9,025"
+    ]
+   }
+  },
+  {
    "name": "Stainless Steel Bars and Pipes Sales Volume",
    "unit": "KMT",
    "kind": "flow",
@@ -1002,23 +1088,6 @@
    }
   },
   {
-   "name": "DI Pipes Order Book",
-   "unit": "KMT",
-   "kind": "level",
-   "y": {},
-   "q": {
-    "20250630": 307.0
-   },
-   "src": {
-    "q:20250630": [
-     "c7ec4fa4-5650-4342-8fb0-cca5585feaaf.pdf",
-     6,
-     "Order Book - DI Pipes",
-     "307"
-    ]
-   }
-  },
-  {
    "name": "Export Contribution to Turnover",
    "unit": "%",
    "kind": "level",
@@ -1032,40 +1101,6 @@
      199,
      "Exports contribute to 20.46% of the total turnover (doc period)",
      "20.46"
-    ]
-   }
-  },
-  {
-   "name": "Line Pipes Order Book",
-   "unit": "KMT",
-   "kind": "level",
-   "y": {},
-   "q": {
-    "20250630": 1103.0
-   },
-   "src": {
-    "q:20250630": [
-     "c7ec4fa4-5650-4342-8fb0-cca5585feaaf.pdf",
-     6,
-     "Order Book - Line Pipes",
-     "1,103"
-    ]
-   }
-  },
-  {
-   "name": "SS Bars & Pipes Order Book",
-   "unit": "MT",
-   "kind": "level",
-   "y": {},
-   "q": {
-    "20250630": 9660.0
-   },
-   "src": {
-    "q:20250630": [
-     "c7ec4fa4-5650-4342-8fb0-cca5585feaaf.pdf",
-     6,
-     "Order Book - SS Bars & Pipes",
-     "9,660"
     ]
    }
   },
