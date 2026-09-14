@@ -57,9 +57,68 @@
    "title": "Q4 FY25 Unaudited Financial Results (Board Outcome)",
    "read": "2026-09-06",
    "by": "claude-routine"
+  },
+  "a16cdf86-3806-4acb-b498-5c2150638ce8.pdf": {
+   "kind": "res",
+   "date": "2025-01-20",
+   "title": "Q3 FY25 Unaudited Financial Results",
+   "read": "2026-09-14",
+   "by": "claude-routine"
+  },
+  "f3381052-19b4-4627-897e-319804bb30b5.pdf": {
+   "kind": "ip",
+   "date": "2023-12-06",
+   "title": "Investor/Analyst Call Presentation (Dec 2023) - Loan Distribution Update",
+   "read": "2026-09-14",
+   "by": "claude-routine"
+  },
+  "61bd3477-0728-46fa-9e62-319088c2f276.pdf": {
+   "kind": "ar",
+   "date": "2024-08-21",
+   "title": "Annual Report FY 2023-24",
+   "read": "2026-09-14",
+   "by": "claude-routine"
   }
  },
  "metrics": [
+  {
+   "name": "Permanent Employees",
+   "unit": "count",
+   "kind": "level",
+   "y": {
+    "20230331": 25959.0,
+    "20240331": 28107.0,
+    "20250331": 14656.0,
+    "20260331": 10587.0
+   },
+   "q": {},
+   "src": {
+    "y:20260331": [
+     "3107a9c0-3da0-40f0-85eb-43c8db2ab423.pdf",
+     136,
+     "Permanent (D) - Total employees",
+     "10,587"
+    ],
+    "y:20250331": [
+     "5476abcf-764f-42f7-a621-6ff9a4d03a5a.pdf",
+     129,
+     "Total Permanent Employees",
+     "14,656"
+    ],
+    "y:20240331": [
+     "61bd3477-0728-46fa-9e62-319088c2f276.pdf",
+     159,
+     "Total Permanent Employees",
+     "28,107"
+    ],
+    "y:20230331": [
+     "61bd3477-0728-46fa-9e62-319088c2f276.pdf",
+     159,
+     "Total Permanent Employees",
+     "25,959"
+    ]
+   }
+  },
   {
    "name": "Average Monthly Transacting Users (MTU)",
    "unit": "Cr",
@@ -92,41 +151,11 @@
    }
   },
   {
-   "name": "Permanent Employees",
-   "unit": "count",
-   "kind": "level",
-   "y": {
-    "20240331": 28107.0,
-    "20250331": 14656.0,
-    "20260331": 10587.0
-   },
-   "q": {},
-   "src": {
-    "y:20260331": [
-     "3107a9c0-3da0-40f0-85eb-43c8db2ab423.pdf",
-     136,
-     "Permanent (D) - Total employees",
-     "10,587"
-    ],
-    "y:20250331": [
-     "5476abcf-764f-42f7-a621-6ff9a4d03a5a.pdf",
-     129,
-     "Total Permanent Employees",
-     "14,656"
-    ],
-    "y:20240331": [
-     "5476abcf-764f-42f7-a621-6ff9a4d03a5a.pdf",
-     129,
-     "Total Permanent Employees (previous FY)",
-     "28,107"
-    ]
-   }
-  },
-  {
    "name": "Average Sales Employees",
    "unit": "count",
    "kind": "flow",
    "y": {
+    "20240331": 35512.0,
     "20250331": 32614.0,
     "20260331": 42018.0
    },
@@ -143,6 +172,36 @@
      62,
      "Average sales employees (from FY25)",
      "32,614"
+    ],
+    "y:20240331": [
+     "61bd3477-0728-46fa-9e62-319088c2f276.pdf",
+     54,
+     "employees engaged in sales",
+     "35,512"
+    ]
+   }
+  },
+  {
+   "name": "Average On-roll Employees",
+   "unit": "count",
+   "kind": "flow",
+   "y": {
+    "20240331": 43960.0,
+    "20260331": 47826.0
+   },
+   "q": {},
+   "src": {
+    "y:20260331": [
+     "3107a9c0-3da0-40f0-85eb-43c8db2ab423.pdf",
+     62,
+     "average of active on-roll employees",
+     "47,826"
+    ],
+    "y:20240331": [
+     "61bd3477-0728-46fa-9e62-319088c2f276.pdf",
+     54,
+     "average of active on-roll employees, inclusive of all subsidiaries",
+     "43,960"
     ]
    }
   },
@@ -219,19 +278,27 @@
    }
   },
   {
-   "name": "Average On-roll Employees",
-   "unit": "count",
-   "kind": "flow",
+   "name": "Merchant Network",
+   "unit": "Cr",
+   "kind": "level",
    "y": {
-    "20260331": 47826.0
+    "20240331": 4.06
    },
-   "q": {},
+   "q": {
+    "20260331": 4.9
+   },
    "src": {
-    "y:20260331": [
+    "q:20260331": [
      "3107a9c0-3da0-40f0-85eb-43c8db2ab423.pdf",
-     62,
-     "average of active on-roll employees",
-     "47,826"
+     136,
+     "merchant network ... reaching 4.90 Crore merchants as of March 2026",
+     "4.90"
+    ],
+    "y:20240331": [
+     "61bd3477-0728-46fa-9e62-319088c2f276.pdf",
+     139,
+     "merchant network has grown to (as of March 2024)",
+     "4.06"
     ]
    }
   },
@@ -300,23 +367,6 @@
      136,
      "International Total (plants + offices)",
      "20"
-    ]
-   }
-  },
-  {
-   "name": "Merchant Network",
-   "unit": "Cr",
-   "kind": "level",
-   "y": {},
-   "q": {
-    "20260331": 4.9
-   },
-   "src": {
-    "q:20260331": [
-     "3107a9c0-3da0-40f0-85eb-43c8db2ab423.pdf",
-     136,
-     "merchant network ... reaching 4.90 Crore merchants as of March 2026",
-     "4.90"
     ]
    }
   },
@@ -648,5 +698,5 @@
  "catalog_since": "2020-01-01",
  "catalog_until": "2026-09-06",
  "catalog_ver": 5,
- "updated": "2026-09-06"
+ "updated": "2026-09-14"
 }
