@@ -50,6 +50,27 @@
    "title": "Q2 FY26 Investor Presentation (Nov 2025)",
    "read": "2026-09-06",
    "by": "claude-routine"
+  },
+  "72b85f9a-af19-49e0-8e77-db9bc108439a.pdf": {
+   "kind": "ip",
+   "date": "2026-05-26",
+   "title": "Investor Day 2026 Presentation (FY26 Results)",
+   "read": "2026-09-14",
+   "by": "claude-routine"
+  },
+  "8a60878d-e330-455e-a497-aa002146c51d.pdf": {
+   "kind": "pr",
+   "date": "2025-11-03",
+   "title": "Q2FY26 Results Press Release",
+   "read": "2026-09-14",
+   "by": "claude-routine"
+  },
+  "63c3ee3e-aee0-4fe1-8c9a-a9f09c6c529e.pdf": {
+   "kind": "ip",
+   "date": "2025-07-30",
+   "title": "Q1 FY26 Investor Presentation",
+   "read": "2026-09-14",
+   "by": "claude-routine"
   }
  },
  "metrics": [
@@ -57,9 +78,14 @@
    "name": "Orders (with HVDC)",
    "unit": "Rs Crs",
    "kind": "flow",
-   "y": {},
+   "y": {
+    "20250331": 18173.8,
+    "20260331": 18456.5
+   },
    "q": {
+    "20240630": 2436.7,
     "20241231": 11594.3,
+    "20250331": 2190.8,
     "20250630": 2422.5,
     "20250930": 2217.1,
     "20251231": 2477.6,
@@ -98,10 +124,34 @@
      "11,594.3"
     ],
     "q:20250930": [
-     "f27b8e91-61b9-48cd-8933-9cd9d10a7c18.pdf",
-     11,
+     "8a60878d-e330-455e-a497-aa002146c51d.pdf",
+     7,
      "Orders",
      "2,217.1"
+    ],
+    "y:20250331": [
+     "72b85f9a-af19-49e0-8e77-db9bc108439a.pdf",
+     12,
+     "Orders",
+     "18,173.8"
+    ],
+    "y:20260331": [
+     "72b85f9a-af19-49e0-8e77-db9bc108439a.pdf",
+     12,
+     "Orders",
+     "18,456.5"
+    ],
+    "q:20250331": [
+     "72b85f9a-af19-49e0-8e77-db9bc108439a.pdf",
+     12,
+     "Orders",
+     "2,190.8"
+    ],
+    "q:20240630": [
+     "63c3ee3e-aee0-4fe1-8c9a-a9f09c6c529e.pdf",
+     13,
+     "Orders",
+     "2436.7"
     ]
    }
   },
@@ -114,6 +164,7 @@
     "20260331": 29555.33
    },
    "q": {
+    "20250630": 29125.3,
     "20250930": 29412.6,
     "20251231": 29872.2,
     "20260630": 32222.1
@@ -148,6 +199,12 @@
      7,
      "Highest ever order backlog of INR 29,412.6 crore",
      "29,412.6"
+    ],
+    "q:20250630": [
+     "63c3ee3e-aee0-4fe1-8c9a-a9f09c6c529e.pdf",
+     7,
+     "Highest ever order backlog (doc period)",
+     "29,125.3"
     ]
    }
   },
@@ -172,6 +229,31 @@
      88,
      "Number of days of accounts payables",
      "134"
+    ]
+   }
+  },
+  {
+   "name": "Export Share of Order Book",
+   "unit": "%",
+   "kind": "level",
+   "y": {
+    "20260331": 30.3
+   },
+   "q": {
+    "20250930": 30.4
+   },
+   "src": {
+    "y:20260331": [
+     "ec6df9db-e4ba-445b-8043-5b5914dab8be.pdf",
+     174,
+     "Exports contributed 30.3% to the total order book (w/o HVDC) (doc period)",
+     "30.3"
+    ],
+    "q:20250930": [
+     "8a60878d-e330-455e-a497-aa002146c51d.pdf",
+     7,
+     "Exports maintained a contribution of the total orders",
+     "30.4"
     ]
    }
   },
@@ -213,23 +295,6 @@
      76,
      "contribution of exports to the total turnover",
      "26.19"
-    ]
-   }
-  },
-  {
-   "name": "Export Share of Order Book",
-   "unit": "%",
-   "kind": "level",
-   "y": {
-    "20260331": 30.3
-   },
-   "q": {},
-   "src": {
-    "y:20260331": [
-     "ec6df9db-e4ba-445b-8043-5b5914dab8be.pdf",
-     174,
-     "Exports contributed 30.3% to the total order book (w/o HVDC) (doc period)",
-     "30.3"
     ]
    }
   },
@@ -851,5 +916,5 @@
  "catalog_since": "2020-01-01",
  "catalog_until": "2026-09-06",
  "catalog_ver": 5,
- "updated": "2026-09-06"
+ "updated": "2026-09-14"
 }
