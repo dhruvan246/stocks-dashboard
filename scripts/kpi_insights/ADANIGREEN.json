@@ -99,6 +99,20 @@
    "title": "H1 FY25 Investor Presentation (Nov 2024)",
    "read": "2026-09-15",
    "by": "claude-routine"
+  },
+  "c5937445-15d0-4b78-ba99-052047169893.pdf": {
+   "kind": "res",
+   "date": "2024-10-22",
+   "title": "Q2 & H1 FY25 Results + Media Release",
+   "read": "2026-09-15",
+   "by": "claude-routine"
+  },
+  "53534c37-f1a6-4788-a629-1ae70a713459.pdf": {
+   "kind": "ip",
+   "date": "2024-08-08",
+   "title": "Investor Presentation (Aug 2024, Q1 FY25)",
+   "read": "2026-09-15",
+   "by": "claude-routine"
   }
  },
  "metrics": [
@@ -118,6 +132,7 @@
     "20260331": 19294.0
    },
    "q": {
+    "20230930": 8316.0,
     "20240630": 10934.0,
     "20240930": 11184.0,
     "20241231": 11609.0,
@@ -200,9 +215,9 @@
      "16,680"
     ],
     "q:20240930": [
-     "27f54649-fff5-4f30-8556-bdfca3e92866.pdf",
-     23,
-     "the same was 11,184 MW as at 30th September, 2024",
+     "c5937445-15d0-4b78-ba99-052047169893.pdf",
+     21,
+     "renewable generation operational capacity of 11,184 MW as at 30th September, 202",
      "11,184"
     ],
     "q:20240630": [
@@ -222,6 +237,12 @@
      14,
      "Operational Capacity (MW) chart",
      "1,970"
+    ],
+    "q:20230930": [
+     "c5937445-15d0-4b78-ba99-052047169893.pdf",
+     21,
+     "whereas the same was 8,316 MW as at 30th September, 2023",
+     "8,316"
     ]
    }
   },
@@ -724,6 +745,52 @@
    }
   },
   {
+   "name": "Khavda Operational Capacity",
+   "unit": "MW",
+   "kind": "level",
+   "y": {
+    "20250331": 4059.0
+   },
+   "q": {
+    "20240930": 2250.0,
+    "20241231": 2425.0,
+    "20250630": 5582.0,
+    "20260630": 10262.0
+   },
+   "src": {
+    "q:20260630": [
+     "508a8ca4-1b33-41c8-a9a7-fa0b1b018f92.pdf",
+     29,
+     "the operational portfolio at Khavda stands at 10,262 MW4",
+     "10,262"
+    ],
+    "q:20250630": [
+     "33236ff1-5a1a-4d4f-9788-6c894ed71d9f.pdf",
+     29,
+     "Operational - June 2025 (Renewable Energy Capacity in Khavda (MW))",
+     "5,582"
+    ],
+    "y:20250331": [
+     "779e95cf-59db-409d-b163-8ebe242c16cb.pdf",
+     48,
+     "Operational - March 2025 (Renewable Energy Capacity in Khavda (MW))",
+     "4,059"
+    ],
+    "q:20241231": [
+     "e94f33b4-078e-4b0b-b223-82d9b1ffb122.pdf",
+     32,
+     "Operational - Dec 2024 (Renewable Energy Capacity in Khavda (MW))",
+     "2,425"
+    ],
+    "q:20240930": [
+     "c5937445-15d0-4b78-ba99-052047169893.pdf",
+     34,
+     "Operational - Sep 2024 (Renewable Energy Capacity in Khavda (MW))",
+     "2,250"
+    ]
+   }
+  },
+  {
    "name": "Solar Avg Realisation",
    "unit": "Rs/kwh",
    "kind": "flow",
@@ -966,45 +1033,6 @@
    }
   },
   {
-   "name": "Khavda Operational Capacity",
-   "unit": "MW",
-   "kind": "level",
-   "y": {
-    "20250331": 4059.0
-   },
-   "q": {
-    "20241231": 2425.0,
-    "20250630": 5582.0,
-    "20260630": 10262.0
-   },
-   "src": {
-    "q:20260630": [
-     "508a8ca4-1b33-41c8-a9a7-fa0b1b018f92.pdf",
-     29,
-     "the operational portfolio at Khavda stands at 10,262 MW4",
-     "10,262"
-    ],
-    "q:20250630": [
-     "33236ff1-5a1a-4d4f-9788-6c894ed71d9f.pdf",
-     29,
-     "Operational - June 2025 (Renewable Energy Capacity in Khavda (MW))",
-     "5,582"
-    ],
-    "y:20250331": [
-     "779e95cf-59db-409d-b163-8ebe242c16cb.pdf",
-     48,
-     "Operational - March 2025 (Renewable Energy Capacity in Khavda (MW))",
-     "4,059"
-    ],
-    "q:20241231": [
-     "e94f33b4-078e-4b0b-b223-82d9b1ffb122.pdf",
-     32,
-     "Operational - Dec 2024 (Renewable Energy Capacity in Khavda (MW))",
-     "2,425"
-    ]
-   }
-  },
-  {
    "name": "PPA Electricity Generation (% of commitment)",
    "unit": "%",
    "kind": "flow",
@@ -1132,6 +1160,31 @@
    }
   },
   {
+   "name": "CO2 Emissions Avoided",
+   "unit": "Mn tons",
+   "kind": "flow",
+   "y": {
+    "20250331": 20.33
+   },
+   "q": {
+    "20240630": 5.3
+   },
+   "src": {
+    "y:20250331": [
+     "b9249c1c-0e56-49b8-91c9-f1636fa30e1f.pdf",
+     28,
+     "Mn tons CO2 emissions avoided in FY25",
+     "20.33"
+    ],
+    "q:20240630": [
+     "53534c37-f1a6-4788-a629-1ae70a713459.pdf",
+     29,
+     "5.3 Mn ton CO2 emission avoided in Q1 FY25",
+     "5.3"
+    ]
+   }
+  },
+  {
    "name": "CRISIL ESG Score",
    "unit": "score",
    "kind": "level",
@@ -1152,6 +1205,130 @@
      27,
      "score improving from 66 to 69",
      "66"
+    ]
+   }
+  },
+  {
+   "name": "Direct/Indirect Job Opportunities",
+   "unit": "count",
+   "kind": "flow",
+   "y": {
+    "20250331": 1707.0
+   },
+   "q": {
+    "20240630": 2214.0
+   },
+   "src": {
+    "y:20250331": [
+     "b9249c1c-0e56-49b8-91c9-f1636fa30e1f.pdf",
+     28,
+     "1,707 direct/indirect job opportunities provided in FY25",
+     "1,707"
+    ],
+    "q:20240630": [
+     "53534c37-f1a6-4788-a629-1ae70a713459.pdf",
+     29,
+     "2,214 direct/indirect job opportunities provided in Q1 FY25",
+     "2,214"
+    ]
+   }
+  },
+  {
+   "name": "Freshwater Consumption Intensity",
+   "unit": "kl/MWh",
+   "kind": "flow",
+   "y": {
+    "20250331": 0.015
+   },
+   "q": {
+    "20240630": 0.038
+   },
+   "src": {
+    "y:20250331": [
+     "b9249c1c-0e56-49b8-91c9-f1636fa30e1f.pdf",
+     28,
+     "operational freshwater consumption per unit of generation (0.015 kl/MWh) in FY25",
+     "0.015"
+    ],
+    "q:20240630": [
+     "53534c37-f1a6-4788-a629-1ae70a713459.pdf",
+     29,
+     "Fresh Water consumption per unit of generation (0.038 kl/MWh) in Q1 FY25",
+     "0.038"
+    ]
+   }
+  },
+  {
+   "name": "Khavda Site Workforce",
+   "unit": "count",
+   "kind": "level",
+   "y": {},
+   "q": {
+    "20240930": 9000.0,
+    "20241231": 12000.0
+   },
+   "src": {
+    "q:20241231": [
+     "e94f33b4-078e-4b0b-b223-82d9b1ffb122.pdf",
+     32,
+     "We have a workforce of over 12,000 putting in enormous efforts at the site",
+     "12,000"
+    ],
+    "q:20240930": [
+     "c5937445-15d0-4b78-ba99-052047169893.pdf",
+     34,
+     "We have workforce of over 9,000 people putting in enormous efforts at the site",
+     "9,000"
+    ]
+   }
+  },
+  {
+   "name": "LTIFR",
+   "unit": "ratio",
+   "kind": "flow",
+   "y": {
+    "20250331": 0.04
+   },
+   "q": {
+    "20240630": 0.13
+   },
+   "src": {
+    "y:20250331": [
+     "b9249c1c-0e56-49b8-91c9-f1636fa30e1f.pdf",
+     28,
+     "0.04 LTIFR ... in FY25",
+     "0.04"
+    ],
+    "q:20240630": [
+     "53534c37-f1a6-4788-a629-1ae70a713459.pdf",
+     29,
+     "0.13 LTIFR ... in Q1 FY25",
+     "0.13"
+    ]
+   }
+  },
+  {
+   "name": "Safety Training Hours",
+   "unit": "count",
+   "kind": "flow",
+   "y": {
+    "20250331": 189473.0
+   },
+   "q": {
+    "20240630": 39371.0
+   },
+   "src": {
+    "y:20250331": [
+     "b9249c1c-0e56-49b8-91c9-f1636fa30e1f.pdf",
+     28,
+     "1,89,473 safety training hours in FY25",
+     "1,89,473"
+    ],
+    "q:20240630": [
+     "53534c37-f1a6-4788-a629-1ae70a713459.pdf",
+     29,
+     "39,371 safety training hours in Q1 FY25",
+     "39,371"
     ]
    }
   },
@@ -1193,23 +1370,6 @@
      27,
      "Commissioned BESS capacity of 1,972 MWh2 in Khavda during Q1 FY27",
      "1,972"
-    ]
-   }
-  },
-  {
-   "name": "CO2 Emissions Avoided",
-   "unit": "Mn tons",
-   "kind": "flow",
-   "y": {
-    "20250331": 20.33
-   },
-   "q": {},
-   "src": {
-    "y:20250331": [
-     "b9249c1c-0e56-49b8-91c9-f1636fa30e1f.pdf",
-     28,
-     "Mn tons CO2 emissions avoided in FY25",
-     "20.33"
     ]
    }
   },
@@ -1265,23 +1425,6 @@
    }
   },
   {
-   "name": "Direct/Indirect Job Opportunities",
-   "unit": "count",
-   "kind": "flow",
-   "y": {
-    "20250331": 1707.0
-   },
-   "q": {},
-   "src": {
-    "y:20250331": [
-     "b9249c1c-0e56-49b8-91c9-f1636fa30e1f.pdf",
-     28,
-     "1,707 direct/indirect job opportunities provided in FY25",
-     "1,707"
-    ]
-   }
-  },
-  {
    "name": "Energy Sales",
    "unit": "Bn units",
    "kind": "flow",
@@ -1299,19 +1442,19 @@
    }
   },
   {
-   "name": "Freshwater Consumption Intensity",
-   "unit": "kl/MWh",
+   "name": "GHG Emission Intensity",
+   "unit": "tCO2/MWh",
    "kind": "flow",
-   "y": {
-    "20250331": 0.015
+   "y": {},
+   "q": {
+    "20240630": 0.0014
    },
-   "q": {},
    "src": {
-    "y:20250331": [
-     "b9249c1c-0e56-49b8-91c9-f1636fa30e1f.pdf",
-     28,
-     "operational freshwater consumption per unit of generation (0.015 kl/MWh) in FY25",
-     "0.015"
+    "q:20240630": [
+     "53534c37-f1a6-4788-a629-1ae70a713459.pdf",
+     29,
+     "less emission intensity per unit of generation (0.0014GHG tCO2/MWh) in Q1 FY25",
+     "0.0014"
     ]
    }
   },
@@ -1333,40 +1476,6 @@
    }
   },
   {
-   "name": "Khavda Site Workforce",
-   "unit": "count",
-   "kind": "level",
-   "y": {},
-   "q": {
-    "20241231": 12000.0
-   },
-   "src": {
-    "q:20241231": [
-     "e94f33b4-078e-4b0b-b223-82d9b1ffb122.pdf",
-     32,
-     "We have a workforce of over 12,000 putting in enormous efforts at the site",
-     "12,000"
-    ]
-   }
-  },
-  {
-   "name": "LTIFR",
-   "unit": "ratio",
-   "kind": "flow",
-   "y": {
-    "20250331": 0.04
-   },
-   "q": {},
-   "src": {
-    "y:20250331": [
-     "b9249c1c-0e56-49b8-91c9-f1636fa30e1f.pdf",
-     28,
-     "0.04 LTIFR ... in FY25",
-     "0.04"
-    ]
-   }
-  },
-  {
    "name": "Rajasthan Operational Capacity",
    "unit": "GW",
    "kind": "level",
@@ -1384,19 +1493,19 @@
    }
   },
   {
-   "name": "Safety Training Hours",
-   "unit": "count",
+   "name": "Safe Man Hours",
+   "unit": "Mn hours",
    "kind": "flow",
-   "y": {
-    "20250331": 189473.0
+   "y": {},
+   "q": {
+    "20240630": 1.36
    },
-   "q": {},
    "src": {
-    "y:20250331": [
-     "b9249c1c-0e56-49b8-91c9-f1636fa30e1f.pdf",
-     28,
-     "1,89,473 safety training hours in FY25",
-     "1,89,473"
+    "q:20240630": [
+     "53534c37-f1a6-4788-a629-1ae70a713459.pdf",
+     29,
+     "1.36 Mn continuous safe man hours ... in Q1 FY25",
+     "1.36"
     ]
    }
   },
