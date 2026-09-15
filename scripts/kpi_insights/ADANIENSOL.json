@@ -82,14 +82,14 @@
   "c22a549b-46aa-4a9b-80db-f57f18273dd0.pdf": {
    "kind": "ip",
    "date": "2024-10-22",
-   "title": "Q2 & H1 FY2025 Results Investor Presentation (22 Oct 2024)",
+   "title": "Q2 & H1 FY2025 Results Investor Presentation (22 Oct 2024) - supplemental",
    "read": "2026-09-15",
    "by": "claude-routine"
   },
   "1dc77cc9-ab15-4d0f-9534-63622c4e84bc.pdf": {
    "kind": "ip",
    "date": "2024-07-25",
-   "title": "Q1 FY2025 Results Investor Presentation (25 Jul 2024)",
+   "title": "Q1 FY2025 Results Investor Presentation (25 Jul 2024) - supplemental",
    "read": "2026-09-15",
    "by": "claude-routine"
   },
@@ -1102,6 +1102,87 @@
    }
   },
   {
+   "name": "AEML Transmission Availability",
+   "unit": "%",
+   "kind": "level",
+   "y": {
+    "20230331": 99.77,
+    "20240331": 99.79,
+    "20250331": 99.31,
+    "20260331": 99.47
+   },
+   "q": {
+    "20230630": 99.81,
+    "20230930": 99.47,
+    "20231231": 99.69,
+    "20240630": 99.05,
+    "20240930": 98.91,
+    "20241231": 99.21
+   },
+   "src": {
+    "y:20260331": [
+     "6bd769e5-13a6-46fd-8e87-b80b232d03d3.pdf",
+     133,
+     "Transmission availability (%)",
+     "99.47"
+    ],
+    "y:20250331": [
+     "19354121-3fe6-4edb-82ae-2e1f315f414e.pdf",
+     28,
+     "Transmission Availability (%)",
+     "99.31"
+    ],
+    "y:20240331": [
+     "90592f15-1d13-4cdb-8328-b8636e7f3406.pdf",
+     103,
+     "Transmission Availability (%)",
+     "99.79"
+    ],
+    "q:20241231": [
+     "20a99a8b-edab-4a81-9bf5-cc821a9d84cc.pdf",
+     28,
+     "Transmission Availability (%)",
+     "99.21"
+    ],
+    "q:20231231": [
+     "20a99a8b-edab-4a81-9bf5-cc821a9d84cc.pdf",
+     28,
+     "Transmission Availability (%)",
+     "99.69"
+    ],
+    "y:20230331": [
+     "90592f15-1d13-4cdb-8328-b8636e7f3406.pdf",
+     103,
+     "Transmission Availability (%)",
+     "99.77"
+    ],
+    "q:20240630": [
+     "1dc77cc9-ab15-4d0f-9534-63622c4e84bc.pdf",
+     23,
+     "Transmission Availability (%)",
+     "99.05"
+    ],
+    "q:20230630": [
+     "1dc77cc9-ab15-4d0f-9534-63622c4e84bc.pdf",
+     23,
+     "Transmission Availability (%)",
+     "99.81"
+    ],
+    "q:20240930": [
+     "c22a549b-46aa-4a9b-80db-f57f18273dd0.pdf",
+     26,
+     "Transmission Availability (%)",
+     "98.91"
+    ],
+    "q:20230930": [
+     "c22a549b-46aa-4a9b-80db-f57f18273dd0.pdf",
+     26,
+     "Transmission Availability (%)",
+     "99.47"
+    ]
+   }
+  },
+  {
    "name": "AEML CAIDI",
    "unit": "mins",
    "kind": "flow",
@@ -1604,55 +1685,55 @@
    }
   },
   {
-   "name": "AEML Transmission Availability",
+   "name": "AEML Plant Availability Factor (ADTPS)",
    "unit": "%",
    "kind": "level",
    "y": {
-    "20230331": 99.77,
-    "20240331": 99.79,
-    "20250331": 99.31,
-    "20260331": 99.47
+    "20230331": 95.82,
+    "20240331": 92.09
    },
    "q": {
-    "20231231": 99.69,
-    "20241231": 99.21
+    "20230630": 95.13,
+    "20230930": 98.84,
+    "20240630": 91.71,
+    "20240930": 97.4
    },
    "src": {
-    "y:20260331": [
-     "6bd769e5-13a6-46fd-8e87-b80b232d03d3.pdf",
-     133,
-     "Transmission availability (%)",
-     "99.47"
-    ],
-    "y:20250331": [
-     "19354121-3fe6-4edb-82ae-2e1f315f414e.pdf",
-     28,
-     "Transmission Availability (%)",
-     "99.31"
-    ],
     "y:20240331": [
      "90592f15-1d13-4cdb-8328-b8636e7f3406.pdf",
      103,
-     "Transmission Availability (%)",
-     "99.79"
-    ],
-    "q:20241231": [
-     "20a99a8b-edab-4a81-9bf5-cc821a9d84cc.pdf",
-     28,
-     "Transmission Availability (%)",
-     "99.21"
-    ],
-    "q:20231231": [
-     "20a99a8b-edab-4a81-9bf5-cc821a9d84cc.pdf",
-     28,
-     "Transmission Availability (%)",
-     "99.69"
+     "Plant Availability Factor - ADTPS (%)",
+     "92.09"
     ],
     "y:20230331": [
      "90592f15-1d13-4cdb-8328-b8636e7f3406.pdf",
      103,
-     "Transmission Availability (%)",
-     "99.77"
+     "Plant Availability Factor - ADTPS (%)",
+     "95.82"
+    ],
+    "q:20240630": [
+     "1dc77cc9-ab15-4d0f-9534-63622c4e84bc.pdf",
+     23,
+     "Plant Availability Factor - ADTPS (%)",
+     "91.71"
+    ],
+    "q:20230630": [
+     "1dc77cc9-ab15-4d0f-9534-63622c4e84bc.pdf",
+     23,
+     "Plant Availability Factor - ADTPS (%)",
+     "95.13"
+    ],
+    "q:20240930": [
+     "c22a549b-46aa-4a9b-80db-f57f18273dd0.pdf",
+     26,
+     "Plant Availability Factor - ADTPS (%)",
+     "97.40"
+    ],
+    "q:20230930": [
+     "c22a549b-46aa-4a9b-80db-f57f18273dd0.pdf",
+     26,
+     "Plant Availability Factor - ADTPS (%)",
+     "98.84"
     ]
    }
   },
@@ -1975,30 +2056,6 @@
      135,
      "Units Sold (million units)",
      "658"
-    ]
-   }
-  },
-  {
-   "name": "AEML Plant Availability Factor (ADTPS)",
-   "unit": "%",
-   "kind": "level",
-   "y": {
-    "20230331": 95.82,
-    "20240331": 92.09
-   },
-   "q": {},
-   "src": {
-    "y:20240331": [
-     "90592f15-1d13-4cdb-8328-b8636e7f3406.pdf",
-     103,
-     "Plant Availability Factor - ADTPS (%)",
-     "92.09"
-    ],
-    "y:20230331": [
-     "90592f15-1d13-4cdb-8328-b8636e7f3406.pdf",
-     103,
-     "Plant Availability Factor - ADTPS (%)",
-     "95.82"
     ]
    }
   },
