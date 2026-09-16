@@ -92,6 +92,13 @@
    "title": "Q4 & FY2025 Investor Presentation",
    "read": "2026-09-16",
    "by": "claude-routine"
+  },
+  "528600f3-153e-40af-8bed-a713d40730d8.pdf": {
+   "kind": "ip",
+   "date": "2025-02-25",
+   "title": "Q3 & 9M FY2025 Investor Presentation",
+   "read": "2026-09-16",
+   "by": "claude-routine"
   }
  },
  "metrics": [
@@ -172,6 +179,106 @@
    }
   },
   {
+   "name": "Open Die Forge Annual Forging Capacity",
+   "unit": "Tonnes",
+   "kind": "level",
+   "y": {
+    "20250331": 12000.0
+   },
+   "q": {
+    "20241231": 12000.0
+   },
+   "src": {
+    "y:20250331": [
+     "bf158474-edd7-43cf-be8c-3f05cbc88507.pdf",
+     34,
+     "Annual Forging Capacity 12,000 Tonnes (doc period, under transit)",
+     "12,000"
+    ],
+    "q:20241231": [
+     "528600f3-153e-40af-8bed-a713d40730d8.pdf",
+     25,
+     "Annual Forging Capacity 12,000 Tonnes (doc period, under manufacture)",
+     "12,000"
+    ]
+   }
+  },
+  {
+   "name": "Open Die Forging Press Rating",
+   "unit": "Tonnes",
+   "kind": "level",
+   "y": {
+    "20250331": 4500.0
+   },
+   "q": {
+    "20241231": 4500.0
+   },
+   "src": {
+    "y:20250331": [
+     "bf158474-edd7-43cf-be8c-3f05cbc88507.pdf",
+     34,
+     "Forge Press rating (Tonnes) 4,500 Tonnes (doc period, under transit)",
+     "4,500"
+    ],
+    "q:20241231": [
+     "528600f3-153e-40af-8bed-a713d40730d8.pdf",
+     25,
+     "Forge Press rating (Tonnes) 4,500 Tonnes (doc period, under manufacture)",
+     "4,500"
+    ]
+   }
+  },
+  {
+   "name": "Plasma Arc Melting Furnace Annual Melting Capacity",
+   "unit": "Tonnes",
+   "kind": "level",
+   "y": {
+    "20250331": 200.0
+   },
+   "q": {
+    "20241231": 200.0
+   },
+   "src": {
+    "y:20250331": [
+     "bf158474-edd7-43cf-be8c-3f05cbc88507.pdf",
+     31,
+     "Annual Melting Capacity >200 Tonnes (doc period, under installation)",
+     "200"
+    ],
+    "q:20241231": [
+     "528600f3-153e-40af-8bed-a713d40730d8.pdf",
+     22,
+     "Annual Melting Capacity >200 Tonnes (doc period, under commissioning)",
+     "200"
+    ]
+   }
+  },
+  {
+   "name": "Plates & Sheets Rolling Mill Annual Capacity",
+   "unit": "Tonnes",
+   "kind": "level",
+   "y": {
+    "20250331": 5000.0
+   },
+   "q": {
+    "20241231": 5000.0
+   },
+   "src": {
+    "y:20250331": [
+     "bf158474-edd7-43cf-be8c-3f05cbc88507.pdf",
+     35,
+     "Annual Capacity 5,000 Tonnes (doc period, installation to commence)",
+     "5,000"
+    ],
+    "q:20241231": [
+     "528600f3-153e-40af-8bed-a713d40730d8.pdf",
+     26,
+     "Annual Capacity 5,000 Tonnes (doc period, in transit)",
+     "5,000"
+    ]
+   }
+  },
+  {
    "name": "Total Permanent Employees",
    "unit": "count",
    "kind": "level",
@@ -220,86 +327,26 @@
    }
   },
   {
-   "name": "Open Die Forge Annual Forging Capacity",
-   "unit": "Tonnes",
-   "kind": "level",
-   "y": {
-    "20250331": 12000.0
-   },
-   "q": {},
-   "src": {
-    "y:20250331": [
-     "bf158474-edd7-43cf-be8c-3f05cbc88507.pdf",
-     34,
-     "Annual Forging Capacity 12,000 Tonnes (doc period, under transit)",
-     "12,000"
-    ]
-   }
-  },
-  {
-   "name": "Open Die Forging Press Rating",
-   "unit": "Tonnes",
-   "kind": "level",
-   "y": {
-    "20250331": 4500.0
-   },
-   "q": {},
-   "src": {
-    "y:20250331": [
-     "bf158474-edd7-43cf-be8c-3f05cbc88507.pdf",
-     34,
-     "Forge Press rating (Tonnes) 4,500 Tonnes (doc period, under transit)",
-     "4,500"
-    ]
-   }
-  },
-  {
-   "name": "Plasma Arc Melting Furnace Annual Melting Capacity",
-   "unit": "Tonnes",
-   "kind": "level",
-   "y": {
-    "20250331": 200.0
-   },
-   "q": {},
-   "src": {
-    "y:20250331": [
-     "bf158474-edd7-43cf-be8c-3f05cbc88507.pdf",
-     31,
-     "Annual Melting Capacity >200 Tonnes (doc period, under installation)",
-     "200"
-    ]
-   }
-  },
-  {
-   "name": "Plates & Sheets Rolling Mill Annual Capacity",
-   "unit": "Tonnes",
-   "kind": "level",
-   "y": {
-    "20250331": 5000.0
-   },
-   "q": {},
-   "src": {
-    "y:20250331": [
-     "bf158474-edd7-43cf-be8c-3f05cbc88507.pdf",
-     35,
-     "Annual Capacity 5,000 Tonnes (doc period, installation to commence)",
-     "5,000"
-    ]
-   }
-  },
-  {
    "name": "VAR Furnace Annual Casting Capacity (New Titanium Casting VAR)",
    "unit": "Tonnes",
    "kind": "level",
    "y": {
     "20250331": 300.0
    },
-   "q": {},
+   "q": {
+    "20241231": 300.0
+   },
    "src": {
     "y:20250331": [
      "bf158474-edd7-43cf-be8c-3f05cbc88507.pdf",
      25,
      "Annual Casting Capacity 300Tonnes (doc period, under installation)",
+     "300"
+    ],
+    "q:20241231": [
+     "528600f3-153e-40af-8bed-a713d40730d8.pdf",
+     12,
+     "Annual Casting Capacity 300Tonnes (doc period, in transit)",
      "300"
     ]
    }
