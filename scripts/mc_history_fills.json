@@ -12613,8 +12613,8 @@
   "type_format": "cons_quarterly"
  },
  "INDLMETER|20250630|con": {
+  "fallback_check": "STALE HOLD SETTLED AUTOMATICALLY 2026-09-18 00:41 IST by scripts/settle_stale_holds.py. This hold asked to be settled from the filing (57/58), and conpat_filing_fills.json now asserts the same value 1.71 for this cell from a primary filing, which outranks this aggregator read. The payload was NOT changed. Provenance in that ledger under key INDLMETER|20250630|con_rev: src=https://nsearchives.nseindia.com/corporate/xbrl/INTEGRATED_FILING_INDAS_1507530_08082025081430_WEB.xml | evidence=RevenueFromOperations 17,118,000 = 1.71 cr in the consolidated XBRL (equal to standalone revenue, as in every INDLMETER quarter: Jun-24 3.15/3.15, Mar-25 0.36/0.36, Sep-25 0.73/0.73). op -0.81, ebit -1.90 from build_revop.xbrl_revop on the same XBRL. | why=revenue twin of the con-PAT fill above \u2014 mc_history_fills held this cell for the same reason | when=2026-09-18 00:39 IST",
   "gate": "28 anchors, 1 distant disagreements, none within \u00b16 quarters",
-  "held": "MC consolidated == our standalone for this quarter, and this company's own history shows con != std elsewhere \u2014 Moneycontrol's consolidated table falls back to standalone where no consolidated result was filed. Writing it would manufacture a consolidated figure (\u00a767 class).",
   "neighbour_ratio": 0.864,
   "rev": 1.71,
   "row_label": "Net Sales/Income from operations",

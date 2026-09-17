@@ -222,7 +222,8 @@
   "VIJAYABANK__never_filed_con_CORRECTED": "CORRECTED 2026-09-02 (CON-GAP PRE-2020 campaign, runbook §123): the NSE results-archive list API returns 1 consolidated QUARTERLY rows for VIJAYABANK (first QE 20130331) among 56 filing rows, and 1 of them were read from the archive detail pages through GATE S' (standalone sibling == our stored std) + the EPS recon and landed in con_pat_nse_reads.json (quarters 20130331..20130331). 'never_filed_con' was therefore wrong; the consolidated rows are sporadic (1 in the whole record), so the company is removed from never_filed_con without a cadence start.",
   "YESBANK__started_filing_con": "NSE filing index: 84 standalone rows, 29 consolidated (0 of them annual-Mar rows before any quarterly cadence); first QUARTERLY-cadence con 20190630; each never-filed cell has a std row for its exact quarter and no con row. Annual-Mar con cells themselves stay in the fill queue, not here.",
   "_ceased": "Entities that ceased filing ANY results. Verified across BSE announcements, BSE detailed-results and the NSE archive (see runbook §51c/§52c). Their cells are not gaps in ANY metric -- there is no company left to report.",
-  "_rule_4q": "USER RULE 2026-08-06: exclude any company with no real consolidated filing for the last 4+ quarters. Detected as: >=2 quarters where stored con genuinely diverges from std (proof it once consolidated), then >=4 later quarters with no divergence. Excluded from the quarter AFTER its last real consolidated filing."
+  "_rule_4q": "USER RULE 2026-08-06: exclude any company with no real consolidated filing for the last 4+ quarters. Detected as: >=2 quarters where stored con genuinely diverges from std (proof it once consolidated), then >=4 later quarters with no divergence. Excluded from the quarter AFTER its last real consolidated filing.",
+  "INDLMETER__stopped_filing_con_RETRACTED_2026-09-18": "RETRACTED 2026-09-18 00:39 IST: listed as stopped_filing_con from 20250630, but NSE integrated-filing index for INDLMETER lists a Consolidated financial filing for EVERY quarter from 20250630 on: 1507530 (bcast 08-Aug-2025 20:14:30), re-filed as 1725016 on 17-Sep-2026 04:24 UTC (the refile is what update_fundamentals.py pulled from 2026-09-17 11:01Z and the guard flagged), then 1570140 (20250930, con PAT -2.05 vs std -2.04), 1626093 (20251231), 1673531 (20260331), 1710476 (20260630). The company never stopped consolidating; stored con differs from std in every neighbouring quarter (Mar-25 con -0.33 / std 1.77; Sep-25 -2.05 / -2.04). copied_con_purge (purge_copied_con.py, §67 class) nulled patC/revC for INDLMETER 20250630 on 2-dp equality with standalone, and mc_history_fills/mc_pat_fills held the MC read for the same reason. Both are answered by the filing: the hold's own exit is 'settle from the filing (57/58)'. Rounded equality is not a copy signature; the purge doctrine (ZERO consolidated filings after the stop quarter) was never met for INDLMETER."
  },
  "ceased_filing": {
   "CAPF": 20181231,
@@ -1246,7 +1247,6 @@
   "HINDCON": 20250630,
   "HUHTAMAKI": 20170331,
   "INDIAHOMES": 20230930,
-  "INDLMETER": 20250630,
   "INDTONER": 20200930,
   "INTLCOMBQ": 20200630,
   "IOLCP": 20250630,
