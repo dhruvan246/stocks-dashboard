@@ -540,6 +540,13 @@
    "title": "Investor Presentation (Jun-2025, FY25 snapshot)",
    "read": "2026-09-17",
    "by": "claude-routine"
+  },
+  "6c62c5c3-ebd5-4d3b-a1aa-8e862513e222.pdf": {
+   "kind": "ip",
+   "date": "2025-05-08",
+   "title": "Q4 FY25 Earning Presentation",
+   "read": "2026-09-17",
+   "by": "claude-routine"
   }
  },
  "fy_end_month": 3,
@@ -547,8 +554,104 @@
  "metrics": [
   {
    "kind": "flow",
+   "name": "Total Construction Equipment Volume",
+   "q": {
+    "20240331": 1958.0,
+    "20240930": 1394.0,
+    "20241231": 1989.0,
+    "20250331": 1719.0,
+    "20250630": 1055.0,
+    "20250930": 1146.0,
+    "20251231": 1716.0,
+    "20260331": 1877.0,
+    "20260630": 1344.0
+   },
+   "src": {
+    "q:20240930": [
+     "d91499f4-56a0-4f00-9de7-eb889b290ee1.pdf",
+     4,
+     "1,394 units in corresponding quarter",
+     "1,394"
+    ],
+    "q:20250630": [
+     "d9d8e31e-474c-4429-96d0-94727753a307.pdf",
+     2,
+     "Construction Volume",
+     "1,055"
+    ],
+    "q:20250930": [
+     "d91499f4-56a0-4f00-9de7-eb889b290ee1.pdf",
+     4,
+     "Construction Equipment's sales volume was at 1,146 units",
+     "1,146"
+    ],
+    "q:20251231": [
+     "338fff39-2fc4-4043-9d68-0ccf26e1a75a.pdf",
+     6,
+     "Construction Equipment's Volume",
+     "1,716"
+    ],
+    "q:20260331": [
+     "83e1e3d2-aaa9-4bb1-9e91-82b5cc802d99.pdf",
+     6,
+     "Construction Equipment's Volume",
+     "1,877"
+    ],
+    "q:20260630": [
+     "83db41f6-839d-4bdf-8e9f-90a0ba8aee0f.pdf",
+     7,
+     "Construction Equipment's Volume",
+     "1,344"
+    ],
+    "y:20250331": [
+     "6c62c5c3-ebd5-4d3b-a1aa-8e862513e222.pdf",
+     11,
+     "Construction Equipment's Volume",
+     "6,484"
+    ],
+    "y:20260331": [
+     "aa4acd39-762b-4cf1-9948-7ad5537f6059.pdf",
+     95,
+     "Construction Equipment Volumes",
+     "5,794"
+    ],
+    "q:20240331": [
+     "6c62c5c3-ebd5-4d3b-a1aa-8e862513e222.pdf",
+     22,
+     "EKL Construction Equipment Volumes",
+     "1,958"
+    ],
+    "q:20241231": [
+     "6c62c5c3-ebd5-4d3b-a1aa-8e862513e222.pdf",
+     22,
+     "EKL Construction Equipment Volumes",
+     "1,989"
+    ],
+    "q:20250331": [
+     "6c62c5c3-ebd5-4d3b-a1aa-8e862513e222.pdf",
+     22,
+     "EKL Construction Equipment Volumes",
+     "1,719"
+    ],
+    "y:20240331": [
+     "6c62c5c3-ebd5-4d3b-a1aa-8e862513e222.pdf",
+     22,
+     "EKL Construction Equipment Volumes",
+     "7,141"
+    ]
+   },
+   "unit": "Nos.",
+   "y": {
+    "20240331": 7141.0,
+    "20250331": 6484.0,
+    "20260331": 5794.0
+   }
+  },
+  {
+   "kind": "flow",
    "name": "Domestic Tractor Volume",
    "q": {
+    "20240331": 23406.0,
     "20241231": 31585.0,
     "20250331": 24801.0,
     "20250630": 28848.0,
@@ -559,15 +662,15 @@
    },
    "src": {
     "q:20241231": [
-     "338fff39-2fc4-4043-9d68-0ccf26e1a75a.pdf",
+     "6c62c5c3-ebd5-4d3b-a1aa-8e862513e222.pdf",
      19,
-     "EKL Domestic Volume (Nos.)",
+     "Domestic tractor volume",
      "31,585"
     ],
     "q:20250331": [
-     "83e1e3d2-aaa9-4bb1-9e91-82b5cc802d99.pdf",
-     20,
-     "EKL Domestic Volume (Nos.)",
+     "6c62c5c3-ebd5-4d3b-a1aa-8e862513e222.pdf",
+     19,
+     "Domestic tractor volume",
      "24,801"
     ],
     "q:20250630": [
@@ -601,9 +704,9 @@
      "35,457"
     ],
     "y:20250331": [
-     "aa4acd39-762b-4cf1-9948-7ad5537f6059.pdf",
-     215,
-     "Domestic Sales",
+     "6c62c5c3-ebd5-4d3b-a1aa-8e862513e222.pdf",
+     19,
+     "Domestic tractor volume",
      "1,10,563"
     ],
     "y:20260331": [
@@ -611,10 +714,23 @@
      215,
      "Domestic Sales",
      "1,26,994"
+    ],
+    "q:20240331": [
+     "6c62c5c3-ebd5-4d3b-a1aa-8e862513e222.pdf",
+     19,
+     "Domestic tractor volume",
+     "23,406"
+    ],
+    "y:20240331": [
+     "6c62c5c3-ebd5-4d3b-a1aa-8e862513e222.pdf",
+     19,
+     "Domestic tractor volume",
+     "1,08,777"
     ]
    },
    "unit": "Nos.",
    "y": {
+    "20240331": 108777.0,
     "20250331": 110563.0,
     "20260331": 126994.0
    }
@@ -623,6 +739,7 @@
    "kind": "flow",
    "name": "Export Tractor Volume",
    "q": {
+    "20240331": 1341.0,
     "20241231": 971.0,
     "20250331": 1832.0,
     "20250630": 1733.0,
@@ -633,15 +750,15 @@
    },
    "src": {
     "q:20241231": [
-     "338fff39-2fc4-4043-9d68-0ccf26e1a75a.pdf",
+     "6c62c5c3-ebd5-4d3b-a1aa-8e862513e222.pdf",
      19,
-     "EKL Export Volume (Nos.)",
+     "Export tractor volume",
      "971"
     ],
     "q:20250331": [
-     "83e1e3d2-aaa9-4bb1-9e91-82b5cc802d99.pdf",
-     20,
-     "EKL Export Volume (Nos.)",
+     "6c62c5c3-ebd5-4d3b-a1aa-8e862513e222.pdf",
+     19,
+     "Export tractor volume",
      "1,832"
     ],
     "q:20250630": [
@@ -675,9 +792,9 @@
      "1,405"
     ],
     "y:20250331": [
-     "aa4acd39-762b-4cf1-9948-7ad5537f6059.pdf",
-     215,
-     "Export Sales",
+     "6c62c5c3-ebd5-4d3b-a1aa-8e862513e222.pdf",
+     19,
+     "Export tractor volume",
      "4,991"
     ],
     "y:20260331": [
@@ -685,12 +802,99 @@
      215,
      "Export Sales",
      "6,676"
+    ],
+    "q:20240331": [
+     "6c62c5c3-ebd5-4d3b-a1aa-8e862513e222.pdf",
+     19,
+     "Export tractor volume",
+     "1,341"
+    ],
+    "y:20240331": [
+     "6c62c5c3-ebd5-4d3b-a1aa-8e862513e222.pdf",
+     19,
+     "Export tractor volume",
+     "5,619"
     ]
    },
    "unit": "Nos.",
    "y": {
+    "20240331": 5619.0,
     "20250331": 4991.0,
     "20260331": 6676.0
+   }
+  },
+  {
+   "kind": "flow",
+   "name": "Total Tractor Volume",
+   "q": {
+    "20240930": 25995.0,
+    "20250331": 26633.0,
+    "20250630": 30581.0,
+    "20250930": 33877.0,
+    "20251231": 36955.0,
+    "20260331": 32257.0,
+    "20260630": 36862.0
+   },
+   "src": {
+    "q:20240930": [
+     "d91499f4-56a0-4f00-9de7-eb889b290ee1.pdf",
+     4,
+     "25,995 units in corresponding quarter",
+     "25,995"
+    ],
+    "q:20250630": [
+     "d9d8e31e-474c-4429-96d0-94727753a307.pdf",
+     2,
+     "Tractor Volume",
+     "30,581"
+    ],
+    "q:20250930": [
+     "d91499f4-56a0-4f00-9de7-eb889b290ee1.pdf",
+     4,
+     "Tractors volumes came at 33,877 units",
+     "33,877"
+    ],
+    "q:20251231": [
+     "338fff39-2fc4-4043-9d68-0ccf26e1a75a.pdf",
+     6,
+     "Tractors Volumes",
+     "36,955"
+    ],
+    "q:20260331": [
+     "83e1e3d2-aaa9-4bb1-9e91-82b5cc802d99.pdf",
+     6,
+     "Tractors Volumes",
+     "32,257"
+    ],
+    "q:20260630": [
+     "83db41f6-839d-4bdf-8e9f-90a0ba8aee0f.pdf",
+     7,
+     "Tractors Volumes",
+     "36,862"
+    ],
+    "y:20250331": [
+     "6c62c5c3-ebd5-4d3b-a1aa-8e862513e222.pdf",
+     11,
+     "Tractors Volumes",
+     "1,15,554"
+    ],
+    "y:20260331": [
+     "aa4acd39-762b-4cf1-9948-7ad5537f6059.pdf",
+     215,
+     "EKL Total Tractor Sales",
+     "1,33,670"
+    ],
+    "q:20250331": [
+     "6c62c5c3-ebd5-4d3b-a1aa-8e862513e222.pdf",
+     5,
+     "Tractors Volumes",
+     "26,633"
+    ]
+   },
+   "unit": "Nos.",
+   "y": {
+    "20250331": 115554.0,
+    "20260331": 133670.0
    }
   },
   {
@@ -768,140 +972,6 @@
    }
   },
   {
-   "kind": "flow",
-   "name": "Total Construction Equipment Volume",
-   "q": {
-    "20240930": 1394.0,
-    "20250630": 1055.0,
-    "20250930": 1146.0,
-    "20251231": 1716.0,
-    "20260331": 1877.0,
-    "20260630": 1344.0
-   },
-   "src": {
-    "q:20240930": [
-     "d91499f4-56a0-4f00-9de7-eb889b290ee1.pdf",
-     4,
-     "1,394 units in corresponding quarter",
-     "1,394"
-    ],
-    "q:20250630": [
-     "d9d8e31e-474c-4429-96d0-94727753a307.pdf",
-     2,
-     "Construction Volume",
-     "1,055"
-    ],
-    "q:20250930": [
-     "d91499f4-56a0-4f00-9de7-eb889b290ee1.pdf",
-     4,
-     "Construction Equipment's sales volume was at 1,146 units",
-     "1,146"
-    ],
-    "q:20251231": [
-     "338fff39-2fc4-4043-9d68-0ccf26e1a75a.pdf",
-     6,
-     "Construction Equipment's Volume",
-     "1,716"
-    ],
-    "q:20260331": [
-     "83e1e3d2-aaa9-4bb1-9e91-82b5cc802d99.pdf",
-     6,
-     "Construction Equipment's Volume",
-     "1,877"
-    ],
-    "q:20260630": [
-     "83db41f6-839d-4bdf-8e9f-90a0ba8aee0f.pdf",
-     7,
-     "Construction Equipment's Volume",
-     "1,344"
-    ],
-    "y:20250331": [
-     "aa4acd39-762b-4cf1-9948-7ad5537f6059.pdf",
-     95,
-     "Construction Equipment Volumes",
-     "6,484"
-    ],
-    "y:20260331": [
-     "aa4acd39-762b-4cf1-9948-7ad5537f6059.pdf",
-     95,
-     "Construction Equipment Volumes",
-     "5,794"
-    ]
-   },
-   "unit": "Nos.",
-   "y": {
-    "20250331": 6484.0,
-    "20260331": 5794.0
-   }
-  },
-  {
-   "kind": "flow",
-   "name": "Total Tractor Volume",
-   "q": {
-    "20240930": 25995.0,
-    "20250630": 30581.0,
-    "20250930": 33877.0,
-    "20251231": 36955.0,
-    "20260331": 32257.0,
-    "20260630": 36862.0
-   },
-   "src": {
-    "q:20240930": [
-     "d91499f4-56a0-4f00-9de7-eb889b290ee1.pdf",
-     4,
-     "25,995 units in corresponding quarter",
-     "25,995"
-    ],
-    "q:20250630": [
-     "d9d8e31e-474c-4429-96d0-94727753a307.pdf",
-     2,
-     "Tractor Volume",
-     "30,581"
-    ],
-    "q:20250930": [
-     "d91499f4-56a0-4f00-9de7-eb889b290ee1.pdf",
-     4,
-     "Tractors volumes came at 33,877 units",
-     "33,877"
-    ],
-    "q:20251231": [
-     "338fff39-2fc4-4043-9d68-0ccf26e1a75a.pdf",
-     6,
-     "Tractors Volumes",
-     "36,955"
-    ],
-    "q:20260331": [
-     "83e1e3d2-aaa9-4bb1-9e91-82b5cc802d99.pdf",
-     6,
-     "Tractors Volumes",
-     "32,257"
-    ],
-    "q:20260630": [
-     "83db41f6-839d-4bdf-8e9f-90a0ba8aee0f.pdf",
-     7,
-     "Tractors Volumes",
-     "36,862"
-    ],
-    "y:20250331": [
-     "aa4acd39-762b-4cf1-9948-7ad5537f6059.pdf",
-     215,
-     "EKL Total Tractor Sales",
-     "1,15,554"
-    ],
-    "y:20260331": [
-     "aa4acd39-762b-4cf1-9948-7ad5537f6059.pdf",
-     215,
-     "EKL Total Tractor Sales",
-     "1,33,670"
-    ]
-   },
-   "unit": "Nos.",
-   "y": {
-    "20250331": 115554.0,
-    "20260331": 133670.0
-   }
-  },
-  {
    "kind": "level",
    "name": "Tractor Market Share - Export",
    "q": {
@@ -970,6 +1040,158 @@
   },
   {
    "kind": "level",
+   "name": "Capacity Utilization - Construction Equipment",
+   "q": {
+    "20250331": 30.0,
+    "20251231": 60.0,
+    "20260331": 70.0,
+    "20260630": 47.0
+   },
+   "src": {
+    "q:20251231": [
+     "338fff39-2fc4-4043-9d68-0ccf26e1a75a.pdf",
+     10,
+     "Capacity Utilization Construction Equipment (doc period)",
+     "60"
+    ],
+    "q:20260331": [
+     "83e1e3d2-aaa9-4bb1-9e91-82b5cc802d99.pdf",
+     10,
+     "Capacity Utilization Construction Equipment (doc period)",
+     "70"
+    ],
+    "q:20260630": [
+     "83db41f6-839d-4bdf-8e9f-90a0ba8aee0f.pdf",
+     12,
+     "Capacity Utilization Construction Equipment (doc period)",
+     "47"
+    ],
+    "y:20260331": [
+     "aa4acd39-762b-4cf1-9948-7ad5537f6059.pdf",
+     81,
+     "47% capacity utilisation (doc period)",
+     "47"
+    ],
+    "q:20250331": [
+     "6c62c5c3-ebd5-4d3b-a1aa-8e862513e222.pdf",
+     9,
+     "Capacity Utilization Construction Equipment",
+     "30"
+    ],
+    "y:20250331": [
+     "6c62c5c3-ebd5-4d3b-a1aa-8e862513e222.pdf",
+     14,
+     "Capacity Utilization Construction Equipment",
+     "60"
+    ]
+   },
+   "unit": "%",
+   "y": {
+    "20250331": 60.0,
+    "20260331": 47.0
+   }
+  },
+  {
+   "kind": "level",
+   "name": "Capacity Utilization - Tractors",
+   "q": {
+    "20250331": 60.0,
+    "20251231": 75.0,
+    "20260331": 85.0,
+    "20260630": 84.0
+   },
+   "src": {
+    "q:20251231": [
+     "338fff39-2fc4-4043-9d68-0ccf26e1a75a.pdf",
+     10,
+     "Capacity Utilization Tractors (doc period)",
+     "75"
+    ],
+    "q:20260331": [
+     "83e1e3d2-aaa9-4bb1-9e91-82b5cc802d99.pdf",
+     10,
+     "Capacity Utilization Tractors (doc period)",
+     "85"
+    ],
+    "q:20260630": [
+     "83db41f6-839d-4bdf-8e9f-90a0ba8aee0f.pdf",
+     12,
+     "Capacity Utilization Tractors (doc period)",
+     "84"
+    ],
+    "y:20260331": [
+     "aa4acd39-762b-4cf1-9948-7ad5537f6059.pdf",
+     215,
+     "Total Capacity Utilisation in FY 2025-26",
+     "77"
+    ],
+    "q:20250331": [
+     "6c62c5c3-ebd5-4d3b-a1aa-8e862513e222.pdf",
+     9,
+     "Capacity Utilization Tractors",
+     "60"
+    ],
+    "y:20250331": [
+     "6c62c5c3-ebd5-4d3b-a1aa-8e862513e222.pdf",
+     14,
+     "Capacity Utilization Tractors",
+     "70"
+    ]
+   },
+   "unit": "%",
+   "y": {
+    "20250331": 70.0,
+    "20260331": 77.0
+   }
+  },
+  {
+   "kind": "level",
+   "name": "Export Volume via Kubota Channel Share",
+   "q": {
+    "20250331": 72.0,
+    "20251231": 68.0,
+    "20260331": 67.0
+   },
+   "src": {
+    "q:20251231": [
+     "338fff39-2fc4-4043-9d68-0ccf26e1a75a.pdf",
+     21,
+     "Export through Kubota channel of total Export volume ~68% in Q3FY26",
+     "68"
+    ],
+    "q:20260331": [
+     "83e1e3d2-aaa9-4bb1-9e91-82b5cc802d99.pdf",
+     22,
+     "Export through Kubota channel of total Export volume ~67% in Q4FY26",
+     "67"
+    ],
+    "y:20260331": [
+     "83e1e3d2-aaa9-4bb1-9e91-82b5cc802d99.pdf",
+     22,
+     "Export through Kubota channel of total Export volume ~60% in FY26",
+     "60"
+    ],
+    "q:20250331": [
+     "6c62c5c3-ebd5-4d3b-a1aa-8e862513e222.pdf",
+     20,
+     "Export through Kubota channel of total Export volume",
+     "72"
+    ],
+    "y:20250331": [
+     "6c62c5c3-ebd5-4d3b-a1aa-8e862513e222.pdf",
+     20,
+     "Export through Kubota channel of total Export volume",
+     "40"
+    ]
+   },
+   "unit": "%",
+   "y": {
+    "20250331": 40.0,
+    "20260331": 60.0
+   }
+  },
+  {
+   "kind": "level",
    "name": "Backhoe Loader Market Share",
    "q": {
     "20251231": 0.6,
@@ -1005,84 +1227,6 @@
    "unit": "%",
    "y": {
     "20260331": 0.5
-   }
-  },
-  {
-   "kind": "level",
-   "name": "Capacity Utilization - Construction Equipment",
-   "q": {
-    "20251231": 60.0,
-    "20260331": 70.0,
-    "20260630": 47.0
-   },
-   "src": {
-    "q:20251231": [
-     "338fff39-2fc4-4043-9d68-0ccf26e1a75a.pdf",
-     10,
-     "Capacity Utilization Construction Equipment (doc period)",
-     "60"
-    ],
-    "q:20260331": [
-     "83e1e3d2-aaa9-4bb1-9e91-82b5cc802d99.pdf",
-     10,
-     "Capacity Utilization Construction Equipment (doc period)",
-     "70"
-    ],
-    "q:20260630": [
-     "83db41f6-839d-4bdf-8e9f-90a0ba8aee0f.pdf",
-     12,
-     "Capacity Utilization Construction Equipment (doc period)",
-     "47"
-    ],
-    "y:20260331": [
-     "aa4acd39-762b-4cf1-9948-7ad5537f6059.pdf",
-     81,
-     "47% capacity utilisation (doc period)",
-     "47"
-    ]
-   },
-   "unit": "%",
-   "y": {
-    "20260331": 47.0
-   }
-  },
-  {
-   "kind": "level",
-   "name": "Capacity Utilization - Tractors",
-   "q": {
-    "20251231": 75.0,
-    "20260331": 85.0,
-    "20260630": 84.0
-   },
-   "src": {
-    "q:20251231": [
-     "338fff39-2fc4-4043-9d68-0ccf26e1a75a.pdf",
-     10,
-     "Capacity Utilization Tractors (doc period)",
-     "75"
-    ],
-    "q:20260331": [
-     "83e1e3d2-aaa9-4bb1-9e91-82b5cc802d99.pdf",
-     10,
-     "Capacity Utilization Tractors (doc period)",
-     "85"
-    ],
-    "q:20260630": [
-     "83db41f6-839d-4bdf-8e9f-90a0ba8aee0f.pdf",
-     12,
-     "Capacity Utilization Tractors (doc period)",
-     "84"
-    ],
-    "y:20260331": [
-     "aa4acd39-762b-4cf1-9948-7ad5537f6059.pdf",
-     215,
-     "Total Capacity Utilisation in FY 2025-26",
-     "77"
-    ]
-   },
-   "unit": "%",
-   "y": {
-    "20260331": 77.0
    }
   },
   {
@@ -1200,38 +1344,6 @@
    "unit": "%",
    "y": {
     "20260331": 41.4
-   }
-  },
-  {
-   "kind": "level",
-   "name": "Export Volume via Kubota Channel Share",
-   "q": {
-    "20251231": 68.0,
-    "20260331": 67.0
-   },
-   "src": {
-    "q:20251231": [
-     "338fff39-2fc4-4043-9d68-0ccf26e1a75a.pdf",
-     21,
-     "Export through Kubota channel of total Export volume ~68% in Q3FY26",
-     "68"
-    ],
-    "q:20260331": [
-     "83e1e3d2-aaa9-4bb1-9e91-82b5cc802d99.pdf",
-     22,
-     "Export through Kubota channel of total Export volume ~67% in Q4FY26",
-     "67"
-    ],
-    "y:20260331": [
-     "83e1e3d2-aaa9-4bb1-9e91-82b5cc802d99.pdf",
-     22,
-     "Export through Kubota channel of total Export volume ~60% in FY26",
-     "60"
-    ]
-   },
-   "unit": "%",
-   "y": {
-    "20260331": 60.0
    }
   },
   {
@@ -1364,6 +1476,23 @@
      5,
      "Manufacturing Plant (doc period)",
      "6"
+    ]
+   }
+  },
+  {
+   "name": "Railway Equipment Order Book",
+   "unit": "INR Cr",
+   "kind": "level",
+   "y": {
+    "20250331": 900.0
+   },
+   "q": {},
+   "src": {
+    "y:20250331": [
+     "6c62c5c3-ebd5-4d3b-a1aa-8e862513e222.pdf",
+     25,
+     "Order Book at the end of March 2025",
+     "900"
     ]
    }
   },
