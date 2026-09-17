@@ -16330,3 +16330,41 @@ booting on the shared theme.js/sw.js edits. **Sections outside the preview assum
 2026-10-26.** Sandbox on 2026-09-13 blocked cartocdn / nominatim / overpass / open-meteo / frankfurter /
 the live Pages host, so tiles were blank in shots and NO live third-party endpoint was exercised — only
 their documented response shapes, mocked via Playwright routing.
+
+---
+
+## 140. ★★ INDLMETER Jun-2025 — the copied-con purge's first confirmed FALSE POSITIVE, surfaced by a re-filing  (2026-09-18)
+*(from the "Run failed: Daily fundamentals refresh" mails — red on every run from 2026-09-17 11:01Z through the 15:45Z nightly;
+the 30-min cadence mailed ~10 times, plus the auto-rerun echoes)*
+
+**What happened (measured):** on 2026-09-17 ~04:24 UTC INDLMETER re-filed BOTH bases of its Q1-FY26 (qe 30-Jun-2025)
+Integrated Filing (XBRL 1725012 std, 1725016 con). Those rows entered `update_fundamentals.py`'s 120-day window at the 11:01Z
+run ("upserted 2 quarters … 1 rev/op cells"); the fill-only upsert wrote con PAT −2.0 and con revenue 1.71 into the null con
+slots — and `settle_stale_holds.py` went red because `mc_pat_fills.json` / `mc_history_fills.json` HELD exactly those cells
+("MC con == our std → suspected fallback, settle from the filing") and no filing-sourced ledger backed them. The con slots
+were null because `purge_copied_con.py` (§67 class) had nulled them on 2-dp equality with standalone
+(`copied_con_purge.json` INDLMETER|20250630|patC/revC) after `no_con_filing.json` listed INDLMETER as
+`stopped_filing_con` from 20250630.
+
+**Why that was wrong:** NSE's integrated-filing index lists a **Consolidated** filing for INDLMETER in EVERY quarter from
+20250630 on (1507530 bcast 08-Aug-2025 20:14:30 → 1570140 → 1626093 → 1673531 → 1710476), so the purge doctrine (ZERO
+consolidated filings after the stop quarter) was never met. And the con XBRL is a distinct statement: RevenueFromOperations
+17,118,000 (= std), OtherIncome 0 (std 30,000), **ProfitLossForPeriod −20,033,000 (std −19,970,000)**, OCI +87,000 (std −87,000)
+— equal to standalone only after rounding to 2 dp. **Rounded equality is not the copy signature; the discriminator is the
+NSE index + the XBRL `NatureOfReportStandaloneConsolidated` tag + the raw rupee facts.**
+
+**Fix (worktree `~/stocks-wt/phantom-0914`, every step re-run locally):** `conpat_filing_fills.json` gains
+`INDLMETER|20250630|con` (−2.0, annCon 20250808) and `INDLMETER|20250630|con_rev` (1.71) with the raw-fact anchor and index
+identity journalled beside the values; `no_con_filing.json` retracts INDLMETER from `stopped_filing_con` (evidence note);
+`copied_con_purge.json` entries annotated `restored` (audit trail kept); payload + mirrors filled fill-only into the null
+slots (con PAT/ann; con rev −0.81 op / −1.90 ebit, from `build_revop.xbrl_revop` on the same XBRL — the same cells the CI
+upsert was writing). Then `settle_stale_holds.py --apply` settled both holds "outranked by conpat_filing_fills.json", and
+`verify_fills_live.py` exits 0 (MISSING 0, RESURRECTED 0, phantom-key guard OK).
+
+**Two traps this run exposed:**
+- *"It's fixed upstream" was a measurement error.* Running `settle_stale_holds.py` against the COMMITTED payload reports
+  0 resurrected — the resurrection happens IN-RUN (the XBRL upsert fills the nulls before the guard step), so the committed
+  tree proves nothing about the next run. Test the gate after the fill steps, or read which step wrote the cell in the run
+  log (`gh run view <id> --log`, the "upserted N quarters" line).
+- *A stale `stopped_filing_con` entry is a live writer:* any future manual `purge_copied_con.py --apply` would have re-nulled
+  the cell. Retract the entry, not just the symptom.
