@@ -57,6 +57,34 @@
    "title": "69th Integrated Annual Report FY 2024-25",
    "read": "2026-09-07",
    "by": "claude-routine"
+  },
+  "6f0fcf51-e42f-41f4-b9c5-4aed53c7a91b.pdf": {
+   "kind": "ar",
+   "date": "2026-09-08",
+   "title": "AGM Notice / Annual Report weblink letter FY2025-26",
+   "read": "2026-09-17",
+   "by": "claude-routine"
+  },
+  "8735b966-b53c-4c30-a780-63c83c1214cb.pdf": {
+   "kind": "ar",
+   "date": "2025-09-05",
+   "title": "AGM Notice / Annual Report weblink letter FY2024-25",
+   "read": "2026-09-17",
+   "by": "claude-routine"
+  },
+  "809fdf74-997d-466c-91a2-ae6c5e933bb6.pdf": {
+   "kind": "pr",
+   "date": "2025-08-07",
+   "title": "Q1 FY25-26 Press Release",
+   "read": "2026-09-17",
+   "by": "claude-routine"
+  },
+  "d28b50c9-e932-4f4e-b082-ab8a10dfcc20.pdf": {
+   "kind": "ar",
+   "date": "2026-09-07",
+   "title": "70th Integrated Annual Report FY 2025-26",
+   "read": "2026-09-17",
+   "by": "claude-routine"
   }
  },
  "metrics": [
@@ -322,6 +350,52 @@
    }
   },
   {
+   "name": "Group Gross Power Generation",
+   "unit": "MU",
+   "kind": "flow",
+   "y": {
+    "20240331": 27106.21,
+    "20250331": 27865.58,
+    "20260331": 28944.71
+   },
+   "q": {
+    "20250630": 6609.4,
+    "20260630": 8262.06
+   },
+   "src": {
+    "q:20260630": [
+     "a5ca1db7-c3ea-4cb8-a0a6-84d6cddc6224.pdf",
+     2,
+     "Gross Power Generation of 8,262.06 MU compared to 6,609.40 MU in Q1 2025-26",
+     "8,262.06"
+    ],
+    "q:20250630": [
+     "a5ca1db7-c3ea-4cb8-a0a6-84d6cddc6224.pdf",
+     2,
+     "compared to 6,609.40 MU in Q1 2025-26",
+     "6,609.40"
+    ],
+    "y:20260331": [
+     "d28b50c9-e932-4f4e-b082-ab8a10dfcc20.pdf",
+     42,
+     "Total (Gross Generation by Station)",
+     "28,944.71"
+    ],
+    "y:20250331": [
+     "d28b50c9-e932-4f4e-b082-ab8a10dfcc20.pdf",
+     42,
+     "Total (Gross Generation by Station)",
+     "27,865.58"
+    ],
+    "y:20240331": [
+     "d28b50c9-e932-4f4e-b082-ab8a10dfcc20.pdf",
+     42,
+     "Total (Gross Generation by Station)",
+     "27,106.21"
+    ]
+   }
+  },
+  {
    "name": "Group Power Export",
    "unit": "BU",
    "kind": "flow",
@@ -571,6 +645,30 @@
    }
   },
   {
+   "name": "Coal Mining Capacity (Standalone)",
+   "unit": "MTPA",
+   "kind": "level",
+   "y": {
+    "20250331": 20.0,
+    "20260331": 20.0
+   },
+   "q": {},
+   "src": {
+    "y:20250331": [
+     "3820278f-a17a-467b-b3dd-aca7902cc966.pdf",
+     97,
+     "Coal: 20.00 MTPA (Current Capacities, doc period)",
+     "20.00"
+    ],
+    "y:20260331": [
+     "d28b50c9-e932-4f4e-b082-ab8a10dfcc20.pdf",
+     96,
+     "Current Capacities - Coal",
+     "20"
+    ]
+   }
+  },
+  {
    "name": "Coal Production (Standalone)",
    "unit": "MT",
    "kind": "flow",
@@ -595,26 +693,27 @@
    }
   },
   {
-   "name": "Group Gross Power Generation",
-   "unit": "MU",
-   "kind": "flow",
-   "y": {},
+   "name": "Collection Efficiency of Power Debtors",
+   "unit": "%",
+   "kind": "level",
+   "y": {
+    "20260331": 100.0
+   },
    "q": {
-    "20250630": 6609.4,
-    "20260630": 8262.06
+    "20260630": 100.0
    },
    "src": {
     "q:20260630": [
      "a5ca1db7-c3ea-4cb8-a0a6-84d6cddc6224.pdf",
      2,
-     "Gross Power Generation of 8,262.06 MU compared to 6,609.40 MU in Q1 2025-26",
-     "8,262.06"
+     "Collection efficiency of Power Debtors till 30.06.2026 stood at 100%",
+     "100"
     ],
-    "q:20250630": [
-     "a5ca1db7-c3ea-4cb8-a0a6-84d6cddc6224.pdf",
-     2,
-     "compared to 6,609.40 MU in Q1 2025-26",
-     "6,609.40"
+    "y:20260331": [
+     "d28b50c9-e932-4f4e-b082-ab8a10dfcc20.pdf",
+     97,
+     "Maintained 100%+ collection efficiency against billing",
+     "100"
     ]
    }
   },
@@ -623,7 +722,7 @@
    "unit": "MW",
    "kind": "level",
    "y": {
-    "20260331": 1734.0
+    "20260331": 1785.0
    },
    "q": {
     "20250930": 1599.0
@@ -636,12 +735,21 @@
      "1599"
     ],
     "y:20260331": [
-     "ae523ca7-e933-4ec4-af04-6c514eccddbb.pdf",
-     29,
-     "Renewable Capacity",
-     "1,734"
+     "d28b50c9-e932-4f4e-b082-ab8a10dfcc20.pdf",
+     13,
+     "Operational renewable capacity",
+     "1,785"
     ]
-   }
+   },
+   "restated": [
+    [
+     "y:20260331",
+     "ae523ca7-e933-4ec4-af04-6c514eccddbb.pdf",
+     1734.0,
+     "d28b50c9-e932-4f4e-b082-ab8a10dfcc20.pdf",
+     1785.0
+    ]
+   ]
   },
   {
    "name": "Installed Thermal Generation Capacity (Group)",
@@ -665,6 +773,30 @@
      29,
      "Thermal Capacity",
      "5,960"
+    ]
+   }
+  },
+  {
+   "name": "Lignite Mining Capacity (Standalone)",
+   "unit": "MTPA",
+   "kind": "level",
+   "y": {
+    "20250331": 30.1,
+    "20260331": 30.1
+   },
+   "q": {},
+   "src": {
+    "y:20250331": [
+     "3820278f-a17a-467b-b3dd-aca7902cc966.pdf",
+     68,
+     "combined lignite mining capacity of 30.10 MTPA (doc period)",
+     "30.10"
+    ],
+    "y:20260331": [
+     "d28b50c9-e932-4f4e-b082-ab8a10dfcc20.pdf",
+     96,
+     "Current Capacities - Lignite",
+     "30.10"
     ]
    }
   },
@@ -713,6 +845,102 @@
      98,
      "including 2.1 BU from green energy",
      "2.1"
+    ]
+   }
+  },
+  {
+   "name": "Solar Power Installed Capacity",
+   "unit": "MW",
+   "kind": "level",
+   "y": {
+    "20250331": 1432.0,
+    "20260331": 1734.0
+   },
+   "q": {},
+   "src": {
+    "y:20250331": [
+     "3820278f-a17a-467b-b3dd-aca7902cc966.pdf",
+     97,
+     "Solar: 1,432 MW, Current Capacities (doc period)",
+     "1,432"
+    ],
+    "y:20260331": [
+     "d28b50c9-e932-4f4e-b082-ab8a10dfcc20.pdf",
+     96,
+     "Current Capacities - Solar",
+     "1,734"
+    ]
+   }
+  },
+  {
+   "name": "Thermal Generation Capacity (Standalone)",
+   "unit": "MW",
+   "kind": "level",
+   "y": {
+    "20250331": 3640.0,
+    "20260331": 3640.0
+   },
+   "q": {},
+   "src": {
+    "y:20250331": [
+     "3820278f-a17a-467b-b3dd-aca7902cc966.pdf",
+     68,
+     "operating five lignite based thermal power stations with an aggregate capacity o",
+     "3,640"
+    ],
+    "y:20260331": [
+     "d28b50c9-e932-4f4e-b082-ab8a10dfcc20.pdf",
+     96,
+     "Current Capacities - Lignite Based",
+     "3,640"
+    ]
+   }
+  },
+  {
+   "name": "Total Mining Capacity (Standalone, incl. JVs)",
+   "unit": "MTPA",
+   "kind": "level",
+   "y": {
+    "20250331": 50.1,
+    "20260331": 50.1
+   },
+   "q": {},
+   "src": {
+    "y:20250331": [
+     "3820278f-a17a-467b-b3dd-aca7902cc966.pdf",
+     97,
+     "Mining Capacity (50.10 MTPA), Current Capacities (doc period)",
+     "50.10"
+    ],
+    "y:20260331": [
+     "d28b50c9-e932-4f4e-b082-ab8a10dfcc20.pdf",
+     96,
+     "Current Capacities - Mining Capacity",
+     "50.10"
+    ]
+   }
+  },
+  {
+   "name": "Wind Power Installed Capacity",
+   "unit": "MW",
+   "kind": "level",
+   "y": {
+    "20250331": 51.0,
+    "20260331": 51.0
+   },
+   "q": {},
+   "src": {
+    "y:20250331": [
+     "3820278f-a17a-467b-b3dd-aca7902cc966.pdf",
+     97,
+     "Wind: 51 MW, Current Capacities (doc period)",
+     "51"
+    ],
+    "y:20260331": [
+     "d28b50c9-e932-4f4e-b082-ab8a10dfcc20.pdf",
+     96,
+     "Current Capacities - Wind",
+     "51"
     ]
    }
   },
@@ -777,23 +1005,6 @@
    ]
   },
   {
-   "name": "Coal Mining Capacity (Standalone)",
-   "unit": "MTPA",
-   "kind": "level",
-   "y": {
-    "20250331": 20.0
-   },
-   "q": {},
-   "src": {
-    "y:20250331": [
-     "3820278f-a17a-467b-b3dd-aca7902cc966.pdf",
-     97,
-     "Coal: 20.00 MTPA (Current Capacities, doc period)",
-     "20.00"
-    ]
-   }
-  },
-  {
    "name": "Coal and Lignite Production (Combined, Standalone)",
    "unit": "MT",
    "kind": "flow",
@@ -828,19 +1039,19 @@
    }
   },
   {
-   "name": "Collection Efficiency of Power Debtors",
-   "unit": "%",
+   "name": "Energy Storage Pipeline Capacity",
+   "unit": "MWh",
    "kind": "level",
-   "y": {},
-   "q": {
-    "20260630": 100.0
+   "y": {
+    "20260331": 3300.0
    },
+   "q": {},
    "src": {
-    "q:20260630": [
-     "a5ca1db7-c3ea-4cb8-a0a6-84d6cddc6224.pdf",
-     2,
-     "Collection efficiency of Power Debtors till 30.06.2026 stood at 100%",
-     "100"
+    "y:20260331": [
+     "d28b50c9-e932-4f4e-b082-ab8a10dfcc20.pdf",
+     13,
+     "Energy storage pipeline across three contracts",
+     "3,300"
     ]
    }
   },
@@ -862,23 +1073,6 @@
    }
   },
   {
-   "name": "Lignite Mining Capacity (Standalone)",
-   "unit": "MTPA",
-   "kind": "level",
-   "y": {
-    "20250331": 30.1
-   },
-   "q": {},
-   "src": {
-    "y:20250331": [
-     "3820278f-a17a-467b-b3dd-aca7902cc966.pdf",
-     68,
-     "combined lignite mining capacity of 30.10 MTPA (doc period)",
-     "30.10"
-    ]
-   }
-  },
-  {
    "name": "Pachwara South Coal Mine Capacity",
    "unit": "MTPA",
    "kind": "level",
@@ -896,53 +1090,36 @@
    }
   },
   {
-   "name": "Solar Power Installed Capacity",
+   "name": "Renewable Capacity Under Implementation",
    "unit": "MW",
    "kind": "level",
    "y": {
-    "20250331": 1432.0
+    "20260331": 5810.0
    },
    "q": {},
    "src": {
-    "y:20250331": [
-     "3820278f-a17a-467b-b3dd-aca7902cc966.pdf",
-     97,
-     "Solar: 1,432 MW, Current Capacities (doc period)",
-     "1,432"
+    "y:20260331": [
+     "d28b50c9-e932-4f4e-b082-ab8a10dfcc20.pdf",
+     13,
+     "Under implementation (doc period)",
+     "5,810"
     ]
    }
   },
   {
-   "name": "Thermal Generation Capacity (Standalone)",
-   "unit": "MW",
-   "kind": "level",
-   "y": {
-    "20250331": 3640.0
-   },
-   "q": {},
-   "src": {
-    "y:20250331": [
-     "3820278f-a17a-467b-b3dd-aca7902cc966.pdf",
-     68,
-     "operating five lignite based thermal power stations with an aggregate capacity o",
-     "3,640"
-    ]
-   }
-  },
-  {
-   "name": "Total Mining Capacity (Standalone, incl. JVs)",
+   "name": "Silica Sand Plant Capacity",
    "unit": "MTPA",
    "kind": "level",
    "y": {
-    "20250331": 50.1
+    "20260331": 1.0
    },
    "q": {},
    "src": {
-    "y:20250331": [
-     "3820278f-a17a-467b-b3dd-aca7902cc966.pdf",
-     97,
-     "Mining Capacity (50.10 MTPA), Current Capacities (doc period)",
-     "50.10"
+    "y:20260331": [
+     "d28b50c9-e932-4f4e-b082-ab8a10dfcc20.pdf",
+     13,
+     "Washed silica sand plant commissioned at Mine I",
+     "1.0"
     ]
    }
   },
@@ -977,23 +1154,6 @@
      48,
      "Total Workforce (doc period)",
      "9,735"
-    ]
-   }
-  },
-  {
-   "name": "Wind Power Installed Capacity",
-   "unit": "MW",
-   "kind": "level",
-   "y": {
-    "20250331": 51.0
-   },
-   "q": {},
-   "src": {
-    "y:20250331": [
-     "3820278f-a17a-467b-b3dd-aca7902cc966.pdf",
-     97,
-     "Wind: 51 MW, Current Capacities (doc period)",
-     "51"
     ]
    }
   },
@@ -1516,5 +1676,5 @@
  "catalog_since": "2020-01-01",
  "catalog_until": "2026-09-07",
  "catalog_ver": 5,
- "updated": "2026-09-07"
+ "updated": "2026-09-17"
 }
