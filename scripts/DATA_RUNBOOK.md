@@ -397,6 +397,46 @@ not return) → built 09-07 = **4,441** (99.8% of committed), 09-08 = 4,717 (fin
   reading and it was right *then*; here the exchange bhavcopy shows 2,652 traded symbols behind Yahoo's nulls. The
   bhavcopy is the reader that adjudicates a null — never Yahoo alone (memory: `feedback-null-close-is-not-untraded`).
 
+### 1b-iii. 2026-09-18 — PHANTOM SESSIONS: Yahoo pads exchange HOLIDAYS with flat bars, and 2026-09-14 (Ganesh Chaturthi) wedged the refresh for 3 days
+*(found + fixed 2026-09-18 from the "Run failed: Daily stock data refresh" mails — red on every run from 2026-09-15 10:00Z; the dashboard's Yahoo store froze at the 09-11 build)*
+
+**What happened (every number measured this session, worktree `~/stocks-wt/phantom-0914` @69e9c715d):**
+- `guard_sessions` failed every run with `2026-09-14: 1430 bars vs trailing-20 median 4743 (30%) — half-loaded session`.
+  It was NOT half-loaded. **2026-09-14 was a trading holiday (Ganesh Chaturthi)**: `^NSEI` has no 09-14 bar; NSE's dated
+  `sec_bhavdata_full_14092026.csv` carries `DATE1 = 11-Sep-2026` in every row (the holiday misdirect, §1 / `build_sf_data.py`);
+  BSE's UDiFF for 09-14 returns the homepage; `docs/delivery_hist.json` and `docs/bse_prices.bin` both go 09-11 → 09-15;
+  `scripts/fo_spot_nse.json` lists it under `_holidays`. Yahoo served 1,430 tickers a bar with **open == close == the 09-11
+  close and volume 0** — a carry-forward phantom.
+- The same padding is what `2026-01-15` (1,825 bars) and `2026-05-01` (1,805) are — the two standing WARNs from 1b — and it
+  also produced two **full-universe** phantoms nobody noticed: `2026-05-28` (4,436 bars, Bakri Id) and `2026-06-26` (4,460,
+  Muharram): BSE has 0 scrips on both dates, yet every dashboard chart carried a flat bar there since May/June. Bar counts
+  looked normal, so the guard passed them.
+- Why 09-14 wedged and the others did not: a phantom that appears while its date is still the NEWEST session is exempt and
+  slips into the committed copy (it then only WARNs as "pre-existing"). 09-14's phantom surfaced on 09-15, after the store had
+  frozen at 09-11, so it was "new damage" below the 80% floor on every later run.
+- **The near-miss to remember:** a first pass at a fix read NSE's 09-14 file (RELIANCE 1257.50 = "matches Yahoo!") and
+  proposed seeding `price_gap_fills.json` with 2,325 "real NSE 09-14 closes". Those were the 09-11 closes re-served under a
+  09-14 URL — it would have written 2,325 fake bars for a day the market was closed. **Before trusting any dated exchange
+  file, read the date INSIDE it (`DATE1`/`TradDt`), and treat "matches the previous session to the paisa" as the holiday
+  signature, not as verification.** Fill a session only when an exchange session existed; a holiday phantom is DROPPED.
+
+**Fix — `scripts/heal_price_series.py` pass 0 (PHANTOM PASS), before the floor pass.** Two independent tests must BOTH hold:
+(a) the exchange calendar says closed — `fo_spot_nse.json` `_holidays` (dates NSE published no index-close file for); and
+(b) ≥ 90% (`CARRY_FLOOR`) of the session's bars repeat the ticker's previous close to the paisa, over ≥ 100 bars
+(`MIN_PHANTOM_BARS`). Measured signature: real sessions 10–13%, phantoms 100%. A holiday-listed date whose prices MOVED is
+kept and printed as a WARN — and two of those exist: **`2026-08-24` and `2026-08-28` are FALSE holidays** (a transient 404
+of `ind_close_all_DDMMYYYY.csv` is recorded as a holiday forever by `fetch_fo_spot_nse.py`); NSE `delivery_hist` and BSE
+`bse_prices` both have full sessions on both days. A calendar-only gate would have deleted two real sessions — the
+carry-forward test is the load-bearing half. Dropped offsets leave `off2ts`, so the floor pass cannot re-add a phantom the
+committed copy already carries (`skip_no_session_ts`), which is how the four legacy phantoms purge themselves on the first
+run after this lands. Lone pre-2020 weekly bars stamped on holiday dates (13 of them, n=1) are deliberately left alone.
+
+**Replay before the push** (same masters the workflow downloads, `TZ=UTC`, fresh fetch 18:50Z = 4,765 series): unpatched →
+the exact CI failure (`FAIL 2026-09-14: 1430 bars`); patched → `PHANTOM session … dropped` for 01-15 (1,837), 05-01 (1,818),
+05-28 (4,455), 06-26 (4,479), 09-14 (1,430); WARN-kept 08-24/08-28; floor pass unchanged (2,978 re-adds for 09-07);
+`guard_feed` OK; `guard_sessions: 168 sessions checked … session bar counts sane`, exit 0. 12,474 committed bars on the
+four legacy phantom dates are the only bars the new build lacks. Nothing was seeded; no ledger changed.
+
 ---
 
 ## 2. FUNDAMENTALS BACKFILL  (quarterly net-profit gaps)
