@@ -318,6 +318,97 @@ def held_bs(x, qe):
     c = cell.get('c') or cell.get('s') or {}
     return c if c.get('assets') is not None else None
 
+def key_basis(x, qe):
+    """Which basis does the XBRL key we validate against actually hold — 'c' or 's'? held_bs
+    prefers consolidated, so this says which one it returned."""
+    cell = x.get(qe) or {}
+    if (cell.get('c') or {}).get('assets') is not None: return 'c'
+    if (cell.get('s') or {}).get('assets') is not None: return 's'
+    return None
+
+# ---- consolidated-BS recovery (prep only) ----------------------------------------------------
+# locate() can pick the STANDALONE balance sheet when the CONSOLIDATED one is what the XBRL key
+# holds: on many filers the consolidated BS has its assets-side and liabilities-side on separate,
+# non-adjacent pages that each fail locate()'s single-page test, while the standalone is one
+# compact page (GRASIM: standalone p8 TotAssets 77,980 vs consolidated assets p29 500,535 + liab
+# p31). These helpers re-pick the right BS by the ACTUAL answer key (validate) or by Total-Assets
+# size (fills: consolidation only ADDS subsidiary assets, so the largest Total Assets IS the
+# consolidated one). Used in prep only; locate() (text-pass + main-fill) is unchanged.
+_TA_RX = re.compile(r'^\s*total\s+assets\b', re.I)
+_PPE_RX = re.compile(r'property,?\s*plant\s+and\s+equipment\b(?!.*expenditure)', re.I)
+_ROU_RX = re.compile(r'right[\-\s]*of[\-\s]*use\s+asset', re.I)
+def _page_total_assets(page):
+    for label, nums in rows_of(page):
+        if _TA_RX.search(label) and nums:
+            return nums[0]
+    return None
+
+def _page_ppe_rou(page):
+    """(PP&E line, separate Right-of-use line) parsed off an assets-side page, current-year col."""
+    ppe = rou = None
+    for label, nums in rows_of(page):
+        if ppe is None and _PPE_RX.search(label) and nums: ppe = nums[0]
+        if rou is None and _ROU_RX.search(label) and nums: rou = nums[0]
+    return ppe, rou
+
+def bs_assets_pages(doc, texts):
+    """[(page_idx, current-year Total Assets)] for pages that are a real BS ASSETS side — a
+    'Total Assets' line plus BS context (a BS title / equity marker / a liabilities marker on the
+    page or an adjacent one), which excludes a segment schedule's per-segment 'total assets'."""
+    out = []; n = len(texts)
+    for i in range(n):
+        ta = _page_total_assets(doc[i])
+        if ta is None or ta <= 0:
+            continue
+        t = texts[i]
+        if (BS_PAGE.search(t) or BS_REAL.search(t) or BS_LIAB.search(t)
+                or (i + 1 < n and BS_LIAB.search(texts[i + 1]))
+                or (i - 1 >= 0 and BS_LIAB.search(texts[i - 1]))):
+            out.append((i, ta))
+    return out
+
+def _bs_pages_from_assets(texts, i):
+    """Assets page i + its liabilities-side page (itself if single-page, else the nearest of the
+    next two pages carrying the liab marker)."""
+    n = len(texts)
+    for j in (i, i + 1, i + 2):
+        if 0 <= j < n and BS_LIAB.search(texts[j]):
+            return [i] if j == i else [i, j]
+    return [i]
+
+_SCALES = (1.0, 0.1, 0.01, 1e-7)   # crore / million / lakh / absolute-rupees -> crore
+def bs_pages_for_key(doc, texts, key):
+    """The BS page(s) matching the key on BOTH Total Assets AND PP&E within 1% (ROU-aware), at a
+    common unit scale — i.e. a page the holdout gate would accept. Matching both anchors (not
+    assets alone) stops a low-consolidation filer's standalone page, whose assets sit ~1-2% from
+    the consolidated key, from being mis-picked (MRF: standalone assets 29,096 vs consol key
+    29,567). Closest-assets match wins. None if nothing qualifies. Uses only the exact key."""
+    ka, kp = (key or {}).get('assets'), (key or {}).get('ppe')
+    if not ka:
+        return None
+    best_i = None; best_err = 0.01
+    for (i, ta) in bs_assets_pages(doc, texts):
+        pp, rr = _page_ppe_rou(doc[i])
+        for scale in _SCALES:
+            ea = abs(ta * scale - ka) / abs(ka)
+            if ea > best_err:
+                continue
+            if kp:                                   # confirm PP&E at the SAME scale, ROU-aware
+                if pp is None:
+                    continue
+                p, r = pp * scale, (rr or 0) * scale
+                if not (abs(p - kp) / abs(kp) <= 0.01 or abs(p + r - kp) / abs(kp) <= 0.01):
+                    continue
+            best_err = ea; best_i = i
+    return _bs_pages_from_assets(texts, best_i) if best_i is not None else None
+
+def bs_pages_largest(doc, texts):
+    """The BS with the LARGEST Total Assets = the consolidated one. None if no BS assets page."""
+    cands = bs_assets_pages(doc, texts)
+    if not cands:
+        return None
+    return _bs_pages_from_assets(texts, max(cands, key=lambda c: c[1])[0])
+
 def gate_ok(parsed, key):
     """parsed BS agrees with the XBRL-held BS for a held year? Compare Total Assets + PP&E."""
     for f in ('assets', 'ppe'):
@@ -366,6 +457,8 @@ def prep(outdir, limit, only):
         if not miss: continue   # 0-fill "jammer": every FY-end already held, nothing to fill —
         # skip it BEFORE any BSE fetch/render and WITHOUT counting it against --limit, so each
         # batch spends its whole limit on symbols that can actually land (was ~42% wasted).
+        kbasis = key_basis(x, '%d0331' % val_fy)   # 'c' or 's': the basis the answer key holds
+        need_recover = False                         # set True once the validate re-pick fires
         entries = []
         for role, fy in [('validate', val_fy)] + [('fill', f) for f in miss]:
             try: fl = result_filings(o, code, '%d0401' % fy, '%d0901' % fy)
@@ -376,6 +469,30 @@ def prep(outdir, limit, only):
                 loc = locate(pdf, fy)
                 if not loc: continue
                 b, bs_pi, cf_pi = loc
+                # CONSOLIDATED-BS recovery: locate() may have picked the standalone BS. For the
+                # validate year, ONLY when locate's page does not already satisfy the key, re-pick
+                # by the exact key (closest Total-Assets match). If that fires, the filer needs
+                # recovery, so also re-pick its fill years to the largest-Total-Assets (=consolidated)
+                # BS. locate()'s pick is otherwise kept untouched, so working filers never change.
+                try:
+                    _d = fitz.open(stream=pdf, filetype="pdf")
+                    _tx = [_d[k].get_text() for k in range(len(_d))]
+                    if role == 'validate':
+                        _ka = held[val_fy].get('assets')
+                        _lta = _page_total_assets(_d[_as_list(bs_pi)[0]])
+                        _loc_ok = _lta is not None and _ka and any(
+                            abs(_lta * s - _ka) / abs(_ka) <= 0.02 for s in (1.0, 0.1, 0.01, 1e-7))
+                        if not _loc_ok:
+                            _np = bs_pages_for_key(_d, _tx, held[val_fy])
+                            if _np and _np != _as_list(bs_pi):
+                                bs_pi = _np; b = kbasis or b; need_recover = True
+                    elif kbasis == 'c' and need_recover:
+                        _np = bs_pages_largest(_d, _tx)
+                        if _np and _np != _as_list(bs_pi):
+                            bs_pi = _np; b = 'c'
+                    _d.close()
+                except Exception:
+                    pass
                 pngs = []
                 for j, pi in enumerate(_as_list(bs_pi)):        # 1 page, or a 2-page [assets, liabilities] split
                     fn = '%s_%d_bs%s.png' % (sym, fy, '' if j == 0 else str(j + 1))
