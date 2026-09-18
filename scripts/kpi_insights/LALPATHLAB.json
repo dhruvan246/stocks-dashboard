@@ -92,6 +92,13 @@
    "title": "Q1 FY25 Earnings Presentation",
    "read": "2026-09-18",
    "by": "claude-routine"
+  },
+  "720e725b-efc6-44f3-a3e6-b425901a25ba.pdf": {
+   "kind": "ar",
+   "date": "2024-06-04",
+   "title": "Annual Report FY 2023-24",
+   "read": "2026-09-18",
+   "by": "claude-routine"
   }
  },
  "metrics": [
@@ -919,6 +926,52 @@
    }
   },
   {
+   "name": "Revenue per Patient",
+   "unit": "Rs.",
+   "kind": "flow",
+   "y": {
+    "20230331": 750.0,
+    "20240331": 806.0,
+    "20250331": 855.0,
+    "20260331": 912.0
+   },
+   "q": {
+    "20240930": 844.0
+   },
+   "src": {
+    "y:20250331": [
+     "c5a19268-920d-4aea-ab34-1f70d8f0a847.pdf",
+     130,
+     "Revenue per patient (Rs)",
+     "855"
+    ],
+    "y:20260331": [
+     "c5a19268-920d-4aea-ab34-1f70d8f0a847.pdf",
+     130,
+     "Revenue per patient (Rs)",
+     "912"
+    ],
+    "q:20240930": [
+     "a7b8bed5-ea31-4c19-87b5-d8c9a385eb6d.pdf",
+     7,
+     "Revenue per patient (doc period)",
+     "844"
+    ],
+    "y:20230331": [
+     "720e725b-efc6-44f3-a3e6-b425901a25ba.pdf",
+     102,
+     "Revenue Per Patient (in Rs.)",
+     "750"
+    ],
+    "y:20240331": [
+     "720e725b-efc6-44f3-a3e6-b425901a25ba.pdf",
+     102,
+     "Revenue Per Patient (in Rs.)",
+     "806"
+    ]
+   }
+  },
+  {
    "name": "CAP Accredited Labs",
    "unit": "count",
    "kind": "level",
@@ -997,6 +1050,44 @@
    }
   },
   {
+   "name": "Test per Patient",
+   "unit": "units",
+   "kind": "flow",
+   "y": {
+    "20230331": 2.69,
+    "20240331": 2.83,
+    "20250331": 3.0,
+    "20260331": 3.1
+   },
+   "q": {},
+   "src": {
+    "y:20250331": [
+     "c5a19268-920d-4aea-ab34-1f70d8f0a847.pdf",
+     130,
+     "Test per patient (units)",
+     "3.0"
+    ],
+    "y:20260331": [
+     "c5a19268-920d-4aea-ab34-1f70d8f0a847.pdf",
+     130,
+     "Test per patient (units)",
+     "3.1"
+    ],
+    "y:20230331": [
+     "720e725b-efc6-44f3-a3e6-b425901a25ba.pdf",
+     102,
+     "Test Per Patient (in no.)",
+     "2.69"
+    ],
+    "y:20240331": [
+     "720e725b-efc6-44f3-a3e6-b425901a25ba.pdf",
+     102,
+     "Test Per Patient (in no.)",
+     "2.83"
+    ]
+   }
+  },
+  {
    "name": "Comprehensive Test Menu",
    "unit": "count",
    "kind": "level",
@@ -1028,38 +1119,6 @@
    }
   },
   {
-   "name": "Revenue per Patient",
-   "unit": "Rs.",
-   "kind": "flow",
-   "y": {
-    "20250331": 855.0,
-    "20260331": 912.0
-   },
-   "q": {
-    "20240930": 844.0
-   },
-   "src": {
-    "y:20250331": [
-     "c5a19268-920d-4aea-ab34-1f70d8f0a847.pdf",
-     130,
-     "Revenue per patient (Rs)",
-     "855"
-    ],
-    "y:20260331": [
-     "c5a19268-920d-4aea-ab34-1f70d8f0a847.pdf",
-     130,
-     "Revenue per patient (Rs)",
-     "912"
-    ],
-    "q:20240930": [
-     "a7b8bed5-ea31-4c19-87b5-d8c9a385eb6d.pdf",
-     7,
-     "Revenue per patient (doc period)",
-     "844"
-    ]
-   }
-  },
-  {
    "name": "B2C Revenue Mix",
    "unit": "%",
    "kind": "level",
@@ -1084,26 +1143,98 @@
    }
   },
   {
-   "name": "Test per Patient",
-   "unit": "units",
-   "kind": "flow",
+   "name": "States Covered (National)",
+   "unit": "count",
+   "kind": "level",
    "y": {
-    "20250331": 3.0,
-    "20260331": 3.1
+    "20240331": 28.0,
+    "20260331": 27.0
    },
    "q": {},
    "src": {
-    "y:20250331": [
-     "c5a19268-920d-4aea-ab34-1f70d8f0a847.pdf",
-     130,
-     "Test per patient (units)",
-     "3.0"
-    ],
     "y:20260331": [
      "c5a19268-920d-4aea-ab34-1f70d8f0a847.pdf",
-     130,
-     "Test per patient (units)",
-     "3.1"
+     137,
+     "National (No. of states)",
+     "27"
+    ],
+    "y:20240331": [
+     "720e725b-efc6-44f3-a3e6-b425901a25ba.pdf",
+     106,
+     "National (No. of States)",
+     "28"
+    ]
+   }
+  },
+  {
+   "name": "Total Employees (Standalone)",
+   "unit": "count",
+   "kind": "level",
+   "y": {
+    "20240331": 1464.0,
+    "20260331": 1981.0
+   },
+   "q": {},
+   "src": {
+    "y:20260331": [
+     "c5a19268-920d-4aea-ab34-1f70d8f0a847.pdf",
+     137,
+     "Total employees (D+E)",
+     "1,981"
+    ],
+    "y:20240331": [
+     "720e725b-efc6-44f3-a3e6-b425901a25ba.pdf",
+     106,
+     "Total employees (D + E)",
+     "1,464"
+    ]
+   }
+  },
+  {
+   "name": "Total Workers (Standalone)",
+   "unit": "count",
+   "kind": "level",
+   "y": {
+    "20240331": 2784.0,
+    "20260331": 3630.0
+   },
+   "q": {},
+   "src": {
+    "y:20260331": [
+     "c5a19268-920d-4aea-ab34-1f70d8f0a847.pdf",
+     137,
+     "Total workers (F+G)",
+     "3,630"
+    ],
+    "y:20240331": [
+     "720e725b-efc6-44f3-a3e6-b425901a25ba.pdf",
+     106,
+     "Total workers (F + G)",
+     "2,784"
+    ]
+   }
+  },
+  {
+   "name": "Union Territories Covered",
+   "unit": "count",
+   "kind": "level",
+   "y": {
+    "20240331": 6.0,
+    "20260331": 4.0
+   },
+   "q": {},
+   "src": {
+    "y:20260331": [
+     "c5a19268-920d-4aea-ab34-1f70d8f0a847.pdf",
+     137,
+     "National (No. of states) - 4 Union Territories",
+     "4"
+    ],
+    "y:20240331": [
+     "720e725b-efc6-44f3-a3e6-b425901a25ba.pdf",
+     106,
+     "National (No. of States): 28 States and 6 Union Territories",
+     "6"
     ]
    }
   },
@@ -1138,74 +1269,6 @@
      130,
      "over 1,100 collection centres during FY 2026",
      "1,100"
-    ]
-   }
-  },
-  {
-   "name": "States Covered (National)",
-   "unit": "count",
-   "kind": "level",
-   "y": {
-    "20260331": 27.0
-   },
-   "q": {},
-   "src": {
-    "y:20260331": [
-     "c5a19268-920d-4aea-ab34-1f70d8f0a847.pdf",
-     137,
-     "National (No. of states)",
-     "27"
-    ]
-   }
-  },
-  {
-   "name": "Total Employees (Standalone)",
-   "unit": "count",
-   "kind": "level",
-   "y": {
-    "20260331": 1981.0
-   },
-   "q": {},
-   "src": {
-    "y:20260331": [
-     "c5a19268-920d-4aea-ab34-1f70d8f0a847.pdf",
-     137,
-     "Total employees (D+E)",
-     "1,981"
-    ]
-   }
-  },
-  {
-   "name": "Total Workers (Standalone)",
-   "unit": "count",
-   "kind": "level",
-   "y": {
-    "20260331": 3630.0
-   },
-   "q": {},
-   "src": {
-    "y:20260331": [
-     "c5a19268-920d-4aea-ab34-1f70d8f0a847.pdf",
-     137,
-     "Total workers (F+G)",
-     "3,630"
-    ]
-   }
-  },
-  {
-   "name": "Union Territories Covered",
-   "unit": "count",
-   "kind": "level",
-   "y": {
-    "20260331": 4.0
-   },
-   "q": {},
-   "src": {
-    "y:20260331": [
-     "c5a19268-920d-4aea-ab34-1f70d8f0a847.pdf",
-     137,
-     "National (No. of states) - 4 Union Territories",
-     "4"
     ]
    }
   },
