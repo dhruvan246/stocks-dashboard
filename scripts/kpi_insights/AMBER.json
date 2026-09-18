@@ -57,6 +57,27 @@
    "title": "Annual Report FY2024-25",
    "read": "2026-09-07",
    "by": "claude-routine"
+  },
+  "ab4d4032-6d77-4530-a997-1acab952cbbf.pdf": {
+   "kind": "ip",
+   "date": "2025-01-23",
+   "title": "Q3 & 9M FY25 Investor Presentation",
+   "read": "2026-09-18",
+   "by": "claude-routine"
+  },
+  "9c1a0997-c532-49db-bebf-929fdadf2f63.pdf": {
+   "kind": "ar",
+   "date": "2024-07-18",
+   "title": "Annual Report 2023-24 (FY24)",
+   "read": "2026-09-18",
+   "by": "claude-routine"
+  },
+  "83f743c6-63e4-4abe-86be-8e52ec2836ce.pdf": {
+   "kind": "ar",
+   "date": "2024-07-20",
+   "title": "Clarification Letter to Annual Report FY24 (typo correction)",
+   "read": "2026-09-18",
+   "by": "claude-routine"
   }
  },
  "metrics": [
@@ -157,6 +178,7 @@
    "unit": "count",
    "kind": "level",
    "y": {
+    "20240331": 1990.0,
     "20250331": 1709.0,
     "20260331": 1960.0
    },
@@ -173,6 +195,61 @@
      178,
      "total number of permanent employees ... standalone, as on 31st March 2025",
      "1709"
+    ],
+    "y:20240331": [
+     "9c1a0997-c532-49db-bebf-929fdadf2f63.pdf",
+     88,
+     "Employees > Permanent > Total",
+     "1,990"
+    ]
+   }
+  },
+  {
+   "name": "Total Manufacturing Facilities",
+   "unit": "count",
+   "kind": "level",
+   "y": {
+    "20240331": 30.0,
+    "20260331": 37.0
+   },
+   "q": {},
+   "src": {
+    "y:20260331": [
+     "687e644f-ff97-492b-be5a-63050d02fde4.pdf",
+     114,
+     "Total Operational Units, as on 31st March 2026 (doc period)",
+     "37"
+    ],
+    "y:20240331": [
+     "9c1a0997-c532-49db-bebf-929fdadf2f63.pdf",
+     32,
+     "Manufacturing Facilities (doc period)",
+     "30"
+    ]
+   }
+  },
+  {
+   "name": "Total Workforce (Group)",
+   "unit": "count",
+   "kind": "level",
+   "y": {
+    "20240331": 16938.0
+   },
+   "q": {
+    "20250630": 18000.0
+   },
+   "src": {
+    "q:20250630": [
+     "79f4b5c6-c2f2-4a78-a99a-671fb005e533.pdf",
+     6,
+     "18,000+ Workforce (doc period)",
+     "18,000"
+    ],
+    "y:20240331": [
+     "9c1a0997-c532-49db-bebf-929fdadf2f63.pdf",
+     88,
+     "employee base of over 16,938 individuals",
+     "16,938"
     ]
    }
   },
@@ -211,36 +288,53 @@
    }
   },
   {
-   "name": "Total Manufacturing Facilities",
+   "name": "R&D Headcount",
    "unit": "count",
    "kind": "level",
    "y": {
-    "20260331": 37.0
+    "20240331": 250.0
    },
    "q": {},
    "src": {
-    "y:20260331": [
-     "687e644f-ff97-492b-be5a-63050d02fde4.pdf",
-     114,
-     "Total Operational Units, as on 31st March 2026 (doc period)",
-     "37"
+    "y:20240331": [
+     "9c1a0997-c532-49db-bebf-929fdadf2f63.pdf",
+     123,
+     "highly skilled team of more than 250 engineers across the group (doc period)",
+     "250"
     ]
    }
   },
   {
-   "name": "Total Workforce (Group)",
+   "name": "RAC Manufacturing Market Share",
+   "unit": "%",
+   "kind": "level",
+   "y": {
+    "20240331": 27.0
+   },
+   "q": {},
+   "src": {
+    "y:20240331": [
+     "9c1a0997-c532-49db-bebf-929fdadf2f63.pdf",
+     123,
+     "representing 27% (in value terms) of the manufacturing footprint in RAC sector",
+     "27"
+    ]
+   }
+  },
+  {
+   "name": "States of Presence",
    "unit": "count",
    "kind": "level",
-   "y": {},
-   "q": {
-    "20250630": 18000.0
+   "y": {
+    "20240331": 9.0
    },
+   "q": {},
    "src": {
-    "q:20250630": [
-     "79f4b5c6-c2f2-4a78-a99a-671fb005e533.pdf",
-     6,
-     "18,000+ Workforce (doc period)",
-     "18,000"
+    "y:20240331": [
+     "9c1a0997-c532-49db-bebf-929fdadf2f63.pdf",
+     32,
+     "Presence in States (doc period)",
+     "9"
     ]
    }
   }
@@ -665,5 +759,5 @@
  "catalog_since": "2020-01-01",
  "catalog_until": "2026-09-07",
  "catalog_ver": 5,
- "updated": "2026-09-07"
+ "updated": "2026-09-18"
 }
