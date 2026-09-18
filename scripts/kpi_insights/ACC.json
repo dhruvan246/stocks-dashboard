@@ -57,6 +57,29 @@
    "title": "Q2 FY26 Adani Cement Group Investor Presentation (filed by ACC)",
    "read": "2026-09-07",
    "by": "claude-routine"
+  },
+  "c66ec6a0-9a89-4afb-b5dd-2b945ce3566d.pdf": {
+   "kind": "ip",
+   "date": "2025-08-02",
+   "title": "Addendum: Response to Earnings Call Queries (Q1 FY26)",
+   "read": "2026-09-18",
+   "by": "claude-routine",
+   "note": "company_matches=false: Filed under ACC's BSE scrip but the substantive volume/financial data in this addendum (pages 4-7) is entirely for Ambuja Cements Limited (Consolidated/Standalone), not ACC Limited itself -- no ACC-sp"
+  },
+  "46fbc334-fdfb-4672-9139-6b9a43f30bbf.pdf": {
+   "kind": "ip",
+   "date": "2025-07-31",
+   "title": "Q1 FY26 Operational & Financial Highlights (Ambuja Cements group deck)",
+   "read": "2026-09-18",
+   "by": "claude-routine",
+   "note": "company_matches=false: Filed under ACC's BSE scrip but this is the Ambuja Cements Limited group investor presentation (disclaimer, IR contact and registered office all name Ambuja Cements Ltd, CIN L26942GJ1981PLC004717) -- "
+  },
+  "78e96fbf-4b27-459c-a1db-7061d5b0322f.pdf": {
+   "kind": "pr",
+   "date": "2025-07-24",
+   "title": "Q1 FY26 Media Release: ACC reports robust quarterly performance",
+   "read": "2026-09-18",
+   "by": "claude-routine"
   }
  },
  "metrics": [
@@ -423,6 +446,38 @@
    }
   },
   {
+   "name": "Cement Manufacturing Sites",
+   "unit": "count",
+   "kind": "level",
+   "y": {
+    "20260331": 20.0
+   },
+   "q": {
+    "20250630": 20.0,
+    "20260630": 20.0
+   },
+   "src": {
+    "q:20260630": [
+     "4519d477-4c19-4782-a90e-4eab4d6eb95c.pdf",
+     5,
+     "ACC operates 20 cement manufacturing sites (doc period)",
+     "20"
+    ],
+    "y:20260331": [
+     "e287fe32-17c2-4bbc-8d70-5b9cc42cd050.pdf",
+     5,
+     "ACC operates 20 cement manufacturing sites (doc period)",
+     "20"
+    ],
+    "q:20250630": [
+     "78e96fbf-4b27-459c-a1db-7061d5b0322f.pdf",
+     5,
+     "ACC operates 20 cement manufacturing sites (doc period)",
+     "20"
+    ]
+   }
+  },
+  {
    "name": "Capacity Utilisation",
    "unit": "%",
    "kind": "level",
@@ -443,31 +498,6 @@
      36,
      "ACC Capacity Utilisation Dec'25 Q",
      "71"
-    ]
-   }
-  },
-  {
-   "name": "Cement Manufacturing Sites",
-   "unit": "count",
-   "kind": "level",
-   "y": {
-    "20260331": 20.0
-   },
-   "q": {
-    "20260630": 20.0
-   },
-   "src": {
-    "q:20260630": [
-     "4519d477-4c19-4782-a90e-4eab4d6eb95c.pdf",
-     5,
-     "ACC operates 20 cement manufacturing sites (doc period)",
-     "20"
-    ],
-    "y:20260331": [
-     "e287fe32-17c2-4bbc-8d70-5b9cc42cd050.pdf",
-     5,
-     "ACC operates 20 cement manufacturing sites (doc period)",
-     "20"
     ]
    }
   },
@@ -517,6 +547,102 @@
      5,
      "117 ready-mix concrete plants (doc period)",
      "117"
+    ]
+   }
+  },
+  {
+   "name": "Sales Volume (Cement and Clinker)",
+   "unit": "Million Tonnes",
+   "kind": "flow",
+   "y": {},
+   "q": {
+    "20240630": 10.2,
+    "20250630": 11.5
+   },
+   "src": {
+    "q:20250630": [
+     "78e96fbf-4b27-459c-a1db-7061d5b0322f.pdf",
+     3,
+     "Sales Volume (Cement and Clinker)",
+     "11.5"
+    ],
+    "q:20240630": [
+     "78e96fbf-4b27-459c-a1db-7061d5b0322f.pdf",
+     3,
+     "Sales Volume (Cement and Clinker)",
+     "10.2"
+    ]
+   }
+  },
+  {
+   "name": "Sales Volume Ready Mix Concrete",
+   "unit": "Million M3",
+   "kind": "flow",
+   "y": {},
+   "q": {
+    "20240630": 0.68,
+    "20250630": 0.83
+   },
+   "src": {
+    "q:20250630": [
+     "78e96fbf-4b27-459c-a1db-7061d5b0322f.pdf",
+     3,
+     "Sales Volume Ready Mix Concrete",
+     "0.83"
+    ],
+    "q:20240630": [
+     "78e96fbf-4b27-459c-a1db-7061d5b0322f.pdf",
+     3,
+     "Sales Volume Ready Mix Concrete",
+     "0.68"
+    ]
+   }
+  },
+  {
+   "name": "Solar Power Share",
+   "unit": "%",
+   "kind": "level",
+   "y": {},
+   "q": {
+    "20240630": 3.4,
+    "20250630": 11.3
+   },
+   "src": {
+    "q:20250630": [
+     "78e96fbf-4b27-459c-a1db-7061d5b0322f.pdf",
+     2,
+     "Solar power share increased by 7.9pp from 3.4% to 11.3%",
+     "11.3"
+    ],
+    "q:20240630": [
+     "78e96fbf-4b27-459c-a1db-7061d5b0322f.pdf",
+     2,
+     "Solar power share increased by 7.9pp from 3.4% to 11.3%",
+     "3.4"
+    ]
+   }
+  },
+  {
+   "name": "WHRS Power Share",
+   "unit": "%",
+   "kind": "level",
+   "y": {},
+   "q": {
+    "20240630": 9.9,
+    "20250630": 13.9
+   },
+   "src": {
+    "q:20250630": [
+     "78e96fbf-4b27-459c-a1db-7061d5b0322f.pdf",
+     2,
+     "WHRS power share increased by 4pp from 9.9% to 13.9%",
+     "13.9"
+    ],
+    "q:20240630": [
+     "78e96fbf-4b27-459c-a1db-7061d5b0322f.pdf",
+     2,
+     "WHRS power share increased by 4pp from 9.9% to 13.9%",
+     "9.9"
     ]
    }
   },
@@ -623,6 +749,23 @@
    }
   },
   {
+   "name": "Green Power Share (% of power consumption)",
+   "unit": "%",
+   "kind": "level",
+   "y": {},
+   "q": {
+    "20250630": 26.2
+   },
+   "src": {
+    "q:20250630": [
+     "78e96fbf-4b27-459c-a1db-7061d5b0322f.pdf",
+     2,
+     "green power share up by 11.9pp to 26.2%",
+     "26.2"
+    ]
+   }
+  },
+  {
    "name": "New Channel Partners Added",
    "unit": "count",
    "kind": "flow",
@@ -657,6 +800,23 @@
    }
   },
   {
+   "name": "Premium Product Share of Trade Sales",
+   "unit": "%",
+   "kind": "level",
+   "y": {},
+   "q": {
+    "20250630": 41.0
+   },
+   "src": {
+    "q:20250630": [
+     "78e96fbf-4b27-459c-a1db-7061d5b0322f.pdf",
+     4,
+     "Premium product share increased to 41% of trade sales",
+     "41"
+    ]
+   }
+  },
+  {
    "name": "RMX Volume",
    "unit": "Mn m3",
    "kind": "flow",
@@ -670,6 +830,40 @@
      3,
      "Concrete business Volume up 17% at 0.97 Mn m3 YoY",
      "0.97"
+    ]
+   }
+  },
+  {
+   "name": "Ready-Mix Concrete Plants",
+   "unit": "count",
+   "kind": "level",
+   "y": {},
+   "q": {
+    "20250630": 114.0
+   },
+   "src": {
+    "q:20250630": [
+     "78e96fbf-4b27-459c-a1db-7061d5b0322f.pdf",
+     5,
+     "114 ready-mix concrete plants (doc period)",
+     "114"
+    ]
+   }
+  },
+  {
+   "name": "Road Direct Dispatch",
+   "unit": "%",
+   "kind": "level",
+   "y": {},
+   "q": {
+    "20250630": 69.0
+   },
+   "src": {
+    "q:20250630": [
+     "78e96fbf-4b27-459c-a1db-7061d5b0322f.pdf",
+     3,
+     "improved road direct dispatch by 2pp @69%",
+     "69"
     ]
    }
   },
@@ -1208,5 +1402,5 @@
  "catalog_since": "2020-01-01",
  "catalog_until": "2026-09-07",
  "catalog_ver": 5,
- "updated": "2026-09-07"
+ "updated": "2026-09-18"
 }
