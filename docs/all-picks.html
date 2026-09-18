@@ -167,6 +167,8 @@
         <div title="The basket screened on the last rebalance date — what the strategy actually holds, and what the return badges are measured on">Qualifying at rebalance · move since</div>
       </div>
       <div id="boardRows"></div>
+      <!-- totals row: the equal-weight average of whatever strategies are on screen (renderBoard) -->
+      <div id="boardFoot"></div>
     </div></div>
   </section>
 
@@ -553,9 +555,19 @@ function renderCards() {
     </article>`).join('');
 }
 
+// Equal-weight mean of a numeric field across the rows shown, skipping the blanks — a strategy
+// "in cash", "not started", or without a live quote yet carries no number and can't be averaged.
+// Returns the mean AND how many rows actually had a value, so the footer can say what it averaged.
+function meanField(rows, field) {
+  let sum = 0, n = 0;
+  for (const r of rows) { const v = r[field]; if (v != null && !isNaN(v)) { sum += v; n++; } }
+  return { avg: n ? sum / n : null, n };
+}
+
 function renderBoard() {
   const favs = loadFavs();
-  $('boardRows').innerHTML = visible().map((r, i) => `
+  const rows = visible();
+  $('boardRows').innerHTML = rows.map((r, i) => `
     <div class="grid-row brow px-4 py-2.5 border-b border-slate-100 transition">
       <div class="text-[11px] text-slate-400 font-bold">${i + 1}</div>
       <div class="min-w-0">
@@ -578,6 +590,27 @@ function renderBoard() {
            title="₹${f2(h.entry)} → ₹${f2(h.live)} · since the ${esc(r.rebDate)} rebalance"><b>${esc(h.sym)}</b><em>${sp(h.ret)}</em></a>`).join('')}${
         r.held.length > PICK_CAP ? `<a href="${stratHref(r.s)}" class="tick text-slate-500">+${r.held.length - PICK_CAP} more</a>` : ''}</div>
     </div>`).join('');
+
+  // ---- totals row -----------------------------------------------------------------------------
+  // Equal-weight average of the strategies CURRENTLY SHOWN, so the Membership picker re-computes it
+  // for that slice: ⭐ favourites → the mean of those, a saved mix → the mean of the mix, All → all.
+  // Blanks (in-cash / no-quote-yet) drop out of each column's mean; the count of contributors sits
+  // in the tooltip so the number is never mistaken for "over every row".
+  const mRet = meanField(rows, 'ret'), mDay = meanField(rows, 'day');
+  const dayLabel = ASOF ? 'move on ' + ASOF : 'move since prev close';
+  $('boardFoot').innerHTML = !rows.length ? '' : `
+    <div class="grid-row px-4 py-3 bg-slate-50 border-t-2 border-slate-200">
+      <div class="text-[13px] text-slate-400 font-bold" title="Average across the strategies shown">Σ</div>
+      <div class="min-w-0">
+        <div class="text-[12.5px] font-bold text-slate-700">Average — all strategies shown</div>
+        <div class="text-[10.5px] text-slate-400 truncate">equal-weight mean of ${rows.length} strateg${rows.length > 1 ? 'ies' : 'y'}${UNI !== '*' ? ' in this membership' : ''}</div>
+      </div>
+      <div class="text-right text-[13px] font-extrabold ${kls(mRet.avg)}" title="Mean 'since rebalance' return over the ${mRet.n} strateg${mRet.n === 1 ? 'y' : 'ies'} shown that hold a basket">${mRet.avg == null ? '<span class="text-slate-400 font-semibold text-[11px]">—</span>' : sp(mRet.avg)}</div>
+      <div class="text-right text-[13px] font-extrabold ${kls(mDay.avg)}" title="Mean ${dayLabel} over the ${mDay.n} strateg${mDay.n === 1 ? 'y' : 'ies'} shown with a quote">${mDay.avg == null ? '<span class="text-slate-400 font-semibold text-[11px]">—</span>' : sp(mDay.avg)}</div>
+      <div></div>
+      <div></div>
+      <div></div>
+    </div>`;
 }
 
 /* Everything outside the two renderers that has to say WHICH DAY is on screen: the banner, the
