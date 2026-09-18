@@ -80,6 +80,13 @@
    "title": "Q1 FY26 Media Release: ACC reports robust quarterly performance",
    "read": "2026-09-18",
    "by": "claude-routine"
+  },
+  "87574430-abe1-407b-ba2e-db4633b15235.pdf": {
+   "kind": "ar",
+   "date": "2025-05-31",
+   "title": "Integrated Annual Report FY 2024-25",
+   "read": "2026-09-18",
+   "by": "claude-routine"
   }
  },
  "metrics": [
@@ -88,6 +95,8 @@
    "unit": "MnT",
    "kind": "flow",
    "y": {
+    "20230331": 37.93,
+    "20240331": 35.26,
     "20250331": 39.0,
     "20260331": 43.9
    },
@@ -132,10 +141,10 @@
      "43.9"
     ],
     "y:20250331": [
-     "e287fe32-17c2-4bbc-8d70-5b9cc42cd050.pdf",
-     2,
-     "Sales Volume (Cement) FY'25",
-     "39.0"
+     "87574430-abe1-407b-ba2e-db4633b15235.pdf",
+     13,
+     "Cement Sales Volume (MnT)",
+     "39"
     ],
     "q:20251231": [
      "8bae1518-4554-4fa2-9ffd-6045f15404c1.pdf",
@@ -154,6 +163,18 @@
      36,
      "ACC Dec'24 Q",
      "9.8"
+    ],
+    "y:20230331": [
+     "87574430-abe1-407b-ba2e-db4633b15235.pdf",
+     13,
+     "Cement Sales Volume (MnT), 15-month transition period Jan 2022-Mar 2023",
+     "37.93"
+    ],
+    "y:20240331": [
+     "87574430-abe1-407b-ba2e-db4633b15235.pdf",
+     13,
+     "Cement Sales Volume (MnT)",
+     "35.26"
     ]
    }
   },
@@ -256,10 +277,10 @@
      "22"
     ],
     "y:20250331": [
-     "e287fe32-17c2-4bbc-8d70-5b9cc42cd050.pdf",
-     3,
-     "Green Power (as a % of power Consumption) FY'25",
-     "18"
+     "87574430-abe1-407b-ba2e-db4633b15235.pdf",
+     46,
+     "Renewable and Green Energy Consumed 18.0% (doc period)",
+     "18.0"
     ]
    }
   },
@@ -388,9 +409,9 @@
      "29.0"
     ],
     "y:20250331": [
-     "bb4e40db-6408-4fbf-91a3-7917b4de41aa.pdf",
+     "87574430-abe1-407b-ba2e-db4633b15235.pdf",
      13,
-     "Cement Production Volume (MnT) 2024-25",
+     "Cement Production Volume (MMT)",
      "29.5"
     ],
     "y:20240331": [
@@ -478,6 +499,123 @@
    }
   },
   {
+   "name": "Clinker Production Volume",
+   "unit": "MMT",
+   "kind": "flow",
+   "y": {
+    "20230331": 18.74,
+    "20240331": 16.75,
+    "20250331": 16.4
+   },
+   "q": {},
+   "src": {
+    "y:20230331": [
+     "87574430-abe1-407b-ba2e-db4633b15235.pdf",
+     49,
+     "Clinker Production Volume (MMT), 15-month transition period",
+     "18.74"
+    ],
+    "y:20240331": [
+     "87574430-abe1-407b-ba2e-db4633b15235.pdf",
+     49,
+     "Clinker Production Volume (MMT)",
+     "16.75"
+    ],
+    "y:20250331": [
+     "87574430-abe1-407b-ba2e-db4633b15235.pdf",
+     49,
+     "Clinker Production Volume (MMT)",
+     "16.40"
+    ]
+   }
+  },
+  {
+   "name": "Permanent Workers Count",
+   "unit": "count",
+   "kind": "level",
+   "y": {
+    "20240331": 1681.0,
+    "20250331": 1470.0,
+    "20260331": 1442.0
+   },
+   "q": {},
+   "src": {
+    "y:20260331": [
+     "bb4e40db-6408-4fbf-91a3-7917b4de41aa.pdf",
+     194,
+     "Total Permanent Workers FY 2025-26",
+     "1442"
+    ],
+    "y:20250331": [
+     "87574430-abe1-407b-ba2e-db4633b15235.pdf",
+     161,
+     "Total Permanent Workers 1,470",
+     "1,470"
+    ],
+    "y:20240331": [
+     "87574430-abe1-407b-ba2e-db4633b15235.pdf",
+     161,
+     "Total Permanent Workers 1,681",
+     "1,681"
+    ]
+   }
+  },
+  {
+   "name": "Thermal Substitution Rate",
+   "unit": "%",
+   "kind": "level",
+   "y": {
+    "20230331": 9.15,
+    "20240331": 9.15,
+    "20250331": 10.5
+   },
+   "q": {},
+   "src": {
+    "y:20230331": [
+     "87574430-abe1-407b-ba2e-db4633b15235.pdf",
+     49,
+     "Thermal Substitution Rate (%), 15-month transition period",
+     "9.15"
+    ],
+    "y:20240331": [
+     "87574430-abe1-407b-ba2e-db4633b15235.pdf",
+     49,
+     "Thermal Substitution Rate (%)",
+     "9.15"
+    ],
+    "y:20250331": [
+     "87574430-abe1-407b-ba2e-db4633b15235.pdf",
+     49,
+     "Thermal Substitution Rate (%)",
+     "10.5"
+    ]
+   }
+  },
+  {
+   "name": "ACT Implementation Sites",
+   "unit": "count",
+   "kind": "flow",
+   "y": {
+    "20250331": 88065.0,
+    "20260331": 64854.0
+   },
+   "q": {},
+   "src": {
+    "y:20260331": [
+     "bb4e40db-6408-4fbf-91a3-7917b4de41aa.pdf",
+     107,
+     "In FY 2025-26, ACT was implemented across more than 64,854 customer sites",
+     "64,854"
+    ],
+    "y:20250331": [
+     "87574430-abe1-407b-ba2e-db4633b15235.pdf",
+     104,
+     "ACT was implemented at over 88,065 customer sites",
+     "88,065"
+    ]
+   }
+  },
+  {
    "name": "Capacity Utilisation",
    "unit": "%",
    "kind": "level",
@@ -498,30 +636,6 @@
      36,
      "ACC Capacity Utilisation Dec'25 Q",
      "71"
-    ]
-   }
-  },
-  {
-   "name": "Permanent Workers Count",
-   "unit": "count",
-   "kind": "level",
-   "y": {
-    "20250331": 1470.0,
-    "20260331": 1442.0
-   },
-   "q": {},
-   "src": {
-    "y:20260331": [
-     "bb4e40db-6408-4fbf-91a3-7917b4de41aa.pdf",
-     194,
-     "Total Permanent Workers FY 2025-26",
-     "1442"
-    ],
-    "y:20250331": [
-     "bb4e40db-6408-4fbf-91a3-7917b4de41aa.pdf",
-     194,
-     "Total Permanent Workers FY 2024-25",
-     "1470"
     ]
    }
   },
@@ -623,6 +737,30 @@
    }
   },
   {
+   "name": "Total Permanent Employees",
+   "unit": "count",
+   "kind": "level",
+   "y": {
+    "20240331": 2202.0,
+    "20250331": 1701.0
+   },
+   "q": {},
+   "src": {
+    "y:20250331": [
+     "87574430-abe1-407b-ba2e-db4633b15235.pdf",
+     161,
+     "Employees Total (A) 1,701",
+     "1,701"
+    ],
+    "y:20240331": [
+     "87574430-abe1-407b-ba2e-db4633b15235.pdf",
+     161,
+     "Employees Total (A) 2,202",
+     "2,202"
+    ]
+   }
+  },
+  {
    "name": "WHRS Power Share",
    "unit": "%",
    "kind": "level",
@@ -643,23 +781,6 @@
      2,
      "WHRS power share increased by 4pp from 9.9% to 13.9%",
      "9.9"
-    ]
-   }
-  },
-  {
-   "name": "ACT Implementation Sites",
-   "unit": "count",
-   "kind": "flow",
-   "y": {
-    "20260331": 64854.0
-   },
-   "q": {},
-   "src": {
-    "y:20260331": [
-     "bb4e40db-6408-4fbf-91a3-7917b4de41aa.pdf",
-     107,
-     "In FY 2025-26, ACT was implemented across more than 64,854 customer sites",
-     "64,854"
     ]
    }
   },
@@ -715,6 +836,40 @@
    }
   },
   {
+   "name": "Captive Power Generated",
+   "unit": "Mn Units",
+   "kind": "flow",
+   "y": {
+    "20250331": 1056.0
+   },
+   "q": {},
+   "src": {
+    "y:20250331": [
+     "87574430-abe1-407b-ba2e-db4633b15235.pdf",
+     46,
+     "Captive Power Generated (Mn Units) (doc period)",
+     "1,056"
+    ]
+   }
+  },
+  {
+   "name": "Clinker Factor",
+   "unit": "%",
+   "kind": "level",
+   "y": {
+    "20250331": 58.2
+   },
+   "q": {},
+   "src": {
+    "y:20250331": [
+     "87574430-abe1-407b-ba2e-db4633b15235.pdf",
+     46,
+     "Clinker Factor (doc period)",
+     "58.2"
+    ]
+   }
+  },
+  {
    "name": "Contractors Engaged",
    "unit": "count",
    "kind": "flow",
@@ -762,6 +917,23 @@
      2,
      "green power share up by 11.9pp to 26.2%",
      "26.2"
+    ]
+   }
+  },
+  {
+   "name": "MSA Sales Volume",
+   "unit": "million tonnes",
+   "kind": "flow",
+   "y": {
+    "20250331": 9.0
+   },
+   "q": {},
+   "src": {
+    "y:20250331": [
+     "87574430-abe1-407b-ba2e-db4633b15235.pdf",
+     104,
+     "the Company sold 9 million tonnes of Cement and Clinker (CLC) under the agreemen",
+     "9"
     ]
    }
   },
@@ -898,6 +1070,23 @@
      31,
      "19.5 man-hours of training provided per employee (Progress in FY 2025-26)",
      "19.5"
+    ]
+   }
+  },
+  {
+   "name": "WHRS Generated",
+   "unit": "Mn Units",
+   "kind": "flow",
+   "y": {
+    "20250331": 285.0
+   },
+   "q": {},
+   "src": {
+    "y:20250331": [
+     "87574430-abe1-407b-ba2e-db4633b15235.pdf",
+     46,
+     "WHRS Generated (Mn Units) (doc period)",
+     "285"
     ]
    }
   },
