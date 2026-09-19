@@ -381,6 +381,9 @@ random sample against a live Yahoo fetch before committing. Never hand-write a c
 3. `.github/workflows/ci-janitor.yml` no longer re-runs **margin-watch**: its failure IS the alert; the sweep re-mailed
    the same shortfall three times overnight (22:52 / 01:38 / 04:24 IST) and then turned the run GREEN at 06:36 IST once
    Kite had logged out ("no margin data — skip"), hiding the alert history.
+   **2026-09-19: margin-watch.yml DELETED from main** (`b162b3042`; disabled since 09-09; user: "delete it"). The janitor
+   exclusion went with it — a comment there keeps the rule that failure-as-alert workflows must be excluded from the
+   re-run filter. Restore: `git show 3b45c4c97:.github/workflows/margin-watch.yml`, re-add the exclusion in the same commit.
 
 **Local replay before the push** (private worktree, `TZ=UTC`, the same three scrip masters the workflow downloads):
 raw fetch 09-07 = **1,451** of 4,448 (Yahoo had wiped it for 67% of tickers by 18:50 IST, up from ~37% on 09-08) →
@@ -4989,17 +4992,18 @@ Convention guards that bit repeatedly: bank rev = Interest Earned; holdco std re
 precedent); HMT-class stored series may be the AUDITED-restated basis — match the SERIES
 convention (continuing-ops rev 2.30), not the original filing, when stored PATs prove restated.
 
-## 50. ★ THE DEEP-FUNDAMENTALS NIGHTLY IS A CLOUD ROUTINE  (moved off the desktop 2026-08-05)
+## 50. ★ THE DEEP-FUNDAMENTALS NIGHTLY — cloud routine 2026-08-05 → 2026-09-19, now a GitHub cron (§50a)
 
 `scripts/xbrl_extra.json.gz` — the ~200-tag-per-filing ledger behind the stock page's Financial
 detail block (EPS, balance sheet, cash flow, segments, bank health) — was topped up by a LOCAL
-scheduled task reading the 5.9-GB (104k-file) `scripts/_xbrl_cache`. It now runs as a **cloud routine**
-(claude.ai/code/routines, 00:00 IST daily), landing via `claude/xbrl-extra-<ts>` → PR →
-`gh pr merge --squash --admin`, exactly like the vision-fill routine (§17b). The local task is
-GONE (retired with the Windows box 2026-08-05 — do not recreate it).
-`.github/workflows/xbrl-extra-nightly.yml` exists but has **no cron**
-— it is the MANUAL rescue lever (dispatch it for a big catch-up; a GitHub runner reaches
-nsearchives directly and its Actions cache makes repeat runs cheap).
+scheduled task reading the 5.9-GB (104k-file) `scripts/_xbrl_cache`. From 2026-08-05 it ran as a
+**cloud routine** (claude.ai/code/routines `trig_013Vx5YYo7xdKgTqKcXBP2DC`, 00:00 IST daily), landing
+via `claude/xbrl-extra-<ts>` → PR → `gh pr merge --squash --admin`, exactly like the vision-fill
+routine (§17b). The local task is GONE (retired with the Windows box 2026-08-05 — do not recreate it).
+**Since 2026-09-19 the nightly is `.github/workflows/xbrl-extra-nightly.yml` on a cron (18:40 UTC =
+00:10 IST) and the routine is DISABLED — §50a has the why, the proof run and the revert recipe.** Manual
+dispatch of the same workflow stays the catch-up lever (a GitHub runner reaches nsearchives directly
+and its Actions cache makes repeat runs cheap).
 
 **A cloud sandbox keeps NOTHING between runs, so the state had to move into the repo.** Two
 committed files are the whole contract, and both runners maintain them identically:
@@ -5025,6 +5029,38 @@ Reusable lessons for moving any local routine to cloud:
   old local one (5.9 GB / 104k files; that cache went away with the Windows box).
 - `--push` stays refused from a tree named `stocks-dashboard` (CLAUDE.md rule 2), which is also
   the runner's checkout name — cloud and CI both commit via their own retry/PR path instead.
+
+### 50a. ★ The nightly moved BACK to GitHub — cron on xbrl-extra-nightly.yml, routine disabled  (2026-09-19)
+
+**Why.** The 2026-09-19 routines audit measured every Claude-token spender for what genuinely needs an
+LLM. This one needs none: NSE filings list → XBRL download → `build_xbrl_extra.py --incremental` →
+gzip → commit; no PDF, no vision, no judgement. The routine spent a cloud session a night (26 PR merges
+in 30 days) on work the manual-rescue workflow already did identically — its own header said so.
+Actions minutes are free on this public repo.
+
+**What changed (commit `b162b3042` and its parent).** `xbrl-extra-nightly.yml`: `schedule: 40 18 * * *`
+(the routine's slot, off the :00/:30 marks, after tl-reconcile's 18:15 UTC); `permissions: actions:
+write`; the commit step runs `gh workflow run refresh-stock-fin.yml` after a successful push — a
+GITHUB_TOKEN push never fires another workflow's `push:` trigger (the routine's PR merge was a real
+push and did), and without the dispatch the per-stock `docs/fin/` slices would silently stop following
+the ledger. Same idiom as `refresh-kpi-insights.yml`. Flags are the routine's (`--seed-seen
+--seen-repo`; `--max-fetch 1500` vs its 1200; the Actions cache stands in for its `/tmp` cache).
+
+**Proof run (workflow_dispatch 35433192705, 14:22 IST, 50 s, cold cache):** "Cache not found" →
+`seen-repo: seeded 4532 names` → `filings [equities] last 14 days: 151 rows` + `[sme] 35 rows` (NSE
+reachable from the runner) → `cache top-up: +13 files (0 failed)` → `Wrote … 3031 symbols, 89883
+symbol-quarters` → op-identity 100.0% → pushed `6795afee4` ("Deep-fundamentals ledger top-up
+2026-09-19 14:23 IST", github-actions[bot]) → dispatched refresh-stock-fin run 35433229592 → success.
+50 s is right: only 13 filings had arrived since the routine's 00:05 IST run. The routine
+`trig_013Vx5YYo7xdKgTqKcXBP2DC` was set `enabled: false` right after (RemoteTrigger API); the first
+scheduled GitHub run is due 2026-09-20 00:10 IST.
+
+**Rules.** (1) NEVER both: the ledger + seen-window are one state contract; two schedulers race
+pushes for the same filings. (2) One cron only — single daily crons deliver ~100% here (feed-monitor,
+tl-reconcile, macro over 60 days); it is dense schedules GitHub throttles (see refresh-fundamentals.yml).
+A missed night self-heals through the 14-day window + latest-wins merge. (3) Revert = re-enable the
+trigger AND delete the cron line in the same move (the routine prompt is intact and still names this
+workflow as its rescue). (4) The "STATE" block above holds for both runners unchanged.
 
 ---
 
