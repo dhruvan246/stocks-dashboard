@@ -99,17 +99,14 @@ jobs:
         run: |
           set -uo pipefail
           # "Still red" = its most recent FAILURE is newer than its most recent SUCCESS.
-          # margin-watch is excluded on purpose: its FAILURE IS THE ALERT (net margin below the
-          # floor). Re-running it does not clear anything — it re-mails the same shortfall every
-          # sweep (2026-09-08: attempts 2-4 at 22:52, 01:38, 04:24 IST) and then flips the run
-          # GREEN overnight once Kite has logged out ("no margin data - skip"), hiding the alert.
           # Bounded deliberately, so a genuinely broken workflow does not get re-run forever:
           #   - only failures from the last 12 h
           #   - skip anything with an active run (do not fight auto-rerun.yml mid-retry)
           #   - skip runs already on attempt >= 5 (auto-rerun.yml had its go; a human is needed)
           since=$(date -u -d '12 hours ago' +%Y-%m-%dT%H:%M:%SZ)
 
-          # margin-watch is an INTENTIONAL-failure alarm (exit 1 = the alert e-mail): excluded below and must NEVER be re-run — a re-run only multiplies the alert.
+          # (margin-watch — an intentional-failure alarm that used to be excluded here — was deleted from
+          # the repo on 2026-09-19. Any workflow whose FAILURE IS THE ALERT must be excluded below.)
           red=$(gh run list --repo "$REPO" --limit 200 \
                   --json name,conclusion,status,createdAt,databaseId \
                   --jq "
@@ -122,7 +119,7 @@ jobs:
                         okAt:   ([.[] | select(.conclusion==\"success\")] | if length>0 then (max_by(.createdAt).createdAt) else null end)
                       })
                     | map(select(.fail != null and .active == 0 and (.okAt == null or .okAt < .fail.createdAt)))
-                    | map(select(.wf != \"Auto-rerun failed workflows\" and .wf != \"CI janitor (unwedge Pages + resweep stragglers)\" and .wf != \"Deploy site to Pages\" and .wf != \"margin-watch\"))
+                    | map(select(.wf != \"Auto-rerun failed workflows\" and .wf != \"CI janitor (unwedge Pages + resweep stragglers)\" and .wf != \"Deploy site to Pages\"))
                     | .[] | \"\(.fail.databaseId)\t\(.wf)\"
                   ")
 
