@@ -71,6 +71,13 @@
    "title": "Executive Summary FY25 / Q4 FY25 Investor Presentation (post-merger, Cohance Lifesciences)",
    "read": "2026-09-19",
    "by": "claude-routine"
+  },
+  "1b8256e9-3113-47df-be4b-acefc441005e.pdf": {
+   "kind": "ip",
+   "date": "2025-01-15",
+   "title": "Suven + Cohance Combined Platform Investor Presentation, 15 Jan 2025",
+   "read": "2026-09-19",
+   "by": "claude-routine"
   }
  },
  "metrics": [
@@ -83,7 +90,9 @@
     "20250331": 16.0,
     "20260331": 18.0
    },
-   "q": {},
+   "q": {
+    "20241231": 16.0
+   },
    "src": {
     "y:20260331": [
      "78cbe2ab-9a8e-42c3-87f0-dd31191486af.pdf",
@@ -101,6 +110,12 @@
      "a15a7709-e546-47ca-9d16-727c2e444ba2.pdf",
      10,
      "Expanded commercial molecules portfolio from 10 to 16",
+     "16"
+    ],
+    "q:20241231": [
+     "1b8256e9-3113-47df-be4b-acefc441005e.pdf",
+     3,
+     "16 commercial Molecules Suven+Cohance (doc period)",
      "16"
     ]
    }
@@ -208,6 +223,38 @@
    }
   },
   {
+   "name": "Regulatory Audits (Facility Network)",
+   "unit": "count",
+   "kind": "flow",
+   "y": {
+    "20250331": 20.0,
+    "20260331": 12.0
+   },
+   "q": {
+    "20241231": 18.0
+   },
+   "src": {
+    "y:20260331": [
+     "57785e14-bc4d-4ed1-979b-86c824dcebcd.pdf",
+     44,
+     "facilities underwent 12 regulatory audits",
+     "12"
+    ],
+    "y:20250331": [
+     "a15a7709-e546-47ca-9d16-727c2e444ba2.pdf",
+     10,
+     "Achieved 20 successful US FDA audits",
+     "20"
+    ],
+    "q:20241231": [
+     "1b8256e9-3113-47df-be4b-acefc441005e.pdf",
+     7,
+     "18 Successful Regulatory Audits",
+     "18"
+    ]
+   }
+  },
+  {
    "name": "Workers (Permanent)",
    "unit": "count",
    "kind": "level",
@@ -297,6 +344,31 @@
    }
   },
   {
+   "name": "Manufacturing Plants",
+   "unit": "count",
+   "kind": "level",
+   "y": {
+    "20250331": 14.0
+   },
+   "q": {
+    "20241231": 14.0
+   },
+   "src": {
+    "y:20250331": [
+     "a15a7709-e546-47ca-9d16-727c2e444ba2.pdf",
+     8,
+     "Plants (doc period)",
+     "14"
+    ],
+    "q:20241231": [
+     "1b8256e9-3113-47df-be4b-acefc441005e.pdf",
+     3,
+     "14 Plants, 6 R&D labs regulatory approved (doc period)",
+     "14"
+    ]
+   }
+  },
+  {
    "name": "OTIF (On-Time-In-Full)",
    "unit": "%",
    "kind": "level",
@@ -346,26 +418,77 @@
    }
   },
   {
-   "name": "Regulatory Audits (Facility Network)",
+   "name": "R&D Facilities",
    "unit": "count",
-   "kind": "flow",
+   "kind": "level",
    "y": {
-    "20250331": 20.0,
-    "20260331": 12.0
+    "20250331": 7.0
    },
-   "q": {},
+   "q": {
+    "20241231": 6.0
+   },
    "src": {
-    "y:20260331": [
-     "57785e14-bc4d-4ed1-979b-86c824dcebcd.pdf",
-     44,
-     "facilities underwent 12 regulatory audits",
-     "12"
-    ],
     "y:20250331": [
      "a15a7709-e546-47ca-9d16-727c2e444ba2.pdf",
-     10,
-     "Achieved 20 successful US FDA audits",
-     "20"
+     8,
+     "R&D facilities (doc period)",
+     "7"
+    ],
+    "q:20241231": [
+     "1b8256e9-3113-47df-be4b-acefc441005e.pdf",
+     7,
+     "R&D Labs scale 6 (in US & India) (doc period)",
+     "6"
+    ]
+   }
+  },
+  {
+   "name": "R&D Scientists",
+   "unit": "count",
+   "kind": "level",
+   "y": {
+    "20250331": 510.0
+   },
+   "q": {
+    "20241231": 510.0
+   },
+   "src": {
+    "y:20250331": [
+     "a15a7709-e546-47ca-9d16-727c2e444ba2.pdf",
+     8,
+     "R&D team: comprising 510+ Scientists (doc period)",
+     "510"
+    ],
+    "q:20241231": [
+     "1b8256e9-3113-47df-be4b-acefc441005e.pdf",
+     7,
+     "R&D team Scientist - 510+ (doc period)",
+     "510"
+    ]
+   }
+  },
+  {
+   "name": "Top-20 Global Innovators Served",
+   "unit": "count",
+   "kind": "level",
+   "y": {
+    "20250331": 14.0
+   },
+   "q": {
+    "20241231": 14.0
+   },
+   "src": {
+    "y:20250331": [
+     "a15a7709-e546-47ca-9d16-727c2e444ba2.pdf",
+     8,
+     "Working with 14 of the top 20 Global innovators (doc period)",
+     "14"
+    ],
+    "q:20241231": [
+     "1b8256e9-3113-47df-be4b-acefc441005e.pdf",
+     7,
+     "Top 14/20 Global Innovators (doc period)",
+     "14"
     ]
    }
   },
@@ -462,23 +585,6 @@
    }
   },
   {
-   "name": "Manufacturing Plants",
-   "unit": "count",
-   "kind": "level",
-   "y": {
-    "20250331": 14.0
-   },
-   "q": {},
-   "src": {
-    "y:20250331": [
-     "a15a7709-e546-47ca-9d16-727c2e444ba2.pdf",
-     8,
-     "Plants (doc period)",
-     "14"
-    ]
-   }
-  },
-  {
    "name": "New Biotech Customers Onboarded (NJ Bio)",
    "unit": "count",
    "kind": "flow",
@@ -530,53 +636,19 @@
    }
   },
   {
-   "name": "R&D Facilities",
+   "name": "Projects Executed",
    "unit": "count",
    "kind": "level",
-   "y": {
-    "20250331": 7.0
+   "y": {},
+   "q": {
+    "20241231": 1000.0
    },
-   "q": {},
    "src": {
-    "y:20250331": [
-     "a15a7709-e546-47ca-9d16-727c2e444ba2.pdf",
-     8,
-     "R&D facilities (doc period)",
-     "7"
-    ]
-   }
-  },
-  {
-   "name": "R&D Scientists",
-   "unit": "count",
-   "kind": "level",
-   "y": {
-    "20250331": 510.0
-   },
-   "q": {},
-   "src": {
-    "y:20250331": [
-     "a15a7709-e546-47ca-9d16-727c2e444ba2.pdf",
-     8,
-     "R&D team: comprising 510+ Scientists (doc period)",
-     "510"
-    ]
-   }
-  },
-  {
-   "name": "Top-20 Global Innovators Served",
-   "unit": "count",
-   "kind": "level",
-   "y": {
-    "20250331": 14.0
-   },
-   "q": {},
-   "src": {
-    "y:20250331": [
-     "a15a7709-e546-47ca-9d16-727c2e444ba2.pdf",
-     8,
-     "Working with 14 of the top 20 Global innovators (doc period)",
-     "14"
+    "q:20241231": [
+     "1b8256e9-3113-47df-be4b-acefc441005e.pdf",
+     3,
+     "1000+ Projects Executed (doc period)",
+     "1000"
     ]
    }
   }
