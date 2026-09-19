@@ -4,10 +4,13 @@
 //   cat docs/backtest-engine.js scripts/grid_search_full.js > scripts/_gridfull_run.js && node scripts/_gridfull_run.js
 // Writes ranked top-40 by CAGR and top-20 by risk-adj (CAGR/maxDD) to scripts/_gridfull_result.json.
 (function () {
-  const fs = require('fs'), zlib = require('zlib'), path = require('path');
+  const fs = require('fs'), path = require('path');
   const os = require('os'), { execFileSync } = require('child_process');
   const ROOT = path.resolve(__dirname, '..');
-  const GZ = p => JSON.parse(zlib.gunzipSync(fs.readFileSync(path.join(ROOT, p))));
+  // Shared big-gzip reader — see scripts/_read_big_gz.js (live sf bin is past V8's string cap,
+  // so a one-shot JSON.parse(gunzipSync(...)) throws ERR_STRING_TOO_LONG).
+  const { readGz } = require('./_read_big_gz.js');
+  const GZ = p => readGz(path.join(ROOT, p));
   const J = p => JSON.parse(fs.readFileSync(path.join(ROOT, p), 'utf8'));
 
   // ── LIVE-bin resolver (audit 2026-09-01, P1-1). docs/sf_stock_data.bin is a FROZEN snapshot —
@@ -26,7 +29,7 @@
     throw new Error(`could not download a valid ${RELEASE_BIN} after 4 attempts`); };
   function resolveSfBin() {
     let expect = ''; try { expect = (J('docs/sf_meta.json').end) || ''; } catch { /* no marker */ }
-    const load = p => JSON.parse(zlib.gunzipSync(fs.readFileSync(p)));
+    const load = readGz;
     const ov = process.env.SF_BIN;
     if (ov) { const src = path.resolve(ov); const c = _binBad(src); if (c) throw new Error(`SF_BIN=${src} unusable: ${c}`);
       const bin = load(src); if (expect && bin.end && bin.end < expect) throw new Error(`STALE SF_BIN: end=${bin.end} < sf_meta ${expect}`);

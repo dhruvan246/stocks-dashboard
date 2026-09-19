@@ -27,6 +27,7 @@ on:
   push:
     paths:
       - "scripts/build_coverage_matrix.js"
+      - "scripts/_read_big_gz.js"        # shared big-gzip reader the builder require()s
       - ".github/workflows/refresh-coverage.yml"
 
 permissions:

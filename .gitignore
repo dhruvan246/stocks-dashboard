@@ -10,6 +10,9 @@ scripts/_bhav_cache/
 !.claude/settings.json
 scripts/_*
 !scripts/_concurrency_guard.py
+# Shared big-gzip JSON reader required at runtime by build_coverage_matrix.js (nightly
+# refresh-coverage.yml), build_first_bar_map.js, grid_search.js, grid_search_full.js — must be tracked.
+!scripts/_read_big_gz.js
 !scripts/_ann_recon_skips.json
 !scripts/_seq_audit_verdicts.json
 !scripts/_seq_audit_probe.py

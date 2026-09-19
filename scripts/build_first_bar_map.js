@@ -48,7 +48,11 @@ const OUT = path.resolve(ROOT, arg('out', 'scripts/agg_tools/_first_bar.json'));
 const BIN_ARG = arg('bin', 'auto');
 const log = (...a) => console.log('[first-bar]', ...a);
 
-const readGz = p => JSON.parse(zlib.gunzipSync(fs.readFileSync(p)).toString('utf8'));
+// Shared big-gzip JSON reader — the live sf bin's uncompressed form is past V8's string
+// cap, so a one-shot JSON.parse(gunzipSync(...)) now throws ERR_STRING_TOO_LONG (see
+// scripts/_read_big_gz.js + memory project-stocks-live-bin-exceeds-v8-string-cap). zlib is
+// still needed below for the 1 KB cache-header probe.
+const { readGz } = require('./_read_big_gz.js');
 
 function resolveBin() {
   if (BIN_ARG !== 'auto') { log('using bin', BIN_ARG); return readGz(path.resolve(ROOT, BIN_ARG)); }
