@@ -92,6 +92,13 @@
    "title": "Q4 FY24 / FY24 Investor Presentation (Mar 31, 2024)",
    "read": "2026-09-19",
    "by": "claude-routine"
+  },
+  "266bf740-2bed-4a6a-8780-8c753e246223.pdf": {
+   "kind": "ar",
+   "date": "2026-09-08",
+   "title": "FY 2025-26 Annual Report",
+   "read": "2026-09-19",
+   "by": "claude-routine"
   }
  },
  "metrics": [
@@ -1182,6 +1189,45 @@
    }
   },
   {
+   "name": "Installed Capacity (CNC Machines, India)",
+   "unit": "machines p.a.",
+   "kind": "level",
+   "y": {
+    "20260331": 6000.0
+   },
+   "q": {
+    "20240930": 6000.0,
+    "20241231": 6000.0,
+    "20260630": 6000.0
+   },
+   "src": {
+    "q:20260630": [
+     "3ef1e735-8b24-40e1-9a77-dad8e04fd467.pdf",
+     18,
+     "Installed Capacity for CNC Machines (doc period)",
+     "6,000"
+    ],
+    "q:20241231": [
+     "aaca7ffe-b801-4f69-80c5-3383cc0d3672.pdf",
+     15,
+     "Installed Capacity for CNC Machines, Rajkot (doc period)",
+     "6,000"
+    ],
+    "q:20240930": [
+     "f4f11baf-04ce-43ad-b010-59166fa2e152.pdf",
+     17,
+     "Installed Capacity for CNC Machines, Rajkot (doc period)",
+     "6,000"
+    ],
+    "y:20260331": [
+     "266bf740-2bed-4a6a-8780-8c753e246223.pdf",
+     26,
+     "installed capacity of 6,000 machine per annum",
+     "6,000"
+    ]
+   }
+  },
+  {
    "name": "Order Executed",
    "unit": "INR Mn",
    "kind": "flow",
@@ -1297,33 +1343,94 @@
    }
   },
   {
-   "name": "Installed Capacity (CNC Machines, India)",
-   "unit": "machines p.a.",
+   "name": "Distributors/Dealers (Total)",
+   "unit": "count",
    "kind": "level",
-   "y": {},
-   "q": {
-    "20240930": 6000.0,
-    "20241231": 6000.0,
-    "20260630": 6000.0
+   "y": {
+    "20250331": 7.0,
+    "20260331": 3.0
    },
+   "q": {},
    "src": {
-    "q:20260630": [
-     "3ef1e735-8b24-40e1-9a77-dad8e04fd467.pdf",
-     18,
-     "Installed Capacity for CNC Machines (doc period)",
-     "6,000"
+    "y:20260331": [
+     "266bf740-2bed-4a6a-8780-8c753e246223.pdf",
+     48,
+     "Number of dealers / distributors to whom sales are made",
+     "3"
     ],
-    "q:20241231": [
-     "aaca7ffe-b801-4f69-80c5-3383cc0d3672.pdf",
-     15,
-     "Installed Capacity for CNC Machines, Rajkot (doc period)",
-     "6,000"
-    ],
-    "q:20240930": [
-     "f4f11baf-04ce-43ad-b010-59166fa2e152.pdf",
-     17,
-     "Installed Capacity for CNC Machines, Rajkot (doc period)",
-     "6,000"
+    "y:20250331": [
+     "266bf740-2bed-4a6a-8780-8c753e246223.pdf",
+     48,
+     "Number of dealers / distributors to whom sales are made",
+     "7"
+    ]
+   }
+  },
+  {
+   "name": "BRSR Employees (Permanent + Other)",
+   "unit": "count",
+   "kind": "level",
+   "y": {
+    "20260331": 1711.0
+   },
+   "q": {},
+   "src": {
+    "y:20260331": [
+     "266bf740-2bed-4a6a-8780-8c753e246223.pdf",
+     45,
+     "Total employees (D + E)",
+     "1711"
+    ]
+   }
+  },
+  {
+   "name": "BRSR Workers (Permanent + Other)",
+   "unit": "count",
+   "kind": "level",
+   "y": {
+    "20260331": 2411.0
+   },
+   "q": {},
+   "src": {
+    "y:20260331": [
+     "266bf740-2bed-4a6a-8780-8c753e246223.pdf",
+     45,
+     "Total employees (F + G)",
+     "2411"
+    ]
+   }
+  },
+  {
+   "name": "Capacity Utilisation (CNC Machines, India)",
+   "unit": "%",
+   "kind": "flow",
+   "y": {
+    "20260331": 89.5
+   },
+   "q": {},
+   "src": {
+    "y:20260331": [
+     "266bf740-2bed-4a6a-8780-8c753e246223.pdf",
+     26,
+     "capacity utilization",
+     "89.50"
+    ]
+   }
+  },
+  {
+   "name": "Countries Served",
+   "unit": "count",
+   "kind": "level",
+   "y": {
+    "20260331": 14.0
+   },
+   "q": {},
+   "src": {
+    "y:20260331": [
+     "266bf740-2bed-4a6a-8780-8c753e246223.pdf",
+     45,
+     "International (No. of Countries) / Region",
+     "14"
     ]
    }
   },
@@ -1362,6 +1469,74 @@
    }
   },
   {
+   "name": "Land Acquired - Tumkur Machine Tool Park",
+   "unit": "acres",
+   "kind": "level",
+   "y": {
+    "20260331": 20.0
+   },
+   "q": {},
+   "src": {
+    "y:20260331": [
+     "266bf740-2bed-4a6a-8780-8c753e246223.pdf",
+     26,
+     "acquired around 20 acres of land at Tumkur Machine Tool Park",
+     "20"
+    ]
+   }
+  },
+  {
+   "name": "Machines Manufactured",
+   "unit": "count",
+   "kind": "flow",
+   "y": {
+    "20260331": 5369.0
+   },
+   "q": {},
+   "src": {
+    "y:20260331": [
+     "266bf740-2bed-4a6a-8780-8c753e246223.pdf",
+     26,
+     "company manufactured total machines",
+     "5,369"
+    ]
+   }
+  },
+  {
+   "name": "Number of Manufacturing Plants (India)",
+   "unit": "count",
+   "kind": "level",
+   "y": {
+    "20260331": 2.0
+   },
+   "q": {},
+   "src": {
+    "y:20260331": [
+     "266bf740-2bed-4a6a-8780-8c753e246223.pdf",
+     45,
+     "National Number of Plants",
+     "2"
+    ]
+   }
+  },
+  {
+   "name": "Number of Offices (India)",
+   "unit": "count",
+   "kind": "level",
+   "y": {
+    "20260331": 27.0
+   },
+   "q": {},
+   "src": {
+    "y:20260331": [
+     "266bf740-2bed-4a6a-8780-8c753e246223.pdf",
+     45,
+     "National Number of Offices",
+     "27"
+    ]
+   }
+  },
+  {
    "name": "Sales Branches (India)",
    "unit": "count",
    "kind": "level",
@@ -1375,6 +1550,23 @@
      21,
      "29 branches",
      "29"
+    ]
+   }
+  },
+  {
+   "name": "States Served (India)",
+   "unit": "count",
+   "kind": "level",
+   "y": {
+    "20260331": 12.0
+   },
+   "q": {},
+   "src": {
+    "y:20260331": [
+     "266bf740-2bed-4a6a-8780-8c753e246223.pdf",
+     45,
+     "National (No. of States)",
+     "12"
     ]
    }
   }
