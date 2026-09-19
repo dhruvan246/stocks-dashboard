@@ -1,16 +1,21 @@
 name: Deep-fundamentals ledger top-up
 
-# ⚠️ NOT the nightly runner — that is the CLOUD ROUTINE (claude.ai/code/routines, 00:00 IST),
-# see DATA_RUNBOOK §50. This workflow is the MANUAL RESCUE: dispatch it when the routine is
-# broken or when a catch-up needs more throughput than a routine run gives (a GitHub runner
-# reaches nsearchives without the worker relay, and the Actions cache makes repeat runs cheap).
-# Both runners share ONE state contract — the committed ledger .gz and seen-window .gz — so
-# either can run any night without confusing the other.
+# ★ THE NIGHTLY RUNNER since 2026-09-19 (DATA_RUNBOOK §50a). From 2026-08-05 to 2026-09-19 the nightly
+# was the cloud routine trig_013Vx5YYo7xdKgTqKcXBP2DC (claude.ai/code/routines, 00:00 IST): it ran this
+# SAME script with the same flags and landed via a claude/xbrl-extra-* PR — but every step is plain
+# scripting (NSE filings list → XBRL download → parse → gzip → commit), no LLM read anywhere, so it
+# spent a Claude session nightly on work a free runner does identically. The routine is DISABLED, not
+# deleted. NEVER run both: they share ONE state contract — the committed ledger .gz and seen-window
+# .gz — so either can own the slot, but two schedulers race each other's pushes for the same filings.
+# If this cron ever stops delivering, re-enable the routine AND delete the cron below in the same move.
+# Manual dispatch stays the catch-up lever (a GitHub runner reaches nsearchives without the worker
+# relay, and the Actions cache makes repeat runs cheap).
 #
 # Keeps scripts/xbrl_extra.json.gz — the ~200-tag-per-filing ledger behind the stock page's
 # "Financial detail" block (EPS, balance sheet, cash flow, segments, bank health) — current with
-# each day's NSE filings. Pushing the .gz push-triggers refresh-stock-fin.yml, so the per-stock
-# fin slices follow minutes later.
+# each day's NSE filings. A GITHUB_TOKEN push cannot fire refresh-stock-fin.yml's `push:` trigger
+# (the routine's PR merge was a real push and could), so the commit step DISPATCHES it explicitly,
+# the same way refresh-kpi-insights.yml does; the per-stock fin slices follow minutes later.
 #
 # STATE, and why none of it has to be committed:
 #   ledger  — gunzipped from the committed .gz at the start of every run (authoritative).
@@ -25,8 +30,14 @@ name: Deep-fundamentals ledger top-up
 #   no state behind, so tomorrow redoes it rather than marking those filings seen-but-unextracted.
 
 on:
-  # No cron ON PURPOSE: the routine owns the nightly slot. Two schedulers on one ledger would
-  # just race each other's pushes for the same filings.
+  schedule:
+    # 18:40 UTC = 00:10 IST — the slot the routine held (18:30 UTC), kept off the :00/:30 marks and
+    # after tl-reconcile (18:15 UTC). ONE cron on purpose: a single daily cron delivers reliably on
+    # this repo (feed-monitor / tl-reconcile / macro: ~100% of nights over 60 days — it is DENSE
+    # schedules GitHub throttles, see refresh-fundamentals.yml), and a missed night self-heals: the
+    # filings list is a 14-day window and the ledger merge is per-field latest-wins, so the next run
+    # simply picks up what was skipped. Do not add a catch-up cron; do not re-enable the routine.
+    - cron: "40 18 * * *"
   workflow_dispatch:
     inputs:
       max_fetch:
@@ -38,6 +49,7 @@ on:
 
 permissions:
   contents: write
+  actions: write   # dispatch refresh-stock-fin.yml after a push (a bot push cannot trigger it)
 
 concurrency:
   group: xbrl-extra-nightly
@@ -92,6 +104,8 @@ jobs:
       # rule 2) and the runner's checkout is exactly that. Committing here also matches the rest of
       # the repo's workflows. reset --hard is legal in this ephemeral checkout, hence the copy-back.
       - name: Commit the ledger
+        env:
+          GH_TOKEN: ${{ github.token }}
         run: |
           git config user.name  "github-actions[bot]"
           git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
@@ -104,7 +118,13 @@ jobs:
             git add scripts/xbrl_extra.json.gz scripts/xtra_seen_window.json.gz
             if git diff --cached --quiet; then echo "gz unchanged — nothing to push"; exit 0; fi
             git commit -q -m "Deep-fundamentals ledger top-up $(TZ=Asia/Kolkata date +'%Y-%m-%d %H:%M IST')"
-            if git push origin HEAD:main; then echo "pushed (attempt #$attempt)"; exit 0; fi
+            if git push origin HEAD:main; then
+              echo "pushed (attempt #$attempt)"
+              # A GITHUB_TOKEN push never fires `push:` workflows — kick the slice rebuild ourselves
+              # (refresh-stock-fin.yml then dispatches pages.yml once docs/fin changes).
+              gh workflow run refresh-stock-fin.yml || echo "(fin-slice rebuild dispatch failed — the next results commit will rebuild)"
+              exit 0
+            fi
             sleep $(( attempt * 5 ))
           done
           echo "ledger push failed after 5 attempts"; exit 1
