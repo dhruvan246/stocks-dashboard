@@ -57,6 +57,13 @@
    "title": "Q4 FY25 Investor Presentation",
    "read": "2026-09-08",
    "by": "claude-routine"
+  },
+  "118df59b-0820-44a0-9613-2f3ec08ae5a4.pdf": {
+   "kind": "ip",
+   "date": "2025-03-03",
+   "title": "9M FY25 Investor Presentation",
+   "read": "2026-09-20",
+   "by": "claude-session"
   }
  },
  "metrics": [
@@ -65,6 +72,8 @@
    "unit": "MT",
    "kind": "flow",
    "y": {
+    "20210331": 389261.0,
+    "20220331": 454188.0,
     "20230331": 445184.0,
     "20240331": 531849.0,
     "20250331": 596262.0
@@ -99,10 +108,142 @@
      "5,31,849"
     ],
     "y:20230331": [
-     "7b2fa8c4-c0b6-422b-aff4-f3a729fa6904.pdf",
-     87,
-     "Carbon Black Sales Volume FY 2022-23",
+     "118df59b-0820-44a0-9613-2f3ec08ae5a4.pdf",
+     18,
+     "Sales Volume (in MT)",
      "4,45,184"
+    ],
+    "y:20210331": [
+     "118df59b-0820-44a0-9613-2f3ec08ae5a4.pdf",
+     18,
+     "Sales Volume (in MT)",
+     "3,89,261"
+    ],
+    "y:20220331": [
+     "118df59b-0820-44a0-9613-2f3ec08ae5a4.pdf",
+     18,
+     "Sales Volume (in MT)",
+     "4,54,188"
+    ]
+   }
+  },
+  {
+   "name": "Carbon Black Sales Volume - Export",
+   "unit": "MT",
+   "kind": "flow",
+   "y": {
+    "20210331": 106384.0,
+    "20220331": 145559.0,
+    "20230331": 136467.0,
+    "20240331": 200608.0,
+    "20250331": 244500.0
+   },
+   "q": {
+    "20240331": 54280.0,
+    "20250331": 63415.0
+   },
+   "src": {
+    "q:20250331": [
+     "89a45694-26ac-47da-89ad-8bc5db6464ba.pdf",
+     9,
+     "Export Q4FY25",
+     "63,415"
+    ],
+    "q:20240331": [
+     "89a45694-26ac-47da-89ad-8bc5db6464ba.pdf",
+     9,
+     "Export Q4FY24",
+     "54,280"
+    ],
+    "y:20250331": [
+     "89a45694-26ac-47da-89ad-8bc5db6464ba.pdf",
+     10,
+     "Export FY25",
+     "2,44,500"
+    ],
+    "y:20240331": [
+     "118df59b-0820-44a0-9613-2f3ec08ae5a4.pdf",
+     18,
+     "Export Sales Volume (in MT)",
+     "2,00,608"
+    ],
+    "y:20210331": [
+     "118df59b-0820-44a0-9613-2f3ec08ae5a4.pdf",
+     18,
+     "Export Sales Volume (in MT)",
+     "1,06,384"
+    ],
+    "y:20220331": [
+     "118df59b-0820-44a0-9613-2f3ec08ae5a4.pdf",
+     18,
+     "Export Sales Volume (in MT)",
+     "1,45,559"
+    ],
+    "y:20230331": [
+     "118df59b-0820-44a0-9613-2f3ec08ae5a4.pdf",
+     18,
+     "Export Sales Volume (in MT)",
+     "1,36,467"
+    ]
+   }
+  },
+  {
+   "name": "Specialty Blacks Sales Volume",
+   "unit": "MT",
+   "kind": "flow",
+   "y": {
+    "20210331": 23967.0,
+    "20220331": 34686.0,
+    "20230331": 40375.0,
+    "20240331": 57247.0,
+    "20250331": 62450.0
+   },
+   "q": {
+    "20240331": 15458.0,
+    "20250331": 15372.0
+   },
+   "src": {
+    "q:20250331": [
+     "89a45694-26ac-47da-89ad-8bc5db6464ba.pdf",
+     12,
+     "Specialty Q4FY25",
+     "15,372"
+    ],
+    "q:20240331": [
+     "89a45694-26ac-47da-89ad-8bc5db6464ba.pdf",
+     12,
+     "Specialty Q4FY24",
+     "15,458"
+    ],
+    "y:20250331": [
+     "89a45694-26ac-47da-89ad-8bc5db6464ba.pdf",
+     12,
+     "Specialty FY25",
+     "62,450"
+    ],
+    "y:20240331": [
+     "118df59b-0820-44a0-9613-2f3ec08ae5a4.pdf",
+     18,
+     "Specialty Blacks Sales Volume (in MT)",
+     "57,247"
+    ],
+    "y:20210331": [
+     "118df59b-0820-44a0-9613-2f3ec08ae5a4.pdf",
+     18,
+     "Specialty Blacks Sales Volume (in MT)",
+     "23,967"
+    ],
+    "y:20220331": [
+     "118df59b-0820-44a0-9613-2f3ec08ae5a4.pdf",
+     18,
+     "Specialty Blacks Sales Volume (in MT)",
+     "34,686"
+    ],
+    "y:20230331": [
+     "118df59b-0820-44a0-9613-2f3ec08ae5a4.pdf",
+     18,
+     "Specialty Blacks Sales Volume (in MT)",
+     "40,375"
     ]
    }
   },
@@ -142,45 +283,6 @@
      10,
      "Domestic FY24",
      "3,31,241"
-    ]
-   }
-  },
-  {
-   "name": "Carbon Black Sales Volume - Export",
-   "unit": "MT",
-   "kind": "flow",
-   "y": {
-    "20240331": 200608.0,
-    "20250331": 244500.0
-   },
-   "q": {
-    "20240331": 54280.0,
-    "20250331": 63415.0
-   },
-   "src": {
-    "q:20250331": [
-     "89a45694-26ac-47da-89ad-8bc5db6464ba.pdf",
-     9,
-     "Export Q4FY25",
-     "63,415"
-    ],
-    "q:20240331": [
-     "89a45694-26ac-47da-89ad-8bc5db6464ba.pdf",
-     9,
-     "Export Q4FY24",
-     "54,280"
-    ],
-    "y:20250331": [
-     "89a45694-26ac-47da-89ad-8bc5db6464ba.pdf",
-     10,
-     "Export FY25",
-     "2,44,500"
-    ],
-    "y:20240331": [
-     "89a45694-26ac-47da-89ad-8bc5db6464ba.pdf",
-     10,
-     "Export FY24",
-     "2,00,608"
     ]
    }
   },
@@ -263,45 +365,6 @@
    }
   },
   {
-   "name": "Specialty Blacks Sales Volume",
-   "unit": "MT",
-   "kind": "flow",
-   "y": {
-    "20240331": 57247.0,
-    "20250331": 62450.0
-   },
-   "q": {
-    "20240331": 15458.0,
-    "20250331": 15372.0
-   },
-   "src": {
-    "q:20250331": [
-     "89a45694-26ac-47da-89ad-8bc5db6464ba.pdf",
-     12,
-     "Specialty Q4FY25",
-     "15,372"
-    ],
-    "q:20240331": [
-     "89a45694-26ac-47da-89ad-8bc5db6464ba.pdf",
-     12,
-     "Specialty Q4FY24",
-     "15,458"
-    ],
-    "y:20250331": [
-     "89a45694-26ac-47da-89ad-8bc5db6464ba.pdf",
-     12,
-     "Specialty FY25",
-     "62,450"
-    ],
-    "y:20240331": [
-     "89a45694-26ac-47da-89ad-8bc5db6464ba.pdf",
-     12,
-     "Specialty FY24",
-     "57,247"
-    ]
-   }
-  },
-  {
    "name": "Permanent Employee Headcount",
    "unit": "count",
    "kind": "level",
@@ -357,6 +420,31 @@
    }
   },
   {
+   "name": "Green Power Generation Capacity",
+   "unit": "MW",
+   "kind": "level",
+   "y": {
+    "20250331": 122.0
+   },
+   "q": {
+    "20241231": 122.0
+   },
+   "src": {
+    "y:20250331": [
+     "89a45694-26ac-47da-89ad-8bc5db6464ba.pdf",
+     4,
+     "Green power generation capacity of 122 MW (doc period)",
+     "122"
+    ],
+    "q:20241231": [
+     "118df59b-0820-44a0-9613-2f3ec08ae5a4.pdf",
+     6,
+     "(doc period)",
+     "122"
+    ]
+   }
+  },
+  {
    "name": "Green Power Units Generated",
    "unit": "MU",
    "kind": "flow",
@@ -401,6 +489,56 @@
      12,
      "Units Sold FY24",
      "408"
+    ]
+   }
+  },
+  {
+   "name": "Rubber Black Capacity",
+   "unit": "KT",
+   "kind": "level",
+   "y": {
+    "20250331": 678.0
+   },
+   "q": {
+    "20241231": 678.0
+   },
+   "src": {
+    "y:20250331": [
+     "89a45694-26ac-47da-89ad-8bc5db6464ba.pdf",
+     4,
+     "Rubber Black capacity (doc period)",
+     "678"
+    ],
+    "q:20241231": [
+     "118df59b-0820-44a0-9613-2f3ec08ae5a4.pdf",
+     6,
+     "(doc period)",
+     "678"
+    ]
+   }
+  },
+  {
+   "name": "Total Carbon Black Capacity",
+   "unit": "KTPA",
+   "kind": "level",
+   "y": {
+    "20250331": 790.0
+   },
+   "q": {
+    "20241231": 790.0
+   },
+   "src": {
+    "y:20250331": [
+     "89a45694-26ac-47da-89ad-8bc5db6464ba.pdf",
+     4,
+     "carbon black producer with a capacity of 790KTPA across 5 locations (doc period)",
+     "790"
+    ],
+    "q:20241231": [
+     "118df59b-0820-44a0-9613-2f3ec08ae5a4.pdf",
+     6,
+     "(doc period)",
+     "790"
     ]
    }
   },
@@ -473,23 +611,6 @@
    }
   },
   {
-   "name": "Green Power Generation Capacity",
-   "unit": "MW",
-   "kind": "level",
-   "y": {
-    "20250331": 122.0
-   },
-   "q": {},
-   "src": {
-    "y:20250331": [
-     "89a45694-26ac-47da-89ad-8bc5db6464ba.pdf",
-     4,
-     "Green power generation capacity of 122 MW (doc period)",
-     "122"
-    ]
-   }
-  },
-  {
    "name": "New Patents Filed",
    "unit": "count",
    "kind": "flow",
@@ -541,23 +662,6 @@
    }
   },
   {
-   "name": "Rubber Black Capacity",
-   "unit": "KT",
-   "kind": "level",
-   "y": {
-    "20250331": 678.0
-   },
-   "q": {},
-   "src": {
-    "y:20250331": [
-     "89a45694-26ac-47da-89ad-8bc5db6464ba.pdf",
-     4,
-     "Rubber Black capacity (doc period)",
-     "678"
-    ]
-   }
-  },
-  {
    "name": "Specialty Blacks Capacity",
    "unit": "MTPA",
    "kind": "level",
@@ -575,19 +679,19 @@
    }
   },
   {
-   "name": "Total Carbon Black Capacity",
-   "unit": "KTPA",
+   "name": "Specialty Blacks Capacity",
+   "unit": "KT",
    "kind": "level",
-   "y": {
-    "20250331": 790.0
+   "y": {},
+   "q": {
+    "20241231": 112.0
    },
-   "q": {},
    "src": {
-    "y:20250331": [
-     "89a45694-26ac-47da-89ad-8bc5db6464ba.pdf",
-     4,
-     "carbon black producer with a capacity of 790KTPA across 5 locations (doc period)",
-     "790"
+    "q:20241231": [
+     "118df59b-0820-44a0-9613-2f3ec08ae5a4.pdf",
+     6,
+     "(doc period)",
+     "112"
     ]
    }
   },
@@ -1055,5 +1159,5 @@
  "catalog_since": "2020-01-01",
  "catalog_until": "2026-09-07",
  "catalog_ver": 5,
- "updated": "2026-09-08"
+ "updated": "2026-09-20"
 }
