@@ -57,6 +57,13 @@
    "title": "Q1 FY27 Earnings Update & Balance Sheet Numbers",
    "read": "2026-09-07",
    "by": "claude-routine"
+  },
+  "263824f8-0772-48c4-aee9-369d93c8dd30.pdf": {
+   "kind": "ar",
+   "date": "2026-09-08",
+   "title": "Annual Report FY26",
+   "read": "2026-09-20",
+   "by": "claude-session"
   }
  },
  "metrics": [
@@ -109,6 +116,52 @@
      4,
      "NET NPA",
      "0.15"
+    ]
+   }
+  },
+  {
+   "name": "Capital to Risk-Weighted Assets Ratio (CRAR)",
+   "unit": "%",
+   "kind": "level",
+   "y": {
+    "20250331": 29.52,
+    "20260331": 20.32
+   },
+   "q": {
+    "20250331": 29.67,
+    "20250630": 29.17,
+    "20250930": 27.44
+   },
+   "src": {
+    "q:20250630": [
+     "6087a6a6-a3d5-4523-90b5-bc09121018a1.pdf",
+     18,
+     "Capital to risk-weighted assets ratio (Calculated as per RBI guidelines)",
+     "29.17"
+    ],
+    "q:20250930": [
+     "845b8a55-3856-412d-90e4-db8da1a26513.pdf",
+     25,
+     "Capital to risk-weighted assets ratio (Calculated as per RBI guidelines)",
+     "27.44"
+    ],
+    "q:20250331": [
+     "66ecd685-e198-4d78-96e1-2bb7ac8068d4.pdf",
+     30,
+     "Capital to risk-weighted assets ratio (Calculated as per RBI guidelines)",
+     "29.67"
+    ],
+    "y:20260331": [
+     "263824f8-0772-48c4-aee9-369d93c8dd30.pdf",
+     43,
+     "CRAR% (Standalone)",
+     "20.32"
+    ],
+    "y:20250331": [
+     "263824f8-0772-48c4-aee9-369d93c8dd30.pdf",
+     43,
+     "CRAR% (Standalone)",
+     "29.52"
     ]
    }
   },
@@ -189,37 +242,6 @@
    }
   },
   {
-   "name": "Capital to Risk-Weighted Assets Ratio (CRAR)",
-   "unit": "%",
-   "kind": "level",
-   "y": {},
-   "q": {
-    "20250331": 29.67,
-    "20250630": 29.17,
-    "20250930": 27.44
-   },
-   "src": {
-    "q:20250630": [
-     "6087a6a6-a3d5-4523-90b5-bc09121018a1.pdf",
-     18,
-     "Capital to risk-weighted assets ratio (Calculated as per RBI guidelines)",
-     "29.17"
-    ],
-    "q:20250930": [
-     "845b8a55-3856-412d-90e4-db8da1a26513.pdf",
-     25,
-     "Capital to risk-weighted assets ratio (Calculated as per RBI guidelines)",
-     "27.44"
-    ],
-    "q:20250331": [
-     "66ecd685-e198-4d78-96e1-2bb7ac8068d4.pdf",
-     30,
-     "Capital to risk-weighted assets ratio (Calculated as per RBI guidelines)",
-     "29.67"
-    ]
-   }
-  },
-  {
    "name": "Liquidity Coverage Ratio",
    "unit": "%",
    "kind": "level",
@@ -279,6 +301,38 @@
      26,
      "Count of Loan accounts Assigned - Assignment (Year ended March 31, 2025)",
      "13316"
+    ]
+   }
+  },
+  {
+   "name": "Loans (Standalone)",
+   "unit": "INR Cr",
+   "kind": "level",
+   "y": {
+    "20260331": 38537.49
+   },
+   "q": {
+    "20240331": 44619.79,
+    "20250331": 42932.18
+   },
+   "src": {
+    "q:20250331": [
+     "66ecd685-e198-4d78-96e1-2bb7ac8068d4.pdf",
+     20,
+     "Loans",
+     "42,932.18"
+    ],
+    "q:20240331": [
+     "66ecd685-e198-4d78-96e1-2bb7ac8068d4.pdf",
+     20,
+     "Loans",
+     "44,619.79"
+    ],
+    "y:20260331": [
+     "263824f8-0772-48c4-aee9-369d93c8dd30.pdf",
+     43,
+     "Loan book at end of FY25-26",
+     "38,537.49"
     ]
    }
   },
@@ -433,30 +487,6 @@
      10,
      "Loans",
      "52,748.86"
-    ]
-   }
-  },
-  {
-   "name": "Loans (Standalone)",
-   "unit": "INR Cr",
-   "kind": "level",
-   "y": {},
-   "q": {
-    "20240331": 44619.79,
-    "20250331": 42932.18
-   },
-   "src": {
-    "q:20250331": [
-     "66ecd685-e198-4d78-96e1-2bb7ac8068d4.pdf",
-     20,
-     "Loans",
-     "42,932.18"
-    ],
-    "q:20240331": [
-     "66ecd685-e198-4d78-96e1-2bb7ac8068d4.pdf",
-     20,
-     "Loans",
-     "44,619.79"
     ]
    }
   },
@@ -1104,6 +1134,23 @@
    }
   },
   {
+   "name": "Total Loan Assets",
+   "unit": "INR Cr",
+   "kind": "level",
+   "y": {
+    "20260331": 47580.33
+   },
+   "q": {},
+   "src": {
+    "y:20260331": [
+     "263824f8-0772-48c4-aee9-369d93c8dd30.pdf",
+     43,
+     "total loan assets FY25-26",
+     "47,580.33"
+    ]
+   }
+  },
+  {
    "name": "Towns/Cities Covered",
    "unit": "count",
    "kind": "level",
@@ -1492,5 +1539,5 @@
  "catalog_since": "2020-01-01",
  "catalog_until": "2026-09-07",
  "catalog_ver": 5,
- "updated": "2026-09-07"
+ "updated": "2026-09-20"
 }
