@@ -57,9 +57,48 @@
    "title": "Media Release - SJVN FDRE tender award",
    "read": "2026-09-08",
    "by": "claude-routine"
+  },
+  "567d60d5-c08c-47f2-9785-b4dd08ec103e.pdf": {
+   "kind": "pr",
+   "date": "2025-05-12",
+   "title": "Media Release - SJVN Solar+BESS Tender Win (May 2025)",
+   "read": "2026-09-20",
+   "by": "claude-session"
   }
  },
  "metrics": [
+  {
+   "name": "Sasan UMPP Installed Capacity",
+   "unit": "MW",
+   "kind": "level",
+   "y": {
+    "20250331": 3960.0,
+    "20260331": 3960.0
+   },
+   "q": {
+    "20250630": 3960.0
+   },
+   "src": {
+    "y:20260331": [
+     "9f1e9b89-d465-472f-8f61-0392aafcbcf7.pdf",
+     23,
+     "Sasan Ultra Mega Power Plant (UMPP) (Capacity 3,960 megawatt)",
+     "3,960"
+    ],
+    "y:20250331": [
+     "5be605ee-f8e0-48a8-b221-9a6445053df7.pdf",
+     52,
+     "Sasan Ultra Mega Power Plant (UMPP) (Capacity 3,960 megawatt)",
+     "3,960"
+    ],
+    "q:20250630": [
+     "567d60d5-c08c-47f2-9785-b4dd08ec103e.pdf",
+     3,
+     "3960 megawatts Sasan Power Limited (doc period)",
+     "3960"
+    ]
+   }
+  },
   {
    "name": "Sasan UMPP Plant Load Factor (PLF)",
    "unit": "%",
@@ -285,26 +324,27 @@
    }
   },
   {
-   "name": "Sasan UMPP Installed Capacity",
+   "name": "Total Installed Generation Capacity",
    "unit": "MW",
    "kind": "level",
    "y": {
-    "20250331": 3960.0,
-    "20260331": 3960.0
+    "20260331": 5305.0
    },
-   "q": {},
+   "q": {
+    "20250630": 5305.0
+   },
    "src": {
     "y:20260331": [
      "9f1e9b89-d465-472f-8f61-0392aafcbcf7.pdf",
-     23,
-     "Sasan Ultra Mega Power Plant (UMPP) (Capacity 3,960 megawatt)",
-     "3,960"
+     51,
+     "5,305 MW total capacity of power projects",
+     "5,305"
     ],
-    "y:20250331": [
-     "5be605ee-f8e0-48a8-b221-9a6445053df7.pdf",
-     52,
-     "Sasan Ultra Mega Power Plant (UMPP) (Capacity 3,960 megawatt)",
-     "3,960"
+    "q:20250630": [
+     "567d60d5-c08c-47f2-9785-b4dd08ec103e.pdf",
+     3,
+     "operating portfolio of 5,305 megawatts (doc period)",
+     "5,305"
     ]
    }
   },
@@ -390,23 +430,6 @@
      52,
      "removed 47 million bank cubic metres of overburden",
      "47"
-    ]
-   }
-  },
-  {
-   "name": "Total Installed Generation Capacity",
-   "unit": "MW",
-   "kind": "level",
-   "y": {
-    "20260331": 5305.0
-   },
-   "q": {},
-   "src": {
-    "y:20260331": [
-     "9f1e9b89-d465-472f-8f61-0392aafcbcf7.pdf",
-     51,
-     "5,305 MW total capacity of power projects",
-     "5,305"
     ]
    }
   },
@@ -803,5 +826,5 @@
  "catalog_since": "2020-01-01",
  "catalog_until": "2026-09-08",
  "catalog_ver": 5,
- "updated": "2026-09-08"
+ "updated": "2026-09-20"
 }

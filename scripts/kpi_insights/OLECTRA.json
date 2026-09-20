@@ -57,6 +57,13 @@
    "title": "Annual Report FY2024-25",
    "read": "2026-09-08",
    "by": "claude-routine"
+  },
+  "871a1258-4681-4593-beb3-fd8a56e1bda6.pdf": {
+   "kind": "ip",
+   "date": "2025-08-13",
+   "title": "Q1 FY26 Investor Presentation",
+   "read": "2026-09-20",
+   "by": "claude-session"
   }
  },
  "metrics": [
@@ -74,27 +81,27 @@
    "q": {},
    "src": {
     "y:20220331": [
-     "ba685a32-e1a7-4a78-ac26-007b1d06ad6d.pdf",
-     6,
-     "Number of EVs sold, FY22",
+     "871a1258-4681-4593-beb3-fd8a56e1bda6.pdf",
+     14,
+     "Number of EV's sold",
      "259"
     ],
     "y:20230331": [
-     "ba685a32-e1a7-4a78-ac26-007b1d06ad6d.pdf",
-     6,
-     "Number of EVs sold, FY23",
+     "871a1258-4681-4593-beb3-fd8a56e1bda6.pdf",
+     14,
+     "Number of EV's sold",
      "580"
     ],
     "y:20240331": [
-     "ba685a32-e1a7-4a78-ac26-007b1d06ad6d.pdf",
-     6,
-     "Number of EVs sold, FY24",
+     "871a1258-4681-4593-beb3-fd8a56e1bda6.pdf",
+     14,
+     "Number of EV's sold",
      "541"
     ],
     "y:20250331": [
-     "ba685a32-e1a7-4a78-ac26-007b1d06ad6d.pdf",
-     6,
-     "Number of EVs sold, FY25",
+     "871a1258-4681-4593-beb3-fd8a56e1bda6.pdf",
+     14,
+     "Number of EV's sold",
      "972"
     ],
     "y:20260331": [
@@ -113,6 +120,7 @@
     "20260331": 10000.0
    },
    "q": {
+    "20250630": 10000.0,
     "20250930": 9818.0,
     "20251231": 9400.0
    },
@@ -134,6 +142,12 @@
      5,
      "Order Book (Key Information, doc period)",
      "9,818"
+    ],
+    "q:20250630": [
+     "871a1258-4681-4593-beb3-fd8a56e1bda6.pdf",
+     5,
+     "Order Book (doc period)",
+     "10,000"
     ]
    }
   },
@@ -145,6 +159,7 @@
     "20260331": 3800.0
    },
    "q": {
+    "20250630": 2800.0,
     "20250930": 3000.0,
     "20251231": 3600.0
    },
@@ -166,6 +181,12 @@
      5,
      "No. of EVs on Road (Key Information, doc period)",
      "3,000"
+    ],
+    "q:20250630": [
+     "871a1258-4681-4593-beb3-fd8a56e1bda6.pdf",
+     5,
+     "No. of EVs on Road (doc period)",
+     "2,800"
     ]
    }
   },
@@ -175,6 +196,7 @@
    "kind": "flow",
    "y": {},
    "q": {
+    "20240630": 156.0,
     "20250630": 358.0,
     "20260630": 161.0
    },
@@ -190,6 +212,36 @@
      10,
      "No. of Vehicles Sold, Q1FY27",
      "161"
+    ],
+    "q:20240630": [
+     "871a1258-4681-4593-beb3-fd8a56e1bda6.pdf",
+     15,
+     "No. of vehicles sold",
+     "156"
+    ]
+   }
+  },
+  {
+   "name": "Number of Employees",
+   "unit": "count",
+   "kind": "level",
+   "y": {},
+   "q": {
+    "20250630": 1000.0,
+    "20250930": 1000.0
+   },
+   "src": {
+    "q:20250930": [
+     "c2f4e58f-16e4-4ccb-98ef-5a5704b9ea43.pdf",
+     5,
+     "No. of Employees (Key Information, doc period)",
+     "1,000"
+    ],
+    "q:20250630": [
+     "871a1258-4681-4593-beb3-fd8a56e1bda6.pdf",
+     5,
+     "No. of Employees (doc period)",
+     "1,000"
     ]
    }
   },
@@ -228,6 +280,23 @@
    }
   },
   {
+   "name": "Manufacturing Capacity",
+   "unit": "units/year",
+   "kind": "level",
+   "y": {},
+   "q": {
+    "20250630": 5000.0
+   },
+   "src": {
+    "q:20250630": [
+     "871a1258-4681-4593-beb3-fd8a56e1bda6.pdf",
+     6,
+     "plant capacity units/year (doc period)",
+     "5,000"
+    ]
+   }
+  },
+  {
    "name": "Market Share (Electric Bus, India)",
    "unit": "%",
    "kind": "level",
@@ -241,23 +310,6 @@
      96,
      "securing over 20% market share (doc period)",
      "20"
-    ]
-   }
-  },
-  {
-   "name": "Number of Employees",
-   "unit": "count",
-   "kind": "level",
-   "y": {},
-   "q": {
-    "20250930": 1000.0
-   },
-   "src": {
-    "q:20250930": [
-     "c2f4e58f-16e4-4ccb-98ef-5a5704b9ea43.pdf",
-     5,
-     "No. of Employees (Key Information, doc period)",
-     "1,000"
     ]
    }
   }
@@ -691,5 +743,5 @@
  "catalog_since": "2020-01-01",
  "catalog_until": "2026-09-08",
  "catalog_ver": 5,
- "updated": "2026-09-08"
+ "updated": "2026-09-20"
 }
