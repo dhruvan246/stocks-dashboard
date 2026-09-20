@@ -57,6 +57,13 @@
    "title": "Q4 FY25 / FY25 Investor Presentation",
    "read": "2026-09-11",
    "by": "claude-routine"
+  },
+  "a50a79d1-315f-417f-8130-785322bffc29.pdf": {
+   "kind": "ip",
+   "date": "2025-02-15",
+   "title": "Q3 FY25 Investor Presentation",
+   "read": "2026-09-20",
+   "by": "claude-session"
   }
  },
  "metrics": [
@@ -68,6 +75,8 @@
     "20260331": 1336.04
    },
    "q": {
+    "20240930": 956.74,
+    "20241231": 816.91,
     "20250630": 754.56,
     "20250930": 675.04,
     "20251231": 1082.76,
@@ -110,6 +119,18 @@
      7,
      "Order Book as at 30th June 2025",
      "754.56"
+    ],
+    "q:20240930": [
+     "a50a79d1-315f-417f-8130-785322bffc29.pdf",
+     8,
+     "Order Book as on 1st Oct 2024 (Q2FY25 end)",
+     "956.74"
+    ],
+    "q:20241231": [
+     "a50a79d1-315f-417f-8130-785322bffc29.pdf",
+     8,
+     "Total Order Book as on 31st Dec 2024",
+     "816.91"
     ]
    }
   },
@@ -119,6 +140,7 @@
    "kind": "flow",
    "y": {},
    "q": {
+    "20241231": 1.69,
     "20250331": 168.52,
     "20250630": 64.26,
     "20250930": 94.05,
@@ -162,6 +184,12 @@
      12,
      "New Order bagged in Q4FY25 - Total",
      "168.52"
+    ],
+    "q:20241231": [
+     "a50a79d1-315f-417f-8130-785322bffc29.pdf",
+     8,
+     "New Order bagged in Q3FY25 (total)",
+     "1.69"
     ]
    }
   },
@@ -171,6 +199,7 @@
    "kind": "flow",
    "y": {},
    "q": {
+    "20241231": 141.52,
     "20250331": 293.49,
     "20250630": 158.22,
     "20250930": 173.57,
@@ -214,6 +243,50 @@
      12,
      "Orders executed in Q4FY25 - Total",
      "293.49"
+    ],
+    "q:20241231": [
+     "a50a79d1-315f-417f-8130-785322bffc29.pdf",
+     8,
+     "Orders executed in Q3FY25 (total)",
+     "141.52"
+    ]
+   }
+  },
+  {
+   "name": "Order Book - AMC",
+   "unit": "INR Cr",
+   "kind": "level",
+   "y": {},
+   "q": {
+    "20240930": 288.69,
+    "20241231": 279.68,
+    "20250331": 269.55,
+    "20260630": 318.43
+   },
+   "src": {
+    "q:20260630": [
+     "112d61fd-d4c8-4343-aef4-fc9961aee2b8.pdf",
+     11,
+     "AMC",
+     "318.43"
+    ],
+    "q:20241231": [
+     "a50a79d1-315f-417f-8130-785322bffc29.pdf",
+     8,
+     "AMC order book 31st Dec 2024",
+     "279.68"
+    ],
+    "q:20250331": [
+     "942259fd-3661-4d9d-ae09-1599f188bbd9.pdf",
+     12,
+     "Total Order Book as on 31st March 2025 - AMC",
+     "269.55"
+    ],
+    "q:20240930": [
+     "a50a79d1-315f-417f-8130-785322bffc29.pdf",
+     8,
+     "AMC order book 1st Oct 2024",
+     "288.69"
     ]
    }
   },
@@ -256,6 +329,44 @@
    }
   },
   {
+   "name": "Order Book - Equipment",
+   "unit": "INR Cr",
+   "kind": "level",
+   "y": {},
+   "q": {
+    "20240930": 668.05,
+    "20241231": 537.23,
+    "20250331": 422.39,
+    "20260630": 920.59
+   },
+   "src": {
+    "q:20260630": [
+     "112d61fd-d4c8-4343-aef4-fc9961aee2b8.pdf",
+     11,
+     "Equipment",
+     "920.59"
+    ],
+    "q:20241231": [
+     "a50a79d1-315f-417f-8130-785322bffc29.pdf",
+     8,
+     "Equipment order book 31st Dec 2024",
+     "537.23"
+    ],
+    "q:20250331": [
+     "942259fd-3661-4d9d-ae09-1599f188bbd9.pdf",
+     12,
+     "Total Order Book as on 31st March 2025 - Equipment",
+     "422.39"
+    ],
+    "q:20240930": [
+     "a50a79d1-315f-417f-8130-785322bffc29.pdf",
+     8,
+     "Equipment order book 1st Oct 2024",
+     "668.05"
+    ]
+   }
+  },
+  {
    "name": "Order Book - Export",
    "unit": "INR Cr",
    "kind": "level",
@@ -290,68 +401,6 @@
      8,
      "Export",
      "117.41"
-    ]
-   }
-  },
-  {
-   "name": "Order Book - AMC",
-   "unit": "INR Cr",
-   "kind": "level",
-   "y": {},
-   "q": {
-    "20241231": 279.68,
-    "20250331": 269.55,
-    "20260630": 318.43
-   },
-   "src": {
-    "q:20260630": [
-     "112d61fd-d4c8-4343-aef4-fc9961aee2b8.pdf",
-     11,
-     "AMC",
-     "318.43"
-    ],
-    "q:20241231": [
-     "942259fd-3661-4d9d-ae09-1599f188bbd9.pdf",
-     12,
-     "Order Book as on 31st December 2024 - AMC",
-     "279.68"
-    ],
-    "q:20250331": [
-     "942259fd-3661-4d9d-ae09-1599f188bbd9.pdf",
-     12,
-     "Total Order Book as on 31st March 2025 - AMC",
-     "269.55"
-    ]
-   }
-  },
-  {
-   "name": "Order Book - Equipment",
-   "unit": "INR Cr",
-   "kind": "level",
-   "y": {},
-   "q": {
-    "20241231": 537.23,
-    "20250331": 422.39,
-    "20260630": 920.59
-   },
-   "src": {
-    "q:20260630": [
-     "112d61fd-d4c8-4343-aef4-fc9961aee2b8.pdf",
-     11,
-     "Equipment",
-     "920.59"
-    ],
-    "q:20241231": [
-     "942259fd-3661-4d9d-ae09-1599f188bbd9.pdf",
-     12,
-     "Order Book as on 31st December 2024 - Equipment",
-     "537.23"
-    ],
-    "q:20250331": [
-     "942259fd-3661-4d9d-ae09-1599f188bbd9.pdf",
-     12,
-     "Total Order Book as on 31st March 2025 - Equipment",
-     "422.39"
     ]
    }
   },
@@ -953,5 +1002,5 @@
  "catalog_since": "2020-01-01",
  "catalog_until": "2026-09-07",
  "catalog_ver": 5,
- "updated": "2026-09-11"
+ "updated": "2026-09-20"
 }
