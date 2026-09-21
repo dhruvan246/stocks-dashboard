@@ -11938,8 +11938,8 @@ NSE source), so the whole difference is which cells EXIST. Ours lacked a bar on 
    that DVR series, not this row). Only the DUMMY* placeholders remain without a bar on those sessions.
 **Local full-sequence run on the live-bin slice (CI order: session insert, then ledger):** 13,243 session bars over the 9
 days + 2,148 ledger rows, second pass 0, no structure violations; 29 member-days remain without a bar: 22 not in NSE's
-file that day (special sessions), SBBJ/SBT/MYSOREBANK ×2 (merged into SBIN), RASOYPR 2015-09-03 (zero-close bars around
-it — §zero-close class). OPEN after this: our roster's DUMMY* placeholders (DUMMYHEG/VEDL1-4/HDLVR/DBRLT/ABFRL/RAYMN/
+file that day (special sessions), SBBJ/SBT/MYSOREBANK ×2 (merged into SBIN), RASOYPR 2015-09-03 (FILLED 2026-09-21f, commit 67b4310b8: anchored on the real-close 2015-08-31 bar
+past its zero-close 09-01/02 neighbours, f=1 no 2015 CA, dv 99.66 — the neighbours' zero-close is a separate defect). OPEN after this: our roster's DUMMY* placeholders (DUMMYHEG/VEDL1-4/HDLVR/DBRLT/ABFRL/RAYMN/
 SIEMS — index placeholders, not securities) and the TATAMOTORS fragment's stray bars.
 
 ## 107. ★★★ ONE SOURCE OF TRUTH — THE SHARED CHECKOUT SYNCS ITSELF; "DIRTY" AND "AHEAD" WERE ALL STALE COPIES  (2026-08-24)
