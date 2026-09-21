@@ -664,6 +664,12 @@ def main():
                 # a name whose tape begins in 2016 cannot sit in a 1999 IT roster (LTTS, HEXT, GLAND,
                 # LAURUSLABS did, 2026-09-22 spot-check), while a 2004 first bar says nothing certain.
                 early = snap["effectiveDate"] < "2011-01-01"
+                # Nifty 500 keeps its pre-2011 rows untouched: its walk is register-built and validated
+                # 100% at 39 archived lists, and the names this rule would drop there (Ambalal Sarabhai,
+                # Provogue, Digjam ... 184 rows / 8 names, measured 2026-09-22) are real members whose
+                # old tape our bin lacks under the current key — a §132 era-key question, not a phantom.
+                if early and h_idx == "Nifty 500":
+                    continue
                 keep = []
                 for sym in snap["symbols"]:
                     ft = first_trade.get(sym)
