@@ -16631,15 +16631,19 @@ index level from the per-index daily JSON + `index_monthly.json` month-ends (for
 "nifty50", "niftybank"]` (18 KB / 5 KB for the two small ones); `all` or slugs on the CLI build more.
 The page's `REG[<ix>].surv` names the file; an index without one keeps the card hidden. **To add an
 index: slug into `DEFAULT`, `surv:'<slug>'` on its `REG` entry, a `feeds.json` row.**
-- **Roster-data caveat that remains (upstream `indicesHistory`):** Nifty 50 has 15 snapshots from
-  2015-09-28 and its roster in force is **2025-09-30** (the 2026-09-30 snapshot is future-dated; no
-  2026-03 reshuffle snapshot exists). The Nifty Bank caveat (PAYTM / KINDIA) is HEALED — §141a.
+- **Roster-data caveats: HEALED.** Nifty Bank (PAYTM / KINDIA) — §141a. Nifty 50 (history began
+  2015-09-28; six 2017-19 reviews missing from the changelog) — §141b, now 97 snapshots from
+  1996-09-18. The roster in force 2025-09-30 was always right: ind_prs23022026 says "No changes are
+  being made in Nifty 50" for March 2026.
 
 **Conventions (all measured 2026-09-21; docstring has the full list):**
 - A stint opens at the effectiveDate of the first snapshot carrying the name and closes at the
   effectiveDate of the first later snapshot without it. Roster in force = latest snapshot ≤ bin end
   (2026-07-17); a later-dated snapshot is an ANNOUNCED reshuffle — reported in `upcoming` only when
-  it actually differs (the 2026-09-30 one is byte-identical to 2026-07-17, so `upcoming: null`).
+  it actually differs. (Until §141b the 2026-09-30 snapshot was byte-identical to 2026-07-17; I first
+  wrote that NSE re-anchors unchanged lists. The truth was a builder defect — `reconstruct()` assigned
+  today's list to the future event date instead of applying the announced changes forward. Fixed
+  2026-09-21: the card now shows 27 announced leaves / 10 rejoins for 2026-09-30.)
 - A name in the FIRST snapshot is `fromStart` — shown as "≤ 1 Aug 1998": already a member when the
   record begins, the real join is earlier. 452 of 1,425 rows.
 - `DUMMY*` dropped; DVR lines KEPT (TATAMTRDVR is a row — a security officially in the index),
@@ -16820,3 +16824,39 @@ YESBANK 2012-04-27→2020-03-19 and 2025-12-31→, CANBK 2003-05-02→2018-04-02
 (1,491 names tried: DDMMYYYY, _1, _2) found **376 PDFs absent from `build_changelog.py`'s FILES list**
 (mostly daily notices); FILES + the 80-day auto-probe is all the parser sees — worth a sweep if another
 index shows an unexplained roster.
+
+## 141b. ★★ NIFTY 50 ROSTERS 1996→date + announced reshuffles applied forward  (2026-09-21)
+
+**Symptom (user: "fix the nifty 50 roster too"):** the flagship's history had 15 snapshots from
+2015-09-28 only (every founding name showed "≤ 28 Sep 2015"), and — measured once the archived lists
+were pinned — the press-release changelog had NO events for the six reviews 2017-03-31, 2017-09-29,
+2018-04-02, 2018-09-28, 2019-03-29, 2019-09-27 (older PDF layouts parse_pdf cannot read; the same class
+§132 hunted for Nifty 500), so the 2017-19 rosters were the 2020 list walked back through one event.
+
+**Sources:** NSE's register sheet "Nifty 50" (196 events 1996-09-18 → 2020-07-31) →
+`gen_nifty50_inclexcl_events.py` → `_nifty50_inclexcl_events.json` (force-tracked; `scripts/_*` is
+gitignored). Name → symbol: MANUAL for the 34 spellings the Nifty 500 sheet never used (each
+tape-verified; both legs of a company always on ONE key — "Reckitt & Colman" inc 1999 had to land on
+RECKCOLMAN with its 2002 exclusion, else the walk fabricates a pre-1999 member) > the Nifty 500
+ledger's era map (per-date) > its exact name map. 195/196 resolved; **Brooke Bond Lipton (excluded
+1997-05-07) has no tape under any key → recorded unmapped; the 1996-09-18 roster is 49 and says so.**
+NO seam-twin mirroring in this ledger: it doubled Essar (ESSARGUJ + its 2005 relisting key ESTL) and
+the 1997 rosters read 51. Pins: **30 archived official lists 2006-11-08 → 2026-08-27**
+(`_idx_official_fetch.py --only "Nifty 50"`, which now keeps a tier's earlier captures — a Wayback
+timeout dropped 3 of 30 on one run); CNX-era `ind_niftylist.csv` + `ind_nifty50list.csv` on
+niftyindices / nseindia / archives. The 2020-07-31 capture is an HTML error page, rejected by size.
+
+**Result:** Nifty 50 = **97 snapshots 1996-09-18 → 2026-09-30, off-by 0 at all 30 pins**; 51 names on
+2016-04-01 → 2017-09-29 is GENUINE (NSE carried TATAMTRDVR as a 51st line). Survivorship card: 139
+rows (50 in · 60 left · 29 delisted/merged · 0 untraced); rewind 2005-01-03 → 50 names. Every other
+index byte-identical before today; Nifty 500 validation 100% at all 39 archived lists.
+
+**Announced reshuffles now applied forward (builder fix, ALL indices):** `reconstruct()` walked every
+event backward from today's live list, including events dated after today — so an announced
+reshuffle's snapshot was today's (pre-event) list and read as "no change" until the weekly run after
+it took effect. Now an event with eff > today gets `anchor + included − excluded` and the walk
+continues from the anchor. 21 indices' 2026-09-30 snapshots changed (Nifty 50 +BSE −WIPRO; Nifty Next
+50 +IDEA POLYCAB POWERINDIA VAML WIPRO −INDHOTEL LODHA RECLTD SHREECEM UNITDSPR; Nifty 500 27 out /
+10+ in); the engine's latest-≤-day selection ignores a future snapshot until its date, then it is
+right without waiting for a rebuild. `REGISTER_LEDGERS` in the builder maps index → register ledger
+(Nifty Bank, Nifty 50); adding a sheet = one line there + a generator with an explicit name map.
