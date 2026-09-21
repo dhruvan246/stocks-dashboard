@@ -16676,3 +16676,50 @@ inside the body flex column (`margin:0 auto` cancels stretch), so the 2,827px ta
 1120px and overflowed its card. Fix: page-scoped holder rules at every width (sideways scroll, pinned
 Stock column, `--sw-pin-*` backgrounds) + `main.wrap{width:100%;min-width:0}`. Measured after: desktop
 docW == clientW (1014), card 972, holder 940 scrolling 2,827; mobile 375 unchanged. Check added to §39.
+
+## 142. ★★ QUANTMAC FII-HOLDING PARITY — 2026 adjudicated cell by cell against the exchange filings  (2026-09-21)
+Source: `Nifty500_PIT_FII_MonthEnd_2009_2026.xlsx` (quantmac / StockView `month_end_snapshot.fii_pct`, 106,001
+stock-month cells, 2009-01 → 2026-08, FII as a FRACTION → ×100). Ours: live `docs/shp_engine.json`, engine rule
+`shpAt()` = among rows public by the screen date, the one with the LATEST AS-OF date (rows sorted by qe, walk
+from the end). Scratchpad `fii_compare.py` (rename resolution = the engine's FUND_ALIAS; 11 quantmac symbols
+resolve to nothing: AANJANEYA, AIONJSW, AMTEKINDIA, BINANICEM, CHETTINAD, FCH, GAMMNINFRA, IBVENTURES,
+INVSTSMART, SHILPI, SUMMITSEC_BSE).
+**⚠️ Replication trap (cost half an hour and one wrong verdict):** my first comparison sorted our rows by
+VISIBILITY date and took the last one public = "latest FILED", which is NOT the engine's rule. It manufactured
+14 phantom 2026 differences and I called quantmac "look-ahead" on BRIGADE from OUR stored date. The user's
+"don't consider ourselves right, check every stock" is what caught it. Any parity script MUST replicate
+`shpAt()` literally, and any verdict on a date must come from the exchange, not from our ledgers.
+**2026 result (Jan→Aug, 4,000 cells): 3,986 equal, 14 differ.** All 74 filing VALUES for the 15 stocks
+involved re-read from the source XBRL (`nsearchives …/corporate/xbrl/SHP_*.xml`, our own `parse_shp`) — 74/74
+equal ours. Filing DATES checked against BSE `SHPQNewFormat` (`filing_date_time` to the second) + NSE master
+`broadcastDate`, with the 15:30 gate = NEXT TRADING DAY (measured on the ledger: 4,953 of 5,306 Friday-after-
+15:30 filings are served Monday).
+- **13 differences are quantmac's:** ABB, GVT&D, J&KBANK, M&M, M&MFIN at the Jul+Aug month-ends still show
+  the Mar-2026 quarter although Jun-2026 was filed 15–22 Jul on both exchanges (ABB: BSE 20-Jul, NSE only
+  1-Sep — ours serves BSE's date); MANAPPURAM May+Jun show 23.23 (Mar quarter) — its 24-Apr event pattern
+  (23.42, filed 2-May) is missing on their side; APARINDS Aug shows the Jun quarter — the 13-Aug event
+  (11.36, filed 20-Aug) is missing.
+- **1 difference was ours — FIXED:** BRIGADE 30-Jun. Its 18-Jun event pattern was first filed 25-Jun 18:33
+  (BSE New), re-filed 3-Jul; NSE carries only a 21-Aug "Revised" broadcast. `refresh_events()` keeps the
+  NEWEST submission per as-on date, so we stored 2026-07-03 and hid a public filing for 8 days (served
+  16.75, correct 15.83). Fixed by `shp_lag_fix.json` `BRIGADE|20260618` (days_earlier, sub 20260626) —
+  `_reassert_sub` serves it rebuild-proof; feed rebuilt with `--feed-only`.
+**Two defect classes found on the way (the user deferred the sweep: "do this later for all years after 2026"):**
+1. **Re-filed event patterns lose their first disclosure date** (same `newest submission wins`). Verified
+   from BSE for three more rows, NOT yet applied (their month-ends are 2025): ADANIENT|20251211 stored
+   2026-02-16 → first filed 2025-12-18 15:17 (sub 20251218); LENSKART|20251107 stored 2026-02-13 → first
+   filed 2025-11-10 15:45 (sub 20251111); EMMVEE|20251117 stored 2026-06-23 → first filed 2025-11-18 16:22
+   (sub 20251119). Root fix = keep the EARLIEST sub per (sym, as-on) in `refresh_events()` while still
+   taking the newest XBRL's values.
+2. **Event rows bypass the 15:30 gate** — `shp_lag_fix.json` has 0 event-keyed entries; events store NSE's
+   raw submissionDate. 8 of the 15 stocks' events are a 1-day look-ahead vs the gate the user chose:
+   BIOCON|20260105 (06→07 Jan), BIOCON|20260114 (16→19 Jan), BIOCON|20260629 (1→2 Jul), ADANIENT|20260707
+   (16→17 Jul), URBANCO|20260324 (23→24 Apr), MANAPPURAM|20260327 (28→30 Mar), MANAPPURAM|20260424 (2→4 May),
+   KIMS|20260619 (4→5 Aug). None moves a month-end cell; every one moves a mid-month screen. Population to
+   sweep: 4,022 event rows / 1,656 symbols, 2,941 with as-on ≥ Sep-2021 (BSE-verifiable).
+**Whole-history headline (not yet adjudicated):** 85,202 both-have cells, 72,028 equal (84.5 %); 2017-2026
+≥ 96 %; pre-2016 40-80 % — 11,905 cells where quantmac shows an OLDER quarter (the un-timestamped era's
+visibility convention: ours qe+28 d, theirs later), 1,030 cells whose quantmac value matches NO quarter we
+hold (123 stocks; DELHIVERY Dec-2022 9.2 vs 69.1, KALYANKJIL 2.36 vs 28.7 — smells like an FII definition
+split, unverified), 460 cells quantmac has with no filing on our side (PIRAMALFIN 168, HEXT 109, …), 20,009
+cells we hold that quantmac leaves blank.
