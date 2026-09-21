@@ -9389,6 +9389,28 @@ fetch → build → merge; MTO_SP env = cache dir):
   era fragments — §86 territory, not dv work). 1996-2001: no MTO exists (pre-rolling, weekly-bar
   era) — stays 0%, correctly unfillable.
 
+- **2026-09-21 addendum — 10 WHOLE-DAY HOLES FILLED (ledger `built` 2026-09-21).** A live month-by-month
+  measure (sf-data rev 74618a39ac, N500 PIT rosters) found 10 trading dates where NO symbol carried dv:
+  2009-03-31, 2010-10-14, 2010-10-26, 2014-02-21, 2014-10-14, 2015-09-03, 2016-08-17, 2016-11-17,
+  2017-03-24, 2017-03-27. They were never in the sweep's `gap_dates.json` (not 404s — NSE serves all 10
+  MTO files, 1,214–1,663 rows each, `10,MTO` header). Filled with the SAME build stage: `MTO_SP=<private
+  dir>` holding only those 10 files + a `gap_dates.json` of the 10 dates → `_mto_sweep_fetch.py` →
+  `_mto_sweep_build.py` with `load_bin` swapped for a streaming reader restricted to those dates (the
+  537 MB release bin as Python objects does not fit 16 GB) → old-wins union into the ledger. Do NOT run
+  `_mto_sweep_merge.py` verbatim for a re-fill: it re-stamps the 2026-08-11 meta text and replays
+  `wrong_cells.json` (retired by §89). Result: 13,883 of 14,681 bars volume-matched (99.993 %), 797 bars
+  = securities absent from that day's MTO (the ceiling above), 1 volume mismatch (AMJLAND 2009-03-31,
+  bin v=7,811 vs MTO traded 124,955 — left 0). N500 member-days on those dates: 4,974 → 4,939 filled; the
+  35 left are members absent from MTO that day (CENTENKA/AFTEK/EDUCOMP class). Before the fill the
+  N500 member monthly coverage dipped to 84.7 % (2010-10) and 91.0 % (2017-03); 2019+ was already
+  100.0 % every month. Ledger 5,260,784 → 5,274,667 cells.
+  **OPEN (found here, NOT fixed — price-series class, not dv):** on these same 10 dates some members
+  have NO price bar under their merged key although they trade on both sides (±7 d): TMPV on all 10
+  dates (the bin holds a TATAMOTORS-keyed bar on 6 of them), BAJFINANCE on the 5 pre-2015 dates, plus
+  1–5 others per date (member no-bar counts 4/3/7/3/3/2/2/2/4/4; MYSOREBANK/SBBJ/SBT on 2017-03-24/27
+  are genuine post-merger delistings). Cause not measured yet — §106 rename-orphan territory. The dv
+  cells for era-keyed bars sit under the era key and will fold in with any future series merge.
+
 ### 88c. ★★ §12 15:30-GATE DRIFT — FIXED 2026-08-11 (one-off cleanup + nightly automation)
 The gate ran ONCE (2026-07-08, 3,760 events → 1,000 bumped) and gates NEW NSE ingestion — but
 backfill writers (detres/vision/aggregator/scale-step campaigns) stamp ann-dates ungated. LIVE
