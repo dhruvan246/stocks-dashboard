@@ -216,17 +216,19 @@ def validate_n500(snaps, wb):
         worst = min(worst, pct)
     return worst
 
-def load_inclexcl_register():
+def load_inclexcl_register(fname="_n500_inclexcl_events.json"):
     """NSE's own dated inclusion/exclusion register (IndexInclExcl.xls -> Nifty 500 sheet,
     parsed by scripts/_staleness_fix/gen_inclexcl_events.py). 1,765 mapped events, 1998-2020.
     Added 2026-08-23 (DATA_RUNBOOK §102 finding 1): _changelog.json starts 2015-03-23, so the
     backward walk never rolled pre-2015 joiners out of the past — 24 externally-flagged trades
     entered stocks NSE had excluded years earlier (PCBL excluded 2002-01-17 was screenable in
-    2017). Returns ({sym: [(iso_date, 'inc'|'exc'), ...] sorted}, [event dicts]) or ({}, [])."""
+    2017). Returns ({sym: [(iso_date, 'inc'|'exc'), ...] sorted}, [event dicts]) or ({}, []).
+    `fname` selects the sheet's ledger: the same register's "Nifty Bank" sheet is
+    _bank_inclexcl_events.json (gen_bank_inclexcl_events.py, 28 events 2000-2020, runbook §141a)."""
     try:
-        reg = json.load(open(os.path.join(HERE, "_n500_inclexcl_events.json")))
+        reg = json.load(open(os.path.join(HERE, fname)))
     except Exception as e:
-        print(f"(_n500_inclexcl_events.json not loaded: {e} — membership keeps changelog-only events)")
+        print(f"({fname} not loaded: {e} — membership keeps changelog-only events)")
         return {}, []
     by_sym = {}
     by_date = {}
@@ -243,6 +245,89 @@ def load_inclexcl_register():
     for s in by_sym:
         by_sym[s].sort()
     return by_sym, [by_date[d] for d in sorted(by_date)]
+
+
+def merge_register_events(idx, events, reg_events):
+    """Merge a register's events into an index's changelog events (2026-09-21, Nifty Bank; the same
+    rule the Nifty 500 block in main() applies inline): events dated BEFORE the first changelog event
+    go in wholesale — the changelog has nothing there — and in-window register events are added only
+    when the changelog has no same-symbol same-direction event within ±10 days (eff conventions
+    differ by a day or two). Returns the merged list and prints what it added."""
+    if not reg_events or not events:
+        return events + list(reg_events) if reg_events else events
+    first_cl = min(c["eff"] for c in events)
+    cl_keys = set()
+    for c in events:
+        for s in c["included"]:
+            cl_keys.add((canon(s), "inc", c["eff"]))
+        for s in c["excluded"]:
+            cl_keys.add((canon(s), "exc", c["eff"]))
+    def _cl_has(sym, kind, eff):
+        lo = (datetime.date.fromisoformat(eff) - datetime.timedelta(days=10)).isoformat()
+        hi = (datetime.date.fromisoformat(eff) + datetime.timedelta(days=10)).isoformat()
+        return any(k[0] == canon(sym) and k[1] == kind and lo <= k[2] <= hi for k in cl_keys)
+    out = list(events); added_pre = added_gap = 0
+    for ev in reg_events:
+        if ev["eff"] < first_cl:
+            out.append(ev); added_pre += 1
+        else:
+            inc = [s for s in ev["included"] if not _cl_has(s, "inc", ev["eff"])]
+            exc = [s for s in ev["excluded"] if not _cl_has(s, "exc", ev["eff"])]
+            if inc or exc:
+                out.append({"eff": ev["eff"], "included": inc, "excluded": exc, "src": "IndexInclExcl-gap"})
+                added_gap += 1
+                for s in inc: print(f"  {idx}: register fills changelog HOLE: +{s} eff {ev['eff']}")
+                for s in exc: print(f"  {idx}: register fills changelog HOLE: -{s} eff {ev['eff']}")
+    print(f"  {idx}: IndexInclExcl register merged: {added_pre} pre-changelog event-days, {added_gap} in-window gap event-days")
+    return out
+
+
+def pin_report(idx, walk, checkpoints):
+    """MEASURE the walk against every official pin BEFORE the pins overwrite it: for each pin date,
+    the walked roster in force (latest walked snapshot <= pin date) vs the archived list. A mismatch
+    means an event is missing or mis-dated between that pin and the next — the pin then corrects its
+    own date but nothing in between (runbook §141a). Prints one line per pin; returns total off-by."""
+    if not checkpoints:
+        return 0
+    dates = sorted(walk); tot = 0
+    for d in sorted(checkpoints):
+        best = None
+        for k in dates:
+            if k <= d: best = k
+        rec = walk[best] if best else set()
+        off = {canon(x) for x in checkpoints[d]}
+        diff = off ^ rec; tot += len(diff)
+        print(f"  {idx} pin {d}: walk {len(rec)} vs official {len(off)} — off-by {len(diff)}"
+              + (f" (walk-only {sorted(rec - off)}, official-only {sorted(off - rec)})" if diff else ""))
+    return tot
+
+
+def drop_prepublished_pins(idx, walk, checkpoints, events, days=7):
+    """NSE publishes a reshuffled constituent CSV a few days BEFORE the press-release effective date
+    (measured 2026-09-21: the 2024-09-28 Nifty Bank capture already carries CANBK for BANDHANBNK,
+    effective 2024-09-30). Pinning such a capture dates the swap at the capture day. Rule: a pin that
+    disagrees with the walk but EQUALS the walked roster in force right after an event dated within
+    `days` after it is a pre-published list — skip it (the event's own snapshot carries the change on
+    the true date). Returns the filtered checkpoints; prints each drop."""
+    if not checkpoints or not events:
+        return checkpoints
+    ev = merge_same_eff(events)
+    keep = {}
+    dates = sorted(walk)
+    for d, S in checkpoints.items():
+        off = {canon(x) for x in S}
+        best = None
+        for k in dates:
+            if k <= d: best = k
+        rec = walk[best] if best else set()
+        if off == rec:
+            keep[d] = S; continue
+        nxt = [c for c in ev if d < c["eff"] <= (datetime.date.fromisoformat(d) + datetime.timedelta(days=days)).isoformat()]
+        if nxt and nxt[0]["eff"] in walk and walk[nxt[0]["eff"]] == off:
+            print(f"  {idx} pin {d}: pre-published list (equals the roster effective {nxt[0]['eff']}) — not pinned")
+            continue
+        keep[d] = S
+    return keep
 
 
 def register_inc_is_live(reg_by_sym, sym, iso_date, official):
@@ -287,6 +372,7 @@ def main():
     changelog = json.load(open(os.path.join(HERE, "_changelog.json")))
     wb = json.load(open(os.path.join(HERE, "_wb_n500_snaps.json")))
     REG_BY_SYM, REG_EVENTS = load_inclexcl_register()
+    BANK_BY_SYM, BANK_EVENTS = load_inclexcl_register("_bank_inclexcl_events.json")   # Nifty Bank sheet (§141a)
     # Official archived sub-index constituent CSVs (ground truth) pinned as hard
     # checkpoints for the 8 broad tiers, exactly like wb does for Nifty 500. Keys
     # are Wayback YYYYMMDD (or "LIVE") -> convert to ISO; LIVE == today's anchor, skip.
@@ -471,7 +557,17 @@ def main():
             except FileNotFoundError:
                 pass
         else:
+            if idx == "Nifty Bank" and BANK_EVENTS:
+                # 2026-09-21 (§141a): Nifty Bank had NO pins and no events before 2021, so its 2017-2020
+                # rosters were the old scrapbook (PAYTM, KINDIA, 15 names). NSE's register carries the
+                # index's 28 dated changes 2000-2020; with the 12 archived official lists (2006-2026)
+                # pinned below, the walk reproduces every list exactly (pin_report prints the proof).
+                events = merge_register_events(idx, events, BANK_EVENTS)
             cps = OFFICIAL.get(idx) or None   # official archived CSVs pinned exact
+            if cps:
+                _walk = reconstruct(anchor, events, None)
+                cps = drop_prepublished_pins(idx, _walk, cps, events)
+                pin_report(idx, _walk, cps)
         snaps = reconstruct(anchor, events, cps)
         # Nifty 500 only: its checkpoints are dense enough for the invariant to be safe, and it
         # is the index whose backward walk provably decays (see checkpoint_continuity). The

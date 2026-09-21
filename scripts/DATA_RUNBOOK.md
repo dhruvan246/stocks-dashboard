@@ -16631,12 +16631,9 @@ index level from the per-index daily JSON + `index_monthly.json` month-ends (for
 "nifty50", "niftybank"]` (18 KB / 5 KB for the two small ones); `all` or slugs on the CLI build more.
 The page's `REG[<ix>].surv` names the file; an index without one keeps the card hidden. **To add an
 index: slug into `DEFAULT`, `surv:'<slug>'` on its `REG` entry, a `feeds.json` row.**
-- **Roster-data caveats surfaced by the small indices (upstream `indicesHistory`, NOT this builder):**
-  Nifty 50 has 15 snapshots from 2015-09-28 and its roster in force is **2025-09-30** (the 2026-09-30
-  snapshot is future-dated; no 2026-03 reshuffle snapshot exists); Nifty Bank has 7 snapshots
-  2017-03-31 → 2024-09-30 and its 2017–2020 rosters carry **PAYTM** (One 97, listed Nov-2021 — an
-  impossible member; join price correctly null) and **KINDIA** (untraced). The card shows them as the
-  data says; fixing them is a `build_membership_v2.py` / register question, not a page one.
+- **Roster-data caveat that remains (upstream `indicesHistory`):** Nifty 50 has 15 snapshots from
+  2015-09-28 and its roster in force is **2025-09-30** (the 2026-09-30 snapshot is future-dated; no
+  2026-03 reshuffle snapshot exists). The Nifty Bank caveat (PAYTM / KINDIA) is HEALED — §141a.
 
 **Conventions (all measured 2026-09-21; docstring has the full list):**
 - A stint opens at the effectiveDate of the first snapshot carrying the name and closes at the
@@ -16723,3 +16720,59 @@ visibility convention: ours qe+28 d, theirs later), 1,030 cells whose quantmac v
 hold (123 stocks; DELHIVERY Dec-2022 9.2 vs 69.1, KALYANKJIL 2.36 vs 28.7 — smells like an FII definition
 split, unverified), 460 cells quantmac has with no filing on our side (PIRAMALFIN 168, HEXT 109, …), 20,009
 cells we hold that quantmac leaves blank.
+
+## 141a. ★★ NIFTY BANK ROSTERS HEALED — 2000→date from NSE's register + 12 archived lists  (2026-09-21)
+
+**Symptom (user, via the §141 card):** Nifty Bank's history had 7 snapshots 2017-03-31 → 2024-09-30 with
+14-15 names, carrying **PAYTM** (listed Nov-2021, an impossible 2017 member), **KINDIA** (no such tape)
+and UNIONBANK/YESBANK in every year. **Cause, measured:** `build_membership_v2.py` walks each index
+back from NSE's LIVE list through `_changelog.json` events and pins archived official CSVs
+(`_idx_official_snaps.json`) — Nifty Bank had **no pins** (the fetcher covered the 9 broad tiers only)
+and **no events before 2021** (the March-2020 Yes Bank swap sits in ind_prs12032020, which the COVID
+null rule dropped wholesale; the Dec-2025 widening is a criteria notice parse_pdf cannot read), so
+every pre-2021 date fell back to the old scrapbook rows (the junk), and today's 14 names (UNIONBANK,
+YESBANK joined 2025-12-31) were carried back to 2017 because their inclusion event was missing.
+
+**Sources (all NSE's own, no guessing):**
+- `scripts/_staleness_fix/IndexInclExcl.xls` has a **"Nifty Bank" sheet**: 28 dated inclusion/exclusion
+  events 2000-05-02 → 2020-03-19 (company names; Excel serial dates). `gen_bank_inclexcl_events.py`
+  maps the 20 bank names explicitly (verified against the bin meta: UTIBANK→AXISBANK era fold,
+  GLOBLTRUST, INGVYSYABK, SYNDIBANK, CORPBANK, ORIENTBANK, IDBI, IDFCBANK→IDFCFIRSTB …) →
+  `scripts/_bank_inclexcl_events.json` (force-tracked; `scripts/_*` is gitignored).
+- **12 archived official constituent CSVs** (Wayback: niftyindices `ind_niftybanklist.csv` 2017-10-22,
+  2018-05-19, 2023-08-12, 2024-09-28, 2026-08-27; nseindia `ind_cnxbanklist.csv` 2006-11-08, 2010-01-02,
+  2012-02-19, 2013-06-26, 2014-07-09, 2015-03-25; nseindia `ind_niftybanklist.csv` 2018-10-04) + LIVE,
+  fetched by `_idx_official_fetch.py --only "Nifty Bank"` (new: per-tier min size 10, header-aware
+  Symbol column for the 2006 layout, gunzip for gzip-stored captures, `--only` merges into the file).
+- Press releases: ind_prs12032020 (YESBANK out / BANDHANBNK in, effective 2020-03-19 per the register
+  and ind_prs19032020's early rebalance), ind_prs01122025 §B ("Inclusions in Nifty Bank index":
+  UNIONBANK, YESBANK effective 2025-12-31; index widened 12→14 for SEBI's F&O circular). Every
+  semi-annual review Mar-2025 → Sep-2026 says "No changes are being made in Nifty Bank".
+
+**Builder changes:** `load_inclexcl_register(fname)` now takes the ledger name; `merge_register_events()`
+(the Nifty 500 rule, as a function) merges the Bank register for idx == "Nifty Bank" (13 pre-changelog
+event-days, 0 gap days); `pin_report()` prints, for EVERY pinned sub-index, the walked roster vs each
+archived list BEFORE pinning (Nifty Bank: **off-by 0 at 11 of 12 pins**); `drop_prepublished_pins()`
+skips a capture that disagrees with the walk only because NSE published the reshuffled CSV a few days
+early (the 2024-09-28 capture already carried CANBK for BANDHANBNK, effective 2024-09-30 — pinning it
+would date the swap two days early; rule: pin == roster in force after an event ≤7 days later).
+`build_changelog.py`: the COVID null rule keeps Nifty Bank from 12032020 redated 2020-03-19; a manual
+FIX strips the bled "ITC" from that block (the "B. Replacement in NIFTY50 Value 20" heading is lettered,
+HEAD_RE misses it, its rows leak in); `MANUAL_CHANGELOG_EVENTS` adds the 2025-12-31 inclusion; tickers
+listed twice in a block are deduped. Committed `_changelog.json` carries both events; a scratch
+regeneration reproduced them.
+
+**Result (local rebuild on the 2026-09-21 `data` bin, then CI):** Nifty Bank = **29 snapshots
+2000-05-02 → 2026-08-27, exactly 12 names until 2025-12-31 and 14 after**, 0 scrapbook rows; every
+other index byte-identical; Nifty 500 validation 100% at all 39 archived lists. Survivorship card:
+24 rows (14 in · 4 left · 6 delisted · 0 untraced) — UNIONBANK 2003-03-01→2014-03-28 and 2025-12-31→,
+YESBANK 2012-04-27→2020-03-19 and 2025-12-31→, CANBK 2003-05-02→2018-04-02 and 2024-09-30→.
+
+**Propagation chain (each a dispatch, in this order):** `refresh-membership.yml` (regenerates
+`_changelog.json`, `indices_history.json`, `docs/stock_data.bin` on the live bin) → `refresh.yml`
+(`build_compressed.py` rebuilds `docs/dash_slim.bin` from `indices_history.json`) →
+`refresh-market-mood.yml` (`build_index_survivorship.py` reads dash_slim). The page reads only the last.
+
+**Leads not pursued:** a weekday probe of niftyindices press-release stems 2024-10 → 2026-09 found
+~275 PDFs absent from `build_changelog.py`'s FILES list (mostly daily notices); FILES + the 80-day
+auto-probe is what the parser sees — worth a sweep if another index shows an unexplained roster.

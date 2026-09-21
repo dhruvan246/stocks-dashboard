@@ -1269,7 +1269,9 @@ function survCell(r, k) {
     case 'n': return '<span title="' + esc(stintTitle(r)) + '">' + v + (v > 1 ? ' <span class="faint">ⓘ</span>' : '') + '</span>';
     case 'days': return (v / 365.25).toFixed(1);
     case 'joinPx': case 'exitPx': case 'lastPx': return money(v);
-    case 'retIn': case 'cagrIn': case 'idxIn': case 'relIn': case 'retSince': case 'retAfter': case 'maxDD':
+    case 'maxDD':                                   // a fall: never a "+", 0 = never traded below its peak
+      return v == null ? '—' : v >= -0.005 ? '<span class="faint">0.0%</span>' : '<span class="down">' + pctBig(v) + '</span>';
+    case 'retIn': case 'cagrIn': case 'idxIn': case 'relIn': case 'retSince': case 'retAfter':
       return v == null ? '—' : '<span class="' + cls(v) + '">' + pctBig(v) + '</span>';
     case 'sector': case 'industry': return v == null ? '—' : '<span class="el" title="' + esc(v) + '">' + esc(v) + '</span>';
     case 'mcap': return v == null ? '—' : fmt(v, 0);

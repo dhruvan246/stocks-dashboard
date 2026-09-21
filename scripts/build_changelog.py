@@ -192,7 +192,33 @@ MANUAL_CHANGELOG_FIXES = [
     #    (Wayback checkpoint) and NO other event exists between 2020-06-26 and 2020-07-25; their only other
     #    add (Feb-18-2020) was nulled. Without this they phantom-extend back to listing (Jan-May 2020). 2026-07-10.
     ("Nifty 500", "2020-06-26", set(), set(), set(), {"IRCTC", "SWSOLAR"}),
+    #  - ind_prs12032020 (Nifty Bank, redated 2020-03-19 above): the notice's next section "B. Replacement
+    #    in NIFTY50 Value 20 index" is a lettered heading HEAD_RE does not recognise, so its rows (excluded
+    #    Yes Bank, included ITC) bleed into the Nifty Bank block — ITC as a pre-2020 Nifty Bank member.
+    #    The Nifty Bank swap is exactly YESBANK out / BANDHANBNK in (NSE register, same date). 2026-09-21.
+    ("Nifty Bank", "2020-03-19", set(), set(), {"ITC"}, set()),
 ]
+
+# Whole events parse_pdf cannot see because the notice is not a reconstitution review. Each:
+# (index, eff, [excluded], [included], src stem, why). Added only when no event with that index+eff+src
+# exists (the parser never produces one for these layouts, so the add is idempotent across runs).
+#  - ind_prs01122025 (eff 2025-12-31): "Revision in criteria for Nifty indices and inclusions in Nifty
+#    Bank index" — Nifty Bank widened from 12 to 14 names for SEBI's F&O eligibility circular; section B
+#    "Inclusions in Nifty Bank index": Union Bank of India UNIONBANK, Yes Bank Ltd. YESBANK, "effective
+#    from December 31, 2025 (close of December 30, 2025)". Corroborated by NSE's archived constituent
+#    list of 2026-08-27 (14 names, both present) vs 2024-09-28 (12, neither). 2026-09-21, runbook §141a.
+MANUAL_CHANGELOG_EVENTS = [
+    ("Nifty Bank", "2025-12-31", [], ["UNIONBANK", "YESBANK"], "01122025",
+     "index widened 12->14 (SEBI F&O eligibility), ind_prs01122025 section B"),
+]
+
+def apply_manual_events(changelog):
+    for idx, eff, exc, inc, src, why in MANUAL_CHANGELOG_EVENTS:
+        ev = changelog.setdefault(idx, [])
+        if any(c["eff"] == eff and c["src"] == src for c in ev):
+            continue
+        ev.append({"eff": eff, "excluded": list(exc), "included": list(inc), "src": src})
+        print(f"  MANUAL EVENT {idx} {eff}: -{exc} +{inc} ({why})")
 
 def apply_manual_fixes(changelog):
     for idx, eff, rmx, adx, rmi, adi in MANUAL_CHANGELOG_FIXES:
@@ -229,12 +255,19 @@ def main():
     # So: DROP every parsed event from srcs 18022020/12032020 except Nifty 50/Nifty Bank from 18022020,
     # which are redated to 2020-03-19. (Without this, ALKYLAMINE/DHANUKA/GMMPFAUDLR/SUMICHEM etc. appear
     # in Nifty 500 from 2020-03-27 though they only entered 2020-06-26 — caught by a StockView cross-check.)
+    # 2026-09-21 (runbook §141a): the Nifty BANK leg of that early rebalance is NOT in 18022020 (which
+    # says "no changes ... NIFTY Bank") but in ind_prs12032020 ("Replacement on account of
+    # non-availability of F&O contracts: NIFTY Bank — excluded Yes Bank YESBANK, included Bandhan Bank
+    # BANDHANBNK"), which the rule above nulled wholesale — so the Nifty Bank changelog began in 2021 and
+    # YESBANK never left. NSE's own register dates that swap 2020-03-19 (IndexInclExcl.xls, Nifty Bank
+    # sheet); keep it, redated like the Nifty 50 leg.
     nulled = 0
     for idx in list(changelog):
         kept = []
         for c in changelog[idx]:
             if c["src"] in ("18022020", "12032020"):
-                if idx in ("Nifty 50", "Nifty Bank") and c["src"] == "18022020":
+                if (idx == "Nifty 50" and c["src"] == "18022020") or \
+                   (idx == "Nifty Bank" and c["src"] in ("18022020", "12032020")):
                     c = dict(c, eff="2020-03-19")
                 else:
                     nulled += 1; continue
@@ -262,8 +295,11 @@ def main():
         changelog["Nifty 500"] = n5
         print(f"  HUNT OVERLAY (Nifty 500): {len(hunt)} hunted docs win over {len(hstems)} stems")
     apply_manual_fixes(changelog)
+    apply_manual_events(changelog)
     for idx in sorted(changelog):
         ch = changelog[idx]; ch.sort(key=lambda x: x["eff"])
+        for c in ch:                                     # a ticker listed twice in one block is one event
+            c["excluded"] = list(dict.fromkeys(c["excluded"])); c["included"] = list(dict.fromkeys(c["included"]))
         nx = sum(len(c["excluded"]) for c in ch); ni = sum(len(c["included"]) for c in ch)
         print(f"  {idx:22s}: {len(ch):3d} events, {nx:3d} out / {ni:3d} in   {ch[0]['eff']}..{ch[-1]['eff']}")
     json.dump(changelog, open(os.path.join(HERE, "_changelog.json"), "w"), indent=0)
