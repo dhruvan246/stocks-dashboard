@@ -1812,6 +1812,10 @@ async function liveQuote(){
     $('rwPick').min=isoOff(s0.d[0]); $('rwPick').max=isoOff(stkEndOff());
     $('rwGo').onclick=()=>{ const v=$('rwPick').value; if(v) applyRewind(v); };
     $('rwExit').onclick=exitRewind;
+    // ?asof=YYYY-MM-DD deep link (index-chart.html survivorship table, "Rewind" button): open the page
+    // already rewound to that date. applyRewind clamps it to this stock's own bar range.
+    const asofQ=new URLSearchParams(location.search).get('asof');
+    if(asofQ&&/^\d{4}-\d{2}-\d{2}$/.test(asofQ)){ $('rwPick').value=asofQ; applyRewind(asofQ); }
   }
   liveQuote();
   setInterval(()=>{ if(!document.hidden&&liveMarketOpen()) liveQuote(); },60000);

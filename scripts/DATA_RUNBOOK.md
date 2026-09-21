@@ -16596,3 +16596,51 @@ upsert was writing). Then `settle_stale_holds.py --apply` settled both holds "ou
   log (`gh run view <id> --log`, the "upserted N quarters" line).
 - *A stale `stopped_filing_con` entry is a live writer:* any future manual `purge_copied_con.py --apply` would have re-nulled
   the cell. Retract the entry, not just the symptom.
+
+## 141. ★★ INDEX SURVIVORSHIP TABLE — every stock EVER in an index, with a Rewind per row  (index-chart.html, built 2026-09-21)
+
+**What it is (user ask, 2026-09-21):** on `index-chart.html?ix=nifty500` a card "Every member, ever" —
+one row per stock that was EVER a Nifty 500 member (the survivors AND every name that left: dropped,
+merged, delisted), every column sortable, and a **Rewind** button per row that opens the stock page as
+the market saw it on the day the stock joined (`stock.html?sym=X&asof=YYYY-MM-DD`, a new deep link
+that pre-applies the page's existing Rewind). Nifty 500 first; the user will say when to extend it
+to the other indices.
+
+**Builder:** `scripts/build_index_survivorship.py` → `docs/survivorship/<slug>.json` (Nifty 500 =
+383 KB, 1,425 rows). Reads the LIVE sf bin (`SF_BIN=`, the `data` release asset in CI — never the
+frozen committed copy, §0), `docs/dash_slim.bin` `indicesHistory[<name>]` (the engine's own
+event-driven snapshots, 339 for Nifty 500 from 1998-08-01), `scripts/_rename_map.json` (fold),
+sf/dash_slim meta (name, sector, industry, ISIN, mcap), `docs/sector_classification.json`, and the
+index level from the per-index daily JSON + `index_monthly.json` month-ends (for "index, same span").
+`INDEXES` maps 27 slugs → (indicesHistory name, daily file, monthly key); `DEFAULT = ["nifty500"]`;
+`all` or slugs on the CLI build more. The page's `REG[<ix>].surv` names the file; an index without
+one keeps the card hidden. **To extend to another index: add its slug to `DEFAULT` (or the CLI),
+add `surv:'<slug>'` to its `REG` entry, and a `feeds.json` row.**
+
+**Conventions (all measured 2026-09-21; docstring has the full list):**
+- A stint opens at the effectiveDate of the first snapshot carrying the name and closes at the
+  effectiveDate of the first later snapshot without it. Roster in force = latest snapshot ≤ bin end
+  (2026-07-17); a later-dated snapshot is an ANNOUNCED reshuffle — reported in `upcoming` only when
+  it actually differs (the 2026-09-30 one is byte-identical to 2026-07-17, so `upcoming: null`).
+- A name in the FIRST snapshot is `fromStart` — shown as "≤ 1 Aug 1998": already a member when the
+  record begins, the real join is earlier. 452 of 1,425 rows.
+- `DUMMY*` dropped; DVR lines KEPT (TATAMTRDVR is a row — a security officially in the index),
+  unlike the breadth builders. Rosters are current-keyed: 1,420 direct, 0 folds, 5 unresolved
+  pre-2004 names (ADCINDIA ASIIL ATVPR ITHL TCIIND) → status `untraced`, no prices.
+- Prices = adjusted closes: join = first bar on/after the join date, exit = last bar BEFORE the exit
+  effectiveDate, each within 45 days else null (30 rows have no join price). `retIn` compounds every
+  stint (YESBANK: +22% then +74% = +112% "in index" while buy-and-hold `retSince` is −53% — both are
+  right, they answer different questions). `idxIn` needs a level at both ends of every window.
+- Status: `in` (500) / `out` = left and `meta.alive` (494) / `dead` = left and not alive (426) /
+  `untraced` (5). Anchors: RELIANCE in since ≤1998, +13,170% vs index +3,577%; SATYAMCOMP dead, left
+  2009-01-12; JETAIRWAYS 2 stints, dead; BAJFINANCE top retIn +408,420% from an adjusted ₹0.25.
+
+**CI:** `refresh-market-mood.yml` (weekdays 21:35 IST, same fresh bin) runs the builder after the
+PIT breadth step and rides its cp-to-/tmp + cp-back + `git add docs/survivorship/*.json` lists
+(the §18 reset-and-replay gotcha). `feeds.json` row: min 200 KB, ratio 0.8, page index-chart.html.
+
+**Page (§39 gate run 2026-09-21):** filter pills (All / In index / Left / Delisted / No series) with
+counts, search over symbol/name/sector/industry/ISIN, 23 sortable columns (numbers descend on the
+first click, blanks always sink), 100 rows + "Show all", stint list on the Stints ⓘ hover, the
+theme's `.sw-scrollx` holder with the Stock column pinned, footnote naming every convention.
+`sw.js` v152.
