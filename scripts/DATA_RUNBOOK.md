@@ -16890,6 +16890,15 @@ ICICIBANK Mar-13 38.0474, HCC Dec-14 12.0334. The 69 pre-existing "stored cell i
 bad value" warnings (AFSL, BBTC, UPL, RESPONIND …) are unchanged by this commit — they were there with the HEAD ledger
 and belong to §22h re-adjudication.
 
+**Class sweep (second commit, same day):** every stored cell Sep-2014..Dec-2015 with a BSE code (3,452 cells, 678 symbols)
+re-read from its Clause-35 page (scratchpad `fpi_sweep.py`): 36 cells hold the FII row alone while the page prints FPI/FVCI
+rows — 26 were already in the first batch, **10 more corrected** (IGARASHI, IL&FSTRANS Dec-2013 from the cached-page census,
+KIRLOSBROS, KPRMILL, MARICO Jun/Sep-2015 FVCI 0.74, NAVKARCORP, PHOENIXLTD Mar/Jun-2015 FVCI, TAKE). Where an SW-2 phase-2
+entry had set dii deliberately (MARICO, PHOENIXLTD) only fii moves and the entry is chained via `superseded`. 20 pages have
+no FII row at all (Dec-2015 QFI-label era, TVTODAY/WSTCSTPAPR/INDIAGLYCO …) and were not touched; 4 pages parse no category
+rows; RTNPOWER Dec-2014 page cache is corrupt (re-fetch before judging it). The class is closed for this window; pre-Sep-2014
+pages carry no separate FPI row (SEBI created the category in 2014), so it cannot exist earlier.
+
 **Left open / not ours to change:** BRFL's Standard Chartered Bank block (2.56 → 1.93, 19 cells) keeps the sweep's
 hand-curated "domestic" verdict — quantmac counts it foreign, no filer classification either way (BRFL never filed
 the new format); the wider census of store-vs-page-ledger disagreements after Mar-2016 (1,012 cells) is dominated by
