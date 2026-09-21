@@ -324,6 +324,27 @@ def main():
             del pending[k]
 
     filled = []; newly_pending = []; unfiled = 0; asked = 0
+    # ---- insurer-inbox self-heal: apply_insurer_inbox marks an entry "applied" BEFORE the job's commit
+    # step; if a later step fails, the values are lost while the inbox believes they were filed (twice
+    # on 2026-09-22). Any applied entry whose cell is still EMPTY in the store gets its flag cleared so
+    # the next inbox pass files it again. Read-only when nothing needs healing; skipped offline.
+    if not a.dry:
+        try:
+            import apply_insurer_inbox as AI
+            box = AI.rpc("sw_kv_get", {"k": "INSURER_INBOX"})
+            healed = 0
+            if isinstance(box, list):
+                for e in box:
+                    if isinstance(e, dict) and e.get("applied") and not e.get("rejected") \
+                       and stored(fund, e.get("sym"), int(e.get("qe") or 0), "con") is None \
+                       and stored(fund, e.get("sym"), int(e.get("qe") or 0), "std") is None:
+                        e.pop("applied", None); e["note"] = (e.get("note") or "") + " | applied-flag cleared by reconcile_missing_quarters %s: cell still empty in the store" % today
+                        healed += 1
+                if healed:
+                    ok = AI.rpc("sw_kv_set", {"secret": AI.WRITE, "k": "INSURER_INBOX", "payload": box})
+                    print("insurer-inbox self-heal: %d entry(ies) re-opened (kv write %s)" % (healed, ok))
+        except Exception as e:
+            print("insurer-inbox self-heal skipped: %s" % str(e)[:80])
     # ---- manual anchored reads (scripts/manual_result_reads.json): a human read of an image-only filing.
     # Same gate as an automated read: year-ago (and preceding, when held) must reproduce the store.
     manual = load_json(MANUAL, [])

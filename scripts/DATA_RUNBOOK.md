@@ -17114,3 +17114,21 @@ are the place to start; the pin table above says where it matters most (Midcap 5
 100, Midcap 150). (2) The derived tiers inherit their parents' walk errors between pins. (3) Nifty
 Realty walks down to 6 names in 2007-11 (missing early inclusions). To add pins later: the fetcher is
 additive — `cd scripts && python3 _idx_official_fetch.py --only "<tier>" …`, then rebuild.
+
+### 143a. What the first CI runs taught (2026-09-22, 01:24–02:00 IST) — all fixed the same night
+1. **CI image ≠ local venv.** `bse_text` imports `bse_vision` → numpy/cv2, absent in the runner; the step crashed
+   on import while the local dry run (venv has both) passed. Guard now imports `bse_text` with a stub `bse_vision`
+   when those are missing (parse_pdf needs neither). Prove a new step under a SIMULATED image
+   (`sys.modules['numpy']=None`) before dispatching — "measure what ships".
+2. **`apply_insurer_inbox.py` wrote the announce date as a str** ("20260730"); `fill_ann_dates.py` then died on
+   `'<=' str vs int` and the whole job failed AFTER the inbox had marked both entries "applied" — values lost,
+   inbox happy. Fixed: `ann = int(...)`; and the guard now clears the `applied` flag on any inbox entry whose cell
+   is still empty in the store (self-heal, every nightly).
+3. **The commit step's ledger-restore merge was dict-only** (`{**snap, **cur}`); the guard's `bse_result_fills.json`
+   and `manual_result_reads.json` are lists → `'list' object is not a mapping` → EVERY refresh run's commit step
+   failed from the moment the manual ledger was committed (01:41) until the fix (01:55). Merge now unions lists.
+4. **Gemini free-tier quota was already exhausted** (429 RESOURCE_EXHAUSTED) when the guard first ran, so the two
+   image-only filings (MCX, ABBOTINDIA) could not be machine-read. Added `scripts/manual_result_reads.json`: a
+   human/vision read (cur, prev, yago per basis) that the guard applies ONLY when the same double anchor holds
+   (a wrong triplet is rejected and stays visible). MCX std 327.32 / con 413.44 and ABBOTINDIA 428.52 landed
+   that way, anchors exact to the paisa.
