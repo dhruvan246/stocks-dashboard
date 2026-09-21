@@ -559,6 +559,55 @@ def insert_weekend_sessions(data, j, old2new=None):
     return total
 
 
+def apply_bar_inserts(data):
+    """Per-(symbol, session) bar inserts the missing-day path left out (scripts/bar_inserts.json,
+    DATA_RUNBOOK §106h). insert_weekend_sessions() re-homes a day's bhavcopy rows once and then treats
+    the day as done (RELIANCE/SBIN/ITC carry the bar), so a row it skipped stays out forever. Two skip
+    classes measured 2026-09-21 on the §106b sessions: (a) the as-printed era symbol is ALSO a bin key —
+    a dead fragment (TATAMOTORS: 845 stray bars, alive=False) — so _survivor() kept the bar there and the
+    survivor series (TMPV) got nothing on all 10 dates; (b) the anchor guard's 0.01 floor rejected a
+    series whose cumulative adjustment is two 1:10 splits (BAJFINANCE pre-2016: f = 0.0097).
+
+    Ledger rows are RAW NSE values (bhavcopy OHLC / volume / turnover in lacs + MTO delivery %, volume-
+    identity checked at build) plus the ANCHOR bar's date and raw close. Nothing is pre-scaled: at apply
+    time f = stored close of the anchor bar / its raw close puts the bar on the series' CURRENT adjusted
+    level — the day-insert's own rule — so a later corporate action that re-anchors history can never
+    double-scale these bars. Idempotent: a symbol that already holds the date is skipped; a row whose
+    anchor bar is absent, or whose scaled close sits outside 0.6-1.6x the anchor, is left out and
+    reported (never guessed). Rows apply in (symbol, date) order so a row may anchor on an earlier row."""
+    import bisect
+    lp = os.path.join(HERE, "bar_inserts.json")
+    if not os.path.exists(lp): return 0
+    try:
+        rows = json.load(open(lp)).get("rows") or []
+    except Exception as ex:
+        print("  bar-inserts ledger unreadable (%s) — skipped" % ex); return 0
+    ins = 0
+    for r in sorted(rows, key=lambda r: (r["sym"], int(r["ymd"]))):
+        sym, ymd = r["sym"], int(r["ymd"]); e = data.get(sym)
+        if not e or not e.get("d") or any(k not in e for k in ("c", "t", "h", "l", "op", "v", "dv", "vw")):
+            print("  BAR-INSERT %s %d: series absent — left out" % (sym, ymd)); continue
+        ds = e["d"]; i = bisect.bisect_left(ds, ymd)
+        if i < len(ds) and ds[i] == ymd: continue           # steady state — already holds the bar
+        a = r.get("anchor") or {}; aymd = int(a.get("ymd") or 0); ai = bisect.bisect_left(ds, aymd)
+        if not (a.get("c") and ai < len(ds) and ds[ai] == aymd and ai < i):
+            print("  BAR-INSERT %s %d: anchor bar %d not in series — left out" % (sym, ymd, aymd)); continue
+        f = e["c"][ai] / float(a["c"])
+        c = round(float(r["c"]) * f, 2)
+        if not (0.001 < f < 100) or not (0.6 <= c / e["c"][ai] <= 1.6):
+            print("  BAR-INSERT %s %d: implausible (f=%.5f, close/anchor %.3f) — left out" % (sym, ymd, f, c / e["c"][ai])); continue
+        h = round(max(float(r["h"]), float(r["c"])) * f, 2)
+        l = round((min(float(r["l"]), float(r["c"])) if float(r["l"]) > 0 else float(r["c"])) * f, 2)
+        o = round(float(r["o"]) * f, 2) if float(r.get("o") or 0) > 0 else c
+        vw = round(float(r["vw"]) * f, 2) if float(r.get("vw") or 0) > 0 else c
+        e["d"].insert(i, ymd); e["c"].insert(i, c); e["t"].insert(i, round(float(r["tl"]), 1))
+        e["h"].insert(i, h); e["l"].insert(i, l); e["op"].insert(i, o)
+        e["v"].insert(i, int(r["v"])); e["dv"].insert(i, round(float(r.get("dv") or 0), 2)); e["vw"].insert(i, vw)
+        ins += 1
+        print("  BAR-INSERT %s %d: inserted (f=%.5f, close %.2f, anchor %d)" % (sym, ymd, f, c, aymd))
+    return ins
+
+
 def normalize_turnover_units(data):
     """Force every stored turnover onto ONE unit: ₹ LACS. Returns bars converted.
 
@@ -1005,6 +1054,8 @@ def main():
     if ao: print("Open-arbitrated corporate actions: %d applied." % ao)
     wk = insert_weekend_sessions(data, j, {(o["old"] if isinstance(o, dict) else o): n for n, o in MANUAL_MERGE.items()})   # backfill missing weekend special sessions (budget Sats etc.); old->new so merged-away tickers' sessions land on the survivor
     if wk: print("Weekend special sessions: %d bars inserted." % wk)
+    bi = apply_bar_inserts(data)   # per-(symbol, session) rows the day-insert skipped (scripts/bar_inserts.json, §106h)
+    if bi: print("Bar inserts: %d bars inserted." % bi)
     for day in days:
         rows = B.fetch_day(day, j)
         if not rows:
@@ -1132,8 +1183,8 @@ def main():
     # refreshes the on-disk bin but does NOT publish the release, bump clients, or commit a marker.
     blob = gzip.compress(json.dumps(D, separators=(",", ":")).encode(), 6)
     open(OUT, "wb").write(blob)
-    if not appended and not healed and not merged and not mr and not ao and not dvf and not dvo and not wk and not bz and not sg and not tunits and not dead and not _n:
-        print("No new day / heal / merge / manual-rights / open-arbitrated CA / dv-fill / dv-overwrite / weekend-insert / BZ-backfill / series-surgery / turnover-unit fix / aliveness decay / industry fill — rewrote merged base to %s (%.2f MB); nothing to publish." % (OUT, len(blob) / 1048576)); return
+    if not appended and not healed and not merged and not mr and not ao and not dvf and not dvo and not wk and not bi and not bz and not sg and not tunits and not dead and not _n:
+        print("No new day / heal / merge / manual-rights / open-arbitrated CA / dv-fill / dv-overwrite / weekend-insert / bar-insert / BZ-backfill / series-surgery / turnover-unit fix / aliveness decay / industry fill — rewrote merged base to %s (%.2f MB); nothing to publish." % (OUT, len(blob) / 1048576)); return
     open(MARK, "w").write(D["end"])
     # tiny version marker — committed daily, lets the browser cache the big bin in IndexedDB
     # keyed to this `end` and skip re-downloading 80 MB until the data actually changes.

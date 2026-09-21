@@ -1,0 +1,280 @@
+{
+ "_meta": {
+  "built": "2026-09-21",
+  "rule": "RAW NSE bhavcopy OHLC/volume/turnover(lacs) + MTO delivery %; scaled at apply time by f = stored close of the anchor bar / anchor raw close (update_sf_data.apply_bar_inserts); fill-only where the (sym,date) bar is absent; rows apply in (sym,date) order so 2010-10-26 / 2017-03-27 anchor on the ledger's own 2010-10-14 / 2017-03-24 rows",
+  "why": "the \u00a7106b missing-session insert skipped these rows: TMPV because the as-printed symbol TATAMOTORS is itself a (dead) bin key so _survivor() kept the bar on that fragment; BAJFINANCE because its cumulative adjustment (two 1:10 splits) put f=0.0097 under the inserter's 0.01 floor. DATA_RUNBOOK \u00a7106h",
+  "src": "cm<DDMONYYYY>bhav.csv.zip + MTO_DDMMYYYY.DAT from nsearchives.nseindia.com, fetched 2026-09-21; anchor raw close == the session's own PREVCLOSE (except 2010-10-26 rows, see note); two-sided f agreement within 0.5% + 2-dp rounding on every directly-anchored row"
+ },
+ "rows": [
+  {
+   "sym": "TMPV",
+   "ymd": 20090331,
+   "as": "TATAMOTORS",
+   "o": 170.0,
+   "h": 185.7,
+   "l": 170.0,
+   "c": 180.3,
+   "v": 6423571,
+   "tl": 11604.0398,
+   "dv": 21.06,
+   "anchor": {
+    "ymd": 20090330,
+    "c": 172.0
+   },
+   "note": "",
+   "src": "nsearchives cm20090331bhav.csv.zip (TOTTRDVAL/1e5 -> lacs) + MTO_20090331.DAT traded 6423571 == TOTTRDQTY"
+  },
+  {
+   "sym": "TMPV",
+   "ymd": 20101014,
+   "as": "TATAMOTORS",
+   "o": 1178.0,
+   "h": 1195.0,
+   "l": 1171.55,
+   "c": 1183.25,
+   "v": 2642230,
+   "tl": 31305.0383,
+   "dv": 42.36,
+   "anchor": {
+    "ymd": 20101013,
+    "c": 1176.35
+   },
+   "note": "",
+   "src": "nsearchives cm20101014bhav.csv.zip (TOTTRDVAL/1e5 -> lacs) + MTO_20101014.DAT traded 2642230 == TOTTRDQTY"
+  },
+  {
+   "sym": "TMPV",
+   "ymd": 20101026,
+   "as": "TATAMOTORS",
+   "o": 1185.8,
+   "h": 1200.0,
+   "l": 1178.55,
+   "c": 1194.75,
+   "v": 2814639,
+   "tl": 33495.7876,
+   "dv": 37.01,
+   "anchor": {
+    "ymd": 20101014,
+    "c": 1183.25
+   },
+   "note": "previous trading day 2010-10-25 is absent bin-wide (15-25 Oct 2010 hole) \u2014 anchors on the ledger's own 2010-10-14 row; PREVCLOSE check n/a",
+   "src": "nsearchives cm20101026bhav.csv.zip (TOTTRDVAL/1e5 -> lacs) + MTO_20101026.DAT traded 2814639 == TOTTRDQTY"
+  },
+  {
+   "sym": "TMPV",
+   "ymd": 20140221,
+   "as": "TATAMOTORS",
+   "o": 395.0,
+   "h": 397.8,
+   "l": 392.85,
+   "c": 396.2,
+   "v": 6329199,
+   "tl": 25004.0601,
+   "dv": 61.02,
+   "anchor": {
+    "ymd": 20140220,
+    "c": 391.85
+   },
+   "note": "",
+   "src": "nsearchives cm20140221bhav.csv.zip (TOTTRDVAL/1e5 -> lacs) + MTO_20140221.DAT traded 6329199 == TOTTRDQTY"
+  },
+  {
+   "sym": "TMPV",
+   "ymd": 20141014,
+   "as": "TATAMOTORS",
+   "o": 498.9,
+   "h": 500.2,
+   "l": 486.1,
+   "c": 488.0,
+   "v": 3845609,
+   "tl": 18869.0989,
+   "dv": 40.93,
+   "anchor": {
+    "ymd": 20141013,
+    "c": 496.25
+   },
+   "note": "",
+   "src": "nsearchives cm20141014bhav.csv.zip (TOTTRDVAL/1e5 -> lacs) + MTO_20141014.DAT traded 3845609 == TOTTRDQTY"
+  },
+  {
+   "sym": "TMPV",
+   "ymd": 20150903,
+   "as": "TATAMOTORS",
+   "o": 326.2,
+   "h": 339.8,
+   "l": 326.2,
+   "c": 333.55,
+   "v": 8138855,
+   "tl": 27227.7813,
+   "dv": 52.45,
+   "anchor": {
+    "ymd": 20150902,
+    "c": 324.45
+   },
+   "note": "",
+   "src": "nsearchives cm20150903bhav.csv.zip (TOTTRDVAL/1e5 -> lacs) + MTO_20150903.DAT traded 8138855 == TOTTRDQTY"
+  },
+  {
+   "sym": "TMPV",
+   "ymd": 20160817,
+   "as": "TATAMOTORS",
+   "o": 511.1,
+   "h": 514.25,
+   "l": 505.85,
+   "c": 510.4,
+   "v": 5853980,
+   "tl": 29883.7806,
+   "dv": 50.02,
+   "anchor": {
+    "ymd": 20160816,
+    "c": 507.6
+   },
+   "note": "",
+   "src": "nsearchives cm20160817bhav.csv.zip (TOTTRDVAL/1e5 -> lacs) + MTO_20160817.DAT traded 5853980 == TOTTRDQTY"
+  },
+  {
+   "sym": "TMPV",
+   "ymd": 20161117,
+   "as": "TATAMOTORS",
+   "o": 460.0,
+   "h": 476.0,
+   "l": 459.65,
+   "c": 472.85,
+   "v": 8949767,
+   "tl": 42102.4504,
+   "dv": 44.94,
+   "anchor": {
+    "ymd": 20161116,
+    "c": 458.45
+   },
+   "note": "",
+   "src": "nsearchives cm20161117bhav.csv.zip (TOTTRDVAL/1e5 -> lacs) + MTO_20161117.DAT traded 8949767 == TOTTRDQTY"
+  },
+  {
+   "sym": "TMPV",
+   "ymd": 20170324,
+   "as": "TATAMOTORS",
+   "o": 470.75,
+   "h": 474.8,
+   "l": 467.55,
+   "c": 470.4,
+   "v": 4296510,
+   "tl": 20244.6646,
+   "dv": 49.29,
+   "anchor": {
+    "ymd": 20170323,
+    "c": 472.9
+   },
+   "note": "",
+   "src": "nsearchives cm20170324bhav.csv.zip (TOTTRDVAL/1e5 -> lacs) + MTO_20170324.DAT traded 4296510 == TOTTRDQTY"
+  },
+  {
+   "sym": "TMPV",
+   "ymd": 20170327,
+   "as": "TATAMOTORS",
+   "o": 469.0,
+   "h": 469.15,
+   "l": 462.1,
+   "c": 464.75,
+   "v": 4417413,
+   "tl": 20537.2081,
+   "dv": 57.07,
+   "anchor": {
+    "ymd": 20170324,
+    "c": 470.4
+   },
+   "note": "",
+   "src": "nsearchives cm20170327bhav.csv.zip (TOTTRDVAL/1e5 -> lacs) + MTO_20170327.DAT traded 4417413 == TOTTRDQTY"
+  },
+  {
+   "sym": "BAJFINANCE",
+   "ymd": 20090331,
+   "as": "BAJAUTOFIN",
+   "o": 65.6,
+   "h": 71.95,
+   "l": 63.8,
+   "c": 69.85,
+   "v": 21877,
+   "tl": 14.7997,
+   "dv": 78.74,
+   "anchor": {
+    "ymd": 20090330,
+    "c": 66.45
+   },
+   "note": "stored neighbours are 0.64 / 0.70 (two later 1:10 splits); 2-dp rounding of the anchors alone moves f by up to ~1.5%, so the two-sided check uses a rounding-aware tolerance; the inserted close carries the same \u00b10.01 precision as its neighbours",
+   "src": "nsearchives cm20090331bhav.csv.zip (TOTTRDVAL/1e5 -> lacs) + MTO_20090331.DAT traded 21877 == TOTTRDQTY"
+  },
+  {
+   "sym": "BAJFINANCE",
+   "ymd": 20101014,
+   "as": "BAJFINANCE",
+   "o": 798.0,
+   "h": 807.0,
+   "l": 798.0,
+   "c": 805.4,
+   "v": 47108,
+   "tl": 378.7213,
+   "dv": 82.48,
+   "anchor": {
+    "ymd": 20101013,
+    "c": 797.6
+   },
+   "note": "",
+   "src": "nsearchives cm20101014bhav.csv.zip (TOTTRDVAL/1e5 -> lacs) + MTO_20101014.DAT traded 47108 == TOTTRDQTY"
+  },
+  {
+   "sym": "BAJFINANCE",
+   "ymd": 20101026,
+   "as": "BAJFINANCE",
+   "o": 788.0,
+   "h": 797.9,
+   "l": 775.2,
+   "c": 783.95,
+   "v": 8898,
+   "tl": 70.2364,
+   "dv": 63.06,
+   "anchor": {
+    "ymd": 20101014,
+    "c": 805.4
+   },
+   "note": "previous trading day 2010-10-25 is absent bin-wide (15-25 Oct 2010 hole) \u2014 anchors on the ledger's own 2010-10-14 row; PREVCLOSE check n/a",
+   "src": "nsearchives cm20101026bhav.csv.zip (TOTTRDVAL/1e5 -> lacs) + MTO_20101026.DAT traded 8898 == TOTTRDQTY"
+  },
+  {
+   "sym": "BAJFINANCE",
+   "ymd": 20140221,
+   "as": "BAJFINANCE",
+   "o": 1505.1,
+   "h": 1540.0,
+   "l": 1501.05,
+   "c": 1529.65,
+   "v": 10910,
+   "tl": 166.204,
+   "dv": 88.07,
+   "anchor": {
+    "ymd": 20140220,
+    "c": 1512.3
+   },
+   "note": "",
+   "src": "nsearchives cm20140221bhav.csv.zip (TOTTRDVAL/1e5 -> lacs) + MTO_20140221.DAT traded 10910 == TOTTRDQTY"
+  },
+  {
+   "sym": "BAJFINANCE",
+   "ymd": 20141014,
+   "as": "BAJFINANCE",
+   "o": 2721.0,
+   "h": 2787.0,
+   "l": 2700.0,
+   "c": 2727.7,
+   "v": 62914,
+   "tl": 1729.6424,
+   "dv": 14.2,
+   "anchor": {
+    "ymd": 20141013,
+    "c": 2687.3
+   },
+   "note": "",
+   "src": "nsearchives cm20141014bhav.csv.zip (TOTTRDVAL/1e5 -> lacs) + MTO_20141014.DAT traded 62914 == TOTTRDQTY"
+  }
+ ]
+}

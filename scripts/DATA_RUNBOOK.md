@@ -11859,6 +11859,46 @@ survivorship-biased before calling the row unmappable** — and resolve through 
 
 ---
 
+### 106h. ★★ TMPV + BAJFINANCE HAD NO BAR ON THE §106b SESSIONS — two inserter skip classes, fixed by a per-(symbol, session) ledger  (2026-09-21)
+Found while filling the 10 whole-day delivery holes (§88b addendum): on those same sessions **TMPV had no
+bar on all 10 dates** and **BAJFINANCE on 5** (2009-03-31, 2010-10-14, 2010-10-26, 2014-02-21, 2014-10-14),
+although both trade on both sides. Measured causes in `insert_weekend_sessions()`:
+- **(a) dead-fragment capture.** `_survivor()` never redirects a symbol the bin holds under its own name —
+  and TATAMOTORS IS a bin key: an 845-bar dead fragment (1996-2003 pre-rename history + 1-4 stray
+  special-session bars a year to 2025, ISIN INE155A01022, alive=False). So the day's TATAMOTORS row anchored
+  on the fragment: on 6 dates it landed there scaled off the fragment's own stray bars (2014-02-21 stored
+  455.42 vs the correct 227.33 on TMPV's level), on 4 the 0.6-1.6 plausibility gate rejected it. TMPV got
+  nothing either way. `_rename_map` has TATAMOTORS→TMPV, but the own-key rule wins.
+- **(b) the anchor floor.** `0.01 < f` rejects a series whose cumulative adjustment is exactly two 1:10
+  splits: BAJFINANCE pre-2016 sits at f = 0.0097 (splits 2016-09-08 + 2025-06-16, ×0.01, plus a rights
+  term). 2015-09-03 squeaked through at f = 0.0100001; the earlier five did not.
+- **(c) no second chance.** The day-level steady-state guard (RELIANCE/SBIN/ITC hold the bar → skip the
+  whole day) means a skipped row is never revisited, so neither cause can be healed by re-running.
+**Fix — `scripts/bar_inserts.json` + `apply_bar_inserts()` in update_sf_data.py** (runs right after the
+day-insert, in the publish gate as `bi`). Rows carry RAW NSE values (bhavcopy OHLC/volume/turnover-in-
+lacs, MTO delivery % with `traded == TOTTRDQTY` asserted) plus the ANCHOR bar's date and raw close;
+nothing pre-scaled — f = stored close of the anchor / anchor raw close is computed at apply time (the
+day-insert's own rule), so a later CA that re-anchors history cannot double-scale them. Floor 0.001.
+Idempotent (15 inserted, then 0). Rows apply in (sym, date) order so 2010-10-26 and 2017-03-27 anchor
+on the ledger's own 10-14 / 03-24 rows. Build-time checks: anchor raw close == the session's PREVCLOSE
+(except 10-26, whose PREVCLOSE is the bin-wide-missing 10-25), two-sided f agreement < 0.05 % on every
+directly-anchored row (rounding-aware for BAJFINANCE 2009, stored at 0.64 where 2-dp rounding alone is
+±0.8 %), OHLC consistency, day moves -3.2..+4.8 % = NSE's own. Ledger build recipe: scratchpad
+`bhav/cm<date>.csv` from `nsearchives …/cm<DD><MON><YYYY>bhav.csv.zip` + `_mto_sweep_fetch.py` files.
+**OPEN (measured here, NOT fixed):**
+1. **Bin-wide hole 2010-10-15 → 2010-10-25 (7 sessions, every symbol).** Bars per date: 1,425 on 10-13,
+   1,404 on 10-14, then NOTHING until 10-26 (1,388). NSE has the files (cm15OCT2010: 1,457 rows). §106b's
+   "BEPL's tape lacks 15-25 Oct 2010" was this bin-wide hole, not BEPL's. Fix = add the 7 dates to
+   `_WEEKDAY_MISSING_CONFIRMED` + ledger rows — but FIRST lower the f floor to 0.001 and give
+   `_survivor()` a dead-fragment rule (own key has no bar within ±30 d of the session while the
+   `_rename_map` successor does), else the TMPV/BAJFINANCE-class rows drop again on those 7 days.
+2. Other N500 members skipped on these sessions (cause not measured per name): ALLCARGO, ANSALAPI
+   (2009-03-31); BBOX (2010-10-14, -26); JINDALPOLY, PARSVNATH, SUPREMEIND, UNICHEMLAB (2010-10-26);
+   RASOYPR (2014-02-21, 2014-10-14, 2015-09-03); SITINET (2016-08-17); KARURVYSYA (2016-11-17).
+3. The TATAMOTORS fragment keeps its 6 junk-scaled bars on these dates (and its other stray post-2003
+   bars); the §88b-addendum dv cells for those 6 dates sit under TATAMOTORS, not TMPV. The TMPV rows in
+   `bar_inserts.json` carry their own MTO dv, so TMPV is complete regardless.
+
 ## 107. ★★★ ONE SOURCE OF TRUTH — THE SHARED CHECKOUT SYNCS ITSELF; "DIRTY" AND "AHEAD" WERE ALL STALE COPIES  (2026-08-24)
 
 **User's complaint (2026-08-23):** "daily I see many stale files … many files have same params but
