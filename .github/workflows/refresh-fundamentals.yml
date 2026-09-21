@@ -149,6 +149,25 @@ jobs:
       # COLUMNS printed in the company's own results PDF (text layer first, free Gemini vision for
       # scanned filings), ANCHOR-VERIFIED against our stored XBRL values — never an unanchored guess.
       # Nightly-gated like the insurer step; --limit keeps a first-time backlog inside the timeout.
+      # Guard (runbook 142): a quarter the company HAS FILED can never sit missing. For every
+      # Nifty-500 name whose latest stored quarter is stale it asks BSE's announcement stream (the
+      # primary record) for the results filing, reads it (text layer, then Gemini vision), double-
+      # anchors on our stored year-ago + preceding quarter, fills, and lists what it could not read
+      # as PENDING in scripts/_missing_quarter_pending.json + the step summary. Born 2026-09-22 after
+      # MCX/ABBOTINDIA/BAYERCROP (filed on BSE, absent from NSE's feed) and NIVABUPA/STARHEALTH
+      # (unanchored insurer reads) sat a quarter stale for seven weeks with no signal anywhere.
+      - name: Reconcile missing quarters against BSE filings (nightly)
+        env:
+          GEMINI_API_KEY: ${{ secrets.GEMINI_API_KEY }}
+        run: |
+          EV="${{ github.event_name }}"; ACTION="${{ github.event.action }}"; RUN=0
+          [ "$EV" = "workflow_dispatch" ] && RUN=1
+          [ "$EV" = "schedule" ] && case "$(date -u +%H)" in 15|16) RUN=1;; esac
+          [ "$EV" = "repository_dispatch" ] && [ "$ACTION" = "insurer-refresh" ] && RUN=1
+          if [ "$RUN" != "1" ]; then echo "Not a nightly trigger ($EV/$ACTION) — skipping missing-quarter reconcile"; exit 0; fi
+          pip install -q pymupdf curl_cffi
+          python3 -X utf8 scripts/reconcile_missing_quarters.py || echo "(missing-quarter reconcile failed — nothing written; pending list unchanged)"
+
       - name: Backfill new-listing year-ago bases (comparative columns, anchored)
         env:
           GEMINI_API_KEY: ${{ secrets.GEMINI_API_KEY }}
@@ -320,6 +339,8 @@ jobs:
           # step earlier in this job; must survive the reset --hard below or every night refetches
           [ -f scripts/ann_date_fills.json ] && cp scripts/ann_date_fills.json /tmp/ann_date_fills.json
           [ -f scripts/_ann_recon_skips.json ] && cp scripts/_ann_recon_skips.json /tmp/_ann_recon_skips.json
+          # missing-quarter guard ledgers (runbook 142): provenance + pending + skip tracker
+          for f in bse_result_fills.json _missing_quarter_pending.json _missing_quarter_skips.json; do [ -f scripts/$f ] && cp scripts/$f /tmp/$f; done
           for attempt in 1 2 3 4 5; do
             git fetch origin main && git reset --hard origin/main
             if [ "$FUND" = "1" ]; then
@@ -367,7 +388,7 @@ jobs:
             # the stale snapshot over them (this exact clobber wiped 1,240 tier-2 entries on the
             # 2026-08-23 15:02 run). Current tree (= origin, post-reset) wins per key; the
             # snapshot only re-adds keys this run itself created before the reset.
-            for LF in scripts/ann_date_fills.json scripts/_ann_recon_skips.json; do
+            for LF in scripts/ann_date_fills.json scripts/_ann_recon_skips.json scripts/bse_result_fills.json scripts/_missing_quarter_pending.json scripts/_missing_quarter_skips.json; do
               if [ -f "/tmp/$(basename $LF)" ]; then
                 python3 -c "import json,os; lf='$LF'; sn='/tmp/'+os.path.basename(lf); cur=json.load(open(lf)) if os.path.exists(lf) else {}; snap=json.load(open(sn)); m={**snap, **cur}; json.dump(m,open(lf,'w'),separators=(',',':')); print(lf,'union:',len(snap),'snap +',len(cur),'tree ->',len(m))"
                 git add "$LF"

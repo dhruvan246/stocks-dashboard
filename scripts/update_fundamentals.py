@@ -2,7 +2,7 @@
 """
 Daily INCREMENTAL refresh for docs/sf_fundamentals.json (the backtest's quarterly
 net-profit dataset). Instead of re-fetching all 5,000+ stocks, it asks NSE's
-integrated-filing-results endpoint for everything filed in the last ~21 days
+integrated-filing-results endpoint for everything filed in the last WINDOW_DAYS (120) days
 (ALL companies, one date-range call), parses net profit from each new filing, and
 upserts the quarter into the dataset. Light: one list call + a handful of XBRL
 fetches during earnings season, ~nothing otherwise.
@@ -19,6 +19,12 @@ KNOWN BLIND SPOT (fill manually when it shows gaps):
      GODIGIT/NIVABUPA) file IRDAI-format results (Revenue A/c + Shareholders' P&L)
      that xbrl_profit can't parse -> they get NEITHER std nor con here. Extract per
      scripts/INSURER_EXTRACTION_PLAYBOOK.md.
+  2. FILERS ABSENT FROM NSE's FEED. 2026-09-21: MCX, ABBOTINDIA and BAYERCROP filed Jun-2026
+     results on BSE (4/5/12 Aug) but NSE's integrated-filing-results API returned ZERO rows for
+     them all season (per-symbol and unfiltered queries) — this script never saw them, and
+     nothing else looked. Both blind spots are now caught nightly by
+     scripts/reconcile_missing_quarters.py (BSE announcement stream = primary record, §58 read,
+     double-anchored fill, PENDING list for what it cannot read) — runbook §142.
 
 Run: python -X utf8 update_fundamentals.py
 """
