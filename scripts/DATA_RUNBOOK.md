@@ -16984,8 +16984,9 @@ they filed. Two silent classes:
    never hold; the identity anchor is the filing's own reconciliation row ("Net Profit as per Previous GAAP,
    30 June 2025: 26,252 lakh" = 262.52 exactly). The other nine insurers' Jun-26 rows anchored under old GAAP.
    NIVABUPA's results sit inside the 30 Jul "Outcome of Board Meeting" PDF (BSE "Board Meeting" category).
-   **Basis break, decided by the user:** the store is as-filed point-in-time; Q1 FY27 lands as filed (Ind AS),
-   the GAAP history stays. YoY across the break compares Ind AS with GAAP for these two names.
+   **Basis break — store policy (as-filed, point-in-time; §108/9 vintage rule), FLAGGED to the user 2026-09-22, not
+   yet ruled on:** Q1 FY27 lands as filed (Ind AS), the GAAP history stays, so YoY across the break compares Ind AS
+   with GAAP for these two names (STARHEALTH 549.73 vs 262.52 = +109 %; like-for-like Ind AS 549.73 vs 438.18 = +25 %).
 
 **The guard — `scripts/reconcile_missing_quarters.py`, nightly step "Reconcile missing quarters against BSE
 filings" in refresh-fundamentals.yml (15/16 UTC gate + workflow_dispatch; GEMINI_API_KEY):**
