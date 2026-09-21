@@ -87,6 +87,7 @@ loads every session. (README.md is just a short pointer here — this file is th
 - **§137** ★★ INSIGHTS CARD — per-company OPERATING KPIs (stores, subscribers, ARPU, order book, NIM, GNPA…) read from the company's OWN presentations on BSE; screener's card is login-gated and is only a calibration holdout; every cell carries filing+page; Gemini walker 2× daily over Nifty 500 back to 2020 (**read before touching kpi_extract.py / the Insights card, and before reading any KPI off a deck by hand**)
 
 ## 0. GOLDEN RULES (the things that bite if forgotten)
+- **§89f** ★★★ THE DATE INSIDE AN EXCHANGE FILE DECIDES, NEVER THE URL — NSE re-serves the prior session PER ROUTE (zip 404s, `sec_bhavdata_full` answers with Friday's rows under a Sunday URL), a whole-file signature dedup is FORMAT-sensitive and let 12 phantom Sundays into DVL/DTIL; `fetch_day` now rejects a file stamped with another day, every bar-emitting ledger is gated on the market calendar at the splice (`session_calendar`, ≥100 symbol-bars from `dailyFrom`), and `phantom_date_audit` prints `PHANTOM-DATE` lines nightly (**read before any calendar-walking rebuild or any ledger that inserts bars**)
 - **§114** ★★★ THE HTML-ESCAPED PHANTOM SYMBOLS WERE NOT INVISIBLE — `M&AMP;M` was RENDERING in docs/discovery.json (47 rows / 21 buckets), and the fundamentals rows were NOT all duplicates (4 unique, 46 contested, both sides filing-sourced). Fundamentals stores retracted to zero + guarded; the Trendlyne sitemap escape was writing off all 10 ampersand tickers (**read before trusting any recorded coverage/absence claim, and before deleting a phantom key**)
 - **§115** ★★★ THE PHANTOM CLASS IS CLOSED — root cause was `build_revop.py` upper-casing a RAW XML capture (XBRL escapes `&`), still firing in a 2026 filing; closing sf_revop ADDED +784 values / +63 quarters. FOUR gate defects: a retraction that RAISED a score, a derived flag voting, "target has no row" read as nothing-to-do, and the resume-cache treated as a mirror. A filing's own ScripCode OUTRANKS the overlap proxy (**read before trusting any agreement gate, and before retracting anything a gate could still harvest**)
 - **§116** ★★★ THE 46 CONTESTED con CELLS ADJUDICATED — the phantom read the OWNERS tag and WE had stored the TOTAL, so the phantom was RIGHT on 16 of 23; the other 7 are the filer's owners=0 mis-tag where the store was right. Swept the rest of each series: **53 cells healed** total→owners, 2018-2026. sf_revop's un-rendered mirror already held the owners figure on 45 of 53. **1,417 symbols / 18,175 con cells share the exposure — sized, not swept** (**read before trusting a con-PAT value for any symbol absent from _reattr_owners.json**)
@@ -247,7 +248,12 @@ tracked ledger `scripts/weekend_sessions.json.gz` first (CI can't always reach t
 with live fetch as fallback — prices are scaled onto the series' CA level via the PREVIOUS day's
 raw bhavcopy close, NEVER the file's PREV_CLOSE column; (c) fetch_bse_bhav.py has a matching
 `WEEKEND_HEAL` pass for dates inside the BSE store's span. A NEW special weekend session needs NO
-action — the daily walk picks it up like any weekday. ⚠️ An insert-only publish does not advance
+action — the daily walk picks it up like any weekday. ⚠️ **NSE re-serves the prior session PER ROUTE**
+(the zip 404s while `sec_bhavdata_full` answers with Friday's rows under the Sunday URL) — `fetch_day`
+now reads the date INSIDE the file (`DATE1`/`TIMESTAMP`) and rejects a mismatch, and every ledger that
+emits bars is gated on the market calendar at splice time (`session_calendar`, floor 100 symbol-bars
+from `dailyFrom`); the 12 DVL/DTIL phantom Sundays of Oct–Dec 2019 are the case: **§89f**.
+⚠️ An insert-only publish does not advance
 `end` — clients pick it up via the content-hash `rev` in sf-data's sf_meta.json (see the
 sf-cache-key memory); confirm `rev` changed after the run. After bars change, re-bake waves.
 
@@ -4246,6 +4252,7 @@ A named unverified corner costs one sentence; the same corner found by the user 
 
 | Options Backtest 💾 Save / 🔗 Share read white-on-white in dark theme for as long as the page existed — Tailwind `bg-slate-200` was the one light-palette utility `theme.css` never re-skinned (found by the 2026-09-05 whole-site audit) | **4** — a whole-site text-contrast walk (every text node's colour vs its nearest opaque ancestor background, flag < 1.6) in EVERY theme finds this class in one pass; grep each new page's `bg-*`/`text-*` utilities against the theme.css override list before shipping |
 | `stock.html` rendered DELISTED symbols as live and flat — the as-of offset was the BIN end for every symbol, so MINDTREE (last bar Nov-2022) read "as of 2026-09-04", 1M…3Y/YTD "+0.00%", 52w high/low ±100% and a 2022 "1-day" move; 1,932 of 4,584 search-index symbols have no bar in the last 60 days and all rendered this way, and a renamed old name with a dead stub slice (3IINFOTECH) never hopped to the current symbol (2026-09-05) | **3** — the unhappy path "a stock whose series ended long ago": a page's "now" must be the SUBJECT's last bar (`min(bin end, last bar)`, `stkEndOff()`), labelled "last traded" when it trails the bin; any `+0.00%` over a window that holds no bars is the §37a no-base sentinel, never a flat return |
+| **DVL and DTIL carried a daily bar on 12 Sundays of Oct–Dec 2019 that no other symbol had** (2 symbol-bars per date, live for six weeks). NSE's `sec_bhavdata_full` route re-served Friday's file under each Sunday URL (`DATE1` = the Friday) while the zip route 404'd; the symbol-level rebuild's whole-file signature dedup hashed Friday's zip (1,682 rows) and Sunday's csv (1,670 rows) differently, and `apply_series_surgery` spliced whatever the ledger said (2026-09-21, §89f) | **new** — (a) **the date INSIDE a dated exchange file decides, never the URL** (`build_sf_data.file_date`), and a dedup must be per-symbol identity, not a whole-file hash, because two routes serve one session in two formats; (b) **every ledger that emits bars is gated on the market calendar at the splice** (`session_calendar` ≥100 symbol-bars from `dailyFrom`, dated floor — 1996-2001 is sparse by construction) so a rebuild cannot put a bar on a day the market did not trade; (c) a per-date TRIPWIRE for dates with TOO FEW bars (`phantom_date_audit`, `PHANTOM-DATE` lines) — a universe-level count check never sees a phantom only two symbols carry |
 | On phones, switching theme with the site buttons left every pinned first-column cell on the OLD theme's background (white quarter labels in dark on stock.html, contrast 1.16) — `scrollifyTable` resolved `--sw-pin-body` by walking up from the pinned cell, and that cell PAINTS the previous answer (theme.css `background:var(--sw-pin-body,…)`), so the 260 ms re-resolve read its own stale copy and froze it; fresh loads were fine, so no load-time check could see it (2026-09-05) | **4** — theme checks must exercise the SWITCH, not only a fresh load per theme: click each theme button on a ≤640px table page and re-run the contrast walk after the transition; any cached/derived colour must be cleared before it is re-derived (`removeProperty` first), or the second pass reads its own output |
 ### If a bug ships anyway
 Fix the **class**, not just the instance: ask *"what check would have caught this?"* and add it to the
@@ -9553,6 +9560,86 @@ still a CLAIM; the raw tape + an independent recorder arbitrate** — same-famil
 same-day actions are exactly where feeds swap symbols. Full-window self-heal cannot re-break the
 repaired series either way: the reconciliation guard (raw_ratio/off outside [0.75,1.30]) rejects
 the factor on DVL's tape, and converges it on DTIL's.
+
+### 89f. ★★★ THE 12 PHANTOM SUNDAYS — a ledger that walks calendar days inherits NSE's per-ROUTE holiday re-serve  (2026-09-21)
+**Finding (measured LIVE, sf-data rev 4af0052629, then reproduced against NSE's archives):** DVL and
+DTIL each carried a daily bar on twelve Sundays — 2019-10-06, 10-13, 10-20, 11-03, 11-10, 11-17, 11-24,
+12-01, 12-08, 12-15, 12-22, 12-29 — and no other symbol did (2 symbol-bars per date; the real muhurat
+Sunday 2019-10-27 has 1,642). Every phantom repeated the prior Friday's close/high/low/open/volume/deliv%
+to the paisa, but with a real VWAP and 1-dp turnover where Friday's bar had vw==close and 4-dp turnover —
+i.e. the two bars came from files of DIFFERENT FORMATS. Both symbols' 2015+ segments are served wholesale
+by `scripts/dvl_dtil_surgery.json.gz` (§89c-2), and the ledger held the 12 rows.
+
+**Mechanism — three things had to line up, and they only do in Oct–Dec 2019:**
+1. `build_sf_data.fetch_day` tries the OLD zip first for years < 2020 and `sec_bhavdata_full` first
+   from 2020. On Sunday 2019-10-06 the zip is a 404 but `sec_bhavdata_full_06102019.csv` answers 200 with
+   `DATE1 = 04-Oct-2019` in every row — NSE re-serves the prior session **per route**. (The csv route
+   simply did not exist for weekend dates before ~Oct 2019: 2019-09-29 is a 404 on both routes.)
+2. `_dvl_dtil_rebuild.py build` walks every calendar day and dedups with `hash(tuple((sym, close)))`
+   of the whole file against the previous accepted day. Friday came from the zip (1,682 rows, 12 illiquid
+   names the csv omits — CHROMATIC, DCMFINSERV, HBSL…); Sunday from the csv (1,670 rows). Different row
+   set → different hash → accepted. From 2020 the csv is first on BOTH days, so Friday and Sunday hash
+   identically and the dup guard holds — which is why 2020-01-05 (also a re-serve, DATE1 = 03-Jan-2020)
+   never became a bar. Saturdays are 404 on both routes.
+3. The 2026-08-02 base rebuild still skipped weekends (`weekday()<5`, fixed 08-03), and the daily
+   updater's own guard is per-symbol close identity (format-blind), so the rest of the universe never
+   saw those files. Only the one symbol-level ledger that walked calendar days with the signature dedup
+   could emit them — and `apply_series_surgery` splices whatever the ledger says.
+
+**Fix (all landed together; heal via the LEDGER, never the bin — §1 rule 5, memory
+`feedback-holiday-phantom-drop-not-fill`):**
+- `scripts/dvl_dtil_surgery.json.gz`: the 12 rows removed from DVL (2,879→2,867 bars) and DTIL
+  (2,880→2,868); RASOYPR untouched; provenance in the file's `phantoms_dropped` block. Verified before
+  editing that the LIVE DVL and DTIL segments were byte-equal to the ledger (steady state), so the
+  nightly re-splice changes exactly the 12 rows and keeps the 28 later-appended bars.
+- `build_sf_data.file_date()` + `fetch_day`: **the date INSIDE the file decides.** A file whose
+  `DATE1`/`TIMESTAMP`/`TradDt` is another day is the re-serve — skip that route, try the other, else
+  "no session" (logged). Tested on the real files: 2019-10-06 csv → rejected; 2020-01-05 csv → rejected;
+  2021-11-04 csv (03-Nov copy) → rejected and the zip's real muhurat session (1,831 rows) accepted; a
+  2002 zip and the 2024-05-18 special Saturday accepted. Every caller of `fetch_day` (base rebuild, daily
+  append, weekend inserter's prior-day walk, demerger builder, this rebuild) gets it for free.
+- `_dvl_dtil_rebuild.py build`: the per-symbol close-identity dedup from the daily loop (>500 common
+  symbols, >99% identical closes ⇒ re-serve) as a second line, and the validation gate now prints every
+  weekend-dated bar for the human eye.
+- **§39-style SPLICE GUARD in `update_sf_data.py` — a symbol-level ledger cannot emit a bar on a date
+  the market calendar does not have.** `session_calendar()` derives the calendar from the bin itself
+  (a date in `[dailyFrom, end]` is a session iff ≥ `SESSION_FLOOR`=100 symbols hold a bar, ∪ the
+  confirmed `WEEKEND_SESSIONS` so heal order cannot matter). `apply_series_surgery`,
+  `apply_bar_inserts` and `insert_bz_history` DROP off-calendar ledger bars loudly (`… on NON-SESSION
+  dates DROPPED, never emitted: …`) and leave bars past `end` to the daily walk (which has its own
+  misdirect guard). Measured basis for the floor: over the live bin every date from 2002-01-02 on has
+  ≥ 463 symbol-bars (min = 2003-10-25 muhurat Saturday) except the 12 phantoms at 2; 1996–2001 has 1,072
+  real dates under 100, so the floor is DATED — dates before `dailyFrom` are not judged (memory
+  `feedback-dated-floor-not-flat-floor`).
+- **`phantom_date_audit()` tripwire at the end of every run**, after all heals and the day loop:
+  any date inside the daily era with < 100 symbol-bars prints `PHANTOM-DATE <ymd>: n bar(s) — <symbols>`
+  plus a `::warning::` annotation. Non-fatal by design (an abort would freeze prices for everyone), but
+  it names the symbols, so the emitting ledger is one grep away. It also catches a half-loaded append.
+- Unit-tested against the LIVE DVL/DTIL/RASOYPR series (`update_sf_data` imported, real calendar):
+  corrected ledger → exactly 12 rows gone per symbol, all other bars byte-identical, second run silent;
+  the OLD ledger under the guard → the same 12 dropped with the message and the same result; a bar
+  past `end` → left to the walk with the replaced range not widened; an off-calendar bar_inserts row →
+  refused. Known pre-existing churn, unchanged: RASOYPR's ledger (734 bars) lacks 8 real sessions the
+  inserters add after surgery, so it re-splices every night and converges.
+- **Full-pipeline proof before the push:** the three live parts merged into one bin (4,603 symbols,
+  end 2026-09-21) and `python3 scripts/update_sf_data.py --base <that bin>` run as CI runs it — 1 min
+  27 s wall, `Session calendar: 6152 session dates judged`, DVL/DTIL re-spliced (2,879→2,867 / 2,880→
+  2,868), RASOYPR's 8 sessions re-inserted, **`2024-01-22: NSE re-served the 2024-01-20 file … treated as
+  no session`** (the new check catching a real holiday on the first run), `Phantom-date audit: clean`.
+  Per-symbol hash diff of the output against the live bin: exactly DVL and DTIL differ, each by the 12
+  rows removed, 0 rows added or changed; meta byte-identical.
+
+**How to check it stays fixed:** `python3 scripts/fetch_live_sf.py`-style read of the parts → per-date
+`Counter` over every `d` → no date ≥ 2002-01-02 below 100 (recipe in this section's session: DVL/DTIL
+counts on the 12 dates must be 0, `2019-10-27` ~1,642). In the refresh log look for `Session calendar:`,
+zero `NON-SESSION dates DROPPED` lines, and `Phantom-date audit: clean`.
+
+**Lessons:** (a) a whole-file signature is a dedup of FORMAT, not of session — two routes serving the
+same day hash differently; identity has to be per symbol, or better, read the date the exchange wrote
+inside the file; (b) a ledger that emits bars needs the same calendar gate the daily walk has, at the
+splice — the rule "HOLIDAY PHANTOM = DROP, never fill" is only enforceable where bars enter the bin;
+(c) a phantom that only two symbols carry is invisible to every per-date count check that looks at the
+universe — the tripwire must look for dates with TOO FEW bars, not too many.
 
 ---
 

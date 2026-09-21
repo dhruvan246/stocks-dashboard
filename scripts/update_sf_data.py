@@ -590,7 +590,7 @@ def insert_weekend_sessions(data, j, old2new=None):
     return total
 
 
-def apply_bar_inserts(data):
+def apply_bar_inserts(data, cal=None):
     """Per-(symbol, session) bar inserts the missing-day path left out (scripts/bar_inserts.json,
     DATA_RUNBOOK §106h). insert_weekend_sessions() re-homes a day's bhavcopy rows once and then treats
     the day as done (RELIANCE/SBIN/ITC carry the bar), so a row it skipped stays out forever. Two skip
@@ -616,6 +616,8 @@ def apply_bar_inserts(data):
     ins = 0
     for r in sorted(rows, key=lambda r: (r["sym"], int(r["ymd"]))):
         sym, ymd = r["sym"], int(r["ymd"]); e = data.get(sym)
+        if cal is not None and off_calendar([ymd], cal):     # §89f splice guard — see off_calendar()
+            print("  BAR-INSERT %s %d: not a session on the market calendar — left out, never emitted" % (sym, ymd)); continue
         if not e or not e.get("d") or any(k not in e for k in ("c", "t", "h", "l", "op", "v", "dv", "vw")):
             print("  BAR-INSERT %s %d: series absent — left out" % (sym, ymd)); continue
         ds = e["d"]; i = bisect.bisect_left(ds, ymd)
@@ -722,7 +724,63 @@ def normalize_turnover_units(data):
     return converted
 
 
-def insert_bz_history(data):
+SESSION_FLOOR = 100   # real NSE sessions carry >= 463 symbol-bars across the daily era (measured
+                      # 2026-09-21 over the live bin, 2002-01-02 -> 2026-09-21); the only dates under
+                      # 100 were the 12 DVL/DTIL phantom Sundays, at 2 bars each (DATA_RUNBOOK §89f)
+
+
+def session_calendar(data, lo, hi, floor=SESSION_FLOOR):
+    """The market calendar, derived from the bin itself: a date inside [lo, hi] (ints, yyyymmdd) is a
+    session iff at least `floor` symbols hold a bar on it, plus the confirmed special sessions
+    (WEEKEND_SESSIONS) so the verdict does not depend on which heal ran first. Dates outside the
+    window are NOT judged: the pre-`dailyFrom` era is sparse by construction (1,072 real dates under
+    100 bars in 1996-2001) and dates past `end` belong to the daily walk, which has its own misdirect
+    guard. Returns (calendar_set, lo, hi) — the tuple the splice guards take. DATA_RUNBOOK §89f."""
+    import collections
+    cnt = collections.Counter()
+    for e in data.values():
+        ds = e.get("d") if isinstance(e, dict) else None
+        if ds: cnt.update(ds)
+    cal = {d for d, n in cnt.items() if n >= floor}
+    cal.update(int(x.strftime("%Y%m%d")) for x in WEEKEND_SESSIONS)
+    return cal, lo, hi
+
+
+def off_calendar(dates, cal):
+    """The dates (ints) a ledger must NOT emit bars on: inside the judged window and not a session,
+    or past the bin's end. `cal` is session_calendar()'s tuple. Order preserved."""
+    cset, lo, hi = cal
+    return [d for d in dates if (lo <= d <= hi and d not in cset) or d > hi]
+
+
+def phantom_date_audit(data, lo, hi, floor=SESSION_FLOOR):
+    """§89f TRIPWIRE, run after every heal and append: a date inside the daily era that only a handful
+    of symbols hold is a bar the market never traded (the 12 DVL/DTIL Sundays sat at 2 bars for six
+    weeks). Non-fatal by design — aborting the nightly would freeze prices for everyone — but it NAMES
+    the symbols, so the ledger that emitted them is one grep away. Heal through that ledger (the
+    splice guards drop what it no longer carries); never edit the bin. Returns the phantom-date count."""
+    import collections
+    cnt = collections.Counter()
+    for e in data.values():
+        ds = e.get("d") if isinstance(e, dict) else None
+        if ds: cnt.update(ds)
+    bad = sorted(d for d, n in cnt.items() if lo <= d <= hi and n < floor)
+    if not bad:
+        print("Phantom-date audit: clean — every date in %d..%d has >= %d symbol-bars." % (lo, hi, floor))
+        return 0
+    who = collections.defaultdict(list); badset = set(bad)
+    for sym, e in data.items():
+        ds = e.get("d") if isinstance(e, dict) else None
+        if not ds: continue
+        for d in badset.intersection(ds): who[d].append(sym)
+    for d in bad:
+        print("  PHANTOM-DATE %d: %d bar(s) — %s" % (d, cnt[d], ", ".join(sorted(who[d])[:20])))
+    print("::warning::Phantom-date audit: %d date(s) in %d..%d carry fewer than %d symbol-bars — "
+          "see the PHANTOM-DATE lines; heal via the emitting ledger (DATA_RUNBOOK §89f)" % (len(bad), lo, hi, floor))
+    return len(bad)
+
+
+def insert_bz_history(data, cal=None):
     """Splice in the series-BZ bars that build_sf_data's old ("EQ","BE") filter threw away.
 
     BZ is trade-for-trade + surveillance: a company that has not complied with a listing/regulatory
@@ -758,6 +816,12 @@ def insert_bz_history(data):
         if any(k not in e for k in ("c", "t", "h", "l", "op", "v", "dv", "vw")): continue
         for b in sorted(blocks, key=lambda x: x["after"]):
             bars = b.get("bars") or []
+            if cal is not None:                                   # §89f splice guard — see off_calendar()
+                bad = set(off_calendar([x[0] for x in bars], cal))
+                if bad:
+                    print("  BZ-BACKFILL %s: %d ledger bar(s) on non-session dates DROPPED, never emitted: %s"
+                          % (sym, len(bad), ", ".join(map(str, sorted(bad)[:12]))))
+                    bars = [x for x in bars if x[0] not in bad]
             if not bars: continue
             ds = e["d"]
             i = bisect.bisect_left(ds, bars[0][0])
@@ -790,7 +854,7 @@ def insert_bz_history(data):
     return total
 
 
-def apply_series_surgery(data, meta):
+def apply_series_surgery(data, meta, cal=None):
     """Wrong-company stitch repair (scripts/dvl_dtil_surgery.json.gz, DATA_RUNBOOK §89).
 
     The NSE ticker DTIL was RECYCLED: today's DVL traded as DTIL until 2010-07-26
@@ -826,15 +890,32 @@ def apply_series_surgery(data, meta):
         bars = spec.get("bars") or []
         if not bars: continue
         frm = int(spec.get("from") or bars[0][0])
+        new_seg = [list(b) for b in bars]
+        # §89f SPLICE GUARD — a symbol-level ledger cannot emit a bar on a date the market calendar
+        # does not have. The 12 Oct–Dec 2019 Sunday bars this ledger once carried (NSE's csv route
+        # re-serving Friday's file, invisible to a whole-file signature) are the class: DROPPED here,
+        # loudly, whatever the ledger says. Filter BEFORE the segment bounds are taken, or a dropped
+        # last bar would widen the replaced range past the bars that remain.
+        if cal is not None:
+            bad = set(off_calendar([b[0] for b in new_seg], cal))
+            if bad:
+                late = sorted(d for d in bad if d > cal[2]); phantom = sorted(bad - set(late))
+                if phantom:
+                    print("  SURGERY %s: %d ledger bar(s) on NON-SESSION dates DROPPED, never emitted: %s"
+                          % (sym, len(phantom), ", ".join(map(str, phantom))))
+                if late:
+                    print("  SURGERY %s: %d ledger bar(s) past the bin end %d left to the daily walk"
+                          % (sym, len(late), cal[2]))
+                new_seg = [b for b in new_seg if b[0] not in bad]
+                if not new_seg: continue
         e = data.get(sym)
         if e is None:
             if not is_create:
                 print("  SURGERY %s: series absent — replace skipped" % sym); continue
             data[sym] = e = {k: [] for k in KEYS}
         i0 = bisect.bisect_left(e["d"], frm)
-        i1 = bisect.bisect_right(e["d"], bars[-1][0])
+        i1 = bisect.bisect_right(e["d"], new_seg[-1][0])
         cur_seg = [[e[k][i] for k in KEYS] for i in range(i0, i1)]
-        new_seg = [list(b) for b in bars]
         if cur_seg == new_seg: continue                    # steady state — zero-cost no-op
         pre = float(spec.get("pre") or 1.0)
         if abs(pre - 1.0) > 1e-9 and i0 > 0:
@@ -1077,15 +1158,21 @@ def main():
     # before the day loop because appending today's BZ row onto a years-stale series would hand
     # ca_factor() a multi-year ratio to mis-read as a split (measured: HDIL 1.57/2.20 -> "3/4",
     # RAJESHEXPO 83.58/223.97 -> "2/5", both phantom).
-    bz = insert_bz_history(data)
-    sg = apply_series_surgery(data, meta)   # wrong-company stitch repair (DVL/DTIL, §89) — before the
-                                            # day loop so appends land on the repaired series
+    # §89f: the market calendar every bar-emitting ledger is checked against — derived from the bin
+    # itself (dates with >= SESSION_FLOOR symbol-bars inside the daily era) plus the confirmed specials.
+    _cal_lo = int((D.get("dailyFrom") or "2002-01-02").replace("-", "")); _cal_hi = int(D["end"].replace("-", ""))
+    cal = session_calendar(data, _cal_lo, _cal_hi)
+    print("Session calendar: %d session dates judged in %d..%d (floor %d symbol-bars; earlier dates not judged)"
+          % (sum(1 for x in cal[0] if _cal_lo <= x <= _cal_hi), _cal_lo, _cal_hi, SESSION_FLOOR))
+    bz = insert_bz_history(data, cal=cal)
+    sg = apply_series_surgery(data, meta, cal=cal)   # wrong-company stitch repair (DVL/DTIL, §89) — before the
+                                                     # day loop so appends land on the repaired series
     mr = apply_manual_rights(data)   # hand-verified per-stock rights adjustments to match Trendlyne
     ao = apply_ca_arbitrated(data)   # official splits the close-ratio guard rejected, confirmed by the ex-day OPEN (§87g)
     if ao: print("Open-arbitrated corporate actions: %d applied." % ao)
     wk = insert_weekend_sessions(data, j, {(o["old"] if isinstance(o, dict) else o): n for n, o in MANUAL_MERGE.items()})   # backfill missing weekend special sessions (budget Sats etc.); old->new so merged-away tickers' sessions land on the survivor
     if wk: print("Weekend special sessions: %d bars inserted." % wk)
-    bi = apply_bar_inserts(data)   # per-(symbol, session) rows the day-insert skipped (scripts/bar_inserts.json, §106h)
+    bi = apply_bar_inserts(data, cal=cal)   # per-(symbol, session) rows the day-insert skipped (scripts/bar_inserts.json, §106h)
     if bi: print("Bar inserts: %d bars inserted." % bi)
     for day in days:
         rows = B.fetch_day(day, j)
@@ -1205,6 +1292,10 @@ def main():
     # runner and published nothing. All 26 fills were computed and thrown away with the runner, and
     # the same thing would have happened every quiet day forever. A heal that is not in the
     # did-anything-change test is not a heal — it is a log line.
+
+    # §89f tripwire — after EVERY heal and append, so it also sees bars this run emitted. Non-fatal;
+    # names the symbols so the emitting ledger is one grep away (never edit the bin to fix it).
+    phantom_date_audit(data, _cal_lo, int(D["end"].replace("-", "")))
 
     # ALWAYS rewrite the freshly-loaded MERGED base to disk — even on a no-op run — so the split/publish
     # step never reads the stale, UN-merged in-repo copy (frozen at an old `end`, still carrying

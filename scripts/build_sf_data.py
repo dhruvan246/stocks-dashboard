@@ -226,6 +226,34 @@ def apply_dv_overwrite(data):
     return n
 
 
+def file_date(text):
+    """The trading date INSIDE a bhavcopy — sec_bhavdata_full `DATE1`, old-zip `TIMESTAMP`, UDiFF
+    `TradDt` — read off the first data rows. None when the file has no recognisable date column
+    (callers must then fall back to trusting the URL date, never reject).
+
+    Why it exists (DATA_RUNBOOK §89f, 2026-09-21): NSE re-serves the PRIOR session's file under a
+    non-session date's URL, and it does so per ROUTE — the old zip 404s on Sunday 2019-10-06 while
+    sec_bhavdata_full_06102019.csv answers 200 with `DATE1 = 04-Oct-2019` in every row. A whole-file
+    signature dedup cannot see that when Friday came from the zip (1,682 rows) and Sunday from the
+    csv (1,670 rows): different row set, different hash, and 12 phantom Sunday bars reached the
+    live bin for the two symbols a calendar-walking rebuild happened to be tracking. The date
+    inside the file is the only thing that identifies a re-serve regardless of format."""
+    lines = text.splitlines()
+    if len(lines) < 2: return None
+    hdr = [h.strip().strip('"').upper() for h in lines[0].split(",")]
+    col = next((c for c in ("DATE1", "TIMESTAMP", "TRADDT") if c in hdr), None)
+    if col is None: return None
+    i = hdr.index(col)
+    for line in lines[1:4]:
+        f = line.split(",")
+        if i >= len(f): continue
+        s = f[i].strip().strip('"')
+        for fmt in ("%d-%b-%Y", "%Y-%m-%d", "%d-%m-%Y"):
+            try: return datetime.datetime.strptime(s, fmt).date()
+            except ValueError: pass
+    return None
+
+
 def fetch_day(d, j):
     cf = os.path.join(CACHE, d.strftime("%Y%m%d") + ".json")
     if os.path.exists(cf):
@@ -240,17 +268,28 @@ def fetch_day(d, j):
     new = "https://nsearchives.nseindia.com/products/content/sec_bhavdata_full_%s.csv" % ddmmyyyy
     old = "https://nsearchives.nseindia.com/content/historical/EQUITIES/%d/%s/cm%02d%s%dbhav.csv.zip" % (
         d.year, MON[d.month-1], d.day, MON[d.month-1], d.year)
+    misdirect = None
     for url in ([new, old] if d.year >= 2020 else [old, new]):
         try:
             blob = get(url, j)
             text = (zipfile.ZipFile(io.BytesIO(blob)).read(zipfile.ZipFile(io.BytesIO(blob)).namelist()[0]).decode("utf-8","replace")
                     if url.endswith(".zip") else blob.decode("utf-8","replace"))
             if "SYMBOL" in text[:200].upper():
+                # HOLIDAY MISDIRECT (§89f): the date INSIDE the file decides, not the URL. A file
+                # stamped with another date is the prior session re-served — not this day's file;
+                # try the other route (2021-11-04: the csv route serves the 03-Nov copy while the
+                # zip is the real muhurat session), else it is a "no file" day.
+                fd = file_date(text)
+                if fd is not None and fd != d:
+                    misdirect = fd; continue
                 rows = parse_rows(text)
                 json.dump(rows, open(cf, "w"))
                 return rows
         except Exception:
             continue
+    if misdirect is not None:
+        print("  %s: NSE re-served the %s file under this date's URL — treated as no session (DATA_RUNBOOK §89f)"
+              % (d, misdirect), flush=True)
     # cache the miss (holiday) so we don't refetch — but NOT for the last few days:
     # a same-evening build can run before NSE publishes today's file (~7 pm IST),
     # and a cached empty marker would wrongly freeze that day as a holiday forever.
