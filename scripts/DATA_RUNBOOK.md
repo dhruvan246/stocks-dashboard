@@ -17132,3 +17132,8 @@ additive — `cd scripts && python3 _idx_official_fetch.py --only "<tier>" …`,
    human/vision read (cur, prev, yago per basis) that the guard applies ONLY when the same double anchor holds
    (a wrong triplet is rejected and stays visible). MCX std 327.32 / con 413.44 and ABBOTINDIA 428.52 landed
    that way, anchors exact to the paisa.
+**LANDED + LIVE-VERIFIED 2026-09-22 02:18 IST:** CI run 35652437966 → commit 74474d8. Live sf_fundamentals.json: MCX [20260630,
+327.32, 20260805, 413.44] · ABBOTINDIA [428.52, 20260813, con —] · BAYERCROP [321.6, 20260806, con —] · NIVABUPA [137.80, 20260731]
+· STARHEALTH [549.73, 20260730]. The 2026-08-31 screen on the deployed engine reads **500/500** Nifty-500 names on the Jun-2026
+quarter (was 495/500). Residue in `scripts/_missing_quarter_pending.json`: BAGMANE/BIRET/EMBASSY/DUMMYHEG (no BSE scrip code —
+REITs + a placeholder ticker) and CLEANMAX Mar-2026 (image PDF; Gemini quota) — the guard re-lists them nightly until resolved.
