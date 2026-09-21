@@ -16956,11 +16956,19 @@ Midcap 100 worst 14 (2/10), Midcap 50 worst 17 (3/10), Smallcap 100 worst 27 (0/
 worst 56, Smallcap 250 (derived) worst 180. After pinning + re-anchoring the between-pin error is
 bounded to each window's own missing events. Nifty 500 validation 100% at all 39 archived lists.
 
-**Honest gaps (open):** (1) **Wayback refused connections at the end of the run** — Nifty 200, IT,
-FMCG, Media, Realty, Consumer Durables, MidSmallcap 400 have NO archived pins yet and Nifty 100 lacks
-its 12 CNX-era captures (2006-15) that a per-file query returns; re-run
-`python3 _idx_official_fetch.py --only "<tier>" …` from `scripts/` when the archive allows, then
-rebuild — the ledger is additive. (2) Post-2020 changelog holes for sub-indices (the register ends
+**Second pass (2026-09-22 01:40 IST, after Wayback's outage cleared):** the additive fetch (directory
+prefix listing + per-file fallback) brought the ledger to **217 archived lists** — every index has at
+least two (Nifty 100 22, Midcap 50 16, IT 13, Next 50 12, Pharma 10, FMCG 9, Nifty 200 8, Realty 6,
+Media 6, MNC 6, Metal 6, Auto 6 …). Rebuilt (`membership_build10.log`): walk-vs-pin before pinning is
+**off-by 0 at every pin** for Nifty 50 (29), Bank (11), PSU Bank (4), Realty (6), Consumer Durables
+(3); within 1 name for Auto (5/6), Metal (5/6), Oil & Gas; worst 2 FMCG, 4 Next 50 / MNC / Media, 5
+Nifty 100 / IT, 8 LargeMidcap 250, 9 Pharma, 11 Nifty 200, 14 Midcap 100, 17 Midcap 50, 27 Smallcap
+100 and Energy (the 2006 list has 10 names vs 40 today — a real methodology change), 56 Midcap 150,
+and 180 / 287 for the DERIVED Smallcap 250 / MidSmallcap 400 (set differences of walked parents).
+After pinning + re-anchoring every snapshot AT a pin is exact and the between-pin error is bounded to
+that window's own missing events. Nifty 50 / Bank / 500 byte-identical (regression check).
+
+**Honest gaps (open):** (1) Post-2020 changelog holes for the sub-indices (the register ends
 2020-07/09) — the same press-release hunt §132 did for Nifty 500; the 376 unlisted stems in §141a
 are the place to start. (3) Nifty Realty walks down to 6 names in 2007-11 (missing early
 inclusions), Nifty Energy's 2006 capture has 10 names vs 40 today (methodology change, real).
@@ -17017,3 +17025,7 @@ NIVABUPA/STARHEALTH → pending "insurer". Nothing written in dry mode. Shipped 
 
 **Lesson (§0 class):** an INDEX is not the filing (§58a). Any capture pipeline with one source needs a
 second, primary-record source that at least COUNTS what the first one missed. Silence ≠ nothing to do.
+are the place to start; the pin table above says where it matters most (Midcap 50/100, Smallcap
+100, Midcap 150). (2) The derived tiers inherit their parents' walk errors between pins. (3) Nifty
+Realty walks down to 6 names in 2007-11 (missing early inclusions). To add pins later: the fetcher is
+additive — `cd scripts && python3 _idx_official_fetch.py --only "<tier>" …`, then rebuild.
