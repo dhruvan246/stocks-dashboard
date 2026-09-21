@@ -348,6 +348,14 @@ def main():
     # ---- manual anchored reads (scripts/manual_result_reads.json): a human read of an image-only filing.
     # Same gate as an automated read: year-ago (and preceding, when held) must reproduce the store.
     manual = load_json(MANUAL, [])
+    # The commit step's list union can carry two copies of one read (the run's "applied" copy and the
+    # committed un-applied one, 2026-09-22 02:17: 2 -> 4). Dedupe by (sym, qe): a copy with a status wins.
+    _seen = {}
+    for m in manual:
+        if not isinstance(m, dict): continue
+        k = (m.get("sym"), int(m.get("qe") or 0)); cur = _seen.get(k)
+        if cur is None or (not (cur.get("applied") or cur.get("rejected")) and (m.get("applied") or m.get("rejected"))): _seen[k] = m
+    manual = list(_seen.values())
     for m in manual:
         if not isinstance(m, dict) or m.get("applied") or m.get("rejected"): continue
         sym, qe = m.get("sym"), int(m.get("qe") or 0)
