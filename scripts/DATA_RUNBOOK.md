@@ -16768,6 +16768,30 @@ row may adjudicate a bar only if its SERIES is EQ/BE/BZ **and** traded == bar vo
 least 2026-09-02 (3 of 8 once) — event XBRLs are not being parsed in CI; `shp_events.json` advances only from local runs
 (latest stored event sub 2026-09-19). Quarterly parsing works. Diagnose the CI-side XBRL fetch (NSE lockdown class).
 
+
+### 142c. ★★★ ITEM 2 — every served filing date from 2016 checked against BSE's earliest timestamp; 6,976 corrected; events keep their FIRST filing date  (2026-09-22)
+**Source:** BSE `SHPQNewFormat` per-scrip lists for all 2,629 feed symbols with rows ≥ 2016 (2,153 with a BSE code
+fetched, 0 failures, 29 min; 476 symbols have no BSE code — 7,971 rows unverifiable by this route). Earliest
+`filing_date_time` / `revised_date_time` per as-on date, §12-gated (after 15:30 or non-trading day → next trading day
+in `gate_calendar.json`). Scratchpad `audit_dates.py`.
+**Measured on 59,129 served rows ≥ 2016:** 48,812 already equal the gated earliest disclosure · 1,401 already in a
+ledger · 1,509 no BSE timestamp · 2,004 served EARLIER than BSE's gated date by another route (NSE disclosed first —
+left alone) · **499 served LATER than a filing that was already public** (hidden filings: AEGISVOPAK 29-May-2025 event
+public 3-Jun, served 27-Aug; UCOBANK/NIACL 1–4 days) · **4,904 served on the RAW calendar day of an after-close or
+weekend filing** (ungated). Refinements: 2 days_later entries dropped where NSE broadcast the same filing before
+15:30 that day (VIJIFIN, STLTECH); **1,574 more rows whose served date is not a trading day at all** (weekend/holiday
+submission days from NSE's date-only field, 2014→2026) gated to the next trading day regardless of source.
+**Applied:** 6,975 `shp_lag_fix.json` entries (499 days_earlier, 6,476 days_later; 1,755 on event rows) + the
+BRIGADE|20260618 entry corrected 20260626→20260629 (26-Jun-2026 is a holiday — my earlier hand-computed date skipped the
+calendar). Feed rebuilt: **6,976 of 6,976 rows moved to the expected date, 0 other changes.**
+**Code:** `refresh_events()` now keeps the EARLIEST submission as the row's visibility date (values still from the newest
+XBRL); the newest submission seen per row is recorded in `shp_events.json["_latest"]` (reserved key, skipped by the
+feed) so a re-filing is parsed exactly once. Unit-tested on the BRIGADE re-filing (first 25-Jun → visible 29-Jun,
+newest 3-Jul; second run "nothing new"). Quarterly rows stay ledger-driven (§135 re-assert).
+**Left as measured:** 2,004 rows where NSE disclosed earlier than BSE (a valid earlier route, but without an NSE
+timestamp the gate cannot be checked on them for 2016→Sep-2021); 476 symbols with no BSE code; 1,509 rows BSE never
+timestamped. Pre-2016 rows are untouched (convention era, §142).
+
 ## 141a. ★★ NIFTY BANK ROSTERS HEALED — 2000→date from NSE's register + 12 archived lists  (2026-09-21)
 
 **Symptom (user, via the §141 card):** Nifty Bank's history had 7 snapshots 2017-03-31 → 2024-09-30 with

@@ -994,10 +994,10 @@ def refresh_events(qes, only=None, reparse=False):
     all keyed by quarter-end and none of them describes an event row."""
     jar = B.nse_jar()
     ev = load_events()
-    before = sum(len(v) for v in ev.values())
+    before = sum(len(v) for k, v in ev.items() if not k.startswith("_"))
     for qe in qes:
         recs = fetch_master(jar, qe, events=True)
-        best = {}                       # (sym, as-on) -> newest submission wins
+        best = {}                       # (sym, as-on) -> newest submission's XBRL (values), EARLIEST submission (visibility)
         for r in recs:
             sym = str(r.get("symbol") or "").strip().upper()
             ason = iso_date(r.get("date"))
@@ -1006,10 +1006,18 @@ def refresh_events(qes, only=None, reparse=False):
             if not sym or not ason or not sub or not xb.lower().startswith("http"): continue
             if only is not None and sym not in only: continue
             k = (sym, ason)
-            if k not in best or sub >= best[k]["sub"]: best[k] = {"sub": sub, "xb": xb}
+            if k not in best: best[k] = {"sub": sub, "xb": xb, "first": sub}
+            else:
+                if sub >= best[k]["sub"]: best[k]["sub"], best[k]["xb"] = sub, xb
+                if sub < best[k]["first"]: best[k]["first"] = sub
+        # §142c (2026-09-21): a company re-files the SAME event pattern (BRIGADE 18-Jun-2026: 25-Jun, again 3-Jul;
+        # LENSKART 7-Nov-2025: 10-Nov, again 13-Feb). Values come from the newest filing, but the row's visibility
+        # date must stay the FIRST filing — "newest submission wins" had stored the re-filing date and hid a public
+        # pattern for weeks. The newest submission seen per row lives in ev["_latest"] so a re-filing is parsed once.
+        latest = ev.setdefault("_latest", {})
         todo = [(k, v) for k, v in best.items()
                 if reparse or not (ev.get(k[0]) or {}).get(k[1])
-                or str(((ev.get(k[0]) or {}).get(k[1]) or [None] * 6)[5]) < v["sub"]]
+                or str((latest.get(k[0]) or {}).get(k[1]) or ((ev.get(k[0]) or {}).get(k[1]) or [None] * 6)[5]) < v["sub"]]
         if not todo:
             print("  events %s: nothing new" % qe); continue
         def work(item):
@@ -1023,14 +1031,17 @@ def refresh_events(qes, only=None, reparse=False):
             for fut in as_completed([ex.submit(work, it) for it in todo]):
                 sym, ason, r, res = fut.result()
                 if not isinstance(res, dict): continue
-                cell = [res["prom"], res["fii"], res["dii"], res["mf"], res["ins"], r["sub"]]
+                prev = (ev.get(sym) or {}).get(ason)
+                first = min([r["first"]] + ([str(prev[5])] if prev and prev[5] else []))
+                cell = [res["prom"], res["fii"], res["dii"], res["mf"], res["ins"], first]
                 if res.get("nsh"): cell.append(res["nsh"])
                 ev.setdefault(sym, {})[ason] = cell
+                latest.setdefault(sym, {})[ason] = r["sub"]
                 done += 1
         print("  events %s: %d parsed of %d" % (qe, done, len(todo)))
         save_events(ev)
-    after = sum(len(v) for v in ev.values())
-    print("shp_events.json: %d rows (%+d), %d symbols" % (after, after - before, len(ev)))
+    after = sum(len(v) for k, v in ev.items() if not k.startswith("_"))
+    print("shp_events.json: %d rows (%+d), %d symbols" % (after, after - before, sum(1 for k in ev if not k.startswith("_"))))
     return ev
 
 # ------------------------------------------------------------------ page feed
