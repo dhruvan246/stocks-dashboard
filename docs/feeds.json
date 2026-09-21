@@ -377,6 +377,30 @@
       ]
     },
     {
+      "file": "survivorship/nifty50.json",
+      "name": "Nifty 50 survivorship — every member ever (index-chart.html)",
+      "workflow": "refresh-market-mood.yml",
+      "cadence": "weekdays 21:35 IST",
+      "max_age_hours": 110,
+      "min_bytes": 10000,
+      "min_ratio": 0.8,
+      "pages": [
+        "index-chart.html"
+      ]
+    },
+    {
+      "file": "survivorship/niftybank.json",
+      "name": "Nifty Bank survivorship — every member ever (index-chart.html)",
+      "workflow": "refresh-market-mood.yml",
+      "cadence": "weekdays 21:35 IST",
+      "max_age_hours": 110,
+      "min_bytes": 3000,
+      "min_ratio": 0.8,
+      "pages": [
+        "index-chart.html"
+      ]
+    },
+    {
       "file": "shareholding.json",
       "name": "FII/DII holdings per stock (SHP)",
       "workflow": "refresh-shareholding.yml",

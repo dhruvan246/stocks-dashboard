@@ -138,23 +138,32 @@
   #survTable th .arr{font-size:9px;opacity:.65;margin-left:2px;}
   #survTable td.symc{font-weight:700;}
   #survTable td .nm{display:block;max-width:190px;overflow:hidden;text-overflow:ellipsis;font-weight:500;}
-  .rw{display:inline-flex;align-items:center;gap:4px;margin-left:6px;font-size:10.5px;font-weight:700;padding:2px 8px;border-radius:999px;
+  .rwrow{display:flex;align-items:center;gap:6px;flex-wrap:wrap;}
+  .sinp[type=date]{min-width:0;padding:5px 10px;}
+  .rw{display:inline-flex;align-items:center;gap:5px;cursor:pointer;font-family:inherit;font-size:11.5px;font-weight:700;padding:6px 12px;border-radius:999px;
     border:1px solid color-mix(in srgb,var(--accent) 35%,transparent);background:var(--accent-soft);color:var(--accent);
-    transition:var(--tr);white-space:nowrap;vertical-align:middle;}
+    transition:var(--tr);white-space:nowrap;}
   .rw:hover{background:var(--accent);color:#fff;}
-  .rw svg{width:11px;height:11px;}
+  .rw svg{width:12px;height:12px;}
   .st{font-size:10px;font-weight:800;letter-spacing:.04em;padding:2px 7px;border-radius:999px;background:var(--surface-3);color:var(--text-muted);}
   .st.in{background:var(--up-soft);color:var(--up);} .st.dead{background:var(--down-soft);color:var(--down);}
-  @media (max-width:560px){.sinp{min-width:0;width:100%;}}
+  @media (max-width:560px){.sinp{min-width:0;width:100%;}.sinp[type=date]{width:auto;flex:1 1 150px;}}
   /* the theme's .sw-scrollx holder is styled for PHONES ONLY (theme.css ≤640px). This table is
      23 columns (~2,800px) at every width, so its holder gets the same sideways scroll + pinned
      Stock column on desktop too — otherwise the table spills out of the card and widens the page. */
-  html[data-theme] #survTable .sw-scrollx{overflow-x:auto;overflow-y:hidden;-webkit-overflow-scrolling:touch;
-    scrollbar-width:thin;padding-bottom:3px;max-width:100%;}
+  html[data-theme] #survTable .sw-scrollx{overflow-x:auto;overflow-y:auto;-webkit-overflow-scrolling:touch;
+    scrollbar-width:thin;max-width:100%;max-height:72vh;border:1px solid var(--border);border-radius:10px;}
   html[data-theme] #survTable .sw-scrollx::-webkit-scrollbar{height:7px;}
   html[data-theme] #survTable .sw-scrollx::-webkit-scrollbar-thumb{border-width:2px;}
-  html[data-theme] #survTable .sw-scrollx table{width:auto !important;min-width:100%;}
-  html[data-theme] #survTable .sw-scrollx table th,html[data-theme] #survTable .sw-scrollx table td{white-space:nowrap;}
+  html[data-theme] #survTable .sw-scrollx table{width:auto !important;min-width:100%;font-size:11.5px;}
+  html[data-theme] #survTable .sw-scrollx table th,html[data-theme] #survTable .sw-scrollx table td{white-space:nowrap;padding:5px 8px;}
+  /* header row stays put while the 100+ rows scroll inside the holder */
+  html[data-theme] #survTable .sw-scrollx table thead th{position:sticky;top:0;z-index:3;}
+  html[data-theme] #survTable .sw-scrollx table thead th:first-child{z-index:4;}
+  /* text columns read left-to-right; long names clip with an ellipsis (full text on hover) */
+  #survTable td.txt,#survTable th.txt{text-align:left;}
+  #survTable td .el{display:block;max-width:150px;overflow:hidden;text-overflow:ellipsis;}
+  #survTable td .nm{max-width:170px;}
   html[data-theme] #survTable .sw-scrollx table thead th:first-child,
   html[data-theme] #survTable .sw-scrollx table tbody td:first-child{position:sticky;left:0;z-index:2;box-shadow:1px 0 0 var(--border);}
   html[data-theme] #survTable .sw-scrollx table thead th:first-child{background:var(--sw-pin-head,var(--surface-2));}
@@ -271,6 +280,11 @@
     <div class="card-h">
       <h2>Every member, ever <span class="mut" id="survNote"></span></h2>
       <div class="ctrls">
+        <div class="rwrow">
+          <input id="survDate" type="date" class="sinp" title="Rewind: show the roster in force on this date" />
+          <button class="rw" id="survGo" type="button" title="Show only the stocks that were in the index on the chosen date"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M3 12a9 9 0 1 0 9-9 9.75 9.75 0 0 0-6.74 2.74L3 8"/><path d="M3 3v5h5"/><path d="M12 7v5l4 2"/></svg> Rewind</button>
+          <button class="tgl hidden" id="survExit" type="button">Exit rewind</button>
+        </div>
         <div class="tgls" id="survFilters"></div>
         <input id="survQ" type="search" class="sinp" placeholder="Search stock, sector, industry…" autocomplete="off" />
       </div>
@@ -304,11 +318,11 @@
  * ======================================================================== */
 
 var REG = {
-  nifty:     { src:'nifty.json',      ysym:'^NSEI',     key:'NIFTY 50',   name:'NIFTY 50',   kind:'index',
+  nifty:     { src:'nifty.json',      ysym:'^NSEI',     key:'NIFTY 50',   name:'NIFTY 50',   kind:'index', surv:'nifty50',
                sub:'India’s 50 largest listed companies — the market’s benchmark.' },
   nifty500:  { src:'nifty500.json',   ysym:'^CRSLDX',   key:'NIFTY 500',  name:'NIFTY 500',  kind:'index', surv:'nifty500',
                sub:'The broadest Nifty — ~96% of listed market capitalisation.' },
-  banknifty: { src:'nifty_bank.json', ysym:'^NSEBANK',  key:'NIFTY BANK', name:'NIFTY BANK', kind:'index',
+  banknifty: { src:'nifty_bank.json', ysym:'^NSEBANK',  key:'NIFTY BANK', name:'NIFTY BANK', kind:'index', surv:'niftybank',
                sub:'The most-traded banking index — the market’s risk barometer.' },
   vix:       { src:'india_vix.json',  ysym:'^INDIAVIX', key:null,         name:'INDIA VIX',  kind:'vix',
                sub:'Expected 30-day Nifty volatility, implied by option prices — the “fear gauge”.' }
@@ -1179,11 +1193,14 @@ function renderLinks() {
  * One row per stock that was EVER in this index (the survivors AND every name that left), with
  * the dates, prices and returns of each membership stint. Baked nightly by
  * scripts/build_index_survivorship.py into ./survivorship/<slug>.json (lazy, additive — the card
- * stays hidden for an index with no file). Every column sorts; "Rewind" opens the stock page as
- * the market saw it on the day the stock joined (stock.html ?asof=).
+ * stays hidden for an index with no file). Every column sorts. REWIND (date box + button above the
+ * table) narrows the rows to the roster in force on that date — a stock is "in" on day D when one
+ * of its stints has join <= D < leave — and, while rewound, each stock link opens stock.html
+ * ?asof=D so the name is seen as the market saw it that day. ?asof= on THIS page's URL restores
+ * the rewind on reload / share.
  * ====================================================================== */
 var SURV = null, SROWS = [], SWIRED = false;
-var SV = { filter: 'all', q: '', sort: 'status', dir: 1, all: false };
+var SV = { filter: 'all', q: '', sort: 'status', dir: 1, all: false, asof: null };
 var SPAGE = 100;
 var SCOLS = [                                    // [key, header, 's'tring | 'n'umber]
   ['sym', 'Stock', 's'], ['name', 'Company', 's'], ['status', 'Status', 's'], ['sector', 'Sector', 's'],
@@ -1196,13 +1213,21 @@ var SCOLS = [                                    // [key, header, 's'tring | 'n'
 ];
 var SLAB = { 'in': ['In index', 'in'], out: ['Left', 'out'], dead: ['Delisted', 'dead'], untraced: ['No series', 'untraced'] };
 var SORD = { 'in': 0, out: 1, dead: 2, untraced: 3 };
-var RWICON = '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">' +
-             '<path d="M3 12a9 9 0 1 0 9-9 9.75 9.75 0 0 0-6.74 2.74L3 8"/><path d="M3 3v5h5"/><path d="M12 7v5l4 2"/></svg>';
+// was this stock in the index on ISO day D? (stints are [join, leave|null, …]; leave is the first
+// day OUT, so the membership interval is join <= D < leave)
+function memberOn(r, D) {
+  for (var i = 0; i < r.st.length; i++) { var s = r.st[i]; if (s[0] <= D && (s[1] == null || s[1] > D)) return true; }
+  return false;
+}
+function survBase() { return SV.asof ? SROWS.filter(function (r) { return memberOn(r, SV.asof); }) : SROWS; }
+function setAsofUrl(v) {
+  try { var u = new URL(location.href); if (v) u.searchParams.set('asof', v); else u.searchParams.delete('asof'); history.replaceState(null, '', u); } catch (e) {}
+}
 function pctBig(v) { if (v == null || !isFinite(v)) return '—'; return Math.abs(v) >= 1000 ? (v >= 0 ? '+' : '') + fmt(v, 0) + '%' : pct(v, 1); }
 function money(v) { return v == null ? '—' : '₹' + fmt(v, v < 1000 ? 2 : 0); }
 function survRows() {
   var q = SV.q.toLowerCase();
-  return SROWS.filter(function (r) {
+  return survBase().filter(function (r) {
     if (SV.filter !== 'all' && r.status !== SV.filter) return false;
     if (!q) return true;
     return (r.sym + ' ' + r.name + ' ' + (r.sector || '') + ' ' + (r.industry || '') + ' ' + (r.isin || '')).toLowerCase().indexOf(q) >= 0;
@@ -1235,10 +1260,8 @@ function survCell(r, k) {
   var v = r[k], l;
   switch (k) {
     case 'sym':
-      return '<a class="lnk" href="./stock.html?sym=' + encodeURIComponent(r.sym) + '">' + esc(r.sym) + '</a>' +
-        '<a class="rw" href="./stock.html?sym=' + encodeURIComponent(r.sym) + '&amp;asof=' + esc(r.first) + '" title="Open ' + esc(r.sym) +
-        ' as the market saw it on ' + prettyDate(r.first) + (r.fromStart ? ' (already a member when the record begins)' : ', the day it joined') + '">' +
-        RWICON + 'Rewind</a>';
+      return '<a class="lnk" href="./stock.html?sym=' + encodeURIComponent(r.sym) + (SV.asof ? '&amp;asof=' + esc(SV.asof) : '') + '"' +
+        (SV.asof ? ' title="Open ' + esc(r.sym) + ' as the market saw it on ' + prettyDate(SV.asof) + '"' : '') + '>' + esc(r.sym) + '</a>';
     case 'name': return '<span class="nm" title="' + esc(v) + '">' + esc(v) + '</span>';
     case 'status': l = SLAB[v] || [v, '']; return '<span class="st ' + l[1] + '">' + l[0] + '</span>';
     case 'first': return (r.fromStart ? '<span class="faint" title="Already a member when the record begins — the real join is earlier">≤ </span>' : '') + prettyDate(v);
@@ -1248,6 +1271,7 @@ function survCell(r, k) {
     case 'joinPx': case 'exitPx': case 'lastPx': return money(v);
     case 'retIn': case 'cagrIn': case 'idxIn': case 'relIn': case 'retSince': case 'retAfter': case 'maxDD':
       return v == null ? '—' : '<span class="' + cls(v) + '">' + pctBig(v) + '</span>';
+    case 'sector': case 'industry': return v == null ? '—' : '<span class="el" title="' + esc(v) + '">' + esc(v) + '</span>';
     case 'mcap': return v == null ? '—' : fmt(v, 0);
     case 'upcoming': return v ? (v.indexOf('join') === 0 ? 'Joins ' : 'Leaves ') + prettyDate(v.slice(-10)) : '';
     default: return v == null ? '—' : esc(v);
@@ -1261,17 +1285,37 @@ function wireSurv() {
     t = setTimeout(function () { SV.q = v.trim(); renderSurv(); }, 120);
   };
   $('survMore').onclick = function () { SV.all = !SV.all; renderSurv(); };
+  var d = $('survDate');
+  d.min = SURV.firstSnap; d.max = SURV.dataEnd;
+  if (SV.asof) d.value = SV.asof;
+  var go = function () {
+    var v = d.value; if (!v) { d.focus(); return; }
+    if (v > SURV.dataEnd) { v = SURV.dataEnd; d.value = v; }
+    SV.asof = v; SV.all = false; setAsofUrl(v); renderSurv();
+  };
+  $('survGo').onclick = go;
+  d.onkeydown = function (e) { if (e.key === 'Enter') go(); };
+  $('survExit').onclick = function () { SV.asof = null; d.value = ''; setAsofUrl(null); renderSurv(); };
 }
 function renderSurv() {
   if (!SURV) return;
   if (!SROWS.length) SROWS = SURV.rows.map(function (a) { var o = {}; SURV.cols.forEach(function (c, i) { o[c] = a[i]; }); return o; });
   wireSurv();
   $('survCard').classList.remove('hidden');
-  var tot = SROWS.length, counts = { all: tot, 'in': 0, out: 0, dead: 0, untraced: 0 };
-  SROWS.forEach(function (r) { counts[r.status] = (counts[r.status] || 0) + 1; });
-  $('survNote').innerHTML = '— ' + fmt(tot, 0) + ' stocks since ' + prettyDate(SURV.firstSnap) + ' · <b class="up">' + counts['in'] + '</b> in today · ' +
-    counts.out + ' left &amp; still trade · <b class="down">' + counts.dead + '</b> delisted or merged' +
-    (counts.untraced ? ' · ' + counts.untraced + ' with no price series' : '');
+  var base = survBase(), tot = base.length, counts = { all: tot, 'in': 0, out: 0, dead: 0, untraced: 0 };
+  base.forEach(function (r) { counts[r.status] = (counts[r.status] || 0) + 1; });
+  $('survExit').classList.toggle('hidden', !SV.asof);
+  if (SV.asof && SV.asof < SURV.firstSnap) {
+    $('survNote').innerHTML = '— <b class="down">no roster before ' + prettyDate(SURV.firstSnap) + '</b> (the record begins there)';
+  } else if (SV.asof) {
+    $('survNote').innerHTML = '— roster on <b>' + prettyDate(SV.asof) + '</b>: ' + fmt(tot, 0) + ' stocks · <b class="up">' + counts['in'] + '</b> still in today · ' +
+      counts.out + ' since left &amp; still trade · <b class="down">' + counts.dead + '</b> since delisted or merged' +
+      (counts.untraced ? ' · ' + counts.untraced + ' with no price series' : '');
+  } else {
+    $('survNote').innerHTML = '— ' + fmt(tot, 0) + ' stocks since ' + prettyDate(SURV.firstSnap) + ' · <b class="up">' + counts['in'] + '</b> in today · ' +
+      counts.out + ' left &amp; still trade · <b class="down">' + counts.dead + '</b> delisted or merged' +
+      (counts.untraced ? ' · ' + counts.untraced + ' with no price series' : '');
+  }
   var pills = [['all', 'All'], ['in', 'In index'], ['out', 'Left'], ['dead', 'Delisted'], ['untraced', 'No series']];
   $('survFilters').innerHTML = pills.filter(function (p) { return counts[p[0]]; }).map(function (p) {
     return '<button class="tgl' + (SV.filter === p[0] ? ' on' : '') + '" data-f="' + p[0] + '" type="button">' + p[1] +
@@ -1283,15 +1327,16 @@ function renderSurv() {
   var shown = SV.all ? rows : rows.slice(0, SPAGE);
   var head = '<tr>' + SCOLS.map(function (c) {
     var on = SV.sort === c[0];
-    return '<th class="s' + (on ? ' on' : '') + '" data-k="' + c[0] + '" title="Sort by ' + esc(c[1]) + '">' + esc(c[1]) +
+    return '<th class="s' + (on ? ' on' : '') + (c[2] === 'n' ? '' : ' txt') + '" data-k="' + c[0] + '" title="Sort by ' + esc(c[1]) + '">' + esc(c[1]) +
            '<span class="arr">' + (on ? (SV.dir > 0 ? '▲' : '▼') : '⇅') + '</span></th>';
   }).join('') + '</tr>';
   var body = shown.map(function (r) {
     return '<tr>' + SCOLS.map(function (c) {
-      return '<td class="' + (c[2] === 'n' ? 'num' : '') + (c[0] === 'sym' ? ' symc' : '') + '">' + survCell(r, c[0]) + '</td>';
+      return '<td class="' + (c[2] === 'n' ? 'num' : 'txt') + (c[0] === 'sym' ? ' symc' : '') + '">' + survCell(r, c[0]) + '</td>';
     }).join('') + '</tr>';
   }).join('');
-  if (!rows.length) body = '<tr><td colspan="' + SCOLS.length + '" class="faint" style="text-align:center;padding:24px">No stock matches.</td></tr>';
+  if (!rows.length) body = '<tr><td colspan="' + SCOLS.length + '" class="faint" style="text-align:center;padding:24px">' +
+    (SV.asof && SV.asof < SURV.firstSnap ? 'No roster exists before ' + prettyDate(SURV.firstSnap) + '.' : 'No stock matches.') + '</td></tr>';
   // .sw-scrollx = theme.js's sideways-scroll holder with the Stock column pinned (it re-resolves
   // the pin on every re-render via its MutationObserver; wrapping here keeps the DOM stable)
   $('survTable').className = '';
@@ -1309,8 +1354,9 @@ function renderSurv() {
   more.classList.toggle('hidden', rows.length <= SPAGE);
   more.textContent = SV.all ? 'Show first ' + SPAGE : 'Show all ' + fmt(rows.length, 0) + ' rows';
   var sname = (SCOLS.filter(function (c) { return c[0] === SV.sort; })[0] || [0, SV.sort])[1];
-  $('survShown').textContent = 'Showing ' + fmt(shown.length, 0) + ' of ' + fmt(rows.length, 0) + (rows.length !== tot ? ' matching' : '') +
-    ' · sorted by ' + sname + (SV.dir > 0 ? ' ↑' : ' ↓') + ' · click any column header to sort';
+  $('survShown').textContent = 'Showing ' + fmt(shown.length, 0) + ' of ' + fmt(rows.length, 0) + (SV.asof ? ' members on ' + prettyDate(SV.asof) : '') +
+    (rows.length !== tot ? ' matching' : '') + ' · sorted by ' + sname + (SV.dir > 0 ? ' ↑' : ' ↓') +
+    ' · click any column header to sort · scroll the grid sideways for all ' + SCOLS.length + ' columns';
   $('survFoot').innerHTML = 'Membership: NSE index reconstitutions — ' + SURV.snaps + ' dated rosters from ' + prettyDate(SURV.firstSnap) +
     ' (roster in force ' + prettyDate(SURV.rosterAsOf) +
     (SURV.upcoming ? '; a reshuffle announced for ' + prettyDate(SURV.upcoming) + ' shows under “Announced”' : '') + '). ' +
@@ -1318,7 +1364,8 @@ function renderSurv() {
     '“Return in index” compounds every stint (an open stint runs to the last close); “Index, same span” is the ' + esc(CFG.name) +
     ' level over the same windows (month-end levels before daily history) and “vs index” the member relative to it. ' +
     '“Since first join” is buy-and-hold from the first inclusion; “After exit” is what the price did after the index dropped it. ' +
-    'Rewind opens the stock page as the market saw it on the join date. Data to ' + prettyDate(SURV.dataEnd) + '.';
+    'Rewind (date box above) narrows the table to the roster in force on that day; while rewound, tapping a stock opens it as the market saw it on that date. ' +
+    'Data to ' + prettyDate(SURV.dataEnd) + '.';
 }
 
 /* =========================================================================
@@ -1392,7 +1439,13 @@ function boot() {
       if (CFG.surv) {
         fetch('./survivorship/' + CFG.surv + '.json', { cache: 'no-store' })
           .then(function (r) { if (!r.ok) throw new Error('no survivorship file'); return r.json(); })
-          .then(function (j4) { if (j4 && j4.rows && j4.rows.length) { SURV = j4; safe(renderSurv); } })
+          .then(function (j4) {
+            if (!j4 || !j4.rows || !j4.rows.length) return;
+            SURV = j4;
+            var a = new URLSearchParams(location.search).get('asof');
+            if (a && /^\d{4}-\d{2}-\d{2}$/.test(a)) SV.asof = a > j4.dataEnd ? j4.dataEnd : a;
+            safe(renderSurv);
+          })
           .catch(function () {});
       }
       // ---- live quote + polling

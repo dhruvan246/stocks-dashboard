@@ -109,7 +109,7 @@ INDEXES = {
     "niftypsubank":          ("Nifty PSU Bank",         None, "NIFTY PSU BANK"),
     "niftymnc":              ("Nifty MNC",              None, "NIFTY MNC"),
 }
-DEFAULT = ["nifty500"]
+DEFAULT = ["nifty500", "nifty50", "niftybank"]     # the member-bearing indices index-chart.html serves
 
 COLS = ["sym", "name", "sector", "industry", "isin", "mcap", "status", "first", "fromStart", "last",
         "n", "days", "joinPx", "exitPx", "lastPx", "lastD", "retIn", "cagrIn", "retSince", "retAfter",

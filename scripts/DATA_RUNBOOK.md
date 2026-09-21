@@ -16609,12 +16609,17 @@ upsert was writing). Then `settle_stale_holds.py --apply` settled both holds "ou
 
 ## 141. ★★ INDEX SURVIVORSHIP TABLE — every stock EVER in an index, with a Rewind per row  (index-chart.html, built 2026-09-21)
 
-**What it is (user ask, 2026-09-21):** on `index-chart.html?ix=nifty500` a card "Every member, ever" —
-one row per stock that was EVER a Nifty 500 member (the survivors AND every name that left: dropped,
-merged, delisted), every column sortable, and a **Rewind** button per row that opens the stock page as
-the market saw it on the day the stock joined (`stock.html?sym=X&asof=YYYY-MM-DD`, a new deep link
-that pre-applies the page's existing Rewind). Nifty 500 first; the user will say when to extend it
-to the other indices.
+**What it is (user asks, 2026-09-21, three iterations):** on `index-chart.html` (NIFTY 500, NIFTY 50,
+NIFTY BANK — every member-bearing index the page serves; VIX has no constituents) a card "Every
+member, ever" — one row per stock that was EVER a member (the survivors AND every name that left:
+dropped, merged, delisted), 23 sortable columns, filter pills + search, and **Rewind at the top of
+the table**: a date box + Rewind button that narrows the rows to the roster in force on that day
+(a stock is "in" on D when one stint has join ≤ D < leave). The user explicitly did NOT want a
+Rewind button per row ("dont want rewind button for all stocks") — the first cut had one that opened
+`stock.html?sym=X&asof=<join>`; that per-row button is gone. While rewound, each stock LINK carries
+`&asof=D` (stock.html's new deep link pre-applies its own Rewind), and `?asof=` on the index page's
+URL restores the view. Verified: the 30 Mar 2024 rewind's 501 names hash-match dash_slim's
+2024-03-28 snapshot; 2015-01-05 → 500 (2014-11-28 snapshot); Nifty 50 2020-01-01 → 50.
 
 **Builder:** `scripts/build_index_survivorship.py` → `docs/survivorship/<slug>.json` (Nifty 500 =
 383 KB, 1,425 rows). Reads the LIVE sf bin (`SF_BIN=`, the `data` release asset in CI — never the
@@ -16622,10 +16627,16 @@ frozen committed copy, §0), `docs/dash_slim.bin` `indicesHistory[<name>]` (the 
 event-driven snapshots, 339 for Nifty 500 from 1998-08-01), `scripts/_rename_map.json` (fold),
 sf/dash_slim meta (name, sector, industry, ISIN, mcap), `docs/sector_classification.json`, and the
 index level from the per-index daily JSON + `index_monthly.json` month-ends (for "index, same span").
-`INDEXES` maps 27 slugs → (indicesHistory name, daily file, monthly key); `DEFAULT = ["nifty500"]`;
-`all` or slugs on the CLI build more. The page's `REG[<ix>].surv` names the file; an index without
-one keeps the card hidden. **To extend to another index: add its slug to `DEFAULT` (or the CLI),
-add `surv:'<slug>'` to its `REG` entry, and a `feeds.json` row.**
+`INDEXES` maps 27 slugs → (indicesHistory name, daily file, monthly key); `DEFAULT = ["nifty500",
+"nifty50", "niftybank"]` (18 KB / 5 KB for the two small ones); `all` or slugs on the CLI build more.
+The page's `REG[<ix>].surv` names the file; an index without one keeps the card hidden. **To add an
+index: slug into `DEFAULT`, `surv:'<slug>'` on its `REG` entry, a `feeds.json` row.**
+- **Roster-data caveats surfaced by the small indices (upstream `indicesHistory`, NOT this builder):**
+  Nifty 50 has 15 snapshots from 2015-09-28 and its roster in force is **2025-09-30** (the 2026-09-30
+  snapshot is future-dated; no 2026-03 reshuffle snapshot exists); Nifty Bank has 7 snapshots
+  2017-03-31 → 2024-09-30 and its 2017–2020 rosters carry **PAYTM** (One 97, listed Nov-2021 — an
+  impossible member; join price correctly null) and **KINDIA** (untraced). The card shows them as the
+  data says; fixing them is a `build_membership_v2.py` / register question, not a page one.
 
 **Conventions (all measured 2026-09-21; docstring has the full list):**
 - A stint opens at the effectiveDate of the first snapshot carrying the name and closes at the
@@ -16649,11 +16660,15 @@ add `surv:'<slug>'` to its `REG` entry, and a `feeds.json` row.**
 PIT breadth step and rides its cp-to-/tmp + cp-back + `git add docs/survivorship/*.json` lists
 (the §18 reset-and-replay gotcha). `feeds.json` row: min 200 KB, ratio 0.8, page index-chart.html.
 
-**Page (§39 gate run 2026-09-21):** filter pills (All / In index / Left / Delisted / No series) with
-counts, search over symbol/name/sector/industry/ISIN, 23 sortable columns (numbers descend on the
-first click, blanks always sink), 100 rows + "Show all", stint list on the Stints ⓘ hover, the
-theme's `.sw-scrollx` holder with the Stock column pinned, footnote naming every convention.
-`sw.js` v152.
+**Page (§39 gate run 2026-09-21):** Rewind row (date box min = first snapshot, max = data end; Enter
+or the button applies; "Exit rewind" clears; before the first snapshot → "No roster exists before …"),
+filter pills (All / In index / Left / Delisted / No series) whose counts follow the rewound roster,
+search over symbol/name/sector/industry/ISIN, 23 sortable columns (numbers descend on the first click,
+worst-fall ascends, blanks always sink), 100 rows + "Show all", stint list on the Stints ⓘ hover.
+**Desktop grid rules (page-scoped, because theme.css's `.sw-scrollx` is phone-only):** holder
+`overflow:auto; max-height:72vh` so the sideways scrollbar is always in view under the rows, sticky
+header row (`thead th{position:sticky;top:0}`), pinned Stock column, 11.5px cells, text columns
+left-aligned, sector/industry/company clipped with an ellipsis (full text on hover). `sw.js` v154.
 
 **Shipped broken once (2026-09-21 21:00 IST, fixed 21:20, sw v153):** the user reported "table is
 broken" on desktop — the theme's `.sw-scrollx` rules are phone-only (≤640px) and `<main>` shrink-to-fits
