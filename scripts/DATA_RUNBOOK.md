@@ -16773,6 +16773,7 @@ YESBANK 2012-04-27→2020-03-19 and 2025-12-31→, CANBK 2003-05-02→2018-04-02
 (`build_compressed.py` rebuilds `docs/dash_slim.bin` from `indices_history.json`) →
 `refresh-market-mood.yml` (`build_index_survivorship.py` reads dash_slim). The page reads only the last.
 
-**Leads not pursued:** a weekday probe of niftyindices press-release stems 2024-10 → 2026-09 found
-~275 PDFs absent from `build_changelog.py`'s FILES list (mostly daily notices); FILES + the 80-day
-auto-probe is what the parser sees — worth a sweep if another index shows an unexplained roster.
+**Leads not pursued:** a weekday probe of niftyindices press-release stems 2024-10-01 → 2026-09-21
+(1,491 names tried: DDMMYYYY, _1, _2) found **376 PDFs absent from `build_changelog.py`'s FILES list**
+(mostly daily notices); FILES + the 80-day auto-probe is all the parser sees — worth a sweep if another
+index shows an unexplained roster.
