@@ -658,12 +658,16 @@ def main():
         # 2021) and BSE (2017) into 2006-2019 Midcap rosters whenever their inclusion event was missing.
         for h_idx, h_snaps in H.items():
             for snap in h_snaps:
-                if snap["effectiveDate"] < "2011-01-01": continue   # pre-dataset — data coverage incomplete
                 dint = snap["effectiveDate"].replace("-", "")
+                # Before 2011 the bin's first bar can be a coverage artefact (weekly-era tapes), so a
+                # pre-2011 snapshot is only floored by first-trade dates INSIDE the reliable daily era:
+                # a name whose tape begins in 2016 cannot sit in a 1999 IT roster (LTTS, HEXT, GLAND,
+                # LAURUSLABS did, 2026-09-22 spot-check), while a 2004 first bar says nothing certain.
+                early = snap["effectiveDate"] < "2011-01-01"
                 keep = []
                 for sym in snap["symbols"]:
                     ft = first_trade.get(sym)
-                    if ft is not None and ft > dint:                # not yet trading => impossible => phantom
+                    if ft is not None and ft > dint and (not early or ft >= "20110101"):   # not yet trading => phantom
                         dropped.setdefault(sym, []).append(h_idx + " " + snap["effectiveDate"])
                     else:
                         keep.append(sym)

@@ -16910,7 +16910,9 @@ the changelog.
   pinned sub-index (a between-pin snapshot is derived from the later pin through that window's
   events); the listing-date **PHANTOM FLOOR runs for every index** (dropped 1,099 pre-listing rows /
   84 stocks — IRFC, BSE, Indigo Paints, Kalyan … had been walked into 2006-2019 Midcap/Smallcap
-  rosters wherever their inclusion event was missing). Nifty 50, Nifty Bank, Nifty 500 are
+  rosters wherever their inclusion event was missing). Pre-2011 snapshots are floored only by
+  first-trade dates inside the daily era (≥ 2011): a 2016 listing cannot sit in a 1999 IT roster, a
+  2004 first bar proves nothing (weekly-era coverage). Nifty 50, Nifty Bank, Nifty 500 are
   byte-identical before and after (regression check against origin).
 - `_idx_official_fetch.py`: every tracked index with its three NSE hosts + CNX-era file names;
   ONE Wayback directory prefix query per host (535 + 5,799 + 329 captures listed) with a per-file
