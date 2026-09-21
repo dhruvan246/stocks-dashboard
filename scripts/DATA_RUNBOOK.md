@@ -16742,6 +16742,28 @@ refresh-shareholding.yml — fails the job if the function or either call site i
 instead of poisoning it. Quantmac parity is unaffected either way (§142: ±4 cells of 85,202) — this is
 backtest honesty, not parity.
 
+
+### 142b. ★★ QUANTMAC'S DELIVERY REPLY: 8,262 of 8,294 accepted; its 32 DHANI rejections were RIGHT — a wrong-SERIES class, 115 cells, 39 corrected  (2026-09-21)
+`~/Downloads/Delivery_reconciliation_updated.xlsx`: 544 recovered observations verified, 7,718 trade-to-trade 100s
+stored as rule-derived, the 4 NSE source conflicts (ALOKTEXT/BHARTIARTL/CHEMPLAST/RSWM 2009) retained on their side and
+left OPEN — same reading as ours. GEOJITFSL 2009-05-18: my workbook labelled the 100 as T2T; it is an EQ day whose MTO
+prints 100 — value right, label wrong. **DHANI Jun–Jul 2018, 32 cells: rejected as "partly-paid share class", and they
+are right.** Our bar is IBVENTURES series BE (ordinary shares, trade-to-trade: 15-Jun close 487.75, vol 555,755 = the
+bhavcopy BE row). NSE's MTO file that day carries ONLY the E1 row (partly-paid, ISIN IN9274G01018; traded 83,520, 54.02 %)
+and some fill path attached that pct to the BE bar without the volume identity (53 such cells sit in dv_fill.json, 62 in
+dv_fill_hist.json.gz — the 2026-08-02 pre-volume-identity build and the re-read path).
+**Class sweep (all 6,077 MTO files):** symbol-days where NSE lists only non-EQ/BE/BZ series for the symbol (E1/E2/P1
+partly-paid, N* debt, W1 warrants, BL) and our bar's dv == that row's pct while bar volume != its traded qty →
+**115 cells / 14 symbols**: 76 are BE bars already at 100 (IIFL Jun–Oct 2021 ×53 matched an N-series 100 — right
+number, wrong reason, untouched); **36 BE bars carried a partly-paid pct → 100 by the T2T rule** (DHANI 32, MUKANDLTD 4);
+**3 EQ bars carried a warrant row's 100 with ONE share traded → 0** (BHARATFORG 2005-07-25, TRENT, SKFINDIA).
+Fix: ledger cells replaced with `[100,"be-t2t-series-fix"]` (36) or pruned (3); `dv_overwrite.json` +39 anchored
+entries `[old, new, bar_vol]`; simulated bake on the live bars 39/39, second pass 0. Rule for any future fill: an MTO
+row may adjudicate a bar only if its SERIES is EQ/BE/BZ **and** traded == bar volume — series alone is not identity.
+**OPEN (found on the way):** refresh-shareholding.yml's event step logs "events …: 0 parsed of N" on every run since at
+least 2026-09-02 (3 of 8 once) — event XBRLs are not being parsed in CI; `shp_events.json` advances only from local runs
+(latest stored event sub 2026-09-19). Quarterly parsing works. Diagnose the CI-side XBRL fetch (NSE lockdown class).
+
 ## 141a. ★★ NIFTY BANK ROSTERS HEALED — 2000→date from NSE's register + 12 archived lists  (2026-09-21)
 
 **Symptom (user, via the §141 card):** Nifty Bank's history had 7 snapshots 2017-03-31 → 2024-09-30 with

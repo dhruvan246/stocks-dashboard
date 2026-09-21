@@ -1,1 +1,216 @@
-{"_meta":{"built":"2026-08-11","purpose":"ONE-SHOT overwrite of the \u00a788b wrong-company delivery-% cells. The 2026-08-02 MTO backfill keyed these 602 DVL cells to the wrong company (rename map funnels both DPL-Petrochem and DTIL-Tea into DVL; the bin bar's volume identifies the right MTO row - every bar here carries DTIL's traded volume while the stored pct was DPL's / own-symbol's). dv_fill_hist.json.gz was corrected in-place (4e16d24f) but is applied fill-only, so live bins keep the baked wrong value; this ledger is the overwrite leg.","rule":"cell = [old_wrong_dv, correct_dv, bar_volume]. apply_dv_overwrite (build_sf_data.py) rewrites dv to correct_dv ONLY where the bar still matches BOTH anchors: dv == old_wrong_dv (+-0.011) AND v == bar_volume (the volume of the MTO row that adjudicated the cell). Already-correct cells and anything else are left alone, so the pass is idempotent (\u00a787e-bis: second run = 0) and can never touch a bar it did not adjudicate (e.g. a from-scratch rebuild whose 20220808 bar carries DVL's own volume 64833 with dv 51.77 correctly).","src":"wrong_cells.json of the \u00a788b full-universe sweep (stored dv contradicts the volume-matched MTO row; controls: volume identity exact, existing-dv==MTO-pct on 99.987% of 4.6M overlap cells). 601/602 values independently confirmed == the in-place ledger diff at 4e16d24f; the 20220808 cell (not in the hist ledger - 2022 dv came from the bhavcopy) re-verified against a fresh MTO_08082022.DAT fetch: bin v 23295 == DTIL row traded, pct 66.04.","superseded":"2026-08-11 \u00a789: all 602 cells were DVL, whose 2015-2019 bars were the TEA company's (recycled-ticker chimera). dvl_dtil_surgery.json.gz replaces those bars wholesale (DPL volumes + DPL dv), so the v==vol anchor can never match again \u2014 cells emptied to retire the permanently-firing 'left alone' tripwire. History in git; see DATA_RUNBOOK \u00a789."},"cells":{}}
+{
+ "_meta": {
+  "built": "2026-08-11",
+  "purpose": "ONE-SHOT overwrite of the §88b wrong-company delivery-% cells. The 2026-08-02 MTO backfill keyed these 602 DVL cells to the wrong company (rename map funnels both DPL-Petrochem and DTIL-Tea into DVL; the bin bar's volume identifies the right MTO row - every bar here carries DTIL's traded volume while the stored pct was DPL's / own-symbol's). dv_fill_hist.json.gz was corrected in-place (4e16d24f) but is applied fill-only, so live bins keep the baked wrong value; this ledger is the overwrite leg. | 2026-09-21 (§142b): 39 cells whose delivery %% was the WRONG SERIES' figure — NSE's MTO file carried only a partly-paid (E1/P1), debt (N*) or warrant (W1) row for the symbol that day, and a fill path attached its pct to the ordinary-share bar. 36 bars are BE (trade-to-trade) -> 100 by rule; 3 EQ bars (BHARATFORG 2005-07-25, TRENT, SKFINDIA: a warrant row with 1 share traded printing 100) -> 0 (no observation). Surfaced by quantmac rejecting 32 DHANI cells; class-swept over all 6,077 MTO files (115 hits, 76 already at the right value).",
+  "rule": "cell = [old_wrong_dv, correct_dv, bar_volume]. apply_dv_overwrite (build_sf_data.py) rewrites dv to correct_dv ONLY where the bar still matches BOTH anchors: dv == old_wrong_dv (+-0.011) AND v == bar_volume (the volume of the MTO row that adjudicated the cell). Already-correct cells and anything else are left alone, so the pass is idempotent (§87e-bis: second run = 0) and can never touch a bar it did not adjudicate (e.g. a from-scratch rebuild whose 20220808 bar carries DVL's own volume 64833 with dv 51.77 correctly).",
+  "src": "wrong_cells.json of the §88b full-universe sweep (stored dv contradicts the volume-matched MTO row; controls: volume identity exact, existing-dv==MTO-pct on 99.987% of 4.6M overlap cells). 601/602 values independently confirmed == the in-place ledger diff at 4e16d24f; the 20220808 cell (not in the hist ledger - 2022 dv came from the bhavcopy) re-verified against a fresh MTO_08082022.DAT fetch: bin v 23295 == DTIL row traded, pct 66.04.",
+  "superseded": "2026-08-11 §89: all 602 cells were DVL, whose 2015-2019 bars were the TEA company's (recycled-ticker chimera). dvl_dtil_surgery.json.gz replaces those bars wholesale (DPL volumes + DPL dv), so the v==vol anchor can never match again — cells emptied to retire the permanently-firing 'left alone' tripwire. History in git; see DATA_RUNBOOK §89."
+ },
+ "cells": {
+  "BHARATFORG": {
+   "20050725": [
+    100.0,
+    0,
+    208265
+   ]
+  },
+  "DHANI": {
+   "20180615": [
+    54.02,
+    100.0,
+    555755
+   ],
+   "20180618": [
+    67.92,
+    100.0,
+    386456
+   ],
+   "20180619": [
+    70.73,
+    100.0,
+    328390
+   ],
+   "20180620": [
+    66.74,
+    100.0,
+    332056
+   ],
+   "20180621": [
+    69.12,
+    100.0,
+    258326
+   ],
+   "20180622": [
+    60.06,
+    100.0,
+    264716
+   ],
+   "20180625": [
+    85.12,
+    100.0,
+    167290
+   ],
+   "20180626": [
+    81.26,
+    100.0,
+    315884
+   ],
+   "20180627": [
+    83.2,
+    100.0,
+    664006
+   ],
+   "20180628": [
+    82.46,
+    100.0,
+    434328
+   ],
+   "20180629": [
+    54.4,
+    100.0,
+    602744
+   ],
+   "20180702": [
+    58.39,
+    100.0,
+    272652
+   ],
+   "20180703": [
+    57.47,
+    100.0,
+    373867
+   ],
+   "20180704": [
+    51.56,
+    100.0,
+    229994
+   ],
+   "20180705": [
+    68.85,
+    100.0,
+    295215
+   ],
+   "20180706": [
+    69.06,
+    100.0,
+    368749
+   ],
+   "20180709": [
+    60.3,
+    100.0,
+    448304
+   ],
+   "20180710": [
+    67.03,
+    100.0,
+    109374
+   ],
+   "20180711": [
+    46.61,
+    100.0,
+    373818
+   ],
+   "20180712": [
+    73.31,
+    100.0,
+    331896
+   ],
+   "20180713": [
+    79.84,
+    100.0,
+    176403
+   ],
+   "20180716": [
+    84.2,
+    100.0,
+    104561
+   ],
+   "20180717": [
+    44.96,
+    100.0,
+    292034
+   ],
+   "20180718": [
+    50.79,
+    100.0,
+    630617
+   ],
+   "20180719": [
+    54.44,
+    100.0,
+    509003
+   ],
+   "20180720": [
+    62.37,
+    100.0,
+    518340
+   ],
+   "20180723": [
+    82.0,
+    100.0,
+    693540
+   ],
+   "20180724": [
+    53.39,
+    100.0,
+    525180
+   ],
+   "20180725": [
+    71.68,
+    100.0,
+    981916
+   ],
+   "20180726": [
+    58.56,
+    100.0,
+    781996
+   ],
+   "20180727": [
+    62.73,
+    100.0,
+    266969
+   ],
+   "20181012": [
+    96.13,
+    100.0,
+    432763
+   ]
+  },
+  "TRENT": {
+   "20070514": [
+    100.0,
+    0,
+    1860
+   ]
+  },
+  "SKFINDIA": {
+   "20020318": [
+    91.74,
+    0,
+    328655
+   ]
+  },
+  "MUKANDLTD": {
+   "20190828": [
+    99.36,
+    100.0,
+    28664
+   ],
+   "20190911": [
+    55.88,
+    100.0,
+    4506
+   ],
+   "20190912": [
+    71.19,
+    100.0,
+    6104
+   ],
+   "20190913": [
+    92.37,
+    100.0,
+    15830
+   ]
+  }
+ }
+}
