@@ -33,6 +33,11 @@ jobs:
         with:
           python-version: "3.11"
 
+      # §142a: the 15:30 visibility gate was silently deleted from the fetcher by a stale-copy commit on
+      # 2026-09-05 and nothing noticed for 16 days. Refuse to ingest if it is not wired into BOTH paths.
+      - name: Guard — the 15:30 visibility gate must be wired into both ingestion paths
+        run: python3 scripts/guard_shp_gate.py
+
       - name: Fetch new/revised shareholding filings (last 3 quarter-ends)
         run: python3 -X utf8 scripts/fetch_shareholding.py
 

@@ -16721,6 +16721,27 @@ hold (123 stocks; DELHIVERY Dec-2022 9.2 vs 69.1, KALYANKJIL 2.36 vs 28.7 — sm
 split, unverified), 460 cells quantmac has with no filing on our side (PIRAMALFIN 168, HEXT 109, …), 20,009
 cells we hold that quantmac leaves blank.
 
+
+### 142a. ★★★ THE 15:30 VISIBILITY GATE HAD BEEN DELETED FROM THE FETCHER FOR 16 DAYS — restored + guarded  (2026-09-21)
+`visible_iso()` (§135j, commit 2ee1e235c 2026-09-05 13:33) gated every NSE SHP filing at ingestion: broadcast
+after 15:30 IST or on a non-trading day → visible the next trading day (`gate_calendar.json`). **Commit
+66a241e4f, 13:41 the same day** (WP-S2 pass 3 — a different workstream whose copy of fetch_shareholding.py
+predated 2ee1e235c) removed the function and both call sites; its diff touches nothing else in the file. The
+clobber class in `feedback-file-scoped-add-still-reverts`. Nobody noticed: the daily runs kept passing, the
+quarterly rows ingested earlier were protected by the Aug-23/Sep-5 ledgers re-asserted at serve time, and no
+check asserted the gate's presence. Found by the quantmac FII parity drill (§142) when 8 event rows carried raw
+after-close dates. Measured cost: of the 34 filings ingested 6→21 Sep, 28 stored on the raw day where the gate
+moves them; of everything served for filings submitted Oct-2025→Sep-2026 (all symbols), **1,739 rows** sat on
+a raw after-close day (1,332 quarterly, 407 event; 50 already ledgered).
+**Fixed:** (1) `visible_iso()` restored verbatim, both call sites re-wired, 7 timestamp cases unit-tested
+(Fri-after-close→Mon, Sat→Mon, Sunday-before-Republic-Day→Tue…); (2) **1,689 `days_later` entries** added to
+`shp_lag_fix.json` from NSE master `broadcastDate` (prov says "§142a"), feed rebuilt `--feed-only`: exactly
+1,689 served rows moved, 0 other changes; (3) **`scripts/guard_shp_gate.py`** runs FIRST in
+refresh-shareholding.yml — fails the job if the function or either call site is missing, or if the raw
+`submissionDate` assignment reappears, or the 5 self-test dates drift. A silent revert now stops ingestion
+instead of poisoning it. Quantmac parity is unaffected either way (§142: ±4 cells of 85,202) — this is
+backtest honesty, not parity.
+
 ## 141a. ★★ NIFTY BANK ROSTERS HEALED — 2000→date from NSE's register + 12 archived lists  (2026-09-21)
 
 **Symptom (user, via the §141 card):** Nifty Bank's history had 7 snapshots 2017-03-31 → 2024-09-30 with
