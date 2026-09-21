@@ -46,7 +46,12 @@ import os, sys, re, json, time, datetime, argparse
 HERE = os.path.dirname(os.path.abspath(__file__)); ROOT = os.path.dirname(HERE)
 sys.path.insert(0, HERE)
 import fund_dup_guard                       # ONE row per (sym, quarter-end)
-import bse_text                             # §58 text-layer reader (labelled PAT row, unit-aware)
+try:
+    import bse_text                         # §58 text-layer reader (labelled PAT row, unit-aware)
+except ModuleNotFoundError as _e:           # bse_text imports bse_vision -> numpy/cv2, absent from the CI image;
+    import types                            # parse_pdf/rows_by_y/data_after_label/detect_unit need neither
+    sys.modules["bse_vision"] = types.ModuleType("bse_vision")
+    import bse_text
 import fetch_insurers as FI                 # is_result_filing / anchored / render_pl_pngs / INSURERS
 try:
     import gemini_vision as GV              # read_corp_results (free tier; needs GEMINI_API_KEY)
