@@ -16884,3 +16884,53 @@ continues from the anchor. 21 indices' 2026-09-30 snapshots changed (Nifty 50 +B
 10+ in); the engine's latest-≤-day selection ignores a future snapshot until its date, then it is
 right without waiting for a rebuild. `REGISTER_LEDGERS` in the builder maps index → register ledger
 (Nifty Bank, Nifty 50); adding a sheet = one line there + a generator with an explicit name map.
+
+## 141c. ★★ ALL 27 INDEX ROSTERS — register sheets + archived lists for every tracked index  (2026-09-22)
+
+**Ask (user: "do the same for all the other indexes").** The 18 remaining register sheets (Next 50, 100,
+200, Midcap 50/100, Smallcap 50/100, LargeMidcap 250, IT, Pharma, Auto, FMCG, Metal, Energy, Realty,
+Media, PSU Bank, MNC — 4,376 dated rows 1996→2020) now feed the builder; Midcap 150, Smallcap 250,
+MidSmallcap 400, Healthcare, Consumer Durables, Oil & Gas post-date the register and rely on pins +
+the changelog.
+
+**Machinery (generic, reusable):**
+- `scripts/_staleness_fix/gen_register_events.py --all` → `scripts/_<slug>_inclexcl_events.json` per
+  sheet (force-tracked). Precedence: `register_manual_names.json` (87 hand-verified old spellings,
+  each with its tape span or rename chain in the note) > the Nifty 500 ledger's era map (pre-2015
+  dates) > its exact name map > an exact normalised match against the bin's own meta names (≥2 tokens
+  or one ≥4-letter token, unique, tape covers an event date; every such pair is written to the
+  ledger's `binexact_audit`). 4 names stay unmapped and RECORDED: SmithKline Beecham Pharma (2
+  spellings — mapping it to GLAXO would let its 2001 exclusion remove Glaxo India), Nalco Chemicals,
+  Spice Communications. NO seam-twin mirroring (§141b). Both legs of a company on ONE key is the rule
+  the manual map enforces (United Phosphorous 2002 = UNITEDPHOS, the pre-demerger listing; United
+  Phosphorus 2009 = UPL).
+- `build_membership_v2.py`: `REGISTER_LEDGERS` maps each index to its ledger; `merge_register_events`
+  (pre-changelog wholesale, in-window ±10 d gap fill) filled **1,210 changelog holes** across the
+  sheets (whole 2017-19 reviews the PDF parser never read). `reanchor_segments` now runs for EVERY
+  pinned sub-index (a between-pin snapshot is derived from the later pin through that window's
+  events); the listing-date **PHANTOM FLOOR runs for every index** (dropped 1,099 pre-listing rows /
+  84 stocks — IRFC, BSE, Indigo Paints, Kalyan … had been walked into 2006-2019 Midcap/Smallcap
+  rosters wherever their inclusion event was missing). Nifty 50, Nifty Bank, Nifty 500 are
+  byte-identical before and after (regression check against origin).
+- `_idx_official_fetch.py`: every tracked index with its three NSE hosts + CNX-era file names;
+  ONE Wayback directory prefix query per host (535 + 5,799 + 329 captures listed) with a per-file
+  fallback; 4 parallel tiers; the ledger is rewritten after every tier; `--only` is additive. 119
+  archived lists pinned in total.
+
+**Result (`membership_build7.log`, 2026-09-22):** every index now starts where NSE's register does
+(Next 50 2000-01-12 · Nifty 100 2003-03-19 · Midcap 50 2004-01-02 · Midcap 100 2005-12-08 ·
+LargeMidcap 250 2005-09-26 · IT 1999-08-04 · FMCG 1998-11-01 · MNC 1998-08-01 · Pharma 2003 · Energy
+2005 · Realty 2007 …). Walk-vs-pin BEFORE pinning: off-by 0 at every pin for Nifty 50 (29), Bank (11),
+Auto (2), Metal (3), PSU Bank (4); Next 50 worst 4 (2/6 exact), Nifty 100 worst 5 (1/10), MNC worst 4,
+Midcap 100 worst 14 (2/10), Midcap 50 worst 17 (3/10), Smallcap 100 worst 27 (0/5), Midcap 150
+worst 56, Smallcap 250 (derived) worst 180. After pinning + re-anchoring the between-pin error is
+bounded to each window's own missing events. Nifty 500 validation 100% at all 39 archived lists.
+
+**Honest gaps (open):** (1) **Wayback refused connections at the end of the run** — Nifty 200, IT,
+FMCG, Media, Realty, Consumer Durables, MidSmallcap 400 have NO archived pins yet and Nifty 100 lacks
+its 12 CNX-era captures (2006-15) that a per-file query returns; re-run
+`python3 _idx_official_fetch.py --only "<tier>" …` from `scripts/` when the archive allows, then
+rebuild — the ledger is additive. (2) Post-2020 changelog holes for sub-indices (the register ends
+2020-07/09) — the same press-release hunt §132 did for Nifty 500; the 376 unlisted stems in §141a
+are the place to start. (3) Nifty Realty walks down to 6 names in 2007-11 (missing early
+inclusions), Nifty Energy's 2006 capture has 10 names vs 40 today (methodology change, real).

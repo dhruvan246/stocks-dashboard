@@ -384,8 +384,27 @@ def main():
     REG_BY_SYM, REG_EVENTS = load_inclexcl_register()
     # Other sheets of the same NSE register, one ledger per index (runbook §141a/§141b). Each index
     # listed here merges its register events into the walk exactly like the Nifty 500 block below.
-    REGISTER_LEDGERS = {"Nifty Bank": "_bank_inclexcl_events.json",       # 28 events 2000-2020
-                        "Nifty 50": "_nifty50_inclexcl_events.json"}      # 196 events 1996-2020
+    REGISTER_LEDGERS = {"Nifty Bank": "_bank_inclexcl_events.json",       # 28 events 2000-2020 (§141a)
+                        "Nifty 50": "_nifty50_inclexcl_events.json",      # 196 events 1996-2020 (§141b)
+                        # 2026-09-21 (§141c): every other sheet of the register, gen_register_events.py
+                        "Nifty Next 50": "_niftynext50_inclexcl_events.json",
+                        "Nifty 100": "_nifty100_inclexcl_events.json",
+                        "Nifty 200": "_nifty200_inclexcl_events.json",
+                        "Nifty Midcap 50": "_niftymidcap50_inclexcl_events.json",
+                        "Nifty Midcap 100": "_niftymidcap100_inclexcl_events.json",
+                        "Nifty Smallcap 50": "_niftysmallcap50_inclexcl_events.json",
+                        "Nifty Smallcap 100": "_niftysmallcap100_inclexcl_events.json",
+                        "Nifty LargeMidcap 250": "_niftylargemidcap250_inclexcl_events.json",
+                        "Nifty IT": "_niftyit_inclexcl_events.json",
+                        "Nifty Pharma": "_niftypharma_inclexcl_events.json",
+                        "Nifty Auto": "_niftyauto_inclexcl_events.json",
+                        "Nifty FMCG": "_niftyfmcg_inclexcl_events.json",
+                        "Nifty Metal": "_niftymetal_inclexcl_events.json",
+                        "Nifty Energy": "_niftyenergy_inclexcl_events.json",
+                        "Nifty Realty": "_niftyrealty_inclexcl_events.json",
+                        "Nifty Media": "_niftymedia_inclexcl_events.json",
+                        "Nifty PSU Bank": "_niftypsubank_inclexcl_events.json",
+                        "Nifty MNC": "_niftymnc_inclexcl_events.json"}
     REG_EXTRA = {idx: load_inclexcl_register(f)[1] for idx, f in REGISTER_LEDGERS.items()}
     # Official archived sub-index constituent CSVs (ground truth) pinned as hard
     # checkpoints for the 8 broad tiers, exactly like wb does for Nifty 500. Keys
@@ -593,6 +612,12 @@ def main():
             print(f"  segment re-anchor: {nr} between-pin snapshots re-derived from their later pin")
             n = checkpoint_continuity(snaps, cps, events)
             print(f"  continuity repair: restored {n} member-slots between pinned checkpoints")
+        elif cps:
+            # 2026-09-21 (§141c): the same bounded walk for every pinned sub-index — a between-pin
+            # snapshot is derived from the LATER pin through that window's events only, so a missing
+            # event costs its own window, not every earlier year. (checkpoint_continuity stays N500-only.)
+            nr = reanchor_segments(snaps, cps, events)
+            print(f"  {idx}: segment re-anchor: {nr} between-pin snapshots re-derived from their later pin")
         if idx == "Nifty 500":
             worst = validate_n500(snaps, wb)
             if worst < 99.0:   # SAFETY GATE: never overwrite good membership with a degraded rebuild
@@ -629,20 +654,23 @@ def main():
     if _sf is not None and "Nifty 500" in H:
         first_trade = {s: str(o["d"][0]) for s, o in _sf.items() if o.get("d")}   # YYYYMMDD
         dropped = {}
-        for snap in H["Nifty 500"]:
-            if snap["effectiveDate"] < "2011-01-01": continue   # pre-dataset — data coverage incomplete
-            dint = snap["effectiveDate"].replace("-", "")
-            keep = []
-            for sym in snap["symbols"]:
-                ft = first_trade.get(sym)
-                if ft is not None and ft > dint:                # not yet trading => impossible => phantom
-                    dropped.setdefault(sym, []).append(snap["effectiveDate"])
-                else:
-                    keep.append(sym)
-            snap["symbols"] = keep
+        # 2026-09-21 (§141c): every index, not only Nifty 500 — the sub-index walks carried IRFC (listed
+        # 2021) and BSE (2017) into 2006-2019 Midcap rosters whenever their inclusion event was missing.
+        for h_idx, h_snaps in H.items():
+            for snap in h_snaps:
+                if snap["effectiveDate"] < "2011-01-01": continue   # pre-dataset — data coverage incomplete
+                dint = snap["effectiveDate"].replace("-", "")
+                keep = []
+                for sym in snap["symbols"]:
+                    ft = first_trade.get(sym)
+                    if ft is not None and ft > dint:                # not yet trading => impossible => phantom
+                        dropped.setdefault(sym, []).append(h_idx + " " + snap["effectiveDate"])
+                    else:
+                        keep.append(sym)
+                snap["symbols"] = keep
         json.dump({k: v for k, v in sorted(dropped.items())},
                   open(os.path.join(HERE, "_phantom_dropped.json"), "w"), indent=0)
-        print("  PHANTOM FLOOR (listing): dropped %d pre-listing rows across %d stocks (see _phantom_dropped.json)"
+        print("  PHANTOM FLOOR (listing): dropped %d pre-listing rows across %d stocks, all indices (see _phantom_dropped.json)"
               % (sum(len(v) for v in dropped.values()), len(dropped)))
 
     # --- DERIVE the cleanly-partitionable sub-indices from the VALIDATED Nifty 500 -----------------
