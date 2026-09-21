@@ -11929,6 +11929,13 @@ NSE source), so the whole difference is which cells EXIST. Ours lacked a bar on 
    volume — sweep build re-run for those 105 dates (control A 99.996 %, B 100 %), merged into `dv_fill_hist.json.gz`.
    4 member cells stay 0 (ALOKTEXT 2009-03-25, BHARTIARTL 2009-07-31, CHEMPLAST 2009-03-24, RSWM 2009-04-24): the bin
    bar's volume is NOT NSE's traded quantity there — a bar defect, not a delivery one.
+5. **Second batch (same evening): the 2019-2026 weekend specials.** 2019-10-27, 2020-02-01, 2020-11-14, 2023-11-12,
+   2024-01-20, 2024-03-02, 2024-05-18, 2025-02-01, 2026-02-01 — renamed keys (LTM as LTIM, GUJENERGY as GUJGASLTD,
+   UNITDSPR as MCDOWELL-N, ZYDUSLIFE as CADILAHC …) the original insert skipped; quantmac held 180 member cells there.
+   Same dry-run harvest: 958 rows (187 member-days), turnover unit detected per session (2019-10-27 rows are raw ₹,
+   2020+ ledger rows are already lacs — `TURNOVER_LACS` — so NEVER divide those by 1e5), DELIV_PER from the row else MTO
+   volume-matched; two-sided validated 957 ok, GATECHDVR 2020-02-01 dropped (+60 % vs its next bar — a scale defect on
+   that DVR series, not this row). Only the DUMMY* placeholders remain without a bar on those sessions.
 **Local full-sequence run on the live-bin slice (CI order: session insert, then ledger):** 13,243 session bars over the 9
 days + 2,148 ledger rows, second pass 0, no structure violations; 29 member-days remain without a bar: 22 not in NSE's
 file that day (special sessions), SBBJ/SBT/MYSOREBANK ×2 (merged into SBIN), RASOYPR 2015-09-03 (zero-close bars around
