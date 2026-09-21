@@ -115,14 +115,24 @@ def merge_same_eff(events):
         e["excluded"] += c["excluded"]; e["included"] += c["included"]
     return [by[k] for k in sorted(by)]
 
-def reconstruct(anchor_today, events, checkpoints=None):
+def reconstruct(anchor_today, events, checkpoints=None, today=None):
     """Backward walk from today's anchor; returns {eff: set(canonical members)}.
-       checkpoints {date: set} are pinned exact afterwards."""
+       checkpoints {date: set} are pinned exact afterwards.
+       An event dated AFTER today (an announced reshuffle) is applied FORWARD: today's anchor is the
+       list BEFORE it, so its snapshot is anchor + included - excluded and the walk continues from the
+       anchor unchanged. (2026-09-21, runbook §141b: the old code assigned the anchor itself to the
+       future date, so every announced reshuffle read as "no change" until the week after it took
+       effect — the Nifty 500's 2026-09-30 snapshot was byte-identical to 2026-07-17 for that reason,
+       not because NSE re-anchored an unchanged list.)"""
     ev = merge_same_eff(events)
     snaps = {}
     m = {canon(s) for s in anchor_today}
+    today = today or datetime.date.today().isoformat()
     for c in reversed(ev):
         inc = {canon(x) for x in c["included"]}; exc = {canon(x) for x in c["excluded"]}
+        if c["eff"] > today:
+            snaps[c["eff"]] = (m | inc) - exc   # announced: the anchor is the PRE-event list
+            continue
         snaps[c["eff"]] = set(m)         # membership in force FROM c.eff
         m = (m - inc) | exc              # roll back to before this event
     snaps["1900-01-01"] = set(m)         # pre-changelog baseline
@@ -372,7 +382,11 @@ def main():
     changelog = json.load(open(os.path.join(HERE, "_changelog.json")))
     wb = json.load(open(os.path.join(HERE, "_wb_n500_snaps.json")))
     REG_BY_SYM, REG_EVENTS = load_inclexcl_register()
-    BANK_BY_SYM, BANK_EVENTS = load_inclexcl_register("_bank_inclexcl_events.json")   # Nifty Bank sheet (§141a)
+    # Other sheets of the same NSE register, one ledger per index (runbook §141a/§141b). Each index
+    # listed here merges its register events into the walk exactly like the Nifty 500 block below.
+    REGISTER_LEDGERS = {"Nifty Bank": "_bank_inclexcl_events.json",       # 28 events 2000-2020
+                        "Nifty 50": "_nifty50_inclexcl_events.json"}      # 196 events 1996-2020
+    REG_EXTRA = {idx: load_inclexcl_register(f)[1] for idx, f in REGISTER_LEDGERS.items()}
     # Official archived sub-index constituent CSVs (ground truth) pinned as hard
     # checkpoints for the 8 broad tiers, exactly like wb does for Nifty 500. Keys
     # are Wayback YYYYMMDD (or "LIVE") -> convert to ISO; LIVE == today's anchor, skip.
@@ -557,12 +571,13 @@ def main():
             except FileNotFoundError:
                 pass
         else:
-            if idx == "Nifty Bank" and BANK_EVENTS:
-                # 2026-09-21 (§141a): Nifty Bank had NO pins and no events before 2021, so its 2017-2020
-                # rosters were the old scrapbook (PAYTM, KINDIA, 15 names). NSE's register carries the
-                # index's 28 dated changes 2000-2020; with the 12 archived official lists (2006-2026)
-                # pinned below, the walk reproduces every list exactly (pin_report prints the proof).
-                events = merge_register_events(idx, events, BANK_EVENTS)
+            if REG_EXTRA.get(idx):
+                # 2026-09-21 (§141a/§141b): Nifty Bank had NO pins and no events before 2021, so its
+                # 2017-2020 rosters were the old scrapbook (PAYTM, KINDIA, 15 names); Nifty 50's history
+                # began 2015-09-28. NSE's register carries each index's dated changes back to 1996/2000;
+                # with the archived official lists pinned below, the walk reproduces every list
+                # (pin_report prints the proof per pin).
+                events = merge_register_events(idx, events, REG_EXTRA[idx])
             cps = OFFICIAL.get(idx) or None   # official archived CSVs pinned exact
             if cps:
                 _walk = reconstruct(anchor, events, None)

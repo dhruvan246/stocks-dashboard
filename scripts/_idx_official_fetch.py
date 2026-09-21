@@ -39,9 +39,15 @@ TIERS = {
     "Nifty Bank": ["niftyindices.com/IndexConstituent/ind_niftybanklist.csv",
                    "nseindia.com/content/indices/ind_cnxbanklist.csv",
                    "nseindia.com/content/indices/ind_niftybanklist.csv"],
+    # 2026-09-21 (runbook section 141b): the flagship's own history began 2015-09-28; the S&P CNX
+    # Nifty-era file (ind_niftylist.csv, 2006-2020) + the nifty50list captures pin it 2006-2026.
+    "Nifty 50": ["niftyindices.com/IndexConstituent/ind_nifty50list.csv",
+                 "nseindia.com/content/indices/ind_niftylist.csv",
+                 "nseindia.com/content/indices/ind_nifty50list.csv",
+                 "archives.nseindia.com/content/indices/ind_nifty50list.csv"],
 }
 # a capture must carry at least this many names to count as a full list (guards truncated pages)
-MIN_NAMES = {"Nifty Bank": 10}
+MIN_NAMES = {"Nifty Bank": 10, "Nifty 50": 45}
 DEFAULT_MIN = 30
 # live current filenames (niftyindices serves these)
 LIVE = {t: "https://www.niftyindices.com/IndexConstituent/ind_%slist.csv"
@@ -99,11 +105,18 @@ if len(sys.argv) >= 3 and sys.argv[1] == "--only":
     if bad:
         raise SystemExit("unknown tier(s) %s - known: %s" % (bad, ", ".join(TIERS)))
 
+try:
+    _prev = json.load(open(OUT))
+except Exception:
+    _prev = {}
 snaps = {}
 for tier, paths in TIERS.items():
     if only and tier not in only:
         continue
-    snaps[tier] = {}
+    # --only starts from the tier's committed captures so a Wayback timeout on this run never
+    # drops a list that was fetched fine before (measured 2026-09-21: 3 of 30 Nifty 50 captures
+    # came back empty on one run and parsed on the next)
+    snaps[tier] = dict(_prev.get(tier, {})) if only else {}
     mn = MIN_NAMES.get(tier, DEFAULT_MIN)
     for path in paths:
         for ts, orig in [(r[1], r[2]) for r in cdx(path)]:
@@ -130,11 +143,7 @@ for tier, paths in TIERS.items():
                                        ", ".join("%s(%d)" % (d, len(snaps[tier][d])) for d in dates)), flush=True)
 
 if only:                                   # merge the refreshed tier(s) into the committed file
-    try:
-        prev = json.load(open(OUT))
-    except Exception:
-        prev = {}
-    prev.update(snaps)
-    snaps = prev
+    _prev.update(snaps)
+    snaps = _prev
 json.dump(snaps, open(OUT, "w"))
 print("\nwrote %s (%d tiers)" % (OUT, len(snaps)))
