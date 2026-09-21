@@ -16792,6 +16792,34 @@ newest 3-Jul; second run "nothing new"). Quarterly rows stay ledger-driven (§13
 timestamp the gate cannot be checked on them for 2016→Sep-2021); 476 symbols with no BSE code; 1,509 rows BSE never
 timestamped. Pre-2016 rows are untouched (convention era, §142).
 
+
+### 142d. ★★★ ITEM 3 — PRE-2014 SHAREHOLDING VISIBILITY IS A CONVENTION. CLOSED: documented, shown on the backtest, not to be re-chased  (2026-09-22)
+**What we hold, on the point-in-time Nifty 500 roster (35,065 member-quarters, Mar-2009 → Jun-2026), measured 2026-09-21:**
+
+| era | member-quarters | filing present | measured visibility date | with clock time (gate-checkable) | convention only |
+|---|---|---|---|---|---|
+| 2009–2013 | 10,028 | 9,867 (98 %) | 0 | 0 | 9,867 (100 %) |
+| 2014–2015 | 4,000 | 3,974 (99 %) | 3,928 (99 %) | 3,928 | 46 |
+| 2016 | 2,003 | 1,970 (98 %) | 1,960 (99 %) | 1,045 (53 %) | 10 |
+| 2017–2026 | 19,034 | 19,014 (99.9 %) | 19,014 (100 %) | ~13,500 after item 2 | 0 |
+
+**The convention (engine `loadShp`, §120):** an undated row is visible at quarter-end + 28 calendar days. Rationale is in the
+engine comment: the statutory deadline is 21 d, the measured median lag 14–19 d, and day 28 is strictly before every
+month-end screen (census: earliest is day 29), so a synthetic date never lands on a screen.
+**What it costs, measured on the years that DO have real dates (share of filings public later than day 28):** 2014 0.8 % ·
+2015 13.0 % · 2016 7.5 % · 2017 1.3 % · 2018 5.2 % · 2019 5.3 % · 2020 19.0 % (pandemic filing relief) · 2021 2.7 % ·
+2022–2026 0.5–0.7 %. So a pre-2014 screen on FII/DII/promoter/MF holdings sees a few percent of values some days before
+the market did, and we cannot say which cells. Nothing is seen LATE by more than a typical filing lag.
+**Why it stays this way (the negative is earned, §105 / PLAN_SHP_DATES.md):** BSE `SHPQNewFormat` timestamps begin with the
+Mar-2016 quarter; BSE's announcement stream carries SHP filings from Jan-2014 only; NSE's master reaches ~Sep-2021; Wayback
+has no captures; every other route probed measured empty for 2013 and earlier. Quantmac's convention for the same era is
+simply LATER than ours (11,905 cells where it shows the previous quarter, §142) — also unmeasured.
+**Shipped:** `stock-backtest.html` shows a caveat card under the KPIs (and a `# shp_dates_pre2014` row in the CSV preamble)
+whenever the strategy screens on a shareholding factor and the window starts before 2014-01-01; both engine twins return
+`shpConvention: true` on such runs so other consumers can surface it. sw v156.
+**Rule:** do not spend time on pre-2014 SHP dates again unless a NEW source with per-filing timestamps appears; record it here
+if one does.
+
 ## 141a. ★★ NIFTY BANK ROSTERS HEALED — 2000→date from NSE's register + 12 archived lists  (2026-09-21)
 
 **Symptom (user, via the §141 card):** Nifty Bank's history had 7 snapshots 2017-03-31 → 2024-09-30 with

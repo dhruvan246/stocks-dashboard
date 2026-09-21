@@ -764,6 +764,11 @@ function foldFundAliases() {
 let SHPD = {};
 const SHP_FIELDS = new Set(['fiiPct', 'fiiChgPp', 'diiPct', 'diiChgPp', 'promPct', 'promChgPp', 'mfPct', 'mfChgPp']);
 function needsShp(cfg) { return SHP_FIELDS.has(cfg.sortBy) || (cfg.filters || []).some(f => SHP_FIELDS.has(f.field)); }
+// §142d (2026-09-22): pre-2014 shareholding visibility is a convention (qe+28d, see loadShp). A run that screens on a
+// shareholding factor with an effective start before 2014-01-01 carries this note in its result (r.shpNote) so every
+// consumer can say so on screen. (Sync: stock-backtest.html)
+const SHP_CONVENTION_NOTE = "Shareholding factors before 2014 use a filing-date CONVENTION, not measured dates: each quarter's pattern is treated as public 28 days after quarter-end (no exchange timestamps exist for 2013 and earlier; real dates cover 99% of filings from 2014). In the years that can be measured, 1–13% of filings became public later than day 28, so a few percent of pre-2014 FII/DII/promoter/MF reads may be seen a little before the market could. Runbook §142d.";
+function shpConventionNote(cfg, effStart) { return (needsShp(cfg) && String(effStart || cfg.start || '') < '2014-01-01') ? SHP_CONVENTION_NOTE : null; }
 async function loadShp() {
   if (Object.keys(SHPD).length) return;
   try { SHPD = await (await fetch('./shp_engine.json')).json(); } catch (e) { console.warn('no shareholding data', e); SHPD = {}; return; }
@@ -950,6 +955,7 @@ function simulate(cfg) {
       _msStart + ' — backtest starts there, not ' + cfg.start + '.'
     : null;
   if (membershipNote) console.warn('[backtest]', membershipNote);
+  const shpNote = shpConventionNote(cfg, _start);
   _histGuard(_start);   // LOUD failure beats silently backtesting years with no bars loaded
   const months = monthsBetween(_start, cfg.end);
   // Rebalance on the LAST TRADING DAY <= the calendar month-end (a month-end can fall on a weekend/holiday).
@@ -1037,7 +1043,7 @@ function simulate(cfg) {
   const periodRebs = rebs.slice(1); const wins = periodRebs.filter(r => r.ret > 0).length;
   trades.sort((a, b) => a.entryDate < b.entryDate ? 1 : -1);
   return { equity, bench, bench500, rebs, trades, latest, latestCash, cfg, years, finalV, cagr, benchCagr, vol, fLabel, dispCols,
-           effStart: _start, membershipNote,
+           effStart: _start, membershipNote, shpNote,
            maxDD: maxDrawdown(equity), winRate: periodRebs.length ? 100 * wins / periodRebs.length : 0 };
 }
 function nearestIdx(map, dstr) { if (map[dstr]) return map[dstr]; let d = new Date(dstr + 'T00:00:00Z'); for (let i = 0; i < 7; i++) { d.setUTCDate(d.getUTCDate() - 1); const k = d.toISOString().slice(0, 10); if (map[k]) return map[k]; } return null; }
