@@ -11899,6 +11899,42 @@ directly-anchored row (rounding-aware for BAJFINANCE 2009, stored at 0.64 where 
    bars); the §88b-addendum dv cells for those 6 dates sit under TATAMOTORS, not TMPV. The TMPV rows in
    `bar_inserts.json` carry their own MTO dv, so TMPV is complete regardless.
 
+### 106i. ★★★ NINE MISSING SESSIONS + 2,147 SKIPPED MEMBER ROWS — inserter fixed, sessions and rows landed  (2026-09-21)
+**Surfaced by the quantmac parity check** (`Nifty_500_PIT_Delivery_2009_2026.xlsx`, 2.19 M member-day cells, 2009→2026-09-18,
+scratchpad `qm_compare.py`): every cell where both sides carry a value is EQUAL (2,169,794 / 2,169,794, 0 differ — same
+NSE source), so the whole difference is which cells EXIST. Ours lacked a bar on 5,308 member-days:
+1. **Nine whole sessions the bin never had.** 2010-10-15/18/19/20/21/22/25 (every symbol; §106b's "BEPL lacks 15-25 Oct"
+   was this), 2016-08-12 (the §105 census counted "zero bars" and the bin held TWO, so it passed), 2021-11-04 muhurat
+   (the NEW-format `sec_bhavdata_full_04112021.csv` is a byte-copy of 03-Nov — that is what "1,829/1,829 identical"
+   measured — but `cm04NOV2021bhav.csv.zip` and `MTO_04112021.DAT` are the real session: RELIANCE 2,498.85 / 787,160
+   shares vs 2,483.60 / 5.5 M the day before). All nine added to `_WEEKDAY_MISSING_CONFIRMED` with rows + prior-day
+   anchors + MTO delivery (traded == TOTTRDQTY, 1,339-1,668 rows/day) in `weekend_sessions.json.gz`, so CI fetches nothing.
+2. **Rows the 2026-08-23 insert skipped on the 11 weekend specials and the 12 §106b sessions** — 50-81 members per special
+   session. Two inserter rules, both FIXED in `insert_weekend_sessions()`: (a) `_survivor()` now prefers the key that is
+   LIVE around the session (≥5 bars within ±30 d) over an own-name dead fragment (TATAMOTORS → TMPV); (b) anchor floor
+   0.01 → 0.001 (two 1:10 splits = 0.01 exactly). The day-level RELIANCE/SBIN/ITC guard means CI never revisits an
+   inserted session, so the rows the fixed inserter recovers in a LOCAL dry run (bars ±31 d around each session, the
+   guard bypassed) ride `bar_inserts.json` as raw NSE values + anchors: 2,110 rows, each reproducing the inserter's
+   scaled close to the paise, MTO delivery where traded == TOTTRDQTY (115 rows have none).
+3. **Members whose split ex-date fell ON a missing session** — the 0.6-1.6 gate rejects them by design: PARSVNATH 0.5 and
+   SUPREMEIND 0.2 (2010-10-18), UNICHEMLAB 0.4 (10-21), JINDALPOLY 0.5 (10-22), PNCINFRA 0.2 (2016-08-12), KARURVYSYA 0.2
+   (2016-11-17). 23 rows whose anchor raw close is expressed post-split with the official factor; each block verified
+   against the bin's own scale after the block (Δ ≤ 0.007 %). Plus SITINET 2016-08-17 (NSE renamed SITICABLE→SITINET
+   that day, so the prior-day anchor lookup by the new name found nothing).
+   **⚠️ Trap found on the way:** the inserter can reach a post-split session from a PRE-split anchor when the split is
+   0.5 and the day's real move is large — JINDALPOLY 10-26 from 10-21 passed the gate at 0.61 and landed at HALF scale
+   in the dry run; harvested, then caught by the two-sided validation (every ledger row's f vs stored(next)/raw(next),
+   2,132 ok; FCSSOFT 2009-10-17 dropped at +9.5 %). Any future harvest MUST run that check.
+4. **105 AGCNET (era AVAYAGCL) + 105 NXTDIGITAL delivery cells 2009-01→2010-06** at dv=0 although MTO traded == bin
+   volume — sweep build re-run for those 105 dates (control A 99.996 %, B 100 %), merged into `dv_fill_hist.json.gz`.
+   4 member cells stay 0 (ALOKTEXT 2009-03-25, BHARTIARTL 2009-07-31, CHEMPLAST 2009-03-24, RSWM 2009-04-24): the bin
+   bar's volume is NOT NSE's traded quantity there — a bar defect, not a delivery one.
+**Local full-sequence run on the live-bin slice (CI order: session insert, then ledger):** 13,243 session bars over the 9
+days + 2,148 ledger rows, second pass 0, no structure violations; 29 member-days remain without a bar: 22 not in NSE's
+file that day (special sessions), SBBJ/SBT/MYSOREBANK ×2 (merged into SBIN), RASOYPR 2015-09-03 (zero-close bars around
+it — §zero-close class). OPEN after this: our roster's DUMMY* placeholders (DUMMYHEG/VEDL1-4/HDLVR/DBRLT/ABFRL/RAYMN/
+SIEMS — index placeholders, not securities) and the TATAMOTORS fragment's stray bars.
+
 ## 107. ★★★ ONE SOURCE OF TRUTH — THE SHARED CHECKOUT SYNCS ITSELF; "DIRTY" AND "AHEAD" WERE ALL STALE COPIES  (2026-08-24)
 
 **User's complaint (2026-08-23):** "daily I see many stale files … many files have same params but

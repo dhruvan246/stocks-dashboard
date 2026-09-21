@@ -436,10 +436,21 @@ _WEEKEND_CONFIRMED = [
 # weekend specials — the ledger carries each day's rows + prior-day anchors. NOT listed: 2021-11-04
 # (muhurat Thursday) — NSE's archive serves the 03-Nov file for it (1,829/1,829 closes identical),
 # so there is no session file to insert; the misdirect guard below would skip it anyway.
+# (2026-09-21: superseded — the OLD-format zip for 2021-11-04 is a distinct real session; listed below.)
 _WEEKDAY_MISSING_CONFIRMED = [
-    (2008, 2, 19), (2009, 3, 31), (2010, 10, 14), (2010, 10, 26),
+    (2008, 2, 19), (2009, 3, 31), (2010, 10, 14),
+    # 2026-09-21 (DATA_RUNBOOK §106i): the bin had NO bars 15-25 Oct 2010 (seven sessions, every symbol —
+    # the §106b BEPL "tape lacks 15-25 Oct" note was this hole) — chronological order matters here
+    # because each day's anchor is the previous inserted day; 2016-08-12 had TWO bars (the §105 census
+    # counted "zero bars", so 2 passed); 2021-11-04 muhurat: the NEW-format sec_bhavdata_full URL serves
+    # the 03-Nov copy (that is what "1,829/1,829 identical" measured) but the OLD zip
+    # cm04NOV2021bhav.csv.zip and MTO_04112021.DAT are the real, distinct session — its rows ride the
+    # ledger, so no fetch is made and the misdirect guard sees distinct closes.
+    (2010, 10, 15), (2010, 10, 18), (2010, 10, 19), (2010, 10, 20), (2010, 10, 21), (2010, 10, 22), (2010, 10, 25),
+    (2010, 10, 26),
     (2014, 2, 21), (2014, 7, 25), (2014, 10, 14),
-    (2015, 9, 3), (2016, 8, 17), (2016, 11, 17), (2017, 3, 24), (2017, 3, 27),
+    (2015, 9, 3), (2016, 8, 12), (2016, 8, 17), (2016, 11, 17), (2017, 3, 24), (2017, 3, 27),
+    (2021, 11, 4),
 ]
 WEEKEND_SESSIONS = [datetime.date(*t) for t in _WEEKEND_CONFIRMED + _WEEKDAY_MISSING_CONFIRMED]
 
@@ -477,13 +488,31 @@ def insert_weekend_sessions(data, j, old2new=None):
         _rm = json.load(open(os.path.join(HERE, "_rename_map.json")))
     except Exception:
         _rm = {}
-    def _survivor(sym):
+    def _live(k, ymd):
+        # a series genuinely trading around the session: >= 5 bars within +-30 calendar days. A DEAD
+        # rename fragment (TATAMOTORS: 845 stray bars, 1-4 a year after 2003) has 0-2, a recycled ticker
+        # that really trades then (DTIL 2015+, §89) has ~20 — so this separates the two without a list.
+        e = data.get(k); ds = e.get("d") if e else None
+        if not ds: return False
+        d0 = datetime.date(ymd // 10000, (ymd // 100) % 100, ymd % 100)
+        lo = int((d0 - datetime.timedelta(days=30)).strftime("%Y%m%d")); hi = int((d0 + datetime.timedelta(days=30)).strftime("%Y%m%d"))
+        return bisect.bisect_right(ds, hi) - bisect.bisect_left(ds, lo) >= 5
+    def _survivor(sym, ymd):
+        # 2026-09-21 (§106h/§106i): "a symbol the bin holds under its own name is never redirected" sent
+        # TATAMOTORS's rows to the dead TATAMOTORS fragment on every §106b session while TMPV (its
+        # _rename_map successor, trading every day) got nothing. Own key wins only when it is LIVE around
+        # the session; otherwise the first live successor on the rename chain; otherwise the old rule.
         s = (old2new or {}).get(sym, sym)
+        if s in data and _live(s, ymd): return s
+        cur, seen = s, set()
+        while cur in _rm and cur not in seen:
+            seen.add(cur); cur = _rm[cur]
+            if cur in data and _live(cur, ymd): return cur
         if s in data: return s
-        seen = set()
-        while s not in data and s in _rm and s not in seen:
-            seen.add(s); s = _rm[s]
-        return s
+        cur, seen = s, set()
+        while cur not in data and cur in _rm and cur not in seen:
+            seen.add(cur); cur = _rm[cur]
+        return cur
     total = 0
     for day in WEEKEND_SESSIONS:
         ymd = int(day.strftime("%Y%m%d"))
@@ -516,7 +545,7 @@ def insert_weekend_sessions(data, j, old2new=None):
         ins = skip = 0
         for r in rows:
             osym, c, p, t = r[0], r[1], r[2], r[3]
-            sym = _survivor(osym)                      # merged-away / era ticker -> survivor series
+            sym = _survivor(osym, ymd)                 # merged-away / era ticker -> the survivor series LIVE at the session
             h = r[4] if len(r) > 4 else c; l = r[5] if len(r) > 5 else c
             o_ = r[6] if len(r) > 6 else c; v = r[7] if len(r) > 7 else 0
             dlv = r[8] if len(r) > 8 else 0; vw = r[9] if len(r) > 9 else 0
@@ -546,7 +575,9 @@ def insert_weekend_sessions(data, j, old2new=None):
             f = e["c"][i - 1] / raw_prev               # CA-adjustment level at the insertion point
             adj_c = round(c * f, 2)
             # implausible day move vs the neighbour = ex-date-on-session edge or bad anchor -> leave out
-            if not (0.01 < f < 100) or not (0.6 <= adj_c / e["c"][i - 1] <= 1.6):
+            # floor 0.001 (was 0.01): two 1:10 splits are exactly 0.01 and a rights term pushes BAJFINANCE
+            # pre-2016 to 0.0097 — the old floor rejected it on five §106b sessions (§106h)
+            if not (0.001 < f < 100) or not (0.6 <= adj_c / e["c"][i - 1] <= 1.6):
                 skip += 1; continue
             hi = round(max(h, c) * f, 2); lo_ = round((min(l, c) if l > 0 else c) * f, 2)
             opx = round(o_ * f, 2) if o_ > 0 else adj_c; vwx = round(vw * f, 2) if vw > 0 else adj_c
