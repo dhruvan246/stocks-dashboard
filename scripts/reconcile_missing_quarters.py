@@ -67,6 +67,7 @@ QR = os.path.join(ROOT, "docs", "quarterly_results.json")   # company names for 
 LEDGER = os.path.join(HERE, "bse_result_fills.json")
 PENDING = os.path.join(HERE, "_missing_quarter_pending.json")
 SKIPS = os.path.join(HERE, "_missing_quarter_skips.json")
+MANUAL = os.path.join(HERE, "manual_result_reads.json")   # human/vision reads: [{sym,qe,att,filed,std:[cur,prev,yago],con:[...]|null,by,note}] — applied ONLY if they anchor
 PDFCACHE = os.path.join(HERE, "_revgap_pdfcache")   # shared with backfill_revop_gaps: each attachment downloaded once
 
 MIN_LAG_DAYS = 10        # nobody files inside the first 10 days after a quarter-end
@@ -323,6 +324,38 @@ def main():
             del pending[k]
 
     filled = []; newly_pending = []; unfiled = 0; asked = 0
+    # ---- manual anchored reads (scripts/manual_result_reads.json): a human read of an image-only filing.
+    # Same gate as an automated read: year-ago (and preceding, when held) must reproduce the store.
+    manual = load_json(MANUAL, [])
+    for m in manual:
+        if not isinstance(m, dict) or m.get("applied") or m.get("rejected"): continue
+        sym, qe = m.get("sym"), int(m.get("qe") or 0)
+        if a.only and sym not in roster: continue
+        if stored(fund, sym, qe, "std") is not None:
+            m["rejected"] = "already filled"; continue
+        std_v, con_v = m.get("std"), m.get("con")
+        ok_s, det_s = anchor_ok(std_v, fund, sym, qe, "std")
+        if not ok_s:
+            m["rejected"] = det_s; print("  MANUAL REJECT %s %d: %s" % (sym, qe, det_s)); continue
+        ok_c, det_c = anchor_ok(con_v, fund, sym, qe, "con") if con_v else (False, "no consolidated read")
+        ann = gated_ann(m.get("filed") or "")
+        if not ann:
+            m["rejected"] = "bad filed timestamp"; continue
+        rows = fund.setdefault(sym, []); row = next((r for r in rows if r[0] == qe), None)
+        if row is None: row = [qe, None, None, None, None]; rows.append(row); rows.sort(key=lambda r: r[0])
+        row[1], row[2] = round(std_v[0], 2), ann
+        if ok_c: row[3], row[4] = round(con_v[0], 2), ann
+        if src is not None:
+            srows = src.setdefault(sym, []); srow = next((r for r in srows if r[0] == qe), None)
+            if srow is None: srow = [qe, None, None, None, None]; srows.append(srow); srows.sort(key=lambda r: r[0])
+            if srow[1] is None: srow[1], srow[2] = row[1], row[2]
+            if ok_c and srow[3] is None: srow[3], srow[4] = row[3], row[4]
+        entry = {"sym": sym, "qe": qe, "std": row[1], "con": row[3] if ok_c else None, "ann": ann, "att": m.get("att"),
+                 "filed": (m.get("filed") or "")[:19], "method": "manual-anchored:" + str(m.get("by") or "?"),
+                 "read": {"std": std_v, "con": con_v}, "anchor": {"std": det_s, "con": det_c}, "note": m.get("note"),
+                 "ts": datetime.datetime.utcnow().strftime("%Y-%m-%dT%H:%MZ")}
+        ledger.append(entry); filled.append(entry); pending.pop("%s|%d" % (sym, qe), None); m["applied"] = str(today)
+        print("  FILLED %-11s %d std=%s con=%s ann=%s via %s [%s | %s]" % (sym, qe, row[1], entry["con"], ann, entry["method"], det_s, det_c))
     for qe in quarters:
         lo = yyyymmdd(datetime.date(qe // 10000, qe // 100 % 100, qe % 100) + datetime.timedelta(days=1))
         for sym in sorted(roster):
@@ -412,6 +445,7 @@ def main():
             open(MARK, "w").write(today.isoformat())
             save_json(LEDGER, ledger)
         save_json(PENDING, pending); save_json(SKIPS, skips)
+        if manual: save_json(MANUAL, manual)
     gh = os.environ.get("GITHUB_STEP_SUMMARY")
     if gh:
         with open(gh, "a", encoding="utf-8") as fh:
