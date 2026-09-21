@@ -4174,6 +4174,16 @@ outrank it — the same precedence that saved NUCLEUS in §71c.
   nothing in any HEG filing, and the true Q4FY19 (482.27) came from the FY20 audited comparative.
   Read the filing before writing the class into a ledger, or the ledger inherits the screen's guess.
 
+- **★ A WIDE TABLE ON DESKTOP MUST BE MEASURED, NOT ASSUMED SCROLLABLE** (added 2026-09-21, index-chart
+  survivorship table shipped broken to live for ~10 min). theme.js wraps every ≥4-column table in
+  `.sw-scrollx`, but theme.css styles that holder ONLY under `@media (max-width:640px)` — on desktop the
+  holder is inert and a 2,900px table spills out of its card. Worse, `<body>` is a flex column and `.wrap`
+  centres with `margin:0 auto`; auto cross-axis margins cancel the flex stretch, so `<main>` is sized
+  SHRINK-TO-FIT and the table's min-content width drags the whole page to main's 1120px cap. The check:
+  at desktop width after the table renders, `document.documentElement.scrollWidth ===
+  document.documentElement.clientWidth` and the holder's `overflowX === 'auto'`. The fix pattern is in
+  index-chart.html (§141): page-scoped `.sw-scrollx` rules at all widths + `main.wrap{width:100%}`.
+
 **2. Blast radius — everything else that uses what you touched.**
 - `theme.js` / `theme.css` / nav / footer / tiles → **all pages**; spot-check ≥3 (home, a table page, a chart page).
 - Shared JS (`sw-sync.js`, `sw-watchlist.js`, `backtest-engine.js`) → `grep -rl` every consumer, open each.
@@ -16644,3 +16654,10 @@ counts, search over symbol/name/sector/industry/ISIN, 23 sortable columns (numbe
 first click, blanks always sink), 100 rows + "Show all", stint list on the Stints ⓘ hover, the
 theme's `.sw-scrollx` holder with the Stock column pinned, footnote naming every convention.
 `sw.js` v152.
+
+**Shipped broken once (2026-09-21 21:00 IST, fixed 21:20, sw v153):** the user reported "table is
+broken" on desktop — the theme's `.sw-scrollx` rules are phone-only (≤640px) and `<main>` shrink-to-fits
+inside the body flex column (`margin:0 auto` cancels stretch), so the 2,827px table widened the page to
+1120px and overflowed its card. Fix: page-scoped holder rules at every width (sideways scroll, pinned
+Stock column, `--sw-pin-*` backgrounds) + `main.wrap{width:100%;min-width:0}`. Measured after: desktop
+docW == clientW (1014), card 972, holder 940 scrolling 2,827; mobile 375 unchanged. Check added to §39.
