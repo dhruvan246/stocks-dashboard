@@ -515,6 +515,31 @@ def _cell_eq(a, b):
         elif x != y: return False
     return True
 
+def apply_cell_fix_events(ev, led=None):
+    """§142e (2026-09-22): the cell_fix ledger also corrects EVENT rows (scripts/shp_events.json).
+    Same `fix.<SYM>.<DATE>` shape; a key that is not a quarter-end names an event row (as-on date).
+    Event rows had NO ledger route before this (runbook §22k: "no ledgers are applied to event
+    rows"), so a wrong event cell could only be edited in place and a --reparse would re-poison
+    it. Same was-guard as apply_cell_fix: never invent a row, never overwrite a cell that is
+    neither the fix nor the recorded bad value. Returns the number of rows corrected."""
+    led = load_cell_fix() if led is None else led
+    n = 0
+    for sym, qs in (led.get("fix") or {}).items():
+        for d, ent in qs.items():
+            if d[5:] in ("03-31", "06-30", "09-30", "12-31"): continue     # quarter-end keys belong to shp_history
+            cur = (ev.get(sym) or {}).get(d)
+            want, was = ent.get("cell"), ent.get("was")
+            if cur is None: continue
+            if _cell_eq(cur, want): continue
+            if was is not None and not _cell_eq(cur, was):
+                print("WARN cell_fix(event) %s %s: stored row is neither the fix nor the recorded bad "
+                      "value (%s) — leaving it alone, re-adjudicate" % (sym, d, cur))
+                continue
+            ev.setdefault(sym, {})[d] = list(want)
+            n += 1
+    if n: print("shp_cell_fix applied to %d event row(s)" % n)
+    return n
+
 def apply_cell_fix(h, led=None):
     """Override known-wrong cells. Runs AFTER the fetch so a --reparse cannot re-poison them."""
     led = load_cell_fix() if led is None else led
@@ -990,10 +1015,12 @@ def refresh_events(qes, only=None, reparse=False):
     six weeks of a "lowest DII" screen holding a stock whose real DII was 170x what we showed.
 
     Stored {SYM: {ASON_ISO: [prom, fii, dii, mf, ins, sub, nsh]}} — the shp_history row shape, so
-    the engine feed can merge the two without a second format. No ledgers are applied: those are
-    all keyed by quarter-end and none of them describes an event row."""
+    the engine feed can merge the two without a second format. The fill/heal ledgers are keyed by
+    quarter-end and describe no event row; the ONE ledger that does is shp_cell_fix.json, whose
+    non-quarter-end keys name event rows (apply_cell_fix_events, §142e)."""
     jar = B.nse_jar()
     ev = load_events()
+    if apply_cell_fix_events(ev): save_events(ev)        # §142e: re-assert event-row corrections
     before = sum(len(v) for k, v in ev.items() if not k.startswith("_"))
     for qe in qes:
         recs = fetch_master(jar, qe, events=True)
@@ -1039,6 +1066,7 @@ def refresh_events(qes, only=None, reparse=False):
                 latest.setdefault(sym, {})[ason] = r["sub"]
                 done += 1
         print("  events %s: %d parsed of %d" % (qe, done, len(todo)))
+        apply_cell_fix_events(ev)                          # §142e: a re-parsed row must not re-poison a fixed cell
         save_events(ev)
     after = sum(len(v) for k, v in ev.items() if not k.startswith("_"))
     print("shp_events.json: %d rows (%+d), %d symbols" % (after, after - before, sum(1 for k in ev if not k.startswith("_"))))
@@ -1224,6 +1252,8 @@ if __name__ == "__main__":
             print("ABORT: history would shrink %d -> %d" % (before, after)); sys.exit(1)
         save_hist(h)
         print("history: %d cells (%+d) after ledgers" % (after, after - before))
+        ev = load_events()
+        if apply_cell_fix_events(ev): save_events(ev)     # §142e: event rows take cell_fix too
         build_feed()
         build_engine_feed()
     elif "--events" in args:

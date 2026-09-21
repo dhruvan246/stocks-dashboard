@@ -2,7 +2,8 @@
  "_doc": [
   "SW-2 quantmac r5: Any-Other-institutions block classification + per-cell verdicts. name_verdicts holds the curated per-holder-name class (foreign/domestic) — hand-reviewed; the regexes only PROPOSE.",
   "name_verdicts curated 2026-08-30: foreign = the Foreign-*/FII/QFI-Corporate/OCB LABEL classes, development-finance multilaterals (IFC/ADB/CDC/BII/DEG/FMO), and entities the filer itself tags (FII)/(FPI) (incl. untagged spellings of the same holder); domestic = Indian life insurers + unclaimed-suspense. Entity names with no label, no filer tag and no jurisdiction marker stay UNRESOLVED (held), never guessed.",
-  "name_verdicts extended 2026-08-30 via CROSS-REFERENCE: a holder name seen >=2 times under the filers OWN FPI/FVCI typed rows across the 16,719 cached filings (and never under a domestic row) = foreign; the mirror rule = domestic. The filers own classification elsewhere is the evidence (e.g. AMANSA 418x under FPI, MALABAR 257x, ELARA 228x)."
+  "name_verdicts extended 2026-08-30 via CROSS-REFERENCE: a holder name seen >=2 times under the filers OWN FPI/FVCI typed rows across the 16,719 cached filings (and never under a domestic row) = foreign; the mirror rule = domestic. The filers own classification elsewhere is the evidence (e.g. AMANSA 418x under FPI, MALABAR 257x, ELARA 228x).",
+  "2026-09-22 (§142e): MITSUI SUMITOMO INSURANCE COMPANY LIMITED = foreign — the filer (MFSL) reports the same 21.86% block under ForeignDirectInvestment inside Institutions(Foreign) in its Sep-2022 new-format filing (500271_2010202215014_SHP.xml); the 7 MFSL cells Dec-2020..Jun-2022 healed via shp_cell_fix. XENOK LIMITED (MFSL/MAXINDIA 2016-17) stays UNRESOLVED: the 16,719-filing corpus shows it only under D_OtherInstitutions, never under an FPI/FVCI row. CDSL's 7,500,000-share Any-Other holder (7.18%, 2018-2022) is foreign by the same filer-classification rule (OtherInstitutionsForeign in Sep-22/Dec-22/Mar-23 NSE XBRLs) — no name in the XBRL, so no name_verdict entry."
  ],
  "name_verdicts": {
   "Foreign Institutional Investors": "foreign",
@@ -279,7 +280,8 @@
   "MARINA HOLDCO (FPI) LTD": "foreign",
   "HOUSING DEVELOPMENT FINANCE CORPORATION LTD": "domestic",
   "Foreign bodies Corporate- Jomei Investments Limited": "foreign",
-  "DYNASTY ACQUISITION (FPI) LTD": "foreign"
+  "DYNASTY ACQUISITION (FPI) LTD": "foreign",
+  "MITSUI SUMITOMO INSURANCE COMPANY LIMITED": "foreign"
  },
  "cells": {
   "3MINDIA|2020-03-31": {

@@ -16820,6 +16820,82 @@ whenever the strategy screens on a shareholding factor and the window starts bef
 **Rule:** do not spend time on pre-2014 SHP dates again unless a NEW source with per-filing timestamps appears; record it here
 if one does.
 
+### 142e. ★★★ ITEM 4 — THE 808 FII VALUE-MISMATCH CELLS ADJUDICATED AGAINST THE FILINGS: 98 cells + 3 event rows + 1 fill corrected on our side, the rest are quantmac's or a definition split  (2026-09-22)
+
+**Two artefacts of my own compare came first (fix them before adjudicating anything).** (1) The live engine's
+`loadShp()` folds rows filed under an OLD ticker into the CURRENT key (RUCHISOYA→PATANJALI, HEXAWARE→HEXT …)
+before serving; the compare looked rows up by symbol, so PATANJALI/ORCHPHARMA/SPLPETRO/CHOLAHLDNG/ALOKINDS/PROVOGE
+"served a 2002 row for 2009-2015" and HEXT/PIRAMALFIN "lacked" 277 cells. (2) FUND_ALIAS is a June snapshot of
+`_rename_map.json`; quantmac names the era ticker (IBVENTURES, AIONJSW, AMTEKINDIA, FCH, GAMMNINFRA), which the
+compare must walk through the rename map. With both applied (scratchpad `fii_compare.py`): agree 72,188 / both
+85,628; **quantmac-has-we-lack 460 → 34** (SHILPI 8, INNOIND 7, AJMERA 4, CDSL 3, ADANIENSOL 3, 3IINFOLTD 3, PURVA 2,
+CHETTINAD 2, TULIP 1, BINANICEM 1 — the "item 5" list); value-mismatch cells (quantmac value ≠ EVERY row we hold
+for the symbol) 1,030 → **808 cells = 333 (symbol, value, quarter) groups, 120 symbols**. PIRAMALFIN 2009-2024 in
+quantmac's file is PEL's history relabelled (row-for-row), not a gap.
+
+**Adjudication (scratchpad `adjudicate.py` → `adjudicate.jsonl`, `analyze2.py`):** for every group read the SOURCE
+filing — BSE's XBRL copy for quarters ≥ Mar-2016 (`XBRLFILES/SHPXBRLDataXML/<XbrlFile>` from the SHPQNewFormat
+list; event rows via the list's `DD Mon YYYY` labels), BSE's Clause-35 `ShareholdingPattern.aspx` render for
+2006-2016 (`fetch_shp_bse_aspx.fetch_page/parse_new`; also the fallback for Mar-2016, which BSE never re-filed as
+XBRL), NSE's master for the NSE-only CDSL (it serves only the latest ~21 filings per symbol, so 2018-06..2021-06
+could not be re-read) — then ask which SUM of the filing's categories reproduces OUR number and which reproduces
+QUANTMAC's (subset search over FPI/FVCI/FDI/ODR/Any-Other/banks/MF/…). Two reader bugs found on the way, both
+fixed before trusting a verdict: old-format XBRL carries PERCENTS while new-format carries FRACTIONS, so a
+per-value "≤1 ⇒ fraction" rule turned CUB's 0.29% Any-Other block into 29%; and the Dec-2015/Mar-2016 pages print
+the FPI row under a "Qualified Foreign Investor" label, which the family reader does not add to fii.
+
+| class (groups / cells) | meaning | action |
+|---|---|---|
+| quantmac value matches nothing foreign in the filing — 191 / 419 | stale carry-forward of an earlier quarter (POLYCAB 4.89 for five quarters, BERGEPAINT 9.45 for four, CASTEXTECH 42.32, SUMMITSEC 1.74 …) or a misread (YESBANK 2011-15 1.5-7 vs the page's 44-47; ICICIBANK Dec-08 51.11 = FII+banks+insurance) | none — ours = the filing |
+| quantmac = a NARROWER foreign subset — 94 / 256 | FII row without the FVCI/FPI rows (JUSTDIAL, MARICO, PERSISTENT, PHOENIXLTD, RTNPOWER, COLPAL, PEL …); FPI Cat-I only where SEBI's new format puts FDI/ODR inside Institutions(Foreign) (DELHIVERY Dec-22 9.20 vs 69.12 = FPI 9.20 + FDI 59.93; KALYANKJIL 2.36 vs 28.73; HINDALCO/UPL ODR); excludes the name-adjudicated foreign Any-Other blocks we include (CYIENT Tele Atlas, JSWSTEEL JFE, POLYCAB IFC, ACLGATI, VAIBHAVGBL Nalanda) | none — definition split, ours is the SEBI bucket and stays continuous across the Sep-2022 seam |
+| quantmac INCLUDES an Any-Other block we held domestic — 21 / 53 | adjudicated holder by holder (below) | **ours wrong where the filer itself calls the holder foreign** |
+| our cell ≠ the filing under ANY reading — 10 / 32 | 2014-15 cells holding the FII row alone while the same page prints a separate "Foreign Portfolio Investments Corporation" (FPI) row; one wrong-company cell; one lone outlier | **ours wrong** — re-derived by today's reader |
+
+**Corrected on our side — 98 `shp_cell_fix.json` cells over 31 symbols, 3 event rows, 1 fill (all `why` fields cite
+this section):**
+- **MFSL Dec-2020..Jun-2022 (7):** institutions Any-Other = MITSUI SUMITOMO INSURANCE 21.86%, held "name-unknown" by the
+  SW-2 sweep; the filer's own Sep-2022 new-format filing reports the same block under ForeignDirectInvestment inside
+  Institutions(Foreign) → foreign. fii += block, dii −= block; our series no longer jumps +22 pp at the seam. Name
+  verdict recorded in `_shp_other_inst_audit.json`. XENOK LIMITED (MFSL/MAXINDIA 2016-17) stays UNRESOLVED — the
+  16,719-filing corpus shows it only under D_OtherInstitutions.
+- **CDSL Jun-2018..Jun-2022 (17):** one institutional holder of 7,500,000 shares (7.18%) under Any-Other in every
+  old-format filing; from Sep-2022 the filer reports the same block under Institutions(Foreign)/Other (Sep-22, Dec-22,
+  Mar-23 NSE XBRLs). Sep-21..Jun-22 read directly (7.177 at share-count precision); Jun-18..Jun-21 not re-readable
+  (NSE keeps ~21 filings) — corrected on the block's constancy plus quantmac's independent read of each of those
+  quarters (their value = our FPI + 7.18 in all 13). Says so in the ledger. The XBRL names no holder.
+- **DHFL Sep-2011..Sep-2015 (16 + Sep-2014 FILLED):** the filer prints a holder labelled "Foreign Institutional
+  Investors (FDI)" (6.9-9.9%) inside institutions Any-Others, plus QFI / "Foreign Port Folio Investor Corporate" / FPI
+  rows (1.0-9.5%); stored fii = the FII row alone (the block sat in dii until the SW-2 phase-2 dii heal, whose 3
+  entries this supersedes). fii = FII + FDI-labelled block + FPI/QFI rows; dii = mf+banks+ins. The missing Sep-2014
+  cell went into `shp_fill_bse_aspx.json.gz` (fill-only ledger, `bseaspx:511072:83:New`).
+- **ICICIBANK Jun-2008..Sep-2015 (29):** Any-Other sub-rows the filer labels "FIIs-DR" + "Foreign Bank" (0.02-0.21 pp)
+  were never summed (the recon gate did not need them, so they were in neither fii nor dii). fii += labelled parts only
+  (Jun-2015's unlabelled "Others" left out).
+- **2014-15 FPI-row class (26 cells, 25 symbols):** ABAN, ARE&M, ASHOKA, BAJAJFINSV, BAJAJHIND, BOMDYEING, CASTROLIND,
+  FMGOETZE, GEOJITFSL×2, GITANJALI, GRINDWELL×2, HCC, IL&FSTRANS, IMAGICAA, INGERRAND, MONSANTO, NATIONALUM, NOCIL,
+  RAJESHEXPO, ROLTA, TECHNO, THOMASCOOK, VESUVIUS, ZENSARTECH, ZFCVINDIA — found by a census of every cell where the
+  store disagrees with the BSE-page ledgers (`shp_fill_bse_aspx` / `shp_refine_4dp` HAD the right value but are
+  fill-only, so the older third-party cell survived). Re-derived by `fetch_shp_bse_aspx._attempt` (FII+FPI+FVCI).
+- **REIAGROLTD Sep-2014:** wrong-company cell [74.87, 3.76, 7.95 …] vs the page's prom 37.40 / FII 22.22 and neighbours
+  26→22; **SBBJ Sep-2015:** fii 9.72 was a lone outlier (neighbours 1.2-1.4, page 1.05, quantmac 1.05).
+- **Event rows RBLBANK 9-Aug-2017 (+3.48 Asian Development Bank), 12-Nov-2020 (+2.40), VAIBHAVGBL 29-Nov-2019 (+10.47
+  Nalanda India Fund (FII)):** the same holders the SW-2 sweep confirmed foreign in the adjacent quarter-ends. Event
+  rows had NO ledger route (§22k) → **new `apply_cell_fix_events()`** in `fetch_shareholding.py`: a `fix.<SYM>.<DATE>`
+  key that is not a quarter-end names an event row in `shp_events.json`; applied after load, before every save, and
+  on `--apply-ledgers`. Same was-guard; never invents a row.
+
+**Verification before landing:** dry run on copies — 98 history cells + 3 event rows applied, second pass 0/0
+(idempotent); spot values MFSL Jun-22 45.6219, CDSL Jun-18 8.78, DHFL Mar-12 43.64, REIAGROLTD Sep-14 22.2204,
+ICICIBANK Mar-13 38.0474, HCC Dec-14 12.0334. The 69 pre-existing "stored cell is neither the fix nor the recorded
+bad value" warnings (AFSL, BBTC, UPL, RESPONIND …) are unchanged by this commit — they were there with the HEAD ledger
+and belong to §22h re-adjudication.
+
+**Left open / not ours to change:** BRFL's Standard Chartered Bank block (2.56 → 1.93, 19 cells) keeps the sweep's
+hand-curated "domestic" verdict — quantmac counts it foreign, no filer classification either way (BRFL never filed
+the new format); the wider census of store-vs-page-ledger disagreements after Mar-2016 (1,012 cells) is dominated by
+cells the SW-2 heals deliberately moved and was not re-adjudicated here; XENOK; the 34 quantmac-only cells (item 5);
+quantmac's own ~419 stale/misread cells are theirs to fix (list in `adjudicate.jsonl`, class QM-NOT-FOREIGN).
+
 ## 141a. ★★ NIFTY BANK ROSTERS HEALED — 2000→date from NSE's register + 12 archived lists  (2026-09-21)
 
 **Symptom (user, via the §141 card):** Nifty Bank's history had 7 snapshots 2017-03-31 → 2024-09-30 with

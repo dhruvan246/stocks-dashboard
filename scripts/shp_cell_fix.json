@@ -13,7 +13,8 @@
   "",
   "accept.<SYM>.<QE> = a shareholder-count collapse that is REAL (post-insolvency capital",
   "   reduction, pre-IPO pattern, ...). Exempts the cell from the write-time nsh scale gate so a",
-  "   --reparse cannot punch a hole in correct data. See runbook \u00a722g for how each was adjudicated."
+  "   --reparse cannot punch a hole in correct data. See runbook \u00a722g for how each was adjudicated.",
+  "2026-09-22 (\u00a7142e): fix.<SYM>.<DATE> with a NON-quarter-end DATE names an EVENT row in scripts/shp_events.json (apply_cell_fix_events); quarter-end keys keep naming shp_history cells. A `superseded` field keeps the earlier entry this one chains from."
  ],
  "_doc_bulk_stamp": "2026-08-13: 441 rows across 57 symbols carried ONE identical submission date across >=3 quarters \u2014 a scrape date, not a filing date. Separated from the 268 symbols whose late dates are DISTINCT per quarter (genuinely late filers: TALWALKARS, MANPASAND et al) \u2014 those are left alone, because for a distressed company a multi-year filing lag is real. The discriminator is the identical-date collapse, and the fii/dii values under it differ per quarter, which is what proves the data was read per-quarter and only the date was stamped.",
  "accept": {
@@ -1736,6 +1737,26 @@
     ],
     "src": "bseaspx:500008:qtrid86",
     "why": "SW-2 phase-2 2026-08-30: pre-2016 family convention is dii = mf+banks+ins(+vcf); this cell's dii equals that PLUS the institutions Any-Other row (5.20pp) folded in by a minority route. Healed to the page's own domestic rows (9.1831). fii left as authored (block nationality not adjudicated here). Census: _shp_oth_p2_census.jsonl"
+   },
+   "2014-12-31": {
+    "cell": [
+     52.0614,
+     18.2273,
+     8.7001,
+     8.6563,
+     0.0,
+     "2015-01-13"
+    ],
+    "was": [
+     52.0614,
+     17.84,
+     8.7001,
+     8.6563,
+     0.0,
+     "2015-01-13"
+    ],
+    "src": "bseaspx:500008:84:New",
+    "why": "quantmac FII reconciliation 2026-09-22 (runbook \u00a7142e): stored fii is the page's FII row alone; the same Clause-35 page also prints [('Foreign Portfolio Investments Corporat', 0.38)]. Re-derived by today's reader (fetch_shp_bse_aspx._attempt: FII+FPI+FVCI, dii=mf+banks+ins[+recon Any-Others]); sub date kept."
    }
   },
   "ARIHANT": {
@@ -9780,6 +9801,26 @@
      14456
     ],
     "why": "BSE revision 2020-10-09 supersedes stored (sub 2020-10-07); diffs {'prom': [74.98, 96.82]}; corroboration=NO_SITE_WINDOW (revision sweep 2026-08-09)"
+   },
+   "2015-09-30": {
+    "cell": [
+     74.9845,
+     0.2605,
+     13.5826,
+     10.2159,
+     3.361,
+     "2015-10-14"
+    ],
+    "was": [
+     74.9845,
+     0.2,
+     13.5826,
+     10.2159,
+     3.361,
+     "2015-10-14"
+    ],
+    "src": "bseaspx:505744:87:New",
+    "why": "quantmac FII reconciliation 2026-09-22 (runbook \u00a7142e): stored fii is the page's FII row alone; the same Clause-35 page also prints [('Foreign Portfolio Investments Corporat', 0.06)]. Re-derived by today's reader (fetch_shp_bse_aspx._attempt: FII+FPI+FVCI, dii=mf+banks+ins[+recon Any-Others]); sub date kept."
    }
   },
   "FOODSIN": {
@@ -10852,6 +10893,46 @@
      50109
     ],
     "why": "WITHIN-SYMBOL OUTLIER: this symbol's own median filing lag is inside the 21-day window, yet this row is 210d late. An otherwise-compliant filer does not file one quarter months late and resume on time. Corrected only because the stamp signature is present as well \u2014 the date is shared with another quarter of the same symbol, or the lag exceeds a year. Rows 120-365d late carrying a LONE date are left alone: there a single genuinely-delayed filing cannot be told from a stamp."
+   },
+   "2014-12-31": {
+    "cell": [
+     63.7245,
+     2.502,
+     0.5428,
+     0.5428,
+     0.0,
+     "2015-01-15"
+    ],
+    "was": [
+     63.7245,
+     2.34,
+     0.5428,
+     0.5428,
+     0.0,
+     "2015-01-15"
+    ],
+    "src": "bseaspx:532285:84:New",
+    "why": "quantmac FII reconciliation 2026-09-22 (runbook \u00a7142e): stored fii is the page's FII row alone; the same Clause-35 page also prints [('Foreign Portfolio Investments Corporat', 0.16)]. Re-derived by today's reader (fetch_shp_bse_aspx._attempt: FII+FPI+FVCI, dii=mf+banks+ins[+recon Any-Others]); sub date kept."
+   },
+   "2015-03-31": {
+    "cell": [
+     63.6491,
+     2.7655,
+     1.9541,
+     1.951,
+     0.0,
+     "2015-04-18"
+    ],
+    "was": [
+     63.6491,
+     2.4,
+     1.9541,
+     1.951,
+     0.0,
+     "2015-04-18"
+    ],
+    "src": "bseaspx:532285:85:New",
+    "why": "quantmac FII reconciliation 2026-09-22 (runbook \u00a7142e): stored fii is the page's FII row alone; the same Clause-35 page also prints [('Foreign Portfolio Investments Corporat', 0.36)]. Re-derived by today's reader (fetch_shp_bse_aspx._attempt: FII+FPI+FVCI, dii=mf+banks+ins[+recon Any-Others]); sub date kept."
    }
   },
   "GHCL": {
@@ -11917,6 +11998,26 @@
      48043
     ],
     "why": "Company REVISED its filing (BSE revised_date_time=n/a); NSE's master kept serving the original, which is what we stored. BSE's revised copy parses clean and matches the independent sites (screener,tickertape). Diffs: {'prom': '73.22->72.45'}. Rule-6b quorum: revised exchange filing + 2 sites. Found 2026-08-09 after the user challenged unanimous site-vs-us cells."
+   },
+   "2015-09-30": {
+    "cell": [
+     70.7887,
+     7.8768,
+     2.5083,
+     1.7677,
+     0.0,
+     "2015-10-16"
+    ],
+    "was": [
+     70.7887,
+     7.81,
+     2.5083,
+     1.7677,
+     0.0,
+     "2015-10-16"
+    ],
+    "src": "bseaspx:533177:87:New",
+    "why": "quantmac FII reconciliation 2026-09-22 (runbook \u00a7142e): stored fii is the page's FII row alone; the same Clause-35 page also prints [('Foreign Portfolio Investments Corporat', 0.07)]. Re-derived by today's reader (fetch_shp_bse_aspx._attempt: FII+FPI+FVCI, dii=mf+banks+ins[+recon Any-Others]); sub date kept."
    }
   },
   "IMAGICAA": {
@@ -11983,6 +12084,26 @@
     ],
     "src": "bseaspx:539056:qtrid88",
     "why": "SW-2 phase-2 2026-08-30: pre-2016 family convention is dii = mf+banks+ins(+vcf); this cell's dii equals that PLUS the institutions Any-Other row (1.48pp) folded in by a minority route. Healed to the page's own domestic rows (9.4222). fii left as authored (block nationality not adjudicated here). Census: _shp_oth_p2_census.jsonl"
+   },
+   "2015-09-30": {
+    "cell": [
+     56.8442,
+     2.9589,
+     9.7077,
+     9.7053,
+     0.0,
+     "2015-10-06"
+    ],
+    "was": [
+     56.8442,
+     2.26,
+     9.7077,
+     9.7053,
+     0.0,
+     "2015-10-06"
+    ],
+    "src": "bseaspx:539056:87:New",
+    "why": "quantmac FII reconciliation 2026-09-22 (runbook \u00a7142e): stored fii is the page's FII row alone; the same Clause-35 page also prints [('Foreign Portfolio Investments Corporat', 0.7)]. Re-derived by today's reader (fetch_shp_bse_aspx._attempt: FII+FPI+FVCI, dii=mf+banks+ins[+recon Any-Others]); sub date kept."
    }
   },
   "INDHOTEL": {
@@ -19144,6 +19265,26 @@
      213908
     ],
     "why": "WITHIN-SYMBOL OUTLIER: this symbol's own median filing lag is inside the 21-day window, yet this row is 198d late. An otherwise-compliant filer does not file one quarter months late and resume on time. Corrected only because the stamp signature is present as well \u2014 the date is shared with another quarter of the same symbol, or the lag exceeds a year. Rows 120-365d late carrying a LONE date are left alone: there a single genuinely-delayed filing cannot be told from a stamp."
+   },
+   "2015-09-30": {
+    "cell": [
+     53.8925,
+     17.9274,
+     2.1589,
+     0.6875,
+     1.4641,
+     "2015-10-12"
+    ],
+    "was": [
+     53.8925,
+     16.94,
+     2.1589,
+     0.6875,
+     1.4641,
+     "2015-10-12"
+    ],
+    "src": "bseaspx:531500:87:New",
+    "why": "quantmac FII reconciliation 2026-09-22 (runbook \u00a7142e): stored fii is the page's FII row alone; the same Clause-35 page also prints [('Foreign Portfolio Investments Corporat', 0.99)]. Re-derived by today's reader (fetch_shp_bse_aspx._attempt: FII+FPI+FVCI, dii=mf+banks+ins[+recon Any-Others]); sub date kept."
    }
   },
   "RAMRAT": {
@@ -21391,21 +21532,41 @@
    "2015-09-30": {
     "cell": [
      75.0713,
+     1.0469,
+     9.6259,
+     7.2229,
+     2.3581,
+     "2015-10-10"
+    ],
+    "was": [
+     75.0713,
      9.72,
      6.7,
      6.69,
      2.3581,
      "2015-10-10"
     ],
-    "was": [
-     74.87,
-     9.72,
-     6.7,
-     6.69,
-     0.0,
-     "2015-10-10"
-    ],
-    "why": "22j field adjudication: BSE document read (self-consistent on every denominator) corroborated by the symbol own series \u2014 stored was a lone outlier between two identical neighbours. fields: prom,ins [sub advanced in lockstep with the ann-stream re-dating, 2026-08-30 \u2014 see runbook \u00a7105/\u00a7117]"
+    "src": "bseaspx:501061:87:New",
+    "why": "quantmac FII reconciliation 2026-09-22 (runbook \u00a7142e): stored fii is the page's FII row alone; the same Clause-35 page also prints rows the stored cell omitted. Re-derived by today's reader (fetch_shp_bse_aspx._attempt: FII+FPI+FVCI, dii=mf+banks+ins[+recon Any-Others]); sub date kept. Neighbours Mar/Jun/Dec-2015 fii [1.3179, 1.376, 1.09] and quantmac's independent read (1.05) agree with the page; 9.72 was a lone outlier. Supersedes the earlier entry (its cell is this entry's `was`).",
+    "superseded": {
+     "cell": [
+      75.0713,
+      9.72,
+      6.7,
+      6.69,
+      2.3581,
+      "2015-10-10"
+     ],
+     "was": [
+      74.87,
+      9.72,
+      6.7,
+      6.69,
+      0.0,
+      "2015-10-10"
+     ],
+     "why": "22j field adjudication: BSE document read (self-consistent on every denominator) corroborated by the symbol own series \u2014 stored was a lone outlier between two identical neighbours. fields: prom,ins [sub advanced in lockstep with the ann-stream re-dating, 2026-08-30 \u2014 see runbook \u00a7105/\u00a7117]"
+    }
    }
   },
   "SBILIFE": {
@@ -26672,6 +26833,26 @@
     ],
     "src": "bsexbrl:504067_12102021181425_SHP.xml",
     "why": "SW-2 other-institutions sweep 2026-08-30: filing's Any-Other institutions block (11.40pp, holders: MARINA HOLDCO (FPI) LTD) is FOREIGN \u2014 belongs in fii, not dii. dii -> domestic-only 9.5448 (MF+AIF+VCF+Banks+Ins+PF from the filing's own share counts), fii += the block. Evidence: _shp_other_inst_audit.json"
+   },
+   "2015-09-30": {
+    "cell": [
+     48.0297,
+     13.9344,
+     0.5845,
+     0.5611,
+     0.0034,
+     "2015-10-10"
+    ],
+    "was": [
+     48.0297,
+     13.03,
+     0.5845,
+     0.5611,
+     0.0034,
+     "2015-10-10"
+    ],
+    "src": "bseaspx:504067:87:New",
+    "why": "quantmac FII reconciliation 2026-09-22 (runbook \u00a7142e): stored fii is the page's FII row alone; the same Clause-35 page also prints [('Foreign Portfolio Investments Corporat', 0.9)]. Re-derived by today's reader (fetch_shp_bse_aspx._attempt: FII+FPI+FVCI, dii=mf+banks+ins[+recon Any-Others]); sub date kept."
    }
   },
   "ZFCVINDIA": {
@@ -26824,6 +27005,26 @@
     ],
     "src": "bseaspx:533023:qtrid89",
     "why": "SW-2 phase-2 2026-08-30: pre-2016 family convention is dii = mf+banks+ins(+vcf); this cell's dii equals that PLUS the institutions Any-Other row (1.37pp) folded in by a minority route. Healed to the page's own domestic rows (8.1597). fii left as authored (block nationality not adjudicated here). Census: _shp_oth_p2_census.jsonl"
+   },
+   "2015-09-30": {
+    "cell": [
+     75.0,
+     2.4345,
+     8.368,
+     8.2652,
+     0.0,
+     "2015-10-16"
+    ],
+    "was": [
+     75.0,
+     1.9,
+     8.368,
+     8.2652,
+     0.0,
+     "2015-10-16"
+    ],
+    "src": "bseaspx:533023:87:New",
+    "why": "quantmac FII reconciliation 2026-09-22 (runbook \u00a7142e): stored fii is the page's FII row alone; the same Clause-35 page also prints [('Foreign Portfolio Investments Corporat', 0.54)]. Re-derived by today's reader (fetch_shp_bse_aspx._attempt: FII+FPI+FVCI, dii=mf+banks+ins[+recon Any-Others]); sub date kept."
    }
   },
   "63MOONS": {
@@ -26936,6 +27137,26 @@
     ],
     "src": "bseaspx:523204:qtrid86",
     "why": "SW-2 phase-2 2026-08-30: pre-2016 family convention is dii = mf+banks+ins(+vcf); this cell's dii equals that PLUS the institutions Any-Other row (2.28pp) folded in by a minority route. Healed to the page's own domestic rows (6.6146). fii left as authored (block nationality not adjudicated here). Census: _shp_oth_p2_census.jsonl"
+   },
+   "2015-09-30": {
+    "cell": [
+     47.0083,
+     7.611,
+     6.3219,
+     3.4364,
+     0.0,
+     "2015-10-09"
+    ],
+    "was": [
+     47.0083,
+     6.79,
+     6.3219,
+     3.4364,
+     0.0,
+     "2015-10-09"
+    ],
+    "src": "bseaspx:523204:87:New",
+    "why": "quantmac FII reconciliation 2026-09-22 (runbook \u00a7142e): stored fii is the page's FII row alone; the same Clause-35 page also prints [('Foreign Portfolio Investments Corporat', 0.83)]. Re-derived by today's reader (fetch_shp_bse_aspx._attempt: FII+FPI+FVCI, dii=mf+banks+ins[+recon Any-Others]); sub date kept."
    }
   },
   "ABCAPITAL": {
@@ -29554,6 +29775,26 @@
     ],
     "src": "bsexbrl:500020_19102018171523_SHP.xml",
     "why": "SW-2 other-institutions sweep 2026-08-30: filing's Any-Other institutions block (0.25pp, holders: FOREIGN INSTITUTIONAL INVESTOR) is FOREIGN \u2014 belongs in fii, not dii. dii -> domestic-only 3.8518 (MF+AIF+VCF+Banks+Ins+PF from the filing's own share counts), fii += the block. Evidence: _shp_other_inst_audit.json"
+   },
+   "2015-09-30": {
+    "cell": [
+     52.3508,
+     8.1494,
+     8.263,
+     3.7529,
+     4.2211,
+     "2015-10-09"
+    ],
+    "was": [
+     52.3508,
+     7.86,
+     8.263,
+     3.7529,
+     4.2211,
+     "2015-10-09"
+    ],
+    "src": "bseaspx:500020:87:New",
+    "why": "quantmac FII reconciliation 2026-09-22 (runbook \u00a7142e): stored fii is the page's FII row alone; the same Clause-35 page also prints [('Foreign Portfolio Investments Corporat', 0.29)]. Re-derived by today's reader (fetch_shp_bse_aspx._attempt: FII+FPI+FVCI, dii=mf+banks+ins[+recon Any-Others]); sub date kept."
    }
   },
   "BRITANNIA": {
@@ -36318,6 +36559,26 @@
     ],
     "src": "bsexbrl:524084_1842018151233_SHP.xml",
     "why": "SW-2 other-institutions sweep 2026-08-30: filing's Any-Other institutions block (0.58pp, holders: Foreign Mutual Fund) is FOREIGN \u2014 belongs in fii, not dii. dii -> domestic-only 2.3303 (MF+AIF+VCF+Banks+Ins+PF from the filing's own share counts), fii += the block. Evidence: _shp_other_inst_audit.json"
+   },
+   "2015-09-30": {
+    "cell": [
+     72.144,
+     2.8547,
+     3.3091,
+     3.228,
+     0.0,
+     "2015-10-13"
+    ],
+    "was": [
+     72.144,
+     2.73,
+     3.3091,
+     3.228,
+     0.0,
+     "2015-10-13"
+    ],
+    "src": "bseaspx:524084:87:New",
+    "why": "quantmac FII reconciliation 2026-09-22 (runbook \u00a7142e): stored fii is the page's FII row alone; the same Clause-35 page also prints [('Foreign Portfolio Investments Corporat', 0.13)]. Re-derived by today's reader (fetch_shp_bse_aspx._attempt: FII+FPI+FVCI, dii=mf+banks+ins[+recon Any-Others]); sub date kept."
    }
   },
   "MOREPENLAB": {
@@ -38426,6 +38687,50 @@
     ],
     "src": "bsexbrl:540065_1572022125953_SHP.xml",
     "why": "SW-2 other-institutions sweep 2026-08-30: filing's Any-Other institutions block (2.39pp, holders: Foreign Bank; Asian Development Bank) is FOREIGN \u2014 belongs in fii, not dii. dii -> domestic-only 11.6309 (MF+AIF+VCF+Banks+Ins+PF from the filing's own share counts), fii += the block. Evidence: _shp_other_inst_audit.json"
+   },
+   "2017-08-09": {
+    "cell": [
+     0.0,
+     13.6036,
+     6.2458,
+     4.3256,
+     0.2357,
+     "2017-08-16",
+     197383
+    ],
+    "was": [
+     0.0,
+     10.1236,
+     9.7258,
+     4.3256,
+     0.2357,
+     "2017-08-16",
+     197383
+    ],
+    "src": "bsexbrl event filing (BSE SHPQNewFormat list, label 09 Aug 2017)",
+    "why": "quantmac FII reconciliation 2026-09-22 (runbook \u00a7142e): event-row institutions Any-Others block 3.48 = Asian Development Bank (Foreign Bank), the SAME holder the SW-2 sweep confirmed foreign in the adjacent quarter-ends (2017-06-30 3.81 / 2017-09-30 3.45 foreign-confirmed). Event rows had no ledger route until apply_cell_fix_events (this commit). fii += block, dii -= block."
+   },
+   "2020-11-12": {
+    "cell": [
+     0.0,
+     36.8156,
+     20.2416,
+     11.3217,
+     6.2885,
+     "2020-11-12",
+     308651
+    ],
+    "was": [
+     0.0,
+     34.4156,
+     22.6416,
+     11.3217,
+     6.2885,
+     "2020-11-12",
+     308651
+    ],
+    "src": "bsexbrl event filing (BSE SHPQNewFormat list, label 12 Nov 2020)",
+    "why": "quantmac FII reconciliation 2026-09-22 (runbook \u00a7142e): event-row institutions Any-Others block 2.40 = Asian Development Bank (Foreign Bank), the SAME holder the SW-2 sweep confirmed foreign in the adjacent quarter-ends (2020-09-30 2.82 / 2020-12-31 2.40 foreign-confirmed). Event rows had no ledger route until apply_cell_fix_events (this commit). fii += block, dii -= block."
    }
   },
   "REDINGTON": {
@@ -42576,6 +42881,28 @@
     ],
     "src": "bsexbrl:532156_1472022143046_SHP.xml",
     "why": "SW-2 other-institutions sweep 2026-08-30: filing's Any-Other institutions block (10.22pp, holders: NALANDA INDIA FUND LIMITED(FII)) is FOREIGN \u2014 belongs in fii, not dii. dii -> domestic-only 8.1655 (MF+AIF+VCF+Banks+Ins+PF from the filing's own share counts), fii += the block. Evidence: _shp_other_inst_audit.json"
+   },
+   "2019-11-29": {
+    "cell": [
+     58.42,
+     22.9007,
+     8.3828,
+     7.1715,
+     0.0,
+     "2019-12-02",
+     5436
+    ],
+    "was": [
+     58.42,
+     12.4307,
+     18.8528,
+     7.1715,
+     0.0,
+     "2019-12-02",
+     5436
+    ],
+    "src": "bsexbrl event filing (BSE SHPQNewFormat list, label 29 Nov 2019)",
+    "why": "quantmac FII reconciliation 2026-09-22 (runbook \u00a7142e): event-row institutions Any-Others block 10.47 = NALANDA INDIA FUND LIMITED (FII), the SAME holder the SW-2 sweep confirmed foreign in the adjacent quarter-ends (2019-09-30 10.27 / 2019-12-31 10.44 foreign-confirmed). Event rows had no ledger route until apply_cell_fix_events (this commit). fii += block, dii -= block."
    }
   },
   "VEEDOL": {
@@ -43436,6 +43763,26 @@
     ],
     "src": "bseaspx:520113:qtrid88",
     "why": "SW-2 phase-2 2026-08-30: pre-2016 family convention is dii = mf+banks+ins(+vcf); this cell's dii equals that PLUS the institutions Any-Other row (1.50pp) folded in by a minority route. Healed to the page's own domestic rows (15.1585). fii left as authored (block nationality not adjudicated here). Census: _shp_oth_p2_census.jsonl"
+   },
+   "2015-03-31": {
+    "cell": [
+     55.5657,
+     12.4088,
+     14.87,
+     14.8632,
+     0.0,
+     "2015-04-07"
+    ],
+    "was": [
+     55.5657,
+     12.21,
+     14.87,
+     14.8632,
+     0.0,
+     "2015-04-07"
+    ],
+    "src": "bseaspx:520113:85:New",
+    "why": "quantmac FII reconciliation 2026-09-22 (runbook \u00a7142e): stored fii is the page's FII row alone; the same Clause-35 page also prints [('Foreign Portfolio Investments Corporat', 0.2)]. Re-derived by today's reader (fetch_shp_bse_aspx._attempt: FII+FPI+FVCI, dii=mf+banks+ins[+recon Any-Others]); sub date kept."
    }
   },
   "VRLLOG": {
@@ -43770,6 +44117,26 @@
     ],
     "src": "bseaspx:532234:qtrid85",
     "why": "SW-2 phase-2 2026-08-30: pre-2016 family convention is dii = mf+banks+ins(+vcf); this cell's dii equals that PLUS the institutions Any-Other row (1.27pp) folded in by a minority route. Healed to the page's own domestic rows (9.6779). fii left as authored (block nationality not adjudicated here). Census: _shp_oth_p2_census.jsonl"
+   },
+   "2015-09-30": {
+    "cell": [
+     80.9309,
+     2.9338,
+     9.4896,
+     0.4078,
+     7.7026,
+     "2015-10-07"
+    ],
+    "was": [
+     80.9309,
+     2.13,
+     9.4896,
+     0.4078,
+     7.7026,
+     "2015-10-07"
+    ],
+    "src": "bseaspx:532234:87:New",
+    "why": "quantmac FII reconciliation 2026-09-22 (runbook \u00a7142e): stored fii is the page's FII row alone; the same Clause-35 page also prints [('Foreign Portfolio Investments Corporat', 0.8)]. Re-derived by today's reader (fetch_shp_bse_aspx._attempt: FII+FPI+FVCI, dii=mf+banks+ins[+recon Any-Others]); sub date kept."
    }
   },
   "MFSL": {
@@ -43912,6 +44279,160 @@
     ],
     "src": "bseaspx:500271:qtrid86",
     "why": "SW-2 phase-2 2026-08-30: pre-2016 family convention is dii = mf+banks+ins(+vcf); this cell's dii equals that PLUS the institutions Any-Other row (12.13pp) folded in by a minority route. Healed to the page's own domestic rows (12.0175). fii left as authored (block nationality not adjudicated here). Census: _shp_oth_p2_census.jsonl"
+   },
+   "2020-12-31": {
+    "cell": [
+     17.26,
+     41.5671,
+     28.9889,
+     26.9335,
+     0.0,
+     "2021-01-12",
+     64384
+    ],
+    "was": [
+     17.26,
+     19.6973,
+     50.8587,
+     26.9335,
+     0.0,
+     "2021-01-12",
+     64384
+    ],
+    "src": "bsexbrl:500271:500271_1212021112234_SHP.xml",
+    "why": "quantmac FII reconciliation 2026-09-22 (runbook \u00a7142e): institutions Any-Others block = MITSUI SUMITOMO INSURANCE COMPANY LIMITED 21.87% (held 'name-unknown' by the SW-2 sweep). The filer's own Sep-2022 new-format filing (500271_2010202215014_SHP.xml) reports the same 21.86% under ForeignDirectInvestment inside Institutions(Foreign) -> foreign. fii += block, dii -= block; our series no longer jumps +22pp at the format seam."
+   },
+   "2021-03-31": {
+    "cell": [
+     16.99,
+     44.9454,
+     29.5205,
+     24.9417,
+     3.1645,
+     "2021-04-09",
+     63253
+    ],
+    "was": [
+     16.99,
+     23.0792,
+     51.3867,
+     24.9417,
+     3.1645,
+     "2021-04-09",
+     63253
+    ],
+    "src": "bsexbrl:500271:500271_942021122056_SHP.xml",
+    "why": "quantmac FII reconciliation 2026-09-22 (runbook \u00a7142e): institutions Any-Others block = MITSUI SUMITOMO INSURANCE COMPANY LIMITED 21.87% (held 'name-unknown' by the SW-2 sweep). The filer's own Sep-2022 new-format filing (500271_2010202215014_SHP.xml) reports the same 21.86% under ForeignDirectInvestment inside Institutions(Foreign) -> foreign. fii += block, dii -= block; our series no longer jumps +22pp at the format seam."
+   },
+   "2021-06-30": {
+    "cell": [
+     14.72,
+     48.1941,
+     28.8519,
+     24.3452,
+     3.1318,
+     "2021-07-09",
+     64363
+    ],
+    "was": [
+     14.72,
+     26.329,
+     50.717,
+     24.3452,
+     3.1318,
+     "2021-07-09",
+     64363
+    ],
+    "src": "bsexbrl:500271:500271_97202111026_SHP.xml",
+    "why": "quantmac FII reconciliation 2026-09-22 (runbook \u00a7142e): institutions Any-Others block = MITSUI SUMITOMO INSURANCE COMPANY LIMITED 21.87% (held 'name-unknown' by the SW-2 sweep). The filer's own Sep-2022 new-format filing (500271_2010202215014_SHP.xml) reports the same 21.86% under ForeignDirectInvestment inside Institutions(Foreign) -> foreign. fii += block, dii -= block; our series no longer jumps +22pp at the format seam."
+   },
+   "2021-09-30": {
+    "cell": [
+     14.72,
+     49.581,
+     27.5067,
+     23.1711,
+     3.1314,
+     "2021-10-08",
+     70706
+    ],
+    "was": [
+     14.72,
+     27.7164,
+     49.3713,
+     23.1711,
+     3.1314,
+     "2021-10-08",
+     70706
+    ],
+    "src": "bsexbrl:500271:500271_8102021135919_SHP.xml",
+    "why": "quantmac FII reconciliation 2026-09-22 (runbook \u00a7142e): institutions Any-Others block = MITSUI SUMITOMO INSURANCE COMPANY LIMITED 21.86% (held 'name-unknown' by the SW-2 sweep). The filer's own Sep-2022 new-format filing (500271_2010202215014_SHP.xml) reports the same 21.86% under ForeignDirectInvestment inside Institutions(Foreign) -> foreign. fii += block, dii -= block; our series no longer jumps +22pp at the format seam."
+   },
+   "2021-12-31": {
+    "cell": [
+     14.72,
+     47.9403,
+     29.3113,
+     25.1579,
+     2.9726,
+     "2022-01-18",
+     66724
+    ],
+    "was": [
+     14.72,
+     26.0757,
+     51.1759,
+     25.1579,
+     2.9726,
+     "2022-01-18",
+     66724
+    ],
+    "src": "bsexbrl:500271:500271_1812022114034_SHP.xml",
+    "why": "quantmac FII reconciliation 2026-09-22 (runbook \u00a7142e): institutions Any-Others block = MITSUI SUMITOMO INSURANCE COMPANY LIMITED 21.86% (held 'name-unknown' by the SW-2 sweep). The filer's own Sep-2022 new-format filing (500271_2010202215014_SHP.xml) reports the same 21.86% under ForeignDirectInvestment inside Institutions(Foreign) -> foreign. fii += block, dii -= block; our series no longer jumps +22pp at the format seam."
+   },
+   "2022-03-31": {
+    "cell": [
+     14.72,
+     45.1293,
+     32.1513,
+     28.0538,
+     2.8472,
+     "2022-04-13",
+     69014
+    ],
+    "was": [
+     14.72,
+     23.2647,
+     54.0159,
+     28.0538,
+     2.8472,
+     "2022-04-13",
+     69014
+    ],
+    "src": "bsexbrl:500271:500271_1242022153321_SHP.xml",
+    "why": "quantmac FII reconciliation 2026-09-22 (runbook \u00a7142e): institutions Any-Others block = MITSUI SUMITOMO INSURANCE COMPANY LIMITED 21.86% (held 'name-unknown' by the SW-2 sweep). The filer's own Sep-2022 new-format filing (500271_2010202215014_SHP.xml) reports the same 21.86% under ForeignDirectInvestment inside Institutions(Foreign) -> foreign. fii += block, dii -= block; our series no longer jumps +22pp at the format seam."
+   },
+   "2022-06-30": {
+    "cell": [
+     14.72,
+     45.6219,
+     31.4192,
+     28.0035,
+     2.3038,
+     "2022-07-11",
+     68088
+    ],
+    "was": [
+     14.72,
+     23.7573,
+     53.2838,
+     28.0035,
+     2.3038,
+     "2022-07-11",
+     68088
+    ],
+    "src": "bsexbrl:500271:500271_1172022123923_SHP.xml",
+    "why": "quantmac FII reconciliation 2026-09-22 (runbook \u00a7142e): institutions Any-Others block = MITSUI SUMITOMO INSURANCE COMPANY LIMITED 21.86% (held 'name-unknown' by the SW-2 sweep). The filer's own Sep-2022 new-format filing (500271_2010202215014_SHP.xml) reports the same 21.86% under ForeignDirectInvestment inside Institutions(Foreign) -> foreign. fii += block, dii -= block; our series no longer jumps +22pp at the format seam."
    }
   },
   "OSWALGREEN": {
@@ -44700,6 +45221,26 @@
     ],
     "src": "bseaspx:500870:qtrid86",
     "why": "SW-2 phase-2 2026-08-30: pre-2016 family convention is dii = mf+banks+ins(+vcf); this cell's dii equals that PLUS the institutions Any-Other row (1.05pp) folded in by a minority route. Healed to the page's own domestic rows (7.0678). fii left as authored (block nationality not adjudicated here). Census: _shp_oth_p2_census.jsonl"
+   },
+   "2015-03-31": {
+    "cell": [
+     71.031,
+     7.0329,
+     6.9301,
+     1.5728,
+     5.1594,
+     "2015-04-11"
+    ],
+    "was": [
+     71.031,
+     6.57,
+     6.9301,
+     1.5728,
+     5.1594,
+     "2015-04-11"
+    ],
+    "src": "bseaspx:500870:85:New",
+    "why": "quantmac FII reconciliation 2026-09-22 (runbook \u00a7142e): stored fii is the page's FII row alone; the same Clause-35 page also prints [('Foreign Portfolio Investments Corporat', 0.47)]. Re-derived by today's reader (fetch_shp_bse_aspx._attempt: FII+FPI+FVCI, dii=mf+banks+ins[+recon Any-Others]); sub date kept."
    }
   },
   "APLLTD": {
@@ -44998,6 +45539,26 @@
     ],
     "src": "bseaspx:500032:qtrid89",
     "why": "SW-2 phase-2 2026-08-30: pre-2016 family convention is dii = mf+banks+ins(+vcf); this cell's dii equals that PLUS the institutions Any-Other row (2.20pp) folded in by a minority route. Healed to the page's own domestic rows (48.1158). fii left as authored (block nationality not adjudicated here). Census: _shp_oth_p2_census.jsonl"
+   },
+   "2015-09-30": {
+    "cell": [
+     36.1101,
+     2.2714,
+     32.8287,
+     0.0014,
+     5.2851,
+     "2015-10-13"
+    ],
+    "was": [
+     36.1101,
+     2.09,
+     32.8287,
+     0.0014,
+     5.2851,
+     "2015-10-13"
+    ],
+    "src": "bseaspx:500032:87:New",
+    "why": "quantmac FII reconciliation 2026-09-22 (runbook \u00a7142e): stored fii is the page's FII row alone; the same Clause-35 page also prints [('Foreign Portfolio Investments Corporat', 0.18)]. Re-derived by today's reader (fetch_shp_bse_aspx._attempt: FII+FPI+FVCI, dii=mf+banks+ins[+recon Any-Others]); sub date kept."
    }
   },
   "PVRINOX": {
@@ -46475,6 +47036,14 @@
   "DHFL": {
    "2013-12-31": {
     "cell": [
+     39.2825,
+     31.96,
+     0.45,
+     0.1673,
+     0.0,
+     "2014-01-21"
+    ],
+    "was": [
      39.28,
      22.04,
      0.4516,
@@ -46482,19 +47051,39 @@
      0.0,
      "2014-01-21"
     ],
-    "was": [
-     39.28,
-     22.04,
-     9.35,
-     0.17,
-     0.0,
-     "2014-01-21"
-    ],
-    "src": "bseaspx:511072:qtrid80",
-    "why": "SW-2 phase-2 2026-08-30: pre-2016 family convention is dii = mf+banks+ins(+vcf); this cell's dii equals that PLUS the institutions Any-Other row (8.90pp) folded in by a minority route. Healed to the page's own domestic rows (0.4516). fii left as authored (block nationality not adjudicated here). Census: _shp_oth_p2_census.jsonl"
+    "src": "bseaspx:511072:80:New",
+    "why": "quantmac FII reconciliation 2026-09-22 (runbook \u00a7142e): the filer prints a holder labelled 'Foreign Institutional Investors (FDI)' inside institutions Any-Others ([('Foreign Institutional Investors (FDI)', 8.9)]) and FPI/QFI rows [('Qualified Foreign Investor', 1.02)]; stored fii = the FII row alone and the block sat in dii. fii = FII row + FDI-labelled block + FPI/QFI rows; dii = mf+banks+ins. Supersedes the bseaspx:511072:qtrid80 entry (its cell is this entry's `was`).",
+    "superseded": {
+     "cell": [
+      39.28,
+      22.04,
+      0.4516,
+      0.17,
+      0.0,
+      "2014-01-21"
+     ],
+     "was": [
+      39.28,
+      22.04,
+      9.35,
+      0.17,
+      0.0,
+      "2014-01-21"
+     ],
+     "src": "bseaspx:511072:qtrid80",
+     "why": "SW-2 phase-2 2026-08-30: pre-2016 family convention is dii = mf+banks+ins(+vcf); this cell's dii equals that PLUS the institutions Any-Other row (8.90pp) folded in by a minority route. Healed to the page's own domestic rows (0.4516). fii left as authored (block nationality not adjudicated here). Census: _shp_oth_p2_census.jsonl"
+    }
    },
    "2014-03-31": {
     "cell": [
+     39.2538,
+     31.95,
+     0.43,
+     0.1399,
+     0.0,
+     "2014-04-19"
+    ],
+    "was": [
      39.25,
      22.04,
      0.4319,
@@ -46502,19 +47091,39 @@
      0.0,
      "2014-04-19"
     ],
-    "was": [
-     39.25,
-     22.04,
-     9.32,
-     0.14,
-     0.0,
-     "2014-04-19"
-    ],
-    "src": "bseaspx:511072:qtrid81",
-    "why": "SW-2 phase-2 2026-08-30: pre-2016 family convention is dii = mf+banks+ins(+vcf); this cell's dii equals that PLUS the institutions Any-Other row (8.89pp) folded in by a minority route. Healed to the page's own domestic rows (0.4319). fii left as authored (block nationality not adjudicated here). Census: _shp_oth_p2_census.jsonl"
+    "src": "bseaspx:511072:81:New",
+    "why": "quantmac FII reconciliation 2026-09-22 (runbook \u00a7142e): the filer prints a holder labelled 'Foreign Institutional Investors (FDI)' inside institutions Any-Others ([('Foreign Institutional Investors (FDI)', 8.89)]) and FPI/QFI rows [('Qualified Foreign Investor', 1.02)]; stored fii = the FII row alone and the block sat in dii. fii = FII row + FDI-labelled block + FPI/QFI rows; dii = mf+banks+ins. Supersedes the bseaspx:511072:qtrid81 entry (its cell is this entry's `was`).",
+    "superseded": {
+     "cell": [
+      39.25,
+      22.04,
+      0.4319,
+      0.14,
+      0.0,
+      "2014-04-19"
+     ],
+     "was": [
+      39.25,
+      22.04,
+      9.32,
+      0.14,
+      0.0,
+      "2014-04-19"
+     ],
+     "src": "bseaspx:511072:qtrid81",
+     "why": "SW-2 phase-2 2026-08-30: pre-2016 family convention is dii = mf+banks+ins(+vcf); this cell's dii equals that PLUS the institutions Any-Other row (8.89pp) folded in by a minority route. Healed to the page's own domestic rows (0.4319). fii left as authored (block nationality not adjudicated here). Census: _shp_oth_p2_census.jsonl"
+    }
    },
    "2014-06-30": {
     "cell": [
+     39.1969,
+     30.64,
+     0.38,
+     0.1475,
+     0.0,
+     "2014-07-17"
+    ],
+    "was": [
      39.2,
      24.48,
      0.3761,
@@ -46522,16 +47131,288 @@
      0.0,
      "2014-07-17"
     ],
-    "was": [
-     39.2,
-     24.48,
-     5.52,
-     0.15,
+    "src": "bseaspx:511072:82:New",
+    "why": "quantmac FII reconciliation 2026-09-22 (runbook \u00a7142e): the filer prints a holder labelled 'Foreign Institutional Investors (FDI)' inside institutions Any-Others ([('Foreign Institutional Investors (FDI)', 5.14)]) and FPI/QFI rows [('Qualified Foreign Investor', 1.02)]; stored fii = the FII row alone and the block sat in dii. fii = FII row + FDI-labelled block + FPI/QFI rows; dii = mf+banks+ins. Supersedes the bseaspx:511072:qtrid82 entry (its cell is this entry's `was`).",
+    "superseded": {
+     "cell": [
+      39.2,
+      24.48,
+      0.3761,
+      0.15,
+      0.0,
+      "2014-07-17"
+     ],
+     "was": [
+      39.2,
+      24.48,
+      5.52,
+      0.15,
+      0.0,
+      "2014-07-17"
+     ],
+     "src": "bseaspx:511072:qtrid82",
+     "why": "SW-2 phase-2 2026-08-30: pre-2016 family convention is dii = mf+banks+ins(+vcf); this cell's dii equals that PLUS the institutions Any-Other row (5.14pp) folded in by a minority route. Healed to the page's own domestic rows (0.3761). fii left as authored (block nationality not adjudicated here). Census: _shp_oth_p2_census.jsonl"
+    }
+   },
+   "2011-09-30": {
+    "cell": [
+     39.2898,
+     42.28,
+     0.91,
+     0.3002,
      0.0,
-     "2014-07-17"
+     "2011-10-21"
     ],
-    "src": "bseaspx:511072:qtrid82",
-    "why": "SW-2 phase-2 2026-08-30: pre-2016 family convention is dii = mf+banks+ins(+vcf); this cell's dii equals that PLUS the institutions Any-Other row (5.14pp) folded in by a minority route. Healed to the page's own domestic rows (0.3761). fii left as authored (block nationality not adjudicated here). Census: _shp_oth_p2_census.jsonl"
+    "was": [
+     39.2898,
+     34.5803,
+     8.6107,
+     0.3002,
+     0.0,
+     "2011-10-21"
+    ],
+    "src": "bseaspx:511072:71:New",
+    "why": "quantmac FII reconciliation 2026-09-22 (runbook \u00a7142e): the filer prints a holder labelled 'Foreign Institutional Investors (FDI)' inside institutions Any-Others ([('Foreign Institutional Investors (FDI)', 7.7)]) and FPI/QFI rows []; stored fii = the FII row alone and the block sat in dii. fii = FII row + FDI-labelled block + FPI/QFI rows; dii = mf+banks+ins."
+   },
+   "2011-12-31": {
+    "cell": [
+     39.2383,
+     41.36,
+     1.05,
+     0.3022,
+     0.0,
+     "2012-01-21"
+    ],
+    "was": [
+     39.24,
+     33.67,
+     8.74,
+     0.3,
+     0.0,
+     "2012-01-21"
+    ],
+    "src": "bseaspx:511072:72:New",
+    "why": "quantmac FII reconciliation 2026-09-22 (runbook \u00a7142e): the filer prints a holder labelled 'Foreign Institutional Investors (FDI)' inside institutions Any-Others ([('Foreign Institutional Investors (FDI)', 7.69)]) and FPI/QFI rows []; stored fii = the FII row alone and the block sat in dii. fii = FII row + FDI-labelled block + FPI/QFI rows; dii = mf+banks+ins."
+   },
+   "2012-03-31": {
+    "cell": [
+     35.2229,
+     43.64,
+     0.84,
+     0.2166,
+     0.0,
+     "2012-04-21"
+    ],
+    "was": [
+     35.22,
+     36.74,
+     7.74,
+     0.22,
+     0.0,
+     "2012-04-21"
+    ],
+    "src": "bseaspx:511072:73:New",
+    "why": "quantmac FII reconciliation 2026-09-22 (runbook \u00a7142e): the filer prints a holder labelled 'Foreign Institutional Investors (FDI)' inside institutions Any-Others ([('Foreign Institutional Investors (FDI)', 6.9)]) and FPI/QFI rows []; stored fii = the FII row alone and the block sat in dii. fii = FII row + FDI-labelled block + FPI/QFI rows; dii = mf+banks+ins."
+   },
+   "2012-06-30": {
+    "cell": [
+     35.1515,
+     42.26,
+     0.95,
+     0.3327,
+     0.0,
+     "2012-07-21"
+    ],
+    "was": [
+     35.15,
+     35.37,
+     7.84,
+     0.33,
+     0.0,
+     "2012-07-21"
+    ],
+    "src": "bseaspx:511072:74:New",
+    "why": "quantmac FII reconciliation 2026-09-22 (runbook \u00a7142e): the filer prints a holder labelled 'Foreign Institutional Investors (FDI)' inside institutions Any-Others ([('Foreign Institutional Investors (FDI)', 6.89)]) and FPI/QFI rows []; stored fii = the FII row alone and the block sat in dii. fii = FII row + FDI-labelled block + FPI/QFI rows; dii = mf+banks+ins."
+   },
+   "2012-09-30": {
+    "cell": [
+     35.2748,
+     41.59,
+     1.24,
+     0.6828,
+     0.0,
+     "2012-10-21"
+    ],
+    "was": [
+     35.27,
+     34.7,
+     8.13,
+     0.68,
+     0.0,
+     "2012-10-21"
+    ],
+    "src": "bseaspx:511072:75:New",
+    "why": "quantmac FII reconciliation 2026-09-22 (runbook \u00a7142e): the filer prints a holder labelled 'Foreign Institutional Investors (FDI)' inside institutions Any-Others ([('Foreign Institutional Investors (FDI)', 6.89)]) and FPI/QFI rows []; stored fii = the FII row alone and the block sat in dii. fii = FII row + FDI-labelled block + FPI/QFI rows; dii = mf+banks+ins."
+   },
+   "2012-12-31": {
+    "cell": [
+     35.2016,
+     39.16,
+     1.21,
+     0.6939,
+     0.0,
+     "2013-01-21"
+    ],
+    "was": [
+     35.2,
+     32.29,
+     8.08,
+     0.69,
+     0.0,
+     "2013-01-21"
+    ],
+    "src": "bseaspx:511072:76:New",
+    "why": "quantmac FII reconciliation 2026-09-22 (runbook \u00a7142e): the filer prints a holder labelled 'Foreign Institutional Investors (FDI)' inside institutions Any-Others ([('Foreign Institutional Investors (FDI)', 6.87)]) and FPI/QFI rows []; stored fii = the FII row alone and the block sat in dii. fii = FII row + FDI-labelled block + FPI/QFI rows; dii = mf+banks+ins."
+   },
+   "2013-03-31": {
+    "cell": [
+     38.0713,
+     38.72,
+     0.66,
+     0.33,
+     0.0,
+     "2013-04-21"
+    ],
+    "was": [
+     38.07,
+     29.81,
+     9.57,
+     0.33,
+     0.0,
+     "2013-04-21"
+    ],
+    "src": "bseaspx:511072:77:New",
+    "why": "quantmac FII reconciliation 2026-09-22 (runbook \u00a7142e): the filer prints a holder labelled 'Foreign Institutional Investors (FDI)' inside institutions Any-Others ([('Foreign Institutional Investors (FDI)', 8.91)]) and FPI/QFI rows []; stored fii = the FII row alone and the block sat in dii. fii = FII row + FDI-labelled block + FPI/QFI rows; dii = mf+banks+ins."
+   },
+   "2013-06-30": {
+    "cell": [
+     38.0714,
+     39.42,
+     0.68,
+     0.3421,
+     0.0,
+     "2013-07-21"
+    ],
+    "was": [
+     38.07,
+     29.5,
+     10.6,
+     0.34,
+     0.0,
+     "2013-07-21"
+    ],
+    "src": "bseaspx:511072:78:New",
+    "why": "quantmac FII reconciliation 2026-09-22 (runbook \u00a7142e): the filer prints a holder labelled 'Foreign Institutional Investors (FDI)' inside institutions Any-Others ([('Foreign Institutional Investors (FDI)', 9.92)]) and FPI/QFI rows []; stored fii = the FII row alone and the block sat in dii. fii = FII row + FDI-labelled block + FPI/QFI rows; dii = mf+banks+ins."
+   },
+   "2013-09-30": {
+    "cell": [
+     39.274,
+     37.94,
+     0.55,
+     0.2103,
+     0.0,
+     "2013-10-21"
+    ],
+    "was": [
+     39.27,
+     28.02,
+     9.45,
+     0.21,
+     0.0,
+     "2013-10-21"
+    ],
+    "src": "bseaspx:511072:79:New",
+    "why": "quantmac FII reconciliation 2026-09-22 (runbook \u00a7142e): the filer prints a holder labelled 'Foreign Institutional Investors (FDI)' inside institutions Any-Others ([('Foreign Institutional Investors (FDI)', 8.9)]) and FPI/QFI rows [('Qualified Foreign Investor', 1.02)]; stored fii = the FII row alone and the block sat in dii. fii = FII row + FDI-labelled block + FPI/QFI rows; dii = mf+banks+ins."
+   },
+   "2014-12-31": {
+    "cell": [
+     39.5722,
+     27.71,
+     0.32,
+     0.0343,
+     0.0,
+     "2015-01-13"
+    ],
+    "was": [
+     39.57,
+     20.6,
+     0.32,
+     0.03,
+     0.0,
+     "2015-01-13"
+    ],
+    "src": "bseaspx:511072:84:New",
+    "why": "quantmac FII reconciliation 2026-09-22 (runbook \u00a7142e): the filer prints a holder labelled 'Foreign Institutional Investors (FDI)' inside institutions Any-Others ([]) and FPI/QFI rows [('Foreign Port Folio Investor Corporate', 7.11)]; stored fii = the FII row alone and the block sat in dii. fii = FII row + FDI-labelled block + FPI/QFI rows; dii = mf+banks+ins."
+   },
+   "2015-03-31": {
+    "cell": [
+     34.9471,
+     34.85,
+     2.41,
+     2.235,
+     0.0,
+     "2015-04-11"
+    ],
+    "was": [
+     34.95,
+     25.9,
+     2.41,
+     2.24,
+     0.0,
+     "2015-04-11"
+    ],
+    "src": "bseaspx:511072:85:New",
+    "why": "quantmac FII reconciliation 2026-09-22 (runbook \u00a7142e): the filer prints a holder labelled 'Foreign Institutional Investors (FDI)' inside institutions Any-Others ([]) and FPI/QFI rows [('Foreign Port Folio Investor Corporate', 8.95)]; stored fii = the FII row alone and the block sat in dii. fii = FII row + FDI-labelled block + FPI/QFI rows; dii = mf+banks+ins."
+   },
+   "2015-06-30": {
+    "cell": [
+     34.9188,
+     32.98,
+     3.75,
+     3.519,
+     0.0,
+     "2015-07-16"
+    ],
+    "was": [
+     34.92,
+     26.72,
+     3.75,
+     3.52,
+     0.0,
+     "2015-07-16"
+    ],
+    "src": "bseaspx:511072:86:New",
+    "why": "quantmac FII reconciliation 2026-09-22 (runbook \u00a7142e): the filer prints a holder labelled 'Foreign Institutional Investors (FDI)' inside institutions Any-Others ([]) and FPI/QFI rows [('Foreign Portfolio Investors', 6.26)]; stored fii = the FII row alone and the block sat in dii. fii = FII row + FDI-labelled block + FPI/QFI rows; dii = mf+banks+ins."
+   },
+   "2015-09-30": {
+    "cell": [
+     34.904,
+     35.41,
+     1.77,
+     1.5609,
+     0.0,
+     "2015-10-14"
+    ],
+    "was": [
+     34.9,
+     25.89,
+     1.77,
+     1.56,
+     0.0,
+     "2015-10-14"
+    ],
+    "src": "bseaspx:511072:87:New",
+    "why": "quantmac FII reconciliation 2026-09-22 (runbook \u00a7142e): the filer prints a holder labelled 'Foreign Institutional Investors (FDI)' inside institutions Any-Others ([]) and FPI/QFI rows [('Foreign Portfolio Investors', 9.52)]; stored fii = the FII row alone and the block sat in dii. fii = FII row + FDI-labelled block + FPI/QFI rows; dii = mf+banks+ins."
    }
   },
   "LAKSHVILAS": {
@@ -47106,6 +47987,1216 @@
      null,
      "2005-04-21"
     ]
+   }
+  },
+  "ASHOKA": {
+   "2015-09-30": {
+    "cell": [
+     57.2318,
+     10.6207,
+     19.0638,
+     17.482,
+     1.331,
+     "2015-10-21"
+    ],
+    "was": [
+     57.2318,
+     10.05,
+     19.0638,
+     17.482,
+     1.331,
+     "2015-10-21"
+    ],
+    "src": "bseaspx:533271:87:New",
+    "why": "quantmac FII reconciliation 2026-09-22 (runbook \u00a7142e): stored fii is the page's FII row alone; the same Clause-35 page also prints [('Foreign Portfolio Investments Corporat', 0.57)]. Re-derived by today's reader (fetch_shp_bse_aspx._attempt: FII+FPI+FVCI, dii=mf+banks+ins[+recon Any-Others]); sub date kept."
+   }
+  },
+  "BAJAJFINSV": {
+   "2015-09-30": {
+    "cell": [
+     58.352,
+     7.7479,
+     7.8528,
+     5.1935,
+     2.6345,
+     "2015-10-20"
+    ],
+    "was": [
+     58.352,
+     6.86,
+     7.8528,
+     5.1935,
+     2.6345,
+     "2015-10-20"
+    ],
+    "src": "bseaspx:532978:87:New",
+    "why": "quantmac FII reconciliation 2026-09-22 (runbook \u00a7142e): stored fii is the page's FII row alone; the same Clause-35 page also prints [('Foreign Portfolio Investments Corporat', 0.89)]. Re-derived by today's reader (fetch_shp_bse_aspx._attempt: FII+FPI+FVCI, dii=mf+banks+ins[+recon Any-Others]); sub date kept."
+   }
+  },
+  "CDSL": {
+   "2018-06-30": {
+    "cell": [
+     24.0,
+     8.78,
+     39.42,
+     3.94,
+     0.0,
+     "2018-07-21"
+    ],
+    "was": [
+     24.0,
+     1.6,
+     46.6,
+     3.94,
+     0.0,
+     "2018-07-21"
+    ],
+    "src": "nsexbrl:CDSL:2021-09..2023-03 + quantmac r5 FII file",
+    "why": "quantmac FII reconciliation 2026-09-22 (runbook \u00a7142e): CDSL (NSE-only) carries ONE institutional holder of 7,500,000 shares (7.18%) under institutions Any-Others in every old-format filing; from Sep-2022 the filer reports the same block under Institutions(Foreign)/Other (7.18 in Sep-22, Dec-22, Mar-23 NSE XBRLs) -> foreign. block not read for this quarter: same 7,500,000-share holder proven in the Sep-2021..Jun-2022 NSE filings and quantmac's independent read of this quarter carries exactly our FPI + 7.18. fii += 7.180, dii -= same."
+   },
+   "2018-09-30": {
+    "cell": [
+     24.0,
+     8.74,
+     36.78,
+     4.02,
+     0.0,
+     "2018-10-21"
+    ],
+    "was": [
+     24.0,
+     1.56,
+     43.96,
+     4.02,
+     0.0,
+     "2018-10-21"
+    ],
+    "src": "nsexbrl:CDSL:2021-09..2023-03 + quantmac r5 FII file",
+    "why": "quantmac FII reconciliation 2026-09-22 (runbook \u00a7142e): CDSL (NSE-only) carries ONE institutional holder of 7,500,000 shares (7.18%) under institutions Any-Others in every old-format filing; from Sep-2022 the filer reports the same block under Institutions(Foreign)/Other (7.18 in Sep-22, Dec-22, Mar-23 NSE XBRLs) -> foreign. block not read for this quarter: same 7,500,000-share holder proven in the Sep-2021..Jun-2022 NSE filings and quantmac's independent read of this quarter carries exactly our FPI + 7.18. fii += 7.180, dii -= same."
+   },
+   "2018-12-31": {
+    "cell": [
+     24.0,
+     9.47,
+     34.21,
+     6.46,
+     0.0,
+     "2019-01-21"
+    ],
+    "was": [
+     24.0,
+     2.29,
+     41.39,
+     6.46,
+     0.0,
+     "2019-01-21"
+    ],
+    "src": "nsexbrl:CDSL:2021-09..2023-03 + quantmac r5 FII file",
+    "why": "quantmac FII reconciliation 2026-09-22 (runbook \u00a7142e): CDSL (NSE-only) carries ONE institutional holder of 7,500,000 shares (7.18%) under institutions Any-Others in every old-format filing; from Sep-2022 the filer reports the same block under Institutions(Foreign)/Other (7.18 in Sep-22, Dec-22, Mar-23 NSE XBRLs) -> foreign. block not read for this quarter: same 7,500,000-share holder proven in the Sep-2021..Jun-2022 NSE filings and quantmac's independent read of this quarter carries exactly our FPI + 7.18. fii += 7.180, dii -= same."
+   },
+   "2019-03-31": {
+    "cell": [
+     24.0,
+     10.29,
+     34.5,
+     7.44,
+     0.0,
+     "2019-04-21"
+    ],
+    "was": [
+     24.0,
+     3.11,
+     41.68,
+     7.44,
+     0.0,
+     "2019-04-21"
+    ],
+    "src": "nsexbrl:CDSL:2021-09..2023-03 + quantmac r5 FII file",
+    "why": "quantmac FII reconciliation 2026-09-22 (runbook \u00a7142e): CDSL (NSE-only) carries ONE institutional holder of 7,500,000 shares (7.18%) under institutions Any-Others in every old-format filing; from Sep-2022 the filer reports the same block under Institutions(Foreign)/Other (7.18 in Sep-22, Dec-22, Mar-23 NSE XBRLs) -> foreign. block not read for this quarter: same 7,500,000-share holder proven in the Sep-2021..Jun-2022 NSE filings and quantmac's independent read of this quarter carries exactly our FPI + 7.18. fii += 7.180, dii -= same."
+   },
+   "2019-06-30": {
+    "cell": [
+     24.0,
+     9.89,
+     34.56,
+     9.58,
+     0.0,
+     "2019-07-21"
+    ],
+    "was": [
+     24.0,
+     2.71,
+     41.74,
+     9.58,
+     0.0,
+     "2019-07-21"
+    ],
+    "src": "nsexbrl:CDSL:2021-09..2023-03 + quantmac r5 FII file",
+    "why": "quantmac FII reconciliation 2026-09-22 (runbook \u00a7142e): CDSL (NSE-only) carries ONE institutional holder of 7,500,000 shares (7.18%) under institutions Any-Others in every old-format filing; from Sep-2022 the filer reports the same block under Institutions(Foreign)/Other (7.18 in Sep-22, Dec-22, Mar-23 NSE XBRLs) -> foreign. block not read for this quarter: same 7,500,000-share holder proven in the Sep-2021..Jun-2022 NSE filings and quantmac's independent read of this quarter carries exactly our FPI + 7.18. fii += 7.180, dii -= same."
+   },
+   "2019-09-30": {
+    "cell": [
+     24.0,
+     8.96,
+     34.97,
+     9.54,
+     2.34,
+     "2019-10-12",
+     136353
+    ],
+    "was": [
+     24.0,
+     1.78,
+     42.15,
+     9.54,
+     2.34,
+     "2019-10-12",
+     136353
+    ],
+    "src": "nsexbrl:CDSL:2021-09..2023-03 + quantmac r5 FII file",
+    "why": "quantmac FII reconciliation 2026-09-22 (runbook \u00a7142e): CDSL (NSE-only) carries ONE institutional holder of 7,500,000 shares (7.18%) under institutions Any-Others in every old-format filing; from Sep-2022 the filer reports the same block under Institutions(Foreign)/Other (7.18 in Sep-22, Dec-22, Mar-23 NSE XBRLs) -> foreign. block not read for this quarter: same 7,500,000-share holder proven in the Sep-2021..Jun-2022 NSE filings and quantmac's independent read of this quarter carries exactly our FPI + 7.18. fii += 7.180, dii -= same."
+   },
+   "2019-12-31": {
+    "cell": [
+     20.0,
+     9.41,
+     34.02,
+     10.72,
+     2.0,
+     "2020-01-07",
+     138955
+    ],
+    "was": [
+     20.0,
+     2.23,
+     41.2,
+     10.72,
+     2.0,
+     "2020-01-07",
+     138955
+    ],
+    "src": "nsexbrl:CDSL:2021-09..2023-03 + quantmac r5 FII file",
+    "why": "quantmac FII reconciliation 2026-09-22 (runbook \u00a7142e): CDSL (NSE-only) carries ONE institutional holder of 7,500,000 shares (7.18%) under institutions Any-Others in every old-format filing; from Sep-2022 the filer reports the same block under Institutions(Foreign)/Other (7.18 in Sep-22, Dec-22, Mar-23 NSE XBRLs) -> foreign. block not read for this quarter: same 7,500,000-share holder proven in the Sep-2021..Jun-2022 NSE filings and quantmac's independent read of this quarter carries exactly our FPI + 7.18. fii += 7.180, dii -= same."
+   },
+   "2020-03-31": {
+    "cell": [
+     20.0,
+     8.96,
+     34.76,
+     12.87,
+     1.93,
+     "2020-04-15",
+     144902
+    ],
+    "was": [
+     20.0,
+     1.78,
+     41.94,
+     12.87,
+     1.93,
+     "2020-04-15",
+     144902
+    ],
+    "src": "nsexbrl:CDSL:2021-09..2023-03 + quantmac r5 FII file",
+    "why": "quantmac FII reconciliation 2026-09-22 (runbook \u00a7142e): CDSL (NSE-only) carries ONE institutional holder of 7,500,000 shares (7.18%) under institutions Any-Others in every old-format filing; from Sep-2022 the filer reports the same block under Institutions(Foreign)/Other (7.18 in Sep-22, Dec-22, Mar-23 NSE XBRLs) -> foreign. block not read for this quarter: same 7,500,000-share holder proven in the Sep-2021..Jun-2022 NSE filings and quantmac's independent read of this quarter carries exactly our FPI + 7.18. fii += 7.180, dii -= same."
+   },
+   "2020-06-30": {
+    "cell": [
+     20.0,
+     8.69,
+     35.46,
+     13.34,
+     2.22,
+     "2020-07-15",
+     145699
+    ],
+    "was": [
+     20.0,
+     1.51,
+     42.64,
+     13.34,
+     2.22,
+     "2020-07-15",
+     145699
+    ],
+    "src": "nsexbrl:CDSL:2021-09..2023-03 + quantmac r5 FII file",
+    "why": "quantmac FII reconciliation 2026-09-22 (runbook \u00a7142e): CDSL (NSE-only) carries ONE institutional holder of 7,500,000 shares (7.18%) under institutions Any-Others in every old-format filing; from Sep-2022 the filer reports the same block under Institutions(Foreign)/Other (7.18 in Sep-22, Dec-22, Mar-23 NSE XBRLs) -> foreign. block not read for this quarter: same 7,500,000-share holder proven in the Sep-2021..Jun-2022 NSE filings and quantmac's independent read of this quarter carries exactly our FPI + 7.18. fii += 7.180, dii -= same."
+   },
+   "2020-09-30": {
+    "cell": [
+     20.0,
+     10.03,
+     31.83,
+     10.98,
+     6.85,
+     "2020-10-20",
+     147784
+    ],
+    "was": [
+     20.0,
+     2.85,
+     39.01,
+     10.98,
+     6.85,
+     "2020-10-20",
+     147784
+    ],
+    "src": "nsexbrl:CDSL:2021-09..2023-03 + quantmac r5 FII file",
+    "why": "quantmac FII reconciliation 2026-09-22 (runbook \u00a7142e): CDSL (NSE-only) carries ONE institutional holder of 7,500,000 shares (7.18%) under institutions Any-Others in every old-format filing; from Sep-2022 the filer reports the same block under Institutions(Foreign)/Other (7.18 in Sep-22, Dec-22, Mar-23 NSE XBRLs) -> foreign. block not read for this quarter: same 7,500,000-share holder proven in the Sep-2021..Jun-2022 NSE filings and quantmac's independent read of this quarter carries exactly our FPI + 7.18. fii += 7.180, dii -= same."
+   },
+   "2020-12-31": {
+    "cell": [
+     20.0,
+     13.31,
+     29.42,
+     8.09,
+     7.56,
+     "2021-01-15",
+     156679
+    ],
+    "was": [
+     20.0,
+     6.13,
+     36.6,
+     8.09,
+     7.56,
+     "2021-01-15",
+     156679
+    ],
+    "src": "nsexbrl:CDSL:2021-09..2023-03 + quantmac r5 FII file",
+    "why": "quantmac FII reconciliation 2026-09-22 (runbook \u00a7142e): CDSL (NSE-only) carries ONE institutional holder of 7,500,000 shares (7.18%) under institutions Any-Others in every old-format filing; from Sep-2022 the filer reports the same block under Institutions(Foreign)/Other (7.18 in Sep-22, Dec-22, Mar-23 NSE XBRLs) -> foreign. block not read for this quarter: same 7,500,000-share holder proven in the Sep-2021..Jun-2022 NSE filings and quantmac's independent read of this quarter carries exactly our FPI + 7.18. fii += 7.180, dii -= same."
+   },
+   "2021-03-31": {
+    "cell": [
+     20.0,
+     15.2,
+     26.76,
+     6.69,
+     7.9,
+     "2021-04-09",
+     177148
+    ],
+    "was": [
+     20.0,
+     8.02,
+     33.94,
+     6.69,
+     7.9,
+     "2021-04-09",
+     177148
+    ],
+    "src": "nsexbrl:CDSL:2021-09..2023-03 + quantmac r5 FII file",
+    "why": "quantmac FII reconciliation 2026-09-22 (runbook \u00a7142e): CDSL (NSE-only) carries ONE institutional holder of 7,500,000 shares (7.18%) under institutions Any-Others in every old-format filing; from Sep-2022 the filer reports the same block under Institutions(Foreign)/Other (7.18 in Sep-22, Dec-22, Mar-23 NSE XBRLs) -> foreign. block not read for this quarter: same 7,500,000-share holder proven in the Sep-2021..Jun-2022 NSE filings and quantmac's independent read of this quarter carries exactly our FPI + 7.18. fii += 7.180, dii -= same."
+   },
+   "2021-06-30": {
+    "cell": [
+     20.0,
+     15.49,
+     25.86,
+     7.96,
+     8.03,
+     "2021-07-13",
+     273628
+    ],
+    "was": [
+     20.0,
+     8.31,
+     33.04,
+     7.96,
+     8.03,
+     "2021-07-13",
+     273628
+    ],
+    "src": "nsexbrl:CDSL:2021-09..2023-03 + quantmac r5 FII file",
+    "why": "quantmac FII reconciliation 2026-09-22 (runbook \u00a7142e): CDSL (NSE-only) carries ONE institutional holder of 7,500,000 shares (7.18%) under institutions Any-Others in every old-format filing; from Sep-2022 the filer reports the same block under Institutions(Foreign)/Other (7.18 in Sep-22, Dec-22, Mar-23 NSE XBRLs) -> foreign. block not read for this quarter: same 7,500,000-share holder proven in the Sep-2021..Jun-2022 NSE filings and quantmac's independent read of this quarter carries exactly our FPI + 7.18. fii += 7.180, dii -= same."
+   },
+   "2021-09-30": {
+    "cell": [
+     20.0,
+     15.7454,
+     22.3331,
+     7.942,
+     7.2419,
+     "2021-10-18",
+     493332
+    ],
+    "was": [
+     20.0,
+     8.5684,
+     29.5101,
+     7.942,
+     7.2419,
+     "2021-10-18",
+     493332
+    ],
+    "src": "nsexbrl:CDSL:2021-09..2023-03 + quantmac r5 FII file",
+    "why": "quantmac FII reconciliation 2026-09-22 (runbook \u00a7142e): CDSL (NSE-only) carries ONE institutional holder of 7,500,000 shares (7.18%) under institutions Any-Others in every old-format filing; from Sep-2022 the filer reports the same block under Institutions(Foreign)/Other (7.18 in Sep-22, Dec-22, Mar-23 NSE XBRLs) -> foreign. NSE XBRL read (OtherInstitutions = 1 holder, 7,500,000 sh = 7.18%%). fii += 7.177, dii -= same."
+   },
+   "2021-12-31": {
+    "cell": [
+     20.0,
+     16.3395,
+     19.8622,
+     7.8937,
+     7.2105,
+     "2022-01-06",
+     599804
+    ],
+    "was": [
+     20.0,
+     9.1625,
+     27.0392,
+     7.8937,
+     7.2105,
+     "2022-01-06",
+     599804
+    ],
+    "src": "nsexbrl:CDSL:2021-09..2023-03 + quantmac r5 FII file",
+    "why": "quantmac FII reconciliation 2026-09-22 (runbook \u00a7142e): CDSL (NSE-only) carries ONE institutional holder of 7,500,000 shares (7.18%) under institutions Any-Others in every old-format filing; from Sep-2022 the filer reports the same block under Institutions(Foreign)/Other (7.18 in Sep-22, Dec-22, Mar-23 NSE XBRLs) -> foreign. NSE XBRL read (OtherInstitutions = 1 holder, 7,500,000 sh = 7.18%%). fii += 7.177, dii -= same."
+   },
+   "2022-03-31": {
+    "cell": [
+     20.0,
+     16.9591,
+     18.957,
+     8.1574,
+     7.4,
+     "2022-04-18",
+     694979
+    ],
+    "was": [
+     20.0,
+     9.7821,
+     26.134,
+     8.1574,
+     7.4,
+     "2022-04-18",
+     694979
+    ],
+    "src": "nsexbrl:CDSL:2021-09..2023-03 + quantmac r5 FII file",
+    "why": "quantmac FII reconciliation 2026-09-22 (runbook \u00a7142e): CDSL (NSE-only) carries ONE institutional holder of 7,500,000 shares (7.18%) under institutions Any-Others in every old-format filing; from Sep-2022 the filer reports the same block under Institutions(Foreign)/Other (7.18 in Sep-22, Dec-22, Mar-23 NSE XBRLs) -> foreign. NSE XBRL read (OtherInstitutions = 1 holder, 7,500,000 sh = 7.18%%). fii += 7.177, dii -= same."
+   },
+   "2022-06-30": {
+    "cell": [
+     20.0,
+     15.7647,
+     18.9244,
+     7.8507,
+     8.0247,
+     "2022-07-13",
+     790055
+    ],
+    "was": [
+     20.0,
+     8.5877,
+     26.1014,
+     7.8507,
+     8.0247,
+     "2022-07-13",
+     790055
+    ],
+    "src": "nsexbrl:CDSL:2021-09..2023-03 + quantmac r5 FII file",
+    "why": "quantmac FII reconciliation 2026-09-22 (runbook \u00a7142e): CDSL (NSE-only) carries ONE institutional holder of 7,500,000 shares (7.18%) under institutions Any-Others in every old-format filing; from Sep-2022 the filer reports the same block under Institutions(Foreign)/Other (7.18 in Sep-22, Dec-22, Mar-23 NSE XBRLs) -> foreign. NSE XBRL read (OtherInstitutions = 1 holder, 7,500,000 sh = 7.18%%). fii += 7.177, dii -= same."
+   }
+  },
+  "GITANJALI": {
+   "2015-09-30": {
+    "cell": [
+     35.5996,
+     4.3819,
+     4.9691,
+     0.0009,
+     0.0,
+     "2015-10-16"
+    ],
+    "was": [
+     35.5996,
+     4.08,
+     4.9691,
+     0.0009,
+     0.0,
+     "2015-10-16"
+    ],
+    "src": "bseaspx:532715:87:New",
+    "why": "quantmac FII reconciliation 2026-09-22 (runbook \u00a7142e): stored fii is the page's FII row alone; the same Clause-35 page also prints [('Foreign Portfolio Investments Corporat', 0.3)]. Re-derived by today's reader (fetch_shp_bse_aspx._attempt: FII+FPI+FVCI, dii=mf+banks+ins[+recon Any-Others]); sub date kept."
+   }
+  },
+  "GRINDWELL": {
+   "2014-12-31": {
+    "cell": [
+     59.0288,
+     3.6614,
+     9.4271,
+     9.4106,
+     0.0,
+     "2015-01-14"
+    ],
+    "was": [
+     59.0288,
+     2.97,
+     9.4271,
+     9.4106,
+     0.0,
+     "2015-01-14"
+    ],
+    "src": "bseaspx:506076:84:New",
+    "why": "quantmac FII reconciliation 2026-09-22 (runbook \u00a7142e): stored fii is the page's FII row alone; the same Clause-35 page also prints [('Foreign Portfolio Investments Corporat', 0.69)]. Re-derived by today's reader (fetch_shp_bse_aspx._attempt: FII+FPI+FVCI, dii=mf+banks+ins[+recon Any-Others]); sub date kept."
+   },
+   "2015-03-31": {
+    "cell": [
+     59.0288,
+     3.9519,
+     9.6716,
+     9.6611,
+     0.0,
+     "2015-04-16"
+    ],
+    "was": [
+     59.0288,
+     3.18,
+     9.6716,
+     9.6611,
+     0.0,
+     "2015-04-16"
+    ],
+    "src": "bseaspx:506076:85:New",
+    "why": "quantmac FII reconciliation 2026-09-22 (runbook \u00a7142e): stored fii is the page's FII row alone; the same Clause-35 page also prints [('Foreign Portfolio Investments Corporat', 0.77)]. Re-derived by today's reader (fetch_shp_bse_aspx._attempt: FII+FPI+FVCI, dii=mf+banks+ins[+recon Any-Others]); sub date kept."
+   }
+  },
+  "HCC": {
+   "2014-12-31": {
+    "cell": [
+     43.5125,
+     12.0334,
+     4.0532,
+     1.9734,
+     1.7779,
+     "2015-01-08"
+    ],
+    "was": [
+     43.5125,
+     11.94,
+     4.0532,
+     1.9734,
+     1.7779,
+     "2015-01-08"
+    ],
+    "src": "bseaspx:500185:84:New",
+    "why": "quantmac FII reconciliation 2026-09-22 (runbook \u00a7142e): stored fii is the page's FII row alone; the same Clause-35 page also prints [('Foreign Portfolio Investments Corporat', 0.09)]. Re-derived by today's reader (fetch_shp_bse_aspx._attempt: FII+FPI+FVCI, dii=mf+banks+ins[+recon Any-Others]); sub date kept."
+   }
+  },
+  "ICICIBANK": {
+   "2008-06-30": {
+    "cell": [
+     0.0,
+     38.9996,
+     17.5274,
+     6.0084,
+     11.2071,
+     "2008-07-21"
+    ],
+    "was": [
+     0.0,
+     38.8496,
+     17.5274,
+     6.0084,
+     11.2071,
+     "2008-07-21"
+    ],
+    "src": "bseaspx:532174:58:New",
+    "why": "quantmac FII reconciliation 2026-09-22 (runbook \u00a7142e): institutions Any-Others sub-rows the filer labels foreign ([('FIIs-DR', 0.15)]) were left out of fii (never folded into dii either: recon gate did not need them). fii += 0.15."
+   },
+   "2008-09-30": {
+    "cell": [
+     0.0,
+     36.4589,
+     19.534,
+     7.7355,
+     11.4993,
+     "2008-10-21"
+    ],
+    "was": [
+     0.0,
+     36.4389,
+     19.534,
+     7.7355,
+     11.4993,
+     "2008-10-21"
+    ],
+    "src": "bseaspx:532174:59:New",
+    "why": "quantmac FII reconciliation 2026-09-22 (runbook \u00a7142e): institutions Any-Others sub-rows the filer labels foreign ([('Foreign Bank', 0.02)]) were left out of fii (never folded into dii either: recon gate did not need them). fii += 0.02."
+   },
+   "2008-12-31": {
+    "cell": [
+     0.0,
+     36.6227,
+     22.1385,
+     7.9109,
+     13.8901,
+     "2009-01-21"
+    ],
+    "was": [
+     0.0,
+     36.6027,
+     22.1385,
+     7.9109,
+     13.8901,
+     "2009-01-21"
+    ],
+    "src": "bseaspx:532174:60:New",
+    "why": "quantmac FII reconciliation 2026-09-22 (runbook \u00a7142e): institutions Any-Others sub-rows the filer labels foreign ([('Foreign Bank', 0.02)]) were left out of fii (never folded into dii either: recon gate did not need them). fii += 0.02."
+   },
+   "2009-03-31": {
+    "cell": [
+     0.0,
+     35.5704,
+     22.4829,
+     6.8379,
+     15.2913,
+     "2009-04-21"
+    ],
+    "was": [
+     0.0,
+     35.4704,
+     22.4829,
+     6.8379,
+     15.2913,
+     "2009-04-21"
+    ],
+    "src": "bseaspx:532174:61:New",
+    "why": "quantmac FII reconciliation 2026-09-22 (runbook \u00a7142e): institutions Any-Others sub-rows the filer labels foreign ([('FIIs-DR', 0.08), ('Foreign Bank', 0.02)]) were left out of fii (never folded into dii either: recon gate did not need them). fii += 0.10."
+   },
+   "2009-06-30": {
+    "cell": [
+     0.0,
+     36.3624,
+     23.4477,
+     6.8489,
+     16.2389,
+     "2009-07-21"
+    ],
+    "was": [
+     0.0,
+     36.1824,
+     23.4477,
+     6.8489,
+     16.2389,
+     "2009-07-21"
+    ],
+    "src": "bseaspx:532174:62:New",
+    "why": "quantmac FII reconciliation 2026-09-22 (runbook \u00a7142e): institutions Any-Others sub-rows the filer labels foreign ([('FIIs-DR', 0.16), ('Foreign Bank', 0.02)]) were left out of fii (never folded into dii either: recon gate did not need them). fii += 0.18."
+   },
+   "2009-09-30": {
+    "cell": [
+     0.0,
+     35.3961,
+     24.4443,
+     7.0696,
+     17.0708,
+     "2009-10-21"
+    ],
+    "was": [
+     0.0,
+     35.2561,
+     24.4443,
+     7.0696,
+     17.0708,
+     "2009-10-21"
+    ],
+    "src": "bseaspx:532174:63:New",
+    "why": "quantmac FII reconciliation 2026-09-22 (runbook \u00a7142e): institutions Any-Others sub-rows the filer labels foreign ([('FIIs-DR', 0.12), ('Foreign Bank', 0.02)]) were left out of fii (never folded into dii either: recon gate did not need them). fii += 0.14."
+   },
+   "2009-12-31": {
+    "cell": [
+     0.0,
+     36.384,
+     24.7628,
+     7.1201,
+     17.4,
+     "2010-01-21"
+    ],
+    "was": [
+     0.0,
+     36.234,
+     24.7628,
+     7.1201,
+     17.4,
+     "2010-01-21"
+    ],
+    "src": "bseaspx:532174:64:New",
+    "why": "quantmac FII reconciliation 2026-09-22 (runbook \u00a7142e): institutions Any-Others sub-rows the filer labels foreign ([('FIIs-DR', 0.13), ('Foreign Bank', 0.02)]) were left out of fii (never folded into dii either: recon gate did not need them). fii += 0.15."
+   },
+   "2010-03-31": {
+    "cell": [
+     0.0,
+     37.209,
+     25.0145,
+     7.4535,
+     17.4395,
+     "2010-04-21"
+    ],
+    "was": [
+     0.0,
+     37.019,
+     25.0145,
+     7.4535,
+     17.4395,
+     "2010-04-21"
+    ],
+    "src": "bseaspx:532174:65:New",
+    "why": "quantmac FII reconciliation 2026-09-22 (runbook \u00a7142e): institutions Any-Others sub-rows the filer labels foreign ([('FIIs-DR', 0.17), ('Foreign Bank', 0.02)]) were left out of fii (never folded into dii either: recon gate did not need them). fii += 0.19."
+   },
+   "2010-06-30": {
+    "cell": [
+     0.0,
+     37.8769,
+     23.7379,
+     6.2457,
+     17.3197,
+     "2010-07-21"
+    ],
+    "was": [
+     0.0,
+     37.6969,
+     23.7379,
+     6.2457,
+     17.3197,
+     "2010-07-21"
+    ],
+    "src": "bseaspx:532174:66:New",
+    "why": "quantmac FII reconciliation 2026-09-22 (runbook \u00a7142e): institutions Any-Others sub-rows the filer labels foreign ([('FIIs-DR', 0.16), ('Foreign Bank', 0.02)]) were left out of fii (never folded into dii either: recon gate did not need them). fii += 0.18."
+   },
+   "2010-09-30": {
+    "cell": [
+     0.0,
+     39.404,
+     22.9573,
+     6.2936,
+     16.5605,
+     "2010-10-21"
+    ],
+    "was": [
+     0.0,
+     39.274,
+     22.9573,
+     6.2936,
+     16.5605,
+     "2010-10-21"
+    ],
+    "src": "bseaspx:532174:67:New",
+    "why": "quantmac FII reconciliation 2026-09-22 (runbook \u00a7142e): institutions Any-Others sub-rows the filer labels foreign ([('FIIs-DR', 0.11), ('Foreign Bank', 0.02)]) were left out of fii (never folded into dii either: recon gate did not need them). fii += 0.13."
+   },
+   "2010-12-31": {
+    "cell": [
+     0.0,
+     39.358,
+     23.3062,
+     6.8134,
+     16.4088,
+     "2011-01-21"
+    ],
+    "was": [
+     0.0,
+     39.228,
+     23.3062,
+     6.8134,
+     16.4088,
+     "2011-01-21"
+    ],
+    "src": "bseaspx:532174:68:New",
+    "why": "quantmac FII reconciliation 2026-09-22 (runbook \u00a7142e): institutions Any-Others sub-rows the filer labels foreign ([('FIIs-DR', 0.11), ('Foreign Bank', 0.02)]) were left out of fii (never folded into dii either: recon gate did not need them). fii += 0.13."
+   },
+   "2011-03-31": {
+    "cell": [
+     0.0,
+     38.7603,
+     24.0421,
+     7.3208,
+     16.6411,
+     "2011-04-21"
+    ],
+    "was": [
+     0.0,
+     38.6203,
+     24.0421,
+     7.3208,
+     16.6411,
+     "2011-04-21"
+    ],
+    "src": "bseaspx:532174:69:New",
+    "why": "quantmac FII reconciliation 2026-09-22 (runbook \u00a7142e): institutions Any-Others sub-rows the filer labels foreign ([('FIIs-DR', 0.12), ('Foreign Bank', 0.02)]) were left out of fii (never folded into dii either: recon gate did not need them). fii += 0.14."
+   },
+   "2011-06-30": {
+    "cell": [
+     0.0,
+     38.8183,
+     24.9324,
+     7.9802,
+     16.8511,
+     "2011-07-21"
+    ],
+    "was": [
+     0.0,
+     38.6083,
+     24.9324,
+     7.9802,
+     16.8511,
+     "2011-07-21"
+    ],
+    "src": "bseaspx:532174:70:New",
+    "why": "quantmac FII reconciliation 2026-09-22 (runbook \u00a7142e): institutions Any-Others sub-rows the filer labels foreign ([('FIIs-DR', 0.19), ('Foreign Bank', 0.02)]) were left out of fii (never folded into dii either: recon gate did not need them). fii += 0.21."
+   },
+   "2011-09-30": {
+    "cell": [
+     0.0,
+     38.2963,
+     25.1126,
+     7.6655,
+     17.3045,
+     "2011-10-21"
+    ],
+    "was": [
+     0.0,
+     38.1663,
+     25.1126,
+     7.6655,
+     17.3045,
+     "2011-10-21"
+    ],
+    "src": "bseaspx:532174:71:New",
+    "why": "quantmac FII reconciliation 2026-09-22 (runbook \u00a7142e): institutions Any-Others sub-rows the filer labels foreign ([('FIIs-DR', 0.11), ('Foreign Bank', 0.02)]) were left out of fii (never folded into dii either: recon gate did not need them). fii += 0.13."
+   },
+   "2011-12-31": {
+    "cell": [
+     0.0,
+     34.8571,
+     27.8072,
+     8.9325,
+     18.73,
+     "2012-01-21"
+    ],
+    "was": [
+     0.0,
+     34.7371,
+     27.8072,
+     8.9325,
+     18.73,
+     "2012-01-21"
+    ],
+    "src": "bseaspx:532174:72:New",
+    "why": "quantmac FII reconciliation 2026-09-22 (runbook \u00a7142e): institutions Any-Others sub-rows the filer labels foreign ([('FIIs-DR', 0.1), ('Foreign Bank', 0.02)]) were left out of fii (never folded into dii either: recon gate did not need them). fii += 0.12."
+   },
+   "2012-03-31": {
+    "cell": [
+     0.0,
+     35.9188,
+     26.6384,
+     8.8463,
+     17.6733,
+     "2012-04-21"
+    ],
+    "was": [
+     0.0,
+     35.7888,
+     26.6384,
+     8.8463,
+     17.6733,
+     "2012-04-21"
+    ],
+    "src": "bseaspx:532174:73:New",
+    "why": "quantmac FII reconciliation 2026-09-22 (runbook \u00a7142e): institutions Any-Others sub-rows the filer labels foreign ([('FIIs-DR', 0.11), ('Foreign Bank', 0.02)]) were left out of fii (never folded into dii either: recon gate did not need them). fii += 0.13."
+   },
+   "2012-06-30": {
+    "cell": [
+     0.0,
+     34.9565,
+     27.6811,
+     9.6166,
+     17.823,
+     "2012-07-21"
+    ],
+    "was": [
+     0.0,
+     34.8265,
+     27.6811,
+     9.6166,
+     17.823,
+     "2012-07-21"
+    ],
+    "src": "bseaspx:532174:74:New",
+    "why": "quantmac FII reconciliation 2026-09-22 (runbook \u00a7142e): institutions Any-Others sub-rows the filer labels foreign ([('FIIs-DR', 0.11), ('Foreign Bank', 0.02)]) were left out of fii (never folded into dii either: recon gate did not need them). fii += 0.13."
+   },
+   "2012-09-30": {
+    "cell": [
+     0.0,
+     36.506,
+     25.2699,
+     8.6765,
+     16.5232,
+     "2012-10-21"
+    ],
+    "was": [
+     0.0,
+     36.376,
+     25.2699,
+     8.6765,
+     16.5232,
+     "2012-10-21"
+    ],
+    "src": "bseaspx:532174:75:New",
+    "why": "quantmac FII reconciliation 2026-09-22 (runbook \u00a7142e): institutions Any-Others sub-rows the filer labels foreign ([('FIIs-DR', 0.11), ('Foreign Bank', 0.02)]) were left out of fii (never folded into dii either: recon gate did not need them). fii += 0.13."
+   },
+   "2012-12-31": {
+    "cell": [
+     0.0,
+     37.1997,
+     24.7955,
+     8.9594,
+     15.7864,
+     "2013-01-21"
+    ],
+    "was": [
+     0.0,
+     37.0697,
+     24.7955,
+     8.9594,
+     15.7864,
+     "2013-01-21"
+    ],
+    "src": "bseaspx:532174:76:New",
+    "why": "quantmac FII reconciliation 2026-09-22 (runbook \u00a7142e): institutions Any-Others sub-rows the filer labels foreign ([('FIIs-DR', 0.11), ('Foreign Bank', 0.02)]) were left out of fii (never folded into dii either: recon gate did not need them). fii += 0.13."
+   },
+   "2013-03-31": {
+    "cell": [
+     0.0,
+     38.0474,
+     24.0233,
+     8.7328,
+     15.1936,
+     "2013-04-21"
+    ],
+    "was": [
+     0.0,
+     37.9174,
+     24.0233,
+     8.7328,
+     15.1936,
+     "2013-04-21"
+    ],
+    "src": "bseaspx:532174:77:New",
+    "why": "quantmac FII reconciliation 2026-09-22 (runbook \u00a7142e): institutions Any-Others sub-rows the filer labels foreign ([('FIIs-DR', 0.11), ('Foreign Bank', 0.02)]) were left out of fii (never folded into dii either: recon gate did not need them). fii += 0.13."
+   },
+   "2013-06-30": {
+    "cell": [
+     0.0,
+     39.3532,
+     22.8587,
+     7.9673,
+     14.8063,
+     "2013-07-21"
+    ],
+    "was": [
+     0.0,
+     39.2232,
+     22.8587,
+     7.9673,
+     14.8063,
+     "2013-07-21"
+    ],
+    "src": "bseaspx:532174:78:New",
+    "why": "quantmac FII reconciliation 2026-09-22 (runbook \u00a7142e): institutions Any-Others sub-rows the filer labels foreign ([('FIIs-DR', 0.11), ('Foreign Bank', 0.02)]) were left out of fii (never folded into dii either: recon gate did not need them). fii += 0.13."
+   },
+   "2013-09-30": {
+    "cell": [
+     0.0,
+     37.6613,
+     24.9264,
+     7.1365,
+     17.7063,
+     "2013-10-21"
+    ],
+    "was": [
+     0.0,
+     37.5413,
+     24.9264,
+     7.1365,
+     17.7063,
+     "2013-10-21"
+    ],
+    "src": "bseaspx:532174:79:New",
+    "why": "quantmac FII reconciliation 2026-09-22 (runbook \u00a7142e): institutions Any-Others sub-rows the filer labels foreign ([('FIIs-DR', 0.1), ('Foreign Bank', 0.02)]) were left out of fii (never folded into dii either: recon gate did not need them). fii += 0.12."
+   },
+   "2013-12-31": {
+    "cell": [
+     0.0,
+     38.5061,
+     24.5027,
+     7.7598,
+     16.7143,
+     "2014-01-21"
+    ],
+    "was": [
+     0.0,
+     38.3861,
+     24.5027,
+     7.7598,
+     16.7143,
+     "2014-01-21"
+    ],
+    "src": "bseaspx:532174:80:New",
+    "why": "quantmac FII reconciliation 2026-09-22 (runbook \u00a7142e): institutions Any-Others sub-rows the filer labels foreign ([('FIIs-DR', 0.1), ('Foreign Bank', 0.02)]) were left out of fii (never folded into dii either: recon gate did not need them). fii += 0.12."
+   },
+   "2014-03-31": {
+    "cell": [
+     0.0,
+     39.9683,
+     23.0785,
+     7.5729,
+     15.4879,
+     "2014-04-12"
+    ],
+    "was": [
+     0.0,
+     39.8483,
+     23.0785,
+     7.5729,
+     15.4879,
+     "2014-04-12"
+    ],
+    "src": "bseaspx:532174:81:New",
+    "why": "quantmac FII reconciliation 2026-09-22 (runbook \u00a7142e): institutions Any-Others sub-rows the filer labels foreign ([('FIIs-DR', 0.1), ('Foreign Bank', 0.02)]) were left out of fii (never folded into dii either: recon gate did not need them). fii += 0.12."
+   },
+   "2014-06-30": {
+    "cell": [
+     0.0,
+     40.1472,
+     23.1366,
+     8.1717,
+     14.8961,
+     "2014-07-12"
+    ],
+    "was": [
+     0.0,
+     40.0272,
+     23.1366,
+     8.1717,
+     14.8961,
+     "2014-07-12"
+    ],
+    "src": "bseaspx:532174:82:New",
+    "why": "quantmac FII reconciliation 2026-09-22 (runbook \u00a7142e): institutions Any-Others sub-rows the filer labels foreign ([('FIIs-DR', 0.1), ('Foreign Bank', 0.02)]) were left out of fii (never folded into dii either: recon gate did not need them). fii += 0.12."
+   },
+   "2014-09-30": {
+    "cell": [
+     0.0,
+     41.192,
+     22.1923,
+     7.8357,
+     14.3229,
+     "2014-10-16"
+    ],
+    "was": [
+     0.0,
+     41.082,
+     22.1923,
+     7.8357,
+     14.3229,
+     "2014-10-16"
+    ],
+    "src": "bseaspx:532174:83:New",
+    "why": "quantmac FII reconciliation 2026-09-22 (runbook \u00a7142e): institutions Any-Others sub-rows the filer labels foreign ([('FIIs-DR', 0.09), ('Foreign Bank', 0.02)]) were left out of fii (never folded into dii either: recon gate did not need them). fii += 0.11."
+   },
+   "2014-12-31": {
+    "cell": [
+     0.0,
+     41.8285,
+     21.3784,
+     7.6617,
+     13.6886,
+     "2015-01-13"
+    ],
+    "was": [
+     0.0,
+     41.7185,
+     21.3784,
+     7.6617,
+     13.6886,
+     "2015-01-13"
+    ],
+    "src": "bseaspx:532174:84:New",
+    "why": "quantmac FII reconciliation 2026-09-22 (runbook \u00a7142e): institutions Any-Others sub-rows the filer labels foreign ([('FIIs-DR', 0.09), ('Foreign Bank', 0.02)]) were left out of fii (never folded into dii either: recon gate did not need them). fii += 0.11."
+   },
+   "2015-03-31": {
+    "cell": [
+     0.0,
+     41.0885,
+     21.6258,
+     8.2453,
+     13.3199,
+     "2015-04-14"
+    ],
+    "was": [
+     0.0,
+     40.9785,
+     21.6258,
+     8.2453,
+     13.3199,
+     "2015-04-14"
+    ],
+    "src": "bseaspx:532174:85:New",
+    "why": "quantmac FII reconciliation 2026-09-22 (runbook \u00a7142e): institutions Any-Others sub-rows the filer labels foreign ([('FIIs-DR', 0.08), ('Foreign Bank', 0.03)]) were left out of fii (never folded into dii either: recon gate did not need them). fii += 0.11."
+   },
+   "2015-09-30": {
+    "cell": [
+     0.0,
+     38.2426,
+     23.5642,
+     9.3746,
+     14.0839,
+     "2015-10-10"
+    ],
+    "was": [
+     0.0,
+     38.2126,
+     23.5642,
+     9.3746,
+     14.0839,
+     "2015-10-10"
+    ],
+    "src": "bseaspx:532174:87:New",
+    "why": "quantmac FII reconciliation 2026-09-22 (runbook \u00a7142e): institutions Any-Others sub-rows the filer labels foreign ([('Foreign Bank', 0.03)]) were left out of fii (never folded into dii either: recon gate did not need them). fii += 0.03."
+   }
+  },
+  "INGERRAND": {
+   "2015-09-30": {
+    "cell": [
+     73.999,
+     0.7011,
+     8.3119,
+     3.9926,
+     4.2071,
+     "2015-10-12"
+    ],
+    "was": [
+     73.999,
+     0.64,
+     8.3119,
+     3.9926,
+     4.2071,
+     "2015-10-12"
+    ],
+    "src": "bseaspx:500210:87:New",
+    "why": "quantmac FII reconciliation 2026-09-22 (runbook \u00a7142e): stored fii is the page's FII row alone; the same Clause-35 page also prints [('Foreign Portfolio Investments Corporat', 0.06)]. Re-derived by today's reader (fetch_shp_bse_aspx._attempt: FII+FPI+FVCI, dii=mf+banks+ins[+recon Any-Others]); sub date kept."
+   }
+  },
+  "NOCIL": {
+   "2015-09-30": {
+    "cell": [
+     37.5524,
+     0.8618,
+     1.671,
+     0.0286,
+     1.3109,
+     "2015-10-08"
+    ],
+    "was": [
+     37.5524,
+     0.46,
+     1.671,
+     0.0286,
+     1.3109,
+     "2015-10-08"
+    ],
+    "src": "bseaspx:500730:87:New",
+    "why": "quantmac FII reconciliation 2026-09-22 (runbook \u00a7142e): stored fii is the page's FII row alone; the same Clause-35 page also prints [('Foreign Portfolio Investments Corporat', 0.4)]. Re-derived by today's reader (fetch_shp_bse_aspx._attempt: FII+FPI+FVCI, dii=mf+banks+ins[+recon Any-Others]); sub date kept."
+   }
+  },
+  "REIAGROLTD": {
+   "2014-09-30": {
+    "cell": [
+     37.3998,
+     22.2204,
+     0.1857,
+     0.0,
+     0.1317,
+     "2014-10-22"
+    ],
+    "was": [
+     74.87,
+     3.76,
+     7.95,
+     7.95,
+     0.0,
+     "2014-10-22"
+    ],
+    "src": "bseaspx:532106:83:New",
+    "why": "quantmac FII reconciliation 2026-09-22 (runbook \u00a7142e): stored cell [74.87, 3.76, 7.95, 7.95 ...] matches nothing on REI Agro's own Sep-2014 page (prom 37.40, FII 22.22, banks 0.05, ins 0.13) nor its neighbours (Jun-14 fii 26.12, Dec-14 22.10) - a wrong-company cell. Replaced by the page, read by today's reader; quantmac carries 22.22 too."
+   }
+  },
+  "ROLTA": {
+   "2015-09-30": {
+    "cell": [
+     51.3541,
+     13.3154,
+     2.5595,
+     0.0005,
+     0.0,
+     "2015-10-16"
+    ],
+    "was": [
+     51.3541,
+     13.13,
+     2.5595,
+     0.0005,
+     0.0,
+     "2015-10-16"
+    ],
+    "src": "bseaspx:500366:87:New",
+    "why": "quantmac FII reconciliation 2026-09-22 (runbook \u00a7142e): stored fii is the page's FII row alone; the same Clause-35 page also prints [('Foreign Portfolio Investments Corporat', 0.18)]. Re-derived by today's reader (fetch_shp_bse_aspx._attempt: FII+FPI+FVCI, dii=mf+banks+ins[+recon Any-Others]); sub date kept."
+   }
+  },
+  "TECHNO": {
+   "2015-09-30": {
+    "cell": [
+     57.9785,
+     8.617,
+     16.2963,
+     16.1804,
+     0.0,
+     "2015-10-15"
+    ],
+    "was": [
+     57.9785,
+     8.21,
+     16.2963,
+     16.1804,
+     0.0,
+     "2015-10-15"
+    ],
+    "src": "bseaspx:533281:87:New",
+    "why": "quantmac FII reconciliation 2026-09-22 (runbook \u00a7142e): stored fii is the page's FII row alone; the same Clause-35 page also prints [('Foreign Portfolio Investments Corporat', 0.41)]. Re-derived by today's reader (fetch_shp_bse_aspx._attempt: FII+FPI+FVCI, dii=mf+banks+ins[+recon Any-Others]); sub date kept."
+   }
+  },
+  "THOMASCOOK": {
+   "2015-03-31": {
+    "cell": [
+     74.7711,
+     10.5607,
+     3.7122,
+     1.3799,
+     2.3223,
+     "2015-04-18"
+    ],
+    "was": [
+     74.7711,
+     10.06,
+     3.7122,
+     1.3799,
+     2.3223,
+     "2015-04-18"
+    ],
+    "src": "bseaspx:500413:85:New",
+    "why": "quantmac FII reconciliation 2026-09-22 (runbook \u00a7142e): stored fii is the page's FII row alone; the same Clause-35 page also prints [('Foreign Portfolio Investments Corporat', 0.51)]. Re-derived by today's reader (fetch_shp_bse_aspx._attempt: FII+FPI+FVCI, dii=mf+banks+ins[+recon Any-Others]); sub date kept."
    }
   }
  }
