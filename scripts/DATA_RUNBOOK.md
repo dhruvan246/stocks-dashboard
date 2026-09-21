@@ -16964,3 +16964,55 @@ rebuild — the ledger is additive. (2) Post-2020 changelog holes for sub-indice
 2020-07/09) — the same press-release hunt §132 did for Nifty 500; the 376 unlisted stems in §141a
 are the place to start. (3) Nifty Realty walks down to 6 names in 2007-11 (missing early
 inclusions), Nifty Energy's 2006 capture has 10 names vs 40 today (methodology change, real).
+
+## 143. ★★★ THE MISSING-QUARTER GUARD — a filed quarter can never sit unread again  (2026-09-22, worktree ~/stocks-wt/jun26fix)
+
+**What was found (measured live 2026-09-21/22):** on the 2026-08-31 screen 495/500 Nifty-500 names had their
+Jun-2026 standalone quarter; five did not — MCX, ABBOTINDIA, BAYERCROP, NIVABUPA, STARHEALTH — seven weeks after
+they filed. Two silent classes:
+1. **Filed on BSE, absent from NSE's feed.** MCX (BSE 2026-08-04 20:02), BAYERCROP (08-05 18:00), ABBOTINDIA
+   (08-12 19:18) each have a "Financial Results" PDF on BSE's announcement index, while NSE's
+   `integrated-filing-results` API returned `{"data":[]}` per symbol for 1 Jul→22 Sep and 600 rows of the
+   4–20 Aug feed contained none of them (NSE's older `corporates-financial-results` endpoint: also 0).
+   `update_fundamentals.py` reads ONLY that NSE feed (WINDOW_DAYS 120 — the docstring's "~21 days" was stale),
+   so a filing NSE never lists is never captured, and no step cross-checked BSE.
+2. **Insurer reads that fail to anchor leave no trace.** `fetch_insurers.py` nightly logged
+   `NIVABUPA/STARHEALTH 20260630 con=None std=None range=None -> unanchored` and "No insurer values filled"
+   — and nothing surfaced the residue. Root cause of the failed anchor: **both adopted Ind AS 117 from Q1 FY27**
+   (IRDAI circular IRDAI/F&I/CIR/MISC/92/7/2026 of 8 Jul 2026) — the filing's year-ago column is RESTATED
+   (STARHEALTH Jun-25 43,818 lakh vs our GAAP 262.52 cr; NIVABUPA 7,144 vs our −91.44) so the 3 % anchor can
+   never hold; the identity anchor is the filing's own reconciliation row ("Net Profit as per Previous GAAP,
+   30 June 2025: 26,252 lakh" = 262.52 exactly). The other nine insurers' Jun-26 rows anchored under old GAAP.
+   NIVABUPA's results sit inside the 30 Jul "Outcome of Board Meeting" PDF (BSE "Board Meeting" category).
+   **Basis break, decided by the user:** the store is as-filed point-in-time; Q1 FY27 lands as filed (Ind AS),
+   the GAAP history stays. YoY across the break compares Ind AS with GAAP for these two names.
+
+**The guard — `scripts/reconcile_missing_quarters.py`, nightly step "Reconcile missing quarters against BSE
+filings" in refresh-fundamentals.yml (15/16 UTC gate + workflow_dispatch; GEMINI_API_KEY):**
+- Scope: union of the two latest Nifty-500 rosters in `scripts/indices_history.json`. Target: the last two
+  quarter-ends closed ≥10 days ago. Every (sym, qe) with no standalone value → BSE announcement index
+  (all categories, qe+1→today) via curl_cffi (urllib fallback); `fetch_insurers.is_result_filing` decides.
+- Read = §58: `bse_text.parse_pdf` (labelled PAT row, unit-aware, basis by declared context) plus a
+  tolerant labelled-row pass; **a filing with exactly ONE distinct PAT row is standalone** (Reg 33 makes
+  standalone mandatory; the word "consolidated" on a cover page had bse_text filing Bayer's only row as con).
+  No text PAT row → `gemini_vision.read_corp_results` on `fetch_insurers.render_pl_pngs` pages.
+- **Double anchor:** the filing's year-ago column must match our stored year-ago (`anchored`: 3 %/₹5 cr)
+  and, when held, the preceding-quarter column must match too. Any other column order fails, never fills.
+- Fill-only into docs/sf_fundamentals.json (+ scripts/fundamentals.json mirror); ann date = BSE DT_TM through
+  the 15:30 IST gate (after 15:30 → next weekday, = `update_fundamentals.gated_ann`); touches
+  docs/.fund_updated so the CI three-way merge commits it. Provenance `scripts/bse_result_fills.json`
+  (read triplets + which anchors held). Unreadable/insurer/unanchored → `scripts/_missing_quarter_pending.json`
+  + step summary ("⏳ SYM|qe — reason"); cleared automatically when any route fills the cell. No filing →
+  `scripts/_missing_quarter_skips.json` (re-asked after 3 days). ≤400 BSE calls/run. All three ledgers ride
+  the commit step's snapshot/restore list.
+- Insurers are never read here (IRDAI format) — they stay `fetch_insurers` / insurer-inbox — but they are
+  LISTED, so an unanchored insurer quarter is visible the same night, not seven weeks later.
+
+**Verified before shipping (dry run on live data):** full roster found exactly the five; BAYERCROP filled
+from its text table — std 321.6 (₹3,216 mn), ann 20260806, anchors 278.7≈278.7 (Jun-25) and 162.1≈162.1
+(Mar-26); MCX/ABBOTINDIA → pending "no readable text PAT row; no vision key" (image tables → Gemini in CI);
+NIVABUPA/STARHEALTH → pending "insurer". Nothing written in dry mode. Shipped 6dd55d142; first CI run
+35647732175 (workflow_dispatch 01:24 IST).
+
+**Lesson (§0 class):** an INDEX is not the filing (§58a). Any capture pipeline with one source needs a
+second, primary-record source that at least COUNTS what the first one missed. Silence ≠ nothing to do.

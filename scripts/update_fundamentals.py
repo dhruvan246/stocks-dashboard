@@ -24,7 +24,7 @@ KNOWN BLIND SPOT (fill manually when it shows gaps):
      them all season (per-symbol and unfiltered queries) — this script never saw them, and
      nothing else looked. Both blind spots are now caught nightly by
      scripts/reconcile_missing_quarters.py (BSE announcement stream = primary record, §58 read,
-     double-anchored fill, PENDING list for what it cannot read) — runbook §142.
+     double-anchored fill, PENDING list for what it cannot read) — runbook §143.
 
 Run: python -X utf8 update_fundamentals.py
 """

@@ -149,7 +149,7 @@ jobs:
       # COLUMNS printed in the company's own results PDF (text layer first, free Gemini vision for
       # scanned filings), ANCHOR-VERIFIED against our stored XBRL values — never an unanchored guess.
       # Nightly-gated like the insurer step; --limit keeps a first-time backlog inside the timeout.
-      # Guard (runbook 142): a quarter the company HAS FILED can never sit missing. For every
+      # Guard (runbook 143): a quarter the company HAS FILED can never sit missing. For every
       # Nifty-500 name whose latest stored quarter is stale it asks BSE's announcement stream (the
       # primary record) for the results filing, reads it (text layer, then Gemini vision), double-
       # anchors on our stored year-ago + preceding quarter, fills, and lists what it could not read
@@ -339,7 +339,7 @@ jobs:
           # step earlier in this job; must survive the reset --hard below or every night refetches
           [ -f scripts/ann_date_fills.json ] && cp scripts/ann_date_fills.json /tmp/ann_date_fills.json
           [ -f scripts/_ann_recon_skips.json ] && cp scripts/_ann_recon_skips.json /tmp/_ann_recon_skips.json
-          # missing-quarter guard ledgers (runbook 142): provenance + pending + skip tracker
+          # missing-quarter guard ledgers (runbook 143): provenance + pending + skip tracker
           for f in bse_result_fills.json _missing_quarter_pending.json _missing_quarter_skips.json; do [ -f scripts/$f ] && cp scripts/$f /tmp/$f; done
           for attempt in 1 2 3 4 5; do
             git fetch origin main && git reset --hard origin/main

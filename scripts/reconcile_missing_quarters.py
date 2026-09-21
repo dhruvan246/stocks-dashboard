@@ -2,7 +2,7 @@
 # -*- coding: utf-8 -*-
 """Nightly guard: a quarter that a company HAS FILED can never sit missing in sf_fundamentals.json.
 
-Why this exists (2026-09-21/22, runbook §142): update_fundamentals.py reads ONLY NSE's
+Why this exists (2026-09-21/22, runbook §143): update_fundamentals.py reads ONLY NSE's
 integrated-filing-results feed. On 2026-09-21 five Nifty-500 names (MCX, ABBOTINDIA, BAYERCROP,
 NIVABUPA, STARHEALTH) were still on their Mar-2026 quarter seven weeks after filing Jun-2026:
 the three non-insurers had filed on BSE (4/5/12 Aug) but NSE's feed carried ZERO rows for them
