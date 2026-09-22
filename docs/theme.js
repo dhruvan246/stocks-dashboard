@@ -362,13 +362,31 @@
     var _u = new URL(location.href), _ok = _u.searchParams.get('ownerkey');
     if (_ok) { localStorage.setItem('bt_owner_key', _ok); _u.searchParams.delete('ownerkey'); history.replaceState(null, '', _u.pathname + _u.search + _u.hash); }
   } catch (e) {}
-  var PRIVATE_PAGES = ['watchlist.html', 'live-tracking.html', 'insurer-inbox.html', 'analytics.html', 'status.html', 'results-coverage.html', 'fill-coverage.html', 'coverage.html'];
+  var PRIVATE_PAGES = ['watchlist.html', 'live-tracking.html', 'insurer-inbox.html', 'analytics.html', 'status.html', 'results-coverage.html', 'fill-coverage.html', 'coverage.html',
+                       'ideas.html', 'bull-runs.html', 'strategy-phases.html', 'portfolio.html', 'pf-glance.html', 'terminal.html', 'private-import.html'];
   var IS_OWNER = false; try { IS_OWNER = !!localStorage.getItem('bt_owner_key'); } catch (e) {}
-  if (!IS_OWNER) NAV_GROUPS.forEach(function (g) {
-    var keep = function (it) { return PRIVATE_PAGES.indexOf(it[0].replace('./', '')) < 0; };
-    if (g.cols) g.cols.forEach(function (c) { c.items = c.items.filter(keep); });
-    g.items = g.items.filter(keep);
+  // Every private page lives in ONE owner-only "Admin" section: entries listed in a public group above are
+  // moved out of it (for everyone), the direct-URL-only owner tools are added here, and the whole section
+  // is appended to the nav only when this browser holds the owner key.
+  var ADMIN = { g: 'Admin', items: [
+    ['./ideas.html',           ic('flask'), 'Daily Ideas'],
+    ['./bull-runs.html',       ic('trend'), 'Bull-Run Survivors'],
+    ['./strategy-phases.html', ic('layers'), 'Strategy Phases Lab'],
+    ['./portfolio.html',       ic('wallet'), 'Portfolio'],
+    ['./pf-glance.html',       ic('eye'), 'Portfolio Glance'],
+    ['./terminal.html',        ic('zap'), 'Live Terminal'],
+    ['./private-import.html',  ic('swap'), 'Restore Strategies']
+  ] };
+  NAV_GROUPS.forEach(function (g) {
+    var move = function (it) {
+      var priv = PRIVATE_PAGES.indexOf(it[0].replace('./', '')) >= 0;
+      if (priv && !ADMIN.items.some(function (a) { return a[0] === it[0]; })) ADMIN.items.push(it);
+      return !priv;
+    };
+    if (g.cols) g.cols.forEach(function (c) { c.items = c.items.filter(move); });
+    g.items = (g.items || []).filter(move);
   });
+  if (IS_OWNER) NAV_GROUPS.push(ADMIN);
 
   // Expose the nav as the single source of truth so the home page (index.html) can
   // render its tile grid from the same list — add a page above and it shows up there too.

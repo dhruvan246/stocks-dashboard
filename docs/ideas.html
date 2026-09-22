@@ -81,6 +81,15 @@
 <script>
 (async function () {
   const $ = (s) => document.querySelector(s);
+  // Owner-only page: same gate as the other private pages (theme.js PRIVATE_PAGES hides it from the nav for everyone else).
+  let SW_OWNER = false; try { SW_OWNER = !!localStorage.getItem('bt_owner_key'); } catch (e) {}
+  if (!SW_OWNER) {
+    document.querySelector('main').innerHTML =
+      '<div class="max-w-md mx-auto text-center py-20"><div class="text-5xl mb-4">🔒</div>' +
+      '<h1 class="text-lg font-bold mb-2">This page is private</h1>' +
+      '<p class="text-sm muted">It\'s a personal research tool of the site owner. The rest of the site is open — head back to the <a class="font-semibold hover:underline" style="color:var(--accent)" href="./index.html">home page</a>.</p></div>';
+    return;
+  }
   const esc = (s) => String(s == null ? '' : s).replace(/[&<>"']/g, (c) => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
   const fmt = (x, d = 1) => (x == null || isNaN(x)) ? '—' : Number(x).toLocaleString('en-IN', { maximumFractionDigits: d });
   const pct = (x) => (x == null || isNaN(x)) ? '—' : `<span class="${x >= 0 ? 'pos' : 'neg'}">${x >= 0 ? '+' : ''}${fmt(x)}%</span>`;
