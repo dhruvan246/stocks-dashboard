@@ -554,6 +554,62 @@
     block('Iron ore — NMDC administered price', S.nmdc, [['Grade', r => esc(r.name)], ['₹/tonne', r => fmt(r.price, 0), 1],
       ['w.e.f.', r => esc(r.wef || '')], ['vs prev revision', r => pct(r.chg_rev), 1], ['Highest since', r => sinceCell(r)]],
       (S.nmdc && S.nmdc.rows) || [], nmdcNote);
+    // Every revision, on demand. The file is fetched and the chart built on FIRST OPEN, never before:
+    // a chart created inside a closed <details> gets a zero-width container and paints nothing.
+    if (((S.nmdc && S.nmdc.rows) || []).length) {
+      const det = document.createElement('details');
+      det.className = 'card';
+      det.innerHTML = `<summary class="font-semibold">Every NMDC price revision — chart and table</summary>
+        <div class="nmdc-body mt-2"><p class="muted text-sm">Opening this reads the full filing history.</p></div>`;
+      blocks.appendChild(det);
+      let built = false;
+      det.addEventListener('toggle', async () => {
+        if (!det.open || built) return;
+        built = true;
+        const body = det.querySelector('.nmdc-body');
+        body.innerHTML = '<p class="muted text-sm">Reading the filing history…</p>';
+        let h = null;
+        try { h = await (await fetch('./ideas/nmdc_history.json', { cache: 'no-cache' })).json(); } catch (e) { h = null; }
+        if (!h || !Array.isArray(h.filings)) { body.innerHTML = '<p class="muted text-sm">nmdc_history.json could not be read.</p>'; return; }
+        const key = f => f.wef || f.date;
+        const priced = h.filings.filter(f => f.lump != null || f.fines != null).sort((a, b) => key(a) < key(b) ? -1 : 1);
+        const unread = h.filings.filter(f => f.lump == null && f.fines == null);
+        if (!priced.length) { body.innerHTML = '<p class="muted text-sm">No priced filing in the history file.</p>'; return; }
+        // one row per revision, newest first, each change measured against the previous PRICED revision
+        const rows = priced.map((f, i) => {
+          const pl = priced.slice(0, i).filter(x => x.lump != null).pop();
+          const pf = priced.slice(0, i).filter(x => x.fines != null).pop();
+          return { ...f, dl: f.lump != null && pl ? (f.lump / pl.lump - 1) * 100 : null,
+                          df: f.fines != null && pf ? (f.fines / pf.fines - 1) * 100 : null };
+        }).reverse();
+        // group the unread by CAUSE, not by message: the fetch failures embed a different URL each time
+        const cause = (e) => !e ? 'unexplained'
+          : /no attachment/i.test(e) ? "the BSE row names no attachment"
+          : /GET failed|404|not a PDF/i.test(e) ? "BSE no longer serves the attachment (all pre-2019)"
+          : /no readable price/i.test(e) ? "the filing is a scan with no text layer"
+          : 'unexplained';
+        const why = {};
+        unread.forEach(f => { const k = cause(f.error); why[k] = (why[k] || 0) + 1; });
+        body.innerHTML = `<div class="nmdc-chart" style="height:280px"></div>
+          <p class="muted text-xs mt-1">Blue: lump (65.5%). Amber: fines (64%). Rupees per tonne, on the date each revision took effect.</p>
+          <div class="overflow-x-auto mt-3" style="max-height:420px;overflow-y:auto"><table class="sw">
+            <thead><tr><th>w.e.f.</th><th class="num">Lump ₹/t</th><th class="num">chg</th><th class="num">Fines ₹/t</th><th class="num">chg</th><th>Tax basis</th></tr></thead>
+            <tbody>${rows.map(f => `<tr><td>${esc(key(f))}</td><td class="num">${f.lump == null ? '—' : fmt(f.lump, 0)}</td><td class="num">${pct(f.dl == null ? null : Math.round(f.dl * 10) / 10)}</td><td class="num">${f.fines == null ? '—' : fmt(f.fines, 0)}</td><td class="num">${pct(f.df == null ? null : Math.round(f.df * 10) / 10)}</td><td class="muted text-xs">${esc(f.basis || '—')}</td></tr>`).join('')}</tbody>
+          </table></div>
+          <p class="muted text-xs mt-2">${priced.length} priced revisions, ${esc(key(priced[0]))} to ${esc(key(priced[priced.length - 1]))}, read from NMDC's own price letters filed with BSE.
+          ${unread.length ? esc(unread.length) + ' further filings are in BSE\'s index but carry no readable price: ' + Object.entries(why).map(([k, n]) => `${n} ${esc(k)}`).join('; ') + '. They are listed in nmdc_history.json rather than dropped.' : ''}
+          A blank cell means that filing named only the other grade. Rows either side of a change in the tax basis are not like for like.</p>`;
+        const line = k => priced.filter(f => f[k] != null).map(f => ({ time: key(f), value: f[k] }));
+        const el = body.querySelector('.nmdc-chart');
+        const ch = drawChart(el, line('lump'), null, { precision: 0 });
+        if (ch && window.LightweightCharts) {
+          const fs = ch.addSeries(window.LightweightCharts.LineSeries,
+            { color: '#f59e0b', lineWidth: 2, priceLineVisible: false, priceFormat: { type: 'price', precision: 0, minMove: 1 } });
+          fs.setData(line('fines'));
+          ch.timeScale().fitContent();
+        }
+      });
+    }
     const te = (S.te && S.te.rows) || [];
     $('#global-meta').textContent = `${te.length} series · ${S.te ? S.te.fetched : ''}`;
     $('#global-table tbody').innerHTML = te.slice().sort((a, b) => (b.chg_1m || 0) - (a.chg_1m || 0)).map(r =>
