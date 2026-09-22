@@ -20,13 +20,24 @@ Usage: python3 scripts/ideas/india_spot.py [--te-only | --no-te]
 Writes docs/ideas/india_spot.json and appends docs/ideas/india_spot_history.csv (one row per series per day, so
 weekly and monthly changes accumulate for the sources that publish no history).
 """
-import argparse, csv, datetime, html, json, os, re, ssl, sys, time, urllib.request, concurrent.futures as cf
+import argparse, csv, datetime, gzip, html, json, os, re, ssl, sys, time, urllib.request, concurrent.futures as cf
 
 HERE = os.path.dirname(os.path.abspath(__file__))
 sys.path.insert(0, HERE)          # the sibling bse.py, for the NMDC filings
 DOCS = os.path.join(HERE, '..', '..', 'docs', 'ideas')
 OUT = os.path.join(DOCS, 'india_spot.json')
 HIST = os.path.join(DOCS, 'india_spot_history.csv')
+# Older prints recovered from archives (e.g. dated snapshots of a source page). Kept apart from HIST so a
+# recorded print and a recovered one never blur: columns date,source,series,price,unit,via - `via` says where
+# the price was read. A recorded print outranks a recovered one on the same date.
+BACKFILL = os.path.join(DOCS, 'india_backfill.csv')
+# What the page charts when a price is clicked: one dated series per print, with its stats.
+HIST_JSON = os.path.join(DOCS, 'india_history.json.gz')
+
+
+def series_key(r):
+    """The one name a print goes by - in the CSV, the history file, signals.json and the page."""
+    return ' | '.join(str(r.get(k)) for k in ('city', 'market', 'name', 'grade', 'slug') if r.get(k))
 UA = 'Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/128.0 Safari/537.36'
 HDR = {'User-Agent': UA, 'Accept': 'text/html,application/json,*/*', 'Accept-Language': 'en-IN,en;q=0.9'}
 LAX = ssl.create_default_context(); LAX.check_hostname = False; LAX.verify_mode = ssl.CERT_NONE
@@ -432,6 +443,50 @@ def src_nmdc(days=200, since=None):
                 unread=sum(1 for r in rows_h if r.get('lump') is None and r.get('fines') is None))
 
 
+# ---------------------------------------------------------------- history for click-to-chart
+def build_history(sources):
+    """One dated series per Indian print (and per Trading Economics proxy), written to india_history.json.gz.
+
+    Points come from three places and each keeps its provenance: what this site has recorded daily
+    (india_spot_history.csv, from 2026-09-22), older prints recovered from archives (india_backfill.csv,
+    `via` names the archive copy), and NMDC's own revision history (its filings, with the tax basis each
+    was stated on). Stats are computed here with signals.hist_stats - the one definition the page reads.
+    """
+    from signals import hist_stats
+    pts = {}
+    for path, tag in ((BACKFILL, None), (HIST, 'recorded')):          # recorded last, so it wins a tie
+        if not os.path.exists(path):
+            continue
+        for r in csv.DictReader(open(path)):
+            try:
+                pts.setdefault((r['source'], r['series']), {})[r['date']] = (float(r['price']), tag or r.get('via') or 'archive')
+            except (ValueError, KeyError, TypeError):
+                continue
+    out = {}
+    for src, res in sources.items():
+        for r in res.get('rows', []):
+            key = r.get('key') or series_key(r)
+            if r.get('history'):
+                series = [list(x) for x in r['history']]
+                via = ['filing'] * len(series)
+            else:
+                d = pts.get((src, key), {})
+                series = [[dt, d[dt][0]] for dt in sorted(d)]
+                via = [d[dt][1] for dt in sorted(d)]
+            if not series:
+                continue
+            out[f'{src}|{key}'] = dict(src=src, key=key, unit=r.get('unit'), p=series, via=via,
+                                       stats=hist_stats(series) if len(series) >= 2 else None,
+                                       recorded_from=next((x[0] for x, v in zip(series, via) if v == 'recorded'), None),
+                                       archived=sum(1 for v in via if v not in ('recorded', 'filing')))
+    blob = json.dumps(dict(built=datetime.datetime.now().strftime('%Y-%m-%d %H:%M IST'), series=out),
+                      separators=(',', ':'), ensure_ascii=False).encode()
+    with open(HIST_JSON, 'wb') as fh:
+        with gzip.GzipFile(fileobj=fh, mode='wb', mtime=0) as gz:   # mtime=0: same data, same bytes
+            gz.write(blob)
+    return len(out), sum(len(v['p']) for v in out.values())
+
+
 # ---------------------------------------------------------------- main
 def main():
     ap = argparse.ArgumentParser()
@@ -481,13 +536,21 @@ def main():
             if not status.get(key, '').startswith('ok'):
                 continue
             for r in res['rows']:
-                series = ' | '.join(str(r.get(k)) for k in ('city', 'market', 'name', 'grade', 'slug') if r.get(k))
+                series = series_key(r)
                 if r.get('price') is None or (today, key, series) in seen:
                     continue
                 w.writerow([today, key, series, r['price'], r.get('unit', '')]); new += 1
+    for res in sources.values():
+        for r in res.get('rows', []):
+            r['key'] = series_key(r)
     out = dict(built=datetime.datetime.now().strftime('%Y-%m-%d %H:%M IST'), status=status, sources=sources)
     json.dump(out, open(OUT, 'w'), indent=1, ensure_ascii=False)
     print('india_spot:', json.dumps(status, indent=1)); print(f'history rows appended: {new}')
+    try:
+        n_series, n_pts = build_history(sources)
+        print(f'india_history.json.gz: {n_series} series, {n_pts} dated points')
+    except Exception as e:                                    # never lose the day's prices over the chart file
+        print(f'india_history.json.gz NOT rebuilt: {str(e)[:160]}')
 
 
 if __name__ == '__main__':

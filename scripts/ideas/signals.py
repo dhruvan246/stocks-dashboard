@@ -86,8 +86,18 @@ def trade_group(prefixes, side):
 
 
 def _india_history():
-    """Every Indian print we have ever recorded, keyed the way india_spot.py writes the CSV."""
+    """Every dated Indian print we hold - recorded daily plus recovered from archives - keyed (source, series)
+    the way india_spot.py writes them. Read from india_history.json.gz (what the page charts) so the stats
+    here and on the page come from the same points; the raw CSV is the fallback."""
     out = {}
+    p = os.path.join(DOCS, 'india_history.json.gz')
+    if os.path.exists(p):
+        try:
+            for v in json.load(gzip.open(p, 'rt'))['series'].values():
+                out[(v['src'], v['key'])] = [tuple(x) for x in v['p']]
+            return out
+        except Exception:
+            out = {}
     p = os.path.join(DOCS, 'india_spot_history.csv')
     if not os.path.exists(p):
         return out
@@ -175,7 +185,8 @@ def main():
         for slug in g.get('te', []):
             r = te_rows.get(slug)
             if r and r.get('price') is not None:
-                te.append(dict(slug=slug, name=r['name'], last=r['price'], unit=r['unit'], date=r['date'], chg_1d=r.get('chg_1d'), chg_1m=r.get('chg_1m'), chg_1y=r.get('chg_1y')))
+                te.append(dict(slug=slug, name=r['name'], last=r['price'], unit=r['unit'], date=r['date'], chg_1d=r.get('chg_1d'), chg_1m=r.get('chg_1m'), chg_1y=r.get('chg_1y'),
+                               id='te|' + (r.get('key') or f"{r['name']} | {slug}")))
         if te:
             sig['sources']['te'] = te
         # Indian domestic prints (MetalBook city prices, IBJA, Rubber Board, sugar spot, PPAC fuel)
@@ -189,7 +200,8 @@ def main():
                 # only today's print, so their history is the one we have been recording since 2026-09-22.
                 key = ' | '.join(str(r.get(k)) for k in ('city', 'market', 'name', 'grade', 'slug') if r.get(k))
                 series = r.get('history') or ihist.get((src, key)) or []
-                row = dict(source=src, name=label, last=r['price'], unit=r.get('unit'), chg_1d=r.get('chg_1d'))
+                row = dict(source=src, name=label, last=r['price'], unit=r.get('unit'), chg_1d=r.get('chg_1d'),
+                           id=f'{src}|{key}')
                 for k in ('wef', 'basis', 'chg_rev', 'filed'):
                     if r.get(k) is not None:
                         row[k] = r[k]

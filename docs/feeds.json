@@ -867,6 +867,18 @@
    "pages": [
     "commodities.html"
    ]
+  },
+  {
+   "file": "ideas/india_history.json.gz",
+   "name": "Commodity Watch — dated history of every Indian print and global proxy (recorded daily since 2026-09-22 + archive backfill + NMDC filings), what a click on a price charts",
+   "workflow": "cloud routine daily-ideas (scripts/ideas/india_spot.py build_history)",
+   "cadence": "daily ~19:30 IST (trading days)",
+   "max_age_hours": 80,
+   "min_bytes": 3000,
+   "min_ratio": 0,
+   "pages": [
+    "commodities.html"
+   ]
   }
  ],
  "special": [

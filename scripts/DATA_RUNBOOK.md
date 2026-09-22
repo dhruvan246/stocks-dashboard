@@ -17445,6 +17445,35 @@ highest since 2026-07-10 in 83 lump revisions back to 2019. For FINISHED steel t
 series — WPI flat products (monthly, to 2026-04) and the HS 7208 customs unit value (monthly, to 2026-07)
 are the only long ones, and both lag the newspaper by months.
 
+### 144a-iv. ★★★ CLICK ANY PRICE → ITS HISTORY (2026-09-23)
+
+Every Indian print on the India spot tab (MetalBook steel and metals by city, IBJA, Rubber Board, sugar, PPAC
+fuel) and every Trading Economics proxy on the Global tab opens in the SAME detail panel as an HS code, a WPI
+item or a spot metal: chart (3m/1y/3y/max), stats, every dated reading with where it was read, and the mapped
+names. Also from the beneficiary-map pills, the search box, and `?ih=<source>|<series key>`. NMDC keeps its own
+view (`?nmdc=lump|fines`) because its history is its filings.
+
+**One key, everywhere.** `india_spot.series_key(r)` (city | market | name | grade | slug) names a print in the
+CSV, in india_spot.json (every row now carries `key`), in `india_history.json.gz`, and in signals.json (`id` =
+`source|key`). Never re-derive it in JS; the page reads `r.key`.
+
+**`docs/ideas/india_history.json.gz`** — built at the end of every india_spot.py run by `build_history()`:
+per series `p` = [[date, price(, basis)]], `via` per point (`recorded` = taken by this site that day, `filing` =
+NMDC letter, anything else = the archive copy it was read from), `stats` = signals.hist_stats (the ONE
+definition the page shows), `recorded_from`, `archived`. signals.py reads the same file, so the page and the
+routine can never disagree about a change.
+
+**Backfill ledger `docs/ideas/india_backfill.csv`** (date, source, series, price, unit, via) holds older prints
+recovered from archives, kept APART from the recorded CSV so the two never blur; a recorded print wins a tie.
+Empty until a backfill route is proved (runbook 144a-v when it lands).
+
+**What the panel says about a short history** (true for all of them today: 2 readings since 2026-09-22): the
+source's own changes are shown and labelled "stated by source"; the changes measured on our readings appear as
+they become computable; "highest since" says "needs 60 days and 6 readings" until the `deep` gate opens.
+
+**pct() fix.** The page's percent formatter chose the sign before rounding, so -0.002% printed "+-0%". It now
+rounds to the one decimal shown first. Applies to every table on the page.
+
 ### 144a-ii. ★★★ INDIA SPOT — the domestic prints the newspapers quote, daily, free (2026-09-22 evening)
 
 **Trigger:** the user showed a Business Line clipping (Mumbai HRC ₹63,900/t, CRC ₹73,500, rebar ₹60,450, NMDC lump ₹5,400,
