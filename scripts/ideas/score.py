@@ -8,6 +8,7 @@ stores it when it publishes); if missing it is the first close on or after the c
 import json, os, sys, datetime, statistics
 sys.path.insert(0, os.path.dirname(os.path.abspath(__file__)))
 import bse
+import ist
 
 HERE = os.path.dirname(os.path.abspath(__file__))
 DOCS = os.path.join(HERE, '..', '..', 'docs', 'ideas')
@@ -51,7 +52,7 @@ def main():
                        mean_ret=round(statistics.mean([r['ret_pct'] for r in ok]), 1),
                        up=sum(1 for r in ok if r['ret_pct'] > 0), median_peak=round(statistics.median([r['peak_pct'] for r in ok]), 1),
                        hit_20=sum(1 for r in ok if r['peak_pct'] >= 20), hit_50=sum(1 for r in ok if r['peak_pct'] >= 50))
-    out = dict(updated=datetime.datetime.now().strftime('%Y-%m-%d %H:%M IST'), summary=summary, rows=rows)
+    out = dict(updated=ist.stamp(), summary=summary, rows=rows)
     json.dump(out, open(os.path.join(DOCS, 'track.json'), 'w'), indent=1)
     print('scored', len(rows), 'ideas;', summary)
 

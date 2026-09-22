@@ -8,6 +8,7 @@ dropped. NSE symbols are joined by ISIN from the two NSE lists when present next
 import json, os, sys, csv, datetime, argparse
 sys.path.insert(0, os.path.dirname(os.path.abspath(__file__)))
 import bse
+import ist
 
 HERE = os.path.dirname(os.path.abspath(__file__))
 DOCS = os.path.join(HERE, '..', '..', 'docs', 'ideas')
@@ -56,7 +57,7 @@ if __name__ == '__main__':
     a = ap.parse_args()
     uni = build(a.min, a.max)
     os.makedirs(DOCS, exist_ok=True)
-    out = dict(asof=datetime.date.today().isoformat(), mcap_min=a.min, mcap_max=a.max, count=len(uni), rows=uni)
+    out = dict(asof=ist.today().isoformat(), mcap_min=a.min, mcap_max=a.max, count=len(uni), rows=uni)
     json.dump(out, open(os.path.join(DOCS, 'universe.json'), 'w'), separators=(',', ':'))
     import collections
     print('universe', len(uni), 'names |', collections.Counter(r['group'] for r in uni).most_common(), '| with NSE symbol:',

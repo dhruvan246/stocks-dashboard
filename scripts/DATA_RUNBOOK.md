@@ -2048,6 +2048,14 @@ the user's plan: no API key, no laptop-awake dependency.
 - Environment `env_01Pb6Vujaf9FQ9m1kZXYJN9c`; sandbox egress must allow api/www.bseindia.com,
   nsearchives/www.nseindia.com and the CF worker. BSE IS reachable from Anthropic egress (verified
   2026-07-23); if that ever changes the run reports a cloud-IP block explicitly.
+- **The Daily Ideas commodity half needs four MORE hosts on the allowlist and did not have them
+  (2026-09-22, first scheduled run).** `spot.py` (www.westmetall.com, markets.businessinsider.com),
+  `wpi.py` (eaindustry.nic.in) and `trade.py` (tradestat.commerce.gov.in) every one failed with
+  `Tunnel connection failed: 403 Forbidden` at the agent proxy, while bseindia.com returned 200 —
+  i.e. the environment's network policy covers BSE only. **A human has to add those four hosts to
+  the environment's egress allowlist** (Claude cannot change its own network policy). Until then the
+  commodity panels only refresh when a local run rebuilds them, and `signals.py` scores whatever was
+  last committed. The builders no longer damage anything when blocked (§144b).
 
 ---
 
@@ -17406,6 +17414,64 @@ Feeds registered: ideas/signals.json, ideas/spot.json (80 h), ideas/trade/meta.j
 **Caveats stated on the page:** unit price = value ÷ quantity for one month, so small codes jump on one shipment; NOS-type
 units are excluded from rankings by default; the trade month lags ~45 days and WPI ~2 months; spot names from Markets
 Insider have no history before 2026-09-22; the map is a hypothesis list, not a verified exposure table.
+
+### 144b. ★★ WHAT THE FIRST SCHEDULED IDEAS RUN BROKE, AND THE FIXES  (2026-09-22 evening)
+
+The first cloud run of `daily-ideas` published 2 ideas but surfaced four defects in `scripts/ideas/`.
+All four are fixed; the egress one is NOT a code fix and is listed in §17b for a human.
+
+1. **Every timestamp on a cloud run was 5h30m wrong.** All six builders wrote
+   `datetime.datetime.now().strftime('%Y-%m-%d %H:%M IST')` — the *container* clock wearing an IST
+   label. The VM runs UTC, so signals.json said "14:06 IST" for a run at 19:36 IST, and track.json
+   said "14:24 IST" at 19:54. Fixed with **`scripts/ideas/ist.py`** (`ist.stamp()`, `ist.today()`,
+   fixed UTC+05:30, stdlib only, no tzdata). Every stamp in bse/dossier/scan/score/signals/spot/
+   trade/universe/wpi now goes through it, and every `datetime.date.today()` — which picks the
+   trading day to FETCH and the date written into spot_history.csv — is now `ist.today()`, so a run
+   between 00:00 and 05:30 IST no longer asks BSE for the previous day.
+2. **`spot.py` overwrote a good panel with a failed fetch.** Both its sources are remote; when the
+   egress block killed both it still wrote `{"count": 0, "rows": {}}` over spot.json, taking the
+   commodity page's spot table to zero (34 rows → 0; restored by hand from git that evening). Now:
+   an empty panel writes NOTHING and exits 2, and a panel smaller than the committed one prints a
+   WARNING naming both counts. `wpi.py` and `trade.py` likewise report an unreachable source in one
+   line and exit non-zero instead of dumping a traceback, leaving their files untouched.
+3. **`dossier.py` extracted 0 documents for Modison** — reported as "PyMuPDF not available or no
+   matching filings", which was wrong on both counts. BSE moves a filing's PDF from `/AttachLive/`
+   to `/AttachHis/` keeping the same uuid, but the announcement feed keeps serving the AttachLive
+   link, so every fetch 404'd and `extract_pdf` swallowed it silently. Fixed with
+   **`bse.get_attachment()`** (tries the other form before giving up), `_get` no longer burning 3
+   retries on a terminal 404, and extraction failures now printing WHY. Modison went 0 → 7 docs.
+4. **The six extraction slots went to compliance noise.** Selection was "most recent filing matching
+   a keyword", so Modison got two newspaper publications, a board-meeting intimation, a scrutinizer's
+   report and a "weblink of annual report" letter, while Diffusion got the same presentation twice.
+   Now `doc_rank()` ranks by class — presentation/transcript, then results, then credit rating, then
+   order/capex, then press release — newest within each, with a DOC_SKIP list for filings whose
+   titles carry a keyword but no content ("Board Meeting Intimation for Approval For Financial
+   Results" is not a result). **And the annual report is now extracted too** (`annual_report.txt`,
+   300-page budget): it is the method's core document (MD&A, capacity, related-party notes, auditor
+   remarks) but is filed as its own record rather than an announcement, so it was listed and never
+   extracted — every run had to fetch it by hand. Modison's now arrives with the silver-exposure
+   sentences the idea was built on ("Basic ingredients of company raw material is Silver and Tungsten
+   Powder", "The company is able to pass on price hike to the customer").
+
+5. **A failed announcement page was cached as if the day were quiet.** Found by re-running `scan.py`
+   as a regression check: `bse.announcements()` paginates until a page returns <50 rows, but ANY
+   exception mid-pagination just `break`-ed — and it then wrote the short list to the day's cache
+   file, where nothing distinguishes a truncated fetch from a genuinely quiet day (for a past date
+   that cache is never refreshed). Now a failed page prints which page failed and how many rows
+   survived, and a partial fetch is NOT cached.
+
+Verified: all 10 modules compile and import; `ist.stamp()` matches `TZ=Asia/Kolkata date` to the
+minute (20:12 IST vs the old naive 14:42); spot/wpi/trade all refuse cleanly under the live egress
+block leaving `git status` clean, exiting 2/1/1; dossier 506261 went 0 → 7 docs and 544264 7 docs
+with no duplicate files, both led by the right document class; `universe.py` byte-identical to the
+committed file.
+
+**The scan is NOT byte-reproducible within a day, and that is BSE, not us.** A re-run at 20:50 IST
+returned 950 announcements against 1,072 at 19:40 — 8 rows gone, 2 new, and a second Sugs Lloyd
+release about the same Rs 213.48 cr order (its score 4 → 9). So `docs/ideas/scan/<date>.json` is a
+SNAPSHOT of the feed at run time, not a reconstructible fact: do not "refresh" a published scan file
+on a later run, because the later snapshot can be the thinner one. The 2026-09-22 file was restored
+to the 19:40 version that the published ideas were actually built from.
 
 ## 145. ★★★ THE SME PLATFORM WAS NEVER IN THE PRICE UNIVERSE — every NSE Emerge name now has a series, a stock page and a dashboard row  (2026-09-22, worktree ~/stocks-wt/sme-universe)
 

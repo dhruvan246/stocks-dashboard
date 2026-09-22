@@ -12,6 +12,7 @@ adjusted price statistics, listed peers in the same industry (from docs/search_i
 import json, os, sys, re, datetime, argparse, html, statistics, urllib.request
 sys.path.insert(0, os.path.dirname(os.path.abspath(__file__)))
 import bse
+import ist
 
 HERE = os.path.dirname(os.path.abspath(__file__))
 DOCS = os.path.join(HERE, '..', '..', 'docs')
@@ -31,7 +32,7 @@ def header(scrip):
 
 def results(scrip, n_quarters=10):
     """Last quarters from Corp_detailedResult_Transpose_ng. Tries the .00 and .50 (half-year/annual) variants."""
-    today = datetime.date.today()
+    today = ist.today()
     y, m = today.year, ((today.month - 1) // 3) * 3
     if m == 0:
         y, m = y - 1, 12
@@ -111,7 +112,7 @@ def shareholding(scrip):
 
 
 def announcements_for(scrip, days):
-    d_to = datetime.date.today(); d_from = d_to - datetime.timedelta(days=days)
+    d_to = ist.today(); d_from = d_to - datetime.timedelta(days=days)
     url = ('https://api.bseindia.com/BseIndiaAPI/api/AnnSubCategoryGetData/w?pageno=1&strCat=-1&strPrevDate=%s&strScrip=%s'
            '&strSearch=P&strToDate=%s&strType=C&subcategory=-1' % (d_from.strftime('%Y%m%d'), scrip, d_to.strftime('%Y%m%d')))
     try:
@@ -135,7 +136,7 @@ def annual_reports(scrip):
 
 
 def price_stats(scrip):
-    rows, events = bse.adjusted_history(scrip, d_from=datetime.date.today() - datetime.timedelta(days=400))
+    rows, events = bse.adjusted_history(scrip, d_from=ist.today() - datetime.timedelta(days=400))
     if not rows:
         return {}, []
     last = rows[-1]
@@ -187,14 +188,46 @@ def peers(scrip, hdr):
     return out
 
 
+# Which filings are worth the six extraction slots, best class first. Ranked rather than taken in
+# date order because the feed is mostly compliance noise: Modison's six most recent *matching*
+# filings on 2026-09-22 were two newspaper publications, a board-meeting intimation, a scrutinizer's
+# report and a "weblink of annual report" letter, which crowded out the one result PDF that carried
+# the numbers. Anything not matched here is skipped.
+DOC_CLASSES = [
+    r'investor\s*presentation|earnings\s*call|transcript|concall',
+    r'financial\s+results|un-?audited.*results|audited.*results|outcome of board meeting',
+    r'credit\s*rating',
+    r'award[_ ]of[_ ]order|receipt[_ ]of[_ ]order|capex|expansion|commercial production|capacity|acquisition|agreement|letter of award',
+    r'press\s*release|media\s*release|business update',
+]
+# Compliance filings that carry no research content, even when their titles contain a keyword above
+# ("Board Meeting Intimation for Approval For Financial Results" is not a result).
+DOC_SKIP = re.compile(r'newspaper publication|board meeting intimation|trading window|scrutinizer|'
+                      r'certificate under reg|shareholders communication|weblink|voting result|'
+                      r'record date|postal ballot|compliance', re.I)
+
+
+def doc_rank(a):
+    """Rank an announcement for PDF extraction: 0 = best, None = not worth a slot."""
+    t = (a.get('subject') or '') + ' ' + (a.get('headline') or '')
+    if DOC_SKIP.search(t):
+        return None
+    for i, pat in enumerate(DOC_CLASSES):
+        if re.search(pat, t, re.I):
+            return i
+    return None
+
+
 def extract_pdf(url, dst, max_pages=60):
     try:
         import fitz  # PyMuPDF
     except Exception:
+        print('pdf: PyMuPDF not installed, no document text extracted (pip install pymupdf)')
         return None
     try:
-        data = bse._get(url, timeout=120)
+        data = bse.get_attachment(url, timeout=120)   # follows BSE's AttachLive -> AttachHis move
         if not data.startswith(b'%PDF'):
+            print(f'pdf: not a PDF, skipped {url}')
             return None
         doc = fitz.open(stream=data, filetype='pdf')
         txt = []
@@ -204,7 +237,8 @@ def extract_pdf(url, dst, max_pages=60):
             txt.append(p.get_text())
         open(dst, 'w').write('\n'.join(txt))
         return dst
-    except Exception:
+    except Exception as e:   # say WHY: a silent None here reads as "no matching filings"
+        print(f'pdf: extract failed {url}: {e}')
         return None
 
 
@@ -222,17 +256,27 @@ def build(scrip, days, pdf=True):
     prs = peers(scrip, hdr)
     key_docs = []
     if pdf:
-        want = [a for a in ann if re.search(r'presentation|transcript|earnings call|concall|order|capex|expansion|credit rating|results|annual report|press release|acquisition|agreement|commercial production|land|capacity', (a['subject'] + ' ' + a['headline']), re.I)]
+        want = [a for a in ann if a['pdf'] and doc_rank(a) is not None]
+        want.sort(key=lambda a: a['date'], reverse=True)   # newest first...
+        want.sort(key=doc_rank)                            # ...then stable by class, best first
         for i, a in enumerate(want[:6]):
-            if not a['pdf']:
-                continue
             p = extract_pdf(a['pdf'], os.path.join(d, f'doc{i+1}.txt'))
             if p:
                 key_docs.append(dict(file=os.path.basename(p), subject=a['subject'], url=a['pdf']))
+        # The annual report is the method's core document (MD&A, capacity, related-party notes,
+        # auditor remarks) but it is filed as its own record, not as an announcement, so it used to
+        # be listed and never extracted - every run had to fetch it by hand. Take the latest one,
+        # with a page budget that reaches the notes at the back of a 250-page report.
+        if ars:
+            yr, url = ars[0].get('year'), ars[0].get('url')   # annual_reports() returns newest first
+            if url:
+                p = extract_pdf(url, os.path.join(d, 'annual_report.txt'), max_pages=300)
+                if p:
+                    key_docs.append(dict(file=os.path.basename(p), subject=f'Annual report {yr}', url=url))
     dj = dict(scrip=str(scrip), universe=u, header={k: hdr.get(k) for k in ('SecurityId', 'ISIN', 'Industry', 'Sector', 'IGroup', 'ISubGroup', 'Group', 'FaceVal', 'EPS', 'PE', 'PB', 'ROE', 'ConEPS', 'ConPE')},
               results=res, shareholding=shp, corporate_actions=[dict(ex=e[0].isoformat(), factor=e[1], label=e[2]) for e in acts],
               announcements=ann, annual_reports=ars, price=st, price_adjustments=adj, peers=prs, key_docs=key_docs,
-              built=datetime.datetime.now().strftime('%Y-%m-%d %H:%M IST'))
+              built=ist.stamp())
     json.dump(dj, open(os.path.join(d, 'dossier.json'), 'w'), indent=1, default=str)
     L = [f"# Dossier: {u.get('name') or hdr.get('SecurityId')} (BSE {scrip}{', NSE ' + u['nse'] if u.get('nse') else ''})", '',
          f"Built {dj['built']}. Market cap ₹{u.get('mcap')} cr (BSE master). Group {u.get('group')}{' SME' if u.get('sme') else ''}. "

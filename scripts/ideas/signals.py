@@ -2,7 +2,9 @@
 listed Indian beneficiaries and sufferers, via docs/ideas/commodity_map.json. This is the file the daily research run reads
 first and the Commodity Watch page shows at the top. Usage: python3 scripts/ideas/signals.py -> docs/ideas/signals.json
 """
-import json, os, datetime, statistics, gzip
+import json, os, sys, datetime, statistics, gzip
+sys.path.insert(0, os.path.dirname(os.path.abspath(__file__)))
+import ist
 
 HERE = os.path.dirname(os.path.abspath(__file__))
 DOCS = os.path.join(HERE, '..', '..', 'docs', 'ideas')
@@ -160,7 +162,7 @@ def main():
             sig['strength'] = 0; sig['headline'] = 'no price feed wired for this group yet'; sig['direction'] = 'none'; sig['evidence'] = []
         out.append(sig)
     out.sort(key=lambda s: -abs(s.get('strength') or 0))
-    res = dict(built=datetime.datetime.now().strftime('%Y-%m-%d %H:%M IST'), thresholds='strength 1.0 = spot +5% 1w / +10% 1m / +20% 3m; WPI +3% 1m / +8% 3m / +15% 12m; trade unit price +8% 1m / +15% 3m / +30% smoothed yoy',
+    res = dict(built=ist.stamp(), thresholds='strength 1.0 = spot +5% 1w / +10% 1m / +20% 3m; WPI +3% 1m / +8% 3m / +15% 12m; trade unit price +8% 1m / +15% 3m / +30% smoothed yoy',
                spot_date=(spot or {}).get('updated'), wpi_month=(wpi or {}).get('months', [None])[-1], trade_month=(idx or {}).get('latest'), groups=out)
     json.dump(res, open(os.path.join(DOCS, 'signals.json'), 'w'), indent=1)
     print('signals:', len(out), 'groups')

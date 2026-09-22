@@ -20,6 +20,7 @@ Signal families (all from public exchange data, nothing inferred):
 import json, os, sys, re, datetime, argparse, statistics, collections
 sys.path.insert(0, os.path.dirname(os.path.abspath(__file__)))
 import bse
+import ist
 
 HERE = os.path.dirname(os.path.abspath(__file__))
 DOCS = os.path.join(HERE, '..', '..', 'docs', 'ideas')
@@ -140,5 +141,5 @@ if __name__ == '__main__':
     ap.add_argument('--date', default=None)
     ap.add_argument('--days', type=int, default=65)
     a = ap.parse_args()
-    d = datetime.date.fromisoformat(a.date) if a.date else datetime.date.today()
+    d = datetime.date.fromisoformat(a.date) if a.date else ist.today()
     run(d, a.days)

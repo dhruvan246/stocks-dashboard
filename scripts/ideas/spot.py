@@ -8,6 +8,8 @@ Writes docs/ideas/spot.json (latest + stats) and appends today's snapshot to doc
 commodity per day, so weekly/monthly changes accumulate for the Markets Insider names that have no history feed).
 """
 import json, os, re, sys, datetime, urllib.request, csv, statistics, html as htmlmod
+sys.path.insert(0, os.path.dirname(os.path.abspath(__file__)))
+import ist
 
 HERE = os.path.dirname(os.path.abspath(__file__))
 DOCS = os.path.join(HERE, '..', '..', 'docs', 'ideas')
@@ -74,7 +76,7 @@ def stats(series):
 
 
 def main():
-    today = datetime.date.today()
+    today = ist.today()
     hist_fn = os.path.join(DOCS, 'spot_history.csv')
     hist = {}
     if os.path.exists(hist_fn):
@@ -107,6 +109,22 @@ def main():
         st['chg_1d'] = r['chg_pct']
         series_out[key] = series
         panel[key] = dict(source='Markets Insider', unit=r['unit'], **st)
+    # Never overwrite a good panel with a failed fetch. Both sources are remote, so a blocked or
+    # rate-limited run used to write {"count": 0, "rows": {}} over yesterday's file and take the
+    # whole commodity page down with it (2026-09-22: the cloud VM's egress blocked both hosts and
+    # spot.json went from 34 rows to 0). A run that fetched nothing leaves every file untouched.
+    if not panel:
+        print('spot: 0 commodities fetched - every source failed, so spot.json and spot_series.json '
+              'were LEFT UNCHANGED. Check network access to westmetall.com and markets.businessinsider.com.')
+        return 2
+    prev_n = 0
+    try:
+        prev_n = json.load(open(os.path.join(DOCS, 'spot.json')))['count']
+    except Exception:
+        pass
+    if prev_n and len(panel) < prev_n:
+        print(f'spot: WARNING only {len(panel)} of {prev_n} commodities fetched - some source failed; '
+              'the panel is being written with fewer rows than the committed one.')
     # append today's snapshot for everything to the history file (idempotent per day)
     seen = {(k, d) for k, v in hist.items() for d, _ in v}
     with open(hist_fn, 'a', newline='') as f:
@@ -116,7 +134,7 @@ def main():
         for k, v in panel.items():
             if v.get('last') is not None and (k, today) not in seen and v.get('date') == today.isoformat():
                 w.writerow([today.isoformat(), k, v['last'], v['unit'], v['source']])
-    out = dict(updated=datetime.datetime.now().strftime('%Y-%m-%d %H:%M IST'), count=len(panel), rows=panel)
+    out = dict(updated=ist.stamp(), count=len(panel), rows=panel)
     json.dump(out, open(os.path.join(DOCS, 'spot.json'), 'w'), indent=1)
     json.dump({k: [[d.isoformat(), v] for d, v in sorted(set(ser))] for k, ser in series_out.items()}, open(os.path.join(DOCS, 'spot_series.json'), 'w'), separators=(',', ':'))
     print('spot:', len(panel), 'commodities')
@@ -125,4 +143,4 @@ def main():
 
 
 if __name__ == '__main__':
-    main()
+    sys.exit(main() or 0)
