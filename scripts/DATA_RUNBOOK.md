@@ -16988,6 +16988,43 @@ onward — the latter are covered by the daily fetch's own broadcast stamps from
 These are not defects found and left; they are rows for which no exchange clock exists. When NSE's windows go stale, the
 recipe is `nse_windows.py` (fetch) → `step3_classify.py` (classify with the three exclusions) → append.
 
+### 142i. ★★★ A RE-FILING MUST NEVER RE-DATE A STORED ROW — the fetcher re-stamped 763 recent rows to later re-publications (TCS Mar-2026 dark for five months); fixed in code, 747 rows restored from BSE's originals  (2026-09-22)
+
+**Found from the quantmac compare:** 2026 differences had grown from 14 to 177 and 158 of them were OURS — the newer
+quarter's row existed but the engine treated it as public only weeks or months after its filing. Cause, measured
+on three examples (TCS Mar-2026, VIJAYA Jun-2026, AMBER Jun-2026): **NSE's master keeps ONE record per (symbol, as-on)
+and moves `broadcastDate` to the newest re-publication while `submissionDate` keeps the original's day.** Our quarterly
+fetch ("newest submission per symbol wins") re-parsed that record and stamped the row with the new broadcast: TCS's
+21-Apr pattern (BSE holds only the original, values identical) became visible 17-Sep; AMBER's 20-Jul became 11-Sep;
+VIJAYA's 17-Jul original (52.47 / 11.6477) was replaced by its 22-Jul correction (52.51 / 11.6566) — a real change,
+public 23-Jul — but dated 9-Sep from an NSE re-broadcast. Item 1's NSE-clock entries inherited the same defect
+(464 of 1,689 moved a row later than BSE's original), and 47 step-3 entries rested on records NSE flags Revised.
+Live feed, as-on ≥ Sep-2025: 8,800 rows on the earliest exchange date, 203 one-to-three days late, **601 more than
+three days late (188 by more than 90 days)**, 50 served before either exchange's clock.
+
+**Code (refresh_quarters):** a stored row is never re-dated or overwritten by a later re-filing — values and date come
+from the same, earliest public document (the §142g rule). The one exception is a re-filing that becomes visible in the
+SAME session as the stored row (same gated date): the later document of one visibility window serves, parsed once per
+XBRL (`hist["_seen"]`, an underscore key like `_names`, ignored by every consumer). First sight of an as-on whose NSE
+record is already a re-filing (we never saw the original): serve from the original's submission DAY (day precision,
+the pre-2021 NSE convention) with the re-filing's values — the only document NSE has; the §22h sweep can recover the
+original later. `--reparse` re-derives values but never moves a row later. Tested on a temp history: TCS/RELIANCE
+untouched (0 re-parses), AMBER/EIDPARRY kept their restored July dates through a fetch, a deleted VIJAYA row came back
+dated 2026-07-17 with `_seen` set.
+
+**Data:** 763 rows served later than BSE's original gated timestamp; **747 restored** through `shp_cell_fix.json`
+(682 quarterly + 65 events; values + gated date from the original XBRL, `was` = the re-filing row), 16 whose original
+the parser refuses got DATE-ONLY `shp_lag_fix` entries (values stay the re-filing's, said so in the entry).
+`shp_lag_fix`: 355 item-1 entries deleted (BSE original = the raw day already served), 109 replaced with BSE's
+original timestamp, 44 step-3 entries deleted (NSE record Revised, no BSE original to check), 32 look-ahead rows gated
+to the earliest clock where NSE's record is the original; 18 look-ahead rows left (NSE record revised → its clock is
+unusable, BSE's timestamp alone cannot prove the NSE filing was after 15:30). Dry run: 591 history cells + 46 event
+rows corrected, 0 warnings.
+
+**Not changed, on purpose:** `refresh_events` still takes the newest re-filing's VALUES with the first filing's date
+(§142c, 2026-09-22 morning) — that is the KALYANKJIL class (§142g "open"): a later document's numbers under the
+original's date. Same fix pattern applies when it is taken up; events are ~5 % of rows.
+
 ## 141a. ★★ NIFTY BANK ROSTERS HEALED — 2000→date from NSE's register + 12 archived lists  (2026-09-21)
 
 **Symptom (user, via the §141 card):** Nifty Bank's history had 7 snapshots 2017-03-31 → 2024-09-30 with

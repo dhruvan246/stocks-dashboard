@@ -898,7 +898,9 @@ def refresh_quarters(qes, reparse=False, only=None, fill_shares=False):
 
     for qe in qes:
         recs = fetch_master(jar, qe)
-        # newest submission per symbol wins (revisions re-file the same (sym, qe))
+        # NSE's master keeps ONE record per (symbol, as-on): a re-filing REPLACES it and moves broadcastDate to
+        # the newest publication, while submissionDate keeps the ORIGINAL's day. So "newest submission" is all
+        # NSE serves — remember whether the record is a revision and what the original's day was (§142i).
         best = {}
         for r in recs:
             sym = str(r.get("symbol") or "").strip().upper()
@@ -907,7 +909,10 @@ def refresh_quarters(qes, reparse=False, only=None, fill_shares=False):
             if not sym or not sub or not xb.lower().startswith("http"): continue
             cur = best.get(sym)
             if cur is None or sub >= cur["sub"]:
-                best[sym] = {"sub": sub, "xb": xb, "name": re.sub(r"\s+", " ", str(r.get("name") or "")).strip()}
+                best[sym] = {"sub": sub, "xb": xb, "name": re.sub(r"\s+", " ", str(r.get("name") or "")).strip(),
+                             "revised": str(r.get("revisedData") or "").strip().lower() == "revised",
+                             "first": iso_date(r.get("submissionDate")) or sub}
+        seen = hist.setdefault("_seen", {})       # "SYM|QE" -> XBRL already parsed for a same-window re-filing
         todo = []
         for sym, r in best.items():
             if only is not None and sym not in only: continue
@@ -915,23 +920,30 @@ def refresh_quarters(qes, reparse=False, only=None, fill_shares=False):
             if fill_shares:
                 # re-read only the filings whose share count we never captured
                 if (shares.get(sym) or [None, ""])[1] >= qe: continue
-            elif have and str(have[5]) >= r["sub"] and not reparse:
-                continue                                                    # already have this or newer
-            todo.append((sym, r))
+            elif have and not reparse:
+                # §142i (2026-09-22): a stored row is NEVER re-dated or overwritten by a later re-filing — values
+                # and date come from the same, earliest public document (runbook §142g). "Newest submission wins"
+                # had re-stamped TCS Mar-2026 to 17-Sep on a same-numbers re-publication and left the quarter dark
+                # for five months (601 such rows since Sep-2025). ONE exception: a re-filing that becomes visible in
+                # the SAME session as the stored row (same gated date) — the later document of one visibility
+                # window serves; each such XBRL is parsed once (`_seen`).
+                if not r["revised"] or r["sub"] != str(have[5]): continue
+                if seen.get("%s|%s" % (sym, qe)) == r["xb"]: continue
+            todo.append((sym, r, have))
         print("%s: %d filings, %d new/revised to parse" % (qe, len(best), len(todo)))
         stats.append((qe, len(best), len(todo)))
 
         done = skip = nsh_new = quar = 0
         def work(item):
-            sym, r = item
+            sym, r, have = item
             try:
                 root = ET.fromstring(fetch_xbrl(r["xb"], jar))
-                return sym, r, parse_shp(root, qe), parse_shares(root)
+                return sym, r, have, parse_shp(root, qe), parse_shares(root)
             except Exception as e:
-                return sym, r, ("ERR", repr(e)), None
+                return sym, r, have, ("ERR", repr(e)), None
         with ThreadPoolExecutor(max_workers=THREADS) as ex:
             for fut in as_completed([ex.submit(work, it) for it in todo]):
-                sym, r, res, nshares = fut.result()
+                sym, r, have, res, nshares = fut.result()
                 # A filing that describes a different share class carries a share count to
                 # match, and shares_outstanding feeds market cap (§22e) — so a quarantined
                 # filing must not bank its count either, or the stock gets a mcap several
@@ -949,9 +961,20 @@ def refresh_quarters(qes, reparse=False, only=None, fill_shares=False):
                     if shares.get(sym) != [nshares, qe, r["sub"]]: nsh_new += 1
                     shares[sym] = [nshares, qe, r["sub"]]
                 if isinstance(res, dict):
-                    cell = [res["prom"], res["fii"], res["dii"], res["mf"], res["ins"], r["sub"]]
+                    vis = r["sub"]
+                    if not have and r["revised"]:
+                        # §142i: first sight of an as-on whose NSE record is already a re-filing — the original's
+                        # broadcast is gone (NSE overwrote it) but its submission DAY survives. Serve from that day
+                        # (day precision, the pre-2021 NSE convention) rather than from the revision's broadcast,
+                        # which would leave the quarter dark. Values are the re-filing's — the only document NSE has;
+                        # the BSE revision sweep (§22h) can recover the original later.
+                        vis = r["first"]
+                    if have and str(have[5]) < vis:
+                        vis = str(have[5])                      # a re-parse never moves a row later
+                    cell = [res["prom"], res["fii"], res["dii"], res["mf"], res["ins"], vis]
                     if res.get("nsh"): cell.append(res["nsh"])
                     hist.setdefault(sym, {})[qe] = cell
+                    seen["%s|%s" % (sym, qe)] = r["xb"]
                     # Government sidecar (separate file, never in the cell): newest submission wins.
                     if res.get("gov") is not None:
                         g = gov.setdefault(sym, {})
