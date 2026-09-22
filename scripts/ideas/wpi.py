@@ -2,7 +2,9 @@
 The workbook indx_download_1112/monthly_index_<yyyymm>.xls holds ~870 rows (all commodities down to ~700 items) with one
 column per month from Apr 2012. Usage: python3 scripts/ideas/wpi.py  -> docs/ideas/wpi.json.gz
 """
-import re, os, json, datetime, urllib.request, tempfile, gzip
+import re, os, sys, json, datetime, urllib.request, urllib.error, tempfile, gzip
+sys.path.insert(0, os.path.dirname(os.path.abspath(__file__)))
+import ist
 import xlrd
 
 HERE = os.path.dirname(os.path.abspath(__file__))
@@ -49,11 +51,16 @@ def main():
         items.append(dict(c=code, n=re.sub(r'\s+', ' ', name), w=round(float(wt), 5) if isinstance(wt, (int, float)) else None,
                           leaf=0 if code.endswith('00') else 1, v=vals))
     out = dict(source='Office of the Economic Adviser, DPIIT (eaindustry.nic.in) - WPI monthly index, base 2011-12=100', file=link,
-               built=datetime.datetime.now().strftime('%Y-%m-%d %H:%M IST'), months=months, n=len(items), items=items)
+               built=ist.stamp(), months=months, n=len(items), items=items)
     dump_gz(out, os.path.join(DOCS, 'wpi.json.gz'))
     print('wpi:', len(items), 'rows,', months[0], '..', months[-1], 'from', link)
     os.unlink(tmp.name)
 
 
 if __name__ == '__main__':
-    main()
+    try:
+        main()
+    except urllib.error.URLError as e:
+        # Same rule as the other builders: report the unreachable source, keep the committed file.
+        raise SystemExit(f'wpi: eaindustry.nic.in unreachable ({e.reason}); '
+                         'docs/ideas/wpi.json.gz LEFT UNCHANGED')

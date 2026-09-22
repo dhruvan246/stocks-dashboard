@@ -14,7 +14,9 @@ Writes:
   docs/ideas/trade/ch/<NN>.json.gz per HS chapter: the full monthly series per code (page chart, loaded on demand)
   docs/ideas/trade/meta.json    months covered, build stamp, chapter names
 """
-import json, os, re, sys, datetime, argparse, urllib.request, urllib.parse, http.cookiejar, time, gzip, html as htmlmod, statistics, glob
+import json, os, re, sys, datetime, argparse, urllib.request, urllib.parse, urllib.error, http.cookiejar, time, gzip, html as htmlmod, statistics, glob
+sys.path.insert(0, os.path.dirname(os.path.abspath(__file__)))
+import ist
 
 HERE = os.path.dirname(os.path.abspath(__file__))
 OUT = os.path.join(HERE, '..', '..', 'docs', 'ideas', 'trade')
@@ -182,7 +184,7 @@ def build():
         i = mi[latest] - n
         return months[i] if i >= 0 else None
     m1, m3, m12 = back(1), back(3), back(12)
-    stamp = datetime.datetime.now().strftime('%Y-%m-%d %H:%M IST')
+    stamp = ist.stamp()
 
     rows = []
     chapters = {}
@@ -256,7 +258,13 @@ if __name__ == '__main__':
     ap.add_argument('--build', action='store_true', help='build from cache only')
     a = ap.parse_args()
     if a.months or a.latest:
-        tok, latest, _ = form_state('export')
+        try:
+            tok, latest, _ = form_state('export')
+        except urllib.error.URLError as e:
+            # A blocked or down MEIDB is a reported failure, not a stack trace: leave every
+            # published file exactly as it is rather than rebuilding from a half-fetched cache.
+            raise SystemExit(f'trade: MEIDB (tradestat.commerce.gov.in) unreachable ({e.reason}); '
+                             'docs/ideas/trade/** LEFT UNCHANGED')
         if not latest:
             raise SystemExit('could not read the "Data available" line from MEIDB')
         if a.latest and not a.months:

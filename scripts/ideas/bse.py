@@ -10,7 +10,9 @@ All calls go to public BSE endpoints that were verified to work on 2026-09-22:
   - corp actions   : api.bseindia.com/BseIndiaAPI/api/CorporateAction/w
   - attachment     : www.bseindia.com/xml-data/corpfiling/AttachLive/<ATTACHMENTNAME>
 """
-import csv, io, json, os, time, datetime, urllib.request, urllib.parse
+import csv, io, json, os, sys, time, datetime, urllib.request, urllib.parse, urllib.error
+sys.path.insert(0, os.path.dirname(os.path.abspath(__file__)))
+import ist
 
 UA = ('Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 '
       '(KHTML, like Gecko) Chrome/128.0 Safari/537.36')
@@ -29,15 +31,39 @@ def _get(url, timeout=60, retries=3, sleep=0.6):
                 data = f.read()
             time.sleep(sleep)
             return data
+        except urllib.error.HTTPError as e:
+            if e.code == 404:   # terminal for this URL - retrying just burns 6s of sleeps
+                raise RuntimeError(f'GET failed {url}: {e}')
+            last = e
+            time.sleep(2 * (i + 1))
         except Exception as e:  # noqa
             last = e
             time.sleep(2 * (i + 1))
     raise RuntimeError(f'GET failed {url}: {last}')
 
 
+def get_attachment(url, timeout=120):
+    """Fetch a corpfiling attachment, following BSE's Live -> His move.
+
+    BSE serves a filing's PDF under /AttachLive/ when it is fresh and moves it to /AttachHis/
+    later, keeping the same uuid. The announcement feed keeps handing out the AttachLive link
+    after the move, so that link 404s. Whichever form we are given, try the other one before
+    giving up (2026-09-22: every Modison PDF 404'd on AttachLive and resolved on AttachHis,
+    which is why its dossier extracted 0 documents).
+    """
+    alt = (url.replace('/AttachLive/', '/AttachHis/') if '/AttachLive/' in url
+           else url.replace('/AttachHis/', '/AttachLive/') if '/AttachHis/' in url else None)
+    try:
+        return _get(url, timeout=timeout)
+    except Exception:
+        if not alt:
+            raise
+    return _get(alt, timeout=timeout)
+
+
 def scrip_master():
     """All active BSE equity scrips with market cap (Rs crore). Cached for the day."""
-    fn = os.path.join(CACHE, f'master_{datetime.date.today():%Y%m%d}.json')
+    fn = os.path.join(CACHE, f'master_{ist.today():%Y%m%d}.json')
     if os.path.exists(fn):
         return json.load(open(fn))
     data = _get('https://api.bseindia.com/BseIndiaAPI/api/ListofScripData/w?Group=&Scripcode=&industry=&segment=Equity&status=Active')
@@ -80,7 +106,7 @@ def bhavcopy(d):
 
 def trading_days_back(n, end=None):
     """Return the last n dates for which a bhavcopy exists, newest first (walks back over holidays)."""
-    d = end or datetime.date.today()
+    d = end or ist.today()
     out = []
     tries = 0
     while len(out) < n and tries < n * 3 + 15:
@@ -95,20 +121,28 @@ def announcements(d_from, d_to=None, max_pages=40):
     """All BSE announcements between two dates (inclusive), as the API rows (paginated, 50/page)."""
     d_to = d_to or d_from
     fn = os.path.join(CACHE, f'ann_{d_from:%Y%m%d}_{d_to:%Y%m%d}.json')
-    if os.path.exists(fn) and d_to < datetime.date.today():
+    if os.path.exists(fn) and d_to < ist.today():
         return json.load(open(fn))
     rows = []
+    partial = False
     for p in range(1, max_pages + 1):
         url = ('https://api.bseindia.com/BseIndiaAPI/api/AnnSubCategoryGetData/w?pageno=%d&strCat=-1&strPrevDate=%s'
                '&strScrip=&strSearch=P&strToDate=%s&strType=C&subcategory=-1' % (p, d_from.strftime('%Y%m%d'), d_to.strftime('%Y%m%d')))
         try:
             t = json.loads(_get(url, sleep=0.4)).get('Table') or []
-        except Exception:
+        except Exception as e:
+            # One failed page used to end the loop quietly and then CACHE the short list, so a
+            # transient error became a permanently thin announcement set for that date, with nothing
+            # to distinguish it from a genuinely quiet day. Say so, and never cache a partial fetch.
+            print(f'announcements {d_from}..{d_to}: page {p} failed ({e}); returning {len(rows)} rows '
+                  'from the pages that did load, NOT caching this partial fetch')
+            partial = True
             break
         rows += t
         if len(t) < 50:
             break
-    json.dump(rows, open(fn, 'w'))
+    if not partial:
+        json.dump(rows, open(fn, 'w'))
     return rows
 
 
@@ -120,7 +154,7 @@ def attachment_url(row):
 def price_history(scrip, d_from=None, d_to=None):
     """Daily OHLC history for a scrip code from BSE (unadjusted). List of dict rows oldest first."""
     d_from = d_from or datetime.date(2021, 1, 1)
-    d_to = d_to or datetime.date.today()
+    d_to = d_to or ist.today()
     url = ('https://api.bseindia.com/BseIndiaAPI/api/StockPriceCSVDownload/w?pageType=0&rbType=D&Scode=%s&FDates=%s&TDates=%s'
            % (scrip, d_from.strftime('%d/%m/%Y'), d_to.strftime('%d/%m/%Y')))
     data = _get(url).decode('utf-8', 'ignore')
