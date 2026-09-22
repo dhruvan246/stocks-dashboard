@@ -17445,6 +17445,53 @@ highest since 2026-07-10 in 83 lump revisions back to 2019. For FINISHED steel t
 series — WPI flat products (monthly, to 2026-04) and the HS 7208 customs unit value (monthly, to 2026-07)
 are the only long ones, and both lag the newspaper by months.
 
+### 144a-vii. ★★★ OLDER INDIAN PRICES RECOVERED: `scripts/ideas/india_backfill.py` (2026-09-23)
+
+One-off, re-runnable, idempotent steps that fill `docs/ideas/india_backfill.csv.gz` (date, source, series, price,
+unit, via; gzipped - 76,723 rows are 6 MB of text, 298 KB gzipped; rewritten sorted with mtime 0 only by this script) from the routes the research measured. Kept APART from the recorded CSV; a recorded print wins a tie;
+build_history merges both. Caches under `scripts/ideas/_cache/backfill/` (git-ignored). Not part of the daily
+routine (Wayback and some hosts are unreachable from the cloud sandbox); re-run by hand when a gap matters.
+
+| step | route | measured result 2026-09-23 |
+|---|---|---|
+| `metalbook` | Wayback CDX (140 captures of metalbook.com/, 2002 -> 2026-02-15), MetalBook's embedded price records (the ticker markup is NOT in the captures) | 32 captures carry records; **863 dated prints, 64 series, 2025-06-18 -> 2026-02-12**, 0 conflicts; all 47 live series get history (Mumbai TMT Fe500 24 points, Mumbai HRC 9) |
+| `ppac` | the SAME daily PDF src_fuel reads holds every day since 16-Jun-2017 as a petrol row + diesel row with one date | **3,385 days 2017-06-16 -> 2026-09-21, no calendar day missing**, 0 implausible; 27,080 points |
+| `ibja` | IBJA's own chart JSON on its home page (`HdnGold`/`HdnSilver`) - the PM fix, which is what the daily row records | **85 trading days 2026-05-22 -> 2026-09-22** for gold 999, gold 916, silver 999 |
+| `rubber` | Rubber Board's daily search (GET /public?lang=E for the cookie, POST /indianPrices per grade per year); markets read from `<div id="Kottayam|Kochi|Agartala">`, never table order | **41,905 daily prices**: Kottayam and Kochi RSS4/RSS5 from 2001-01 (Kottayam ISNR20 and Latex(60%) from 2001-01-24), Agartala RSS4/RSS5 from 2019-03-25; to 2026-09-22; 0 failed requests; 2001-01-27 -> 2002-01-02 is a gap in the Board's own data |
+| `sugar` | Chinimandi daily post by address `daily-sugar-market-update-by-vizzie-DD-MM-YYYY` ("Bangaluru" = Bengaluru) | **6,620 prices on 982 days, 2023-03-06 -> 2026-09-22**; Delhi, Kanpur, Kolhapur, Kolkata, Muzaffarnagar from 2023-03, Ahmedabad and Chennai from 2024-06, Bengaluru from 2024-10; 101 weekdays had no post, 21 posts no readable table. The Aug-2026 spike (Delhi 4,788 -> 6,457.50 on 21-Aug -> 4,809 by 22-Sep, every city alike) is what Chinimandi published - the same post's state ex-mill ranges read Rs 6,000-6,650 - not a parse error |
+
+**Two more wrong DATES found while doing this — same class as the MetalBook run-date bug:**
+- **Rubber Board:** `src_rubber` took the first dd-mm-yyyy on the page, which is a NEWS item ("03-09-2026- ..."). The
+  tables are labelled "Domestic market on 22-09-2026 per 100 kg" (the page renders in Hindi). The 22-Sep prices were
+  recorded under 3 September, and I told the owner the Rubber Board page "lags" - it does not. Fix: the last date
+  before `id="loc1"`.
+- **IBJA:** `src_ibja` took the first dd/mm/yyyy, the top row of the past-rates table (the previous day). IBJA's own
+  chart data puts the headline PM fix (gold 999 Rs 152,136) on 22/09. Fix: the date is the chart point carrying
+  the same gold 999 PM price; no match, no date.
+Both misdated row sets (8 rubber rows @ 2026-09-03, 7 IBJA rows @ 2026-09-21) are in `india_retracted.csv` with
+the reason. **Rule: a source's date must be read from the label attached to the prices, and checked against a
+second view of the same source (its search, its chart), never "the first date on the page".**
+
+**Source slips, two ledgers, and which row a retraction removes.**
+- A value that breaks >50% from BOTH neighbours while they agree within 25% is a data-entry slip in the SOURCE
+  (Rubber Board: 48.25 between 4,825 and 4,850; 156,000 between 15,400 and 15,600; all six series on 2001-01-27;
+  Chinimandi: Kanpur 3.874 on 2024-12-04). Never corrected - a guessed decimal is a guess - only listed:
+  `india_backfill.py` scans after every append and writes new ones to `docs/ideas/india_backfill_retracted.csv`
+  (13 so far).
+- **Each ledger applies ONLY to its own file**: `india_retracted.csv` -> the recorded CSV, `india_backfill_retracted
+  .csv` -> the backfill. One ledger for both hid a correct recovered point (Kottayam RSS4 2026-09-22 carried the same
+  date/series/price as a retracted run-dated recorded row).
+- **A retraction removes the EARLIEST matching row** (`india_spot.in_force`): the files only grow, so the retracted
+  row is always the older one. Keyed on values alone, IBJA's correctly re-recorded 22-Sep fix was hidden because the
+  misdated row it replaced had the same values. signals.py uses the same helper.
+
+**Page, same day:** a hole longer than ~4 usual spacings (at least 45 days) is drawn as a break - each continuous
+stretch is its own line series of one colour, a lone reading a dot. (Lightweight Charts 5.2.1 DROPS whitespace
+points on a line series, so the whitespace approach silently joined Feb -> Sep 2026 in a straight line; its time
+axis is ordinal, so a hole shows as a break, not as empty width. The chart element carries data-segments for
+testing.); the readings table lists the latest 400 (the chart holds all); a series
+whose points share one source stores that label once.
+
 ### 144a-vi. ★★★ OFFICIAL MONTHLY STEEL PRICES: MINISTRY OF STEEL, MUMBAI TMT / HRC / CRC (2026-09-23)
 
 The first dated Indian FINISHED-steel series on the site. `scripts/ideas/minsteel.py` lists

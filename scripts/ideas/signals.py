@@ -101,11 +101,8 @@ def _india_history():
     p = os.path.join(DOCS, 'india_spot_history.csv')
     if not os.path.exists(p):
         return out
-    rp = os.path.join(DOCS, 'india_retracted.csv')
-    retracted = {(r['date'], r['source'], r['series'], r['price']) for r in csv.DictReader(open(rp))} if os.path.exists(rp) else set()
-    for r in csv.DictReader(open(p)):
-        if (r.get('date'), r.get('source'), r.get('series'), r.get('price')) in retracted:
-            continue
+    import india_spot                                        # the one definition of which recorded rows are in force
+    for r in india_spot.in_force(p, os.path.join(DOCS, 'india_retracted.csv')):
         try:
             out.setdefault((r['source'], r['series']), []).append((r['date'], float(r['price'])))
         except (ValueError, KeyError):

@@ -32,10 +32,14 @@ HIST = os.path.join(DOCS, 'india_spot_history.csv')
 # Older prints recovered from archives (e.g. dated snapshots of a source page). Kept apart from HIST so a
 # recorded print and a recovered one never blur: columns date,source,series,price,unit,via - `via` says where
 # the price was read. A recorded print outranks a recovered one on the same date.
-BACKFILL = os.path.join(DOCS, 'india_backfill.csv')
+BACKFILL = os.path.join(DOCS, 'india_backfill.csv.gz')   # gzipped: 6 MB of text, rewritten only by india_backfill.py
 # Recorded rows later found wrong are never deleted from HIST: they are listed here with the reason and skipped
 # when the history is built. columns date,source,series,price,unit,reason (runbook 144a-v).
 RETRACTED = os.path.join(DOCS, 'india_retracted.csv')
+# The same idea for the RECOVERED rows (india_backfill.csv): values the source itself got wrong (a one-day decimal
+# slip in the Rubber Board's database). Each ledger applies ONLY to its own file: a recorded row and a recovered row
+# can share date, series and price, and one ledger for both once hid a correct recovered point (runbook 144a-vii).
+BACKFILL_RETRACTED = os.path.join(DOCS, 'india_backfill_retracted.csv')
 # What the page charts when a price is clicked: one dated series per print, with its stats.
 HIST_JSON = os.path.join(DOCS, 'india_history.json.gz')
 
@@ -64,6 +68,29 @@ def iso_date(s):
     except ValueError:
         return None
     return None
+
+
+def in_force(path, ledger_path):
+    """The rows of an append-only CSV minus the ones its ledger retracts. A ledger line names a row by (date, source,
+    series, price) and removes the EARLIEST row with those values - the file only grows, so the retracted row is
+    always the older one. Without that, a correctly re-recorded row that happens to carry the same values as a
+    retracted one (IBJA's 22-Sep fix: first stamped wrong, then recorded right) was hidden too."""
+    if not os.path.exists(path):
+        return []
+    opener = (lambda p: gzip.open(p, 'rt', newline='')) if path.endswith('.gz') else (lambda p: open(p, newline=''))
+    left = {}
+    if os.path.exists(ledger_path):
+        for r in csv.DictReader(open(ledger_path)):
+            k = (r['date'], r['source'], r['series'], r['price'])
+            left[k] = left.get(k, 0) + 1
+    out = []
+    for r in csv.DictReader(opener(path)):
+        k = (r.get('date'), r.get('source'), r.get('series'), r.get('price'))
+        if left.get(k):
+            left[k] -= 1
+            continue
+        out.append(r)
+    return out
 
 
 def series_key(r):
@@ -156,10 +183,38 @@ def src_ibja():
         if am or pm:
             rows.append(dict(name=label, am=num(am.group(1)) if am else None, pm=num(pm.group(1)) if pm else None,
                              price=num((pm or am).group(1)), unit=unit))
-    dm = re.search(r'(\d{2}/\d{2}/20\d\d)', plain(h))
+    # The date of the headline fix is the chart point that carries the same gold 999 PM price. The FIRST date in
+    # the page text is the top row of a past-rates table (the previous day), which is what this used to read, so
+    # the 22-Sep fix was recorded under 21 September (runbook 144a-v). No match: no date (the run date is used).
+    date = None
+    g = next((r for r in rows if r['name'] == 'gold 999'), None)
+    ch = ibja_chart(h)
+    if g and ch.get('gold 999'):
+        hits = [d for d, v in ch['gold 999'] if v == g['pm']]
+        date = hits[-1] if hits else None
     if len(rows) < 5:
         raise RuntimeError('ibja parsed too few rows')
-    return dict(source='IBJA (ibjarates.com) daily AM/PM fix', url='https://ibjarates.com/', date=dm.group(1) if dm else None, rows=rows)
+    return dict(source='IBJA (ibjarates.com) daily AM/PM fix', url='https://ibjarates.com/', date=date, rows=rows)
+
+
+def ibja_chart(h):
+    """IBJA's own chart data on its home page: ~85 trading days of the PM fix for gold 999, gold 916 and silver 999,
+    as {series name: [(YYYY-MM-DD, Rs)]}."""
+    out = {}
+    for hid, series in (('HdnGold', (('purity999', 'gold 999'), ('purity916', 'gold 916 (22k)'))), ('HdnSilver', (('silverRate', 'silver 999'),))):
+        m = re.search(r'id="%s"[^>]*value="([^"]*)"' % hid, h)
+        if not m:
+            continue
+        try:
+            j = json.loads(html.unescape(m.group(1)))
+        except ValueError:
+            continue
+        labels = [iso_date(x) for x in j.get('labels') or []]
+        for k, name in series:
+            vals = j.get(k) or []
+            if len(vals) == len(labels):
+                out[name] = [(d, float(v)) for d, v in zip(labels, vals) if d and v]
+    return out
 
 
 def src_rubber():
@@ -171,11 +226,14 @@ def src_rubber():
             continue
         for grade, inr, usd in re.findall(r'(RSS4|RSS5|ISNR20|Latex\(60%\))</i></td>.*?<i[^>]*>([\d.]+)</i></td>.*?<i[^>]*>([\d.]+)</i>', m.group(0), re.S):
             rows.append(dict(market=name, name=grade, price=num(inr), unit='Rs/100kg', usd_per_100kg=num(usd)))
-    p = plain(h)
-    dm = re.search(r'(\d{2}-\d{2}-20\d\d)', p)
+    # The price date is the one labelled right above the tables ('Domestic market on 22-09-2026, per 100 kg').
+    # The FIRST date on the page is a news item ('03-09-2026- ...'), which is what this used to read, so the
+    # 22-Sep prices were recorded under 3 September (runbook 144a-v).
+    i = h.find('id="loc1"')
+    ds = re.findall(r'(\d{2}-\d{2}-20\d\d)', plain(h[max(0, i - 3000):i])) if i > 0 else []
     if len(rows) < 3:
         raise RuntimeError('rubber board parsed too few rows')
-    return dict(source='Rubber Board of India (rubberboard.gov.in)', url='https://rubberboard.gov.in/public', date=dm.group(1) if dm else None, rows=rows)
+    return dict(source='Rubber Board of India (rubberboard.gov.in)', url='https://rubberboard.gov.in/public', date=ds[-1] if ds else None, rows=rows)
 
 
 def src_sugar():
@@ -517,17 +575,9 @@ def build_history(sources):
     was stated on). Stats are computed here with signals.hist_stats - the one definition the page reads.
     """
     from signals import hist_stats
-    retracted = set()
-    if os.path.exists(RETRACTED):
-        for r in csv.DictReader(open(RETRACTED)):
-            retracted.add((r['date'], r['source'], r['series'], r['price']))
     pts = {}
-    for path, tag in ((BACKFILL, None), (HIST, 'recorded')):          # recorded last, so it wins a tie
-        if not os.path.exists(path):
-            continue
-        for r in csv.DictReader(open(path)):
-            if (r.get('date'), r.get('source'), r.get('series'), r.get('price')) in retracted:
-                continue
+    for path, tag, ledger in ((BACKFILL, None, BACKFILL_RETRACTED), (HIST, 'recorded', RETRACTED)):   # recorded last: wins a tie
+        for r in in_force(path, ledger):
             try:
                 pts.setdefault((r['source'], r['series']), {})[r['date']] = (float(r['price']), tag or r.get('via') or 'archive')
             except (ValueError, KeyError, TypeError):
@@ -545,7 +595,8 @@ def build_history(sources):
                 via = [d[dt][1] for dt in sorted(d)]
             if not series:
                 continue
-            out[f'{src}|{key}'] = dict(src=src, key=key, unit=r.get('unit'), p=series, via=via,
+            out[f'{src}|{key}'] = dict(src=src, key=key, unit=r.get('unit'), p=series,
+                                       via=via[0] if len(set(via)) == 1 else via,      # one label, or one per point
                                        stats=hist_stats(series, step=bool(r.get('step'))) if len(series) >= 2 else None,
                                        recorded_from=next((x[0] for x, v in zip(series, via) if v == 'recorded'), None),
                                        archived=sum(1 for v in via if str(v).lower().startswith('wayback')))
@@ -597,14 +648,7 @@ def main():
     # A print is recorded under the date its SOURCE states (MetalBook prices each item on its own day, often
     # a week back; Rubber Board's page can lag a fortnight). Stamping the run date instead made a flat line of
     # fake daily points out of one unchanged print. No stated date, or one in the future: the run date, marked.
-    seen = set()
-    retracted = set()
-    if os.path.exists(RETRACTED):
-        retracted = {(r['date'], r['source'], r['series'], r['price']) for r in csv.DictReader(open(RETRACTED))}
-    if os.path.exists(HIST):
-        for r in csv.DictReader(open(HIST)):
-            if (r['date'], r['source'], r['series'], r['price']) not in retracted:   # a retracted row is not a record
-                seen.add((r['date'], r['source'], r['series']))
+    seen = {(r['date'], r['source'], r['series']) for r in in_force(HIST, RETRACTED)}   # a retracted row is not a record
     new = 0
     with open(HIST, 'a', newline='') as f:
         w = csv.writer(f)
