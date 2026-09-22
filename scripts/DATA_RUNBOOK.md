@@ -17348,6 +17348,65 @@ the BSE bhavcopy lands; commits only `docs/ideas/**`, `docs/ideas.html`, `script
 (ideas/latest.json 80 h, ideas/track.json 80 h, ideas/universe.json 80 h, ideas/ideas.json static). sw.js v158; nav entry under
 Markets ▸ Discovery & Filings; home tile text in `docs/index.html` DESC.
 
+### 144a. ★★★ COMMODITY WATCH — product prices for every HS code + WPI items + daily spot, mapped to listed beneficiaries (2026-09-22)
+
+**Trigger:** the user rejected the first filings-driven ideas: *"he is suggesting copper recyclers bcos copper is rising … electrode
+prices rose so much few years back that made graphite and hg to run … chemical prices ran a lot which made … deepak nitrite
+run … i want u to daily monitor raw material or what these companies sells prices to check who will benefit when"* and
+*"have thousands of commodities prices like https://www.screener.in/hs/ on our site … keep a track on their weekly monthly
+rise and volumes and then check which stocks are listed in our country that will benefit"*. Screener's /hs/ (login-walled,
+read through the user's own browser session) is: a search box over "HS-<8 digits>: <description> in KGS" items plus
+"<item> - WPI" items, and a per-product chart of monthly import/export **rate in ₹/kg + value bars from Jan 2010**. Both
+halves are public government data, so the site now carries the same thing built from the sources directly.
+
+**Sources (all measured working on 2026-09-22, stdlib fetches):**
+- **HS trade panel** — Ministry of Commerce MEIDB `tradestat.commerce.gov.in/meidb/commoditywise_export` and
+  `commoditywise_import`: Laravel form (GET for `_token` + session cookie, then POST `ddMonth, ddYear, comlev=all,
+  ddCommodityLevel=8, ddReportVal (1=US$ mn, 2=quantity — adds a Unit column, 3=₹ cr), ddReportYear=2`; the IMPORT form
+  prefixes its select names with `im` (`imddMonth`… — a plain `ddMonth` POST returns HTTP 500). One POST returns all
+  ~11-12k 8-digit codes for the month AND the same month a year earlier; ~11-20 s per POST; data Jan 2018 → latest
+  (published ~45 days after month-end; the form says "Data available: Jan 2018 to <Mon YYYY>"). Not ₹: we store US$.
+- **WPI items** — `eaindustry.nic.in/indx_download_1112/monthly_index_<yyyymm>.xls` (link discovered on
+  `download_data_1112.asp`): 869 rows (all-commodities → 697 leaf items), base 2011-12=100, columns `INDX<mm><yyyy>`
+  from Apr 2012; the Jun-2026 file carries index to Apr 2026 (2-month lag). Needs `xlrd`.
+- **Spot** — Westmetall `markdaten.php?action=table&field=LME_Cu_cash|Al|Zn|Pb|Ni|Sn|Au|Ag` (~190 rows history;
+  Au/Ag in EUR/kg) + Markets Insider `markets.businessinsider.com/commodities` (~30 names, price + day %, no history —
+  the daily snapshot accumulates in `docs/ideas/spot_history.csv`). Dead ends kept for the record: MCX (Akamai 403),
+  Yahoo (429), stooq (JS proof-of-work), SunSirs (cookie bot-gate, deliberately not bypassed), screener /hs/ (login).
+
+**Pipeline (`scripts/ideas/`):** `spot.py` → `docs/ideas/spot.json` (+ `spot_series.json`, `spot_history.csv`) ·
+`wpi.py` → `docs/ideas/wpi.json.gz` · `trade.py --months N | --latest | --build` → `docs/ideas/trade/index.json.gz`
+(one row per code: latest value/qty/unit price both sides, % vs 1/3/12 months, `isy/esy` = last-3-months vs year-ago-3,
+`thin` = latest qty < 30% of trailing-12 median, momentum score for mass/volume units only) + `trade/ch/<NN>.json.gz`
+(full monthly series per code, per chapter, loaded on demand) + `trade/meta.json`. The panel is SEEDED from the published
+chapter files and overlaid with whatever the local cache (`scripts/ideas/_cache/trade/`, git-ignored) holds, so a fresh
+clone keeps the history; `--latest` is a no-op unless MEIDB has published a month newer than `meta.json`. Deterministic gzip
+(mtime=0) so an unchanged rebuild is byte-identical. `signals.py` → `docs/ideas/signals.json`: for every group in
+`docs/ideas/commodity_map.json` (curated commodity → `hs` prefixes, `spot` keys, `wpi` name terms, `benefit`/`suffer`
+names with a one-line why, `history` precedent) it aggregates ONE series per HS prefix (Σvalue/Σkg across the prefix's
+codes; TON→KGS; codes whose trailing-12-month median unit price is >3× or <⅓ of the value-weighted median are dropped
+as a different price class — powder vs bars, jewellery vs metal, wrong-unit rows) and scores every series against
+thresholds (spot +5%/1w, +10%/1m, +20%/3m; WPI +3%/1m, +8%/3m, +15%/12m; trade +10%/1m, +15%/3m, +30% smoothed
+y/y; trade sides under US$3 mn/month ignored; a 1-month trade jump counts only when the 3-month move agrees). Strength
+1.0 = at threshold; groups sorted by |strength|. Full local rebuild of the HS history = ~410 POSTs (~1.5-2 h) via
+`trade.py --months 103` (or the one-off `_cache/deep_fetch.py`).
+
+**Page:** `docs/commodities.html` (owner-only, Admin group, sw v161): search box over HS codes + WPI items + spot +
+groups (sorted by traded value, like screener), Signals cards (headline, evidence, beneficiary/sufferer chips linking to
+stock pages), movers table (imports/exports × 1m/3m/12m/3-mo-y/y × rising/falling, min US$ mn, chapter, count-unit and
+thin-month toggles, sortable), spot table, WPI table, beneficiary map, and a detail panel with a Lightweight Charts
+line (unit price) + histogram (US$ mn) with Imports/Exports and 6m/1y/3y/5y/max — the screener layout — plus a 25-month
+table and the mapped names. Deep links `?hs=`, `?wpi=`, `?spot=`, `?g=`.
+
+**Routine:** the `daily-ideas` prompt now runs the four builders before the scan and reads `signals.json` first (PLAYBOOK
+"Price-driven ideas"): research the mapped small-cap beneficiaries of every group ≥ 1.5×, publish only when the exposure
+is read in the company's own documents, add newly found producers to the map with the document that proves the exposure.
+Feeds registered: ideas/signals.json, ideas/spot.json (80 h), ideas/trade/meta.json, ideas/wpi.json.gz (60 d).
+
+**Caveats stated on the page:** unit price = value ÷ quantity for one month, so small codes jump on one shipment; NOS-type
+units are excluded from rankings by default; the trade month lags ~45 days and WPI ~2 months; spot names from Markets
+Insider have no history before 2026-09-22; the map is a hypothesis list, not a verified exposure table.
+
 ## 145. ★★★ THE SME PLATFORM WAS NEVER IN THE PRICE UNIVERSE — every NSE Emerge name now has a series, a stock page and a dashboard row  (2026-09-22, worktree ~/stocks-wt/sme-universe)
 
 **Trigger:** user opened nse-bse-dashboard.html, asked why SUNLITE was missing, then: *"i want every

@@ -1,0 +1,493 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>STOCKSWORLD · Commodity Watch</title>
+  <meta name="description" content="Product prices for every 8-digit HS code India trades (monthly import and export unit prices and volumes), 697 WPI items and daily global spot prices, each mapped to the listed Indian companies that benefit or suffer when the price moves." />
+  <script src="https://cdn.tailwindcss.com"></script>
+  <link rel="stylesheet" href="./theme.css" />
+  <script src="./theme.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/lightweight-charts@5.2.1/dist/lightweight-charts.standalone.production.js"></script>
+  <style>
+    .muted { color: var(--text-muted); }
+    .card { background: var(--surface-2); border: 1px solid var(--border); border-radius: 12px; padding: 16px; }
+    .pill { display: inline-block; font-size: 11px; padding: 2px 8px; border-radius: 999px; border: 1px solid var(--border); margin: 0 4px 4px 0; white-space: nowrap; }
+    .pill.b { border-color: #16a34a66; color: #16a34a; } .pill.s { border-color: #dc262666; color: #dc2626; }
+    .pos { color: #16a34a; } .neg { color: #dc2626; }
+    table.sw { width: 100%; font-size: 13px; border-collapse: collapse; }
+    table.sw th, table.sw td { padding: 5px 8px; border-bottom: 1px solid var(--border); text-align: left; white-space: nowrap; }
+    table.sw th { color: var(--text-muted); font-weight: 600; font-size: 12px; cursor: pointer; user-select: none; }
+    table.sw th.on { color: var(--accent); }
+    table.sw td.num, table.sw th.num { text-align: right; font-variant-numeric: tabular-nums; }
+    table.sw tr.row { cursor: pointer; } table.sw tr.row:hover td { background: color-mix(in srgb, var(--accent) 8%, transparent); }
+    .seg button { font-size: 12px; padding: 4px 10px; border: 1px solid var(--border); background: var(--surface-2); }
+    .seg button:first-child { border-radius: 8px 0 0 8px; } .seg button:last-child { border-radius: 0 8px 8px 0; }
+    .seg button.on { background: var(--accent); color: #fff; border-color: var(--accent); }
+    input.ctl, select.ctl { font-size: 13px; padding: 5px 8px; border: 1px solid var(--border); border-radius: 8px; background: var(--surface-2); color: var(--text); }
+    #search { font-size: 15px; padding: 10px 14px; }
+    #results { position: absolute; left: 0; right: 0; top: 100%; z-index: 30; max-height: 420px; overflow: auto; background: var(--surface-2); border: 1px solid var(--border); border-radius: 10px; box-shadow: 0 10px 30px #0004; }
+    #results div { padding: 7px 12px; font-size: 13px; cursor: pointer; border-bottom: 1px solid var(--border); }
+    #results div:hover, #results div.on { background: color-mix(in srgb, var(--accent) 12%, transparent); }
+    #results .k { font-size: 11px; color: var(--text-muted); margin-right: 6px; }
+    .chart { height: 300px; width: 100%; }
+    .disc { font-size: 12px; color: var(--text-muted); border-left: 3px solid var(--border); padding-left: 10px; }
+    .sig { border-left: 4px solid var(--border); }
+    .sig.up { border-left-color: #16a34a; } .sig.down { border-left-color: #dc2626; }
+    .sig ul { list-style: disc; padding-left: 1.2rem; }
+    .sym { font-weight: 600; text-decoration: none; }
+    .sym:hover { text-decoration: underline; }
+    details summary { cursor: pointer; }
+  </style>
+</head>
+<body>
+<header class="sticky top-0 z-40 bg-white/90 backdrop-blur-md border-b border-slate-200 shadow-sm">
+  <div class="max-w-screen-xl mx-auto px-4 h-14 flex items-center justify-between gap-4">
+    <a href="./index.html" class="font-bold tracking-tight">SW · STOCKSWORLD</a>
+    <nav></nav>
+  </div>
+</header>
+<main class="max-w-screen-xl mx-auto px-4 py-6">
+  <div class="flex flex-wrap items-end justify-between gap-3 mb-3">
+    <div>
+      <h1 class="text-2xl font-bold">Commodity Watch</h1>
+      <p class="muted text-sm">Product prices for every 8-digit HS code India imports or exports (monthly unit price and volume), 697 wholesale-price-index items (monthly) and global spot prices (daily), each mapped to the listed companies that benefit or suffer when the price moves.</p>
+    </div>
+    <div id="meta" class="text-sm muted"></div>
+  </div>
+  <p class="disc mb-4">Unit prices are value divided by quantity for the month, so a single unusual shipment can move a small code a lot. Rows flagged <i>thin</i> shipped under 30% of their usual quantity. Signals are hypotheses for research, not calls.</p>
+
+  <div class="relative mb-6">
+    <input id="search" class="ctl w-full" type="text" placeholder="Search a product, HS code, WPI item or spot commodity — e.g. copper cathode, 28070010, sulphuric acid, electrodes" autocomplete="off" />
+    <div id="results" class="hidden"></div>
+  </div>
+
+  <section id="detail" class="mb-8 hidden"></section>
+
+  <section id="signals" class="mb-8">
+    <div class="flex flex-wrap items-center justify-between gap-2 mb-2">
+      <h2 class="text-lg font-semibold">Signals — commodities on the move, and who is exposed</h2>
+      <span id="signals-meta" class="muted text-xs"></span>
+    </div>
+    <div id="signals-list" class="grid gap-3 md:grid-cols-2"></div>
+  </section>
+
+  <section id="movers" class="mb-8">
+    <h2 class="text-lg font-semibold mb-2">Product price movers (HS codes)</h2>
+    <div class="flex flex-wrap items-center gap-2 mb-3 text-sm">
+      <span class="seg" id="side"><button data-v="imp" class="on">Imports</button><button data-v="exp">Exports</button></span>
+      <span class="seg" id="win"><button data-v="1">1 month</button><button data-v="3" class="on">3 months</button><button data-v="12">12 months</button><button data-v="sy">3-mo vs year-ago</button></span>
+      <span class="seg" id="dir"><button data-v="up" class="on">Rising</button><button data-v="down">Falling</button></span>
+      <label class="muted">min US$ mn/month <input id="minval" class="ctl w-20" type="number" value="5" min="0" step="1" /></label>
+      <select id="chapter" class="ctl"><option value="">All chapters</option></select>
+      <label class="muted"><input id="nos" type="checkbox" /> include count-based units (NOS, PRS…)</label>
+      <label class="muted"><input id="thin" type="checkbox" /> include thin months</label>
+      <input id="filter" class="ctl w-48" type="text" placeholder="filter by text" />
+    </div>
+    <p id="movers-summary" class="muted text-xs mb-2"></p>
+    <div class="card overflow-x-auto"><table class="sw" id="movers-table"><thead></thead><tbody></tbody></table></div>
+    <div class="mt-2"><button id="more" class="pill">Show more</button></div>
+  </section>
+
+  <section id="spot" class="mb-8">
+    <h2 class="text-lg font-semibold mb-2">Spot prices (daily)</h2>
+    <p id="spot-summary" class="muted text-xs mb-2"></p>
+    <div class="card overflow-x-auto"><table class="sw" id="spot-table"><thead></thead><tbody></tbody></table></div>
+  </section>
+
+  <section id="wpi" class="mb-8">
+    <div class="flex flex-wrap items-center gap-2 mb-2">
+      <h2 class="text-lg font-semibold">Wholesale Price Index items (monthly)</h2>
+      <input id="wpi-filter" class="ctl w-48" type="text" placeholder="filter items" />
+      <label class="muted text-sm"><input id="wpi-groups" type="checkbox" /> include group rows</label>
+    </div>
+    <p id="wpi-summary" class="muted text-xs mb-2"></p>
+    <div class="card overflow-x-auto"><table class="sw" id="wpi-table"><thead></thead><tbody></tbody></table></div>
+    <div class="mt-2"><button id="wpi-more" class="pill">Show more</button></div>
+  </section>
+
+  <section id="map" class="mb-8">
+    <details class="card"><summary class="font-semibold">Beneficiary map — which listed names ride which price</summary>
+      <p class="muted text-xs mt-1 mb-2">Curated starting hypotheses (docs/ideas/commodity_map.json). Every name here must be verified from the company's own filings — share of revenue, pricing terms, inventory — before it becomes an idea.</p>
+      <div id="map-list" class="grid gap-2 md:grid-cols-2 text-sm"></div>
+    </details>
+  </section>
+
+  <section id="method" class="mb-8">
+    <details class="card"><summary class="font-semibold">Sources and method</summary>
+      <div class="text-sm mt-2 space-y-2">
+        <p><b>HS trade panel.</b> Ministry of Commerce MEIDB (tradestat.commerce.gov.in), commodity-wise monthly imports and exports at 8-digit HS, value in US$ million and quantity in the code's unit, from January 2018; a month is published about 45 days after it ends. Unit price = value ÷ quantity. The movers table ranks unit-price changes; the "3-mo vs year-ago" window compares the last three months' aggregate price with the same three months a year earlier and is the least noisy.</p>
+        <p><b>WPI items.</b> Office of the Economic Adviser (eaindustry.nic.in) monthly index, base 2011-12 = 100, from April 2012, item level (697 items) plus group rows.</p>
+        <p><b>Spot.</b> LME cash settlements and London gold/silver via Westmetall (with history), and a daily snapshot of about 30 global futures from Markets Insider that accumulates its own history from 22 Sep 2026.</p>
+        <p><b>Signals.</b> For each commodity group in the beneficiary map, every wired series is scored against a threshold (spot +5% in a week, +10% in a month, +20% in a quarter; WPI +3% / +8% / +15% over 1 / 3 / 12 months; trade unit price +10% / +15% / +30% over 1 month / 3 months / smoothed year-on-year, trade sides under US$3 mn a month ignored, one-month jumps only when the quarter agrees). Strength 1.0 = exactly at threshold. The daily research run reads this file first.</p>
+      </div>
+    </details>
+  </section>
+</main>
+<script>
+(async function () {
+  const $ = (s) => document.querySelector(s);
+  let SW_OWNER = false; try { SW_OWNER = !!localStorage.getItem('bt_owner_key'); } catch (e) {}
+  if (!SW_OWNER) {
+    document.querySelector('main').innerHTML =
+      '<div class="max-w-md mx-auto text-center py-20"><div class="text-5xl mb-4">🔒</div>' +
+      '<h1 class="text-lg font-bold mb-2">This page is private</h1>' +
+      '<p class="text-sm muted">It\'s a personal research tool of the site owner. The rest of the site is open — head back to the <a class="font-semibold hover:underline" style="color:var(--accent)" href="./index.html">home page</a>.</p></div>';
+    return;
+  }
+  const esc = (s) => String(s == null ? '' : s).replace(/[&<>"']/g, (c) => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
+  const fmt = (x, d = 1) => (x == null || isNaN(x)) ? '—' : Number(x).toLocaleString('en-IN', { maximumFractionDigits: d });
+  const fmtP = (x) => { if (x == null || isNaN(x)) return '—'; const a = Math.abs(x); return fmt(x, a >= 100 ? 2 : a >= 1 ? 3 : 4); };
+  const pct = (x) => (x == null || isNaN(x)) ? '<span class="muted">—</span>' : `<span class="${x >= 0 ? 'pos' : 'neg'}">${x >= 0 ? '+' : ''}${fmt(x)}%</span>`;
+  const stockLink = (sym) => `./stock.html?sym=${encodeURIComponent(sym)}`;
+  async function loadJSON(url) {
+    const r = await fetch(url);
+    if (!r.ok) throw new Error(url + ' ' + r.status);
+    if (/\.gz$/.test(url)) {
+      const buf = await r.arrayBuffer();
+      const stream = new Blob([new Uint8Array(buf)]).stream().pipeThrough(new DecompressionStream('gzip'));
+      return JSON.parse(await new Response(stream).text());
+    }
+    return r.json();
+  }
+  const safe = async (url) => { try { return await loadJSON(url); } catch (e) { console.warn('load failed', url, e); return null; } };
+
+  const [meta, signals, spot, spotSeries, cmap] = await Promise.all([
+    safe('./ideas/trade/meta.json'), safe('./ideas/signals.json'), safe('./ideas/spot.json'), safe('./ideas/spot_series.json'), safe('./ideas/commodity_map.json')]);
+  const [index, wpi] = await Promise.all([safe('./ideas/trade/index.json.gz'), safe('./ideas/wpi.json.gz')]);
+  const CH = meta && meta.chapters || {};
+  $('#meta').innerHTML = [
+    index ? `Trade month <b>${esc(index.latest)}</b> (${fmt(index.n, 0)} HS codes, ${esc(index.months_from)} → ${esc(index.months_to)})` : 'trade panel unavailable',
+    wpi ? `WPI to <b>${esc(wpi.months[wpi.months.length - 1])}</b>` : 'WPI unavailable',
+    spot ? `Spot <b>${esc(spot.updated)}</b>` : 'spot unavailable'].join(' · ');
+
+  // ---- beneficiary map lookup by HS prefix / spot name / wpi term ----
+  const groups = cmap && cmap.groups || [];
+  const groupsForHS = (hs) => groups.filter(g => (g.hs || []).some(p => hs.startsWith(p)));
+  const groupsForSpot = (name) => groups.filter(g => (g.spot || []).includes(name));
+  const groupsForWPI = (name) => { const n = name.toLowerCase(); return groups.filter(g => (g.wpi || []).some(t => n.includes(t))); };
+  const chips = (gs, max = 6) => {
+    const b = [], s = [];
+    gs.forEach(g => { (g.benefit || []).forEach(x => b.push(x)); (g.suffer || []).forEach(x => s.push(x)); });
+    const uniq = (arr) => { const seen = new Set(); return arr.filter(x => !seen.has(x.symbol) && seen.add(x.symbol)); };
+    const mk = (arr, cls) => uniq(arr).slice(0, max).map(x => `<a class="pill ${cls}" href="${stockLink(x.symbol)}" title="${esc(x.name)}: ${esc(x.why)}">${esc(x.symbol)}</a>`).join('');
+    return mk(b, 'b') + mk(s, 's');
+  };
+  const chipsFull = (g) => {
+    const mk = (arr, label, cls) => arr && arr.length ? `<div class="mt-1"><span class="muted text-xs">${label}:</span> ${arr.map(x => `<a class="pill ${cls}" href="${stockLink(x.symbol)}" title="${esc(x.why)}">${esc(x.symbol)}</a>`).join('')}</div>` +
+      `<ul class="text-xs muted">${arr.map(x => `<li><b>${esc(x.name)}</b> — ${esc(x.why)}</li>`).join('')}</ul>` : '';
+    return mk(g.benefit, 'Benefit', 'b') + mk(g.suffer, 'Suffer', 's');
+  };
+
+  // ---- charts (Lightweight Charts v5) ----
+  const cssVar = (n) => getComputedStyle(document.documentElement).getPropertyValue(n).trim();
+  const charts = [];
+  function chartOpts() {
+    return { layout: { background: { type: 'solid', color: 'transparent' }, textColor: cssVar('--text-muted') || '#888', attributionLogo: false },
+      grid: { vertLines: { color: 'transparent' }, horzLines: { color: cssVar('--border') || '#ddd' } },
+      rightPriceScale: { borderColor: cssVar('--border') || '#ddd' }, timeScale: { borderColor: cssVar('--border') || '#ddd', timeVisible: false },
+      crosshair: { mode: 0 }, handleScroll: true, handleScale: true, autoSize: true };
+  }
+  function drawChart(el, line, bars, opts) {
+    // line: [{time:'YYYY-MM-DD', value}], bars: same (nullable). Returns the chart.
+    el.innerHTML = '';
+    const LC = window.LightweightCharts;
+    if (!LC) { el.innerHTML = '<p class="muted text-sm">chart library not loaded</p>'; return null; }
+    const chart = LC.createChart(el, chartOpts());
+    const ls = chart.addSeries(LC.LineSeries, { color: cssVar('--accent') || '#2563eb', lineWidth: 2, priceLineVisible: false, priceFormat: { type: 'price', precision: opts && opts.precision != null ? opts.precision : 2, minMove: 0.0001 } });
+    ls.setData(line.filter(p => p.value != null));
+    if (bars && bars.length) {
+      const hs = chart.addSeries(LC.HistogramSeries, { priceScaleId: 'vol', color: (cssVar('--accent') || '#2563eb') + '55', priceFormat: { type: 'volume' }, lastValueVisible: false, priceLineVisible: false });
+      hs.priceScale().applyOptions({ scaleMargins: { top: 0.75, bottom: 0 } });
+      hs.setData(bars.filter(p => p.value != null));
+    }
+    chart.timeScale().fitContent();
+    charts.push({ chart, ls });
+    return chart;
+  }
+  new MutationObserver(() => { charts.forEach(c => { try { c.chart.applyOptions(chartOpts()); c.ls.applyOptions({ color: cssVar('--accent') || '#2563eb' }); } catch (e) {} }); })
+    .observe(document.documentElement, { attributes: true, attributeFilter: ['data-theme', 'class'] });
+  const mTime = (m) => m + '-01';
+  function rangeFrom(months, key) {
+    const n = { '6m': 6, '1y': 12, '3y': 36, '5y': 60, 'max': 9999 }[key] || 9999;
+    return Math.max(0, months.length - n);
+  }
+
+  // ---- detail panel ----
+  const detail = $('#detail');
+  const chCache = {};
+  async function chapterData(ch) {
+    if (!chCache[ch]) chCache[ch] = await safe(`./ideas/trade/ch/${ch}.json.gz`);
+    return chCache[ch];
+  }
+  const idxCols = index ? index.cols : []; const ci = {}; idxCols.forEach((c, i) => ci[c] = i);
+  const idxByHS = {}; (index ? index.rows : []).forEach(r => idxByHS[r[0]] = r);
+  function showDetail(html) { detail.innerHTML = html; detail.classList.remove('hidden'); detail.scrollIntoView({ behavior: 'smooth', block: 'start' }); }
+  const closeBtn = '<button id="dclose" class="pill">✕ close</button>';
+
+  async function openHS(hs) {
+    const r = idxByHS[hs];
+    const ch = await chapterData(hs.slice(0, 2));
+    const rec = ch && ch.codes[hs];
+    if (!rec) { showDetail(`<div class="card">${closeBtn}<p class="mt-2">No series for HS ${esc(hs)}.</p></div>`); return; }
+    const gs = groupsForHS(hs);
+    let side = (r && (r[ci.iv] || 0) < (r[ci.ev] || 0)) ? 'exp' : 'imp', range = '3y';
+    showDetail(`<div class="card">
+      <div class="flex flex-wrap justify-between gap-2"><div><h2 class="text-lg font-bold">${esc(rec.d)}</h2><div class="muted text-sm">HS ${esc(hs)} · chapter ${esc(hs.slice(0, 2))} ${esc(CH[hs.slice(0, 2)] || '')} · unit ${esc(rec.u || '?')} · unit price in US$ per ${esc(rec.u || 'unit')}</div></div>${closeBtn}</div>
+      <div class="flex flex-wrap items-center gap-2 my-3 text-sm">
+        <span class="seg" id="dside"><button data-v="imp" class="${side === 'imp' ? 'on' : ''}">Imports</button><button data-v="exp" class="${side === 'exp' ? 'on' : ''}">Exports</button></span>
+        <span class="seg" id="drange">${['6m', '1y', '3y', '5y', 'max'].map(k => `<button data-v="${k}" class="${k === range ? 'on' : ''}">${k}</button>`).join('')}</span>
+        <span class="muted text-xs">line = unit price, bars = US$ mn traded</span>
+      </div>
+      <div id="dchart" class="chart"></div>
+      <div id="dstats" class="grid gap-x-6 gap-y-1 text-sm mt-3" style="grid-template-columns:repeat(auto-fit,minmax(220px,1fr))"></div>
+      <div class="overflow-x-auto mt-3"><table class="sw" id="dtable"></table></div>
+      <div class="mt-3">${gs.length ? gs.map(g => `<div class="mb-2"><b>${esc(g.name)}</b>${chipsFull(g)}</div>`).join('') : '<span class="muted text-sm">No listed beneficiaries mapped for this code yet — add the HS prefix to docs/ideas/commodity_map.json.</span>'}</div>
+    </div>`);
+    const render = () => {
+      const vf = side === 'imp' ? 'i' : 'e', qf = side === 'imp' ? 'p' : 'q';
+      const from = rangeFrom(ch.months, range);
+      const line = [], bars = [];
+      for (let i = from; i < ch.months.length; i++) {
+        const v = rec[vf][i], q = rec[qf][i];
+        line.push({ time: mTime(ch.months[i]), value: (v != null && q && v >= 0.05) ? v * 1e6 / q : null });
+        bars.push({ time: mTime(ch.months[i]), value: v });
+      }
+      const vals = line.map(p => p.value).filter(x => x != null);
+      const mx = vals.length ? Math.max(...vals) : 1;
+      drawChart($('#dchart'), line, bars, { precision: mx >= 100 ? 1 : mx >= 1 ? 3 : 4 });
+      if (r) {
+        const p = side === 'imp' ? 'i' : 'e';
+        $('#dstats').innerHTML = [
+          ['Latest month', index.latest], ['Value', 'US$ ' + fmt(r[ci[p + 'v']], 2) + ' mn'], ['Quantity', fmt(r[ci[p + 'q']], 0) + ' ' + esc(rec.u)],
+          ['Unit price', 'US$ ' + fmtP(r[ci[p + 'p']]) + '/' + esc(rec.u)], ['vs 1 month', pct(r[ci[p + 'p1']])], ['vs 3 months', pct(r[ci[p + 'p3']])],
+          ['vs 12 months', pct(r[ci[p + 'p12']])], ['3-mo vs year-ago', pct(r[ci[p + 'sy']])], ['Quantity y/y', pct(r[ci[p + 'q12']])], ['Value y/y', pct(r[ci[p + 'v12']])],
+          ['Thin month', r[ci[p + 'thin']] ? '<span class="neg">yes</span>' : 'no']]
+          .map(([k, v]) => `<div><span class="muted">${k}</span> <b>${v}</b></div>`).join('');
+      }
+      const rows = [];
+      for (let i = ch.months.length - 1; i >= Math.max(0, ch.months.length - 25); i--) {
+        const v = rec[vf][i], q = rec[qf][i];
+        rows.push(`<tr><td>${esc(ch.months[i])}</td><td class="num">${fmt(v, 2)}</td><td class="num">${fmt(q, 0)}</td><td class="num">${(v != null && q && v >= 0.05) ? fmtP(v * 1e6 / q) : '—'}</td></tr>`);
+      }
+      $('#dtable').innerHTML = `<thead><tr><th>Month</th><th class="num">US$ mn</th><th class="num">Qty (${esc(rec.u)})</th><th class="num">US$/${esc(rec.u)}</th></tr></thead><tbody>${rows.join('')}</tbody>`;
+    };
+    render();
+    detail.querySelector('#dside').addEventListener('click', (e) => { const b = e.target.closest('button'); if (!b) return; side = b.dataset.v; detail.querySelectorAll('#dside button').forEach(x => x.classList.toggle('on', x === b)); render(); });
+    detail.querySelector('#drange').addEventListener('click', (e) => { const b = e.target.closest('button'); if (!b) return; range = b.dataset.v; detail.querySelectorAll('#drange button').forEach(x => x.classList.toggle('on', x === b)); render(); });
+    history.replaceState(null, '', '?hs=' + hs);
+  }
+  function openWPI(code) {
+    const it = wpi && wpi.items.find(x => x.c === code);
+    if (!it) return;
+    const gs = groupsForWPI(it.n);
+    let range = '5y';
+    showDetail(`<div class="card"><div class="flex flex-wrap justify-between gap-2"><div><h2 class="text-lg font-bold">${esc(it.n)}</h2><div class="muted text-sm">WPI item ${esc(it.c)} · weight ${fmt(it.w, 3)} · index, base 2011-12 = 100</div></div>${closeBtn}</div>
+      <div class="flex flex-wrap items-center gap-2 my-3 text-sm"><span class="seg" id="drange">${['1y', '3y', '5y', 'max'].map(k => `<button data-v="${k}" class="${k === range ? 'on' : ''}">${k}</button>`).join('')}</span></div>
+      <div id="dchart" class="chart"></div><div id="dstats" class="grid gap-x-6 gap-y-1 text-sm mt-3" style="grid-template-columns:repeat(auto-fit,minmax(220px,1fr))"></div>
+      <div class="mt-3">${gs.length ? gs.map(g => `<div class="mb-2"><b>${esc(g.name)}</b>${chipsFull(g)}</div>`).join('') : '<span class="muted text-sm">No listed beneficiaries mapped for this item yet.</span>'}</div></div>`);
+    const render = () => {
+      const from = rangeFrom(wpi.months, range);
+      drawChart($('#dchart'), wpi.months.slice(from).map((m, i) => ({ time: mTime(m), value: it.v[from + i] })), null, { precision: 1 });
+      const st = wpiStats(it);
+      $('#dstats').innerHTML = [['Latest', st.month + ' · ' + fmt(st.last, 1)], ['vs 1 month', pct(st.c1)], ['vs 3 months', pct(st.c3)], ['vs 12 months', pct(st.c12)], ['vs 36 months', pct(st.c36)]]
+        .map(([k, v]) => `<div><span class="muted">${k}</span> <b>${v}</b></div>`).join('');
+    };
+    render();
+    detail.querySelector('#drange').addEventListener('click', (e) => { const b = e.target.closest('button'); if (!b) return; range = b.dataset.v; detail.querySelectorAll('#drange button').forEach(x => x.classList.toggle('on', x === b)); render(); });
+    history.replaceState(null, '', '?wpi=' + code);
+  }
+  function openSpot(name) {
+    const r = spot && spot.rows[name]; const ser = spotSeries && spotSeries[name] || [];
+    if (!r) return;
+    const gs = groupsForSpot(name);
+    showDetail(`<div class="card"><div class="flex flex-wrap justify-between gap-2"><div><h2 class="text-lg font-bold capitalize">${esc(name)}</h2><div class="muted text-sm">${esc(r.source)} · ${esc(r.unit)} · ${esc(r.date)}</div></div>${closeBtn}</div>
+      <div id="dchart" class="chart mt-3"></div>
+      <div class="grid gap-x-6 gap-y-1 text-sm mt-3" style="grid-template-columns:repeat(auto-fit,minmax(200px,1fr))">
+        ${[['Last', fmt(r.last, 2) + ' ' + esc(r.unit)], ['1 day', pct(r.chg_1d)], ['1 week', pct(r.chg_1w)], ['1 month', pct(r.chg_1m)], ['3 months', pct(r.chg_3m)], ['6 months', pct(r.chg_6m)], ['52-week range', fmt(r.lo, 2) + ' – ' + fmt(r.hi, 2) + (r.pos != null ? ` (at ${r.pos}%)` : '')], ['History points', r.n]].map(([k, v]) => `<div><span class="muted">${k}</span> <b>${v}</b></div>`).join('')}
+      </div>
+      <div class="mt-3">${gs.length ? gs.map(g => `<div class="mb-2"><b>${esc(g.name)}</b>${chipsFull(g)}</div>`).join('') : '<span class="muted text-sm">No listed beneficiaries mapped for this commodity yet.</span>'}</div></div>`);
+    drawChart($('#dchart'), ser.map(([d, v]) => ({ time: d, value: v })), null, { precision: 2 });
+    history.replaceState(null, '', '?spot=' + encodeURIComponent(name));
+  }
+  function openGroup(id) {
+    const s = signals && signals.groups.find(g => g.id === id); const g = groups.find(x => x.id === id);
+    if (!s || !g) return;
+    const tr = s.sources.trade || [];
+    let pi = 0, side = tr.length ? (tr[0].imp ? 'imp' : 'exp') : null;
+    showDetail(`<div class="card"><div class="flex flex-wrap justify-between gap-2"><div><h2 class="text-lg font-bold">${esc(g.name)}</h2><div class="muted text-sm">${esc(s.headline)}</div></div>${closeBtn}</div>
+      ${tr.length ? `<div class="flex flex-wrap items-center gap-2 my-3 text-sm"><span class="seg" id="dpre">${tr.map((d, i) => `<button data-v="${i}" class="${i === 0 ? 'on' : ''}" title="${esc(d.name)}">HS ${esc(d.prefix)} · US$${fmt(d.value_3m_avg, 0)}mn</button>`).join('')}</span><span class="seg" id="dside"></span><span class="muted text-xs" id="dnote"></span></div><div id="dchart" class="chart"></div>` : '<p class="muted text-sm mt-2">No HS prefixes mapped for this group.</p>'}
+      <ul class="text-sm mt-3 list-disc pl-5">${(s.evidence || []).map(e => `<li>${esc(e)}</li>`).join('')}</ul>
+      ${s.history ? `<p class="text-sm mt-2"><b>Precedent:</b> ${esc(s.history)}</p>` : ''}
+      <div class="mt-3">${chipsFull(g)}</div>
+      <div class="mt-3 text-sm">${(s.sources.spot || []).map(x => `<span class="pill">${esc(x.name)} ${fmt(x.last, 2)} ${esc(x.unit)} · 1w ${x.chg_1w == null ? '—' : x.chg_1w + '%'} · 1m ${x.chg_1m == null ? '—' : x.chg_1m + '%'}</span>`).join('')}
+        ${(s.sources.wpi || []).map(x => `<span class="pill">WPI ${esc(x.name)} ${x.month}: ${fmt(x.last, 1)} · 3m ${x.chg_3m == null ? '—' : x.chg_3m + '%'} · 12m ${x.chg_12m == null ? '—' : x.chg_12m + '%'}</span>`).join('')}</div>
+    </div>`);
+    const render = () => {
+      const d = tr[pi]; if (!d) return;
+      if (!d[side]) side = d.imp ? 'imp' : 'exp';
+      detail.querySelector('#dside').innerHTML = ['imp', 'exp'].filter(k => d[k]).map(k => `<button data-v="${k}" class="${k === side ? 'on' : ''}">${k === 'imp' ? 'Imports' : 'Exports'}</button>`).join('');
+      const t = d[side];
+      detail.querySelector('#dnote').textContent = `${d.name} — aggregate US$/kg over ${t.codes} code(s)${t.dropped && t.dropped.length ? ', ' + t.dropped.length + ' left out as a different price class' : ''}; bars = US$ mn`;
+      const from = rangeFrom(t.series.months, '5y');
+      drawChart($('#dchart'), t.series.months.slice(from).map((m, i) => ({ time: mTime(m), value: t.series.price[from + i] })), t.series.months.slice(from).map((m, i) => ({ time: mTime(m), value: t.series.value[from + i] })), { precision: 3 });
+    };
+    if (tr.length) {
+      render();
+      detail.querySelector('#dpre').addEventListener('click', (e) => { const b = e.target.closest('button'); if (!b) return; pi = +b.dataset.v; detail.querySelectorAll('#dpre button').forEach(x => x.classList.toggle('on', x === b)); render(); });
+      detail.querySelector('#dside').addEventListener('click', (e) => { const b = e.target.closest('button'); if (!b) return; side = b.dataset.v; render(); });
+    }
+    history.replaceState(null, '', '?g=' + id);
+  }
+  detail.addEventListener('click', (e) => { if (e.target.id === 'dclose') { detail.classList.add('hidden'); detail.innerHTML = ''; history.replaceState(null, '', location.pathname); } });
+
+  // ---- search ----
+  const results = $('#results'); const sbox = $('#search');
+  const tradeValue = (r) => (r[ci.iv] || 0) + (r[ci.ev] || 0);
+  function search(q) {
+    const toks = q.toLowerCase().split(/\s+/).filter(Boolean);
+    if (!toks.length) return [];
+    const hit = (s) => { s = s.toLowerCase(); return toks.every(t => s.includes(t)); };
+    const out = [];
+    if (/^\d{2,8}$/.test(q.trim())) {
+      (index ? index.rows : []).filter(r => r[0].startsWith(q.trim())).sort((a, b) => tradeValue(b) - tradeValue(a)).slice(0, 40).forEach(r => out.push({ k: 'HS', id: r[0], label: `${r[0]}: ${r[1]} in ${r[2] || '?'}`, sub: `US$ ${fmt(tradeValue(r), 1)} mn/month` }));
+    } else {
+      (spot ? Object.keys(spot.rows) : []).filter(n => hit(n)).forEach(n => out.push({ k: 'SPOT', id: n, label: n, sub: spot.rows[n].unit }));
+      groups.filter(g => hit(g.name)).forEach(g => out.push({ k: 'GROUP', id: g.id, label: g.name, sub: 'beneficiary map' }));
+      (wpi ? wpi.items : []).filter(i => i.leaf && hit(i.n)).slice(0, 15).forEach(i => out.push({ k: 'WPI', id: i.c, label: i.n, sub: 'WPI item ' + i.c }));
+      (index ? index.rows : []).filter(r => hit(r[0] + ' ' + r[1])).sort((a, b) => tradeValue(b) - tradeValue(a)).slice(0, 40).forEach(r => out.push({ k: 'HS', id: r[0], label: `${r[0]}: ${r[1]} in ${r[2] || '?'}`, sub: `US$ ${fmt(tradeValue(r), 1)} mn/month` }));
+    }
+    return out.slice(0, 60);
+  }
+  let sel = -1, cur = [];
+  function renderResults() {
+    if (!cur.length) { results.classList.add('hidden'); results.innerHTML = ''; return; }
+    results.innerHTML = cur.map((r, i) => `<div data-i="${i}" class="${i === sel ? 'on' : ''}"><span class="k">${r.k}</span>${esc(r.label)} <span class="muted text-xs">· ${esc(r.sub)}</span></div>`).join('');
+    results.classList.remove('hidden');
+  }
+  function pick(r) { results.classList.add('hidden'); if (r.k === 'HS') openHS(r.id); else if (r.k === 'WPI') openWPI(r.id); else if (r.k === 'SPOT') openSpot(r.id); else if (r.k === 'GROUP') openGroup(r.id); }
+  sbox.addEventListener('input', () => { cur = search(sbox.value); sel = cur.length ? 0 : -1; renderResults(); });
+  sbox.addEventListener('keydown', (e) => {
+    if (e.key === 'ArrowDown') { sel = Math.min(cur.length - 1, sel + 1); renderResults(); e.preventDefault(); }
+    else if (e.key === 'ArrowUp') { sel = Math.max(0, sel - 1); renderResults(); e.preventDefault(); }
+    else if (e.key === 'Enter' && sel >= 0 && cur[sel]) { pick(cur[sel]); }
+    else if (e.key === 'Escape') { results.classList.add('hidden'); }
+  });
+  results.addEventListener('mousedown', (e) => { const d = e.target.closest('div[data-i]'); if (d) { e.preventDefault(); pick(cur[+d.dataset.i]); } });
+  sbox.addEventListener('blur', () => setTimeout(() => results.classList.add('hidden'), 150));
+  sbox.addEventListener('focus', () => { if (cur.length) results.classList.remove('hidden'); });
+
+  // ---- signals ----
+  if (signals) {
+    $('#signals-meta').textContent = `built ${signals.built} · spot ${signals.spot_date || '—'} · WPI ${signals.wpi_month || '—'} · trade ${signals.trade_month || '—'}`;
+    const list = $('#signals-list');
+    const strong = signals.groups.filter(g => Math.abs(g.strength || 0) >= 1);
+    const rest = signals.groups.filter(g => Math.abs(g.strength || 0) < 1);
+    const card = (s) => {
+      const g = groups.find(x => x.id === s.id) || {};
+      return `<div class="card sig ${esc(s.direction)} text-sm" data-g="${esc(s.id)}">
+        <div class="flex justify-between gap-2"><b class="cursor-pointer hover:underline" data-open="${esc(s.id)}">${esc(s.name)}</b><span class="pill">${s.direction === 'up' ? '▲' : s.direction === 'down' ? '▼' : '·'} ${fmt(s.strength, 1)}×</span></div>
+        <div class="mt-1">${esc(s.headline)}</div>
+        ${(s.evidence || []).length > 1 ? `<ul class="muted text-xs mt-1">${s.evidence.slice(1, 4).map(e => `<li>${esc(e)}</li>`).join('')}</ul>` : ''}
+        <div class="mt-2">${chips([g], 8) || '<span class="muted text-xs">no listed names mapped</span>'}</div>
+      </div>`;
+    };
+    list.innerHTML = strong.map(card).join('') || '<div class="card muted text-sm">Nothing above threshold today.</div>';
+    if (rest.length) list.insertAdjacentHTML('afterend', `<details class="mt-2 text-sm"><summary class="muted">${rest.length} groups below threshold</summary><div class="grid gap-3 md:grid-cols-2 mt-2">${rest.map(card).join('')}</div></details>`);
+    document.querySelector('#signals').addEventListener('click', (e) => { const b = e.target.closest('[data-open]'); if (b) openGroup(b.dataset.open); });
+  } else {
+    $('#signals-list').innerHTML = '<div class="card muted text-sm">signals.json not published yet.</div>';
+  }
+
+  // ---- movers table ----
+  const COMMODITY_UNITS = new Set(['KGS', 'TON', 'LTR', 'GMS', 'MTR', 'SQM', 'CUM', 'CCM', 'MTS', 'KLR', 'TNE', 'CTM']);
+  const state = { side: 'imp', win: '3', dir: 'up', minval: 5, chapter: '', nos: false, thin: false, filter: '', limit: 100, sort: null, asc: false };
+  if (meta) Object.keys(CH).sort().forEach(c => { const o = document.createElement('option'); o.value = c; o.textContent = `${c} ${CH[c]}`; $('#chapter').appendChild(o); });
+  ['side', 'win', 'dir'].forEach(id => $('#' + id).addEventListener('click', (e) => { const b = e.target.closest('button'); if (!b) return; state[id] = b.dataset.v; document.querySelectorAll('#' + id + ' button').forEach(x => x.classList.toggle('on', x === b)); state.limit = 100; state.sort = null; renderMovers(); }));
+  $('#minval').addEventListener('input', () => { state.minval = +$('#minval').value || 0; renderMovers(); });
+  $('#chapter').addEventListener('change', () => { state.chapter = $('#chapter').value; renderMovers(); });
+  $('#nos').addEventListener('change', () => { state.nos = $('#nos').checked; renderMovers(); });
+  $('#thin').addEventListener('change', () => { state.thin = $('#thin').checked; renderMovers(); });
+  $('#filter').addEventListener('input', () => { state.filter = $('#filter').value.toLowerCase(); renderMovers(); });
+  $('#more').addEventListener('click', () => { state.limit += 200; renderMovers(); });
+  function renderMovers() {
+    if (!index) { $('#movers-summary').textContent = 'trade index unavailable'; return; }
+    const p = state.side === 'imp' ? 'i' : 'e';
+    const key = p + (state.win === 'sy' ? 'sy' : 'p' + state.win);
+    let rows = index.rows.filter(r => (r[ci[p + 'v']] || 0) >= state.minval && r[ci[key]] != null
+      && (state.nos || COMMODITY_UNITS.has(r[2])) && (state.thin || !r[ci[p + 'thin']])
+      && (!state.chapter || r[0].startsWith(state.chapter)) && (!state.filter || (r[0] + ' ' + r[1]).toLowerCase().includes(state.filter))
+      && (state.dir === 'up' ? r[ci[key]] > 0 : r[ci[key]] < 0));
+    const cols = [['hs', 'HS', false], ['d', 'Product', false], ['u', 'Unit', false], [p + 'v', 'US$ mn', true], [p + 'q', 'Qty', true], [p + 'p', 'US$/unit', true],
+      [p + 'p1', '1m', true], [p + 'p3', '3m', true], [p + 'p12', '12m', true], [p + 'sy', '3-mo y/y', true], [p + 'q12', 'Qty y/y', true], [p + 'v12', 'Value y/y', true], ['ben', 'Exposed names', false]];
+    const sortKey = state.sort || key;
+    rows.sort((a, b) => { const x = a[ci[sortKey]], y = b[ci[sortKey]]; if (x == null) return 1; if (y == null) return -1; return typeof x === 'string' ? (state.asc ? x.localeCompare(y) : y.localeCompare(x)) : (state.asc ? x - y : y - x); });
+    if (!state.sort && state.dir === 'down') rows.reverse();
+    $('#movers-summary').textContent = `${fmt(rows.length, 0)} codes match (${state.side === 'imp' ? 'imports' : 'exports'}, ${state.win === 'sy' ? 'last 3 months vs the same 3 months a year ago' : 'unit price vs ' + state.win + ' month(s) earlier'}, ≥ US$ ${state.minval} mn in ${index.latest}); showing ${Math.min(rows.length, state.limit)}. Click a row for the chart.`;
+    $('#movers-table thead').innerHTML = '<tr>' + cols.map(([k, l, n]) => `<th class="${n ? 'num' : ''} ${k === sortKey ? 'on' : ''}" data-k="${k}">${l}</th>`).join('') + '</tr>';
+    $('#movers-table tbody').innerHTML = rows.slice(0, state.limit).map(r => `<tr class="row" data-hs="${r[0]}">
+      <td>${r[0]}</td><td title="${esc(r[1])}">${esc(r[1].length > 48 ? r[1].slice(0, 46) + '…' : r[1])}</td><td>${esc(r[2])}</td>
+      <td class="num">${fmt(r[ci[p + 'v']], 1)}</td><td class="num">${fmt(r[ci[p + 'q']], 0)}</td><td class="num">${fmtP(r[ci[p + 'p']])}</td>
+      <td class="num">${pct(r[ci[p + 'p1']])}</td><td class="num">${pct(r[ci[p + 'p3']])}</td><td class="num">${pct(r[ci[p + 'p12']])}</td><td class="num">${pct(r[ci[p + 'sy']])}</td>
+      <td class="num">${pct(r[ci[p + 'q12']])}</td><td class="num">${pct(r[ci[p + 'v12']])}</td><td>${chips(groupsForHS(r[0]), 4)}</td></tr>`).join('');
+    $('#more').style.display = rows.length > state.limit ? '' : 'none';
+  }
+  $('#movers-table').addEventListener('click', (e) => {
+    const th = e.target.closest('th'); if (th && th.dataset.k !== 'ben') { if (state.sort === th.dataset.k) state.asc = !state.asc; else { state.sort = th.dataset.k; state.asc = false; } renderMovers(); return; }
+    if (e.target.closest('a')) return;
+    const tr = e.target.closest('tr.row'); if (tr) openHS(tr.dataset.hs);
+  });
+  renderMovers();
+
+  // ---- spot table ----
+  if (spot) {
+    const names = Object.keys(spot.rows).sort((a, b) => (spot.rows[b].chg_1m || 0) - (spot.rows[a].chg_1m || 0));
+    $('#spot-summary').textContent = `${names.length} commodities · ${spot.updated} · sorted by 1-month change · click a row for the chart`;
+    $('#spot-table thead').innerHTML = '<tr><th>Commodity</th><th class="num">Last</th><th>Unit</th><th class="num">1d</th><th class="num">1w</th><th class="num">1m</th><th class="num">3m</th><th class="num">6m</th><th class="num">52w pos</th><th>Source</th><th>Exposed names</th></tr>';
+    $('#spot-table tbody').innerHTML = names.map(n => { const r = spot.rows[n]; return `<tr class="row" data-spot="${esc(n)}"><td class="capitalize">${esc(n)}</td><td class="num">${fmt(r.last, 2)}</td><td>${esc(r.unit)}</td><td class="num">${pct(r.chg_1d)}</td><td class="num">${pct(r.chg_1w)}</td><td class="num">${pct(r.chg_1m)}</td><td class="num">${pct(r.chg_3m)}</td><td class="num">${pct(r.chg_6m)}</td><td class="num">${r.pos == null ? '—' : r.pos + '%'}</td><td class="muted">${esc(r.source)}</td><td>${chips(groupsForSpot(n), 5)}</td></tr>`; }).join('');
+    $('#spot-table').addEventListener('click', (e) => { if (e.target.closest('a')) return; const tr = e.target.closest('tr.row'); if (tr) openSpot(tr.dataset.spot); });
+  }
+
+  // ---- WPI table ----
+  function wpiStats(it) {
+    const v = it.v; let li = -1; for (let i = v.length - 1; i >= 0; i--) if (v[i] != null) { li = i; break; }
+    if (li < 0) return {};
+    const at = (n) => li - n >= 0 ? v[li - n] : null; const ch = (b) => b ? +((v[li] / b - 1) * 100).toFixed(1) : null;
+    return { month: wpi.months[li], last: v[li], c1: ch(at(1)), c3: ch(at(3)), c12: ch(at(12)), c36: ch(at(36)) };
+  }
+  const wstate = { filter: '', groups: false, limit: 60, sort: 'c3', asc: false };
+  if (wpi) {
+    const stats = wpi.items.map(it => Object.assign({ it }, wpiStats(it)));
+    function renderWPI() {
+      let rows = stats.filter(s => s.last != null && (wstate.groups || s.it.leaf) && (!wstate.filter || s.it.n.toLowerCase().includes(wstate.filter)));
+      rows.sort((a, b) => { const x = a[wstate.sort] ?? (wstate.sort === 'n' ? a.it.n : null), y = b[wstate.sort] ?? (wstate.sort === 'n' ? b.it.n : null); if (x == null) return 1; if (y == null) return -1; return typeof x === 'string' ? (wstate.asc ? x.localeCompare(y) : y.localeCompare(x)) : (wstate.asc ? x - y : y - x); });
+      $('#wpi-summary').textContent = `${rows.length} items · index to ${wpi.months[wpi.months.length - 1]} · click a heading to sort, a row for the chart`;
+      const cols = [['n', 'Item', false], ['w', 'Weight', true], ['last', 'Index', true], ['c1', '1m', true], ['c3', '3m', true], ['c12', '12m', true], ['c36', '36m', true], ['ben', 'Exposed names', false]];
+      $('#wpi-table thead').innerHTML = '<tr>' + cols.map(([k, l, n]) => `<th class="${n ? 'num' : ''} ${k === wstate.sort ? 'on' : ''}" data-k="${k}">${l}</th>`).join('') + '</tr>';
+      $('#wpi-table tbody').innerHTML = rows.slice(0, wstate.limit).map(s => `<tr class="row" data-c="${s.it.c}"><td>${esc(s.it.n)}${s.it.leaf ? '' : ' <span class="muted text-xs">group</span>'}</td><td class="num">${fmt(s.it.w, 3)}</td><td class="num">${fmt(s.last, 1)}</td><td class="num">${pct(s.c1)}</td><td class="num">${pct(s.c3)}</td><td class="num">${pct(s.c12)}</td><td class="num">${pct(s.c36)}</td><td>${chips(groupsForWPI(s.it.n), 4)}</td></tr>`).join('');
+      $('#wpi-more').style.display = rows.length > wstate.limit ? '' : 'none';
+    }
+    $('#wpi-filter').addEventListener('input', () => { wstate.filter = $('#wpi-filter').value.toLowerCase(); wstate.limit = 60; renderWPI(); });
+    $('#wpi-groups').addEventListener('change', () => { wstate.groups = $('#wpi-groups').checked; renderWPI(); });
+    $('#wpi-more').addEventListener('click', () => { wstate.limit += 200; renderWPI(); });
+    $('#wpi-table').addEventListener('click', (e) => {
+      const th = e.target.closest('th'); if (th && th.dataset.k !== 'ben' && th.dataset.k !== 'w') { if (wstate.sort === th.dataset.k) wstate.asc = !wstate.asc; else { wstate.sort = th.dataset.k; wstate.asc = false; } renderWPI(); return; }
+      if (e.target.closest('a')) return;
+      const tr = e.target.closest('tr.row'); if (tr) openWPI(tr.dataset.c);
+    });
+    renderWPI();
+  } else {
+    $('#wpi-summary').textContent = 'wpi.json.gz unavailable';
+  }
+
+  // ---- map ----
+  $('#map-list').innerHTML = groups.map(g => `<div class="card"><b class="cursor-pointer hover:underline" data-open="${esc(g.id)}">${esc(g.name)}</b> <span class="muted text-xs">HS ${esc((g.hs || []).join(', ') || '—')}${(g.spot || []).length ? ' · spot ' + esc(g.spot.join(', ')) : ''}</span>${chipsFull(g)}${g.history ? `<p class="muted text-xs mt-1">${esc(g.history)}</p>` : ''}</div>`).join('');
+  $('#map-list').addEventListener('click', (e) => { const b = e.target.closest('[data-open]'); if (b) openGroup(b.dataset.open); });
+
+  // ---- deep links ----
+  const q = new URLSearchParams(location.search);
+  if (q.get('hs')) openHS(q.get('hs')); else if (q.get('wpi')) openWPI(q.get('wpi')); else if (q.get('spot')) openSpot(q.get('spot')); else if (q.get('g')) openGroup(q.get('g'));
+})();
+</script>
+</body>
+</html>

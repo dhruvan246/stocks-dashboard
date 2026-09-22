@@ -1,0 +1,1784 @@
+{
+ "_readme": "Curated map from a commodity or product price to the listed Indian companies whose earnings move with it. 'benefit' = sells the product, owns the resource, or carries inventory that revalues up (pass-through with inventory gains); 'suffer' = buys it as a raw material without full pass-through. Every entry is a starting hypothesis for the research run to VERIFY from the company's own filings (share of revenue, pricing terms) before publishing. 'spot' keys refer to docs/ideas/spot.json rows; 'hs' are HS-code prefixes aggregated from docs/ideas/trade/panel.json (imports and exports, unit price = value/quantity). 'history' records past episodes the user pointed to as the pattern to catch. 'wpi' lists case-insensitive substrings matched against WPI item names in docs/ideas/wpi.json. 'spot' names are lower-case keys of docs/ideas/spot.json.",
+ "groups": [
+  {
+   "id": "copper",
+   "name": "Copper",
+   "spot": [
+    "copper"
+   ],
+   "hs": [
+    "7403",
+    "7404",
+    "7407",
+    "7408"
+   ],
+   "benefit": [
+    {
+     "symbol": "SUNLITE",
+     "name": "Sunlite Recycling Industries",
+     "why": "copper scrap recycler; pass-through pricing plus inventory gains in a rising market"
+    },
+    {
+     "symbol": "PARMESHWAR",
+     "name": "Parmeshwar Metal",
+     "why": "copper recycler adding capacity; same pass-through + inventory-gain mechanics"
+    },
+    {
+     "symbol": "BAHETI",
+     "name": "Baheti Recycling Industries",
+     "why": "non-ferrous recycler"
+    },
+    {
+     "symbol": "HINDCOPPER",
+     "name": "Hindustan Copper",
+     "why": "India's only copper miner; revenue is directly LME-linked"
+    },
+    {
+     "symbol": "KSHINTL",
+     "name": "KSH International",
+     "why": "winding wires with copper pass-through; volume story, price neutral to positive"
+    },
+    {
+     "symbol": "BHAGYANGR",
+     "name": "Bhagyanagar India",
+     "why": "copper products; pass-through (contested in his posts)"
+    },
+    {
+     "symbol": "PRECWIRE",
+     "name": "Precision Wires India",
+     "why": "winding wires, copper pass-through"
+    }
+   ],
+   "suffer": [
+    {
+     "symbol": "TARIL",
+     "name": "Transformers & Rectifiers",
+     "why": "copper is a major transformer input; margin squeeze when contracts lag"
+    },
+    {
+     "symbol": "SHILCTECH",
+     "name": "Shilchar Technologies",
+     "why": "transformer maker, same exposure"
+    },
+    {
+     "symbol": "VOLTAMP",
+     "name": "Voltamp Transformers",
+     "why": "transformer maker, same exposure"
+    }
+   ],
+   "history": "Aug-Sep 2026: LME copper at record highs; he called Sunlite/Parmeshwar on pass-through + inventory gains.",
+   "wpi": [
+    "copper"
+   ]
+  },
+  {
+   "id": "aluminium",
+   "name": "Aluminium",
+   "spot": [
+    "aluminium"
+   ],
+   "hs": [
+    "7601",
+    "7602",
+    "7604",
+    "7606"
+   ],
+   "benefit": [
+    {
+     "symbol": "HINDALCO",
+     "name": "Hindalco",
+     "why": "integrated aluminium producer"
+    },
+    {
+     "symbol": "NATIONALUM",
+     "name": "NALCO",
+     "why": "bauxite-to-metal, most price-sensitive"
+    },
+    {
+     "symbol": "VEDL",
+     "name": "Vedanta",
+     "why": "largest Indian aluminium smelter"
+    }
+   ],
+   "suffer": [
+    {
+     "symbol": "MAANALU",
+     "name": "Maan Aluminium",
+     "why": "extrusions; pass-through with lag"
+    },
+    {
+     "symbol": "CENTEXT",
+     "name": "Century Extrusions",
+     "why": "extrusions converter"
+    }
+   ],
+   "wpi": [
+    "aluminium metal",
+    "aluminium ingot",
+    "aluminium alloys",
+    "aluminium shapes"
+   ]
+  },
+  {
+   "id": "zinc_lead",
+   "name": "Zinc and lead",
+   "spot": [
+    "zinc",
+    "lead"
+   ],
+   "hs": [
+    "7901",
+    "7801",
+    "7802"
+   ],
+   "benefit": [
+    {
+     "symbol": "HINDZINC",
+     "name": "Hindustan Zinc",
+     "why": "zinc, lead and silver producer"
+    },
+    {
+     "symbol": "GRAVITA",
+     "name": "Gravita India",
+     "why": "lead recycler; inventory gains"
+    },
+    {
+     "symbol": "POCL",
+     "name": "Pondy Oxides & Chemicals",
+     "why": "lead recycler"
+    },
+    {
+     "symbol": "NILE",
+     "name": "Nile Ltd",
+     "why": "lead smelter"
+    }
+   ],
+   "suffer": [
+    {
+     "symbol": "EXIDEIND",
+     "name": "Exide Industries",
+     "why": "lead is the main battery input"
+    },
+    {
+     "symbol": "ARE&M",
+     "name": "Amara Raja Energy & Mobility",
+     "why": "lead input"
+    }
+   ],
+   "wpi": [
+    "zinc concentrate",
+    "zinc metal",
+    "lead concentrate",
+    "lead ingots"
+   ]
+  },
+  {
+   "id": "nickel",
+   "name": "Nickel",
+   "spot": [
+    "nickel"
+   ],
+   "hs": [
+    "7502"
+   ],
+   "benefit": [],
+   "suffer": [
+    {
+     "symbol": "JSL",
+     "name": "Jindal Stainless",
+     "why": "nickel drives stainless input cost; surcharge pass-through with lag"
+    },
+    {
+     "symbol": "VENUSPIPES",
+     "name": "Venus Pipes & Tubes",
+     "why": "stainless pipes, nickel-linked input"
+    }
+   ],
+   "wpi": []
+  },
+  {
+   "id": "silver",
+   "name": "Silver",
+   "spot": [
+    "silver"
+   ],
+   "hs": [
+    "710691",
+    "710692"
+   ],
+   "benefit": [
+    {
+     "symbol": "HINDZINC",
+     "name": "Hindustan Zinc",
+     "why": "India's largest silver producer (by-product)"
+    },
+    {
+     "symbol": "MODISONLTD",
+     "name": "Modison Ltd",
+     "why": "silver electrical contacts, ~90% pass-through, inventory revalues"
+    }
+   ],
+   "suffer": [
+    {
+     "symbol": "PNGJL",
+     "name": "P N Gadgil Jewellers",
+     "why": "silver jewellery input"
+    }
+   ],
+   "wpi": [
+    "silver"
+   ]
+  },
+  {
+   "id": "gold",
+   "name": "Gold",
+   "spot": [
+    "gold"
+   ],
+   "hs": [
+    "710812",
+    "710813"
+   ],
+   "benefit": [
+    {
+     "symbol": "MUTHOOTFIN",
+     "name": "Muthoot Finance",
+     "why": "gold-loan book value rises with gold"
+    },
+    {
+     "symbol": "MANAPPURAM",
+     "name": "Manappuram Finance",
+     "why": "gold loans"
+    },
+    {
+     "symbol": "TITAN",
+     "name": "Titan",
+     "why": "jewellery inventory gains; demand softens if price spikes"
+    },
+    {
+     "symbol": "KALYANKJIL",
+     "name": "Kalyan Jewellers",
+     "why": "inventory gains"
+    },
+    {
+     "symbol": "SKYGOLD",
+     "name": "Sky Gold & Diamonds",
+     "why": "converter; price pass-through, inventory gains"
+    },
+    {
+     "symbol": "UTSSAV",
+     "name": "Utssav CZ Gold Jewels",
+     "why": "converter"
+    },
+    {
+     "symbol": "SHANTIGOLD",
+     "name": "Shanti Gold International",
+     "why": "converter"
+    }
+   ],
+   "suffer": [],
+   "wpi": [
+    "gold & gold"
+   ]
+  },
+  {
+   "id": "crude",
+   "name": "Crude oil",
+   "spot": [
+    "oil (brent)",
+    "oil (wti)"
+   ],
+   "hs": [
+    "2709"
+   ],
+   "benefit": [
+    {
+     "symbol": "ONGC",
+     "name": "ONGC",
+     "why": "producer"
+    },
+    {
+     "symbol": "OIL",
+     "name": "Oil India",
+     "why": "producer"
+    },
+    {
+     "symbol": "HINDOILEXP",
+     "name": "Hindustan Oil Exploration",
+     "why": "small E&P"
+    },
+    {
+     "symbol": "SELAN",
+     "name": "Selan Exploration",
+     "why": "small E&P"
+    }
+   ],
+   "suffer": [
+    {
+     "symbol": "BPCL",
+     "name": "BPCL",
+     "why": "marketing margins compress"
+    },
+    {
+     "symbol": "HINDPETRO",
+     "name": "HPCL",
+     "why": "same"
+    },
+    {
+     "symbol": "IOC",
+     "name": "Indian Oil",
+     "why": "same"
+    },
+    {
+     "symbol": "ASIANPAINT",
+     "name": "Asian Paints",
+     "why": "crude-linked solvents and monomers"
+    },
+    {
+     "symbol": "INDIGO",
+     "name": "InterGlobe Aviation",
+     "why": "ATF"
+    }
+   ],
+   "wpi": [
+    "crude petroleum",
+    "petrol",
+    "high speed diesel",
+    "aviation turbine"
+   ]
+  },
+  {
+   "id": "natgas",
+   "name": "Natural gas",
+   "spot": [
+    "natural gas (henry hub)"
+   ],
+   "hs": [
+    "2711"
+   ],
+   "benefit": [
+    {
+     "symbol": "ONGC",
+     "name": "ONGC",
+     "why": "gas producer"
+    },
+    {
+     "symbol": "OIL",
+     "name": "Oil India",
+     "why": "gas producer"
+    }
+   ],
+   "suffer": [
+    {
+     "symbol": "IGL",
+     "name": "Indraprastha Gas",
+     "why": "city gas margins if APM allocation falls"
+    },
+    {
+     "symbol": "MGL",
+     "name": "Mahanagar Gas",
+     "why": "same"
+    },
+    {
+     "symbol": "GNFC",
+     "name": "GNFC",
+     "why": "gas-based chemicals"
+    },
+    {
+     "symbol": "DEEPAKFERT",
+     "name": "Deepak Fertilisers",
+     "why": "gas input for ammonia"
+    }
+   ],
+   "wpi": [
+    "natural gas",
+    "lpg"
+   ]
+  },
+  {
+   "id": "coal",
+   "name": "Thermal coal",
+   "spot": [
+    "coal"
+   ],
+   "hs": [
+    "2701"
+   ],
+   "benefit": [
+    {
+     "symbol": "COALINDIA",
+     "name": "Coal India",
+     "why": "e-auction realisations track imported coal"
+    }
+   ],
+   "suffer": [
+    {
+     "symbol": "ULTRACEMCO",
+     "name": "UltraTech Cement",
+     "why": "fuel cost"
+    },
+    {
+     "symbol": "JSWENERGY",
+     "name": "JSW Energy",
+     "why": "imported-coal plants"
+    },
+    {
+     "symbol": "TATAPOWER",
+     "name": "Tata Power",
+     "why": "Mundra imported-coal plant"
+    }
+   ],
+   "wpi": [
+    "coking coal",
+    "non-coking coal"
+   ]
+  },
+  {
+   "id": "steel",
+   "name": "Steel (HRC, rebar)",
+   "spot": [],
+   "hs": [
+    "7208",
+    "7209",
+    "7210",
+    "7214"
+   ],
+   "benefit": [
+    {
+     "symbol": "TATASTEEL",
+     "name": "Tata Steel",
+     "why": "integrated producer"
+    },
+    {
+     "symbol": "JSWSTEEL",
+     "name": "JSW Steel",
+     "why": "producer"
+    },
+    {
+     "symbol": "SAIL",
+     "name": "SAIL",
+     "why": "producer, highest operating leverage"
+    },
+    {
+     "symbol": "JINDALSTEL",
+     "name": "Jindal Steel & Power",
+     "why": "producer"
+    }
+   ],
+   "suffer": [
+    {
+     "symbol": "APLAPOLLO",
+     "name": "APL Apollo Tubes",
+     "why": "converter; inventory gains short term, margin risk if lagged"
+    },
+    {
+     "symbol": "HARIOMPIPE",
+     "name": "Hariom Pipe Industries",
+     "why": "converter"
+    }
+   ],
+   "wpi": [
+    "hr coils",
+    "cr coils",
+    "mild steel",
+    "tmt bars",
+    "wire rods",
+    "blooms",
+    "billets"
+   ]
+  },
+  {
+   "id": "iron_ore",
+   "name": "Iron ore and pellets",
+   "spot": [],
+   "hs": [
+    "2601"
+   ],
+   "benefit": [
+    {
+     "symbol": "NMDC",
+     "name": "NMDC",
+     "why": "miner"
+    },
+    {
+     "symbol": "GPIL",
+     "name": "Godawari Power & Ispat",
+     "why": "captive iron ore mines, pellets"
+    },
+    {
+     "symbol": "LLOYDSME",
+     "name": "Lloyds Metals & Energy",
+     "why": "miner"
+    },
+    {
+     "symbol": "SANDUMA",
+     "name": "Sandur Manganese & Iron Ores",
+     "why": "miner"
+    }
+   ],
+   "suffer": [
+    {
+     "symbol": "JSWSTEEL",
+     "name": "JSW Steel",
+     "why": "buys ore"
+    }
+   ],
+   "wpi": [
+    "iron ore",
+    "sponge iron",
+    "pig iron"
+   ]
+  },
+  {
+   "id": "manganese",
+   "name": "Manganese ore and alloys",
+   "spot": [],
+   "hs": [
+    "2602",
+    "7202"
+   ],
+   "benefit": [
+    {
+     "symbol": "MOIL",
+     "name": "MOIL",
+     "why": "manganese ore miner"
+    },
+    {
+     "symbol": "SANDUMA",
+     "name": "Sandur Manganese & Iron Ores",
+     "why": "ore + ferroalloys"
+    },
+    {
+     "symbol": "MAITHANALL",
+     "name": "Maithan Alloys",
+     "why": "ferroalloys"
+    }
+   ],
+   "suffer": [],
+   "wpi": [
+    "manganese ore",
+    "ferromanganese",
+    "silicomanganese"
+   ]
+  },
+  {
+   "id": "graphite_electrodes",
+   "name": "Graphite electrodes and needle coke",
+   "spot": [],
+   "hs": [
+    "854511",
+    "2713"
+   ],
+   "benefit": [
+    {
+     "symbol": "HEG",
+     "name": "HEG",
+     "why": "graphite electrode maker; pure price play"
+    },
+    {
+     "symbol": "GRAPHITE",
+     "name": "Graphite India",
+     "why": "graphite electrode maker"
+    }
+   ],
+   "suffer": [],
+   "history": "2017-18: electrode prices rose ~10x on China closures; HEG rose ~30x and Graphite India ~10x. Needle coke (HS 2713) is the input: its rise squeezes them.",
+   "wpi": [
+    "graphite rod"
+   ]
+  },
+  {
+   "id": "phenol_acetone",
+   "name": "Phenol and acetone",
+   "spot": [],
+   "hs": [
+    "290711",
+    "291411"
+   ],
+   "benefit": [
+    {
+     "symbol": "DEEPAKNTR",
+     "name": "Deepak Nitrite",
+     "why": "India's largest phenol-acetone producer (Deepak Phenolics)"
+    }
+   ],
+   "suffer": [
+    {
+     "symbol": "GREENPLY",
+     "name": "Greenply Industries",
+     "why": "phenolic resins for plywood"
+    },
+    {
+     "symbol": "CENTURYPLY",
+     "name": "Century Plyboards",
+     "why": "phenolic resins"
+    }
+   ],
+   "history": "2020-21: phenol spread widened and Deepak Nitrite re-rated several-fold.",
+   "wpi": []
+  },
+  {
+   "id": "sulphuric_acid",
+   "name": "Sulphuric acid and sulphur",
+   "spot": [],
+   "hs": [
+    "280700",
+    "2503"
+   ],
+   "benefit": [
+    {
+     "symbol": "TANFACIND",
+     "name": "Tanfac Industries",
+     "why": "expanded sulphuric acid capacity 140% in 2024; price-taker on the upside"
+    },
+    {
+     "symbol": "HINDZINC",
+     "name": "Hindustan Zinc",
+     "why": "sells by-product acid"
+    },
+    {
+     "symbol": "HINDALCO",
+     "name": "Hindalco",
+     "why": "by-product acid"
+    }
+   ],
+   "suffer": [
+    {
+     "symbol": "MBAPL",
+     "name": "Madhya Bharat Agro Products",
+     "why": "acid is the SSP/DAP input"
+    },
+    {
+     "symbol": "COROMANDEL",
+     "name": "Coromandel International",
+     "why": "phosphatic fertiliser input (partly captive)"
+    },
+    {
+     "symbol": "PARADEEP",
+     "name": "Paradeep Phosphates",
+     "why": "same"
+    }
+   ],
+   "wpi": [
+    "sulphuric acid"
+   ]
+  },
+  {
+   "id": "caustic_soda",
+   "name": "Caustic soda and chlor-alkali",
+   "spot": [],
+   "hs": [
+    "281511",
+    "281512",
+    "2801"
+   ],
+   "benefit": [
+    {
+     "symbol": "GUJALKALI",
+     "name": "Gujarat Alkalies & Chemicals",
+     "why": "largest caustic producer"
+    },
+    {
+     "symbol": "DCMSHRIRAM",
+     "name": "DCM Shriram",
+     "why": "chlor-alkali"
+    },
+    {
+     "symbol": "LORDSCHLO",
+     "name": "Lords Chloro Alkali",
+     "why": "small caustic producer, highest operating leverage"
+    },
+    {
+     "symbol": "EPIGRAL",
+     "name": "Epigral (Meghmani Finechem)",
+     "why": "chlor-alkali"
+    },
+    {
+     "symbol": "PUNJABCHEM",
+     "name": "Punjab Alkalies",
+     "why": "caustic"
+    },
+    {
+     "symbol": "DCW",
+     "name": "DCW",
+     "why": "caustic + soda ash + PVC"
+    },
+    {
+     "symbol": "DENORA",
+     "name": "De Nora India",
+     "why": "electrode coatings for chlor-alkali plants; benefits from industry capex, not price directly"
+    }
+   ],
+   "suffer": [
+    {
+     "symbol": "GRASIM",
+     "name": "Grasim",
+     "why": "also a producer; net positive"
+    },
+    {
+     "symbol": "CENTURYTEX",
+     "name": "Aditya Birla Real Estate (Century Pulp)",
+     "why": "pulp uses caustic"
+    }
+   ],
+   "wpi": [
+    "caustic soda",
+    "liquid chlorine"
+   ]
+  },
+  {
+   "id": "soda_ash",
+   "name": "Soda ash",
+   "spot": [],
+   "hs": [
+    "283620"
+   ],
+   "benefit": [
+    {
+     "symbol": "TATACHEM",
+     "name": "Tata Chemicals",
+     "why": "largest producer"
+    },
+    {
+     "symbol": "GHCL",
+     "name": "GHCL",
+     "why": "soda ash producer"
+    },
+    {
+     "symbol": "DCW",
+     "name": "DCW",
+     "why": "soda ash"
+    }
+   ],
+   "suffer": [
+    {
+     "symbol": "BOROSIL",
+     "name": "Borosil",
+     "why": "glass input"
+    },
+    {
+     "symbol": "HINDUNILVR",
+     "name": "Hindustan Unilever",
+     "why": "detergent input"
+    }
+   ],
+   "wpi": [
+    "soda ash"
+   ]
+  },
+  {
+   "id": "refrigerant_gases",
+   "name": "Refrigerant gases (R32, R125, R134a, R22)",
+   "spot": [],
+   "hs": [
+    "290339",
+    "290341",
+    "290342",
+    "290343"
+   ],
+   "benefit": [
+    {
+     "symbol": "SRF",
+     "name": "SRF",
+     "why": "largest Indian producer"
+    },
+    {
+     "symbol": "NAVINFLUOR",
+     "name": "Navin Fluorine",
+     "why": "producer"
+    },
+    {
+     "symbol": "FLUOROCHEM",
+     "name": "Gujarat Fluorochemicals",
+     "why": "producer"
+    },
+    {
+     "symbol": "STALLION",
+     "name": "Stallion India Fluorochemicals",
+     "why": "importer-debulker with quota; price pass-through on inventory"
+    }
+   ],
+   "suffer": [
+    {
+     "symbol": "VOLTAS",
+     "name": "Voltas",
+     "why": "AC maker"
+    },
+    {
+     "symbol": "BLUESTARCO",
+     "name": "Blue Star",
+     "why": "AC maker"
+    },
+    {
+     "symbol": "AMBER",
+     "name": "Amber Enterprises",
+     "why": "AC components"
+    }
+   ],
+   "history": "2024-25: US refrigerant prices rose 2-3x on HFC quota cuts; SRF/Navin re-rated; he called Stallion on the import data.",
+   "wpi": []
+  },
+  {
+   "id": "tio2",
+   "name": "Titanium dioxide",
+   "spot": [],
+   "hs": [
+    "282300",
+    "320611"
+   ],
+   "benefit": [],
+   "suffer": [
+    {
+     "symbol": "ASIANPAINT",
+     "name": "Asian Paints",
+     "why": "TiO2 is the largest pigment input"
+    },
+    {
+     "symbol": "BERGEPAINT",
+     "name": "Berger Paints",
+     "why": "same"
+    },
+    {
+     "symbol": "INDIGOPNTS",
+     "name": "Indigo Paints",
+     "why": "same"
+    }
+   ],
+   "wpi": [
+    "titanium"
+   ]
+  },
+  {
+   "id": "pvc",
+   "name": "PVC resin",
+   "spot": [],
+   "hs": [
+    "390410",
+    "390421",
+    "390422"
+   ],
+   "benefit": [
+    {
+     "symbol": "CHEMPLASTS",
+     "name": "Chemplast Sanmar",
+     "why": "PVC producer"
+    },
+    {
+     "symbol": "DCW",
+     "name": "DCW",
+     "why": "PVC producer"
+    },
+    {
+     "symbol": "FINPIPE",
+     "name": "Finolex Industries",
+     "why": "backward-integrated PVC resin"
+    },
+    {
+     "symbol": "RELIANCE",
+     "name": "Reliance Industries",
+     "why": "largest PVC producer"
+    }
+   ],
+   "suffer": [
+    {
+     "symbol": "SUPREMEIND",
+     "name": "Supreme Industries",
+     "why": "pipe maker; inventory gains when PVC rises, losses when it falls"
+    },
+    {
+     "symbol": "ASTRAL",
+     "name": "Astral",
+     "why": "same"
+    },
+    {
+     "symbol": "PRINCEPIPE",
+     "name": "Prince Pipes",
+     "why": "same"
+    }
+   ],
+   "wpi": [
+    "poly vinyl chloride"
+   ]
+  },
+  {
+   "id": "polyolefins",
+   "name": "Polyethylene and polypropylene",
+   "spot": [],
+   "hs": [
+    "3901",
+    "3902"
+   ],
+   "benefit": [
+    {
+     "symbol": "RELIANCE",
+     "name": "Reliance Industries",
+     "why": "producer"
+    }
+   ],
+   "suffer": [
+    {
+     "symbol": "BAIKAKAJI",
+     "name": "Bai-Kakaji Polymers",
+     "why": "packaging converter; LDPE input"
+    },
+    {
+     "symbol": "UFLEX",
+     "name": "UFlex",
+     "why": "films converter"
+    },
+    {
+     "symbol": "COSMOFIRST",
+     "name": "Cosmo First",
+     "why": "BOPP films; spread business"
+    },
+    {
+     "symbol": "SUPREMEIND",
+     "name": "Supreme Industries",
+     "why": "polymer processor"
+    }
+   ],
+   "wpi": [
+    "polyethylene",
+    "polypropylene"
+   ]
+  },
+  {
+   "id": "methanol_acetic",
+   "name": "Methanol and acetic acid",
+   "spot": [],
+   "hs": [
+    "290511",
+    "291521"
+   ],
+   "benefit": [
+    {
+     "symbol": "GNFC",
+     "name": "GNFC",
+     "why": "methanol and acetic acid producer"
+    }
+   ],
+   "suffer": [
+    {
+     "symbol": "JUBLINGREA",
+     "name": "Jubilant Ingrevia",
+     "why": "acetic acid derivatives input"
+    },
+    {
+     "symbol": "LAXMIORG",
+     "name": "Laxmi Organic",
+     "why": "acetic acid derivatives input"
+    }
+   ],
+   "wpi": [
+    "acetic acid",
+    "methanol"
+   ]
+  },
+  {
+   "id": "benzene_pta",
+   "name": "Benzene, PTA and MEG",
+   "spot": [],
+   "hs": [
+    "290220",
+    "291736",
+    "290531"
+   ],
+   "benefit": [
+    {
+     "symbol": "RELIANCE",
+     "name": "Reliance Industries",
+     "why": "petchem producer"
+    },
+    {
+     "symbol": "IOC",
+     "name": "Indian Oil",
+     "why": "PTA producer"
+    }
+   ],
+   "suffer": [
+    {
+     "symbol": "DEEPAKNTR",
+     "name": "Deepak Nitrite",
+     "why": "benzene is the phenol input; watch the phenol-benzene spread, not benzene alone"
+    },
+    {
+     "symbol": "FILATEX",
+     "name": "Filatex India",
+     "why": "polyester input"
+    },
+    {
+     "symbol": "INDORAMA",
+     "name": "Indo Rama Synthetics",
+     "why": "polyester input"
+    }
+   ],
+   "wpi": [
+    "alkyl benzene",
+    "purified terephthalic",
+    "pta",
+    "mono ethylene glycol"
+   ]
+  },
+  {
+   "id": "fertiliser",
+   "name": "Urea, DAP, potash",
+   "spot": [],
+   "hs": [
+    "310210",
+    "310530",
+    "310420"
+   ],
+   "benefit": [
+    {
+     "symbol": "CHAMBLFERT",
+     "name": "Chambal Fertilisers",
+     "why": "urea producer; subsidy-linked"
+    },
+    {
+     "symbol": "COROMANDEL",
+     "name": "Coromandel International",
+     "why": "phosphatics"
+    },
+    {
+     "symbol": "PARADEEP",
+     "name": "Paradeep Phosphates",
+     "why": "phosphatics"
+    },
+    {
+     "symbol": "MBAPL",
+     "name": "Madhya Bharat Agro Products",
+     "why": "SSP/DAP maker; nutrient-based subsidy raised with global prices (his 2022 thesis)"
+    },
+    {
+     "symbol": "KRISHANA",
+     "name": "Krishana Phoschem",
+     "why": "phosphatics"
+    },
+    {
+     "symbol": "RCF",
+     "name": "RCF",
+     "why": "urea"
+    }
+   ],
+   "suffer": [],
+   "wpi": [
+    "urea",
+    "di ammonium phosphate",
+    "superphospate",
+    "nitrogenous fertilizer",
+    "mixed fertilizer"
+   ]
+  },
+  {
+   "id": "cotton",
+   "name": "Cotton",
+   "spot": [
+    "cotton"
+   ],
+   "hs": [
+    "5201",
+    "5205"
+   ],
+   "benefit": [
+    {
+     "symbol": "SPML",
+     "name": "Ginners (verify)",
+     "why": "no clean listed pure play; treat as watch"
+    }
+   ],
+   "suffer": [
+    {
+     "symbol": "VTL",
+     "name": "Vardhman Textiles",
+     "why": "spinner; yarn prices lag cotton"
+    },
+    {
+     "symbol": "NITINSPIN",
+     "name": "Nitin Spinners",
+     "why": "spinner"
+    },
+    {
+     "symbol": "AMBIKCO",
+     "name": "Ambika Cotton Mills",
+     "why": "spinner"
+    },
+    {
+     "symbol": "TRIDENT",
+     "name": "Trident",
+     "why": "home textiles, cotton input"
+    },
+    {
+     "symbol": "WELSPUNLIV",
+     "name": "Welspun Living",
+     "why": "home textiles"
+    }
+   ],
+   "wpi": [
+    "raw cotton",
+    "cotton yarn"
+   ]
+  },
+  {
+   "id": "sugar",
+   "name": "Sugar (and ethanol)",
+   "spot": [
+    "sugar"
+   ],
+   "hs": [
+    "1701"
+   ],
+   "benefit": [
+    {
+     "symbol": "BALRAMCHIN",
+     "name": "Balrampur Chini",
+     "why": "integrated sugar-ethanol"
+    },
+    {
+     "symbol": "TRIVENI",
+     "name": "Triveni Engineering",
+     "why": "sugar-ethanol"
+    },
+    {
+     "symbol": "DHAMPURSUG",
+     "name": "Dhampur Sugar",
+     "why": "sugar"
+    },
+    {
+     "symbol": "DALMIASUG",
+     "name": "Dalmia Bharat Sugar",
+     "why": "sugar"
+    },
+    {
+     "symbol": "EIDPARRY",
+     "name": "EID Parry",
+     "why": "sugar"
+    },
+    {
+     "symbol": "RENUKA",
+     "name": "Shree Renuka Sugars",
+     "why": "sugar, refining"
+    },
+    {
+     "symbol": "DWARKESH",
+     "name": "Dwarikesh Sugar",
+     "why": "sugar"
+    }
+   ],
+   "suffer": [
+    {
+     "symbol": "NESTLEIND",
+     "name": "Nestle India",
+     "why": "sugar input"
+    },
+    {
+     "symbol": "BRITANNIA",
+     "name": "Britannia",
+     "why": "sugar input"
+    }
+   ],
+   "wpi": [
+    "sugarcane",
+    "sugar"
+   ]
+  },
+  {
+   "id": "coffee",
+   "name": "Coffee",
+   "spot": [
+    "coffee"
+   ],
+   "hs": [
+    "0901",
+    "2101"
+   ],
+   "benefit": [
+    {
+     "symbol": "CCL",
+     "name": "CCL Products",
+     "why": "instant coffee; cost-plus pass-through, volume story"
+    },
+    {
+     "symbol": "TATACONSUM",
+     "name": "Tata Consumer Products",
+     "why": "plantations + brands"
+    }
+   ],
+   "suffer": [
+    {
+     "symbol": "NESTLEIND",
+     "name": "Nestle India",
+     "why": "Nescafe input"
+    }
+   ],
+   "wpi": [
+    "coffee"
+   ]
+  },
+  {
+   "id": "tea",
+   "name": "Tea",
+   "spot": [],
+   "hs": [
+    "0902"
+   ],
+   "benefit": [
+    {
+     "symbol": "MCLEODRUSS",
+     "name": "McLeod Russel",
+     "why": "bulk tea producer"
+    },
+    {
+     "symbol": "GOODRICKE",
+     "name": "Goodricke Group",
+     "why": "producer"
+    },
+    {
+     "symbol": "JAYSREETEA",
+     "name": "Jay Shree Tea",
+     "why": "producer"
+    },
+    {
+     "symbol": "ROSSELLIND",
+     "name": "Rossell India",
+     "why": "tea estates"
+    },
+    {
+     "symbol": "ANDREWYU",
+     "name": "Andrew Yule",
+     "why": "tea"
+    }
+   ],
+   "suffer": [
+    {
+     "symbol": "TATACONSUM",
+     "name": "Tata Consumer Products",
+     "why": "packet tea margins"
+    }
+   ],
+   "wpi": [
+    "tea"
+   ]
+  },
+  {
+   "id": "rubber",
+   "name": "Natural rubber",
+   "spot": [],
+   "hs": [
+    "4001"
+   ],
+   "benefit": [
+    {
+     "symbol": "HARRMALAYA",
+     "name": "Harrisons Malayalam",
+     "why": "rubber plantations"
+    }
+   ],
+   "suffer": [
+    {
+     "symbol": "MRF",
+     "name": "MRF",
+     "why": "tyres"
+    },
+    {
+     "symbol": "APOLLOTYRE",
+     "name": "Apollo Tyres",
+     "why": "tyres"
+    },
+    {
+     "symbol": "CEATLTD",
+     "name": "CEAT",
+     "why": "tyres"
+    },
+    {
+     "symbol": "JKTYRE",
+     "name": "JK Tyre",
+     "why": "tyres"
+    }
+   ],
+   "wpi": [
+    "raw rubber"
+   ]
+  },
+  {
+   "id": "palm_oil",
+   "name": "Palm oil and edible oils",
+   "spot": [
+    "palm oil",
+    "soybean oil",
+    "rapeseed"
+   ],
+   "hs": [
+    "1511",
+    "1507",
+    "1512"
+   ],
+   "benefit": [
+    {
+     "symbol": "PATANJALI",
+     "name": "Patanjali Foods",
+     "why": "edible-oil refiner; inventory gains"
+    },
+    {
+     "symbol": "GOKULAGRO",
+     "name": "Gokul Agro Resources",
+     "why": "refiner"
+    },
+    {
+     "symbol": "AWL",
+     "name": "AWL Agri Business (Adani Wilmar)",
+     "why": "refiner"
+    }
+   ],
+   "suffer": [
+    {
+     "symbol": "HINDUNILVR",
+     "name": "Hindustan Unilever",
+     "why": "soaps"
+    },
+    {
+     "symbol": "GODREJCP",
+     "name": "Godrej Consumer",
+     "why": "soaps"
+    },
+    {
+     "symbol": "BRITANNIA",
+     "name": "Britannia",
+     "why": "bakery fats"
+    }
+   ],
+   "wpi": [
+    "palm oil",
+    "soyabean oil",
+    "rapeseed",
+    "mustard oil",
+    "sunflower oil"
+   ]
+  },
+  {
+   "id": "corn_starch",
+   "name": "Corn (maize) and starch",
+   "spot": [
+    "corn"
+   ],
+   "hs": [
+    "1005",
+    "1108"
+   ],
+   "benefit": [],
+   "suffer": [
+    {
+     "symbol": "TBICORN",
+     "name": "TBI Corn",
+     "why": "corn is the input"
+    },
+    {
+     "symbol": "GULPOLY",
+     "name": "Gulshan Polyols",
+     "why": "corn-based starch and ethanol"
+    },
+    {
+     "symbol": "GAEL",
+     "name": "Gujarat Ambuja Exports",
+     "why": "corn wet milling"
+    }
+   ],
+   "wpi": [
+    "maize",
+    "starch"
+   ]
+  },
+  {
+   "id": "wheat_rice",
+   "name": "Wheat and rice",
+   "spot": [
+    "wheat",
+    "rice"
+   ],
+   "hs": [
+    "1001",
+    "1006"
+   ],
+   "benefit": [
+    {
+     "symbol": "KRBL",
+     "name": "KRBL",
+     "why": "basmati exporter; inventory revalues"
+    },
+    {
+     "symbol": "LTFOODS",
+     "name": "LT Foods",
+     "why": "basmati exporter"
+    },
+    {
+     "symbol": "CHAMANLAL",
+     "name": "Chaman Lal Setia",
+     "why": "basmati"
+    }
+   ],
+   "suffer": [
+    {
+     "symbol": "BRITANNIA",
+     "name": "Britannia",
+     "why": "wheat input"
+    },
+    {
+     "symbol": "ITC",
+     "name": "ITC",
+     "why": "atta business"
+    }
+   ],
+   "wpi": [
+    "wheat",
+    "rice, non-basmati",
+    "basmati rice"
+   ]
+  },
+  {
+   "id": "dairy",
+   "name": "Milk, SMP and whey",
+   "spot": [
+    "milk"
+   ],
+   "hs": [
+    "0402",
+    "0404"
+   ],
+   "benefit": [
+    {
+     "symbol": "PARAGMILK",
+     "name": "Parag Milk Foods",
+     "why": "whey protein and value-added; whey price up = margin up (his Sep-2026 call)"
+    },
+    {
+     "symbol": "DODLA",
+     "name": "Dodla Dairy",
+     "why": "dairy"
+    },
+    {
+     "symbol": "HATSUN",
+     "name": "Hatsun Agro",
+     "why": "dairy"
+    },
+    {
+     "symbol": "HERITGFOOD",
+     "name": "Heritage Foods",
+     "why": "dairy"
+    }
+   ],
+   "suffer": [
+    {
+     "symbol": "NESTLEIND",
+     "name": "Nestle India",
+     "why": "milk input"
+    }
+   ],
+   "wpi": [
+    "milk",
+    "powder milk",
+    "ghee",
+    "butter"
+   ]
+  },
+  {
+   "id": "cocoa",
+   "name": "Cocoa",
+   "spot": [
+    "cocoa"
+   ],
+   "hs": [
+    "1801",
+    "1803"
+   ],
+   "benefit": [],
+   "suffer": [
+    {
+     "symbol": "NESTLEIND",
+     "name": "Nestle India",
+     "why": "chocolate"
+    },
+    {
+     "symbol": "LOTUSCHOC",
+     "name": "Lotus Chocolate",
+     "why": "cocoa input"
+    }
+   ],
+   "wpi": [
+    "cocoa"
+   ]
+  },
+  {
+   "id": "solar_cells",
+   "name": "Solar cells, wafers and modules",
+   "spot": [],
+   "hs": [
+    "854142",
+    "854143",
+    "381800"
+   ],
+   "benefit": [
+    {
+     "symbol": "WEBELSOLAR",
+     "name": "Websol Energy System",
+     "why": "pure-play cell maker; DCR cell price up = margin up"
+    },
+    {
+     "symbol": "PREMIERENE",
+     "name": "Premier Energies",
+     "why": "cell + module maker"
+    },
+    {
+     "symbol": "WAAREEENER",
+     "name": "Waaree Energies",
+     "why": "module maker, adding cells"
+    }
+   ],
+   "suffer": [
+    {
+     "symbol": "INA",
+     "name": "Insolation Energy",
+     "why": "module maker buying cells"
+    },
+    {
+     "symbol": "ALPEXSOLAR",
+     "name": "Alpex Solar",
+     "why": "module maker"
+    },
+    {
+     "symbol": "SOLEX",
+     "name": "Solex Energy",
+     "why": "module maker"
+    },
+    {
+     "symbol": "SHAKTIPUMP",
+     "name": "Shakti Pumps",
+     "why": "solar pumps need DCR modules"
+    }
+   ],
+   "history": "2024-25: falling cell prices lifted module makers (Insolation); 2025-26 DCR cell scarcity lifted Websol.",
+   "wpi": [
+    "solar"
+   ]
+  },
+  {
+   "id": "lithium",
+   "name": "Lithium carbonate and battery materials",
+   "spot": [],
+   "hs": [
+    "283691",
+    "2825"
+   ],
+   "benefit": [
+    {
+     "symbol": "HIMADRI",
+     "name": "Himadri Speciality Chemical",
+     "why": "anode materials"
+    }
+   ],
+   "suffer": [
+    {
+     "symbol": "ARE&M",
+     "name": "Amara Raja Energy & Mobility",
+     "why": "lithium cell input"
+    },
+    {
+     "symbol": "EXIDEIND",
+     "name": "Exide Industries",
+     "why": "lithium cells"
+    },
+    {
+     "symbol": "OLAELEC",
+     "name": "Ola Electric",
+     "why": "cell cost"
+    }
+   ],
+   "wpi": [
+    "lithium"
+   ]
+  },
+  {
+   "id": "tungsten",
+   "name": "Tungsten (APT, tungsten carbide)",
+   "spot": [],
+   "hs": [
+    "284180",
+    "8101"
+   ],
+   "benefit": [
+    {
+     "symbol": "DIFFNKG",
+     "name": "Diffusion Engineers",
+     "why": "integrated hard-facing and tungsten carbide consumables; pass-through with margin (his Aug-2026 call)"
+    }
+   ],
+   "suffer": [
+    {
+     "symbol": "ADORWELD",
+     "name": "Ador Welding",
+     "why": "consumables input without integration"
+    }
+   ],
+   "wpi": []
+  },
+  {
+   "id": "paper",
+   "name": "Paper and pulp",
+   "spot": [],
+   "hs": [
+    "4802",
+    "4703",
+    "4707"
+   ],
+   "benefit": [
+    {
+     "symbol": "JKPAPER",
+     "name": "JK Paper",
+     "why": "paper producer"
+    },
+    {
+     "symbol": "WSTCSTPAPR",
+     "name": "West Coast Paper Mills",
+     "why": "producer"
+    },
+    {
+     "symbol": "ANDHRAPAP",
+     "name": "Andhra Paper",
+     "why": "producer"
+    },
+    {
+     "symbol": "SESHAPAPER",
+     "name": "Seshasayee Paper",
+     "why": "producer"
+    }
+   ],
+   "suffer": [
+    {
+     "symbol": "TCPLPACK",
+     "name": "TCPL Packaging",
+     "why": "paperboard input"
+    }
+   ],
+   "wpi": [
+    "paper for printing",
+    "kraft paper",
+    "pulp"
+   ]
+  },
+  {
+   "id": "shipping",
+   "name": "Freight rates (dry bulk, tankers)",
+   "spot": [],
+   "hs": [],
+   "benefit": [
+    {
+     "symbol": "SCI",
+     "name": "Shipping Corporation of India",
+     "why": "fleet owner"
+    },
+    {
+     "symbol": "GESHIP",
+     "name": "Great Eastern Shipping",
+     "why": "fleet owner"
+    },
+    {
+     "symbol": "SEAMECLTD",
+     "name": "Seamec",
+     "why": "offshore vessels; charter rates"
+    }
+   ],
+   "suffer": [],
+   "note": "no free daily index wired yet; Baltic indices are paid",
+   "wpi": []
+  },
+  {
+   "id": "silicon_polysilicon",
+   "name": "Polysilicon and silicon metal",
+   "spot": [],
+   "hs": [
+    "280461",
+    "280469"
+   ],
+   "benefit": [],
+   "suffer": [
+    {
+     "symbol": "WEBELSOLAR",
+     "name": "Websol Energy System",
+     "why": "wafer input"
+    },
+    {
+     "symbol": "PREMIERENE",
+     "name": "Premier Energies",
+     "why": "wafer input"
+    }
+   ],
+   "wpi": [
+    "ferrosilicon"
+   ]
+  },
+  {
+   "id": "spices",
+   "name": "Spices (turmeric, cumin, chilli, cardamom)",
+   "spot": [],
+   "hs": [
+    "091030",
+    "090931",
+    "090421",
+    "090831"
+   ],
+   "benefit": [
+    {
+     "symbol": "KRBL",
+     "name": "(none clean) watch",
+     "why": "no pure listed spice grower; exporters pass through"
+    }
+   ],
+   "suffer": [
+    {
+     "symbol": "EVERESTIND",
+     "name": "(branded spice makers, verify)",
+     "why": "input cost for MDH/Everest-type brands; listed proxies limited"
+    }
+   ],
+   "wpi": [
+    "spices",
+    "turmeric",
+    "chillies",
+    "cardamom",
+    "cumin"
+   ]
+  },
+  {
+   "id": "gherkins",
+   "name": "Gherkins (pickled cucumber exports)",
+   "spot": [],
+   "hs": [
+    "071140",
+    "200110"
+   ],
+   "benefit": [
+    {
+     "symbol": "FRESHARA",
+     "name": "Freshara Agro Exports",
+     "why": "largest Indian gherkin exporter (his 2024-25 call); export unit price and quantity are the direct trackers"
+    }
+   ],
+   "suffer": [],
+   "wpi": []
+  },
+  {
+   "id": "cashew",
+   "name": "Cashew",
+   "spot": [],
+   "hs": [
+    "080131",
+    "080132"
+   ],
+   "benefit": [],
+   "suffer": [],
+   "note": "used to check claimed revenues (Aelea case), not as a price play",
+   "wpi": [
+    "cashew"
+   ]
+  }
+ ]
+}

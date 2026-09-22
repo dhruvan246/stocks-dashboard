@@ -771,6 +771,54 @@
    "pages": [
     "ideas.html"
    ]
+  },
+  {
+   "file": "ideas/signals.json",
+   "name": "Commodity Watch — signals (spot + WPI + HS trade mapped to listed names)",
+   "workflow": "cloud routine daily-ideas (scripts/ideas/spot.py, wpi.py, trade.py --latest, signals.py)",
+   "cadence": "daily ~19:30 IST (trading days)",
+   "max_age_hours": 80,
+   "min_bytes": 20000,
+   "min_ratio": 0,
+   "pages": [
+    "commodities.html"
+   ]
+  },
+  {
+   "file": "ideas/spot.json",
+   "name": "Commodity Watch — daily spot panel (LME via Westmetall + Markets Insider)",
+   "workflow": "cloud routine daily-ideas (scripts/ideas/spot.py, wpi.py, trade.py --latest, signals.py)",
+   "cadence": "daily ~19:30 IST (trading days)",
+   "max_age_hours": 80,
+   "min_bytes": 3000,
+   "min_ratio": 0,
+   "pages": [
+    "commodities.html"
+   ]
+  },
+  {
+   "file": "ideas/trade/meta.json",
+   "name": "Commodity Watch — HS trade panel pointer (MEIDB, monthly, ~45-day lag)",
+   "workflow": "cloud routine daily-ideas (scripts/ideas/spot.py, wpi.py, trade.py --latest, signals.py)",
+   "cadence": "monthly (portal publishes ~45 days after month-end)",
+   "max_age_hours": 1440,
+   "min_bytes": 1500,
+   "min_ratio": 0,
+   "pages": [
+    "commodities.html"
+   ]
+  },
+  {
+   "file": "ideas/wpi.json.gz",
+   "name": "Commodity Watch — WPI item index (eaindustry.nic.in, monthly)",
+   "workflow": "cloud routine daily-ideas (scripts/ideas/spot.py, wpi.py, trade.py --latest, signals.py)",
+   "cadence": "monthly (14th of the month)",
+   "max_age_hours": 1440,
+   "min_bytes": 100000,
+   "min_ratio": 0,
+   "pages": [
+    "commodities.html"
+   ]
   }
  ],
  "special": [

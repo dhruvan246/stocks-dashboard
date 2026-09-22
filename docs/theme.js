@@ -363,13 +363,14 @@
     if (_ok) { localStorage.setItem('bt_owner_key', _ok); _u.searchParams.delete('ownerkey'); history.replaceState(null, '', _u.pathname + _u.search + _u.hash); }
   } catch (e) {}
   var PRIVATE_PAGES = ['watchlist.html', 'live-tracking.html', 'insurer-inbox.html', 'analytics.html', 'status.html', 'results-coverage.html', 'fill-coverage.html', 'coverage.html',
-                       'ideas.html', 'bull-runs.html', 'strategy-phases.html', 'portfolio.html', 'pf-glance.html', 'terminal.html', 'private-import.html'];
+                       'ideas.html', 'commodities.html', 'bull-runs.html', 'strategy-phases.html', 'portfolio.html', 'pf-glance.html', 'terminal.html', 'private-import.html'];
   var IS_OWNER = false; try { IS_OWNER = !!localStorage.getItem('bt_owner_key'); } catch (e) {}
   // Every private page lives in ONE owner-only "Admin" section: entries listed in a public group above are
   // moved out of it (for everyone), the direct-URL-only owner tools are added here, and the whole section
   // is appended to the nav only when this browser holds the owner key.
   var ADMIN = { g: 'Admin', items: [
     ['./ideas.html',           ic('flask'), 'Daily Ideas'],
+    ['./commodities.html',     ic('activity'), 'Commodity Watch'],
     ['./bull-runs.html',       ic('trend'), 'Bull-Run Survivors'],
     ['./strategy-phases.html', ic('layers'), 'Strategy Phases Lab'],
     ['./portfolio.html',       ic('wallet'), 'Portfolio'],
