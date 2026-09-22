@@ -10,6 +10,7 @@
   <script src="./theme.js"></script>
   <script src="https://cdn.jsdelivr.net/npm/lightweight-charts@5.2.1/dist/lightweight-charts.standalone.production.js"></script>
   <style>
+    main { width: 100%; }   /* body is a flex column: without this, main shrinks-to-fit its widest table and the page scrolls sideways (runbook §... index-chart precedent) */
     .muted { color: var(--text-muted); }
     .card { background: var(--surface-2); border: 1px solid var(--border); border-radius: 12px; padding: 16px; }
     .pill { display: inline-block; font-size: 11px; padding: 2px 8px; border-radius: 999px; border: 1px solid var(--border); margin: 0 4px 4px 0; white-space: nowrap; }
@@ -67,7 +68,7 @@
   </div>
 
   <div id="tabs" class="seg flex flex-wrap" role="tablist" aria-label="Sections">
-    <button data-t="map" class="on">Beneficiary map</button><button data-t="signals">Signals</button><button data-t="movers">Movers (HS codes)</button><button data-t="spot">Spot (daily)</button><button data-t="wpi">WPI (monthly)</button><button data-t="method">Sources &amp; method</button>
+    <button data-t="map" class="on">Beneficiary map</button><button data-t="signals">Signals</button><button data-t="movers">Movers (HS codes)</button><button data-t="spot">Spot (daily)</button><button data-t="india">India spot</button><button data-t="global">Global</button><button data-t="wpi">WPI (monthly)</button><button data-t="method">Sources &amp; method</button>
   </div>
 
   <section id="detail" class="mb-8 hidden"></section>
@@ -109,6 +110,24 @@
     <h2 class="text-lg font-semibold mb-2">Spot prices (daily)</h2>
     <p id="spot-summary" class="muted text-xs mb-2"></p>
     <div class="card overflow-x-auto"><table class="sw" id="spot-table"><thead></thead><tbody></tbody></table></div>
+  </section>
+
+  <section id="india" class="mb-8">
+    <div class="flex flex-wrap items-baseline justify-between gap-2 mb-1">
+      <h2 class="text-lg font-semibold">India spot (daily, in rupees)</h2>
+      <span id="india-meta" class="muted text-xs"></span>
+    </div>
+    <p class="muted text-sm mb-3">The domestic prints the newspapers quote: steel and metals by city from MetalBook's ticker, IBJA's bullion fix, the Rubber Board, sugar spot by city, and PPAC's metro fuel prices. Day changes where the source publishes them; weekly and monthly changes build up from here as the history accumulates.</p>
+    <div id="india-blocks" class="grid gap-4 md:grid-cols-2"></div>
+  </section>
+
+  <section id="global" class="mb-8">
+    <div class="flex flex-wrap items-baseline justify-between gap-2 mb-1">
+      <h2 class="text-lg font-semibold">Global proxies (daily, Trading Economics)</h2>
+      <span id="global-meta" class="muted text-xs"></span>
+    </div>
+    <p class="muted text-sm mb-3">Futures and contract-for-difference series, so they give direction rather than the Indian price: their "steel" is Shanghai rebar in yuan and HRC is a US benchmark. Sorted by one-month change.</p>
+    <div class="card overflow-x-auto"><table class="sw" id="global-table"><thead><tr><th>Commodity</th><th class="num">Last</th><th>Unit</th><th>As of</th><th class="num">1d</th><th class="num">1m</th><th class="num">1y</th><th>Exposed names</th></tr></thead><tbody></tbody></table></div>
   </section>
 
   <section id="wpi" class="mb-8">
@@ -161,8 +180,8 @@
   }
   const safe = async (url) => { try { return await loadJSON(url); } catch (e) { console.warn('load failed', url, e); return null; } };
 
-  const [meta, signals, spot, spotSeries, cmap] = await Promise.all([
-    safe('./ideas/trade/meta.json'), safe('./ideas/signals.json'), safe('./ideas/spot.json'), safe('./ideas/spot_series.json'), safe('./ideas/commodity_map.json')]);
+  const [meta, signals, spot, spotSeries, cmap, india] = await Promise.all([
+    safe('./ideas/trade/meta.json'), safe('./ideas/signals.json'), safe('./ideas/spot.json'), safe('./ideas/spot_series.json'), safe('./ideas/commodity_map.json'), safe('./ideas/india_spot.json')]);
   const [index, wpi] = await Promise.all([safe('./ideas/trade/index.json.gz'), safe('./ideas/wpi.json.gz')]);
   const CH = meta && meta.chapters || {};
   $('#meta').innerHTML = [
@@ -357,7 +376,9 @@
       ${s.history ? `<p class="text-sm mt-2"><b>Precedent:</b> ${esc(s.history)}</p>` : ''}
       <div class="mt-3">${chipsFull(g)}</div>
       <div class="mt-3 text-sm">${(s.sources.spot || []).map(x => `<span class="pill">${esc(x.name)} ${fmt(x.last, 2)} ${esc(x.unit)} · 1w ${x.chg_1w == null ? '—' : x.chg_1w + '%'} · 1m ${x.chg_1m == null ? '—' : x.chg_1m + '%'}</span>`).join('')}
-        ${(s.sources.wpi || []).map(x => `<span class="pill">WPI ${esc(x.name)} ${x.month}: ${fmt(x.last, 1)} · 3m ${x.chg_3m == null ? '—' : x.chg_3m + '%'} · 12m ${x.chg_12m == null ? '—' : x.chg_12m + '%'}</span>`).join('')}</div>
+        ${(s.sources.wpi || []).map(x => `<span class="pill">WPI ${esc(x.name)} ${x.month}: ${fmt(x.last, 1)} · 3m ${x.chg_3m == null ? '—' : x.chg_3m + '%'} · 12m ${x.chg_12m == null ? '—' : x.chg_12m + '%'}</span>`).join('')}
+        ${(s.sources.te || []).map(x => `<span class="pill">${esc(x.name)} (global) ${fmt(x.last, 2)} ${esc(x.unit)} · 1m ${x.chg_1m == null ? '—' : x.chg_1m + '%'} · 1y ${x.chg_1y == null ? '—' : x.chg_1y + '%'}</span>`).join('')}
+        ${(s.sources.india || []).map(x => `<span class="pill">India · ${esc(x.name)} ${fmt(x.last, 1)} ${esc(x.unit || '')}${x.chg_1d == null ? '' : ' · 1d ' + x.chg_1d + '%'}</span>`).join('')}</div>
     </div>`);
     const render = () => {
       const d = tr[pi]; if (!d) return;
@@ -390,6 +411,10 @@
     } else {
       (spot ? Object.keys(spot.rows) : []).filter(n => hit(n)).forEach(n => out.push({ k: 'SPOT', id: n, label: n, sub: spot.rows[n].unit }));
       groups.filter(g => hit(g.name)).forEach(g => out.push({ k: 'GROUP', id: g.id, label: g.name, sub: 'beneficiary map' }));
+      if (india && india.sources) {
+        ((india.sources.te || {}).rows || []).filter(r => hit(r.name)).forEach(r => out.push({ k: 'GLOBAL', id: r.slug, label: `${r.name} ${fmt(r.price, 2)} ${r.unit}`, sub: `Trading Economics · 1m ${r.chg_1m == null ? '—' : r.chg_1m + '%'}` }));
+        (((india.sources.metalbook || {}).rows) || []).filter(r => hit(r.city + ' ' + r.name)).slice(0, 12).forEach(r => out.push({ k: 'INDIA', id: 'india', label: `${r.city} ${r.name} ₹${fmt(r.price, 1)}/kg`, sub: 'MetalBook' }));
+      }
       (wpi ? wpi.items : []).filter(i => i.leaf && hit(i.n)).slice(0, 15).forEach(i => out.push({ k: 'WPI', id: i.c, label: i.n, sub: 'WPI item ' + i.c }));
       (index ? index.rows : []).filter(r => hit(r[0] + ' ' + r[1])).sort((a, b) => tradeValue(b) - tradeValue(a)).slice(0, 40).forEach(r => out.push({ k: 'HS', id: r[0], label: `${r[0]}: ${r[1]} in ${r[2] || '?'}`, sub: `US$ ${fmt(tradeValue(r), 1)} mn/month` }));
     }
@@ -401,7 +426,7 @@
     results.innerHTML = cur.map((r, i) => `<div data-i="${i}" class="${i === sel ? 'on' : ''}"><span class="k">${r.k}</span>${esc(r.label)} <span class="muted text-xs">· ${esc(r.sub)}</span></div>`).join('');
     results.classList.remove('hidden');
   }
-  function pick(r) { results.classList.add('hidden'); if (r.k === 'HS') openHS(r.id); else if (r.k === 'WPI') openWPI(r.id); else if (r.k === 'SPOT') openSpot(r.id); else if (r.k === 'GROUP') openGroup(r.id); }
+  function pick(r) { results.classList.add('hidden'); if (r.k === 'HS') openHS(r.id); else if (r.k === 'WPI') openWPI(r.id); else if (r.k === 'SPOT') openSpot(r.id); else if (r.k === 'GROUP') openGroup(r.id); else if (r.k === 'GLOBAL') document.getElementById('global').scrollIntoView({ behavior: 'instant', block: 'start' }); else if (r.k === 'INDIA') document.getElementById('india').scrollIntoView({ behavior: 'instant', block: 'start' }); }
   sbox.addEventListener('input', () => { cur = search(sbox.value); sel = cur.length ? 0 : -1; renderResults(); });
   sbox.addEventListener('keydown', (e) => {
     if (e.key === 'ArrowDown') { sel = Math.min(cur.length - 1, sel + 1); renderResults(); e.preventDefault(); }
@@ -482,6 +507,35 @@
     $('#spot-table thead').innerHTML = '<tr><th>Commodity</th><th class="num">Last</th><th>Unit</th><th class="num">1d</th><th class="num">1w</th><th class="num">1m</th><th class="num">3m</th><th class="num">6m</th><th class="num">52w pos</th><th>Source</th><th>Exposed names</th></tr>';
     $('#spot-table tbody').innerHTML = names.map(n => { const r = spot.rows[n]; return `<tr class="row" data-spot="${esc(n)}"><td class="capitalize">${esc(n)}</td><td class="num">${fmt(r.last, 2)}</td><td>${esc(r.unit)}</td><td class="num">${pct(r.chg_1d)}</td><td class="num">${pct(r.chg_1w)}</td><td class="num">${pct(r.chg_1m)}</td><td class="num">${pct(r.chg_3m)}</td><td class="num">${pct(r.chg_6m)}</td><td class="num">${r.pos == null ? '—' : r.pos + '%'}</td><td class="muted">${esc(r.source)}</td><td>${chips(groupsForSpot(n), 5)}</td></tr>`; }).join('');
     $('#spot-table').addEventListener('click', (e) => { if (e.target.closest('a')) return; const tr = e.target.closest('tr.row'); if (tr) openSpot(tr.dataset.spot); });
+  }
+
+  // ---- India spot blocks + Trading Economics table ----
+  const groupsForTE = (slug) => groups.filter(g => (g.te || []).includes(slug));
+  if (india && india.sources) {
+    const S = india.sources;
+    $('#india-meta').textContent = `built ${india.built} · ` + Object.entries(india.status || {}).map(([k, v]) => `${k}: ${v.split(',')[0]}`).join(' · ');
+    const blocks = $('#india-blocks');
+    const block = (title, src, cols, rows) => {
+      if (!src || !rows.length) return;
+      const el = document.createElement('div'); el.className = 'card';
+      el.innerHTML = `<div class="flex justify-between gap-2"><b>${esc(title)}</b><span class="muted text-xs">${esc(src.date || '')} · <a class="hover:underline" href="${esc(src.url)}" target="_blank" rel="noopener">${esc(src.source.split('(')[0].trim())}</a></span></div>
+        <div class="overflow-x-auto mt-2"><table class="sw"><thead><tr>${cols.map(c => `<th class="${c[2] ? 'num' : ''}">${c[0]}</th>`).join('')}</tr></thead><tbody>${rows.map(r => `<tr>${cols.map(c => `<td class="${c[2] ? 'num' : ''}">${c[1](r)}</td>`).join('')}</tr>`).join('')}</tbody></table></div>`;
+      blocks.appendChild(el);
+    };
+    const mb = (S.metalbook && S.metalbook.rows) || [];
+    const mbCity = (city) => mb.filter(r => r.city === city).sort((a, b) => a.name.localeCompare(b.name));
+    ['Mumbai', 'Delhi', 'Raipur', 'Hyderabad', 'Bangalore'].forEach(city => block(`Steel & metals — ${city}`, S.metalbook,
+      [['Product', r => esc(r.name)], ['₹/kg', r => fmt(r.price, 1), 1], ['1d', r => pct(r.chg_1d), 1]], mbCity(city)));
+    block('Bullion (IBJA)', S.ibja, [['Series', r => esc(r.name)], ['AM', r => fmt(r.am, 0), 1], ['PM', r => fmt(r.pm, 0), 1], ['Unit', r => esc(r.unit)]], (S.ibja && S.ibja.rows) || []);
+    block('Natural rubber (Rubber Board)', S.rubber, [['Market', r => esc(r.market)], ['Grade', r => esc(r.name)], ['₹/100 kg', r => fmt(r.price, 0), 1], ['US$/100 kg', r => fmt(r.usd_per_100kg, 2), 1]], (S.rubber && S.rubber.rows) || []);
+    block('Sugar spot (Chinimandi)', S.sugar, [['City', r => esc(r.city)], ['Grade', r => esc(r.grade)], ['₹/quintal', r => fmt(r.price, 2), 1], ['Change', r => fmt(r.chg_1d, 2), 1]], (S.sugar && S.sugar.rows) || []);
+    block('Petrol & diesel (PPAC)', S.fuel, [['Fuel', r => esc(r.name)], ['City', r => esc(r.city)], ['₹/litre', r => fmt(r.price, 2), 1]], (S.fuel && S.fuel.rows) || []);
+    const te = (S.te && S.te.rows) || [];
+    $('#global-meta').textContent = `${te.length} series · ${S.te ? S.te.fetched : ''}`;
+    $('#global-table tbody').innerHTML = te.slice().sort((a, b) => (b.chg_1m || 0) - (a.chg_1m || 0)).map(r =>
+      `<tr><td><b>${esc(r.name)}</b></td><td class="num">${fmt(r.price, 2)}</td><td>${esc(r.unit)}</td><td class="muted">${esc(r.date)}</td><td class="num">${pct(r.chg_1d)}</td><td class="num">${pct(r.chg_1m)}</td><td class="num">${pct(r.chg_1y)}</td><td>${chips(groupsForTE(r.slug), 5)}</td></tr>`).join('');
+  } else {
+    $('#india-blocks').innerHTML = '<div class="card muted text-sm">india_spot.json not published yet.</div>';
   }
 
   // ---- WPI table ----

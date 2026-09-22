@@ -1,3 +1,4 @@
+import re
 """Turn the three price panels (daily spot, monthly WPI, monthly HS trade unit prices) into commodity SIGNALS mapped to
 listed Indian beneficiaries and sufferers, via docs/ideas/commodity_map.json. This is the file the daily research run reads
 first and the Commodity Watch page shows at the top. Usage: python3 scripts/ideas/signals.py -> docs/ideas/signals.json
@@ -86,6 +87,9 @@ def trade_group(prefixes, side):
 
 def main():
     cmap = load('commodity_map.json'); spot = load('spot.json'); wpi = load('wpi.json'); idx = load('trade/index.json')
+    ind = load('india_spot.json') or {}
+    te_rows = {r['slug']: r for r in ((ind.get('sources') or {}).get('te') or {}).get('rows', [])}
+    ind_src = {k: v.get('rows', []) for k, v in (ind.get('sources') or {}).items() if k != 'te'}
     out = []
     for g in cmap['groups']:
         sig = dict(id=g['id'], name=g['name'], hs=g.get('hs', []), benefit=g.get('benefit', []), suffer=g.get('suffer', []), history=g.get('history'), note=g.get('note'), sources={})
@@ -97,6 +101,23 @@ def main():
                 sp.append(dict(name=k, last=r['last'], unit=r.get('unit'), chg_1w=r.get('chg_1w'), chg_1m=r.get('chg_1m'), chg_3m=r.get('chg_3m'), chg_6m=r.get('chg_6m'), pos52=r.get('pos'), date=r.get('date'), n=r.get('n')))
         if sp:
             sig['sources']['spot'] = sp
+        # Trading Economics daily proxies (futures/CFD: direction, not the Indian print)
+        te = []
+        for slug in g.get('te', []):
+            r = te_rows.get(slug)
+            if r and r.get('price') is not None:
+                te.append(dict(slug=slug, name=r['name'], last=r['price'], unit=r['unit'], date=r['date'], chg_1d=r.get('chg_1d'), chg_1m=r.get('chg_1m'), chg_1y=r.get('chg_1y')))
+        if te:
+            sig['sources']['te'] = te
+        # Indian domestic prints (MetalBook city prices, IBJA, Rubber Board, sugar spot, PPAC fuel)
+        india = []
+        for src, rx in g.get('india', []):
+            for r in ind_src.get(src, []):
+                label = ' '.join(str(r.get(k)) for k in ('city', 'market', 'name', 'grade') if r.get(k))
+                if re.search(rx, str(r.get('name') or r.get('grade') or ''), re.I) and r.get('price') is not None:
+                    india.append(dict(source=src, name=label, last=r['price'], unit=r.get('unit'), chg_1d=r.get('chg_1d')))
+        if india:
+            sig['sources']['india'] = india
         # monthly WPI items
         wp = []
         if wpi and g.get('wpi'):
@@ -137,6 +158,10 @@ def main():
             for k, thr in (('chg_1w', 5), ('chg_1m', 10), ('chg_3m', 20)):
                 if s.get(k) is not None:
                     cands.append((s[k] / thr, f"spot {s['name']} {k[4:]} {s[k]:+.1f}%"))
+        for t in te:
+            for k, thr in (('chg_1m', 10), ('chg_1y', 30)):
+                if t.get(k) is not None:
+                    cands.append((max(min(t[k], 300), -100) / thr, f"{t['name']} (global) {k[4:]} {t[k]:+.1f}%"))
         for w in wp:
             for k, thr in (('chg_1m', 3), ('chg_3m', 8), ('chg_12m', 15)):
                 if w.get(k) is not None:
@@ -163,7 +188,8 @@ def main():
         out.append(sig)
     out.sort(key=lambda s: -abs(s.get('strength') or 0))
     res = dict(built=ist.stamp(), thresholds='strength 1.0 = spot +5% 1w / +10% 1m / +20% 3m; WPI +3% 1m / +8% 3m / +15% 12m; trade unit price +8% 1m / +15% 3m / +30% smoothed yoy',
-               spot_date=(spot or {}).get('updated'), wpi_month=(wpi or {}).get('months', [None])[-1], trade_month=(idx or {}).get('latest'), groups=out)
+               spot_date=(spot or {}).get('updated'), wpi_month=(wpi or {}).get('months', [None])[-1], trade_month=(idx or {}).get('latest'),
+               india_built=ind.get('built'), india_status=ind.get('status'), groups=out)
     json.dump(res, open(os.path.join(DOCS, 'signals.json'), 'w'), indent=1)
     print('signals:', len(out), 'groups')
     for s in out[:14]:

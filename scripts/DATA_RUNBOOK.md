@@ -17356,6 +17356,40 @@ the BSE bhavcopy lands; commits only `docs/ideas/**`, `docs/ideas.html`, `script
 (ideas/latest.json 80 h, ideas/track.json 80 h, ideas/universe.json 80 h, ideas/ideas.json static). sw.js v158; nav entry under
 Markets ▸ Discovery & Filings; home tile text in `docs/index.html` DESC.
 
+### 144a-ii. ★★★ INDIA SPOT — the domestic prints the newspapers quote, daily, free (2026-09-22 evening)
+
+**Trigger:** the user showed a Business Line clipping (Mumbai HRC ₹63,900/t, CRC ₹73,500, rebar ₹60,450, NMDC lump ₹5,400,
+imported coking coal +22% to US$283) and asked why the page could not show it; then a Gemini list of "free" steel
+sources and *"one of my friend has all the commodity prices … please find it"*. Every source was PROBED from this
+Mac, not trusted: Tata nexarc `/steel` 404s and the real page is a login marketplace with TMT "coming soon"; NCDEX
+serves a 4 KB JS shell (and is agri); MCX is 403 (Akamai); Investing.com/TradingView serve no quote without their
+scripts; JPC (jpcindiansteel.nic.in) times out. **What works, all parsed and shipped in `scripts/ideas/india_spot.py`
+→ `docs/ideas/india_spot.json` (+ `india_spot_history.csv`, one row per series per day):**
+- **MetalBook** (`metalbook.com` home-page ticker, server-rendered, split on `lucide-map-pin`): ~41 Indian steel and
+  metals prices by city in ₹/kg with the day's % — Mumbai HRC 62.7, TMT Fe500 51.8 / Fe500D 60.0, CRC 68.5, GP coil
+  79.8, PPGI 86.5, melting scrap 33.8, copper CC rod 1,410, zinc SHG 432, lead 204.3; Delhi, Raipur, Hyderabad,
+  Bangalore likewise. The same market the paper quotes (its ₹60,450 rebar ≈ 51.8 × 1.18 GST).
+- **IBJA** (`ibjarates.com`, broken cert chain → SSL verification off): gold 999/995/916/750/585 ₹/10 g, silver 999
+  ₹/kg, platinum, AM and PM fixes, via `lblGold999_AM` span ids. Official Indian bullion benchmark.
+- **Rubber Board** (`rubberboard.gov.in/public`, same cert issue): RSS4/RSS5/ISNR20/Latex60 at Kottayam, Kochi,
+  Agartala, ₹/100 kg + US$. NB the page's visible date lagged (03-09-2026 on 22-09) — verify freshness before use.
+- **Chinimandi** home page: sugar spot by city and grade (S/30, M/30), ₹/quintal, day change, stamped to the minute.
+- **PPAC** (`ppac.gov.in`): the daily "PP_9_a_DailyPriceMSHSD_Metro" PDF, petrol/diesel for the 4 metros (the gas-price
+  PDF is image-only — skipped).
+- **Trading Economics** (`tradingeconomics.com/commodity/<slug>`): the `<meta name="description">` line carries value,
+  unit, date, day/month/year change for ~100 commodities; we take ~65 (HRC steel, Shanghai rebar, scrap, iron ore,
+  coking coal, urea, DAP, sulphur, soda ash, methanol, styrene, naphtha, PVC, PE, PP, titanium, lithium, cobalt,
+  manganese, silicon, uranium, kraft pulp, freight index…). Futures/CFD proxies: direction, not the Indian print.
+  Parser traps fixed: "traded flat **at**", "USD/t oz." / "USD/t.oz", "USD Cents / Kg", "INR/10 kg", "AUD/100Kg", and
+  the year-ago phrase in both orders ("is up X% compared to…" / "is still X% lower than a year ago"). It corroborated
+  the clipping: coking coal US$263 +12.2% 1m +34.9% 1y; HRC US$1,317 +12.5% 1m +58.9% 1y. Their data is a licensed
+  product sold via API — the page is owner-only and names the source; the user was told and decided.
+- **NMDC iron-ore prices** are filed with BSE ("Prices Of Iron Ore W.E.F. 09.09.2026": lump 65.5% ₹5,400/t, fines 64%
+  ₹4,500/t — exactly the paper's numbers) — parseable PDF; NOT yet wired (next).
+`commodity_map.json` groups carry `te` (slug list) and `india` ([source, name-regex]) keys; a `coking_coal` group was
+added (steel makers as sufferers). `signals.py` scores TE 1m ≥10% / 1y ≥30% and lists Indian prints as evidence.
+`commodities.html` gained "India spot" (city blocks) and "Global" (TE table) sections + tab entries + search rows; sw v165.
+
 ### 144b/c. ★★★ WHAT ACTUALLY DRIVES A MULTIBAGGER — the 2026-09-22 studies, and the government lane they produced
 
 **Trigger:** the user pointed at Sterlite Technologies (base ₹52.59 on 2025-04-09 → peak ₹897.40 on 2026-09-11,
