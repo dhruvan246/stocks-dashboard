@@ -102,46 +102,56 @@ def _india_history():
 
 
 def hist_stats(series):
-    """Changes and a HIGHEST-SINCE date from a dated series of [date, price].
+    """Changes and a HIGHEST-SINCE date from a dated series of [date, price] or [date, price, basis].
 
     'Highest since' is the plain reading of the question 'is this at a four-month high?': the most recent
     earlier date whose price was at or above today's. No earlier date reaching it means today is the highest
     in everything we hold, which is a statement about OUR history, not about all time - so the span we hold
     is reported beside it and the page says so.
+
+    A third field, when present, is the basis the price was stated on (NMDC's letters say whether royalty,
+    DMF and NMET are included, and that flipped in Jul-2023 and again in Jan-2026). A change measured
+    between two different bases is a definition change, not a price move, so every window that compares
+    across one is named in `basis_break` and the page flags it instead of presenting it as a move.
     """
-    v = [(d, x) for d, x in series if x is not None]
+    # sorted here, never trusted from the caller: NMDC's history once arrived in FILING order with one letter
+    # misdated to 2020, and the 'a year ago' lookup took the last list entry before the cut - the misdated
+    # one - turning a -11.5% year into +17.4%.
+    v = sorted(((it[0], it[1], it[2] if len(it) > 2 else None) for it in series if it[1] is not None),
+               key=lambda t: t[0])
     if len(v) < 2:
         return None
-    last_d, last = v[-1]
+    last_d, last, last_b = v[-1]
 
     def back(days):
         cut = (datetime.date.fromisoformat(last_d) - datetime.timedelta(days=days)).isoformat()
-        older = [x for d, x in v if d <= cut]
+        older = [t for t in v if t[0] <= cut]
         return older[-1] if older else None
 
-    hi_since = None
-    for d, x in reversed(v[:-1]):
-        if x >= last:
-            hi_since = d
-            break
-    lo_since = None
-    for d, x in reversed(v[:-1]):
-        if x <= last:
-            lo_since = d
-            break
-    vals = [x for _, x in v]
+    out, breaks = {}, {}
+    for name, days in (('chg_1w', 7), ('chg_1m', 30), ('chg_3m', 91), ('chg_6m', 182), ('chg_1y', 365)):
+        o = back(days)
+        out[name] = pct(last, o[1]) if o else None
+        if o and last_b and o[2] and o[2] != last_b:
+            breaks[name] = o[2]
+    hi = next((t for t in reversed(v[:-1]) if t[1] >= last), None)
+    lo = next((t for t in reversed(v[:-1]) if t[1] <= last), None)
+    if hi and last_b and hi[2] and hi[2] != last_b:
+        breaks['high_since'] = hi[2]
+    vals = [t[1] for t in v]
     span = (datetime.date.fromisoformat(last_d) - datetime.date.fromisoformat(v[0][0])).days
     # A two-day series can say "highest since yesterday" and be literally true while telling the reader
     # nothing. Below a real span the changes still stand - they are measured - but the high/low-since
     # verdict is withheld rather than dressed up.
     deep = span >= 60 and len(v) >= 6
-    return dict(n=len(v), first=v[0][0], last_date=last_d, span_days=span, deep=deep,
-                chg_1w=pct(last, back(7)), chg_1m=pct(last, back(30)), chg_3m=pct(last, back(91)),
-                chg_6m=pct(last, back(182)), chg_1y=pct(last, back(365)),
+    return dict(n=len(v), first=v[0][0], last_date=last_d, span_days=span, deep=deep, **out,
                 hi=max(vals), lo=min(vals),
-                high_since=hi_since if deep else None, low_since=lo_since if deep else None,
-                at_series_high=(hi_since is None) if deep else None,
-                at_series_low=(lo_since is None) if deep else None)
+                high_since=(hi[0] if hi else None) if deep else None,
+                low_since=(lo[0] if lo else None) if deep else None,
+                at_series_high=(hi is None) if deep else None,
+                at_series_low=(lo is None) if deep else None,
+                basis=last_b, bases=len({t[2] for t in v if t[2]}), basis_break=breaks)
+
 
 def main():
     cmap = load('commodity_map.json'); spot = load('spot.json'); wpi = load('wpi.json'); idx = load('trade/index.json')

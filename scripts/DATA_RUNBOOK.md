@@ -17365,7 +17365,8 @@ Regulation 30 every time it revises, roughly monthly. Those filings ARE the seri
 
 **Reach, measured 2026-09-23 (never assume it, re-measure):** a quarterly sweep of NMDC's BSE announcements
 (scrip 526371) from 2011 finds **135** "Prices of Iron Ore w.e.f. ..." filings, 2013-11-16 to 2026-09-09.
-Of those, **86 PDFs are still served** and **84 parse** → the published series runs **2019-01-03 → today**.
+Of those, **86 PDFs are still served** and all 86 parse; one is a re-filing of the day before, so the series is
+**85 distinct revisions** (83 carry a lump price, 82 a fines price), **2019-01-03 → today**.
 The other 49 are not a parser failure and must not be reported as one:
   - 39 (2015-2018) → the announcement ROW survives but BSE 404s the attachment on both AttachLive and
     AttachHis. The old-style name (`37BB874C_916A_..._120319.pdf`) is gone from their servers.
@@ -17391,10 +17392,29 @@ Two traps that cost a re-read:
   Validation that caught both: parse all cached PDFs, then assert no value outside Rs 1,500-20,000, no row
   where lump < fines, and six hand-read values match exactly.
 
-**BASIS BREAK — do not compare across it.** The letters state their own tax basis and it CHANGES:
-2024-25 filings say the price is **inclusive** of royalty, DMF and NMET; the 2026 ones say **exclusive**.
-84 rows: 64 exclusive, 19 inclusive, 1 unstated. Every row stores its `basis` and the page repeats it under
-the table. A move across the break is a definition change, not a price move.
+**BASIS BREAK — do not compare across it.** The letters state their own tax basis and it CHANGES TWICE:
+**exclusive** of royalty/DMF/NMET 2019-01-03 → 2023-05-30, **inclusive** 2023-07-18 → 2025-11-15, **exclusive**
+again from 2026-01-09 (85 rows: 64 exclusive, 21 inclusive). Every row stores its `basis`. `hist_stats()` takes
+[date, price, basis] and names in `basis_break` every window whose two ends sit on different bases; the page
+prints "across a basis change" beside that figure and "basis changed" on the table row where it flips. The
+measured 1-year lump change on 2026-09-23 is -11.5% AND crosses the Jan-2026 flip - it is not a price move.
+
+**Four more traps, all found after the first ship (2026-09-23 night), all fixed at the parser, not in the data:**
+  - **"w.e.f. 09Th January 20206"** — BSE's subject for NMDC's 2026-01-09 letter (the body says 2026). Taking the
+    first four digits filed a Rs 4,600 price under Jan-2020, drew a fake spike on the chart and hid it from 2026.
+    `nmdc_wef` now takes EVERY w.e.f. candidate in subject+body, forbids a year running on into another digit
+    (`(?!\d)`), picks the one nearest the filing date, and rejects any more than 60 days away.
+  - **A caller-ordered history.** `hist_stats` took the last list entry before a cut; the list came in FILING
+    order, so the misdated letter was "a year ago" and a -11.5% year printed as **+17.4%** (reported to the user,
+    then corrected). It now sorts its own input; never trust the caller's order.
+  - **Re-filings.** "Resubmission: Prices Of Iron Ore W.E.F. 08-10-2020" (filed 2020-10-09) repeats the 2020-10-08
+    letter; two points on one date also break the chart library. The ORIGINAL keeps the row, the re-filing is
+    kept marked `dup_of` and never counted; a re-filing that states a different price writes `refiling_differs`
+    onto the original instead of overwriting it.
+  - **OCR-split basis words** ("exc luding Royalty", the 2020-01-02 scan) left one row with no basis. The basis
+    regex allows one space inside each word.
+  **`NMDC_PARSER`** (now 4) is stored on every record; a record read by an older parser is re-read ONCE by the
+  normal daily path, so a parser fix reaches the rows already on file. Bump it with every parser change.
 
 **Where it lives.**
   - `scripts/ideas/india_spot.py` → `src_nmdc()` is the seventh source. Daily it looks back `--nmdc-days`
@@ -17414,9 +17434,14 @@ at or above today's. Two rules that keep it honest:
     worthless. The changes still show; only the verdict is suppressed. The page never re-implements the
     rule: `commodities.html` reads `stats` off signals.json.
 
-**So the honest answer today** (2026-09-23, measured, HEAD at the commit below): NMDC lump Rs 5,400/t
-w.e.f. 2026-09-09, +2.9% on the previous revision, 1m +2.9% / 3m -5.3% / 1y +17.4%, highest since
-2026-07-10 in a series of 84 revisions back to 2019. For FINISHED steel there is still no dated Indian
+**On the page:** click either grade in the "Iron ore — NMDC administered price" card (India spot tab) and it
+opens in the shared detail panel like every other commodity - step chart (the price holds flat between
+letters), 1y/3y/5y/max, stats, every revision with its basis, and the mapped names. Deep link `?nmdc=lump` /
+`?nmdc=fines`; the search box finds it too.
+
+**So the honest answer today** (2026-09-23, measured): NMDC lump Rs 5,400/t w.e.f. 2026-09-09, +2.9% on the
+previous revision, 1m +2.9% / 3m -5.3% / 6m +12.5%, 1y -11.5% (across a basis change, so not a price move),
+highest since 2026-07-10 in 83 lump revisions back to 2019. For FINISHED steel there is still no dated Indian
 series — WPI flat products (monthly, to 2026-04) and the HS 7208 customs unit value (monthly, to 2026-07)
 are the only long ones, and both lag the newspaper by months.
 

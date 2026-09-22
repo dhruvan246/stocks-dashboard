@@ -212,6 +212,10 @@ NMDC_ANN = ('https://api.bseindia.com/BseIndiaAPI/api/AnnSubCategoryGetData/w?pa
             '&strScrip=' + NMDC_SCRIP + '&strSearch=P&strToDate=%s&strType=C&subcategory=-1')
 NMDC_ATT = 'https://www.bseindia.com/xml-data/corpfiling/AttachLive/%s'
 NMDC_PAT = re.compile(r'price[s]?\s+of\s+iron\s+ore', re.I)
+# Bump when nmdc_parse/nmdc_wef change: every stored letter read by an older parser is read again ONCE, so a
+# parser fix reaches the rows already on file instead of only the next month's letter.
+#   2 = four-digit price + 'Baila' grades   3 = w.e.f. nearest the filing, no '20206'   4 = OCR-split basis
+NMDC_PARSER = 4
 # the letters call the grades 'Lump Ore'/'Fines' up to 2024 and 'Baila Lump'/'Baila Fines' after it
 NMDC_GRADES = (('lump', r'(?:Baila\s+)?Lump(?:\s*Ore)?', 'Iron ore lump (65.5%, 10-40mm)'),
                ('fines', r'(?:Baila\s+)?Fines', 'Iron ore fines (64%, -10mm)'))
@@ -223,19 +227,43 @@ for _i, _m in enumerate(['January', 'February', 'March', 'April', 'May', 'June',
 
 
 def nmdc_wef(text, fallback):
-    """The 'with effect from' date the filing names, as YYYY-MM-DD; the filing's own date when it names none."""
+    """The 'with effect from' date the letter names, as (YYYY-MM-DD, note).
+
+    Every w.e.f. date in the subject AND the body is a candidate, and the one nearest the filing date wins.
+    Two guards, both from real filings: BSE's subject for the 2026-01-09 letter reads "w.e.f. 09Th January
+    20206" (the body says 2026), and taking the first four digits of '20206' filed a 2026 price under
+    January 2020 - so a year must not run on into another digit. And a letter announces the price in force
+    now, so a candidate more than 60 days from the filing date is rejected; with none left the filing date
+    stands and the note says so.
+    """
     t = re.sub(r'\s+', ' ', text or '')
-    m = re.search(r'w\.?\s*e\.?\s*f\.?\s*:?\s*(\d{1,2})\s*[./-]\s*(\d{1,2})\s*[./-]\s*(\d{2,4})', t, re.I)
-    if m:
+    wef = r'w\.?\s*e\.?\s*f\.?\s*:?\s*'
+    cands = []
+    for m in re.finditer(wef + r'(\d{1,2})\s*[./-]\s*(\d{1,2})\s*[./-]\s*(\d{4}|\d{2})(?!\d)', t, re.I):
         y = int(m.group(3))
-        return '%04d-%02d-%02d' % (y + 2000 if y < 100 else y, int(m.group(2)), int(m.group(1)))
-    m = re.search(r'w\.?\s*e\.?\s*f\.?\s*:?\s*(\d{1,2})\s*(?:st|nd|rd|th)?\s+([A-Za-z]{3,9})\.?,?\s+(\d{4})', t, re.I)
-    if m and MONTHS.get(m.group(2).lower()):
-        return '%s-%02d-%02d' % (m.group(3), MONTHS[m.group(2).lower()], int(m.group(1)))
-    m = re.search(r'w\.?\s*e\.?\s*f\.?\s*:?\s*([A-Za-z]{3,9})\.?\s+(\d{1,2})\s*(?:st|nd|rd|th)?,?\s+(\d{4})', t, re.I)
-    if m and MONTHS.get(m.group(1).lower()):
-        return '%s-%02d-%02d' % (m.group(3), MONTHS[m.group(1).lower()], int(m.group(2)))
-    return fallback
+        cands.append((y + 2000 if y < 100 else y, int(m.group(2)), int(m.group(1))))
+    for m in re.finditer(wef + r'(\d{1,2})\s*(?:st|nd|rd|th)?\s+([A-Za-z]{3,9})\.?,?\s+(\d{4})(?!\d)', t, re.I):
+        if MONTHS.get(m.group(2).lower()):
+            cands.append((int(m.group(3)), MONTHS[m.group(2).lower()], int(m.group(1))))
+    for m in re.finditer(wef + r'([A-Za-z]{3,9})\.?\s+(\d{1,2})\s*(?:st|nd|rd|th)?,?\s+(\d{4})(?!\d)', t, re.I):
+        if MONTHS.get(m.group(1).lower()):
+            cands.append((int(m.group(3)), MONTHS[m.group(1).lower()], int(m.group(2))))
+    try:
+        f = datetime.date.fromisoformat(fallback)
+    except (TypeError, ValueError):
+        return fallback, 'filing date unreadable'
+    ok = []
+    for y, mo, d in cands:
+        try:
+            ok.append(datetime.date(y, mo, d))
+        except ValueError:
+            continue
+    if not ok:
+        return fallback, 'no w.e.f. date in the letter; filing date used'
+    best = min(ok, key=lambda x: abs((x - f).days))
+    if abs((best - f).days) > 60:
+        return fallback, f'w.e.f. {best} is {abs((best - f).days)} days from the filing; filing date used'
+    return best.isoformat(), ''
 
 
 def nmdc_parse(text, subject, filing_date):
@@ -255,12 +283,16 @@ def nmdc_parse(text, subject, filing_date):
                       body, re.I)
         out[key] = float(re.sub(r'[^\d]', '', m.group(1))) if m else None
     basis = None
-    if re.search(r'inclusive of\s+Royalty', body, re.I):
+    # the OCR of the scans splits words ("exc luding Royalty" in the 2020-01-02 letter), so allow one space
+    # inside each word rather than miss the basis and leave the row undated in its tax era
+    w = lambda word: r'\s?'.join(word)
+    if re.search(w('inclusive') + r'\s+of\s+Royalty|' + w('including') + r'\s+Royalty', body, re.I):
         basis = 'includes royalty, DMF and NMET'
-    elif re.search(r'(?:exclusive of|excluding)\s+Royalty', body, re.I):
+    elif re.search(w('exclusive') + r'\s+of\s+Royalty|' + w('excluding') + r'\s+Royalty', body, re.I):
         basis = 'excludes royalty, DMF and NMET'
     note = re.search(r'(Note\s*:.{0,260}?)(?:Please take note|Thanking you|$)', body, re.I)
-    return dict(wef=nmdc_wef(subject + ' ' + body, filing_date), lump=out['lump'], fines=out['fines'],
+    wef, wef_note = nmdc_wef(subject + ' ' + body, filing_date)
+    return dict(wef=wef, wef_note=wef_note, lump=out['lump'], fines=out['fines'],
                 basis=basis, note=re.sub(r'\s+', ' ', note.group(1)).strip()[:240] if note else '')
 
 
@@ -285,7 +317,7 @@ def nmdc_read(f):
     """One filing's PDF -> parsed record. Never raises: an unreadable filing is recorded as unread."""
     import bse
     if not f['att']:
-        return dict(f, lump=None, fines=None, basis=None, note='', wef=f['date'],
+        return dict(f, lump=None, fines=None, basis=None, note='', wef=f['date'], wef_note='',
                     error='the BSE row carries no attachment')
     try:
         data = bse.get_attachment(NMDC_ATT % f['att'], timeout=90)
@@ -296,7 +328,7 @@ def nmdc_read(f):
         txt = '\n'.join(doc[i].get_text() for i in range(min(3, len(doc))))
     except Exception as e:
         return dict(f, lump=None, fines=None, basis=None, note='', wef=f['date'], error=str(e)[:110])
-    rec = dict(f, **nmdc_parse(txt, f['subject'], f['date']))
+    rec = dict(f, **nmdc_parse(txt, f['subject'], f['date']), parser=NMDC_PARSER)
     if rec['lump'] is None and rec['fines'] is None:
         rec['error'] = 'PDF has no readable price line (older filings are scans with no text layer)'
     return rec
@@ -327,11 +359,22 @@ def src_nmdc(days=200, since=None):
             print(f'nmdc: window {a}..{b} failed ({str(e)[:70]})')
     if win_err == len(wins) and not hist:
         raise RuntimeError(f'every BSE window failed ({win_err})')
+    def implausible(r):
+        # a price letter announces the price in force now; a w.e.f. far from the filing date is a misread
+        try:
+            return abs((datetime.date.fromisoformat(r['wef']) - datetime.date.fromisoformat(r['date'])).days) > 60
+        except (KeyError, TypeError, ValueError):
+            return True
+    def stale(r):
+        return (r.get('parser') or 0) < NMDC_PARSER
+    for r in list(hist.values()):
+        if (r.get('lump') is not None or r.get('fines') is not None) and (implausible(r) or stale(r)) and r.get('att'):
+            seen.setdefault(r['date'], dict(date=r['date'], att=r['att'], subject=r.get('subject', '')))
     added, unread = 0, 0
     for f in sorted(seen.values(), key=lambda r: r['date']):
         prev = hist.get(f['date'])
-        if prev and (prev.get('lump') is not None or prev.get('fines') is not None):
-            continue                      # already read and priced; never refetch
+        if prev and (prev.get('lump') is not None or prev.get('fines') is not None) and not implausible(prev) and not stale(prev):
+            continue                      # already read by this parser, priced and dated sensibly; never refetch
         rec = nmdc_read(f)
         hist[f['date']] = rec
         if rec.get('lump') is not None or rec.get('fines') is not None:
@@ -339,15 +382,37 @@ def src_nmdc(days=200, since=None):
         else:
             unread += 1
     rows_h = sorted(hist.values(), key=lambda r: r['date'])
-    priced = [r for r in rows_h if r.get('lump') is not None or r.get('fines') is not None]
+    # A re-filing ("Resubmission: Prices of Iron Ore w.e.f. 08-10-2020", filed the next day) repeats a letter
+    # already on record. The ORIGINAL keeps the row; the re-filing stays in the file marked dup_of and is
+    # never counted twice. Should a re-filing ever state a different price, the original still stands and
+    # the disagreement is written onto it rather than resolved by guessing.
+    first_by_wef = {}
+    for r in rows_h:
+        r.pop('dup_of', None)
+        if r.get('lump') is None and r.get('fines') is None:
+            continue
+        o = first_by_wef.get(r['wef'])
+        if o is None:
+            first_by_wef[r['wef']] = r
+            r.pop('refiling_differs', None)
+            continue
+        r['dup_of'] = o['date']
+        diff = [f'{leg} {o[leg]:.0f} vs {r[leg]:.0f}' for leg in ('lump', 'fines')
+                if o.get(leg) is not None and r.get(leg) is not None and o[leg] != r[leg]]
+        if diff:
+            o['refiling_differs'] = f"re-filing of {r['date']} states " + ', '.join(diff)
+    priced = [r for r in rows_h if (r.get('lump') is not None or r.get('fines') is not None) and not r.get('dup_of')]
     json.dump(dict(built=datetime.datetime.now().strftime('%Y-%m-%d %H:%M IST'),
                    source='NMDC Limited price letters filed with BSE under LODR Regulation 30 (scrip %s)' % NMDC_SCRIP,
                    note='NMDC administers this price; it changes only when NMDC files a revision, so the series is '
                         'dated by the filing, not daily. The tax basis is stated per row and changes between eras.',
-                   filings_found=len(rows_h), priced=len(priced), unread=len(rows_h) - len(priced),
+                   filings_found=len(rows_h), priced=len(priced),
+                   refilings=sum(1 for r in rows_h if r.get('dup_of')),
+                   unread=sum(1 for r in rows_h if r.get('lump') is None and r.get('fines') is None),
                    filings=rows_h), open(NMDC_HIST, 'w'), indent=1, ensure_ascii=False)
     if not priced:
         raise RuntimeError('no NMDC price filing could be read')
+    priced.sort(key=lambda r: r['wef'])   # by the date the price took effect, not the date it was filed
     last = priced[-1]
     rows = []
     for key, _rx, name in NMDC_GRADES:
@@ -359,11 +424,12 @@ def src_nmdc(days=200, since=None):
                          wef=last.get('wef'), basis=last.get('basis'), filed=last['date'],
                          chg_rev=round(100 * (last[key] / prev_v - 1), 2) if prev_v else None,
                          prev=prev_v, prev_date=before[-1]['wef'] if before else None,
-                         history=[[r['wef'], r[key]] for r in priced if r.get(key) is not None]))
+                         history=sorted([r['wef'], r[key], r.get('basis')] for r in priced if r.get(key) is not None)))
     return dict(source='NMDC Limited price letters filed with BSE (scrip %s)' % NMDC_SCRIP,
                 url='https://www.bseindia.com/stock-share-price/nmdc-ltd/nmdc/%s/corp-announcements/' % NMDC_SCRIP,
                 date='w.e.f. ' + (last.get('wef') or last['date']), rows=rows,
-                revisions=len(priced), since=priced[0]['wef'], unread=len(rows_h) - len(priced))
+                revisions=len(priced), since=priced[0]['wef'],
+                unread=sum(1 for r in rows_h if r.get('lump') is None and r.get('fines') is None))
 
 
 # ---------------------------------------------------------------- main
