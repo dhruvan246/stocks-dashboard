@@ -40,7 +40,7 @@
       </a>
       <div class="flex items-center gap-3 min-w-0">
         <nav></nav>
-        <span class="text-[11px] text-slate-400 hidden xl:block shrink-0" id="lastUpdated">01 Jan 1996 &rarr; 22 Sep 2026 15:47 IST</span>
+        <span class="text-[11px] text-slate-400 hidden xl:block shrink-0" id="lastUpdated">01 Jan 1996 &rarr; 22 Sep 2026 19:31 IST</span>
       </div>
     </div>
   </header>
@@ -539,7 +539,14 @@ function compareRows(a, b, key, dir) {
   return dir === 'asc' ? cmp : -cmp;
 }
 
-function renderResults(results) {
+// Rows are drawn in pages of ROW_PAGE (drawing all 5,500 at once is slow on phones); a row at the
+// foot of the table reveals the next page or everything. The old hard cap of 500 hid every stock
+// ranked below it with no way to scroll to it — SUNLITE ranked 654th for 31-Mar→today (runbook §145).
+const ROW_PAGE = 500;
+let ROW_LIMIT = ROW_PAGE;
+function showMoreRows(all) { ROW_LIMIT = all ? Infinity : ROW_LIMIT + ROW_PAGE; renderResults(lastResults, true); }
+function renderResults(results, keepLimit) {
+  if (!keepLimit) ROW_LIMIT = ROW_PAGE;           // new data / search / sort starts at the first page
   const q = document.getElementById('searchBox').value.toLowerCase().trim();
   let f = results;
   if (q) f = f.filter(r => r.symbol.toLowerCase().includes(q) || r.name.toLowerCase().includes(q) || (r.sector || '').toLowerCase().includes(q));
@@ -547,9 +554,8 @@ function renderResults(results) {
   f.sort((a, b) => compareRows(a, b, SORT_STATE.key, SORT_STATE.dir));
 
   const tbody = document.getElementById('resultsBody');
-  const MAX_ROWS = 500;
-  const truncated = f.length > MAX_ROWS;
-  const view = f.slice(0, MAX_ROWS);
+  const truncated = f.length > ROW_LIMIT;
+  const view = f.slice(0, ROW_LIMIT);
 
   if (view.length === 0) {
     tbody.innerHTML = '<tr><td colspan="9" class="text-center text-slate-400 py-16 text-sm">No matching stocks. Adjust filters or search.</td></tr>';
@@ -615,13 +621,24 @@ function renderResults(results) {
         '</tr>'
       );
     }
+    if (truncated) {
+      const left = f.length - view.length;
+      // Pinned to the LEFT edge (position:sticky): on a phone the table is wider than the screen, and a
+      // centred cell spanning the whole table put these buttons off-screen to the right.
+      out.push('<tr><td colspan="9" class="py-4 text-left text-sm">' +
+        '<div style="position:sticky;left:12px;display:inline-flex;flex-wrap:wrap;align-items:center;gap:8px;padding:0 12px;max-width:calc(100vw - 72px)">' +
+        '<span class="text-slate-500">Showing ' + view.length.toLocaleString('en-IN') + ' of ' + f.length.toLocaleString('en-IN') + '</span>' +
+        '<button type="button" onclick="showMoreRows(false)" class="px-3 py-1.5 rounded-lg bg-blue-600 text-white font-semibold text-xs">Show ' + Math.min(ROW_PAGE, left).toLocaleString('en-IN') + ' more</button>' +
+        '<button type="button" onclick="showMoreRows(true)" class="px-3 py-1.5 rounded-lg border border-slate-300 text-slate-700 font-semibold text-xs">Show all</button>' +
+        '</div></td></tr>');
+    }
     tbody.innerHTML = out.join('');
   }
   const noDataCount = f.filter(r => r.noData).length;
   const noDataNote  = noDataCount ? ' &middot; <span class="text-slate-400">' + noDataCount.toLocaleString('en-IN') + ' without price data</span>' : '';
   document.getElementById('resultCount').innerHTML =
     '<span class="font-semibold text-slate-700">' + f.length.toLocaleString('en-IN') + '</span> stocks' + noDataNote +
-    (truncated ? ' (showing top ' + MAX_ROWS + ' \u2014 use sort/search/filters to narrow)' : '');
+    (truncated ? ' (showing first ' + view.length.toLocaleString('en-IN') + ' \u2014 "Show more" at the bottom of the table, or search)' : '');
 }
 
 function updateStats(results) {
