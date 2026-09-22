@@ -16922,7 +16922,7 @@ ledgers (never a direct store edit):
 Dry run before landing: `apply_bse_hist_ledger` on a copy of the store adds exactly 17 cells, 0 overwrites. The 2008-13 cells
 carry the ledger's qe+21d convention date like every other page-derived cell of that era (§120/§142d).
 
-### 142g. ★★★ THE 72 ORPHANED CELL-FIX ENTRIES — a rule for revisions, 64 retired, 8 re-armed  (2026-09-22)
+### 142g. ★★★ THE 72 ORPHANED CELL-FIX ENTRIES — a rule for revisions, 64 retired, 8 re-armed  (2026-09-22) — VALUE RULE SUPERSEDED BY §142j THE SAME DAY (date rule stands)
 
 **Symptom:** every fetcher run printed 69-72 `WARN cell_fix … stored cell is neither the fix nor the recorded bad value`.
 Those corrections were silently not in effect. Adjudicated one by one against BSE's list (original `New` row with its
@@ -17024,6 +17024,31 @@ rows corrected, 0 warnings.
 **Not changed, on purpose:** `refresh_events` still takes the newest re-filing's VALUES with the first filing's date
 (§142c, 2026-09-22 morning) — that is the KALYANKJIL class (§142g "open"): a later document's numbers under the
 original's date. Same fix pattern applies when it is taken up; events are ~5 % of rows.
+
+### 142j. ★★★ USER RULE (2026-09-22): a quarter keeps the ORIGINAL filing's date and serves the LATEST re-filing's values  (supersedes §142g's "original values")
+
+After seeing §142i's three examples (TCS: re-publication, no change; VIJAYA: +0.04 promoter / +0.009 FII five days
+later; AMBER: no change) the user ruled: **"keep the older date but data has to be changed if they have refiled."**
+So the binding rule for shareholding rows is now:
+
+- **Date:** the earliest gated publication on either exchange (BSE `New` timestamp, or NSE's broadcast when its
+  record is not a revision). A re-filing never moves a row later. (unchanged from §142i)
+- **Values:** the newest document on either exchange — BSE's latest `Revised` XBRL or NSE's current record,
+  whichever was filed last. This is the rule event rows already used (§142c) and what the §22h revision heals
+  did; §142g's "original values win" reading is withdrawn and the 64 entries it retired are re-activated where
+  their revision values differ from the store, now carrying the original's gated date.
+- Trade-off, stated once: for the days between the original and the correction, screens see numbers that were not
+  yet public. Measured on the repaired set the corrections are small (VIJAYA class) and the user prefers accuracy.
+
+**Fetcher:** `refresh_quarters` re-parses a re-filed XBRL once (`hist["_seen"]`) and takes its values; the stored
+date stays (`vis = min(stored, new)`). Unrevised records we already hold are never re-fetched.
+
+**Data (this commit):** 835 rows re-derived from the newest document (the 747 + 16 §142i rows and the 72 §142g cases):
+722 already held the newest values at the original date (re-publications without changes), **92 changed** (values from
+the newest BSE/NSE document, date unchanged), 14 whose every document the parser refuses and 5 with no original clock
+left as they are. 36 `shp_lag_fix` entries built from NSE broadcasts that would have pushed a repaired row a day or
+three later than BSE's earlier timestamp were deleted (BELRISE Mar-2026, DCMSHRIRAM Sep-2025, SCHNEIDER Jun-2026 …).
+Dry run: 86 history cells + 6 event rows, 0 warnings.
 
 ## 141a. ★★ NIFTY BANK ROSTERS HEALED — 2000→date from NSE's register + 12 archived lists  (2026-09-21)
 

@@ -921,13 +921,13 @@ def refresh_quarters(qes, reparse=False, only=None, fill_shares=False):
                 # re-read only the filings whose share count we never captured
                 if (shares.get(sym) or [None, ""])[1] >= qe: continue
             elif have and not reparse:
-                # §142i (2026-09-22): a stored row is NEVER re-dated or overwritten by a later re-filing — values
-                # and date come from the same, earliest public document (runbook §142g). "Newest submission wins"
-                # had re-stamped TCS Mar-2026 to 17-Sep on a same-numbers re-publication and left the quarter dark
-                # for five months (601 such rows since Sep-2025). ONE exception: a re-filing that becomes visible in
-                # the SAME session as the stored row (same gated date) — the later document of one visibility
-                # window serves; each such XBRL is parsed once (`_seen`).
-                if not r["revised"] or r["sub"] != str(have[5]): continue
+                # §142i/§142j (2026-09-22): a stored row is NEVER re-dated by a later re-filing — its visibility date
+                # stays the EARLIEST publication we know. "Newest submission wins" had re-stamped TCS Mar-2026 to
+                # 17-Sep on a same-numbers re-publication and left the quarter dark for five months (601 such rows
+                # since Sep-2025). A re-filing's VALUES do replace the stored ones (user decision §142j: corrections
+                # are small and must be reflected; the same rule events already use, §142c). Each re-filed XBRL is
+                # parsed once (`_seen`); an unrevised record that we already hold is never re-fetched.
+                if not r["revised"]: continue
                 if seen.get("%s|%s" % (sym, qe)) == r["xb"]: continue
             todo.append((sym, r, have))
         print("%s: %d filings, %d new/revised to parse" % (qe, len(best), len(todo)))
@@ -970,7 +970,7 @@ def refresh_quarters(qes, reparse=False, only=None, fill_shares=False):
                         # the BSE revision sweep (§22h) can recover the original later.
                         vis = r["first"]
                     if have and str(have[5]) < vis:
-                        vis = str(have[5])                      # a re-parse never moves a row later
+                        vis = str(have[5])                      # a re-filing / re-parse never moves a row later
                     cell = [res["prom"], res["fii"], res["dii"], res["mf"], res["ins"], vis]
                     if res.get("nsh"): cell.append(res["nsh"])
                     hist.setdefault(sym, {})[qe] = cell
