@@ -48,6 +48,13 @@ jobs:
       - name: Fetch event-driven (mid-quarter) shareholding filings
         run: python3 -X utf8 scripts/fetch_shareholding.py --events
 
+      # NSE files SME-platform (Emerge) shareholding on a SEPARATE board (index=sme). This pass banks
+      # only their total share counts into scripts/shares_outstanding.json (already committed below),
+      # which gives the ~570 SME names a market cap on the dashboard and stock pages (shares x close).
+      # Non-fatal: a failed SME pass keeps yesterday's counts. DATA_RUNBOOK §145.
+      - name: Bank NSE SME share counts (market caps)
+        run: python3 -X utf8 scripts/fetch_shareholding.py --sme-shares || echo "::warning::SME share-count pass failed — SME market caps keep yesterday's counts"
+
       # NOTE: the on-page backtest section was REMOVED per user preference (2026-07-16) —
       # backtests run on demand in chat via scripts/build_shp_backtest.py (runbook §22c).
       - name: Guard — refuse to commit a broken or shrunken feed

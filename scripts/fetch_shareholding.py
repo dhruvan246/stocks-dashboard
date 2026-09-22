@@ -32,6 +32,7 @@ Runs:
   python -X utf8 scripts/fetch_shareholding.py --quarters 2026-06-30 --fill-shares   # only symbols with no share count yet
   python -X utf8 scripts/fetch_shareholding.py --quarters 2026-06-30 --fill-shares --symbols E2E,BSE,CDSL
   python -X utf8 scripts/fetch_shareholding.py --feed-only    # rebuild docs feed from history, no network
+  python -X utf8 scripts/fetch_shareholding.py --sme-shares   # NSE SME board: bank share counts only (market caps, §145)
 
 Self-healing: a failed master call skips that quarter (history keeps yesterday's cells); XBRL
 download/parse failures skip that company; the history write is add/update-only and ABORTs if
@@ -605,7 +606,7 @@ def visible_iso(rec):
     return iso_date(rec.get("submissionDate")) or iso_date(rec.get("broadcastDate"))
 
 
-def fetch_master(jar, qe_iso, events=False):
+def fetch_master(jar, qe_iso, events=False, index="equities"):
     """All SHP filings whose AS-ON date == qe (events=True: the MID-quarter ones instead).
     Returns [] on failure (self-healing).
 
@@ -620,8 +621,8 @@ def fetch_master(jar, qe_iso, events=False):
     d = datetime.date.fromisoformat(qe_iso)
     to = max(d, min(datetime.date.today(), d + datetime.timedelta(days=MASTER_WINDOW_DAYS)))
     fmt = lambda x: "%02d-%02d-%04d" % (x.day, x.month, x.year)
-    url = ("https://www.nseindia.com/api/corporate-share-holdings-master?index=equities"
-           "&from_date=%s&to_date=%s" % (fmt(d), fmt(to)))
+    url = ("https://www.nseindia.com/api/corporate-share-holdings-master?index=%s"
+           "&from_date=%s&to_date=%s" % (index, fmt(d), fmt(to)))
     hdr = {"User-Agent": B.UA, "Accept": "application/json, text/plain, */*", "Referer": REF}
     try:
         j = json.loads(B._get(url, headers=hdr, jar=jar, timeout=180))
@@ -879,6 +880,83 @@ def parse_shp(txt, qe_iso):
     return out
 
 # ------------------------------------------------------------------ main fetch
+def bank_sme_shares(qes, only=None):
+    """Bank the total share count of every NSE SME-platform (Emerge) filer — shares ONLY.
+
+    NSE files SME shareholding patterns on a SEPARATE board (`index=sme`), exactly like SME results
+    and corporate actions, so the main pass (index=equities) never saw them and no SME company had a
+    share count — i.e. no market cap anywhere on the site, and every dashboard market-cap band hid
+    all 570 of them (user report 2026-09-23, SUNLITE; DATA_RUNBOOK §145). Most SME companies file
+    HALF-YEARLY (31-Mar / 30-Sep; measured Mar-2026 window: 550 as-on 31-MAR, 143 as-on 30-JUN), so
+    the default walks the last 4 quarter-ends and the newest quarter per symbol wins, the same rule as
+    the main bank. shp_history is deliberately NOT touched: SME holdings are a separate decision (the
+    backtest engines read that file), the share count is a separate fact with its own ledger.
+    NSE symbols are unique across the two boards; a company that migrates to the main board is then
+    banked by the main pass with a newer quarter, which wins."""
+    jar = B.nse_jar()
+    shares = load_shares()
+    banked = seen = 0
+    for qe in qes:
+        recs = fetch_master(jar, qe, index="sme")
+        best = {}
+        for r in recs:
+            sym = str(r.get("symbol") or "").strip().upper()
+            sub = visible_iso(r)
+            xb = str(r.get("xbrl") or "").strip()
+            if not sym or not sub or not xb.lower().startswith("http"): continue
+            if only is not None and sym not in only: continue
+            if sym not in best or sub >= best[sym]["sub"]:
+                best[sym] = {"sub": sub, "xb": xb}
+        todo = [(sym, r) for sym, r in best.items() if (shares.get(sym) or [None, ""])[1] < qe]
+        print("sme %s: %d filers, %d with no count at this quarter yet" % (qe, len(best), len(todo)))
+        seen += len(best)
+        def work(item):
+            sym, r = item
+            try:
+                return sym, r, parse_shares(ET.fromstring(fetch_xbrl(r["xb"], jar)))
+            except Exception as e:
+                return sym, r, None
+        with ThreadPoolExecutor(max_workers=THREADS) as ex:
+            for fut in as_completed([ex.submit(work, it) for it in todo]):
+                sym, r, n = fut.result()
+                if n and n > 0 and (shares.get(sym) or [None, ""])[1] <= qe:
+                    shares[sym] = [n, qe, r["sub"]]
+                    banked += 1
+        save_shares(shares)
+    # NEW LISTINGS: a company that listed after the last quarter end has only its PRE-LISTING
+    # pattern (Reg 31(1)(a)), filed as an EVENT with a mid-quarter as-on date, which the quarter-end
+    # filter above drops. For symbols that still have no count at all, bank the newest such event
+    # filing, keyed by its as-on date (the ledger's "QE" slot then sorts before the next quarter end,
+    # so the first regular filing replaces it). Measured 2026-09-23: 32 SME names, all listed
+    # 2026-04-07 .. 2026-09-17, had no quarter-end filing yet.
+    ev_best = {}
+    for qe in qes[:2]:                           # the two newest windows cover the last ~6 months
+        for r in fetch_master(jar, qe, events=True, index="sme"):
+            sym = str(r.get("symbol") or "").strip().upper()
+            asof = iso_date(r.get("date")) or ""
+            xb = str(r.get("xbrl") or "").strip()
+            if not sym or not asof or not xb.lower().startswith("http") or sym in shares: continue
+            if only is not None and sym not in only: continue
+            if sym not in ev_best or asof >= ev_best[sym]["asof"]:
+                ev_best[sym] = {"asof": asof, "xb": xb, "sub": visible_iso(r) or asof}
+    ev_banked = 0
+    if ev_best:
+        with ThreadPoolExecutor(max_workers=THREADS) as ex:
+            futs = [ex.submit(lambda it: (it[0], it[1], parse_shares(ET.fromstring(fetch_xbrl(it[1]["xb"], jar)))), it)
+                    for it in ev_best.items()]
+            for fut in as_completed(futs):
+                try:
+                    sym, r, n = fut.result()
+                except Exception:
+                    continue
+                if n and n > 0 and sym not in shares:
+                    shares[sym] = [n, r["asof"], r["sub"]]
+                    ev_banked += 1
+        save_shares(shares)
+    print("sme share counts: %d banked from quarter-end filings, %d from pre-listing/event filings "
+          "(%d filer-quarters seen), ledger now %d symbols" % (banked, ev_banked, seen, len(shares)))
+    return banked + ev_banked
+
 def refresh_quarters(qes, reparse=False, only=None, fill_shares=False):
     jar = B.nse_jar()
     hist = load_hist()
@@ -1360,6 +1438,15 @@ if __name__ == "__main__":
         print("event quarters:", ", ".join(qes))
         refresh_events(qes, only=only, reparse="--reparse" in args)
         build_engine_feed()
+    elif "--sme-shares" in args:
+        # NSE SME-platform share counts -> shares_outstanding.json only (market caps; §145).
+        n = int(args[args.index("--backfill") + 1]) if "--backfill" in args else 4
+        qes = ([q.strip() for q in args[args.index("--quarters") + 1].split(",") if q.strip()]
+               if "--quarters" in args else last_qes(n))
+        only = ({s.strip().upper() for s in args[args.index("--symbols") + 1].split(",") if s.strip()}
+                if "--symbols" in args else None)
+        print("sme quarter-ends:", ", ".join(qes))
+        bank_sme_shares(qes, only=only)
     elif "--feed-only" in args:
         build_feed()
         build_engine_feed()

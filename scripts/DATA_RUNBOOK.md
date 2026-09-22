@@ -17784,6 +17784,30 @@ stock to be there. fix it"* + *"plus i want stock pages for all sme stocks as we
   the live old full file beside a slim file carrying SUNLITE: 1-year range keeps 167 SUNLITE bars (₹376 → ₹657.50),
   31-March afterwards ₹363 → ₹657.50, 0 console errors. movers.html / stock-backtest.html keep the old replace
   (§103 item 2) — OPEN.
+- **SME market caps (user, 2026-09-23: "when I select mcap it doesn't come — its mcap is empty").** Every
+  dashboard market-cap band requires `mcap > 0`; SME names had none (not on BSE, 0 counts in
+  shares_outstanding.json), so any ticked band hid all 570. Three fixes:
+  1. `fetch_shareholding.py --sme-shares` banks share counts from NSE's SME board (`index=sme` — a separate
+     board, like SME results and corporate actions; most SME filers are HALF-YEARLY: Mar-2026 window 550 as-on
+     31-MAR vs 143 as-on 30-JUN). Shares ONLY — shp_history is untouched. New listings with no quarter-end
+     filing yet are banked from their pre-listing EVENT filing (keyed by its as-on date, so the first regular
+     filing supersedes it). First run: 546 + 28 banked → 566/570 current SME symbols. refresh-shareholding.yml
+     runs it after the events pass (non-fatal). Second reader = screener.in Market Cap ÷ Current Price on 18
+     names: 17 within 0.4 % (screener rounds to ~3 s.f.), PARTH −2.1 % (shares issued after its Mar filing).
+  2. `build_compressed.py` computed `mcap = shares × meta.latest`, but `latest` is written only by the 52-week
+     pass (≥ 30 bars in the last year) — 21 of 25 still-capless SME rows HAD a count and a price series (new
+     listings, thin traders like DRSCARGO). Falls back to the series' own last close now.
+  3. The 4 with no NSE filing at all (ASHUTOSH, METALIC, UTKAL, VINOD — listed Jul–Sep 2026) take a count from
+     `scripts/shares_fill_screener.json` (screener mcap ÷ price, identity checked by name + NSE symbol), read by
+     build_compressed and build_stock_slices ONLY when shares_outstanding has no count. Result: **570/570 SME
+     rows priced with a cap** (566 `shp:`, 4 `screener:`); SUNLITE 13,805,848 shares → ₹875.5 Cr.
+  Still capless site-wide: 101 rows, 94 of them BSE-only with no price series, 7 priced BSE-only rows whose BSE
+  Mktcap is 0 (TVOLCON, BENTCOM, ESQRMON, PUNCTRD, ZJEETMAC, PETPLST, INFRA) — OPEN, not SME.
+- **The results table drew only the top 500 of 5,527 with no way past it** — SUNLITE ranked 654th for 31-Mar →
+  today (the 500th row was +87.60 %, SUNLITE +74.70 %). Now paged: a row at the foot of the table offers "Show
+  500 more" / "Show all" (pinned left and width-capped so it stays on a 375 px screen); new data, search and sort
+  restart at page one. Verified on a 375×812 viewport over the live data: 500 → 1,000 rows (SUNLITE at 654) →
+  5,527; ₹500–1,000 Cr band lists SUNLITE (mcap 876); 0 console errors on a clean load.
 - **Phone scroll trap in a capped table holder (found by the user on this page, 2026-09-22 18:33 IST):**
   nse-bse-dashboard's results box is `max-h-[640px] overflow-auto`; theme.js's `scrollifyTable` re-uses it as
   the `.sw-scrollx` holder and the phone rule sets `overflow-y:hidden`, so rows past 640px could not be reached

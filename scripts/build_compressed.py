@@ -23,7 +23,9 @@ compact_series = {}
 end_ts = payload["endTs"]
 year_ago_ts = end_ts - 365 * DAY
 h52_count = 0
+last_close = {}   # every priced ticker's last close — the mcap fill below needs it for names with <30 bars in a year
 for tkr, pairs in payload["series"].items():
+    if pairs: last_close[tkr] = pairs[-1][1]
     ds, ps = [], []
     for ts, close in pairs:
         ds.append(int((ts - start_ts) // DAY))
@@ -59,20 +61,40 @@ print(f"52w-high attached to {h52_count} stocks")
 # median 0.08% on a 20-name check, so the two sources are interchangeable in practice.
 # Fill-only: a real BSE mcap is never overwritten.
 shares_path = ROOT / "scripts" / "shares_outstanding.json"
+# Fallback counts for SME listings with no filing yet (screener-derived, §145) — used only when
+# shares_outstanding.json has no count, so a real filing always wins.
+try:
+    screener_fill = (json.loads((ROOT / "scripts" / "shares_fill_screener.json").read_text(encoding="utf-8"))
+                     .get("fills") or {})
+except Exception:
+    screener_fill = {}
 if shares_path.exists():
     try:
         shares = json.loads(shares_path.read_text(encoding="utf-8"))
-        filled = 0
+        filled = filled_sc = 0
         for tkr, meta in payload["meta"].items():
-            if meta.get("mcap") or not meta.get("latest"): continue
-            got = shares.get(str(meta.get("symbol") or tkr.split(".")[0]).upper())
-            if not got or not got[0]: continue
-            mcap = got[0] * meta["latest"] / 1e7          # shares x rupees -> rupees crore
+            if meta.get("mcap"): continue
+            # `latest` is only written by the 52w pass (>= 30 bars in the last year), so a new or thinly
+            # traded listing had none and was skipped — 21 of 25 cap-less SME rows on 2026-09-23 had a
+            # share count AND a price series. Fall back to the series' own last close.
+            px = meta.get("latest") or last_close.get(tkr)
+            if not px: continue
+            sym = str(meta.get("symbol") or tkr.split(".")[0]).upper()
+            got = shares.get(sym)
+            src = None
+            if got and got[0]:
+                n, src = got[0], "shp:" + got[1]          # provenance — not a BSE-reported cap
+            elif (screener_fill.get(sym) or {}).get("shares"):
+                n, src = screener_fill[sym]["shares"], "screener:" + str(screener_fill[sym].get("asof"))
+            if not src: continue
+            mcap = n * px / 1e7                           # shares x rupees -> rupees crore
             if mcap <= 0: continue
             meta["mcap"] = round(mcap, 2)
-            meta["mcapSrc"] = "shp:" + got[1]             # provenance — not a BSE-reported cap
-            filled += 1
-        print(f"mcap from SHP share counts: {filled} filled ({len(shares)} counts on file)")
+            meta["mcapSrc"] = src
+            if src.startswith("screener"): filled_sc += 1
+            else: filled += 1
+        print(f"mcap from SHP share counts: {filled} filled ({len(shares)} counts on file); "
+              f"{filled_sc} from the screener fallback ledger")
     except Exception as e:
         print(f"WARN shares_outstanding unusable ({e}) — NSE-only caps stay blank")
 
@@ -687,7 +709,14 @@ function compareRows(a, b, key, dir) {
   return dir === 'asc' ? cmp : -cmp;
 }
 
-function renderResults(results) {
+// Rows are drawn in pages of ROW_PAGE (drawing all 5,500 at once is slow on phones); a row at the
+// foot of the table reveals the next page or everything. The old hard cap of 500 hid every stock
+// ranked below it with no way to scroll to it — SUNLITE ranked 654th for 31-Mar→today (runbook §145).
+const ROW_PAGE = 500;
+let ROW_LIMIT = ROW_PAGE;
+function showMoreRows(all) { ROW_LIMIT = all ? Infinity : ROW_LIMIT + ROW_PAGE; renderResults(lastResults, true); }
+function renderResults(results, keepLimit) {
+  if (!keepLimit) ROW_LIMIT = ROW_PAGE;           // new data / search / sort starts at the first page
   const q = document.getElementById('searchBox').value.toLowerCase().trim();
   let f = results;
   if (q) f = f.filter(r => r.symbol.toLowerCase().includes(q) || r.name.toLowerCase().includes(q) || (r.sector || '').toLowerCase().includes(q));
@@ -695,9 +724,8 @@ function renderResults(results) {
   f.sort((a, b) => compareRows(a, b, SORT_STATE.key, SORT_STATE.dir));
 
   const tbody = document.getElementById('resultsBody');
-  const MAX_ROWS = 500;
-  const truncated = f.length > MAX_ROWS;
-  const view = f.slice(0, MAX_ROWS);
+  const truncated = f.length > ROW_LIMIT;
+  const view = f.slice(0, ROW_LIMIT);
 
   if (view.length === 0) {
     tbody.innerHTML = '<tr><td colspan="9" class="text-center text-slate-400 py-16 text-sm">No matching stocks. Adjust filters or search.</td></tr>';
@@ -763,13 +791,24 @@ function renderResults(results) {
         '</tr>'
       );
     }
+    if (truncated) {
+      const left = f.length - view.length;
+      // Pinned to the LEFT edge (position:sticky): on a phone the table is wider than the screen, and a
+      // centred cell spanning the whole table put these buttons off-screen to the right.
+      out.push('<tr><td colspan="9" class="py-4 text-left text-sm">' +
+        '<div style="position:sticky;left:12px;display:inline-flex;flex-wrap:wrap;align-items:center;gap:8px;padding:0 12px;max-width:calc(100vw - 72px)">' +
+        '<span class="text-slate-500">Showing ' + view.length.toLocaleString('en-IN') + ' of ' + f.length.toLocaleString('en-IN') + '</span>' +
+        '<button type="button" onclick="showMoreRows(false)" class="px-3 py-1.5 rounded-lg bg-blue-600 text-white font-semibold text-xs">Show ' + Math.min(ROW_PAGE, left).toLocaleString('en-IN') + ' more</button>' +
+        '<button type="button" onclick="showMoreRows(true)" class="px-3 py-1.5 rounded-lg border border-slate-300 text-slate-700 font-semibold text-xs">Show all</button>' +
+        '</div></td></tr>');
+    }
     tbody.innerHTML = out.join('');
   }
   const noDataCount = f.filter(r => r.noData).length;
   const noDataNote  = noDataCount ? ' &middot; <span class="text-slate-400">' + noDataCount.toLocaleString('en-IN') + ' without price data</span>' : '';
   document.getElementById('resultCount').innerHTML =
     '<span class="font-semibold text-slate-700">' + f.length.toLocaleString('en-IN') + '</span> stocks' + noDataNote +
-    (truncated ? ' (showing top ' + MAX_ROWS + ' \u2014 use sort/search/filters to narrow)' : '');
+    (truncated ? ' (showing first ' + view.length.toLocaleString('en-IN') + ' \u2014 "Show more" at the bottom of the table, or search)' : '');
 }
 
 function updateStats(results) {
