@@ -819,6 +819,30 @@
    "pages": [
     "commodities.html"
    ]
+  },
+  {
+   "file": "ideas/govt.json",
+   "name": "Daily Ideas — government announcements that cleared the materiality gate",
+   "workflow": "cloud routine daily-ideas (scripts/ideas/govt.py)",
+   "cadence": "daily ~19:30 IST (trading days)",
+   "max_age_hours": 80,
+   "min_bytes": 200,
+   "min_ratio": 0,
+   "pages": [
+    "ideas.html"
+   ]
+  },
+  {
+   "file": "ideas/theme_map.json",
+   "name": "Daily Ideas — government programme to listed-beneficiary map",
+   "workflow": "cloud routine daily-ideas (scripts/ideas/govt.py)",
+   "cadence": "daily ~19:30 IST (trading days)",
+   "max_age_hours": 2160,
+   "min_bytes": 5000,
+   "min_ratio": 0,
+   "pages": [
+    "ideas.html"
+   ]
   }
  ],
  "special": [

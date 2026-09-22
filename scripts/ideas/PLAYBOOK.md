@@ -12,6 +12,7 @@ valid answer; nothing is investment advice.
 - One run per trading day after BSE has published the bhavcopy (evening IST). Steps, in order:
   1. `python3 scripts/ideas/universe.py`
   2. `python3 scripts/ideas/scan.py` → `docs/ideas/scan/<date>.json` (candidates = score ≥ 4)
+  2a. Government announcements: `python3 scripts/ideas/govt.py` → `docs/ideas/govt.json` (see "Government-driven ideas")
   2b. Commodity panels (the price-driven half of the method, see "Price-driven ideas" below):
       `python3 scripts/ideas/spot.py` (daily spot) · `python3 scripts/ideas/wpi.py` (WPI items, monthly) ·
       `python3 scripts/ideas/trade.py --latest` (HS trade panel; no-op unless the ministry published a new month) ·
@@ -56,9 +57,62 @@ Every run, BEFORE the filings triage, read `docs/ideas/signals.json` (groups sor
    `docs/ideas/commodity_map.json` with a one-line `why` so tomorrow's run starts from it. Keep the map honest: only
    add a name whose exposure you read in a document, and say which.
 
+## Government-driven ideas: the third lane (added 2026-09-22, runbook §144c)
+
+`python3 scripts/ideas/govt.py` reads every English press release the Press Information Bureau published today
+and keeps only the ones that look like a DECISION (approved, sanctioned, launched, allocated, notified, awarded)
+carrying either a real outlay (≥ ₹1,000 cr by default) or a procurement mandate, in a sector we have a
+beneficiary map for (`docs/ideas/theme_map.json`). On a normal day it keeps nothing, and that is the correct
+answer: of the 42 releases on 2026-09-22, 30 were not decisions, 7 were ceremonial and 5 were below the floor.
+
+**What the history says (measured, not assumed).** Each basket below is the set of companies later seen winning
+work under that programme in three years of NSE order filings; each ran base-to-peak from the policy date, against
+every listed stock measured the same way over the same window:
+
+| programme | announced | names | basket median | market median | made 5x |
+|---|---|---|---|---|---|
+| Defence indigenisation list | 9 Aug 2020 | 34 | 17.4x | 4.3x | 76% vs 44% |
+| Shipbuilding and yards | 9 Aug 2020 | 21 | 16.2x | 4.3x | 81% vs 44% |
+| Smart meters (RDSS) | 30 Jun 2021 | 8 | 12.0x | 3.2x | 100% vs 28% |
+| Jal Jeevan Mission | 1 Feb 2021 | 8 | 6.7x | 3.7x | 50% vs 35% |
+| PM-KUSUM | 1 Nov 2020 | 26 | 5.5x | 4.1x | 54% vs 41% |
+| Power transmission | 1 Feb 2022 | 47 | 4.7x | 3.0x | 49% vs 24% |
+| Railways + Vande Bharat | 1 Feb 2022 | 68 | 4.4x | 3.0x | 44% vs 24% |
+| Roads and highways | 1 Feb 2021 | 31 | 4.1x | 3.7x | 45% vs 35% |
+| Green hydrogen | 4 Jan 2023 | 9 | 3.8x | 2.7x | 33% vs 18% |
+| BharatNet amended | 4 Aug 2023 | 18 | 2.5x | 2.3x | 17% vs 10% |
+| PM Surya Ghar rooftop | 13 Feb 2024 | 9 | 1.8x | 2.0x | 0% vs 6% |
+
+Read the bottom of that table as carefully as the top. **Money that becomes somebody's order book paid; a
+household subsidy did not.** PM Surya Ghar underperformed the market outright. So the question to ask of any
+new announcement is not how big the number is, but whose order book it lands in.
+
+Two more facts from the same work: the baskets' bases were usually MONTHS after the announcement (the defence
+names bottomed between September and November 2020), so there is time to research properly; and almost every
+winner is now 30-90% below its peak, so an idea must say what would end the run, not only what started it.
+
+**Each run:**
+1. `python3 scripts/ideas/govt.py` → `docs/ideas/govt.json`. Read `releases` and `unmapped_releases`.
+2. For a kept release, take the mapped companies in the ₹200-7,500 cr band (`small_caps`) and research the one
+   or two whose exposure to that programme is largest. The map's `n_order_filings` says how many orders that
+   company has actually won under the programme: it is evidence of participation, never a recommendation.
+3. For an `unmapped_releases` entry — big, but in a sector with no basket — search `docs/ideas/universe.json`
+   and `docs/search_index.json` for companies in that line of work, verify from their own filings that the
+   programme is material to them, and ADD them to `docs/ideas/theme_map.json` with the document you read.
+   That is how the map grows; never add a name on a hunch.
+4. Publish with `trigger` = "govt: <programme> — <what was decided and how much>" and `lane` = "govt".
+
 ## Triage: which candidates to research (spend the deep work on at most 3-4 names)
 
 Rank the scan's candidates by, in this order:
+0. **What the order study measured (2026-09-22, 1,245 order filings with values, runbook §144c).** Order value
+   against MARKET CAP predicts nothing: the 25-50%-of-market-cap bucket produced no 3x at all. Two things do
+   work. Size against SALES: an order worth 25-50% of a trailing year's revenue reached 2x within two years
+   35.7% of the time against 21.4% for orders under 10% of sales. And rarity: a company filing its FIRST order
+   announcement in two years reached 2x 30.4% of the time and 5x 3.5%, while a serial bidder with eight or more
+   prior filings reached 2x only 17.3% of the time and 5x NEVER. So always state the order against a year of
+   sales, and check how many orders that company has announced before. A big order from an EPC serial bidder is
+   not an idea.
 1. A hard operational trigger from the company itself: order win with a value, capex or new capacity with a number,
    commercial production, credit-rating upgrade or a rating report that states revenue expectations, a results filing
    with revenue growth ≥ 30% YoY and PAT growth.

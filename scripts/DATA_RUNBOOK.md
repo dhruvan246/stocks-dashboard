@@ -17356,6 +17356,65 @@ the BSE bhavcopy lands; commits only `docs/ideas/**`, `docs/ideas.html`, `script
 (ideas/latest.json 80 h, ideas/track.json 80 h, ideas/universe.json 80 h, ideas/ideas.json static). sw.js v158; nav entry under
 Markets ▸ Discovery & Filings; home tile text in `docs/index.html` DESC.
 
+### 144b/c. ★★★ WHAT ACTUALLY DRIVES A MULTIBAGGER — the 2026-09-22 studies, and the government lane they produced
+
+**Trigger:** the user pointed at Sterlite Technologies (base ₹52.59 on 2025-04-09 → peak ₹897.40 on 2026-09-11,
+17.1x) and asked why its volume exploded in June 2025 and February 2026, then: *"find same pattern in last three
+years for all the stocks"*, *"reverse engineering find all the stocks that rose 5 to 10x in last three years and
+find common thing among them"*, and finally *"from 2020 till date check what government announced and how much
+the stocks related to that news rose from base to peak"*.
+
+**Sterlite's two triggers, from BSE's own filings:** order award filed 11-Jun-2025 17:06 (BharatNet J&K/Ladakh
+Package 13, ₹2,631.14 cr incl GST — **70% of its ₹3,741 cr market cap that day**, capex leg ₹1,620.50 cr); then
+board approval 7-Feb-2026 14:11 of 45.3 crore warrants to promoter Twin Star at ₹110 (₹498.3 cr, stake 42.9% →
+47.75%), EGM 4-Mar-2026. Volume on 17-Jun-2025 was 141x its own 60-day median.
+
+#### 144b. The price/earnings studies (scripts in the session scratchpad, data = the LIVE sf bin)
+- **A volume explosion is an alarm bell, not an edge.** 1,594 tradable stocks, three years, base-to-peak:
+  81.4% of the 113 that ran ≥5x had a ≥10x volume day near their base — and so did 78.4% of those that did
+  under 2x. At ≥25x volume: 48.7% vs 47.1%. Insolation Energy (BSE 543620) ran 57.7x from 10-Oct-2022 with a
+  loudest-day volume of just **2x** its median. Never build a screen on volume alone.
+- **Earnings decide it.** Among the ≥5x runs: profit doubled in 73.9% (vs 8.8% of the <2x group), revenue +50%
+  in 53.8% (vs 2.7%), FII stake +1pp in 45.5% (vs 15.5%), promoter stake rose in 15.2% (vs 4.8%).
+- **Knowable at the base:** newest quarter revenue +30% YoY in 30.1% of winners vs 11.1% of the rest (on its own:
+  +30-60% quarter → 9.4% odds of a 5x run, +60% → 13.8%, versus 5.0-5.8% for flat or shrinking). Market cap
+  median ₹1,760 cr vs ₹3,565 cr; **nothing above ₹25,000 cr produced a 5x run in three years**; the odds peak
+  between ₹300 cr and ₹7,500 cr. Runs take a median 578 days base-to-peak (vs 141 for the also-rans).
+- **Do not over-read a confirmation.** "Price held 20 days after the ignition" looks powerful only because the
+  multiple is measured from the ignition close; entering 20 sessions later at the real price takes the ≥5x rate
+  from 3.6% to 7-9%, not the 15.6% the naive table suggests. Median drawdown from that entry is -25%.
+- **Orders: size vs SALES, not vs market cap.** 1,245 order filings with values (NSE archive + 3,675 PDFs read):
+  order/market-cap predicts nothing (the 25-50%-of-mcap bucket made no 3x at all — those buckets are full of EPC
+  names for whom it is routine). Order ≥25-50% of a trailing year's revenue: 2y ≥2x 35.7% vs 21.4% for <10%.
+  Rarity is the other half: a company's FIRST order filing in two years → 2y ≥2x 30.4%, ≥5x 3.5%; a serial bidder
+  with 8+ prior filings → 17.3% and **0% ≥5x**.
+
+#### 144c. The government lane (SHIPPED)
+Baskets built from evidence, not opinion: the companies later seen winning work under each programme in three
+years of NSE order filings. Base-to-peak from the policy date, against all 2,832 stocks over the same window:
+defence (9-Aug-2020) 34 names median **17.4x vs 4.3x**, 76% made 5x; shipbuilding 16.2x; RDSS smart meters
+(30-Jun-2021) 8 names **12.0x vs 3.2x**, 100% made 5x; Jal Jeevan (1-Feb-2021) 6.7x vs 3.7x; PM-KUSUM 5.5x vs
+4.1x; transmission 4.7x vs 3.0x; railways (1-Feb-2022) 68 names 4.4x vs 3.0x; roads 4.1x vs 3.7x; green hydrogen
+3.8x vs 2.7x; BharatNet (4-Aug-2023) 2.5x vs 2.3x; **PM Surya Ghar (13-Feb-2024) 1.8x vs 2.0x — a household
+subsidy is not an order book.** Bases came months after the announcements, and nearly every winner is now 30-90%
+off its peak.
+
+**Shipped:** `scripts/ideas/govt.py` reads the PIB English listing (`allRel.aspx?reg=3&lang=1`, 40-80 releases a
+day, grouped under ministry `<h3>` headings; per-language PRIDs; body via `PressReleaseIframePage.aspx?PRID=` and
+the `innner-page-main-about-us-content-right-part` div) and keeps a release only when it has a decision verb, is
+not ceremonial, and carries an outlay ≥ ₹1,000 cr or a procurement mandate, in a mapped sector. Big-but-unmapped
+releases are kept separately (`unmapped_releases`) so nothing large is dropped silently. Gate unit-tested against
+the real historical headlines (15 cases): it caught BharatNet, Surya Ghar, green hydrogen, RDSS, the indigenisation
+list, the railway outlay, Jal Jeevan and the semiconductor PLI, and rejected film awards, greetings and pay-scale
+revisions. **Watch the amount regex**: `Rs 1.39 lakh cr` must match `lakh cr` BEFORE plain `cr` or it reads as
+₹1.39 cr — that bug was live until the unit test caught it. `docs/ideas/theme_map.json` holds 12 themes and 304
+company rows with `n_order_filings` as the evidence and the measured history per theme. `docs/ideas.html` now has
+three lanes (Government / Commodity / Filing) with lane tabs, a government section and a commodity strip; sw v163.
+
+**Open:** the study universe is the NSE price store, so 332 BSE companies above ₹200 cr (14%) are missing, and
+SME history is absent (Insolation's run is invisible there — use BSE `adjusted_history` for those). The
+earnings-acceleration and institutional-accumulation lanes are measured but NOT yet built.
+
 ### 144a. ★★★ COMMODITY WATCH — product prices for every HS code + WPI items + daily spot, mapped to listed beneficiaries (2026-09-22)
 
 **Trigger:** the user rejected the first filings-driven ideas: *"he is suggesting copper recyclers bcos copper is rising … electrode
