@@ -16509,15 +16509,15 @@
     ],
     "was": [
      62.69,
-     1.9892,
-     0.0129,
+     2.0049,
+     0.013,
      0.0028,
      0.0,
      "2026-04-09",
      14576
     ],
     "src": "bsexbrl:500890:500890_2112026173336_SHP.xml",
-    "why": "\u00a7142g 2026-09-22 orphan re-adjudication: ORIGINAL FILING WINS \u2014 original 2026-01-21 17:33 -> 2026-01-22; the store held NSE's 2026-04-07 revision. Re-armed: `was` = the store's revision row.",
+    "why": "\u00a7142g 2026-09-22 orphan re-adjudication: ORIGINAL FILING WINS \u2014 original 2026-01-21 17:33 -> 2026-01-22; the store held NSE's 2026-04-07 revision. Re-armed: `was` = the store's revision row. Re-armed again 2026-09-22 08:15: the daily fetch (Dec-2025 is still inside its last-3-quarters window) pulled a NEWER NSE re-revision (fii 2.0049) before the fix ran, so the was-guard blocked it; `was` = that row. Expect this to recur for any recent-window quarter the company keeps re-filing until the quarter leaves the window.",
     "superseded": {
      "cell": [
       62.2,
