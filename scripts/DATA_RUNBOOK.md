@@ -16958,6 +16958,36 @@ revision's values under the original's gated date (KALYANKJIL Dec-2022: 28.73 fr
 10-Jan; UPL 2017-2020 hold the 2023 re-filed ODR values at the original dates). Census them against `revised_date_time`
 before touching: where the revision fell inside the same visibility window they stand; otherwise the original wins.
 
+### 142h. ★★ THE DEFERRED DATE SWEEP — NSE broadcast timestamps close 906 more served dates; what NSE's clock can and cannot prove  (2026-09-22)
+
+Item 2 (§142c) left three classes it could not judge from BSE alone. Re-audited on the live feed (scratchpad `audit_residual.py`):
+1,569 rows served EARLIER than BSE's earliest gated timestamp, 1,512 rows whose BSE row carries no timestamp (Revised-only),
+7,680 rows of the 476 symbols with no BSE code at all. New evidence: NSE's `corporate-share-holdings-master` carries a
+`broadcastDate` WITH a clock for every filing, and its submission windows from Jul-2021 are still served (17 quarterly windows,
+36,470 rows, cached in scratchpad `nse_master/`). Rule: earliest broadcast of the as-on on either exchange, 15:30-gated.
+
+**NSE's clock lies in three ways — each measured, each excluded before writing:**
+- **Bulk re-stamps.** 1,236 rows carry the identical broadcast second on 2022-01-06 and 576 on 2022-01-07 (a re-broadcast of
+  every older filing), smaller clusters on 2022-04-22 16:11:32 (NATCOPHARM, AAREYDRUGS, GOCOLORS…), 2022-11-30, 2023-01-06,
+  2024-03-26. Any broadcast second shared by ≥3 symbols is a system stamp, not a publication: 961 candidate moves dropped.
+- **No in-window original.** A broadcast more than 45 days after the as-on (30 for an event) with nothing earlier on either
+  exchange is a later re-filing, not proof the original was hidden: 417 dropped. Same logic as §142g — a later document is
+  never allowed to re-date an earlier one.
+- **Window edge.** As-on dates before 2021-06-30 filed outside the fetched windows; their "earliest" NSE row is a re-filing: 39 dropped.
+
+**Written: 906 `shp_lag_fix.json` entries** — 903 `days_later` (median 1 day: after-close or weekend filings served on the raw day;
+589 of one day, 271 of 2-5, 43 of 6-30, none longer) and 3 `days_earlier`; 604 quarterly rows, 302 event rows; 2023-25 carry
+most of them (311 / 312 / 183). 21 of the 906 are BSE-timestamp entries the live-feed re-audit surfaced (DHANI 2017 events,
+PEL, MONSANTO, LAKSHVILAS, ACLGATI…). Verified before writing that every entry's `was` equals the store's current date, so
+`_reassert_sub` will move exactly these rows.
+
+**Left, by construction, and why:** 1,210 "served-earlier-than-BSE" rows before Jul-2021 (NSE dates without a clock and no
+NSE window to read — the served date is NSE's day, BSE's later timestamp is BSE's own receipt; nothing shows the NSE filing was
+after 15:30, so the day stands), 548 + 3,697 no-timestamp / no-BSE-code rows outside the NSE windows (2016-2021 and mid-2026
+onward — the latter are covered by the daily fetch's own broadcast stamps from item 1), and the 1,378 rows dropped above.
+These are not defects found and left; they are rows for which no exchange clock exists. When NSE's windows go stale, the
+recipe is `nse_windows.py` (fetch) → `step3_classify.py` (classify with the three exclusions) → append.
+
 ## 141a. ★★ NIFTY BANK ROSTERS HEALED — 2000→date from NSE's register + 12 archived lists  (2026-09-21)
 
 **Symptom (user, via the §141 card):** Nifty Bank's history had 7 snapshots 2017-03-31 → 2024-09-30 with
