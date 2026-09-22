@@ -14,7 +14,8 @@
   "accept.<SYM>.<QE> = a shareholder-count collapse that is REAL (post-insolvency capital",
   "   reduction, pre-IPO pattern, ...). Exempts the cell from the write-time nsh scale gate so a",
   "   --reparse cannot punch a hole in correct data. See runbook \u00a722g for how each was adjudicated.",
-  "2026-09-22 (\u00a7142e): fix.<SYM>.<DATE> with a NON-quarter-end DATE names an EVENT row in scripts/shp_events.json (apply_cell_fix_events); quarter-end keys keep naming shp_history cells. A `superseded` field keeps the earlier entry this one chains from."
+  "2026-09-22 (\u00a7142e): fix.<SYM>.<DATE> with a NON-quarter-end DATE names an EVENT row in scripts/shp_events.json (apply_cell_fix_events); quarter-end keys keep naming shp_history cells. A `superseded` field keeps the earlier entry this one chains from.",
+  "2026-09-22 (\u00a7142g): `retired` holds entries whose stored cell was neither the fix nor its `was` (orphans). Rule adopted: VALUES AND DATE COME FROM THE SAME DOCUMENT, and the document that serves a quarter is the EARLIEST PUBLIC filing (the original); a revision replaces it only when its own gated publication date falls in the same visibility window (same-day re-filing). Late revisions are recorded here, never served at the original's date."
  ],
  "_doc_bulk_stamp": "2026-08-13: 441 rows across 57 symbols carried ONE identical submission date across >=3 quarters \u2014 a scrape date, not a filing date. Separated from the 268 symbols whose late dates are DISTINCT per quarter (genuinely late filers: TALWALKARS, MANPASAND et al) \u2014 those are left alone, because for a distressed company a multi-year filing lag is real. The discriminator is the identical-date collapse, and the fii/dii values under it differ per quarter, which is what proves the data was read per-quarter and only the date was stamped.",
  "accept": {
@@ -655,52 +656,6 @@
     "why": "WITHIN-SYMBOL OUTLIER: this symbol's own median filing lag is inside the 21-day window, yet this row is 197d late. An otherwise-compliant filer does not file one quarter months late and resume on time. Corrected only because the stamp signature is present as well \u2014 the date is shared with another quarter of the same symbol, or the lag exceeds a year. Rows 120-365d late carrying a LONE date are left alone: there a single genuinely-delayed filing cannot be told from a stamp."
    }
   },
-  "AFSL": {
-   "2023-09-30": {
-    "cell": [
-     72.09,
-     11.72,
-     0.0,
-     0.0,
-     0.0,
-     "2023-10-21",
-     14524
-    ],
-    "src": "shp filing-date convention QE+21d (SEBI Reg 31 deadline)",
-    "was": [
-     72.09,
-     11.72,
-     0.0,
-     0.0,
-     0.0,
-     "2024-05-10",
-     14524
-    ],
-    "why": "WITHIN-SYMBOL OUTLIER: this symbol's own median filing lag is inside the 21-day window, yet this row is 223d late. An otherwise-compliant filer does not file one quarter months late and resume on time. Corrected only because the stamp signature is present as well \u2014 the date is shared with another quarter of the same symbol, or the lag exceeds a year. Rows 120-365d late carrying a LONE date are left alone: there a single genuinely-delayed filing cannot be told from a stamp."
-   },
-   "2023-12-31": {
-    "cell": [
-     72.09,
-     11.58,
-     0.0,
-     0.0,
-     0.0,
-     "2024-01-21",
-     13193
-    ],
-    "src": "shp filing-date convention QE+21d (SEBI Reg 31 deadline)",
-    "was": [
-     72.09,
-     11.58,
-     0.0,
-     0.0,
-     0.0,
-     "2024-05-10",
-     13193
-    ],
-    "why": "WITHIN-SYMBOL OUTLIER: this symbol's own median filing lag is inside the 21-day window, yet this row is 131d late. An otherwise-compliant filer does not file one quarter months late and resume on time. Corrected only because the stamp signature is present as well \u2014 the date is shared with another quarter of the same symbol, or the lag exceeds a year. Rows 120-365d late carrying a LONE date are left alone: there a single genuinely-delayed filing cannot be told from a stamp."
-   }
-  },
   "AHLWEST": {
    "2021-12-31": {
     "cell": [
@@ -1174,28 +1129,6 @@
      86464
     ],
     "why": "WITHIN-SYMBOL OUTLIER: this symbol's own median filing lag is inside the 21-day window, yet this row is 298d late. An otherwise-compliant filer does not file one quarter months late and resume on time. Corrected only because the stamp signature is present as well \u2014 the date is shared with another quarter of the same symbol, or the lag exceeds a year. Rows 120-365d late carrying a LONE date are left alone: there a single genuinely-delayed filing cannot be told from a stamp."
-   },
-   "2016-09-30": {
-    "cell": [
-     47.42,
-     9.56,
-     4.18,
-     0.0,
-     3.75,
-     "2016-10-21",
-     82217
-    ],
-    "src": "shp filing-date convention QE+21d (SEBI Reg 31 deadline)",
-    "was": [
-     47.42,
-     9.56,
-     4.18,
-     0.0,
-     3.75,
-     "2017-04-24",
-     82217
-    ],
-    "why": "WITHIN-SYMBOL OUTLIER: this symbol's own median filing lag is inside the 21-day window, yet this row is 206d late. An otherwise-compliant filer does not file one quarter months late and resume on time. Corrected only because the stamp signature is present as well \u2014 the date is shared with another quarter of the same symbol, or the lag exceeds a year. Rows 120-365d late carrying a LONE date are left alone: there a single genuinely-delayed filing cannot be told from a stamp."
    },
    "2017-03-31": {
     "cell": [
@@ -1963,72 +1896,6 @@
    }
   },
   "ARVSMART": {
-   "2023-06-30": {
-    "cell": [
-     50.55,
-     0.69,
-     11.49,
-     2.58,
-     0.0,
-     "2023-07-21",
-     88361
-    ],
-    "src": "shp filing-date convention QE+21d (SEBI Reg 31 deadline)",
-    "was": [
-     50.55,
-     0.69,
-     11.49,
-     2.58,
-     0.0,
-     "2025-02-13",
-     88361
-    ],
-    "why": "BULK STAMP: 3 quarters of this symbol all carry the single submission date 2025-02-13, which is 594 days after this quarter ended. The DATA is real and per-quarter (the fii/dii values differ quarter to quarter) \u2014 only the DATE is a scrape date written into the filing slot. Replaced with the QE+21d convention already used by the MC/Wayback ledgers, and the modal lag of our own clean rows (36.8% of 87,977 dated rows sit at exactly +21d; median +19d)."
-   },
-   "2023-09-30": {
-    "cell": [
-     50.55,
-     0.85,
-     11.61,
-     2.71,
-     0.0,
-     "2023-10-21",
-     87548
-    ],
-    "src": "shp filing-date convention QE+21d (SEBI Reg 31 deadline)",
-    "was": [
-     50.55,
-     0.85,
-     11.61,
-     2.71,
-     0.0,
-     "2025-02-13",
-     87548
-    ],
-    "why": "BULK STAMP: 3 quarters of this symbol all carry the single submission date 2025-02-13, which is 502 days after this quarter ended. The DATA is real and per-quarter (the fii/dii values differ quarter to quarter) \u2014 only the DATE is a scrape date written into the filing slot. Replaced with the QE+21d convention already used by the MC/Wayback ledgers, and the modal lag of our own clean rows (36.8% of 87,977 dated rows sit at exactly +21d; median +19d)."
-   },
-   "2023-12-31": {
-    "cell": [
-     50.55,
-     0.49,
-     11.66,
-     2.75,
-     0.0,
-     "2024-01-21",
-     89484
-    ],
-    "src": "shp filing-date convention QE+21d (SEBI Reg 31 deadline)",
-    "was": [
-     50.55,
-     0.49,
-     11.66,
-     2.75,
-     0.0,
-     "2025-02-13",
-     89484
-    ],
-    "why": "BULK STAMP: 3 quarters of this symbol all carry the single submission date 2025-02-13, which is 410 days after this quarter ended. The DATA is real and per-quarter (the fii/dii values differ quarter to quarter) \u2014 only the DATE is a scrape date written into the filing slot. Replaced with the QE+21d convention already used by the MC/Wayback ledgers, and the modal lag of our own clean rows (36.8% of 87,977 dated rows sit at exactly +21d; median +19d)."
-   },
    "2024-03-31": {
     "cell": [
      50.4,
@@ -2233,28 +2100,6 @@
    }
   },
   "ASTERDM": {
-   "2018-06-30": {
-    "cell": [
-     37.56,
-     6.76,
-     2.75,
-     1.82,
-     0.0,
-     "2018-07-21",
-     108982
-    ],
-    "src": "shp filing-date convention QE+21d (SEBI Reg 31 deadline)",
-    "was": [
-     37.56,
-     6.76,
-     2.75,
-     1.82,
-     0.0,
-     "2019-05-13",
-     108982
-    ],
-    "why": "WITHIN-SYMBOL OUTLIER: this symbol's own median filing lag is inside the 21-day window, yet this row is 317d late. An otherwise-compliant filer does not file one quarter months late and resume on time. Corrected only because the stamp signature is present as well \u2014 the date is shared with another quarter of the same symbol, or the lag exceeds a year. Rows 120-365d late carrying a LONE date are left alone: there a single genuinely-delayed filing cannot be told from a stamp."
-   },
    "2018-09-30": {
     "cell": [
      37.56,
@@ -2282,24 +2127,46 @@
    "2025-12-31": {
     "cell": [
      32.83,
-     6.9,
+     6.902,
      0.0,
      0.0,
      0.0,
      "2026-01-21",
      15779
     ],
-    "src": "bse:543911_1622026153255_SHP.xml",
     "was": [
      30.15,
-     6.18,
+     6.1837,
      0.0,
      0.0,
      0.0,
-     "2026-01-20",
+     "2026-02-23",
      15798
     ],
-    "why": "AMBIGUOUS cell adjudicated REVISION_RIGHT: fingerprint SAME_SECURITY (local nsh window) + last-word principle.  Diffs {'prom': [30.15, 32.83], 'fii': [6.18, 6.9]} (2026-08-09)"
+    "src": "bsexbrl:543911:543911_201202617349_SHP.xml",
+    "why": "\u00a7142g 2026-09-22 orphan re-adjudication: ORIGINAL FILING WINS \u2014 original 2026-01-20 17:03 -> 2026-01-21; the store held the 2026-02-20 second revision (30.15/6.18). Re-armed: `was` = the store's revision row.",
+    "superseded": {
+     "cell": [
+      32.83,
+      6.9,
+      0.0,
+      0.0,
+      0.0,
+      "2026-01-21",
+      15779
+     ],
+     "src": "bse:543911_1622026153255_SHP.xml",
+     "was": [
+      30.15,
+      6.18,
+      0.0,
+      0.0,
+      0.0,
+      "2026-01-20",
+      15798
+     ],
+     "why": "AMBIGUOUS cell adjudicated REVISION_RIGHT: fingerprint SAME_SECURITY (local nsh window) + last-word principle.  Diffs {'prom': [30.15, 32.83], 'fii': [6.18, 6.9]} (2026-08-09)"
+    }
    }
   },
   "ATCOM": {
@@ -2369,28 +2236,6 @@
      24673
     ],
     "why": "Unanchorable-revision adjudication (zero-institution filing, prom-only): stored 68.45 is a one-quarter dip vs neighbours 71.8-71.96; same register. Raw prom read off the promoter context; institutional zeros kept from stored. (2026-08-09)"
-   },
-   "2025-03-31": {
-    "cell": [
-     74.67,
-     0.0,
-     0.0,
-     0.0,
-     0.0,
-     "2025-04-21",
-     23528
-    ],
-    "src": "shp filing-date convention QE+21d (SEBI Reg 31 deadline)",
-    "was": [
-     74.67,
-     0.0,
-     0.0,
-     0.0,
-     0.0,
-     "2026-04-04",
-     23528
-    ],
-    "why": "WITHIN-SYMBOL OUTLIER: this symbol's own median filing lag is inside the 21-day window, yet this row is 369d late. An otherwise-compliant filer does not file one quarter months late and resume on time. Corrected only because the stamp signature is present as well \u2014 the date is shared with another quarter of the same symbol, or the lag exceeds a year. Rows 120-365d late carrying a LONE date are left alone: there a single genuinely-delayed filing cannot be told from a stamp."
    }
   },
   "AUBANK": {
@@ -3579,182 +3424,6 @@
     ],
     "why": "BULK STAMP: 9 quarters of this symbol all carry the single submission date 2023-12-26, which is 909 days after this quarter ended. The DATA is real and per-quarter (the fii/dii values differ quarter to quarter) \u2014 only the DATE is a scrape date written into the filing slot. Replaced with the QE+21d convention already used by the MC/Wayback ledgers, and the modal lag of our own clean rows (36.8% of 87,977 dated rows sit at exactly +21d; median +19d)."
    },
-   "2021-09-30": {
-    "cell": [
-     74.05,
-     7.16,
-     1.14,
-     0.01,
-     0.45,
-     "2021-10-21",
-     48469
-    ],
-    "src": "shp filing-date convention QE+21d (SEBI Reg 31 deadline)",
-    "was": [
-     74.05,
-     7.16,
-     1.14,
-     0.01,
-     0.45,
-     "2023-12-26",
-     48469
-    ],
-    "why": "BULK STAMP: 9 quarters of this symbol all carry the single submission date 2023-12-26, which is 817 days after this quarter ended. The DATA is real and per-quarter (the fii/dii values differ quarter to quarter) \u2014 only the DATE is a scrape date written into the filing slot. Replaced with the QE+21d convention already used by the MC/Wayback ledgers, and the modal lag of our own clean rows (36.8% of 87,977 dated rows sit at exactly +21d; median +19d)."
-   },
-   "2021-12-31": {
-    "cell": [
-     74.05,
-     7.18,
-     1.15,
-     0.02,
-     0.45,
-     "2022-01-21",
-     48262
-    ],
-    "src": "shp filing-date convention QE+21d (SEBI Reg 31 deadline)",
-    "was": [
-     74.05,
-     7.18,
-     1.15,
-     0.02,
-     0.45,
-     "2023-12-26",
-     48262
-    ],
-    "why": "BULK STAMP: 9 quarters of this symbol all carry the single submission date 2023-12-26, which is 725 days after this quarter ended. The DATA is real and per-quarter (the fii/dii values differ quarter to quarter) \u2014 only the DATE is a scrape date written into the filing slot. Replaced with the QE+21d convention already used by the MC/Wayback ledgers, and the modal lag of our own clean rows (36.8% of 87,977 dated rows sit at exactly +21d; median +19d)."
-   },
-   "2022-03-31": {
-    "cell": [
-     74.05,
-     7.29,
-     1.18,
-     0.02,
-     0.45,
-     "2022-04-21",
-     46465
-    ],
-    "src": "shp filing-date convention QE+21d (SEBI Reg 31 deadline)",
-    "was": [
-     74.05,
-     7.29,
-     1.18,
-     0.02,
-     0.45,
-     "2023-12-26",
-     46465
-    ],
-    "why": "BULK STAMP: 9 quarters of this symbol all carry the single submission date 2023-12-26, which is 635 days after this quarter ended. The DATA is real and per-quarter (the fii/dii values differ quarter to quarter) \u2014 only the DATE is a scrape date written into the filing slot. Replaced with the QE+21d convention already used by the MC/Wayback ledgers, and the modal lag of our own clean rows (36.8% of 87,977 dated rows sit at exactly +21d; median +19d)."
-   },
-   "2022-06-30": {
-    "cell": [
-     74.05,
-     7.63,
-     1.18,
-     0.02,
-     0.45,
-     "2022-07-21",
-     45153
-    ],
-    "src": "shp filing-date convention QE+21d (SEBI Reg 31 deadline)",
-    "was": [
-     74.05,
-     7.63,
-     1.18,
-     0.02,
-     0.45,
-     "2023-12-26",
-     45153
-    ],
-    "why": "BULK STAMP: 9 quarters of this symbol all carry the single submission date 2023-12-26, which is 544 days after this quarter ended. The DATA is real and per-quarter (the fii/dii values differ quarter to quarter) \u2014 only the DATE is a scrape date written into the filing slot. Replaced with the QE+21d convention already used by the MC/Wayback ledgers, and the modal lag of our own clean rows (36.8% of 87,977 dated rows sit at exactly +21d; median +19d)."
-   },
-   "2022-09-30": {
-    "cell": [
-     74.05,
-     7.71,
-     1.18,
-     0.02,
-     0.45,
-     "2022-10-21",
-     44960
-    ],
-    "src": "shp filing-date convention QE+21d (SEBI Reg 31 deadline)",
-    "was": [
-     74.05,
-     7.71,
-     1.18,
-     0.02,
-     0.45,
-     "2023-12-26",
-     44960
-    ],
-    "why": "BULK STAMP: 9 quarters of this symbol all carry the single submission date 2023-12-26, which is 452 days after this quarter ended. The DATA is real and per-quarter (the fii/dii values differ quarter to quarter) \u2014 only the DATE is a scrape date written into the filing slot. Replaced with the QE+21d convention already used by the MC/Wayback ledgers, and the modal lag of our own clean rows (36.8% of 87,977 dated rows sit at exactly +21d; median +19d)."
-   },
-   "2022-12-31": {
-    "cell": [
-     74.05,
-     7.81,
-     1.2,
-     0.03,
-     0.45,
-     "2023-01-21",
-     44356
-    ],
-    "src": "shp filing-date convention QE+21d (SEBI Reg 31 deadline)",
-    "was": [
-     74.05,
-     7.81,
-     1.2,
-     0.03,
-     0.45,
-     "2023-12-26",
-     44356
-    ],
-    "why": "BULK STAMP: 9 quarters of this symbol all carry the single submission date 2023-12-26, which is 360 days after this quarter ended. The DATA is real and per-quarter (the fii/dii values differ quarter to quarter) \u2014 only the DATE is a scrape date written into the filing slot. Replaced with the QE+21d convention already used by the MC/Wayback ledgers, and the modal lag of our own clean rows (36.8% of 87,977 dated rows sit at exactly +21d; median +19d)."
-   },
-   "2023-03-31": {
-    "cell": [
-     74.05,
-     7.95,
-     1.19,
-     0.03,
-     0.45,
-     "2023-04-21",
-     43686
-    ],
-    "src": "shp filing-date convention QE+21d (SEBI Reg 31 deadline)",
-    "was": [
-     74.05,
-     7.95,
-     1.19,
-     0.03,
-     0.45,
-     "2023-12-26",
-     43686
-    ],
-    "why": "BULK STAMP: 9 quarters of this symbol all carry the single submission date 2023-12-26, which is 270 days after this quarter ended. The DATA is real and per-quarter (the fii/dii values differ quarter to quarter) \u2014 only the DATE is a scrape date written into the filing slot. Replaced with the QE+21d convention already used by the MC/Wayback ledgers, and the modal lag of our own clean rows (36.8% of 87,977 dated rows sit at exactly +21d; median +19d)."
-   },
-   "2023-06-30": {
-    "cell": [
-     74.05,
-     8.24,
-     1.19,
-     0.03,
-     0.45,
-     "2023-07-21",
-     40495
-    ],
-    "src": "shp filing-date convention QE+21d (SEBI Reg 31 deadline)",
-    "was": [
-     74.05,
-     8.24,
-     1.19,
-     0.03,
-     0.45,
-     "2023-12-26",
-     40495
-    ],
-    "why": "BULK STAMP: 9 quarters of this symbol all carry the single submission date 2023-12-26, which is 179 days after this quarter ended. The DATA is real and per-quarter (the fii/dii values differ quarter to quarter) \u2014 only the DATE is a scrape date written into the filing slot. Replaced with the QE+21d convention already used by the MC/Wayback ledgers, and the modal lag of our own clean rows (36.8% of 87,977 dated rows sit at exactly +21d; median +19d)."
-   },
    "2015-06-30": {
     "cell": [
      65.9087,
@@ -3908,116 +3577,6 @@
      59883
     ],
     "why": "BULK STAMP: 6 quarters of this symbol all carry the single submission date 2023-04-27, which is 847 days after this quarter ended. The DATA is real and per-quarter (the fii/dii values differ quarter to quarter) \u2014 only the DATE is a scrape date written into the filing slot. Replaced with the QE+21d convention already used by the MC/Wayback ledgers, and the modal lag of our own clean rows (36.8% of 87,977 dated rows sit at exactly +21d; median +19d)."
-   },
-   "2021-03-31": {
-    "cell": [
-     7.25,
-     0.72,
-     0.0,
-     0.0,
-     0.0,
-     "2021-04-21",
-     65061
-    ],
-    "src": "shp filing-date convention QE+21d (SEBI Reg 31 deadline)",
-    "was": [
-     7.25,
-     0.72,
-     0.0,
-     0.0,
-     0.0,
-     "2023-04-28",
-     65061
-    ],
-    "why": "WITHIN-SYMBOL OUTLIER: this symbol's own median filing lag is inside the 21-day window, yet this row is 758d late. An otherwise-compliant filer does not file one quarter months late and resume on time. Corrected only because the stamp signature is present as well \u2014 the date is shared with another quarter of the same symbol, or the lag exceeds a year. Rows 120-365d late carrying a LONE date are left alone: there a single genuinely-delayed filing cannot be told from a stamp."
-   },
-   "2021-06-30": {
-    "cell": [
-     7.05,
-     0.19,
-     0.0,
-     0.0,
-     0.0,
-     "2021-07-21",
-     77636
-    ],
-    "src": "shp filing-date convention QE+21d (SEBI Reg 31 deadline)",
-    "was": [
-     7.05,
-     0.19,
-     0.0,
-     0.0,
-     0.0,
-     "2023-04-28",
-     77636
-    ],
-    "why": "WITHIN-SYMBOL OUTLIER: this symbol's own median filing lag is inside the 21-day window, yet this row is 667d late. An otherwise-compliant filer does not file one quarter months late and resume on time. Corrected only because the stamp signature is present as well \u2014 the date is shared with another quarter of the same symbol, or the lag exceeds a year. Rows 120-365d late carrying a LONE date are left alone: there a single genuinely-delayed filing cannot be told from a stamp."
-   },
-   "2021-09-30": {
-    "cell": [
-     4.19,
-     0.38,
-     0.01,
-     0.0,
-     0.0,
-     "2021-10-21",
-     107710
-    ],
-    "src": "shp filing-date convention QE+21d (SEBI Reg 31 deadline)",
-    "was": [
-     4.19,
-     0.38,
-     0.01,
-     0.0,
-     0.0,
-     "2023-04-28",
-     107710
-    ],
-    "why": "WITHIN-SYMBOL OUTLIER: this symbol's own median filing lag is inside the 21-day window, yet this row is 575d late. An otherwise-compliant filer does not file one quarter months late and resume on time. Corrected only because the stamp signature is present as well \u2014 the date is shared with another quarter of the same symbol, or the lag exceeds a year. Rows 120-365d late carrying a LONE date are left alone: there a single genuinely-delayed filing cannot be told from a stamp."
-   },
-   "2021-12-31": {
-    "cell": [
-     4.12,
-     1.87,
-     0.0,
-     0.0,
-     0.0,
-     "2022-01-21",
-     211973
-    ],
-    "src": "shp filing-date convention QE+21d (SEBI Reg 31 deadline)",
-    "was": [
-     4.12,
-     1.87,
-     0.0,
-     0.0,
-     0.0,
-     "2023-04-28",
-     211973
-    ],
-    "why": "WITHIN-SYMBOL OUTLIER: this symbol's own median filing lag is inside the 21-day window, yet this row is 483d late. An otherwise-compliant filer does not file one quarter months late and resume on time. Corrected only because the stamp signature is present as well \u2014 the date is shared with another quarter of the same symbol, or the lag exceeds a year. Rows 120-365d late carrying a LONE date are left alone: there a single genuinely-delayed filing cannot be told from a stamp."
-   },
-   "2022-03-31": {
-    "cell": [
-     3.5,
-     12.15,
-     0.0,
-     0.0,
-     0.0,
-     "2022-04-22",
-     267918
-    ],
-    "src": "shp filing-date convention QE+21d (SEBI Reg 31 deadline)",
-    "was": [
-     3.5,
-     12.15,
-     0.0,
-     0.0,
-     0.0,
-     "2023-04-28",
-     267918
-    ],
-    "why": "WITHIN-SYMBOL OUTLIER: this symbol's own median filing lag is inside the 21-day window, yet this row is 393d late. An otherwise-compliant filer does not file one quarter months late and resume on time. Corrected only because the stamp signature is present as well \u2014 the date is shared with another quarter of the same symbol, or the lag exceeds a year. Rows 120-365d late carrying a LONE date are left alone: there a single genuinely-delayed filing cannot be told from a stamp."
    }
   },
   "BCLIND": {
@@ -4115,25 +3674,47 @@
    },
    "2016-12-31": {
     "cell": [
-     57.19,
-     0.74,
-     7.86,
-     0.0,
-     0.08,
+     56.44,
+     0.7365,
+     7.8721,
+     0.0045,
+     0.0838,
      "2017-01-11",
      47689
     ],
-    "src": "shp filing-date convention QE+21d (SEBI Reg 31 deadline)",
     "was": [
      57.19,
-     0.74,
-     7.86,
-     0.0,
-     0.08,
-     "2022-07-25",
+     0.7365,
+     7.8722,
+     0.0045,
+     0.0838,
+     "2017-01-11",
      47689
     ],
-    "why": "BULK STAMP: 8 quarters of this symbol all carry the single submission date 2022-07-25, which is 2032 days after this quarter ended. The DATA is real and per-quarter (the fii/dii values differ quarter to quarter) \u2014 only the DATE is a scrape date written into the filing slot. Replaced with the QE+21d convention already used by the MC/Wayback ledgers, and the modal lag of our own clean rows (36.8% of 87,977 dated rows sit at exactly +21d; median +19d)."
+    "src": "bsexbrl:532430:532430_1112017112416_SHP.xml",
+    "why": "\u00a7142g 2026-09-22 orphan re-adjudication: ORIGINAL FILING WINS \u2014 the store served the Jul-2022 revision's promoter 57.19 at the Jan-2017 date; original 2017-01-11 11:47 says 56.44.",
+    "superseded": {
+     "cell": [
+      57.19,
+      0.74,
+      7.86,
+      0.0,
+      0.08,
+      "2017-01-11",
+      47689
+     ],
+     "src": "shp filing-date convention QE+21d (SEBI Reg 31 deadline)",
+     "was": [
+      57.19,
+      0.74,
+      7.86,
+      0.0,
+      0.08,
+      "2022-07-25",
+      47689
+     ],
+     "why": "BULK STAMP: 8 quarters of this symbol all carry the single submission date 2022-07-25, which is 2032 days after this quarter ended. The DATA is real and per-quarter (the fii/dii values differ quarter to quarter) \u2014 only the DATE is a scrape date written into the filing slot. Replaced with the QE+21d convention already used by the MC/Wayback ledgers, and the modal lag of our own clean rows (36.8% of 87,977 dated rows sit at exactly +21d; median +19d)."
+    }
    },
    "2017-03-31": {
     "cell": [
@@ -4430,72 +4011,6 @@
      44387
     ],
     "why": "22j field adjudication: BSE document internally CONSISTENT (share counts reproduce its own printed pct, partition closes to 100) and the symbol own series does not contradict it. fields: prom"
-   },
-   "2021-03-31": {
-    "cell": [
-     56.74,
-     0.28,
-     0.09,
-     0.0,
-     0.08,
-     "2021-04-21",
-     46868
-    ],
-    "src": "shp filing-date convention QE+21d (SEBI Reg 31 deadline)",
-    "was": [
-     56.74,
-     0.28,
-     0.09,
-     0.0,
-     0.08,
-     "2022-07-25",
-     46868
-    ],
-    "why": "BULK STAMP: 8 quarters of this symbol all carry the single submission date 2022-07-25, which is 481 days after this quarter ended. The DATA is real and per-quarter (the fii/dii values differ quarter to quarter) \u2014 only the DATE is a scrape date written into the filing slot. Replaced with the QE+21d convention already used by the MC/Wayback ledgers, and the modal lag of our own clean rows (36.8% of 87,977 dated rows sit at exactly +21d; median +19d)."
-   },
-   "2021-06-30": {
-    "cell": [
-     56.74,
-     0.28,
-     0.09,
-     0.0,
-     0.08,
-     "2021-07-21",
-     49017
-    ],
-    "src": "shp filing-date convention QE+21d (SEBI Reg 31 deadline)",
-    "was": [
-     56.74,
-     0.28,
-     0.09,
-     0.0,
-     0.08,
-     "2022-07-25",
-     49017
-    ],
-    "why": "BULK STAMP: 8 quarters of this symbol all carry the single submission date 2022-07-25, which is 390 days after this quarter ended. The DATA is real and per-quarter (the fii/dii values differ quarter to quarter) \u2014 only the DATE is a scrape date written into the filing slot. Replaced with the QE+21d convention already used by the MC/Wayback ledgers, and the modal lag of our own clean rows (36.8% of 87,977 dated rows sit at exactly +21d; median +19d)."
-   },
-   "2021-09-30": {
-    "cell": [
-     56.74,
-     0.28,
-     0.09,
-     0.0,
-     0.08,
-     "2021-10-21",
-     58282
-    ],
-    "src": "shp filing-date convention QE+21d (SEBI Reg 31 deadline)",
-    "was": [
-     56.74,
-     0.28,
-     0.09,
-     0.0,
-     0.08,
-     "2022-07-25",
-     58282
-    ],
-    "why": "BULK STAMP: 8 quarters of this symbol all carry the single submission date 2022-07-25, which is 298 days after this quarter ended. The DATA is real and per-quarter (the fii/dii values differ quarter to quarter) \u2014 only the DATE is a scrape date written into the filing slot. Replaced with the QE+21d convention already used by the MC/Wayback ledgers, and the modal lag of our own clean rows (36.8% of 87,977 dated rows sit at exactly +21d; median +19d)."
    }
   },
   "BHARATFORG": {
@@ -5015,25 +4530,47 @@
    },
    "2026-06-30": {
     "cell": [
-     50.07,
-     26.48,
-     20.76,
-     11.85,
-     6.36,
-     "2026-07-24",
-     924369
-    ],
-    "src": "bse:532454_2472026211415_SHP.xml",
-    "was": [
      48.87,
      27.12,
-     21.26,
-     12.14,
-     6.51,
-     "2026-07-20",
+     21.2638,
+     12.138,
+     6.5136,
+     "2026-07-21",
      924369
     ],
-    "why": "HELD cell adjudicated REVISION_RIGHT: NSE itself now serves the revised document. Votes cont=neutral nse=revision sites=split; diffs {'prom': [48.87, 50.07], 'fii': [27.12, 26.48], 'dii': [21.26, 20.76], 'mf': [12.14, 11.85], 'ins': [6.51, 6.36]} (2026-08-09)"
+    "was": [
+     50.07,
+     26.4819,
+     20.7634,
+     11.8524,
+     6.3603,
+     "2026-07-28",
+     924369
+    ],
+    "src": "bsexbrl:532454:532454_2072026173138_SHP.xml",
+    "why": "\u00a7142g 2026-09-22 orphan re-adjudication: ORIGINAL FILING WINS \u2014 original 2026-07-20 17:31 -> 2026-07-21; the 2026-07-24 re-filing (prom 50.07) is a later document (BSE 24-Jul 21:21, NSE broadcast 27-Jul).",
+    "superseded": {
+     "cell": [
+      50.07,
+      26.48,
+      20.76,
+      11.85,
+      6.36,
+      "2026-07-24",
+      924369
+     ],
+     "src": "bse:532454_2472026211415_SHP.xml",
+     "was": [
+      48.87,
+      27.12,
+      21.26,
+      12.14,
+      6.51,
+      "2026-07-20",
+      924369
+     ],
+     "why": "HELD cell adjudicated REVISION_RIGHT: NSE itself now serves the revised document. Votes cont=neutral nse=revision sites=split; diffs {'prom': [48.87, 50.07], 'fii': [27.12, 26.48], 'dii': [21.26, 20.76], 'mf': [12.14, 11.85], 'ins': [6.51, 6.36]} (2026-08-09)"
+    }
    },
    "2015-03-31": {
     "cell": [
@@ -6055,160 +5592,6 @@
      41543
     ],
     "why": "WITHIN-SYMBOL OUTLIER: this symbol's own median filing lag is inside the 21-day window, yet this row is 1009d late. An otherwise-compliant filer does not file one quarter months late and resume on time. Corrected only because the stamp signature is present as well \u2014 the date is shared with another quarter of the same symbol, or the lag exceeds a year. Rows 120-365d late carrying a LONE date are left alone: there a single genuinely-delayed filing cannot be told from a stamp."
-   },
-   "2021-09-30": {
-    "cell": [
-     21.71,
-     5.01,
-     19.03,
-     17.65,
-     0.0,
-     "2021-10-21",
-     51038
-    ],
-    "src": "shp filing-date convention QE+21d (SEBI Reg 31 deadline)",
-    "was": [
-     21.71,
-     5.01,
-     19.03,
-     17.65,
-     0.0,
-     "2024-04-04",
-     51038
-    ],
-    "why": "WITHIN-SYMBOL OUTLIER: this symbol's own median filing lag is inside the 21-day window, yet this row is 917d late. An otherwise-compliant filer does not file one quarter months late and resume on time. Corrected only because the stamp signature is present as well \u2014 the date is shared with another quarter of the same symbol, or the lag exceeds a year. Rows 120-365d late carrying a LONE date are left alone: there a single genuinely-delayed filing cannot be told from a stamp."
-   },
-   "2021-12-31": {
-    "cell": [
-     21.71,
-     4.81,
-     17.88,
-     16.82,
-     0.0,
-     "2022-01-21",
-     56394
-    ],
-    "src": "shp filing-date convention QE+21d (SEBI Reg 31 deadline)",
-    "was": [
-     21.71,
-     4.81,
-     17.88,
-     16.82,
-     0.0,
-     "2024-04-04",
-     56394
-    ],
-    "why": "WITHIN-SYMBOL OUTLIER: this symbol's own median filing lag is inside the 21-day window, yet this row is 825d late. An otherwise-compliant filer does not file one quarter months late and resume on time. Corrected only because the stamp signature is present as well \u2014 the date is shared with another quarter of the same symbol, or the lag exceeds a year. Rows 120-365d late carrying a LONE date are left alone: there a single genuinely-delayed filing cannot be told from a stamp."
-   },
-   "2022-03-31": {
-    "cell": [
-     17.65,
-     10.5,
-     14.47,
-     13.71,
-     0.0,
-     "2022-04-21",
-     55277
-    ],
-    "src": "shp filing-date convention QE+21d (SEBI Reg 31 deadline)",
-    "was": [
-     17.65,
-     10.5,
-     14.47,
-     13.71,
-     0.0,
-     "2024-04-04",
-     55277
-    ],
-    "why": "WITHIN-SYMBOL OUTLIER: this symbol's own median filing lag is inside the 21-day window, yet this row is 735d late. An otherwise-compliant filer does not file one quarter months late and resume on time. Corrected only because the stamp signature is present as well \u2014 the date is shared with another quarter of the same symbol, or the lag exceeds a year. Rows 120-365d late carrying a LONE date are left alone: there a single genuinely-delayed filing cannot be told from a stamp."
-   },
-   "2022-06-30": {
-    "cell": [
-     17.64,
-     10.74,
-     14.2,
-     13.51,
-     0.0,
-     "2022-07-21",
-     57835
-    ],
-    "src": "shp filing-date convention QE+21d (SEBI Reg 31 deadline)",
-    "was": [
-     17.64,
-     10.74,
-     14.2,
-     13.51,
-     0.0,
-     "2024-04-04",
-     57835
-    ],
-    "why": "WITHIN-SYMBOL OUTLIER: this symbol's own median filing lag is inside the 21-day window, yet this row is 644d late. An otherwise-compliant filer does not file one quarter months late and resume on time. Corrected only because the stamp signature is present as well \u2014 the date is shared with another quarter of the same symbol, or the lag exceeds a year. Rows 120-365d late carrying a LONE date are left alone: there a single genuinely-delayed filing cannot be told from a stamp."
-   },
-   "2022-09-30": {
-    "cell": [
-     17.64,
-     11.32,
-     13.53,
-     12.86,
-     0.0,
-     "2022-10-21",
-     57904
-    ],
-    "src": "shp filing-date convention QE+21d (SEBI Reg 31 deadline)",
-    "was": [
-     17.64,
-     11.32,
-     13.53,
-     12.86,
-     0.0,
-     "2024-04-03",
-     57904
-    ],
-    "why": "WITHIN-SYMBOL OUTLIER: this symbol's own median filing lag is inside the 21-day window, yet this row is 551d late. An otherwise-compliant filer does not file one quarter months late and resume on time. Corrected only because the stamp signature is present as well \u2014 the date is shared with another quarter of the same symbol, or the lag exceeds a year. Rows 120-365d late carrying a LONE date are left alone: there a single genuinely-delayed filing cannot be told from a stamp."
-   },
-   "2022-12-31": {
-    "cell": [
-     17.64,
-     10.94,
-     12.53,
-     11.6,
-     0.0,
-     "2023-01-21",
-     54197
-    ],
-    "src": "shp filing-date convention QE+21d (SEBI Reg 31 deadline)",
-    "was": [
-     17.64,
-     10.94,
-     12.53,
-     11.6,
-     0.0,
-     "2024-04-03",
-     54197
-    ],
-    "why": "WITHIN-SYMBOL OUTLIER: this symbol's own median filing lag is inside the 21-day window, yet this row is 459d late. An otherwise-compliant filer does not file one quarter months late and resume on time. Corrected only because the stamp signature is present as well \u2014 the date is shared with another quarter of the same symbol, or the lag exceeds a year. Rows 120-365d late carrying a LONE date are left alone: there a single genuinely-delayed filing cannot be told from a stamp."
-   },
-   "2023-03-31": {
-    "cell": [
-     17.64,
-     10.18,
-     12.33,
-     11.6,
-     0.0,
-     "2023-04-21",
-     52921
-    ],
-    "src": "shp filing-date convention QE+21d (SEBI Reg 31 deadline)",
-    "was": [
-     17.64,
-     10.18,
-     12.33,
-     11.6,
-     0.0,
-     "2024-04-03",
-     52921
-    ],
-    "why": "WITHIN-SYMBOL OUTLIER: this symbol's own median filing lag is inside the 21-day window, yet this row is 369d late. An otherwise-compliant filer does not file one quarter months late and resume on time. Corrected only because the stamp signature is present as well \u2014 the date is shared with another quarter of the same symbol, or the lag exceeds a year. Rows 120-365d late carrying a LONE date are left alone: there a single genuinely-delayed filing cannot be told from a stamp."
    }
   },
   "CANDC": {
@@ -6723,30 +6106,6 @@
      13902
     ],
     "why": "BULK STAMP: 3 quarters of this symbol all carry the single submission date 2018-07-23, which is 204 days after this quarter ended. The DATA is real and per-quarter (the fii/dii values differ quarter to quarter) \u2014 only the DATE is a scrape date written into the filing slot. Replaced with the QE+21d convention already used by the MC/Wayback ledgers, and the modal lag of our own clean rows (36.8% of 87,977 dated rows sit at exactly +21d; median +19d)."
-   }
-  },
-  "CCCL": {
-   "2023-03-31": {
-    "cell": [
-     32.82,
-     0.0,
-     52.61,
-     0.0,
-     0.01,
-     "2023-04-21",
-     48689
-    ],
-    "src": "shp filing-date convention QE+21d (SEBI Reg 31 deadline)",
-    "was": [
-     32.82,
-     0.0,
-     52.61,
-     0.0,
-     0.01,
-     "2024-08-14",
-     48689
-    ],
-    "why": "WITHIN-SYMBOL OUTLIER: this symbol's own median filing lag is inside the 21-day window, yet this row is 502d late. An otherwise-compliant filer does not file one quarter months late and resume on time. Corrected only because the stamp signature is present as well \u2014 the date is shared with another quarter of the same symbol, or the lag exceeds a year. Rows 120-365d late carrying a LONE date are left alone: there a single genuinely-delayed filing cannot be told from a stamp."
    }
   },
   "CELEBRITY": {
@@ -7450,28 +6809,6 @@
    }
   },
   "DATAMATICS": {
-   "2021-12-31": {
-    "cell": [
-     74.3,
-     1.64,
-     0.0,
-     0.0,
-     0.0,
-     "2022-01-21",
-     39488
-    ],
-    "src": "shp filing-date convention QE+21d (SEBI Reg 31 deadline)",
-    "was": [
-     74.3,
-     1.64,
-     0.0,
-     0.0,
-     0.0,
-     "2022-05-18",
-     39488
-    ],
-    "why": "WITHIN-SYMBOL OUTLIER: this symbol's own median filing lag is inside the 21-day window, yet this row is 138d late. An otherwise-compliant filer does not file one quarter months late and resume on time. Corrected only because the stamp signature is present as well \u2014 the date is shared with another quarter of the same symbol, or the lag exceeds a year. Rows 120-365d late carrying a LONE date are left alone: there a single genuinely-delayed filing cannot be told from a stamp."
-   },
    "2022-03-31": {
     "cell": [
      74.3,
@@ -7654,28 +6991,6 @@
    }
   },
   "DELHIVERY": {
-   "2022-09-30": {
-    "cell": [
-     0.0,
-     74.24,
-     7.11,
-     6.95,
-     0.0,
-     "2022-10-21",
-     59499
-    ],
-    "src": "shp filing-date convention QE+21d (SEBI Reg 31 deadline)",
-    "was": [
-     0.0,
-     74.24,
-     7.11,
-     6.95,
-     0.0,
-     "2023-02-06",
-     59499
-    ],
-    "why": "WITHIN-SYMBOL OUTLIER: this symbol's own median filing lag is inside the 21-day window, yet this row is 129d late. An otherwise-compliant filer does not file one quarter months late and resume on time. Corrected only because the stamp signature is present as well \u2014 the date is shared with another quarter of the same symbol, or the lag exceeds a year. Rows 120-365d late carrying a LONE date are left alone: there a single genuinely-delayed filing cannot be told from a stamp."
-   },
    "2022-12-31": {
     "cell": [
      0.0,
@@ -8817,30 +8132,6 @@
     ],
     "src": "bseaspx:500135:qtrid86",
     "why": "SW-2 phase-2 2026-08-30: pre-2016 family convention is dii = mf+banks+ins(+vcf); this cell's dii equals that PLUS the institutions Any-Other row (3.60pp) folded in by a minority route. Healed to the page's own domestic rows (4.3951). fii left as authored (block nationality not adjudicated here). Census: _shp_oth_p2_census.jsonl"
-   }
-  },
-  "ERIS": {
-   "2017-09-30": {
-    "cell": [
-     55.93,
-     6.12,
-     12.49,
-     11.17,
-     0.6,
-     "2017-10-21",
-     53130
-    ],
-    "src": "shp filing-date convention QE+21d (SEBI Reg 31 deadline)",
-    "was": [
-     55.93,
-     6.12,
-     12.49,
-     11.17,
-     0.6,
-     "2022-03-30",
-     53130
-    ],
-    "why": "WITHIN-SYMBOL OUTLIER: this symbol's own median filing lag is inside the 21-day window, yet this row is 1642d late. An otherwise-compliant filer does not file one quarter months late and resume on time. Corrected only because the stamp signature is present as well \u2014 the date is shared with another quarter of the same symbol, or the lag exceeds a year. Rows 120-365d late carrying a LONE date are left alone: there a single genuinely-delayed filing cannot be told from a stamp."
    }
   },
   "EROSMEDIA": {
@@ -10163,30 +9454,6 @@
      42648
     ],
     "why": "WITHIN-SYMBOL OUTLIER: this symbol's own median filing lag is inside the 21-day window, yet this row is 129d late. An otherwise-compliant filer does not file one quarter months late and resume on time. Corrected only because the stamp signature is present as well \u2014 the date is shared with another quarter of the same symbol, or the lag exceeds a year. Rows 120-365d late carrying a LONE date are left alone: there a single genuinely-delayed filing cannot be told from a stamp."
-   }
-  },
-  "GANGOTRI": {
-   "2020-06-30": {
-    "cell": [
-     24.53,
-     0.0,
-     6.77,
-     0.0,
-     2.98,
-     "2020-07-23",
-     9772
-    ],
-    "src": "shp filing-date convention QE+21d (SEBI Reg 31 deadline)",
-    "was": [
-     24.53,
-     0.0,
-     6.77,
-     0.0,
-     2.98,
-     "2021-07-09",
-     9772
-    ],
-    "why": "WITHIN-SYMBOL OUTLIER: this symbol's own median filing lag is inside the 21-day window, yet this row is 374d late. An otherwise-compliant filer does not file one quarter months late and resume on time. Corrected only because the stamp signature is present as well \u2014 the date is shared with another quarter of the same symbol, or the lag exceeds a year. Rows 120-365d late carrying a LONE date are left alone: there a single genuinely-delayed filing cannot be told from a stamp."
    }
   },
   "GAYAPROJ": {
@@ -12041,28 +11308,6 @@
    }
   },
   "IMAGICAA": {
-   "2022-06-30": {
-    "cell": [
-     72.93,
-     0.66,
-     11.37,
-     0.0,
-     0.52,
-     "2022-07-21",
-     35733
-    ],
-    "src": "shp filing-date convention QE+21d (SEBI Reg 31 deadline)",
-    "was": [
-     72.93,
-     0.66,
-     11.37,
-     0.0,
-     0.52,
-     "2022-12-27",
-     35733
-    ],
-    "why": "WITHIN-SYMBOL OUTLIER: this symbol's own median filing lag is inside the 21-day window, yet this row is 180d late. An otherwise-compliant filer does not file one quarter months late and resume on time. Corrected only because the stamp signature is present as well \u2014 the date is shared with another quarter of the same symbol, or the lag exceeds a year. Rows 120-365d late carrying a LONE date are left alone: there a single genuinely-delayed filing cannot be told from a stamp."
-   },
    "2022-09-30": {
     "cell": [
      72.79,
@@ -16339,24 +15584,46 @@
    "2026-03-31": {
     "cell": [
      55.0,
-     0.18,
-     0.11,
+     0.1828,
+     0.1134,
      0.0,
      0.0,
      "2026-04-20",
      6911
     ],
-    "src": "bse:543364_304202619397_SHP.xml",
     "was": [
      54.6,
-     0.18,
-     0.11,
+     0.1828,
+     0.1134,
      0.0,
      0.0,
-     "2026-04-18",
+     "2026-05-19",
      6914
     ],
-    "why": "Company REVISED its filing (BSE revised_date_time=2026-04-30); NSE's master kept serving the original, which is what we stored. BSE's revised copy parses clean and matches the independent sites (screener,stockedge,tickertape). Diffs: {'prom': '54.6->55.0'}. Rule-6b quorum: revised exchange filing + 3 sites. Found 2026-08-09 after the user challenged unanimous site-vs-us cells."
+    "src": "bsexbrl:543364:543364_174202617352_SHP.xml",
+    "why": "\u00a7142g 2026-09-22 orphan re-adjudication: ORIGINAL FILING WINS \u2014 original 2026-04-17 17:35 (Fri) -> visible Mon 2026-04-20; BSE revision 2026-04-30 and NSE revision 2026-05-18 came later. Re-armed: `was` = the store's revision row.",
+    "superseded": {
+     "cell": [
+      55.0,
+      0.18,
+      0.11,
+      0.0,
+      0.0,
+      "2026-04-20",
+      6911
+     ],
+     "src": "bse:543364_304202619397_SHP.xml",
+     "was": [
+      54.6,
+      0.18,
+      0.11,
+      0.0,
+      0.0,
+      "2026-04-18",
+      6914
+     ],
+     "why": "Company REVISED its filing (BSE revised_date_time=2026-04-30); NSE's master kept serving the original, which is what we stored. BSE's revised copy parses clean and matches the independent sites (screener,stockedge,tickertape). Diffs: {'prom': '54.6->55.0'}. Rule-6b quorum: revised exchange filing + 3 sites. Found 2026-08-09 after the user challenged unanimous site-vs-us cells."
+    }
    }
   },
   "MARKSANS": {
@@ -16385,24 +15652,46 @@
    "2025-12-31": {
     "cell": [
      43.87,
-     8.12,
-     5.91,
-     4.41,
+     8.1246,
+     5.9144,
+     4.4104,
      0.0,
      "2026-01-14",
      255153
     ],
-    "src": "bse:524404_102202612116_SHP.xml",
     "was": [
      43.87,
-     16.74,
-     5.91,
-     4.41,
+     16.7427,
+     5.9144,
+     4.4104,
      0.0,
-     "2026-01-13",
+     "2026-05-19",
      255153
     ],
-    "why": "Company REVISED its filing (BSE revised_date_time=2026-02-10); NSE's master kept serving the original, which is what we stored. BSE's revised copy parses clean and matches the independent sites (screener,stockedge,tickertape). Diffs: {'fii': '16.74->8.12'}. Rule-6b quorum: revised exchange filing + 3 sites. Found 2026-08-09 after the user challenged unanimous site-vs-us cells."
+    "src": "bsexbrl:524404:524404_1312026153816_SHP.xml",
+    "why": "\u00a7142g 2026-09-22 orphan re-adjudication: ORIGINAL FILING WINS \u2014 original 2026-01-13 15:38 -> 2026-01-14; the store held NSE's 2026-05-19 revision (fii 16.74) \u2014 a document not public until May. Re-armed: `was` = the store's revision row.",
+    "superseded": {
+     "cell": [
+      43.87,
+      8.12,
+      5.91,
+      4.41,
+      0.0,
+      "2026-01-14",
+      255153
+     ],
+     "src": "bse:524404_102202612116_SHP.xml",
+     "was": [
+      43.87,
+      16.74,
+      5.91,
+      4.41,
+      0.0,
+      "2026-01-13",
+      255153
+     ],
+     "why": "Company REVISED its filing (BSE revised_date_time=2026-02-10); NSE's master kept serving the original, which is what we stored. BSE's revised copy parses clean and matches the independent sites (screener,stockedge,tickertape). Diffs: {'fii': '16.74->8.12'}. Rule-6b quorum: revised exchange filing + 3 sites. Found 2026-08-09 after the user challenged unanimous site-vs-us cells."
+    }
    },
    "2016-09-30": {
     "cell": [
@@ -17211,24 +16500,46 @@
    "2025-12-31": {
     "cell": [
      62.2,
-     1.99,
-     0.01,
-     0.0,
+     1.9892,
+     0.0129,
+     0.0028,
      0.0,
      "2026-01-22",
      14576
     ],
-    "src": "bse:500890_2112026173336_SHP.xml",
     "was": [
      62.69,
-     2.01,
-     0.01,
+     1.9892,
+     0.0129,
+     0.0028,
      0.0,
-     0.0,
-     "2026-01-21",
+     "2026-04-09",
      14576
     ],
-    "why": "Company REVISED its filing (BSE revised_date_time=n/a); NSE's master kept serving the original, which is what we stored. BSE's revised copy parses clean and matches the independent sites (screener,stockedge,tickertape). Diffs: {'prom': '62.69->62.2'}. Rule-6b quorum: revised exchange filing + 3 sites. Found 2026-08-09 after the user challenged unanimous site-vs-us cells."
+    "src": "bsexbrl:500890:500890_2112026173336_SHP.xml",
+    "why": "\u00a7142g 2026-09-22 orphan re-adjudication: ORIGINAL FILING WINS \u2014 original 2026-01-21 17:33 -> 2026-01-22; the store held NSE's 2026-04-07 revision. Re-armed: `was` = the store's revision row.",
+    "superseded": {
+     "cell": [
+      62.2,
+      1.99,
+      0.01,
+      0.0,
+      0.0,
+      "2026-01-22",
+      14576
+     ],
+     "src": "bse:500890_2112026173336_SHP.xml",
+     "was": [
+      62.69,
+      2.01,
+      0.01,
+      0.0,
+      0.0,
+      "2026-01-21",
+      14576
+     ],
+     "why": "Company REVISED its filing (BSE revised_date_time=n/a); NSE's master kept serving the original, which is what we stored. BSE's revised copy parses clean and matches the independent sites (screener,stockedge,tickertape). Diffs: {'prom': '62.69->62.2'}. Rule-6b quorum: revised exchange filing + 3 sites. Found 2026-08-09 after the user challenged unanimous site-vs-us cells."
+    }
    }
   },
   "MONARCH": {
@@ -18348,52 +17659,6 @@
     "why": "foreign block swallowed by OtherInstitutionsMember (o_other 2.35, no domestic other-institutions residue in the symbol's itemised filings); chain-corroborated <=3pp"
    }
   },
-  "PCJEWELLER": {
-   "2022-03-31": {
-    "cell": [
-     54.53,
-     1.0,
-     1.49,
-     0.0,
-     1.49,
-     "2022-04-21",
-     216619
-    ],
-    "src": "shp filing-date convention QE+21d (SEBI Reg 31 deadline)",
-    "was": [
-     54.53,
-     1.0,
-     1.49,
-     0.0,
-     1.49,
-     "2023-05-25",
-     216619
-    ],
-    "why": "WITHIN-SYMBOL OUTLIER: this symbol's own median filing lag is inside the 21-day window, yet this row is 420d late. An otherwise-compliant filer does not file one quarter months late and resume on time. Corrected only because the stamp signature is present as well \u2014 the date is shared with another quarter of the same symbol, or the lag exceeds a year. Rows 120-365d late carrying a LONE date are left alone: there a single genuinely-delayed filing cannot be told from a stamp."
-   },
-   "2022-06-30": {
-    "cell": [
-     54.53,
-     1.12,
-     1.49,
-     0.0,
-     1.49,
-     "2022-07-21",
-     206811
-    ],
-    "src": "shp filing-date convention QE+21d (SEBI Reg 31 deadline)",
-    "was": [
-     54.53,
-     1.12,
-     1.49,
-     0.0,
-     1.49,
-     "2023-05-25",
-     206811
-    ],
-    "why": "WITHIN-SYMBOL OUTLIER: this symbol's own median filing lag is inside the 21-day window, yet this row is 329d late. An otherwise-compliant filer does not file one quarter months late and resume on time. Corrected only because the stamp signature is present as well \u2014 the date is shared with another quarter of the same symbol, or the lag exceeds a year. Rows 120-365d late carrying a LONE date are left alone: there a single genuinely-delayed filing cannot be told from a stamp."
-   }
-  },
   "PFIZER": {
    "2021-06-30": {
     "cell": [
@@ -18884,94 +18149,6 @@
    }
   },
   "PRUDMOULI": {
-   "2022-03-31": {
-    "cell": [
-     70.09,
-     0.0,
-     0.99,
-     0.96,
-     0.0,
-     "2022-04-22",
-     11587
-    ],
-    "src": "shp filing-date convention QE+21d (SEBI Reg 31 deadline)",
-    "was": [
-     70.09,
-     0.0,
-     0.99,
-     0.96,
-     0.0,
-     "2023-06-02",
-     11587
-    ],
-    "why": "BULK STAMP: 4 quarters of this symbol all carry the single submission date 2023-06-02, which is 428 days after this quarter ended. The DATA is real and per-quarter (the fii/dii values differ quarter to quarter) \u2014 only the DATE is a scrape date written into the filing slot. Replaced with the QE+21d convention already used by the MC/Wayback ledgers, and the modal lag of our own clean rows (36.8% of 87,977 dated rows sit at exactly +21d; median +19d)."
-   },
-   "2022-06-30": {
-    "cell": [
-     70.09,
-     0.0,
-     0.99,
-     0.96,
-     0.0,
-     "2022-07-21",
-     11587
-    ],
-    "src": "shp filing-date convention QE+21d (SEBI Reg 31 deadline)",
-    "was": [
-     70.09,
-     0.0,
-     0.99,
-     0.96,
-     0.0,
-     "2023-06-02",
-     11587
-    ],
-    "why": "BULK STAMP: 4 quarters of this symbol all carry the single submission date 2023-06-02, which is 337 days after this quarter ended. The DATA is real and per-quarter (the fii/dii values differ quarter to quarter) \u2014 only the DATE is a scrape date written into the filing slot. Replaced with the QE+21d convention already used by the MC/Wayback ledgers, and the modal lag of our own clean rows (36.8% of 87,977 dated rows sit at exactly +21d; median +19d)."
-   },
-   "2022-09-30": {
-    "cell": [
-     70.09,
-     0.0,
-     0.99,
-     0.96,
-     0.0,
-     "2022-10-21",
-     11587
-    ],
-    "src": "shp filing-date convention QE+21d (SEBI Reg 31 deadline)",
-    "was": [
-     70.09,
-     0.0,
-     0.99,
-     0.96,
-     0.0,
-     "2023-06-02",
-     11587
-    ],
-    "why": "BULK STAMP: 4 quarters of this symbol all carry the single submission date 2023-06-02, which is 245 days after this quarter ended. The DATA is real and per-quarter (the fii/dii values differ quarter to quarter) \u2014 only the DATE is a scrape date written into the filing slot. Replaced with the QE+21d convention already used by the MC/Wayback ledgers, and the modal lag of our own clean rows (36.8% of 87,977 dated rows sit at exactly +21d; median +19d)."
-   },
-   "2022-12-31": {
-    "cell": [
-     70.09,
-     0.0,
-     0.99,
-     0.96,
-     0.0,
-     "2023-01-21",
-     11587
-    ],
-    "src": "shp filing-date convention QE+21d (SEBI Reg 31 deadline)",
-    "was": [
-     70.09,
-     0.0,
-     0.99,
-     0.96,
-     0.0,
-     "2023-06-02",
-     11587
-    ],
-    "why": "BULK STAMP: 4 quarters of this symbol all carry the single submission date 2023-06-02, which is 153 days after this quarter ended. The DATA is real and per-quarter (the fii/dii values differ quarter to quarter) \u2014 only the DATE is a scrape date written into the filing slot. Replaced with the QE+21d convention already used by the MC/Wayback ledgers, and the modal lag of our own clean rows (36.8% of 87,977 dated rows sit at exactly +21d; median +19d)."
-   },
    "2023-03-31": {
     "cell": [
      66.84,
@@ -20174,204 +19351,6 @@
      6124
     ],
     "why": "BULK STAMP: 10 quarters of this symbol all carry the single submission date 2025-12-27, which is 1641 days after this quarter ended. The DATA is real and per-quarter (the fii/dii values differ quarter to quarter) \u2014 only the DATE is a scrape date written into the filing slot. Replaced with the QE+21d convention already used by the MC/Wayback ledgers, and the modal lag of our own clean rows (36.8% of 87,977 dated rows sit at exactly +21d; median +19d)."
-   },
-   "2021-09-30": {
-    "cell": [
-     50.13,
-     35.7,
-     3.59,
-     0.0,
-     3.59,
-     "2021-10-21",
-     6681
-    ],
-    "src": "shp filing-date convention QE+21d (SEBI Reg 31 deadline)",
-    "was": [
-     50.13,
-     35.7,
-     3.59,
-     0.0,
-     3.59,
-     "2025-12-27",
-     6681
-    ],
-    "why": "BULK STAMP: 10 quarters of this symbol all carry the single submission date 2025-12-27, which is 1549 days after this quarter ended. The DATA is real and per-quarter (the fii/dii values differ quarter to quarter) \u2014 only the DATE is a scrape date written into the filing slot. Replaced with the QE+21d convention already used by the MC/Wayback ledgers, and the modal lag of our own clean rows (36.8% of 87,977 dated rows sit at exactly +21d; median +19d)."
-   },
-   "2021-12-31": {
-    "cell": [
-     50.13,
-     35.65,
-     3.59,
-     0.0,
-     3.59,
-     "2022-01-21",
-     7008
-    ],
-    "src": "shp filing-date convention QE+21d (SEBI Reg 31 deadline)",
-    "was": [
-     50.13,
-     35.65,
-     3.59,
-     0.0,
-     3.59,
-     "2025-12-27",
-     7008
-    ],
-    "why": "BULK STAMP: 10 quarters of this symbol all carry the single submission date 2025-12-27, which is 1457 days after this quarter ended. The DATA is real and per-quarter (the fii/dii values differ quarter to quarter) \u2014 only the DATE is a scrape date written into the filing slot. Replaced with the QE+21d convention already used by the MC/Wayback ledgers, and the modal lag of our own clean rows (36.8% of 87,977 dated rows sit at exactly +21d; median +19d)."
-   },
-   "2022-03-31": {
-    "cell": [
-     50.13,
-     35.67,
-     3.59,
-     0.0,
-     3.59,
-     "2022-04-21",
-     5931
-    ],
-    "src": "shp filing-date convention QE+21d (SEBI Reg 31 deadline)",
-    "was": [
-     50.13,
-     35.67,
-     3.59,
-     0.0,
-     3.59,
-     "2025-12-27",
-     5931
-    ],
-    "why": "BULK STAMP: 10 quarters of this symbol all carry the single submission date 2025-12-27, which is 1367 days after this quarter ended. The DATA is real and per-quarter (the fii/dii values differ quarter to quarter) \u2014 only the DATE is a scrape date written into the filing slot. Replaced with the QE+21d convention already used by the MC/Wayback ledgers, and the modal lag of our own clean rows (36.8% of 87,977 dated rows sit at exactly +21d; median +19d)."
-   },
-   "2022-06-30": {
-    "cell": [
-     50.13,
-     35.67,
-     3.56,
-     0.0,
-     3.56,
-     "2022-07-21",
-     5478
-    ],
-    "src": "shp filing-date convention QE+21d (SEBI Reg 31 deadline)",
-    "was": [
-     50.13,
-     35.67,
-     3.56,
-     0.0,
-     3.56,
-     "2025-12-27",
-     5478
-    ],
-    "why": "BULK STAMP: 10 quarters of this symbol all carry the single submission date 2025-12-27, which is 1276 days after this quarter ended. The DATA is real and per-quarter (the fii/dii values differ quarter to quarter) \u2014 only the DATE is a scrape date written into the filing slot. Replaced with the QE+21d convention already used by the MC/Wayback ledgers, and the modal lag of our own clean rows (36.8% of 87,977 dated rows sit at exactly +21d; median +19d)."
-   },
-   "2022-09-30": {
-    "cell": [
-     59.5,
-     35.69,
-     3.56,
-     0.0,
-     3.56,
-     "2022-10-21",
-     6559
-    ],
-    "src": "shp filing-date convention QE+21d (SEBI Reg 31 deadline)",
-    "was": [
-     59.5,
-     35.69,
-     3.56,
-     0.0,
-     3.56,
-     "2025-12-27",
-     6559
-    ],
-    "why": "BULK STAMP: 10 quarters of this symbol all carry the single submission date 2025-12-27, which is 1184 days after this quarter ended. The DATA is real and per-quarter (the fii/dii values differ quarter to quarter) \u2014 only the DATE is a scrape date written into the filing slot. Replaced with the QE+21d convention already used by the MC/Wayback ledgers, and the modal lag of our own clean rows (36.8% of 87,977 dated rows sit at exactly +21d; median +19d)."
-   },
-   "2022-12-31": {
-    "cell": [
-     59.5,
-     35.69,
-     3.56,
-     0.0,
-     3.56,
-     "2023-01-21",
-     6559
-    ],
-    "src": "shp filing-date convention QE+21d (SEBI Reg 31 deadline)",
-    "was": [
-     59.5,
-     35.69,
-     3.56,
-     0.0,
-     3.56,
-     "2025-12-27",
-     6559
-    ],
-    "why": "BULK STAMP: 10 quarters of this symbol all carry the single submission date 2025-12-27, which is 1092 days after this quarter ended. The DATA is real and per-quarter (the fii/dii values differ quarter to quarter) \u2014 only the DATE is a scrape date written into the filing slot. Replaced with the QE+21d convention already used by the MC/Wayback ledgers, and the modal lag of our own clean rows (36.8% of 87,977 dated rows sit at exactly +21d; median +19d)."
-   },
-   "2023-03-31": {
-    "cell": [
-     59.5,
-     35.67,
-     3.56,
-     0.0,
-     3.56,
-     "2023-04-21",
-     7009
-    ],
-    "src": "shp filing-date convention QE+21d (SEBI Reg 31 deadline)",
-    "was": [
-     59.5,
-     35.67,
-     3.56,
-     0.0,
-     3.56,
-     "2025-12-27",
-     7009
-    ],
-    "why": "BULK STAMP: 10 quarters of this symbol all carry the single submission date 2025-12-27, which is 1002 days after this quarter ended. The DATA is real and per-quarter (the fii/dii values differ quarter to quarter) \u2014 only the DATE is a scrape date written into the filing slot. Replaced with the QE+21d convention already used by the MC/Wayback ledgers, and the modal lag of our own clean rows (36.8% of 87,977 dated rows sit at exactly +21d; median +19d)."
-   },
-   "2023-06-30": {
-    "cell": [
-     59.5,
-     35.67,
-     3.56,
-     0.0,
-     3.56,
-     "2023-07-21",
-     6473
-    ],
-    "src": "shp filing-date convention QE+21d (SEBI Reg 31 deadline)",
-    "was": [
-     59.5,
-     35.67,
-     3.56,
-     0.0,
-     3.56,
-     "2025-12-27",
-     6473
-    ],
-    "why": "BULK STAMP: 10 quarters of this symbol all carry the single submission date 2025-12-27, which is 911 days after this quarter ended. The DATA is real and per-quarter (the fii/dii values differ quarter to quarter) \u2014 only the DATE is a scrape date written into the filing slot. Replaced with the QE+21d convention already used by the MC/Wayback ledgers, and the modal lag of our own clean rows (36.8% of 87,977 dated rows sit at exactly +21d; median +19d)."
-   },
-   "2023-09-30": {
-    "cell": [
-     59.5,
-     35.44,
-     3.56,
-     0.0,
-     3.56,
-     "2023-10-21",
-     10237
-    ],
-    "src": "shp filing-date convention QE+21d (SEBI Reg 31 deadline)",
-    "was": [
-     59.5,
-     35.44,
-     3.56,
-     0.0,
-     3.56,
-     "2025-12-22",
-     10237
-    ],
-    "why": "WITHIN-SYMBOL OUTLIER: this symbol's own median filing lag is inside the 21-day window, yet this row is 814d late. An otherwise-compliant filer does not file one quarter months late and resume on time. Corrected only because the stamp signature is present as well \u2014 the date is shared with another quarter of the same symbol, or the lag exceeds a year. Rows 120-365d late carrying a LONE date are left alone: there a single genuinely-delayed filing cannot be told from a stamp."
    }
   },
   "RMCL": {
@@ -21305,28 +20284,6 @@
    }
   },
   "SATIN": {
-   "2019-09-30": {
-    "cell": [
-     29.7,
-     13.45,
-     26.25,
-     18.73,
-     0.0,
-     "2019-10-21",
-     9278
-    ],
-    "src": "shp filing-date convention QE+21d (SEBI Reg 31 deadline)",
-    "was": [
-     29.7,
-     13.45,
-     26.25,
-     18.73,
-     0.0,
-     "2020-09-29",
-     9278
-    ],
-    "why": "BULK STAMP: 3 quarters of this symbol all carry the single submission date 2020-09-29, which is 365 days after this quarter ended. The DATA is real and per-quarter (the fii/dii values differ quarter to quarter) \u2014 only the DATE is a scrape date written into the filing slot. Replaced with the QE+21d convention already used by the MC/Wayback ledgers, and the modal lag of our own clean rows (36.8% of 87,977 dated rows sit at exactly +21d; median +19d)."
-   },
    "2019-12-31": {
     "cell": [
      30.19,
@@ -21348,28 +20305,6 @@
      10187
     ],
     "why": "BULK STAMP: 3 quarters of this symbol all carry the single submission date 2020-09-29, which is 273 days after this quarter ended. The DATA is real and per-quarter (the fii/dii values differ quarter to quarter) \u2014 only the DATE is a scrape date written into the filing slot. Replaced with the QE+21d convention already used by the MC/Wayback ledgers, and the modal lag of our own clean rows (36.8% of 87,977 dated rows sit at exactly +21d; median +19d)."
-   },
-   "2020-03-31": {
-    "cell": [
-     30.19,
-     7.63,
-     26.35,
-     19.04,
-     0.0,
-     "2020-04-21",
-     10210
-    ],
-    "src": "shp filing-date convention QE+21d (SEBI Reg 31 deadline)",
-    "was": [
-     30.19,
-     7.63,
-     26.35,
-     19.04,
-     0.0,
-     "2020-09-29",
-     10210
-    ],
-    "why": "BULK STAMP: 3 quarters of this symbol all carry the single submission date 2020-09-29, which is 182 days after this quarter ended. The DATA is real and per-quarter (the fii/dii values differ quarter to quarter) \u2014 only the DATE is a scrape date written into the filing slot. Replaced with the QE+21d convention already used by the MC/Wayback ledgers, and the modal lag of our own clean rows (36.8% of 87,977 dated rows sit at exactly +21d; median +19d)."
    },
    "2020-06-30": {
     "cell": [
@@ -21998,30 +20933,6 @@
     "why": "BSE revision 2023-04-26 supersedes stored (sub 2023-04-10); diffs {'prom': [37.81, 40.45]}; corroboration=SITES_BACK_REVISION (revision sweep 2026-08-09)"
    }
   },
-  "SOLARA": {
-   "2019-09-30": {
-    "cell": [
-     40.55,
-     15.04,
-     6.59,
-     5.33,
-     0.0,
-     "2019-10-31",
-     56947
-    ],
-    "src": "shp filing-date convention QE+21d (SEBI Reg 31 deadline)",
-    "was": [
-     40.55,
-     15.04,
-     6.59,
-     5.33,
-     0.0,
-     "2020-12-14",
-     56947
-    ],
-    "why": "WITHIN-SYMBOL OUTLIER: this symbol's own median filing lag is inside the 21-day window, yet this row is 441d late. An otherwise-compliant filer does not file one quarter months late and resume on time. Corrected only because the stamp signature is present as well \u2014 the date is shared with another quarter of the same symbol, or the lag exceeds a year. Rows 120-365d late carrying a LONE date are left alone: there a single genuinely-delayed filing cannot be told from a stamp."
-   }
-  },
   "SOMATEX": {
    "2020-12-31": {
     "cell": [
@@ -22070,24 +20981,46 @@
    "2026-03-31": {
     "cell": [
      40.19,
-     0.36,
-     15.11,
+     0.3598,
+     15.1041,
      0.0,
      0.0,
-     "2026-04-18",
+     "2026-04-20",
      22442
     ],
-    "src": "bse:500402_1842026114528_SHP.xml",
     "was": [
      39.54,
-     0.31,
-     15.27,
+     0.3149,
+     15.2682,
      0.0,
      0.0,
-     "2026-04-18",
+     "2026-04-20",
      22977
     ],
-    "why": "Company REVISED its filing (BSE revised_date_time=2026-04-18); NSE's master kept serving the original, which is what we stored. BSE's revised copy parses clean and matches the independent sites (screener,stockedge,tickertape). Diffs: {'prom': '39.54->40.19'}. Rule-6b quorum: revised exchange filing + 3 sites. Found 2026-08-09 after the user challenged unanimous site-vs-us cells."
+    "src": "bsexbrl:500402:500402_1842026114528_SHP.xml",
+    "why": "\u00a7142g 2026-09-22 orphan re-adjudication: SAME-DAY REVISION WINS \u2014 original 2026-04-18 11:27 and revision 11:47 (Sat) are both first visible Mon 2026-04-20; the later document of the same visibility window serves.",
+    "superseded": {
+     "cell": [
+      40.19,
+      0.36,
+      15.11,
+      0.0,
+      0.0,
+      "2026-04-18",
+      22442
+     ],
+     "src": "bse:500402_1842026114528_SHP.xml",
+     "was": [
+      39.54,
+      0.31,
+      15.27,
+      0.0,
+      0.0,
+      "2026-04-18",
+      22977
+     ],
+     "why": "Company REVISED its filing (BSE revised_date_time=2026-04-18); NSE's master kept serving the original, which is what we stored. BSE's revised copy parses clean and matches the independent sites (screener,stockedge,tickertape). Diffs: {'prom': '39.54->40.19'}. Rule-6b quorum: revised exchange filing + 3 sites. Found 2026-08-09 after the user challenged unanimous site-vs-us cells."
+    }
    }
   },
   "SRHHYPOLTD": {
@@ -22632,24 +21565,46 @@
    "2025-12-31": {
     "cell": [
      34.68,
-     8.55,
+     8.5535,
      0.0,
      0.0,
      0.0,
      "2026-01-19",
      8047
     ],
-    "src": "bse:532904_1612026173510_SHP.xml",
     "was": [
      47.32,
-     3.02,
-     5.99,
+     3.0218,
+     5.9933,
      0.0,
      0.0,
-     "2026-01-16",
+     "2026-04-23",
      7907
     ],
-    "why": "Company REVISED its filing (BSE revised_date_time=n/a); NSE's master kept serving the original, which is what we stored. BSE's revised copy parses clean and matches the independent sites (screener,tickertape). Diffs: {'dii': '5.99->0.0', 'fii': '3.02->8.55', 'prom': '47.32->34.68'}. Rule-6b quorum: revised exchange filing + 2 sites. Found 2026-08-09 after the user challenged unanimous site-vs-us cells."
+    "src": "bsexbrl:532904:532904_1612026173510_SHP.xml",
+    "why": "\u00a7142g 2026-09-22 orphan re-adjudication: ORIGINAL FILING WINS \u2014 original 2026-01-16 17:35 (Fri) -> 2026-01-19; the store held NSE's 2026-04-21 revision (47.32/3.02/5.99), BSE never received it. Re-armed: `was` = the store's revision row.",
+    "superseded": {
+     "cell": [
+      34.68,
+      8.55,
+      0.0,
+      0.0,
+      0.0,
+      "2026-01-19",
+      8047
+     ],
+     "src": "bse:532904_1612026173510_SHP.xml",
+     "was": [
+      47.32,
+      3.02,
+      5.99,
+      0.0,
+      0.0,
+      "2026-01-16",
+      7907
+     ],
+     "why": "Company REVISED its filing (BSE revised_date_time=n/a); NSE's master kept serving the original, which is what we stored. BSE's revised copy parses clean and matches the independent sites (screener,tickertape). Diffs: {'dii': '5.99->0.0', 'fii': '3.02->8.55', 'prom': '47.32->34.68'}. Rule-6b quorum: revised exchange filing + 2 sites. Found 2026-08-09 after the user challenged unanimous site-vs-us cells."
+    }
    },
    "2026-03-31": {
     "cell": [
@@ -23132,28 +22087,6 @@
      22309
     ],
     "why": "BULK STAMP: 20 quarters of this symbol all carry the single submission date 2026-06-29, which is 272 days after this quarter ended. The DATA is real and per-quarter (the fii/dii values differ quarter to quarter) \u2014 only the DATE is a scrape date written into the filing slot. Replaced with the QE+21d convention already used by the MC/Wayback ledgers, and the modal lag of our own clean rows (36.8% of 87,977 dated rows sit at exactly +21d; median +19d)."
-   },
-   "2025-12-31": {
-    "cell": [
-     38.49,
-     0.29,
-     0.0,
-     0.0,
-     0.0,
-     "2026-01-21",
-     22309
-    ],
-    "src": "shp filing-date convention QE+21d (SEBI Reg 31 deadline)",
-    "was": [
-     38.49,
-     0.29,
-     0.0,
-     0.0,
-     0.0,
-     "2026-06-29",
-     22309
-    ],
-    "why": "BULK STAMP: 20 quarters of this symbol all carry the single submission date 2026-06-29, which is 180 days after this quarter ended. The DATA is real and per-quarter (the fii/dii values differ quarter to quarter) \u2014 only the DATE is a scrape date written into the filing slot. Replaced with the QE+21d convention already used by the MC/Wayback ledgers, and the modal lag of our own clean rows (36.8% of 87,977 dated rows sit at exactly +21d; median +19d)."
    }
   },
   "TARMAT": {
@@ -25299,28 +24232,6 @@
     ],
     "why": "WITHIN-SYMBOL OUTLIER: this symbol's own median filing lag is inside the 21-day window, yet this row is 1127d late. An otherwise-compliant filer does not file one quarter months late and resume on time. Corrected only because the stamp signature is present as well \u2014 the date is shared with another quarter of the same symbol, or the lag exceeds a year. Rows 120-365d late carrying a LONE date are left alone: there a single genuinely-delayed filing cannot be told from a stamp."
    },
-   "2021-09-30": {
-    "cell": [
-     28.12,
-     43.29,
-     17.97,
-     5.52,
-     11.81,
-     "2021-11-15",
-     237555
-    ],
-    "src": "shp filing-date convention QE+21d (SEBI Reg 31 deadline)",
-    "was": [
-     28.12,
-     43.29,
-     17.97,
-     5.52,
-     11.81,
-     "2024-07-31",
-     237555
-    ],
-    "why": "WITHIN-SYMBOL OUTLIER: this symbol's own median filing lag is inside the 21-day window, yet this row is 1035d late. An otherwise-compliant filer does not file one quarter months late and resume on time. Corrected only because the stamp signature is present as well \u2014 the date is shared with another quarter of the same symbol, or the lag exceeds a year. Rows 120-365d late carrying a LONE date are left alone: there a single genuinely-delayed filing cannot be told from a stamp."
-   },
    "2021-12-31": {
     "cell": [
      28.41,
@@ -25342,160 +24253,6 @@
      245135
     ],
     "why": "WITHIN-SYMBOL OUTLIER: this symbol's own median filing lag is inside the 21-day window, yet this row is 943d late. An otherwise-compliant filer does not file one quarter months late and resume on time. Corrected only because the stamp signature is present as well \u2014 the date is shared with another quarter of the same symbol, or the lag exceeds a year. Rows 120-365d late carrying a LONE date are left alone: there a single genuinely-delayed filing cannot be told from a stamp."
-   },
-   "2022-03-31": {
-    "cell": [
-     28.45,
-     43.02,
-     17.8,
-     5.9,
-     11.27,
-     "2022-04-21",
-     240012
-    ],
-    "src": "shp filing-date convention QE+21d (SEBI Reg 31 deadline)",
-    "was": [
-     28.45,
-     43.02,
-     17.8,
-     5.9,
-     11.27,
-     "2024-03-27",
-     240012
-    ],
-    "why": "WITHIN-SYMBOL OUTLIER: this symbol's own median filing lag is inside the 21-day window, yet this row is 727d late. An otherwise-compliant filer does not file one quarter months late and resume on time. Corrected only because the stamp signature is present as well \u2014 the date is shared with another quarter of the same symbol, or the lag exceeds a year. Rows 120-365d late carrying a LONE date are left alone: there a single genuinely-delayed filing cannot be told from a stamp."
-   },
-   "2022-06-30": {
-    "cell": [
-     29.13,
-     43.64,
-     16.47,
-     5.62,
-     10.38,
-     "2022-07-21",
-     245370
-    ],
-    "src": "shp filing-date convention QE+21d (SEBI Reg 31 deadline)",
-    "was": [
-     29.13,
-     43.64,
-     16.47,
-     5.62,
-     10.38,
-     "2024-07-31",
-     245370
-    ],
-    "why": "WITHIN-SYMBOL OUTLIER: this symbol's own median filing lag is inside the 21-day window, yet this row is 762d late. An otherwise-compliant filer does not file one quarter months late and resume on time. Corrected only because the stamp signature is present as well \u2014 the date is shared with another quarter of the same symbol, or the lag exceeds a year. Rows 120-365d late carrying a LONE date are left alone: there a single genuinely-delayed filing cannot be told from a stamp."
-   },
-   "2022-09-30": {
-    "cell": [
-     29.13,
-     42.77,
-     17.19,
-     6.35,
-     9.73,
-     "2022-10-21",
-     269168
-    ],
-    "src": "shp filing-date convention QE+21d (SEBI Reg 31 deadline)",
-    "was": [
-     29.13,
-     42.77,
-     17.19,
-     6.35,
-     9.73,
-     "2024-07-31",
-     269168
-    ],
-    "why": "WITHIN-SYMBOL OUTLIER: this symbol's own median filing lag is inside the 21-day window, yet this row is 670d late. An otherwise-compliant filer does not file one quarter months late and resume on time. Corrected only because the stamp signature is present as well \u2014 the date is shared with another quarter of the same symbol, or the lag exceeds a year. Rows 120-365d late carrying a LONE date are left alone: there a single genuinely-delayed filing cannot be told from a stamp."
-   },
-   "2022-12-31": {
-    "cell": [
-     30.91,
-     42.71,
-     16.2,
-     5.76,
-     9.49,
-     "2023-01-21",
-     253054
-    ],
-    "src": "shp filing-date convention QE+21d (SEBI Reg 31 deadline)",
-    "was": [
-     30.91,
-     42.71,
-     16.2,
-     5.76,
-     9.49,
-     "2024-07-31",
-     253054
-    ],
-    "why": "WITHIN-SYMBOL OUTLIER: this symbol's own median filing lag is inside the 21-day window, yet this row is 578d late. An otherwise-compliant filer does not file one quarter months late and resume on time. Corrected only because the stamp signature is present as well \u2014 the date is shared with another quarter of the same symbol, or the lag exceeds a year. Rows 120-365d late carrying a LONE date are left alone: there a single genuinely-delayed filing cannot be told from a stamp."
-   },
-   "2023-03-31": {
-    "cell": [
-     32.52,
-     42.62,
-     14.4,
-     4.62,
-     8.39,
-     "2023-04-21",
-     253548
-    ],
-    "src": "shp filing-date convention QE+21d (SEBI Reg 31 deadline)",
-    "was": [
-     32.52,
-     42.62,
-     14.4,
-     4.62,
-     8.39,
-     "2024-07-31",
-     253548
-    ],
-    "why": "WITHIN-SYMBOL OUTLIER: this symbol's own median filing lag is inside the 21-day window, yet this row is 488d late. An otherwise-compliant filer does not file one quarter months late and resume on time. Corrected only because the stamp signature is present as well \u2014 the date is shared with another quarter of the same symbol, or the lag exceeds a year. Rows 120-365d late carrying a LONE date are left alone: there a single genuinely-delayed filing cannot be told from a stamp."
-   },
-   "2023-06-30": {
-    "cell": [
-     32.52,
-     41.99,
-     15.24,
-     5.1,
-     8.59,
-     "2023-07-21",
-     280819
-    ],
-    "src": "shp filing-date convention QE+21d (SEBI Reg 31 deadline)",
-    "was": [
-     32.52,
-     41.99,
-     15.24,
-     5.1,
-     8.59,
-     "2024-07-31",
-     280819
-    ],
-    "why": "WITHIN-SYMBOL OUTLIER: this symbol's own median filing lag is inside the 21-day window, yet this row is 397d late. An otherwise-compliant filer does not file one quarter months late and resume on time. Corrected only because the stamp signature is present as well \u2014 the date is shared with another quarter of the same symbol, or the lag exceeds a year. Rows 120-365d late carrying a LONE date are left alone: there a single genuinely-delayed filing cannot be told from a stamp."
-   },
-   "2023-09-30": {
-    "cell": [
-     32.52,
-     37.6,
-     17.27,
-     7.32,
-     8.69,
-     "2023-10-21",
-     383299
-    ],
-    "src": "shp filing-date convention QE+21d (SEBI Reg 31 deadline)",
-    "was": [
-     32.52,
-     37.6,
-     17.27,
-     7.32,
-     8.69,
-     "2024-07-31",
-     383299
-    ],
-    "why": "WITHIN-SYMBOL OUTLIER: this symbol's own median filing lag is inside the 21-day window, yet this row is 305d late. An otherwise-compliant filer does not file one quarter months late and resume on time. Corrected only because the stamp signature is present as well \u2014 the date is shared with another quarter of the same symbol, or the lag exceeds a year. Rows 120-365d late carrying a LONE date are left alone: there a single genuinely-delayed filing cannot be told from a stamp."
    }
   },
   "URAVIDEF": {
@@ -49407,6 +48164,1524 @@
     ],
     "src": "bseaspx:532890:87:New",
     "why": "quantmac FII reconciliation 2026-09-22, class sweep (runbook \u00a7142e): stored fii is the page's FII row alone (1.59); the same Clause-35 page prints FPI 0.09 / FVCI 0.00. Re-derived by today's reader (fetch_shp_bse_aspx._attempt: FII+FPI+FVCI, dii=mf+banks+ins[+recon Any-Others]); sub date kept."
+   }
+  }
+ },
+ "retired": {
+  "AFSL": {
+   "2023-09-30": {
+    "cell": [
+     72.09,
+     11.72,
+     0.0,
+     0.0,
+     0.0,
+     "2023-10-21",
+     14524
+    ],
+    "src": "shp filing-date convention QE+21d (SEBI Reg 31 deadline)",
+    "was": [
+     72.09,
+     11.72,
+     0.0,
+     0.0,
+     0.0,
+     "2024-05-10",
+     14524
+    ],
+    "why": "WITHIN-SYMBOL OUTLIER: this symbol's own median filing lag is inside the 21-day window, yet this row is 223d late. An otherwise-compliant filer does not file one quarter months late and resume on time. Corrected only because the stamp signature is present as well \u2014 the date is shared with another quarter of the same symbol, or the lag exceeds a year. Rows 120-365d late carrying a LONE date are left alone: there a single genuinely-delayed filing cannot be told from a stamp.",
+    "retired": "\u00a7142g 2026-09-22 orphan re-adjudication: ORIGINAL FILING WINS (values and date from the same document, the earliest public one): the store holds the original filing at 4dp with its own gated BSE timestamp; the entry carried a later REVISION's values (BSE revised_date_time 2024-05-10) that was not public in the window this row serves"
+   },
+   "2023-12-31": {
+    "cell": [
+     72.09,
+     11.58,
+     0.0,
+     0.0,
+     0.0,
+     "2024-01-21",
+     13193
+    ],
+    "src": "shp filing-date convention QE+21d (SEBI Reg 31 deadline)",
+    "was": [
+     72.09,
+     11.58,
+     0.0,
+     0.0,
+     0.0,
+     "2024-05-10",
+     13193
+    ],
+    "why": "WITHIN-SYMBOL OUTLIER: this symbol's own median filing lag is inside the 21-day window, yet this row is 131d late. An otherwise-compliant filer does not file one quarter months late and resume on time. Corrected only because the stamp signature is present as well \u2014 the date is shared with another quarter of the same symbol, or the lag exceeds a year. Rows 120-365d late carrying a LONE date are left alone: there a single genuinely-delayed filing cannot be told from a stamp.",
+    "retired": "\u00a7142g 2026-09-22 orphan re-adjudication: ORIGINAL FILING WINS (values and date from the same document, the earliest public one): the store holds the original filing at 4dp with its own gated BSE timestamp; the entry carried a later REVISION's values (BSE revised_date_time 2024-05-10) that was not public in the window this row serves"
+   }
+  },
+  "AMTEKAUTO": {
+   "2016-09-30": {
+    "cell": [
+     47.42,
+     9.56,
+     4.18,
+     0.0,
+     3.75,
+     "2016-10-21",
+     82217
+    ],
+    "src": "shp filing-date convention QE+21d (SEBI Reg 31 deadline)",
+    "was": [
+     47.42,
+     9.56,
+     4.18,
+     0.0,
+     3.75,
+     "2017-04-24",
+     82217
+    ],
+    "why": "WITHIN-SYMBOL OUTLIER: this symbol's own median filing lag is inside the 21-day window, yet this row is 206d late. An otherwise-compliant filer does not file one quarter months late and resume on time. Corrected only because the stamp signature is present as well \u2014 the date is shared with another quarter of the same symbol, or the lag exceeds a year. Rows 120-365d late carrying a LONE date are left alone: there a single genuinely-delayed filing cannot be told from a stamp.",
+    "retired": "\u00a7142g 2026-09-22 orphan re-adjudication: store holds the same filing at share-count precision (4dp); the entry only re-stamped the date and the store's date already equals it \u2014 superseded by the \u00a722j precision pass"
+   }
+  },
+  "ARVSMART": {
+   "2023-06-30": {
+    "cell": [
+     50.55,
+     0.69,
+     11.49,
+     2.58,
+     0.0,
+     "2023-07-21",
+     88361
+    ],
+    "src": "shp filing-date convention QE+21d (SEBI Reg 31 deadline)",
+    "was": [
+     50.55,
+     0.69,
+     11.49,
+     2.58,
+     0.0,
+     "2025-02-13",
+     88361
+    ],
+    "why": "BULK STAMP: 3 quarters of this symbol all carry the single submission date 2025-02-13, which is 594 days after this quarter ended. The DATA is real and per-quarter (the fii/dii values differ quarter to quarter) \u2014 only the DATE is a scrape date written into the filing slot. Replaced with the QE+21d convention already used by the MC/Wayback ledgers, and the modal lag of our own clean rows (36.8% of 87,977 dated rows sit at exactly +21d; median +19d).",
+    "retired": "\u00a7142g 2026-09-22 orphan re-adjudication: ORIGINAL FILING WINS (values and date from the same document, the earliest public one): the store holds the original filing at 4dp with its own gated BSE timestamp; the entry carried a later REVISION's values (BSE revised_date_time 2025-02-13) that was not public in the window this row serves"
+   },
+   "2023-09-30": {
+    "cell": [
+     50.55,
+     0.85,
+     11.61,
+     2.71,
+     0.0,
+     "2023-10-21",
+     87548
+    ],
+    "src": "shp filing-date convention QE+21d (SEBI Reg 31 deadline)",
+    "was": [
+     50.55,
+     0.85,
+     11.61,
+     2.71,
+     0.0,
+     "2025-02-13",
+     87548
+    ],
+    "why": "BULK STAMP: 3 quarters of this symbol all carry the single submission date 2025-02-13, which is 502 days after this quarter ended. The DATA is real and per-quarter (the fii/dii values differ quarter to quarter) \u2014 only the DATE is a scrape date written into the filing slot. Replaced with the QE+21d convention already used by the MC/Wayback ledgers, and the modal lag of our own clean rows (36.8% of 87,977 dated rows sit at exactly +21d; median +19d).",
+    "retired": "\u00a7142g 2026-09-22 orphan re-adjudication: ORIGINAL FILING WINS (values and date from the same document, the earliest public one): the store holds the original filing at 4dp with its own gated BSE timestamp; the entry carried a later REVISION's values (BSE revised_date_time 2025-02-13) that was not public in the window this row serves"
+   },
+   "2023-12-31": {
+    "cell": [
+     50.55,
+     0.49,
+     11.66,
+     2.75,
+     0.0,
+     "2024-01-21",
+     89484
+    ],
+    "src": "shp filing-date convention QE+21d (SEBI Reg 31 deadline)",
+    "was": [
+     50.55,
+     0.49,
+     11.66,
+     2.75,
+     0.0,
+     "2025-02-13",
+     89484
+    ],
+    "why": "BULK STAMP: 3 quarters of this symbol all carry the single submission date 2025-02-13, which is 410 days after this quarter ended. The DATA is real and per-quarter (the fii/dii values differ quarter to quarter) \u2014 only the DATE is a scrape date written into the filing slot. Replaced with the QE+21d convention already used by the MC/Wayback ledgers, and the modal lag of our own clean rows (36.8% of 87,977 dated rows sit at exactly +21d; median +19d).",
+    "retired": "\u00a7142g 2026-09-22 orphan re-adjudication: ORIGINAL FILING WINS (values and date from the same document, the earliest public one): the store holds the original filing at 4dp with its own gated BSE timestamp; the entry carried a later REVISION's values (BSE revised_date_time 2025-02-13) that was not public in the window this row serves"
+   }
+  },
+  "ASTERDM": {
+   "2018-06-30": {
+    "cell": [
+     37.56,
+     6.76,
+     2.75,
+     1.82,
+     0.0,
+     "2018-07-21",
+     108982
+    ],
+    "src": "shp filing-date convention QE+21d (SEBI Reg 31 deadline)",
+    "was": [
+     37.56,
+     6.76,
+     2.75,
+     1.82,
+     0.0,
+     "2019-05-13",
+     108982
+    ],
+    "why": "WITHIN-SYMBOL OUTLIER: this symbol's own median filing lag is inside the 21-day window, yet this row is 317d late. An otherwise-compliant filer does not file one quarter months late and resume on time. Corrected only because the stamp signature is present as well \u2014 the date is shared with another quarter of the same symbol, or the lag exceeds a year. Rows 120-365d late carrying a LONE date are left alone: there a single genuinely-delayed filing cannot be told from a stamp.",
+    "retired": "\u00a7142g 2026-09-22 orphan re-adjudication: store holds the same filing at share-count precision (4dp); the entry only re-stamped the date and the store's date already equals it \u2014 superseded by the \u00a722j precision pass"
+   }
+  },
+  "ATLANTAA": {
+   "2025-03-31": {
+    "cell": [
+     74.67,
+     0.0,
+     0.0,
+     0.0,
+     0.0,
+     "2025-04-21",
+     23528
+    ],
+    "src": "shp filing-date convention QE+21d (SEBI Reg 31 deadline)",
+    "was": [
+     74.67,
+     0.0,
+     0.0,
+     0.0,
+     0.0,
+     "2026-04-04",
+     23528
+    ],
+    "why": "WITHIN-SYMBOL OUTLIER: this symbol's own median filing lag is inside the 21-day window, yet this row is 369d late. An otherwise-compliant filer does not file one quarter months late and resume on time. Corrected only because the stamp signature is present as well \u2014 the date is shared with another quarter of the same symbol, or the lag exceeds a year. Rows 120-365d late carrying a LONE date are left alone: there a single genuinely-delayed filing cannot be told from a stamp.",
+    "retired": "\u00a7142g 2026-09-22 orphan re-adjudication: store = the ORIGINAL 2025-04-03 17:38 filing (NSE copy parses: 74.67/0.0/0.0, nsh 22197) gated to 2025-04-04; the entry's 23528/qe+21d belonged to the Apr-2026 re-submission"
+   }
+  },
+  "BBTC": {
+   "2021-09-30": {
+    "cell": [
+     74.05,
+     7.16,
+     1.14,
+     0.01,
+     0.45,
+     "2021-10-21",
+     48469
+    ],
+    "src": "shp filing-date convention QE+21d (SEBI Reg 31 deadline)",
+    "was": [
+     74.05,
+     7.16,
+     1.14,
+     0.01,
+     0.45,
+     "2023-12-26",
+     48469
+    ],
+    "why": "BULK STAMP: 9 quarters of this symbol all carry the single submission date 2023-12-26, which is 817 days after this quarter ended. The DATA is real and per-quarter (the fii/dii values differ quarter to quarter) \u2014 only the DATE is a scrape date written into the filing slot. Replaced with the QE+21d convention already used by the MC/Wayback ledgers, and the modal lag of our own clean rows (36.8% of 87,977 dated rows sit at exactly +21d; median +19d).",
+    "retired": "\u00a7142g 2026-09-22 orphan re-adjudication: ORIGINAL FILING WINS (values and date from the same document, the earliest public one): the store holds the original filing at 4dp with its own gated BSE timestamp; the entry carried a later REVISION's values (BSE revised_date_time 2023-12-26) that was not public in the window this row serves"
+   },
+   "2021-12-31": {
+    "cell": [
+     74.05,
+     7.18,
+     1.15,
+     0.02,
+     0.45,
+     "2022-01-21",
+     48262
+    ],
+    "src": "shp filing-date convention QE+21d (SEBI Reg 31 deadline)",
+    "was": [
+     74.05,
+     7.18,
+     1.15,
+     0.02,
+     0.45,
+     "2023-12-26",
+     48262
+    ],
+    "why": "BULK STAMP: 9 quarters of this symbol all carry the single submission date 2023-12-26, which is 725 days after this quarter ended. The DATA is real and per-quarter (the fii/dii values differ quarter to quarter) \u2014 only the DATE is a scrape date written into the filing slot. Replaced with the QE+21d convention already used by the MC/Wayback ledgers, and the modal lag of our own clean rows (36.8% of 87,977 dated rows sit at exactly +21d; median +19d).",
+    "retired": "\u00a7142g 2026-09-22 orphan re-adjudication: ORIGINAL FILING WINS (values and date from the same document, the earliest public one): the store holds the original filing at 4dp with its own gated BSE timestamp; the entry carried a later REVISION's values (BSE revised_date_time 2023-12-26) that was not public in the window this row serves"
+   },
+   "2022-03-31": {
+    "cell": [
+     74.05,
+     7.29,
+     1.18,
+     0.02,
+     0.45,
+     "2022-04-21",
+     46465
+    ],
+    "src": "shp filing-date convention QE+21d (SEBI Reg 31 deadline)",
+    "was": [
+     74.05,
+     7.29,
+     1.18,
+     0.02,
+     0.45,
+     "2023-12-26",
+     46465
+    ],
+    "why": "BULK STAMP: 9 quarters of this symbol all carry the single submission date 2023-12-26, which is 635 days after this quarter ended. The DATA is real and per-quarter (the fii/dii values differ quarter to quarter) \u2014 only the DATE is a scrape date written into the filing slot. Replaced with the QE+21d convention already used by the MC/Wayback ledgers, and the modal lag of our own clean rows (36.8% of 87,977 dated rows sit at exactly +21d; median +19d).",
+    "retired": "\u00a7142g 2026-09-22 orphan re-adjudication: ORIGINAL FILING WINS (values and date from the same document, the earliest public one): the store holds the original filing at 4dp with its own gated BSE timestamp; the entry carried a later REVISION's values (BSE revised_date_time 2023-12-26) that was not public in the window this row serves"
+   },
+   "2022-06-30": {
+    "cell": [
+     74.05,
+     7.63,
+     1.18,
+     0.02,
+     0.45,
+     "2022-07-21",
+     45153
+    ],
+    "src": "shp filing-date convention QE+21d (SEBI Reg 31 deadline)",
+    "was": [
+     74.05,
+     7.63,
+     1.18,
+     0.02,
+     0.45,
+     "2023-12-26",
+     45153
+    ],
+    "why": "BULK STAMP: 9 quarters of this symbol all carry the single submission date 2023-12-26, which is 544 days after this quarter ended. The DATA is real and per-quarter (the fii/dii values differ quarter to quarter) \u2014 only the DATE is a scrape date written into the filing slot. Replaced with the QE+21d convention already used by the MC/Wayback ledgers, and the modal lag of our own clean rows (36.8% of 87,977 dated rows sit at exactly +21d; median +19d).",
+    "retired": "\u00a7142g 2026-09-22 orphan re-adjudication: ORIGINAL FILING WINS (values and date from the same document, the earliest public one): the store holds the original filing at 4dp with its own gated BSE timestamp; the entry carried a later REVISION's values (BSE revised_date_time 2023-12-26) that was not public in the window this row serves"
+   },
+   "2022-09-30": {
+    "cell": [
+     74.05,
+     7.71,
+     1.18,
+     0.02,
+     0.45,
+     "2022-10-21",
+     44960
+    ],
+    "src": "shp filing-date convention QE+21d (SEBI Reg 31 deadline)",
+    "was": [
+     74.05,
+     7.71,
+     1.18,
+     0.02,
+     0.45,
+     "2023-12-26",
+     44960
+    ],
+    "why": "BULK STAMP: 9 quarters of this symbol all carry the single submission date 2023-12-26, which is 452 days after this quarter ended. The DATA is real and per-quarter (the fii/dii values differ quarter to quarter) \u2014 only the DATE is a scrape date written into the filing slot. Replaced with the QE+21d convention already used by the MC/Wayback ledgers, and the modal lag of our own clean rows (36.8% of 87,977 dated rows sit at exactly +21d; median +19d).",
+    "retired": "\u00a7142g 2026-09-22 orphan re-adjudication: ORIGINAL FILING WINS (values and date from the same document, the earliest public one): the store holds the original filing at 4dp with its own gated BSE timestamp; the entry carried a later REVISION's values (BSE revised_date_time 2023-12-26) that was not public in the window this row serves"
+   },
+   "2022-12-31": {
+    "cell": [
+     74.05,
+     7.81,
+     1.2,
+     0.03,
+     0.45,
+     "2023-01-21",
+     44356
+    ],
+    "src": "shp filing-date convention QE+21d (SEBI Reg 31 deadline)",
+    "was": [
+     74.05,
+     7.81,
+     1.2,
+     0.03,
+     0.45,
+     "2023-12-26",
+     44356
+    ],
+    "why": "BULK STAMP: 9 quarters of this symbol all carry the single submission date 2023-12-26, which is 360 days after this quarter ended. The DATA is real and per-quarter (the fii/dii values differ quarter to quarter) \u2014 only the DATE is a scrape date written into the filing slot. Replaced with the QE+21d convention already used by the MC/Wayback ledgers, and the modal lag of our own clean rows (36.8% of 87,977 dated rows sit at exactly +21d; median +19d).",
+    "retired": "\u00a7142g 2026-09-22 orphan re-adjudication: ORIGINAL FILING WINS (values and date from the same document, the earliest public one): the store holds the original filing at 4dp with its own gated BSE timestamp; the entry carried a later REVISION's values (BSE revised_date_time 2023-12-26) that was not public in the window this row serves"
+   },
+   "2023-03-31": {
+    "cell": [
+     74.05,
+     7.95,
+     1.19,
+     0.03,
+     0.45,
+     "2023-04-21",
+     43686
+    ],
+    "src": "shp filing-date convention QE+21d (SEBI Reg 31 deadline)",
+    "was": [
+     74.05,
+     7.95,
+     1.19,
+     0.03,
+     0.45,
+     "2023-12-26",
+     43686
+    ],
+    "why": "BULK STAMP: 9 quarters of this symbol all carry the single submission date 2023-12-26, which is 270 days after this quarter ended. The DATA is real and per-quarter (the fii/dii values differ quarter to quarter) \u2014 only the DATE is a scrape date written into the filing slot. Replaced with the QE+21d convention already used by the MC/Wayback ledgers, and the modal lag of our own clean rows (36.8% of 87,977 dated rows sit at exactly +21d; median +19d).",
+    "retired": "\u00a7142g 2026-09-22 orphan re-adjudication: ORIGINAL FILING WINS (values and date from the same document, the earliest public one): the store holds the original filing at 4dp with its own gated BSE timestamp; the entry carried a later REVISION's values (BSE revised_date_time 2023-12-26) that was not public in the window this row serves"
+   },
+   "2023-06-30": {
+    "cell": [
+     74.05,
+     8.24,
+     1.19,
+     0.03,
+     0.45,
+     "2023-07-21",
+     40495
+    ],
+    "src": "shp filing-date convention QE+21d (SEBI Reg 31 deadline)",
+    "was": [
+     74.05,
+     8.24,
+     1.19,
+     0.03,
+     0.45,
+     "2023-12-26",
+     40495
+    ],
+    "why": "BULK STAMP: 9 quarters of this symbol all carry the single submission date 2023-12-26, which is 179 days after this quarter ended. The DATA is real and per-quarter (the fii/dii values differ quarter to quarter) \u2014 only the DATE is a scrape date written into the filing slot. Replaced with the QE+21d convention already used by the MC/Wayback ledgers, and the modal lag of our own clean rows (36.8% of 87,977 dated rows sit at exactly +21d; median +19d).",
+    "retired": "\u00a7142g 2026-09-22 orphan re-adjudication: ORIGINAL FILING WINS (values and date from the same document, the earliest public one): the store holds the original filing at 4dp with its own gated BSE timestamp; the entry carried a later REVISION's values (BSE revised_date_time 2023-12-26) that was not public in the window this row serves"
+   }
+  },
+  "BCG": {
+   "2021-03-31": {
+    "cell": [
+     7.25,
+     0.72,
+     0.0,
+     0.0,
+     0.0,
+     "2021-04-21",
+     65061
+    ],
+    "src": "shp filing-date convention QE+21d (SEBI Reg 31 deadline)",
+    "was": [
+     7.25,
+     0.72,
+     0.0,
+     0.0,
+     0.0,
+     "2023-04-28",
+     65061
+    ],
+    "why": "WITHIN-SYMBOL OUTLIER: this symbol's own median filing lag is inside the 21-day window, yet this row is 758d late. An otherwise-compliant filer does not file one quarter months late and resume on time. Corrected only because the stamp signature is present as well \u2014 the date is shared with another quarter of the same symbol, or the lag exceeds a year. Rows 120-365d late carrying a LONE date are left alone: there a single genuinely-delayed filing cannot be told from a stamp.",
+    "retired": "\u00a7142g 2026-09-22 orphan re-adjudication: ORIGINAL FILING WINS (values and date from the same document, the earliest public one): the store holds the original filing at 4dp with its own gated BSE timestamp; the entry carried a later REVISION's values (BSE revised_date_time 2023-04-28) that was not public in the window this row serves"
+   },
+   "2021-06-30": {
+    "cell": [
+     7.05,
+     0.19,
+     0.0,
+     0.0,
+     0.0,
+     "2021-07-21",
+     77636
+    ],
+    "src": "shp filing-date convention QE+21d (SEBI Reg 31 deadline)",
+    "was": [
+     7.05,
+     0.19,
+     0.0,
+     0.0,
+     0.0,
+     "2023-04-28",
+     77636
+    ],
+    "why": "WITHIN-SYMBOL OUTLIER: this symbol's own median filing lag is inside the 21-day window, yet this row is 667d late. An otherwise-compliant filer does not file one quarter months late and resume on time. Corrected only because the stamp signature is present as well \u2014 the date is shared with another quarter of the same symbol, or the lag exceeds a year. Rows 120-365d late carrying a LONE date are left alone: there a single genuinely-delayed filing cannot be told from a stamp.",
+    "retired": "\u00a7142g 2026-09-22 orphan re-adjudication: ORIGINAL FILING WINS (values and date from the same document, the earliest public one): the store holds the original filing at 4dp with its own gated BSE timestamp; the entry carried a later REVISION's values (BSE revised_date_time 2023-04-28) that was not public in the window this row serves"
+   },
+   "2021-09-30": {
+    "cell": [
+     4.19,
+     0.38,
+     0.01,
+     0.0,
+     0.0,
+     "2021-10-21",
+     107710
+    ],
+    "src": "shp filing-date convention QE+21d (SEBI Reg 31 deadline)",
+    "was": [
+     4.19,
+     0.38,
+     0.01,
+     0.0,
+     0.0,
+     "2023-04-28",
+     107710
+    ],
+    "why": "WITHIN-SYMBOL OUTLIER: this symbol's own median filing lag is inside the 21-day window, yet this row is 575d late. An otherwise-compliant filer does not file one quarter months late and resume on time. Corrected only because the stamp signature is present as well \u2014 the date is shared with another quarter of the same symbol, or the lag exceeds a year. Rows 120-365d late carrying a LONE date are left alone: there a single genuinely-delayed filing cannot be told from a stamp.",
+    "retired": "\u00a7142g 2026-09-22 orphan re-adjudication: ORIGINAL FILING WINS (values and date from the same document, the earliest public one): the store holds the original filing at 4dp with its own gated BSE timestamp; the entry carried a later REVISION's values (BSE revised_date_time 2023-04-28) that was not public in the window this row serves"
+   },
+   "2021-12-31": {
+    "cell": [
+     4.12,
+     1.87,
+     0.0,
+     0.0,
+     0.0,
+     "2022-01-21",
+     211973
+    ],
+    "src": "shp filing-date convention QE+21d (SEBI Reg 31 deadline)",
+    "was": [
+     4.12,
+     1.87,
+     0.0,
+     0.0,
+     0.0,
+     "2023-04-28",
+     211973
+    ],
+    "why": "WITHIN-SYMBOL OUTLIER: this symbol's own median filing lag is inside the 21-day window, yet this row is 483d late. An otherwise-compliant filer does not file one quarter months late and resume on time. Corrected only because the stamp signature is present as well \u2014 the date is shared with another quarter of the same symbol, or the lag exceeds a year. Rows 120-365d late carrying a LONE date are left alone: there a single genuinely-delayed filing cannot be told from a stamp.",
+    "retired": "\u00a7142g 2026-09-22 orphan re-adjudication: ORIGINAL FILING WINS (values and date from the same document, the earliest public one): the store holds the original filing at 4dp with its own gated BSE timestamp; the entry carried a later REVISION's values (BSE revised_date_time 2023-04-28) that was not public in the window this row serves"
+   },
+   "2022-03-31": {
+    "cell": [
+     3.5,
+     12.15,
+     0.0,
+     0.0,
+     0.0,
+     "2022-04-22",
+     267918
+    ],
+    "src": "shp filing-date convention QE+21d (SEBI Reg 31 deadline)",
+    "was": [
+     3.5,
+     12.15,
+     0.0,
+     0.0,
+     0.0,
+     "2023-04-28",
+     267918
+    ],
+    "why": "WITHIN-SYMBOL OUTLIER: this symbol's own median filing lag is inside the 21-day window, yet this row is 393d late. An otherwise-compliant filer does not file one quarter months late and resume on time. Corrected only because the stamp signature is present as well \u2014 the date is shared with another quarter of the same symbol, or the lag exceeds a year. Rows 120-365d late carrying a LONE date are left alone: there a single genuinely-delayed filing cannot be told from a stamp.",
+    "retired": "\u00a7142g 2026-09-22 orphan re-adjudication: ORIGINAL FILING WINS (values and date from the same document, the earliest public one): the store holds the original filing at 4dp with its own gated BSE timestamp; the entry carried a later REVISION's values (BSE revised_date_time 2023-04-28) that was not public in the window this row serves"
+   }
+  },
+  "BFUTILITIE": {
+   "2021-03-31": {
+    "cell": [
+     56.74,
+     0.28,
+     0.09,
+     0.0,
+     0.08,
+     "2021-04-21",
+     46868
+    ],
+    "src": "shp filing-date convention QE+21d (SEBI Reg 31 deadline)",
+    "was": [
+     56.74,
+     0.28,
+     0.09,
+     0.0,
+     0.08,
+     "2022-07-25",
+     46868
+    ],
+    "why": "BULK STAMP: 8 quarters of this symbol all carry the single submission date 2022-07-25, which is 481 days after this quarter ended. The DATA is real and per-quarter (the fii/dii values differ quarter to quarter) \u2014 only the DATE is a scrape date written into the filing slot. Replaced with the QE+21d convention already used by the MC/Wayback ledgers, and the modal lag of our own clean rows (36.8% of 87,977 dated rows sit at exactly +21d; median +19d).",
+    "retired": "\u00a7142g 2026-09-22 orphan re-adjudication: ORIGINAL FILING WINS (values and date from the same document, the earliest public one): the store holds the original filing at 4dp with its own gated BSE timestamp; the entry carried a later REVISION's values (BSE revised_date_time 2022-07-25) that was not public in the window this row serves"
+   },
+   "2021-06-30": {
+    "cell": [
+     56.74,
+     0.28,
+     0.09,
+     0.0,
+     0.08,
+     "2021-07-21",
+     49017
+    ],
+    "src": "shp filing-date convention QE+21d (SEBI Reg 31 deadline)",
+    "was": [
+     56.74,
+     0.28,
+     0.09,
+     0.0,
+     0.08,
+     "2022-07-25",
+     49017
+    ],
+    "why": "BULK STAMP: 8 quarters of this symbol all carry the single submission date 2022-07-25, which is 390 days after this quarter ended. The DATA is real and per-quarter (the fii/dii values differ quarter to quarter) \u2014 only the DATE is a scrape date written into the filing slot. Replaced with the QE+21d convention already used by the MC/Wayback ledgers, and the modal lag of our own clean rows (36.8% of 87,977 dated rows sit at exactly +21d; median +19d).",
+    "retired": "\u00a7142g 2026-09-22 orphan re-adjudication: ORIGINAL FILING WINS (values and date from the same document, the earliest public one): the store holds the original filing at 4dp with its own gated BSE timestamp; the entry carried a later REVISION's values (BSE revised_date_time 2022-07-25) that was not public in the window this row serves"
+   },
+   "2021-09-30": {
+    "cell": [
+     56.74,
+     0.28,
+     0.09,
+     0.0,
+     0.08,
+     "2021-10-21",
+     58282
+    ],
+    "src": "shp filing-date convention QE+21d (SEBI Reg 31 deadline)",
+    "was": [
+     56.74,
+     0.28,
+     0.09,
+     0.0,
+     0.08,
+     "2022-07-25",
+     58282
+    ],
+    "why": "BULK STAMP: 8 quarters of this symbol all carry the single submission date 2022-07-25, which is 298 days after this quarter ended. The DATA is real and per-quarter (the fii/dii values differ quarter to quarter) \u2014 only the DATE is a scrape date written into the filing slot. Replaced with the QE+21d convention already used by the MC/Wayback ledgers, and the modal lag of our own clean rows (36.8% of 87,977 dated rows sit at exactly +21d; median +19d).",
+    "retired": "\u00a7142g 2026-09-22 orphan re-adjudication: ORIGINAL FILING WINS (values and date from the same document, the earliest public one): the store holds the original filing at 4dp with its own gated BSE timestamp; the entry carried a later REVISION's values (BSE revised_date_time 2022-07-25) that was not public in the window this row serves"
+   }
+  },
+  "CAMLINFINE": {
+   "2021-09-30": {
+    "cell": [
+     21.71,
+     5.01,
+     19.03,
+     17.65,
+     0.0,
+     "2021-10-21",
+     51038
+    ],
+    "src": "shp filing-date convention QE+21d (SEBI Reg 31 deadline)",
+    "was": [
+     21.71,
+     5.01,
+     19.03,
+     17.65,
+     0.0,
+     "2024-04-04",
+     51038
+    ],
+    "why": "WITHIN-SYMBOL OUTLIER: this symbol's own median filing lag is inside the 21-day window, yet this row is 917d late. An otherwise-compliant filer does not file one quarter months late and resume on time. Corrected only because the stamp signature is present as well \u2014 the date is shared with another quarter of the same symbol, or the lag exceeds a year. Rows 120-365d late carrying a LONE date are left alone: there a single genuinely-delayed filing cannot be told from a stamp.",
+    "retired": "\u00a7142g 2026-09-22 orphan re-adjudication: ORIGINAL FILING WINS (values and date from the same document, the earliest public one): the store holds the original filing at 4dp with its own gated BSE timestamp; the entry carried a later REVISION's values (BSE revised_date_time 2024-04-04) that was not public in the window this row serves"
+   },
+   "2021-12-31": {
+    "cell": [
+     21.71,
+     4.81,
+     17.88,
+     16.82,
+     0.0,
+     "2022-01-21",
+     56394
+    ],
+    "src": "shp filing-date convention QE+21d (SEBI Reg 31 deadline)",
+    "was": [
+     21.71,
+     4.81,
+     17.88,
+     16.82,
+     0.0,
+     "2024-04-04",
+     56394
+    ],
+    "why": "WITHIN-SYMBOL OUTLIER: this symbol's own median filing lag is inside the 21-day window, yet this row is 825d late. An otherwise-compliant filer does not file one quarter months late and resume on time. Corrected only because the stamp signature is present as well \u2014 the date is shared with another quarter of the same symbol, or the lag exceeds a year. Rows 120-365d late carrying a LONE date are left alone: there a single genuinely-delayed filing cannot be told from a stamp.",
+    "retired": "\u00a7142g 2026-09-22 orphan re-adjudication: ORIGINAL FILING WINS (values and date from the same document, the earliest public one): the store holds the original filing at 4dp with its own gated BSE timestamp; the entry carried a later REVISION's values (BSE revised_date_time 2024-04-04) that was not public in the window this row serves"
+   },
+   "2022-03-31": {
+    "cell": [
+     17.65,
+     10.5,
+     14.47,
+     13.71,
+     0.0,
+     "2022-04-21",
+     55277
+    ],
+    "src": "shp filing-date convention QE+21d (SEBI Reg 31 deadline)",
+    "was": [
+     17.65,
+     10.5,
+     14.47,
+     13.71,
+     0.0,
+     "2024-04-04",
+     55277
+    ],
+    "why": "WITHIN-SYMBOL OUTLIER: this symbol's own median filing lag is inside the 21-day window, yet this row is 735d late. An otherwise-compliant filer does not file one quarter months late and resume on time. Corrected only because the stamp signature is present as well \u2014 the date is shared with another quarter of the same symbol, or the lag exceeds a year. Rows 120-365d late carrying a LONE date are left alone: there a single genuinely-delayed filing cannot be told from a stamp.",
+    "retired": "\u00a7142g 2026-09-22 orphan re-adjudication: ORIGINAL FILING WINS (values and date from the same document, the earliest public one): the store holds the original filing at 4dp with its own gated BSE timestamp; the entry carried a later REVISION's values (BSE revised_date_time 2024-04-04) that was not public in the window this row serves"
+   },
+   "2022-06-30": {
+    "cell": [
+     17.64,
+     10.74,
+     14.2,
+     13.51,
+     0.0,
+     "2022-07-21",
+     57835
+    ],
+    "src": "shp filing-date convention QE+21d (SEBI Reg 31 deadline)",
+    "was": [
+     17.64,
+     10.74,
+     14.2,
+     13.51,
+     0.0,
+     "2024-04-04",
+     57835
+    ],
+    "why": "WITHIN-SYMBOL OUTLIER: this symbol's own median filing lag is inside the 21-day window, yet this row is 644d late. An otherwise-compliant filer does not file one quarter months late and resume on time. Corrected only because the stamp signature is present as well \u2014 the date is shared with another quarter of the same symbol, or the lag exceeds a year. Rows 120-365d late carrying a LONE date are left alone: there a single genuinely-delayed filing cannot be told from a stamp.",
+    "retired": "\u00a7142g 2026-09-22 orphan re-adjudication: ORIGINAL FILING WINS (values and date from the same document, the earliest public one): the store holds the original filing at 4dp with its own gated BSE timestamp; the entry carried a later REVISION's values (BSE revised_date_time 2024-04-04) that was not public in the window this row serves"
+   },
+   "2022-09-30": {
+    "cell": [
+     17.64,
+     11.32,
+     13.53,
+     12.86,
+     0.0,
+     "2022-10-21",
+     57904
+    ],
+    "src": "shp filing-date convention QE+21d (SEBI Reg 31 deadline)",
+    "was": [
+     17.64,
+     11.32,
+     13.53,
+     12.86,
+     0.0,
+     "2024-04-03",
+     57904
+    ],
+    "why": "WITHIN-SYMBOL OUTLIER: this symbol's own median filing lag is inside the 21-day window, yet this row is 551d late. An otherwise-compliant filer does not file one quarter months late and resume on time. Corrected only because the stamp signature is present as well \u2014 the date is shared with another quarter of the same symbol, or the lag exceeds a year. Rows 120-365d late carrying a LONE date are left alone: there a single genuinely-delayed filing cannot be told from a stamp.",
+    "retired": "\u00a7142g 2026-09-22 orphan re-adjudication: ORIGINAL FILING WINS (values and date from the same document, the earliest public one): the store holds the original filing at 4dp with its own gated BSE timestamp; the entry carried a later REVISION's values (BSE revised_date_time 2024-04-03) that was not public in the window this row serves"
+   },
+   "2022-12-31": {
+    "cell": [
+     17.64,
+     10.94,
+     12.53,
+     11.6,
+     0.0,
+     "2023-01-21",
+     54197
+    ],
+    "src": "shp filing-date convention QE+21d (SEBI Reg 31 deadline)",
+    "was": [
+     17.64,
+     10.94,
+     12.53,
+     11.6,
+     0.0,
+     "2024-04-03",
+     54197
+    ],
+    "why": "WITHIN-SYMBOL OUTLIER: this symbol's own median filing lag is inside the 21-day window, yet this row is 459d late. An otherwise-compliant filer does not file one quarter months late and resume on time. Corrected only because the stamp signature is present as well \u2014 the date is shared with another quarter of the same symbol, or the lag exceeds a year. Rows 120-365d late carrying a LONE date are left alone: there a single genuinely-delayed filing cannot be told from a stamp.",
+    "retired": "\u00a7142g 2026-09-22 orphan re-adjudication: ORIGINAL FILING WINS (values and date from the same document, the earliest public one): the store holds the original filing at 4dp with its own gated BSE timestamp; the entry carried a later REVISION's values (BSE revised_date_time 2024-04-03) that was not public in the window this row serves"
+   },
+   "2023-03-31": {
+    "cell": [
+     17.64,
+     10.18,
+     12.33,
+     11.6,
+     0.0,
+     "2023-04-21",
+     52921
+    ],
+    "src": "shp filing-date convention QE+21d (SEBI Reg 31 deadline)",
+    "was": [
+     17.64,
+     10.18,
+     12.33,
+     11.6,
+     0.0,
+     "2024-04-03",
+     52921
+    ],
+    "why": "WITHIN-SYMBOL OUTLIER: this symbol's own median filing lag is inside the 21-day window, yet this row is 369d late. An otherwise-compliant filer does not file one quarter months late and resume on time. Corrected only because the stamp signature is present as well \u2014 the date is shared with another quarter of the same symbol, or the lag exceeds a year. Rows 120-365d late carrying a LONE date are left alone: there a single genuinely-delayed filing cannot be told from a stamp.",
+    "retired": "\u00a7142g 2026-09-22 orphan re-adjudication: ORIGINAL FILING WINS (values and date from the same document, the earliest public one): the store holds the original filing at 4dp with its own gated BSE timestamp; the entry carried a later REVISION's values (BSE revised_date_time 2023-04-15, 2023-05-24, 2024-04-03) that was not public in the window this row serves"
+   }
+  },
+  "CCCL": {
+   "2023-03-31": {
+    "cell": [
+     32.82,
+     0.0,
+     52.61,
+     0.0,
+     0.01,
+     "2023-04-21",
+     48689
+    ],
+    "src": "shp filing-date convention QE+21d (SEBI Reg 31 deadline)",
+    "was": [
+     32.82,
+     0.0,
+     52.61,
+     0.0,
+     0.01,
+     "2024-08-14",
+     48689
+    ],
+    "why": "WITHIN-SYMBOL OUTLIER: this symbol's own median filing lag is inside the 21-day window, yet this row is 502d late. An otherwise-compliant filer does not file one quarter months late and resume on time. Corrected only because the stamp signature is present as well \u2014 the date is shared with another quarter of the same symbol, or the lag exceeds a year. Rows 120-365d late carrying a LONE date are left alone: there a single genuinely-delayed filing cannot be told from a stamp.",
+    "retired": "\u00a7142g 2026-09-22 orphan re-adjudication: ORIGINAL FILING WINS (values and date from the same document, the earliest public one): the store holds the original filing at 4dp with its own gated BSE timestamp; the entry carried a later REVISION's values (BSE revised_date_time 2024-08-14) that was not public in the window this row serves"
+   }
+  },
+  "DATAMATICS": {
+   "2021-12-31": {
+    "cell": [
+     74.3,
+     1.64,
+     0.0,
+     0.0,
+     0.0,
+     "2022-01-21",
+     39488
+    ],
+    "src": "shp filing-date convention QE+21d (SEBI Reg 31 deadline)",
+    "was": [
+     74.3,
+     1.64,
+     0.0,
+     0.0,
+     0.0,
+     "2022-05-18",
+     39488
+    ],
+    "why": "WITHIN-SYMBOL OUTLIER: this symbol's own median filing lag is inside the 21-day window, yet this row is 138d late. An otherwise-compliant filer does not file one quarter months late and resume on time. Corrected only because the stamp signature is present as well \u2014 the date is shared with another quarter of the same symbol, or the lag exceeds a year. Rows 120-365d late carrying a LONE date are left alone: there a single genuinely-delayed filing cannot be told from a stamp.",
+    "retired": "\u00a7142g 2026-09-22 orphan re-adjudication: ORIGINAL FILING WINS (values and date from the same document, the earliest public one): the store holds the original filing at 4dp with its own gated BSE timestamp; the entry carried a later REVISION's values (BSE revised_date_time 2022-05-18) that was not public in the window this row serves"
+   }
+  },
+  "DELHIVERY": {
+   "2022-09-30": {
+    "cell": [
+     0.0,
+     74.24,
+     7.11,
+     6.95,
+     0.0,
+     "2022-10-21",
+     59499
+    ],
+    "src": "shp filing-date convention QE+21d (SEBI Reg 31 deadline)",
+    "was": [
+     0.0,
+     74.24,
+     7.11,
+     6.95,
+     0.0,
+     "2023-02-06",
+     59499
+    ],
+    "why": "WITHIN-SYMBOL OUTLIER: this symbol's own median filing lag is inside the 21-day window, yet this row is 129d late. An otherwise-compliant filer does not file one quarter months late and resume on time. Corrected only because the stamp signature is present as well \u2014 the date is shared with another quarter of the same symbol, or the lag exceeds a year. Rows 120-365d late carrying a LONE date are left alone: there a single genuinely-delayed filing cannot be told from a stamp.",
+    "retired": "\u00a7142g 2026-09-22 orphan re-adjudication: ORIGINAL FILING WINS (values and date from the same document, the earliest public one): the store holds the original filing at 4dp with its own gated BSE timestamp; the entry carried a later REVISION's values (BSE revised_date_time 2023-02-06) that was not public in the window this row serves"
+   }
+  },
+  "ERIS": {
+   "2017-09-30": {
+    "cell": [
+     55.93,
+     6.12,
+     12.49,
+     11.17,
+     0.6,
+     "2017-10-21",
+     53130
+    ],
+    "src": "shp filing-date convention QE+21d (SEBI Reg 31 deadline)",
+    "was": [
+     55.93,
+     6.12,
+     12.49,
+     11.17,
+     0.6,
+     "2022-03-30",
+     53130
+    ],
+    "why": "WITHIN-SYMBOL OUTLIER: this symbol's own median filing lag is inside the 21-day window, yet this row is 1642d late. An otherwise-compliant filer does not file one quarter months late and resume on time. Corrected only because the stamp signature is present as well \u2014 the date is shared with another quarter of the same symbol, or the lag exceeds a year. Rows 120-365d late carrying a LONE date are left alone: there a single genuinely-delayed filing cannot be told from a stamp.",
+    "retired": "\u00a7142g 2026-09-22 orphan re-adjudication: store holds the same filing at share-count precision (4dp); the entry only re-stamped the date and the store's date already equals it \u2014 superseded by the \u00a722j precision pass"
+   }
+  },
+  "GANGOTRI": {
+   "2020-06-30": {
+    "cell": [
+     24.53,
+     0.0,
+     6.77,
+     0.0,
+     2.98,
+     "2020-07-23",
+     9772
+    ],
+    "src": "shp filing-date convention QE+21d (SEBI Reg 31 deadline)",
+    "was": [
+     24.53,
+     0.0,
+     6.77,
+     0.0,
+     2.98,
+     "2021-07-09",
+     9772
+    ],
+    "why": "WITHIN-SYMBOL OUTLIER: this symbol's own median filing lag is inside the 21-day window, yet this row is 374d late. An otherwise-compliant filer does not file one quarter months late and resume on time. Corrected only because the stamp signature is present as well \u2014 the date is shared with another quarter of the same symbol, or the lag exceeds a year. Rows 120-365d late carrying a LONE date are left alone: there a single genuinely-delayed filing cannot be told from a stamp.",
+    "retired": "\u00a7142g 2026-09-22 orphan re-adjudication: store holds the same filing at share-count precision (4dp); the entry only re-stamped the date and the store's date already equals it \u2014 superseded by the \u00a722j precision pass"
+   }
+  },
+  "IMAGICAA": {
+   "2022-06-30": {
+    "cell": [
+     72.93,
+     0.66,
+     11.37,
+     0.0,
+     0.52,
+     "2022-07-21",
+     35733
+    ],
+    "src": "shp filing-date convention QE+21d (SEBI Reg 31 deadline)",
+    "was": [
+     72.93,
+     0.66,
+     11.37,
+     0.0,
+     0.52,
+     "2022-12-27",
+     35733
+    ],
+    "why": "WITHIN-SYMBOL OUTLIER: this symbol's own median filing lag is inside the 21-day window, yet this row is 180d late. An otherwise-compliant filer does not file one quarter months late and resume on time. Corrected only because the stamp signature is present as well \u2014 the date is shared with another quarter of the same symbol, or the lag exceeds a year. Rows 120-365d late carrying a LONE date are left alone: there a single genuinely-delayed filing cannot be told from a stamp.",
+    "retired": "\u00a7142g 2026-09-22 orphan re-adjudication: ORIGINAL FILING WINS (values and date from the same document, the earliest public one): the store holds the original filing at 4dp with its own gated BSE timestamp; the entry carried a later REVISION's values (BSE revised_date_time 2022-12-27) that was not public in the window this row serves"
+   }
+  },
+  "PCJEWELLER": {
+   "2022-03-31": {
+    "cell": [
+     54.53,
+     1.0,
+     1.49,
+     0.0,
+     1.49,
+     "2022-04-21",
+     216619
+    ],
+    "src": "shp filing-date convention QE+21d (SEBI Reg 31 deadline)",
+    "was": [
+     54.53,
+     1.0,
+     1.49,
+     0.0,
+     1.49,
+     "2023-05-25",
+     216619
+    ],
+    "why": "WITHIN-SYMBOL OUTLIER: this symbol's own median filing lag is inside the 21-day window, yet this row is 420d late. An otherwise-compliant filer does not file one quarter months late and resume on time. Corrected only because the stamp signature is present as well \u2014 the date is shared with another quarter of the same symbol, or the lag exceeds a year. Rows 120-365d late carrying a LONE date are left alone: there a single genuinely-delayed filing cannot be told from a stamp.",
+    "retired": "\u00a7142g 2026-09-22 orphan re-adjudication: ORIGINAL FILING WINS (values and date from the same document, the earliest public one): the store holds the original filing at 4dp with its own gated BSE timestamp; the entry carried a later REVISION's values (BSE revised_date_time 2022-05-25, 2023-05-25) that was not public in the window this row serves"
+   },
+   "2022-06-30": {
+    "cell": [
+     54.53,
+     1.12,
+     1.49,
+     0.0,
+     1.49,
+     "2022-07-21",
+     206811
+    ],
+    "src": "shp filing-date convention QE+21d (SEBI Reg 31 deadline)",
+    "was": [
+     54.53,
+     1.12,
+     1.49,
+     0.0,
+     1.49,
+     "2023-05-25",
+     206811
+    ],
+    "why": "WITHIN-SYMBOL OUTLIER: this symbol's own median filing lag is inside the 21-day window, yet this row is 329d late. An otherwise-compliant filer does not file one quarter months late and resume on time. Corrected only because the stamp signature is present as well \u2014 the date is shared with another quarter of the same symbol, or the lag exceeds a year. Rows 120-365d late carrying a LONE date are left alone: there a single genuinely-delayed filing cannot be told from a stamp.",
+    "retired": "\u00a7142g 2026-09-22 orphan re-adjudication: ORIGINAL FILING WINS (values and date from the same document, the earliest public one): the store holds the original filing at 4dp with its own gated BSE timestamp; the entry carried a later REVISION's values (BSE revised_date_time 2023-05-25) that was not public in the window this row serves"
+   }
+  },
+  "PRUDMOULI": {
+   "2022-03-31": {
+    "cell": [
+     70.09,
+     0.0,
+     0.99,
+     0.96,
+     0.0,
+     "2022-04-22",
+     11587
+    ],
+    "src": "shp filing-date convention QE+21d (SEBI Reg 31 deadline)",
+    "was": [
+     70.09,
+     0.0,
+     0.99,
+     0.96,
+     0.0,
+     "2023-06-02",
+     11587
+    ],
+    "why": "BULK STAMP: 4 quarters of this symbol all carry the single submission date 2023-06-02, which is 428 days after this quarter ended. The DATA is real and per-quarter (the fii/dii values differ quarter to quarter) \u2014 only the DATE is a scrape date written into the filing slot. Replaced with the QE+21d convention already used by the MC/Wayback ledgers, and the modal lag of our own clean rows (36.8% of 87,977 dated rows sit at exactly +21d; median +19d).",
+    "retired": "\u00a7142g 2026-09-22 orphan re-adjudication: ORIGINAL FILING WINS (values and date from the same document, the earliest public one): the store holds the original filing at 4dp with its own gated BSE timestamp; the entry carried a later REVISION's values (BSE revised_date_time 2023-06-02) that was not public in the window this row serves"
+   },
+   "2022-06-30": {
+    "cell": [
+     70.09,
+     0.0,
+     0.99,
+     0.96,
+     0.0,
+     "2022-07-21",
+     11587
+    ],
+    "src": "shp filing-date convention QE+21d (SEBI Reg 31 deadline)",
+    "was": [
+     70.09,
+     0.0,
+     0.99,
+     0.96,
+     0.0,
+     "2023-06-02",
+     11587
+    ],
+    "why": "BULK STAMP: 4 quarters of this symbol all carry the single submission date 2023-06-02, which is 337 days after this quarter ended. The DATA is real and per-quarter (the fii/dii values differ quarter to quarter) \u2014 only the DATE is a scrape date written into the filing slot. Replaced with the QE+21d convention already used by the MC/Wayback ledgers, and the modal lag of our own clean rows (36.8% of 87,977 dated rows sit at exactly +21d; median +19d).",
+    "retired": "\u00a7142g 2026-09-22 orphan re-adjudication: ORIGINAL FILING WINS (values and date from the same document, the earliest public one): the store holds the original filing at 4dp with its own gated BSE timestamp; the entry carried a later REVISION's values (BSE revised_date_time 2023-06-02) that was not public in the window this row serves"
+   },
+   "2022-09-30": {
+    "cell": [
+     70.09,
+     0.0,
+     0.99,
+     0.96,
+     0.0,
+     "2022-10-21",
+     11587
+    ],
+    "src": "shp filing-date convention QE+21d (SEBI Reg 31 deadline)",
+    "was": [
+     70.09,
+     0.0,
+     0.99,
+     0.96,
+     0.0,
+     "2023-06-02",
+     11587
+    ],
+    "why": "BULK STAMP: 4 quarters of this symbol all carry the single submission date 2023-06-02, which is 245 days after this quarter ended. The DATA is real and per-quarter (the fii/dii values differ quarter to quarter) \u2014 only the DATE is a scrape date written into the filing slot. Replaced with the QE+21d convention already used by the MC/Wayback ledgers, and the modal lag of our own clean rows (36.8% of 87,977 dated rows sit at exactly +21d; median +19d).",
+    "retired": "\u00a7142g 2026-09-22 orphan re-adjudication: ORIGINAL FILING WINS (values and date from the same document, the earliest public one): the store holds the original filing at 4dp with its own gated BSE timestamp; the entry carried a later REVISION's values (BSE revised_date_time 2022-10-21, 2023-06-02) that was not public in the window this row serves"
+   },
+   "2022-12-31": {
+    "cell": [
+     70.09,
+     0.0,
+     0.99,
+     0.96,
+     0.0,
+     "2023-01-21",
+     11587
+    ],
+    "src": "shp filing-date convention QE+21d (SEBI Reg 31 deadline)",
+    "was": [
+     70.09,
+     0.0,
+     0.99,
+     0.96,
+     0.0,
+     "2023-06-02",
+     11587
+    ],
+    "why": "BULK STAMP: 4 quarters of this symbol all carry the single submission date 2023-06-02, which is 153 days after this quarter ended. The DATA is real and per-quarter (the fii/dii values differ quarter to quarter) \u2014 only the DATE is a scrape date written into the filing slot. Replaced with the QE+21d convention already used by the MC/Wayback ledgers, and the modal lag of our own clean rows (36.8% of 87,977 dated rows sit at exactly +21d; median +19d).",
+    "retired": "\u00a7142g 2026-09-22 orphan re-adjudication: ORIGINAL FILING WINS (values and date from the same document, the earliest public one): the store holds the original filing at 4dp with its own gated BSE timestamp; the entry carried a later REVISION's values (BSE revised_date_time 2023-06-02) that was not public in the window this row serves"
+   }
+  },
+  "RESPONIND": {
+   "2021-09-30": {
+    "cell": [
+     50.13,
+     35.7,
+     3.59,
+     0.0,
+     3.59,
+     "2021-10-21",
+     6681
+    ],
+    "src": "shp filing-date convention QE+21d (SEBI Reg 31 deadline)",
+    "was": [
+     50.13,
+     35.7,
+     3.59,
+     0.0,
+     3.59,
+     "2025-12-27",
+     6681
+    ],
+    "why": "BULK STAMP: 10 quarters of this symbol all carry the single submission date 2025-12-27, which is 1549 days after this quarter ended. The DATA is real and per-quarter (the fii/dii values differ quarter to quarter) \u2014 only the DATE is a scrape date written into the filing slot. Replaced with the QE+21d convention already used by the MC/Wayback ledgers, and the modal lag of our own clean rows (36.8% of 87,977 dated rows sit at exactly +21d; median +19d).",
+    "retired": "\u00a7142g 2026-09-22 orphan re-adjudication: ORIGINAL FILING WINS (values and date from the same document, the earliest public one): the store holds the original filing at 4dp with its own gated BSE timestamp; the entry carried a later REVISION's values (BSE revised_date_time 2025-12-27) that was not public in the window this row serves"
+   },
+   "2021-12-31": {
+    "cell": [
+     50.13,
+     35.65,
+     3.59,
+     0.0,
+     3.59,
+     "2022-01-21",
+     7008
+    ],
+    "src": "shp filing-date convention QE+21d (SEBI Reg 31 deadline)",
+    "was": [
+     50.13,
+     35.65,
+     3.59,
+     0.0,
+     3.59,
+     "2025-12-27",
+     7008
+    ],
+    "why": "BULK STAMP: 10 quarters of this symbol all carry the single submission date 2025-12-27, which is 1457 days after this quarter ended. The DATA is real and per-quarter (the fii/dii values differ quarter to quarter) \u2014 only the DATE is a scrape date written into the filing slot. Replaced with the QE+21d convention already used by the MC/Wayback ledgers, and the modal lag of our own clean rows (36.8% of 87,977 dated rows sit at exactly +21d; median +19d).",
+    "retired": "\u00a7142g 2026-09-22 orphan re-adjudication: ORIGINAL FILING WINS (values and date from the same document, the earliest public one): the store holds the original filing at 4dp with its own gated BSE timestamp; the entry carried a later REVISION's values (BSE revised_date_time 2025-12-27) that was not public in the window this row serves"
+   },
+   "2022-03-31": {
+    "cell": [
+     50.13,
+     35.67,
+     3.59,
+     0.0,
+     3.59,
+     "2022-04-21",
+     5931
+    ],
+    "src": "shp filing-date convention QE+21d (SEBI Reg 31 deadline)",
+    "was": [
+     50.13,
+     35.67,
+     3.59,
+     0.0,
+     3.59,
+     "2025-12-27",
+     5931
+    ],
+    "why": "BULK STAMP: 10 quarters of this symbol all carry the single submission date 2025-12-27, which is 1367 days after this quarter ended. The DATA is real and per-quarter (the fii/dii values differ quarter to quarter) \u2014 only the DATE is a scrape date written into the filing slot. Replaced with the QE+21d convention already used by the MC/Wayback ledgers, and the modal lag of our own clean rows (36.8% of 87,977 dated rows sit at exactly +21d; median +19d).",
+    "retired": "\u00a7142g 2026-09-22 orphan re-adjudication: ORIGINAL FILING WINS (values and date from the same document, the earliest public one): the store holds the original filing at 4dp with its own gated BSE timestamp; the entry carried a later REVISION's values (BSE revised_date_time 2022-05-12, 2025-12-27) that was not public in the window this row serves"
+   },
+   "2022-06-30": {
+    "cell": [
+     50.13,
+     35.67,
+     3.56,
+     0.0,
+     3.56,
+     "2022-07-21",
+     5478
+    ],
+    "src": "shp filing-date convention QE+21d (SEBI Reg 31 deadline)",
+    "was": [
+     50.13,
+     35.67,
+     3.56,
+     0.0,
+     3.56,
+     "2025-12-27",
+     5478
+    ],
+    "why": "BULK STAMP: 10 quarters of this symbol all carry the single submission date 2025-12-27, which is 1276 days after this quarter ended. The DATA is real and per-quarter (the fii/dii values differ quarter to quarter) \u2014 only the DATE is a scrape date written into the filing slot. Replaced with the QE+21d convention already used by the MC/Wayback ledgers, and the modal lag of our own clean rows (36.8% of 87,977 dated rows sit at exactly +21d; median +19d).",
+    "retired": "\u00a7142g 2026-09-22 orphan re-adjudication: ORIGINAL FILING WINS (values and date from the same document, the earliest public one): the store holds the original filing at 4dp with its own gated BSE timestamp; the entry carried a later REVISION's values (BSE revised_date_time 2025-12-27) that was not public in the window this row serves"
+   },
+   "2022-09-30": {
+    "cell": [
+     59.5,
+     35.69,
+     3.56,
+     0.0,
+     3.56,
+     "2022-10-21",
+     6559
+    ],
+    "src": "shp filing-date convention QE+21d (SEBI Reg 31 deadline)",
+    "was": [
+     59.5,
+     35.69,
+     3.56,
+     0.0,
+     3.56,
+     "2025-12-27",
+     6559
+    ],
+    "why": "BULK STAMP: 10 quarters of this symbol all carry the single submission date 2025-12-27, which is 1184 days after this quarter ended. The DATA is real and per-quarter (the fii/dii values differ quarter to quarter) \u2014 only the DATE is a scrape date written into the filing slot. Replaced with the QE+21d convention already used by the MC/Wayback ledgers, and the modal lag of our own clean rows (36.8% of 87,977 dated rows sit at exactly +21d; median +19d).",
+    "retired": "\u00a7142g 2026-09-22 orphan re-adjudication: ORIGINAL FILING WINS (values and date from the same document, the earliest public one): the store holds the original filing at 4dp with its own gated BSE timestamp; the entry carried a later REVISION's values (BSE revised_date_time 2025-12-27) that was not public in the window this row serves"
+   },
+   "2022-12-31": {
+    "cell": [
+     59.5,
+     35.69,
+     3.56,
+     0.0,
+     3.56,
+     "2023-01-21",
+     6559
+    ],
+    "src": "shp filing-date convention QE+21d (SEBI Reg 31 deadline)",
+    "was": [
+     59.5,
+     35.69,
+     3.56,
+     0.0,
+     3.56,
+     "2025-12-27",
+     6559
+    ],
+    "why": "BULK STAMP: 10 quarters of this symbol all carry the single submission date 2025-12-27, which is 1092 days after this quarter ended. The DATA is real and per-quarter (the fii/dii values differ quarter to quarter) \u2014 only the DATE is a scrape date written into the filing slot. Replaced with the QE+21d convention already used by the MC/Wayback ledgers, and the modal lag of our own clean rows (36.8% of 87,977 dated rows sit at exactly +21d; median +19d).",
+    "retired": "\u00a7142g 2026-09-22 orphan re-adjudication: ORIGINAL FILING WINS (values and date from the same document, the earliest public one): the store holds the original filing at 4dp with its own gated BSE timestamp; the entry carried a later REVISION's values (BSE revised_date_time 2025-12-27, 2025-12-27) that was not public in the window this row serves"
+   },
+   "2023-03-31": {
+    "cell": [
+     59.5,
+     35.67,
+     3.56,
+     0.0,
+     3.56,
+     "2023-04-21",
+     7009
+    ],
+    "src": "shp filing-date convention QE+21d (SEBI Reg 31 deadline)",
+    "was": [
+     59.5,
+     35.67,
+     3.56,
+     0.0,
+     3.56,
+     "2025-12-27",
+     7009
+    ],
+    "why": "BULK STAMP: 10 quarters of this symbol all carry the single submission date 2025-12-27, which is 1002 days after this quarter ended. The DATA is real and per-quarter (the fii/dii values differ quarter to quarter) \u2014 only the DATE is a scrape date written into the filing slot. Replaced with the QE+21d convention already used by the MC/Wayback ledgers, and the modal lag of our own clean rows (36.8% of 87,977 dated rows sit at exactly +21d; median +19d).",
+    "retired": "\u00a7142g 2026-09-22 orphan re-adjudication: ORIGINAL FILING WINS (values and date from the same document, the earliest public one): the store holds the original filing at 4dp with its own gated BSE timestamp; the entry carried a later REVISION's values (BSE revised_date_time 2023-04-28, 2025-12-27) that was not public in the window this row serves"
+   },
+   "2023-06-30": {
+    "cell": [
+     59.5,
+     35.67,
+     3.56,
+     0.0,
+     3.56,
+     "2023-07-21",
+     6473
+    ],
+    "src": "shp filing-date convention QE+21d (SEBI Reg 31 deadline)",
+    "was": [
+     59.5,
+     35.67,
+     3.56,
+     0.0,
+     3.56,
+     "2025-12-27",
+     6473
+    ],
+    "why": "BULK STAMP: 10 quarters of this symbol all carry the single submission date 2025-12-27, which is 911 days after this quarter ended. The DATA is real and per-quarter (the fii/dii values differ quarter to quarter) \u2014 only the DATE is a scrape date written into the filing slot. Replaced with the QE+21d convention already used by the MC/Wayback ledgers, and the modal lag of our own clean rows (36.8% of 87,977 dated rows sit at exactly +21d; median +19d).",
+    "retired": "\u00a7142g 2026-09-22 orphan re-adjudication: ORIGINAL FILING WINS (values and date from the same document, the earliest public one): the store holds the original filing at 4dp with its own gated BSE timestamp; the entry carried a later REVISION's values (BSE revised_date_time 2025-12-27) that was not public in the window this row serves"
+   },
+   "2023-09-30": {
+    "cell": [
+     59.5,
+     35.44,
+     3.56,
+     0.0,
+     3.56,
+     "2023-10-21",
+     10237
+    ],
+    "src": "shp filing-date convention QE+21d (SEBI Reg 31 deadline)",
+    "was": [
+     59.5,
+     35.44,
+     3.56,
+     0.0,
+     3.56,
+     "2025-12-22",
+     10237
+    ],
+    "why": "WITHIN-SYMBOL OUTLIER: this symbol's own median filing lag is inside the 21-day window, yet this row is 814d late. An otherwise-compliant filer does not file one quarter months late and resume on time. Corrected only because the stamp signature is present as well \u2014 the date is shared with another quarter of the same symbol, or the lag exceeds a year. Rows 120-365d late carrying a LONE date are left alone: there a single genuinely-delayed filing cannot be told from a stamp.",
+    "retired": "\u00a7142g 2026-09-22 orphan re-adjudication: ORIGINAL FILING WINS (values and date from the same document, the earliest public one): the store holds the original filing at 4dp with its own gated BSE timestamp; the entry carried a later REVISION's values (BSE revised_date_time 2025-12-22) that was not public in the window this row serves"
+   }
+  },
+  "SATIN": {
+   "2019-09-30": {
+    "cell": [
+     29.7,
+     13.45,
+     26.25,
+     18.73,
+     0.0,
+     "2019-10-21",
+     9278
+    ],
+    "src": "shp filing-date convention QE+21d (SEBI Reg 31 deadline)",
+    "was": [
+     29.7,
+     13.45,
+     26.25,
+     18.73,
+     0.0,
+     "2020-09-29",
+     9278
+    ],
+    "why": "BULK STAMP: 3 quarters of this symbol all carry the single submission date 2020-09-29, which is 365 days after this quarter ended. The DATA is real and per-quarter (the fii/dii values differ quarter to quarter) \u2014 only the DATE is a scrape date written into the filing slot. Replaced with the QE+21d convention already used by the MC/Wayback ledgers, and the modal lag of our own clean rows (36.8% of 87,977 dated rows sit at exactly +21d; median +19d).",
+    "retired": "\u00a7142g 2026-09-22 orphan re-adjudication: store holds the same filing at share-count precision (4dp); the entry only re-stamped the date and the store's date already equals it \u2014 superseded by the \u00a722j precision pass"
+   },
+   "2020-03-31": {
+    "cell": [
+     30.19,
+     7.63,
+     26.35,
+     19.04,
+     0.0,
+     "2020-04-21",
+     10210
+    ],
+    "src": "shp filing-date convention QE+21d (SEBI Reg 31 deadline)",
+    "was": [
+     30.19,
+     7.63,
+     26.35,
+     19.04,
+     0.0,
+     "2020-09-29",
+     10210
+    ],
+    "why": "BULK STAMP: 3 quarters of this symbol all carry the single submission date 2020-09-29, which is 182 days after this quarter ended. The DATA is real and per-quarter (the fii/dii values differ quarter to quarter) \u2014 only the DATE is a scrape date written into the filing slot. Replaced with the QE+21d convention already used by the MC/Wayback ledgers, and the modal lag of our own clean rows (36.8% of 87,977 dated rows sit at exactly +21d; median +19d).",
+    "retired": "\u00a7142g 2026-09-22 orphan re-adjudication: store holds the same filing at share-count precision (4dp); the entry only re-stamped the date and the store's date already equals it \u2014 superseded by the \u00a722j precision pass"
+   }
+  },
+  "SOLARA": {
+   "2019-09-30": {
+    "cell": [
+     40.55,
+     15.04,
+     6.59,
+     5.33,
+     0.0,
+     "2019-10-31",
+     56947
+    ],
+    "src": "shp filing-date convention QE+21d (SEBI Reg 31 deadline)",
+    "was": [
+     40.55,
+     15.04,
+     6.59,
+     5.33,
+     0.0,
+     "2020-12-14",
+     56947
+    ],
+    "why": "WITHIN-SYMBOL OUTLIER: this symbol's own median filing lag is inside the 21-day window, yet this row is 441d late. An otherwise-compliant filer does not file one quarter months late and resume on time. Corrected only because the stamp signature is present as well \u2014 the date is shared with another quarter of the same symbol, or the lag exceeds a year. Rows 120-365d late carrying a LONE date are left alone: there a single genuinely-delayed filing cannot be told from a stamp.",
+    "retired": "\u00a7142g 2026-09-22 orphan re-adjudication: store holds the same filing at share-count precision (4dp); the entry only re-stamped the date and the store's date already equals it \u2014 superseded by the \u00a722j precision pass"
+   }
+  },
+  "TALWALKARS": {
+   "2025-12-31": {
+    "cell": [
+     38.49,
+     0.29,
+     0.0,
+     0.0,
+     0.0,
+     "2026-01-21",
+     22309
+    ],
+    "src": "shp filing-date convention QE+21d (SEBI Reg 31 deadline)",
+    "was": [
+     38.49,
+     0.29,
+     0.0,
+     0.0,
+     0.0,
+     "2026-06-29",
+     22309
+    ],
+    "why": "BULK STAMP: 20 quarters of this symbol all carry the single submission date 2026-06-29, which is 180 days after this quarter ended. The DATA is real and per-quarter (the fii/dii values differ quarter to quarter) \u2014 only the DATE is a scrape date written into the filing slot. Replaced with the QE+21d convention already used by the MC/Wayback ledgers, and the modal lag of our own clean rows (36.8% of 87,977 dated rows sit at exactly +21d; median +19d).",
+    "retired": "\u00a7142g 2026-09-22 orphan re-adjudication: the Dec-2025 pattern really was filed on 2026-06-29 15:38 (BSE list, NSE broadcast 29-Jun-2026 18:49); the store's 2026-06-30 is that filing gated, not a bulk stamp"
+   }
+  },
+  "UPL": {
+   "2021-09-30": {
+    "cell": [
+     28.12,
+     43.29,
+     17.97,
+     5.52,
+     11.81,
+     "2021-11-15",
+     237555
+    ],
+    "src": "shp filing-date convention QE+21d (SEBI Reg 31 deadline)",
+    "was": [
+     28.12,
+     43.29,
+     17.97,
+     5.52,
+     11.81,
+     "2024-07-31",
+     237555
+    ],
+    "why": "WITHIN-SYMBOL OUTLIER: this symbol's own median filing lag is inside the 21-day window, yet this row is 1035d late. An otherwise-compliant filer does not file one quarter months late and resume on time. Corrected only because the stamp signature is present as well \u2014 the date is shared with another quarter of the same symbol, or the lag exceeds a year. Rows 120-365d late carrying a LONE date are left alone: there a single genuinely-delayed filing cannot be told from a stamp.",
+    "retired": "\u00a7142g 2026-09-22 orphan re-adjudication: ORIGINAL FILING WINS (values and date from the same document, the earliest public one): the store holds the original filing at 4dp with its own gated BSE timestamp; the entry carried a later REVISION's values (BSE revised_date_time 2024-03-26, 2024-07-31) that was not public in the window this row serves"
+   },
+   "2022-03-31": {
+    "cell": [
+     28.45,
+     43.02,
+     17.8,
+     5.9,
+     11.27,
+     "2022-04-21",
+     240012
+    ],
+    "src": "shp filing-date convention QE+21d (SEBI Reg 31 deadline)",
+    "was": [
+     28.45,
+     43.02,
+     17.8,
+     5.9,
+     11.27,
+     "2024-03-27",
+     240012
+    ],
+    "why": "WITHIN-SYMBOL OUTLIER: this symbol's own median filing lag is inside the 21-day window, yet this row is 727d late. An otherwise-compliant filer does not file one quarter months late and resume on time. Corrected only because the stamp signature is present as well \u2014 the date is shared with another quarter of the same symbol, or the lag exceeds a year. Rows 120-365d late carrying a LONE date are left alone: there a single genuinely-delayed filing cannot be told from a stamp.",
+    "retired": "\u00a7142g 2026-09-22 orphan re-adjudication: ORIGINAL FILING WINS (values and date from the same document, the earliest public one): the store holds the original filing at 4dp with its own gated BSE timestamp; the entry carried a later REVISION's values (BSE revised_date_time 2024-03-27, 2024-07-31) that was not public in the window this row serves"
+   },
+   "2022-06-30": {
+    "cell": [
+     29.13,
+     43.64,
+     16.47,
+     5.62,
+     10.38,
+     "2022-07-21",
+     245370
+    ],
+    "src": "shp filing-date convention QE+21d (SEBI Reg 31 deadline)",
+    "was": [
+     29.13,
+     43.64,
+     16.47,
+     5.62,
+     10.38,
+     "2024-07-31",
+     245370
+    ],
+    "why": "WITHIN-SYMBOL OUTLIER: this symbol's own median filing lag is inside the 21-day window, yet this row is 762d late. An otherwise-compliant filer does not file one quarter months late and resume on time. Corrected only because the stamp signature is present as well \u2014 the date is shared with another quarter of the same symbol, or the lag exceeds a year. Rows 120-365d late carrying a LONE date are left alone: there a single genuinely-delayed filing cannot be told from a stamp.",
+    "retired": "\u00a7142g 2026-09-22 orphan re-adjudication: ORIGINAL FILING WINS (values and date from the same document, the earliest public one): the store holds the original filing at 4dp with its own gated BSE timestamp; the entry carried a later REVISION's values (BSE revised_date_time 2024-03-27, 2024-07-31) that was not public in the window this row serves"
+   },
+   "2022-09-30": {
+    "cell": [
+     29.13,
+     42.77,
+     17.19,
+     6.35,
+     9.73,
+     "2022-10-21",
+     269168
+    ],
+    "src": "shp filing-date convention QE+21d (SEBI Reg 31 deadline)",
+    "was": [
+     29.13,
+     42.77,
+     17.19,
+     6.35,
+     9.73,
+     "2024-07-31",
+     269168
+    ],
+    "why": "WITHIN-SYMBOL OUTLIER: this symbol's own median filing lag is inside the 21-day window, yet this row is 670d late. An otherwise-compliant filer does not file one quarter months late and resume on time. Corrected only because the stamp signature is present as well \u2014 the date is shared with another quarter of the same symbol, or the lag exceeds a year. Rows 120-365d late carrying a LONE date are left alone: there a single genuinely-delayed filing cannot be told from a stamp.",
+    "retired": "\u00a7142g 2026-09-22 orphan re-adjudication: ORIGINAL FILING WINS (values and date from the same document, the earliest public one): the store holds the original filing at 4dp with its own gated BSE timestamp; the entry carried a later REVISION's values (BSE revised_date_time 2024-03-27, 2024-07-31) that was not public in the window this row serves"
+   },
+   "2022-12-31": {
+    "cell": [
+     30.91,
+     42.71,
+     16.2,
+     5.76,
+     9.49,
+     "2023-01-21",
+     253054
+    ],
+    "src": "shp filing-date convention QE+21d (SEBI Reg 31 deadline)",
+    "was": [
+     30.91,
+     42.71,
+     16.2,
+     5.76,
+     9.49,
+     "2024-07-31",
+     253054
+    ],
+    "why": "WITHIN-SYMBOL OUTLIER: this symbol's own median filing lag is inside the 21-day window, yet this row is 578d late. An otherwise-compliant filer does not file one quarter months late and resume on time. Corrected only because the stamp signature is present as well \u2014 the date is shared with another quarter of the same symbol, or the lag exceeds a year. Rows 120-365d late carrying a LONE date are left alone: there a single genuinely-delayed filing cannot be told from a stamp.",
+    "retired": "\u00a7142g 2026-09-22 orphan re-adjudication: ORIGINAL FILING WINS (values and date from the same document, the earliest public one): the store holds the original filing at 4dp with its own gated BSE timestamp; the entry carried a later REVISION's values (BSE revised_date_time 2024-03-27, 2024-07-31, 2024-07-31) that was not public in the window this row serves"
+   },
+   "2023-03-31": {
+    "cell": [
+     32.52,
+     42.62,
+     14.4,
+     4.62,
+     8.39,
+     "2023-04-21",
+     253548
+    ],
+    "src": "shp filing-date convention QE+21d (SEBI Reg 31 deadline)",
+    "was": [
+     32.52,
+     42.62,
+     14.4,
+     4.62,
+     8.39,
+     "2024-07-31",
+     253548
+    ],
+    "why": "WITHIN-SYMBOL OUTLIER: this symbol's own median filing lag is inside the 21-day window, yet this row is 488d late. An otherwise-compliant filer does not file one quarter months late and resume on time. Corrected only because the stamp signature is present as well \u2014 the date is shared with another quarter of the same symbol, or the lag exceeds a year. Rows 120-365d late carrying a LONE date are left alone: there a single genuinely-delayed filing cannot be told from a stamp.",
+    "retired": "\u00a7142g 2026-09-22 orphan re-adjudication: ORIGINAL FILING WINS (values and date from the same document, the earliest public one): the store holds the original filing at 4dp with its own gated BSE timestamp; the entry carried a later REVISION's values (BSE revised_date_time 2024-03-27, 2024-07-31) that was not public in the window this row serves"
+   },
+   "2023-06-30": {
+    "cell": [
+     32.52,
+     41.99,
+     15.24,
+     5.1,
+     8.59,
+     "2023-07-21",
+     280819
+    ],
+    "src": "shp filing-date convention QE+21d (SEBI Reg 31 deadline)",
+    "was": [
+     32.52,
+     41.99,
+     15.24,
+     5.1,
+     8.59,
+     "2024-07-31",
+     280819
+    ],
+    "why": "WITHIN-SYMBOL OUTLIER: this symbol's own median filing lag is inside the 21-day window, yet this row is 397d late. An otherwise-compliant filer does not file one quarter months late and resume on time. Corrected only because the stamp signature is present as well \u2014 the date is shared with another quarter of the same symbol, or the lag exceeds a year. Rows 120-365d late carrying a LONE date are left alone: there a single genuinely-delayed filing cannot be told from a stamp.",
+    "retired": "\u00a7142g 2026-09-22 orphan re-adjudication: ORIGINAL FILING WINS (values and date from the same document, the earliest public one): the store holds the original filing at 4dp with its own gated BSE timestamp; the entry carried a later REVISION's values (BSE revised_date_time 2024-03-27, 2024-07-31) that was not public in the window this row serves"
+   },
+   "2023-09-30": {
+    "cell": [
+     32.52,
+     37.6,
+     17.27,
+     7.32,
+     8.69,
+     "2023-10-21",
+     383299
+    ],
+    "src": "shp filing-date convention QE+21d (SEBI Reg 31 deadline)",
+    "was": [
+     32.52,
+     37.6,
+     17.27,
+     7.32,
+     8.69,
+     "2024-07-31",
+     383299
+    ],
+    "why": "WITHIN-SYMBOL OUTLIER: this symbol's own median filing lag is inside the 21-day window, yet this row is 305d late. An otherwise-compliant filer does not file one quarter months late and resume on time. Corrected only because the stamp signature is present as well \u2014 the date is shared with another quarter of the same symbol, or the lag exceeds a year. Rows 120-365d late carrying a LONE date are left alone: there a single genuinely-delayed filing cannot be told from a stamp.",
+    "retired": "\u00a7142g 2026-09-22 orphan re-adjudication: ORIGINAL FILING WINS (values and date from the same document, the earliest public one): the store holds the original filing at 4dp with its own gated BSE timestamp; the entry carried a later REVISION's values (BSE revised_date_time 2024-03-27, 2024-07-31, 2024-08-02) that was not public in the window this row serves"
    }
   }
  }

@@ -16922,6 +16922,42 @@ ledgers (never a direct store edit):
 Dry run before landing: `apply_bse_hist_ledger` on a copy of the store adds exactly 17 cells, 0 overwrites. The 2008-13 cells
 carry the ledger's qe+21d convention date like every other page-derived cell of that era (§120/§142d).
 
+### 142g. ★★★ THE 72 ORPHANED CELL-FIX ENTRIES — a rule for revisions, 64 retired, 8 re-armed  (2026-09-22)
+
+**Symptom:** every fetcher run printed 69-72 `WARN cell_fix … stored cell is neither the fix nor the recorded bad value`.
+Those corrections were silently not in effect. Adjudicated one by one against BSE's list (original `New` row with its
+timestamp, `Revised` rows with `revised_date_time`) and both XBRLs (scratchpad `orphans.py` → `orphans.json`).
+
+**What they were.** Almost all were 2026-08 date heals ("BULK STAMP" / "WITHIN-SYMBOL OUTLIER") that copied the values
+then in the store — which were a later REVISION's values (BSE's list serves the revised XBRL) — into `cell`. Since then
+the CI fetch re-parsed the ORIGINAL filing from NSE at share-count precision and stamped it with its real gated timestamp,
+so the store now differs from both `cell` and `was`. Re-applying them would have regressed the store: BBTC promoter
+65.93 → 74.05 (a Dec-2023 re-filing served at Oct-2021), BCG 36.76 → 7.25 (the Apr-2023 SEBI-ordered restatement
+served in 2021), BFUTILITIE, PRUDMOULI, RESPONIND (Dec-2025 revisions of 2021-23 quarters), UPL (2024 re-filings),
+DELHIVERY Sep-2022 (Feb-2023 new-format re-filing 74.24 vs the old-format original 8.02), IMAGICAA, CCCL, CAMLINFINE …
+
+**Rule adopted (binding for shareholding cells): values and date come from the SAME document, and the document that
+serves a quarter is the EARLIEST PUBLIC filing — the original.** A revision may replace it only when its own gated
+publication date falls in the same visibility window (a same-day re-filing: SPMLINFRA Mar-2026, 11:27 and 11:47 on a
+Saturday, both visible Mon 20-Apr). A late revision is never served at the original's date — that is look-ahead of a
+document nobody had — and with one row per quarter it cannot serve at its own date either without hiding the original
+(the next quarter's filing supersedes it anyway). Late revisions are RECORDED (the entry moves to `retired`, reason and
+BSE `revised_date_time` inside) so the true-history question stays answerable.
+
+**Outcome:** 64 retired (52 original-wins where the store already held the original with its own gated date; 7 where
+the store is the same filing at 4dp and only the date had been re-stamped; TALWALKARS Dec-2025 whose 29-Jun-2026 filing
+really was six months late; ATLANTAA Mar-2025 whose "outlier" date was the NSE original's real timestamp); 8 re-armed or
+re-derived to the original — MARKOLINES, MARKSANS (store had NSE's 19-May revision fii 16.74; original 8.12), MODIRUBBER,
+SUPREMEINF (store had a 21-Apr revision BSE never received), ATALREAL (store had the second revision), BHARTIARTL Jun-2026
+(prom 48.87 from the 20-Jul original, not 50.07 from the 24-Jul re-filing), BFUTILITIE Dec-2016 (56.44, not the 2022
+revision's 57.19), SPMLINFRA (same-day revision wins). Dry run: 8 applied, **0 warnings**. `apply_cell_fix` only reads
+`fix`, so `retired` is inert by construction.
+
+**Open (measured, not changed):** the same look-ahead class exists among NON-orphaned §22h entries that write a
+revision's values under the original's gated date (KALYANKJIL Dec-2022: 28.73 from the 13-Jan revision served from
+10-Jan; UPL 2017-2020 hold the 2023 re-filed ODR values at the original dates). Census them against `revised_date_time`
+before touching: where the revision fell inside the same visibility window they stand; otherwise the original wins.
+
 ## 141a. ★★ NIFTY BANK ROSTERS HEALED — 2000→date from NSE's register + 12 archived lists  (2026-09-21)
 
 **Symptom (user, via the §141 card):** Nifty Bank's history had 7 snapshots 2017-03-31 → 2024-09-30 with
