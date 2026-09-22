@@ -228,7 +228,7 @@ const dayWord = () => ASOF ? 'move on ' + ASOF : "today's move";
 /* factor columns for each pick (user 2026-09-22): the sort field + every filter field, each pick's
    value shown, in sort order — the same columns the terminal buy-side shows, so you see WHY a
    stock is picked and where it sits vs the cut. fieldVal / FIELD_LABEL are engine globals. */
-const SHORT_FIELD = { diiPct:'DII%', fiiPct:'FII%', diiChgPp:'ΔDII', fiiChgPp:'ΔFII',
+const AP_SHORT_FIELD = { diiPct:'DII%', fiiPct:'FII%', diiChgPp:'ΔDII', fiiChgPp:'ΔFII',
   d52:'52wHi%', d52_low_pct:'52wLo%', rsi:'RSI', accel:'Accel%', changePercent:'Chg%',
   ret1m:'1m%', ret3m:'3m%', ret6m:'6m%', ret12m:'12m%', dma50:'50DMA%', dma200:'200DMA%',
   profitYoyPct:'NP-YoY%', profitTTM:'TTM-NP%', profitStreak:'NP-strk', profitAccel:'NP-accel',
@@ -242,7 +242,7 @@ function pickCols(cfg){
   return out;
 }
 function pickFV(r, cols){ const o = {}; cols.forEach(c => { o[c.field] = r ? fieldVal(r, c.field) : null; }); return o; }
-function fldLabel(field){ return SHORT_FIELD[field] || (typeof FIELD_LABEL !== 'undefined' && FIELD_LABEL[field]) || field; }
+function fldLabel(field){ return AP_SHORT_FIELD[field] || (typeof FIELD_LABEL !== 'undefined' && FIELD_LABEL[field]) || field; }
 function fmtFV(v){ if (v == null || !isFinite(v)) return '—'; return Number.isInteger(v) ? String(v) : (Math.abs(v) >= 1000 ? Math.round(v).toLocaleString('en-IN') : (+v).toFixed(1)); }
 function apColHead(cols){ return cols.map(function(c){
   return '<th class="text-right px-1 font-semibold text-slate-400 whitespace-nowrap" title="' + esc(fldLabel(c.field) + (c.op ? ' filter ' + (OP_SYM[c.op] || c.op) + ' ' + c.val : '') + (c.sortCol ? ' · SORT ' + (c.dir === 'high' ? 'high first' : 'low first') : '')) + '">' +
