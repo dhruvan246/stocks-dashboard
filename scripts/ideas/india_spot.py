@@ -31,8 +31,37 @@ HIST = os.path.join(DOCS, 'india_spot_history.csv')
 # recorded print and a recovered one never blur: columns date,source,series,price,unit,via - `via` says where
 # the price was read. A recorded print outranks a recovered one on the same date.
 BACKFILL = os.path.join(DOCS, 'india_backfill.csv')
+# Recorded rows later found wrong are never deleted from HIST: they are listed here with the reason and skipped
+# when the history is built. columns date,source,series,price,unit,reason (runbook 144a-v).
+RETRACTED = os.path.join(DOCS, 'india_retracted.csv')
 # What the page charts when a price is clicked: one dated series per print, with its stats.
 HIST_JSON = os.path.join(DOCS, 'india_history.json.gz')
+
+
+MON = {m: i for i, m in enumerate(['jan', 'feb', 'mar', 'apr', 'may', 'jun', 'jul', 'aug', 'sep', 'oct', 'nov', 'dec'], 1)}
+
+
+def iso_date(s):
+    """A source's own date in any of the forms they print it, as YYYY-MM-DD; None when unreadable.
+    21/09/2026 (IBJA) · 22/09/2026 4.30 PM (sugar) · 03-09-2026 (Rubber Board) · 21-Sep-26 / 5-Sep-26 (PPAC) ·
+    September 22, 2026 (Trading Economics) · w.e.f. 2026-09-09 (NMDC) · 2026-09-16 (MetalBook)"""
+    s = (s or '').strip()
+    try:
+        m = re.search(r'(\d{4})-(\d{2})-(\d{2})', s)
+        if m:
+            return datetime.date(int(m[1]), int(m[2]), int(m[3])).isoformat()
+        m = re.search(r'(?<!\d)(\d{1,2})[/-](\d{1,2})[/-](\d{4})', s)
+        if m:
+            return datetime.date(int(m[3]), int(m[2]), int(m[1])).isoformat()
+        m = re.search(r'(?<!\d)(\d{1,2})-([A-Za-z]{3})-(\d{2})(?!\d)', s)
+        if m and m[2].lower() in MON:
+            return datetime.date(2000 + int(m[3]), MON[m[2].lower()], int(m[1])).isoformat()
+        m = re.search(r'([A-Za-z]{3,9})\.?\s+(\d{1,2}),?\s+(\d{4})', s)
+        if m and m[1][:3].lower() in MON:
+            return datetime.date(int(m[3]), MON[m[1][:3].lower()], int(m[2])).isoformat()
+    except ValueError:
+        return None
+    return None
 
 
 def series_key(r):
@@ -80,32 +109,39 @@ def num(s):
 
 # ---------------------------------------------------------------- sources
 def src_metalbook():
-    h = get('https://www.metalbook.com/')
-    # the ticker repeats one block per item: <svg map-pin>...</svg>City</span> ... font-medium ">PRODUCT<!-- --> <!-- -->SPEC</span>
-    # <span ...>51.1 / kg</span> ... <span class="truncate">+<!-- -->Rs<!-- -->1.19<!-- -->% ...   (marquee duplicates each item)
-    rows, seen = [], set()
-    for chunk in h.split('lucide-map-pin')[1:]:
-        chunk = chunk[:2500]
-        city = re.search(r'</svg>\s*([A-Za-z .]+?)\s*</span>', chunk)
-        prod = re.search(r'font-medium\s*">(.*?)</span>', chunk, re.S)
-        px = re.search(r'>\s*([\d.,]+)\s*/\s*(kg|MT|ton|tonne|Kg|KG)\s*<', chunk)
-        chg = re.search(r'truncate">\s*([+-])(?:<!--.*?-->)?\s*₹?(?:<!--.*?-->)?\s*([\d.]+)', chunk, re.S)
-        if not (city and prod and px):
-            continue
-        name = re.sub(r'<!--.*?-->', '', prod.group(1))
-        name = re.sub(r'\s+', ' ', html.unescape(re.sub(r'<[^>]+>', '', name))).strip()
-        key = (city.group(1).strip(), name)
-        if key in seen:
-            continue
-        seen.add(key)
-        c = num(chg.group(2)) if chg else None
-        if c is not None and chg.group(1) == '-':
-            c = -c
-        rows.append(dict(city=city.group(1).strip(), name=name, price=num(px.group(1)), unit='Rs/' + px.group(2).lower(), chg_1d=c))
-    if len(rows) < 20:
-        raise RuntimeError(f'metalbook ticker parsed only {len(rows)} rows')
-    return dict(source='MetalBook (metalbook.com) home-page ticker', url='https://www.metalbook.com/', rows=rows)
+    """MetalBook's Indian steel and metal prices, from the price records embedded in its home page.
 
+    NOT the ticker markup: the ticker prints each item as PRODUCT, PRICE, CHANGE, then CITY, and the old parser
+    split on the city pin and read the city first - so every product took the NEXT item's city. Checked on
+    2026-09-23 against these records, 12 of 41 published rows were right, 12 carried another city's price and
+    17 were city/product pairs the site does not list (runbook 144a-v). The records also carry what the ticker
+    hid: the date MetalBook priced each item (`price_date`, often days old) and the prices before it.
+    Data vendor per the records: SteelMint (BigMint).
+    """
+    h = get('https://www.metalbook.com/')
+    t = h.replace('\\\\"', '\x00').replace('\\"', '"')
+    rows, seen = [], set()
+    for m in re.findall(r'\{"_id":\{"product_name".*?"created_by":"[^"]*"\}', t):
+        try:
+            o = json.loads(m.replace('\x00', '\\"'))
+            pid = o['_id']
+            city = (o.get('location') or pid.get('location') or '').strip()
+            name = re.sub(r'\s+', ' ', f"{pid.get('product_name', '')} {pid.get('grade') or ''}").strip()
+            per_t = float(o['price_per_ton'])
+            when = datetime.datetime.utcfromtimestamp(o['price_date'] / 1000) + datetime.timedelta(hours=5, minutes=30)
+        except (ValueError, KeyError, TypeError):
+            continue
+        if not city or not name or (city, name) in seen:
+            continue
+        seen.add((city, name))
+        prev = [float(x) for x in (o.get('prices') or [])[1:2] if x]
+        rows.append(dict(city=city, name=name, price=round(per_t / 1000, 2), unit='Rs/kg', date=when.strftime('%Y-%m-%d'),
+                         prev=round(prev[0] / 1000, 2) if prev else None,
+                         chg_prev=round(100 * (per_t / prev[0] - 1), 2) if prev else None,
+                         grade_class=pid.get('primary_or_secondary'), vendor=o.get('source')))
+    if len(rows) < 20:
+        raise RuntimeError(f'metalbook price records parsed only {len(rows)} rows')
+    return dict(source='MetalBook (metalbook.com) price records, data from SteelMint', url='https://www.metalbook.com/', rows=rows)
 
 def src_ibja():
     h = get('https://ibjarates.com/', ctx=LAX)
@@ -163,7 +199,9 @@ def src_fuel():
     b = get(links[0], binary=True)
     d = fitz.open(stream=b, filetype='pdf')
     t = re.sub(r'\s+', ' ', d[0].get_text())
-    m = re.search(r'Posted:\s*(\d{2}-\w{3}-\d{2}).*?(\d{2}-\w{3}-\d{2})\s+([\d.]+)\s+([\d.]+)\s+([\d.]+)\s+([\d.]+)\s+(\d{2}-\w{3}-\d{2})\s+([\d.]+)\s+([\d.]+)\s+([\d.]+)\s+([\d.]+)', t)
+    # PPAC prints days 1-9 without a leading zero ("5-Sep-26"), so the day is one or two digits
+    d_ = r'\d{1,2}-\w{3}-\d{2}'
+    m = re.search(r'Posted:\s*(' + d_ + r').*?(?<![\d-])(' + d_ + r')\s+([\d.]+)\s+([\d.]+)\s+([\d.]+)\s+([\d.]+)\s+(' + d_ + r')\s+([\d.]+)\s+([\d.]+)\s+([\d.]+)\s+([\d.]+)', t)
     if not m:
         raise RuntimeError('PPAC PDF layout not recognised: ' + t[:120])
     rows = []
@@ -453,11 +491,17 @@ def build_history(sources):
     was stated on). Stats are computed here with signals.hist_stats - the one definition the page reads.
     """
     from signals import hist_stats
+    retracted = set()
+    if os.path.exists(RETRACTED):
+        for r in csv.DictReader(open(RETRACTED)):
+            retracted.add((r['date'], r['source'], r['series'], r['price']))
     pts = {}
     for path, tag in ((BACKFILL, None), (HIST, 'recorded')):          # recorded last, so it wins a tie
         if not os.path.exists(path):
             continue
         for r in csv.DictReader(open(path)):
+            if (r.get('date'), r.get('source'), r.get('series'), r.get('price')) in retracted:
+                continue
             try:
                 pts.setdefault((r['source'], r['series']), {})[r['date']] = (float(r['price']), tag or r.get('via') or 'archive')
             except (ValueError, KeyError, TypeError):
@@ -523,10 +567,17 @@ def main():
         raise SystemExit('nothing fetched and nothing to keep: ' + json.dumps(status))
     # history: one row per series per day, so 1w/1m changes can be computed later for sources with no history of their own
     today = datetime.date.today().isoformat()
+    # A print is recorded under the date its SOURCE states (MetalBook prices each item on its own day, often
+    # a week back; Rubber Board's page can lag a fortnight). Stamping the run date instead made a flat line of
+    # fake daily points out of one unchanged print. No stated date, or one in the future: the run date, marked.
     seen = set()
+    retracted = set()
+    if os.path.exists(RETRACTED):
+        retracted = {(r['date'], r['source'], r['series'], r['price']) for r in csv.DictReader(open(RETRACTED))}
     if os.path.exists(HIST):
         for r in csv.DictReader(open(HIST)):
-            seen.add((r['date'], r['source'], r['series']))
+            if (r['date'], r['source'], r['series'], r['price']) not in retracted:   # a retracted row is not a record
+                seen.add((r['date'], r['source'], r['series']))
     new = 0
     with open(HIST, 'a', newline='') as f:
         w = csv.writer(f)
@@ -537,9 +588,13 @@ def main():
                 continue
             for r in res['rows']:
                 series = series_key(r)
-                if r.get('price') is None or (today, key, series) in seen:
+                d = iso_date(r.get('date') or r.get('wef') or res.get('date') or '')
+                if not d or d > today:
+                    d = today
+                if r.get('price') is None or (d, key, series) in seen:
                     continue
-                w.writerow([today, key, series, r['price'], r.get('unit', '')]); new += 1
+                seen.add((d, key, series))
+                w.writerow([d, key, series, r['price'], r.get('unit', '')]); new += 1
     for res in sources.values():
         for r in res.get('rows', []):
             r['key'] = series_key(r)

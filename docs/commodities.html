@@ -117,7 +117,7 @@
       <h2 class="text-lg font-semibold">India spot (daily, in rupees)</h2>
       <span id="india-meta" class="muted text-xs"></span>
     </div>
-    <p class="muted text-sm mb-3">The domestic prints the newspapers quote: steel and metals by city from MetalBook's ticker, IBJA's bullion fix, the Rubber Board, sugar spot by city, and PPAC's metro fuel prices. Day changes where the source publishes them; weekly and monthly changes build up from here as the history accumulates.</p>
+    <p class="muted text-sm mb-3">The domestic prints the newspapers quote: steel and metals by city from MetalBook (its data comes from SteelMint), IBJA's bullion fix, the Rubber Board, sugar spot by city, PPAC's metro fuel prices and NMDC's iron ore. Each price is dated the day its source set it: MetalBook reprices items on their own schedule, often days apart, so read the Priced column. Click any row for its history.</p>
     <div id="india-blocks" class="grid gap-4 md:grid-cols-2"></div>
   </section>
 
@@ -448,7 +448,7 @@
     const srcName = ((S0[src] || {}).source || src).split('(')[0].trim();
     const gs = groupsForRow(src, row);
     const archived = (h && h.archived) || 0;
-    const stated = [['1 day', row.chg_1d], ['1 month', row.chg_1m], ['1 year', row.chg_1y]].filter(x => x[1] != null);
+    const stated = [['1 day', row.chg_1d], ['vs the previous price', row.chg_prev], ['1 month', row.chg_1m], ['1 year', row.chg_1y]].filter(x => x[1] != null);
     const held = (st ? [['1 week', st.chg_1w], ['1 month', st.chg_1m], ['3 months', st.chg_3m], ['1 year', st.chg_1y]] : []).filter(x => x[1] != null);
     const viaLabel = v => v === 'recorded' ? 'recorded by this site' : v === 'filing' ? 'filing' : 'archived copy · ' + v;
     const rowsT = pts.map((p, i) => ({ d: p[0], v: p[1], ch: i ? (p[1] / pts[i - 1][1] - 1) * 100 : null, via: via[i] || '' })).reverse();
@@ -495,7 +495,7 @@
       <div class="mt-3 text-sm">${(s.sources.spot || []).map(x => `<span class="pill">${esc(x.name)} ${fmt(x.last, 2)} ${esc(x.unit)} · 1w ${x.chg_1w == null ? '—' : x.chg_1w + '%'} · 1m ${x.chg_1m == null ? '—' : x.chg_1m + '%'}</span>`).join('')}
         ${(s.sources.wpi || []).map(x => `<span class="pill">WPI ${esc(x.name)} ${x.month}: ${fmt(x.last, 1)} · 3m ${x.chg_3m == null ? '—' : x.chg_3m + '%'} · 12m ${x.chg_12m == null ? '—' : x.chg_12m + '%'}</span>`).join('')}
         ${(s.sources.te || []).map(x => `<span class="pill${x.id ? ' cursor-pointer' : ''}"${x.id ? ` data-ih="${esc(x.id)}" title="Open its history"` : ''}>${esc(x.name)} (global) ${fmt(x.last, 2)} ${esc(x.unit)} · 1m ${x.chg_1m == null ? '—' : x.chg_1m + '%'} · 1y ${x.chg_1y == null ? '—' : x.chg_1y + '%'}</span>`).join('')}
-        ${(s.sources.india || []).map(x => `<span class="pill${x.id ? ' cursor-pointer' : ''}"${x.id ? ` data-ih="${esc(x.id)}" title="Open its history"` : ''}>India · ${esc(x.name)} ${fmt(x.last, 1)} ${esc(x.unit || '')}${x.chg_1d == null ? '' : ' · 1d ' + x.chg_1d + '%'}${x.stats && x.stats.chg_1m != null ? ' · 1m ' + x.stats.chg_1m + '%' : ''}${x.stats && x.stats.deep ? (x.stats.at_series_high ? ' · highest in ' + x.stats.n + ' readings since ' + esc(x.stats.first) : ' · highest since ' + esc(x.stats.high_since)) : ''}</span>`).join('')}</div>
+        ${(s.sources.india || []).map(x => `<span class="pill${x.id ? ' cursor-pointer' : ''}"${x.id ? ` data-ih="${esc(x.id)}" title="Open its history"` : ''}>India · ${esc(x.name)} ${fmt(x.last, 1)} ${esc(x.unit || '')}${x.chg_1d == null ? '' : ' · 1d ' + x.chg_1d + '%'}${x.chg_prev == null ? '' : ' · vs prev ' + x.chg_prev + '%'}${x.date ? ' · priced ' + esc(x.date) : ''}${x.stats && x.stats.chg_1m != null ? ' · 1m ' + x.stats.chg_1m + '%' : ''}${x.stats && x.stats.deep ? (x.stats.at_series_high ? ' · highest in ' + x.stats.n + ' readings since ' + esc(x.stats.first) : ' · highest since ' + esc(x.stats.high_since)) : ''}</span>`).join('')}</div>
     </div>`);
     const render = () => {
       const d = tr[pi]; if (!d) return;
@@ -652,7 +652,7 @@
     // every row opens its own history in the detail panel, like every other commodity on the page
     const ih = (src) => (r) => r.key ? `class="row" data-ih="${esc(src + '|' + r.key)}"` : '';
     ['Mumbai', 'Delhi', 'Raipur', 'Hyderabad', 'Bangalore'].forEach(city => block(`Steel & metals — ${city}`, S.metalbook,
-      [['Product', r => esc(r.name)], ['₹/kg', r => fmt(r.price, 1), 1], ['1d', r => pct(r.chg_1d), 1]], mbCity(city), '', ih('metalbook')));
+      [['Product', r => esc(r.name)], ['₹/kg', r => fmt(r.price, 1), 1], ['vs prev', r => pct(r.chg_prev), 1], ['Priced', r => `<span class="muted text-xs">${esc((r.date || '').slice(5))}</span>`]], mbCity(city), '', ih('metalbook')));
     block('Bullion (IBJA)', S.ibja, [['Series', r => esc(r.name)], ['AM', r => fmt(r.am, 0), 1], ['PM', r => fmt(r.pm, 0), 1], ['Unit', r => esc(r.unit)]], (S.ibja && S.ibja.rows) || [], '', ih('ibja'));
     block('Natural rubber (Rubber Board)', S.rubber, [['Market', r => esc(r.market)], ['Grade', r => esc(r.name)], ['₹/100 kg', r => fmt(r.price, 0), 1], ['US$/100 kg', r => fmt(r.usd_per_100kg, 2), 1]], (S.rubber && S.rubber.rows) || [], '', ih('rubber'));
     block('Sugar spot (Chinimandi)', S.sugar, [['City', r => esc(r.city)], ['Grade', r => esc(r.grade)], ['₹/quintal', r => fmt(r.price, 2), 1], ['Change', r => fmt(r.chg_1d, 2), 1]], (S.sugar && S.sugar.rows) || [], '', ih('sugar'));

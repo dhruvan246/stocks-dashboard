@@ -101,7 +101,11 @@ def _india_history():
     p = os.path.join(DOCS, 'india_spot_history.csv')
     if not os.path.exists(p):
         return out
+    rp = os.path.join(DOCS, 'india_retracted.csv')
+    retracted = {(r['date'], r['source'], r['series'], r['price']) for r in csv.DictReader(open(rp))} if os.path.exists(rp) else set()
     for r in csv.DictReader(open(p)):
+        if (r.get('date'), r.get('source'), r.get('series'), r.get('price')) in retracted:
+            continue
         try:
             out.setdefault((r['source'], r['series']), []).append((r['date'], float(r['price'])))
         except (ValueError, KeyError):
@@ -201,7 +205,7 @@ def main():
                 key = ' | '.join(str(r.get(k)) for k in ('city', 'market', 'name', 'grade', 'slug') if r.get(k))
                 series = r.get('history') or ihist.get((src, key)) or []
                 row = dict(source=src, name=label, last=r['price'], unit=r.get('unit'), chg_1d=r.get('chg_1d'),
-                           id=f'{src}|{key}')
+                           chg_prev=r.get('chg_prev'), date=r.get('date'), id=f'{src}|{key}')
                 for k in ('wef', 'basis', 'chg_rev', 'filed'):
                     if r.get(k) is not None:
                         row[k] = r[k]

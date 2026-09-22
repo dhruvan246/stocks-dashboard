@@ -17445,6 +17445,49 @@ highest since 2026-07-10 in 83 lump revisions back to 2019. For FINISHED steel t
 series — WPI flat products (monthly, to 2026-04) and the HS 7208 customs unit value (monthly, to 2026-07)
 are the only long ones, and both lag the newspaper by months.
 
+### 144a-v. ★★★ METALBOOK CITY BUG, SOURCE-DATED RECORDING, AND WHERE OLDER PRICES LIVE (2026-09-23)
+
+**Defect (live 2026-09-22 → 2026-09-23, now fixed).** The MetalBook ticker prints each item as PRODUCT, PRICE,
+CHANGE, then CITY. `src_metalbook` split the page on the city pin and read the city FIRST, so every product took
+the NEXT item's city. Checked against the price records MetalBook embeds in the same page: **12 of 41 published
+rows were right, 12 carried another city's price, 17 were city/product pairs the site does not list.** Two numbers
+given to the owner were wrong because of it ("Mumbai CRC 68.5" was Delhi's; Mumbai is 73.7. "Mumbai TMT Fe500D
+60.0" was Delhi's; Mumbai is 59.9). Found by the history-reach research, confirmed independently before fixing.
+**Fix:** `src_metalbook` reads the embedded records (`{"_id":{"product_name"...}...}`: location, product_name +
+grade, price_per_ton, `price_date` epoch ms, `prices` = [current, previous, ...]). Names compose exactly as the
+ticker printed them, so series keys carry over. 47 records vs 41 ticker items. Vendor field: `steelmint`.
+
+**Record under the SOURCE's date, not the run date.** MetalBook prices each item on its own day (HRC/CRC were
+priced 2026-09-14, TMT 2026-09-16, seen on 09-23); Rubber Board's page read 03-09-2026 on 09-23. Stamping the run
+date turned one unchanged print into a flat line of fake daily points. `iso_date()` reads every form the sources
+use (21/09/2026, 22/09/2026 4.30 PM, 03-09-2026, 21-Sep-26, 5-Sep-26, "September 22, 2026", w.e.f. 2026-09-09);
+the CSV row takes that date; a missing or future date falls back to the run date. Dedupe is (date, source, series).
+
+**Heal by ledger, never by deleting.** The mis-recorded rows stay in `india_spot_history.csv`.
+`docs/ideas/india_retracted.csv` (date, source, series, price, unit, reason) lists 218 of the 276 pre-fix rows:
+every MetalBook row (wrong city), every row stamped 2026-09-23 (no source had published a 09-23 price at 00:25),
+and 2026-09-22 rows whose source states an earlier date. 58 rows whose source really states 2026-09-22 are kept.
+`build_history`, the CSV dedupe and signals.py's fallback reader all skip ledger rows. (A truncate of the CSV was
+refused by the auto-mode guard as irreversible - correctly; the ledger is the repo's heal pattern, rule 5.)
+
+**PPAC date bug (latent).** `src_fuel` matched `\d{2}-\w{3}-\d{2}`; PPAC prints days 1-9 as "5-Sep-26", so it
+would have failed on the 1st-9th of every month (next 2026-10-01). Now `\d{1,2}`, with a `(?<![\d-])` guard.
+Tested on the real PDF text with the day made single-digit: old NO MATCH, new matches.
+
+**Where older prices live — measured 2026-09-23 by the research agent (each route fetched and parsed; recipes
+in that session's scratchpad `steelhunt/`, `mos/`, `steel/`, `wb/`).** Ranked by value:
+| Source | Route | Earliest proved | Density |
+|---|---|---|---|
+| PPAC fuel | the one "Current" PDF on `rsp-of-petrol-and-diesel-in-metro-cities-since-16-6-2017`; Delhi xls to 2002 | 2017-06-16 daily (3,386/3,386 days); Delhi revisions from 2002-06-04 | daily |
+| Rubber Board | GET `/public?lang=E` for the cookie, then POST `/indianPrices` searchFlag=day, grade 7/9/10/11 | 2001-01-12 | daily, 3 markets |
+| IBJA | page `HdnGold`/`HdnSilver` chart JSON (PM fix); 30-day PDF; Wayback | continuous from 2025-09-22; snapshots from 2015-12-26 | daily / sparse |
+| Chinimandi sugar | WordPress API category 21 "Sugar Market Update" posts | city M/30 from 2023-03-06; state ex-mill from 2018-11-20 | ~daily |
+| Ministry of Steel | monthly summary PDFs `steel.gov.in/monthly-summary?page=0..13` | Mumbai TMT/HRC/CRC Rs/t incl. GST: 2018-04 → 2020-05 and 2023-02 → 2026-06 (2020-06 → 2023-01 gives % only) | monthly |
+| MetalBook | Wayback `web/<ts>id_/https://www.metalbook.com/`, the embedded records (NOT the ticker - 0 rows on all 38 captures) | 2025-06-18 → 2026-02-15 | ~3-4 captures/month |
+| Trading Economics | Wayback `TEChartsMeta` | sparse, wording changes | low |
+Dead: JPC (times out; successor paywalled), BigMint (403 bot challenge), SAIL/JSW/Tata price circulars (0 in
+3,305 steel-producer announcements; only NMDC files them), data.gov.in Delhi steel panels (frozen 2012-2019, key).
+
 ### 144a-iv. ★★★ CLICK ANY PRICE → ITS HISTORY (2026-09-23)
 
 Every Indian print on the India spot tab (MetalBook steel and metals by city, IBJA, Rubber Board, sugar, PPAC
