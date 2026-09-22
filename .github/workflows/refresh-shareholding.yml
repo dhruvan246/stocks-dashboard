@@ -68,6 +68,8 @@ jobs:
           # guarded: absent until the first --events run lands it, and a failed --events step
           # must not take the whole quarterly refresh down with it
           [ -f scripts/shp_events.json ] && cp scripts/shp_events.json /tmp/shp/scripts/ || echo "(no shp_events.json yet)"
+          # §142k re-filings sidecar (option C): written by both fetch steps, must ride the same reset-and-replay lists
+          [ -f scripts/shp_revisions.json ] && cp scripts/shp_revisions.json /tmp/shp/scripts/ || echo "(no shp_revisions.json yet)"
           # Government sidecar (docs/shp_gov.json) — written by the quarterly fetch, absent on an --events-only run
           [ -f docs/shp_gov.json ] && cp docs/shp_gov.json /tmp/shp/docs/ || echo "(no shp_gov.json this run)"
 
@@ -80,10 +82,12 @@ jobs:
             cp /tmp/shp/scripts/shp_history.json        scripts/shp_history.json
             cp /tmp/shp/scripts/shares_outstanding.json scripts/shares_outstanding.json
             [ -f /tmp/shp/scripts/shp_events.json ] && cp /tmp/shp/scripts/shp_events.json scripts/shp_events.json || true
+            [ -f /tmp/shp/scripts/shp_revisions.json ] && cp /tmp/shp/scripts/shp_revisions.json scripts/shp_revisions.json || true
             [ -f /tmp/shp/docs/shp_gov.json ] && cp /tmp/shp/docs/shp_gov.json docs/shp_gov.json || true
             git add docs/shareholding.json docs/shp_meta.json docs/shp_engine.json \
                     scripts/shp_history.json scripts/shares_outstanding.json
             [ -f scripts/shp_events.json ] && git add scripts/shp_events.json || true
+            [ -f scripts/shp_revisions.json ] && git add scripts/shp_revisions.json || true
             [ -f docs/shp_gov.json ] && git add docs/shp_gov.json || true
 
             if git diff --cached --quiet; then

@@ -17025,7 +17025,7 @@ rows corrected, 0 warnings.
 (§142c, 2026-09-22 morning) — that is the KALYANKJIL class (§142g "open"): a later document's numbers under the
 original's date. Same fix pattern applies when it is taken up; events are ~5 % of rows.
 
-### 142j. ★★★ USER RULE (2026-09-22): a quarter keeps the ORIGINAL filing's date and serves the LATEST re-filing's values  (supersedes §142g's "original values")
+### 142j. ★★★ USER RULE (2026-09-22): a quarter keeps the ORIGINAL filing's date and serves the LATEST re-filing's values  (supersedes §142g's "original values") — SUPERSEDED BY §142k (option C) THE SAME DAY
 
 After seeing §142i's three examples (TCS: re-publication, no change; VIJAYA: +0.04 promoter / +0.009 FII five days
 later; AMBER: no change) the user ruled: **"keep the older date but data has to be changed if they have refiled."**
@@ -17049,6 +17049,40 @@ the newest BSE/NSE document, date unchanged), 14 whose every document the parser
 left as they are. 36 `shp_lag_fix` entries built from NSE broadcasts that would have pushed a repaired row a day or
 three later than BSE's earlier timestamp were deleted (BELRISE Mar-2026, DCMSHRIRAM Sep-2025, SCHNEIDER Jun-2026 …).
 Dry run: 86 history cells + 6 event rows, 0 warnings.
+
+### 142k. ★★★ OPTION C — TWO VERSIONS OF A QUARTER: the ORIGINAL serves the backtest until the re-filing was public, the RE-FILING serves after it and on the stock page  (2026-09-22, supersedes §142j)
+
+**The user's final rule, after §142i's examples:** the backtest must see what was known on the screen day (the original
+until the correction was published, the correction after), and the stock page must show the latest numbers. One row
+per quarter cannot do both, so a quarter may now carry two:
+
+- `scripts/shp_history.json` / `shp_events.json` — the ORIGINAL filing: its values, its gated publication date. A
+  re-filing never touches it (the §142i rule).
+- **`scripts/shp_revisions.json`** (new, CI-owned, on the workflow's replay lists) — the LATEST re-filing:
+  `{SYM: {ASON: [prom, fii, dii, mf, ins, revSub, nsh, src]}}`, dated by the EARLIEST exchange publication of those
+  numbers (a BSE `Revised` row's `revised_date_time`, or NSE's broadcast when only NSE has it), 15:30-gated. Identical
+  re-publications (TCS Mar-2026) record nothing.
+- `docs/shp_engine.json` — both rows for such a quarter, same as-on, the re-filing dated by its own publication; rows
+  ordered by (qe, sub). Both engine twins: the alias merge keys by qe|sub, arrays are sorted by (qe, sub) after the
+  +28d stamping, and the previous-quarter delta takes that quarter's latest PUBLIC row (it walks past a not-yet-public
+  re-filing to the original). `shpAt` itself was already "latest row public by the screen date", so a screen on
+  20-Jul-2026 reads VIJAYA 52.47 / 11.6477 and one on 23-Jul reads 52.51 / 11.6566 (Node harness, scratchpad
+  `engine_test.js`: five dates + the alias fold).
+- `docs/shareholding.json` — the page shows the re-filing's numbers under the original's date, with a trailing
+  `"rev:<date>"` element on the cell (pages index the cell by position 0-5, so the extra element is inert).
+
+**Fetcher:** `refresh_quarters` / `refresh_events` parse a re-filed XBRL once (`_seen`); if its numbers differ from
+the stored original they go to the sidecar with the re-filing's gated date; the row is untouched. First sight of an
+as-on whose NSE record is already a revision still stores it as the row from the original's submission day (the only
+document NSE has) — the §22h sweep can recover the original.
+
+**Backfill (BSE lists 2016→, NSE windows Jun-2021→):** 5,935 (symbol, as-on) pairs carry a re-filing. 7,926 re-filing
+documents are identical to the original (re-publications) and were dropped; **419 real corrections** went to the
+sidecar (24 in 2016 … 81 in 2024, 80 in 2025, 19 in 2026); **362 store rows** that held a revision's numbers were moved
+back to the original (`shp_cell_fix.json`, dates unchanged; KALYANKJIL Dec-2022 back to 2.36 at 10-Jan with 28.73 in the
+sidecar from 13-Jan; the §142j/§22h entries chained as `superseded`). 2,846 pairs have no BSE original XBRL (the row
+stays as stored, the re-filing still goes to the sidecar when it differs), 218 re-filings the parser refuses. Dry run:
+341 history cells + 21 event rows, 0 warnings.
 
 ## 141a. ★★ NIFTY BANK ROSTERS HEALED — 2000→date from NSE's register + 12 archived lists  (2026-09-21)
 

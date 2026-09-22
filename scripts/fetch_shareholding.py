@@ -895,6 +895,7 @@ def refresh_quarters(qes, reparse=False, only=None, fill_shares=False):
         except Exception: gov = {}
     before = cells_of(hist)
     stats = []
+    revs = load_revs(); rev_new = 0                    # §142k re-filings sidecar
 
     for qe in qes:
         recs = fetch_master(jar, qe)
@@ -921,12 +922,11 @@ def refresh_quarters(qes, reparse=False, only=None, fill_shares=False):
                 # re-read only the filings whose share count we never captured
                 if (shares.get(sym) or [None, ""])[1] >= qe: continue
             elif have and not reparse:
-                # §142i/§142j (2026-09-22): a stored row is NEVER re-dated by a later re-filing — its visibility date
-                # stays the EARLIEST publication we know. "Newest submission wins" had re-stamped TCS Mar-2026 to
-                # 17-Sep on a same-numbers re-publication and left the quarter dark for five months (601 such rows
-                # since Sep-2025). A re-filing's VALUES do replace the stored ones (user decision §142j: corrections
-                # are small and must be reflected; the same rule events already use, §142c). Each re-filed XBRL is
-                # parsed once (`_seen`); an unrevised record that we already hold is never re-fetched.
+                # §142i/§142k (2026-09-22): a stored row is the ORIGINAL filing and is never re-dated or overwritten.
+                # "Newest submission wins" had re-stamped TCS Mar-2026 to 17-Sep on a same-numbers re-publication
+                # and left the quarter dark for five months (601 such rows since Sep-2025). A re-filing is parsed
+                # once (`_seen`) and, if its numbers differ, recorded in shp_revisions.json with ITS OWN gated date
+                # (option C: the backtest serves it from that date, the stock page shows it as the latest truth).
                 if not r["revised"]: continue
                 if seen.get("%s|%s" % (sym, qe)) == r["xb"]: continue
             todo.append((sym, r, have))
@@ -960,6 +960,18 @@ def refresh_quarters(qes, reparse=False, only=None, fill_shares=False):
                 if nshares and (shares.get(sym) or [None, ""])[1] <= qe:
                     if shares.get(sym) != [nshares, qe, r["sub"]]: nsh_new += 1
                     shares[sym] = [nshares, qe, r["sub"]]
+                if isinstance(res, dict) and have and r["revised"]:
+                    # §142k: the stored row is the ORIGINAL — never touched. The re-filing's values go to the
+                    # revisions sidecar dated by THEIR gated publication (r["sub"]); an identical re-publication
+                    # (TCS Mar-2026, NSE re-broadcast of the same numbers) records nothing.
+                    seen["%s|%s" % (sym, qe)] = r["xb"]
+                    rc = [res["prom"], res["fii"], res["dii"], res["mf"], res["ins"], r["sub"], res.get("nsh"),
+                          "nse:" + r["xb"].rsplit("/", 1)[-1]]
+                    if not _same_cell(rc, have):
+                        revs.setdefault(sym, {})[qe] = rc; rev_new += 1
+                    if r["name"]: names[sym] = r["name"]
+                    done += 1
+                    continue
                 if isinstance(res, dict):
                     vis = r["sub"]
                     if not have and r["revised"]:
@@ -970,7 +982,7 @@ def refresh_quarters(qes, reparse=False, only=None, fill_shares=False):
                         # the BSE revision sweep (§22h) can recover the original later.
                         vis = r["first"]
                     if have and str(have[5]) < vis:
-                        vis = str(have[5])                      # a re-filing / re-parse never moves a row later
+                        vis = str(have[5])                      # a re-parse never moves a row later
                     cell = [res["prom"], res["fii"], res["dii"], res["mf"], res["ins"], vis]
                     if res.get("nsh"): cell.append(res["nsh"])
                     hist.setdefault(sym, {})[qe] = cell
@@ -990,10 +1002,11 @@ def refresh_quarters(qes, reparse=False, only=None, fill_shares=False):
                     skip += 1
                     why = res[1] if isinstance(res, tuple) else "no-anchor/old-format"
                     if skip <= 12: print("  SKIP %s %s: %s" % (sym, qe, why))
-        print("%s: +%d cells, %d skipped, %d quarantined, %d share counts"
-              % (qe, done, skip, quar, nsh_new))
+        print("%s: +%d cells, %d skipped, %d quarantined, %d share counts, %d re-filings to the sidecar"
+              % (qe, done, skip, quar, nsh_new, rev_new))
         save_hist(hist)
         save_shares(shares)
+        save_revs(revs)
         # persist the Government sidecar per-quarter too, so a long backfill survives an interruption
         _gtmp = GOV_OUT + ".tmp"
         json.dump(gov, open(_gtmp, "w", encoding="utf-8"), ensure_ascii=False, separators=(",", ":"), sort_keys=True)
@@ -1023,6 +1036,24 @@ def load_events():
     except Exception:
         return {}
 
+REVS = os.path.join(HERE, "shp_revisions.json")
+def load_revs():
+    """§142k (2026-09-22, option C): the LATEST re-filing of a quarter/event, kept BESIDE the original —
+    {SYM: {ASON_ISO: [prom, fii, dii, mf, ins, revSub, nsh, src]}}. The store (shp_history / shp_events) keeps the
+    ORIGINAL filing's values at its own date; a re-filing never touches it. The engine feed carries both rows
+    (same as-on, the re-filing dated by ITS gated publication) so a screen sees the original until the
+    correction was public and the correction after; the stock page shows the re-filing (latest truth)."""
+    if os.path.exists(REVS):
+        try: return json.load(open(REVS, encoding="utf-8"))
+        except Exception as e: print("WARN shp_revisions.json unreadable (%s) — starting empty" % e)
+    return {}
+def save_revs(r):
+    tmp = REVS + ".tmp"
+    json.dump(r, open(tmp, "w", encoding="utf-8"), separators=(",", ":"), sort_keys=True)
+    os.replace(tmp, REVS)
+def _same_cell(a, b):
+    return a is not None and b is not None and all(abs(float(x) - float(y)) <= 0.0100001 for x, y in zip(a[:5], b[:5]))
+
 def save_events(e):
     tmp = EVENTS + ".tmp"
     json.dump(e, open(tmp, "w", encoding="utf-8"), separators=(",", ":"), sort_keys=True)
@@ -1044,6 +1075,7 @@ def refresh_events(qes, only=None, reparse=False):
     jar = B.nse_jar()
     ev = load_events()
     if apply_cell_fix_events(ev): save_events(ev)        # §142e: re-assert event-row corrections
+    revs = load_revs(); rev_new = 0                      # §142k re-filings sidecar
     before = sum(len(v) for k, v in ev.items() if not k.startswith("_"))
     for qe in qes:
         recs = fetch_master(jar, qe, events=True)
@@ -1082,15 +1114,25 @@ def refresh_events(qes, only=None, reparse=False):
                 sym, ason, r, res = fut.result()
                 if not isinstance(res, dict): continue
                 prev = (ev.get(sym) or {}).get(ason)
+                latest.setdefault(sym, {})[ason] = r["sub"]
+                if prev and str(prev[5]) < r["sub"]:
+                    # §142k: a re-filed event pattern — the stored row (original values, first date) stays; the
+                    # re-filing goes to the sidecar dated by its own gated publication unless identical.
+                    rc = [res["prom"], res["fii"], res["dii"], res["mf"], res["ins"], r["sub"], res.get("nsh"),
+                          "nse:" + r["xb"].rsplit("/", 1)[-1]]
+                    if not _same_cell(rc, prev):
+                        revs.setdefault(sym, {})[ason] = rc; rev_new += 1
+                    done += 1
+                    continue
                 first = min([r["first"]] + ([str(prev[5])] if prev and prev[5] else []))
                 cell = [res["prom"], res["fii"], res["dii"], res["mf"], res["ins"], first]
                 if res.get("nsh"): cell.append(res["nsh"])
                 ev.setdefault(sym, {})[ason] = cell
-                latest.setdefault(sym, {})[ason] = r["sub"]
                 done += 1
-        print("  events %s: %d parsed of %d" % (qe, done, len(todo)))
+        print("  events %s: %d parsed of %d (%d re-filings to the sidecar)" % (qe, done, len(todo), rev_new))
         apply_cell_fix_events(ev)                          # §142e: a re-parsed row must not re-poison a fixed cell
         save_events(ev)
+        save_revs(revs)
     after = sum(len(v) for k, v in ev.items() if not k.startswith("_"))
     print("shp_events.json: %d rows (%+d), %d symbols" % (after, after - before, sum(1 for k in ev if not k.startswith("_"))))
     return ev
@@ -1115,10 +1157,18 @@ def build_feed():
 
     all_qes = sorted({qe for s, qs in hist.items() if not s.startswith("_") for qe in qs}, reverse=True)
     quarters = all_qes[:FEED_QUARTERS]
+    revs = load_revs(); n_rev = 0                       # §142k: the page shows the LATEST re-filing's numbers
     rows = []
     for sym, qs in hist.items():
         if sym.startswith("_") or not isinstance(qs, dict): continue
-        cells = [qs.get(qe) or 0 for qe in quarters]
+        cells = []
+        for qe in quarters:
+            c = qs.get(qe) or 0
+            rc = (revs.get(sym) or {}).get(qe)
+            if c and rc and not _same_cell(rc, c):
+                c = list(rc[:5]) + [c[5]] + list(c[6:]) + ["rev:" + str(rc[5])]   # original date kept, re-filing date appended
+                n_rev += 1
+            cells.append(c)
         if not any(cells): continue
         nm, mc = meta.get(sym, (None, None))
         rows.append([sym, nm or names.get(sym) or sym, mc or 0, sector.get(sym) or "", cells])
@@ -1129,8 +1179,8 @@ def build_feed():
     ist = datetime.datetime.utcnow() + datetime.timedelta(hours=5, minutes=30)
     out = {"updated": ist.strftime("%Y-%m-%d %H:%M IST"), "quarters": quarters, "rows": rows}
     json.dump(out, open(OUT, "w", encoding="utf-8"), ensure_ascii=False, separators=(",", ":"))
-    print("WROTE %s: %d rows x %d quarters, %.1f KB" %
-          (os.path.normpath(OUT), len(rows), len(quarters), os.path.getsize(OUT) / 1e3))
+    print("WROTE %s: %d rows x %d quarters, %.1f KB (%d cells show a re-filing, §142k)" %
+          (os.path.normpath(OUT), len(rows), len(quarters), os.path.getsize(OUT) / 1e3, n_rev))
     return True
 
 UNDATED_SUB = 99999999   # sentinel: value is real, its visibility date is NOT evidenced —
@@ -1222,6 +1272,7 @@ def build_engine_feed():
             except (ValueError, TypeError, IndexError):
                 continue
         return rows
+    revs = load_revs(); n_rev = 0                       # §142k re-filings sidecar
     for sym in set(hist) | set(events):
         if sym.startswith("_"): continue
         qs = hist.get(sym)
@@ -1231,7 +1282,22 @@ def build_engine_feed():
         # no engine change. A quarter-end row wins a same-date collision (it is the fuller filing).
         seen = {r[0] for r in rows}
         rows += [r for r in rows_of(events.get(sym), sym) if r[0] not in seen]
-        if rows: out[sym] = sorted(rows)
+        # §142k: a re-filing rides as a SECOND row for the same as-on, dated by its own gated publication — never
+        # lag-fixed, never un-dated (its date is measured). The engine picks the latest row public on the screen date.
+        base = {r[0]: r for r in rows}
+        for iso, rc in (revs.get(sym) or {}).items():
+            try:
+                qi = int(iso.replace("-", "")); rsub = int(str(rc[5]).replace("-", ""))
+            except (ValueError, TypeError, IndexError):
+                continue
+            b = base.get(qi)
+            if b is None or rsub <= b[3]: continue          # no original row, or not later than it: nothing to add
+            _eq = lambda x, y: x is None or y is None or abs(float(x) - float(y)) <= 0.0100001
+            if _eq(rc[1], b[1]) and _eq(rc[2], b[2]) and _eq(rc[0], b[4]) and _eq(rc[3], b[5]):
+                continue                                     # identical numbers (fii/dii/prom/mf): nothing for the engine to learn
+            rows.append([qi, rc[1], rc[2], rsub, rc[0], rc[3]]); n_rev += 1
+        if rows: out[sym] = sorted(rows, key=lambda r: (r[0], r[3]))
+    print("  engine feed: %d re-filing rows added beside their originals (§142k)" % n_rev)
     print("  engine feed: %d pre-Jun-2016 rows served UN-DATED (no evidenced visibility date)"
           % n_undated[0])
     print("  engine feed: %d visibility dates re-asserted from shp_lag_fix.json / shp_sub_dates.json (§135)"

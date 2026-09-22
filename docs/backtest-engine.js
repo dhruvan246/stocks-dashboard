@@ -778,10 +778,13 @@ async function loadShp() {
     const nw = FUND_ALIAS[old], by = {};
     // A DATED row always beats an UN-DATED one (sub 99999999 = no evidenced visibility date;
     // a plain `q[3] > cur[3]` would let the sentinel win the collision and blind the cell).
-    (SHPD[nw] || []).concat(SHPD[old]).forEach(q => { const cur = by[q[0]]; if (!cur) { by[q[0]] = q; return; }
+    // §142k: a quarter may carry TWO rows — the original filing and a later re-filing with its own visibility date
+    // (same qe, later sub). Key the merge by qe|sub so a revision row survives; the dated-beats-undated rule still
+    // collapses the SAME filing seen under both keys.
+    (SHPD[nw] || []).concat(SHPD[old]).forEach(q => { const k = q[3] === 99999999 ? String(q[0]) : q[0] + '|' + q[3]; const cur = by[k] || by[String(q[0])]; if (!cur) { by[k] = q; return; }
       const qU = q[3] === 99999999, cU = cur[3] === 99999999;
-      if ((cU && !qU) || (qU === cU && q[3] > cur[3])) by[q[0]] = q; });
-    SHPD[nw] = Object.values(by).sort((a, b) => a[0] - b[0]);
+      if (cU && !qU) { delete by[String(q[0])]; by[k] = q; } });
+    SHPD[nw] = Object.values(by).sort((a, b) => (a[0] - b[0]) || (a[3] - b[3]));
   }
   // +28d FALLBACK for rows STILL un-dated after §105's recovery (essentially pre-2014):
   // visibility = quarter-end + 28 calendar days. MEASURED twice over (runbook §120):
@@ -797,6 +800,9 @@ async function loadShp() {
   // still sees the raw sentinel; a recovered real date arrives already-dated from the
   // feed and is never touched here.
   for (const sym in SHPD) for (const q of SHPD[sym]) if (q[3] === 99999999) q[3] = qePlus28(q[0]);
+  // §142k: rows ordered by (qe, sub) — shpAt walks from the end, so a quarter's re-filing is taken once ITS date is
+  // reached and the original serves before that (values and date always from the same document).
+  for (const sym in SHPD) SHPD[sym].sort((a, b) => (a[0] - b[0]) || (a[3] - b[3]));
 }
 function qePlus28(qe) { const d = new Date(Date.UTC(Math.floor(qe / 10000), Math.floor(qe / 100) % 100 - 1, qe % 100)); d.setUTCDate(d.getUTCDate() + 28); return d.getUTCFullYear() * 10000 + (d.getUTCMonth() + 1) * 100 + d.getUTCDate(); }
 function prevQeInt(qe) { let y = Math.floor(qe / 10000), m = Math.floor(qe / 100) % 100 - 3; if (m <= 0) { y--; m += 12; } return y * 10000 + m * 100 + { 3: 31, 6: 30, 9: 30, 12: 31 }[m]; }
@@ -829,7 +835,10 @@ function shpAt(sym, dateInt) {
   if (cur[0] !== 20220930) {
     if (isQuarterEnd(cur[0])) {
       const pq = prevQeInt(cur[0]);
-      for (let i = ci - 1; i >= 0; i--) { const q = arr[i]; if (q[0] === pq) { if (q[3] <= dateInt) setDeltas(q); break; } if (q[0] < pq) break; }
+      // §142k: the previous quarter may hold an original AND a re-filing; walking down from ci meets the re-filing first —
+      // use it only if public by the screen date, else fall through to the original (a same-qe row of cur's own quarter
+      // never matches pq and is skipped).
+      for (let i = ci - 1; i >= 0; i--) { const q = arr[i]; if (q[0] === pq) { if (q[3] <= dateInt) { setDeltas(q); break; } continue; } if (q[0] < pq) break; }
     } else {
       // EVENT row (mid-quarter as-on date, §22k): it has no calendar-previous quarter, so the
       // QoQ walk above would leave the deltas null — and a null factor is FILTERED OUT of the
