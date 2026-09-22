@@ -55,19 +55,42 @@ def ts_of(ymd, weekday_monday=False):
     return int(datetime.datetime(d.year, d.month, d.day, 9, 15, tzinfo=IST).timestamp())
 
 
-def series_from(e):
-    """bin entry {d:[ymd], c:[adj close]} -> [[ts, close]] in fetch_all's weekly-then-daily shape."""
-    weekly, daily = {}, []          # weekly: (iso year, iso week) -> bar; bars arrive in date order,
+def yahoo_calendar(meta, series):
+    """The set of daily-era session dates (ymd ints) that THIS build's Yahoo-sourced series carry.
+    The dashboard store is a Yahoo-calendar store: Yahoo publishes no bar for NSE's weekend special
+    sessions (the Budget Sunday 2026-02-01 — 2,956 symbols in the bhavcopy store, 0 on Yahoo), so a
+    filled series that kept such a bar would be among the only tickers with that session, and
+    guard_sessions.py rightly reads a session held by 405 of 4,800 tickers as HALF-LOADED (exactly how
+    the first SME run failed, 2026-09-22 11:48Z). Filled series therefore follow the same calendar as
+    the Yahoo rows they sit beside; a session Yahoo does not have is not emitted."""
+    days = set()
+    floor = ts_of(DAILY_FROM)
+    for t, ser in series.items():
+        if (meta.get(t) or {}).get("src") == "nse-bhavcopy": continue     # only Yahoo-sourced rows vote
+        for ts, _c in ser:
+            if ts >= floor:
+                d = datetime.datetime.fromtimestamp(ts, IST).date()
+                days.add(d.year * 10000 + d.month * 100 + d.day)
+    return days
+
+
+def series_from(e, cal=None):
+    """bin entry {d:[ymd], c:[adj close]} -> [[ts, close]] in fetch_all's weekly-then-daily shape.
+    `cal` = the Yahoo session calendar (yahoo_calendar); daily bars on dates outside it are dropped.
+    Returns (bars, dropped)."""
+    weekly, daily, dropped = {}, [], 0   # weekly: (iso year, iso week) -> bar; bars arrive in date order,
     for ymd, c in zip(e["d"], e["c"]):   # so the last assignment per week is that week's LAST close
         if c is None or c <= 0: continue
         if ymd >= DAILY_FROM:
+            if cal is not None and ymd not in cal:
+                dropped += 1; continue
             daily.append([ts_of(ymd), round(float(c), 2)])
         else:
             dt = datetime.date(ymd // 10000, ymd // 100 % 100, ymd % 100)
             weekly[dt.isocalendar()[:2]] = [ts_of(ymd, weekday_monday=True), round(float(c), 2)]
     out = list(weekly.values()) + daily
     out.sort(key=lambda b: b[0])
-    return out
+    return out, dropped
 
 
 def main():
@@ -77,24 +100,38 @@ def main():
     print("sf-fill: %d .NS tickers with no Yahoo series (of %d)" % (len(todo), len(meta)), flush=True)
     if not todo:
         print("sf-fill: nothing to fill"); return
+    cal = yahoo_calendar(meta, series)
+    if len(cal) < 200:
+        # a Yahoo build with fewer than 200 daily sessions is not a calendar anyone should follow —
+        # fill uncut and say so, rather than emit 200-bar stubs for every SME name
+        print("sf-fill: WARNING only %d Yahoo daily sessions in this payload — calendar alignment skipped" % len(cal), flush=True)
+        cal = None
+    else:
+        print("sf-fill: Yahoo calendar = %d daily sessions (%d..%d); filled bars outside it are dropped"
+              % (len(cal), min(cal), max(cal)), flush=True)
     D = load_bin()
     data = D.get("data") or {}
-    filled, absent, short = 0, [], []
+    filled, absent, short, dropped_total, dropped_days = 0, [], [], 0, {}
     for t in todo:
         sym = (meta[t].get("symbol") or t[:-3]).upper()
         e = data.get(sym)
         if not e or not e.get("d"):
             absent.append(sym); continue
-        ser = series_from(e)
+        ser, dropped = series_from(e, cal)
         if len(ser) < 2:
             short.append(sym); continue
         series[t] = ser
         meta[t]["src"] = "nse-bhavcopy"          # provenance: not a Yahoo series
-        filled += 1
+        filled += 1; dropped_total += dropped
+        if cal is not None and dropped:
+            for ymd in e["d"]:
+                if ymd >= DAILY_FROM and ymd not in cal: dropped_days[ymd] = dropped_days.get(ymd, 0) + 1
     payload["series"] = series
     PAYLOAD.write_text(json.dumps(payload, separators=(",", ":")))
-    print("sf-fill: filled %d series from the bhavcopy store (bin end %s); %d symbols not in the store, %d too short"
-          % (filled, D.get("end"), len(absent), len(short)), flush=True)
+    print("sf-fill: filled %d series from the bhavcopy store (bin end %s); %d symbols not in the store, %d too short; "
+          "%d bars on %d non-Yahoo sessions dropped%s"
+          % (filled, D.get("end"), len(absent), len(short), dropped_total, len(dropped_days),
+             (" (" + ", ".join("%d x%d" % kv for kv in sorted(dropped_days.items())[-8:]) + ")") if dropped_days else ""), flush=True)
     if absent: print("  not in store (first 40): %s" % ", ".join(sorted(absent)[:40]))
     if short: print("  too short: %s" % ", ".join(sorted(short)[:40]))
     print("sf-fill: payload now %d tickers with prices of %d" % (sum(1 for t in meta if series.get(t)), len(meta)), flush=True)

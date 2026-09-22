@@ -17425,9 +17425,26 @@ stock to be there. fix it"* + *"plus i want stock pages for all sme stocks as we
   ⚠️ audit-probe trap (§39): the page's loader awaits `requestAnimationFrame` before its first fetch, and a HIDDEN
   browser pane never delivers one — it sat at "Loading universe…" until rAF was stubbed in the probe; the stall is
   the pane, not the build.
-- LIVE (after landing): {{LIVE}}
+- **LIVE, stock side (landed 33571b6f6, 17:03 IST; refresh-backtest-data run 35722134850 push-triggered, success):**
+  sf-data `sf_meta.json` nTot **4,603 → 5,253**, rev 7d2a7f5db9; `stk/SUNLITE.json` HTTP 200 (`sme:1, alive:1,
+  raw 657.5`, 501 bars); `docs/search_index.json` on main carries SUNLITE; corp-actions step logged
+  `[sme]` 166 split/bonus + 2 scheme events 2016-2026 (the SME board answers in CI); the updater logged
+  `SME backfill: 650 series created (315693 bars), 154 main-board series extended backwards (76507 bars)`.
+  **stock.html?sym=SUNLITE live:** NSE SME chip, ₹657.50 +1.95 %, chart since 2024-08, all panels; console =
+  only the pre-existing quotes-worker 502 (every page). Pages served the new stock.html/sw v160/engine within 2 min.
+- **LIVE, dashboard side — first run FAILED, fixed, re-run:** refresh run 35722161444 died in
+  `guard_sessions.py`: `2026-02-01: 405 bars vs trailing-20 median 4803 (8 %)`. 2026-02-01 is the **Budget
+  Sunday** special session — 2,956 symbols hold it in the bhavcopy store, **0 on Yahoo** (RELIANCE.NS daily has no
+  such bar; the committed dash_slim has none). The filled series were the only rows with that session, which is
+  precisely the half-loaded shape the guard exists for. Fix: `fill_prices_from_sf.py` now derives the build's
+  **Yahoo session calendar** from the Yahoo-sourced rows and drops filled daily bars outside it (tested: exactly
+  the 5 weekend specials 2023-11-12 · 2024-01-20 · 2024-03-02 · 2024-05-18 · 2026-02-01 dropped for SUNLITE +
+  INFOLLION, neighbours kept; <200 Yahoo sessions = alignment skipped with a warning). Dashboard live status: {{LIVE2}}
 
 ### 145e. Rules learned / still open
+- **A filled series must follow the calendar of the store it lands in.** The bhavcopy store trades on NSE's
+  calendar (weekend specials included, §106h); the Yahoo store does not. Mixing them inside one payload makes a
+  legitimate session look half-loaded — the guard is right, the fill was wrong.
 - **"Every stock" has two stores and they need two fixes** (§1b): the Yahoo store's universe AND the
   bhavcopy store's series filter. Fixing one leaves either the dashboard or the stock page blank.
 - **A series filter is a universe decision** — the same class as §80 (BZ). Grep for every consumer that
