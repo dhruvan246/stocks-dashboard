@@ -166,7 +166,7 @@ function pickCols(cfg){
   (cfg.filters || []).forEach(f => push(f.field, { op: f.op, val: f.val }));
   return out;
 }
-function pickFV(r, cols){ const o = {}; cols.forEach(c => { o[c.field] = fieldVal(r, c.field); }); return o; }
+function pickFV(r, cols){ const o = {}; cols.forEach(c => { o[c.field] = r ? fieldVal(r, c.field) : null; }); return o; }
 function fldLabel(field){ return SHORT_FIELD[field] || (typeof FIELD_LABEL !== 'undefined' && FIELD_LABEL[field]) || field; }
 function fmtFV(v){ if (v == null || !isFinite(v)) return '—'; return Number.isInteger(v) ? String(v) : (Math.abs(v) >= 1000 ? Math.round(v).toLocaleString('en-IN') : (+v).toFixed(1)); }
 function pickColHead(cols){ return cols.map(function(c){
@@ -174,8 +174,24 @@ function pickColHead(cols){ return cols.map(function(c){
     esc(fldLabel(c.field)) +
     (c.sortCol ? ' <span class="sym">' + (c.dir === 'high' ? '▼' : '▲') + '</span>' : '') +
     (c.op ? ' <span class="sym">' + (OP_SYM[c.op] || c.op) + c.val + '</span>' : '') + '</th>'; }).join(''); }
-function pickColCells(cols, r){ return cols.map(function(c){
-  return '<td' + (c.sortCol ? ' style="font-weight:700"' : '') + '>' + fmtFV(r.fv ? r.fv[c.field] : null) + '</td>'; }).join(''); }
+function passOp(v, op, t){ if (v == null || !isFinite(v)) return true; switch(op){ case '<=': return v<=t; case '>=': return v>=t; case '<': return v<t; case '>': return v>t; case '=': case '==': return v===t; } return true; }
+function pickColCells(cols, r, mark){ return cols.map(function(c){
+  const v = (r && r.fv) ? r.fv[c.field] : null;
+  const fail = mark && c.op && v != null && !passOp(v, c.op, c.val);
+  return '<td' + (c.sortCol ? ' style="font-weight:700"' : '') + (fail ? ' class="down"' : '') + '>' + fmtFV(v) + '</td>'; }).join(''); }
+/* live factor rows for EVERY universe stock at the pick date, so a HELD stock that's an exit (and so
+   not in the top-N picks) still gets its factor values. One entry per strategy, refreshed when the
+   date / live-rerank changes. */
+const FACT_CACHE = {};
+function factorMap(it){
+  const p = PICKS[it.id];
+  const date = (p && p.live) ? (LIVEOV.date || SF.end) : SF.end;
+  const stamp = date + '|' + ((p && p.liveTs) || '');
+  const c = FACT_CACHE[it.id]; if (c && c.stamp === stamp) return c.m;
+  const m = {};
+  try { (factorsAt(dayOff(date), it.cfg) || []).forEach(r => { const sym = (META[r.tkr] && META[r.tkr].symbol) || r.tkr; if (sym) m[sym] = r; }); } catch(e){}
+  FACT_CACHE[it.id] = { stamp: stamp, m: m }; return m;
+}
 function screenOne(it){
   const all = screenAsOf(it.cfg, SF.end), picks = all.slice(0, it.cfg.topN), bd = borderMap(it.cfg, all), cols = pickCols(it.cfg);
   PICKS[it.id] = { asOf: SF.end, cols: cols, rows: picks.map((r, i) => ({ rank: i+1, sym: r.sym, tkr: r.tkr, bd: bd[i+1] || null,
@@ -935,16 +951,17 @@ function sellExits(it){
   const held = heldFor(it.cfg), p = PICKS[it.id];
   const isReset = !!(held && held.method === 'reset');
   const pickSet = (p && p.rows.length) ? new Set(p.rows.map(r => r.sym)) : null;
+  const cols = pickCols(it.cfg), fmap = (held && held.rows.length) ? factorMap(it) : {};
   const rows = (held && held.rows.length) ? held.rows.map(h => {
       const q = liveQ(h.sym), px = (q && q.ltp != null) ? +q.ltp : null;
       const zh = Z.connected ? Z.hold[h.sym] : null;
       const zt = zh ? (zh.mtf + zh.cnc + (zh.coll || 0)) : null;
       const lt = (FEED.symTot || {})[h.sym];
       const mism = (zt != null && lt != null && zt !== lt) ? (zt - lt) : null;   // demat vs strategy-ledger, both ways
-      return { h: h, px: px, mism: mism, stays: !isReset && !!(pickSet && pickSet.has(h.sym)), val: px != null ? h.qty * px : null };
+      return { h: h, px: px, mism: mism, stays: !isReset && !!(pickSet && pickSet.has(h.sym)), val: px != null ? h.qty * px : null, fv: pickFV(fmap[h.sym], cols) };
     }) : [];
   const exits = rows.filter(r => !r.stays);
-  return { held, p, isReset, pickSet, rows, exits, est: exits.reduce((s, r) => s + (r.val || 0), 0), known: !!(pickSet || isReset) };
+  return { held, p, isReset, pickSet, cols, rows, exits, est: exits.reduce((s, r) => s + (r.val || 0), 0), known: !!(pickSet || isReset) };
 }
 function renderSellAll(list){
   let nEx = 0, est = 0, nKnown = 0, nUnknown = 0, nBook = 0;
@@ -965,11 +982,11 @@ function sellCardHTML(it, disp, favNum){
     const liveOk = isReset || !marketOpen() || livePicksOk(p);
     const rt = (pickSet || isReset) && exits.length ? sellRuntime(exits) : null;
     const rtTxt = rt ? ' \u00b7 \u2248 ' + rt.tot + ' slice' + (rt.tot === 1 ? '' : 's') + ', ~' + rt.mins + ' min at ' + sliceGap() + 's gap' + (rt.startBy ? ' \u2014 start by ' + rt.startBy + ' for a 3:28 finish' : '') : '';
-    body = '<div class="twrap"><table><thead><tr><th>Stock</th><th>Held</th><th>Live \u20b9</th><th>Value</th><th></th></tr></thead><tbody>' +
+    body = '<div class="twrap"><table><thead><tr><th>Stock</th><th>Held</th><th>Live \u20b9</th><th>Value</th>' + pickColHead(X.cols) + '<th></th></tr></thead><tbody>' +
       rows.map(r => '<tr' + (r.stays ? ' style="opacity:.45"' : '') + '><td><b>' + esc(r.h.sym) + '</b></td>' +
         '<td>' + r.h.qty.toLocaleString('en-IN') + '</td>' +
         '<td>' + (r.px != null ? '\u20b9' + r.px.toFixed(2) : '\u2014') + '</td>' +
-        '<td>' + (r.val != null ? zinr(r.val) : '\u2014') + '</td>' +
+        '<td>' + (r.val != null ? zinr(r.val) : '\u2014') + '</td>' + pickColCells(X.cols, r, true) +
         '<td>' + (r.mism != null ? '<span class="tag" style="background:color-mix(in srgb,#c98500 18%,transparent);color:#c98500" title="Zerodha demat holds ' + (r.h.qty + r.mism) + ' vs ' + r.h.qty + ' in the strategy ledger \u2014 bonus/split/rename? Heal the ledger before selling.">demat ' + (r.mism > 0 ? '+' : '') + r.mism + '</span> ' : '') +
         (r.stays ? '<span class="tag keep">stays \u2014 not sold</span>'
                 : (pickSet || isReset ? '<span class="tag" style="background:color-mix(in srgb,var(--down) 16%,transparent);color:var(--down)">' + (isReset ? 'reset \u2014 sell' : 'EXIT \u2014 sell') + '</span>'
