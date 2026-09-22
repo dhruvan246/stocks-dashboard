@@ -115,13 +115,18 @@ def _india_history():
     return out
 
 
-def hist_stats(series):
+def hist_stats(series, step=False):
     """Changes and a HIGHEST-SINCE date from a dated series of [date, price] or [date, price, basis].
 
     'Highest since' is the plain reading of the question 'is this at a four-month high?': the most recent
     earlier date whose price was at or above today's. No earlier date reaching it means today is the highest
     in everything we hold, which is a statement about OUR history, not about all time - so the span we hold
     is reported beside it and the page says so.
+
+    `step`: an ADMINISTERED price (NMDC) holds until the next letter, so "the price a year ago" is the one in force
+    then, however long before it was set. Every other series is a set of OBSERVATIONS: a window counts only when
+    a reading sits within 10% of the window (at least 4 days) of its start - otherwise a monthly series reports
+    its previous month-end as "1 week ago" (it did: HRC "1 week -1.2%" on 2026-09-23).
 
     A third field, when present, is the basis the price was stated on (NMDC's letters say whether royalty,
     DMF and NMET are included, and that flipped in Jul-2023 and again in Jan-2026). A change measured
@@ -138,9 +143,14 @@ def hist_stats(series):
     last_d, last, last_b = v[-1]
 
     def back(days):
-        cut = (datetime.date.fromisoformat(last_d) - datetime.timedelta(days=days)).isoformat()
-        older = [t for t in v if t[0] <= cut]
-        return older[-1] if older else None
+        cut_d = datetime.date.fromisoformat(last_d) - datetime.timedelta(days=days)
+        if step:                                      # the price in force at the cut
+            older = [t for t in v if t[0] <= cut_d.isoformat()]
+            return older[-1] if older else None
+        # an observation series: the reading nearest the window's start, either side, if one is close enough
+        # (six months back from 30 Jun is 31 Dec, 181 days; a 182-day cut lands on 30 Dec)
+        near = [t for t in v[:-1] if abs((datetime.date.fromisoformat(t[0]) - cut_d).days) <= max(4, days * 0.1)]
+        return min(near, key=lambda t: abs((datetime.date.fromisoformat(t[0]) - cut_d).days)) if near else None
 
     out, breaks = {}, {}
     for name, days in (('chg_1w', 7), ('chg_1m', 30), ('chg_3m', 91), ('chg_6m', 182), ('chg_1y', 365)):
@@ -209,7 +219,7 @@ def main():
                 for k in ('wef', 'basis', 'chg_rev', 'filed'):
                     if r.get(k) is not None:
                         row[k] = r[k]
-                st = hist_stats([tuple(x) for x in series])
+                st = hist_stats([tuple(x) for x in series], step=bool(r.get('step')))
                 if st:
                     row['stats'] = st
                 india.append(row)

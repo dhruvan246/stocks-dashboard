@@ -8,6 +8,8 @@ Sources (each isolated: a failure is reported and the previous rows for that sou
   rubber      Rubber Board of India: RSS4, RSS5, ISNR20, Latex 60% at Kottayam, Kochi, Agartala (Rs per 100 kg + US$)
   sugar       Chinimandi sugar spot rates by city and grade (S/30, M/30), Rs per quintal, with the day's change
   fuel        PPAC (Ministry of Petroleum): daily petrol and diesel in the four metros from the posted PDF
+  minsteel    the Ministry of Steel's monthly Mumbai retail TMT / HRC / CRC (Rs/t incl. GST), from the committed
+              docs/ideas/minsteel_mumbai.json that minsteel.py builds from its reports (Nov-2021 onward)
   nmdc        NMDC's administered iron-ore price (lump and fines, Rs per tonne), read from the price letters it
               files with BSE. It revises roughly monthly, so this is a dated series, not a daily print, and the
               whole history back to 2015 is kept in docs/ideas/nmdc_history.json.
@@ -469,7 +471,7 @@ def src_nmdc(days=200, since=None):
             continue
         before = [r for r in priced[:-1] if r.get(key) is not None]
         prev_v = before[-1][key] if before else None
-        rows.append(dict(market='NMDC (administered)', name=name, price=last[key], unit='Rs/tonne',
+        rows.append(dict(market='NMDC (administered)', name=name, price=last[key], unit='Rs/tonne', step=True,
                          wef=last.get('wef'), basis=last.get('basis'), filed=last['date'],
                          chg_rev=round(100 * (last[key] / prev_v - 1), 2) if prev_v else None,
                          prev=prev_v, prev_date=before[-1]['wef'] if before else None,
@@ -479,6 +481,30 @@ def src_nmdc(days=200, since=None):
                 date='w.e.f. ' + (last.get('wef') or last['date']), rows=rows,
                 revisions=len(priced), since=priced[0]['wef'],
                 unread=sum(1 for r in rows_h if r.get('lump') is None and r.get('fines') is None))
+
+
+# ---------------------------------------------------------------- Ministry of Steel, monthly Mumbai retail
+def src_minsteel():
+    """The official monthly Mumbai retail price of TMT, HRC and CRC (Rs/t incl. GST), read from
+    docs/ideas/minsteel_mumbai.json, which minsteel.py builds from the Ministry of Steel's monthly reports. No
+    network here: the reports are monthly. Each row carries its whole series, like NMDC."""
+    j = json.load(open(os.path.join(DOCS, 'minsteel_mumbai.json')))
+    rows = []
+    for n in ('TMT', 'HRC', 'CRC'):
+        s = (j.get('series') or {}).get(n) or []
+        if not s:
+            continue
+        d, v, report = s[-1]
+        prev = s[-2] if len(s) > 1 else None
+        rows.append(dict(city='Mumbai', name=j['specs'][n], price=v, unit='Rs/tonne', date=d,
+                         prev=prev[1] if prev else None, prev_date=prev[0] if prev else None,
+                         chg_prev=round(100 * (v / prev[1] - 1), 2) if prev else None,
+                         history=[[x[0], x[1]] for x in s], history_via='Ministry of Steel monthly report',
+                         report=report))
+    if not rows:
+        raise RuntimeError('minsteel_mumbai.json holds no series')
+    return dict(source='Ministry of Steel monthly report (steel.gov.in): Mumbai retail price incl. GST',
+                url='https://steel.gov.in/monthly-summary', date=rows[0]['date'], rows=rows)
 
 
 # ---------------------------------------------------------------- history for click-to-chart
@@ -512,7 +538,7 @@ def build_history(sources):
             key = r.get('key') or series_key(r)
             if r.get('history'):
                 series = [list(x) for x in r['history']]
-                via = ['filing'] * len(series)
+                via = [r.get('history_via') or 'filing'] * len(series)
             else:
                 d = pts.get((src, key), {})
                 series = [[dt, d[dt][0]] for dt in sorted(d)]
@@ -520,9 +546,9 @@ def build_history(sources):
             if not series:
                 continue
             out[f'{src}|{key}'] = dict(src=src, key=key, unit=r.get('unit'), p=series, via=via,
-                                       stats=hist_stats(series) if len(series) >= 2 else None,
+                                       stats=hist_stats(series, step=bool(r.get('step'))) if len(series) >= 2 else None,
                                        recorded_from=next((x[0] for x, v in zip(series, via) if v == 'recorded'), None),
-                                       archived=sum(1 for v in via if v not in ('recorded', 'filing')))
+                                       archived=sum(1 for v in via if str(v).lower().startswith('wayback')))
     blob = json.dumps(dict(built=datetime.datetime.now().strftime('%Y-%m-%d %H:%M IST'), series=out),
                       separators=(',', ':'), ensure_ascii=False).encode()
     with open(HIST_JSON, 'wb') as fh:
@@ -548,7 +574,8 @@ def main():
     since = datetime.date.fromisoformat(a.nmdc_since) if a.nmdc_since else None
     plan = [] if a.te_only else [('metalbook', src_metalbook), ('ibja', src_ibja), ('rubber', src_rubber),
                                  ('sugar', src_sugar), ('fuel', src_fuel),
-                                 ('nmdc', lambda: src_nmdc(days=a.nmdc_days, since=since))]
+                                 ('nmdc', lambda: src_nmdc(days=a.nmdc_days, since=since)),
+                                 ('minsteel', src_minsteel)]
     if not a.no_te:
         plan.append(('te', lambda: src_te(TE_SLUGS)))
     sources, status = dict(old), {}

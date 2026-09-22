@@ -448,15 +448,16 @@
     const srcName = ((S0[src] || {}).source || src).split('(')[0].trim();
     const gs = groupsForRow(src, row);
     const archived = (h && h.archived) || 0;
-    const stated = [['1 day', row.chg_1d], ['vs the previous price', row.chg_prev], ['1 month', row.chg_1m], ['1 year', row.chg_1y]].filter(x => x[1] != null);
+    // "stated by source" only when the source itself states it; a series-backed row's changes are measured below
+    const stated = row.history ? [] : [['1 day', row.chg_1d], ['vs the previous price', row.chg_prev], ['1 month', row.chg_1m], ['1 year', row.chg_1y]].filter(x => x[1] != null);
     const held = (st ? [['1 week', st.chg_1w], ['1 month', st.chg_1m], ['3 months', st.chg_3m], ['1 year', st.chg_1y]] : []).filter(x => x[1] != null);
-    const viaLabel = v => v === 'recorded' ? 'recorded by this site' : v === 'filing' ? 'filing' : 'archived copy · ' + v;
+    const viaLabel = v => v === 'recorded' ? 'recorded by this site' : /^wayback/i.test(v) ? 'archived copy · ' + v.replace(/^wayback\s*/i, '') : v;
     const rowsT = pts.map((p, i) => ({ d: p[0], v: p[1], ch: i ? (p[1] / pts[i - 1][1] - 1) * 100 : null, via: via[i] || '' })).reverse();
     let range = 'max';
     showDetail(`<div class="card"><div class="flex flex-wrap justify-between gap-2"><div><h2 class="text-lg font-bold">${esc(title)}</h2>
         <div class="muted text-sm">${esc(srcName)} · ${esc(row.unit || '')}${row.date ? ' · as of ' + esc(row.date) : ''}</div></div>${closeBtn}</div>
       <div class="flex flex-wrap items-center gap-2 my-3 text-sm"><span class="seg" id="drange">${['3m', '1y', '3y', 'max'].map(k => `<button data-v="${k}" class="${k === range ? 'on' : ''}">${k}</button>`).join('')}</span>
-        <span class="muted text-xs">${pts.length} dated reading${pts.length === 1 ? '' : 's'}${pts.length ? ' since ' + esc(pts[0][0]) : ''}${archived ? ' · ' + archived + ' recovered from archived copies of the source page' : ''}</span></div>
+        <span class="muted text-xs">${pts.length} dated reading${pts.length === 1 ? '' : 's'}${pts.length ? ' since ' + esc(pts[0][0]) : ''}${archived ? ' · ' + archived + ' recovered from archived copies of the source page' : ''}${row.history_via ? ' · from the ' + esc(row.history_via) + 's' : ''}</span></div>
       <div id="dchart" class="chart"></div>
       <div class="grid gap-x-6 gap-y-1 text-sm mt-3" style="grid-template-columns:repeat(auto-fit,minmax(220px,1fr))">
         ${[['Latest', fmt(row.price, 2) + ' ' + esc(row.unit || '')],
@@ -470,7 +471,7 @@
         <thead><tr><th>Date</th><th class="num">Price</th><th class="num">vs previous</th><th>Read from</th></tr></thead>
         <tbody>${rowsT.map(t => `<tr><td>${esc(t.d)}</td><td class="num">${fmt(t.v, 2)}</td><td class="num">${pct(t.ch == null ? null : Math.round(t.ch * 10) / 10)}</td><td class="muted text-xs">${esc(viaLabel(t.via))}</td></tr>`).join('')}</tbody>
       </table></div>
-      <p class="muted text-xs mt-2">${src === 'te' ? 'A futures or CFD proxy for the global benchmark, not the Indian price: read it for direction. ' : ''}Figures marked "stated by source" are the source's own. The rest are measured on the readings listed, which this site has taken daily since ${esc((h && h.recorded_from) || '2026-09-22')}${archived ? ', plus older prints read from archived copies of the source page' : ''}; they fill in as the record grows.</p>
+      <p class="muted text-xs mt-2">${src === 'te' ? 'A futures or CFD proxy for the global benchmark, not the Indian price: read it for direction. ' : ''}${row.history ? 'Every change here is measured on the readings listed. A window with no reading near its start shows a dash rather than borrowing the nearest older one.' : `Figures marked "stated by source" are the source's own. The rest are measured on the readings listed, which this site has taken daily since ${esc((h && h.recorded_from) || '2026-09-22')}${archived ? ', plus older prints read from archived copies of the source page' : ''}; they fill in as the record grows.`}</p>
       <div class="mt-3">${gs.length ? gs.map(g => `<div class="mb-2"><b>${esc(g.name)}</b>${chipsFull(g)}</div>`).join('') : '<span class="muted text-sm">No listed names mapped to this price yet.</span>'}</div></div>`);
     const render = () => {
       const last = pts.length ? pts[pts.length - 1][0] : '';
@@ -653,6 +654,10 @@
     const ih = (src) => (r) => r.key ? `class="row" data-ih="${esc(src + '|' + r.key)}"` : '';
     ['Mumbai', 'Delhi', 'Raipur', 'Hyderabad', 'Bangalore'].forEach(city => block(`Steel & metals — ${city}`, S.metalbook,
       [['Product', r => esc(r.name)], ['₹/kg', r => fmt(r.price, 1), 1], ['vs prev', r => pct(r.chg_prev), 1], ['Priced', r => `<span class="muted text-xs">${esc((r.date || '').slice(5))}</span>`]], mbCity(city), '', ih('metalbook')));
+    // the official monthly figure: the one Indian finished-steel price with years of dated history
+    block('Steel — Mumbai retail, monthly (Ministry of Steel)', S.minsteel, [['Product', r => esc(r.name)], ['₹/tonne', r => fmt(r.price, 0), 1],
+      ['vs prev month', r => pct(r.chg_prev), 1], ['Month-end', r => `<span class="muted text-xs">${esc(r.date || '')}</span>`]],
+      (S.minsteel && S.minsteel.rows) || [], 'The price the Ministry of Steel reports for the Mumbai market as on each month-end, including GST. It is the official series and goes back to November 2021; a month with no report is a gap, not a zero. Click a product for its history.', ih('minsteel'));
     block('Bullion (IBJA)', S.ibja, [['Series', r => esc(r.name)], ['AM', r => fmt(r.am, 0), 1], ['PM', r => fmt(r.pm, 0), 1], ['Unit', r => esc(r.unit)]], (S.ibja && S.ibja.rows) || [], '', ih('ibja'));
     block('Natural rubber (Rubber Board)', S.rubber, [['Market', r => esc(r.market)], ['Grade', r => esc(r.name)], ['₹/100 kg', r => fmt(r.price, 0), 1], ['US$/100 kg', r => fmt(r.usd_per_100kg, 2), 1]], (S.rubber && S.rubber.rows) || [], '', ih('rubber'));
     block('Sugar spot (Chinimandi)', S.sugar, [['City', r => esc(r.city)], ['Grade', r => esc(r.grade)], ['₹/quintal', r => fmt(r.price, 2), 1], ['Change', r => fmt(r.chg_1d, 2), 1]], (S.sugar && S.sugar.rows) || [], '', ih('sugar'));

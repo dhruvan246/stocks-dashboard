@@ -17445,6 +17445,37 @@ highest since 2026-07-10 in 83 lump revisions back to 2019. For FINISHED steel t
 series — WPI flat products (monthly, to 2026-04) and the HS 7208 customs unit value (monthly, to 2026-07)
 are the only long ones, and both lag the newspaper by months.
 
+### 144a-vi. ★★★ OFFICIAL MONTHLY STEEL PRICES: MINISTRY OF STEEL, MUMBAI TMT / HRC / CRC (2026-09-23)
+
+The first dated Indian FINISHED-steel series on the site. `scripts/ideas/minsteel.py` lists
+`steel.gov.in/monthly-summary?page=0..13` (~10 report PDFs a page; skip the Citizens-Charter link), caches each
+PDF under `scripts/ideas/_cache/minsteel/<md5(path)[:10]>.pdf` (git-ignored), and writes
+`docs/ideas/minsteel_mumbai.json`: per product [[month-end, Rs/t incl. GST, report file]]. india_spot.py's
+`minsteel` source reads that file (no network) and publishes three rows carrying their whole series, so the India
+spot tab has a "Steel — Mumbai retail, monthly (Ministry of Steel)" card and each row opens its chart.
+
+**Measured 2026-09-23:** 95 reports listed, 48 state Mumbai prices → **48 month-ends, 2021-11-30 → 2026-06-30**
+(TMT 48, HRC 47, CRC 46 points). Missing months: 2022-10, 2023-06, 2024-10 → 2025-01, 2025-06/07 (no report states
+them in a readable sentence). Reports before Nov-2021 state % changes or a chart table only; the 2018-04 →
+2020-05 chart table the research found is NOT ingested (unverified; 14 of 78 cells differ between editions).
+
+**Parser rules — every one from a defect seen in these PDFs** (minsteel.py docstring has the list):
+names bind to values only WITHIN a sentence (the preamble "prices of TMT, CRC and HRC decreased" once bound
+June-2024's TMT price to HRC); "andCRC" still counts; "f.o.b." is not a sentence end (a chart label printed inside
+the Apr-2026 sentence split it); a run binds only when the sentence named exactly as many products; values outside
+Rs 30,000-150,000 are not finished steel; the date is the one the sentence STATES - never the comparison date "over
+their prices as on 31st May" - in any of five forms, and a date the PDF text cut ("as on 31st <chart numbers>")
+keeps its day and takes month/year from the report's own title. Validation: no date+product with two values, CRC
+never below HRC, all month-ends, and all 33 months also read by the research's independent extract agree exactly.
+
+**What it answers** (as of the latest report, June 2026): Mumbai HRC Rs 68,170/t, -1.2% on May, +24.5% on Dec-2025,
+highest since 2026-05-31 - NOT at a four-month high (April was 71,990). The series lags ~2-3 months.
+
+**hist_stats windows (fixed the same day).** A window change now needs a reading NEAR its start (within 10% of the
+window, at least 4 days, either side) for observation series; otherwise a monthly series reported its previous
+month-end as "1 week -1.2%". An administered price (NMDC, `step=True` on its rows) keeps "the price in force then".
+The page shows "stated by source" only for rows without a series; a series-backed row's changes are all measured.
+
 ### 144a-v. ★★★ METALBOOK CITY BUG, SOURCE-DATED RECORDING, AND WHERE OLDER PRICES LIVE (2026-09-23)
 
 **Defect (live 2026-09-22 → 2026-09-23, now fixed).** The MetalBook ticker prints each item as PRODUCT, PRICE,
