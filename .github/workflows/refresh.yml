@@ -201,7 +201,7 @@ jobs:
             # refresh for ~10 weeks (runbook §103). Self-healing: any missed or
             # failed run just means the NEXT run still sees it as stale and
             # commits, so this can't silently drift again.
-            if ! python3 scripts/stock_bin_stale.py docs/stock_data.bin 5; then
+            if ! python3 scripts/stock_bin_stale.py docs/stock_data.bin 5 /tmp/new_stock_data.bin; then   # stale prices OR a changed symbol set (§145)
               cp /tmp/new_stock_data.bin docs/stock_data.bin
               git add docs/stock_data.bin
             fi

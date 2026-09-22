@@ -361,13 +361,34 @@ async function gunzipFetch(url) {
   const stream = new Blob([new Uint8Array(buf)]).stream().pipeThrough(new DecompressionStream('gzip'));
   return JSON.parse(await new Response(stream).text());
 }
+// base = full history, overlay = the series already loaded (slim, fresher). Overlay wins on
+// overlapping day offsets; tickers present only in the overlay are kept whole.
+function mergeSeries(base, overlay) {
+  const merged = {};
+  for (const t in base) merged[t] = base[t];
+  for (const t in overlay) {
+    const ov = overlay[t], ba = merged[t];
+    if (!ba || !ba.d || !ba.d.length) { merged[t] = ov; continue; }
+    const byOff = new Map();
+    for (let i = 0; i < ba.d.length; i++) byOff.set(ba.d[i], ba.p[i]);
+    for (let i = 0; i < ov.d.length; i++) byOff.set(ov.d[i], ov.p[i]);
+    const offs = [...byOff.keys()].sort((a, b) => a - b);
+    merged[t] = { d: offs, p: offs.map(o => byOff.get(o)) };
+  }
+  return merged;
+}
 // Lazily pull the FULL price history (only when a long-range query / backtest needs it).
 async function ensureFull(statusFn) {
   if (FULL_LOADED) return true;
   if (!FULL_LOADING) FULL_LOADING = (async () => {
     if (statusFn) statusFn('Loading full history…');
     const D = await gunzipFetch('./stock_data.bin');   // full series, already built + cacheable
-    SERIES = D.series;                                  // superset of the slim recent series
+    // MERGE, never replace (the sectors.html guard, runbook §103/§145): stock_data.bin is committed
+    // on its own cadence, so it can lag dash_slim.bin — on 2026-09-22 it still carried the 4,929-name
+    // universe while the slim file had 5,527, and `SERIES = D.series` silently dropped every SME name
+    // for the rest of the session (all bars, even inside the slim window). Slim (fresher) wins on
+    // any overlapping day; a ticker only the slim file knows keeps its slim bars.
+    SERIES = mergeSeries(D.series, SERIES);
     FULL_LOADED = true;
   })().catch(e => { FULL_LOADING = null; throw e; });
   await FULL_LOADING;

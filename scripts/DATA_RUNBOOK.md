@@ -17522,6 +17522,20 @@ stock to be there. fix it"* + *"plus i want stock pages for all sme stocks as we
   entitlements, not companies) — a filter in `parse_rows` + a one-shot key purge, never a ledger edit.
 
 ### 145e. Rules learned / still open
+- **The full-history file lagged the universe, and the page REPLACED its series with it (user: "31 March →
+  today hides SUNLITE, last week shows it", 2026-09-22 19:40 IST).** `docs/stock_data.bin` is committed only when
+  `stock_bin_stale.py` finds its PRICES > 5 d old; the 15:31 IST copy (4,929 names, 0 SME) stayed "fresh" all day
+  while dash_slim.bin moved to 5,527. Any range reaching before the slim cutoff (`fromDayOffset < RECENT_CUTOFF_OFF`,
+  250 d) ran `ensureFull()` → `SERIES = D.series` → every SME name lost its bars for the rest of the session — even
+  a later 31-March query (measured live: fresh page 31-Mar = ₹363 → ₹657.50; after a 1-year query = "without
+  price data"; 31-Mar again = still blank). This is the §103 clobber that sectors.html already guards against.
+  Two fixes: `stock_bin_stale.py COMMITTED MAX_AGE NEW` also returns "commit" when the SYMBOL SET differs
+  (measured old→new: +808 / −208 keys — the 571 SME names plus 208 BE/BZ names that now take their `.NS` key
+  because the fetcher joins all three main-board series, not EQ only); and the dashboard's `ensureFull()` now
+  MERGES (`mergeSeries(full, slim)`, slim wins on overlap, slim-only tickers kept whole). Verified locally with
+  the live old full file beside a slim file carrying SUNLITE: 1-year range keeps 167 SUNLITE bars (₹376 → ₹657.50),
+  31-March afterwards ₹363 → ₹657.50, 0 console errors. movers.html / stock-backtest.html keep the old replace
+  (§103 item 2) — OPEN.
 - **Phone scroll trap in a capped table holder (found by the user on this page, 2026-09-22 18:33 IST):**
   nse-bse-dashboard's results box is `max-h-[640px] overflow-auto`; theme.js's `scrollifyTable` re-uses it as
   the `.sw-scrollx` holder and the phone rule sets `overflow-y:hidden`, so rows past 640px could not be reached
