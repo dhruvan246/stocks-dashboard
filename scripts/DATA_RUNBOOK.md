@@ -17347,3 +17347,99 @@ the BSE bhavcopy lands; commits only `docs/ideas/**`, `docs/ideas.html`, `script
 && python3 scripts/ideas/score.py`; cache under `scripts/ideas/_cache/` (git-ignored). Feeds registered in `docs/feeds.json`
 (ideas/latest.json 80 h, ideas/track.json 80 h, ideas/universe.json 80 h, ideas/ideas.json static). sw.js v158; nav entry under
 Markets ▸ Discovery & Filings; home tile text in `docs/index.html` DESC.
+
+## 145. ★★★ THE SME PLATFORM WAS NEVER IN THE PRICE UNIVERSE — every NSE Emerge name now has a series, a stock page and a dashboard row  (2026-09-22, worktree ~/stocks-wt/sme-universe)
+
+**Trigger:** user opened nse-bse-dashboard.html, asked why SUNLITE was missing, then: *"i want every
+stock to be there. fix it"* + *"plus i want stock pages for all sme stocks as well"*.
+
+### 145a. What was measured before touching anything (all from the live site + today's exchange files)
+- **SUNLITE** = Sunlite Recycling Industries Ltd, NSE **SME platform** (Emerge), series **SM**, listed
+  2024-08-20, ISIN INE0U2N01013. Not in NSE's main-board master (`EQUITY_L.csv`, 2,580 rows: EQ 2,317 ·
+  BE 236 · BZ 27), only in the SEPARATE SME master
+  (`https://nsearchives.nseindia.com/emerge/corporates/content/SME_EQUITY_L.csv`, 571 rows: SM 467 ·
+  ST 103 · SZ 1). Not on BSE at all (ListofScripData, 5,042 active equity scrips: 0 SME ISINs; 5 SME
+  SYMBOLS collide with unrelated BSE scrip_ids — RAJPUTANA, MAL, SEL, ZEAL, GSTL — the §76 class).
+- **Both price stores excluded the whole platform.** `fetch_all.py` (Yahoo → dash_slim/stock_data.bin)
+  read `EQUITY_L.csv` with `SERIES == "EQ"` only (so 27 NSE-only BE/BZ names were dropped too);
+  `build_sf_data.parse_rows` (NSE bhavcopy → sf_stock_data.bin → stk slices / search / backtests) kept
+  `("EQ","BE","BZ")`. Live dash_slim.bin: 5,062 meta rows, 0 SME. Live release bin (end 2026-09-21):
+  4,603 symbols, **0 of 571 current SME symbols**, 0 SME ISINs under another key.
+- **The fundamentals side already had them** (the results/announcement crawlers query `index=sme`,
+  §~1525): fin/SUNLITE.json existed live with one quarter, announcements/discovery/ipo_prehistory
+  carried it — so stock.html?sym=SUNLITE read *"not found in the dataset"* with empty panels. 1,054
+  fundamentals symbols had no price row; 539 of them SME (the other 515 = delisted history).
+- **Yahoo is NOT a price source for SME** (probe of 31 tickers): SUNLITE.NS = *Not Found*; 21/31 Not
+  Found; the 10 Yahoo does carry are typed `instrumentType: MUTUALFUND`, which fetch_chart rejects by
+  design. The 27 NSE-only BE/BZ names: 26/27 on Yahoo as EQUITY (CENTEXT-RE is a rights entitlement).
+- **The bhavcopy IS the source.** `sec_bhavdata_full_21092026.csv`: EQ 2,665 · SM 388 · BE 241 · ST 87 ·
+  BZ 36 (SUNLITE row present, DELIV_PER numeric for SM and ST — no dash rule needed). The old zip format
+  carries SM rows from the platform's first listings (2013-01-02: THEJO, VETO; 2016-01-04: 3 names);
+  2012-07-09 has none (Emerge opened Sept 2012).
+
+### 145b. What shipped (one worktree, one landing on main)
+| piece | change |
+|---|---|
+| `scripts/build_sf_data.py` | `parse_rows` keeps `EQ/BE/BZ` **+ `SM/ST/SZ`**; cache rows gain a 14th column `seg` (`SME`/`MAIN`) = new cache-version marker (v5), so any `_bhav_cache` day parsed under an older filter is refetched instead of replayed SME-less |
+| `scripts/build_sme_backfill.py` (new) | `--scan A B` every bhavcopy since 2012-09-01 → `scripts/_sme_scan/` (gitignored; SME rows in full + close/prev_close of every main-board row for anchors; the date INSIDE the file decides, §89f). `--build` = build_sf_data's own construction loop (close/close chain, official factors when present, CA_FRACS inference, re-anchor to last RAW close, turnover → ₹ lacs whatever the file carried) → `scripts/sme_backfill.json.gz` with `create` (symbol absent from the bin) and `prepend` (SME-era history of a name that later moved to the main board, anchored on the bin's first bar with a 2 % PREV_CLOSE exit control — a failing block is DROPPED and named) |
+| `scripts/update_sf_data.py` | `insert_sme_history()` applies the ledger before the day loop (idempotent: a key that already exists is the daily walk's from then on; a recycled key under another ISIN is named, never overwritten; prepends only while the bin still starts on the anchor bar). The day loop keeps **`meta[sym]["sme"]`** from the row's series (SM/ST/SZ → True; the day a name's first EQ/BE row appends it flips to False and prints). New count `sm` in the publish gate |
+| `scripts/build_corp_actions.py` | queries `index=sme` alongside `index=equities` per year (NSE files SME actions on a separate board; 0 SME symbols were in corp_actions.json) |
+| `scripts/build_stock_slices.py` · `docs/backtest-engine.js` · `docs/stock.html` · `docs/sw.js` | slice carries `sme: 1`; `installStockSlice` puts it on META; stock.html shows an **NSE SME** chip next to the symbol; sw **v158** |
+| `scripts/fetch_all.py` | universe = `EQUITY_L` **EQ/BE/BZ** (rights entitlements `*-RE` excluded) + `SME_EQUITY_L` **SM/ST/SZ** as `NSE-SME` rows (name from the list, `sme: true` in meta, **no `.BO` alt** — 0 SME ISINs on BSE, 5 scrip_id coincidences). NSE↔BSE join is now **ISIN-gated (§76)**: a BSE scrip_id equal to an NSE symbol but with a different ISIN is two companies (measured: FOCUS, KALYANI) → the BSE row stays `.BO` with no `.NS` fallback and the NSE name ships separately. `FETCH_ALL_DRY=1` = universe-only smoke run |
+| `scripts/fill_prices_from_sf.py` (new) | after fetch_all: every `.NS` ticker Yahoo returned NOTHING for is filled from the release-asset bin (weekly < 2020 / daily ≥ 2020, 09:15 IST stamps = Yahoo's `.NS` convention); fill-only, `meta.src = "nse-bhavcopy"` for provenance |
+| `.github/workflows/refresh.yml` | downloads `SME_EQUITY_L.csv` (fatal on failure, like the other two masters — a silently missing list would drop ~570 published rows) and runs the fill step (non-fatal, `::warning::`) |
+
+### 145c. Ledger numbers (built 2026-09-22 on the live release bin, end 2026-09-21)
+- **Scan:** 5,134 calendar days 2012-09-01 → 2026-09-21 (~45 min, 6 workers on the nsearchives CDN): 3,921 files
+  + 1,212 confirmed no-file days; **3,452 session files** kept after dropping **443 misdirects** (date inside the file
+  ≠ URL date — NSE re-serving the prior session, §89f) and 26 duplicate re-serves; 2012-11-11 (a Sunday) never
+  answered on either route — no session. Cache = 218 MB under `scripts/_sme_scan/` (gitignored).
+- **Rows:** 812 SME symbols, 394,038 bars; 3 in-set ISIN renames merged (SKML→BABAFOOD, FORGE→TIRUPATIFL,
+  AVONMPL→AVROIND). Corporate actions: 0 official (SME board absent from corp_actions.json), **168 inferred**.
+- **Ledger** `scripts/sme_backfill.json.gz` (6.4 MB, tracked): **create = 650 series / 315,693 bars** (all 571
+  symbols on today's SME list + 79 delisted or migrated-away names), **prepend = 154 / 76,507 bars** (10 of them
+  across an in-issuer ISIN change — AAKASH INE087Z01016→…024 etc., same `isin[:7]` issuer, each joined only because
+  the PREV_CLOSE control passed), **5 blocks dropped by the exit control** and named with their numbers (DSML→DIL
+  151.0 vs 137.0 · HITECH 380.0 vs 405.45 · NANDANI→JAIPURKURT 74.75 vs 41.0 · SAKETH→TEMBO 107.8 vs 120.0 ·
+  SUREVIN→WEWIN 45.1 vs 58.8 — a migration whose first main-board PREV_CLOSE is not the last SME close is not
+  joined by guessing; OPEN), 0 recycled tickers, 0 overlaps, 0 missing anchors.
+- **Apply test** (scratch copy of the live bin through `update_sf_data.insert_sme_history`, the CI code path):
+  4,603 → **5,253 symbols**, 392,200 bars in; **second apply = 0 bars** (idempotent); `veto_stale_alive` turned 77
+  stale SME names off (SME-flagged 650, alive 573); 0 length/monotonic/close defects; phantom-date audit clean.
+  SUNLITE: 501 bars 2024-08-20 → 2026-09-21, last close 657.50 = the bhavcopy CLOSE, alive, sme=True.
+
+### 145d. Verification (§39 gate)
+- `py_compile` every touched .py · `node --check` sw.js + backtest-engine.js · refresh.yml parses.
+- `FETCH_ALL_DRY=1 fetch_all.py` on today's three masters: universe **5,528** (NSE-SME 571 · NSE-only 128 · BSE
+  groups unchanged); FOCUS and KALYANI refused as another company (§76) — exactly the two measured.
+- `fill_prices_from_sf.py` on a mini payload vs the live bin: a Yahoo-less main-board name (ABMINTLLTD) filled with
+  1,197 bars and `src=nse-bhavcopy`; a Yahoo-sourced row untouched; SUNLITE reported absent (ledger not yet applied).
+- `build_stock_slices.py` from the test bin: `--only` 5 symbols and the FULL cut (**5,253 slices, exit 0**);
+  SUNLITE slice = `sme:1, alive:1, raw 657.5`, 501 bars, 7 results dates, name from the SME list.
+- `build_search_index.py` from the test bin: 7,280 rows, SUNLITE + INFOLLION present (alive 1, mcap 0).
+- **stock.html?sym=SUNLITE** on the worktree server (docs/stk/ local slice): **NSE SME** chip, ₹657.50 **+1.95 %**
+  1-day (bhavcopy prev 644.90 → close 657.50), returns vs Nifty, technicals, the Mar-2026 quarter, pre-IPO table,
+  peers. Console: only the pre-existing external 502 every page logs. Screenshot taken.
+- **nse-bse-dashboard.html** built from a payload filled from the test bin: sector dropdown **NSE-SME (2)**, table row
+  `SUNLITE · Sunlite Recycling Industries Limited · NSE-SME · — · ₹683.65 → ₹657.50 · -3.83 % · -6.80 % from 52w`.
+  ⚠️ audit-probe trap (§39): the page's loader awaits `requestAnimationFrame` before its first fetch, and a HIDDEN
+  browser pane never delivers one — it sat at "Loading universe…" until rAF was stubbed in the probe; the stall is
+  the pane, not the build.
+- LIVE (after landing): {{LIVE}}
+
+### 145e. Rules learned / still open
+- **"Every stock" has two stores and they need two fixes** (§1b): the Yahoo store's universe AND the
+  bhavcopy store's series filter. Fixing one leaves either the dashboard or the stock page blank.
+- **A series filter is a universe decision** — the same class as §80 (BZ). Grep for every consumer that
+  must tell the boards apart (`meta.sme`, slice `sme`, dash `sector == "NSE-SME"`), never re-derive
+  from the series letter.
+- **Yahoo `instrumentType: MUTUALFUND` on an SME ticker is a mis-type, not a mutual fund** — the
+  rejection in `fetch_chart` is right for BSE MF scrips but it is why SME prices must come from the
+  bhavcopy store. Do not "fix" it by accepting MUTUALFUND for `.NS`.
+- SME names carry **no BSE market cap** (`mcap` 0 → "—" on the dashboard; shares_outstanding.json has 0
+  SME symbols) and **no official corporate actions before build_corp_actions' next sme run** — their
+  history is inference-adjusted (CA_FRACS ladder) exactly like a pre-2016 main-board name.
+- OPEN: `bake_liquid_universe.py` screens by turnover only, so an SME name with ≥ ₹1 cr/day median
+  turnover enters the liquid universe. Left as designed; revisit if SME names distort a strategy.
+- OPEN: `liveQuote()` on stock.html is Yahoo-backed → SME pages carry no intraday bar (fails silently,
+  as for BSE-only names).

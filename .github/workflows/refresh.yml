@@ -68,6 +68,29 @@ jobs:
             exit 1
           fi
 
+          # --- NSE SME-platform master (~570 lines; Emerge, series SM/ST/SZ) — DATA_RUNBOOK §145 ---
+          # A SEPARATE file from EQUITY_L.csv: SME names never appear in the main-board master, which
+          # is why no SME listing (SUNLITE...) reached the dashboard until 2026-09-22. Fatal on failure
+          # for the same reason the other two are: a silently missing list would drop ~570 rows from
+          # the published universe and read as "SME vanished" for a day.
+          ok=0
+          for attempt in 1 2 3 4 5 6; do
+            curl -sS --compressed --max-time 90 -A "$UA" \
+                 "https://nsearchives.nseindia.com/emerge/corporates/content/SME_EQUITY_L.csv" \
+                 -o /tmp/nse_sme.csv || true
+            lines=$(wc -l < /tmp/nse_sme.csv 2>/dev/null || echo 0)
+            if [ "$lines" -ge 300 ]; then
+              echo "NSE SME scrip list OK ($lines lines)"
+              ok=1; break
+            fi
+            echo "NSE SME attempt #$attempt: $lines lines, $(wc -c < /tmp/nse_sme.csv 2>/dev/null || echo 0) bytes — retrying"
+            sleep $((attempt * 15))
+          done
+          if [ "$ok" != 1 ]; then
+            echo "::error::NSE SME scrip list unavailable after 6 attempts"
+            exit 1
+          fi
+
           # --- BSE active-equity master (~4,900 scrips) ---
           # BSE rate-limits by IP: over quota it answers 302 -> error_Bse.html, and that
           # 162-byte stub is exactly what used to poison /tmp/bse.json (so `-L` would not
@@ -97,6 +120,15 @@ jobs:
 
       - name: Fetch price history from Yahoo Finance
         run: python3 scripts/fetch_all.py
+
+      - name: Fill tickers Yahoo cannot serve from the NSE bhavcopy store
+        # NSE SME-platform names (SUNLITE...) and a few main-board series have no Yahoo chart
+        # (SUNLITE.NS = Not Found; the SME tickers Yahoo does carry are typed MUTUALFUND and
+        # rejected by fetch_all). Their series come from docs/sf_stock_data.bin's release asset
+        # (NSE bhavcopies, SME ingested since 2026-09-22). Fill-only where Yahoo returned nothing,
+        # never a mix inside one ticker. Non-fatal: the Yahoo-only payload still ships, and the
+        # warning below is what tells you the SME rows shipped price-less. DATA_RUNBOOK §145.
+        run: python3 scripts/fill_prices_from_sf.py || echo "::warning::bhavcopy fill failed — SME/NSE-only rows ship without prices this run (see log)"
 
       - name: Floor the fetch against the last published build
         # fetch_all.py rebuilds stock_data.json from scratch, so whatever Yahoo returns IS

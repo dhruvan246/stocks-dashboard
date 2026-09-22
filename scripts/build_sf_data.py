@@ -143,7 +143,15 @@ def parse_rows(text):
         # carries the same OPEN/HIGH/LOW/CLOSE/PREV_CLOSE/TTL_TRD_QNTY/TURNOVER_LACS/NO_OF_TRADES
         # as an EQ row. Mid-series holes were the same defect: UNITECH went BZ 2020-03 -> 2025-10
         # and traded Rs16 cr on a sampled day inside the hole. See DATA_RUNBOOK §80.
-        if ser not in ("EQ", "BE", "BZ"): continue
+        # THE SME PLATFORM (NSE Emerge) IS ALSO LISTED EQUITY. SM = SME rolling, ST = SME
+        # trade-for-trade, SZ = SME surveillance — ordinary companies (SUNLITE, 571 symbols on
+        # 2026-09-22) trading every session in the same cash-segment file with the same columns.
+        # They were dropped with the debt/ETF/rights rows until 2026-09-22, so no SME name had a
+        # series, a stock page or a search row; the history since the platform's first listing
+        # (2012-09) rides in on scripts/sme_backfill.json.gz (update_sf_data.insert_sme_history,
+        # built by build_sme_backfill.py). Consumers that must tell the boards apart read
+        # meta[sym]["sme"], never the series letter. See DATA_RUNBOOK §145.
+        if ser not in ("EQ", "BE", "BZ", "SM", "ST", "SZ"): continue
         c = num(r, iC)
         if c <= 0: continue
         dlv = num(r, iD)
@@ -153,13 +161,16 @@ def parse_rows(text):
         # instead of the 0 sentinel (0 must mean "unavailable" only).
         if ser in ("BE", "BZ") and iD >= 0 and dlv == 0: dlv = 100.0
         # FULL row cached so future factor additions never need a refetch:
-        # [sym, close, prevclose, turnover, high, low, open, volume, deliv%, vwap, trades, isin, series]
-        # `series` is last and is also the CACHE VERSION MARKER — fetch_day/needs_fetch require >=13
-        # columns, so any day cached under the old EQ/BE-only filter is refetched instead of being
-        # replayed BZ-less. Append new columns at the END only; readers index by position.
+        # [sym, close, prevclose, turnover, high, low, open, volume, deliv%, vwap, trades, isin, series, seg]
+        # The LAST column is the CACHE VERSION MARKER — fetch_day/needs_fetch require >=14 columns
+        # (v4 = 13 with `series` under the EQ/BE/BZ filter; v5 = 14 with `seg`, parsed WITH the SME
+        # series), so any day cached under an older filter is refetched instead of being replayed
+        # without the rows that filter dropped. Append new columns at the END only; readers index
+        # by position. `seg` = "SME" for SM/ST/SZ rows, "MAIN" otherwise.
         out.append([r[iS].strip(), c, num(r, iP), num(r, iT), num(r, iH, c), num(r, iL, c),
                     num(r, iO, c), num(r, iV), dlv, num(r, iW), num(r, iN),
-                    (r[iI].strip() if 0 <= iI < len(r) else ""), ser])
+                    (r[iI].strip() if 0 <= iI < len(r) else ""), ser,
+                    "SME" if ser in ("SM", "ST", "SZ") else "MAIN"])
     return out
 
 
@@ -259,9 +270,9 @@ def fetch_day(d, j):
     if os.path.exists(cf):
         try:
             rows = json.load(open(cf))
-            # older cache rows lack the full column set (v3 = 12 cols, v4 = 13 with `series`, which
+            # older cache rows lack the full column set (v3 = 12 cols, v4 = 13 with `series` under the EQ/BE/BZ filter, v5 = 14 with `seg` incl. SME rows;
             # is also the marker for "parsed under the EQ/BE/BZ filter") — refetch; holiday [] reusable
-            if not rows or len(rows[0]) >= 13:
+            if not rows or len(rows[0]) >= 14:
                 return rows
         except Exception: pass
     ddmmyyyy = d.strftime("%d%m%Y")
@@ -303,7 +314,7 @@ def needs_fetch(d):
     if not os.path.exists(cf): return True
     try:
         rows = json.load(open(cf))
-        return bool(rows) and len(rows[0]) < 13   # pre-v4 cache (no `series` col / BZ-less) -> refetch
+        return bool(rows) and len(rows[0]) < 14   # pre-v5 cache (no `seg` col / SME-less, or BZ-less) -> refetch
     except Exception:
         return True
 

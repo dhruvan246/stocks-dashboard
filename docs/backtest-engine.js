@@ -311,7 +311,8 @@ function installStockSlice(S) {
   SERIES = {}; SERIES[sym] = ser;
   TURN   = {}; TURN[sym]   = { d, t: pad(S.t, () => 0) || new Array(n).fill(0) };
   META   = {}; META[sym]   = { symbol: sym, name: S.name || sym, industry: S.ind || '', sector: S.ind || '',
-                               mcap: 0, latest: S.p[n - 1] / 100, alive: !!S.alive, raw: S.raw != null ? S.raw : null };
+                               mcap: 0, latest: S.p[n - 1] / 100, alive: !!S.alive, raw: S.raw != null ? S.raw : null,
+                               sme: !!S.sme };   // NSE SME platform (Emerge) listing — slice flag from meta.sme (runbook §145)
   const endOff = Math.floor((Date.parse((S.end || '') + 'T00:00:00Z') / 1000 - S.ts) / DAY);
   SF_END_OFF = isFinite(endOff) ? endOff : d[n - 1];
   CORE_META = {};

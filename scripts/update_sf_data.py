@@ -780,6 +780,88 @@ def phantom_date_audit(data, lo, hi, floor=SESSION_FLOOR):
     return len(bad)
 
 
+def insert_sme_history(data, meta, cal=None):
+    """Bring in the NSE SME-platform (Emerge) history that build_sf_data's main-board-only filter
+    (("EQ","BE","BZ") until 2026-09-22) never ingested — scripts/sme_backfill.json.gz, built by
+    build_sme_backfill.py straight from NSE's daily bhavcopies (series SM/ST/SZ). DATA_RUNBOOK §145.
+
+    Two block kinds, both idempotent:
+      "create"  — a symbol the bin has never held: the whole adjusted series + meta (name from
+                  NSE's SME list, isin, sme=True). Skipped whenever the key already exists — the
+                  daily walk owns it from then on. A key that exists under a DIFFERENT ISIN is a
+                  recycled ticker and is named, never overwritten.
+      "prepend" — an SME name that later moved to the main board under `target`: its SME-era
+                  bars go in front of the bin series, rescaled onto that series' adjustment level
+                  by `anchor` (the bin's first bar: stored close / RAW close that day). Applied
+                  only while the bin still starts exactly on the anchor bar and every ledger bar
+                  precedes it; once applied the first bar moves earlier, so a re-run no-ops.
+    Bars on non-session dates are dropped by the §89f splice guard, never emitted.
+    Returns bars inserted."""
+    import bisect
+    lp = os.path.join(HERE, "sme_backfill.json.gz")
+    if not os.path.exists(lp): return 0
+    try:
+        led = json.load(gzip.open(lp, "rt", encoding="utf-8"))
+    except Exception as ex:
+        print("  sme_backfill ledger unreadable (%s) — skipped" % ex); return 0
+    KEYS = ("d", "c", "t", "h", "l", "op", "v", "dv", "vw")
+    def clean(sym, bars):
+        if cal is None: return bars
+        bad = set(off_calendar([b[0] for b in bars], cal))
+        if bad:
+            late = sorted(x for x in bad if x > cal[2]); phantom = sorted(bad - set(late))
+            if phantom:
+                print("  SME-BACKFILL %s: %d ledger bar(s) on non-session dates DROPPED, never emitted: %s"
+                      % (sym, len(phantom), ", ".join(map(str, phantom[:12]))))
+            bars = [b for b in bars if b[0] not in bad]
+        return bars
+    created = cbars = prepended = pbars = skipped = 0
+    for sym, spec in sorted((led.get("create") or {}).items()):
+        bars = clean(sym, spec.get("bars") or [])
+        if not bars: continue
+        if sym in data:
+            have = (meta.get(sym) or {}).get("isin"); want = (spec.get("meta") or {}).get("isin")
+            if have and want and have != want:
+                print("  SME-BACKFILL %s: bin key holds ISIN %s, ledger carries %s — recycled ticker, not touched" % (sym, have, want))
+            skipped += 1; continue                      # steady state after the first apply
+        data[sym] = {k: [b[i] for b in bars] for i, k in enumerate(KEYS)}
+        m = meta.setdefault(sym, {})
+        for k2, v2 in (spec.get("meta") or {}).items():
+            if k2 == "series": continue
+            m[k2] = v2
+        m.setdefault("name", sym); m.setdefault("ind", "Unknown"); m["sme"] = True
+        m["alive"] = True                                # veto_stale_alive() decides for real below
+        m["raw"] = bars[-1][1]
+        created += 1; cbars += len(bars)
+    for sym, spec in sorted((led.get("prepend") or {}).items()):
+        tgt = spec.get("target"); e = data.get(tgt); anc = spec.get("anchor") or {}
+        bars = clean(sym, spec.get("bars") or [])
+        if not e or not e.get("d") or not bars: skipped += 1; continue
+        if e["d"][0] <= bars[0][0]: continue           # already applied (or covered) — zero-cost steady state
+        if e["d"][0] != int(anc.get("ymd") or 0):
+            print("  SME-BACKFILL %s->%s: bin now starts %d, anchor was %s — not applied (verify by hand)"
+                  % (sym, tgt, e["d"][0], anc.get("ymd"))); skipped += 1; continue
+        if bars[-1][0] >= e["d"][0]:
+            print("  SME-BACKFILL %s->%s: ledger overlaps the bin — not applied" % (sym, tgt)); skipped += 1; continue
+        raw0 = float(anc.get("raw") or 0)
+        if raw0 <= 0: skipped += 1; continue
+        s = e["c"][0] / raw0                             # stored / raw on the anchor bar = the bin's adjustment level
+        for i, k in enumerate(KEYS):
+            vals = [b[i] for b in bars]
+            if k in ("c", "h", "l", "op", "vw") and abs(s - 1.0) > 1e-9:
+                vals = [round(x * s, 2) for x in vals]
+            e[k][0:0] = vals
+        mm = meta.setdefault(tgt, {})
+        if not mm.get("isin") and (spec.get("meta") or {}).get("isin"): mm["isin"] = spec["meta"]["isin"]
+        if abs(s - 1.0) > 1e-9:
+            print("  SME-BACKFILL %s->%s: %d SME-era bars prepended, rescaled x%.6f onto the bin's level" % (sym, tgt, len(bars), s))
+        prepended += 1; pbars += len(bars)
+    if created or prepended:
+        print("SME backfill: %d series created (%d bars), %d main-board series extended backwards (%d bars), %d blocks skipped; ledger built %s"
+              % (created, cbars, prepended, pbars, skipped, led.get("built")))
+    return cbars + pbars
+
+
 def insert_bz_history(data, cal=None):
     """Splice in the series-BZ bars that build_sf_data's old ("EQ","BE") filter threw away.
 
@@ -1165,6 +1247,7 @@ def main():
     print("Session calendar: %d session dates judged in %d..%d (floor %d symbol-bars; earlier dates not judged)"
           % (sum(1 for x in cal[0] if _cal_lo <= x <= _cal_hi), _cal_lo, _cal_hi, SESSION_FLOOR))
     bz = insert_bz_history(data, cal=cal)
+    sm = insert_sme_history(data, meta, cal=cal)     # NSE SME-platform history (create + main-board prepends, §145)
     sg = apply_series_surgery(data, meta, cal=cal)   # wrong-company stitch repair (DVL/DTIL, §89) — before the
                                                      # day loop so appends land on the repaired series
     mr = apply_manual_rights(data)   # hand-verified per-stock rights adjustments to match Trendlyne
@@ -1198,6 +1281,12 @@ def main():
             hi = round(max(h, c), 2); lo_ = round(min(l, c) if l > 0 else c, 2)   # EXACT intraday hi/lo
             opx = round(o_, 2) if o_ > 0 else round(c, 2); vwx = round(vw, 2) if vw > 0 else round(c, 2)
             dvx = round(dlv, 2) if dlv else 0
+            # Board flag (DATA_RUNBOOK §145): the row's series says which platform the symbol trades
+            # on TODAY — SM/ST/SZ = NSE SME (Emerge), EQ/BE/BZ = main board. Kept on meta["sme"] so a
+            # consumer never has to know the series letters; an SME name that migrates to the main
+            # board flips to False the day its first EQ/BE row is appended. None = row has no series
+            # column (pre-v4 cache) -> leave whatever the flag already says.
+            seg_sme = (r[12] in ("SM", "ST", "SZ")) if len(r) > 12 and r[12] else None
             e = data.get(sym)
             if e is None:
                 isin = r[11] if len(r) > 11 and r[11] else ""
@@ -1213,8 +1302,13 @@ def main():
                                  "op": [opx], "v": [int(v)], "dv": [dvx], "vw": [vwx]}
                     meta.setdefault(sym, {"name": sym, "ind": "Unknown", "alive": True})
                     if isin: meta[sym]["isin"] = isin; isin2sym[isin] = sym
+                    if seg_sme: meta[sym]["sme"] = True
                     continue
             if e["d"] and e["d"][-1] >= ymd: continue   # already have this day
+            if seg_sme is not None and sym in meta and bool(meta[sym].get("sme")) != seg_sme:
+                meta[sym]["sme"] = seg_sme
+                print("  %s: %s now trades on the %s (series %s) — meta.sme=%s"
+                      % (day, sym, "SME platform" if seg_sme else "main board", r[12], seg_sme))
             prev_raw = e["c"][-1]   # series is re-anchored: last value == last RAW close
             ratio = (c / prev_raw) if prev_raw else 1.0
             off = (CA_OFF.get(sym) or {}).get(ymd)   # OFFICIAL split/bonus factor for this ex-date
@@ -1305,8 +1399,8 @@ def main():
     # refreshes the on-disk bin but does NOT publish the release, bump clients, or commit a marker.
     blob = gzip.compress(json.dumps(D, separators=(",", ":")).encode(), 6)
     open(OUT, "wb").write(blob)
-    if not appended and not healed and not merged and not mr and not ao and not dvf and not dvo and not wk and not bi and not bz and not sg and not tunits and not dead and not _n:
-        print("No new day / heal / merge / manual-rights / open-arbitrated CA / dv-fill / dv-overwrite / weekend-insert / bar-insert / BZ-backfill / series-surgery / turnover-unit fix / aliveness decay / industry fill — rewrote merged base to %s (%.2f MB); nothing to publish." % (OUT, len(blob) / 1048576)); return
+    if not appended and not healed and not merged and not mr and not ao and not dvf and not dvo and not wk and not bi and not bz and not sm and not sg and not tunits and not dead and not _n:
+        print("No new day / heal / merge / manual-rights / open-arbitrated CA / dv-fill / dv-overwrite / weekend-insert / bar-insert / BZ-backfill / SME-backfill / series-surgery / turnover-unit fix / aliveness decay / industry fill — rewrote merged base to %s (%.2f MB); nothing to publish." % (OUT, len(blob) / 1048576)); return
     open(MARK, "w").write(D["end"])
     # tiny version marker — committed daily, lets the browser cache the big bin in IndexedDB
     # keyed to this `end` and skip re-downloading 80 MB until the data actually changes.

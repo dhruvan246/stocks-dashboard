@@ -338,6 +338,8 @@ def build_slice(sym, o, m, end, ts, chips, fno, core):
         "d0": offs[0], "dd": [offs[i] - offs[i - 1] for i in range(1, n)],
         "p": p, "k": k,
     }
+    if m.get("sme"):
+        out["sme"] = 1        # NSE SME platform (Emerge) listing — series SM/ST/SZ, DATA_RUNBOOK §145
 
     # --- tail arrays: passed through VERBATIM ------------------------------------------------
     # The client applies the very same transform loadSF() does, so a slice cannot drift from the

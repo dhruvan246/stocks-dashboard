@@ -59,6 +59,7 @@
         <div class="flex items-center gap-2 flex-wrap">
           <h1 id="sSym" class="text-2xl font-extrabold text-slate-900 tracking-tight">—</h1>
           <span id="sDead" class="hidden text-[10px] font-bold uppercase bg-amber-100 text-amber-700 px-2 py-0.5 rounded-full">delisted</span>
+          <span id="sSme" class="hidden text-[10px] font-bold uppercase bg-sky-100 text-sky-700 px-2 py-0.5 rounded-full" title="Listed on NSE's SME platform (Emerge): SME series SM/ST — smaller float, wider price bands, lot-size trading">NSE SME</span>
         </div>
         <div id="sName" class="text-sm text-slate-500 mt-0.5"></div>
         <div id="sInd" class="text-xs text-slate-400 mt-0.5"></div>
@@ -580,6 +581,7 @@ function render(){
   $('sSym').textContent=m.symbol; document.title='STOCKSWORLD · '+m.symbol;
   $('sName').textContent=m.name||''; $('sInd').textContent=m.industry||'';
   if(!m.alive) $('sDead').classList.remove('hidden');
+  if(m.sme) $('sSme').classList.remove('hidden');   // NSE SME platform listing (slice flag, runbook §145)
   $('sPrice').textContent='₹'+(rawLast>=1000?Math.round(rawLast).toLocaleString('en-IN'):rawLast.toFixed(2));
   $('sChg').innerHTML=`<span class="${dayChg>=0?'pos':'neg'}">${pct(dayChg)}</span> <span class="text-slate-400 text-xs">1-day</span>`;
   if(!rw&&LIVE_OFF!=null&&off===LIVE_OFF)
