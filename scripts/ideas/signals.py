@@ -1,9 +1,8 @@
-import re
 """Turn the three price panels (daily spot, monthly WPI, monthly HS trade unit prices) into commodity SIGNALS mapped to
 listed Indian beneficiaries and sufferers, via docs/ideas/commodity_map.json. This is the file the daily research run reads
 first and the Commodity Watch page shows at the top. Usage: python3 scripts/ideas/signals.py -> docs/ideas/signals.json
 """
-import json, os, sys, datetime, statistics, gzip
+import csv, json, os, re, sys, datetime, statistics, gzip
 sys.path.insert(0, os.path.dirname(os.path.abspath(__file__)))
 import ist
 
@@ -85,11 +84,71 @@ def trade_group(prefixes, side):
                 series=dict(months=months, price=P, value=[round(x, 2) for x in V]))
 
 
+
+def _india_history():
+    """Every Indian print we have ever recorded, keyed the way india_spot.py writes the CSV."""
+    out = {}
+    p = os.path.join(DOCS, 'india_spot_history.csv')
+    if not os.path.exists(p):
+        return out
+    for r in csv.DictReader(open(p)):
+        try:
+            out.setdefault((r['source'], r['series']), []).append((r['date'], float(r['price'])))
+        except (ValueError, KeyError):
+            continue
+    for v in out.values():
+        v.sort()
+    return out
+
+
+def hist_stats(series):
+    """Changes and a HIGHEST-SINCE date from a dated series of [date, price].
+
+    'Highest since' is the plain reading of the question 'is this at a four-month high?': the most recent
+    earlier date whose price was at or above today's. No earlier date reaching it means today is the highest
+    in everything we hold, which is a statement about OUR history, not about all time - so the span we hold
+    is reported beside it and the page says so.
+    """
+    v = [(d, x) for d, x in series if x is not None]
+    if len(v) < 2:
+        return None
+    last_d, last = v[-1]
+
+    def back(days):
+        cut = (datetime.date.fromisoformat(last_d) - datetime.timedelta(days=days)).isoformat()
+        older = [x for d, x in v if d <= cut]
+        return older[-1] if older else None
+
+    hi_since = None
+    for d, x in reversed(v[:-1]):
+        if x >= last:
+            hi_since = d
+            break
+    lo_since = None
+    for d, x in reversed(v[:-1]):
+        if x <= last:
+            lo_since = d
+            break
+    vals = [x for _, x in v]
+    span = (datetime.date.fromisoformat(last_d) - datetime.date.fromisoformat(v[0][0])).days
+    # A two-day series can say "highest since yesterday" and be literally true while telling the reader
+    # nothing. Below a real span the changes still stand - they are measured - but the high/low-since
+    # verdict is withheld rather than dressed up.
+    deep = span >= 60 and len(v) >= 6
+    return dict(n=len(v), first=v[0][0], last_date=last_d, span_days=span, deep=deep,
+                chg_1w=pct(last, back(7)), chg_1m=pct(last, back(30)), chg_3m=pct(last, back(91)),
+                chg_6m=pct(last, back(182)), chg_1y=pct(last, back(365)),
+                hi=max(vals), lo=min(vals),
+                high_since=hi_since if deep else None, low_since=lo_since if deep else None,
+                at_series_high=(hi_since is None) if deep else None,
+                at_series_low=(lo_since is None) if deep else None)
+
 def main():
     cmap = load('commodity_map.json'); spot = load('spot.json'); wpi = load('wpi.json'); idx = load('trade/index.json')
     ind = load('india_spot.json') or {}
     te_rows = {r['slug']: r for r in ((ind.get('sources') or {}).get('te') or {}).get('rows', [])}
     ind_src = {k: v.get('rows', []) for k, v in (ind.get('sources') or {}).items() if k != 'te'}
+    ihist = _india_history()
     out = []
     for g in cmap['groups']:
         sig = dict(id=g['id'], name=g['name'], hs=g.get('hs', []), benefit=g.get('benefit', []), suffer=g.get('suffer', []), history=g.get('history'), note=g.get('note'), sources={})
@@ -114,8 +173,20 @@ def main():
         for src, rx in g.get('india', []):
             for r in ind_src.get(src, []):
                 label = ' '.join(str(r.get(k)) for k in ('city', 'market', 'name', 'grade') if r.get(k))
-                if re.search(rx, str(r.get('name') or r.get('grade') or ''), re.I) and r.get('price') is not None:
-                    india.append(dict(source=src, name=label, last=r['price'], unit=r.get('unit'), chg_1d=r.get('chg_1d')))
+                if not re.search(rx, str(r.get('name') or r.get('grade') or ''), re.I) or r.get('price') is None:
+                    continue
+                # NMDC carries its own history (its price letters are the series); the other sources publish
+                # only today's print, so their history is the one we have been recording since 2026-09-22.
+                key = ' | '.join(str(r.get(k)) for k in ('city', 'market', 'name', 'grade', 'slug') if r.get(k))
+                series = r.get('history') or ihist.get((src, key)) or []
+                row = dict(source=src, name=label, last=r['price'], unit=r.get('unit'), chg_1d=r.get('chg_1d'))
+                for k in ('wef', 'basis', 'chg_rev', 'filed'):
+                    if r.get(k) is not None:
+                        row[k] = r[k]
+                st = hist_stats([tuple(x) for x in series])
+                if st:
+                    row['stats'] = st
+                india.append(row)
         if india:
             sig['sources']['india'] = india
         # monthly WPI items

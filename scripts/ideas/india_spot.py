@@ -8,6 +8,9 @@ Sources (each isolated: a failure is reported and the previous rows for that sou
   rubber      Rubber Board of India: RSS4, RSS5, ISNR20, Latex 60% at Kottayam, Kochi, Agartala (Rs per 100 kg + US$)
   sugar       Chinimandi sugar spot rates by city and grade (S/30, M/30), Rs per quintal, with the day's change
   fuel        PPAC (Ministry of Petroleum): daily petrol and diesel in the four metros from the posted PDF
+  nmdc        NMDC's administered iron-ore price (lump and fines, Rs per tonne), read from the price letters it
+              files with BSE. It revises roughly monthly, so this is a dated series, not a daily print, and the
+              whole history back to 2015 is kept in docs/ideas/nmdc_history.json.
   te          Trading Economics: ~100 global commodities (HRC steel, iron ore, coking coal, steel scrap, PVC, PE, PP,
               soda ash, methanol, urea, DAP, sulphur, titanium, lithium, kraft pulp, freight index...) from each
               page's summary line: value, unit, date, day / month / year change. Their series are futures and CFD
@@ -20,6 +23,7 @@ weekly and monthly changes accumulate for the sources that publish no history).
 import argparse, csv, datetime, html, json, os, re, ssl, sys, time, urllib.request, concurrent.futures as cf
 
 HERE = os.path.dirname(os.path.abspath(__file__))
+sys.path.insert(0, HERE)          # the sibling bse.py, for the NMDC filings
 DOCS = os.path.join(HERE, '..', '..', 'docs', 'ideas')
 OUT = os.path.join(DOCS, 'india_spot.json')
 HIST = os.path.join(DOCS, 'india_spot_history.csv')
@@ -195,11 +199,180 @@ def src_te(slugs):
                 rows=rows, errors=errs)
 
 
+# ---------------------------------------------------------------- NMDC iron ore (from its own BSE filings)
+# NMDC sets an administered price for Indian iron ore and files a letter with BSE every time it revises
+# (roughly monthly). That makes it the one Indian steel-chain price with a real, dated, free history: this
+# reads those filings back to 2015 into docs/ideas/nmdc_history.json and adds only what it has not read yet.
+# The filing's own tax basis CHANGES between eras (2023-24 letters say the price INCLUDES royalty/DMF/NMET,
+# the 2026 ones say it excludes them), so the basis of every row is stored beside the number and never
+# silently compared across the break.
+NMDC_SCRIP = '526371'
+NMDC_HIST = os.path.join(DOCS, 'nmdc_history.json')
+NMDC_ANN = ('https://api.bseindia.com/BseIndiaAPI/api/AnnSubCategoryGetData/w?pageno=%d&strCat=-1&strPrevDate=%s'
+            '&strScrip=' + NMDC_SCRIP + '&strSearch=P&strToDate=%s&strType=C&subcategory=-1')
+NMDC_ATT = 'https://www.bseindia.com/xml-data/corpfiling/AttachLive/%s'
+NMDC_PAT = re.compile(r'price[s]?\s+of\s+iron\s+ore', re.I)
+# the letters call the grades 'Lump Ore'/'Fines' up to 2024 and 'Baila Lump'/'Baila Fines' after it
+NMDC_GRADES = (('lump', r'(?:Baila\s+)?Lump(?:\s*Ore)?', 'Iron ore lump (65.5%, 10-40mm)'),
+               ('fines', r'(?:Baila\s+)?Fines', 'Iron ore fines (64%, -10mm)'))
+MONTHS = {}
+for _i, _m in enumerate(['January', 'February', 'March', 'April', 'May', 'June',
+                         'July', 'August', 'September', 'October', 'November', 'December'], 1):
+    MONTHS[_m.lower()] = _i
+    MONTHS[_m.lower()[:3]] = _i
+
+
+def nmdc_wef(text, fallback):
+    """The 'with effect from' date the filing names, as YYYY-MM-DD; the filing's own date when it names none."""
+    t = re.sub(r'\s+', ' ', text or '')
+    m = re.search(r'w\.?\s*e\.?\s*f\.?\s*:?\s*(\d{1,2})\s*[./-]\s*(\d{1,2})\s*[./-]\s*(\d{2,4})', t, re.I)
+    if m:
+        y = int(m.group(3))
+        return '%04d-%02d-%02d' % (y + 2000 if y < 100 else y, int(m.group(2)), int(m.group(1)))
+    m = re.search(r'w\.?\s*e\.?\s*f\.?\s*:?\s*(\d{1,2})\s*(?:st|nd|rd|th)?\s+([A-Za-z]{3,9})\.?,?\s+(\d{4})', t, re.I)
+    if m and MONTHS.get(m.group(2).lower()):
+        return '%s-%02d-%02d' % (m.group(3), MONTHS[m.group(2).lower()], int(m.group(1)))
+    m = re.search(r'w\.?\s*e\.?\s*f\.?\s*:?\s*([A-Za-z]{3,9})\.?\s+(\d{1,2})\s*(?:st|nd|rd|th)?,?\s+(\d{4})', t, re.I)
+    if m and MONTHS.get(m.group(1).lower()):
+        return '%s-%02d-%02d' % (m.group(3), MONTHS[m.group(1).lower()], int(m.group(2)))
+    return fallback
+
+
+def nmdc_parse(text, subject, filing_date):
+    """Lump and fines rupees per tonne out of one price letter, with the tax basis it states."""
+    body = re.sub(r'\s+', ' ', text or '')
+    out = {}
+    for key, rx, _name in NMDC_GRADES:
+        # The letters use four shapes for the same line, so anchor on the "per ton" that all of them end
+        # with rather than on any one separator:
+        #   "Lump Ore (65.53, 6-40mm) @Rs. 2,850/- per ton"      (2019, and the OCR of the scanned ones)
+        #   "Lump Ore (65.5%, 10-40mm) @ ₹ 5,400/- per ton."     (2026)
+        #   "Baila Lump (65.5%, 10-40 mm) - ₹ 5,450/- Per Ton."  (2026, a dash where the @ used to be)
+        #   "Baila Lump (65.5%, 10-40mm) – ₹ 6,100- Per Ton."    (2025, including the filing's own missing slash)
+        # The number needs four digits: the OCR of the scans breaks '3,100' into '3, 100', and matching a
+        # bare three-digit run there silently produced a price of Rs 100 a tonne.
+        m = re.search(rx + r'[^\n]{0,60}?(?:₹|Rs\.?|INR|@)\s*(\d{1,2}[,\s]{0,2}\d{3})\s*/?\s*-?\s*(?:per|PER)\s*(?:ton|mt|wmt)',
+                      body, re.I)
+        out[key] = float(re.sub(r'[^\d]', '', m.group(1))) if m else None
+    basis = None
+    if re.search(r'inclusive of\s+Royalty', body, re.I):
+        basis = 'includes royalty, DMF and NMET'
+    elif re.search(r'(?:exclusive of|excluding)\s+Royalty', body, re.I):
+        basis = 'excludes royalty, DMF and NMET'
+    note = re.search(r'(Note\s*:.{0,260}?)(?:Please take note|Thanking you|$)', body, re.I)
+    return dict(wef=nmdc_wef(subject + ' ' + body, filing_date), lump=out['lump'], fines=out['fines'],
+                basis=basis, note=re.sub(r'\s+', ' ', note.group(1)).strip()[:240] if note else '')
+
+
+def nmdc_filings(d_from, d_to):
+    """NMDC's 'Prices of Iron Ore w.e.f. ...' filings in a window. BSE serves 50 rows a page whatever
+    window is asked for, so callers walk the range in short windows rather than trusting one call."""
+    import bse
+    out = {}
+    for page in (1, 2):
+        rows = json.loads(bse._get(NMDC_ANN % (page, d_from.strftime('%Y%m%d'), d_to.strftime('%Y%m%d')),
+                                   sleep=0.4)).get('Table') or []
+        for r in rows:
+            if NMDC_PAT.search((r.get('NEWSSUB') or '') + ' ' + (r.get('HEADLINE') or '')):
+                out[r['NEWS_DT'][:10]] = dict(date=r['NEWS_DT'][:10], att=(r.get('ATTACHMENTNAME') or '').strip(),
+                                              subject=re.sub(r'\s+', ' ', r.get('NEWSSUB') or '').strip())
+        if len(rows) < 50:
+            break
+    return list(out.values())
+
+
+def nmdc_read(f):
+    """One filing's PDF -> parsed record. Never raises: an unreadable filing is recorded as unread."""
+    import bse
+    if not f['att']:
+        return dict(f, lump=None, fines=None, basis=None, note='', wef=f['date'],
+                    error='the BSE row carries no attachment')
+    try:
+        data = bse.get_attachment(NMDC_ATT % f['att'], timeout=90)
+        if data[:4] != b'%PDF':
+            return dict(f, lump=None, fines=None, basis=None, note='', wef=f['date'], error='attachment is not a PDF')
+        import fitz
+        doc = fitz.open(stream=data, filetype='pdf')
+        txt = '\n'.join(doc[i].get_text() for i in range(min(3, len(doc))))
+    except Exception as e:
+        return dict(f, lump=None, fines=None, basis=None, note='', wef=f['date'], error=str(e)[:110])
+    rec = dict(f, **nmdc_parse(txt, f['subject'], f['date']))
+    if rec['lump'] is None and rec['fines'] is None:
+        rec['error'] = 'PDF has no readable price line (older filings are scans with no text layer)'
+    return rec
+
+
+def src_nmdc(days=200, since=None):
+    """NMDC's administered iron-ore price, and the whole dated history of its revisions."""
+    hist = {}
+    if os.path.exists(NMDC_HIST):
+        try:
+            hist = {r['date']: r for r in (json.load(open(NMDC_HIST)).get('filings') or [])}
+        except Exception:
+            hist = {}
+    d_to = datetime.date.today()
+    d_from = since or (d_to - datetime.timedelta(days=days))
+    wins, d = [], d_from
+    while d < d_to:                       # quarters: one BSE call cannot return more than 50 rows
+        nxt = min(d + datetime.timedelta(days=90), d_to)
+        wins.append((d, nxt))
+        d = nxt + datetime.timedelta(days=1)
+    seen, win_err = {}, 0
+    for a, b in wins:
+        try:
+            for f in nmdc_filings(a, b):
+                seen[f['date']] = f
+        except Exception as e:
+            win_err += 1
+            print(f'nmdc: window {a}..{b} failed ({str(e)[:70]})')
+    if win_err == len(wins) and not hist:
+        raise RuntimeError(f'every BSE window failed ({win_err})')
+    added, unread = 0, 0
+    for f in sorted(seen.values(), key=lambda r: r['date']):
+        prev = hist.get(f['date'])
+        if prev and (prev.get('lump') is not None or prev.get('fines') is not None):
+            continue                      # already read and priced; never refetch
+        rec = nmdc_read(f)
+        hist[f['date']] = rec
+        if rec.get('lump') is not None or rec.get('fines') is not None:
+            added += 1
+        else:
+            unread += 1
+    rows_h = sorted(hist.values(), key=lambda r: r['date'])
+    priced = [r for r in rows_h if r.get('lump') is not None or r.get('fines') is not None]
+    json.dump(dict(built=datetime.datetime.now().strftime('%Y-%m-%d %H:%M IST'),
+                   source='NMDC Limited price letters filed with BSE under LODR Regulation 30 (scrip %s)' % NMDC_SCRIP,
+                   note='NMDC administers this price; it changes only when NMDC files a revision, so the series is '
+                        'dated by the filing, not daily. The tax basis is stated per row and changes between eras.',
+                   filings_found=len(rows_h), priced=len(priced), unread=len(rows_h) - len(priced),
+                   filings=rows_h), open(NMDC_HIST, 'w'), indent=1, ensure_ascii=False)
+    if not priced:
+        raise RuntimeError('no NMDC price filing could be read')
+    last = priced[-1]
+    rows = []
+    for key, _rx, name in NMDC_GRADES:
+        if last.get(key) is None:
+            continue
+        before = [r for r in priced[:-1] if r.get(key) is not None]
+        prev_v = before[-1][key] if before else None
+        rows.append(dict(market='NMDC (administered)', name=name, price=last[key], unit='Rs/tonne',
+                         wef=last.get('wef'), basis=last.get('basis'), filed=last['date'],
+                         chg_rev=round(100 * (last[key] / prev_v - 1), 2) if prev_v else None,
+                         prev=prev_v, prev_date=before[-1]['wef'] if before else None,
+                         history=[[r['wef'], r[key]] for r in priced if r.get(key) is not None]))
+    return dict(source='NMDC Limited price letters filed with BSE (scrip %s)' % NMDC_SCRIP,
+                url='https://www.bseindia.com/stock-share-price/nmdc-ltd/nmdc/%s/corp-announcements/' % NMDC_SCRIP,
+                date='w.e.f. ' + (last.get('wef') or last['date']), rows=rows,
+                revisions=len(priced), since=priced[0]['wef'], unread=len(rows_h) - len(priced))
+
+
 # ---------------------------------------------------------------- main
 def main():
     ap = argparse.ArgumentParser()
     ap.add_argument('--no-te', action='store_true')
     ap.add_argument('--te-only', action='store_true')
+    ap.add_argument('--nmdc-days', type=int, default=200, help='how far back to look for unread NMDC price filings')
+    ap.add_argument('--nmdc-since', default='', help='YYYY-MM-DD: sweep NMDC filings from here (one-off backfill)')
     a = ap.parse_args()
     old = {}
     if os.path.exists(OUT):
@@ -207,7 +380,10 @@ def main():
             old = json.load(open(OUT)).get('sources') or {}
         except Exception:
             old = {}
-    plan = [] if a.te_only else [('metalbook', src_metalbook), ('ibja', src_ibja), ('rubber', src_rubber), ('sugar', src_sugar), ('fuel', src_fuel)]
+    since = datetime.date.fromisoformat(a.nmdc_since) if a.nmdc_since else None
+    plan = [] if a.te_only else [('metalbook', src_metalbook), ('ibja', src_ibja), ('rubber', src_rubber),
+                                 ('sugar', src_sugar), ('fuel', src_fuel),
+                                 ('nmdc', lambda: src_nmdc(days=a.nmdc_days, since=since))]
     if not a.no_te:
         plan.append(('te', lambda: src_te(TE_SLUGS)))
     sources, status = dict(old), {}

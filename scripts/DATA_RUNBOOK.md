@@ -17356,6 +17356,70 @@ the BSE bhavcopy lands; commits only `docs/ideas/**`, `docs/ideas.html`, `script
 (ideas/latest.json 80 h, ideas/track.json 80 h, ideas/universe.json 80 h, ideas/ideas.json static). sw.js v158; nav entry under
 Markets ▸ Discovery & Filings; home tile text in `docs/index.html` DESC.
 
+### 144a-iii. ★★★ NMDC IRON ORE — the one Indian price with a free, dated history (2026-09-23)
+
+**The gap it closes.** Every other Indian print on Commodity Watch (MetalBook, IBJA, sugar, fuel) publishes
+TODAY and nothing else, so "is steel at a four-month high?" had no answer until we had recorded four months
+ourselves. NMDC is different: it ADMINISTERS the iron-ore price and files a letter with BSE under LODR
+Regulation 30 every time it revises, roughly monthly. Those filings ARE the series.
+
+**Reach, measured 2026-09-23 (never assume it, re-measure):** a quarterly sweep of NMDC's BSE announcements
+(scrip 526371) from 2011 finds **135** "Prices of Iron Ore w.e.f. ..." filings, 2013-11-16 to 2026-09-09.
+Of those, **86 PDFs are still served** and **84 parse** → the published series runs **2019-01-03 → today**.
+The other 49 are not a parser failure and must not be reported as one:
+  - 39 (2015-2018) → the announcement ROW survives but BSE 404s the attachment on both AttachLive and
+    AttachHis. The old-style name (`37BB874C_916A_..._120319.pdf`) is gone from their servers.
+  - 8 (2013, 2015) → the BSE row carries no ATTACHMENTNAME at all.
+  - 2 → the PDF is a scan with no text layer (OCR-grade noise, no price line).
+  NMDC's own site (nmdc.co.in) is a JS shell that serves the same 3,285-byte page for every path, so it is
+  NOT a route to the older letters. Checked and rejected 2026-09-23.
+
+**The four filing formats** (one regex must cover all; `scripts/ideas/india_spot.py` → `nmdc_parse`):
+```
+Lump Ore (65.53, 6-40mm) @Rs. 2,850/- per ton        2019, and the OCR of the scans
+Lump Ore (65.5%, 10-40mm) @ ₹ 5,400/- per ton.       2026
+Baila Lump (65.5%, 10-40 mm) - ₹ 5,450/- Per Ton.    2026, a dash where the @ used to be
+Baila Lump (65.5%, 10-40mm) – ₹ 6,100- Per Ton.      2025, incl. the filing's own missing slash
+```
+Two traps that cost a re-read:
+  - the grade is renamed **"Lump Ore"/"Fines" → "Baila Lump"/"Baila Fines"** around 2024. A regex anchored
+    on `Lump\s*Ore` silently returns lump=None for everything after the rename while fines keeps working,
+    which looks like a half-broken source rather than a rename.
+  - the OCR of the scans breaks `3,100` into `3, 100`. Matching a bare three-digit run there wrote a price
+    of **Rs 100 a tonne** into the series. The number is therefore required to be four digits
+    (`\d{1,2}[,\s]{0,2}\d{3}`) and the match is anchored on the "per ton" every format ends with.
+  Validation that caught both: parse all cached PDFs, then assert no value outside Rs 1,500-20,000, no row
+  where lump < fines, and six hand-read values match exactly.
+
+**BASIS BREAK — do not compare across it.** The letters state their own tax basis and it CHANGES:
+2024-25 filings say the price is **inclusive** of royalty, DMF and NMET; the 2026 ones say **exclusive**.
+84 rows: 64 exclusive, 19 inclusive, 1 unstated. Every row stores its `basis` and the page repeats it under
+the table. A move across the break is a definition change, not a price move.
+
+**Where it lives.**
+  - `scripts/ideas/india_spot.py` → `src_nmdc()` is the seventh source. Daily it looks back `--nmdc-days`
+    (200) and only reads filings not already priced; `--nmdc-since YYYY-MM-DD` does a one-off backfill.
+  - `docs/ideas/nmdc_history.json` — every filing found, priced or not, with the reason when unread.
+  - `docs/ideas/commodity_map.json` — `iron_ore` and `steel` both carry `["nmdc", "^Iron ore"]`;
+    `coking_coal` gained its missing `te: ["coking-coal"]` at the same time.
+
+**hist_stats() — the general answer to "highest since".** `scripts/ideas/signals.py` now reads
+`india_spot_history.csv` (and any `history` an India row carries, which is how NMDC's own series arrives)
+and returns 1w/3m/6m/1y changes, hi/lo, and **`high_since`**: the most recent EARLIER date whose price was
+at or above today's. Two rules that keep it honest:
+  - it is a statement about OUR span, not about all time, so `n`, `first` and `span_days` ride with it and
+    the page prints the span under the table;
+  - **`deep` gate** — with `span_days < 60` or fewer than 6 points the verdict is withheld entirely.
+    Without it, a two-day MetalBook series rendered "highest since 2026-09-22", literally true and
+    worthless. The changes still show; only the verdict is suppressed. The page never re-implements the
+    rule: `commodities.html` reads `stats` off signals.json.
+
+**So the honest answer today** (2026-09-23, measured, HEAD at the commit below): NMDC lump Rs 5,400/t
+w.e.f. 2026-09-09, +2.9% on the previous revision, 1m +2.9% / 3m -5.3% / 1y +17.4%, highest since
+2026-07-10 in a series of 84 revisions back to 2019. For FINISHED steel there is still no dated Indian
+series — WPI flat products (monthly, to 2026-04) and the HS 7208 customs unit value (monthly, to 2026-07)
+are the only long ones, and both lag the newspaper by months.
+
 ### 144a-ii. ★★★ INDIA SPOT — the domestic prints the newspapers quote, daily, free (2026-09-22 evening)
 
 **Trigger:** the user showed a Business Line clipping (Mumbai HRC ₹63,900/t, CRC ₹73,500, rebar ₹60,450, NMDC lump ₹5,400,

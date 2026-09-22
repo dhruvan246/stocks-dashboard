@@ -846,11 +846,23 @@
   },
   {
    "file": "ideas/india_spot.json",
-   "name": "Commodity Watch — India spot (MetalBook steel/metals by city, IBJA, Rubber Board, sugar spot, PPAC fuel) + Trading Economics proxies",
+   "name": "Commodity Watch — India spot (MetalBook steel/metals by city, IBJA, Rubber Board, sugar spot, PPAC fuel, NMDC iron ore) + Trading Economics proxies",
    "workflow": "cloud routine daily-ideas (scripts/ideas/india_spot.py)",
    "cadence": "daily ~19:30 IST (trading days)",
    "max_age_hours": 80,
    "min_bytes": 8000,
+   "min_ratio": 0,
+   "pages": [
+    "commodities.html"
+   ]
+  },
+  {
+   "file": "ideas/nmdc_history.json",
+   "name": "Commodity Watch — NMDC iron-ore price revisions (every price letter NMDC filed with BSE, 2019 to date)",
+   "workflow": "cloud routine daily-ideas (scripts/ideas/india_spot.py, NMDC source)",
+   "cadence": "checked daily; the file only changes when NMDC files a revision (roughly monthly)",
+   "max_age_hours": 8760,
+   "min_bytes": 20000,
    "min_ratio": 0,
    "pages": [
     "commodities.html"
