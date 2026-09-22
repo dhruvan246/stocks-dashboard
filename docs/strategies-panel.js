@@ -150,10 +150,36 @@ function borderMap(cfg, all){
         out[i + 1] = (out[i + 1] ? out[i + 1] + ' \u00b7 ' : '') + f.field + ' ' + (+v).toFixed(1) + ' sits near the ' + f.op + ' ' + f.val + ' cut'; } });
   return out;
 }
+/* factor columns for a strategy's pick table (user 2026-09-22): the sort field + every filter
+   field, each pick's live value shown, so you see WHY a stock is picked and where it sits vs the
+   cut. Picks already arrive in sort order (screenAsOf sorts by sortBy). */
+const SHORT_FIELD = { diiPct:'DII%', fiiPct:'FII%', diiChgPp:'ΔDII', fiiChgPp:'ΔFII',
+  d52:'52wHi%', d52_low_pct:'52wLo%', rsi:'RSI', accel:'Accel%', changePercent:'Chg%',
+  ret1m:'1m%', ret3m:'3m%', ret6m:'6m%', ret12m:'12m%', dma50:'50DMA%', dma200:'200DMA%',
+  profitYoyPct:'NP-YoY%', profitTTM:'TTM-NP%', profitStreak:'NP-strk', profitAccel:'NP-accel',
+  profitBase:'NP-base', mcap:'Mcap', hist_mcap:'HMcap', indRank:'IndRk', vol:'Vol%', delivPct:'Deliv%' };
+const OP_SYM = { '<=':'≤', '>=':'≥', '<':'<', '>':'>', '=':'=', '==':'=' };
+function pickCols(cfg){
+  const out = [], idx = {};
+  const push = (field, m) => { if (field in idx) Object.assign(out[idx[field]], m); else { idx[field] = out.length; out.push(Object.assign({ field: field }, m)); } };
+  if (cfg.sortBy) push(cfg.sortBy, { sortCol: true, dir: cfg.dir });
+  (cfg.filters || []).forEach(f => push(f.field, { op: f.op, val: f.val }));
+  return out;
+}
+function pickFV(r, cols){ const o = {}; cols.forEach(c => { o[c.field] = fieldVal(r, c.field); }); return o; }
+function fldLabel(field){ return SHORT_FIELD[field] || (typeof FIELD_LABEL !== 'undefined' && FIELD_LABEL[field]) || field; }
+function fmtFV(v){ if (v == null || !isFinite(v)) return '—'; return Number.isInteger(v) ? String(v) : (Math.abs(v) >= 1000 ? Math.round(v).toLocaleString('en-IN') : (+v).toFixed(1)); }
+function pickColHead(cols){ return cols.map(function(c){
+  return '<th title="' + esc(fldLabel(c.field) + (c.op ? ' filter ' + (OP_SYM[c.op] || c.op) + ' ' + c.val : '') + (c.sortCol ? ' · SORT ' + (c.dir === 'high' ? 'high first' : 'low first') : '')) + '">' +
+    esc(fldLabel(c.field)) +
+    (c.sortCol ? ' <span class="sym">' + (c.dir === 'high' ? '▼' : '▲') + '</span>' : '') +
+    (c.op ? ' <span class="sym">' + (OP_SYM[c.op] || c.op) + c.val + '</span>' : '') + '</th>'; }).join(''); }
+function pickColCells(cols, r){ return cols.map(function(c){
+  return '<td' + (c.sortCol ? ' style="font-weight:700"' : '') + '>' + fmtFV(r.fv ? r.fv[c.field] : null) + '</td>'; }).join(''); }
 function screenOne(it){
-  const all = screenAsOf(it.cfg, SF.end), picks = all.slice(0, it.cfg.topN), bd = borderMap(it.cfg, all);
-  PICKS[it.id] = { asOf: SF.end, rows: picks.map((r, i) => ({ rank: i+1, sym: r.sym, tkr: r.tkr, bd: bd[i+1] || null,
-    px: (META[r.tkr] && META[r.tkr].raw) ? META[r.tkr].raw : r.price })) };
+  const all = screenAsOf(it.cfg, SF.end), picks = all.slice(0, it.cfg.topN), bd = borderMap(it.cfg, all), cols = pickCols(it.cfg);
+  PICKS[it.id] = { asOf: SF.end, cols: cols, rows: picks.map((r, i) => ({ rank: i+1, sym: r.sym, tkr: r.tkr, bd: bd[i+1] || null,
+    px: (META[r.tkr] && META[r.tkr].raw) ? META[r.tkr].raw : r.price, fv: pickFV(r, cols) })) };
 }
 /* ---------- LIVE re-ranking — the ENGINE'S OWN overlay (unified 2026-08-31) ----------
    The first version approximated live factors with ratio maths and its own candidate quotes —
@@ -170,9 +196,9 @@ function screenOne(it){
     LIVEOV = { ts: Date.now(), date: (r && r.date) || SF.end, n: (r && r.n) || 0 };
   }
   function screenLiveOne(it){
-    const all = screenAsOf(it.cfg, LIVEOV.date || SF.end), picks = all.slice(0, it.cfg.topN), bd = borderMap(it.cfg, all);
-    PICKS[it.id] = { asOf: SF.end, live: true, liveTs: LIVEOV.ts, rows: picks.map((r, i) => ({ rank: i + 1, sym: r.sym, tkr: r.tkr, bd: bd[i+1] || null,
-      px: r.price })) };   // the spliced bar IS the live price; rebalance mode still shows META.raw
+    const all = screenAsOf(it.cfg, LIVEOV.date || SF.end), picks = all.slice(0, it.cfg.topN), bd = borderMap(it.cfg, all), cols = pickCols(it.cfg);
+    PICKS[it.id] = { asOf: SF.end, live: true, liveTs: LIVEOV.ts, cols: cols, rows: picks.map((r, i) => ({ rank: i + 1, sym: r.sym, tkr: r.tkr, bd: bd[i+1] || null,
+      px: r.price, fv: pickFV(r, cols) })) };   // the spliced bar IS the live price; rebalance mode still shows META.raw
   }
   async function screenPick(it){
     if (PICKMODE === 'live'){ await ensureLiveOverlay([it.cfg]); screenLiveOne(it); }
@@ -306,7 +332,8 @@ function renderCards(){
     const p = PICKS[it.id];
     let body = '';
     if (p){
-      body = '<div class="twrap"><table><thead><tr><th>#</th><th>Pick</th><th>Live ₹</th><th>Day %</th></tr></thead><tbody>' +
+      const cols = p.cols || [];
+      body = '<div class="twrap"><table><thead><tr><th>#</th><th>Pick</th><th>Live ₹</th><th>Day %</th>' + pickColHead(cols) + '</tr></thead><tbody>' +
         p.rows.map(r => {
           const q = liveQ(r.sym); const px = q && q.ltp != null ? q.ltp : r.px;
           const chg = q && q.ltp != null && q.prevClose ? (q.ltp / q.prevClose - 1) * 100 : null;
@@ -315,7 +342,7 @@ function renderCards(){
             (r.bd ? ' <span class="tag" style="background:color-mix(in srgb,#c98500 18%,transparent);color:#c98500" title="' + esc(r.bd) + '">borderline</span>' : '') +
             (q && q.ltp != null ? '' : ' <span class="badge">EOD</span>') + '</td>' +
             '<td>₹' + (+px).toFixed(2) + '</td>' +
-            '<td class="' + (chg == null ? 'sym' : chg >= 0 ? 'up' : 'down') + '">' + (chg == null ? '—' : (chg >= 0 ? '+' : '') + chg.toFixed(2) + '%') + '</td></tr>';
+            '<td class="' + (chg == null ? 'sym' : chg >= 0 ? 'up' : 'down') + '">' + (chg == null ? '—' : (chg >= 0 ? '+' : '') + chg.toFixed(2) + '%') + '</td>' + pickColCells(cols, r) + '</tr>';
         }).join('') + '</tbody></table></div>' +
         (p.rows.some(r => r.bd) ? '<div class="khelp">\u26a0 borderline = the screen can still flip this pick by the close (hover it for the numbers) \u2014 on a rebalance day buy that slot LAST (~3:25 IST), the safe ones early.</div>' : '');
     }
