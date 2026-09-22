@@ -17452,7 +17452,15 @@ stock to be there. fix it"* + *"plus i want stock pages for all sme stocks as we
   symbols (SEL, MAL, …) and the FOCUS/KALYANI twins another company's industry. Fixed the same evening: SME rows
   skip the BSE lookup and keep `sector = "NSE-SME"`; `.NS` scrip_id hits are ISIN-gated (§76) before the ISIN
   fallback; `FETCH_SECTORS_DRY=1` runs the resolution without BSE traffic (dry-run: SUNLITE/SEL → no code +
-  NSE-SME, KALYANI/FOCUS refused, RELIANCE → 500325). Lands with the next refresh run.
+  NSE-SME, KALYANI/FOCUS refused, RELIANCE → 500325). **Live via run 35725320781 (17:37 IST build): 5,529 rows,
+  5,375 priced, industry filter `NSE-SME (571)`, all 571 priced, SUNLITE row 366 of that view; log:
+  `scrip_id twins refused (ISIN differs, §76): 2` · `NSE-SME rows (no BSE lookup, sector NSE-SME): 571`.**
+- **Rights entitlements ride BOTH boards as `<SYM>-RE`.** The SME list carried RCDL-RE (series SM) and the SME
+  backfill created 34 `-RE` keys (ABIN-RE, ACCENT-RE, …); the live bin ALREADY held 24 main-board `-RE` keys
+  (AKG-RE, HATSUN-RE, …) from the EQ/BE/BZ filter, so the price store is consistent across boards and untouched.
+  The dashboard's universe excludes `-RE` on both lists (fetch_all.py; SME rows 571 → 570). OPEN for a separate
+  decision: drop `-RE` instruments from the bhavcopy store on both boards (they are weeks-long rights
+  entitlements, not companies) — a filter in `parse_rows` + a one-shot key purge, never a ledger edit.
 
 ### 145e. Rules learned / still open
 - **A filled series must follow the calendar of the store it lands in.** The bhavcopy store trades on NSE's

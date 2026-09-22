@@ -64,7 +64,7 @@ if os.path.exists(NSE_SME_CSV):
         for row in csv.DictReader(f):
             row = {k.strip(): (v or '').strip() for k, v in row.items()}
             sym = row.get("SYMBOL")
-            if not sym or row.get("SERIES") not in ("SM", "ST", "SZ"): continue
+            if not sym or row.get("SERIES") not in ("SM", "ST", "SZ") or sym.endswith("-RE"): continue   # -RE = rights entitlement, not a stock
             nse_sme[sym] = {"name": row.get("NAME_OF_COMPANY") or sym,
                             "isin": row.get("ISIN_NUMBER") or "", "series": row["SERIES"]}
     print(f"NSE SME symbols (SM/ST/SZ): {len(nse_sme)}")
