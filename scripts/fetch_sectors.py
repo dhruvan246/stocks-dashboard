@@ -15,7 +15,7 @@ Older versions of this script discarded a row unless `Sector` was non-empty.
 That dropped a lot of legit data (BSE sometimes nulls Sector but populates
 the rest), so now we accept any row with at least one classification field.
 """
-import json, subprocess, concurrent.futures, time, re
+import os, json, subprocess, concurrent.futures, time, re
 from pathlib import Path
 
 ROOT = Path(__file__).resolve().parent.parent
@@ -67,7 +67,7 @@ def fetch(entry):
 
 # Up to 4 passes — BSE's endpoint is flaky from cloud IPs, retries pay off.
 sectors = {}
-PASSES = 4
+PASSES = 0 if os.environ.get("FETCH_SECTORS_DRY") else 4   # DRY = no BSE traffic, resolution logic only (prints per-ticker codes)
 for attempt in range(PASSES):
     todo = [s for s in scrip_list if s[0] not in sectors]
     if not todo: break
@@ -104,6 +104,7 @@ for b in bse:
     isin = (b.get("ISIN_NUMBER") or "").strip()
     if sid and code:  sid_to_code[sid]   = code
     if isin and code: isin_to_code[isin] = code
+code_to_isin = {c: i for i, c in isin_to_code.items()}
 
 # Build NSE symbol -> ISIN map from the NSE master
 import csv
@@ -119,6 +120,8 @@ print(f"NSE symbol->ISIN map: {len(nse_sym_to_isin)}")
 merged = 0
 fallback_isin = 0
 fallback_sid  = 0
+refused_sid = 0   # §76: scrip_id twin with a different ISIN, not used
+sme_rows = 0      # NSE-SME rows kept out of the BSE lookup
 for ticker, meta in data["meta"].items():
     sym, suffix = ticker.rsplit(".", 1)
     code = None
@@ -130,19 +133,34 @@ for ticker, meta in data["meta"].items():
         else:
             code = sid_to_code.get(sym)
             if code: fallback_sid += 1
+    elif meta.get("sme"):
+        # NSE SME platform (Emerge) listing: not on BSE at all (measured 2026-09-22: 0 of 571 SME
+        # ISINs on BSE), and 5 SME symbols COLLIDE with unrelated BSE scrip_ids (RAJPUTANA, MAL,
+        # SEL, ZEAL, GSTL) — a scrip_id lookup here would hand them another company's industry
+        # (DATA_RUNBOOK §76 / §145). No BSE lookup; the group is set below.
+        code = None
     else:  # .NS
-        # NSE symbol: try direct scrip_id match, then ISIN fallback.
+        # NSE symbol: direct scrip_id match, ISIN-GATED (§76: a scrip_id equal to the NSE symbol is
+        # a coincidence until the ISIN agrees — BSE "KALYANI" is Kalyani Cast-Tech, NSE KALYANI is
+        # Kalyani Commercials; same for FOCUS), then ISIN fallback.
         code = sid_to_code.get(sym)
-        if not code:
-            isin = nse_sym_to_isin.get(sym)
-            if isin:
-                code = isin_to_code.get(isin)
-                if code: fallback_isin += 1
+        isin = nse_sym_to_isin.get(sym)
+        if code and isin and code_to_isin.get(code) and code_to_isin[code] != isin:
+            refused_sid += 1
+            code = None
+        if not code and isin:
+            code = isin_to_code.get(isin)
+            if code: fallback_isin += 1
+    if PASSES == 0: print(f"  DRY resolve {ticker}: code={code}")
     info = sectors.get(code or "")
     if info:
         meta["sector"]   = info.get("sector")   or info.get("industry") or "Uncategorized"
         meta["industry"] = info.get("industry") or info.get("igroup")   or info.get("sector") or ""
         merged += 1
+    elif meta.get("sme"):
+        meta["sector"]   = "NSE-SME"        # the dashboard's industry filter groups these as "NSE-SME (n)"
+        meta["industry"] = ""
+        sme_rows += 1
     else:
         meta["sector"]   = "Uncategorized"
         meta["industry"] = ""
@@ -152,4 +170,6 @@ print(f"\nMerged sector data into {merged}/{len(data['meta'])} stocks ({100*merg
 print(f"  via numeric/scrip_id direct: {merged - fallback_isin - fallback_sid}")
 print(f"  via .BO scrip_id text match: {fallback_sid}")
 print(f"  via ISIN fallback:           {fallback_isin}")
+print(f"  scrip_id twins refused (ISIN differs, §76): {refused_sid}")
+print(f"  NSE-SME rows (no BSE lookup, sector NSE-SME): {sme_rows}")
 print(f"Updated {DATA}")

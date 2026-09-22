@@ -17439,7 +17439,20 @@ stock to be there. fix it"* + *"plus i want stock pages for all sme stocks as we
   precisely the half-loaded shape the guard exists for. Fix: `fill_prices_from_sf.py` now derives the build's
   **Yahoo session calendar** from the Yahoo-sourced rows and drops filled daily bars outside it (tested: exactly
   the 5 weekend specials 2023-11-12 · 2024-01-20 · 2024-03-02 · 2024-05-18 · 2026-02-01 dropped for SUNLITE +
-  INFOLLION, neighbours kept; <200 Yahoo sessions = alignment skipped with a warning). Dashboard live status: {{LIVE2}}
+  INFOLLION, neighbours kept; <200 Yahoo sessions = alignment skipped with a warning). Re-run 35723907224 (commit 4786b53b7) **succeeded**: universe 5,528 (NSE-SME 571;
+  FOCUS/KALYANI refused), Yahoo priced 4,803, **fill added 570 series** (1,097 bars dropped on the 6 weekend
+  specials 2020-02-01 · 2023-11-12 · 2024-01-20 · 2024-03-02 · 2024-05-18 · 2026-02-01; HEGAM = listed after the
+  bin's end, MANIKA = 1 bar, both price up on the next append), guard passed, pushed 6689d90a8, Pages live 17:35 IST.
+  **LIVE dash_slim.bin (17:23 IST build): 5,528 rows, 5,372 priced, SUNLITE.NS latest 657.5, sme=true,
+  src=nse-bhavcopy; nse-bse-dashboard.html search "SUNLITE" → `Sunlite Recycling Industries Limited · — ·
+  ₹683.65 → ₹657.50 · -3.83 % · -6.80 % from 52w`.**
+- **Found on the live build: `fetch_sectors.py` ran AFTER the fill and relabelled every SME row `sector =
+  "Uncategorized"`** (it rewrites sector/industry for all rows from the BSE lookup; a miss = Uncategorized), so the
+  industry filter had no NSE-SME group, and its `.NS` branch would also have handed the 5 scrip_id-coincidence SME
+  symbols (SEL, MAL, …) and the FOCUS/KALYANI twins another company's industry. Fixed the same evening: SME rows
+  skip the BSE lookup and keep `sector = "NSE-SME"`; `.NS` scrip_id hits are ISIN-gated (§76) before the ISIN
+  fallback; `FETCH_SECTORS_DRY=1` runs the resolution without BSE traffic (dry-run: SUNLITE/SEL → no code +
+  NSE-SME, KALYANI/FOCUS refused, RELIANCE → 500325). Lands with the next refresh run.
 
 ### 145e. Rules learned / still open
 - **A filled series must follow the calendar of the store it lands in.** The bhavcopy store trades on NSE's
