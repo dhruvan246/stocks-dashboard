@@ -225,6 +225,32 @@ let SERIALS = new Map();   // identityKey → save serial (DDMMYY-NN), same tag 
 let ASOF = null;
 try { const q = new URLSearchParams(location.search).get('asof'); if (q && /^\d{4}-\d{2}-\d{2}$/.test(q)) ASOF = q; } catch (e) {}
 const dayWord = () => ASOF ? 'move on ' + ASOF : "today's move";
+/* factor columns for each pick (user 2026-09-22): the sort field + every filter field, each pick's
+   value shown, in sort order — the same columns the terminal buy-side shows, so you see WHY a
+   stock is picked and where it sits vs the cut. fieldVal / FIELD_LABEL are engine globals. */
+const SHORT_FIELD = { diiPct:'DII%', fiiPct:'FII%', diiChgPp:'ΔDII', fiiChgPp:'ΔFII',
+  d52:'52wHi%', d52_low_pct:'52wLo%', rsi:'RSI', accel:'Accel%', changePercent:'Chg%',
+  ret1m:'1m%', ret3m:'3m%', ret6m:'6m%', ret12m:'12m%', dma50:'50DMA%', dma200:'200DMA%',
+  profitYoyPct:'NP-YoY%', profitTTM:'TTM-NP%', profitStreak:'NP-strk', profitAccel:'NP-accel',
+  profitBase:'NP-base', mcap:'Mcap', hist_mcap:'HMcap', indRank:'IndRk', vol:'Vol%', delivPct:'Deliv%' };
+const OP_SYM = { '<=':'≤', '>=':'≥', '<':'<', '>':'>', '=':'=', '==':'=' };
+function pickCols(cfg){
+  const out = [], idx = {};
+  const push = (field, m) => { if (field in idx) Object.assign(out[idx[field]], m); else { idx[field] = out.length; out.push(Object.assign({ field: field }, m)); } };
+  if (cfg.sortBy) push(cfg.sortBy, { sortCol: true, dir: cfg.dir });
+  (cfg.filters || []).forEach(f => push(f.field, { op: f.op, val: f.val }));
+  return out;
+}
+function pickFV(r, cols){ const o = {}; cols.forEach(c => { o[c.field] = r ? fieldVal(r, c.field) : null; }); return o; }
+function fldLabel(field){ return SHORT_FIELD[field] || (typeof FIELD_LABEL !== 'undefined' && FIELD_LABEL[field]) || field; }
+function fmtFV(v){ if (v == null || !isFinite(v)) return '—'; return Number.isInteger(v) ? String(v) : (Math.abs(v) >= 1000 ? Math.round(v).toLocaleString('en-IN') : (+v).toFixed(1)); }
+function apColHead(cols){ return cols.map(function(c){
+  return '<th class="text-right px-1 font-semibold text-slate-400 whitespace-nowrap" title="' + esc(fldLabel(c.field) + (c.op ? ' filter ' + (OP_SYM[c.op] || c.op) + ' ' + c.val : '') + (c.sortCol ? ' · SORT ' + (c.dir === 'high' ? 'high first' : 'low first') : '')) + '">' +
+    esc(fldLabel(c.field)) +
+    (c.sortCol ? ' <span class="text-indigo-400">' + (c.dir === 'high' ? '▼' : '▲') + '</span>' : '') +
+    (c.op ? ' <span class="text-slate-300 font-normal">' + esc((OP_SYM[c.op] || c.op) + c.val) + '</span>' : '') + '</th>'; }).join(''); }
+function apColCells(cols, r){ return cols.map(function(c){
+  return '<td class="text-right px-1 text-[12px] text-slate-500 whitespace-nowrap ' + (c.sortCol ? 'font-bold' : '') + '">' + fmtFV(r.fv ? r.fv[c.field] : null) + '</td>'; }).join(''); }
 // `noData` (set by basketAt) = NOTHING in the universe had a computable factor on that date, so no
 // screen ran. That is a different fact from "it ran and nothing passed", and the deep end of the
 // rewind is full of it — daily bars start 2002-01-02, so 52-week and 6-month factors stay null for
@@ -538,18 +564,22 @@ function renderCards() {
       </div>
       ${r.empty ? `<div class="border-t border-dashed border-slate-200 py-4 text-center text-[12px] text-slate-400">
           ${noQual(r)}.</div>` : ''}
-      <table class="w-full text-sm border-collapse ${r.empty ? 'hidden' : 'border-t border-dashed border-slate-200'}">
+      <div class="overflow-x-auto ${r.empty ? 'hidden' : 'border-t border-dashed border-slate-200'}">
+      <table class="w-full text-sm border-collapse">
+        ${(r.cols && r.cols.length) ? `<thead><tr class="text-[9.5px] uppercase tracking-wide text-slate-400 border-b border-slate-100">
+          <th class="w-4"></th><th class="text-left font-semibold py-1">Pick</th><th class="text-right px-1 font-semibold">₹</th><th class="text-right pl-1 font-semibold">Day</th>${apColHead(r.cols)}</tr></thead>` : ''}
         <tbody>${r.picks.slice(0, PICK_CAP).map((p, i) => `
           <tr class="border-b border-slate-100">
             <td class="py-1.5 pr-2 text-[10.5px] text-slate-400 font-bold w-4">${i + 1}</td>
-            <td class="pr-2 font-semibold"><a href="./stock.html?sym=${encodeURIComponent(p.sym)}" class="hover:text-indigo-600">${esc(p.sym)}</a></td>
-            <td class="text-right px-1 text-[12.5px] text-slate-500">₹${f2(p.live)}</td>
-            <td class="text-right pl-1 text-[12px] font-bold ${kls(p.day)}" title="${dayWord()}">${sp(p.day)}</td>
+            <td class="pr-2 font-semibold whitespace-nowrap"><a href="./stock.html?sym=${encodeURIComponent(p.sym)}" class="hover:text-indigo-600">${esc(p.sym)}</a></td>
+            <td class="text-right px-1 text-[12.5px] text-slate-500 whitespace-nowrap">₹${f2(p.live)}</td>
+            <td class="text-right pl-1 text-[12px] font-bold ${kls(p.day)} whitespace-nowrap" title="${dayWord()}">${sp(p.day)}</td>${apColCells(r.cols || [], p)}
           </tr>`).join('')}
-          ${r.picks.length > PICK_CAP ? `<tr><td colspan="4" class="py-1.5 text-[11px] text-slate-400">
+          ${r.picks.length > PICK_CAP ? `<tr><td colspan="${4 + (r.cols ? r.cols.length : 0)}" class="py-1.5 text-[11px] text-slate-400">
             + ${r.picks.length - PICK_CAP} more — <a href="${stratHref(r.s)}" class="text-indigo-600 hover:underline">see all</a></td></tr>` : ''}
         </tbody>
       </table>
+      </div>
       <a href="${stratHref(r.s)}" class="-mx-4 mt-2 px-4 py-2 border-t border-slate-200 bg-slate-50 rounded-b-xl text-[12px] font-semibold text-indigo-600 flex justify-between items-center">
         Open strategy →<span class="text-slate-400 font-normal">${ASOF ? 'qualifying on ' + esc(ASOF) : 'qualifying now'}</span></a>
     </article>`).join('');
@@ -740,12 +770,13 @@ async function build(msg) {
     // An empty list is a real state, not a failure: nothing passed the filters. Show it as such
     // rather than dropping the card.
     const held = heldRows.map(r => priceHold({ sym: r.sym, tkr: r.tkr, ind: r.ind, entry: r.price }, priceOff, prevOff));
-    const picks = pickRows.map(r => pricePick({ sym: r.sym, tkr: r.tkr, ind: r.ind }, priceOff, prevOff));
+    const cols = pickCols(cfg);
+    const picks = pickRows.map(r => { const pp = pricePick({ sym: r.sym, tkr: r.tkr, ind: r.ind }, priceOff, prevOff); pp.fv = pickFV(r, cols); return pp; });
     RESULT.push({
       s, name: s.name || strategyLabel(cfg), cfg, topN, ids: groups[i].ids,
       uni: universeLabel(cfg), freqL: FREQL[cfg.freq] || (cfg.freq + 'mo'),
       nf: (cfg.filters || []).length, rebDate, rebLabel: rebDate ? 'since ' + rebDate : 'not started', counts,
-      picks, held, empty: !picks.length,
+      picks, held, cols, empty: !picks.length,
       // read off the RAW basketAt arrays — `held`/`picks` above are .map() results, and a mapped
       // array is a new one that drops the flag basketAt hangs on it
       heldNoData: !!heldRows.noData, picksNoData: !!pickRows.noData,
