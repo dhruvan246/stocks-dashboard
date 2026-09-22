@@ -211,6 +211,9 @@ def main():
     if not a.no_te:
         plan.append(('te', lambda: src_te(TE_SLUGS)))
     sources, status = dict(old), {}
+    for key in old:                                   # rows carried over from the previous file, not refetched this run
+        if key not in [k for k, _ in plan]:
+            status[key] = f'kept from previous run ({old[key].get("fetched", "?")}), {len(old[key].get("rows", []))} rows'
     for key, fn in plan:
         try:
             res = fn()
