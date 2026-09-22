@@ -16905,6 +16905,23 @@ the new format); the wider census of store-vs-page-ledger disagreements after Ma
 cells the SW-2 heals deliberately moved and was not re-adjudicated here; XENOK; the 34 quantmac-only cells (item 5);
 quantmac's own ~419 stale/misread cells are theirs to fix (list in `adjudicate.jsonl`, class QM-NOT-FOREIGN).
 
+### 142f. ★★ ITEM 5 — the 34 quantmac-only FII cells: 28 filled from the exchanges' own pages, 6 have no source  (2026-09-22)
+
+After the engine-faithful compare (§142e) quantmac held 34 month-end cells we served nothing for. Each one needs the
+quarter-end filing that would have been public by that month-end; sources measured, then filled through the fill-only
+ledgers (never a direct store edit):
+
+| symbol (quantmac name) | cells | quarters filled | source | ledger |
+|---|---|---|---|---|
+| SHILPI | 8 | Dec-2016..Sep-2017 | BSE SHPQNewFormat XBRL (533389), production `parse_shp`; subs = 15:30-gated filing dates, Jun-2017 Revised row has no timestamp → qe+21d | `shp_fill_hist_2016_2019.json.gz` |
+| INNOIND | 7 | Jun/Sep/Dec-2012 | BSE Clause-35 page (533402), family reader `cell_of` with neighbour gate | `shp_fill_bse_aspx.json.gz` |
+| AJMERA, PURVA, CHETTINAD (BSE `CHETTICE` 590001, keyed by the NSE name our rename map uses), 3IINFOLTD, BINANICEM, TULIP | 4+2+2+3+1+1 | Dec-2008/Mar-2009, Sep-2009/Mar-2011, Mar-2011, Mar-2009 | same | same |
+| CDSL | 3 (Apr..Jun-2018) | Mar-2018 | **none** — NSE-only listing, NSE serves ~21 latest filings; screener's HTML shows no 2018 shareholding columns, Trendlyne's page is gone | not filled |
+| ADANIENSOL | 3 (Apr..Jun-2016) | Mar-2016 | **none usable** — BSE has no XBRL for Mar-2016 and the page prints FII 0.00 with an anonymous 10.17 Any-Others block (the Jun-2016 XBRL splits it FPI 8.29 + named foreign 8.25); the family reader refuses (zero beside a 16.54 neighbour) and nothing on the page says how much of the block is foreign | not filled |
+
+Dry run before landing: `apply_bse_hist_ledger` on a copy of the store adds exactly 17 cells, 0 overwrites. The 2008-13 cells
+carry the ledger's qe+21d convention date like every other page-derived cell of that era (§120/§142d).
+
 ## 141a. ★★ NIFTY BANK ROSTERS HEALED — 2000→date from NSE's register + 12 archived lists  (2026-09-21)
 
 **Symptom (user, via the §141 card):** Nifty Bank's history had 7 snapshots 2017-03-31 → 2024-09-30 with
