@@ -64,6 +64,13 @@
 
   <section id="detail" class="mb-8 hidden"></section>
 
+  <section id="map" class="mb-8">
+    <details class="card" open><summary class="font-semibold">Beneficiary map — which listed names ride which price</summary>
+      <p class="muted text-xs mt-1 mb-2">Curated starting hypotheses (docs/ideas/commodity_map.json). Every name here must be verified from the company's own filings — share of revenue, pricing terms, inventory — before it becomes an idea.</p>
+      <div id="map-list" class="grid gap-2 md:grid-cols-2 text-sm"></div>
+    </details>
+  </section>
+
   <section id="signals" class="mb-8">
     <div class="flex flex-wrap items-center justify-between gap-2 mb-2">
       <h2 class="text-lg font-semibold">Signals — commodities on the move, and who is exposed</h2>
@@ -104,13 +111,6 @@
     <p id="wpi-summary" class="muted text-xs mb-2"></p>
     <div class="card overflow-x-auto"><table class="sw" id="wpi-table"><thead></thead><tbody></tbody></table></div>
     <div class="mt-2"><button id="wpi-more" class="pill">Show more</button></div>
-  </section>
-
-  <section id="map" class="mb-8">
-    <details class="card"><summary class="font-semibold">Beneficiary map — which listed names ride which price</summary>
-      <p class="muted text-xs mt-1 mb-2">Curated starting hypotheses (docs/ideas/commodity_map.json). Every name here must be verified from the company's own filings — share of revenue, pricing terms, inventory — before it becomes an idea.</p>
-      <div id="map-list" class="grid gap-2 md:grid-cols-2 text-sm"></div>
-    </details>
   </section>
 
   <section id="method" class="mb-8">
