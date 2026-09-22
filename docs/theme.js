@@ -270,6 +270,7 @@
       ] },
       { sub: 'Discovery & Filings', items: [
         ['./discovery.html',          ic('sparkles'), 'Smart Money Picks'],
+        ['./ideas.html',              ic('flask'), 'Daily Ideas'],
         ['./quarterly-results.html',  ic('file'), 'Quarterly Results'],
         ['./employees.html',          ic('users'), 'Employee Headcount'],
         ['./announcements.html',      ic('megaphone'), 'Announcements'],

@@ -1,0 +1,180 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>STOCKSWORLD · Daily Ideas</title>
+  <meta name="description" content="Daily deep-research ideas on Indian small caps (Rs 200-2,000 cr): what the exchange data flagged today, the thesis, the model, the risks, and a running scorecard of every idea published." />
+  <script src="https://cdn.tailwindcss.com"></script>
+  <link rel="stylesheet" href="./theme.css" />
+  <script src="./theme.js"></script>
+  <style>
+    .muted { color: var(--text-muted); }
+    .card { background: var(--surface-2); border: 1px solid var(--border); border-radius: 12px; padding: 16px; }
+    .pill { display: inline-block; font-size: 11px; padding: 2px 8px; border-radius: 999px; border: 1px solid var(--border); margin: 0 4px 4px 0; }
+    .pill.sig { background: var(--surface-2); }
+    .pos { color: #16a34a; } .neg { color: #dc2626; }
+    .idea h3 { font-size: 1.05rem; font-weight: 700; }
+    .idea .thesis p { margin: 6px 0; }
+    .idea ul { list-style: disc; padding-left: 1.2rem; }
+    .kv { display: grid; grid-template-columns: max-content 1fr; gap: 2px 12px; font-size: 13px; }
+    .kv dt { color: var(--text-muted); }
+    table.sw { width: 100%; font-size: 13px; border-collapse: collapse; }
+    table.sw th, table.sw td { padding: 6px 8px; border-bottom: 1px solid var(--border); text-align: left; white-space: nowrap; }
+    table.sw th { color: var(--text-muted); font-weight: 600; font-size: 12px; }
+    details summary { cursor: pointer; }
+    .src a { color: var(--accent); text-decoration: underline; }
+    .disc { font-size: 12px; color: var(--text-muted); border-left: 3px solid var(--border); padding-left: 10px; }
+  </style>
+</head>
+<body>
+<header class="sticky top-0 z-40 bg-white/90 backdrop-blur-md border-b border-slate-200 shadow-sm">
+  <div class="max-w-screen-xl mx-auto px-4 h-14 flex items-center justify-between gap-4">
+    <a href="./index.html" class="font-bold tracking-tight">SW · STOCKSWORLD</a>
+    <nav></nav>
+  </div>
+</header>
+<main class="max-w-screen-xl mx-auto px-4 py-6">
+  <div class="flex flex-wrap items-end justify-between gap-3 mb-4">
+    <div>
+      <h1 class="text-2xl font-bold">Daily Ideas</h1>
+      <p class="muted text-sm">Deep-research ideas on Indian small caps with market cap between ₹200 cr and ₹2,000 cr. A scheduled research run scans every exchange filing and price move in the universe, researches the strongest signals from primary documents, and publishes what clears the bar. Every idea is then scored against prices automatically.</p>
+    </div>
+    <div id="meta" class="text-sm muted"></div>
+  </div>
+  <p class="disc mb-5">Research notes, not investment advice. Each number carries a source link; where a datum could not be found the note says "unknown" rather than guessing. Small caps in this band are thinly traded: the scorecard measures closing prices, not what a real order would have achieved.</p>
+
+  <section id="ideas" class="mb-8">
+    <h2 class="text-lg font-semibold mb-3">Ideas</h2>
+    <div id="ideas-list" class="grid gap-4 md:grid-cols-2"></div>
+  </section>
+
+  <section id="run" class="mb-8">
+    <h2 class="text-lg font-semibold mb-1">Researched in the last run</h2>
+    <p id="run-summary" class="muted text-sm mb-3"></p>
+    <div id="run-list" class="grid gap-3 md:grid-cols-2"></div>
+  </section>
+
+  <section id="track" class="mb-8">
+    <h2 class="text-lg font-semibold mb-1">Scorecard</h2>
+    <p id="track-summary" class="muted text-sm mb-3"></p>
+    <div class="card"><table class="sw" id="track-table"><thead><tr><th>Idea</th><th>Called</th><th>Call close</th><th>Now</th><th>Return</th><th>Best close</th><th>Peak</th><th>Days</th></tr></thead><tbody></tbody></table></div>
+  </section>
+
+  <section id="scan" class="mb-8">
+    <h2 class="text-lg font-semibold mb-1">What the scan flagged</h2>
+    <p id="scan-summary" class="muted text-sm mb-3"></p>
+    <div class="card"><table class="sw" id="scan-table"><thead><tr><th>Score</th><th>Company</th><th>Mcap ₹cr</th><th>Signals</th><th>1d</th><th>20d</th><th>Vol vs 60d</th><th>Med. turnover</th><th>Filings today</th></tr></thead><tbody></tbody></table></div>
+  </section>
+
+  <section id="method" class="mb-8">
+    <details class="card"><summary class="font-semibold">How ideas are produced</summary>
+      <div class="text-sm mt-2 space-y-2">
+        <p><b>Universe.</b> Every active BSE equity with market cap between ₹200 cr and ₹2,000 cr on BSE's scrip master, refreshed daily (about 1,180 names, including BSE SME). Suspended groups are excluded. NSE-only SME names are not yet covered because no public market-cap feed exists for them.</p>
+        <p><b>Scan.</b> The last 65 BSE bhavcopies give price, volume and turnover features; the day's BSE announcements are classified into order wins, capex, credit-rating actions, results, fund raises, corporate actions, disclosures and deals. Names below ₹25 lakh median daily turnover are down-weighted.</p>
+        <p><b>Research.</b> For each candidate the run builds a dossier from primary sources (BSE filings and attachments, annual reports, investor decks and transcripts, shareholding pattern, corporate actions, adjusted price history, industry peers) and writes the idea in a fixed format: the trigger, what the business physically does, a revenue model from a physical driver (capacity, shipments, head-count, orders), the assumed margin and forward earnings, valuation against peers, red flags, what still needs on-the-ground verification, and the list of unknowns.</p>
+        <p><b>Scorecard.</b> Each published idea is re-priced daily from BSE history adjusted for bonus and split: return since the call close and the best close since.</p>
+      </div>
+    </details>
+  </section>
+</main>
+<script>
+(async function () {
+  const $ = (s) => document.querySelector(s);
+  const esc = (s) => String(s == null ? '' : s).replace(/[&<>"']/g, (c) => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
+  const fmt = (x, d = 1) => (x == null || isNaN(x)) ? '—' : Number(x).toLocaleString('en-IN', { maximumFractionDigits: d });
+  const pct = (x) => (x == null || isNaN(x)) ? '—' : `<span class="${x >= 0 ? 'pos' : 'neg'}">${x >= 0 ? '+' : ''}${fmt(x)}%</span>`;
+  const md = (s) => {
+    // minimal markdown: paragraphs, bullets, bold
+    const lines = String(s || '').split('\n');
+    let html = '', inList = false;
+    for (let l of lines) {
+      l = esc(l).replace(/\*\*(.+?)\*\*/g, '<b>$1</b>');
+      if (/^\s*[-*] /.test(l)) { if (!inList) { html += '<ul>'; inList = true; } html += `<li>${l.replace(/^\s*[-*] /, '')}</li>`; }
+      else { if (inList) { html += '</ul>'; inList = false; } if (l.trim()) html += `<p>${l}</p>`; }
+    }
+    if (inList) html += '</ul>';
+    return html;
+  };
+  let latest = null, ideas = null, track = null, scan = null, run = null;
+  try { latest = await (await fetch('./ideas/latest.json')).json(); } catch (e) {}
+  try { ideas = await (await fetch('./ideas/ideas.json')).json(); } catch (e) {}
+  try { track = await (await fetch('./ideas/track.json')).json(); } catch (e) {}
+  if (latest && latest.scan_file) { try { scan = await (await fetch('./ideas/' + latest.scan_file)).json(); } catch (e) {} }
+  if (latest && latest.run_file) { try { run = await (await fetch('./ideas/' + latest.run_file)).json(); } catch (e) {} }
+
+  // run log: what was researched and the verdict
+  if (run) {
+    $('#run-summary').textContent = `Run for ${run.date} (${run.run_finished || ''}): ${run.candidates_considered} candidates considered, ${(run.researched || []).length} researched, ${run.published} published.${run.note ? ' ' + run.note : ''}`;
+    const rl = $('#run-list');
+    (run.researched || []).forEach(r => {
+      const el = document.createElement('div');
+      el.className = 'card text-sm';
+      el.innerHTML = `<div class="flex justify-between gap-2"><b>${esc(r.name)} <span class="muted">${esc(r.ticker)}</span></b><span class="pill">${esc(r.verdict)}</span></div>
+        <div class="muted text-xs mt-1">Trigger: ${esc(r.trigger)}</div>
+        <div class="mt-1">${esc(r.reason)}</div>
+        ${(r.sources || []).length ? `<div class="src text-xs mt-1">${r.sources.map(s => `<a href="${esc(s.url)}" target="_blank" rel="noopener">${esc(s.title)}</a>`).join(' · ')}</div>` : ''}`;
+      rl.appendChild(el);
+    });
+  } else {
+    $('#run-summary').textContent = 'No run log published yet.';
+  }
+  $('#meta').textContent = latest ? `Last run ${latest.updated || ''} · scan date ${latest.scan_date || ''} · ${latest.universe || ''} names in universe` : 'No run published yet.';
+
+  // ideas
+  const list = $('#ideas-list');
+  const trackBy = {};
+  (track && track.rows || []).forEach(r => { trackBy[r.idea_id] = r; });
+  const all = (ideas && ideas.ideas || []).slice().sort((a, b) => (b.date || '').localeCompare(a.date || ''));
+  if (!all.length) list.innerHTML = '<div class="card muted text-sm">No ideas published yet.</div>';
+  for (const it of all) {
+    const t = trackBy[it.id] || {};
+    const el = document.createElement('div');
+    el.className = 'card idea';
+    el.innerHTML = `
+      <div class="flex justify-between items-start gap-2">
+        <div><h3>${esc(it.name)} <span class="muted text-sm">${esc(it.ticker || '')}${it.nse ? ' · NSE ' + esc(it.nse) : ''}</span></h3>
+        <div class="muted text-xs">${esc(it.date)} · mcap ₹${fmt(it.mcap, 0)} cr · ${esc(it.industry || '')}${it.sme ? ' · SME' : ''}</div></div>
+        <div class="text-right text-sm">${t.status === 'ok' ? `since call ${pct(t.ret_pct)}<br><span class="muted text-xs">peak ${pct(t.peak_pct)}</span>` : ''}</div>
+      </div>
+      <div class="mt-2"><span class="pill">Trigger</span> <span class="text-sm">${esc(it.trigger)}</span></div>
+      <div class="thesis text-sm mt-2">${md(it.thesis)}</div>
+      ${it.model ? `<details class="mt-2 text-sm"><summary class="font-semibold">Model</summary><div class="mt-1">${md(it.model)}</div></details>` : ''}
+      ${it.valuation ? `<details class="mt-1 text-sm"><summary class="font-semibold">Valuation</summary><div class="mt-1">${md(it.valuation)}</div></details>` : ''}
+      ${it.red_flags ? `<details class="mt-1 text-sm"><summary class="font-semibold">Red flags and risks</summary><div class="mt-1">${md(it.red_flags)}</div></details>` : ''}
+      ${it.verify ? `<details class="mt-1 text-sm"><summary class="font-semibold">Still to verify</summary><div class="mt-1">${md(it.verify)}</div></details>` : ''}
+      ${it.unknowns ? `<details class="mt-1 text-sm"><summary class="font-semibold">Unknowns</summary><div class="mt-1">${md(it.unknowns)}</div></details>` : ''}
+      <details class="mt-1 text-sm src"><summary class="font-semibold">Sources (${(it.sources || []).length})</summary><ul class="mt-1">${(it.sources || []).map(s => `<li><a href="${esc(s.url)}" target="_blank" rel="noopener">${esc(s.title)}</a></li>`).join('')}</ul></details>
+      <div class="muted text-xs mt-2">Call close ₹${fmt(it.call_close, 2)} on ${esc(it.call_date)} · confidence ${esc(it.confidence || '')}</div>`;
+    list.appendChild(el);
+  }
+
+  // scorecard
+  const ts = track && track.summary || {};
+  $('#track-summary').textContent = ts.count ? `${ts.count} ideas scored · median return ${ts.median_ret >= 0 ? '+' : ''}${ts.median_ret}% · ${ts.up} above call price · median best close +${ts.median_peak}% · ${ts.hit_20} reached +20%, ${ts.hit_50} reached +50% · updated ${track.updated}` : 'Nothing scored yet.';
+  const tb = $('#track-table tbody');
+  (track && track.rows || []).filter(r => r.status === 'ok').sort((a, b) => b.call_date.localeCompare(a.call_date)).forEach(r => {
+    const tr = document.createElement('tr');
+    tr.innerHTML = `<td>${esc(r.name || r.ticker)}</td><td>${esc(r.call_date)}</td><td>${fmt(r.call_close, 2)}</td><td>${fmt(r.last_close, 2)}</td><td>${pct(r.ret_pct)}</td><td>${fmt(r.peak_close, 2)} <span class="muted">${esc(r.peak_date)}</span></td><td>${pct(r.peak_pct)}</td><td>${r.days}</td>`;
+    tb.appendChild(tr);
+  });
+
+  // scan
+  if (scan) {
+    $('#scan-summary').textContent = `Scan of ${scan.date}: ${scan.universe} names, ${scan.announcements_in_universe} classified filings out of ${scan.announcements_total} BSE announcements that day, ${scan.candidates} candidates at score ≥ 4. Window: ${scan.window_days} trading days from ${scan.window_from}.`;
+    const sb = $('#scan-table tbody');
+    (scan.rows || []).filter(r => r.score >= 4).slice(0, 40).forEach(r => {
+      const f = r.features || {};
+      const sig = Object.entries(r.signals || {}).map(([k, v]) => `<span class="pill sig">${esc(k)}${v > 1 ? ' ×' + v : ''}</span>`).join('');
+      const fil = (r.announcements || []).map(a => `<a href="${esc(a.pdf)}" target="_blank" rel="noopener" title="${esc(a.headline)}">${esc((a.sub || a.category || '').trim() || 'filing')}</a>`).join(', ');
+      const tr = document.createElement('tr');
+      tr.innerHTML = `<td>${fmt(r.score, 1)}</td><td><b>${esc(r.name)}</b> <span class="muted">${esc(r.id)}${r.nse && r.nse !== r.id ? ' · NSE ' + esc(r.nse) : ''}${r.sme ? ' · SME' : ''}</span></td><td>${fmt(r.mcap, 0)}</td><td>${sig}</td><td>${pct(f.ret_1d)}</td><td>${pct(f.ret_20d)}</td><td>${f.vol_ratio != null ? fmt(f.vol_ratio, 1) + '×' : '—'}</td><td>₹${fmt(f.med_turnover_lakh, 0)} L</td><td class="src" style="white-space:normal">${fil || '—'}</td>`;
+      sb.appendChild(tr);
+    });
+  } else {
+    $('#scan-summary').textContent = 'No scan published yet.';
+  }
+})();
+</script>
+</body>
+</html>

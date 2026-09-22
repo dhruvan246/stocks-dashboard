@@ -17316,3 +17316,34 @@ additive — `cd scripts && python3 _idx_official_fetch.py --only "<tier>" …`,
 · STARHEALTH [549.73, 20260730]. The 2026-08-31 screen on the deployed engine reads **500/500** Nifty-500 names on the Jun-2026
 quarter (was 495/500). Residue in `scripts/_missing_quarter_pending.json`: BAGMANE/BIRET/EMBASSY/DUMMYHEG (no BSE scrip code —
 REITs + a placeholder ticker) and CLEANMAX Mar-2026 (image PDF; Gemini quota) — the guard re-lists them nightly until resolved.
+
+## 144. ★★ DAILY IDEAS — filings-driven deep-research page for ₹200-2,000 cr small caps (2026-09-22)
+
+**What:** `docs/ideas.html` + `docs/ideas/{universe,latest,ideas,track}.json`, `docs/ideas/scan/<date>.json`,
+`docs/ideas/runs/<date>.json`. Pipeline in `scripts/ideas/` (self-contained, stdlib only; PyMuPDF optional for PDF text):
+`universe.py` (BSE scrip master, 200 ≤ mcap ≤ 2,000 cr, groups Z/ZP dropped, NSE symbol joined by ISIN) →
+`scan.py` (last 65 BSE bhavcopies → price/volume features; the day's BSE announcements classified into ORDER/CAPEX/RATING/
+RESULT/FUNDRAISE/CORPACT/DISCLOSE/DEAL after stripping the company name; VOL ≥3× 60-day median, BREAKOUT at window high;
+score ≥ 4 = candidate; only rows with a signal are written so the daily file stays ~80 KB) →
+`dossier.py <scrip>` (BSE header/industry/PE, detailed results via `Corp_detailedResult_Transpose_ng` with quarter id
+`81+(y-2014)*4+{Mar0,Jun1,Sep2,Dec3}` and the `.50` half-year/annual variant for SME filers, values are ₹ million → ₹ cr,
+shareholding pages with promoter % parsed, corporate actions, 240-day announcements with attachment links, annual reports,
+split/bonus-adjusted price stats, same-industry peers from `docs/search_index.json` with BSE PE, key PDFs extracted to text) →
+the research run writes ideas per `scripts/ideas/PLAYBOOK.md` (the method reverse-engineered from @Investindia6's posts:
+physical-driver revenue model, forward PE vs peers, red-flag checklist, unknowns listed, sources for every number) →
+`score.py` re-prices every published idea (return since call close, best close since; BSE history back-adjusted from the
+corporate-action record plus one-day ratio gaps ≥1.3× snapped to standard factors). A run with zero ideas still publishes the
+scan, the run log (what was researched, verdict, reason, sources) and `latest.json`.
+
+**Gaps (known, stated on the page):** NSE-only SME names are not in the universe (no public mcap feed for them; the site's
+search index carries none of them). Company-level import/export shipments and EPFO head-counts (the style's two heaviest
+tools) are paid or captcha-gated and are not automated; the playbook tells the run to list them under "still to verify".
+
+**Routine:** cloud routine `daily-ideas` (prompt lives in the trigger config, see §17b for the pattern), weekdays ~19:30 IST after
+the BSE bhavcopy lands; commits only `docs/ideas/**`, `docs/ideas.html`, `scripts/ideas/**` on a `claude/ideas-<ts>` branch →
+`gh pr create` → `gh pr merge --squash --delete-branch --admin`; sandbox egress must allow api/www.bseindia.com.
+
+**Local run:** `python3 scripts/ideas/universe.py && python3 scripts/ideas/scan.py && python3 scripts/ideas/dossier.py <scrip> ...
+&& python3 scripts/ideas/score.py`; cache under `scripts/ideas/_cache/` (git-ignored). Feeds registered in `docs/feeds.json`
+(ideas/latest.json 80 h, ideas/track.json 80 h, ideas/universe.json 80 h, ideas/ideas.json static). sw.js v158; nav entry under
+Markets ▸ Discovery & Filings; home tile text in `docs/index.html` DESC.
