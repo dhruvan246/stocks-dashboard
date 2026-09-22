@@ -17339,7 +17339,7 @@ scan, the run log (what was researched, verdict, reason, sources) and `latest.js
 search index carries none of them). Company-level import/export shipments and EPFO head-counts (the style's two heaviest
 tools) are paid or captcha-gated and are not automated; the playbook tells the run to list them under "still to verify".
 
-**Routine:** cloud routine `daily-ideas` (prompt lives in the trigger config, see §17b for the pattern), weekdays ~19:30 IST after
+**Routine:** cloud routine `daily-ideas` = `trig_01WU7EM4k4BxTtAzNnjP9pnD` (cron `0 14 * * 1-5` UTC, model claude-opus-5, env env_01Pb6Vujaf9FQ9m1kZXYJN9c, MCP connections cleared; prompt lives in the trigger config, see §17b for the pattern), weekdays ~19:30 IST after
 the BSE bhavcopy lands; commits only `docs/ideas/**`, `docs/ideas.html`, `scripts/ideas/**` on a `claude/ideas-<ts>` branch →
 `gh pr create` → `gh pr merge --squash --delete-branch --admin`; sandbox egress must allow api/www.bseindia.com.
 
