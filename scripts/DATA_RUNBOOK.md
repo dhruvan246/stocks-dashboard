@@ -17522,6 +17522,16 @@ stock to be there. fix it"* + *"plus i want stock pages for all sme stocks as we
   entitlements, not companies) — a filter in `parse_rows` + a one-shot key purge, never a ledger edit.
 
 ### 145e. Rules learned / still open
+- **Phone scroll trap in a capped table holder (found by the user on this page, 2026-09-22 18:33 IST):**
+  nse-bse-dashboard's results box is `max-h-[640px] overflow-auto`; theme.js's `scrollifyTable` re-uses it as
+  the `.sw-scrollx` holder and the phone rule sets `overflow-y:hidden`, so rows past 640px could not be reached
+  (measured 375×812: scrollHeight 19,381 vs clientHeight 640, computed overflow-y hidden). Fix in theme.js: read
+  the holder's computed overflow-y BEFORE adding the class and pin `auto`/`scroll` inline (inline outranks the
+  class rule); a wrapper theme.js creates itself stays hidden as before. Verified on the worktree server: dashboard
+  scrollTop moves, quarterly-results holders unchanged, 0 console errors; sw v163.
+- **SME names have no market cap** (BSE reports none, shares_outstanding.json has 0 SME symbols), and every
+  dashboard market-cap band requires `mcap > 0` — with any band selected an SME row is hidden; only "All market
+  caps" lists them. OPEN: derive SME mcap from an NSE shareholding/share-count source.
 - **A filled series must follow the calendar of the store it lands in.** The bhavcopy store trades on NSE's
   calendar (weekend specials included, §106h); the Yahoo store does not. Mixing them inside one payload makes a
   legitimate session look half-loaded — the guard is right, the fill was wrong.

@@ -1327,6 +1327,13 @@
       // Re-use the existing wrapper only when the table is its ONLY element child —
       // otherwise a card's heading would scroll away with the table.
       if (holder.children.length === 1) {
+        // A holder that already scrolls VERTICALLY (a capped results box — nse-bse-dashboard's
+        // max-h-[640px] overflow-auto div) must keep doing so: .sw-scrollx's phone rule sets
+        // overflow-y:hidden, which trapped every row past the cap (found 2026-09-22 on a phone:
+        // 500 rows in a 640px box, nothing below the first screenful reachable). Read the computed
+        // value BEFORE the class lands and pin it inline, which outranks the class rule.
+        var hcs = getComputedStyle(holder);
+        if (hcs.overflowY === 'auto' || hcs.overflowY === 'scroll') holder.style.overflowY = 'auto';
         holder.classList.add('sw-scrollx');
       } else {
         var w = document.createElement('div');
