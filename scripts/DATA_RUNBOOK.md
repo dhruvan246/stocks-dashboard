@@ -18657,3 +18657,9 @@ declarations analysis": **≥407 results declared after 3:30 p.m. on a rebalance
   the same 6 of 624 baskets (listed above), mean CAGR of The Eight 91.23 → 91.31, maxDD identical, The Four
   byte-identical. 359 newly visible member-quarters → 6 changed top-3 slots is the measured sensitivity of a
   top-3-of-~130-candidates screen, not a sign the data did not move.
+- **Weekend / holiday filings between the rebalance day and the next session — USER DECISION 22:30: KEEP the
+  midnight cutoff.** Measured first: 138 Nifty-500 results + 20 SHP filings over the 78 rebalances land on closed
+  days between the screen day and the next session (26 rebalances; 29-Oct-2021 20, 29-May-2020 13, 30-Jan-2026 12).
+  They are public by the Monday buy but count only at the next month's rebalance. Offered the "before the next
+  session opens" rule (engine change in both twins, ENGINE_VER bump, re-bake; a Monday pre-open residue would need
+  filing times); the user chose to keep midnight. Nothing to build; recorded so nobody re-derives it.
