@@ -95,6 +95,8 @@ def main():
             verdict, got = "unknown", None
             try:
                 fl = F.result_filings(o, code, "%d0401" % nxt, "%d0901" % nxt)
+            except F.BseBlocked:
+                raise                      # a block must abort the run, never read as 'unknown' (§148)
             except Exception:
                 fl = []
             for ann, att in fl[:8]:

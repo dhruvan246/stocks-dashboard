@@ -68,12 +68,21 @@ def get(o, u, b=False):
     if r.headers.get('Content-Encoding') == 'gzip': raw = gzip.decompress(raw)
     return raw if b else raw.decode('utf-8', 'replace')
 
+class BseBlocked(RuntimeError):
+    pass
+
 def result_filings(o, code, frm, to, pages=6):
     out = []
     for pg in range(1, pages + 1):
         u = ('https://api.bseindia.com/BseIndiaAPI/api/AnnSubCategoryGetData/w?pageno=%d&strCat=Result'
              '&strPrevDate=%s&strScrip=%d&strSearch=P&strToDate=%s&strType=C' % (pg, frm, code, to))
         try: rows = json.loads(get(o, u)).get('Table', [])
+        except urllib.error.HTTPError as e:
+            if e.code in (403, 429):
+                # BSE BLOCKED this client (measured 2026-09-23 after ~2k symbols: every call 403).
+                # Never let it read as "no filings" — that silently gate-failed ~310 symbols (§148).
+                raise BseBlocked('BSE HTTP %d on AnnSubCategoryGetData' % e.code)
+            break
         except Exception: break
         for r in rows:
             if r.get('ATTACHMENTNAME'):
