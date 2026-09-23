@@ -18467,3 +18467,42 @@ handling — every lakh/million filer gate-failed (pilot 10/10 failed; CMSINFO F
 tagged `u: stated|inherited`) and `--only` now targets any symbol. **Untested — re-run the 10-symbol pilot first.**
 Target list: 1,190 non-financial mainboard companies ≥ ₹100 cr at any FY20-22 year-end, missing ≥1 of FY20-22,
 with a BSE code and an FY23+ validate year (290 more have no validate year, 88 no BSE code).
+
+### 148a. SME merge LANDED (2026-09-23 evening)
+Fetch complete: 6,261 of 6,268 listed SME filings (7 fetch failures). `--merge` result: **+3,165 basis-cells**
+(3,008 from SME half-year/yearly filings Mar-2023→Mar-2026, 157 from six-month INTEGRATED files), +298 fields
+into existing cells, **513 symbols that had no BS at all**; diff vs the committed gz: **0 existing fields changed
+or removed**. **SME filers make power-of-ten errors too** — TRUST Sep-2024 filed every money field /10 (share
+capital 2.38 vs 23.83 cr in Mar-25/Sep-25). `scale_screen()` drops a BS-only row whose share capital is ~10^k off
+the (symbol, basis) median (or, without sc, whose Total Assets is ~10^k off BOTH period neighbours): 10 rows
+dropped, and it independently re-found GULFOILLUB Sep-25 (×10) and RMCL Sep-25 (the §147 entry).
+**Stock page:** a BS-only cell opened the Financial-detail card with an all-dash Quarterly table (~500 SME pages);
+`renderDeep` now requires P&L fields for the Quarterly tab (`xPnl`) and hides the card when no tab has data;
+sw v176. Preview-verified: JAYBEE card hidden, DIVISLAB/CYBERMEDIA tabs unchanged, HDFCBANK tabs = live.
+To preview stock pages locally the per-stock PRICE slice must exist (`stk/<SYM>.json` lives on sf-data, 404 on a
+docs server) — copy the live ones into the preview dir, or the page falls back and never loads `fin/`.
+
+### 148b. The annual-BS PDF text reader — what was broken, what fixed it (fetch_annual_bscf.py)
+Pilot 0/10 → first full pass 327/1,190 trusted → re-run in flight. Each fix measured on real filings:
+- **Units**: no unit handling at all → `detect_unit()` from the BS page note, else ÷1/10/100/1e4/1e7 tried against
+  the gate (only one can pass). Inherited-unit fill years must sit within 7× of the validated year's assets.
+- **ROU**: no right-of-use pattern → `rou` read; gate = `merge_annual_bscf.gate_ok` (PP&E or PP&E+ROU).
+- **Note column**: 'Note 8.1' was read as the value → note-shaped numbers under a Note header are dropped.
+- **Dash cells**: a '–' current year shifted the PRIOR year into nums[0] (ROUTE con CWIP 1.09 = the std FY23
+  figure) → a dash right of the label is 0 in position. A column-clustering rewrite regressed 261/461 fields
+  on the landed cells and was reverted — keep the positional reader.
+- **Basis**: fill years prefer the validated basis's page (PROZONER FY22 read the con page for a std filer).
+- **No Total Assets line**: Total Equity and Liabilities (identity) — ALEMBICLTD.
+- **One validate year**: FY2025 only, FY2026 never tried → try each XBRL-held year newest first incl FY2026.
+- Regression vs the origin reader on the 48 landed text cells: 530 fields identical, 6 differ — all 6 were the
+  old reader's prior-year shifts. **15 live ledger cells were wrong** (lakh stored as crore ×100: 360ONE,
+  CHENNPETRO, DIVISLAB, EPIGRAL, WELSPUNLIV, ROUTE; note numbers stored as Total Assets: BIRLACORPN 13, CESC 35,
+  CHOLAFIN 82, HEROMOTOCO 23, ETERNAL 23.36) → 8 healed (stated unit), 7 retracted; RTNINDIA FY21 (vision) flagged.
+- **`verify_annual_bscf_comparative.py`** = the 2nd reader: the FY(t+1) filing's prior-year column vs each landed
+  FY(t). agree → x2=1; MISREAD (~10^k or >20×) → adjudicated by the symbol's own XBRL-held year (the side within
+  3× of it wins; a disagreement names no side — 8 of the first 10 were the COMPARATIVE misreading a note
+  number); other gaps = restatement (merger/reclass) → keep the as-filed PIT value, x2=-1.
+- Residue classes (40-symbol sample of gate-fails): page found but rows unread 12, assets never match 5, page
+  rejected 6, scanned (vision, ASK FIRST) 3, no BSE filing 3.
+- Queue after the re-run: 459 companies ≥ ₹100 cr missing FY23-25 (ex-BSE-SME names like INA: NSE SME XBRL does not
+  cover BSE SME) → same PDF route.

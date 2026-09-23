@@ -963,12 +963,16 @@ function renderDeep(ends,patFn,revFn,opFn,isFin){
   // borrowings / investments) — banks tag none of these the usual way, leaving just a Total-Assets
   // plug, so their Balance-sheet tab is dropped in favour of the Bank-health tab.
   const bsMeaningful=bsFys.some(fy=>{ const x=bsOf(fy).x; return x.sc!=null||x.eq!=null||x.ppe!=null||x.invst!=null||x.borr!=null; });
-  const has={q:ends.some(e=>xCell(e)), a:fys.length>0, bs:bsFys.length>0&&bsMeaningful, cf:cfFys.length>0, ratio:ratioFys.length>0,
+  // a quarter row needs P&L detail — a balance-sheet-only cell (SME half-year / yearly filings,
+  // runbook §148) must not open an all-dash Quarterly table
+  const xPnl=e=>{ const x=xCell(e); return !!x&&['eps_b','oi','fc','dep','tax','exc','pbt','emp','mat'].some(k=>x[k]!=null); };
+  const has={q:ends.some(xPnl), a:fys.length>0, bs:bsFys.length>0&&bsMeaningful, cf:cfFys.length>0, ratio:ratioFys.length>0,
     seg:ends.some(e=>(xCell(e)||{}).seg),
     bank:ends.slice(-12).some(e=>{const x=xCell(e); return x&&(x.gnpa_pct!=null||x.cet1!=null);})};
   const tabs=[['q',SWI.file+' Quarterly detail'],['a',SWI.book+' P&L'],['bs',SWI.scale+' Balance sheet'],
     ['cf',SWI.banknote+' Cash flow'],['ratio',SWI.percent+' Ratios'],['seg',SWI.layers+' Segments'],
     ['bank',SWI.landmark+' Bank health']].filter(([k])=>has[k]);
+  if(!tabs.length){ card.style.display='none'; return; }        // nothing to show (e.g. BS-only cells on a basis the switch hides)
   // keep the open tab across a re-render (flipping the basis switch re-runs this whole card)
   let cur=(DEEP_TAB&&tabs.some(([k])=>k===DEEP_TAB))?DEEP_TAB:tabs[0][0];
   // ---- shared transposed table (Screener layout: metric rows × year columns, oldest→newest) ----
