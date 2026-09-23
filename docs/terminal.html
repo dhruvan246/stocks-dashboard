@@ -878,6 +878,7 @@ body.blur-secret .secret{filter:blur(7px);-webkit-user-select:none;user-select:n
       '<label>≤ ₹<input id="slLakh" value="'+sliceLakh()+'" inputmode="decimal"> L per slice</label>'+
       '<label>every <input id="slGap" value="'+sliceGap()+'" inputmode="numeric"> s</label>'+
       '<label>limit <input id="slRng" value="'+sliceRng()+'" inputmode="decimal"> % below live</label>'+
+      '<label>cloud slices \u2264 <input id="slPart" value="'+partPct()+'" inputmode="numeric"> % of 5-min volume</label>'+
       '<span class="xh">Sell splits a row into paced NSE limit orders · tap again mid-run to stop</span></div>';
     h+='<div class="av-kpis">'+
       kpi("Day's P&L",inrSigned(acctDay),signed(dayPctAll)+' on holdings'+(ACCT.pos.length?' · positions '+inrSigned(ACCT.posDay):''),acctDay>=0)+
@@ -1125,7 +1126,7 @@ body.blur-secret .secret{filter:blur(7px);-webkit-user-select:none;user-select:n
   function ensureStrategies(){
     if(window.mountStrategies) return Promise.resolve();
     if(SP_LOADING) return SP_LOADING;
-    var deps=['https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2','./bt-names.js','./bt-identity.js','./backtest-engine.js','./bt-sync.js','./strategies-panel.js?v=zba28'];   // versioned: GitHub Pages serves JS with max-age=600, so a plain name kept serving the pre-sync copy for 10 min after a deploy
+    var deps=['https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2','./bt-names.js','./bt-identity.js','./backtest-engine.js','./bt-sync.js','./strategies-panel.js?v=zba29'];   // versioned: GitHub Pages serves JS with max-age=600, so a plain name kept serving the pre-sync copy for 10 min after a deploy
     SP_LOADING=deps.reduce(function(p,src){ return p.then(function(){ return loadScript(src); }); }, Promise.resolve());
     return SP_LOADING;
   }
@@ -1175,6 +1176,7 @@ body.blur-secret .secret{filter:blur(7px);-webkit-user-select:none;user-select:n
      instead of walking the book. rng=0 falls back to a plain market order. The live price is
      re-fetched per slice (a 25-min slicer can't price off the row's stale ltp). */
   function sliceRng(){ var v=parseFloat(localStorage.getItem('sw_sell_rng_pct')); return (v>=0&&v<=5)?v:0.5; }
+  function partPct(){ var v=parseInt(localStorage.getItem('sw_part_pct'),10); return (v>=0&&v<=50)?v:10; }   // cloud slicer participation cap (0 = off)
   /* Tick sizes are NOT guessable from price — ASHOKLEY at ₹175 rejected a 0.01-grid limit with
      "RATE NOT MULTIPLE OF TICK[0.05]" (2026-08-31). Default to the 0.05 grid, and when an
      exchange rejects a slice naming its tick, LEARN it from the message and retry that slice. */
@@ -1310,6 +1312,7 @@ body.blur-secret .secret{filter:blur(7px);-webkit-user-select:none;user-select:n
     if(e.target.id==='slLakh'){ var v=parseFloat(e.target.value); if(v>0){ try{ localStorage.setItem('sw_sell_slice_lakh',String(v)); }catch(e2){} ktoast('Sell slices: ≤₹'+v+'L each'); } }
     if(e.target.id==='slGap'){ var g=parseInt(e.target.value,10); if(g>=3&&g<=600){ try{ localStorage.setItem('sw_sell_gap_s',String(g)); }catch(e2){} ktoast('Sell slices: '+g+'s apart'); } }
     if(e.target.id==='slRng'){ var p=parseFloat(e.target.value); if(p>=0&&p<=5){ try{ localStorage.setItem('sw_sell_rng_pct',String(p)); }catch(e2){} ktoast(p>0?('Slices go as limits ≤'+p+'% below live'):'Slices go as plain market orders'); } }
+    if(e.target.id==='slPart'){ var pp=parseInt(e.target.value,10); if(pp>=0&&pp<=50){ try{ localStorage.setItem('sw_part_pct',String(pp)); }catch(e2){} ktoast(pp?'Cloud slices capped at '+pp+'% of the last 5 minutes\u2019 volume':'Participation cap off \u2014 slices sized by average turnover only'); } }
   });
   document.getElementById('acctView').addEventListener('click',function(e){
     var ca=e.target.closest('[data-act]');

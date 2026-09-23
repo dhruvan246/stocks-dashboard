@@ -122,9 +122,32 @@ async function fetchLive(){
       if ($('zbWrap') && $('zbWrap').classList.contains('open')) zbLiveTick(); }
   } catch(e){}
 }
+/* ---------- live ticks + depth from the box (v3 ticker, user 2026-09-24) ----------
+   Every 4 s while connected, cloud on and the market open: GET /ticks?i=<the symbols on screen>. The box
+   opens Kite's WebSocket on demand and answers from memory. Ticks overlay LIVE.data (ltp, prevClose from
+   the tick's close, bid/ask, day volume, 5-min volume) so every price cell updates tick-fresh, and the
+   \u26a1 dialog / sell tables show bid/ask beside the price. */
+const TK = { at: 0, ws: '', timer: null };
+const partPct = () => { try { const v = parseInt(localStorage.getItem('sw_part_pct'), 10); return (v >= 0 && v <= 50) ? v : 10; } catch(e){ return 10; } };
+function tickSyms(){ return [...new Set(Object.values(PICKS).flatMap(p => p.rows.map(r => r.sym)).concat(Object.values(FEED.byKey || {}).flatMap(f => f.rows.map(h => h.sym))).concat((ZB.rows || []).map(r => r.sym)))]; }
+async function fetchTicks(){
+  if (!cloudOn() || !Z.connected || !marketOpen() || document.hidden) return;
+  const syms = tickSyms(); if (!syms.length) return;
+  const r = await zFetch('/ticks?i=' + encodeURIComponent(syms.join(',')));
+  if (r.st !== 200 || !r.j || !r.j.ok) return;
+  TK.at = Date.now(); TK.ws = r.j.ws || '';
+  const d = r.j.data || {}; let n = 0;
+  if (!LIVE) LIVE = { ts: Date.now(), data: {} };
+  for (const sym in d){ const q = d[sym]; if (!(q.ltp > 0)) continue; n++;
+    LIVE.data[sym] = Object.assign(LIVE.data[sym] || {}, { ltp: q.ltp, prevClose: q.close > 0 ? q.close : (LIVE.data[sym] || {}).prevClose, bid: q.bid, ask: q.ask, bq: q.bq, aq: q.aq, vol: q.vol, vol5m: q.vol5m, tick: q.ts || q.at }); }
+  if (n){ LIVE.ts = Date.now(); renderCards(); if ($('zbWrap') && $('zbWrap').classList.contains('open')) zbLiveTick(); }
+}
+function startTickLoop(){ if (TK.timer) return; TK.timer = setInterval(fetchTicks, 4000); }
+const baCell = sym => { const q = liveQ(sym); return (q && q.bid > 0 && q.ask > 0) ? ' <span class="sym" title="best bid / best ask (live depth)">' + (+q.bid).toFixed(2) + '/' + (+q.ask).toFixed(2) + '</span>' : ''; };
 function startLiveLoop(){
   if (LIVE_TIMER) return;
   LIVE_TIMER = setInterval(() => { if (!document.hidden && marketOpen()){ zbaPull(); if (Object.keys(PICKS).length){ fetchLive(); if (PICKMODE === 'live') liveRerankAll(); } } }, 60000);
+  startTickLoop(); fetchTicks();
 }
 
 /* ---------- picks ---------- */
@@ -457,7 +480,7 @@ function renderCards(){
           return '<tr><td class="sym">' + r.rank + '</td>' +
             '<td><b>' + esc(r.sym) + '</b> ' + (bk ? '<span class="tag" style="background:color-mix(in srgb,#c98500 18%,transparent);color:#c98500" title="Sold on the ' + esc(RW.tlab) + ' close but still in the official screen \u2014 buy the same ' + bk.qty.toLocaleString('en-IN') + ' back">buy back</span>' : (Z.held.has(r.sym) ? '<span class="tag keep">held</span>' : '<span class="tag new">new</span>')) +
             (q && q.ltp != null ? '' : ' <span class="badge">EOD</span>') + '</td>' +
-            '<td>\u20b9' + (+px).toFixed(2) + '</td>' +
+            '<td>\u20b9' + (+px).toFixed(2) + baCell(r.sym) + '</td>' +
             '<td class="' + (chg == null ? 'sym' : chg >= 0 ? 'up' : 'down') + '">' + (chg == null ? '\u2014' : (chg >= 0 ? '+' : '') + chg.toFixed(2) + '%') + '</td>' + pickColCells(cols, r) + '</tr>';
         }).join('') + '</tbody></table></div>' +
         (leg && !leg.ok ? '<div class="khelp">\u26a0 <b>' + esc(leg.msg) + '</b> \u2014 buying is locked until then.</div>' : '');
@@ -934,7 +957,7 @@ function zbLiveTick(){
   const trs = $('zbTbl') ? $('zbTbl').querySelectorAll('tbody tr') : [];
   ZB.rows.forEach((r, i) => { const q = liveQ(r.sym); if (q && q.ltp != null){ r.px = q.ltp; r.live = true; }
     const tr = trs[i]; if (!tr) return;
-    tr.children[2].innerHTML = r.px ? '₹' + (+r.px).toFixed(2) : '—';
+    tr.children[2].innerHTML = r.px ? '₹' + (+r.px).toFixed(2) + baCell(r.sym) : '—';
     tr.children[5].innerHTML = r.qty ? zinr(r.qty * r.px) : '—'; });
   zbFoot();
 }
@@ -948,7 +971,7 @@ function zbRender(){
       : r.st ? '<span class="zchip open">' + esc(r.st) + '</span>' : '';
     h += '<tr><td><input type="checkbox" data-i="' + i + '"' + (r.on ? ' checked' : '') + '></td>' +
       '<td><b>' + esc(r.sym) + '</b>' + (r.back ? ' <span class="tag" style="background:color-mix(in srgb,#c98500 18%,transparent);color:#c98500" title="Sold on the month-end close but still in the official screen \u2014 same quantity back">buy back</span>' : r.kept ? ' <span class="tag keep">kept \u2014 riding, not re-bought</span>' : (Z.held.has(r.sym) ? ' <span class="tag keep">held</span>' : '')) + (r.live ? '' : ' <span class="badge">EOD</span>') + '</td>' +
-      '<td>' + (r.px ? '₹' + (+r.px).toFixed(2) : '—') + '</td>' +
+      '<td>' + (r.px ? '₹' + (+r.px).toFixed(2) + baCell(r.sym) : '—') + '</td>' +
       '<td class="limcol"><input class="zbl" type="number" min="0" step="0.05" data-i="' + i + '" value="' + ((r.limit > 0 ? r.limit : r.px) || 0).toFixed(2) + '"' + (r.on ? '' : ' disabled') + '></td>' +
       '<td><input class="zbq" type="number" min="0" step="1" data-i="' + i + '" value="' + r.qty + '"' + (r.on ? '' : ' disabled') + '></td>' +
       '<td>' + (r.qty ? zinr(r.qty * r.px) : '—') + '</td>' +
@@ -966,7 +989,7 @@ function zBasketOpen(id){
   ZB = { id, rows: p.rows.map(r => { const q = liveQ(r.sym); const px = (q && q.ltp != null) ? q.ltp : r.px;
     return { sym: r.sym, px: px, limit: px, live: !!(q && q.ltp != null),
              on: true, qty: 0, st: '', msg: '', margin: null, mps: 0, chg: 0 }; }) };
-  $('zbTitle').textContent = 'Buy the basket';
+  $('zbTitle').textContent = 'Buy the basket' + (cloudOn() ? ' \u2601' : '');
   $('zbSub').textContent = ((typeof strategyEnglish === 'function' && strategyEnglish(it.cfg)) || nameWithBasis(it.name, it.cfg)) + ' — ' + p.rows.length + ' picks as of ' + p.asOf + '. You confirm before anything is placed.';
   $('zbProd').value = 'MTF';
   if ($('zbType')) $('zbType').value = 'MARKET';
@@ -1275,7 +1298,7 @@ function sellCardHTML(it, disp, favNum){
       rows.map(r => '<tr' + (r.stays ? ' style="opacity:.45"' : '') + '><td><b>' + esc(r.h.sym) + '</b>' +
         (r.bd ? ' <span class="tag" style="background:color-mix(in srgb,#c98500 18%,transparent);color:#c98500" title="' + esc(r.bd) + '">borderline</span>' : '') + '</td>' +
         '<td>' + r.h.qty.toLocaleString('en-IN') + (r.sent ? ' <span class="sym" title="sent to Zerodha this rebalance">sent ' + r.sent.toLocaleString('en-IN') + '</span>' : '') + '</td>' +
-        '<td>' + (r.px != null ? '\u20b9' + r.px.toFixed(2) : '\u2014') + '</td>' +
+        '<td>' + (r.px != null ? '\u20b9' + r.px.toFixed(2) + baCell(r.h.sym) : '\u2014') + '</td>' +
         '<td>' + (r.val != null ? zinr(r.val) : '\u2014') + '</td>' + pickColCells(X.cols, r, true) +
         '<td>' + (r.mism != null ? '<span class="tag" style="background:color-mix(in srgb,#c98500 18%,transparent);color:#c98500" title="Zerodha demat holds ' + (r.h.qty + r.mism) + ' vs ' + r.h.qty + ' in the strategy ledger \u2014 sold already, or bonus/split/rename? The sell quantity is capped at what the demat holds beyond the keeping strategies.">demat ' + (r.mism > 0 ? '+' : '') + r.mism + '</span> ' : '') +
         (r.stays ? '<span class="tag keep">stays \u2014 not sold</span>'
@@ -1434,7 +1457,7 @@ async function cloudSubmit(id){
   const label = it ? ((typeof strategyEnglish === 'function' && strategyEnglish(it.cfg)) || it.name || id) : ({ __exitall__: 'Exit all', __reenter__: 'Re-enter', __residual__: 'Buy remaining', __all__: 'Buy all' }[id] || id);
   const jobId = jobSlug(id) + '~' + Date.now().toString(36);
   const body = { id: jobId, label: String(label).slice(0, 80), device: ((navigator.platform || '') + ' ' + new Date().toTimeString().slice(0, 5)).slice(0, 40),
-    gapS: sliceGap(), rngPct: sliceRng(),
+    gapS: sliceGap(), rngPct: sliceRng(), peg: 'touch', partPct: partPct(),
     slices: B.slices.map(s => ({ tradingsymbol: s.tradingsymbol, transaction_type: s.transaction_type, quantity: s.quantity, product: s.product,
       tag: s.tag, px: +s._px || 0, tick: TICKMEM[s.tradingsymbol] || 0.05, round: s._round })) };
   let r = null;
@@ -1447,7 +1470,7 @@ async function cloudSubmit(id){
     ktoast('☁ Cloud slicer refused (' + why + ') — NOTHING was sent. Tap again to ' + (CLOUD.ok ? 'retry' : 'slice in this tab instead') + '.', 9000); return; }
   Object.assign(B, { remote: true, jobId: jobId, i: r.j.job.i, n: r.j.job.n, slices: [] });
   CLOUD.seen[jobId] = 'running';
-  ktoast('☁ Sent to the cloud slicer — ' + B.n + ' slices keep firing even if this tab closes; any device can stop it', 7000);
+  ktoast('☁ Sent to the cloud slicer — ' + B.n + ' slices keep firing even if this tab closes; limits pegged to the live bid/ask' + (partPct() ? ', each slice ≤ ' + partPct() + '% of the last 5 min’s volume' : '') + '; any device can stop it', 8000);
   cloudLoop(true); renderCards();
 }
 function cloudApply(jobs){
