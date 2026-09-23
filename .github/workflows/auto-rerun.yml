@@ -133,7 +133,19 @@ jobs:
             attempt=$((attempt+1))
             echo "::group::Auto-retry $attempt/5 for '$WF_NAME' (run $RID) — waiting ${wait_s}s first"
             sleep "$wait_s"                                     # let a transient upstream issue clear
-            gh run rerun "$RID" --failed --repo "$REPO" || echo "rerun trigger returned non-zero (continuing)"
+            if ! out=$(gh run rerun "$RID" --failed --repo "$REPO" 2>&1); then
+              echo "rerun trigger returned non-zero: $out"
+              # 2026-09-23: the retry attempt of 'Daily stock data refresh' run 35879345026 was CANCELLED
+              # by its own concurrency group (a newer scheduled run queued behind the in-flight one;
+              # GitHub keeps ONE pending run per group and cancels the older). GitHub then refuses every
+              # further rerun ("This workflow run cannot be retried"), and this loop slept through the
+              # remaining ~35 min of backoff and mailed a 6th failure that carried nothing new. The newer
+              # run IS the retry and mails for itself — stand down.
+              if printf '%s' "$out" | grep -qiE "cannot be re-?run|cannot be retried"; then
+                echo "::notice::'$WF_NAME' (run $RID) can no longer be re-run — superseded/cancelled by a newer run of the same workflow, or out of attempts. Standing down; that newer run reports for itself."
+                exit 0
+              fi
+            fi
 
             # wait for the new attempt to actually start
             for _ in $(seq 1 20); do
@@ -153,6 +165,12 @@ jobs:
             echo "::endgroup::"
             if [ "$concl" = "success" ]; then
               echo "✅ '$WF_NAME' recovered on auto-retry $attempt"
+              exit 0
+            fi
+            if [ "$concl" = "cancelled" ]; then
+              # Same 2026-09-23 case, seen from the other side: the attempt we triggered was cancelled by
+              # a newer run in the workflow's concurrency group. Nothing here can succeed any more.
+              echo "::notice::attempt $attempt of '$WF_NAME' (run $RID) was CANCELLED — superseded by a newer run in its concurrency group; that run carries the retry and mails for itself. Standing down."
               exit 0
             fi
           done

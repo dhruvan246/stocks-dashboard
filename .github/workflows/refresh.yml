@@ -42,6 +42,8 @@ jobs:
           python-version: "3.11"
 
       - name: Download NSE + BSE scrip lists
+        env:
+          GH_TOKEN: ${{ github.token }}   # scripts/bse_master_asset.py push/pull (data release asset)
         run: |
           # Both masters are checked here before anything reads them: `curl -s` exits 0
           # even when an exchange rejects the request, so a junk body used to land in
@@ -113,9 +115,21 @@ jobs:
             head -c 200 /tmp/bse.json 2>/dev/null || true; echo
             sleep $((attempt * 30))
           done
-          if [ "$ok" != 1 ]; then
-            echo "::error::BSE scrip list unavailable after 6 attempts (rate-limited? bodies logged above)"
-            exit 1
+          if [ "$ok" = 1 ]; then
+            # Keep the outage fallback fresh: the live list goes to the `data` release as
+            # bse_scrip_master.json.gz (the repo is 9 GB; ~1.7 MB up to 4x/day does not belong in
+            # git). Non-fatal — a failed upload only means the fallback stays one run older. §150.
+            python3 scripts/bse_master_asset.py push /tmp/bse.json \
+              || echo "::warning::could not refresh the bse_scrip_master fallback asset (see log) — DATA_RUNBOOK §150"
+          else
+            # 2026-09-23: api.bseindia.com answered 403 "Access Denied" (Akamai) to every client for
+            # hours; three scheduled runs + their auto-retries all died right here and no close prices
+            # shipped that evening. Fall back to the last-good list instead: prices stay fresh, market
+            # caps (Mktcap is the ONE source of every mcap on the site) are as old as the fallback —
+            # the "FALLBACK BSE MASTER in use" line below says exactly how old. DATA_RUNBOOK §150.
+            echo "::warning::BSE scrip list unavailable after 6 attempts (last HTTP $code; bodies logged above) — using the last-good master from the data release; market caps are as old as that copy (DATA_RUNBOOK §150)"
+            python3 scripts/bse_master_asset.py pull /tmp/bse.json \
+              || { echo "::error::no BSE scrip list: the live fetch failed AND no valid bse_scrip_master.json.gz is on the data release (DATA_RUNBOOK §150)"; exit 1; }
           fi
 
       - name: Fetch price history from Yahoo Finance

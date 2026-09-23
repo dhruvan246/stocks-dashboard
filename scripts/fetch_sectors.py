@@ -84,6 +84,24 @@ for attempt in range(PASSES):
 
 print(f"\nTotal sector rows: {len(sectors)} / {len(scrip_list)} ({100*len(sectors)/len(scrip_list):.1f}%)")
 
+# --- Fallback: the last PUBLISHED build's labels, fill-only (DATA_RUNBOOK §150) ------------
+# 2026-09-23: api.bseindia.com answered 403 "Access Denied" to every client for hours. With
+# `sectors` empty, the merge below stamped EVERY stock "Uncategorized" — so a run that survives
+# the outage (the scrip-master fallback in refresh.yml) would have shipped a sector-less site.
+# Any ticker BSE did not answer for THIS run keeps the sector/industry it shipped with last time;
+# a fresh answer always wins. docs/stock_data.bin is the build that is live right now (committed
+# by the previous successful run) — the same "last-good copy" the scrip master falls back to.
+PREV = {}
+try:
+    import gzip
+    with open(ROOT / "docs" / "stock_data.bin", "rb") as fh:
+        for _t, _m in (json.loads(gzip.decompress(fh.read())).get("meta") or {}).items():
+            if _m.get("sector") and _m["sector"] not in ("Uncategorized", "NSE-SME"):
+                PREV[_t] = {"sector": _m["sector"], "industry": _m.get("industry") or ""}
+except Exception as e:
+    print(f"previous build unreadable, no sector fallback this run: {e}")
+print(f"Previous build carries sector labels for {len(PREV)} tickers (fallback for any BSE did not answer)")
+
 # Histogram of industries we found
 from collections import Counter
 ind_hist = Counter(v.get("industry") for v in sectors.values() if v.get("industry"))
@@ -118,6 +136,7 @@ with open("/tmp/nse.csv") as f:
 print(f"NSE symbol->ISIN map: {len(nse_sym_to_isin)}")
 
 merged = 0
+carried = 0       # §150: kept from the previous build because BSE gave no answer this run
 fallback_isin = 0
 fallback_sid  = 0
 refused_sid = 0   # §76: scrip_id twin with a different ISIN, not used
@@ -161,6 +180,9 @@ for ticker, meta in data["meta"].items():
         meta["sector"]   = "NSE-SME"        # the dashboard's industry filter groups these as "NSE-SME (n)"
         meta["industry"] = ""
         sme_rows += 1
+    elif ticker in PREV:
+        meta["sector"], meta["industry"] = PREV[ticker]["sector"], PREV[ticker]["industry"]
+        carried += 1
     else:
         meta["sector"]   = "Uncategorized"
         meta["industry"] = ""
@@ -172,4 +194,7 @@ print(f"  via .BO scrip_id text match: {fallback_sid}")
 print(f"  via ISIN fallback:           {fallback_isin}")
 print(f"  scrip_id twins refused (ISIN differs, §76): {refused_sid}")
 print(f"  NSE-SME rows (no BSE lookup, sector NSE-SME): {sme_rows}")
+print(f"  carried from the previous build (BSE gave no answer this run, §150): {carried}")
+if carried > 50:   # the script's own "BSE is rate-limiting" threshold — a handful of flaky scrips is normal, this is an outage
+    print(f"::warning::fetch_sectors: {carried} tickers keep the previous build's sector/industry — BSE ComHeadernew answered for {len(sectors)}/{len(scrip_list)} scrips this run (DATA_RUNBOOK §150)")
 print(f"Updated {DATA}")
