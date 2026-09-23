@@ -732,8 +732,11 @@ def main():
                     p.pop('rou', None)                  # not a ledger field (merge_annual_bscf FIELDS)
                     # an INHERITED unit is only safe when the year sits within 7x of the validated
                     # year's Total Assets — a wrong unit is off by exactly 10x / 100x (§148)
-                    if u_src == 'inherited' and (not val_assets or p.get('assets') is None or
-                                                 not (1 / 7 <= p['assets'] / val_assets <= 7)):
+                    # EVERY fill year must sit within 7x of the validated year's Total Assets — a stated
+                    # unit is no guarantee (9 first-pass cells read a note number / sub-total as Total
+                    # Assets: AARTISURF FY22 0.4 vs 402 cr, GIPCL FY20 0.03 vs 4,487; §148)
+                    if (not val_assets or p.get('assets') is None or
+                            not (1 / 7 <= p['assets'] / val_assets <= 7)):
                         continue
                 else:
                     v = vision_read(pdf, bs_pi, cf_pi, sym, fy)
