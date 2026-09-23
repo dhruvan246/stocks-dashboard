@@ -15,6 +15,7 @@ UA = {"User-Agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64)"}
 BASE = "https://www.niftyindices.com/Press_Release/"
 
 FILES = """
+16032020 28082019 13062019 08042019 20032019 25022019 20022019
 10062026 21052026_1 20052026_1 15052026 08052026 04052026 23042026 12032026 23022026 20022026_2 20012026_2
 26122025 23122025 11122025 01122025 17112025_1 20102025 17102025 25092025_1 15092025 15092025_1 22082025 22082025_1
 24072025 10072025 04072025 03072025 02072025 26062025_1 25062025_1 23062025_1 06062025 05062025 04062025 03062025_1
@@ -114,7 +115,17 @@ def to_iso(d):
     return f"{int(m.group(3)):04d}-{mo:02d}-{int(m.group(2)):02d}" if mo else None
 
 # index heading on its own line, numbered OR lettered: "1) Nifty Alpha 50", "c) Nifty 500"
-HEAD_RE = re.compile(r"^\s*(?:\d+|[a-zA-Z])[\)\.]\s*((?:nifty|cnx)[\w &\-]*?)\s*$", re.I)
+# 2026-09-23 (runbook §141d): tolerate a footnote marker ("5) NIFTY Smallcap 100**", "4) NIFTY Smallcap 50*")
+# and a trailing parenthetical ("2) Nifty Midcap 150 (a parent index for Nifty Midcap 50)") after the
+# name — the strict form dropped those WHOLE sections (15092021 lost its Smallcap 50/100 blocks).
+HEAD_RE = re.compile(r"^\s*(?:\d+|[a-zA-Z])[\)\.]\s*((?:nifty|cnx)[\w &\-]*?)\s*[\*#@\u2020]*\s*(?:\([^)]*\)?)?\s*[\*#@\u2020]*\s*$", re.I)
+# 2026-09-23 (§141d): a lettered PROSE heading that names one index — how NSE words one-off revisions:
+# "B. Revision in criteria and replacements in Nifty Energy index:" (ind_prs11122024, Energy 10 -> 40).
+# LETTERED only ("B. …"): numbered lines in these notices are footnotes — "1. Bharat Electronics … removed
+# from Nifty Next 50 on account of its inclusion in Nifty 50 index" — and matching them hijacked the
+# section mid-list (23082024 / 22082025 lost their Next 50 inclusions in the first cut).
+HEAD2_RE = re.compile(r"^\s*[A-Z][\)\.]\s*(?![^\n]*\b(?:has been|have been|pursuant|on account of its)\b)[^\n]*?\b(?:replacements?|changes?|inclusions?|exclusions?)\s+(?:in|to|from)\s+"
+                      r"((?:nifty|cnx)[\w &\-]*?)\s*(?:index|indices)?\s*[:\.]?\s*$", re.I)
 # A data row = serial number, company name, then the ticker as the LAST whitespace token.
 # The ticker is extracted by taking the last token and VALIDATING it (O(n), no regex backtracking):
 #   - 2-15 chars of [A-Z0-9&-], MUST contain >=1 letter  => allows digit-leading symbols like
@@ -139,19 +150,30 @@ def _row_ticker(line):
     toks = m.group(2).split()
     return _ticker(toks[-1]) if toks else None
 
-def parse_pdf(fp):
-    try:
-        txt = "\n".join(p.extract_text() or "" for p in PdfReader(fp).pages)
-    except Exception:
-        return []
+OCR_DIR = os.path.join(HERE, "_pr_ocr")
+
+def _bare_head(lines, i):
+    """OCR text only: a line that is exactly a tracked index name, followed within 3 lines by
+    'being excluded/included', is a section heading whose '4)' numbering the OCR split off
+    ("NIFTY Midcap 50" in ind_prs23082021)."""
+    ci = canon_index(lines[i].strip())
+    if not ci:
+        return None
+    for j in range(i + 1, min(i + 4, len(lines))):
+        low = lines[j].lower()
+        if "being excluded" in low or "being included" in low:
+            return ci
+    return None
+
+def parse_text(txt, bare_heads=False):
     md = DATE_RE.search(txt); eff_default = to_iso(md.group(1)) if md else None
     cur = None; mode = None; blocks = []
     lines = txt.splitlines(); i = 0; n = len(lines)
     while i < n:
         ln = lines[i]
-        h = HEAD_RE.match(ln)
-        if h:
-            ci = canon_index(h.group(1))
+        h = HEAD_RE.match(ln) or HEAD2_RE.match(ln)
+        ci = canon_index(h.group(1)) if h else (_bare_head(lines, i) if bare_heads else None)
+        if h or ci:
             cur = {"index": ci, "eff": eff_default, "excluded": [], "included": []} if ci else None
             if cur: blocks.append(cur)
             mode = None; i += 1; continue
@@ -163,7 +185,10 @@ def parse_pdf(fp):
             t = _row_ticker(ln)                                    # single-line row
             if t:
                 cur[mode].append(t); i += 1; continue
-            if SERIAL_RE.match(ln):                                # wrapped-row fallback
+            # wrapped-row fallback; the serial may also stand ALONE on its line with the name and ticker
+            # wrapped below it ("8" / "ICICI Prudential Asset Management Company" / "Ltd. ICICIAMC" in
+            # ind_prs23022026; GNFC in ind_prs28022024) — 2026-09-23, runbook §141d
+            if SERIAL_RE.match(ln) or re.match(r"^\s*\d{1,3}\s*$", ln):
                 merged = ln.strip(); j = i + 1
                 while j < n and j <= i + 3 and not SERIAL_RE.match(lines[j]) and not HEAD_RE.match(lines[j]) \
                         and "exclud" not in lines[j].lower() and "includ" not in lines[j].lower():
@@ -174,6 +199,82 @@ def parse_pdf(fp):
                     j += 1
         i += 1
     return [b for b in blocks if (b["excluded"] or b["included"]) and b["eff"]]
+
+# REVOCATION TABLES (2026-09-23, runbook §141d): "Sr. No. | Index Name | Security Name | Symbol | Remarks"
+# with Remarks = Inclusion / Exclusion / Inclusion revoked / Exclusion revoked — how NSE amends an announced
+# review (ind_prs19032024: IREDA's inclusion revoked in 6 indices, BSE included instead; ind_prs25092024:
+# IDEA's exclusion revoked in 10). parse_text cannot read this layout, so these amendments were missed
+# entirely (BSE read as a Nifty 200 / Midcap 100 / 150 / LargeMidcap member back to 2006).
+REV_ROW = re.compile(r"(?<![A-Z0-9&\-])([A-Z][A-Z0-9&\-]{1,14})\*?\s+(Inclusion revoked|Exclusion revoked|Inclusion|Exclusion)\s*$")
+def _lead_index(toks):
+    """longest leading run of tokens that names a tracked index -> (index, tokens used)"""
+    for k in range(min(len(toks), 5), 1, -1):
+        ci = canon_index(re.sub(r"[#*]+$", "", " ".join(toks[:k])))
+        if ci:
+            return ci, k
+    return None, 0
+
+def parse_revocations(txt):
+    md = DATE_RE.search(txt); eff = to_iso(md.group(1)) if md else None
+    lines = txt.splitlines(); out = []; active = False; cur = None
+    for i, ln in enumerate(lines):
+        low = ln.lower()
+        if "index name" in low and "remarks" in low:
+            active = True; cur = None; continue
+        if not active:
+            continue
+        if low.startswith("about nse indices") or re.match(r"^\s*[A-Z]\.\s", ln) or "the following compan" in low:
+            active = False; cur = None; continue
+        m = re.match(r"^\s*\d{1,2}\s+(.*)$", ln)
+        if m and re.match(r"(?i)nifty", m.group(1).strip()):
+            toks = m.group(1).split()
+            ci, k = _lead_index(toks)
+            if not ci and i + 1 < len(lines) and len(lines[i + 1].split()) <= 2:     # name wrapped: "Nifty LargeMidcap" / "250"
+                toks = toks + lines[i + 1].split(); ci, k = _lead_index(toks)
+            cur = ci
+            ln = " ".join(toks[k:]) if ci else ""
+        r = REV_ROW.search(ln)
+        if r and cur and eff:
+            out.append((cur, eff, r.group(2).lower(), r.group(1)))
+    return out
+
+# ONE SYMBOL, MANY INDICES (2026-09-23, §141d): "… (Symbol: TATAMTRDVR) shall be excluded from the following
+# indices: Sr. No. Index Name / 1 Nifty 100 / 2 Nifty 200 / …" (ind_prs23082024_1, the DVR cancellation,
+# effective 2024-08-30). Returns the same (index, eff, action, symbol) tuples as parse_revocations.
+SYM_LIST = re.compile(r"\(Symbol:\s*([A-Z0-9&\-]{2,15})\)\s*shall\s+be\s+(excluded\s+from|included\s+in)\s+the\s+following\s+indices", re.I | re.S)
+def parse_symbol_lists(txt):
+    md = DATE_RE.search(txt); eff = to_iso(md.group(1)) if md else None
+    out = []
+    for m in SYM_LIST.finditer(txt):
+        act = "exclusion" if m.group(2).lower().startswith("excluded") else "inclusion"
+        for ln in txt[m.end():].splitlines()[1:]:
+            s2 = ln.strip()
+            if not s2 or s2.lower().startswith("sr. no"):
+                continue
+            mm = re.match(r"^\d{1,2}\s+(.+)$", s2)
+            if not mm:
+                break
+            ci = canon_index(mm.group(1))
+            if ci and eff:
+                out.append((ci, eff, act, m.group(1)))
+    return out
+
+def parse_pdf(fp):
+    """Text layer via pypdf. A notice whose text is drawn as IMAGES (ind_prs23082021 — the Sept-2021
+    semi-annual review for 20+ indices, ~90 image draws per page, zero real text) yields nothing, so
+    such a notice is read from a committed OCR sidecar scripts/_pr_ocr/<stem>.txt (macOS Vision OCR,
+    every ticker checked against the symbol universe, runbook §141d) — CI parses the same text."""
+    try:
+        txt = "\n".join(p.extract_text() or "" for p in PdfReader(fp).pages)
+    except Exception:
+        txt = ""
+    if len(txt.strip()) < 200:
+        stem = os.path.basename(fp).replace("ind_prs", "").replace(".pdf", "")
+        side = os.path.join(OCR_DIR, stem + ".txt")
+        if os.path.exists(side):
+            return parse_text(open(side, encoding="utf-8").read(), bare_heads=True)
+        return []
+    return parse_text(txt)
 
 # Manual corrections for reconstitution notices whose non-standard layout parse_pdf can't read.
 # Each: (index, eff, {remove from excluded}, {add to excluded}, {remove from included}, {add to included}).
@@ -197,6 +298,8 @@ MANUAL_CHANGELOG_FIXES = [
     #    Yes Bank, included ITC) bleed into the Nifty Bank block — ITC as a pre-2020 Nifty Bank member.
     #    The Nifty Bank swap is exactly YESBANK out / BANDHANBNK in (NSE register, same date). 2026-09-21.
     ("Nifty Bank", "2020-03-19", set(), set(), {"ITC"}, set()),
+    #  (the other nine indices in ind_prs25092024's table are applied by parse_revocations(), which reads
+    #   that table and ind_prs19032024's generically — runbook §141d)
 ]
 
 # Whole events parse_pdf cannot see because the notice is not a reconstitution review. Each:
@@ -211,6 +314,22 @@ MANUAL_CHANGELOG_EVENTS = [
     ("Nifty Bank", "2025-12-31", [], ["UNIONBANK", "YESBANK"], "01122025",
      "index widened 12->14 (SEBI F&O eligibility), ind_prs01122025 section B"),
 ]
+
+def apply_revocations(changelog, revs, src):
+    for idx, eff, act, sym in revs:
+        evs = [c for c in changelog.get(idx, []) if c["eff"] == eff]
+        if act == "inclusion revoked":
+            for c in evs: c["included"] = [x for x in c["included"] if x != sym]
+        elif act == "exclusion revoked":
+            for c in evs: c["excluded"] = [x for x in c["excluded"] if x != sym]
+        else:
+            if not evs:
+                c = {"eff": eff, "excluded": [], "included": [], "src": src}
+                changelog.setdefault(idx, []).append(c); evs = [c]
+            side = "included" if act == "inclusion" else "excluded"
+            if sym not in evs[0][side]:
+                evs[0][side].append(sym)
+        print(f"  REVOCATION TABLE {src}: {idx} {eff} {act} {sym}")
 
 def apply_manual_events(changelog):
     for idx, eff, exc, inc, src, why in MANUAL_CHANGELOG_EVENTS:
@@ -233,20 +352,60 @@ def apply_manual_fixes(changelog):
             if s not in first["excluded"]: first["excluded"].append(s)
         for s in adi:
             if s not in first["included"]: first["included"].append(s)
-        print(f"  MANUAL FIX {idx} {eff}: -excl{sorted(rmx)} +excl{sorted(adx)}")
+        print(f"  MANUAL FIX {idx} {eff}: -excl{sorted(rmx)} +excl{sorted(adx)} -incl{sorted(rmi)} +incl{sorted(adi)}")
+
+# 2026-09-23 (runbook §141d): an auto-probed notice that yields events is PERSISTED here, because the
+# probe only looks back 80 days — ind_prs10082026 (the whole Sept-2026 reshuffle, 21 indices) and
+# ind_prs13072026_1 were reachable ONLY through the probe window, so the weekly rebuild would have
+# silently dropped them in late October. refresh-membership.yml commits this file with the changelog.
+PROBED_FILE = os.path.join(HERE, "_pr_probed_stems.json")
+def load_probed():
+    try:
+        return list(json.load(open(PROBED_FILE)))
+    except Exception:
+        return []
 
 def main():
-    known = set(FILES)
-    stems = list(dict.fromkeys(FILES + recent_stems()))   # hand-maintained history + auto-probed recent
-    print(f"Parsing {len(FILES)} known + {len(stems)-len(FILES)} auto-probed recent press releases...")
-    ok = miss = 0; changelog = {}
+    probed_keep = load_probed()
+    files_all = list(dict.fromkeys(FILES + probed_keep))
+    known = set(files_all)
+    stems = list(dict.fromkeys(files_all + recent_stems()))   # hand-maintained + persisted + auto-probed recent
+    print(f"Parsing {len(FILES)} known + {len(probed_keep)} persisted + {len(stems)-len(files_all)} auto-probed recent press releases...")
+    ok = miss = 0; changelog = {}; revocations = []
     for stem in stems:
         fp = download(stem, tries=(5 if stem in known else 1))   # don't retry the speculative probes
         if not fp: miss += 1; continue
         ok += 1
-        for b in parse_pdf(fp):
+        blocks = parse_pdf(fp)
+        try:
+            _rtxt = "\n".join(p.extract_text() or "" for p in PdfReader(fp).pages)
+            _revs = parse_revocations(_rtxt) + parse_symbol_lists(_rtxt)
+        except Exception:
+            _revs = []
+        if _revs:
+            revocations.append((stem, _revs))
+        if blocks and stem not in known and stem not in probed_keep:
+            probed_keep.append(stem); print(f"  persisting auto-probed notice {stem} ({len(blocks)} index blocks)")
+        for b in blocks:
             changelog.setdefault(b["index"], []).append({"eff": b["eff"], "excluded": b["excluded"], "included": b["included"], "src": stem})
-    print(f"Have {ok}/{len(FILES)} PDFs (missing {miss})")
+    print(f"Have {ok}/{len(files_all)} PDFs (missing {miss})")
+    # SUPERSEDED NOTICES (2026-09-23, runbook §141d): a later notice that says its lists REPLACE an
+    # earlier notice's lists for named indices. ind_prs15092021 §C: REIT/InvIT inclusion put on hold,
+    # so "the earlier list of replacement of these indices published through a press release on August
+    # 23, 2021 stands replaced" for Nifty 500, Midcap 150, Smallcap 250/50/100, LargeMidcap 250,
+    # MidSmallcap 400 and Realty. The August lists stand for every other index.
+    SUPERSEDED = [("23082021", "15092021", {"Nifty 500", "Nifty Midcap 150", "Nifty Smallcap 250",
+                   "Nifty Smallcap 50", "Nifty Smallcap 100", "Nifty LargeMidcap 250",
+                   "Nifty MidSmallcap 400", "Nifty Realty"})]
+    for old_src, new_src, idxs in SUPERSEDED:
+        for idx in idxs:
+            evs = changelog.get(idx, [])
+            if any(c["src"] == new_src for c in evs):
+                n0 = len(evs)
+                changelog[idx] = [c for c in evs if c["src"] != old_src]
+                if len(changelog[idx]) != n0:
+                    print(f"  SUPERSEDED {idx}: {old_src} list replaced by {new_src}")
+    json.dump(sorted(set(probed_keep), key=lambda x: (x[4:8], x[2:4], x[:2], x)), open(PROBED_FILE, "w"), indent=0)
     # --- COVID-2020 NULLED RECONSTITUTION (verified from primary sources 2026-07-10) ---------------
     # The Feb-18 + Mar-12 (+Mar-19) reshuffle (eff 2020-03-27) was DEFERRED on Mar-23 (ind_prs23032020)
     # and declared "shall stand null" by ind_prs13052020 — EXCEPT Nifty 50 & Nifty Bank, which were
@@ -265,7 +424,10 @@ def main():
     for idx in list(changelog):
         kept = []
         for c in changelog[idx]:
-            if c["src"] in ("18022020", "12032020"):
+            # 19032020 (found by the 2026-09-23 probe, §141d) re-fills Yes Bank's vacancy in the SAME
+            # never-effective 27-Mar reshuffle (its own text: "w.e.f. March 27, 2020") — nulled with it.
+            # 16032020 is NOT nulled: the early Yes Bank removal it announces took effect 2020-03-19.
+            if c["src"] in ("18022020", "12032020", "19032020"):
                 if (idx == "Nifty 50" and c["src"] == "18022020") or \
                    (idx == "Nifty Bank" and c["src"] in ("18022020", "12032020")):
                     c = dict(c, eff="2020-03-19")
@@ -294,6 +456,8 @@ def main():
                        "included": h["included"], "src": h["file"].replace("ind_prs", "").replace(".pdf", "")})
         changelog["Nifty 500"] = n5
         print(f"  HUNT OVERLAY (Nifty 500): {len(hunt)} hunted docs win over {len(hstems)} stems")
+    for _src, _revs in sorted(revocations, key=lambda x: (x[0][4:8], x[0][2:4], x[0][:2])):
+        apply_revocations(changelog, _revs, _src)
     apply_manual_fixes(changelog)
     apply_manual_events(changelog)
     for idx in sorted(changelog):

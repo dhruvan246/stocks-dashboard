@@ -56,7 +56,11 @@ def load_renames():
     for old, new in [("GMRINFRA","GMRAIRPORT"), ("GET&D","GVT&D"), ("HBLPOWER","HBLENGINE"),
                      ("AKZOINDIA","JSWDULUX"), ("SWANENERGY","SWANCORP"), ("MFL","EPIGRAL"),
                      ("GLS","ALIVUS"), ("ADANITRANS","ADANIENSOL"), ("MOTHERSUMI","MOTHERSON"),
-                     ("MAHINDCIE","CIEINDIA")]:   # MAHINDCIE 2026-08-11: in LargeMidcap250 history; bin key merged into CIEINDIA (orphan-series batch)
+                     ("MAHINDCIE","CIEINDIA"),
+                     # 2026-09-23 (§141d): NSE renamed HEG -> HEGAM ("HEG Advanced Materials Ltd.", new ISIN
+                     # INE545A01024) after demerging its graphite business (ind_prs03092026); today's live
+                     # lists carry HEGAM, the price bin ends HEG on 2026-09-21 and opens HEGAM on 2026-09-22.
+                     ("HEG","HEGAM")]:   # MAHINDCIE 2026-08-11: in LargeMidcap250 history; bin key merged into CIEINDIA (orphan-series batch)
         ren.setdefault(old, (new, None))
     return ren
 
@@ -292,20 +296,23 @@ def merge_register_events(idx, events, reg_events):
     return out
 
 
-def pin_report(idx, walk, checkpoints):
+def pin_report(idx, walk, checkpoints, key=None):
     """MEASURE the walk against every official pin BEFORE the pins overwrite it: for each pin date,
     the walked roster in force (latest walked snapshot <= pin date) vs the archived list. A mismatch
     means an event is missing or mis-dated between that pin and the next — the pin then corrects its
     own date but nothing in between (runbook §141a). Prints one line per pin; returns total off-by."""
     if not checkpoints:
         return 0
+    # compare in the key space the builder EMITS (rename-map folded), else one company under two tickers
+    # (GESHIPPING/GESHIP, DALBHARAT/DALMIABHA, PCBL/PHILIPCARB) reads as two errors (2026-09-23, §141d)
+    key = key or (lambda x: x)
     dates = sorted(walk); tot = 0
     for d in sorted(checkpoints):
         best = None
         for k in dates:
             if k <= d: best = k
-        rec = walk[best] if best else set()
-        off = {canon(x) for x in checkpoints[d]}
+        rec = {key(x) for x in walk[best]} if best else set()
+        off = {key(canon(x)) for x in checkpoints[d]}
         diff = off ^ rec; tot += len(diff)
         print(f"  {idx} pin {d}: walk {len(rec)} vs official {len(off)} — off-by {len(diff)}"
               + (f" (walk-only {sorted(rec - off)}, official-only {sorted(off - rec)})" if diff else ""))
@@ -417,6 +424,22 @@ def main():
     for _tier, _snaps in _off.items():
         OFFICIAL[_tier] = {("%s-%s-%s" % (d[:4], d[4:6], d[6:8])): set(v)
                            for d, v in _snaps.items() if d != "LIVE"}
+    # STALE CAPTURES (2026-09-23, runbook §141d): a mirror can keep serving an old constituent file —
+    # Wayback's 2026-09-08 MidSmallcap 400 capture is byte-identical to the 2023-08-12 one although the
+    # changelog records 382 membership changes between them, and pinning it dragged the September 2026
+    # roster back to 2023. A capture identical to an EARLIER capture of the same tier while the
+    # changelog records >= 3 changes between them is not pinned.
+    for _tier, _pins in OFFICIAL.items():
+        _ds = sorted(_pins)
+        for _i, _b in enumerate(_ds):
+            for _a in _ds[:_i]:
+                if _a in _pins and _b in _pins and _pins[_a] == _pins[_b]:
+                    _n = sum(len(c["included"]) + len(c["excluded"]) for c in changelog.get(_tier, [])
+                             if _a < c["eff"] <= _b)
+                    if _n >= 3:
+                        print(f"  {_tier} pin {_b}: STALE capture (identical to {_a}, {_n} changelog changes between) — not pinned")
+                        _pins.pop(_b, None)
+                        break
     hist_path = os.path.join(HERE, "indices_history.json")
     H = json.load(open(hist_path, encoding="utf-8"))
     # old->current map from the PRICE build (build_sf_data merges renamed series by ISIN). Membership
@@ -485,6 +508,11 @@ def main():
     for _o in RENAME:
         _c = to_current(_o)
         if _c != _o: _REV.setdefault(_c, []).append(_o)
+    # also the symchg/supplement chain (REN): a rename the PRICE build has not folded yet (HEG -> HEGAM,
+    # an ISIN seam) must still emit the OLD tape for dates before the new key trades (2026-09-23, §141d)
+    for _o in REN:
+        _c = to_current(canon(_o))
+        if _c != _o and _o not in _REV.get(_c, []): _REV.setdefault(_c, []).append(_o)
     import datetime as _dt
     def _plus_days(ymd, n):
         return (_dt.date(int(ymd[:4]), int(ymd[4:6]), int(ymd[6:8])) + _dt.timedelta(days=n)).strftime("%Y%m%d")
@@ -601,7 +629,7 @@ def main():
             if cps:
                 _walk = reconstruct(anchor, events, None)
                 cps = drop_prepublished_pins(idx, _walk, cps, events)
-                pin_report(idx, _walk, cps)
+                pin_report(idx, _walk, cps, key=to_current)
         snaps = reconstruct(anchor, events, cps)
         # Nifty 500 only: its checkpoints are dense enough for the invariant to be safe, and it
         # is the index whose backward walk provably decays (see checkpoint_continuity). The

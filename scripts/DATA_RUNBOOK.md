@@ -18008,3 +18008,75 @@ stock to be there. fix it"* + *"plus i want stock pages for all sme stocks as we
   turnover enters the liquid universe. Left as designed; revisit if SME names distort a strategy.
 - OPEN: `liveQuote()` on stock.html is Yahoo-backed → SME pages carry no intraday bar (fails silently,
   as for BSE-only names).
+
+## 141d. ★★★ SUB-INDEX PRESS-RELEASE HUNT — every NSE notice 2015→2026, 4 parser defects, 1 OCR'd review  (2026-09-23)
+
+**Ask (user: "try" — fill the post-2020 sub-index changelog holes §141c named).** Scored throughout by
+the builder's `pin_report` (walked roster vs every archived official list BEFORE pinning, summed over the
+24 non-derived indexes, compared in the rename-folded key space the builder emits): **761 → 94**.
+Nifty 100 55→2, Next 50 16→0, Midcap 50 118→8, Midcap 150 59→0, Smallcap 50 22→0, Smallcap 100 101→9,
+Energy 107→0, Pharma 72→0, FMCG 13→0, Media 18→0, MNC 18→5, Nifty 200 48→14, IT 24→12. Nifty 50 / Bank /
+PSU Bank / Realty / Consumer Durables stay 0; Nifty 500 still 100% at its 39 lists and differs from the
+previous build only by TATAMTRDVR's 2024-08-30 exit and HEG→HEGAM on the announced 2026-09-30 snapshot.
+
+**Method (worktree ~/stocks-wt/subindex-hunt, `.hunt/` scratch): (1)** a window diagnostic — for each pair
+of consecutive archived lists, NSE's net change vs our events in that window — named the missing legs;
+**(2)** a corpus of every niftyindices notice: the 157 FILES + a weekday probe of ind_prsDDMMYYYY[_1.._3]
+2019-01 → 2026-09 (869 found, 4,638 + 1,491 names tried) with pypdf text cached; **(3)** a locator
+(symbol → notice, section heading, direction) matched each missing leg to a notice.
+
+**What was actually wrong (each fixed in `build_changelog.py`, CI regenerates `_changelog.json` weekly):**
+1. **Footnote-marked headings** — `5) NIFTY Smallcap 100**` failed HEAD_RE, so the WHOLE section was
+   dropped (15092021 lost Smallcap 50/100; its rows bled into the Smallcap 250 block). HEAD_RE now allows
+   `* # @ †` and a trailing `(a parent index for …)`.
+2. **Lettered prose headings** — `B. Revision in criteria and replacements in Nifty Energy index:`
+   (11122024: Energy 10→40, 30 inclusions eff 2024-12-31; 16122019 PSU Bank). New HEAD2_RE, **lettered
+   only**: numbered lines are footnotes ("1. Bharat Electronics … removed from Nifty Next 50 on account of
+   its inclusion in Nifty 50 index") and matching them hijacked the Next 50 section in the first cut.
+   HEAD2 also CLOSES a section on an untracked lettered heading ("B. Replacement in NIFTY50 Value 20
+   index"), which stopped LT/ZEEL bleeding into MidSmallcap 400 in 2020.
+3. **Serial on its own line** — "8" / "ICICI Prudential Asset Management Company" / "Ltd. ICICIAMC": the
+   wrapped-row fallback now also starts from a bare serial (37 rows recovered, incl. IRCTC's 2020 entry
+   into five midcap tiers that MANUAL_CHANGELOG_FIXES had hand-patched for Nifty 500 only).
+4. **Two table layouts parse_text cannot read**, now read generically and applied on the notice's
+   effective date: the REVOCATION TABLE (`Index Name | Security Name | Symbol | Remarks` with Inclusion /
+   Exclusion / Inclusion revoked / Exclusion revoked — 19032024: IREDA revoked, BSE included in its place
+   in 6 indices, VIPIND/VGUARD in Consumer Durables; 25092024: IDEA's exclusion revoked in 10 — the reader
+   reproduced all 18 hand-transcribed rows, so those hand entries were removed) and ONE SYMBOL, MANY
+   INDICES ("(Symbol: TATAMTRDVR) shall be excluded from the following indices", 23082024_1, eff
+   2024-08-30).
+
+**Missing documents:** 7 event-bearing notices were never in FILES — 25022019 and 28082019 (the Mar/Sep
+2019 semi-annual reviews: all of Midcap 150's 2019 drift), 20022019, 20032019, 08042019, 13062019 and
+16032020 (Yes Bank removed from every index eff 2020-03-19). **19032020 is nulled** with 18022020/12032020:
+it re-fills Yes Bank's slot in the never-effective 27-Mar-2020 reshuffle. Also **ind_prs10082026 (the
+whole Sept-2026 reshuffle, 21 indices) and 13072026_1 were reachable ONLY through the 80-day auto-probe**
+— the weekly rebuild would have dropped them in late October. Auto-probed notices that yield events are
+now persisted to `scripts/_pr_probed_stems.json`, read back every run, committed by
+refresh-membership.yml.
+
+**The image-only notice:** ind_prs23082021 (the Sep-2021 review for 22 indices) draws its text as images
+(~90 image draws/page, 0 text) — the single largest hole. Read with macOS Vision OCR locally
+(`scripts/_pr_ocr/ocr.swift`), normalised with a logged pass (serials restored, MRPLR→MRPL,
+VAIBHAVGBLR→VAIBHAVGBL), committed as `scripts/_pr_ocr/23082021.txt`; `parse_pdf` uses a sidecar only
+when a PDF has no text layer, with bare-index-name headings allowed for OCR text. `README.md` there logs
+every correction. Validation: every section balances, every ticker resolves (REITs excepted), and the pin
+agreement above. **ind_prs15092021 §C supersedes it** for Nifty 500 / Midcap 150 / Smallcap 250/50/100 /
+LargeMidcap 250 / MidSmallcap 400 / Realty (REIT inclusion put on hold, lists re-issued) — explicit
+`SUPERSEDED` table. This is a local OCR (deterministic, no tokens), not the vision rung of
+[[feedback-vision-reads-last-ask-first]].
+
+**Builder (`build_membership_v2.py`):** STALE CAPTURES are not pinned — a capture identical to an earlier
+one of the same tier with ≥3 changelog changes between them (Wayback's 2026-09-08 MidSmallcap 400 list ==
+2023-08-12 despite 382 changes; pinning it had dragged September 2026 back to 2023). `pin_report` compares
+rename-folded keys (GESHIPPING/GESHIP, DALBHARAT/DALMIABHA, PCBL/PHILIPCARB were phantom errors).
+**HEG → HEGAM** ("HEG Advanced Materials", new ISIN INE545A01024, after the graphite demerger 03092026;
+live lists switched 2026-09-22/23) added to the supplement renames, and era emission now also walks the
+REN (symchg + supplement) chain, so HEG's history keeps emitting the HEG tape and HEGAM only from its first
+bar. ⚠️ The PRICE build has not joined HEG→HEGAM (ISIN seam) — `_rename_map.json` lacks it; that is the
+§30/§94 rename pipeline's call.
+
+**Residual (94) is mostly identity, not events:** KPITTECH vs the old KPIT (BSOFT), HEXT vs the delisted
+HEXAWARE, MAXIND, PIRAMALFIN/DHFL, DUMMYREL (NSE placeholder we drop) at 2006-2015 checkpoints — the
+EMITTED rosters are clean for those names (checked); plus Healthcare LAURUSLABS/GLAXO at a 2021-05
+capture that contradicts NSE's own 23022021 notice (likely a lagged capture), Oil & Gas DUMMYREL.
