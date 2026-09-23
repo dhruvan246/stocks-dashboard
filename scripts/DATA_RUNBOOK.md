@@ -17997,7 +17997,13 @@ stock to be there. fix it"* + *"plus i want stock pages for all sme stocks as we
      Sundays only): refresh-bse.yml now refreshes the universe DAILY, and `fetch_bse_bhav.py` scans back 180 d ONCE
      for any never-seen code (`data["catchup"]`). Local test: 122 never-seen codes, all 4 listings got their bars.
   Result on the live data (local build): 19 rows priced from the BSE store, 40 show a last trade, 38 "no trades on
-  record", 3 NSE listings fill after their second session. Order in refresh.yml: fetch_all → fill (NSE + BSE
+  record", 3 NSE listings fill after their second session.
+  **LIVE (build 831211445, 13:16 IST, after refresh-bse's catch-up 272352e0f — 122 never-seen scrips, 181 d, 26
+  bars, 10 got a series):** of the 101 rows, 19 priced from the BSE store + 2 now on Yahoo (Vama Wovenfab re-keyed
+  VAMAWOVEN.BO), 39 last trade shown, 38 "no trades on record", 3 NSE listings of 23-Sep pending their 2nd session.
+  ⚠️ **The browser served an OLD dash_slim.bin from cache** on a reload (transferSize 0, build 12:08 IST while Pages
+  had 13:16; GitHub Pages sends max-age=600) — a live fix reads as "still broken". The dashboard's gunzipFetch now
+  uses `cache: 'no-cache'` (revalidate every load; unchanged file = 304). Order in refresh.yml: fetch_all → fill (NSE + BSE
   stores) → last trade → BSE share counts → heal → sectors → build.
 - **The results table drew only the top 500 of 5,527 with no way past it** — SUNLITE ranked 654th for 31-Mar →
   today (the 500th row was +87.60 %, SUNLITE +74.70 %). Now paged: a row at the foot of the table offers "Show

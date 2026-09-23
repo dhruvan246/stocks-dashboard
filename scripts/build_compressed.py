@@ -407,7 +407,11 @@ let META = {}, SERIES = {}, UNIVERSE = [], START_TS = 0, END_TS = 0,
 // before it triggers a one-time lazy fetch of the full history from stock_data.bin.
 let RECENT_CUTOFF_OFF = 0, FULL_LOADED = false, FULL_LOADING = null;
 async function gunzipFetch(url) {
-  const buf = await (await fetch(url)).arrayBuffer();
+  // cache:'no-cache' = always ask the server whether the file changed (an unchanged file costs a
+  // 304, not a re-download). A plain fetch let the browser reuse an OLD build: on 2026-09-23 a
+  // reload got the 12:08 IST dash_slim.bin from cache (0 bytes transferred) while Pages served
+  // the 13:16 build — a fix that was live read as "still broken" (runbook §145).
+  const buf = await (await fetch(url, {cache: 'no-cache'})).arrayBuffer();
   const stream = new Blob([new Uint8Array(buf)]).stream().pipeThrough(new DecompressionStream('gzip'));
   return JSON.parse(await new Response(stream).text());
 }
