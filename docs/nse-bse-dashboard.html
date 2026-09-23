@@ -40,7 +40,7 @@
       </a>
       <div class="flex items-center gap-3 min-w-0">
         <nav></nav>
-        <span class="text-[11px] text-slate-400 hidden xl:block shrink-0" id="lastUpdated">01 Jan 1996 &rarr; 23 Sep 2026 04:08 IST</span>
+        <span class="text-[11px] text-slate-400 hidden xl:block shrink-0" id="lastUpdated">01 Jan 1996 &rarr; 23 Sep 2026 06:38 IST</span>
       </div>
     </div>
   </header>
@@ -459,6 +459,7 @@ async function loadData() {
       sectorBroad: m.sector || '',           // kept for tooltip / CSV
       mcap: m.mcap,
       frozenSince: m.frozenSince || null,   // price unchanged for >= 1 year while Yahoo still prints it (§145)
+      lastTrade: m.lastTrade || null,       // BSE's last trade for a row with no price series {d, p} (§145)
       fromPrice: null, toPrice: null, changePercent: null,
       fromDate: null,  toDate: null,  noData: true,
       // 52-week-high distance, anchored at snapshot date (constant per stock)
@@ -566,9 +567,18 @@ function renderResults(results, keepLimit) {
     for (let i = 0; i < view.length; i++) {
       const r = view[i];
       // Whole crores hid real sub-crore caps as "0" (BENTCOM 0.40, ZJEETMAC 0.13 — §145): under 10 Cr keep 2 dp.
-      const mcap = r.mcap > 0 ? r.mcap.toLocaleString('en-IN', r.mcap < 10 ? {minimumFractionDigits: 2, maximumFractionDigits: 2} : {maximumFractionDigits: 0}) : '\u2014';
+      const mcap = r.mcap > 0 ? (r.mcap < 0.01 ? '&lt;0.01' : r.mcap.toLocaleString('en-IN', r.mcap < 10 ? {minimumFractionDigits: 2, maximumFractionDigits: 2} : {maximumFractionDigits: 0})) : '\u2014';
       let fromCell, toCell, chgCell;
-      if (r.noData) {
+      if (r.noData && r.lastTrade) {
+        // Listed but no trade in our price stores: show BSE's own last trade, or say there is none (§145).
+        const lt = r.lastTrade;
+        fromCell = DASH;
+        toCell = lt.p ? '&#8377;' + Number(lt.p).toFixed(2) : DASH;
+        const when = lt.d ? new Date(lt.d + 'T00:00:00Z').toLocaleDateString('en-IN', {month: 'short', year: 'numeric', timeZone: 'UTC'}) : null;
+        chgCell = '<span class="inline-flex items-center bg-amber-50 text-amber-700 rounded-md px-2 py-0.5 font-semibold text-xs" title="' +
+          (lt.p ? 'Last BSE trade ' + lt.d + ' at \u20b9' + lt.p + ' (BSE quote page)' : 'BSE shows no trade on record for this scrip') + '">' +
+          (lt.p ? 'not traded since ' + when : 'no trades on record') + '</span>';
+      } else if (r.noData) {
         fromCell = toCell = chgCell = DASH;
       } else if (r.firstDay) {
         // Stock has only one trading day inside the window (its listing day);
