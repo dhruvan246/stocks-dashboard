@@ -269,7 +269,9 @@ jobs:
       # Quarterly Results page payload — rebuilt EVERY run (not just when new earnings land):
       # result-day reactions and since-result drift move with prices daily. Reactions need the
       # FRESH price bin (the committed docs bin is a stale snapshot — runbook §0), so pull the
-      # `data` release asset like refresh-market-mood does. Non-fatal on download failure.
+      # `data` release asset like refresh-market-mood does, via fetch_release_bin.py (never
+      # `gh release download`, whose tag listing can lag a re-upload, DATA_RUNBOOK §146).
+      # Non-fatal on download failure, but it now leaves a visible ::warning:: in the run.
       - name: Rebuild Quarterly Results payload (fresh prices)
         env:
           GH_TOKEN: ${{ github.token }}
@@ -284,10 +286,10 @@ jobs:
             exit 0
           fi
           mkdir -p /tmp/qr
-          if gh release download data --pattern 'sf_stock_data.bin' --dir /tmp/qr --clobber; then
+          if python3 scripts/fetch_release_bin.py /tmp/qr/sf_stock_data.bin --tries 3; then
             SF_BIN=/tmp/qr/sf_stock_data.bin python3 -X utf8 scripts/build_quarterly_results.py
           else
-            echo "(release download failed — building from committed bin; reactions may lag)"
+            echo "::warning::fresh sf_stock_data.bin download failed — building from the committed bin; reactions may lag"
             python3 -X utf8 scripts/build_quarterly_results.py
           fi
 

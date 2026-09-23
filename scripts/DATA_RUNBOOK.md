@@ -18343,3 +18343,37 @@ Nifty 500 on that snapshot. (3) The SUPPLEMENT PDFs are downloaded by CI each ru
 download prints `SUPPLEMENT <stem>: PDF unavailable — skipped` and that week's build silently loses its
 events (same failure mode as FILES) — check the membership-refresh log for that line if Midcap 150 counts
 drop.
+
+## 146. ★★ STALE RELEASE TAG LISTING — never `gh release download` the data bin  (2026-09-23)
+*(from refresh-market-mood runs 35844504712 + 35845350113, red on the download step)*
+
+**What happened (measured 2026-09-23):** `refresh-backtest-data.yml` re-uploaded the `data` release's
+`sf_stock_data.bin` at 08:45:46Z (new asset id 583362351). For >70 min afterwards (checked 09:42–09:55Z)
+`GET /repos/dhruvan246/stocks-dashboard/releases/tags/data` still listed the DELETED id 582103099, while
+`GET /releases/338946059/assets` (by release id) and the public
+`https://github.com/dhruvan246/stocks-dashboard/releases/download/data/sf_stock_data.bin` both served the new
+file. `gh release download data` resolves through the tag listing, so it got
+`HTTP 404 … releases/assets/582103099`: market-mood failed the job (Nifty 500 turnover/breadth +
+`docs/survivorship/*.json` did not refresh), and refresh-fundamentals' quarterly-results step fell back to the
+committed bin with only a plain echo. By 10:35Z the tag listing had caught up on its own.
+
+**Fix:** `scripts/fetch_release_bin.py DEST [--tries N]`, used by both workflows. Each attempt tries (1) the
+public URL with `curl -fsSL`, then (2) the asset id listed by RELEASE id (the release `id` is read from the tag
+endpoint; only its `assets` array lags), fetched as `application/octet-stream` via `gh api` (curl without gh).
+A download is accepted only if it is ≥50 MB, gzip, gunzips + parses, has `end` shaped YYYY-MM-DD, and equals the
+size the by-id listing reports (when readable), so a stale copy from either route is rejected. DEST is written
+only by an atomic rename of a validated file; it prints `data end = …`; exit 1 when every route fails.
+Market-mood stays fatal on failure; refresh-fundamentals stays non-fatal but now emits a `::warning::`.
+`check_feeds.py`'s release-asset age check lists assets by release id for the same reason.
+Tested locally 2026-09-23: normal route, forced fallback (404 public URL → by-id route, with and without gh on
+PATH; md5 identical to the public copy), and rejection of short/non-gzip/truncated/no-`end`/size-mismatch
+files with DEST left untouched.
+
+**Other readers (grep `releases/download|release download|releases/tags`, 2026-09-23):** every other script
+already downloads the public URL, not by tag. `build_coverage_matrix.js` and `grid_search*.js` size + gzip-check
+it with retries; `update_sf_data.py` and `fill_prices_from_sf.py` gunzip + parse it with 3 retries;
+`build_first_bar_map.js` (local tool) curls it unvalidated. The only by-tag callers were the two workflow steps
+above plus `check_feeds.py`.
+
+**Rule:** any new job that needs the data bin calls `scripts/fetch_release_bin.py`. Never resolve release assets
+through `releases/tags/<tag>` (`gh release download` does exactly that).

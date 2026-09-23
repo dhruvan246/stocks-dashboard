@@ -20,6 +20,7 @@ on:
       - "scripts/build_market_breadth.py"
       - "scripts/build_market_breadth_pit.py"
       - "scripts/build_index_survivorship.py"
+      - "scripts/fetch_release_bin.py"
       - ".github/workflows/refresh-market-mood.yml"
 
 permissions:
@@ -46,12 +47,15 @@ jobs:
       # Pull the freshest survivorship-free dataset (published daily by
       # refresh-backtest-data.yml as the `data` release asset). We BUILD from it
       # but never commit it — docs/sf_stock_data.bin stays a frozen snapshot.
+      # NOT `gh release download`: gh resolves the asset through the TAG listing, which kept the
+      # deleted asset id for >70 min after a re-upload on 2026-09-23 (HTTP 404, job red twice).
+      # fetch_release_bin.py tries the public URL, then the fresh asset id listed by RELEASE id,
+      # and validates size + gzip + JSON 'end' before writing the file (DATA_RUNBOOK §146).
       - name: Download fresh sf_stock_data.bin (data release asset)
         env:
           GH_TOKEN: ${{ github.token }}
         run: |
-          mkdir -p /tmp/mm
-          gh release download data --pattern 'sf_stock_data.bin' --dir /tmp/mm --clobber
+          python3 scripts/fetch_release_bin.py /tmp/mm/sf_stock_data.bin
           cp /tmp/mm/sf_stock_data.bin docs/sf_stock_data.bin
           python3 -c "import json,gzip;print('data end =', json.loads(gzip.decompress(open('docs/sf_stock_data.bin','rb').read()))['end'])"
 
