@@ -98,6 +98,11 @@
   const _sTs = k => { try { return +(localStorage.getItem('swset_ts_' + k) || 0); } catch (e) { return 0; } };
   const _sStamp = (k, ts) => { try { localStorage.setItem('swset_ts_' + k, String(ts)); } catch (e) {} };
   let _snap = {}, _remoteExtra = [];   // _remoteExtra: SETTINGS entries this page's key list doesn't know
+  // _ready: the first pull has finished and _snap holds this tab's baseline. A push before that saw
+  // _snap = {} → every key "changed" → all stamped NOW and pushed as this browser's values. A fresh
+  // owner browser left/hidden within its first second did exactly that at 00:59 IST 23-Sep-2026 and
+  // blanked favourites, both saved mixes, the Mixer selection and live_worker_url on every device.
+  let _ready = false;
   async function syncSettings(keys) {
     if (keys && keys.length) SETTINGS_KEYS.splice(0, SETTINGS_KEYS.length, ...keys);
     if (!SETTINGS_KEYS.length) return;
@@ -118,6 +123,7 @@
       });
     } catch (e) {}
     _snap = {}; SETTINGS_KEYS.forEach(k => { try { _snap[k] = localStorage.getItem(k); } catch (e) {} });
+    _ready = true;
   }
   function _mergeSettingsDocs(a, b) {   // union of two SETTINGS docs, newer ts wins per key
     const m = {};
@@ -126,7 +132,7 @@
     return Object.keys(m).map(k => m[k]);
   }
   async function pushSettings(opts) {
-    if (!SETTINGS_KEYS.length || !ownerKey()) return;
+    if (!SETTINGS_KEYS.length || !ownerKey() || !_ready) return;   // no baseline yet → nothing to compare, never push
     let changed = false;
     SETTINGS_KEYS.forEach(k => { let v = null; try { v = localStorage.getItem(k); } catch (e) {}
       if (v !== _snap[k]) { _sStamp(k, Date.now()); _snap[k] = v; changed = true; } });
@@ -138,12 +144,14 @@
     // await a read, which is why the hidden-state push does the fetch ahead of it.
     let ref = _get('SETTINGS');
     if (opts && opts.fetchFirst) { try { const r = await rpc('sw_kv_get', { k: 'SETTINGS' }); if (r != null) { ref = r; _put('SETTINGS', r); } } catch (e) {} }
-    const rm = {}; (Array.isArray(ref) ? ref : _remoteExtra).forEach(e => { if (e && e.k) rm[e.k] = e; });
+    // No copy of the remote doc at all (never read it successfully) → we can't tell what we'd overwrite.
+    if (!Array.isArray(ref)) return;
+    const rm = {}; ref.forEach(e => { if (e && e.k) rm[e.k] = e; });
     const out = SETTINGS_KEYS.map(k => {
       const r = rm[k], st = _sTs(k);
       if (r && (r.ts || 0) > st) return r;              // someone else knows newer — keep theirs
       let v = null; try { v = localStorage.getItem(k); } catch (e) {}
-      return { k, v, ts: st || Date.now() };
+      return { k, v, ts: st };                          // a key this browser never stamped carries ts 0 — it can never beat another device's value
     });
     Object.keys(rm).forEach(k => { if (SETTINGS_KEYS.indexOf(k) < 0) out.push(rm[k]); });
     await kvSet('SETTINGS', out);
