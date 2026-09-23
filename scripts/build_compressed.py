@@ -24,8 +24,21 @@ end_ts = payload["endTs"]
 year_ago_ts = end_ts - 365 * DAY
 h52_count = 0
 last_close = {}   # every priced ticker's last close — the mcap fill below needs it for names with <30 bars in a year
+# FROZEN PRICES (§145): Yahoo keeps printing a scrip that stopped trading years ago, repeating its last
+# close every session (TVOLCON/BENTCOM/ESQRMON/PUNCTRD/ZJEETMAC/PETPLST: frozen since 2001-2011, no row
+# in BSE's own bhavcopy). The table showed them as live 0.00% moves. A series still printing within
+# FROZEN_LIVE_DAYS of the end whose close has not changed for FROZEN_MIN_DAYS is flagged with the
+# date its price last changed; the page shows "not traded since" instead of a change.
+FROZEN_MIN_DAYS, FROZEN_LIVE_DAYS = 365, 10
+frozen = 0
 for tkr, pairs in payload["series"].items():
     if pairs: last_close[tkr] = pairs[-1][1]
+    if pairs and (payload["endTs"] - pairs[-1][0]) <= FROZEN_LIVE_DAYS * DAY:
+        i = len(pairs) - 1
+        while i > 0 and pairs[i - 1][1] == pairs[i][1]: i -= 1
+        if pairs[-1][0] - pairs[i][0] >= FROZEN_MIN_DAYS * DAY and tkr in payload["meta"]:
+            payload["meta"][tkr]["frozenSince"] = datetime.fromtimestamp(pairs[i][0]).strftime("%Y-%m-%d")
+            frozen += 1
     ds, ps = [], []
     for ts, close in pairs:
         ds.append(int((ts - start_ts) // DAY))
@@ -68,10 +81,19 @@ try:
                      .get("fills") or {})
 except Exception:
     screener_fill = {}
+# BSE-only rows with no BSE market cap: the scrip's own newest BSE shareholding filing
+# (scripts/fill_bse_share_counts.py), keyed by dashboard TICKER — a BSE scrip_id can equal an
+# unrelated NSE symbol, so the two NSE-keyed ledgers above are never used for a .BO row (§76).
+try:
+    bse_fill = (json.loads((ROOT / "scripts" / "shares_bse_only.json").read_text(encoding="utf-8"))
+                .get("fills") or {})
+except Exception:
+    bse_fill = {}
+print(f"frozen-price rows (no change for >= {FROZEN_MIN_DAYS}d while still printing): {frozen}")
 if shares_path.exists():
     try:
         shares = json.loads(shares_path.read_text(encoding="utf-8"))
-        filled = filled_sc = 0
+        filled = filled_sc = filled_bse = 0
         for tkr, meta in payload["meta"].items():
             if meta.get("mcap"): continue
             # `latest` is only written by the 52w pass (>= 30 bars in the last year), so a new or thinly
@@ -80,21 +102,27 @@ if shares_path.exists():
             px = meta.get("latest") or last_close.get(tkr)
             if not px: continue
             sym = str(meta.get("symbol") or tkr.split(".")[0]).upper()
-            got = shares.get(sym)
             src = None
-            if got and got[0]:
-                n, src = got[0], "shp:" + got[1]          # provenance — not a BSE-reported cap
-            elif (screener_fill.get(sym) or {}).get("shares"):
-                n, src = screener_fill[sym]["shares"], "screener:" + str(screener_fill[sym].get("asof"))
+            if tkr.endswith(".BO"):
+                bf = bse_fill.get(tkr) or {}
+                if bf.get("shares"):
+                    n, src = bf["shares"], "bse-shp:" + str(bf.get("qtr") or bf.get("filed"))
+            else:
+                got = shares.get(sym)
+                if got and got[0]:
+                    n, src = got[0], "shp:" + got[1]          # provenance — not a BSE-reported cap
+                elif (screener_fill.get(sym) or {}).get("shares"):
+                    n, src = screener_fill[sym]["shares"], "screener:" + str(screener_fill[sym].get("asof"))
             if not src: continue
             mcap = n * px / 1e7                           # shares x rupees -> rupees crore
             if mcap <= 0: continue
             meta["mcap"] = round(mcap, 2)
             meta["mcapSrc"] = src
             if src.startswith("screener"): filled_sc += 1
+            elif src.startswith("bse-shp"): filled_bse += 1
             else: filled += 1
         print(f"mcap from SHP share counts: {filled} filled ({len(shares)} counts on file); "
-              f"{filled_sc} from the screener fallback ledger")
+              f"{filled_sc} from the screener fallback ledger; {filled_bse} BSE-only from their BSE filings")
     except Exception as e:
         print(f"WARN shares_outstanding unusable ({e}) — NSE-only caps stay blank")
 
@@ -628,6 +656,7 @@ async function loadData() {
       sector: indKey,                       // shown in the table chip
       sectorBroad: m.sector || '',           // kept for tooltip / CSV
       mcap: m.mcap,
+      frozenSince: m.frozenSince || null,   // price unchanged for >= 1 year while Yahoo still prints it (§145)
       fromPrice: null, toPrice: null, changePercent: null,
       fromDate: null,  toDate: null,  noData: true,
       // 52-week-high distance, anchored at snapshot date (constant per stock)
@@ -734,7 +763,8 @@ function renderResults(results, keepLimit) {
     const DASH = '<span class="text-slate-400">\u2014</span>';
     for (let i = 0; i < view.length; i++) {
       const r = view[i];
-      const mcap = r.mcap > 0 ? r.mcap.toLocaleString('en-IN', {maximumFractionDigits: 0}) : '\u2014';
+      // Whole crores hid real sub-crore caps as "0" (BENTCOM 0.40, ZJEETMAC 0.13 — §145): under 10 Cr keep 2 dp.
+      const mcap = r.mcap > 0 ? r.mcap.toLocaleString('en-IN', r.mcap < 10 ? {minimumFractionDigits: 2, maximumFractionDigits: 2} : {maximumFractionDigits: 0}) : '\u2014';
       let fromCell, toCell, chgCell;
       if (r.noData) {
         fromCell = toCell = chgCell = DASH;
@@ -757,6 +787,11 @@ function renderResults(results, keepLimit) {
           ? '<span class="inline-flex items-center bg-amber-50 text-amber-700 rounded-md px-1.5 py-0.5 font-medium text-[10px] ml-1" title="Stock\'s last trade in this window was ' + r.staleDays + ' days before your To Date">stale</span>'
           : '';
         chgCell  = '<span class="inline-flex items-center gap-1 ' + cls + ' rounded-md px-2 py-0.5 font-semibold text-xs tabular-nums">' + arr + ' ' + sgn + r.changePercent.toFixed(2) + '%</span>' + staleNote;
+        if (r.frozenSince) {
+          // The exchange has no trade for this scrip; the "price" is the last trade repeated (§145).
+          const fs = new Date(r.frozenSince + 'T00:00:00Z').toLocaleDateString('en-IN', {month: 'short', year: 'numeric', timeZone: 'UTC'});
+          chgCell = '<span class="inline-flex items-center bg-amber-50 text-amber-700 rounded-md px-2 py-0.5 font-semibold text-xs" title="No trades since ' + r.frozenSince + ' — the price shown is the last traded price">not traded since ' + fs + '</span>';
+        }
       }
       // Screener.in URL: NSE symbols use the symbol itself; BSE-only stocks use
       // the numeric scrip code (Screener accepts both formats).
@@ -813,7 +848,7 @@ function renderResults(results, keepLimit) {
 
 function updateStats(results) {
   if (!results.length) { document.getElementById('statsGrid').innerHTML = ''; return; }
-  const priced    = results.filter(r => !r.noData);
+  const priced    = results.filter(r => !r.noData && !r.frozenSince);   // frozen = no trades, not a 0% move
   const gainers   = priced.filter(r => r.changePercent > 0).length;
   const losers    = priced.filter(r => r.changePercent < 0).length;
   const unchanged = priced.length - gainers - losers;

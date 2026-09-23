@@ -25,8 +25,11 @@ NONSTOCK_RE = re.compile(
     r'\b(?:ETF|BeES|InvIT|REIT|Index Fund|Exchange Traded Fund|FoF)\b'
     r'|Mutual Fund', re.IGNORECASE
 )
-def is_non_stock(name):
-    return bool(name) and bool(NONSTOCK_RE.search(name))
+def is_non_stock(name, isin=""):
+    # ISINs starting "INF" are mutual-fund / ETF UNITS by construction (NSDL assigns INF to fund
+    # schemes) — the name regex missed e.g. INFRA ("Mirae Asset Nifty India Infrastructure &
+    # Logistics") and 56 Nippon segregated-portfolio units on BSE (measured 2026-09-23, §145).
+    return (bool(name) and bool(NONSTOCK_RE.search(name))) or str(isin or "").upper().startswith("INF")
 
 ROOT     = Path(__file__).resolve().parent.parent
 NSE_CSV  = "/tmp/nse.csv"          # NSE main-board equity master (EQUITY_L.csv)
@@ -83,7 +86,7 @@ for b in bse_scrips:
     except: mcap = 0
     grp  = (b.get("GROUP") or "").strip() or "Other"
     if not sid and not code: continue
-    if is_non_stock(name):
+    if is_non_stock(name, isin):
         skipped_etf += 1
         continue
     # §76: a BSE scrip_id equal to an NSE symbol is a COINCIDENCE until the ISIN agrees. Both ISINs
@@ -114,7 +117,7 @@ for b in bse_scrips:
 bse_nse_syms = {u["display"] for u in universe if u["primary"].endswith(".NS")}
 for sym in sorted(nse_symbols - bse_nse_syms):
     info = nse_main[sym]
-    if is_non_stock(info["name"]):
+    if is_non_stock(info["name"], info["isin"]):
         skipped_etf += 1
         continue
     universe.append({
@@ -125,7 +128,7 @@ n_sme = 0
 for sym in sorted(nse_sme):
     if sym in bse_nse_syms: continue                # cannot happen today (0 SME ISINs on BSE) — guard anyway
     info = nse_sme[sym]
-    if is_non_stock(info["name"]):
+    if is_non_stock(info["name"], info["isin"]):
         skipped_etf += 1
         continue
     universe.append({

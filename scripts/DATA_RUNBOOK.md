@@ -17953,6 +17953,28 @@ stock to be there. fix it"* + *"plus i want stock pages for all sme stocks as we
      rows priced with a cap** (566 `shp:`, 4 `screener:`); SUNLITE 13,805,848 shares → ₹875.5 Cr.
   Still capless site-wide: 101 rows, 94 of them BSE-only with no price series, 7 priced BSE-only rows whose BSE
   Mktcap is 0 (TVOLCON, BENTCOM, ESQRMON, PUNCTRD, ZJEETMAC, PETPLST, INFRA) — OPEN, not SME.
+- **The 7 priced rows with no market cap (user, 2026-09-23: "fix the 7 BSE ones with zero mcap").** Measured:
+  six BSE-only scrips (TVOLCON, BENTCOM, ESQRMON, PUNCTRD, ZJEETMAC, PETPLST) are LISTED but have NOT TRADED
+  for 15-25 years — BSE's master Mktcap blank/0.00, BSE StockTrading API MktCapFull "-"/0.00 with circuit
+  0.00/x, NO row in BSE's own bhavcopy (docs/bse_prices.bin, 2,662 scrips), and the Yahoo series repeats one
+  close (1 distinct value in 60 bars; frozen since 2001-06-03 BENTCOM, 2004-11-07 ESQRMON, 2006-11-19 PETPLST,
+  2008-03-16 ZJEETMAC, 2011-11-13 TVOLCON; PUNCTRD's series itself stops 2018-06-03). ⚠️ **screener.in is a
+  PLACEHOLDER for these**: Market Cap (Cr) == Current Price (Rs) on all six = an assumed 1 crore shares, and its
+  prices are not the last trade (TVOLCON 10 vs 12, ESQRMON 10 vs 5.50, PUNCTRD 5.50 vs 1.00). The companies
+  still FILE a quarterly shareholding pattern with BSE (all six filed Jun-2026 in July) → real counts 5-22 LAKH
+  shares (`SHPQNewFormat/w?scripcode=` → newest `XbrlFile` under /XBRLFILES/SHPXBRLDataXML/ →
+  fetch_shareholding.parse_shares). New `scripts/fill_bse_share_counts.py` → `scripts/shares_bse_only.json`
+  (keyed by dashboard TICKER, cached 100 d), run in refresh.yml after fetch_all; build_compressed reads it for
+  `.BO` rows only and never gives a `.BO` row an NSE-keyed count (§76). Caps at the last traded close: ₹0.10-6.17
+  Cr. The table shows sub-₹10 Cr caps with 2 dp (whole crores printed 0.40 as "0").
+  **Frozen-price label:** a series still printing within 10 d of the end whose close has not changed for ≥ 365 d
+  gets `meta.frozenSince`; the page shows "not traded since Mon YYYY" instead of a 0.00 % move and leaves it out
+  of gainers/losers/unchanged/avg. 16 rows (6 above + ZSATYASL, TWIROST, ALNATRD, HCLTD, DAL, SHIKHARLETR,
+  ZGOLDINV, SFTL, TECHCON, ISHWATR, ZSOUTGAS — 11 already had a BSE cap).
+  **The 7th, INFRA.NS, was an ETF** (Mirae Asset Nifty India Infrastructure & Logistics, ISIN INF769K01QB4) the
+  name regex missed. fetch_all's non-stock test now also drops ISINs starting `INF` (fund units by NSDL
+  convention): 56 rows left the universe (5,527 → 5,471) — 30 Nippon segregated-portfolio plans, 25 specialised
+  investment-fund units (Platinum, Titanium, Arudha, Infinity, iSIF), INFRA; only INFRA had prices.
 - **The results table drew only the top 500 of 5,527 with no way past it** — SUNLITE ranked 654th for 31-Mar →
   today (the 500th row was +87.60 %, SUNLITE +74.70 %). Now paged: a row at the foot of the table offers "Show
   500 more" / "Show all" (pinned left and width-capped so it stays on a 375 px screen); new data, search and sort

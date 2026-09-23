@@ -121,6 +121,13 @@ jobs:
       - name: Fetch price history from Yahoo Finance
         run: python3 scripts/fetch_all.py
 
+      - name: Share counts for BSE-only rows with no BSE market cap
+        # BSE leaves Mktcap blank/0 for scrips with no recent trade; their own BSE shareholding
+        # filing still carries the share count (scripts/shares_bse_only.json, cached ~1 quarter, so a
+        # normal run makes no BSE calls). build_compressed turns it into mcap x last traded close.
+        # Non-fatal. DATA_RUNBOOK §145.
+        run: python3 scripts/fill_bse_share_counts.py || echo "::warning::BSE-only share-count fill failed — those rows keep a blank market cap this run"
+
       - name: Fill tickers Yahoo cannot serve from the NSE bhavcopy store
         # NSE SME-platform names (SUNLITE...) and a few main-board series have no Yahoo chart
         # (SUNLITE.NS = Not Found; the SME tickers Yahoo does carry are typed MUTUALFUND and
