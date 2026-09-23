@@ -233,6 +233,43 @@ def main():
         print("  weekend %s: inserted %d scrips" % (wd, ins))
         time.sleep(0.15)
 
+    # --- catch-up for scrips the store has NEVER seen (new listings) ----------------------------
+    # The forward walk only fetches days after `end`, and `codes` comes from bse_universe.json, which
+    # picks up new listings on its own schedule. A scrip that joins the universe AFTER its first
+    # sessions were walked therefore never got those sessions — measured 2026-09-23: 4 new BSE
+    # listings (544930 Injecto, 544931 Vama, 544928 Century Business Media, 544907 Seksaria) trading
+    # on BSE with no series at all, so the dashboard had no price for them (DATA_RUNBOOK §145).
+    # Each such code is scanned back CATCHUP_DAYS calendar days ONCE (marked in data["catchup"], so a
+    # scrip that simply never trades is not rescanned every run; later trades arrive via the forward walk).
+    catch = data.setdefault("catchup", {})
+    fresh = sorted(c for c in codes if c not in px and c not in catch)
+    if fresh:
+        cdays = int(sys.argv[sys.argv.index("--catchup-days") + 1]) if "--catchup-days" in sys.argv else 180
+        earliest = min((s["d"][0] for s in px.values() if s["d"]), default=None)
+        lo = today - datetime.timedelta(days=cdays)
+        if earliest:
+            lo = max(lo, datetime.date(earliest // 10000, earliest // 100 % 100, earliest % 100))
+        fset = set(fresh); d = today; scanned = hits = 0
+        while d >= lo:
+            cl = day_closes(op, d)
+            scanned += 1
+            if cl:
+                di = int(d.strftime("%Y%m%d"))
+                for code in fset:
+                    t = cl.get(code)
+                    if not t: continue
+                    s = px.get(code)
+                    if s is None: s = px[code] = {"d": [], "c": [], "v": []}; have[code] = set()
+                    if di in have.get(code, ()): continue
+                    s["d"].append(di); s["c"].append(t[0]); s["v"].append(t[1]); have.setdefault(code, set()).add(di)
+                    hits += 1
+            time.sleep(0.15)
+            d -= datetime.timedelta(days=1)
+        stamp = int(today.strftime("%Y%m%d"))
+        for c in fresh: catch[c] = stamp
+        print("  catch-up: %d never-seen scrips, scanned %d calendar days back to %s, %d bars added, %d scrips now have a series"
+              % (len(fresh), scanned, lo, hits, sum(1 for c in fresh if c in px)))
+
     # --- bounded backward history backfill (optional, resumable) ------------------------------
     # The forward walk only extends `end` toward today, so a store that begins in (say) 2025 never
     # reaches 2020. With --backfill-floor YYYYMMDD, fetch up to --backfill-days N calendar days

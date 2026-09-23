@@ -47,10 +47,11 @@ jobs:
 
       - name: Refresh BSE-only universe weekly (sector top-up)
         run: |
-          # Sundays: refresh the universe (new listings, more sectors). Other days keep it.
-          if [ "$(date -u +%u)" = "7" ] || [ ! -f docs/bse_universe.json ]; then
-            python3 -X utf8 scripts/build_bse_universe.py --sector-budget 400 || echo "(universe refresh failed — keeping existing)"
-          fi
+          # DAILY (was Sundays only): new listings must enter the universe the day they list, or the
+          # price store never tracks their first sessions and the dashboard shows them price-less
+          # (§145, 2026-09-23). Sundays keep the big sector top-up; other days a small one.
+          if [ "$(date -u +%u)" = "7" ] || [ ! -f docs/bse_universe.json ]; then SB=400; else SB=40; fi
+          python3 -X utf8 scripts/build_bse_universe.py --sector-budget $SB || echo "(universe refresh failed — keeping existing)"
 
       - name: Append today's BSE closes + backfill history toward 2020 (bounded, resumable)
         # Forward-appends new sessions AND, via --backfill-floor/-days, fetches up to 90 more calendar
