@@ -23,7 +23,13 @@
   "",
   "Applied at PARSE time by build_revop.py + build_fundamentals.py (keyed on `file`, so a full rebuild",
   "stays clean), and to the live JSONs once by apply_scale_fix.py (guarded on `was_*`, so it is",
-  "idempotent). Re-detect suspects with detect_scale_errors.py; add an entry only with a real anchor."
+  "idempotent). Re-detect suspects with detect_scale_errors.py; add an entry only with a real anchor.",
+  "",
+  "Optional flags (runbook 147): `eps_scaled: true` -- the filer scaled its per-share tags too (only GICL",
+  "20250930; 36 of 37 armed filings file a CORRECT EPS beside x10^k money, so EPS is left alone by default).",
+  "`parse_only: true` -- factor_cell() skips it: the owners/P&L stores already hold a figure from a",
+  "DIFFERENT, correctly scaled filing (JINDALSAW 20240930 con). xbrl_extra.json.gz is healed by",
+  "`XBRL_CACHE=<main checkout>/scripts/_xbrl_cache python3 -X utf8 scripts/scale_fix.py --apply-xtra`."
  ],
  "fixes": [
   {
@@ -97,7 +103,7 @@
    "basis": "std",
    "k": 5,
    "file": "INTEGRATED_FILING_NONINDAS_1575526_14112025065604_WEB_xml",
-   "why": "XBRL RevenueFromOperations = 36152700000000 (3.6e13 rupees = 3,615,270cr) for a company whose adjacent quarters are 34.33 and 39.16. ÷1e5 lands ALL SIX values on their neighbours: revStd 36.15 (34.33/39.16), revCon 37.57 (35.40/47.31), opStd 3.02 (2.97/3.02), opCon 3.45 (3.18/10.10), npStd 1.82 (1.74/1.73), npCon 1.72 (1.45/6.92). MISSED by the original detector purely because GICL has only 4 quarters and that sweep required >= 6.",
+   "why": "XBRL RevenueFromOperations = 36152700000000 (3.6e13 rupees = 3,615,270cr) for a company whose adjacent quarters are 34.33 and 39.16. ÷1e5 lands ALL SIX values on their neighbours: revStd 36.15 (34.33/39.16), revCon 37.57 (35.40/47.31), opStd 3.02 (2.97/3.02), opCon 3.45 (3.18/10.10), npStd 1.82 (1.74/1.73), npCon 1.72 (1.45/6.92). MISSED by the original detector purely because GICL has only 4 quarters and that sweep required >= 6. EPS is scaled WITH the money (raw BasicEPS 61000 -> 0.61 beside 0.62 in Jun-25), so eps_scaled=true: the only armed filing where that holds (2026-09-23 16:43 IST).",
    "was_revop": {
     "rev": 3615270.0,
     "op": 302190.0,
@@ -109,7 +115,8 @@
     "ebit": 3.02
    },
    "was_fund": 181880.0,
-   "fixed_fund": 1.82
+   "fixed_fund": 1.82,
+   "eps_scaled": true
   },
   {
    "sym": "GICL",
@@ -117,7 +124,7 @@
    "basis": "con",
    "k": 5,
    "file": "INTEGRATED_FILING_NONINDAS_1576583_15112025022609_WEB_xml",
-   "why": "Consolidated half of the same x1e5 mis-filing (rev 37569300000000); see the std entry.",
+   "why": "Consolidated half of the same x1e5 mis-filing (rev 37569300000000); see the std entry. EPS is scaled WITH the money (raw BasicEPS 61000 -> 0.61 beside 0.62 in Jun-25), so eps_scaled=true: the only armed filing where that holds (2026-09-23 16:43 IST).",
    "was_revop": {
     "rev": 3756930.0,
     "op": 345160.0,
@@ -129,7 +136,8 @@
     "ebit": 3.45
    },
    "was_fund": 171560.0,
-   "fixed_fund": 1.72
+   "fixed_fund": 1.72,
+   "eps_scaled": true
   },
   {
    "sym": "GEEKAYWIRE",
@@ -763,6 +771,404 @@
    },
    "was_fund": 4.39,
    "fixed_fund": 439.15
+  },
+  {
+   "sym": "SRF",
+   "qe": "20230331",
+   "basis": "con",
+   "k": -2,
+   "file": "INDAS_91421_839795_09052023094542_xml",
+   "why": "Filer-side power-of-ten, k=-2. YTD ANCHOR (the filing's own YTD minus its quarter against the earlier quarters' YTD from a DIFFERENT filing): PAT: this filing YTD 216234000 - quarter 56245000 = 159989000 vs 20221231 YTD 15998900000 in INDAS_88058_780467_30012023032226_WEB_xml -> ratio 0.01000 ; rev: this filing YTD 1487025000 - quarter 377809000 = 1109216000 vs 20221231 YTD 110921600000 in INDAS_88058_780467_30012023032226_WEB_xml -> ratio 0.01000. Same-day std filing INDAS_91422_839804 is at true scale (assets 15,551.41, PBT 749.42); con BS then read 187.55 total assets vs 17,053.02 (Sep-22) / 19,654.57 (Sep-23). EPS 18.97 is filed correctly. parse_only: sf_revop/sf_fundamentals already hold the true con rev 3,719.3 / PAT 562.0 from another route and _reattr_owners has no row. Found by the xbrl_extra balance-sheet neighbour screen (runbook §147). 2026-09-23 16:43 IST",
+   "was_revop": {
+    "rev": 37.7809,
+    "op": 9.316,
+    "pat": 5.6245,
+    "ebit": 7.7696
+   },
+   "fixed_revop": {
+    "rev": 3778.09,
+    "op": 931.6,
+    "pat": 562.45,
+    "ebit": 776.96
+   },
+   "was_fund": 5.6245,
+   "fixed_fund": 562.45,
+   "parse_only": true
+  },
+  {
+   "sym": "RML",
+   "qe": "20221231",
+   "basis": "std",
+   "k": -2,
+   "file": "INDAS_88958_788516_08022023032647_xml",
+   "why": "Filer-side power-of-ten, k=-2. YTD ANCHOR (the filing's own YTD minus its quarter against the earlier quarters' YTD from a DIFFERENT filing): PAT: this filing YTD 6920000 - quarter 3331000 = 3589000 vs 20220930 YTD 358900000 in INDAS_785658_5300_21102022150310_WEB_xml -> ratio 0.01000 ; rev: this filing YTD 156274000 - quarter 52637000 = 103637000 vs 20220930 YTD 10363700000 in INDAS_785658_5300_21102022150310_WEB_xml -> ratio 0.01000. Whole filing ÷100 (decimals=-5). Stores held rev 5.26 / PAT 0.33 for a ~₹530cr-a-quarter company. Found by the xbrl_extra balance-sheet neighbour screen (runbook §147). 2026-09-23 16:43 IST",
+   "was_revop": {
+    "rev": 5.2637,
+    "op": 0.5357,
+    "pat": 0.3331,
+    "ebit": 0.3578
+   },
+   "fixed_revop": {
+    "rev": 526.37,
+    "op": 53.57,
+    "pat": 33.31,
+    "ebit": 35.78
+   },
+   "was_fund": 0.3331,
+   "fixed_fund": 33.31
+  },
+  {
+   "sym": "RML",
+   "qe": "20221231",
+   "basis": "con",
+   "k": -2,
+   "file": "INDAS_88959_788523_08022023032844_xml",
+   "why": "Filer-side power-of-ten, k=-2. YTD ANCHOR (the filing's own YTD minus its quarter against the earlier quarters' YTD from a DIFFERENT filing): PAT: this filing YTD 2048000 - quarter 2371000 = -323000 vs 20220930 YTD -32300000 in INDAS_785659_5300_21102022150310_WEB_xml -> ratio 0.01000 ; rev: this filing YTD 173288000 - quarter 58324000 = 114964000 vs 20220930 YTD 11496400000 in INDAS_785659_5300_21102022150310_WEB_xml -> ratio 0.01000. Consolidated half of the same ÷100 pair; npCon is 0.0 from the filer's owners=0 mis-tag and is NOT reachable by this entry (was 0.2371 ≠ 0.0). Found by the xbrl_extra balance-sheet neighbour screen (runbook §147). 2026-09-23 16:43 IST",
+   "was_revop": {
+    "rev": 5.8324,
+    "op": 0.4286,
+    "pat": 0.2371,
+    "ebit": 0.1831
+   },
+   "fixed_revop": {
+    "rev": 583.24,
+    "op": 42.86,
+    "pat": 23.71,
+    "ebit": 18.31
+   },
+   "was_fund": 0.2371,
+   "fixed_fund": 23.71
+  },
+  {
+   "sym": "RML",
+   "qe": "20230331",
+   "basis": "std",
+   "k": -2,
+   "file": "INDAS_91225_837764_05052023030343_xml",
+   "why": "Filer-side power-of-ten, k=-2. YTD ANCHOR (the filing's own YTD minus its quarter against the earlier quarters' YTD from a DIFFERENT filing): PAT: this filing YTD -12654000 - quarter -19573000 = 6919000 vs 20221231 YTD 6920000 in INDAS_88958_788516_08022023032647_xml -> ratio 0.99986 ; rev: this filing YTD 212355000 - quarter 56082000 = 156273000 vs 20221231 YTD 156274000 in INDAS_88958_788516_08022023032647_xml -> ratio 0.99999. Chain anchor: this filing's 9M equals the Dec-22 filing's 9M to the rupee, and Dec-22 is itself exactly ×0.01 of Sep-22 (see that entry). BS total assets 11.78 vs 1,296.25 (Sep-22) / 1,339.87 (Sep-23). EPS -120.34 is filed correctly and reconciles a ₹-195.73cr PAT (raw -1.9573 ×100) at the 1.627cr shares of Sep-22. Found by the xbrl_extra balance-sheet neighbour screen (runbook §147). 2026-09-23 16:43 IST",
+   "was_revop": {
+    "rev": 5.6082,
+    "op": 0.5696,
+    "pat": -1.9573,
+    "ebit": 0.3411
+   },
+   "fixed_revop": {
+    "rev": 560.82,
+    "op": 56.96,
+    "pat": -195.73,
+    "ebit": 34.11
+   },
+   "was_fund": -1.9573,
+   "fixed_fund": -195.73
+  },
+  {
+   "sym": "RML",
+   "qe": "20230331",
+   "basis": "con",
+   "k": -2,
+   "file": "INDAS_91229_837782_05052023033413_xml",
+   "why": "Filer-side power-of-ten, k=-2. YTD ANCHOR (the filing's own YTD minus its quarter against the earlier quarters' YTD from a DIFFERENT filing): PAT: this filing YTD 3002000 - quarter 954000 = 2048000 vs 20221231 YTD 2048000 in INDAS_88959_788523_08022023032844_xml -> ratio 1.00000 ; rev: this filing YTD 235444000 - quarter 62156000 = 173288000 vs 20221231 YTD 173288000 in INDAS_88959_788523_08022023032844_xml -> ratio 1.00000. Chain anchor as the std entry; BS 13.49 vs 1,321.89 / 1,339.48. Found by the xbrl_extra balance-sheet neighbour screen (runbook §147). 2026-09-23 16:43 IST",
+   "was_revop": {
+    "rev": 6.2156,
+    "op": 0.5549,
+    "pat": 0.0954,
+    "ebit": 0.2722
+   },
+   "fixed_revop": {
+    "rev": 621.56,
+    "op": 55.49,
+    "pat": 9.54,
+    "ebit": 27.22
+   },
+   "was_fund": 0.0954,
+   "fixed_fund": 9.54
+  },
+  {
+   "sym": "RANEENGINE",
+   "qe": "20230331",
+   "basis": "std",
+   "k": -2,
+   "file": "INDAS_91187_837305_04052023045906_xml",
+   "why": "Filer-side power-of-ten, k=-2. YTD ANCHOR (the filing's own YTD minus its quarter against the earlier quarters' YTD from a DIFFERENT filing): PAT: this filing YTD -6000 - quarter 486000 = -492000 vs 20221231 YTD -49200000 in INDAS_88781_787376_07022023022141_xml -> ratio 0.01000 ; rev: this filing YTD 49757000 - quarter 13571000 = 36186000 vs 20221231 YTD 3618600000 in INDAS_88781_787376_07022023022141_xml -> ratio 0.01000. BS total assets 3.52 vs 323.95 (Sep-22) / 352.20 (Sep-23). sf_revop rev 136.0 was already right (other route); op/PAT/ebit were not. Found by the xbrl_extra balance-sheet neighbour screen (runbook §147). 2026-09-23 16:43 IST",
+   "was_revop": {
+    "rev": 1.3571,
+    "op": 0.1579,
+    "pat": 0.0486,
+    "ebit": 0.1072
+   },
+   "fixed_revop": {
+    "rev": 135.71,
+    "op": 15.79,
+    "pat": 4.86,
+    "ebit": 10.72
+   },
+   "was_fund": 0.0486,
+   "fixed_fund": 4.86
+  },
+  {
+   "sym": "RANEENGINE",
+   "qe": "20220331",
+   "basis": "std",
+   "k": -2,
+   "file": "INDAS_84561_655074_16052022031114_WEB_xml",
+   "why": "Filer-side power-of-ten, k=-2. YTD ANCHOR (the filing's own YTD minus its quarter against the earlier quarters' YTD from a DIFFERENT filing): PAT: this filing YTD -1186000 - quarter -1000 = -1185000 vs 20211231 YTD -118500000 in INDAS_80429_598501_25012022010430_WEB_xml -> ratio 0.01000 ; rev: this filing YTD 38206000 - quarter 10872000 = 27334000 vs 20211231 YTD 2733400000 in INDAS_80429_598501_25012022010430_WEB_xml -> ratio 0.01000. P&L-only filing (pre-BS era), same filer disease one year earlier; sf_revop op 0.09 / PAT -0.0. Found by the xbrl_extra balance-sheet neighbour screen (runbook §147). 2026-09-23 16:43 IST",
+   "was_revop": {
+    "rev": 1.0872,
+    "op": 0.0917,
+    "pat": -0.0001,
+    "ebit": 0.0426
+   },
+   "fixed_revop": {
+    "rev": 108.72,
+    "op": 9.17,
+    "pat": -0.01,
+    "ebit": 4.26
+   },
+   "was_fund": -0.0001,
+   "fixed_fund": -0.01
+  },
+  {
+   "sym": "PURVA",
+   "qe": "20230331",
+   "basis": "con",
+   "k": -2,
+   "file": "INDAS_92921_853807_26052023063119_xml",
+   "why": "Filer-side power-of-ten, k=-2. YTD ANCHOR (the filing's own YTD minus its quarter against the earlier quarters' YTD from a DIFFERENT filing): PAT: this filing YTD 6652000 - quarter 2675000 = 3977000 vs 20221231 YTD 397700000 in INDAS_89525_791449_10022023065250_xml -> ratio 0.01000 ; rev: this filing YTD 123577000 - quarter 38899000 = 84678000 vs 20221231 YTD 8467800000 in INDAS_89525_791449_10022023065250_xml -> ratio 0.01000. BS total assets 100.55 vs 9,270.06 (Sep-22) / 11,080.54 (Sep-23). npCon 0.0 is the owners=0 mis-tag and is NOT reachable by this entry. Found by the xbrl_extra balance-sheet neighbour screen (runbook §147). 2026-09-23 16:43 IST",
+   "was_revop": {
+    "rev": 3.8899,
+    "op": 0.1618,
+    "pat": 0.2675,
+    "ebit": 0.1237
+   },
+   "fixed_revop": {
+    "rev": 388.99,
+    "op": 16.18,
+    "pat": 26.75,
+    "ebit": 12.37
+   },
+   "was_fund": 0.2675,
+   "fixed_fund": 26.75
+  },
+  {
+   "sym": "JINDALSAW",
+   "qe": "20240930",
+   "basis": "con",
+   "k": -2,
+   "file": "INDAS_112893_1278640_18102024061846_xml",
+   "why": "Filer-side power-of-ten, k=-2. YTD ANCHOR (the filing's own YTD minus its quarter against the earlier quarters' YTD from a DIFFERENT filing): PAT: this filing YTD 89174000 - quarter 47531000 = 41643000 vs 20240630 YTD 4164300000 in INDAS_109760_1206034_30072024121853_xml -> ratio 0.01000 ; rev: this filing YTD 1051100000 - quarter 557192000 = 493908000 vs 20240630 YTD 49390800000 in INDAS_109760_1206034_30072024121853_xml -> ratio 0.01000. SECOND READER: the filer's revised XBRL INDAS_114233_1298369_06112024021318 (06-Nov-2024, not in the local cache; fetched 2026-09-23) carries total assets 21,115.83 = this file's 211.1583 ×100. parse_only: _reattr_owners holds 482.41 from the revised filing — factor_cell would have written 48,241. Found by the xbrl_extra balance-sheet neighbour screen (runbook §147). 2026-09-23 16:43 IST",
+   "was_revop": {
+    "rev": 55.7192,
+    "op": 9.1411,
+    "pat": 4.7531,
+    "ebit": 7.6342
+   },
+   "fixed_revop": {
+    "rev": 5571.92,
+    "op": 914.11,
+    "pat": 475.31,
+    "ebit": 763.42
+   },
+   "was_fund": 4.9961,
+   "fixed_fund": 499.61,
+   "parse_only": true
+  },
+  {
+   "sym": "EVEREADY",
+   "qe": "20230930",
+   "basis": "std",
+   "k": -2,
+   "file": "INDAS_99221_979298_07112023062145_xml",
+   "why": "Filer-side power-of-ten, k=-2. YTD ANCHOR (the filing's own YTD minus its quarter against the earlier quarters' YTD from a DIFFERENT filing): PAT: this filing YTD 5031000 - quarter 2545000 = 2486000 vs 20230630 YTD 248600000 in INDAS_96944_917170_12082023042727_xml -> ratio 0.01000 ; rev: this filing YTD 72846000 - quarter 36489000 = 36357000 vs 20230630 YTD 3635700000 in INDAS_96944_917170_12082023042727_xml -> ratio 0.01000. BS total assets 10.11 vs 984.65 (Mar-23) / 960.15 (Mar-24); Dec-23 filing's YTD confirms from the other side (ratio 100). Found by the xbrl_extra balance-sheet neighbour screen (runbook §147). 2026-09-23 16:43 IST",
+   "was_revop": {
+    "rev": 3.6489,
+    "op": 0.4633,
+    "pat": 0.2545,
+    "ebit": 0.3916
+   },
+   "fixed_revop": {
+    "rev": 364.89,
+    "op": 46.33,
+    "pat": 25.45,
+    "ebit": 39.16
+   },
+   "was_fund": 0.2545,
+   "fixed_fund": 25.45
+  },
+  {
+   "sym": "EVEREADY",
+   "qe": "20230930",
+   "basis": "con",
+   "k": -2,
+   "file": "INDAS_99223_979306_07112023062319_xml",
+   "why": "Filer-side power-of-ten, k=-2. YTD ANCHOR (the filing's own YTD minus its quarter against the earlier quarters' YTD from a DIFFERENT filing): PAT: this filing YTD 5030000 - quarter 2544000 = 2486000 vs 20230630 YTD 248600000 in INDAS_96946_917177_12082023043016_xml -> ratio 0.01000 ; rev: this filing YTD 72846000 - quarter 36489000 = 36357000 vs 20230630 YTD 3635700000 in INDAS_96946_917177_12082023043016_xml -> ratio 0.01000. Consolidated half; BS 10.14 vs 982.92 / 963.10. Found by the xbrl_extra balance-sheet neighbour screen (runbook §147). 2026-09-23 16:43 IST",
+   "was_revop": {
+    "rev": 3.6489,
+    "op": 0.4632,
+    "pat": 0.2544,
+    "ebit": 0.3915
+   },
+   "fixed_revop": {
+    "rev": 364.89,
+    "op": 46.32,
+    "pat": 25.44,
+    "ebit": 39.15
+   },
+   "was_fund": 0.2544,
+   "fixed_fund": 25.44
+  },
+  {
+   "sym": "FLEXITUFF",
+   "qe": "20230930",
+   "basis": "std",
+   "k": 1,
+   "file": "INDAS_100692_987179_11112023043055_xml",
+   "why": "Filer-side power-of-ten, k=1. YTD ANCHOR (the filing's own YTD minus its quarter against the earlier quarters' YTD from a DIFFERENT filing): PAT: this filing YTD -6624970000 - quarter -2785690000 = -3839280000 vs 20230630 YTD -383928000 in INDAS_96806_916623_12082023111846_xml -> ratio 10.00000 ; rev: this filing YTD 33811350000 - quarter 17715230000 = 16096120000 vs 20230630 YTD 1609612000 in INDAS_96806_916623_12082023111846_xml -> ratio 10.00000. ×10 (k=+1): BS total assets 9,202.31 vs 919.91 (Mar-23) / 950.80 (Mar-24); Dec-23 filing's YTD ratio 0.1 confirms. Same filer's Mar-24 con filing is already in this ledger at k=1. Found by the xbrl_extra balance-sheet neighbour screen (runbook §147). 2026-09-23 16:43 IST",
+   "was_revop": {
+    "rev": 1771.523,
+    "op": -148.401,
+    "pat": -278.569,
+    "ebit": -303.343
+   },
+   "fixed_revop": {
+    "rev": 177.15,
+    "op": -14.84,
+    "pat": -27.86,
+    "ebit": -30.33
+   },
+   "was_fund": -278.569,
+   "fixed_fund": -27.86
+  },
+  {
+   "sym": "FLEXITUFF",
+   "qe": "20230930",
+   "basis": "con",
+   "k": 1,
+   "file": "INDAS_100672_987084_11112023034710_xml",
+   "why": "Filer-side power-of-ten, k=1. YTD ANCHOR (the filing's own YTD minus its quarter against the earlier quarters' YTD from a DIFFERENT filing): PAT: this filing YTD -6612640000 - quarter -2762720000 = -3849920000 vs 20230630 YTD -384992000 in INDAS_96807_916627_12082023112026_xml -> ratio 10.00000 ; rev: this filing YTD 33811350000 - quarter 17715230000 = 16096120000 vs 20230630 YTD 1609612000 in INDAS_96807_916627_12082023112026_xml -> ratio 10.00000. Consolidated half; BS 8,958.31 vs 892.80 / 1,183.54. Found by the xbrl_extra balance-sheet neighbour screen (runbook §147). 2026-09-23 16:43 IST",
+   "was_revop": {
+    "rev": 1771.523,
+    "op": -139.357,
+    "pat": -276.272,
+    "ebit": -294.301
+   },
+   "fixed_revop": {
+    "rev": 177.15,
+    "op": -13.94,
+    "pat": -27.63,
+    "ebit": -29.43
+   },
+   "was_fund": -275.427,
+   "fixed_fund": -27.54
+  },
+  {
+   "sym": "CENTUM",
+   "qe": "20230331",
+   "basis": "std",
+   "k": -1,
+   "file": "INDAS_93246_855814_28052023024524_xml",
+   "why": "Filer-side power-of-ten, k=-1. YTD ANCHOR (the filing's own YTD minus its quarter against the earlier quarters' YTD from a DIFFERENT filing): PAT: this filing YTD 19399000 - quarter 22822000 = -3423000 vs 20221231 YTD -34230000 in INDAS_88909_788221_08022023110455_xml -> ratio 0.10000 ; rev: this filing YTD 500554000 - quarter 195172000 = 305382000 vs 20221231 YTD 3053820000 in INDAS_88909_788221_08022023110455_xml -> ratio 0.10000. ÷10 (k=-1). SECOND READER: the revised XBRL INDAS_94079_862616_06062023120917 (06-Jun-2023, not in the local cache) carries assets 705.44 = this file's 70.5437 ×10. BS 70.54 vs 585.72 (Sep-22) / 792.03 (Sep-23). Found by the xbrl_extra balance-sheet neighbour screen (runbook §147). 2026-09-23 16:43 IST",
+   "was_revop": {
+    "rev": 19.5172,
+    "op": 3.7918,
+    "pat": 2.2822,
+    "ebit": 3.3792
+   },
+   "fixed_revop": {
+    "rev": 195.17,
+    "op": 37.92,
+    "pat": 22.82,
+    "ebit": 33.79
+   },
+   "was_fund": 2.2822,
+   "fixed_fund": 22.82
+  },
+  {
+   "sym": "MTNL",
+   "qe": "20230930",
+   "basis": "std",
+   "k": -2,
+   "file": "INDAS_100477_985974_10112023060618_xml",
+   "why": "Filer-side power-of-ten, k=-2. YTD ANCHOR (the filing's own YTD minus its quarter against the earlier quarters' YTD from a DIFFERENT filing): PAT: this filing YTD -164282000 - quarter -79267000 = -85015000 vs 20230630 YTD -8501460000 in INDAS_96743_916292_11082023081555_xml -> ratio 0.01000 ; rev: this filing YTD 36656000 - quarter 18198000 = 18458000 vs 20230630 YTD 1845740000 in INDAS_96743_916292_11082023081555_xml -> ratio 0.01000. BS total assets 113.54 vs 11,634.64 (Mar-23) / 10,677.20 (Mar-24); Dec-23 YTD ratio 100 confirms. EPS -12.58 filed correctly. Found by the xbrl_extra balance-sheet neighbour screen (runbook §147). 2026-09-23 16:43 IST",
+   "was_revop": {
+    "rev": 1.8198,
+    "op": -1.3389,
+    "pat": -7.9267,
+    "ebit": -3.014
+   },
+   "fixed_revop": {
+    "rev": 181.98,
+    "op": -133.89,
+    "pat": -792.67,
+    "ebit": -301.4
+   },
+   "was_fund": -7.9267,
+   "fixed_fund": -792.67
+  },
+  {
+   "sym": "MTNL",
+   "qe": "20230930",
+   "basis": "con",
+   "k": -2,
+   "file": "INDAS_100481_985995_10112023060944_xml",
+   "why": "Filer-side power-of-ten, k=-2. YTD ANCHOR (the filing's own YTD minus its quarter against the earlier quarters' YTD from a DIFFERENT filing): PAT: this filing YTD -164475000 - quarter -79282000 = -85193000 vs 20230630 YTD -8519310000 in INDAS_96744_916298_11082023081846_xml -> ratio 0.01000 ; rev: this filing YTD 39730000 - quarter 19783000 = 19947000 vs 20230630 YTD 1994780000 in INDAS_96744_916298_11082023081846_xml -> ratio 0.01000. Consolidated half; BS 113.57 vs 11,643.99 / 10,717.34. Found by the xbrl_extra balance-sheet neighbour screen (runbook §147). 2026-09-23 16:43 IST",
+   "was_revop": {
+    "rev": 1.9783,
+    "op": -1.3272,
+    "pat": -7.9282,
+    "ebit": -3.0281
+   },
+   "fixed_revop": {
+    "rev": 197.83,
+    "op": -132.72,
+    "pat": -792.82,
+    "ebit": -302.81
+   },
+   "was_fund": -7.9282,
+   "fixed_fund": -792.82
+  },
+  {
+   "sym": "ICIL",
+   "qe": "20220930",
+   "basis": "con",
+   "k": -2,
+   "file": "INDAS_871830_4877_14112022185120_WEB_xml",
+   "why": "Filer-side power-of-ten, k=-2. YTD ANCHOR (the filing's own YTD minus its quarter against the earlier quarters' YTD from a DIFFERENT filing): PAT: this filing YTD 14435000 - quarter 6697000 = 7738000 vs 20220630 YTD 773800000 in INDAS_619176_2536_01082022160603_WEB_xml -> ratio 0.01000 ; rev: this filing YTD 154718000 - quarter 84409000 = 70309000 vs 20220630 YTD 7030900000 in INDAS_619176_2536_01082022160603_WEB_xml -> ratio 0.01000. First BS row of the series: 31.54 vs 3,059.71 (Mar-23) and the same-day std filing's 3,092.77; Dec-22 con YTD ratio 100 confirms. Found by the xbrl_extra balance-sheet neighbour screen (runbook §147). 2026-09-23 16:43 IST",
+   "was_revop": {
+    "rev": 8.4409,
+    "op": 1.1477,
+    "pat": 0.6697,
+    "ebit": 0.9941
+   },
+   "fixed_revop": {
+    "rev": 844.09,
+    "op": 114.77,
+    "pat": 66.97,
+    "ebit": 99.41
+   },
+   "was_fund": 0.6697,
+   "fixed_fund": 66.97
+  },
+  {
+   "sym": "RMCL",
+   "qe": "20250930",
+   "basis": "std",
+   "k": -1,
+   "file": "INTEGRATED_FILING_INDAS_1679423_04062026040924_WEB_xml",
+   "why": "Filer-side power-of-ten, k=-1. YTD ANCHOR (the filing's own YTD minus its quarter against the earlier quarters' YTD from a DIFFERENT filing): PAT: this filing YTD -869000 - quarter -796000 = -73000 vs 20250630 YTD -730000 in INTEGRATED_FILING_INDAS_1511985_13082025072218_WEB_xml -> ratio 0.10000. ÷10 (k=-1): EquityShareCapital 7,810,000 vs 78,100,000 in the Mar-25 and Mar-26 filings; BS total assets 1.51 vs 17.53 / 14.89; Dec-25 YTD ratio 10 confirms. Found by the xbrl_extra balance-sheet neighbour screen (runbook §147). 2026-09-23 16:43 IST",
+   "was_revop": {
+    "rev": 0.0,
+    "op": -0.1099,
+    "pat": -0.0796,
+    "ebit": -0.1194
+   },
+   "fixed_revop": {
+    "rev": 0.0,
+    "op": -1.1,
+    "pat": -0.8,
+    "ebit": -1.19
+   },
+   "was_fund": -0.0796,
+   "fixed_fund": -0.8
   }
  ]
 }

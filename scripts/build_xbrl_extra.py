@@ -261,6 +261,9 @@ def parse_file(path, fname):
         del bases["FourD"]                 # same basis twice — trust OneD
 
     sc = scale_fix.factor(fname) or 1.0
+    # per-share tags keep their filed value unless the entry says the filer scaled them too —
+    # 36 of 37 armed filings filed a correct EPS beside x10^k money (scale_fix.eps_factor)
+    sc_eps = scale_fix.eps_factor(fname) or 1.0
     out = {"sym": sym, "qe": qe, "ts": ts_key(fname), "s": {}, "c": {}}
 
     def money(v):
@@ -275,7 +278,7 @@ def parse_file(path, fname):
         for key, names in EPS.items():
             f = facts_by_ctx(xml, names)
             if cid in f:
-                row[key] = round(f[cid] / sc, 2)
+                row[key] = round(f[cid] / sc_eps, 2)
         for key, names in RATIO.items():
             f = facts_by_ctx(xml, names)
             if cid in f:

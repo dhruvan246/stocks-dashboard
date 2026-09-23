@@ -93,6 +93,7 @@ loads every session. (README.md is just a short pointer here — this file is th
 - **§116** ★★★ THE 46 CONTESTED con CELLS ADJUDICATED — the phantom read the OWNERS tag and WE had stored the TOTAL, so the phantom was RIGHT on 16 of 23; the other 7 are the filer's owners=0 mis-tag where the store was right. Swept the rest of each series: **53 cells healed** total→owners, 2018-2026. sf_revop's un-rendered mirror already held the owners figure on 45 of 53. **1,417 symbols / 18,175 con cells share the exposure — sized, not swept** (**read before trusting a con-PAT value for any symbol absent from _reattr_owners.json**)
 - **§116d** ★★★ THE SCREEN RUN OVER ALL 60,768 con CELLS — 52 more healed, **762 REFUSED because `owners+NCI==total` does NOT close** (302 have NCI=0 so the TAG is wrong not the store; 24 sign flips; 13 filer power-of-ten; 460 unreconciled → `owners_basis_unreconciled.json`). `_reattr_owners` coverage is per-CELL not per-SYMBOL. A hand-rolled context regex silently dropped every pre-2021 filing — use `build_revop.ctx_period`. **29,998 cells are older than the cache and remain UNSCREENED**
 - **§130** ★★★ THE LINE-ITEM BLOCK (EPS/OI/interest/dep/tax) BEFORE 2018 — NSE lists an XBRL URL only from Mar-2018; 2005-2017 come from the archive HTML pages (PAT-anchored, GATE E) and 2002-04/residue from Moneycontrol (gate T/C/R). BANKING XBRL 2018-22 has NO context block (OneD = quarter, FourD = YTD, 'Half yearly'/'Yearly' name the filing). A LOCAL `--fresh` rebuild DROPS the cloud nightly's newest cells unless unioned with the committed .gz (**read before touching build_xbrl_extra.py or judging pre-2018 coverage**)
+- **§147** ★★★ A scale_fix entry does NOT heal xbrl_extra by itself (the nightly is incremental) — run `scale_fix.py --apply-xtra` with XBRL_CACHE. A mis-scaled filing's EPS is almost always CORRECT (36/37), so flag `eps_scaled` only where it isn't. Use `parse_only` where the owners store already holds a figure from a different, correctly scaled filing. Arm a filing only on an exact YTD power of ten (**read before adding any scale_fix entry**)
 - **★★★ NO ASSUMPTIONS. NO GUESSWORK. EVER.** User-mandated 2026-08-10; standing rule across
   this runbook AND every campaign/playbook doc (each carries the same line). Every value written
   and every claim made ("exists", "absent", "fixed", "live", "matches") must trace to something
@@ -18377,3 +18378,41 @@ above plus `check_feeds.py`.
 
 **Rule:** any new job that needs the data bin calls `scripts/fetch_release_bin.py`. Never resolve release assets
 through `releases/tags/<tag>` (`gh release download` does exactly that).
+
+## 147. ★★★ xbrl_extra BALANCE-SHEET SCALE SCREEN — 18 filer power-of-ten filings armed, the EPS-scaling builder bug, `--apply-xtra`  (2026-09-23)
+
+**NO ASSUMPTIONS, NO GUESSWORK (§0).** Every number below was measured this session from the raw XBRL in the main checkout's `scripts/_xbrl_cache` (read-only via `XBRL_CACHE`) plus 41 filings fetched from NSE's per-symbol lists.
+
+**Trigger.** Stock page Balance Sheet: SRF Mar-2023 con total assets 187.55 (Sep-22 17,053.02, Sep-23 19,654.57); RML Mar-2023 11.78 / 13.49 against ~1,300.
+
+**Screen (all 3,034 symbols, both bases).** A row whose total assets sit >3× from BOTH neighbouring BS rows (≤400 days apart) of the same basis → **14 two-sided hits**. A row at a series edge with only one neighbour and >3× from it → 70 one-sided rows.
+BS rows start at Sep-2022 (SEBI's half-yearly BS in XBRL), so "one-sided" mostly means the first or last row of a series.
+
+**Adjudication — the YTD anchor, per FILING.** A Q2/Q3/Q4 filing's `FourD` is its YTD, so `(FourD − OneD)` of this filing divided by the previous quarter's YTD from a DIFFERENT filing is the scale factor by arithmetic. All 18 armed filings come out at **exactly** 0.01000 / 0.10000 / 10.00000 on BOTH PAT and revenue. (Caveat: the context BLOCK dates in the 2023 INDAS files lie — FourD carries the quarter's dates while holding the FY value. Read FourD as YTD by position, never by the block.)
+Two filers had filed a correctly scaled REVISED XBRL that the nightly never ingested. After the heal, every field matches it: JINDALSAW 20240930 con matches `INDAS_114233_…` on 41/41 fields, CENTUM 20230331 std matches `INDAS_94079_…` on 40/40. The XBRL carries no comparative BS instant, so there is no in-filing BS anchor; the scale is a property of the whole filing, and the P&L YTD adjudicates it. EPS is filed correctly (next paragraph), so PAT ÷ EPS gives a 3rd check (RML Mar-23 EPS −120.34 ↔ PAT −195.73 cr at 1.627 cr shares).
+
+| armed (k) | filings |
+|---|---|
+| ÷100 | SRF 20230331 con · RML 20221231 std+con, 20230331 std+con (chain: Mar-23 9M == Dec-22 9M, Dec-22 = 0.01 × Sep-22 H1) · RANEENGINE 20230331 std, 20220331 std (P&L-only) · PURVA 20230331 con · JINDALSAW 20240930 con · EVEREADY 20230930 std+con · MTNL 20230930 std+con · ICIL 20220930 con |
+| ÷10 | CENTUM 20230331 std · RMCL 20250930 std (EquityShareCapital 7.81M vs 78.1M in both Mar filings) |
+| ×10 | FLEXITUFF 20230930 std+con (its Mar-24 con was already armed) |
+
+**Left as-is, with the reason measured:** internally consistent filings (YTD ratio 1.000 AND the jump is not a power of ten): IPOs / fund-raises / one-offs — EMMVEE, IKIO, CEWATER, ONESOURCE, GKSL, NPST, KIRIINDUS (Dec-25 PAT 5,081.7), SPARC (Mar-26 PAT 1,760.7), RHFL (Mar-23 PAT +5,972), GFLLIMITED (Mar-23 PAT +2,323.6), SPTL (Mar-23 PAT −553.5), RHIM, SUVEN, MAGNUM, HARDWYN, WSI, JPOLYINVST, NEUEON, ADVANIHOTR, JINDALPHOT, BKMINDST, LCCINFOTEC, XLENERGY, UMESLTD, NEXTMEDIA, SEJALLTD, ATLASCYCLE, JIKIND, GFSTEELS, UNIVAFOODS, HYBRIDFIN, SECURKLOUD.
+**UNRESOLVED, not-found-via:** NSE per-symbol results lists (both endpoints) return 0 rows → BINANIIND, GISOLUTION, KAVVERITEL, KBCGLOBAL, NXTDIGITAL, YAARI. Not yet tried: BSE announcement PDFs.
+VAKRANGEE 20220930 → 20230331 (assets 2,900 → 245, Mar-23 rev 42.92 against ~240 a quarter) has YTD ratios 0.177 / 0.018, which fit no power of ten. Needs the filing PDF.
+After the heal: **0 two-sided rows**, 62 one-sided rows (the edge rows of the lists above).
+
+**Builder bug found on the way — EPS was divided by the scale factor.** `build_xbrl_extra.parse_file` did `eps / sc`. Over the 37 armed filings whose raw EPS is readable, **36 file a CORRECT EPS** beside ×10^k money, so the ledger carried SRF 20220930 std EPS 1,481 (true 14.81), TEAMLEASE 1,737, GAIL 588, BATAINDIA 0.01, METROBRAND 249 … The exception is GICL 20250930 (raw EPS 61000, true 0.61). Fix: `scale_fix.eps_factor(fname)` returns 10^k only for entries flagged `eps_scaled: true` (the two GICL rows), and the builder divides EPS by that alone.
+
+**`scale_fix.py --apply-xtra` — the xbrl_extra heal route.** The nightly is `--incremental`, so a filing parsed before its ledger entry existed keeps its scaled cells forever. The re-assert parses each ledger filing three ways (raw / old builder / current builder) and replaces a stored field only where it still equals the raw or old-builder value. Idempotent (a 2nd run re-asserts 0). A field supplied by another filing is never touched. Run it from a worktree with
+`XBRL_CACHE=/Users/dhruvan/stocks-dashboard/scripts/_xbrl_cache python3 -X utf8 scripts/scale_fix.py --apply-xtra [--dry]`.
+First run: 567 fields / 53 cells. LANCER's 5 entries have no cached filing and are skipped.
+
+**`parse_only: true`** keeps an entry out of `factor_cell()`. Use it when the owners/P&L stores already hold a figure from a DIFFERENT, correctly scaled filing. Without it, JINDALSAW (`_reattr_owners` 482.41 from the revised XBRL) would have become 48,241 in the nightly `apply_owners_full`. SRF 20230331 con is also `parse_only`.
+**`_fix_fund` slot ownership:** a slot whose own basis has an entry is left to that entry (EVEREADY std 0.2545 / con 0.2544 had both become 25.45).
+
+**P&L collateral healed by `--apply`** (the same filings had poisoned sf_revop / sf_fundamentals): RML Dec-22/Mar-23 (rev 5.26 → 526.37, PAT −1.96 → −195.73), MTNL Sep-23 (PAT −7.93 → −792.67), EVEREADY, FLEXITUFF (−278.57 → −27.86), CENTUM std, RANEENGINE, ICIL con, RMCL, and JINDALSAW op/ebit con.
+**Known residue:** RML 20221231 npCon and PURVA 20230331 npCon are 0.0 — the filer's owners=0 mis-tag (§116 class), which a scale entry cannot reach.
+MTNL 20230930 npCon: the nightly owners pass writes −793.0 (the `_reattr_owners` 2-dp −7.93 ÷ 0.01) where the filing's exact figure is −792.82.
+
+**Detect again:** re-run the neighbour screen, then the YTD ratio for each hit. The procedure in this section is the recipe: arm only exact powers of ten, add a 2nd reader where the filer revised, and set `parse_only` where the stores already hold a figure from another filing.
