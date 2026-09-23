@@ -350,15 +350,17 @@ function wizardSteps(){
   const RW = rebalWindow(), list = wizardList(), now = istNow(), steps = [];
   const S = (k, st, label, detail, act) => steps.push({ k: k, st: st, label: label, detail: detail || '', act: act || '' });
   const okc = c => c ? 'ok' : 'bad';
-  const t0 = (function(){ const d = new Date(RW.tIso + 'T00:00:00Z'); let q = new Date(d.getTime() - 864e5); while (q.getUTCDay() % 6 === 0) q = new Date(q.getTime() - 864e5); return q.toISOString().slice(0, 10); })();
+  const t0 = (function(){ const d = new Date(RW.tIso + 'T00:00:00Z'); let q = new Date(d.getTime() - 864e5); while (isOff(q)) q = new Date(q.getTime() - 864e5); return q.toISOString().slice(0, 10); })();
   const today = now.toISOString().slice(0, 10);
   const leg = RW.sellIn ? 'sell' : RW.buyIn ? 'buy' : (today === t0 ? 'eve' : 'off');
   if (leg === 'off' || leg === 'eve'){
     S('when', 'info', leg === 'eve' ? 'Tomorrow is the sell day' : 'Next rebalance', 'sell the exits near the ' + RW.tlab + ' close \u00b7 buy the entries the morning of ' + RW.t1lab);
+    S('cal', RW.calMissing.length ? 'warn' : (RW.calLoaded ? 'ok' : 'warn'), RW.calLoaded ? ('NSE holiday calendar: ' + (RW.calYears.join(', ') || 'none') + (RW.calMissing.length ? ' \u2014 no list yet for ' + RW.calMissing.join(', ') : '')) : 'NSE holiday calendar not loaded \u2014 weekends only', RW.calMissing.length ? 'add next year\u2019s list to docs/nse_holidays.json (published by NSE in December)' : 'sessions skip exchange holidays');
     return { leg: leg, RW: RW, steps: steps };
   }
   const books = list.filter(it => { const h = heldFor(it.cfg); return h && h.rows.length; });
   const loaded = list.filter(it => PICKS[it.id] && PICKS[it.id].rows.length);
+  if (RW.calMissing.length || !RW.calLoaded) S('cal', 'warn', RW.calLoaded ? 'NSE holiday list missing for ' + RW.calMissing.join(', ') : 'NSE holiday calendar not loaded', 'dates assume weekends only \u2014 check the exchange calendar');
   S('zerodha', okc(Z.connected), Z.connected ? 'Zerodha connected \u2014 ' + Z.user : 'Zerodha not connected', Z.connected ? 'session ends 6:00 AM tomorrow' : 'daily login needed before anything can be sent', Z.connected ? '' : 'login');
   S('cloud', cloudOn() ? 'ok' : (CLOUD.ok === false ? 'warn' : 'off'), cloudOn() ? 'Cloud slicer on' : (CLOUD.ok === false ? 'Cloud slicer unavailable \u2014 baskets slice in this tab' : (cloudWanted() ? 'Cloud slicer: checking\u2026' : 'Cloud slicer switched off \u2014 in-tab slicing')), cloudOn() ? 'baskets keep running if this tab closes' : (CLOUD.ok === false ? 'keep this tab open while a basket runs' : ''), (!cloudOn() && CLOUD.ok !== false) ? 'cloud' : '');
   S('feed', okc(books.length), books.length ? books.length + ' strategy books loaded' : 'No strategy books \u2014 holdings feed missing', books.length ? '' : 'needs the pf token in this browser');
@@ -416,7 +418,7 @@ function renderWizard(){
   const title = W.leg === 'sell' ? 'Sell day \u2014 ' + RW.tlab + ' (month-end close)' : W.leg === 'buy' ? 'Buy day \u2014 ' + (RW.planned ? RW.t1lab + ' morning' : 'buffer day (planned ' + RW.t1lab + ')') : W.leg === 'eve' ? 'Rebalance tomorrow' : 'Rebalance';
   const done = W.steps.filter(x => x.st === 'ok').length, total = W.steps.filter(x => x.st !== 'info' && x.st !== 'off').length;
   box.innerHTML = '<div class="bal wz"><div class="bal-h"><b>' + esc(title) + '</b><span class="sub">' + (live ? done + ' of ' + total + ' checks green' : esc(W.steps[0].detail)) + '</span></div>' +
-    (live ? W.steps.map(x => '<div class="wz-row wz-' + x.st + '"><span class="wz-ic">' + WZ_ICON[x.st] + '</span><span class="wz-l"><b>' + esc(x.label) + '</b>' + (x.detail ? ' <span class="sym">' + esc(x.detail) + '</span>' : '') + '</span>' + (x.act ? '<button class="btn wz-b" data-wz="' + x.act + '">' + esc(WZ_ACT[x.act]) + '</button>' : '') + '</div>').join('') : '') + '</div>';
+    (live ? W.steps : W.steps.slice(1)).map(x => '<div class="wz-row wz-' + x.st + '"><span class="wz-ic">' + WZ_ICON[x.st] + '</span><span class="wz-l"><b>' + esc(x.label) + '</b>' + (x.detail ? ' <span class="sym">' + esc(x.detail) + '</span>' : '') + '</span>' + (x.act ? '<button class="btn wz-b" data-wz="' + x.act + '">' + esc(WZ_ACT[x.act]) + '</button>' : '') + '</div>').join('') + '</div>';
 }
 function wizardAct(a){
   if (a === 'login'){ const b = $('btnZLogin'); if (b) b.click(); }
@@ -1188,12 +1190,23 @@ function livePicksOk(p){ return !!(p && p.live && p.liveTs && Date.now() - p.liv
    T-close screen (Rebalance picks). The buy leg stays armed two more weekdays as a buffer (no NSE
    holiday calendar here — a holiday on T+1 must not strand the buys); sells on those days are
    STRAGGLERS only (held stocks that dropped out of the official screen but were not sold on T).
-   Any other day the view is informational. Weekend-aware; NSE holidays not modelled. The window
+   Any other day the view is informational. Sessions skip weekends AND NSE trading holidays
+   (docs/nse_holidays.json — the exchange's holiday master, one list per year, refreshed each
+   December; a year with no list falls back to weekends only and the wizard says so). The window
    is keyed by T (tIso): the sold / bought marks live for the whole window, not a calendar day. */
+const HOL = { set: new Set(), years: [], loaded: false };
+async function loadHolidays(){
+  try { const r = await fetch('./nse_holidays.json', { cache: 'no-store' }); const d = await r.json();
+    HOL.set = new Set(Object.values(d.holidays || {}).flatMap(y => Object.keys(y))); HOL.years = (d.years || Object.keys(d.holidays || {})).map(String); HOL.loaded = true; }
+  catch(e){ HOL.loaded = false; }
+  renderCards();
+}
+const isoDay = d => d.toISOString().slice(0, 10);
+const isOff = d => d.getUTCDay() % 6 === 0 || HOL.set.has(isoDay(d));      // weekend or NSE holiday
 function rebalWindow(){
   const now = new Date(Date.now() + 330 * 60000);
   const y = now.getUTCFullYear(), m = now.getUTCMonth();
-  const wk = d => d.getUTCDay() % 6 === 0;
+  const wk = isOff;
   const lastTD = (yy, mm) => { let t = new Date(Date.UTC(yy, mm + 1, 0)); while (wk(t)) t = new Date(t.getTime() - 864e5); return t; };
   const nextTD = d => { let t = new Date(d.getTime() + 864e5); while (wk(t)) t = new Date(t.getTime() + 864e5); return t; };
   const d0 = Date.UTC(y, m, now.getUTCDate());
@@ -1203,8 +1216,10 @@ function rebalWindow(){
   const lab = d => d.toLocaleDateString('en-GB', { day: 'numeric', month: 'short', timeZone: 'UTC' });
   const iso = d => d.toISOString().slice(0, 10);
   const sellIn = d0 === +L.t, buyIn = d0 >= +L.t1 && d0 <= +L.t3;
+  const yrs = [...new Set([iso(L.t).slice(0, 4), iso(L.t3).slice(0, 4)])], calMissing = yrs.filter(yy => !HOL.years.includes(yy));
   return { in: sellIn || buyIn, sellIn: sellIn, buyIn: buyIn, planned: d0 === +L.t1,
-           tIso: iso(L.t), t1Iso: iso(L.t1), tlab: lab(L.t), t1lab: lab(L.t1), t3lab: lab(L.t3) };
+           tIso: iso(L.t), t1Iso: iso(L.t1), tlab: lab(L.t), t1lab: lab(L.t1), t3lab: lab(L.t3),
+           calYears: HOL.years.slice(), calMissing: calMissing, calLoaded: HOL.loaded };
 }
 /* exit rows for one strategy: the card's table AND the sell-side summary read this */
 function sellExits(it){
@@ -1616,6 +1631,7 @@ function kiteSend(orders){
     st.textContent = '.wz .wz-row{display:flex;align-items:center;gap:8px;padding:5px 4px;border-top:1px solid color-mix(in srgb,currentColor 9%,transparent)}.wz .wz-ic{width:18px;text-align:center;font-weight:700;flex:none}.wz .wz-l{flex:1;min-width:0;font-size:12.5px;line-height:1.35}.wz .wz-b{margin-left:auto;white-space:nowrap;flex:none}.wz-ok .wz-ic{color:var(--up)}.wz-bad .wz-ic{color:var(--down)}.wz-warn .wz-ic{color:#c98500}.wz-info .wz-ic,.wz-off .wz-ic{opacity:.55}';
     document.head.appendChild(st); }
   document.addEventListener('click', e => { const b = e.target.closest('#spWizard [data-wz]'); if (b) wizardAct(b.dataset.wz); });
+  loadHolidays();
   cloudLoop();
   document.addEventListener('visibilitychange', () => { if (!document.hidden) cloudLoop(true); });   // a phone opened mid-basket updates at once
   renderCards();
