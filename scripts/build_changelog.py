@@ -457,24 +457,6 @@ def main():
             changelog.setdefault(b["index"], []).append({"eff": b["eff"], "excluded": b["excluded"],
                                                          "included": b["included"], "src": stem, "hole_fill": True})
             print(f"  SUPPLEMENT {stem} {b['index']} {b['eff']}: -{len(b['excluded'])} +{len(b['included'])}")
-    # RESCHEDULED LEGS (2026-09-23, runbook §141f): a rescheduling notice moves the legs it names OFF the
-    # date the original review announced. Its own events now carry the new date (resched_dates), so the
-    # same legs are removed from every other event of that index dated on the announced date — else the
-    # stock is excluded twice and the walk holds it in the index between the two dates (28082017's
-    # Midcap 150 block vs 29082017). Nifty 500 is left to the hunt overlay below, which replaces its
-    # 2015-2019 reviews wholesale (validated at 39 archived lists).
-    for stem, old_eff, blocks in rescheduled:
-        for b in blocks:
-            if b["index"] == "Nifty 500":
-                continue
-            for c in changelog.get(b["index"], []):
-                if c["src"] == stem or c["eff"] != old_eff:
-                    continue
-                gone = [x for x in c["excluded"] if x in b["excluded"]] + [x for x in c["included"] if x in b["included"]]
-                if gone:
-                    c["excluded"] = [x for x in c["excluded"] if x not in b["excluded"]]
-                    c["included"] = [x for x in c["included"] if x not in b["included"]]
-                    print(f"  RESCHEDULED {stem}: {b['index']} {gone} moved {old_eff} -> {b['eff']} (removed from {c['src']})")
     # SUPERSEDED NOTICES (2026-09-23, runbook §141d): a later notice that says its lists REPLACE an
     # earlier notice's lists for named indices. ind_prs15092021 §C: REIT/InvIT inclusion put on hold,
     # so "the earlier list of replacement of these indices published through a press release on August
@@ -542,6 +524,22 @@ def main():
                        "included": h["included"], "src": h["file"].replace("ind_prs", "").replace(".pdf", "")})
         changelog["Nifty 500"] = n5
         print(f"  HUNT OVERLAY (Nifty 500): {len(hunt)} hunted docs win over {len(hstems)} stems")
+    # RESCHEDULED LEGS (2026-09-23, runbook §141f): a rescheduling notice moves the legs it names OFF the
+    # date the original review announced. Its own events now carry the new date (resched_dates; for Nifty
+    # 500 the hunt ledger's eff, corrected to 20170905 / 20170316), so the same legs are removed from every
+    # other event of that index dated on the announced date — else the stock is excluded twice and the walk
+    # holds it in the index between the two dates (28082017 vs 29082017 in Midcap 150 and Nifty 500;
+    # 16022017 vs 07032017 in Nifty 500). Runs AFTER the hunt overlay so Nifty 500's reviews are covered.
+    for stem, old_eff, blocks in rescheduled:
+        for b in blocks:
+            for c in changelog.get(b["index"], []):
+                if c["src"] == stem or c["eff"] != old_eff:
+                    continue
+                gone = [x for x in c["excluded"] if x in b["excluded"]] + [x for x in c["included"] if x in b["included"]]
+                if gone:
+                    c["excluded"] = [x for x in c["excluded"] if x not in b["excluded"]]
+                    c["included"] = [x for x in c["included"] if x not in b["included"]]
+                    print(f"  RESCHEDULED {stem}: {b['index']} {gone} moved {old_eff} -> {b['eff']} (removed from {c['src']})")
     for _src, _revs in sorted(revocations, key=lambda x: (x[0][4:8], x[0][2:4], x[0][:2])):
         apply_revocations(changelog, _revs, _src)
     apply_manual_fixes(changelog)

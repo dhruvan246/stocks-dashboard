@@ -18265,15 +18265,26 @@ SBT out 2017-03-16) — before, the register leg AND the late notice leg both ap
 in the index until the old date. Those three indices differ from the base build on that one date only.
 **RESCHEDULED LEGS:** the moved legs are also removed from every other event of that index dated on the
 announced date (28082017's Midcap 150 block loses RELCAPITAL / MFSL — else RELCAPITAL is excluded twice
-and walks back into the index from 09-05 to 09-29). Nifty 500 is skipped: the hunt overlay owns it.
+and walks back into the index from 09-05 to 09-29). Nifty 500: see the follow-up below.
 
-**Open.** (1) **Nifty 500 keeps the same defect** — the hunt overlay (`_n500_hunt_prs.json`) dates 29082017
-at 20170929 and 07032017 at 20170331, while NSE's Nifty 500 register moves those legs on 2017-09-05 /
-2017-03-16. Measured: Nifty 500 holds RELCAPITAL and lacks MFSL 2017-09-05 → 09-28, and holds SBBJ /
-MYSOREBANK / SBT and lacks FRETAIL / MAXINDIA / MGL 2017-03-16 → 03-30. Consequences today: derived
-Smallcap 250 = 251 on the 2017-09-05 snapshot (RELCAPITAL), and MFSL sits in Midcap 150 but not Nifty 500
-for those 24 days. Left untouched by instruction (Nifty 500 is pinned exact at 39 lists; none falls in
-either window) — the fix is those two hunt entries' `eff`, then re-check the 39 pins. (2) Pre-existing,
+**Nifty 500 follow-up (same day, user: "fix the Nifty 500 hunt dates too").** The hunt overlay
+(`_n500_hunt_prs.json`) had the same defect — 29082017 at 20170929 and 07032017 at 20170331 — so Nifty 500
+held RELCAPITAL / lacked MFSL 2017-09-05 → 09-28 and held SBBJ / MYSOREBANK / SBT / lacked FRETAIL /
+MAXINDIA / MGL 2017-03-16 → 03-30, although NSE's Nifty 500 register moves those legs on 09-05 / 03-16
+(its 09-29 rows carry neither RELCAPITAL nor MFSL). Fix: the two ledger `eff`s → **20170905 / 20170316**
+(2-line diff; every entry still records what its notice printed), and the RESCHEDULED LEGS step now runs
+AFTER the hunt overlay with no Nifty 500 skip, so it strips the moved legs from 28082017 (→ 24 out / 23
+in) and 16022017 (→ 22 / 22). Measured (live bin rev a5cb8704d3): pin_report lines identical to the
+previous build (all 0), **Nifty 500 39/39 at 100%** (no archived list falls in either window), Nifty 50 /
+Bank byte-identical; Nifty 500 and the derived MidSmallcap 400 / Smallcap 250 change on 2017-03-16 and
+2017-09-05 ONLY; derived Smallcap 250 = 250 at every snapshot 2016-2019 (the 251 is gone); Midcap 150 ⊂
+Nifty 500 on every date except (2). The register no longer gap-fills either window; it still adds +BSE
+2017-09-29 (the hunt's 28082017 list lacks BSE — why that entry was 25 / 24) and +MFSL 2017-03-16:
+the ledger maps "Max India Ltd." to MAX (→ MFSL) for all eras, but on 2017-03-16 that name is the new
+MAXINDIA (its tape's first bar is 2016-07-14); a no-op in the walk (MFSL is out of Nifty 500 2017-01-23 → 09-05), left as is.
+Nifty 500 rosters read 501 in 2016-2019 by design: TATAMTRDVR is its own line in NSE's index file.
+
+**Open.** (1) — (done above). (2) Pre-existing,
 unchanged: Nifty 500's 2022-05-04 archived list has no GMR ticker, so Midcap 150's GMRAIRPORT is outside
 Nifty 500 on that snapshot. (3) The SUPPLEMENT PDFs are downloaded by CI each run; a stem that fails to
 download prints `SUPPLEMENT <stem>: PDF unavailable — skipped` and that week's build silently loses its
