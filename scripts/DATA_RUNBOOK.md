@@ -18110,3 +18110,73 @@ bar. ⚠️ The PRICE build has not joined HEG→HEGAM (ISIN seam) — `_rename_
 HEXAWARE, MAXIND, PIRAMALFIN/DHFL, DUMMYREL (NSE placeholder we drop) at 2006-2015 checkpoints — the
 EMITTED rosters are clean for those names (checked); plus Healthcare LAURUSLABS/GLAXO at a 2021-05
 capture that contradicts NSE's own 23022021 notice (likely a lagged capture), Oil & Gas DUMMYREL.
+
+## 141e. ★★★ ROSTER RESIDUAL → 0 — one identity space, era-correct register names, 5 hand-read IISL notices, lagging captures  (2026-09-23)
+
+**Result (measured, worktree build on bin2, base d1567d95b):** walk-vs-archived-list off-by summed over the
+24 non-derived indices **27 → 0** (the §141d residual was 94; the first two items below took it to 27).
+Nifty 500 still 39/39 archived lists at 100%; **Nifty 50 and Nifty Bank byte-identical** to live. Derived
+indices (pinned exact anyway) improved: MidSmallcap 400 walk-vs-pin 123 → 0, Smallcap 250 308 → 110.
+The listing-date phantom floor now drops **294** pre-listing rows (was 1,298), because the walk itself
+fabricates far fewer. Score harness: `pin_report` lines in the build log (`Nifty X pin D: … off-by N`).
+
+1. **`pin_report` compares in the EMITTED key space** (`key=emit`, era-aware): KPIT/BSOFT, HEXAWARE/HEXT,
+   DHFL/PIRAMALFIN were one company scored as two errors.
+2. **`gen_register_events.py` resolves names by DATE**: strict normalised name (no loose token match —
+   WELSPUNLIV had landed on WELCORP), a key whose own tape covers the date judged in symchg space, then
+   the N500 name_map only if it trades then. 11 name changes, e.g. ALOKINDS→ALOKTEXT, DALBHARAT→DALMIABHA
+   (2016-18 rows), FLUOROCHEM→GUJFLUORO, KPITTECH→KPIT, MAXIND→MAX, UNITDSPR→MCDOWELL-N.
+3. **`canon()` folds `_rename_map.json` as well as REN** (symchg + supplement) — ONE identity space for
+   the roster arithmetic. With REN alone, one company under two era tickers was two members: an exit
+   recorded as PHILIPCARB never cancelled an entry recorded as PCBL, BURGERKING/RBA, GESHIPPING/GESHIP —
+   each half walked back for years (RBA sat in Nifty 500 from 1998). Everything the fold changed was
+   checked against the register AND the archived lists: COLPAL out of Nifty 500 2007-11-29→2008-12-29
+   (register exc/inc; the 2008-05/10/12 lists lack it), BALLARPUR back in 2010-11, KIRLOSBROS/KBL,
+   HFCL, NAHARSPING, SABTN, TVSHLTD out on their register dates. Guard measured: no rename-map pair
+   co-occurs in any official list or register event-day except KPIT/BSOFT (same company, both names on
+   2019-09-27). Emission is unchanged — `era_key` still emits the tape trading on the date.
+4. **ERA_OVERRIDES apply in the arithmetic too** (`_era_events` on events + pins), not only at output:
+   FRETAIL before its 2016-08-29 listing = the Pantaloon company, so its exits and FEL's entries are one
+   arc (Midcap 50 2013: inc FEL / exc FRETAIL had split). **`JSWISPL→JSWISPAT` override RETIRED** — no
+   ledger, pin or notice names JSWISPL before 2018 (measured), and once MONNETISPA folds into JSWISPL it
+   rewrote 169 Monnet Ispat Nifty 500 slots (2004-2015) to JSW Ispat.
+5. **Five register names mapped to the wrong company for their era** (evidence: symchg dates, first bars,
+   NSE EQUITY_L listing dates) — segments added to `_staleness_fix/register_names_era.json`, the Nifty 500
+   ledger patched surgically (11 events, `.hunt/patch_era.py` logic), sub-index ledgers regenerated (diff
+   = exactly these): "Future Retail Ltd." PANTALOONR → FRL 2013-04-11 → FRETAIL 2016-08-29; "Tube
+   Investments of India Ltd." TUBEINVEST → TIINDIA 2017-11-02; "Dalmia Bharat Ltd." DALMIABHA 2013-01-09 →
+   DALBHARAT 2019-01-22; "Gujarat Gas Ltd." GUJGASLTD from 2015-09-15 (old GUJRATGAS tape ends
+   2015-05-26); **"Minda Industries Ltd." had mapped to MINALIND = Minal Industries, listed 2026-08-17 —
+   a different company**; now MINDAIND (→UNOMINDA). ⚠️ Do NOT regenerate the Nifty 500 ledger wholesale:
+   with today's bin `gen_inclexcl_events.py` also shifts seven 1998-2002 mappings (BARODARAYN→BARODARY,
+   ASIIL, FGP, NPL, ROYALCU, RRSECUR, SVCIND) nobody has reviewed — patch it.
+6. **Parser (`build_changelog.py`)**, validated by diffing old vs new over 1,400 cached notices — only the
+   intended blocks move, no changelog notice changes except 17092019_1:
+   `SECT_RE` — a lettered heading naming an UNTRACKED index still ends the block ("B. Exclusion of a
+   security from NIFTY SME EMERGE Index" had put SME-listed AKASH into Smallcap 100 back to 2017);
+   "S&P CNX 500"/"S&P CNX Nifty" headings (their rows had spilled into the previous block: MVL, FUTUREVENT
+   read as Nifty 200); "December 7 , 2011" dates; a `(with) effect from` fallback used only when no
+   "effective from <date>" parses; `PROSE_RE` for single-index notices that name the index only in prose
+   ("change in Nifty Midcap 50 Index which will become effective from July 25, 2011"); STOP += LIMITED,
+   LTD, IISL (a wrapped name / the old page header read as tickers).
+7. **HOLE-FILL SUPPLEMENT** — `SUPPLEMENT` in build_changelog: 07062011 (Midcap 50 CHENNPETRO→ADANIPOWER),
+   16062011, 01122011 (CNX Midcap IBREALEST→DISHTV), 12122011 (CNX Midcap AREVAT&D→JISLJALEQS), 29022012,
+   each READ BY HAND. Tagged `hole_fill`; `fill_holes()` adds an event only where changelog + register have
+   no same-symbol same-direction event within ±10 days, so the register's pre-changelog history is never
+   re-routed (a plain changelog event would move `first_cl`). Blocks with a repeated ticker or unequal
+   in/out counts are refused. **03092012 deliberately NOT listed**: its Midcap 50 "exclusion" of SOUTHBANK
+   cancels an inclusion announced 16082012 — the register has neither leg; applied, it fabricates a
+   pre-2012 member.
+8. **LAGGING captures are not pinned** (`drop_prepublished_pins`, mirror of the pre-published rule): a
+   capture ≤90 days after a dated notice that EQUALS the roster before that notice, while the NEXT
+   archived list agrees with the walk. Only hit: Nifty Healthcare 2021-05-25 (still GLAXO / no LAURUSLABS
+   although ind_prs23022021 swapped them from 2021-03-31; no notice revokes it; the 2023-08-13 list has
+   the swap). Wayback was offline 2026-09-23, so no second 2021 capture was read.
+
+**Open (not part of the pin residual):** (a) `29082017` reschedules only RELCAPITAL to **2017-09-05**, but
+`parse_text` takes the first "effective from" (which quotes the original 2017-09-29 review) — its events
+are mis-dated by 24 days. (b) **Nifty Midcap 150 before 2019 is incomplete** — its 2016-09-30 snapshot has
+138 members; the 2017-2018 reviews (16012017, 16022017, 28082017, 08012018, 21022018, 28082018, 14122018 +
+off-cycles) carry ~120 Midcap 150 events only the N500 hunt overlay reads, and Midcap 150 has no register
+sheet; derived Smallcap 250 inherits it (286 members at 2016-09-30). (c) IISL two-copy text layers
+(01102010, 08102010, 19042011) detach rows from headings — never admit them without reading.

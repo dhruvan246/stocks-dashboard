@@ -58,6 +58,14 @@ def norm(x):
     return toks
 
 
+def strict_name(x):
+    """exact-name key for the same-name lookup: only punctuation, 'ltd/limited' and 'the' are dropped —
+    norm() also drops 'india'/'corporation', which made "Welspun India" (WELSPUNLIV, textiles) equal
+    "Welspun Corp" (WELCORP, pipes)."""
+    x = re.sub(r"\(.*?\)", " ", x.lower().replace("&", " and "))
+    return "".join(t for t in re.split(r"[^a-z0-9]+", x) if t and t not in {"ltd", "limited", "the"})
+
+
 def to_iso(v):
     if isinstance(v, float):
         return (datetime.date(1899, 12, 30) + datetime.timedelta(days=int(v))).isoformat()
@@ -79,7 +87,22 @@ def load_bin_names():
         span[k] = (str(e["d"][0]), str(e["d"][-1]))
         nm = m.get("name") or k
         by["".join(norm(nm))].append(k)
+        by["STRICT:" + strict_name(nm)].append(k)
     return by, span
+
+
+def load_renames():
+    """RENAME (price-build fold, old -> current key) and REN (NSE symchg: old -> (new, iso date))."""
+    import csv
+    rename = json.load(open(os.path.join(SCRIPTS, "_rename_map.json")))
+    ren = {}
+    mon = {m: i for i, m in enumerate(["JAN","FEB","MAR","APR","MAY","JUN","JUL","AUG","SEP","OCT","NOV","DEC"], 1)}
+    for r in csv.reader(open(os.path.join(SCRIPTS, "symchg.csv"), encoding="utf-8", errors="replace")):
+        if len(r) >= 4 and r[1].strip() and r[2].strip():
+            m = re.match(r"(\d{1,2})-([A-Z]{3})-(\d{4})", r[3].strip().upper())
+            d = f"{int(m.group(3)):04d}-{mon[m.group(2)]:02d}-{int(m.group(1)):02d}" if m and m.group(2) in mon else None
+            ren[r[1].strip().upper()] = (r[2].strip().upper(), d)
+    return rename, ren
 
 
 def covers(span, key, d, pad=120):
@@ -108,6 +131,29 @@ def gen(sheet, out_name, wb, n500, manual, binby, span):
     for d, n, k in raw:
         dates_of[n].append(d)
 
+    def to_current(x):
+        seen = set()
+        while x in RENAME and x not in seen: seen.add(x); x = RENAME[x]
+        return x
+    folded_from = collections.defaultdict(set)
+    for o in RENAME: folded_from[to_current(o)].add(o)
+    def canon_ren(x):
+        seen = set()
+        while x in REN and x not in seen: seen.add(x); x = REN[x][0]
+        return x
+    def tape(x, d):
+        """does x trade around d, as itself or under its NSE symbol-change successor? (the builder does
+        its set arithmetic in that canon() space — a price-build fold like GESHIPPING -> GESHIP that NSE's
+        symchg does not carry would split one member into two keys)"""
+        return any(covers(span, k, d) for k in {x, canon_ren(x)})
+    def renamed_before(x, d):
+        r = REN.get(x)
+        return bool(r and r[1] and r[1] <= d)
+    def same_name_keys(n, d):
+        """bin keys whose own meta name is this register name and whose OWN tape covers d"""
+        key = strict_name(n)
+        return [k for k in binby.get("STRICT:" + key, []) if covers(span, k, d)] if key else []
+
     def binexact(n):
         toks = norm(n)
         if len(toks) < 2 and (not toks or len(toks[0]) < 4):    # one short token ("ABB") is not a name
@@ -120,12 +166,26 @@ def gen(sheet, out_name, wb, n500, manual, binby, span):
     def sym_for(n, d):
         if n in manual:
             return manual[n]["sym"] if isinstance(manual[n], dict) else manual[n], "manual"
-        segs = era_map.get(n)
-        if segs and d < ERA_CUTOFF:
-            best = None
+        # DATE-AWARE resolution (2026-09-23, runbook §141e): the Nifty 500 name_map gives the ticker that
+        # holds the name TODAY — "Max India Ltd." -> MAXIND (listed 2020), "KPIT Technologies" -> KPITTECH
+        # (the 2019 demerged entity), "Gujarat Fluorochemicals" -> FLUOROCHEM (listed 2019), "Dalmia
+        # Bharat" -> DALBHARAT (2019) — wrong for 2015-2020 register rows. Order: the per-date era ticker
+        # unless it had been renamed away by d; then any bin key that carries this exact name with a tape
+        # on d; then the name_map ticker when it trades on d; else the era ticker.
+        segs = era_map.get(n); e = None
+        if segs:
             for f, sym in segs:
-                if f <= d: best = sym
-            return (best if best is not None else segs[0][1]), "era"
+                if f <= d: e = sym
+            e = e or segs[0][1]
+            if d < ERA_CUTOFF or (not renamed_before(e, d) and tape(e, d)):
+                return e, "era"
+        sk = same_name_keys(n, d)
+        if len(sk) == 1:
+            return sk[0], "binname"
+        if n in name_map and tape(name_map[n], d):
+            return name_map[n], "n500"
+        if e and tape(e, d):
+            return e, "era"
         if n in name_map:
             return name_map[n], "n500"
         b = binexact(n)
@@ -164,6 +224,8 @@ def main(argv):
     n500 = json.load(open(N500, encoding="utf-8"))
     manual = json.load(open(MANUAL_FILE, encoding="utf-8")) if os.path.exists(MANUAL_FILE) else {}
     binby, span = load_bin_names()
+    global RENAME, REN
+    RENAME, REN = load_renames()
     if argv[1:] == ["--all"]:
         for sheet, out in SHEETS.items():
             gen(sheet, out, wb, n500, manual, binby, span)

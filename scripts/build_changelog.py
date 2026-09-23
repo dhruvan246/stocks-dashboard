@@ -69,6 +69,7 @@ for _disp, _keys in _CANON_LIST:
 def canon_index(name):
     n = re.sub(r"[^a-z0-9]", "", name.lower())
     n = re.sub(r"index$", "", n)   # "Nifty Bank Index" -> "niftybank"
+    n = re.sub(r"^spcnx", "cnx", n)  # IISL-era "S&P CNX 500" / "S&P CNX Nifty" (2026-09-23, §141e)
     return CANON.get(n)
 
 def get(url, tries=5):
@@ -105,11 +106,11 @@ def recent_stems(days=80):
         out += [s, s + "_1", s + "_2"]
     return out
 
-DATE_RE = re.compile(r"effective\s+from\s+([A-Z][a-z]+\s+\d{1,2},\s+\d{4})", re.I)
+DATE_RE = re.compile(r"effective\s+from\s+([A-Z][a-z]+\s+\d{1,2}\s*,\s*\d{4})", re.I)   # "December 7 , 2011" (§141e)
 MONTHS = {m: i for i, m in enumerate(
     ["January","February","March","April","May","June","July","August","September","October","November","December"], 1)}
 def to_iso(d):
-    m = re.match(r"([A-Za-z]+)\s+(\d{1,2}),\s+(\d{4})", d.strip())
+    m = re.match(r"([A-Za-z]+)\s+(\d{1,2})\s*,\s*(\d{4})", d.strip())
     if not m: return None
     mo = MONTHS.get(m.group(1).capitalize())
     return f"{int(m.group(3)):04d}-{mo:02d}-{int(m.group(2)):02d}" if mo else None
@@ -118,7 +119,7 @@ def to_iso(d):
 # 2026-09-23 (runbook §141d): tolerate a footnote marker ("5) NIFTY Smallcap 100**", "4) NIFTY Smallcap 50*")
 # and a trailing parenthetical ("2) Nifty Midcap 150 (a parent index for Nifty Midcap 50)") after the
 # name — the strict form dropped those WHOLE sections (15092021 lost its Smallcap 50/100 blocks).
-HEAD_RE = re.compile(r"^\s*(?:\d+|[a-zA-Z])[\)\.]\s*((?:nifty|cnx)[\w &\-]*?)\s*[\*#@\u2020]*\s*(?:\([^)]*\)?)?\s*[\*#@\u2020]*\s*$", re.I)
+HEAD_RE = re.compile(r"^\s*(?:\d+|[a-zA-Z])[\)\.]\s*((?:s&p\s*)?(?:nifty|cnx)[\w &\-]*?)\s*[\*#@\u2020]*\s*(?:\([^)]*\)?)?\s*[\*#@\u2020]*\s*$", re.I)
 # 2026-09-23 (§141d): a lettered PROSE heading that names one index — how NSE words one-off revisions:
 # "B. Revision in criteria and replacements in Nifty Energy index:" (ind_prs11122024, Energy 10 -> 40).
 # LETTERED only ("B. …"): numbered lines in these notices are footnotes — "1. Bharat Electronics … removed
@@ -135,10 +136,20 @@ HEAD2_RE = re.compile(r"^\s*[A-Z][\)\.]\s*(?![^\n]*\b(?:has been|have been|pursu
 #   ("16 Johnson Controls - Hitachi Air Conditioning India" / "Ltd. JCHAC"). When a serial-line has
 #   no valid last-token ticker, merge following non-serial continuation lines (<=3) until one appears.
 # (Both fixes validated over all cached PDFs: 0 regressions, recovers JCHAC/8KMILES/360ONE. 2026-07-09)
+# 2026-09-23 (runbook §141e): a LETTERED section heading that names no tracked index still ENDS the
+# current section — "B. Exclusion of a security from NIFTY SME EMERGE Index:" (ind_prs17092019_1) left the
+# Smallcap 100 block open, so SME-platform AKASH was read as a Smallcap 100 exclusion (and walked in to
+# 2018). Heading-shaped only: capital letter + ")"/"." + a capitalised word, and the line names an index or
+# a change, or ends in ":"; row lines start with a serial number, so they never match.
+SECT_RE = re.compile(r"^\s*[A-Z][\)\.]\s+[A-Z][a-z]+[^\n]*(?:(?i:\b(?:index|indices|replacements?|exclusions?|inclusions?|revisions?|changes?)\b)|:\s*$)")
+# IISL-era single-index notices name the index only in prose: "It has been decided to make the following
+# change in Nifty Midcap 50 Index which will become effective from July 25, 2011" (ind_prs07062011 —
+# CHENNPETRO out / ADANIPOWER in, the Midcap 50 swap the 2010 and 2012 archived lists bracket). §141e.
+PROSE_RE = re.compile(r"\b(?:decided|effective)\b[^\n]*?\bchanges?\s+in\s+((?:s&p\s*)?(?:nifty|cnx)[\w &\-]*?)\s+index\b", re.I)
 SERIAL_RE = re.compile(r"^\s*\d{1,3}\s+\S")
 ROWSER_RE = re.compile(r"^\s*(\d{1,3})\s+(.+)$")
 TICK_RE = re.compile(r"[A-Z0-9&\-]{2,15}")
-STOP = ("NSE", "EQ", "BE", "NIFTY", "CNX")
+STOP = ("NSE", "EQ", "BE", "NIFTY", "CNX", "LIMITED", "LTD", "IISL")   # "IISL" = the old page header   # "LIMITED" = a wrapped name, not a ticker (§141e)
 def _ticker(tok):
     if not tok or not TICK_RE.fullmatch(tok): return None
     if not any(c.isalpha() for c in tok): return None
@@ -165,15 +176,18 @@ def _bare_head(lines, i):
             return ci
     return None
 
+# fallback ONLY when no "effective from <date>" parses: IISL notices whose text layer splits that phrase
+# carry the date once as "with effect from December 7 , 2011" (ind_prs01122011, Indiabulls demerger). §141e
+DATE2_RE = re.compile(r"(?:with\s+)?effect\s+from\s+([A-Z][a-z]+\s+\d{1,2}\s*,\s*\d{4})", re.I)
 def parse_text(txt, bare_heads=False):
-    md = DATE_RE.search(txt); eff_default = to_iso(md.group(1)) if md else None
+    md = DATE_RE.search(txt) or DATE2_RE.search(txt); eff_default = to_iso(md.group(1)) if md else None
     cur = None; mode = None; blocks = []
     lines = txt.splitlines(); i = 0; n = len(lines)
     while i < n:
         ln = lines[i]
-        h = HEAD_RE.match(ln) or HEAD2_RE.match(ln)
+        h = HEAD_RE.match(ln) or HEAD2_RE.match(ln) or PROSE_RE.search(ln)
         ci = canon_index(h.group(1)) if h else (_bare_head(lines, i) if bare_heads else None)
-        if h or ci:
+        if h or ci or SECT_RE.match(ln):
             cur = {"index": ci, "eff": eff_default, "excluded": [], "included": []} if ci else None
             if cur: blocks.append(cur)
             mode = None; i += 1; continue
@@ -389,6 +403,26 @@ def main():
         for b in blocks:
             changelog.setdefault(b["index"], []).append({"eff": b["eff"], "excluded": b["excluded"], "included": b["included"], "src": stem})
     print(f"Have {ok}/{len(files_all)} PDFs (missing {miss})")
+    # HOLE-FILL SUPPLEMENT (2026-09-23, runbook §141e): IISL-era notices (2011-2012), each READ BY HAND,
+    # that carry changes NSE's IndexInclExcl register lost — the Midcap 50 CHENNPETRO->ADANIPOWER swap
+    # (07062011), CNX Midcap's IBREALEST->DISHTV (01122011) and AREVAT&D->JISLJALEQS (12122011), CNX
+    # Smallcap/Media (16062011, 29022012). Tagged hole_fill: the builder adds an event only where neither
+    # the changelog nor the register already has that stock moving that way within ±10 days, so the
+    # register's pre-changelog history is never re-routed. Blocks with a repeated ticker or unequal in/out
+    # counts (a garbled two-copy text layer) are refused. NOT listed: 03092012 — its Midcap 50 "exclusion"
+    # of SOUTHBANK cancels an announced inclusion (the register has neither leg) and would fabricate a
+    # pre-2012 member.
+    SUPPLEMENT = ["07062011", "16062011", "01122011", "12122011", "29022012"]
+    for stem in SUPPLEMENT:
+        fp = download(stem)
+        if not fp:
+            print(f"  SUPPLEMENT {stem}: PDF unavailable — skipped"); continue
+        for b in parse_pdf(fp):
+            if len(set(b["included"])) != len(b["included"]) or len(set(b["excluded"])) != len(b["excluded"]) \
+                    or len(b["included"]) != len(b["excluded"]):
+                print(f"  SUPPLEMENT {stem} {b['index']}: refused (+{b['included']} -{b['excluded']})"); continue
+            changelog.setdefault(b["index"], []).append({"eff": b["eff"], "excluded": b["excluded"],
+                                                         "included": b["included"], "src": stem, "hole_fill": True})
     # SUPERSEDED NOTICES (2026-09-23, runbook §141d): a later notice that says its lists REPLACE an
     # earlier notice's lists for named indices. ind_prs15092021 §C: REIT/InvIT inclusion put on hold,
     # so "the earlier list of replacement of these indices published through a press release on August
