@@ -64,7 +64,7 @@ BSESCRIP_J = os.path.join(HERE, "bse_scrips.json")        # {by_id:{SYM:scripcod
 XTRA_KEEP = {"eps_b", "eps_d", "oi", "fc", "dep", "tax", "exc", "pbt", "emp", "mat",
              "assoc", "nci",
              "assets", "eq", "sc", "oeq", "borr", "blt", "bst", "cash", "invnt", "rec", "pay",
-             "ppe", "cwip", "iuad", "gw", "intg", "invst",
+             "ppe", "cwip", "iuad", "gw", "intg", "invst", "invprop",
              "cfo", "cfi", "cff", "capex", "divp", "cf_tax", "cf_d", "seg",
              "gnpa_pct", "nnpa_pct", "cet1", "car", "roa", "dep_amt", "adv", "int_exp",
              "aud", "qual"}
@@ -158,7 +158,7 @@ def main():
     if os.path.exists(abscf_p):
         try:
             abscf = json.load(open(abscf_p))
-            PDF_FIELDS = {"assets", "sc", "oeq", "borr", "blt", "bst", "ppe", "cwip", "gw", "intg",
+            PDF_FIELDS = {"assets", "sc", "oeq", "borr", "blt", "bst", "ppe", "cwip", "gw", "intg", "invprop",
                           "invst", "rec", "pay", "invnt", "cfo", "cfi", "cff", "capex", "cf_tax"}
             nfill = 0
             for sym, qs in abscf.items():

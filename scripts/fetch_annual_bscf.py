@@ -198,11 +198,13 @@ BS_ONE = [   # (field, label regex, sign) — first matching line wins
     # right-of-use: its own line in most layouts; the XBRL PropertyPlantAndEquipment key includes it
     # for some filers and not others (merge_annual_bscf.gate_ok accepts either and says which, §148)
     ('rou',    r'right[\s\-]*of[\s\-]*use\s+assets?\b', 1),
+    # Screener's Fixed Assets includes investment property (§148c); 'under construction/development' is CWIP-like
+    ('invprop', r'^\s*(?:\([a-z]+\)\s*)?investment\s+propert(?:y|ies)\b(?!.*(?:under|construction|development))', 1),
     ('invnt',  r'^\s*(?:\([a-z]\)\s*)?inventories\b', 1),
 ]
 BS_SUM = [   # (field, label regex) — SUM the first-col of every matching line (non-current + current)
     ('borr',  r'^\s*(?:\([a-z]+\)\s*|\(i+\)\s*)?borrowings\b'),
-    ('invst', r'^\s*(?:\([a-z]+\)\s*|\(i+\)\s*)?investments?\b'),
+    ('invst', r'^\s*(?:\([a-z]+\)\s*|\(i+\)\s*)?investments?\b(?!\s+propert)'),   # 'Investment property' is a fixed asset (§148c)
     ('intg',  r'other\s+intangible\s+assets\b(?!\s+under)'),
     ('rec',   r'trade\s+receivables\b'),
     ('pay',   r'trade\s+payables\b|dues\s+of\s+(?:micro|creditors)'),
@@ -317,7 +319,7 @@ def detect_unit(text):
                 found.add(f); break
     return found.pop() if len(found) == 1 else None
 
-MONEY_KEYS = ('assets', 'sc', 'oeq', 'borr', 'blt', 'bst', 'ppe', 'cwip', 'gw', 'intg', 'invst', 'rec',
+MONEY_KEYS = ('assets', 'sc', 'oeq', 'borr', 'blt', 'bst', 'ppe', 'cwip', 'gw', 'intg', 'invst', 'invprop', 'rec',
               'pay', 'invnt', 'rou', 'cfo', 'cfi', 'cff', 'capex', 'cf_tax', 'eq', 'cash')
 
 def scale_read(p, k):

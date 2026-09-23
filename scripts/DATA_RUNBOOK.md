@@ -18506,3 +18506,19 @@ Pilot 0/10 → first full pass 327/1,190 trusted → re-run in flight. Each fix 
   rejected 6, scanned (vision, ASK FIRST) 3, no BSE filing 3.
 - Queue after the re-run: 459 companies ≥ ₹100 cr missing FY23-25 (ex-BSE-SME names like INA: NSE SME XBRL does not
   cover BSE SME) → same PDF route.
+
+### 148c. Screener "Fixed Assets" parity — Investment Property was never captured (2026-09-23)
+User: "ours should match screener's fixed asset for all the stocks" (after DBREALTY showed 5→1,502 here vs
+72→2,429 on screener). Measured on screener pages vs the raw XBRL: **Screener Fixed Assets = PP&E +
+Investment Property + Goodwill + Other Intangibles; CWIP separate** (DBREALTY Mar-24 1,492.19+86.50+548.58+301.23
+= 2,428.50 vs 2,429; OBEROIRLTY/PHOENIXLTD/DLF gaps = their InvestmentProperty to the rupee). Builder adds
+`invprop` (InvestmentProperty), non-Ind-AS `iuad`/`cwip` spellings and a `tx:"na"` marker; one-off
+`scripts/_fa_newfields_backfill.py` (gitignored) filled +23,346 invprop / +1,944 iuad / +2,697 tx, 0 existing
+fields changed. Stock page FA row = ppe+invprop+gw+intg with an "Investment property" sub-row (sw v177);
+build_stock_fin XTRA_KEEP + PDF_FIELDS carry invprop; the PDF reader reads it and its `invst` regex no longer
+swallows "Investment property" rows (it did — PDF-era Investments include invprop on those filers).
+Sample check 52/58 exact; the 6 are NOT fixable by design: **restated years** (screener shows later-restated
+figures — RELIANCE std FY23 after the JFS demerger, OBEROIRLTY std FY23 after its amalgamation: our as-filed
+total assets 13,553 vs screener 17,314) — we keep AS FILED for point-in-time; and **vendor quirks** (SKYGOLD FY25
+CWIP counted inside FA; TRUST puts intangibles-under-development in CWIP in FY25 but in FA in FY26 — we keep one
+rule: iuad → CWIP, as for RELIANCE).

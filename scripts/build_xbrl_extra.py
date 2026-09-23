@@ -132,9 +132,13 @@ BS = {  # instant, ₹ -> cr; tuple entries are summed when at least one part is
     # filers use (runbook §148) — facts_by_ctx takes the first name with any facts, so they only
     # apply where the Ind-AS tag is absent
     "ppe": ["PropertyPlantAndEquipment", "TangibleAssets"],
-    "cwip": ["CapitalWorkInProgress", "TangibleAssetsCapitalWorkInProgress"],
+    "cwip": ["CapitalWorkInProgress", "TangibleAssetsCapitalWorkInProgress",
+             "PropertyPlantAndEquipmentCapitalWorkInProgress"],   # INTEGRATED non-Ind-AS spelling
     "gw": ["Goodwill"], "intg": ["OtherIntangibleAssets", "IntangibleAssets"],
-    "iuad": ["IntangibleAssetsUnderDevelopment"],
+    "iuad": ["IntangibleAssetsUnderDevelopment", "IntangibleAssetsUnderDevelopmentOrWorkInProgress"],
+    # Screener's "Fixed Assets" = PP&E + Investment Property + Goodwill + Other Intangibles (measured
+    # 2026-09-23 against screener on DBREALTY/OBEROIRLTY/PHOENIXLTD/DLF/INA/TCS/RELIANCE, runbook §148c)
+    "invprop": ["InvestmentProperty"],
 }
 BS_SUM = {
     "borr": ["BorrowingsCurrent", "BorrowingsNoncurrent"],
@@ -243,11 +247,16 @@ def parse_bs_only(xml, fname, sym, ctx, end):
             continue                      # same basis twice — the first (OneI) wins
         used.add(b)
         row = out[b]
+        if "NONINDAS" in fname.upper():
+            row["tx"] = "na"
         for key, names in BS.items():
             f = facts_by_ctx(xml, names)
             if icid in f:
                 row[key] = money(f[icid])
         bs_sums(xml, icid, row, money)
+    for b in ("s", "c"):
+        if out[b] == {"tx": "na"}:
+            out[b] = {}
     if not out["s"] and not out["c"]:
         return None
     return out
@@ -356,8 +365,11 @@ def parse_file(path, fname):
     def money(v):
         return round(v / sc / CR, 2)
 
+    na = "NONINDAS" in fname.upper()
     for cid, b in bases.items():
         row = out[b]
+        if na:
+            row["tx"] = "na"
         for key, names in PNL.items():
             f = facts_by_ctx(xml, names)
             if cid in f:
@@ -477,6 +489,9 @@ def parse_file(path, fname):
         for b in bases.values():
             out[b]["qual"] = 1
 
+    for b in ("s", "c"):
+        if out[b] == {"tx": "na"}:
+            out[b] = {}
     if not out["s"] and not out["c"]:
         return None
     return out

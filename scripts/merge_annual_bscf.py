@@ -21,7 +21,7 @@ import json, os, re, sys
 from datetime import date
 HERE = os.path.dirname(os.path.abspath(__file__))
 LEDGER = os.path.join(HERE, "annual_bscf.json")
-FIELDS = {"assets", "sc", "oeq", "borr", "blt", "bst", "ppe", "cwip", "gw", "intg", "invst",
+FIELDS = {"assets", "sc", "oeq", "borr", "blt", "bst", "ppe", "cwip", "gw", "intg", "invst", "invprop",
           "rec", "pay", "invnt", "cfo", "cfi", "cff", "capex", "cf_tax"}
 
 def asat_ok(e):
