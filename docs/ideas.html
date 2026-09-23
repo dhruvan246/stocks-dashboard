@@ -69,23 +69,6 @@
     <div id="commodity-list" class="grid gap-3 md:grid-cols-2"></div>
   </section>
 
-  <section id="momentum" class="mb-8">
-    <div class="flex flex-wrap items-baseline justify-between gap-2 mb-1">
-      <h2 class="text-lg font-semibold">Momentum + results screen</h2>
-      <span id="mo-meta" class="muted text-xs"></span>
-    </div>
-    <p class="muted text-sm mb-2">Rules measured from how a mid/small-cap model portfolio actually bought and sold across 92 rebalances (Sep-2019 to Sep-2026). It bought stocks that were already running, close to their 52-week high, right after a strong quarterly result. It sold once the momentum faded. Sector tailwinds explained which themes it held, not when it bought.</p>
-    <div id="mo-rules" class="mb-2"></div>
-    <p id="mo-valid" class="text-sm mb-3"></p>
-    <div id="mo-themes" class="mb-3"></div>
-    <div class="card" style="overflow-x:auto"><table class="sw" id="mo-table"><thead><tr><th data-k="name">Company</th><th data-k="theme">Theme</th><th data-k="mcap">Mcap ₹cr</th><th data-k="ret_3m">3M return</th><th data-k="pct_3m">3M rank</th><th data-k="off_52w">vs 52W high</th><th data-k="off_ath">vs all-time high</th><th data-k="pe">P/E</th><th data-k="pat_yoy">Profit YoY</th><th data-k="result_days">Result</th><th data-k="listed_days">Listed</th></tr></thead><tbody></tbody></table></div>
-    <details class="card mt-3"><summary class="font-semibold text-sm" id="mo-faded-sum">Momentum faded</summary>
-      <p class="muted text-xs mt-2">Passed the screen at some point in the last 90 days and now ranks in the bottom half on 6-month return, or sits more than 20% under its 52-week high. That is the state the portfolio usually sold in.</p>
-      <div style="overflow-x:auto"><table class="sw mt-2" id="mo-faded"><thead><tr><th>Company</th><th>Theme</th><th>First passed</th><th>vs 52W high</th><th>6M rank</th><th>Why it's here</th></tr></thead><tbody></tbody></table></div>
-    </details>
-    <p id="mo-held" class="muted text-xs mt-2"></p>
-  </section>
-
   <section id="ideas" class="mb-8">
     <div class="flex flex-wrap items-center gap-2 mb-3">
       <h2 class="text-lg font-semibold">Ideas</h2>
@@ -212,55 +195,6 @@
     });
   } else {
     $('#commodity-list').innerHTML = '<div class="card muted text-sm">signals.json not published yet.</div>';
-  }
-
-  // ---- momentum + results screen (scripts/ideas/momentum.py, runbook §144d) ----
-  const [mo, mv] = await Promise.all([grab('./ideas/momentum.json'), grab('./ideas/momentum_validation.json')]);
-  if (mo) {
-    const R = mo.rules || {};
-    $('#mo-meta').textContent = `prices ${mo.asof} · built ${mo.built}`;
-    $('#mo-rules').innerHTML = [
-      `3-month return in the top ${100 - R.p3_min}% of NSE`, `within ${R.off52_max}% of the 52-week high`,
-      `latest quarter profit up ≥${R.pat_yoy_min}% YoY, in profit`, `result announced in the last ${R.result_days_max} days`,
-      `market cap ₹${fmt(R.mcap_min, 0)}–${fmt(R.mcap_max, 0)} cr`].map(t => `<span class="pill">${esc(t)}</span>`).join('');
-    if (mv && mv.summary && mv.summary.h3_vs_universe) {
-      const a = mv.summary.h3_vs_universe, b = mv.summary.h6_vs_universe, rc = mv.recall || {};
-      $('#mo-valid').innerHTML = `<b>Backtest, ${mv.months[0].date.slice(0, 7)} to ${mv.months[mv.months.length - 1].date.slice(0, 7)}</b> (month-end screens, delisted stocks included, equal weight, no costs): picks averaged <b>${pct(a.avg)}</b> over the next 3 months against ${pct(a.bench)} for all eligible stocks, and beat them in ${a.beat} of the ${a.months} months with 3 or more picks. Over 6 months: ${pct(b.avg)} vs ${pct(b.bench)}, beat in ${b.beat} of ${b.months}.` +
-        (rc.buys ? ` <span class="muted">The rules are strict: ${rc.all_rules} of the portfolio's ${rc.buys} real buys passed all five on the day it bought (momentum alone matched ${rc.momentum}, near-high ${rc.near_high}, profit growth ${rc.earnings}).</span>` : '') +
-        ` <span class="muted">The backtest swaps the market-cap band for "outside the Nifty 100, ₹50 lakh+ daily turnover", because past market caps of delisted companies aren't in our data.</span>`;
-    }
-    $('#mo-themes').innerHTML = (mo.themes || []).slice(0, 10).map(t => `<span class="pill" title="${esc(t.symbols.join(', '))}">${esc(t.theme)} · ${t.n}</span>`).join('');
-    const tb = $('#mo-table tbody');
-    const cell = (p) => {
-      const prog = (p.programmes || []).length ? ` <span class="lane govt" title="${esc(p.programmes.join('; '))}">${p.fresh_govt ? 'govt: fresh' : 'govt programme'}</span>` : '';
-      const ipo = p.listed_days < 730 ? ' <span class="pill">new listing</span>' : '';
-      return `<td><a class="hover:underline font-semibold" href="./stock.html?sym=${encodeURIComponent(p.symbol)}">${esc(p.symbol)}</a> <span class="muted">${esc(p.name)}</span>${prog}${ipo}</td>
-        <td>${esc(p.theme)}</td><td>${fmt(p.mcap, 0)}</td><td>${pct(p.ret_3m)}</td><td>${fmt(p.pct_3m, 0)}</td><td>${pct(p.off_52w)}</td><td>${pct(p.off_ath)}</td>
-        <td>${p.pe == null ? '—' : fmt(p.pe, 1)}</td><td>${pct(p.pat_yoy)}</td><td title="${esc(p.result_date || '')}">${p.result_days == null ? '—' : p.result_days + 'd ago'}</td>
-        <td>${p.listed_days < 365 ? '<1 yr' : fmt(p.listed_days / 365.25, 0) + ' yr'}</td>`;
-    };
-    let SK = 'pct_3m', SD = -1;
-    const drawMo = () => {
-      const rows = (mo.picks || []).slice().sort((a, b) => {
-        const x = a[SK], y = b[SK];
-        if (x == null) return 1; if (y == null) return -1;
-        return (typeof x === 'string' ? x.localeCompare(y) : x - y) * SD;
-      });
-      tb.innerHTML = rows.length ? rows.map(p => `<tr>${cell(p)}</tr>`).join('') : '<tr><td colspan="11" class="muted">No stock passes all five rules today.</td></tr>';
-      document.querySelectorAll('#mo-table th').forEach(th => { th.style.cursor = 'pointer'; th.textContent = th.textContent.replace(/ [▲▼]$/, '') + (th.dataset.k === SK ? (SD > 0 ? ' ▲' : ' ▼') : ''); });
-    };
-    $('#mo-table thead').addEventListener('click', (e) => {
-      const th = e.target.closest('th'); if (!th) return;
-      if (th.dataset.k === SK) SD = -SD; else { SK = th.dataset.k; SD = ['name', 'theme'].includes(SK) ? 1 : -1; }
-      drawMo();
-    });
-    drawMo();
-    $('#mo-meta').textContent = `${(mo.picks || []).length} pass · prices ${mo.asof} · built ${mo.built}`;
-    $('#mo-faded-sum').textContent = `Momentum faded (${(mo.faded || []).length})`;
-    $('#mo-faded tbody').innerHTML = (mo.faded || []).map(p => `<tr><td><a class="hover:underline font-semibold" href="./stock.html?sym=${encodeURIComponent(p.symbol)}">${esc(p.symbol)}</a> <span class="muted">${esc(p.name)}</span></td><td>${esc(p.theme)}</td><td>${esc(p.first_seen)}</td><td>${pct(p.off_52w)}</td><td>${fmt(p.pct_6m, 0)}</td><td style="white-space:normal">${esc((p.why || []).join('; '))}</td></tr>`).join('') || '<tr><td colspan="6" class="muted">Nothing has faded.</td></tr>';
-    if ((mo.held_out || []).length) $('#mo-held').textContent = `Held out today (a one-day price jump in the last year, from a split, bonus or relisting, makes the 52-week high and 3-month return unreliable): ${mo.held_out.length} stocks — ${mo.held_out.join(', ')}.`;
-  } else {
-    $('#mo-table tbody').innerHTML = '<tr><td colspan="11" class="muted">momentum.json not published yet.</td></tr>';
   }
 
   // run log: what was researched and the verdict

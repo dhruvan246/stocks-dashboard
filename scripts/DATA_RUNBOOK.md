@@ -17356,42 +17356,6 @@ the BSE bhavcopy lands; commits only `docs/ideas/**`, `docs/ideas.html`, `script
 (ideas/latest.json 80 h, ideas/track.json 80 h, ideas/universe.json 80 h, ideas/ideas.json static). sw.js v158; nav entry under
 Markets ▸ Discovery & Filings; home tile text in `docs/index.html` DESC.
 
-### 144d. ★★ MOMENTUM + RESULTS SCREEN — a portfolio's measured behaviour turned into rules (2026-09-23)
-
-**Why:** the user shared the full rebalance history of a mid/small-cap model portfolio (NIVMO_0001, Niveshaay
-"Mid and Small Cap Focused Portfolio Fundamental": 92 rebalances, 169 buys, 145 sells, Sep-2019 → Sep-2026) and
-asked what it buys and why. Measured (synced checkout dd1856cf, stock_data.bin + sf_fundamentals, PIT): buys sat at
-a median 86th percentile of 3-month return across NSE, 7.3% under the 52-week high (108/169 within 10%), 35 days
-after the latest result with that quarter's PAT +39% YoY; sells at the 50th percentile of 6-month return and 22.7%
-under the high; median entry P/E rose 16.7 (2019) → 64 (2026); 117/169 buys were outside the Nifty 500. Web research
-per year found policy news explains the THEMES it held but almost never the timing (adds came weeks-months after
-announcements, usually days after a strong result). Holdings of the paid smallcase are NOT published anywhere.
-
-**What:** `scripts/ideas/momentum.py` → `docs/ideas/momentum.json` (BUY list: 3M return pct ≥80, ≤10% under 52W high,
-newest quarter a profit and +25% YoY with TTM in profit, result ≤45 days old, mcap ₹500–20,000 cr — the user picked
-this band over the page's 200–2,000 because the portfolio's buys median ₹4,160 cr; FADED list: passed any screen in
-the last 90 days, now 6M pct <50 or >20% under the high) and, with `--validate`, `docs/ideas/momentum_validation.json`
-(month-end screens since 2019-09 on the survivorship-free sf bin, delisted names priced at their last close; mcap band
-replaced by "outside the Nifty 100 + ≥₹50 lakh median daily turnover" because past mcaps of dead names are not in our
-data). Card "Momentum + results screen" on `docs/ideas.html`. Nightly in `refresh-market-mood.yml` (21:35 IST,
-reuses its fresh sf bin download). Feeds registered in `docs/feeds.json` (min_ratio 0: the pick count legitimately
-moves). sw v174.
-
-**Measured on first build (local sf bin ending 2026-06-13):** 66 months with ≥3 picks — picks +10.0% over 3 months vs
-+6.9% for the eligible universe (beat in 50), 6 months +17.1% vs +13.5% (beat in 47); equal weight, no costs,
-overlapping 6M windows. **The rules are strict:** only 29 of the 169 real buys passed all five on the purchase day
-(momentum alone 101, near-high 108, earnings 91, result ≤45d 107, mcap band 157) — it is a screen in the portfolio's
-style, not a replica.
-
-**Traps built in (each hit on the first run):**
-- **A shrinking LOSS is not growth.** MBECL (2026-08) read PAT "+88.8% YoY" from −230 → −25 cr; the rule now also
-  requires the newest quarter to be a profit.
-- **One-day jumps outside 0.6×–1.8× in the last year are held out** (listed on the card): INDIAGLYCO 0.21× on
-  2026-09-02 (unadjusted split in stock_data.bin → a fake "78% under the high" on the faded list), MBECL 3.42× on
-  2026-09-01 (relisting after months frozen at ₹65.40). 56 names held out on 2026-09-23.
-- **Owner gate in tests:** the page is owner-only; test it from a scratch copy with the gate line replaced, never by
-  writing `bt_owner_key` into a test tab (a keyed tab can push SETTINGS — the 2026-09-23 favourites wipe class).
-
 ### 144a-iii. ★★★ NMDC IRON ORE — the one Indian price with a free, dated history (2026-09-23)
 
 **The gap it closes.** Every other Indian print on Commodity Watch (MetalBook, IBJA, sugar, fuel) publishes
