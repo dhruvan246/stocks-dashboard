@@ -298,6 +298,7 @@ async function zInit(){
   if (!zWorker() || !zToken()){ zPill('Zerodha: not set up here', 'warn'); return; }
   const { st, j } = await zFetch('/status');
   if (st !== 200 || !j){ zPill('Zerodha: worker unreachable', 'warn'); return; }
+  cloudProbe(true);
   if (!j.connected){ Z.connected = false; zPill('Zerodha: not connected today', 'warn');
     $('btnZLogin').style.display = ''; return; }
   Z.connected = true; Z.user = j.user || '';
@@ -392,7 +393,7 @@ function renderCards(){
   for (const id in BUYSLICER){
     const el = (id === '__all__') ? $('balGo') : (id === '__residual__') ? $('residGo') : (id === '__exitall__') ? $('exitAllGo') : (id === '__reenter__') ? $('reenterGo')
       : (document.querySelector('[data-basket="' + id + '"]') || document.querySelector('[data-sellbasket="' + id + '"]'));
-    BUYSLICER[id].btn = el || null; if (el) el.textContent = (BUYSLICER[id].sell ? 'Selling ' : 'Buying ') + BUYSLICER[id].i + '/' + BUYSLICER[id].n; }
+    BUYSLICER[id].btn = el || null; if (el) el.textContent = (BUYSLICER[id].sell ? 'Selling ' : 'Buying ') + BUYSLICER[id].i + '/' + BUYSLICER[id].n + (BUYSLICER[id].remote ? ' \u2601' : ''); }
 }
 /* ---------- THIS REBALANCE: every stock to buy, in one place (user 2026-08-31) ----------
    Eight strategies × three picks means eight blocks to read, and the same stock often appears in
@@ -1243,7 +1244,90 @@ function buySlices(orders){
   while (more){ more = false; for (const k in per){ const l = per[k]; if (l.length){ const sl = l.shift(); sl._round = round; out.push(sl); if (l.length) more = true; } } round++; }
   return out;
 }
-function buyStop(id, msg){ const B = BUYSLICER[id]; if (!B) return; clearTimeout(B.t); delete BUYSLICER[id];
+/* ================= CLOUD SLICER (user 2026-09-23: "execution that survives the tab") =================
+   The slicer can run on the static-IP relay VM (kite-relay.js v2) instead of this tab: the tab submits
+   the whole sliced basket ONCE (POST /jobs through the worker), the VM fires the slices on its own clock
+   with the same rules (fresh LTP, limit ≤rng% off on the tick grid, tick / MTF→CNC retries, skip-and-
+   continue), and EVERY device sees the counter and can Stop (GET /jobs, POST /jobs/<id>/stop). Falls back
+   to in-tab slicing when the worker or VM is not upgraded (GET /jobs → 404/503) or the ☁ toggle is off.
+   A job id carries the strategy id (slug~stamp) so any device maps it back to its card. The same
+   per-strategy sell tags travel with the slices, so proceeds capture is unchanged. */
+const CLOUD = { ok: null, at: 0, seen: {}, timer: null };
+const cloudWanted = () => { try { return localStorage.getItem('sw_cloud_slicer') !== '0'; } catch(e){ return true; } };
+const cloudOn = () => !!CLOUD.ok && cloudWanted();
+async function cloudProbe(force){
+  if (!force && CLOUD.at && Date.now() - CLOUD.at < 600000) return CLOUD.ok;
+  const r = await zFetch('/jobs');
+  CLOUD.ok = !!(r.st === 200 && r.j && r.j.ok && r.j.v >= 2); CLOUD.at = Date.now();
+  if (CLOUD.ok) cloudApply(r.j.jobs || []);
+  cloudChip(); return CLOUD.ok;
+}
+const jobSlug = s => String(s).replace(/[^\w.:-]/g, '-').slice(0, 60);
+function jobSid(jobId){ const pre = String(jobId).split('~')[0];
+  if (/^__/.test(pre)) return pre;
+  const it = strategies().find(x => jobSlug(x.id) === pre); return it ? it.id : pre; }
+async function cloudSubmit(id){
+  const B = BUYSLICER[id]; if (!B || !B.slices || !B.slices.length) return;
+  const it = strategies().find(x => x.id === id);
+  const label = it ? ((typeof strategyEnglish === 'function' && strategyEnglish(it.cfg)) || it.name || id) : id;
+  const jobId = jobSlug(id) + '~' + Date.now().toString(36);
+  const body = { id: jobId, label: String(label).slice(0, 80), device: ((navigator.platform || '') + ' ' + new Date().toTimeString().slice(0, 5)).slice(0, 40),
+    gapS: sliceGap(), rngPct: sliceRng(),
+    slices: B.slices.map(s => ({ tradingsymbol: s.tradingsymbol, transaction_type: s.transaction_type, quantity: s.quantity, product: s.product,
+      tag: s.tag, px: +s._px || 0, tick: TICKMEM[s.tradingsymbol] || 0.05, round: s._round })) };
+  let r = null;
+  for (let k = 0; k < 2 && !(r && r.st === 200); k++)
+    r = await zFetch('/jobs', { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify(body) });   // same id twice = idempotent
+  if (!(r && r.st === 200 && r.j && r.j.ok)){
+    const why = (r && r.j && (r.j.error || r.j.message)) || ('HTTP ' + (r && r.st));
+    if (r && (r.st === 404 || r.st === 502 || r.st === 503 || r.st === 0)){ CLOUD.ok = false; cloudChip(); }
+    delete BUYSLICER[id]; renderCards();
+    ktoast('☁ Cloud slicer refused (' + why + ') — NOTHING was sent. Tap again to ' + (CLOUD.ok ? 'retry' : 'slice in this tab instead') + '.', 9000); return; }
+  Object.assign(B, { remote: true, jobId: jobId, i: r.j.job.i, n: r.j.job.n, slices: [] });
+  CLOUD.seen[jobId] = 'running';
+  ktoast('☁ Sent to the cloud slicer — ' + B.n + ' slices keep firing even if this tab closes; any device can stop it', 7000);
+  cloudLoop(true); renderCards();
+}
+function cloudApply(jobs){
+  let changed = false;
+  jobs.forEach(j => {
+    const sid = jobSid(j.id), was = CLOUD.seen[j.id];
+    if (j.status === 'running'){
+      const B = BUYSLICER[sid];
+      if (B && !B.remote) return;                                                           // this tab is slicing that one locally
+      if (!B || B.jobId !== j.id){ BUYSLICER[sid] = { remote: true, jobId: j.id, i: j.i, n: j.n, sell: j.side === 'SELL', btn: null, t: 0, slices: [] }; changed = true; }
+      else if (B.i !== j.i || B.n !== j.n){ B.i = j.i; B.n = j.n; changed = true; }
+    } else if (was === 'running'){
+      const B = BUYSLICER[sid]; if (B && B.jobId === j.id){ delete BUYSLICER[sid]; changed = true; }
+      ktoast('☁ ' + (j.side === 'SELL' ? 'Sell' : 'Buy') + ' basket ' + j.status + ' — ' + j.i + '/' + j.n + ' slices sent' +
+        (j.failed && j.failed.length ? ' · FAILED (' + (j.side === 'SELL' ? 'sell' : 'buy') + ' separately): ' + j.failed.join(', ') : ''), 8000);
+      if (j.side === 'SELL' && !/^__/.test(sid) && j.status === 'done') setTimeout(() => captureProceeds(sid), 120000);   // actual proceeds fund the T+1 buys
+    }
+    CLOUD.seen[j.id] = j.status;
+  });
+  if (changed) renderCards();
+}
+function cloudLoop(now){
+  clearTimeout(CLOUD.timer);
+  const anyRemote = Object.values(BUYSLICER).some(B => B.remote);
+  const tick = async () => {
+    if (!document.hidden && cloudWanted() && zWorker() && zToken()){
+      const r = await zFetch('/jobs');
+      if (r.st === 200 && r.j && r.j.ok){ if (!CLOUD.ok){ CLOUD.ok = true; cloudChip(); } cloudApply(r.j.jobs || []); }
+    }
+    cloudLoop();
+  };
+  CLOUD.timer = setTimeout(tick, now ? 800 : (anyRemote ? 5000 : 30000));
+}
+function cloudChip(){ const b = $('spCloud'); if (!b) return;
+  b.textContent = '☁ ' + (CLOUD.ok === null ? 'cloud?' : !CLOUD.ok ? 'cloud n/a' : cloudWanted() ? 'cloud on' : 'cloud off');
+  b.classList.toggle('on', cloudOn());
+  b.title = CLOUD.ok === false ? 'Cloud slicer not reachable (worker / Oracle box not upgraded?) — baskets slice in this tab'
+          : cloudWanted() ? 'Baskets run on the Oracle box and keep going if this tab closes — tap to switch to in-tab slicing'
+          : 'In-tab slicing — tap to run baskets on the Oracle box'; }
+function buyStop(id, msg){ const B = BUYSLICER[id]; if (!B) return; clearTimeout(B.t);
+  if (B.remote && B.jobId){ zFetch('/jobs/' + encodeURIComponent(B.jobId) + '/stop', { method: 'POST' }); CLOUD.seen[B.jobId] = 'stopped'; }   // stops it on the VM, from any device
+  delete BUYSLICER[id];
   if (msg) ktoast(msg, 6500); renderCards(); }
 /* A per-stock failure SKIPS that stock (drops its remaining slices) and continues the rest,
    instead of killing the whole basket (user 2026-09-01). Failed names are reported at the end. */
@@ -1263,6 +1347,8 @@ function buyDone(id){ const B = BUYSLICER[id]; if (!B) return;
   buyStop(id, 'Basket done — ' + B.n + ' slices sent' + (f.length ? (B.sell ? ' · FAILED (sell separately): ' : ' · FAILED (buy separately): ') + f.join(', ') : ' (unfilled tails rest at their limits)')); }
 function buyFire(id){
   const B = BUYSLICER[id]; if (!B) return;
+  if (B.remote) return;                                                                         // cloud job: the VM fires it, cloudLoop keeps the counter
+  if (cloudOn() && B.i === 0 && !B.cloudTried && B.slices && B.slices.length){ B.cloudTried = 1; cloudSubmit(id); return; }
   if (B.i >= B.slices.length){ buyDone(id); return; }
   const o0 = B.slices[B.i];
   freshLtp(o0.tradingsymbol).then(ltp => {
@@ -1375,6 +1461,11 @@ function kiteSend(orders){
     if (SIDE === 'sell'){ await feedPull(true); renderCards(); fetchLive(); }
   };
   sLbl();
+  if (sb2 && !$('spCloud')){ const cb = document.createElement('button'); cb.id = 'spCloud'; cb.className = 'btn'; cb.style.marginLeft = '4px';
+    cb.onclick = () => { try { localStorage.setItem('sw_cloud_slicer', cloudWanted() ? '0' : '1'); } catch(e){} cloudChip(); if (cloudWanted()) cloudProbe(true); };
+    sb2.insertAdjacentElement('afterend', cb); cloudChip(); }
+  cloudLoop();
+  document.addEventListener('visibilitychange', () => { if (!document.hidden) cloudLoop(true); });   // a phone opened mid-basket updates at once
   renderCards();
   refreshFavsFromSettings();
   zbaPull();   // synced \u20b9 amounts (token-gated row) \u2014 lands before any basket dialog opens
