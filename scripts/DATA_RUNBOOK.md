@@ -18620,3 +18620,40 @@ Reading: every DII/FII-sorted or -filtered strategy is untouched — SHP filings
 the rebalance is month-end, so a same-day shift rarely crosses a boundary (the §105 A/B found the same). Only the
 two profit-sorted strategies move, because a result filed on a month-end EVENING now counts for that month (the JSL
 class). The change is a correctness change for the user's real execution, not a performance change.
+
+### 149a. ★★ The user's challenge ("many companies declare after 3:30 on rebalance day") — reconciled, and a mirror gap closed  (2026-09-23 22:00)
+The user rejected "6 baskets" as implausible against what they had seen in a parallel session ("Nifty 500 earnings
+declarations analysis": **≥407 results declared after 3:30 p.m. on a rebalance day, Nifty-500 point-in-time, 39 of
+78 days**, from the BSE times cache). Measured here against the same cache (this checkout, 9a0d408d8):
+- **406 after-close Nifty-500 filer-days** (BSE Result category, earliest broadcast > 15:30, member on that day).
+  **359 of them are real same-day result declarations that the heal made visible on the rebalance day** (before
+  the change their cell sat on the next session; after it, on the day). The other **47 are BSE "Result"-category
+  items for companies whose quarter had already been declared weeks earlier** — e.g. 31-May-2022: 19 after-close
+  items, but IRB / ABBOTINDIA / LICHSGFIN / EIDPARRY / JKCEMENT… all carry result dates of 3-21 May; the 31-May
+  filing is not the quarterly result (annual-report / audited re-filing class). Their cells were never on the next
+  session, so nothing moved — correct. Peak days agree with the other session to ±1: 29-Oct-2021 22 (they: 23),
+  31-Jul-2025 19/19, 31-Jan-2024 18/18, 31-Jan-2023 17/17, 30-Jan-2026 16/16.
+- **Honest "newly visible" measure** (latest VISIBLE QUARTER differs at the screen day, not the date label — a
+  first pass that compared `lastResultDate` values over-counted, because the same quarter's date moved for every
+  screen after it): **357 (std) / 322 (con) member-rebalances across 43 of 78 dates**, 10-22 per results-season
+  month-end; SHP rows newly visible at a screen: **19** (patterns cluster mid-month). Both twins' `shpAt` /
+  `profitAt` see exactly these.
+- **Why the top-3 still barely moves:** per strategy, the CANDIDATE list (passes the filters) changed on up to
+  24 of 78 rebalances (profitYoyPct-std: 24; d52_low_pct-std: 17; d52-con: 16; the DII ones 0-13) and the top-10's
+  VALUES changed on up to 12, but the top-3 changed on 5 (profitYoyPct) and 2 (d52_low_pct) screens — 4 and 2
+  baskets in the simulation, because `method: hold` keeps a winner that merely slipped in the ranking. Example
+  29-May-2026 (the Q4 deadline day, 495 after-close filers of which 10 Nifty-500): the profitYoyPct top-10 is
+  byte-identical before/after (ACMESOLAR 2,705% … MFSL 493%) — the deadline-day filers are small caps whose YoY
+  never reaches the leaders. Evidence harness `screen_ab.js` in the session scratchpad (`scr_before/after.json`).
+- **Mirror gap found and closed (commit 9a0d408d8):** the first `ungate_1530.py` only looked at the next trading
+  day / next weekday after a month-end. An after-close FRIDAY filing is often stored on the SATURDAY or SUNDAY
+  (NSE-archive-dated writers, NSE's next-morning broadcast): **362 more cells restored (354 Saturday-dated, 8
+  Sunday-dated; 55 of the 206 filer-days were Nifty-500 members)**, e.g. METROPOLIS / LEMONTREE Mar-2020 30-May
+  (Sat) → 29-May-2020. `build_gate_events --ungate` and `ungate_1530.py` now map EVERY calendar day up to and
+  including the next trading day to the month-end. Second pass 0; LIVE verified. The 14 other cell changes seen in
+  the diff were the CI nightly's impossible-pair demotions (Jun-2021 cells dated on their own quarter-end →
+  deadline), not this work.
+- **Final A/B on the completed data (before = c211fec15, after = 9a0d408d8, identical 23-Sep bin):** unchanged —
+  the same 6 of 624 baskets (listed above), mean CAGR of The Eight 91.23 → 91.31, maxDD identical, The Four
+  byte-identical. 359 newly visible member-quarters → 6 changed top-3 slots is the measured sensitivity of a
+  top-3-of-~130-candidates screen, not a sign the data did not move.

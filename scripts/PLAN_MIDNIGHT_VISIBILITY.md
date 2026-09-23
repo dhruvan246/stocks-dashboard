@@ -99,6 +99,12 @@ R+1 open) at ≈ −3.2%/yr on ⭐ The Eight vs the close-to-close backtest, and
   The Eight mean 91.23 → 91.31; 6 of 624 baskets changed; maxDD identical. Table in runbook §149.
 - 21:05 pages: stock-backtest.html + saved-strategies.html on a local preview of the worktree (port 8905) —
   zero console errors (only the Tailwind CDN warning).
-- next: file-scoped commit → push to main via the recipe → Pages deploy → LIVE re-verify (JSL/HEXAGON/ZEEMEDIA)
-  ~20 min later → dispatch bake-snapshots / bake-waves / monthly-returns + refresh-shareholding (first --regate,
-  and the guard fix ends the 2-run failure streak).
+- 21:11 pushed 937eda128 (sw v179 after a rebase conflict with another session's v177/v178); Pages deployed; LIVE
+  JSL 20201030 / HEXAGON 20260630 / ZEEMEDIA 20260630 / sw v179. Dispatched refresh-shareholding (green; guard
+  fixed; --regate moved 3,710 quarterly / 3 event / 7 revision history rows to the filing day) and
+  refresh-fundamentals (green; BSE 403 for all 37 pending month-ends from CI too; mirror idempotent 0; LIVE held).
+- 21:30-22:10 USER CHALLENGE ("many companies declare after 3:30 on rebalance day") → runbook §149a: 406 after-close
+  N500 filer-days, 359 made visible by the heal, 47 non-quarter BSE Result items; candidate lists change on up to
+  24/78 dates but top-3 on 5; MIRROR GAP: weekend-dated after-close Friday filings (362 cells, 354 Sat / 8 Sun)
+  restored, pushed 9a0d408d8, LIVE verified (METROPOLIS/LEMONTREE Mar-2020 → 20200529). Final A/B on the
+  completed data: unchanged — same 6 of 624 baskets, The Eight mean 91.23 → 91.31.
