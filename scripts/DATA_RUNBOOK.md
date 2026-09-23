@@ -4271,6 +4271,7 @@ A named unverified corner costs one sentence; the same corner found by the user 
 | Options Backtest 💾 Save / 🔗 Share read white-on-white in dark theme for as long as the page existed — Tailwind `bg-slate-200` was the one light-palette utility `theme.css` never re-skinned (found by the 2026-09-05 whole-site audit) | **4** — a whole-site text-contrast walk (every text node's colour vs its nearest opaque ancestor background, flag < 1.6) in EVERY theme finds this class in one pass; grep each new page's `bg-*`/`text-*` utilities against the theme.css override list before shipping |
 | `stock.html` rendered DELISTED symbols as live and flat — the as-of offset was the BIN end for every symbol, so MINDTREE (last bar Nov-2022) read "as of 2026-09-04", 1M…3Y/YTD "+0.00%", 52w high/low ±100% and a 2022 "1-day" move; 1,932 of 4,584 search-index symbols have no bar in the last 60 days and all rendered this way, and a renamed old name with a dead stub slice (3IINFOTECH) never hopped to the current symbol (2026-09-05) | **3** — the unhappy path "a stock whose series ended long ago": a page's "now" must be the SUBJECT's last bar (`min(bin end, last bar)`, `stkEndOff()`), labelled "last traded" when it trails the bin; any `+0.00%` over a window that holds no bars is the §37a no-base sentinel, never a flat return |
 | **DVL and DTIL carried a daily bar on 12 Sundays of Oct–Dec 2019 that no other symbol had** (2 symbol-bars per date, live for six weeks). NSE's `sec_bhavdata_full` route re-served Friday's file under each Sunday URL (`DATE1` = the Friday) while the zip route 404'd; the symbol-level rebuild's whole-file signature dedup hashed Friday's zip (1,682 rows) and Sunday's csv (1,670 rows) differently, and `apply_series_surgery` spliced whatever the ledger said (2026-09-21, §89f) | **new** — (a) **the date INSIDE a dated exchange file decides, never the URL** (`build_sf_data.file_date`), and a dedup must be per-symbol identity, not a whole-file hash, because two routes serve one session in two formats; (b) **every ledger that emits bars is gated on the market calendar at the splice** (`session_calendar` ≥100 symbol-bars from `dailyFrom`, dated floor — 1996-2001 is sparse by construction) so a rebuild cannot put a bar on a day the market did not trade; (c) a per-date TRIPWIRE for dates with TOO FEW bars (`phantom_date_audit`, `PHANTOM-DATE` lines) — a universe-level count check never sees a phantom only two symbols carry |
+| `refresh-membership.yml`'s "membership unchanged" guard never fired, so each run committed another ~18 MB `docs/stock_data.bin`. `gzip.compress` stamps the current time into the header, and the job re-compressed refresh.yml's level-9 file at level 6 (2026-09-23, §103a) | **new** — a `git diff --quiet` guard on a generated gzip works only if the writer is byte-deterministic. Run the writer twice on the same input and `cmp` the outputs. Then feed it the OTHER writer's copy of the same content: it must leave the file untouched |
 | On phones, switching theme with the site buttons left every pinned first-column cell on the OLD theme's background (white quarter labels in dark on stock.html, contrast 1.16) — `scrollifyTable` resolved `--sw-pin-body` by walking up from the pinned cell, and that cell PAINTS the previous answer (theme.css `background:var(--sw-pin-body,…)`), so the 260 ms re-resolve read its own stale copy and froze it; fresh loads were fine, so no load-time check could see it (2026-09-05) | **4** — theme checks must exercise the SWITCH, not only a fresh load per theme: click each theme button on a ≤640px table page and re-run the contrast walk after the transition; any cached/derived colour must be cleared before it is re-derived (`removeProperty` first), or the second pass reads its own output |
 ### If a bug ships anyway
 Fix the **class**, not just the instance: ask *"what check would have caught this?"* and add it to the
@@ -11478,6 +11479,46 @@ per-stock return columns to the constituent table (feature request, same commit)
    `stock-backtest.html` all have their own `ensureFull`-equivalent that replaces `SERIES` outright, and
    `stock.html` loads `stock_data.bin` as its primary source — same exposure to a stale full-history
    file, not yet given the merge guard. Only `sectors.html` (what was reported) was fixed this pass.
+
+## 103a. ★★ `docs/stock_data.bin` MUST STAY BYTE-IDENTICAL WHEN NOTHING CHANGED — the membership job committed an 18 MB blob of nothing  (2026-09-23)
+
+**Found:** workflow_dispatch run 35843537169 (commit `93a6026e7`, "Weekly membership refresh 2026-09-23")
+changed ONLY `docs/stock_data.bin`, and its decompressed payload was byte-identical to its parent's. The
+only bytes that moved were 4-8 of the gzip header (MTIME `1096b36a` → `2b9eb36a`): `gzip.compress` stamps
+the current time there by default. So `refresh-membership.yml`'s `git diff --cached --quiet` "membership
+unchanged" guard could never fire, and every run (Saturday cron, dispatch, and every push to its scripts)
+added another ~18 MB blob to a repo that is already ~8.5 GB. Measured on 09-23: 1 of that day's 4
+membership commits was header-only; the other 3 carried real `indicesHistory` changes.
+
+**Second cause, found while fixing the first:** the writers use different compression levels.
+`build_compressed.py` (refresh.yml) writes level 9 (header XFL=2); `build_membership_v2.py` and
+`extend_fno_history.py` wrote level 6 (XFL=0). With `mtime=0` alone, the first membership run after any
+daily-refresh commit of this file would still re-compress identical content into new bytes. On 09-23 the
+level switched three times across the day's 9 commits of this file (`a5d5e1cac` … `93a6026e7`).
+
+**Fix:** `build_membership_v2.py` and `extend_fno_history.py` each compare the slice they own
+(`indicesHistory` / `fnoHistory`, serialized) against what the file already holds, and **leave the file
+untouched** when it is equal ("… unchanged — not rewritten" in the log). When they do write, they use
+`gzip.compress(…, 6, mtime=0)`. Verified locally with the live sf bin (`fetch_live_sf.py`):
+- two builder runs produced `stock_data.bin` + `indices_history.json` byte-identical to HEAD (the skip path);
+- a perturbed input (one index dropped, written at level 9 with a timestamp), run twice from the same start,
+  gave byte-identical output with mtime 0 and content + key order equal to HEAD (the write path);
+  same test for `extend_fno_history.py` (last F&O snapshot dropped);
+- a same-content level-9 bin went through both steps in workflow order byte-untouched.
+
+No reader depends on the header mtime. `sw.js` never caches `.bin`; the pages rely on the Pages ETag,
+which an untouched file keeps. movers, sectors `ensureFull`, dashboard `ensureFull` and stock-backtest
+`gunzipBuf` all decoded an mtime=0 file with no new console errors.
+
+**Deliberately left alone:** `build_compressed.py` embeds `generatedAt` in its payload, so its bytes change
+every run whatever the header says. Its commits are already gated on content by `stock_bin_stale.py` and
+`dash_slim_same.py`. The manual-only writers `build_n500_membership.py`, `rebuild_fno_history.py` and
+`normalize_fno_names.py` still use the timestamped pattern: add `mtime=0` and the skip if one is ever wired
+into CI.
+
+**Rule:** a script that rewrites a committed gzip must (a) write `mtime=0` and (b) not rewrite at all
+when the part it owns is unchanged. Every `git diff --quiet` guard in CI is measuring bytes, not content.
+Already doing (a): `split_sf_data.py` (§41), `build_fo_store.py`, `_mto_sweep_merge.py`.
 
 ---
 

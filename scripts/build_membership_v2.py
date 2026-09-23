@@ -864,9 +864,17 @@ def main():
     print(f"\nWrote {hist_path}")
     binp = os.path.join(ROOT, "docs", "stock_data.bin")
     D = json.loads(gzip.decompress(open(binp, "rb").read()))
+    old_ih = json.dumps(D.get("indicesHistory", {}), separators=(",", ":"))
     D["indicesHistory"] = {**D.get("indicesHistory", {}), **{k: H[k] for k in SLUGS if k in H}}
-    open(binp, "wb").write(gzip.compress(json.dumps(D, separators=(",", ":")).encode(), 6))
-    print(f"Wrote {binp} ({os.path.getsize(binp)/1048576:.1f} MB)")
+    # Runbook §103a: an unchanged roster must leave the file UNTOUCHED, or refresh-membership.yml's
+    # "membership unchanged" guard never fires and every run commits another 18 MB blob. Two causes:
+    # gzip.compress stamps the current time into header bytes 4-8 (hence mtime=0), and refresh.yml
+    # writes this file at level 9, so even a byte-stable level-6 rewrite of the same content differs.
+    if json.dumps(D["indicesHistory"], separators=(",", ":")) == old_ih:
+        print(f"{binp}: indicesHistory unchanged — not rewritten")
+    else:
+        open(binp, "wb").write(gzip.compress(json.dumps(D, separators=(",", ":")).encode(), 6, mtime=0))
+        print(f"Wrote {binp} ({os.path.getsize(binp)/1048576:.1f} MB)")
 
     # spot checks
     n5 = H["Nifty 500"]
