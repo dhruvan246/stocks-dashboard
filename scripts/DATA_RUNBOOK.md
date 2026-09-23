@@ -18398,7 +18398,19 @@ Two filers had filed a correctly scaled REVISED XBRL that the nightly never inge
 | ×10 | FLEXITUFF 20230930 std+con (its Mar-24 con was already armed) |
 
 **Left as-is, with the reason measured:** internally consistent filings (YTD ratio 1.000 AND the jump is not a power of ten): IPOs / fund-raises / one-offs — EMMVEE, IKIO, CEWATER, ONESOURCE, GKSL, NPST, KIRIINDUS (Dec-25 PAT 5,081.7), SPARC (Mar-26 PAT 1,760.7), RHFL (Mar-23 PAT +5,972), GFLLIMITED (Mar-23 PAT +2,323.6), SPTL (Mar-23 PAT −553.5), RHIM, SUVEN, MAGNUM, HARDWYN, WSI, JPOLYINVST, NEUEON, ADVANIHOTR, JINDALPHOT, BKMINDST, LCCINFOTEC, XLENERGY, UMESLTD, NEXTMEDIA, SEJALLTD, ATLASCYCLE, JIKIND, GFSTEELS, UNIVAFOODS, HYBRIDFIN, SECURKLOUD.
-**UNRESOLVED, not-found-via:** NSE per-symbol results lists (both endpoints) return 0 rows → BINANIIND, GISOLUTION, KAVVERITEL, KBCGLOBAL, NXTDIGITAL, YAARI. Not yet tried: BSE announcement PDFs.
+**The 6 with no NSE list rows — RESOLVED from BSE result-announcement PDFs (2026-09-23): all GENUINE, stored = as filed.**
+NSE returned nothing because every ticker was RENAMED. Look up the current name in `_rename_map.json`, then the BSE code in `bse_scrips.json` by_id. Old keys fail BSE's PeerSmartSearch too.
+
+| old key → current (BSE) | flagged | the filing prints | cause |
+|---|---|---|---|
+| GISOLUTION → TPHQ (533048) | Sep-22 4.50 → Mar-23 43.85 | TA 449.88 → 4,384.79 lakh | capital raise (share capital 8.61 → 36.26) |
+| KBCGLOBAL → DHARAN (541161) | Sep-22 328.91 → Mar-23 1,119.51 / 1,733.23 | std 1,11,951.40 / con 1,73,322.94 lakh (audited, filed 2023-07-07; the jump is already there at Dec-22, 1,10,644 lakh) | USD 95M FCCB issue |
+| KAVVERITEL → KAVDEFENCE (590041) | Sep-22 279.56 → Mar-23 60.54 / 79.02 | Sep-22 std TOTAL 27,955.74 lakh. Mar-23 std BS (scanned p.23, RapidOCR) 6,053.66 and con (p.38) 7,902.21 | ~20,445 lakh long-term borrowings extinguished → one-off FY23 PAT ~3,200 lakh. (The filer's qualification statement says 6,909.80 for std, which contradicts its own BS.) |
+| NXTDIGITAL → NDLVENTURE (500189) | Sep-22 1,751.43 → Mar-23 80.55 | Mar-23 TA 8,054.94 lakh | NCLT-sanctioned demerger (digital media undertaking out; shown as discontinued ops) |
+| BINANIIND → BILVYAPAR (500059) | Sep-22 con 97.54 → Mar-23 19.57 | Sep-22 con Total 9,754 lakh. Mar-23 ~1,95x lakh | deconsolidation of erstwhile subsidiaries (exceptional item "Net Gain/Loss on deconsolidation") |
+| YAARI → IBULLSLTD (533520) | Sep-22 con 290.77 → Mar-23 37.59; Mar-25 488.22 / 23.79 → Sep-25 7,382.05 / 3,923.33 | ₹ crore throughout: Sep-22 con 290.77; Mar-23 con 37.59 / std 495.35 (OCR p.3/p.6); Sep-25 7,382.05 / 3,923.33 | FY23 group-loan non-current assets 272 → 23; Oct-2025 scheme merging Dhani Services, Indiabulls Enterprises et al. (Sep-25 comparative Mar-25 restated 7,221.35 / 4,042.78) |
+
+Shared tell: share capital is flat across every one of these jumps (or moves by a real issuance). A filer power of ten would scale it too, so check `sc` before fetching any PDF.
 **VAKRANGEE 20220930 → 20230331 = GENUINE DEMERGER, resolved from the filing PDFs (BSE 511431, 2026-09-23).** The assets went 2,900 → 245, Mar-23 rev read 42.92 against ~240 a quarter, and the YTD ratios were 0.177 / 0.018. The audited Mar-23 result (att `5a1c617b-a3c5-4333-8879-041f92d5bef2.pdf`, ₹ lakh) gives effect to the NCLT-approved scheme (order intimated 2023-05-19): the E-Governance & IT/ITES business was demerged into VL E-Governance & IT.
 Its standalone statement prints Mar-23 total assets **24,500.23 lakh = 245.00 cr = stored**, and Mar-22 total assets 2,87,639.26 reported vs 24,414.63 restated. The consolidated statement prints 29,806.46 lakh = **298.06 = stored**. Q4 rev 4,291.55 lakh = 42.92 = stored.
 Sep-22 (att `fc2a60aa-…`, a scanned PDF) is on the pre-demerger basis: Total Equity 2,75,188.18 lakh ≈ ₹2,752 cr, consistent with the stored 2,900 assets.
