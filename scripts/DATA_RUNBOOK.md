@@ -18579,9 +18579,14 @@ legs at next open at ≈ −0.25%/yr.
   2,608 (mirror)**, second pass 0. Net before→after **3,969 ann cells earlier, 0 later, 0 value cells changed**.
   JSL Sep-2020 (the gate's proof case) 20201102 → 20201030; HEXAGON Mar-2026 20260701 → 20260630. docs-vs-mirror
   populated-ann disagreements 201 → 18 (pre-existing class, reduced).
-- **37 month-ends had no BSE broadcast times in `filing_times_cache.json.gz`** (incl. 2024-09-30, 2024-11-29,
-  2025-11-28, 2026-02-27) and this Mac gets HTTP 403 from the BSE announcement API → their after-close cells are
-  restored by the CI nightly (which reaches BSE); re-verify LIVE the next day.
+- **37 month-ends had no BSE broadcast times in `filing_times_cache.json.gz`** and the BSE announcement API
+  returned **HTTP 403 to this Mac AND to the GitHub runner** (dispatched run 35883347194, 23-Sep 21:17 IST: all
+  37 fetches failed; new — the cache had still grown on CI on 21-Sep night). The mirror is idempotent and the
+  fetch is resumable, so every nightly retries until BSE answers. Residual measured on ee7a8e54b: 32 of the 37
+  are 2000-2008 month-ends where BSE has no times (the old gate never bumped anything there — nothing to
+  restore); the 5 recent ones (2024-09-30, 2024-11-29, 2025-11-28, 2026-02-27, 2026-09-22) have 8 + 2 + 5 + 4 + 1
+  = **20 cells** sitting on the following day, each either a genuine next-day filing or a still-gated
+  after-close one. LIVE re-verified after that CI commit: JSL 20201030 / HEXAGON 20260630 held.
 - Pages: stock-backtest.html + saved-strategies.html loaded from a local preview of the worktree with zero console
   errors (only the documented Tailwind CDN warning).
 
