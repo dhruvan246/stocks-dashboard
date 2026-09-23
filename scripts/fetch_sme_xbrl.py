@@ -150,6 +150,51 @@ def do_fetch(nse, rows):
     print("fetch: +%d files, %d failed, cache %d, ledger %d" % (new, fail, len(have), len(ledger)))
 
 
+def pow10_off(v, ref, tol=0.03):
+    """Exactly 10^k apart (k = ±1..3)? The filer scale-error signature (§147/§148)."""
+    if not v or not ref:
+        return False
+    r = abs(v / ref)
+    return any(abs(r / f - 1) <= tol for f in (10, 100, 1000, 0.1, 0.01, 0.001))
+
+
+def scale_screen(cands, data):
+    """Drop BS-only candidate rows carrying a filer power-of-ten error. Anchor = share capital
+    (it almost never moves by exactly 10^k): the median of every sc this (symbol, basis) shows in
+    the candidates AND the committed ledger. Rows without sc fall back to Total Assets vs the
+    nearest-period neighbour. TRUST Sep-2024 filed sc 2.38 / assets 11.63 cr beside 23.83 / 117.56
+    in Mar-25 and Sep-25 — every money field /10 (measured 2026-09-23)."""
+    import statistics as st
+    by = {}
+    for r in cands:
+        for b in ("s", "c"):
+            if r[b]:
+                by.setdefault((r["sym"], b), []).append((r["qe"], r[b]))
+    for sym, qs in data.items():
+        for qe, cell in qs.items():
+            for b in ("s", "c"):
+                d = cell.get(b) if isinstance(cell, dict) else None
+                if isinstance(d, dict) and (sym, b) in by and (d.get("sc") or d.get("assets")):
+                    by[(sym, b)].append((int(qe), dict(d, _store=1)))
+    drop = set()
+    for (sym, b), rows in by.items():
+        scs = [d["sc"] for _, d in rows if d.get("sc")]
+        med = st.median(scs) if len(scs) >= 2 else None
+        rows.sort(key=lambda t: t[0])
+        for i, (qe, d) in enumerate(rows):
+            if d.get("_store"):
+                continue
+            if med and d.get("sc"):
+                if pow10_off(d["sc"], med):
+                    drop.add((sym, qe, b))
+                continue
+            nb = [rows[j][1].get("assets") for j in (i - 1, i + 1) if 0 <= j < len(rows)]
+            nb = [x for x in nb if x]
+            if d.get("assets") and nb and all(pow10_off(d["assets"], x) for x in nb):
+                drop.add((sym, qe, b))
+    return drop
+
+
 def do_merge(dry):
     import build_xbrl_extra as BX           # reads xbrl_sme_files.json at import — fetch first
     data = json.loads(gzip.decompress(open(GZ, "rb").read()))
@@ -159,32 +204,38 @@ def do_merge(dry):
         if f.startswith("INTEGRATED"):
             jobs.append((main, f))
     jobs.sort(key=lambda j: BX.ts_key(j[1]))
-    stats = {"files": 0, "bso": 0, "cells_new": 0, "fields_filled": 0, "fields_kept": 0}
-    per_src = {}
+    cands = []
     for d, f in jobs:
         try:
             r = BX.parse_file(os.path.join(d, f), f)
         except Exception:
             r = None
-        stats["files"] += 1
-        if not r or not r.get("bso"):
-            continue
-        stats["bso"] += 1
+        if r and r.get("bso"):
+            r["_main"] = (d == main)
+            cands.append(r)
+    drop = scale_screen(cands, data)
+    print("scale screen: %d basis-rows dropped as filer power-of-ten" % len(drop))
+    for x in sorted(drop)[:40]:
+        print("   drop", x)
+    stats = {"files": len(jobs), "bso": len(cands), "cells_new": 0, "fields_filled": 0, "fields_kept": 0,
+             "new_from_sme": 0, "new_from_main": 0}
+    for r in cands:                      # ascending filing time: a later filing fills first-come
         cell = data.setdefault(r["sym"], {}).setdefault(str(r["qe"]), {})
         for b in ("s", "c"):
-            if not r[b]:
+            if not r[b] or (r["sym"], r["qe"], b) in drop:
                 continue
             if b not in cell:
                 stats["cells_new"] += 1
-                per_src[d == main] = per_src.get(d == main, 0) + 1
+                stats["new_from_main" if r["_main"] else "new_from_sme"] += 1
             tgt = cell.setdefault(b, {})
             for k, v in r[b].items():
                 if k in tgt:
                     stats["fields_kept"] += 1
                 else:
                     tgt[k] = v; stats["fields_filled"] += 1
-    print("merge: %s | new basis-cells from SME cache %d, from main-cache long files %d"
-          % (stats, per_src.get(False, 0), per_src.get(True, 0)))
+    for sym in [s for s, qs in data.items() if not qs]:
+        del data[sym]
+    print("merge:", stats)
     if not dry:
         blob = json.dumps(data, separators=(",", ":")).encode("utf-8")
         open(GZ, "wb").write(gzip.compress(blob, 9))
