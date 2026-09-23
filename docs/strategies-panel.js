@@ -557,12 +557,66 @@ function buyAllAgg(list){
     .sort((x, y) => (y.amt - x.amt) || (x.sym < y.sym ? -1 : 1));
   return { rows: rows, missing: missing, nAct: nAct, nEst: nEst };
 }
+/* ================= FILLS & SLIPPAGE (user 2026-09-24, world-class #3) =================
+   Cloud baskets (kite-relay v2.1) follow every sent order to its fill and remember the arrival price
+   the limit was pegged to, so each basket reports filled vs sent, value, slippage vs arrival (bps and
+   rupees, value-weighted; positive = cost) and time to complete. With no cloud basket today the panel
+   falls back to the Zerodha order book grouped by our basket tags (fills only — no arrival price). */
+const dayStartIST = () => { const d = istNow(); return Date.UTC(d.getUTCFullYear(), d.getUTCMonth(), d.getUTCDate()) - 330 * 60000; };
+const FILL_TERM = new Set(['COMPLETE', 'CANCELLED', 'REJECTED']);
+const FILLS_OB = { at: 0, rows: null, busy: false };
+function tagLabel(tag){
+  if (/^ss/.test(tag)){ const it = strategies().find(x => sellTag(x.id) === tag); return it ? (((typeof strategyEnglish === 'function' && strategyEnglish(it.cfg)) || it.name || it.id) + ' \u00b7 exits') : tag; }
+  return { swbasket: 'Buy baskets (in-tab)', swresid: 'Buy remaining', swexitall: 'Exit all', swreenter: 'Re-enter', swcloud: 'Cloud basket', swtest: 'Rehearsal' }[tag] || tag;
+}
+async function fillsFromOrderBook(){
+  if (!Z.connected || FILLS_OB.busy || Date.now() - FILLS_OB.at < 60000) return;
+  FILLS_OB.busy = true;
+  try {
+    const r = await zFetch('/orders'), list = (r.j && r.j.data) || [], by = {};
+    list.forEach(o => { const tag = String(o.tag || ''); if (!/^(ss|sw)/.test(tag)) return;
+      const k = tag + '|' + o.transaction_type, a = by[k] = by[k] || { label: tagLabel(tag), side: o.transaction_type, filled: 0, value: 0, open: 0, n: 0 };
+      const f = +o.filled_quantity || 0, px = +o.average_price || 0; a.filled += f; a.value += f * px; a.n++;
+      if (!FILL_TERM.has(String(o.status || '').toUpperCase())) a.open++; });
+    FILLS_OB.rows = Object.values(by).map(a => Object.assign(a, { avg: a.filled ? a.value / a.filled : 0 })).sort((x, y) => y.value - x.value);
+    FILLS_OB.at = Date.now();
+  } catch(e){} finally { FILLS_OB.busy = false; }
+  renderCards();
+}
+const cloudJobsToday = () => (CLOUD.jobs || []).filter(j => (j.created || 0) >= dayStartIST()).sort((a, b) => (b.created || 0) - (a.created || 0));
+function fillsKick(){ if (!cloudJobsToday().length) fillsFromOrderBook(); }
+function slipCell(f){
+  if (!f || f.slipBps == null) return '<td>\u2014</td>';
+  const cost = f.slipRs > 0, cls = cost ? 'down' : (f.slipRs < 0 ? 'up' : '');
+  return '<td class="' + cls + '" title="value-weighted vs the arrival price each slice was pegged to">' + (cost ? 'cost ' : (f.slipRs < 0 ? 'gain ' : '')) + zinr(Math.abs(f.slipRs)) + ' \u00b7 ' + Math.abs(f.slipBps) + ' bps</td>';
+}
+function fillsHTML(){
+  const jobs = cloudJobsToday();
+  if (!jobs.length){
+    const ob = FILLS_OB.rows; if (!ob || !ob.length) return '';
+    const tv = ob.reduce((s, r) => s + r.value, 0);
+    return '<div class="bal"><div class="bal-h"><b>Fills today</b><span class="sub">from the Zerodha order book, by basket tag \u00b7 slippage vs arrival needs a cloud basket</span></div>' +
+      '<div class="twrap"><table><thead><tr><th>Basket</th><th>Side</th><th>Filled</th><th>Avg \u20b9</th><th>Value</th></tr></thead><tbody>' +
+      ob.map(r => '<tr><td><b>' + esc(r.label) + '</b></td><td>' + esc(r.side) + '</td><td>' + r.filled.toLocaleString('en-IN') + (r.open ? ' <span class="sym">+' + r.open + ' open</span>' : '') + '</td><td>' + (r.avg ? r.avg.toFixed(2) : '\u2014') + '</td><td>' + zinr(r.value) + '</td></tr>').join('') +
+      '</tbody><tfoot><tr><td>Total</td><td></td><td></td><td></td><td>' + zinr(tv) + '</td></tr></tfoot></table></div></div>';
+  }
+  let tv = 0, ts = 0, hasSlip = false;
+  const rows = jobs.map(j => { const f = j.fill || {}; tv += f.value || 0; if (f.slipBps != null){ ts += f.slipRs || 0; hasSlip = true; }
+    const dur = (f.firstAt && f.lastAt) ? Math.max(1, Math.round((f.lastAt - f.firstAt) / 60000)) : null;
+    const st = j.status === 'running' ? (j.i + '/' + j.n + ' \u2601') : j.status;
+    return '<tr><td><b>' + esc(j.label || j.id) + '</b></td><td>' + esc(j.side) + '</td><td>' + esc(st) + (f.open ? ' <span class="sym">' + f.open + ' open</span>' : '') + '</td>' +
+      '<td>' + (f.filledQty || 0).toLocaleString('en-IN') + ' / ' + (f.sentQty || 0).toLocaleString('en-IN') + '</td><td>' + zinr(f.value || 0) + '</td>' + slipCell(f) +
+      '<td>' + (dur != null ? dur + ' min' : '\u2014') + '</td></tr>'; }).join('');
+  return '<div class="bal"><div class="bal-h"><b>Fills today</b><span class="sub">' + jobs.length + ' cloud basket' + (jobs.length === 1 ? '' : 's') + ' \u00b7 slippage = filled price vs the arrival price each slice was pegged to (positive = cost)</span></div>' +
+    '<div class="twrap"><table><thead><tr><th>Basket</th><th>Side</th><th>Status</th><th>Filled / sent</th><th>Value</th><th>Slippage</th><th>Took</th></tr></thead><tbody>' + rows +
+    '</tbody><tfoot><tr><td>Total</td><td></td><td></td><td></td><td>' + zinr(tv) + '</td><td class="' + (ts > 0 ? 'down' : ts < 0 ? 'up' : '') + '">' + (hasSlip ? ((ts > 0 ? 'cost ' : ts < 0 ? 'gain ' : '') + zinr(Math.abs(ts)) + (tv ? ' \u00b7 ' + Math.round(Math.abs(ts) / tv * 1e4) + ' bps' : '')) : '\u2014') + '</td><td></td></tr></tfoot></table></div></div>';
+}
 function renderBuyAll(list){
   const box = $('buyall'); if (!box) return;
-  if (SIDE === 'sell'){ box.innerHTML = renderSellAll(list) + renderExitAll() + '<div class="khelp" style="margin:6px 4px 10px">Timing (user 2026-09-23): <b>sell the exits near the close of ' + esc(rebalWindow().tlab) + '</b> \u2014 the month-end session, on that day\u2019s near-final \u26a1 live picks \u00b7 <b>buy the entries the next morning (' + esc(rebalWindow().t1lab) + ')</b> on the official month-end close screen, funded by the captured sell proceeds. A stock kept on month-end that drops out of the final screen sells the next morning as a straggler.</div>'; wireExitAll(); return; }
+  if (SIDE === 'sell'){ box.innerHTML = renderSellAll(list) + renderExitAll() + '<div class="khelp" style="margin:6px 4px 10px">Timing (user 2026-09-23): <b>sell the exits near the close of ' + esc(rebalWindow().tlab) + '</b> \u2014 the month-end session, on that day\u2019s near-final \u26a1 live picks \u00b7 <b>buy the entries the next morning (' + esc(rebalWindow().t1lab) + ')</b> on the official month-end close screen, funded by the captured sell proceeds. A stock kept on month-end that drops out of the final screen sells the next morning as a straggler.</div>' + fillsHTML(); wireExitAll(); fillsKick(); return; }
   const residHTML = renderResidual();
   const withPicks = list.filter(it => PICKS[it.id] && PICKS[it.id].rows.length);
-  if (!withPicks.length){ box.innerHTML = renderReenter() + residHTML; wireResidGo(); wireReenter(); return; }
+  if (!withPicks.length){ box.innerHTML = renderReenter() + residHTML + fillsHTML(); wireResidGo(); wireReenter(); fillsKick(); return; }
   const agg = buyAllAgg(list), rows = agg.rows;
   const totAmt = rows.reduce((s, r) => s + r.amt, 0), totQty = rows.reduce((s, r) => s + (r.qty || 0), 0);
   const anyQty = rows.some(r => r.qty > 0);
@@ -580,7 +634,8 @@ function renderBuyAll(list){
       '<td>' + (r.amt ? zinr(r.amt) : '—') + (r.capped ? ' <span class="sym" title="capped per basket">cap</span>' : '') + '</td></tr>').join('') +
     '</tbody><tfoot><tr><td>' + esc(spTotLbl(list)) + '</td><td class="sym">' + rows.length + ' stock' + (rows.length === 1 ? '' : 's') + '</td><td></td>' +
     '<td>' + (totQty ? totQty.toLocaleString('en-IN') : '—') + '</td><td>' + (totAmt ? zinr(totAmt) : '—') + '</td></tr></tfoot></table></div>' +
-    '<div class="khelp">Numbered by the strategy blocks below. Amounts are the engine’s rebalance sizing — each new entry funded by its strategy’s EXIT proceeds: ' + (agg.nAct ? '<b>actual sell fills captured on ' + esc(rebalWindow().tlab) + '</b> for ' + agg.nAct + (agg.nEst ? ', ' : ' ') : '') + (agg.nEst ? '<b>estimated at today’s prices</b> for ' + agg.nEst + ' (no proceeds captured — the exits were sold at the month-end close) ' : '') + (agg.nAct || agg.nEst ? 'strateg' + ((agg.nAct + agg.nEst) === 1 ? 'y' : 'ies') + '; ' : '') + 'a first-ever buy with no holdings falls back to the ₹ amount in its ⚡ dialog. A stock several strategies want is bought once, for the combined amount; <b>buy back</b> = sold on the month-end close but still in the official screen.</div></div>';
+    '<div class="khelp">Numbered by the strategy blocks below. Amounts are the engine’s rebalance sizing — each new entry funded by its strategy’s EXIT proceeds: ' + (agg.nAct ? '<b>actual sell fills captured on ' + esc(rebalWindow().tlab) + '</b> for ' + agg.nAct + (agg.nEst ? ', ' : ' ') : '') + (agg.nEst ? '<b>estimated at today’s prices</b> for ' + agg.nEst + ' (no proceeds captured — the exits were sold at the month-end close) ' : '') + (agg.nAct || agg.nEst ? 'strateg' + ((agg.nAct + agg.nEst) === 1 ? 'y' : 'ies') + '; ' : '') + 'a first-ever buy with no holdings falls back to the ₹ amount in its ⚡ dialog. A stock several strategies want is bought once, for the combined amount; <b>buy back</b> = sold on the month-end close but still in the official screen.</div></div>' + fillsHTML();
+  fillsKick();
   const lg = $('levGo'); if (lg) lg.onclick = () => zbLevSweep(rows);
   const go = $('balGo');
   if (go) go.onclick = () => {
@@ -1361,7 +1416,7 @@ function jobSid(jobId){ const pre = String(jobId).split('~')[0];
 async function cloudSubmit(id){
   const B = BUYSLICER[id]; if (!B || !B.slices || !B.slices.length) return;
   const it = strategies().find(x => x.id === id);
-  const label = it ? ((typeof strategyEnglish === 'function' && strategyEnglish(it.cfg)) || it.name || id) : id;
+  const label = it ? ((typeof strategyEnglish === 'function' && strategyEnglish(it.cfg)) || it.name || id) : ({ __exitall__: 'Exit all', __reenter__: 'Re-enter', __residual__: 'Buy remaining', __all__: 'Buy all' }[id] || id);
   const jobId = jobSlug(id) + '~' + Date.now().toString(36);
   const body = { id: jobId, label: String(label).slice(0, 80), device: ((navigator.platform || '') + ' ' + new Date().toTimeString().slice(0, 5)).slice(0, 40),
     gapS: sliceGap(), rngPct: sliceRng(),
@@ -1381,6 +1436,7 @@ async function cloudSubmit(id){
   cloudLoop(true); renderCards();
 }
 function cloudApply(jobs){
+  CLOUD.jobs = jobs;                                                                        // the fills panel reads these
   let changed = false;
   jobs.forEach(j => {
     const sid = jobSid(j.id), was = CLOUD.seen[j.id];
