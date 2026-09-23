@@ -1064,7 +1064,7 @@ function renderDeep(ends,patFn,revFn,opFn,isFin){
       const reserves=fy=>{ const x=B(fy); if(x.oeq!=null) return x.oeq; const w=nw(fy); return (w!=null&&x.sc!=null)?w-x.sc:null; };
       // Screener "Fixed Assets" = PP&E + Investment Property + Goodwill + Other Intangibles (runbook §148c —
       // DBREALTY Mar-24 1,492.19+86.50+548.58+301.23 = 2,428.50 = Screener 2,429; OBEROIRLTY/PHOENIXLTD/DLF tie too)
-      const fa=fy=>{ const x=B(fy); if(x.ppe==null&&x.gw==null&&x.intg==null&&x.invprop==null) return null; return (x.ppe||0)+(x.invprop||0)+(x.gw||0)+(x.intg||0); };
+      const fa=fy=>{ const x=B(fy); if(x.ppe==null&&x.gw==null&&x.intg==null&&x.invprop==null) return null; return (x.ppe||0)+(x.invprop||0)+(x.gw||0)+(x.intg||0)+(x.bio||0)+(x.prodprop||0); };
       const cwip=fy=>{ const x=B(fy); if(x.cwip==null&&x.iuad==null) return null; return (x.cwip||0)+(x.iuad||0); };
       const othLia=fy=>{ const x=B(fy),w=nw(fy); return (x.assets!=null&&w!=null&&x.borr!=null)?x.assets-w-x.borr:null; };
       const othAss=fy=>{ const x=B(fy); if(x.assets==null) return null; return x.assets-(fa(fy)||0)-(cwip(fy)||0)-(x.invst||0); };
@@ -1083,6 +1083,7 @@ function renderDeep(ends,patFn,revFn,opFn,isFin){
           {label:'Investment property', get:fy=>B(fy).invprop, fmt:crS},
           {label:'Goodwill', get:fy=>B(fy).gw, fmt:crS},
           {label:'Intangibles', get:fy=>B(fy).intg, fmt:crS},
+          {label:'Biological / producing', get:fy=>{ const x=B(fy); return (x.bio==null&&x.prodprop==null)?null:(x.bio||0)+(x.prodprop||0); }, fmt:crS},
         ]},
         {label:'CWIP', get:cwip, fmt:crS},
         {label:'Investments', get:fy=>B(fy).invst, fmt:crS},
@@ -1090,7 +1091,7 @@ function renderDeep(ends,patFn,revFn,opFn,isFin){
         {label:'Total Assets', get:fy=>B(fy).assets, fmt:crS, bold:true, top:true},
       ];
       html=matrix(bsFys, rows);
-      note='₹ crore, '+(FB_EFF==='std'?'standalone':'consolidated where filed')+', as filed at each year-end — point-in-time, later restatements are not back-applied. Fixed Assets = net block + investment property + goodwill + other intangibles; CWIP includes intangibles under development; Other Liabilities and Other Assets balance the sheet (Screener convention). Lease liabilities appear under Borrowings only where the filer tags them separately.';
+      note='₹ crore, '+(FB_EFF==='std'?'standalone':'consolidated where filed')+', as filed at each year-end — point-in-time, later restatements are not back-applied. Fixed Assets = net block + investment property + goodwill + other intangibles + biological/producing assets; CWIP includes intangibles under development; Other Liabilities and Other Assets balance the sheet (Screener convention). Lease liabilities appear under Borrowings only where the filer tags them separately.';
     }else if(cur==='cf'){
       const C=fy=>{ const c=cfOf(fy); return c?c.x:{}; };
       const net=fy=>{ const x=C(fy); return (x.cfo!=null&&x.cfi!=null&&x.cff!=null)?x.cfo+x.cfi+x.cff:null; };

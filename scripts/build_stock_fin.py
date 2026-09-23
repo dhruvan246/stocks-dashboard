@@ -64,7 +64,7 @@ BSESCRIP_J = os.path.join(HERE, "bse_scrips.json")        # {by_id:{SYM:scripcod
 XTRA_KEEP = {"eps_b", "eps_d", "oi", "fc", "dep", "tax", "exc", "pbt", "emp", "mat",
              "assoc", "nci",
              "assets", "eq", "sc", "oeq", "borr", "blt", "bst", "cash", "invnt", "rec", "pay",
-             "ppe", "cwip", "iuad", "gw", "intg", "invst", "invprop",
+             "ppe", "cwip", "iuad", "gw", "intg", "invst", "invprop", "bio", "prodprop",
              "cfo", "cfi", "cff", "capex", "divp", "cf_tax", "cf_d", "seg",
              "gnpa_pct", "nnpa_pct", "cet1", "car", "roa", "dep_amt", "adv", "int_exp",
              "aud", "qual"}

@@ -18522,3 +18522,11 @@ figures — RELIANCE std FY23 after the JFS demerger, OBEROIRLTY std FY23 after 
 total assets 13,553 vs screener 17,314) — we keep AS FILED for point-in-time; and **vendor quirks** (SKYGOLD FY25
 CWIP counted inside FA; TRUST puts intangibles-under-development in CWIP in FY25 but in FA in FY26 — we keep one
 rule: iuad → CWIP, as for RELIANCE).
+**§148c addendum — every company checked, not a sample.** Scan of each company's latest FY25/26 BS filing (2,437
+companies) for fixed-asset-like XBRL tags we do not capture found exactly two: `BiologicalAssetsOtherThanBearerPlants`
+(27 cos) and non-Ind-AS `ProducingProperties` (inside the SME subtotal `PropertyPlantAndEquipmentAndIntangibleAssets`,
+94 cos). Screener counts both in Fixed Assets (LLOYDSENGG FY26 con 355.1 + biological 75.8 = 431; ASPINWALL
+84.6 + 4.8 = 89). Now captured as `bio` / `prodprop` (+20,880 / +1,758, fill-only, 0 existing changed); FA =
+ppe+invprop+gw+intg+bio+prodprop (sw v178). After: 0 uncaptured fixed-asset tags; SME subtotal reconciles 198/198;
+screener sample 17/17. Still NOT matched by design: restated years (screener back-applies restatements) and
+vendor quirks. PDF-era (FY20-22 annual_bscf) cells predate the invprop reader — re-read them to add it.

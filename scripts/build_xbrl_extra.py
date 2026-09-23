@@ -139,6 +139,11 @@ BS = {  # instant, ₹ -> cr; tuple entries are summed when at least one part is
     # Screener's "Fixed Assets" = PP&E + Investment Property + Goodwill + Other Intangibles (measured
     # 2026-09-23 against screener on DBREALTY/OBEROIRLTY/PHOENIXLTD/DLF/INA/TCS/RELIANCE, runbook §148c)
     "invprop": ["InvestmentProperty"],
+    # also inside Screener's Fixed Assets (measured 2026-09-23: LLOYDSENGG FY26 con 355.1 + biological 75.8 =
+    # Screener 431; ASPINWALL 84.6 + 4.8 = 89; non-Ind-AS ProducingProperties closes the 5 SME subtotals
+    # PropertyPlantAndEquipmentAndIntangibleAssets that our parts missed)
+    "bio": ["BiologicalAssetsOtherThanBearerPlants"],
+    "prodprop": ["ProducingProperties"],
 }
 BS_SUM = {
     "borr": ["BorrowingsCurrent", "BorrowingsNoncurrent"],
