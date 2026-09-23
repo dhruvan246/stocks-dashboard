@@ -337,6 +337,95 @@ function cardMeta(cfg){
   if (cfg.indexName) bits.push(String(cfg.indexName).replace('__FNO__', 'F&O'));
   return bits.join(' · ');
 }
+/* ================= REBALANCE WIZARD (user 2026-09-23, world-class #2) =================
+   One card at the top of the panel that knows which leg today is (sell day T, buy days T+1..T+3, the
+   eve, or off-window) and lists live checks for it — connected, cloud slicer, books, picks + the right
+   screen mode, exits/stragglers/buy-backs, timing, baskets sent, proceeds captured, leverage checked,
+   ledger updated — each with a one-tap fix. Pure computation in wizardSteps() (unit-tested), HTML in
+   renderWizard(), re-rendered with every renderCards(). */
+const istNow = () => new Date(Date.now() + 330 * 60000);
+const hhmm = d => String(d.getUTCHours()).padStart(2, '0') + ':' + String(d.getUTCMinutes()).padStart(2, '0');
+function wizardList(){ return spList(uniqStrategies(), loadFavs()); }
+function wizardSteps(){
+  const RW = rebalWindow(), list = wizardList(), now = istNow(), steps = [];
+  const S = (k, st, label, detail, act) => steps.push({ k: k, st: st, label: label, detail: detail || '', act: act || '' });
+  const okc = c => c ? 'ok' : 'bad';
+  const t0 = (function(){ const d = new Date(RW.tIso + 'T00:00:00Z'); let q = new Date(d.getTime() - 864e5); while (q.getUTCDay() % 6 === 0) q = new Date(q.getTime() - 864e5); return q.toISOString().slice(0, 10); })();
+  const today = now.toISOString().slice(0, 10);
+  const leg = RW.sellIn ? 'sell' : RW.buyIn ? 'buy' : (today === t0 ? 'eve' : 'off');
+  if (leg === 'off' || leg === 'eve'){
+    S('when', 'info', leg === 'eve' ? 'Tomorrow is the sell day' : 'Next rebalance', 'sell the exits near the ' + RW.tlab + ' close \u00b7 buy the entries the morning of ' + RW.t1lab);
+    return { leg: leg, RW: RW, steps: steps };
+  }
+  const books = list.filter(it => { const h = heldFor(it.cfg); return h && h.rows.length; });
+  const loaded = list.filter(it => PICKS[it.id] && PICKS[it.id].rows.length);
+  S('zerodha', okc(Z.connected), Z.connected ? 'Zerodha connected \u2014 ' + Z.user : 'Zerodha not connected', Z.connected ? 'session ends 6:00 AM tomorrow' : 'daily login needed before anything can be sent', Z.connected ? '' : 'login');
+  S('cloud', cloudOn() ? 'ok' : (CLOUD.ok === false ? 'warn' : 'off'), cloudOn() ? 'Cloud slicer on' : (CLOUD.ok === false ? 'Cloud slicer unavailable \u2014 baskets slice in this tab' : (cloudWanted() ? 'Cloud slicer: checking\u2026' : 'Cloud slicer switched off \u2014 in-tab slicing')), cloudOn() ? 'baskets keep running if this tab closes' : (CLOUD.ok === false ? 'keep this tab open while a basket runs' : ''), (!cloudOn() && CLOUD.ok !== false) ? 'cloud' : '');
+  S('feed', okc(books.length), books.length ? books.length + ' strategy books loaded' : 'No strategy books \u2014 holdings feed missing', books.length ? '' : 'needs the pf token in this browser');
+  S('picks', (loaded.length === list.length && list.length) ? 'ok' : 'bad', 'Picks loaded ' + loaded.length + '/' + list.length, '', loaded.length === list.length ? '' : 'load');
+  if (leg === 'sell'){
+    const mkt = marketOpen();
+    const fresh = loaded.filter(it => livePicksOk(PICKS[it.id]));
+    S('mode', !loaded.length ? 'off' : (fresh.length === loaded.length ? 'ok' : (mkt ? 'bad' : 'warn')),
+      PICKMODE === 'live' ? 'Live picks \u2014 ' + fresh.length + '/' + loaded.length + ' fresh (< 3 min)' : 'Rebalance picks selected \u2014 today\u2019s sells need \u26a1 Live picks',
+      mkt ? 'the ' + RW.tlab + ' close screen bakes only this evening' : 'market closed \u2014 live re-rank pauses', PICKMODE === 'live' ? (fresh.length === loaded.length ? '' : 'loadall') : 'live');
+    let nEx = 0, val = 0, nBd = 0, todo = 0, sent = 0, withEx = 0, startBy = null, slices = 0; const sold = zbSoldSet();
+    books.forEach(it => { const X = sellExits(it); if (!X.known) return;
+      const ex = X.exits; if (!ex.length) return; withEx++; nEx += ex.length; val += X.est;
+      nBd += X.rows.filter(r => r.bd).length;
+      const td = ex.filter(r => r.remain == null ? true : r.remain > 0); todo += td.length;
+      if (sold.has(it.id)) sent++;
+      const rt = td.length ? sellRuntime(td.map(r => ({ h: { sym: r.h.sym, qty: (r.remain != null ? r.remain : r.h.qty), avg: r.h.avg }, px: r.px }))) : null;
+      if (rt){ slices += rt.tot; if (rt.startBy && (!startBy || rt.startBy < startBy)) startBy = rt.startBy; } });
+    S('exits', nEx ? 'info' : (loaded.length ? 'ok' : 'off'), nEx + ' exit' + (nEx === 1 ? '' : 's') + ' across ' + withEx + ' strateg' + (withEx === 1 ? 'y' : 'ies') + (val ? ' \u2248 ' + zinr(val) : ''), nBd ? nBd + ' borderline \u2014 sell those last (~3:25)' : (loaded.length ? 'no borderline names' : 'load picks first'), nEx ? 'sellside' : '');
+    const late = !!(startBy && hhmm(now) > startBy);
+    S('timing', !loaded.length ? 'off' : (!todo ? 'ok' : (late ? 'warn' : 'info')), todo ? (slices + ' slice' + (slices === 1 ? '' : 's') + ' still to send' + (startBy ? ' \u2014 start by ' + startBy + ' for a 3:28 finish' : '')) : (withEx ? 'All exit shares sent' : 'Nothing to sell'), late ? 'past the start-by time \u2014 start now' : ('now ' + hhmm(now) + ' IST'), todo ? 'sellside' : '');
+    S('sent', withEx ? (sent === withEx ? 'ok' : (sent ? 'warn' : 'bad')) : 'off', 'Sell baskets sent ' + sent + '/' + withEx, '', sent < withEx ? 'sellside' : '');
+    const cap = books.filter(it => proceedsOf(it.id)).length;
+    S('proceeds', sent ? (cap >= sent ? 'ok' : 'warn') : 'off', 'Sell proceeds captured ' + cap + '/' + sent, (sent && cap < sent) ? 'auto-captures ~2 min after a basket finishes \u00b7 \u21bb proceeds chip to redo' : 'funds tomorrow\u2019s buys', '');
+    S('evening', 'info', 'Tonight on the Mac: rebalance_sync.py capture', 'snapshots today\u2019s fills (Kite forgets them at midnight)');
+  } else {
+    const legs = loaded.map(it => buyLeg(PICKS[it.id], RW)), okN = legs.filter(l => l.ok).length, bad = legs.find(l => !l.ok);
+    S('mode', !loaded.length ? 'off' : (okN === loaded.length ? 'ok' : 'bad'),
+      !loaded.length ? 'Load the picks first' : (okN === loaded.length) ? 'Official ' + RW.tlab + ' close screen on all ' + okN : (PICKMODE === 'live' ? 'Live picks selected \u2014 buys need Rebalance picks dated ' + RW.tlab : 'Waiting for the ' + RW.tlab + ' close in the data (' + okN + '/' + loaded.length + ' ready)'),
+      bad ? bad.msg : 'the screen the backtest holds', okN === loaded.length ? '' : (PICKMODE === 'live' ? 'reb' : 'loadall'));
+    let strag = 0, backs = 0, entries = 0, withEnt = 0, bought = 0; const bt = zbBoughtSet();
+    books.forEach(it => { const p = PICKS[it.id]; if (!p || !p.rows.length) return;
+      const X = sellExits(it); strag += X.exits.filter(r => r.remain == null ? true : r.remain > 0).length;
+      const rb = rebuyRows(it, p); backs += rb.length;
+      const held = heldFor(it.cfg), hs = new Set(held.rows.map(h => h.sym)), en = p.rows.filter(r => !hs.has(r.sym)).length + rb.length;
+      if (en){ withEnt++; entries += en; if (bt.has(it.id)) bought++; } });
+    S('strag', strag ? 'warn' : (loaded.length ? 'ok' : 'off'), strag ? strag + ' straggler' + (strag === 1 ? '' : 's') + ' to sell (kept on ' + RW.tlab + ', out of the final screen)' : 'No stragglers', '', strag ? 'sellside' : '');
+    S('backs', backs ? 'warn' : (loaded.length ? 'ok' : 'off'), backs ? backs + ' buy-back' + (backs === 1 ? '' : 's') + ' (sold on ' + RW.tlab + ', still in the final screen)' : 'No buy-backs needed', backs ? 'pre-ticked in the \u26a1 dialog at the sold quantity' : '', backs ? 'buyside' : '');
+    const cap = books.filter(it => proceedsOf(it.id)).length;
+    S('proceeds', books.length ? (cap === books.length ? 'ok' : 'warn') : 'off', 'Actual sell proceeds for ' + cap + '/' + books.length + ' strategies', cap < books.length ? 'the rest size from today\u2019s prices (an estimate)' : 'buys sized from real fills', '');
+    S('lev', LEV ? (LEV.blocked.length ? 'warn' : 'ok') : 'bad', LEV ? ('Leverage checked ' + hhmm(new Date(LEV.at + 330 * 60000)) + (LEV.blocked.length ? ' \u2014 MTF blocked: ' + LEV.blocked.join(', ') : ' \u2014 no MTF-blocked entrants')) : 'Leverage not checked yet', (LEV && LEV.blocked.length) ? 'those need the FULL amount in cash (auto-CNC)' : '', LEV ? '' : 'lev');
+    S('bought', withEnt ? (bought === withEnt ? 'ok' : (bought ? 'warn' : 'bad')) : (loaded.length ? 'ok' : 'off'), withEnt ? 'Buy baskets sent ' + bought + '/' + withEnt + ' (' + entries + ' entr' + (entries === 1 ? 'y' : 'ies') + ')' : 'Nothing to buy', '', bought < withEnt ? 'buyside' : '');
+    const ledgerDone = !!books.length && books.every(it => { const p = PICKS[it.id]; if (!p || !p.rows.length) return false; const held = heldFor(it.cfg), hs = new Set(held.rows.map(h => h.sym)); return !p.rows.some(r => !hs.has(r.sym)) && !held.rows.some(h => !p.rows.some(r => r.sym === h.sym)); });
+    S('ledger', ledgerDone ? 'ok' : 'info', ledgerDone ? 'Ledger matches the official screen' : 'Tonight on the Mac: rebalance_sync.py capture \u2192 plan --reb ' + RW.tIso + ' \u2192 apply', ledgerDone ? 'rebalance_sync.py has run' : 'writes the new books; until then the cards still show the old holdings');
+  }
+  return { leg: leg, RW: RW, steps: steps };
+}
+const WZ_ICON = { ok: '\u2713', warn: '\u26a0', bad: '\u2717', info: '\u2022', off: '\u2013' };
+const WZ_ACT = { login: 'Login', cloud: 'Cloud on', load: 'Load picks', loadall: 'Refresh picks', live: 'Live picks', reb: 'Rebalance picks', sellside: 'Sell side', buyside: 'Buy side', lev: 'Check leverage' };
+function renderWizard(){
+  let box = $('spWizard');
+  if (!box){ const ch = $('spChips'); if (!ch) return; box = document.createElement('div'); box.id = 'spWizard'; ch.insertAdjacentElement('beforebegin', box); }
+  let W; try { W = wizardSteps(); } catch(e){ box.innerHTML = ''; return; }
+  const RW = W.RW, live = (W.leg === 'sell' || W.leg === 'buy');
+  const title = W.leg === 'sell' ? 'Sell day \u2014 ' + RW.tlab + ' (month-end close)' : W.leg === 'buy' ? 'Buy day \u2014 ' + (RW.planned ? RW.t1lab + ' morning' : 'buffer day (planned ' + RW.t1lab + ')') : W.leg === 'eve' ? 'Rebalance tomorrow' : 'Rebalance';
+  const done = W.steps.filter(x => x.st === 'ok').length, total = W.steps.filter(x => x.st !== 'info' && x.st !== 'off').length;
+  box.innerHTML = '<div class="bal wz"><div class="bal-h"><b>' + esc(title) + '</b><span class="sub">' + (live ? done + ' of ' + total + ' checks green' : esc(W.steps[0].detail)) + '</span></div>' +
+    (live ? W.steps.map(x => '<div class="wz-row wz-' + x.st + '"><span class="wz-ic">' + WZ_ICON[x.st] + '</span><span class="wz-l"><b>' + esc(x.label) + '</b>' + (x.detail ? ' <span class="sym">' + esc(x.detail) + '</span>' : '') + '</span>' + (x.act ? '<button class="btn wz-b" data-wz="' + x.act + '">' + esc(WZ_ACT[x.act]) + '</button>' : '') + '</div>').join('') : '') + '</div>';
+}
+function wizardAct(a){
+  if (a === 'login'){ const b = $('btnZLogin'); if (b) b.click(); }
+  else if (a === 'cloud'){ try { localStorage.setItem('sw_cloud_slicer', '1'); } catch(e){} cloudProbe(true); }
+  else if (a === 'load' || a === 'loadall'){ const b = $('btnLoadAll'); if (b) b.click(); }
+  else if (a === 'live' || a === 'reb'){ if ((a === 'live') !== (PICKMODE === 'live')) $('spMode').click(); }
+  else if (a === 'sellside' || a === 'buyside'){ if ((a === 'sellside') !== (SIDE === 'sell')) $('spSide').click(); }
+  else if (a === 'lev'){ if (SIDE !== 'buy') $('spSide').click(); setTimeout(() => { const g = $('levGo'); if (g) g.click(); else ktoast('Load the picks first \u2014 the leverage check needs the entrants'); }, 300); }
+}
 function renderCards(){
   if (document.querySelector('#cards [data-arm="1"], #buyall [data-arm="1"]')) return;   // an armed Sell/Buy confirm is showing — don't rebuild under it
   const favs = loadFavs();
@@ -390,6 +479,7 @@ function renderCards(){
   }).join('');
   $('cards').innerHTML = h;
   renderBuyAll(list);
+  renderWizard();
   for (const id in BUYSLICER){
     const el = (id === '__all__') ? $('balGo') : (id === '__residual__') ? $('residGo') : (id === '__exitall__') ? $('exitAllGo') : (id === '__reenter__') ? $('reenterGo')
       : (document.querySelector('[data-basket="' + id + '"]') || document.querySelector('[data-sellbasket="' + id + '"]'));
@@ -536,6 +626,7 @@ async function buyResidual(){
    Leverage is MEASURED from the same response (order value \u00f7 blocked margin) \u2014 no assumed
    field. \u22641.05x = MTF refused for that scrip: the buy slicer's auto-CNC fallback will then
    need the FULL amount in cash, so see it BEFORE firing, not mid-basket. */
+let LEV = null;   // last leverage sweep {at, n, blocked[]} — the rebalance wizard shows it
 async function zbLevSweep(rows){
   const el = $('levOut');
   if (!Z.connected){ ktoast('Zerodha not connected'); return; }
@@ -554,6 +645,7 @@ async function zbLevSweep(rows){
     const blk = lev != null && lev <= 1.05; if (blk) blocked.push(r.sym);
     h += '<tr><td><b>' + esc(r.sym) + '</b>' + (blk ? ' <span class="tag" style="background:color-mix(in srgb,var(--down) 16%,transparent);color:var(--down)">MTF blocked \u2014 full cash</span>' : '') + '</td>' +
          '<td>' + (lev != null ? lev.toFixed(2) + 'x' : '\u2014') + '</td><td>' + zinr(tot) + '</td><td>' + zinr(v) + '</td></tr>'; });
+  LEV = { at: Date.now(), n: flist.length, blocked: blocked.slice() }; renderWizard();
   if (el) el.innerHTML = '<div class="bal"><div class="twrap"><table><thead><tr><th>Entrant</th><th>Leverage</th><th>Blocks \u20b9</th><th>Order \u20b9</th></tr></thead><tbody>' + h + '</tbody></table></div>' +
     '<div class="khelp">' + (blocked.length ? '\u26a0 <b>' + blocked.join(', ') + '</b>: MTF refused \u2014 the auto-CNC fallback will need the FULL amount in cash. ' : 'No MTF-blocked entrants. ') +
     'At these quantities: order \u2248 ' + zinr(val) + ' \u00b7 blocks \u2248 ' + zinr(cash) + ' of funds.</div></div>';
@@ -1464,6 +1556,10 @@ function kiteSend(orders){
   if (sb2 && !$('spCloud')){ const cb = document.createElement('button'); cb.id = 'spCloud'; cb.className = 'btn'; cb.style.marginLeft = '4px';
     cb.onclick = () => { try { localStorage.setItem('sw_cloud_slicer', cloudWanted() ? '0' : '1'); } catch(e){} cloudChip(); if (cloudWanted()) cloudProbe(true); };
     sb2.insertAdjacentElement('afterend', cb); cloudChip(); }
+  if (!$('spWizardCss')){ const st = document.createElement('style'); st.id = 'spWizardCss';
+    st.textContent = '.wz .wz-row{display:flex;align-items:center;gap:8px;padding:5px 4px;border-top:1px solid color-mix(in srgb,currentColor 9%,transparent)}.wz .wz-ic{width:18px;text-align:center;font-weight:700;flex:none}.wz .wz-l{flex:1;min-width:0;font-size:12.5px;line-height:1.35}.wz .wz-b{margin-left:auto;white-space:nowrap;flex:none}.wz-ok .wz-ic{color:var(--up)}.wz-bad .wz-ic{color:var(--down)}.wz-warn .wz-ic{color:#c98500}.wz-info .wz-ic,.wz-off .wz-ic{opacity:.55}';
+    document.head.appendChild(st); }
+  document.addEventListener('click', e => { const b = e.target.closest('#spWizard [data-wz]'); if (b) wizardAct(b.dataset.wz); });
   cloudLoop();
   document.addEventListener('visibilitychange', () => { if (!document.hidden) cloudLoop(true); });   // a phone opened mid-basket updates at once
   renderCards();
