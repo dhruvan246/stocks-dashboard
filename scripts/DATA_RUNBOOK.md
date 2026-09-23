@@ -18013,6 +18013,18 @@ stock to be there. fix it"* + *"plus i want stock pages for all sme stocks as we
   loadData threw and blanked the WHOLE table; caught by the local phone test before shipping (now reads iTo).
   Verified (375×812, 0 errors): Day 1 on 1-week / 31-Mar / today windows, "—" for a window ending before listing. Order in refresh.yml: fetch_all → fill (NSE + BSE
   stores) → last trade → BSE share counts → heal → sectors → build.
+- **The 38 "no trades on record" rows (user: "fix the 38 with no trades on record too").** BSE's quote page shows
+  LTP 0.00 for them, and it FORGETS old trades — but BSE's daily archive still serves every session from Jan-2007
+  (`EQ_ISINCODE_DDMMYY.zip` from ~2016, `EQDDMMYY_CSV.ZIP` back to 2007; 2006 and earlier return an HTML page).
+  `scripts/scan_bse_archive_last_trade.py` walked all 4,415 weekdays 2023-12-03 → 2007-01-01 most-recent-first
+  (1,112 s, 4 workers; re-serve guard = identical file signature on an older day). Controls matched the quote page
+  exactly (Apex 2020-07-29 ₹45.60, Winro 2019-03-08 ₹244.45). Found: P. B. Films 2019-12-10 ₹0.68, Sidh Automobiles
+  2016-10-13 ₹12.50, Midland Polymers 2015-03-03 ₹23.90, Ardi Alliances 2011-11-30 ₹2.75 → shown with their last
+  price, "not traded since", and a cap from their June-2026 BSE filing. The other 34 have no row in any archive
+  file 2007→2023, none in the store 2023-12→date and LTP 0.00 → "no BSE trade since 2007". Of 259 weekdays with
+  no file, 28 are NSE sessions; re-fetched twice, BSE serves no file for them in either format — a trade on those
+  28 days cannot be ruled out (stated in the label's hover text; listed in the ledger). Ledger:
+  scripts/bse_last_trade_archive.json (read by fill_bse_last_trade.py only when the quote page says 0.00).
 - **The results table drew only the top 500 of 5,527 with no way past it** — SUNLITE ranked 654th for 31-Mar →
   today (the 500th row was +87.60 %, SUNLITE +74.70 %). Now paged: a row at the foot of the table offers "Show
   500 more" / "Show all" (pinned left and width-capped so it stays on a 375 px screen); new data, search and sort

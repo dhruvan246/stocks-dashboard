@@ -20,6 +20,11 @@ HERE = os.path.dirname(os.path.abspath(__file__))
 ROOT = os.path.dirname(HERE)
 PAYLOAD = os.path.join(HERE, "stock_data.json")
 LEDGER = os.path.join(HERE, "bse_last_trade.json")
+# BSE's quote page forgets old trades (LTP 0.00 for scrips whose last session is years back). Their real
+# last trade comes from BSE's own daily archive (EQ_ISINCODE_/EQ..._CSV files, 2007-01 -> 2023-12),
+# scanned once: {"scanned": [from, to], "rows": {code: {d, p, trades, file}}, "none": [codes with no
+# trade in the whole span]}. Written by a one-off scan (DATA_RUNBOOK §145); read-only here.
+ARCHIVE = os.path.join(HERE, "bse_last_trade_archive.json")
 UNIV = os.path.join(ROOT, "docs", "bse_universe.json")
 MAX_AGE_DAYS = 7
 UA = "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/120 Safari/537.36"
@@ -56,6 +61,11 @@ def main():
                     if sid and code: sid2code.setdefault(sid, code)
         except Exception:
             pass
+    try:
+        arch = json.load(open(ARCHIVE, encoding="utf-8"))
+    except Exception:
+        arch = {}
+    arows, anone, aspan = arch.get("rows") or {}, set(arch.get("none") or ()), arch.get("scanned") or [None, None]
     today = datetime.date.today()
     todo = [t for t in meta if t.endswith(".BO") and not series.get(t)]
     fetched = cached = nocode = 0
@@ -90,7 +100,14 @@ def main():
             time.sleep(0.8)
         else:
             cached += 1
-        meta[t]["lastTrade"] = {"d": cur.get("d"), "p": cur.get("p")}
+        lt = {"d": cur.get("d"), "p": cur.get("p")}
+        if not lt["p"]:
+            a = arows.get(cur.get("code") or "")
+            if a and a.get("p"):
+                lt = {"d": a["d"], "p": a["p"], "src": "bse-archive"}      # last trade from BSE's daily archive
+            elif (cur.get("code") or "") in anone and aspan[0]:
+                lt["since"] = aspan[0]                                        # measured: no BSE trade since then
+        meta[t]["lastTrade"] = lt
     json.dump(led, open(LEDGER, "w", encoding="utf-8"), indent=1, sort_keys=True)
     json.dump(payload, open(PAYLOAD, "w", encoding="utf-8"), separators=(",", ":"))
     withp = sum(1 for t in todo if (meta[t].get("lastTrade") or {}).get("p"))

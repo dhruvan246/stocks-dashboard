@@ -782,8 +782,8 @@ function renderResults(results, keepLimit) {
         toCell = lt.p ? '&#8377;' + Number(lt.p).toFixed(2) : DASH;
         const when = lt.d ? new Date(lt.d + 'T00:00:00Z').toLocaleDateString('en-IN', {month: 'short', year: 'numeric', timeZone: 'UTC'}) : null;
         chgCell = '<span class="inline-flex items-center bg-amber-50 text-amber-700 rounded-md px-2 py-0.5 font-semibold text-xs" title="' +
-          (lt.p ? 'Last BSE trade ' + lt.d + ' at \u20b9' + lt.p + ' (BSE quote page)' : 'BSE shows no trade on record for this scrip') + '">' +
-          (lt.p ? 'not traded since ' + when : 'no trades on record') + '</span>';
+          (lt.p ? 'Last BSE trade ' + lt.d + ' at \u20b9' + lt.p + (lt.src === 'bse-archive' ? ' (BSE daily archive)' : ' (BSE quote page)') : (lt.since ? 'No trade in BSE\u2019s daily files since ' + lt.since + ' (BSE serves no file for 28 sessions in that span) and none on its quote page' : 'BSE shows no trade on record for this scrip')) + '">' +
+          (lt.p ? 'not traded since ' + when : (lt.since ? 'no BSE trade since ' + lt.since.slice(0, 4) : 'no trades on record')) + '</span>';
       } else if (r.noData) {
         fromCell = toCell = chgCell = DASH;
       } else if (r.firstDay) {

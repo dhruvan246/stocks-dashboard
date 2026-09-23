@@ -1,0 +1,117 @@
+{
+ "_doc": "Last BSE trade per scrip code from BSE's own daily archive (EQ_ISINCODE_DDMMYY.zip / EQDDMMYY_CSV.ZIP), scanned most-recent-first over every weekday 2023-12-03 -> 2007-01-01 (the archive's first file is Jan-2007; the live store docs/bse_prices.bin covers 2023-12 on). Used by scripts/fill_bse_last_trade.py only when BSE's quote page shows LTP 0.00. Controls: 541133 (Apex, 2020-07-29 45.60) and 512022 (Winro, 2019-03-08 244.45) match the quote page exactly. `none` = codes with no row in any archive file in the span; `missing_days` = trading sessions for which BSE serves no archive file in either format (re-fetched twice), so a trade on those days cannot be ruled out. DATA_RUNBOOK \u00a7145.",
+ "missing_days": [
+  "20080625",
+  "20081114",
+  "20090216",
+  "20090317",
+  "20090325",
+  "20090515",
+  "20090707",
+  "20090730",
+  "20090731",
+  "20090820",
+  "20090824",
+  "20090826",
+  "20090828",
+  "20090901",
+  "20090903",
+  "20090908",
+  "20090911",
+  "20091014",
+  "20091130",
+  "20100128",
+  "20191002",
+  "20191008",
+  "20191021",
+  "20191028",
+  "20191112",
+  "20191225",
+  "20201116",
+  "20211105"
+ ],
+ "none": [
+  "506024",
+  "506162",
+  "506580",
+  "509782",
+  "511060",
+  "512004",
+  "512060",
+  "512147",
+  "512157",
+  "512245",
+  "512261",
+  "512265",
+  "512303",
+  "512307",
+  "512433",
+  "512445",
+  "512505",
+  "512517",
+  "514236",
+  "523343",
+  "531562",
+  "531610",
+  "531696",
+  "532138",
+  "539488",
+  "539560",
+  "539683",
+  "539691",
+  "540270",
+  "540318",
+  "542544",
+  "780014",
+  "780016",
+  "780018"
+ ],
+ "rows": {
+  "504370": {
+   "d": "2011-11-30",
+   "file": "EQ301111_CSV.ZIP",
+   "p": 2.75,
+   "shares_traded": 50,
+   "trades": 1
+  },
+  "512022": {
+   "d": "2019-03-08",
+   "file": "EQ_ISINCODE_080319.zip",
+   "p": 244.45,
+   "shares_traded": 5,
+   "trades": 1
+  },
+  "531597": {
+   "d": "2015-03-03",
+   "file": "EQ030315_CSV.ZIP",
+   "p": 23.9,
+   "shares_traded": 6,
+   "trades": 2
+  },
+  "539352": {
+   "d": "2019-12-10",
+   "file": "EQ_ISINCODE_101219.zip",
+   "p": 0.68,
+   "shares_traded": 30000,
+   "trades": 2
+  },
+  "539983": {
+   "d": "2016-10-13",
+   "file": "EQ131016_CSV.ZIP",
+   "p": 12.5,
+   "shares_traded": 1,
+   "trades": 1
+  },
+  "541133": {
+   "d": "2020-07-29",
+   "file": "EQ_ISINCODE_290720.zip",
+   "p": 45.6,
+   "shares_traded": 12,
+   "trades": 4
+  }
+ },
+ "scanned": [
+  "2007-01-01",
+  "2023-12-03"
+ ]
+}
