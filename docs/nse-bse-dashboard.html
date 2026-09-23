@@ -40,7 +40,7 @@
       </a>
       <div class="flex items-center gap-3 min-w-0">
         <nav></nav>
-        <span class="text-[11px] text-slate-400 hidden xl:block shrink-0" id="lastUpdated">01 Jan 1996 &rarr; 22 Sep 2026 19:31 IST</span>
+        <span class="text-[11px] text-slate-400 hidden xl:block shrink-0" id="lastUpdated">01 Jan 1996 &rarr; 23 Sep 2026 03:16 IST</span>
       </div>
     </div>
   </header>
@@ -458,6 +458,7 @@ async function loadData() {
       sector: indKey,                       // shown in the table chip
       sectorBroad: m.sector || '',           // kept for tooltip / CSV
       mcap: m.mcap,
+      frozenSince: m.frozenSince || null,   // price unchanged for >= 1 year while Yahoo still prints it (§145)
       fromPrice: null, toPrice: null, changePercent: null,
       fromDate: null,  toDate: null,  noData: true,
       // 52-week-high distance, anchored at snapshot date (constant per stock)
@@ -564,7 +565,8 @@ function renderResults(results, keepLimit) {
     const DASH = '<span class="text-slate-400">\u2014</span>';
     for (let i = 0; i < view.length; i++) {
       const r = view[i];
-      const mcap = r.mcap > 0 ? r.mcap.toLocaleString('en-IN', {maximumFractionDigits: 0}) : '\u2014';
+      // Whole crores hid real sub-crore caps as "0" (BENTCOM 0.40, ZJEETMAC 0.13 — §145): under 10 Cr keep 2 dp.
+      const mcap = r.mcap > 0 ? r.mcap.toLocaleString('en-IN', r.mcap < 10 ? {minimumFractionDigits: 2, maximumFractionDigits: 2} : {maximumFractionDigits: 0}) : '\u2014';
       let fromCell, toCell, chgCell;
       if (r.noData) {
         fromCell = toCell = chgCell = DASH;
@@ -587,6 +589,11 @@ function renderResults(results, keepLimit) {
           ? '<span class="inline-flex items-center bg-amber-50 text-amber-700 rounded-md px-1.5 py-0.5 font-medium text-[10px] ml-1" title="Stock\'s last trade in this window was ' + r.staleDays + ' days before your To Date">stale</span>'
           : '';
         chgCell  = '<span class="inline-flex items-center gap-1 ' + cls + ' rounded-md px-2 py-0.5 font-semibold text-xs tabular-nums">' + arr + ' ' + sgn + r.changePercent.toFixed(2) + '%</span>' + staleNote;
+        if (r.frozenSince) {
+          // The exchange has no trade for this scrip; the "price" is the last trade repeated (§145).
+          const fs = new Date(r.frozenSince + 'T00:00:00Z').toLocaleDateString('en-IN', {month: 'short', year: 'numeric', timeZone: 'UTC'});
+          chgCell = '<span class="inline-flex items-center bg-amber-50 text-amber-700 rounded-md px-2 py-0.5 font-semibold text-xs" title="No trades since ' + r.frozenSince + ' — the price shown is the last traded price">not traded since ' + fs + '</span>';
+        }
       }
       // Screener.in URL: NSE symbols use the symbol itself; BSE-only stocks use
       // the numeric scrip code (Screener accepts both formats).
@@ -643,7 +650,7 @@ function renderResults(results, keepLimit) {
 
 function updateStats(results) {
   if (!results.length) { document.getElementById('statsGrid').innerHTML = ''; return; }
-  const priced    = results.filter(r => !r.noData);
+  const priced    = results.filter(r => !r.noData && !r.frozenSince);   // frozen = no trades, not a 0% move
   const gainers   = priced.filter(r => r.changePercent > 0).length;
   const losers    = priced.filter(r => r.changePercent < 0).length;
   const unchanged = priced.length - gainers - losers;
