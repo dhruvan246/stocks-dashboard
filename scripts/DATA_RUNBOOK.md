@@ -18420,3 +18420,38 @@ First run: 567 fields / 53 cells. LANCER's 5 entries have no cached filing and a
 MTNL 20230930 npCon: the nightly owners pass writes −793.0 (the `_reattr_owners` 2-dp −7.93 ÷ 0.01) where the filing's exact figure is −792.82.
 
 **Detect again:** re-run the neighbour screen, then the YTD ratio for each hit. The procedure in this section is the recipe: arm only exact powers of ten, add a 2nd reader where the filer revised, and set `parse_only` where the stores already hold a figure from another filing.
+
+## 148. ★★ SME + LONG-PERIOD BALANCE SHEETS INTO xbrl_extra — non-Ind-AS tags, BS-only parse, separate SME cache  (2026-09-23, IN PROGRESS, worktree ~/stocks-wt/fa-backfill)
+
+**Measured this session (§0).** (1) Mainboard results XBRL carries a balance sheet only from filings submitted in
+2022 (0 of 600 sampled 2018-21 filings have PP&E; 2,042 2022-23 filings carry ONE BS instant, no comparative) —
+FY20-22 year-end BS is NOT in any exchange XBRL. (2) NSE lists SME XBRL only from the FY24 year-end results (filed
+Apr-2024); 2020-23 SME rows carry the placeholder `.../corporate/xbrl/-`. (3) SME files use the NON-Ind-AS
+taxonomy (`TangibleAssets`, `TangibleAssetsCapitalWorkInProgress`, `IntangibleAssets`, `ReservesAndSurplus`,
+`LongTermBorrowings`…) which the builder did not know. (4) `parse_file` returned None for OneD > 100 days — 877
+cached six-month INTEGRATED filings (481 companies, 172 SME) contributed nothing. (5) **2024 SME half-year files
+LIE in the context block**: OneD says Jul-Sep while `DateOf{Start,End}OfReportingPeriod` say Apr-Sep and the money
+is the 6-month figure (TRUST/GGBL Sep-2024) — a quarter parser would file H1 as Q2.
+
+**Builder change (pushed):** BS tag fallbacks (Ind-AS name first, so existing cells unchanged); `BS_SUM_ALT` used
+only when the Ind-AS group is absent (no double count); the filing's own reporting-period FACTS outrank the context
+block — span > 100 d → `parse_bs_only` (BS instants dated at the period end ONLY; no P&L/CF/aud); files listed in
+`scripts/xbrl_sme_files.json` with ReportingQuarter Half-yearly/Yearly → BS-only too; BS-only rows merge
+FILL-ONLY (a quarterly filing's value always wins). Regression over 4,000 random cache files vs the old parser:
+3,867 identical, 94 gained fields only (NBFC `rec`, bank `oeq` — banks gain nothing in the `bsMeaningful` set, so
+the Bank-health tab is unchanged), 39 long files now yield a BS, **0 existing fields changed or removed**. BS-only
+vs an existing quarterly row for the same instant: 98% identical; the misses were filer errors (GULFOILLUB Sep-25
+assets ×10, CGCL mis-dated period) or restatements — hence fill-only.
+
+**SME fetch:** `scripts/fetch_sme_xbrl.py --list/--fetch/--merge` — both endpoints (corporates-financial-results
+for 2024 NONINDAS, integrated-filing-results for 2025+), SEPARATE cache `scripts/_xbrl_cache_sme` (build_revop
+trusts the lying context block — these files must never reach the main cache). List done: **6,268 SME filings**
+(Mar-24 458, Sep-24 594, Mar-25 1,165, Sep-25 1,219, Mar-26 1,397 …). Fetch PAUSED at 84 files (resumable:
+re-run `--fetch`), then `--merge` (also picks up the 877 main-cache long files: 427 new basis-cells measured).
+
+**FY20-22 PDF route (NOT pushed, committed in the worktree only):** `fetch_annual_bscf.py` text path had NO unit
+handling — every lakh/million filer gate-failed (pilot 10/10 failed; CMSINFO FY25 read 31,199.24 = ₹ mn vs key
+3,119.92 cr). Fix written (stated unit from the BS page, else ÷1/10/100 tried against the holdout gate; fill years
+tagged `u: stated|inherited`) and `--only` now targets any symbol. **Untested — re-run the 10-symbol pilot first.**
+Target list: 1,190 non-financial mainboard companies ≥ ₹100 cr at any FY20-22 year-end, missing ≥1 of FY20-22,
+with a BSE code and an FY23+ validate year (290 more have no validate year, 88 no BSE code).
