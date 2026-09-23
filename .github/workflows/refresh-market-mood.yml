@@ -20,6 +20,7 @@ on:
       - "scripts/build_market_breadth.py"
       - "scripts/build_market_breadth_pit.py"
       - "scripts/build_index_survivorship.py"
+      - "scripts/ideas/momentum.py"
       - ".github/workflows/refresh-market-mood.yml"
 
 permissions:
@@ -72,6 +73,12 @@ jobs:
       - name: Rebuild index survivorship tables
         run: python3 -X utf8 scripts/build_index_survivorship.py
 
+      # Momentum + results screen for docs/ideas.html (runbook section 144d): today's picks from
+      # docs/stock_data.bin + sf_fundamentals, and the month-end backtest on the same fresh
+      # survivorship-free bin downloaded above.
+      - name: Rebuild momentum + results screen
+        run: python3 -X utf8 scripts/ideas/momentum.py --validate
+
       # Commit BOTH built feeds (the freshly downloaded bin is discarded by the
       # reset). ⚠️ reset-and-replay gotcha (runbook §18): every file the build
       # steps write MUST ride the cp-to-/tmp + cp-back + git-add lists below,
@@ -88,6 +95,8 @@ jobs:
           cp docs/market_breadth.json    /tmp/market_breadth.json
           cp docs/market_breadth_pit.json /tmp/market_breadth_pit.json
           mkdir -p /tmp/survivorship && cp docs/survivorship/*.json /tmp/survivorship/
+          cp docs/ideas/momentum.json /tmp/momentum.json
+          cp docs/ideas/momentum_validation.json /tmp/momentum_validation.json
           for attempt in 1 2 3 4 5; do
             git fetch origin main
             git reset --hard origin/main
@@ -95,7 +104,9 @@ jobs:
             cp /tmp/market_breadth.json    docs/market_breadth.json
             cp /tmp/market_breadth_pit.json docs/market_breadth_pit.json
             mkdir -p docs/survivorship && cp /tmp/survivorship/*.json docs/survivorship/
-            git add docs/nifty500_turnover.json docs/market_breadth.json docs/market_breadth_pit.json docs/survivorship/*.json
+            cp /tmp/momentum.json docs/ideas/momentum.json
+            cp /tmp/momentum_validation.json docs/ideas/momentum_validation.json
+            git add docs/nifty500_turnover.json docs/market_breadth.json docs/market_breadth_pit.json docs/survivorship/*.json docs/ideas/momentum.json docs/ideas/momentum_validation.json
             if git diff --cached --quiet; then
               echo "Turnover + breadth series unchanged — nothing to commit"
               echo "changed=false" >> "$GITHUB_OUTPUT"
