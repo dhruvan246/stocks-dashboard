@@ -179,8 +179,25 @@ def _bare_head(lines, i):
 # fallback ONLY when no "effective from <date>" parses: IISL notices whose text layer splits that phrase
 # carry the date once as "with effect from December 7 , 2011" (ind_prs01122011, Indiabulls demerger). §141e
 DATE2_RE = re.compile(r"(?:with\s+)?effect\s+from\s+([A-Z][a-z]+\s+\d{1,2}\s*,\s*\d{4})", re.I)
+# RESCHEDULING NOTICES (2026-09-23, runbook §141f): the preamble first QUOTES the review being amended
+# ("On August 28, 2017 IISL announced replacement of Reliance Capital Ltd. … effective from September
+# 29, 2017"), then gives the new date ("decided to reschedule replacement of Reliance Capital Ltd. …
+# effective from September 05, 2017"). The first "effective from" is the OLD date, so every block of
+# ind_prs29082017 (RELCAPITAL) and ind_prs07032017 (SBBJ / MYSOREBANK / SBT: 16-Mar, not 31-Mar 2017)
+# was dated 15-24 days late. Returns (announced, rescheduled) or None.
+RESCHED_RE = re.compile(r"reschedul", re.I)
+def resched_dates(txt):
+    m = RESCHED_RE.search(txt)
+    if not m:
+        return None
+    old = DATE_RE.search(txt[:m.start()]); new = DATE_RE.search(txt, m.start())
+    if not (old and new):
+        return None
+    return to_iso(old.group(1)), to_iso(new.group(1))
 def parse_text(txt, bare_heads=False):
     md = DATE_RE.search(txt) or DATE2_RE.search(txt); eff_default = to_iso(md.group(1)) if md else None
+    rs = resched_dates(txt)
+    if rs: eff_default = rs[1]
     cur = None; mode = None; blocks = []
     lines = txt.splitlines(); i = 0; n = len(lines)
     while i < n:
@@ -385,7 +402,7 @@ def main():
     known = set(files_all)
     stems = list(dict.fromkeys(files_all + recent_stems()))   # hand-maintained + persisted + auto-probed recent
     print(f"Parsing {len(FILES)} known + {len(probed_keep)} persisted + {len(stems)-len(files_all)} auto-probed recent press releases...")
-    ok = miss = 0; changelog = {}; revocations = []
+    ok = miss = 0; changelog = {}; revocations = []; rescheduled = []
     for stem in stems:
         fp = download(stem, tries=(5 if stem in known else 1))   # don't retry the speculative probes
         if not fp: miss += 1; continue
@@ -394,10 +411,13 @@ def main():
         try:
             _rtxt = "\n".join(p.extract_text() or "" for p in PdfReader(fp).pages)
             _revs = parse_revocations(_rtxt) + parse_symbol_lists(_rtxt)
+            _rs = resched_dates(_rtxt)
         except Exception:
-            _revs = []
+            _revs = []; _rs = None
         if _revs:
             revocations.append((stem, _revs))
+        if _rs and blocks:
+            rescheduled.append((stem, _rs[0], blocks))
         if blocks and stem not in known and stem not in probed_keep:
             probed_keep.append(stem); print(f"  persisting auto-probed notice {stem} ({len(blocks)} index blocks)")
         for b in blocks:
@@ -412,17 +432,49 @@ def main():
     # counts (a garbled two-copy text layer) are refused. NOT listed: 03092012 — its Midcap 50 "exclusion"
     # of SOUTHBANK cancels an announced inclusion (the register has neither leg) and would fabricate a
     # pre-2012 member.
-    SUPPLEMENT = ["07062011", "16062011", "01122011", "12122011", "29022012"]
-    for stem in SUPPLEMENT:
+    # MIDCAP 150 BEFORE 2019 (2026-09-23, runbook §141f): Midcap 150 has no sheet in the register and its
+    # first archived list is 2019-02-01, so every 2017-2018 review was missing from its walk — only their
+    # Nifty 500 blocks entered, via the hunt overlay — and the 2016-09-30 roster had 138 names. Each notice
+    # below was READ BY HAND; only its Midcap 150 block is admitted (the second field names the indices a
+    # stem may feed; None = every block). All eleven blocks balance, with no repeated ticker. The
+    # RELCAPITAL / MFSL leg of 28082017 is taken out by the rescheduling step below (29082017 moved it to
+    # 2017-09-05).
+    M150 = {"Nifty Midcap 150"}
+    SUPPLEMENT = [("07062011", None), ("16062011", None), ("01122011", None), ("12122011", None), ("29022012", None),
+                  ("16012017", M150), ("16022017", M150), ("15062017", M150), ("28082017", M150),
+                  ("16102017", M150), ("03112017", M150), ("08012018", M150), ("21022018", M150),
+                  ("24052018", M150), ("28082018", M150), ("14122018", M150)]
+    for stem, only in SUPPLEMENT:
         fp = download(stem)
         if not fp:
             print(f"  SUPPLEMENT {stem}: PDF unavailable — skipped"); continue
         for b in parse_pdf(fp):
+            if only is not None and b["index"] not in only:
+                continue
             if len(set(b["included"])) != len(b["included"]) or len(set(b["excluded"])) != len(b["excluded"]) \
                     or len(b["included"]) != len(b["excluded"]):
                 print(f"  SUPPLEMENT {stem} {b['index']}: refused (+{b['included']} -{b['excluded']})"); continue
             changelog.setdefault(b["index"], []).append({"eff": b["eff"], "excluded": b["excluded"],
                                                          "included": b["included"], "src": stem, "hole_fill": True})
+            print(f"  SUPPLEMENT {stem} {b['index']} {b['eff']}: -{len(b['excluded'])} +{len(b['included'])}")
+    # RESCHEDULED LEGS (2026-09-23, runbook §141f): a rescheduling notice moves the legs it names OFF the
+    # date the original review announced. Its own events now carry the new date (resched_dates), so the
+    # same legs are removed from every other event of that index dated on the announced date — else the
+    # stock is excluded twice and the walk holds it in the index between the two dates (28082017's
+    # Midcap 150 block vs 29082017). Nifty 500 is left to the hunt overlay below, which replaces its
+    # 2015-2019 reviews wholesale (validated at 39 archived lists).
+    for stem, old_eff, blocks in rescheduled:
+        for b in blocks:
+            if b["index"] == "Nifty 500":
+                continue
+            for c in changelog.get(b["index"], []):
+                if c["src"] == stem or c["eff"] != old_eff:
+                    continue
+                gone = [x for x in c["excluded"] if x in b["excluded"]] + [x for x in c["included"] if x in b["included"]]
+                if gone:
+                    c["excluded"] = [x for x in c["excluded"] if x not in b["excluded"]]
+                    c["included"] = [x for x in c["included"] if x not in b["included"]]
+                    print(f"  RESCHEDULED {stem}: {b['index']} {gone} moved {old_eff} -> {b['eff']} (removed from {c['src']})")
     # SUPERSEDED NOTICES (2026-09-23, runbook §141d): a later notice that says its lists REPLACE an
     # earlier notice's lists for named indices. ind_prs15092021 §C: REIT/InvIT inclusion put on hold,
     # so "the earlier list of replacement of these indices published through a press release on August

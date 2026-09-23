@@ -18181,10 +18181,81 @@ fabricates far fewer. Score harness: `pin_report` lines in the build log (`Nifty
    although ind_prs23022021 swapped them from 2021-03-31; no notice revokes it; the 2023-08-13 list has
    the swap). Wayback was offline 2026-09-23, so no second 2021 capture was read.
 
-**Open (not part of the pin residual):** (a) `29082017` reschedules only RELCAPITAL to **2017-09-05**, but
+**Open (not part of the pin residual):** ((a) and (b) DONE 2026-09-23 — §141f.) (a) `29082017` reschedules only RELCAPITAL to **2017-09-05**, but
 `parse_text` takes the first "effective from" (which quotes the original 2017-09-29 review) — its events
 are mis-dated by 24 days. (b) **Nifty Midcap 150 before 2019 is incomplete** — its 2016-09-30 snapshot has
 138 members; the 2017-2018 reviews (16012017, 16022017, 28082017, 08012018, 21022018, 28082018, 14122018 +
 off-cycles) carry ~120 Midcap 150 events only the N500 hunt overlay reads, and Midcap 150 has no register
 sheet; derived Smallcap 250 inherits it (286 members at 2016-09-30). (c) IISL two-copy text layers
 (01102010, 08102010, 19042011) detach rows from headings — never admit them without reading.
+
+## 141f. ★★★ NIFTY MIDCAP 150 BEFORE 2019 — eleven hand-read reviews, and the rescheduled-date defect  (2026-09-23)
+
+**Result (measured, worktree ~/stocks-wt/midcap150-hist, base 11c7405ab, LIVE sf bin fetched 2026-09-23 13:47
+IST, today's NSE lists as anchors).** Nifty Midcap 150 now has **150 members at every snapshot 2016-09-30 →
+2019** (was 138 / 140 / 143 / 145). Derived Smallcap 250 is 250 at 2016-09-30 (was 286). All `pin_report`
+lines stay **off-by 0** (24 non-derived indices). **Nifty 500 39/39 archived lists at 100%**. **Nifty 500,
+Nifty 50 and Nifty Bank `indices_history` byte-identical** to the base build (which equalled the committed
+file). The listing-date phantom floor drops 268 rows (was 294); Midcap 150 now needs none.
+
+| Midcap 150 snapshot | before | after |  | Midcap 150 snapshot | before | after |
+|---|---|---|---|---|---|---|
+| 2016-09-30 | 138 | 150 | | 2017-10-30 | — | 150 |
+| 2016-11-15 | 140 | 150 | | 2017-11-13 | — | 150 |
+| 2017-01-23 | — | 150 | | 2018-02-05 | — | 150 |
+| 2017-03-31 | — | 150 | | 2018-04-02 | — | 150 |
+| 2017-05-26 | 143 | 150 | | 2018-06-29 | — | 150 |
+| 2017-06-23 | — | 150 | | 2018-09-28 | — | 150 |
+| 2017-09-05 | — | 150 | | 2018-12-28 | — | 150 |
+| 2017-09-29 | 145 | 150 | | 2019-02-01 (first pin) | 150 | 150 |
+
+**Second readers.** Midcap 150's first archived list is 2019-02-01, so its own pins cannot see 2016-2018.
+Three independent readers from OTHER indices' archived lists (script: canon-folded sets):
+
+| reader | before | after |
+|---|---|---|
+| LargeMidcap 250 list 2018-01-08 − Nifty 100 | off-by 61 | **0** |
+| Nifty 500 − Nifty 100 − Smallcap 250 list 2018-03-09 | off-by 55 | **0** |
+| Midcap 50 lists 2018-05-04 / 2018-07-04 ⊂ Midcap 150 | 5 / 3 missing | **0 / 0** |
+| Midcap 150 ∩ Nifty 100 (overlap = impossible by construction) | up to 14 names, 21 of 32 dates 2016-09 → 2019-06 | **0 on all 93 dates 2016-09-30 → today** |
+
+**(b) What was added.** `SUPPLEMENT` entries are now `(stem, indices)`; eleven stems admit ONLY their
+Midcap 150 block, each read by hand from the text layer (every block balances, no repeated ticker, none
+refused): 16012017 (eff 2017-01-23, 1 swap), 16022017 (03-31, 9), 15062017 (06-23, 1), 28082017 (09-29, 10
+→ 9, see below), 16102017 (10-30, 1), 03112017 (11-13, 1), 08012018 (2018-02-05, 3), 21022018 (04-02, 15),
+24052018 (06-29, 2), 28082018 (09-28, 13), 14122018 (12-28, 3) — 58 swaps, 116 events. Midcap 150 has no
+register sheet, so `fill_holes` admits every leg. **Search coverage:** every 2016-2019 notice in the
+corpus (`~/stocks-backups/press-release-hunt-2026-09-23/prs/`, 1,416 PDFs) whose text names Midcap 150
+(loose regex `mid\s*cap\s*150`) was classified: the four already in FILES (12082016, 17102016, 27042017,
+29082017) + these eleven are ALL the change-bearing ones; 22022016_1, 01042016, 22082017, 30112017,
+05012018, 24102019 are methodology / launch notices. The eight image-only 2018 notices (03122018,
+10092018, 11092018, 14062018, 18092018, 24092018, 24092018_1, 25092018) were OCR'd with
+`_pr_ocr/ocr.swift`: SDL / G-sec / CPSE / Alpha-50 / conference / arbitration — no Midcap 150 block.
+The other index blocks of the eleven notices were NOT admitted: every one of those indices already scores
+off-by 0 at its pins and the derived Smallcap 250 / MidSmallcap 400 are rebuilt from Midcap 150.
+
+**(a) The rescheduled-date defect** (`resched_dates` in build_changelog). A rescheduling notice first QUOTES
+the review it amends, then gives the new date; `parse_text` took the first "effective from", so all its
+blocks were late. When the text says "reschedul", the date is the first "effective from" AFTER that word.
+Diffed over all 1,416 cached PDFs: exactly two notices move, rows unchanged — **29082017 → 2017-09-05**
+(RELCAPITAL; Midcap 150, Midcap 50, Nifty 200, MidSmallcap 400) and **07032017 → 2017-03-16** (SBBJ,
+MYSOREBANK, SBT suspended for the SBI merger; Smallcap 250, MidSmallcap 400, Smallcap 50). NSE's own
+register sheets carry the same dates (Nifty 200 / Midcap 50: RELCAPITAL out 2017-09-05; Smallcap 50: SBBJ,
+SBT out 2017-03-16) — before, the register leg AND the late notice leg both applied, so the stock stayed
+in the index until the old date. Those three indices differ from the base build on that one date only.
+**RESCHEDULED LEGS:** the moved legs are also removed from every other event of that index dated on the
+announced date (28082017's Midcap 150 block loses RELCAPITAL / MFSL — else RELCAPITAL is excluded twice
+and walks back into the index from 09-05 to 09-29). Nifty 500 is skipped: the hunt overlay owns it.
+
+**Open.** (1) **Nifty 500 keeps the same defect** — the hunt overlay (`_n500_hunt_prs.json`) dates 29082017
+at 20170929 and 07032017 at 20170331, while NSE's Nifty 500 register moves those legs on 2017-09-05 /
+2017-03-16. Measured: Nifty 500 holds RELCAPITAL and lacks MFSL 2017-09-05 → 09-28, and holds SBBJ /
+MYSOREBANK / SBT and lacks FRETAIL / MAXINDIA / MGL 2017-03-16 → 03-30. Consequences today: derived
+Smallcap 250 = 251 on the 2017-09-05 snapshot (RELCAPITAL), and MFSL sits in Midcap 150 but not Nifty 500
+for those 24 days. Left untouched by instruction (Nifty 500 is pinned exact at 39 lists; none falls in
+either window) — the fix is those two hunt entries' `eff`, then re-check the 39 pins. (2) Pre-existing,
+unchanged: Nifty 500's 2022-05-04 archived list has no GMR ticker, so Midcap 150's GMRAIRPORT is outside
+Nifty 500 on that snapshot. (3) The SUPPLEMENT PDFs are downloaded by CI each run; a stem that fails to
+download prints `SUPPLEMENT <stem>: PDF unavailable — skipped` and that week's build silently loses its
+events (same failure mode as FILES) — check the membership-refresh log for that line if Midcap 150 counts
+drop.
