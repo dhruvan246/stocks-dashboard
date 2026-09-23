@@ -67,7 +67,7 @@ function spList(all, favs){
   return l.slice().sort((a, b) => (isFavCfg(favs, b.cfg) ? 1 : 0) - (isFavCfg(favs, a.cfg) ? 1 : 0));   // ★ float to the top
 }
 function spActive(B){ return SP_FILT || ((FAVONLY && B.fav > 0) ? 'fav' : 'all'); }
-function spChipName(k){ return k === 'fav' ? '★ Favourites' : k === 'mark' ? (SIDE === 'sell' ? '✓ Sold today' : '✓ Bought today') : k === 'priv' ? 'Private' : 'All'; }
+function spChipName(k){ return k === 'fav' ? '★ Favourites' : k === 'mark' ? (SIDE === 'sell' ? '✓ Sold' : '✓ Bought') : k === 'priv' ? 'Private' : 'All'; }
 /* footer label for a totals row: "Total" on All, else "Total · ★ Favourites 8 of 45" */
 function spTotLbl(list){
   const all = uniqStrategies(), k = spActive(spBuckets(all, loadFavs()));
@@ -194,7 +194,7 @@ function factorMap(it){
 }
 function screenOne(it){
   const all = screenAsOf(it.cfg, SF.end), picks = all.slice(0, it.cfg.topN), bd = borderMap(it.cfg, all), cols = pickCols(it.cfg);
-  PICKS[it.id] = { asOf: SF.end, cols: cols, rows: picks.map((r, i) => ({ rank: i+1, sym: r.sym, tkr: r.tkr, bd: bd[i+1] || null,
+  PICKS[it.id] = { asOf: SF.end, cols: cols, edge: edgeRows(it.cfg, all), rows: picks.map((r, i) => ({ rank: i+1, sym: r.sym, tkr: r.tkr, bd: bd[i+1] || null,
     px: (META[r.tkr] && META[r.tkr].raw) ? META[r.tkr].raw : r.price, fv: pickFV(r, cols) })) };
 }
 /* ---------- LIVE re-ranking — the ENGINE'S OWN overlay (unified 2026-08-31) ----------
@@ -213,7 +213,7 @@ function screenOne(it){
   }
   function screenLiveOne(it){
     const all = screenAsOf(it.cfg, LIVEOV.date || SF.end), picks = all.slice(0, it.cfg.topN), bd = borderMap(it.cfg, all), cols = pickCols(it.cfg);
-    PICKS[it.id] = { asOf: SF.end, live: true, liveTs: LIVEOV.ts, cols: cols, rows: picks.map((r, i) => ({ rank: i + 1, sym: r.sym, tkr: r.tkr, bd: bd[i+1] || null,
+    PICKS[it.id] = { asOf: SF.end, live: true, liveTs: LIVEOV.ts, cols: cols, edge: edgeRows(it.cfg, all), rows: picks.map((r, i) => ({ rank: i + 1, sym: r.sym, tkr: r.tkr, bd: bd[i+1] || null,
       px: r.price, fv: pickFV(r, cols) })) };   // the spliced bar IS the live price; rebalance mode still shows META.raw
   }
   async function screenPick(it){
@@ -259,18 +259,25 @@ const Z = { connected: false, user: null, held: new Set(), hold: {} };
    Marked the moment orders leave for Zerodha (direct API or the Kite popup); browser-local
    (same device that buys), auto-expires at midnight, and the chip un-marks on click if a
    basket was cancelled on Zerodha's page. */
-const zbDayKey = () => { const d = new Date(); return d.getFullYear() + '-' + String(d.getMonth() + 1).padStart(2, '0') + '-' + String(d.getDate()).padStart(2, '0'); };
-function zbDayIds(field){ try { const d = zbaDoc()[field]; if (d && d.d === zbDayKey() && Array.isArray(d.ids)) return d.ids; } catch(e){} return []; }
-function zbMarkDay(field, lsKey, id, on){ try { const k = zbDayKey();
-    let a; try { a = new Set([...(JSON.parse(localStorage.getItem(lsKey) || '{}')[k] || []), ...zbDayIds(field)]); } catch(e){ a = new Set(zbDayIds(field)); }
+/* Marks are keyed by the REBALANCE (its T date), not the calendar day (user 2026-09-23): a basket
+   sent on T must still read "sent" on T+1, or the button re-arms against a ledger that still lists
+   the sold exits — and for a stock two strategies share, that re-armed basket would sell the OTHER
+   strategy's shares. Each mark also records what was SENT per strategy ({SYM: qty}), so the buy leg
+   can tell a sold-then-kept stock (buy it back) from a genuinely kept one. Synced in the same
+   token-gated row; whole-field newer-wins like every other field there. */
+function zbRebKey(){ return rebalWindow().tIso; }
+function zbMarkDoc(field){ try { const d = zbaDoc()[field]; if (d && d.k === zbRebKey()) return { k: d.k, ids: Array.isArray(d.ids) ? d.ids.slice() : [], syms: Object.assign({}, d.syms || {}) }; } catch(e){} return { k: zbRebKey(), ids: [], syms: {} }; }
+function zbMarkReb(field, id, on, sent){ try {
+    const m = zbMarkDoc(field), a = new Set(m.ids);
     on ? a.add(id) : a.delete(id);
-    localStorage.setItem(lsKey, JSON.stringify({ [k]: [...a] }));
-    const d = zbaDoc(); d[field] = { d: k, ids: [...a] }; d.ts = Date.now();
+    if (on && sent){ const cur = m.syms[id] = Object.assign({}, m.syms[id] || {}); for (const k in sent) cur[k] = (+cur[k] || 0) + (+sent[k] || 0); } else if (!on) delete m.syms[id];
+    const d = zbaDoc(); d[field] = { k: m.k, ids: [...a], syms: m.syms }; d.ts = Date.now();
     localStorage.setItem(ZBA_LS, JSON.stringify(d));
     clearTimeout(zbaSet._t); zbaSet._t = setTimeout(zbaPush, 1200);
   } catch(e){} renderCards(); }
-function zbBoughtSet(){ try { const j = JSON.parse(localStorage.getItem('sp_bought_v1') || '{}'); return new Set([...(j[zbDayKey()] || []), ...zbDayIds('boughtDay')]); } catch(e){ return new Set(zbDayIds('boughtDay')); } }
-function zbSetBought(id, on){ zbMarkDay('boughtDay', 'sp_bought_v1', id, on); }
+function zbSentSyms(field, id){ return (zbMarkDoc(field).syms || {})[id] || {}; }
+function zbBoughtSet(){ return new Set(zbMarkDoc('boughtReb').ids); }
+function zbSetBought(id, on, sent){ zbMarkReb('boughtReb', id, on, sent); }
 /* Zerodha's SEBI static-IP rule (Apr-2026) rejects API order placement from a non-whitelisted IP —
    our Cloudflare worker has no static IP, so direct /order can't work here; the Kite basket popup
    (you confirm on Zerodha's page) has no such requirement. Detect that reject and fall back. */
@@ -346,34 +353,38 @@ function renderCards(){
     const disp = en || nameWithBasis(it.name, it.cfg);
     if (SIDE === 'sell') return sellCardHTML(it, disp, favNum);
     const p = PICKS[it.id];
+    const leg = RW.buyIn ? buyLeg(p, RW) : null, backs = p ? rebuyRows(it, p) : [];
     let body = '';
     if (p){
       const cols = p.cols || [];
-      body = '<div class="twrap"><table><thead><tr><th>#</th><th>Pick</th><th>Live ₹</th><th>Day %</th>' + pickColHead(cols) + '</tr></thead><tbody>' +
+      body = '<div class="twrap"><table><thead><tr><th>#</th><th>Pick</th><th>Live \u20b9</th><th>Day %</th>' + pickColHead(cols) + '</tr></thead><tbody>' +
         p.rows.map(r => {
           const q = liveQ(r.sym); const px = q && q.ltp != null ? q.ltp : r.px;
           const chg = q && q.ltp != null && q.prevClose ? (q.ltp / q.prevClose - 1) * 100 : null;
+          const bk = backs.find(b => b.sym === r.sym);
           return '<tr><td class="sym">' + r.rank + '</td>' +
-            '<td><b>' + esc(r.sym) + '</b> ' + (Z.held.has(r.sym) ? '<span class="tag keep">held</span>' : '<span class="tag new">new</span>') +
-            (r.bd ? ' <span class="tag" style="background:color-mix(in srgb,#c98500 18%,transparent);color:#c98500" title="' + esc(r.bd) + '">borderline</span>' : '') +
+            '<td><b>' + esc(r.sym) + '</b> ' + (bk ? '<span class="tag" style="background:color-mix(in srgb,#c98500 18%,transparent);color:#c98500" title="Sold on the ' + esc(RW.tlab) + ' close but still in the official screen \u2014 buy the same ' + bk.qty.toLocaleString('en-IN') + ' back">buy back</span>' : (Z.held.has(r.sym) ? '<span class="tag keep">held</span>' : '<span class="tag new">new</span>')) +
             (q && q.ltp != null ? '' : ' <span class="badge">EOD</span>') + '</td>' +
-            '<td>₹' + (+px).toFixed(2) + '</td>' +
-            '<td class="' + (chg == null ? 'sym' : chg >= 0 ? 'up' : 'down') + '">' + (chg == null ? '—' : (chg >= 0 ? '+' : '') + chg.toFixed(2) + '%') + '</td>' + pickColCells(cols, r) + '</tr>';
+            '<td>\u20b9' + (+px).toFixed(2) + '</td>' +
+            '<td class="' + (chg == null ? 'sym' : chg >= 0 ? 'up' : 'down') + '">' + (chg == null ? '\u2014' : (chg >= 0 ? '+' : '') + chg.toFixed(2) + '%') + '</td>' + pickColCells(cols, r) + '</tr>';
         }).join('') + '</tbody></table></div>' +
-        (p.rows.some(r => r.bd) ? '<div class="khelp">\u26a0 borderline = the screen can still flip this pick by the close (hover it for the numbers) \u2014 on a rebalance day buy that slot LAST (~3:25 IST), the safe ones early.</div>' : '');
+        (leg && !leg.ok ? '<div class="khelp">\u26a0 <b>' + esc(leg.msg) + '</b> \u2014 buying is locked until then.</div>' : '');
     }
-    return '<div class="sblk"><div class="shead">' + (favNum(it.cfg) ? '<span class="snum" style="font-size:11px;background:var(--buy);color:#fff;border-color:var(--buy);padding:1px 6px;margin:0 4px 0 0">#' + favNum(it.cfg) + '</span>' : '') + '<span class="nm2" title="Code-name: ' + esc(nameWithBasis(it.name, it.cfg)) + '">' + (isFavCfg(loadFavs(), it.cfg) ? '★ ' : '') + esc(disp) + '</span>' +
+    return '<div class="sblk"><div class="shead">' + (favNum(it.cfg) ? '<span class="snum" style="font-size:11px;background:var(--buy);color:#fff;border-color:var(--buy);padding:1px 6px;margin:0 4px 0 0">#' + favNum(it.cfg) + '</span>' : '') + '<span class="nm2" title="Code-name: ' + esc(nameWithBasis(it.name, it.cfg)) + '">' + (isFavCfg(loadFavs(), it.cfg) ? '\u2605 ' : '') + esc(disp) + '</span>' +
       (it._priv ? '<span class="tag new">private</span>' : '') +
-      (bought.has(it.id) ? '<span class="tag keep" data-unbought="' + esc(it.id) + '" title="Basket sent to Zerodha today — click if that was cancelled" style="cursor:pointer">✓ bought today</span>' : '') +
-      '<span class="sym">' + esc(cardMeta(it.cfg)) + (p ? (p.live ? ' · LIVE picks · close ' + esc(p.asOf) + ' + prices ' + (p.liveTs ? new Date(p.liveTs).toTimeString().slice(0, 5) : 'now') : ' · picks as of ' + esc(p.asOf)) : '') + '</span>' +
+      (bought.has(it.id) ? '<span class="tag keep" data-unbought="' + esc(it.id) + '" title="Basket sent to Zerodha this rebalance \u2014 click if that was cancelled" style="cursor:pointer">\u2713 bought</span>' : '') +
+      '<span class="sym">' + esc(cardMeta(it.cfg)) + (p ? (p.live ? ' \u00b7 LIVE picks \u00b7 close ' + esc(p.asOf) + ' + prices ' + (p.liveTs ? new Date(p.liveTs).toTimeString().slice(0, 5) : 'now') : ' \u00b7 picks as of ' + esc(p.asOf)) : '') + '</span>' +
       (p && p.live ? '<span class="tag new">LIVE</span>' : '') +
       '<span style="margin-left:auto; display:flex; gap:6px">' +
       '<button class="btn" data-load="' + esc(it.id) + '">' + (p ? 'Refresh picks' : 'Picks') + '</button>' +
       (p ? (BUYSLICER[it.id]
               ? '<button class="btn on" data-basket="' + esc(it.id) + '">Buying ' + BUYSLICER[it.id].i + '/' + BUYSLICER[it.id].n + '</button>'
               : (bought.has(it.id)
-                   ? '<button class="btn" disabled title="Already bought today — click the ✓ bought-today chip to re-enable" style="opacity:.5;cursor:not-allowed;color:var(--up)">✓ Bought</button>'
-                   : (RW.in ? '<button class="btn on" data-basket="' + esc(it.id) + '">Buy basket</button>' : '<span class="tag off" title="Buy baskets act only on the rebalance window — enter new positions near the month-end close, funded by the exits. Off-window this is a preview only.">Locked · arms ' + RW.t1lab + '</span>'))) : '') +
+                   ? '<button class="btn" disabled title="Already bought this rebalance \u2014 click the \u2713 bought chip to re-enable" style="opacity:.5;cursor:not-allowed;color:var(--up)">\u2713 Bought</button>'
+                   : (!RW.buyIn
+                        ? '<span class="tag off" title="Buy baskets act only on the morning after month-end \u2014 ' + esc(RW.t1lab) + ' (buffer to ' + esc(RW.t3lab) + '), on the official ' + esc(RW.tlab) + ' close screen, funded by the sell proceeds. Off-window this is a preview only.">Locked \u00b7 arms ' + esc(RW.t1lab) + '</span>'
+                        : (leg.ok ? '<button class="btn on" data-basket="' + esc(it.id) + '">Buy basket</button>'
+                                  : '<span class="tag warn" title="' + esc(leg.msg) + '">' + (p.live ? 'Rebalance picks required' : 'Waiting for ' + esc(RW.tlab) + ' close') + '</span>')))) : '') +
       '</span></div>' + body + '</div>';
   }).join('');
   $('cards').innerHTML = h;
@@ -391,45 +402,73 @@ function renderCards(){
    buys at the live price. Money per strategy = the ₹ amount last used in its ⚡ dialog
    (remembered per strategy); strategies with no amount yet are named so you can set one.
    "Buy all" runs the same sliced, NSE-only, tick-aware engine as a single basket. */
+/* The buy leg trusts ONE screen: rebalance mode, dated exactly T — the official month-end close the
+   backtest holds. A live re-rank on T+1 prices is a different screen; a pick date before T means the
+   evening bake has not landed yet (~20:45 IST on T, retry 08:55 IST next morning). */
+function buyLeg(p, RW){
+  if (!p || !p.rows.length) return { ok: false, msg: 'Load the picks first' };
+  if (p.live) return { ok: false, msg: 'Switch to Rebalance picks \u2014 buys use the official ' + RW.tlab + ' close screen, not a live re-rank' };
+  if (p.asOf !== RW.tIso) return { ok: false, msg: 'Waiting for the ' + RW.tlab + ' close in the data (picks are as of ' + p.asOf + '; it lands ~8:45 pm, retry 8:55 am) \u2014 refresh picks' };
+  return { ok: true, msg: '' };
+}
+/* Buy-backs (user 2026-09-23): a stock this strategy SOLD on T that the official T-close screen still
+   holds. The ledger still lists it as held, so plain sizing would silently skip it; the demat shortfall
+   (what the keeping strategies should own minus what Zerodha holds) says it is gone. Same quantity
+   back — the backtest never sold it. Funded by its own sale (see buyAllAgg). */
+function rebuyRows(it, p){
+  const held = heldFor(it.cfg); if (!held || !held.rows.length || held.method === 'reset' || !p || !p.rows.length) return [];
+  const PR = proceedsOf(it.id), sold = zbSentSyms('soldReb', it.id), out = [];
+  p.rows.forEach(r => { const h = held.rows.find(x => x.sym === r.sym); if (!h) return;
+    const soldQ = (PR && PR.filled && PR.filled[r.sym] != null) ? +PR.filled[r.sym] : (+sold[r.sym] || 0); if (soldQ <= 0) return;
+    let q = Math.min(h.qty, soldQ);
+    if (Z.connected){ const gap = Math.max(0, keeperQty(r.sym, it) + h.qty - dematQty(r.sym)); q = Math.min(q, gap); }
+    if (q > 0) out.push({ sym: r.sym, qty: q, px: r.px }); });
+  return out;
+}
 function buyAllAgg(list){
   const agg = {}, missing = [];
+  let nAct = 0, nEst = 0;
   list.forEach((it, i) => {
     const p = PICKS[it.id]; if (!p || !p.rows.length) return;
-    /* engine sizing (2026-09-01, FIXED): a HOLD strategy funds each NEW entry from its EXIT
-       proceeds (value of the holds it drops from the picks) ÷ open slots — never a fresh full
-       amount. RESET sells its whole book, split topN ways. Proceeds are estimated at live prices
-       (the ⚡ dialog + rebalance_sync reconcile the actual fills). Only a strategy with no held
-       book yet (a first-ever buy) falls back to the ₹ amount typed in its dialog. */
+    /* engine sizing (2026-09-01, FIXED): a HOLD strategy funds each NEW entry from its EXIT proceeds ÷ open
+       slots — never a fresh full amount. RESET sells its whole book, split topN ways. Proceeds = the ACTUAL
+       sell fills captured on T (Option A, user 2026-09-23) when present, else the exits' value at today's
+       prices (an estimate — the exits were sold at the T close). Only a strategy with no held book yet (a
+       first-ever buy) falls back to the ₹ amount typed in its dialog. */
     const held = heldFor(it.cfg);
     const isReset = !!(held && held.method === 'reset');
     const holdKeep = held && held.rows.length && !isReset;
     const heldSet = holdKeep ? new Set(held.rows.map(x => x.sym)) : null;
     const rows2 = holdKeep ? p.rows.filter(r => !heldSet.has(r.sym)) : p.rows;
-    if (!rows2.length) return;
-    let per;
+    const backs = holdKeep ? rebuyRows(it, p) : [];
+    const PR = proceedsOf(it.id);
+    let per = 0;
     if (held && held.rows.length){
       const pxOf = h => { const q = liveQ(h.sym); return (q && q.ltp != null) ? +q.ltp : (h.avg || 0); };
-      if (isReset){ const book = held.rows.reduce((s, h) => s + h.qty * pxOf(h), 0);
+      PR ? nAct++ : nEst++;
+      if (isReset){ const book = PR ? PR.amt : held.rows.reduce((s, h) => s + h.qty * pxOf(h), 0);
         per = book / (held.topN || p.rows.length); }
       else { const pickSet = new Set(p.rows.map(r => r.sym));
-        const exitVal = held.rows.filter(h => !pickSet.has(h.sym)).reduce((s, h) => s + h.qty * pxOf(h), 0);
+        const backVal = backs.reduce((s, b) => s + ((PR && PR.val && PR.val[b.sym]) || 0), 0);
+        const exitVal = PR ? Math.max(0, PR.amt - backVal) : held.rows.filter(h => !pickSet.has(h.sym)).reduce((s, h) => s + h.qty * pxOf(h), 0);
         const stays = held.rows.filter(h => pickSet.has(h.sym)).length;
         per = exitVal / Math.max(1, (held.topN || p.rows.length) - stays); }
-    } else { const amt = zbaGet(it.id); if (!amt) missing.push(i + 1); per = amt ? amt / rows2.length : 0; }
-    rows2.forEach(r => {
-      const q = liveQ(r.sym), px = (q && q.ltp != null) ? q.ltp : r.px;
-      const cap = zbCap(r.sym), contrib = cap > 0 ? Math.min(per, cap) : per;   // per-basket ₹ cap (HFCL)
-      const a = agg[r.sym] = agg[r.sym] || { sym: r.sym, px: px, amt: 0, from: [], capped: false };
-      a.px = px; a.amt += contrib; if (cap > 0 && contrib < per) a.capped = true; a.from.push(i + 1);
-    });
+    } else { const amt = zbaGet(it.id); if (!amt) missing.push(i + 1); per = amt && rows2.length ? amt / rows2.length : 0; }
+    const add = (sym, px0, contrib, back) => {
+      const q = liveQ(sym), px = (q && q.ltp != null) ? q.ltp : px0;
+      const a = agg[sym] = agg[sym] || { sym: sym, px: px, amt: 0, from: [], capped: false, back: false };
+      a.px = px; a.amt += contrib; a.from.push(i + 1); if (back) a.back = true; return a; };
+    rows2.forEach(r => { const cap = zbCap(r.sym), contrib = cap > 0 ? Math.min(per, cap) : per;   // per-basket ₹ cap (HFCL)
+      const a = add(r.sym, r.px, contrib, false); if (cap > 0 && contrib < per) a.capped = true; });
+    backs.forEach(b => { const q = liveQ(b.sym), px = (q && q.ltp != null) ? q.ltp : b.px; add(b.sym, b.px, b.qty * px, true); });
   });
   const rows = Object.values(agg).map(a => Object.assign(a, { qty: (a.amt > 0 && a.px > 0) ? Math.floor(a.amt / a.px) : 0 }))
     .sort((x, y) => (y.amt - x.amt) || (x.sym < y.sym ? -1 : 1));
-  return { rows: rows, missing: missing };
+  return { rows: rows, missing: missing, nAct: nAct, nEst: nEst };
 }
 function renderBuyAll(list){
   const box = $('buyall'); if (!box) return;
-  if (SIDE === 'sell'){ box.innerHTML = renderSellAll(list) + renderExitAll() + '<div class="khelp" style="margin:6px 4px 10px">Adopted timing (backtested \u2248+10pp/yr vs buying next morning): <b>sell the exits near the close of T\u22121</b> \u2014 the session BEFORE month-end, on that day\u2019s near-final \u26a1 live picks \u00b7 <b>buy the entries near the month-end close</b>, sized from the sell proceeds.</div>'; wireExitAll(); return; }
+  if (SIDE === 'sell'){ box.innerHTML = renderSellAll(list) + renderExitAll() + '<div class="khelp" style="margin:6px 4px 10px">Timing (user 2026-09-23): <b>sell the exits near the close of ' + esc(rebalWindow().tlab) + '</b> \u2014 the month-end session, on that day\u2019s near-final \u26a1 live picks \u00b7 <b>buy the entries the next morning (' + esc(rebalWindow().t1lab) + ')</b> on the official month-end close screen, funded by the captured sell proceeds. A stock kept on month-end that drops out of the final screen sells the next morning as a straggler.</div>'; wireExitAll(); return; }
   const residHTML = renderResidual();
   const withPicks = list.filter(it => PICKS[it.id] && PICKS[it.id].rows.length);
   if (!withPicks.length){ box.innerHTML = renderReenter() + residHTML; wireResidGo(); wireReenter(); return; }
@@ -443,14 +482,14 @@ function renderBuyAll(list){
       (agg.missing.length ? ' · no amount set for ' + agg.missing.map(n => '#' + n).join(', ') : '') + '</span>' +
     '<span class="go"><button class="btn" id="levGo" title="Zerodha margincalc on every entrant \u2014 catches MTF-blocked names that will need FULL cash via the auto-CNC fallback">Check leverage</button></span></div><div id="levOut"></div>' +   // Buy-all button REMOVED (user 2026-09-01): one round-robin queue for ~₹35 Cr ≈ 141 slices × 150s ≈ 6h — buy per-strategy (8 parallel ⚡ slicers) instead; the table stays as the consolidated checklist
     '<div class="twrap"><table><thead><tr><th>Stock</th><th>Strategies</th><th>Live ₹</th><th>Qty</th><th>Amount</th></tr></thead><tbody>' +
-    rows.map(r => '<tr><td><b>' + esc(r.sym) + '</b> ' + (Z.held.has(r.sym) ? '<span class="tag keep">held</span>' : '<span class="tag new">new</span>') + '</td>' +
+    rows.map(r => '<tr><td><b>' + esc(r.sym) + '</b> ' + (r.back ? '<span class="tag" style="background:color-mix(in srgb,#c98500 18%,transparent);color:#c98500" title="Sold on the month-end close but still in the official screen \u2014 restore the same quantity">buy back</span>' : (Z.held.has(r.sym) ? '<span class="tag keep">held</span>' : '<span class="tag new">new</span>')) + '</td>' +
       '<td class="sym">' + r.from.map(n => '<span class="snum">#' + n + '</span>').join('') + (r.from.length > 1 ? ' <b>×' + r.from.length + '</b>' : '') + '</td>' +
       '<td>₹' + (+r.px).toFixed(2) + '</td>' +
       '<td>' + (r.qty ? r.qty.toLocaleString('en-IN') : '—') + '</td>' +
       '<td>' + (r.amt ? zinr(r.amt) : '—') + (r.capped ? ' <span class="sym" title="capped per basket">cap</span>' : '') + '</td></tr>').join('') +
     '</tbody><tfoot><tr><td>' + esc(spTotLbl(list)) + '</td><td class="sym">' + rows.length + ' stock' + (rows.length === 1 ? '' : 's') + '</td><td></td>' +
     '<td>' + (totQty ? totQty.toLocaleString('en-IN') : '—') + '</td><td>' + (totAmt ? zinr(totAmt) : '—') + '</td></tr></tfoot></table></div>' +
-    '<div class="khelp">Numbered by the strategy blocks below. Amounts are the engine’s rebalance sizing — each new entry funded by its strategy’s EXIT proceeds (value of the holds it drops), estimated at live prices; a first-ever buy with no holdings falls back to the ₹ amount in its ⚡ dialog. A stock several strategies want is bought once, for the combined amount.</div></div>';
+    '<div class="khelp">Numbered by the strategy blocks below. Amounts are the engine’s rebalance sizing — each new entry funded by its strategy’s EXIT proceeds: ' + (agg.nAct ? '<b>actual sell fills captured on ' + esc(rebalWindow().tlab) + '</b> for ' + agg.nAct + (agg.nEst ? ', ' : ' ') : '') + (agg.nEst ? '<b>estimated at today’s prices</b> for ' + agg.nEst + ' (no proceeds captured — the exits were sold at the month-end close) ' : '') + (agg.nAct || agg.nEst ? 'strateg' + ((agg.nAct + agg.nEst) === 1 ? 'y' : 'ies') + '; ' : '') + 'a first-ever buy with no holdings falls back to the ₹ amount in its ⚡ dialog. A stock several strategies want is bought once, for the combined amount; <b>buy back</b> = sold on the month-end close but still in the official screen.</div></div>';
   const lg = $('levGo'); if (lg) lg.onclick = () => zbLevSweep(rows);
   const go = $('balGo');
   if (go) go.onclick = () => {
@@ -639,6 +678,7 @@ $('cards').addEventListener('click', e => {
   const u = e.target.closest('[data-unbought]'); if (u){ zbSetBought(u.dataset.unbought, false); ktoast('Un-marked — it shows as not bought again'); return; }
   const l = e.target.closest('[data-load]'); if (l){ l.textContent = '⏳…'; loadPicks(l.dataset.load); return; }
   const us = e.target.closest('[data-unsold]'); if (us){ zbSetSold(us.dataset.unsold, false); ktoast('Un-marked — it shows as not sold again'); return; }
+  const cp = e.target.closest('[data-capture]'); if (cp){ captureProceeds(cp.dataset.capture); return; }
   const sb = e.target.closest('[data-sellbasket]'); if (sb){
     const sid = sb.dataset.sellbasket;
     if (BUYSLICER[sid]){ const S = BUYSLICER[sid];
@@ -682,7 +722,8 @@ function ensureZbDlg(){
   $('zbTbl').addEventListener('change', e => { const c = e.target.closest('input[type=checkbox]'); if (!c) return;
     ZB.rows[+c.dataset.i].on = c.checked; zbAlloc(); zbRender(); zbMarginSoon(true); });
   $('zbKite').onclick = () => { const o = zbOrders(); if (!o.length){ ktoast('Nothing to buy — set an amount first'); return; }
-    if (kiteSend(o)){ zbSetBought(ZB.id, true); $('zbWrap').classList.remove('open'); } };
+    if (!buyLegGuard()) return;
+    if (kiteSend(o)){ zbSetBought(ZB.id, true, sentMap(o)); $('zbWrap').classList.remove('open'); } };
   $('zbGo').onclick = zbPlaceAll;
 }
 function zbOrders(){
@@ -693,8 +734,9 @@ function zbOrders(){
 }
 function zbAlloc(){
   const amt = +$('zbAmt').value || 0, mode = ($('zbMode') && $('zbMode').value) || 'value';
-  const on = ZB.rows.filter(r => r.on && r.px > 0), per = on.length ? amt / on.length : 0;
+  const on = ZB.rows.filter(r => r.on && r.px > 0 && !r.fixed), per = on.length ? amt / on.length : 0;
   ZB.rows.forEach(r => { r.st = ''; r.msg = '';
+    if (r.fixed){ r.margin = null; r.qty = r.on ? (r.backQty || r.qty) : 0; return; }   // buy-back: fixed quantity, funded by its own sale
     if (!(r.on && r.px > 0)){ r.qty = 0; r.margin = null; return; }
     const perShare = (mode === 'margin' && r.mps > 0) ? r.mps : r.px;
     const cap = zbCap(r.sym), val = (cap > 0 && mode !== 'margin') ? Math.min(per, cap) : per;   // HFCL ₹1 Cr cap
@@ -755,7 +797,7 @@ function zbRender(){
       : r.st === 'fail' ? '<span class="zchip bad" title="' + esc(r.msg) + '">FAILED</span>'
       : r.st ? '<span class="zchip open">' + esc(r.st) + '</span>' : '';
     h += '<tr><td><input type="checkbox" data-i="' + i + '"' + (r.on ? ' checked' : '') + '></td>' +
-      '<td><b>' + esc(r.sym) + '</b>' + (r.kept ? ' <span class="tag keep">kept \u2014 riding, not re-bought</span>' : (Z.held.has(r.sym) ? ' <span class="tag keep">held</span>' : '')) + (r.live ? '' : ' <span class="badge">EOD</span>') + '</td>' +
+      '<td><b>' + esc(r.sym) + '</b>' + (r.back ? ' <span class="tag" style="background:color-mix(in srgb,#c98500 18%,transparent);color:#c98500" title="Sold on the month-end close but still in the official screen \u2014 same quantity back">buy back</span>' : r.kept ? ' <span class="tag keep">kept \u2014 riding, not re-bought</span>' : (Z.held.has(r.sym) ? ' <span class="tag keep">held</span>' : '')) + (r.live ? '' : ' <span class="badge">EOD</span>') + '</td>' +
       '<td>' + (r.px ? '₹' + (+r.px).toFixed(2) : '—') + '</td>' +
       '<td class="limcol"><input class="zbl" type="number" min="0" step="0.05" data-i="' + i + '" value="' + ((r.limit > 0 ? r.limit : r.px) || 0).toFixed(2) + '"' + (r.on ? '' : ' disabled') + '></td>' +
       '<td><input class="zbq" type="number" min="0" step="1" data-i="' + i + '" value="' + r.qty + '"' + (r.on ? '' : ' disabled') + '></td>' +
@@ -785,21 +827,30 @@ function zBasketOpen(id){
      prefill the whole book's value (sell all, fresh equal split). Editable as ever. */
   (function(){
     const held = heldFor(it.cfg); if (!held || !held.rows.length) return;
+    const RW = rebalWindow(), PR = proceedsOf(id);
     const px = h => { const q = liveQ(h.sym); return (q && q.ltp != null) ? +q.ltp : (h.avg || 0); };
     if (held.method === 'reset'){
-      const all = held.rows.reduce((s, h) => s + h.qty * px(h), 0);
+      const all = PR ? PR.amt : held.rows.reduce((s, h) => s + h.qty * px(h), 0);
       if (all > 0) $('zbAmt').value = Math.round(all);
+      $('zbSub').textContent += PR ? ' \u00b7 amount = actual sell proceeds captured on ' + RW.tlab + ' (' + zinr(PR.amt) + ').'
+                                   : ' \u00b7 amount = the book\u2019s value at today\u2019s prices (no proceeds captured) \u2014 edit to your actual sell proceeds.';
       return;
     }
-    const heldSet = new Set(held.rows.map(h => h.sym));
-    let stay = 0; ZB.rows.forEach(r => { if (heldSet.has(r.sym)){ r.on = false; r.kept = true; stay++; } });
-    if (!stay) return;
+    const heldSet = new Set(held.rows.map(h => h.sym)), backs = rebuyRows(it, p);
+    let stay = 0; ZB.rows.forEach(r => { const b = backs.find(x => x.sym === r.sym);
+      if (b){ r.on = true; r.fixed = true; r.back = true; r.qty = b.qty; r.backQty = b.qty; }
+      else if (heldSet.has(r.sym)){ r.on = false; r.kept = true; stay++; } });
+    stay += backs.length;   // a buy-back is a stay whose shares are restored, not an open slot
+    if (!stay && !PR) return;
     const pickSet = new Set(p.rows.map(r => r.sym));
-    const exitVal = held.rows.filter(h => !pickSet.has(h.sym)).reduce((s, h) => s + h.qty * px(h), 0);
+    const backVal = backs.reduce((s, b) => s + ((PR && PR.val && PR.val[b.sym]) || 0), 0);
+    const exitVal = PR ? Math.max(0, PR.amt - backVal) : held.rows.filter(h => !pickSet.has(h.sym)).reduce((s, h) => s + h.qty * px(h), 0);
     const openSlots = Math.max(1, (held.topN || p.rows.length) - stay);
-    const entries = ZB.rows.filter(r => r.on).length;
+    const entries = ZB.rows.filter(r => r.on && !r.fixed).length;
     if (exitVal > 0 && entries) $('zbAmt').value = Math.round(exitVal * entries / openSlots);
-    $('zbSub').textContent += ' · kept winners stay unticked; amount = the exits\u2019 value per open slot (engine sizing) — edit to your actual sell proceeds.';
+    $('zbSub').textContent += ' \u00b7 kept winners stay unticked' +
+      (backs.length ? '; ' + backs.map(b => b.sym + ' \u00d7 ' + b.qty.toLocaleString('en-IN')).join(', ') + ' = buy back (sold on ' + RW.tlab + ', stayed in the final screen)' : '') +
+      '; amount = ' + (PR ? 'actual sell proceeds captured on ' + RW.tlab + ' (' + zinr(exitVal) + ')' : 'the exits\u2019 value at today\u2019s prices (no proceeds captured \u2014 the exits were sold at the ' + RW.tlab + ' close)') + ' per open slot \u2014 edit if needed.';
   })();
   zbAlloc(); zbRender();
   $('zbWrap').classList.add('open');
@@ -877,7 +928,10 @@ function zbaMerge(a, b){ const newer = (b.ts || 0) >= (a.ts || 0) ? b : a, older
            residual: (newer.residual !== undefined ? newer.residual : older.residual),
            boughtDay: (newer.boughtDay && (!older.boughtDay || String(newer.boughtDay.d) >= String(older.boughtDay.d))) ? newer.boughtDay : older.boughtDay,
            soldDay:   (newer.soldDay   && (!older.soldDay   || String(newer.soldDay.d)   >= String(older.soldDay.d)))   ? newer.soldDay   : older.soldDay,
-           exitSnap:  (newer.exitSnap !== undefined ? newer.exitSnap : older.exitSnap) }; }
+           exitSnap:  (newer.exitSnap !== undefined ? newer.exitSnap : older.exitSnap),
+           soldReb:   zbMergeReb(newer.soldReb, older.soldReb), boughtReb: zbMergeReb(newer.boughtReb, older.boughtReb),
+           proceeds:  zbMergeReb(newer.proceeds, older.proceeds) }; }
+function zbMergeReb(n, o){ return (n && (!o || String(n.k) >= String(o.k))) ? n : o; }
 
 /* ================= SELL BASKETS (user 2026-09-01) =================
    Month-end mirror of the buy side. The card shows EVERY stock the strategy holds (exact
@@ -917,8 +971,57 @@ async function feedPull(force){
   return FEED.byKey;
 }
 function heldFor(cfg){ try { return (FEED.byKey || {})[identityKey(cfg)] || null; } catch (e){ return null; } }
-function zbSoldSet(){ try { const j = JSON.parse(localStorage.getItem('sp_sold_v1') || '{}'); return new Set([...(j[zbDayKey()] || []), ...zbDayIds('soldDay')]); } catch (e){ return new Set(zbDayIds('soldDay')); } }
-function zbSetSold(id, on){ zbMarkDay('soldDay', 'sp_sold_v1', id, on); }
+function zbSoldSet(){ return new Set(zbMarkDoc('soldReb').ids); }
+function zbSetSold(id, on, sent){ zbMarkReb('soldReb', id, on, sent); }
+function edgeRows(cfg, all){ return all.slice(0, (cfg.topN || 3) + 3).map((r, i) => ({ sym: r.sym, rank: i + 1, v: cfg.sortBy ? fieldVal(r, cfg.sortBy) : null })); }
+/* Shares of `sym` that OTHER strategies still own: each one's ledger quantity minus what it already SENT
+   to Zerodha this rebalance (its actual fills once captured). `it` may sell only what the demat holds
+   BEYOND these — so a re-armed basket can never eat another strategy's shares (user 2026-09-23), a
+   keeper is protected without needing its picks loaded, and an exit that never filled still shows as
+   remaining. (Shares held outside every strategy book look like an unfilled exit; the persisted sold
+   mark is what guards those — the button does not re-arm by itself.) */
+function keeperQty(sym, it){
+  const me = identityKey(it.cfg); let q = 0;
+  uniqStrategies().forEach(o => { if (identityKey(o.cfg) === me) return;
+    const hb = heldFor(o.cfg); if (!hb) return;
+    const row = hb.rows.find(h => h.sym === sym); if (!row) return;
+    const PR = proceedsOf(o.id), sent = zbSentSyms('soldReb', o.id);
+    const gone = (PR && PR.filled && PR.filled[sym] != null) ? +PR.filled[sym] : (+sent[sym] || 0);
+    q += Math.max(0, row.qty - gone); });
+  return q;
+}
+function dematQty(sym){ const b = Z.hold[sym]; return b ? (b.mtf + b.cnc) : 0; }   // pledged shares excluded: not sellable
+/* Borderline for a HELD stock on the sell day (mirror of borderMap, user 2026-09-23): a STAY at the cut
+   can drop out by the close, an EXIT just outside (rank N+1 on a price-sensitive sort, or failing a
+   price-sensitive filter by a whisker) can climb back in. Sell the clear exits first, these last. */
+function heldBorder(it, p, h, stays, fv){
+  const cfg = it.cfg, N = cfg.topN || 3, band = PS_BAND[cfg.sortBy];
+  if (stays){ const r = p.rows.find(x => x.sym === h.sym); return (r && r.bd) || null; }
+  const notes = [], e = p.edge || [], me = e.find(x => x.sym === h.sym), nth = e.find(x => x.rank === N);
+  if (me && nth && band != null && me.rank === N + 1 && me.v != null && nth.v != null && Math.abs(me.v - nth.v) <= band)
+    notes.push('rank #' + (N + 1) + ' vs #' + N + ': ' + cfg.sortBy + ' gap ' + Math.abs(me.v - nth.v).toFixed(1) + ' \u2014 could re-enter by the close');
+  (cfg.filters || []).forEach(f => { if (!(f.field in PS_BAND) || !fv) return; const v = fv[f.field];
+    if (v != null && !passOp(v, f.op, f.val) && Math.abs(v - f.val) <= PS_BAND[f.field])
+      notes.push('fails ' + f.field + ' ' + f.op + ' ' + f.val + ' by ' + Math.abs(v - f.val).toFixed(1) + ' \u2014 could pass by the close'); });
+  return notes.length ? notes.join(' \u00b7 ') : null;
+}
+/* Per-strategy order tag (Kite: alphanumeric, ≤20 chars) so the day's SELL fills can be attributed back
+   to the strategy that sold them — the actual proceeds then fund that strategy's T+1 buys (Option A). */
+function sellTag(id){ return ('ss' + String(id).replace(/[^a-zA-Z0-9]/g, '')).slice(0, 20); }
+function proceedsOf(id){ try { const P = zbaDoc().proceeds; return (P && P.k === zbRebKey() && P.by && P.by[id]) ? P.by[id] : null; } catch(e){ return null; } }
+async function captureProceeds(id, quiet){
+  if (!Z.connected) return;
+  const tag = sellTag(id), ob = await zFetch('/orders');
+  if (ob.st !== 200 || !ob.j || !ob.j.data) return;
+  let amt = 0, n = 0; const filled = {}, val = {};
+  ob.j.data.forEach(o => { if (o.transaction_type !== 'SELL' || o.tag !== tag) return; const fq = +o.filled_quantity || 0; if (fq <= 0) return;
+    const v = fq * (+o.average_price || 0); amt += v; n++; filled[o.tradingsymbol] = (filled[o.tradingsymbol] || 0) + fq; val[o.tradingsymbol] = (val[o.tradingsymbol] || 0) + v; });
+  try { const d = zbaDoc(); const P = (d.proceeds && d.proceeds.k === zbRebKey()) ? d.proceeds : { k: zbRebKey(), by: {} };
+    P.by[id] = { amt: Math.round(amt), n: n, filled: filled, val: val, at: Date.now() }; d.proceeds = P; d.ts = Date.now();
+    localStorage.setItem(ZBA_LS, JSON.stringify(d)); clearTimeout(zbaSet._t); zbaSet._t = setTimeout(zbaPush, 1200); } catch(e){}
+  if (!quiet) ktoast('Captured ' + zinr(amt) + ' of actual sell proceeds (' + n + ' fill' + (n === 1 ? '' : 's') + ') \u2014 this funds the strategy\u2019s ' + rebalWindow().t1lab + ' buys', 6500);
+  renderCards();
+}
 function sellRuntime(exitRows){
   let mx = 0, tot = 0;
   exitRows.forEach(r => { const px = (r.px != null ? r.px : (r.h.avg || 0)), q = r.h.qty || 0;
@@ -931,37 +1034,60 @@ function sellRuntime(exitRows){
   return { tot: tot, mins: mins, startBy: (t > 9 * 60 && mins > 3) ? (Math.floor(t / 60) + ':' + String(t % 60).padStart(2, '0')) : null };
 }
 function livePicksOk(p){ return !!(p && p.live && p.liveTs && Date.now() - p.liveTs < 180000); }
-/* Sell baskets only MEAN anything on the rebalance window: T-1 (sell exits near that close, the
-   adopted convention) and T = the month-end session (flush late exits). Any other day the view is
-   informational -- an armed Sell button on Sep 1 is how a mid-month accidental dump happens
-   (user 2026-09-01: "y does terminal say sell this?"). Weekend-aware; NSE holidays not modelled. */
+/* Rebalance legs (user 2026-09-23, replaces the T-1 / T convention): SELL the exits near the
+   close of T = the month-end session, on that day's near-final ⚡ live picks (the T-close screen
+   only bakes ~20:45 IST). BUY the entries the NEXT session (T+1) in the morning, on the official
+   T-close screen (Rebalance picks). The buy leg stays armed two more weekdays as a buffer (no NSE
+   holiday calendar here — a holiday on T+1 must not strand the buys); sells on those days are
+   STRAGGLERS only (held stocks that dropped out of the official screen but were not sold on T).
+   Any other day the view is informational. Weekend-aware; NSE holidays not modelled. The window
+   is keyed by T (tIso): the sold / bought marks live for the whole window, not a calendar day. */
 function rebalWindow(){
   const now = new Date(Date.now() + 330 * 60000);
   const y = now.getUTCFullYear(), m = now.getUTCMonth();
-  let t = new Date(Date.UTC(y, m + 1, 0));
-  while (t.getUTCDay() % 6 === 0) t = new Date(t.getTime() - 864e5);       // T: last trading day of month
-  let t1 = new Date(t.getTime() - 864e5);
-  while (t1.getUTCDay() % 6 === 0) t1 = new Date(t1.getTime() - 864e5);    // T-1: the session before
+  const wk = d => d.getUTCDay() % 6 === 0;
+  const lastTD = (yy, mm) => { let t = new Date(Date.UTC(yy, mm + 1, 0)); while (wk(t)) t = new Date(t.getTime() - 864e5); return t; };
+  const nextTD = d => { let t = new Date(d.getTime() + 864e5); while (wk(t)) t = new Date(t.getTime() + 864e5); return t; };
   const d0 = Date.UTC(y, m, now.getUTCDate());
-  const lab = d => new Date(d).toLocaleDateString('en-GB', { day: 'numeric', month: 'short', timeZone: 'UTC' });
-  return { in: d0 >= +t1 && d0 <= +t, t1lab: lab(+t1), tlab: lab(+t) };
+  const legs = t => { const t1 = nextTD(t), t2 = nextTD(t1), t3 = nextTD(t2); return { t: t, t1: t1, t3: t3 }; };
+  let L = legs(lastTD(y, m - 1));                                        // last month's buy leg can spill into this month
+  if (!(d0 >= +L.t && d0 <= +L.t3)) L = legs(lastTD(y, m));
+  const lab = d => d.toLocaleDateString('en-GB', { day: 'numeric', month: 'short', timeZone: 'UTC' });
+  const iso = d => d.toISOString().slice(0, 10);
+  const sellIn = d0 === +L.t, buyIn = d0 >= +L.t1 && d0 <= +L.t3;
+  return { in: sellIn || buyIn, sellIn: sellIn, buyIn: buyIn, planned: d0 === +L.t1,
+           tIso: iso(L.t), t1Iso: iso(L.t1), tlab: lab(L.t), t1lab: lab(L.t1), t3lab: lab(L.t3) };
 }
 /* exit rows for one strategy: the card's table AND the sell-side summary read this */
 function sellExits(it){
+  const RW = rebalWindow();
   const held = heldFor(it.cfg), p = PICKS[it.id];
   const isReset = !!(held && held.method === 'reset');
   const pickSet = (p && p.rows.length) ? new Set(p.rows.map(r => r.sym)) : null;
   const cols = pickCols(it.cfg), fmap = (held && held.rows.length) ? factorMap(it) : {};
+  const sent = zbSentSyms('soldReb', it.id);
+  /* the screen each leg trusts: T = today's live picks (the T-close screen bakes only this evening);
+     T+1.. = the OFFICIAL T-close screen (rebalance mode, dated exactly T) — stragglers are judged on it */
+  let legOk = true, legMsg = '';
+  if (!isReset && p && RW.sellIn && marketOpen() && !livePicksOk(p)){ legOk = false;
+    legMsg = p.live ? 'Live picks are stale \u2014 refresh them' : 'Switch to \u26a1 Live picks \u2014 the ' + RW.tlab + ' close screen bakes only this evening'; }
+  if (!isReset && p && RW.buyIn && (p.live || p.asOf !== RW.tIso)){ legOk = false;
+    legMsg = p.live ? 'Switch to Rebalance picks \u2014 stragglers are judged on the official ' + RW.tlab + ' close screen' : 'Waiting for the ' + RW.tlab + ' close in the data (picks are as of ' + p.asOf + ') \u2014 refresh picks'; }
   const rows = (held && held.rows.length) ? held.rows.map(h => {
       const q = liveQ(h.sym), px = (q && q.ltp != null) ? +q.ltp : null;
       const zh = Z.connected ? Z.hold[h.sym] : null;
       const zt = zh ? (zh.mtf + zh.cnc + (zh.coll || 0)) : null;
       const lt = (FEED.symTot || {})[h.sym];
       const mism = (zt != null && lt != null && zt !== lt) ? (zt - lt) : null;   // demat vs strategy-ledger, both ways
-      return { h: h, px: px, mism: mism, stays: !isReset && !!(pickSet && pickSet.has(h.sym)), val: px != null ? h.qty * px : null, fv: pickFV(fmap[h.sym], cols) };
+      const stays = !isReset && !!(pickSet && pickSet.has(h.sym));
+      const fv = pickFV(fmap[h.sym], cols);
+      const keep = Z.connected ? keeperQty(h.sym, it) : null;
+      const remain = (Z.connected && !stays) ? Math.min(h.qty, Math.max(0, dematQty(h.sym) - keep)) : null;   // shares still to sell
+      const bd = (!isReset && p && p.live && RW.sellIn) ? heldBorder(it, p, h, stays, fv) : null;
+      return { h: h, px: px, mism: mism, stays: stays, val: px != null ? h.qty * px : null, fv: fv, keep: keep, remain: remain, sent: +sent[h.sym] || 0, bd: bd };
     }) : [];
   const exits = rows.filter(r => !r.stays);
-  return { held, p, isReset, pickSet, cols, rows, exits, est: exits.reduce((s, r) => s + (r.val || 0), 0), known: !!(pickSet || isReset) };
+  return { held, p, isReset, pickSet, cols, rows, exits, est: exits.reduce((s, r) => s + (r.val || 0), 0), known: !!(pickSet || isReset), legOk, legMsg, RW };
 }
 function renderSellAll(list){
   let nEx = 0, est = 0, nKnown = 0, nUnknown = 0, nBook = 0;
@@ -972,87 +1098,90 @@ function renderSellAll(list){
       (nUnknown ? ' · ' + nUnknown + ' need picks loaded' : '')) : 'no strategy book in this browser yet') + ' · ' + esc(spTotLbl(list)) + '</span></div></div>';
 }
 function sellCardHTML(it, disp, favNum){
-  const sold = zbSoldSet();
-  const X = sellExits(it), held = X.held, p = X.p, isReset = X.isReset, pickSet = X.pickSet;
+  const X = sellExits(it), RW = X.RW, held = X.held, p = X.p, isReset = X.isReset, pickSet = X.pickSet;
+  const isSold = zbSoldSet().has(it.id), PR = proceedsOf(it.id);
   let body = '', btn = '';
-  if (!held) body = '<div class="khelp">No holdings feed in this browser yet (needs the pf token) — or this strategy has no live book.</div>';
+  if (!held) body = '<div class="khelp">No holdings feed in this browser yet (needs the pf token) \u2014 or this strategy has no live book.</div>';
   else if (!held.rows.length) body = '<div class="khelp">Nothing held under this strategy.</div>';
   else {
     const rows = X.rows, exits = X.exits, est = X.est;
-    const liveOk = isReset || !marketOpen() || livePicksOk(p);
-    const rt = (pickSet || isReset) && exits.length ? sellRuntime(exits) : null;
+    const todo = exits.filter(r => r.remain == null ? true : r.remain > 0);      // shares still to sell (demat-aware)
+    const rt = (pickSet || isReset) && todo.length ? sellRuntime(todo.map(r => ({ h: { sym: r.h.sym, qty: (r.remain != null ? r.remain : r.h.qty), avg: r.h.avg }, px: r.px }))) : null;
     const rtTxt = rt ? ' \u00b7 \u2248 ' + rt.tot + ' slice' + (rt.tot === 1 ? '' : 's') + ', ~' + rt.mins + ' min at ' + sliceGap() + 's gap' + (rt.startBy ? ' \u2014 start by ' + rt.startBy + ' for a 3:28 finish' : '') : '';
     body = '<div class="twrap"><table><thead><tr><th>Stock</th><th>Held</th><th>Live \u20b9</th><th>Value</th>' + pickColHead(X.cols) + '<th></th></tr></thead><tbody>' +
-      rows.map(r => '<tr' + (r.stays ? ' style="opacity:.45"' : '') + '><td><b>' + esc(r.h.sym) + '</b></td>' +
-        '<td>' + r.h.qty.toLocaleString('en-IN') + '</td>' +
+      rows.map(r => '<tr' + (r.stays ? ' style="opacity:.45"' : '') + '><td><b>' + esc(r.h.sym) + '</b>' +
+        (r.bd ? ' <span class="tag" style="background:color-mix(in srgb,#c98500 18%,transparent);color:#c98500" title="' + esc(r.bd) + '">borderline</span>' : '') + '</td>' +
+        '<td>' + r.h.qty.toLocaleString('en-IN') + (r.sent ? ' <span class="sym" title="sent to Zerodha this rebalance">sent ' + r.sent.toLocaleString('en-IN') + '</span>' : '') + '</td>' +
         '<td>' + (r.px != null ? '\u20b9' + r.px.toFixed(2) : '\u2014') + '</td>' +
         '<td>' + (r.val != null ? zinr(r.val) : '\u2014') + '</td>' + pickColCells(X.cols, r, true) +
-        '<td>' + (r.mism != null ? '<span class="tag" style="background:color-mix(in srgb,#c98500 18%,transparent);color:#c98500" title="Zerodha demat holds ' + (r.h.qty + r.mism) + ' vs ' + r.h.qty + ' in the strategy ledger \u2014 bonus/split/rename? Heal the ledger before selling.">demat ' + (r.mism > 0 ? '+' : '') + r.mism + '</span> ' : '') +
+        '<td>' + (r.mism != null ? '<span class="tag" style="background:color-mix(in srgb,#c98500 18%,transparent);color:#c98500" title="Zerodha demat holds ' + (r.h.qty + r.mism) + ' vs ' + r.h.qty + ' in the strategy ledger \u2014 sold already, or bonus/split/rename? The sell quantity is capped at what the demat holds beyond the keeping strategies.">demat ' + (r.mism > 0 ? '+' : '') + r.mism + '</span> ' : '') +
         (r.stays ? '<span class="tag keep">stays \u2014 not sold</span>'
-                : (pickSet || isReset ? '<span class="tag" style="background:color-mix(in srgb,var(--down) 16%,transparent);color:var(--down)">' + (isReset ? 'reset \u2014 sell' : 'EXIT \u2014 sell') + '</span>'
-                : '<span class="badge">load picks</span>')) + '</td></tr>').join('') +
+                : (pickSet || isReset
+                    ? (r.remain === 0 ? '<span class="tag keep" title="Zerodha holds none of these beyond what the keeping strategies own">sold \u2713</span>'
+                       : '<span class="tag" style="background:color-mix(in srgb,var(--down) 16%,transparent);color:var(--down)">' + (isReset ? 'reset \u2014 sell' : (RW.buyIn ? 'STRAGGLER \u2014 sell' : 'EXIT \u2014 sell')) + (r.remain != null && r.remain < r.h.qty ? ' ' + r.remain.toLocaleString('en-IN') : '') + '</span>')
+                    : '<span class="badge">load picks</span>')) + '</td></tr>').join('') +
       '</tbody></table></div>' +
       '<div class="khelp">' + (isReset
-        ? 'Reset strategy: the whole basket sells every rebalance and re-enters fresh \u2014 even a stock picked again. Acts on the rebalance window only (' + rebalWindow().t1lab + '\u2013' + rebalWindow().tlab + ').' + rtTxt
-        : (pickSet ? exits.length + ' exit' + (exits.length === 1 ? '' : 's') + ' to sell' + (est ? ' \u2248 ' + zinr(est) : '') + rtTxt + ' \u00b7 greyed rows stay for next month and are never sold.'
+        ? 'Reset strategy: the whole basket sells every rebalance and re-enters fresh \u2014 even a stock picked again. Sells near the ' + RW.tlab + ' close; re-enters the morning of ' + RW.t1lab + '.' + rtTxt
+        : (pickSet ? todo.length + ' ' + (RW.buyIn ? 'straggler' : 'exit') + (todo.length === 1 ? '' : 's') + ' to sell' + (est && !RW.buyIn ? ' \u2248 ' + zinr(est) : '') + rtTxt + ' \u00b7 greyed rows stay for next month and are never sold.'
                    : 'Load the picks (\ud83c\udfaf) first \u2014 without them the exits are unknown, so nothing can be sold.')) +
-      (!liveOk && pickSet ? '<br>\u26a0 <b>Picks are ' + (p && p.live ? 'STALE live' : 'REBALANCE-mode \u2014 yesterday\u2019s bake, one day older than you think') + '.</b> Switch to \u26a1 Live picks (top bar) and refresh \u2014 selling is locked until then.' : '') + '</div>';
-    const B = BUYSLICER[it.id], RW = rebalWindow();
+      (rows.some(r => r.bd) ? '<br>\u26a0 <b>borderline</b> = could still flip by the close (hover for the numbers) \u2014 sell the clear exits first, these last (~3:25 IST). A borderline stay you keep shows up on ' + RW.t1lab + ' as a straggler if it drops out.' : '') +
+      (PR ? '<br>\u2713 Actual sell proceeds captured: <b>' + zinr(PR.amt) + '</b> (' + PR.n + ' fill' + (PR.n === 1 ? '' : 's') + ', ' + new Date(PR.at).toTimeString().slice(0, 5) + ') \u2014 funds the ' + RW.t1lab + ' buys.' : (isSold && RW.sellIn ? '<br>Proceeds are captured from the order book ~2 min after the basket finishes; tap \u21bb proceeds to redo it (before midnight \u2014 Kite forgets yesterday\u2019s orders).' : '')) +
+      (!X.legOk && pickSet ? '<br>\u26a0 <b>' + esc(X.legMsg) + '</b> \u2014 selling is locked until then.' : '') + '</div>';
+    const B = BUYSLICER[it.id];
     if (B && B.sell) btn = '<button class="btn sell" data-sellbasket="' + esc(it.id) + '">Selling ' + B.i + '/' + B.n + '</button>';
-    else if (sold.has(it.id)) btn = '<button class="btn" disabled style="opacity:.5;cursor:not-allowed;color:var(--down)" title="Sold today \u2014 click the \u2713 sold-today chip to re-enable">\u2713 Sold</button>';
-    else if ((pickSet || isReset) && exits.length && !RW.in) btn = '<span class="tag off" title="Sell baskets act only on the rebalance window \u2014 sell exits near the T\u22121 close, flush stragglers on month-end. Until then this list is informational.">Locked · arms ' + esc(RW.t1lab) + '</span>';
-    else if ((pickSet || isReset) && exits.length && liveOk) btn = '<button class="btn sell" data-sellbasket="' + esc(it.id) + '">Sell ' + (isReset ? 'all ' : '') + exits.length + (isReset ? '' : (exits.length === 1 ? ' exit' : ' exits')) + '</button>';
-    else if ((pickSet || isReset) && exits.length) btn = '<span class="tag warn">Live picks required</span>';
+    else if ((pickSet || isReset) && exits.length && !RW.in) btn = '<span class="tag off" title="Sell baskets act only on the rebalance window \u2014 exits near the ' + esc(RW.tlab) + ' close (month-end), stragglers from ' + esc(RW.t1lab) + '. Until then this list is informational.">Locked \u00b7 arms ' + esc(RW.tlab) + '</span>';
+    else if ((pickSet || isReset) && exits.length && !X.legOk) btn = '<span class="tag warn" title="' + esc(X.legMsg) + '">' + (RW.buyIn ? 'Rebalance picks required' : 'Live picks required') + '</span>';
+    else if (isSold && !todo.length) btn = '<button class="btn" disabled style="opacity:.5;cursor:not-allowed;color:var(--down)" title="Sold this rebalance \u2014 click the \u2713 sold chip to re-enable">\u2713 Sold</button>';
+    else if ((pickSet || isReset) && todo.length) btn = '<button class="btn sell" data-sellbasket="' + esc(it.id) + '">Sell ' + (isSold || RW.buyIn ? 'remaining ' : (isReset ? 'all ' : '')) + todo.length + (isReset ? '' : (todo.length === 1 ? ' exit' : ' exits')) + '</button>';
   }
   return '<div class="sblk"><div class="shead">' + (favNum(it.cfg) ? '<span class="snum" style="font-size:11px;background:var(--down);color:#fff;border-color:var(--down);padding:1px 6px;margin:0 4px 0 0">#' + favNum(it.cfg) + '</span>' : '') +
     '<span class="nm2" title="Code-name: ' + esc(nameWithBasis(it.name, it.cfg)) + '">' + esc(disp) + '</span>' +
-    (sold.has(it.id) ? '<span class="tag keep" data-unsold="' + esc(it.id) + '" title="Sell basket sent today \u2014 click if that was cancelled" style="cursor:pointer">\u2713 sold today</span>' : '') +
-    '<span class="sym">' + (held ? esc(held.pfId + ' \u00b7 ' + held.method) : '') + (p ? ' \u00b7 picks as of ' + esc(p.asOf) : '') + '</span>' +
+    (isSold ? '<span class="tag keep" data-unsold="' + esc(it.id) + '" title="Sell basket sent this rebalance (' + esc(RW.tlab) + ') \u2014 click if that was cancelled" style="cursor:pointer">\u2713 sold</span>' : '') +
+    (isSold && Z.connected && RW.sellIn ? '<span class="tag" data-capture="' + esc(it.id) + '" title="Re-read today\u2019s order book for this strategy\u2019s SELL fills" style="cursor:pointer">\u21bb proceeds</span>' : '') +
+    '<span class="sym">' + (held ? esc(held.pfId + ' \u00b7 ' + held.method) : '') + (p ? ' \u00b7 picks as of ' + esc(p.asOf) + (p.live ? ' + live' : '') : '') + '</span>' +
     '<span style="margin-left:auto;display:flex;gap:6px">' +
     '<button class="btn" data-load="' + esc(it.id) + '">' + (p ? 'Refresh picks' : 'Picks') + '</button>' + btn + '</span></div>' + body + '</div>';
 }
 async function sellBasketStart(id){
   const it = strategies().find(x => x.id === id); if (!it) return;
-  const held = heldFor(it.cfg);
+  const X = sellExits(it), held = X.held, isReset = X.isReset, p = X.p, RW = X.RW;
   if (!held || !held.rows.length){ ktoast('No holdings on record for this strategy'); return; }
-  const isReset = held.method === 'reset';
-  const p = PICKS[id];
   if (!isReset && (!p || !p.rows.length)){ ktoast('Load the picks first \u2014 exits are unknown without them'); return; }
-  const RW = rebalWindow();
-  if (!RW.in){ ktoast('\ud83d\udd12 Sell baskets act only on the rebalance window \u2014 ' + RW.t1lab + ' (T\u22121, sell exits near the close) and ' + RW.tlab + ' (month-end). Nothing sent.', 7500); return; }
-  if (!isReset && marketOpen() && !livePicksOk(p)){
-    ktoast('\u26a0 Picks are ' + (p.live ? 'stale' : 'REBALANCE-mode (yesterday\u2019s bake)') + ' \u2014 switch to \u26a1 Live picks and refresh; selling exits is locked until the screen is live-fresh', 7500); return; }
-  const pickSet = new Set(((p && p.rows) || []).map(r => r.sym));
-  const exits = held.rows.filter(h => isReset || !pickSet.has(h.sym));
-  if (!exits.length){ ktoast('Nothing to sell \u2014 every holding stays next month'); return; }
+  if (!RW.in){ ktoast('\ud83d\udd12 Sell baskets act only on the rebalance window \u2014 exits near the ' + RW.tlab + ' close (month-end), stragglers from ' + RW.t1lab + '. Nothing sent.', 7500); return; }
+  if (!X.legOk){ ktoast('\u26a0 ' + X.legMsg + ' \u2014 selling is locked until then', 7500); return; }
+  if (!Z.connected){ ktoast('Zerodha not connected'); return; }
   const btn = document.querySelector('[data-sellbasket="' + id + '"]');
-  if (btn && btn.dataset.arm !== '1'){ btn.dataset.arm = '1';
-    btn.textContent = 'Confirm SELL ' + exits.length + (isReset ? ' (reset: all)' : ' exit' + (exits.length === 1 ? '' : 's')) + ' ?';
+  if (btn && btn.dataset.arm !== '1'){
+    const todo0 = X.exits.filter(r => r.remain == null ? true : r.remain > 0);
+    if (!todo0.length){ ktoast(X.exits.length ? 'Nothing left to sell \u2014 Zerodha holds none of these exits beyond what the keeping strategies own' : 'Nothing to sell \u2014 every holding stays next month'); return; }
+    btn.dataset.arm = '1';
+    btn.textContent = 'Confirm SELL ' + todo0.length + (isReset ? ' (reset: all)' : ' exit' + (todo0.length === 1 ? '' : 's')) + ' ?';
     clearTimeout(sellBasketStart._t); sellBasketStart._t = setTimeout(() => { btn.dataset.arm = ''; renderCards(); }, 8000); return; }
   if (btn) btn.dataset.arm = '';
-  if (!Z.connected){ ktoast('Zerodha not connected'); return; }
   await loadTicks();
   await zHoldRefresh();                 // fresh per-product buckets right before selling
-  const orders = [], short = [];
-  exits.forEach(h => {
-    const q = liveQ(h.sym), px = (q && q.ltp != null) ? +q.ltp : (h.avg || 0);
+  const todo = sellExits(it).exits.filter(r => r.remain > 0);   // remaining quantities off the fresh demat
+  if (!todo.length){ ktoast('Nothing left to sell \u2014 Zerodha holds none of these exits beyond what the keeping strategies own', 6000); renderCards(); return; }
+  const orders = [], short = [], sent = {};
+  todo.forEach(r => {
+    const h = r.h, px = (r.px != null ? r.px : (h.avg || 0));
     const bk = Z.hold[h.sym] || { mtf: 0, cnc: 0 };
-    let mq = Math.min(h.qty, bk.mtf), cq = Math.min(h.qty - mq, bk.cnc);
-    if (mq + cq < h.qty) short.push(h.sym + ' (' + (h.qty - mq - cq) + ')');
-    const ztAll = bk.mtf + bk.cnc + (bk.coll || 0), lt = (FEED.symTot || {})[h.sym];
-    if (lt != null && ztAll > lt) ktoast('\u26a0 ' + h.sym + ': demat holds ' + ztAll + ' vs ' + lt + ' in the strategy ledger \u2014 bonus/split/rename? Selling only the ledger quantity; heal the ledger after.', 8000);
-    const base = { variety: 'regular', validity: 'DAY', tag: 'swsell', tradingsymbol: h.sym,
+    const mq = Math.min(r.remain, bk.mtf), cq = Math.min(r.remain - mq, bk.cnc);   // MTF position first, then demat (CNC)
+    if (r.remain < h.qty) short.push(h.sym + ' (' + (h.qty - r.remain) + (r.keep ? ' kept by other strategies' : ' not in demat') + ')');
+    const base = { variety: 'regular', validity: 'DAY', tag: sellTag(id), tradingsymbol: h.sym,
                    exchange: 'NSE', transaction_type: 'SELL', order_type: 'MARKET', _px: px };
     if (mq > 0) orders.push(Object.assign({}, base, { quantity: mq, product: 'MTF' }));
     if (cq > 0) orders.push(Object.assign({}, base, { quantity: cq, product: 'CNC' }));
+    if (mq + cq > 0) sent[h.sym] = mq + cq;
   });
   if (!orders.length){ ktoast('Zerodha shows no sellable shares for these exits \u2014 nothing sent', 6000); return; }
-  if (short.length) ktoast('\u26a0 fewer sellable shares than the ledger for ' + short.join(', ') + ' \u2014 selling what is there', 7000);
+  if (short.length) ktoast('\u26a0 selling fewer shares than the ledger for ' + short.join(', '), 7000);
   const slices = buySlices(orders);
   if (BUYSLICER[id]) buyStop(id);
   BUYSLICER[id] = { slices: slices, i: 0, n: slices.length, btn: btn || null, t: 0, sell: true };
-  zbSetSold(id, true);
-  ktoast('Selling ' + exits.length + ' stock' + (exits.length === 1 ? '' : 's') + ' in ' + slices.length +
+  zbSetSold(id, true, sent);
+  ktoast('Selling ' + todo.length + ' stock' + (todo.length === 1 ? '' : 's') + ' in ' + slices.length +
     ' slices \u2014 each a limit \u2264' + sliceRng() + '% BELOW live on NSE, MTF shares as MTF, demat as CNC; tap the counter to stop', 7000);
   buyFire(id);
   renderCards();
@@ -1129,6 +1258,7 @@ function buySkipStock(id, o0, reason){
   B.t = setTimeout(() => buyFire(id), 1000);
 }
 function buyDone(id){ const B = BUYSLICER[id]; if (!B) return;
+  if (B.sell && !/^__/.test(id)) setTimeout(() => captureProceeds(id), 120000);   // Option A: actual proceeds fund the T+1 buys
   const f = B.failed && B.failed.length ? [...new Set(B.failed)] : [];
   buyStop(id, 'Basket done — ' + B.n + ' slices sent' + (f.length ? (B.sell ? ' · FAILED (sell separately): ' : ' · FAILED (buy separately): ') + f.join(', ') : ' (unfilled tails rest at their limits)')); }
 function buyFire(id){
@@ -1173,9 +1303,16 @@ function buyFire(id){
     });
   });
 }
-async function zbPlaceAll(){
+function buyLegGuard(){
   const RW = rebalWindow();
-  if (!RW.in){ ktoast('🔒 Buy baskets act only on the rebalance window — ' + RW.t1lab + ' (T−1) to ' + RW.tlab + ' (month-end). Nothing placed.', 7500); return; }
+  if (!RW.buyIn){ ktoast('🔒 Buy baskets act only on the morning after month-end — ' + RW.t1lab + ' (buffer to ' + RW.t3lab + '), on the official ' + RW.tlab + ' close screen. Nothing placed.', 7500); return false; }
+  const leg = buyLeg(PICKS[ZB.id], RW);
+  if (!leg.ok){ ktoast('⚠ ' + leg.msg + ' — buying is locked until then', 7500); return false; }
+  return true;
+}
+function sentMap(orders){ const m = {}; orders.forEach(o => { m[o.tradingsymbol] = (m[o.tradingsymbol] || 0) + (+o.quantity || 0); }); return m; }
+async function zbPlaceAll(){
+  if (!buyLegGuard()) return;
   const orders = zbOrders();
   if (!orders.length){ ktoast('Nothing to buy — set an amount first'); return; }
   const b = $('zbGo'), est = orders.reduce((s, o) => { const r = ZB.rows.find(x => x.sym === o.tradingsymbol); return s + o.quantity * ((r && r.px) || 0); }, 0);
@@ -1183,13 +1320,13 @@ async function zbPlaceAll(){
     b.textContent = 'Confirm ' + orders.length + ' BUY orders ≈ ' + zinr(est) + ' ?';
     clearTimeout(ZB.t); ZB.t = setTimeout(zbArmReset, 8000); return; }
   b.dataset.arm = '';
-  if (Z.directBlocked){ if (kiteSend(orders)){ zbSetBought(ZB.id, true); $('zbWrap').classList.remove('open'); } return; }
+  if (Z.directBlocked){ if (kiteSend(orders)){ zbSetBought(ZB.id, true, sentMap(orders)); $('zbWrap').classList.remove('open'); } return; }
   await loadTicks();
   orders.forEach(o => { const r = ZB.rows.find(x => x.sym === o.tradingsymbol); o._px = (r && r.px) || o.price || 0; });
   const slices = buySlices(orders);
   if (BUYSLICER[ZB.id]) buyStop(ZB.id);
   BUYSLICER[ZB.id] = { slices: slices, i: 0, n: slices.length, btn: null, t: 0 };
-  zbSetBought(ZB.id, true);
+  zbSetBought(ZB.id, true, sentMap(orders));
   $('zbWrap').classList.remove('open');
   ktoast('Buying in ' + slices.length + ' liquidity-sized slices (1% of the stock\u2019s 10-day traded value, \u20b95L\u2013\u20b91Cr each) every ' + sliceGap() + 's, each a limit \u2264' + sliceRng() + '% above live \u2014 keep this tab open; tap the \u26a1 counter to stop', 6500);
   renderCards();
