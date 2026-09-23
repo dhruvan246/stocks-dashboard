@@ -57,6 +57,22 @@ def main():
         i = bisect.bisect_right(tdays, d)
         return tdays[i] if i < len(tdays) else None
 
+    def days_after(me):
+        """§149 addendum: every calendar day after the month-end up to and including the next trading
+        day (weekend + holidays + the next session), or the next weekday when no later bar exists yet.
+        An after-close Friday filing is often stored on the Saturday/Sunday by NSE-archive-dated writers;
+        the first mirror only looked at the next trading day / weekday and left 206 such cells behind."""
+        nt = next_td(me); out = []
+        d0 = datetime.date(me // 10000, me // 100 % 100, me % 100)
+        for k in range(1, 8):
+            x = d0 + datetime.timedelta(days=k); xi = x.year * 10000 + x.month * 100 + x.day
+            if nt is None:
+                if x.weekday() < 5: out.append(xi); break
+                continue
+            if xi > nt: break
+            out.append(xi)
+        return out
+
     restore = {}          # (sym, storedDate) -> monthEnd
     reasons = {'restorable': 0, 'before_close': 0, 'no_bse_record': 0, 'no_scrip': 0}
     examples = []
@@ -70,8 +86,8 @@ def main():
             reasons['no_bse_record'] += 1; continue
         if min(mins) <= CUTOFF_MIN:
             reasons['before_close'] += 1; continue      # never bumped by the gate: leave the stored date alone
-        for nd in {next_td(me), next_wd(me)}:
-            if nd: restore[(sym, nd)] = me
+        for nd in days_after(me):
+            restore[(sym, nd)] = me
         reasons['restorable'] += 1
         if len(examples) < 20:
             examples.append((sym, me, f'{min(mins) // 60:02d}:{min(mins) % 60:02d}'))
