@@ -64,11 +64,31 @@ def main():
 
     fund = json.load(open(os.path.join(DOCS, 'sf_fundamentals.json')))
     events, dates = set(), set()
-    for sym, rows in fund.items():
-        for r in rows:
-            for idx in (2, 4):
-                if len(r) > idx and isinstance(r[idx], int) and r[idx] in me_days:
-                    events.add((sym, r[idx])); dates.add(r[idx])
+    if '--ungate' in argv:
+        # §149 (midnight visibility rule, 2026-09-23): the retired 15:30 gate pushed an after-close
+        # month-end filing to the NEXT trading day (gate_1530.py) or next WEEKDAY (gated_ann). The
+        # mirror, ungate_1530.py, needs every cell sitting on such a day, keyed by the month-end it
+        # may have been pushed from — the BSE broadcast times are fetched per MONTH-END date.
+        import bisect, datetime
+        tdl = sorted(tdays)
+        after = {}                       # stored date -> the month-end it would have been pushed from
+        for me in me_days:
+            i = bisect.bisect_right(tdl, me)
+            if i < len(tdl): after[tdl[i]] = me
+            d = datetime.date(me // 10000, me // 100 % 100, me % 100) + datetime.timedelta(days=1)
+            while d.weekday() >= 5: d += datetime.timedelta(days=1)
+            after.setdefault(d.year * 10000 + d.month * 100 + d.day, me)
+        for sym, rows in fund.items():
+            for r in rows:
+                for idx in (2, 4):
+                    if len(r) > idx and isinstance(r[idx], int) and r[idx] in after:
+                        events.add((sym, after[r[idx]])); dates.add(after[r[idx]])
+    else:
+        for sym, rows in fund.items():
+            for r in rows:
+                for idx in (2, 4):
+                    if len(r) > idx and isinstance(r[idx], int) and r[idx] in me_days:
+                        events.add((sym, r[idx])); dates.add(r[idx])
 
     json.dump(tdays, open(os.path.join(HERE, '_trading_days.json'), 'w'), separators=(',', ':'))
     json.dump(sorted(me_days), open(os.path.join(HERE, '_me_days.json'), 'w'), separators=(',', ':'))

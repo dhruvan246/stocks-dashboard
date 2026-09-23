@@ -1413,7 +1413,15 @@ context. `ctx_period()` reads the context block first, then falls back to those 
 
 ---
 
-## 12. 15:30 FILING-TIME GATE  (no same-day look-ahead; done 2026-07-08)
+## 12. 15:30 FILING-TIME GATE  (no same-day look-ahead; done 2026-07-08) — ★ RETIRED 2026-09-23, see §149
+> ⚠️ **Superseded by the MIDNIGHT visibility rule (§149, user decision 2026-09-23).** A filing now counts for
+> the CALENDAR DAY it was broadcast, whatever the time: the user sells at the rebalance close and buys at the
+> next session's open, so anything public by midnight on the rebalance day is actionable. Every shift this
+> section describes was reversed on the data side (`ungate_1530.py` + `rewrite_ledgers_midnight.py`),
+> `gated_ann()` / `visible_iso()` return the broadcast day, `guard_visibility_rule.py` / `guard_shp_gate.py`
+> assert that behaviour every run, and the nightly step is the MIRROR (`build_gate_events --ungate` +
+> `ungate_1530 --apply`). Kept below for history; do not re-implement any of it.
+
 The backtest rebalances at the **15:30 close** and checks availability as `annDate <= rebalanceDate` at DATE
 granularity (`profitAt`, `docs/backtest-engine.js` ~L242 AND self-contained `docs/stock-backtest.html` ~L566 — keep
 in sync). So a result **broadcast after 15:30 on the rebalance day** was wrongly treated as available that day =
@@ -18530,3 +18538,80 @@ companies) for fixed-asset-like XBRL tags we do not capture found exactly two: `
 ppe+invprop+gw+intg+bio+prodprop (sw v178). After: 0 uncaptured fixed-asset tags; SME subtotal reconciles 198/198;
 screener sample 17/17. Still NOT matched by design: restated years (screener back-applies restatements) and
 vendor quirks. PDF-era (FY20-22 annual_bscf) cells predate the invprop reader — re-read them to add it.
+
+## 149. ★★★ MIDNIGHT VISIBILITY RULE — the 15:30 filing-time gate RETIRED, every shift reversed on the data side  (2026-09-23)
+**User decision (2026-09-23, confirmed three times, then "ok do it"):** "I exit the stocks on rebalance-day close
+and buy the stocks on next day opening, so I am planning to remove that 3:30 gate — when I buy at 9:20 next morning
+it should take all the data even if the profits / FII holding / DII holding are declared after 3:30 but before
+12 a.m. on the rebalance day." **The rule:** a filing is visible to a rebalance dated R iff its **CALENDAR filing
+day ≤ R** — time of day is irrelevant, the cutoff is midnight (not 09:15 next morning; the user's stated boundary,
+simpler and slightly conservative). The engines never changed (they already compare `annDate <= R` and `sub <= R`
+at date granularity); everything moved on the DATA side. §12 (the gate) is marked RETIRED. Plan + step log:
+`scripts/PLAN_MIDNIGHT_VISIBILITY.md`. Memory: project-stocks-midnight-visibility-rule.
+
+**NOT built (user's call, still open):** simulating the buy at R+1 OPEN. The engine has closes only; the 23-Sep
+next-day-fill study measured sell-at-close/buy-next-open at ≈ −3.2%/yr on ⭐ The Eight vs close-to-close, and both
+legs at next open at ≈ −0.25%/yr.
+
+**Where the shift lived → what changed (all in commit(s) of 2026-09-23 evening, worktree ~/stocks-wt/midnight-gate):**
+| writer / store | old | new |
+|---|---|---|
+| `update_fundamentals.gated_ann()` (NSE results ingestion) | broadcast > 15:30 → next weekday | the broadcast's calendar day (name kept, one call site) |
+| `reconcile_missing_quarters.gated_ann()` (BSE DT_TM) | same | same |
+| nightly step in refresh-fundamentals.yml | `build_gate_events --calendar` → `fetch_filing_times` → `gate_1530 --apply` | **`build_gate_events --calendar --ungate` → `fetch_filing_times` → `ungate_1530 --apply`** — the exact mirror: a cell on the trading day / weekday AFTER a month-end D whose scrip's BSE Result broadcasts on D were all after 15:30 is restored to D; same conservatism (no BSE record / any pre-close broadcast → untouched); idempotent (second pass decides 0); audit `_ungate_restores.json` |
+| `backfill_ann_dates_bse.py --reapply` | `override` entries applied earlier-only with a +4-day "gate buffer" | buffer 0 — any stored date later than the raw BSE first-public day is a lag |
+| `ann_date_fills.json` `exact` entries (4,733, written in gated form) | asserted both ways | 380 rewritten to the raw day (374 from the reviewer's own "<timestamp> -> <gated date>" note, 6 from the month-end BSE cache), `ann_1530` keeps the old value; 101 already raw; **4,252 have no arrow form in their note and were left as-is** — a gated one there is a one-day-late visibility on a non-month-end (no monthly-backtest effect; the nightly mirror covers month-ends) |
+| `bse_result_fills.json` (3) | `ann` gated, `filed` raw | `ann` = day of `filed` (MCX/ABBOTINDIA/BAYERCROP Jun-2026); their 4 cells moved in both fundamentals files |
+| `fetch_shareholding.visible_iso()` (quarterly + events + revisions) | > 15:30 or non-trading day → next trading day | the broadcast's calendar day (fallback raw submissionDate). `legacy_gate_iso()` = the old rule, kept ONLY as a recogniser |
+| `shp_lag_fix.json` / `shp_sub_dates.json` | `sub` = gated form of `ts` | `sub` = day of `ts` (32,994 + 3,878 entries; 11 §142i repairs → `was`), `sub_1530` = old served date, `days_later` recomputed, `rule: midnight-2026-09-23`. `build_engine_feed._reassert_sub` matches a stored date against `was` OR `sub_1530` (history holds the raw day for the §135j/§142a classes and the gated day for the Aug-23 P4 class — both re-served at the ledger date) |
+| rows the old `visible_iso` dated at ingestion (21-23 Sep 2026; NSE-dated revisions) — no ledger | — | `fetch_shareholding.py --regate`: re-reads NSE's master for the fetch window and moves any stored quarterly/event/revision date that EQUALS the legacy gate of that record's broadcast to the filing day (no XBRL parsed, values untouched). Runs after `--events` in refresh-shareholding.yml, rebuild-proof; the first CI run after this lands does the one-off |
+| guards | `guard_shp_gate.py` asserted the 15:30 gate by counting `sub = visible_iso(r)` == 2 | `guard_shp_gate.py`: midnight self-tests (Fri 16:46 → Friday, Sat 20:37 → Saturday…), legacy recogniser self-tests, ingestion functions checked BY NAME via ast; NEW `guard_visibility_rule.py` (fundamentals): extracts both `gated_ann` functions and runs them against fixed timestamps, refuses an executed `gate_1530.py` line in the workflow and the +4 buffer. ★ **The old count-of-2 check had been FAILING every shareholding run since 22-Sep 19:42Z** — §145's SME share-count pass (c77930081, 23-Sep 01:00) added a third, harmless `sub = visible_iso(r)`; two runs failed on the guard, no shareholding ingested after 22-Sep 18:04 IST. Fixed as a side effect |
+| engine twins | comments described the 15:30 close gate | comments updated (profitAt header, +28d fallback note); no logic change, no ENGINE_VER bump; sw v179 |
+| qe+28d SHP convention (pre-2014) | chosen so a clockless date never lands ON a screen | unchanged — the measured late floor; under the midnight rule a same-day date would simply count |
+
+**Measured effect of the heal (worktree at c211fec15 + heal; A/B files in the session scratchpad):**
+- Shareholding feed (`--feed-only`, no network; the rebuild reproduced the committed feed byte-for-byte before the
+  rewrite — 0 of 98,664 rows differ): **36,831 served dates moved EARLIER, 0 later**; 35 more §142k re-filing rows
+  qualify as strictly-later; WARN count 4 = baseline. By year: 2016 1,213 · 2018 1,441 · 2020 2,920 · 2022 3,979 ·
+  2024 5,354 · 2025 5,738 · 2026 4,490. ZEEMEDIA 2026-06-25 event 20260701 → 20260630; 20MICRONS Jun-2020 → 20200708.
+- Fundamentals: `--reapply` 1,005 cells (docs) / 692 (mirror); ungate events 5,260 across 228 month-ends →
+  restorable 1,705 · before-close 146 · no BSE record 2,536 · no scripcode 873 → **2,960 cells restored (docs) /
+  2,608 (mirror)**, second pass 0. Net before→after **3,969 ann cells earlier, 0 later, 0 value cells changed**.
+  JSL Sep-2020 (the gate's proof case) 20201102 → 20201030; HEXAGON Mar-2026 20260701 → 20260630. docs-vs-mirror
+  populated-ann disagreements 201 → 18 (pre-existing class, reduced).
+- **37 month-ends had no BSE broadcast times in `filing_times_cache.json.gz`** (incl. 2024-09-30, 2024-11-29,
+  2025-11-28, 2026-02-27) and this Mac gets HTTP 403 from the BSE announcement API → their after-close cells are
+  restored by the CI nightly (which reaches BSE); re-verify LIVE the next day.
+- Pages: stock-backtest.html + saved-strategies.html loaded from a local preview of the worktree with zero console
+  errors (only the documented Tailwind CDN warning).
+
+**Consequences stated plainly (documented, not changed):** postDrift / `lastResultDate` for an after-close filer
+now references the filing day's close (pre-reaction) instead of the next day's; `build_quarterly_results` `rx`
+(result-day reaction %) reads the pre-reaction day for after-close filers — page metric, needs the filing time
+(results_feed.json carries it for recent filings) if it is to be fixed. Live "Today's Picks" next morning: the last
+ingestion runs are 23:15 IST (fundamentals) / 21:40 IST (SHP); a filing after those is in the backtest's window
+but not in the picks until the next run — follow-up: an ~08:00 IST refresh of both. Filings shifted by the old
+`gated_ann` on NON-month-end days that the BSE cache does not cover stay +1 day (no monthly-rebalance effect).
+
+**A/B on the user's strategies (⭐ The Eight, 🍀 The Four; 31-Mar-2020 → data end; site engine under Node with
+prices/membership from the live site and only sf_fundamentals.json + shp_engine.json swapped):** first pass ran on
+different bin days (22 vs 23 Sep) and was discarded; the identical-bin re-run (both legs end 2026-09-23, 78 monthly
+rebalances each) — harness `sim_ab.js` in the session scratchpad, results `ab2_before.json` / `ab2_after.json`:
+
+| ⭐ strategy (sort/dir/topN · basis · filters) | CAGR before | after | Δ pp | maxDD | baskets changed |
+|---|---|---|---|---|---|
+| diiPct low top3 · std · d52<=10 d52_low_pct>=100 profitYoyPct>25 | 85.79 | 85.79 | 0.00 | 41.41 | 0 / 78 |
+| profitYoyPct high top3 · std · profitStreak>=2 ret12m>0 | 99.54 | 99.05 | −0.49 | 29.00 | 4 / 78 (2021-10, 2023-04, 2025-01, +1) |
+| diiPct low top3 · con · profitTTM>0 profitStreak>=2 fiiPct>=15 | 75.87 | 75.87 | 0.00 | 45.64 | 0 / 78 |
+| d52_low_pct high top3 · std · profitAccel>0 profitStreak>=2 accel>0 | 95.95 | 97.04 | +1.09 | 38.79 | 2 / 78 (2021-01 ADVENZYMES→TMPV; 2022-07 TRIDENT→CREDITACC) |
+| diiPct low top3 · std · d52<=10 profitYoyPct>25 profitTTM>0 | 115.62 | 115.62 | 0.00 | 27.94 | 0 / 78 |
+| diiPct low top3 · con · d52<=10 d52_low_pct>=100 accel>0 | 82.20 | 82.20 | 0.00 | 40.37 | 0 / 78 |
+| ret6m high top3 · std · d52<=10 profitYoyPct>25 | 75.65 | 75.65 | 0.00 | 33.51 | 0 / 78 |
+| d52 high top3 · con · profitYoyPct>0 profitStreak>=2 fiiPct>=15 | 99.24 | 99.24 | 0.00 | 33.69 | 0 / 78 |
+
+🍀 The Four (ret6m-std, diiPct-con-accel, diiPct-std-d52, d52-con-fiiPct — rows 7, 6, 5, 8) are all unchanged.
+Mean CAGR of The Eight 91.23 → 91.31 (+0.07 pp); **6 of 624 monthly baskets changed; maxDD identical everywhere.**
+Reading: every DII/FII-sorted or -filtered strategy is untouched — SHP filings cluster around qe+21 (mid-month) and
+the rebalance is month-end, so a same-day shift rarely crosses a boundary (the §105 A/B found the same). Only the
+two profit-sorted strategies move, because a result filed on a month-end EVENING now counts for that month (the JSL
+class). The change is a correctness change for the user's real execution, not a performance change.

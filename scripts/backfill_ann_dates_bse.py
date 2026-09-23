@@ -146,10 +146,12 @@ def apply_ledger(ledger):
                             (SUZLON Mar-2020: a tier-2 seq override matched a debt-restructuring
                             board outcome, 80 days before the results; TASTYBITE Mar-2021 /
                             NMDC Jun-2019: the board-meeting INTIMATION stamped as the result
-                            date). Unlike raw-BSE override dates, an exact date is the GATED
-                            (15:30/weekend-aware, runbook §12) value — write the date the engine
-                            should compare against, so no buffer applies. Reviewed entries only:
-                            each needs the BSE announcement timestamp in its src note."""
+                            date). An exact date is the date the engine should compare against —
+                            since 2026-09-23 (midnight visibility rule, runbook §149) that is the
+                            filing's CALENDAR day; the 813 entries the retired 15:30 gate had
+                            pushed to the next trading day were rewritten to the raw day, with the
+                            gated value kept as `ann_1530`. Reviewed entries only: each needs the
+                            BSE announcement timestamp in its src note."""
     counts = []
     for path in (SF, MASTER):
         data = jload(path, None)
@@ -171,15 +173,12 @@ def apply_ledger(ledger):
                 if q[1] is not None and q[2] == 0: q[2] = ann; n += 1
                 if q[3] is not None and q[4] == 0: q[4] = ann; n += 1
                 if ovr:   # earlier-only correction of populated dates.
-                    # GATE BUFFER (adjudicated 2026-08-23): ledger dates here are RAW BSE filing
-                    # dates, but the engine's PIT convention gates post-15:30/weekend/holiday
-                    # filings to the next trading day (runbook §12) — up to +4 calendar days
-                    # (Fri evening + Mon holiday). A stored date within [ann, ann+4] is the GATED
-                    # form of the same event, not a lag: overriding it re-introduces a half-day
-                    # look-ahead and ping-pongs with the nightly gate_1530 pass. Only a stored
-                    # date > ann+4 is a genuine NSE-broadcast-lag.
-                    if q[1] is not None and isinstance(q[2], int) and q[2] > plus(ann, 4): q[2] = ann; n += 1
-                    if q[3] is not None and isinstance(q[4], int) and q[4] > plus(ann, 4): q[4] = ann; n += 1
+                    # Ledger dates here are RAW BSE filing days. Under the midnight visibility rule
+                    # (runbook §149, 2026-09-23) the raw day IS the visibility date, so ANY stored
+                    # date later than it is a lag and moves back. (The +4-day "gate buffer" that
+                    # protected the retired 15:30 gate's next-trading-day form is gone with it.)
+                    if q[1] is not None and isinstance(q[2], int) and q[2] > ann: q[2] = ann; n += 1
+                    if q[3] is not None and isinstance(q[4], int) and q[4] > ann: q[4] = ann; n += 1
         if n:
             jsave(path, data)
         counts.append(n)

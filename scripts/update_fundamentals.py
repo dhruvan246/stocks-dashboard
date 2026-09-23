@@ -36,26 +36,18 @@ import fund_dup_guard            # ONE row per (sym, quarter-end) -- the sibling
 
 
 def gated_ann(bstr):
-    """15:30 IST availability gate (memory project-stocks-1530-gate).
+    """MIDNIGHT VISIBILITY RULE (user decision 2026-09-23, runbook §149) — the announce date is the
+    CALENDAR DAY of NSE's `broadcast_Date` ("16-Jan-2025 20:20" -> 20250116), whatever the time.
 
-    NSE `broadcast_Date` looks like "16-Jan-2025 20:20" — it carries the filing
-    TIME. The backtest rebalances at the 15:30 close and checks `annDate <= rebalanceDate`
-    at DATE granularity, so a result broadcast AFTER 15:30 on a rebalance day would be
-    wrongly treated as available that day (same-day look-ahead). So: if the broadcast
-    time is after 15:30, the result is only actionable from the NEXT trading day — return
-    that date. (Next *weekday* is engine-equivalent to next *trading day* here: rebalance
-    dates are always trading days, so a `<=` test against one never lands on a skipped
-    weekend/holiday.) Returns YYYYMMDD str, or "99999999" when no date is present."""
+    The user sells at the rebalance close and buys at the next session's open, so anything public
+    by midnight on the rebalance day is actionable: a result broadcast at 20:20 on day R counts for
+    R. The engines compare `annDate <= rebalanceDate` at date granularity, so no engine change.
+    This RETIRES the §12 15:30 gate (2026-07-08 → 2026-09-23), which pushed an after-close filing to
+    the next weekday; the historical shifts it made were reversed by scripts/ungate_1530.py and the
+    nightly now runs that mirror instead. Name kept (one call site); guard_visibility_rule.py asserts
+    this behaviour on every fundamentals run. Returns YYYYMMDD str, or "99999999" when no date."""
     d = B.iso(bstr)                       # YYYYMMDD (date part) or None
-    if not d:
-        return "99999999"
-    m = re.search(r'\b(\d{1,2}):(\d{2})\b', bstr or '')
-    if m and int(m.group(1)) * 60 + int(m.group(2)) > 15 * 60 + 30:
-        nd = datetime.date(int(d[:4]), int(d[4:6]), int(d[6:])) + datetime.timedelta(days=1)
-        while nd.weekday() >= 5:          # skip Sat/Sun
-            nd += datetime.timedelta(days=1)
-        return nd.strftime("%Y%m%d")
-    return d
+    return d if d else "99999999"
 from build_revop import xbrl_revop, strip_lender_ebit   # revenue + operating profit from the SAME filing XBRL
 
 HERE = os.path.dirname(os.path.abspath(__file__)); ROOT = os.path.dirname(HERE)

@@ -754,8 +754,10 @@ async function loadShp(){
   // quarter-end + 28 calendar days — measured twice: lag (≤28d ≈ 99.3% of 2014 / 87% of 2015 dated
   // filings vs 91%/74% at the legal 21d) AND calendar (day 28 is STRICTLY before every 2003-16
   // Jan/Apr/Jul/Oct month-end screen — census min is day 29, incl. the Sat-29-Apr-2006 special
-  // session; a synthetic date has no 15:30 clock so it must never land ON a screen day, which +30
-  // could). Stamped AFTER the merge so dated-beats-undated still sees raw sentinels; recovered
+  // session; chosen under the old 15:30 gate so a clockless date never landed ON a screen day —
+  // under the §149 midnight rule (2026-09-23: a filing counts for the calendar day it was broadcast,
+  // the user buys at the next open) a same-day date would simply count; 28 stays as the measured
+  // late floor). Stamped AFTER the merge so dated-beats-undated still sees raw sentinels; recovered
   // real dates arrive dated and are never touched. (Sync: backtest-engine.js)
   for(const sym in SHPD) for(const q of SHPD[sym]) if(q[3]===99999999) q[3]=qePlus28(q[0]);
   // §142k: rows ordered by (qe, sub) — shpAt walks from the end, so a quarter's re-filing is taken once ITS date is

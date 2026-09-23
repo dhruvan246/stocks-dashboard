@@ -582,13 +582,26 @@ def nsh_gate(h, sym, qe, nsh, accept):
 
 # ------------------------------------------------------------------ NSE fetch
 def visible_iso(rec):
-    """§135j (2026-09-05, RESTORED 2026-09-21 after commit 66a241e4f silently dropped it — runbook §142a):
-    the visibility date of an NSE SHP filing = its broadcast timestamp §12-gated (after 15:30 IST or a
-    non-trading day -> next trading day). `submissionDate` is a DATE only, so a filing broadcast after the
-    close was stored as visible the same session — a one-day look-ahead measured on 277 Nifty-500 rows
-    2022+ (and again on 28 of the 34 filings ingested 6-21 Sep 2026 while this function was missing).
-    Falls back to the raw date when the broadcast carries no time. Both ingestion paths (quarterly and
-    event) MUST call this; refresh-shareholding.yml asserts that on every run."""
+    """MIDNIGHT VISIBILITY RULE (user decision 2026-09-23, runbook §149 — supersedes the §12/§135j 15:30 gate):
+    the visibility date of an NSE SHP filing = the CALENDAR DAY of its broadcast timestamp, whatever the time.
+    The user sells at the rebalance close and buys at the next session's open, so anything public by midnight
+    on the rebalance day is actionable — a pattern broadcast at 22:00 on day R counts for R. `submissionDate`
+    is a DATE only and is the fallback when the broadcast carries no time. Non-trading days are NOT shifted
+    either: the engines compare `sub <= screenDate`, so a Saturday filing is simply visible to the next screen.
+    Both ingestion paths (quarterly and event) MUST call this; refresh-shareholding.yml asserts that on every
+    run (guard_shp_gate.py). The retired rule survives as legacy_gate_iso() ONLY so `--regate` can recognise
+    the rows it dated (21-23 Sep 2026 ingestion, NSE-dated revisions) and move them to the filing day."""
+    b = str(rec.get("broadcastDate") or "")
+    m = re.match(r"\s*(\d{1,2})-([A-Za-z]{3})-(\d{4})\s+(\d{1,2}):(\d{2})", b)
+    if m and MON.get(m.group(2).upper()):
+        return "%s-%02d-%02d" % (m.group(3), MON[m.group(2).upper()], int(m.group(1)))
+    return iso_date(rec.get("submissionDate")) or iso_date(rec.get("broadcastDate"))
+
+
+def legacy_gate_iso(rec):
+    """The RETIRED §12 15:30 gate exactly as it ran from 2026-09-05/21 to 2026-09-23 (broadcast after 15:30 IST
+    or on a non-trading day -> next trading day per gate_calendar.json). Kept ONLY so regate_recent() can tell
+    "this stored date is what the old rule produced for this record" — never call it to date a row."""
     b = str(rec.get("broadcastDate") or "")
     m = re.match(r"\s*(\d{1,2})-([A-Za-z]{3})-(\d{4})\s+(\d{1,2}):(\d{2})", b)
     if m and MON.get(m.group(2).upper()):
@@ -1317,6 +1330,10 @@ def build_engine_feed():
                                                    encoding="utf-8")).items() if not k.startswith("_")}
     except Exception as e:
         print("WARN SHP date ledgers unreadable (%s) — visibility dates served as stored" % e)
+    # §149 (2026-09-23, midnight visibility rule): every ledger entry the 15:30 gate had dated now carries
+    # `sub` = the filing's CALENDAR day and `sub_1530` = the date the retired gate used to serve. History slot 5
+    # may hold either the raw day (`was`) or that gated day (the Aug-23 P4 pass wrote gated dates into history),
+    # so a stored date matching EITHER is the same filing and is served at the ledger's (midnight-rule) date.
     n_reassert = [0]
     def _reassert_sub(sym, qi, sub):
         k = "%s|%d" % (sym, qi)
@@ -1328,10 +1345,12 @@ def build_engine_feed():
                 if sub == e["sub"]:
                     return sub          # already at the healed (earliest-disclosure) date: an older BSE-only
                                         # shp_sub_dates entry must not move it later again
-            if "days_later" in e and sub == e.get("was"):
-                n_reassert[0] += 1; return e["sub"]
+            if "days_later" in e and (sub == e.get("was") or sub == e.get("sub_1530")):
+                if sub != e["sub"]: n_reassert[0] += 1
+                return e["sub"]
         e = sub_led.get(k)
-        if isinstance(e, dict) and isinstance(e.get("sub"), int) and sub != e["sub"] and sub == e.get("was"):
+        if (isinstance(e, dict) and isinstance(e.get("sub"), int) and sub != e["sub"]
+                and (sub == e.get("was") or sub == e.get("sub_1530"))):
             n_reassert[0] += 1; return e["sub"]
         return sub
     n_undated = [0]
@@ -1398,6 +1417,49 @@ def write_meta(stats):
     json.dump(out, open(META_OUT, "w", encoding="utf-8"), separators=(",", ":"))
     print("WROTE %s" % os.path.normpath(META_OUT))
 
+def regate_recent(qes, only=None):
+    """§149 (2026-09-23): rows the RETIRED 15:30 gate dated AT INGESTION carry no ledger entry — their raw
+    broadcast lives only in NSE's master (visible_iso gated from 2026-09-05 13:33-13:41 and 2026-09-21 → 23;
+    NSE-dated re-filings in shp_revisions.json likewise). For the given quarter-ends (and their event windows)
+    re-read the master and, wherever a stored quarterly / event / revision date EQUALS the legacy gate of that
+    record's broadcast, store the midnight-rule day instead. Any other stored date (an earlier disclosure, a
+    ledger heal, a re-filing's own date) is left alone. No XBRL is parsed; holdings never change. Runs after
+    every fetch in refresh-shareholding.yml so a stale writer can never re-poison the window. Returns rows moved."""
+    jar = B.nse_jar()
+    hist = load_hist(); ev = load_events(); revs = load_revs()
+    latest = ev.setdefault("_latest", {})
+    moved = {"quarterly": 0, "event": 0, "revision": 0, "latest": 0}
+    for qe in qes:
+        for events in (False, True):
+            try:
+                recs = fetch_master(jar, qe, events=events)
+            except Exception as e:
+                print("  regate %s%s: master fetch failed (%s)" % (qe, " events" if events else "", str(e)[:80]))
+                continue
+            for r in recs:
+                sym = str(r.get("symbol") or "").strip().upper()
+                if not sym or (only is not None and sym not in only): continue
+                key = iso_date(r.get("date")) if events else qe
+                if not key: continue
+                new = visible_iso(r); old = legacy_gate_iso(r)
+                if not new or not old or new == old: continue
+                store = ev if events else hist
+                cell = (store.get(sym) or {}).get(key)
+                if isinstance(cell, list) and len(cell) > 5 and str(cell[5]) == old:
+                    cell[5] = new; moved["event" if events else "quarterly"] += 1
+                rc = (revs.get(sym) or {}).get(key)
+                if isinstance(rc, list) and len(rc) > 5 and str(rc[5]) == old:
+                    rc[5] = new; moved["revision"] += 1
+                if events and (latest.get(sym) or {}).get(key) == old:
+                    latest[sym][key] = new; moved["latest"] += 1
+    if moved["quarterly"]: save_hist(hist)
+    if moved["event"] or moved["latest"]: save_events(ev)
+    if moved["revision"]: save_revs(revs)
+    print("  regate: %d quarterly, %d event, %d revision rows moved from the retired 15:30-gate day to the "
+          "filing day (%d _latest markers)" % (moved["quarterly"], moved["event"], moved["revision"], moved["latest"]))
+    return moved["quarterly"] + moved["event"] + moved["revision"]
+
+
 if __name__ == "__main__":
     args = sys.argv[1:]
     if "--hist" in args:   # write to an alternate history file (staging for conflict-free backfills)
@@ -1447,6 +1509,18 @@ if __name__ == "__main__":
                 if "--symbols" in args else None)
         print("sme quarter-ends:", ", ".join(qes))
         bank_sme_shares(qes, only=only)
+    elif "--regate" in args:
+        # §149: move rows the retired 15:30 gate dated at ingestion to the filing day (see regate_recent).
+        n = int(args[args.index("--backfill") + 1]) if "--backfill" in args else TOPUP_QES
+        qes = ([q.strip() for q in args[args.index("--quarters") + 1].split(",") if q.strip()]
+               if "--quarters" in args else last_qes(n))
+        only = ({s.strip().upper() for s in args[args.index("--symbols") + 1].split(",") if s.strip()}
+                if "--symbols" in args else None)
+        print("regate quarter-ends:", ", ".join(qes))
+        if regate_recent(qes, only=only):
+            build_engine_feed()
+        else:
+            print("  regate: nothing to move")
     elif "--feed-only" in args:
         build_feed()
         build_engine_feed()

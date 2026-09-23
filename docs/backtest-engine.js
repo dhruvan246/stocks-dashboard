@@ -602,6 +602,11 @@ function _conFreshEnough(arr, dateInt) {
   const mdiff = (Math.floor(s / 10000) - Math.floor(c / 10000)) * 12 + (Math.floor(s / 100) % 100 - Math.floor(c / 100) % 100);
   return mdiff <= 12;
 }
+// VISIBILITY RULE (runbook §149, user decision 2026-09-23): a quarter is visible to a screen dated R iff its
+// stored announce date <= R — and since 2026-09-23 that stored date is the filing's CALENDAR day, whatever the
+// time of day (the user sells at R's close and buys at the next open, so a result broadcast at 20:00 on R
+// counts for R). The earlier §12 "15:30 gate" (after-close -> next trading day) is retired and its historical
+// shifts reversed on the data side; this comparison never changed. Same for shpAt() below. (Sync: stock-backtest.html)
 function profitAt(sym, dateInt, basis) {
   const arr = fundFor(sym); if (!arr || !arr.length) return null;
   // 'conOnly' reads the consolidated slots with NO standalone fallback. It is a MEASUREMENT
@@ -795,8 +800,9 @@ async function loadShp() {
   // (2) calendar: day 28 is STRICTLY BEFORE every screen these stamps can ever meet —
   //     the earliest month-end trading day across ALL 56 Jan/Apr/Jul/Oct screens of
   //     2003-2016 (a closed census, majority-of-8 calendar, incl. the Sat-29-Apr-2006
-  //     special session) is day 29. A synthetic date has no 15:30 clock, so it must
-  //     never coincide with a screen date; +30 could land ON a day-30 screen.
+  //     special session) is day 29. (Chosen when the 15:30 gate was in force, so a
+  //     clockless date could never land ON a screen; under the §149 midnight rule a
+  //     same-day date would simply count — 28 stays as the measured late floor.)
   // Stamped AFTER the alias merge so dated-beats-undated collision preference above
   // still sees the raw sentinel; a recovered real date arrives already-dated from the
   // feed and is never touched here.

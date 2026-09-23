@@ -106,16 +106,14 @@ def prev_q(qe):
     return bse_text.prev_q(qe)
 
 def gated_ann(dt_iso):
-    """BSE DT_TM '2026-08-04T20:02:14.153' → YYYYMMDD int through the 15:30 IST gate."""
+    """BSE DT_TM '2026-08-04T20:02:14.153' → YYYYMMDD int = the broadcast's CALENDAR DAY (20260804).
+    Midnight visibility rule (user decision 2026-09-23, runbook §149): a filing counts for the day it
+    was broadcast, whatever the time — the user buys at the next session's open. The §12 15:30 gate
+    (after-close → next weekday) is retired; name kept, guard_visibility_rule.py asserts this."""
     m = re.match(r"(\d{4})-(\d{2})-(\d{2})T(\d{2}):(\d{2})", dt_iso or "")
     if not m:
         return None
-    d = datetime.date(int(m.group(1)), int(m.group(2)), int(m.group(3)))
-    if int(m.group(4)) * 60 + int(m.group(5)) > 15 * 60 + 30:
-        d += datetime.timedelta(days=1)
-        while d.weekday() >= 5:
-            d += datetime.timedelta(days=1)
-    return yyyymmdd(d)
+    return yyyymmdd(datetime.date(int(m.group(1)), int(m.group(2)), int(m.group(3))))
 
 def load_json(p, default):
     try:

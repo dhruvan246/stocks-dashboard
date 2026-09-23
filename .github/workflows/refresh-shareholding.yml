@@ -33,9 +33,10 @@ jobs:
         with:
           python-version: "3.11"
 
-      # §142a: the 15:30 visibility gate was silently deleted from the fetcher by a stale-copy commit on
-      # 2026-09-05 and nothing noticed for 16 days. Refuse to ingest if it is not wired into BOTH paths.
-      - name: Guard — the 15:30 visibility gate must be wired into both ingestion paths
+      # §142a: a visibility function was silently deleted from the fetcher by a stale-copy commit on
+      # 2026-09-05 and nothing noticed for 16 days. §149 (2026-09-23): the rule is now MIDNIGHT (a filing
+      # counts for the calendar day it was broadcast). Refuse to ingest unless BOTH paths apply exactly that.
+      - name: Guard — midnight visibility rule must be wired into both ingestion paths
         run: python3 scripts/guard_shp_gate.py
 
       - name: Fetch new/revised shareholding filings (last 3 quarter-ends)
@@ -47,6 +48,13 @@ jobs:
       # Runs after the quarterly pass so build_engine_feed merges both into shp_engine.json.
       - name: Fetch event-driven (mid-quarter) shareholding filings
         run: python3 -X utf8 scripts/fetch_shareholding.py --events
+
+      # §149: rows the RETIRED 15:30 gate dated at ingestion carry no ledger entry (their raw broadcast
+      # lives only in NSE's master). Re-read the master for the same window and move any stored
+      # quarterly / event / revision date that equals the old gate's output to the filing day. No XBRL
+      # parsed, holdings untouched; a quiet day moves 0 rows. Non-fatal: a failed pass retries tomorrow.
+      - name: Regate — move retired-gate dates to the filing day
+        run: python3 -X utf8 scripts/fetch_shareholding.py --regate || echo "::warning::regate pass failed — retired-gate dates stay this run"
 
       # NSE files SME-platform (Emerge) shareholding on a SEPARATE board (index=sme). This pass banks
       # only their total share counts into scripts/shares_outstanding.json (already committed below),
