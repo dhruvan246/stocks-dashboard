@@ -699,14 +699,18 @@ async function loadData() {
           row.staleDays = Math.max(0, toDayOffset - ser.d[iTo]);
           row.fromGapDays = Math.max(0, (fromDayOffset - 1) - ser.d[iFrom]);
         }
-      } else if (iFrom !== -1 && iFrom === iTo && iFrom === 0) {
+      } else if (iTo === 0 && (iFrom === -1 || iFrom === 0)) {
+        // (iFrom === -1 too: a stock whose ONLY bar is inside the window — it listed within it, e.g. today
+        // — resolved no from-bar at all and the row went blank; §145, HEROMOTORS 23-Sep-2026.)
         // Listing-day edge case: stock has only one entry inside the window
         // and there's nothing earlier. Show the listing-day price as "Day 1"
         // with no change figure, instead of an empty row.
-        row.fromPrice = ser.p[iFrom] / 100;
-        row.toPrice   = ser.p[iFrom] / 100;
+        // Read the bar at iTo (always 0 here): iFrom is -1 in the listing-within-window case, and
+        // ser.d[-1] made an Invalid Date that threw and blanked the whole table (caught in testing).
+        row.fromPrice = ser.p[iTo] / 100;
+        row.toPrice   = ser.p[iTo] / 100;
         row.changePercent = null;
-        row.fromDate = row.toDate = new Date((START_TS + ser.d[iFrom] * DAY) * 1000).toISOString().slice(0, 10);
+        row.fromDate = row.toDate = new Date((START_TS + ser.d[iTo] * DAY) * 1000).toISOString().slice(0, 10);
         row.firstDay = true;
         row.noData = false;
       }

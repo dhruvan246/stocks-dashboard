@@ -18003,7 +18003,15 @@ stock to be there. fix it"* + *"plus i want stock pages for all sme stocks as we
   VAMAWOVEN.BO), 39 last trade shown, 38 "no trades on record", 3 NSE listings of 23-Sep pending their 2nd session.
   ⚠️ **The browser served an OLD dash_slim.bin from cache** on a reload (transferSize 0, build 12:08 IST while Pages
   had 13:16; GitHub Pages sends max-age=600) — a live fix reads as "still broken". The dashboard's gunzipFetch now
-  uses `cache: 'no-cache'` (revalidate every load; unchanged file = 304). Order in refresh.yml: fetch_all → fill (NSE + BSE
+  uses `cache: 'no-cache'` (revalidate every load; unchanged file = 304).
+- **Listing-day stocks were blank for their whole first session (user: "fix the 3 NSE listings with no price").**
+  HEROMOTORS / SSRETAIL / JSIPL listed 23-Sep-2026; Yahoo already had today's bar (98.40 / 748.80 / 126.00) but
+  `fetch_all.fetch_with_fallback` required ≥ 2 bars and the page's "Day 1" branch fired only when the window
+  STARTED after the listing day. Now: a single bar within 7 days of the build is kept (fetch_all +
+  fill_prices_from_sf `long_enough`), and the page shows "Day 1" whenever the only bar sits inside the window
+  (iFrom −1 or 0, iTo 0). ⚠️ The first cut read `ser.d[iFrom]` in that branch — iFrom is −1 there → Invalid Date →
+  loadData threw and blanked the WHOLE table; caught by the local phone test before shipping (now reads iTo).
+  Verified (375×812, 0 errors): Day 1 on 1-week / 31-Mar / today windows, "—" for a window ending before listing. Order in refresh.yml: fetch_all → fill (NSE + BSE
   stores) → last trade → BSE share counts → heal → sectors → build.
 - **The results table drew only the top 500 of 5,527 with no way past it** — SUNLITE ranked 654th for 31-Mar →
   today (the 500th row was +87.60 %, SUNLITE +74.70 %). Now paged: a row at the foot of the table offers "Show

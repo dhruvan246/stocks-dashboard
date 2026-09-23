@@ -152,6 +152,7 @@ DAILY_START_TS  = int(_dt.datetime(2020, 1, 1).timestamp())
 START_TS        = WEEKLY_START_TS  # this is what we tell the dashboard
 
 UA = "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36"
+NEW_LISTING_MAX_AGE_S = 7 * 86400   # a one-bar series is a listing-day stock only if that bar is this recent
 
 def fetch_chart(ticker, p1, p2, interval):
     url = f"https://query1.finance.yahoo.com/v8/finance/chart/{ticker}?period1={p1}&period2={p2}&interval={interval}"
@@ -187,6 +188,12 @@ def fetch_with_fallback(entry):
             if ts in seen: continue
             seen.add(ts); out.append([ts, close])
         if len(out) >= 2:
+            return ticker, out
+        # A stock on its LISTING DAY has exactly one bar. Dropping it left new listings blank for their
+        # whole first session (HEROMOTORS / SSRETAIL / JSIPL, 23-Sep-2026, §145); the page shows such a
+        # row as "Day 1". A lone bar is kept only when it is recent — an old single stray bar is not a
+        # listing, and falling through to the alternates stays the rule for those.
+        if len(out) == 1 and END_TS - out[0][0] <= NEW_LISTING_MAX_AGE_S:
             return ticker, out
     return entry["primary"], None
 

@@ -29,6 +29,7 @@ ROOT = Path(__file__).resolve().parent.parent
 PAYLOAD = ROOT / "scripts" / "stock_data.json"
 RELEASE_URL = "https://github.com/dhruvan246/stocks-dashboard/releases/download/data/sf_stock_data.bin"
 DAILY_FROM = 20200101
+END_TS_NOW = int(time.time())
 IST = datetime.timezone(datetime.timedelta(hours=5, minutes=30))
 
 
@@ -192,10 +193,10 @@ def fill_bse(meta, series, cal):
         base = t[:-3]
         code = base if base.isdigit() else sid2code.get(base.upper())
         e = px.get(code) if code else None
-        if not e or len(e.get("d") or ()) < 2: short.append(t); continue
+        if not e or not e.get("d"): short.append(t); continue
         a, n = adjusted(e, code, cache)
         ser, dropped = series_from(a, cal)
-        if len(ser) < 2: short.append(t); continue
+        if not long_enough(ser, END_TS_NOW): short.append(t); continue
         series[t] = ser
         meta[t]["src"] = "bse-bhavcopy"
         filled += 1; actions += n; dropped_total += dropped
@@ -206,6 +207,11 @@ def fill_bse(meta, series, cal):
     print("bse-fill: %d of %d price-less .BO rows filled from BSE's bhavcopy store (%d split/bonus "
           "steps divided out, each confirmed by BSE's record; %d off-calendar bars dropped); %d have < 2 BSE trades since 2023-12"
           % (filled, len(todo), actions, dropped_total, len(short)), flush=True)
+
+
+def long_enough(ser, end_ts):
+    """>= 2 bars, or a single bar from the last 7 days (a listing-day stock; the page shows "Day 1")."""
+    return len(ser) >= 2 or (len(ser) == 1 and end_ts - ser[0][0] <= 7 * 86400)
 
 
 def main():
@@ -240,7 +246,7 @@ def main():
         if not e or not e.get("d"):
             absent.append(sym); continue
         ser, dropped = series_from(e, cal)
-        if len(ser) < 2:
+        if not long_enough(ser, END_TS_NOW):
             short.append(sym); continue
         series[t] = ser
         meta[t]["src"] = "nse-bhavcopy"          # provenance: not a Yahoo series
