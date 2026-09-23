@@ -18025,6 +18025,14 @@ stock to be there. fix it"* + *"plus i want stock pages for all sme stocks as we
   no file, 28 are NSE sessions; re-fetched twice, BSE serves no file for them in either format — a trade on those
   28 days cannot be ruled out (stated in the label's hover text; listed in the ledger). Ledger:
   scripts/bse_last_trade_archive.json (read by fill_bse_last_trade.py only when the quote page says 0.00).
+  **The 34 "no BSE trade since 2007" — every other route checked (user: "fix the 34 too"), 2026-09-23:** NSE
+  full tape 1996→ (sf release bin) by exact ISIN AND by issuer prefix `isin[:7]`: 0. MSEI's listed-company
+  list (`msei.in/SX-Content/.../List-of-companies-databas.xlsx`, 6 ISINs): 0. BSE quote-header status notes:
+  31 plain "Listed" (no suspension / IRP / ASM / GSM beyond 2 at "GSM : Stage 0", 1 "Trading in Abeyance"),
+  3 group IP (BSE institutional trading platform) with no quote at all. BSE's archive does not exist before
+  2007 (HTML for 2006-). Verdict: listed, untraded on every exchange this repo can read since at least 2007 — NO
+  price exists to show; the label stays the measured statement. Do not fill from face value or screener
+  (screener shows 1-crore-share placeholders for such scrips, see the frozen-price note above).
 - **The results table drew only the top 500 of 5,527 with no way past it** — SUNLITE ranked 654th for 31-Mar →
   today (the 500th row was +87.60 %, SUNLITE +74.70 %). Now paged: a row at the foot of the table offers "Show
   500 more" / "Show all" (pinned left and width-capped so it stays on a 375 px screen); new data, search and sort
