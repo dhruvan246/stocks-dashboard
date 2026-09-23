@@ -1,0 +1,102 @@
+#!/usr/bin/env python3
+# -*- coding: utf-8 -*-
+"""Last traded price + date for BSE-only dashboard rows that still have NO price series after the
+Yahoo fetch and the bhavcopy-store fills. DATA_RUNBOOK §145.
+
+WHY: 66 BSE-only rows (2026-09-23) had no bar at all in BSE's own daily bhavcopy since 2023-12 — the
+store watches them every day and BSE printed no trade. They are LISTED but untraded. BSE's scrip header
+(getScripHeaderData) still states the last trade: `Header.LTP` and `Header.Ason` ("29 Jul 20 | 16:00" =
+Apex Capital's last session). Measured: 27 last traded 2001-2023, 36 show LTP 0.00 (no trade on record),
+3 are group IP (BSE's institutional trading platform: no public quote at all). The page shows the last
+price with "not traded since <date>", or "no trades on record", instead of a blank row.
+
+Output: meta[ticker]["lastTrade"] = {"d": "YYYY-MM-DD" | null, "p": float | null} in
+scripts/stock_data.json, and a ticker-keyed cache scripts/bse_last_trade.json (re-checked after
+MAX_AGE_DAYS, so a normal run makes few BSE calls). Non-fatal in refresh.yml.
+"""
+import os, sys, json, time, datetime, subprocess
+
+HERE = os.path.dirname(os.path.abspath(__file__))
+ROOT = os.path.dirname(HERE)
+PAYLOAD = os.path.join(HERE, "stock_data.json")
+LEDGER = os.path.join(HERE, "bse_last_trade.json")
+UNIV = os.path.join(ROOT, "docs", "bse_universe.json")
+MAX_AGE_DAYS = 7
+UA = "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/120 Safari/537.36"
+
+
+def header(code):
+    out = subprocess.run(["curl", "-s", "--max-time", "30", "-A", UA, "-H", "Referer: https://www.bseindia.com/",
+                          "-H", "Origin: https://www.bseindia.com",
+                          "https://api.bseindia.com/BseIndiaAPI/api/getScripHeaderData/w?Debtflag=&scripcode=%s&seriesid=" % code],
+                         capture_output=True, timeout=45).stdout
+    return (json.loads(out or b"{}") or {}).get("Header") or {}
+
+
+def main():
+    try:
+        led = json.load(open(LEDGER, encoding="utf-8"))
+    except Exception:
+        led = {"_doc": "Last BSE trade per BSE-only dashboard ticker with no price series "
+                       "(getScripHeaderData LTP + Ason). Written by scripts/fill_bse_last_trade.py. §145.",
+               "rows": {}}
+    rows = led.setdefault("rows", {})
+    payload = json.load(open(PAYLOAD, encoding="utf-8"))
+    meta, series = payload["meta"], payload["series"]
+    sid2code = {}
+    for src in (UNIV, "/tmp/bse.json"):
+        try:
+            j = json.load(open(src, encoding="utf-8"))
+            if isinstance(j, dict):
+                for r in j.get("rows") or ():
+                    sid2code.setdefault(str(r[1]).upper(), str(r[0]))
+            else:
+                for b in j:
+                    sid, code = (b.get("scrip_id") or "").strip().upper(), (b.get("SCRIP_CD") or "").strip()
+                    if sid and code: sid2code.setdefault(sid, code)
+        except Exception:
+            pass
+    today = datetime.date.today()
+    todo = [t for t in meta if t.endswith(".BO") and not series.get(t)]
+    fetched = cached = nocode = 0
+    for t in todo:
+        cur = rows.get(t) or {}
+        try:
+            age = (today - datetime.date.fromisoformat(cur.get("checked", "1900-01-01"))).days
+        except ValueError:
+            age = 9999
+        if age > MAX_AGE_DAYS:
+            base = t[:-3]
+            code = base if base.isdigit() else sid2code.get(base.upper())
+            if not code:
+                nocode += 1; continue
+            try:
+                h = header(code)
+            except Exception as e:
+                print("  %s: header failed (%r)" % (t, e)); continue
+            ason = (h.get("Ason") or "").split("|")[0].strip()
+            try:
+                d = datetime.datetime.strptime(ason, "%d %b %y").date().isoformat()
+            except ValueError:
+                d = None
+            try:
+                p = float(h.get("LTP") or 0)
+            except ValueError:
+                p = 0.0
+            # LTP 0.00 is BSE's "no trade on record"; its Ason is then just today's page time, not a trade
+            cur = {"code": code, "p": (round(p, 2) if p > 0 else None), "d": (d if p > 0 else None),
+                   "quote": bool(h), "checked": today.isoformat()}
+            rows[t] = cur; fetched += 1
+            time.sleep(0.8)
+        else:
+            cached += 1
+        meta[t]["lastTrade"] = {"d": cur.get("d"), "p": cur.get("p")}
+    json.dump(led, open(LEDGER, "w", encoding="utf-8"), indent=1, sort_keys=True)
+    json.dump(payload, open(PAYLOAD, "w", encoding="utf-8"), separators=(",", ":"))
+    withp = sum(1 for t in todo if (meta[t].get("lastTrade") or {}).get("p"))
+    print("fill_bse_last_trade: %d price-less .BO rows — %d fetched, %d cached, %d without a code; "
+          "%d have a last trade, %d have none on record" % (len(todo), fetched, cached, nocode, withp, len(todo) - withp - nocode))
+
+
+if __name__ == "__main__":
+    main()

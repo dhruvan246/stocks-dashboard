@@ -17975,6 +17975,30 @@ stock to be there. fix it"* + *"plus i want stock pages for all sme stocks as we
   name regex missed. fetch_all's non-stock test now also drops ISINs starting `INF` (fund units by NSDL
   convention): 56 rows left the universe (5,527 → 5,471) — 30 Nippon segregated-portfolio plans, 25 specialised
   investment-fund units (Platinum, Titanium, Arudha, Infinity, iSIF), INFRA; only INFRA had prices.
+- **The 101 rows with NO price data (user, 2026-09-23: "fix the 94 BSE rows with no price data too").** Measured
+  per row (BSE header `getScripHeaderData` → `Header.LTP` + `Header.Ason` = last trade, BSE's own bhavcopy store
+  docs/bse_prices.bin from 2023-12, the 22-Sep BSE UDiFF file): 12 trading now with history in the store (Hindustan
+  Motors, AG Ventures, Team24 … 675+ sessions — Yahoo just has no chart), 16 last traded 2024-26 and in the store,
+  4 NEW BSE listings the store never tracked, 3 NSE listings of TODAY (HEROMOTORS, SSRETAIL, JSIPL — list 23-Sep),
+  27 last traded 2001-2023 (before the store), 36 with LTP 0.00 = no trade on record, 3 group IP (BSE institutional
+  trading platform, no quote). ⚠️ `Header.LTP` is the LAST trade, not today's: Apex Capital's "−5.00 %" is
+  "As on 29 Jul 20". Fixes:
+  1. `fill_prices_from_sf.py` also fills `.BO` rows from docs/bse_prices.bin (≥ 2 trades), split/bonus steps
+     inferred by build_sf_data's ladder BUT divided out only when BSE's corporate-action record (`DefaultData/w`,
+     ±7 d) shows a split or bonus — **AG Ventures 809.85 → 209.50 on 2024-07-01 is a SPIN OFF** (ratio 0.259 looks
+     like 1:4); dividing it out would have invented the earlier history. Verdicts cached in scripts/bse_ca_checks.json.
+  2. `fill_bse_last_trade.py` → meta.lastTrade {d, p} for `.BO` rows still without a series (cache
+     scripts/bse_last_trade.json, 7 d). Store-vs-header cross-check on the 11 single-trade scrips: date AND price
+     agree (503622 2025-06-17 ₹7.71 both). LTP 0.00 → "no trades on record".
+  3. Page: such rows show the last price + "not traded since Mon YYYY" / "no trades on record"; market cap uses
+     the last trade × the BSE-filing share count (caps < ₹0.01 Cr kept to 6 dp, shown "<0.01": White Hall ₹0.02
+     × 2.49 lakh shares = ₹4,980).
+  4. The BSE store never back-filled a scrip that joined bse_universe after its first sessions (universe refresh was
+     Sundays only): refresh-bse.yml now refreshes the universe DAILY, and `fetch_bse_bhav.py` scans back 180 d ONCE
+     for any never-seen code (`data["catchup"]`). Local test: 122 never-seen codes, all 4 listings got their bars.
+  Result on the live data (local build): 19 rows priced from the BSE store, 40 show a last trade, 38 "no trades on
+  record", 3 NSE listings fill after their second session. Order in refresh.yml: fetch_all → fill (NSE + BSE
+  stores) → last trade → BSE share counts → heal → sectors → build.
 - **The results table drew only the top 500 of 5,527 with no way past it** — SUNLITE ranked 654th for 31-Mar →
   today (the 500th row was +87.60 %, SUNLITE +74.70 %). Now paged: a row at the foot of the table offers "Show
   500 more" / "Show all" (pinned left and width-capped so it stays on a 375 px screen); new data, search and sort

@@ -121,21 +121,28 @@ jobs:
       - name: Fetch price history from Yahoo Finance
         run: python3 scripts/fetch_all.py
 
+      - name: Fill tickers Yahoo cannot serve from the NSE and BSE bhavcopy stores
+        # NSE SME-platform names (SUNLITE...) and a few main-board series have no Yahoo chart
+        # (SUNLITE.NS = Not Found; the SME tickers Yahoo does carry are typed MUTUALFUND and
+        # rejected by fetch_all). Their series come from docs/sf_stock_data.bin's release asset
+        # (NSE bhavcopies, SME ingested since 2026-09-22). Fill-only where Yahoo returned nothing,
+        # never a mix inside one ticker. BSE-only rows are filled from docs/bse_prices.bin (BSE's own
+        # bhavcopy, split/bonus steps inferred and divided out). Non-fatal: the Yahoo-only payload still ships, and the
+        # warning below is what tells you the SME rows shipped price-less. DATA_RUNBOOK §145.
+        run: python3 scripts/fill_prices_from_sf.py || echo "::warning::bhavcopy fill failed — SME/NSE-only rows ship without prices this run (see log)"
+
+      - name: Last BSE trade for BSE-only rows still without a price series
+        # Listed-but-untraded BSE scrips (no BSE bhavcopy row since 2023-12): BSE's quote header gives the
+        # last trade (LTP + date) or none on record; the page shows it with a label. Cached ~1 week in
+        # scripts/bse_last_trade.json. Non-fatal. DATA_RUNBOOK §145.
+        run: python3 scripts/fill_bse_last_trade.py || echo "::warning::BSE last-trade fill failed — untraded BSE rows show no price this run"
+
       - name: Share counts for BSE-only rows with no BSE market cap
         # BSE leaves Mktcap blank/0 for scrips with no recent trade; their own BSE shareholding
         # filing still carries the share count (scripts/shares_bse_only.json, cached ~1 quarter, so a
         # normal run makes no BSE calls). build_compressed turns it into mcap x last traded close.
         # Non-fatal. DATA_RUNBOOK §145.
         run: python3 scripts/fill_bse_share_counts.py || echo "::warning::BSE-only share-count fill failed — those rows keep a blank market cap this run"
-
-      - name: Fill tickers Yahoo cannot serve from the NSE bhavcopy store
-        # NSE SME-platform names (SUNLITE...) and a few main-board series have no Yahoo chart
-        # (SUNLITE.NS = Not Found; the SME tickers Yahoo does carry are typed MUTUALFUND and
-        # rejected by fetch_all). Their series come from docs/sf_stock_data.bin's release asset
-        # (NSE bhavcopies, SME ingested since 2026-09-22). Fill-only where Yahoo returned nothing,
-        # never a mix inside one ticker. Non-fatal: the Yahoo-only payload still ships, and the
-        # warning below is what tells you the SME rows shipped price-less. DATA_RUNBOOK §145.
-        run: python3 scripts/fill_prices_from_sf.py || echo "::warning::bhavcopy fill failed — SME/NSE-only rows ship without prices this run (see log)"
 
       - name: Floor the fetch against the last published build
         # fetch_all.py rebuilds stock_data.json from scratch, so whatever Yahoo returns IS

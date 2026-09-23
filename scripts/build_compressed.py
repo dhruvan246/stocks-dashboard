@@ -99,7 +99,7 @@ if shares_path.exists():
             # `latest` is only written by the 52w pass (>= 30 bars in the last year), so a new or thinly
             # traded listing had none and was skipped — 21 of 25 cap-less SME rows on 2026-09-23 had a
             # share count AND a price series. Fall back to the series' own last close.
-            px = meta.get("latest") or last_close.get(tkr)
+            px = meta.get("latest") or last_close.get(tkr) or (meta.get("lastTrade") or {}).get("p")
             if not px: continue
             sym = str(meta.get("symbol") or tkr.split(".")[0]).upper()
             src = None
@@ -116,7 +116,7 @@ if shares_path.exists():
             if not src: continue
             mcap = n * px / 1e7                           # shares x rupees -> rupees crore
             if mcap <= 0: continue
-            meta["mcap"] = round(mcap, 2)
+            meta["mcap"] = round(mcap, 2) if mcap >= 0.01 else round(mcap, 6)   # a Rs 4,980 cap is not "0.00" (§145)
             meta["mcapSrc"] = src
             if src.startswith("screener"): filled_sc += 1
             elif src.startswith("bse-shp"): filled_bse += 1
@@ -657,6 +657,7 @@ async function loadData() {
       sectorBroad: m.sector || '',           // kept for tooltip / CSV
       mcap: m.mcap,
       frozenSince: m.frozenSince || null,   // price unchanged for >= 1 year while Yahoo still prints it (§145)
+      lastTrade: m.lastTrade || null,       // BSE's last trade for a row with no price series {d, p} (§145)
       fromPrice: null, toPrice: null, changePercent: null,
       fromDate: null,  toDate: null,  noData: true,
       // 52-week-high distance, anchored at snapshot date (constant per stock)
@@ -764,9 +765,18 @@ function renderResults(results, keepLimit) {
     for (let i = 0; i < view.length; i++) {
       const r = view[i];
       // Whole crores hid real sub-crore caps as "0" (BENTCOM 0.40, ZJEETMAC 0.13 — §145): under 10 Cr keep 2 dp.
-      const mcap = r.mcap > 0 ? r.mcap.toLocaleString('en-IN', r.mcap < 10 ? {minimumFractionDigits: 2, maximumFractionDigits: 2} : {maximumFractionDigits: 0}) : '\u2014';
+      const mcap = r.mcap > 0 ? (r.mcap < 0.01 ? '&lt;0.01' : r.mcap.toLocaleString('en-IN', r.mcap < 10 ? {minimumFractionDigits: 2, maximumFractionDigits: 2} : {maximumFractionDigits: 0})) : '\u2014';
       let fromCell, toCell, chgCell;
-      if (r.noData) {
+      if (r.noData && r.lastTrade) {
+        // Listed but no trade in our price stores: show BSE's own last trade, or say there is none (§145).
+        const lt = r.lastTrade;
+        fromCell = DASH;
+        toCell = lt.p ? '&#8377;' + Number(lt.p).toFixed(2) : DASH;
+        const when = lt.d ? new Date(lt.d + 'T00:00:00Z').toLocaleDateString('en-IN', {month: 'short', year: 'numeric', timeZone: 'UTC'}) : null;
+        chgCell = '<span class="inline-flex items-center bg-amber-50 text-amber-700 rounded-md px-2 py-0.5 font-semibold text-xs" title="' +
+          (lt.p ? 'Last BSE trade ' + lt.d + ' at \u20b9' + lt.p + ' (BSE quote page)' : 'BSE shows no trade on record for this scrip') + '">' +
+          (lt.p ? 'not traded since ' + when : 'no trades on record') + '</span>';
+      } else if (r.noData) {
         fromCell = toCell = chgCell = DASH;
       } else if (r.firstDay) {
         // Stock has only one trading day inside the window (its listing day);

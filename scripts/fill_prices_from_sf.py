@@ -93,14 +93,136 @@ def series_from(e, cal=None):
     return out, dropped
 
 
+BSE_PX = ROOT / "docs" / "bse_prices.bin"        # BSE daily bhavcopy closes (fetch_bse_bhav.py), RAW
+BSE_UNIV = ROOT / "docs" / "bse_universe.json"
+CA_FRACS = [1/2, 1/3, 2/3, 1/4, 3/4, 1/5, 2/5, 3/5, 1/6, 5/6, 1/8, 1/10, 1/20, 1/50, 2.0, 3.0, 4.0, 5.0, 10.0]
+
+
+def ca_factor(r):
+    """build_sf_data's corporate-action ladder: a close-to-close ratio outside [0.75, 1.30] within 8% of a
+    canonical split/bonus fraction is a corporate action, anything else a real move. On BSE's X/XT/M
+    groups the daily band is 5-20%, so a ratio that far out between two TRADES is not a market move."""
+    if 0.75 <= r <= 1.30: return 1.0
+    for f in CA_FRACS:
+        if abs(r / f - 1) <= 0.08: return f
+    return 1.0
+
+
+CA_LEDGER = ROOT / "scripts" / "bse_ca_checks.json"   # {"code|ymd": verdict} — BSE's own record per candidate step
+_UA = "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/120 Safari/537.36"
+
+
+def bse_official(code, ymd, cache):
+    """What BSE's corporate-action record says within 7 days of a candidate step: "split_bonus",
+    "other" (spin-off / demerger / scheme / anything else) or "none". A step that looks like a split
+    by its ratio is NOT divided out unless BSE records a split or bonus: AG Ventures fell 809.85 ->
+    209.50 on 2024-07-01 (ratio 0.259, "1:4" by shape) and BSE's record for that day is a SPIN OFF —
+    real value left the stock, and dividing it out would have invented the whole earlier history."""
+    key = "%s|%d" % (code, ymd)
+    if key in cache: return cache[key]
+    d = datetime.date(ymd // 10000, ymd // 100 % 100, ymd % 100)
+    f, t = (d - datetime.timedelta(days=7)).strftime("%Y%m%d"), (d + datetime.timedelta(days=7)).strftime("%Y%m%d")
+    url = ("https://api.bseindia.com/BseIndiaAPI/api/DefaultData/w?Fdate=%s&Purposecode=&ScripCode=%s"
+           "&segment=0&strSearch=S&TDate=%s" % (f, code, t))
+    try:
+        import subprocess
+        out = subprocess.run(["curl", "-s", "--max-time", "30", "-A", _UA, "-H", "Referer: https://www.bseindia.com/",
+                              "-H", "Origin: https://www.bseindia.com", url], capture_output=True, timeout=45).stdout
+        rows = json.loads(out or b"[]")
+    except Exception:
+        return "unknown"                                     # not cached: retried next run
+    purposes = " | ".join(str(r.get("Purpose") or "") for r in rows) if isinstance(rows, list) else ""
+    low = purposes.lower()
+    v = "split_bonus" if ("split" in low or "bonus" in low) else ("other" if purposes.strip() else "none")
+    cache[key] = v
+    print("  bse-fill: %s step on %d -> BSE record: %s (%s)" % (code, ymd, v, purposes.strip() or "nothing"), flush=True)
+    return v
+
+
+def adjusted(e, code=None, cache=None):
+    """RAW closes -> split/bonus-adjusted closes, re-anchored so the last value is the last RAW close
+    (the same convention as the NSE store). A ratio-shaped step is divided out ONLY when BSE records a
+    split or bonus there (bse_official); spin-offs, schemes and unexplained steps stay as real moves.
+    Returns ({"d","c"}, n_actions)."""
+    d, c = e["d"], e["c"]
+    adj, out, n = None, [], 0
+    for i, x in enumerate(c):
+        if adj is None:
+            adj = x
+        else:
+            r = (x / c[i - 1]) if c[i - 1] else 1.0
+            f = ca_factor(r)
+            if f != 1.0 and code is not None and bse_official(code, d[i], cache if cache is not None else {}) != "split_bonus":
+                f = 1.0
+            if f != 1.0: n += 1
+            adj = adj * (r / f)
+        out.append(adj)
+    k = (c[-1] / out[-1]) if out and out[-1] else 1.0
+    return {"d": d, "c": [round(v * k, 2) for v in out]}, n
+
+
+def fill_bse(meta, series, cal):
+    """`.BO` rows Yahoo has no chart for -> series from BSE's own bhavcopy store (docs/bse_prices.bin,
+    2023-12 -> date). Measured 2026-09-23: 28 such rows had BSE trades in the store (Hindustan Motors,
+    AG Ventures, Team24 … 675+ sessions each) while the dashboard showed them price-less (§145)."""
+    todo = [t for t in meta if t.endswith(".BO") and not series.get(t)]
+    if not todo: return
+    try:
+        px = json.loads(gzip.decompress(BSE_PX.read_bytes()))["px"]
+    except Exception as e:
+        print("bse-fill: %s unreadable (%s) — skipped" % (BSE_PX, e)); return
+    sid2code = {}
+    try:
+        for r in json.loads(BSE_UNIV.read_text(encoding="utf-8"))["rows"]:
+            sid2code[str(r[1]).upper()] = str(r[0])
+    except Exception:
+        pass
+    try:
+        for b in json.load(open("/tmp/bse.json", encoding="utf-8")):
+            sid, code = (b.get("scrip_id") or "").strip().upper(), (b.get("SCRIP_CD") or "").strip()
+            if sid and code: sid2code.setdefault(sid, code)
+    except Exception:
+        pass
+    try:
+        cache = json.loads(CA_LEDGER.read_text(encoding="utf-8"))
+    except Exception:
+        cache = {}
+    filled = actions = dropped_total = 0; short = []
+    for t in todo:
+        base = t[:-3]
+        code = base if base.isdigit() else sid2code.get(base.upper())
+        e = px.get(code) if code else None
+        if not e or len(e.get("d") or ()) < 2: short.append(t); continue
+        a, n = adjusted(e, code, cache)
+        ser, dropped = series_from(a, cal)
+        if len(ser) < 2: short.append(t); continue
+        series[t] = ser
+        meta[t]["src"] = "bse-bhavcopy"
+        filled += 1; actions += n; dropped_total += dropped
+    try:
+        CA_LEDGER.write_text(json.dumps(cache, indent=1, sort_keys=True), encoding="utf-8")
+    except Exception:
+        pass
+    print("bse-fill: %d of %d price-less .BO rows filled from BSE's bhavcopy store (%d split/bonus "
+          "steps divided out, each confirmed by BSE's record; %d off-calendar bars dropped); %d have < 2 BSE trades since 2023-12"
+          % (filled, len(todo), actions, dropped_total, len(short)), flush=True)
+
+
 def main():
     payload = json.loads(PAYLOAD.read_text())
     meta, series = payload["meta"], payload["series"]
     todo = [t for t in meta if t.endswith(".NS") and not series.get(t)]
     print("sf-fill: %d .NS tickers with no Yahoo series (of %d)" % (len(todo), len(meta)), flush=True)
-    if not todo:
-        print("sf-fill: nothing to fill"); return
     cal = yahoo_calendar(meta, series)
+    if len(cal) < 200:
+        print("sf-fill: WARNING only %d Yahoo daily sessions in this payload — calendar alignment skipped" % len(cal), flush=True)
+        cal = None
+    fill_bse(meta, series, cal)                  # BSE rows first: needs no download
+    if not todo:
+        payload["series"] = series
+        PAYLOAD.write_text(json.dumps(payload, separators=(",", ":")))
+        print("sf-fill: no .NS gaps"); return
+    cal = yahoo_calendar(meta, series) if cal is not None else None
     if len(cal) < 200:
         # a Yahoo build with fewer than 200 daily sessions is not a calendar anyone should follow —
         # fill uncut and say so, rather than emit 200-bar stubs for every SME name

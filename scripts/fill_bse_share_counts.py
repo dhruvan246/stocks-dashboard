@@ -78,7 +78,8 @@ def main():
     except Exception as e:
         print("fill_bse_share_counts: %s unreadable (%s) — numeric tickers only" % (BSE_JSON, e))
     today = datetime.date.today()
-    todo = [t for t, m in meta.items() if t.endswith(".BO") and not m.get("mcap") and series.get(t)
+    todo = [t for t, m in meta.items() if t.endswith(".BO") and not m.get("mcap")
+            and (series.get(t) or (m.get("lastTrade") or {}).get("p"))      # a series, or BSE's last trade (§145)
             and (only is None or t in only)]
     fresh = fetched = failed = 0
     for t in todo:
