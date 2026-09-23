@@ -18279,9 +18279,21 @@ previous build (all 0), **Nifty 500 39/39 at 100%** (no archived list falls in e
 Bank byte-identical; Nifty 500 and the derived MidSmallcap 400 / Smallcap 250 change on 2017-03-16 and
 2017-09-05 ONLY; derived Smallcap 250 = 250 at every snapshot 2016-2019 (the 251 is gone); Midcap 150 ⊂
 Nifty 500 on every date except (2). The register no longer gap-fills either window; it still adds +BSE
-2017-09-29 (the hunt's 28082017 list lacks BSE — why that entry was 25 / 24) and +MFSL 2017-03-16:
-the ledger maps "Max India Ltd." to MAX (→ MFSL) for all eras, but on 2017-03-16 that name is the new
-MAXINDIA (its tape's first bar is 2016-07-14); a no-op in the walk (MFSL is out of Nifty 500 2017-01-23 → 09-05), left as is.
+2017-09-29 (the hunt's 28082017 list lacks BSE — why that entry was 25 / 24).
+
+**"Max India Ltd." register mapping (same day, user: "fix the Max India register mapping too").** Three
+companies have carried that name: the original (MAX, renamed MFSL 26-FEB-2016 per symchg), the demerged
+Max India (MAXINDIA, bin tape 2016-07-14 → 2020-06-11) and today's (MAXIND, NSE EQUITY_L listing
+28-AUG-2020). The Nifty 500 ledger mapped the name to MAX for every era, so its 2017-03-16 inclusion and
+2019-12-27 exclusion (both MAXINDIA) landed on MFSL: the builder printed "register fills changelog HOLE:
++MFSL eff 2017-03-16" and "-MFSL eff 2019-12-27". Era segments MAX 1998-08-01 / MAXINDIA 2016-07-14 /
+MAXIND 2020-08-28 added to `_staleness_fix/register_names_era.json`, the Nifty 500 ledger patched
+surgically (exactly those 2 events + its era_map, §141e patch_era.py logic; script kept at
+~/stocks-backups/midcap150-hist-2026-09-23/patch_maxindia.py). `gen_register_events.py --all` on the same
+live bin changes NO sub-index ledger (their only tracked "Max India Ltd." rows are the 2015-09-28 exits =
+MAX, already date-resolved). Build: both phantom gap fills gone (Nifty 500 in-window gap event-days 16 →
+14), MC reconcile and phantom floor unchanged, pin_report identical, **indices_history byte-identical**
+(both legs were no-ops in the walk: MFSL was out of Nifty 500 2017-01-23 → 09-05 and in it on 2019-12-27).
 Nifty 500 rosters read 501 in 2016-2019 by design: TATAMTRDVR is its own line in NSE's index file.
 
 **Open.** (1) — (done above). (2) Pre-existing,
