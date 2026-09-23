@@ -30,6 +30,8 @@ Run: python -X utf8 scripts/fetch_annual_bscf.py [--only SYM,SYM] [--limit N] [-
 """
 import urllib.request, json, gzip, re, http.cookiejar, os, sys, time, base64, datetime
 import fitz  # PyMuPDF
+sys.path.insert(0, os.path.dirname(os.path.abspath(__file__)))
+from merge_annual_bscf import gate_ok as merge_gate   # (ok, add_rou) — the landing gate, one definition
 
 HERE = os.path.dirname(os.path.abspath(__file__))
 DOCS = os.path.join(HERE, "..", "docs")
@@ -105,7 +107,10 @@ ISNUM = re.compile(r'^[\(\-]?\d[\d,]*(?:\.\d+)?[\).,;:!]*%?$')   # numeric with 
 def rows_of(page):
     """Reconstruct table rows from word boxes: group words by y, split each row into its
     label text (left) and its numeric columns (right, by x). The PDF text layer returns a
-    table's labels and numbers on different lines, so line-based reading fails — this doesn't."""
+    table's labels and numbers on different lines, so line-based reading fails — this doesn't.
+    A dash cell ('-', '–') is kept as 0 IN POSITION, so a nil current year can no longer shift
+    the prior-year number into nums[0] (§148; a column-clustering rewrite regressed 261/461 fields
+    on the landed text cells and was reverted)."""
     words = page.get_text("words")   # (x0,y0,x1,y1,text,block,line,word)
     buckets = {}
     for w in words:
@@ -116,27 +121,61 @@ def rows_of(page):
             merged[-1][1].extend(buckets[y]); merged[-1][0] = y
         else:
             merged.append([y, list(buckets[y])])
+    # a "Note(s)" column: its short references (8, 8.1, 3a) sit where the values start and were
+    # read AS the value (INDOWIND FY25 PP&E 8.1 for 16,134 lakh). Drop note-shaped numbers under it.
+    note_x = [x for _, ts in merged for x, t in ts if NOTE_HDR.match(t.strip())]
     rows = []
     for _, toks in merged:
         toks.sort()
         label = ' '.join(t for _, t in toks)
-        nums = [to_num(t.rstrip('%')) for _, t in toks if ISNUM.match(t.strip())]
-        nums = [n for n in nums if n is not None]
+        nums = []
+        seen_num = False
+        for x, t in toks:
+            t = t.strip()
+            if DASH.match(t):
+                if seen_num or nums or _right_of_label(x, toks):
+                    nums.append(0.0)
+                continue
+            if not ISNUM.match(t):
+                continue
+            if note_x and NOTE_REF.match(t) and any(abs(x - nx) <= 30 for nx in note_x):
+                continue
+            n = to_num(t.rstrip('%'))
+            if n is not None:
+                nums.append(n); seen_num = True
         rows.append((label, nums))
     return rows
+
+def _right_of_label(x, toks):
+    """A dash counts as a value cell only when it sits right of the row's last word (the label),
+    so hyphens inside labels ('Work - in - Progress') are never read as a nil value."""
+    words = [tx for tx, t in toks if not (ISNUM.match(t.strip()) or DASH.match(t.strip()))]
+    return bool(words) and x > max(words)
+
+DASH = re.compile(r'^[-\u2013\u2014]{1,3}$|^nil$', re.I)
+NOTE_HDR = re.compile(r'^notes?\.?$|^note\s*no\.?$', re.I)
+NOTE_REF = re.compile(r'^\d{1,2}(?:\.\d{1,2})?[a-z]?$', re.I)
 
 def parse_rows(rows, specs_one, specs_sum):
     out = {}
     for field, rx, sign in specs_one:
         for label, nums in rows:
             if re.search(rx, label, re.I) and nums:
-                out[field] = round(sign * nums[0], 2); break
+                if nums[0] is not None:          # blank current-year cell = not stated (never the prior year)
+                    out[field] = round(sign * nums[0], 2)
+                break
     for field, rx in specs_sum:
         tot = 0.0; seen = False
         for label, nums in rows:
-            if re.search(rx, label, re.I) and nums:
+            if re.search(rx, label, re.I) and nums and nums[0] is not None:
                 tot += abs(nums[0]); seen = True
         if seen: out[field] = round(tot, 2)
+    # Total Assets = Total Equity and Liabilities (accounting identity) when the assets total
+    # has no line of its own (ALEMBICLTD FY25 prints only 'TOTAL - EQUITY AND LIABILITIES')
+    if 'assets' in dict((f, 1) for f, _, _ in specs_one) and out.get('assets') is None:
+        for label, nums in rows:
+            if re.search(r'total[\s\-\u2013:.]{0,6}equity\s+and\s+liabilit', label, re.I) and nums and nums[0] is not None:
+                out['assets'] = round(nums[0], 2); break
     return out
 
 # label -> field. Order matters: more specific first. Some fields SUM multiple matching lines.
@@ -144,9 +183,12 @@ BS_ONE = [   # (field, label regex, sign) — first matching line wins
     ('assets', r'^\s*total\s+assets\b', 1),
     ('sc',     r'^\s*(?:\([a-z]\)\s*)?equity\s+share\s+capital\b', 1),
     ('oeq',    r'^\s*(?:\([a-z]\)\s*)?other\s+equity\b', 1),
-    ('ppe',    r'property,?\s*plant\s+and\s+equipment\b(?!.*expenditure)', 1),
+    ('ppe',    r'property,?\s*plant\s*(?:and|&)\s*equipments?\b(?!.*expenditure)', 1),
     ('cwip',   r'capital\s+work[\-\s]*in[\-\s]*progress\b', 1),
     ('gw',     r'^\s*(?:\([a-z]\)\s*)?goodwill\b', 1),
+    # right-of-use: its own line in most layouts; the XBRL PropertyPlantAndEquipment key includes it
+    # for some filers and not others (merge_annual_bscf.gate_ok accepts either and says which, §148)
+    ('rou',    r'right[\s\-]*of[\s\-]*use\s+assets?\b', 1),
     ('invnt',  r'^\s*(?:\([a-z]\)\s*)?inventories\b', 1),
 ]
 BS_SUM = [   # (field, label regex) — SUM the first-col of every matching line (non-current + current)
@@ -199,7 +241,7 @@ def fy_end_hit(text, want_year):
         return True
     return False
 
-def locate(pdf, want_year):
+def locate(pdf, want_year, want_basis=None):
     """Confirm this PDF is the FY-end audited result and return (basis, bs_pi, cf_pi) — the
     consolidated BS + CF page indices (standalone fallback). None otherwise."""
     doc = fitz.open(stream=pdf, filetype="pdf")
@@ -229,6 +271,10 @@ def locate(pdf, want_year):
         if not BS_ASSET.search(texts[i]) and i > 0 and BS_ASSET.search(texts[i - 1]) and not BS_LIAB.search(texts[i - 1]):
             return [i - 1, i]
         return [i]
+    # a FILL year must come from the basis the gate validated — prefer that page when the filing
+    # carries both (PROZONER FY22: con page read fine but the validated basis is std, §148)
+    if want_basis == 's' and bs_std is not None:
+        return 's', bs_pages(bs_std), (cf_std if cf_std is not None else cf_con)
     if bs_con is not None:
         return 'c', bs_pages(bs_con), (cf_con if cf_con is not None else cf_std)
     if bs_std is not None:
@@ -238,18 +284,62 @@ def locate(pdf, want_year):
 def _as_list(x):
     return list(x) if isinstance(x, (list, tuple)) else [x]
 
+# ---- statement unit (runbook §0 "FILINGS COME IN THREE UNITS", §148) -------------------------
+# The text path used to land the printed number as crore, so every lakh / million filer read
+# 10x-100x off and gate-failed (CMSINFO FY25: read 31,199.24 = Rs mn vs key 3,119.92 cr).
+UNIT_PATS = [
+    (100.0, re.compile(r'\b(?:in\s+)?(?:rs\.?|inr|₹|rupees)?\s*(?:in\s+)?(?:lakhs?|lacs?)\b', re.I)),
+    (10.0,  re.compile(r'\b(?:in\s+)?(?:rs\.?|inr|₹|rupees)?\s*(?:in\s+)?(?:millions?|mn)\b', re.I)),
+    (1e4,   re.compile(r'\b(?:rs\.?|inr|₹|rupees)?\s*in\s+(?:thousands?|\'?000s?)\b', re.I)),
+    (1.0,   re.compile(r'\b(?:in\s+)?(?:rs\.?|inr|₹|rupees)?\s*(?:in\s+)?(?:crores?|crs?\.?)\b(?!\s*(?:shares|equity))', re.I)),
+]
+UNIT_CTX = re.compile(r'(?:amount|figures|rs\.?|inr|₹|rupees)[^\n]{0,25}\bin\b|\(\s*(?:rs\.?|inr|₹|rupees)?\s*in\b', re.I)
+
+def detect_unit(text):
+    """Divisor to crore from the statement's own unit note, or None when absent/ambiguous.
+    Only lines that LOOK like a unit note count ('(Rs. in Lakhs)', 'Amount in ₹ million',
+    '₹ in crore') — a bare 'crore' in a footnote is not a unit declaration."""
+    found = set()
+    for ln in text.splitlines():
+        if not UNIT_CTX.search(ln) or len(ln) > 160:
+            continue
+        for f, pat in UNIT_PATS:
+            if pat.search(ln):
+                found.add(f); break
+    return found.pop() if len(found) == 1 else None
+
+MONEY_KEYS = ('assets', 'sc', 'oeq', 'borr', 'blt', 'bst', 'ppe', 'cwip', 'gw', 'intg', 'invst', 'rec',
+              'pay', 'invnt', 'rou', 'cfo', 'cfi', 'cff', 'capex', 'cf_tax', 'eq', 'cash')
+
+def scale_read(p, k):
+    return {kk: (round(v / k, 2) if (kk in MONEY_KEYS and isinstance(v, (int, float))) else v)
+            for kk, v in p.items()}
+
 def text_read(pdf, bs_pi, cf_pi):
     """Word-grid text parse (free, exact — but fails on filers who shade the current-year column).
-    bs_pi may be one page or a two-page [assets, liabilities] split."""
+    bs_pi may be one page or a two-page [assets, liabilities] split. Returns the RAW printed
+    numbers plus '_unit' = divisor to crore detected on the BS page(s) (None if not stated)."""
     doc = fitz.open(stream=pdf, filetype="pdf")
     fields = {}
+    bs_text = ""
     for pi in _as_list(bs_pi):
+        bs_text += doc[pi].get_text() + "\n"
         for k, v in parse_rows(rows_of(doc[pi]), BS_ONE, BS_SUM).items():
             fields.setdefault(k, v)          # first page (assets side) wins any shared key
     if cf_pi is not None:
         fields.update(parse_rows(rows_of(doc[cf_pi]), CF_ONE, []))
+        cf_unit = detect_unit(doc[cf_pi].get_text())
+    else:
+        cf_unit = None
     doc.close()
+    fields['_unit'] = detect_unit(bs_text)
+    fields['_cf_unit'] = cf_unit
     return fields
+
+def unit_candidates(p):
+    """Divisors to try: the stated unit alone when the page states one, else crore/million/lakh —
+    the holdout gate (<=1% on Total Assets AND PP&E) can accept at most one of them."""
+    return [p['_unit']] if p.get('_unit') else [1.0, 10.0, 100.0, 1e4, 1e7]   # crore, mn, lakh, '000, Rs
 
 def render(pdf, pi, dpi=200):
     doc = fitz.open(stream=pdf, filetype="pdf")
@@ -540,7 +630,9 @@ def main():
     ledger = json.load(open(LEDGER)) if os.path.exists(LEDGER) else {}
     gate = json.load(open(GATE_REPORT)) if os.path.exists(GATE_REPORT) else {}
     FYS = [2025, 2024, 2023, 2022, 2021, 2020]      # newest first
-    todo = [s for s in n500 if (only is None or s in only)]
+    # --only is a full target list, not a filter on the N500 queue: the universe backfill (§148)
+    # runs it over every listed company >= Rs 100 cr, most of which were never Nifty-500 members
+    todo = n500 if only is None else sorted(only)
     o = session(); processed = 0
     for sym in todo:
         if limit and processed >= limit: break
@@ -566,25 +658,38 @@ def main():
         if not held:
             gate.setdefault(sym, {}).update({'verdict': 'no-xbrl-year-to-validate'})
             json.dump(gate, open(GATE_REPORT, 'w'), separators=(',', ':'), sort_keys=True); continue
-        val_fy = max(held)                                            # newest held year = the gate
-        got = {}; basis = None; trusted = False; method = None; note = None
-        # 1) validate on the newest held year — text first (free), vision fallback (CI, needs key)
-        frm, to = '%d0401' % val_fy, '%d0901' % val_fy
-        try: fl = result_filings(o, code, frm, to)
-        except Exception as e: note = 'filings-err:%s' % str(e)[:30]; fl = []
-        for ann, att in fl[:8]:
-            pdf = download(o, att)
-            if not pdf: continue
-            loc = locate(pdf, val_fy)
-            if not loc: continue
-            b, bs_pi, cf_pi = loc
-            p = text_read(pdf, bs_pi, cf_pi)
-            if gate_ok(p, held[val_fy]): trusted, basis, method = True, b, 'text'; break
-            v = vision_read(pdf, bs_pi, cf_pi, sym, val_fy)          # None locally (no key) / on CI reads
-            if v and gate_ok(v[1], held[val_fy]): trusted, basis, method = True, v[0], 'vision'; break
+        # the gate: try each XBRL-held year newest first (FY2026 included — a validation year, never
+        # a fill year) until one passes; one awkward filing no longer sinks the symbol (§148 — in a
+        # 40-symbol sample of gate-fails, 10 matched Total Assets exactly on FY2026, never tried)
+        got = {}; basis = None; trusted = False; method = None; note = None; unit = None
+        add_rou = False; val_assets = None
+        vheld = dict(held)
+        k26 = held_bs(x, '20260331')
+        if k26:
+            vheld[2026] = k26
+        val_fy = max(vheld)
+        for vfy in sorted(vheld, reverse=True)[:3]:
+            try: fl = result_filings(o, code, '%d0401' % vfy, '%d0901' % vfy)
+            except Exception as e: note = 'filings-err:%s' % str(e)[:30]; fl = []
+            for ann, att in fl[:8]:
+                pdf = download(o, att)
+                if not pdf: continue
+                loc = locate(pdf, vfy)
+                if not loc: continue
+                b, bs_pi, cf_pi = loc
+                p = text_read(pdf, bs_pi, cf_pi)
+                for k in unit_candidates(p):
+                    ok, add_rou = merge_gate(scale_read(p, k), vheld[vfy])   # ROU-aware, zero-PP&E aware
+                    if ok:
+                        trusted, basis, method, unit, val_fy = True, b, 'text', k, vfy
+                        val_assets = scale_read(p, k).get('assets'); break
+                if trusted: break
+                v = vision_read(pdf, bs_pi, cf_pi, sym, vfy)          # None locally (no key) / on CI reads
+                if v and gate_ok(v[1], vheld[vfy]): trusted, basis, method, val_fy = True, v[0], 'vision', vfy; break
+            if trusted: break
         entry = gate.setdefault(sym, {})     # UPDATE, don't replace: carry over vnil/na marks prep wrote
         entry.update({'verdict': 'trusted' if trusted else 'gate-failed', 'val_fy': val_fy,
-                      'basis': basis, 'method': method, 'note': note,
+                      'basis': basis, 'method': method, 'note': note, 'unit': unit,
                       'vtry': bool(os.environ.get('ANTHROPIC_API_KEY'))})
         if not trusted and not os.environ.get('ANTHROPIC_API_KEY'):
             entry['ttry'] = _today()         # token-free text attempt -> cooldown so the walk advances
@@ -601,11 +706,26 @@ def main():
             for ann, att in fl[:8]:
                 pdf = download(o, att)
                 if not pdf: continue
-                loc = locate(pdf, fy)
+                loc = locate(pdf, fy, basis)
                 if not loc: continue
                 b, bs_pi, cf_pi = loc
                 if method == 'text':
                     p = text_read(pdf, bs_pi, cf_pi)
+                    k = p.get('_unit') or unit         # the year's own stated unit, else the validated one
+                    u_src = 'stated' if p.get('_unit') else 'inherited'
+                    cfk = p.get('_cf_unit') or k
+                    p = {kk: (round(v / (cfk if kk in ('cfo', 'cfi', 'cff', 'capex', 'cf_tax') else k), 2)
+                              if (kk in MONEY_KEYS and isinstance(v, (int, float))) else v)
+                         for kk, v in p.items() if not kk.startswith('_')}
+                    p['u'] = u_src
+                    if add_rou and p.get('ppe') is not None:
+                        p['ppe'] = round(p['ppe'] + (p.get('rou') or 0), 2)   # the convention the gate proved
+                    p.pop('rou', None)                  # not a ledger field (merge_annual_bscf FIELDS)
+                    # an INHERITED unit is only safe when the year sits within 7x of the validated
+                    # year's Total Assets — a wrong unit is off by exactly 10x / 100x (§148)
+                    if u_src == 'inherited' and (not val_assets or p.get('assets') is None or
+                                                 not (1 / 7 <= p['assets'] / val_assets <= 7)):
+                        continue
                 else:
                     v = vision_read(pdf, bs_pi, cf_pi, sym, fy)
                     if not v: continue
