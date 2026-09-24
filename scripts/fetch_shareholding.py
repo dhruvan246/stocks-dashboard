@@ -1193,7 +1193,7 @@ def save_revs(r):
 # there the re-filing's own numbers are the truth.
 VALUE_HEAL_MARK = re.compile(r"SW-2 other-institutions|SW-2 phase-2|foreign block swallowed|locked [\d.]+-[\d.]+ block|"
                              r"FILER MISCLASSIFICATION|FALSE ZERO|NSE served ONE filing|\u00a7142e|item 4 \u2014|\u00a7151|"
-                             r"other-institutions sweep|quantmac FII reconciliation|§158 row-level DII heal|§159 row-level FII heal")
+                             r"other-institutions sweep|quantmac FII reconciliation|§158 row-level DII heal|§159 row-level FII heal|§160 page-era row-level heal")
 AUDIT_JSON = os.path.join(HERE, "_shp_other_inst_audit.json")
 _AUDIT_CELLS = None
 def audited_block(sym, key):

@@ -124,19 +124,19 @@ def norm(n): return re.sub(r'[^A-Z0-9]','',(n or '').upper())
 def load_verdicts():
     a=json.load(open(os.path.join(REPO,"scripts","_shp_other_inst_audit.json")))
     return {norm(k):v for k,v in (a.get("name_verdicts") or {}).items()}
-def holder_class(name, verdicts, newmap):
+def holder_class(name, verdicts, newmap, pct=None):
     """-> (cls 'foreign'|'domestic'|None, dest 'fii'|'public'|None, evidence). Priority: the filer's own
     new-format placement > curated verdict > strong domestic markers (insurer/NPS/LIC/MF/QIB) > foreign
     markers (jurisdiction, plc/llc/pte, 'global', university...) > weak domestic markers (bank, FI, AIF)."""
     n=norm(name); newmap=newmap or {}
     hit=None
-    if n in newmap: hit=(newmap[n],"new-format:"+newmap[n][1])
+    if n in newmap: pr=pick_row(newmap[n],pct); hit=(pr,"new-format:"+pr[1])
     else:
         best=None
-        for k,(cls,src) in newmap.items():
+        for k,rows in newmap.items():
             if len(n)>=10 and len(k)>=10 and abs(len(n)-len(k))<=8:
                 r=difflib.SequenceMatcher(None,n,k).ratio()
-                if r>=0.85 and (best is None or r>best[0]): best=(r,(cls,src))
+                if r>=0.85 and (best is None or r>best[0]): best=(r,pick_row(rows,pct))
         if best: hit=(best[1],"new-format~:"+best[1][1])
     if hit:
         (cls,src),how=hit
@@ -152,7 +152,9 @@ def holder_class(name, verdicts, newmap):
     return None, None, ""
 NEWFOR={"InstitutionsForeignPortfolioInvestorCatergoryOneMember","InstitutionsForeignPortfolioInvestorCatergoryTwoMember","ForeignDirectInvestmentMember","ForeignVentureCapitalInvestorsMember","SovereignWealthFundsMember","OtherInstitutionsForeignMember","ForeignPortfolioInvestorMember"}
 def newmap_for(sym, bse_rows):
-    """Holder -> ('fii'|'public'|'domestic', axis) from the filer's FIRST new-format filing (Sep-2022+)."""
+    """Holder -> [( 'fii'|'public'|'domestic', axis, pct ), ...] from the filer's FIRST new-format filing (Sep-2022+).
+    ALL rows a name appears on are kept (ASTERDM Sep-2022: Olympus Capital 20.36 under ForeignCompanies AND 2.60 under
+    FVCI); pick_row chooses the row whose size is closest to the old-form holding, else the largest."""
     cands=sorted([(qe_of(r.get("qtr")),(r.get("XbrlFile") or "").strip(),r.get("filing_date_time") or "") for r in bse_rows if qe_of(r.get("qtr")) and qe_of(r.get("qtr"))>="2022-09-30" and r.get("XbrlFile")])
     for qe,f,fd in cands[:3]:
         p=find_file(f)
@@ -168,21 +170,25 @@ def newmap_for(sym, bse_rows):
         M={}
         for ax,seq,pct,kind,cat,name in rows_of(txt):
             if kind.lower().startswith('categ') or not name: continue
-            if ax.startswith("ForeignPortfolioInvestor") or ax in ("ForeignDirectInvestment","ForeignVentureCapitalInvestors","SovereignWealthFunds","OtherInstitutionsForeign","InstitutionsForeign"): M[norm(name)]=("fii",ax)
-            elif ax in ("ForeignCompanies","ForeignNationals","OtherForeignShareholders","BodiesCorporate","OtherNonInstitutions","NonResidentIndians"): M[norm(name)]=("public",ax)
-            elif ax in ("MutualFundsOrUti","MutualFundsOrUTI","AlternativeInvestmentFunds","InsuranceCompanies","Banks","ProvidentFundsOrPensionFunds","NBFCsRegisteredWithRbi","OtherFinancialInstitutions","OtherInstitutionsDomestic","SovereignWealthFundsDomestic","VentureCapitalFunds","AssetReconstructionCompanies"): M[norm(name)]=("domestic",ax)
+            if ax.startswith("ForeignPortfolioInvestor") or ax in ("ForeignDirectInvestment","ForeignVentureCapitalInvestors","SovereignWealthFunds","OtherInstitutionsForeign","InstitutionsForeign"): cls="fii"
+            elif ax in ("ForeignCompanies","ForeignNationals","OtherForeignShareholders","BodiesCorporate","OtherNonInstitutions","NonResidentIndians"): cls="public"
+            elif ax in ("MutualFundsOrUti","MutualFundsOrUTI","AlternativeInvestmentFunds","InsuranceCompanies","Banks","ProvidentFundsOrPensionFunds","NBFCsRegisteredWithRbi","OtherFinancialInstitutions","OtherInstitutionsDomestic","SovereignWealthFundsDomestic","VentureCapitalFunds","AssetReconstructionCompanies"): cls="domestic"
+            else: continue
+            M.setdefault(norm(name),[]).append((cls,ax,pct))
         return M, f
     return {}, None
-
-import difflib
+def pick_row(rows, pct=None):
+    """The (cls, axis) for a holder with several new-format rows: closest size to the old holding, else the largest."""
+    if pct is not None: return min(rows,key=lambda r:abs(r[2]-pct))[:2]
+    return max(rows,key=lambda r:r[2])[:2]
 class SymCtx:
     """Per-symbol state: the filer's first new-format holder map, holder memory, label memory."""
     def __init__(self, sym, bse_rows, verdicts):
         self.sym=sym; self.bse_rows=bse_rows; self.verdicts=verdicts
         self.newmap=None; self.newfile=None; self.memory={}; self.label_memory={}
-    def hclass(self, hn):
+    def hclass(self, hn, pct=None):
         if self.newmap is None: self.newmap,self.newfile=newmap_for(self.sym,self.bse_rows)
-        c,dest,src=holder_class(hn,self.verdicts,self.newmap)
+        c,dest,src=holder_class(hn,self.verdicts,self.newmap,pct)
         n=norm(hn)
         if src.startswith("new-format") or src=="curated": self.memory[n]=(c,dest,src)
         elif n in self.memory: c,dest,src=self.memory[n]; src="memory"
@@ -191,14 +197,14 @@ class SymCtx:
                 if len(n)>=8 and difflib.SequenceMatcher(None,n,k).ratio()>=0.85: c,dest,src=v; src="memory~"; break
         return c,dest,src
 
-def eval_filing(ctx, qe, txt, bd, res, cur, final=True, unres_log=None):
+def eval_filing(ctx, qe, txt, bd, res, cur, final=True, unres_log=None, ext_fii=0.0, add_prev=0.0):
     """Apply R1/R2/R3 to one old-format filing whose parse `res` describes the stored row `cur`.
     -> dict(t_fii,t_dii,add_ins,ev,split,mv_fii,mv_pub,keep,unres,add_dii,overflow) or None (split unknown)."""
     oth_inst=bd.get("OtherInstitutionsMember") or 0.0
     dom_only=res["dii"]-oth_inst
     # how much of the Any-Other block the STORE already holds in fii (0 = raw parse; oth_inst = a whole-block
     # heal such as §22i / SW-2; anything between = a labelled-part heal such as the FII session's §156).
-    fii_shift=(cur[1] or 0)-res["fii"]
+    fii_shift=(cur[1] or 0)-ext_fii-res["fii"]
     if fii_shift<-0.03 or fii_shift>oth_inst+0.03: return None
     fii_shift=min(max(fii_shift,0.0),oth_inst)
     split="a" if fii_shift<=0.03 else ("b" if abs(fii_shift-oth_inst)<=0.03 else "p")
@@ -207,12 +213,12 @@ def eval_filing(ctx, qe, txt, bd, res, cur, final=True, unres_log=None):
     if oth_inst>=0.005:
         if not gi: unres+=oth_inst; ev.append(("R1-unresolved","no typed rows",round(oth_inst,4)))
         for g in gi:
-            lab=g["label"]; hs=[(hp,hn)+ctx.hclass(hn) for hp,hn in g["holders"]]
+            lab=g["label"]; hs=[(hp,hn)+ctx.hclass(hn,hp) for hp,hn in g["holders"]]
             lab_kind=("domestic" if (DOMLAB.search(lab) and not LAB_FII.search(lab)) else "public" if LAB_PUB.search(lab) else "fii" if (LAB_FII.search(lab) or FORLAB.search(lab)) else None)
             lab_src="keyword"
             if lab_kind is None and not g["holders"]:
                 ltxt=re.sub(r"^(other|others|any other)\s*","",lab,flags=re.I).strip()
-                c,dest,src=ctx.hclass(ltxt) if ltxt else (None,None,"")
+                c,dest,src=ctx.hclass(ltxt,g["pct"]) if ltxt else (None,None,"")
                 if c=="foreign": lab_kind=dest or "fii"; lab_src="label-as-holder:"+src
                 elif c=="domestic": lab_kind="domestic"; lab_src="label-as-holder:"+src
                 elif norm(lab) in ctx.label_memory: lab_kind=ctx.label_memory[norm(lab)]; lab_src="label-memory"
@@ -263,7 +269,7 @@ def eval_filing(ctx, qe, txt, bd, res, cur, final=True, unres_log=None):
     for g in gn:
         lab=g["label"]
         if (LAB_PUB.search(lab) or LAB_FII.search(lab) or FORLAB.search(lab)) and not DOMLAB.search(lab): continue
-        hs=[(hp,hn)+ctx.hclass(hn) for hp,hn in g["holders"]] if g["holders"] else []
+        hs=[(hp,hn)+ctx.hclass(hn,hp) for hp,hn in g["holders"]] if g["holders"] else []
         dh=[h for h in hs if h[2]=="domestic" and (DOMLAB.search(h[1]) or h[4].startswith("new-format"))]
         fh=[h for h in hs if h[2]=="foreign"]
         contained=(sum(h[0] for h in hs)<=g["pct"]+0.02)
@@ -278,11 +284,16 @@ def eval_filing(ctx, qe, txt, bd, res, cur, final=True, unres_log=None):
             ev.append(("R2-named",lab,round(take,4),"; ".join("%s %.2f(%s)"%(h[1],h[0],h[4]) for h in dh)))
     nbfc=bd.get("NBFCsRegisteredWithRbiMember") or 0.0
     if nbfc>=0.005: add_dii+=nbfc; ev.append(("R3-nbfc","NBFCsRegisteredWithRbi",round(nbfc,4)))
-    # the unresolved part stays where the store has it: in fii up to the shift my resolved holders do not explain
-    u_fii=min(unres,max(0.0,fii_shift-mv_fii)); u_dii=unres-u_fii
+    # the unresolved part stays where the STORE has it (dii, fii or public): `left` = how much of the block the store
+    # already holds outside dii; whatever my resolved moves do not explain is the unresolved part's current home
+    # `add_prev` = the non-inst/NBFC adds a previous §158 entry already put into the stored dii (from its audit record);
+    # the block's part the store holds OUTSIDE dii = raw dii + add_prev - stored dii
+    left=min(oth_inst,max(0.0,res["dii"]+add_prev-(cur[2] or 0)))
+    u_out=min(unres,max(0.0,left-(mv_fii+mv_pub)))
+    u_fii=min(u_out,max(0.0,fii_shift-mv_fii)); u_pub=u_out-u_fii; u_dii=unres-u_out
     t_dii=dom_only+keep+u_dii+add_dii
-    t_fii=res["fii"]+mv_fii+u_fii
-    return dict(t_fii=round(max(0.0,t_fii),4),t_dii=round(max(0.0,t_dii),4),add_ins=round(add_ins,4),ev=ev,split=split,
+    t_fii=res["fii"]+mv_fii+u_fii+ext_fii
+    return dict(t_fii=round(max(0.0,t_fii),4),t_dii=round(max(0.0,t_dii),4),add_ins=round(add_ins,4),ins_base=round(res.get("ins") or 0.0,4),ev=ev,split=split,
                 mv_fii=round(mv_fii,4),mv_pub=round(mv_pub,4),keep=round(keep,4),unres=round(unres,4),add_dii=round(add_dii,4),overflow=overflow)
 
 def quarter_files(bse_rows, lo="2015-06-30", hi="2022-06-30"):
@@ -293,8 +304,10 @@ def quarter_files(bse_rows, lo="2015-06-30", hi="2022-06-30"):
         byq.setdefault(qe,[]).append(((r.get("filing_date_time") or ""),f))
     return {q:sorted(v) for q,v in byq.items()}
 
-def match_filing(fl, qe, cur, stats=None):
-    """The filing among `fl` whose parse describes the row `cur` (prom within 0.06, fii+dii within 0.06)."""
+def match_filing(fl, qe, cur, stats=None, ext_fii=0.0, healed=False):
+    """The filing among `fl` whose parse describes the row `cur` (raw or already healed by a row-level pass):
+    prom within 0.06; stored fii within [parse_fii - 0.06, parse_fii + inst Any-Other + non-inst Any-Other + 0.06];
+    stored dii within [parse_dii - inst Any-Other - 0.06, parse_dii + non-inst Any-Other + NBFC + 0.06]."""
     for fd,f in fl:
         p=find_file(f)
         if not p: continue
@@ -309,11 +322,18 @@ def match_filing(fl, qe, cur, stats=None):
         if "InstitutionsMember" not in bd or "InstitutionsDomesticMember" in bd:
             if stats is not None: stats["not_old_fmt"]+=1
             continue
-        if abs((res["prom"] or 0)-(cur[0] or 0))<=0.06 and abs((res["fii"]+res["dii"])-((cur[1] or 0)+(cur[2] or 0)))<=0.06:
-            return f,txt,bd,res
+        oi=bd.get("OtherInstitutionsMember") or 0.0; on=bd.get("OtherNonInstitutionsMember") or 0.0; nb=bd.get("NBFCsRegisteredWithRbiMember") or 0.0
+        sf=(cur[1] or 0)-ext_fii; sd=(cur[2] or 0)
+        if abs((res["prom"] or 0)-(cur[0] or 0))<=0.06:
+            if healed:
+                if res["fii"]-0.06<=sf<=res["fii"]+oi+on+0.06 and res["dii"]-oi-0.06<=sd<=res["dii"]+on+nb+0.06: return f,txt,bd,res
+            elif abs((sf+sd)-(res["fii"]+res["dii"]))<=0.06: return f,txt,bd,res       # a raw or whole-block-moved cell keeps the document's total
         if stats is not None: stats["value_mismatch_try"]+=1
     return None
 
+AUDIT={}
+try: AUDIT=json.load(open(os.path.join(REPO,"scripts","_shp_dii_rowfix_audit.json"))).get("cells") or {}
+except Exception: AUDIT={}
 def classify(limit=0, start=0, only=None, verbose=False):
     syms=json.load(open(os.path.join(HERE,"n500_syms.json")))
     if only: syms=[x for x in syms if x in only]
@@ -334,14 +354,25 @@ def classify(limit=0, start=0, only=None, verbose=False):
             if not cur:
                 if final: stats["no_store_row"]+=1
                 continue
-            chosen=match_filing(fl,qe,cur,stats if final else None)
+            prior=(led.get(sym) or {}).get(qe); ext_fii=0.0; add_prev=0.0
+            if prior and "\u00a7159 row-level FII heal" in (prior.get("why") or "") and F._cell_eq(cur,prior.get("cell")) and prior.get("was"):
+                ext_fii=round(float(prior["cell"][1])-float(prior["was"][1]),4)       # the FII session's non-inst move, not ours to re-judge
+            chain=prior; depth=0
+            while chain and depth<6:
+                if "\u00a7158 row-level DII heal" in (chain.get("why") or ""): add_prev=float((AUDIT.get("%s|%s"%(sym,qe)) or {}).get("add_dii") or 0.0); break
+                chain=chain.get("superseded") if isinstance(chain.get("superseded"),dict) else None; depth+=1
+            healed=False; chain=prior; depth=0
+            while chain and depth<6:
+                if F.VALUE_HEAL_MARK.search(str(chain.get("why") or "")): healed=True; break
+                chain=chain.get("superseded") if isinstance(chain.get("superseded"),dict) else None; depth+=1
+            chosen=match_filing(fl,qe,cur,stats if final else None,ext_fii,healed)
             if not chosen:
                 if final:
                     if not any(find_file(f) for fd,f in fl): stats["not_cached"]+=1
                     else: stats["no_matching_filing"]+=1; verbose and print("  %s NO MATCHING FILING stored=%s files=%s"%(qe,cur[:3],[x[1] for x in fl]))
                 continue
             f,txt,bd,res=chosen
-            r=eval_filing(ctx,qe,txt,bd,res,cur,final,unres_log)
+            r=eval_filing(ctx,qe,txt,bd,res,cur,final,unres_log,ext_fii,add_prev)
             if not final: continue
             stats["matched"]+=1
             if r is None: stats["split_unknown"]+=1; continue
@@ -351,9 +382,8 @@ def classify(limit=0, start=0, only=None, verbose=False):
             if verbose: print("  %s %s split=%s res(fii %.2f dii %.2f) -> t_fii %.2f t_dii %.2f | %s"%(qe,f,r["split"],res["fii"],res["dii"],r["t_fii"],r["t_dii"],"; ".join(str(e)[:160] for e in r["ev"])))
             if abs(dd)<0.05 and abs(df)<0.05: stats["unchanged"]+=1; continue
             new=list(cur); new[1]=r["t_fii"]; new[2]=r["t_dii"]
-            if cur[4] is not None and r["add_ins"]>0: new[4]=round((cur[4] or 0)+r["add_ins"],4)
-            prior=(led.get(sym) or {}).get(qe)
-            P["%s|%s"%(sym,qe)]={"file":f,"was":cur,"cell":new,"split":r["split"],"d_dii":round(dd,4),"d_fii":round(df,4),"to_public":r["mv_pub"],"to_fii":r["mv_fii"],"keep_dom":r["keep"],"unresolved":r["unres"],"add_dii":r["add_dii"],"add_ins":r["add_ins"],"ev":r["ev"],"prior_entry":bool(prior),"prior_applied":bool(prior and F._cell_eq(cur,prior.get("cell"))),"newmap_file":ctx.newfile}
+            if cur[4] is not None and r["add_ins"]>0: new[4]=round(r["ins_base"]+r["add_ins"],4)     # absolute: filing's insurance row + named insurers, idempotent
+            P["%s|%s"%(sym,qe)]={"file":f,"was":cur,"cell":new,"split":r["split"],"ext_fii":ext_fii,"d_dii":round(dd,4),"d_fii":round(df,4),"to_public":r["mv_pub"],"to_fii":r["mv_fii"],"keep_dom":r["keep"],"unresolved":r["unres"],"add_dii":r["add_dii"],"add_ins":r["add_ins"],"ev":r["ev"],"prior_entry":bool(prior),"prior_applied":bool(prior and F._cell_eq(cur,prior.get("cell"))),"newmap_file":ctx.newfile}
             stats["proposed"]+=1
         if si%50==0: print("  %d/%d %s %s %.0fs"%(si,len(syms),sym,dict(stats),time.time()-t0),file=sys.stderr)
         if limit and si>=limit: break
@@ -386,7 +416,7 @@ def revfix():
         if r is None: out[k]={"was":rc,"how":"split unknown (left as is)"}; stats["split_unknown"]+=1; continue
         if abs(r["t_dii"]-float(rc[2]))<0.05 and abs(r["t_fii"]-float(rc[1]))<0.05: stats["rev_unchanged"]+=1; continue
         new=list(rc); new[1]=r["t_fii"]; new[2]=r["t_dii"]
-        if rc[4] is not None and r["add_ins"]>0: new[4]=round(float(rc[4])+r["add_ins"],4)
+        if rc[4] is not None and r["add_ins"]>0: new[4]=round(r["ins_base"]+r["add_ins"],4)
         out[k]={"was":rc,"cell":new,"how":"re-filing document %s re-read: %s"%(f,"; ".join(" ".join(str(x) for x in e) for e in r["ev"])[:600])}; stats["re_read"]+=1
     json.dump(out,open(os.path.join(HERE,"revfix.json"),"w"),indent=0)
     print("revfix",dict(stats))
