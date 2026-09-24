@@ -1353,6 +1353,26 @@
     ],
     "src": "bsexbrl:533096_2072022192953_SHP.xml",
     "why": "\u00a7158 row-level DII heal (2026-09-24, DII = Institutions(Domestic) in every format): dii 5.03 -> 0.00, fii 12.53 -> 12.53. R1-public-label Overseas Corporate Bodies 5.0 public=5.00 fii=0.00 OPAL INVESTMENT PVT LTD 5.00 foreign->public(new-format:ForeignCompanies) keyword; R1-public-label Other FOREIGN NATIONALS 0.03 public=0.03 fii=0.00  keyword. Evidence: _shp_dii_rowfix_audit.json"
+   },
+   "2015-09-30": {
+    "cell": [
+     58.1287,
+     29.6,
+     2.8392,
+     0.4578,
+     0.0,
+     "2015-10-16"
+    ],
+    "was": [
+     58.1287,
+     18.7261,
+     2.8392,
+     0.4578,
+     0.0,
+     "2015-10-16"
+    ],
+    "src": "bseaspx:533096_87",
+    "why": "\u00a7160 page-era row-level heal (2026-09-24, DII = Institutions(Domestic), FII = Institutions(Foreign) in every format): fii 18.73 -> 29.60, dii 2.84 -> 2.84. generic-row-by-holders Others 10.87 fii [exact]: Elara India Opportunities Fund Ltd 3.35 (2015-form XBRL row); Emerging India Focus Funds 3.18 (curated); Cresta Fund Ltd 2.11 (2015-form XBRL row); Albula Investment Fund Ltd 2.19 (2015-form XBRL row); noninst-fii Others 10.87. Evidence: _shp_aspx_rowfix_audit.json (\u00a7160b)"
    }
   },
   "ADFFOODS": {
@@ -12423,6 +12443,26 @@
     ],
     "src": "bseaspx:500085_87",
     "why": "\u00a7160 page-era row-level heal (2026-09-24, DII = Institutions(Domestic), FII = Institutions(Foreign) in every format): fii 5.99 -> 7.45, dii 13.78 -> 13.78. noninst-fii Foreign Portfolio Investors 1.46. Evidence: _shp_aspx_rowfix_audit.json"
+   },
+   "2015-06-30": {
+    "cell": [
+     56.7776,
+     7.61,
+     13.5909,
+     5.195,
+     8.0865,
+     "2015-07-18"
+    ],
+    "was": [
+     56.7776,
+     6.3393,
+     13.5909,
+     5.195,
+     8.0865,
+     "2015-07-18"
+    ],
+    "src": "bseaspx:500085_86",
+    "why": "\u00a7160 page-era row-level heal (2026-09-24, DII = Institutions(Domestic), FII = Institutions(Foreign) in every format): fii 6.34 -> 7.61, dii 13.59 -> 13.59. generic-row-by-holders Others 1.27 fii [exact]: Government Pension Fund Global 1.27 (name marker (fund-type)); noninst-fii Others 1.27. Evidence: _shp_aspx_rowfix_audit.json (\u00a7160b)"
    }
   },
   "CHROMATIC": {
@@ -30993,6 +31033,26 @@
     ],
     "src": "bseaspx:526299_87",
     "why": "\u00a7160 page-era row-level heal (2026-09-24, DII = Institutions(Domestic), FII = Institutions(Foreign) in every format): fii 20.41 -> 23.40, dii 8.33 -> 8.33. noninst-fii Foreign Portfolio Investors 2.99. Evidence: _shp_aspx_rowfix_audit.json"
+   },
+   "2015-06-30": {
+    "cell": [
+     60.486,
+     25.32,
+     5.7621,
+     2.314,
+     0.0,
+     "2015-07-17"
+    ],
+    "was": [
+     60.486,
+     22.8613,
+     5.7621,
+     2.314,
+     0.0,
+     "2015-07-17"
+    ],
+    "src": "bseaspx:526299_86",
+    "why": "\u00a7160 page-era row-level heal (2026-09-24, DII = Institutions(Domestic), FII = Institutions(Foreign) in every format): fii 22.86 -> 25.32, dii 5.76 -> 5.76. generic-row-by-holders Others 2.46 fii [exact]: Aberdeen Global - Asian Smaller Companie 2.45 (2015-form XBRL row); noninst-fii Others 2.46. Evidence: _shp_aspx_rowfix_audit.json (\u00a7160b)"
    }
   },
   "MRF": {
@@ -41085,7 +41145,7 @@
     "cell": [
      31.3539,
      12.3572,
-     26.4628,
+     28.58,
      4.9196,
      21.0476,
      "2015-07-16"
@@ -41093,13 +41153,33 @@
     "was": [
      31.3539,
      12.3572,
-     28.7355,
+     26.4628,
      4.9196,
      21.0476,
      "2015-07-16"
     ],
-    "src": "bseaspx:500470:qtrid86",
-    "why": "SW-2 phase-2 2026-08-30: pre-2016 family convention is dii = mf+banks+ins(+vcf); this cell's dii equals that PLUS the institutions Any-Other row (2.27pp) folded in by a minority route. Healed to the page's own domestic rows (26.4628). fii left as authored (block nationality not adjudicated here). Census: _shp_oth_p2_census.jsonl"
+    "src": "bseaspx:500470_86",
+    "why": "\u00a7160 page-era row-level heal (2026-09-24, DII = Institutions(Domestic), FII = Institutions(Foreign) in every format): fii 12.36 -> 12.36, dii 26.46 -> 28.58. generic-row-by-holders Others 2.11 dii [exact]: HDFC Trustee Company Ltd 2.10 (2015-form XBRL row); inst-sub-dii Others 2.11; inst-sub-unresolved Others 0.15 stays as stored. Evidence: _shp_aspx_rowfix_audit.json (\u00a7160b)",
+    "superseded": {
+     "cell": [
+      31.3539,
+      12.3572,
+      26.4628,
+      4.9196,
+      21.0476,
+      "2015-07-16"
+     ],
+     "was": [
+      31.3539,
+      12.3572,
+      28.7355,
+      4.9196,
+      21.0476,
+      "2015-07-16"
+     ],
+     "src": "bseaspx:500470:qtrid86",
+     "why": "SW-2 phase-2 2026-08-30: pre-2016 family convention is dii = mf+banks+ins(+vcf); this cell's dii equals that PLUS the institutions Any-Other row (2.27pp) folded in by a minority route. Healed to the page's own domestic rows (26.4628). fii left as authored (block nationality not adjudicated here). Census: _shp_oth_p2_census.jsonl"
+    }
    },
    "2014-12-31": {
     "cell": [
@@ -63451,6 +63531,26 @@
     ],
     "src": "bseaspx:524494_87",
     "why": "\u00a7160 page-era row-level heal (2026-09-24, DII = Institutions(Domestic), FII = Institutions(Foreign) in every format): fii 15.37 -> 21.77, dii 14.75 -> 14.75. inst-sub-unresolved Others 0.46 stays as stored; noninst-fii Foreign Portfolio Investors 6.4. Evidence: _shp_aspx_rowfix_audit.json"
+   },
+   "2015-06-30": {
+    "cell": [
+     45.8943,
+     19.9367,
+     15.73,
+     13.958,
+     0.0,
+     "2015-07-17"
+    ],
+    "was": [
+     45.8943,
+     19.9367,
+     13.9939,
+     13.958,
+     0.0,
+     "2015-07-17"
+    ],
+    "src": "bseaspx:524494_86",
+    "why": "\u00a7160 page-era row-level heal (2026-09-24, DII = Institutions(Domestic), FII = Institutions(Foreign) in every format): fii 19.94 -> 19.94, dii 13.99 -> 15.73. generic-row-by-holders Others 1.73 dii [exact]: Reliance Capital Trustee Co Ltd 1.69 (2015-form XBRL row); inst-sub-unresolved Others 0.44 stays as stored; noninst-dii Others 1.73. Evidence: _shp_aspx_rowfix_audit.json (\u00a7160b)"
    }
   },
   "JAMNAAUTO": {
@@ -69375,6 +69475,26 @@
     ],
     "src": "bseaspx:532466_87",
     "why": "\u00a7160 page-era row-level heal (2026-09-24, DII = Institutions(Domestic), FII = Institutions(Foreign) in every format): fii 10.45 -> 11.59, dii 3.92 -> 3.93. noninst-fii Foreign Portfolio Investors 1.14. Evidence: _shp_aspx_rowfix_audit.json | 2026-09-24: cell aligned to shp_refine_4dp's share-count dii/ins (the page's 2-dp value was re-derived after apply_cell_fix; proposed [3.93, 0.0])"
+   },
+   "2015-06-30": {
+    "cell": [
+     74.5017,
+     13.73,
+     3.894,
+     3.8916,
+     0.0,
+     "2015-07-14"
+    ],
+    "was": [
+     74.5017,
+     10.6069,
+     3.894,
+     3.8916,
+     0.0,
+     "2015-07-14"
+    ],
+    "src": "bseaspx:532466_86",
+    "why": "\u00a7160 page-era row-level heal (2026-09-24, DII = Institutions(Domestic), FII = Institutions(Foreign) in every format): fii 10.61 -> 13.73, dii 3.89 -> 3.89. generic-row-by-holders Others 3.12 fii [exact]: Macquarie Bank Limited 1.84 (curated); Mansfield Mauritius Limited 1.26 (2015-form XBRL row); noninst-fii Others 3.12. Evidence: _shp_aspx_rowfix_audit.json (\u00a7160b)"
    }
   },
   "ORTEL": {
@@ -70240,24 +70360,25 @@
     "cell": [
      65.9162,
      23.6272,
-     3.2794,
+     4.68,
      3.2767,
      0.0,
      "2015-07-17"
     ],
     "was": [
      65.9162,
-     22.8031,
+     23.6272,
      3.2794,
      3.2767,
      0.0,
      "2015-07-17"
     ],
-    "src": "bseaspx:503100:86:New",
+    "src": "bseaspx:503100_86",
+    "why": "\u00a7160 page-era row-level heal (2026-09-24, DII = Institutions(Domestic), FII = Institutions(Foreign) in every format): fii 23.63 -> 23.63, dii 3.28 -> 4.68. generic-row-by-holders Others 1.4 dii [exact]: Reliance Capital Trustee Co Ltd A/c Reli 1.38 (2015-form XBRL row); inst-sub-dii Others 1.4. Evidence: _shp_aspx_rowfix_audit.json (\u00a7160b)",
     "superseded": {
      "cell": [
       65.9162,
-      22.8031,
+      23.6272,
       3.2794,
       3.2767,
       0.0,
@@ -70266,15 +70387,34 @@
      "was": [
       65.9162,
       22.8031,
-      4.677,
+      3.2794,
       3.2767,
       0.0,
       "2015-07-17"
      ],
-     "src": "bseaspx:503100:qtrid86",
-     "why": "SW-2 phase-2 2026-08-30: pre-2016 family convention is dii = mf+banks+ins(+vcf); this cell's dii equals that PLUS the institutions Any-Other row (1.40pp) folded in by a minority route. Healed to the page's own domestic rows (3.2794). fii left as authored (block nationality not adjudicated here). Census: _shp_oth_p2_census.jsonl"
-    },
-    "why": "quantmac FII reconciliation 2026-09-22, class sweep (runbook \u00a7142e): stored fii is the page's FII row alone (22.80); the same Clause-35 page prints FPI 0.00 / FVCI 0.82. Re-derived by today's reader (fetch_shp_bse_aspx._attempt: FII+FPI+FVCI, dii=mf+banks+ins[+recon Any-Others]); sub date kept. Supersedes the bseaspx:503100:qtrid86 entry (dii left as that entry set it; its cell is this entry's `was`)."
+     "src": "bseaspx:503100:86:New",
+     "superseded": {
+      "cell": [
+       65.9162,
+       22.8031,
+       3.2794,
+       3.2767,
+       0.0,
+       "2015-07-17"
+      ],
+      "was": [
+       65.9162,
+       22.8031,
+       4.677,
+       3.2767,
+       0.0,
+       "2015-07-17"
+      ],
+      "src": "bseaspx:503100:qtrid86",
+      "why": "SW-2 phase-2 2026-08-30: pre-2016 family convention is dii = mf+banks+ins(+vcf); this cell's dii equals that PLUS the institutions Any-Other row (1.40pp) folded in by a minority route. Healed to the page's own domestic rows (3.2794). fii left as authored (block nationality not adjudicated here). Census: _shp_oth_p2_census.jsonl"
+     },
+     "why": "quantmac FII reconciliation 2026-09-22, class sweep (runbook \u00a7142e): stored fii is the page's FII row alone (22.80); the same Clause-35 page prints FPI 0.00 / FVCI 0.82. Re-derived by today's reader (fetch_shp_bse_aspx._attempt: FII+FPI+FVCI, dii=mf+banks+ins[+recon Any-Others]); sub date kept. Supersedes the bseaspx:503100:qtrid86 entry (dii left as that entry set it; its cell is this entry's `was`)."
+    }
    },
    "2015-12-31": {
     "cell": [
@@ -72229,6 +72369,46 @@
     ],
     "src": "bsexbrl:532497_127202215850_SHP.xml",
     "why": "\u00a7158 row-level DII heal (2026-09-24, DII = Institutions(Domestic) in every format): dii 20.26 -> 22.98, fii 18.35 -> 18.35. R2-label Others QIB 2.72 . Evidence: _shp_dii_rowfix_audit.json"
+   },
+   "2015-06-30": {
+    "cell": [
+     40.4618,
+     20.44,
+     11.1224,
+     11.0126,
+     0.0,
+     "2015-07-08"
+    ],
+    "was": [
+     40.4618,
+     18.4789,
+     11.1224,
+     11.0126,
+     0.0,
+     "2015-07-08"
+    ],
+    "src": "bseaspx:532497_86",
+    "why": "\u00a7160 page-era row-level heal (2026-09-24, DII = Institutions(Domestic), FII = Institutions(Foreign) in every format): fii 18.48 -> 20.44, dii 11.12 -> 11.12. generic-row-by-holders Others 1.96 fii [exact]: Bnp Paribas Arbitrage 2.02 (2015-form XBRL row); noninst-fii Others 1.96. Evidence: _shp_aspx_rowfix_audit.json (\u00a7160b)"
+   },
+   "2015-09-30": {
+    "cell": [
+     40.4618,
+     23.09,
+     13.2937,
+     13.1657,
+     0.0,
+     "2015-10-09"
+    ],
+    "was": [
+     40.4618,
+     21.1322,
+     13.2937,
+     13.1657,
+     0.0,
+     "2015-10-09"
+    ],
+    "src": "bseaspx:532497_87",
+    "why": "\u00a7160 page-era row-level heal (2026-09-24, DII = Institutions(Domestic), FII = Institutions(Foreign) in every format): fii 21.13 -> 23.09, dii 13.29 -> 13.29. generic-row-by-holders Others 1.96 fii [exact]: BNP Paribas Arbitrage 2.00 (2015-form XBRL row); noninst-fii Others 1.96. Evidence: _shp_aspx_rowfix_audit.json (\u00a7160b)"
    }
   },
   "RBLBANK": {
@@ -73373,7 +73553,7 @@
    "2015-06-30": {
     "cell": [
      13.3289,
-     27.2061,
+     39.11,
      13.2047,
      13.1959,
      0.0,
@@ -73382,13 +73562,33 @@
     "was": [
      13.3289,
      27.2061,
-     25.1526,
+     13.2047,
      13.1959,
      0.0,
      "2015-07-13"
     ],
-    "src": "bseaspx:532805:qtrid86",
-    "why": "SW-2 phase-2 2026-08-30: pre-2016 family convention is dii = mf+banks+ins(+vcf); this cell's dii equals that PLUS the institutions Any-Other row (11.95pp) folded in by a minority route. Healed to the page's own domestic rows (13.2047). fii left as authored (block nationality not adjudicated here). Census: _shp_oth_p2_census.jsonl"
+    "src": "bseaspx:532805_86",
+    "why": "\u00a7160 page-era row-level heal (2026-09-24, DII = Institutions(Domestic), FII = Institutions(Foreign) in every format): fii 27.21 -> 39.11, dii 13.20 -> 13.20. generic-row-by-holders Others 11.9 fii [exact]: Standard Chartered Pvt Equity Mauritius  11.93 (2015-form XBRL row); inst-sub-unresolved Others 0.02 stays as stored; inst-sub-fii Others 11.9; inst-sub-unresolved Others 0.03 stays as stored. Evidence: _shp_aspx_rowfix_audit.json (\u00a7160b)",
+    "superseded": {
+     "cell": [
+      13.3289,
+      27.2061,
+      13.2047,
+      13.1959,
+      0.0,
+      "2015-07-13"
+     ],
+     "was": [
+      13.3289,
+      27.2061,
+      25.1526,
+      13.1959,
+      0.0,
+      "2015-07-13"
+     ],
+     "src": "bseaspx:532805:qtrid86",
+     "why": "SW-2 phase-2 2026-08-30: pre-2016 family convention is dii = mf+banks+ins(+vcf); this cell's dii equals that PLUS the institutions Any-Other row (11.95pp) folded in by a minority route. Healed to the page's own domestic rows (13.2047). fii left as authored (block nationality not adjudicated here). Census: _shp_oth_p2_census.jsonl"
+    }
    },
    "2016-06-30": {
     "cell": [
@@ -84565,7 +84765,7 @@
    "2015-06-30": {
     "cell": [
      48.4862,
-     11.9848,
+     18.13,
      7.0471,
      5.8597,
      1.0712,
@@ -84574,18 +84774,38 @@
     "was": [
      48.4862,
      11.9848,
-     13.1921,
+     7.0471,
      5.8597,
      1.0712,
      "2015-07-14"
     ],
-    "src": "bseaspx:532508:qtrid86",
-    "why": "SW-2 phase-2 2026-08-30: pre-2016 family convention is dii = mf+banks+ins(+vcf); this cell's dii equals that PLUS the institutions Any-Other row (6.15pp) folded in by a minority route. Healed to the page's own domestic rows (7.0471). fii left as authored (block nationality not adjudicated here). Census: _shp_oth_p2_census.jsonl"
+    "src": "bseaspx:532508_86",
+    "why": "\u00a7160 page-era row-level heal (2026-09-24, DII = Institutions(Domestic), FII = Institutions(Foreign) in every format): fii 11.98 -> 18.13, dii 7.05 -> 7.05. generic-row-by-holders Others 6.15 fii [exact, composition = adjacent quarter]: Hypnos Fund Ltd 4.55 (2015-form XBRL row); Albula Investment Fund Ltd 1.59 (2015-form XBRL row); inst-sub-fii Others 6.15. Evidence: _shp_aspx_rowfix_audit.json (\u00a7160b)",
+    "superseded": {
+     "cell": [
+      48.4862,
+      11.9848,
+      7.0471,
+      5.8597,
+      1.0712,
+      "2015-07-14"
+     ],
+     "was": [
+      48.4862,
+      11.9848,
+      13.1921,
+      5.8597,
+      1.0712,
+      "2015-07-14"
+     ],
+     "src": "bseaspx:532508:qtrid86",
+     "why": "SW-2 phase-2 2026-08-30: pre-2016 family convention is dii = mf+banks+ins(+vcf); this cell's dii equals that PLUS the institutions Any-Other row (6.15pp) folded in by a minority route. Healed to the page's own domestic rows (7.0471). fii left as authored (block nationality not adjudicated here). Census: _shp_oth_p2_census.jsonl"
+    }
    },
    "2015-09-30": {
     "cell": [
      49.558,
-     11.4369,
+     17.46,
      6.5704,
      5.4168,
      1.0489,
@@ -84594,13 +84814,33 @@
     "was": [
      49.558,
      11.4369,
-     12.5876,
+     6.5704,
      5.4168,
      1.0489,
      "2015-10-18"
     ],
-    "src": "bseaspx:532508:qtrid87",
-    "why": "SW-2 phase-2 2026-08-30: pre-2016 family convention is dii = mf+banks+ins(+vcf); this cell's dii equals that PLUS the institutions Any-Other row (6.02pp) folded in by a minority route. Healed to the page's own domestic rows (6.5704). fii left as authored (block nationality not adjudicated here). Census: _shp_oth_p2_census.jsonl"
+    "src": "bseaspx:532508_87",
+    "why": "\u00a7160 page-era row-level heal (2026-09-24, DII = Institutions(Domestic), FII = Institutions(Foreign) in every format): fii 11.44 -> 17.46, dii 6.57 -> 6.57. generic-row-by-holders Others 6.02 fii [exact]: Hypnos Fund Ltd 4.46 (2015-form XBRL row); Albula Investment Fund Ltd 1.56 (2015-form XBRL row); inst-sub-fii Others 6.02. Evidence: _shp_aspx_rowfix_audit.json (\u00a7160b)",
+    "superseded": {
+     "cell": [
+      49.558,
+      11.4369,
+      6.5704,
+      5.4168,
+      1.0489,
+      "2015-10-18"
+     ],
+     "was": [
+      49.558,
+      11.4369,
+      12.5876,
+      5.4168,
+      1.0489,
+      "2015-10-18"
+     ],
+     "src": "bseaspx:532508:qtrid87",
+     "why": "SW-2 phase-2 2026-08-30: pre-2016 family convention is dii = mf+banks+ins(+vcf); this cell's dii equals that PLUS the institutions Any-Other row (6.02pp) folded in by a minority route. Healed to the page's own domestic rows (6.5704). fii left as authored (block nationality not adjudicated here). Census: _shp_oth_p2_census.jsonl"
+    }
    },
    "2022-09-30": {
     "cell": [
@@ -89551,7 +89791,7 @@
    "2014-09-30": {
     "cell": [
      44.0564,
-     34.1828,
+     35.82,
      4.7478,
      4.3416,
      0.3232,
@@ -89560,13 +89800,33 @@
     "was": [
      44.0564,
      34.1828,
-     6.3881,
+     4.7478,
      4.3416,
      0.3232,
      "2014-10-22"
     ],
-    "src": "bseaspx:500877:qtrid83",
-    "why": "SW-2 phase-2 2026-08-30: pre-2016 family convention is dii = mf+banks+ins(+vcf); this cell's dii equals that PLUS the institutions Any-Other row (1.64pp) folded in by a minority route. Healed to the page's own domestic rows (4.7478). fii left as authored (block nationality not adjudicated here). Census: _shp_oth_p2_census.jsonl"
+    "src": "bseaspx:500877_83",
+    "why": "\u00a7160 page-era row-level heal (2026-09-24, DII = Institutions(Domestic), FII = Institutions(Foreign) in every format): fii 34.18 -> 35.82, dii 4.75 -> 4.75. generic-row-by-holders Any Other 1.64 fii [exact]: Credit Suisse (Singapore) Ltd 1.65 (2015-form XBRL row); inst-sub-fii Any Other 1.64. Evidence: _shp_aspx_rowfix_audit.json (\u00a7160b)",
+    "superseded": {
+     "cell": [
+      44.0564,
+      34.1828,
+      4.7478,
+      4.3416,
+      0.3232,
+      "2014-10-22"
+     ],
+     "was": [
+      44.0564,
+      34.1828,
+      6.3881,
+      4.3416,
+      0.3232,
+      "2014-10-22"
+     ],
+     "src": "bseaspx:500877:qtrid83",
+     "why": "SW-2 phase-2 2026-08-30: pre-2016 family convention is dii = mf+banks+ins(+vcf); this cell's dii equals that PLUS the institutions Any-Other row (1.64pp) folded in by a minority route. Healed to the page's own domestic rows (4.7478). fii left as authored (block nationality not adjudicated here). Census: _shp_oth_p2_census.jsonl"
+    }
    },
    "2014-12-31": {
     "cell": [
@@ -93809,7 +94069,7 @@
    "2015-06-30": {
     "cell": [
      25.5949,
-     32.9943,
+     37.34,
      18.2188,
      2.5863,
      15.4267,
@@ -93818,13 +94078,33 @@
     "was": [
      25.5949,
      32.9943,
-     22.5671,
+     18.2188,
      2.5863,
      15.4267,
      "2015-07-17"
     ],
-    "src": "bseaspx:500520:qtrid86",
-    "why": "SW-2 phase-2 2026-08-30: pre-2016 family convention is dii = mf+banks+ins(+vcf); this cell's dii equals that PLUS the institutions Any-Other row (4.35pp) folded in by a minority route. Healed to the page's own domestic rows (18.2188). fii left as authored (block nationality not adjudicated here). Census: _shp_oth_p2_census.jsonl"
+    "src": "bseaspx:500520_86",
+    "why": "\u00a7160 page-era row-level heal (2026-09-24, DII = Institutions(Domestic), FII = Institutions(Foreign) in every format): fii 32.99 -> 37.34, dii 18.22 -> 18.22. generic-row-by-holders Others 4.35 fii [exact]: Dodge And Cox International Stock Fund 2.66 (2015-form XBRL row); Europacific Growth Fund 1.75 (curated); inst-sub-fii Others 4.35. Evidence: _shp_aspx_rowfix_audit.json (\u00a7160b)",
+    "superseded": {
+     "cell": [
+      25.5949,
+      32.9943,
+      18.2188,
+      2.5863,
+      15.4267,
+      "2015-07-17"
+     ],
+     "was": [
+      25.5949,
+      32.9943,
+      22.5671,
+      2.5863,
+      15.4267,
+      "2015-07-17"
+     ],
+     "src": "bseaspx:500520:qtrid86",
+     "why": "SW-2 phase-2 2026-08-30: pre-2016 family convention is dii = mf+banks+ins(+vcf); this cell's dii equals that PLUS the institutions Any-Other row (4.35pp) folded in by a minority route. Healed to the page's own domestic rows (18.2188). fii left as authored (block nationality not adjudicated here). Census: _shp_oth_p2_census.jsonl"
+    }
    },
    "2026-03-31": {
     "cell": [
@@ -107659,6 +107939,26 @@
     ],
     "src": "bseaspx:500477_89 shpperent",
     "why": "\u00a7160 page-era row-level heal (2026-09-24, DII = Institutions(Domestic), FII = Institutions(Foreign) in every format): fii 7.25 -> 21.58, dii 11.29 -> 11.29. seam-fii-reconstruction base 7.25 14.3252; lump-fii FOREIGN INSTITUTIONAL INVESTORS 14.3252. Evidence: _shp_aspx_rowfix_audit.json"
+   },
+   "2015-06-30": {
+    "cell": [
+     38.8157,
+     21.72,
+     12.2811,
+     3.924,
+     1.6853,
+     "2015-07-14"
+    ],
+    "was": [
+     38.8157,
+     20.206,
+     12.2811,
+     3.924,
+     1.6853,
+     "2015-07-14"
+    ],
+    "src": "bseaspx:500477_86",
+    "why": "\u00a7160 page-era row-level heal (2026-09-24, DII = Institutions(Domestic), FII = Institutions(Foreign) in every format): fii 20.21 -> 21.72, dii 12.28 -> 12.28. generic-row-by-holders Others 1.51 fii [exact]: Government Pension Fund Global 1.56 (2015-form XBRL row); noninst-fii Others 1.51. Evidence: _shp_aspx_rowfix_audit.json (\u00a7160b)"
    }
   },
   "DAVANGERE": {
@@ -141443,6 +141743,46 @@
     ],
     "src": "bseaspx:500469_89 shpperent",
     "why": "\u00a7160 page-era row-level heal (2026-09-24, DII = Institutions(Domestic), FII = Institutions(Foreign) in every format): fii 11.70 -> 38.98, dii 30.41 -> 30.41. seam-fii-reconstruction base 11.70 27.2799; lump-fii Foreign Institutional Investors 26.9241; lump-fii Foreign Portfolio Investors 0.3558. Evidence: _shp_aspx_rowfix_audit.json"
+   },
+   "2015-06-30": {
+    "cell": [
+     0.0,
+     36.6,
+     33.8846,
+     26.0073,
+     4.0792,
+     "2015-07-09"
+    ],
+    "was": [
+     0.0,
+     34.3893,
+     33.8846,
+     26.0073,
+     4.0792,
+     "2015-07-09"
+    ],
+    "src": "bseaspx:500469_86",
+    "why": "\u00a7160 page-era row-level heal (2026-09-24, DII = Institutions(Domestic), FII = Institutions(Foreign) in every format): fii 34.39 -> 36.60, dii 33.88 -> 33.88. row-by-holders Others 2.21 International Finance Corpo 2.21 (memory~); inst-sub-unresolved Others 0.08 stays as stored; noninst-fii Others 2.21. Evidence: _shp_aspx_rowfix_audit.json (\u00a7160b)"
+   },
+   "2015-09-30": {
+    "cell": [
+     0.0,
+     32.76,
+     37.4104,
+     26.7064,
+     4.0522,
+     "2015-10-08"
+    ],
+    "was": [
+     0.0,
+     30.5504,
+     37.4104,
+     26.7064,
+     4.0522,
+     "2015-10-08"
+    ],
+    "src": "bseaspx:500469_87",
+    "why": "\u00a7160 page-era row-level heal (2026-09-24, DII = Institutions(Domestic), FII = Institutions(Foreign) in every format): fii 30.55 -> 32.76, dii 37.41 -> 37.41. row-by-holders Others 2.21 International Finance Corpo 2.21 (memory~); inst-sub-unresolved Others 0.08 stays as stored; noninst-fii Others 2.21. Evidence: _shp_aspx_rowfix_audit.json (\u00a7160b)"
    }
   },
   "FINCABLES": {
@@ -157681,6 +158021,46 @@
     ],
     "src": "bsexbrl:508869_510201812519_SHP.xml",
     "why": "\u00a7159 row-level FII heal (2026-09-24, FII = Institutions(Foreign) in every format): fii 45.84 -> 46.24 (+0.40 from Non-institutions Any-Other rows the filer's 2022 form lists under B2). R2FII-label Foreign Portfolio Investor (Category - III) 0.4 0.4 FII-labelled row 0.40 -> fii. Evidence: _shp_fii_rowfix_audit.json"
+   },
+   "2015-06-30": {
+    "cell": [
+     34.3493,
+     55.57,
+     2.0744,
+     0.2914,
+     1.6385,
+     "2015-07-15"
+    ],
+    "was": [
+     34.3493,
+     43.7863,
+     2.0744,
+     0.2914,
+     1.6385,
+     "2015-07-15"
+    ],
+    "src": "bseaspx:508869_86",
+    "why": "\u00a7160 page-era row-level heal (2026-09-24, DII = Institutions(Domestic), FII = Institutions(Foreign) in every format): fii 43.79 -> 55.57, dii 2.07 -> 2.07. generic-row-by-holders Others 11.78 fii [exact]: Oppenheimer Developing Markets Fund 8.69 (2015-form XBRL row); Schroder International Selection Fund As 1.99 (2015-form XBRL row); Mirae Asset Asia Great Consumer Equity F 1.13 (2015-form XBRL row); noninst-fii Others 11.78. Evidence: _shp_aspx_rowfix_audit.json (\u00a7160b)"
+   },
+   "2015-09-30": {
+    "cell": [
+     34.3493,
+     56.02,
+     1.6086,
+     0.1845,
+     1.4187,
+     "2015-10-14"
+    ],
+    "was": [
+     34.3493,
+     44.2393,
+     1.6086,
+     0.1845,
+     1.4187,
+     "2015-10-14"
+    ],
+    "src": "bseaspx:508869_87",
+    "why": "\u00a7160 page-era row-level heal (2026-09-24, DII = Institutions(Domestic), FII = Institutions(Foreign) in every format): fii 44.24 -> 56.02, dii 1.61 -> 1.61. generic-row-by-holders Others 11.78 fii [exact, composition = adjacent quarter]: Oppenheimer Developing Markets Fund 8.69 (2015-form XBRL row); Schroder International Selection Fund As 1.99 (2015-form XBRL row); Mirae Asset Asia Great Consumer Equity F 1.13 (2015-form XBRL row); noninst-fii Others 11.78. Evidence: _shp_aspx_rowfix_audit.json (\u00a7160b)"
    }
   },
   "DATAPATTNS": {
@@ -158367,6 +158747,26 @@
     ],
     "src": "bseaspx:509488_87",
     "why": "\u00a7160 page-era row-level heal (2026-09-24, DII = Institutions(Domestic), FII = Institutions(Foreign) in every format): fii 11.75 -> 13.59, dii 6.18 -> 6.19. noninst-fii Foreign Portfolio Investors 1.84. Evidence: _shp_aspx_rowfix_audit.json | 2026-09-24: cell aligned to shp_refine_4dp's share-count dii/ins (the page's 2-dp value was re-derived after apply_cell_fix; proposed [6.19, 3.4565])"
+   },
+   "2015-06-30": {
+    "cell": [
+     65.2521,
+     12.7116,
+     7.19,
+     2.1211,
+     3.4565,
+     "2015-07-21"
+    ],
+    "was": [
+     65.2521,
+     12.7116,
+     5.6105,
+     2.1211,
+     3.4565,
+     "2015-07-21"
+    ],
+    "src": "bseaspx:509488_86",
+    "why": "\u00a7160 page-era row-level heal (2026-09-24, DII = Institutions(Domestic), FII = Institutions(Foreign) in every format): fii 12.71 -> 12.71, dii 5.61 -> 7.19. generic-row-by-holders Others 1.58 dii [exact]: THE NEW INDIA ASSURANCE COMPANY LIMITED 1.56 (new-format:InsuranceCompanies); noninst-dii Others 1.58. Evidence: _shp_aspx_rowfix_audit.json (\u00a7160b)"
    }
   },
   "HAVELLS": {

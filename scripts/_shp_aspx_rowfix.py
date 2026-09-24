@@ -194,7 +194,101 @@ HANDOFF={  # symbol -> which row / holder the XBRL era shows to be B2-placed (FI
 }
 TOL=0.10     # a stored cell must equal one reading convention of the page within this (BSE's two renderings round differently: ITC Dec-15 dii 35.21 vs 35.29)
 _KNOWN={}
-def evaluate(h, cur, sym=None, qi=None, code=None, ctx=None):
+# ---- generic 'Others' / 'Any Other' sub-rows: resolved ONLY by the filer's own evidence on the named >1% holders ----
+OLD_AX={"fii":re.compile(r"ForeignPortfolio|ForeignInstitutional|ForeignVentureCapital|QualifiedForeign", re.I),
+        "domestic":re.compile(r"MutualFunds|InsuranceCompanies|FinancialInstitution|IndianFinancial|VentureCapitalFunds|ProvidentFund|PensionFund|AlternateInvestment|NBFC", re.I),
+        "public":re.compile(r"OthersIndianShareholders|OtherForeignShareholders|NonResidentIndividuals|IndividualsOrHUF|IndividualShareholders|EmployeeBenefitsTrusts|BodiesCorporate|Trusts|ClearingMembers|HinduUndivided", re.I),
+        "gov":re.compile(r"CentralGovernment|StateGovernment", re.I)}
+def _label_cls(lab):
+    if D.LAB_FII.search(lab): return "fii"
+    if D.LAB_PUB.search(lab): return "public"
+    if D.DOMLAB.search(lab): return "domestic"
+    return None
+def oldmap_for(bse_rows, maxfiles=4):
+    """holder key -> Counter(class) from the filer's own 2015-form XBRLs (Jun-2016..Jun-2022, nearest first): the row the filer
+    itself put the holder on (typed Any-Other groups by their label, standard axes by OLD_AX)."""
+    import seam88
+    cands=sorted([(D.qe_of(r.get("qtr")),(r.get("XbrlFile") or "").strip()) for r in bse_rows if D.qe_of(r.get("qtr")) and r.get("XbrlFile")])
+    M=collections.defaultdict(collections.Counter); used=0
+    for qe,f in [c for c in cands if "2016-06-30"<=c[0]<="2022-06-30"]:
+        p=D.find_file(f)
+        if not p: continue
+        rows=D.rows_of(open(p,"rb").read())
+        if not rows: continue
+        used+=1
+        for axis in ("OtherInstitutions","OtherNonInstitutions"):
+            for g in D.groups(rows,axis):
+                c=_label_cls(g["label"]) or ("public" if axis=="OtherNonInstitutions" else None)
+                if c:
+                    for hp,hn in g["holders"]: M[nkey(hn)][c]+=1
+        for ax,seq,pct,kind,cat,name in rows:
+            if not name or ax in ("OtherInstitutions","OtherNonInstitutions") or (kind or "").lower().startswith("categ"): continue
+            for c,rx in OLD_AX.items():
+                if rx.search(ax): M[nkey(name)][c]+=1; break
+        if used>=maxfiles: break
+    return M
+def _subsets(hold, p, used, limit=3):
+    idx=[i for i in range(len(hold)) if i not in used]; out=[]
+    for mask in range(1,1<<len(idx)):
+        ssum=sum(hold[idx[k]][2] for k in range(len(idx)) if mask>>k&1)
+        if abs(ssum-p)<=max(0.06,0.006*p):
+            out.append(tuple(idx[k] for k in range(len(idx)) if mask>>k&1))
+            if len(out)>=limit: break
+    return out
+def page_label_map(code, hist_sym):
+    """holder key -> Counter(class) from the filer's own page era: a LABELLED sub-row (fii / dii / public) whose value is the exact,
+    unique sum of named >1% holders attributes the label to those holders (POONAWALLA Mar-15 'Multilateral & Bilateral DFI' 12.08 = IFC)."""
+    import seam88, shpperent as SP
+    M=collections.defaultdict(collections.Counter)
+    for q in sorted(hist_sym):
+        if not ("2006-06-30"<=q<="2016-03-31"): continue
+        qi=qtrid(q); f="aspx_pages/%d_%d.html.gz"%(code,qi)
+        if not os.path.exists(f): continue
+        h=gzip.open(f,"rt",encoding="utf-8").read(); b=parse(h); labelled=[]
+        for blk in ("inst","noninst"):
+            si,subs=classify_rows(b[blk],blk)
+            for lab,p,cls,io in subs:
+                if cls in ("fii","dii","pub") and p>=0.5 and not DR_LAB.search(lab): labelled.append((lab,p,cls))
+        if not labelled: continue
+        tot=total_shares(h); hp=fetch(code,qi)
+        if not tot or not hp: continue
+        hold=[(nkey(n),n,sh/tot*100) for n,sh,_ in rows(hp) if sh/tot*100>=0.05][:16]; used=set()
+        for lab,p,cls in sorted(labelled,key=lambda x:-x[1]):
+            got=_subsets(hold,p,used)
+            if len(got)==1:
+                used.update(got[0])
+                for g in got[0]: M[hold[g][0]][{"fii":"fii","dii":"domestic","pub":"public"}[cls]]+=1
+    return M
+def _fuzzy_get(M, key):
+    import seam88
+    if key in M: return M[key]
+    for k in M:
+        if in_known(key,{k}): return M[k]
+    return None
+def holder_cls_full(ctx, n, v, oldmap, pagemap, known):
+    """(class, source) for a named holder from the filer's own evidence, strongest first; None when nothing the filer itself said decides."""
+    import seam88
+    key=nkey(re.sub(r"^\s*(fii|fpi|qfi)s?\s*[-:]\s*","",n,flags=re.I))
+    c,dest,src=ctx.hclass(n,v)
+    if src.startswith("new-format") or src in ("curated","memory","memory~"):
+        if c=="foreign" and dest=="fii": return "fii",src
+        if c=="foreign" and dest=="public": return "public",src
+        if c=="domestic": return "domestic",src
+    dom_name=bool(D.DOMSTRONG.search(n)) and not D.FORLAB.search(n.replace("International","").replace("INTERNATIONAL",""))   # a domestic MF / insurer by its own name never takes a foreign class from a value coincidence
+    m=_fuzzy_get(oldmap,key)
+    if m and len(m)==1 and not (dom_name and next(iter(m))=="fii"): return next(iter(m)),"2015-form XBRL row"
+    if not dom_name and (re.match(r"^\s*(fii|fpi|qfi)s?\s*[-:]",n,re.I) or in_known(key,known) or re.search(r"\((fpi|fii)\)",n,re.I)): return "fii","filer FII/FPI/QFI prefix"
+    m=_fuzzy_get(pagemap,key)
+    if m and len(m)==1 and not (dom_name and next(iter(m))=="fii"): return next(iter(m)),"filer's own page label"
+    # lowest tier — name markers, and only for names whose TYPE is unmistakable: a foreign fund-type vehicle, or a domestic MF trustee /
+    # insurer (never a bare 'X Mauritius Ltd' company, which may be FDI/strategic -> public)
+    if c=="foreign" and dest=="fii" and src=="regex" and FUNDLIKE.search(n): return "fii","name marker (fund-type)"
+    if (c=="domestic" or dom_name or MFLIKE.search(n)) and not D.FORLAB.search(n.replace("International","").replace("INTERNATIONAL","")): return "domestic","name marker (MF/insurer)"
+    return None,None
+MECH_LAB=re.compile(r"subsidiar|in transit|office bearer|indian public|welfare|partnership|escrow|unclaimed|iepf|suspense", re.I)   # mechanical public-type rows: a value coincidence with a named holder means nothing
+FUNDLIKE=re.compile(r"\bfunds?\b|\binvestors\b|portfolio|\bcapital\b|\bpartners\b|\btrust\b|\bsicav\b|\bucits\b|\bplc\b|\binc\b|\bl\.?p\.?\b|pension|\bmaster\b|global markets|securities|asset management|\bemerging\b|\bopportunit|\bequit", re.I)
+MFLIKE=re.compile(r"trustee|mutual fund|\bmf\b|\bscheme\b|insurance|assurance|\blife\b|\bmagnum\b|\bprudential\b|\bsbi\b|\buti\b|\bhdfc\b|\bicici\b|\bkotak\b|\bbirla\b|\breliance capital\b|\bdsp\b|\bfranklin templeton mutual|\bnippon\b|\btata (mutual|aia)|\bl&t\b|\bsundaram\b|\bcanara\b|\baxis\b|\bidfc\b|\bmirae asset (india|mutual)", re.I)
+def evaluate(h, cur, sym=None, qi=None, code=None, ctx=None, gctx=None):
     b=parse(h)
     if not b["inst"] and not b["noninst"]: return None,"no table"
     prom=b["prom"][-1][1] if b["prom"] else 0.0
@@ -226,7 +320,7 @@ def evaluate(h, cur, sym=None, qi=None, code=None, ctx=None):
     # holder rule (§158 R1 at page level): an unresolved or company-labelled sub-row >= 1pp whose value is EXACTLY the sum of named >1%
     # holders that the filer's own 2022 row / SW-2 curated verdict / the filer's own FII-FPI-QFI prefix on its seam tables place in fii
     # (never a bare name marker) -> fii. POONAWALLA Sep-15 'Others' 30.89 = Indium 8.60 + LeapFrog 7.82 + Zend 14.47 (QFI-prefixed on the Dec-15 table).
-    hold_ev=[]
+    hold_ev=[]; rowsets=[]
     if ctx is not None and code and qi:
         cands=[i for i,(lab,p,cls,io) in enumerate(subi) if cls in (None,"pub") and p>=1.0]
         candn=[i for i,(lab,p,cls,io) in enumerate(subn) if cls is None and p>=1.0]
@@ -259,6 +353,44 @@ def evaluate(h, cur, sym=None, qi=None, code=None, ctx=None):
                         lab,p,cls,io=lst[i]; got=explain(p)
                         if got:
                             used.update(got); lst[i]=(lab,p,"fii",io); hold_ev.append(("row-by-holders",lab,round(p,4),"; ".join("%s %.2f (%s)"%(hold[g][1][:40],hold[g][2],hold[g][3]) for g in got)))
+    # generic rows ('Others', 'Any Other', 'FDI', 'Private Equity'...): the row must equal the UNIQUE exact sum of named >1% holders
+    # that ALL carry one class by the filer's own evidence (holder_cls_full) -> that class; anything else stays as stored
+    if gctx is not None and code and qi:
+        candg=[(lst,i) for lst in (subi,subn) for i,(lab,p,cls,io) in enumerate(lst) if cls is None and p>=0.5 and not DR_LAB.search(lab) and not MECH_LAB.search(lab)]
+        if candg:
+            tot=total_shares(h); hp=fetch(code,qi)
+            if code not in _KNOWN: _KNOWN[code]=sibling_foreign_names(code)
+            if tot and hp:
+                hold=[]
+                for n,sh,_ in rows(hp):
+                    v=sh/tot*100
+                    if v<0.05: continue
+                    if HO and HO["names"].search(n): continue
+                    c,src=holder_cls_full(ctx,n,v,gctx["oldmap"],gctx["pagemap"],_KNOWN[code])
+                    hold.append((nkey(n),n,round(v,4),c,src))
+                hold=hold[:16]; used=set(g for g in range(len(hold)) if hold[g][3] is None)     # unclassified names can never explain a row
+                rowmem=(gctx.get("rowmem") or {}); import seam88 as _s88
+                for lst,i in sorted(candg,key=lambda x:-x[0][x[1]][1]):
+                    lab,p,cls,io=lst[i]; blk="inst" if lst is subi else "noninst"; lk=(blk,re.sub(r"\s+"," ",lab.strip().lower()))
+                    tb=set()
+                    for q2 in (qi-1,qi+1):
+                        for st_ in (rowmem.get(lk) or {}).get(q2,[]): tb|=set(st_)
+                    got=_subsets(hold,p,used,limit=6)
+                    single=[g for g in got if len({hold[x][3] for x in g})==1 and hold[g[0]][3]!="gov"]
+                    choose=None; how="exact"
+                    if len(got)==1 and single: choose=got[0]
+                    elif single and tb:
+                        cs=[g for g in single if all(_s88.in_known(hold[x][0],tb) for x in g)]
+                        if len(cs)==1: choose=cs[0]; how="exact, composition = adjacent quarter"
+                    if choose is None and tb:      # the adjacent quarter's composition is present here and the remainder is below the >1% table's floor -> the rest follows (§158 R1)
+                        comp=tuple(x for x in range(len(hold)) if x not in used and _s88.in_known(hold[x][0],tb))
+                        if comp and len({hold[x][3] for x in comp})==1 and hold[comp[0]][3]!="gov":
+                            rem=p-sum(hold[x][2] for x in comp)
+                            if -0.06<=rem<=1.0: choose=comp; how="adjacent quarter's composition, rest %.2f follows"%max(rem,0)
+                    if choose is None: continue
+                    c=hold[choose[0]][3]; used.update(choose); newcls={"fii":"fii","domestic":"dii","public":"pub"}[c]
+                    lst[i]=(lab,p,newcls,io); rowsets.append((lk,set(hold[x][0] for x in choose)))
+                    hold_ev.append(("generic-row-by-holders",lab,round(p,4),newcls+" ["+how+"]: "+"; ".join("%s %.2f (%s)"%(hold[g][1][:40],hold[g][2],hold[g][4]) for g in choose)))
     fii_subs_inst=sum(p for lab,p,cls,io in subi if cls=="fii"); dii_subs_inst=sum(p for lab,p,cls,io in subi if cls=="dii")     # re-summed after the holder rule (the reading convention above was identified on the label classes alone)
     fii_rows_noninst=sum(p for lab,p,cls,io in subn if cls=="fii")+sum(p for lab,p in std_for_noninst); dii_rows_noninst=sum(p for lab,p,cls,io in subn if cls=="dii")+sum(p for lab,p in std_dom_noninst)
     ev.extend(hold_ev)
@@ -300,40 +432,77 @@ def evaluate(h, cur, sym=None, qi=None, code=None, ctx=None):
                         v=sh/tot*100
                         if v>=0.005: moved+=v; used_shp=True; ev.append(("handoff-fii",n,round(v,4),HO["note"]+" (shpperent)"))
         t_fii+=moved
-    return dict(t_fii=round(t_fii,4),t_dii=round(t_dii,4),add_ins=round(add_ins,4),ev=ev,base=(prom,base_fii,base_dii),conv=(fm[0],dm[0]),prom_fix=prom_fix,shpperent=used_shp),None
-def classify():
-    hist=json.load(open(os.path.join(REPO,"scripts","shp_history.json")))
-    codes=json.load(open("aspx_codes.json")); syms=json.load(open("n500_syms.json"))
-    led=json.load(open(os.path.join(REPO,"scripts","shp_cell_fix.json"))).get("fix",{})
-    verdicts=D.load_verdicts()
-    P={}; stats=collections.Counter(); reasons=collections.Counter(); unres=collections.Counter()
+    generic_left=[(("inst" if lst is subi else "noninst"),lab,round(p,4)) for lst in (subi,subn) for lab,p,cls,io in lst if cls is None and p>=0.5 and not DR_LAB.search(lab) and not MECH_LAB.search(lab)]
+    return dict(t_fii=round(t_fii,4),t_dii=round(t_dii,4),add_ins=round(add_ins,4),ev=ev,base=(prom,base_fii,base_dii),conv=(fm[0],dm[0]),prom_fix=prom_fix,shpperent=used_shp,rowsets=rowsets,generic_left=generic_left),None
+def scan_generic_rows():
+    """(sym, qe, block, label, pct) for every unresolved sub-row >= 0.5 pp on the cached pages; cached in generic_rows.json (112 symbols on 2026-09-24)."""
+    if os.path.exists("generic_rows.json"): return json.load(open("generic_rows.json"))
+    hist=json.load(open(os.path.join(REPO,"scripts","shp_history.json"))); codes=json.load(open("aspx_codes.json")); syms=json.load(open("n500_syms.json")); gen=[]
     for s in syms:
         c=codes.get(s)
         if not c: continue
-        ctx=None; lp=os.path.join(D.LISTS,s+".json")
+        for q in sorted(hist.get(s,{})):
+            if not ("2006-06-30"<=q<="2016-03-31"): continue
+            f="aspx_pages/%d_%d.html.gz"%(c,qtrid(q))
+            if not os.path.exists(f): continue
+            b=parse(gzip.open(f,"rt",encoding="utf-8").read())
+            for blk in ("inst","noninst"):
+                for lab,p,cls,io in classify_rows(b[blk],blk)[1]:
+                    if cls is None and p>=0.5 and not DR_LAB.search(lab): gen.append((s,q,blk,lab,p))
+    json.dump(gen,open("generic_rows.json","w")); return gen
+GENERIC_SYMS=set(g[0] for g in scan_generic_rows())
+def classify():
+    hist=json.load(open(os.path.join(REPO,"scripts","shp_history.json")))
+    codes=json.load(open("aspx_codes.json")); syms=json.load(open("n500_syms.json"))
+    led=json.load(open(os.path.join(REPO,"scripts","shp_cell_fix.json"),encoding="utf-8")).get("fix",{})
+    F_cell_eq=D.F._cell_eq
+    verdicts=D.load_verdicts()
+    P={}; stats=collections.Counter(); reasons=collections.Counter(); unres=collections.Counter(); left_log=[]
+    for s in syms:
+        c=codes.get(s)
+        if not c: continue
+        ctx=None; gctx=None; lp=os.path.join(D.LISTS,s+".json")
         if os.path.exists(lp):
             dd=json.load(open(lp)); bse_rows=dd.get("Table") if isinstance(dd,dict) else dd; ctx=D.SymCtx(s,bse_rows,verdicts)
+            if s in GENERIC_SYMS: gctx={"oldmap":oldmap_for(bse_rows),"pagemap":page_label_map(c,hist.get(s,{}))}
+        if gctx is not None:      # pass 1: collect each generic row's holder composition per quarter (no tie-break yet)
+            gctx["rowmem"]={}
+            for q in sorted(hist.get(s,{})):
+                if not ("2006-06-30"<=q<="2016-03-31"): continue
+                f="aspx_pages/%d_%d.html.gz"%(c,qtrid(q))
+                if not os.path.exists(f): continue
+                prior=(led.get(s) or {}).get(q); cur=hist[s][q]
+                base=prior["was"] if (prior and "\u00a7160" in prior.get("why","") and prior.get("was") and F_cell_eq(cur,prior.get("cell"))) else cur
+                try: r,why=evaluate(gzip.open(f,"rt",encoding="utf-8").read(),base,s,qtrid(q),c,ctx,gctx)
+                except Exception as e: continue
+                for lk,keys in ((r or {}).get("rowsets") or []): gctx["rowmem"].setdefault(lk,{}).setdefault(qtrid(q),[]).append(keys)
         for q in sorted(hist.get(s,{})):
             if not ("2006-06-30"<=q<="2016-03-31"): continue
             f="aspx_pages/%d_%d.html.gz"%(c,qtrid(q))
             if not os.path.exists(f): stats["no_page"]+=1; continue
             stats["pages"]+=1; cur=hist[s][q]
-            try: h=gzip.open(f,"rt",encoding="utf-8").read(); r,why=evaluate(h,cur,s,qtrid(q),c,ctx)
+            prior=(led.get(s) or {}).get(q)
+            base=prior["was"] if (prior and "\u00a7160" in prior.get("why","") and prior.get("was") and F_cell_eq(cur,prior.get("cell"))) else cur   # a page already healed by §160 is re-read from the cell the entry started from, so every rule (hand-off, holders, generic rows) is re-derived together
+            try: h=gzip.open(f,"rt",encoding="utf-8").read(); r,why=evaluate(h,base,s,qtrid(q),c,ctx,gctx)
             except Exception as e: stats["parse_err"]+=1; print("  err",s,q,repr(e)[:120],file=sys.stderr); continue
             if r is None: stats["no_match"]+=1; reasons[why.split(" page")[0]]+=1; continue
+            for blk,lab,p in r.get("generic_left",[]): stats["generic_rows_left"]+=1; stats["generic_pp_left"]+=p; left_log.append((s,q,blk,lab,p))
+            for e in r["ev"]:
+                if e[0]=="generic-row-by-holders": stats["generic_rows_resolved"]+=1
             for e in r["ev"]:
                 if e[0]=="inst-sub-unresolved": unres[e[1][:40]]+=1
             stats["conv:"+r["conv"][0]]+=1
-            if (abs(r["t_fii"]-(cur[1] or 0))<0.05 and abs(r["t_dii"]-(cur[2] or 0))<0.05 and not r["prom_fix"]) or not (r["ev"] or r["prom_fix"]): stats["unchanged"]+=1; continue
+            if not (r["ev"] or r["prom_fix"]): stats["unchanged"]+=1; continue
             new=list(cur)      # a slot that does not move >= 0.05 keeps the STORED value: shp_refine_4dp re-derives dii/ins at 4 dp after apply_cell_fix and would otherwise diverge from the ledger (89 cells aligned by hand on 2026-09-24)
-            if abs(r["t_fii"]-(cur[1] or 0))>=0.05: new[1]=r["t_fii"]
-            if abs(r["t_dii"]-(cur[2] or 0))>=0.05: new[2]=r["t_dii"]
+            if abs(r["t_fii"]-(base[1] or 0))>=0.05: new[1]=r["t_fii"]
+            if abs(r["t_dii"]-(base[2] or 0))>=0.05: new[2]=r["t_dii"]
             if r["prom_fix"]: new[0]=round(r["prom_fix"],4)
-            if cur[4] is not None and r["add_ins"]>0: new[4]=round((cur[4] or 0)+r["add_ins"],4)
-            prior=(led.get(s) or {}).get(q)
+            if base[4] is not None and r["add_ins"]>0: new[4]=round((base[4] or 0)+r["add_ins"],4)
+            if abs(new[1]-(cur[1] or 0))<0.05 and abs(new[2]-(cur[2] or 0))<0.05 and abs(new[0]-(cur[0] or 0))<0.05: stats["unchanged"]+=1; continue
             P["%s|%s"%(s,q)]={"file":os.path.basename(f),"was":cur,"cell":new,"d_dii":round(r["t_dii"]-(cur[2] or 0),4),"d_fii":round(r["t_fii"]-(cur[1] or 0),4),"add_ins":r["add_ins"],"ev":r["ev"],"prior_entry":bool(prior),"shpperent":r.get("shpperent",False)}
             stats["proposed"]+=1
-    json.dump(P,open("proposals_aspx.json","w"),indent=0)
+    json.dump(P,open("proposals_aspx.json","w"),indent=0); json.dump(left_log,open("generic_left.json","w"))
+    stats["generic_pp_left"]=round(stats["generic_pp_left"])
     print("aspx classify",dict(stats)); print(" no-match reasons:",reasons.most_common(6)); print(" unresolved inst sub-row labels:",unres.most_common(10))
     return P
 def seam_pass(names=None, dip=5.0):
@@ -366,21 +535,23 @@ def seam_pass(names=None, dip=5.0):
             out["%s|%s"%(s,qe)]={"file":"%d_%d.html.gz"%(codes[s],q),"was":b,"cell":new,"d_fii":round(r["t_fii"]-b[1],4),"d_dii":0.0,"add_ins":0.0,"ev":[("seam-fii-reconstruction","base %.2f"%r["base_fii"],round(r["t_fii"]-r["base_fii"],4))]+r["ev"],"shpperent":True,"prior_entry":False}
             stats["proposed"]+=1
     json.dump(out,open("proposals_seam.json","w"),indent=0); print("seam pass",dict(stats)); return out
-def write_aspx(stamp=None):
+def write_aspx(stamp=None, tag=""):
     """Merge page-era proposals (proposals_aspx.json + proposals_seam.json) into scripts/shp_cell_fix.json with the §160 marker."""
     stamp=stamp or time.strftime("%Y-%m-%d")
     P=json.load(open("proposals_aspx.json")); S={k:v for k,v in json.load(open("proposals_seam.json")).items() if v.get("cell")} if os.path.exists("proposals_seam.json") else {}
     for k,v in S.items(): P[k]=v      # a seam reconstruction supersedes the label-rule proposal for the same cell
     path=os.path.join(REPO,"scripts","shp_cell_fix.json"); raw=open(path,encoding="utf-8").read(); led=json.loads(raw); fix=led.setdefault("fix",{}); ascii_only=("\\u00" in raw)
     hist=json.load(open(os.path.join(REPO,"scripts","shp_history.json"))); codes=json.load(open("aspx_codes.json"))
-    audit={"_doc":["§160 page-era row-level heal (%s): BSE ShareholdingPattern.aspx (Clause-35 / 88-89 layouts) + shpperent.aspx; rules in DATA_RUNBOOK §160."%stamp],"cells":{}}
+    apath=os.path.join(REPO,"scripts","_shp_aspx_rowfix_audit.json")
+    audit=json.load(open(apath,encoding="utf-8")) if os.path.exists(apath) else {"_doc":[],"cells":{}}     # merged: later passes add cells, never drop earlier evidence
+    audit["_doc"].append("§160%s page-era row-level heal (%s): BSE ShareholdingPattern.aspx (Clause-35 / 88-89 layouts) + shpperent.aspx; rules in DATA_RUNBOOK §160%s."%(tag,stamp,tag))
     n_new=n_sup=n_skip=0
     for k,v in sorted(P.items()):
         sym,qe=k.split("|"); cur=(hist.get(sym) or {}).get(qe)
         if cur is None or not D.F._cell_eq(cur,v["was"]): n_skip+=1; continue
         src="bseaspx:%s"%v["file"].replace(".html.gz","")+(" shpperent" if v.get("shpperent") else "")
         why=("§160 page-era row-level heal (%s, DII = Institutions(Domestic), FII = Institutions(Foreign) in every format): fii %.2f -> %.2f, dii %.2f -> %.2f%s. "%(stamp,cur[1],v["cell"][1],cur[2],v["cell"][2],(", prom %.2f -> %.2f"%(cur[0],v["cell"][0]) if abs(v["cell"][0]-cur[0])>0.005 else ""))
-             +"; ".join(" ".join(str(x) for x in e) for e in v["ev"])[:900]+". Evidence: _shp_aspx_rowfix_audit.json")
+             +"; ".join(" ".join(str(x) for x in e) for e in v["ev"])[:900]+". Evidence: _shp_aspx_rowfix_audit.json"+(" (§160%s)"%tag if tag else ""))
         ent={"cell":list(v["cell"]),"was":list(cur),"src":src,"why":why}
         prior=(fix.get(sym) or {}).get(qe)
         if prior:
@@ -389,7 +560,7 @@ def write_aspx(stamp=None):
         else: n_new+=1
         fix.setdefault(sym,{})[qe]=ent; audit["cells"][k]={x:v.get(x) for x in ("file","d_dii","d_fii","add_ins","ev","shpperent")}
     json.dump(led,open(path,"w",encoding="utf-8"),indent=1,ensure_ascii=ascii_only)
-    json.dump(audit,open(os.path.join(REPO,"scripts","_shp_aspx_rowfix_audit.json"),"w",encoding="utf-8"),indent=0,ensure_ascii=False)
+    json.dump(audit,open(apath,"w",encoding="utf-8"),indent=0,ensure_ascii=False)
     print("write_aspx: %d new, %d superseding, %d skipped"%(n_new,n_sup,n_skip))
 
 def verify():

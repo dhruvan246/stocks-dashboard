@@ -19224,3 +19224,46 @@ the second reader here is the Jun-2016 XBRL neighbour on every cell. Verified wi
 `shp_engine.json` serves all five (JKCEMENT Dec-15 11.72 / Mar-16 11.7343 & dii 13.5177, JUBLPHARMA Dec-15 26.31, LINDEINDIA
 Mar-16 8.17, REDINGTON Dec-15 37.51 & dii 20.86) with §159's 247 cells intact; per-stock slices re-dispatched
 (`refresh-stock-fin.yml`). Reply workbook rebuilt from this feed: 90,852 agree of 106,001 rows; no cell left "unfinished".
+
+## §160b — GENERIC "OTHERS" / "ANY OTHER" SUB-ROWS ON THE PAGE ERA (2026-09-24 late, user: "fix the generic Others rows too")
+
+**Population (measured on the cached pages).** 348 unresolved sub-rows ≥ 0.5 pp on 112 N500 symbols, 2,321 pp in all: non-institutions
+"Others" 108, institutions "Others" 47, "Foreign Collaborators" 43, "Any Other" 62, "Shares held by Subsidiary Companies" 27, "Shares in
+transit" 18, "FDI" 14, "Office Bearer" 11, "Private Equity (Funds)" 10, the rest singletons. A generic row carries no filer label, so
+the ONLY admissible evidence is what the filer itself said about the named > 1% holders behind it.
+
+**Rule (scripts/_shp_aspx_rowfix.py, generic tier of `evaluate`; runs after the reading-convention check).** A generic row ≥ 0.5 pp
+(never a mechanical public-type row: subsidiary / in transit / office bearer / welfare / partnership / escrow / IEPF) is resolved when
+its value is the EXACT (≤ max(0.06 pp, 0.6%)) and UNIQUE sum of named > 1% holders that ALL carry one class, the class coming from,
+in order: (1) the holder's row in the filer's first 2022-form filing, (2) the holder's row in the filer's own 2015-form XBRLs
+Jun-2016..Jun-2022 (`oldmap_for`: typed Any-Other groups by their label, standard axes ForeignPortfolio* → fii, MutualFunds /
+Insurance / FinancialInstitution → domestic, OthersIndianShareholders / OtherForeignShareholders / individuals → public),
+(3) the SW-2 curated verdict, (4) the filer's own FII/FPI/QFI prefix on its Dec-2015/Mar-2016 tables, (5) the filer's own label on the
+same holder elsewhere in its page era (`page_label_map`: a LABELLED sub-row whose value is the exact unique sum of named holders
+attributes that label to them), (6) last, a name marker — but only for an unmistakable fund-type foreign name (fund / investors /
+portfolio / sicav / pension / master …) or an unmistakable domestic MF-trustee / insurer name; a bare "X Mauritius Ltd" never
+qualifies (it may be FDI / strategic → public). A domestic MF / insurer by its own name never takes a foreign class from a value
+coincidence. Ambiguity (several subsets within tolerance) is broken only by the SAME row's composition in an adjacent quarter
+(APOLLOHOSP Sep-2015 "Others" 11.78 = Oppenheimer 8.69 + Schroder 1.99 + Mirae 1.13, the Jun-2015 composition); when that adjacent
+composition is present but the remainder is below the table's 1 % floor (≤ 1.0 pp) the rest follows (§158 R1) — 0 rows needed it.
+Pages already healed by §160 are re-read from the ledger entry's original cell so every rule is re-derived together (the new entry
+supersedes in place).
+
+**Result (verified on a store copy 20/20; guards green).** 20 cells / 16 symbols, all upward: fii on REDINGTON Jun-15 27.21 → 39.11
+(Standard Chartered PE Mauritius 11.93, the filer's 2015-form FPI row), APOLLOHOSP Jun/Sep-15 43.79 → 55.57 / 44.24 → 56.02,
+ADANIPOWER Sep-15 18.73 → 29.60 (Elara, Emerging India Focus, Cresta, Albula), JSL Jun/Sep-15 +6.15 / +6.02 (Hypnos, Albula), M&M
+Jun-15 +4.35 (Dodge & Cox, Europacific), OFSS Jun-15 +3.12, MPHASIS +2.46 (Aberdeen), FEDERALBNK Jun/Sep-15 +2.21 (IFC), RADICO
+Jun/Sep-15 +1.96 (BNP Paribas Arbitrage), APOLLOTYRE Sep-14 +1.64, ASHOKLEY Jun-15 +1.51 (GPFG), CHAMBLFERT Jun-15 +1.27 (GPFG);
+dii on TATASTEEL Jun-15 26.46 → 28.58 (HDFC Trustee), IPCALAB +1.73 and PHOENIXLTD +1.40 (Reliance Capital Trustee), GRAPHITE +1.58
+(New India Assurance). 42 generic rows resolved in all (22 to public = no change). fii Jun-15→Sep-15 ≥ 3 pp movers 27 → 26,
+Sep-15→Dec-15 29 → 28, quarter-to-quarter ≥ 5 pp 275 → 272. Entries carry the §160 marker with "(§160b)" in `why`; evidence merged
+into `scripts/_shp_aspx_rowfix_audit.json` (498 cells).
+
+**Not fixable without guessing (left as stored, 217 rows / 1,725 pp / 85 symbols).** "Others" 108, "Any Other" 45, "Foreign
+Collaborators" 43 (CYIENT's GAGIL FDI Ltd sits under "Foreign Corporate Bodies" on its other pages → public, so the collaborator rows
+are public by the filer's own label), "Private Equity (Funds)" 10, "FDI" 6, FSL's "Foreign Banks & Foreign Companies" 50.77 ×2.
+Reasons measured before this pass: the named holders form no exact single-class subset (sub-1 % remainders, mixed foreign/domestic
+sets: ADANIPOWER Jun-15 "Others" 11.76 = Elara + EIFF + Cresta + Albula 8.52 + 3i Power 2.50 (unplaced) + 0.74 sub-1%), or the
+names carry no filer placement at all. A neighbour-value or label-bracketing inference was NOT applied — it would write numbers the
+filer never stated. Trendlyne's seam route (§155) answers "fail" and no site publishes pre-2015 rows, so these stay open unless a
+filer's own document surfaces.
