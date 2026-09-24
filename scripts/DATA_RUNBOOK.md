@@ -19175,3 +19175,27 @@ lack; 20,254 cells we hold that they leave blank. Reply workbook `StockWorld_rep
 feed (106,001 rows of their reconciliation file: 90,842 agree; 5,591 depository-share definition; 6,648 Any-Other block; 1,236
 dates needing their source; 1,306 changed on our side; 101 revision dates; 48 filings they have not loaded; 28 their gaps; 78 ours;
 123 both blank) with the "How our FII-DII cells work" sheet carrying the final per-era FII and DII rules (§151, §156-§160).
+
+## §160a — THE FIVE HELD SEAM CELLS RESOLVED (2026-09-24 ~20:40 IST, FII session; user: "make the 4 held seam cells also get fixed")
+
+§160's held list is closed. Read from the filers' own Dec-2015 / Mar-2016 pages (BSE ShareholdingPattern.aspx main page + the
+linked `shpperent.aspx` holders-above-1% table, every % = share count / the page's total shares): in all five the institutional
+"Any Others" block holds ONLY foreign holders, so the whole block is FII (§158-R1's own rule: all named holders foreign → the
+unnamed rest follows them). The DII session's reconstruction had summed named holders only (and, for JUBLPHARMA, dropped the
+FII-prefixed names), so it fell short of the neighbours and was rightly held.
+- JKCEMENT Dec-15: block 11.69 = FII lump 3.23 + Fidelity Investment Trust 4.49 + Franklin Templeton Investment Funds 1.88 +
+  Templeton Global 2.09 (exact); fii 0.03 → 11.72 (dii already domestic-only 13.39). Mar-16: block 10.48 = Fidelity 4.63 + FT
+  Investment Funds 2.24 + Templeton Global 2.09 + Other FIIs 1.52 (exact); the stored row had the block inside dii: fii 1.25 →
+  11.73, dii 24.00 → 13.52. Neighbours 10.95 (Sep-15) / 11.33 (Jun-16).
+- JUBLPHARMA Dec-15: block 15.12 ≈ GPFG 2.13 + Samena 3.00 + Morgan Stanley Asia 2.60 + East Bridge 3.78 + Deutsche Securities
+  Mauritius 1.95 + Goldman Sachs Singapore 1.55 = 15.01; fii 11.19 → 26.31 (neighbours 25.97 / 27.42).
+- LINDEINDIA Mar-16: block 7.54 ⊇ Aberdeen Asian Smaller 1.49 + NatWest 1.77 + Scottish Oriental 1.38 + Pacific Assets 1.05
+  (the MF row 7.81 is Reliance Capital Trustee); fii 0.63 → 8.17 (neighbours 8.76 / 6.85).
+- REDINGTON Dec-15: block 24.46 ⊇ nine named foreign funds 19.00 (Morgan Stanley Asia 3.49, FT Investment Fund 3.70, Pyramis
+  2.50, FIL Mauritius 2.01, StanChart PE 1.99, MS India Investment Fund 1.54, Fidelity Northstar 1.38, MS Sicav 1.21, Fidelity
+  Puritan 1.18), every domestic name in its own row; the stored row had the block inside dii (45.16): fii 13.05 → 37.51, dii →
+  20.86 (MF 15.65 + FI 0.12 + Ins 5.09); Synnex Mauritius 23.59 stays public (non-inst Foreign Corporate Bodies, as in Jun-16).
+  Neighbours 36.89 / 34.53 / 39.01.
+Ledger: 5 `fix` entries under the "§160 page-era row-level heal" marker (3 supersede SW-2 phase-2 entries in place), src
+"bseaspx:<code>_<qtrid> shpperent". Trendlyne could not serve as the second reader tonight (its id-lookup API answers "fail");
+the second reader here is the Jun-2016 XBRL neighbour on every cell. Verified with `load_hist` (5/5 applied), guards green.
