@@ -23,7 +23,8 @@
   "2026-09-24 (\u00a7152): the SW-2 foreign-block heals re-asserted on 22 rows the store had lost \u2014 20 \u00a7142k/date entries updated in place (their `cell` had put the RAW original back over the healed reading) and 2 rows the SW-2 apply had skipped because an unrelated entry already existed. Re-filings now inherit these heals in the fetcher (heal_refiling) instead of undoing them in shp_revisions.json.",
   "2026-09-24 (\u00a7153): 13 rows whose stored date was a BSE re-filing date healed to the ORIGINAL filing (values + calendar day) read from BSE's original XBRL; the re-filing values moved to shp_revisions.json (0 rows).",
   "2026-09-24 (\u00a7156): the SW-2 sweep's 1,543 unresolved Any-Other cells re-read from BSE's XBRL \u2014 262 cells / 83 symbols where the row holds holders LABELLED foreign (curated name_verdicts or the FII/FPI/Foreign-*/OCB label class) moved dii -> fii by the labelled portion (share counts on the filer's base); e.g. RELIANCE 2016-17 'Foreign Institutional Investors' 12.07/8.55/5.99/2.53 pp. 256 new entries, 6 existing date entries updated in place.",
-  "2026-09-24 (\u00a7156): new `drop` map = sanctioned retraction of a stored cell while it still equals `was` (apply_cell_fix); first use: the 6 Trendlyne seam cells whose unlabelled Any-Other row hid the legacy FII registrations."
+  "2026-09-24 (\u00a7156): new `drop` map = sanctioned retraction of a stored cell while it still equals `was` (apply_cell_fix); first use: the 6 Trendlyne seam cells whose unlabelled Any-Other row hid the legacy FII registrations.",
+  "2026-09-24 (\u00a7157): 42 \u00a7156 entries REVERTED to the pre-heal reading \u2014 company/individual-type labels (Foreign/Overseas Corporate Bodies, Foreign Companies, Foreign Nationals) and curated funds nested under them are placed by the 2022 form under Non-Institutions or FDI depending on the filer (UTIAMC T. Rowe Price = Foreign Companies 22.97; IDFCFIRSTB's foreign corporate holder = FDI); handed to the row-level 2022-placement pass (DII session) rather than guessed here."
  ],
  "_doc_bulk_stamp": "2026-08-13: 441 rows across 57 symbols carried ONE identical submission date across >=3 quarters \u2014 a scrape date, not a filing date. Separated from the 268 symbols whose late dates are DISTINCT per quarter (genuinely late filers: TALWALKARS, MANPASAND et al) \u2014 those are left alone, because for a distressed company a multi-year filing lag is real. The discriminator is the identical-date collapse, and the fii/dii values under it differ per quarter, which is what proves the data was read per-quarter and only the date was stamped.",
  "accept": {
@@ -590,15 +591,6 @@
    "2016-12-31": {
     "cell": [
      64.89,
-     24.3514,
-     2.725,
-     0.7168,
-     0.0,
-     "2017-01-09",
-     355277
-    ],
-    "was": [
-     64.89,
      17.2883,
      9.7881,
      0.7168,
@@ -606,20 +598,20 @@
      "2017-01-09",
      355277
     ],
+    "was": [
+     64.89,
+     24.3514,
+     2.725,
+     0.7168,
+     0.0,
+     "2017-01-09",
+     355277
+    ],
     "src": "bsexbrl:533096_712017153847_SHP.xml",
-    "why": "SW-2 other-institutions sweep re-read 2026-09-24 (\u00a7156): the filing's Any-Other institutions row holds holders LABELLED foreign (FOREIGN NATIONALS 0.04; FOREIGN CORPORATE BODIES 7.02) \u2014 moved dii -> fii (7.0631 pp, share counts on the filer's base; unlabelled holders in the same row left in dii). Audit verdict was name-unknown."
+    "why": "\u00a7157 (2026-09-24): \u00a7156 move REVERTED \u2014 the institutional Any-Other row of this filing holds company/individual-type labels (Foreign/Overseas Corporate Bodies, Foreign Companies, Foreign Nationals) or curated funds nested under such a label; the 2022 form places those under Non-Institutions (UTIAMC: T. Rowe Price = Foreign Companies 22.97 in Sep-2022) or, filer by filer, under FDI (IDFCFIRSTB). Returned to the pre-heal reading (block in dii) for the row-level 2022-placement pass to settle per holder. Superseded: SW-2 other-institutions sweep re-read 2026-09-24 (\u00a7156): the filing's Any-Other institutions row holds holders LABELLED foreign (FOREIGN NAT"
    },
    "2017-03-31": {
     "cell": [
-     68.08,
-     22.1154,
-     2.6741,
-     0.8256,
-     0.0,
-     "2017-04-13",
-     340749
-    ],
-    "was": [
      68.08,
      15.7044,
      9.0851,
@@ -628,8 +620,17 @@
      "2017-04-13",
      340749
     ],
+    "was": [
+     68.08,
+     22.1154,
+     2.6741,
+     0.8256,
+     0.0,
+     "2017-04-13",
+     340749
+    ],
     "src": "bsexbrl:533096_1242017195629_SHP.xml",
-    "why": "SW-2 other-institutions sweep re-read 2026-09-24 (\u00a7156): the filing's Any-Other institutions row holds holders LABELLED foreign (FOREIGN NATIONALS 0.03; FOREIGN CORPORATE BODIES 6.38) \u2014 moved dii -> fii (6.4110 pp, share counts on the filer's base; unlabelled holders in the same row left in dii). Audit verdict was name-unknown."
+    "why": "\u00a7157 (2026-09-24): \u00a7156 move REVERTED \u2014 the institutional Any-Other row of this filing holds company/individual-type labels (Foreign/Overseas Corporate Bodies, Foreign Companies, Foreign Nationals) or curated funds nested under such a label; the 2022 form places those under Non-Institutions (UTIAMC: T. Rowe Price = Foreign Companies 22.97 in Sep-2022) or, filer by filer, under FDI (IDFCFIRSTB). Returned to the pre-heal reading (block in dii) for the row-level 2022-placement pass to settle per holder. Superseded: SW-2 other-institutions sweep re-read 2026-09-24 (\u00a7156): the filing's Any-Other institutions row holds holders LABELLED foreign (FOREIGN NAT"
    }
   },
   "ADFFOODS": {
@@ -25778,15 +25779,6 @@
    "2021-09-30": {
     "cell": [
      0.0,
-     18.7517,
-     1.4157,
-     0.3639,
-     0.0,
-     "2021-10-20",
-     48971
-    ],
-    "was": [
-     0.0,
      14.6599,
      5.5075,
      0.3639,
@@ -25794,20 +25786,20 @@
      "2021-10-20",
      48971
     ],
+    "was": [
+     0.0,
+     18.7517,
+     1.4157,
+     0.3639,
+     0.0,
+     "2021-10-20",
+     48971
+    ],
     "src": "bsexbrl:532915_19102021181821_SHP.xml",
-    "why": "SW-2 other-institutions sweep re-read 2026-09-24 (\u00a7156): the filing's Any-Other institutions row holds holders LABELLED foreign (FOREIGN CORPORATE BODIES 4.09; INTERNATIONAL FINANCE CORPORATION 4.03) \u2014 moved dii -> fii (4.0918 pp, share counts on the filer's base; unlabelled holders in the same row left in dii). Audit verdict was name-unknown."
+    "why": "\u00a7157 (2026-09-24): \u00a7156 move REVERTED \u2014 the institutional Any-Other row of this filing holds company/individual-type labels (Foreign/Overseas Corporate Bodies, Foreign Companies, Foreign Nationals) or curated funds nested under such a label; the 2022 form places those under Non-Institutions (UTIAMC: T. Rowe Price = Foreign Companies 22.97 in Sep-2022) or, filer by filer, under FDI (IDFCFIRSTB). Returned to the pre-heal reading (block in dii) for the row-level 2022-placement pass to settle per holder. Superseded: SW-2 other-institutions sweep re-read 2026-09-24 (\u00a7156): the filing's Any-Other institutions row holds holders LABELLED foreign (FOREIGN COR"
    },
    "2022-03-31": {
     "cell": [
-     0.0,
-     19.595,
-     2.3763,
-     1.6404,
-     0.0,
-     "2022-04-18",
-     57189
-    ],
-    "was": [
      0.0,
      15.5743,
      6.397,
@@ -25816,20 +25808,20 @@
      "2022-04-18",
      57189
     ],
+    "was": [
+     0.0,
+     19.595,
+     2.3763,
+     1.6404,
+     0.0,
+     "2022-04-18",
+     57189
+    ],
     "src": "bsexbrl:532915_134202217416_SHP.xml",
-    "why": "SW-2 other-institutions sweep re-read 2026-09-24 (\u00a7156): the filing's Any-Other institutions row holds holders LABELLED foreign (FOREIGN CORPORATE BODIES 4.02; INTERNATIONAL FINANCE CORPORATION 4.02) \u2014 moved dii -> fii (4.0207 pp, share counts on the filer's base; unlabelled holders in the same row left in dii). Audit verdict was name-unknown."
+    "why": "\u00a7157 (2026-09-24): \u00a7156 move REVERTED \u2014 the institutional Any-Other row of this filing holds company/individual-type labels (Foreign/Overseas Corporate Bodies, Foreign Companies, Foreign Nationals) or curated funds nested under such a label; the 2022 form places those under Non-Institutions (UTIAMC: T. Rowe Price = Foreign Companies 22.97 in Sep-2022) or, filer by filer, under FDI (IDFCFIRSTB). Returned to the pre-heal reading (block in dii) for the row-level 2022-placement pass to settle per holder. Superseded: SW-2 other-institutions sweep re-read 2026-09-24 (\u00a7156): the filing's Any-Other institutions row holds holders LABELLED foreign (FOREIGN COR"
    },
    "2022-06-30": {
     "cell": [
-     0.0,
-     18.9849,
-     3.8224,
-     2.0004,
-     0.0,
-     "2022-07-20",
-     55613
-    ],
-    "was": [
      0.0,
      14.9693,
      7.838,
@@ -25838,8 +25830,17 @@
      "2022-07-20",
      55613
     ],
+    "was": [
+     0.0,
+     18.9849,
+     3.8224,
+     2.0004,
+     0.0,
+     "2022-07-20",
+     55613
+    ],
     "src": "bsexbrl:532915_382022132410_SHP.xml",
-    "why": "SW-2 other-institutions sweep re-read 2026-09-24 (\u00a7156): the filing's Any-Other institutions row holds holders LABELLED foreign (FOREIGN CORPORATE BODIES 4.02; INTERNATIONAL FINANCE CORPORATION 4.02) \u2014 moved dii -> fii (4.0156 pp, share counts on the filer's base; unlabelled holders in the same row left in dii). Audit verdict was name-unknown."
+    "why": "\u00a7157 (2026-09-24): \u00a7156 move REVERTED \u2014 the institutional Any-Other row of this filing holds company/individual-type labels (Foreign/Overseas Corporate Bodies, Foreign Companies, Foreign Nationals) or curated funds nested under such a label; the 2022 form places those under Non-Institutions (UTIAMC: T. Rowe Price = Foreign Companies 22.97 in Sep-2022) or, filer by filer, under FDI (IDFCFIRSTB). Returned to the pre-heal reading (block in dii) for the row-level 2022-placement pass to settle per holder. Superseded: SW-2 other-institutions sweep re-read 2026-09-24 (\u00a7156): the filing's Any-Other institutions row holds holders LABELLED foreign (FOREIGN COR"
    }
   },
   "REPRO": {
@@ -37776,15 +37777,6 @@
    "2017-09-30": {
     "cell": [
      29.82,
-     28.159,
-     0.2371,
-     0.0,
-     0.0,
-     "2017-10-18",
-     105085
-    ],
-    "was": [
-     29.82,
      6.6315,
      21.7646,
      0.0,
@@ -37792,20 +37784,20 @@
      "2017-10-18",
      105085
     ],
+    "was": [
+     29.82,
+     28.159,
+     0.2371,
+     0.0,
+     0.0,
+     "2017-10-18",
+     105085
+    ],
     "src": "bsexbrl:532345_1710201716512_SHP.xml",
-    "why": "SW-2 other-institutions sweep re-read 2026-09-24 (\u00a7156): the filing's Any-Other institutions row holds holders LABELLED foreign (Foreign Corporate Bodies 21.53; Foreign Nationals) \u2014 moved dii -> fii (21.5275 pp, share counts on the filer's base; unlabelled holders in the same row left in dii). Audit verdict was name-unknown."
+    "why": "\u00a7157 (2026-09-24): \u00a7156 move REVERTED \u2014 the institutional Any-Other row of this filing holds company/individual-type labels (Foreign/Overseas Corporate Bodies, Foreign Companies, Foreign Nationals) or curated funds nested under such a label; the 2022 form places those under Non-Institutions (UTIAMC: T. Rowe Price = Foreign Companies 22.97 in Sep-2022) or, filer by filer, under FDI (IDFCFIRSTB). Returned to the pre-heal reading (block in dii) for the row-level 2022-placement pass to settle per holder. Superseded: SW-2 other-institutions sweep re-read 2026-09-24 (\u00a7156): the filing's Any-Other institutions row holds holders LABELLED foreign (Foreign Cor"
    },
    "2017-12-31": {
     "cell": [
-     26.2,
-     28.2476,
-     0.2814,
-     0.0,
-     0.0,
-     "2018-01-17",
-     108233
-    ],
-    "was": [
      26.2,
      6.7405,
      21.7885,
@@ -37814,8 +37806,17 @@
      "2018-01-17",
      108233
     ],
+    "was": [
+     26.2,
+     28.2476,
+     0.2814,
+     0.0,
+     0.0,
+     "2018-01-17",
+     108233
+    ],
     "src": "bsexbrl:532345_1712018113246_SHP.xml",
-    "why": "SW-2 other-institutions sweep re-read 2026-09-24 (\u00a7156): the filing's Any-Other institutions row holds holders LABELLED foreign (Foreign Bodies Corporate 21.51; Foreign Nationals) \u2014 moved dii -> fii (21.5071 pp, share counts on the filer's base; unlabelled holders in the same row left in dii). Audit verdict was name-unknown."
+    "why": "\u00a7157 (2026-09-24): \u00a7156 move REVERTED \u2014 the institutional Any-Other row of this filing holds company/individual-type labels (Foreign/Overseas Corporate Bodies, Foreign Companies, Foreign Nationals) or curated funds nested under such a label; the 2022 form places those under Non-Institutions (UTIAMC: T. Rowe Price = Foreign Companies 22.97 in Sep-2022) or, filer by filer, under FDI (IDFCFIRSTB). Returned to the pre-heal reading (block in dii) for the row-level 2022-placement pass to settle per holder. Superseded: SW-2 other-institutions sweep re-read 2026-09-24 (\u00a7156): the filing's Any-Other institutions row holds holders LABELLED foreign (Foreign Bod"
    }
   },
   "ADANIENSOL": {
@@ -41214,15 +41215,6 @@
    "2016-12-31": {
     "cell": [
      53.09,
-     19.6665,
-     14.803,
-     11.1709,
-     0.0,
-     "2017-01-31",
-     30704
-    ],
-    "was": [
-     53.09,
      17.7617,
      16.7078,
      11.1709,
@@ -41230,8 +41222,17 @@
      "2017-01-31",
      30704
     ],
+    "was": [
+     53.09,
+     19.6665,
+     14.803,
+     11.1709,
+     0.0,
+     "2017-01-31",
+     30704
+    ],
     "src": "bsexbrl:511243_3112017144216_SHP.xml",
-    "why": "SW-2 other-institutions sweep re-read 2026-09-24 (\u00a7156): the filing's Any-Other institutions row holds holders LABELLED foreign (INTERNATIONAL FINANCE CORPORATION 1.90; FOREIGN NATIONAL 0.01) \u2014 moved dii -> fii (1.9048 pp, share counts on the filer's base; unlabelled holders in the same row left in dii). Audit verdict was name-unknown."
+    "why": "\u00a7157 (2026-09-24): \u00a7156 move REVERTED \u2014 the institutional Any-Other row of this filing holds company/individual-type labels (Foreign/Overseas Corporate Bodies, Foreign Companies, Foreign Nationals) or curated funds nested under such a label; the 2022 form places those under Non-Institutions (UTIAMC: T. Rowe Price = Foreign Companies 22.97 in Sep-2022) or, filer by filer, under FDI (IDFCFIRSTB). Returned to the pre-heal reading (block in dii) for the row-level 2022-placement pass to settle per holder. Superseded: SW-2 other-institutions sweep re-read 2026-09-24 (\u00a7156): the filing's Any-Other institutions row holds holders LABELLED foreign (INTERNATION"
    }
   },
   "CIPLA": {
@@ -42248,15 +42249,6 @@
    "2017-06-30": {
     "cell": [
      36.78,
-     47.0654,
-     1.0775,
-     0.0,
-     0.0,
-     "2017-07-07",
-     11483
-    ],
-    "was": [
-     36.78,
      17.8558,
      30.2871,
      0.0,
@@ -42264,20 +42256,20 @@
      "2017-07-07",
      11483
     ],
+    "was": [
+     36.78,
+     47.0654,
+     1.0775,
+     0.0,
+     0.0,
+     "2017-07-07",
+     11483
+    ],
     "src": "bsexbrl:533137_672017174135_SHP.xml",
-    "why": "SW-2 other-institutions sweep re-read 2026-09-24 (\u00a7156): the filing's Any-Other institutions row holds holders LABELLED foreign (FOREIGN CORPORATE BODIES 29.21) \u2014 moved dii -> fii (29.2096 pp, share counts on the filer's base; unlabelled holders in the same row left in dii). Audit verdict was name-unknown."
+    "why": "\u00a7157 (2026-09-24): \u00a7156 move REVERTED \u2014 the institutional Any-Other row of this filing holds company/individual-type labels (Foreign/Overseas Corporate Bodies, Foreign Companies, Foreign Nationals) or curated funds nested under such a label; the 2022 form places those under Non-Institutions (UTIAMC: T. Rowe Price = Foreign Companies 22.97 in Sep-2022) or, filer by filer, under FDI (IDFCFIRSTB). Returned to the pre-heal reading (block in dii) for the row-level 2022-placement pass to settle per holder. Superseded: SW-2 other-institutions sweep re-read 2026-09-24 (\u00a7156): the filing's Any-Other institutions row holds holders LABELLED foreign (FOREIGN COR"
    },
    "2017-09-30": {
     "cell": [
-     36.45,
-     46.4183,
-     0.9716,
-     0.0,
-     0.0,
-     "2017-10-13",
-     12623
-    ],
-    "was": [
      36.45,
      17.4698,
      29.9201,
@@ -42286,20 +42278,20 @@
      "2017-10-13",
      12623
     ],
+    "was": [
+     36.45,
+     46.4183,
+     0.9716,
+     0.0,
+     0.0,
+     "2017-10-13",
+     12623
+    ],
     "src": "bsexbrl:533137_12102017172527_SHP.xml",
-    "why": "SW-2 other-institutions sweep re-read 2026-09-24 (\u00a7156): the filing's Any-Other institutions row holds holders LABELLED foreign (FOREIGN CORPORATE BODIES 28.95) \u2014 moved dii -> fii (28.9485 pp, share counts on the filer's base; unlabelled holders in the same row left in dii). Audit verdict was name-unknown."
+    "why": "\u00a7157 (2026-09-24): \u00a7156 move REVERTED \u2014 the institutional Any-Other row of this filing holds company/individual-type labels (Foreign/Overseas Corporate Bodies, Foreign Companies, Foreign Nationals) or curated funds nested under such a label; the 2022 form places those under Non-Institutions (UTIAMC: T. Rowe Price = Foreign Companies 22.97 in Sep-2022) or, filer by filer, under FDI (IDFCFIRSTB). Returned to the pre-heal reading (block in dii) for the row-level 2022-placement pass to settle per holder. Superseded: SW-2 other-institutions sweep re-read 2026-09-24 (\u00a7156): the filing's Any-Other institutions row holds holders LABELLED foreign (FOREIGN COR"
    },
    "2017-12-31": {
     "cell": [
-     36.45,
-     45.8284,
-     0.9912,
-     0.0,
-     0.0,
-     "2018-01-09",
-     13398
-    ],
-    "was": [
      36.45,
      16.9157,
      29.9039,
@@ -42308,8 +42300,17 @@
      "2018-01-09",
      13398
     ],
+    "was": [
+     36.45,
+     45.8284,
+     0.9912,
+     0.0,
+     0.0,
+     "2018-01-09",
+     13398
+    ],
     "src": "bsexbrl:533137_812018165239_SHP.xml",
-    "why": "SW-2 other-institutions sweep re-read 2026-09-24 (\u00a7156): the filing's Any-Other institutions row holds holders LABELLED foreign (FOREIGN CORPORATE BODIES 28.91) \u2014 moved dii -> fii (28.9127 pp, share counts on the filer's base; unlabelled holders in the same row left in dii). Audit verdict was name-unknown."
+    "why": "\u00a7157 (2026-09-24): \u00a7156 move REVERTED \u2014 the institutional Any-Other row of this filing holds company/individual-type labels (Foreign/Overseas Corporate Bodies, Foreign Companies, Foreign Nationals) or curated funds nested under such a label; the 2022 form places those under Non-Institutions (UTIAMC: T. Rowe Price = Foreign Companies 22.97 in Sep-2022) or, filer by filer, under FDI (IDFCFIRSTB). Returned to the pre-heal reading (block in dii) for the row-level 2022-placement pass to settle per holder. Superseded: SW-2 other-institutions sweep re-read 2026-09-24 (\u00a7156): the filing's Any-Other institutions row holds holders LABELLED foreign (FOREIGN COR"
    }
   },
   "DHANI": {
@@ -57262,15 +57263,6 @@
    "2017-03-31": {
     "cell": [
      73.25,
-     10.9605,
-     5.7715,
-     2.5161,
-     2.6306,
-     "2017-04-17",
-     241154
-    ],
-    "was": [
-     73.25,
      10.1931,
      6.5389,
      2.5161,
@@ -57278,20 +57270,20 @@
      "2017-04-17",
      241154
     ],
+    "was": [
+     73.25,
+     10.9605,
+     5.7715,
+     2.5161,
+     2.6306,
+     "2017-04-17",
+     241154
+    ],
     "src": "bsexbrl:507685_134201716354_SHP.xml",
-    "why": "SW-2 other-institutions sweep re-read 2026-09-24 (\u00a7156): the filing's Any-Other institutions row holds holders LABELLED foreign (Overseas Corporate Bodies; Foreign Nationals 0.77) \u2014 moved dii -> fii (0.7674 pp, share counts on the filer's base; unlabelled holders in the same row left in dii). Audit verdict was name-unknown."
+    "why": "\u00a7157 (2026-09-24): \u00a7156 move REVERTED \u2014 the institutional Any-Other row of this filing holds company/individual-type labels (Foreign/Overseas Corporate Bodies, Foreign Companies, Foreign Nationals) or curated funds nested under such a label; the 2022 form places those under Non-Institutions (UTIAMC: T. Rowe Price = Foreign Companies 22.97 in Sep-2022) or, filer by filer, under FDI (IDFCFIRSTB). Returned to the pre-heal reading (block in dii) for the row-level 2022-placement pass to settle per holder. Superseded: SW-2 other-institutions sweep re-read 2026-09-24 (\u00a7156): the filing's Any-Other institutions row holds holders LABELLED foreign (Overseas Co"
    },
    "2017-06-30": {
     "cell": [
-     73.18,
-     10.9631,
-     5.8048,
-     2.128,
-     3.0727,
-     "2017-07-11",
-     256342
-    ],
-    "was": [
      73.18,
      10.1964,
      6.5715,
@@ -57300,20 +57292,20 @@
      "2017-07-11",
      256342
     ],
+    "was": [
+     73.18,
+     10.9631,
+     5.8048,
+     2.128,
+     3.0727,
+     "2017-07-11",
+     256342
+    ],
     "src": "bsexbrl:507685_1172017102640_SHP.xml",
-    "why": "SW-2 other-institutions sweep re-read 2026-09-24 (\u00a7156): the filing's Any-Other institutions row holds holders LABELLED foreign (Overseas Corporate Bodies; Foreign Nationals 0.77) \u2014 moved dii -> fii (0.7667 pp, share counts on the filer's base; unlabelled holders in the same row left in dii). Audit verdict was name-unknown."
+    "why": "\u00a7157 (2026-09-24): \u00a7156 move REVERTED \u2014 the institutional Any-Other row of this filing holds company/individual-type labels (Foreign/Overseas Corporate Bodies, Foreign Companies, Foreign Nationals) or curated funds nested under such a label; the 2022 form places those under Non-Institutions (UTIAMC: T. Rowe Price = Foreign Companies 22.97 in Sep-2022) or, filer by filer, under FDI (IDFCFIRSTB). Returned to the pre-heal reading (block in dii) for the row-level 2022-placement pass to settle per holder. Superseded: SW-2 other-institutions sweep re-read 2026-09-24 (\u00a7156): the filing's Any-Other institutions row holds holders LABELLED foreign (Overseas Co"
    },
    "2017-09-30": {
     "cell": [
-     73.18,
-     10.6161,
-     5.5722,
-     1.8026,
-     3.1902,
-     "2017-10-19",
-     350630
-    ],
-    "was": [
      73.18,
      9.8495,
      6.3388,
@@ -57322,20 +57314,20 @@
      "2017-10-19",
      350630
     ],
+    "was": [
+     73.18,
+     10.6161,
+     5.5722,
+     1.8026,
+     3.1902,
+     "2017-10-19",
+     350630
+    ],
     "src": "bsexbrl:507685_18102017184714_SHP.xml",
-    "why": "SW-2 other-institutions sweep re-read 2026-09-24 (\u00a7156): the filing's Any-Other institutions row holds holders LABELLED foreign (Overseas Corporate Bodies; Foreign National 0.77) \u2014 moved dii -> fii (0.7666 pp, share counts on the filer's base; unlabelled holders in the same row left in dii). Audit verdict was name-unknown."
+    "why": "\u00a7157 (2026-09-24): \u00a7156 move REVERTED \u2014 the institutional Any-Other row of this filing holds company/individual-type labels (Foreign/Overseas Corporate Bodies, Foreign Companies, Foreign Nationals) or curated funds nested under such a label; the 2022 form places those under Non-Institutions (UTIAMC: T. Rowe Price = Foreign Companies 22.97 in Sep-2022) or, filer by filer, under FDI (IDFCFIRSTB). Returned to the pre-heal reading (block in dii) for the row-level 2022-placement pass to settle per holder. Superseded: SW-2 other-institutions sweep re-read 2026-09-24 (\u00a7156): the filing's Any-Other institutions row holds holders LABELLED foreign (Overseas Co"
    },
    "2017-12-31": {
     "cell": [
-     74.33,
-     10.6094,
-     5.3751,
-     1.6063,
-     3.2143,
-     "2018-01-16",
-     281244
-    ],
-    "was": [
      74.33,
      9.7846,
      6.1999,
@@ -57344,20 +57336,20 @@
      "2018-01-16",
      281244
     ],
+    "was": [
+     74.33,
+     10.6094,
+     5.3751,
+     1.6063,
+     3.2143,
+     "2018-01-16",
+     281244
+    ],
     "src": "bsexbrl:507685_151201820043_SHP.xml",
-    "why": "SW-2 other-institutions sweep re-read 2026-09-24 (\u00a7156): the filing's Any-Other institutions row holds holders LABELLED foreign (OVERSEAS CORPORATE BODIES; FOREIGN NATIONALS 0.82) \u2014 moved dii -> fii (0.8248 pp, share counts on the filer's base; unlabelled holders in the same row left in dii). Audit verdict was name-unknown."
+    "why": "\u00a7157 (2026-09-24): \u00a7156 move REVERTED \u2014 the institutional Any-Other row of this filing holds company/individual-type labels (Foreign/Overseas Corporate Bodies, Foreign Companies, Foreign Nationals) or curated funds nested under such a label; the 2022 form places those under Non-Institutions (UTIAMC: T. Rowe Price = Foreign Companies 22.97 in Sep-2022) or, filer by filer, under FDI (IDFCFIRSTB). Returned to the pre-heal reading (block in dii) for the row-level 2022-placement pass to settle per holder. Superseded: SW-2 other-institutions sweep re-read 2026-09-24 (\u00a7156): the filing's Any-Other institutions row holds holders LABELLED foreign (OVERSEAS CO"
    },
    "2018-03-31": {
     "cell": [
-     74.32,
-     10.0902,
-     5.7782,
-     2.2384,
-     3.1514,
-     "2018-04-23",
-     269694
-    ],
-    "was": [
      74.32,
      9.2657,
      6.6027,
@@ -57366,8 +57358,17 @@
      "2018-04-23",
      269694
     ],
+    "was": [
+     74.32,
+     10.0902,
+     5.7782,
+     2.2384,
+     3.1514,
+     "2018-04-23",
+     269694
+    ],
     "src": "bsexbrl:507685_204201819057_SHP.xml",
-    "why": "SW-2 other-institutions sweep re-read 2026-09-24 (\u00a7156): the filing's Any-Other institutions row holds holders LABELLED foreign (OVERSEAS CORPORATE BODIES; FOREIGN NATIONALS 0.82) \u2014 moved dii -> fii (0.8245 pp, share counts on the filer's base; unlabelled holders in the same row left in dii). Audit verdict was name-unknown."
+    "why": "\u00a7157 (2026-09-24): \u00a7156 move REVERTED \u2014 the institutional Any-Other row of this filing holds company/individual-type labels (Foreign/Overseas Corporate Bodies, Foreign Companies, Foreign Nationals) or curated funds nested under such a label; the 2022 form places those under Non-Institutions (UTIAMC: T. Rowe Price = Foreign Companies 22.97 in Sep-2022) or, filer by filer, under FDI (IDFCFIRSTB). Returned to the pre-heal reading (block in dii) for the row-level 2022-placement pass to settle per holder. Superseded: SW-2 other-institutions sweep re-read 2026-09-24 (\u00a7156): the filing's Any-Other institutions row holds holders LABELLED foreign (OVERSEAS CO"
    },
    "2018-06-30": {
     "cell": [
@@ -57394,15 +57395,6 @@
    "2018-12-31": {
     "cell": [
      74.3,
-     9.2705,
-     6.7769,
-     1.9798,
-     4.3494,
-     "2019-01-17",
-     268298
-    ],
-    "was": [
-     74.3,
      8.4465,
      7.6009,
      1.9798,
@@ -57410,8 +57402,17 @@
      "2019-01-17",
      268298
     ],
+    "was": [
+     74.3,
+     9.2705,
+     6.7769,
+     1.9798,
+     4.3494,
+     "2019-01-17",
+     268298
+    ],
     "src": "bsexbrl:507685_1612019175041_SHP.xml",
-    "why": "SW-2 other-institutions sweep re-read 2026-09-24 (\u00a7156): the filing's Any-Other institutions row holds holders LABELLED foreign (FOREIGN NATIONALS 0.82) \u2014 moved dii -> fii (0.8240 pp, share counts on the filer's base; unlabelled holders in the same row left in dii). Audit verdict was name-unknown."
+    "why": "\u00a7157 (2026-09-24): \u00a7156 move REVERTED \u2014 the institutional Any-Other row of this filing holds company/individual-type labels (Foreign/Overseas Corporate Bodies, Foreign Companies, Foreign Nationals) or curated funds nested under such a label; the 2022 form places those under Non-Institutions (UTIAMC: T. Rowe Price = Foreign Companies 22.97 in Sep-2022) or, filer by filer, under FDI (IDFCFIRSTB). Returned to the pre-heal reading (block in dii) for the row-level 2022-placement pass to settle per holder. Superseded: SW-2 other-institutions sweep re-read 2026-09-24 (\u00a7156): the filing's Any-Other institutions row holds holders LABELLED foreign (FOREIGN NAT"
    }
   },
   "PAISALO": {
@@ -60018,15 +60019,6 @@
    "2016-12-31": {
     "cell": [
      25.25,
-     48.8879,
-     12.6632,
-     12.647,
-     0.0,
-     "2017-01-05",
-     31698
-    ],
-    "was": [
-     25.25,
      30.999,
      30.5521,
      12.647,
@@ -60034,8 +60026,17 @@
      "2017-01-05",
      31698
     ],
+    "was": [
+     25.25,
+     48.8879,
+     12.6632,
+     12.647,
+     0.0,
+     "2017-01-05",
+     31698
+    ],
     "src": "bsexbrl:532689_412017164217_SHP.xml",
-    "why": "SW-2 other-institutions sweep re-read 2026-09-24 (\u00a7156): the filing's Any-Other institutions row holds holders LABELLED foreign (FOREIGN CORPORATE BODIES 17.89) \u2014 moved dii -> fii (17.8889 pp, share counts on the filer's base; unlabelled holders in the same row left in dii). Audit verdict was name-unknown."
+    "why": "\u00a7157 (2026-09-24): \u00a7156 move REVERTED \u2014 the institutional Any-Other row of this filing holds company/individual-type labels (Foreign/Overseas Corporate Bodies, Foreign Companies, Foreign Nationals) or curated funds nested under such a label; the 2022 form places those under Non-Institutions (UTIAMC: T. Rowe Price = Foreign Companies 22.97 in Sep-2022) or, filer by filer, under FDI (IDFCFIRSTB). Returned to the pre-heal reading (block in dii) for the row-level 2022-placement pass to settle per holder. Superseded: SW-2 other-institutions sweep re-read 2026-09-24 (\u00a7156): the filing's Any-Other institutions row holds holders LABELLED foreign (FOREIGN COR"
    }
   },
   "CENTRALBK": {
@@ -61490,15 +61491,6 @@
    "2016-12-31": {
     "cell": [
      28.76,
-     27.9843,
-     22.3125,
-     21.4365,
-     0.8249,
-     "2017-01-19",
-     52626
-    ],
-    "was": [
-     28.76,
      26.106,
      24.1908,
      21.4365,
@@ -61506,20 +61498,20 @@
      "2017-01-19",
      52626
     ],
+    "was": [
+     28.76,
+     27.9843,
+     22.3125,
+     21.4365,
+     0.8249,
+     "2017-01-19",
+     52626
+    ],
     "src": "bsexbrl:533269_1812017181848_SHP.xml",
-    "why": "SW-2 other-institutions sweep re-read 2026-09-24 (\u00a7156): the filing's Any-Other institutions row holds holders LABELLED foreign (FOREIGN BODIES CORPORATE 1.88) \u2014 moved dii -> fii (1.8783 pp, share counts on the filer's base; unlabelled holders in the same row left in dii). Audit verdict was name-unknown."
+    "why": "\u00a7157 (2026-09-24): \u00a7156 move REVERTED \u2014 the institutional Any-Other row of this filing holds company/individual-type labels (Foreign/Overseas Corporate Bodies, Foreign Companies, Foreign Nationals) or curated funds nested under such a label; the 2022 form places those under Non-Institutions (UTIAMC: T. Rowe Price = Foreign Companies 22.97 in Sep-2022) or, filer by filer, under FDI (IDFCFIRSTB). Returned to the pre-heal reading (block in dii) for the row-level 2022-placement pass to settle per holder. Superseded: SW-2 other-institutions sweep re-read 2026-09-24 (\u00a7156): the filing's Any-Other institutions row holds holders LABELLED foreign (FOREIGN BOD"
    },
    "2017-03-31": {
     "cell": [
-     24.73,
-     27.7361,
-     22.1586,
-     21.258,
-     0.8136,
-     "2017-04-17",
-     50887
-    ],
-    "was": [
      24.73,
      25.8976,
      23.9971,
@@ -61528,20 +61520,20 @@
      "2017-04-17",
      50887
     ],
+    "was": [
+     24.73,
+     27.7361,
+     22.1586,
+     21.258,
+     0.8136,
+     "2017-04-17",
+     50887
+    ],
     "src": "bsexbrl:533269_1342017182240_SHP.xml",
-    "why": "SW-2 other-institutions sweep re-read 2026-09-24 (\u00a7156): the filing's Any-Other institutions row holds holders LABELLED foreign (foreign corporate bodies 1.84) \u2014 moved dii -> fii (1.8385 pp, share counts on the filer's base; unlabelled holders in the same row left in dii). Audit verdict was name-unknown."
+    "why": "\u00a7157 (2026-09-24): \u00a7156 move REVERTED \u2014 the institutional Any-Other row of this filing holds company/individual-type labels (Foreign/Overseas Corporate Bodies, Foreign Companies, Foreign Nationals) or curated funds nested under such a label; the 2022 form places those under Non-Institutions (UTIAMC: T. Rowe Price = Foreign Companies 22.97 in Sep-2022) or, filer by filer, under FDI (IDFCFIRSTB). Returned to the pre-heal reading (block in dii) for the row-level 2022-placement pass to settle per holder. Superseded: SW-2 other-institutions sweep re-read 2026-09-24 (\u00a7156): the filing's Any-Other institutions row holds holders LABELLED foreign (foreign cor"
    },
    "2017-06-30": {
     "cell": [
-     24.73,
-     28.5177,
-     22.7479,
-     21.8524,
-     0.8135,
-     "2017-07-21",
-     49081
-    ],
-    "was": [
      24.73,
      26.6883,
      24.5773,
@@ -61550,20 +61542,20 @@
      "2017-07-21",
      49081
     ],
+    "was": [
+     24.73,
+     28.5177,
+     22.7479,
+     21.8524,
+     0.8135,
+     "2017-07-21",
+     49081
+    ],
     "src": "bsexbrl:533269_2172017123525_SHP.xml",
-    "why": "SW-2 other-institutions sweep re-read 2026-09-24 (\u00a7156): the filing's Any-Other institutions row holds holders LABELLED foreign (FOREIGN CORPORATE BODIES 1.83) \u2014 moved dii -> fii (1.8294 pp, share counts on the filer's base; unlabelled holders in the same row left in dii). Audit verdict was name-unknown."
+    "why": "\u00a7157 (2026-09-24): \u00a7156 move REVERTED \u2014 the institutional Any-Other row of this filing holds company/individual-type labels (Foreign/Overseas Corporate Bodies, Foreign Companies, Foreign Nationals) or curated funds nested under such a label; the 2022 form places those under Non-Institutions (UTIAMC: T. Rowe Price = Foreign Companies 22.97 in Sep-2022) or, filer by filer, under FDI (IDFCFIRSTB). Returned to the pre-heal reading (block in dii) for the row-level 2022-placement pass to settle per holder. Superseded: SW-2 other-institutions sweep re-read 2026-09-24 (\u00a7156): the filing's Any-Other institutions row holds holders LABELLED foreign (FOREIGN COR"
    },
    "2017-09-30": {
     "cell": [
-     24.72,
-     28.5267,
-     23.1886,
-     22.3352,
-     0.8133,
-     "2017-10-13",
-     55501
-    ],
-    "was": [
      24.72,
      26.7089,
      25.0064,
@@ -61572,20 +61564,20 @@
      "2017-10-13",
      55501
     ],
+    "was": [
+     24.72,
+     28.5267,
+     23.1886,
+     22.3352,
+     0.8133,
+     "2017-10-13",
+     55501
+    ],
     "src": "bsexbrl:533269_13102017111823_SHP.xml",
-    "why": "SW-2 other-institutions sweep re-read 2026-09-24 (\u00a7156): the filing's Any-Other institutions row holds holders LABELLED foreign (FOREIGN CORPORATE BODIES 1.82) \u2014 moved dii -> fii (1.8178 pp, share counts on the filer's base; unlabelled holders in the same row left in dii). Audit verdict was name-unknown."
+    "why": "\u00a7157 (2026-09-24): \u00a7156 move REVERTED \u2014 the institutional Any-Other row of this filing holds company/individual-type labels (Foreign/Overseas Corporate Bodies, Foreign Companies, Foreign Nationals) or curated funds nested under such a label; the 2022 form places those under Non-Institutions (UTIAMC: T. Rowe Price = Foreign Companies 22.97 in Sep-2022) or, filer by filer, under FDI (IDFCFIRSTB). Returned to the pre-heal reading (block in dii) for the row-level 2022-placement pass to settle per holder. Superseded: SW-2 other-institutions sweep re-read 2026-09-24 (\u00a7156): the filing's Any-Other institutions row holds holders LABELLED foreign (FOREIGN COR"
    },
    "2017-12-31": {
     "cell": [
-     24.69,
-     27.6375,
-     20.6899,
-     19.8298,
-     0.8124,
-     "2018-01-22",
-     57746
-    ],
-    "was": [
      24.69,
      25.8216,
      22.5058,
@@ -61594,8 +61586,17 @@
      "2018-01-22",
      57746
     ],
+    "was": [
+     24.69,
+     27.6375,
+     20.6899,
+     19.8298,
+     0.8124,
+     "2018-01-22",
+     57746
+    ],
     "src": "bsexbrl:533269_191201817344_SHP.xml",
-    "why": "SW-2 other-institutions sweep re-read 2026-09-24 (\u00a7156): the filing's Any-Other institutions row holds holders LABELLED foreign (FOREIGN CORPORATE BODIES 1.82) \u2014 moved dii -> fii (1.8159 pp, share counts on the filer's base; unlabelled holders in the same row left in dii). Audit verdict was name-unknown."
+    "why": "\u00a7157 (2026-09-24): \u00a7156 move REVERTED \u2014 the institutional Any-Other row of this filing holds company/individual-type labels (Foreign/Overseas Corporate Bodies, Foreign Companies, Foreign Nationals) or curated funds nested under such a label; the 2022 form places those under Non-Institutions (UTIAMC: T. Rowe Price = Foreign Companies 22.97 in Sep-2022) or, filer by filer, under FDI (IDFCFIRSTB). Returned to the pre-heal reading (block in dii) for the row-level 2022-placement pass to settle per holder. Superseded: SW-2 other-institutions sweep re-read 2026-09-24 (\u00a7156): the filing's Any-Other institutions row holds holders LABELLED foreign (FOREIGN COR"
    }
   },
   "WELSPUNLIV": {
@@ -65070,15 +65071,6 @@
    "2016-06-30": {
     "cell": [
      56.89,
-     21.5219,
-     5.8009,
-     0.0952,
-     0.0,
-     "2016-07-16",
-     12920
-    ],
-    "was": [
-     56.89,
      13.74,
      13.5828,
      0.0952,
@@ -65086,20 +65078,20 @@
      "2016-07-16",
      12920
     ],
+    "was": [
+     56.89,
+     21.5219,
+     5.8009,
+     0.0952,
+     0.0,
+     "2016-07-16",
+     12920
+    ],
     "src": "bsexbrl:530549_1672016115523_SHP.xml",
-    "why": "SW-2 other-institutions sweep re-read 2026-09-24 (\u00a7156): the filing's Any-Other institutions row holds holders LABELLED foreign (Foreign Corporate Bodies 7.78) \u2014 moved dii -> fii (7.7819 pp, share counts on the filer's base; unlabelled holders in the same row left in dii). Audit verdict was name-unknown."
+    "why": "\u00a7157 (2026-09-24): \u00a7156 move REVERTED \u2014 the institutional Any-Other row of this filing holds company/individual-type labels (Foreign/Overseas Corporate Bodies, Foreign Companies, Foreign Nationals) or curated funds nested under such a label; the 2022 form places those under Non-Institutions (UTIAMC: T. Rowe Price = Foreign Companies 22.97 in Sep-2022) or, filer by filer, under FDI (IDFCFIRSTB). Returned to the pre-heal reading (block in dii) for the row-level 2022-placement pass to settle per holder. Superseded: SW-2 other-institutions sweep re-read 2026-09-24 (\u00a7156): the filing's Any-Other institutions row holds holders LABELLED foreign (Foreign Cor"
    },
    "2016-12-31": {
     "cell": [
-     54.74,
-     26.0037,
-     0.0934,
-     0.0591,
-     0.0,
-     "2017-01-20",
-     13682
-    ],
-    "was": [
      54.74,
      18.5156,
      7.5815,
@@ -65108,8 +65100,17 @@
      "2017-01-20",
      13682
     ],
+    "was": [
+     54.74,
+     26.0037,
+     0.0934,
+     0.0591,
+     0.0,
+     "2017-01-20",
+     13682
+    ],
     "src": "bsexbrl:530549_1912017191114_SHP.xml",
-    "why": "SW-2 other-institutions sweep re-read 2026-09-24 (\u00a7156): the filing's Any-Other institutions row holds holders LABELLED foreign (FOREIGN CORPORATE BODIES 7.49) \u2014 moved dii -> fii (7.4881 pp, share counts on the filer's base; unlabelled holders in the same row left in dii). Audit verdict was name-unknown."
+    "why": "\u00a7157 (2026-09-24): \u00a7156 move REVERTED \u2014 the institutional Any-Other row of this filing holds company/individual-type labels (Foreign/Overseas Corporate Bodies, Foreign Companies, Foreign Nationals) or curated funds nested under such a label; the 2022 form places those under Non-Institutions (UTIAMC: T. Rowe Price = Foreign Companies 22.97 in Sep-2022) or, filer by filer, under FDI (IDFCFIRSTB). Returned to the pre-heal reading (block in dii) for the row-level 2022-placement pass to settle per holder. Superseded: SW-2 other-institutions sweep re-read 2026-09-24 (\u00a7156): the filing's Any-Other institutions row holds holders LABELLED foreign (FOREIGN COR"
    },
    "2017-03-31": {
     "cell": [
@@ -65136,15 +65137,6 @@
    "2017-06-30": {
     "cell": [
      54.74,
-     26.1956,
-     5.6894,
-     0.0798,
-     0.0,
-     "2017-07-21",
-     14593
-    ],
-    "was": [
-     54.74,
      18.7075,
      13.1775,
      0.0798,
@@ -65152,20 +65144,20 @@
      "2017-07-21",
      14593
     ],
+    "was": [
+     54.74,
+     26.1956,
+     5.6894,
+     0.0798,
+     0.0,
+     "2017-07-21",
+     14593
+    ],
     "src": "bsexbrl:530549_207201717572_SHP.xml",
-    "why": "SW-2 other-institutions sweep re-read 2026-09-24 (\u00a7156): the filing's Any-Other institutions row holds holders LABELLED foreign (FOREIGN CORPORATE BODIES 7.49) \u2014 moved dii -> fii (7.4881 pp, share counts on the filer's base; unlabelled holders in the same row left in dii). Audit verdict was name-unknown."
+    "why": "\u00a7157 (2026-09-24): \u00a7156 move REVERTED \u2014 the institutional Any-Other row of this filing holds company/individual-type labels (Foreign/Overseas Corporate Bodies, Foreign Companies, Foreign Nationals) or curated funds nested under such a label; the 2022 form places those under Non-Institutions (UTIAMC: T. Rowe Price = Foreign Companies 22.97 in Sep-2022) or, filer by filer, under FDI (IDFCFIRSTB). Returned to the pre-heal reading (block in dii) for the row-level 2022-placement pass to settle per holder. Superseded: SW-2 other-institutions sweep re-read 2026-09-24 (\u00a7156): the filing's Any-Other institutions row holds holders LABELLED foreign (FOREIGN COR"
    },
    "2017-09-30": {
     "cell": [
-     54.74,
-     26.4011,
-     5.6976,
-     0.1173,
-     0.0,
-     "2017-10-23",
-     15081
-    ],
-    "was": [
      54.74,
      18.913,
      13.1857,
@@ -65174,20 +65166,20 @@
      "2017-10-23",
      15081
     ],
+    "was": [
+     54.74,
+     26.4011,
+     5.6976,
+     0.1173,
+     0.0,
+     "2017-10-23",
+     15081
+    ],
     "src": "bsexbrl:530549_20102017101823_SHP.xml",
-    "why": "SW-2 other-institutions sweep re-read 2026-09-24 (\u00a7156): the filing's Any-Other institutions row holds holders LABELLED foreign (FOREIGN CORPORATE BODIES 7.49) \u2014 moved dii -> fii (7.4881 pp, share counts on the filer's base; unlabelled holders in the same row left in dii). Audit verdict was name-unknown."
+    "why": "\u00a7157 (2026-09-24): \u00a7156 move REVERTED \u2014 the institutional Any-Other row of this filing holds company/individual-type labels (Foreign/Overseas Corporate Bodies, Foreign Companies, Foreign Nationals) or curated funds nested under such a label; the 2022 form places those under Non-Institutions (UTIAMC: T. Rowe Price = Foreign Companies 22.97 in Sep-2022) or, filer by filer, under FDI (IDFCFIRSTB). Returned to the pre-heal reading (block in dii) for the row-level 2022-placement pass to settle per holder. Superseded: SW-2 other-institutions sweep re-read 2026-09-24 (\u00a7156): the filing's Any-Other institutions row holds holders LABELLED foreign (FOREIGN COR"
    },
    "2017-12-31": {
     "cell": [
-     53.8,
-     26.0158,
-     5.7751,
-     0.0975,
-     0.0,
-     "2018-01-20",
-     14719
-    ],
-    "was": [
      53.8,
      18.6563,
      13.1346,
@@ -65196,8 +65188,17 @@
      "2018-01-20",
      14719
     ],
+    "was": [
+     53.8,
+     26.0158,
+     5.7751,
+     0.0975,
+     0.0,
+     "2018-01-20",
+     14719
+    ],
     "src": "bsexbrl:530549_2012018132555_SHP.xml",
-    "why": "SW-2 other-institutions sweep re-read 2026-09-24 (\u00a7156): the filing's Any-Other institutions row holds holders LABELLED foreign (FOREIGN CORPORATE BODIES 7.36) \u2014 moved dii -> fii (7.3595 pp, share counts on the filer's base; unlabelled holders in the same row left in dii). Audit verdict was name-unknown."
+    "why": "\u00a7157 (2026-09-24): \u00a7156 move REVERTED \u2014 the institutional Any-Other row of this filing holds company/individual-type labels (Foreign/Overseas Corporate Bodies, Foreign Companies, Foreign Nationals) or curated funds nested under such a label; the 2022 form places those under Non-Institutions (UTIAMC: T. Rowe Price = Foreign Companies 22.97 in Sep-2022) or, filer by filer, under FDI (IDFCFIRSTB). Returned to the pre-heal reading (block in dii) for the row-level 2022-placement pass to settle per holder. Superseded: SW-2 other-institutions sweep re-read 2026-09-24 (\u00a7156): the filing's Any-Other institutions row holds holders LABELLED foreign (FOREIGN COR"
    }
   },
   "ROLEXRINGS": {
@@ -85432,15 +85433,6 @@
    "2016-06-30": {
     "cell": [
      62.93,
-     11.7285,
-     3.2103,
-     1.3279,
-     0.0009,
-     "2016-07-21",
-     28095
-    ],
-    "was": [
-     62.93,
      5.3806,
      9.5582,
      1.3279,
@@ -85448,20 +85440,20 @@
      "2016-07-21",
      28095
     ],
+    "was": [
+     62.93,
+     11.7285,
+     3.2103,
+     1.3279,
+     0.0009,
+     "2016-07-21",
+     28095
+    ],
     "src": "bsexbrl:500003_2172016115553_SHP.xml",
-    "why": "SW-2 other-institutions sweep re-read 2026-09-24 (\u00a7156): the filing's Any-Other institutions row holds holders LABELLED foreign (Foreign Companies 6.35) \u2014 moved dii -> fii (6.3479 pp, share counts on the filer's base; unlabelled holders in the same row left in dii). Audit verdict was name-unknown."
+    "why": "\u00a7157 (2026-09-24): \u00a7156 move REVERTED \u2014 the institutional Any-Other row of this filing holds company/individual-type labels (Foreign/Overseas Corporate Bodies, Foreign Companies, Foreign Nationals) or curated funds nested under such a label; the 2022 form places those under Non-Institutions (UTIAMC: T. Rowe Price = Foreign Companies 22.97 in Sep-2022) or, filer by filer, under FDI (IDFCFIRSTB). Returned to the pre-heal reading (block in dii) for the row-level 2022-placement pass to settle per holder. Superseded: SW-2 other-institutions sweep re-read 2026-09-24 (\u00a7156): the filing's Any-Other institutions row holds holders LABELLED foreign (Foreign Com"
    },
    "2016-09-30": {
     "cell": [
-     61.5,
-     11.3909,
-     3.6603,
-     2.8496,
-     0.0009,
-     "2016-10-17",
-     37284
-    ],
-    "was": [
      61.5,
      10.6326,
      4.4186,
@@ -85470,20 +85462,20 @@
      "2016-10-17",
      37284
     ],
+    "was": [
+     61.5,
+     11.3909,
+     3.6603,
+     2.8496,
+     0.0009,
+     "2016-10-17",
+     37284
+    ],
     "src": "bsexbrl:500003_14102016164033_SHP.xml",
-    "why": "SW-2 other-institutions sweep re-read 2026-09-24 (\u00a7156): the filing's Any-Other institutions row holds holders LABELLED foreign (Foreign Companies 0.76) \u2014 moved dii -> fii (0.7583 pp, share counts on the filer's base; unlabelled holders in the same row left in dii). Audit verdict was name-unknown."
+    "why": "\u00a7157 (2026-09-24): \u00a7156 move REVERTED \u2014 the institutional Any-Other row of this filing holds company/individual-type labels (Foreign/Overseas Corporate Bodies, Foreign Companies, Foreign Nationals) or curated funds nested under such a label; the 2022 form places those under Non-Institutions (UTIAMC: T. Rowe Price = Foreign Companies 22.97 in Sep-2022) or, filer by filer, under FDI (IDFCFIRSTB). Returned to the pre-heal reading (block in dii) for the row-level 2022-placement pass to settle per holder. Superseded: SW-2 other-institutions sweep re-read 2026-09-24 (\u00a7156): the filing's Any-Other institutions row holds holders LABELLED foreign (Foreign Com"
    },
    "2016-12-31": {
     "cell": [
-     61.5,
-     12.1527,
-     3.9712,
-     2.7685,
-     0.0009,
-     "2017-01-16",
-     40380
-    ],
-    "was": [
      61.5,
      11.3944,
      4.7295,
@@ -85492,20 +85484,20 @@
      "2017-01-16",
      40380
     ],
+    "was": [
+     61.5,
+     12.1527,
+     3.9712,
+     2.7685,
+     0.0009,
+     "2017-01-16",
+     40380
+    ],
     "src": "bsexbrl:500003_161201715054_SHP.xml",
-    "why": "SW-2 other-institutions sweep re-read 2026-09-24 (\u00a7156): the filing's Any-Other institutions row holds holders LABELLED foreign (Foreign Companies 0.76) \u2014 moved dii -> fii (0.7583 pp, share counts on the filer's base; unlabelled holders in the same row left in dii). Audit verdict was name-unknown."
+    "why": "\u00a7157 (2026-09-24): \u00a7156 move REVERTED \u2014 the institutional Any-Other row of this filing holds company/individual-type labels (Foreign/Overseas Corporate Bodies, Foreign Companies, Foreign Nationals) or curated funds nested under such a label; the 2022 form places those under Non-Institutions (UTIAMC: T. Rowe Price = Foreign Companies 22.97 in Sep-2022) or, filer by filer, under FDI (IDFCFIRSTB). Returned to the pre-heal reading (block in dii) for the row-level 2022-placement pass to settle per holder. Superseded: SW-2 other-institutions sweep re-read 2026-09-24 (\u00a7156): the filing's Any-Other institutions row holds holders LABELLED foreign (Foreign Com"
    },
    "2017-03-31": {
     "cell": [
-     61.5,
-     12.8277,
-     2.0501,
-     1.801,
-     0.0009,
-     "2017-04-17",
-     42373
-    ],
-    "was": [
      61.5,
      12.2941,
      2.5837,
@@ -85514,8 +85506,17 @@
      "2017-04-17",
      42373
     ],
+    "was": [
+     61.5,
+     12.8277,
+     2.0501,
+     1.801,
+     0.0009,
+     "2017-04-17",
+     42373
+    ],
     "src": "bsexbrl:500003_1342017164356_SHP.xml",
-    "why": "SW-2 other-institutions sweep re-read 2026-09-24 (\u00a7156): the filing's Any-Other institutions row holds holders LABELLED foreign (Foreign Companies 0.53) \u2014 moved dii -> fii (0.5336 pp, share counts on the filer's base; unlabelled holders in the same row left in dii). Audit verdict was name-unknown."
+    "why": "\u00a7157 (2026-09-24): \u00a7156 move REVERTED \u2014 the institutional Any-Other row of this filing holds company/individual-type labels (Foreign/Overseas Corporate Bodies, Foreign Companies, Foreign Nationals) or curated funds nested under such a label; the 2022 form places those under Non-Institutions (UTIAMC: T. Rowe Price = Foreign Companies 22.97 in Sep-2022) or, filer by filer, under FDI (IDFCFIRSTB). Returned to the pre-heal reading (block in dii) for the row-level 2022-placement pass to settle per holder. Superseded: SW-2 other-institutions sweep re-read 2026-09-24 (\u00a7156): the filing's Any-Other institutions row holds holders LABELLED foreign (Foreign Com"
    }
   },
   "CUMMINSIND": {
@@ -85766,15 +85767,6 @@
    "2018-06-30": {
     "cell": [
      38.93,
-     13.0819,
-     19.9326,
-     16.4439,
-     0.0,
-     "2018-07-17",
-     34979
-    ],
-    "was": [
-     38.93,
      9.9004,
      23.1141,
      16.4439,
@@ -85782,20 +85774,20 @@
      "2018-07-17",
      34979
     ],
+    "was": [
+     38.93,
+     13.0819,
+     19.9326,
+     16.4439,
+     0.0,
+     "2018-07-17",
+     34979
+    ],
     "src": "bsexbrl:540699_1772018133541_SHP.xml",
-    "why": "SW-2 other-institutions sweep re-read 2026-09-24 (\u00a7156): the filing's Any-Other institutions row holds holders LABELLED foreign (GMO EMERGING DOMESTIC OPPORTUNITIES FUND, A SERIES 3.00; FOREIGN BODIES CORPORATES 3.18; STEADVIEW CAPITAL MAURITIUS LIMITED 1.70) \u2014 moved dii -> fii (3.1815 pp, share counts on the filer's base; unlabelled holders in the same row left in dii). Audit verdict was name-unknown."
+    "why": "\u00a7157 (2026-09-24): \u00a7156 move REVERTED \u2014 the institutional Any-Other row of this filing holds company/individual-type labels (Foreign/Overseas Corporate Bodies, Foreign Companies, Foreign Nationals) or curated funds nested under such a label; the 2022 form places those under Non-Institutions (UTIAMC: T. Rowe Price = Foreign Companies 22.97 in Sep-2022) or, filer by filer, under FDI (IDFCFIRSTB). Returned to the pre-heal reading (block in dii) for the row-level 2022-placement pass to settle per holder. Superseded: SW-2 other-institutions sweep re-read 2026-09-24 (\u00a7156): the filing's Any-Other institutions row holds holders LABELLED foreign (GMO EMERGIN"
    },
    "2018-09-30": {
     "cell": [
-     38.93,
-     11.726,
-     20.4646,
-     18.4905,
-     0.0,
-     "2018-10-09",
-     32394
-    ],
-    "was": [
      38.93,
      8.5445,
      23.6461,
@@ -85804,8 +85796,17 @@
      "2018-10-09",
      32394
     ],
+    "was": [
+     38.93,
+     11.726,
+     20.4646,
+     18.4905,
+     0.0,
+     "2018-10-09",
+     32394
+    ],
     "src": "bsexbrl:540699_81020181872_SHP.xml",
-    "why": "SW-2 other-institutions sweep re-read 2026-09-24 (\u00a7156): the filing's Any-Other institutions row holds holders LABELLED foreign (FOREIGN BODIES CORPORATES 3.18; STEADVIEW CAPITAL MAURITIUS LIMITED 1.70; GMO EMERGING DOMESTIC OPPORTUNITIES FUND, A SERIES 1.40) \u2014 moved dii -> fii (3.1815 pp, share counts on the filer's base; unlabelled holders in the same row left in dii). Audit verdict was name-unknown."
+    "why": "\u00a7157 (2026-09-24): \u00a7156 move REVERTED \u2014 the institutional Any-Other row of this filing holds company/individual-type labels (Foreign/Overseas Corporate Bodies, Foreign Companies, Foreign Nationals) or curated funds nested under such a label; the 2022 form places those under Non-Institutions (UTIAMC: T. Rowe Price = Foreign Companies 22.97 in Sep-2022) or, filer by filer, under FDI (IDFCFIRSTB). Returned to the pre-heal reading (block in dii) for the row-level 2022-placement pass to settle per holder. Superseded: SW-2 other-institutions sweep re-read 2026-09-24 (\u00a7156): the filing's Any-Other institutions row holds holders LABELLED foreign (FOREIGN BOD"
    }
   },
   "ELGIEQUIP": {
@@ -86070,15 +86071,6 @@
    "2022-06-30": {
     "cell": [
      49.83,
-     22.966,
-     9.4399,
-     6.5481,
-     0.0,
-     "2022-07-18",
-     166064
-    ],
-    "was": [
-     49.83,
      13.4756,
      18.9303,
      6.5481,
@@ -86086,8 +86078,17 @@
      "2022-07-18",
      166064
     ],
+    "was": [
+     49.83,
+     22.966,
+     9.4399,
+     6.5481,
+     0.0,
+     "2022-07-18",
+     166064
+    ],
     "src": "bsexbrl:543524_282022161033_SHP.xml",
-    "why": "SW-2 other-institutions sweep re-read 2026-09-24 (\u00a7156): the filing's Any-Other institutions row holds holders LABELLED foreign (FOREIGN BODIES CORPORATES 9.49; BRITISH INTERNATIONAL INVESTMENT PLC (Formerly Known as CDC Group PLC) 9.49) \u2014 moved dii -> fii (9.4904 pp, share counts on the filer's base; unlabelled holders in the same row left in dii). Audit verdict was name-unknown."
+    "why": "\u00a7157 (2026-09-24): \u00a7156 move REVERTED \u2014 the institutional Any-Other row of this filing holds company/individual-type labels (Foreign/Overseas Corporate Bodies, Foreign Companies, Foreign Nationals) or curated funds nested under such a label; the 2022 form places those under Non-Institutions (UTIAMC: T. Rowe Price = Foreign Companies 22.97 in Sep-2022) or, filer by filer, under FDI (IDFCFIRSTB). Returned to the pre-heal reading (block in dii) for the row-level 2022-placement pass to settle per holder. Superseded: SW-2 other-institutions sweep re-read 2026-09-24 (\u00a7156): the filing's Any-Other institutions row holds holders LABELLED foreign (FOREIGN BOD"
    }
   },
   "RAYMOND": {
@@ -86428,15 +86429,6 @@
    "2021-12-31": {
     "cell": [
      9.72,
-     29.0636,
-     14.2094,
-     4.2947,
-     0.0,
-     "2022-01-21",
-     470104
-    ],
-    "was": [
-     9.72,
      28.3969,
      14.8761,
      4.2947,
@@ -86444,20 +86436,20 @@
      "2022-01-21",
      470104
     ],
+    "was": [
+     9.72,
+     29.0636,
+     14.2094,
+     4.2947,
+     0.0,
+     "2022-01-21",
+     470104
+    ],
     "src": "bsexbrl:535789_2012022181949_SHP.xml",
-    "why": "SW-2 other-institutions sweep re-read 2026-09-24 (\u00a7156): the filing's Any-Other institutions row holds holders LABELLED foreign (FOREIGN CORPORATE BODIES 0.67) \u2014 moved dii -> fii (0.6667 pp, share counts on the filer's base; unlabelled holders in the same row left in dii). Audit verdict was name-unknown."
+    "why": "\u00a7157 (2026-09-24): \u00a7156 move REVERTED \u2014 the institutional Any-Other row of this filing holds company/individual-type labels (Foreign/Overseas Corporate Bodies, Foreign Companies, Foreign Nationals) or curated funds nested under such a label; the 2022 form places those under Non-Institutions (UTIAMC: T. Rowe Price = Foreign Companies 22.97 in Sep-2022) or, filer by filer, under FDI (IDFCFIRSTB). Returned to the pre-heal reading (block in dii) for the row-level 2022-placement pass to settle per holder. Superseded: SW-2 other-institutions sweep re-read 2026-09-24 (\u00a7156): the filing's Any-Other institutions row holds holders LABELLED foreign (FOREIGN COR"
    },
    "2022-03-31": {
     "cell": [
-     9.66,
-     26.8103,
-     13.1086,
-     4.2328,
-     0.0,
-     "2022-04-21",
-     545738
-    ],
-    "was": [
      9.66,
      26.3613,
      13.5576,
@@ -86466,8 +86458,17 @@
      "2022-04-21",
      545738
     ],
+    "was": [
+     9.66,
+     26.8103,
+     13.1086,
+     4.2328,
+     0.0,
+     "2022-04-21",
+     545738
+    ],
     "src": "bsexbrl:535789_2042022181244_SHP.xml",
-    "why": "SW-2 other-institutions sweep re-read 2026-09-24 (\u00a7156): the filing's Any-Other institutions row holds holders LABELLED foreign (FOREIGN CORPORATE BODIES 0.45) \u2014 moved dii -> fii (0.4490 pp, share counts on the filer's base; unlabelled holders in the same row left in dii). Audit verdict was name-unknown."
+    "why": "\u00a7157 (2026-09-24): \u00a7156 move REVERTED \u2014 the institutional Any-Other row of this filing holds company/individual-type labels (Foreign/Overseas Corporate Bodies, Foreign Companies, Foreign Nationals) or curated funds nested under such a label; the 2022 form places those under Non-Institutions (UTIAMC: T. Rowe Price = Foreign Companies 22.97 in Sep-2022) or, filer by filer, under FDI (IDFCFIRSTB). Returned to the pre-heal reading (block in dii) for the row-level 2022-placement pass to settle per holder. Superseded: SW-2 other-institutions sweep re-read 2026-09-24 (\u00a7156): the filing's Any-Other institutions row holds holders LABELLED foreign (FOREIGN COR"
    }
   },
   "SUZLON": {
@@ -86542,15 +86543,6 @@
    "2020-12-31": {
     "cell": [
      0.0,
-     28.2033,
-     60.9288,
-     13.6462,
-     9.9892,
-     "2021-01-13",
-     313721
-    ],
-    "was": [
-     0.0,
      5.2033,
      83.9288,
      13.6462,
@@ -86558,20 +86550,20 @@
      "2021-01-13",
      313721
     ],
+    "was": [
+     0.0,
+     28.2033,
+     60.9288,
+     13.6462,
+     9.9892,
+     "2021-01-13",
+     313721
+    ],
     "src": "bsexbrl:543238_12120211754_SHP.xml",
-    "why": "SW-2 other-institutions sweep re-read 2026-09-24 (\u00a7156): the filing's Any-Other institutions row holds holders LABELLED foreign (FOREIGN CORPORATE BODIES 23.00) \u2014 moved dii -> fii (23.0000 pp, share counts on the filer's base; unlabelled holders in the same row left in dii). Audit verdict was name-unknown."
+    "why": "\u00a7157 (2026-09-24): \u00a7156 move REVERTED \u2014 the institutional Any-Other row of this filing holds company/individual-type labels (Foreign/Overseas Corporate Bodies, Foreign Companies, Foreign Nationals) or curated funds nested under such a label; the 2022 form places those under Non-Institutions (UTIAMC: T. Rowe Price = Foreign Companies 22.97 in Sep-2022) or, filer by filer, under FDI (IDFCFIRSTB). Returned to the pre-heal reading (block in dii) for the row-level 2022-placement pass to settle per holder. Superseded: SW-2 other-institutions sweep re-read 2026-09-24 (\u00a7156): the filing's Any-Other institutions row holds holders LABELLED foreign (FOREIGN COR"
    },
    "2021-03-31": {
     "cell": [
-     0.0,
-     28.3606,
-     62.6943,
-     15.915,
-     9.9892,
-     "2021-04-13",
-     217467
-    ],
-    "was": [
      0.0,
      5.3606,
      85.6943,
@@ -86580,20 +86572,20 @@
      "2021-04-13",
      217467
     ],
+    "was": [
+     0.0,
+     28.3606,
+     62.6943,
+     15.915,
+     9.9892,
+     "2021-04-13",
+     217467
+    ],
     "src": "bsexbrl:543238_1342021122954_SHP.xml",
-    "why": "SW-2 other-institutions sweep re-read 2026-09-24 (\u00a7156): the filing's Any-Other institutions row holds holders LABELLED foreign (FOREIGN CORPORATE BODIES 23.00) \u2014 moved dii -> fii (23.0000 pp, share counts on the filer's base; unlabelled holders in the same row left in dii). Audit verdict was name-unknown."
+    "why": "\u00a7157 (2026-09-24): \u00a7156 move REVERTED \u2014 the institutional Any-Other row of this filing holds company/individual-type labels (Foreign/Overseas Corporate Bodies, Foreign Companies, Foreign Nationals) or curated funds nested under such a label; the 2022 form places those under Non-Institutions (UTIAMC: T. Rowe Price = Foreign Companies 22.97 in Sep-2022) or, filer by filer, under FDI (IDFCFIRSTB). Returned to the pre-heal reading (block in dii) for the row-level 2022-placement pass to settle per holder. Superseded: SW-2 other-institutions sweep re-read 2026-09-24 (\u00a7156): the filing's Any-Other institutions row holds holders LABELLED foreign (FOREIGN COR"
    },
    "2021-12-31": {
     "cell": [
-     0.0,
-     28.4324,
-     61.2901,
-     14.7504,
-     0.0,
-     "2022-01-12",
-     177729
-    ],
-    "was": [
      0.0,
      5.4508,
      84.2717,
@@ -86602,20 +86594,20 @@
      "2022-01-12",
      177729
     ],
+    "was": [
+     0.0,
+     28.4324,
+     61.2901,
+     14.7504,
+     0.0,
+     "2022-01-12",
+     177729
+    ],
     "src": "bsexbrl:543238_1112022202643_SHP.xml",
-    "why": "SW-2 other-institutions sweep re-read 2026-09-24 (\u00a7156): the filing's Any-Other institutions row holds holders LABELLED foreign (OVERSEAS CORPORATE BODIES 22.98) \u2014 moved dii -> fii (22.9816 pp, share counts on the filer's base; unlabelled holders in the same row left in dii). Audit verdict was name-unknown."
+    "why": "\u00a7157 (2026-09-24): \u00a7156 move REVERTED \u2014 the institutional Any-Other row of this filing holds company/individual-type labels (Foreign/Overseas Corporate Bodies, Foreign Companies, Foreign Nationals) or curated funds nested under such a label; the 2022 form places those under Non-Institutions (UTIAMC: T. Rowe Price = Foreign Companies 22.97 in Sep-2022) or, filer by filer, under FDI (IDFCFIRSTB). Returned to the pre-heal reading (block in dii) for the row-level 2022-placement pass to settle per holder. Superseded: SW-2 other-institutions sweep re-read 2026-09-24 (\u00a7156): the filing's Any-Other institutions row holds holders LABELLED foreign (OVERSEAS CO"
    },
    "2022-03-31": {
     "cell": [
-     0.0,
-     29.4646,
-     60.2897,
-     13.6969,
-     0.0,
-     "2022-04-13",
-     175820
-    ],
-    "was": [
      0.0,
      6.4939,
      83.2604,
@@ -86624,20 +86616,20 @@
      "2022-04-13",
      175820
     ],
+    "was": [
+     0.0,
+     29.4646,
+     60.2897,
+     13.6969,
+     0.0,
+     "2022-04-13",
+     175820
+    ],
     "src": "bsexbrl:543238_1242022155328_SHP.xml",
-    "why": "SW-2 other-institutions sweep re-read 2026-09-24 (\u00a7156): the filing's Any-Other institutions row holds holders LABELLED foreign (OVERSEAS CORPORATE BODIES 22.97) \u2014 moved dii -> fii (22.9707 pp, share counts on the filer's base; unlabelled holders in the same row left in dii). Audit verdict was name-unknown."
+    "why": "\u00a7157 (2026-09-24): \u00a7156 move REVERTED \u2014 the institutional Any-Other row of this filing holds company/individual-type labels (Foreign/Overseas Corporate Bodies, Foreign Companies, Foreign Nationals) or curated funds nested under such a label; the 2022 form places those under Non-Institutions (UTIAMC: T. Rowe Price = Foreign Companies 22.97 in Sep-2022) or, filer by filer, under FDI (IDFCFIRSTB). Returned to the pre-heal reading (block in dii) for the row-level 2022-placement pass to settle per holder. Superseded: SW-2 other-institutions sweep re-read 2026-09-24 (\u00a7156): the filing's Any-Other institutions row holds holders LABELLED foreign (OVERSEAS CO"
    },
    "2022-06-30": {
     "cell": [
-     0.0,
-     29.2799,
-     60.17,
-     13.672,
-     0.0,
-     "2022-07-21",
-     179824
-    ],
-    "was": [
      0.0,
      6.3113,
      83.1386,
@@ -86646,8 +86638,17 @@
      "2022-07-21",
      179824
     ],
+    "was": [
+     0.0,
+     29.2799,
+     60.17,
+     13.672,
+     0.0,
+     "2022-07-21",
+     179824
+    ],
     "src": "bsexbrl:543238_2072022201942_SHP.xml",
-    "why": "SW-2 other-institutions sweep re-read 2026-09-24 (\u00a7156): the filing's Any-Other institutions row holds holders LABELLED foreign (OVERSEAS CORPORATE BODIES 22.97) \u2014 moved dii -> fii (22.9686 pp, share counts on the filer's base; unlabelled holders in the same row left in dii). Audit verdict was name-unknown."
+    "why": "\u00a7157 (2026-09-24): \u00a7156 move REVERTED \u2014 the institutional Any-Other row of this filing holds company/individual-type labels (Foreign/Overseas Corporate Bodies, Foreign Companies, Foreign Nationals) or curated funds nested under such a label; the 2022 form places those under Non-Institutions (UTIAMC: T. Rowe Price = Foreign Companies 22.97 in Sep-2022) or, filer by filer, under FDI (IDFCFIRSTB). Returned to the pre-heal reading (block in dii) for the row-level 2022-placement pass to settle per holder. Superseded: SW-2 other-institutions sweep re-read 2026-09-24 (\u00a7156): the filing's Any-Other institutions row holds holders LABELLED foreign (OVERSEAS CO"
    }
   },
   "VAKRANGEE": {

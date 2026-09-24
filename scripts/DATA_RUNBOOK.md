@@ -18894,3 +18894,17 @@ NATCOPHARM, ARVIND Mar-2016) removed from `shp_fill_thirdparty.json.gz` — the 
 SINTEX Mar-2016 and ARVIND Dec-2015 kept (exact agreement with the independent reader).
 
 **Retraction route (added with §156):** `shp_cell_fix.json` gained a `drop` map — `apply_cell_fix` deletes a stored cell while it still equals the recorded `was` (the history writer is add/update-only, so a wrong fill could never leave the store before). First use: the 6 seam cells above.
+
+## §157 — FII TWIN OF THE 2022-FORM PLACEMENT ARTEFACT (2026-09-24)
+
+The DII review (separate session) showed the pre-Sep-2022 free-text "Any Other" boxes were used inconsistently (LIC/NPS under
+Non-Institutions by Infosys, Britannia, Dixon, L&T, Crisil, PFC, Wipro; foreign PE owners under the institutional box by Home
+First, Star Health, UTI AMC, Aptus, Jupiter Wagons), so DII jumped 5-35 pp for 42 of 421 N500 names at Sep-2022 with no trade.
+The same applies to FII in mirror: the 2022 form files a foreign strategic/PE owner under Non-Institutions → "Foreign Companies"
+(UTIAMC: T. Rowe Price 22.97 pp; HOMEFIRST: Orange Clove + Bessemer 36.48) or, filer by filer, under FDI inside Institutions
+(Foreign) (IDFCFIRSTB 7.58). §156's label class had counted "Foreign/Overseas Corporate Bodies", "Foreign Companies" and
+"Foreign Nationals" as FII, producing the mirror artefact (UTIAMC FII 29.3 Jun-2022 → 6.2 Sep-2022). Those 42 cells / 14 symbols
+are reverted to the pre-heal reading and handed to the row-level 2022-placement pass (one reader for both FII and DII; nested
+parent-label + child-entity rows must be counted once, and a curated FPI fund nested under a company label goes to FII while the
+company label itself does not). The 220 §156 moves that rest on institution-type labels (FII/FPI/foreign bank/foreign MF/FVCI/
+QFI, curated FPI funds) stand.
