@@ -567,6 +567,20 @@ def apply_cell_fix(h, led=None):
             h.setdefault(sym, {})[qe] = list(want)
             n += 1
     if n: print("shp_cell_fix applied: %d cells" % n)
+    # §156 (2026-09-24): a sanctioned RETRACTION. `drop.<SYM>.<QE>` = a cell the ledger asserts must be ABSENT — a
+    # fill written from a source read that was later shown wrong (the seam formula routed an unlabelled FII row to
+    # dii; the fill ledger no longer carries it). The history writer is add/update-only, so without this a wrong fill
+    # could never leave the store. Dropped only while the stored cell still equals the recorded value, so a genuine
+    # later filing for the same quarter is never removed. load_hist applies it, so the shrink guard's `before`
+    # already reflects the drop.
+    d = 0
+    for sym, qs in (led.get("drop") or {}).items():
+        for qe, ent in qs.items():
+            cur = (h.get(sym) or {}).get(qe)
+            if cur is None or ent.get("was") is None: continue
+            if _cell_eq(cur, ent["was"]):
+                del h[sym][qe]; d += 1
+    if d: print("shp_cell_fix dropped: %d cells (retractions)" % d)
     return n
 
 def nsh_gate(h, sym, qe, nsh, accept):

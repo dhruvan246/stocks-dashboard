@@ -18892,3 +18892,5 @@ VALUE_HEAL_MARK carries them onto re-filings).
 **Seam cells held:** the 6 §155 Trendlyne cells with an unlabelled Any-Other row (RELIANCE, BRITANNIA, EXIDEIND, VRLLOG,
 NATCOPHARM, ARVIND Mar-2016) removed from `shp_fill_thirdparty.json.gz` — the formula would have put the FII row in dii;
 SINTEX Mar-2016 and ARVIND Dec-2015 kept (exact agreement with the independent reader).
+
+**Retraction route (added with §156):** `shp_cell_fix.json` gained a `drop` map — `apply_cell_fix` deletes a stored cell while it still equals the recorded `was` (the history writer is add/update-only, so a wrong fill could never leave the store before). First use: the 6 seam cells above.

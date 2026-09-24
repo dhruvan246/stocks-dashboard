@@ -22,7 +22,8 @@
   "2026-09-24 (\u00a7151, USER RULE 'exclude DR shares like Screener'): 189 new-format rows / 19 symbols where the stored FII was the Institutions (Foreign) bucket TOTAL, i.e. included the 'Overseas Depositories (holding DRs)' custodian line. Each entry = the same row with fii minus that line, read from the same BSE XBRL by the patched parser (src names the file and both figures). The parser now excludes the line (MEMBERS 'od'); guard_shp_definition.py keeps it that way.",
   "2026-09-24 (\u00a7152): the SW-2 foreign-block heals re-asserted on 22 rows the store had lost \u2014 20 \u00a7142k/date entries updated in place (their `cell` had put the RAW original back over the healed reading) and 2 rows the SW-2 apply had skipped because an unrelated entry already existed. Re-filings now inherit these heals in the fetcher (heal_refiling) instead of undoing them in shp_revisions.json.",
   "2026-09-24 (\u00a7153): 13 rows whose stored date was a BSE re-filing date healed to the ORIGINAL filing (values + calendar day) read from BSE's original XBRL; the re-filing values moved to shp_revisions.json (0 rows).",
-  "2026-09-24 (\u00a7156): the SW-2 sweep's 1,543 unresolved Any-Other cells re-read from BSE's XBRL \u2014 262 cells / 83 symbols where the row holds holders LABELLED foreign (curated name_verdicts or the FII/FPI/Foreign-*/OCB label class) moved dii -> fii by the labelled portion (share counts on the filer's base); e.g. RELIANCE 2016-17 'Foreign Institutional Investors' 12.07/8.55/5.99/2.53 pp. 256 new entries, 6 existing date entries updated in place."
+  "2026-09-24 (\u00a7156): the SW-2 sweep's 1,543 unresolved Any-Other cells re-read from BSE's XBRL \u2014 262 cells / 83 symbols where the row holds holders LABELLED foreign (curated name_verdicts or the FII/FPI/Foreign-*/OCB label class) moved dii -> fii by the labelled portion (share counts on the filer's base); e.g. RELIANCE 2016-17 'Foreign Institutional Investors' 12.07/8.55/5.99/2.53 pp. 256 new entries, 6 existing date entries updated in place.",
+  "2026-09-24 (\u00a7156): new `drop` map = sanctioned retraction of a stored cell while it still equals `was` (apply_cell_fix); first use: the 6 Trendlyne seam cells whose unlabelled Any-Other row hid the legacy FII registrations."
  ],
  "_doc_bulk_stamp": "2026-08-13: 441 rows across 57 symbols carried ONE identical submission date across >=3 quarters \u2014 a scrape date, not a filing date. Separated from the 268 symbols whose late dates are DISTINCT per quarter (genuinely late filers: TALWALKARS, MANPASAND et al) \u2014 those are left alone, because for a distressed company a multi-year filing lag is real. The discriminator is the identical-date collapse, and the fii/dii values under it differ per quarter, which is what proves the data was read per-quarter and only the date was stamped.",
  "accept": {
@@ -87329,5 +87330,85 @@
    }
   },
   "UPL": {}
+ },
+ "drop": {
+  "RELIANCE": {
+   "2016-03-31": {
+    "was": [
+     46.53,
+     7.39,
+     25.85,
+     2.95,
+     10.06,
+     "2016-04-21"
+    ],
+    "why": "\u00a7156 2026-09-24: Trendlyne seam fill held \u2014 the page's unlabelled Any-Other institutional row (RELIANCE 12.75 pp / 791 holders = the legacy FII registrations) was routed to dii by the seam formula; the independent reader shows FII 5-13 pp higher. The cell is a partial reading, not a filing: absent until BSE's Mar-2016 page can be read (api 403 since 23-Sep)."
+   }
+  },
+  "BRITANNIA": {
+   "2016-03-31": {
+    "was": [
+     50.73,
+     6.51,
+     20.77,
+     6.16,
+     2.97,
+     "2016-04-21"
+    ],
+    "why": "\u00a7156 2026-09-24: Trendlyne seam fill held \u2014 the page's unlabelled Any-Other institutional row (RELIANCE 12.75 pp / 791 holders = the legacy FII registrations) was routed to dii by the seam formula; the independent reader shows FII 5-13 pp higher. The cell is a partial reading, not a filing: absent until BSE's Mar-2016 page can be read (api 403 since 23-Sep)."
+   }
+  },
+  "EXIDEIND": {
+   "2016-03-31": {
+    "was": [
+     45.99,
+     4.47,
+     30.93,
+     9.94,
+     10.13,
+     "2016-04-21"
+    ],
+    "why": "\u00a7156 2026-09-24: Trendlyne seam fill held \u2014 the page's unlabelled Any-Other institutional row (RELIANCE 12.75 pp / 791 holders = the legacy FII registrations) was routed to dii by the seam formula; the independent reader shows FII 5-13 pp higher. The cell is a partial reading, not a filing: absent until BSE's Mar-2016 page can be read (api 403 since 23-Sep)."
+   }
+  },
+  "VRLLOG": {
+   "2016-03-31": {
+    "was": [
+     69.57,
+     11.9,
+     11.82,
+     6.64,
+     0.0,
+     "2016-04-21"
+    ],
+    "why": "\u00a7156 2026-09-24: Trendlyne seam fill held \u2014 the page's unlabelled Any-Other institutional row (RELIANCE 12.75 pp / 791 holders = the legacy FII registrations) was routed to dii by the seam formula; the independent reader shows FII 5-13 pp higher. The cell is a partial reading, not a filing: absent until BSE's Mar-2016 page can be read (api 403 since 23-Sep)."
+   }
+  },
+  "NATCOPHARM": {
+   "2016-03-31": {
+    "was": [
+     49.88,
+     11.75,
+     13.56,
+     5.86,
+     0.0,
+     "2016-04-21"
+    ],
+    "why": "\u00a7156 2026-09-24: Trendlyne seam fill held \u2014 the page's unlabelled Any-Other institutional row (RELIANCE 12.75 pp / 791 holders = the legacy FII registrations) was routed to dii by the seam formula; the independent reader shows FII 5-13 pp higher. The cell is a partial reading, not a filing: absent until BSE's Mar-2016 page can be read (api 403 since 23-Sep)."
+   }
+  },
+  "ARVIND": {
+   "2016-03-31": {
+    "was": [
+     43.79,
+     14.74,
+     24.25,
+     11.6,
+     4.74,
+     "2016-04-21"
+    ],
+    "why": "\u00a7156 2026-09-24: Trendlyne seam fill held \u2014 the page's unlabelled Any-Other institutional row (RELIANCE 12.75 pp / 791 holders = the legacy FII registrations) was routed to dii by the seam formula; the independent reader shows FII 5-13 pp higher. The cell is a partial reading, not a filing: absent until BSE's Mar-2016 page can be read (api 403 since 23-Sep)."
+   }
+  }
  }
 }
