@@ -466,7 +466,7 @@ def evaluate(h, cur, sym=None, qi=None, code=None, ctx=None, gctx=None):
                     if v<0.05: continue
                     if HO and HO["names"].search(n): continue        # the hand-off moves these itself
                     c,src=holder_cls_full(ctx,n,v,gctx["oldmap"],gctx["pagemap"],_KNOWN[code])
-                    if src and src.startswith("name marker"): c=None     # a bare name marker never splits a row
+                    if src and (src.startswith("name marker") or src.startswith("holder registered as FDI")): c=None     # a name alone never splits a row (CHOLAFIN Sep-15: 'Dynasty Acquisition FDI Ltd' sits under 'Foreign Bodies Corporate' in 2012-13)
                     named.append((n,round(v,4),c,src))
             taken_b=set()
             for lst,i in sorted(candc,key=lambda x:-x[0][x[1]][1]):
@@ -481,7 +481,10 @@ def evaluate(h, cur, sym=None, qi=None, code=None, ctx=None, gctx=None):
                     for combo in itertools.combinations(range(len(named)),hn):
                         ssum=sum(named[k][1] for k in combo)
                         if abs(ssum-p)<=max(0.06,0.006*p): fits.append(combo)
-                        if len(fits)>2: break
+                        if len(fits)>6: break
+                    if len(fits)>1:        # several subsets within rounding: the one whose sum IS the row (<=0.01) decides, if unique (CEATLTD Sep-15 3.51 = WestBridge 3.51, not Kotak 3.54)
+                        ex_=[f_ for f_ in fits if abs(sum(named[k][1] for k in f_)-p)<=0.01]
+                        if len(ex_)==1: fits=ex_
                     if len(fits)==1:
                         combo=fits[0]; parts=collections.defaultdict(float)
                         for k in combo: parts[named[k][2]]+=named[k][1]
@@ -514,8 +517,8 @@ def evaluate(h, cur, sym=None, qi=None, code=None, ctx=None, gctx=None):
                             if r[0]!=blk or r[5] not in ("fii","dii","pub","gov") or not r[2]: continue
                             gen_twin=label_class(r[1]) is None and STD_INST.get(re.sub(r"\s+"," ",r[1].strip().lower())) is None
                             hr=r[2]/hn; pr=r[4]/p if p else 0
-                            if gen_twin:          # the same generic row decided one quarter away: same holders within one, same size within 5%
-                                if not (abs(r[2]-hn)<=1 and 0.95<=pr<=1.05): continue
+                            if gen_twin:          # the same generic row decided one quarter away (FPI rows grew fast in 2015: NATCOPHARM 15 -> 19 -> 29 holders)
+                                if not (1/3<=hr<=3 and 0.5<=pr<=2): continue
                             else:
                                 if re.sub(r"\s+"," ",r[1].lower()) in here: continue          # that category is still on this page -> not where this row went
                                 if not (1/3<=hr<=3 and 0.5<=pr<=2): continue
@@ -540,22 +543,70 @@ def evaluate(h, cur, sym=None, qi=None, code=None, ctx=None, gctx=None):
                         ends=[]
                         for step in (-1,1):
                             q2=qi
-                            for _ in range(8):
+                            for _ in range(24):
                                 q2+=step; r=sole(q2)
                                 if r is None: break
                                 if r[5] in ("fii","dii","pub","gov"): ends.append((r[5],q2,r)); break
                         if ends and len({e[0] for e in ends})==1:
                             c=ends[0][0]; decided=("C",{ {"fii":"fii","dii":"domestic","pub":"public","gov":"gov"}[c]:p},"; ".join("qtrid %d '%s' %d holders %.2f"%(e[1],e[2][1][:34],e[2][2],e[2][4]) for e in ends))
-                C_=decided; RC=B_ or C_
+                C_=decided; decided=None
+                # T — a single holder / small row whose stake is unchanged, walked quarter by quarter (holders within max(1,10%), size within 5% per hop)
+                #     to the nearest quarter where that same row carries a label or a decision (INDUSTOWER 0.95: 'Any Other' -> 'Private Equity' -> QFI)
+                T_=None
+                if B_ is None and C_ is None and hn:
+                    ends=[]
+                    for step in (-1,1):
+                        q2=qi; h0=hn; p0=p
+                        for _ in range(16):
+                            q2+=step; nxt=[r for r in (pf.get(q2) or []) if r[0]==blk and r[2] and abs(r[2]-h0)<=max(1,0.1*h0) and p0 and 0.95<=r[4]/p0<=1.05]
+                            if len(nxt)!=1: break
+                            r=nxt[0]
+                            if r[5] in ("fii","dii","pub","gov"): ends.append((r[5],q2,r)); break
+                            h0,p0=r[2],r[4]
+                    if ends and len({e[0] for e in ends})==1:
+                        c=ends[0][0]; T_=("T",{ {"fii":"fii","dii":"domestic","pub":"public","gov":"gov"}[c]:p},"; ".join("same row walked to qtrid %d '%s' %d holders %.2f"%(e[1],e[2][1][:34],e[2][2],e[2][4]) for e in ends))
+                # U — union twin: the row equals two or three same-class rows of the adjacent quarter together (holders and size within 10%;
+                #     OFSS Jun-15 'Others' 34 holders 3.12 = Sep-15 FPI 27 holders 1.14 + 'Others' 9 holders 2.13 decided fii)
+                U_=None
+                if B_ is None and C_ is None and T_ is None and hn and hn>=3:
+                    import itertools
+                    here={re.sub(r"\s+"," ",r[1].lower()) for r in me if r[0]==blk and label_class(r[1]) is not None}
+                    hitsU=[]
+                    for q2 in (qi-1,qi+1):
+                        cand=[r for r in (pf.get(q2) or []) if r[0]==blk and r[5] in ("fii","dii","pub") and r[2] and re.sub(r"\s+"," ",r[1].lower()) not in here and not (r[1].lower().startswith(("individual","bodies corporate")))]
+                        for kk in (2,3):
+                            for combo in itertools.combinations(cand,kk):
+                                if len({x[5] for x in combo})!=1: continue
+                                H_=sum(x[2] for x in combo); S_=sum(x[4] for x in combo)
+                                if 0.9<=H_/hn<=1.1 and 0.9<=S_/p<=1.1: hitsU.append((combo[0][5],q2,combo))
+                    if hitsU and len({h_[0] for h_ in hitsU})==1:
+                        c=hitsU[0][0]; U_=("U",{ {"fii":"fii","dii":"domestic","pub":"public"}[c]:p},"; ".join("qtrid %d: %s"%(h_[1]," + ".join("'%s' %d holders %.2f"%(x[1][:26],x[2],x[4]) for x in h_[2])) for h_ in hitsU[:2]))
+                RC=B_ or C_ or T_ or U_
+                if A_ is not None and A_[0]=="A-rest" and RC is not None and set(A_[1])!=set(RC[1]): A_=None        # a same-row identity beats a rest-follows reading (PIIND Sep-15: the directors' row, not GPFG + 2)
+                # K — consensus: every admissible explanation by named holders (named part >= half the row, each unnamed holder < 1%) has one class
+                K_=None
+                if A_ is None and RC is None and hn and named:
+                    import itertools
+                    cl=[k for k in range(len(named)) if named[k][2] in ("fii","domestic","public")]
+                    classes=set(); n_fit=0; ex_k=None
+                    for kk in range(1,min(len(cl),hn)+1):
+                        for combo in itertools.combinations(cl,kk):
+                            ssum=sum(named[k][1] for k in combo); u=hn-kk; r_=p-ssum
+                            if ssum>=0.5*p and -max(0.06,0.006*p)<=r_<=1.0*u and (u>=1 or abs(r_)<=max(0.06,0.006*p)):
+                                n_fit+=1; classes|={named[k][2] for k in combo}; ex_k=ex_k or combo
+                    if n_fit and len(classes)==1:
+                        c0=next(iter(classes))
+                        if not (c0!="public" and any(company_elsewhere(gctx["pagemap"],named[k][0]) for k in cl if named[k][2]==c0)):
+                            K_=("K",{c0:p},"all %d admissible named-holder explanations are %s, e.g. %s"%(n_fit,c0,"; ".join("%s %.2f (%s)"%(named[k][0][:34],named[k][1],named[k][3]) for k in ex_k)))
                 if A_ is not None:
                     placed={c for c in A_[1] if c is not None}; unpl=A_[1].get(None,0.0)
                     if unpl>0.004 and RC is not None and placed<=set(RC[1]):
                         decided=(RC[0],RC[1],"%s + %s"%(A_[2],RC[2]))           # the row's own identity decides the unplaced holder too (MFSL Jun-15: Xenok with IFC in the row the filer labelled FDI)
                     else: decided=A_
-                else: decided=RC
+                else: decided=RC or K_
                 if decided is None: continue
                 grade,parts,why_=decided
-                if grade in ("B","C","A-rest"):
+                if grade in ("B","C","A-rest","T","K","U"):
                     c=next(iter(parts)); newcls={"fii":"fii","domestic":"dii","public":"pub","gov":"pub"}[c]
                     lst[i]=(lab,p,newcls,io); hold_ev.append(("generic-row-"+grade,lab,round(p,4),newcls+": "+why_))
                 elif grade=="A-pub":
@@ -627,7 +678,8 @@ def page_rows_classed(h):
         if blk=="noninst" and not in_other[blk] and (L.startswith("bodies corporate") or L.startswith("individual")): out.append((blk,lab.strip(),hn,sh,p,"pub",False)); continue
         c=label_class(lab); c={"fii":"fii","dii":"dii","pub":"pub"}.get(c) if c else None
         if c is None and MECH_LAB.search(lab): c="pub"
-        out.append((blk,lab.strip(),hn,sh,p,c,in_other[blk]))
+        bare_other=bool(re.match(r"^(any )?others?$",L))          # a header-less 'Any Other' row is itself the block's Any-Others sub-row (FEDERALBNK 2009-13)
+        out.append((blk,lab.strip(),hn,sh,p,c,in_other[blk] or bare_other))
     return out
 def scan_generic_rows():
     """(sym, qe, block, label, pct) for every unresolved sub-row >= 0.5 pp on the cached pages; cached in generic_rows.json (112 symbols on 2026-09-24)."""
