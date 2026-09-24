@@ -207,6 +207,7 @@ function pickColCells(cols, r, mark){ return cols.map(function(c){
    date / live-rerank changes. */
 const FACT_CACHE = {};
 function factorMap(it){
+  if (typeof SF === 'undefined' || !SF || !SF.end) return {};   // zba31: engine data not loaded yet (no picks) — the sell side must still render; factor cells show —
   const p = PICKS[it.id];
   const date = (p && p.live) ? (LIVEOV.date || SF.end) : SF.end;
   const stamp = date + '|' + ((p && p.liveTs) || '');
