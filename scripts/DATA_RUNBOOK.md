@@ -18693,3 +18693,21 @@ declarations analysis": **≥407 results declared after 3:30 p.m. on a rebalance
 
 **First fallback run, measured (run 35893442120 → commit 1016be19a "Daily refresh 2026-09-23 23:00 IST").** BSE 403 on all 6 attempts → `public URL: OK, 4926 Active/Equity rows` → `FALLBACK BSE MASTER in use: fetched 2026-09-23T17:03:55Z, 0.3 h old, source: SEED …`. `fetch_sectors`: ComHeadernew answered 0/4,926, **4,687 tickers carried** from the previous build; both fallbacks are `::warning::` annotations on the run. Build vs the 17:10 IST build: universe 5,434 vs 5,474 — 86 BSE-only `.BO` rows listed since 2026-08-05 vanished (all mcap>0, none with an NSE symbol, so no NSE-index member), 46 Aug-5-era `.BO` rows reappeared carrying their 2026-08-05 Mktcap and no sector (Uncategorized 131 → 177; 2 of them are §76 twins split back into two rows: KIRLPNU, CORDELIA); 0 shared tickers changed sector; RELIANCE mcap identical to 17:10 (1,688,184.21 cr), latest 1247.8 → 1248.0 — prices fresh. This churn reverses itself the first time the live fetch succeeds and `push` overwrites the seed. Announcements: the 22:38 IST refresh passed the guard (`docs/order_shares.json` now 2 names) and was live on the site at 17:10:56Z after being stuck at 01:04 IST all day.
 LIVE check 17:35:55Z: `pages.yml` had to be dispatched by hand (the refresh bot's own commit never triggers it — GITHUB_TOKEN pushes fire no workflows, the long-known F6 rule); after run 35896551225 the served `stock_data.bin` reads `generatedAt 1790184159` = the 23:00 IST build, 5,434 tickers, RELIANCE latest 1248.0.
+
+## 149. ★★ BSE SME PRICE HISTORY 2020→ + the BSE-only store filled to 2020 from one local bhavcopy cache  (2026-09-24)
+**Ask (user):** prices for companies that began on BSE SME (INSOLATION ENERGY 543620 listed BSE SME 2022-10-10, on NSE
+only from 2026-03-09 — the capex study had no BSE-era prices). User scope: Jan-2020 on.
+**Measured:** docs/bse_prices.bin kept only CURRENT BSE-only scrips and began 2023; SME groups = M/MT/MS.
+`scripts/build_bse_sme_backfill.py --fetch` cached 1,671 daily bhavcopies 2020-01-01→2026-09-23 in
+scripts/_bse_bhav_cache (gitignored; www download host, 2 s spacing, no 403 — the api host was 403-blocked all night).
+File eras: `EQ<ddmmyy>_CSV.ZIP` ≤2016 (no ISIN/date col), `EQ_ISINCODE_<ddmmyy>.zip` 2017→mid-2024, UDiFF CSV after;
+**a file BSE does not serve answers HTTP 200 with a 14,287-byte "Access Denied" page — the same look as a block**,
+so the fetcher checks a known-good canary before treating it as absent. **BSE's PREVCLOSE is never ex-adjusted**
+(0 of 198 one-day falls >30 % carried an adjusted prev close) → splits applied only where the ISIN changes on the
+ex-date (59; INA 1:10 2025-01-24 → adjusted 9.70 / 14.45 / 219.55 = Screener's chart), the other 139 big falls are
+flagged `unexpl` (bonus or crash — needs BSE's CorporateAction api) and the capex study refuses windows across them.
+→ `scripts/bse_sme_backfill.json.gz` (713 scrips ever SME). The study splices it before NSE series by ISIN or
+bse_scrips by_id (57 cos, INA join ratio 1.0001).
+**Store fill:** `scripts/merge_bse_px_from_cache.py` fills docs/bse_prices.bin for ALL BSE-only scrips 2020→ from the
+same cache (all, not just SME: the nightly backfill frontier is store-wide — filling some would strand the rest).
+Pre-check on the overlap: 1,230,815 stored closes, 0 differ. RAW closes, dv=0 (nightly heal_delivery fills it).
