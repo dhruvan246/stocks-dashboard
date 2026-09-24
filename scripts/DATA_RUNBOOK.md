@@ -17495,6 +17495,17 @@ BSE-only and SME names (no NSE symbol) stay unknown on such a day, and the feed'
 18:50 IST feeds run is 18:00 IST, so the post-close flood is partial - `announcements_blocked` stays true and
 the page keeps saying the counts are a floor.
 
+**Second dispatch (run 36039266279, 23:44-23:48 IST, `a17738c`): all three fixes proven.** `steps_failed: []`;
+govt 59 scanned / **kept 0, backgrounder 2** (the coal retrospective and one more); minsteel listed and read
+its reports (48 month-ends to 2026-06-30); the scan landed on main with `announcements_source: nse (...)`, 52
+classified filings and GENESYS at score 11. **And one more defect the run's own file exposed**: `govt.json`
+said `built: 2026-09-24 18:10 IST` - a naive `datetime.now()` on a UTC runner labelled IST, the exact trap the
+routine prompt forbids. Every builder stamp and `date.today()` in `govt.py`, `india_spot.py` and `minsteel.py`
+now goes through `ist.stamp()` / `ist.today()` (as `score.py` and `scan.py` already did). It mattered beyond
+cosmetics: `ideas.html`'s staleness guard compares the DATE part of that stamp with the run date, and a UTC
+clock crosses midnight at 05:30 IST - a builder run after that would have stamped yesterday and tripped the
+guard falsely.
+
 ## 144. ★★ DAILY IDEAS — filings-driven deep-research page for ₹200-2,000 cr small caps (2026-09-22)
 
 **What:** `docs/ideas.html` + `docs/ideas/{universe,latest,ideas,track}.json`, `docs/ideas/scan/<date>.json`,
