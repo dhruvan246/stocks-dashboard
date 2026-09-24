@@ -2,7 +2,8 @@
 "_doc": [
 "§160 page-era row-level heal (2026-09-24): BSE ShareholdingPattern.aspx (Clause-35 / 88-89 layouts) + shpperent.aspx; rules in DATA_RUNBOOK §160.",
 "§160b page-era row-level heal (2026-09-24): BSE ShareholdingPattern.aspx (Clause-35 / 88-89 layouts) + shpperent.aspx; rules in DATA_RUNBOOK §160b.",
-"§160c page-era row-level heal (2026-09-25): BSE ShareholdingPattern.aspx (Clause-35 / 88-89 layouts) + shpperent.aspx; rules in DATA_RUNBOOK §160c."
+"§160c page-era row-level heal (2026-09-25): BSE ShareholdingPattern.aspx (Clause-35 / 88-89 layouts) + shpperent.aspx; rules in DATA_RUNBOOK §160c.",
+"§160d page-era row-level heal (2026-09-25): BSE ShareholdingPattern.aspx (Clause-35 / 88-89 layouts) + shpperent.aspx; rules in DATA_RUNBOOK §160d."
 ],
 "cells": {
 "3MINDIA|2015-12-31": {
@@ -5051,9 +5052,20 @@
 "OFSS|2015-09-30": {
 "file": "532466_87.html.gz",
 "d_dii": 0.0059,
-"d_fii": 1.1369,
+"d_fii": 2.13,
 "add_ins": 0,
 "ev": [
+[
+"generic-row-K",
+"Others",
+2.13,
+"fii: all 4 admissible named-holder explanations are fii, e.g. Macquarie Bank Limited 1.83 (curated)"
+],
+[
+"noninst-fii",
+"Others",
+2.13
+],
 [
 "noninst-fii",
 "Foreign Portfolio Investors",
@@ -7756,14 +7768,20 @@
 },
 "OFSS|2015-06-30": {
 "file": "532466_86.html.gz",
-"d_dii": 0.0,
-"d_fii": -3.1231,
-"add_ins": 0.0,
+"d_dii": -0.004,
+"d_fii": 3.1231,
+"add_ins": 0,
 "ev": [
 [
-"revert-unsupported",
-"the earlier §160 move is not supported under the holder-count rules: no rule fires",
--3.1231
+"generic-row-U",
+"Others",
+3.12,
+"fii: qtrid 87: 'Foreign Portfolio Investor' 27 holders 1.14 + 'Others' 9 holders 2.13"
+],
+[
+"noninst-fii",
+"Others",
+3.12
 ]
 ],
 "shpperent": false
@@ -9252,19 +9270,14 @@
 "INDUSTOWER|2015-06-30": {
 "file": "534816_86.html.gz",
 "d_dii": -0.0048,
-"d_fii": 2.6199,
+"d_fii": -2.62,
 "add_ins": 0,
 "ev": [
 [
-"generic-row-A-rest",
+"generic-row-B",
 "Others",
 2.62,
-"fii: Merrill Lynch Capital Markets Espana S.A 1.87 (curated) + 2 unnamed holder(s) 0.75 (rest follows, §158 R1)"
-],
-[
-"noninst-fii",
-"Others",
-2.62
+"pub: prev 'Foreign Corporate Bodies' 5 holders 4.00; next 'Others' 3 holders 1.32"
 ]
 ],
 "shpperent": false
@@ -12066,6 +12079,215 @@
 ]
 ],
 "shpperent": false
+},
+"APOLLOTYRE|2015-03-31": {
+"file": "500877_85.html.gz",
+"d_dii": 0.0022,
+"d_fii": 0.7624,
+"add_ins": 0,
+"ev": [
+[
+"generic-row-B",
+"Any Other",
+0.77,
+"fii: prev 'Any Other' 4 holders 1.19; next 'Others' 1 holders 0.52"
+]
+],
+"shpperent": false
+},
+"APOLLOTYRE|2015-06-30": {
+"file": "500877_86.html.gz",
+"d_dii": 0.0023,
+"d_fii": 0.5197,
+"add_ins": 0,
+"ev": [
+[
+"generic-row-B",
+"Others",
+0.52,
+"fii: prev 'Any Other' 3 holders 0.77"
+],
+[
+"inst-sub-fii",
+"Others",
+0.52
+]
+],
+"shpperent": false
+},
+"INDUSTOWER|2012-12-31": {
+"file": "534816_76.html.gz",
+"d_dii": -0.9431,
+"d_fii": 0.9546,
+"add_ins": 0,
+"ev": [
+[
+"generic-row-B",
+"Any Other",
+0.95,
+"fii: next 'Any Other' 1 holders 0.95"
+],
+[
+"dii-block-out",
+"Any Other",
+0.95,
+"stored dii held the institutional Any-Others block; this fii sub-row is not a domestic institution"
+],
+[
+"inst-sub-unresolved",
+"Any Other",
+0.76,
+"stays as stored"
+],
+[
+"inst-sub-fii",
+"Any Other",
+0.95
+]
+],
+"shpperent": false
+},
+"INDUSTOWER|2013-03-31": {
+"file": "534816_77.html.gz",
+"d_dii": -0.9417,
+"d_fii": 0.9495,
+"add_ins": 0,
+"ev": [
+[
+"generic-row-B",
+"Any Other",
+0.95,
+"fii: prev 'Any Other' 1 holders 0.95; next 'Any Other' 1 holders 0.95"
+],
+[
+"dii-block-out",
+"Any Other",
+0.95,
+"stored dii held the institutional Any-Others block; this fii sub-row is not a domestic institution"
+],
+[
+"inst-sub-unresolved",
+"Any Other",
+0.76,
+"stays as stored"
+],
+[
+"inst-sub-fii",
+"Any Other",
+0.95
+]
+],
+"shpperent": false
+},
+"INDUSTOWER|2013-06-30": {
+"file": "534816_78.html.gz",
+"d_dii": -0.9451,
+"d_fii": 0.9463,
+"add_ins": 0,
+"ev": [
+[
+"generic-row-B",
+"Any Other",
+0.95,
+"fii: prev 'Any Other' 1 holders 0.95; next 'Any Other' 1 holders 0.95"
+],
+[
+"dii-block-out",
+"Any Other",
+0.95,
+"stored dii held the institutional Any-Others block; this fii sub-row is not a domestic institution"
+],
+[
+"inst-sub-unresolved",
+"Any Other",
+0.76,
+"stays as stored"
+],
+[
+"inst-sub-fii",
+"Any Other",
+0.95
+]
+],
+"shpperent": false
+},
+"INDUSTOWER|2013-09-30": {
+"file": "534816_79.html.gz",
+"d_dii": -0.9492,
+"d_fii": 0.9464,
+"add_ins": 0,
+"ev": [
+[
+"generic-row-B",
+"Any Other",
+0.95,
+"fii: prev 'Any Other' 1 holders 0.95; next 'Private Equity' 1 holders 0.95"
+],
+[
+"dii-block-out",
+"Any Other",
+0.95,
+"stored dii held the institutional Any-Others block; this fii sub-row is not a domestic institution"
+],
+[
+"inst-sub-unresolved",
+"Any Other",
+0.76,
+"stays as stored"
+],
+[
+"inst-sub-fii",
+"Any Other",
+0.95
+]
+],
+"shpperent": false
+},
+"INDUSTOWER|2013-12-31": {
+"file": "534816_80.html.gz",
+"d_dii": 0.0071,
+"d_fii": 0.9486,
+"add_ins": 0,
+"ev": [
+[
+"generic-row-B",
+"Private Equity",
+0.95,
+"fii: prev 'Any Other' 1 holders 0.95; next 'Private Equity' 1 holders 0.95"
+],
+[
+"inst-sub-unresolved",
+"Investment Fund",
+0.76,
+"stays as stored"
+],
+[
+"inst-sub-fii",
+"Private Equity",
+0.95
+]
+],
+"shpperent": false
+},
+"NATCOPHARM|2015-09-30": {
+"file": "524816_87.html.gz",
+"d_dii": 0.0042,
+"d_fii": 9.8049,
+"add_ins": 0,
+"ev": [
+[
+"generic-row-B",
+"Others",
+9.8,
+"fii: prev 'Others' 19 holders 8.06"
+],
+[
+"noninst-fii",
+"Others",
+9.8
+]
+],
+"shpperent": false
 }
 },
 "generic_residue_160c": [
@@ -12492,6 +12714,320 @@
 "label": "Others",
 "pct": 19.97,
 "verdict": "public — the filer's own Non-Institutions row; no filer statement places its holders elsewhere (stored placement already public)"
+}
+],
+"generic_residue_160d": [
+{
+"sym": "AARTIIND",
+"qe": "2012-12-31",
+"block": "noninst",
+"label": "Any Other",
+"pct": 0.52,
+"verdict": "public — a Non-Institutions row; no filer document places its holders in an institution class (stored placement is public)"
+},
+{
+"sym": "AARTIIND",
+"qe": "2013-03-31",
+"block": "noninst",
+"label": "Any Other",
+"pct": 0.52,
+"verdict": "public — a Non-Institutions row; no filer document places its holders in an institution class (stored placement is public)"
+},
+{
+"sym": "ADANIENT",
+"qe": "2015-06-30",
+"block": "noninst",
+"label": "Others",
+"pct": 5.84,
+"verdict": "public — a Non-Institutions row; no filer document places its holders in an institution class (stored placement is public)"
+},
+{
+"sym": "ADANIPORTS",
+"qe": "2015-06-30",
+"block": "noninst",
+"label": "Others",
+"pct": 0.95,
+"verdict": "public — a Non-Institutions row; no filer document places its holders in an institution class (stored placement is public)"
+},
+{
+"sym": "ADANIPOWER",
+"qe": "2015-06-30",
+"block": "noninst",
+"label": "Others",
+"pct": 11.76,
+"verdict": "public — a Non-Institutions row; no filer document places its holders in an institution class (stored placement is public)"
+},
+{
+"sym": "ARE&M",
+"qe": "2013-06-30",
+"block": "noninst",
+"label": "Any Other",
+"pct": 0.55,
+"verdict": "public — a Non-Institutions row; no filer document places its holders in an institution class (stored placement is public)"
+},
+{
+"sym": "ARE&M",
+"qe": "2013-09-30",
+"block": "noninst",
+"label": "Any Other",
+"pct": 0.54,
+"verdict": "public — a Non-Institutions row; no filer document places its holders in an institution class (stored placement is public)"
+},
+{
+"sym": "ARE&M",
+"qe": "2013-12-31",
+"block": "noninst",
+"label": "Any Other",
+"pct": 0.54,
+"verdict": "public — a Non-Institutions row; no filer document places its holders in an institution class (stored placement is public)"
+},
+{
+"sym": "ARE&M",
+"qe": "2014-03-31",
+"block": "noninst",
+"label": "Any Other",
+"pct": 0.53,
+"verdict": "public — a Non-Institutions row; no filer document places its holders in an institution class (stored placement is public)"
+},
+{
+"sym": "ARE&M",
+"qe": "2014-06-30",
+"block": "noninst",
+"label": "Any Other",
+"pct": 0.53,
+"verdict": "public — a Non-Institutions row; no filer document places its holders in an institution class (stored placement is public)"
+},
+{
+"sym": "ARE&M",
+"qe": "2014-09-30",
+"block": "noninst",
+"label": "Any Other",
+"pct": 0.53,
+"verdict": "public — a Non-Institutions row; no filer document places its holders in an institution class (stored placement is public)"
+},
+{
+"sym": "ARE&M",
+"qe": "2014-12-31",
+"block": "noninst",
+"label": "Any Other",
+"pct": 0.53,
+"verdict": "public — a Non-Institutions row; no filer document places its holders in an institution class (stored placement is public)"
+},
+{
+"sym": "ARE&M",
+"qe": "2015-03-31",
+"block": "noninst",
+"label": "Any Other",
+"pct": 0.52,
+"verdict": "public — a Non-Institutions row; no filer document places its holders in an institution class (stored placement is public)"
+},
+{
+"sym": "ARE&M",
+"qe": "2015-06-30",
+"block": "noninst",
+"label": "Others",
+"pct": 0.52,
+"verdict": "public — a Non-Institutions row; no filer document places its holders in an institution class (stored placement is public)"
+},
+{
+"sym": "ARE&M",
+"qe": "2015-09-30",
+"block": "noninst",
+"label": "Others",
+"pct": 0.51,
+"verdict": "public — a Non-Institutions row; no filer document places its holders in an institution class (stored placement is public)"
+},
+{
+"sym": "DRREDDY",
+"qe": "2015-09-30",
+"block": "noninst",
+"label": "Others",
+"pct": 1.79,
+"verdict": "public — a Non-Institutions row; no filer document places its holders in an institution class (stored placement is public)"
+},
+{
+"sym": "FEDERALBNK",
+"qe": "2009-06-30",
+"block": "inst",
+"label": "Any Other",
+"pct": 0.75,
+"verdict": "undecidable from the filer's documents — an institutional row never labelled, no named holder >1%, no labelled or decided twin in any quarter; kept out of FII and DII as stored"
+},
+{
+"sym": "FEDERALBNK",
+"qe": "2009-09-30",
+"block": "inst",
+"label": "Any Other",
+"pct": 0.69,
+"verdict": "undecidable from the filer's documents — an institutional row never labelled, no named holder >1%, no labelled or decided twin in any quarter; kept out of FII and DII as stored"
+},
+{
+"sym": "FEDERALBNK",
+"qe": "2009-12-31",
+"block": "inst",
+"label": "Any Other",
+"pct": 0.54,
+"verdict": "undecidable from the filer's documents — an institutional row never labelled, no named holder >1%, no labelled or decided twin in any quarter; kept out of FII and DII as stored"
+},
+{
+"sym": "FEDERALBNK",
+"qe": "2010-03-31",
+"block": "inst",
+"label": "Any Other",
+"pct": 0.59,
+"verdict": "undecidable from the filer's documents — an institutional row never labelled, no named holder >1%, no labelled or decided twin in any quarter; kept out of FII and DII as stored"
+},
+{
+"sym": "FEDERALBNK",
+"qe": "2010-06-30",
+"block": "inst",
+"label": "Any Other",
+"pct": 0.55,
+"verdict": "undecidable from the filer's documents — an institutional row never labelled, no named holder >1%, no labelled or decided twin in any quarter; kept out of FII and DII as stored"
+},
+{
+"sym": "FEDERALBNK",
+"qe": "2010-09-30",
+"block": "inst",
+"label": "Any Other",
+"pct": 0.56,
+"verdict": "undecidable from the filer's documents — an institutional row never labelled, no named holder >1%, no labelled or decided twin in any quarter; kept out of FII and DII as stored"
+},
+{
+"sym": "FEDERALBNK",
+"qe": "2010-12-31",
+"block": "inst",
+"label": "Any Other",
+"pct": 0.52,
+"verdict": "undecidable from the filer's documents — an institutional row never labelled, no named holder >1%, no labelled or decided twin in any quarter; kept out of FII and DII as stored"
+},
+{
+"sym": "FEDERALBNK",
+"qe": "2011-03-31",
+"block": "inst",
+"label": "Any Other",
+"pct": 0.56,
+"verdict": "undecidable from the filer's documents — an institutional row never labelled, no named holder >1%, no labelled or decided twin in any quarter; kept out of FII and DII as stored"
+},
+{
+"sym": "FEDERALBNK",
+"qe": "2011-06-30",
+"block": "inst",
+"label": "Any Other",
+"pct": 0.55,
+"verdict": "undecidable from the filer's documents — an institutional row never labelled, no named holder >1%, no labelled or decided twin in any quarter; kept out of FII and DII as stored"
+},
+{
+"sym": "FEDERALBNK",
+"qe": "2011-09-30",
+"block": "inst",
+"label": "Any Other",
+"pct": 0.55,
+"verdict": "undecidable from the filer's documents — an institutional row never labelled, no named holder >1%, no labelled or decided twin in any quarter; kept out of FII and DII as stored"
+},
+{
+"sym": "FEDERALBNK",
+"qe": "2011-12-31",
+"block": "inst",
+"label": "Any Other",
+"pct": 0.52,
+"verdict": "undecidable from the filer's documents — an institutional row never labelled, no named holder >1%, no labelled or decided twin in any quarter; kept out of FII and DII as stored"
+},
+{
+"sym": "FEDERALBNK",
+"qe": "2012-03-31",
+"block": "inst",
+"label": "Any Other",
+"pct": 0.52,
+"verdict": "undecidable from the filer's documents — an institutional row never labelled, no named holder >1%, no labelled or decided twin in any quarter; kept out of FII and DII as stored"
+},
+{
+"sym": "FEDERALBNK",
+"qe": "2012-06-30",
+"block": "inst",
+"label": "Any Other",
+"pct": 0.56,
+"verdict": "undecidable from the filer's documents — an institutional row never labelled, no named holder >1%, no labelled or decided twin in any quarter; kept out of FII and DII as stored"
+},
+{
+"sym": "FEDERALBNK",
+"qe": "2012-09-30",
+"block": "inst",
+"label": "Any Other",
+"pct": 0.62,
+"verdict": "undecidable from the filer's documents — an institutional row never labelled, no named holder >1%, no labelled or decided twin in any quarter; kept out of FII and DII as stored"
+},
+{
+"sym": "FEDERALBNK",
+"qe": "2012-12-31",
+"block": "inst",
+"label": "Any Other",
+"pct": 0.6,
+"verdict": "undecidable from the filer's documents — an institutional row never labelled, no named holder >1%, no labelled or decided twin in any quarter; kept out of FII and DII as stored"
+},
+{
+"sym": "FEDERALBNK",
+"qe": "2013-03-31",
+"block": "inst",
+"label": "Any Other",
+"pct": 0.67,
+"verdict": "undecidable from the filer's documents — an institutional row never labelled, no named holder >1%, no labelled or decided twin in any quarter; kept out of FII and DII as stored"
+},
+{
+"sym": "FEDERALBNK",
+"qe": "2013-06-30",
+"block": "inst",
+"label": "Any Other",
+"pct": 0.7,
+"verdict": "undecidable from the filer's documents — an institutional row never labelled, no named holder >1%, no labelled or decided twin in any quarter; kept out of FII and DII as stored"
+},
+{
+"sym": "HINDZINC",
+"qe": "2015-09-30",
+"block": "noninst",
+"label": "Others",
+"pct": 0.52,
+"verdict": "public — a Non-Institutions row; no filer document places its holders in an institution class (stored placement is public)"
+},
+{
+"sym": "INDUSTOWER",
+"qe": "2012-12-31",
+"block": "inst",
+"label": "Any Other",
+"pct": 0.76,
+"verdict": "undecidable from the filer's documents — an institutional row never labelled, no named holder >1%, no labelled or decided twin in any quarter; kept out of FII and DII as stored"
+},
+{
+"sym": "INDUSTOWER",
+"qe": "2013-03-31",
+"block": "inst",
+"label": "Any Other",
+"pct": 0.76,
+"verdict": "undecidable from the filer's documents — an institutional row never labelled, no named holder >1%, no labelled or decided twin in any quarter; kept out of FII and DII as stored"
+},
+{
+"sym": "INDUSTOWER",
+"qe": "2013-06-30",
+"block": "inst",
+"label": "Any Other",
+"pct": 0.76,
+"verdict": "undecidable from the filer's documents — an institutional row never labelled, no named holder >1%, no labelled or decided twin in any quarter; kept out of FII and DII as stored"
+},
+{
+"sym": "INDUSTOWER",
+"qe": "2013-09-30",
+"block": "inst",
+"label": "Any Other",
+"pct": 0.76,
+"verdict": "undecidable from the filer's documents — an institutional row never labelled, no named holder >1%, no labelled or decided twin in any quarter; kept out of FII and DII as stored"
+},
+{
+"sym": "INDUSTOWER",
+"qe": "2013-12-31",
+"block": "inst",
+"label": "Investment Fund",
+"pct": 0.76,
+"verdict": "undecidable from the filer's documents — an institutional row never labelled, no named holder >1%, no labelled or decided twin in any quarter; kept out of FII and DII as stored"
 }
 ]
 }

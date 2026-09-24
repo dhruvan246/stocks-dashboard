@@ -19373,3 +19373,30 @@ under the holder-count check to 43.79 (Jun-15) / 44.24 (Sep-15) and reverted fou
 PHOENIXLTD) and OFSS — see §160c. Live after §160c (store 7ce239304, run 36044108295 "210 cells"): APOLLOHOSP Jun-15 43.79, ITC
 Jun-15 50.77, OFSS Jun-15 10.61, YESBANK Dec-09 fii 53.55 / dii 4.47, MFSL Mar-12 fii 45.62; §159 247/247 and §160a 5/5 intact.
 Reply workbook rebuilt from `shp_engine_live_final5.json` with the §160c rules on the methodology sheet — that copy is the one to send.
+
+## §160d — THE LAST 53 GENERIC ROWS (2026-09-25 ~00:35 IST, user: "fix the remaining 53 rows too")
+
+**New evidence routes (scripts/_shp_aspx_rowfix.py, tier c):** exact-value tie-break when several named subsets fit within rounding (CEATLTD
+Sep-15 3.51 = WestBridge 3.51, not Kotak 3.54); a generic twin decided in the adjacent quarter counts with the normal fingerprint bounds
+(NATCOPHARM Sep-15 "Others" 29 holders 9.80 ← Jun-15 19 holders 8.06 ← Mar-15 "Foreign Portfolio Investments" 15 holders 8.33); the same row
+walked quarter by quarter (holders within max(1,10%), size within 5% per hop) to its nearest labelled/decided quarter (INDUSTOWER's single 0.95
+holder: "Any Other" 2012-13 → "Private Equity" 2013-14 → "Qualified Foreign Investor" 2014-09); a union twin (OFSS Jun-15 "Others" 34 holders
+3.12 = Sep-15 "Foreign Portfolio Investor" 27 holders 1.14 + "Others" 9 holders 2.13); consensus (every admissible named-holder explanation
+of the row has one class: OFSS Sep-15, all four candidates fii); a same-row identity beats a rest-follows reading (PIIND Sep-15 "Others" 1.17 is
+the directors' row: 0.31 labelled + 1.17 = Jun-15 1.48); a holder's FDI NAME never splits a row (CHOLAFIN Sep-15: "Dynasty Acquisition FDI
+Ltd" sits under "Foreign Bodies Corporate" in 2012-13).
+
+**Chain-walk fix found on the way.** A re-read of a §160-family cell must start from the cell BEFORE the first §160 entry (walk the
+`superseded` chain) — a §160c entry's `was` is the §160b healed value. The first run proposed "reverting" 8 correct live cells (APOLLOHOSP,
+ITC, TATASTEEL …); caught by reading every proposal before writing, fixed (`pre160`), re-run clean.
+
+**Result (verified on a copy of the origin store 11/11; both guards green).** 11 cells: INDUSTOWER Dec-12..Dec-13 +0.95 fii (and −0.95 dii
+where the stored DII held the block), INDUSTOWER Jun-15 26.92 → 24.30 (the §160c rest-follows move undone: the row is the "Foreign Corporate
+Bodies" twin), NATCOPHARM Sep-15 10.85 → 20.65, OFSS Jun/Sep-15 10.61/11.59 → 13.73/13.72, APOLLOTYRE Mar/Jun-15 +0.77/+0.52. All 4
+symbols smoother; Natco's and OFSS's 2015 dips and Indus Towers' Jun-15 spike are gone. **Left (39 rows, verdicts in the audit
+"generic_residue_160d"):** 17 Non-Institution rows (27 pp) are public — the filer's own block, no document places their holders elsewhere
+(ADANIPOWER / ADANIENT / ADANIPORTS Jun-15, DRREDDY and HINDZINC Sep-15, ARE&M's single 0.53 holder 2013-15, AARTIIND); 22 Institution rows
+(13.8 pp) are UNDECIDABLE from the filer's documents and stay out of FII and DII as stored: FEDERALBNK's 5-holder "Any Other" row 2009-06..
+2013-06 (~0.6 pp, never labelled; it sits BESIDE the "Foreign Bank" row in 2013 and vanishes in Sep-2013) and INDUSTOWER's single 0.76 holder
+2012-12..2013-12 ("Any Other" → "Investment Fund", never labelled further). The only route left for those is the companies' annual reports
+(category-wise shareholding schedules), not read here.

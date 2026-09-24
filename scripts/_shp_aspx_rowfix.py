@@ -681,6 +681,18 @@ def page_rows_classed(h):
         bare_other=bool(re.match(r"^(any )?others?$",L))          # a header-less 'Any Other' row is itself the block's Any-Others sub-row (FEDERALBNK 2009-13)
         out.append((blk,lab.strip(),hn,sh,p,c,in_other[blk] or bare_other))
     return out
+def pre160(prior, cur, eq):
+    """The cell before any §160-family entry: walk the superseded chain while entries carry the §160 marker and return the lowest one's
+    'was' (a §160c entry's 'was' is the §160/§160b healed value, not the page's own reading). cur itself when the top entry is not §160
+    or the store no longer holds the entry's cell."""
+    if not (prior and "\u00a7160" in prior.get("why","") and prior.get("was") and eq(cur,prior.get("cell"))): return cur
+    link=prior; base=prior["was"]; depth=0
+    while isinstance(link,dict) and "\u00a7160" in link.get("why","") and link.get("was") and depth<10:
+        base=link["was"]; link=link.get("superseded"); depth+=1
+    return base
+def F_cell_eq_(a,b):
+    if not a or not b: return False
+    return all(abs((a[i] or 0)-(b[i] or 0))<=1e-9+1e-6*abs(b[i] or 0) for i in range(min(len(a),len(b),5)) if isinstance(a[i],(int,float)) and isinstance(b[i],(int,float)))
 def scan_generic_rows():
     """(sym, qe, block, label, pct) for every unresolved sub-row >= 0.5 pp on the cached pages; cached in generic_rows.json (112 symbols on 2026-09-24)."""
     if os.path.exists("generic_rows.json"): return json.load(open("generic_rows.json"))
@@ -724,7 +736,7 @@ def classify():
                 f="aspx_pages/%d_%d.html.gz"%(c,qtrid(q))
                 if not os.path.exists(f): continue
                 prior=(led.get(s) or {}).get(q); cur=hist[s][q]
-                base=prior["was"] if (prior and "\u00a7160" in prior.get("why","") and prior.get("was") and F_cell_eq(cur,prior.get("cell"))) else cur
+                base=pre160(prior,cur,F_cell_eq)
                 try: r,why=evaluate(gzip.open(f,"rt",encoding="utf-8").read(),base,s,qtrid(q),c,ctx,gctx)
                 except Exception as e: continue
                 for lk,keys in ((r or {}).get("rowsets") or []): gctx["rowmem"].setdefault(lk,{}).setdefault(qtrid(q),[]).append(keys)
@@ -738,7 +750,7 @@ def classify():
             if not os.path.exists(f): stats["no_page"]+=1; continue
             stats["pages"]+=1; cur=hist[s][q]
             prior=(led.get(s) or {}).get(q)
-            base=prior["was"] if (prior and "\u00a7160" in prior.get("why","") and prior.get("was") and F_cell_eq(cur,prior.get("cell"))) else cur   # a page already healed by §160 is re-read from the cell the entry started from, so every rule (hand-off, holders, generic rows) is re-derived together
+            base=pre160(prior,cur,F_cell_eq)   # a page already healed by §160 is re-read from the cell BEFORE the first §160-family entry (walks the superseded chain), so every rule is re-derived together
             try: h=gzip.open(f,"rt",encoding="utf-8").read(); r,why=evaluate(h,base,s,qtrid(q),c,ctx,gctx)
             except Exception as e: stats["parse_err"]+=1; print("  err",s,q,repr(e)[:120],file=sys.stderr); continue
             own160=bool(prior and "\u00a7160 page-era" in prior.get("why","") and "resolved by the FII session" not in prior.get("why","") and "seam-fii-reconstruction" not in prior.get("why","") and base is not cur)
