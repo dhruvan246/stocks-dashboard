@@ -1,7 +1,8 @@
 {
 "_doc": [
 "§160 page-era row-level heal (2026-09-24): BSE ShareholdingPattern.aspx (Clause-35 / 88-89 layouts) + shpperent.aspx; rules in DATA_RUNBOOK §160.",
-"§160b page-era row-level heal (2026-09-24): BSE ShareholdingPattern.aspx (Clause-35 / 88-89 layouts) + shpperent.aspx; rules in DATA_RUNBOOK §160b."
+"§160b page-era row-level heal (2026-09-24): BSE ShareholdingPattern.aspx (Clause-35 / 88-89 layouts) + shpperent.aspx; rules in DATA_RUNBOOK §160b.",
+"§160c page-era row-level heal (2026-09-25): BSE ShareholdingPattern.aspx (Clause-35 / 88-89 layouts) + shpperent.aspx; rules in DATA_RUNBOOK §160c."
 ],
 "cells": {
 "3MINDIA|2015-12-31": {
@@ -2085,9 +2086,20 @@
 "IIFL|2015-06-30": {
 "file": "532636_86.html.gz",
 "d_dii": 0.0004,
-"d_fii": 0.318,
+"d_fii": 3.98,
 "add_ins": 0,
 "ev": [
+[
+"generic-row-B",
+"Others",
+3.98,
+"fii: prev 'Foreign Port Folio Investor Corpor' 11 holders 3.95; next 'Foreign Portfolio Investors' 15 holders 4.13"
+],
+[
+"noninst-fii",
+"Others",
+3.98
+],
 [
 "noninst-fii",
 "Qualified Foreign Investor",
@@ -2902,15 +2914,20 @@
 },
 "ITC|2015-06-30": {
 "file": "500875_86.html.gz",
-"d_dii": -0.0033,
-"d_fii": 30.1078,
+"d_dii": 0.0,
+"d_fii": 5.19,
 "add_ins": 0,
 "ev": [
 [
-"inst-sub-unresolved",
+"generic-row-B",
 "Others",
 5.19,
-"stays as stored"
+"fii: prev 'Foreign Portolio Investor ( Corpor' 140 holders 3.98; next 'Foreign Portfolio Investments Corp' 249 holders 5.60"
+],
+[
+"inst-sub-fii",
+"Others",
+5.19
 ],
 [
 "handoff-fii",
@@ -3246,14 +3263,25 @@
 },
 "JUBLPHARMA|2014-09-30": {
 "file": "530019_83.html.gz",
-"d_dii": 0.0001,
-"d_fii": 7.3112,
+"d_dii": 0.0,
+"d_fii": 2.42,
 "add_ins": 0,
 "ev": [
+[
+"generic-row-by-holders",
+"Any Other",
+2.42,
+"fii [exact]: Deutsche Securities Mauritius Ltd 2.42 (name marker (fund-type))"
+],
 [
 "inst-sub-fii",
 "Foreign Financial Institutions",
 7.14
+],
+[
+"noninst-fii",
+"Any Other",
+2.42
 ],
 [
 "noninst-fii",
@@ -3314,9 +3342,20 @@
 "JUBLPHARMA|2015-06-30": {
 "file": "530019_86.html.gz",
 "d_dii": -0.0001,
-"d_fii": 0.2862,
+"d_fii": 8.17,
 "add_ins": 0,
 "ev": [
+[
+"generic-row-B",
+"Others",
+8.17,
+"fii: next 'Foreign Portfolio Investors' 23 holders 8.41"
+],
+[
+"noninst-fii",
+"Others",
+8.17
+],
 [
 "noninst-fii",
 "Qualified Foreign Investor",
@@ -7331,14 +7370,19 @@
 "ZENSARTECH|2015-06-30": {
 "file": "504067_86.html.gz",
 "d_dii": -0.0016,
-"d_fii": 23.2306,
+"d_fii": 0.71,
 "add_ins": 0,
 "ev": [
 [
-"inst-sub-unresolved",
+"generic-row-B",
 "Others",
 0.71,
-"stays as stored"
+"fii: next 'Foreign Portfolio Investments Corp' 17 holders 0.90"
+],
+[
+"inst-sub-fii",
+"Others",
+0.71
 ],
 [
 "handoff-fii",
@@ -7445,19 +7489,14 @@
 "APOLLOHOSP|2015-06-30": {
 "file": "508869_86.html.gz",
 "d_dii": -0.0044,
-"d_fii": 11.7837,
+"d_fii": -11.78,
 "add_ins": 0,
 "ev": [
 [
-"generic-row-by-holders",
+"generic-row-B",
 "Others",
 11.78,
-"fii [exact]: Oppenheimer Developing Markets Fund 8.69 (2015-form XBRL row); Schroder International Selection Fund As 1.99 (2015-form XBRL row); Mirae Asset Asia Great Consumer Equity F 1.13 (2015-form XBRL row)"
-],
-[
-"noninst-fii",
-"Others",
-11.78
+"pub: prev 'Foreign Corporate Bodies' 4 holders 11.78; next 'Others' 4 holders 11.78"
 ]
 ],
 "shpperent": false
@@ -7465,19 +7504,14 @@
 "APOLLOHOSP|2015-09-30": {
 "file": "508869_87.html.gz",
 "d_dii": 0.0014,
-"d_fii": 11.7807,
+"d_fii": -11.78,
 "add_ins": 0,
 "ev": [
 [
-"generic-row-by-holders",
+"generic-row-B",
 "Others",
 11.78,
-"fii [exact, composition = adjacent quarter]: Oppenheimer Developing Markets Fund 8.69 (2015-form XBRL row); Schroder International Selection Fund As 1.99 (2015-form XBRL row); Mirae Asset Asia Great Consumer Equity F 1.13 (2015-form XBRL row)"
-],
-[
-"noninst-fii",
-"Others",
-11.78
+"pub: prev 'Others' 4 holders 11.78"
 ]
 ],
 "shpperent": false
@@ -7596,18 +7630,18 @@
 },
 "GRAPHITE|2015-06-30": {
 "file": "509488_86.html.gz",
-"d_dii": 1.5795,
-"d_fii": -0.0016,
+"d_dii": -1.58,
+"d_fii": 1.5784,
 "add_ins": 0,
 "ev": [
 [
-"generic-row-by-holders",
+"generic-row-B",
 "Others",
 1.58,
-"dii [exact]: THE NEW INDIA ASSURANCE COMPANY LIMITED 1.56 (new-format:InsuranceCompanies)"
+"fii: prev 'Foreign Port Folio Investor Corpor' 5 holders 1.72; next 'Foreign Portfolio Investors' 5 holders 1.84"
 ],
 [
-"noninst-dii",
+"noninst-fii",
 "Others",
 1.58
 ]
@@ -7616,15 +7650,15 @@
 },
 "IPCALAB|2015-06-30": {
 "file": "524494_86.html.gz",
-"d_dii": 1.7361,
-"d_fii": 0.0033,
+"d_dii": -1.73,
+"d_fii": 1.7333,
 "add_ins": 0,
 "ev": [
 [
-"generic-row-by-holders",
+"generic-row-B",
 "Others",
 1.73,
-"dii [exact]: Reliance Capital Trustee Co Ltd 1.69 (2015-form XBRL row)"
+"fii: prev 'Foreign Port Folio Investor Corpor' 23 holders 1.56"
 ],
 [
 "inst-sub-unresolved",
@@ -7633,7 +7667,7 @@
 "stays as stored"
 ],
 [
-"noninst-dii",
+"noninst-fii",
 "Others",
 1.73
 ]
@@ -7722,38 +7756,32 @@
 },
 "OFSS|2015-06-30": {
 "file": "532466_86.html.gz",
-"d_dii": -0.004,
-"d_fii": 3.1231,
-"add_ins": 0,
+"d_dii": 0.0,
+"d_fii": -3.1231,
+"add_ins": 0.0,
 "ev": [
 [
-"generic-row-by-holders",
-"Others",
-3.12,
-"fii [exact]: Macquarie Bank Limited 1.84 (curated); Mansfield Mauritius Limited 1.26 (2015-form XBRL row)"
-],
-[
-"noninst-fii",
-"Others",
-3.12
+"revert-unsupported",
+"the earlier §160 move is not supported under the holder-count rules: no rule fires",
+-3.1231
 ]
 ],
 "shpperent": false
 },
 "PHOENIXLTD|2015-06-30": {
 "file": "503100_86.html.gz",
-"d_dii": 1.4006,
-"d_fii": -0.0072,
+"d_dii": -1.397,
+"d_fii": 1.3928,
 "add_ins": 0,
 "ev": [
 [
-"generic-row-by-holders",
+"generic-row-B",
 "Others",
 1.4,
-"dii [exact]: Reliance Capital Trustee Co Ltd A/c Reli 1.38 (2015-form XBRL row)"
+"fii: prev 'Foreign Portolio Investor ( Corpor' 7 holders 1.38"
 ],
 [
-"inst-sub-dii",
+"inst-sub-fii",
 "Others",
 1.4
 ]
@@ -7834,18 +7862,18 @@
 },
 "TATASTEEL|2015-06-30": {
 "file": "500470_86.html.gz",
-"d_dii": 2.1172,
-"d_fii": 0.0028,
+"d_dii": -2.11,
+"d_fii": 2.1128,
 "add_ins": 0,
 "ev": [
 [
-"generic-row-by-holders",
+"generic-row-B",
 "Others",
 2.11,
-"dii [exact]: HDFC Trustee Company Ltd 2.10 (2015-form XBRL row)"
+"fii: prev 'Foreign Portolio Investor ( Corpor' 79 holders 2.79; next 'Foreign Portfolio Investments Corp' 97 holders 2.58"
 ],
 [
-"inst-sub-dii",
+"inst-sub-fii",
 "Others",
 2.11
 ],
@@ -7857,6 +7885,4613 @@
 ]
 ],
 "shpperent": false
+},
+"ADANIPORTS|2015-06-30": {
+"file": "532921_86.html.gz",
+"d_dii": -0.0068,
+"d_fii": 7.3084,
+"add_ins": 0,
+"ev": [
+[
+"generic-row-B",
+"Others",
+7.31,
+"fii: next 'Foreign Portfolio Investments Corp' 132 holders 9.29"
+],
+[
+"inst-sub-fii",
+"Others",
+7.31
+]
+],
+"shpperent": false
+},
+"ANANTRAJ|2015-06-30": {
+"file": "515055_86.html.gz",
+"d_dii": 0.0088,
+"d_fii": 0.7297,
+"add_ins": 0,
+"ev": [
+[
+"generic-row-B",
+"Others",
+0.73,
+"fii: prev 'Foreign Port Folio Investor Corpor' 9 holders 0.72; next 'Foreign Portfolio Investors' 11 holders 0.85"
+],
+[
+"noninst-fii",
+"Others",
+0.73
+]
+],
+"shpperent": false
+},
+"APOLLOTYRE|2013-09-30": {
+"file": "500877_79.html.gz",
+"d_dii": -3.65,
+"d_fii": 3.6477,
+"add_ins": 0,
+"ev": [
+[
+"generic-row-C",
+"Any Other",
+3.65,
+"fii: qtrid 81 'Any Other' 2 holders 1.47"
+],
+[
+"dii-block-out",
+"Any Other",
+3.65,
+"stored dii held the institutional Any-Others block; this fii sub-row is not a domestic institution"
+],
+[
+"inst-sub-fii",
+"Any Other",
+3.65
+]
+],
+"shpperent": false
+},
+"APOLLOTYRE|2013-12-31": {
+"file": "500877_80.html.gz",
+"d_dii": 0.0081,
+"d_fii": 2.7055,
+"add_ins": 0,
+"ev": [
+[
+"generic-row-C",
+"Any Other",
+2.71,
+"fii: qtrid 81 'Any Other' 2 holders 1.47"
+],
+[
+"inst-sub-fii",
+"Any Other",
+2.71
+]
+],
+"shpperent": false
+},
+"APOLLOTYRE|2014-03-31": {
+"file": "500877_81.html.gz",
+"d_dii": 0.0048,
+"d_fii": 1.4738,
+"add_ins": 0,
+"ev": [
+[
+"generic-row-A-rest",
+"Any Other",
+1.47,
+"fii: Merrill Lynch Capital Markets Espana S A 1.02 (curated) + 1 unnamed holder(s) 0.45 (rest follows, §158 R1)"
+],
+[
+"inst-sub-fii",
+"Any Other",
+1.47
+]
+],
+"shpperent": false
+},
+"APOLLOTYRE|2014-06-30": {
+"file": "500877_82.html.gz",
+"d_dii": 0.003,
+"d_fii": 0.9395,
+"add_ins": 0,
+"ev": [
+[
+"generic-row-C",
+"Any Other",
+0.94,
+"fii: qtrid 81 'Any Other' 2 holders 1.47; qtrid 83 'Any Other' 6 holders 1.64"
+],
+[
+"inst-sub-fii",
+"Any Other",
+0.94
+]
+],
+"shpperent": false
+},
+"APOLLOTYRE|2014-12-31": {
+"file": "500877_84.html.gz",
+"d_dii": -0.0024,
+"d_fii": 1.191,
+"add_ins": 0,
+"ev": [
+[
+"generic-row-A-rest",
+"Any Other",
+1.19,
+"fii: Merrill Lynch Capital Markets Espana S A 1.03 (curated) + 3 unnamed holder(s) 0.16 (rest follows, §158 R1)"
+]
+],
+"shpperent": false
+},
+"ARE&M|2015-06-30": {
+"file": "500008_86.html.gz",
+"d_dii": -0.0031,
+"d_fii": 5.2002,
+"add_ins": 0,
+"ev": [
+[
+"generic-row-B",
+"Others",
+5.2,
+"fii: prev 'Foreign Portolio Investor ( Corpor' 30 holders 3.49; next 'Foreign Portfolio Investments Corp' 52 holders 6.52"
+],
+[
+"inst-sub-fii",
+"Others",
+5.2
+]
+],
+"shpperent": false
+},
+"BAJAJ-AUTO|2015-06-30": {
+"file": "532977_86.html.gz",
+"d_dii": 0.0,
+"d_fii": 2.6854,
+"add_ins": 0,
+"ev": [
+[
+"generic-row-B",
+"Others",
+2.69,
+"fii: prev 'Foreign Portolio Investor ( Corpor' 90 holders 1.98; next 'Foreign Portfolio Investments Corp' 142 holders 3.51"
+],
+[
+"inst-sub-fii",
+"Others",
+2.69
+]
+],
+"shpperent": false
+},
+"BAJAJFINSV|2015-06-30": {
+"file": "532978_86.html.gz",
+"d_dii": 0.0018,
+"d_fii": 0.584,
+"add_ins": 0,
+"ev": [
+[
+"generic-row-B",
+"Others",
+0.58,
+"fii: prev 'Foreign Portolio Investor ( Corpor' 16 holders 0.53; next 'Foreign Portfolio Investments Corp' 26 holders 0.89"
+],
+[
+"inst-sub-fii",
+"Others",
+0.58
+]
+],
+"shpperent": false
+},
+"BAJAJHLDNG|2015-06-30": {
+"file": "500490_86.html.gz",
+"d_dii": 0.0021,
+"d_fii": 4.1058,
+"add_ins": 0,
+"ev": [
+[
+"generic-row-B",
+"Others",
+4.11,
+"fii: prev 'Foreign Portolio Investor ( Corpor' 21 holders 4.54; next 'Foreign Portfolio Investments Corp' 29 holders 4.63"
+],
+[
+"inst-sub-fii",
+"Others",
+4.11
+]
+],
+"shpperent": false
+},
+"BALRAMCHIN|2015-06-30": {
+"file": "500038_86.html.gz",
+"d_dii": 0.0098,
+"d_fii": 0.8197,
+"add_ins": 0,
+"ev": [
+[
+"generic-row-B",
+"Others",
+0.82,
+"fii: prev 'Foreign Port Folio Investor Corpor' 10 holders 1.49"
+],
+[
+"noninst-fii",
+"Others",
+0.82
+]
+],
+"shpperent": false
+},
+"BANKINDIA|2015-06-30": {
+"file": "532149_86.html.gz",
+"d_dii": -0.0006,
+"d_fii": 0.7888,
+"add_ins": 0,
+"ev": [
+[
+"generic-row-B",
+"Others",
+0.79,
+"fii: next 'Foreign Portfolio Investments Corp' 25 holders 1.07"
+],
+[
+"inst-sub-fii",
+"Others",
+0.79
+]
+],
+"shpperent": false
+},
+"BHARATFORG|2015-06-30": {
+"file": "500493_86.html.gz",
+"d_dii": -0.0075,
+"d_fii": 3.2033,
+"add_ins": 0,
+"ev": [
+[
+"generic-row-B",
+"Others",
+3.2,
+"fii: next 'Foreign Portfolio Investments Corp' 99 holders 3.96"
+],
+[
+"inst-sub-fii",
+"Others",
+3.2
+]
+],
+"shpperent": false
+},
+"BHARTIARTL|2015-06-30": {
+"file": "532454_86.html.gz",
+"d_dii": -0.0025,
+"d_fii": 3.0137,
+"add_ins": 0,
+"ev": [
+[
+"generic-row-A",
+"Others",
+5.11,
+"pub: Three Pillars Pte Ltd 5.00 (2015-form XBRL row) + 1 unnamed holder(s) 0.11 (rest follows, §158 R1)"
+],
+[
+"generic-row-B",
+"Others",
+3.01,
+"fii: prev 'Foreign Portolio Investor ( Corpor' 103 holders 2.00; next 'Foreign Portfolio Investments Corp' 160 holders 3.15"
+],
+[
+"inst-sub-fii",
+"Others",
+3.01
+]
+],
+"shpperent": false
+},
+"BLUEDART|2015-06-30": {
+"file": "526612_86.html.gz",
+"d_dii": -0.0034,
+"d_fii": 0.5168,
+"add_ins": 0,
+"ev": [
+[
+"generic-row-B",
+"Others",
+0.52,
+"fii: next 'Foreign Portfolio Investors' 19 holders 0.57"
+],
+[
+"noninst-fii",
+"Others",
+0.52
+]
+],
+"shpperent": false
+},
+"BLUESTARCO|2008-06-30": {
+"file": "500067_58.html.gz",
+"d_dii": -4.3315,
+"d_fii": 4.3436,
+"add_ins": 0,
+"ev": [
+[
+"dii-block-out",
+"Foreign Mutual Fund",
+4.34,
+"stored dii held the institutional Any-Others block; this fii sub-row is not a domestic institution"
+],
+[
+"inst-sub-fii",
+"Foreign Mutual Fund",
+4.34
+]
+],
+"shpperent": false
+},
+"BLUESTARCO|2008-09-30": {
+"file": "500067_59.html.gz",
+"d_dii": -4.6035,
+"d_fii": 4.6067,
+"add_ins": 0,
+"ev": [
+[
+"dii-block-out",
+"Foreign Mutual Fund",
+4.61,
+"stored dii held the institutional Any-Others block; this fii sub-row is not a domestic institution"
+],
+[
+"inst-sub-fii",
+"Foreign Mutual Fund",
+4.61
+]
+],
+"shpperent": false
+},
+"BLUESTARCO|2008-12-31": {
+"file": "500067_60.html.gz",
+"d_dii": -1.9891,
+"d_fii": 1.9867,
+"add_ins": 0,
+"ev": [
+[
+"dii-block-out",
+"Foreign Mutual Fund",
+1.99,
+"stored dii held the institutional Any-Others block; this fii sub-row is not a domestic institution"
+],
+[
+"inst-sub-fii",
+"Foreign Mutual Fund",
+1.99
+]
+],
+"shpperent": false
+},
+"BLUESTARCO|2009-03-31": {
+"file": "500067_61.html.gz",
+"d_dii": -1.9842,
+"d_fii": 1.9851,
+"add_ins": 0,
+"ev": [
+[
+"dii-block-out",
+"Foreign Mutual Fund",
+1.99,
+"stored dii held the institutional Any-Others block; this fii sub-row is not a domestic institution"
+],
+[
+"inst-sub-fii",
+"Foreign Mutual Fund",
+1.99
+]
+],
+"shpperent": false
+},
+"BLUESTARCO|2009-06-30": {
+"file": "500067_62.html.gz",
+"d_dii": -1.6882,
+"d_fii": 1.6856,
+"add_ins": 0,
+"ev": [
+[
+"dii-block-out",
+"Foreign Mutual Fund",
+1.69,
+"stored dii held the institutional Any-Others block; this fii sub-row is not a domestic institution"
+],
+[
+"inst-sub-fii",
+"Foreign Mutual Fund",
+1.69
+]
+],
+"shpperent": false
+},
+"BLUESTARCO|2009-09-30": {
+"file": "500067_63.html.gz",
+"d_dii": -1.8583,
+"d_fii": 1.8557,
+"add_ins": 0,
+"ev": [
+[
+"dii-block-out",
+"Foreign Mutual Fund",
+1.86,
+"stored dii held the institutional Any-Others block; this fii sub-row is not a domestic institution"
+],
+[
+"inst-sub-fii",
+"Foreign Mutual Fund",
+1.86
+]
+],
+"shpperent": false
+},
+"BLUESTARCO|2009-12-31": {
+"file": "500067_64.html.gz",
+"d_dii": -1.518,
+"d_fii": 1.5246,
+"add_ins": 0,
+"ev": [
+[
+"dii-block-out",
+"Foreign Mutual Fund",
+1.52,
+"stored dii held the institutional Any-Others block; this fii sub-row is not a domestic institution"
+],
+[
+"inst-sub-fii",
+"Foreign Mutual Fund",
+1.52
+]
+],
+"shpperent": false
+},
+"BLUESTARCO|2010-03-31": {
+"file": "500067_65.html.gz",
+"d_dii": -1.5253,
+"d_fii": 1.5194,
+"add_ins": 0,
+"ev": [
+[
+"dii-block-out",
+"Foreign Mutual Fund",
+1.52,
+"stored dii held the institutional Any-Others block; this fii sub-row is not a domestic institution"
+],
+[
+"inst-sub-fii",
+"Foreign Mutual Fund",
+1.52
+]
+],
+"shpperent": false
+},
+"BLUESTARCO|2010-06-30": {
+"file": "500067_66.html.gz",
+"d_dii": -1.5151,
+"d_fii": 1.5088,
+"add_ins": 0,
+"ev": [
+[
+"dii-block-out",
+"Foreign Mutual Fund",
+1.51,
+"stored dii held the institutional Any-Others block; this fii sub-row is not a domestic institution"
+],
+[
+"inst-sub-fii",
+"Foreign Mutual Fund",
+1.51
+]
+],
+"shpperent": false
+},
+"BLUESTARCO|2010-09-30": {
+"file": "500067_67.html.gz",
+"d_dii": -1.5084,
+"d_fii": 1.5143,
+"add_ins": 0,
+"ev": [
+[
+"dii-block-out",
+"Foreign Mutual Fund",
+1.51,
+"stored dii held the institutional Any-Others block; this fii sub-row is not a domestic institution"
+],
+[
+"inst-sub-fii",
+"Foreign Mutual Fund",
+1.51
+]
+],
+"shpperent": false
+},
+"BLUESTARCO|2010-12-31": {
+"file": "500067_68.html.gz",
+"d_dii": -1.5084,
+"d_fii": 1.5078,
+"add_ins": 0,
+"ev": [
+[
+"dii-block-out",
+"Foreign Mutual Fund",
+1.51,
+"stored dii held the institutional Any-Others block; this fii sub-row is not a domestic institution"
+],
+[
+"inst-sub-fii",
+"Foreign Mutual Fund",
+1.51
+]
+],
+"shpperent": false
+},
+"BLUESTARCO|2011-03-31": {
+"file": "500067_69.html.gz",
+"d_dii": -1.4808,
+"d_fii": 1.4781,
+"add_ins": 0,
+"ev": [
+[
+"dii-block-out",
+"Foreign Mutual Fund",
+1.48,
+"stored dii held the institutional Any-Others block; this fii sub-row is not a domestic institution"
+],
+[
+"inst-sub-fii",
+"Foreign Mutual Fund",
+1.48
+]
+],
+"shpperent": false
+},
+"BLUESTARCO|2011-06-30": {
+"file": "500067_70.html.gz",
+"d_dii": -1.4784,
+"d_fii": 1.4769,
+"add_ins": 0,
+"ev": [
+[
+"dii-block-out",
+"Foreign Mutual Fund",
+1.48,
+"stored dii held the institutional Any-Others block; this fii sub-row is not a domestic institution"
+],
+[
+"inst-sub-fii",
+"Foreign Mutual Fund",
+1.48
+]
+],
+"shpperent": false
+},
+"BLUESTARCO|2011-09-30": {
+"file": "500067_71.html.gz",
+"d_dii": -1.2547,
+"d_fii": 1.2628,
+"add_ins": 0,
+"ev": [
+[
+"dii-block-out",
+"Foreign Mutual Fund",
+1.26,
+"stored dii held the institutional Any-Others block; this fii sub-row is not a domestic institution"
+],
+[
+"inst-sub-fii",
+"Foreign Mutual Fund",
+1.26
+]
+],
+"shpperent": false
+},
+"BLUESTARCO|2011-12-31": {
+"file": "500067_72.html.gz",
+"d_dii": -1.212,
+"d_fii": 1.2107,
+"add_ins": 0,
+"ev": [
+[
+"dii-block-out",
+"Foreign Mutual Fund",
+1.21,
+"stored dii held the institutional Any-Others block; this fii sub-row is not a domestic institution"
+],
+[
+"inst-sub-fii",
+"Foreign Mutual Fund",
+1.21
+]
+],
+"shpperent": false
+},
+"BLUESTARCO|2012-03-31": {
+"file": "500067_73.html.gz",
+"d_dii": -1.0782,
+"d_fii": 1.076,
+"add_ins": 0,
+"ev": [
+[
+"dii-block-out",
+"Foreign Mutual Fund",
+1.08,
+"stored dii held the institutional Any-Others block; this fii sub-row is not a domestic institution"
+],
+[
+"inst-sub-fii",
+"Foreign Mutual Fund",
+1.08
+]
+],
+"shpperent": false
+},
+"BLUESTARCO|2012-06-30": {
+"file": "500067_74.html.gz",
+"d_dii": -1.0809,
+"d_fii": 1.0927,
+"add_ins": 0,
+"ev": [
+[
+"dii-block-out",
+"Foreign Mutual Fund",
+1.09,
+"stored dii held the institutional Any-Others block; this fii sub-row is not a domestic institution"
+],
+[
+"inst-sub-fii",
+"Foreign Mutual Fund",
+1.09
+]
+],
+"shpperent": false
+},
+"BLUESTARCO|2015-06-30": {
+"file": "500067_86.html.gz",
+"d_dii": -0.0106,
+"d_fii": 0.8238,
+"add_ins": 0,
+"ev": [
+[
+"generic-row-B",
+"Others",
+0.82,
+"fii: next 'Foreign Portfolio Investors' 5 holders 0.87"
+],
+[
+"inst-sub-unresolved",
+"Others",
+0.48,
+"stays as stored"
+],
+[
+"noninst-fii",
+"Others",
+0.82
+]
+],
+"shpperent": false
+},
+"BSOFT|2015-06-30": {
+"file": "532400_86.html.gz",
+"d_dii": 0.007,
+"d_fii": 9.2103,
+"add_ins": 0,
+"ev": [
+[
+"generic-row-by-holders",
+"Others",
+6.53,
+"pub [exact]: Van Dyck 3.95 (2015-form XBRL row); CX Partners Fund 1 Ltd 2.58 (2015-form XBRL row)"
+],
+[
+"generic-row-B",
+"Others",
+9.21,
+"fii: prev 'Foreign Port Folio Investor Corpor' 22 holders 8.53; next 'Foreign Portfolio Investors' 24 holders 11.11"
+],
+[
+"noninst-fii",
+"Others",
+9.21
+]
+],
+"shpperent": false
+},
+"CASTROLIND|2015-06-30": {
+"file": "500870_86.html.gz",
+"d_dii": 0.0022,
+"d_fii": 1.0462,
+"add_ins": 0,
+"ev": [
+[
+"generic-row-B",
+"Others",
+1.05,
+"fii: next 'Foreign Portfolio Investments Corp' 21 holders 1.10"
+],
+[
+"inst-sub-fii",
+"Others",
+1.05
+]
+],
+"shpperent": false
+},
+"CEATLTD|2015-06-30": {
+"file": "500878_86.html.gz",
+"d_dii": -0.0028,
+"d_fii": 2.3072,
+"add_ins": 0,
+"ev": [
+[
+"generic-row-B",
+"Others",
+2.31,
+"fii: prev 'Foreign Port Folio Investor Corpor' 10 holders 1.55"
+],
+[
+"noninst-fii",
+"Others",
+2.31
+]
+],
+"shpperent": false
+},
+"CHOLAFIN|2010-06-30": {
+"file": "511243_66.html.gz",
+"d_dii": -9.911,
+"d_fii": 9.9092,
+"add_ins": 0,
+"ev": [
+[
+"row-by-holders",
+"Any Other",
+9.91,
+"International Finance Corporation 9.91 (curated)"
+],
+[
+"dii-block-out",
+"Any Other",
+9.91,
+"stored dii held the institutional Any-Others block; this fii sub-row is not a domestic institution"
+],
+[
+"inst-sub-fii",
+"Any Other",
+9.91
+]
+],
+"shpperent": false
+},
+"CHOLAFIN|2010-09-30": {
+"file": "511243_67.html.gz",
+"d_dii": -9.9123,
+"d_fii": 9.9092,
+"add_ins": 0,
+"ev": [
+[
+"row-by-holders",
+"Any Other",
+9.91,
+"International Finance Corporation 9.91 (curated)"
+],
+[
+"dii-block-out",
+"Any Other",
+9.91,
+"stored dii held the institutional Any-Others block; this fii sub-row is not a domestic institution"
+],
+[
+"inst-sub-fii",
+"Any Other",
+9.91
+]
+],
+"shpperent": false
+},
+"CHOLAFIN|2010-12-31": {
+"file": "511243_68.html.gz",
+"d_dii": -12.1473,
+"d_fii": 9.9216,
+"add_ins": 0,
+"ev": [
+[
+"dii-block-out",
+"Multilateral Finance Corporation",
+9.92,
+"stored dii held the institutional Any-Others block; this fii sub-row is not a domestic institution"
+],
+[
+"dii-block-out",
+"Foreign Bodies Corporate",
+2.23,
+"stored dii held the institutional Any-Others block; this pub sub-row is not a domestic institution"
+],
+[
+"inst-sub-fii",
+"Multilateral Finance Corporation",
+9.92
+]
+],
+"shpperent": false
+},
+"CHOLAFIN|2011-03-31": {
+"file": "511243_69.html.gz",
+"d_dii": -12.1441,
+"d_fii": 9.9221,
+"add_ins": 0,
+"ev": [
+[
+"dii-block-out",
+"Multilateral Finance Corporation",
+9.92,
+"stored dii held the institutional Any-Others block; this fii sub-row is not a domestic institution"
+],
+[
+"dii-block-out",
+"Foreign Bodies Corporate",
+2.23,
+"stored dii held the institutional Any-Others block; this pub sub-row is not a domestic institution"
+],
+[
+"inst-sub-fii",
+"Multilateral Finance Corporation",
+9.92
+]
+],
+"shpperent": false
+},
+"CHOLAFIN|2011-06-30": {
+"file": "511243_70.html.gz",
+"d_dii": -12.1496,
+"d_fii": 9.9188,
+"add_ins": 0,
+"ev": [
+[
+"dii-block-out",
+"Multilateral Finance Corporation",
+9.92,
+"stored dii held the institutional Any-Others block; this fii sub-row is not a domestic institution"
+],
+[
+"dii-block-out",
+"Foreign Bodies Corporate",
+2.23,
+"stored dii held the institutional Any-Others block; this pub sub-row is not a domestic institution"
+],
+[
+"inst-sub-fii",
+"Multilateral Finance Corporation",
+9.92
+]
+],
+"shpperent": false
+},
+"CHOLAFIN|2011-09-30": {
+"file": "511243_71.html.gz",
+"d_dii": -12.1421,
+"d_fii": 9.9231,
+"add_ins": 0,
+"ev": [
+[
+"dii-block-out",
+"Multilateral Finance Corporation",
+9.92,
+"stored dii held the institutional Any-Others block; this fii sub-row is not a domestic institution"
+],
+[
+"dii-block-out",
+"Foreign Bodies Corporate",
+2.23,
+"stored dii held the institutional Any-Others block; this pub sub-row is not a domestic institution"
+],
+[
+"inst-sub-fii",
+"Multilateral Finance Corporation",
+9.92
+]
+],
+"shpperent": false
+},
+"CHOLAFIN|2011-12-31": {
+"file": "511243_72.html.gz",
+"d_dii": -12.1453,
+"d_fii": 9.9159,
+"add_ins": 0,
+"ev": [
+[
+"dii-block-out",
+"Multilateral Finance Corporation",
+9.92,
+"stored dii held the institutional Any-Others block; this fii sub-row is not a domestic institution"
+],
+[
+"dii-block-out",
+"Foreign Bodies Corporate",
+2.23,
+"stored dii held the institutional Any-Others block; this pub sub-row is not a domestic institution"
+],
+[
+"inst-sub-fii",
+"Multilateral Finance Corporation",
+9.92
+]
+],
+"shpperent": false
+},
+"CHOLAFIN|2012-03-31": {
+"file": "511243_73.html.gz",
+"d_dii": -19.5599,
+"d_fii": 8.9325,
+"add_ins": 0,
+"ev": [
+[
+"dii-block-out",
+"Multilateral Finance Corporation",
+8.93,
+"stored dii held the institutional Any-Others block; this fii sub-row is not a domestic institution"
+],
+[
+"dii-block-out",
+"Foreign Bodies Corporate",
+10.64,
+"stored dii held the institutional Any-Others block; this pub sub-row is not a domestic institution"
+],
+[
+"inst-sub-fii",
+"Multilateral Finance Corporation",
+8.93
+]
+],
+"shpperent": false
+},
+"CHOLAFIN|2012-06-30": {
+"file": "511243_74.html.gz",
+"d_dii": -19.5588,
+"d_fii": 8.9319,
+"add_ins": 0,
+"ev": [
+[
+"dii-block-out",
+"Multilateral Finance Corporation",
+8.93,
+"stored dii held the institutional Any-Others block; this fii sub-row is not a domestic institution"
+],
+[
+"dii-block-out",
+"Foreign Bodies Corporate",
+10.64,
+"stored dii held the institutional Any-Others block; this pub sub-row is not a domestic institution"
+],
+[
+"inst-sub-fii",
+"Multilateral Finance Corporation",
+8.93
+]
+],
+"shpperent": false
+},
+"CHOLAFIN|2012-09-30": {
+"file": "511243_75.html.gz",
+"d_dii": -19.5614,
+"d_fii": 8.9289,
+"add_ins": 0,
+"ev": [
+[
+"dii-block-out",
+"Multilateral Finance Corporation",
+8.93,
+"stored dii held the institutional Any-Others block; this fii sub-row is not a domestic institution"
+],
+[
+"dii-block-out",
+"Foreign Bodies Corporate",
+10.64,
+"stored dii held the institutional Any-Others block; this pub sub-row is not a domestic institution"
+],
+[
+"inst-sub-fii",
+"Multilateral Finance Corporation",
+8.93
+]
+],
+"shpperent": false
+},
+"CHOLAFIN|2012-12-31": {
+"file": "511243_76.html.gz",
+"d_dii": -19.5437,
+"d_fii": 8.9167,
+"add_ins": 0,
+"ev": [
+[
+"dii-block-out",
+"Multilateral Finance Corporation",
+8.92,
+"stored dii held the institutional Any-Others block; this fii sub-row is not a domestic institution"
+],
+[
+"dii-block-out",
+"Foreign Bodies Corporate",
+10.63,
+"stored dii held the institutional Any-Others block; this pub sub-row is not a domestic institution"
+],
+[
+"inst-sub-fii",
+"Multilateral Finance Corporation",
+8.92
+]
+],
+"shpperent": false
+},
+"CHOLAFIN|2013-03-31": {
+"file": "511243_77.html.gz",
+"d_dii": -18.1173,
+"d_fii": 8.2698,
+"add_ins": 0,
+"ev": [
+[
+"dii-block-out",
+"Multilateral Finance Corporation",
+8.27,
+"stored dii held the institutional Any-Others block; this fii sub-row is not a domestic institution"
+],
+[
+"dii-block-out",
+"Foreign Bodies Corporate",
+9.85,
+"stored dii held the institutional Any-Others block; this pub sub-row is not a domestic institution"
+],
+[
+"inst-sub-fii",
+"Multilateral Finance Corporation",
+8.27
+]
+],
+"shpperent": false
+},
+"CHOLAFIN|2013-06-30": {
+"file": "511243_78.html.gz",
+"d_dii": -18.1039,
+"d_fii": 8.2714,
+"add_ins": 0,
+"ev": [
+[
+"dii-block-out",
+"Multilateral Finance Corporation",
+8.27,
+"stored dii held the institutional Any-Others block; this fii sub-row is not a domestic institution"
+],
+[
+"dii-block-out",
+"Foreign Bodies Corporate",
+9.85,
+"stored dii held the institutional Any-Others block; this pub sub-row is not a domestic institution"
+],
+[
+"inst-sub-fii",
+"Multilateral Finance Corporation",
+8.27
+]
+],
+"shpperent": false
+},
+"CHOLAFIN|2013-09-30": {
+"file": "511243_79.html.gz",
+"d_dii": -18.1092,
+"d_fii": 8.2577,
+"add_ins": 0,
+"ev": [
+[
+"dii-block-out",
+"Multilateral Finance Corporation",
+8.26,
+"stored dii held the institutional Any-Others block; this fii sub-row is not a domestic institution"
+],
+[
+"dii-block-out",
+"Foreign Bodies Corporate",
+9.85,
+"stored dii held the institutional Any-Others block; this pub sub-row is not a domestic institution"
+],
+[
+"inst-sub-fii",
+"Multilateral Finance Corporation",
+8.26
+]
+],
+"shpperent": false
+},
+"CIPLA|2015-06-30": {
+"file": "500087_86.html.gz",
+"d_dii": -0.0009,
+"d_fii": 5.7663,
+"add_ins": 0,
+"ev": [
+[
+"generic-row-B",
+"Others",
+5.77,
+"fii: prev 'Foreign Portolio Investor ( Corpor' 73 holders 5.27; next 'Foreign Portfolio Investments Corp' 120 holders 8.20"
+],
+[
+"inst-sub-fii",
+"Others",
+5.77
+]
+],
+"shpperent": false
+},
+"COFORGE|2015-06-30": {
+"file": "532541_86.html.gz",
+"d_dii": 0.0068,
+"d_fii": 5.6613,
+"add_ins": 0,
+"ev": [
+[
+"generic-row-B",
+"Others",
+5.66,
+"fii: prev 'Foreign Portolio Investor ( Corpor' 14 holders 4.69; next 'Foreign Portfolio Investments Corp' 21 holders 5.80"
+],
+[
+"inst-sub-fii",
+"Others",
+5.66
+]
+],
+"shpperent": false
+},
+"COLPAL|2015-06-30": {
+"file": "500830_86.html.gz",
+"d_dii": 0.0025,
+"d_fii": 3.3738,
+"add_ins": 0,
+"ev": [
+[
+"generic-row-B",
+"Others",
+3.37,
+"fii: prev 'Foreign Portolio Investor ( Corpor' 30 holders 3.13; next 'Foreign Portfolio Investments Corp' 50 holders 2.77"
+],
+[
+"inst-sub-fii",
+"Others",
+3.37
+]
+],
+"shpperent": false
+},
+"HCLTECH|2008-06-30": {
+"file": "532281_58.html.gz",
+"d_dii": -1.1967,
+"d_fii": 1.1961,
+"add_ins": 0,
+"ev": [
+[
+"dii-block-out",
+"Foreign Financial Institutions / Banks",
+1.2,
+"stored dii held the institutional Any-Others block; this fii sub-row is not a domestic institution"
+],
+[
+"inst-sub-fii",
+"Foreign Financial Institutions / Banks",
+1.2
+]
+],
+"shpperent": false
+},
+"HCLTECH|2008-09-30": {
+"file": "532281_59.html.gz",
+"d_dii": -1.2039,
+"d_fii": 1.1903,
+"add_ins": 0,
+"ev": [
+[
+"dii-block-out",
+"Foreign Bank",
+1.19,
+"stored dii held the institutional Any-Others block; this fii sub-row is not a domestic institution"
+],
+[
+"inst-sub-fii",
+"Foreign Bank",
+1.19
+]
+],
+"shpperent": false
+},
+"HCLTECH|2008-12-31": {
+"file": "532281_60.html.gz",
+"d_dii": -1.1935,
+"d_fii": 1.1876,
+"add_ins": 0,
+"ev": [
+[
+"dii-block-out",
+"Foreign Bank",
+1.19,
+"stored dii held the institutional Any-Others block; this fii sub-row is not a domestic institution"
+],
+[
+"inst-sub-fii",
+"Foreign Bank",
+1.19
+]
+],
+"shpperent": false
+},
+"HDFCBANK|2006-06-30": {
+"file": "500180_50.html.gz",
+"d_dii": 0.0043,
+"d_fii": 1.2652,
+"add_ins": 0,
+"ev": [
+[
+"inst-sub-fii",
+"Indocean Financial Holding Ltd FDI",
+1.27
+]
+],
+"shpperent": false
+},
+"HEG|2008-06-30": {
+"file": "509631_58.html.gz",
+"d_dii": -1.3217,
+"d_fii": 1.3217,
+"add_ins": 0,
+"ev": [
+[
+"dii-block-out",
+"Foreign Financial Institutions / Banks",
+1.32,
+"stored dii held the institutional Any-Others block; this fii sub-row is not a domestic institution"
+],
+[
+"inst-sub-fii",
+"Foreign Financial Institutions / Banks",
+1.32
+]
+],
+"shpperent": false
+},
+"HEG|2008-09-30": {
+"file": "509631_59.html.gz",
+"d_dii": -1.3179,
+"d_fii": 1.3236,
+"add_ins": 0,
+"ev": [
+[
+"dii-block-out",
+"Foreign Bank",
+1.32,
+"stored dii held the institutional Any-Others block; this fii sub-row is not a domestic institution"
+],
+[
+"inst-sub-fii",
+"Foreign Bank",
+1.32
+]
+],
+"shpperent": false
+},
+"INDIACEM|2015-06-30": {
+"file": "530005_86.html.gz",
+"d_dii": -0.0017,
+"d_fii": 6.6053,
+"add_ins": 0,
+"ev": [
+[
+"generic-row-B",
+"Others",
+6.61,
+"fii: next 'Foreign Portfolio Investors' 23 holders 5.68"
+],
+[
+"noninst-fii",
+"Others",
+6.61
+]
+],
+"shpperent": false
+},
+"INDUSTOWER|2014-03-31": {
+"file": "534816_81.html.gz",
+"d_dii": -0.0024,
+"d_fii": 0.9532,
+"add_ins": 0,
+"ev": [
+[
+"generic-row-B",
+"Private Equity",
+0.95,
+"fii: next 'Private Equity' 1 holders 0.95"
+],
+[
+"inst-sub-unresolved",
+"Investment Fund",
+0.47,
+"stays as stored"
+],
+[
+"inst-sub-fii",
+"Private Equity",
+0.95
+]
+],
+"shpperent": false
+},
+"INDUSTOWER|2014-06-30": {
+"file": "534816_82.html.gz",
+"d_dii": 0.0085,
+"d_fii": 0.9525,
+"add_ins": 0,
+"ev": [
+[
+"generic-row-B",
+"Private Equity",
+0.95,
+"fii: next 'Qualified Foreign Investor' 1 holders 0.95"
+],
+[
+"inst-sub-fii",
+"Private Equity",
+0.95
+]
+],
+"shpperent": false
+},
+"INDUSTOWER|2015-06-30": {
+"file": "534816_86.html.gz",
+"d_dii": -0.0048,
+"d_fii": 2.6199,
+"add_ins": 0,
+"ev": [
+[
+"generic-row-A-rest",
+"Others",
+2.62,
+"fii: Merrill Lynch Capital Markets Espana S.A 1.87 (curated) + 2 unnamed holder(s) 0.75 (rest follows, §158 R1)"
+],
+[
+"noninst-fii",
+"Others",
+2.62
+]
+],
+"shpperent": false
+},
+"JINDALSTEL|2015-06-30": {
+"file": "532286_86.html.gz",
+"d_dii": -0.0008,
+"d_fii": 2.7612,
+"add_ins": 0,
+"ev": [
+[
+"generic-row-B",
+"Others",
+2.76,
+"fii: prev 'Foreign Portfolio Investors' 57 holders 2.82; next 'Foreign Portfolio Investors' 38 holders 2.41"
+],
+[
+"noninst-fii",
+"Others",
+2.76
+]
+],
+"shpperent": false
+},
+"JPPOWER|2015-06-30": {
+"file": "532627_86.html.gz",
+"d_dii": -0.0003,
+"d_fii": 1.3511,
+"add_ins": 0,
+"ev": [
+[
+"generic-row-B",
+"Others",
+0.72,
+"fii: prev 'Foreign Bank' 1 holders 0.72; next 'Foreign Bank' 1 holders 0.72"
+],
+[
+"generic-row-B",
+"Others",
+0.63,
+"fii: prev 'Foreign Port Folio Investor Corpor' 5 holders 0.85"
+],
+[
+"inst-sub-fii",
+"Others",
+0.72
+],
+[
+"noninst-fii",
+"Others",
+0.63
+]
+],
+"shpperent": false
+},
+"JSL|2008-06-30": {
+"file": "532508_58.html.gz",
+"d_dii": -6.1625,
+"d_fii": 6.1746,
+"add_ins": 0,
+"ev": [
+[
+"dii-block-out",
+"Foreign Financial Institutions / Banks",
+6.17,
+"stored dii held the institutional Any-Others block; this fii sub-row is not a domestic institution"
+],
+[
+"inst-sub-fii",
+"Foreign Financial Institutions / Banks",
+6.17
+]
+],
+"shpperent": false
+},
+"JSL|2008-09-30": {
+"file": "532508_59.html.gz",
+"d_dii": -6.1602,
+"d_fii": 6.1687,
+"add_ins": 0,
+"ev": [
+[
+"dii-block-out",
+"Foreign Bank",
+6.17,
+"stored dii held the institutional Any-Others block; this fii sub-row is not a domestic institution"
+],
+[
+"inst-sub-fii",
+"Foreign Bank",
+6.17
+]
+],
+"shpperent": false
+},
+"JSL|2008-12-31": {
+"file": "532508_60.html.gz",
+"d_dii": -6.1604,
+"d_fii": 6.1734,
+"add_ins": 0,
+"ev": [
+[
+"dii-block-out",
+"Foreign Bank",
+6.17,
+"stored dii held the institutional Any-Others block; this fii sub-row is not a domestic institution"
+],
+[
+"inst-sub-fii",
+"Foreign Bank",
+6.17
+]
+],
+"shpperent": false
+},
+"JSL|2009-03-31": {
+"file": "532508_61.html.gz",
+"d_dii": -6.162,
+"d_fii": 6.1675,
+"add_ins": 0,
+"ev": [
+[
+"dii-block-out",
+"Foreign Bank",
+6.17,
+"stored dii held the institutional Any-Others block; this fii sub-row is not a domestic institution"
+],
+[
+"inst-sub-fii",
+"Foreign Bank",
+6.17
+]
+],
+"shpperent": false
+},
+"JSL|2009-06-30": {
+"file": "532508_62.html.gz",
+"d_dii": -6.1628,
+"d_fii": 6.1687,
+"add_ins": 0,
+"ev": [
+[
+"dii-block-out",
+"Foreign Bank",
+6.17,
+"stored dii held the institutional Any-Others block; this fii sub-row is not a domestic institution"
+],
+[
+"inst-sub-fii",
+"Foreign Bank",
+6.17
+]
+],
+"shpperent": false
+},
+"JSL|2009-09-30": {
+"file": "532508_63.html.gz",
+"d_dii": -6.1645,
+"d_fii": 6.1708,
+"add_ins": 0,
+"ev": [
+[
+"dii-block-out",
+"Foreign Bank",
+6.17,
+"stored dii held the institutional Any-Others block; this fii sub-row is not a domestic institution"
+],
+[
+"inst-sub-fii",
+"Foreign Bank",
+6.17
+]
+],
+"shpperent": false
+},
+"JSL|2009-12-31": {
+"file": "532508_64.html.gz",
+"d_dii": -6.1647,
+"d_fii": 6.1703,
+"add_ins": 0,
+"ev": [
+[
+"dii-block-out",
+"Foreign Bank",
+6.17,
+"stored dii held the institutional Any-Others block; this fii sub-row is not a domestic institution"
+],
+[
+"inst-sub-fii",
+"Foreign Bank",
+6.17
+]
+],
+"shpperent": false
+},
+"JSL|2010-03-31": {
+"file": "532508_65.html.gz",
+"d_dii": -5.3885,
+"d_fii": 5.3935,
+"add_ins": 0,
+"ev": [
+[
+"dii-block-out",
+"Foreign Bank",
+5.39,
+"stored dii held the institutional Any-Others block; this fii sub-row is not a domestic institution"
+],
+[
+"inst-sub-fii",
+"Foreign Bank",
+5.39
+]
+],
+"shpperent": false
+},
+"JSL|2010-06-30": {
+"file": "532508_66.html.gz",
+"d_dii": -5.3879,
+"d_fii": 5.3938,
+"add_ins": 0,
+"ev": [
+[
+"dii-block-out",
+"Foreign Bank",
+5.39,
+"stored dii held the institutional Any-Others block; this fii sub-row is not a domestic institution"
+],
+[
+"inst-sub-fii",
+"Foreign Bank",
+5.39
+]
+],
+"shpperent": false
+},
+"JSL|2010-09-30": {
+"file": "532508_67.html.gz",
+"d_dii": -5.3884,
+"d_fii": 5.3943,
+"add_ins": 0,
+"ev": [
+[
+"dii-block-out",
+"Foreign Bank",
+5.39,
+"stored dii held the institutional Any-Others block; this fii sub-row is not a domestic institution"
+],
+[
+"inst-sub-fii",
+"Foreign Bank",
+5.39
+]
+],
+"shpperent": false
+},
+"JSL|2010-12-31": {
+"file": "532508_68.html.gz",
+"d_dii": -5.3788,
+"d_fii": 5.3854,
+"add_ins": 0,
+"ev": [
+[
+"dii-block-out",
+"Foreign Bank",
+5.39,
+"stored dii held the institutional Any-Others block; this fii sub-row is not a domestic institution"
+],
+[
+"inst-sub-fii",
+"Foreign Bank",
+5.39
+]
+],
+"shpperent": false
+},
+"JSL|2011-03-31": {
+"file": "532508_69.html.gz",
+"d_dii": -5.3335,
+"d_fii": 5.3416,
+"add_ins": 0,
+"ev": [
+[
+"dii-block-out",
+"Foreign Bank",
+5.34,
+"stored dii held the institutional Any-Others block; this fii sub-row is not a domestic institution"
+],
+[
+"inst-sub-fii",
+"Foreign Bank",
+5.34
+]
+],
+"shpperent": false
+},
+"JSL|2011-06-30": {
+"file": "532508_70.html.gz",
+"d_dii": -5.3165,
+"d_fii": 5.3198,
+"add_ins": 0,
+"ev": [
+[
+"dii-block-out",
+"Foreign Bank",
+5.32,
+"stored dii held the institutional Any-Others block; this fii sub-row is not a domestic institution"
+],
+[
+"inst-sub-fii",
+"Foreign Bank",
+5.32
+]
+],
+"shpperent": false
+},
+"JSL|2011-09-30": {
+"file": "532508_71.html.gz",
+"d_dii": -5.3154,
+"d_fii": 5.3204,
+"add_ins": 0,
+"ev": [
+[
+"dii-block-out",
+"Foreign Bank",
+5.32,
+"stored dii held the institutional Any-Others block; this fii sub-row is not a domestic institution"
+],
+[
+"inst-sub-fii",
+"Foreign Bank",
+5.32
+]
+],
+"shpperent": false
+},
+"JSL|2011-12-31": {
+"file": "532508_72.html.gz",
+"d_dii": -5.3085,
+"d_fii": 5.3127,
+"add_ins": 0,
+"ev": [
+[
+"dii-block-out",
+"Foreign Bank",
+5.31,
+"stored dii held the institutional Any-Others block; this fii sub-row is not a domestic institution"
+],
+[
+"inst-sub-fii",
+"Foreign Bank",
+5.31
+]
+],
+"shpperent": false
+},
+"JSL|2012-03-31": {
+"file": "532508_73.html.gz",
+"d_dii": -5.2794,
+"d_fii": 5.2838,
+"add_ins": 0,
+"ev": [
+[
+"dii-block-out",
+"Foreign Bank",
+5.28,
+"stored dii held the institutional Any-Others block; this fii sub-row is not a domestic institution"
+],
+[
+"inst-sub-fii",
+"Foreign Bank",
+5.28
+]
+],
+"shpperent": false
+},
+"JSL|2012-06-30": {
+"file": "532508_74.html.gz",
+"d_dii": -5.2643,
+"d_fii": 5.2728,
+"add_ins": 0,
+"ev": [
+[
+"dii-block-out",
+"Foreign Bank",
+5.27,
+"stored dii held the institutional Any-Others block; this fii sub-row is not a domestic institution"
+],
+[
+"inst-sub-fii",
+"Foreign Bank",
+5.27
+]
+],
+"shpperent": false
+},
+"JUBLPHARMA|2008-06-30": {
+"file": "530019_58.html.gz",
+"d_dii": -17.6554,
+"d_fii": 17.658,
+"add_ins": 0,
+"ev": [
+[
+"dii-block-out",
+"Foreign Financial Institutions",
+17.66,
+"stored dii held the institutional Any-Others block; this fii sub-row is not a domestic institution"
+],
+[
+"inst-sub-fii",
+"Foreign Financial Institutions",
+17.66
+]
+],
+"shpperent": false
+},
+"JUBLPHARMA|2008-09-30": {
+"file": "530019_59.html.gz",
+"d_dii": -16.8407,
+"d_fii": 16.8359,
+"add_ins": 0,
+"ev": [
+[
+"dii-block-out",
+"Foreign Financial Institutions",
+16.84,
+"stored dii held the institutional Any-Others block; this fii sub-row is not a domestic institution"
+],
+[
+"inst-sub-fii",
+"Foreign Financial Institutions",
+16.84
+]
+],
+"shpperent": false
+},
+"JUBLPHARMA|2008-12-31": {
+"file": "530019_60.html.gz",
+"d_dii": -16.7958,
+"d_fii": 16.8015,
+"add_ins": 0,
+"ev": [
+[
+"dii-block-out",
+"Foreign Financial Institutions",
+16.8,
+"stored dii held the institutional Any-Others block; this fii sub-row is not a domestic institution"
+],
+[
+"inst-sub-fii",
+"Foreign Financial Institutions",
+16.8
+]
+],
+"shpperent": false
+},
+"JUBLPHARMA|2009-03-31": {
+"file": "530019_61.html.gz",
+"d_dii": -16.1808,
+"d_fii": 16.1762,
+"add_ins": 0,
+"ev": [
+[
+"dii-block-out",
+"Foreign Financial Institutions",
+16.18,
+"stored dii held the institutional Any-Others block; this fii sub-row is not a domestic institution"
+],
+[
+"inst-sub-fii",
+"Foreign Financial Institutions",
+16.18
+]
+],
+"shpperent": false
+},
+"JUBLPHARMA|2009-06-30": {
+"file": "530019_62.html.gz",
+"d_dii": -16.1747,
+"d_fii": 16.1774,
+"add_ins": 0,
+"ev": [
+[
+"dii-block-out",
+"Foreign Financial Institutions",
+16.18,
+"stored dii held the institutional Any-Others block; this fii sub-row is not a domestic institution"
+],
+[
+"inst-sub-fii",
+"Foreign Financial Institutions",
+16.18
+]
+],
+"shpperent": false
+},
+"JUBLPHARMA|2009-09-30": {
+"file": "530019_63.html.gz",
+"d_dii": -16.1731,
+"d_fii": 16.1755,
+"add_ins": 0,
+"ev": [
+[
+"dii-block-out",
+"Foreign Financial Institutions",
+16.18,
+"stored dii held the institutional Any-Others block; this fii sub-row is not a domestic institution"
+],
+[
+"inst-sub-fii",
+"Foreign Financial Institutions",
+16.18
+]
+],
+"shpperent": false
+},
+"JUBLPHARMA|2009-12-31": {
+"file": "530019_64.html.gz",
+"d_dii": -16.0016,
+"d_fii": 16.0006,
+"add_ins": 0,
+"ev": [
+[
+"dii-block-out",
+"Foreign Financial Institutions",
+16.0,
+"stored dii held the institutional Any-Others block; this fii sub-row is not a domestic institution"
+],
+[
+"inst-sub-fii",
+"Foreign Financial Institutions",
+16.0
+]
+],
+"shpperent": false
+},
+"JUBLPHARMA|2010-03-31": {
+"file": "530019_65.html.gz",
+"d_dii": -14.7054,
+"d_fii": 14.703,
+"add_ins": 0,
+"ev": [
+[
+"dii-block-out",
+"Foreign Financial Institutions",
+14.7,
+"stored dii held the institutional Any-Others block; this fii sub-row is not a domestic institution"
+],
+[
+"inst-sub-fii",
+"Foreign Financial Institutions",
+14.7
+]
+],
+"shpperent": false
+},
+"JUBLPHARMA|2010-06-30": {
+"file": "530019_66.html.gz",
+"d_dii": -9.9046,
+"d_fii": 9.8964,
+"add_ins": 0,
+"ev": [
+[
+"dii-block-out",
+"Foreign Financial Institutions",
+9.9,
+"stored dii held the institutional Any-Others block; this fii sub-row is not a domestic institution"
+],
+[
+"inst-sub-fii",
+"Foreign Financial Institutions",
+9.9
+]
+],
+"shpperent": false
+},
+"JUBLPHARMA|2010-09-30": {
+"file": "530019_67.html.gz",
+"d_dii": -7.3732,
+"d_fii": 7.3675,
+"add_ins": 0,
+"ev": [
+[
+"dii-block-out",
+"Foreign Financial Institutions",
+7.37,
+"stored dii held the institutional Any-Others block; this fii sub-row is not a domestic institution"
+],
+[
+"inst-sub-fii",
+"Foreign Financial Institutions",
+7.37
+]
+],
+"shpperent": false
+},
+"JUBLPHARMA|2010-12-31": {
+"file": "530019_68.html.gz",
+"d_dii": -7.3458,
+"d_fii": 7.3549,
+"add_ins": 0,
+"ev": [
+[
+"dii-block-out",
+"Foreign Financial Institutions",
+7.35,
+"stored dii held the institutional Any-Others block; this fii sub-row is not a domestic institution"
+],
+[
+"inst-sub-fii",
+"Foreign Financial Institutions",
+7.35
+]
+],
+"shpperent": false
+},
+"JUBLPHARMA|2011-03-31": {
+"file": "530019_69.html.gz",
+"d_dii": -7.353,
+"d_fii": 7.3478,
+"add_ins": 0,
+"ev": [
+[
+"dii-block-out",
+"Foreign Financial Institutions",
+7.35,
+"stored dii held the institutional Any-Others block; this fii sub-row is not a domestic institution"
+],
+[
+"inst-sub-fii",
+"Foreign Financial Institutions",
+7.35
+]
+],
+"shpperent": false
+},
+"JUBLPHARMA|2011-06-30": {
+"file": "530019_70.html.gz",
+"d_dii": -7.3522,
+"d_fii": 7.3536,
+"add_ins": 0,
+"ev": [
+[
+"dii-block-out",
+"Foreign Financial Institutions",
+7.35,
+"stored dii held the institutional Any-Others block; this fii sub-row is not a domestic institution"
+],
+[
+"inst-sub-fii",
+"Foreign Financial Institutions",
+7.35
+]
+],
+"shpperent": false
+},
+"JUBLPHARMA|2011-09-30": {
+"file": "530019_71.html.gz",
+"d_dii": -7.3485,
+"d_fii": 7.3476,
+"add_ins": 0,
+"ev": [
+[
+"dii-block-out",
+"Foreign Financial Institutions",
+7.35,
+"stored dii held the institutional Any-Others block; this fii sub-row is not a domestic institution"
+],
+[
+"inst-sub-fii",
+"Foreign Financial Institutions",
+7.35
+]
+],
+"shpperent": false
+},
+"JUBLPHARMA|2011-12-31": {
+"file": "530019_72.html.gz",
+"d_dii": -7.3494,
+"d_fii": 7.3536,
+"add_ins": 0,
+"ev": [
+[
+"dii-block-out",
+"Foreign Financial Institutions",
+7.35,
+"stored dii held the institutional Any-Others block; this fii sub-row is not a domestic institution"
+],
+[
+"inst-sub-fii",
+"Foreign Financial Institutions",
+7.35
+]
+],
+"shpperent": false
+},
+"JUBLPHARMA|2012-03-31": {
+"file": "530019_73.html.gz",
+"d_dii": -7.3452,
+"d_fii": 7.3516,
+"add_ins": 0,
+"ev": [
+[
+"dii-block-out",
+"Foreign Financial Institutions",
+7.35,
+"stored dii held the institutional Any-Others block; this fii sub-row is not a domestic institution"
+],
+[
+"inst-sub-fii",
+"Foreign Financial Institutions",
+7.35
+]
+],
+"shpperent": false
+},
+"JUBLPHARMA|2012-06-30": {
+"file": "530019_74.html.gz",
+"d_dii": -7.3502,
+"d_fii": 7.3509,
+"add_ins": 0,
+"ev": [
+[
+"dii-block-out",
+"Foreign Financial Institutions",
+7.35,
+"stored dii held the institutional Any-Others block; this fii sub-row is not a domestic institution"
+],
+[
+"inst-sub-fii",
+"Foreign Financial Institutions",
+7.35
+]
+],
+"shpperent": false
+},
+"JUBLPHARMA|2012-09-30": {
+"file": "530019_75.html.gz",
+"d_dii": -7.3517,
+"d_fii": 7.3547,
+"add_ins": 0,
+"ev": [
+[
+"dii-block-out",
+"Foreign Financial Institutions",
+7.35,
+"stored dii held the institutional Any-Others block; this fii sub-row is not a domestic institution"
+],
+[
+"inst-sub-fii",
+"Foreign Financial Institutions",
+7.35
+]
+],
+"shpperent": false
+},
+"JUBLPHARMA|2012-12-31": {
+"file": "530019_76.html.gz",
+"d_dii": -7.3497,
+"d_fii": 7.3485,
+"add_ins": 0,
+"ev": [
+[
+"dii-block-out",
+"Foreign Financial Institutions",
+7.35,
+"stored dii held the institutional Any-Others block; this fii sub-row is not a domestic institution"
+],
+[
+"inst-sub-fii",
+"Foreign Financial Institutions",
+7.35
+]
+],
+"shpperent": false
+},
+"JUBLPHARMA|2013-03-31": {
+"file": "530019_77.html.gz",
+"d_dii": -7.355,
+"d_fii": 7.3481,
+"add_ins": 0,
+"ev": [
+[
+"dii-block-out",
+"Foreign Financial Institutions",
+7.35,
+"stored dii held the institutional Any-Others block; this fii sub-row is not a domestic institution"
+],
+[
+"inst-sub-fii",
+"Foreign Financial Institutions",
+7.35
+]
+],
+"shpperent": false
+},
+"JUBLPHARMA|2013-06-30": {
+"file": "530019_78.html.gz",
+"d_dii": -7.3546,
+"d_fii": 7.3486,
+"add_ins": 0,
+"ev": [
+[
+"dii-block-out",
+"Foreign Financial Institutions",
+7.35,
+"stored dii held the institutional Any-Others block; this fii sub-row is not a domestic institution"
+],
+[
+"inst-sub-fii",
+"Foreign Financial Institutions",
+7.35
+]
+],
+"shpperent": false
+},
+"JUBLPHARMA|2013-09-30": {
+"file": "530019_79.html.gz",
+"d_dii": -7.3504,
+"d_fii": 7.3451,
+"add_ins": 0,
+"ev": [
+[
+"dii-block-out",
+"Foreign Financial Institutions",
+7.35,
+"stored dii held the institutional Any-Others block; this fii sub-row is not a domestic institution"
+],
+[
+"inst-sub-fii",
+"Foreign Financial Institutions",
+7.35
+]
+],
+"shpperent": false
+},
+"LINDEINDIA|2015-06-30": {
+"file": "523457_86.html.gz",
+"d_dii": 0.0092,
+"d_fii": 0.5037,
+"add_ins": 0,
+"ev": [
+[
+"generic-row-B",
+"Others",
+0.5,
+"fii: next 'Foreign Portfolio Investors' 2 holders 0.59"
+],
+[
+"noninst-fii",
+"Others",
+0.5
+]
+],
+"shpperent": false
+},
+"LT|2015-06-30": {
+"file": "500510_86.html.gz",
+"d_dii": -0.0019,
+"d_fii": 2.848,
+"add_ins": 0,
+"ev": [
+[
+"generic-row-B",
+"Others",
+2.85,
+"fii: next 'Foreign Portfolio Investments Corp' 154 holders 2.97"
+],
+[
+"inst-sub-fii",
+"Others",
+2.85
+]
+],
+"shpperent": false
+},
+"LUPIN|2009-03-31": {
+"file": "500257_61.html.gz",
+"d_dii": -2.7868,
+"d_fii": 0.004,
+"add_ins": 0,
+"ev": [
+[
+"dii-block-out",
+"Foreign Bodies (FIPB Route)",
+2.79,
+"stored dii held the institutional Any-Others block; this pub sub-row is not a domestic institution"
+]
+],
+"shpperent": false
+},
+"LUPIN|2009-06-30": {
+"file": "500257_62.html.gz",
+"d_dii": -1.6082,
+"d_fii": 0.0002,
+"add_ins": 0,
+"ev": [
+[
+"dii-block-out",
+"Foreign Bodies (FIPB Route)",
+1.4,
+"stored dii held the institutional Any-Others block; this pub sub-row is not a domestic institution"
+],
+[
+"dii-block-out",
+"Foreign Bodies/Bank",
+0.21,
+"stored dii held the institutional Any-Others block; this pub sub-row is not a domestic institution"
+]
+],
+"shpperent": false
+},
+"LUPIN|2009-09-30": {
+"file": "500257_63.html.gz",
+"d_dii": -1.0696,
+"d_fii": 0.0039,
+"add_ins": 0,
+"ev": [
+[
+"dii-block-out",
+"Foreign Bodies/Bank",
+1.07,
+"stored dii held the institutional Any-Others block; this pub sub-row is not a domestic institution"
+]
+],
+"shpperent": false
+},
+"LUPIN|2009-12-31": {
+"file": "500257_64.html.gz",
+"d_dii": -1.0293,
+"d_fii": 0.0049,
+"add_ins": 0,
+"ev": [
+[
+"dii-block-out",
+"Foreign Bodies/Bank",
+1.02,
+"stored dii held the institutional Any-Others block; this pub sub-row is not a domestic institution"
+]
+],
+"shpperent": false
+},
+"MARICO|2015-06-30": {
+"file": "531642_86.html.gz",
+"d_dii": 0.0028,
+"d_fii": 3.5166,
+"add_ins": 0,
+"ev": [
+[
+"generic-row-B",
+"Others",
+3.52,
+"fii: prev 'Foreign Portolio Investor ( Corpor' 34 holders 1.92"
+],
+[
+"inst-sub-fii",
+"Others",
+3.52
+]
+],
+"shpperent": false
+},
+"MARICO|2015-09-30": {
+"file": "531642_87.html.gz",
+"d_dii": -0.0041,
+"d_fii": 4.0886,
+"add_ins": 0,
+"ev": [
+[
+"generic-row-C",
+"Others",
+4.09,
+"fii: qtrid 86 'Others' 77 holders 3.52"
+],
+[
+"inst-sub-fii",
+"Others",
+4.09
+]
+],
+"shpperent": false
+},
+"MFSL|2006-06-30": {
+"file": "500271_50.html.gz",
+"d_dii": 0.0063,
+"d_fii": 16.5802,
+"add_ins": 0,
+"ev": [
+[
+"row-by-holders",
+"Foreign Corporate Bodies",
+16.58,
+"Parkville Holdings Ltd 16.58 (filer's own FDI row for this holder)"
+],
+[
+"noninst-fii",
+"Foreign Corporate Bodies",
+16.58
+]
+],
+"shpperent": false
+},
+"MFSL|2006-09-30": {
+"file": "500271_51.html.gz",
+"d_dii": 0.0063,
+"d_fii": 16.5808,
+"add_ins": 0,
+"ev": [
+[
+"row-by-holders",
+"Foreign Corporate Bodies",
+16.58,
+"Parkville Holdings Ltd 16.58 (filer's own FDI row for this holder)"
+],
+[
+"noninst-fii",
+"Foreign Corporate Bodies",
+16.58
+]
+],
+"shpperent": false
+},
+"MFSL|2006-12-31": {
+"file": "500271_52.html.gz",
+"d_dii": 0.0036,
+"d_fii": 16.5782,
+"add_ins": 0,
+"ev": [
+[
+"row-by-holders",
+"Foreign Corporate Bodies",
+16.58,
+"Parrville Holdings Ltd 16.58 (filer's own FDI row for this holder)"
+],
+[
+"noninst-fii",
+"Foreign Corporate Bodies",
+16.58
+]
+],
+"shpperent": false
+},
+"MFSL|2007-03-31": {
+"file": "500271_53.html.gz",
+"d_dii": 0.0008,
+"d_fii": 16.577,
+"add_ins": 0,
+"ev": [
+[
+"row-by-holders",
+"Foreign Corporate Bodies",
+16.58,
+"Parrville Holdings Ltd 16.58 (filer's own FDI row for this holder)"
+],
+[
+"noninst-fii",
+"Foreign Corporate Bodies",
+16.58
+]
+],
+"shpperent": false
+},
+"MFSL|2007-06-30": {
+"file": "500271_54.html.gz",
+"d_dii": 0.0059,
+"d_fii": 13.4618,
+"add_ins": 0,
+"ev": [
+[
+"row-by-holders",
+"Foreign Corporate Bodies",
+13.46,
+"Parkville Holdings Ltd 13.46 (filer's own FDI row for this holder)"
+],
+[
+"noninst-fii",
+"Foreign Corporate Bodies",
+13.46
+]
+],
+"shpperent": false
+},
+"MFSL|2007-09-30": {
+"file": "500271_55.html.gz",
+"d_dii": -0.0018,
+"d_fii": 13.447,
+"add_ins": 0,
+"ev": [
+[
+"row-by-holders",
+"Foreign Corporate Bodies",
+13.45,
+"Parkville Holdings Ltd 13.45 (filer's own FDI row for this holder)"
+],
+[
+"noninst-fii",
+"Foreign Corporate Bodies",
+13.45
+]
+],
+"shpperent": false
+},
+"MFSL|2007-12-31": {
+"file": "500271_56.html.gz",
+"d_dii": 0.0027,
+"d_fii": 13.4494,
+"add_ins": 0,
+"ev": [
+[
+"row-by-holders",
+"Foreign Corporate Bodies",
+13.45,
+"Parkville Holdings Ltd 13.45 (filer's own FDI row for this holder)"
+],
+[
+"noninst-fii",
+"Foreign Corporate Bodies",
+13.45
+]
+],
+"shpperent": false
+},
+"MFSL|2008-03-31": {
+"file": "500271_57.html.gz",
+"d_dii": -0.0022,
+"d_fii": 13.4467,
+"add_ins": 0,
+"ev": [
+[
+"row-by-holders",
+"Foreign Corporate Bodies",
+13.45,
+"Parkville Holdings Ltd 13.45 (filer's own FDI row for this holder)"
+],
+[
+"noninst-fii",
+"Foreign Corporate Bodies",
+13.45
+]
+],
+"shpperent": false
+},
+"MFSL|2008-06-30": {
+"file": "500271_58.html.gz",
+"d_dii": 0.0049,
+"d_fii": 13.433,
+"add_ins": 0,
+"ev": [
+[
+"row-by-holders",
+"Foreign Corporate Bodies",
+13.43,
+"Parkville Holdings Ltd 13.43 (filer's own FDI row for this holder)"
+],
+[
+"noninst-fii",
+"Foreign Corporate Bodies",
+13.43
+]
+],
+"shpperent": false
+},
+"MFSL|2008-09-30": {
+"file": "500271_59.html.gz",
+"d_dii": -0.0022,
+"d_fii": 13.4255,
+"add_ins": 0,
+"ev": [
+[
+"row-by-holders",
+"Foreign Corporate Bodies",
+13.43,
+"Parkville Holdings Ltd 13.43 (filer's own FDI row for this holder)"
+],
+[
+"noninst-fii",
+"Foreign Corporate Bodies",
+13.43
+]
+],
+"shpperent": false
+},
+"MFSL|2008-12-31": {
+"file": "500271_60.html.gz",
+"d_dii": 0.0056,
+"d_fii": 13.4331,
+"add_ins": 0,
+"ev": [
+[
+"row-by-holders",
+"Foreign Corporate Bodies",
+13.43,
+"Parkville Holdings Ltd 13.43 (filer's own FDI row for this holder)"
+],
+[
+"noninst-fii",
+"Foreign Corporate Bodies",
+13.43
+]
+],
+"shpperent": false
+},
+"MFSL|2009-03-31": {
+"file": "500271_61.html.gz",
+"d_dii": 0.0043,
+"d_fii": 13.4316,
+"add_ins": 0,
+"ev": [
+[
+"row-by-holders",
+"Foreign Corporate Bodies",
+13.43,
+"Parkville Holdings Ltd 13.43 (filer's own FDI row for this holder)"
+],
+[
+"noninst-fii",
+"Foreign Corporate Bodies",
+13.43
+]
+],
+"shpperent": false
+},
+"MFSL|2009-06-30": {
+"file": "500271_62.html.gz",
+"d_dii": -0.0023,
+"d_fii": 17.2766,
+"add_ins": 0,
+"ev": [
+[
+"row-by-holders",
+"Foreign Corporate Bodies",
+17.28,
+"Parkville Holdings Ltd 12.84 (filer's own FDI row for this holder); International Finance Corporation 4.44 (curated)"
+],
+[
+"noninst-fii",
+"Foreign Corporate Bodies",
+17.28
+]
+],
+"shpperent": false
+},
+"MFSL|2009-09-30": {
+"file": "500271_63.html.gz",
+"d_dii": -0.0013,
+"d_fii": 17.2767,
+"add_ins": 0,
+"ev": [
+[
+"row-by-holders",
+"Foreign Corporate Bodies",
+17.28,
+"International Finance Corporation 4.44 (curated); Parkville Holdings Ltd 12.84 (filer's own FDI row for this holder)"
+],
+[
+"noninst-fii",
+"Foreign Corporate Bodies",
+17.28
+]
+],
+"shpperent": false
+},
+"MFSL|2009-12-31": {
+"file": "500271_64.html.gz",
+"d_dii": 0.0026,
+"d_fii": 17.2759,
+"add_ins": 0,
+"ev": [
+[
+"row-by-holders",
+"Foreign Corporate Bodies",
+17.28,
+"International Finance Corporation 4.44 (curated); Parkville Holdings Ltd 12.84 (filer's own FDI row for this holder)"
+],
+[
+"noninst-fii",
+"Foreign Corporate Bodies",
+17.28
+]
+],
+"shpperent": false
+},
+"MFSL|2010-03-31": {
+"file": "500271_65.html.gz",
+"d_dii": 0.0088,
+"d_fii": 17.2771,
+"add_ins": 0,
+"ev": [
+[
+"row-by-holders",
+"Foreign Corporate Bodies",
+17.28,
+"International Finance Corporation 4.44 (curated); Parkville Holdings Ltd 12.83 (filer's own FDI row for this holder)"
+],
+[
+"noninst-fii",
+"Foreign Corporate Bodies",
+17.28
+]
+],
+"shpperent": false
+},
+"MFSL|2010-06-30": {
+"file": "500271_66.html.gz",
+"d_dii": 0.0052,
+"d_fii": 17.2797,
+"add_ins": 0,
+"ev": [
+[
+"row-by-holders",
+"Foreign Corporate Bodies",
+17.28,
+"International Finance Corporation 4.44 (curated); Parkville Holdings Ltd 12.83 (filer's own FDI row for this holder)"
+],
+[
+"noninst-fii",
+"Foreign Corporate Bodies",
+17.28
+]
+],
+"shpperent": false
+},
+"MFSL|2010-09-30": {
+"file": "500271_67.html.gz",
+"d_dii": 0.0049,
+"d_fii": 17.2743,
+"add_ins": 0,
+"ev": [
+[
+"row-by-holders",
+"Foreign Corporate Bodies",
+17.27,
+"International Finance Corporation 4.44 (curated); Parkville Holdings Ltd 12.83 (filer's own FDI row for this holder)"
+],
+[
+"noninst-fii",
+"Foreign Corporate Bodies",
+17.27
+]
+],
+"shpperent": false
+},
+"MFSL|2010-12-31": {
+"file": "500271_68.html.gz",
+"d_dii": 0.0013,
+"d_fii": 17.2704,
+"add_ins": 0,
+"ev": [
+[
+"row-by-holders",
+"Foreign Corporate Bodies",
+17.27,
+"International Finance Corporation 4.44 (curated); Parkville Holdings Ltd 12.83 (filer's own FDI row for this holder)"
+],
+[
+"noninst-fii",
+"Foreign Corporate Bodies",
+17.27
+]
+],
+"shpperent": false
+},
+"MFSL|2011-03-31": {
+"file": "500271_69.html.gz",
+"d_dii": 0.006,
+"d_fii": 17.2653,
+"add_ins": 0,
+"ev": [
+[
+"row-by-holders",
+"Foreign Corporate Bodies",
+17.27,
+"International Finance Corporation 4.44 (curated); Parkville Holdings Ltd 12.83 (filer's own FDI row for this holder)"
+],
+[
+"noninst-fii",
+"Foreign Corporate Bodies",
+17.27
+]
+],
+"shpperent": false
+},
+"MFSL|2011-06-30": {
+"file": "500271_70.html.gz",
+"d_dii": -0.0004,
+"d_fii": 23.0742,
+"add_ins": 0,
+"ev": [
+[
+"row-by-holders",
+"Foreign Corporate Bodies",
+23.07,
+"International Finance Corporation 4.02 (curated); Parkville Holdings Ltd 9.66 (filer's own FDI row for this holder); Xenok Ltd 9.39 (filer's own FDI row for this holder)"
+],
+[
+"noninst-fii",
+"Foreign Corporate Bodies",
+23.07
+]
+],
+"shpperent": false
+},
+"MFSL|2011-09-30": {
+"file": "500271_71.html.gz",
+"d_dii": -22.3728,
+"d_fii": 22.3744,
+"add_ins": 0,
+"ev": [
+[
+"dii-block-out",
+"FDI",
+22.37,
+"stored dii held the institutional Any-Others block; this fii sub-row is not a domestic institution"
+],
+[
+"inst-sub-fii",
+"FDI",
+22.37
+]
+],
+"shpperent": false
+},
+"MFSL|2011-12-31": {
+"file": "500271_72.html.gz",
+"d_dii": 0.0097,
+"d_fii": 15.9011,
+"add_ins": 0,
+"ev": [
+[
+"noninst-fii",
+"Foreign Direct Investments",
+15.9
+]
+],
+"shpperent": false
+},
+"MFSL|2012-03-31": {
+"file": "500271_73.html.gz",
+"d_dii": -15.8869,
+"d_fii": 15.8963,
+"add_ins": 0,
+"ev": [
+[
+"dii-block-out",
+"FDI",
+15.9,
+"stored dii held the institutional Any-Others block; this fii sub-row is not a domestic institution"
+],
+[
+"inst-sub-fii",
+"FDI",
+15.9
+]
+],
+"shpperent": false
+},
+"MFSL|2012-06-30": {
+"file": "500271_74.html.gz",
+"d_dii": -12.9569,
+"d_fii": 12.9626,
+"add_ins": 0,
+"ev": [
+[
+"dii-block-out",
+"FDI",
+12.96,
+"stored dii held the institutional Any-Others block; this fii sub-row is not a domestic institution"
+],
+[
+"inst-sub-fii",
+"FDI",
+12.96
+]
+],
+"shpperent": false
+},
+"MFSL|2012-09-30": {
+"file": "500271_75.html.gz",
+"d_dii": -12.9606,
+"d_fii": 12.961,
+"add_ins": 0,
+"ev": [
+[
+"dii-block-out",
+"FDI",
+12.96,
+"stored dii held the institutional Any-Others block; this fii sub-row is not a domestic institution"
+],
+[
+"inst-sub-fii",
+"FDI",
+12.96
+]
+],
+"shpperent": false
+},
+"MFSL|2012-12-31": {
+"file": "500271_76.html.gz",
+"d_dii": -12.958,
+"d_fii": 12.9573,
+"add_ins": 0,
+"ev": [
+[
+"dii-block-out",
+"FDI",
+12.96,
+"stored dii held the institutional Any-Others block; this fii sub-row is not a domestic institution"
+],
+[
+"inst-sub-fii",
+"FDI",
+12.96
+]
+],
+"shpperent": false
+},
+"MFSL|2013-03-31": {
+"file": "500271_77.html.gz",
+"d_dii": -12.9541,
+"d_fii": 12.9579,
+"add_ins": 0,
+"ev": [
+[
+"dii-block-out",
+"FDI",
+12.96,
+"stored dii held the institutional Any-Others block; this fii sub-row is not a domestic institution"
+],
+[
+"inst-sub-fii",
+"FDI",
+12.96
+]
+],
+"shpperent": false
+},
+"MFSL|2013-06-30": {
+"file": "500271_78.html.gz",
+"d_dii": -12.9338,
+"d_fii": 12.9434,
+"add_ins": 0,
+"ev": [
+[
+"dii-block-out",
+"FDI",
+12.94,
+"stored dii held the institutional Any-Others block; this fii sub-row is not a domestic institution"
+],
+[
+"inst-sub-fii",
+"FDI",
+12.94
+]
+],
+"shpperent": false
+},
+"MFSL|2013-09-30": {
+"file": "500271_79.html.gz",
+"d_dii": -12.9386,
+"d_fii": 12.9383,
+"add_ins": 0,
+"ev": [
+[
+"dii-block-out",
+"FDI",
+12.94,
+"stored dii held the institutional Any-Others block; this fii sub-row is not a domestic institution"
+],
+[
+"inst-sub-fii",
+"FDI",
+12.94
+]
+],
+"shpperent": false
+},
+"MFSL|2013-12-31": {
+"file": "500271_80.html.gz",
+"d_dii": 0.0057,
+"d_fii": 12.9286,
+"add_ins": 0,
+"ev": [
+[
+"inst-sub-fii",
+"FDI",
+12.93
+]
+],
+"shpperent": false
+},
+"MFSL|2014-03-31": {
+"file": "500271_81.html.gz",
+"d_dii": 0.0076,
+"d_fii": 12.9181,
+"add_ins": 0,
+"ev": [
+[
+"inst-sub-fii",
+"FDI",
+12.92
+]
+],
+"shpperent": false
+},
+"MFSL|2014-06-30": {
+"file": "500271_82.html.gz",
+"d_dii": 0.0107,
+"d_fii": 12.9214,
+"add_ins": 0,
+"ev": [
+[
+"inst-sub-fii",
+"FDI",
+12.92
+]
+],
+"shpperent": false
+},
+"MFSL|2014-09-30": {
+"file": "500271_83.html.gz",
+"d_dii": 0.0,
+"d_fii": 12.1421,
+"add_ins": 0,
+"ev": [
+[
+"inst-sub-fii",
+"FDI",
+12.14
+]
+],
+"shpperent": false
+},
+"MFSL|2014-12-31": {
+"file": "500271_84.html.gz",
+"d_dii": 0.0039,
+"d_fii": 12.1386,
+"add_ins": 0,
+"ev": [
+[
+"inst-sub-fii",
+"FDI",
+12.14
+]
+],
+"shpperent": false
+},
+"MFSL|2015-03-31": {
+"file": "500271_85.html.gz",
+"d_dii": 0.0001,
+"d_fii": 12.1383,
+"add_ins": 0,
+"ev": [
+[
+"inst-sub-fii",
+"FDI",
+12.14
+]
+],
+"shpperent": false
+},
+"MFSL|2015-06-30": {
+"file": "500271_86.html.gz",
+"d_dii": 0.0025,
+"d_fii": 12.1252,
+"add_ins": 0,
+"ev": [
+[
+"row-by-holders",
+"Others",
+12.13,
+"Xenok Ltd 9.03 (filer's own FDI row for this holder); International Finance Corporation 3.10 (curated)"
+],
+[
+"inst-sub-fii",
+"Others",
+12.13
+]
+],
+"shpperent": false
+},
+"NATCOPHARM|2015-06-30": {
+"file": "524816_86.html.gz",
+"d_dii": -0.0069,
+"d_fii": 8.0589,
+"add_ins": 0,
+"ev": [
+[
+"generic-row-B",
+"Others",
+8.06,
+"fii: prev 'Foreign Portfolio Investments Corp' 15 holders 8.33"
+],
+[
+"noninst-fii",
+"Others",
+8.06
+]
+],
+"shpperent": false
+},
+"NAUKRI|2015-06-30": {
+"file": "532777_86.html.gz",
+"d_dii": 0.0014,
+"d_fii": 5.9829,
+"add_ins": 0,
+"ev": [
+[
+"generic-row-B",
+"Others",
+5.98,
+"fii: prev 'Foreign Portfolio Investors' 30 holders 5.67; next 'Foreign Portfolio Investors' 39 holders 6.69"
+],
+[
+"generic-row-B",
+"Others",
+0.67,
+"pub: prev 'Directors & their Relatives & Frie' 3 holders 0.67; next 'Directors & their Relatives & Frie' 3 holders 0.66"
+],
+[
+"noninst-fii",
+"Others",
+5.98
+]
+],
+"shpperent": false
+},
+"NAVA|2015-06-30": {
+"file": "513023_86.html.gz",
+"d_dii": -0.0017,
+"d_fii": 5.4805,
+"add_ins": 0,
+"ev": [
+[
+"generic-row-B",
+"Others",
+5.48,
+"fii: next 'Foreign Portfolio Investors' 12 holders 2.88"
+],
+[
+"noninst-fii",
+"Others",
+5.48
+]
+],
+"shpperent": false
+},
+"NMDC|2015-06-30": {
+"file": "526371_86.html.gz",
+"d_dii": -0.002,
+"d_fii": 1.2615,
+"add_ins": 0,
+"ev": [
+[
+"generic-row-B",
+"Others",
+1.26,
+"fii: prev 'Foreign Port Folio Investor Corpor' 21 holders 1.04; next 'Foreign Portfolio Investors' 29 holders 1.16"
+],
+[
+"noninst-fii",
+"Others",
+1.26
+]
+],
+"shpperent": false
+},
+"OBEROIRLTY|2015-06-30": {
+"file": "533273_86.html.gz",
+"d_dii": 0.0027,
+"d_fii": 2.0698,
+"add_ins": 0,
+"ev": [
+[
+"generic-row-by-holders",
+"Others",
+3.36,
+"pub [exact]: SSIII Indian Investments Two Ltd 3.36 (2015-form XBRL row)"
+],
+[
+"generic-row-B",
+"Others",
+2.07,
+"fii: prev 'Foreign Portolio Investor ( Corpor' 13 holders 1.12; next 'Foreign Portfolio Investments Corp' 27 holders 3.45"
+],
+[
+"inst-sub-fii",
+"Others",
+2.07
+]
+],
+"shpperent": false
+},
+"PERSISTENT|2015-06-30": {
+"file": "533179_86.html.gz",
+"d_dii": -0.0032,
+"d_fii": 2.2381,
+"add_ins": 0,
+"ev": [
+[
+"generic-row-B",
+"Others",
+2.24,
+"fii: prev 'Foreign Port Folio Investor Corpor' 17 holders 3.72"
+],
+[
+"inst-sub-unresolved",
+"Others",
+0.46,
+"stays as stored"
+],
+[
+"noninst-fii",
+"Others",
+2.24
+]
+],
+"shpperent": false
+},
+"PHOENIXLTD|2008-12-31": {
+"file": "503100_60.html.gz",
+"d_dii": -2.9435,
+"d_fii": -0.0011,
+"add_ins": 0,
+"ev": [
+[
+"dii-block-out",
+"Trusts",
+2.95,
+"stored dii held the institutional Any-Others block; this pub sub-row is not a domestic institution"
+]
+],
+"shpperent": false
+},
+"PHOENIXLTD|2009-03-31": {
+"file": "503100_61.html.gz",
+"d_dii": -3.9817,
+"d_fii": 0.0049,
+"add_ins": 0,
+"ev": [
+[
+"dii-block-out",
+"Trusts",
+2.95,
+"stored dii held the institutional Any-Others block; this pub sub-row is not a domestic institution"
+],
+[
+"dii-block-out",
+"Foreign Companies",
+1.04,
+"stored dii held the institutional Any-Others block; this pub sub-row is not a domestic institution"
+]
+],
+"shpperent": false
+},
+"PHOENIXLTD|2009-06-30": {
+"file": "503100_62.html.gz",
+"d_dii": -3.9834,
+"d_fii": 0.0049,
+"add_ins": 0,
+"ev": [
+[
+"dii-block-out",
+"Trusts",
+2.95,
+"stored dii held the institutional Any-Others block; this pub sub-row is not a domestic institution"
+],
+[
+"dii-block-out",
+"Foreign Companies",
+1.04,
+"stored dii held the institutional Any-Others block; this pub sub-row is not a domestic institution"
+]
+],
+"shpperent": false
+},
+"PHOENIXLTD|2009-09-30": {
+"file": "503100_63.html.gz",
+"d_dii": -3.9848,
+"d_fii": -0.002,
+"add_ins": 0,
+"ev": [
+[
+"dii-block-out",
+"Trusts",
+2.95,
+"stored dii held the institutional Any-Others block; this pub sub-row is not a domestic institution"
+],
+[
+"dii-block-out",
+"Foreign Companies",
+1.04,
+"stored dii held the institutional Any-Others block; this pub sub-row is not a domestic institution"
+]
+],
+"shpperent": false
+},
+"PHOENIXLTD|2009-12-31": {
+"file": "503100_64.html.gz",
+"d_dii": -2.0404,
+"d_fii": -0.0012,
+"add_ins": 0,
+"ev": [
+[
+"dii-block-out",
+"Trusts",
+1.01,
+"stored dii held the institutional Any-Others block; this pub sub-row is not a domestic institution"
+],
+[
+"dii-block-out",
+"Foreign Companies",
+1.04,
+"stored dii held the institutional Any-Others block; this pub sub-row is not a domestic institution"
+]
+],
+"shpperent": false
+},
+"PIDILITIND|2015-06-30": {
+"file": "500331_86.html.gz",
+"d_dii": 0.0103,
+"d_fii": 8.8598,
+"add_ins": 0,
+"ev": [
+[
+"generic-row-B",
+"Others",
+8.86,
+"fii: next 'Foreign Portfolio Investments Corp' 45 holders 8.83"
+],
+[
+"inst-sub-fii",
+"Others",
+8.86
+]
+],
+"shpperent": false
+},
+"POONAWALLA|2013-03-31": {
+"file": "524000_77.html.gz",
+"d_dii": -26.2527,
+"d_fii": 26.2542,
+"add_ins": 0,
+"ev": [
+[
+"row-by-holders",
+"Foreign Bodies Corporate",
+14.14,
+"Zend Mauritius VC Investment Ltd 14.14 (regex)"
+],
+[
+"dii-block-out",
+"Foreign Bodies Corporate",
+14.14,
+"stored dii held the institutional Any-Others block; this fii sub-row is not a domestic institution"
+],
+[
+"dii-block-out",
+"Multilateral & Bileteral Development Financial Institution",
+12.11,
+"stored dii held the institutional Any-Others block; this fii sub-row is not a domestic institution"
+],
+[
+"inst-sub-fii",
+"Foreign Bodies Corporate",
+14.14
+],
+[
+"inst-sub-fii",
+"Multilateral & Bileteral Development Financial Institution",
+12.11
+]
+],
+"shpperent": false
+},
+"POONAWALLA|2013-06-30": {
+"file": "524000_78.html.gz",
+"d_dii": -26.2434,
+"d_fii": 26.2506,
+"add_ins": 0,
+"ev": [
+[
+"row-by-holders",
+"Foreign Bodies Corporate",
+14.14,
+"Zend Mauritius VC Investments Ltd 14.14 (regex)"
+],
+[
+"dii-block-out",
+"Foreign Bodies Corporate",
+14.14,
+"stored dii held the institutional Any-Others block; this fii sub-row is not a domestic institution"
+],
+[
+"dii-block-out",
+"Multilateral & Bileteral Development Financial Institution",
+12.11,
+"stored dii held the institutional Any-Others block; this fii sub-row is not a domestic institution"
+],
+[
+"inst-sub-fii",
+"Foreign Bodies Corporate",
+14.14
+],
+[
+"inst-sub-fii",
+"Multilateral & Bileteral Development Financial Institution",
+12.11
+]
+],
+"shpperent": false
+},
+"POONAWALLA|2013-09-30": {
+"file": "524000_79.html.gz",
+"d_dii": -26.2197,
+"d_fii": 26.2313,
+"add_ins": 0,
+"ev": [
+[
+"row-by-holders",
+"Foreign Bodies Corporate",
+14.13,
+"Zend Mauritius VC Investments Ltd 14.13 (regex)"
+],
+[
+"dii-block-out",
+"Foreign Bodies Corporate",
+14.13,
+"stored dii held the institutional Any-Others block; this fii sub-row is not a domestic institution"
+],
+[
+"dii-block-out",
+"Multilateral & Bileteral Development Financial Institution",
+12.1,
+"stored dii held the institutional Any-Others block; this fii sub-row is not a domestic institution"
+],
+[
+"inst-sub-fii",
+"Foreign Bodies Corporate",
+14.13
+],
+[
+"inst-sub-fii",
+"Multilateral & Bileteral Development Financial Institution",
+12.1
+]
+],
+"shpperent": false
+},
+"RKFORGE|2015-09-30": {
+"file": "532527_87.html.gz",
+"d_dii": -3.8019,
+"d_fii": 3.797,
+"add_ins": 0,
+"ev": [
+[
+"row-by-holders",
+"Others",
+3.8,
+"International Finance Corporation 3.80 (curated)"
+],
+[
+"dii-block-out",
+"Others",
+3.8,
+"stored dii held the institutional Any-Others block; this fii sub-row is not a domestic institution"
+],
+[
+"inst-sub-fii",
+"Others",
+3.8
+]
+],
+"shpperent": false
+},
+"SIEMENS|2015-06-30": {
+"file": "500550_86.html.gz",
+"d_dii": -0.0014,
+"d_fii": 1.03,
+"add_ins": 0,
+"ev": [
+[
+"generic-row-B",
+"Others",
+1.03,
+"fii: prev 'Foreign Portolio Investor ( Corpor' 43 holders 0.82; next 'Foreign Portfolio Investments Corp' 70 holders 1.10"
+],
+[
+"inst-sub-fii",
+"Others",
+1.03
+]
+],
+"shpperent": false
+},
+"SOBHA|2015-06-30": {
+"file": "532784_86.html.gz",
+"d_dii": -0.0062,
+"d_fii": 9.9622,
+"add_ins": 0,
+"ev": [
+[
+"generic-row-B",
+"Others",
+9.96,
+"fii: prev 'Foreign Portolio Investor ( Corpor' 14 holders 9.90; next 'Foreign Portfolio Investments Corp' 20 holders 14.34"
+],
+[
+"inst-sub-fii",
+"Others",
+9.96
+]
+],
+"shpperent": false
+},
+"SUNPHARMA|2015-06-30": {
+"file": "524715_86.html.gz",
+"d_dii": 0.0034,
+"d_fii": 4.1387,
+"add_ins": 0,
+"ev": [
+[
+"generic-row-B",
+"Others",
+4.14,
+"fii: prev 'Foreign Portfolio Investments Corp' 129 holders 3.61"
+],
+[
+"noninst-fii",
+"Others",
+4.14
+]
+],
+"shpperent": false
+},
+"TATACHEM|2015-06-30": {
+"file": "500770_86.html.gz",
+"d_dii": 0.0037,
+"d_fii": 2.1465,
+"add_ins": 0,
+"ev": [
+[
+"generic-row-B",
+"Others",
+2.15,
+"fii: prev 'Foreign Portolio Investor ( Corpor' 21 holders 2.08; next 'Foreign Portfolio Investments Corp' 41 holders 2.50"
+],
+[
+"inst-sub-fii",
+"Others",
+2.15
+]
+],
+"shpperent": false
+},
+"TATACONSUM|2015-06-30": {
+"file": "500800_86.html.gz",
+"d_dii": 0.0025,
+"d_fii": 2.992,
+"add_ins": 0,
+"ev": [
+[
+"generic-row-B",
+"Others",
+2.99,
+"fii: prev 'Foreign Portolio Investor ( Corpor' 26 holders 3.10; next 'Foreign Portfolio Investments Corp' 33 holders 2.92"
+],
+[
+"inst-sub-fii",
+"Others",
+2.99
+]
+],
+"shpperent": false
+},
+"TATAPOWER|2015-06-30": {
+"file": "500400_86.html.gz",
+"d_dii": -0.0034,
+"d_fii": 2.8918,
+"add_ins": 0,
+"ev": [
+[
+"generic-row-B",
+"Others",
+2.89,
+"fii: prev 'Foreign Portolio Investor ( Corpor' 61 holders 2.81; next 'Foreign Portfolio Investments Corp' 81 holders 3.10"
+],
+[
+"inst-sub-fii",
+"Others",
+2.89
+],
+[
+"inst-sub-unresolved",
+"Others",
+0.05,
+"stays as stored"
+]
+],
+"shpperent": false
+},
+"TATASTEEL|2009-09-30": {
+"file": "500470_63.html.gz",
+"d_dii": -2.4722,
+"d_fii": 0.0006,
+"add_ins": 0,
+"ev": [
+[
+"dii-block-out",
+"Foreign Institutional Investors - DR",
+2.29,
+"stored dii held the institutional Any-Others block; this depository-receipt sub-row is not a domestic institution"
+],
+[
+"dii-block-out",
+"Foreign Bodies DR",
+0.18,
+"stored dii held the institutional Any-Others block; this depository-receipt sub-row is not a domestic institution"
+],
+[
+"inst-sub-unresolved",
+"Foreign Institutional Investors - DR",
+2.29,
+"stays as stored"
+],
+[
+"inst-sub-unresolved",
+"Foreign Bodies DR",
+0.18,
+"stays as stored"
+]
+],
+"shpperent": false
+},
+"TATASTEEL|2009-12-31": {
+"file": "500470_64.html.gz",
+"d_dii": -2.27,
+"d_fii": 0.0015,
+"add_ins": 0,
+"ev": [
+[
+"dii-block-out",
+"Foreign Institutional Investors - DR",
+2.11,
+"stored dii held the institutional Any-Others block; this depository-receipt sub-row is not a domestic institution"
+],
+[
+"dii-block-out",
+"Foreign Bodies DR",
+0.17,
+"stored dii held the institutional Any-Others block; this depository-receipt sub-row is not a domestic institution"
+],
+[
+"inst-sub-unresolved",
+"Foreign Institutional Investors - DR",
+2.11,
+"stays as stored"
+],
+[
+"inst-sub-unresolved",
+"Foreign Bodies DR",
+0.17,
+"stays as stored"
+]
+],
+"shpperent": false
+},
+"TATASTEEL|2010-03-31": {
+"file": "500470_65.html.gz",
+"d_dii": -1.3061,
+"d_fii": -0.0014,
+"add_ins": 0,
+"ev": [
+[
+"dii-block-out",
+"Foreign Institutional Investors - DR",
+1.29,
+"stored dii held the institutional Any-Others block; this depository-receipt sub-row is not a domestic institution"
+],
+[
+"dii-block-out",
+"Foreign Bodies DR",
+0.02,
+"stored dii held the institutional Any-Others block; this depository-receipt sub-row is not a domestic institution"
+],
+[
+"inst-sub-unresolved",
+"Foreign Institutional Investors - DR",
+1.29,
+"stays as stored"
+],
+[
+"inst-sub-unresolved",
+"Foreign Bodies DR",
+0.02,
+"stays as stored"
+]
+],
+"shpperent": false
+},
+"TATASTEEL|2010-06-30": {
+"file": "500470_66.html.gz",
+"d_dii": -1.2985,
+"d_fii": -0.0025,
+"add_ins": 0,
+"ev": [
+[
+"dii-block-out",
+"Foreign Institutional Investors - DR",
+1.26,
+"stored dii held the institutional Any-Others block; this depository-receipt sub-row is not a domestic institution"
+],
+[
+"dii-block-out",
+"Foreign Bodies DR",
+0.03,
+"stored dii held the institutional Any-Others block; this depository-receipt sub-row is not a domestic institution"
+],
+[
+"inst-sub-unresolved",
+"Foreign Institutional Investors - DR",
+1.26,
+"stays as stored"
+],
+[
+"inst-sub-unresolved",
+"Foreign Bodies DR",
+0.03,
+"stays as stored"
+]
+],
+"shpperent": false
+},
+"TECHM|2015-03-31": {
+"file": "532755_85.html.gz",
+"d_dii": -2.6515,
+"d_fii": 2.6491,
+"add_ins": 0,
+"ev": [
+[
+"dii-block-out",
+"Foreign Portolio Investor ( Corporate)",
+2.65,
+"stored dii held the institutional Any-Others block; this fii sub-row is not a domestic institution"
+],
+[
+"inst-sub-fii",
+"Foreign Portolio Investor ( Corporate)",
+2.65
+]
+],
+"shpperent": false
+},
+"TECHM|2015-06-30": {
+"file": "532755_86.html.gz",
+"d_dii": -2.7844,
+"d_fii": 2.7845,
+"add_ins": 0,
+"ev": [
+[
+"generic-row-B",
+"Others",
+2.78,
+"fii: prev 'Foreign Portolio Investor ( Corpor' 97 holders 2.65; next 'Foreign Portfolio Investments Corp' 126 holders 4.26"
+],
+[
+"dii-block-out",
+"Others",
+2.78,
+"stored dii held the institutional Any-Others block; this fii sub-row is not a domestic institution"
+],
+[
+"inst-sub-fii",
+"Others",
+2.78
+]
+],
+"shpperent": false
+},
+"TITAN|2015-06-30": {
+"file": "500114_86.html.gz",
+"d_dii": -0.005,
+"d_fii": 1.4073,
+"add_ins": 0,
+"ev": [
+[
+"generic-row-B",
+"Others",
+1.41,
+"fii: prev 'Foreign Portfolio Investments Corp' 29 holders 1.26; next 'Foreign Portfolio Investments Corp' 51 holders 1.87"
+],
+[
+"inst-sub-fii",
+"Others",
+1.41
+]
+],
+"shpperent": false
+},
+"TMPV|2009-12-31": {
+"file": "500570_64.html.gz",
+"d_dii": -1.0651,
+"d_fii": 0.0035,
+"add_ins": 0,
+"ev": [
+[
+"dii-block-out",
+"Foreign Bodies DR",
+0.09,
+"stored dii held the institutional Any-Others block; this depository-receipt sub-row is not a domestic institution"
+],
+[
+"dii-block-out",
+"Foreign Institutional Investors - DR",
+0.97,
+"stored dii held the institutional Any-Others block; this depository-receipt sub-row is not a domestic institution"
+],
+[
+"inst-sub-unresolved",
+"Foreign Bodies DR",
+0.09,
+"stays as stored"
+],
+[
+"inst-sub-unresolved",
+"Foreign Institutional Investors - DR",
+0.97,
+"stays as stored"
+]
+],
+"shpperent": false
+},
+"TMPV|2015-06-30": {
+"file": "500570_86.html.gz",
+"d_dii": 0.0073,
+"d_fii": 2.5655,
+"add_ins": 0,
+"ev": [
+[
+"generic-row-B",
+"Others",
+2.57,
+"fii: prev 'Foreign Portolio Investor ( Corpor' 112 holders 2.40; next 'Foreign Portfolio Investments Corp' 161 holders 3.87"
+],
+[
+"inst-sub-fii",
+"Others",
+2.57
+],
+[
+"inst-sub-unresolved",
+"Others",
+0.25,
+"stays as stored"
+]
+],
+"shpperent": false
+},
+"TRENT|2015-06-30": {
+"file": "500251_86.html.gz",
+"d_dii": -0.002,
+"d_fii": 1.5625,
+"add_ins": 0,
+"ev": [
+[
+"generic-row-B",
+"Others",
+1.56,
+"fii: prev 'Foreign Portolio Investor ( Corpor' 5 holders 1.22; next 'Foreign Portfolio Investments Corp' 7 holders 1.69"
+],
+[
+"inst-sub-fii",
+"Others",
+1.56
+]
+],
+"shpperent": false
+},
+"TVSMOTOR|2015-06-30": {
+"file": "532343_86.html.gz",
+"d_dii": -0.0064,
+"d_fii": 0.7859,
+"add_ins": 0,
+"ev": [
+[
+"generic-row-B",
+"Others",
+0.79,
+"fii: prev 'Foreign Portolio Investor ( Corpor' 17 holders 0.97; next 'Foreign Portfolio Investments Corp' 20 holders 0.92"
+],
+[
+"generic-row-B",
+"Others",
+0.6,
+"pub: prev 'Directors & their Relatives & Frie' 9 holders 0.60; next 'Directors & their Relatives & Frie' 9 holders 0.60"
+],
+[
+"inst-sub-fii",
+"Others",
+0.79
+]
+],
+"shpperent": false
+},
+"YESBANK|2009-06-30": {
+"file": "532648_62.html.gz",
+"d_dii": -20.8606,
+"d_fii": 20.8648,
+"add_ins": 0,
+"ev": [
+[
+"dii-block-out",
+"Foreign Financial Institutions",
+20.86,
+"stored dii held the institutional Any-Others block; this fii sub-row is not a domestic institution"
+],
+[
+"inst-sub-fii",
+"Foreign Financial Institutions",
+20.86
+]
+],
+"shpperent": false
+},
+"YESBANK|2009-09-30": {
+"file": "532648_63.html.gz",
+"d_dii": -18.3448,
+"d_fii": 18.3479,
+"add_ins": 0,
+"ev": [
+[
+"dii-block-out",
+"Foreign Financial Institutions",
+18.35,
+"stored dii held the institutional Any-Others block; this fii sub-row is not a domestic institution"
+],
+[
+"inst-sub-fii",
+"Foreign Financial Institutions",
+18.35
+]
+],
+"shpperent": false
+},
+"YESBANK|2009-12-31": {
+"file": "532648_64.html.gz",
+"d_dii": -18.2169,
+"d_fii": 18.2157,
+"add_ins": 0,
+"ev": [
+[
+"dii-block-out",
+"Foreign Financial Institutions",
+18.22,
+"stored dii held the institutional Any-Others block; this fii sub-row is not a domestic institution"
+],
+[
+"inst-sub-fii",
+"Foreign Financial Institutions",
+18.22
+]
+],
+"shpperent": false
+},
+"YESBANK|2010-03-31": {
+"file": "532648_65.html.gz",
+"d_dii": -14.8113,
+"d_fii": 14.8078,
+"add_ins": 0,
+"ev": [
+[
+"dii-block-out",
+"Foreign Financial Institutions",
+14.81,
+"stored dii held the institutional Any-Others block; this fii sub-row is not a domestic institution"
+],
+[
+"inst-sub-fii",
+"Foreign Financial Institutions",
+14.81
+]
+],
+"shpperent": false
+},
+"YESBANK|2010-06-30": {
+"file": "532648_66.html.gz",
+"d_dii": -7.9241,
+"d_fii": 7.9239,
+"add_ins": 0,
+"ev": [
+[
+"dii-block-out",
+"Foreign Financial Institutions",
+7.92,
+"stored dii held the institutional Any-Others block; this fii sub-row is not a domestic institution"
+],
+[
+"inst-sub-fii",
+"Foreign Financial Institutions",
+7.92
+]
+],
+"shpperent": false
+},
+"YESBANK|2010-09-30": {
+"file": "532648_67.html.gz",
+"d_dii": -7.8163,
+"d_fii": 7.8224,
+"add_ins": 0,
+"ev": [
+[
+"dii-block-out",
+"Foreign Financial Institutions",
+7.82,
+"stored dii held the institutional Any-Others block; this fii sub-row is not a domestic institution"
+],
+[
+"inst-sub-fii",
+"Foreign Financial Institutions",
+7.82
+]
+],
+"shpperent": false
+},
+"YESBANK|2010-12-31": {
+"file": "532648_68.html.gz",
+"d_dii": -7.7927,
+"d_fii": 7.7894,
+"add_ins": 0,
+"ev": [
+[
+"dii-block-out",
+"Foreign Financial Institutions",
+7.79,
+"stored dii held the institutional Any-Others block; this fii sub-row is not a domestic institution"
+],
+[
+"inst-sub-fii",
+"Foreign Financial Institutions",
+7.79
+]
+],
+"shpperent": false
+},
+"YESBANK|2011-03-31": {
+"file": "532648_69.html.gz",
+"d_dii": -4.8105,
+"d_fii": 4.8067,
+"add_ins": 0,
+"ev": [
+[
+"dii-block-out",
+"Foreign Financial Institutions",
+4.81,
+"stored dii held the institutional Any-Others block; this fii sub-row is not a domestic institution"
+],
+[
+"inst-sub-fii",
+"Foreign Financial Institutions",
+4.81
+]
+],
+"shpperent": false
+},
+"YESBANK|2011-06-30": {
+"file": "532648_70.html.gz",
+"d_dii": -4.7928,
+"d_fii": 4.7984,
+"add_ins": 0,
+"ev": [
+[
+"dii-block-out",
+"Foreign Financial Institutions",
+4.8,
+"stored dii held the institutional Any-Others block; this fii sub-row is not a domestic institution"
+],
+[
+"inst-sub-fii",
+"Foreign Financial Institutions",
+4.8
+]
+],
+"shpperent": false
+},
+"YESBANK|2011-09-30": {
+"file": "532648_71.html.gz",
+"d_dii": -4.7621,
+"d_fii": 4.7579,
+"add_ins": 0,
+"ev": [
+[
+"dii-block-out",
+"Foreign Financial Institutions",
+4.76,
+"stored dii held the institutional Any-Others block; this fii sub-row is not a domestic institution"
+],
+[
+"inst-sub-fii",
+"Foreign Financial Institutions",
+4.76
+]
+],
+"shpperent": false
+},
+"YESBANK|2011-12-31": {
+"file": "532648_72.html.gz",
+"d_dii": -4.753,
+"d_fii": 4.7495,
+"add_ins": 0,
+"ev": [
+[
+"dii-block-out",
+"Foreign Financial Institutions",
+4.75,
+"stored dii held the institutional Any-Others block; this fii sub-row is not a domestic institution"
+],
+[
+"inst-sub-fii",
+"Foreign Financial Institutions",
+4.75
+]
+],
+"shpperent": false
+},
+"YESBANK|2012-03-31": {
+"file": "532648_73.html.gz",
+"d_dii": -4.7289,
+"d_fii": 4.7342,
+"add_ins": 0,
+"ev": [
+[
+"dii-block-out",
+"Foreign Financial Institutions",
+4.73,
+"stored dii held the institutional Any-Others block; this fii sub-row is not a domestic institution"
+],
+[
+"inst-sub-fii",
+"Foreign Financial Institutions",
+4.73
+]
+],
+"shpperent": false
+},
+"YESBANK|2012-06-30": {
+"file": "532648_74.html.gz",
+"d_dii": -1.1359,
+"d_fii": 1.1349,
+"add_ins": 0,
+"ev": [
+[
+"dii-block-out",
+"Foreign Financial Institutions",
+1.13,
+"stored dii held the institutional Any-Others block; this fii sub-row is not a domestic institution"
+],
+[
+"inst-sub-fii",
+"Foreign Financial Institutions",
+1.13
+]
+],
+"shpperent": false
+},
+"YESBANK|2012-09-30": {
+"file": "532648_75.html.gz",
+"d_dii": -1.1229,
+"d_fii": 1.1283,
+"add_ins": 0,
+"ev": [
+[
+"dii-block-out",
+"Foreign Financial Institutions",
+1.13,
+"stored dii held the institutional Any-Others block; this fii sub-row is not a domestic institution"
+],
+[
+"inst-sub-fii",
+"Foreign Financial Institutions",
+1.13
+]
+],
+"shpperent": false
+},
+"ZFCVINDIA|2015-06-30": {
+"file": "533023_86.html.gz",
+"d_dii": 0.0036,
+"d_fii": 0.7607,
+"add_ins": 0,
+"ev": [
+[
+"generic-row-B",
+"Others",
+0.76,
+"fii: next 'Foreign Portfolio Investments Corp' 19 holders 0.54"
+],
+[
+"inst-sub-fii",
+"Others",
+0.76
+]
+],
+"shpperent": false
 }
+},
+"generic_residue_160c": [
+{
+"sym": "AARTIIND",
+"qe": "2012-12-31",
+"block": "noninst",
+"label": "Any Other",
+"pct": 0.52,
+"verdict": "public — the filer's own Non-Institutions row; no filer statement places its holders elsewhere (stored placement already public)"
+},
+{
+"sym": "AARTIIND",
+"qe": "2013-03-31",
+"block": "noninst",
+"label": "Any Other",
+"pct": 0.52,
+"verdict": "public — the filer's own Non-Institutions row; no filer statement places its holders elsewhere (stored placement already public)"
+},
+{
+"sym": "ADANIENT",
+"qe": "2015-06-30",
+"block": "noninst",
+"label": "Others",
+"pct": 5.84,
+"verdict": "public — the filer's own Non-Institutions row; no filer statement places its holders elsewhere (stored placement already public)"
+},
+{
+"sym": "ADANIPORTS",
+"qe": "2015-06-30",
+"block": "noninst",
+"label": "Others",
+"pct": 0.95,
+"verdict": "public — the filer's own Non-Institutions row; no filer statement places its holders elsewhere (stored placement already public)"
+},
+{
+"sym": "APOLLOTYRE",
+"qe": "2015-03-31",
+"block": "inst",
+"label": "Any Other",
+"pct": 0.77,
+"verdict": "stored placement kept — an institutional row whose domestic/foreign class the filer never states (no label, no named holder >1% that decides, no labelled twin one quarter away)"
+},
+{
+"sym": "APOLLOTYRE",
+"qe": "2015-06-30",
+"block": "inst",
+"label": "Others",
+"pct": 0.52,
+"verdict": "stored placement kept — an institutional row whose domestic/foreign class the filer never states (no label, no named holder >1% that decides, no labelled twin one quarter away)"
+},
+{
+"sym": "ARE&M",
+"qe": "2013-06-30",
+"block": "noninst",
+"label": "Any Other",
+"pct": 0.55,
+"verdict": "public — the filer's own Non-Institutions row; no filer statement places its holders elsewhere (stored placement already public)"
+},
+{
+"sym": "ARE&M",
+"qe": "2013-09-30",
+"block": "noninst",
+"label": "Any Other",
+"pct": 0.54,
+"verdict": "public — the filer's own Non-Institutions row; no filer statement places its holders elsewhere (stored placement already public)"
+},
+{
+"sym": "ARE&M",
+"qe": "2013-12-31",
+"block": "noninst",
+"label": "Any Other",
+"pct": 0.54,
+"verdict": "public — the filer's own Non-Institutions row; no filer statement places its holders elsewhere (stored placement already public)"
+},
+{
+"sym": "ARE&M",
+"qe": "2014-03-31",
+"block": "noninst",
+"label": "Any Other",
+"pct": 0.53,
+"verdict": "public — the filer's own Non-Institutions row; no filer statement places its holders elsewhere (stored placement already public)"
+},
+{
+"sym": "ARE&M",
+"qe": "2014-06-30",
+"block": "noninst",
+"label": "Any Other",
+"pct": 0.53,
+"verdict": "public — the filer's own Non-Institutions row; no filer statement places its holders elsewhere (stored placement already public)"
+},
+{
+"sym": "ARE&M",
+"qe": "2014-09-30",
+"block": "noninst",
+"label": "Any Other",
+"pct": 0.53,
+"verdict": "public — the filer's own Non-Institutions row; no filer statement places its holders elsewhere (stored placement already public)"
+},
+{
+"sym": "ARE&M",
+"qe": "2014-12-31",
+"block": "noninst",
+"label": "Any Other",
+"pct": 0.53,
+"verdict": "public — the filer's own Non-Institutions row; no filer statement places its holders elsewhere (stored placement already public)"
+},
+{
+"sym": "ARE&M",
+"qe": "2015-03-31",
+"block": "noninst",
+"label": "Any Other",
+"pct": 0.52,
+"verdict": "public — the filer's own Non-Institutions row; no filer statement places its holders elsewhere (stored placement already public)"
+},
+{
+"sym": "ARE&M",
+"qe": "2015-06-30",
+"block": "noninst",
+"label": "Others",
+"pct": 0.52,
+"verdict": "public — the filer's own Non-Institutions row; no filer statement places its holders elsewhere (stored placement already public)"
+},
+{
+"sym": "ARE&M",
+"qe": "2015-09-30",
+"block": "noninst",
+"label": "Others",
+"pct": 0.51,
+"verdict": "public — the filer's own Non-Institutions row; no filer statement places its holders elsewhere (stored placement already public)"
+},
+{
+"sym": "ASAHIINDIA",
+"qe": "2015-09-30",
+"block": "noninst",
+"label": "Others",
+"pct": 1.3,
+"verdict": "public — the filer's own Non-Institutions row; no filer statement places its holders elsewhere (stored placement already public)"
+},
+{
+"sym": "CEATLTD",
+"qe": "2015-09-30",
+"block": "noninst",
+"label": "Others",
+"pct": 3.51,
+"verdict": "public — the filer's own Non-Institutions row; no filer statement places its holders elsewhere (stored placement already public)"
+},
+{
+"sym": "CHOLAFIN",
+"qe": "2015-09-30",
+"block": "inst",
+"label": "Others",
+"pct": 13.45,
+"verdict": "stored placement kept — an institutional row whose domestic/foreign class the filer never states (no label, no named holder >1% that decides, no labelled twin one quarter away)"
+},
+{
+"sym": "DRREDDY",
+"qe": "2015-09-30",
+"block": "noninst",
+"label": "Others",
+"pct": 1.79,
+"verdict": "public — the filer's own Non-Institutions row; no filer statement places its holders elsewhere (stored placement already public)"
+},
+{
+"sym": "FEDERALBNK",
+"qe": "2009-06-30",
+"block": "inst",
+"label": "Any Other",
+"pct": 0.75,
+"verdict": "stored placement kept — an institutional row whose domestic/foreign class the filer never states (no label, no named holder >1% that decides, no labelled twin one quarter away)"
+},
+{
+"sym": "FEDERALBNK",
+"qe": "2009-09-30",
+"block": "inst",
+"label": "Any Other",
+"pct": 0.69,
+"verdict": "stored placement kept — an institutional row whose domestic/foreign class the filer never states (no label, no named holder >1% that decides, no labelled twin one quarter away)"
+},
+{
+"sym": "FEDERALBNK",
+"qe": "2009-12-31",
+"block": "inst",
+"label": "Any Other",
+"pct": 0.54,
+"verdict": "stored placement kept — an institutional row whose domestic/foreign class the filer never states (no label, no named holder >1% that decides, no labelled twin one quarter away)"
+},
+{
+"sym": "FEDERALBNK",
+"qe": "2010-03-31",
+"block": "inst",
+"label": "Any Other",
+"pct": 0.59,
+"verdict": "stored placement kept — an institutional row whose domestic/foreign class the filer never states (no label, no named holder >1% that decides, no labelled twin one quarter away)"
+},
+{
+"sym": "FEDERALBNK",
+"qe": "2010-06-30",
+"block": "inst",
+"label": "Any Other",
+"pct": 0.55,
+"verdict": "stored placement kept — an institutional row whose domestic/foreign class the filer never states (no label, no named holder >1% that decides, no labelled twin one quarter away)"
+},
+{
+"sym": "FEDERALBNK",
+"qe": "2010-09-30",
+"block": "inst",
+"label": "Any Other",
+"pct": 0.56,
+"verdict": "stored placement kept — an institutional row whose domestic/foreign class the filer never states (no label, no named holder >1% that decides, no labelled twin one quarter away)"
+},
+{
+"sym": "FEDERALBNK",
+"qe": "2010-12-31",
+"block": "inst",
+"label": "Any Other",
+"pct": 0.52,
+"verdict": "stored placement kept — an institutional row whose domestic/foreign class the filer never states (no label, no named holder >1% that decides, no labelled twin one quarter away)"
+},
+{
+"sym": "FEDERALBNK",
+"qe": "2011-03-31",
+"block": "inst",
+"label": "Any Other",
+"pct": 0.56,
+"verdict": "stored placement kept — an institutional row whose domestic/foreign class the filer never states (no label, no named holder >1% that decides, no labelled twin one quarter away)"
+},
+{
+"sym": "FEDERALBNK",
+"qe": "2011-06-30",
+"block": "inst",
+"label": "Any Other",
+"pct": 0.55,
+"verdict": "stored placement kept — an institutional row whose domestic/foreign class the filer never states (no label, no named holder >1% that decides, no labelled twin one quarter away)"
+},
+{
+"sym": "FEDERALBNK",
+"qe": "2011-09-30",
+"block": "inst",
+"label": "Any Other",
+"pct": 0.55,
+"verdict": "stored placement kept — an institutional row whose domestic/foreign class the filer never states (no label, no named holder >1% that decides, no labelled twin one quarter away)"
+},
+{
+"sym": "FEDERALBNK",
+"qe": "2011-12-31",
+"block": "inst",
+"label": "Any Other",
+"pct": 0.52,
+"verdict": "stored placement kept — an institutional row whose domestic/foreign class the filer never states (no label, no named holder >1% that decides, no labelled twin one quarter away)"
+},
+{
+"sym": "FEDERALBNK",
+"qe": "2012-03-31",
+"block": "inst",
+"label": "Any Other",
+"pct": 0.52,
+"verdict": "stored placement kept — an institutional row whose domestic/foreign class the filer never states (no label, no named holder >1% that decides, no labelled twin one quarter away)"
+},
+{
+"sym": "FEDERALBNK",
+"qe": "2012-06-30",
+"block": "inst",
+"label": "Any Other",
+"pct": 0.56,
+"verdict": "stored placement kept — an institutional row whose domestic/foreign class the filer never states (no label, no named holder >1% that decides, no labelled twin one quarter away)"
+},
+{
+"sym": "FEDERALBNK",
+"qe": "2012-09-30",
+"block": "inst",
+"label": "Any Other",
+"pct": 0.62,
+"verdict": "stored placement kept — an institutional row whose domestic/foreign class the filer never states (no label, no named holder >1% that decides, no labelled twin one quarter away)"
+},
+{
+"sym": "FEDERALBNK",
+"qe": "2012-12-31",
+"block": "inst",
+"label": "Any Other",
+"pct": 0.6,
+"verdict": "stored placement kept — an institutional row whose domestic/foreign class the filer never states (no label, no named holder >1% that decides, no labelled twin one quarter away)"
+},
+{
+"sym": "FEDERALBNK",
+"qe": "2013-03-31",
+"block": "inst",
+"label": "Any Other",
+"pct": 0.67,
+"verdict": "stored placement kept — an institutional row whose domestic/foreign class the filer never states (no label, no named holder >1% that decides, no labelled twin one quarter away)"
+},
+{
+"sym": "FEDERALBNK",
+"qe": "2013-06-30",
+"block": "inst",
+"label": "Any Other",
+"pct": 0.7,
+"verdict": "stored placement kept — an institutional row whose domestic/foreign class the filer never states (no label, no named holder >1% that decides, no labelled twin one quarter away)"
+},
+{
+"sym": "HINDZINC",
+"qe": "2015-09-30",
+"block": "noninst",
+"label": "Others",
+"pct": 0.52,
+"verdict": "public — the filer's own Non-Institutions row; no filer statement places its holders elsewhere (stored placement already public)"
+},
+{
+"sym": "INDUSTOWER",
+"qe": "2012-12-31",
+"block": "inst",
+"label": "Any Other",
+"pct": 0.76,
+"verdict": "stored placement kept — an institutional row whose domestic/foreign class the filer never states (no label, no named holder >1% that decides, no labelled twin one quarter away)"
+},
+{
+"sym": "INDUSTOWER",
+"qe": "2012-12-31",
+"block": "inst",
+"label": "Any Other",
+"pct": 0.95,
+"verdict": "stored placement kept — an institutional row whose domestic/foreign class the filer never states (no label, no named holder >1% that decides, no labelled twin one quarter away)"
+},
+{
+"sym": "INDUSTOWER",
+"qe": "2013-03-31",
+"block": "inst",
+"label": "Any Other",
+"pct": 0.76,
+"verdict": "stored placement kept — an institutional row whose domestic/foreign class the filer never states (no label, no named holder >1% that decides, no labelled twin one quarter away)"
+},
+{
+"sym": "INDUSTOWER",
+"qe": "2013-03-31",
+"block": "inst",
+"label": "Any Other",
+"pct": 0.95,
+"verdict": "stored placement kept — an institutional row whose domestic/foreign class the filer never states (no label, no named holder >1% that decides, no labelled twin one quarter away)"
+},
+{
+"sym": "INDUSTOWER",
+"qe": "2013-06-30",
+"block": "inst",
+"label": "Any Other",
+"pct": 0.76,
+"verdict": "stored placement kept — an institutional row whose domestic/foreign class the filer never states (no label, no named holder >1% that decides, no labelled twin one quarter away)"
+},
+{
+"sym": "INDUSTOWER",
+"qe": "2013-06-30",
+"block": "inst",
+"label": "Any Other",
+"pct": 0.95,
+"verdict": "stored placement kept — an institutional row whose domestic/foreign class the filer never states (no label, no named holder >1% that decides, no labelled twin one quarter away)"
+},
+{
+"sym": "INDUSTOWER",
+"qe": "2013-09-30",
+"block": "inst",
+"label": "Any Other",
+"pct": 0.76,
+"verdict": "stored placement kept — an institutional row whose domestic/foreign class the filer never states (no label, no named holder >1% that decides, no labelled twin one quarter away)"
+},
+{
+"sym": "INDUSTOWER",
+"qe": "2013-09-30",
+"block": "inst",
+"label": "Any Other",
+"pct": 0.95,
+"verdict": "stored placement kept — an institutional row whose domestic/foreign class the filer never states (no label, no named holder >1% that decides, no labelled twin one quarter away)"
+},
+{
+"sym": "INDUSTOWER",
+"qe": "2013-12-31",
+"block": "inst",
+"label": "Investment Fund",
+"pct": 0.76,
+"verdict": "stored placement kept — an institutional row whose domestic/foreign class the filer never states (no label, no named holder >1% that decides, no labelled twin one quarter away)"
+},
+{
+"sym": "INDUSTOWER",
+"qe": "2013-12-31",
+"block": "inst",
+"label": "Private Equity",
+"pct": 0.95,
+"verdict": "stored placement kept — an institutional row whose domestic/foreign class the filer never states (no label, no named holder >1% that decides, no labelled twin one quarter away)"
+},
+{
+"sym": "INDUSTOWER",
+"qe": "2015-09-30",
+"block": "noninst",
+"label": "Others",
+"pct": 1.32,
+"verdict": "public — the filer's own Non-Institutions row; no filer statement places its holders elsewhere (stored placement already public)"
+},
+{
+"sym": "NATCOPHARM",
+"qe": "2015-09-30",
+"block": "noninst",
+"label": "Others",
+"pct": 9.8,
+"verdict": "public — the filer's own Non-Institutions row; no filer statement places its holders elsewhere (stored placement already public)"
+},
+{
+"sym": "OFSS",
+"qe": "2015-09-30",
+"block": "noninst",
+"label": "Others",
+"pct": 2.13,
+"verdict": "public — the filer's own Non-Institutions row; no filer statement places its holders elsewhere (stored placement already public)"
+},
+{
+"sym": "PIIND",
+"qe": "2015-09-30",
+"block": "noninst",
+"label": "Others",
+"pct": 1.17,
+"verdict": "public — the filer's own Non-Institutions row; no filer statement places its holders elsewhere (stored placement already public)"
+},
+{
+"sym": "PVRINOX",
+"qe": "2015-09-30",
+"block": "noninst",
+"label": "Others",
+"pct": 19.97,
+"verdict": "public — the filer's own Non-Institutions row; no filer statement places its holders elsewhere (stored placement already public)"
 }
+]
 }

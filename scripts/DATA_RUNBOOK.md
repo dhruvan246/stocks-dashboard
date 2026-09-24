@@ -19318,3 +19318,53 @@ Jun-2015 18.13, TATASTEEL Jun-2015 dii 28.58). `refresh-stock-fin.yml` dispatche
 from this side (REDINGTON Jun-15 39.11, APOLLOHOSP Jun-15 55.57, ADANIPOWER Sep-15 29.60, M&M Jun-15 37.34; §159 247/247 and
 §160a 5/5 intact). Reply workbook rebuilt from that feed (`shp_engine_live_final4.json`) — the copy in ~/Downloads is the one
 to send. Nothing held on either side; the 217-row generic-label residue is documented in §160b with per-row reasons.
+
+## §160c — THE REMAINING GENERIC ROWS + THE FAKE-DII "ANY OTHERS" BLOCK (2026-09-25 early, user: "fix the remaining 217 rows too")
+
+**What decided the 217 rows §160b left (scripts/_shp_aspx_rowfix.py, evidence per cell in _shp_aspx_rowfix_audit.json).** No BSE XBRL exists for
+any of those quarters (the lists carry none before Jun-2016), so the page, its holder counts and the linked >1% table are the filer's only
+documents. Each page row prints its NUMBER OF HOLDERS, which identifies the same category row across quarters. New evidence tiers, strongest first:
+- **Exact decomposition by holder count (A):** a subset of named >1% holders whose SIZE equals the row's holder count and whose sum is the row →
+  each holder by its own filer placement; with a dominant single-class named subset and the rest in unnamed holders that fit the count, the rest
+  follows (§158 R1, "A-rest"; L&T Finance's Mace Cipef rows).
+- **Same row one quarter away (B):** BSE's Jun-2015 (and some Sep-2015) pages print the filer's sub-row text as "Others". The same row (same
+  block, category absent from this page, holder count within ×3 and size within ×2) carries the filer's label in the adjacent quarter —
+  ITC institutional "Others" 182 holders 5.19 between "Foreign Portfolio Investor" 140 / 249 holders; ADANIPORTS 74 → 92 → 132 holders. A twin
+  decided the same way counts with a tight fingerprint (holders ±1, size ±5%); both neighbours must agree.
+- **Sole-row chain (C):** the block's only Any-Others sub-row, persisting, labelled at the nearest labelled quarter (4 cells).
+- **Label meaning:** "FDI" / "Foreign Direct Investment" → fii (the 2022 form lists FDI under Institutions (Foreign); our FII =
+  InstitutionsForeignMember incl. FDI); "Foreign Collaborators" → public (company-type, the same filers label the same holders "Foreign
+  Corporate Bodies": CYIENT). A holder name tagged FDI counts like (FPI)/(FII).
+- **The filer's own FDI label follows its holders:** MFSL filed Parkville + Xenok + IFC as "Foreign Corporate Bodies" until Jun-2011 and as "FDI"
+  for 15 quarters after (same three holders, 23.07 → 22.37, holder count 3 both sides) → fii throughout (ITC precedent, §159 hand-off).
+  Only case of such a relabel in N500 pages (measured).
+
+**The fake-DII block (129 of the 136 "dii mismatch" rows).** The store's DII on those pages = MF + banks + insurance + the WHOLE institutional
+"Any Others" block — a foreign mutual fund (BLUESTARCO 2008-09 4.34), Rabobank as "Foreign Financial Institutions" (YESBANK 2009-12, 20.86 →
+1.13), IFC + foreign bodies corporate (CHOLAFIN 2012-13, 19.56), MFSL's FDI row (22.37), foreign banks (HCLTECH, HEG). A new reading
+convention (dii = mf+bank+ins[+vcf]+other) lets the page be read; the block's labelled fii / public sub-rows and depository-receipt lines leave
+DII, unresolved sub-rows keep the stored placement. 118 cells / 16 symbols; DII falls on all of them, FII rises by the foreign parts.
+
+**Guards added after measuring the first runs (each caught a real error).** Every subset match checks the row's holder count (a 567-holder
+"NRIs/OCBs" row is never one named holder); the search runs by subset SIZE (a cap on near-miss combinations had hidden MFSL's 3-holder
+FDI row); hand-off holders never enter a decomposition (KOTAKBANK's Sumitomo Mitsui was counted twice); a holder the filer files under a
+company label elsewhere and never under FDI is not moved from a generic row (FORTIS IFC, INDUSTOWER Merrill: one-quarter spikes);
+holder spellings are merged ("Parrville" = "Parkville"). Company-labelled rows whose holders are fii by the filer's other filings (FEDERALBNK
+IFC 2006-2015, CUB FMO, JSWSTEEL Lotus/Indiaman, FORTIS IFC, M&M) were tried and pulled back: they matched only in the quarters where the named
+holders summed exactly and left zig-zags — OPEN, needs a chain-consistent rule.
+
+**Live §160/§160b cells re-audited under the stricter rules (every one re-derived from its original cell).** 12 superseded in place: ITC
+Jun-2015 gains its FPI row (45.58 → 50.77); TATASTEEL / IPCALAB / GRAPHITE / PHOENIXLTD Jun-2015 — §160b had put an "Others" row into DII
+because its size equalled one domestic fund (HDFC Trustee 2.10 against a ~90-holder row); the holder count shows the row is the FPI twin →
+FII, DII back to the original; APOLLOHOSP Jun/Sep-2015 55.57/56.02 → 43.79/44.24 (the "Others" row is the Mar-2015 "Foreign Corporate Bodies"
+row, 4 holders 11.78 = Integrated (Mauritius) Healthcare 10.85 + 3 small; §160b had matched three fund names by sum alone); OFSS Jun-2015
+reverted (34 holders, 2 names). The FII session's five §160a seam cells are not re-derivable by this evaluator by design and stay as written.
+
+**Result (verified on a copy of the origin store 210/210; both guards green).** 210 cells / 65 N500 symbols: 118 fake-DII block, 61 generic
+rows, 22 FDI-relabel holder rule, 8 FDI labels, 1 revert; FII up on 193, down on 3 (the reverts), DII down on 122, up on none. Of the 217
+generic rows: 164 decided, 53 left (88 pp) — 23 Non-Institution rows (55 pp) are public by the filer's own block (the stored placement), 30
+Institution rows (33 pp: FEDERALBNK 2009-13 "Any Other" 17 × ~0.6, INDUSTOWER 2012-13, CHOLAFIN Sep-2015 13.45) keep the stored placement
+because the filer never states domestic or foreign — listed with verdicts in the audit ("generic_residue_160c"). DII-mismatch no-match rows
+136 → 5. Jun→Sep-2015 FII ≥3 pp movers 26 → 16; FII quarter-to-quarter ≥5 pp 272 → 252; DII ≥5 pp 155 → 145. Per-symbol total
+variation: 55 of 65 smoother; the rougher ones are real events now visible (YESBANK Rabobank's sell-down in FII, MFSL's Jun-2007 share issue,
+APOLLOTYRE's own FII row).
