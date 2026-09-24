@@ -19104,3 +19104,14 @@ POONAWALLA Dec-2015 64.11, ZENSARTECH Jun-2012 32.25, KOTAKBANK Sep-2010 29.50, 
 written into the entry) — entries aligned to the served value (§158 lesson, now built into the writer: a slot that moves < 0.05 pp
 keeps the stored value); `apply_cell_fix` on the served store is a no-op for all 478. Per-stock slices: `refresh-stock-fin.yml`
 dispatched by hand (run 36012618916; the store commit never fires it).
+**Closing state 2026-09-24 20:00 IST (both sessions).** §158 + follow-up (DII session), §159 (this session) and §160 (DII session,
+page era from BSE ShareholdingPattern.aspx + the linked `shpperent.aspx` >1%-holders table, 478 cells / 115 symbols) are all
+LIVE — store eb61656b4, engine feed verified 247/247 (§159) and on the §160 spot cells (ITC Mar-2016 50.44, POONAWALLA Dec-2015
+64.11, ASHOKLEY Dec-2015 29.12, FEDERALBNK Mar-2016 38.98, SHRIRAMFIN Dec-2015 52.89, KOTAKBANK Sep-2010 29.50). The page-era
+hand-off above is therefore closed (the Mar→Jun-2016 jumps for ITC / FEDERALBNK / ZENSARTECH are gone); still open on the page
+side: JKCEMENT Dec-15/Mar-16, JUBLPHARMA Dec-15, LINDEINDIA Mar-16, REDINGTON Dec-15 (§160 held cells). Final Quantmac
+comparison on this feed (scratchpad `fii_compare.py`, their 85,662 valued month-end cells): 70,829 agree / 14,827 differ / 6 we
+lack; 20,254 cells we hold that they leave blank. Reply workbook `StockWorld_reply_to_Quantmac_20260924.xlsx` rebuilt from this
+feed (106,001 rows of their reconciliation file: 90,842 agree; 5,591 depository-share definition; 6,648 Any-Other block; 1,236
+dates needing their source; 1,306 changed on our side; 101 revision dates; 48 filings they have not loaded; 28 their gaps; 78 ours;
+123 both blank) with the "How our FII-DII cells work" sheet carrying the final per-era FII and DII rules (§151, §156-§160).
