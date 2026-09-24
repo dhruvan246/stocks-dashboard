@@ -18908,3 +18908,62 @@ are reverted to the pre-heal reading and handed to the row-level 2022-placement 
 parent-label + child-entity rows must be counted once, and a curated FPI fund nested under a company label goes to FII while the
 company label itself does not). The 220 §156 moves that rest on institution-type labels (FII/FPI/foreign bank/foreign MF/FVCI/
 QFI, curated FPI funds) stand.
+
+## §158 — DII = INSTITUTIONS (DOMESTIC) IN EVERY FORMAT: ROW-LEVEL HEAL OF THE 2016-2022 "ANY OTHER" ROWS (2026-09-24, user: "do it — row-level heal via shp_cell_fix, keep DII = B1")
+
+**Audit that led here (same day, N500 only, every number read this session).** Jun-2026 live DII = the filing's
+`InstitutionsDomesticMember` (B1) to 2 dp on all 28 test names. Sites: Screener DII = B1 − the domestic "Sovereign Wealth
+Funds" row (moved into its Government row: INFY 0.02 + 0.18 = 0.20); Trendlyne DII = B1 + Government block B3 + the Overseas
+Depositories line (WIPRO 7.5 = 5.22 + 2.29, DRREDDY 43.2 = 31.74 + 11.41); Moneycontrol DII = B1 + B3, re-based on the full
+share count for DR issuers (INFY 39.62 = 42.98 × 0.922). Old format Mar-2017..Mar-2022: Screener = our stored cell to 0.01 on
+115/120 name-years; the 5 differences are Institutions "Any Other" rows whose LABEL says foreign (UTIAMC Mar-2021 "FOREIGN
+CORPORATE BODIES" 23.0, WIPRO 2017-18 "FOREIGN NATIONALS"), which Screener books as FII and `OLD_OTHER_TO_DII` sent to dii.
+Pre-2015: no site publishes it; the Jun-2015 seam has no artefact (6 outliers, all real events on BSE's Clause-35 pages).
+**Decision: DII stays B1 (Trendlyne/Moneycontrol minus their add-ons; the Government block stays in the `shp_gov.json`
+sidecar, the depositories line stays out of everything per §151).**
+
+**The defect (measured).** Sep-2022 seam, 421 N500 names: median +0.13 pp, p95 +3.91, 42 names moved ≥ 3 pp (10.0%) against
+1.9-3.6% in control quarters. Two filer-side causes, both shared by every site because everyone read bucket totals:
+1. DROPS — foreign PE / OCB blocks inside the old Institutions → "Any Other" row became "Foreign Companies" (non-institutions)
+   in the 2022 form: HOMEFIRST 41.18 → 6.41 (Orange Clove 28.73 + Bessemer 7.77 labelled "Overseas Corporate Bodies"),
+   STARHEALTH 27.20 → 1.47 (Apis, MIO Star, Notre Dame, MIT, ROC labelled "Bodies Corporate"), UTIAMC 83.14 → 60.14 (T Rowe
+   Price 22.97), APTUS, JWL, RAINBOW, ADANIPOWER. The SW-2 ledger held these "name-unknown" — the category LABEL was the evidence.
+2. RISES — LIC, NPS Trust and private insurers parked under Non-institutions → "Any Other → Qualified Institutional Buyer"
+   moved into the Insurance / PF rows: INFY 18.87 → 32.38 (LIC 6.20 + NPS 1.38, plus the ex-ADR base), DIXON 8.07 → 18.59
+   (LIC 5.68, ICICI Pru 2.05), BRITANNIA, BALKRISIND, LT, CRISIL, PFC, WIPRO, POWERINDIA, BANDHANBNK, SRF, RECLTD, SBILIFE.
+   The same "QIB" label sat INSIDE Institutions for HEROMOTOCO (LIC 11.29) — which is why flipping `OLD_OTHER_TO_DII` can never
+   fix this: the flag is right for one filer and wrong for the next.
+3. NBFCs: the old form listed them under Non-institutions, the 2022 form inside B1 (WELCORP +4.02 at the seam).
+
+**Rules (scripts/_shp_dii_rowfix.py (classify / one / verify / revfix / write; local inputs: the 2026-09-22 BSE list cache and the raw XBRLs, env DII_ROWFIX_*), evidence per cell in scripts/_shp_dii_rowfix_audit.json).** Old-format BSE XBRLs
+Jun-2015..Jun-2022, the EARLIEST filing whose parse matches the stored row (prom ± 0.06, fii+dii ± 0.06; a prior split-heal
+is recognised by its sum):
+- R1 Institutions → Any Other category rows. Label keywords decide first (QIB/insurance/NPS/PF/bank/AIF → domestic;
+  FII/FPI/QFI/"foreign institution" → fii; OCB/foreign companies/foreign bodies corporate/foreign nationals/NRI → public);
+  otherwise the ≥1% holders decide (the filer's OWN placement of that holder in its first new-format filing: FDI/FPI/foreign
+  SWF → fii, non-inst Foreign Companies/Nationals/Bodies Corporate → public; then the SW-2 curated verdicts; then name
+  markers). Holders are attached to the category row carrying the same category text with room for them (filers list them
+  before OR after the row), a label resolved in one quarter carries to that symbol's other quarters, the block total is
+  conserved (an uncovered remainder is left where the store has it) and a block that cannot be resolved keeps the stored split.
+- R2 Non-institutions → Any Other rows labelled as a domestic institution (QIB, insurance, provident/pension/NPS, NBFC, FI,
+  bank, AIF) join dii in full (minus any foreign-named holder); a generic label ("Others", "Trusts", "Clearing Members")
+  contributes only its NAMED domestic-institution holders. Named insurers raise the `ins` slot too.
+- R3 the old NBFC row joins dii.
+- Materiality 0.05 pp. Cells already ledgered (SW-2, §22i, §142) are superseded in place (`superseded` keeps the earlier
+  entry; `was` = the current stored cell). Re-filing rows in `shp_revisions.json` for the same quarters are healed from their
+  own document (or inherit the original's healed values when their raw fii/dii are identical) — otherwise the option-C row
+  would serve the raw split from its date.
+- `fetch_shareholding.heal_refiling` now walks the `superseded` chain (a re-filing repeating the OLDEST raw numbers gets the
+  TOP healed cell) and `VALUE_HEAL_MARK` knows the "§158 row-level DII heal" marker; `guard_shp_revisions.py` check 2 skips
+  cells the §158 entry re-adjudicated (their block may legitimately sit in public, not fii).
+- Destination "public" is deliberate: a holder the filer itself lists under non-institutions in the 2022 form (Orange Clove,
+  T Rowe Price, Opal Investment) must not be counted as FII before Sep-2022 either, or the DII seam becomes an FII seam.
+
+**Result (verified on a copy of the store, then LIVE).** 2,574 cells / 289 N500 symbols entered (of 8,734 store rows matched to a BSE filing; 6,160 unchanged at the 0.05 pp floor): dii up on 2,254, down on 293 (median |move| 1.14 pp, 436 cells ≥ 3 pp); fii touched on 244 (142 up, 102 down); 253 cells route a block to public; 949 cells raise the ins slot by their named insurers; 303 entries supersede earlier SW-2 / §22i / §142 / §156-§157 entries in place; 5 re-filing rows healed in shp_revisions.json (4 inherit the original's healed values, 1 re-read), 14 re-filing rows have no matching document on BSE's list and keep their raw split (listed in the audit). Sep-2022 seam (421 N500 names): ≥ 3 pp movers 42 → 15 (10.0% → 3.6%), p95 +3.91 → +1.87, median +0.13 → +0.02; fii ≥ 3 pp movers 28 → 25; Jun→Sep-2016 ≥ 3 pp 26 → 21. Residual Sep-2022 movers are real changes or the ex-DR base (INFY +5.2, SONACOMS, KIMS, GLAND, TRITURBINE, IFCI). Rule hits: NBFC 1,392 rows, non-inst domestic label 1,144, named domestic holders 895, foreign label → public 331, foreign holders 245, FII label 209, domestic label kept 188, unresolved kept 128 (17 ≥ 0.5 pp: IDFCFIRSTB "Bodies Corporate" 2.8-3.3, ROWANHILL in a few cells). Verified on a copy of the store with apply_cell_fix (2,574 applied, 0 was-mismatch), guards green locally; live check recorded below after the refresh.
+
+**Not covered.** Store rows of the era with no BSE filing on the cached lists (NSE-only fills, Jun-2015..Mar-2016 Clause-35
+pages: the aspx table's institutions "Any Other" row is unlabelled and was never in dii, so the Mar-2016 → Jun-2016 page-to-XBRL
+seam remains: Mar→Jun-2016 ≥ 3 pp movers 20 → 28, because Jun-2016 XBRL rows now hold domestic Any-Other blocks the Mar-2016 page reading never had; the follow-up page-era pass (user, same day) will read those pages' labelled sub-rows for both fii and dii); rows whose parse matches no filing on the list (45 rows whose stored values match no listed filing, 32 files BSE returns 404 for (KARURVYSYA 2016-17 and 8 others), 470 listed quarters with no store row); the ex-DR base change at Sep-2022
+for INFY/WIPRO/HINDALCO/HDFCBANK (§151: as filed); PSU-bank holdings that the 2022 form moved from Banks into B3 (IFCI).
+Screener will differ from us on the old-format cells where its label rule books an OCB block as FII (UTIAMC Mar-2021) — we
+follow the filer's new-format placement instead.

@@ -218,7 +218,12 @@ def eval_filing(ctx, qe, txt, bd, res, cur, final=True, unres_log=None):
                 elif norm(lab) in ctx.label_memory: lab_kind=ctx.label_memory[norm(lab)]; lab_src="label-memory"
             hs2=[]
             for hp,hn,c,dest,src in hs:
-                if c=="foreign" and not src.startswith("new-format") and src not in ("memory","memory~") and lab_kind in ("public","fii"): dest=lab_kind
+                inst_tag=bool(re.search(r"\((fpi|fii)\)|\bfpi\b|\bfii\b|foreign portfolio|foreign institutional|\bfvci\b|foreign venture|foreign bank|sovereign", hn, re.I))
+                if c=="foreign" and not src.startswith("new-format") and src not in ("memory","memory~") and lab_kind in ("public","fii"):
+                    # the label decides an unnamed-type holder; an institution-type holder (FPI/FII tag in its own name, or a
+                    # curated FPI fund) is FII whatever the row was called — the 2022 form would list it in B2
+                    if src=="curated" or inst_tag: dest="fii"
+                    else: dest=lab_kind
                 hs2.append((hp,hn,c,dest,src))
             hs=hs2
             fh=[h for h in hs if h[2]=="foreign"]; dh=[h for h in hs if h[2]=="domestic"]
@@ -432,7 +437,7 @@ def write(stamp=None):
     ascii_only = ("\\u00" in raw)     # the file's own style: json.dump(ensure_ascii=True) escapes every non-ASCII char
     hist=json.load(open(os.path.join(REPO,"scripts","shp_history.json")))
     n_new=n_sup=n_skip=0; audit={"_doc":[
-        "§152 (%s) row-level DII heal, old-format XBRL era Jun-2015..Jun-2022, Nifty 500. DII = Institutions(Domestic) in every format."%stamp,
+        "§158 row-level DII heal (%s), old-format XBRL era Jun-2015..Jun-2022, Nifty 500. DII = Institutions(Domestic) in every format."%stamp,
         "R1 Institutions->Any Other rows: foreign label/holders leave dii (destination = the filer's own placement of that holder in its first new-format filing: FDI/FPI -> fii, non-inst Foreign Companies -> public; OCB/Foreign Corporate Bodies/Foreign Nationals labels -> public; FII/FPI labels -> fii). Domestic labels/holders (QIB, LIC, insurers, NPS, PF, banks, AIF) stay. Unresolved rows keep the stored split.",
         "R2 Non-institutions->Any Other rows labelled as domestic institutions (Qualified Institutional Buyer, insurance, provident/pension, NBFC, FI, bank, AIF) join dii in full; generic labels contribute only their NAMED domestic-institution holders (>=1% rows). Named insurers also raise the ins slot.",
         "R3 the old-format NBFC row joins dii (the 2022 form lists NBFCs inside Institutions(Domestic)).",
@@ -440,7 +445,7 @@ def write(stamp=None):
     for k,v in sorted(P.items()):
         sym,qe=k.split("|"); cur=(hist.get(sym) or {}).get(qe)
         if cur is None or not F._cell_eq(cur,v["was"]): n_skip+=1; continue
-        why=("§152 %s row-level DII heal (DII = Institutions(Domestic) in every format): dii %.2f -> %.2f, fii %.2f -> %.2f. "%(stamp,cur[2],v["cell"][2],cur[1],v["cell"][1])
+        why=("§158 row-level DII heal (%s, DII = Institutions(Domestic) in every format): dii %.2f -> %.2f, fii %.2f -> %.2f. "%(stamp,cur[2],v["cell"][2],cur[1],v["cell"][1])
              +"; ".join(" ".join(str(x) for x in e) for e in v["ev"])[:900]+". Evidence: _shp_dii_rowfix_audit.json")
         ent={"cell":list(v["cell"]),"was":list(cur),"src":"bsexbrl:%s"%v["file"],"why":why}
         prior=(fix.get(sym) or {}).get(qe)
