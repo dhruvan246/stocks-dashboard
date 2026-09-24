@@ -25,6 +25,35 @@ import ist
 HERE = os.path.dirname(os.path.abspath(__file__))
 DOCS = os.path.join(HERE, '..', '..', 'docs', 'ideas')
 LIQ_MIN_TURNOVER = 25e5   # Rs 25 lakh median daily turnover over the window
+NSE_PDF = 'https://nsearchives.nseindia.com/corporate/'   # the prefix docs/announcements.json rows omit
+
+
+def nse_announcements(asof, by_scrip):
+    """The day's filings from docs/announcements.json - NSE corporate announcements, ~31 rolling days, rebuilt
+    four times a day from GitHub Actions by refresh-announcements.yml - shaped like BSE's rows so classify()
+    needs no second path. A fallback for when BSE's announcement list (api.bseindia.com) is unreachable, which
+    on 2026-09-23/24 it was from the sandbox AND from Actions (runbook 144e). Only names with an NSE symbol can
+    match, so BSE-only and SME names stay unknown on such a day; the caller must say so."""
+    fn = os.path.join(HERE, '..', '..', 'docs', 'announcements.json')
+    if not os.path.exists(fn):
+        return [], 0, 'no docs/announcements.json'
+    d = json.load(open(fn, encoding='utf-8'))
+    by_nse = {u['nse']: s for s, u in by_scrip.items() if u.get('nse')}
+    day, rows, total = asof.isoformat(), [], 0
+    for r in d.get('rows') or []:
+        try:
+            sym, name, dt, cat, desc, pdf = r[:6]
+        except (TypeError, ValueError):
+            continue
+        if not str(dt).startswith(day):
+            continue
+        total += 1
+        s = by_nse.get(sym)
+        if not s:
+            continue
+        rows.append(dict(SCRIP_CD=s, NEWSSUB=desc or '', HEADLINE=desc or '', NEWS_DT=dt, CATEGORYNAME=cat or '',
+                         SUBCATNAME='', ATTACHMENTNAME='', _pdf=(NSE_PDF + pdf) if pdf else ''))
+    return rows, total, f"nse (docs/announcements.json, updated {d.get('updated', '?')})"
 
 CATS = [
     ('ORDER', re.compile(r'\b(order|orders|contract|loi|letter of intent|work order|purchase order|tender|awarded|bagged|supply agreement|rate contract)\b', re.I)),
@@ -95,6 +124,11 @@ def run(date, days):
     # which it was: on 2026-09-24 the feed 403'd all run and every candidate's empty filing list was
     # UNKNOWN, not empty. The page and the run log both need to be able to say so.
     ann_blocked = bse.last_announcements_partial
+    ann_source, ann_total = 'bse', len(ann)
+    if ann_blocked:
+        nse_rows, ann_total, ann_source = nse_announcements(asof, by_scrip)
+        print(f'announcements: BSE feed blocked -> {len(nse_rows)} universe rows of {ann_total} that day from {ann_source}')
+        ann = nse_rows
     ann_by = collections.defaultdict(list)
     for a in ann:
         s = str(a.get('SCRIP_CD') or '').strip()
@@ -104,7 +138,7 @@ def run(date, days):
         if not cats:
             continue
         ann_by[s].append(dict(cats=cats, subject=(a.get('NEWSSUB') or '').strip(), headline=(a.get('HEADLINE') or '').strip()[:300],
-                              time=a.get('NEWS_DT'), pdf=bse.attachment_url(a), category=a.get('CATEGORYNAME'), sub=a.get('SUBCATNAME')))
+                              time=a.get('NEWS_DT'), pdf=a.get('_pdf') or bse.attachment_url(a), category=a.get('CATEGORYNAME'), sub=a.get('SUBCATNAME')))
     rows = []
     for s, u in by_scrip.items():
         f = features(s, hist.get(s, []))
@@ -127,14 +161,14 @@ def run(date, days):
     # keep the file small enough to commit daily: only names with at least one signal are written
     kept = [r for r in rows if r['score'] > 0]
     out = dict(date=asof.isoformat(), window_days=len(tdays), window_from=min(tdays).isoformat(), universe=len(rows),
-               announcements_total=len(ann), announcements_in_universe=sum(len(v) for v in ann_by.values()),
-               announcements_blocked=ann_blocked,
+               announcements_total=ann_total, announcements_in_universe=sum(len(v) for v in ann_by.values()),
+               announcements_blocked=ann_blocked, announcements_source=ann_source,
                candidates=len(cands), rows_with_signals=len(kept), rows=kept)
     os.makedirs(os.path.join(DOCS, 'scan'), exist_ok=True)
     fn = os.path.join(DOCS, 'scan', f'{asof.isoformat()}.json')
     json.dump(out, open(fn, 'w'), separators=(',', ':'))
-    print(f'scan {asof}: window {len(tdays)}d from {min(tdays)} | universe {len(rows)} | announcements {len(ann)} total'
-          f'{" (FEED BLOCKED - this count is a floor, not the day)" if ann_blocked else ""}, '
+    print(f'scan {asof}: window {len(tdays)}d from {min(tdays)} | universe {len(rows)} | announcements {ann_total} total'
+          f'{" (BSE FEED BLOCKED - " + ann_source + "; this count is a floor, not the day)" if ann_blocked else ""}, '
           f'{out["announcements_in_universe"]} classified in universe | candidates {len(cands)} -> {fn}')
     for r in cands[:25]:
         f = r['features'] or {}

@@ -108,7 +108,9 @@ def main():
     urls = []
     for pg in range(a.pages):
         try:
-            h = I.get(LIST % pg, timeout=45)
+            # steel.gov.in's chain does not verify on a GitHub runner (2026-09-24: every listing page
+            # 'CERTIFICATE_VERIFY_FAILED' while curl -k saw 200) - same treatment as IBJA and the Rubber Board.
+            h = I.get(LIST % pg, timeout=45, ctx=I.LAX)
         except Exception as e:
             print(f'minsteel: listing page {pg} failed ({str(e)[:80]}); keeping what was listed so far')
             break
@@ -124,7 +126,7 @@ def main():
         fn = os.path.join(CACHE, hashlib.md5(u.encode()).hexdigest()[:10] + '.pdf')
         if not os.path.exists(fn):
             try:
-                b = I.get(BASE + u, timeout=90, binary=True)
+                b = I.get(BASE + u, timeout=90, binary=True, ctx=I.LAX)
                 if b[:4] != b'%PDF':
                     unread.append((u, 'not a PDF')); continue
                 open(fn, 'wb').write(b)
