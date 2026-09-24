@@ -9,6 +9,10 @@ All calls go to public BSE endpoints that were verified to work on 2026-09-22:
   - price history  : api.bseindia.com/BseIndiaAPI/api/StockPriceCSVDownload/w
   - corp actions   : api.bseindia.com/BseIndiaAPI/api/CorporateAction/w
   - attachment     : www.bseindia.com/xml-data/corpfiling/AttachLive/<ATTACHMENTNAME>
+
+The two hosts fail independently: BSE's Akamai edge can refuse api.bseindia.com outright for a
+whole network while www.bseindia.com keeps serving (measured 2026-09-23/24, runbook 144e). Anything
+that can be answered from the bhavcopy therefore has a www-only fallback - see bhav_history().
 """
 import csv, io, json, os, sys, time, datetime, urllib.request, urllib.parse, urllib.error
 sys.path.insert(0, os.path.dirname(os.path.abspath(__file__)))
@@ -117,8 +121,47 @@ def trading_days_back(n, end=None):
     return out
 
 
+def bhav_history(scrips, d_from, d_to=None, max_days=800):
+    """Close history for a set of scrip codes, assembled from the daily bhavcopies.
+
+    A fallback for price_history(). The per-scrip endpoint lives on api.bseindia.com, which BSE's
+    Akamai edge refuses outright from some networks (measured 2026-09-23 20:07 IST -> 2026-09-24
+    20:00 IST: every api call 403 while www.bseindia.com, which serves the bhavcopy, answered 200).
+    The bhavcopy carries the same closes, so a scorecard need not go blind when the api does.
+
+    One pass over the dates fills every scrip at once, so the cost is the same for one idea or twenty.
+    Returns {scrip: [dict(date, open, high, low, close, volume), ...]} oldest first, and only the
+    dates whose bhavcopy actually downloaded - a missing day is absent, never zero-filled.
+    """
+    want = {str(s).strip() for s in scrips}
+    d_to = d_to or ist.today()
+    out = {s: [] for s in want}
+    d, days = d_from, 0
+    while d <= d_to and days < max_days:
+        days += 1
+        rows = bhavcopy(d)
+        d += datetime.timedelta(days=1)
+        if not rows:
+            continue
+        cur = d - datetime.timedelta(days=1)
+        for r in rows:
+            if r['scrip'] in want:
+                out[r['scrip']].append(dict(date=cur, open=r['open'], high=r['high'], low=r['low'],
+                                            close=r['close'], volume=r['volume']))
+    for s in out:
+        out[s].sort(key=lambda r: r['date'])
+    return out
+
+
+# Set by announcements() on every call: True when a page failed and the list came back short, so a
+# caller can tell "the feed was blocked" from "a quiet day". Both look like zero rows otherwise.
+last_announcements_partial = False
+
+
 def announcements(d_from, d_to=None, max_pages=40):
     """All BSE announcements between two dates (inclusive), as the API rows (paginated, 50/page)."""
+    global last_announcements_partial
+    last_announcements_partial = False
     d_to = d_to or d_from
     fn = os.path.join(CACHE, f'ann_{d_from:%Y%m%d}_{d_to:%Y%m%d}.json')
     if os.path.exists(fn) and d_to < ist.today():
@@ -137,6 +180,7 @@ def announcements(d_from, d_to=None, max_pages=40):
             print(f'announcements {d_from}..{d_to}: page {p} failed ({e}); returning {len(rows)} rows '
                   'from the pages that did load, NOT caching this partial fetch')
             partial = True
+            last_announcements_partial = True
             break
         rows += t
         if len(t) < 50:
@@ -215,12 +259,13 @@ def corporate_actions(scrip):
     return sorted(ev)
 
 
-def adjusted_history(scrip, d_from=None):
-    """Price history back-adjusted for bonus/split (recorded + unrecorded one-day gaps matching a standard factor)."""
-    rows = price_history(scrip, d_from)
+def apply_adjustments(rows, events):
+    """Back-adjust `rows` in place for `events`, adding any unrecorded one-day gap that matches a
+    standard bonus/split factor. Shared by adjusted_history() and the bhavcopy fallback so the two
+    can never drift apart on what counts as a split."""
     if not rows:
-        return rows, []
-    events = corporate_actions(scrip)
+        return rows, list(events)
+    events = list(events)
     STD = [1.1, 1.2, 1.25, 1.333, 1.5, 2, 2.5, 3, 4, 5, 6, 7, 8, 10, 11, 20]
     for i in range(1, len(rows)):
         a, b = rows[i - 1]['close'], rows[i]['close']
@@ -239,5 +284,14 @@ def adjusted_history(scrip, d_from=None):
         for r in rows:
             if r['date'] < ex:
                 for k in ('open', 'high', 'low', 'close'):
-                    r[k] = r[k] / f
+                    if r.get(k):
+                        r[k] = r[k] / f
     return rows, events
+
+
+def adjusted_history(scrip, d_from=None):
+    """Price history back-adjusted for bonus/split (recorded + unrecorded one-day gaps matching a standard factor)."""
+    rows = price_history(scrip, d_from)
+    if not rows:
+        return rows, []
+    return apply_adjustments(rows, corporate_actions(scrip))

@@ -17383,6 +17383,66 @@ additive — `cd scripts && python3 _idx_official_fetch.py --only "<tier>" …`,
 quarter (was 495/500). Residue in `scripts/_missing_quarter_pending.json`: BAGMANE/BIRET/EMBASSY/DUMMYHEG (no BSE scrip code —
 REITs + a placeholder ticker) and CLEANMAX Mar-2026 (image PDF; Gemini quota) — the guard re-lists them nightly until resolved.
 
+### 144e. ★★★ THE TWO-HOST FAILURE, AND WHY A BLOCKED RUN MUST NEVER LOOK LIKE A QUIET ONE (2026-09-24)
+
+**What happened.** From about 20:07 IST on 2026-09-23 to past 20:00 IST on 2026-09-24, **api.bseindia.com
+returned an Akamai "Access Denied" to the cloud sandbox while www.bseindia.com answered 200 on the same
+connection.** Measured, not inferred: five probes at 19:44/19:45/19:47/19:56/20:00 IST, HTTP/2 and HTTP/1.1,
+with and without a cookie jar taken from www first, all 403; the body is the edge error page
+(`Reference #18.f0263e17...`), and the proxy CONNECT succeeds, so this is BSE refusing the egress IP, not
+the sandbox refusing BSE. PIB was blocked at the proxy the same two days, and all eleven commodity hosts.
+
+**The two hosts fail INDEPENDENTLY, and the split is the useful fact:**
+
+| on api.bseindia.com (can vanish) | on www.bseindia.com (kept working) |
+|---|---|
+| scrip master (market caps) | daily bhavcopy (OHLCV for every scrip) |
+| announcement list | the filing PDFs themselves (`/xml-data/corpfiling/Attach{Live,His}/`) |
+| per-scrip price history | |
+| corporate actions | |
+
+**Three defects that only a blocked day exposed** — each had been invisible while the network was fine:
+
+1. **`score.py` destroyed the scorecard it could not refresh.** On a failed fetch it wrote
+   `error: ... 403` over every previously priced row and emptied the summary, so one bad night cost the
+   page its whole track record. Two runs in a row (09-23, 09-24) had to hand-restore `track.json`.
+   **Fixed two ways.** (a) *Fallback*: when the api fails, unpriced ideas are re-scored from the
+   bhavcopies via the new `bse.bhav_history()` - ONE pass over the dates fills every scrip at once - and
+   the row is stamped `source: bhavcopy` with an `adj_note`, because BSE's corporate-action record is on
+   the blocked host and a bonus or split is then caught only by the one-day-gap rule. (b) *Keep-previous*:
+   an idea that cannot be priced at all keeps its last good row, marked `stale` + `stale_reason` +
+   `stale_since`, and still counts in the summary; an error row is written only for an idea that was
+   **never** priced. The summary gained `stale` and `from_bhavcopy` counts. Measured on the real blocked
+   network 2026-09-24 20:44 IST: **3 of 3 ideas priced via bhavcopy**, every `call_close` matching both
+   the published `ideas.json` value and the raw CSV (MODISONLTD 467.90, SUGSLLOYD 258.65, BHAGYANGR
+   444.90) - BHAGYANGR had been unpriced for two days. 21 assertions in the scratchpad test cover all
+   five paths (api ok / fallback / total outage / never-priced / recovery).
+2. **`ideas.html` reported a stale file as today's news.** With `govt.json` two days old it printed
+   *"Nothing today cleared the bar. Of 42 releases..."* - literally the older build's verdict, presented as
+   the day's. Every section now carries a staleness note built from `latest.json`'s `govt_status` /
+   `filings_status` / `commodity_status` / `track_status` and from each file's own build stamp compared
+   against `latest.scan_date`; the government card says *"No release cleared the bar WHEN THIS LANE LAST
+   RAN (date) ... what the government announced on <run date> is unknown"*; a carried-forward scorecard row
+   renders dimmed with a `stale` pill, a bhavcopy-priced one with a `bhavcopy` pill. **The guard must not
+   cry wolf**: a synthetic all-fresh day is asserted to show ZERO notes. sw v181.
+3. **A blocked announcement feed was indistinguishable from a quiet day.** `scan.py` wrote
+   `announcements_total: 0` either way, and the run log had to explain in prose that every candidate's
+   empty filing list meant *unknown*. `bse.announcements()` now sets `bse.last_announcements_partial` and
+   the scan file carries **`announcements_blocked`**; the page then says the counts are a floor.
+
+**Two builders no longer take the routine down with them.** `universe.py` used to raise on the scrip
+master, killing the run before the scan - which needs only the committed universe plus bhavcopies from the
+OTHER host. It now keeps the committed file, prints which build it is serving ("market caps are that day's,
+not today's") and exits 0. `govt.py` likewise exits 0 on an unreachable PIB, leaving `govt.json` untouched
+and naming the build it is leaving. And `india_spot.py`'s nmdc source no longer reports **"ok, 2 rows"**
+when all three of its BSE windows failed and the rows are the committed series re-published: the status
+carries `DEGRADED: ... a revision filed since the last run would NOT have been seen`.
+
+**The rule this leaves behind.** A builder that cannot reach its source must (a) leave its file alone,
+(b) say so in a field the page can read, and (c) never let a *count* it could not measure be rendered as a
+*measurement*. Zero is a measurement; unknown is not. If the page can print a number, it must also be able
+to print why that number is missing.
+
 ## 144. ★★ DAILY IDEAS — filings-driven deep-research page for ₹200-2,000 cr small caps (2026-09-22)
 
 **What:** `docs/ideas.html` + `docs/ideas/{universe,latest,ideas,track}.json`, `docs/ideas/scan/<date>.json`,
