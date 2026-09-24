@@ -19403,3 +19403,7 @@ symbols smoother; Natco's and OFSS's 2015 dips and Indus Towers' Jun-15 spike ar
 **Live (2026-09-25 00:41 IST).** Store commit be98119bf (refresh-shareholding run 36046097422, guards green; Pages deployed); live
 `shp_engine.json` serves 11/11 §160d cells (NATCOPHARM Sep-2015 20.65, OFSS Jun-2015 13.73, INDUSTOWER Jun-2015 24.30) and still the
 §160c spot values (ITC Jun-2015 50.77, APOLLOHOSP Jun-2015 43.79). `refresh-stock-fin.yml` dispatched (run 36046468953).
+**Live after §160d (2026-09-25 00:45 IST, verified from this side).** Store be98119bf (run 36046097422, "11 cells", guards green):
+OFSS Jun-15 13.73, NATCOPHARM Sep-15 20.65, INDUSTOWER Jun-15 24.30, APOLLOHOSP Jun-15 43.79 unchanged; §159 247/247 and §160a 5/5
+intact. Reply workbook rebuilt from `shp_engine_live_final6.json`; its open-items text now names the §160d residue (22 institutional
+rows UNDECIDABLE from the filers' documents, 17 non-institutional rows public by block) — that copy is the one to send.
