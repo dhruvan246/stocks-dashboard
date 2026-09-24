@@ -1,0 +1,55 @@
+{
+ "built": "2026-09-24 23:26 IST",
+ "where": "GitHub Actions (ideas-feeds.yml)",
+ "run_url": "https://github.com/dhruvan246/stocks-dashboard/actions/runs/36037288870",
+ "hosts": {
+  "https://www.pib.gov.in/allRel.aspx?reg=3&lang=1": 200,
+  "https://api.bseindia.com/BseIndiaAPI/api/ComHeadernew/w?quotetype=EQ&scripcode=500002&seriesid=": 403,
+  "https://www.bseindia.com/": 200,
+  "https://www.metalbook.com/": 200,
+  "https://ibjarates.com/": 200,
+  "https://rubberboard.gov.in/public": 200,
+  "https://www.chinimandi.com/": 200,
+  "https://ppac.gov.in/": 200,
+  "https://steel.gov.in/monthly-summary?page=0": 200,
+  "https://tradingeconomics.com/commodity/copper": 200,
+  "https://www.westmetall.com/": 302,
+  "https://markets.businessinsider.com/": 200,
+  "https://eaindustry.nic.in/": 200,
+  "https://tradestat.commerce.gov.in/": 302
+ },
+ "steps": {
+  "govt": 0,
+  "spot": 0,
+  "minsteel": 1,
+  "india_spot": 0,
+  "wpi": 0,
+  "trade": 0,
+  "universe": 0,
+  "scan": 0,
+  "signals": 0,
+  "score": 0
+ },
+ "hosts_ok": [
+  "https://eaindustry.nic.in/",
+  "https://ibjarates.com/",
+  "https://markets.businessinsider.com/",
+  "https://ppac.gov.in/",
+  "https://rubberboard.gov.in/public",
+  "https://steel.gov.in/monthly-summary?page=0",
+  "https://tradingeconomics.com/commodity/copper",
+  "https://www.bseindia.com/",
+  "https://www.chinimandi.com/",
+  "https://www.metalbook.com/",
+  "https://www.pib.gov.in/allRel.aspx?reg=3&lang=1"
+ ],
+ "hosts_blocked": [
+  "https://api.bseindia.com/BseIndiaAPI/api/ComHeadernew/w?quotetype=EQ&scripcode=500002&seriesid=",
+  "https://tradestat.commerce.gov.in/",
+  "https://www.westmetall.com/"
+ ],
+ "steps_failed": [
+  "minsteel"
+ ],
+ "note": "A step that exited non-zero left its file exactly as it was (every builder keeps-previous, runbook 144e). A host not in hosts_ok is the reason its builder changed nothing."
+}
