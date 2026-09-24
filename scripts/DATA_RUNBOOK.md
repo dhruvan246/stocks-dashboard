@@ -19368,3 +19368,8 @@ because the filer never states domestic or foreign — listed with verdicts in t
 136 → 5. Jun→Sep-2015 FII ≥3 pp movers 26 → 16; FII quarter-to-quarter ≥5 pp 272 → 252; DII ≥5 pp 155 → 145. Per-symbol total
 variation: 55 of 65 smoother; the rougher ones are real events now visible (YESBANK Rabobank's sell-down in FII, MFSL's Jun-2007 share issue,
 APOLLOTYRE's own FII row).
+**Correction 2026-09-25 00:35 IST.** The "final state" line above cites APOLLOHOSP Jun-15 55.57 from §160b; §160c re-derived it
+under the holder-count check to 43.79 (Jun-15) / 44.24 (Sep-15) and reverted four §160b DII moves (TATASTEEL, IPCALAB, GRAPHITE,
+PHOENIXLTD) and OFSS — see §160c. Live after §160c (store 7ce239304, run 36044108295 "210 cells"): APOLLOHOSP Jun-15 43.79, ITC
+Jun-15 50.77, OFSS Jun-15 10.61, YESBANK Dec-09 fii 53.55 / dii 4.47, MFSL Mar-12 fii 45.62; §159 247/247 and §160a 5/5 intact.
+Reply workbook rebuilt from `shp_engine_live_final5.json` with the §160c rules on the methodology sheet — that copy is the one to send.
