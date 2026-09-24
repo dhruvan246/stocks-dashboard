@@ -19436,3 +19436,8 @@ of the page era is left undecided.
 **Live (2026-09-25 00:54 IST).** Store commit c233def53 (refresh-shareholding run 36047507585, guards green; Pages deployed): live
 `shp_engine.json` serves all 6 §160e cells (INDUSTOWER Dec-2012 10.36 / 0.23 … Mar-2014 12.26 / 0.72); FEDERALBNK Mar-2010 unchanged 35.05 / 25.00
 as intended; `refresh-stock-fin.yml` dispatched (run 36047895250).
+**Live after §160e (2026-09-25 00:55 IST, verified from this side).** Store c233def53: INDUSTOWER Dec-12..Mar-14 fii 10.36 / 11.07 /
+11.15 / 11.12 / 11.45 / 12.26 with DII down where the store had counted Anadale; FEDERALBNK unchanged (depository-receipt line);
+§159 247/247 and §160a 5/5 intact. Reply workbook rebuilt from `shp_engine_live_final7.json`; its open-items text no longer lists
+any "undecidable" row — the page-era residue is 17 non-institutional rows public by the filer's own block, plus the company-labelled
+chains (FEDERALBNK IFC, CUB FMO, JSWSTEEL, FORTIS, M&M) still awaiting a chain-consistent rule. That copy is the one to send.
