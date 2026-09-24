@@ -751,8 +751,8 @@
   {
    "file": "ideas/track.json",
    "name": "Daily Ideas — scorecard",
-   "workflow": "cloud routine daily-ideas (claude/ideas-* PRs)",
-   "cadence": "daily",
+   "workflow": "GitHub Actions ideas-feeds.yml (18:50 IST, trading days) + cloud routine daily-ideas re-check (claude/ideas-* PRs)",
+   "cadence": "daily 18:50 IST from Actions (trading days); routine re-checks ~19:30",
    "max_age_hours": 80,
    "min_bytes": 20,
    "min_ratio": 0,
@@ -763,8 +763,8 @@
   {
    "file": "ideas/universe.json",
    "name": "Daily Ideas — 200-2000 cr universe",
-   "workflow": "cloud routine daily-ideas (claude/ideas-* PRs)",
-   "cadence": "daily",
+   "workflow": "GitHub Actions ideas-feeds.yml (18:50 IST, trading days) + cloud routine daily-ideas re-check (claude/ideas-* PRs)",
+   "cadence": "daily 18:50 IST from Actions (trading days); routine re-checks ~19:30",
    "max_age_hours": 80,
    "min_bytes": 150000,
    "min_ratio": 0.8,
@@ -775,8 +775,8 @@
   {
    "file": "ideas/signals.json",
    "name": "Commodity Watch — signals (spot + WPI + HS trade mapped to listed names)",
-   "workflow": "cloud routine daily-ideas (scripts/ideas/spot.py, wpi.py, trade.py --latest, signals.py)",
-   "cadence": "daily ~19:30 IST (trading days)",
+   "workflow": "GitHub Actions ideas-feeds.yml (18:50 IST, trading days) + cloud routine daily-ideas re-check (claude/ideas-* PRs)",
+   "cadence": "daily 18:50 IST from Actions (trading days); routine re-checks ~19:30",
    "max_age_hours": 80,
    "min_bytes": 20000,
    "min_ratio": 0,
@@ -787,8 +787,8 @@
   {
    "file": "ideas/spot.json",
    "name": "Commodity Watch — daily spot panel (LME via Westmetall + Markets Insider)",
-   "workflow": "cloud routine daily-ideas (scripts/ideas/spot.py, wpi.py, trade.py --latest, signals.py)",
-   "cadence": "daily ~19:30 IST (trading days)",
+   "workflow": "GitHub Actions ideas-feeds.yml (18:50 IST, trading days) + cloud routine daily-ideas re-check (claude/ideas-* PRs)",
+   "cadence": "daily 18:50 IST from Actions (trading days); routine re-checks ~19:30",
    "max_age_hours": 80,
    "min_bytes": 3000,
    "min_ratio": 0,
@@ -799,8 +799,8 @@
   {
    "file": "ideas/trade/meta.json",
    "name": "Commodity Watch — HS trade panel pointer (MEIDB, monthly, ~45-day lag)",
-   "workflow": "cloud routine daily-ideas (scripts/ideas/spot.py, wpi.py, trade.py --latest, signals.py)",
-   "cadence": "monthly (portal publishes ~45 days after month-end)",
+   "workflow": "GitHub Actions ideas-feeds.yml (18:50 IST, trading days) + cloud routine daily-ideas re-check (claude/ideas-* PRs)",
+   "cadence": "daily 18:50 IST from Actions (trading days); routine re-checks ~19:30",
    "max_age_hours": 1440,
    "min_bytes": 1500,
    "min_ratio": 0,
@@ -811,8 +811,8 @@
   {
    "file": "ideas/wpi.json.gz",
    "name": "Commodity Watch — WPI item index (eaindustry.nic.in, monthly)",
-   "workflow": "cloud routine daily-ideas (scripts/ideas/spot.py, wpi.py, trade.py --latest, signals.py)",
-   "cadence": "monthly (14th of the month)",
+   "workflow": "GitHub Actions ideas-feeds.yml (18:50 IST, trading days) + cloud routine daily-ideas re-check (claude/ideas-* PRs)",
+   "cadence": "daily 18:50 IST from Actions (trading days); routine re-checks ~19:30",
    "max_age_hours": 1440,
    "min_bytes": 100000,
    "min_ratio": 0,
@@ -823,8 +823,8 @@
   {
    "file": "ideas/govt.json",
    "name": "Daily Ideas — government announcements that cleared the materiality gate",
-   "workflow": "cloud routine daily-ideas (scripts/ideas/govt.py)",
-   "cadence": "daily ~19:30 IST (trading days)",
+   "workflow": "GitHub Actions ideas-feeds.yml (18:50 IST, trading days) + cloud routine daily-ideas re-check (claude/ideas-* PRs)",
+   "cadence": "daily 18:50 IST from Actions (trading days); routine re-checks ~19:30",
    "max_age_hours": 80,
    "min_bytes": 200,
    "min_ratio": 0,
@@ -847,8 +847,8 @@
   {
    "file": "ideas/india_spot.json",
    "name": "Commodity Watch — India spot (MetalBook steel/metals by city, IBJA, Rubber Board, sugar spot, PPAC fuel, NMDC iron ore) + Trading Economics proxies",
-   "workflow": "cloud routine daily-ideas (scripts/ideas/india_spot.py)",
-   "cadence": "daily ~19:30 IST (trading days)",
+   "workflow": "GitHub Actions ideas-feeds.yml (18:50 IST, trading days) + cloud routine daily-ideas re-check (claude/ideas-* PRs)",
+   "cadence": "daily 18:50 IST from Actions (trading days); routine re-checks ~19:30",
    "max_age_hours": 80,
    "min_bytes": 8000,
    "min_ratio": 0,
@@ -859,8 +859,8 @@
   {
    "file": "ideas/nmdc_history.json",
    "name": "Commodity Watch — NMDC iron-ore price revisions (every price letter NMDC filed with BSE, 2019 to date)",
-   "workflow": "cloud routine daily-ideas (scripts/ideas/india_spot.py, NMDC source)",
-   "cadence": "checked daily; the file only changes when NMDC files a revision (roughly monthly)",
+   "workflow": "GitHub Actions ideas-feeds.yml (18:50 IST, trading days) + cloud routine daily-ideas re-check (claude/ideas-* PRs)",
+   "cadence": "daily 18:50 IST from Actions (trading days); routine re-checks ~19:30",
    "max_age_hours": 8760,
    "min_bytes": 20000,
    "min_ratio": 0,
@@ -871,8 +871,8 @@
   {
    "file": "ideas/india_history.json.gz",
    "name": "Commodity Watch — dated history of every Indian print and global proxy (recorded daily since 2026-09-22 + archive backfill + NMDC filings), what a click on a price charts",
-   "workflow": "cloud routine daily-ideas (scripts/ideas/india_spot.py build_history)",
-   "cadence": "daily ~19:30 IST (trading days)",
+   "workflow": "GitHub Actions ideas-feeds.yml (18:50 IST, trading days) + cloud routine daily-ideas re-check (claude/ideas-* PRs)",
+   "cadence": "daily 18:50 IST from Actions (trading days); routine re-checks ~19:30",
    "max_age_hours": 80,
    "min_bytes": 3000,
    "min_ratio": 0,
@@ -883,13 +883,25 @@
   {
    "file": "ideas/minsteel_mumbai.json",
    "name": "Commodity Watch — Ministry of Steel monthly Mumbai retail TMT / HRC / CRC (Rs/t incl. GST), Nov-2021 onward",
-   "workflow": "scripts/ideas/minsteel.py (monthly; the cloud routine runs it, non-fatal if steel.gov.in is blocked)",
-   "cadence": "monthly, ~2-3 months after the month",
+   "workflow": "GitHub Actions ideas-feeds.yml (18:50 IST, trading days) + cloud routine daily-ideas re-check (claude/ideas-* PRs)",
+   "cadence": "daily 18:50 IST from Actions (trading days); routine re-checks ~19:30",
    "max_age_hours": 2880,
    "min_bytes": 5000,
    "min_ratio": 0,
    "pages": [
     "commodities.html"
+   ]
+  },
+  {
+   "file": "ideas/feeds_status.json",
+   "name": "Daily Ideas — feeds build status (which host answered, which builder ran)",
+   "workflow": "GitHub Actions ideas-feeds.yml",
+   "cadence": "daily 18:50 IST (trading days)",
+   "max_age_hours": 80,
+   "min_bytes": 200,
+   "min_ratio": 0,
+   "pages": [
+    "ideas.html"
    ]
   }
  ],

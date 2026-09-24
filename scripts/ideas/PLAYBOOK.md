@@ -9,6 +9,13 @@ valid answer; nothing is investment advice.
 
 - Universe: `docs/ideas/universe.json`, all active BSE equities with market cap ₹200-2,000 cr (about 1,180 names,
   BSE SME included, suspended groups excluded). Rebuilt every run by `scripts/ideas/universe.py`.
+- **The feeds are built by GitHub Actions first** (`.github/workflows/ideas-feeds.yml`, 18:50 IST on trading
+  days, runbook §144e): every builder in steps 1, 2, 2a and 2b below plus `score.py`, run from a runner with open
+  egress, committed to `main`, with `docs/ideas/feeds_status.json` recording which host answered what. The cloud
+  routine's sandbox cannot reach PIB, the commodity hosts or (some days) BSE's api, so the routine's own builder
+  runs are a re-check: they succeed and change nothing, or they fail and keep the rows the workflow wrote. Read
+  `feeds_status.json` before reporting a lane as blocked — "blocked from the sandbox" and "blocked from Actions"
+  are different facts, and only the second means the day's data is genuinely missing.
 - One run per trading day after BSE has published the bhavcopy (evening IST). Steps, in order:
   1. `python3 scripts/ideas/universe.py`
   2. `python3 scripts/ideas/scan.py` → `docs/ideas/scan/<date>.json` (candidates = score ≥ 4)

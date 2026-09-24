@@ -1,0 +1,213 @@
+# Daily Ideas — the feeds, built where the network works (DATA_RUNBOOK §144e).
+#
+# Every builder here reads a public site and writes a file under docs/ideas/. The cloud routine that
+# researches the ideas runs on a sandbox whose egress allowlist refuses most of those sites
+# (pib.gov.in and the eleven commodity hosts returned 403 at the proxy on 2026-09-23/24) and whose
+# IP BSE's Akamai edge refused outright for a day. GitHub runners have no such allowlist — every
+# other data workflow in this repo already reads BSE, NSE and the ministries from here — so the
+# feeds are built HERE and committed to main, and the routine starts from committed files. Its own
+# builder runs then either succeed (nothing changes) or fail and keep the rows this job wrote:
+# every builder keeps-previous since §144e.
+#
+# Scheduled ONCE, before the routine (14:00 UTC), and never during it: the routine lands its own
+# PR on these same files, and a push from here inside that window would conflict it.
+#
+# Nothing here is fatal. A blocked host leaves that builder's file untouched, by design; the probe
+# step and docs/ideas/feeds_status.json record which host answered what, so "nothing changed" is
+# never mistaken for "nothing happened".
+name: Daily Ideas feeds
+
+on:
+  schedule:
+    - cron: "20 13 * * 1-5"   # 18:50 IST on trading days: off the :00/:30 marks, 40 min before the routine
+  repository_dispatch:
+    types: [ideas-feeds]
+  workflow_dispatch: {}
+
+permissions:
+  contents: write
+  actions: write   # dispatch pages.yml after a push — a GITHUB_TOKEN push never fires another workflow's push trigger (§50a)
+
+concurrency:
+  group: ideas-feeds
+  cancel-in-progress: false
+
+jobs:
+  feeds:
+    runs-on: ubuntu-latest
+    timeout-minutes: 45   # a cold scan downloads 65 bhavcopies; the cache below makes the next run warm
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v5
+
+      - name: Set up Python
+        uses: actions/setup-python@v6
+        with:
+          python-version: "3.11"
+
+      # PyMuPDF reads the Ministry of Steel and PPAC PDFs; xlrd reads the WPI workbook. Everything
+      # else in scripts/ideas/ is stdlib on purpose (the routine runs on a bare VM).
+      - name: Install PDF and XLS readers
+        run: pip install -q pymupdf xlrd
+
+      - name: Restore the builders' cache (bhavcopies, report PDFs, scrip master)
+        uses: actions/cache/restore@v4
+        with:
+          path: scripts/ideas/_cache
+          key: ideas-feeds-${{ github.run_id }}
+          restore-keys: ideas-feeds-
+
+      # The URL per host is the one its builder actually fetches, so a 403 here means the builder
+      # will fail, not just that a home page is fussy. Each line is a measurement; the status file
+      # below carries them to the page and to the routine's report.
+      - name: Probe every source host
+        run: |
+          UA="Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/128.0 Safari/537.36"
+          mkdir -p /tmp/ideas
+          : > /tmp/ideas/probe.txt
+          while read -r h; do
+            [ -z "$h" ] && continue
+            code=$(curl -s -m 30 -o /dev/null -w '%{http_code}' -A "$UA" -H "Referer: https://www.bseindia.com/" -k "$h" || echo 000)
+            printf '%s %s\n' "$code" "$h" | tee -a /tmp/ideas/probe.txt
+          done <<'EOF'
+          https://www.pib.gov.in/allRel.aspx?reg=3&lang=1
+          https://api.bseindia.com/BseIndiaAPI/api/ComHeadernew/w?quotetype=EQ&scripcode=500002&seriesid=
+          https://www.bseindia.com/
+          https://www.metalbook.com/
+          https://ibjarates.com/
+          https://rubberboard.gov.in/public
+          https://www.chinimandi.com/
+          https://ppac.gov.in/
+          https://steel.gov.in/monthly-summary?page=0
+          https://tradingeconomics.com/commodity/copper
+          https://www.westmetall.com/
+          https://markets.businessinsider.com/
+          https://eaindustry.nic.in/
+          https://tradestat.commerce.gov.in/
+          EOF
+
+      # Same order as the routine's prompt. `|| rc=$?` keeps a blocked host from aborting the job:
+      # the builder has already left its file alone and said why on stdout.
+      - name: Government lane — PIB releases
+        run: rc=0; python3 -X utf8 scripts/ideas/govt.py || rc=$?; echo "govt=$rc" >> /tmp/ideas/steps.txt
+
+      - name: Commodity — global spot (westmetall, businessinsider)
+        run: rc=0; python3 -X utf8 scripts/ideas/spot.py || rc=$?; echo "spot=$rc" >> /tmp/ideas/steps.txt
+
+      - name: Commodity — Ministry of Steel monthly Mumbai prices
+        run: rc=0; python3 -X utf8 scripts/ideas/minsteel.py || rc=$?; echo "minsteel=$rc" >> /tmp/ideas/steps.txt
+
+      - name: Commodity — Indian prints (MetalBook, IBJA, Rubber Board, sugar, PPAC, NMDC, TE)
+        run: rc=0; python3 -X utf8 scripts/ideas/india_spot.py || rc=$?; echo "india_spot=$rc" >> /tmp/ideas/steps.txt
+
+      - name: Commodity — WPI items
+        run: rc=0; python3 -X utf8 scripts/ideas/wpi.py || rc=$?; echo "wpi=$rc" >> /tmp/ideas/steps.txt
+
+      - name: Commodity — HS trade panel (latest month only)
+        run: rc=0; python3 -X utf8 scripts/ideas/trade.py --latest || rc=$?; echo "trade=$rc" >> /tmp/ideas/steps.txt
+
+      - name: Filings — universe (BSE scrip master)
+        run: rc=0; python3 -X utf8 scripts/ideas/universe.py || rc=$?; echo "universe=$rc" >> /tmp/ideas/steps.txt
+
+      - name: Filings — scan (65 bhavcopies + the day's announcements)
+        run: rc=0; python3 -X utf8 scripts/ideas/scan.py --days 65 || rc=$?; echo "scan=$rc" >> /tmp/ideas/steps.txt
+
+      - name: Commodity — signals (committed panels only, never fails on network)
+        run: rc=0; python3 -X utf8 scripts/ideas/signals.py || rc=$?; echo "signals=$rc" >> /tmp/ideas/steps.txt
+
+      - name: Scorecard
+        run: rc=0; python3 -X utf8 scripts/ideas/score.py || rc=$?; echo "score=$rc" >> /tmp/ideas/steps.txt
+
+      # feeds_status.json: which host answered what and which builder exited how, stamped. Then the
+      # same parse guard the routine runs: a file this job cannot parse is not committed by this job.
+      - name: Record status and guard every output
+        run: |
+          python3 -X utf8 - <<'PY'
+          import json, gzip, os, subprocess, sys
+          hosts = {}
+          for line in open('/tmp/ideas/probe.txt'):
+              code, url = line.split(None, 1)
+              hosts[url.strip()] = int(code) if code.isdigit() else 0
+          steps = {}
+          for line in open('/tmp/ideas/steps.txt'):
+              k, v = line.strip().split('=')
+              steps[k] = int(v)
+          stamp = subprocess.run(['date', '+%Y-%m-%d %H:%M IST'], capture_output=True, text=True,
+                                 env={'TZ': 'Asia/Kolkata', 'PATH': os.environ['PATH']}).stdout.strip()
+          out = dict(built=stamp, where='GitHub Actions (ideas-feeds.yml)',
+                     run_url=f"{os.environ.get('GITHUB_SERVER_URL','')}/{os.environ.get('GITHUB_REPOSITORY','')}/actions/runs/{os.environ.get('GITHUB_RUN_ID','')}",
+                     hosts=hosts, steps=steps,
+                     hosts_ok=sorted(u for u, c in hosts.items() if c == 200),
+                     hosts_blocked=sorted(u for u, c in hosts.items() if c != 200),
+                     steps_failed=sorted(k for k, v in steps.items() if v),
+                     note='A step that exited non-zero left its file exactly as it was (every builder keeps-previous, '
+                          'runbook 144e). A host not in hosts_ok is the reason its builder changed nothing.')
+          json.dump(out, open('docs/ideas/feeds_status.json', 'w'), indent=1)
+          print(json.dumps({k: out[k] for k in ('built', 'hosts_ok', 'hosts_blocked', 'steps_failed')}, indent=1))
+          bad = 0
+          for f in ['govt.json', 'spot.json', 'spot_series.json', 'india_spot.json', 'nmdc_history.json', 'minsteel_mumbai.json',
+                    'universe.json', 'signals.json', 'track.json', 'feeds_status.json', 'theme_map.json', 'commodity_map.json',
+                    'ideas.json', 'latest.json']:
+              try:
+                  json.load(open('docs/ideas/' + f))
+              except Exception as e:
+                  print('PARSE FAIL', f, e); bad += 1
+          for f in ['india_history.json.gz', 'wpi.json.gz', 'trade/index.json.gz']:
+              try:
+                  json.load(gzip.open('docs/ideas/' + f))
+              except Exception as e:
+                  print('GZIP FAIL', f, e); bad += 1
+          if bad:
+              print(f'::error::{bad} output file(s) do not parse — refusing to commit'); sys.exit(1)
+          print('all outputs parse')
+          PY
+
+      - name: Save the builders' cache
+        uses: actions/cache/save@v4
+        if: always()
+        with:
+          path: scripts/ideas/_cache
+          key: ideas-feeds-${{ github.run_id }}
+
+      # Explicit paths only (the repo rule), and the standard fetch/reset/copy/push loop every data
+      # workflow here uses — this checkout is the runner's own, so the reset is safe.
+      - name: Commit the feeds
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          git config user.name  "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+
+          FILES="docs/ideas/govt.json docs/ideas/spot.json docs/ideas/spot_series.json docs/ideas/spot_history.csv \
+                 docs/ideas/india_spot.json docs/ideas/india_spot_history.csv docs/ideas/nmdc_history.json \
+                 docs/ideas/minsteel_mumbai.json docs/ideas/india_history.json.gz docs/ideas/wpi.json.gz \
+                 docs/ideas/universe.json docs/ideas/signals.json docs/ideas/track.json docs/ideas/feeds_status.json"
+          DIRS="docs/ideas/trade docs/ideas/scan"
+
+          rm -rf /tmp/ideas/out && mkdir -p /tmp/ideas/out
+          for f in $FILES; do [ -f "$f" ] && { mkdir -p "/tmp/ideas/out/$(dirname "$f")"; cp "$f" "/tmp/ideas/out/$f"; }; done
+          for d in $DIRS;  do [ -d "$d" ] && { mkdir -p "/tmp/ideas/out/$d"; cp -r "$d/." "/tmp/ideas/out/$d/"; }; done
+
+          for attempt in 1 2 3 4 5; do
+            git fetch origin main
+            git reset --hard origin/main
+            cp -r /tmp/ideas/out/. .
+            git add $FILES $DIRS 2>/dev/null || true
+
+            if git diff --cached --quiet; then
+              echo "No feed changed — nothing to commit"
+              exit 0
+            fi
+            git diff --cached --stat | tail -20
+
+            git commit -m "Daily Ideas feeds $(TZ=Asia/Kolkata date +'%Y-%m-%d %H:%M IST')"
+            if git push origin HEAD:main; then
+              echo "Pushed on attempt #$attempt"
+              gh workflow run pages.yml || echo "(pages deploy dispatch failed — will publish on the next push)"
+              exit 0
+            fi
+            echo "Push attempt #$attempt rejected; resetting and retrying"
+            sleep $(( attempt * 3 ))
+          done
+          echo "Failed to push after 5 attempts"
+          exit 1
