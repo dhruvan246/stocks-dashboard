@@ -19149,10 +19149,12 @@ labelled domestic sub-rows, so the DII side of that seam is the §158 Jun-2016 h
 55.5 55.3 63.2 63.6 64.1 63.8 | 51.3 (Jun-16 = §156, a real step: Zend/LeapFrog re-registered as FPI + a sale); KOTAKBANK Mar-16
 37.7 | Jun-16 37.3. Commit ff980fe84 (main), refresh-shareholding run 36012264333.
 
-**Held / not covered (open, for the FII session's Quantmac reply — "unfinished", not "differs by design").** Seam cells whose
-reconstruction falls outside the band: JKCEMENT Dec-15/Mar-16 (3.3/2.8 vs 10.9/11.3), JUBLPHARMA Dec-15 (14.7 vs 26.0/26.7 — its
-FII-prefixed holders are inside the FII row, the rest is sub-1%), LINDEINDIA Mar-16 (3.4 vs 8.7/6.9), REDINGTON Dec-15 (27.0 vs
-36.9/39.0, no lump on the 88 table). Generic rows with no name ≥ 1%: ITC Jun-2015 institutional "Others" 5.19 (FPI corporate on the
+**Held / not covered.** The five held seam cells (JKCEMENT Dec-15/Mar-16, JUBLPHARMA Dec-15, LINDEINDIA Mar-16, REDINGTON Dec-15)
+were RESOLVED by the FII session in §160a (2026-09-24 ~20:40 IST, commit 38acf2adc): each institutional Any-Other block holds only
+foreign holders, so the whole block is fii by the R1 rest-follows rule (JKCEMENT 11.69 = 3.23+4.49+1.88+2.09 exactly). Lesson
+for the seam reader: whether "FII- <name>" rows sit inside the main page's FII/QFI row or inside the Any-Other block is decided by
+the BLOCK-SUM test, not by the prefix — JUBLPHARMA block 15.12 = 7.73 prefixed + 7.28 named (in the block), POONAWALLA block 49.62
+= the named holders WITHOUT its "FII - Bay Pond" rows (inside the row). Still open: Generic rows with no name ≥ 1%: ITC Jun-2015 institutional "Others" 5.19 (FPI corporate on the
 neighbours' pages → one 5-pp dip stays), JUBLPHARMA Jun-2015 "Others" 8.17 (GA Global 7.15 + sub-1%), 79 institutional "Others" /
 29 "Any Other" rows in all. The 239 no-match rows (KARURVYSYA no table; 136 seam-fill dii cells ADANIPOWER/AEGISLOG/APOLLOTYRE-type
 where the page's dii differs from the store's seam reading). CHOLAFIN Dec-15/Mar-16 dip 3-4 pp (IFC inside the 88/89 lump, below the
