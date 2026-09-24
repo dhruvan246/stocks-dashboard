@@ -20,7 +20,8 @@
   "2026-09-22 (\u00a7142j, USER RULE): a quarter's row keeps the ORIGINAL filing's gated date but serves the LATEST re-filing's values (corrections are small and must be reflected). Supersedes the \u00a7142g 'original values' reading; `retired` entries whose revision values now serve were re-activated with the original date.",
   "2026-09-22 (\u00a7142k, option C): the store row is the ORIGINAL filing; re-filings live in scripts/shp_revisions.json with their own gated dates (engine serves each from its date, stock page shows the re-filing). Entries here move a store row back to its original where a revision had been written into it.",
   "2026-09-24 (\u00a7151, USER RULE 'exclude DR shares like Screener'): 189 new-format rows / 19 symbols where the stored FII was the Institutions (Foreign) bucket TOTAL, i.e. included the 'Overseas Depositories (holding DRs)' custodian line. Each entry = the same row with fii minus that line, read from the same BSE XBRL by the patched parser (src names the file and both figures). The parser now excludes the line (MEMBERS 'od'); guard_shp_definition.py keeps it that way.",
-  "2026-09-24 (\u00a7152): the SW-2 foreign-block heals re-asserted on 22 rows the store had lost \u2014 20 \u00a7142k/date entries updated in place (their `cell` had put the RAW original back over the healed reading) and 2 rows the SW-2 apply had skipped because an unrelated entry already existed. Re-filings now inherit these heals in the fetcher (heal_refiling) instead of undoing them in shp_revisions.json."
+  "2026-09-24 (\u00a7152): the SW-2 foreign-block heals re-asserted on 22 rows the store had lost \u2014 20 \u00a7142k/date entries updated in place (their `cell` had put the RAW original back over the healed reading) and 2 rows the SW-2 apply had skipped because an unrelated entry already existed. Re-filings now inherit these heals in the fetcher (heal_refiling) instead of undoing them in shp_revisions.json.",
+  "2026-09-24 (\u00a7153): 13 rows whose stored date was a BSE re-filing date healed to the ORIGINAL filing (values + calendar day) read from BSE's original XBRL; the re-filing values moved to shp_revisions.json (0 rows)."
  ],
  "_doc_bulk_stamp": "2026-08-13: 441 rows across 57 symbols carried ONE identical submission date across >=3 quarters \u2014 a scrape date, not a filing date. Separated from the 268 symbols whose late dates are DISTINCT per quarter (genuinely late filers: TALWALKARS, MANPASAND et al) \u2014 those are left alone, because for a distressed company a multi-year filing lag is real. The discriminator is the identical-date collapse, and the fii/dii values under it differ per quarter, which is what proves the data was read per-quarter and only the date was stamped.",
  "accept": {
@@ -22735,42 +22736,20 @@
      20.3093,
      0.0,
      17.2862,
-     "2022-10-20",
+     "2022-10-19",
      19651
     ],
     "was": [
-     50.01,
-     0.227,
-     9.6284,
      0.0,
-     8.1952,
+     0.0,
+     20.3093,
+     0.0,
+     17.2862,
      "2022-10-20",
-     20319
+     19651
     ],
-    "src": "bsexbrl:590086_19102022164718_SHP.xml",
-    "why": "\u00a7142k 2026-09-22 option C: the store row is the ORIGINAL filing; the stored values were a later re-filing's (now kept beside it in shp_revisions.json with its own date). Date unchanged.",
-    "superseded": {
-     "cell": [
-      50.01,
-      0.23,
-      9.63,
-      0.0,
-      8.2,
-      "2022-10-20",
-      20319
-     ],
-     "src": "bse:590086_2010202292427_SHP.xml",
-     "was": [
-      0.0,
-      0.0,
-      20.31,
-      0.0,
-      17.29,
-      "2022-10-19",
-      19651
-     ],
-     "why": "BSE revision 2022-10-20 supersedes stored (sub 2022-10-19); diffs {'prom': [0.0, 50.01], 'fii': [0.0, 0.23], 'dii': [20.31, 9.63], 'ins': [17.29, 8.2], 'nsh': [19651, 20319]}; corroboration=NO_SITE_WINDOW (revision sweep 2026-08-09)"
-    }
+    "src": "bsexbrl:590086_19102022164718_SHP.xml | bsexbrl:590086_19102022164718_SHP.xml (BSE original filing 2022-10-19T16:47:19)",
+    "why": "\u00a7153 (2026-09-24): the stored row carried the RE-FILING's date (BSE revised_date_time) and values \u2014 the original filing was never captured; option C (\u00a7142k) wants the ORIGINAL here (values + calendar filing day, midnight rule \u00a7149) and the re-filing in shp_revisions.json. Original read by the current parser (\u00a7151 rule). | replaces: \u00a7142k 2026-09-22 option C: the store row is the ORIGINAL filing; the stored values were a later re-filing's (now kept be"
    },
    "2016-06-30": {
     "cell": [
@@ -34930,6 +34909,28 @@
      2044109
     ],
     "why": "WITHIN-SYMBOL OUTLIER: this symbol's own median filing lag is inside the 21-day window, yet this row is 483d late. An otherwise-compliant filer does not file one quarter months late and resume on time. Corrected only because the stamp signature is present as well \u2014 the date is shared with another quarter of the same symbol, or the lag exceeds a year. Rows 120-365d late carrying a LONE date are left alone: there a single genuinely-delayed filing cannot be told from a stamp."
+   },
+   "2022-09-30": {
+    "cell": [
+     0.0,
+     12.1473,
+     44.1644,
+     0.3578,
+     5.3006,
+     "2022-10-18",
+     4547534
+    ],
+    "was": [
+     0.0,
+     12.1473,
+     44.1644,
+     0.3578,
+     5.3006,
+     "2022-10-20",
+     4547534
+    ],
+    "src": "bsexbrl:532648_18102022171153_SHP.xml (BSE original filing 2022-10-18T17:11:56)",
+    "why": "\u00a7153 (2026-09-24): the stored row carried the RE-FILING's date (BSE revised_date_time) and values \u2014 the original filing was never captured; option C (\u00a7142k) wants the ORIGINAL here (values + calendar filing day, midnight rule \u00a7149) and the re-filing in shp_revisions.json. Original read by the current parser (\u00a7151 rule)."
    }
   },
   "ZENITHSTL": {
@@ -57079,6 +57080,28 @@
      125263
     ],
     "why": "FILER MISCLASSIFICATION in BAJAJ-AUTO's 2020-03-31 SHP filing (532977_562020155433_SHP.xml): institutional holder(s) [ALTERNATIVE INVESTMENT FUND 0.0285%; Qualified Institutional Buyer 1.0222%] tagged D_OtherNonInstitutions (Public->Non-Institutions) instead of domestic institutions, dropping dii to 8.7662 (outlier vs neighbours 10.1025/9.1202). Same class as HAL Sep-2021 [[project-stocks-hal-sep2021-dii-heal]]. Heal restores the block to dii/ins: dii 8.7662->9.817, ins 0.0->0.0. Named holder(s) counted once (QIB category row deduped against LIC). Neighbour-band verified. 2026-09-03."
+   },
+   "2026-03-31": {
+    "cell": [
+     55.01,
+     8.8216,
+     14.4695,
+     7.1745,
+     6.1269,
+     "2026-04-20",
+     314095
+    ],
+    "was": [
+     55.01,
+     8.8216,
+     14.4695,
+     7.1745,
+     6.1269,
+     "2026-04-21",
+     314095
+    ],
+    "src": "bsexbrl:532977_204202611294_SHP.xml (BSE original filing 2026-04-20T11:29:06)",
+    "why": "\u00a7153 (2026-09-24): the stored row carried the RE-FILING's date (BSE revised_date_time) and values \u2014 the original filing was never captured; option C (\u00a7142k) wants the ORIGINAL here (values + calendar filing day, midnight rule \u00a7149) and the re-filing in shp_revisions.json. Original read by the current parser (\u00a7151 rule)."
    }
   },
   "WHIRLPOOL": {
@@ -58455,6 +58478,28 @@
     ],
     "src": "bseaspx:500520:qtrid86",
     "why": "SW-2 phase-2 2026-08-30: pre-2016 family convention is dii = mf+banks+ins(+vcf); this cell's dii equals that PLUS the institutions Any-Other row (4.35pp) folded in by a minority route. Healed to the page's own domestic rows (18.2188). fii left as authored (block nationality not adjudicated here). Census: _shp_oth_p2_census.jsonl"
+   },
+   "2026-03-31": {
+    "cell": [
+     18.45,
+     36.2216,
+     31.5037,
+     17.2471,
+     10.7001,
+     "2026-04-16",
+     941478
+    ],
+    "was": [
+     18.45,
+     36.2216,
+     31.5037,
+     17.2471,
+     10.7001,
+     "2026-04-21",
+     941478
+    ],
+    "src": "bsexbrl:500520_164202620586_SHP.xml (BSE original filing 2026-04-16T20:58:08)",
+    "why": "\u00a7153 (2026-09-24): the stored row carried the RE-FILING's date (BSE revised_date_time) and values \u2014 the original filing was never captured; option C (\u00a7142k) wants the ORIGINAL here (values + calendar filing day, midnight rule \u00a7149) and the re-filing in shp_revisions.json. Original read by the current parser (\u00a7151 rule)."
    }
   },
   "CASTEXTECH": {
@@ -62735,6 +62780,28 @@
     ],
     "src": "bsexbrl:532509_157202617650_SHP.xml",
     "why": "\u00a7142i 2026-09-22 dark-window repair: the daily fetch re-dated this row to a later re-publication (NSE moves broadcastDate to the latest version); BSE's ORIGINAL filing 532509_157202617650_SHP.xml was public 2026-07-16 (gated). Values and date restored from that original document (runbook \u00a7142g rule)."
+   },
+   "2026-03-31": {
+    "cell": [
+     45.26,
+     6.5076,
+     17.177,
+     16.7349,
+     0.0,
+     "2026-04-15",
+     73587
+    ],
+    "was": [
+     45.27,
+     6.5065,
+     17.1741,
+     16.7321,
+     0.0,
+     "2026-04-16",
+     73587
+    ],
+    "src": "bsexbrl:532509_154202617846_SHP.xml (BSE original filing 2026-04-15T17:08:47)",
+    "why": "\u00a7153 (2026-09-24): the stored row carried the RE-FILING's date (BSE revised_date_time) and values \u2014 the original filing was never captured; option C (\u00a7142k) wants the ORIGINAL here (values + calendar filing day, midnight rule \u00a7149) and the re-filing in shp_revisions.json. Original read by the current parser (\u00a7151 rule)."
    }
   },
   "FINOPB": {
@@ -64355,6 +64422,28 @@
     ],
     "src": "bsexbrl:540595_2172026151514_SHP.xml",
     "why": "\u00a7142i 2026-09-22 dark-window repair: the daily fetch re-dated this row to a later re-publication (NSE moves broadcastDate to the latest version); BSE's ORIGINAL filing 540595_2172026151514_SHP.xml was public 2026-07-21 (gated). Values and date restored from that original document (runbook \u00a7142g rule)."
+   },
+   "2025-06-30": {
+    "cell": [
+     53.73,
+     6.139,
+     4.7174,
+     4.2155,
+     0.0109,
+     "2025-07-21",
+     345757
+    ],
+    "was": [
+     53.73,
+     6.139,
+     4.7174,
+     4.2155,
+     0.0109,
+     "2025-07-23",
+     345757
+    ],
+    "src": "bsexbrl:540595_2172025204154_SHP.xml (BSE original filing 2025-07-21T20:41:54)",
+    "why": "\u00a7153 (2026-09-24): the stored row carried the RE-FILING's date (BSE revised_date_time) and values \u2014 the original filing was never captured; option C (\u00a7142k) wants the ORIGINAL here (values + calendar filing day, midnight rule \u00a7149) and the re-filing in shp_revisions.json. Original read by the current parser (\u00a7151 rule)."
    }
   },
   "SADBHIN": {
@@ -70702,6 +70791,28 @@
     ],
     "src": "bsexbrl:532872_2072026141518_SHP.xml",
     "why": "\u00a7142i 2026-09-22 dark-window repair: the daily fetch re-dated this row to a later re-publication (NSE moves broadcastDate to the latest version); BSE's ORIGINAL filing 532872_2072026141518_SHP.xml was public 2026-07-20 (gated). Values and date restored from that original document (runbook \u00a7142g rule)."
+   },
+   "2024-12-31": {
+    "cell": [
+     65.67,
+     2.2289,
+     0.6354,
+     0.5051,
+     0.0058,
+     "2025-01-20",
+     131034
+    ],
+    "was": [
+     65.67,
+     2.2289,
+     0.6354,
+     0.5051,
+     0.0058,
+     "2025-01-21",
+     131034
+    ],
+    "src": "bsexbrl:532872_2012025173917_SHP.xml (BSE original filing 2025-01-20T17:39:23)",
+    "why": "\u00a7153 (2026-09-24): the stored row carried the RE-FILING's date (BSE revised_date_time) and values \u2014 the original filing was never captured; option C (\u00a7142k) wants the ORIGINAL here (values + calendar filing day, midnight rule \u00a7149) and the re-filing in shp_revisions.json. Original read by the current parser (\u00a7151 rule)."
    }
   },
   "SUPERSPIN": {
@@ -80813,6 +80924,150 @@
     ],
     "src": "bsexbrl:539597_171202311631_SHP.xml \u2014 Institutions (Foreign) 22.4960 minus Overseas Depositories (holding DRs) 1.4280",
     "why": "\u00a7151 (2026-09-24, user rule 'exclude DR shares like Screener'): the 2022+ format prints the ADR/GDR custodian line inside Institutions (Foreign); the stored FII was the bucket total. Screener/Trendlyne and the pre-Sep-2022 rows exclude it; keeping it made the series jump at the format change."
+   }
+  },
+  "CANBK": {
+   "2025-12-31": {
+    "cell": [
+     62.93,
+     14.6141,
+     10.4806,
+     4.3713,
+     4.9953,
+     "2026-01-05",
+     1530698
+    ],
+    "was": [
+     62.93,
+     14.6141,
+     10.4806,
+     4.3713,
+     4.9953,
+     "2026-01-06",
+     1530698
+    ],
+    "src": "bsexbrl:532483_512026172245_SHP.xml (BSE original filing 2026-01-05T17:22:46)",
+    "why": "\u00a7153 (2026-09-24): the stored row carried the RE-FILING's date (BSE revised_date_time) and values \u2014 the original filing was never captured; option C (\u00a7142k) wants the ORIGINAL here (values + calendar filing day, midnight rule \u00a7149) and the re-filing in shp_revisions.json. Original read by the current parser (\u00a7151 rule)."
+   }
+  },
+  "IDFCFIRSTB": {
+   "2024-09-30": {
+    "cell": [
+     35.37,
+     19.5683,
+     11.7432,
+     2.3852,
+     9.0642,
+     "2024-10-11",
+     2856377
+    ],
+    "was": [
+     35.37,
+     19.5683,
+     11.7432,
+     2.3852,
+     9.0642,
+     "2024-10-14",
+     2856377
+    ],
+    "src": "bsexbrl:539437_11102024202645_SHP.xml (BSE original filing 2024-10-11T20:26:48)",
+    "why": "\u00a7153 (2026-09-24): the stored row carried the RE-FILING's date (BSE revised_date_time) and values \u2014 the original filing was never captured; option C (\u00a7142k) wants the ORIGINAL here (values + calendar filing day, midnight rule \u00a7149) and the re-filing in shp_revisions.json. Original read by the current parser (\u00a7151 rule)."
+   }
+  },
+  "J&KBANK": {
+   "2026-03-31": {
+    "cell": [
+     59.4,
+     8.344,
+     6.0023,
+     3.8883,
+     1.7725,
+     "2026-04-15",
+     240539
+    ],
+    "was": [
+     59.4,
+     8.344,
+     6.0023,
+     3.8883,
+     1.7725,
+     "2026-04-27",
+     240539
+    ],
+    "src": "bsexbrl:532209_1542026121413_SHP.xml (BSE original filing 2026-04-15T12:14:14)",
+    "why": "\u00a7153 (2026-09-24): the stored row carried the RE-FILING's date (BSE revised_date_time) and values \u2014 the original filing was never captured; option C (\u00a7142k) wants the ORIGINAL here (values + calendar filing day, midnight rule \u00a7149) and the re-filing in shp_revisions.json. Original read by the current parser (\u00a7151 rule)."
+   }
+  },
+  "NAUKRI": {
+   "2025-06-30": {
+    "cell": [
+     37.63,
+     32.9865,
+     19.015,
+     10.6849,
+     6.3899,
+     "2025-07-21",
+     202671
+    ],
+    "was": [
+     37.63,
+     32.9865,
+     19.015,
+     10.6849,
+     6.3899,
+     "2025-07-23",
+     202670
+    ],
+    "src": "bsexbrl:532777_2172025202042_SHP.xml (BSE original filing 2025-07-21T20:20:42)",
+    "why": "\u00a7153 (2026-09-24): the stored row carried the RE-FILING's date (BSE revised_date_time) and values \u2014 the original filing was never captured; option C (\u00a7142k) wants the ORIGINAL here (values + calendar filing day, midnight rule \u00a7149) and the re-filing in shp_revisions.json. Original read by the current parser (\u00a7151 rule)."
+   }
+  },
+  "SHRIRAMCIT": {
+   "2022-09-30": {
+    "cell": [
+     36.86,
+     26.9468,
+     6.0937,
+     5.9005,
+     0.0182,
+     "2022-10-19",
+     22900
+    ],
+    "was": [
+     36.86,
+     26.9472,
+     6.0927,
+     5.9006,
+     0.0182,
+     "2022-10-20",
+     22900
+    ],
+    "src": "bsexbrl:532498_19102022221032_SHP.xml (BSE original filing 2022-10-19T22:10:34)",
+    "why": "\u00a7153 (2026-09-24): the stored row carried the RE-FILING's date (BSE revised_date_time) and values \u2014 the original filing was never captured; option C (\u00a7142k) wants the ORIGINAL here (values + calendar filing day, midnight rule \u00a7149) and the re-filing in shp_revisions.json. Original read by the current parser (\u00a7151 rule)."
+   }
+  },
+  "SURYAROSNI": {
+   "2022-12-31": {
+    "cell": [
+     62.96,
+     0.8616,
+     0.2417,
+     0.0001,
+     0.0055,
+     "2023-01-09",
+     45722
+    ],
+    "was": [
+     62.96,
+     0.8616,
+     0.2417,
+     0.0001,
+     0.0055,
+     "2023-01-10",
+     45722
+    ],
+    "src": "bsexbrl:500336_912023171130_SHP.xml (BSE original filing 2023-01-09T17:11:34)",
+    "why": "\u00a7153 (2026-09-24): the stored row carried the RE-FILING's date (BSE revised_date_time) and values \u2014 the original filing was never captured; option C (\u00a7142k) wants the ORIGINAL here (values + calendar filing day, midnight rule \u00a7149) and the re-filing in shp_revisions.json. Original read by the current parser (\u00a7151 rule)."
    }
   }
  },

@@ -18816,3 +18816,23 @@ adjudications.
 **Guard.** `scripts/guard_shp_revisions.py` (workflow step after the fetch passes, before the feed guard): fails if any
 sidecar row repeats the raw `was` of a value heal, or if any audited foreign block is missing from the store. Ran red on
 the unfixed data (65 problems), green after.
+
+## §153 — LATE VISIBILITY DATES: EARLIEST EXCHANGE PUBLICATION, CALENDAR DAY (2026-09-24, "fix rest of quantmac findings")
+
+**Census (live feed of 24-Sep 16:04, N500-ever symbols, quarter-end rows ≥ Jun-2016, EARLIEST served row per quarter so a
+re-filing's own later date is not counted):** 575 quarters served later than the earliest exchange publication we hold —
+BSE `SHPQNewFormat` original `filing_date_time` (cache of 22-Sep) or NSE `corporate-share-holdings-master` `submissionDate`
+(cache from Jun-2021): 409 by 1-3 days, 37 by 4-7, 109 by 8-30, 20 by >30. Causes: 394 later than every exchange date
+(retired-gate / next-trading-day leftovers with no or a `days_later` ledger entry, NSE re-broadcast stamps: SAMMAANCAP
+Mar-26 served 2026-08-21 vs BSE 04-03, KARURVYSYA Mar-26 06-30 vs NSE 04-17, SPIC ×2, AQYLON ×5), 127 where NSE received
+the filing before BSE and we held the BSE day (THYROCARE Sep-21 +43 d, RAJESHEXPO Mar-25 +113 d), 54 where the stored row
+IS the re-filing (its date = BSE `revised_date_time`; the original was never captured).
+**Heal (ledgers only).** `shp_lag_fix.json`: 562 `days_earlier` entries (`sub` = the earliest publication's CALENDAR day
+under the midnight rule §149, `was` = the served date, provenance names the exchange field; 18 duplicated under the OLD
+ticker where the store row lives — ALOKTEXT/SABTN/HOTELEELA/DIGJAMLTD…; 6 `days_later` gate entries replaced on healed
+rows). `shp_cell_fix.json`: 13 revision-dated rows healed to BSE's ORIGINAL document (values + calendar day, parsed by the
+current §151 parser); the other 41 revision-dated rows have no original document on BSE's list (only the revised one) →
+dated by NSE's submission day with the re-filing's values (§142j rule) where NSE has the quarter, left as is before 2021.
+Verified on a local `--feed-only` build: 575/575 on time, 571 quarters moved earlier, 0 later; ~24 N500 month-end cells
+change. Not covered: 502 quarters served 1-2 days EARLIER than BSE's time (2019-21, no NSE date cached — unadjudicated),
+2,611 quarters with no exchange timestamp cached, and the 8 pre-2016 convention-dated cells whose only BSE row is a revision.
