@@ -18868,3 +18868,27 @@ records for windows before mid-2021 and the symbol-scoped call returns the last 
 pages 403/JS-shell, Wayback-MC already harvested (residual = captures that do not exist), Trendlyne floor Dec-2015; CDSL
 Mar-2018 (NSE-only listing, beyond the symbol call's 20-quarter window; Trendlyne page exists — not a seam quarter for the
 seam script). Quantmac holds values for these; ask them for the documents.
+
+## §156 — LEGACY "FOREIGN INSTITUTIONAL INVESTORS" ROWS INSIDE ANY-OTHER (2026-09-24) + SEAM CELLS HELD
+
+**Found while cross-checking the §155 seam fills against Quantmac:** 6 of 8 differed by 5-13 pp, SINTEX and ARVIND Dec-15
+matched exactly. Reliance's Mar-2016 Trendlyne page lists FPI 7.39 and an unlabelled institutional "Any Other" row of 12.75
+(791 holders); BSE's Jun-2016 / Sep-2016 / Dec-2016 / Mar-2017 XBRLs name that row "Foreign Institutional Investors"
+(12.07 / 8.55 / 5.99 / 2.53 pp — the legacy FII registrations draining into FPI). Our old-format rule (OLD_OTHER_TO_DII)
+had the whole row in dii, so RELIANCE's FII read 8.24 in Jun-2016 against a true ~20. The SW-2 sweep (2026-08-30) had
+left these cells unresolved: verdict `mismatch-other-source` (110, its dii reconciliation failed), `name-unknown` (1,067),
+`names-insufficient` (366).
+**Heal.** All 1,543 unresolved cells re-read from BSE's XBRL with the sweep's own `extract()`; each named holder classified
+by the curated `name_verdicts` map, else by the LABEL class (Foreign Institutional Investors / Foreign Portfolio Investors
+/ FII / FPI / Foreign Bank / Foreign Mutual Fund / Foreign Companies / Foreign Nationals / OCB / QFI, or a "(FII)"/"(FPI)"
+tag) — no other name is guessed. 262 cells / 83 symbols moved by the labelled-foreign portion dii → fii (share counts on
+the filer's base; nested listings capped at the row): RELIANCE ×5, WIPRO ×7 (OCB + foreign nationals 0.77), POONAWALLA ×21
+(IFC 9.71), SUPREMEIND ×12 (Nalanda, Matthews, J P Morgan Funds), TECHM ×4, MFSL ×3 (IFC), CUMMINSIND ×8 (Foreign Mutual
+Fund) …; 7 cells skipped because another value heal had already raised fii, 3 because the store already sat above the raw
+reading. Left as they are: 573 + 224 cells whose holders carry no label or verdict (fund and company names without a
+jurisdiction marker), 207 with no named holders, 142 with no BSE copy, 129 below 0.25 pp. Verified on a store copy: every
+change is a pure dii → fii move of the same amount. `shp_cell_fix.json` +262 entries (SW-2 wording, so §152's
+VALUE_HEAL_MARK carries them onto re-filings).
+**Seam cells held:** the 6 §155 Trendlyne cells with an unlabelled Any-Other row (RELIANCE, BRITANNIA, EXIDEIND, VRLLOG,
+NATCOPHARM, ARVIND Mar-2016) removed from `shp_fill_thirdparty.json.gz` — the formula would have put the FII row in dii;
+SINTEX Mar-2016 and ARVIND Dec-2015 kept (exact agreement with the independent reader).
