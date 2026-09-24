@@ -19023,3 +19023,77 @@ longer trips the audited-block check). `shp_refine_4dp` runs after `apply_cell_f
 healed fii on 247/247 cells (PAYTM Jun-2022 71.55, ETERNAL 42.34, ITC Jun-2017 49.88 / Jun-2022 42.05, IDFCFIRSTB 18.58,
 ASTERDM 11.44 unchanged, KIMS 8.55); per-stock slices rebuilt (815b66b40, `refresh-stock-fin.yml` dispatched by hand — the
 store commit never fires it) and checked on `fin/ITC.json`, `fin/PAYTM.json`, `fin/ETERNAL.json`, `fin/IDFCFIRSTB.json`.
+
+## §160 — PAGE-ERA ROW-LEVEL HEAL, JUN-2006..MAR-2016, FII + DII (2026-09-24, user: "yes do that as well" after §158, "finish it asap")
+
+**Scope and sources.** All 9,154 N500 store rows Jun-2006..Mar-2016 (470 symbols with a BSE scrip code) re-read from BSE's own
+`ShareholdingPattern.aspx?scripcd=<code>&flag_qtr=1&qtrid=<q>.00&Flag=New` (qtrid = (year−2001)×4 + {Mar 29, Jun 30, Sep 31, Dec 32};
+%(A+B+C) column; three renderings: 2006-2015 Clause-35, the Dec-2015/Mar-2016 (qtrid 88/89) layout, and our store's seam-fill reading
+of 88/89) and, where a row is unlabelled or the layout dumps the FII row, the linked `shpperent.aspx?scripcd=&qtrid=&CompName=&QtrName=`
+table (public holders > 1% by name; on 88/89 it also carries the category lumps with share counts). 9,120 distinct pages fetched with
+18 parallel curl_cffi workers (zero refusals), cached in the session scratchpad, never in the repo. Pre-Jun-2006 (1997 layout) untouched.
+Parser (`scripts/_shp_aspx_rowfix.py`, built from the scratch modules aspx_parse / shpperent / seam88 / aspx_heal) switches blocks on the
+section headings, so filers with NO promoter block (ITC, ICICIBANK, LT) parse; 74 pages carry no table at all on BSE (KARURVYSYA ×39).
+
+**Reading check.** The stored cell must equal one known reading convention of the page within 0.10 pp (fii = FII row [+ FPI/QFI/FVCI
+rows] [+ FII-labelled sub-rows] [+ the institutional Any-Other block]; dii = MF + banks + insurance [+ VCF] [+ dii-labelled sub-rows]);
+239 rows match none and are left (136 dii on the 88/89 seam-fill reading, 74 no table, 24 promoter differs, 5 fii). A cell is proposed
+only when a rule below fires (rounding differences alone never write).
+
+**Rules — the same placement the 2022 form makes (evidence per cell in `scripts/_shp_aspx_rowfix_audit.json`).**
+- Label rule: rows labelled Foreign Portfolio Investor(s) (incl. the typos "Portolio", "Port Folio", "Foreign Portfolio Investments
+  Corporation"), Foreign Institutional Investors, Qualified Foreign Investor, FVCI, Foreign Bank, Foreign Mutual Fund, Foreign
+  Financial Institutions, Sovereign, and the IFC/ADB-type rows ("Multilateral Finance Corporation", "Multilateral & Bilateral Development
+  Financial Institution" — the SW-2 curated verdict places IFC/CDC/ADB in fii in the XBRL era, §156/§159) → fii wherever they sit
+  (INFY Mar-2015 filed its FPIs under non-institutions; JUBLPHARMA Sep-2015 "Foreign Portfolio Investors" 8.41 in non-institutions).
+  Venture Capital Funds row → dii (MINDACORP Dec-15/Mar-16 11.78, LICHSGFIN, M&MFIN); QIB / insurer / PF / NPS / NBFC / AIF rows → dii.
+  A MIXED label ("Foreign Banks & Foreign Companies", FSL 50.77), any depository-receipt line ("FIIs-DR", "Foreign Bodies DR", "Foreign
+  Institutional Investors - DR" — §151 user rule), OCB / foreign companies / foreign nationals / NRI rows and generic "Others" / "Any
+  Other" / "FDI" / "Private Equity" rows keep the stored placement. When the stored reading already held the whole institutional
+  Any-Other block in fii, only labelled dii/public sub-rows leave it; unresolved and unlabelled parts stay (0 such cells fired).
+- Hand-off from the FII session (§159), amount = the page's own number for THAT quarter, never a constant carried across quarters:
+  ITC "Foreign Corporate Bodies" row (32.20 Jun-2006 → 30.11 Mar-2015; Jun/Sep-2015 label it "Others" and the 88/89 pages have no row,
+  there the named BAT holders from shpperent: Tobacco Manufacturers 24.77 + Myddleton 4.04 + Rothmans 1.29) → fii (FDI in the 2022
+  form); ZENSARTECH "Overseas Corporate Bodies" row 21.48-23.87 (Marina Holdco (FPI) Ltd) → fii; KOTAKBANK: ONLY Sumitomo Mitsui's
+  named holding from shpperent (4.47 Sep-2010 … 4.26 2013-14, 3.59 Jun-2015, 1.79 Mar-2016) — the "Foreign Banks" row also carried
+  ING and is never written. Hand-off rows are excluded from the label rule (they were double-counting on the first run).
+- Holder rule (§158 R1 at page level): an unresolved or company-labelled sub-row ≥ 1 pp whose value equals EXACTLY (≤ max(0.06,
+  0.6%)) the sum of named > 1% holders that the filer's own first 2022-form row / the SW-2 curated verdict / the filer's own
+  FII-FPI-QFI prefix on its Dec-2015/Mar-2016 tables place in fii (a bare name marker never qualifies; hand-off holders excluded;
+  names matched across the filer's spellings "Indian V (Mauritius) Holding Ltd" = "INDIUM V (MAURITIUS) HOLDINGS LIMITED") → fii.
+  14 hits: POONAWALLA Jun-2015 OCB 30.90 = Indium 8.60 + LeapFrog 7.82 + Zend 14.48, Sep-2015 "Others" 30.89 same three, Jun/Sep-2015
+  "Others" 9.71 = IFC, Sep-2013..Mar-2015 "Foreign Bodies Corporate" 14.1 = Zend; CHOLAFIN Jun/Sep-2015 "Others" 4.12/3.79 = IFC;
+  MUTHOOTFIN Jun/Sep-2015 "Others" 2.06 = Government of Singapore 2.03.
+- Seam quarters (qtrid 88/89): BSE's main page dumps the FII row into unlabelled Any-Others lumps (ASHOKLEY: FII 20.6 Sep-15, 5.0
+  stored Dec-15, 26.7 healed Jun-16 — 19 N500 cells show that V ≥ 5 pp against both neighbours, the Sep-15 neighbour taken AFTER the
+  label rule). fii reconstructed = the page's standard foreign rows + EITHER the table's FII/FPI CATEGORY lump(s) (named FPI holders
+  sit inside them: FEDERALBNK Mar-16 read 58 = lump + the same names before this rule) OR, with no lump, the FII/FPI/QFI-prefixed
+  holder rows + named holders placed in fii by the filer's 2022 row / curated verdict / name markers / the filer's own prefix on the
+  sibling table, de-duplicated; "FII - X" rows are the main page's FII row itself when that row is non-zero (POONAWALLA "FII - Bay
+  Pond" inside 14.49). Accepted inside the Sep-2015..Jun-2016 neighbours' range ± 3 pp and closer to the healed Jun-2016 value than
+  the stored one; the §158-R1 whole-block rule (every named holder of the institutional Any-Other block foreign → the unnamed rest
+  follows; POONAWALLA Dec-15 block 49.62, named 49.19) waives the band (the neighbours cannot judge a real move) but keeps
+  closer-to-Jun-16. DII on those pages is left as stored (no V-dips; insurance/bank rows unreliable there, LIC would double-count).
+  Cross-checked ASHOKLEY Mar-2016 against Trendlyne's seam row (FPI 6.35 + institutional "Any Other" 23.70).
+- Promoter: 4 cells stored prom 0.00 where the page prints it (3MINDIA Dec-15/Mar-16 75.00, ABB Dec-15 75.00, NTPC Mar-16 69.96).
+- Ledger mechanics as §158: `fix` entries, `was` = the stored cell, `superseded` chain for earlier entries (69 in place), src
+  "bseaspx:<code>_<qtrid>" (+ " shpperent" on 43 cells), marker "§160 page-era row-level heal" (VALUE_HEAL_MARK + guard check 2).
+
+**Result (verified on a copy of the store: 478/478 cells apply; guard_shp_revisions + guard_shp_definition green).** 478 cells /
+115 N500 symbols = 464 label-rule + 14 seam reconstructions; fii up on 436 (never down), dii up on 39, promoter on 4; 190 cells move
+fii ≥ 3 pp (ITC 40 cells +29.9..+34.0, ZENSARTECH 29 cells +21.5..+23.9, SHRIRAMFIN 11, FEDERALBNK 11, KOTAKBANK 21, POONAWALLA 16,
+REDINGTON, TECHM, SAMMAANCAP, BSOFT, JUBLPHARMA, SOBHA…). Seams: fii Sep-15→Dec-15 ≥ 3 pp movers 42 → 32, Dec-15→Mar-16 18 → 16,
+Mar-16→Jun-16 34 → 28, Jun-06..Jun-16 quarter-to-quarter ≥ 5 pp 291 → 283; dii Mar-16→Jun-16 28 → 27 (the page era rarely carries
+labelled domestic sub-rows, so the DII side of that seam is the §158 Jun-2016 heal showing, not a page defect). Series now: ITC
+45.4 (2006) → 50.8 (2015) → 50.6 Jun-16; ZENSARTECH 22→35.9→38.4; SHRIRAMFIN 51.0 51.2 52.1 54.2 52.9 53.6 | 52.8; POONAWALLA
+55.5 55.3 63.2 63.6 64.1 63.8 | 51.3 (Jun-16 = §156, a real step: Zend/LeapFrog re-registered as FPI + a sale); KOTAKBANK Mar-16
+37.7 | Jun-16 37.3. Commit ff980fe84 (main), refresh-shareholding run 36012264333.
+
+**Held / not covered (open, for the FII session's Quantmac reply — "unfinished", not "differs by design").** Seam cells whose
+reconstruction falls outside the band: JKCEMENT Dec-15/Mar-16 (3.3/2.8 vs 10.9/11.3), JUBLPHARMA Dec-15 (14.7 vs 26.0/26.7 — its
+FII-prefixed holders are inside the FII row, the rest is sub-1%), LINDEINDIA Mar-16 (3.4 vs 8.7/6.9), REDINGTON Dec-15 (27.0 vs
+36.9/39.0, no lump on the 88 table). Generic rows with no name ≥ 1%: ITC Jun-2015 institutional "Others" 5.19 (FPI corporate on the
+neighbours' pages → one 5-pp dip stays), JUBLPHARMA Jun-2015 "Others" 8.17 (GA Global 7.15 + sub-1%), 79 institutional "Others" /
+29 "Any Other" rows in all. The 239 no-match rows (KARURVYSYA no table; 136 seam-fill dii cells ADANIPOWER/AEGISLOG/APOLLOTYRE-type
+where the page's dii differs from the store's seam reading). CHOLAFIN Dec-15/Mar-16 dip 3-4 pp (IFC inside the 88/89 lump, below the
+5-pp seam gate). DR-labelled rows stay out of fii by the §151 rule.
