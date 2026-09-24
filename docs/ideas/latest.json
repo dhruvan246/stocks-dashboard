@@ -1,12 +1,15 @@
 {
- "updated": "2026-09-23 20:29 IST",
- "scan_date": "2026-09-23",
- "scan_file": "scan/2026-09-23.json",
- "run_file": "runs/2026-09-23.json",
+ "updated": "2026-09-24 20:05 IST",
+ "scan_date": "2026-09-24",
+ "scan_file": "scan/2026-09-24.json",
+ "run_file": "runs/2026-09-24.json",
  "ideas_count": 3,
  "universe": 1184,
- "candidates": 21,
+ "candidates": 6,
  "signals_strong": 31,
  "govt_kept": 0,
- "govt_status": "lane did not run: PIB (pib.gov.in) returned 403 at the sandbox proxy, so govt.json still carries its 2026-09-22 build"
+ "govt_status": "lane did not run for the second day: PIB (pib.gov.in) is blocked at the sandbox egress proxy, so govt.json still carries its 2026-09-22 build",
+ "filings_status": "lane did not run: api.bseindia.com returned Akamai 'Access Denied' (403) to every probe all run, so universe.py crashed (universe is the 2026-09-23 build), the scan saw 0 announcements and no dossier was obtainable",
+ "commodity_status": "no new prices: all eleven live sources (metalbook, ibja, rubberboard, chinimandi, ppac, steel.gov.in, tradingeconomics, westmetall, businessinsider, eaindustry, tradestat) 403 at the proxy and NMDC's BSE lookback 403 too; signals.json is yesterday's panel re-stamped",
+ "track_status": "NOT refreshed - score.py could not price any idea (BSE 403) and would have overwritten the 2 real rows with errors, so track.json is left at its 2026-09-22 20:32 IST build; BHAGYANGR is still unpriced"
 }
