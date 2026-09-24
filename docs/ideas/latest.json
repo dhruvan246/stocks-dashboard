@@ -1,15 +1,14 @@
 {
- "updated": "2026-09-24 20:48 IST",
+ "updated": "2026-09-24 23:37 IST",
  "scan_date": "2026-09-24",
  "scan_file": "scan/2026-09-24.json",
  "run_file": "runs/2026-09-24.json",
  "ideas_count": 3,
  "universe": 1184,
- "candidates": 6,
+ "candidates": 10,
  "signals_strong": 31,
- "govt_kept": 0,
- "govt_status": "lane did not run for the second day: PIB (pib.gov.in) is blocked at the sandbox egress proxy, so govt.json still carries its 2026-09-22 build",
- "filings_status": "lane did not run: api.bseindia.com returned Akamai 'Access Denied' (403) to every probe all run, so universe.py kept the 2026-09-23 universe, the announcement feed returned nothing and no dossier was obtainable. Prices still came through www.bseindia.com, which is why the scan and the scorecard exist.",
- "commodity_status": "no new prices: all eleven live sources (metalbook, ibja, rubberboard, chinimandi, ppac, steel.gov.in, tradingeconomics, westmetall, businessinsider, eaindustry, tradestat) 403 at the proxy and NMDC's BSE lookback 403 too; signals.json is yesterday's panel re-stamped",
- "track_scored": "3 of 3 ideas priced (every row priced from the daily bhavcopy because api.bseindia.com is blocked; each row is tagged)"
+ "govt_kept": 1,
+ "filings_status": "BSE's announcement list (api.bseindia.com) was unreachable from the sandbox and from Actions, so the scan read the day's filings from the NSE feed instead (nse (docs/announcements.json, updated 2026-09-24 22:58 IST)): 52 classified of 1098 NSE filings. Names without an NSE symbol (BSE-only, SME) show no filings even if they filed. The universe is still the 2026-09-23 build.",
+ "track_scored": "3 of 3 ideas priced (every row priced from the daily bhavcopy because api.bseindia.com is blocked; each row is tagged)",
+ "feeds_status": "built from GitHub Actions at 2026-09-24 23:26 IST (ideas-feeds.yml): PIB and every commodity host answered; api.bseindia.com 403 from Actions too, so universe/announcements/NMDC/scorecard took their fallbacks. See feeds_status.json."
 }

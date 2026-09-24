@@ -38,6 +38,13 @@ NOISE = re.compile(r'\b(congratulat|condol|greet|felicitat|celebrat|observ(?:es|
                    r'film award|exhibition|webinar|workshop|seminar|swachhata|cleanliness|yoga day|walkathon|'
                    r'photo caption|clarification|fact check|rashtrapati|visits|meets|inaugurat(?:es|ed) an? (?:exhibition|event)|'
                    r'address(?:es|ed) (?:the )?(?:gathering|students)|quiz|essay|poster|pledge|anniversar)\b', re.I)
+# Retrospectives quote big numbers about decisions taken years ago. 2026-09-24: "Coal Distribution Over
+# the Years: From Allocation to Auction" (Rs 7,500 cr in the body) was kept because "Allocation" is a
+# decision verb. A backgrounder is a story about the past, not an order book.
+BACKGROUNDER = re.compile(r'\b(over the (?:years|decades)|explainer|backgrounder|fact ?sheet|year[- ]?ender|'
+                          r'(?:a )?look (?:back )?at|journey (?:of|from)|story of|(?:a )?decade of|\d+ years of|'
+                          r'milestones?|achievements? (?:of|in|under)|background note|from \w+ to \w+:|'
+                          r'transforming|transformation of|then and now|retrospect)\b', re.I)
 
 # NOTE: 'lakh cr' and 'lakh crore' must be tried BEFORE plain 'cr' or 'Rs 1.39 lakh cr' reads as Rs 1.39 cr
 AMT = re.compile(r'(?:rs\.?|inr|₹|rupees)\s*([\d,]+(?:\.\d+)?)\s*(lakh\s+crores?|lakh\s+cr\b|crores?|cr\b|lakhs?|billion|bn\b|trillion)', re.I)
@@ -64,17 +71,22 @@ def get(url, timeout=60, retries=3):
     raise RuntimeError(f'GET failed {url}: {last}')
 
 
-def amount_cr(text):
-    """Largest rupee outlay in the text, in Rs crore."""
-    best = None
+def amount_hit(text):
+    """Largest rupee outlay in the text -> (Rs crore, the matched text), or (None, None)."""
+    best, hit = None, None
     for m in AMT.finditer(text or ''):
         try:
             v = float(m.group(1).replace(',', '')) * MULT.get(re.sub(r'\s+', ' ', m.group(2).lower().strip()), 0)
         except Exception:
             continue
         if v and (best is None or v > best):
-            best = v
-    return round(best, 1) if best else None
+            best, hit = v, m.group(0).strip()
+    return (round(best, 1), hit) if best else (None, None)
+
+
+def amount_cr(text):
+    """Largest rupee outlay in the text, in Rs crore."""
+    return amount_hit(text)[0]
 
 
 def listing():
@@ -134,31 +146,41 @@ def main():
         sys.exit(0)
     stamp = datetime.datetime.now().strftime('%Y-%m-%d %H:%M IST')
     kept, unmapped, opened = [], [], 0
-    dropped = {'noise': 0, 'no decision verb': 0, 'no theme': 0, 'too small': 0}
+    dropped = {'noise': 0, 'backgrounder': 0, 'no decision verb': 0, 'no theme': 0, 'too small': 0}
     for prid, ministry, title in rels:
         if NOISE.search(title):
             dropped['noise'] += 1
             continue
-        if not DECISION.search(title):
+        if BACKGROUNDER.search(title):
+            dropped['backgrounder'] += 1
+            continue
+        verb = DECISION.search(title)
+        if not verb:
             dropped['no decision verb'] += 1
             continue
         hit = [k for k, (v, rx) in themes.items() if rx.search(title)]
         text = title
-        if opened < a.max_bodies and (not hit or amount_cr(title) is None):
+        amt, amt_text, amt_in = *amount_hit(title), 'title'
+        if opened < a.max_bodies and (not hit or amt is None):
             text = title + ' ' + body_text(prid)
             opened += 1
             hit = [k for k, (v, rx) in themes.items() if rx.search(text)] or hit
-        amt = amount_cr(text)
-        mandate = bool(MANDATE.search(text))
+            if amt is None:
+                amt, amt_text = amount_hit(text)
+                amt_in = 'body' if amt is not None else None
+        mandate = MANDATE.search(text)
         if not mandate and (amt is None or amt < a.min_cr):
             dropped['too small'] += 1
             continue
+        # Why it passed, from the file itself: the verb, the figure and where the figure was found.
+        why = dict(verb=verb.group(0), amount_text=amt_text, amount_in=amt_in,
+                   mandate=mandate.group(0) if mandate else None)
         if not hit:
             # big enough to matter but in a sector we have no beneficiary map for. Never drop this
             # silently: the run researches it from the universe and adds the names to theme_map.json.
             unmapped.append(dict(prid=prid, ministry=ministry, title=title,
                                  url=f'https://pib.gov.in/PressReleasePage.aspx?PRID={prid}',
-                                 outlay_cr=amt, mandate=mandate))
+                                 outlay_cr=amt, mandate=bool(mandate), why=why))
             dropped['no theme'] += 1
             continue
         names = []
@@ -175,7 +197,7 @@ def main():
                          url=f'https://pib.gov.in/PressReleasePage.aspx?PRID={prid}',
                          themes=hit, theme_names=[tm['themes'][k]['name'] for k in hit],
                          history=[tm['themes'][k]['history'] for k in hit],
-                         outlay_cr=amt, mandate=mandate,
+                         outlay_cr=amt, mandate=bool(mandate), why=why,
                          small_caps=[c for c in uniq if c.get('mcap_cr') and 200 <= c['mcap_cr'] <= 7500][:15],
                          companies=uniq[:30]))
     kept.sort(key=lambda r: -(r['outlay_cr'] or 0))

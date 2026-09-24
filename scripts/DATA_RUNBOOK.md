@@ -17462,6 +17462,39 @@ wrote — the PLAYBOOK now tells the routine to read `feeds_status.json` before 
 "blocked from the sandbox" and "blocked from Actions" are different facts. What Actions can actually reach is
 measured by the first dispatch, recorded below, and re-measured on every run in `feeds_status.json`.
 
+**Measured, first dispatch (run 36037288870, 2026-09-24 23:22-23:26 IST, committed `7069acb`).** From a GitHub
+runner, probing the exact URL each builder fetches: **200** - pib.gov.in (allRel.aspx), www.bseindia.com,
+metalbook.com, ibjarates.com, rubberboard.gov.in, chinimandi.com, ppac.gov.in, steel.gov.in, tradingeconomics.com,
+markets.businessinsider.com, eaindustry.nic.in; **302** - westmetall.com and tradestat.commerce.gov.in (root
+redirects; both builders worked); **403** - **api.bseindia.com**, the same Akamai "Access Denied" the sandbox gets.
+So BSE's edge is refusing datacenter IPs generally, not this sandbox specifically, and the api-dependent steps
+degrade identically from Actions: universe kept (2026-09-23 build), scan `announcements_blocked`, NMDC
+DEGRADED, scorecard via bhavcopy. Everything else came alive: govt 59 releases scanned / 4 opened / 1 kept;
+spot 35 commodities (LME copper US$14,735 n=184); india_spot metalbook 47, ibja 7, rubber 8, sugar 8, fuel 8,
+te 65 rows, **95 history rows appended**, india_history 77,102 points; wpi to 2026-04 (no new month); trade
+2026-07 already built. One builder failed: **minsteel** - `CERTIFICATE_VERIFY_FAILED` on steel.gov.in from the
+runner while `curl -k` saw 200, i.e. the same broken chain IBJA and the Rubber Board have; fixed by passing
+india_spot's `LAX` context on both of minsteel's fetches.
+
+**The kept release was a false positive**, and the gate learned from it. "Coal Distribution Over the Years:
+From Allocation to Auction, Powering India's Growth" (Ministry of Coal, Rs 7,500 cr in the body) passed because
+"Allocation" is a decision verb - but it is a retrospective, and a retrospective quotes big numbers about
+decisions taken years ago. `govt.py` gained a `BACKGROUNDER` pattern (over the years, explainer, backgrounder,
+fact sheet, year-ender, a look at, journey of, story of, decade of, N years of, milestones, achievements of,
+"From X to Y:", transformation, then and now, retrospect) counted under `dropped.backgrounder`, and every kept
+or unmapped release now records **`why`** - the decision verb matched, the amount text it took and whether
+that came from the title or the body - so a false positive can be read off the file instead of re-fetched.
+
+**The filings feed gets an NSE fallback.** BSE's announcement list is api-only, so from Actions the scan still
+saw 0 filings. But `docs/announcements.json` - NSE corporate announcements, ~31 rolling days, rebuilt four
+times a day from Actions by `refresh-announcements.yml` - is committed and reachable everywhere. `scan.py` now
+reads it when `bse.last_announcements_partial` is set: rows for the as-of date whose NSE symbol maps to a
+universe scrip are classified with the same CATS, their PDF links carry the nsearchives prefix, and the scan
+file says `announcements_source: "nse (docs/announcements.json, updated <stamp>)"`. What it does NOT restore:
+BSE-only and SME names (no NSE symbol) stay unknown on such a day, and the feed's last build before the
+18:50 IST feeds run is 18:00 IST, so the post-close flood is partial - `announcements_blocked` stays true and
+the page keeps saying the counts are a floor.
+
 ## 144. ★★ DAILY IDEAS — filings-driven deep-research page for ₹200-2,000 cr small caps (2026-09-22)
 
 **What:** `docs/ideas.html` + `docs/ideas/{universe,latest,ideas,track}.json`, `docs/ideas/scan/<date>.json`,

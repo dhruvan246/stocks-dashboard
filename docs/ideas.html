@@ -357,12 +357,18 @@
   $('#scan-table tbody').innerHTML = '';
   const filingsStatus = (!day || day === asof) ? (latest && latest.filings_status) : '';
   if (scan) {
-    $('#scan-summary').textContent = `Scan of ${scan.date}: ${scan.universe} names, ${scan.announcements_in_universe} classified filings out of ${scan.announcements_total} BSE announcements that day, ${scan.candidates} candidates at score ≥ 4. Window: ${scan.window_days} trading days from ${scan.window_from}.`;
+    // Where the filings came from: BSE's own list, or (when that was blocked) the NSE feed the repo builds
+    // from Actions - which covers only names with an NSE symbol. The scan file says which (runbook 144e).
+    const viaNse = /^nse/i.test(scan.announcements_source || '');
+    const feedName = viaNse ? 'NSE announcements that day (BSE’s list was unreachable)' : 'BSE announcements that day';
+    $('#scan-summary').textContent = `Scan of ${scan.date}: ${scan.universe} names, ${scan.announcements_in_universe} classified filings out of ${scan.announcements_total} ${feedName}, ${scan.candidates} candidates at score ≥ 4. Window: ${scan.window_days} trading days from ${scan.window_from}.`;
     // A blocked announcement feed and a quiet day both show zero filings. Only the scan knows which.
     if (scan.announcements_blocked || filingsStatus) {
+      const gap = viaNse
+        ? `Filings were read from the NSE feed instead (${esc(scan.announcements_source)}), so names without an NSE symbol - BSE-only and SME - show no filings here even if they filed, and the feed's last build predates the post-close flood.`
+        : `The filing counts above are a floor, and an empty "Filings today" cell below means <b>unknown</b>, not none.`;
       $('#scan-summary').insertAdjacentHTML('afterend', staleNote(
-        `<b>The filings feed did not fully load for this scan.</b> ${esc(filingsStatus || '')} `
-        + `The filing counts above are a floor, and an empty "Filings today" cell below means <b>unknown</b>, not none.`));
+        `<b>BSE’s filings feed did not load for this scan.</b> ${esc(filingsStatus || '')} ${gap}`));
     }
     const sb = $('#scan-table tbody');
     (scan.rows || []).filter(r => r.score >= 4).slice(0, 40).forEach(r => {
