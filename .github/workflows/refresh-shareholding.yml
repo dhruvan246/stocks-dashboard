@@ -71,6 +71,12 @@ jobs:
 
       # NOTE: the on-page backtest section was REMOVED per user preference (2026-07-16) —
       # backtests run on demand in chat via scripts/build_shp_backtest.py (runbook §22c).
+      # §152 (2026-09-24): a re-filing row must carry the stored original's adjudicated heals (SW-2 foreign
+      # Any-Other blocks, §142e, §151) and the store must still hold every audited block. Fails the run
+      # before anything is committed if either has been undone.
+      - name: Guard — re-filings carry the original's heals
+        run: python3 scripts/guard_shp_revisions.py
+
       - name: Guard — refuse to commit a broken or shrunken feed
         run: python3 scripts/guard_feed.py
 

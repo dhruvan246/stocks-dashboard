@@ -19,7 +19,8 @@
   "2026-09-22 (\u00a7142i): dark-window repair \u2014 747 rows (as-on >= Sep-2025) re-dated by the fetcher to a later re-publication restored to BSE's ORIGINAL filing (values + gated date from that one document); the fetcher no longer re-dates or overwrites a stored row on a re-filing.",
   "2026-09-22 (\u00a7142j, USER RULE): a quarter's row keeps the ORIGINAL filing's gated date but serves the LATEST re-filing's values (corrections are small and must be reflected). Supersedes the \u00a7142g 'original values' reading; `retired` entries whose revision values now serve were re-activated with the original date.",
   "2026-09-22 (\u00a7142k, option C): the store row is the ORIGINAL filing; re-filings live in scripts/shp_revisions.json with their own gated dates (engine serves each from its date, stock page shows the re-filing). Entries here move a store row back to its original where a revision had been written into it.",
-  "2026-09-24 (\u00a7151, USER RULE 'exclude DR shares like Screener'): 189 new-format rows / 19 symbols where the stored FII was the Institutions (Foreign) bucket TOTAL, i.e. included the 'Overseas Depositories (holding DRs)' custodian line. Each entry = the same row with fii minus that line, read from the same BSE XBRL by the patched parser (src names the file and both figures). The parser now excludes the line (MEMBERS 'od'); guard_shp_definition.py keeps it that way."
+  "2026-09-24 (\u00a7151, USER RULE 'exclude DR shares like Screener'): 189 new-format rows / 19 symbols where the stored FII was the Institutions (Foreign) bucket TOTAL, i.e. included the 'Overseas Depositories (holding DRs)' custodian line. Each entry = the same row with fii minus that line, read from the same BSE XBRL by the patched parser (src names the file and both figures). The parser now excludes the line (MEMBERS 'od'); guard_shp_definition.py keeps it that way.",
+  "2026-09-24 (\u00a7152): the SW-2 foreign-block heals re-asserted on 22 rows the store had lost \u2014 20 \u00a7142k/date entries updated in place (their `cell` had put the RAW original back over the healed reading) and 2 rows the SW-2 apply had skipped because an unrelated entry already existed. Re-filings now inherit these heals in the fetcher (heal_refiling) instead of undoing them in shp_revisions.json."
  ],
  "_doc_bulk_stamp": "2026-08-13: 441 rows across 57 symbols carried ONE identical submission date across >=3 quarters \u2014 a scrape date, not a filing date. Separated from the 268 symbols whose late dates are DISTINCT per quarter (genuinely late filers: TALWALKARS, MANPASAND et al) \u2014 those are left alone, because for a distressed company a multi-year filing lag is real. The discriminator is the identical-date collapse, and the fii/dii values under it differ per quarter, which is what proves the data was read per-quarter and only the date was stamped.",
  "accept": {
@@ -54,24 +55,24 @@
    "2020-03-31": {
     "cell": [
      55.87,
-     0.0,
-     0.5,
-     0.15,
+     0.3457,
+     0.1505,
+     0.1505,
      0.0,
      "2020-04-13",
      5349
     ],
-    "src": "shp filing-date convention QE+21d (SEBI Reg 31 deadline)",
+    "src": "shp filing-date convention QE+21d (SEBI Reg 31 deadline) | bsexbrl:526921_1142020164951_SHP.xml",
     "was": [
      55.87,
      0.0,
-     0.5,
-     0.15,
+     0.4962,
+     0.1505,
      0.0,
-     "2020-09-09",
+     "2020-04-13",
      5349
     ],
-    "why": "WITHIN-SYMBOL OUTLIER: this symbol's own median filing lag is inside the 21-day window, yet this row is 162d late. An otherwise-compliant filer does not file one quarter months late and resume on time. Corrected only because the stamp signature is present as well \u2014 the date is shared with another quarter of the same symbol, or the lag exceeds a year. Rows 120-365d late carrying a LONE date are left alone: there a single genuinely-delayed filing cannot be told from a stamp."
+    "why": "WITHIN-SYMBOL OUTLIER: this symbol's own median filing lag is inside the 21-day window, yet this row is 162d late. An otherwise-compliant filer does not file one quarter months late and resume on time. Corrected only because the stamp signature is present as well \u2014 the date is shared with another quarter of the same symbol, or the lag exceeds a year. Rows 120-365d late carrying a LONE date are left alone: there a single genuinely-delayed filing cannot be told from a stamp. | SW-2 other-institutions sweep re-asserted 2026-09-24 (\u00a7152): filing's Any-Other institutions block (0.35pp, holders: ) is FOREIGN \u2014 belongs in fii, not dii. dii -> domestic-only 0.1505, fii += the block. Evidence: _shp_other_inst_audit.json"
    },
    "2019-09-30": {
     "cell": [
@@ -16827,156 +16828,156 @@
    "2016-06-30": {
     "cell": [
      30.95,
-     33.93,
-     14.25,
-     3.03,
+     44.725,
+     3.4315,
+     3.0254,
      0.0,
      "2016-07-21",
      145985
     ],
-    "src": "shp filing-date convention QE+21d (SEBI Reg 31 deadline)",
+    "src": "shp filing-date convention QE+21d (SEBI Reg 31 deadline) | bsexbrl:500219_112021122056_SHP.xml",
     "was": [
      30.95,
-     33.93,
-     14.25,
-     3.03,
+     33.9317,
+     14.2467,
+     3.0254,
      0.0,
-     "2021-01-04",
+     "2016-07-21",
      145985
     ],
-    "why": "BULK STAMP: 11 quarters of this symbol all carry the single submission date 2021-01-04, which is 1649 days after this quarter ended. The DATA is real and per-quarter (the fii/dii values differ quarter to quarter) \u2014 only the DATE is a scrape date written into the filing slot. Replaced with the QE+21d convention already used by the MC/Wayback ledgers, and the modal lag of our own clean rows (36.8% of 87,977 dated rows sit at exactly +21d; median +19d)."
+    "why": "BULK STAMP: 11 quarters of this symbol all carry the single submission date 2021-01-04, which is 1649 days after this quarter ended. The DATA is real and per-quarter (the fii/dii values differ quarter to quarter) \u2014 only the DATE is a scrape date written into the filing slot. Replaced with the QE+21d convention already used by the MC/Wayback ledgers, and the modal lag of our own clean rows (36.8% of 87,977 dated rows sit at exactly +21d; median +19d). | SW-2 other-institutions sweep re-asserted 2026-09-24 (\u00a7152): filing's Any-Other institutions block (10.79pp, holders: Mkcp Institutional Investor (Mauritius) Ii Ltd; International Finance Corporation; VISTA INSTITUTIONAL INVESTOR (MAURITIUS) LTD) is FOREIGN \u2014 belongs in fii, not dii. dii -> domestic-only 3.4315, fii += the block. Evidence: _shp_other_inst_audit.json"
    },
    "2016-09-30": {
     "cell": [
      30.75,
-     41.02,
-     4.87,
-     1.77,
+     43.8813,
+     1.9973,
+     1.772,
      0.0,
      "2016-10-21",
      137628
     ],
-    "src": "shp filing-date convention QE+21d (SEBI Reg 31 deadline)",
+    "src": "shp filing-date convention QE+21d (SEBI Reg 31 deadline) | bsexbrl:500219_112021183525_SHP.xml",
     "was": [
      30.75,
-     41.02,
-     4.87,
-     1.77,
+     41.0197,
+     4.8665,
+     1.772,
      0.0,
-     "2021-01-04",
+     "2016-10-21",
      137628
     ],
-    "why": "BULK STAMP: 11 quarters of this symbol all carry the single submission date 2021-01-04, which is 1557 days after this quarter ended. The DATA is real and per-quarter (the fii/dii values differ quarter to quarter) \u2014 only the DATE is a scrape date written into the filing slot. Replaced with the QE+21d convention already used by the MC/Wayback ledgers, and the modal lag of our own clean rows (36.8% of 87,977 dated rows sit at exactly +21d; median +19d)."
+    "why": "BULK STAMP: 11 quarters of this symbol all carry the single submission date 2021-01-04, which is 1557 days after this quarter ended. The DATA is real and per-quarter (the fii/dii values differ quarter to quarter) \u2014 only the DATE is a scrape date written into the filing slot. Replaced with the QE+21d convention already used by the MC/Wayback ledgers, and the modal lag of our own clean rows (36.8% of 87,977 dated rows sit at exactly +21d; median +19d). | SW-2 other-institutions sweep re-asserted 2026-09-24 (\u00a7152): filing's Any-Other institutions block (2.86pp, holders: Foreign Bank; International Finance Corporation) is FOREIGN \u2014 belongs in fii, not dii. dii -> domestic-only 1.9973, fii += the block. Evidence: _shp_other_inst_audit.json"
    },
    "2016-12-31": {
     "cell": [
      30.75,
-     42.75,
-     5.37,
-     2.35,
+     45.6137,
+     2.4943,
+     2.347,
      0.0,
      "2017-01-21",
      142781
     ],
-    "src": "shp filing-date convention QE+21d (SEBI Reg 31 deadline)",
+    "src": "shp filing-date convention QE+21d (SEBI Reg 31 deadline) | bsexbrl:500219_112021194131_SHP.xml",
     "was": [
      30.75,
-     42.75,
-     5.37,
-     2.35,
+     42.7521,
+     5.3642,
+     2.347,
      0.0,
-     "2021-01-04",
+     "2017-01-21",
      142781
     ],
-    "why": "BULK STAMP: 11 quarters of this symbol all carry the single submission date 2021-01-04, which is 1465 days after this quarter ended. The DATA is real and per-quarter (the fii/dii values differ quarter to quarter) \u2014 only the DATE is a scrape date written into the filing slot. Replaced with the QE+21d convention already used by the MC/Wayback ledgers, and the modal lag of our own clean rows (36.8% of 87,977 dated rows sit at exactly +21d; median +19d)."
+    "why": "BULK STAMP: 11 quarters of this symbol all carry the single submission date 2021-01-04, which is 1465 days after this quarter ended. The DATA is real and per-quarter (the fii/dii values differ quarter to quarter) \u2014 only the DATE is a scrape date written into the filing slot. Replaced with the QE+21d convention already used by the MC/Wayback ledgers, and the modal lag of our own clean rows (36.8% of 87,977 dated rows sit at exactly +21d; median +19d). | SW-2 other-institutions sweep re-asserted 2026-09-24 (\u00a7152): filing's Any-Other institutions block (2.86pp, holders: International Finance Corporation; VISTA INSTITUTIONAL INVESTOR (MAURITIUS) LTD) is FOREIGN \u2014 belongs in fii, not dii. dii -> domestic-only 2.4943, fii += the block. Evidence: _shp_other_inst_audit.json"
    },
    "2017-03-31": {
     "cell": [
      30.75,
-     42.07,
-     5.92,
-     2.84,
+     44.9298,
+     3.0504,
+     2.8422,
      0.0,
      "2017-04-21",
      143509
     ],
-    "src": "shp filing-date convention QE+21d (SEBI Reg 31 deadline)",
+    "src": "shp filing-date convention QE+21d (SEBI Reg 31 deadline) | bsexbrl:500219_2120211416_SHP.xml",
     "was": [
      30.75,
-     42.07,
-     5.92,
-     2.84,
+     42.0682,
+     5.9212,
+     2.8422,
      0.0,
-     "2021-01-04",
+     "2017-04-21",
      143509
     ],
-    "why": "BULK STAMP: 11 quarters of this symbol all carry the single submission date 2021-01-04, which is 1375 days after this quarter ended. The DATA is real and per-quarter (the fii/dii values differ quarter to quarter) \u2014 only the DATE is a scrape date written into the filing slot. Replaced with the QE+21d convention already used by the MC/Wayback ledgers, and the modal lag of our own clean rows (36.8% of 87,977 dated rows sit at exactly +21d; median +19d)."
+    "why": "BULK STAMP: 11 quarters of this symbol all carry the single submission date 2021-01-04, which is 1375 days after this quarter ended. The DATA is real and per-quarter (the fii/dii values differ quarter to quarter) \u2014 only the DATE is a scrape date written into the filing slot. Replaced with the QE+21d convention already used by the MC/Wayback ledgers, and the modal lag of our own clean rows (36.8% of 87,977 dated rows sit at exactly +21d; median +19d). | SW-2 other-institutions sweep re-asserted 2026-09-24 (\u00a7152): filing's Any-Other institutions block (2.86pp, holders: Foreign Bank; International Finance Corporation) is FOREIGN \u2014 belongs in fii, not dii. dii -> domestic-only 3.0504, fii += the block. Evidence: _shp_other_inst_audit.json"
    },
    "2017-06-30": {
     "cell": [
      30.7,
-     41.48,
-     7.31,
-     4.27,
+     44.345,
+     4.4513,
+     4.2679,
      0.0,
      "2017-07-21",
      140981
     ],
-    "src": "shp filing-date convention QE+21d (SEBI Reg 31 deadline)",
+    "src": "shp filing-date convention QE+21d (SEBI Reg 31 deadline) | bsexbrl:500219_21202114529_SHP.xml",
     "was": [
      30.7,
-     41.48,
-     7.31,
-     4.27,
+     41.4834,
+     7.3132,
+     4.2679,
      0.0,
-     "2021-01-04",
+     "2017-07-21",
      140981
     ],
-    "why": "BULK STAMP: 11 quarters of this symbol all carry the single submission date 2021-01-04, which is 1284 days after this quarter ended. The DATA is real and per-quarter (the fii/dii values differ quarter to quarter) \u2014 only the DATE is a scrape date written into the filing slot. Replaced with the QE+21d convention already used by the MC/Wayback ledgers, and the modal lag of our own clean rows (36.8% of 87,977 dated rows sit at exactly +21d; median +19d)."
+    "why": "BULK STAMP: 11 quarters of this symbol all carry the single submission date 2021-01-04, which is 1284 days after this quarter ended. The DATA is real and per-quarter (the fii/dii values differ quarter to quarter) \u2014 only the DATE is a scrape date written into the filing slot. Replaced with the QE+21d convention already used by the MC/Wayback ledgers, and the modal lag of our own clean rows (36.8% of 87,977 dated rows sit at exactly +21d; median +19d). | SW-2 other-institutions sweep re-asserted 2026-09-24 (\u00a7152): filing's Any-Other institutions block (2.86pp, holders: International Finance Corporation; Foreign Bank) is FOREIGN \u2014 belongs in fii, not dii. dii -> domestic-only 4.4513, fii += the block. Evidence: _shp_other_inst_audit.json"
    },
    "2017-09-30": {
     "cell": [
      28.46,
-     35.98,
-     7.84,
-     4.89,
+     38.6391,
+     5.1849,
+     4.8884,
      0.0,
      "2017-10-21",
      147342
     ],
-    "src": "shp filing-date convention QE+21d (SEBI Reg 31 deadline)",
+    "src": "shp filing-date convention QE+21d (SEBI Reg 31 deadline) | bsexbrl:500219_212021142011_SHP.xml",
     "was": [
      28.46,
-     35.98,
-     7.84,
-     4.89,
+     35.9862,
+     7.8382,
+     4.8884,
      0.0,
-     "2021-01-04",
+     "2017-10-21",
      147342
     ],
-    "why": "BULK STAMP: 11 quarters of this symbol all carry the single submission date 2021-01-04, which is 1192 days after this quarter ended. The DATA is real and per-quarter (the fii/dii values differ quarter to quarter) \u2014 only the DATE is a scrape date written into the filing slot. Replaced with the QE+21d convention already used by the MC/Wayback ledgers, and the modal lag of our own clean rows (36.8% of 87,977 dated rows sit at exactly +21d; median +19d)."
+    "why": "BULK STAMP: 11 quarters of this symbol all carry the single submission date 2021-01-04, which is 1192 days after this quarter ended. The DATA is real and per-quarter (the fii/dii values differ quarter to quarter) \u2014 only the DATE is a scrape date written into the filing slot. Replaced with the QE+21d convention already used by the MC/Wayback ledgers, and the modal lag of our own clean rows (36.8% of 87,977 dated rows sit at exactly +21d; median +19d). | SW-2 other-institutions sweep re-asserted 2026-09-24 (\u00a7152): filing's Any-Other institutions block (2.65pp, holders: Foreign Bank; International Finance Corporation) is FOREIGN \u2014 belongs in fii, not dii. dii -> domestic-only 5.1849, fii += the block. Evidence: _shp_other_inst_audit.json"
    },
    "2017-12-31": {
     "cell": [
      28.46,
-     34.8,
-     8.47,
-     5.46,
+     37.0468,
+     6.2173,
+     5.4563,
      0.0,
      "2018-01-21",
      130758
     ],
-    "src": "shp filing-date convention QE+21d (SEBI Reg 31 deadline)",
+    "src": "shp filing-date convention QE+21d (SEBI Reg 31 deadline) | bsexbrl:500219_3120211319_SHP.xml",
     "was": [
      28.46,
-     34.8,
-     8.47,
-     5.46,
+     34.7986,
+     8.466,
+     5.4563,
      0.0,
-     "2021-01-04",
+     "2018-01-21",
      130758
     ],
-    "why": "BULK STAMP: 11 quarters of this symbol all carry the single submission date 2021-01-04, which is 1100 days after this quarter ended. The DATA is real and per-quarter (the fii/dii values differ quarter to quarter) \u2014 only the DATE is a scrape date written into the filing slot. Replaced with the QE+21d convention already used by the MC/Wayback ledgers, and the modal lag of our own clean rows (36.8% of 87,977 dated rows sit at exactly +21d; median +19d)."
+    "why": "BULK STAMP: 11 quarters of this symbol all carry the single submission date 2021-01-04, which is 1100 days after this quarter ended. The DATA is real and per-quarter (the fii/dii values differ quarter to quarter) \u2014 only the DATE is a scrape date written into the filing slot. Replaced with the QE+21d convention already used by the MC/Wayback ledgers, and the modal lag of our own clean rows (36.8% of 87,977 dated rows sit at exactly +21d; median +19d). | SW-2 other-institutions sweep re-asserted 2026-09-24 (\u00a7152): filing's Any-Other institutions block (2.25pp, holders: Foreign Bank; International Finance Corporation) is FOREIGN \u2014 belongs in fii, not dii. dii -> domestic-only 6.2173, fii += the block. Evidence: _shp_other_inst_audit.json"
    },
    "2018-03-31": {
     "cell": [
@@ -24586,24 +24587,24 @@
    "2016-06-30": {
     "cell": [
      52.13,
-     6.54,
-     21.9,
-     4.94,
-     4.28,
+     16.2445,
+     12.1441,
+     4.9443,
+     4.2821,
      "2016-07-21",
      997795
     ],
-    "src": "shp filing-date convention QE+21d (SEBI Reg 31 deadline)",
+    "src": "shp filing-date convention QE+21d (SEBI Reg 31 deadline) | bsexbrl:500111_23122016183336_SHP.xml",
     "was": [
      52.13,
-     6.54,
-     21.9,
-     4.94,
-     4.28,
-     "2016-12-27",
+     6.5408,
+     21.9002,
+     4.9443,
+     4.2821,
+     "2016-07-21",
      997795
     ],
-    "why": "WITHIN-SYMBOL OUTLIER: this symbol's own median filing lag is inside the 21-day window, yet this row is 180d late. An otherwise-compliant filer does not file one quarter months late and resume on time. Corrected only because the stamp signature is present as well \u2014 the date is shared with another quarter of the same symbol, or the lag exceeds a year. Rows 120-365d late carrying a LONE date are left alone: there a single genuinely-delayed filing cannot be told from a stamp."
+    "why": "WITHIN-SYMBOL OUTLIER: this symbol's own median filing lag is inside the 21-day window, yet this row is 180d late. An otherwise-compliant filer does not file one quarter months late and resume on time. Corrected only because the stamp signature is present as well \u2014 the date is shared with another quarter of the same symbol, or the lag exceeds a year. Rows 120-365d late carrying a LONE date are left alone: there a single genuinely-delayed filing cannot be told from a stamp. | SW-2 other-institutions sweep re-asserted 2026-09-24 (\u00a7152): filing's Any-Other institutions block (9.70pp, holders: Foreign Institutional Investors; MORGAN STANLEY MAURITIUS COMPANY LIMITED; VALIANT MAURITIUS PARTNERS OFFSHORE LIMITED; VALIANT MAURITIUS PARTNERS LIMITED) is FOREIGN \u2014 belongs in fii, not dii. dii -> domestic-only 12.1441, fii += the block. Evidence: _shp_other_inst_audit.json"
    },
    "2016-09-30": {
     "cell": [
@@ -24654,24 +24655,24 @@
    "2019-09-30": {
     "cell": [
      0.99,
-     17.92,
-     13.03,
+     23.5749,
+     7.3748,
      0.0,
      0.0,
      "2019-10-25",
      42639
     ],
-    "src": "bse:532915_2310201911203_SHP.xml",
+    "src": "bse:532915_2310201911203_SHP.xml | bsexbrl:532915_2310201911203_SHP.xml",
     "was": [
-     1.04,
-     18.99,
-     13.82,
+     0.99,
+     17.9156,
+     13.0336,
      0.0,
      0.0,
-     "2019-10-21",
-     42632
+     "2019-10-25",
+     42639
     ],
-    "why": "BSE revision 2019-10-25 supersedes stored (sub 2019-10-21); diffs {'fii': [18.99, 17.92], 'dii': [13.82, 13.03]}; corroboration=NO_SITE_WINDOW (revision sweep 2026-08-09)"
+    "why": "BSE revision 2019-10-25 supersedes stored (sub 2019-10-21); diffs {'fii': [18.99, 17.92], 'dii': [13.82, 13.03]}; corroboration=NO_SITE_WINDOW (revision sweep 2026-08-09) | SW-2 other-institutions sweep re-asserted 2026-09-24 (\u00a7152): filing's Any-Other institutions block (5.66pp, holders: International Finance Corporation) is FOREIGN \u2014 belongs in fii, not dii. dii -> domestic-only 7.3748, fii += the block. Evidence: _shp_other_inst_audit.json"
    },
    "2021-06-30": {
     "cell": [
@@ -27049,24 +27050,24 @@
    "2019-12-31": {
     "cell": [
      30.19,
-     7.81,
-     28.29,
+     10.7752,
+     25.3231,
      20.58,
      0.0,
      "2020-01-21",
      10187
     ],
-    "src": "shp filing-date convention QE+21d (SEBI Reg 31 deadline)",
+    "src": "shp filing-date convention QE+21d (SEBI Reg 31 deadline) | bsexbrl:539404_2292020125334_SHP.xml",
     "was": [
      30.19,
-     7.81,
-     28.29,
+     7.8097,
+     28.2899,
      20.58,
      0.0,
-     "2020-09-29",
+     "2020-01-21",
      10187
     ],
-    "why": "BULK STAMP: 3 quarters of this symbol all carry the single submission date 2020-09-29, which is 273 days after this quarter ended. The DATA is real and per-quarter (the fii/dii values differ quarter to quarter) \u2014 only the DATE is a scrape date written into the filing slot. Replaced with the QE+21d convention already used by the MC/Wayback ledgers, and the modal lag of our own clean rows (36.8% of 87,977 dated rows sit at exactly +21d; median +19d)."
+    "why": "BULK STAMP: 3 quarters of this symbol all carry the single submission date 2020-09-29, which is 273 days after this quarter ended. The DATA is real and per-quarter (the fii/dii values differ quarter to quarter) \u2014 only the DATE is a scrape date written into the filing slot. Replaced with the QE+21d convention already used by the MC/Wayback ledgers, and the modal lag of our own clean rows (36.8% of 87,977 dated rows sit at exactly +21d; median +19d). | SW-2 other-institutions sweep re-asserted 2026-09-24 (\u00a7152): filing's Any-Other institutions block (2.97pp, holders: Foreign Bank; Asian Development Bank) is FOREIGN \u2014 belongs in fii, not dii. dii -> domestic-only 25.3231, fii += the block. Evidence: _shp_other_inst_audit.json"
    },
    "2020-06-30": {
     "cell": [
@@ -27181,15 +27182,6 @@
    "2021-12-31": {
     "cell": [
      38.26,
-     6.6645,
-     10.3796,
-     3.9287,
-     0.0,
-     "2022-01-11",
-     19608
-    ],
-    "was": [
-     38.26,
      8.8095,
      8.2351,
      3.9287,
@@ -27197,8 +27189,17 @@
      "2022-01-11",
      19608
     ],
-    "src": "bsexbrl:539404_1112022131940_SHP.xml",
-    "why": "\u00a7142k 2026-09-22 option C: the store row is the ORIGINAL filing; the stored values were a later re-filing's (now kept beside it in shp_revisions.json with its own date). Date unchanged.",
+    "was": [
+     38.26,
+     6.6645,
+     10.3796,
+     3.9287,
+     0.0,
+     "2022-01-11",
+     19608
+    ],
+    "src": "bsexbrl:539404_1112022131940_SHP.xml | bsexbrl:539404_1112022131940_SHP.xml",
+    "why": "\u00a7142k 2026-09-22 option C: the store row is the ORIGINAL filing; the stored values were a later re-filing's (now kept beside it in shp_revisions.json with its own date). Date unchanged. | SW-2 other-institutions sweep re-asserted 2026-09-24 (\u00a7152): filing's Any-Other institutions block (2.15pp, holders: Foreign Bank; Asian Development Bank) is FOREIGN \u2014 belongs in fii, not dii. dii -> domestic-only 8.2351, fii += the block. Evidence: _shp_other_inst_audit.json (the \u00a7142k option-C restore had taken the healed store value for a revision and put the raw original back; the block is part of the original's reading)",
     "superseded": {
      "cell": [
       38.26,
@@ -27265,6 +27266,50 @@
     ],
     "src": "bsexbrl:539404_1372022152428_SHP.xml",
     "why": "SW-2 other-institutions sweep 2026-08-30: filing's Any-Other institutions block (2.06pp, holders: Foreign Bank; Asian Development Bank) is FOREIGN \u2014 belongs in fii, not dii. dii -> domestic-only 7.5842 (MF+AIF+VCF+Banks+Ins+PF from the filing's own share counts), fii += the block. Evidence: _shp_other_inst_audit.json"
+   },
+   "2019-09-30": {
+    "cell": [
+     29.7,
+     16.4206,
+     23.2701,
+     18.7263,
+     0.0,
+     "2019-10-21",
+     9278
+    ],
+    "was": [
+     29.7,
+     13.4551,
+     26.237,
+     18.7263,
+     0.0,
+     "2019-10-21",
+     9278
+    ],
+    "src": "bsexbrl:539404_229202013019_SHP.xml",
+    "why": "SW-2 other-institutions sweep re-asserted 2026-09-24 (\u00a7152): filing's Any-Other institutions block (2.97pp, holders: Foreign Bank; Asian Development Bank) is FOREIGN \u2014 belongs in fii, not dii. dii -> domestic-only 23.2701, fii += the block. Evidence: _shp_other_inst_audit.json"
+   },
+   "2020-03-31": {
+    "cell": [
+     30.19,
+     10.5966,
+     23.3691,
+     19.0363,
+     0.0,
+     "2020-04-21",
+     10210
+    ],
+    "was": [
+     30.19,
+     7.6311,
+     26.3337,
+     19.0363,
+     0.0,
+     "2020-04-21",
+     10210
+    ],
+    "src": "bsexbrl:539404_2292020131443_SHP.xml",
+    "why": "SW-2 other-institutions sweep re-asserted 2026-09-24 (\u00a7152): filing's Any-Other institutions block (2.97pp, holders: Foreign Bank; Asian Development Bank) is FOREIGN \u2014 belongs in fii, not dii. dii -> domestic-only 23.3691, fii += the block. Evidence: _shp_other_inst_audit.json"
    }
   },
   "SBBJ": {
@@ -36966,15 +37011,6 @@
    "2022-03-31": {
     "cell": [
      65.18,
-     5.7262,
-     3.6825,
-     3.0896,
-     0.0,
-     "2022-04-19",
-     65071
-    ],
-    "was": [
-     65.18,
      6.1202,
      3.2887,
      3.0896,
@@ -36982,8 +37018,17 @@
      "2022-04-19",
      65071
     ],
-    "src": "bsexbrl:543275_1842022173726_SHP.xml",
-    "why": "\u00a7142k 2026-09-22 option C: the store row is the ORIGINAL filing; the stored values were a later re-filing's (now kept beside it in shp_revisions.json with its own date). Date unchanged.",
+    "was": [
+     65.18,
+     5.7262,
+     3.6825,
+     3.0896,
+     0.0,
+     "2022-04-19",
+     65071
+    ],
+    "src": "bsexbrl:543275_1842022173726_SHP.xml | bsexbrl:543275_135202218359_SHP.xml",
+    "why": "\u00a7142k 2026-09-22 option C: the store row is the ORIGINAL filing; the stored values were a later re-filing's (now kept beside it in shp_revisions.json with its own date). Date unchanged. | SW-2 other-institutions sweep re-asserted 2026-09-24 (\u00a7152): filing's Any-Other institutions block (0.39pp, holders: ) is FOREIGN \u2014 belongs in fii, not dii. dii -> domestic-only 3.2887, fii += the block. Evidence: _shp_other_inst_audit.json (the \u00a7142k option-C restore had taken the healed store value for a revision and put the raw original back; the block is part of the original's reading)",
     "superseded": {
      "cell": [
       65.18,
@@ -37560,15 +37605,6 @@
    "2021-06-30": {
     "cell": [
      55.74,
-     20.5804,
-     10.1988,
-     7.2,
-     0.302,
-     "2021-07-20",
-     124057
-    ],
-    "was": [
-     55.74,
      22.7514,
      8.027,
      7.2,
@@ -37576,8 +37612,17 @@
      "2021-07-20",
      124057
     ],
-    "src": "bsexbrl:532830_1972021191051_SHP.xml",
-    "why": "\u00a7142k 2026-09-22 option C: the store row is the ORIGINAL filing; the stored values were a later re-filing's (now kept beside it in shp_revisions.json with its own date). Date unchanged.",
+    "was": [
+     55.74,
+     20.5804,
+     10.1988,
+     7.2,
+     0.302,
+     "2021-07-20",
+     124057
+    ],
+    "src": "bsexbrl:532830_1972021191051_SHP.xml | bsexbrl:532830_1972021191051_SHP.xml",
+    "why": "\u00a7142k 2026-09-22 option C: the store row is the ORIGINAL filing; the stored values were a later re-filing's (now kept beside it in shp_revisions.json with its own date). Date unchanged. | SW-2 other-institutions sweep re-asserted 2026-09-24 (\u00a7152): filing's Any-Other institutions block (2.17pp, holders: FII; TREE LINE ASIA MASTER FUND (SINGAPORE) PTE LTD) is FOREIGN \u2014 belongs in fii, not dii. dii -> domestic-only 8.0270, fii += the block. Evidence: _shp_other_inst_audit.json (the \u00a7142k option-C restore had taken the healed store value for a revision and put the raw original back; the block is part of the original's reading)",
     "superseded": {
      "cell": [
       55.74,
@@ -40508,15 +40553,6 @@
    "2021-12-31": {
     "cell": [
      23.41,
-     34.7167,
-     22.764,
-     21.1571,
-     0.2465,
-     "2022-01-21",
-     115866
-    ],
-    "was": [
-     23.41,
      36.0769,
      21.4028,
      21.1571,
@@ -40524,8 +40560,17 @@
      "2022-01-21",
      115866
     ],
-    "src": "bsexbrl:532175_2012022154457_SHP.xml",
-    "why": "\u00a7142k 2026-09-22 option C: the store row is the ORIGINAL filing; the stored values were a later re-filing's (now kept beside it in shp_revisions.json with its own date). Date unchanged.",
+    "was": [
+     23.41,
+     34.7167,
+     22.764,
+     21.1571,
+     0.2465,
+     "2022-01-21",
+     115866
+    ],
+    "src": "bsexbrl:532175_2012022154457_SHP.xml | bsexbrl:532175_2012022154457_SHP.xml",
+    "why": "\u00a7142k 2026-09-22 option C: the store row is the ORIGINAL filing; the stored values were a later re-filing's (now kept beside it in shp_revisions.json with its own date). Date unchanged. | SW-2 other-institutions sweep re-asserted 2026-09-24 (\u00a7152): filing's Any-Other institutions block (1.36pp, holders: TELE ATLAS DATA 'S HERTOGENBOSCH B V) is FOREIGN \u2014 belongs in fii, not dii. dii -> domestic-only 21.4028, fii += the block. Evidence: _shp_other_inst_audit.json (the \u00a7142k option-C restore had taken the healed store value for a revision and put the raw original back; the block is part of the original's reading)",
     "superseded": {
      "cell": [
       23.41,
@@ -41196,15 +41241,6 @@
    "2021-12-31": {
     "cell": [
      62.54,
-     6.4771,
-     14.9613,
-     10.5024,
-     0.0,
-     "2022-01-10",
-     43143
-    ],
-    "was": [
-     62.54,
      10.9357,
      10.5016,
      10.5024,
@@ -41212,8 +41248,17 @@
      "2022-01-10",
      43143
     ],
-    "src": "bsexbrl:543306_101202215530_SHP.xml",
-    "why": "\u00a7142k 2026-09-22 option C: the store row is the ORIGINAL filing; the stored values were a later re-filing's (now kept beside it in shp_revisions.json with its own date). Date unchanged.",
+    "was": [
+     62.54,
+     6.4771,
+     14.9613,
+     10.5024,
+     0.0,
+     "2022-01-10",
+     43143
+    ],
+    "src": "bsexbrl:543306_101202215530_SHP.xml | bsexbrl:543306_101202215530_SHP.xml",
+    "why": "\u00a7142k 2026-09-22 option C: the store row is the ORIGINAL filing; the stored values were a later re-filing's (now kept beside it in shp_revisions.json with its own date). Date unchanged. | SW-2 other-institutions sweep re-asserted 2026-09-24 (\u00a7152): filing's Any-Other institutions block (4.46pp, holders: INTERNATIONAL FINANCE CORPORATION) is FOREIGN \u2014 belongs in fii, not dii. dii -> domestic-only 10.5016, fii += the block. Evidence: _shp_other_inst_audit.json (the \u00a7142k option-C restore had taken the healed store value for a revision and put the raw original back; the block is part of the original's reading)",
     "superseded": {
      "cell": [
       62.54,
@@ -41240,15 +41285,6 @@
    "2022-03-31": {
     "cell": [
      62.54,
-     4.3997,
-     16.8443,
-     12.3854,
-     0.0,
-     "2022-04-12",
-     43390
-    ],
-    "was": [
-     62.54,
      8.8583,
      12.3845,
      12.3854,
@@ -41256,8 +41292,17 @@
      "2022-04-12",
      43390
     ],
-    "src": "bsexbrl:543306_1142022165329_SHP.xml",
-    "why": "\u00a7142k 2026-09-22 option C: the store row is the ORIGINAL filing; the stored values were a later re-filing's (now kept beside it in shp_revisions.json with its own date). Date unchanged.",
+    "was": [
+     62.54,
+     4.3997,
+     16.8443,
+     12.3854,
+     0.0,
+     "2022-04-12",
+     43390
+    ],
+    "src": "bsexbrl:543306_1142022165329_SHP.xml | bsexbrl:543306_1352022143558_SHP.xml",
+    "why": "\u00a7142k 2026-09-22 option C: the store row is the ORIGINAL filing; the stored values were a later re-filing's (now kept beside it in shp_revisions.json with its own date). Date unchanged. | SW-2 other-institutions sweep re-asserted 2026-09-24 (\u00a7152): filing's Any-Other institutions block (4.46pp, holders: INTERNATIONAL FINANCE CORPORATION) is FOREIGN \u2014 belongs in fii, not dii. dii -> domestic-only 12.3845, fii += the block. Evidence: _shp_other_inst_audit.json (the \u00a7142k option-C restore had taken the healed store value for a revision and put the raw original back; the block is part of the original's reading)",
     "superseded": {
      "cell": [
       62.54,
@@ -46536,15 +46581,6 @@
    "2017-12-31": {
     "cell": [
      63.85,
-     5.3101,
-     23.832,
-     6.5464,
-     0.0,
-     "2018-01-05",
-     33441
-    ],
-    "was": [
-     63.85,
      14.6466,
      14.4957,
      6.5464,
@@ -46552,8 +46588,17 @@
      "2018-01-05",
      33441
     ],
-    "src": "bsexbrl:539551_512018122931_SHP.xml",
-    "why": "\u00a7142k 2026-09-22 option C: the store row is the ORIGINAL filing; the stored values were a later re-filing's (now kept beside it in shp_revisions.json with its own date). Date unchanged.",
+    "was": [
+     63.85,
+     5.3101,
+     23.832,
+     6.5464,
+     0.0,
+     "2018-01-05",
+     33441
+    ],
+    "src": "bsexbrl:539551_512018122931_SHP.xml | bsexbrl:539551_512018123516_SHP.xml",
+    "why": "\u00a7142k 2026-09-22 option C: the store row is the ORIGINAL filing; the stored values were a later re-filing's (now kept beside it in shp_revisions.json with its own date). Date unchanged. | SW-2 other-institutions sweep re-asserted 2026-09-24 (\u00a7152): filing's Any-Other institutions block (9.34pp, holders: CDC GROUP PLC; CDC INDIA OPPORTUNITIES LIMITED) is FOREIGN \u2014 belongs in fii, not dii. dii -> domestic-only 14.4957, fii += the block. Evidence: _shp_other_inst_audit.json (the \u00a7142k option-C restore had taken the healed store value for a revision and put the raw original back; the block is part of the original's reading)",
     "superseded": {
      "cell": [
       63.85,
@@ -46764,15 +46809,6 @@
    "2022-03-31": {
     "cell": [
      40.75,
-     4.4672,
-     15.0999,
-     0.0,
-     0.0,
-     "2022-04-15",
-     65044
-    ],
-    "was": [
-     40.75,
      11.5515,
      8.0155,
      0.0,
@@ -46780,8 +46816,17 @@
      "2022-04-15",
      65044
     ],
-    "src": "bsexbrl:539889_1542022114011_SHP.xml",
-    "why": "\u00a7142k 2026-09-22 option C: the store row is the ORIGINAL filing; the stored values were a later re-filing's (now kept beside it in shp_revisions.json with its own date). Date unchanged.",
+    "was": [
+     40.75,
+     4.4672,
+     15.0999,
+     0.0,
+     0.0,
+     "2022-04-15",
+     65044
+    ],
+    "src": "bsexbrl:539889_1542022114011_SHP.xml | bsexbrl:539889_1252022174925_SHP.xml",
+    "why": "\u00a7142k 2026-09-22 option C: the store row is the ORIGINAL filing; the stored values were a later re-filing's (now kept beside it in shp_revisions.json with its own date). Date unchanged. | SW-2 other-institutions sweep re-asserted 2026-09-24 (\u00a7152): filing's Any-Other institutions block (7.08pp, holders: INTERNATIONAL FINANCE CORPORATION) is FOREIGN \u2014 belongs in fii, not dii. dii -> domestic-only 8.0155, fii += the block. Evidence: _shp_other_inst_audit.json (the \u00a7142k option-C restore had taken the healed store value for a revision and put the raw original back; the block is part of the original's reading)",
     "superseded": {
      "cell": [
       40.75,
@@ -49206,15 +49251,6 @@
    "2021-09-30": {
     "cell": [
      62.48,
-     0.2318,
-     12.4252,
-     0.3427,
-     0.0,
-     "2021-10-12",
-     321081
-    ],
-    "was": [
-     62.48,
      1.6124,
      11.0446,
      0.3427,
@@ -49222,8 +49258,17 @@
      "2021-10-12",
      321081
     ],
-    "src": "bsexbrl:532670_11112021174853_SHP.xml",
-    "why": "\u00a7142k 2026-09-22 option C: the store row is the ORIGINAL filing; the stored values were a later re-filing's (now kept beside it in shp_revisions.json with its own date). Date unchanged.",
+    "was": [
+     62.48,
+     0.2318,
+     12.4252,
+     0.3427,
+     0.0,
+     "2021-10-12",
+     321081
+    ],
+    "src": "bsexbrl:532670_11112021174853_SHP.xml | bsexbrl:532670_11112021174853_SHP.xml",
+    "why": "\u00a7142k 2026-09-22 option C: the store row is the ORIGINAL filing; the stored values were a later re-filing's (now kept beside it in shp_revisions.json with its own date). Date unchanged. | SW-2 other-institutions sweep re-asserted 2026-09-24 (\u00a7152): filing's Any-Other institutions block (1.38pp, holders: Foreign Body Corporate/Foreign Bank; Standard Chartered Bank, UAE Branch) is FOREIGN \u2014 belongs in fii, not dii. dii -> domestic-only 11.0446, fii += the block. Evidence: _shp_other_inst_audit.json (the \u00a7142k option-C restore had taken the healed store value for a revision and put the raw original back; the block is part of the original's reading)",
     "superseded": {
      "cell": [
       62.48,

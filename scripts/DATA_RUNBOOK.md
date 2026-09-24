@@ -18774,3 +18774,45 @@ Reliance carry the DR flag but report the ADR shares as C1 outside the base, so 
 
 **Effect on the Quantmac reconciliation:** their "Definition/basis" and "Same quarter" classes (5,422 cells) are this DR
 question; after §151 our series is consistent with Screener/Trendlyne and will differ from Quantmac on every DR-issuer cell.
+
+## §152 — OPTION-C RE-FILING ROWS MUST CARRY THE ORIGINAL'S HEALS (2026-09-24, user: "fix the option C regression")
+
+**The defect (measured against the 22-Sep and 24-Sep live feeds).** §142k wrote every re-filing's RAW parse into
+`scripts/shp_revisions.json`, dated by the re-filing. Where the stored original had been healed from its own document —
+the SW-2 curated-FOREIGN "Any Other institutions" block moved dii → fii (JSWSTEEL: JFE Steel 15.02 pp; JUSTDIAL 29.26;
+ZENSARTECH 22.87; MAXVIL 21.27; VAIBHAVGBL 10.4; POLYCAB 9.5; PARAGMILK 7.1; …), item-4 §142e reads, §151 depositories —
+a re-filing that repeated the same raw numbers was served from its date onward and silently undid the heal: 42 sidecar
+rows (43 with CDSL Dec-2021), 66 N500 month-end cells changed between the 22-Sep and 24-Sep feeds (JSWSTEEL Sep-2016
+35.64 → 20.62 for 12 month-ends, RKFORGE 8, EIHOTEL 6, MOIL 5, JUSTDIAL/ZENSARTECH/BOMDYEING/CANFINHOME/SCI/CHOLAFIN/GHCL/
+KOLTEPATIL/RBLBANK/BERGEPAINT/FSL 3 each, BIOCON 2). Second facet: the §142k "restore the original" pass took the SW-2
+healed store value for a revision and put the raw original back into the store for 9 rows (ANURAS, ASTRAL, CYIENT, NH,
+PARAGMILK, RENUKA, DODLA ×2, SATIN Dec-2021), and the SW-2 apply had skipped 13 rows because an unrelated (date/bulk-stamp)
+entry already existed for them (JISLJALEQS ×7, RELCAPITAL, 21STCENMGM, RELIGARE, SATIN ×3) — 22 audited blocks absent
+from the store.
+
+**Rule.** A re-filing inherits the stored original's source-adjudicated heals. `fetch_shareholding.heal_refiling(sym,
+key, rc, cellfix)` (both re-filing branches, quarterly and event): (1) if the re-filing's holdings equal the raw `was` of
+a VALUE-heal ledger entry (`VALUE_HEAL_MARK`: SW-2 other-institutions, §142e/item 4, §151) → serve that entry's healed
+holdings with the re-filing's date/nsh/src; a healed re-filing identical to the original writes NO sidecar row (and deletes
+a stale one); (2) else a quarter with an audited foreign block (`audited_block`, verdict foreign-confirmed in
+`_shp_other_inst_audit.json`) still gets that block moved dii → fii when its dii can hold it. Date-only / option-C entries
+are never used (their `was` is a wrong date or a revision's values). Never re-classify holder names at fetch time: the
+sweep's regexes only proposed, and nested holder rows double-count (JUSTDIAL's parent FII row + its funds read 53 pp
+against the adjudicated 29).
+
+**Heal.** Sidecar rebuilt offline with the same function: 49 rows dropped (healed re-filing == original: 43 SW-2 blocks +
+CANFINHOME Mar-2017 / EIHOTEL Jun-16, Dec-16 / FILATEX Sep-19 / RUCHINFRA Dec-20 "foreign block swallowed" reads + GHCL
+Dec-22 wrong-security filing), 370 kept, 0 rewritten. `shp_cell_fix.json`: the 22 lost blocks re-asserted (20 entries
+updated in place with `was` = the current store, 2 new; SW-2 wording so `VALUE_HEAL_MARK` recognises them). Verified on a
+local `--feed-only` build: the 66 regressed month-end cells are back at their 22-Sep values, §151 values unchanged, JSWSTEEL
+Sep-2016 serves 35.6426 only; blast radius 118 N500 month-end cells vs the 24-Sep live feed (the 66 + 52 from the
+re-asserted store heals: JISLJALEQS 20, RELCAPITAL 5, NH/ASTRAL/CYIENT/ANURAS/ABCAPITAL 3 each …).
+`VALUE_HEAL_MARK` (document-reading classes carried onto a re-filing): SW-2 other-institutions, SW-2 phase-2, "foreign block
+swallowed", "locked … block", FILER MISCLASSIFICATION, FALSE ZERO, "NSE served ONE filing", §142e / item 4, §151, quantmac
+FII reconciliation. Excluded on purpose: §142k option C (299 sidecar rows equal their `was` BY DESIGN — those are the
+re-filing's values), "BSE revision supersedes", "Company REVISED", REVISION_RIGHT, "Unanchorable-revision", 22j field
+adjudications.
+
+**Guard.** `scripts/guard_shp_revisions.py` (workflow step after the fetch passes, before the feed guard): fails if any
+sidecar row repeats the raw `was` of a value heal, or if any audited foreign block is missing from the store. Ran red on
+the unfixed data (65 problems), green after.

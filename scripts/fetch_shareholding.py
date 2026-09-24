@@ -1080,8 +1080,12 @@ def refresh_quarters(qes, reparse=False, only=None, fill_shares=False):
                     seen["%s|%s" % (sym, qe)] = r["xb"]
                     rc = [res["prom"], res["fii"], res["dii"], res["mf"], res["ins"], r["sub"], res.get("nsh"),
                           "nse:" + r["xb"].rsplit("/", 1)[-1]]
+                    rc, how = heal_refiling(sym, qe, rc, cellfix)                     # §152
+                    if how: rc[7] += " §152 heal:" + how
                     if not _same_cell(rc, have):
                         revs.setdefault(sym, {})[qe] = rc; rev_new += 1
+                    elif qe in (revs.get(sym) or {}):
+                        del revs[sym][qe]; rev_new += 1                       # healed re-filing == original: no row
                     if r["name"]: names[sym] = r["name"]
                     done += 1
                     continue
@@ -1164,6 +1168,51 @@ def save_revs(r):
     tmp = REVS + ".tmp"
     json.dump(r, open(tmp, "w", encoding="utf-8"), separators=(",", ":"), sort_keys=True)
     os.replace(tmp, REVS)
+# ---- §152 (2026-09-24): a re-filing must inherit the stored original's source-adjudicated heals ----
+# Option C (§142k) wrote every re-filing's RAW parse into shp_revisions.json. Where the stored original
+# had been healed from its own document (SW-2: a curated-FOREIGN "Any Other institutions" block moved
+# dii -> fii; item-4 §142e; §151 depositories), a re-filing that repeats the same raw numbers served the
+# raw value from its date onward and silently undid the heal: JSWSTEEL Sep-2016 35.64 -> 20.62 (the 15 pp
+# JFE Steel block), JUSTDIAL Jun-2016 42.14 -> 12.88, 42 sidecar rows / 66 N500 month-end cells measured.
+# Ledger classes that are DOCUMENT-READING heals (the same numbers re-read correctly): carried onto a re-filing.
+# Revision adjudications ("BSE revision supersedes", "Company REVISED", REVISION_RIGHT, option C §142k) are NOT —
+# there the re-filing's own numbers are the truth.
+VALUE_HEAL_MARK = re.compile(r"SW-2 other-institutions|SW-2 phase-2|foreign block swallowed|locked [\d.]+-[\d.]+ block|"
+                             r"FILER MISCLASSIFICATION|FALSE ZERO|NSE served ONE filing|\u00a7142e|item 4 \u2014|\u00a7151|"
+                             r"other-institutions sweep|quantmac FII reconciliation")
+AUDIT_JSON = os.path.join(HERE, "_shp_other_inst_audit.json")
+_AUDIT_CELLS = None
+def audited_block(sym, key):
+    """The SW-2 audit's adjudicated FOREIGN Any-Other block for (symbol, as-on) in pp, or 0.0. Hand-reviewed
+    per cell (verdict 'foreign-confirmed'); the block is a strategic holder (JFE Steel in JSWSTEEL, IFC in
+    JISLJALEQS...) that a re-filing does not move. Never re-classified from names here — the sweep's name
+    regexes only ever proposed, and nested holder rows double-count (JUSTDIAL: parent FII row + its funds)."""
+    global _AUDIT_CELLS
+    if _AUDIT_CELLS is None:
+        try:
+            cells = json.load(open(AUDIT_JSON, encoding="utf-8")).get("cells") or {}
+            _AUDIT_CELLS = {k: float(v.get("oth") or 0.0) for k, v in cells.items() if v.get("verdict") == "foreign-confirmed"}
+        except Exception as e:
+            print("WARN %s unreadable (%s) — no audited blocks" % (os.path.basename(AUDIT_JSON), e)); _AUDIT_CELLS = {}
+    return _AUDIT_CELLS.get("%s|%s" % (sym, key), 0.0)
+
+def heal_refiling(sym, key, rc, cellfix):
+    """§152: return (cell, how) — the re-filing cell `rc` carrying the original's adjudicated heals.
+    (1) Its holdings repeat the raw numbers a VALUE heal adjudicated (`was` of a cell_fix entry) -> serve
+        that entry's healed holdings: same document numbers, same adjudication. Date/nsh/src stay the re-filing's.
+    (2) Otherwise (numbers changed) a quarter with an audited foreign Any-Other block still gets that block
+        moved dii -> fii, provided the re-filing's dii can hold it. Date-only / option-C entries are never
+        used: their `was` is a wrong date or a revision's values, not an adjudicated reading."""
+    ent = ((cellfix or {}).get("fix") or {}).get(sym, {}).get(key)
+    if ent and VALUE_HEAL_MARK.search(str(ent.get("why", ""))) and ent.get("was") and ent.get("cell"):
+        if _same_cell(rc, ent["was"]) and not _same_cell(ent["was"], ent["cell"]):
+            return [ent["cell"][0], ent["cell"][1], ent["cell"][2], ent["cell"][3], ent["cell"][4]] + list(rc[5:]), "adjudicated"
+    blk = audited_block(sym, key)
+    if blk >= 0.25 and rc[2] is not None and float(rc[2]) + 0.02 >= blk:
+        out = list(rc); out[1] = round(float(rc[1]) + blk, 4); out[2] = round(float(rc[2]) - blk, 4)
+        return out, "audited block %.4f" % blk
+    return rc, None
+
 def _same_cell(a, b):
     return a is not None and b is not None and all(abs(float(x) - float(y)) <= 0.0100001 for x, y in zip(a[:5], b[:5]))
 
@@ -1189,6 +1238,7 @@ def refresh_events(qes, only=None, reparse=False):
     ev = load_events()
     if apply_cell_fix_events(ev): save_events(ev)        # §142e: re-assert event-row corrections
     revs = load_revs(); rev_new = 0                      # §142k re-filings sidecar
+    cellfix_ev = load_cell_fix()                          # §152: re-filed events inherit adjudicated heals
     before = sum(len(v) for k, v in ev.items() if not k.startswith("_"))
     for qe in qes:
         recs = fetch_master(jar, qe, events=True)
@@ -1233,8 +1283,12 @@ def refresh_events(qes, only=None, reparse=False):
                     # re-filing goes to the sidecar dated by its own gated publication unless identical.
                     rc = [res["prom"], res["fii"], res["dii"], res["mf"], res["ins"], r["sub"], res.get("nsh"),
                           "nse:" + r["xb"].rsplit("/", 1)[-1]]
+                    rc, how = heal_refiling(sym, ason, rc, cellfix_ev)                # §152
+                    if how: rc[7] += " §152 heal:" + how
                     if not _same_cell(rc, prev):
                         revs.setdefault(sym, {})[ason] = rc; rev_new += 1
+                    elif ason in (revs.get(sym) or {}):
+                        del revs[sym][ason]; rev_new += 1
                     done += 1
                     continue
                 first = min([r["first"]] + ([str(prev[5])] if prev and prev[5] else []))
