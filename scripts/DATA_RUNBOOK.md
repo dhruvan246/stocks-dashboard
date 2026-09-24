@@ -19433,3 +19433,6 @@ scripts/_shp_aspx_rowfix.py): FII +0.76 (+0.47 Mar-2014), DII −0.76 in the fou
 **Page-era generic rows now: 17 left, all Non-Institutions (27 pp)** — public by the filer's own block (ADANIPOWER / ADANIENT / ADANIPORTS
 Jun-2015, DRREDDY and HINDZINC Sep-2015, ARE&M 2013-15, AARTIIND 2012-13); verdicts in the audit ("generic_residue_160e"). No institution row
 of the page era is left undecided.
+**Live (2026-09-25 00:54 IST).** Store commit c233def53 (refresh-shareholding run 36047507585, guards green; Pages deployed): live
+`shp_engine.json` serves all 6 §160e cells (INDUSTOWER Dec-2012 10.36 / 0.23 … Mar-2014 12.26 / 0.72); FEDERALBNK Mar-2010 unchanged 35.05 / 25.00
+as intended; `refresh-stock-fin.yml` dispatched (run 36047895250).
