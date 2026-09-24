@@ -38,6 +38,11 @@
              border-radius: 8px; padding: 8px 10px; margin-bottom: 10px; }
     .stale b { color: #ca8a04; }
     tr.is-stale td { opacity: .72; }
+    .daypick { display: inline-flex; flex-wrap: wrap; align-items: center; gap: 6px; font-size: 12px; }
+    .daypick input[type=date] { font-size: 12px; padding: 3px 6px; border: 1px solid var(--border); border-radius: 8px;
+                                background: var(--surface-2); color: inherit; color-scheme: light dark; }
+    .daypick button { font-size: 11px; padding: 2px 8px; border-radius: 999px; border: 1px solid var(--border); background: var(--surface-2); }
+    .daypick button.on { background: var(--accent); color: #fff; border-color: var(--accent); }
   </style>
 </head>
 <body>
@@ -80,11 +85,18 @@
       <h2 class="text-lg font-semibold">Ideas</h2>
       <span class="seg" id="lane"><button data-v="" class="on">All</button><button data-v="govt">Government</button><button data-v="price">Commodity</button><button data-v="filing">Filing</button><button data-v="earnings">Earnings</button></span>
     </div>
+    <div class="daypick mb-3" id="daypick">
+      <label for="day" class="muted">Published on</label>
+      <input type="date" id="day" />
+      <button type="button" data-d="" class="on" id="day-all">All dates</button>
+      <span id="day-chips"></span>
+    </div>
+    <p id="day-note" class="muted text-sm mb-3" hidden></p>
     <div id="ideas-list" class="grid gap-4 md:grid-cols-2"></div>
   </section>
 
   <section id="run" class="mb-8">
-    <h2 class="text-lg font-semibold mb-1">Researched in the last run</h2>
+    <h2 class="text-lg font-semibold mb-1" id="run-title">Researched in the last run</h2>
     <p id="run-summary" class="muted text-sm mb-3"></p>
     <div id="run-list" class="grid gap-3 md:grid-cols-2"></div>
   </section>
@@ -242,7 +254,10 @@
     $('#commodity-list').innerHTML = '<div class="card muted text-sm">signals.json not published yet.</div>';
   }
 
-  // run log: what was researched and the verdict
+  // run log: what was researched and the verdict. Drawn for the latest run, or for the day picked below.
+  const renderRun = (run, day) => {
+  $('#run-title').textContent = day ? `Researched in the run for ${day}` : 'Researched in the last run';
+  $('#run-list').innerHTML = '';
   if (run) {
     $('#run-summary').textContent = `Run for ${run.date} (${run.run_finished || ''}): ${run.candidates_considered} candidates considered, ${(run.researched || []).length} researched, ${run.published} published.${run.note ? ' ' + run.note : ''}`;
     const rl = $('#run-list');
@@ -256,8 +271,10 @@
       rl.appendChild(el);
     });
   } else {
-    $('#run-summary').textContent = 'No run log published yet.';
+    $('#run-summary').textContent = day ? `No run log was published for ${day}.` : 'No run log published yet.';
   }
+  };
+  renderRun(run, '');
   $('#meta').textContent = latest ? `Last run ${latest.updated || ''} · scan date ${latest.scan_date || ''} · ${latest.universe || ''} names in universe` : 'No run published yet.';
 
   // ideas
@@ -265,12 +282,16 @@
   const trackBy = {};
   (track && track.rows || []).forEach(r => { trackBy[r.idea_id] = r; });
   const all = (ideas && ideas.ideas || []).slice().sort((a, b) => (b.date || '').localeCompare(a.date || ''));
-  let LANE = '';
+  let LANE = '', DAY = '';
   const renderIdeas = () => {
     list.innerHTML = '';
-    const show = all.filter(it => !LANE || laneOf(it) === LANE);
+    const onDay = all.filter(it => !DAY || it.date === DAY);
+    const show = onDay.filter(it => !LANE || laneOf(it) === LANE);
     if (!show.length) {
-      list.innerHTML = `<div class="card muted text-sm">${all.length ? 'No idea in this lane yet.' : 'No ideas published yet.'}</div>`;
+      const msg = !all.length ? 'No ideas published yet.'
+        : !onDay.length ? `No idea was published on ${esc(DAY)}.`
+        : DAY ? `No idea in this lane on ${esc(DAY)}.` : 'No idea in this lane yet.';
+      list.innerHTML = `<div class="card muted text-sm">${msg}</div>`;
       return;
     }
     for (const it of show) drawIdea(it);
@@ -329,13 +350,18 @@
     tb.appendChild(tr);
   });
 
-  // scan
+  // scan. The status lines in latest.json describe the latest scan only, so they are shown only against it.
+  const renderScan = (scan, day) => {
+  const sec = $('#scan');
+  sec.querySelectorAll('.stale').forEach(n => n.remove());
+  $('#scan-table tbody').innerHTML = '';
+  const filingsStatus = (!day || day === asof) ? (latest && latest.filings_status) : '';
   if (scan) {
     $('#scan-summary').textContent = `Scan of ${scan.date}: ${scan.universe} names, ${scan.announcements_in_universe} classified filings out of ${scan.announcements_total} BSE announcements that day, ${scan.candidates} candidates at score ≥ 4. Window: ${scan.window_days} trading days from ${scan.window_from}.`;
     // A blocked announcement feed and a quiet day both show zero filings. Only the scan knows which.
-    if (scan.announcements_blocked || (latest && latest.filings_status)) {
+    if (scan.announcements_blocked || filingsStatus) {
       $('#scan-summary').insertAdjacentHTML('afterend', staleNote(
-        `<b>The filings feed did not fully load for this scan.</b> ${esc((latest && latest.filings_status) || '')} `
+        `<b>The filings feed did not fully load for this scan.</b> ${esc(filingsStatus || '')} `
         + `The filing counts above are a floor, and an empty "Filings today" cell below means <b>unknown</b>, not none.`));
     }
     const sb = $('#scan-table tbody');
@@ -348,8 +374,56 @@
       sb.appendChild(tr);
     });
   } else {
-    $('#scan-summary').textContent = 'No scan published yet.';
+    $('#scan-summary').textContent = day ? `No scan was published for ${day}.` : 'No scan published yet.';
   }
+  };
+  renderScan(scan, '');
+
+  // ---- date selector ----------------------------------------------------------------
+  // Picking a day shows the ideas published that day (an idea's own `date`), and that day's run log
+  // and scan (runs/<day>.json, scan/<day>.json). "All dates" restores the latest run and every idea.
+  const dayIn = $('#day');
+  const pubDays = {};
+  all.forEach(it => { if (it.date) pubDays[it.date] = (pubDays[it.date] || 0) + 1; });
+  const dayList = Object.keys(pubDays).sort().reverse();
+  const bounds = dayList.concat(asof ? [asof] : []).sort();
+  if (bounds.length) dayIn.max = bounds[bounds.length - 1];
+  $('#day-chips').innerHTML = dayList.map(d =>
+    `<button type="button" data-d="${esc(d)}" title="${pubDays[d]} idea${pubDays[d] > 1 ? 's' : ''} published">${esc(d)} · ${pubDays[d]}</button>`).join(' ');
+  const perDay = {};   // day -> Promise<[run, scan]>; a missing file resolves to null
+  const loadDay = (d) => perDay[d] || (perDay[d] = Promise.all([grab('./ideas/runs/' + d + '.json'), grab('./ideas/scan/' + d + '.json')]));
+  let pickSeq = 0;
+  const setDay = async (d) => {
+    if (d && !/^\d{4}-\d{2}-\d{2}$/.test(d)) d = '';
+    DAY = d;
+    dayIn.value = d;
+    document.querySelectorAll('#daypick button').forEach(b => b.classList.toggle('on', b.dataset.d === d));
+    try {
+      const u = new URL(location.href);
+      if (d) u.searchParams.set('date', d); else u.searchParams.delete('date');
+      history.replaceState(null, '', u);
+    } catch (e) {}
+    renderIdeas();
+    const note = $('#day-note');
+    if (!d) { note.hidden = true; renderRun(run, ''); renderScan(scan, ''); return; }
+    const seq = ++pickSeq;
+    note.hidden = false;
+    note.textContent = `Loading the run for ${d}…`;
+    const [r, sc] = await loadDay(d);
+    if (seq !== pickSeq) return;   // a later pick has already taken over
+    const n = pubDays[d] || 0;
+    note.textContent = `${n} idea${n === 1 ? '' : 's'} published on ${d}.` + (r ? '' : ' No run log exists for this date.');
+    renderRun(r, d);
+    renderScan(sc, d);
+  };
+  dayIn.addEventListener('change', () => setDay(dayIn.value));
+  $('#daypick').addEventListener('click', (e) => {
+    const b = e.target.closest('button'); if (!b) return;
+    setDay(b.dataset.d || '');
+  });
+  let startDay = '';
+  try { startDay = new URLSearchParams(location.search).get('date') || ''; } catch (e) {}
+  if (startDay) setDay(startDay);
 })();
 </script>
 </body>
