@@ -18711,3 +18711,10 @@ bse_scrips by_id (57 cos, INA join ratio 1.0001).
 **Store fill:** `scripts/merge_bse_px_from_cache.py` fills docs/bse_prices.bin for ALL BSE-only scrips 2020→ from the
 same cache (all, not just SME: the nightly backfill frontier is store-wide — filling some would strand the rest).
 Pre-check on the overlap: 1,230,815 stored closes, 0 differ. RAW closes, dv=0 (nightly heal_delivery fills it).
+**§149 addendum — INA's BSE-SME era joined to the NSE tape.** `scripts/bse_sme_prepend.json.gz` (built from the same
+bhavcopy cache: OHLC, turnover in ₹ lakh, volume, vwap = turnover/volume, dv = 0 unavailable; 1:10 split 2025-01-24
+applied) carries a standard `prepend` block for INA — 845 BSE bars 2022-10-10 → 2026-03-06, anchor = the NSE tape's
+first bar 2026-03-09 raw 96.81 (BSE closed 96.80 that day; no INA corporate action since → rescale ×1).
+`update_sf_data.insert_sme_history` merges this file's prepends with sme_backfill.json.gz's (separate file so an NSE
+ledger rebuild cannot drop it). Dry-run on the live series: INA 134 → 979 bars, join 96.15 (BSE 03-06) → 96.81 (NSE
+03-09), second run a no-op. To add another ex-BSE-SME name: same block shape, anchor on its first NSE bar.

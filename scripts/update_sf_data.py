@@ -804,6 +804,16 @@ def insert_sme_history(data, meta, cal=None):
         led = json.load(gzip.open(lp, "rt", encoding="utf-8"))
     except Exception as ex:
         print("  sme_backfill ledger unreadable (%s) — skipped" % ex); return 0
+    # BSE-SME-era history of names that later listed on NSE (scripts/bse_sme_prepend.json.gz, built from BSE's
+    # own daily bhavcopies — DATA_RUNBOOK §149; INSOLATION ENERGY 2022-10-10 -> 2026-03-06). A separate file so a
+    # rebuild of the NSE SME ledger can never drop it; same "prepend" contract, same anchor guard, same splice guard.
+    bp = os.path.join(HERE, "bse_sme_prepend.json.gz")
+    if os.path.exists(bp):
+        try:
+            for k2, v2 in (json.load(gzip.open(bp, "rt", encoding="utf-8")).get("prepend") or {}).items():
+                led.setdefault("prepend", {}).setdefault(k2, v2)
+        except Exception as ex:
+            print("  bse_sme_prepend ledger unreadable (%s) — skipped" % ex)
     KEYS = ("d", "c", "t", "h", "l", "op", "v", "dv", "vw")
     def clean(sym, bars):
         if cal is None: return bars
