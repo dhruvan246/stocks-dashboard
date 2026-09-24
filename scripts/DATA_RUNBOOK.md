@@ -19267,3 +19267,6 @@ sets: ADANIPOWER Jun-15 "Others" 11.76 = Elara + EIFF + Cresta + Albula 8.52 + 3
 names carry no filer placement at all. A neighbour-value or label-bracketing inference was NOT applied — it would write numbers the
 filer never stated. Trendlyne's seam route (§155) answers "fail" and no site publishes pre-2015 rows, so these stay open unless a
 filer's own document surfaces.
+**Live (2026-09-24 23:34 IST).** Store commit 3fe1e8cc6 (refresh-shareholding run 36038086883, guards green; Pages deployed); live
+`shp_engine.json` serves all 20 §160b cells (REDINGTON Jun-2015 39.11, APOLLOHOSP Jun-2015 55.57, ADANIPOWER Sep-2015 29.60, JSL
+Jun-2015 18.13, TATASTEEL Jun-2015 dii 28.58). `refresh-stock-fin.yml` dispatched by hand for the per-stock slices.
