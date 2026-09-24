@@ -18718,3 +18718,12 @@ first bar 2026-03-09 raw 96.81 (BSE closed 96.80 that day; no INA corporate acti
 `update_sf_data.insert_sme_history` merges this file's prepends with sme_backfill.json.gz's (separate file so an NSE
 ledger rebuild cannot drop it). Dry-run on the live series: INA 134 → 979 bars, join 96.15 (BSE 03-06) → 96.81 (NSE
 03-09), second run a no-op. To add another ex-BSE-SME name: same block shape, anchor on its first NSE bar.
+**§149 addendum 2 — every ex-BSE-SME NSE name (2026-09-24).** `scripts/build_bse_sme_prepend.py --tape <live bin>
+--equity-l <NSE EQUITY_L.csv>` builds the prepend blocks for all of them from the bhavcopy cache. Three gates, all
+measured to bite: (1) IDENTITY — NSE symbol's own ISIN issuer (isin[:7], from EQUITY_L) must equal the BSE scrip's
+(GSTL refused: NSE INE00WS vs BSE INE632W — the §76 collision class); (2) the anchor rescale (NSE stored first close ÷
+BSE raw close that day) must equal the PRODUCT of the NSE series' own corporate actions after the anchor (±3 %) —
+AARTECH 0.3332 = 1:3 on 2024-08-09, AXITA 0.0512 = 0.1·0.75·0.75·0.909; NGIL 0.678 (no NSE action) and AKSHAR
+(0.0625 vs 0.0833) refused; "near a standard ratio" was too loose; (3) any BSE-era `unexpl` fall truncates the block
+to the bars after it. Result: 53 blocks + INA, 28,720 bars; dry-run on the live bin: 53 series extended, no join step
+>20 %, second run inserts 0.
