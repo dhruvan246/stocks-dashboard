@@ -18735,3 +18735,42 @@ AARTECH 0.3332 = 1:3 on 2024-08-09, AXITA 0.0512 = 0.1·0.75·0.75·0.909; NGIL 
 (0.0625 vs 0.0833) refused; "near a standard ratio" was too loose; (3) any BSE-era `unexpl` fall truncates the block
 to the bars after it. Result: 53 blocks + INA, 28,720 bars; dry-run on the live bin: 53 series extended, no join step
 >20 %, second run inserts 0.
+
+## §151 — FII EXCLUDES DEPOSITORY-RECEIPT SHARES (user rule 2026-09-24: "exclude DR shares like Screener")
+
+**Decision.** FII% = the filing's foreign-institution lines WITHOUT the "Overseas Depositories (holding DRs) (balancing
+figure)" custodian line, in every format. That is what Screener and Trendlyne print (Dr Reddy's Jun-2026: 20.67 = FPI I+II
+vs 32.07 = the Institutions (Foreign) bucket total; UPL 42.39 vs 43.71; Wipro 8.85 vs 11.14). Moneycontrol includes the
+line for filers that report it inside the public block (32.07) and re-bases Infosys/HDFC Bank on total shares instead;
+Quantmac (23-Sep-2026 change) counts DR shares as foreign in every era and re-expresses pre-2015 pages on A+B+C2. The user
+chose Screener's convention: pre-2015 pages stay AS FILED (% of total incl. DR underlying, no re-basing).
+
+**Why it mattered (measured 2026-09-24 against the live feed).** Our reading was inconsistent across the three SEBI formats:
+2001-2015 pages → FII row as printed; Jun-2015–Jun-2022 XBRL → the FPI row (the depositories line sits outside it);
+Sep-2022+ XBRL → `InstitutionsForeignMember` TOTAL, which the new taxonomy defines to INCLUDE the depositories line.
+So every DR issuer jumped at the Sep-2022 format change with no real change in ownership: DRREDDY 25.87 → 36.34 (+10.5 pp),
+UPL 36.44 → 42.77, TMPV 13.71 → 19.04, GRASIM 11.49 → 15.91, HINDALCO 24.76 → 28.55, WIPRO 6.95 → 8.88, JSLHISAR, TATASTEEL,
+ABCAPITAL, ULTRACEMCO, JSL, TATAPOWER (the 12 N500 names; Quantmac's reconciliation exposed it — their "Definition/basis,
+previously matched" class ended exactly at the Jun-2022 quarter for these names). Infosys/HDFC Bank/ICICI Bank/L&T/SBI/
+Reliance carry the DR flag but report the ADR shares as C1 outside the base, so they never had the line and are untouched.
+
+**Fix (this section).**
+- `scripts/fetch_shareholding.py`: `MEMBERS["OverseasDepositoriesMember"] = "od"`; the new-format branch subtracts it from
+  fii and exposes `out["od"]`; the share-count precision pass subtracts the member's NumberOfShares (and keeps the percentage
+  path when the line has a percentage but no count). The old-format branch is unchanged (FPI + FVCI rows).
+- `scripts/guard_shp_definition.py` + fixtures `scripts/tests/shp_fixture_DRREDDY_2022-09-30.xml.gz` (new format) and
+  `…_2022-06-30.xml.gz` (old format), a workflow step right after the midnight guard: refuses to run unless the parser
+  returns 26.15–26.40 for Sep-2022 (bucket total 36.34 would fail) and 25.75–26.00 for Jun-2022.
+- History healed through the ledgers, not the feed: census over the 2,170 store symbols that have a BSE list (3 snapshot
+  quarters Sep-2022 / Mar-2024 / Jun-2026 for the DR flag or the line; 60 candidates; all 936 of their new-format quarters
+  re-read with the patched parser) → 206 store rows / 19 symbols carried the line (ABCAPITAL, AXISBANK, DISHTV, DRREDDY,
+  GRASIM, GVKPIL, HINDALCO, ICICIBANK, JSL, JSLHISAR, KESORAMIND, MODTHREAD, SIL, TATAPOWER, TATASTEEL, TMPV, ULTRACEMCO,
+  UPL, WIPRO) → `shp_cell_fix.json` entries (189 new + 17 existing §142i/j/k entries updated in place with `was` = the
+  previous fix, `cell` = the same row with fii minus the line, `src` naming the XBRL and both figures). 10 rows of
+  `shp_revisions.json` (UPL ×8, ABCAPITAL ×2) edited the same way. Verified on a copy of the store: 206 applied, only slot 1
+  moved, always down by the line's value.
+- Not covered: the 288 store symbols with no BSE list (NSE-only/SME names; DR issuers are BSE-listed, none expected) and a
+  DR line that existed only between the three snapshot quarters. The daily fetch parses new filings with the fixed rule.
+
+**Effect on the Quantmac reconciliation:** their "Definition/basis" and "Same quarter" classes (5,422 cells) are this DR
+question; after §151 our series is consistent with Screener/Trendlyne and will differ from Quantmac on every DR-issuer cell.

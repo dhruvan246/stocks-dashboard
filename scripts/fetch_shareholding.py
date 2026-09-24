@@ -10,6 +10,9 @@ Pipeline (DATA_RUNBOOK.md section 22):
        promoter  = ShareholdingOfPromoterAndPromoterGroupMember
        public    = PublicShareholdingMember
        FII       = InstitutionsForeignMember      (FPI I+II, FDI, other foreign)
+                   MINUS OverseasDepositoriesMember — the ADR/GDR custodian line that the
+                   2022+ format prints inside Institutions (Foreign). DR-underlying shares are
+                   NOT a foreign-institution holding (runbook §151, user rule 2026-09-24).
        DII       = InstitutionsDomesticMember     (MF, insurance, banks, PF, AIF, ...)
        MF        = MutualFundsOrUTIMember
        insurance = InsuranceCompaniesMember
@@ -80,6 +83,12 @@ MEMBERS = {
     "PublicShareholdingMember": "pub",
     "InstitutionsForeignMember": "fii",
     "InstitutionsDomesticMember": "dii",
+    # §151: "Overseas Depositories (holding DRs) (balancing figure)" — the custodian of shares
+    # underlying ADRs/GDRs. The 2022+ format lists it INSIDE Institutions (Foreign); the 2015-2022
+    # format listed it outside the FII rows and the 2001-2015 pages put DR shares in the custodian
+    # block. Excluded from FII in every era (Screener/Trendlyne rule) so a DR issuer's series does
+    # not jump at the Sep-2022 format change (DRREDDY 25.9 -> 36.3, UPL +6.3, TMPV +5.3, ...).
+    "OverseasDepositoriesMember": "od",
     "MutualFundsOrUTIMember": "mf",
     "InsuranceCompaniesMember": "ins",
     "ShareholdingPatternMember": "total",
@@ -796,6 +805,12 @@ def parse_shp(txt, qe_iso):
     if is_new:
         for k in ("fii", "dii", "mf", "ins"):
             out[k] = (vals.get(k) or 0.0) * scale
+        # §151 (2026-09-24, user rule "exclude DR shares like Screener"): drop the Overseas
+        # Depositories line from the Institutions (Foreign) total. Recorded as out["od"] so ledgers
+        # and audits can see what was removed; callers build cells from named slots only.
+        if vals.get("od"):
+            out["od"] = vals["od"] * scale
+            out["fii"] = max(0.0, out["fii"] - out["od"])
         # ⚠️ New-format filings spell the MF member BOTH ways — MutualFundsOrUTIMember and the
         # old-format's MutualFundsOrUtiMember (the lowercase-ti one is what BSE's copies and every
         # NSE filing before ~Jul-2025 carry). Mapping only the uppercase spelling silently wrote
@@ -871,7 +886,14 @@ def parse_shp(txt, qe_iso):
             groups = {"fii": f_slots, "dii": d_slots, "mf": ["o_mf"], "ins": ["ins"]}
         for key, slots in groups.items():
             n = _sum(slots)
-            if n is not None: out[key] = n / tot_sh * 100.0
+            if n is None: continue
+            if key == "fii" and is_new and vals.get("od"):
+                # §151: the share-count path must drop the same DR-custodian block. A percentage
+                # without a count -> keep the percentage-derived fii rather than undercount.
+                if "od" not in shares: continue
+                n -= shares["od"]
+                out["od"] = shares["od"] / tot_sh * 100.0
+            out[key] = n / tot_sh * 100.0
     # Government row (public sub-category) for the sidecar — share-count precision where available,
     # else the filer's own 2dp percentage. Present only when the filing carried the member AND the
     # value is a genuine PUBLIC government holding. In a PSU the SAME GovernmentsMember tag carries the

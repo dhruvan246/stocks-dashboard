@@ -39,6 +39,12 @@ jobs:
       - name: Guard — midnight visibility rule must be wired into both ingestion paths
         run: python3 scripts/guard_shp_gate.py
 
+      # §151 (2026-09-24, user rule): FII excludes the "Overseas Depositories (holding DRs)" custodian
+      # line in every format (Screener/Trendlyne convention). Parses two real Dr Reddy's filings from
+      # scripts/tests/ and refuses to run if the parser ever returns the bucket total again.
+      - name: Guard — FII definition excludes depository-receipt shares
+        run: python3 scripts/guard_shp_definition.py
+
       - name: Fetch new/revised shareholding filings (last 3 quarter-ends)
         run: python3 -X utf8 scripts/fetch_shareholding.py
 
