@@ -17443,6 +17443,25 @@ carries `DEGRADED: ... a revision filed since the last run would NOT have been s
 *measurement*. Zero is a measurement; unknown is not. If the page can print a number, it must also be able
 to print why that number is missing.
 
+**And the structural fix (same evening, "resolve it anyhow"): the feeds moved to GitHub Actions.**
+Honest degradation is not data. The sandbox's egress allowlist is organisation policy and not editable from a
+session, but this repo already reads BSE, NSE and the ministries from ~30 GitHub workflows with no such
+allowlist — §50a moved the XBRL nightly there for the same reason. `.github/workflows/ideas-feeds.yml`
+(`20 13 * * 1-5` = 18:50 IST, 40 min before the routine's 14:00 UTC slot, and NEVER during it because the
+routine lands a PR on the same files) runs, in the routine's own order, `govt.py`, `spot.py`, `minsteel.py`,
+`india_spot.py`, `wpi.py`, `trade.py --latest`, `universe.py`, `scan.py --days 65`, `signals.py`, `score.py`,
+each `|| rc=$?` so a blocked host fails only its own builder; probes the exact URL each builder fetches first
+and writes **`docs/ideas/feeds_status.json`** (`hosts`, `hosts_ok`, `hosts_blocked`, `steps`, `steps_failed`,
+`run_url`, stamp) so "nothing changed" is never mistaken for "nothing happened"; parses every output before
+committing; commits explicit paths with the fetch/reset/copy/push loop every data workflow here uses; and
+`gh workflow run pages.yml` after the push (§50a: a GITHUB_TOKEN push fires no `push:` trigger).
+`scripts/ideas/_cache` rides an actions/cache keyed by run id so the 65-bhavcopy scan is warm after the first
+run. The routine's prompt (owner-only trigger config) still runs the builders itself; since §144e they all
+keep-previous, so on the sandbox they either succeed and change nothing or fail and keep the rows Actions
+wrote — the PLAYBOOK now tells the routine to read `feeds_status.json` before calling a lane blocked, because
+"blocked from the sandbox" and "blocked from Actions" are different facts. What Actions can actually reach is
+measured by the first dispatch, recorded below, and re-measured on every run in `feeds_status.json`.
+
 ## 144. ★★ DAILY IDEAS — filings-driven deep-research page for ₹200-2,000 cr small caps (2026-09-22)
 
 **What:** `docs/ideas.html` + `docs/ideas/{universe,latest,ideas,track}.json`, `docs/ideas/scan/<date>.json`,
