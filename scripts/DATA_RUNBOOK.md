@@ -4127,6 +4127,14 @@ injected site-wide. Never push those unchecked. Never let `|| echo` swallow a fa
 `read_page` and confirm the new thing is really in the DOM **with real values** — not `Loading…`,
 `NaN`, `undefined`, `null`, `—`, or an empty table. Reading your own diff is not verification.
 
+- **★ EVERY TOGGLE / TAB IN ITS EMPTY STATE** (added 2026-09-24, terminal Sell side). A view that renders fine
+  with data loaded can throw with none: `factorMap` read `SF.end` before the engine loaded, so the terminal's
+  **Sell side crashed whenever picks were not loaded** — every sell card AND the "🚨 Exit everything" block
+  vanished from zba23 (Sep 22) until the user asked "why did you remove the exit-all button" on Sep 24 (zba31).
+  zba23/24 were verified only with picks loaded. For the terminal the gate is: switch Buy↔Sell **before loading
+  any picks** and **with Zerodha disconnected**; both sides must render with zero console errors. In general:
+  flip every mode/side/tab toggle in the state a fresh visitor sees (nothing loaded, not logged in).
+
 - **★ SEEDING TEST STATE: NEVER WRITE A SYNCED KEY IN A TEST TAB WITHOUT CHECKING THE OWNER GATE**
   (added 2026-09-02, strategies chips). `bt_fav_strategies`, `mix_state_v1`, `sw_theme`… are
   `SW_SETTINGS_KEYS` (theme.js) — `sw-sync.js` pushes them to the shared SETTINGS doc on
