@@ -196,6 +196,16 @@ HANDOFF={  # symbol -> which row / holder the XBRL era shows to be B2-placed (FI
     "ZENSARTECH":dict(rx=re.compile(r"overseas corporate|foreign (bodies )?corporate|foreign compan", re.I), names=re.compile(r"marina holdco", re.I), note="Marina Holdco (FPI) Ltd, curated FPI"),
     "KOTAKBANK":dict(rx=re.compile(r"foreign bank", re.I), row_ok=False, names=re.compile(r"sumitomo mitsui", re.I), note="Sumitomo Mitsui Banking Corp, OtherInstitutionsForeign in the 2022 form (named holding only, never the 'Foreign Banks' row)"),
 }
+DOC_EVIDENCE={  # §160e — rows the filer's own annual reports / offer document decide (read 2026-09-25; PDFs cached in the session scratchpad)
+    "INDUSTOWER":[dict(blk="inst", match=lambda lab,hn,sh: hn==1 and (sh==14422272 or lab.strip().lower()=="investment fund"), cls="fii",
+        why="Anadale Limited, incorporated under the laws of Mauritius (Bharti Infratel prospectus 19-Dec-2012, SEBI 1356088790925.pdf: p93 'Investment Fund' 1 holder "
+            "18,027,840 pre-issue -> 14,422,272 post-issue; p7/p72 offer for sale 'Anadale 3,605,568'; p91 Anadale total 18,027,840; p74 domicile). Annual reports FY2012-13 p46 "
+            "'Investment Fund 14,422,272 0.76%', FY2013-14 p67 'Investment Fund 8,801,595 0.47%', FY2014-15 0 -> foreign institution (B2) = fii")],
+    "FEDERALBNK":[dict(blk="inst", match=lambda lab,hn,sh: lab.strip().lower()=="any other" and hn>=3, cls="pub",
+        why="depository-receipt holdings by the bank's own annual reports: 'Shares held by Custodians and others against which Depository Receipts have been issued' = "
+            "page (C) + this row to the share (FY2009-10 p29 4,749,763 = 3,732,941 + 1,016,822; FY2010-11 p37 4,240,472 = 3,289,222 + 951,250; FY2012-13 p71 4,517,785 = "
+            "3,371,338 + 1,146,447; the same 890,000-share core throughout; FY2011-12 p56 alone counts it under Mutual Funds/UTI) -> §151: DR shares are never fii, and not a domestic institution")],
+}
 TOL=0.10     # a stored cell must equal one reading convention of the page within this (BSE's two renderings round differently: ITC Dec-15 dii 35.21 vs 35.29)
 _KNOWN={}
 # ---- generic 'Others' / 'Any Other' sub-rows: resolved ONLY by the filer's own evidence on the named >1% holders ----
@@ -340,6 +350,15 @@ def evaluate(h, cur, sym=None, qi=None, code=None, ctx=None, gctx=None):
         for lab,p,cls,io in subi+subn:
             if HO["rx"].search(lab.strip()) and p>=0.005: hand.add(lab)
     subi=[(lab,p,("hand" if lab in hand else cls),io) for lab,p,cls,io in subi]; subn=[(lab,p,("hand" if lab in hand else cls),io) for lab,p,cls,io in subn]   # a hand-off row is decided by the hand-off rule only
+    doc_ev=[]
+    if sym in DOC_EVIDENCE:
+        full={(b_,l_.strip(),round(p_,2)):(hn_,sh_) for b_,l_,hn_,sh_,p_ in parse_full(h)}
+        for rule in DOC_EVIDENCE[sym]:
+            lst=subi if rule["blk"]=="inst" else subn
+            for i_,(lab,p,cls,io) in enumerate(lst):
+                hs=full.get((rule["blk"],lab.strip(),round(p,2)))
+                if hs and cls in (None,"pub") and rule["match"](lab,hs[0],hs[1]):
+                    lst[i_]=(lab,p,rule["cls"],io); doc_ev.append(("filer-document",lab,round(p,4),rule["cls"]+": "+rule["why"]))
     base_dii=si.get("mf",0)+si.get("bank",0)+si.get("ins",0); base_fii=si.get("fii",0)
     extra_fii_std=si.get("fpi",0)+si.get("qfi",0)+si.get("fvci",0)
     fii_subs_inst=sum(p for lab,p,cls,io in subi if cls=="fii"); other_inst=si.get("other",0.0)
@@ -347,7 +366,7 @@ def evaluate(h, cur, sym=None, qi=None, code=None, ctx=None, gctx=None):
     std_for_noninst=[(lab,p) for lab,p in b["noninst"] if STD_INST.get(re.sub(r"\s+"," ",lab.strip().lower())) in ("fii","fpi","qfi","fvci")]   # a standard foreign label filed INSIDE non-institutions (JUBLPHARMA Sep-15 'Foreign Portfolio Investors' 8.41)
     std_dom_noninst=[(lab,p) for lab,p in b["noninst"] if STD_INST.get(re.sub(r"\s+"," ",lab.strip().lower())) in ("vcf","mf","bank","ins")]
     fii_rows_noninst=sum(p for lab,p,cls,io in subn if cls=="fii")+sum(p for lab,p in std_for_noninst); dii_rows_noninst=sum(p for lab,p,cls,io in subn if cls=="dii")+sum(p for lab,p in std_dom_noninst)
-    ev=[]; prom_fix=None
+    ev=list(doc_ev); prom_fix=None
     if abs(prom-(cur[0] or 0))>0.06:
         if (cur[0] or 0)==0 and prom>0: prom_fix=prom; ev.append(("prom-from-page","stored promoter 0.00, page %.2f"%prom,round(prom,4)))
         else: return None,"prom mismatch page %.2f store %.2f"%(prom,cur[0] or 0)

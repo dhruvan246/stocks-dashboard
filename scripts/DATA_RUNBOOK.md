@@ -19407,3 +19407,29 @@ symbols smoother; Natco's and OFSS's 2015 dips and Indus Towers' Jun-15 spike ar
 OFSS Jun-15 13.73, NATCOPHARM Sep-15 20.65, INDUSTOWER Jun-15 24.30, APOLLOHOSP Jun-15 43.79 unchanged; §159 247/247 and §160a 5/5
 intact. Reply workbook rebuilt from `shp_engine_live_final6.json`; its open-items text now names the §160d residue (22 institutional
 rows UNDECIDABLE from the filers' documents, 17 non-institutional rows public by block) — that copy is the one to send.
+
+## §160e — THE 22 INSTITUTION ROWS DECIDED FROM ANNUAL REPORTS (2026-09-25 ~00:50 IST, user: "fix the remaining 22 rows using annual reports")
+
+**Sources (all text-layer PDFs, no image reads; cached in the session scratchpad, never in the repo).** BSE annual-report archive
+`https://www.bseindia.com/bseplus/AnnualReport/<code>/<code>03<yy>.pdf` (reachable 2026-09-25; api.bseindia.com answered again too):
+Federal Bank (500469) FY2009-10 … FY2013-14; Bharti Infratel (534816) FY2012-13 … FY2015-16; and Bharti Infratel's final prospectus of
+19-Dec-2012 from SEBI (`sebi.gov.in/sebi_data/attachdocs/1356088790925.pdf` — curl_cffi lacks SEBI's CA chain, the system curl works).
+
+**FEDERALBNK, 17 rows (institutions "Any Other", 3-8 holders, 0.52-0.75 %, Jun-2009..Jun-2013).** The annual reports' shareholding table is
+coarser than the page but reconciles to the share: every bucket equals its page row except "Shares held by Custodians and others against
+which Depository Receipts have been issued", which equals the page's (C) row PLUS this row — Mar-2010 4,749,763 = 3,732,941 + 1,016,822;
+Mar-2011 4,240,472 = 3,289,222 + 951,250; Mar-2013 4,517,785 = 3,371,338 + 1,146,447. The same 890,000-share core (3 holders) runs through
+every quarter. FY2011-12 alone counts the 890,000 under "Mutual Funds/UTI" (23,480,939 = page MF 22,590,939 + 890,000) — overruled by the
+other three years for the same holders. Verdict: depository-receipt holdings → never FII (§151), not a domestic institution → the stored
+placement (outside FII and DII) is CONFIRMED; no ledger entry.
+
+**INDUSTOWER, 5 rows (the single 0.76 % holder, Dec-2012..Dec-2013; + Mar-2014 0.47 %).** Annual reports FY2012-13 p46 / FY2013-14 p67 label
+it "Investment Fund" 14,422,272 / 8,801,595 shares; FY2014-15 shows 0. The prospectus identifies it: p93 "Investment Fund" 1 holder 18,027,840
+pre-issue → 14,422,272 post-issue; the offer for sale (p7, p72) has "3,605,568 Equity Shares by Anadale"; p91 Anadale's total 18,027,840;
+p74 "Anadale Limited is incorporated under the laws of Mauritius". Foreign institution → FII. The store had counted it in DII Dec-2012..
+Sep-2013 (the stored DII held the institutional block) and nowhere in Dec-2013 / Mar-2014. 6 ledger entries (`DOC_EVIDENCE` in
+scripts/_shp_aspx_rowfix.py): FII +0.76 (+0.47 Mar-2014), DII −0.76 in the four quarters. Verified on a copy of the origin store 6/6; guards green.
+
+**Page-era generic rows now: 17 left, all Non-Institutions (27 pp)** — public by the filer's own block (ADANIPOWER / ADANIENT / ADANIPORTS
+Jun-2015, DRREDDY and HINDZINC Sep-2015, ARE&M 2013-15, AARTIIND 2012-13); verdicts in the audit ("generic_residue_160e"). No institution row
+of the page era is left undecided.
