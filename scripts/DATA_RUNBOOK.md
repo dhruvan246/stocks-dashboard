@@ -19097,3 +19097,10 @@ neighbours' pages → one 5-pp dip stays), JUBLPHARMA Jun-2015 "Others" 8.17 (GA
 29 "Any Other" rows in all. The 239 no-match rows (KARURVYSYA no table; 136 seam-fill dii cells ADANIPOWER/AEGISLOG/APOLLOTYRE-type
 where the page's dii differs from the store's seam reading). CHOLAFIN Dec-15/Mar-16 dip 3-4 pp (IFC inside the 88/89 lump, below the
 5-pp seam gate). DR-labelled rows stay out of fii by the §151 rule.
+**Live (2026-09-24 19:55 IST).** Store commit eb61656b4 (refresh-shareholding run 36012264333, guards green; Pages run 36012446693);
+live `shp_engine.json` serves the healed fii on 478/478 §160 cells (ITC Mar-2015 50.83 / Jun-2006 45.39, ASHOKLEY Dec-2015 29.12,
+POONAWALLA Dec-2015 64.11, ZENSARTECH Jun-2012 32.25, KOTAKBANK Sep-2010 29.50, SHRIRAMFIN Dec-2015 52.89, MINDACORP Dec-2015 dii
+14.85). `shp_refine_4dp` re-derived the dii/ins slot at 4 dp on 89 cells whose dii did not move (the page's 2-dp value had been
+written into the entry) — entries aligned to the served value (§158 lesson, now built into the writer: a slot that moves < 0.05 pp
+keeps the stored value); `apply_cell_fix` on the served store is a no-op for all 478. Per-stock slices: `refresh-stock-fin.yml`
+dispatched by hand (run 36012618916; the store commit never fires it).

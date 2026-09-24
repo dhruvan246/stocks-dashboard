@@ -325,7 +325,9 @@ def classify():
                 if e[0]=="inst-sub-unresolved": unres[e[1][:40]]+=1
             stats["conv:"+r["conv"][0]]+=1
             if (abs(r["t_fii"]-(cur[1] or 0))<0.05 and abs(r["t_dii"]-(cur[2] or 0))<0.05 and not r["prom_fix"]) or not (r["ev"] or r["prom_fix"]): stats["unchanged"]+=1; continue
-            new=list(cur); new[1]=r["t_fii"]; new[2]=r["t_dii"]
+            new=list(cur)      # a slot that does not move >= 0.05 keeps the STORED value: shp_refine_4dp re-derives dii/ins at 4 dp after apply_cell_fix and would otherwise diverge from the ledger (89 cells aligned by hand on 2026-09-24)
+            if abs(r["t_fii"]-(cur[1] or 0))>=0.05: new[1]=r["t_fii"]
+            if abs(r["t_dii"]-(cur[2] or 0))>=0.05: new[2]=r["t_dii"]
             if r["prom_fix"]: new[0]=round(r["prom_fix"],4)
             if cur[4] is not None and r["add_ins"]>0: new[4]=round((cur[4] or 0)+r["add_ins"],4)
             prior=(led.get(s) or {}).get(q)
