@@ -23,6 +23,7 @@ Writes docs/ideas/minsteel_mumbai.json. A failed listing keeps the committed fil
 import argparse, datetime, glob, hashlib, json, os, re, sys, time, urllib.parse
 HERE = os.path.dirname(os.path.abspath(__file__))
 sys.path.insert(0, HERE)
+import ist                        # IST stamps: a naive now() on a UTC runner was labelled IST (runbook 144e)
 DOCS = os.path.join(HERE, '..', '..', 'docs', 'ideas')
 OUT = os.path.join(DOCS, 'minsteel_mumbai.json')
 CACHE = os.path.join(HERE, '_cache', 'minsteel')
@@ -150,7 +151,7 @@ def main():
             series[n].append([d, price, reps[0]])
     inverted = sorted({d for d, _, _ in series['CRC']} & {d for d, _, _ in series['HRC']})
     inverted = [d for d in inverted if dict((x[0], x[1]) for x in series['CRC'])[d] < dict((x[0], x[1]) for x in series['HRC'])[d]]
-    out = dict(built=datetime.datetime.now().strftime('%Y-%m-%d %H:%M IST'),
+    out = dict(built=ist.stamp(),
                source='Ministry of Steel monthly reports (steel.gov.in/monthly-summary): retail price in the Mumbai market',
                unit='Rs/tonne incl. GST', specs=dict(TMT='TMT 10 mm (rebar)', HRC='HR coil 2.50 mm', CRC='CR coil 0.63 mm'),
                reports_listed=len(urls), reports_with_prices=sum(1 for v in per_report.values() if v),

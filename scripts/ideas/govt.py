@@ -23,6 +23,8 @@ Writes docs/ideas/govt.json  {built, scanned, kept, releases:[...]}
 import argparse, datetime, html, json, os, re, sys, time, urllib.request
 
 HERE = os.path.dirname(os.path.abspath(__file__))
+sys.path.insert(0, HERE)
+import ist                        # IST stamps: a naive now() on a UTC runner was labelled IST (runbook 144e)
 DOCS = os.path.join(HERE, '..', '..', 'docs', 'ideas')
 UA = 'Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/128.0 Safari/537.36'
 LIST = 'https://www.pib.gov.in/allRel.aspx?reg=3&lang=1'
@@ -144,7 +146,7 @@ def main():
         print(f'govt: PIB unreachable ({str(e)[:130]}); docs/ideas/govt.json LEFT UNCHANGED at its {built} build. '
               'The government lane did NOT run - its kept count is that build\'s, not today\'s.')
         sys.exit(0)
-    stamp = datetime.datetime.now().strftime('%Y-%m-%d %H:%M IST')
+    stamp = ist.stamp()
     kept, unmapped, opened = [], [], 0
     dropped = {'noise': 0, 'backgrounder': 0, 'no decision verb': 0, 'no theme': 0, 'too small': 0}
     for prid, ministry, title in rels:

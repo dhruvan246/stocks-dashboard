@@ -26,6 +26,7 @@ import argparse, csv, datetime, gzip, html, json, os, re, ssl, sys, time, urllib
 
 HERE = os.path.dirname(os.path.abspath(__file__))
 sys.path.insert(0, HERE)          # the sibling bse.py, for the NMDC filings
+import ist                        # IST stamps: a naive now() on a UTC runner was labelled IST (runbook 144e)
 DOCS = os.path.join(HERE, '..', '..', 'docs', 'ideas')
 OUT = os.path.join(DOCS, 'india_spot.json')
 HIST = os.path.join(DOCS, 'india_spot_history.csv')
@@ -451,7 +452,7 @@ def src_nmdc(days=200, since=None):
             hist = {r['date']: r for r in (json.load(open(NMDC_HIST)).get('filings') or [])}
         except Exception:
             hist = {}
-    d_to = datetime.date.today()
+    d_to = ist.today()
     d_from = since or (d_to - datetime.timedelta(days=days))
     wins, d = [], d_from
     while d < d_to:                       # quarters: one BSE call cannot return more than 50 rows
@@ -511,7 +512,7 @@ def src_nmdc(days=200, since=None):
         if diff:
             o['refiling_differs'] = f"re-filing of {r['date']} states " + ', '.join(diff)
     priced = [r for r in rows_h if (r.get('lump') is not None or r.get('fines') is not None) and not r.get('dup_of')]
-    json.dump(dict(built=datetime.datetime.now().strftime('%Y-%m-%d %H:%M IST'),
+    json.dump(dict(built=ist.stamp(),
                    source='NMDC Limited price letters filed with BSE under LODR Regulation 30 (scrip %s)' % NMDC_SCRIP,
                    note='NMDC administers this price; it changes only when NMDC files a revision, so the series is '
                         'dated by the filing, not daily. The tax basis is stated per row and changes between eras.',
@@ -604,7 +605,7 @@ def build_history(sources):
                                        stats=hist_stats(series, step=bool(r.get('step'))) if len(series) >= 2 else None,
                                        recorded_from=next((x[0] for x, v in zip(series, via) if v == 'recorded'), None),
                                        archived=sum(1 for v in via if str(v).lower().startswith('wayback')))
-    blob = json.dumps(dict(built=datetime.datetime.now().strftime('%Y-%m-%d %H:%M IST'), series=out),
+    blob = json.dumps(dict(built=ist.stamp(), series=out),
                       separators=(',', ':'), ensure_ascii=False).encode()
     with open(HIST_JSON, 'wb') as fh:
         with gzip.GzipFile(fileobj=fh, mode='wb', mtime=0) as gz:   # mtime=0: same data, same bytes
@@ -640,7 +641,7 @@ def main():
     for key, fn in plan:
         try:
             res = fn()
-            res['fetched'] = datetime.datetime.now().strftime('%Y-%m-%d %H:%M IST')
+            res['fetched'] = ist.stamp()
             sources[key] = res
             status[key] = f'ok, {len(res["rows"])} rows'
             if res.get('degraded'):     # rows came back, but not from a live read - never report that as "ok" alone
@@ -650,7 +651,7 @@ def main():
     if not sources:
         raise SystemExit('nothing fetched and nothing to keep: ' + json.dumps(status))
     # history: one row per series per day, so 1w/1m changes can be computed later for sources with no history of their own
-    today = datetime.date.today().isoformat()
+    today = ist.today().isoformat()
     # A print is recorded under the date its SOURCE states (MetalBook prices each item on its own day, often
     # a week back; Rubber Board's page can lag a fortnight). Stamping the run date instead made a flat line of
     # fake daily points out of one unchanged print. No stated date, or one in the future: the run date, marked.
@@ -675,7 +676,7 @@ def main():
     for res in sources.values():
         for r in res.get('rows', []):
             r['key'] = series_key(r)
-    out = dict(built=datetime.datetime.now().strftime('%Y-%m-%d %H:%M IST'), status=status, sources=sources)
+    out = dict(built=ist.stamp(), status=status, sources=sources)
     json.dump(out, open(OUT, 'w'), indent=1, ensure_ascii=False)
     print('india_spot:', json.dumps(status, indent=1)); print(f'history rows appended: {new}')
     try:
