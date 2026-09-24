@@ -19201,3 +19201,7 @@ FII-prefixed names), so it fell short of the neighbours and was rightly held.
 Ledger: 5 `fix` entries under the "§160 page-era row-level heal" marker (3 supersede SW-2 phase-2 entries in place), src
 "bseaspx:<code>_<qtrid> shpperent". Trendlyne could not serve as the second reader tonight (its id-lookup API answers "fail");
 the second reader here is the Jun-2016 XBRL neighbour on every cell. Verified with `load_hist` (5/5 applied), guards green.
+**Live (2026-09-24 22:58 IST).** Store e35302aaf (run 36034170642: "shp_cell_fix applied: 5 cells", guards green); live
+`shp_engine.json` serves all five (JKCEMENT Dec-15 11.72 / Mar-16 11.7343 & dii 13.5177, JUBLPHARMA Dec-15 26.31, LINDEINDIA
+Mar-16 8.17, REDINGTON Dec-15 37.51 & dii 20.86) with §159's 247 cells intact; per-stock slices re-dispatched
+(`refresh-stock-fin.yml`). Reply workbook rebuilt from this feed: 90,852 agree of 106,001 rows; no cell left "unfinished".
