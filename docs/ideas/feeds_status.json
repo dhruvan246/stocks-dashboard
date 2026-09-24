@@ -1,7 +1,7 @@
 {
- "built": "2026-09-24 23:26 IST",
+ "built": "2026-09-24 23:48 IST",
  "where": "GitHub Actions (ideas-feeds.yml)",
- "run_url": "https://github.com/dhruvan246/stocks-dashboard/actions/runs/36037288870",
+ "run_url": "https://github.com/dhruvan246/stocks-dashboard/actions/runs/36039266279",
  "hosts": {
   "https://www.pib.gov.in/allRel.aspx?reg=3&lang=1": 200,
   "https://api.bseindia.com/BseIndiaAPI/api/ComHeadernew/w?quotetype=EQ&scripcode=500002&seriesid=": 403,
@@ -21,7 +21,7 @@
  "steps": {
   "govt": 0,
   "spot": 0,
-  "minsteel": 1,
+  "minsteel": 0,
   "india_spot": 0,
   "wpi": 0,
   "trade": 0,
@@ -48,8 +48,6 @@
   "https://tradestat.commerce.gov.in/",
   "https://www.westmetall.com/"
  ],
- "steps_failed": [
-  "minsteel"
- ],
+ "steps_failed": [],
  "note": "A step that exited non-zero left its file exactly as it was (every builder keeps-previous, runbook 144e). A host not in hosts_ok is the reason its builder changed nothing."
 }
