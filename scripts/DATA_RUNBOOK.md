@@ -19019,3 +19019,7 @@ after SEBI abolished the category in 2019: LICHSGFIN Jun-2019 5.95 → Sep-2019 
 `guard_shp_revisions.py` check 2 walks the `superseded` chain for a §158/§159 marker (a §159 entry on top of a §158 one no
 longer trips the audited-block check). `shp_refine_4dp` runs after `apply_cell_fix` and re-derives slots within 0.02 pp — every
 §159 move is ≥ 0.05 pp so none is overridden (the §158 session saw 6 of its 0.02-pp moves reverted that way).
+**Live (2026-09-24 18:30 IST).** Store commit 1bbe31c2b (run 36002083521, guards green); live `shp_engine.json` serves the
+healed fii on 247/247 cells (PAYTM Jun-2022 71.55, ETERNAL 42.34, ITC Jun-2017 49.88 / Jun-2022 42.05, IDFCFIRSTB 18.58,
+ASTERDM 11.44 unchanged, KIMS 8.55); per-stock slices rebuilt (815b66b40, `refresh-stock-fin.yml` dispatched by hand — the
+store commit never fires it) and checked on `fin/ITC.json`, `fin/PAYTM.json`, `fin/ETERNAL.json`, `fin/IDFCFIRSTB.json`.
