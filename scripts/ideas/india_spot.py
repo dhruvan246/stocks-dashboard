@@ -534,9 +534,13 @@ def src_nmdc(days=200, since=None):
                          chg_rev=round(100 * (last[key] / prev_v - 1), 2) if prev_v else None,
                          prev=prev_v, prev_date=before[-1]['wef'] if before else None,
                          history=sorted([r['wef'], r[key], r.get('basis')] for r in priced if r.get(key) is not None)))
+    # Every BSE window can fail while the committed history still yields rows. That is NOT a clean
+    # read: no revision filed since the last run could have been seen. Say so instead of "ok".
+    degraded = (f'BSE unreachable, all {win_err} window(s) failed - these rows are the committed '
+                f'series re-published; a revision filed since the last run would NOT have been seen') if win_err == len(wins) else None
     return dict(source='NMDC Limited price letters filed with BSE (scrip %s)' % NMDC_SCRIP,
                 url='https://www.bseindia.com/stock-share-price/nmdc-ltd/nmdc/%s/corp-announcements/' % NMDC_SCRIP,
-                date='w.e.f. ' + (last.get('wef') or last['date']), rows=rows,
+                date='w.e.f. ' + (last.get('wef') or last['date']), rows=rows, degraded=degraded,
                 revisions=len(priced), since=priced[0]['wef'],
                 unread=sum(1 for r in rows_h if r.get('lump') is None and r.get('fines') is None))
 
@@ -639,6 +643,8 @@ def main():
             res['fetched'] = datetime.datetime.now().strftime('%Y-%m-%d %H:%M IST')
             sources[key] = res
             status[key] = f'ok, {len(res["rows"])} rows'
+            if res.get('degraded'):     # rows came back, but not from a live read - never report that as "ok" alone
+                status[key] += ' - DEGRADED: ' + res['degraded']
         except Exception as e:
             status[key] = f'FAILED ({str(e)[:90]}) - previous rows kept' if key in old else f'FAILED ({str(e)[:90]})'
     if not sources:

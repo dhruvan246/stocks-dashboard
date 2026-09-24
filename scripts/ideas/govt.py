@@ -116,7 +116,22 @@ def main():
     tm = json.load(open(os.path.join(DOCS, 'theme_map.json')))
     themes = {k: (v, re.compile(v['keywords'], re.I)) for k, v in tm['themes'].items()}
 
-    rels = listing()
+    try:
+        rels = listing()
+    except Exception as e:
+        # PIB is blocked outright on some networks (2026-09-23/24). Leave govt.json exactly as it is -
+        # a stale file the page can detect beats a half-written one - but exit cleanly and say which,
+        # so the run log can tell "nothing was announced" from "the lane could not be read".
+        fn = os.path.join(DOCS, 'govt.json')
+        built = '?'
+        if os.path.exists(fn):
+            try:
+                built = json.load(open(fn)).get('built', '?')
+            except Exception:
+                pass
+        print(f'govt: PIB unreachable ({str(e)[:130]}); docs/ideas/govt.json LEFT UNCHANGED at its {built} build. '
+              'The government lane did NOT run - its kept count is that build\'s, not today\'s.')
+        sys.exit(0)
     stamp = datetime.datetime.now().strftime('%Y-%m-%d %H:%M IST')
     kept, unmapped, opened = [], [], 0
     dropped = {'noise': 0, 'no decision verb': 0, 'no theme': 0, 'too small': 0}

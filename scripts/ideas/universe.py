@@ -55,10 +55,27 @@ if __name__ == '__main__':
     ap.add_argument('--min', type=float, default=200)
     ap.add_argument('--max', type=float, default=2000)
     a = ap.parse_args()
-    uni = build(a.min, a.max)
+    out_fn = os.path.join(DOCS, 'universe.json')
+    try:
+        uni = build(a.min, a.max)
+    except Exception as e:
+        # The scrip master lives on api.bseindia.com, which BSE's edge can refuse for a whole network
+        # (2026-09-24). Crashing here used to take the whole routine down before the scan ran, even
+        # though the scan only needs the committed universe plus bhavcopies from the other host.
+        # Behave like the commodity builders: keep what is on file, say so, and do not fail the run.
+        if os.path.exists(out_fn):
+            try:
+                old = json.load(open(out_fn))
+                print(f'universe: BSE scrip master unreachable ({str(e)[:110]}); '
+                      f'universe.json LEFT UNCHANGED at its {old.get("asof", "?")} build, {old.get("count", "?")} names. '
+                      'Market caps are that day\'s, not today\'s.')
+                sys.exit(0)
+            except Exception:
+                pass
+        raise SystemExit(f'universe: BSE scrip master unreachable and no committed universe.json to fall back on: {e}')
     os.makedirs(DOCS, exist_ok=True)
     out = dict(asof=ist.today().isoformat(), mcap_min=a.min, mcap_max=a.max, count=len(uni), rows=uni)
-    json.dump(out, open(os.path.join(DOCS, 'universe.json'), 'w'), separators=(',', ':'))
+    json.dump(out, open(out_fn, 'w'), separators=(',', ':'))
     import collections
     print('universe', len(uni), 'names |', collections.Counter(r['group'] for r in uni).most_common(), '| with NSE symbol:',
           sum(1 for r in uni if r['nse']), '| SME:', sum(1 for r in uni if r['sme']))

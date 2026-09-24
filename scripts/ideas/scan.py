@@ -91,6 +91,10 @@ def run(date, days):
             if r['scrip'] in by_scrip:
                 hist[r['scrip']].append(r)
     ann = bse.announcements(asof)
+    # "0 announcements" reads as a quiet day, but it is also what a blocked feed looks like. Record
+    # which it was: on 2026-09-24 the feed 403'd all run and every candidate's empty filing list was
+    # UNKNOWN, not empty. The page and the run log both need to be able to say so.
+    ann_blocked = bse.last_announcements_partial
     ann_by = collections.defaultdict(list)
     for a in ann:
         s = str(a.get('SCRIP_CD') or '').strip()
@@ -124,11 +128,13 @@ def run(date, days):
     kept = [r for r in rows if r['score'] > 0]
     out = dict(date=asof.isoformat(), window_days=len(tdays), window_from=min(tdays).isoformat(), universe=len(rows),
                announcements_total=len(ann), announcements_in_universe=sum(len(v) for v in ann_by.values()),
+               announcements_blocked=ann_blocked,
                candidates=len(cands), rows_with_signals=len(kept), rows=kept)
     os.makedirs(os.path.join(DOCS, 'scan'), exist_ok=True)
     fn = os.path.join(DOCS, 'scan', f'{asof.isoformat()}.json')
     json.dump(out, open(fn, 'w'), separators=(',', ':'))
-    print(f'scan {asof}: window {len(tdays)}d from {min(tdays)} | universe {len(rows)} | announcements {len(ann)} total, '
+    print(f'scan {asof}: window {len(tdays)}d from {min(tdays)} | universe {len(rows)} | announcements {len(ann)} total'
+          f'{" (FEED BLOCKED - this count is a floor, not the day)" if ann_blocked else ""}, '
           f'{out["announcements_in_universe"]} classified in universe | candidates {len(cands)} -> {fn}')
     for r in cands[:25]:
         f = r['features'] or {}

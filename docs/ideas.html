@@ -32,6 +32,12 @@
     .lane.govt { border-color: #7c3aed66; color: #7c3aed; } .lane.price { border-color: #0891b266; color: #0891b2; }
     .lane.filing { border-color: #ca8a0466; color: #ca8a04; } .lane.earnings { border-color: #16a34a66; color: #16a34a; }
     .disc { font-size: 12px; color: var(--text-muted); border-left: 3px solid var(--border); padding-left: 10px; }
+    /* A lane that could not be read is not a quiet lane. Anything built from a file older than the
+       run's own as-of date says so here, in the section it belongs to, not only in the run log. */
+    .stale { font-size: 12px; border: 1px solid #ca8a0466; border-left: 3px solid #ca8a04; background: #ca8a040f;
+             border-radius: 8px; padding: 8px 10px; margin-bottom: 10px; }
+    .stale b { color: #ca8a04; }
+    tr.is-stale td { opacity: .72; }
   </style>
 </head>
 <body>
@@ -143,6 +149,35 @@
   const grab = (u) => fetch(u).then(r => r.ok ? r.json() : null).catch(() => null);
   const [govt, signals] = await Promise.all([grab('./ideas/govt.json'), grab('./ideas/signals.json')]);
 
+  // ---- staleness ----------------------------------------------------------------
+  // A builder that cannot reach its source leaves its file untouched, by design. The page then
+  // rendered that file's contents as today's news: on 2026-09-24 it printed "Nothing today cleared
+  // the bar. Of 42 releases..." from a govt.json two days old, because PIB had been unreachable
+  // for two days. Every section now states when what it is showing predates the run.
+  const asof = (latest && latest.scan_date) || '';
+  const dayOf = (s) => {            // "2026-09-22 21:51 IST" | "2026-09-22" -> "2026-09-22"
+    const m = String(s || '').match(/\d{4}-\d{2}-\d{2}/);
+    return m ? m[0] : '';
+  };
+  const isStale = (builtStamp) => {
+    const d = dayOf(builtStamp);
+    return !!(asof && d && d < asof);
+  };
+  const staleNote = (html) => `<div class="stale">${html}</div>`;
+  // The run states per lane what it could and could not read; the page never re-derives that.
+  const lanePut = (sel, status, builtStamp, what) => {
+    if (!status && !isStale(builtStamp)) return false;
+    const el = $(sel);
+    if (!el) return false;
+    const built = dayOf(builtStamp);
+    let txt = String(status || '').trim();
+    if (txt && !/[.!?]$/.test(txt)) txt += '.';
+    // Don't repeat a date the status line already names.
+    const age = (isStale(builtStamp) && !txt.includes(built)) ? ` Showing the ${built} build; the run is for ${asof}.` : '';
+    el.insertAdjacentHTML('beforebegin', staleNote(`<b>${esc(what)} did not refresh in the last run.</b> ${esc(txt + age)}`));
+    return true;
+  };
+
   // which lane an idea came from: the run writes trigger = "price: ...", "filing: ...", "govt: ...", "earnings: ..."
   const laneOf = (it) => {
     const t = String(it.scope === 'govt' ? 'govt' : (it.lane || it.trigger || '')).toLowerCase();
@@ -156,11 +191,18 @@
 
   // ---- government announcements that cleared the bar ----
   if (govt) {
+    const govtStale = isStale(govt.built) || !!(latest && latest.govt_status);
     $('#govt-meta').textContent = `${govt.built} · ${fmt(govt.scanned, 0)} releases scanned, ${govt.kept} kept`;
+    lanePut('#govt-list', latest && latest.govt_status, govt.built, 'The government lane');
     const gl = $('#govt-list');
     const rows = (govt.releases || []).concat((govt.unmapped_releases || []).map(r => Object.assign({ unmapped: true, companies: [], small_caps: [], themes: [], theme_names: [], history: [] }, r)));
     if (!rows.length) {
-      gl.innerHTML = `<div class="card muted text-sm">Nothing today cleared the bar. Of ${fmt(govt.scanned, 0)} releases, ${govt.dropped['no decision verb']} were not decisions, ${govt.dropped.noise} were ceremonial and ${govt.dropped['too small']} were below the size floor.</div>`;
+      // "Nothing today" is only true when the file IS today's. Otherwise it is the older build's verdict.
+      const d = govt.dropped || {};
+      const tally = `Of ${fmt(govt.scanned, 0)} releases, ${d['no decision verb']} were not decisions, ${d.noise} were ceremonial and ${d['too small']} were below the size floor.`;
+      gl.innerHTML = `<div class="card muted text-sm">${govtStale
+        ? `No release cleared the bar <b>when this lane last ran</b> (${esc(dayOf(govt.built) || govt.built)}). ${tally} Nothing has been read since, so what the government announced on ${esc(asof || 'the run date')} is unknown.`
+        : `Nothing today cleared the bar. ${tally}`}</div>`;
     }
     rows.forEach(r => {
       const el = document.createElement('div');
@@ -183,6 +225,9 @@
   if (signals) {
     const strong = (signals.groups || []).filter(g => Math.abs(g.strength || 0) >= 1.5).slice(0, 6);
     $('#commodity-meta').textContent = `${(signals.groups || []).length} groups tracked · ${strong.length} above the alert threshold · spot ${signals.spot_date || '—'}, trade month ${signals.trade_month || '—'}, WPI ${signals.wpi_month || '—'}`;
+    // signals.json rebuilds from the committed panels even when every live price source is blocked, so
+    // its own build stamp is always fresh. The staleness that matters is the panels underneath it.
+    lanePut('#commodity-list', latest && latest.commodity_status, signals.spot_date, 'The commodity panel');
     const cl = $('#commodity-list');
     if (!strong.length) cl.innerHTML = '<div class="card muted text-sm">No commodity group is above its alert threshold today.</div>';
     strong.forEach(g => {
@@ -261,17 +306,38 @@
 
   // scorecard
   const ts = track && track.summary || {};
-  $('#track-summary').textContent = ts.count ? `${ts.count} ideas scored · median return ${ts.median_ret >= 0 ? '+' : ''}${ts.median_ret}% · ${ts.up} above call price · median best close +${ts.median_peak}% · ${ts.hit_20} reached +20%, ${ts.hit_50} reached +50% · updated ${track.updated}` : 'Nothing scored yet.';
+  const trackRows = (track && track.rows || []).filter(r => r.status === 'ok');
+  const nStale = trackRows.filter(r => r.stale).length;
+  $('#track-summary').textContent = ts.count
+    ? `${ts.count} ideas scored · median return ${ts.median_ret >= 0 ? '+' : ''}${ts.median_ret}% · ${ts.up} above call price · median best close +${ts.median_peak}% · ${ts.hit_20} reached +20%, ${ts.hit_50} reached +50% · updated ${track.updated}`
+    : 'Nothing scored yet.';
+  // An idea that could not be re-priced keeps its last good row rather than vanishing, so say which
+  // rows those are: their "Now" column is the last price we could read, not the latest close.
+  if (nStale || (latest && latest.track_status)) {
+    const bits = [];
+    if (latest && latest.track_status) bits.push(esc(latest.track_status));
+    if (nStale) bits.push(`${nStale} row${nStale > 1 ? 's are' : ' is'} carried forward from an earlier run and marked below; their prices are as of the date shown, not today.`);
+    $('#track-summary').insertAdjacentHTML('afterend', staleNote(`<b>The scorecard did not fully refresh.</b> ${bits.join(' ')}`));
+  }
   const tb = $('#track-table tbody');
-  (track && track.rows || []).filter(r => r.status === 'ok').sort((a, b) => b.call_date.localeCompare(a.call_date)).forEach(r => {
+  trackRows.sort((a, b) => b.call_date.localeCompare(a.call_date)).forEach(r => {
     const tr = document.createElement('tr');
-    tr.innerHTML = `<td>${esc(r.name || r.ticker)}</td><td>${esc(r.call_date)}</td><td>${fmt(r.call_close, 2)}</td><td>${fmt(r.last_close, 2)}</td><td>${pct(r.ret_pct)}</td><td>${fmt(r.peak_close, 2)} <span class="muted">${esc(r.peak_date)}</span></td><td>${pct(r.peak_pct)}</td><td>${r.days}</td>`;
+    if (r.stale) tr.className = 'is-stale';
+    const flag = r.stale ? ` <span class="pill" title="${esc(r.stale_reason || '')}">stale</span>`
+      : (r.source === 'bhavcopy' ? ` <span class="pill" title="${esc(r.adj_note || '')}">bhavcopy</span>` : '');
+    tr.innerHTML = `<td>${esc(r.name || r.ticker)}${flag}</td><td>${esc(r.call_date)}</td><td>${fmt(r.call_close, 2)}</td><td>${fmt(r.last_close, 2)} <span class="muted">${esc(r.last_date || '')}</span></td><td>${pct(r.ret_pct)}</td><td>${fmt(r.peak_close, 2)} <span class="muted">${esc(r.peak_date)}</span></td><td>${pct(r.peak_pct)}</td><td>${r.days}</td>`;
     tb.appendChild(tr);
   });
 
   // scan
   if (scan) {
     $('#scan-summary').textContent = `Scan of ${scan.date}: ${scan.universe} names, ${scan.announcements_in_universe} classified filings out of ${scan.announcements_total} BSE announcements that day, ${scan.candidates} candidates at score ≥ 4. Window: ${scan.window_days} trading days from ${scan.window_from}.`;
+    // A blocked announcement feed and a quiet day both show zero filings. Only the scan knows which.
+    if (scan.announcements_blocked || (latest && latest.filings_status)) {
+      $('#scan-summary').insertAdjacentHTML('afterend', staleNote(
+        `<b>The filings feed did not fully load for this scan.</b> ${esc((latest && latest.filings_status) || '')} `
+        + `The filing counts above are a floor, and an empty "Filings today" cell below means <b>unknown</b>, not none.`));
+    }
     const sb = $('#scan-table tbody');
     (scan.rows || []).filter(r => r.score >= 4).slice(0, 40).forEach(r => {
       const f = r.features || {};
