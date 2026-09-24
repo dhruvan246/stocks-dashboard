@@ -48,8 +48,8 @@ def breakdown(txt):
 MON={"March":3,"June":6,"September":9,"December":12}
 LAB_FII=re.compile(r"\bfiis?\b|\bfpis?\b|\bqfi\b|foreig\w* portfolio|foreig\w* instit|foreign bank|foreign venture|qualified foreign|sovereign", re.I)
 LAB_PUB=re.compile(r"overseas corporate|\bocb\b|foreig\w* compan|foreig\w* (corporate )?bod|corporate bodies|foreig\w* national|foreig\w* individual|non.?resident|\bnri\b", re.I)
-FORLAB=re.compile(r'foreig|muscat|s\.?a\.?o\.?g\b|overseas|\bfpi\b|\bfii\b|\bocb\b|non.?resident|\bnri\b|mauritius|singapore|\bpte\b|\bb\.?v\.?\b|\bllc\b|\bl\.?p\.?\b|\binc\b|\bplc\b|\bltd\.? *\((uk|usa|us)\)|university|college|\bsa\b|\bag\b|\bgmbh\b|\bnv\b|luxembourg|cayman|netherlands|\busa\b|\buk\b|japan|korea|hong ?kong|cyprus|delaware|\bsarl\b|\bs\.?a\.?r\.?l\b|holdings? (ii|iii|iv|v)\b|\bpty\b|\bcapital partners\b|\bglobal\b|international', re.I)
-DOMSTRONG=re.compile(r"insur|assurance|provident|pension|nps trust|national pension|mutual fund|\blic\b|\blici\b|qualified inst|q[au]+lified|instit\w* buyers?|\bqib", re.I)
+FORLAB=re.compile(r'foreig|muscat|s\.?a\.?o\.?g\b|overseas|\bfpi\b|\bfii\b|\bocb\b|non.?resident|\bnri\b|mauritius|singapore|\bpte\b|\bb\.?v\.?\b|\bllc\b|\bl\.?p\.?\b|\binc\b|\bplc\b|\bltd\.? *\((uk|usa|us)\)|university|college|\bsa\b|\bag\b|\bgmbh\b|\bnv\b|luxembourg|cayman|netherlands|\busa\b|\buk\b|japan|korea|hong ?kong|cyprus|delaware|\bsarl\b|\bs\.?a\.?r\.?l\b|holdings? (ii|iii|iv|v)\b|\bpty\b|\bcapital partners\b|\bglobal\b|international|\bsicav\b|\bucits\b|\boeic\b', re.I)
+DOMSTRONG=re.compile(r"insur|assurance|provident|pension|nps trust|national pension|mutual fund|\bmagnum\b|\blic\b|\blici\b|qualified inst|q[au]+lified|instit\w* buyers?|\bqib", re.I)
 DOMLAB=re.compile(r"insur|assurance|provident|pension|nps trust|national pension|mutual fund|\blic\b|\blici\b|qualified inst|q[au]+lified|instit\w* buyers?|\bqib|\bnbfc|non.?banking|financial institution|\bbank|alternat(e|ive) investment|venture capital|asset reconstruct|general insurance corp", re.I)
 INSURER=re.compile(r'insur|assurance|\blic\b|\blici\b|life ins', re.I)
 def qe_of(qtr):
