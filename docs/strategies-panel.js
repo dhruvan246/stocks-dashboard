@@ -5,7 +5,7 @@
   'use strict';
   if (window.mountStrategies) return;
   var mounted = false;
-  var SP_CSS = "\n.spwrap{font-size:13px;line-height:1.5}\n.spwrap .sp-top{display:flex;align-items:center;justify-content:space-between;gap:10px;flex-wrap:wrap;margin-bottom:4px}\n.spwrap .sp-h{font-size:15px;font-weight:800;letter-spacing:-.015em;margin:0;display:flex;align-items:center;gap:9px}\n.spwrap .sp-h::before{content:\"\";width:4px;height:15px;border-radius:3px;flex:none;background:linear-gradient(180deg,var(--accent),color-mix(in srgb,var(--accent) 45%,transparent))}\n.spwrap .sp-actions{display:flex;gap:7px;align-items:center;flex-wrap:wrap}\n.spwrap .sp-sub{font-size:11.5px;color:var(--text-3);line-height:1.45;margin:4px 0}\n.spwrap .sp-input{flex:1;padding:7px 9px;font-size:13px;border:1px solid var(--border);border-radius:8px;background:var(--surface-2);color:var(--text);font-family:inherit}\n.spwrap .sym{color:var(--text-3);font-size:11px;font-weight:600}\n.spwrap .badge{font-size:9px;font-weight:800;letter-spacing:.05em;padding:1px 5px;border-radius:4px;background:var(--surface-2);color:var(--text-3);border:1px solid var(--border)}\n.spwrap .zpill{display:inline-flex;align-items:center;gap:6px;font-size:11.5px;font-weight:700;padding:5px 11px;border-radius:999px;background:color-mix(in srgb,var(--surface-2) 70%,transparent);color:var(--text-2);border:1px solid var(--border);white-space:nowrap}\n.spwrap .zpill.ok{color:var(--up);border-color:color-mix(in srgb,var(--up) 40%,transparent)} .spwrap .zpill.warn{color:#c98500;border-color:color-mix(in srgb,#c98500 40%,transparent)}\n.spwrap .sblk{border:1px solid var(--border);border-radius:14px;padding:13px 14px 11px;margin:10px 0;background:linear-gradient(180deg,color-mix(in srgb,var(--surface-2) 40%,transparent),transparent)}\n.spwrap .shead{display:flex;flex-wrap:wrap;align-items:center;gap:6px 10px;margin-bottom:8px}\n.spwrap .shead .nm2{font-size:13.5px;font-weight:800;letter-spacing:-.01em}\n.spwrap .tag{font-size:9.5px;font-weight:800;letter-spacing:.06em;padding:2.5px 7px;border-radius:5px;white-space:nowrap;text-transform:uppercase}\n.spwrap .tag.keep{background:color-mix(in srgb,var(--up) 16%,transparent);color:var(--up)}\n.spwrap .tag.new{background:color-mix(in srgb,var(--accent) 16%,transparent);color:var(--accent)}\n.spwrap .tag.off{background:var(--surface-2);color:var(--text-3);border:1px solid var(--border)}\n.spwrap .tag.warn{background:color-mix(in srgb,#c98500 18%,transparent);color:#c98500}\n.spwrap .tag.exit{background:color-mix(in srgb,var(--down) 16%,transparent);color:var(--down)}\n.spwrap .twrap{overflow-x:auto;-webkit-overflow-scrolling:touch;border:1px solid var(--border);border-radius:10px;background:var(--surface)}\n.spwrap table{width:100%;border-collapse:collapse;font-size:12.5px}\n.spwrap th{text-align:right;font-weight:700;color:var(--text-3);font-size:10px;text-transform:uppercase;letter-spacing:.08em;padding:8px 10px;border-bottom:1px solid var(--border);white-space:nowrap;background:color-mix(in srgb,var(--surface-2) 45%,var(--surface))}\n.spwrap th:first-child,.spwrap td:first-child{text-align:left}\n.spwrap td{padding:8px 10px;border-bottom:1px solid var(--border-2);text-align:right;white-space:nowrap;font-variant-numeric:tabular-nums}\n.spwrap tbody tr:last-child td{border-bottom:none}\n.spwrap td:nth-child(2),.spwrap th:nth-child(2){text-align:left}\n.spwrap .empty{text-align:center;color:var(--text-3);font-size:12.5px;padding:30px 10px}\n.spwrap .bal{border:1px solid var(--border);border-radius:14px;padding:13px 14px;margin:10px 0 4px;background:color-mix(in srgb,var(--surface-2) 45%,transparent)}\n.spwrap .bal-h{display:flex;align-items:center;gap:9px;flex-wrap:wrap;margin-bottom:8px}\n.spwrap .bal-h b{font-size:13.5px}\n.spwrap .bal-h .sub{font-size:11.5px;color:var(--text-3)}\n.spwrap .bal-h .go{margin-left:auto}\n.spwrap .snum{display:inline-block;font-size:9.5px;font-weight:800;background:var(--surface);border:1px solid var(--border);border-radius:4px;padding:0 4px;margin-left:3px;color:var(--text-3)}\n.spwrap .khelp{font-size:11.5px;color:var(--text-3);line-height:1.5;margin-top:10px}\n.spwrap .up{color:var(--up)} .spwrap .down{color:var(--down)}\n.spwrap .btn,#zbDlg .btn{border:1px solid var(--border);background:color-mix(in srgb,var(--surface-2) 70%,transparent);color:var(--text-2);border-radius:10px;padding:6px 11px;font-size:12.5px;font-weight:600;cursor:pointer;white-space:nowrap;display:inline-flex;align-items:center;gap:6px;transition:.15s;font-family:inherit;line-height:1.3}\n.spwrap .btn:hover,#zbDlg .btn:hover{border-color:color-mix(in srgb,var(--accent) 55%,transparent);color:var(--text)}\n.spwrap .btn.on,#zbDlg .btn.on{background:linear-gradient(135deg,var(--accent),color-mix(in srgb,var(--accent) 70%,#7c5cd6));border-color:transparent;color:#fff}\n.spwrap .btn.sell{background:var(--down);border-color:var(--down);color:#fff}\n.spwrap .btn:disabled{cursor:not-allowed;opacity:.55;transform:none}\n#ktoast{position:fixed;left:50%;bottom:24px;transform:translateX(-50%);z-index:300;background:var(--text);color:var(--bg);padding:9px 14px;border-radius:10px;font-size:12.5px;font-weight:600;opacity:0;pointer-events:none;transition:opacity .25s;max-width:90vw;text-align:center}\n#ktoast.show{opacity:1}\n.zchip{display:inline-block;padding:2px 7px;border-radius:20px;font-size:10.5px;font-weight:700;background:var(--surface-2);border:1px solid var(--border)}\n.zchip.ok{color:var(--up);border-color:var(--up)} .zchip.bad{color:var(--down);border-color:var(--down)} .zchip.open{color:var(--accent);border-color:var(--accent)}\n.zmsg{font-size:11px;color:var(--down);white-space:normal;text-align:left;max-width:280px}\n#zbWrap{position:fixed;inset:0;z-index:200;background:rgba(5,8,14,.55);backdrop-filter:blur(4px);display:none;align-items:center;justify-content:center;padding:16px}\n#zbWrap.open{display:flex}\n#zbDlg{width:min(620px,100%);max-height:92vh;overflow:auto;padding:18px;background:var(--surface);border:1px solid var(--border);border-radius:16px;box-shadow:var(--shadow)}\n#zbDlg h3{margin:0 0 2px;font-size:14.5px;font-weight:800;letter-spacing:-.01em}\n#zbDlg .sub{font-size:11.5px;color:var(--text-3)}\n#zbDlg .krow{display:flex;gap:8px;margin-top:10px}\n#zbDlg label{flex:1;font-size:10.5px;font-weight:800;color:var(--text-3);text-transform:uppercase;letter-spacing:.06em}\n#zbDlg input,#zbDlg select{width:100%;margin-top:4px;padding:7px 9px;font-size:13.5px;font-weight:600;border:1px solid var(--border);border-radius:8px;background:var(--surface-2);color:var(--text);font-family:inherit}\n#zbDlg table{margin-top:10px;width:100%;border-collapse:collapse;font-size:12.5px}\n#zbDlg th{font-size:10px;letter-spacing:.06em;color:var(--text-3);text-transform:uppercase;padding:7px 9px;text-align:right;border-bottom:1px solid var(--border);white-space:nowrap}\n#zbDlg th:first-child,#zbDlg td:first-child{text-align:left}\n#zbDlg td{padding:6px 9px;border-bottom:1px solid var(--border-2);text-align:right;font-variant-numeric:tabular-nums}\n#zbDlg td input.zbq{width:80px;margin:0;padding:5px 7px;text-align:right}\n#zbDlg td input.zbl{width:92px;margin:0;padding:5px 7px;text-align:right}\n#zbDlg .khelp{font-size:11.5px;color:var(--text-3);line-height:1.5;margin-top:10px}\n#zbTbl:not(.lim) .limcol{display:none}\n\n.spwrap .sp-cnt{font-size:11px;font-weight:800;background:var(--surface-2);border-radius:20px;padding:1px 8px;color:var(--text-2);letter-spacing:0}\n.spwrap .spchips{display:flex;gap:6px;align-items:center;overflow-x:auto;-webkit-overflow-scrolling:touch;padding:2px 0;margin:6px 0 10px;scrollbar-width:none}\n.spwrap .spchips::-webkit-scrollbar{display:none}\n.spwrap .spchips button{white-space:nowrap;background:color-mix(in srgb,var(--surface-2) 70%,transparent);border:1px solid var(--border);color:var(--text-2);border-radius:999px;padding:5px 12px;font:inherit;font-size:12px;font-weight:700;cursor:pointer}\n.spwrap .spchips button:hover{border-color:color-mix(in srgb,var(--accent) 55%,transparent);color:var(--text)}\n.spwrap .spchips button.on{background:color-mix(in srgb,var(--accent) 16%,transparent);border-color:color-mix(in srgb,var(--accent) 45%,transparent);color:var(--accent)}\n.spwrap .spchips .n{font-size:10.5px;font-weight:800;opacity:.75;margin-left:5px}\n.spwrap .bal tfoot td{font-weight:800;border-top:1px solid var(--border);background:color-mix(in srgb,var(--surface-2) 45%,transparent)}";
+  var SP_CSS = "\n.spwrap{font-size:13px;line-height:1.5}\n.spwrap .sp-top{display:flex;align-items:center;justify-content:space-between;gap:10px;flex-wrap:wrap;margin-bottom:4px}\n.spwrap .sp-h{font-size:15px;font-weight:800;letter-spacing:-.015em;margin:0;display:flex;align-items:center;gap:9px}\n.spwrap .sp-h::before{content:\"\";width:4px;height:15px;border-radius:3px;flex:none;background:linear-gradient(180deg,var(--accent),color-mix(in srgb,var(--accent) 45%,transparent))}\n.spwrap .sp-actions{display:flex;gap:7px;align-items:center;flex-wrap:wrap}\n.spwrap .sp-sub{font-size:11.5px;color:var(--text-3);line-height:1.45;margin:4px 0}\n.spwrap .sp-input{flex:1;padding:7px 9px;font-size:13px;border:1px solid var(--border);border-radius:8px;background:var(--surface-2);color:var(--text);font-family:inherit}\n.spwrap .sym{color:var(--text-3);font-size:11px;font-weight:600}\n.spwrap .badge{font-size:9px;font-weight:800;letter-spacing:.05em;padding:1px 5px;border-radius:4px;background:var(--surface-2);color:var(--text-3);border:1px solid var(--border)}\n.spwrap .zpill{display:inline-flex;align-items:center;gap:6px;font-size:11.5px;font-weight:700;padding:5px 11px;border-radius:999px;background:color-mix(in srgb,var(--surface-2) 70%,transparent);color:var(--text-2);border:1px solid var(--border);white-space:nowrap}\n.spwrap .zpill.ok{color:var(--up);border-color:color-mix(in srgb,var(--up) 40%,transparent)} .spwrap .zpill.warn{color:#c98500;border-color:color-mix(in srgb,#c98500 40%,transparent)}\n.spwrap .sblk{border:1px solid var(--border);border-radius:14px;padding:13px 14px 11px;margin:10px 0;background:linear-gradient(180deg,color-mix(in srgb,var(--surface-2) 40%,transparent),transparent)}\n.spwrap .shead{display:flex;flex-wrap:wrap;align-items:center;gap:6px 10px;margin-bottom:8px}\n.spwrap .shead .nm2{font-size:13.5px;font-weight:800;letter-spacing:-.01em}\n.spwrap .tag{font-size:9.5px;font-weight:800;letter-spacing:.06em;padding:2.5px 7px;border-radius:5px;white-space:nowrap;text-transform:uppercase}\n.spwrap .tag.keep{background:color-mix(in srgb,var(--up) 16%,transparent);color:var(--up)}\n.spwrap .tag.new{background:color-mix(in srgb,var(--accent) 16%,transparent);color:var(--accent)}\n.spwrap .tag.off{background:var(--surface-2);color:var(--text-3);border:1px solid var(--border)}\n.spwrap .tag.warn{background:color-mix(in srgb,#c98500 18%,transparent);color:#c98500}\n.spwrap .tag.exit{background:color-mix(in srgb,var(--down) 16%,transparent);color:var(--down)}\n.spwrap .twrap{overflow-x:auto;-webkit-overflow-scrolling:touch;border:1px solid var(--border);border-radius:10px;background:var(--surface)}\n.spwrap table{width:100%;border-collapse:collapse;font-size:12.5px}\n.spwrap th{text-align:right;font-weight:700;color:var(--text-3);font-size:10px;text-transform:uppercase;letter-spacing:.08em;padding:8px 10px;border-bottom:1px solid var(--border);white-space:nowrap;background:color-mix(in srgb,var(--surface-2) 45%,var(--surface))}\n.spwrap th:first-child,.spwrap td:first-child{text-align:left}\n.spwrap td{padding:8px 10px;border-bottom:1px solid var(--border-2);text-align:right;white-space:nowrap;font-variant-numeric:tabular-nums}\n.spwrap tbody tr:last-child td{border-bottom:none}\n.spwrap td:nth-child(2),.spwrap th:nth-child(2){text-align:left}\n.spwrap .empty{text-align:center;color:var(--text-3);font-size:12.5px;padding:30px 10px}\n.spwrap .bal{border:1px solid var(--border);border-radius:14px;padding:13px 14px;margin:10px 0 4px;background:color-mix(in srgb,var(--surface-2) 45%,transparent)}\n.spwrap .bal-h{display:flex;align-items:center;gap:9px;flex-wrap:wrap;margin-bottom:8px}\n.spwrap .bal-h b{font-size:13.5px}\n.spwrap .bal-h .sub{font-size:11.5px;color:var(--text-3)}\n.spwrap .bal-h .go{margin-left:auto}\n.spwrap .snum{display:inline-block;font-size:9.5px;font-weight:800;background:var(--surface);border:1px solid var(--border);border-radius:4px;padding:0 4px;margin-left:3px;color:var(--text-3)}\n.spwrap .khelp{font-size:11.5px;color:var(--text-3);line-height:1.5;margin-top:10px}\n.spwrap .up{color:var(--up)} .spwrap .down{color:var(--down)}\n.spwrap .btn,#zbDlg .btn{border:1px solid var(--border);background:color-mix(in srgb,var(--surface-2) 70%,transparent);color:var(--text-2);border-radius:10px;padding:6px 11px;font-size:12.5px;font-weight:600;cursor:pointer;white-space:nowrap;display:inline-flex;align-items:center;gap:6px;transition:.15s;font-family:inherit;line-height:1.3}\n.spwrap .btn:hover,#zbDlg .btn:hover{border-color:color-mix(in srgb,var(--accent) 55%,transparent);color:var(--text)}\n.spwrap .btn.on,#zbDlg .btn.on{background:linear-gradient(135deg,var(--accent),color-mix(in srgb,var(--accent) 70%,#7c5cd6));border-color:transparent;color:#fff}\n.spwrap .btn.sell{background:var(--down);border-color:var(--down);color:#fff}\n.spwrap .btn:disabled{cursor:not-allowed;opacity:.55;transform:none}\n#ktoast{position:fixed;left:50%;bottom:24px;transform:translateX(-50%);z-index:300;background:var(--text);color:var(--bg);padding:9px 14px;border-radius:10px;font-size:12.5px;font-weight:600;opacity:0;pointer-events:none;transition:opacity .25s;max-width:90vw;text-align:center}\n#ktoast.show{opacity:1}\n.zchip{display:inline-block;padding:2px 7px;border-radius:20px;font-size:10.5px;font-weight:700;background:var(--surface-2);border:1px solid var(--border)}\n.zchip.ok{color:var(--up);border-color:var(--up)} .zchip.bad{color:var(--down);border-color:var(--down)} .zchip.open{color:var(--accent);border-color:var(--accent)}\n.zmsg{font-size:11px;color:var(--down);white-space:normal;text-align:left;max-width:280px}\n#zbWrap{position:fixed;inset:0;z-index:200;background:rgba(5,8,14,.55);backdrop-filter:blur(4px);display:none;align-items:center;justify-content:center;padding:16px}\n#zbWrap.open{display:flex}\n#zbDlg{width:min(620px,100%);max-height:92vh;overflow:auto;padding:18px;background:var(--surface);border:1px solid var(--border);border-radius:16px;box-shadow:var(--shadow)}\n#zbDlg h3{margin:0 0 2px;font-size:14.5px;font-weight:800;letter-spacing:-.01em}\n#zbDlg .sub{font-size:11.5px;color:var(--text-3)}\n#zbDlg .krow{display:flex;gap:8px;margin-top:10px}\n#zbDlg label{flex:1;font-size:10.5px;font-weight:800;color:var(--text-3);text-transform:uppercase;letter-spacing:.06em}\n#zbDlg input,#zbDlg select{width:100%;margin-top:4px;padding:7px 9px;font-size:13.5px;font-weight:600;border:1px solid var(--border);border-radius:8px;background:var(--surface-2);color:var(--text);font-family:inherit}\n#zbDlg table{margin-top:10px;width:100%;border-collapse:collapse;font-size:12.5px}\n#zbDlg th{font-size:10px;letter-spacing:.06em;color:var(--text-3);text-transform:uppercase;padding:7px 9px;text-align:right;border-bottom:1px solid var(--border);white-space:nowrap}\n#zbDlg th:first-child,#zbDlg td:first-child{text-align:left}\n#zbDlg td{padding:6px 9px;border-bottom:1px solid var(--border-2);text-align:right;font-variant-numeric:tabular-nums}\n#zbDlg td input.zbq{width:80px;margin:0;padding:5px 7px;text-align:right}\n#zbDlg td input.zbl{width:92px;margin:0;padding:5px 7px;text-align:right}\n#zbDlg .khelp{font-size:11.5px;color:var(--text-3);line-height:1.5;margin-top:10px}\n#zbTbl:not(.lim) .limcol{display:none}\n#ldWrap{position:fixed;inset:0;z-index:200;background:rgba(5,8,14,.55);backdrop-filter:blur(4px);display:none;align-items:center;justify-content:center;padding:16px}\n#ldWrap.open{display:flex}\n#ldDlg{width:min(680px,100%);max-height:92vh;overflow:auto;padding:18px;background:var(--surface);border:1px solid var(--border);border-radius:16px;box-shadow:var(--shadow)}\n#ldDlg h3{margin:0 0 2px;font-size:14.5px;font-weight:800;letter-spacing:-.01em}\n#ldDlg .sub{font-size:11.5px;color:var(--text-3);line-height:1.5}\n#ldDlg h4{margin:12px 0 2px;font-size:10.5px;font-weight:800;text-transform:uppercase;letter-spacing:.06em;color:var(--text-3)}\n#ldDlg .twrap{overflow-x:auto;-webkit-overflow-scrolling:touch;border:1px solid var(--border);border-radius:10px}\n#ldDlg table{width:100%;border-collapse:collapse;font-size:12.5px}\n#ldDlg th{font-size:10px;letter-spacing:.06em;color:var(--text-3);text-transform:uppercase;padding:6px 8px;text-align:right;border-bottom:1px solid var(--border);white-space:nowrap}\n#ldDlg th:first-child,#ldDlg td:first-child{text-align:left}\n#ldDlg td{padding:5px 8px;border-bottom:1px solid var(--border-2);text-align:right;font-variant-numeric:tabular-nums;white-space:nowrap}\n#ldDlg tbody tr:last-child td{border-bottom:none}\n#ldDlg .krow{display:flex;gap:8px;margin-top:12px}\n#ldDlg .khelp{font-size:11.5px;color:var(--text-3);line-height:1.5;margin-top:10px}\n#ldDlg .warn{color:#c98500}\n#ldDlg .up{color:var(--up)} #ldDlg .down{color:var(--down)}\n#ldDlg .btn{border:1px solid var(--border);background:color-mix(in srgb,var(--surface-2) 70%,transparent);color:var(--text-2);border-radius:10px;padding:6px 11px;font-size:12.5px;font-weight:600;cursor:pointer;white-space:nowrap;display:inline-flex;align-items:center;gap:6px;transition:.15s;font-family:inherit;line-height:1.3}\n#ldDlg .btn.on{background:linear-gradient(135deg,var(--accent),color-mix(in srgb,var(--accent) 70%,#7c5cd6));border-color:transparent;color:#fff}\n#ldDlg .btn:disabled{cursor:not-allowed;opacity:.55}\n\n.spwrap .sp-cnt{font-size:11px;font-weight:800;background:var(--surface-2);border-radius:20px;padding:1px 8px;color:var(--text-2);letter-spacing:0}\n.spwrap .spchips{display:flex;gap:6px;align-items:center;overflow-x:auto;-webkit-overflow-scrolling:touch;padding:2px 0;margin:6px 0 10px;scrollbar-width:none}\n.spwrap .spchips::-webkit-scrollbar{display:none}\n.spwrap .spchips button{white-space:nowrap;background:color-mix(in srgb,var(--surface-2) 70%,transparent);border:1px solid var(--border);color:var(--text-2);border-radius:999px;padding:5px 12px;font:inherit;font-size:12px;font-weight:700;cursor:pointer}\n.spwrap .spchips button:hover{border-color:color-mix(in srgb,var(--accent) 55%,transparent);color:var(--text)}\n.spwrap .spchips button.on{background:color-mix(in srgb,var(--accent) 16%,transparent);border-color:color-mix(in srgb,var(--accent) 45%,transparent);color:var(--accent)}\n.spwrap .spchips .n{font-size:10.5px;font-weight:800;opacity:.75;margin-left:5px}\n.spwrap .bal tfoot td{font-weight:800;border-top:1px solid var(--border);background:color-mix(in srgb,var(--surface-2) 45%,transparent)}";
   var SP_DOM = "<div class=\"spwrap\"><div class=\"sp-top\"><h2 class=\"sp-h\">Strategies<span class=\"sp-cnt\" id=\"spCnt\"></span></h2><div class=\"sp-actions\"><span id=\"zStatus\" class=\"zpill\">Zerodha: checking…</span><button class=\"btn\" id=\"btnZLogin\" style=\"display:none\">Login to Zerodha ▸</button><button class=\"btn\" id=\"btnZSetup\" title=\"Kite worker URL\">Worker</button><button class=\"btn\" id=\"spMode\" title=\"Rebalance picks rank on the LAST CLOSE — the official screen the backtest uses. Live picks re-rank the price-based factors (52w high/low distance, returns, momentum) at the CURRENT market price — fundamentals and holdings stay as filed. Near the close of a rebalance day the two converge.\"></button><button class=\"btn\" id=\"spSide\"></button><button class=\"btn on\" id=\"btnLoadAll\">Load all picks</button></div></div><div class=\"sp-sub\">One block per saved strategy: the screen’s top picks as of the latest close, live prices during market hours, and a basket order for the whole block — you confirm before anything is placed.</div><div class=\"sp-sub\" id=\"status\"></div><div id=\"zSetupBox\" style=\"display:none\"><div class=\"khelp\">One-time per browser: your Kite worker URL (the portfolio/terminal shares it automatically).</div><div style=\"display:flex;gap:7px;max-width:520px;margin-top:6px\"><input id=\"zWUrl\" placeholder=\"https://…workers.dev\" class=\"sp-input\"><button class=\"btn on\" id=\"zWSave\">Save</button></div></div><div class=\"spchips\" id=\"spChips\"></div><div id=\"buyall\"></div><div id=\"cards\"><div class=\"empty\">Loading saved strategies…</div></div></div>";
   function injectCSS(){ if (document.getElementById('sp-css')) return; var s=document.createElement('style'); s.id='sp-css'; s.textContent=SP_CSS; document.head.appendChild(s); }
   window.mountStrategies = function(container, opts){
@@ -368,6 +368,15 @@ function cardMeta(cfg){
    renderWizard(), re-rendered with every renderCards(). */
 const istNow = () => new Date(Date.now() + 330 * 60000);
 const hhmm = d => String(d.getUTCHours()).padStart(2, '0') + ':' + String(d.getUTCMinutes()).padStart(2, '0');
+const LST = { at: 0, j: null, busy: false };   // v4: the box's ledger status (today's order-book snapshot, tags, last apply), refreshed by ledgerStatus()
+/* 'Fills capture' row: the box snapshots the day's order book at 15:35 IST (needs the Kite token armed) — the reconcile reads those */
+function wizSnap(S, now){
+  if (!cloudOn()) return; const L = LST.j;
+  if (!L){ S('snap', 'off', 'Fills capture: checking the box\u2026', '', ''); return; }
+  if (L.snapToday){ const sn = (L.snapshots || []).find(x => x.date === L.today) || {}; S('snap', 'ok', 'Today\u2019s order book captured on the box (' + (sn.orders || 0) + ' fill' + (sn.orders === 1 ? '' : 's') + (sn.captured ? ', ' + String(sn.captured).slice(11, 16) : '') + ')', 'the reconcile reads these \u00b7 tap to refresh after late fills', 'capture'); }
+  else if (hhmm(now) < (L.snapAt || '15:35')) S('snap', 'info', 'The box captures today\u2019s fills at ' + (L.snapAt || '15:35'), 'stay logged in to Zerodha until then', Z.connected ? 'capture' : '');
+  else S('snap', 'warn', 'Today\u2019s fills not captured yet', Z.connected ? 'capture now \u2014 before midnight (Kite forgets yesterday\u2019s orders)' : 'needs Zerodha connected', Z.connected ? 'capture' : 'login');
+}
 function wizardList(){ return spList(uniqStrategies(), loadFavs()); }
 function wizardSteps(){
   const RW = rebalWindow(), list = wizardList(), now = istNow(), steps = [];
@@ -408,7 +417,7 @@ function wizardSteps(){
     S('sent', withEx ? (sent === withEx ? 'ok' : (sent ? 'warn' : 'bad')) : 'off', 'Sell baskets sent ' + sent + '/' + withEx, '', sent < withEx ? 'sellside' : '');
     const cap = books.filter(it => proceedsOf(it.id)).length;
     S('proceeds', sent ? (cap >= sent ? 'ok' : 'warn') : 'off', 'Sell proceeds captured ' + cap + '/' + sent, (sent && cap < sent) ? 'auto-captures ~2 min after a basket finishes \u00b7 \u21bb proceeds chip to redo' : 'funds tomorrow\u2019s buys', '');
-    S('evening', 'info', 'Tonight on the Mac: rebalance_sync.py capture', 'snapshots today\u2019s fills (Kite forgets them at midnight)');
+    wizSnap(S, now);
   } else {
     const legs = loaded.map(it => buyLeg(PICKS[it.id], RW)), okN = legs.filter(l => l.ok).length, bad = legs.find(l => !l.ok);
     S('mode', !loaded.length ? 'off' : (okN === loaded.length ? 'ok' : 'bad'),
@@ -427,12 +436,13 @@ function wizardSteps(){
     S('lev', LEV ? (LEV.blocked.length ? 'warn' : 'ok') : 'bad', LEV ? ('Leverage checked ' + hhmm(new Date(LEV.at + 330 * 60000)) + (LEV.blocked.length ? ' \u2014 MTF blocked: ' + LEV.blocked.join(', ') : ' \u2014 no MTF-blocked entrants')) : 'Leverage not checked yet', (LEV && LEV.blocked.length) ? 'those need the FULL amount in cash (auto-CNC)' : '', LEV ? '' : 'lev');
     S('bought', withEnt ? (bought === withEnt ? 'ok' : (bought ? 'warn' : 'bad')) : (loaded.length ? 'ok' : 'off'), withEnt ? 'Buy baskets sent ' + bought + '/' + withEnt + ' (' + entries + ' entr' + (entries === 1 ? 'y' : 'ies') + ')' : 'Nothing to buy', '', bought < withEnt ? 'buyside' : '');
     const ledgerDone = !!books.length && books.every(it => { const p = PICKS[it.id]; if (!p || !p.rows.length) return false; const held = heldFor(it.cfg), hs = new Set(held.rows.map(h => h.sym)); return !p.rows.some(r => !hs.has(r.sym)) && !held.rows.some(h => !p.rows.some(r => r.sym === h.sym)); });
-    S('ledger', ledgerDone ? 'ok' : 'info', ledgerDone ? 'Ledger matches the official screen' : 'Tonight on the Mac: rebalance_sync.py capture \u2192 plan --reb ' + RW.tIso + ' \u2192 apply', ledgerDone ? 'rebalance_sync.py has run' : 'writes the new books; until then the cards still show the old holdings');
+    wizSnap(S, now);
+    S('ledger', ledgerDone ? 'ok' : 'warn', ledgerDone ? 'Books match the official screen' : 'Books not updated yet \u2014 reconcile from the fills', ledgerDone ? 'the cloud ledger is current' : 'the box reconciles from the captured fills; you confirm before it writes', ledgerDone ? '' : 'reconcile');
   }
   return { leg: leg, RW: RW, steps: steps };
 }
 const WZ_ICON = { ok: '\u2713', warn: '\u26a0', bad: '\u2717', info: '\u2022', off: '\u2013' };
-const WZ_ACT = { login: 'Login', cloud: 'Cloud on', load: 'Load picks', loadall: 'Refresh picks', live: 'Live picks', reb: 'Rebalance picks', sellside: 'Sell side', buyside: 'Buy side', lev: 'Check leverage' };
+const WZ_ACT = { login: 'Login', cloud: 'Cloud on', load: 'Load picks', loadall: 'Refresh picks', live: 'Live picks', reb: 'Rebalance picks', sellside: 'Sell side', buyside: 'Buy side', lev: 'Check leverage', capture: 'Capture now', reconcile: 'Reconcile books' };
 function renderWizard(){
   let box = $('spWizard');
   if (!box){ const ch = $('spChips'); if (!ch) return; box = document.createElement('div'); box.id = 'spWizard'; ch.insertAdjacentElement('beforebegin', box); }
@@ -442,6 +452,7 @@ function renderWizard(){
   const done = W.steps.filter(x => x.st === 'ok').length, total = W.steps.filter(x => x.st !== 'info' && x.st !== 'off').length;
   box.innerHTML = '<div class="bal wz"><div class="bal-h"><b>' + esc(title) + '</b><span class="sub">' + (live ? done + ' of ' + total + ' checks green' : esc(W.steps[0].detail)) + '</span></div>' +
     (live ? W.steps : W.steps.slice(1)).map(x => '<div class="wz-row wz-' + x.st + '"><span class="wz-ic">' + WZ_ICON[x.st] + '</span><span class="wz-l"><b>' + esc(x.label) + '</b>' + (x.detail ? ' <span class="sym">' + esc(x.detail) + '</span>' : '') + '</span>' + (x.act ? '<button class="btn wz-b" data-wz="' + x.act + '">' + esc(WZ_ACT[x.act]) + '</button>' : '') + '</div>').join('') + '</div>';
+  if (live) ledgerStatus();   // v4: keep the box's ledger status fresh on the live legs (throttled inside)
 }
 function wizardAct(a){
   if (a === 'login'){ const b = $('btnZLogin'); if (b) b.click(); }
@@ -449,6 +460,8 @@ function wizardAct(a){
   else if (a === 'load' || a === 'loadall'){ const b = $('btnLoadAll'); if (b) b.click(); }
   else if (a === 'live' || a === 'reb'){ if ((a === 'live') !== (PICKMODE === 'live')) $('spMode').click(); }
   else if (a === 'sellside' || a === 'buyside'){ if ((a === 'sellside') !== (SIDE === 'sell')) $('spSide').click(); }
+  else if (a === 'capture'){ ledgerCapture(); }
+  else if (a === 'reconcile'){ ledgerOpen(); }
   else if (a === 'lev'){ if (SIDE !== 'buy') $('spSide').click(); setTimeout(() => { const g = $('levGo'); if (g) g.click(); else ktoast('Load the picks first \u2014 the leverage check needs the entrants'); }, 300); }
 }
 function renderCards(){
@@ -592,6 +605,7 @@ const FILL_TERM = new Set(['COMPLETE', 'CANCELLED', 'REJECTED']);
 const FILLS_OB = { at: 0, rows: null, busy: false };
 function tagLabel(tag){
   if (/^ss/.test(tag)){ const it = strategies().find(x => sellTag(x.id) === tag); return it ? (((typeof strategyEnglish === 'function' && strategyEnglish(it.cfg)) || it.name || it.id) + ' \u00b7 exits') : tag; }
+  if (/^sb/.test(tag)){ const it = strategies().find(x => buyTag(x.id) === tag); return it ? (((typeof strategyEnglish === 'function' && strategyEnglish(it.cfg)) || it.name || it.id) + ' \u00b7 entries') : tag; }
   return { swbasket: 'Buy baskets (in-tab)', swresid: 'Buy remaining', swexitall: 'Exit all', swreenter: 'Re-enter', swcloud: 'Cloud basket', swtest: 'Rehearsal' }[tag] || tag;
 }
 async function fillsFromOrderBook(){
@@ -901,7 +915,7 @@ function ensureZbDlg(){
 }
 function zbOrders(){
   const type = ($('zbType') && $('zbType').value) || 'MARKET';
-  return ZB.rows.filter(r => r.on && r.qty > 0).map(r => Object.assign({ variety:'regular', validity:'DAY', tag:'swbasket',
+  return ZB.rows.filter(r => r.on && r.qty > 0).map(r => Object.assign({ variety:'regular', validity:'DAY', tag: (ZB.id && !/^__/.test(String(ZB.id))) ? buyTag(ZB.id) : 'swbasket',
     tradingsymbol: r.sym, exchange:'NSE', transaction_type:'BUY', order_type: type,
     quantity: r.qty, product: $('zbProd').value }, type === 'LIMIT' ? { price: (r.limit > 0 ? r.limit : r.px) } : {}));
 }
@@ -1139,6 +1153,7 @@ async function feedPull(force){
       const b = String(h.sym || '').replace(/\.(NS|BO)$/, ''); tot[b] = (tot[b] || 0) + Math.floor(+h.qty || 0); });
     FEED.symTot = tot;
     FEED.ts = Date.now(); FEED.byKey = map;
+    cloudTags();
     if (SIDE === 'sell') renderCards();
   } catch (e){}
   return FEED.byKey;
@@ -1181,19 +1196,32 @@ function heldBorder(it, p, h, stays, fv){
 /* Per-strategy order tag (Kite: alphanumeric, ≤20 chars) so the day's SELL fills can be attributed back
    to the strategy that sold them — the actual proceeds then fund that strategy's T+1 buys (Option A). */
 function sellTag(id){ return ('ss' + String(id).replace(/[^a-zA-Z0-9]/g, '')).slice(0, 20); }
+function buyTag(id){ return ('sb' + String(id).replace(/[^a-zA-Z0-9]/g, '')).slice(0, 20); }   // per-strategy BUY tag (ledger in the cloud, 2026-09-24): the box attributes each fill to its strategy exactly
 function proceedsOf(id){ try { const P = zbaDoc().proceeds; return (P && P.k === zbRebKey() && P.by && P.by[id]) ? P.by[id] : null; } catch(e){ return null; } }
 async function captureProceeds(id, quiet){
-  if (!Z.connected) return;
-  const tag = sellTag(id), ob = await zFetch('/orders');
-  if (ob.st !== 200 || !ob.j || !ob.j.data) return;
-  let amt = 0, n = 0; const filled = {}, val = {};
-  ob.j.data.forEach(o => { if (o.transaction_type !== 'SELL' || o.tag !== tag) return; const fq = +o.filled_quantity || 0; if (fq <= 0) return;
-    const v = fq * (+o.average_price || 0); amt += v; n++; filled[o.tradingsymbol] = (filled[o.tradingsymbol] || 0) + fq; val[o.tradingsymbol] = (val[o.tradingsymbol] || 0) + v; });
+  if (!Z.connected && !cloudOn()) return;
+  const tag = sellTag(id); let amt = 0, n = 0, src = 'order book'; const filled = {}, val = {};
+  if (Z.connected){ const ob = await zFetch('/orders');
+    if (ob.st === 200 && ob.j && ob.j.data) ob.j.data.forEach(o => { if (o.transaction_type !== 'SELL' || o.tag !== tag) return; const fq = +o.filled_quantity || 0; if (fq <= 0) return;
+      const v = fq * (+o.average_price || 0); amt += v; n++; filled[o.tradingsymbol] = (filled[o.tradingsymbol] || 0) + fq; val[o.tradingsymbol] = (val[o.tradingsymbol] || 0) + v; }); }
+  if (!n){ const c = await proceedsFromCloud(id);   // v4: yesterday's cloud basket still knows its fills (Kite's order book is today-only)
+    if (!c){ if (!quiet) ktoast('No SELL fills found for this strategy yet \u2014 nothing captured', 5000); return; }
+    amt = c.amt; n = c.n; Object.assign(filled, c.filled); Object.assign(val, c.val); src = 'cloud basket fills'; }
   try { const d = zbaDoc(); const P = (d.proceeds && d.proceeds.k === zbRebKey()) ? d.proceeds : { k: zbRebKey(), by: {} };
     P.by[id] = { amt: Math.round(amt), n: n, filled: filled, val: val, at: Date.now() }; d.proceeds = P; d.ts = Date.now();
     localStorage.setItem(ZBA_LS, JSON.stringify(d)); clearTimeout(zbaSet._t); zbaSet._t = setTimeout(zbaPush, 1200); } catch(e){}
-  if (!quiet) ktoast('Captured ' + zinr(amt) + ' of actual sell proceeds (' + n + ' fill' + (n === 1 ? '' : 's') + ') \u2014 this funds the strategy\u2019s ' + rebalWindow().t1lab + ' buys', 6500);
+  if (!quiet) ktoast('Captured ' + zinr(amt) + ' of actual sell proceeds (' + n + ' fill' + (n === 1 ? '' : 's') + ', ' + src + ') \u2014 this funds the strategy\u2019s ' + rebalWindow().t1lab + ' buys', 6500);
   renderCards();
+}
+/* the strategy's finished SELL cloud jobs of this rebalance (from the session before T on) -> per-order fills */
+async function proceedsFromCloud(id){
+  const t0 = Date.parse(zbRebKey() + 'T00:00:00+05:30') - 4 * 86400e3;
+  const jobs = (CLOUD.jobs || []).filter(j => jobSid(j.id) === id && j.side === 'SELL' && j.status !== 'running' && j.fill && j.fill.filledQty > 0 && (j.created || 0) >= t0);
+  if (!jobs.length) return null;
+  let amt = 0, n = 0; const filled = {}, val = {};
+  for (const j of jobs){ const r = await zFetch('/jobs/' + encodeURIComponent(j.id)); const sent = (r.j && r.j.job && r.j.job.sent) || [];
+    sent.forEach(o => { const fq = +o.filled || 0; if (fq <= 0) return; const v = fq * (+o.avg || 0); amt += v; n++; filled[o.sym] = (filled[o.sym] || 0) + fq; val[o.sym] = (val[o.sym] || 0) + v; }); }
+  return n ? { amt: amt, n: n, filled: filled, val: val } : null;
 }
 function sellRuntime(exitRows){
   let mx = 0, tot = 0;
@@ -1444,7 +1472,7 @@ async function cloudProbe(force){
   if (!force && CLOUD.at && Date.now() - CLOUD.at < 600000) return CLOUD.ok;
   const r = await zFetch('/jobs');
   CLOUD.ok = !!(r.st === 200 && r.j && r.j.ok && r.j.v >= 2); CLOUD.at = Date.now();
-  if (CLOUD.ok) cloudApply(r.j.jobs || []);
+  if (CLOUD.ok){ cloudApply(r.j.jobs || []); cloudTags(); ledgerStatus(); }
   cloudChip(); return CLOUD.ok;
 }
 const jobSlug = s => String(s).replace(/[^\w.:-]/g, '-').slice(0, 60);
@@ -1457,6 +1485,7 @@ async function cloudSubmit(id){
   const label = it ? ((typeof strategyEnglish === 'function' && strategyEnglish(it.cfg)) || it.name || id) : ({ __exitall__: 'Exit all', __reenter__: 'Re-enter', __residual__: 'Buy remaining', __all__: 'Buy all' }[id] || id);
   const jobId = jobSlug(id) + '~' + Date.now().toString(36);
   const body = { id: jobId, label: String(label).slice(0, 80), device: ((navigator.platform || '') + ' ' + new Date().toTimeString().slice(0, 5)).slice(0, 40),
+    pfId: ((typeof heldFor === 'function' && it && heldFor(it.cfg)) || {}).pfId || '', sid: String(id),   // v4: the box books this basket's fills to that portfolio
     gapS: sliceGap(), rngPct: sliceRng(), peg: 'touch', partPct: partPct(),
     slices: B.slices.map(s => ({ tradingsymbol: s.tradingsymbol, transaction_type: s.transaction_type, quantity: s.quantity, product: s.product,
       tag: s.tag, px: +s._px || 0, tick: TICKMEM[s.tradingsymbol] || 0.05, round: s._round })) };
@@ -1511,6 +1540,96 @@ function cloudChip(){ const b = $('spCloud'); if (!b) return;
   b.title = CLOUD.ok === false ? 'Cloud slicer not reachable (worker / Oracle box not upgraded?) — baskets slice in this tab'
           : cloudWanted() ? 'Baskets run on the Oracle box and keep going if this tab closes — tap to switch to in-tab slicing'
           : 'In-tab slicing — tap to run baskets on the Oracle box'; }
+/* ================= LEDGER IN THE CLOUD (user "go" 2026-09-24, world-class #6) =================
+   The strategy books' master copy is the cloud holdings row; the Oracle box (kite-relay.js v4 +
+   ledger_core.js) reconciles it from the fills after each rebalance. This tab: (1) tells the box which
+   order tag belongs to which ledger portfolio, (2) shows the box's fills-capture status in the wizard,
+   (3) opens the reconcile PLAN from the box and applies it only on a second tap. The Mac pulls the result
+   at its next Publish; nothing here writes holdings.json. */
+function cloudTags(){
+  if (!cloudOn() || !FEED.byKey || Date.now() - (CLOUD.tagsAt || 0) < 6 * 3600e3) return;
+  const tags = {};
+  uniqStrategies().forEach(it => { const h = heldFor(it.cfg); if (h && h.pfId){ tags[sellTag(it.id)] = h.pfId; tags[buyTag(it.id)] = h.pfId; } });
+  if (!Object.keys(tags).length) return;
+  CLOUD.tagsAt = Date.now();
+  zFetch('/ledger/tags', { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ tags: tags }) }).catch(() => {});
+}
+async function ledgerStatus(force){
+  if (!cloudWanted() || !zWorker() || !zToken()) return;
+  if (!force && (LST.busy || Date.now() - LST.at < 300000)) return;
+  LST.busy = true;
+  try { const r = await zFetch('/ledger/status'); if (r.st === 200 && r.j && r.j.ok){ LST.j = r.j; LST.at = Date.now(); renderWizard(); } }
+  catch(e){} finally { LST.busy = false; }
+}
+async function ledgerCapture(){
+  const r = await zFetch('/ledger/capture', { method: 'POST' });
+  if (r.st === 200 && r.j && r.j.ok){ ktoast('\u2713 Order book captured on the box: ' + r.j.orders + ' fill' + (r.j.orders === 1 ? '' : 's') + ' for ' + r.j.date, 6000); LST.at = 0; ledgerStatus(true); }
+  else ktoast('Capture failed: ' + ledgerErr(r), 7000);
+}
+function ledgerErr(r){
+  const c = r && r.j && r.j.code, m = (r && r.j && (r.j.error || r.j.message)) || ('HTTP ' + (r && r.st));
+  if (c === 'NO_PF') return 'the box has not seen the portfolio token yet \u2014 it arrives with every call; try again in a moment';
+  if (c === 'NO_LEG' || c === 'NO_MODEL') return m + ' (the official screen lands with the nightly model at 22:30 IST \u2014 reconcile after that)';
+  if (c === 'CAP') return m;
+  if (r && r.st === 404) return 'the worker or the box is not upgraded for the ledger (404) \u2014 deploy kite-worker.js and kite-relay.js v4';
+  return m;
+}
+function pfName(pf){ try { const k = Object.keys(FEED.byKey || {}).find(x => FEED.byKey[x].pfId === pf); const it = k && uniqStrategies().find(x => identityKey(x.cfg) === k);
+  return it ? ((typeof strategyEnglish === 'function' && strategyEnglish(it.cfg)) || it.name || pf) : pf; } catch(e){ return pf; } }
+const LD = { reb: '', plan: null, t: 0 };
+function ensureLdDlg(){
+  if ($('ldWrap')) return;
+  const w = document.createElement('div'); w.id = 'ldWrap';
+  w.innerHTML = '<div class="card" id="ldDlg"><h3 id="ldTitle"></h3><div class="sub" id="ldSub"></div><div id="ldBody"></div>' +
+    '<div class="krow" style="justify-content:flex-end"><button class="btn" id="ldCancel">Close</button><button class="btn on" id="ldGo" style="display:none">Apply to the books</button></div></div>';
+  document.body.appendChild(w);
+  w.addEventListener('click', e => { if (e.target === w) w.classList.remove('open'); });
+  $('ldCancel').onclick = () => $('ldWrap').classList.remove('open');
+  $('ldGo').onclick = ledgerApply;
+}
+const bsym = v => String(v || '').replace(/\.(NS|BO)$/, '');
+function ledgerPlanHTML(P){
+  const RW = rebalWindow(), n = v => (+v).toLocaleString('en-IN');
+  let h = '<div class="sub">' + esc(P.src) + ' \u00b7 fills ' + esc(P.window[0]) + ' \u2192 ' + esc(P.window[1]) + ': <b>' + P.fills.orders + '</b> filled order' + (P.fills.orders === 1 ? '' : 's') +
+    ' (' + P.fills.tagged + ' tagged to a strategy' + (P.fills.fromJobs ? ', ' + P.fills.fromJobs + ' from cloud baskets' : '') + ')' +
+    (P.snapshots.length ? ' \u00b7 order-book snapshots: ' + esc(P.snapshots.join(', ')) : ' \u00b7 <b class="warn">no order-book snapshot in the window yet</b>') +
+    (P.applied ? ' \u00b7 applied before: ' + P.applied.runs + ' run' + (P.applied.runs === 1 ? '' : 's') + ', last ' + esc(P.applied.at || '') : '') + '</div>';
+  if (P.consistent) h += '<p style="margin:10px 0 4px"><b>\u2713 The books already match the official ' + esc(RW.tlab) + ' screen.</b> Nothing to write.</p>';
+  if (P.trades.length) h += '<h4>Trades to book (' + P.trades.length + ')</h4><div class="twrap"><table><thead><tr><th>Strategy</th><th>Stock</th><th>Qty</th><th>Bought \u2192 sold</th><th>P&amp;L</th></tr></thead><tbody>' +
+    P.trades.map(t => '<tr><td>' + esc(pfName(t.pf)) + '</td><td>' + esc(t.invSym) + '</td><td>' + n(t.qty) + '</td><td>' + (+t.openPx).toFixed(2) + ' \u2192 ' + (+t.closePx).toFixed(2) + '</td><td class="' + (t.pnl >= 0 ? 'up' : 'down') + '">' + (t.pnl >= 0 ? '+' : '\u2212') + zinr(Math.abs(t.pnl)) + ' (' + (t.gainPct >= 0 ? '+' : '') + (+t.gainPct).toFixed(1) + '%)</td></tr>').join('') + '</tbody></table></div>';
+  if (P.opened.length) h += '<h4>Rows to open (' + P.opened.length + ')</h4><div class="twrap"><table><thead><tr><th>Strategy</th><th>Stock</th><th>Qty</th><th>Avg \u20b9</th><th>Date</th></tr></thead><tbody>' +
+    P.opened.map(r => '<tr><td>' + esc(pfName(r.pf)) + '</td><td>' + esc(bsym(r.sym)) + '</td><td>' + n(r.qty) + '</td><td>' + (+r.avg).toFixed(2) + '</td><td>' + esc(r.date) + '</td></tr>').join('') + '</tbody></table></div>';
+  if (P.changed.length) h += '<h4>Rows changed</h4><div class="sub">' + P.changed.map(c => esc(pfName(c.pf)) + ' ' + esc(bsym(c.sym)) + ' \u2192 ' + n(c.qty) + ' @ ' + (+c.avg).toFixed(2)).join(' \u00b7 ') + '</div>';
+  if (P.removed.length) h += '<h4>Rows closed</h4><div class="sub">' + P.removed.map(c => esc(pfName(c.pf)) + ' ' + esc(bsym(c.sym)) + ' \u00d7 ' + n(c.qty)).join(' \u00b7 ') + '</div>';
+  if (Object.keys(P.proceeds || {}).length) h += '<div class="sub" style="margin-top:8px">Attributed sell proceeds: ' + Object.keys(P.proceeds).map(k => esc(pfName(k)) + ' ' + zinr(P.proceeds[k])).join(' \u00b7 ') + '</div>';
+  if (P.topups.length) h += '<div class="sub">Tagged top-ups: ' + esc(P.topups.join(', ')) + '</div>';
+  if (P.ignored.length) h += '<div class="sub">Ignored (not a strategy exit or entry): ' + esc(P.ignored.join(', ')) + '</div>';
+  if (P.warnings.length) h += '<h4 class="warn">Warnings (' + P.warnings.length + ')</h4>' + P.warnings.map(w => '<div class="sub warn">\u26a0 ' + esc(w) + '</div>').join('');
+  h += '<div class="khelp">Computed on the box from the cloud holdings row, the official ' + esc(RW.tlab) + ' screen and every fill it captured. Applying writes the new books to the cloud row and this rebalance\u2019s closed trades to its trade log; the Mac pulls both at its next Publish. Re-applying later books only what is new (stragglers, repairs).</div>';
+  return h;
+}
+async function ledgerOpen(){
+  ensureLdDlg(); const RW = rebalWindow(); LD.reb = RW.tIso; LD.plan = null;
+  $('ldTitle').textContent = 'Reconcile the strategy books \u2014 ' + RW.tlab; $('ldSub').textContent = 'Reading the fills and the official screen from the box\u2026';
+  $('ldBody').innerHTML = ''; const g = $('ldGo'); g.style.display = 'none'; g.dataset.arm = ''; g.disabled = false; g.textContent = 'Apply to the books';
+  $('ldWrap').classList.add('open');
+  const r = await zFetch('/ledger/plan?reb=' + encodeURIComponent(LD.reb));
+  if (r.st !== 200 || !r.j || !r.j.ok){ $('ldSub').textContent = ''; $('ldBody').innerHTML = '<p class="warn">\u26a0 ' + esc(ledgerErr(r)) + '</p>'; return; }
+  LD.plan = r.j; $('ldSub').textContent = r.j.consistent ? '' : 'Nothing is written until you confirm.'; $('ldBody').innerHTML = ledgerPlanHTML(r.j);
+  if (!r.j.consistent) g.style.display = '';
+}
+async function ledgerApply(){
+  const g = $('ldGo'), P = LD.plan; if (!P || g.disabled) return;
+  if (!g.dataset.arm){ g.dataset.arm = '1'; g.textContent = 'Tap again to write ' + P.trades.length + ' trade' + (P.trades.length === 1 ? '' : 's') + ' + ' + P.opened.length + ' row' + (P.opened.length === 1 ? '' : 's');
+    clearTimeout(LD.t); LD.t = setTimeout(() => { g.dataset.arm = ''; g.textContent = 'Apply to the books'; }, 8000); return; }
+  clearTimeout(LD.t); g.disabled = true; g.textContent = 'Writing\u2026';
+  const r = await zFetch('/ledger/apply?reb=' + encodeURIComponent(LD.reb), { method: 'POST' });
+  g.disabled = false; g.dataset.arm = ''; g.textContent = 'Apply to the books';
+  if (r.st !== 200 || !r.j || !r.j.ok){ ktoast('Not written: ' + ledgerErr(r), 9000); return; }
+  $('ldWrap').classList.remove('open');
+  ktoast(r.j.written ? '\u2713 Books written on the box \u2014 ' + r.j.trades.length + ' trade' + (r.j.trades.length === 1 ? '' : 's') + ' booked, ' + r.j.opened.length + ' row' + (r.j.opened.length === 1 ? '' : 's') + ' opened' + (r.j.error ? ' \u00b7 ' + r.j.error : '') : '\u2713 Books already matched \u2014 nothing written', 9000);
+  LST.at = 0; ledgerStatus(true); FEED.ts = 0; await feedPull(true); renderCards();
+}
 function buyStop(id, msg){ const B = BUYSLICER[id]; if (!B) return; clearTimeout(B.t);
   if (B.remote && B.jobId){ zFetch('/jobs/' + encodeURIComponent(B.jobId) + '/stop', { method: 'POST' }); CLOUD.seen[B.jobId] = 'stopped'; }   // stops it on the VM, from any device
   delete BUYSLICER[id];
