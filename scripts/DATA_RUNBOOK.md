@@ -19400,3 +19400,6 @@ symbols smoother; Natco's and OFSS's 2015 dips and Indus Towers' Jun-15 spike ar
 2013-06 (~0.6 pp, never labelled; it sits BESIDE the "Foreign Bank" row in 2013 and vanishes in Sep-2013) and INDUSTOWER's single 0.76 holder
 2012-12..2013-12 ("Any Other" → "Investment Fund", never labelled further). The only route left for those is the companies' annual reports
 (category-wise shareholding schedules), not read here.
+**Live (2026-09-25 00:41 IST).** Store commit be98119bf (refresh-shareholding run 36046097422, guards green; Pages deployed); live
+`shp_engine.json` serves 11/11 §160d cells (NATCOPHARM Sep-2015 20.65, OFSS Jun-2015 13.73, INDUSTOWER Jun-2015 24.30) and still the
+§160c spot values (ITC Jun-2015 50.77, APOLLOHOSP Jun-2015 43.79). `refresh-stock-fin.yml` dispatched (run 36046468953).
