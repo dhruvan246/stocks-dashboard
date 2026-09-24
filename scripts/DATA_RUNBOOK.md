@@ -19270,3 +19270,7 @@ filer's own document surfaces.
 **Live (2026-09-24 23:34 IST).** Store commit 3fe1e8cc6 (refresh-shareholding run 36038086883, guards green; Pages deployed); live
 `shp_engine.json` serves all 20 §160b cells (REDINGTON Jun-2015 39.11, APOLLOHOSP Jun-2015 55.57, ADANIPOWER Sep-2015 29.60, JSL
 Jun-2015 18.13, TATASTEEL Jun-2015 dii 28.58). `refresh-stock-fin.yml` dispatched by hand for the per-stock slices.
+**Final state 2026-09-24 23:40 IST.** §160b (DII session, 20 generic-row page-era cells, store 3fe1e8cc6) is live and verified
+from this side (REDINGTON Jun-15 39.11, APOLLOHOSP Jun-15 55.57, ADANIPOWER Sep-15 29.60, M&M Jun-15 37.34; §159 247/247 and
+§160a 5/5 intact). Reply workbook rebuilt from that feed (`shp_engine_live_final4.json`) — the copy in ~/Downloads is the one
+to send. Nothing held on either side; the 217-row generic-label residue is documented in §160b with per-row reasons.
