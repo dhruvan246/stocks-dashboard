@@ -18836,3 +18836,35 @@ dated by NSE's submission day with the re-filing's values (§142j rule) where NS
 Verified on a local `--feed-only` build: 575/575 on time, 571 quarters moved earlier, 0 later; ~24 N500 month-end cells
 change. Not covered: 502 quarters served 1-2 days EARLIER than BSE's time (2019-21, no NSE date cached — unadjudicated),
 2,611 quarters with no exchange timestamp cached, and the 8 pre-2016 convention-dated cells whose only BSE row is a revision.
+
+## §154 — SHAREHOLDING STALENESS CAP IN THE ENGINE (2026-09-24, engine e19, "fix rest of quantmac findings")
+
+**Defect.** `shpAt()` served the latest row public by the screen date with no limit on its age: OSWALGREEN's Dec-2003 row
+was served for 79 N500 month-ends 2009-15 (the company's BSE pages stop in 2005 and restart in Jun-2015 — Quantmac
+correctly holds no value), CONSOFINVT's Mar-2008 row for 11 month-ends 2009-10, and 28 more cells sat 400-800 days stale
+(BBOX, ZANDUREALT, HMT, GVT&D, KOUTONS, PURVA, SCHNEIDER, BBTC, MAHINDUGIN, SPLPETRO). A ten-year-old pattern is not knowledge
+of that day; serving it as current holding is a fabricated value.
+**Rule.** `SHP_MAX_AGE_DAYS = 400` in both engine twins (backtest-engine.js + stock-backtest.html, `daysBetweenInt`):
+`shpAt` returns null when the served row's quarter-end is more than 400 days before the screen date (four quarters + a
+late-filing allowance; SEBI requires a pattern within 21 days of every quarter-end). A null factor drops the stock from
+any screen that reads a shareholding field — the engine's documented behaviour for missing data. ENGINE_VER e18 → e19
+(snapshots re-keyed), sw v180. Node harness on the engine source: 2004-04-30 served, 2005-06-30 / 2009-01-30 null,
+boundary 400 d served / 401 d null.
+
+## §155 — SEAM QUARTERS FILLED FROM TRENDLYNE (2026-09-24) + WHAT STAYS BLOCKED
+
+Quantmac's "stale" and "blank" sheets named 14 Dec-2015 / Mar-2016 quarters we lacked (old-format BSE pages, unreadable
+since the api.bseindia.com 403 of 23-Sep, runbook §150) and 58 start-of-history cells. `fetch_shp_seam_trendlyne.py` needs
+`scripts/_shp_tl_cache/tl_ids.json` (local, gitignored) — rebuilt for 19 names from Trendlyne's autocomplete route
+`member/api/ac_snames/all/?all-results=true&term=<name>` (field `k` = the numeric id the share-holding URL takes). Run:
+10 gaps tried, **8 cells written** to `shp_fill_thirdparty.json.gz` (RELIANCE, BRITANNIA, EXIDEIND, VRLLOG, SINTEX,
+NATCOPHARM Mar-2016; ARVIND Dec-2015 + Mar-2016; overlap vs the Wayback-derived ledger n=2 median |fii diff| 0.00 pp), 3 held
+(fii row absent / no rows, never fii=0). Provenance is an aggregator read (Trendlyne rows + our old-format formula,
+sub = QE+21d convention) — not an exchange document.
+**Blocked, with the route census:** 39 NSE-only event filings (POWERGRID 2021-08-03, LICHSGFIN 2021-09-08, PNB/UNIONBANK/
+INDIANB 2020-04-01 amalgamations, SHREECEM 2019-11-23 …) — not in BSE's lists; NSE's master API returns only re-published
+records for windows before mid-2021 and the symbol-scoped call returns the last 20 quarterlies only; 2009-2011 blanks
+(BINANICEM, GAMMNINFRA→AJRINFRA, DBREALTY, KOUTONS, PIPAVAVYD→SWANDEF, FCONSUMER, JYOTHYLAB, ORISSAMINE) — BSE Clause-35
+pages 403/JS-shell, Wayback-MC already harvested (residual = captures that do not exist), Trendlyne floor Dec-2015; CDSL
+Mar-2018 (NSE-only listing, beyond the symbol call's 20-quarter window; Trendlyne page exists — not a seam quarter for the
+seam script). Quantmac holds values for these; ask them for the documents.

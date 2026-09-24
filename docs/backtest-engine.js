@@ -823,11 +823,23 @@ function isQuarterEnd(d) { return ({ 3: 31, 6: 30, 9: 30, 12: 31 }[Math.floor(d 
 // (essentially pre-2014) get the measured-conservative qe+28d visibility stamped at load
 // (§120, see loadShp) — so early-era DII/FII screens invest on a disclosed, late-biased
 // approximation instead of holding nothing; recovered real dates always take precedence.
+// §154 (2026-09-24): a shareholding row is served only while it is CURRENT. SEBI requires a pattern within
+// 21 days of every quarter-end, so a row whose quarter-end is more than SHP_MAX_AGE_DAYS before the screen
+// date means the company stopped filing (delisted / suspended) or the store has a hole — either way the
+// value is not knowledge of that day. Without this cap OSWALGREEN's Dec-2003 row was served for 79 month-ends
+// 2009-15 and CONSOFINVT's Mar-2008 row for 11 (Quantmac reconciliation, runbook §154). 400 d = four
+// quarters + a late-filing allowance; a null factor drops the stock from the screen (documented behaviour).
+const SHP_MAX_AGE_DAYS = 400;
+function daysBetweenInt(a, b) {   // a, b as YYYYMMDD ints -> a minus b in days
+  const d = x => Date.UTC(Math.floor(x / 10000), Math.floor(x / 100) % 100 - 1, x % 100);
+  return Math.round((d(a) - d(b)) / 86400000);
+}
 function shpAt(sym, dateInt) {
   const arr = SHPD[sym] || (FUND_ALIAS[sym] ? SHPD[FUND_ALIAS[sym]] : null); if (!arr || !arr.length) return null;
   let ci = -1; for (let i = arr.length - 1; i >= 0; i--) { if (arr[i][3] <= dateInt) { ci = i; break; } }
   if (ci < 0) return null;
   const cur = arr[ci];
+  if (daysBetweenInt(dateInt, cur[0]) > SHP_MAX_AGE_DAYS) return null;   // §154 staleness cap
   // QoQ change vs the CALENDAR-previous quarter only (gaps break it), and NEVER across the
   // Sep-2022 SEBI format change (DR blocks were reclassified into FII/DII — not a stake change).
   // rows are [qe, fii, dii, sub, prom, mf] (prom/mf added 2026-09-06); prom/mf may be null (mf None
