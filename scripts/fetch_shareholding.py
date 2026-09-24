@@ -1193,7 +1193,7 @@ def save_revs(r):
 # there the re-filing's own numbers are the truth.
 VALUE_HEAL_MARK = re.compile(r"SW-2 other-institutions|SW-2 phase-2|foreign block swallowed|locked [\d.]+-[\d.]+ block|"
                              r"FILER MISCLASSIFICATION|FALSE ZERO|NSE served ONE filing|\u00a7142e|item 4 \u2014|\u00a7151|"
-                             r"other-institutions sweep|quantmac FII reconciliation")
+                             r"other-institutions sweep|quantmac FII reconciliation|§158 row-level DII heal")
 AUDIT_JSON = os.path.join(HERE, "_shp_other_inst_audit.json")
 _AUDIT_CELLS = None
 def audited_block(sym, key):
@@ -1219,8 +1219,14 @@ def heal_refiling(sym, key, rc, cellfix):
         used: their `was` is a wrong date or a revision's values, not an adjudicated reading."""
     ent = ((cellfix or {}).get("fix") or {}).get(sym, {}).get(key)
     if ent and VALUE_HEAL_MARK.search(str(ent.get("why", ""))) and ent.get("was") and ent.get("cell"):
-        if _same_cell(rc, ent["was"]) and not _same_cell(ent["was"], ent["cell"]):
-            return [ent["cell"][0], ent["cell"][1], ent["cell"][2], ent["cell"][3], ent["cell"][4]] + list(rc[5:]), "adjudicated"
+        # §156: an entry that supersedes an earlier value heal keeps that heal under `superseded`; the raw
+        # document numbers a re-filing repeats are the OLDEST `was` in that chain, the reading to serve is
+        # the TOP `cell`. Walk the chain so a superseding entry never re-exposes the raw numbers.
+        top = ent["cell"]; link = ent; depth = 0
+        while link and depth < 8:
+            if link.get("was") and _same_cell(rc, link["was"]) and not _same_cell(link["was"], top):
+                return [top[0], top[1], top[2], top[3], top[4]] + list(rc[5:]), "adjudicated"
+            link = link.get("superseded") if isinstance(link.get("superseded"), dict) else None; depth += 1
     blk = audited_block(sym, key)
     if blk >= 0.25 and rc[2] is not None and float(rc[2]) + 0.02 >= blk:
         out = list(rc); out[1] = round(float(rc[1]) + blk, 4); out[2] = round(float(rc[2]) - blk, 4)
