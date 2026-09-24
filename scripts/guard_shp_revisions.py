@@ -32,8 +32,15 @@ for key, v in audit.items():
     sym, q = key.split("|"); cur = (hist.get(sym) or {}).get(q)
     if not cur: continue
     ent = fix.get(sym, {}).get(q)
-    if ent and "\u00a7158 row-level DII heal" in str(ent.get("why", "")):
-        n_ok += 1; continue      # §156 re-adjudicated the block's destination from the filer's own new-format placement (fii OR public)
+    # §158 / §159 re-adjudicated the block's destination from the filer's own 2022-form placement (fii OR public);
+    # a later entry keeps the earlier one under `superseded`, so the whole chain is checked
+    link, rowfixed, depth = ent, False, 0
+    while isinstance(link, dict) and depth < 8:
+        w = str(link.get("why", ""))
+        if "\u00a7158 row-level DII heal" in w or "\u00a7159 row-level FII heal" in w: rowfixed = True; break
+        link = link.get("superseded"); depth += 1
+    if rowfixed:
+        n_ok += 1; continue
     want = (v.get("stored_fii") or 0.0) + (v.get("oth") or 0.0)
     if cur[1] + 0.03 < want:
         bad.append("store %s %s lost its foreign Any-Other block: fii %s, adjudicated %.4f" % (sym, q, cur[1], want))

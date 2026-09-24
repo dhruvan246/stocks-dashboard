@@ -18967,3 +18967,55 @@ seam remains: Mar→Jun-2016 ≥ 3 pp movers 20 → 28, because Jun-2016 XBRL ro
 for INFY/WIPRO/HINDALCO/HDFCBANK (§151: as filed); PSU-bank holdings that the 2022 form moved from Banks into B3 (IFCI).
 Screener will differ from us on the old-format cells where its label rule books an OCB block as FII (UTIAMC Mar-2021) — we
 follow the filer's new-format placement instead.
+
+## §159 — FII = INSTITUTIONS (FOREIGN) IN EVERY FORMAT: ROW-LEVEL HEAL OF THE 2015-2022 NON-INSTITUTIONS "ANY OTHER" ROWS (2026-09-24, FII twin of §158)
+
+**Why.** After §158 the Sep-2022 seam still had FII-side artefacts that no DII rule touches: PAYTM 5.45 → 77.26, ETERNAL 9.98 →
+57.87, ITC 12.68 → 42.69, IDFCFIRSTB 10.99 → 19.28. Cause (measured on the filers' own XBRLs): the old form kept strategic / PE
+foreign holders under Non-institutions → "Any Other" rows — "Foreign Companies" (Antfin, SVF, Alibaba, Uber, Alipay), "Bodies
+Corporate" (Tobacco Manufacturers (India) 24.2 in ITC), "Overseas Corporate Bodies" (Cloverdell in IDFCFIRSTB) — and the SAME
+filers list those holders under Institutions (Foreign) B2 (Foreign Direct Investment / FPI / FVCI / other foreign institution)
+from their first 2022-form filing. Quantmac and Screener read bucket totals on both sides of the seam, so they carry the same
+jump (Quantmac ITC Jul-2017 20.03 = the FPI row; Oct-2022 42.69 = B2). Every one of the 247 cells below agrees with Quantmac's
+RAW reading and none with the healed one — the heal is a definition choice (continuity of "Institutions (Foreign)" across the
+form change, the filer's own placement deciding), not a data correction, and it is what §158 already does on the DII side.
+
+**Rule R2-FII (`scripts/_shp_fii_rowfix.py` classify / one / verify / revfix / write; reuses `_shp_dii_rowfix` row parsing,
+holder attachment and the same DII_ROWFIX_* inputs; evidence per cell in `scripts/_shp_fii_rowfix_audit.json`).** Old-format
+BSE XBRLs Jun-2015..Jun-2022, Non-institutions → Any Other rows ONLY (Institutions rows were adjudicated by §158 R1):
+- a ≥1% holder the filer's FIRST 2022-form filing places under Institutions (Foreign) → fii; one it places under Foreign
+  Companies / Bodies Corporate / NRI / other non-institutions → stays public. Size-aware: when the 2022 form lists the holder on
+  several rows (ASTERDM: Olympus Capital 20.36 under Foreign Companies AND 2.60 under FVCI) the row whose size is closest to the
+  old-form holding decides — the DII module's name → one-axis map kept the LAST row and would have sent 20.36 to fii.
+- a holder absent from that filing joins fii only on an institution tag in its own name ((FPI)/(FII)/foreign portfolio/foreign
+  institutional/FVCI/foreign venture/foreign bank/sovereign — Marina Holdco (FPI) Ltd, Emblem FII) or a SW-2 curated foreign
+  verdict (IFC, CDC Group, Amansa, Government of Singapore); every other name is decided by its row label, and every
+  non-institution label is public (Uber B.V. in ETERNAL, Caladium in IDFCFIRSTB, the unnamed rest of PAYTM's Foreign Companies).
+- a row whose LABEL is FII-type ("Other FII", "Other FOREIGN INSTITUTIONAL INVESTOR", "Foreign Portfolio Investors (Category
+  III)" — SEBI's 2015 form put Category-III FPIs under non-institutions; the 2022 form has no such bucket) is fii in full, less
+  holders classified domestic and less holders the filer's own 2022 form places outside B2 (KIMS: General Atlantic 17.24 sat in
+  a row labelled "Foreign Portfolio Investor (Category - III)" but is a Foreign Company in the 2022 form → stays public).
+- Pure public → fii move: dii, mf, ins untouched; the take is capped at the filing's OtherNonInstitutionsMember block (0 cells
+  overflowed). Materiality 0.05 pp. The filing behind a stored row is (a) the file §158 recorded for the cell, (b) the parse
+  matching the stored row, (c) the parse matching an earlier `was` in the cell's ledger chain (§158 changed fii+dii sums).
+
+**Result (store e885df290 → this commit).** 9,281 N500 rows in the era, 8,751 matched (470 no store row, 32 not cached, 28 no
+matching parse); 247 cells / 26 symbols moved: PAYTM ×3 (+66.1), ETERNAL ×4 (+32.4), ITC ×25 (+29.4..30.0), FEDERALBNK ×13 (up
+to +27.4: legacy "Other FII" rows + Amansa/IFC), SHRIRAMFIN ×15 (+25.8: "FOREIGN INSTITUTIONAL INVESTOR" row 13.3 + Cat-III),
+ZENSARTECH ×12 (+23.1 Marina Holdco (FPI)), ASHOKLEY ×20, IIFL ×10 (+15.5 CDC Group), IDFCFIRSTB ×14 (Cloverdell), RBLBANK ×8,
+AUBANK ×20, LICHSGFIN ×9, KOTAKBANK ×25 (SMBC 1.65 "Others Foreign Bank" → OtherInstitutionsForeign), JMFINANCIL ×25 (Vikram
+Pandit under NRI → the filer's FDI row), …; 59 moves ≥ 10 pp, 55 of 3-10, 105 of 1-3, 28 below 1. 91 entries supersede an
+earlier ledger entry (§158/§156/SW-2, kept under `superseded`; `was` = the current stored cell), 156 are new; 0 re-filing rows
+(none of the 247 quarters has a sidecar row). Sep-2022 N500 fii seam ≥3 pp: 25 → 21 (the rest are real: MAXHEALTH's KKR block
+left the promoter group, CHOICEIN/TRITURBINE/HDFCAMC new FPIs; ETERNAL +15.5 and PAYTM +5.7 are the unnamed/absent holders the
+rule leaves public). Control seams unchanged (Jun-2015, Sep-2016, Mar-2022).
+**Left open — hand-off to the §158 session's page-era pass (Jun-2006..Mar-2016, both fii and dii):** the same holders sit in the
+same rows on BSE's Clause-35 pages, so the healed series now jumps where the XBRL era begins: ITC Mar-2016 20.49 → Jun-2016
+50.63, FEDERALBNK 11.70 → 41.48, ZENSARTECH 14.10 → 38.41, APLAPOLLO +3.1; 978 store rows of the 26 symbols precede their first
+healed quarter (127 with a BSE XBRL that did not match; 851 page-era). Holder list per symbol: the session scratchpad's
+`fii_rowfix_handoff.json` (sent to that session). Four within-era jumps are the filers' own rows shrinking (Cat-III FPI rows
+after SEBI abolished the category in 2019: LICHSGFIN Jun-2019 5.95 → Sep-2019 0.31; APOLLOHOSP, FEDERALBNK, JMFINANCIL).
+**Plumbing.** `VALUE_HEAL_MARK` knows "§159 row-level FII heal" (re-filings repeating the raw numbers get the healed cell);
+`guard_shp_revisions.py` check 2 walks the `superseded` chain for a §158/§159 marker (a §159 entry on top of a §158 one no
+longer trips the audited-block check). `shp_refine_4dp` runs after `apply_cell_fix` and re-derives slots within 0.02 pp — every
+§159 move is ≥ 0.05 pp so none is overridden (the §158 session saw 6 of its 0.02-pp moves reverted that way).

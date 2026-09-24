@@ -1,0 +1,3888 @@
+{
+"_doc": [
+"§159 row-level FII heal (2026-09-24), old-format XBRL era Jun-2015..Jun-2022, Nifty 500. FII = Institutions(Foreign) B2 (less depository receipts, §151) in every format.",
+"R2-FII Non-institutions -> Any Other rows: a >=1% holder the filer's FIRST 2022-form filing places under Institutions(Foreign) (FDI/FPI/FVCI/foreign SWF) joins fii; one it places under Foreign Companies / Bodies Corporate / NRI / other non-institutions stays public; a holder absent from that filing joins fii only on an institution tag in its own name or a SW-2 curated foreign verdict, else its row label decides (every non-institution label is public). A row whose LABEL is FII-type (FPI/FII/QFI/foreign institution) is fii in full, less domestic-classified holders.",
+"Pure public -> fii move: dii, mf, ins untouched. Materiality 0.05 pp. Evidence per cell: file, every row hit with label, holders and the tier that decided each."
+],
+"cells": {
+"360ONE|2019-09-30": {
+"file": "542772_7112019103535_SHP.xml",
+"d_fii": 1.26,
+"ev": [
+[
+"R2FII-holders",
+"Others",
+40.88,
+1.26,
+"General Atlantic Singapore Fund Pte. Ltd. 21.44 stay(new-format:ForeignCompanies); Fih Mauritius Investments Ltd 13.92 stay(new-format:ForeignCompanies); Rimco (Mauritius) Limited 2.30 stay(new-format:ForeignCompanies); Wf Asian Reconnaissance Fund Limited 1.56 stay(new-format:ForeignCompanies); Amansa Holdings Private Limited 1.26 fii(curated)"
+]
+],
+"newmap_file": "542772_1910202211321_SHP.xml"
+},
+"360ONE|2019-12-31": {
+"file": "542772_211202011754_SHP.xml",
+"d_fii": 1.25,
+"ev": [
+[
+"R2FII-holders",
+"Others Others",
+40.76,
+1.25,
+"General Atlantic Singapore Fund Pte. Ltd. 21.38 stay(new-format:ForeignCompanies); FIH Mauritius Investments Ltd 13.88 stay(new-format:ForeignCompanies); Rimco (Mauritius) Limited 2.29 stay(new-format:ForeignCompanies); WF Asian Reconnaissance Fund Limited 1.56 stay(new-format:ForeignCompanies); Amansa Holdings Private Limited 1.25 fii(curated)"
+]
+],
+"newmap_file": "542772_1910202211321_SHP.xml"
+},
+"360ONE|2020-03-31": {
+"file": "542772_1352020211255_SHP.xml",
+"d_fii": 1.25,
+"ev": [
+[
+"R2FII-holders",
+"Others Foreign Companies",
+40.72,
+1.25,
+"General Atlantic Singapore Fund Pte. Ltd. 21.36 stay(new-format:ForeignCompanies); Fih Mauritius Investments Ltd 13.87 stay(new-format:ForeignCompanies); Rimco (Mauritius) Limited 2.29 stay(new-format:ForeignCompanies); Wf Asian Reconnaissance Fund Limited 1.56 stay(new-format:ForeignCompanies); Amansa Holdings Private Limited 1.25 fii(curated)"
+]
+],
+"newmap_file": "542772_1910202211321_SHP.xml"
+},
+"360ONE|2020-06-30": {
+"file": "542772_2072020214141_SHP.xml",
+"d_fii": 1.25,
+"ev": [
+[
+"R2FII-holders",
+"Others Foreign Companies",
+40.71,
+1.25,
+"General Atlantic Singapore Fund Pte. Ltd. 21.35 stay(new-format:ForeignCompanies); FIH Mauritius Investments Ltd 13.87 stay(new-format:ForeignCompanies); Rimco (Mauritius) Limited 2.29 stay(new-format:ForeignCompanies); WF Asian Reconnaissance Fund Limited 1.56 stay(new-format:ForeignCompanies); Amansa Holdings Private Limited 1.25 fii(curated)"
+]
+],
+"newmap_file": "542772_1910202211321_SHP.xml"
+},
+"360ONE|2020-09-30": {
+"file": "542772_30102020185820_SHP.xml",
+"d_fii": 1.25,
+"ev": [
+[
+"R2FII-holders",
+"Others",
+0.0,
+1.25,
+"Amansa Holdings Private Limited 1.25 fii(curated)"
+]
+],
+"newmap_file": "542772_1910202211321_SHP.xml"
+},
+"360ONE|2020-12-31": {
+"file": "542772_242202120212_SHP.xml",
+"d_fii": 1.25,
+"ev": [
+[
+"R2FII-holders",
+"Others Foreign Companies",
+40.1,
+1.25,
+"General Atlantic Singapore Fund Pte Ltd 21.24 stay(new-format:ForeignCompanies); Fih Mauritius Investments Ltd 13.79 stay(new-format:ForeignCompanies); Rimco (Mauritius) Limited 2.27 stay(new-format:ForeignCompanies); Wf Asian Reconnaissance Fund Limited 1.55 stay(new-format:ForeignCompanies); Amansa Holdings Private Limited 1.25 fii(curated)"
+]
+],
+"newmap_file": "542772_1910202211321_SHP.xml"
+},
+"APLAPOLLO|2016-06-30": {
+"file": "533758_1472016122916_SHP.xml",
+"d_fii": 3.15,
+"ev": [
+[
+"R2FII-holders",
+"Overseas corporate bodies",
+20.24,
+3.15,
+"KITARA PIIN 1001 12.80 stay(new-format:ForeignCompanies); KOTAK MAHINDRA (INTERNATIONAL) LIMITED 3.64 stay(regex); Emblem FII 3.15 fii(inst-tag)"
+]
+],
+"newmap_file": "533758_21102022101831_SHP.xml"
+},
+"APLAPOLLO|2016-09-30": {
+"file": "533758_1710201618165_SHP.xml",
+"d_fii": 3.13,
+"ev": [
+[
+"R2FII-holders",
+"Overseas corporate bodies",
+20.41,
+3.13,
+"KITARA PIIN 1001 12.72 stay(new-format:ForeignCompanies); KOTAK MAHINDRA (INTERNATIONAL) LIMITED 3.61 stay(regex); EMBLEM FII 3.13 fii(inst-tag)"
+]
+],
+"newmap_file": "533758_21102022101831_SHP.xml"
+},
+"APLAPOLLO|2016-12-31": {
+"file": "533758_1412017112625_SHP.xml",
+"d_fii": 3.13,
+"ev": [
+[
+"R2FII-holders",
+"Bodies Corporate",
+3.47,
+3.13,
+"EMBLEM FII 3.13 fii(inst-tag)"
+]
+],
+"newmap_file": "533758_21102022101831_SHP.xml"
+},
+"APLAPOLLO|2017-03-31": {
+"file": "533758_742017132310_SHP.xml",
+"d_fii": 3.13,
+"ev": [
+[
+"R2FII-holders",
+"Overseas corporate bodies",
+23.0,
+3.13,
+"KITARA PIIN 1001 12.72 stay(new-format:ForeignCompanies); KITARA PIIN 1101 3.61 stay(new-format~:ForeignCompanies); EMBLEM FII 3.13 fii(inst-tag); GOLDMAN SACHS INDIA LIMITED 2.66 stay(label)"
+]
+],
+"newmap_file": "533758_21102022101831_SHP.xml"
+},
+"APLAPOLLO|2017-06-30": {
+"file": "533758_872017114910_SHP.xml",
+"d_fii": 3.13,
+"ev": [
+[
+"R2FII-holders",
+"Overseas corporate bodies",
+23.73,
+3.13,
+"KITARA PIIN 1001 12.72 stay(new-format:ForeignCompanies); KITARA PIIN 1101 3.61 stay(new-format~:ForeignCompanies); EMBLEM FII 3.13 fii(inst-tag); GOLDMAN SACHS INDIA LIMITED 2.66 stay(label)"
+]
+],
+"newmap_file": "533758_21102022101831_SHP.xml"
+},
+"APLAPOLLO|2017-09-30": {
+"file": "533758_7102017155828_SHP.xml",
+"d_fii": 3.13,
+"ev": [
+[
+"R2FII-holders",
+"Overseas corporate bodies",
+23.71,
+3.13,
+"KITARA PIIN 1001 12.72 stay(new-format:ForeignCompanies); KITARA PIIN 1101 3.61 stay(new-format~:ForeignCompanies); EMBLEM FII 3.13 fii(inst-tag); GOLDMAN SACHS INDIA LIMITED 2.66 stay(label)"
+]
+],
+"newmap_file": "533758_21102022101831_SHP.xml"
+},
+"APLAPOLLO|2017-12-31": {
+"file": "533758_512018125341_SHP.xml",
+"d_fii": 3.11,
+"ev": [
+[
+"R2FII-holders",
+"Overseas corporate bodies",
+25.07,
+3.11,
+"KITARA PIIN 1001 12.64 stay(new-format:ForeignCompanies); KITARA PIIN 1101 3.59 stay(new-format~:ForeignCompanies); EMBLEM FII 3.11 fii(inst-tag); GOLDMAN SACHS INDIA LIMITED 2.64 stay(label)"
+]
+],
+"newmap_file": "533758_21102022101831_SHP.xml"
+},
+"APLAPOLLO|2018-03-31": {
+"file": "533758_1342018144655_SHP.xml",
+"d_fii": 1.01,
+"ev": [
+[
+"R2FII-holders",
+"Overseas Corporate Bodies",
+22.91,
+1.01,
+"KITARA PIIN 1001 12.64 stay(new-format:ForeignCompanies); KITARA PIIN 1101 3.59 stay(new-format~:ForeignCompanies); GOLDMAN SACHS INDIA LIMITED 2.64 stay(label); EMBLEM FII 1.01 fii(inst-tag)"
+]
+],
+"newmap_file": "533758_21102022101831_SHP.xml"
+},
+"APLAPOLLO|2018-06-30": {
+"file": "533758_1072018174555_SHP.xml",
+"d_fii": 1.01,
+"ev": [
+[
+"R2FII-holders",
+"Overseas Corporate Bodies",
+25.22,
+1.01,
+"KITARA PIIN 1001 12.64 stay(new-format:ForeignCompanies); KITARA PIIN 1101 3.59 stay(new-format~:ForeignCompanies); GOLDMAN SACHS INDIA LIMITED 2.64 stay(label); WF ASIAN RECONNAISSANCE FUND LIMITED 2.11 stay(label); EMBLEM FII 1.01 fii(inst-tag)"
+]
+],
+"newmap_file": "533758_21102022101831_SHP.xml"
+},
+"APLAPOLLO|2018-09-30": {
+"file": "533758_910201816124_SHP.xml",
+"d_fii": 1.01,
+"ev": [
+[
+"R2FII-holders",
+"Overseas Corporate Bodies",
+25.46,
+1.01,
+"KITARA PIIN 1001 12.64 stay(new-format:ForeignCompanies); KITARA PIIN 1101 3.59 stay(new-format~:ForeignCompanies); GOLDMAN SACHS INDIA LIMITED 3.42 stay(label); WF ASIAN RECONNAISSANCE FUND LIMITED 1.78 stay(label); EMBLEM FII 1.01 fii(inst-tag)"
+]
+],
+"newmap_file": "533758_21102022101831_SHP.xml"
+},
+"APLAPOLLO|2018-12-31": {
+"file": "533758_111201913934_SHP.xml",
+"d_fii": 1.01,
+"ev": [
+[
+"R2FII-holders",
+"Overseas Corporate Bodies",
+24.11,
+1.01,
+"KITARA PIIN 1001 12.64 stay(new-format:ForeignCompanies); KITARA PIIN 1101 3.59 stay(new-format~:ForeignCompanies); GOLDMAN SACHS INDIA LIMITED 3.42 stay(label); EMBLEM FII 1.01 fii(inst-tag)"
+]
+],
+"newmap_file": "533758_21102022101831_SHP.xml"
+},
+"APLAPOLLO|2019-03-31": {
+"file": "533758_1542019105021_SHP.xml",
+"d_fii": 1.0,
+"ev": [
+[
+"R2FII-holders",
+"Overseas Corporate Bodies",
+24.34,
+1.0,
+"KITARA PIIN 1001 12.58 stay(new-format:ForeignCompanies); KITARA PIIN 1101 3.57 stay(new-format~:ForeignCompanies); GOLDMAN SACHS INDIA LIMITED 3.41 stay(label); EMBLEM FII 1.00 fii(inst-tag)"
+]
+],
+"newmap_file": "533758_21102022101831_SHP.xml"
+},
+"APOLLOHOSP|2018-03-31": {
+"file": "508869_642018174014_SHP.xml",
+"d_fii": 0.93,
+"ev": [
+[
+"R2FII-label",
+"Foreign Portfolio Investor (Category - III)",
+0.93,
+0.93,
+"FII-labelled row 0.93 -> fii"
+]
+],
+"newmap_file": "508869_12102022144514_SHP.xml"
+},
+"APOLLOHOSP|2018-06-30": {
+"file": "508869_572018142342_SHP.xml",
+"d_fii": 0.93,
+"ev": [
+[
+"R2FII-label",
+"Foreign Portfolio Investor (Category - III)",
+0.93,
+0.93,
+"FII-labelled row 0.93 -> fii"
+]
+],
+"newmap_file": "508869_12102022144514_SHP.xml"
+},
+"APOLLOHOSP|2018-09-30": {
+"file": "508869_510201812519_SHP.xml",
+"d_fii": 0.4,
+"ev": [
+[
+"R2FII-label",
+"Foreign Portfolio Investor (Category - III)",
+0.4,
+0.4,
+"FII-labelled row 0.40 -> fii"
+]
+],
+"newmap_file": "508869_12102022144514_SHP.xml"
+},
+"ASHOKLEY|2016-06-30": {
+"file": "500477_157201613933_SHP.xml",
+"d_fii": 16.04,
+"ev": [
+[
+"R2FII-label",
+"Other FOREIGN INSTITUTIONAL INVESTORS",
+15.87,
+15.87,
+"FII-labelled row 15.87 -> fii; ABU DHABI INVESTMENT AUTHORITY (Under various sub-accounts) 1.84 in-row(-); KUWAIT INVESTMENT AUTHORITY (Under various sub accounts) 1.21 in-row(-); AMANSA HOLDINGS PRIVATE LIMITED 1.16 in-row(curated)"
+],
+[
+"R2FII-label",
+"Other FOREIGN PORTFOLIO INVESTOR - CORPORATE - 3",
+0.17,
+0.17,
+"FII-labelled row 0.17 -> fii"
+]
+],
+"newmap_file": "500477_19102022201544_SHP.xml"
+},
+"ASHOKLEY|2016-09-30": {
+"file": "500477_19102016133449_SHP.xml",
+"d_fii": 15.29,
+"ev": [
+[
+"R2FII-label",
+"Other FOREIGN INSTITUTIONAL INVESTORS",
+14.9,
+14.9,
+"FII-labelled row 14.90 -> fii; ABU DHABI INVESTMENT AUTHORITY (Under various sub-accounts) 1.51 in-row(-); KUWAIT INVESTMENT AUTHORITY (Under various sub accounts) 1.22 in-row(-); JPMORGAN SICAV INVESTMENT COMPANY (MAURITIUS) LIMITED 1.22 in-row(regex); JP MORGAN INDIAN INVESTMENT COMPANY (MAURITIUS) LIMITED 1.06 in-row(regex)"
+],
+[
+"R2FII-label",
+"Other FOREIGN PORTFOLIO INVESTOR - CORPORATE - 3",
+0.39,
+0.39,
+"FII-labelled row 0.39 -> fii"
+]
+],
+"newmap_file": "500477_19102022201544_SHP.xml"
+},
+"ASHOKLEY|2016-12-31": {
+"file": "500477_1812017193826_SHP.xml",
+"d_fii": 13.26,
+"ev": [
+[
+"R2FII-label",
+"Other FOREIGN INSTITUTIONAL INVESTOR",
+11.62,
+11.62,
+"FII-labelled row 11.62 -> fii; ABU DHABI INVESTMENT AUTHORITY (Under different sub accounts) 1.43 in-row(-); KUWAIT INVESTMENT AUTHORITY FUND (Under different sub accounts) 1.30 in-row(-); AMANSA HOLDINGS PRIVATE LIMITED 1.25 in-row(curated); JPMORGAN SICAV INVESTMENT COMPANY (MAURITIUS) LIMITED 1.22 in-row(regex); JP MORGAN INDIAN INVESTMENT COMPANY (MAURITIUS) LIMITED 1.06 in-row(regex)"
+],
+[
+"R2FII-label",
+"Foreign Portfolio Investors (Category III)",
+1.64,
+1.64,
+"FII-labelled row 1.64 -> fii"
+]
+],
+"newmap_file": "500477_19102022201544_SHP.xml"
+},
+"ASHOKLEY|2017-03-31": {
+"file": "500477_1342017212956_SHP.xml",
+"d_fii": 6.41,
+"ev": [
+[
+"R2FII-label",
+"Other FOREIGN INSTITUTIONAL INVESTOR",
+4.35,
+4.35,
+"FII-labelled row 4.35 -> fii; KUWAIT INVESTMENT AUTHORITY FUND (Under different sub accounts) 1.25 in-row(-); JPMORGAN SICAV INVESTMENT COMPANY (MAURITIUS) LIMITED 1.22 in-row(regex); AMANSA HOLDINGS PRIVATE LIMITED 1.18 in-row(curated)"
+],
+[
+"R2FII-label",
+"Foreign Portfolio Investors (Category III)",
+2.06,
+2.06,
+"FII-labelled row 2.06 -> fii"
+]
+],
+"newmap_file": "500477_19102022201544_SHP.xml"
+},
+"ASHOKLEY|2017-06-30": {
+"file": "500477_1772017114346_SHP.xml",
+"d_fii": 3.33,
+"ev": [
+[
+"R2FII-label",
+"Other FOREIGN INSTITUTIONAL INVESTOR",
+1.08,
+1.08,
+"FII-labelled row 1.08 -> fii"
+],
+[
+"R2FII-label",
+"Foreign Portfolio Investors (Category III)",
+2.25,
+2.25,
+"FII-labelled row 2.25 -> fii"
+]
+],
+"newmap_file": "500477_19102022201544_SHP.xml"
+},
+"ASHOKLEY|2017-09-30": {
+"file": "500477_1410201711109_SHP.xml",
+"d_fii": 2.41,
+"ev": [
+[
+"R2FII-label",
+"Other FOREIGN INSTITUTIONAL INVESTOR",
+0.1,
+0.1,
+"FII-labelled row 0.10 -> fii"
+],
+[
+"R2FII-label",
+"Foreign Portfolio Investors (Category III)",
+2.31,
+2.31,
+"FII-labelled row 2.31 -> fii"
+]
+],
+"newmap_file": "500477_19102022201544_SHP.xml"
+},
+"ASHOKLEY|2017-12-31": {
+"file": "500477_1812018173231_SHP.xml",
+"d_fii": 2.07,
+"ev": [
+[
+"R2FII-label",
+"Other FOREIGN INSTITUTIONAL INVESTOR",
+0.08,
+0.08,
+"FII-labelled row 0.08 -> fii"
+],
+[
+"R2FII-label",
+"Foreign Portfolio Investors (Category III)",
+1.99,
+1.99,
+"FII-labelled row 1.99 -> fii"
+]
+],
+"newmap_file": "500477_19102022201544_SHP.xml"
+},
+"ASHOKLEY|2018-03-31": {
+"file": "500477_1842018165751_SHP.xml",
+"d_fii": 1.9,
+"ev": [
+[
+"R2FII-label",
+"Foreign Portfolio Investor (Category - III)",
+1.9,
+1.9,
+"FII-labelled row 1.90 -> fii"
+]
+],
+"newmap_file": "500477_19102022201544_SHP.xml"
+},
+"ASHOKLEY|2018-06-30": {
+"file": "500477_2072018164723_SHP.xml",
+"d_fii": 1.82,
+"ev": [
+[
+"R2FII-label",
+"Foreign Portfolio Investor (Category - III)",
+1.82,
+1.82,
+"FII-labelled row 1.82 -> fii"
+]
+],
+"newmap_file": "500477_19102022201544_SHP.xml"
+},
+"ASHOKLEY|2018-09-30": {
+"file": "500477_16102018165111_SHP.xml",
+"d_fii": 1.63,
+"ev": [
+[
+"R2FII-label",
+"Foreign Portfolio Investor (Category - III)",
+1.63,
+1.63,
+"FII-labelled row 1.63 -> fii"
+]
+],
+"newmap_file": "500477_19102022201544_SHP.xml"
+},
+"ASHOKLEY|2018-12-31": {
+"file": "500477_251201914152_SHP.xml",
+"d_fii": 1.22,
+"ev": [
+[
+"R2FII-label",
+"Foreign Portfolio Investor (Category - III)",
+1.22,
+1.22,
+"FII-labelled row 1.22 -> fii"
+]
+],
+"newmap_file": "500477_19102022201544_SHP.xml"
+},
+"ASHOKLEY|2019-03-31": {
+"file": "500477_1742019153024_SHP.xml",
+"d_fii": 1.23,
+"ev": [
+[
+"R2FII-label",
+"Foreign Portfolio Investor (Category - III)",
+1.18,
+1.18,
+"FII-labelled row 1.18 -> fii"
+],
+[
+"R2FII-label",
+"Others FOREIGN INSTITUTIONAL INVESTORS",
+0.05,
+0.05,
+"FII-labelled row 0.05 -> fii"
+]
+],
+"newmap_file": "500477_19102022201544_SHP.xml"
+},
+"ASHOKLEY|2019-06-30": {
+"file": "500477_2072019142951_SHP.xml",
+"d_fii": 1.13,
+"ev": [
+[
+"R2FII-label",
+"Foreign Portfolio Investor (Category - III)",
+1.11,
+1.11,
+"FII-labelled row 1.11 -> fii"
+],
+[
+"R2FII-label",
+"Others FII",
+0.02,
+0.02,
+"FII-labelled row 0.02 -> fii"
+]
+],
+"newmap_file": "500477_19102022201544_SHP.xml"
+},
+"ASHOKLEY|2019-09-30": {
+"file": "500477_29102019135444_SHP.xml",
+"d_fii": 0.92,
+"ev": [
+[
+"R2FII-label",
+"Others FII",
+0.02,
+0.02,
+"FII-labelled row 0.02 -> fii"
+],
+[
+"R2FII-label",
+"Foreign Portfolio Investor (Category - III)",
+0.9,
+0.9,
+"FII-labelled row 0.90 -> fii"
+]
+],
+"newmap_file": "500477_19102022201544_SHP.xml"
+},
+"ASHOKLEY|2019-12-31": {
+"file": "500477_171202017356_SHP.xml",
+"d_fii": 0.07,
+"ev": [
+[
+"R2FII-label",
+"Others FOREIGN INSTITUTIONAL INVESTORS",
+0.01,
+0.01,
+"FII-labelled row 0.01 -> fii"
+],
+[
+"R2FII-label",
+"Foreign Portfolio Investor (Category - III)",
+0.06,
+0.06,
+"FII-labelled row 0.06 -> fii"
+]
+],
+"newmap_file": "500477_19102022201544_SHP.xml"
+},
+"ASHOKLEY|2020-06-30": {
+"file": "500477_177202017310_SHP.xml",
+"d_fii": 0.08,
+"ev": [
+[
+"R2FII-label",
+"Others FOREIGN INSTITUTIONAL INVESTORS",
+0.01,
+0.01,
+"FII-labelled row 0.01 -> fii"
+],
+[
+"R2FII-label",
+"Foreign Portfolio Investor (Category - III)",
+0.07,
+0.07,
+"FII-labelled row 0.07 -> fii"
+]
+],
+"newmap_file": "500477_19102022201544_SHP.xml"
+},
+"ASHOKLEY|2020-09-30": {
+"file": "500477_16102020223741_SHP.xml",
+"d_fii": 0.08,
+"ev": [
+[
+"R2FII-label",
+"Foreign Portfolio Investor (Category - III)",
+0.08,
+0.08,
+"FII-labelled row 0.08 -> fii"
+]
+],
+"newmap_file": "500477_19102022201544_SHP.xml"
+},
+"ASHOKLEY|2020-12-31": {
+"file": "500477_181202111952_SHP.xml",
+"d_fii": 0.09,
+"ev": [
+[
+"R2FII-label",
+"Foreign Portfolio Investor (Category - III)",
+0.08,
+0.08,
+"FII-labelled row 0.08 -> fii"
+],
+[
+"R2FII-label",
+"Others FII",
+0.01,
+0.01,
+"FII-labelled row 0.01 -> fii"
+]
+],
+"newmap_file": "500477_19102022201544_SHP.xml"
+},
+"ASHOKLEY|2021-03-31": {
+"file": "500477_2942021164529_SHP.xml",
+"d_fii": 0.06,
+"ev": [
+[
+"R2FII-label",
+"Foreign Portfolio Investor (Category - III)",
+0.06,
+0.06,
+"FII-labelled row 0.06 -> fii"
+]
+],
+"newmap_file": "500477_19102022201544_SHP.xml"
+},
+"ASHOKLEY|2021-06-30": {
+"file": "500477_1972021172551_SHP.xml",
+"d_fii": 0.06,
+"ev": [
+[
+"R2FII-label",
+"Foreign Portfolio Investor (Category - III)",
+0.06,
+0.06,
+"FII-labelled row 0.06 -> fii"
+]
+],
+"newmap_file": "500477_19102022201544_SHP.xml"
+},
+"AUBANK|2017-09-30": {
+"file": "540611_10102017195556_SHP.xml",
+"d_fii": 7.99,
+"ev": [
+[
+"R2FII-holders",
+"Other Foreign Company",
+31.4,
+7.99,
+"Redwood Investment Ltd 15.82 stay(label); International Finance Corporation 7.99 fii(curated); Labh Investments Limited 3.80 stay(label); Ourea Holdings Limited 3.79 stay(label)"
+]
+],
+"newmap_file": "540611_2010202221322_SHP.xml"
+},
+"AUBANK|2017-12-31": {
+"file": "540611_2012018185152_SHP.xml",
+"d_fii": 7.95,
+"ev": [
+[
+"R2FII-holders",
+"Other Foreign Company",
+31.25,
+7.95,
+"Redwood Investment Ltd 15.74 stay(label); International Finance Corporation 7.95 fii(curated); Labh Investments Limited 3.78 stay(label); Ourea Holdings Limited 3.78 stay(label)"
+]
+],
+"newmap_file": "540611_2010202221322_SHP.xml"
+},
+"AUBANK|2018-03-31": {
+"file": "540611_219201817348_SHP.xml",
+"d_fii": 7.95,
+"ev": [
+[
+"R2FII-holders",
+"Others Foreign Company",
+31.24,
+7.95,
+"Redwood Investment Ltd 15.74 stay(label); International Finance Corporation 7.95 fii(curated); Labh Investments Limited 3.78 stay(label); Ourea Holdings Limited 3.77 stay(label)"
+]
+],
+"newmap_file": "540611_2010202221322_SHP.xml"
+},
+"AUBANK|2018-06-30": {
+"file": "540611_2192018174513_SHP.xml",
+"d_fii": 7.83,
+"ev": [
+[
+"R2FII-holders",
+"Others Foreign Company",
+30.78,
+7.83,
+"Redwood Investment Ltd 15.51 stay(label); International Finance Corporation 7.83 fii(curated); Labh Investments Limited 3.72 stay(label); Ourea Holdings Limited 3.72 stay(label)"
+]
+],
+"newmap_file": "540611_2010202221322_SHP.xml"
+},
+"AUBANK|2018-09-30": {
+"file": "540611_1810201816165_SHP.xml",
+"d_fii": 1.95,
+"ev": [
+[
+"R2FII-holders",
+"Others Foreign Company",
+14.68,
+1.95,
+"Redwood Investment Ltd 7.22 stay(label); Labh Investments Limited 2.78 stay(label); Ourea Holdings Limited 2.72 stay(label); International Finance Corporation 1.95 fii(curated)"
+]
+],
+"newmap_file": "540611_2010202221322_SHP.xml"
+},
+"AUBANK|2018-12-31": {
+"file": "540611_221201919240_SHP.xml",
+"d_fii": 1.94,
+"ev": [
+[
+"R2FII-holders",
+"Others Foreign Company",
+14.59,
+1.94,
+"Redwood Investment Ltd 7.18 stay(label); Labh Investments Limited 2.77 stay(label); Ourea Holdings Limited 2.70 stay(label); International Finance Corporation 1.94 fii(curated)"
+]
+],
+"newmap_file": "540611_2010202221322_SHP.xml"
+},
+"AUBANK|2019-03-31": {
+"file": "540611_1642019162813_SHP.xml",
+"d_fii": 1.94,
+"ev": [
+[
+"R2FII-holders",
+"Others Foreign Company",
+14.59,
+1.94,
+"Redwood Investment Ltd 7.17 stay(label); Labh Investments Limited 2.77 stay(label); Ourea Holdings Limited 2.70 stay(label); International Finance Corporation 1.94 fii(curated)"
+]
+],
+"newmap_file": "540611_2010202221322_SHP.xml"
+},
+"AUBANK|2019-06-30": {
+"file": "540611_207201914855_SHP.xml",
+"d_fii": 1.94,
+"ev": [
+[
+"R2FII-holders",
+"Others Foreign Companies",
+14.58,
+1.94,
+"Redwood Investment Ltd 7.17 stay(label); Labh Investments Limited 2.77 stay(label); Ourea Holdings Limited 2.70 stay(label); International Finance Corporation 1.94 fii(curated)"
+]
+],
+"newmap_file": "540611_2010202221322_SHP.xml"
+},
+"AUBANK|2019-09-30": {
+"file": "540611_17102019172725_SHP.xml",
+"d_fii": 1.94,
+"ev": [
+[
+"R2FII-holders",
+"Others Foreign Company",
+13.51,
+1.94,
+"Redwood Investment Ltd 7.15 stay(label); Ourea Holdings Limited 2.69 stay(label); International Finance Corporation 1.94 fii(curated); Labh Investments Limited 1.73 stay(label)"
+]
+],
+"newmap_file": "540611_2010202221322_SHP.xml"
+},
+"AUBANK|2019-12-31": {
+"file": "540611_1812020164650_SHP.xml",
+"d_fii": 4.86,
+"ev": [
+[
+"R2FII-holders",
+"Others Foreign Company",
+14.99,
+4.86,
+"Redwood Investment Ltd. 6.91 stay(label); Camas Investments Pte. Ltd. 3.33 fii(new-format:InstitutionsForeignPortfolioInvestorTwo); Labh Investments Limited 1.68 stay(label); Ourea Holdings Limited 1.56 stay(label); International Finance Corporation 1.53 fii(curated)"
+]
+],
+"newmap_file": "540611_2010202221322_SHP.xml"
+},
+"AUBANK|2020-03-31": {
+"file": "540611_842020182225_SHP.xml",
+"d_fii": 3.32,
+"ev": [
+[
+"R2FII-holders",
+"Others Foreign Company",
+11.78,
+3.32,
+"Redwood Investment Ltd. 6.90 stay(label); Camas Investments Pte. Ltd. 3.32 fii(new-format:InstitutionsForeignPortfolioInvestorTwo); Ourea Holdings Limited 1.56 stay(label)"
+]
+],
+"newmap_file": "540611_2010202221322_SHP.xml"
+},
+"AUBANK|2020-06-30": {
+"file": "540611_217202010844_SHP.xml",
+"d_fii": 3.3,
+"ev": [
+[
+"R2FII-holders",
+"Others Foreign Company",
+11.69,
+3.3,
+"Redwood Investment Ltd 6.84 stay(label); Camas Investments Pte. Ltd. 3.30 fii(new-format:InstitutionsForeignPortfolioInvestorTwo); Ourea Holdings Limited 1.55 stay(label)"
+]
+],
+"newmap_file": "540611_2010202221322_SHP.xml"
+},
+"AUBANK|2020-09-30": {
+"file": "540611_2010202020137_SHP.xml",
+"d_fii": 3.3,
+"ev": [
+[
+"R2FII-holders",
+"Others Foreign Company",
+9.43,
+3.3,
+"Redwood Investment Ltd 4.58 stay(label); Camas Investments Pte. Ltd. 3.30 fii(new-format:InstitutionsForeignPortfolioInvestorTwo); Ourea Holdings Limited 1.55 stay(label)"
+]
+],
+"newmap_file": "540611_2010202221322_SHP.xml"
+},
+"AUBANK|2020-12-31": {
+"file": "540611_1912021115814_SHP.xml",
+"d_fii": 3.29,
+"ev": [
+[
+"R2FII-holders",
+"Others Foreign Company",
+3.41,
+3.29,
+"Camas Investments Pte. Ltd. 3.29 fii(new-format:InstitutionsForeignPortfolioInvestorTwo)"
+]
+],
+"newmap_file": "540611_2010202221322_SHP.xml"
+},
+"AUBANK|2021-03-31": {
+"file": "540611_1542021183041_SHP.xml",
+"d_fii": 3.24,
+"ev": [
+[
+"R2FII-holders",
+"Others Foreign Company",
+3.24,
+3.24,
+"Camas Investments Pte. Ltd. 3.24 fii(new-format:InstitutionsForeignPortfolioInvestorTwo)"
+]
+],
+"newmap_file": "540611_2010202221322_SHP.xml"
+},
+"AUBANK|2021-06-30": {
+"file": "540611_1972021201519_SHP.xml",
+"d_fii": 3.23,
+"ev": [
+[
+"R2FII-holders",
+"Others Foreign Companies",
+3.23,
+3.23,
+"Camas Investments Pte. Ltd. 3.23 fii(new-format:InstitutionsForeignPortfolioInvestorTwo)"
+]
+],
+"newmap_file": "540611_2010202221322_SHP.xml"
+},
+"AUBANK|2021-09-30": {
+"file": "540611_191020212070_SHP.xml",
+"d_fii": 3.23,
+"ev": [
+[
+"R2FII-holders",
+"Others Foreign Companies",
+3.23,
+3.23,
+"Camas Investments Pte. Ltd. 3.23 fii(new-format:InstitutionsForeignPortfolioInvestorTwo)"
+]
+],
+"newmap_file": "540611_2010202221322_SHP.xml"
+},
+"AUBANK|2021-12-31": {
+"file": "540611_2012022195747_SHP.xml",
+"d_fii": 3.22,
+"ev": [
+[
+"R2FII-holders",
+"Others Foreign Companies",
+3.22,
+3.22,
+"Camas Investments Pte. Ltd. 3.22 fii(new-format:InstitutionsForeignPortfolioInvestorTwo)"
+]
+],
+"newmap_file": "540611_2010202221322_SHP.xml"
+},
+"AUBANK|2022-03-31": {
+"file": "540611_1252022201853_SHP.xml",
+"d_fii": 3.21,
+"ev": [
+[
+"R2FII-holders",
+"Others Foreign Companies",
+3.21,
+3.21,
+"Camas Investments Pte. Ltd. 3.21 fii(new-format:InstitutionsForeignPortfolioInvestorTwo)"
+]
+],
+"newmap_file": "540611_2010202221322_SHP.xml"
+},
+"AUBANK|2022-06-30": {
+"file": "540611_1172022221935_SHP.xml",
+"d_fii": 3.21,
+"ev": [
+[
+"R2FII-holders",
+"Others Foreign Companies",
+3.21,
+3.21,
+"Camas Investments Pte. Ltd. 3.21 fii(new-format:InstitutionsForeignPortfolioInvestorTwo)"
+]
+],
+"newmap_file": "540611_2010202221322_SHP.xml"
+},
+"BHARTIARTL|2020-09-30": {
+"file": "532454_20102020223845_SHP.xml",
+"d_fii": 1.52,
+"ev": [
+[
+"R2FII-holders",
+"Others FOREIGN CORPORATE BODIES",
+1.83,
+1.52,
+"GOVERNMENT OF SINGAPORE 1.52 fii(new-format:InstitutionsForeignPortfolioInvestorOne)"
+]
+],
+"newmap_file": "532454_21102022202450_SHP.xml"
+},
+"BHARTIARTL|2020-12-31": {
+"file": "532454_2012021223617_SHP.xml",
+"d_fii": 1.34,
+"ev": [
+[
+"R2FII-holders",
+"Others FOREIGN CORPORATE BODIES",
+1.67,
+1.34,
+"GOVERNMENT OF SINGAPORE 1.34 fii(new-format:InstitutionsForeignPortfolioInvestorOne)"
+]
+],
+"newmap_file": "532454_21102022202450_SHP.xml"
+},
+"BHARTIARTL|2021-03-31": {
+"file": "532454_204202122151_SHP.xml",
+"d_fii": 1.33,
+"ev": [
+[
+"R2FII-holders",
+"Others FOREIGN BODIES CORPORATES",
+2.36,
+1.33,
+"GOVERNMENT OF SINGAPORE 1.33 fii(new-format:InstitutionsForeignPortfolioInvestorOne)"
+]
+],
+"newmap_file": "532454_21102022202450_SHP.xml"
+},
+"BHARTIARTL|2021-06-30": {
+"file": "532454_2072021202223_SHP.xml",
+"d_fii": 1.23,
+"ev": [
+[
+"R2FII-holders",
+"Others FOREIGN BODIES CORPORATES",
+2.26,
+1.23,
+"GOVERNMENT OF SINGAPORE 1.23 fii(new-format:InstitutionsForeignPortfolioInvestorOne)"
+]
+],
+"newmap_file": "532454_21102022202450_SHP.xml"
+},
+"BHARTIARTL|2021-09-30": {
+"file": "532454_21102021221545_SHP.xml",
+"d_fii": 1.41,
+"ev": [
+[
+"R2FII-holders",
+"Others FOREIGN BODIES CORPORATES",
+2.52,
+1.41,
+"GOVERNMENT OF SINGAPORE 1.41 fii(new-format:InstitutionsForeignPortfolioInvestorOne)"
+]
+],
+"newmap_file": "532454_21102022202450_SHP.xml"
+},
+"BHARTIARTL|2021-12-31": {
+"file": "532454_2112022191321_SHP.xml",
+"d_fii": 1.39,
+"ev": [
+[
+"R2FII-holders",
+"Others FOREIGN BODIES CORPORATES",
+2.49,
+1.39,
+"GOVERNMENT OF SINGAPORE 1.39 fii(new-format:InstitutionsForeignPortfolioInvestorOne)"
+]
+],
+"newmap_file": "532454_21102022202450_SHP.xml"
+},
+"BHARTIARTL|2022-03-31": {
+"file": "532454_1852022204620_SHP.xml",
+"d_fii": 1.47,
+"ev": [
+[
+"R2FII-holders",
+"Others Foreign Bodies Corporates",
+2.53,
+1.47,
+"Government of Singapore 1.47 fii(new-format:InstitutionsForeignPortfolioInvestorOne)"
+]
+],
+"newmap_file": "532454_21102022202450_SHP.xml"
+},
+"BHARTIARTL|2022-06-30": {
+"file": "532454_21720221363_SHP.xml",
+"d_fii": 1.52,
+"ev": [
+[
+"R2FII-holders",
+"Overseas Corporate Bodies",
+2.54,
+1.52,
+"GOVERNMENT OF SINGAPORE 1.52 fii(new-format:InstitutionsForeignPortfolioInvestorOne)"
+]
+],
+"newmap_file": "532454_21102022202450_SHP.xml"
+},
+"DABUR|2021-03-31": {
+"file": "500096_124202122922_SHP.xml",
+"d_fii": 0.96,
+"ev": [
+[
+"R2FII-label",
+"Foreign Portfolio Investor (Category - III)",
+0.96,
+0.96,
+"FII-labelled row 0.96 -> fii"
+]
+],
+"newmap_file": "500096_21102022162222_SHP.xml"
+},
+"DATAPATTNS|2021-12-31": {
+"file": "543428_522022171427_SHP.xml",
+"d_fii": 0.33,
+"ev": [
+[
+"R2FII-label",
+"Foreign Portfolio Investor (Category - III)",
+0.33,
+0.33,
+"FII-labelled row 0.33 -> fii"
+]
+],
+"newmap_file": "543428_2110202218252_SHP.xml"
+},
+"DATAPATTNS|2022-03-31": {
+"file": "543428_2042022115838_SHP.xml",
+"d_fii": 0.33,
+"ev": [
+[
+"R2FII-label",
+"Foreign Portfolio Investor (Category - III)",
+0.33,
+0.33,
+"FII-labelled row 0.33 -> fii"
+]
+],
+"newmap_file": "543428_2110202218252_SHP.xml"
+},
+"DATAPATTNS|2022-06-30": {
+"file": "543428_1272022173936_SHP.xml",
+"d_fii": 0.33,
+"ev": [
+[
+"R2FII-label",
+"Foreign Portfolio Investor (Category - III)",
+0.33,
+0.33,
+"FII-labelled row 0.33 -> fii"
+]
+],
+"newmap_file": "543428_2110202218252_SHP.xml"
+},
+"ETERNAL|2021-09-30": {
+"file": "543320_19102021231945_SHP.xml",
+"d_fii": 32.47,
+"ev": [
+[
+"R2FII-holders",
+"Others Foreign Companies",
+57.54,
+32.47,
+"Uber B.V. 7.80 stay(regex); Alipay Singapore Holding Pte Ltd 7.12 fii(new-format:ForeignDirectInvestment); Antfin Singapore Holding Pte Ltd 7.01 fii(new-format:ForeignDirectInvestment); Internet Fund VI Pte. Ltd. 5.13 stay(new-format~:OtherNonInstitutions); SCI Growth Investments II 5.12 fii(new-format:ForeignDirectInvestment); D1 Capital Partners Master Lp 3.25 stay(regex); Macritchie Investments Pte Ltd 3.12 fii(new-format:ForeignDirectInvestment); Dunearn Investments (Mauritius) Pte Ltd 2.18 fii(new-format:ForeignDirectInvestment); Kora Investments I LLC 2.16 fii(new-format:ForeignDirectInvestment); VY Investments Mauritius Limited 2.14 fii(new-format:ForeignDirectInvestment); Kora Holdings II C LLC 1.85 fii(new-format:ForeignDirectInvestment); VYC20 Limited 1.77 fii(new-format:ForeignDirectInvestment); Delivery Hero Se 1.37 stay(label); Glade Brook Private Investors XVII LP 1.11 stay(regex)"
+]
+],
+"newmap_file": "543320_21102022184442_SHP.xml"
+},
+"ETERNAL|2021-12-31": {
+"file": "543320_1912022184216_SHP.xml",
+"d_fii": 32.36,
+"ev": [
+[
+"R2FII-holders",
+"Others Foreign Companies",
+57.42,
+32.36,
+"Uber B.V. 7.78 stay(regex); Alipay Singapore Holding Pte. Ltd. 7.10 fii(new-format:ForeignDirectInvestment); Antfin Singapore Holding Pte Ltd 6.99 fii(new-format:ForeignDirectInvestment); Internet Fund Vi Pte. Ltd. 5.11 stay(new-format~:OtherNonInstitutions); Sci Growth Investments Ii 5.10 fii(new-format:ForeignDirectInvestment); D1 Capital Partners Master Lp 3.24 stay(regex); Macritchie Investments Pte Ltd 3.11 fii(new-format:ForeignDirectInvestment); Dunearn Investments (Mauritius) Pte Ltd 2.18 fii(new-format:ForeignDirectInvestment); Kora Investments I Llc 2.15 fii(new-format:ForeignDirectInvestment); Vy Investments Mauritius Limited 2.13 fii(new-format:ForeignDirectInvestment); Kora Holdings Ii C Llc 1.84 fii(new-format:ForeignDirectInvestment); Vyc20 Limited 1.76 fii(new-format:ForeignDirectInvestment); Delivery Hero Se 1.36 stay(label); Glade Brook Private Investors Xvii Lp 1.11 stay(regex)"
+]
+],
+"newmap_file": "543320_21102022184442_SHP.xml"
+},
+"ETERNAL|2022-03-31": {
+"file": "543320_204202216509_SHP.xml",
+"d_fii": 32.36,
+"ev": [
+[
+"R2FII-holders",
+"Others Foreign Companies",
+57.42,
+32.36,
+"Uber B.V. 7.78 stay(regex); Alipay Singapore Holding Pte. Ltd. 7.10 fii(new-format:ForeignDirectInvestment); Antfin Singapore Holding Pte Ltd 6.99 fii(new-format:ForeignDirectInvestment); Internet Fund VI Pte. Ltd. 5.11 stay(new-format~:OtherNonInstitutions); Sci Growth Investments II 5.10 fii(new-format:ForeignDirectInvestment); D1 Capital Partners Master LP 3.24 stay(regex); Macritchie Investments Pte Ltd 3.11 fii(new-format:ForeignDirectInvestment); Dunearn Investments (Mauritius) Pte Ltd 2.18 fii(new-format:ForeignDirectInvestment); Kora Investments I LLC 2.15 fii(new-format:ForeignDirectInvestment); Vy Investments Mauritius Limited 2.13 fii(new-format:ForeignDirectInvestment); Kora Holdings II (C) LLC 1.84 fii(new-format:ForeignDirectInvestment); Vyc20 Limited 1.76 fii(new-format:ForeignDirectInvestment); Delivery Hero Se 1.36 stay(label); Glade Brook Private Investors XVII LP 1.11 stay(regex)"
+]
+],
+"newmap_file": "543320_21102022184442_SHP.xml"
+},
+"ETERNAL|2022-06-30": {
+"file": "543320_2072022201928_SHP.xml",
+"d_fii": 32.36,
+"ev": [
+[
+"R2FII-holders",
+"Others Foreign Companies",
+57.4,
+32.36,
+"Uber B.V. 7.78 stay(regex); Alipay Singapore Holding Pte. Ltd. 7.10 fii(new-format:ForeignDirectInvestment); Antfin Singapore Holding Pte Ltd 6.99 fii(new-format:ForeignDirectInvestment); Internet Fund VI Pte. Ltd. 5.11 stay(new-format~:OtherNonInstitutions); Sci Growth Investments II 5.10 fii(new-format:ForeignDirectInvestment); D1 Capital Partners Master LP 3.24 stay(regex); Macritchie Investments Pte Ltd 3.11 fii(new-format:ForeignDirectInvestment); Dunearn Investments (Mauritius) Pte Ltd 2.18 fii(new-format:ForeignDirectInvestment); Kora Investments I LLC 2.15 fii(new-format:ForeignDirectInvestment); Vy Investments Mauritius Limited 2.13 fii(new-format:ForeignDirectInvestment); Kora Holdings II (C) LLC 1.84 fii(new-format:ForeignDirectInvestment); Vyc20 Limited 1.76 fii(new-format:ForeignDirectInvestment); Delivery Hero Se 1.36 stay(label); Glade Brook Private Investors XVII LP 1.11 stay(regex)"
+]
+],
+"newmap_file": "543320_21102022184442_SHP.xml"
+},
+"FEDERALBNK|2016-06-30": {
+"file": "500469_1672016172034_SHP.xml",
+"d_fii": 27.39,
+"ev": [
+[
+"R2FII-label",
+"Other FOREIGN INSTITUTIONAL INVESTORS",
+24.92,
+24.92,
+"FII-labelled row 24.92 -> fii"
+],
+[
+"R2FII-label",
+"Other FOREIGN PORTFOLIO INVESTORS",
+2.47,
+2.47,
+"FII-labelled row 2.47 -> fii"
+]
+],
+"newmap_file": "500469_2110202212414_SHP.xml"
+},
+"FEDERALBNK|2016-09-30": {
+"file": "500469_2010201618155_SHP.xml",
+"d_fii": 21.84,
+"ev": [
+[
+"R2FII-label",
+"Other Foreign Institutional Investors",
+16.9,
+16.9,
+"FII-labelled row 16.90 -> fii; Amansa Holdings Private Limited 4.37 in-row(curated); Franklin templeton investment funds 3.33 in-row(curated); Warhol Limited 2.28 in-row(curated)"
+],
+[
+"R2FII-label",
+"Foreign Portfolio Investors (Category III)",
+2.69,
+2.69,
+"FII-labelled row 2.69 -> fii"
+],
+[
+"R2FII-holders",
+"Other Foreign Body Corporate",
+2.29,
+2.25,
+"International Finance Corporation 2.25 fii(new-format:InstitutionsForeignPortfolioInvestorOne)"
+]
+],
+"newmap_file": "500469_2110202212414_SHP.xml"
+},
+"FEDERALBNK|2016-12-31": {
+"file": "500469_1312017183550_SHP.xml",
+"d_fii": 11.03,
+"ev": [
+[
+"R2FII-label",
+"Other FII-DR",
+0.02,
+0.02,
+"FII-labelled row 0.02 -> fii"
+],
+[
+"R2FII-label",
+"Other FII",
+9.8,
+9.8,
+"FII-labelled row 9.80 -> fii; AMANSA HOLDINGS PRIVAYE LIMITED 4.37 in-row(memory~); INTERNATIONAL FINANCE CORPORATION 2.24 in-row(new-format:InstitutionsForeignPortfolioInvestorOne)"
+],
+[
+"R2FII-label",
+"Other FPI",
+1.21,
+1.21,
+"FII-labelled row 1.21 -> fii"
+]
+],
+"newmap_file": "500469_2110202212414_SHP.xml"
+},
+"FEDERALBNK|2017-03-31": {
+"file": "500469_194201716254_SHP.xml",
+"d_fii": 7.75,
+"ev": [
+[
+"R2FII-label",
+"Other FII-DR",
+0.02,
+0.02,
+"FII-labelled row 0.02 -> fii"
+],
+[
+"R2FII-label",
+"Other FII",
+6.46,
+6.46,
+"FII-labelled row 6.46 -> fii; Amansa Holdings Private Limited 4.31 in-row(curated); International Finance Corporation 1.44 in-row(new-format:InstitutionsForeignPortfolioInvestorOne)"
+],
+[
+"R2FII-label",
+"Foreign Portfolio Investors (Category III)",
+1.27,
+1.27,
+"FII-labelled row 1.27 -> fii"
+]
+],
+"newmap_file": "500469_2110202212414_SHP.xml"
+},
+"FEDERALBNK|2017-06-30": {
+"file": "500469_1872017155033_SHP.xml",
+"d_fii": 1.76,
+"ev": [
+[
+"R2FII-label",
+"Other FII-DR",
+0.02,
+0.02,
+"FII-labelled row 0.02 -> fii"
+],
+[
+"R2FII-label",
+"Other FII",
+0.58,
+0.58,
+"FII-labelled row 0.58 -> fii"
+],
+[
+"R2FII-label",
+"Foreign Portfolio Investors (Category III)",
+1.16,
+1.16,
+"FII-labelled row 1.16 -> fii"
+]
+],
+"newmap_file": "500469_2110202212414_SHP.xml"
+},
+"FEDERALBNK|2017-09-30": {
+"file": "500469_12102017162312_SHP.xml",
+"d_fii": 1.6,
+"ev": [
+[
+"R2FII-label",
+"Other FII",
+0.23,
+0.23,
+"FII-labelled row 0.23 -> fii"
+],
+[
+"R2FII-label",
+"Foreign Portfolio Investors (Category III)",
+1.37,
+1.37,
+"FII-labelled row 1.37 -> fii"
+]
+],
+"newmap_file": "500469_2110202212414_SHP.xml"
+},
+"FEDERALBNK|2017-12-31": {
+"file": "500469_1012018124141_SHP.xml",
+"d_fii": 1.41,
+"ev": [
+[
+"R2FII-label",
+"Other FII",
+0.19,
+0.19,
+"FII-labelled row 0.19 -> fii"
+],
+[
+"R2FII-label",
+"Foreign Portfolio Investors (Category III)",
+1.22,
+1.22,
+"FII-labelled row 1.22 -> fii"
+]
+],
+"newmap_file": "500469_2110202212414_SHP.xml"
+},
+"FEDERALBNK|2018-03-31": {
+"file": "500469_184201812503_SHP.xml",
+"d_fii": 1.75,
+"ev": [
+[
+"R2FII-label",
+"Others FII",
+0.17,
+0.17,
+"FII-labelled row 0.17 -> fii"
+],
+[
+"R2FII-label",
+"Foreign Portfolio Investor (Category - III)",
+1.58,
+1.58,
+"FII-labelled row 1.58 -> fii"
+]
+],
+"newmap_file": "500469_2110202212414_SHP.xml"
+},
+"FEDERALBNK|2018-09-30": {
+"file": "500469_17102018162031_SHP.xml",
+"d_fii": 1.75,
+"ev": [
+[
+"R2FII-label",
+"Others FII",
+0.16,
+0.16,
+"FII-labelled row 0.16 -> fii"
+],
+[
+"R2FII-label",
+"Foreign Portfolio Investor (Category - III)",
+1.59,
+1.59,
+"FII-labelled row 1.59 -> fii"
+]
+],
+"newmap_file": "500469_2110202212414_SHP.xml"
+},
+"FEDERALBNK|2018-12-31": {
+"file": "500469_1812019182657_SHP.xml",
+"d_fii": 1.37,
+"ev": [
+[
+"R2FII-label",
+"Others Foreign Institutional Investors",
+0.14,
+0.14,
+"FII-labelled row 0.14 -> fii"
+],
+[
+"R2FII-label",
+"Foreign Portfolio Investor (Category - III)",
+1.23,
+1.23,
+"FII-labelled row 1.23 -> fii"
+]
+],
+"newmap_file": "500469_2110202212414_SHP.xml"
+},
+"FEDERALBNK|2019-03-31": {
+"file": "500469_1742019181922_SHP.xml",
+"d_fii": 1.3,
+"ev": [
+[
+"R2FII-label",
+"Others FII",
+0.14,
+0.14,
+"FII-labelled row 0.14 -> fii"
+],
+[
+"R2FII-label",
+"Foreign Portfolio Investor (Category - III)",
+1.16,
+1.16,
+"FII-labelled row 1.16 -> fii"
+]
+],
+"newmap_file": "500469_2110202212414_SHP.xml"
+},
+"FEDERALBNK|2019-06-30": {
+"file": "500469_1772019104618_SHP.xml",
+"d_fii": 1.32,
+"ev": [
+[
+"R2FII-label",
+"Others FII",
+0.17,
+0.17,
+"FII-labelled row 0.17 -> fii"
+],
+[
+"R2FII-label",
+"Foreign Portfolio Investor (Category - III)",
+1.15,
+1.15,
+"FII-labelled row 1.15 -> fii"
+]
+],
+"newmap_file": "500469_2110202212414_SHP.xml"
+},
+"FEDERALBNK|2019-09-30": {
+"file": "500469_16102019181849_SHP.xml",
+"d_fii": 0.83,
+"ev": [
+[
+"R2FII-label",
+"Others FII",
+0.03,
+0.03,
+"FII-labelled row 0.03 -> fii"
+],
+[
+"R2FII-label",
+"Foreign Portfolio Investor (Category - III)",
+0.8,
+0.8,
+"FII-labelled row 0.80 -> fii"
+]
+],
+"newmap_file": "500469_2110202212414_SHP.xml"
+},
+"GVT&D|2021-09-30": {
+"file": "522275_11102021161033_SHP.xml",
+"d_fii": 0.15,
+"ev": [
+[
+"R2FII-label",
+"Foreign Portfolio Investor (Category - III)",
+0.15,
+0.15,
+"FII-labelled row 0.15 -> fii"
+]
+],
+"newmap_file": null
+},
+"IDFCFIRSTB|2019-03-31": {
+"file": "539437_1842019193716_SHP.xml",
+"d_fii": 9.87,
+"ev": [
+[
+"R2FII-holders",
+"Overseas Corporate Bodies",
+11.25,
+9.87,
+"CLOVERDELL INVESTMENT LTD 9.87 fii(new-format~:ForeignDirectInvestment); CALADIUM INVESTMENT PTE LTD 1.39 stay(regex)"
+]
+],
+"newmap_file": "539437_20102022104430_SHP.xml"
+},
+"IDFCFIRSTB|2019-06-30": {
+"file": "539437_1772019182325_SHP.xml",
+"d_fii": 9.86,
+"ev": [
+[
+"R2FII-holders",
+"Overseas Corporate Bodies",
+11.25,
+9.86,
+"CLOVERDELL INVESTMENT LTD 9.86 fii(new-format~:ForeignDirectInvestment); CALADIUM INVESTMENT PTE LTD 1.39 stay(regex)"
+]
+],
+"newmap_file": "539437_20102022104430_SHP.xml"
+},
+"IDFCFIRSTB|2019-09-30": {
+"file": "539437_18102019183039_SHP.xml",
+"d_fii": 9.86,
+"ev": [
+[
+"R2FII-holders",
+"Overseas Corporate Bodies",
+9.86,
+9.86,
+"CLOVERDELL INVESTMENT LTD 9.86 fii(new-format~:ForeignDirectInvestment)"
+]
+],
+"newmap_file": "539437_20102022104430_SHP.xml"
+},
+"IDFCFIRSTB|2019-12-31": {
+"file": "539437_1712020153042_SHP.xml",
+"d_fii": 9.85,
+"ev": [
+[
+"R2FII-holders",
+"Overseas Corporate Bodies",
+9.85,
+9.85,
+"CLOVERDELL INVESTMENT LTD 9.85 fii(new-format~:ForeignDirectInvestment)"
+]
+],
+"newmap_file": "539437_20102022104430_SHP.xml"
+},
+"IDFCFIRSTB|2020-03-31": {
+"file": "539437_2142020184516_SHP.xml",
+"d_fii": 9.81,
+"ev": [
+[
+"R2FII-holders",
+"Overseas Corporate Bodies",
+9.81,
+9.81,
+"CLOVERDELL INVESTMENT LTD 9.81 fii(new-format~:ForeignDirectInvestment)"
+]
+],
+"newmap_file": "539437_20102022104430_SHP.xml"
+},
+"IDFCFIRSTB|2020-06-30": {
+"file": "539437_217202021158_SHP.xml",
+"d_fii": 8.32,
+"ev": [
+[
+"R2FII-holders",
+"Overseas Corporate Bodies",
+8.32,
+8.32,
+"Cloverdell Investment Ltd 8.32 fii(new-format~:ForeignDirectInvestment)"
+]
+],
+"newmap_file": "539437_20102022104430_SHP.xml"
+},
+"IDFCFIRSTB|2020-09-30": {
+"file": "539437_21102020193312_SHP.xml",
+"d_fii": 8.32,
+"ev": [
+[
+"R2FII-holders",
+"Overseas Corporate Bodies",
+8.32,
+8.32,
+"Cloverdell Investment Ltd 8.32 fii(new-format~:ForeignDirectInvestment)"
+]
+],
+"newmap_file": "539437_20102022104430_SHP.xml"
+},
+"IDFCFIRSTB|2020-12-31": {
+"file": "539437_21120212110_SHP.xml",
+"d_fii": 8.32,
+"ev": [
+[
+"R2FII-holders",
+"Overseas Corporate Bodies",
+8.32,
+8.32,
+"CLOVERDELL INVESTMENT LTD 8.32 fii(new-format~:ForeignDirectInvestment)"
+]
+],
+"newmap_file": "539437_20102022104430_SHP.xml"
+},
+"IDFCFIRSTB|2021-03-31": {
+"file": "539437_1242021163054_SHP.xml",
+"d_fii": 8.31,
+"ev": [
+[
+"R2FII-holders",
+"Overseas Corporate Bodies",
+8.31,
+8.31,
+"CLOVERDELL INVESTMENT LTD 8.31 fii(new-format~:ForeignDirectInvestment)"
+]
+],
+"newmap_file": "539437_20102022104430_SHP.xml"
+},
+"IDFCFIRSTB|2021-06-30": {
+"file": "539437_207202120656_SHP.xml",
+"d_fii": 7.6,
+"ev": [
+[
+"R2FII-holders",
+"Overseas Corporate Bodies",
+7.6,
+7.6,
+"CLOVERDELL INVESTMENT LTD 7.60 fii(new-format~:ForeignDirectInvestment)"
+]
+],
+"newmap_file": "539437_20102022104430_SHP.xml"
+},
+"IDFCFIRSTB|2021-09-30": {
+"file": "539437_2010202118264_SHP.xml",
+"d_fii": 7.59,
+"ev": [
+[
+"R2FII-holders",
+"Overseas Corporate Bodies",
+7.59,
+7.59,
+"CLOVERDELL INVESTMENT LTD 7.59 fii(new-format~:ForeignDirectInvestment)"
+]
+],
+"newmap_file": "539437_20102022104430_SHP.xml"
+},
+"IDFCFIRSTB|2021-12-31": {
+"file": "539437_1712022164122_SHP.xml",
+"d_fii": 7.59,
+"ev": [
+[
+"R2FII-holders",
+"Overseas Corporate Bodies",
+7.59,
+7.59,
+"CLOVERDELL INVESTMENT LTD 7.59 fii(new-format~:ForeignDirectInvestment)"
+]
+],
+"newmap_file": "539437_20102022104430_SHP.xml"
+},
+"IDFCFIRSTB|2022-03-31": {
+"file": "539437_1842022191010_SHP.xml",
+"d_fii": 7.59,
+"ev": [
+[
+"R2FII-holders",
+"Overseas Corporate Bodies",
+7.59,
+7.59,
+"CLOVERDELL INVESTMENT LTD 7.59 fii(new-format~:ForeignDirectInvestment)"
+]
+],
+"newmap_file": "539437_20102022104430_SHP.xml"
+},
+"IDFCFIRSTB|2022-06-30": {
+"file": "539437_1872022183945_SHP.xml",
+"d_fii": 7.59,
+"ev": [
+[
+"R2FII-holders",
+"Overseas Corporate Bodies",
+7.59,
+7.59,
+"CLOVERDELL INVESTMENT LTD 7.59 fii(new-format~:ForeignDirectInvestment)"
+]
+],
+"newmap_file": "539437_20102022104430_SHP.xml"
+},
+"IIFL|2020-03-31": {
+"file": "532636_17420201389_SHP.xml",
+"d_fii": 15.47,
+"ev": [
+[
+"R2FII-label",
+"Foreign Portfolio Investor (Category - III)",
+0.01,
+0.01,
+"FII-labelled row 0.01 -> fii"
+],
+[
+"R2FII-holders",
+"Bodies Corporate",
+38.94,
+15.46,
+"Fih Mauritius Investments Ltd 22.37 stay(new-format:ForeignCompanies); Cdc Group Plc 15.46 fii(curated)"
+]
+],
+"newmap_file": "532636_18102022172216_SHP.xml"
+},
+"IIFL|2020-06-30": {
+"file": "532636_77202020563_SHP.xml",
+"d_fii": 15.47,
+"ev": [
+[
+"R2FII-label",
+"Foreign Portfolio Investor (Category - III)",
+0.01,
+0.01,
+"FII-labelled row 0.01 -> fii"
+],
+[
+"R2FII-holders",
+"Bodies Corporate",
+39.26,
+15.46,
+"Fih Mauritius Investments Ltd 22.37 stay(new-format:ForeignCompanies); Cdc Group Plc 15.46 fii(curated)"
+]
+],
+"newmap_file": "532636_18102022172216_SHP.xml"
+},
+"IIFL|2020-09-30": {
+"file": "532636_14102020191118_SHP.xml",
+"d_fii": 15.48,
+"ev": [
+[
+"R2FII-label",
+"Foreign Portfolio Investor (Category - III)",
+0.02,
+0.02,
+"FII-labelled row 0.02 -> fii"
+],
+[
+"R2FII-holders",
+"Bodies Corporate",
+39.08,
+15.46,
+"Fih Mauritius Investments Ltd* 22.37 stay(new-format:ForeignCompanies); Cdc Group Plc 15.46 fii(curated)"
+]
+],
+"newmap_file": "532636_18102022172216_SHP.xml"
+},
+"IIFL|2020-12-31": {
+"file": "532636_1412021145816_SHP.xml",
+"d_fii": 15.48,
+"ev": [
+[
+"R2FII-holders",
+"Bodies Corporate",
+39.17,
+15.46,
+"Fih Mauritius Investments Ltd 22.36 stay(new-format:ForeignCompanies); Cdc Group Plc 15.46 fii(curated)"
+],
+[
+"R2FII-label",
+"Foreign Portfolio Investor (Category - III)",
+0.02,
+0.02,
+"FII-labelled row 0.02 -> fii"
+]
+],
+"newmap_file": "532636_18102022172216_SHP.xml"
+},
+"IIFL|2021-03-31": {
+"file": "532636_174202111584_SHP.xml",
+"d_fii": 15.46,
+"ev": [
+[
+"R2FII-holders",
+"Bodies Corporate",
+38.42,
+15.44,
+"Fih Mauritius Investments Ltd* 22.34 stay(new-format:ForeignCompanies); Cdc Group Plc 15.44 fii(curated)"
+],
+[
+"R2FII-label",
+"Foreign Portfolio Investor (Category - III)",
+0.02,
+0.02,
+"FII-labelled row 0.02 -> fii"
+]
+],
+"newmap_file": "532636_18102022172216_SHP.xml"
+},
+"IIFL|2021-06-30": {
+"file": "532636_1472021191211_SHP.xml",
+"d_fii": 15.46,
+"ev": [
+[
+"R2FII-holders",
+"Bodies Corporate",
+38.19,
+15.44,
+"Fih Mauritius Investments Ltd* 22.33 stay(new-format:ForeignCompanies); Cdc Group Plc 15.44 fii(curated)"
+],
+[
+"R2FII-label",
+"Foreign Portfolio Investor (Category - III)",
+0.02,
+0.02,
+"FII-labelled row 0.02 -> fii"
+]
+],
+"newmap_file": "532636_18102022172216_SHP.xml"
+},
+"IIFL|2021-09-30": {
+"file": "532636_1810202116059_SHP.xml",
+"d_fii": 7.8,
+"ev": [
+[
+"R2FII-holders",
+"Bodies Corporate",
+31.81,
+7.78,
+"Fih Mauritius Investments Ltd* 22.32 stay(new-format:ForeignCompanies); Cdc Group Plc 7.78 fii(curated)"
+],
+[
+"R2FII-label",
+"Foreign Portfolio Investor (Category - III)",
+0.02,
+0.02,
+"FII-labelled row 0.02 -> fii"
+]
+],
+"newmap_file": "532636_18102022172216_SHP.xml"
+},
+"IIFL|2021-12-31": {
+"file": "532636_1812022184911_SHP.xml",
+"d_fii": 7.8,
+"ev": [
+[
+"R2FII-holders",
+"Bodies Corporate",
+32.51,
+7.78,
+"Fih Mauritius Investments Ltd* 22.31 stay(new-format:ForeignCompanies); Cdc Group Plc 7.78 fii(curated)"
+],
+[
+"R2FII-label",
+"Foreign Portfolio Investor (Category - III)",
+0.02,
+0.02,
+"FII-labelled row 0.02 -> fii"
+]
+],
+"newmap_file": "532636_18102022172216_SHP.xml"
+},
+"IIFL|2022-03-31": {
+"file": "532636_1842022182529_SHP.xml",
+"d_fii": 7.79,
+"ev": [
+[
+"R2FII-holders",
+"Bodies Corporate",
+32.89,
+7.77,
+"Fih Mauritius Investments Ltd 22.30 stay(new-format:ForeignCompanies); Cdc Group Plc 7.77 fii(curated)"
+],
+[
+"R2FII-label",
+"Foreign Portfolio Investor (Category - III)",
+0.02,
+0.02,
+"FII-labelled row 0.02 -> fii"
+]
+],
+"newmap_file": "532636_18102022172216_SHP.xml"
+},
+"IIFL|2022-06-30": {
+"file": "532636_2072022151918_SHP.xml",
+"d_fii": 3.58,
+"ev": [
+[
+"R2FII-holders",
+"Bodies Corporate",
+28.65,
+3.56,
+"Fih Mauritius Investments Ltd 22.29 stay(new-format:ForeignCompanies); Cdc Group Plc 3.56 fii(curated)"
+],
+[
+"R2FII-label",
+"Foreign Portfolio Investor (Category - III)",
+0.02,
+0.02,
+"FII-labelled row 0.02 -> fii"
+]
+],
+"newmap_file": "532636_18102022172216_SHP.xml"
+},
+"ITC|2016-06-30": {
+"file": "500875_217201613121_SHP.xml",
+"d_fii": 30.03,
+"ev": [
+[
+"R2FII-holders",
+"Bodies Corporate",
+33.7,
+30.03,
+"Tobacco Manufacturers (India) Limited 24.71 fii(new-format:ForeignDirectInvestment); Myddleton Investment Company Limited 4.03 fii(new-format:ForeignDirectInvestment); Rothmans International Enterprises Limited 1.29 fii(new-format:ForeignDirectInvestment)"
+]
+],
+"newmap_file": "500875_20102022124920_SHP.xml"
+},
+"ITC|2016-09-30": {
+"file": "500875_1312201617535_SHP.xml",
+"d_fii": 29.95,
+"ev": [
+[
+"R2FII-holders",
+"Overseas corporate bodies",
+29.95,
+28.67,
+"Tobacco Manufacturers (India) Limited 24.65 fii(new-format:ForeignDirectInvestment); Myddleton Investment Company Limited 4.02 fii(new-format:ForeignDirectInvestment)"
+],
+[
+"R2FII-holders",
+"Bodies Corporate",
+3.53,
+1.28,
+"Rothmans International Enterprises Limited 1.28 fii(new-format:ForeignDirectInvestment)"
+]
+],
+"newmap_file": "500875_20102022124920_SHP.xml"
+},
+"ITC|2016-12-31": {
+"file": "500875_13120171852_SHP.xml",
+"d_fii": 29.92,
+"ev": [
+[
+"R2FII-holders",
+"Bodies Corporate",
+33.67,
+29.92,
+"Tobacco Manufacturers (India) Limited 24.62 fii(new-format:ForeignDirectInvestment); Myddleton Investment Company Limited 4.02 fii(new-format:ForeignDirectInvestment); Rothmans International Enterprises Limited 1.28 fii(new-format:ForeignDirectInvestment)"
+]
+],
+"newmap_file": "500875_20102022124920_SHP.xml"
+},
+"ITC|2017-03-31": {
+"file": "500875_124201720613_SHP.xml",
+"d_fii": 29.86,
+"ev": [
+[
+"R2FII-holders",
+"Bodies Corporate",
+33.66,
+29.86,
+"Tobacco Manufacturers (India) Limited 24.57 fii(new-format:ForeignDirectInvestment); Myddleton Investment Company Limited 4.01 fii(new-format:ForeignDirectInvestment); Rothmans International Enterprises Limited 1.28 fii(new-format:ForeignDirectInvestment)"
+]
+],
+"newmap_file": "500875_20102022124920_SHP.xml"
+},
+"ITC|2017-06-30": {
+"file": "500875_177201719191_SHP.xml",
+"d_fii": 29.85,
+"ev": [
+[
+"R2FII-holders",
+"Bodies Corporate",
+8.9,
+5.29,
+"Myddleton Investment Company Limited 4.01 fii(new-format:ForeignDirectInvestment); Rothmans International Enterprises Limited 1.28 fii(new-format:ForeignDirectInvestment)"
+],
+[
+"R2FII-holders",
+"Other",
+0.0,
+24.56,
+"Tobacco Manufacturers (India) Limited 24.56 fii(new-format:ForeignDirectInvestment)"
+]
+],
+"newmap_file": "500875_20102022124920_SHP.xml"
+},
+"ITC|2017-09-30": {
+"file": "500875_12102017182932_SHP.xml",
+"d_fii": 29.77,
+"ev": [
+[
+"R2FII-holders",
+"Bodies Corporate",
+33.51,
+29.77,
+"Tobacco Manufacturers (India) Limited 24.50 fii(new-format:ForeignDirectInvestment); Myddleton Investment Company Limited 4.00 fii(new-format:ForeignDirectInvestment); Rothmans International Enterprises Limited 1.27 fii(new-format:ForeignDirectInvestment)"
+]
+],
+"newmap_file": "500875_20102022124920_SHP.xml"
+},
+"ITC|2017-12-31": {
+"file": "500875_1612018193552_SHP.xml",
+"d_fii": 29.75,
+"ev": [
+[
+"R2FII-holders",
+"Bodies Corporate",
+33.63,
+29.75,
+"Tobacco Manufacturers (India) Limited 24.48 fii(new-format:ForeignDirectInvestment); Myddleton Investment Company Limited 4.00 fii(new-format:ForeignDirectInvestment); Rothmans International Enterprises Limited 1.27 fii(new-format:ForeignDirectInvestment)"
+]
+],
+"newmap_file": "500875_20102022124920_SHP.xml"
+},
+"ITC|2018-03-31": {
+"file": "500875_1142018125646_SHP.xml",
+"d_fii": 29.71,
+"ev": [
+[
+"R2FII-holders",
+"Bodies Corporate",
+33.81,
+29.71,
+"Tobacco Manufacturers (India) Limited 24.45 fii(new-format:ForeignDirectInvestment); Myddleton Investment Company Limited 3.99 fii(new-format:ForeignDirectInvestment); Rothmans International Enterprises Limited 1.27 fii(new-format:ForeignDirectInvestment); ICICI Prudential Life Insurance Company Limited 1.04 stay(curated)"
+]
+],
+"newmap_file": "500875_20102022124920_SHP.xml"
+},
+"ITC|2018-06-30": {
+"file": "500875_1172018143035_SHP.xml",
+"d_fii": 29.71,
+"ev": [
+[
+"R2FII-holders",
+"Bodies Corporate",
+33.75,
+29.71,
+"Tobacco Manufacturers (India) Limited 24.45 fii(new-format:ForeignDirectInvestment); Myddleton Investments Company Limited 3.99 fii(new-format~:ForeignDirectInvestment); Rothmans International Enterprises Limited 1.27 fii(new-format:ForeignDirectInvestment); ICICI Prudential Life Insurance Company Limited 1.01 stay(curated)"
+]
+],
+"newmap_file": "500875_20102022124920_SHP.xml"
+},
+"ITC|2018-09-30": {
+"file": "500875_111020181763_SHP.xml",
+"d_fii": 29.62,
+"ev": [
+[
+"R2FII-holders",
+"Bodies Corporate",
+33.86,
+29.62,
+"Tobacco Manufacturers (India) Limited 24.37 fii(new-format:ForeignDirectInvestment); Myddleton Investments Company Limited 3.98 fii(new-format~:ForeignDirectInvestment); Rothmans International Enterprises Limited 1.27 fii(new-format:ForeignDirectInvestment); ICICI Prudential Life Insurance Company Limited 1.17 stay(curated)"
+]
+],
+"newmap_file": "500875_20102022124920_SHP.xml"
+},
+"ITC|2018-12-31": {
+"file": "500875_181201910559_SHP.xml",
+"d_fii": 29.61,
+"ev": [
+[
+"R2FII-holders",
+"Bodies Corporate",
+33.73,
+29.61,
+"Tobacco Manufacturers (India) Limited 24.36 fii(new-format:ForeignDirectInvestment); Myddleton Investment Company Limited 3.98 fii(new-format:ForeignDirectInvestment); Rothmans International Enterprises Limited 1.27 fii(new-format:ForeignDirectInvestment); ICICI Prudential Life Insurance Company Limited 1.12 stay(curated)"
+]
+],
+"newmap_file": "500875_20102022124920_SHP.xml"
+},
+"ITC|2019-03-31": {
+"file": "500875_1142019125622_SHP.xml",
+"d_fii": 29.58,
+"ev": [
+[
+"R2FII-holders",
+"Bodies Corporate",
+33.7,
+29.58,
+"Tobacco Manufacturers (India) Limited 24.34 fii(new-format:ForeignDirectInvestment); Myddleton Investment Company Limited 3.97 fii(new-format:ForeignDirectInvestment); Rothmans International Enterprises Limited 1.27 fii(new-format:ForeignDirectInvestment); ICICI Prudential Life Insurance Company Limited 1.26 stay(curated)"
+]
+],
+"newmap_file": "500875_20102022124920_SHP.xml"
+},
+"ITC|2019-06-30": {
+"file": "500875_1772019184231_SHP.xml",
+"d_fii": 29.58,
+"ev": [
+[
+"R2FII-holders",
+"Bodies Corporate",
+33.71,
+29.58,
+"Tobacco Manufacturers (India) Limited 24.34 fii(new-format:ForeignDirectInvestment); Myddleton Investment Company Limited 3.97 fii(new-format:ForeignDirectInvestment); ICICI Prudential Life Insurance Company Limited 1.35 stay(curated); Rothmans International Enterprises Limited 1.27 fii(new-format:ForeignDirectInvestment)"
+]
+],
+"newmap_file": "500875_20102022124920_SHP.xml"
+},
+"ITC|2019-09-30": {
+"file": "500875_14102019131949_SHP.xml",
+"d_fii": 29.5,
+"ev": [
+[
+"R2FII-holders",
+"Bodies Corporate",
+30.51,
+29.5,
+"Tobacco Manufacturers (India) Limited 24.28 fii(new-format:ForeignDirectInvestment); Myddleton Investment Company Limited 3.96 fii(new-format:ForeignDirectInvestment); Rothmans International Enterprises Limited 1.26 fii(new-format:ForeignDirectInvestment)"
+]
+],
+"newmap_file": "500875_20102022124920_SHP.xml"
+},
+"ITC|2019-12-31": {
+"file": "500875_1512020172033_SHP.xml",
+"d_fii": 29.49,
+"ev": [
+[
+"R2FII-holders",
+"Bodies Corporate",
+30.53,
+29.49,
+"Tobacco Manufacturers (India) Limited 24.27 fii(new-format:ForeignDirectInvestment); Myddleton Investment Company Limited 3.96 fii(new-format:ForeignDirectInvestment); Rothmans International Enterprises Limited 1.26 fii(new-format:ForeignDirectInvestment)"
+]
+],
+"newmap_file": "500875_20102022124920_SHP.xml"
+},
+"ITC|2020-03-31": {
+"file": "500875_134202019529_SHP.xml",
+"d_fii": 29.48,
+"ev": [
+[
+"R2FII-holders",
+"Bodies Corporate",
+30.53,
+29.48,
+"Tobacco Manufacturers (India) Limited 24.26 fii(new-format:ForeignDirectInvestment); Myddleton Investment Company Limited 3.96 fii(new-format:ForeignDirectInvestment); Rothmans International Enterprises Limited 1.26 fii(new-format:ForeignDirectInvestment)"
+]
+],
+"newmap_file": "500875_20102022124920_SHP.xml"
+},
+"ITC|2020-06-30": {
+"file": "500875_207202018954_SHP.xml",
+"d_fii": 29.48,
+"ev": [
+[
+"R2FII-holders",
+"Bodies Corporate",
+30.48,
+29.48,
+"Tobacco Manufacturers (India) Limited 24.26 fii(new-format:ForeignDirectInvestment); Myddleton Investment Company Limited 3.96 fii(new-format:ForeignDirectInvestment); Rothmans International Enterprises Limited 1.26 fii(new-format:ForeignDirectInvestment)"
+]
+],
+"newmap_file": "500875_20102022124920_SHP.xml"
+},
+"ITC|2020-09-30": {
+"file": "500875_20102020141057_SHP.xml",
+"d_fii": 29.45,
+"ev": [
+[
+"R2FII-holders",
+"Bodies Corporate",
+30.39,
+29.45,
+"Tobacco Manufacturers (India) Limited 24.23 fii(new-format:ForeignDirectInvestment); Myddleton Investment Company Limited 3.96 fii(new-format:ForeignDirectInvestment); Rothmans International Enterprises Limited 1.26 fii(new-format:ForeignDirectInvestment)"
+]
+],
+"newmap_file": "500875_20102022124920_SHP.xml"
+},
+"ITC|2020-12-31": {
+"file": "500875_1912021132758_SHP.xml",
+"d_fii": 29.45,
+"ev": [
+[
+"R2FII-holders",
+"Bodies Corporate",
+30.49,
+29.45,
+"Tobacco Manufacturers (India) Limited 24.23 fii(new-format:ForeignDirectInvestment); Myddleton Investment Company Limited 3.96 fii(new-format:ForeignDirectInvestment); Rothmans International Enterprises Limited 1.26 fii(new-format:ForeignDirectInvestment)"
+]
+],
+"newmap_file": "500875_20102022124920_SHP.xml"
+},
+"ITC|2021-03-31": {
+"file": "500875_1942021194554_SHP.xml",
+"d_fii": 29.45,
+"ev": [
+[
+"R2FII-holders",
+"Bodies Corporate",
+30.62,
+29.45,
+"Tobacco Manufacturers (India) Limited 24.23 fii(new-format:ForeignDirectInvestment); Myddleton Investment Company Limited 3.96 fii(new-format:ForeignDirectInvestment); Rothmans International Enterprises Limited 1.26 fii(new-format:ForeignDirectInvestment)"
+]
+],
+"newmap_file": "500875_20102022124920_SHP.xml"
+},
+"ITC|2021-06-30": {
+"file": "500875_1972021215350_SHP.xml",
+"d_fii": 29.45,
+"ev": [
+[
+"R2FII-holders",
+"Bodies Corporate",
+30.72,
+29.45,
+"Tobacco Manufacturers (India) Limited 24.23 fii(new-format:ForeignDirectInvestment); Myddleton Investment Company Limited 3.96 fii(new-format:ForeignDirectInvestment); Rothmans International Enterprises Limited 1.26 fii(new-format:ForeignDirectInvestment)"
+]
+],
+"newmap_file": "500875_20102022124920_SHP.xml"
+},
+"ITC|2021-09-30": {
+"file": "500875_12102021133535_SHP.xml",
+"d_fii": 29.41,
+"ev": [
+[
+"R2FII-holders",
+"Bodies Corporate",
+30.63,
+29.41,
+"Tobacco Manufacturers (India) Limited 24.20 fii(new-format:ForeignDirectInvestment); Myddleton Investment Company Limited 3.95 fii(new-format:ForeignDirectInvestment); Rothmans International Enterprises Limited 1.26 fii(new-format:ForeignDirectInvestment)"
+]
+],
+"newmap_file": "500875_20102022124920_SHP.xml"
+},
+"ITC|2021-12-31": {
+"file": "500875_1812022162716_SHP.xml",
+"d_fii": 29.41,
+"ev": [
+[
+"R2FII-holders",
+"Bodies Corporate",
+30.7,
+29.41,
+"Tobacco Manufacturers (India) Limited 24.20 fii(new-format:ForeignDirectInvestment); Myddleton Investment Company Limited 3.95 fii(new-format:ForeignDirectInvestment); Rothmans International Enterprises Limited 1.26 fii(new-format:ForeignDirectInvestment)"
+]
+],
+"newmap_file": "500875_20102022124920_SHP.xml"
+},
+"ITC|2022-03-31": {
+"file": "500875_842022182936_SHP.xml",
+"d_fii": 29.41,
+"ev": [
+[
+"R2FII-holders",
+"Bodies Corporate",
+30.63,
+29.41,
+"Tobacco Manufacturers (India) Limited 24.20 fii(new-format:ForeignDirectInvestment); Myddleton Investment Company Limited 3.95 fii(new-format:ForeignDirectInvestment); Rothmans International Enterprises Limited 1.26 fii(new-format:ForeignDirectInvestment)"
+]
+],
+"newmap_file": "500875_20102022124920_SHP.xml"
+},
+"ITC|2022-06-30": {
+"file": "500875_187202216154_SHP.xml",
+"d_fii": 29.37,
+"ev": [
+[
+"R2FII-holders",
+"Bodies Corporate",
+30.39,
+29.37,
+"Tobacco Manufacturers (India) Limited 24.16 fii(new-format:ForeignDirectInvestment); Myddleton Investment Company Limited 3.95 fii(new-format:ForeignDirectInvestment); Rothmans International Enterprises Limited 1.26 fii(new-format:ForeignDirectInvestment)"
+]
+],
+"newmap_file": "500875_20102022124920_SHP.xml"
+},
+"J&KBANK|2016-12-31": {
+"file": "532209_201201711125_SHP.xml",
+"d_fii": 2.43,
+"ev": [
+[
+"R2FII-label",
+"Other Foreign Institutional Investor",
+2.43,
+2.43,
+"FII-labelled row 2.43 -> fii"
+]
+],
+"newmap_file": "532209_13102022124246_SHP.xml"
+},
+"JMFINANCIL|2016-06-30": {
+"file": "523405_1972016194935_SHP.xml",
+"d_fii": 1.48,
+"ev": [
+[
+"R2FII-holders",
+"Foreign Individuals or NRI",
+1.68,
+1.48,
+"Vikram Shanker Pandit 1.48 fii(new-format~:ForeignDirectInvestment)"
+]
+],
+"newmap_file": "523405_20102022163753_SHP.xml"
+},
+"JMFINANCIL|2016-09-30": {
+"file": "523405_10102016214640_SHP.xml",
+"d_fii": 1.47,
+"ev": [
+[
+"R2FII-holders",
+"NRI – Repat",
+1.62,
+1.47,
+"Vikram Shankar Pandit 1.47 fii(new-format:ForeignDirectInvestment)"
+]
+],
+"newmap_file": "523405_20102022163753_SHP.xml"
+},
+"JMFINANCIL|2016-12-31": {
+"file": "523405_1312017203053_SHP.xml",
+"d_fii": 1.47,
+"ev": [
+[
+"R2FII-holders",
+"NRI",
+1.63,
+1.47,
+"Vikram Shankar Pandit 1.47 fii(new-format:ForeignDirectInvestment)"
+]
+],
+"newmap_file": "523405_20102022163753_SHP.xml"
+},
+"JMFINANCIL|2017-03-31": {
+"file": "523405_1842017213120_SHP.xml",
+"d_fii": 1.47,
+"ev": [
+[
+"R2FII-holders",
+"NRI",
+1.61,
+1.47,
+"Vikram Shankar Pandit 1.47 fii(new-format:ForeignDirectInvestment)"
+]
+],
+"newmap_file": "523405_20102022163753_SHP.xml"
+},
+"JMFINANCIL|2017-06-30": {
+"file": "523405_137201718417_SHP.xml",
+"d_fii": 1.46,
+"ev": [
+[
+"R2FII-holders",
+"NRI",
+1.63,
+1.46,
+"Vikram Shankar Pandit 1.46 fii(new-format:ForeignDirectInvestment)"
+]
+],
+"newmap_file": "523405_20102022163753_SHP.xml"
+},
+"JMFINANCIL|2017-09-30": {
+"file": "523405_4102017204315_SHP.xml",
+"d_fii": 1.46,
+"ev": [
+[
+"R2FII-holders",
+"NRI",
+1.81,
+1.46,
+"Vikram Shankar Pandit 1.46 fii(new-format:ForeignDirectInvestment)"
+]
+],
+"newmap_file": "523405_20102022163753_SHP.xml"
+},
+"JMFINANCIL|2017-12-31": {
+"file": "523405_2412018171350_SHP.xml",
+"d_fii": 1.46,
+"ev": [
+[
+"R2FII-holders",
+"NRI",
+1.88,
+1.46,
+"Vikram Shankar Pandit 1.46 fii(new-format:ForeignDirectInvestment)"
+]
+],
+"newmap_file": "523405_20102022163753_SHP.xml"
+},
+"JMFINANCIL|2018-03-31": {
+"file": "523405_1042018155843_SHP.xml",
+"d_fii": 1.39,
+"ev": [
+[
+"R2FII-holders",
+"Non-Resident Indian (NRI)",
+1.73,
+1.39,
+"Vikram Shankar Pandit 1.39 fii(new-format:ForeignDirectInvestment)"
+]
+],
+"newmap_file": "523405_20102022163753_SHP.xml"
+},
+"JMFINANCIL|2018-06-30": {
+"file": "523405_672018112144_SHP.xml",
+"d_fii": 1.39,
+"ev": [
+[
+"R2FII-holders",
+"Non-Resident Indian (NRI)",
+1.73,
+1.39,
+"Vikram Shankar Pandit 1.39 fii(new-format:ForeignDirectInvestment)"
+]
+],
+"newmap_file": "523405_20102022163753_SHP.xml"
+},
+"JMFINANCIL|2018-09-30": {
+"file": "523405_1010201822441_SHP.xml",
+"d_fii": 1.39,
+"ev": [
+[
+"R2FII-holders",
+"Non-Resident Indian (NRI)",
+1.73,
+1.39,
+"Vikram Shankar Pandit 1.39 fii(new-format:ForeignDirectInvestment)"
+]
+],
+"newmap_file": "523405_20102022163753_SHP.xml"
+},
+"JMFINANCIL|2018-12-31": {
+"file": "523405_912019161159_SHP.xml",
+"d_fii": 1.39,
+"ev": [
+[
+"R2FII-holders",
+"Non-Resident Indian (NRI)",
+1.72,
+1.39,
+"Vikram Shankar Pandit 1.39 fii(new-format:ForeignDirectInvestment)"
+]
+],
+"newmap_file": "523405_20102022163753_SHP.xml"
+},
+"JMFINANCIL|2019-03-31": {
+"file": "523405_9420191678_SHP.xml",
+"d_fii": 1.39,
+"ev": [
+[
+"R2FII-holders",
+"Non-Resident Indian (NRI)",
+1.73,
+1.39,
+"Vikram Shankar Pandit 1.39 fii(new-format:ForeignDirectInvestment)"
+]
+],
+"newmap_file": "523405_20102022163753_SHP.xml"
+},
+"JMFINANCIL|2019-06-30": {
+"file": "523405_2072019163319_SHP.xml",
+"d_fii": 1.39,
+"ev": [
+[
+"R2FII-holders",
+"Non-Resident Indian (NRI)",
+1.68,
+1.39,
+"Vikram Shankar Pandit 1.39 fii(new-format:ForeignDirectInvestment)"
+]
+],
+"newmap_file": "523405_20102022163753_SHP.xml"
+},
+"JMFINANCIL|2019-09-30": {
+"file": "523405_1110201919023_SHP.xml",
+"d_fii": 1.38,
+"ev": [
+[
+"R2FII-holders",
+"Non-Resident Indian (NRI)",
+1.66,
+1.38,
+"Vikram Shankar Pandit 1.38 fii(new-format:ForeignDirectInvestment)"
+]
+],
+"newmap_file": "523405_20102022163753_SHP.xml"
+},
+"JMFINANCIL|2019-12-31": {
+"file": "523405_912020113214_SHP.xml",
+"d_fii": 1.38,
+"ev": [
+[
+"R2FII-holders",
+"Non-Resident Indian (NRI)",
+1.65,
+1.38,
+"Vikram Shankar Pandit 1.38 fii(new-format:ForeignDirectInvestment)"
+]
+],
+"newmap_file": "523405_20102022163753_SHP.xml"
+},
+"JMFINANCIL|2020-03-31": {
+"file": "523405_115202013128_SHP.xml",
+"d_fii": 1.38,
+"ev": [
+[
+"R2FII-holders",
+"Non-Resident Indian (NRI)",
+1.63,
+1.38,
+"Vikram Shankar Pandit 1.38 fii(new-format:ForeignDirectInvestment)"
+]
+],
+"newmap_file": "523405_20102022163753_SHP.xml"
+},
+"JMFINANCIL|2020-06-30": {
+"file": "523405_2072020105247_SHP.xml",
+"d_fii": 1.22,
+"ev": [
+[
+"R2FII-holders",
+"Non-Resident Indian (NRI)",
+1.44,
+1.22,
+"Vikram Shankar Pandit 1.22 fii(new-format:ForeignDirectInvestment)"
+]
+],
+"newmap_file": "523405_20102022163753_SHP.xml"
+},
+"JMFINANCIL|2020-09-30": {
+"file": "523405_20102020223627_SHP.xml",
+"d_fii": 1.22,
+"ev": [
+[
+"R2FII-holders",
+"Non-Resident Indian (NRI)",
+1.43,
+1.22,
+"Vikram Shankar Pandit 1.22 fii(new-format:ForeignDirectInvestment)"
+]
+],
+"newmap_file": "523405_20102022163753_SHP.xml"
+},
+"JMFINANCIL|2020-12-31": {
+"file": "523405_141202115461_SHP.xml",
+"d_fii": 1.22,
+"ev": [
+[
+"R2FII-holders",
+"Non-Resident Indian (NRI)",
+1.45,
+1.22,
+"Vikram Shankar Pandit 1.22 fii(new-format:ForeignDirectInvestment)"
+]
+],
+"newmap_file": "523405_20102022163753_SHP.xml"
+},
+"JMFINANCIL|2021-03-31": {
+"file": "523405_144202118211_SHP.xml",
+"d_fii": 1.22,
+"ev": [
+[
+"R2FII-holders",
+"Non-Resident Indian (NRI)",
+1.45,
+1.22,
+"Vikram Shankar Pandit 1.22 fii(new-format:ForeignDirectInvestment)"
+]
+],
+"newmap_file": "523405_20102022163753_SHP.xml"
+},
+"JMFINANCIL|2021-06-30": {
+"file": "523405_1672021213234_SHP.xml",
+"d_fii": 1.22,
+"ev": [
+[
+"R2FII-holders",
+"Non-Resident Indian (NRI)",
+1.42,
+1.22,
+"Vikram Shankar Pandit 1.22 fii(new-format:ForeignDirectInvestment)"
+]
+],
+"newmap_file": "523405_20102022163753_SHP.xml"
+},
+"JMFINANCIL|2021-09-30": {
+"file": "523405_2010202116234_SHP.xml",
+"d_fii": 1.22,
+"ev": [
+[
+"R2FII-holders",
+"Non-Resident Indian (NRI)",
+1.46,
+1.22,
+"Vikram Shankar Pandit 1.22 fii(new-format:ForeignDirectInvestment)"
+]
+],
+"newmap_file": "523405_20102022163753_SHP.xml"
+},
+"JMFINANCIL|2021-12-31": {
+"file": "523405_1022022204348_SHP.xml",
+"d_fii": 1.22,
+"ev": [
+[
+"R2FII-holders",
+"Non-Resident Indian (NRI)",
+1.47,
+1.22,
+"Vikram Shankar Pandit 1.22 fii(new-format:ForeignDirectInvestment)"
+]
+],
+"newmap_file": "523405_20102022163753_SHP.xml"
+},
+"JMFINANCIL|2022-03-31": {
+"file": "523405_214202212444_SHP.xml",
+"d_fii": 1.22,
+"ev": [
+[
+"R2FII-holders",
+"Non-Resident Indian (NRI)",
+1.48,
+1.22,
+"Vikram Shankar Pandit 1.22 fii(new-format:ForeignDirectInvestment)"
+]
+],
+"newmap_file": "523405_20102022163753_SHP.xml"
+},
+"JMFINANCIL|2022-06-30": {
+"file": "523405_197202221349_SHP.xml",
+"d_fii": 1.22,
+"ev": [
+[
+"R2FII-holders",
+"Non-Resident Indian (NRI)",
+1.54,
+1.22,
+"Vikram Shankar Pandit 1.22 fii(new-format:ForeignDirectInvestment)"
+]
+],
+"newmap_file": "523405_20102022163753_SHP.xml"
+},
+"KIMS|2021-09-30": {
+"file": "543308_19102021141924_SHP.xml",
+"d_fii": 0.19,
+"ev": [
+[
+"R2FII-label",
+"Foreign Portfolio Investor (Category - III)",
+17.43,
+0.19,
+"FII-labelled row 17.43 -> fii less holders placed elsewhere 17.24; General Atlantic Singapore Kh Pte Ltd 17.24 stay(new-format:ForeignCompanies)"
+]
+],
+"newmap_file": "543308_18102022162938_SHP.xml"
+},
+"KIMS|2021-12-31": {
+"file": "543308_812022102318_SHP.xml",
+"d_fii": 0.19,
+"ev": [
+[
+"R2FII-label",
+"Foreign Portfolio Investor (Category - III)",
+17.43,
+0.19,
+"FII-labelled row 17.43 -> fii less holders placed elsewhere 17.24; General Atlantic Singapore Kh Pte Ltd 17.24 stay(new-format:ForeignCompanies)"
+]
+],
+"newmap_file": "543308_18102022162938_SHP.xml"
+},
+"KIMS|2022-03-31": {
+"file": "543308_942022103750_SHP.xml",
+"d_fii": 0.19,
+"ev": [
+[
+"R2FII-label",
+"Foreign Portfolio Investor (Category - III)",
+17.43,
+0.19,
+"FII-labelled row 17.43 -> fii less holders placed elsewhere 17.24; General Atlantic Singapore Kh Pte Ltd 17.24 stay(new-format:ForeignCompanies)"
+]
+],
+"newmap_file": "543308_18102022162938_SHP.xml"
+},
+"KIMS|2022-06-30": {
+"file": "543308_1972022135939_SHP.xml",
+"d_fii": 0.19,
+"ev": [
+[
+"R2FII-label",
+"Foreign Portfolio Investor (Category - III)",
+17.43,
+0.19,
+"FII-labelled row 17.43 -> fii less holders placed elsewhere 17.24; General Atlantic Singapore Kh Pte Ltd 17.24 stay(new-format:ForeignCompanies)"
+]
+],
+"newmap_file": "543308_18102022162938_SHP.xml"
+},
+"KOTAKBANK|2016-06-30": {
+"file": "500247_297201617245_SHP.xml",
+"d_fii": 1.79,
+"ev": [
+[
+"R2FII-holders",
+"Other Foreigh Bank",
+1.79,
+1.79,
+"Sumitomo Mitsui banking Corporation 1.79 fii(new-format:OtherInstitutionsForeign)"
+]
+],
+"newmap_file": "500247_21102022184933_SHP.xml"
+},
+"KOTAKBANK|2016-09-30": {
+"file": "500247_171020161556_SHP.xml",
+"d_fii": 1.79,
+"ev": [
+[
+"R2FII-holders",
+"Other Foreign Bank",
+1.79,
+1.79,
+"Sumitomo Mitsui Banking Corporation 1.79 fii(new-format:OtherInstitutionsForeign)"
+]
+],
+"newmap_file": "500247_21102022184933_SHP.xml"
+},
+"KOTAKBANK|2016-12-31": {
+"file": "500247_2012017124715_SHP.xml",
+"d_fii": 1.78,
+"ev": [
+[
+"R2FII-holders",
+"Other Foreign Bank",
+1.78,
+1.78,
+"Sumitomo Mitsui Banking Corporation 1.78 fii(new-format:OtherInstitutionsForeign)"
+]
+],
+"newmap_file": "500247_21102022184933_SHP.xml"
+},
+"KOTAKBANK|2017-03-31": {
+"file": "500247_114201713559_SHP.xml",
+"d_fii": 1.78,
+"ev": [
+[
+"R2FII-holders",
+"Other Foreign Bank",
+1.78,
+1.78,
+"Sumitomo Mitsui Banking Corporation 1.78 fii(new-format:OtherInstitutionsForeign)"
+]
+],
+"newmap_file": "500247_21102022184933_SHP.xml"
+},
+"KOTAKBANK|2017-06-30": {
+"file": "500247_127201715117_SHP.xml",
+"d_fii": 1.72,
+"ev": [
+[
+"R2FII-holders",
+"Other FOREIGN BANK",
+1.72,
+1.72,
+"SUMITOMO MITSUI BANKING CORPORATION 1.72 fii(new-format:OtherInstitutionsForeign)"
+]
+],
+"newmap_file": "500247_21102022184933_SHP.xml"
+},
+"KOTAKBANK|2017-09-30": {
+"file": "500247_1310201717013_SHP.xml",
+"d_fii": 1.72,
+"ev": [
+[
+"R2FII-holders",
+"Other FOREIGN BANK",
+1.72,
+1.72,
+"SUMITOMO MITSUI BANKING CORPORATION 1.72 fii(new-format:OtherInstitutionsForeign)"
+]
+],
+"newmap_file": "500247_21102022184933_SHP.xml"
+},
+"KOTAKBANK|2017-12-31": {
+"file": "500247_1212018174129_SHP.xml",
+"d_fii": 1.72,
+"ev": [
+[
+"R2FII-holders",
+"Other FOREIGN BANK",
+1.72,
+1.72,
+"SUMITOMO MITSUI BANKING CORPORATION 1.72 fii(new-format:OtherInstitutionsForeign)"
+]
+],
+"newmap_file": "500247_21102022184933_SHP.xml"
+},
+"KOTAKBANK|2018-03-31": {
+"file": "500247_114201815317_SHP.xml",
+"d_fii": 1.72,
+"ev": [
+[
+"R2FII-holders",
+"Others FOREIGN BANK",
+1.72,
+1.72,
+"SUMITOMO MITSUI BANKING CORPORATION 1.72 fii(new-format:OtherInstitutionsForeign)"
+]
+],
+"newmap_file": "500247_21102022184933_SHP.xml"
+},
+"KOTAKBANK|2018-06-30": {
+"file": "500247_12720181968_SHP.xml",
+"d_fii": 1.72,
+"ev": [
+[
+"R2FII-holders",
+"Others FOREIGN BANK",
+1.72,
+1.72,
+"SUMITOMO MITSUI BANKING CORPORATION 1.72 fii(new-format:OtherInstitutionsForeign)"
+]
+],
+"newmap_file": "500247_21102022184933_SHP.xml"
+},
+"KOTAKBANK|2018-09-30": {
+"file": "500247_12102018182752_SHP.xml",
+"d_fii": 1.72,
+"ev": [
+[
+"R2FII-holders",
+"Others FOREIGN BANK",
+1.72,
+1.72,
+"SUMITOMO MITSUI BANKING CORPORATION 1.72 fii(new-format:OtherInstitutionsForeign)"
+]
+],
+"newmap_file": "500247_21102022184933_SHP.xml"
+},
+"KOTAKBANK|2018-12-31": {
+"file": "500247_3112019153754_SHP.xml",
+"d_fii": 1.72,
+"ev": [
+[
+"R2FII-holders",
+"Others FOREIGN BANK",
+1.72,
+1.72,
+"SUMITOMO MITSUI BANKING CORPORATION 1.72 fii(new-format:OtherInstitutionsForeign)"
+]
+],
+"newmap_file": "500247_21102022184933_SHP.xml"
+},
+"KOTAKBANK|2019-03-31": {
+"file": "500247_1642019174758_SHP.xml",
+"d_fii": 1.72,
+"ev": [
+[
+"R2FII-holders",
+"Others FOREIGN BANK",
+1.72,
+1.72,
+"SUMITOMO MITSUI BANKING CORPORATION 1.72 fii(new-format:OtherInstitutionsForeign)"
+]
+],
+"newmap_file": "500247_21102022184933_SHP.xml"
+},
+"KOTAKBANK|2019-06-30": {
+"file": "500247_1672019181638_SHP.xml",
+"d_fii": 1.72,
+"ev": [
+[
+"R2FII-holders",
+"Others FOREIGN BANK",
+1.72,
+1.72,
+"SUMITOMO MITSUI BANKING CORPORATION 1.72 fii(new-format:OtherInstitutionsForeign)"
+]
+],
+"newmap_file": "500247_21102022184933_SHP.xml"
+},
+"KOTAKBANK|2019-09-30": {
+"file": "500247_15102019163743_SHP.xml",
+"d_fii": 1.72,
+"ev": [
+[
+"R2FII-holders",
+"Others FOREIGN BANK",
+1.72,
+1.72,
+"SUMITOMO MITSUI BANKING CORPORATION 1.72 fii(new-format:OtherInstitutionsForeign)"
+]
+],
+"newmap_file": "500247_21102022184933_SHP.xml"
+},
+"KOTAKBANK|2019-12-31": {
+"file": "500247_1012020192433_SHP.xml",
+"d_fii": 1.72,
+"ev": [
+[
+"R2FII-holders",
+"Others FOREIGN BANK",
+1.72,
+1.72,
+"SUMITOMO MITSUI BANKING CORPORATION 1.72 fii(new-format:OtherInstitutionsForeign)"
+]
+],
+"newmap_file": "500247_21102022184933_SHP.xml"
+},
+"KOTAKBANK|2020-03-31": {
+"file": "500247_2542020111128_SHP.xml",
+"d_fii": 1.71,
+"ev": [
+[
+"R2FII-holders",
+"Others FOREIGN BANK",
+1.71,
+1.71,
+"SUMITOMO MITSUI BANKING CORPORATION 1.71 fii(new-format:OtherInstitutionsForeign)"
+]
+],
+"newmap_file": "500247_21102022184933_SHP.xml"
+},
+"KOTAKBANK|2020-06-30": {
+"file": "500247_167202013949_SHP.xml",
+"d_fii": 1.66,
+"ev": [
+[
+"R2FII-holders",
+"Others FOREIGN BANK",
+1.66,
+1.66,
+"SUMITOMO MITSUI BANKING CORPORATION 1.66 fii(new-format:OtherInstitutionsForeign)"
+]
+],
+"newmap_file": "500247_21102022184933_SHP.xml"
+},
+"KOTAKBANK|2020-09-30": {
+"file": "500247_191020201426_SHP.xml",
+"d_fii": 1.66,
+"ev": [
+[
+"R2FII-holders",
+"Others Foreign Bank",
+1.66,
+1.66,
+"SUMITOMO MITSUI BANKING CORPORATION 1.66 fii(new-format:OtherInstitutionsForeign)"
+]
+],
+"newmap_file": "500247_21102022184933_SHP.xml"
+},
+"KOTAKBANK|2020-12-31": {
+"file": "500247_1912021142028_SHP.xml",
+"d_fii": 1.66,
+"ev": [
+[
+"R2FII-holders",
+"Others Foreign Bank",
+1.66,
+1.66,
+"SUMITOMO MITSUI BANKING CORPORATION 1.66 fii(new-format:OtherInstitutionsForeign)"
+]
+],
+"newmap_file": "500247_21102022184933_SHP.xml"
+},
+"KOTAKBANK|2021-03-31": {
+"file": "500247_2742021131757_SHP.xml",
+"d_fii": 1.66,
+"ev": [
+[
+"R2FII-holders",
+"Others Foreign Bank",
+1.66,
+1.66,
+"SUMITOMO MITSUI BANKING CORPORATION 1.66 fii(new-format:OtherInstitutionsForeign)"
+]
+],
+"newmap_file": "500247_21102022184933_SHP.xml"
+},
+"KOTAKBANK|2021-06-30": {
+"file": "500247_2072021145611_SHP.xml",
+"d_fii": 1.65,
+"ev": [
+[
+"R2FII-holders",
+"Others Foreign Bank",
+1.65,
+1.65,
+"SUMITOMO MITSUI BANKING CORPORATION 1.65 fii(new-format:OtherInstitutionsForeign)"
+]
+],
+"newmap_file": "500247_21102022184933_SHP.xml"
+},
+"KOTAKBANK|2021-09-30": {
+"file": "500247_16102021102658_SHP.xml",
+"d_fii": 1.65,
+"ev": [
+[
+"R2FII-holders",
+"Others Foreign Bank",
+1.65,
+1.65,
+"SUMITOMO MITSUI BANKING CORPORATION 1.65 fii(new-format:OtherInstitutionsForeign)"
+]
+],
+"newmap_file": "500247_21102022184933_SHP.xml"
+},
+"KOTAKBANK|2021-12-31": {
+"file": "500247_1912022202726_SHP.xml",
+"d_fii": 1.65,
+"ev": [
+[
+"R2FII-holders",
+"Others Foreign Bank",
+1.65,
+1.65,
+"SUMITOMO MITSUI BANKING CORPORATION 1.65 fii(new-format:OtherInstitutionsForeign)"
+]
+],
+"newmap_file": "500247_21102022184933_SHP.xml"
+},
+"KOTAKBANK|2022-03-31": {
+"file": "500247_214202218138_SHP.xml",
+"d_fii": 1.65,
+"ev": [
+[
+"R2FII-holders",
+"Others Foreign Bank",
+1.65,
+1.65,
+"SUMITOMO MITSUI BANKING CORPORATION 1.65 fii(new-format:OtherInstitutionsForeign)"
+]
+],
+"newmap_file": "500247_21102022184933_SHP.xml"
+},
+"KOTAKBANK|2022-06-30": {
+"file": "500247_2172022183410_SHP.xml",
+"d_fii": 1.65,
+"ev": [
+[
+"R2FII-holders",
+"Others Foreign Bank",
+1.65,
+1.65,
+"SUMITOMO MITSUI BANKING CORPORATION 1.65 fii(new-format:OtherInstitutionsForeign)"
+]
+],
+"newmap_file": "500247_21102022184933_SHP.xml"
+},
+"LICHSGFIN|2018-03-31": {
+"file": "500253_1342018154411_SHP.xml",
+"d_fii": 6.15,
+"ev": [
+[
+"R2FII-label",
+"Foreign Portfolio Investor (Category - III)",
+6.15,
+6.15,
+"FII-labelled row 6.15 -> fii"
+]
+],
+"newmap_file": "500253_18102022155016_SHP.xml"
+},
+"LICHSGFIN|2018-06-30": {
+"file": "500253_137201815598_SHP.xml",
+"d_fii": 6.22,
+"ev": [
+[
+"R2FII-label",
+"Foreign Portfolio Investor (Category - III)",
+6.22,
+6.22,
+"FII-labelled row 6.22 -> fii; ABU DHABI INVESTMENT AUTHORITY - ST 1.00 in-row(-)"
+]
+],
+"newmap_file": "500253_18102022155016_SHP.xml"
+},
+"LICHSGFIN|2018-09-30": {
+"file": "500253_1910201811483_SHP.xml",
+"d_fii": 5.74,
+"ev": [
+[
+"R2FII-label",
+"Foreign Portfolio Investor (Category - III)",
+5.74,
+5.74,
+"FII-labelled row 5.74 -> fii"
+]
+],
+"newmap_file": "500253_18102022155016_SHP.xml"
+},
+"LICHSGFIN|2018-12-31": {
+"file": "500253_812019174712_SHP.xml",
+"d_fii": 6.14,
+"ev": [
+[
+"R2FII-label",
+"Foreign Portfolio Investor (Category - III)",
+6.14,
+6.14,
+"FII-labelled row 6.14 -> fii"
+]
+],
+"newmap_file": "500253_18102022155016_SHP.xml"
+},
+"LICHSGFIN|2019-03-31": {
+"file": "500253_1242019152430_SHP.xml",
+"d_fii": 6.38,
+"ev": [
+[
+"R2FII-label",
+"Foreign Portfolio Investor (Category - III)",
+6.38,
+6.38,
+"FII-labelled row 6.38 -> fii"
+]
+],
+"newmap_file": "500253_18102022155016_SHP.xml"
+},
+"LICHSGFIN|2019-06-30": {
+"file": "500253_1572019124948_SHP.xml",
+"d_fii": 5.95,
+"ev": [
+[
+"R2FII-label",
+"Foreign Portfolio Investor (Category - III)",
+5.95,
+5.95,
+"FII-labelled row 5.95 -> fii"
+]
+],
+"newmap_file": "500253_18102022155016_SHP.xml"
+},
+"LICHSGFIN|2019-09-30": {
+"file": "500253_10102019133039_SHP.xml",
+"d_fii": 0.31,
+"ev": [
+[
+"R2FII-label",
+"Foreign Portfolio Investor (Category - III)",
+0.31,
+0.31,
+"FII-labelled row 0.31 -> fii"
+]
+],
+"newmap_file": "500253_18102022155016_SHP.xml"
+},
+"LICHSGFIN|2019-12-31": {
+"file": "500253_1312020172918_SHP.xml",
+"d_fii": 0.06,
+"ev": [
+[
+"R2FII-label",
+"Foreign Portfolio Investor (Category - III)",
+0.06,
+0.06,
+"FII-labelled row 0.06 -> fii"
+]
+],
+"newmap_file": "500253_18102022155016_SHP.xml"
+},
+"LICHSGFIN|2020-03-31": {
+"file": "500253_184202013850_SHP.xml",
+"d_fii": 0.06,
+"ev": [
+[
+"R2FII-label",
+"Foreign Portfolio Investor (Category - III)",
+0.06,
+0.06,
+"FII-labelled row 0.06 -> fii"
+]
+],
+"newmap_file": "500253_18102022155016_SHP.xml"
+},
+"NLCINDIA|2016-06-30": {
+"file": "513683_14122016154910_SHP.xml",
+"d_fii": 0.08,
+"ev": [
+[
+"R2FII-label",
+"Other Foreign Institutional Investors",
+0.05,
+0.05,
+"FII-labelled row 0.05 -> fii"
+],
+[
+"R2FII-label",
+"Other Foreign Portfolio Investor-Corporate 3",
+0.03,
+0.03,
+"FII-labelled row 0.03 -> fii"
+]
+],
+"newmap_file": null
+},
+"NLCINDIA|2016-09-30": {
+"file": "513683_14122016155629_SHP.xml",
+"d_fii": 0.05,
+"ev": [
+[
+"R2FII-label",
+"Other Foreign Institutional Investors",
+0.05,
+0.05,
+"FII-labelled row 0.05 -> fii"
+]
+],
+"newmap_file": null
+},
+"NLCINDIA|2016-12-31": {
+"file": "513683_1712017143032_SHP.xml",
+"d_fii": 0.07,
+"ev": [
+[
+"R2FII-label",
+"Other Foreign Institutional Investor",
+0.05,
+0.05,
+"FII-labelled row 0.05 -> fii"
+],
+[
+"R2FII-label",
+"Other Foreign Portfolio Investor-Corporate",
+0.02,
+0.02,
+"FII-labelled row 0.02 -> fii"
+]
+],
+"newmap_file": null
+},
+"PAYTM|2021-12-31": {
+"file": "543396_211202215391_SHP.xml",
+"d_fii": 66.15,
+"ev": [
+[
+"R2FII-holders",
+"Others Foreign Companies",
+71.18,
+66.15,
+"Antfin (Netherlands) Holding B.V. 24.90 fii(new-format:ForeignDirectInvestment); SVF India Holdings (Cayman) Limited 17.47 fii(new-format:ForeignDirectInvestment); Saif III Mauritius Company Limited 10.60 fii(new-format:ForeignDirectInvestment); Alibaba.Com Singapore E-Commerce Private Limited 6.27 fii(new-format:ForeignDirectInvestment); Saif Partners India IV Limited 4.50 fii(new-format:ForeignDirectInvestment); BH International Holdings 2.41 fii(new-format:ForeignDirectInvestment)"
+]
+],
+"newmap_file": "543396_21102022161133_SHP.xml"
+},
+"PAYTM|2022-03-31": {
+"file": "543396_1352022194729_SHP.xml",
+"d_fii": 66.12,
+"ev": [
+[
+"R2FII-holders",
+"Others Foreign Companies",
+71.16,
+66.12,
+"Antfin (Netherlands) Holding B.V. 24.89 fii(new-format:ForeignDirectInvestment); SVF India Holdings (Cayman) Limited 17.46 fii(new-format:ForeignDirectInvestment); Saif III Mauritius Company Limited 10.60 fii(new-format:ForeignDirectInvestment); Alibaba.com Singapore E-Commerce Private Limited 6.26 fii(new-format:ForeignDirectInvestment); Saif Partners India IV Limited 4.50 fii(new-format:ForeignDirectInvestment); BH International Holdings 2.41 fii(new-format:ForeignDirectInvestment)"
+]
+],
+"newmap_file": "543396_21102022161133_SHP.xml"
+},
+"PAYTM|2022-06-30": {
+"file": "543396_1972022214134_SHP.xml",
+"d_fii": 66.1,
+"ev": [
+[
+"R2FII-holders",
+"Others Foreign Companies",
+71.13,
+66.1,
+"Antfin (Netherlands) Holding B.V. 24.88 fii(new-format:ForeignDirectInvestment); SVF India Holdings (Cayman) Limited 17.46 fii(new-format:ForeignDirectInvestment); Saif III Mauritius Company Limited 10.59 fii(new-format:ForeignDirectInvestment); Alibaba.com Singapore E-Commerce Private Limited 6.26 fii(new-format:ForeignDirectInvestment); Saif Partners India IV Limited 4.50 fii(new-format:ForeignDirectInvestment); BH International Holdings 2.41 fii(new-format:ForeignDirectInvestment)"
+]
+],
+"newmap_file": "543396_21102022161133_SHP.xml"
+},
+"RBLBANK|2016-09-30": {
+"file": "540065_19102016192932_SHP.xml",
+"d_fii": 8.2,
+"ev": [
+[
+"R2FII-holders",
+"Other Foreign Companies",
+29.51,
+8.19,
+"CDC Group PLC 4.28 stay(new-format:ForeignCompanies); International Finance Corporation 3.44 fii(curated); Norwest Venture Partners X Fii - Mauritius 3.38 fii(inst-tag); Cartica Capital 2 Limited 3.06 stay(label); Asia Capital Financial Opportunities Pte Ltd 2.73 stay(new-format:ForeignCompanies); Housing Development Finance Corporation Limited 2.38 stay(new-format:BodiesCorporate); Gpe (India) Ltd 1.86 stay(label); Galileo Investments Limited 1.61 stay(label); HDFC BANK LTD 1.41 stay(regex); Dvi Fund Mauritius Ltd 1.37 fii(curated)"
+],
+[
+"R2FII-label",
+"Foreign Portfolio Investors (Category III)",
+0.01,
+0.01,
+"FII-labelled row 0.01 -> fii"
+]
+],
+"newmap_file": "540065_1710202219460_SHP.xml"
+},
+"RBLBANK|2016-12-31": {
+"file": "540065_181201719234_SHP.xml",
+"d_fii": 8.14,
+"ev": [
+[
+"R2FII-holders",
+"Other Foreign Companies",
+29.25,
+8.12,
+"CDC Group Plc 4.24 stay(new-format:ForeignCompanies); International Finance Corporation 3.41 fii(curated); Norwest Venture Partners X Fii - Mauritius 3.35 fii(inst-tag); Cartica Capital 2 Limited 3.03 stay(label); Asia Capital Financial Opportunities Pte Ltd 2.71 stay(new-format:ForeignCompanies); Housing Development Finance Corporation Limited 2.36 stay(new-format:BodiesCorporate); Gpe (India) Ltd 1.85 stay(label); Galileo Investments Limited 1.59 stay(label); HDFC Bank Limited 1.40 stay(regex); DVI Fund Mauritius Ltd 1.36 fii(curated)"
+],
+[
+"R2FII-label",
+"Foreign Portfolio Investors (Category III)",
+0.02,
+0.02,
+"FII-labelled row 0.02 -> fii"
+]
+],
+"newmap_file": "540065_1710202219460_SHP.xml"
+},
+"RBLBANK|2017-03-31": {
+"file": "540065_184201718436_SHP.xml",
+"d_fii": 8.1,
+"ev": [
+[
+"R2FII-holders",
+"Other Foreign Companies",
+29.09,
+8.08,
+"CDC Group Plc 4.22 stay(new-format:ForeignCompanies); International Finance Corporation 3.39 fii(curated); Norwest Venture Partners X Fii - Mauritius 3.34 fii(inst-tag); Cartica Capital 2 Limited 3.01 stay(label); Asia Capital Financial Opportunities Pte Ltd 2.69 stay(new-format:ForeignCompanies); Housing Development Finance Corporation Limited 2.35 stay(new-format:BodiesCorporate); GPE (India) Ltd 1.84 stay(label); Galileo Investments Limited 1.58 stay(label); Hdfc Bank Ltd 1.39 stay(regex); Dvi Fund Mauritius Ltd 1.35 fii(curated)"
+],
+[
+"R2FII-label",
+"Foreign Portfolio Investors (Category III)",
+0.02,
+0.02,
+"FII-labelled row 0.02 -> fii"
+]
+],
+"newmap_file": "540065_1710202219460_SHP.xml"
+},
+"RBLBANK|2017-06-30": {
+"file": "540065_1872017221126_SHP.xml",
+"d_fii": 8.07,
+"ev": [
+[
+"R2FII-holders",
+"Other Foreign Companies",
+28.97,
+8.05,
+"Cdc Group Plc 4.20 stay(new-format:ForeignCompanies); International Finance Corporation 3.38 fii(curated); Norwest Venture Partners X Fii - Mauritius 3.32 fii(inst-tag); Cartica Capital 2 Limited 3.00 stay(label); Asia Capital Financial Opportunities Pte Ltd 2.68 stay(new-format:ForeignCompanies); Housing Development Finance Corporation Limited 2.34 stay(new-format:BodiesCorporate); Gpe (India) Ltd 1.83 stay(label); Galileo Investments Limited 1.58 stay(label); Hdfc Bank Ltd 1.39 stay(regex); Dvi Fund Mauritius Ltd 1.35 fii(curated)"
+],
+[
+"R2FII-label",
+"Foreign Portfolio Investors (Category III)",
+0.02,
+0.02,
+"FII-labelled row 0.02 -> fii"
+]
+],
+"newmap_file": "540065_1710202219460_SHP.xml"
+},
+"RBLBANK|2017-09-30": {
+"file": "540065_12102017152541_SHP.xml",
+"d_fii": 4.59,
+"ev": [
+[
+"R2FII-holders",
+"Other Foreign Companies",
+23.34,
+4.58,
+"Cdc Group Plc 6.80 stay(new-format:ForeignCompanies); International Finance Corporation 3.01 fii(curated); Asia Capital Financial Opportunities Pte Ltd 2.43 stay(new-format:ForeignCompanies); Housing Development Finance Corporation Limited 2.12 stay(new-format:BodiesCorporate); Gpe (India) Ltd 1.66 stay(label); Norwest Venture Partners X Fii - Mauritius 1.57 fii(inst-tag); Galileo Investments Limited 1.43 stay(label); Hdfc Bank Ltd 1.26 stay(regex)"
+],
+[
+"R2FII-label",
+"Foreign Portfolio Investors (Category III)",
+0.01,
+0.01,
+"FII-labelled row 0.01 -> fii"
+]
+],
+"newmap_file": "540065_1710202219460_SHP.xml"
+},
+"RBLBANK|2017-12-31": {
+"file": "540065_1612018184236_SHP.xml",
+"d_fii": 2.15,
+"ev": [
+[
+"R2FII-holders",
+"Other Foreign Companies",
+19.83,
+2.13,
+"Cdc Group Plc 6.77 stay(new-format:ForeignCompanies); Asia Capital Financial Opportunities Pte Ltd 2.42 stay(new-format:ForeignCompanies); International Finance Corporation 2.13 fii(curated); Housing Development Finance Corporation Limited 2.11 stay(new-format:BodiesCorporate); Gpe (India) Ltd 1.65 stay(label); Galileo Investments Limited 1.42 stay(label); Hdfc Bank Ltd 1.25 stay(regex)"
+],
+[
+"R2FII-label",
+"Foreign Portfolio Investors (Category III)",
+0.02,
+0.02,
+"FII-labelled row 0.02 -> fii"
+]
+],
+"newmap_file": "540065_1710202219460_SHP.xml"
+},
+"RBLBANK|2018-03-31": {
+"file": "540065_1842018192656_SHP.xml",
+"d_fii": 2.14,
+"ev": [
+[
+"R2FII-holders",
+"Others Foreign Companies",
+20.44,
+2.12,
+"Cdc Group Plc 6.73 stay(new-format:ForeignCompanies); Asia Capital Financial Opportunities Pte Ltd 2.41 stay(new-format:ForeignCompanies); International Finance Corporation 2.12 fii(curated); Housing Development Finance Corporation Limited 2.10 stay(new-format:BodiesCorporate); Gpe (India) Ltd 1.64 stay(label); Galileo Investments Limited 1.42 stay(label); Hdfc Standard Life Insurance Company Limited & Other 1.35 stay(regex); Hdfc Bank Ltd 1.24 stay(regex)"
+],
+[
+"R2FII-label",
+"Foreign Portfolio Investor (Category - III)",
+0.02,
+0.02,
+"FII-labelled row 0.02 -> fii"
+]
+],
+"newmap_file": "540065_1710202219460_SHP.xml"
+},
+"RBLBANK|2018-06-30": {
+"file": "540065_2772018172256_SHP.xml",
+"d_fii": 2.11,
+"ev": [
+[
+"R2FII-holders",
+"Others Foreign Companies",
+22.77,
+2.11,
+"Cdc Group Plc 6.71 stay(new-format:ForeignCompanies); Asia Capital Financial Opportunities Pte Ltd 2.40 stay(new-format:ForeignCompanies); INTERNATIONAL FINANCE\nCORPORATION 2.11 fii(curated); Housing Development Finance Corporation Limited 2.09 stay(new-format:BodiesCorporate); Hdfc Standard Life Insurance Company Limited 1.44 stay(memory~); Galileo Investments Limited 1.41 stay(label); Plenty Private Equity Fund I Limited 1.35 stay(label); Hdfc Bank Ltd 1.24 stay(regex); Gpe (India) Ltd 1.20 stay(label)"
+]
+],
+"newmap_file": "540065_1710202219460_SHP.xml"
+},
+"RKFORGE|2018-12-31": {
+"file": "532527_2412019181119_SHP.xml",
+"d_fii": 2.37,
+"ev": [
+[
+"R2FII-holders",
+"Overseas Corporate Bodies",
+2.37,
+2.37,
+"INTERNATIONAL FINANCE CORPORATION 2.37 fii(curated)"
+]
+],
+"newmap_file": "532527_18102022162719_SHP.xml"
+},
+"SHRIRAMFIN|2016-06-30": {
+"file": "511218_1872016115412_SHP.xml",
+"d_fii": 25.78,
+"ev": [
+[
+"R2FII-label",
+"Other FOREIGN INSTITUTIONAL INVESTOR",
+25.78,
+25.78,
+"FII-labelled row 25.78 -> fii; GOVERNMENT OF SINGAPORE - FOREIGN INSTITUTIONAL INVESTOR 1.93 in-row(regex); NEW WORLD FUND INC - FOREIGN INSTITUTIONAL INVESTOR 1.58 in-row(regex); VANGUARD EMERGING MARKETS STOCK INDEX FUND, ASERIES OF VANGUARD INTERNATIONAL EQUITY INDE X FUND -  FOREIGN INSTITUTIONAL INVESTOR 1.15 in-row(memory~); KUWAIT INVESTMENT AUTHORITY - FUND NO. 208 - FOREIGN INSTITUTIONAL INVESTOR 1.05 in-row(regex)"
+]
+],
+"newmap_file": "511218_18102022154917_SHP.xml"
+},
+"SHRIRAMFIN|2016-09-30": {
+"file": "511218_18102016134514_SHP.xml",
+"d_fii": 22.26,
+"ev": [
+[
+"R2FII-label",
+"Other FOREIGN INSTITUTIONAL INVESTOR",
+22.04,
+22.04,
+"FII-labelled row 22.04 -> fii; ABU DHABI INVESTMENT AUTHORITY - LGLINV 2.15 in-row(curated); GOVERNMENT OF SINGAPORE 2.14 in-row(curated); MORGAN STANLEY MAURITIUS COMPANY LIMITED 1.65 in-row(curated); KUWAIT INVESTMENT AUTHORITY FUND 142 1.21 in-row(-); VANGUARD EMERGING MARKETS STOCK INDEX FUND, ASERIES OF VANGUARD INTERNATIONAL EQ 1.19 in-row(new-format~:InstitutionsForeignPortfolioInvestorOne)"
+],
+[
+"R2FII-label",
+"Foreign Portfolio Investors (Category III)",
+0.22,
+0.22,
+"FII-labelled row 0.22 -> fii"
+]
+],
+"newmap_file": "511218_18102022154917_SHP.xml"
+},
+"SHRIRAMFIN|2016-12-31": {
+"file": "511218_161201715727_SHP.xml",
+"d_fii": 14.44,
+"ev": [
+[
+"R2FII-label",
+"Foreign Portfolio Investors (Category III)",
+1.14,
+1.14,
+"FII-labelled row 1.14 -> fii"
+],
+[
+"R2FII-label",
+"Other FOREIGN INSTITUTIONAL INVESTOR",
+13.3,
+13.3,
+"FII-labelled row 13.30 -> fii; PIRAMAL ENTERPRISES LIMITED 9.96 in-row(-); VANGUARD EMERGING MARKETS STOCK INDEX FUND, ASERIES OF VANGUARD INTERNATIONAL EQUITY INDE X FUND 1.24 in-row(curated)"
+]
+],
+"newmap_file": "511218_18102022154917_SHP.xml"
+},
+"SHRIRAMFIN|2017-03-31": {
+"file": "511218_1742017173919_SHP.xml",
+"d_fii": 5.59,
+"ev": [
+[
+"R2FII-label",
+"Other FOREIGN INSTITUTIONAL INVESTOR",
+4.5,
+4.5,
+"FII-labelled row 4.50 -> fii"
+],
+[
+"R2FII-label",
+"Foreign Portfolio Investors (Category III)",
+1.09,
+1.09,
+"FII-labelled row 1.09 -> fii"
+]
+],
+"newmap_file": "511218_18102022154917_SHP.xml"
+},
+"SHRIRAMFIN|2017-06-30": {
+"file": "511218_1772017124014_SHP.xml",
+"d_fii": 2.91,
+"ev": [
+[
+"R2FII-label",
+"Other FOREIGN INSTITUTIONAL INVESTOR",
+1.73,
+1.73,
+"FII-labelled row 1.73 -> fii"
+],
+[
+"R2FII-label",
+"Foreign Portfolio Investors (Category III)",
+1.18,
+1.18,
+"FII-labelled row 1.18 -> fii"
+]
+],
+"newmap_file": "511218_18102022154917_SHP.xml"
+},
+"SHRIRAMFIN|2017-09-30": {
+"file": "511218_16102017164046_SHP.xml",
+"d_fii": 1.65,
+"ev": [
+[
+"R2FII-label",
+"Other FOREIGN INSTITUTIONAL INVESTOR",
+0.01,
+0.01,
+"FII-labelled row 0.01 -> fii"
+],
+[
+"R2FII-label",
+"Foreign Portfolio Investors (Category III)",
+1.64,
+1.64,
+"FII-labelled row 1.64 -> fii"
+]
+],
+"newmap_file": "511218_18102022154917_SHP.xml"
+},
+"SHRIRAMFIN|2017-12-31": {
+"file": "511218_1512018153712_SHP.xml",
+"d_fii": 1.6,
+"ev": [
+[
+"R2FII-label",
+"Foreign Portfolio Investors (Category III)",
+1.6,
+1.6,
+"FII-labelled row 1.60 -> fii"
+]
+],
+"newmap_file": "511218_18102022154917_SHP.xml"
+},
+"SHRIRAMFIN|2018-03-31": {
+"file": "511218_1942018145834_SHP.xml",
+"d_fii": 1.6,
+"ev": [
+[
+"R2FII-label",
+"Foreign Portfolio Investor (Category - III)",
+1.6,
+1.6,
+"FII-labelled row 1.60 -> fii"
+]
+],
+"newmap_file": "511218_18102022154917_SHP.xml"
+},
+"SHRIRAMFIN|2018-06-30": {
+"file": "511218_197201812379_SHP.xml",
+"d_fii": 1.52,
+"ev": [
+[
+"R2FII-label",
+"Others FOREIGN INSTITUTIONAL INVESTOR",
+0.03,
+0.03,
+"FII-labelled row 0.03 -> fii"
+],
+[
+"R2FII-label",
+"Foreign Portfolio Investor (Category - III)",
+1.49,
+1.49,
+"FII-labelled row 1.49 -> fii"
+]
+],
+"newmap_file": "511218_18102022154917_SHP.xml"
+},
+"SHRIRAMFIN|2018-09-30": {
+"file": "511218_6102018135919_SHP.xml",
+"d_fii": 1.77,
+"ev": [
+[
+"R2FII-label",
+"Others FOREIGN INSTITUTIONAL INVESTOR",
+0.02,
+0.02,
+"FII-labelled row 0.02 -> fii"
+],
+[
+"R2FII-label",
+"Foreign Portfolio Investor (Category - III)",
+1.75,
+1.75,
+"FII-labelled row 1.75 -> fii"
+]
+],
+"newmap_file": "511218_18102022154917_SHP.xml"
+},
+"SHRIRAMFIN|2018-12-31": {
+"file": "511218_1712019161612_SHP.xml",
+"d_fii": 1.32,
+"ev": [
+[
+"R2FII-label",
+"Foreign Portfolio Investor (Category - III)",
+1.32,
+1.32,
+"FII-labelled row 1.32 -> fii"
+]
+],
+"newmap_file": "511218_18102022154917_SHP.xml"
+},
+"SHRIRAMFIN|2019-03-31": {
+"file": "511218_1742019161013_SHP.xml",
+"d_fii": 1.02,
+"ev": [
+[
+"R2FII-label",
+"Foreign Portfolio Investor (Category - III)",
+1.02,
+1.02,
+"FII-labelled row 1.02 -> fii"
+]
+],
+"newmap_file": "511218_18102022154917_SHP.xml"
+},
+"SHRIRAMFIN|2019-06-30": {
+"file": "511218_207201914718_SHP.xml",
+"d_fii": 1.3,
+"ev": [
+[
+"R2FII-label",
+"Others FOREIGN INSTITUTIONAL INVESTOR",
+0.14,
+0.14,
+"FII-labelled row 0.14 -> fii"
+],
+[
+"R2FII-label",
+"Foreign Portfolio Investor (Category - III)",
+1.16,
+1.16,
+"FII-labelled row 1.16 -> fii"
+]
+],
+"newmap_file": "511218_18102022154917_SHP.xml"
+},
+"SHRIRAMFIN|2019-09-30": {
+"file": "511218_19102019101925_SHP.xml",
+"d_fii": 1.63,
+"ev": [
+[
+"R2FII-label",
+"Others FOREIGN INSTITUTIONAL INVESTOR",
+0.26,
+0.26,
+"FII-labelled row 0.26 -> fii"
+],
+[
+"R2FII-label",
+"Foreign Portfolio Investor (Category - III)",
+1.37,
+1.37,
+"FII-labelled row 1.37 -> fii"
+]
+],
+"newmap_file": "511218_18102022154917_SHP.xml"
+},
+"SHRIRAMFIN|2019-12-31": {
+"file": "511218_1412020141613_SHP.xml",
+"d_fii": 0.06,
+"ev": [
+[
+"R2FII-label",
+"Foreign Portfolio Investor (Category - III)",
+0.06,
+0.06,
+"FII-labelled row 0.06 -> fii"
+]
+],
+"newmap_file": "511218_18102022154917_SHP.xml"
+},
+"ZENSARTECH|2016-06-30": {
+"file": "504067_257201617162_SHP.xml",
+"d_fii": 23.06,
+"ev": [
+[
+"R2FII-holders",
+"Overseas corporate bodies",
+23.06,
+23.06,
+"i) MARINA HOLDCO (FPI) LTD 23.06 fii(memory~)"
+]
+],
+"newmap_file": "504067_21102022123130_SHP.xml"
+},
+"ZENSARTECH|2016-09-30": {
+"file": "504067_17102016124828_SHP.xml",
+"d_fii": 23.02,
+"ev": [
+[
+"R2FII-holders",
+"Overseas corporate bodies",
+23.02,
+23.02,
+"MARINA HOLDCO (FPI) LTD 23.02 fii(curated)"
+]
+],
+"newmap_file": "504067_21102022123130_SHP.xml"
+},
+"ZENSARTECH|2016-12-31": {
+"file": "504067_2012017181342_SHP.xml",
+"d_fii": 22.99,
+"ev": [
+[
+"R2FII-holders",
+"Overseas corporate bodies",
+22.99,
+22.99,
+"MARINA HOLDCO (FPI) LTD 22.99 fii(curated)"
+]
+],
+"newmap_file": "504067_21102022123130_SHP.xml"
+},
+"ZENSARTECH|2017-03-31": {
+"file": "504067_204201716736_SHP.xml",
+"d_fii": 22.96,
+"ev": [
+[
+"R2FII-holders",
+"Overseas corporate bodies",
+22.96,
+22.96,
+"MARINA HOLDCO (FPI) LTD 22.96 fii(curated)"
+]
+],
+"newmap_file": "504067_21102022123130_SHP.xml"
+},
+"ZENSARTECH|2017-06-30": {
+"file": "504067_482017122142_SHP.xml",
+"d_fii": 22.95,
+"ev": [
+[
+"R2FII-holders",
+"Overseas corporate bodies",
+0.0,
+22.95,
+"Marina Holdco (FPI) Limited 22.95 fii(memory~)"
+]
+],
+"newmap_file": "504067_21102022123130_SHP.xml"
+},
+"ZENSARTECH|2017-09-30": {
+"file": "504067_1710201718310_SHP.xml",
+"d_fii": 22.92,
+"ev": [
+[
+"R2FII-holders",
+"Overseas corporate bodies",
+0.0,
+22.92,
+"Marina Holdco (FPI) Limited 22.92 fii(memory~)"
+]
+],
+"newmap_file": "504067_21102022123130_SHP.xml"
+},
+"ZENSARTECH|2017-12-31": {
+"file": "504067_1912018111633_SHP.xml",
+"d_fii": 22.9,
+"ev": [
+[
+"R2FII-holders",
+"Overseas corporate bodies",
+0.0,
+22.9,
+"Marina Holdco (FPI) Limited 22.90 fii(memory~)"
+]
+],
+"newmap_file": "504067_21102022123130_SHP.xml"
+},
+"ZENSARTECH|2018-03-31": {
+"file": "504067_2042018171822_SHP.xml",
+"d_fii": 22.9,
+"ev": [
+[
+"R2FII-holders",
+"Overseas Corporate Bodies",
+0.0,
+22.9,
+"Marina Holdco (FPI) Ltd. 22.90 fii(curated)"
+]
+],
+"newmap_file": "504067_21102022123130_SHP.xml"
+},
+"ZENSARTECH|2018-06-30": {
+"file": "504067_2072018182726_SHP.xml",
+"d_fii": 22.89,
+"ev": [
+[
+"R2FII-holders",
+"Overseas Corporate Bodies",
+0.0,
+22.89,
+"MARINA HOLDCO (FPI) LTD 22.89 fii(curated)"
+]
+],
+"newmap_file": "504067_21102022123130_SHP.xml"
+},
+"ZENSARTECH|2018-09-30": {
+"file": "504067_1510201812922_SHP.xml",
+"d_fii": 22.89,
+"ev": [
+[
+"R2FII-holders",
+"Overseas Corporate Bodies",
+0.0,
+22.89,
+"MARINA HOLDCO (FPI) LTD 22.89 fii(curated)"
+]
+],
+"newmap_file": "504067_21102022123130_SHP.xml"
+},
+"ZENSARTECH|2018-12-31": {
+"file": "504067_1612019132135_SHP.xml",
+"d_fii": 22.88,
+"ev": [
+[
+"R2FII-holders",
+"Overseas Corporate Bodies",
+0.0,
+22.88,
+"MARINA HOLDCO (FPI) LTD 22.88 fii(curated)"
+]
+],
+"newmap_file": "504067_21102022123130_SHP.xml"
+},
+"ZENSARTECH|2019-03-31": {
+"file": "504067_1742019124745_SHP.xml",
+"d_fii": 22.87,
+"ev": [
+[
+"R2FII-holders",
+"Overseas Corporate Bodies",
+0.0,
+22.87,
+"MARINA HOLDCO (FPI) LTD 22.87 fii(curated)"
+]
+],
+"newmap_file": "504067_21102022123130_SHP.xml"
+},
+"ZYDUSWELL|2020-09-30": {
+"file": "531335_7102020163238_SHP.xml",
+"d_fii": 0.23,
+"ev": [
+[
+"R2FII-label",
+"Foreign Portfolio Investor (Category - III)",
+0.23,
+0.23,
+"FII-labelled row 0.23 -> fii"
+]
+],
+"newmap_file": "531335_10102022102236_SHP.xml"
+}
+},
+"revisions": {}
+}
