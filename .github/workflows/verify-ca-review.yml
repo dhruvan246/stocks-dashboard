@@ -26,10 +26,15 @@ jobs:
       - name: Gather evidence
         timeout-minutes: 170
         run: python3 -u scripts/verify_ca_review.py
+      - name: Gather rights-issue TERP inputs
+        timeout-minutes: 20
+        run: python3 -u scripts/verify_rights_terp.py
+
       - name: Commit evidence
         if: always()
         run: |
           [ -f scripts/ca_review_evidence.json ] || { echo "no evidence file"; exit 0; }
+          [ -f scripts/ca_rights_terp_evidence.json ] && cp scripts/ca_rights_terp_evidence.json /tmp/rt.json
           git config user.name  "github-actions[bot]"
           git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
           cp scripts/ca_review_evidence.json /tmp/ev.json
@@ -37,6 +42,7 @@ jobs:
             git fetch origin main && git reset --hard origin/main
             cp /tmp/ev.json scripts/ca_review_evidence.json
             git add scripts/ca_review_evidence.json
+            [ -f /tmp/rt.json ] && cp /tmp/rt.json scripts/ca_rights_terp_evidence.json && git add scripts/ca_rights_terp_evidence.json
             if git diff --cached --quiet; then echo "evidence unchanged"; exit 0; fi
             git commit -m "CA review evidence $(TZ=Asia/Kolkata date +'%Y-%m-%d %H:%M IST')"
             if git push origin HEAD:main; then exit 0; fi
