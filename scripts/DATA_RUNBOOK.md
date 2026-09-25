@@ -19162,6 +19162,23 @@ keys that had no §158 record), 20 revisions. After §158b a full re-run with th
 both rows (2017-01-17 original, 2022-06-01 re-filing); IEX Jun-2018 18.95 / 13.84, PHOENIXLTD Jun-2016 30.11 / 3.05. `refresh-stock-fin.yml`
 dispatched (run 36129175396).
 
+## §158c — THE §158 / §160 SCRIPTS NEVER RE-JUDGE §164 OR §160f CELLS; THE TRACKED PAGE-ERA SCRIPT RUNS AGAIN (2026-09-25 ~17:30 IST)
+
+**Why.** The FII session's §164 re-decides 1,313 cells ("§164 row-level remainder rule" D1 + ex-member re-reads 221; "§164a
+depository-receipt basis" 1,092). Our classify stages would re-judge them on the older basis. `chain_has()` in
+scripts/_shp_dii_rowfix.py walks the superseded chain for both markers, and both classify stages skip those cells. Measured on store
+094c33d90: §158 with the skip gives 0 proposals (217 skipped); without it, 3 partial reversals (IDFCFIRSTB Sep/Dec-16 0.10 pp, NH
+Dec-19 1.14 pp back into dii).
+
+**The tracked page-era script could not run.** `scripts/_shp_aspx_rowfix.py` raised NameError `parse_full`. The rebuild from the
+scratch modules had cut everything after aspx_parse.py's `__main__` block (parse_full sits below it), dropped `import math`, and
+mangled `_SP.fetch` / `_SP.rows` into undefined `_fetch` / `_rows`. The rebuild is fixed: it strips only the main block's body,
+maps the aliases to the module's own `fetch` / `rows` / `total_shares`, and adds `math`. A static check now finds no undefined name
+in either script. Running it then exposed the 28 §160f Adani cells (ADANIPOWER Dec-09..Mar-16, ADANIENT Jun-15 / Mar-16) as
+"revert-unsupported": they come from the filers' annual reports (one class per holder), not from the page rules. So the stage also
+skips any cell whose top entry carries "(§160f)". Result on store 094c33d90: 0 proposals (1,014 §164 + 28 §160f cells skipped),
+i.e. the tracked script reproduces the live store.
+
 ## §159 — FII = INSTITUTIONS (FOREIGN) IN EVERY FORMAT: ROW-LEVEL HEAL OF THE 2015-2022 NON-INSTITUTIONS "ANY OTHER" ROWS (2026-09-24, FII twin of §158)
 
 **Why.** After §158 the Sep-2022 seam still had FII-side artefacts that no DII rule touches: PAYTM 5.45 → 77.26, ETERNAL 9.98 →

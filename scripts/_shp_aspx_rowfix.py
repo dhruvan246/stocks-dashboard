@@ -7,7 +7,7 @@ Local inputs (never in the repo): <work>/aspx_pages/<code>_<qtrid>.html.gz, <wor
 DII_ROWFIX_LISTS, DII_ROWFIX_CACHES (see _shp_dii_rowfix.py). Run from <work>: classify (label rules), seam (88/89 reconstruction),
 verify, write.
 """
-import json, os, re, sys, gzip, html, time, collections, urllib.parse, statistics as st
+import json, os, re, sys, gzip, html, time, collections, urllib.parse, math, statistics as st
 SCRIPTS=os.path.dirname(os.path.abspath(__file__)); REPO=os.path.dirname(SCRIPTS)
 HERE=os.environ.get("DII_ROWFIX_WORK") or os.path.join(SCRIPTS,"_shp_dii_rowfix_work")
 os.chdir(HERE); sys.path.insert(0,SCRIPTS); sys.path.insert(0,HERE)
@@ -48,6 +48,24 @@ def parse(h):
         if L.startswith('total public') or L.startswith('total (a)'): continue
         blocks[cur].append((lab,pct_abc))
     return blocks
+def parse_full(h):
+    """Same block split as parse(), keeping each row's holder count and share count: [(block, label, holders, shares, pct)]."""
+    out=[]; cur='prom'
+    for t in rows_of(h):
+        L=re.sub(r'\s+',' ',t[0].lower()).strip(); bare=len(t)==1 or not any(num(v) is not None for v in t[1:])
+        if re.match(r'\(a\)\s*(share|promoter)',L): cur='prom'; continue
+        if re.match(r'\(b\)\s*public', L): continue
+        if re.match(r'\(1\)\s*institution',L) or (bare and L=='institutions'): cur='inst'; continue
+        if re.match(r'\(2\)\s*non',L) or (bare and L in ('non-institutions','non institutions')): cur='noninst'; continue
+        if re.match(r'\(c\)\s*shares held by custodian', L) or L.startswith('(c) shares held by custodians'): cur='c'; continue
+        nums=[num(v) for v in t[1:]]
+        if len(nums)>=5 and all(n is not None for n in nums[:5]):
+            if L.startswith('total shareholding of promoter'): out.append(('prom',t[0].strip(),int(nums[0]),int(nums[1]),nums[4])); cur='inst'; continue
+            if L.startswith('sub total'):
+                cur={'inst':'noninst','noninst':'c'}.get(cur,cur); continue
+            if L.startswith('total public') or L.startswith('total (a)'): continue
+            out.append((cur,t[0].strip(),int(nums[0]),int(nums[1]),nums[4]))
+    return out
 
 # ---- linked shpperent.aspx table (>1% holders; category lumps on the 88/89 pages) ----
 H={"Referer":"https://www.bseindia.com/corporates/ShareholdingPattern.aspx","Accept":"text/html,application/xhtml+xml"}
@@ -419,9 +437,8 @@ def evaluate(h, cur, sym=None, qi=None, code=None, ctx=None, gctx=None):
                             used.update(got); lst[i]=(lab,p,"fii",io); hold_ev.append(("row-by-holders",lab,round(p,4),"; ".join("%s %.2f (%s)"%(hold[g][1][:40],hold[g][2],hold[g][3]) for g in got)))
     ho_vals=[]
     if HO and code and qi:
-        import seam88 as _s8, shpperent as _SP
-        _tot=_s8.total_shares(h); _hp=_fetch(code,qi)
-        if _tot and _hp: ho_vals=[sh/_tot*100 for n,sh,_ in _rows(_hp) if HO["names"].search(n)]
+        _tot=total_shares(h); _hp=fetch(code,qi)
+        if _tot and _hp: ho_vals=[sh/_tot*100 for n,sh,_ in rows(_hp) if HO["names"].search(n)]
     def is_ho_row(p): return bool(ho_vals) and (any(abs(v-p)<=max(0.06,0.006*p) for v in ho_vals) or abs(sum(ho_vals)-p)<=max(0.06,0.006*p))
     # generic rows ('Others', 'Any Other', 'FDI', 'Private Equity'...): the row must equal the UNIQUE exact sum of named >1% holders
     # that ALL carry one class by the filer's own evidence (holder_cls_full) -> that class; anything else stays as stored
@@ -773,6 +790,7 @@ def classify():
             try: h=gzip.open(f,"rt",encoding="utf-8").read(); r,why=evaluate(h,base,s,qtrid(q),c,ctx,gctx)
             except Exception as e: stats["parse_err"]+=1; print("  err",s,q,repr(e)[:120],file=sys.stderr); continue
             if D.chain_has(prior): stats["skip_164"]+=1; continue      # re-decided by §164 (FII session, e.g. §164a DR re-base): never re-judged here
+            if prior and "(§160f)" in (prior.get("why") or ""): stats["skip_160f_doc"]+=1; continue      # §160f cells come from the filer's annual reports (one class per holder, doc_cells_160f), not from these rules: never re-judged here
             own160=bool(prior and "\u00a7160 page-era" in prior.get("why","") and "resolved by the FII session" not in prior.get("why","") and "seam-fii-reconstruction" not in prior.get("why","") and base is not cur)
             if own160 and (r is None or not (r["ev"] or r["prom_fix"])):
                 # a live §160/§160b cell the current rules no longer support (APOLLOHOSP Jun/Sep-15: the 'Others' row is the Mar-15 'Foreign Corporate
