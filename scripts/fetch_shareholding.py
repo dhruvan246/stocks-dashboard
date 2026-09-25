@@ -1193,7 +1193,7 @@ def save_revs(r):
 # there the re-filing's own numbers are the truth.
 VALUE_HEAL_MARK = re.compile(r"SW-2 other-institutions|SW-2 phase-2|foreign block swallowed|locked [\d.]+-[\d.]+ block|"
                              r"FILER MISCLASSIFICATION|FALSE ZERO|NSE served ONE filing|\u00a7142e|item 4 \u2014|\u00a7151|"
-                             r"other-institutions sweep|quantmac FII reconciliation|§158 row-level DII heal|§159 row-level FII heal|§160 page-era row-level heal")
+                             r"other-institutions sweep|quantmac FII reconciliation|§158 row-level DII heal|§159 row-level FII heal|§160 page-era row-level heal|§164")
 AUDIT_JSON = os.path.join(HERE, "_shp_other_inst_audit.json")
 _AUDIT_CELLS = None
 def audited_block(sym, key):
@@ -1450,6 +1450,10 @@ def build_engine_feed():
             n_reassert[0] += 1; return e["sub"]
         return sub
     n_undated = [0]
+    try:        # §164e: post-Mar-2016 rows whose only date is an assumed quarter-end + 21 days
+        undated_keys = set((json.load(open(os.path.join(HERE, "shp_undated.json"), encoding="utf-8")).get("keys") or {}))
+    except (OSError, ValueError):
+        undated_keys = set()
     def rows_of(qs, sym):
         rows = []
         for qe, c in (qs or {}).items():
@@ -1458,6 +1462,9 @@ def build_engine_feed():
                 sub = int(str(c[5]).replace("-", ""))
                 if (qi <= 20160331 and _is_conv21(qi, sub)
                         and "%s|%d" % (sym, qi) not in led_keys):
+                    sub = UNDATED_SUB
+                    n_undated[0] += 1
+                elif "%s|%d" % (sym, qi) in undated_keys and _is_conv21(qi, sub):
                     sub = UNDATED_SUB
                     n_undated[0] += 1
                 sub = _reassert_sub(sym, qi, sub)

@@ -37,7 +37,7 @@ for key, v in audit.items():
     link, rowfixed, depth = ent, False, 0
     while isinstance(link, dict) and depth < 8:
         w = str(link.get("why", ""))
-        if "\u00a7158 row-level DII heal" in w or "\u00a7159 row-level FII heal" in w or "\u00a7160 page-era row-level heal" in w: rowfixed = True; break
+        if "\u00a7158 row-level DII heal" in w or "\u00a7159 row-level FII heal" in w or "\u00a7160 page-era row-level heal" in w or "\u00a7164" in w: rowfixed = True; break
         link = link.get("superseded"); depth += 1
     if rowfixed:
         n_ok += 1; continue

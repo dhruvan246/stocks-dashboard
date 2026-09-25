@@ -19772,3 +19772,44 @@ join 2010-06-07 26.09 → 06-08 26.07 (NSE 260.95 → 260.75); SHILPI +69 bars, 
 dates monotonic, second pass inserts 0. Goes live on the next `refresh-backtest-data.yml` run.
 **OPEN (not measured):** the BZ ledger's first bar is 2016-01-01 — BZ history before 2016 was never scanned, and the
 2016-17 blocks were built when `dailyFrom` was 2018 (weekly-thinned). Scope of missing pre-2018 BZ bars unknown.
+
+## 164. QUANTMAC REPLY #2 — THREE DEFINITION DECISIONS + OUR-SIDE FIXES  (2026-09-25, user: "adopt all three recommendations, do it")
+
+**Input.** `~/Downloads/Quantmac_FII_Reconciliation_Response_20260925_v2.xlsx` (their reply to our 24-Sep file; they compared against
+our 24-Sep 23:40 feed). Analysis tooling: session scratchpad `qm_reply2_*.py`. Decisions the user took (all three recommended):
+D1 unnamed remainder of the old institutional Any-Other block counts as FII in the Dec-2015..Jun-2022 form; D2 pre-2016
+depository-receipt basis per company; D3 re-read every former Nifty 500 member row by row. Plus our-side fixes (revision-only
+dates, assumed dates, missing filings). The DII session wrote §158a/§158b (rest-follows-foreign, 134 cells) first.
+
+### 164a. Depository-receipt basis per company (D2)
+**Measured.** Clause-35 pages print two percentage columns, "% of (A+B)" and "% of (A+B+C)"; our store held the (A+B+C) one.
+The SEBI 2015 XBRL prints percentages on (A+B+C2): companies whose ADR/GDR custodian sits in C (outside the 100) jump at the page
+→ XBRL seam (ICICIBANK Sep-15 page 38.6 → Dec-15 52), companies whose depository shares sit INSIDE B (INFY, WIPRO: C = employee
+trust only) do not — Quantmac's blanket re-base breaks those (their INFY 47.93 → 40.46 at Jun-2016).
+**Rule** (`scripts/_shp_164a_dr_select.py`, `_shp_164a_dr_rebase.py`): a company is re-based only when its FIRST old-format XBRL
+prints Promoter + Public = 100 with a non-promoter-non-public block other than an employee-benefit trust (30 current members:
+HDFCBANK, ICICIBANK, ITC, RELIANCE, AXISBANK, SBIN, LT, M&M, INDUSINDBK, UPL, GAIL, CIPLA, AMBUJACEM, FEDERALBNK, …). Each stored
+pre-2016 cell read on the (A+B+C) column (checked per cell against the page's promoter row, or the mutual-fund row when there is
+no promoter) is scaled in all five slots by total (A+B+C) shares / (A+B) shares from the SAME quarter's BSE page. Their 2022-form
+filings also print A+B(+C2) = 100 (checked HDFCBANK, ICICIBANK, RELIANCE, AXISBANK, M&M Jun/Sep-2022), so the basis is one from
+2006 to today. Pre-Jun-2006 pages are empty shells on BSE → those cells are left as stored (a Jun-2006 step remains for these 30).
+**Result.** 1,092 cells (975 new entries, 117 superseding in place); 790 of 904 Quantmac depository-basis cells of these companies
+now agree. Ex-members: after their XBRL download (below).
+
+### 164c. D1 — unnamed remainder of the institutional Any-Other block → FII (Dec-2015..Jun-2022 form)
+`scripts/_shp_d1_rowfix.py` (imports `_shp_dii_rowfix` / `_shp_fii_rowfix` read-only). On top of the §158 R1 evaluation (incl.
+§158a rest-follows-foreign), the part of the block the store holds in dii that no named holder and no label explains moves to
+fii. **Refined by measurement, not adopted blindly:** (i) named ≥1% holders of unknown class stay where the store has them
+(Quantmac does the same: JSWENERGY Jun-16 = 9.37 + 3.26 unnamed = their 12.63); (ii) when every named holder of the block is
+DOMESTIC the unnamed rest follows them and stays dii — HDFCBANK Jun-22 (LIC 3.22 + ICICI Pru Life 1.26 + rest 3.47) and
+APOLLOTYRE Jun-22: their own Sep-2022 filings keep those shares in Institutions (Domestic) (Quantmac moves them; we don't — the
+filer's next filing is the evidence). Result, current members: 221 cells / 76 symbols, dii → fii 278.4 pp (LICHSGFIN Dec-16
+32.83 → 40.57 = Quantmac 40.5766; ABBOTINDIA Sep-20 1.73 = 1.7252; 3MINDIA Jun-22 5.21; PVRINOX Jun-16 49.70 = 49.7045 — "no typed
+rows" 19.07); 523 of 599 affected Quantmac cells now agree; 2022 seam unchanged, Mar→Jun-2016 fii seam 5 → 7 names (PVRINOX,
+JSWENERGY: the Mar-2016 88/89 page reading of the same block is the next step). 7 cells where R1 itself now differs from the store
+are left to the DII session. Ex-members: below.
+
+### 164e. Assumed dates served undated
+11 rows after Mar-2016 carried only an ASSUMED quarter-end + 21 days (third-party value fills: BSE Ltd 2017-2020 ×9 from Trendlyne,
+CDSL Dec-2018, KIOCL Mar-2017). `scripts/shp_undated.json` lists them; `build_engine_feed` serves them UN-DATED (engine convention
+quarter-end + 28) like the pre-Jun-2016 convention rows. An evidenced date always wins — remove the key when one is found.
