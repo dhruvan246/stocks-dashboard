@@ -77,7 +77,30 @@ def get(o, u, b=False):
 class BseBlocked(RuntimeError):
     pass
 
+# ---- browser-discovery override -------------------------------------------------------------------
+# The BSE announcements API (api.bseindia.com/AnnSubCategoryGetData) 403s scripted clients since
+# 2026-09-23, but a real browser reaches it (200) and the PDF host (www.bseindia.com/xml-data) still
+# serves scripts (200). So discovery is done in a browser and dropped to a JSON; set BSE_FILINGS_JSON
+# to a {scripcode: [[annYYYYMMDD, attachmentname], ...]} map and result_filings() reads that instead
+# of calling the blocked API. download()/render()/parse/vision/gate are unchanged — no IP rotation,
+# no impersonation. When the block lifts, unset the env var and the live API path runs as before.
+_FILINGS = None; _FILINGS_LOADED = False
+def _filings_override():
+    global _FILINGS, _FILINGS_LOADED
+    if not _FILINGS_LOADED:
+        _FILINGS_LOADED = True
+        p = os.environ.get("BSE_FILINGS_JSON")
+        if p and os.path.exists(p):
+            raw = json.load(open(p))
+            _FILINGS = {int(k): [(int(a), b) for a, b in v] for k, v in raw.items()}
+            print("filings-override: %d scrips loaded from %s" % (len(_FILINGS), p))
+    return _FILINGS
+
 def result_filings(o, code, frm, to, pages=6):
+    ov = _filings_override()
+    if ov is not None:
+        fi, ti = int(frm), int(to)
+        return sorted({(a, b) for (a, b) in ov.get(int(code), []) if fi <= a <= ti})
     out = []
     for pg in range(1, pages + 1):
         u = ('https://api.bseindia.com/BseIndiaAPI/api/AnnSubCategoryGetData/w?pageno=%d&strCat=Result'
