@@ -772,6 +772,7 @@ def classify():
             base=pre160(prior,cur,F_cell_eq)   # a page already healed by §160 is re-read from the cell BEFORE the first §160-family entry (walks the superseded chain), so every rule is re-derived together
             try: h=gzip.open(f,"rt",encoding="utf-8").read(); r,why=evaluate(h,base,s,qtrid(q),c,ctx,gctx)
             except Exception as e: stats["parse_err"]+=1; print("  err",s,q,repr(e)[:120],file=sys.stderr); continue
+            if D.chain_has(prior): stats["skip_164"]+=1; continue      # re-decided by §164 (FII session, e.g. §164a DR re-base): never re-judged here
             own160=bool(prior and "\u00a7160 page-era" in prior.get("why","") and "resolved by the FII session" not in prior.get("why","") and "seam-fii-reconstruction" not in prior.get("why","") and base is not cur)
             if own160 and (r is None or not (r["ev"] or r["prom_fix"])):
                 # a live §160/§160b cell the current rules no longer support (APOLLOHOSP Jun/Sep-15: the 'Others' row is the Mar-15 'Foreign Corporate

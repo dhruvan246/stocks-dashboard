@@ -52,6 +52,19 @@ FORLAB=re.compile(r'foreig|muscat|s\.?a\.?o\.?g\b|overseas|\bfpi\b|\bfii\b|\bocb
 DOMSTRONG=re.compile(r"insur|assurance|provident|pension|nps trust|national pension|mutual fund|\bmagnum\b|\blic\b|\blici\b|qualified inst|q[au]+lified|instit\w* buyers?|\bqib", re.I)
 DOMLAB=re.compile(r"insur|assurance|provident|pension|nps trust|national pension|mutual fund|\blic\b|\blici\b|qualified inst|q[au]+lified|instit\w* buyers?|\bqib|\bnbfc|non.?banking|financial institution|\bbank|alternat(e|ive) investment|venture capital|asset reconstruct|general insurance corp", re.I)
 REST_FOLLOWS=True     # §158a/§158b (2026-09-25): with the rule on, a full N500 run proposes 0 on the live store; False = the §158 (2026-09-24) evaluation
+# §164 (FII session, 2026-09-25): "§164 row-level remainder rule" (D1 unnamed Any-Other rest -> fii, ex-member re-reads) and "§164a
+# depository-receipt basis" (pre-2016 re-base of all five slots). These rules re-decide cells this script and _shp_aspx_rowfix.py
+# would otherwise re-evaluate on their older basis and propose moving back, so both classify stages SKIP any cell whose ledger chain
+# carries a §164 marker. (Prior-state alternative, if ever needed: a remainder entry's cell - was is a pure dii->fii move of
+# _shp_164_audit.json cells[key]["d1"], plus ["mv159"] into fii for ex-members, carried through R1 the way ext_fii carries §159.)
+MARK164=re.compile(r"\u00a7164 row-level remainder rule|\u00a7164a depository-receipt basis")
+def chain_has(prior, rx=MARK164, depth=12):
+    """True when any entry in a ledger cell's superseded chain carries `rx` in its why."""
+    link=prior; d=0
+    while isinstance(link,dict) and d<depth:
+        if rx.search(str(link.get("why") or "")): return True
+        link=link.get("superseded"); d+=1
+    return False
 INSURER=re.compile(r'insur|assurance|\blic\b|\blici\b|life ins', re.I)
 def qe_of(qtr):
     q=(qtr or "").strip().split()
@@ -383,6 +396,7 @@ def classify(limit=0, start=0, only=None, verbose=False):
             f,txt,bd,res=chosen
             r=eval_filing(ctx,qe,txt,bd,res,cur,final,unres_log,ext_fii,add_prev)
             if not final: continue
+            if chain_has(prior): stats["skip_164"]+=1; continue      # re-decided by §164 (FII session): never re-judged here
             stats["matched"]+=1
             if r is None: stats["split_unknown"]+=1; continue
             if r["overflow"]: stats["r1_overflow"]+=1
