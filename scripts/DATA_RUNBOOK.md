@@ -19441,3 +19441,31 @@ as intended; `refresh-stock-fin.yml` dispatched (run 36047895250).
 §159 247/247 and §160a 5/5 intact. Reply workbook rebuilt from `shp_engine_live_final7.json`; its open-items text no longer lists
 any "undecidable" row — the page-era residue is 17 non-institutional rows public by the filer's own block, plus the company-labelled
 chains (FEDERALBNK IFC, CUB FMO, JSWSTEEL, FORTIS, M&M) still awaiting a chain-consistent rule. That copy is the one to send.
+
+## §160f — THE LAST 17 NON-INSTITUTION ROWS (2026-09-25 ~01:20 IST, user: "fix the remaining 17 rows too")
+
+**Annual reports decide 15 of them as public (verdicts in the audit, "annual_report_verdicts_160f"; no ledger entry — the stored placement
+stands).** AARTIIND Dec-12/Mar-13 single holder 407,688: FY2012-13 report counts it in "Public" (26,167,462 = individuals + trusts 300 +
+407,688; its "FII/NRI/OCB" line = the page's FII + NRI rows exactly). ARE&M 2013-06..2015-09 single holder 932,500 → 877,000: FY2014-15 annual
+return names it "Others-Unclaimed suspense account" 913,000 / 886,000 = the page to the share. HINDZINC Sep-15 (35 holders): FY2015-16 annual
+return "foreign corporate bodies" 2.68M → 38.71M across the year. DRREDDY Sep-15 (57 holders): the filer's Mar-2016 holder table "Foreign
+Companies" 4,594,279 and Jun-2016 XBRL "Other Foreign Companies" 2.98 % are its only non-institution foreign category. ADANIPORTS Jun-15 (3 holders,
+19.6M): matches nothing in either year's report or the seam tables — public by its block, UNDECIDED (the only holder of that size, EM Resurgent
+Fund, is not placed there by any document).
+
+**ADANIPOWER and ADANIENT: one class per holder across the page era (28 ledger entries, "(§160f)").** Their generic rows could not be decided
+alone — the same holders sit under different labels in different quarters — so each holder takes the class its own filer's later typed filings
+give it, the §158 principle: Opal Investment Pvt Ltd → public (first 2022-form filing: Foreign Companies; Jun-2016 XBRL "Other FORIEGN CORPORATE
+BODIES") although the page era files it in the "Foreign Corporate Bodies" row Dec-12..Dec-14 and INSIDE the FII row Mar-15..Mar-16 (Mar-15 FII row
+213,380,683 = Opal 213,236,910 + 143,773); Elara India Opportunities / Emerging India Focus / Cresta / Albula → fii (Foreign Portfolio Investors in
+the Jun-2016 XBRL) although filed as "Foreign Corporate Bodies" (Mar-15 319,107,182), "Others" (Jun/Sep-15 345,262,765 / 319,263,884) and the
+Dec-15/Mar-16 lump "Foreign Corporate Bodies" 319,263,782 = annual report FY2015-16 "Foreign Companies" 319,263,782; 3i Power Investments A1 → fii
+(the filer's own Dec-2015 / Mar-2016 new-format filings place it in the foreign-institution row — the institutional Any-Others lump is exactly
+the funds + Foreign Nationals) although filed in the "Foreign Corporate Bodies" row since listing (row = 3i + a constant 32.5M / 35.4M residue).
+ADANIPOWER fii Dec-09..Mar-16: 7.7-10.3 → 15.1-17.7 (2009-12), 12.1-15.4 (2013), 10.1-11.1 (Jun-14..Mar-15), 23.5 / 22.3 / 22.6 / 19.8 (Jun-15..Mar-16;
+was 19.0 / 29.6 / 29.9 / 16.6), Jun-16 17.7 unchanged; Mar-16 DII 12.18 → 2.56 (the stored DII held the funds lump). ADANIENT Jun-15 12.47 → 18.31
+(the funds left the FII row for "Others" that quarter: FII row −60.3M as the 64.2M row appears) and Mar-16 10.67 → 17.67 (the "Overseas corporate
+bodies" lump 76,979,180 = Emerging India Focus + Elara + Albula + 265,092). §160b's ADANIPOWER Sep-15 entry (29.60, Opal still counted) superseded.
+Verified on a copy of the origin store 28/28; guards green. Script: scratchpad `doc_cells_160f.py` (share-count arithmetic; evidence in each `why`).
+
+**Page era now:** every generic row has a documented verdict; the only undecided one is ADANIPORTS Jun-2015 (0.95 pp, public by block).
