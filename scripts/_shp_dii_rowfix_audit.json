@@ -5,7 +5,9 @@
 "R2 Non-institutions->Any Other rows labelled as domestic institutions (Qualified Institutional Buyer, insurance, provident/pension, NBFC, FI, bank, AIF) join dii in full; generic labels contribute only their NAMED domestic-institution holders (>=1% rows). Named insurers also raise the ins slot.",
 "R3 the old-format NBFC row joins dii (the 2022 form lists NBFCs inside Institutions(Domestic)).",
 "Materiality: a cell is entered only when dii or fii moves >= 0.05pp. Evidence per cell: file, stored split, every rule hit with labels and holder names.",
-"2026-09-25: per-cell evidence restored from 00792eb00 (the 9609c489a follow-up write had replaced the file with its 2 corrected cells); the 2 corrections (HAL Sep-2021, SUNDARMFIN Mar-2016) and the follow-up section are kept on top"
+"2026-09-25: per-cell evidence restored from 00792eb00 (the 9609c489a follow-up write had replaced the file with its 2 corrected cells); the 2 corrections (HAL Sep-2021, SUNDARMFIN Mar-2016) and the follow-up section are kept on top",
+"§158 row-level DII heal (2026-09-25 §158a), old-format XBRL era Jun-2015..Jun-2022, Nifty 500. DII = Institutions(Domestic) in every format.",
+"§158a (2026-09-25) R1 rest-follows: where the block's >=1% holders form orphan groups (no category row) the unnamed rest was left uncovered in the stored split; when every classified named holder is foreign and no row is domestic, the rest joins fii (evidence tag R1-rest-follows-foreign-holders). Written only for the 86 cells the user approved."
 ],
 "cells": {
 "3MINDIA|2016-06-30": {
@@ -8410,12 +8412,12 @@
 "BHARATFORG|2016-06-30": {
 "file": "500493_147201612415_SHP.xml",
 "split": "p",
-"d_dii": -1.2498,
-"d_fii": 1.2494,
+"d_dii": -7.9,
+"d_fii": 7.9,
 "to_public": 0.0,
-"to_fii": 2.39,
+"to_fii": 10.29,
 "keep_dom": 0.0,
-"unresolved": 7.9,
+"unresolved": 0.0,
 "add_dii": 0.0,
 "add_ins": 0.0,
 "ev": [
@@ -8434,7 +8436,7 @@
 "GOVERNMENT OF SINGAPORE 1.14 foreign->fii(curated)"
 ],
 [
-"R1-uncovered-remainder",
+"R1-rest-follows-foreign-holders",
 7.9
 ]
 ],
@@ -8443,12 +8445,12 @@
 "BHARATFORG|2016-09-30": {
 "file": "500493_315202219556_SHP.xml",
 "split": "p",
-"d_dii": -1.2566,
-"d_fii": 1.2566,
+"d_dii": -7.08,
+"d_fii": 7.08,
 "to_public": 0.0,
-"to_fii": 3.37,
+"to_fii": 10.45,
 "keep_dom": 0.0,
-"unresolved": 7.08,
+"unresolved": 0.0,
 "add_dii": 0.0,
 "add_ins": 0.0,
 "ev": [
@@ -8474,7 +8476,7 @@
 "AMANSA HOLDINGS PRIVATE LIMITED 1.02 foreign->fii(curated)"
 ],
 [
-"R1-uncovered-remainder",
+"R1-rest-follows-foreign-holders",
 7.08
 ]
 ],
@@ -9565,13 +9567,13 @@
 },
 "BRITANNIA|2016-06-30": {
 "file": "500825_2172016173152_SHP.xml",
-"split": "a",
-"d_dii": -2.73,
-"d_fii": 2.94,
+"split": "p",
+"d_dii": -8.94,
+"d_fii": 8.94,
 "to_public": 0.0,
-"to_fii": 2.94,
+"to_fii": 11.88,
 "keep_dom": 0.0,
-"unresolved": 8.94,
+"unresolved": 0.0,
 "add_dii": 0.21,
 "add_ins": 0.0,
 "ev": [
@@ -9583,7 +9585,7 @@
 "ARISAG PARTNERS (ASIA)PTE LTD A/C ARISAG 2.94 foreign->fii(regex)"
 ],
 [
-"R1-uncovered-remainder",
+"R1-rest-follows-foreign-holders",
 8.94
 ],
 [
@@ -12724,12 +12726,12 @@
 "CHOLAFIN|2016-06-30": {
 "file": "511243_2672016165049_SHP.xml",
 "split": "p",
-"d_dii": 0.31,
-"d_fii": 0.0,
+"d_dii": -7.8594,
+"d_fii": 7.8594,
 "to_public": 0.0,
-"to_fii": 3.68,
+"to_fii": 11.54,
 "keep_dom": 0.0,
-"unresolved": 7.87,
+"unresolved": 0.01,
 "add_dii": 0.31,
 "add_ins": 0.0,
 "ev": [
@@ -12755,7 +12757,7 @@
 "INTERNATIONAL FINANCE CORPORATION 3.68 foreign->fii(curated)"
 ],
 [
-"R1-uncovered-remainder",
+"R1-rest-follows-foreign-holders",
 7.86
 ],
 [
@@ -12769,12 +12771,12 @@
 "CHOLAFIN|2016-09-30": {
 "file": "511243_21102016162230_SHP.xml",
 "split": "p",
-"d_dii": 2.068,
-"d_fii": 0.002,
+"d_dii": -6.02,
+"d_fii": 6.02,
 "to_public": 0.0,
-"to_fii": 1.9,
+"to_fii": 7.92,
 "keep_dom": 0.0,
-"unresolved": 6.02,
+"unresolved": 0.0,
 "add_dii": 2.07,
 "add_ins": 1.75,
 "ev": [
@@ -12793,7 +12795,7 @@
 "INTERNATIONAL FINANCE CORPORATION 1.90 foreign->fii(curated)"
 ],
 [
-"R1-uncovered-remainder",
+"R1-rest-follows-foreign-holders",
 6.02
 ],
 [
@@ -12812,13 +12814,13 @@
 },
 "CHOLAFIN|2016-12-31": {
 "file": "511243_3112017144216_SHP.xml",
-"split": "a",
-"d_dii": 0.16,
-"d_fii": 1.9,
+"split": "p",
+"d_dii": -3.44,
+"d_fii": 3.44,
 "to_public": 0.01,
-"to_fii": 1.9,
+"to_fii": 5.34,
 "keep_dom": 0.0,
-"unresolved": 3.44,
+"unresolved": 0.0,
 "add_dii": 2.07,
 "add_ins": 1.76,
 "ev": [
@@ -12845,7 +12847,7 @@
 "keyword"
 ],
 [
-"R1-uncovered-remainder",
+"R1-rest-follows-foreign-holders",
 3.44
 ],
 [
@@ -19628,12 +19630,12 @@
 "DIXON|2017-12-31": {
 "file": "540699_1112018135554_SHP.xml",
 "split": "p",
-"d_dii": 1.097,
-"d_fii": 1.303,
+"d_dii": -1.48,
+"d_fii": 1.48,
 "to_public": 1.7,
-"to_fii": 3.0,
+"to_fii": 4.48,
 "keep_dom": 0.0,
-"unresolved": 1.48,
+"unresolved": 0.0,
 "add_dii": 4.1,
 "add_ins": 4.02,
 "ev": [
@@ -19652,7 +19654,7 @@
 "GMO Emerging Domestic Opporunities Fund, A Series 3.00 foreign->fii(memory~)"
 ],
 [
-"R1-uncovered-remainder",
+"R1-rest-follows-foreign-holders",
 1.48
 ],
 [
@@ -19672,12 +19674,12 @@
 "DIXON|2018-03-31": {
 "file": "540699_134201817354_SHP.xml",
 "split": "p",
-"d_dii": -1.893,
-"d_fii": 1.303,
+"d_dii": -1.48,
+"d_fii": 1.48,
 "to_public": 1.7,
-"to_fii": 3.0,
+"to_fii": 4.48,
 "keep_dom": 0.0,
-"unresolved": 1.48,
+"unresolved": 0.0,
 "add_dii": 1.11,
 "add_ins": 1.1,
 "ev": [
@@ -19696,7 +19698,7 @@
 "GMO Emerging Domestic Opporunities Fund, A Series 3.00 foreign->fii(memory~)"
 ],
 [
-"R1-uncovered-remainder",
+"R1-rest-follows-foreign-holders",
 1.48
 ],
 [
@@ -22139,12 +22141,12 @@
 "EXIDEIND|2016-06-30": {
 "file": "500086_207201613813_SHP.xml",
 "split": "p",
-"d_dii": -0.7291,
-"d_fii": 2.2291,
+"d_dii": -4.12,
+"d_fii": 4.12,
 "to_public": 0.0,
-"to_fii": 5.79,
+"to_fii": 9.91,
 "keep_dom": 0.0,
-"unresolved": 4.12,
+"unresolved": 0.0,
 "add_dii": 1.5,
 "add_ins": 1.5,
 "ev": [
@@ -22170,7 +22172,7 @@
 "NALANDA INDIA EQUITY FUND LTD 3.56 foreign->fii(curated)"
 ],
 [
-"R1-uncovered-remainder",
+"R1-rest-follows-foreign-holders",
 4.12
 ],
 [
@@ -22221,13 +22223,13 @@
 },
 "EXIDEIND|2016-12-31": {
 "file": "500086_1712017104423_SHP.xml",
-"split": "a",
-"d_dii": -0.85,
-"d_fii": 2.21,
+"split": "p",
+"d_dii": -1.79,
+"d_fii": 1.79,
 "to_public": 0.0,
-"to_fii": 2.21,
+"to_fii": 4.0,
 "keep_dom": 0.0,
-"unresolved": 1.79,
+"unresolved": 0.0,
 "add_dii": 1.36,
 "add_ins": 1.36,
 "ev": [
@@ -22239,7 +22241,7 @@
 "GOVERNMENT PENSION FUND GLOBAL 2.21 foreign->fii(regex)"
 ],
 [
-"R1-uncovered-remainder",
+"R1-rest-follows-foreign-holders",
 1.79
 ],
 [
@@ -22253,13 +22255,13 @@
 },
 "EXIDEIND|2017-03-31": {
 "file": "500086_2042017114618_SHP.xml",
-"split": "a",
-"d_dii": -2.23,
-"d_fii": 3.42,
+"split": "p",
+"d_dii": -1.1,
+"d_fii": 1.1,
 "to_public": 0.0,
-"to_fii": 3.42,
+"to_fii": 4.52,
 "keep_dom": 0.0,
-"unresolved": 1.1,
+"unresolved": 0.0,
 "add_dii": 1.19,
 "add_ins": 1.19,
 "ev": [
@@ -22271,7 +22273,7 @@
 "GOVERNMENT PENSION FUND GLOBAL 3.42 foreign->fii(regex)"
 ],
 [
-"R1-uncovered-remainder",
+"R1-rest-follows-foreign-holders",
 1.1
 ],
 [
@@ -24056,12 +24058,12 @@
 "GESHIP|2016-06-30": {
 "file": "500620_2172016133444_SHP.xml",
 "split": "p",
-"d_dii": 3.6499,
-"d_fii": 0.0201,
+"d_dii": -9.27,
+"d_fii": 9.27,
 "to_public": 0.0,
-"to_fii": 7.0,
+"to_fii": 16.27,
 "keep_dom": 0.0,
-"unresolved": 9.27,
+"unresolved": 0.0,
 "add_dii": 3.67,
 "add_ins": 3.67,
 "ev": [
@@ -24080,7 +24082,7 @@
 "keyword"
 ],
 [
-"R1-uncovered-remainder",
+"R1-rest-follows-foreign-holders",
 9.27
 ],
 [
@@ -25574,13 +25576,13 @@
 },
 "GODFRYPHLP|2016-06-30": {
 "file": "500163_207201616218_SHP.xml",
-"split": "a",
-"d_dii": -4.66,
-"d_fii": 4.79,
+"split": "p",
+"d_dii": -3.18,
+"d_fii": 3.18,
 "to_public": 0.0,
-"to_fii": 4.79,
+"to_fii": 7.97,
 "keep_dom": 0.0,
-"unresolved": 3.18,
+"unresolved": 0.0,
 "add_dii": 0.13,
 "add_ins": 0.0,
 "ev": [
@@ -25592,7 +25594,7 @@
 "NATIONAL WESTMINSTER BANK PLC \nAS TRUSTEE 4.79 foreign->fii(regex)"
 ],
 [
-"R1-uncovered-remainder",
+"R1-rest-follows-foreign-holders",
 3.18
 ],
 [
@@ -31407,13 +31409,13 @@
 },
 "IEX|2017-12-31": {
 "file": "540750_1912018134420_SHP.xml",
-"split": "a",
-"d_dii": -11.0,
-"d_fii": 13.86,
+"split": "p",
+"d_dii": -9.04,
+"d_fii": 9.04,
 "to_public": 0.0,
-"to_fii": 13.86,
+"to_fii": 22.9,
 "keep_dom": 0.0,
-"unresolved": 9.04,
+"unresolved": 0.0,
 "add_dii": 2.86,
 "add_ins": 2.65,
 "ev": [
@@ -31474,7 +31476,7 @@
 "keyword"
 ],
 [
-"R1-uncovered-remainder",
+"R1-rest-follows-foreign-holders",
 9.04
 ],
 [
@@ -31682,12 +31684,12 @@
 "IEX|2018-12-31": {
 "file": "540750_1712019112651_SHP.xml",
 "split": "a",
-"d_dii": -12.24,
-"d_fii": 0.0,
+"d_dii": -8.01,
+"d_fii": 8.01,
 "to_public": 14.56,
-"to_fii": 0.0,
+"to_fii": 8.01,
 "keep_dom": 0.0,
-"unresolved": 8.01,
+"unresolved": 0.0,
 "add_dii": 2.32,
 "add_ins": 2.25,
 "ev": [
@@ -31700,7 +31702,7 @@
 "keyword"
 ],
 [
-"R1-uncovered-remainder",
+"R1-rest-follows-foreign-holders",
 8.01
 ],
 [
@@ -31806,12 +31808,12 @@
 "IEX|2019-06-30": {
 "file": "540750_217201913240_SHP.xml",
 "split": "a",
-"d_dii": -10.14,
-"d_fii": 0.0,
+"d_dii": -5.05,
+"d_fii": 5.05,
 "to_public": 12.37,
-"to_fii": 0.0,
+"to_fii": 5.05,
 "keep_dom": 0.0,
-"unresolved": 5.05,
+"unresolved": 0.0,
 "add_dii": 2.23,
 "add_ins": 2.23,
 "ev": [
@@ -31856,7 +31858,7 @@
 "keyword"
 ],
 [
-"R1-uncovered-remainder",
+"R1-rest-follows-foreign-holders",
 5.05
 ],
 [
@@ -31871,12 +31873,12 @@
 "IEX|2019-09-30": {
 "file": "540750_15102019154347_SHP.xml",
 "split": "a",
-"d_dii": -9.48,
-"d_fii": 0.0,
+"d_dii": -2.71,
+"d_fii": 2.71,
 "to_public": 12.37,
-"to_fii": 0.0,
+"to_fii": 2.71,
 "keep_dom": 0.0,
-"unresolved": 2.71,
+"unresolved": 0.0,
 "add_dii": 2.89,
 "add_ins": 2.09,
 "ev": [
@@ -31913,7 +31915,7 @@
 "keyword"
 ],
 [
-"R1-uncovered-remainder",
+"R1-rest-follows-foreign-holders",
 2.71
 ],
 [
@@ -31933,12 +31935,12 @@
 "IEX|2019-12-31": {
 "file": "540750_2112020163952_SHP.xml",
 "split": "a",
-"d_dii": -9.57,
-"d_fii": 0.0,
+"d_dii": -2.71,
+"d_fii": 2.71,
 "to_public": 12.37,
-"to_fii": 0.0,
+"to_fii": 2.71,
 "keep_dom": 0.0,
-"unresolved": 2.71,
+"unresolved": 0.0,
 "add_dii": 2.8,
 "add_ins": 2.05,
 "ev": [
@@ -31975,7 +31977,7 @@
 "keyword"
 ],
 [
-"R1-uncovered-remainder",
+"R1-rest-follows-foreign-holders",
 2.71
 ],
 [
@@ -31995,12 +31997,12 @@
 "IEX|2020-03-31": {
 "file": "540750_75202012275_SHP.xml",
 "split": "a",
-"d_dii": -6.59,
-"d_fii": 0.0,
+"d_dii": -2.43,
+"d_fii": 2.43,
 "to_public": 9.31,
-"to_fii": 0.0,
+"to_fii": 2.43,
 "keep_dom": 0.0,
-"unresolved": 2.43,
+"unresolved": 0.0,
 "add_dii": 2.72,
 "add_ins": 2.05,
 "ev": [
@@ -32029,7 +32031,7 @@
 "keyword"
 ],
 [
-"R1-uncovered-remainder",
+"R1-rest-follows-foreign-holders",
 2.43
 ],
 [
@@ -39368,13 +39370,13 @@
 },
 "KARURVYSYA|2016-03-31": {
 "file": "590003_982016181911_SHP.xml",
-"split": "a",
-"d_dii": -6.7015,
-"d_fii": 6.6943,
+"split": "p",
+"d_dii": -1.42,
+"d_fii": 1.42,
 "to_public": 0.0,
-"to_fii": 6.69,
+"to_fii": 8.11,
 "keep_dom": 0.0,
-"unresolved": 1.42,
+"unresolved": 0.0,
 "add_dii": 0.0,
 "add_ins": 0.0,
 "ev": [
@@ -39393,7 +39395,7 @@
 "SAIF ADVISORS MAURITIUS LIMITED A/C SAIF INDIA IV (FII) 2.34 foreign->fii(memory~)"
 ],
 [
-"R1-uncovered-remainder",
+"R1-rest-follows-foreign-holders",
 1.42
 ]
 ],
@@ -41011,13 +41013,13 @@
 },
 "LAURUSLABS|2016-12-31": {
 "file": "540222_9120171984_SHP.xml",
-"split": "a",
-"d_dii": -11.1,
-"d_fii": 11.57,
+"split": "p",
+"d_dii": -19.92,
+"d_fii": 19.92,
 "to_public": 0.0,
-"to_fii": 11.57,
+"to_fii": 31.49,
 "keep_dom": 0.0,
-"unresolved": 19.92,
+"unresolved": 0.0,
 "add_dii": 0.47,
 "add_ins": 0.0,
 "ev": [
@@ -41036,7 +41038,7 @@
 "keyword"
 ],
 [
-"R1-uncovered-remainder",
+"R1-rest-follows-foreign-holders",
 19.92
 ],
 [
@@ -41049,13 +41051,13 @@
 },
 "LAURUSLABS|2017-03-31": {
 "file": "540222_1742017154849_SHP.xml",
-"split": "a",
-"d_dii": -11.27,
-"d_fii": 11.57,
+"split": "p",
+"d_dii": -19.92,
+"d_fii": 19.92,
 "to_public": 0.0,
-"to_fii": 11.57,
+"to_fii": 31.49,
 "keep_dom": 0.0,
-"unresolved": 19.92,
+"unresolved": 0.0,
 "add_dii": 0.3,
 "add_ins": 0.0,
 "ev": [
@@ -41074,7 +41076,7 @@
 "keyword"
 ],
 [
-"R1-uncovered-remainder",
+"R1-rest-follows-foreign-holders",
 19.92
 ],
 [
@@ -41087,13 +41089,13 @@
 },
 "LAURUSLABS|2017-06-30": {
 "file": "540222_1772017163517_SHP.xml",
-"split": "a",
-"d_dii": -11.27,
-"d_fii": 11.57,
+"split": "p",
+"d_dii": -20.71,
+"d_fii": 20.71,
 "to_public": 0.0,
-"to_fii": 11.57,
+"to_fii": 32.28,
 "keep_dom": 0.0,
-"unresolved": 20.71,
+"unresolved": 0.0,
 "add_dii": 0.3,
 "add_ins": 0.0,
 "ev": [
@@ -41112,7 +41114,7 @@
 "keyword"
 ],
 [
-"R1-uncovered-remainder",
+"R1-rest-follows-foreign-holders",
 20.71
 ],
 [
@@ -41125,13 +41127,13 @@
 },
 "LAURUSLABS|2017-09-30": {
 "file": "540222_1010201718187_SHP.xml",
-"split": "a",
-"d_dii": -11.34,
-"d_fii": 11.54,
+"split": "p",
+"d_dii": -20.08,
+"d_fii": 20.08,
 "to_public": 0.0,
-"to_fii": 11.54,
+"to_fii": 31.62,
 "keep_dom": 0.0,
-"unresolved": 20.08,
+"unresolved": 0.0,
 "add_dii": 0.2,
 "add_ins": 0.0,
 "ev": [
@@ -41150,7 +41152,7 @@
 "keyword"
 ],
 [
-"R1-uncovered-remainder",
+"R1-rest-follows-foreign-holders",
 20.08
 ],
 [
@@ -41163,13 +41165,13 @@
 },
 "LAURUSLABS|2017-12-31": {
 "file": "540222_412018182546_SHP.xml",
-"split": "a",
-"d_dii": -11.36,
-"d_fii": 11.54,
+"split": "p",
+"d_dii": -19.87,
+"d_fii": 19.87,
 "to_public": 0.0,
-"to_fii": 11.54,
+"to_fii": 31.41,
 "keep_dom": 0.0,
-"unresolved": 19.87,
+"unresolved": 0.0,
 "add_dii": 0.18,
 "add_ins": 0.0,
 "ev": [
@@ -41188,7 +41190,7 @@
 "keyword"
 ],
 [
-"R1-uncovered-remainder",
+"R1-rest-follows-foreign-holders",
 19.87
 ],
 [
@@ -41202,12 +41204,12 @@
 "LAURUSLABS|2018-03-31": {
 "file": "540222_542018191119_SHP.xml",
 "split": "a",
-"d_dii": -11.37,
-"d_fii": 0.0,
+"d_dii": -19.87,
+"d_fii": 19.87,
 "to_public": 11.54,
-"to_fii": 0.0,
+"to_fii": 19.87,
 "keep_dom": 0.0,
-"unresolved": 19.87,
+"unresolved": 0.0,
 "add_dii": 0.17,
 "add_ins": 0.0,
 "ev": [
@@ -41228,7 +41230,7 @@
 "keyword"
 ],
 [
-"R1-uncovered-remainder",
+"R1-rest-follows-foreign-holders",
 19.87
 ],
 [
@@ -41242,12 +41244,12 @@
 "LAURUSLABS|2018-06-30": {
 "file": "540222_772018174326_SHP.xml",
 "split": "a",
-"d_dii": -11.54,
-"d_fii": 0.0,
+"d_dii": -19.87,
+"d_fii": 19.87,
 "to_public": 11.54,
-"to_fii": 0.0,
+"to_fii": 19.87,
 "keep_dom": 0.0,
-"unresolved": 19.87,
+"unresolved": 0.0,
 "add_dii": 0.0,
 "add_ins": 0.0,
 "ev": [
@@ -41268,7 +41270,7 @@
 "keyword"
 ],
 [
-"R1-uncovered-remainder",
+"R1-rest-follows-foreign-holders",
 19.87
 ]
 ],
@@ -41277,12 +41279,12 @@
 "LAURUSLABS|2018-09-30": {
 "file": "540222_12102018165042_SHP.xml",
 "split": "a",
-"d_dii": -11.5,
-"d_fii": 0.0,
+"d_dii": -19.79,
+"d_fii": 19.79,
 "to_public": 11.5,
-"to_fii": 0.0,
+"to_fii": 19.79,
 "keep_dom": 0.0,
-"unresolved": 19.79,
+"unresolved": 0.0,
 "add_dii": 0.0,
 "add_ins": 0.0,
 "ev": [
@@ -41303,7 +41305,7 @@
 "keyword"
 ],
 [
-"R1-uncovered-remainder",
+"R1-rest-follows-foreign-holders",
 19.79
 ]
 ],
@@ -41312,12 +41314,12 @@
 "LAURUSLABS|2018-12-31": {
 "file": "540222_712019185832_SHP.xml",
 "split": "a",
-"d_dii": -11.5,
-"d_fii": 0.0,
+"d_dii": -19.79,
+"d_fii": 19.79,
 "to_public": 11.5,
-"to_fii": 0.0,
+"to_fii": 19.79,
 "keep_dom": 0.0,
-"unresolved": 19.79,
+"unresolved": 0.0,
 "add_dii": 0.0,
 "add_ins": 0.0,
 "ev": [
@@ -41338,7 +41340,7 @@
 "keyword"
 ],
 [
-"R1-uncovered-remainder",
+"R1-rest-follows-foreign-holders",
 19.79
 ]
 ],
@@ -41347,12 +41349,12 @@
 "LAURUSLABS|2019-03-31": {
 "file": "540222_542019175450_SHP.xml",
 "split": "a",
-"d_dii": -5.75,
-"d_fii": 0.0,
+"d_dii": -19.74,
+"d_fii": 19.74,
 "to_public": 5.75,
-"to_fii": 0.0,
+"to_fii": 19.74,
 "keep_dom": 0.0,
-"unresolved": 19.74,
+"unresolved": 0.0,
 "add_dii": 0.0,
 "add_ins": 0.0,
 "ev": [
@@ -41373,7 +41375,7 @@
 "keyword"
 ],
 [
-"R1-uncovered-remainder",
+"R1-rest-follows-foreign-holders",
 19.74
 ]
 ],
@@ -41382,12 +41384,12 @@
 "LAURUSLABS|2019-06-30": {
 "file": "540222_187201913054_SHP.xml",
 "split": "a",
-"d_dii": -5.75,
-"d_fii": 0.0,
+"d_dii": -19.96,
+"d_fii": 19.96,
 "to_public": 5.75,
-"to_fii": 0.0,
+"to_fii": 19.96,
 "keep_dom": 0.0,
-"unresolved": 19.96,
+"unresolved": 0.0,
 "add_dii": 0.0,
 "add_ins": 0.0,
 "ev": [
@@ -41408,7 +41410,7 @@
 "keyword"
 ],
 [
-"R1-uncovered-remainder",
+"R1-rest-follows-foreign-holders",
 19.96
 ]
 ],
@@ -41530,12 +41532,12 @@
 "LICHSGFIN|2016-06-30": {
 "file": "500253_972016181219_SHP.xml",
 "split": "p",
-"d_dii": -2.8253,
-"d_fii": 4.0053,
+"d_dii": -21.32,
+"d_fii": 21.32,
 "to_public": 0.0,
-"to_fii": 10.17,
+"to_fii": 31.49,
 "keep_dom": 0.0,
-"unresolved": 21.32,
+"unresolved": 0.0,
 "add_dii": 1.18,
 "add_ins": 1.18,
 "ev": [
@@ -41589,7 +41591,7 @@
 "FIL INVESTMENTS(MAURITIUS)LTD 1.05 foreign->fii(curated)"
 ],
 [
-"R1-uncovered-remainder",
+"R1-rest-follows-foreign-holders",
 21.32
 ],
 [
@@ -41604,12 +41606,12 @@
 "LICHSGFIN|2016-09-30": {
 "file": "500253_1010201617363_SHP.xml",
 "split": "p",
-"d_dii": -0.1188,
-"d_fii": 1.6988,
+"d_dii": -11.88,
+"d_fii": 11.88,
 "to_public": 0.0,
-"to_fii": 2.78,
+"to_fii": 14.66,
 "keep_dom": 0.0,
-"unresolved": 11.88,
+"unresolved": 0.0,
 "add_dii": 1.58,
 "add_ins": 1.58,
 "ev": [
@@ -41628,7 +41630,7 @@
 "FIDELITY INVESTMENT TRUST FIDELITY SERIES EMERGING MARKETS FUND 1.08 foreign->fii(curated)"
 ],
 [
-"R1-uncovered-remainder",
+"R1-rest-follows-foreign-holders",
 11.88
 ],
 [
@@ -41669,12 +41671,12 @@
 "LICHSGFIN|2017-06-30": {
 "file": "500253_137201717511_SHP.xml",
 "split": "p",
-"d_dii": 1.7378,
-"d_fii": 0.0022,
+"d_dii": -7.0,
+"d_fii": 7.0,
 "to_public": 0.0,
-"to_fii": 1.01,
+"to_fii": 8.01,
 "keep_dom": 0.0,
-"unresolved": 7.0,
+"unresolved": 0.0,
 "add_dii": 1.74,
 "add_ins": 1.74,
 "ev": [
@@ -41686,7 +41688,7 @@
 "ABU DHABI INVESTMENT AUTHORITY - LGLINV 1.01 foreign->fii(curated)"
 ],
 [
-"R1-uncovered-remainder",
+"R1-rest-follows-foreign-holders",
 7.0
 ],
 [
@@ -45227,12 +45229,12 @@
 "MFSL|2016-06-30": {
 "file": "500271_1572016152948_SHP.xml",
 "split": "p",
-"d_dii": 0.19,
-"d_fii": 0.0,
+"d_dii": -9.0162,
+"d_fii": 9.0162,
 "to_public": 0.0,
-"to_fii": 3.09,
+"to_fii": 12.11,
 "keep_dom": 0.0,
-"unresolved": 9.02,
+"unresolved": 0.0,
 "add_dii": 0.19,
 "add_ins": 0.0,
 "ev": [
@@ -45251,7 +45253,7 @@
 "INTERNATIONAL FINANCE CORPORATION 3.09 foreign->fii(curated)"
 ],
 [
-"R1-uncovered-remainder",
+"R1-rest-follows-foreign-holders",
 9.02
 ],
 [
@@ -45265,12 +45267,12 @@
 "MFSL|2016-09-30": {
 "file": "500271_13102016144848_SHP.xml",
 "split": "p",
-"d_dii": 0.12,
-"d_fii": 0.0,
+"d_dii": -9.0164,
+"d_fii": 9.0164,
 "to_public": 0.0,
-"to_fii": 3.09,
+"to_fii": 12.11,
 "keep_dom": 0.0,
-"unresolved": 9.02,
+"unresolved": 0.0,
 "add_dii": 0.12,
 "add_ins": 0.0,
 "ev": [
@@ -45289,7 +45291,7 @@
 "INTERNATIONAL FINANCE CORPORATION 3.09 foreign->fii(curated)"
 ],
 [
-"R1-uncovered-remainder",
+"R1-rest-follows-foreign-holders",
 9.02
 ],
 [
@@ -45303,12 +45305,12 @@
 "MFSL|2016-12-31": {
 "file": "500271_1212017121059_SHP.xml",
 "split": "p",
-"d_dii": 0.06,
-"d_fii": 0.0,
+"d_dii": -9.0062,
+"d_fii": 9.0062,
 "to_public": 0.0,
-"to_fii": 2.08,
+"to_fii": 11.09,
 "keep_dom": 0.0,
-"unresolved": 9.01,
+"unresolved": 0.0,
 "add_dii": 0.06,
 "add_ins": 0.0,
 "ev": [
@@ -45327,7 +45329,7 @@
 "INTERNATIONAL FINANCE CORPORATION 2.08 foreign->fii(curated)"
 ],
 [
-"R1-uncovered-remainder",
+"R1-rest-follows-foreign-holders",
 9.01
 ],
 [
@@ -45425,13 +45427,13 @@
 },
 "MINDACORP|2016-06-30": {
 "file": "538962_13122016175225_SHP.xml",
-"split": "a",
-"d_dii": -1.3,
-"d_fii": 1.3,
+"split": "p",
+"d_dii": -3.07,
+"d_fii": 3.07,
 "to_public": 0.0,
-"to_fii": 1.3,
+"to_fii": 4.37,
 "keep_dom": 0.0,
-"unresolved": 3.07,
+"unresolved": 0.0,
 "add_dii": 0.0,
 "add_ins": 0.0,
 "ev": [
@@ -45450,7 +45452,7 @@
 "keyword"
 ],
 [
-"R1-uncovered-remainder",
+"R1-rest-follows-foreign-holders",
 3.07
 ]
 ],
@@ -45458,13 +45460,13 @@
 },
 "MINDACORP|2016-09-30": {
 "file": "538962_13122016173857_SHP.xml",
-"split": "a",
-"d_dii": -1.1,
-"d_fii": 1.1,
+"split": "p",
+"d_dii": -1.8,
+"d_fii": 1.8,
 "to_public": 0.0,
-"to_fii": 1.1,
+"to_fii": 2.9,
 "keep_dom": 0.0,
-"unresolved": 1.8,
+"unresolved": 0.0,
 "add_dii": 0.0,
 "add_ins": 0.0,
 "ev": [
@@ -45483,7 +45485,7 @@
 "keyword"
 ],
 [
-"R1-uncovered-remainder",
+"R1-rest-follows-foreign-holders",
 1.8
 ]
 ],
@@ -52113,12 +52115,12 @@
 "POONAWALLA|2016-06-30": {
 "file": "524000_1472016183825_SHP.xml",
 "split": "p",
-"d_dii": -26.759,
-"d_fii": 26.759,
+"d_dii": -11.02,
+"d_fii": 11.02,
 "to_public": 0.0,
-"to_fii": 36.47,
+"to_fii": 47.49,
 "keep_dom": 0.0,
-"unresolved": 11.02,
+"unresolved": 0.0,
 "add_dii": 0.0,
 "add_ins": 0.0,
 "ev": [
@@ -52165,7 +52167,7 @@
 "ZEND MAURITIUS VC INVESTMENTS LTD 14.47 foreign->fii(regex)"
 ],
 [
-"R1-uncovered-remainder",
+"R1-rest-follows-foreign-holders",
 11.02
 ]
 ],
@@ -52174,12 +52176,12 @@
 "POONAWALLA|2016-09-30": {
 "file": "524000_1210201617819_SHP.xml",
 "split": "p",
-"d_dii": -23.0626,
-"d_fii": 23.0626,
+"d_dii": -8.16,
+"d_fii": 8.16,
 "to_public": 0.0,
-"to_fii": 32.77,
+"to_fii": 40.93,
 "keep_dom": 0.0,
-"unresolved": 8.16,
+"unresolved": 0.0,
 "add_dii": 0.0,
 "add_ins": 0.0,
 "ev": [
@@ -52212,7 +52214,7 @@
 "ZEND MAURITIUS VC INVESTMENTS LTD 14.47 foreign->fii(regex)"
 ],
 [
-"R1-uncovered-remainder",
+"R1-rest-follows-foreign-holders",
 8.16
 ]
 ],
@@ -52221,12 +52223,12 @@
 "POONAWALLA|2016-12-31": {
 "file": "524000_1712017163046_SHP.xml",
 "split": "p",
-"d_dii": -23.0626,
-"d_fii": 23.0626,
+"d_dii": -8.41,
+"d_fii": 8.41,
 "to_public": 0.0,
-"to_fii": 32.77,
+"to_fii": 41.18,
 "keep_dom": 0.0,
-"unresolved": 8.41,
+"unresolved": 0.0,
 "add_dii": 0.0,
 "add_ins": 0.0,
 "ev": [
@@ -52259,7 +52261,7 @@
 "ZEND MAURITIUS VC INVESTMENTS LTD 14.47 foreign->fii(regex)"
 ],
 [
-"R1-uncovered-remainder",
+"R1-rest-follows-foreign-holders",
 8.41
 ]
 ],
@@ -52268,12 +52270,12 @@
 "POONAWALLA|2017-03-31": {
 "file": "524000_542017192645_SHP.xml",
 "split": "p",
-"d_dii": -14.4737,
-"d_fii": 14.4737,
+"d_dii": -7.91,
+"d_fii": 7.91,
 "to_public": 0.0,
-"to_fii": 24.18,
+"to_fii": 32.09,
 "keep_dom": 0.0,
-"unresolved": 7.91,
+"unresolved": 0.0,
 "add_dii": 0.0,
 "add_ins": 0.0,
 "ev": [
@@ -52299,7 +52301,7 @@
 "ZEND MAURITIUS VC INVESTMENTS LTD 14.47 foreign->fii(regex)"
 ],
 [
-"R1-uncovered-remainder",
+"R1-rest-follows-foreign-holders",
 7.91
 ]
 ],
@@ -52308,12 +52310,12 @@
 "POONAWALLA|2017-06-30": {
 "file": "524000_2072017175452_SHP.xml",
 "split": "p",
-"d_dii": -14.4643,
-"d_fii": 14.4643,
+"d_dii": -7.82,
+"d_fii": 7.82,
 "to_public": 0.0,
-"to_fii": 24.17,
+"to_fii": 31.99,
 "keep_dom": 0.0,
-"unresolved": 7.82,
+"unresolved": 0.0,
 "add_dii": 0.0,
 "add_ins": 0.0,
 "ev": [
@@ -52339,7 +52341,7 @@
 "ZEND MAURITIUS VC INVESTMENTS LTD 14.46 foreign->fii(regex)"
 ],
 [
-"R1-uncovered-remainder",
+"R1-rest-follows-foreign-holders",
 7.82
 ]
 ],
@@ -52348,12 +52350,12 @@
 "POONAWALLA|2018-06-30": {
 "file": "524000_1272018174734_SHP.xml",
 "split": "p",
-"d_dii": 4.13,
-"d_fii": 0.0,
+"d_dii": -0.2702,
+"d_fii": 0.2702,
 "to_public": 0.0,
-"to_fii": 8.8,
+"to_fii": 13.72,
 "keep_dom": 0.0,
-"unresolved": 5.02,
+"unresolved": 0.1,
 "add_dii": 4.13,
 "add_ins": 4.13,
 "ev": [
@@ -52381,7 +52383,7 @@
 "keyword"
 ],
 [
-"R1-uncovered-remainder",
+"R1-rest-follows-foreign-holders",
 4.92
 ],
 [
@@ -52396,12 +52398,12 @@
 "POONAWALLA|2018-09-30": {
 "file": "524000_161020180107_SHP.xml",
 "split": "p",
-"d_dii": 5.1,
-"d_fii": 0.0,
+"d_dii": -0.326,
+"d_fii": 0.326,
 "to_public": 0.0,
-"to_fii": 7.67,
+"to_fii": 12.57,
 "keep_dom": 0.0,
-"unresolved": 4.9,
+"unresolved": 0.0,
 "add_dii": 5.1,
 "add_ins": 5.1,
 "ev": [
@@ -52422,7 +52424,7 @@
 "keyword"
 ],
 [
-"R1-uncovered-remainder",
+"R1-rest-follows-foreign-holders",
 4.9
 ],
 [
@@ -52437,12 +52439,12 @@
 "POONAWALLA|2018-12-31": {
 "file": "524000_412019185634_SHP.xml",
 "split": "p",
-"d_dii": 5.15,
-"d_fii": 0.0,
+"d_dii": -0.4066,
+"d_fii": 0.4066,
 "to_public": 0.0,
-"to_fii": 7.73,
+"to_fii": 12.65,
 "keep_dom": 0.0,
-"unresolved": 4.92,
+"unresolved": 0.0,
 "add_dii": 5.15,
 "add_ins": 5.15,
 "ev": [
@@ -52463,7 +52465,7 @@
 "keyword"
 ],
 [
-"R1-uncovered-remainder",
+"R1-rest-follows-foreign-holders",
 4.92
 ],
 [
@@ -52478,12 +52480,12 @@
 "POONAWALLA|2019-03-31": {
 "file": "524000_1942019172121_SHP.xml",
 "split": "p",
-"d_dii": 4.51,
-"d_fii": 0.0,
+"d_dii": -0.4077,
+"d_fii": 0.4077,
 "to_public": 0.0,
-"to_fii": 7.73,
+"to_fii": 12.65,
 "keep_dom": 0.0,
-"unresolved": 4.92,
+"unresolved": 0.0,
 "add_dii": 4.51,
 "add_ins": 4.51,
 "ev": [
@@ -52504,7 +52506,7 @@
 "keyword"
 ],
 [
-"R1-uncovered-remainder",
+"R1-rest-follows-foreign-holders",
 4.92
 ],
 [
@@ -52519,12 +52521,12 @@
 "POONAWALLA|2019-06-30": {
 "file": "524000_2072019235533_SHP.xml",
 "split": "p",
-"d_dii": 4.51,
-"d_fii": 0.0,
+"d_dii": -0.3993,
+"d_fii": 0.3993,
 "to_public": 0.0,
-"to_fii": 5.46,
+"to_fii": 10.37,
 "keep_dom": 0.0,
-"unresolved": 4.91,
+"unresolved": 0.0,
 "add_dii": 4.51,
 "add_ins": 4.51,
 "ev": [
@@ -52545,7 +52547,7 @@
 "keyword"
 ],
 [
-"R1-uncovered-remainder",
+"R1-rest-follows-foreign-holders",
 4.91
 ],
 [
@@ -53589,12 +53591,12 @@
 "PVRINOX|2016-12-31": {
 "file": "532689_412017164217_SHP.xml",
 "split": "a",
-"d_dii": -15.76,
-"d_fii": 0.0,
+"d_dii": -1.93,
+"d_fii": 1.93,
 "to_public": 15.96,
-"to_fii": 0.0,
+"to_fii": 1.93,
 "keep_dom": 0.0,
-"unresolved": 1.93,
+"unresolved": 0.0,
 "add_dii": 0.2,
 "add_ins": 0.0,
 "ev": [
@@ -53607,7 +53609,7 @@
 "keyword"
 ],
 [
-"R1-uncovered-remainder",
+"R1-rest-follows-foreign-holders",
 1.93
 ],
 [
@@ -53627,12 +53629,12 @@
 "PVRINOX|2017-03-31": {
 "file": "532689_1942017142038_SHP.xml",
 "split": "a",
-"d_dii": -15.47,
-"d_fii": 0.0,
+"d_dii": -1.91,
+"d_fii": 1.91,
 "to_public": 15.67,
-"to_fii": 0.0,
+"to_fii": 1.91,
 "keep_dom": 0.0,
-"unresolved": 1.91,
+"unresolved": 0.0,
 "add_dii": 0.2,
 "add_ins": 0.0,
 "ev": [
@@ -53665,7 +53667,7 @@
 "PLENTY PRIVATE EQUITY FUND I LIMITED 4.21 foreign->public(new-format:ForeignCompanies)"
 ],
 [
-"R1-uncovered-remainder",
+"R1-rest-follows-foreign-holders",
 1.91
 ],
 [
@@ -60518,12 +60520,12 @@
 "SUPREMEIND|2016-09-30": {
 "file": "509930_18102016135510_SHP.xml",
 "split": "p",
-"d_dii": -1.1774,
-"d_fii": 1.1774,
+"d_dii": -3.91,
+"d_fii": 3.91,
 "to_public": 0.0,
-"to_fii": 8.81,
+"to_fii": 12.72,
 "keep_dom": 0.0,
-"unresolved": 3.91,
+"unresolved": 0.0,
 "add_dii": 0.0,
 "add_ins": 0.0,
 "ev": [
@@ -60549,7 +60551,7 @@
 "JPMORGAN EMERGING MARKETS INVESTMENT TRUST PLC 1.17 foreign->fii(regex)"
 ],
 [
-"R1-uncovered-remainder",
+"R1-rest-follows-foreign-holders",
 3.91
 ]
 ],
@@ -60558,12 +60560,12 @@
 "SUPREMEIND|2016-12-31": {
 "file": "509930_1912017141943_SHP.xml",
 "split": "p",
-"d_dii": -1.1586,
-"d_fii": 1.1786,
+"d_dii": -3.04,
+"d_fii": 3.04,
 "to_public": 0.0,
-"to_fii": 9.76,
+"to_fii": 12.8,
 "keep_dom": 0.0,
-"unresolved": 3.04,
+"unresolved": 0.0,
 "add_dii": 0.02,
 "add_ins": 0.0,
 "ev": [
@@ -60596,7 +60598,7 @@
 "J P MORGAN FUNDS 1.01 foreign->fii(curated)"
 ],
 [
-"R1-uncovered-remainder",
+"R1-rest-follows-foreign-holders",
 3.04
 ],
 [
@@ -60610,12 +60612,12 @@
 "SUPREMEIND|2017-03-31": {
 "file": "509930_1042017182316_SHP.xml",
 "split": "p",
-"d_dii": -1.1586,
-"d_fii": 1.1786,
+"d_dii": -3.27,
+"d_fii": 3.27,
 "to_public": 0.0,
-"to_fii": 9.76,
+"to_fii": 13.03,
 "keep_dom": 0.0,
-"unresolved": 3.27,
+"unresolved": 0.0,
 "add_dii": 0.02,
 "add_ins": 0.0,
 "ev": [
@@ -60648,7 +60650,7 @@
 "J P MORGAN FUNDS 1.01 foreign->fii(curated)"
 ],
 [
-"R1-uncovered-remainder",
+"R1-rest-follows-foreign-holders",
 3.27
 ],
 [
@@ -60662,12 +60664,12 @@
 "SUPREMEIND|2017-06-30": {
 "file": "509930_197201718116_SHP.xml",
 "split": "p",
-"d_dii": -1.1642,
-"d_fii": 1.1742,
+"d_dii": -4.31,
+"d_fii": 4.31,
 "to_public": 0.0,
-"to_fii": 8.85,
+"to_fii": 13.16,
 "keep_dom": 0.0,
-"unresolved": 4.31,
+"unresolved": 0.0,
 "add_dii": 0.01,
 "add_ins": 0.0,
 "ev": [
@@ -60693,7 +60695,7 @@
 "J P MORGAN FUNDS 1.24 foreign->fii(curated)"
 ],
 [
-"R1-uncovered-remainder",
+"R1-rest-follows-foreign-holders",
 4.31
 ],
 [
@@ -60707,12 +60709,12 @@
 "SUPREMEIND|2017-09-30": {
 "file": "509930_7102017174138_SHP.xml",
 "split": "p",
-"d_dii": -1.1652,
-"d_fii": 1.1752,
+"d_dii": -3.93,
+"d_fii": 3.93,
 "to_public": 0.0,
-"to_fii": 8.84,
+"to_fii": 12.77,
 "keep_dom": 0.0,
-"unresolved": 3.93,
+"unresolved": 0.0,
 "add_dii": 0.01,
 "add_ins": 0.0,
 "ev": [
@@ -60738,7 +60740,7 @@
 "J P MORGAN FUNDS 1.23 foreign->fii(curated)"
 ],
 [
-"R1-uncovered-remainder",
+"R1-rest-follows-foreign-holders",
 3.93
 ],
 [
@@ -60752,12 +60754,12 @@
 "SUPREMEIND|2017-12-31": {
 "file": "509930_1212018112919_SHP.xml",
 "split": "p",
-"d_dii": -1.1688,
-"d_fii": 1.1688,
+"d_dii": -3.53,
+"d_fii": 3.53,
 "to_public": 0.0,
-"to_fii": 8.78,
+"to_fii": 12.31,
 "keep_dom": 0.0,
-"unresolved": 3.53,
+"unresolved": 0.0,
 "add_dii": 0.0,
 "add_ins": 0.0,
 "ev": [
@@ -60783,7 +60785,7 @@
 "J P MORGAN FUNDS 1.17 foreign->fii(curated)"
 ],
 [
-"R1-uncovered-remainder",
+"R1-rest-follows-foreign-holders",
 3.53
 ]
 ],
@@ -60792,12 +60794,12 @@
 "SUPREMEIND|2018-03-31": {
 "file": "509930_1242018155012_SHP.xml",
 "split": "p",
-"d_dii": -1.1663,
-"d_fii": 1.1663,
+"d_dii": -2.69,
+"d_fii": 2.69,
 "to_public": 0.0,
-"to_fii": 8.28,
+"to_fii": 10.97,
 "keep_dom": 0.0,
-"unresolved": 2.69,
+"unresolved": 0.0,
 "add_dii": 0.0,
 "add_ins": 0.0,
 "ev": [
@@ -60823,7 +60825,7 @@
 "NALANDA INDIA FUND LIMITED 5.94 foreign->fii(curated)"
 ],
 [
-"R1-uncovered-remainder",
+"R1-rest-follows-foreign-holders",
 2.69
 ]
 ],
@@ -60832,12 +60834,12 @@
 "SUPREMEIND|2018-06-30": {
 "file": "509930_197201818925_SHP.xml",
 "split": "p",
-"d_dii": -1.1708,
-"d_fii": 1.1708,
+"d_dii": -2.53,
+"d_fii": 2.53,
 "to_public": 0.0,
-"to_fii": 8.27,
+"to_fii": 10.8,
 "keep_dom": 0.0,
-"unresolved": 2.53,
+"unresolved": 0.0,
 "add_dii": 0.0,
 "add_ins": 0.0,
 "ev": [
@@ -60863,7 +60865,7 @@
 "NALANDA INDIA FUND LIMITED 5.94 foreign->fii(curated)"
 ],
 [
-"R1-uncovered-remainder",
+"R1-rest-follows-foreign-holders",
 2.53
 ]
 ],
@@ -60872,12 +60874,12 @@
 "SUPREMEIND|2018-09-30": {
 "file": "509930_1310201810407_SHP.xml",
 "split": "p",
-"d_dii": -1.1708,
-"d_fii": 1.1708,
+"d_dii": -2.25,
+"d_fii": 2.25,
 "to_public": 0.0,
-"to_fii": 8.27,
+"to_fii": 10.52,
 "keep_dom": 0.0,
-"unresolved": 2.25,
+"unresolved": 0.0,
 "add_dii": 0.0,
 "add_ins": 0.0,
 "ev": [
@@ -60903,7 +60905,7 @@
 "NALANDA INDIA FUND LIMITED 5.94 foreign->fii(curated)"
 ],
 [
-"R1-uncovered-remainder",
+"R1-rest-follows-foreign-holders",
 2.25
 ]
 ],
@@ -60912,12 +60914,12 @@
 "SUPREMEIND|2018-12-31": {
 "file": "509930_1912019134355_SHP.xml",
 "split": "p",
-"d_dii": -1.1708,
-"d_fii": 1.1708,
+"d_dii": -1.68,
+"d_fii": 1.68,
 "to_public": 0.0,
-"to_fii": 8.27,
+"to_fii": 9.95,
 "keep_dom": 0.0,
-"unresolved": 1.68,
+"unresolved": 0.0,
 "add_dii": 0.0,
 "add_ins": 0.0,
 "ev": [
@@ -60943,7 +60945,7 @@
 "NALANDA INDIA FUND LIMITED 5.94 foreign->fii(curated)"
 ],
 [
-"R1-uncovered-remainder",
+"R1-rest-follows-foreign-holders",
 1.68
 ]
 ],
@@ -60952,12 +60954,12 @@
 "SUPREMEIND|2019-03-31": {
 "file": "509930_20420199341_SHP.xml",
 "split": "p",
-"d_dii": -1.1697,
-"d_fii": 1.1697,
+"d_dii": -1.32,
+"d_fii": 1.32,
 "to_public": 0.0,
-"to_fii": 7.13,
+"to_fii": 8.45,
 "keep_dom": 0.0,
-"unresolved": 1.32,
+"unresolved": 0.0,
 "add_dii": 0.0,
 "add_ins": 0.0,
 "ev": [
@@ -60983,7 +60985,7 @@
 "NALANDA INDIA FUND LIMITED 4.81 foreign->fii(curated)"
 ],
 [
-"R1-uncovered-remainder",
+"R1-rest-follows-foreign-holders",
 1.32
 ]
 ],
@@ -60992,12 +60994,12 @@
 "SUPREMEIND|2019-06-30": {
 "file": "509930_207201920742_SHP.xml",
 "split": "p",
-"d_dii": -1.1775,
-"d_fii": 1.1775,
+"d_dii": -1.15,
+"d_fii": 1.15,
 "to_public": 0.0,
-"to_fii": 7.11,
+"to_fii": 8.26,
 "keep_dom": 0.0,
-"unresolved": 1.15,
+"unresolved": 0.0,
 "add_dii": 0.0,
 "add_ins": 0.0,
 "ev": [
@@ -61023,7 +61025,7 @@
 "NALANDA INDIA FUND LIMITED 4.81 foreign->fii(curated)"
 ],
 [
-"R1-uncovered-remainder",
+"R1-rest-follows-foreign-holders",
 1.15
 ]
 ],
@@ -66637,21 +66639,21 @@
 ]
 },
 "BHARATFORG|2016-06-30": {
-"how": "re-filing document 500493_3152022185242_SHP.xml re-read: R1-foreign-holders Other 0.0 public=0.00 fii=1.25 FRANKLIN TEMPLETON INVESTMENT FUNDS 1.25 foreign->fii(curated); R1-foreign-holders Other 0.0 public=0.00 fii=1.14 GOVERNMENT OF SINGAPORE 1.14 foreign->fii(curated); R1-uncovered-remainder 7.9",
+"how": "same raw fii/dii as the original -> original's healed values",
 "was": [
 47.24,
-6.355,
-26.6668,
+8.745,
+24.2768,
 7.3862,
 1.4825,
 "2022-06-01",
 113136,
-"bsexbrl:500493_3152022185242_SHP.xml"
+"bsexbrl:500493_3152022185242_SHP.xml §158 heal:re-read"
 ],
 "cell": [
 47.24,
-8.745,
-24.2768,
+16.6449,
+16.3765,
 7.3862,
 1.4825,
 "2022-06-01",

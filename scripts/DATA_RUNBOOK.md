@@ -19092,6 +19092,36 @@ for INFY/WIPRO/HINDALCO/HDFCBANK (§151: as filed); PSU-bank holdings that the 2
 Screener will differ from us on the old-format cells where its label rule books an OCB block as FII (UTIAMC Mar-2021) — we
 follow the filer's new-format placement instead.
 
+## §158a — R1 REST-FOLLOWS: THE 86 ALL-NAMED-FOREIGN CELLS WHOSE UNNAMED REST STAYED IN DII (2026-09-25, user: "fix the remaining 86 cells too")
+
+**Found by** Quantmac's 25-Sep reply via the FII session: 86 §158 cells in which every classified named holder of the institutional
+"Any Other" block is foreign, yet an "R1-uncovered-remainder" ≥ 1 pp (633.6 pp in total) stayed where the store had it. LICHSGFIN
+Jun-2016 served fii 10.17 / dii 28.37 between Mar-16 36.67 and Sep-16 27.51 (Quantmac 31.49).
+
+**Cause (measured on the filings).** Those old-format XBRLs print NO category row on the `OtherInstitutions` axis, only the ≥ 1%
+holder rows (LICHSGFIN Jun-2016: 7 foreign funds, block 31.49, no category row). `groups()` made each holder a zero-size orphan group,
+so the R1 "rest follows the holders" branch saw rest = 0 and the sub-1% remainder fell to "uncovered", i.e. the stored split. POONAWALLA
+2018-19 is the one variant: its 4.9 pp "rest" is LeapFrog Financial Inclusion India Holdings (class unknown) inside the filer's own
+"QFI - Corporate" row, so the label gives the same answer.
+
+**Rule (`REST_FOLLOWS` in scripts/_shp_dii_rowfix.py; tag `R1-rest-follows-foreign-holders`).** When the block's R1 evidence names at
+least one foreign holder (→ fii or → public) and no row is domestic (no R1-domestic-* row, no domestic-classed holder), the uncovered
+remainder joins fii. The set is identical to the FII session's ledger-text filter (86 keys). The write was gated to those keys.
+
+**Checks.** Rule OFF: a full N500 re-evaluation reproduces the live store exactly (8,740 matched rows, 0 proposals). Rule ON: 111
+proposals, every one carrying the new tag and nothing else. 63 are in the 86 (dii −469.24 pp, fii +469.24 pp). The other 23 of the 86 already hold the rest in
+fii (split b: INDHOTEL ×11, MANAPPURAM ×4, MRF Jun-16, BRITANNIA ×3; split p: STARHEALTH Dec-21/Mar-22, DIXON Sep-17, JWL Jun-22). The
+re-filing row BHARATFORG Jun-2016 inherits the healed values (same raw fii/dii). verify: 63 applied, 0 was-mismatches; Sep-2022 seam
+unchanged (15/421 ≥ 3 pp). Mar→Jun-2016 dii movers ≥ 3 pp 25 → 22, Jun→Sep-2016 21 → 18. Guards gate / definition / revisions green.
+LICHSGFIN Jun-2016 → fii 31.49 / dii 7.05 (= Quantmac).
+
+**Not written here: the other 48 proposals.** They are the same pattern outside the 86: 3 IEX 2018-19 cells whose §158 why was cut at 900
+chars (≈ 9 pp each), 20 whose top entry is an older pass (SW-2 ×18, §142k, a bulk stamp), and 25 under 1 pp. They fall inside D1-wide (the
+unnamed rest of the Dec-2015..Jun-2022 block counts as FII: remainder beside domestic holders, no-row blocks, generic rows), which the user
+approved in the FII session. That session runs D1-wide over the §158a entries (LICHSGFIN Dec-16 / Mar-17 stay high until then: a named
+ICICI Pru Life row and a no-typed-rows block). `write()` now puts the remainder / rest-follows evidence first in the why, so the 900-char cut
+can no longer hide it.
+
 ## §159 — FII = INSTITUTIONS (FOREIGN) IN EVERY FORMAT: ROW-LEVEL HEAL OF THE 2015-2022 NON-INSTITUTIONS "ANY OTHER" ROWS (2026-09-24, FII twin of §158)
 
 **Why.** After §158 the Sep-2022 seam still had FII-side artefacts that no DII rule touches: PAYTM 5.45 → 77.26, ETERNAL 9.98 →

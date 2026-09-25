@@ -51,6 +51,7 @@ LAB_PUB=re.compile(r"overseas corporate|\bocb\b|foreig\w* compan|foreig\w* (corp
 FORLAB=re.compile(r'foreig|muscat|s\.?a\.?o\.?g\b|overseas|\bfpi\b|\bfii\b|\bocb\b|non.?resident|\bnri\b|mauritius|singapore|\bpte\b|\bb\.?v\.?\b|\bllc\b|\bl\.?p\.?\b|\binc\b|\bplc\b|\bltd\.? *\((uk|usa|us)\)|university|college|\bsa\b|\bag\b|\bgmbh\b|\bnv\b|luxembourg|cayman|netherlands|\busa\b|\buk\b|japan|korea|hong ?kong|cyprus|delaware|\bsarl\b|\bs\.?a\.?r\.?l\b|holdings? (ii|iii|iv|v)\b|\bpty\b|\bcapital partners\b|\bglobal\b|international|\bsicav\b|\bucits\b|\boeic\b', re.I)
 DOMSTRONG=re.compile(r"insur|assurance|provident|pension|nps trust|national pension|mutual fund|\bmagnum\b|\blic\b|\blici\b|qualified inst|q[au]+lified|instit\w* buyers?|\bqib", re.I)
 DOMLAB=re.compile(r"insur|assurance|provident|pension|nps trust|national pension|mutual fund|\blic\b|\blici\b|qualified inst|q[au]+lified|instit\w* buyers?|\bqib|\bnbfc|non.?banking|financial institution|\bbank|alternat(e|ive) investment|venture capital|asset reconstruct|general insurance corp", re.I)
+REST_FOLLOWS=True     # §158a; False reproduces the §158 (2026-09-24) evaluation exactly
 INSURER=re.compile(r'insur|assurance|\blic\b|\blici\b|life ins', re.I)
 def qe_of(qtr):
     q=(qtr or "").strip().split()
@@ -261,7 +262,15 @@ def eval_filing(ctx, qe, txt, bd, res, cur, final=True, unres_log=None, ext_fii=
                     unres+=g["pct"]; ev.append(("R1-unresolved",lab,round(g["pct"],4),desc,lab_src))
                     if g["pct"]>=0.5 and final and unres_log is not None: unres_log.append((ctx.sym,qe,lab,round(g["pct"],2),[h[1] for h in hs]))
         rem=oth_inst-(mv_fii+mv_pub+keep+unres)
-        if rem>0.02: unres+=rem; ev.append(("R1-uncovered-remainder",round(rem,4)))
+        # §158a rest-follows (user 2026-09-25 "fix the remaining 86 cells too"): a filing whose >=1% holders form orphan
+        # groups (no category row on the axis) left the unnamed rest of the block uncovered. When every CLASSIFIED named
+        # holder is foreign and no row is domestic (label or holders), that rest follows them to fii, as a single foreign-
+        # holders row's rest already does. A named holder of unknown class under a foreign label is part of this rest.
+        f_named=any(re.search(r"foreign->(fii|public)",str(e)) for e in ev)
+        d_named=any(str(e[0]).startswith("R1-domestic") or "domestic->" in str(e) for e in ev)
+        if rem>0.02 and REST_FOLLOWS and f_named and not d_named:
+            mv_fii+=rem; ev.append(("R1-rest-follows-foreign-holders",round(rem,4)))
+        elif rem>0.02: unres+=rem; ev.append(("R1-uncovered-remainder",round(rem,4)))
         tot=mv_fii+mv_pub+keep+unres
         if tot>oth_inst+0.05:
             overflow=True; ev.append(("R1-overflow",round(tot,2),round(oth_inst,2))); mv_fii=mv_pub=keep=0.0; unres=oth_inst
@@ -471,12 +480,14 @@ def write(stamp=None):
         "R1 Institutions->Any Other rows: foreign label/holders leave dii (destination = the filer's own placement of that holder in its first new-format filing: FDI/FPI -> fii, non-inst Foreign Companies -> public; OCB/Foreign Corporate Bodies/Foreign Nationals labels -> public; FII/FPI labels -> fii). Domestic labels/holders (QIB, LIC, insurers, NPS, PF, banks, AIF) stay. Unresolved rows keep the stored split.",
         "R2 Non-institutions->Any Other rows labelled as domestic institutions (Qualified Institutional Buyer, insurance, provident/pension, NBFC, FI, bank, AIF) join dii in full; generic labels contribute only their NAMED domestic-institution holders (>=1% rows). Named insurers also raise the ins slot.",
         "R3 the old-format NBFC row joins dii (the 2022 form lists NBFCs inside Institutions(Domestic)).",
-        "Materiality: a cell is entered only when dii or fii moves >= 0.05pp. Evidence per cell: file, stored split, every rule hit with labels and holder names."],"cells":{}}
+        "Materiality: a cell is entered only when dii or fii moves >= 0.05pp. Evidence per cell: file, stored split, every rule hit with labels and holder names.",
+        "§158a (2026-09-25) R1 rest-follows: where the block's >=1% holders form orphan groups (no category row) the unnamed rest was left uncovered in the stored split; when every classified named holder is foreign and no row is domestic, the rest joins fii (evidence tag R1-rest-follows-foreign-holders). Written only for the 86 cells the user approved."],"cells":{}}
     for k,v in sorted(P.items()):
         sym,qe=k.split("|"); cur=(hist.get(sym) or {}).get(qe)
         if cur is None or not F._cell_eq(cur,v["was"]): n_skip+=1; continue
         why=("§158 row-level DII heal (%s, DII = Institutions(Domestic) in every format): dii %.2f -> %.2f, fii %.2f -> %.2f. "%(stamp,cur[2],v["cell"][2],cur[1],v["cell"][1])
-             +"; ".join(" ".join(str(x) for x in e) for e in v["ev"])[:900]+". Evidence: _shp_dii_rowfix_audit.json")
+             # remainder / rest-follows first: the why is cut at 900 chars, and a cut tail hid IEX 2018-19's remainder from a ledger-text count
+             +"; ".join(" ".join(str(x) for x in e) for e in sorted(v["ev"],key=lambda e:0 if e[0] in ("R1-rest-follows-foreign-holders","R1-uncovered-remainder") else 1))[:900]+". Evidence: _shp_dii_rowfix_audit.json")
         ent={"cell":list(v["cell"]),"was":list(cur),"src":"bsexbrl:%s"%v["file"],"why":why}
         prior=(fix.get(sym) or {}).get(qe)
         if prior:
