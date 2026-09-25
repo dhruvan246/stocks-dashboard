@@ -19473,3 +19473,9 @@ Verified on a copy of the origin store 28/28; guards green. Script: scratchpad `
 `shp_engine.json` serves 28/28 §160f cells (ADANIPOWER Jun-2015 23.46 / 2.57, Mar-2016 19.83 / 2.56; ADANIENT Jun-2015 18.31); §160e INDUSTOWER
 unchanged; `refresh-stock-fin.yml` dispatched (run 36091051407). The FII session checked the Opal / funds / 3i placements independently and agreed
 (Sep-2022 filing: Opal under ForeignCompanies 4.69; Jun-2016 XBRL funds under InstitutionsForeignPortfolioInvestor).
+**Live after §160f (2026-09-25 09:10 IST, verified from this side).** Store 2600ec498 (run 36090830750, "28 cells"): ADANIPOWER
+Jun-15 23.46 / Sep-15 22.34 / Dec-15 22.57 / Mar-16 19.83 (DII 2.56) / Jun-16 17.67, ADANIENT Jun-15 18.31 / Mar-16 17.67; §159
+247/247 and §160a 5/5 intact. Opal placement checked independently before it landed (Sep-2022 ForeignCompanies 4.69; Jun/Sep-2016
+institutional "FORIEGN CORPORATE BODIES" 6.40/6.24; Mar-2015 page FII row 213,380,683 vs Opal 213,236,910). Reply workbook rebuilt
+from `shp_engine_live_final8.json`; the methodology sheet states the one-class-per-holder removal (Opal out of Adani Power's printed
+FII row) and the page-era residue is one row (ADANIPORTS Jun-2015, 0.95, public by block) plus the company-labelled chains.
