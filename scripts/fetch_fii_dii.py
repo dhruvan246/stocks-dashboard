@@ -24,6 +24,7 @@ ROOT = os.path.dirname(HERE)
 OUT = os.path.join(ROOT, "docs", "fii_dii.json")       # cash segment (recent + grows)
 OUT_MON = os.path.join(ROOT, "docs", "fii_dii_monthly.json")  # monthly aggregates 2014-07 -> today
 OUT_FO = os.path.join(ROOT, "docs", "fii_fo.json")     # derivatives net positions (2012 -> today)
+OUT_LOTS = os.path.join(ROOT, "docs", "fii_fo_lots.json")  # per-day index-futures OI by index + lot (feeds fii_fo "lf")
 OUT_NIFTY = os.path.join(ROOT, "docs", "nifty.json")   # Nifty 50 close history (for chart overlays)
 OUT_NIFTY500 = os.path.join(ROOT, "docs", "nifty500.json")  # Nifty 500 close history (backtest calendar-year benchmark)
 OUT_BANK = os.path.join(ROOT, "docs", "nifty_bank.json")   # Nifty Bank close history (home-page ticker)
@@ -71,10 +72,12 @@ def fetch_fo_for_date(dt, jar, include_bs=True):
                    headers=hdr, jar=jar, timeout=25)
         if "Participant" in raw:
             oi = {}
-            for row in csv.reader(io.StringIO(raw)):
+            # splitlines(): some days use CR-only line endings; _oi_num: some days print
+            # "2,38,483.00" or NA (NA only ever seen in option columns we don't store)
+            for row in csv.reader(raw.splitlines()):
                 if not row or row[0].strip() not in ("Client", "DII", "FII", "Pro"):
                     continue
-                v = [int(float(x)) for x in (c.strip() or "0" for c in row[1:15])]
+                v = [_oi_num(c) for c in row[1:15]]
                 # cols: 0 FutIdxL 1 FutIdxS 2 FutStkL 3 FutStkS 4 OptIdxCallL 5 OptIdxPutL
                 #       6 OptIdxCallS 7 OptIdxPutS 8 OptStkCallL 9 OptStkPutL 10 OptStkCallS
                 #       11 OptStkPutS 12 TotLong 13 TotShort
@@ -107,6 +110,118 @@ def fetch_fo_for_date(dt, jar, include_bs=True):
     except Exception:
         pass
     return fo or None
+
+
+def _oi_num(c):
+    c = c.strip().replace(",", "")
+    if c in ("", "NA"):
+        return 0
+    return int(float(c))        # truncate, as the stored history always has
+
+
+def _divisors(n):
+    import math
+    out = set()
+    for i in range(1, math.isqrt(n) + 1):
+        if n % i == 0:
+            out.update((i, n // i))
+    return out
+
+
+def fo_index_lots(dt, jar=None, blob=None):
+    """Index-futures open interest by index for one day, from the NSE F&O bhavcopy.
+    Returns {"q": {SYMBOL: [OI quantity, contracts]}, "ref": {SYMBOL: lot of the newest expiry}}
+    or None when the bhavcopy isn't available.
+      - contracts expiring THAT day are skipped: the bhavcopy still shows their OI but the
+        participant file has already dropped them (measured 2026-09-25 on expiry days)
+      - UDiFF (>= 2024-07-08) carries the lot per contract (NewBrdLotQty); the old format
+        doesn't, so the lot is the divisor of gcd(OI, change-in-OI) nearest to
+        traded value / contracts / price.  Rows whose lot can't be resolved are left out
+        (they fall into the residual that apply_lot_factor counts at factor 1).
+    Sum of contracts == the participant file's total index-futures contracts on UDiFF days
+    and on almost every old-format day (backfill report, runbook)."""
+    import csv, io, math, zipfile
+    from fetch_fo_bhavcopy import url_for
+    try:
+        if blob is None:
+            blob = _get(url_for(dt), headers={"User-Agent": UA, "Referer": "https://www.nseindia.com/"},
+                        jar=jar, timeout=60, binary=True)
+        z = zipfile.ZipFile(io.BytesIO(blob))
+        text = z.read(z.namelist()[0]).decode("utf-8", "replace")
+    except Exception:
+        return None
+    rows = list(csv.DictReader(io.StringIO(text)))
+    q, newest = {}, {}
+    def add(sym, qty, lot, exp):
+        a = q.setdefault(sym, [0, 0.0]); a[0] += qty; a[1] += qty / lot
+        if exp >= newest.get(sym, ("", 0))[0]:
+            newest[sym] = (exp, lot)
+    if rows and "FinInstrmTp" in rows[0]:
+        for r in rows:
+            if r["FinInstrmTp"].strip() != "IDF" or r["XpryDt"] == r["TradDt"]:
+                continue
+            qty, lot = int(float(r["OpnIntrst"] or 0)), int(float(r["NewBrdLotQty"] or 0))
+            if qty > 0 and lot > 0:
+                add(r["TckrSymb"].strip(), qty, lot, r["XpryDt"])
+    else:
+        def pdate(x):                     # "31-May-2012" / "31-MAY-2012" / "31-May-12" all occur
+            x = x.strip().title()
+            for f in ("%d-%b-%Y", "%d-%b-%y"):
+                try:
+                    return datetime.datetime.strptime(x, f).strftime("%Y-%m-%d")
+                except ValueError:
+                    pass
+            raise ValueError("bhavcopy date %r" % x)
+        R = [r for r in rows if (r.get("INSTRUMENT") or "").strip() == "FUTIDX"
+             and pdate(r["EXPIRY_DT"]) != pdate(r["TIMESTAMP"])]
+        def est(r):
+            c, px = float(r["CONTRACTS"] or 0), float(r["CLOSE"] or 0) or float(r["SETTLE_PR"] or 0)
+            return float(r["VAL_INLAKH"]) * 1e5 / c / px if c > 0 and px > 0 else None
+        by_sym = {}
+        for r in R:
+            e = est(r)
+            if e:
+                by_sym.setdefault(r["SYMBOL"].strip(), []).append((float(r["CONTRACTS"]), e))
+        for r in R:
+            qty = int(float(r["OPEN_INT"] or 0))
+            if qty <= 0:
+                continue
+            sym = r["SYMBOL"].strip()
+            e = est(r)
+            if e is None and by_sym.get(sym):
+                w = by_sym[sym]; e = sum(a * b for a, b in w) / sum(a for a, b in w)
+            if e is None:
+                continue
+            g = math.gcd(qty, abs(int(float(r["CHG_IN_OI"] or 0))))
+            lot = min(_divisors(g), key=lambda x: abs(x - e))
+            exp = pdate(r["EXPIRY_DT"])
+            add(sym, qty, lot, exp)
+    if not q:
+        return None
+    return {"q": {k: [v[0], round(v[1], 3)] for k, v in q.items()},
+            "ref": {k: v[1] for k, v in newest.items()}}
+
+
+def apply_lot_factor(fo, lots):
+    """Write "lf" on every fii_fo row that has lots data: the factor that turns that day's
+    index-futures contracts into TODAY's lot sizes (today = the newest day in `lots`).
+      lf = sum over indices of (OI qty / today's lot, or the day's own contracts for an
+           index no longer traded) / that day's contracts
+    Both sides come from the same bhavcopy, so an NSE quirk in the participant file (e.g. a
+    holiday-shifted expiry) can't skew it. Same factor for every participant — NSE doesn't
+    say which index a participant holds. The newest day has lf == 1 unless its own
+    contracts carry two lot sizes."""
+    if not lots:
+        return
+    ref = lots[max(lots)]["ref"]
+    for d, r in fo.items():
+        L = lots.get(d)
+        n = sum(v[1] for v in L["q"].values()) if L else 0
+        if not n:
+            r.pop("lf", None)
+            continue
+        conv = sum(v[0] / ref[s] if s in ref else v[1] for s, v in L["q"].items())
+        r["lf"] = round(conv / n, 5)
 
 
 def fetch_niftytrader():
@@ -261,6 +376,23 @@ def update_fo(cash_dates, max_new=40):
                 time.sleep(0.4)
             except Exception:
                 pass
+    # lot sizes: the bhavcopy can land after this run, so fill any of the last 10 days missing
+    try:
+        lots = json.load(open(OUT_LOTS, encoding="utf-8")).get("days", {})
+    except Exception:
+        lots = None
+    if lots is not None:
+        jar = None
+        for d in sorted(fo)[-10:]:
+            if d not in lots:
+                jar = jar or _nse_jar()
+                L = fo_index_lots(datetime.datetime.strptime(d, "%Y-%m-%d").date(), jar)
+                if L:
+                    lots[d] = L
+                time.sleep(0.4)
+        json.dump({"updated": time.strftime("%Y-%m-%dT%H:%M:%S"), "days": {d: lots[d] for d in sorted(lots)}},
+                  open(OUT_LOTS, "w", encoding="utf-8"), separators=(",", ":"))
+        apply_lot_factor(fo, lots)
     rows = [fo[d] for d in sorted(fo)]
     json.dump({"updated": time.strftime("%Y-%m-%dT%H:%M:%S"), "rows": rows},
               open(OUT_FO, "w", encoding="utf-8"), separators=(",", ":"))

@@ -19562,3 +19562,31 @@ inference domain: 1,289 official, 9 other ledgers, 1 POLICYBZR, **806 with no of
   on the review list: AMARJOTHI ×2, KJMCFIN ×5, VTMLTD ×2 (2026-08-17 relistings after 10+ year suspensions), BURNPUR ×3
   (08-11), GENESYS ×2/3 (08-06, Yahoo agrees with a split).
 - Re-run: `python3 scripts/audit_applied_factors.py <sf-data clone> out.json`.
+
+## 162. FII/DII F&O positions — 7 missing days added + LOT-ADJUSTED index futures (2026-09-25, user request)
+- **Verified** every `docs/fii_fo.json` row against NSE `fao_participant_oi_DDMMYYYY.csv` (all 4 participants ×
+  futIdx/futStk/totL/totS): 3,625/3,625 identical; the 103 `bs` rows identical to `fii_stats_DD-Mon-YYYY.xls`.
+  14 old days where NSE prints fractional contracts (e.g. 679462.58) are stored truncated — house convention, <1 contract.
+- **7 days NSE had and we didn't** (2012-01-03/20/23, 2014-07-17, 2017-10-04, 2018-06-13, 2019-12-12) added; each
+  checked Client+DII+FII+Pro == NSE TOTAL row. Cause: the fetcher choked on "2,38,483.00" numbers, NA cells, CR-only
+  line endings — `fetch_fo_for_date` now parses `raw.splitlines()` + `_oi_num` (commas stripped, NA → 0, truncation kept).
+- **Lot adjustment** (Strike.Money-style "adj for lot sizes"): NSE's lot sizes changed many times (Nifty 50→75→25→75→65),
+  so raw contract counts aren't comparable across years. Each fii_fo row gets `lf` = that day's index-futures OI
+  restated in TODAY's lots ÷ that day's actual contracts, from the F&O bhavcopy (`fo_index_lots`): per index,
+  OI qty ÷ today's lot (lot of the newest expiry on the newest day), indices no longer traded kept at their own count.
+  Page (`fii-dii.html`, "Lot-adjusted / Raw (NSE)" switch, default adjusted, remembered per browser) multiplies
+  futIdx long/short/net by `lf` for every participant (NSE doesn't say which index a participant holds → one market
+  factor; long/short ratio unchanged). Stock futures + totals stay raw. Latest day has lf=1.
+  Example 22-Jan-2025: 8,92,085 actual contracts = 4,48,549 in today's lots → lf 0.5028 → FII −3,50,328 → −1,76,148.
+- **Traps measured:** (a) on its expiry day a contract still shows OI in the bhavcopy but the participant file has
+  dropped it — skip `expiry == trade date` (with the skip, UDiFF Σ OI/lot == participant total on all 549 days);
+  (b) old format (≤2024-07-05) has no lot column → lot = divisor of gcd(OI, ΔOI) nearest traded value/contracts/price;
+  dates come as `31-May-12` AND `31-May-2012`; (c) `lf` is computed INSIDE the bhavcopy (converted ÷ actual), not ÷
+  the participant total — the participant file has holiday-shifted-expiry quirks (2014-04-23 −65%, 2013-08-22,
+  2019-08-29). Old-format lot derivation vs participant total: 2,500 days exact, 3,349 within 0.1%, 3,601 within 1%,
+  worst sustained ≈2.5% (late 2018, Bank Nifty lot change; untraded far months). 2021-03-30: bhavcopy 404 → no `lf`
+  (page shows "·" in adjusted mode).
+- **Files:** `docs/fii_fo_lots.json` (per day `q: {SYM: [OI qty, contracts]}`, `ref: {SYM: lot of newest expiry}`),
+  `lf` on `docs/fii_fo.json`. Daily: `update_fo` fills lots for any of the last 10 days missing them, then
+  `apply_lot_factor` re-derives every `lf` (so a future SEBI lot change re-bases all history automatically).
+  Backfill/rebuild: `python3 scripts/backfill_fo_lots.py` (caches per-day results in `~/stocks-wt/fo_lots_cache`).

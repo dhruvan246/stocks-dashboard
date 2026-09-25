@@ -275,6 +275,18 @@
    ]
   },
   {
+   "file": "fii_fo_lots.json",
+   "name": "Index-futures OI by index + lot (lot-adjusted F&O positions)",
+   "workflow": "refresh-fii-dii.yml",
+   "cadence": "weekdays 20:15 IST",
+   "max_age_hours": 110,
+   "min_bytes": 500000,
+   "min_ratio": 0.8,
+   "pages": [
+    "fii-dii.html"
+   ]
+  },
+  {
    "file": "nifty.json",
    "name": "Nifty 50 index history",
    "workflow": "refresh-fii-dii.yml",

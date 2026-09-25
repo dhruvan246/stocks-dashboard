@@ -179,7 +179,8 @@
     <section id="pane-fo" class="hidden">
       <div class="flex flex-wrap items-center gap-2 mb-4">
         <div id="foViewBtns2" class="inline-flex rounded-lg border border-slate-200 overflow-hidden text-sm font-semibold"></div>
-        <span class="text-[11px] text-slate-400">Daily positions &amp; turnover · Monthly = month-end snapshot since 2012</span>
+        <div id="foLotBtns" class="inline-flex rounded-lg border border-slate-200 overflow-hidden text-sm font-semibold" title="Index futures only"></div>
+        <span class="text-[11px] text-slate-400">Daily positions &amp; turnover · Monthly = month-end snapshot since 2012 · <b>Lot-adjusted</b> = index-futures contracts restated in today's lot sizes</span>
       </div>
       <div id="fo-daily">
       <div id="foCards" class="grid grid-cols-2 md:grid-cols-4 gap-3 mb-5"></div>
@@ -191,7 +192,7 @@
       </div>
       <div class="card p-4 mb-4">
         <div class="flex items-center justify-between mb-2 flex-wrap gap-2">
-          <div class="text-sm font-semibold text-slate-700"><span class="text-red-700">FII Index-Futures net</span> vs <span class="text-amber-600">Nifty 50</span> <span class="text-slate-400 font-normal">(contracts long − short; hover for values)</span></div>
+          <div class="text-sm font-semibold text-slate-700"><span class="text-red-700">FII Index-Futures net</span> vs <span class="text-amber-600">Nifty 50</span> <span class="text-slate-400 font-normal">(long − short, <span class="foLL">contracts</span>; hover for values)</span></div>
           <div id="foRangeBtns" class="flex flex-wrap items-center gap-1 text-xs"></div>
         </div>
         <div id="foChart"></div>
@@ -214,7 +215,7 @@
         </div>
       </div>
       <div class="card p-4">
-        <div class="text-sm font-semibold text-slate-700 mb-2">Participant net positions — latest day <span id="foDate2" class="text-slate-400 font-normal"></span> <span class="text-slate-400 font-normal">(no. of contracts)</span></div>
+        <div class="text-sm font-semibold text-slate-700 mb-2">Participant net positions — latest day <span id="foDate2" class="text-slate-400 font-normal"></span> <span class="text-slate-400 font-normal">(no. of contracts · Idx-Fut columns <span class="foLL">contracts</span>)</span></div>
         <div class="overflow-x-auto">
           <table class="w-full text-sm"><thead class="text-[11px] uppercase text-slate-500 border-b border-slate-200"><tr>
             <th class="text-left py-2 px-1">Participant</th>
@@ -225,7 +226,7 @@
       </div>
       <div class="card p-4 mt-4">
         <div class="flex items-center justify-between mb-3 flex-wrap gap-2">
-          <div class="text-sm font-semibold text-slate-700">Day-wise positions <span class="text-slate-400 font-normal">(open interest, no. of contracts)</span></div>
+          <div class="text-sm font-semibold text-slate-700">Day-wise positions <span class="text-slate-400 font-normal">(open interest, <span id="foDailyLL">no. of contracts</span>)</span></div>
           <div class="flex items-center gap-2 text-xs flex-wrap">
             <label class="flex items-center gap-1 text-slate-600">Participant
               <select id="foDP" class="border border-slate-300 rounded-md px-2 py-1 bg-white font-semibold text-blue-700">
@@ -256,11 +257,11 @@
           <span class="text-slate-400">— month-end FII index-futures net position vs Nifty</span>
         </div>
         <div class="card p-4 mb-4">
-          <div class="text-sm font-semibold text-slate-700 mb-2"><span class="text-red-700">FII Index-Futures net</span> — month-end <span class="text-slate-400 font-normal">(contracts long − short)</span> vs <span class="text-amber-600">Nifty 50</span></div>
+          <div class="text-sm font-semibold text-slate-700 mb-2"><span class="text-red-700">FII Index-Futures net</span> — month-end <span class="text-slate-400 font-normal">(long − short, <span class="foLL">contracts</span>)</span> vs <span class="text-amber-600">Nifty 50</span></div>
           <div id="foMonChart"></div>
         </div>
         <div class="card p-4">
-          <div class="text-sm font-semibold text-slate-700 mb-2">Month-end positions <span class="text-[11px] font-normal text-slate-400">(newest first · net contracts = long − short)</span></div>
+          <div class="text-sm font-semibold text-slate-700 mb-2">Month-end positions <span class="text-[11px] font-normal text-slate-400">(newest first · net contracts = long − short · idx-fut columns <span class="foLL">contracts</span>)</span></div>
           <div class="overflow-x-auto tscroll rounded-lg border border-slate-100" style="--tscroll-h:30rem">
             <table class="w-full text-sm"><thead class="text-[11px] uppercase text-slate-500 border-b border-slate-200 sticky top-0 bg-white"><tr>
               <th class="text-left py-2 px-2">Month</th>
@@ -275,7 +276,7 @@
         <p class="text-[11px] text-slate-500 mt-3">Month-end = the last trading day's participant open interest in each month (positions are a snapshot, not a monthly sum). <b>Net</b> = long − short; a large negative FII index-futures number = net short / bearish. <b>L/S</b> = long ÷ short (&lt;1 = net short). Since 2012.</p>
       </div><!-- /fo-monthly -->
 
-      <p class="text-[11px] text-slate-500 mt-5">F&amp;O participant positions = <b>open interest</b> (no. of contracts). <b>Idx-Fut net</b> = index-futures long − short; a large negative FII number = net short / bearish positioning. Buy/sell table is FII-only derivative turnover value. Source: NSE participant-wise OI + FII derivative-stats reports. <span id="updated"></span></p>
+      <p class="text-[11px] text-slate-500 mt-5">F&amp;O participant positions = <b>open interest</b> (no. of contracts). <b>Lot-adjusted</b> (index futures only): NSE has changed lot sizes many times (Nifty 50 → 75 → 25 → 75 …), so raw contract counts from different years aren't comparable. Each day is restated in today's lot sizes: that day's index-futures open interest by index (NSE F&amp;O bhavcopy) ÷ today's lot for each index, as a share of the day's contracts — the same factor for every participant, since NSE doesn't publish which index a participant holds. The latest day is unchanged. Stock futures and totals are always NSE's raw counts. <b>Idx-Fut net</b> = index-futures long − short; a large negative FII number = net short / bearish positioning. Buy/sell table is FII-only derivative turnover value. Source: NSE participant-wise OI + FII derivative-stats reports. <span id="updated"></span></p>
     </section>
 
     <!-- ===================== Holdings (per stock) ===================== -->
@@ -300,6 +301,18 @@ let ROWS=[], FO=[], sortKey='date', sortAsc=false, foRange='3y';   // daily tabl
 let NIFTY={}, foRatioRange='3y', CHART_STATE={}, foView='split', foSection='charts';
 let foCustom={from:'',to:''}, foRatioCustom={from:'',to:''};
 let MONTHLY=[], YEARLY=[], cashView='daily', focus='fii', monRange='5Y', foMode='daily';
+let foLot='adj'; try{ if(localStorage.getItem('fiiFoLot')==='raw') foLot='raw'; }catch(e){}
+// index-futures contracts n on row r in the current mode: raw = NSE's count; adj = restated in
+// today's lot sizes via the row's lot factor lf (null when the day has no bhavcopy lot data)
+const foIdx = (r, n) => n==null ? null : foLot==='raw' ? n : (r.lf!=null ? n*r.lf : null);
+const foLotName = () => foLot==='adj' ? "contracts in today's lot size" : 'contracts';
+function setupFOLot(){
+  const btns=[['adj','Lot-adjusted'],['raw','Raw (NSE)']];
+  $('foLotBtns').innerHTML = btns.map(([k,l],i)=>
+    `<button data-l="${k}" class="px-4 py-1.5 ${i?'border-l border-slate-200':''} ${foLot===k?'bg-blue-600 text-white':'bg-white text-slate-600 hover:bg-slate-50'}">${l}</button>`).join('');
+  $('foLotBtns').querySelectorAll('button').forEach(b=>b.onclick=()=>{ foLot=b.dataset.l; try{localStorage.setItem('fiiFoLot',foLot);}catch(e){} setupFOLot(); renderFO(); if(foMode==='monthly') renderFOMonthly(); });
+  document.querySelectorAll('.foLL').forEach(el=>el.textContent=foLotName());
+}
 
 async function load(){
   let data, fdata={rows:[]}, mdata={rows:[]};
@@ -316,7 +329,7 @@ async function load(){
   $('status').classList.add('hidden'); $('content').classList.remove('hidden');
   renderCards(); renderNetChart(); renderCumChart(); renderTable();
   prepMonthly(); setupCashView(); setupFocus();
-  renderFO(); setupFOView();
+  setupFOLot(); renderFO(); setupFOView();
   liveFiiDii();
 }
 
@@ -761,16 +774,16 @@ function renderFO(){
   const lastBS = [...FO].reverse().find(r=>r.bs);          // newest row that has buy/sell value
   const bs = lastBS ? lastBS.bs : {};
   const fiiIdx = oi.FII ? oi.FII.futIdx : null;
-  const fiiIdxNet = fiiIdx ? fiiIdx[0]-fiiIdx[1] : null;
+  const fiiIdxNet = fiiIdx ? foIdx(last, fiiIdx[0]-fiiIdx[1]) : null;
   const ratio = fiiIdx && fiiIdx[1] ? (fiiIdx[0]/fiiIdx[1]) : null;
-  const diiIdxNet = oi.DII ? oi.DII.futIdx[0]-oi.DII.futIdx[1] : null;
+  const diiIdxNet = oi.DII ? foIdx(last, oi.DII.futIdx[0]-oi.DII.futIdx[1]) : null;
   const bsNetTotal = ['idxFut','idxOpt','stkFut','stkOpt'].reduce((s,k)=>s+(bs[k]?bs[k][0]-bs[k][1]:0),0);
   const card=(t,v,sub,cls)=>`<div class="card p-3"><div class="text-[10px] uppercase text-slate-500">${t}</div><div class="text-lg font-bold ${cls||''}">${v}</div><div class="text-[11px] text-slate-400">${sub||''}</div></div>`;
   $('foCards').innerHTML =
-    card('FII Index-Fut net · '+last.date, fmtSigned(fiiIdxNet), fiiIdx?('long '+fmt(fiiIdx[0])+' / short '+fmt(fiiIdx[1])):'', (fiiIdxNet||0)>=0?'pos':'neg')
+    card('FII Index-Fut net · '+last.date, fmtSigned(fiiIdxNet), fiiIdx?('long '+fmt(foIdx(last,fiiIdx[0]))+' / short '+fmt(foIdx(last,fiiIdx[1]))):'', (fiiIdxNet||0)>=0?'pos':'neg')
    +card('FII long/short ratio', ratio!=null?ratio.toFixed(2):'·', ratio!=null?(ratio<1?'net short (bearish)':'net long (bullish)'):'', (ratio||0)>=1?'pos':'neg')
    +card('FII F&O net turnover · '+(lastBS?lastBS.date:''), fmtSigned(bsNetTotal)+' cr', 'buy − sell, all instruments', bsNetTotal>=0?'pos':'neg')
-   +card('DII Index-Fut net', fmtSigned(diiIdxNet), 'contracts', (diiIdxNet||0)>=0?'pos':'neg');
+   +card('DII Index-Fut net', fmtSigned(diiIdxNet), foLotName(), (diiIdxNet||0)>=0?'pos':'neg');
 
   // charts and tables are shown together (merged)
 
@@ -782,8 +795,8 @@ function renderFO(){
   rangeUI('foRangeBtns', foRange, foCustom, 'foFrom', 'foTo');
   $('foRangeBtns').querySelectorAll('button').forEach(b=>b.onclick=()=>{foRange=b.dataset.r; if(foRange==='custom'&&!foCustom.from){const ld=FO[FO.length-1].date; foCustom.from=dMinus(ld,6); foCustom.to=ld;} renderFO();});
   if(foRange==='custom'){ $('foFrom').onchange=e=>{foCustom.from=e.target.value; renderFO();}; $('foTo').onchange=e=>{foCustom.to=e.target.value; renderFO();}; }
-  let series = filterRange(FO.map(r=>({d:r.date, v: r.oi&&r.oi.FII ? r.oi.FII.futIdx[0]-r.oi.FII.futIdx[1] : null})).filter(p=>p.v!=null), foRange, foCustom);
-  $('foChart').innerHTML = dualChart('foChart', series, {baseline:true, color:'#b91c1c', areaFill:'#fee2e2', label:'FII net', fmt:fmtSigned, unit:'contracts'});
+  let series = filterRange(FO.map(r=>({d:r.date, v: r.oi&&r.oi.FII ? foIdx(r, r.oi.FII.futIdx[0]-r.oi.FII.futIdx[1]) : null})).filter(p=>p.v!=null), foRange, foCustom);
+  $('foChart').innerHTML = dualChart('foChart', series, {baseline:true, color:'#b91c1c', areaFill:'#fee2e2', label:'FII net', fmt:fmtSigned, unit:foLot==='adj'?'contracts (today’s lots)':'contracts'});
   attachHover('foChart');
 
   // chart 2: FII long/short ratio + Nifty overlay (with range + custom dates)
@@ -805,10 +818,10 @@ function renderFO(){
   // participant OI table (latest day)
   $('foDate2').textContent = '('+last.date+')';
   $('foOI').innerHTML = ['FII','DII','Pro','Client'].map(p=>{const o=oi[p];if(!o)return '';
-    const idxNet=o.futIdx[0]-o.futIdx[1], stkNet=o.futStk[0]-o.futStk[1];
+    const idxNet=foIdx(last, o.futIdx[0]-o.futIdx[1]), stkNet=o.futStk[0]-o.futStk[1];
     return `<tr class="border-b border-slate-50"><td class="py-1 px-1 font-medium">${p}</td>
-      <td class="text-right px-1 text-slate-500">${fmt(o.futIdx[0])}</td><td class="text-right px-1 text-slate-500">${fmt(o.futIdx[1])}</td>
-      <td class="text-right px-1 ${idxNet>=0?'pos':'neg'}">${fmtSigned(idxNet)}</td>
+      <td class="text-right px-1 text-slate-500">${fmt(foIdx(last,o.futIdx[0]))}</td><td class="text-right px-1 text-slate-500">${fmt(foIdx(last,o.futIdx[1]))}</td>
+      <td class="text-right px-1 ${(idxNet||0)>=0?'pos':'neg'}">${fmtSigned(idxNet)}</td>
       <td class="text-right px-1 ${stkNet>=0?'pos':'neg'}">${fmtSigned(stkNet)}</td>
       <td class="text-right px-1 text-slate-500">${fmt(o.totL)}</td><td class="text-right px-1 text-slate-500">${fmt(o.totS)}</td></tr>`;}).join('');
 
@@ -821,15 +834,16 @@ function renderFODaily(){
   const p=$('foDP').value, inst=$('foDI').value, nv=$('foDN').value;
   const rows=FO.filter(r=>r.oi&&r.oi[p]).slice().reverse();   // newest first
   const sel=(nv==='all')?rows:rows.slice(0, +nv);
+  $('foDailyLL').textContent = inst==='futIdx' ? foLotName() : 'no. of contracts';
   $('foDaily').innerHTML = sel.map(r=>{const o=r.oi[p]; let L,S;
     if(inst==='futStk'){L=o.futStk[0];S=o.futStk[1];}
     else if(inst==='tot'){L=o.totL;S=o.totS;}
-    else {L=o.futIdx[0];S=o.futIdx[1];}
-    const net=L-S, tot=L+S, lp = tot? Math.round(L/tot*100) : null;
+    else {L=foIdx(r,o.futIdx[0]);S=foIdx(r,o.futIdx[1]);}
+    const net=(L==null||S==null)?null:L-S, tot=(L||0)+(S||0), lp = tot? Math.round(L/tot*100) : null;
     const ratio = lp==null ? '·' : `<span class="${lp>=50?'pos':'text-slate-500'}">${lp}</span>:<span class="${lp<50?'neg':'text-slate-500'}">${100-lp}</span>`;
     return `<tr class="border-b border-slate-50 hover:bg-slate-50"><td class="py-1.5 px-3 font-medium text-slate-700">${fmtDate(r.date)}</td>
       <td class="text-right px-3 text-slate-600">${fmt(L)}</td><td class="text-right px-3 text-slate-600">${fmt(S)}</td>
-      <td class="text-right px-3 font-semibold ${net>=0?'pos':'neg'}">${fmtSigned(net)}</td>
+      <td class="text-right px-3 font-semibold ${(net||0)>=0?'pos':'neg'}">${fmtSigned(net)}</td>
       <td class="text-right px-3 font-medium tabular-nums">${ratio}</td></tr>`;}).join('')
     || '<tr><td colspan="5" class="py-3 px-3 text-slate-400 text-xs">No data for this selection.</td></tr>';
 }
@@ -854,8 +868,8 @@ function foMonthlyRows(){
   return Object.keys(bym).sort().map(ym=>{
     const r=bym[ym], oi=r.oi, fi=oi.FII.futIdx, fs=oi.FII.futStk, di=oi.DII?oi.DII.futIdx:null;
     const nifty = NIFTY[r.date]!=null ? NIFTY[r.date] : (monClose[ym]!=null ? monClose[ym] : null);
-    return { ym, date:r.date, idxNet:fi[0]-fi[1], stkNet:fs[0]-fs[1],
-             ratio: fi[1]? fi[0]/fi[1] : null, diiIdxNet: di? di[0]-di[1] : null, nifty };
+    return { ym, date:r.date, idxNet:foIdx(r, fi[0]-fi[1]), stkNet:fs[0]-fs[1],
+             ratio: fi[1]? fi[0]/fi[1] : null, diiIdxNet: di? foIdx(r, di[0]-di[1]) : null, nifty };
   });
 }
 function renderFOMonthly(){
@@ -863,21 +877,21 @@ function renderFOMonthly(){
   if(!rows.length){ $('foMonBody').innerHTML='<tr><td colspan="6" class="py-4 text-slate-400 text-xs">No F&O data yet.</td></tr>'; $('foMonChart').innerHTML=''; $('foMonCards').innerHTML=''; return; }
   const mlabel=ym=>{const p=ym.split('-');return MON[+p[1]-1]+' '+p[0];};
   const last=rows[rows.length-1], prev=rows[rows.length-2];
-  const chg = prev? last.idxNet-prev.idxNet : null;
+  const chg = (prev&&last.idxNet!=null&&prev.idxNet!=null)? last.idxNet-prev.idxNet : null;
   const card=(t,v,sub,cls)=>`<div class="card p-3"><div class="text-[10px] uppercase text-slate-500">${t}</div><div class="text-lg font-bold ${cls||''}">${v}</div><div class="text-[11px] text-slate-400">${sub||''}</div></div>`;
   $('foMonCards').innerHTML =
-     card('FII idx-fut · '+mlabel(last.ym), fmtSigned(last.idxNet), 'month-end net contracts', last.idxNet>=0?'pos':'neg')
+     card('FII idx-fut · '+mlabel(last.ym), fmtSigned(last.idxNet), 'month-end net '+foLotName(), (last.idxNet||0)>=0?'pos':'neg')
     +card('MoM change', chg!=null?fmtSigned(chg):'·', 'vs previous month-end', (chg||0)>=0?'pos':'neg')
     +card('FII long/short', last.ratio!=null?last.ratio.toFixed(2):'·', last.ratio!=null?(last.ratio<1?'net short (bearish)':'net long (bullish)'):'', (last.ratio||0)>=1?'pos':'neg')
-    +card('DII idx-fut', last.diiIdxNet!=null?fmtSigned(last.diiIdxNet):'·', 'month-end net contracts', (last.diiIdxNet||0)>=0?'pos':'neg');
+    +card('DII idx-fut', last.diiIdxNet!=null?fmtSigned(last.diiIdxNet):'·', 'month-end net '+foLotName(), (last.diiIdxNet||0)>=0?'pos':'neg');
   $('foMonViewBtns').innerHTML = [['overlay','Overlay'],['split','Split']].map(([k,l])=>`<button data-v="${k}" class="px-2.5 py-1 rounded font-semibold ${foView===k?'bg-blue-600 text-white':'bg-slate-100 text-slate-600'}">${l}</button>`).join('');
   $('foMonViewBtns').querySelectorAll('button').forEach(b=>b.onclick=()=>{foView=b.dataset.v; renderFOMonthly();});
   const series=rows.filter(r=>r.idxNet!=null).map(r=>({d:r.date, v:r.idxNet}));
-  $('foMonChart').innerHTML = dualChart('foMonChart', series, {baseline:true, color:'#b91c1c', areaFill:'#fee2e2', label:'FII idx-fut net', fmt:fmtSigned, unit:'contracts'});
+  $('foMonChart').innerHTML = dualChart('foMonChart', series, {baseline:true, color:'#b91c1c', areaFill:'#fee2e2', label:'FII idx-fut net', fmt:fmtSigned, unit:foLot==='adj'?'contracts (today’s lots)':'contracts'});
   attachHover('foMonChart');
   $('foMonBody').innerHTML = rows.slice().reverse().map(r=>`<tr class="border-b border-slate-50 hover:bg-slate-50">
     <td class="py-1.5 px-2 font-medium text-slate-700">${mlabel(r.ym)}</td>
-    <td class="text-right px-2 ${r.idxNet>=0?'pos':'neg'}">${fmtSigned(r.idxNet)}</td>
+    <td class="text-right px-2 ${(r.idxNet||0)>=0?'pos':'neg'}">${fmtSigned(r.idxNet)}</td>
     <td class="text-right px-2 ${(r.ratio||0)>=1?'pos':'neg'}">${r.ratio!=null?r.ratio.toFixed(2):'·'}</td>
     <td class="text-right px-2 ${r.stkNet>=0?'pos':'neg'}">${fmtSigned(r.stkNet)}</td>
     <td class="text-right px-2 ${(r.diiIdxNet||0)>=0?'pos':'neg'}">${r.diiIdxNet!=null?fmtSigned(r.diiIdxNet):'·'}</td>
