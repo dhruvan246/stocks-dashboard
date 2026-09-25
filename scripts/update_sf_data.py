@@ -126,6 +126,44 @@ def _open_confirms(e, j, applied_f, off):
     return 0.88 <= (op[j] / c[j - 1]) * applied_f / off <= 1.12
 
 
+def _baked_factor(e, ex, sym_exs=(), win=3, max_scan=10):
+    """NETWORK-FREE: the split/bonus factor the bin currently bakes across ex-date `ex` (§161e).
+    The builds rescale c/h/l/op/vw on an adjustment but NEVER turnover t (Rs lakh) or volume v, so a
+    bar's raw VWAP is t*1e5/v and cum = vw/(t*1e5/v) is the product of every factor applied AFTER that
+    bar. The level shift of cum across the ex-date boundary is the factor baked there: ~official once
+    applied, ~1.0 if it never was. Median of up to `win` valid bars each side; a side's window never
+    crosses another of the symbol's ex-dates (KARURVYSYA files two factors on consecutive days).
+    Returns None when it can't tell (no t/v/vw, or no valid bar on a side)."""
+    ds = e.get("d"); vw = e.get("vw"); t = e.get("t"); v = e.get("v")
+    if not ds or not vw or not t or not v: return None
+    j = next((k for k in range(len(ds)) if ds[k] >= ex), None)
+    if j is None or j < 1: return None
+    others = [x for x in sym_exs if x != ex]
+    def crosses(lo, hi): return any(lo < x <= hi for x in others)
+    def cum(k):
+        try:
+            if t[k] and v[k] and vw[k] and t[k] > 0 and v[k] > 0 and vw[k] > 0:
+                return vw[k] / (t[k] * 1e5 / v[k])
+        except (IndexError, TypeError): pass
+        return None
+    def med(a): a = sorted(a); n = len(a); return a[n // 2] if n % 2 else (a[n // 2 - 1] + a[n // 2]) / 2
+    pre = []; k = j - 1
+    while k >= 0 and len(pre) < win and (j - 1 - k) < max_scan:
+        if k < j - 1 and crosses(ds[k], ds[j - 1]): break
+        x = cum(k)
+        if x is not None: pre.append(x)
+        k -= 1
+    post = []; k = j
+    while k < len(ds) and len(post) < win and (k - j) < max_scan:
+        if k > j and crosses(ds[j], ds[k]): break
+        x = cum(k)
+        if x is not None: post.append(x)
+        k += 1
+    if not pre or not post: return None
+    mp = med(post)
+    return med(pre) / mp if mp else None
+
+
 def self_heal(data, CA_OFF, NOADJ, end_ymd, jar, window_days=28):
     """Belt-and-suspenders. Re-correct any split/bonus/demerger whose ex-date fell in the last
     ~4 weeks but was processed by an EARLIER daily run before NSE had published the action (so the
@@ -144,6 +182,50 @@ def self_heal(data, CA_OFF, NOADJ, end_ymd, jar, window_days=28):
     for sym, fl in CA_OFF.items():
         for ex, fac in fl.items():
             if od(ex) >= cutoff: events.append((sym, ex, fac, False))
+    # OLD official factors the bin never received (2026-09-25). The window above never revisits an old
+    # ex-date, and SF_HEAL_WINDOW (the full pass) is a manual one-off — so a split/bonus that reaches
+    # corp_actions.json AFTER a symbol's history was built stays un-applied for good. Found by the
+    # quantmac indicator reconciliation: RASOYPR 1:15 @2013-03-21 served raw (52w-high Rs122 vs a Rs14.85
+    # close), plus METALFORGE/RPOWER/VIVIDHA/ZANDUREALT/TTML. Detect them network-free from the bin's own
+    # vw vs t/v (_baked_factor): a boundary still at ~1.0 while the official factor is not ~1.0 = never
+    # applied -> queue it for the SAME guarded reconciliation below (tape band, open gate, quantization
+    # floor, §161 park-don't-guess). Already-applied factors cost no fetch. Idempotent: once healed the
+    # boundary reads ~official and drops out. A boundary matching neither is reported, never auto-healed.
+    # LEDGER-DRIVEN, network-free: CI can't fetch old NSE day files, so an old event is queued only when
+    # its raw prev/ex closes are COMMITTED to crash_raw_prices.json (a human verified the tape first).
+    # Anything else is reported every run until someone seeds it — never a nightly re-fetch loop.
+    try: _RAW = json.load(open(os.path.join(HERE, "crash_raw_prices.json")))
+    except Exception: _RAW = {}
+    _old_unapplied, _old_noraw, _old_ambig, _old_unknown = [], [], [], 0
+    for sym, fl in CA_OFF.items():
+        e_ = data.get(sym)
+        if not e_: continue
+        for ex, fac in fl.items():
+            if od(ex) >= cutoff or not fac or abs(fac - 1) < 0.02: continue
+            bf = _baked_factor(e_, ex, list(fl))
+            if bf is None: _old_unknown += 1; continue
+            tol = min(0.05, abs(fac - 1) / 3)
+            if abs(bf / fac - 1) <= tol: continue            # applied (the normal case)
+            if abs(bf - 1) <= tol:                           # never applied
+                ds_ = e_["d"]; j_ = next((k for k in range(len(ds_)) if ds_[k] >= ex), None)
+                rr = _RAW.get(sym) or {}
+                if j_ and str(ds_[j_]) in rr and str(ds_[j_ - 1]) in rr:
+                    events.append((sym, ex, fac, False)); _old_unapplied.append((sym, ex, fac))
+                else:
+                    _old_noraw.append((sym, ex, fac))
+            else:
+                _old_ambig.append((sym, ex, fac, round(bf, 4)))
+    if _old_unapplied:
+        print("  self-heal: %d OLD official factor(s) not reflected in the bin -> reconciling: %s"
+              % (len(_old_unapplied), ", ".join("%s@%d(f=%s)" % x for x in _old_unapplied[:40])))
+    if _old_noraw:
+        print("::warning::self-heal: %d OLD official factor(s) are NOT applied in the bin and have no committed "
+              "raw ex-date closes - verify the tape, then add the prev/ex closes to scripts/crash_raw_prices.json "
+              "to heal: %s" % (len(_old_noraw), ", ".join("%s@%d(f=%s)" % x for x in _old_noraw[:40])))
+    if _old_ambig:
+        print("::warning::self-heal: %d OLD official factor(s) whose baked boundary matches neither the "
+              "factor nor 1.0 - left for a human: %s"
+              % (len(_old_ambig), ", ".join("%s@%d(f=%s,baked=%s)" % x for x in _old_ambig[:40])))
     # CONTRADICTION GUARD (2026-08-11). A date can end up in BOTH maps when the feed files two
     # rows for it — AHLEAST 2022-10-06 carries an official 2/3 factor AND a scheme row, so
     # corp_actions.json holds factors[20221006]=0.666667 and noadjust[20221006]. The two events
@@ -191,8 +273,6 @@ def self_heal(data, CA_OFF, NOADJ, end_ymd, jar, window_days=28):
     for (dsym, dex), dv in MANUAL_DEMERGERS.items():
         dem_by_sym.setdefault(dsym, []).append((dex, dv))
     if not events: return 0
-    try: _RAW = json.load(open(os.path.join(HERE, "crash_raw_prices.json")))
-    except Exception: _RAW = {}
     daycache = {}
     # a renamed symbol's PRE-RENAME day rows carry the era ticker (TMPV's old rows say
     # TATAMOTORS), so raw_close on a current key misses them — try the rename-map aliases

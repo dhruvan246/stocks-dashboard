@@ -19951,3 +19951,48 @@ www.bseindia.com ShareholdingPattern.aspx and derived by `fetch_shp_bse_aspx.cel
 VGUARD Mar-16 — the 88/89 renderings put the FII row inside a lump, so the parser reads fii 0.0 where Quantmac has 1.7 / 0.3 /
 12.45 / 16.7; they need the §160 seam reconstruction (holders table). **Not by this route (3):** CDSL Mar-2018 (NSE-only filing),
 GLOBOFFS Mar-2016 (no BSE code found), SPLPETRO Jun-2017 (an XBRL-era quarter).
+
+## 166. OLD official splits the bin never received — `self_heal` now detects them network-free and heals them ledger-driven; RASOYPR 1:15 healed  (2026-09-25, found by the Quantmac backtest-indicator reconciliation)
+
+### 166a. The defect
+`self_heal` (`update_sf_data.py`) queues an official split/bonus (`corp_actions.json` factors = CA_OFF) **only when its ex-date is
+inside the 28-day window**. The whole-history pass (`SF_HEAL_WINDOW=99999`, §87e) is a manual one-off. So a factor that reaches
+`corp_actions.json` after a symbol's history was built is **never applied** — the §107a "config that never took effect" class.
+Measured case: **RASOYPR** has `[20130321, 0.066667]` (1:15). Raw NSE bhavcopy: 2013-03-20 C=115.70 → 2013-03-21 O=C=8.45 — a clean
+split, not a crash. The LIVE bin (sf-data rev b3f0349960, end 2026-09-24) still served the raw pre-split tape, so the engine's
+2013-09-30 `d52` was **87.83 %** (52w-high Rs122 against a Rs14.85 close) where raw NSE × the official factor gives **11.607 %**.
+Quantmac had applied the split (their 200-DMA 10.18 = ours after the heal); on that cell **we were wrong**.
+
+### 166b. The fix (`update_sf_data.py`)
+- `_baked_factor(e, ex, sym_exs)` — the factor the bin CURRENTLY bakes across an ex-date, **network-free**: builds never rescale
+  turnover `t` or volume `v`, so `cum = vw / (t·1e5/v)` is the product of all factors applied after a bar (§161e); the level shift of
+  `cum` across the boundary is the baked factor. Median of ≤3 valid bars a side; a window never crosses another of the symbol's
+  ex-dates (KARURVYSYA files two factors on consecutive days).
+- For every CA_OFF factor OLDER than the window: baked ≈ official → applied, skip (1,583 of them, zero cost); baked ≈ 1.0 → never
+  applied → queued for the **unchanged guarded reconcile loop** (tape band [0.75,1.30], §87c open gate, ₹0.25 quantization floor,
+  §161 park) **only if its raw prev/ex closes are committed to `crash_raw_prices.json`**; otherwise a `::warning::` names it.
+  Baked matching neither → a separate `::warning::`, never auto-healed.
+- **Ledger-driven on purpose:** CI cannot fetch old NSE day files (§87d); gating on committed closes keeps the nightly network-free
+  and stops a re-fetch loop for events it can't heal. To heal a listed factor: verify the tape, add its prev/ex closes to
+  `crash_raw_prices.json`, push. `crash_raw_prices.json` += RASOYPR {20130320: 115.7, 20130321: 8.45}.
+
+### 166c. Dry run (live bin in memory, NSE fetches BLOCKED to simulate CI — scratchpad `dryrun_heal.py`)
+Pass 1: 1,583 old official factors applied · 39 unapplied (1 queued: RASOYPR · 38 no committed closes) · 37 ambiguous · 17 unknown
+(no t/v/vw). **Exactly one series changed bin-wide** (all 5,260 fingerprinted): RASOYPR, 282 pre-ex bars ×0.0667 (2013-03-19 close
+117.70 → 7.85; 2013-09-30 d52 → 11.607 %, 52w-high 16.80, low 2.72). **Pass 2: 0 heals, 0 series changed** (§87e-bis test).
+
+### 166d. ★ Two lessons
+1. **"Is this factor applied?" — ask `_baked_factor`, not `audit_applied_factors.py`.** The audit reports only shifts whose raw move
+   lies outside [0.75,1.30], so it is blind to small factors. Matching its events flagged 6 symbols "missed"; the direct boundary
+   check proved 5 applied (METALFORGE 0.3379/⅓, RPOWER 0.6332/0.625, VIVIDHA 0.0885/0.0909 + 0.7516/0.75, ZANDUREALT 0.764/0.75,
+   TTML 0.8741/0.882). Only RASOYPR was real.
+2. **The tape band is load-bearing — never force the queue.** KARURVYSYA@20161118 (0.2) and JINDALPOLY@20101027 (0.5) are unapplied
+   official rows the raw close does not support (no move that day — duplicate / record-date rows). Forcing them would double-split
+   KARURVYSYA ×0.04.
+
+### 166e. Open (reported every run, deliberately NOT healed)
+- **38 unapplied, no committed closes** — mostly NSE-Emerge SME bonuses (0.75–0.952: SANCO, KKVAPOW, SHRENIK, BSHSL, MILTON, NITIRAJ,
+  RELIABLE, AARON, GLOBAL, SHRADHA, KAPSTON, GICL, KHFM, AJOONI, SILGO, SECL, VINNY, DCI, OMFURN, GOLDSTAR, SOLEX, CELLECOR, REMUS,
+  ISHAN, COOLCAPS, KARNIKA, SAHANA …) + the two dupes above. Outside the Nifty 500 scope; verify on the SME bhavcopy before seeding.
+- **37 ambiguous** — a cluster of SME names bakes ≈0.60 where the record says 0.5 (QUADPRO, KODYTECH, MOS, SAHAJSOLAR, USHAFIN,
+  TEMBO, VERTOZ, CONTI, RAJMET …): the bin applied a different factor than the record. Human review; not touched.
