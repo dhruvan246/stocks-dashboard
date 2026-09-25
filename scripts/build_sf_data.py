@@ -508,6 +508,10 @@ def main():
         CA_OFF = {}; NOADJ = {}; print("  (corp_actions.json unavailable: %s — inference only)" % e, flush=True)
     applied_off = bad_recon = demerger_skipped = open_rescued = 0
     skip_log = []; open_log = []
+    # §161: split/bonus inference is allowed ONLY before the official NSE feed's dense era (split and
+    # bonus subjects are only dense from 2006 — DATA_RUNBOOK §87b). From then on, no record = no action.
+    OFFICIAL_FEED_FROM = 20060101
+    kept_unconfirmed = inferred_pre = 0; unconf_log = []
     data, meta, dead = {}, {}, 0
     for sym, obs in acc.items():
         obs.sort(); ds, cs, ts, hr, lr, orr, vol, dv, vr = [], [], [], [], [], [], [], [], []
@@ -549,7 +553,7 @@ def main():
                         f = cand; applied_off += 1; open_rescued += 1
                         if len(open_log) < 40: open_log.append((sym, ymd, cand, round(r, 4), round((o / base) / cand, 4)))
                     else:
-                        bad_recon += 1   # official ratio doesn't reconcile with the drop -> use inference
+                        bad_recon += 1   # official ratio doesn't reconcile with the drop -> falls to the no-record rule below
                 if f is None:
                     nd = NOADJ.get(sym)
                     if nd and not (0.75 <= r <= 1.30) and any(ymd - 3 <= e <= ymd for e in nd):
@@ -558,8 +562,21 @@ def main():
                         demerger_skipped += 1
                         if len(skip_log) < 80: skip_log.append((sym, ymd, round(r, 3)))
                         f = 1.0
+                    elif ymd >= OFFICIAL_FEED_FROM:
+                        # §161: inside the official feed's dense era an action NSE never filed is not an
+                        # action — keep the raw move. ca_factor() here split POLICYBZR's -36% crash
+                        # (2026-09-24) into a phantom 2/3 in the daily updater; the rebuild must agree.
+                        f = 1.0
+                        if not (0.75 <= r <= 1.30):
+                            kept_unconfirmed += 1
+                            if len(unconf_log) < 60: unconf_log.append((sym, ymd, round(r, 4)))
                     else:
+                        # Before 2006 NSE's feed carries almost no split/bonus rows (§87b), so absence
+                        # there proves nothing: the verified corp_actions_hist.json layer + inference is
+                        # all that exists. Counted and printed so the residue is never silent.
                         f = ca_factor(r)
+                        if f != 1.0:
+                            inferred_pre += 1
                 adj = adj * (r / f)
             if ymd >= df:
                 keep = True                              # daily for recent
@@ -609,6 +626,10 @@ def main():
         print("  OPEN-arbitrated official actions (sym, ex, factor, close-ratio, open-gate):", flush=True)
         for s, y, cf, rr, og in open_log: print("    %-12s %d  f=%.6f  close r=%.4f  open/prev/f=%.4f" % (s, y, cf, rr, og), flush=True)
     apply_dv_fill(data)
+    print("  §161: %d big move(s) since %d with NO official record kept RAW; %d pre-%d move(s) still "
+          "inferred as splits (no dense official feed that early)" % (kept_unconfirmed, OFFICIAL_FEED_FROM,
+          inferred_pre, OFFICIAL_FEED_FROM // 10000), flush=True)
+    for s, y, rr in unconf_log: print("    kept raw %-12s %d  ratio=%.4f" % (s, y, rr), flush=True)
     if skip_log:
         print("  demerger/scheme ex-dates kept as real drops (sym, date, ratio):", flush=True)
         for s, y, rr in skip_log: print("    %-12s %d  ratio=%.3f" % (s, y, rr), flush=True)

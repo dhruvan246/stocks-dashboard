@@ -57,6 +57,12 @@ jobs:
       - name: Refresh demerger adjustment ledger
         run: python3 scripts/build_demerger_adj.py || echo "demerger sweep failed — using committed ledger"
 
+      # §161 guard: the updater must never infer a split/bonus from a price move (POLICYBZR
+      # 2026-09-24 crash baked in as a phantom 2/3 split). Offline, <1 s; fails the run — before
+      # anything is published — if the no-inference rules regress.
+      - name: Test corporate-action rules (no inference)
+        run: python3 scripts/test_no_ca_inference.py
+
       - name: Append missing trading days to sf_stock_data.bin
         run: python3 scripts/update_sf_data.py
 
@@ -192,6 +198,22 @@ jobs:
           [ -f scripts/demerger_adj.json ] && cp scripts/demerger_adj.json /tmp/demerger_adj.json
           [ -f docs/liquid_universe.json ] && cp docs/liquid_universe.json /tmp/liquid_universe.json
           [ -f scripts/gate_calendar.json ] && cp scripts/gate_calendar.json /tmp/gate_calendar.json
+          # §161: big moves kept RAW for lack of an official record (the review queue), and the
+          # official ledger this run fetched — so a later run whose NSE fetch fails falls back to a
+          # current copy instead of one weeks stale (it lagged 165 events on 2026-09-24).
+          [ -f scripts/unconfirmed_ca.json ] && cp scripts/unconfirmed_ca.json /tmp/unconfirmed_ca.json
+          # ...but only when this run's fetch is at least as complete as the committed copy (a failed
+          # year prints "fetch failed" and simply writes fewer events — never commit a shrunken ledger).
+          if [ -f scripts/corp_actions.json ] && python3 - <<'PY'
+          import json, subprocess, sys
+          n = lambda d: sum(len(v) for v in d.get("factors", {}).values()) + sum(len(v) for v in d.get("noadjust", {}).values())
+          new = n(json.load(open("scripts/corp_actions.json")))
+          try: old = n(json.loads(subprocess.run(["git", "show", "HEAD:scripts/corp_actions.json"], capture_output=True, check=True).stdout))
+          except Exception: old = 0
+          print("corp_actions.json events: fetched %d vs committed %d" % (new, old))
+          sys.exit(0 if new >= old else 1)
+          PY
+          then cp scripts/corp_actions.json /tmp/corp_actions.json; fi
           for attempt in 1 2 3 4 5; do
             git fetch origin main && git reset --hard origin/main
             cp /tmp/sf_meta.json docs/sf_meta.json
@@ -201,6 +223,8 @@ jobs:
             [ -f /tmp/demerger_adj.json ] && cp /tmp/demerger_adj.json scripts/demerger_adj.json && git add scripts/demerger_adj.json
             [ -f /tmp/liquid_universe.json ] && cp /tmp/liquid_universe.json docs/liquid_universe.json && git add docs/liquid_universe.json
             [ -f /tmp/gate_calendar.json ] && cp /tmp/gate_calendar.json scripts/gate_calendar.json && git add scripts/gate_calendar.json
+            [ -f /tmp/unconfirmed_ca.json ] && cp /tmp/unconfirmed_ca.json scripts/unconfirmed_ca.json && git add scripts/unconfirmed_ca.json
+            [ -f /tmp/corp_actions.json ] && cp /tmp/corp_actions.json scripts/corp_actions.json && git add scripts/corp_actions.json
             if git diff --cached --quiet; then echo "marker unchanged"; exit 0; fi
             git commit -m "Backtest data version marker $(TZ=Asia/Kolkata date +'%Y-%m-%d %H:%M IST')"
             if git push origin HEAD:main; then echo "pushed marker (attempt #$attempt)"; exit 0; fi

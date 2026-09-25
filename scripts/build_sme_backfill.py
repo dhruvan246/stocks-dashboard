@@ -313,6 +313,10 @@ def build(bin_path):
                 if f is None:
                     nd = NOADJ.get(sym)
                     if nd and not (0.75 <= r <= 1.30) and any(ymd - 3 <= e <= ymd for e in nd): f = 1.0
+                    elif ymd >= 20160101:
+                        # §161: build_corp_actions fetches the SME board's official feed from 2016, so
+                        # from then on an action NSE never filed is not an action — keep the raw move.
+                        f = 1.0
                     else:
                         f = ca_factor(r)
                         if f != 1.0: inferred += 1

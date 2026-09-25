@@ -93,6 +93,7 @@ loads every session. (README.md is just a short pointer here — this file is th
 - **§116** ★★★ THE 46 CONTESTED con CELLS ADJUDICATED — the phantom read the OWNERS tag and WE had stored the TOTAL, so the phantom was RIGHT on 16 of 23; the other 7 are the filer's owners=0 mis-tag where the store was right. Swept the rest of each series: **53 cells healed** total→owners, 2018-2026. sf_revop's un-rendered mirror already held the owners figure on 45 of 53. **1,417 symbols / 18,175 con cells share the exposure — sized, not swept** (**read before trusting a con-PAT value for any symbol absent from _reattr_owners.json**)
 - **§116d** ★★★ THE SCREEN RUN OVER ALL 60,768 con CELLS — 52 more healed, **762 REFUSED because `owners+NCI==total` does NOT close** (302 have NCI=0 so the TAG is wrong not the store; 24 sign flips; 13 filer power-of-ten; 460 unreconciled → `owners_basis_unreconciled.json`). `_reattr_owners` coverage is per-CELL not per-SYMBOL. A hand-rolled context regex silently dropped every pre-2021 filing — use `build_revop.ctx_period`. **29,998 cells are older than the cache and remain UNSCREENED**
 - **§130** ★★★ THE LINE-ITEM BLOCK (EPS/OI/interest/dep/tax) BEFORE 2018 — NSE lists an XBRL URL only from Mar-2018; 2005-2017 come from the archive HTML pages (PAT-anchored, GATE E) and 2002-04/residue from Moneycontrol (gate T/C/R). BANKING XBRL 2018-22 has NO context block (OneD = quarter, FourD = YTD, 'Half yearly'/'Yearly' name the filing). A LOCAL `--fresh` rebuild DROPS the cloud nightly's newest cells unless unioned with the committed .gz (**read before touching build_xbrl_extra.py or judging pre-2018 coverage**)
+- **§161** ★★★ NO SPLIT/BONUS IS EVER INFERRED FROM A PRICE MOVE — `ca_factor()` split POLICYBZR's −36% crash (2026-09-24) into a phantom 2/3 and scaled its whole history; official record → exact factor, none → raw move kept + parked in `scripts/unconfirmed_ca.json`; the published bins' every applied factor is recoverable as `vw ÷ (turnover/volume)` (**read before touching any corporate-action code or ledger**)
 - **§147** ★★★ A scale_fix entry does NOT heal xbrl_extra by itself (the nightly is incremental) — run `scale_fix.py --apply-xtra` with XBRL_CACHE. A mis-scaled filing's EPS is almost always CORRECT (36/37), so flag `eps_scaled` only where it isn't. Use `parse_only` where the owners store already holds a figure from a different, correctly scaled filing. Arm a filing only on an exact YTD power of ten (**read before adding any scale_fix entry**)
 - **★★★ NO ASSUMPTIONS. NO GUESSWORK. EVER.** User-mandated 2026-08-10; standing rule across
   this runbook AND every campaign/playbook doc (each carries the same line). Every value written
@@ -19489,3 +19490,55 @@ Member 509 / 1,835,419; NRI 8,618,703 + 277,337 = 8,896,040 over 2,676 holders; 
 16,980). Foreign Companies = Non-Institutions B4 → public: the stored placement stands, no ledger entry (verdict in the audit). BSE's Jun-2015
 rendering had dropped the filer's sub-category text — the same loss the §160c fingerprints worked around; the quarter's own filing restores it.
 **Every page-era generic row now has a verdict from the filer's own documents.**
+
+## 161. ★★★ NO SPLIT/BONUS IS EVER INFERRED FROM A PRICE MOVE — the POLICYBZR phantom split  (2026-09-25, USER-CAUGHT)
+**NO ASSUMPTIONS, NO GUESSWORK** — every number below was measured this session (live sf-data @8784ef4, end 2026-09-24).
+
+### 161a. What the user saw
+All Picks, ⭐ "Top profit growth · 2q streak · +ve 12m return", held basket since the 2026-08-31 rebalance:
+POLICYBZR chip **−9.22%**, tooltip `₹1,250.00 → ₹1,134.70`. The stock actually closed **₹1,875.00** on 31-Aug.
+
+### 161b. Root cause (evidence, not reasoning)
+- CI run 36018834291 (2026-09-24 15:15 UTC) log: `2026-09-24: CHAVDA corporate action f=0.5 [official]` and
+  `2026-09-24: POLICYBZR corporate action f=0.6666666666666666 (history re-anchored)` — **no `[official]` tag**. The
+  same run had just refreshed corp_actions.json (1,631 split/bonus events) and it held nothing for POLICYBZR.
+- Raw tape: 1,886.30 (23-Sep) → 1,207.20 (24-Sep), ratio 0.640 (dash_slim raw + stock_data.bin Yahoo agree).
+  `ca_factor()` snaps any ratio outside [0.75,1.30] within 8% of a CA fraction → 0.640/0.6667 = 0.96 → "2/3 split".
+- The premise in its comment — "cash-segment circuit filters cap genuine daily moves at ~20%" — is FALSE for F&O
+  stocks (no price band). POLICYBZR is F&O.
+- Crash evidence: no action on NSE's feed (either board) or docs/actions.json (covers to 2026-12-08); ex-day OPEN
+  1,697.70 → (open/prev)/f = 1.35 (≥1.18 = crash per §87c); HDFC MF bulk-bought 25 lakh at **₹1,282.30** that day
+  (docs/deals.json) — an unadjusted price; 17-Sep "rumour clarification" filing.
+
+### 161c. The rule now (code)
+- `update_sf_data.ingest_factor()`: official split/bonus (close within [0.75,1.30] of the factor, OR the §87c open
+  gate) → exact factor; official demerger/scheme → keep drop; **anything else → f = 1.0 (raw move kept)**, and a
+  move outside [0.75,1.30] is parked in `scripts/unconfirmed_ca.json` with its raw prev/close/open.
+- `self_heal`: its last-resort `ca_factor(raw_ratio)` is gone (official record contradicted by close AND open →
+  keep raw + park). Every parked move is re-checked against the fresh official feed **at any age** (not only the
+  28-day window) and the official factor applied if NSE files one late; raw closes come from the queue itself when
+  CI can't reach the archive. `prune_unconfirmed()` drops an entry only when the official factor is MEASURED as
+  applied, a demerger/scheme covers it, or it is a verified crash (phantom_crashes / LEGACY_FALSE_CA).
+- `build_sf_data.py` (full rebuild): same rule from **2006-01-01** (the official feed's dense floor, §87b); before
+  that the verified hist layer + inference is all that exists — counted and printed, never silent.
+  `build_sme_backfill.py`: same rule from 2016-01-01 (SME board feed floor).
+- Workflow: `scripts/test_no_ca_inference.py` (15 offline checks, incl. the real POLICYBZR numbers) runs before the
+  updater and fails the build on regression; the commit step now also commits `unconfirmed_ca.json` and the
+  freshly fetched `corp_actions.json` (only if not smaller than the committed copy — it lagged 165 events).
+- A parked move prints a `::warning::` every run until a record or a human resolves it. To resolve by hand:
+  verified crash → add to `phantom_crashes.json`; verified action → it must come from the official feed / hist ledger.
+
+### 161d. Heal
+`phantom_crashes.json` += POLICYBZR [20260924]; `crash_raw_prices.json` += POLICYBZR 20260923 1886.3 / 20260924 1207.2.
+Dry-run of `self_heal` on the live series: 1,208 pre-ex points ×1.5 → 31-Aug close 1,875.00, 52w high 1,957.31
+(dash_slim h52 1,957.3), since-rebalance −35.62% at the 24-Sep close; second pass no-op.
+
+### 161e. The exhaustive audit method (reusable)
+Every factor ever baked into the published bins is recoverable from our own data: the updater rescales c/h/l/op/vw
+but NEVER turnover `t` (₹ lakh) or volume `v`, so per bar `cum = vw ÷ (t·1e5 ÷ v)`; a persistent level shift in `cum`
+across a boundary is the factor applied there (RELIANCE: 1997/2009/2017/2024 bonuses ×0.5 and the 2006/2023
+demergers recovered exactly). Keep shifts within 1.5% of a CA fraction whose implied raw move is outside
+[0.75,1.30] (the only moves inference ever touched) and both closes ≥ 0.25 (§ precision floor), then classify
+against corp_actions(+hist), demerger_adj, rights_terp, ca_open_arbitrated, MANUAL_RIGHTS, phantom_crashes,
+LEGACY_FALSE_CA, with Yahoo (docs/stock_data.bin, split-adjusted) as the second reader. Scripts used:
+session scratch `applied.py` / `cls2.py` / `ycheck.py` (logic reproduced here).

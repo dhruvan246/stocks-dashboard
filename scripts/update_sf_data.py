@@ -77,6 +77,23 @@ try:
 except Exception:
     pass
 
+# Big overnight moves the updater KEPT RAW because no official record existed on the ex-date
+# (DATA_RUNBOOK §161 — inference is gone). {sym: {exYmd: {prev_d, prev, close, open, ratio, seen}}}.
+# self_heal re-checks every entry against the freshly fetched official feed on every run, whatever
+# its age, and applies a factor NSE files later; resolved entries are pruned. Committed by the
+# workflow so the queue survives the runner. A MISSING file is an empty queue; an UNREADABLE one
+# aborts — silently starting empty would drop parked moves and then overwrite the file.
+UNC_PATH = os.path.join(HERE, "unconfirmed_ca.json")
+try:
+    UNCONFIRMED = json.load(open(UNC_PATH)) or {}
+except FileNotFoundError:
+    UNCONFIRMED = {}
+
+def save_unconfirmed():
+    tmp = UNC_PATH + ".tmp"
+    json.dump(UNCONFIRMED, open(tmp, "w"), indent=1, sort_keys=True)
+    os.replace(tmp, UNC_PATH)
+
 def load_base():
     # The release asset is the MERGED source-of-truth (renamed tickers consolidated). We do NOT fall
     # back to the in-repo docs copy — that copy is an old UN-merged build, and appending to it would
@@ -144,6 +161,14 @@ def self_heal(data, CA_OFF, NOADJ, end_ymd, jar, window_days=28):
     for sym, ex in LEGACY_FALSE_CA:
         if not any(e[0] == sym and e[1] == ex for e in events):
             events.append((sym, ex, None, True))
+    # Parked UNCONFIRMED moves (kept raw at ingest, §161): if NSE has since filed an official
+    # split/bonus for that ex-date, reconcile it NOW regardless of age — the 28-day window alone
+    # would strand a record published more than four weeks late.
+    for sym, dd in UNCONFIRMED.items():
+        for ex, fac in (CA_OFF.get(sym) or {}).items():
+            if any(abs(od(ex) - od(int(u))) <= 3 for u in dd) and \
+               not any(e[0] == sym and e[1] == ex for e in events):
+                events.append((sym, ex, fac, False))
     # Ledger DEMERGERS (scripts/demerger_adj.json): reconciled every run regardless of age
     # (idempotent, network-free — the raw ex-day ratio rides in the ledger). Converges bins where
     # the drop is still baked in, AND bins where an old build mis-inferred the drop as a split.
@@ -189,6 +214,10 @@ def self_heal(data, CA_OFF, NOADJ, end_ymd, jar, window_days=28):
                 if v is not None: break
         if v is None:   # CI runners get blocked/rate-limited fetching NSE's archive -> fall back to the
             v = (_RAW.get(sym) or {}).get(str(ymd))   # committed raw ex-date prices so self_heal still works
+        if v is None:   # a parked UNCONFIRMED move carries its own raw prev/ex closes (§161)
+            for u, rec in (UNCONFIRMED.get(sym) or {}).items():
+                if int(u) == ymd: v = rec.get("close"); break
+                if rec.get("prev_d") == ymd: v = rec.get("prev"); break
         return v
     healed = 0
     _quant_skips = []
@@ -248,7 +277,15 @@ def self_heal(data, CA_OFF, NOADJ, end_ymd, jar, window_days=28):
         elif is_dem and not (0.75 <= raw_ratio <= 1.30):
             correct_f = 1.0
         else:
-            correct_f = ca_factor(raw_ratio)
+            # No official factor that the tape agrees with -> keep the raw move (§161). This used to be
+            # ca_factor(raw_ratio): a guess from the size of the move. An official record the close AND
+            # the open both contradict is parked for a human, never replaced by a guessed fraction.
+            correct_f = 1.0
+            if off is not None and not (0.75 <= raw_ratio <= 1.30):
+                UNCONFIRMED.setdefault(sym, {}).setdefault(str(ds[j]), {
+                    "prev_d": ds[j - 1], "prev": re_prev, "close": re_ex, "open": None, "ratio": round(raw_ratio, 4),
+                    "seen": datetime.date.today().isoformat(),
+                    "note": "official factor %s contradicted by the ex-day close AND open — kept raw" % off})
         corr = correct_f / applied_f
         if abs(corr - 1) > 0.02:   # baked-in treatment disagrees with the rebuild's -> fix
             for key in ("c", "h", "l", "op", "vw"):
@@ -1038,6 +1075,71 @@ def apply_series_surgery(data, meta, cal=None):
     return changed
 
 
+def ingest_factor(day, sym, ymd, prev_d, prev_raw, c, o_, off, nd, today_iso):
+    """The factor to divide out of `sym`'s history when bar `ymd` (raw close `c`, raw open `o_`) is
+    appended after raw close `prev_raw` on `prev_d`. OFFICIAL records only (§161): `off` is NSE's
+    split/bonus factor for this ex-date (or None), `nd` its demerger/scheme ex-dates. With no record
+    the move is kept raw (1.0) and, if it is big, parked in UNCONFIRMED for self_heal / a human."""
+    ratio = (c / prev_raw) if prev_raw else 1.0
+    if off is not None and 0.75 <= (ratio / off) <= 1.30:
+        f = off   # official split/bonus: divide out the exact ratio
+    elif off is not None and o_ > 0 and prev_raw and 0.88 <= (o_ / prev_raw) / off <= 1.12:
+        # §87c: the ex-day OPEN prints at the official basis though the close strayed (a violent
+        # ex-day) -> the record is right. Same arbiter self_heal / build_sf_data already use.
+        f = off
+    elif nd and not (0.75 <= ratio <= 1.30) and any(ymd - 3 <= x <= ymd for x in nd):
+        # official demerger/scheme: real value left the stock -> keep the drop as a genuine move
+        print("  %s: %s demerger/scheme drop ratio=%.3f kept (not divided out)" % (day, sym, ratio))
+        f = 1.0
+    else:
+        # NO OFFICIAL RECORD -> NEVER ADJUST (DATA_RUNBOOK §161). This branch used to call
+        # ca_factor(ratio): any >25% overnight move within 8% of a split fraction was divided
+        # out as a split. POLICYBZR 2026-09-24 (1886.30 -> 1207.20, ratio 0.640, F&O stock
+        # so no circuit limit, no NSE action on either board) was "split" 2/3 and every
+        # pre-crash price scaled x2/3 — All Picks showed -9% for a -36% holding. The raw move
+        # is kept and parked in UNCONFIRMED; self_heal applies the official factor if NSE
+        # files one later (any age), so a late-published real split still converges.
+        f = 1.0
+        if not (0.75 <= ratio <= 1.30):
+            UNCONFIRMED.setdefault(sym, {})[str(ymd)] = {
+                "prev_d": prev_d, "prev": round(prev_raw, 2), "close": round(c, 2), "open": round(o_, 2) if o_ > 0 else None,
+                "ratio": round(ratio, 4), "seen": today_iso,
+                "note": "kept raw: no official split/bonus/demerger record on the ex-date"}
+            print("  %s: %s UNCONFIRMED move ratio=%.3f (open/prev=%s) kept raw — no official "
+                  "record; parked in unconfirmed_ca.json" % (day, sym, ratio,
+                  ("%.3f" % (o_ / prev_raw)) if (o_ > 0 and prev_raw) else "n/a"))
+    return f
+
+
+def prune_unconfirmed(data, CA_OFF, NOADJ):
+    """§161 queue upkeep. An UNCONFIRMED move is resolved once (a) an official split/bonus within 3
+    days is MEASURED as applied in the series (self_heal reconciled it), (b) an official demerger/
+    scheme covers it (the raw drop is already the right treatment), or (c) it is a verified crash in
+    phantom_crashes / LEGACY_FALSE_CA. Everything else stays parked, raw. Returns #resolved."""
+    def _od(y): return datetime.date(y // 10000, y // 100 % 100, y % 100).toordinal()
+    def _applied(sym, ex, rec):   # factor the bin now bakes across this boundary (raw ratio / adjusted ratio)
+        e_ = data.get(sym) or {}; ds_ = e_.get("d") or []; cs_ = e_.get("c") or []
+        k = next((i for i in range(len(ds_)) if ds_[i] >= ex), None)
+        if k is None or k < 1 or not cs_[k - 1] or not cs_[k] or not rec.get("prev") or not rec.get("close"):
+            return None
+        return (rec["close"] / rec["prev"]) / (cs_[k] / cs_[k - 1])
+    crash = {}
+    for s_, d_ in LEGACY_FALSE_CA: crash.setdefault(s_, []).append(d_)
+    n = 0
+    for sym in list(UNCONFIRMED):
+        for u in list(UNCONFIRMED[sym]):
+            ex = int(u); rec = UNCONFIRMED[sym][u]
+            near = lambda dates: any(abs(_od(int(x)) - _od(ex)) <= 3 for x in dates)
+            offs = [f_ for x, f_ in (CA_OFF.get(sym) or {}).items() if abs(_od(int(x)) - _od(ex)) <= 3]
+            ap = _applied(sym, ex, rec) if offs else None
+            official_done = bool(offs) and ap is not None and any(abs(ap / f_ - 1) <= 0.02 for f_ in offs)
+            if official_done or near(NOADJ.get(sym) or ()) or near(crash.get(sym, ())):
+                print("  UNCONFIRMED %s %d resolved by an official/verified record — removed from the queue" % (sym, ex))
+                del UNCONFIRMED[sym][u]; n += 1
+        if not UNCONFIRMED[sym]: del UNCONFIRMED[sym]
+    return n
+
+
 def main():
     if os.path.exists(MARK): os.remove(MARK)
     if "--base" in sys.argv:
@@ -1323,14 +1425,7 @@ def main():
             ratio = (c / prev_raw) if prev_raw else 1.0
             off = (CA_OFF.get(sym) or {}).get(ymd)   # OFFICIAL split/bonus factor for this ex-date
             nd = NOADJ.get(sym)                       # official demerger/scheme ex-dates
-            if off is not None and 0.75 <= (ratio / off) <= 1.30:
-                f = off   # official split/bonus: divide out the exact ratio
-            elif nd and not (0.75 <= ratio <= 1.30) and any(ymd - 3 <= e <= ymd for e in nd):
-                # official demerger/scheme: real value left the stock -> keep the drop as a genuine move
-                print("  %s: %s demerger/scheme drop ratio=%.3f kept (not divided out)" % (day, sym, ratio))
-                f = 1.0
-            else:
-                f = ca_factor(ratio)
+            f = ingest_factor(day, sym, ymd, e["d"][-1], prev_raw, c, o_, off, nd, today.isoformat())
             if f != 1.0:   # corporate action: re-anchor history (prices scale by f; dv % does not)
                 for key in ("c", "h", "l", "op", "vw"):
                     if key in e: e[key] = [round(x * f, 2) for x in e[key]]
@@ -1347,6 +1442,17 @@ def main():
     # earlier run mis-handled (action published after its ex-date was already processed).
     healed = self_heal(data, CA_OFF, NOADJ, int(D["end"].replace("-", "")), j)
     if healed: print("Self-heal corrected %d corporate action(s)." % healed)
+    # §161 queue upkeep: an UNCONFIRMED move is resolved once an official record covers its ex-date
+    # (split/bonus -> reconciled by self_heal above; demerger/scheme -> the raw drop is already the
+    # right treatment) or it is a verified crash in phantom_crashes / LEGACY_FALSE_CA. The rest stay
+    # parked — raw, and listed loudly so a human can verify them.
+    prune_unconfirmed(data, CA_OFF, NOADJ)
+    save_unconfirmed()
+    if UNCONFIRMED:
+        print("::warning::%d big move(s) with NO official corporate-action record are kept RAW (not "
+              "divided out) and await verification in scripts/unconfirmed_ca.json: %s"
+              % (sum(len(v) for v in UNCONFIRMED.values()),
+                 ", ".join("%s@%s" % (s, u) for s in sorted(UNCONFIRMED) for u in sorted(UNCONFIRMED[s]))[:900]))
 
     # LAST, so it also catches bars appended/inserted THIS run: one turnover unit (₹ lacs) across
     # the whole file. NSE's old zip served raw rupees and still does on stray days (2022-08-08),
