@@ -84,7 +84,8 @@ def supplement(cell, e):
         cf_ok = _near(e.get("cfo"), cell.get("cfo"))
     else:
         cf_ok = cf_identity(e.get("cfo"), e.get("cfi"), e.get("cff"), e.get("cf_net"), e.get("cf_fx")) is True
-    for f in sorted(FIELDS - {"assets", "ppe"}):
+    allowed = set(e.get("add") or (FIELDS - {"assets", "ppe"})) - {"assets", "ppe"}   # 'add' = fields this re-read may fill
+    for f in sorted(allowed & FIELDS):
         if e.get(f) is None or cell.get(f) is not None:
             continue
         if (f in CF_FIELDS and cf_ok) or (f not in CF_FIELDS and bs_ok):
@@ -92,6 +93,27 @@ def supplement(cell, e):
     if add:
         cell["sup"] = sorted(set(cell.get("sup", [])) | set(add))
     return add
+
+def unit_slip(cell, e):
+    """k when EVERY money field an independent re-read of the SAME document shares with the stored cell
+    (3+ fields) is the re-read times one power of ten k != 1, within 0.1% — the stored cell landed in the
+    wrong unit (ETERNAL FY22: a Rs-million page stored as crore, every field exactly 10x). Else None."""
+    if not cell or e.get("src") != cell.get("src") or e.get("basis") != cell.get("b"):
+        return None
+    common = [f for f in FIELDS if isinstance(cell.get(f), (int, float)) and isinstance(e.get(f), (int, float)) and e[f]]
+    if len(common) < 3:
+        return None
+    for k in (10, 100, 1000, 1e4, 1e5, 1e7, 0.1, 0.01):
+        if all(abs(cell[f] / e[f] - k) <= 0.001 * k for f in common):
+            return k
+    return None
+
+def rescale(cell, k):
+    """Divide every money field of a unit-slipped cell by k; the old values stay under 'fix'."""
+    old = {f: cell[f] for f in FIELDS if isinstance(cell.get(f), (int, float))}
+    for f, v in old.items():
+        cell[f] = round(v / k, 4)
+    cell["fix"] = dict(cell.get("fix", {}), unit=k, **{"%s_was" % f: v for f, v in old.items() if f == "assets"})
 
 def _same(a, b):
     return a is not None and b is not None and abs(a - b) <= max(0.011, 0.0005 * abs(b))
@@ -190,6 +212,9 @@ def main():
                 fixes.append("%s %s:%s" % (sym, q[:4], ",".join("%s %s->%s" % (f, fx[f], (ledger[sym][q].get(f))) for f in sorted(fx))))
         for e in (x for x in entries if x.get("role") == "supplement"):
             q = "%d0331" % int(e["fy"])
+            k = unit_slip((ledger.get(sym) or {}).get(q), e)
+            if k:
+                rescale(ledger[sym][q], k); fixes.append("%s %s: unit slip, every field /%s" % (sym, q[:4], k))
             add = supplement((ledger.get(sym) or {}).get(q), e)
             (supp if add else supp_rej).append("%s %s%s" % (sym, q[:4], (":" + ",".join(add)) if add else ""))
         entries = [x for x in entries if x.get("role") not in ("supplement", "correct")]
@@ -215,7 +240,7 @@ def main():
             if not asat_ok(e):
                 offcycle.append("%s %s" % (sym, e.get("fy"))); continue
             if add_rou and e.get("ppe") is not None:
-                e = dict(e); e["ppe"] = e["ppe"] + (e.get("rou") or 0)
+                e = dict(e); e["ppe"] = round(e["ppe"] + (e.get("rou") or 0), 4)   # round: 24396.64 not 24396.640000000003
             cell = {"b": e.get("basis", "c"), "m": "vision", "src": e.get("src", "")}
             cell.update({f: e[f] for f in FIELDS if e.get(f) is not None})
             if cell.get("assets") is None: continue

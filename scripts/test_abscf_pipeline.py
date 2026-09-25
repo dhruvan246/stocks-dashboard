@@ -304,5 +304,21 @@ check('VIND FY20: a re-read that passes the cash identity replaces the misread c
 check('an unverified disagreement changes nothing', L['KEEP']['20210331'] == {'b': 'c', 'm': 'text', 'src': 'bse:k.pdf', 'assets': 500.0, 'ppe': 50.0, 'cfo': 30.0, 'cfi': -10.0, 'cff': -5.0})
 check('a vision cell is never corrected by a text re-read', L['VISN']['20210331']['cfo'] == 30.0 and 'fix' not in L['VISN']['20210331'])
 
+# ---- 7. unit slip: every shared field exactly k x the independent re-read -> rescale ------------
+json.dump({'ETRN': {'20220331': {'b': 'c', 'm': 'text', 'src': 'bse:e.pdf', 'assets': 173270.0, 'sc': 7643.0, 'oeq': 157412.0,
+                                 'ppe': 509.0, 'gw': 12093.0}},
+           'NEAR': {'20220331': {'b': 'c', 'm': 'text', 'src': 'bse:n.pdf', 'assets': 23096.09, 'sc': 39.96, 'oeq': 15000.0}}},
+          open(M.LEDGER, 'w'))
+reads = [{'sym': 'ETRN', 'fy': 2022, 'role': 'supplement', 'basis': 'c', 'src': 'bse:e.pdf', 'assets': 17327.0, 'sc': 764.3,
+          'oeq': 15741.2, 'ppe': 50.9, 'gw': 1209.3, 'iuad': 0},
+         # 2.7% apart is NOT a unit slip: nothing changes
+         {'sym': 'NEAR', 'fy': 2022, 'role': 'supplement', 'basis': 'c', 'src': 'bse:n.pdf', 'assets': 22478.39, 'sc': 39.96, 'oeq': 14500.0, 'iuad': 5.0}]
+json.dump(reads, open(rp, 'w')); sys.argv = [sys.argv[0], rp]
+M.main()
+L = json.load(open(M.LEDGER)); e = L['ETRN']['20220331']
+check('ETERNAL FY22: every field exactly 10x the re-read -> cell rescaled to crore, old unit recorded, iuad supplemented',
+      (e['assets'], e['sc'], e['oeq'], e['ppe'], e['gw']) == (17327.0, 764.3, 15741.2, 50.9, 1209.3) and e.get('fix', {}).get('unit') == 10 and e.get('iuad') == 0)
+check('a 2.7% gap is not a unit slip — the cell is untouched', L['NEAR']['20220331'] == {'b': 'c', 'm': 'text', 'src': 'bse:n.pdf', 'assets': 23096.09, 'sc': 39.96, 'oeq': 15000.0})
+
 print('ALL PASS' if ok else 'FAILURES')
 sys.exit(0 if ok else 1)

@@ -20303,3 +20303,36 @@ per total when the first ones fail the identity, accepting only a UNIQUE solutio
 "Net cash generated from operating activities" — the first is before tax; stored CFO 1,227 → 589.50 FY22).
 Consequence: the free text route only lands DIGITAL filings; scans go to the image readers, whose prompt now says to
 read ONLY the wanted basis block of a side-by-side page and identify the current-year column by its header date.
+
+### 168i. Wave 2 by image readers — what the pages taught (2026-09-26)
+Round 2 (20 largest vision-queue N500 names + wrong-basis re-reads + scans) and a repair pass over landed cells, all
+read blind (keys withheld OUTSIDE the readers' tree, `~/stocks-cache/abscf-keys/`), joined with unit re-derivation and
+the cash identity, gated by merge. Traps, each measured on a real filing:
+- **Page choice is where reads fail, not the reading.** IFRS/USD statements and fact sheets picked for INFY (the Ind-AS
+  rupee BS was found by the XBRL key: `bs_pages_for_key` → p342 of a 380-page filing); a two-page BS rendered as its
+  liabilities half (NFL FY21/22 — render both); a Q1 P&L page matched by a "Reserves as per audited balance sheet"
+  line (HINDZINC FY22); half-year documents for a Dec-year filer (AMBUJACEM pre-FY23, POWERINDIA pre-FY22 — March
+  years that do not exist; POWERINDIA FY22's cash flow is 15 months → withheld).
+- **Pure scans (no text layer)**: `~/stocks-cache/abscf/tools/contact_sheets.py` (6 labelled thumbnails per sheet) + one
+  page-finder reader → full-resolution render of just those pages (POLYCAB FY21/22, DLF FY20, JINDALSTEL FY20/22,
+  MAZDOCK FY21/22, ADANIENSOL FY20/21 landed this way). HINDZINC FY20/21 filed standalone only.
+- **invst convention differs BY FILER** — measured on each validate year: DLF/NHPC/ONGC/POLYCAB XBRL `invst` =
+  financial investments only (equity-method line excluded); GAIL's XBRL `invst` = the equity-method line ALONE
+  (14,638.56 = its "investments accounted for using equity method"). Fill years were set to the filer's own measured
+  convention. merge has no such check yet (like ROU) — open.
+- **Unit slip in a landed cell**: ETERNAL FY22 (text cell, page in Rs million, unit inherited as crore) stored every field
+  exactly 10x (total assets 173,270 for 17,327). `merge_annual_bscf.unit_slip()` — every field an independent re-read
+  of the SAME document shares (3+) is one power of ten apart → `rescale()` the cell, old total kept under `fix`.
+- Supplements now carry the full re-read (anchors) but may only FILL `add` fields (iuad, capex, cf_tax, cfo/cfi/cff).
+- **A cash flow must match its balance sheet's basis — and position decides an unlabelled page.** The old `locate()`
+  paired a consolidated BS with the filing's FIRST cash-flow page when none said "consolidated" — in a two-basis filing
+  that is the STANDALONE one, ahead of the consolidated section (AUROPHARMA FY21 BS p27 / CF p3, ALLCARGO FY20, JBCHEPHARM
+  FY22, MRPL FY22, NH FY22 — Screener FAR). An unlabelled cash flow right AFTER the consolidated BS is its own (BIRLACORPN,
+  CIPLA, PNBHOUSING, LALPATHLAB — Screener MATCH). Fixed (`_after`, 3-page window); the five wrong ones were removed
+  (old values under `fix` as *_std).
+- **Screener as arbiter, with the user's two-source rule**: where an image re-read of the same page (cash identity
+  closing) AND Screener both disagree with a stored text value, the stored value was wrong — HEROMOTOCO FY20 CFO 5.0
+  (5,518.13), CHENNPETRO FY20 CFO 7.0 (−620.2), HEROMOTOCO FY22 Total Assets 23,096.09 (22,478.39; every component
+  line agreed), JAICORPLTD FY25 cfi 141.04 (111.04). Corrected with `fix` trails. Remaining Screener FAR/CLOSE on
+  values touched this session are restated comparatives (point-in-time as-filed values are kept), Screener's own
+  definitions (Reserves incl. perpetual securities; CWIP without iuad for some filers), or unchecked.

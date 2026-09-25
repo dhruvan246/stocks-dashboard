@@ -505,13 +505,29 @@ def locate(pdf, want_year, want_basis=None):
         return [i]
     # a FILL year must come from the basis the gate validated — prefer that page when the filing
     # carries both (PROZONER FY22: con page read fine but the validated basis is std, §148)
+    # the cash flow must be the SAME basis as the balance sheet. When no page is labelled with that basis,
+    # take an unlabelled cash-flow page only if it sits right AFTER that balance sheet (within 3 pages) —
+    # BIRLACORPN FY20 BS p8 -> CF p9, CIPLA, PNBHOUSING: all match Screener's consolidated cash flow — or,
+    # in a SINGLE-basis filing, any cash-flow page. The old fallback took the first cash-flow page of the
+    # filing, i.e. the STANDALONE one ahead of the consolidated section: AUROPHARMA FY21 (BS p27, CF p3),
+    # ALLCARGO FY20 (p21 / p10), JBCHEPHARM FY22 (p15 / p7) landed standalone cash flows in consolidated
+    # cells (2026-09-26, Screener FAR).
+    def _after(bs_i, other):
+        if bs_i is None: return None
+        last = bs_pages(bs_i)[-1]
+        for j in range(last + 1, min(len(texts), last + 4)):
+            if CF_PAGE.search(texts[j]) and CF_REAL.search(texts[j]) and not other.search(texts[j]):
+                return j
+        return None
+    cf_c = cf_con if cf_con is not None else (_after(bs_con, STANDAL) if bs_std is not None else cf_std)
+    cf_s = cf_std if cf_std is not None else (_after(bs_std, CONSOL) if bs_con is not None else cf_con)
     strict = None
     if want_basis == 's' and bs_std is not None:
-        strict = ('s', bs_pages(bs_std), (cf_std if cf_std is not None else cf_con))
+        strict = ('s', bs_pages(bs_std), cf_s)
     elif bs_con is not None:
-        strict = ('c', bs_pages(bs_con), (cf_con if cf_con is not None else cf_std))
+        strict = ('c', bs_pages(bs_con), cf_c)
     elif bs_std is not None:
-        strict = ('s', bs_pages(bs_std), (cf_std if cf_std is not None else cf_con))
+        strict = ('s', bs_pages(bs_std), cf_s)
     if strict is not None and strict[0] == 'c':
         return strict                                   # strict rules found the consolidated BS: unchanged
     # RELAXED second pass — only when the strict markers found nothing, or found only a standalone

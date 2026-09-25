@@ -86,6 +86,26 @@ pdf = mkpdf(YE, 'Standalone Balance Sheet as at 31 March 2025\nTotal assets 70\n
 r = F.locate(pdf, 2025)
 check('consolidated upgrade with no consolidated CF -> CF None (never the standalone one)', r is not None and r[0] == 'c' and r[2] is None)
 
+# 8b. strict path: consolidated BS, and the only cash flow sits in the STANDALONE section before it
+#     (AUROPHARMA FY21: BS p27, CF p3; ALLCARGO FY20: BS p21, CF p10 — both FAR from Screener's consolidated
+#     cash flow) -> CF None, never the standalone statement in a consolidated cell
+pdf = mkpdf(YE, 'Standalone Balance Sheet as at 31 March 2025\nTotal assets 70\nTrade payables 4\nTotal equity 40', CF_STD,
+            'Consolidated Balance Sheet as at 31 March 2025\nTotal assets 100\nTrade payables 5\nTotal equity 60')
+r = F.locate(pdf, 2025)
+check('strict consolidated BS with only a standalone CF in a two-basis filing -> CF None', r is not None and r[0] == 'c' and r[2] is None)
+# ...but an UNLABELLED cash flow right after the consolidated BS is its own (BIRLACORPN FY20 BS p8 -> CF p9, CIPLA,
+#     PNBHOUSING: all MATCH Screener's consolidated cash flow)
+CF_BARE = 'Statement of Cash Flows for the year ended 31 March 2025\nNet cash from operating activities 95'
+pdf = mkpdf(YE, 'Standalone Balance Sheet as at 31 March 2025\nTotal assets 70\nTrade payables 4\nTotal equity 40', CF_STD,
+            'Consolidated Balance Sheet as at 31 March 2025\nTotal assets 100\nTrade payables 5\nTotal equity 60', CF_BARE)
+r = F.locate(pdf, 2025)
+check('unlabelled cash flow right after the consolidated BS pairs with it', r == ('c', [3], 4))
+# ...but a SINGLE-basis filing whose cash-flow title does not repeat the word keeps it
+pdf = mkpdf(YE, 'Consolidated Balance Sheet as at 31 March 2025\nTotal assets 100\nTrade payables 5\nTotal equity 60',
+            'Statement of Cash Flows for the year ended 31 March 2025\nNet cash from operating activities 90')
+r = F.locate(pdf, 2025)
+check('single-basis filing: an unlabelled cash-flow page still pairs with the consolidated BS', r == ('c', [1], 2))
+
 # 9. not the FY-end filing -> None, whatever the markers say
 pdf = mkpdf('Unaudited results for the quarter ended 30 June 2025', 'Consolidated Balance Sheet\nTotal assets 100\nTrade payables 5\nTotal equity 60')
 check('no FY-end date -> None', F.locate(pdf, 2025) is None)
