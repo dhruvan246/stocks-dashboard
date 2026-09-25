@@ -19122,6 +19122,11 @@ approved in the FII session. That session runs D1-wide over the §158a entries (
 ICICI Pru Life row and a no-typed-rows block). `write()` now puts the remainder / rest-follows evidence first in the why, so the 900-char cut
 can no longer hide it.
 
+**Live (2026-09-25 16:45 IST).** Store commit a56e15cd3 (refresh-shareholding run 36128068843, guards green; Pages deployed): live
+`shp_engine.json` serves 63/63 §158a cells at the healed fii/dii; BHARATFORG Jun-2016 serves 16.64 / 16.38 on both its rows (original
+2016-07-14 and re-filing 2022-06-01); the other 23 of the 86 are unchanged. LICHSGFIN Jun-2016 live fii 31.49 / dii 7.05.
+`refresh-stock-fin.yml` dispatched after the store commit.
+
 ## §159 — FII = INSTITUTIONS (FOREIGN) IN EVERY FORMAT: ROW-LEVEL HEAL OF THE 2015-2022 NON-INSTITUTIONS "ANY OTHER" ROWS (2026-09-24, FII twin of §158)
 
 **Why.** After §158 the Sep-2022 seam still had FII-side artefacts that no DII rule touches: PAYTM 5.45 → 77.26, ETERNAL 9.98 →
