@@ -19853,3 +19853,42 @@ pre-existing.
 client (scratchpad `plainget.py`, one fixed User-Agent, one request at a time) against www.bseindia.com only, which serves such
 clients (200 on ShareholdingPattern.aspx, shpperent.aspx, XBRLFILES). api.bseindia.com refuses plain clients (403) and is not
 used. No browser impersonation (curl_cffi impersonate), header spoofing, User-Agent variation, proxies or IP rotation.
+
+## 165. Pre-2018 series-BZ history backfilled — 1,863 bars / 52 blocks / 43 symbols; builder exit check now tests the BIN's scale  (2026-09-25, user request)
+**NO ASSUMPTIONS, NO GUESSWORK** — measured against LIVE sf-data rev b3f0349960 (end 2026-09-24).
+
+### 165a. Reach
+`build_bz_backfill.py --scan 2002-01-01 2017-12-31` (every calendar day; 3,985 files, 1,857 confirmed 404s, 2 Sundays
+2010-05-16 / 2012-11-11 unfetchable — both before BZ existed). **NSE carries NO series BZ before 2014-07-09**
+(cm08JUL2014: EQ/BE/N*/…, zero BZ; cm09JUL2014: first 3 BZ rows; every 2002-2013 file: zero). BZ symbol-days
+2014-07-09..2017: 4,607, of which 2,737 already in the tape (the 2016-17 blocks of §80) and **1,870 missing over 43
+keys — zero of them on a Nifty-500 point-in-time member-day**; 39 of the 43 keys are dead today.
+
+### 165b. What landed (`scripts/bz_backfill.json.gz`, merged — existing 272 blocks untouched, +52)
+Built in `~/stocks-wt/bz-pre2018` with `--anchors` + `--build` over the 2002-2017 scan ONLY, then merged into
+origin's ledger (a plain `--build` from a partial scan cache REWRITES the whole ledger and would have dropped every
+2018+ block — never run it with a scan cache that does not cover the full range). No date collides with an existing
+block. 1,863 bars = 1,870 − PARASPETRO's 2017-04-17 block (7 bars; exit PREV_CLOSE 1.00 on its 2022-12-23
+resumption = a real 1:10 inside the hole — refused, correct). Two phantom factors undone, both steps AT the hole:
+VARUNSHIP ×1.5 (bin scale 0.667 before, 1.0 after) and BHARATIDIL ×2 (0.5 → 1.0; NSE printed it BHARTISHIP —
+`_rename_map` → BHARATIDIL; entry close 37.40 == first BZ PREVCLOSE, exit 18.45 == 2015-12-14 PREVCLOSE; the builder
+keys scan rows by as-printed symbol, so this block was built from a renamed copy of the scan). MANDHANA's 54 BZ days
+were already under GBGLOBAL (seam-merged) — nothing to do.
+
+### 165c. ★ The builder's exit control was raw-vs-raw — 3 blocks would have minted fake crashes
+CALSOFT / KESORAMIND / JHS: builder proposed pre ×1.7778 / ×1.3333 / 1.0 with bars at raw scale, and the exit
+PREV_CLOSE test PASSED (NSE saw no action in the hole). But the bin's scale is the same on BOTH sides of the hole
+(stored/raw 0.5784→0.5788, 0.7601→0.7600, 0.9460→0.9466) — the non-official factor sits years later (CALSOFT
+2025-01-15; KESORAMIND 2019-12-24 + 2021-09-16, both noadjust-listed; `vw ÷ (t/v)` shows the step). Applied, the
+blocks joined the resumption bar at stored/raw ×0.579 / ×0.760 / ×0.947 — a fake −42% / −24% / −5% day. Fix:
+those 3 blocks carry pre 1.0 and bars at the measured bin scale (`src` note on each); the builder now also requires
+`stored(resume)/raw_close(resume)` == the block's scale within 2% and skips otherwise (re-run: exactly these 3 skipped,
+the other 48 byte-identical). Whether those later non-official factors are themselves right is §161's question — NOT
+adjudicated here.
+**OPEN:** the 2018+ blocks (built 2026-08-10) passed the same raw-vs-raw test; the stored-scale check has NOT been run
+over them.
+
+### 165d. Verification (dry run: live bin + merged ledger through `update_sf_data.insert_bz_history` with the
+`session_calendar` guard): 1,863 inserted, second pass 0, exactly the 43 intended symbols changed, dates monotonic,
+field lengths equal, every new block's entry AND exit stored ratio == NSE raw ratio within 2%, largest one-day stored
+move 2014-06..2016 on the rescued names ≤ 20.0% (circuit band).
