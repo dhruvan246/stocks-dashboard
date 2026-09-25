@@ -19830,3 +19830,26 @@ are left to the DII session. Ex-members: below.
 11 rows after Mar-2016 carried only an ASSUMED quarter-end + 21 days (third-party value fills: BSE Ltd 2017-2020 ×9 from Trendlyne,
 CDSL Dec-2018, KIOCL Mar-2017). `scripts/shp_undated.json` lists them; `build_engine_feed` serves them UN-DATED (engine convention
 quarter-end + 28) like the pre-Jun-2016 convention rows. An evidenced date always wins — remove the key when one is found.
+
+### 164b. Quarters BSE keeps only as a revision — dated from the original when the FII is shown unchanged
+1,411 Nifty 500 (PIT) quarters: BSE's SHP list keeps only the REVISED filing (`filing_date_time` empty, `revised_date_time`
+set) and our feed dated the quarter at the revision (ABB Mar-2019 at 7-May; the original was published 10-Apr). The
+original's first publication was found in BSE's announcement stream for 785 (fetched 25-Sep, before the no-impersonation
+rule below was enforced; see the feedback memory). The values are the revision's (we do not hold the original document), so a
+quarter is re-dated only with evidence that the original carried the same FII: Quantmac serves the original's numbers from
+the original's date, and their month-end value inside [original, revision) equals ours in **107** quarters → `shp_lag_fix.json`
+days_earlier entries (48 new, 59 replacing an older entry kept under `replaced`). Left at the revision date: 18 where Quantmac's
+original reading differs, 486 with no month-end between the two dates, 174 with no Quantmac reading, 595 with no earlier
+announcement found.
+
+### 164a-2. shp_refine_4dp no longer touches re-based cells
+The 4-dp refine ledger (share counts on the (A+B+C) base) ran after `apply_cell_fix` and pulled 200 re-based cells back slot by
+slot where the move was ≤ 0.02 pp (mixed-basis cells, "neither" WARNs next run). `apply_refine_ledger` now skips cells whose
+cell_fix entry carries "§164a depository-receipt basis"; the 200 entries were re-armed (`was` = the interim store value, the
+original kept as `was_before_refine`). Measured on a copy: cell_fix + refine → 1,092 / 1,092 hold, WARN count back to the 11
+pre-existing.
+
+**BSE access rule (2026-09-25 17:49 IST).** From 17:49 every BSE fetch in this campaign uses a plain, honestly identified
+client (scratchpad `plainget.py`, one fixed User-Agent, one request at a time) against www.bseindia.com only, which serves such
+clients (200 on ShareholdingPattern.aspx, shpperent.aspx, XBRLFILES). api.bseindia.com refuses plain clients (403) and is not
+used. No browser impersonation (curl_cffi impersonate), header spoofing, User-Agent variation, proxies or IP rotation.

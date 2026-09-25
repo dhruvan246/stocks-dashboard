@@ -326,12 +326,21 @@ def apply_refine_ledger(h, path=None):
         print("%s unreadable (%s) — skipped" % (os.path.basename(path), e)); return 0
     n = skip = 0
     bad = []
+    # §164a: a cell moved onto the (A+B) depository basis must not be "refined" back toward the (A+B+C) share-count
+    # values this ledger was built on (within 0.02 pp it would silently undo the re-base slot by slot)
+    try:
+        _cf = json.load(open(os.path.join(HERE, "shp_cell_fix.json"), encoding="utf-8")).get("fix") or {}
+        rebased = {(s_, q_) for s_, qs_ in _cf.items() for q_, e_ in qs_.items()
+                   if "\u00a7164a depository-receipt basis" in str(e_.get("why", ""))}
+    except (OSError, ValueError):
+        rebased = set()
     for sym, qs in fills.items():
         dest = h.get(sym)
         if not isinstance(dest, dict): continue      # refine never CREATES a cell
         for qe, cell in qs.items():
             cur = dest.get(qe)
             if cur is None: continue
+            if (sym, qe) in rebased: continue
             # Compare ONLY the five holding percentages. `sub` and `nsh` describe WHICH DOCUMENT
             # was read, not the holding: BSE commonly serves a company's REVISION where NSE served
             # the original, so 73% of the first pass disagreed on `sub` alone while every value
