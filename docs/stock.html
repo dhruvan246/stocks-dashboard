@@ -940,19 +940,37 @@ function renderDeep(ends,patFn,revFn,opFn,isFin){
   if(!FIN_X||!ends.some(e=>xCell(e))){ card.style.display='none'; return; }
   card.style.display='';
   const vOf=x=>x?x.v:null;
+  // ---- fiscal-year bucketing — honor non-March (Dec / June) year-end filers ----
+  // fyOf() assumes an Apr–Mar fiscal year. A Dec- or June-year-end filer (ABB, Castrol, P&G Hygiene,
+  // Sanofi…) tags its annual balance sheet on Dec-31 / Jun-30, so the Apr–Mar buckets anchor its year
+  // on the wrong quarter — its columns read "Mar YYYY" and show a stray interim instead of the real
+  // year-end. Detect the fiscal year-end MONTH and bucket by it. Default March; override only on
+  // strong Dec/Jun annual-balance-sheet evidence (≥2 years and more than March), never for banks.
+  const _mo=e=>Math.floor(e/100)%100;
+  const _bsYrs=m=>{ let s=new Set(); for(const k in (FIN_X||{})){ const e=+k; if(_mo(e)===m){ const c=FIN_X[k], d=c&&(c.c||c.s); if(d&&(d.assets!=null||d.eq!=null)) s.add(Math.floor(e/10000)); } } return s.size; };
+  let FYM=3; if(!isFin){ const a=_bsYrs(3), d=_bsYrs(12), j=_bsYrs(6); if(d>=2&&d>a) FYM=12; else if(j>=2&&j>a) FYM=6; }
+  const MON={1:'Jan',2:'Feb',3:'Mar',4:'Apr',5:'May',6:'Jun',7:'Jul',8:'Aug',9:'Sep',10:'Oct',11:'Nov',12:'Dec'};
+  const fyOfX=e=>{ const m=_mo(e); return m<=FYM?Math.floor(e/10000):Math.floor(e/10000)+1; };   // == fyOf() when FYM===3
   const byFy={};
-  ends.forEach(e=>{ (byFy[fyOf(e)]=byFy[fyOf(e)]||[]).push(e); });
+  ends.forEach(e=>{ (byFy[fyOfX(e)]=byFy[fyOfX(e)]||[]).push(e); });
   Object.values(byFy).forEach(a=>a.sort((a,b)=>a-b));
   const fyAll=Object.keys(byFy).map(Number).sort((a,b)=>b-a);      // newest first
   const fys=fyAll.filter(fy=>byFy[fy].length===4&&byFy[fy].every(e=>patFn(e)!=null));   // complete FYs (P&L)
-  // FY-end pick: the FY's last quarter. Balance sheet is a year-end instant; cash flow is filed
-  // year-to-date, so that quarter's cell carries the full-year figures — Indian filers tag the
-  // annual cash flow to the Q4 context even when its labelled day-count reads like a single quarter
-  // (FY24 CFO lands on a "90-day" context). Strict basis: never fall a consolidated column back to a
-  // standalone cell, which would silently mix bases within one column (use the basis switch instead).
-  const strictCell=e=>{ const cc=FIN_X&&FIN_X[String(e)]; if(!cc) return null; return (FB_EFF==='std'?cc.s:cc.c)||null; };
-  const bsOf=fy=>{ const e=byFy[fy][byFy[fy].length-1]; const d=strictCell(e); return (d&&(d.assets!=null||d.eq!=null))?{e,x:d}:null; };
-  const cfOf=fy=>{ const e=byFy[fy][byFy[fy].length-1]; const d=strictCell(e); return (d&&d.cfo!=null)?{e,x:d}:null; };
+  // year-end anchor = the quarter ending IN the fiscal year-end month (the FY's audited year-end
+  // instant; cash flow is filed year-to-date so that quarter carries the full-year figures). Never a
+  // stray interim or an incomplete current year — a half-year balance sheet must not read as an annual.
+  const yearEndE=fy=>{ const q=byFy[fy]; for(let i=q.length-1;i>=0;i--) if(_mo(q[i])===FYM) return q[i]; return null; };
+  // Balance-sheet / cash-flow basis: prefer the page basis, but render the whole card in the OTHER
+  // basis if the page basis carries none and the other does — a standalone-only filer (Colgate, AU
+  // Bank) or one that tags BS/CF only on standalone (Tata Elxsi, MOIL) would otherwise show no card.
+  // Whole-card, never mixed within a column (that is the trap the strict-basis rule guards against).
+  const cellIn=(e,b)=>{ const cc=FIN_X&&FIN_X[String(e)]; return cc?((b==='std'?cc.s:cc.c)||null):null; };
+  const bscfCnt=b=>fyAll.reduce((n,fy)=>{ const e=yearEndE(fy); if(e==null) return n; const d=cellIn(e,b); return n+((d&&(d.assets!=null||d.eq!=null||d.cfo!=null))?1:0); },0);
+  const pageB=FB_EFF==='std'?'std':'con', otherB=pageB==='std'?'con':'std';
+  const bcB=bscfCnt(otherB)>bscfCnt(pageB)?otherB:pageB;   // whichever basis carries MORE year-end BS/CF; page basis (consolidated) wins ties
+  const strictCell=e=>cellIn(e,bcB);
+  const bsOf=fy=>{ const e=yearEndE(fy); if(e==null) return null; const d=strictCell(e); return (d&&(d.assets!=null||d.eq!=null))?{e,x:d}:null; };
+  const cfOf=fy=>{ const e=yearEndE(fy); if(e==null) return null; const d=strictCell(e); return (d&&d.cfo!=null)?{e,x:d}:null; };
   const fySum=(fy,get)=>{ let t=0,any=false; for(const e of byFy[fy]){ const v=get(e); if(v==null) return null; t+=v; any=true; } return any?t:null; };
   const fyRev=fy=>fySum(fy,e=>vOf(revFn(e))), fyOp=fy=>fySum(fy,e=>vOf(opFn(e)));
   const fyEbit=fy=>fySum(fy,e=>{ const o=opFn(e), d=(xCell(e)||{}).dep; return (o&&o.v!=null&&d!=null)?o.v-d:null; });
@@ -976,7 +994,7 @@ function renderDeep(ends,patFn,revFn,opFn,isFin){
   // keep the open tab across a re-render (flipping the basis switch re-runs this whole card)
   let cur=(DEEP_TAB&&tabs.some(([k])=>k===DEEP_TAB))?DEEP_TAB:tabs[0][0];
   // ---- shared transposed table (Screener layout: metric rows × year columns, oldest→newest) ----
-  const yL=fy=>'Mar '+fy;
+  const yL=fy=>MON[FYM]+' '+fy;   // column label uses the real fiscal year-end month (Mar / Dec / Jun)
   function matrix(fyDesc, rows){
     const cols=fyDesc.slice().reverse();                          // display oldest → newest
     const th=cols.map(fy=>`<th class="text-right px-2 py-1 whitespace-nowrap">${yL(fy)}</th>`).join('');
@@ -1091,7 +1109,7 @@ function renderDeep(ends,patFn,revFn,opFn,isFin){
         {label:'Total Assets', get:fy=>B(fy).assets, fmt:crS, bold:true, top:true},
       ];
       html=matrix(bsFys, rows);
-      note='₹ crore, '+(FB_EFF==='std'?'standalone':'consolidated where filed')+', as filed at each year-end — point-in-time, later restatements are not back-applied. Fixed Assets = net block + investment property + goodwill + other intangibles + biological/producing assets; CWIP includes intangibles under development; Other Liabilities and Other Assets balance the sheet (Screener convention). Lease liabilities appear under Borrowings only where the filer tags them separately.';
+      note='₹ crore, '+(bcB==='std'?'standalone':'consolidated where filed')+', as filed at each year-end — point-in-time, later restatements are not back-applied. Fixed Assets = net block + investment property + goodwill + other intangibles + biological/producing assets; CWIP includes intangibles under development; Other Liabilities and Other Assets balance the sheet (Screener convention). Lease liabilities appear under Borrowings only where the filer tags them separately.';
     }else if(cur==='cf'){
       const C=fy=>{ const c=cfOf(fy); return c?c.x:{}; };
       const net=fy=>{ const x=C(fy); return (x.cfo!=null&&x.cfi!=null&&x.cff!=null)?x.cfo+x.cfi+x.cff:null; };
@@ -1108,7 +1126,7 @@ function renderDeep(ends,patFn,revFn,opFn,isFin){
         {label:'CFO / OP', get:cfoOp, fmt:v=>v.toFixed(0)+'%', faint:true},
       ];
       html=matrix(cfFys, rows);
-      note='₹ crore, full-year cash flows (period ≥ 300 days), '+(FB_EFF==='std'?'standalone':'consolidated where filed')+'. Net Cash Flow = operating + investing + financing; Free Cash Flow = CFO − capex; CFO/OP = operating cash ÷ operating profit.';
+      note='₹ crore, full-year cash flows (period ≥ 300 days), '+(bcB==='std'?'standalone':'consolidated where filed')+'. Net Cash Flow = operating + investing + financing; Free Cash Flow = CFO − capex; CFO/OP = operating cash ÷ operating profit.';
     }else if(cur==='ratio'){
       const B=fy=>{ const c=bsOf(fy); return c?c.x:{}; };
       const dOn=(amt,fy)=>{ const r=fyRev(fy); return (amt!=null&&r)?amt/r*365:null; };
