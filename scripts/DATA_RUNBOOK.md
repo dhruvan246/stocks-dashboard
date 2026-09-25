@@ -19996,3 +19996,19 @@ Pass 1: 1,583 old official factors applied · 39 unapplied (1 queued: RASOYPR ·
   ISHAN, COOLCAPS, KARNIKA, SAHANA …) + the two dupes above. Outside the Nifty 500 scope; verify on the SME bhavcopy before seeding.
 - **37 ambiguous** — a cluster of SME names bakes ≈0.60 where the record says 0.5 (QUADPRO, KODYTECH, MOS, SAHAJSOLAR, USHAFIN,
   TEMBO, VERTOZ, CONTI, RAJMET …): the bin applied a different factor than the record. Human review; not touched.
+
+### 166f. ★ A ledger that REWRITES a segment every run silently undoes any later adjustment — the §89 surgery vs the §166 heal
+`apply_series_surgery` (§89, `dvl_dtil_surgery.json.gz`) replaces RASOYPR 2012-09-03..2015-08-31 with FIXED bars whenever the
+stored segment differs (`cur_seg == new_seg` is its only no-op, and the 8 `bar_inserts` rows make it differ every night anyway).
+Those ledger bars were the RAW pre-split tape, so after §166's heal each run restored 2012-09-03..2013-03-20 to raw, the detector
+re-queued RASOYPR, and the heal fired again — `heals=1` on EVERY run, the §87e-bis nightly rewrite. Measured over the whole
+1,370-bar series with the real production steps (surgery → bar_inserts → self_heal, NSE fetches blocked): the values were
+identical run after run — the 144 pre-split bars OUTSIDE the surgery range (2011-12-12..2012-08-31) are the pre-existing all-zero
+defect, so re-scaling them is a no-op. No corruption, but not converged.
+**Fix:** the ledger's 137 RASOYPR bars before 20130321 now carry the official 1:15 (c/h/l/op/vw × 0.066667, 2 dp — exactly the
+heal's arithmetic; t/v/dv untouched; DVL/DTIL byte-identical). Re-simulated: runs 2 and 3 heal **0**, full series == run 1.
+**Rule:** a ledger that rewrites a series segment each run must hold it on the bin's ADJUSTED basis. Before an official factor
+lands for a symbol, grep the rewrite ledgers (`dvl_dtil_surgery.json.gz`, `bz_backfill.json.gz`, SME history, `bar_inserts.json`).
+**Why §166c missed it:** that dry run called `self_heal` alone; production runs surgery/BZ/SME/bar-inserts first. A heal dry run
+must replay `main()`'s whole pre-heal sequence. LIVE after §166 (rev 83470e2a28): RASOYPR 2013-03-19 close 7.85; 2013-09-30
+d52 11.607 % (official-true), vs200 45.880 % (Quantmac 45.883).
