@@ -20286,3 +20286,20 @@ values stay under `fix` in the cell. Two traps found building it (both now teste
 ("147:<61", APLAPOLLO FY22) was skipped as a word and the prior year slid into its slot — the cash reader now
 keeps digit-bearing garbage right of the label as None in position (`rows_tok(garbled_as_none=True)`); and a
 bare marker before a BRACKETED figure ("8 (167.65)", ATUL FY22) is a marker, not a split figure.
+
+### 168h. ★★ Most "text" cells were read off OCR'd SCANS — the text reader now refuses those pages (and side-by-side bases)
+Measured on the 115 N500 text cells: **78 sat on scanned pages whose text is an OCR layer** (66 invisible text over a
+full-page image — MuPDF bbox log `ignore-text`; 10 image-backed, producers ABBYY FineReader / HP Scan / Konica Minolta /
+Acrobat Paper Capture), 16 on balance sheets printing **standalone and consolidated side by side** (3+ figures per row);
+only 37 on clean digital text. OCR is where §168c's split / mangled / decimal-comma figures come from, and a side-by-side
+page makes `nums[0]` the LEFT block: heading positions over the Total Assets figure proved **PFOCUS FY20-22** (stored
+1,966 cr = standalone; consolidated 5,015), **NFL FY20**, **BOMDYEING FY22**, **FMGOETZE FY20-21** (text) and **BEML FY20**
+(vision — the routine's reader prompt said "the left data column") landed the STANDALONE block as consolidated; TRENT
+FY21/22 (wave 2, never pushed) the same. Fixes (`text_read`): `page_is_ocr()` (bbox log — NOT get_texttrace, which
+crashes PyMuPDF 1.28 after a few hundred pages) → an OCR'd balance sheet is withheld unless `allow_ocr` (the re-read
+uses it only as an ANCHOR), an OCR'd cash flow keeps only a triple that closes the cash identity (capex / tax withheld);
+`_mode_cols >= 3` → the balance sheet is withheld (`_bs_layout: multi`). And `_cf_parse` now tries every candidate line
+per total when the first ones fail the identity, accepting only a UNIQUE solution (HGS FY20-22 print TWO lines called
+"Net cash generated from operating activities" — the first is before tax; stored CFO 1,227 → 589.50 FY22).
+Consequence: the free text route only lands DIGITAL filings; scans go to the image readers, whose prompt now says to
+read ONLY the wanted basis block of a side-by-side page and identify the current-year column by its header date.

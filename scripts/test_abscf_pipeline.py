@@ -188,8 +188,45 @@ r = cf_of('Net cash flow from operating activities A 231.45 717.95', 'Net cash u
           'Net cash used in financing activities (57.44) (52.19)', 'Net increase I (decrease) in cash and cash equivalents A+B+C 6.36 19.37', *BASE)
 check('ATUL FY22: "8 (167.65)" = a marker before a complete bracketed figure (cfi -167.65; identity 6.36 holds)',
       r.get('cfi') == -167.65 and r.get('_cf_ok') is True)
+r = cf_of('Net cash generated from operating activities 122,722.54 82,355.30', 'Income tax paid (net) (63,772.87) (13,194.64)',
+          'Net cash generated from operating activities 58,949.67 69,160.66', 'Net cash used in investing activities 201,153.24 (20,922.94)',
+          'Net cash used in financing activities (103,315.51) (47,574.14)', 'Net increase/ (decrease) in cash and cash equivalents 156,787.40 663.58', *BASE)
+check('HGS FY22: two lines both called "Net cash generated from operating activities" — the identity picks the post-tax one',
+      (r.get('cfo'), r.get('cfi'), r.get('cff'), r.get('_cf_ok')) == (58949.67, 201153.24, -103315.51, True))
+r = cf_of('Net cash generated from operating activities 34.963 23,980', 'Net cash used in investing activities (2,253) (6,750)',
+          'Net cash used in financing activities (28,903) (17,565)', 'Net increase/ (decrease) in cash and cash equivalents 3,817 (263)', *BASE)
+check('VEDL FY22: "34.963" (a comma read as a point) fails the identity and no other line solves it -> triple dropped',
+      r.get('cfo') is None and r.get('cfi') is None and r.get('_cf_ok') is False)
 check('ANANTRAJ FY21: "1, 143.00" (a split 1,143.00) is unreadable, never Rs 1', F.to_num('1,') is None and F.to_num('1,143.00') == 1143.0
       and F.to_num('(1,21,200)') == -121200.0)
+
+# ---- 4b. scanned pages + side-by-side bases: the text layer is not trusted for landing ------------
+def mkpdf_ocr(*pages):
+    """Pages shaped like an OCR'd scan: a full-page image with the text as an INVISIBLE layer on top."""
+    doc = fitz.open()
+    for text in pages:
+        p = doc.new_page()
+        pix = fitz.Pixmap(fitz.csRGB, fitz.IRect(0, 0, 60, 80), False); pix.clear_with(230)
+        p.insert_image(p.rect, pixmap=pix)
+        y = 60
+        for line in text.strip().split('\n'):
+            p.insert_text((50, y), line.strip(), fontsize=9, render_mode=3); y += 13
+    return doc.tobytes()
+pdf = mkpdf_ocr(YE, BS, CF1, CF2)
+loc = F.locate(pdf, 2025)
+r = F.text_read(pdf, loc[1], loc[2]) if loc else {}
+check('an OCR-layer balance sheet is flagged (_bs_ocr) and its BS fields are withheld',
+      loc is not None and r.get('_bs_ocr') is True and r.get('assets') is None and r.get('iuad') is None)
+check('...its cash flow is kept only because the cash identity verifies it',
+      (r.get('cfo'), r.get('cfi'), r.get('cff'), r.get('_cf_ok')) == (90.0, -40.0, -30.0, True) and r.get('capex') is None)
+check('the same pages as a DIGITAL filing are read in full', F.text_read(mkpdf(YE, BS, CF1, CF2), [1], 2).get('assets') == 1000.0)
+SBS = ('Statement of Assets and Liabilities as at 31 March 2025\nStandalone Consolidated\n(Rs. in crore)\n'
+       'Property, plant and equipment 400.00 380.00 410.00 390.00\nTotal assets 1000.00 950.00 1050.00 990.00\n'
+       'Equity share capital 10.00 10.00 10.00 10.00\nOther equity 600.00 550.00 610.00 560.00\n'
+       'Trade payables 50.00 45.00 52.00 47.00\nTotal equity and liabilities 1000.00 950.00 1050.00 990.00')
+r = F.text_read(mkpdf(YE, SBS, CF1, CF2), [1], 2)
+check('TRENT FY21: standalone + consolidated side by side (4 columns) -> BS flagged multi and withheld',
+      r.get('_bs_layout') == 'multi' and r.get('assets') is None)
 
 # ---- 5. merge ----------------------------------------------------------------------------------
 tmp = tempfile.mkdtemp()

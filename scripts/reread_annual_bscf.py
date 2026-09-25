@@ -7,7 +7,10 @@ For each ledger cell (scripts/annual_bscf.json) in scope:
   1. fetch its src PDF (cache dir, else www.bseindia.com/xml-data, >= BSE_MIN_GAP s apart);
   2. locate() the statement on the cell's OWN basis and text_read() it;
   3. ANCHOR: the re-read Total Assets must equal the stored one within 0.5% at one unit scale — the same
-     statement, the same unit — or the cell is skipped (a scan / a different page);
+     statement, the same unit — or the cell is skipped (a scan / a different page / a balance sheet printing
+     several bases side by side, whose text columns cannot be told apart). On an OCR'd page the anchor still
+     holds, but only cash-flow totals that close the cash identity are taken (text_read's own rule);
+     iuad from an OCR'd balance sheet is left to the vision reader;
   4. emit a 'supplement' (fields the cell lacks: iuad, capex, cf_tax, cfo/cfi/cff) and, for TEXT cells, a
      'correct' entry (the old parser's cash-flow misreads — merge_annual_bscf.correct() decides, with
      evidence only).
@@ -23,6 +26,11 @@ sys.path.insert(0, HERE)
 import fetch_annual_bscf as F
 
 SUPP_FIELDS = ("iuad", "capex", "cf_tax", "cfo", "cfi", "cff")
+
+def _anchor(r, c):
+    """Unit scales at which the re-read's Total Assets equals the stored cell's within 0.5%."""
+    ks = [r["_unit"]] if r.get("_unit") else [1.0, 10.0, 100.0, 1e4, 1e7]
+    return [k for k in ks if r.get("assets") and c.get("assets") and abs(r["assets"] / k - c["assets"]) <= 0.005 * abs(c["assets"])]
 
 def main(args):
     out = args[args.index("--out") + 1]
@@ -51,15 +59,34 @@ def main(args):
                 seen["no-pdf"] = seen.get("no-pdf", 0) + 1; continue
             fy = int(q[:4]); b = c.get("b", "c")
             loc = F.locate(pdf, fy, b)
-            if not loc or loc[0] != b:
-                seen["no-locate-on-basis"] = seen.get("no-locate-on-basis", 0) + 1; continue
-            r = F.text_read(pdf, loc[1], loc[2])
-            ks = [r["_unit"]] if r.get("_unit") else [1.0, 10.0, 100.0, 1e4, 1e7]
-            ks = [k for k in ks if r.get("assets") and c.get("assets") and abs(r["assets"] / k - c["assets"]) <= 0.005 * abs(c["assets"])]
+            r, ks = None, []
+            if loc and loc[0] == b:
+                r = F.text_read(pdf, loc[1], loc[2], allow_ocr=True); ks = _anchor(r, c)
             if not ks:
-                seen["anchor-miss"] = seen.get("anchor-miss", 0) + 1; continue
+                # the cell may have been read off another page than locate() picks (prep re-picks the
+                # consolidated BS by size / key): find the page whose Total Assets AND PP&E equal the
+                # STORED cell's, and the first cash-flow page of the same basis after it
+                doc = F.fitz.open(stream=pdf, filetype="pdf"); texts = [doc[k].get_text() for k in range(len(doc))]
+                bs = F.bs_pages_for_key(doc, texts, {"assets": c.get("assets"), "ppe": c.get("ppe")})
+                doc.close()
+                if bs:
+                    cf = next((i for i in range(bs[-1] + 1, len(texts)) if F.CF_PAGE.search(texts[i]) and F.CF_REAL.search(texts[i])
+                               and bool(F.CONSOL.search(texts[i])) == (b == "c")), None)
+                    r = F.text_read(pdf, bs, cf, allow_ocr=True); ks = _anchor(r, c)
+                    if ks: seen["anchor-by-key"] = seen.get("anchor-by-key", 0) + 1
+            if not ks:
+                tag = "multi-column-bs" if (r and r.get("_bs_layout") == "multi") else \
+                      ("anchor-miss" if (loc and loc[0] == b) else "no-locate-on-basis")
+                seen[tag] = seen.get(tag, 0) + 1
+                continue
             k = ks[0]; cfk = r.get("_cf_unit") or k
             s = F.scale_text(r, k)
+            if r.get("_bs_ocr"):
+                # an OCR'd balance sheet anchors the cell (same statement, same unit) but its OTHER figures
+                # are OCR text — iuad from it is not taken (the vision reader gets it); a cash flow only
+                # survives text_read on an OCR'd page when it closes the cash identity (§168h)
+                s.pop("iuad", None)
+                seen["ocr-bs"] = seen.get("ocr-bs", 0) + 1
             net = round(r["_cf_net"] / cfk, 2) if r.get("_cf_net") is not None else None
             fx = round(r["_cf_fx"] / cfk, 2) if r.get("_cf_fx") is not None else None
             base = {"sym": sym, "fy": fy, "basis": b, "src": c["src"], "assets": s.get("assets"),

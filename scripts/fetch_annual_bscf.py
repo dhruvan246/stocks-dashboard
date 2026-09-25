@@ -351,10 +351,23 @@ def _cf_parse(rows):
             cf[k] = abs(cf[k])
     a, b, c, net = cf.get('cfo'), cf.get('cfi'), cf.get('cff'), cf.get('_cf_net')
     chk = cf_identity(a, b, c, net)
+    fxs = [n[0] for lab, n in fixed if n and n[0] is not None and CF_FX.search(lab)]
     if chk is False:
-        for f in [n[0] for lab, n in fixed if n and n[0] is not None and CF_FX.search(lab)]:
+        for f in fxs:
             if cf_identity(a, b, c, net, f):
                 chk = True; cf['_cf_fx'] = f; break
+    if chk is False:
+        # the first matching line is not always the statement's own total: HGS FY22 prints TWO lines both
+        # called "Net cash generated from operating activities" (the first is before tax). Try every
+        # candidate line per total; accept only a UNIQUE triple that closes the identity.
+        rx = {k: rxx for k, rxx, _ in CF_ONE if k in ('cfo', 'cfi', 'cff')}
+        cand = {k: [n[0] for lab, n in fixed if n and n[0] is not None and re.search(rx[k], lab, re.I)][:3] for k in rx}
+        sols = {(x, y, z): f for x in cand['cfo'] for y in cand['cfi'] for z in cand['cff'] for f in [None] + fxs
+                if cf_identity(x, y, z, net, f)}
+        if len(sols) == 1:
+            (a, b, c), f = next(iter(sols.items()))
+            cf.update({'cfo': a, 'cfi': b, 'cff': c}); chk = True
+            if f is not None: cf['_cf_fx'] = f
     if chk is False:
         for k in ('cfo', 'cfi', 'cff'):
             cf.pop(k, None)
@@ -560,19 +573,57 @@ def scale_text(p, k):
     return {kk: (round(v / (cfk if kk in CF_KEYS else k), 2) if (kk in MONEY_KEYS and isinstance(v, (int, float))) else v)
             for kk, v in p.items() if not kk.startswith('_')}
 
-def text_read(pdf, bs_pi, cf_pi):
+def page_is_ocr(page):
+    """True when the page's text is an OCR layer over a SCANNED image, not the filer's own digital text:
+    most text is invisible (render mode 3 — 'ignore-text' in MuPDF's bbox log) or an image covers >= 90%
+    of the page under the text (ABBYY-style visible OCR). Measured 2026-09-26 on the 115 N500 text cells:
+    78 sat on such pages (66 invisible layer; 10 image-backed, producers ABBYY / HP Scan / Konica Minolta /
+    Acrobat Paper Capture) — the source of the split / mangled / decimal-comma figures in §168c. Digital
+    filings (TCS FY21, GRASIM FY20, POLYCAB FY20) show neither. (get_bboxlog, not get_texttrace: the latter
+    crashes PyMuPDF 1.28 with a refcount error after a few hundred pages.)"""
+    try:
+        log = page.get_bboxlog()
+    except Exception:
+        return False
+    txt = [k for k, _ in log if k.endswith('-text')]
+    if not txt:
+        return False
+    inv = sum(1 for k in txt if k == 'ignore-text')
+    pa = (page.rect.width * page.rect.height) or 1.0
+    img = sum((b[2] - b[0]) * (b[3] - b[1]) for k, b in log if k in ('fill-image', 'fill-imgmask')) / pa
+    return inv / len(txt) > 0.5 or img >= 0.9
+
+def _mode_cols(rows):
+    cnt = {}
+    for _, toks in rows:
+        if toks: cnt[len(toks)] = cnt.get(len(toks), 0) + 1
+    return max(cnt, key=lambda k: (cnt[k], -k)) if cnt else 0
+
+def text_read(pdf, bs_pi, cf_pi, allow_ocr=False):
     """Word-grid text parse (free, exact — but fails on filers who shade the current-year column).
     bs_pi may be one page or a two-page [assets, liabilities] split; the cash flow may run onto the
     next page (cf_span). Returns the RAW printed numbers plus '_unit' / '_cf_unit' = divisor to crore
     stated on the BS / CF page(s) (None if not stated). cfo/cfi/cff are dropped when the statement's
-    own cash identity is checkable and fails — a label matched the wrong line."""
+    own cash identity is checkable and fails — a label matched the wrong line.
+    Withheld (never read from text, runbook §168h): a balance sheet printing several column blocks
+    side by side (usually 3+ figures per row: standalone + consolidated — TRENT FY21 landed its
+    STANDALONE block as consolidated), and — unless allow_ocr — a balance sheet on an OCR'd scan
+    (page_is_ocr). On an OCR'd cash-flow page only cfo/cfi/cff that CLOSE the cash identity are kept
+    (a mangled digit cannot close it); capex / cf_tax are withheld. Flags: _bs_ocr, _bs_layout, _cf_ocr."""
     doc = fitz.open(stream=pdf, filetype="pdf")
     fields = {}
     bs_text = ""
+    bs_rows = []; bs_ocr = False
     for pi in _as_list(bs_pi):
         bs_text += doc[pi].get_text() + "\n"
-        for k, v in parse_rows(rows_of(doc[pi]), BS_ONE, BS_SUM).items():
+        toks = rows_tok(doc[pi]); bs_rows += toks
+        bs_ocr = bs_ocr or page_is_ocr(doc[pi])
+        for k, v in parse_rows([(lab, [v for _, v in t]) for lab, t in toks], BS_ONE, BS_SUM).items():
             fields.setdefault(k, v)          # first page (assets side) wins any shared key
+    bs_layout = 'multi' if _mode_cols(bs_rows) >= 3 else 'single'
+    if bs_layout == 'multi' or (bs_ocr and not allow_ocr):
+        fields = {}
+    fields['_bs_ocr'] = bs_ocr; fields['_bs_layout'] = bs_layout
     cf_unit = None
     if cf_pi is not None:
         span = cf_span([doc[k].get_text() for k in range(len(doc))], cf_pi)
@@ -580,6 +631,13 @@ def text_read(pdf, bs_pi, cf_pi):
         for pi in span:
             cf_rows += rows_tok(doc[pi], garbled_as_none=True)
         cf = _cf_parse(cf_rows)
+        cf_ocr = any(page_is_ocr(doc[pi]) for pi in span)
+        if cf_ocr:
+            cf.pop('capex', None); cf.pop('cf_tax', None)
+            if cf.get('_cf_ok') is not True:
+                for k in ('cfo', 'cfi', 'cff'):
+                    cf.pop(k, None)
+        fields['_cf_ocr'] = cf_ocr
         fields.update({k: v for k, v in cf.items() if not k.startswith('_')})
         fields['_cf_ok'] = cf.get('_cf_ok')          # True / False / None: the cash identity's verdict
         fields['_cf_layout'] = cf.get('_cf_layout')  # 'single' / 'multi' (side-by-side bases: not read)
