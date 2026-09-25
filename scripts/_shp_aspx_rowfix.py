@@ -239,7 +239,6 @@ def _label_cls(lab):
 def oldmap_for(bse_rows, maxfiles=4):
     """holder key -> Counter(class) from the filer's own 2015-form XBRLs (Jun-2016..Jun-2022, nearest first): the row the filer
     itself put the holder on (typed Any-Other groups by their label, standard axes by OLD_AX)."""
-    import seam88
     cands=sorted([(D.qe_of(r.get("qtr")),(r.get("XbrlFile") or "").strip()) for r in bse_rows if D.qe_of(r.get("qtr")) and r.get("XbrlFile")])
     M=collections.defaultdict(collections.Counter); used=0
     for qe,f in [c for c in cands if "2016-06-30"<=c[0]<="2022-06-30"]:
@@ -270,7 +269,6 @@ def _subsets(hold, p, used, limit=3):
 def page_label_map(code, hist_sym):
     """holder key -> Counter(class) from the filer's own page era: a LABELLED sub-row (fii / dii / public) whose value is the exact,
     unique sum of named >1% holders attributes the label to those holders (POONAWALLA Mar-15 'Multilateral & Bilateral DFI' 12.08 = IFC)."""
-    import seam88, shpperent as SP
     M=collections.defaultdict(collections.Counter)
     for q in sorted(hist_sym):
         if not ("2006-06-30"<=q<="2016-03-31"): continue
@@ -321,7 +319,6 @@ def pick_by_count(subsets, hn):
     return None
 def _fuzzy_get(M, key):
     """Merged evidence for every spelling of this holder the filer used (exact key + fuzzy matches: 'Parrville' = 'Parkville')."""
-    import seam88
     out=collections.Counter(); hit=False
     for k in M:
         if k==key or in_known(key,{k}): out.update(M[k]); hit=True
@@ -329,12 +326,10 @@ def _fuzzy_get(M, key):
 def company_elsewhere(pagemap, n):
     """True when the filer's own labelled rows put this holder under a company-type label ('public') and never under FDI —
     company-labelled rows stay public in this pass, so a generic row must not move the same holder (FORTIS IFC, INDUSTOWER Merrill)."""
-    import seam88
     m=_fuzzy_get(pagemap,nkey(re.sub(r"^\s*(fii|fpi|qfi)s?\s*[-:]\s*","",n,flags=re.I)))
     return bool(m) and m.get("public",0)>0 and not m.get("fdi-label")
 def holder_cls_full(ctx, n, v, oldmap, pagemap, known):
     """(class, source) for a named holder from the filer's own evidence, strongest first; None when nothing the filer itself said decides."""
-    import seam88
     key=nkey(re.sub(r"^\s*(fii|fpi|qfi)s?\s*[-:]\s*","",n,flags=re.I))
     c,dest,src=ctx.hclass(n,v)
     if src.startswith("new-format") or src in ("curated","memory","memory~"):
@@ -456,7 +451,7 @@ def evaluate(h, cur, sym=None, qi=None, code=None, ctx=None, gctx=None):
                     c,src=holder_cls_full(ctx,n,v,gctx["oldmap"],gctx["pagemap"],_KNOWN[code])
                     hold.append((nkey(n),n,round(v,4),c,src))
                 hold=hold[:16]; used=set(g for g in range(len(hold)) if hold[g][3] is None)     # unclassified names can never explain a row
-                rowmem=(gctx.get("rowmem") or {}); import seam88 as _s88
+                rowmem=(gctx.get("rowmem") or {})
                 for lst,i in sorted(candg,key=lambda x:-x[0][x[1]][1]):
                     lab,p,cls,io=lst[i]; blk="inst" if lst is subi else "noninst"; lk=(blk,re.sub(r"\s+"," ",lab.strip().lower()))
                     tb=set()
@@ -469,10 +464,10 @@ def evaluate(h, cur, sym=None, qi=None, code=None, ctx=None, gctx=None):
                     choose=None; how="exact"
                     if len(got)==1 and single: choose=got[0]
                     elif single and tb:
-                        cs=[g for g in single if all(_s88.in_known(hold[x][0],tb) for x in g)]
+                        cs=[g for g in single if all(in_known(hold[x][0],tb) for x in g)]
                         if len(cs)==1: choose=cs[0]; how="exact, composition = adjacent quarter"
                     if choose is None and tb:      # the adjacent quarter's composition is present here and the remainder is below the >1% table's floor -> the rest follows (§158 R1)
-                        comp=tuple(x for x in range(len(hold)) if x not in used and _s88.in_known(hold[x][0],tb))
+                        comp=tuple(x for x in range(len(hold)) if x not in used and in_known(hold[x][0],tb))
                         if comp and hn_ is not None and not (len(comp)<=hn_<=len(comp)+5): comp=()
                         if comp and len({hold[x][3] for x in comp})==1 and hold[comp[0]][3]!="gov":
                             rem=p-sum(hold[x][2] for x in comp)
