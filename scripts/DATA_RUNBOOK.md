@@ -18671,6 +18671,16 @@ ppe+invprop+gw+intg+bio+prodprop (sw v178). After: 0 uncaptured fixed-asset tags
 screener sample 17/17. Still NOT matched by design: restated years (screener back-applies restatements) and
 vendor quirks. PDF-era (FY20-22 annual_bscf) cells predate the invprop reader — re-read them to add it.
 
+**§148d — a BSE block must STOP the reader, never gate-fail (2026-09-25).** `result_filings` already raised
+`BseBlocked` on 403/429, but `fetch_annual_bscf.main()` caught it with `except Exception` and wrote
+`gate-failed / note filings-err:BSE HTTP 403` + a `ttry` cooldown — measured: CI run 4649467a5 (10:31 IST 09-25)
+re-stamped 150 symbols that way, every 6 h since the 09-23 block. Now all three callers (`prep`, the gate loop, the
+fill loop) re-raise it, and the entry point prints `::warning::… run stopped` and exits 0 BEFORE recording the
+symbol in hand (tested blocked: `--limit 3` → rc 0, ledger + gate byte-identical). Also ships the ≥2 s gap
+between BSE requests (`BSE_MIN_GAP`). Pending BSE work (316 requeue, 459 FY23-25 incl INA, verifier on 213
+unverified years) waits for the api to answer scripts; runner `~/stocks-wt/fa-backfill/scripts/_fa_resume.py`
+(probe every 30 min, 20-symbol chunks, resumable) is written but NOT started — needs the user's go-ahead.
+
 ## 149. ★★★ MIDNIGHT VISIBILITY RULE — the 15:30 filing-time gate RETIRED, every shift reversed on the data side  (2026-09-23)
 **User decision (2026-09-23, confirmed three times, then "ok do it"):** "I exit the stocks on rebalance-day close
 and buy the stocks on next day opening, so I am planning to remove that 3:30 gate — when I buy at 9:20 next morning

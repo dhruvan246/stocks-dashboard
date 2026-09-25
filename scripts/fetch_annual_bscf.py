@@ -62,7 +62,13 @@ def session():
     except Exception: pass
     return o
 
+_LAST_CALL = [0.0]
+MIN_GAP = float(os.environ.get("BSE_MIN_GAP", "2.0"))   # seconds between ANY two BSE requests (<=0.5/s, agreed
+                                                        # with the parallel BSE session after the 2026-09-23 block)
 def get(o, u, b=False):
+    w = MIN_GAP - (time.time() - _LAST_CALL[0])
+    if w > 0: time.sleep(w)
+    _LAST_CALL[0] = time.time()
     r = o.open(urllib.request.Request(u, headers={'User-Agent': UA, 'Referer': 'https://www.bseindia.com/'}), timeout=60)
     raw = r.read()
     if r.headers.get('Content-Encoding') == 'gzip': raw = gzip.decompress(raw)
@@ -563,6 +569,7 @@ def prep(outdir, limit, only):
         entries = []
         for role, fy in [('validate', val_fy)] + [('fill', f) for f in miss]:
             try: fl = result_filings(o, code, '%d0401' % fy, '%d0901' % fy)
+            except BseBlocked: raise
             except Exception: continue
             for ann, att in fl[:8]:
                 pdf = download(o, att)
@@ -681,6 +688,7 @@ def main():
         val_fy = max(vheld)
         for vfy in sorted(vheld, reverse=True)[:3]:
             try: fl = result_filings(o, code, '%d0401' % vfy, '%d0901' % vfy)
+            except BseBlocked: raise              # a block aborts the run — never a gate-fail (§148: 316 cos)
             except Exception as e: note = 'filings-err:%s' % str(e)[:30]; fl = []
             for ann, att in fl[:8]:
                 pdf = download(o, att)
@@ -713,6 +721,7 @@ def main():
         for fy in miss:
             frm, to = '%d0401' % fy, '%d0901' % fy
             try: fl = result_filings(o, code, frm, to)
+            except BseBlocked: raise
             except Exception: continue
             for ann, att in fl[:8]:
                 pdf = download(o, att)
@@ -759,4 +768,9 @@ def main():
     print('DONE. ledger: %d symbols, %d symbol-years. gate report: %s' % (len(ledger), n, os.path.basename(GATE_REPORT)))
 
 if __name__ == '__main__':
-    main()
+    try:
+        main()
+    except BseBlocked as e:
+        # the block stops the run BEFORE the symbol in hand is recorded; every symbol already written stands.
+        # 2026-09-25: without this every 6-hourly CI run re-stamped 150 symbols 'gate-failed: 403' (§148)
+        print('::warning::%s — run stopped, nothing recorded for the symbol in hand' % e)
