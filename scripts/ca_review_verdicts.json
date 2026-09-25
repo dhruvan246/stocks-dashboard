@@ -110,7 +110,8 @@
 "verdict": "UNRESOLVED",
 "evidence": {
 "missing": [
-"boundary spans >1 year with no NSE bars \u2014 actions filed only on BSE in that span are invisible to the NSE feed and BSE is unreachable"
+"boundary spans >1 year with no NSE bars \u2014 actions filed only on BSE in that span are invisible to the NSE feed and BSE is unreachable",
+"share-count witness: fewer than 2 usable quarters (|EPS|>=0.5) on a side within 9 months"
 ]
 }
 },
@@ -124,7 +125,8 @@
 "verdict": "UNRESOLVED",
 "evidence": {
 "missing": [
-"boundary spans >1 year with no NSE bars \u2014 actions filed only on BSE in that span are invisible to the NSE feed and BSE is unreachable"
+"boundary spans >1 year with no NSE bars \u2014 actions filed only on BSE in that span are invisible to the NSE feed and BSE is unreachable",
+"share-count witness: fewer than 2 usable quarters (|EPS|>=0.5) on a side within 9 months"
 ]
 }
 },
@@ -139,7 +141,8 @@
 "evidence": {
 "missing": [
 "NSE feed shows no record-keeping for this company within 3y of the event",
-"boundary spans >1 year with no NSE bars \u2014 actions filed only on BSE in that span are invisible to the NSE feed and BSE is unreachable"
+"boundary spans >1 year with no NSE bars \u2014 actions filed only on BSE in that span are invisible to the NSE feed and BSE is unreachable",
+"share-count witness: fewer than 2 usable quarters (|EPS|>=0.5) on a side within 9 months"
 ]
 }
 },
@@ -154,7 +157,8 @@
 "evidence": {
 "missing": [
 "Yahoo lists a non-matching split [{'src': 'ns', 'date': 20250130, 'factor': 5.0}]",
-"boundary spans >1 year with no NSE bars \u2014 actions filed only on BSE in that span are invisible to the NSE feed and BSE is unreachable"
+"boundary spans >1 year with no NSE bars \u2014 actions filed only on BSE in that span are invisible to the NSE feed and BSE is unreachable",
+"share-count witness: fewer than 2 usable quarters (|EPS|>=0.5) on a side within 9 months"
 ]
 }
 },
@@ -229,7 +233,8 @@
 "verdict": "UNRESOLVED",
 "evidence": {
 "missing": [
-"boundary spans >1 year with no NSE bars \u2014 actions filed only on BSE in that span are invisible to the NSE feed and BSE is unreachable"
+"boundary spans >1 year with no NSE bars \u2014 actions filed only on BSE in that span are invisible to the NSE feed and BSE is unreachable",
+"share-count witness: fewer than 2 usable quarters (|EPS|>=0.5) on a side within 9 months"
 ]
 }
 },
@@ -265,7 +270,8 @@
 "verdict": "UNRESOLVED",
 "evidence": {
 "missing": [
-"NSE feed shows no record-keeping for this company within 3y of the event"
+"NSE feed shows no record-keeping for this company within 3y of the event",
+"share-count witness: no results-filing data for this company"
 ]
 }
 },
@@ -276,11 +282,19 @@
 "F": 0.1001,
 "raw": 0.099,
 "raw_bhav": 0.0989,
-"verdict": "UNRESOLVED",
+"verdict": "REAL_TAPE",
 "evidence": {
+"tape": {
+"open_gate": 1.008,
+"vol_step": 5.014,
+"expected": 9.99,
+"filing_witness": "no results-filing data for this company"
+},
+"earlier": {
 "missing": [
 "NSE feed shows no record-keeping for this company within 3y of the event"
 ]
+}
 }
 },
 {
@@ -293,7 +307,8 @@
 "verdict": "UNRESOLVED",
 "evidence": {
 "missing": [
-"NSE feed shows no record-keeping for this company within 3y of the event"
+"NSE feed shows no record-keeping for this company within 3y of the event",
+"share-count witness: no results-filing data for this company"
 ]
 }
 },
@@ -307,7 +322,8 @@
 "verdict": "UNRESOLVED",
 "evidence": {
 "missing": [
-"NSE feed shows no record-keeping for this company within 3y of the event"
+"NSE feed shows no record-keeping for this company within 3y of the event",
+"share-count witness: no results-filing data for this company"
 ]
 }
 },
@@ -321,7 +337,8 @@
 "verdict": "UNRESOLVED",
 "evidence": {
 "missing": [
-"NSE feed shows no record-keeping for this company within 3y of the event"
+"NSE feed shows no record-keeping for this company within 3y of the event",
+"share-count witness: no results-filing data for this company"
 ]
 }
 },
@@ -335,7 +352,8 @@
 "verdict": "UNRESOLVED",
 "evidence": {
 "missing": [
-"NSE feed shows no record-keeping for this company within 3y of the event"
+"NSE feed shows no record-keeping for this company within 3y of the event",
+"share-count witness: no results-filing data for this company"
 ]
 }
 },
@@ -349,7 +367,8 @@
 "verdict": "UNRESOLVED",
 "evidence": {
 "missing": [
-"NSE feed shows no record-keeping for this company within 3y of the event"
+"NSE feed shows no record-keeping for this company within 3y of the event",
+"share-count witness: no results-filing data for this company"
 ]
 }
 },
@@ -360,11 +379,19 @@
 "F": 0.25,
 "raw": 0.2677,
 "raw_bhav": 0.2677,
-"verdict": "UNRESOLVED",
+"verdict": "REAL_TAPE",
 "evidence": {
+"tape": {
+"open_gate": 1.0592,
+"vol_step": 2.667,
+"expected": 4.0,
+"filing_witness": "fewer than 2 usable quarters (|EPS|>=0.5) on a side within 9 months"
+},
+"earlier": {
 "missing": [
 "Yahoo lists a non-matching split [{'src': 'ns', 'date': 20251015, 'factor': 0.5}]"
 ]
+}
 }
 },
 {
@@ -577,7 +604,8 @@
 "verdict": "UNRESOLVED",
 "evidence": {
 "missing": [
-"NSE feed shows no record-keeping for this company within 3y of the event"
+"NSE feed shows no record-keeping for this company within 3y of the event",
+"share-count witness: no results-filing data for this company"
 ]
 }
 },
@@ -726,7 +754,8 @@
 "verdict": "UNRESOLVED",
 "evidence": {
 "missing": [
-"NSE feed shows no record-keeping for this company within 3y of the event"
+"NSE feed shows no record-keeping for this company within 3y of the event",
+"share-count witness: no results-filing data for this company"
 ]
 }
 },
@@ -866,7 +895,8 @@
 "verdict": "UNRESOLVED",
 "evidence": {
 "missing": [
-"NSE feed shows no record-keeping for this company within 3y of the event"
+"NSE feed shows no record-keeping for this company within 3y of the event",
+"share-count witness: no results-filing data for this company"
 ]
 }
 },
@@ -920,11 +950,19 @@
 "F": 0.1,
 "raw": 0.1025,
 "raw_bhav": 0.1025,
-"verdict": "UNRESOLVED",
+"verdict": "REAL_TAPE",
 "evidence": {
+"tape": {
+"open_gate": 1.017,
+"vol_step": 9.592,
+"expected": 10.0,
+"filing_witness": "no results-filing data for this company"
+},
+"earlier": {
 "missing": [
 "NSE feed shows no record-keeping for this company within 3y of the event"
 ]
+}
 }
 },
 {
@@ -1022,7 +1060,8 @@
 "verdict": "UNRESOLVED",
 "evidence": {
 "missing": [
-"NSE feed shows no record-keeping for this company within 3y of the event"
+"NSE feed shows no record-keeping for this company within 3y of the event",
+"share-count witness: no results-filing data for this company"
 ]
 }
 },
@@ -1036,7 +1075,8 @@
 "verdict": "UNRESOLVED",
 "evidence": {
 "missing": [
-"NSE feed shows no record-keeping for this company within 3y of the event"
+"NSE feed shows no record-keeping for this company within 3y of the event",
+"share-count witness: no results-filing data for this company"
 ]
 }
 },
@@ -1050,7 +1090,8 @@
 "verdict": "UNRESOLVED",
 "evidence": {
 "missing": [
-"NSE feed shows no record-keeping for this company within 3y of the event"
+"NSE feed shows no record-keeping for this company within 3y of the event",
+"share-count witness: no results-filing data for this company"
 ]
 }
 },
@@ -1108,8 +1149,24 @@
 "verdict": "UNRESOLVED",
 "evidence": {
 "missing": [
-"boundary spans >1 year with no NSE bars \u2014 actions filed only on BSE in that span are invisible to the NSE feed and BSE is unreachable"
-]
+"boundary spans >1 year with no NSE bars \u2014 actions filed only on BSE in that span are invisible to the NSE feed and BSE is unreachable",
+"share-count witness: share counts unstable within a side (>5%)"
+],
+"share_count": {
+"basis": "c",
+"pre_cr": [
+3.212,
+3.255
+],
+"post_cr": [
+3.227,
+1.607
+],
+"step": 0.7475,
+"expected_split_step": 0.2498,
+"stable": false,
+"why": "share counts unstable within a side (>5%)"
+}
 }
 },
 {
@@ -1135,7 +1192,8 @@
 "verdict": "UNRESOLVED",
 "evidence": {
 "missing": [
-"NSE feed shows no record-keeping for this company within 3y of the event"
+"NSE feed shows no record-keeping for this company within 3y of the event",
+"share-count witness: no results-filing data for this company"
 ]
 }
 },
@@ -1149,7 +1207,8 @@
 "verdict": "UNRESOLVED",
 "evidence": {
 "missing": [
-"NSE feed shows no record-keeping for this company within 3y of the event"
+"NSE feed shows no record-keeping for this company within 3y of the event",
+"share-count witness: no results-filing data for this company"
 ]
 }
 },
@@ -1163,7 +1222,8 @@
 "verdict": "UNRESOLVED",
 "evidence": {
 "missing": [
-"NSE feed shows no record-keeping for this company within 3y of the event"
+"NSE feed shows no record-keeping for this company within 3y of the event",
+"share-count witness: no results-filing data for this company"
 ]
 }
 },
@@ -1177,7 +1237,8 @@
 "verdict": "UNRESOLVED",
 "evidence": {
 "missing": [
-"NSE feed shows no record-keeping for this company within 3y of the event"
+"NSE feed shows no record-keeping for this company within 3y of the event",
+"share-count witness: no results-filing data for this company"
 ]
 }
 },
@@ -1191,7 +1252,8 @@
 "verdict": "UNRESOLVED",
 "evidence": {
 "missing": [
-"NSE feed shows no record-keeping for this company within 3y of the event"
+"NSE feed shows no record-keeping for this company within 3y of the event",
+"share-count witness: no results-filing data for this company"
 ]
 }
 },
@@ -1218,7 +1280,8 @@
 "verdict": "UNRESOLVED",
 "evidence": {
 "missing": [
-"NSE feed shows no record-keeping for this company within 3y of the event"
+"NSE feed shows no record-keeping for this company within 3y of the event",
+"share-count witness: no results-filing data for this company"
 ]
 }
 },
@@ -1255,7 +1318,8 @@
 "verdict": "UNRESOLVED",
 "evidence": {
 "missing": [
-"NSE feed shows no record-keeping for this company within 3y of the event"
+"NSE feed shows no record-keeping for this company within 3y of the event",
+"share-count witness: fewer than 2 usable quarters (|EPS|>=0.5) on a side within 9 months"
 ]
 }
 },
@@ -1524,11 +1588,19 @@
 "F": 0.1,
 "raw": 0.0995,
 "raw_bhav": 0.0995,
-"verdict": "UNRESOLVED",
+"verdict": "REAL_TAPE",
 "evidence": {
+"tape": {
+"open_gate": 0.986,
+"vol_step": 16.283,
+"expected": 10.0,
+"filing_witness": "no results-filing data for this company"
+},
+"earlier": {
 "missing": [
 "NSE feed shows no record-keeping for this company within 3y of the event"
 ]
+}
 }
 },
 {
@@ -1541,7 +1613,8 @@
 "verdict": "UNRESOLVED",
 "evidence": {
 "missing": [
-"NSE feed shows no record-keeping for this company within 3y of the event"
+"NSE feed shows no record-keeping for this company within 3y of the event",
+"share-count witness: no results-filing data for this company"
 ]
 }
 },
@@ -1552,11 +1625,19 @@
 "F": 0.2003,
 "raw": 0.2004,
 "raw_bhav": 0.2,
-"verdict": "UNRESOLVED",
+"verdict": "REAL_TAPE",
 "evidence": {
+"tape": {
+"open_gate": 1.002,
+"vol_step": 2.858,
+"expected": 4.99,
+"filing_witness": "no results-filing data for this company"
+},
+"earlier": {
 "missing": [
 "NSE feed shows no record-keeping for this company within 3y of the event"
 ]
+}
 }
 },
 {
@@ -1643,7 +1724,8 @@
 "verdict": "UNRESOLVED",
 "evidence": {
 "missing": [
-"NSE feed shows no record-keeping for this company within 3y of the event"
+"NSE feed shows no record-keeping for this company within 3y of the event",
+"share-count witness: no results-filing data for this company"
 ]
 }
 },
@@ -1657,7 +1739,8 @@
 "verdict": "UNRESOLVED",
 "evidence": {
 "missing": [
-"Yahoo lists a non-matching split [{'src': 'ns', 'date': 20220518, 'factor': 0.47619047619047616}]"
+"Yahoo lists a non-matching split [{'src': 'ns', 'date': 20220518, 'factor': 0.47619047619047616}]",
+"share-count witness: fewer than 2 usable quarters (|EPS|>=0.5) on a side within 9 months"
 ]
 }
 },
@@ -1710,7 +1793,8 @@
 "verdict": "UNRESOLVED",
 "evidence": {
 "missing": [
-"NSE feed shows no record-keeping for this company within 3y of the event"
+"NSE feed shows no record-keeping for this company within 3y of the event",
+"share-count witness: no results-filing data for this company"
 ]
 }
 },
@@ -1747,11 +1831,19 @@
 "F": 0.1001,
 "raw": 0.101,
 "raw_bhav": 0.1009,
-"verdict": "UNRESOLVED",
+"verdict": "REAL_TAPE",
 "evidence": {
+"tape": {
+"open_gate": 0.992,
+"vol_step": 16.788,
+"expected": 9.99,
+"filing_witness": "no results-filing data for this company"
+},
+"earlier": {
 "missing": [
 "NSE feed shows no record-keeping for this company within 3y of the event"
 ]
+}
 }
 },
 {
@@ -1764,7 +1856,8 @@
 "verdict": "UNRESOLVED",
 "evidence": {
 "missing": [
-"NSE feed shows no record-keeping for this company within 3y of the event"
+"NSE feed shows no record-keeping for this company within 3y of the event",
+"share-count witness: no results-filing data for this company"
 ]
 }
 },
@@ -1775,11 +1868,19 @@
 "F": 0.1008,
 "raw": 0.1008,
 "raw_bhav": 0.0999,
-"verdict": "UNRESOLVED",
+"verdict": "REAL_TAPE",
 "evidence": {
+"tape": {
+"open_gate": 1.005,
+"vol_step": 9.204,
+"expected": 9.92,
+"filing_witness": "no results-filing data for this company"
+},
+"earlier": {
 "missing": [
 "NSE feed shows no record-keeping for this company within 3y of the event"
 ]
+}
 }
 },
 {
@@ -1789,11 +1890,19 @@
 "F": 0.1,
 "raw": 0.0994,
 "raw_bhav": 0.0995,
-"verdict": "UNRESOLVED",
+"verdict": "REAL_TAPE",
 "evidence": {
+"tape": {
+"open_gate": 1.094,
+"vol_step": 6.946,
+"expected": 10.0,
+"filing_witness": "no results-filing data for this company"
+},
+"earlier": {
 "missing": [
 "NSE feed shows no record-keeping for this company within 3y of the event"
 ]
+}
 }
 },
 {
@@ -1951,11 +2060,19 @@
 "F": 0.1,
 "raw": 0.0993,
 "raw_bhav": 0.0993,
-"verdict": "UNRESOLVED",
+"verdict": "REAL_TAPE",
 "evidence": {
+"tape": {
+"open_gate": 1.054,
+"vol_step": 11.973,
+"expected": 10.0,
+"filing_witness": "no results-filing data for this company"
+},
+"earlier": {
 "missing": [
 "NSE feed shows no record-keeping for this company within 3y of the event"
 ]
+}
 }
 },
 {
@@ -2052,11 +2169,19 @@
 "F": 0.0999,
 "raw": 0.106,
 "raw_bhav": 0.106,
-"verdict": "UNRESOLVED",
+"verdict": "REAL_TAPE",
 "evidence": {
+"tape": {
+"open_gate": 1.0571,
+"vol_step": 10.166,
+"expected": 10.01,
+"filing_witness": "no results-filing data for this company"
+},
+"earlier": {
 "missing": [
 "NSE feed shows no record-keeping for this company within 3y of the event"
 ]
+}
 }
 },
 {
@@ -2079,11 +2204,19 @@
 "F": 0.1,
 "raw": 0.0997,
 "raw_bhav": 0.0998,
-"verdict": "UNRESOLVED",
+"verdict": "REAL_TAPE",
 "evidence": {
+"tape": {
+"open_gate": 1.013,
+"vol_step": 8.155,
+"expected": 10.0,
+"filing_witness": "no results-filing data for this company"
+},
+"earlier": {
 "missing": [
 "NSE feed shows no record-keeping for this company within 3y of the event"
 ]
+}
 }
 },
 {
@@ -2093,11 +2226,19 @@
 "F": 0.1,
 "raw": 0.0992,
 "raw_bhav": 0.0993,
-"verdict": "UNRESOLVED",
+"verdict": "REAL_TAPE",
 "evidence": {
+"tape": {
+"open_gate": 0.951,
+"vol_step": 17.347,
+"expected": 10.0,
+"filing_witness": "no results-filing data for this company"
+},
+"earlier": {
 "missing": [
 "NSE feed shows no record-keeping for this company within 3y of the event"
 ]
+}
 }
 },
 {
@@ -2110,7 +2251,8 @@
 "verdict": "UNRESOLVED",
 "evidence": {
 "missing": [
-"NSE feed shows no record-keeping for this company within 3y of the event"
+"NSE feed shows no record-keeping for this company within 3y of the event",
+"share-count witness: no results-filing data for this company"
 ]
 }
 },
@@ -2124,7 +2266,8 @@
 "verdict": "UNRESOLVED",
 "evidence": {
 "missing": [
-"NSE feed shows no record-keeping for this company within 3y of the event"
+"NSE feed shows no record-keeping for this company within 3y of the event",
+"share-count witness: no results-filing data for this company"
 ]
 }
 },
@@ -2229,7 +2372,8 @@
 "verdict": "UNRESOLVED",
 "evidence": {
 "missing": [
-"boundary spans >1 year with no NSE bars \u2014 actions filed only on BSE in that span are invisible to the NSE feed and BSE is unreachable"
+"boundary spans >1 year with no NSE bars \u2014 actions filed only on BSE in that span are invisible to the NSE feed and BSE is unreachable",
+"share-count witness: fewer than 2 usable quarters (|EPS|>=0.5) on a side within 9 months"
 ]
 }
 },
@@ -2321,7 +2465,8 @@
 "verdict": "UNRESOLVED",
 "evidence": {
 "missing": [
-"NSE feed shows no record-keeping for this company within 3y of the event"
+"NSE feed shows no record-keeping for this company within 3y of the event",
+"share-count witness: no results-filing data for this company"
 ]
 }
 },
@@ -2426,7 +2571,8 @@
 "verdict": "UNRESOLVED",
 "evidence": {
 "missing": [
-"NSE feed shows no record-keeping for this company within 3y of the event"
+"NSE feed shows no record-keeping for this company within 3y of the event",
+"share-count witness: fewer than 2 usable quarters (|EPS|>=0.5) on a side within 9 months"
 ]
 }
 },
@@ -2554,11 +2700,19 @@
 "F": 0.1,
 "raw": 0.1003,
 "raw_bhav": 0.1002,
-"verdict": "UNRESOLVED",
+"verdict": "REAL_TAPE",
 "evidence": {
+"tape": {
+"open_gate": 1.009,
+"vol_step": 14.571,
+"expected": 10.0,
+"filing_witness": "no results-filing data for this company"
+},
+"earlier": {
 "missing": [
 "NSE feed shows no record-keeping for this company within 3y of the event"
 ]
+}
 }
 },
 {
@@ -2568,11 +2722,19 @@
 "F": 0.1002,
 "raw": 0.1009,
 "raw_bhav": 0.1007,
-"verdict": "UNRESOLVED",
+"verdict": "REAL_TAPE",
 "evidence": {
+"tape": {
+"open_gate": 0.998,
+"vol_step": 9.065,
+"expected": 9.98,
+"filing_witness": "no results-filing data for this company"
+},
+"earlier": {
 "missing": [
 "NSE feed shows no record-keeping for this company within 3y of the event"
 ]
+}
 }
 },
 {
@@ -2582,11 +2744,19 @@
 "F": 0.1006,
 "raw": 0.1032,
 "raw_bhav": 0.1026,
-"verdict": "UNRESOLVED",
+"verdict": "REAL_TAPE",
 "evidence": {
+"tape": {
+"open_gate": 1.0239,
+"vol_step": 10.299,
+"expected": 9.94,
+"filing_witness": "no results-filing data for this company"
+},
+"earlier": {
 "missing": [
 "NSE feed shows no record-keeping for this company within 3y of the event"
 ]
+}
 }
 },
 {
@@ -2599,7 +2769,8 @@
 "verdict": "UNRESOLVED",
 "evidence": {
 "missing": [
-"NSE feed shows no record-keeping for this company within 3y of the event"
+"NSE feed shows no record-keeping for this company within 3y of the event",
+"share-count witness: no results-filing data for this company"
 ]
 }
 },
@@ -2634,7 +2805,8 @@
 "verdict": "UNRESOLVED",
 "evidence": {
 "missing": [
-"boundary spans >1 year with no NSE bars \u2014 actions filed only on BSE in that span are invisible to the NSE feed and BSE is unreachable"
+"boundary spans >1 year with no NSE bars \u2014 actions filed only on BSE in that span are invisible to the NSE feed and BSE is unreachable",
+"share-count witness: fewer than 2 usable quarters (|EPS|>=0.5) on a side within 9 months"
 ]
 }
 },
@@ -2648,7 +2820,8 @@
 "verdict": "UNRESOLVED",
 "evidence": {
 "missing": [
-"NSE feed shows no record-keeping for this company within 3y of the event"
+"NSE feed shows no record-keeping for this company within 3y of the event",
+"share-count witness: no results-filing data for this company"
 ]
 }
 },
@@ -2681,11 +2854,19 @@
 "F": 0.1001,
 "raw": 0.1023,
 "raw_bhav": 0.1021,
-"verdict": "UNRESOLVED",
+"verdict": "REAL_TAPE",
 "evidence": {
+"tape": {
+"open_gate": 0.9381,
+"vol_step": 14.227,
+"expected": 9.99,
+"filing_witness": "no results-filing data for this company"
+},
+"earlier": {
 "missing": [
 "NSE feed shows no record-keeping for this company within 3y of the event"
 ]
+}
 }
 },
 {
@@ -2765,7 +2946,8 @@
 "verdict": "UNRESOLVED",
 "evidence": {
 "missing": [
-"boundary spans >1 year with no NSE bars \u2014 actions filed only on BSE in that span are invisible to the NSE feed and BSE is unreachable"
+"boundary spans >1 year with no NSE bars \u2014 actions filed only on BSE in that span are invisible to the NSE feed and BSE is unreachable",
+"share-count witness: fewer than 2 usable quarters (|EPS|>=0.5) on a side within 9 months"
 ]
 }
 },

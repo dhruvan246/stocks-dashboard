@@ -19646,3 +19646,19 @@ no large-factor volume contradiction (> 3×).
 All 29 confirmed factors recorded in corp_actions_hist.json (data unchanged: dry-run self_heal + manual-rights on the
 live series → 0 of 28 series change). Results-filing share counts (`docs/fin/<SYM>.json` x.eps_b vs fund PAT, 2018+)
 are a genuinely independent split/bonus witness — use them before calling any 2018+ factor unresolvable.
+
+### 161i. Share-count witness on the 55 unresolved 2016+ events (2026-09-25)
+`scripts/adjudicate_share_counts.py` (rules in its docstring, committed before the run): shares = PAT / basic EPS from
+the company's own results filings (docs/fin, 2018+; Ind AS 33 restates EPS for a split/bonus in every result announced
+after it, so "pre" = announced before the event, "post" = quarters ending after it; |EPS| ≥ 0.50; ≥ 2 quarters each side
+within 9 months; each side stable within 5%). **Result: 0 of 55 decidable by filings** — 34 are funds/ETFs (no
+results filings), 7 are rights entitlements (`-RE`), 13 are small companies with |EPS| < 0.50 or long suspensions,
+PRUDMOULI's count is unstable around its relisting.
+Second witness, the §87 tape standard with BOTH signals (large factors only): ex-day open at the adjusted basis
+[0.88,1.12] AND a persistent 10-session volume step within 2× of 1/F. **16 REAL_TAPE**: NIFTYBEES, BANKBEES, NV20BEES
+(2019-12-19 ×0.1), ICICIGOLD 2018, HDFCNIFTY/HDFCSENSEX/NEXT50BETA 2021, MON100 2021, ABSLNN50ET/ABSLBANETF/BSE500IETF
+2021, ICICIBANKN 2022, MOMOMENTUM 2022 ×0.2, AUTOIETF 2024, QNIFTY 2026, GICL 2025 ×0.25 → corp_actions_hist.json
+(prices unchanged: dry run 0 of 18 series). **39 remain unresolved**, each with its measured signals in
+ca_review_verdicts.json — e.g. the HDFC Oct-2023 funds open at the adjusted basis but volume ×21–40 (> 2× the ×10 a
+1:10 split implies); the `-RE` entitlements have no witness at all; AMARJOTHI/KJMCFIN/VTMLTD/BURNPUR/BATLIBOI 2026 and
+NOVARTIND/SHREDIGCEM/ARENTERP relist after multi-year gaps where only BSE (unreachable) holds the record.

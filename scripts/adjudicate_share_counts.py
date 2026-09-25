@@ -14,7 +14,11 @@ Rules, fixed before the run:
   REAL_FILING  step within 10% of 1/F                       -> keep the adjustment; record F in corp_actions_hist
   PHANTOM_FILING step within 10% of 1.0 (count unchanged)   -> keep the raw move (phantom_crashes.json)
   otherwise stays UNRESOLVED, with the measured step.
-Run: python3 scripts/adjudicate_share_counts.py [--apply]
+Second witness when no filing exists (funds/ETFs, entitlements, tiny-EPS companies) — the §87 tape
+standard, both signals required, large factors only (F <= 0.25 or >= 4, where the unit count dominates volume):
+  REAL_TAPE  ex-day open at the adjusted basis ((open/prev)/F in [0.88,1.12]) AND a persistent volume step
+             (median 10 sessions after / 10 before) within 2x of 1/F  -> keep; record F in corp_actions_hist.
+Run: python3 scripts/adjudicate_share_counts.py [--apply] [--bins <dir with sf_deep_*/sf_recent_* bins>]
 """
 import os, sys, json, datetime, statistics
 HERE = os.path.dirname(os.path.abspath(__file__)); ROOT = os.path.dirname(HERE)
@@ -58,16 +62,42 @@ def judge(sym, b, F):
     return "UNRESOLVED", dict(best, why="share-count step matches neither the split (1/F) nor no-change")
 
 
+def tape(bins, todo):
+    import glob, gzip
+    need = {v["sym"] for v in todo}; vol = {}
+    for f in sorted(glob.glob(os.path.join(bins, "*deep_*.bin"))) + sorted(glob.glob(os.path.join(bins, "*recent_*.bin"))):
+        D = json.loads(gzip.open(f).read())
+        for sname in need:
+            o = D["data"].get(sname)
+            if o:
+                for i, x in enumerate(o["d"]): vol.setdefault(sname, {})[x] = o["v"][i]
+    E = {(e["sym"], e["b"]): e for e in json.load(open(os.path.join(HERE, "ca_review_evidence.json")))["events"]}
+    out = {}
+    for v in todo:
+        F = v["F"]; m = vol.get(v["sym"], {}); ds = sorted(m)
+        if v["b"] not in m: continue
+        j = ds.index(v["b"])
+        pre = [m[x] for x in ds[max(0, j - 10):j] if m[x]]; post = [m[x] for x in ds[j + 1:j + 11] if m[x]]
+        vr = statistics.median(post) / statistics.median(pre) if len(pre) >= 3 and len(post) >= 3 else None
+        og = E[(v["sym"], v["b"])].get("open_over_prev_bhav"); g = og / F if og else None
+        if (F <= 0.25 or F >= 4) and g is not None and 0.88 <= g <= 1.12 and vr is not None and 0.5 <= vr * F <= 2:
+            out[(v["sym"], v["b"])] = {"open_gate": round(g, 4), "vol_step": round(vr, 3), "expected": round(1 / F, 2)}
+    return out
+
+
 def main():
     VP = os.path.join(HERE, "ca_review_verdicts.json"); VV = json.load(open(VP))
     todo = [v for v in VV["verdicts"] if v["verdict"] == "UNRESOLVED" and v["b"] >= 20160101]
+    T = tape(sys.argv[sys.argv.index("--bins") + 1], todo) if "--bins" in sys.argv else {}
     res = []
     for v in todo:
         verdict, ev = judge(v["sym"], v["b"], v["F"])
+        if verdict == "UNRESOLVED" and (v["sym"], v["b"]) in T:
+            verdict, ev = "REAL_TAPE", dict(T[(v["sym"], v["b"])], filing_witness=ev.get("why"))
         res.append((v, verdict, ev))
         print("%-15s %-11s %d F=%.3f %s" % (verdict, v["sym"], v["b"], v["F"],
               {k: ev[k] for k in ("step", "expected_split_step", "why") if k in ev}))
-    print({k: sum(1 for r in res if r[1] == k) for k in ("REAL_FILING", "PHANTOM_FILING", "UNRESOLVED")})
+    print({k: sum(1 for r in res if r[1] == k) for k in ("REAL_FILING", "PHANTOM_FILING", "REAL_TAPE", "UNRESOLVED")})
     if "--apply" in sys.argv:
         H = json.load(open(os.path.join(HERE, "corp_actions_hist.json")))
         PC = json.load(open(os.path.join(HERE, "phantom_crashes.json")))
@@ -76,8 +106,8 @@ def main():
                 v["evidence"].setdefault("missing", []).append("share-count witness: %s" % ev.get("why"))
                 if "step" in ev: v["evidence"]["share_count"] = ev
                 continue
-            v["verdict"] = verdict; v["evidence"] = {"share_count": ev, "earlier": v["evidence"]}
-            if verdict == "REAL_FILING":
+            v["verdict"] = verdict; v["evidence"] = {("share_count" if verdict != "REAL_TAPE" else "tape"): ev, "earlier": v["evidence"]}
+            if verdict in ("REAL_FILING", "REAL_TAPE"):
                 lst = H["factors"].setdefault(v["sym"], [])
                 if not any(abs(int(x[0]) - v["b"]) <= 3 for x in lst): lst.append([v["b"], round(v["F"], 6)]); lst.sort()
             else:
