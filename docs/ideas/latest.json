@@ -1,14 +1,16 @@
 {
- "updated": "2026-09-24 23:37 IST",
- "scan_date": "2026-09-24",
- "scan_file": "scan/2026-09-24.json",
- "run_file": "runs/2026-09-24.json",
- "ideas_count": 3,
+ "updated": "2026-09-25 20:48 IST",
+ "scan_date": "2026-09-25",
+ "scan_file": "scan/2026-09-25.json",
+ "run_file": "runs/2026-09-25.json",
+ "ideas_count": 5,
  "universe": 1184,
- "candidates": 10,
+ "candidates": 11,
  "signals_strong": 31,
- "govt_kept": 1,
- "filings_status": "BSE's announcement list (api.bseindia.com) was unreachable from the sandbox and from Actions, so the scan read the day's filings from the NSE feed instead (nse (docs/announcements.json, updated 2026-09-24 22:58 IST)): 52 classified of 1098 NSE filings. Names without an NSE symbol (BSE-only, SME) show no filings even if they filed. The universe is still the 2026-09-23 build.",
- "track_scored": "3 of 3 ideas priced (every row priced from the daily bhavcopy because api.bseindia.com is blocked; each row is tagged)",
- "feeds_status": "built from GitHub Actions at 2026-09-24 23:26 IST (ideas-feeds.yml): PIB and every commodity host answered; api.bseindia.com 403 from Actions too, so universe/announcements/NMDC/scorecard took their fallbacks. See feeds_status.json."
+ "govt_kept": 2,
+ "govt_status": "PIB answered from GitHub Actions at 2026-09-25 19:50 IST: 66 releases scanned, 8 opened, 2 kept. Both kept releases were rejected on reading - they are Department of Pharmaceuticals PLI items that govt.py mapped onto the shipbuilding and defence baskets, a theme mis-match, so no government idea was published and theme_map.json was not changed. unmapped_releases was empty. pib.gov.in is blocked at this sandbox's egress proxy, so the release bodies could not be read and those verdicts rest on title, ministry and the recorded amount text. See runs/2026-09-25.json -> govt_considered.",
+ "filings_status": "BSE's announcement list (api.bseindia.com) was 403 from the sandbox AND from Actions for a third day, so the scan read the day's filings from the NSE feed instead (nse (docs/announcements.json, updated 2026-09-25 19:38 IST)): 1,209 filings, 25 classified inside the universe. That count is a floor, not a measurement - names without an NSE symbol (BSE-only, SME) show no filings even if they filed. The universe is still the 2026-09-23 build, so every market cap is that day's. dossier.py could not run for any name (it crashes on the blocked price-history endpoint), so all research was rebuilt from the filing PDFs on nsearchives.nseindia.com, the BSE bhavcopies on www.bseindia.com, and this repo's own quarterly_results.json, shareholding.json and search_index.json.",
+ "commodity_status": "Rebuilt from GitHub Actions at 2026-09-25 19:52 IST; every commodity host answered there. Two of the three sources are months old and they dominate the ranking: wpi_month is 2026-04 and trade_month 2026-07, so the top strengths (crude 10.7, silver 10.16, tungsten 10.0) rest on April and July evidence. The freshest, deepest Indian print is rubber - Kottayam RSS4 Rs 277.00/kg, self-dated 2026-09-25, +34.5% on the FY26 average off 6,854 readings since 2001 - though it is flat over a month and 2.5% below its 2026-08-01 high. MetalBook's steel and metals prints are source-dated 2026-09-16; the Ministry of Steel series is the June-2026 report; the NMDC source is DEGRADED because its BSE windows are on the blocked host.",
+ "track_scored": "5 of 5 ideas priced (every row priced from the daily bhavcopy because api.bseindia.com is blocked; each row is tagged)",
+ "feeds_status": "built from GitHub Actions at 2026-09-25 19:53 IST (ideas-feeds.yml run 36146727185), steps_failed empty. IMPORTANT: that run was dispatched BY HAND by this routine - the workflow's 13:20 UTC schedule did not fire, and at 14:16 UTC its only three runs were all workflow_dispatch from 2026-09-24, leaving every feed a day stale. api.bseindia.com was 403 from Actions too, so universe / announcements / NMDC / scorecard took their fallbacks. The cron needs the owner's attention. See feeds_status.json and runs/2026-09-25.json -> data_problems."
 }
