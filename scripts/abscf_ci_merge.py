@@ -11,9 +11,11 @@ had pushed since checkout (the 2026-09 clobber). This does a real union instead:
     add gate-verified cells, so a real conflict is near-impossible; preferring BASE is the safe tie.
   * Gate    (scripts/annual_bscf_gate.json): per-symbol dict union. MINE (this run, freshest) wins
     per KEY, but BASE keys MINE doesn't carry are preserved — so a routine's vnil/na mark survives
-    this run's verdict write, and vice-versa.
+    this run's verdict write, and vice-versa. With --gate-orig (the gate AT CHECKOUT) only the symbols
+    this run CHANGED are merged — without it, a symbol the run never touched carried its stale checkout
+    copy over a heal pushed mid-run (2026-09-25: 150 restored entries re-stamped 'filings-err 403').
 
-Usage: abscf_ci_merge.py --ledger-mine A --ledger-base B --gate-mine C --gate-base D
+Usage: abscf_ci_merge.py --ledger-mine A --ledger-base B --gate-mine C --gate-base D [--gate-orig E]
 Writes the merged result into the --*-base paths. Missing MINE -> BASE kept as-is; missing BASE -> MINE.
 """
 import json, os, sys
@@ -40,12 +42,14 @@ def _merge_ledger(mine, base):
     return base
 
 
-def _merge_gate(mine, base):
+def _merge_gate(mine, base, orig=None):
     if not isinstance(base, dict):
         return mine if isinstance(mine, dict) else {}
     if not isinstance(mine, dict):
         return base
     for sym, mv in mine.items():
+        if isinstance(orig, dict) and orig.get(sym) == mv:
+            continue                          # untouched by this run: origin's copy (maybe a heal) stands
         if not isinstance(mv, dict):
             base[sym] = mv; continue
         bv = base.get(sym)
@@ -69,7 +73,8 @@ def main():
         print("ledger merged -> %s  (%d symbols, %d symbol-years)"
               % (lb, len(merged), sum(len(v) for v in merged.values() if isinstance(v, dict))))
     if gb:
-        merged = _merge_gate(_load(gm), _load(gb)) or {}
+        go = _arg("--gate-orig")
+        merged = _merge_gate(_load(gm), _load(gb), _load(go) if go else None) or {}
         json.dump(merged, open(gb, "w"), separators=(",", ":"), sort_keys=True)
         print("gate merged   -> %s  (%d entries)" % (gb, len(merged)))
 

@@ -42,7 +42,9 @@ jobs:
       # rest gate-failed. The ~93% that shade the current-year column are read by the Claude vision
       # routine (prep -> native-vision read -> merge_annual_bscf.py), which needs no API key.
       - name: Fill annual BS/CF (text pass)
-        run: python3 -X utf8 scripts/fetch_annual_bscf.py --limit "${{ github.event.inputs.limit || 150 }}"
+        run: |
+          mkdir -p /tmp/abscf && cp scripts/annual_bscf_gate.json /tmp/abscf/gate_orig.json   # gate AT CHECKOUT (§148d)
+          python3 -X utf8 scripts/fetch_annual_bscf.py --limit "${{ github.event.inputs.limit || 150 }}"
 
       - name: Commit ledger
         run: |
@@ -57,7 +59,8 @@ jobs:
             git fetch origin main -q && git reset --hard origin/main -q
             python3 scripts/abscf_ci_merge.py \
               --ledger-mine /tmp/abscf/annual_bscf.json --ledger-base scripts/annual_bscf.json \
-              --gate-mine   /tmp/abscf/annual_bscf_gate.json --gate-base scripts/annual_bscf_gate.json
+              --gate-mine   /tmp/abscf/annual_bscf_gate.json --gate-base scripts/annual_bscf_gate.json \
+              --gate-orig   /tmp/abscf/gate_orig.json
             git add scripts/annual_bscf.json scripts/annual_bscf_gate.json 2>/dev/null || true
             if git diff --cached --quiet; then echo "no new annual BS/CF this run"; exit 0; fi
             git commit -q -m "Annual BS/CF fill $(TZ=Asia/Kolkata date +'%Y-%m-%d %H:%M IST')"

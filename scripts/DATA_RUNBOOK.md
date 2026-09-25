@@ -18680,6 +18680,11 @@ symbol in hand (tested blocked: `--limit 3` → rc 0, ledger + gate byte-identic
 between BSE requests (`BSE_MIN_GAP`). Pending BSE work (316 requeue, 459 FY23-25 incl INA, verifier on 213
 unverified years) waits for the api to answer scripts; runner `~/stocks-wt/fa-backfill/scripts/_fa_resume.py`
 (probe every 30 min, 20-symbol chunks, resumable) is written but NOT started — needs the user's go-ahead.
+**§148d-2 — the CI gate merge re-applied a stale checkout.** The restore (a11b0b97f) was undone 20 min later by
+7d47ec971: `abscf_ci_merge._merge_gate` let MINE win for EVERY symbol, so a run that checked out before the heal
+wrote its stale copy of all 1,466 entries back. Now annual-bscf.yml snapshots the gate at checkout
+(`/tmp/abscf/gate_orig.json`) and `--gate-orig` merges only symbols the run CHANGED. Tested on the real case:
+old merge → 149 stamps back, new merge → 0, run's own edits + a routine's new entry both kept.
 
 ## 149. ★★★ MIDNIGHT VISIBILITY RULE — the 15:30 filing-time gate RETIRED, every shift reversed on the data side  (2026-09-23)
 **User decision (2026-09-23, confirmed three times, then "ok do it"):** "I exit the stocks on rebalance-day close
