@@ -19542,3 +19542,23 @@ demergers recovered exactly). Keep shifts within 1.5% of a CA fraction whose imp
 against corp_actions(+hist), demerger_adj, rights_terp, ca_open_arbitrated, MANUAL_RIGHTS, phantom_crashes,
 LEGACY_FALSE_CA, with Yahoo (docs/stock_data.bin, split-adjusted) as the second reader. Scripts used:
 session scratch `applied.py` / `cls2.py` / `ycheck.py` (logic reproduced here).
+
+### 161f. Audit result (2026-09-25) — all 5,261 symbols, 1996-01-01 → 2026-09-24
+Run on live sf-data @8784ef4 against the FRESH official ledger (CI-fetched 2026-09-25: 1,631 split/bonus events; the
+committed copy had lagged at 1,466 — 102 "no record" events were only that staleness). 2,116 applied factors sit in the
+inference domain: 1,289 official, 9 other ledgers, 1 POLICYBZR, **806 with no official record** (733 symbols).
+- **Healed (13) — two independent sources agree** (no official record on either NSE board, 2016+ standing rule §87c,
+  AND Yahoo's split-adjusted series shows the full raw move): POLICYBZR 2026-09-24, WEIZMANIND 2020-03-16, BANCOINDIA
+  2020-03-18, TCIFINANCE 2022-07-18, GVKPIL 2022-08-12, GAYAHWS 2023-07-31, SUPREMEENG 2023-07-31, OILCOUNTUB
+  2023-08-14, ROLLT 2023-08-14, KSHITIJPOL 2023-08-25, BESTAGRO 2024-04-10, NEUEON 2025-12-23, SETCO 2026-06-02 →
+  `phantom_crashes.json`. Most sit across trading suspensions / relistings, where the §87c open gate cannot arbitrate
+  (the first print after a gap IS the new level). Dry-run self_heal on the live series: 12/12 healed, second pass 0.
+- **NOT healed — `scripts/ca_inferred_review.json` (800 events, evidence per row):** 545 pre-2006 (no dense official
+  feed — absence proves nothing), 77 from 2006-15, 178 from 2016+. Every one has a single source (Yahoo has no series:
+  delisted names, ETFs, `-RE` entitlements) or conflicting sources (Yahoo agrees with the adjustment — mostly SME
+  splits/bonuses the feed parse may miss — or matches neither reading). Resolve by hand only.
+- CI logs (266 of 314 runs readable, 2026-06-29 → 09-24; older expired, HTTP 410): 36 adjustments, 18 without
+  `[official]`. 9 were already reversed by audit_phantom_ca/phantom_crashes, POLICYBZR healed here; still baked in and
+  on the review list: AMARJOTHI ×2, KJMCFIN ×5, VTMLTD ×2 (2026-08-17 relistings after 10+ year suspensions), BURNPUR ×3
+  (08-11), GENESYS ×2/3 (08-06, Yahoo agrees with a split).
+- Re-run: `python3 scripts/audit_applied_factors.py <sf-data clone> out.json`.
