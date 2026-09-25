@@ -19157,6 +19157,11 @@ dry run, every one carrying `R1-rest-follows-foreign-holders` and nothing else (
 18.83 / 16.15 = the original quarter's healed 18.83 / 16.15. Guards gate / definition / revisions green. Audit: 2,596 cells (+20 SW-2-era
 keys that had no §158 record), 20 revisions. After §158b a full re-run with the rule on proposes 0.
 
+**Live (2026-09-25 16:53 IST).** Store commit 21244159a (refresh-shareholding run 36128876117, guards green; Pages deployed): live
+`shp_engine.json` serves 48/48 §158b cells and still 63/63 §158a cells at the healed fii/dii; BHARATFORG Dec-2016 serves 18.83 / 16.15 on
+both rows (2017-01-17 original, 2022-06-01 re-filing); IEX Jun-2018 18.95 / 13.84, PHOENIXLTD Jun-2016 30.11 / 3.05. `refresh-stock-fin.yml`
+dispatched (run 36129175396).
+
 ## §159 — FII = INSTITUTIONS (FOREIGN) IN EVERY FORMAT: ROW-LEVEL HEAL OF THE 2015-2022 NON-INSTITUTIONS "ANY OTHER" ROWS (2026-09-24, FII twin of §158)
 
 **Why.** After §158 the Sep-2022 seam still had FII-side artefacts that no DII rule touches: PAYTM 5.45 → 77.26, ETERNAL 9.98 →
