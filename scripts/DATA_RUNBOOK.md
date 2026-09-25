@@ -8316,6 +8316,8 @@ Both phantom. **Ship the filter and the ledger together, never the filter alone.
    `ca_factor()` only ever returns a `CA_FRACS` member or a product of them, so the correction is an
    exact reciprocal. JYOTISTRUC measures 0.8228 against a baked-in 5/6 = 0.8333 — un-snapped, the
    "fix" would have left the series 1.3% wrong forever.
+   ⚠️ **Corrected §165e:** JYOTISTRUC's 0.8228 was NOT noisy 5/6 — it is two rights TERPs (`rights_terp.json`
+   0.9385 × 0.8767) applied after the hole. Before snapping, divide out EVERY applied factor, not only corp_actions.json.
 5. **A thin stock does not trade every session.** Splitting gap blocks on session adjacency
    shattered illiquid names into hundreds of unanchorable one-bar blocks. A block is a maximal run
    of missing bars with **no bin bar between them**.
@@ -19885,13 +19887,46 @@ those 3 blocks carry pre 1.0 and bars at the measured bin scale (`src` note on e
 `stored(resume)/raw_close(resume)` == the block's scale within 2% and skips otherwise (re-run: exactly these 3 skipped,
 the other 48 byte-identical). Whether those later non-official factors are themselves right is §161's question — NOT
 adjudicated here.
-**OPEN:** the 2018+ blocks (built 2026-08-10) passed the same raw-vs-raw test; the stored-scale check has NOT been run
-over them.
+**CLOSED by §165e** — the stored-scale check was run over the 2016-2026 blocks: 4 were wrong, healed.
 
 ### 165d. Verification (dry run: live bin + merged ledger through `update_sf_data.insert_bz_history` with the
 `session_calendar` guard): 1,863 inserted, second pass 0, exactly the 43 intended symbols changed, dates monotonic,
 field lengths equal, every new block's entry AND exit stored ratio == NSE raw ratio within 2%, largest one-day stored
 move 2014-06..2016 on the rescued names ≤ 20.0% (circuit band).
+
+### 165e. The 2016-2026 blocks audited at BOTH joins on the LIVE bin — 4 blocks minted fake steps; healed by `bz_scale_fix.json`  (2026-09-25, user: "build the one-shot correction ledger and heal all four")
+**NO ASSUMPTIONS, NO GUESSWORK** — live sf-data rev b3f0349960 (end 2026-09-24); raw closes from 425 NSE bhavcopies
+(builder's own `fetch_day`, 0 failures, every symbol found). Ledger blocks: 324 = 271 located in the live series +
+51 §165 pre-2018 blocks not yet published + PARASPETRO 2016-12-16 (0/29 bars live — unexplained, not touched) + MANDHANA
+(no key; under GBGLOBAL). Per block: stored close ratio vs NSE raw close ratio at entry (bar before → first block bar)
+and exit (last block bar → next stored bar): 362 joins measurable (180 blocks end their series), 353 within 0.5%,
+1 at 1.3%, **8 over 2% on 5 symbols**:
+
+| block | join | stored | NSE raw | cause |
+|---|---|---|---|---|
+| JYOTISTRUC 2018-04-02→2023-05-19 (pre ×1.2) | exit 05-19→05-22 | −13.9% | +4.7% | the 0.8228 "phantom 5/6" is `rights_terp.json` 2024-03-21 ×0.9385 × 2025-02-10 ×0.8767 = 0.82278 — **§80f trap 4's own example was a rights TERP, not a snap error** |
+| NATNLSTEEL 2018-09-25→10-24 (pre ×⅔) | exit 10-24→10-25 | +48.8% | −0.7% | CALSOFT shape: bin at ×1.5 on both sides (NSE-checked 2020-01-01..10); later non-official ×½ 2020-04-13, ×3 before 2020-07 |
+| CCCL 2019-02-26→10-29 (pre ×16/9) | exit →2020-03-04 | −51.1% | −11.1% | CALSOFT shape: resumption at 0.55-0.57 (0.05 ticks); 2020-03-13 ×¾ inferred on a 0.20→0.15 tick, second ¾ later |
+| TIL ×2 blocks 2022-10/2023-04 (pre ×0.5, correct) | all 4 joins | ±2.5-2.6% off | | bars lack `rights_terp.json` 2026-03-23 ×0.9747 — the builder's `_p` reads corp_actions.json only |
+| RAJRAYON 2018-12-26→2019-04-30 | exit | 0.0% | +100% | 0.05→0.10 = one tick, below the ₹0.25 floor — not a scale finding, not touched |
+
+Only JYOTISTRUC and TIL have a rights TERP after a block, so no sub-2% TERP residue hides in the other 267. The builder's
+§165c stored-scale check already refuses all four shapes on any future `--build` (it would skip, not mis-ship).
+
+**Why a new ledger:** `insert_bz_history` skips a block whose first bar is present, so editing an already-spliced block in
+`bz_backfill.json.gz` can never reach the live series. `scripts/bz_scale_fix.json` + `update_sf_data.apply_bz_scale_fix()`
+(runs right after `insert_bz_history`) multiply date segments of c/h/l/op/vw once. Idempotent without a marker, the
+apply_manual_rights way: witness = close ratio across the exit join (`a` inside the corrected span, `b` outside), `before`
+→ apply, `after` → no-op, neither (within 3% of before) → printed and skipped. Segments: JYOTISTRUC ≤2018-03-28 ×1/1.2 and
+the block ×0.822783 (covers the 2021-11-04 muhurat bar inserted inside it); NATNLSTEEL ≤2018-10-24 ×1.5; CCCL ≤2019-10-29
+×0.5625; TIL both blocks ×0.9747. The same 5 blocks in `bz_backfill.json.gz` now carry the corrected `pre` (1.0; TIL keeps
+0.5) and bars plus a `src` note, so a bin that ever re-receives them lands consistent (witness then reads `after`).
+Whether the later non-official NATNLSTEEL/CCCL factors are themselves right is §161's question — NOT adjudicated here.
+
+**Dry run** (live bin → `session_calendar` → `insert_bz_history` → `apply_bz_scale_fix`, real module): 1,863 §165 bars + 4
+fixes, second pass 0/0, 47 symbols changed (43 + 4), lengths equal, dates monotonic, series tails untouched. Every join
+now within 0.2% of NSE's raw ratio except CCCL's exit −1.0% (one 0.05 tick). No other day's one-day move changed by >1.5%
+except CCCL 2019-08-26/09-30 inside the block (0.3-0.6 closes re-rounded at 2dp after ×0.5625 — the storage floor).
 
 ### 164d. Former Nifty 500 members re-read row by row (D3) — XBRL era Jun-2015..Jun-2022
 Scope: our PIT roster (`indices_history.json` "Nifty 500") ∪ Quantmac's universe, rename-normalised, minus the current 500 = 865

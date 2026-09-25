@@ -983,6 +983,53 @@ def insert_bz_history(data, cal=None):
     return total
 
 
+# BZ-block SCALE corrections for blocks ALREADY spliced into the live series (DATA_RUNBOOK §165e).
+# insert_bz_history skips a block whose first bar is present, so correcting a block's `pre`/bars in
+# bz_backfill.json.gz cannot reach a series that already carries it. The 2026-08-10 build's exit test
+# was raw-vs-raw (§165c): where the scale it undid as "phantom" was really a factor applied YEARS
+# after the hole (rights TERP, a later inferred factor), `pre` rescaled history across the hole and
+# the block's bars landed on a scale the resumption bar does not share — a fake one-day step at the
+# block's exit. Each fix multiplies date segments of c/h/l/op/vw by a measured factor, once.
+try:
+    BZ_SCALE_FIX = json.load(open(os.path.join(ROOT, "scripts", "bz_scale_fix.json")))["fixes"]
+except Exception as _e:
+    BZ_SCALE_FIX = []
+    print("  (bz_scale_fix.json not loaded: %s)" % _e)
+
+
+def apply_bz_scale_fix(data):
+    """Apply scripts/bz_scale_fix.json. Idempotent WITHOUT a marker, scale-invariant (the
+    apply_manual_rights test): the witness is the close ratio c[b]/c[a] across one join, with `a`
+    inside the corrected segments and `b` outside them. It reads `before` until the fix is applied and
+    `after` once it is; a later factor re-anchoring the whole series moves both bars alike. A ratio
+    that matches neither (a future heal touched one side) is reported and left alone — never guessed."""
+    import bisect
+    n = 0
+    for fx in BZ_SCALE_FIX:
+        sym = fx["sym"]; e = data.get(sym)
+        if not e or not e.get("d"): continue
+        ds, c = e["d"], e["c"]
+        w = fx["witness"]
+        ia, ib = bisect.bisect_left(ds, w["a"]), bisect.bisect_left(ds, w["b"])
+        if not (ia < len(ds) and ds[ia] == w["a"] and ib < len(ds) and ds[ib] == w["b"]) or not c[ia] or not c[ib]:
+            print("  BZ-SCALE-FIX %s: witness bars %d/%d absent — skipped" % (sym, w["a"], w["b"])); continue
+        cur = c[ib] / c[ia]
+        if abs(cur - w["after"]) <= abs(cur - w["before"]):
+            continue                                            # already applied — steady state
+        if abs(cur / w["before"] - 1) > 0.03:
+            print("  BZ-SCALE-FIX %s: witness ratio %.4f matches neither before %.4f nor after %.4f — skipped"
+                  % (sym, cur, w["before"], w["after"])); continue
+        for seg in fx["segments"]:
+            lo, hi = bisect.bisect_left(ds, seg["lo"]), bisect.bisect_right(ds, seg["hi"])
+            for key in ("c", "h", "l", "op", "vw"):
+                if key in e:
+                    e[key][lo:hi] = [round(x * seg["f"], 2) for x in e[key][lo:hi]]
+            print("  BZ-SCALE-FIX %s: bars %d..%d x%.6f" % (sym, ds[lo] if lo < len(ds) else 0,
+                                                            ds[hi - 1] if hi else 0, seg["f"]))
+        n += 1
+    return n
+
+
 def apply_series_surgery(data, meta, cal=None):
     """Wrong-company stitch repair (scripts/dvl_dtil_surgery.json.gz, DATA_RUNBOOK §89).
 
@@ -1360,6 +1407,7 @@ def main():
     print("Session calendar: %d session dates judged in %d..%d (floor %d symbol-bars; earlier dates not judged)"
           % (sum(1 for x in cal[0] if _cal_lo <= x <= _cal_hi), _cal_lo, _cal_hi, SESSION_FLOOR))
     bz = insert_bz_history(data, cal=cal)
+    bzf = apply_bz_scale_fix(data)   # §165e: scale fixes for BZ blocks already spliced in (ledger edits can't reach them)
     sm = insert_sme_history(data, meta, cal=cal)     # NSE SME-platform history (create + main-board prepends, §145)
     sg = apply_series_surgery(data, meta, cal=cal)   # wrong-company stitch repair (DVL/DTIL, §89) — before the
                                                      # day loop so appends land on the repaired series
@@ -1516,7 +1564,7 @@ def main():
     # refreshes the on-disk bin but does NOT publish the release, bump clients, or commit a marker.
     blob = gzip.compress(json.dumps(D, separators=(",", ":")).encode(), 6)
     open(OUT, "wb").write(blob)
-    if not appended and not healed and not merged and not mr and not ao and not dvf and not dvo and not wk and not bi and not bz and not sm and not sg and not tunits and not dead and not _n:
+    if not appended and not healed and not merged and not mr and not ao and not dvf and not dvo and not wk and not bi and not bz and not bzf and not sm and not sg and not tunits and not dead and not _n:
         print("No new day / heal / merge / manual-rights / open-arbitrated CA / dv-fill / dv-overwrite / weekend-insert / bar-insert / BZ-backfill / SME-backfill / series-surgery / turnover-unit fix / aliveness decay / industry fill — rewrote merged base to %s (%.2f MB); nothing to publish." % (OUT, len(blob) / 1048576)); return
     open(MARK, "w").write(D["end"])
     # tiny version marker — committed daily, lets the browser cache the big bin in IndexedDB
