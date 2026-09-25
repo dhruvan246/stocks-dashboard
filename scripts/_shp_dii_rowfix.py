@@ -499,7 +499,17 @@ def write(stamp=None):
             revs[sym][qe]=new; n_rev+=1; audit["revisions"][k]={"how":v["how"],"was":rc,"cell":new}
         json.dump(revs,open(rpath,"w",encoding="utf-8"),separators=(",",":"),sort_keys=True)
     json.dump(led,open(path,"w",encoding="utf-8"),indent=1,ensure_ascii=ascii_only)
-    json.dump(audit,open(os.path.join(REPO,"scripts","_shp_dii_rowfix_audit.json"),"w",encoding="utf-8"),indent=0,ensure_ascii=False)
+    # MERGE into the existing evidence (a partial re-write must never drop earlier cells: 9609c489a replaced 2,574 cells with 2; restored 2026-09-25).
+    # The classify stage reads these cells back (add_prev), so a stripped audit also corrupts any later re-run.
+    apath=os.path.join(REPO,"scripts","_shp_dii_rowfix_audit.json")
+    try: prev=json.load(open(apath,encoding="utf-8"))
+    except Exception: prev={}
+    merged=dict(prev); merged.setdefault("_doc",[])
+    for d in audit["_doc"]:
+        if d not in merged["_doc"]: merged["_doc"].append(d)
+    merged.setdefault("cells",{}).update(audit["cells"])
+    if "revisions" in audit: merged.setdefault("revisions",{}).update(audit["revisions"])
+    json.dump(merged,open(apath,"w",encoding="utf-8"),indent=0,ensure_ascii=False)
     print("write: %d new, %d superseding earlier entries, %d skipped (store moved), %d re-filing rows healed"%(n_new,n_sup,n_skip,n_rev))
 
 if __name__=="__main__":
