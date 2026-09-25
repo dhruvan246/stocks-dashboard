@@ -89,8 +89,8 @@ def main():
             continue
         code = byid.get(sym)
         for q, c in sorted(led[sym].items()):
-            if c.get("m") != "text" or c.get("x2") is not None or not code:
-                continue
+            if c.get("m") != "text" or c.get("x2") is not None or c.get("v") or not code:
+                continue                   # v=1: a validate-year cash-flow-only cell — no BS to compare
             fy = int(q[:4]); nxt = fy + 1
             verdict, got = "unknown", None
             try:

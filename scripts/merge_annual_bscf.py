@@ -12,17 +12,86 @@ symbol's FILL years are landed ONLY if the reader's numbers for the validate yea
 to <=1%. A symbol whose read is wrong (or whose reader hallucinated) fails and lands NOTHING.
 
 Input (arg1): the reader's output — a JSON list of the manifest entries with the read fields added:
-  [{"sym","fy","role":"validate"|"fill","basis":"c|s","key":{...}(validate only),
-    "assets","sc","oeq","borr","blt","bst","ppe","cwip","gw","intg","invst","rec","pay","invnt",
-    "cfo","cfi","cff","capex","cf_tax"}]   — ₹ crore, null a field the statement doesn't print.
+  [{"sym","fy","role":"validate"|"fill"|"supplement","basis":"c|s","key":{...}(validate only),
+    "assets","sc","oeq","borr","blt","bst","ppe","rou","cwip","iuad","gw","intg","invst","rec","pay","invnt",
+    "cfo","cfi","cff","capex","cf_tax","cf_net","cf_fx","asat"}]   — ₹ crore, null a field the statement doesn't print.
+  cf_net / cf_fx (net change in cash, FX effect) only feed the cash identity cfo + cfi + cff (+ fx) =
+  cf_net; a read that FAILS it keeps its balance sheet but lands no cfo/cfi/cff. The validate year's
+  own cash flow lands as a CF-only cell (v=1) when the slice has no CFO for that year (PFIZER FY25).
+  'supplement' = a re-read of an ALREADY-LANDED cell's own document (iuad, a continued cash flow): it
+  only fills null fields, and only when it re-anchors on the stored cell (see supplement()).
 Run: python -X utf8 scripts/merge_annual_bscf.py <reader_output.json>
 """
 import json, os, re, sys
 from datetime import date
 HERE = os.path.dirname(os.path.abspath(__file__))
 LEDGER = os.path.join(HERE, "annual_bscf.json")
-FIELDS = {"assets", "sc", "oeq", "borr", "blt", "bst", "ppe", "cwip", "gw", "intg", "invst", "invprop",
+FIN_DIR = os.path.join(HERE, "..", "docs", "fin")     # the per-stock slices (what the site serves)
+FIELDS = {"assets", "sc", "oeq", "borr", "blt", "bst", "ppe", "cwip", "iuad", "gw", "intg", "invst", "invprop",
           "rec", "pay", "invnt", "cfo", "cfi", "cff", "capex", "cf_tax"}
+CF_FIELDS = ("cfo", "cfi", "cff", "capex", "cf_tax")
+
+def slice_x(sym):
+    """The symbol's slice 'x' map {qEnd: {s:{..}, c:{..}}} — the XBRL-held values the gate and the
+    validate-year CF check read. {} when the slice is missing."""
+    p = os.path.join(FIN_DIR, "%s.json" % re.sub(r'[^A-Za-z0-9._-]', '_', sym))
+    if not os.path.exists(p):
+        return {}
+    try:
+        return json.load(open(p)).get("x") or {}
+    except Exception:
+        return {}
+
+def cf_identity(cfo, cfi, cff, net, fx=None):
+    """The statement's own cash identity cfo + cfi + cff (+ the FX effect, when printed) = net change
+    in cash. True / False when checkable, None when a term is missing. Tolerance: 1 printed unit +
+    0.2% of the largest term — rounding of printed figures, far below a wrong-line pick."""
+    if cfo is None or cfi is None or cff is None or net is None:
+        return None
+    tol = 1.0 + 0.002 * max(abs(cfo), abs(cfi), abs(cff), abs(net))
+    s = cfo + cfi + cff
+    return abs(s - net) <= tol or (fx is not None and abs(s + fx - net) <= tol)
+
+def validate_cf_cell(read, held, basis, method, src):
+    """The validate year's own cash flow for a year whose balance sheet XBRL holds but whose cash flow
+    it does not (PFIZER FY25: BS 4,911 cr from XBRL, no CF). A CF-only ledger cell marked v=1, or None.
+    Never the BS fields of a held year; never when the slice already has a CFO for the year on this
+    basis (the build only gap-fills, so a CF-only cell there would be dead weight); never when the
+    read's own cash identity fails."""
+    if (held or {}).get("cfo") is not None or read.get("cfo") is None:
+        return None
+    if cf_identity(read.get("cfo"), read.get("cfi"), read.get("cff"), read.get("cf_net"), read.get("cf_fx")) is False:
+        return None
+    cell = {"b": basis, "m": method, "src": src, "v": 1}
+    cell.update({f: read[f] for f in CF_FIELDS if read.get(f) is not None})
+    return cell
+
+def _near(a, b, tol=0.01):
+    return a is not None and b is not None and b != 0 and abs(a - b) / abs(b) <= tol
+
+def supplement(cell, e):
+    """Fields a re-read of an already-landed cell's OWN document adds (iuad; the second page of a
+    continued cash flow). Returns the list of fields added. Guards: same document (src) and basis;
+    NULL fields only (a stored value is never overwritten); balance-sheet fields only when the
+    re-read's Total Assets is within 1% of the stored one (same page, same unit); cash-flow fields only
+    when its CFO is within 1% of the stored CFO — or, if the cell has none, when the statement's own
+    cash identity holds. ppe/assets are anchors, never supplemented (the ROU convention was fixed at landing)."""
+    if not cell or e.get("src") != cell.get("src") or e.get("basis") != cell.get("b"):
+        return []
+    add = []
+    bs_ok = _near(e.get("assets"), cell.get("assets"))
+    if cell.get("cfo") is not None:
+        cf_ok = _near(e.get("cfo"), cell.get("cfo"))
+    else:
+        cf_ok = cf_identity(e.get("cfo"), e.get("cfi"), e.get("cff"), e.get("cf_net"), e.get("cf_fx")) is True
+    for f in sorted(FIELDS - {"assets", "ppe"}):
+        if e.get(f) is None or cell.get(f) is not None:
+            continue
+        if (f in CF_FIELDS and cf_ok) or (f not in CF_FIELDS and bs_ok):
+            cell[f] = e[f]; add.append(f)
+    if add:
+        cell["sup"] = sorted(set(cell.get("sup", [])) | set(add))
+    return add
 
 def asat_ok(e):
     """A fill's balance sheet must be the FISCAL-YEAR-END audited statement, not an interim or
@@ -75,13 +144,28 @@ def main():
     for e in reads:
         bysym.setdefault(e["sym"], []).append(e)
     ledger = json.load(open(LEDGER)) if os.path.exists(LEDGER) else {}
-    landed = 0; trusted = 0; rejected = []; offcycle = []; basismix = []
+    landed = 0; trusted = 0; vlanded = 0; rejected = []; offcycle = []; basismix = []; cfdrop = []
+    supp = []; supp_rej = []
     for sym, entries in sorted(bysym.items()):
+        # supplements re-read an already-landed cell's own document: no gate run, they re-anchor instead
+        for e in (x for x in entries if x.get("role") == "supplement"):
+            q = "%d0331" % int(e["fy"])
+            add = supplement((ledger.get(sym) or {}).get(q), e)
+            (supp if add else supp_rej).append("%s %s%s" % (sym, q[:4], (":" + ",".join(add)) if add else ""))
+        entries = [x for x in entries if x.get("role") != "supplement"]
+        if not entries:
+            continue
         val = next((e for e in entries if e.get("role") == "validate"), None)
         ok, add_rou = gate_ok(val, val.get("key")) if val else (False, False)
         if not ok:
             rejected.append(sym); continue
         trusted += 1
+        vq = "%d0331" % int(val["fy"])
+        if vq not in (ledger.get(sym) or {}):
+            vc = validate_cf_cell(val, (slice_x(sym).get(vq) or {}).get(val.get("basis")),
+                                  val.get("basis"), "vision", val.get("src", ""))
+            if vc:
+                ledger.setdefault(sym, {})[vq] = vc; vlanded += 1
         for e in entries:
             if e.get("role") != "fill": continue
             if e.get("basis") != val.get("basis"):
@@ -95,11 +179,20 @@ def main():
             cell = {"b": e.get("basis", "c"), "m": "vision", "src": e.get("src", "")}
             cell.update({f: e[f] for f in FIELDS if e.get(f) is not None})
             if cell.get("assets") is None: continue
+            if cf_identity(e.get("cfo"), e.get("cfi"), e.get("cff"), e.get("cf_net"), e.get("cf_fx")) is False:
+                for f in ("cfo", "cfi", "cff"):   # the statement's own cash identity failed: keep the BS,
+                    cell.pop(f, None)             # never land a cash flow that doesn't add up
+                cfdrop.append("%s %s" % (sym, e.get("fy")))
             ledger.setdefault(sym, {})["%d0331" % int(e["fy"])] = cell
             landed += 1
     json.dump(ledger, open(LEDGER, "w"), separators=(",", ":"), sort_keys=True)
-    print("trusted %d symbols, landed %d fill-years. gate-rejected %d: %s | off-cycle skipped %d: %s | basis-mix skipped %d: %s"
-          % (trusted, landed, len(rejected), rejected[:12], len(offcycle), offcycle[:12], len(basismix), basismix[:12]))
+    print("trusted %d symbols, landed %d fill-years + %d validate-year cash flows. gate-rejected %d: %s | "
+          "off-cycle skipped %d: %s | basis-mix skipped %d: %s | cash identity failed (CF dropped) %d: %s"
+          % (trusted, landed, vlanded, len(rejected), rejected[:12], len(offcycle), offcycle[:12],
+             len(basismix), basismix[:12], len(cfdrop), cfdrop[:12]))
+    if supp or supp_rej:
+        print("supplements: %d applied %s | %d rejected (no cell / other document / anchor off / nothing new): %s"
+              % (len(supp), supp[:20], len(supp_rej), supp_rej[:20]))
 
 if __name__ == "__main__":
     main()

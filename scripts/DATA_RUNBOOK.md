@@ -20217,3 +20217,58 @@ A calendar DERIVED FROM THE DATA inherits the data's phantoms. §89f's calendar 
 bars, and its "≥100 symbol-bars = session" rule certified these ten holidays because the defect sat in the base, not in a ledger.
 Guard both shapes: sparse (`phantom_date_audit`) AND dense (`phantom_session_audit`, repeat share). Agreement dips confined to
 particular years are a calendar smell — the first read here ("volatility × tolerance") was wrong.
+
+## 168. ANNUAL BS/CF (annual_bscf.json) — Board-Meeting filings, continued cash flows, the CASH IDENTITY, iuad, validate-year cash flows  (2026-09-26, user: "do all 5 steps")
+Measured on real filings first, then fixed test-first (`scripts/test_abscf_pipeline.py`, 40 cases; the old code fails
+the discovery cases and has no continued-cash-flow support). Regression on 37 cached result PDFs: 0 balance-sheet fields
+changed except ANANTRAJ FY21 invprop 1.0 → None (the page prints "1, 143.00", a split 1,143.00).
+
+### 168a. Discovery asks TWO categories
+Some filers put the audited annual result under **"Board Meeting" / subcategory "Outcome of Board Meeting"**, not
+"Result": a Result-only list lacked AUROPHARMA 2025-05, BALKRISIND 2023-05 + 2025-05, PFIZER 2020-04 + 2024-05 +
+2025-05. `result_filings()` now asks both (`RESULT_CATS`); Result rows stay first (same order for filers that use
+it), attachments de-duplicate, a 403 on EITHER query raises BseBlocked.
+
+### 168b. A cash-flow statement that runs onto the next page — `cf_span()`
+7 of 36 located statements continue (BEL FY20/21/22/25, DIVISLAB FY22, NFL FY22, SUNPHARMA FY25): operating on page i,
+investing + financing on page i+1. Continuation = page i lacks the financing net line / net change / closing cash AND
+page i+1 carries investing/financing WITHOUT starting a new statement (title + operating = the other basis's cash
+flow). The text reader reads both pages; prep renders `<SYM>_<FY>_cf2.png`; the routine's reader reads both.
+
+### 168c. ★ The text reader's cash-flow defects — and the CASH IDENTITY that now guards them
+Found re-reading landed cells (each one live on the site before this):
+- labels too narrow: "NET CASH FROM OPERATING ACTIVITIES" (NFL), "Net cash inflow from operating" (DIVISLAB),
+  "Net cash (used in)/from ..." were never read; capex had NO text pattern at all (0 of 337 text cells);
+- a split figure: HEROMOTOCO FY22 prints 2,103.70 as "2 103 70" → stored **CFO 2.0**;
+- a decimal comma: APLAPOLLO FY21 "977,11" → stored **CFO 97,711 cr** (true 977.11);
+- an OCR'd marker: VINDHYATEL FY20 "(B)" read as "(8)" → stored **cfi −0.08** (true 29.72);
+- a sub-total: BAJAJHLDNG FY22's first "operating" line is "... before income-tax";
+- sign: "Less: Direct taxes paid 784.08" stored as cf_tax −784.08;
+- side-by-side bases: NFL FY22 prints standalone + consolidated in 4 columns — nums[0] is STANDALONE.
+Fixes: `to_num` refuses a comma group that is not 3 wide ("977,11", "(20,0601", "1,") and `rows_tok` keeps it as
+None IN POSITION (never shifts the prior year in); `_cf_parse` = extra-figure rows (a bare small integer before a
+complete figure = marker, dropped; before a 3-digit fragment = split, unreadable; extra figures after a complete
+first figure = the prior-year part, current value stands — NATIONALUM FY22 "1 403.70"), 3+ columns = multi-basis →
+cash flow NOT read from text; capex/cf_tax abs(); and **the identity cfo + cfi + cff (+ any FX-effect line — the
+LAST one is the statement's own, RITES FY21) = net change in cash**: when checkable and failing, cfo/cfi/cff are
+dropped (IPCALAB FY20: the text layer says 554.27 where the page prints 564.27 — the identity caught it; the vision
+cell has 564.27). Vision reads carry `cf_net`/`cf_fx` for the same check at merge.
+
+### 168d. iuad — intangible assets under development
+The page shows CWIP = cwip + iuad (Screener's convention), but no PDF year ever carried iuad (not in the reader,
+merge FIELDS or build PDF_FIELDS) → every PDF year's CWIP read low beside its XBRL years (BEL, AUROPHARMA: Screener
+CWIP reproduced exactly by cwip + iuad). Now read (text: its own line, never folded into intg/cwip; vision: `iuad`)
+and carried to the slice.
+
+### 168e. The validate year's own cash flow (v=1 cells)
+A gate-passed symbol's validate year is XBRL-held for its BALANCE SHEET, but XBRL may hold no cash flow for it
+(PFIZER FY25: BS 4,911 cr live, CF column missing, though the reader had read CFO 659.75). merge (vision) and the
+text pass now land that year's cash flow as a CF-only cell `{"v":1, cfo, cfi, cff, capex, cf_tax}` — only when the
+slice has no CFO for the year on that basis, never its BS fields, never when the cash identity fails.
+`verify_annual_bscf_comparative.py` skips v cells.
+
+### 168f. `supplement` entries — adding fields to a LANDED cell
+merge role "supplement" = a re-read of an already-landed cell's OWN document (same src + basis). NULL fields only
+(never overwrites); BS fields only if the re-read's Total Assets is within 1% of the stored one; CF fields only if
+its CFO is within 1% of the stored CFO — or, when the cell has none, the cash identity holds; ppe/assets are anchors,
+never supplemented; `sup: [fields]` records what was added.

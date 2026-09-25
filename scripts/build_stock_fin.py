@@ -158,7 +158,9 @@ def main():
     if os.path.exists(abscf_p):
         try:
             abscf = json.load(open(abscf_p))
-            PDF_FIELDS = {"assets", "sc", "oeq", "borr", "blt", "bst", "ppe", "cwip", "gw", "intg", "invprop",
+            # iuad: the page shows CWIP as cwip + iuad (Screener's convention) — without it every
+            # PDF year's CWIP read low against the XBRL years beside it (BEL, AUROPHARMA, 2026-09-26)
+            PDF_FIELDS = {"assets", "sc", "oeq", "borr", "blt", "bst", "ppe", "cwip", "iuad", "gw", "intg", "invprop",
                           "invst", "rec", "pay", "invnt", "cfo", "cfi", "cff", "capex", "cf_tax"}
             nfill = 0
             for sym, qs in abscf.items():
