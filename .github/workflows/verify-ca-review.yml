@@ -1,0 +1,45 @@
+name: Verify corporate-action review queue
+
+# DATA_RUNBOOK §161g — gathers independent evidence (NSE official feed per symbol, NSE bhavcopy,
+# Yahoo split events, BSE per-scrip record) for every event in scripts/ca_inferred_review.json and
+# commits scripts/ca_review_evidence.json. Evidence only: it changes no ledger and no price data.
+# Resumable — a re-run keeps finished events and continues.
+on:
+  workflow_dispatch: {}
+
+permissions:
+  contents: write
+
+concurrency:
+  group: verify-ca-review
+  cancel-in-progress: false
+
+jobs:
+  verify:
+    runs-on: ubuntu-latest
+    timeout-minutes: 180
+    steps:
+      - uses: actions/checkout@v5
+      - uses: actions/setup-python@v6
+        with:
+          python-version: "3.11"
+      - name: Gather evidence
+        timeout-minutes: 170
+        run: python3 -u scripts/verify_ca_review.py
+      - name: Commit evidence
+        if: always()
+        run: |
+          [ -f scripts/ca_review_evidence.json ] || { echo "no evidence file"; exit 0; }
+          git config user.name  "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          cp scripts/ca_review_evidence.json /tmp/ev.json
+          for attempt in 1 2 3 4 5; do
+            git fetch origin main && git reset --hard origin/main
+            cp /tmp/ev.json scripts/ca_review_evidence.json
+            git add scripts/ca_review_evidence.json
+            if git diff --cached --quiet; then echo "evidence unchanged"; exit 0; fi
+            git commit -m "CA review evidence $(TZ=Asia/Kolkata date +'%Y-%m-%d %H:%M IST')"
+            if git push origin HEAD:main; then exit 0; fi
+            sleep $(( attempt * 3 ))
+          done
+          exit 1
