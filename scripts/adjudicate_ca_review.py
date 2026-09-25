@@ -35,6 +35,15 @@ v2 rules (2026-09-25, committed before the v2 evidence run):
                   2006-15: the same PLUS a second reader showing no split — Yahoo's split record covering
                   both dates, or the §87 campaign's recorded BSE check (bse_reach, no bse_factor/rights).
                   pre-2006: Yahoo AND BSE (live or §87-recorded) must both show no split.
+
+v3 rules (2026-09-25, AFTER reading v2 evidence — changed because it exposed a contradiction):
+  REAL_TAPE       no official record, but the §87 campaign's tape analysis confirmed a real action
+                  (ex-day open at the adjusted basis + ~1/f volume step). Data unchanged.
+  PHANTOM <2016   additionally requires the §87 campaign to call it PHANTOM-CONFIRMED/LIKELY: v2 said
+                  "phantom" for 9 events the campaign had tape-confirmed as real (ADANIENT 2004 x0.1…),
+                  proving NSE feed + Yahoo + BSE are all incomplete before 2016.
+  PHANTOM         never across a boundary spanning > 1 year without NSE bars (ARENTERP 1999->2017,
+                  NOVARTIND 2003->2020…): BSE-only filings in the gap are unverifiable.
 """
 import os, sys, json, collections
 HERE = os.path.dirname(os.path.abspath(__file__))
@@ -141,6 +150,20 @@ def verdict(e):
         need.append("2006-15: no second reader (Yahoo covered / §87 BSE record) showing no split")
     if b < 20060101 and not (y_none and bse_none):
         need.append("pre-2006: needs Yahoo AND BSE showing no split (yahoo_none=%s, bse_none=%s; live BSE %s)" % (y_none, bse_none, bse.get("status")))
+    # v3 (2026-09-25, after v2 evidence): before 2016 NSE's feed, Yahoo's split list AND BSE's record
+    # are ALL incomplete — the §87 campaign tape-confirmed real splits (ex-day open at the adjusted
+    # basis + a persistent ~1/f volume step: ADANIENT 2004 x0.1 open-gate 1.021 vol x9.0, GLENMARK 2005,
+    # JSL 2004, GABRIEL 2005, GAEL/AARTIIND/VIMTALABS 2006) that every record source omits. So absence
+    # alone never proves a crash before 2016: the campaign's independent tape analysis must agree.
+    camp_v = [c.get("verdict") for c in camp]
+    if any(v.startswith("REAL") for v in camp_v):
+        return "REAL_TAPE", {"campaign": camp, "note": "no official record; §87 tape analysis confirms the action — data unchanged"}
+    import datetime as _dt
+    if (_dt.date(b // 10000, b // 100 % 100, b % 100) - _dt.date(a // 10000, a // 100 % 100, a % 100)).days > 365:
+        need.append("boundary spans >1 year with no NSE bars — actions filed only on BSE in that span are "
+                    "invisible to the NSE feed and BSE is unreachable")
+    if b < 20160101 and not any(v.startswith("PHANTOM") for v in camp_v):
+        need.append("pre-2016: absence from every record source is not proof (all incomplete) and the §87 tape analysis does not call it a crash (%s)" % (camp_v or "no campaign verdict"))
     if need: return "UNRESOLVED", {"missing": need}
     return "PHANTOM", {"nse_era_rows": len([x for x in all_ex if abs(x // 10000 - b // 10000) <= 3]), "campaign": [c.get("verdict") for c in camp], "nse_status": nse.get("status"), "yahoo": {k: (e["yahoo_events"].get(k) or {}).get("status") for k in ("ns", "bo")},
                        "bse": bse.get("status"), "raw_bhav": e.get("raw_ratio_bhav")}

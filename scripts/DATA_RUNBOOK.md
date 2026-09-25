@@ -19596,3 +19596,34 @@ inference domain: 1,289 official, 9 other ledgers, 1 POLICYBZR, **806 with no of
   the two differ only in lot-change weeks (22-Jan-2025: theirs ≈ −1.35 lakh, ours −1.76 lakh — the Feb/Mar contracts
   were already at lot 75). User chose to KEEP ours (each contract at its own lot), 2026-09-25.
   Backfill/rebuild: `python3 scripts/backfill_fo_lots.py` (caches per-day results in `~/stocks-wt/fo_lots_cache`).
+
+### 161g. The 800 review events — checked against every reachable source (2026-09-25)
+Evidence gathered IN CI (NSE/Yahoo reachable there; Akamai blocks the dev sandbox) by `scripts/verify_ca_review.py`
+(`.github/workflows/verify-ca-review.yml`, manual) → `scripts/ca_review_evidence.json`: per event NSE's official feed
+PER SYMBOL (both boards, every alias, every ex-date it holds), NSE bhavcopy raw close/open/prev for both sessions,
+Yahoo split + dividend events, BSE per-scrip record (api.bseindia.com 403 all run — §150 outage). Rights TERP inputs:
+`scripts/verify_rights_terp.py` → `ca_rights_terp_evidence.json` (terms from the feed, FV from NSE EQUITY_L.csv walked
+back through later FV rows, cum close from the bhavcopy). Verdicts: `scripts/adjudicate_ca_review.py` →
+`scripts/ca_review_verdicts.json` (rules in its docstring, committed before each evidence run; v3 changed after v2
+evidence, stated there and below).
+
+| verdict | n | action |
+|---|---|---|
+| NOT_ADJUSTED | 91 | none — our move equals the exchange's raw move; the audit's turnover/volume signal was noise |
+| REAL (exchange record matches) | 16 | recorded in corp_actions_hist.json (URAVI 2022, CASTROLIND 2010/2012, SUNTV 2007 = NSE "Spl/Bon-1:1" × Yahoo 2:1 …) |
+| REAL_TAPE (§87 tape-confirmed, no record) | 81 | none — data already right |
+| LEDGER_DEMERGER | 5 | none — demerger_adj already applies that factor |
+| WRONG_FACTOR | 3 | official factor → hist + unconfirmed_ca.json; self_heal reconciles (WFL 3:5 bonus 0.625 not 2/3; SEZALGLASS FV10→1 0.1 not 1/8; VITARACHEM 1998 bonus 1:1 0.5 not 0.6) |
+| rights (TERP inputs complete, TERP within 15% of tape) | 17 | rights_terp.json residual = TERP / factor actually baked |
+| rights, inputs missing | 8 | unresolved (no FV: delisted from EQUITY_L; or no premium stated) |
+| demerger without demerger_adj factor | 1 | EMKAYTOOLS 2024-12-04 → keep-drop (official record; the day-of policy) |
+| PHANTOM | 7 | phantom_crashes.json: INGERRAND 2018-05-24 (NSE: special dividend ₹202; Yahoo same), SHILPI, CEREBRAINT, SRPL (bar holes — NSE prev-close shows trading in the gap), 3PLAND, BODALCHEM, TOKYOPLAST (§87 PHANTOM-LIKELY + Yahoo covered, no split) |
+| YAHOO_SPLIT | 30 | unresolved — Yahoo records a matching split, the exchange feed does not |
+| UNRESOLVED | 541 | 452 pre-2006, 34 from 2006-15, 55 from 2016+ — reasons per row |
+
+**v3 lesson (binding): before 2016, absence from NSE's feed, Yahoo's split list AND BSE's record is NOT proof of a
+crash.** v2 rules called 9 events phantom that §87 had tape-confirmed as real (ADANIENT 2004 ×0.1: ex-open 1.021×
+the adjusted basis, volume ×9.0; GLENMARK 2005, JSL 2004, GABRIEL 2005, GAEL/AARTIIND/VIMTALABS 2006, JUBLPHARMA 2002):
+every record source omits them. Also never heal across a boundary with > 1 year of no NSE bars (ARENTERP 1999→2017,
+NOVARTIND 2003→2020 …): BSE-only filings in the gap are invisible. Dry-run on the live series before commit: 17
+manual-rights + 11 self-heals, every boundary lands on its target (raw / raw÷official / raw÷TERP), second pass 0.
