@@ -19469,3 +19469,7 @@ bodies" lump 76,979,180 = Emerging India Focus + Elara + Albula + 265,092). §16
 Verified on a copy of the origin store 28/28; guards green. Script: scratchpad `doc_cells_160f.py` (share-count arithmetic; evidence in each `why`).
 
 **Page era now:** every generic row has a documented verdict; the only undecided one is ADANIPORTS Jun-2015 (0.95 pp, public by block).
+**Live (2026-09-25 09:06 IST).** Store commit 2600ec498 (refresh-shareholding run 36090830750, guards green; Pages deployed): live
+`shp_engine.json` serves 28/28 §160f cells (ADANIPOWER Jun-2015 23.46 / 2.57, Mar-2016 19.83 / 2.56; ADANIENT Jun-2015 18.31); §160e INDUSTOWER
+unchanged; `refresh-stock-fin.yml` dispatched (run 36091051407). The FII session checked the Opal / funds / 3i placements independently and agreed
+(Sep-2022 filing: Opal under ForeignCompanies 4.69; Jun-2016 XBRL funds under InstitutionsForeignPortfolioInvestor).
