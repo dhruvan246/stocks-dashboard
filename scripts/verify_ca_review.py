@@ -28,6 +28,7 @@ import build_corp_actions as BCA        # official_factor / is_demerger — the 
 sys.argv = _argv
 
 OUT = os.path.join(HERE, "ca_review_evidence.json")
+VERSION = 2   # v2: all_ex (era coverage) + Yahoo errors retried
 UA = F.UA
 
 
@@ -73,7 +74,7 @@ def yahoo(ticker, a, b):
             if e.code == 404: return {"status": "404"}
             time.sleep(2 * (attempt + 1))
         except Exception:
-            time.sleep(2 * (attempt + 1))
+            time.sleep(5 * (attempt + 1))
     return {"status": "error"}
 
 
@@ -112,7 +113,9 @@ def main():
     t0 = time.time()
     for n, r in enumerate(R):
         key = (r["sym"], r["b"])
-        if key in prev and prev[key].get("done"): out.append(prev[key]); continue
+        if key in prev and prev[key].get("done") and prev[key].get("v") == VERSION \
+           and all((prev[key]["yahoo_events"].get(k) or {}).get("status") != "error" for k in ("ns", "bo")):
+            out.append(prev[key]); continue
         s, a, b = r["sym"], r["a"], r["b"]
         ev = dict(r)
         # --- NSE official feed, every alias, both boards
@@ -124,6 +127,9 @@ def main():
                     nse_cache[k] = nse_rows(jar, sym, board); time.sleep(0.35)
                 st, rows = nse_cache[k]
                 nse["status"]["%s/%s" % (sym, board)] = "%s (%d rows)" % (st, len(rows))
+                # every ex-date the feed holds for this company (any purpose): proves whether the
+                # exchange was recording this company's actions in the event's era (§161g)
+                nse.setdefault("all_ex", []).extend(sorted({int(F.iso(x.get("exDate"))) for x in rows if F.iso(x.get("exDate"))}))
                 if st == "ok" and rows: nse["covered"] = True
                 for x in rows:
                     ex = F.iso(x.get("exDate"))
@@ -156,13 +162,14 @@ def main():
             ev["raw_ratio_bhav"] = round(cb["close"] / ca["close"], 4)
             ev["open_over_prev_bhav"] = round(cb["open"] / ca["close"], 4) if cb.get("open") else None
         # --- Yahoo split events (NSE ticker, then the BSE code)
+        time.sleep(0.6)
         yh = {"ns": yahoo(s + ".NS", a, b)}
         code = bse_ids.get(s)
         if code: yh["bo"] = yahoo("%s.BO" % code, a, b)
         ev["yahoo_events"] = yh
         # --- BSE per-scrip corporate actions
         ev["bse"] = bse(code, a, b) if code else {"status": "no BSE code"}
-        ev["done"] = True
+        ev["done"] = True; ev["v"] = VERSION
         out.append(ev)
         if n % 25 == 0:
             json.dump({"generated": datetime.datetime.utcnow().isoformat() + "Z", "events": out}, open(OUT, "w"))

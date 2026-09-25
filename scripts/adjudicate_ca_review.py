@@ -24,6 +24,17 @@ Verdicts
   YAHOO_SPLIT     no exchange record, but Yahoo records a split matching F within 3% — conflict
                   between a third party and the exchange; left as is, listed.
   UNRESOLVED      a source needed for any verdict above was unreachable or did not cover the dates.
+
+v2 rules (2026-09-25, committed before the v2 evidence run):
+  NOT_ADJUSTED    NSE's bhavcopy raw move equals our published move (±5%): no factor is baked in at
+                  all — a false detection by the turnover/volume audit (noisy t or v). Nothing to fix.
+  covered_in_era  the NSE feed holds >= 1 row of ANY purpose for the company within 3 years of the
+                  event — the exchange was demonstrably recording this company's actions then.
+  PHANTOM by era  2016+: no split/bonus/demerger/scheme/rights on EITHER NSE board, covered_in_era,
+                  bhavcopy confirms the raw move, no Yahoo split listed (DATA_RUNBOOK §87c standing rule).
+                  2006-15: the same PLUS a second reader showing no split — Yahoo's split record covering
+                  both dates, or the §87 campaign's recorded BSE check (bse_reach, no bse_factor/rights).
+                  pre-2006: Yahoo AND BSE (live or §87-recorded) must both show no split.
 """
 import os, sys, json, collections
 HERE = os.path.dirname(os.path.abspath(__file__))
@@ -59,8 +70,24 @@ def yahoo_covered(yev):
     return any((yev.get(k) or {}).get("status") == "ok" and (yev.get(k) or {}).get("covered") for k in ("ns", "bo"))
 
 
+import gzip
+_CAMP = collections.defaultdict(list)
+try:
+    for _v in json.loads(gzip.open(os.path.join(HERE, "ca2002_campaign", "verdicts.json.gz")).read()):
+        _CAMP[_v["sym"]].append(_v)
+except Exception as _e:
+    print("  (§87 campaign verdicts unavailable: %s)" % _e)
+
+
+def campaign(sym, a, b):   # §87 campaign's recorded BSE/Yahoo checks for an ex-date inside [a-7d, b+7d]
+    return [v for v in _CAMP.get(sym, []) if a - 7 <= v["ex"] <= b + 7]
+
+
 def verdict(e):
     F = e["F"]; a, b = e["a"], e["b"]
+    rb = e.get("raw_ratio_bhav")
+    if rb is not None and e.get("adj_a") and abs((e["adj_b"] / e["adj_a"]) / rb - 1) <= 0.05:
+        return "NOT_ADJUSTED", {"ours": round(e["adj_b"] / e["adj_a"], 4), "exchange_raw": rb}
     nse = e.get("nse") or {}
     rows = nse.get("rows") or []
     split_rows = [r for r in rows if r.get("factor")]
@@ -87,14 +114,25 @@ def verdict(e):
     if any(match(y["factor"], F) for y in ys):
         return "YAHOO_SPLIT", {"yahoo": ys}
     need = []
-    if not nse.get("covered"): need.append("NSE feed has no rows for this company")
-    if not yahoo_covered(e.get("yahoo_events") or {}): need.append("Yahoo does not cover both dates")
+    all_ex = nse.get("all_ex") or []
+    in_era = any(abs(x // 10000 - b // 10000) <= 3 for x in all_ex)
+    camp = campaign(e["sym"], a, b)
+    camp_bse_none = any(c.get("bse_reach") and not c.get("bse_factor") and not c.get("bse_rights") for c in camp)
+    camp_bse_split = [c for c in camp if c.get("bse_factor")]
+    if camp_bse_split and any(match(c["bse_factor"], F) for c in camp_bse_split):
+        return "REAL", {"nse": [], "bse": [{"ex": c["ex"], "factor": c["bse_factor"], "subject": "§87 campaign BSE record"} for c in camp_bse_split]}
+    y_none = yahoo_covered(e.get("yahoo_events") or {}) and not ys
+    bse_none = (bse_ok and not bse_split) or camp_bse_none
+    if not nse.get("covered") or not in_era: need.append("NSE feed shows no record-keeping for this company within 3y of the event")
+    if e.get("raw_ratio_bhav") is None: need.append("no bhavcopy raw move")
+    elif not raw_ok: need.append("bhavcopy raw move %s disagrees with audit raw %s" % (e.get("raw_ratio_bhav"), e["raw"]))
     if ys: need.append("Yahoo lists a non-matching split %s" % ys)
-    if not raw_ok: need.append("bhavcopy raw move %s disagrees with audit raw %s" % (e.get("raw_ratio_bhav"), e["raw"]))
-    if b < 20060101:
-        if not bse_ok: need.append("pre-2006: BSE record needed and not reached (%s)" % bse.get("status"))
+    if 20060101 <= b < 20160101 and not (y_none or camp_bse_none):
+        need.append("2006-15: no second reader (Yahoo covered / §87 BSE record) showing no split")
+    if b < 20060101 and not (y_none and bse_none):
+        need.append("pre-2006: needs Yahoo AND BSE showing no split (yahoo_none=%s, bse_none=%s; live BSE %s)" % (y_none, bse_none, bse.get("status")))
     if need: return "UNRESOLVED", {"missing": need}
-    return "PHANTOM", {"nse_status": nse.get("status"), "yahoo": {k: (e["yahoo_events"].get(k) or {}).get("status") for k in ("ns", "bo")},
+    return "PHANTOM", {"nse_era_rows": len([x for x in all_ex if abs(x // 10000 - b // 10000) <= 3]), "campaign": [c.get("verdict") for c in camp], "nse_status": nse.get("status"), "yahoo": {k: (e["yahoo_events"].get(k) or {}).get("status") for k in ("ns", "bo")},
                        "bse": bse.get("status"), "raw_bhav": e.get("raw_ratio_bhav")}
 
 
