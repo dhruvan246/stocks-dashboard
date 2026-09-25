@@ -19906,3 +19906,13 @@ symbols: Sep-2022 dii ≥3 pp 26 → 15, fii 8 → 6; Jun→Sep-2016 fii 18 → 
 Largest: RESPONIND 2016-2022 fii ~4.2 → ~34.6 (its own 2022 form lists the foreign holder under FDI). Also 112 more §164a cells
 (EMBDL, GNFC, MTNL, ZEELEARN — first XBRLs now cached). `apply_refine_ledger` now skips every §164 cell (27 row-level cells moved a
 slot by ≤ 0.02 pp and refine pulled them back); measured: cell_fix + refine hold 4,166 / 4,166 §164 cells, WARNs 11 (pre-existing).
+
+### 164f. The quarters Quantmac holds and we lacked ("StockWorld blank")
+Their sheet lists 78 month-end cells = 34 (stock, quarter) pairs. 31 are page-era quarters: fetched with the plain client from
+www.bseindia.com ShareholdingPattern.aspx and derived by `fetch_shp_bse_aspx.cell_of` (its own parser + reconciliation gates;
+`scripts/_shp_164f_fill_blank.py` shims its curl_cffi calls to the plain www-only client). All 31 parsed; 27 equal Quantmac's FII to
+2 dp (ADANIENSOL Sep-15 11.18, KOUTONS, DBREALTY, AJRINFRA, BINANICEM, SWANDEF …) and were added to `shp_fill_bse_aspx.json.gz`
+(fill-only; pre-2016 → served un-dated, engine quarter-end + 28). **Held (4):** BOSCH-HCIL Mar-16, SCHNEIDER Dec-15, SHK Dec-15,
+VGUARD Mar-16 — the 88/89 renderings put the FII row inside a lump, so the parser reads fii 0.0 where Quantmac has 1.7 / 0.3 /
+12.45 / 16.7; they need the §160 seam reconstruction (holders table). **Not by this route (3):** CDSL Mar-2018 (NSE-only filing),
+GLOBOFFS Mar-2016 (no BSE code found), SPLPETRO Jun-2017 (an XBRL-era quarter).
