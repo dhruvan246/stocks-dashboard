@@ -897,6 +897,86 @@ def phantom_date_audit(data, lo, hi, floor=SESSION_FLOOR):
     return len(bad)
 
 
+PHANTOM_SESSIONS = os.path.join(HERE, "sf_phantom_sessions.json")
+PHANTOM_REPEAT = 0.90   # phantom-session signature (heal_price_series.CARRY_FLOOR): share of a date's bars that
+                        # repeat each symbol's previous close — real sessions 2-6%, the ten ledger dates 93-100%
+                        # (measured 2026-09-25 over the live bin)
+_BAR_KEYS = ("d", "c", "t", "h", "l", "op", "v", "dv", "vw")
+
+
+def _phantom_session_dates():
+    """The proven holiday dates of scripts/sf_phantom_sessions.json (ints). Missing file = none; an
+    UNREADABLE one warns and drops nothing (never guess which dates to cut)."""
+    try:
+        return {int(k) for k in (json.load(open(PHANTOM_SESSIONS)).get("dates") or {})}
+    except FileNotFoundError:
+        return set()
+    except Exception as ex:
+        print("::warning::sf_phantom_sessions.json unreadable (%s) — phantom-session drop SKIPPED" % ex)
+        return set()
+
+
+def drop_phantom_sessions(data):
+    """§167: FULL-UNIVERSE phantom sessions. On an exchange holiday NSE's per-day URL re-served the previous
+    session's file and an old full build stored it as a trading day, so ~1,600-2,100 symbols each carry a bar
+    that copies their previous session (2019-10-02 .. 2024-05-20: ten dates, 17,521 bars). They are DENSE, so
+    phantom_date_audit (sparse dates) cannot see them and the §89f calendar counts them as sessions — a
+    200-bar window over the Oct-Dec 2019 six held only 194 real sessions. Every bar on a date proven in
+    scripts/sf_phantom_sessions.json is DROPPED from every array of every symbol — never filled, never
+    re-dated (the copied session is already in the bin). Runs FIRST, before any pass reads the calendar or a
+    bar's neighbours. Idempotent: a converged bin drops 0. Returns the number of bars dropped."""
+    dates = _phantom_session_dates()
+    if not dates: return 0
+    dropped = 0; per_date = {}; skipped = []
+    for sym, e in data.items():
+        ds = e.get("d") if isinstance(e, dict) else None
+        if not ds or dates.isdisjoint(ds): continue
+        n = len(ds)
+        if any(k in e and len(e[k]) != n for k in _BAR_KEYS):
+            skipped.append(sym); continue          # ragged arrays: cutting by index would misalign them
+        keep = [i for i, d in enumerate(ds) if d not in dates]
+        for d in ds:
+            if d in dates: per_date[d] = per_date.get(d, 0) + 1
+        for k in _BAR_KEYS:
+            if k in e: e[k] = [e[k][i] for i in keep]
+        dropped += n - len(keep)
+    if dropped:
+        print("Phantom sessions (§167): dropped %d bar(s) on %d exchange-holiday date(s): %s"
+              % (dropped, len(per_date), ", ".join("%d(%d)" % (d, per_date[d]) for d in sorted(per_date))))
+    if skipped:
+        print("::warning::Phantom sessions (§167): %d symbol(s) with ragged bar arrays left untouched: %s"
+              % (len(skipped), ", ".join(sorted(skipped)[:20])))
+    return dropped
+
+
+def phantom_session_audit(data, lo, hi, floor=SESSION_FLOOR):
+    """§167 TRIPWIRE, beside phantom_date_audit: a date in lo..hi holding >= floor bars of which
+    >= PHANTOM_REPEAT repeat each symbol's previous close is a holiday file stored as a session. Names it
+    with ::warning:: — never drops it: verify (NSE file date, next-day PREV_CLOSE, Nifty bar, holiday list),
+    then add it to scripts/sf_phantom_sessions.json. Returns the number of candidate dates."""
+    import collections
+    known = _phantom_session_dates()
+    cnt = collections.Counter(); rep = collections.Counter()
+    for e in data.values():
+        ds = e.get("d") if isinstance(e, dict) else None; c = e.get("c") if isinstance(e, dict) else None
+        if not ds or not c: continue
+        for i in range(1, len(ds)):
+            d = ds[i]
+            if lo <= d <= hi:
+                cnt[d] += 1
+                if c[i] == c[i - 1]: rep[d] += 1
+    bad = sorted(d for d, n in cnt.items() if n >= floor and d not in known and rep[d] >= PHANTOM_REPEAT * n)
+    if not bad:
+        print("Phantom-session audit: clean — no date in %d..%d with >= %d bars repeats the previous close on "
+              ">= %d%% of them." % (lo, hi, floor, round(PHANTOM_REPEAT * 100)))
+        return 0
+    for d in bad:
+        print("  PHANTOM-SESSION %d: %d of %d bars (%.1f%%) repeat the previous close" % (d, rep[d], cnt[d], 100.0 * rep[d] / cnt[d]))
+    print("::warning::Phantom-session audit: %d date(s) look like a holiday file stored as a session — see the "
+          "PHANTOM-SESSION lines; verify, then list them in scripts/sf_phantom_sessions.json (DATA_RUNBOOK §167)" % len(bad))
+    return len(bad)
+
+
 def insert_sme_history(data, meta, cal=None):
     """Bring in the NSE SME-platform (Emerge) history that build_sf_data's main-board-only filter
     (("EQ","BE","BZ") until 2026-09-22) never ingested — scripts/sme_backfill.json.gz, built by
@@ -1323,6 +1403,10 @@ def main():
             e["vw"] = [round(c[i] * (1000 + vwo[i]) / 1000, 2) for i in range(n)]
             e["dv"] = [round(x / 10, 2) for x in e.get("dv", [])]
             for kk in ("hb", "lb", "ob"): e.pop(kk, None)
+    # §167: exchange HOLIDAYS stored as full-universe sessions (NSE's holiday misdirect, old full build) —
+    # dropped FIRST, before the dv/merge/calendar/splice/heal passes read the calendar or a bar's
+    # neighbours (scripts/sf_phantom_sessions.json). Idempotent; the count rides the publish gate below.
+    ph = drop_phantom_sessions(data)
     # Delivery-% heal ledgers (scripts/dv_fill.json + dv_fill_hist.json.gz): recovered DELIV_PER
     # cells, BE/T2T '-' days (compulsory delivery -> 100), and the 2002-2019 MTO-file backfill
     # (pre-2020 bhavcopies have no DELIV_PER column). Fill-only where dv==0, so a re-run applies
@@ -1635,6 +1719,7 @@ def main():
     # §89f tripwire — after EVERY heal and append, so it also sees bars this run emitted. Non-fatal;
     # names the symbols so the emitting ledger is one grep away (never edit the bin to fix it).
     phantom_date_audit(data, _cal_lo, int(D["end"].replace("-", "")))
+    phantom_session_audit(data, _cal_lo, int(D["end"].replace("-", "")))   # §167: the dense twin of the above
 
     # ALWAYS rewrite the freshly-loaded MERGED base to disk — even on a no-op run — so the split/publish
     # step never reads the stale, UN-merged in-repo copy (frozen at an old `end`, still carrying
@@ -1644,8 +1729,8 @@ def main():
     # refreshes the on-disk bin but does NOT publish the release, bump clients, or commit a marker.
     blob = gzip.compress(json.dumps(D, separators=(",", ":")).encode(), 6)
     open(OUT, "wb").write(blob)
-    if not appended and not healed and not merged and not mr and not ao and not dvf and not dvo and not wk and not bi and not bz and not bzf and not sm and not sg and not tunits and not dead and not _n:
-        print("No new day / heal / merge / manual-rights / open-arbitrated CA / dv-fill / dv-overwrite / weekend-insert / bar-insert / BZ-backfill / SME-backfill / series-surgery / turnover-unit fix / aliveness decay / industry fill — rewrote merged base to %s (%.2f MB); nothing to publish." % (OUT, len(blob) / 1048576)); return
+    if not appended and not healed and not merged and not mr and not ao and not dvf and not dvo and not wk and not bi and not bz and not bzf and not sm and not sg and not tunits and not dead and not _n and not ph:
+        print("No new day / heal / merge / manual-rights / open-arbitrated CA / dv-fill / dv-overwrite / weekend-insert / bar-insert / BZ-backfill / SME-backfill / series-surgery / turnover-unit fix / aliveness decay / industry fill / phantom-session drop — rewrote merged base to %s (%.2f MB); nothing to publish." % (OUT, len(blob) / 1048576)); return
     open(MARK, "w").write(D["end"])
     # tiny version marker — committed daily, lets the browser cache the big bin in IndexedDB
     # keyed to this `end` and skip re-downloading 80 MB until the data actually changes.

@@ -20074,3 +20074,51 @@ d52 11.607 % (official-true), vs200 45.880 % (Quantmac 45.883).
   2026-06-04 ×1.5), `stock LOT SIZE CHANGES (history re-based)`. Workflow copies/commits scripts/_fo_stk_state.json
   + scripts/_fo_stk_lots/. Simulation (last 2 days removed from every store) re-produced lf, lfs, lots, ca, tail
   and the shard byte-identically.
+
+## 167. TEN exchange holidays sat in the backtest bin as FULL-UNIVERSE sessions — dropped by a ledger-driven pass; Quantmac Vs-200DMA parity 84.3 % → 98.4 %  (2026-09-26, found by the Quantmac backtest-indicator reconciliation)
+
+### 167a. The defect
+On 10 NSE holidays — 2019-10-02, 10-08, 10-21, 10-28, 11-12, 12-25; 2020-11-16; 2021-11-05; 2024-01-22; 2024-05-20 — the bin
+held a bar for 1,610-2,134 symbols (17,521 bars), each a copy of that symbol's previous session: NSE's per-day URL re-served the
+prior file on the holiday and an old full build stored it. Signature: 93.0-100 % of the date's bars repeat the previous close
+(real sessions 2-6 %). Both existing guards were blind: `phantom_date_audit` hunts SPARSE dates (<100 bars) and §89f's
+`session_calendar` certifies any date with >= 100 bars as a session. Effect: every 200-bar SMA whose window held one spanned
+194-199 real sessions. Measured on the live engine at Quantmac's 213 rebalance dates, Vs-200DMA agreement (<= 0.05 pp) was 2019
+75.5 %, 2020 31.6 %, 2021 49.3 %, 2022 67.5 %, 2024 24.6 % — on those cells Quantmac was right. 52w high/low were untouched (a
+copied bar repeats its source's h/l).
+Proof per date (from files; each is in `scripts/sf_phantom_sessions.json`): NSE's archive returns no bhavcopy (old cm..bhav.csv.zip
+and UDiFF routes both tried); NSE's own PREV_CLOSE on the next session equals the copied session's close for 100 % of the symbols
+in both files (831-888 per date); no Nifty-50 close; on the repo NSE holiday list (`fo_spot_nse.json` `_holidays`); no BSE daily
+archive file (the 8 dates inside `bse_last_trade_archive.json`'s 2007-2023 scan). Every affected symbol already holds the copied
+session, except 3 zero-close stubs on 20191028 (KSERASERA, SUJANAUNI, UVSL) and DVL/DTIL on 20211105 (§89 surgery-ledger bars).
+
+### 167b. The fix
+- `update_sf_data.drop_phantom_sessions(data)` — the FIRST pass after the format migration (before dv-fill, merges, the calendar,
+  the splice ledgers and the heals): removes every bar on a ledger date from all 9 parallel arrays of every symbol. Idempotent;
+  its count `ph` rides the publish gate. Ragged arrays → `::warning::`, symbol untouched.
+- `phantom_session_audit()` — nightly tripwire beside `phantom_date_audit`: any OTHER date with >= 100 bars and >= 90 % repeats
+  prints a `PHANTOM-SESSION` line + `::warning::`. It never drops: verify the date (file date inside, next-day PREV_CLOSE, Nifty
+  bar, holiday list), then add it to the ledger.
+- Automatic knock-ons: `session_calendar` 6,156 → 6,146 dates, so the §89f splice guards now refuse the old ledgers' bars on
+  these dates — BZ-backfill 30 bars on 20211105, DVL/DTIL surgery 6 each — logged EVERY run as "DROPPED, never emitted"
+  (expected, not a fault). `gate_calendar.json` regenerates from the bin in the same workflow (tdays −10; none is a month-end).
+- `crash_raw_prices.json` ZEEL re-keyed 20240122 → 20240120 (231.40 = NSE's 20-Jan close and its 23-Jan PREV_CLOSE): the ZEEL
+  2024-01-23 crash reconcile (LEGACY_FALSE_CA) now reads the 20-Jan Saturday session as its previous bar.
+- Left as is, measured harmless: BZ blocks CGPOWER / COFFEEDAY / COX&KINGS anchor `after: 20191225` — already spliced
+  (steady-state skip), and a from-scratch rebuild ingests BZ itself; `dv_fill.json` (14) + `dv_fill_hist` (2) cells on these
+  dates are inert (a fill needs the row).
+
+### 167c. Verification (release-asset base 2026-09-25, the real `main()`, NSE fetches BLOCKED = CI)
+Current code on the base: content no-op (0 of 5,262 symbols differ). Fixed run vs (current-code output minus the 17,521 bars):
+**0 of 5,262 symbols differ** — the drop is the only change; no heal / rights / demerger / arbitrated / surgery interaction.
+Second pass: 0 dropped, 0 symbols differ. Engine re-dump on the fixed bin vs Quantmac: Vs-200DMA 84.3 % → **98.4 %** (2019 98.7,
+2020 98.0, 2021 98.8, 2022 99.3, 2024 99.3); 14,652 cells into agreement, 22 out by 0.05-0.40 pp — 21 carry a rights TERP in the
+window or a later factor on sub-₹6 prices (policy / 2-dp precision, adjudicated in the reconciliation), 1 is Quantmac's close
+(UNITDSPR 2024-04-30: NSE close 1177.00, theirs implies 1176.00). d52 / d52low: 0 cells changed. `test_no_ca_inference.py` ALL
+PASS; unit test of drop + tripwire (idempotence, ragged arrays, missing/unreadable ledger, bar floor) ALL PASS.
+
+### 167d. ★ Lesson
+A calendar DERIVED FROM THE DATA inherits the data's phantoms. §89f's calendar was built to stop ledgers emitting non-session
+bars, and its "≥100 symbol-bars = session" rule certified these ten holidays because the defect sat in the base, not in a ledger.
+Guard both shapes: sparse (`phantom_date_audit`) AND dense (`phantom_session_audit`, repeat share). Agreement dips confined to
+particular years are a calendar smell — the first read here ("volatility × tolerance") was wrong.

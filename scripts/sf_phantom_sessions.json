@@ -1,0 +1,115 @@
+{
+ "_doc": "DATA_RUNBOOK §167. Exchange HOLIDAYS the backtest bin carried as trading days: on each date NSE's per-day URL re-served the previous session's file (holiday misdirect) and an old full build stored it, so every listed symbol got a bar that copies its previous session. update_sf_data.drop_phantom_sessions() DROPS every bar on these dates from every symbol, every run (idempotent) — never filled, never re-dated; the copied session is already in the bin for all but 5 of the 17,521 dropped bars (3 zero-close stubs on 20191028: KSERASERA, SUJANAUNI, UVSL; DVL/DTIL on 20211105, emitted by the §89 surgery ledger, whose splice guard drops them once the calendar no longer lists the date). Proven per date, from files: NSE's archive serves no bhavcopy for it (old cm..bhav.csv.zip and UDiFF routes both tried); NSE's own PREV_CLOSE on the next session equals the copied session's close for every symbol in both files (the exchange chains straight over the date); the Nifty 50 close series has no bar; the date is on the repo NSE holiday list (fo_spot_nse.json _holidays); BSE's daily archive has no file (bse_last_trade_archive.json missing_days, scanned 2007-01-01..2023-12-03). Measured 2026-09-25 on the live bin (end 2026-09-25): real sessions repeat the previous close on 2-6% of bars, these 93.0-100%. A NEW date is added here only after the same checks; update_sf_data.phantom_session_audit() names candidates (>= 90% repeat) with ::warning:: but never drops an unproven date.",
+ "dates": {
+  "20191002": {
+   "copies": 20191001,
+   "next_session": 20191003,
+   "bars": 1629,
+   "repeat_prev_close_pct": 100.0,
+   "nse_bhavcopy": "no file (archive cm..bhav.csv.zip and UDiFF BhavCopy_NSE_CM zip both tried)",
+   "nse_prevclose_chain": "836/836 symbols: PREV_CLOSE on 20191003 == close on 20191001",
+   "nifty50_close": "no bar",
+   "nse_holiday_list": true,
+   "bse_archive": "no file"
+  },
+  "20191008": {
+   "copies": 20191007,
+   "next_session": 20191009,
+   "bars": 1633,
+   "repeat_prev_close_pct": 100.0,
+   "nse_bhavcopy": "no file (archive cm..bhav.csv.zip and UDiFF BhavCopy_NSE_CM zip both tried)",
+   "nse_prevclose_chain": "836/836 symbols: PREV_CLOSE on 20191009 == close on 20191007",
+   "nifty50_close": "no bar",
+   "nse_holiday_list": true,
+   "bse_archive": "no file"
+  },
+  "20191021": {
+   "copies": 20191018,
+   "next_session": 20191022,
+   "bars": 1633,
+   "repeat_prev_close_pct": 100.0,
+   "nse_bhavcopy": "no file (archive cm..bhav.csv.zip and UDiFF BhavCopy_NSE_CM zip both tried)",
+   "nse_prevclose_chain": "835/835 symbols: PREV_CLOSE on 20191022 == close on 20191018",
+   "nifty50_close": "no bar",
+   "nse_holiday_list": true,
+   "bse_archive": "no file"
+  },
+  "20191028": {
+   "copies": 20191027,
+   "next_session": 20191029,
+   "bars": 1610,
+   "repeat_prev_close_pct": 94.8,
+   "nse_bhavcopy": "no file (archive cm..bhav.csv.zip and UDiFF BhavCopy_NSE_CM zip both tried)",
+   "nse_prevclose_chain": "832/832 symbols: PREV_CLOSE on 20191029 == close on 20191027",
+   "nifty50_close": "no bar",
+   "nse_holiday_list": true,
+   "bse_archive": "no file"
+  },
+  "20191112": {
+   "copies": 20191111,
+   "next_session": 20191113,
+   "bars": 1653,
+   "repeat_prev_close_pct": 100.0,
+   "nse_bhavcopy": "no file (archive cm..bhav.csv.zip and UDiFF BhavCopy_NSE_CM zip both tried)",
+   "nse_prevclose_chain": "836/836 symbols: PREV_CLOSE on 20191113 == close on 20191111",
+   "nifty50_close": "no bar",
+   "nse_holiday_list": true,
+   "bse_archive": "no file"
+  },
+  "20191225": {
+   "copies": 20191224,
+   "next_session": 20191226,
+   "bars": 1637,
+   "repeat_prev_close_pct": 100.0,
+   "nse_bhavcopy": "no file (archive cm..bhav.csv.zip and UDiFF BhavCopy_NSE_CM zip both tried)",
+   "nse_prevclose_chain": "831/831 symbols: PREV_CLOSE on 20191226 == close on 20191224",
+   "nifty50_close": "no bar",
+   "nse_holiday_list": true,
+   "bse_archive": "no file"
+  },
+  "20201116": {
+   "copies": 20201114,
+   "next_session": 20201117,
+   "bars": 1674,
+   "repeat_prev_close_pct": 93.8,
+   "nse_bhavcopy": "no file (archive cm..bhav.csv.zip and UDiFF BhavCopy_NSE_CM zip both tried)",
+   "nse_prevclose_chain": "842/842 symbols: PREV_CLOSE on 20201117 == close on 20201114",
+   "nifty50_close": "no bar",
+   "nse_holiday_list": true,
+   "bse_archive": "no file"
+  },
+  "20211105": {
+   "copies": 20211104,
+   "next_session": 20211108,
+   "bars": 1823,
+   "repeat_prev_close_pct": 93.0,
+   "nse_bhavcopy": "no file (archive cm..bhav.csv.zip and UDiFF BhavCopy_NSE_CM zip both tried)",
+   "nse_prevclose_chain": "861/861 symbols: PREV_CLOSE on 20211108 == close on 20211104",
+   "nifty50_close": "no bar",
+   "nse_holiday_list": true,
+   "bse_archive": "no file"
+  },
+  "20240122": {
+   "copies": 20240120,
+   "next_session": 20240123,
+   "bars": 2095,
+   "repeat_prev_close_pct": 97.9,
+   "nse_bhavcopy": "no file (archive cm..bhav.csv.zip and UDiFF BhavCopy_NSE_CM zip both tried)",
+   "nse_prevclose_chain": "879/879 symbols: PREV_CLOSE on 20240123 == close on 20240120",
+   "nifty50_close": "no bar",
+   "nse_holiday_list": true,
+   "bse_archive": "outside scan span"
+  },
+  "20240520": {
+   "copies": 20240518,
+   "next_session": 20240521,
+   "bars": 2134,
+   "repeat_prev_close_pct": 96.6,
+   "nse_bhavcopy": "no file (archive cm..bhav.csv.zip and UDiFF BhavCopy_NSE_CM zip both tried)",
+   "nse_prevclose_chain": "888/888 symbols: PREV_CLOSE on 20240521 == close on 20240518",
+   "nifty50_close": "no bar",
+   "nse_holiday_list": true,
+   "bse_archive": "outside scan span"
+  }
+ }
+}
