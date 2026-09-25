@@ -136,10 +136,21 @@ def result_filings(o, code, frm, to, pages=6):
     return out
 
 def download(o, att):
+    """The attachment's bytes (a %PDF), or None. BSE_PDF_CACHE=<dir> serves and keeps copies there, so a
+    re-run (text pass -> vision prep -> second read) never downloads a filing twice. Keep that dir under
+    ~/stocks-cache: session scratch dirs are cleared after a few days."""
+    cache = os.environ.get("BSE_PDF_CACHE")
+    cp = os.path.join(cache, os.path.basename(att)) if cache else None
+    if cp and os.path.exists(cp):
+        d = open(cp, 'rb').read()
+        if d[:4] == b'%PDF': return d
     for base in ("AttachHis", "AttachLive"):
         try:
             d = get(o, "https://www.bseindia.com/xml-data/corpfiling/%s/%s" % (base, att), b=True)
-            if d[:4] == b'%PDF': return d
+            if d[:4] == b'%PDF':
+                if cp:
+                    os.makedirs(cache, exist_ok=True); open(cp, 'wb').write(d)
+                return d
         except Exception: continue
     return None
 
@@ -166,14 +177,18 @@ def rows_of(page):
     """[(label, nums)] — rows_tok() without the printed tokens."""
     return [(label, [v for _, v in toks]) for label, toks in rows_tok(page)]
 
-def rows_tok(page):
+_GARBLED = re.compile(r'^[^A-Za-z]*\d[^A-Za-z]*\d[^A-Za-z]*$')   # 2+ digits, no letters: a figure the OCR mangled
+def rows_tok(page, garbled_as_none=False):
     """Reconstruct table rows from word boxes: group words by y, split each row into its
     label text (left) and its numeric columns (right, by x). The PDF text layer returns a
     table's labels and numbers on different lines, so line-based reading fails — this doesn't.
     A dash cell ('-', '–') is kept as 0 IN POSITION, so a nil current year can no longer shift
     the prior-year number into nums[0] (§148; a column-clustering rewrite regressed 261/461 fields
     on the landed text cells and was reverted). Each value comes with its printed token, which
-    the cash-flow guard (_cf_parse) inspects: [(label, [(token, value), ...])]."""
+    the cash-flow guard (_cf_parse) inspects: [(label, [(token, value), ...])].
+    garbled_as_none (the cash-flow reader): a digit-bearing token that is not a number and sits
+    right of the row's last word is a MANGLED figure — kept as None in position, so the prior year
+    cannot slide into its slot (APLAPOLLO FY22 printed its net change as "147:<61")."""
     words = page.get_text("words")   # (x0,y0,x1,y1,text,block,line,word)
     buckets = {}
     for w in words:
@@ -193,6 +208,7 @@ def rows_tok(page):
         label = ' '.join(t for _, t in toks)
         nums = []
         seen_num = False
+        last_word_x = max([x for x, t in toks if re.search(r'[A-Za-z]', t)] or [-1.0])
         for x, t in toks:
             t = t.strip()
             if DASH.match(t):
@@ -200,6 +216,8 @@ def rows_tok(page):
                     nums.append((t, 0.0))
                 continue
             if not ISNUM.match(t):
+                if garbled_as_none and x > last_word_x and _GARBLED.match(t):
+                    nums.append((t, None)); seen_num = True
                 continue
             if note_x and NOTE_REF.match(t) and any(abs(x - nx) <= 30 for nx in note_x):
                 continue
@@ -318,8 +336,10 @@ def _cf_parse(rows):
         if mode and len(toks) > mode and nums[0] is not None:
             t0, t1 = toks[0][0], toks[1][0]
             if _BARE_INT.match(t0):
-                if _SPLIT_TAIL.match(t1):
-                    nums = [None]                    # a split figure: unreadable, never a fragment of it
+                if _SPLIT_TAIL.match(t1) and not t1.startswith('('):
+                    # a split figure: unreadable, never a fragment of it. (A BRACKETED next token is a
+                    # complete figure, so t0 is a marker: ATUL FY22 cfi "8 (167.65)".)
+                    nums = [None]
                 elif len(toks) == mode + 1 and 0 < abs(nums[0]) <= 50:
                     nums = nums[1:]                  # a note / section marker before the figures
                 else:
@@ -332,9 +352,9 @@ def _cf_parse(rows):
     a, b, c, net = cf.get('cfo'), cf.get('cfi'), cf.get('cff'), cf.get('_cf_net')
     chk = cf_identity(a, b, c, net)
     if chk is False:
-        fx = [n[0] for lab, n in fixed if n and n[0] is not None and CF_FX.search(lab)]
-        if any(cf_identity(a, b, c, net, f) for f in fx):
-            chk = True
+        for f in [n[0] for lab, n in fixed if n and n[0] is not None and CF_FX.search(lab)]:
+            if cf_identity(a, b, c, net, f):
+                chk = True; cf['_cf_fx'] = f; break
     if chk is False:
         for k in ('cfo', 'cfi', 'cff'):
             cf.pop(k, None)
@@ -558,11 +578,13 @@ def text_read(pdf, bs_pi, cf_pi):
         span = cf_span([doc[k].get_text() for k in range(len(doc))], cf_pi)
         cf_rows = []
         for pi in span:
-            cf_rows += rows_tok(doc[pi])
+            cf_rows += rows_tok(doc[pi], garbled_as_none=True)
         cf = _cf_parse(cf_rows)
         fields.update({k: v for k, v in cf.items() if not k.startswith('_')})
         fields['_cf_ok'] = cf.get('_cf_ok')          # True / False / None: the cash identity's verdict
         fields['_cf_layout'] = cf.get('_cf_layout')  # 'single' / 'multi' (side-by-side bases: not read)
+        fields['_cf_net'] = cf.get('_cf_net')        # the printed net change in cash (raw) ...
+        fields['_cf_fx'] = cf.get('_cf_fx')          # ... and the FX-effect line that closed the identity
         cf_unit = detect_unit('\n'.join(doc[pi].get_text() for pi in span))
     doc.close()
     fields['_unit'] = detect_unit(bs_text)

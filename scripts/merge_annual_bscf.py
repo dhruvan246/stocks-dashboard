@@ -93,6 +93,40 @@ def supplement(cell, e):
         cell["sup"] = sorted(set(cell.get("sup", [])) | set(add))
     return add
 
+def _same(a, b):
+    return a is not None and b is not None and abs(a - b) <= max(0.011, 0.0005 * abs(b))
+
+def correct(cell, e):
+    """A re-read of a TEXT cell's own document by the fixed text reader (runbook §168c) corrects the
+    old parser's cash-flow misreads — only with evidence. Returns {field: old value}.
+      * the re-read triple satisfies the statement's cash identity -> its cfo/cfi/cff replace the stored
+        ones that differ (VINDHYATEL FY20 cfi -0.08 -> 29.72: "(B)" had been read as "(8)");
+      * otherwise, if the STORED triple contradicts the statement's own net change in cash, each stored
+        value the re-read cannot reproduce is removed (HEROMOTOCO FY22 CFO 2.0 from "2 103 70";
+        APLAPOLLO FY21 CFO 97,711 from "977,11") — a gap, never a guess;
+      * a negative stored cf_tax the re-read reproduces as positive is sign-fixed.
+    Never touches a vision cell; requires the same document, basis, and Total Assets within 0.5%.
+    The old values stay in the cell under 'fix' (audit trail)."""
+    if not cell or cell.get("m") != "text" or e.get("src") != cell.get("src") or e.get("basis") != cell.get("b"):
+        return {}
+    if not _near(e.get("assets"), cell.get("assets"), 0.005):
+        return {}
+    fix = {}
+    if cf_identity(e.get("cfo"), e.get("cfi"), e.get("cff"), e.get("cf_net"), e.get("cf_fx")) is True:
+        for f in ("cfo", "cfi", "cff"):
+            if not _same(cell.get(f), e[f]):
+                fix[f] = cell.get(f); cell[f] = e[f]
+    elif cf_identity(cell.get("cfo"), cell.get("cfi"), cell.get("cff"), e.get("cf_net"), e.get("cf_fx")) is False:
+        for f in ("cfo", "cfi", "cff"):
+            if cell.get(f) is not None and not _same(cell[f], e.get(f)):
+                fix[f] = cell.pop(f)
+    t = cell.get("cf_tax")
+    if t is not None and t < 0 and _same(-t, e.get("cf_tax")):
+        fix["cf_tax"] = t; cell["cf_tax"] = e["cf_tax"]
+    if fix:
+        cell["fix"] = dict(cell.get("fix", {}), **fix)
+    return fix
+
 def asat_ok(e):
     """A fill's balance sheet must be the FISCAL-YEAR-END audited statement, not an interim or
     off-cycle one. Calendar-year filers (e.g. Ambuja pre-2022) print an "as at 30-Jun" interim BS
@@ -145,14 +179,20 @@ def main():
         bysym.setdefault(e["sym"], []).append(e)
     ledger = json.load(open(LEDGER)) if os.path.exists(LEDGER) else {}
     landed = 0; trusted = 0; vlanded = 0; rejected = []; offcycle = []; basismix = []; cfdrop = []
-    supp = []; supp_rej = []
+    supp = []; supp_rej = []; fixes = []
     for sym, entries in sorted(bysym.items()):
-        # supplements re-read an already-landed cell's own document: no gate run, they re-anchor instead
+        # corrections, then supplements: re-reads of an already-landed cell's own document — no gate run,
+        # they re-anchor on the stored cell instead
+        for e in (x for x in entries if x.get("role") == "correct"):
+            q = "%d0331" % int(e["fy"])
+            fx = correct((ledger.get(sym) or {}).get(q), e)
+            if fx:
+                fixes.append("%s %s:%s" % (sym, q[:4], ",".join("%s %s->%s" % (f, fx[f], (ledger[sym][q].get(f))) for f in sorted(fx))))
         for e in (x for x in entries if x.get("role") == "supplement"):
             q = "%d0331" % int(e["fy"])
             add = supplement((ledger.get(sym) or {}).get(q), e)
             (supp if add else supp_rej).append("%s %s%s" % (sym, q[:4], (":" + ",".join(add)) if add else ""))
-        entries = [x for x in entries if x.get("role") != "supplement"]
+        entries = [x for x in entries if x.get("role") not in ("supplement", "correct")]
         if not entries:
             continue
         val = next((e for e in entries if e.get("role") == "validate"), None)
@@ -193,6 +233,8 @@ def main():
     if supp or supp_rej:
         print("supplements: %d applied %s | %d rejected (no cell / other document / anchor off / nothing new): %s"
               % (len(supp), supp[:20], len(supp_rej), supp_rej[:20]))
+    if fixes:
+        print("corrections: %d cells %s" % (len(fixes), fixes[:40]))
 
 if __name__ == "__main__":
     main()

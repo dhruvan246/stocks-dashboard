@@ -20272,3 +20272,17 @@ merge role "supplement" = a re-read of an already-landed cell's OWN document (sa
 (never overwrites); BS fields only if the re-read's Total Assets is within 1% of the stored one; CF fields only if
 its CFO is within 1% of the stored CFO — or, when the cell has none, the cash identity holds; ppe/assets are anchors,
 never supplemented; `sup: [fields]` records what was added.
+
+### 168g. Re-reading LANDED cells — `scripts/reread_annual_bscf.py` + merge role `correct`
+Every ledger cell records its source attachment, so a reader fix can be re-applied to landed cells without the
+BSE announcements API (PDF host only; `BSE_PDF_CACHE` / `--cache` keep the files — use ~/stocks-cache, not a
+session scratch dir). The script anchors each re-read on the stored Total Assets (±0.5%, one unit scale — same
+statement, same unit; a scan or another page is skipped), then emits a `supplement` (iuad, capex, cf_tax,
+cfo/cfi/cff where the cell lacks them) and, for TEXT cells only, a `correct` entry. `merge_annual_bscf.correct()`
+acts only on evidence: a re-read triple that satisfies the cash identity replaces differing stored values;
+otherwise stored values the re-read cannot reproduce are REMOVED only when the stored triple contradicts the
+statement's own printed net change; a negative stored cf_tax reproduced as positive is sign-fixed. The old
+values stay under `fix` in the cell. Two traps found building it (both now tested): a GARBLED net-change figure
+("147:<61", APLAPOLLO FY22) was skipped as a word and the prior year slid into its slot — the cash reader now
+keeps digit-bearing garbage right of the label as None in position (`rows_tok(garbled_as_none=True)`); and a
+bare marker before a BRACKETED figure ("8 (167.65)", ATUL FY22) is a marker, not a split figure.

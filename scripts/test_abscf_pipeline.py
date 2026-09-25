@@ -71,6 +71,18 @@ except F.BseBlocked:
 check('403 on the Board-Meeting query aborts (never reads as "no filings")', blocked)
 F.get = orig_get
 
+# ---- 1b. BSE_PDF_CACHE: a filing is downloaded once --------------------------------------------
+pdf_calls = []
+def fake_pdf(o, u, b=False):
+    pdf_calls.append(u); return b'%PDF-1.4 fake'
+F.get = fake_pdf
+os.environ['BSE_PDF_CACHE'] = tempfile.mkdtemp()
+d1 = F.download(None, 'x1.pdf'); d2 = F.download(None, 'x1.pdf')
+check('BSE_PDF_CACHE: second download of the same attachment is served from the cache',
+      d1 == d2 == b'%PDF-1.4 fake' and len(pdf_calls) == 1)
+del os.environ['BSE_PDF_CACHE']
+F.get = orig_get
+
 # ---- 2. cash-flow continuation -----------------------------------------------------------------
 OPS = ('Consolidated Statement of Cash Flows for the year ended 31 March 2025\n'
        'A. Cash flow from operating activities\nNet cash from operating activities 90')
@@ -167,6 +179,15 @@ r = cf_of('Net cash from operating activities 515.65 317.00', 'Effect of Exchang
           'Effect of Exchange Differences on Translation of Foreign Currency Cash & Cash Equivalents 10.66 11.60', *BASE)
 check('RITES FY21: the LAST FX-effect line closes the identity (the first is an operating adjustment)',
       (r.get('cfo'), r.get('cfi'), r.get('cff')) == (515.65, 183.45, -707.92))
+r = cf_of('Net cash flow from operating activities (A) 651.71 977,11', 'Net cash flow (used in) investing activities (B) (530.13) (646.83)',
+          'Net cash flow from / (used in) financing activities (C) 26.03 (358.55)',
+          'Net increase / (decrease) in cash and cash equivalents (A+B+C) 147:<61 (28.27)', *BASE)
+check('APLAPOLLO FY22: a garbled net change "147:<61" is unreadable — the PRIOR year (-28.27) never slides in',
+      (r.get('cfo'), r.get('cfi'), r.get('cff')) == (651.71, -530.13, 26.03) and r.get('_cf_net') is None)
+r = cf_of('Net cash flow from operating activities A 231.45 717.95', 'Net cash used in investing activities 8 (167.65) (646.39)',
+          'Net cash used in financing activities (57.44) (52.19)', 'Net increase I (decrease) in cash and cash equivalents A+B+C 6.36 19.37', *BASE)
+check('ATUL FY22: "8 (167.65)" = a marker before a complete bracketed figure (cfi -167.65; identity 6.36 holds)',
+      r.get('cfi') == -167.65 and r.get('_cf_ok') is True)
 check('ANANTRAJ FY21: "1, 143.00" (a split 1,143.00) is unreadable, never Rs 1', F.to_num('1,') is None and F.to_num('1,143.00') == 1143.0
       and F.to_num('(1,21,200)') == -121200.0)
 
@@ -216,6 +237,35 @@ check('supplement never creates a cell', '20200331' not in c)
 check('CF supplement: stored CFO matches -> cfi/cff added, cfo kept',
       (c['20220331'].get('cfo'), c['20220331'].get('cfi'), c['20220331'].get('cff')) == (80.0, -50.0, -20.0))
 check('CF supplement without a stored CFO needs the identity (60-30-10 != 25 -> rejected)', c['20210331'].get('cfo') is None)
+
+# ---- 6. merge 'correct': a verified re-read of a TEXT cell's own document fixes the old parser ----
+json.dump({'HERO': {'20220331': {'b': 'c', 'm': 'text', 'src': 'bse:h.pdf', 'assets': 24000.0, 'ppe': 5000.0,
+                                 'cfo': 2.0, 'cfi': -221.97, 'cff': -1975.33, 'cf_tax': -784.08}},
+           'VIND': {'20200331': {'b': 's', 'm': 'text', 'src': 'bse:v.pdf', 'assets': 900.0, 'ppe': 100.0,
+                                 'cfo': 20.49, 'cfi': -0.08, 'cff': -48.28}},
+           'KEEP': {'20210331': {'b': 'c', 'm': 'text', 'src': 'bse:k.pdf', 'assets': 500.0, 'ppe': 50.0, 'cfo': 30.0, 'cfi': -10.0, 'cff': -5.0}},
+           'VISN': {'20210331': {'b': 'c', 'm': 'vision', 'src': 'bse:n.pdf', 'assets': 500.0, 'ppe': 50.0, 'cfo': 30.0, 'cfi': -10.0, 'cff': -5.0}}},
+          open(M.LEDGER, 'w'))
+reads = [  # HERO: re-read cannot read the split CFO; the statement's own net change (-93.60) contradicts the stored triple
+         {'sym': 'HERO', 'fy': 2022, 'role': 'correct', 'basis': 'c', 'src': 'bse:h.pdf', 'assets': 24000.0,
+          'cfo': None, 'cfi': -221.97, 'cff': -1975.33, 'cf_net': -93.60, 'cf_tax': 784.08},
+         # VIND: the re-read triple passes the identity -> replaces the misread cfi
+         {'sym': 'VIND', 'fy': 2020, 'role': 'correct', 'basis': 's', 'src': 'bse:v.pdf', 'assets': 900.2,
+          'cfo': 20.49, 'cfi': 29.72, 'cff': -48.28, 'cf_net': 1.93},
+         # KEEP: re-read disagrees but NOTHING verifies it (no net line) -> untouched
+         {'sym': 'KEEP', 'fy': 2021, 'role': 'correct', 'basis': 'c', 'src': 'bse:k.pdf', 'assets': 500.0, 'cfo': 31.0, 'cfi': -10.0, 'cff': -5.0},
+         # VISN: a vision cell is never "corrected" by a text re-read
+         {'sym': 'VISN', 'fy': 2021, 'role': 'correct', 'basis': 'c', 'src': 'bse:n.pdf', 'assets': 500.0, 'cfo': 40.0, 'cfi': -10.0, 'cff': -5.0, 'cf_net': 25.0}]
+json.dump(reads, open(rp, 'w')); sys.argv = [sys.argv[0], rp]
+M.main()
+L = json.load(open(M.LEDGER))
+h = L['HERO']['20220331']
+check('HERO FY22: the split-figure CFO 2.0 is removed (net change contradicts it), cfi/cff kept, tax sign fixed, old values kept in fix',
+      'cfo' not in h and h['cfi'] == -221.97 and h['cf_tax'] == 784.08 and h.get('fix') == {'cfo': 2.0, 'cf_tax': -784.08})
+v = L['VIND']['20200331']
+check('VIND FY20: a re-read that passes the cash identity replaces the misread cfi (-0.08 -> 29.72)', v['cfi'] == 29.72 and v.get('fix') == {'cfi': -0.08})
+check('an unverified disagreement changes nothing', L['KEEP']['20210331'] == {'b': 'c', 'm': 'text', 'src': 'bse:k.pdf', 'assets': 500.0, 'ppe': 50.0, 'cfo': 30.0, 'cfi': -10.0, 'cff': -5.0})
+check('a vision cell is never corrected by a text re-read', L['VISN']['20210331']['cfo'] == 30.0 and 'fix' not in L['VISN']['20210331'])
 
 print('ALL PASS' if ok else 'FAILURES')
 sys.exit(0 if ok else 1)
