@@ -19479,3 +19479,13 @@ Jun-15 23.46 / Sep-15 22.34 / Dec-15 22.57 / Mar-16 19.83 (DII 2.56) / Jun-16 17
 institutional "FORIEGN CORPORATE BODIES" 6.40/6.24; Mar-2015 page FII row 213,380,683 vs Opal 213,236,910). Reply workbook rebuilt
 from `shp_engine_live_final8.json`; the methodology sheet states the one-class-per-holder removal (Opal out of Adani Power's printed
 FII row) and the page-era residue is one row (ADANIPORTS Jun-2015, 0.95, public by block) plus the company-labelled chains.
+
+## §160g — THE LAST PAGE-ERA ROW: ADANIPORTS JUN-2015 (2026-09-25, user: "fix the remaining adani ports row too")
+
+BSE's announcement archive (`api.bseindia.com/BseIndiaAPI/api/AnnSubCategoryGetData/w?…&strScrip=532921`) holds the company's own "Shareholding
+Pattern For June 30, 2015" (15-Jul-2015) as a scanned PDF; the `AnnPdfOpen.aspx?Pname=` resolver 302s to `CorpAttachment/2015/7/`. Page 2, cropped
+and read at 400 dpi: "(c-iii) Foreign Companies | 3 | 19,609,259 | 0.95". Control: the neighbouring rows match the BSE page to the share (Clearing
+Member 509 / 1,835,419; NRI 8,618,703 + 277,337 = 8,896,040 over 2,676 holders; Foreign Nationals 14,123; Directors/Relatives 1,683,358; Trusts
+16,980). Foreign Companies = Non-Institutions B4 → public: the stored placement stands, no ledger entry (verdict in the audit). BSE's Jun-2015
+rendering had dropped the filer's sub-category text — the same loss the §160c fingerprints worked around; the quarter's own filing restores it.
+**Every page-era generic row now has a verdict from the filer's own documents.**
