@@ -363,6 +363,14 @@ def classify(limit=0, start=0, only=None, verbose=False):
     led=json.load(open(os.path.join(REPO,"scripts","shp_cell_fix.json"))).get("fix",{})
     verdicts=load_verdicts()
     P={}; stats=collections.Counter(); t0=time.time(); unres_log=[]
+    # A missing BSE list silently drops the symbol (stats "no_bse_list"). On 2026-09-26 the macOS /private/tmp cleanup deleted
+    # 1,477 of 2,192 cached lists (385 of the 500 current N500), and api.bseindia.com refuses plain clients, so they cannot be
+    # re-fetched. Refuse a run that would quietly skip more than 2% of the roster; DII_ROWFIX_ALLOW_MISSING_LISTS=1 overrides.
+    miss=[x for x in syms if not os.path.exists(os.path.join(LISTS,x+".json"))]
+    if miss:
+        print("WARNING: no BSE list for %d/%d symbols in %s (e.g. %s)"%(len(miss),len(syms),LISTS,", ".join(miss[:8])),file=sys.stderr)
+        if len(miss)>0.02*len(syms) and os.environ.get("DII_ROWFIX_ALLOW_MISSING_LISTS")!="1":
+            raise SystemExit("refusing a partial run: %d of %d symbols have no BSE list (set DII_ROWFIX_ALLOW_MISSING_LISTS=1 to run anyway)"%(len(miss),len(syms)))
     for si,sym in enumerate(syms):
         if si<start: continue
         lp=os.path.join(LISTS,sym+".json")

@@ -748,6 +748,14 @@ def classify():
     F_cell_eq=D.F._cell_eq
     verdicts=D.load_verdicts()
     P={}; stats=collections.Counter(); reasons=collections.Counter(); unres=collections.Counter(); left_log=[]
+    # a missing BSE list silently drops a symbol's holder evidence (ctx=None), which can turn live §160 cells into revert proposals.
+    # 2026-09-26: the /private/tmp cleanup deleted 385 of the 500 current lists and api.bseindia.com refuses plain clients. Refuse
+    # a run that would degrade more than 2% of the roster; DII_ROWFIX_ALLOW_MISSING_LISTS=1 overrides.
+    miss=[x for x in syms if codes.get(x) and not os.path.exists(os.path.join(D.LISTS,x+".json"))]
+    if miss:
+        print("WARNING: no BSE list for %d/%d symbols in %s (e.g. %s)"%(len(miss),len(syms),D.LISTS,", ".join(miss[:8])),file=sys.stderr)
+        if len(miss)>0.02*len(syms) and os.environ.get("DII_ROWFIX_ALLOW_MISSING_LISTS")!="1":
+            raise SystemExit("refusing a partial run: %d of %d symbols have no BSE list (set DII_ROWFIX_ALLOW_MISSING_LISTS=1 to run anyway)"%(len(miss),len(syms)))
     for s in syms:
         c=codes.get(s)
         if not c: continue

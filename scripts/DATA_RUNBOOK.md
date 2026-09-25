@@ -19187,6 +19187,21 @@ with generic rows died with ModuleNotFoundError. My §158c test runner sat IN th
 Verified from a clean folder (runner outside the scratchpad, scratchpad paths stripped from sys.path): every import in both tracked scripts
 resolves, the full page-era classify proposes 0 (1,014 §164 + 28 §160f skipped), and no scratch module is loaded.
 
+**Local inputs moved out of /private/tmp (2026-09-26 ~00:30 IST).** The macOS temp cleanup deletes scratchpad files not read for a few days.
+The FII session's BSE list cache went from 2,192 files (25-Sep 16:06) to 715, with folder mtime 00:00 IST 26-Sep. Durable copies:
+- `~/stocks-cache/shp/dii_session/`: `xbrl_bse/` (7,478 old-format XBRLs), `aspx_pages/` (9,120), `shpperent/` (3,236), `aspx_codes.json`.
+  The FII session copied these. Counts match the source, and 120 sampled files are byte-identical.
+- `~/stocks-cache/shp/dii_session/work/`: the rest of the DII scratchpad (392 files, 322 MB). It holds the scratch modules and the fixed
+  rebuild `build_tracked2.py` (it writes scripts/_shp_aspx_rowfix.py from aspx_parse/shpperent/seam88/aspx_heal, strips scratch imports,
+  adds the §164/§160f skips and the list guard), `annual_reports/` (the §160e-g evidence PDFs), the86.json, and the §158a/§158b
+  proposal key lists (w158a/write, w158b/full).
+- `~/stocks-cache/shp/fii_session/bse_all/`: the surviving 715 BSE SHPQNewFormat lists. **Only 115 of the 500 current N500
+  symbols still have one**, and no other copy exists on this Mac (searched ~/stocks-wt, ~/stocks-cache, the checkout, all
+  /private/tmp/claude-501 scratchpads, ~/stocks-backups). api.bseindia.com refuses plain clients, so they cannot be re-fetched now.
+Both classify stages now REFUSE a run when more than 2% of the roster has no list (a missing list silently dropped the symbol; in
+the page era it drops holder evidence and can turn live §160 cells into revert proposals). `DII_ROWFIX_ALLOW_MISSING_LISTS=1`
+overrides. Tested: the full roster is refused (385 / 383 missing), and a single symbol with a list (ARE&M) runs from the durable caches.
+
 ## §159 — FII = INSTITUTIONS (FOREIGN) IN EVERY FORMAT: ROW-LEVEL HEAL OF THE 2015-2022 NON-INSTITUTIONS "ANY OTHER" ROWS (2026-09-24, FII twin of §158)
 
 **Why.** After §158 the Sep-2022 seam still had FII-side artefacts that no DII rule touches: PAYTM 5.45 → 77.26, ETERNAL 9.98 →
