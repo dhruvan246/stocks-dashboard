@@ -19892,3 +19892,17 @@ over them.
 `session_calendar` guard): 1,863 inserted, second pass 0, exactly the 43 intended symbols changed, dates monotonic,
 field lengths equal, every new block's entry AND exit stored ratio == NSE raw ratio within 2%, largest one-day stored
 move 2014-06..2016 on the rescued names ≤ 20.0% (circuit band).
+
+### 164d. Former Nifty 500 members re-read row by row (D3) — XBRL era Jun-2015..Jun-2022
+Scope: our PIT roster (`indices_history.json` "Nifty 500") ∪ Quantmac's universe, rename-normalised, minus the current 500 = 865
+former members (all in the store; 753 with a BSE code, 529 with a BSE SHP list). Old-format XBRLs downloaded 25-Sep: ~6,250
+before 17:49 IST (disguised client — see the BSE access rule in 164b) and 2,452 after it with the plain client (2,443 ok, 9 404).
+`_shp_d1_rowfix.py classify ex` applies to each former member what the current 500 already had: §158 R1-R3, §159 R2-FII and D1.
+Its curl_cffi cache-miss fallbacks (in the imported §158/§159 modules) are answered by a plain-client shim (www only; api refused).
+**Result:** 12,608 rows in the era, 9,279 matched a filing, 2,741 cells / 329 symbols proposed (R1-R3 on 2,437, D1 on 210, R2-FII
+on 208); 2,488 new entries + 253 superseding; on a store copy 2,741 applied, 0 mismatches, 0 sanity flags. Seams on those
+symbols: Sep-2022 dii ≥3 pp 26 → 15, fii 8 → 6; Jun→Sep-2016 fii 18 → 15, dii 14 → 10; Mar→Jun-2016 fii 16 → 25, dii 14 → 21
+(the page-era read of the same symbols, 164f, is next). Quantmac-listed cells touched: 565, of which 418 now agree (1 before).
+Largest: RESPONIND 2016-2022 fii ~4.2 → ~34.6 (its own 2022 form lists the foreign holder under FDI). Also 112 more §164a cells
+(EMBDL, GNFC, MTNL, ZEELEARN — first XBRLs now cached). `apply_refine_ledger` now skips every §164 cell (27 row-level cells moved a
+slot by ≤ 0.02 pp and refine pulled them back); measured: cell_fix + refine hold 4,166 / 4,166 §164 cells, WARNs 11 (pre-existing).

@@ -326,12 +326,12 @@ def apply_refine_ledger(h, path=None):
         print("%s unreadable (%s) — skipped" % (os.path.basename(path), e)); return 0
     n = skip = 0
     bad = []
-    # §164a: a cell moved onto the (A+B) depository basis must not be "refined" back toward the (A+B+C) share-count
-    # values this ledger was built on (within 0.02 pp it would silently undo the re-base slot by slot)
+    # §164: a §164 cell (the (A+B) depository re-base, or a row-level read) must not be "refined" back toward the share-count
+    # values this ledger was built on (within 0.02 pp it would silently undo the move slot by slot)
     try:
         _cf = json.load(open(os.path.join(HERE, "shp_cell_fix.json"), encoding="utf-8")).get("fix") or {}
         rebased = {(s_, q_) for s_, qs_ in _cf.items() for q_, e_ in qs_.items()
-                   if "\u00a7164a depository-receipt basis" in str(e_.get("why", ""))}
+                   if "\u00a7164" in str(e_.get("why", ""))}   # every §164 row-level cell (a small slot move is still the read)
     except (OSError, ValueError):
         rebased = set()
     for sym, qs in fills.items():

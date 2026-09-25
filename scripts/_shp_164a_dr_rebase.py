@@ -3,7 +3,7 @@ on the page's (A+B+C) column is moved onto the (A+B) column the company's own XB
 both totals read from the SAME quarter's BSE ShareholdingPattern.aspx page (share counts). The basis of the stored cell is
 decided per cell from the promoter row (or, with no promoter, the public total) printed in both columns."""
 import os,sys,json,re,gzip,time
-from curl_cffi import requests as cr
+import sys as _s; _s.path.insert(0,os.path.dirname(os.path.abspath(__file__))); from plainget import get as PG
 S=os.path.dirname(os.path.abspath(__file__)); REPO="/Users/dhruvan/stocks-dashboard"
 W="/private/tmp/claude-501/-Users-dhruvan-stocks-dashboard--claude-worktrees-gifted-lumiere-43c0b8/44738ffa-e5c1-4489-a522-d9aa9f8f6570/scratchpad"
 sel=json.load(open(S+'/dr_selected.json')); hist=json.load(open(REPO+'/scripts/shp_history.json'))
@@ -13,18 +13,14 @@ def code_of(s):
 def qtrid(q): y=int(q[:4]); m=int(q[5:7]); return (y-2001)*4+{3:29,6:30,9:31,12:32}[m]
 H={"Referer":"https://www.bseindia.com/","Accept":"text/html,application/xhtml+xml"}
 def page(c,qi):
-    for p in (W+'/aspx_pages/%d_%d.html.gz'%(c,qi), S+'/aspx_dr/%d_%d.html.gz'%(c,qi)):
+    for p in (W+'/aspx_pages/%d_%d.html.gz'%(c,qi), S+'/pe_work/aspx_pages/%d_%d.html.gz'%(c,qi), S+'/aspx_dr/%d_%d.html.gz'%(c,qi)):
         if os.path.exists(p): return gzip.open(p,'rt',encoding='utf-8',errors='ignore').read()
     u="https://www.bseindia.com/corporates/ShareholdingPattern.aspx?scripcd=%d&flag_qtr=1&qtrid=%d.00&Flag=New"%(c,qi)
-    for a in range(3):
-        try:
-            r=cr.get(u,headers=H,impersonate="chrome",timeout=60)
-            if r.status_code==200 and len(r.text)>3000:
-                with gzip.open(S+'/aspx_dr/%d_%d.html.gz'%(c,qi),'wt',encoding='utf-8') as fh: fh.write(r.text)
-                time.sleep(0.8); return r.text
-            if r.status_code==200: return None
-        except Exception: pass
-        time.sleep(3+3*a)
+    code,body=PG(u)                      # plain, honestly identified client — www host only (no impersonation)
+    txt=body.decode('utf-8','ignore')
+    if code==200 and len(txt)>3000:
+        with gzip.open(S+'/aspx_dr/%d_%d.html.gz'%(c,qi),'wt',encoding='utf-8') as fh: fh.write(txt)
+        time.sleep(0.8); return txt
     return None
 NUM=r'\s+(\d+)\s+(\d+)\s+(\d+)\s+([\d.]+)\s+([\d.]+)'
 def parse(txt):

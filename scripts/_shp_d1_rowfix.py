@@ -10,6 +10,27 @@ Stages: classify SYMS|current|ex -> <work>/d1_proposals.json ; verify ; write (m
 import json, os, re, sys, time, copy, collections
 SCRIPTS=os.path.dirname(os.path.abspath(__file__)); REPO=os.path.dirname(SCRIPTS)
 sys.path.insert(0, SCRIPTS)
+# No browser impersonation, ever (feedback-no-browser-impersonation-to-pass-bse-filter). The imported modules carry
+# curl_cffi impersonate="chrome" cache-miss fallbacks; this shim answers them with a PLAIN, honestly identified request
+# (fixed User-Agent, www.bseindia.com only — it serves such clients). api.bseindia.com refuses plain clients: refused here.
+import types as _t, urllib.request as _ur, urllib.error as _ue, time as _tm
+_UA="stocks-dashboard-data-fetch/1.0 (+personal research; contact via github dhruvan246)"
+class _Resp:
+    def __init__(s, code, body): s.status_code=code; s.content=body; s.text=body.decode("utf-8","ignore")
+    def json(s): import json as _j; return _j.loads(s.text)
+def _plain_get(url, headers=None, impersonate=None, timeout=60, **k):
+    if "api.bseindia.com" in url or "bseindia.com" not in url: return _Resp(403, b"")
+    for a in range(3):
+        try:
+            r=_ur.urlopen(_ur.Request(url, headers={"User-Agent":_UA,"Referer":"https://www.bseindia.com/"}), timeout=timeout)
+            body=r.read(); _tm.sleep(0.8); return _Resp(r.status, body)
+        except _ue.HTTPError as e:
+            if e.code in (403,404,406,410): return _Resp(e.code, b"")
+        except Exception: pass
+        _tm.sleep(3+3*a)
+    return _Resp(0, b"")
+_shim=_t.ModuleType("curl_cffi"); _shim.requests=_t.SimpleNamespace(get=_plain_get)
+sys.modules["curl_cffi"]=_shim; sys.modules["curl_cffi.requests"]=_shim.requests
 import _shp_dii_rowfix as D
 import _shp_fii_rowfix as X
 F=D.F
