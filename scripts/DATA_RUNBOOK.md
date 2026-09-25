@@ -19934,6 +19934,27 @@ fixes, second pass 0/0, 47 symbols changed (43 + 4), lengths equal, dates monoto
 now within 0.2% of NSE's raw ratio except CCCL's exit −1.0% (one 0.05 tick). No other day's one-day move changed by >1.5%
 except CCCL 2019-08-26/09-30 inside the block (0.3-0.6 closes re-rounded at 2dp after ×0.5625 — the storage floor).
 
+### 165f. The later NATNLSTEEL / CCCL factors checked against §161 — all four PHANTOM, healed  (2026-09-25, user: "apply 1+2")
+**NO ASSUMPTIONS, NO GUESSWORK** — live sf-data rev 83470e2a28; stored/raw from NSE bhavcopies bar by bar (2019-12..2021-12).
+| event | NSE raw | baked | official (feed/hist/actions.json) | Yahoo | shares = PAT ÷ basic EPS (docs/fin) |
+|---|---|---|---|---|---|
+| NATNLSTEEL 2020-04-13 | 2.10 (01-10) → 1.10, PREV_CLOSE 1.05 | ×½ | none | no series | 4.45 cr every quarter Dec-18..Mar-22 |
+| NATNLSTEEL 2020-07-13 | 1.10 → 3.45, PREV_CLOSE 3.60 | ×3 | none | no series | same |
+| CCCL 2020-03-13 | 0.20 → 0.15, PREV_CLOSE 0.20 | ×¾ | none | prints raw | 39.6-40.1 cr standalone, flat 2018-22 |
+| CCCL 2020-10-22 | 0.20 → 0.15 | ×¾ | none | prints raw | same |
+NATNLSTEEL traded on NSE on exactly ONE day between 2020-01-13 and 07-10 (129 files scanned) — both events are relistings
+after suspensions (PREV_CLOSE = NSE's reset base, not a missed trade). CCCL's are single 0.05 ticks at Rs0.20 (-25%,
+exactly the old [0.75,1.30] edge). **Why §161f never listed them:** NATNLSTEEL's two events are one bar apart, so the
+audit's ±4-bar median window blurs them (F 1.67/1.80, no CA fraction); CCCL is under the Rs0.25 floor by design.
+**Heal.** NATNLSTEEL → `phantom_crashes.json` [20200413, 20200713] + `crash_raw_prices.json` (20200110 2.10 / 20200413
+1.10 / 20200713 3.45) — self_heal rescales pre-ex ×2 then ×⅓. CCCL is below self_heal's Rs0.25 quantization floor (it
+skips by design), so it rides `bz_scale_fix.json` (2nd CCCL entry: ≤2020-03-12 ×16/9, 2020-03-13..10-21 ×4/3; witness
+10-21→10-22 ratio 1.0 → 0.75). The two `bz_backfill.json.gz` blocks are back at their original RAW bars, pre 1.0.
+Dry run (live bin → insert_bz_history → apply_bz_scale_fix → self_heal, twice): pass 1 = 2 fix segments + 2 heals, pass 2
+= 0/0/0, only these 2 symbols changed, dates untouched. **Every NSE-checked bar within 1 paisa of raw: CCCL 332/332,
+NATNLSTEEL 356/356**; spot checks CCCL 2009/2010-02-09 scale 0.2000 (official 2010 ×0.2 intact), 2010-02-11..2018 1.0000;
+NATNLSTEEL 2005..2022 1.0000. The series now shows NATNLSTEEL's real relisting moves (-47.6% 04-13, +213.6% 07-13).
+
 ### 164d. Former Nifty 500 members re-read row by row (D3) — XBRL era Jun-2015..Jun-2022
 Scope: our PIT roster (`indices_history.json` "Nifty 500") ∪ Quantmac's universe, rename-normalised, minus the current 500 = 865
 former members (all in the store; 753 with a BSE code, 529 with a BSE SHP list). Old-format XBRLs downloaded 25-Sep: ~6,250

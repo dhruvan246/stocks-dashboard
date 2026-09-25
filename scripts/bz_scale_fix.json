@@ -79,6 +79,28 @@
     "after": 0.950506
    },
    "src": "pre x0.5 correct (phantom x2 at each hole exit); bars lacked rights_terp.json 2026-03-23 x0.9747 (the builder's _p reads corp_actions.json only). Bin scale outside both blocks measured 0.9746-0.9747. Both blocks x0.9747."
+  },
+  {
+   "sym": "CCCL",
+   "segments": [
+    {
+     "lo": 0,
+     "hi": 20200312,
+     "f": 1.77777778
+    },
+    {
+     "lo": 20200313,
+     "hi": 20201021,
+     "f": 1.33333333
+    }
+   ],
+   "witness": {
+    "a": 20201021,
+    "b": 20201022,
+    "before": 1.0,
+    "after": 0.75
+   },
+   "src": "\u00a7165f: undo the two PHANTOM x3/4 inferences at 2020-03-13 and 2020-10-22 (NSE raw 0.20->0.15 one-tick moves, PREV_CLOSE 0.20 both days; no official record on NSE feed/hist/actions.json; Yahoo prints the raw closes; standalone PAT/EPS share count 39.6-40.1 cr flat 2018-2022). Below self_heal's Rs0.25 floor, so healed here. Series is then at raw scale after the official 2010-02-10 x0.2. Penny bars re-rounded at 2dp: +-1 paisa vs raw is the storage floor."
   }
  ]
 }
