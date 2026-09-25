@@ -20064,6 +20064,16 @@ OK. (182 older §164a/§164 cells sit <= 0.01 pp off their entry — within `_ce
 from this batch.) The §160 script's scratch-only `seam88`/`shpperent` imports (which broke it on a clean checkout for
 generic-row symbols) were removed by the DII session in 8a008be1a after this run hit them.
 
+### 164h. 15 assumed dates the §164e sweep missed (2026-09-26, found building the reply-3 per-cell answers)
+§164e un-dated rows whose ONLY date is an assumed quarter-end + 21 days (third-party fills, `subdate=QE+21d`) but selected them by
+the SERVED date. When the +21 day fell on a weekend/holiday, `shp_lag_fix.json` had moved it to the next trading day ("served
+visibility date is not a trading day"), so the served date no longer carried the +21 signature and 15 rows kept an assumed date
+that looked measured: BSE Ltd Sep-17..Jun-19 + Mar/Jun-21 (9), CDSL Jun-18..Jun-19 (4), SUNDARMFIN Jun-18, UBL Sep-18. History
+slot 5 still holds the exact +21 date, so adding the keys to `shp_undated.json` is enough — build_engine_feed un-dates them before
+the lag re-assert (which only re-dates a stored `was`). Measured on a local rebuild: exactly these 15 rows change (sub -> 99999999),
+values untouched. Scan used: every `shp_fill_thirdparty` cell tagged QE+21 whose live row is dated, minus those with a
+`shp_sub_dates` entry (319, evidence: BSE announcement stream / SHPQNewFormat) or a `days_earlier` / NSE-broadcast lag entry.
+
 ## 166. OLD official splits the bin never received — `self_heal` now detects them network-free and heals them ledger-driven; RASOYPR 1:15 healed  (2026-09-25, found by the Quantmac backtest-indicator reconciliation)
 
 ### 166a. The defect
