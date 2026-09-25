@@ -79,6 +79,9 @@ except Exception as _e:
     print("  (§87 campaign verdicts unavailable: %s)" % _e)
 
 
+_DEM = json.load(open(os.path.join(HERE, "demerger_adj.json")))
+
+
 def campaign(sym, a, b):   # §87 campaign's recorded BSE/Yahoo checks for an ex-date inside [a-7d, b+7d]
     return [v for v in _CAMP.get(sym, []) if a - 7 <= v["ex"] <= b + 7]
 
@@ -107,9 +110,16 @@ def verdict(e):
     nse_prod = day_products(split_rows)
     if any(match(f, F) for f in nse_prod.values()) or any(match(r["factor"], F) for r in bse_split):
         return "REAL", {"nse": split_rows, "bse": bse_split}
+    for ex_, f_ in nse_prod.items():   # exchange row names a split without its ratio; Yahoo supplies it
+        for y in ys:
+            if abs(y["date"] - ex_) <= 3 and match(f_ * y["factor"], F):
+                return "REAL", {"nse": [dict(r, factor=f_ * y["factor"]) for r in split_rows if r["ex"] == ex_][:1],
+                                "bse": [], "combined_with_yahoo": y}
     if split_rows or bse_split:
         return "WRONG_FACTOR", {"nse": split_rows, "bse": bse_split}
     if other_rows or bse_other:
+        dem = [x for x in _DEM if x[0] == e["sym"] and a - 7 <= int(x[1]) <= b + 7 and match(x[2], F)]
+        if dem: return "LEDGER_DEMERGER", {"demerger_adj": dem, "nse": other_rows}
         return "OTHER_ACTION", {"nse": other_rows, "bse": bse_other}
     if any(match(y["factor"], F) for y in ys):
         return "YAHOO_SPLIT", {"yahoo": ys}
@@ -164,8 +174,57 @@ def main():
             lst = H.setdefault("factors", {}).setdefault(r["sym"], [])
             if not any(int(x[0]) == ex for x in lst):
                 lst.append([ex, round(best["factor"], 6)]); lst.sort(); n_h += 1
-        json.dump(H, open(h_p, "w"))
-        print("applied: %d phantom_crashes entries, %d corp_actions_hist factors" % (n_pc, n_h))
+        # WRONG_FACTOR: the exchange's exact factor goes in the hist ledger AND the event is parked in
+        # unconfirmed_ca.json keyed by the official ex-date, so self_heal reconciles it at any age
+        # (baked guess -> official factor) and prune_unconfirmed clears it once measured applied.
+        E = {(x["sym"], x["b"]): x for x in json.load(open(os.path.join(HERE, "ca_review_evidence.json")))["events"]}
+        u_p = os.path.join(HERE, "unconfirmed_ca.json")
+        U = json.load(open(u_p)) if os.path.exists(u_p) else {}
+        raw_p = os.path.join(HERE, "crash_raw_prices.json"); RAW = json.load(open(raw_p))
+        n_wf = 0
+        for r in res:
+            if r["verdict"] != "WRONG_FACTOR": continue
+            ev = E[(r["sym"], r["b"])]; bh = ev.get("bhav") or {}
+            pa, pb = bh.get(str(r["a"])), bh.get(str(r["b"]))
+            recs = r["evidence"]["nse"]
+            if not recs or not isinstance(pa, dict) or not isinstance(pb, dict): continue
+            prod = day_products(recs)
+            ex, f = min(prod.items(), key=lambda kv: abs(kv[0] - r["b"]))
+            if not (0.75 <= (pb["close"] / pa["close"]) / f <= 1.30): continue   # tape must agree with the record
+            lst = H["factors"].setdefault(r["sym"], [])
+            lst[:] = [x for x in lst if int(x[0]) != ex] + [[ex, round(f, 6)]]; lst.sort()
+            U.setdefault(r["sym"], {})[str(ex)] = {"prev_d": r["a"], "prev": pa["close"], "close": pb["close"],
+                "open": pb.get("open"), "ratio": round(pb["close"] / pa["close"], 4), "seen": "2026-09-25",
+                "note": "§161g WRONG_FACTOR: baked %.4f, official %.6f (%s) — self_heal reconciles" % (r["F"], f, recs[0]["subject"][:60])}
+            RAW.setdefault(r["sym"], {}).update({str(r["a"]): pa["close"], str(r["b"]): pb["close"]})
+            n_wf += 1
+        # RIGHTS: TERP residual vs the factor actually baked (exchange raw move / our published move)
+        rt_p = os.path.join(HERE, "rights_terp.json"); RT = json.load(open(rt_p)); n_rt = 0
+        rte_p = os.path.join(HERE, "ca_rights_terp_evidence.json")
+        RTE = {(x["sym"], x["b"]): x for x in json.load(open(rte_p))["events"]} if os.path.exists(rte_p) else {}
+        for r in res:
+            if r["verdict"] != "OTHER_ACTION": continue
+            t = RTE.get((r["sym"], r["b"]))
+            if not t or not t.get("terp_factor") or not r.get("raw_bhav"): continue
+            cur = t["adj_b"] / t["adj_a"]                       # ex ratio currently baked into the series
+            baked = r["raw_bhav"] / cur                          # factor the old guess divided out
+            if abs(r["raw_bhav"] / t["terp_factor"] - 1) > 0.15: continue   # TERP inputs must fit the tape
+            resid = t["terp_factor"] / baked
+            if any(x[0] == r["sym"] and int(x[1]) == r["b"] for x in RT): continue
+            RT.append([r["sym"], r["b"], round(resid, 4), round(cur, 4)]); n_rt += 1
+        # OTHER_ACTION demerger with no demerger_adj factor -> official keep-drop (the day-of policy)
+        n_kd = 0
+        for r in res:
+            if r["verdict"] == "OTHER_ACTION" and any(x.get("demerger") for x in r["evidence"]["nse"]):
+                v = pc.setdefault(r["sym"], [])
+                if r["b"] not in v: v.append(r["b"]); v.sort(); n_kd += 1
+        json.dump(dict(sorted(pc.items())), open(pc_p, "w"), indent=0)
+        json.dump(H, open(h_p, "w"), indent=0)
+        json.dump(U, open(u_p, "w"), indent=1, sort_keys=True)
+        json.dump(RAW, open(raw_p, "w"), indent=0)
+        json.dump(RT, open(rt_p, "w"), indent=0)
+        print("applied: %d phantom_crashes, %d hist factors, %d wrong-factor reconciliations, %d rights TERP, %d demerger keep-drops"
+              % (n_pc, n_h, n_wf, n_rt, n_kd))
 
 
 if __name__ == "__main__":
