@@ -19758,6 +19758,51 @@ ca_review_verdicts.json — e.g. the HDFC Oct-2023 funds open at the adjusted ba
 1:10 split implies); the `-RE` entitlements have no witness at all; AMARJOTHI/KJMCFIN/VTMLTD/BURNPUR/BATLIBOI 2026 and
 NOVARTIND/SHREDIGCEM/ARENTERP relist after multi-year gaps where only BSE (unreachable) holds the record.
 
+### 161j. The §161e audit's blind spot fixed — an EXACT witness from NSE's own tape; re-run; 15 phantoms healed  (2026-09-26, user: "fix the §161 audit blind spot and rerun it" / "heal whatever new phantoms it finds")
+**NO ASSUMPTIONS, NO GUESSWORK** — live sf-data rev e9cb28d936 (end 2026-09-25).
+**The blind spot (§165f):** the turnover witness `cum = vw ÷ (t·1e5/v)` is noise wherever turnover is thin (t is stored to
+0.1 lakh: ±30% at t = 0.3), its ±4-bar median merged factors one bar apart (NATNLSTEEL 2020 read 1.67 / 1.80, matching no
+fraction), and the Rs0.25 floor dropped every penny tick (CCCL). **The fix:** `scripts/fetch_raw_tape.py` caches NSE's raw
+close for every bin session 2002+ (`scripts/_raw_tape/`, gitignored; 6,146 of 6,156 sessions — the other 10 are NSE HOLIDAYS,
+see below; the file's own DATE1/TIMESTAMP must equal the URL date or it is not cached). `audit_applied_factors.py --tape`:
+stored/raw per bar IS the applied product; runs of bars whose [(c−h)/r, (c+h)/r] intervals intersect share one scale
+(h = 0.011 + 0.1%·c); every boundary between runs is an applied factor of ANY size, at ANY price (tick-limited flagged), at ANY
+spacing. A 1-bar run whose neighbours share a scale = a BAR MISMATCH, reported apart. Outside the tape's span the turnover
+witness still runs, testing unbounded AND bounded windows (union; tagged `window`) — non-tape mode is a strict superset of
+the old tool (2,075 → 4,881 events, 0 lost). Official rows listed in both corp_actions and hist are de-duplicated before
+the value check. **Validated on known cases first:** the pre-heal bin (b3f0349960) → every defect of §165e/f found (CCCL ×2
++ its BZ exit, NATNLSTEEL ×2 + exit, JYOTISTRUC exit, TIL's 4 joins); the live bin → none; every official / rights / demerger
+factor on RELIANCE, BBOX, KESORAMIND, JYOTISTRUC, TIL, CALSOFT classified correctly (CALSOFT 2025-01-15 = rights_terp).
+**Re-run result (3,329 events):** tape: 1,580 OFFICIAL, 337 LEDGER, 607 NO_RECORD, 35 OFFICIAL_VALUE_MISMATCH, 27
+TICKER_SEAM, 17 CRASH_LISTED_STILL_ADJUSTED; turnover (no tape): 726, 717 without an official record; 238 bar mismatches on 23 symbols.
+**Healed (15)** — rule fixed before looking: 2006+ (dense official feed), no official record, NOT tick-limited, bars adjacent,
+AND an independent witness of the raw move (Yahoo ≤4% from raw and ≥3× nearer raw than adjusted, or the §161i filings
+share count flat) with no witness contradicting: AHLWEST 2026-04-06, BLUECOAST 2008-12-16, BOHRAIND 2023-08-25, CREATIVEYE
+2023-08-25, DCMFINSERV 2021-10-11, DELTAMAGNT 2007-03-20, DSKULKARNI 2026-08-03, HBSL 2020-04-13, RADAAN 2021-04-12, SALONA
+2013-03-19, SAMBHAAV 2006-06-15, SHEKHAWATI 2020-03-23, WEWIN 2023-08-25, ZENITHEXPO 2011-12-02, ZENITHSTL 2020-04-15 →
+`phantom_crashes.json` + `crash_raw_prices.json` (raw prev/ex closes from the tape). Dry run (live bin → self_heal ×2 →
+exact re-audit): 15 healed, pass 2 = 0, dates/tails unchanged, every healed boundary now reads NSE's raw move exactly.
+**Not healed — `scripts/ca_tape_review.json` (review only, evidence per row):**
+- `penny_eroded_needs_tape_restore` (56 events, 11 symbols: BIRLACOT, DHANUS, FARMAXIND, RASOYPR, VKSPL, ESSENTIA, FCSSOFT,
+  GATECHDVR, VIVIDHA, PARASPETRO, SPCENET) — chains of ×¾/×½ inferred on Rs0.05-0.20 ticks (FCSSOFT: six in March 2020);
+  stored closes are down to Rs0.01-0.05 so a multiplicative undo cannot recover them (2dp already lost it). Needs the bars
+  REBUILT from the raw tape — a different mechanism, not built.
+- `special_session_stray_bars` (7: TATAMOTORS, CAREERP, SASTASUNDR) — bars only on weekend special sessions (2019-10-27,
+  2020-11-14, 2023-11-12, 2024-03-02, 2024-05-18); the "flat share count" there is not a factor verdict — identity defect.
+- `real_action_missing_from_feed` (13) — filings show the share count DID change: real actions NSE's feed lacks.
+- `no_record` (532: 171 pre-2006 where absence proves nothing, 148 2006-15, 213 2016+) — witnesses absent, unclear or
+  conflicting (e.g. ZENITHEXPO 2012-01-05: Yahoo 4.8% from raw — just outside the bar).
+- `official_value_mismatch` (35) — an official record exists but a DIFFERENT factor is baked in (AARON 2020-09-03 applied 0.6
+  vs official 0.5238; CONTI 2020-02-13 0.6 vs 0.5; KMSUGAR 1/3 vs 1/5; MAANALU 2/3 vs 1/4 …). Not phantoms; not touched.
+- `ticker_seam` (27) — factor at a rename seam (ARL→ARVINDREM ×10 …); mostly SEAM_MERGES' own seam factors.
+- GLOBLTRUST: `phantom_crashes` lists 2004-07-28 but the baked factor sits on 07-26→07-27 — the entry is one bar late, so
+  self_heal no-ops; pre-2006, no witness → left.
+**⚠️ Found in passing, NOT fixed: 10 whole PHANTOM SESSIONS in the sf bin** — 2019-10-02/08/21/28, 11-12, 12-25,
+2020-11-16, 2021-11-05, 2024-01-22, 2024-05-20 are NSE holidays (NSE's URL re-serves the prior day's file; DATE1 proves
+it), yet the live bin has 1,610-2,134 bars on each, 90-100% repeating the previous bar's close/open/volume exactly (real
+sessions: 0%). `session_calendar` counts bars, so it accepts them (§89f's check is count-based).
+Re-run: `python3 scripts/fetch_raw_tape.py <sf-data clone>` then `python3 scripts/audit_applied_factors.py <clone> out.json --tape`.
+
 ## 163. Nifty-500 PIT OHLC coverage 2009→today measured; the 14 member-days NSE traded but we lacked — SHILPI BZ block + AGCNET→BBOX seam merge  (2026-09-25, user request)
 **NO ASSUMPTIONS, NO GUESSWORK** — measured on LIVE sf-data rev d380cafc55 (end 2026-09-24) × `indices_history.json`
 @ origin/main 07009d433, engine key resolution replicated (`SERIES[s] ? s : FUND_ALIAS[s]`).
