@@ -3,7 +3,7 @@
   "built": "2026-09-21",
   "rule": "RAW NSE bhavcopy OHLC/volume/turnover(lacs) + MTO delivery %; scaled at apply time by f = stored close of the anchor bar / anchor raw close (update_sf_data.apply_bar_inserts); fill-only where the (sym,date) bar is absent; rows apply in (sym,date) order so 2010-10-26 / 2017-03-27 anchor on the ledger's own 2010-10-14 / 2017-03-24 rows",
   "why": "the \u00a7106b missing-session insert skipped these rows: TMPV because the as-printed symbol TATAMOTORS is itself a (dead) bin key so _survivor() kept the bar on that fragment; BAJFINANCE because its cumulative adjustment (two 1:10 splits) put f=0.0097 under the inserter's 0.01 floor. DATA_RUNBOOK \u00a7106h",
-  "src": "cm<DDMONYYYY>bhav.csv.zip + MTO_DDMMYYYY.DAT from nsearchives.nseindia.com, fetched 2026-09-21; anchor raw close == the session's own PREVCLOSE (except 2010-10-26 rows, see note); two-sided f agreement within 0.5% + 2-dp rounding on every directly-anchored row | 2026-09-21b: 2110 rows on the 11 weekend special sessions + 11 \u00a7106b sessions recovered by the inserter fixes (see rows' note) | 2026-09-21c: 22 rows for members whose split ex-date fell ON a missing session (anchor expressed post-split with the official factor) | 2026-09-21d: FCSSOFT 2009-10-17 dropped (two-sided check +9.5%); every other row validated two-sided against the next stored bar (2132 ok, 13 chained on bars the session insert creates first \u2014 verified in the local full-sequence run) | 2026-09-21e: 957 renamed-key rows on the 2019-2026 weekend special sessions (dry-run harvest, two-sided validated; 1 flagged rows dropped) | 2026-09-21f: RASOYPR 2015-09-03 (the last quantmac no-bar cell) \u2014 anchored on the real-close 08-31 bar (f=1, no 2015 CA) past its zero-close 09-01/02 neighbours"
+  "src": "cm<DDMONYYYY>bhav.csv.zip + MTO_DDMMYYYY.DAT from nsearchives.nseindia.com, fetched 2026-09-21; anchor raw close == the session's own PREVCLOSE (except 2010-10-26 rows, see note); two-sided f agreement within 0.5% + 2-dp rounding on every directly-anchored row | 2026-09-21b: 2110 rows on the 11 weekend special sessions + 11 \u00a7106b sessions recovered by the inserter fixes (see rows' note) | 2026-09-21c: 22 rows for members whose split ex-date fell ON a missing session (anchor expressed post-split with the official factor) | 2026-09-21d: FCSSOFT 2009-10-17 dropped (two-sided check +9.5%); every other row validated two-sided against the next stored bar (2132 ok, 13 chained on bars the session insert creates first \u2014 verified in the local full-sequence run) | 2026-09-21e: 957 renamed-key rows on the 2019-2026 weekend special sessions (dry-run harvest, two-sided validated; 1 flagged rows dropped) | 2026-09-21f: RASOYPR 2015-09-03 (the last quantmac no-bar cell) \u2014 anchored on the real-close 08-31 bar (f=1, no 2015 CA) past its zero-close 09-01/02 neighbours | 2026-09-25 (\u00a7163): the 2 AGCNET-keyed rows (2009-10-17, 2010-02-06) re-keyed to BBOX after the AGCNET->BBOX seam merge \u2014 else they would print 'series absent' and drop"
  },
  "rows": [
   {
@@ -511,7 +511,7 @@
    "note": "row the 2026-08-23 session insert skipped (dead-fragment capture / 0.01 floor / anchor); recovered by the 2026-09-21 inserter fixes in a local dry run \u2014 the day-level guard never revisits an inserted session, so it rides this ledger (\u00a7106i)"
   },
   {
-   "sym": "AGCNET",
+   "sym": "BBOX",
    "ymd": 20091017,
    "as": "AVAYAGCL",
    "o": 182.05,
@@ -526,7 +526,7 @@
     "c": 179.2
    },
    "src": "weekend_sessions.json.gz rows for 20091017 (NSE cm-bhav zip, TOTTRDVAL/1e5 -> lacs) + MTO_20091017.DAT traded==TOTTRDQTY; anchor raw close from ledger prev",
-   "note": "row the 2026-08-23 session insert skipped (dead-fragment capture / 0.01 floor / anchor); recovered by the 2026-09-21 inserter fixes in a local dry run \u2014 the day-level guard never revisits an inserted session, so it rides this ledger (\u00a7106i)"
+   "note": "row the 2026-08-23 session insert skipped (dead-fragment capture / 0.01 floor / anchor); recovered by the 2026-09-21 inserter fixes in a local dry run \u2014 the day-level guard never revisits an inserted session, so it rides this ledger (\u00a7106i) | 2026-09-25: sym AGCNET->BBOX \u2014 the AGCNET fragment is now SEAM-merged into BBOX (update_sf_data SEAM_MERGES, DATA_RUNBOOK \u00a7163); anchor bar stays the same session, f becomes the merged 0.1 scale"
   },
   {
    "sym": "AGI",
@@ -4237,7 +4237,7 @@
    "note": "row the 2026-08-23 session insert skipped (dead-fragment capture / 0.01 floor / anchor); recovered by the 2026-09-21 inserter fixes in a local dry run \u2014 the day-level guard never revisits an inserted session, so it rides this ledger (\u00a7106i)"
   },
   {
-   "sym": "AGCNET",
+   "sym": "BBOX",
    "ymd": 20100206,
    "as": "AVAYAGCL",
    "o": 222.0,
@@ -4252,7 +4252,7 @@
     "c": 220.3
    },
    "src": "weekend_sessions.json.gz rows for 20100206 (NSE cm-bhav zip, TOTTRDVAL/1e5 -> lacs) + MTO_20100206.DAT traded==TOTTRDQTY; anchor raw close from ledger prev",
-   "note": "row the 2026-08-23 session insert skipped (dead-fragment capture / 0.01 floor / anchor); recovered by the 2026-09-21 inserter fixes in a local dry run \u2014 the day-level guard never revisits an inserted session, so it rides this ledger (\u00a7106i)"
+   "note": "row the 2026-08-23 session insert skipped (dead-fragment capture / 0.01 floor / anchor); recovered by the 2026-09-21 inserter fixes in a local dry run \u2014 the day-level guard never revisits an inserted session, so it rides this ledger (\u00a7106i) | 2026-09-25: sym AGCNET->BBOX \u2014 the AGCNET fragment is now SEAM-merged into BBOX (update_sf_data SEAM_MERGES, DATA_RUNBOOK \u00a7163); anchor bar stays the same session, f becomes the merged 0.1 scale"
   },
   {
    "sym": "AGI",

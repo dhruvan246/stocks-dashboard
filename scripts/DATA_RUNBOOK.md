@@ -19662,3 +19662,43 @@ Second witness, the §87 tape standard with BOTH signals (large factors only): e
 ca_review_verdicts.json — e.g. the HDFC Oct-2023 funds open at the adjusted basis but volume ×21–40 (> 2× the ×10 a
 1:10 split implies); the `-RE` entitlements have no witness at all; AMARJOTHI/KJMCFIN/VTMLTD/BURNPUR/BATLIBOI 2026 and
 NOVARTIND/SHREDIGCEM/ARENTERP relist after multi-year gaps where only BSE (unreachable) holds the record.
+
+## 163. Nifty-500 PIT OHLC coverage 2009→today measured; the 14 member-days NSE traded but we lacked — SHILPI BZ block + AGCNET→BBOX seam merge  (2026-09-25, user request)
+**NO ASSUMPTIONS, NO GUESSWORK** — measured on LIVE sf-data rev d380cafc55 (end 2026-09-24) × `indices_history.json`
+@ origin/main 07009d433, engine key resolution replicated (`SERIES[s] ? s : FUND_ALIAS[s]`).
+
+### 163a. Measurement
+4,404 sessions 2009-01-01→2026-09-24 (dates with ≥100 bars), 177 N500 snapshots in force, 1,128 distinct keys,
+2,206,340 member-days → **2,204,264 with full O/H/L/C (99.906%)**. Gaps: 1,544 on `DUMMY*` placeholder roster symbols
+(no tape by nature; DUMMYABFRL/RAYMN/SIEMS sit in 9 snapshots 2024-03-28→2025-06-16 — not adjudicated), 16 RASOYPR bars
+with a null field, 532 real member-days without a bar. Those 532 checked against NSE's own bhavcopy (290 dates, every
+file's internal date == URL date; every gap symbol matched in other files, so symbol resolution was not the miss):
+- **377 + 141 = NOT in NSE's bhavcopy → the stock did not trade on NSE; tape correct.** 2009-05-18 (141) = NSE's file has
+  588 rows vs ~1,280 on neighbouring days. RELINFRA 2025-12-22→2026-01-30 (22) is in this class too.
+- **14 traded on NSE, missing from what the engine reads → fixed below.**
+
+### 163b. SHILPI 2017-10-31→2018-02-06 — a whole BZ block missing (9 of its 69 sessions were N500 member-days)
+`bz_backfill.json.gz` held only SHILPI's 2018-09-25 block; why the build skipped this one is NOT known (its skip log was
+not kept). NSE cm-zip rows: entry 30-Oct close 22.70 == 31-Oct PREVCLOSE; every BZ PREVCLOSE == prior close; exit 06-Feb
+close 10.95 == 07-Feb (EQ) PREVCLOSE. Stored 30-Oct close 22.70 == raw and SHILPI's only official factor is 2014-09-16
+→ pre 1.0, values raw. `sec_bhavdata_full` 404s on all 69 days → dv 0 / vw = close, the builder's old-zip rule. Block
+added to the BZ ledger (`after` 20171030, carries a `src` note); the 2018 block's `from` set to 20180206 (pre 1.0, no effect).
+⚠️ A future `build_bz_backfill.py --build` rewrites the ledger — confirm it re-derives this block.
+
+### 163c. AGCNET → BBOX — a CONFIRMED ISIN seam (INE676A01019 → 01027, 2010-06-08) that §106 left split
+The roster says AGCNET until 2010-06-14; the AGCNET key (dead, raw scale) ends 2010-06-07 plus 19 stray special-session
+bars 2012-2020, BBOX starts 2010-06-08 → 5 member-days priceless, and any holder across June 2010 held a dying key.
+`_isin_seam_verdicts.json` has it CONFIRMED (NSE prevclose 260.95 on the new first session == old last close → seam 1).
+It was deferred only because `orphan_needs_factor.json` counted CA-adj 0.2 (drift 0.4995); corp_actions.json now carries
+BBOX 2012-12-19 ×0.5 AND 2022-05-13 ×0.2 → CA-adj 0.1, drift 26.07 / (260.95 × 0.1) = 0.999, gap 1 d.
+Landed as `SEAM_MERGES["BBOX"] = {"old": "AGCNET", "seam": 1}`. The 2 `bar_inserts.json` rows keyed AGCNET
+(2009-10-17, 2010-02-06) re-keyed to BBOX — after the merge the AGCNET key no longer exists and they would drop as
+"series absent" (dry run: both bars arrive via the merge anyway, 17.85 / 22.45 = 178.5 / 224.5 × 0.1).
+Engine: roster AGCNET → `SERIES['AGCNET']` absent → FUND_ALIAS → BBOX (both twins, no engine change).
+
+### 163d. Dry run (live series, the file's own SEAM_MERGES + merge loop exec'd, real `insert_bz_history` / `apply_bar_inserts`)
+`MANUAL RENAME MERGE AGCNET -> BBOX (2404 pts prepended, adj=0.1000)`; BBOX first bar 1996-01-01, 4,052 → 6,456 bars,
+join 2010-06-07 26.09 → 06-08 26.07 (NSE 260.95 → 260.75); SHILPI +69 bars, both joins continuous; field lengths equal,
+dates monotonic, second pass inserts 0. Goes live on the next `refresh-backtest-data.yml` run.
+**OPEN (not measured):** the BZ ledger's first bar is 2016-01-01 — BZ history before 2016 was never scanned, and the
+2016-17 blocks were built when `dailyFrom` was 2018 (weekly-thinned). Scope of missing pre-2018 BZ bars unknown.

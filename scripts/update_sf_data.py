@@ -1281,6 +1281,7 @@ def main():
         "ASHCONIUL": {"old": "ASHCO", "seam": 10},   # ASHCO 20100920→20101004: NSE prevclose 7.5/close 0.75; CA-adj 1, drift 1.067, gap 14d, 713 bars
         "ASIANHOTNR": {"old": "ASIANHOTEL", "seam": 1},   # ASIANHOTEL 20100223→20100407: NSE prevclose 559.95/close 559.95; CA-adj 1, drift 0.898, gap 43d, 2339 bars
         "AVANTIFEED": {"old": "AVANTI", "seam": 1.00197},   # AVANTI 20150129→20150415: NSE prevclose 1805.0/close 1801.45; CA-adj 0.06667, drift 0.984, gap 76d, 1179 bars
+        "BBOX": {"old": "AGCNET", "seam": 1},   # AGCNET 20100607→20100608: NSE prevclose 260.95/close 260.95; CA-adj 0.1 (20121219 x0.5, 20220513 x0.2), drift 0.999, gap 1d — deferred in §106 only because orphan_needs_factor.json counted CA-adj 0.2 (drift 0.4995); §163 (2026-09-25)
         "BALLARPUR": {"old": "BILT", "seam": 0.2},   # BILT 20080228→20080331: NSE prevclose 27.5/close 137.5; CA-adj 1, drift 1.011, gap 32d, 1861 bars
         "BELLCERATL": {"old": "BELCERAMIC", "seam": 3},   # BELCERAMIC 20100723→20100908: NSE prevclose 25.95/close 8.65; CA-adj 1, drift 0.990, gap 47d, 2413 bars
         "BHAGYANGR": {"old": "BHAGYNAGAR", "seam": 1},   # BHAGYNAGAR 20170309→20170517: NSE prevclose 24.35/close 24.35; CA-adj 1, drift 1.092, gap 69d, 3509 bars
