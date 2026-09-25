@@ -19180,6 +19180,12 @@ in either script. Running it then exposed the 28 §160f Adani cells (ADANIPOWER 
 "revert-unsupported": they come from the filers' annual reports (one class per holder), not from the page rules. So the stage also
 skips any cell whose top entry carries "(§160f)". Result on store 094c33d90: 0 proposals (1,014 §164 + 28 §160f cells skipped),
 i.e. the tracked script reproduces the live store.
+**Addendum (2026-09-25 22:15 IST, found by the FII session's §164g runner).** The tracked script still carried six in-function
+`import seam88` / `import seam88, shpperent as SP` lines. Those modules live only in the session scratchpad, so on a clean checkout any symbol
+with generic rows died with ModuleNotFoundError. My §158c test runner sat IN the scratchpad, which is why it passed. All six were dead except
+`_s88.in_known`, now the module's own AST-identical `in_known`. The rebuild now refuses to write if any scratch-module import survives.
+Verified from a clean folder (runner outside the scratchpad, scratchpad paths stripped from sys.path): every import in both tracked scripts
+resolves, the full page-era classify proposes 0 (1,014 §164 + 28 §160f skipped), and no scratch module is loaded.
 
 ## §159 — FII = INSTITUTIONS (FOREIGN) IN EVERY FORMAT: ROW-LEVEL HEAL OF THE 2015-2022 NON-INSTITUTIONS "ANY OTHER" ROWS (2026-09-24, FII twin of §158)
 
