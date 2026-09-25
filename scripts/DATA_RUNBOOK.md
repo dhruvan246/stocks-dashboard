@@ -19627,3 +19627,22 @@ the adjusted basis, volume ×9.0; GLENMARK 2005, JSL 2004, GABRIEL 2005, GAEL/AA
 every record source omits them. Also never heal across a boundary with > 1 year of no NSE bars (ARENTERP 1999→2017,
 NOVARTIND 2003→2020 …): BSE-only filings in the gap are invisible. Dry-run on the live series before commit: 17
 manual-rights + 11 self-heals, every boundary lands on its target (raw / raw÷official / raw÷TERP), second pass 0.
+
+### 161h. The 30 YAHOO_SPLIT conflicts — resolved (2026-09-25)
+Yahoo's split-EVENT record matched the baked factor but no exchange record existed (ETFs are not in NSE's
+corporate-action feed at all; pre-2006 the feed is sparse; HEG's per-symbol query returned 0 rows). Rule
+(`scripts/adjudicate_yahoo_conflicts.py`, fixed before it ran) = the §87 standard, record + tape: Yahoo record AND
+ex-day open at the adjusted basis (§87c band) or, for F ≤ 0.25 / ≥ 4, a persistent volume step within 2× of 1/F, with
+no large-factor volume contradiction (> 3×).
+- **26 REAL_YAHOO_TAPE** — e.g. HINDUNILVR 2000 ×0.1 (open 1.038, volume ×7.8), INFY 1997/2000 bonuses, DRREDDY 2001,
+  PAISALO/SIGIND/SHEKHAWATI/NDL/LGBBROSLTD reverse ×10 (volume ×0.1–0.17), the 2024 ICICI/HDFC ETF 1:10 unit splits.
+- **3 REAL_YAHOO_FILING** — tape conflicted, a third measured source settled it:
+  HEG 2024-10-18 1:5 — results filings: shares (PAT/EPS) 3.85 cr → 19.3 cr = ×5.00;
+  VERTOZ 2025 10:1 consolidation — shares ~84–98 cr → 8.4–8.7 cr = ÷10;
+  LOWVOLIETF 2024-03-01 1:10 units — the 90 largest stocks moved −2.24%..+6.46% that day (median +1.19%), so a raw
+  ×0.10 cannot be a loss for an ETF holding them; siblings NV20IETF/PVTBANIETF split ×0.1 the same day.
+- **1 YAHOO_CONFLICT** — BHAGYANGR 2005-02-24 ×0.2: only Yahoo records it, volume ×1.3 vs ×5 expected, NSE bhavcopy
+  carries neither alias, no filings that early. Left as is.
+All 29 confirmed factors recorded in corp_actions_hist.json (data unchanged: dry-run self_heal + manual-rights on the
+live series → 0 of 28 series change). Results-filing share counts (`docs/fin/<SYM>.json` x.eps_b vs fund PAT, 2018+)
+are a genuinely independent split/bonus witness — use them before calling any 2018+ factor unresolvable.
