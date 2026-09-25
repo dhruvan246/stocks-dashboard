@@ -25,6 +25,7 @@ OUT = os.path.join(ROOT, "docs", "fii_dii.json")       # cash segment (recent + 
 OUT_MON = os.path.join(ROOT, "docs", "fii_dii_monthly.json")  # monthly aggregates 2014-07 -> today
 OUT_FO = os.path.join(ROOT, "docs", "fii_fo.json")     # derivatives net positions (2012 -> today)
 OUT_LOTS = os.path.join(ROOT, "docs", "fii_fo_lots.json")  # per-day index-futures OI by index + lot (feeds fii_fo "lf")
+STK_DIR = os.path.join(HERE, "_fo_stk_lots")               # per-day stock-futures OI by stock + lot, monthly .json.gz (feeds "lfs")
 OUT_NIFTY = os.path.join(ROOT, "docs", "nifty.json")   # Nifty 50 close history (for chart overlays)
 OUT_NIFTY500 = os.path.join(ROOT, "docs", "nifty500.json")  # Nifty 500 close history (backtest calendar-year benchmark)
 OUT_BANK = os.path.join(ROOT, "docs", "nifty_bank.json")   # Nifty Bank close history (home-page ticker)
@@ -128,18 +129,18 @@ def _divisors(n):
     return out
 
 
-def fo_index_lots(dt, jar=None, blob=None):
-    """Index-futures open interest by index for one day, from the NSE F&O bhavcopy.
-    Returns {"q": {SYMBOL: [OI quantity, contracts]}, "ref": {SYMBOL: lot of the newest expiry}}
+def fo_futures_contracts(dt, jar=None, blob=None):
+    """Every open futures contract in one day's NSE F&O bhavcopy.
+    Returns {"idx": [...], "stk": [...]} of (SYMBOL, expiry YYYY-MM-DD, OI qty, lot, settle price),
     or None when the bhavcopy isn't available.
       - contracts expiring THAT day are skipped: the bhavcopy still shows their OI but the
         participant file has already dropped them (measured 2026-09-25 on expiry days)
       - UDiFF (>= 2024-07-08) carries the lot per contract (NewBrdLotQty); the old format
         doesn't, so the lot is the divisor of gcd(OI, change-in-OI) nearest to
-        traded value / contracts / price.  Rows whose lot can't be resolved are left out
-        (they fall into the residual that apply_lot_factor counts at factor 1).
-    Sum of contracts == the participant file's total index-futures contracts on UDiFF days
-    and on almost every old-format day (backfill report, runbook)."""
+        traded value / contracts / price (the symbol's traded rows stand in for an untraded
+        one).  Rows whose lot can't be resolved are left out.
+    Sum of contracts == the participant file's total index / stock futures contracts on
+    UDiFF days and on almost every old-format day (backfill reports, runbook §162-§162a)."""
     import csv, io, math, zipfile
     from fetch_fo_bhavcopy import url_for
     try:
@@ -151,18 +152,16 @@ def fo_index_lots(dt, jar=None, blob=None):
     except Exception:
         return None
     rows = list(csv.DictReader(io.StringIO(text)))
-    q, newest = {}, {}
-    def add(sym, qty, lot, exp):
-        a = q.setdefault(sym, [0, 0.0]); a[0] += qty; a[1] += qty / lot
-        if exp >= newest.get(sym, ("", 0))[0]:
-            newest[sym] = (exp, lot)
+    out = {"idx": [], "stk": []}
     if rows and "FinInstrmTp" in rows[0]:
+        kinds = {"IDF": "idx", "STF": "stk"}
         for r in rows:
-            if r["FinInstrmTp"].strip() != "IDF" or r["XpryDt"] == r["TradDt"]:
+            k = kinds.get(r["FinInstrmTp"].strip())
+            if not k or r["XpryDt"] == r["TradDt"]:
                 continue
             qty, lot = int(float(r["OpnIntrst"] or 0)), int(float(r["NewBrdLotQty"] or 0))
             if qty > 0 and lot > 0:
-                add(r["TckrSymb"].strip(), qty, lot, r["XpryDt"])
+                out[k].append((r["TckrSymb"].strip(), r["XpryDt"], qty, lot, float(r["SttlmPric"] or 0)))
     else:
         def pdate(x):                     # "31-May-2012" / "31-MAY-2012" / "31-May-12" all occur
             x = x.strip().title()
@@ -172,7 +171,8 @@ def fo_index_lots(dt, jar=None, blob=None):
                 except ValueError:
                     pass
             raise ValueError("bhavcopy date %r" % x)
-        R = [r for r in rows if (r.get("INSTRUMENT") or "").strip() == "FUTIDX"
+        kinds = {"FUTIDX": "idx", "FUTSTK": "stk"}
+        R = [r for r in rows if kinds.get((r.get("INSTRUMENT") or "").strip())
              and pdate(r["EXPIRY_DT"]) != pdate(r["TIMESTAMP"])]
         def est(r):
             c, px = float(r["CONTRACTS"] or 0), float(r["CLOSE"] or 0) or float(r["SETTLE_PR"] or 0)
@@ -181,25 +181,105 @@ def fo_index_lots(dt, jar=None, blob=None):
         for r in R:
             e = est(r)
             if e:
-                by_sym.setdefault(r["SYMBOL"].strip(), []).append((float(r["CONTRACTS"]), e))
+                by_sym.setdefault((r["INSTRUMENT"].strip(), r["SYMBOL"].strip()), []).append((float(r["CONTRACTS"]), e))
         for r in R:
             qty = int(float(r["OPEN_INT"] or 0))
             if qty <= 0:
                 continue
-            sym = r["SYMBOL"].strip()
+            key = (r["INSTRUMENT"].strip(), r["SYMBOL"].strip())
             e = est(r)
-            if e is None and by_sym.get(sym):
-                w = by_sym[sym]; e = sum(a * b for a, b in w) / sum(a for a, b in w)
+            if e is None and by_sym.get(key):
+                w = by_sym[key]; e = sum(a * b for a, b in w) / sum(a for a, b in w)
             if e is None:
                 continue
             g = math.gcd(qty, abs(int(float(r["CHG_IN_OI"] or 0))))
             lot = min(_divisors(g), key=lambda x: abs(x - e))
-            exp = pdate(r["EXPIRY_DT"])
-            add(sym, qty, lot, exp)
+            if key[0] == "FUTSTK" and abs(lot - e) > 0.1 * e:
+                # gcd method failed: after a rights issue NSE re-sizes a stock's lot to an odd
+                # number, OI stops sharing a clean factor and the nearest divisor collapses to
+                # 1-3 (BHARTIARTL 2021-09-27 read as 2.6 crore contracts). The traded-value lot
+                # is within ~2%.  (Stocks only: index lots validated before this guard, §162.)
+                lot = max(1, round(e))
+            out[kinds[key[0]]].append((key[1], pdate(r["EXPIRY_DT"]), qty, lot, float(r["SETTLE_PR"] or 0)))
+    return out if (out["idx"] or out["stk"]) else None
+
+
+def fo_lots_summary(contracts):
+    """[(SYM, expiry, qty, lot, settle)] -> {"q": {SYM: [OI qty, contracts]}, "ref": {SYM: lot of the newest expiry}}"""
+    q, newest = {}, {}
+    for sym, exp, qty, lot, _px in contracts:
+        a = q.setdefault(sym, [0, 0.0]); a[0] += qty; a[1] += qty / lot
+        if exp >= newest.get(sym, ("", 0))[0]:
+            newest[sym] = (exp, lot)
     if not q:
         return None
     return {"q": {k: [v[0], round(v[1], 3)] for k, v in q.items()},
             "ref": {k: v[1] for k, v in newest.items()}}
+
+
+def fo_index_lots(dt, jar=None, blob=None):
+    """Index-futures OI by index for one day: {"q": {SYM: [qty, contracts]}, "ref": {SYM: newest lot}}."""
+    c = fo_futures_contracts(dt, jar, blob)
+    return fo_lots_summary(c["idx"]) if c else None
+
+
+def stk_tail(contracts):
+    """Per-contract lot + settle for the corporate-action check against the NEXT day."""
+    t = {}
+    for sym, exp, qty, lot, px in contracts:
+        t.setdefault(sym, {})[exp] = [lot, px]
+    return t
+
+
+_RENAMES = None
+
+
+def canon(sym):
+    """Today's ticker for an F&O symbol (scripts/_rename_map.json old -> new, followed to the end):
+    MOTHERSUMI -> MOTHERSON, ZOMATO -> ETERNAL. A rename doesn't change share units."""
+    global _RENAMES
+    if _RENAMES is None:
+        try:
+            _RENAMES = json.load(open(os.path.join(HERE, "_rename_map.json"), encoding="utf-8"))
+        except Exception:
+            _RENAMES = {}
+    seen = set()
+    while sym in _RENAMES and sym not in seen:
+        seen.add(sym); sym = _RENAMES[sym]
+    return sym
+
+
+def detect_stk_ca(prev_tail, contracts):
+    """Corporate actions (split / bonus / consolidation) between the previous stored day and this one.
+    A SEBI lot revision only applies to NEW expiries (or re-sizes open contracts with no price move);
+    a corporate action re-sizes the contracts already open AND moves the price by the same factor.
+    So, on the stock's most-held contract that exists both days: lot ratio r = new / old with
+    |r - 1| >= 0.1, and the price confirming it (0.85 < (prev settle / settle) / r < 1.15), is a
+    corporate action with unit ratio r (1 old share = r new shares).  Smaller re-sizings (rights
+    issues, special dividends: a few %) are ignored — below the old-format lot noise.
+    Returns ([(SYM, r)], [(SYM, why)] rejected)."""
+    cur = stk_tail(contracts)
+    oi = {}
+    for sym, exp, qty, lot, px in contracts:
+        oi[(sym, exp)] = qty
+    found, rejected = [], []
+    for sym, exps in cur.items():
+        old = (prev_tail or {}).get(sym)
+        if not old:
+            continue
+        common = [e for e in exps if e in old]
+        if not common:
+            continue
+        e0 = max(common, key=lambda e: oi.get((sym, e), 0))
+        r = exps[e0][0] / old[e0][0]
+        if abs(r - 1) < 0.1:
+            continue
+        px_old, px_new = old[e0][1], exps[e0][1]
+        if px_old > 0 and px_new > 0 and 0.85 < (px_old / px_new) / r < 1.15:
+            found.append((sym, round(r, 6)))
+        else:
+            rejected.append((sym, "lot x%.4g but price %.2f -> %.2f" % (r, px_old, px_new)))
+    return found, rejected
 
 
 def apply_lot_factor(fo, lots):
@@ -222,6 +302,82 @@ def apply_lot_factor(fo, lots):
             continue
         conv = sum(v[0] / ref[s] if s in ref else v[1] for s, v in L["q"].items())
         r["lf"] = round(conv / n, 5)
+
+
+def apply_stk_lot_factor(fo, days, ca):
+    """Write "lfs" on every fii_fo row with stock-futures lots: the factor that turns that day's
+    stock-futures contracts into TODAY's lot sizes.
+      lfs = sum over stocks of (OI qty x U / today's lot, or the day's own contracts for a stock
+            not in F&O today) / that day's contracts
+    U = product of the corporate-action unit ratios dated AFTER that day (a 1:2 split makes an
+    old share two of today's), so a split never reads as a lot-size change. `days` =
+    {date: {"q": {SYM: [qty, contracts]}, "ref": {...}}} (symbols as NSE printed them that day),
+    `ca` = {TODAY'S TICKER: [[date, r], ...]} (see canon)."""
+    if not days:
+        return
+    ref = {canon(k): v for k, v in days[max(days)]["ref"].items()}
+    for d, r in fo.items():
+        L = days.get(d)
+        n = sum(v[1] for v in L["q"].values()) if L else 0
+        if not n:
+            r.pop("lfs", None)
+            continue
+        conv = 0.0
+        for s, (qty, c) in L["q"].items():
+            cs = canon(s)                      # a renamed stock converts at its new ticker's lot
+            if cs in ref:
+                u = 1.0
+                for ed, ratio in ca.get(cs, ()):
+                    if ed > d:
+                        u *= ratio
+                conv += qty * u / ref[cs]
+            else:
+                conv += c
+        r["lfs"] = round(conv / n, 5)
+
+
+def load_stk_store():
+    """Stock-futures lots: monthly shards scripts/_fo_stk_lots/YYYY-MM.json.gz + scripts/_fo_stk_state.json
+    (corporate-action ledger, recent rejected lot changes, last day's per-contract tail).
+    None if the store doesn't exist (the job then leaves "lfs" alone)."""
+    import gzip, glob
+    state_p = os.path.join(HERE, "_fo_stk_state.json")
+    if not os.path.exists(state_p):
+        return None
+    days = {}
+    for f in sorted(glob.glob(os.path.join(STK_DIR, "*.json.gz"))):
+        days.update(json.load(gzip.open(f, "rt", encoding="utf-8")))
+    st = json.load(open(state_p, encoding="utf-8"))
+    return {"days": days, "ca": st.get("ca", {}), "rejected": st.get("rejected", []),
+            "tail": st.get("tail"), "tail_date": st.get("tail_date"), "dirty": set()}
+
+
+def add_stk_day(stk, d, contracts, summary):
+    """Add one day; if it's newer than the stored tail, check it for corporate actions first."""
+    if stk["tail_date"] and d > stk["tail_date"]:
+        found, rej = detect_stk_ca(stk["tail"], contracts)
+        for s, r in found:
+            stk["ca"].setdefault(canon(s), []).append([d, r])
+            print("  CORPORATE ACTION %s on %s: lot x%g on open contracts (price confirms) — "
+                  "older days re-scaled" % (s, d, r))
+        for s, why in rej:
+            stk["rejected"].append([d, s, why])
+            print("  stock lot change NOT treated as a corporate action: %s %s (%s)" % (d, s, why))
+        stk["tail"], stk["tail_date"] = stk_tail(contracts), d
+    stk["days"][d] = summary
+    stk["dirty"].add(d[:7])
+
+
+def save_stk_store(stk):
+    import gzip
+    os.makedirs(STK_DIR, exist_ok=True)
+    for m in sorted(stk["dirty"]):
+        dd = {d: v for d, v in stk["days"].items() if d[:7] == m}
+        with gzip.GzipFile(os.path.join(STK_DIR, m + ".json.gz"), "wb", mtime=0) as fh:
+            fh.write(json.dumps(dd, separators=(",", ":"), sort_keys=True).encode())
+    json.dump({"ca": stk["ca"], "rejected": stk["rejected"][-200:], "tail_date": stk["tail_date"], "tail": stk["tail"]},
+              open(os.path.join(HERE, "_fo_stk_state.json"), "w", encoding="utf-8"),
+              separators=(",", ":"), sort_keys=True)
 
 
 def fetch_niftytrader():
@@ -378,29 +534,44 @@ def update_fo(cash_dates, max_new=40):
                 pass
     # lot sizes: the bhavcopy can land after this run (or NSE can be down for days), so fill
     # any of the last 30 days missing. A new SEBI lot size needs no code change: the newest
-    # day's lots become "today's lots" and apply_lot_factor re-bases every day's lf.
+    # day's lots become "today's lots" and apply_lot_factor / apply_stk_lot_factor re-base
+    # every day's lf / lfs. One bhavcopy download feeds both index and stock futures.
     try:
         lots = json.load(open(OUT_LOTS, encoding="utf-8")).get("days", {})
     except Exception:
         lots = None
+    stk = load_stk_store()
     if lots is not None:
         old_ref = lots[max(lots)]["ref"] if lots else {}
+        old_sref = stk["days"][max(stk["days"])]["ref"] if stk and stk["days"] else {}
         jar = None
         for d in sorted(fo)[-30:]:
-            if d not in lots:
-                jar = jar or _nse_jar()
-                L = fo_index_lots(datetime.datetime.strptime(d, "%Y-%m-%d").date(), jar)
-                if L:
+            need_idx = d not in lots
+            need_stk = stk is not None and d not in stk["days"]
+            if not (need_idx or need_stk):
+                continue
+            jar = jar or _nse_jar()
+            C = fo_futures_contracts(datetime.datetime.strptime(d, "%Y-%m-%d").date(), jar)
+            time.sleep(0.4)
+            if not C:
+                print("  lots %s: bhavcopy not available yet — retried next run" % d)
+                continue
+            for kind, seg in (("idx", "futIdx"), ("stk", "futStk")):
+                if kind == "idx" and not need_idx or kind == "stk" and not need_stk:
+                    continue
+                L = fo_lots_summary(C[kind])
+                if not L:
+                    continue
+                if kind == "idx":
                     lots[d] = L
-                    # integrity: the bhavcopy's contracts must equal NSE's participant total
-                    # (exact on every UDiFF day measured 2026-09-25)
-                    tot = sum(fo[d]["oi"][p]["futIdx"][0] for p in fo[d].get("oi", {}))
-                    n = sum(v[1] for v in L["q"].values())
-                    flag = "OK" if tot and abs(n - tot) <= 0.5 else "MISMATCH — check fo_index_lots"
-                    print("  lots %s: %.0f contracts vs participant total %d  %s" % (d, n, tot, flag))
                 else:
-                    print("  lots %s: bhavcopy not available yet — retried next run" % d)
-                time.sleep(0.4)
+                    add_stk_day(stk, d, C["stk"], L)
+                # integrity: the bhavcopy's contracts must equal NSE's participant total
+                # (exact on every UDiFF day measured 2026-09-25)
+                tot = sum(fo[d]["oi"][p][seg][0] for p in fo[d].get("oi", {}))
+                n = sum(v[1] for v in L["q"].values())
+                flag = "OK" if tot and abs(n - tot) <= 0.5 else "MISMATCH — check fo_futures_contracts"
+                print("  %s lots %s: %.0f contracts vs participant total %d  %s" % (kind, d, n, tot, flag))
         new_ref = lots[max(lots)]["ref"] if lots else {}
         for sym in sorted(set(old_ref) | set(new_ref)):
             if old_ref.get(sym) != new_ref.get(sym):
@@ -411,6 +582,14 @@ def update_fo(cash_dates, max_new=40):
         json.dump({"updated": time.strftime("%Y-%m-%dT%H:%M:%S"), "days": {d: lots[d] for d in sorted(lots)}},
                   open(OUT_LOTS, "w", encoding="utf-8"), separators=(",", ":"))
         apply_lot_factor(fo, lots)
+        if stk is not None and stk["days"]:
+            new_sref = stk["days"][max(stk["days"])]["ref"]
+            changed = [s for s in new_sref if s in old_sref and new_sref[s] != old_sref[s]]
+            if changed:
+                print("  stock LOT SIZE CHANGES (history re-based): " +
+                      ", ".join("%s %s->%s" % (s, old_sref[s], new_sref[s]) for s in sorted(changed)))
+            save_stk_store(stk)
+            apply_stk_lot_factor(fo, stk["days"], stk["ca"])
     rows = [fo[d] for d in sorted(fo)]
     json.dump({"updated": time.strftime("%Y-%m-%dT%H:%M:%S"), "rows": rows},
               open(OUT_FO, "w", encoding="utf-8"), separators=(",", ":"))

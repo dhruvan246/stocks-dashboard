@@ -53,6 +53,9 @@ jobs:
 
           mkdir -p /tmp/fd/docs
           cp docs/fii_dii.json docs/fii_dii_monthly.json docs/fii_fo.json docs/fii_fo_lots.json docs/nifty.json docs/nifty500.json docs/nifty_bank.json docs/india_vix.json /tmp/fd/docs/
+          mkdir -p /tmp/fd/scripts/_fo_stk_lots
+          cp scripts/_fo_stk_state.json /tmp/fd/scripts/
+          cp scripts/_fo_stk_lots/*.json.gz /tmp/fd/scripts/_fo_stk_lots/
 
           for attempt in 1 2 3 4 5; do
             git fetch origin main
@@ -61,11 +64,13 @@ jobs:
             cp /tmp/fd/docs/fii_dii_monthly.json docs/fii_dii_monthly.json
             cp /tmp/fd/docs/fii_fo.json  docs/fii_fo.json
             cp /tmp/fd/docs/fii_fo_lots.json docs/fii_fo_lots.json
+            cp /tmp/fd/scripts/_fo_stk_state.json scripts/_fo_stk_state.json
+            cp /tmp/fd/scripts/_fo_stk_lots/*.json.gz scripts/_fo_stk_lots/
             cp /tmp/fd/docs/nifty.json   docs/nifty.json
             cp /tmp/fd/docs/nifty500.json docs/nifty500.json
             cp /tmp/fd/docs/nifty_bank.json docs/nifty_bank.json
             cp /tmp/fd/docs/india_vix.json  docs/india_vix.json
-            git add docs/fii_dii.json docs/fii_dii_monthly.json docs/fii_fo.json docs/fii_fo_lots.json docs/nifty.json docs/nifty500.json docs/nifty_bank.json docs/india_vix.json
+            git add docs/fii_dii.json docs/fii_dii_monthly.json docs/fii_fo.json docs/fii_fo_lots.json docs/nifty.json docs/nifty500.json docs/nifty_bank.json docs/india_vix.json scripts/_fo_stk_state.json scripts/_fo_stk_lots
 
             if git diff --cached --quiet; then
               echo "No new FII/DII data — nothing to commit"

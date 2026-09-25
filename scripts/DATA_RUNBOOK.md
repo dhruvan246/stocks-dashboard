@@ -20039,3 +20039,38 @@ lands for a symbol, grep the rewrite ledgers (`dvl_dtil_surgery.json.gz`, `bz_ba
 **Why §166c missed it:** that dry run called `self_heal` alone; production runs surgery/BZ/SME/bar-inserts first. A heal dry run
 must replay `main()`'s whole pre-heal sequence. LIVE after §166 (rev 83470e2a28): RASOYPR 2013-03-19 close 7.85; 2013-09-30
 d52 11.607 % (official-true), vs200 45.880 % (Quantmac 45.883).
+
+## 162a. FII/DII F&O — LOT-ADJUSTED STOCK FUTURES too (2026-09-25, user request; extends §162)
+- Every fii_fo row gets `lfs` = that day's stock-futures OI restated in TODAY's lots ÷ actual contracts; the page's
+  Lot-adjusted switch multiplies futStk long/short/net by it (participant table, day-wise "Stock Futures", monthly
+  FII stk-fut column). Totals (incl. options) stay raw. 22-Jan-2025: lfs 0.984, FII stock-fut net +11,65,504 → +11,46,716;
+  22-Jan-2020: lfs 2.27, +4,30,475 → +9,75,362.
+- Source: same bhavcopy read as §162 (`fo_futures_contracts` now returns idx AND stk contracts; index output proven
+  identical on 8 sample days + full re-run). Stock per-day data (≈200 stocks) lives OUTSIDE docs: monthly
+  `scripts/_fo_stk_lots/YYYY-MM.json.gz` + `scripts/_fo_stk_state.json` (corporate-action ledger `ca` keyed by
+  TODAY's ticker, last day's per-contract `tail`, recent `rejected`). Backfill: `scripts/backfill_fo_stk_lots.py`
+  (cache `~/stocks-wt/fo_stk_cache_v2`).
+- **Contract counts vs participant totals:** 2,128 days exact, 3,566 within 0.1%, 3,623/3,632 within 1% (worst =
+  the same NSE participant-file quirk days as §162: 2013-08-22, 2014-10-30, 2014-04-23 …).
+- **Traps measured (stocks only):**
+  (a) RIGHTS ISSUES re-size a lot to an odd number → OI loses its clean factor → gcd-divisor lot collapses to 1-3
+      (BHARTIARTL 2021-09-27 read as 2.6 crore contracts, −1,799% day). Guard: inferred lot >10% off the
+      traded-value lot → use the traded-value lot.
+  (b) SPLITS/BONUSES re-size OPEN contracts; a SEBI lot revision doesn't (or does with no price move) — must never
+      read as a lot change. Units carried by U = product of later corporate-action ratios.
+  (c) Old-format lot wobble + NSE lot revisions on crashing stocks MIMIC bonuses (ADAG group Jun-2019, DISHTV,
+      IDEA/INDUSINDBK Mar-2020, ADANIENT Feb-2023: ×1.1-1.18 or ×0.83-0.9 with a matching price move). So before
+      UDiFF (2024-07-08) a corporate action counts ONLY when the OFFICIAL ledger (corp_actions.json + _hist, price
+      factor f) lists it AND NSE's lots moved by 1/f (most-held contract by OI, modal lot over 3 days each side,
+      within 3%): 116/116 ledger events on F&O stocks verify. From UDiFF on, `detect_stk_ca` (same-contract lot
+      change ≥10% + price within ±15%) stands alone: 25/25 of its finds are in the ledger, 0 ledger events on
+      then-F&O stocks missed. Ignored by design: re-sizings <10% (rights/special dividends) — error ≤ a few % on
+      that one stock.
+  (d) RENAMES: `canon()` follows scripts/_rename_map.json so MOTHERSUMI's contracts convert at MOTHERSON's lot and
+      match MOTHERSON's ledger events; share of contracts in stocks not in F&O today (kept at own count) fell to
+      2012 32% · 2016 22% · 2020 12% · 2024 9% · 2026 0.6%.
+- **Daily** (refresh-fii-dii.yml): one bhavcopy download feeds idx + stk; logs `stk lots <day>: N vs participant
+  total M OK|MISMATCH`, `CORPORATE ACTION <SYM> on <day>: lot xr … older days re-scaled` (replayed on TRENT
+  2026-06-04 ×1.5), `stock LOT SIZE CHANGES (history re-based)`. Workflow copies/commits scripts/_fo_stk_state.json
+  + scripts/_fo_stk_lots/. Simulation (last 2 days removed from every store) re-produced lf, lfs, lots, ca, tail
+  and the shard byte-identically.
