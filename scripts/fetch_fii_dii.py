@@ -376,20 +376,38 @@ def update_fo(cash_dates, max_new=40):
                 time.sleep(0.4)
             except Exception:
                 pass
-    # lot sizes: the bhavcopy can land after this run, so fill any of the last 10 days missing
+    # lot sizes: the bhavcopy can land after this run (or NSE can be down for days), so fill
+    # any of the last 30 days missing. A new SEBI lot size needs no code change: the newest
+    # day's lots become "today's lots" and apply_lot_factor re-bases every day's lf.
     try:
         lots = json.load(open(OUT_LOTS, encoding="utf-8")).get("days", {})
     except Exception:
         lots = None
     if lots is not None:
+        old_ref = lots[max(lots)]["ref"] if lots else {}
         jar = None
-        for d in sorted(fo)[-10:]:
+        for d in sorted(fo)[-30:]:
             if d not in lots:
                 jar = jar or _nse_jar()
                 L = fo_index_lots(datetime.datetime.strptime(d, "%Y-%m-%d").date(), jar)
                 if L:
                     lots[d] = L
+                    # integrity: the bhavcopy's contracts must equal NSE's participant total
+                    # (exact on every UDiFF day measured 2026-09-25)
+                    tot = sum(fo[d]["oi"][p]["futIdx"][0] for p in fo[d].get("oi", {}))
+                    n = sum(v[1] for v in L["q"].values())
+                    flag = "OK" if tot and abs(n - tot) <= 0.5 else "MISMATCH — check fo_index_lots"
+                    print("  lots %s: %.0f contracts vs participant total %d  %s" % (d, n, tot, flag))
+                else:
+                    print("  lots %s: bhavcopy not available yet — retried next run" % d)
                 time.sleep(0.4)
+        new_ref = lots[max(lots)]["ref"] if lots else {}
+        for sym in sorted(set(old_ref) | set(new_ref)):
+            if old_ref.get(sym) != new_ref.get(sym):
+                print("  LOT SIZE CHANGE %s: %s -> %s — whole history re-based to the new lot"
+                      % (sym, old_ref.get(sym), new_ref.get(sym)))
+        missing = [d for d in sorted(fo) if d not in lots]
+        print("  fii_fo_lots.json: %d days, %d without a bhavcopy %s" % (len(lots), len(missing), missing[-5:]))
         json.dump({"updated": time.strftime("%Y-%m-%dT%H:%M:%S"), "days": {d: lots[d] for d in sorted(lots)}},
                   open(OUT_LOTS, "w", encoding="utf-8"), separators=(",", ":"))
         apply_lot_factor(fo, lots)

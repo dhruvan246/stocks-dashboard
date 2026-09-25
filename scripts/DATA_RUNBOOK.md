@@ -19587,6 +19587,12 @@ inference domain: 1,289 official, 9 other ledgers, 1 POLICYBZR, **806 with no of
   worst sustained ≈2.5% (late 2018, Bank Nifty lot change; untraded far months). 2021-03-30: bhavcopy 404 → no `lf`
   (page shows "·" in adjusted mode).
 - **Files:** `docs/fii_fo_lots.json` (per day `q: {SYM: [OI qty, contracts]}`, `ref: {SYM: lot of newest expiry}`),
-  `lf` on `docs/fii_fo.json`. Daily: `update_fo` fills lots for any of the last 10 days missing them, then
-  `apply_lot_factor` re-derives every `lf` (so a future SEBI lot change re-bases all history automatically).
+  `lf` on `docs/fii_fo.json`. Daily (refresh-fii-dii.yml, weekdays 20:15 IST + the cron-job.org dispatch):
+  `update_fo` fills lots for any of the last 30 days missing them (logs `lots <day>: N contracts vs participant
+  total M  OK|MISMATCH`), then `apply_lot_factor` re-derives every `lf` — a future SEBI lot change needs NO code
+  change: the newest day's lots become "today's", the log prints `LOT SIZE CHANGE <SYM>: a -> b`, all history re-bases.
+- **Convention check vs Strike.Money** (user's chart, digitised 827 days 2022-08→2026-09): ours median gap 6.3k
+  contracts (tracing noise ≈4.4k). Their chart fits best as raw × Nifty NEAR-MONTH lot ÷ today's Nifty lot (median 5.0k);
+  the two differ only in lot-change weeks (22-Jan-2025: theirs ≈ −1.35 lakh, ours −1.76 lakh — the Feb/Mar contracts
+  were already at lot 75). User chose to KEEP ours (each contract at its own lot), 2026-09-25.
   Backfill/rebuild: `python3 scripts/backfill_fo_lots.py` (caches per-day results in `~/stocks-wt/fo_lots_cache`).
