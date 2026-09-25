@@ -19979,6 +19979,31 @@ VGUARD Mar-16 — the 88/89 renderings put the FII row inside a lump, so the par
 12.45 / 16.7; they need the §160 seam reconstruction (holders table). **Not by this route (3):** CDSL Mar-2018 (NSE-only filing),
 GLOBOFFS Mar-2016 (no BSE code found), SPLPETRO Jun-2017 (an XBRL-era quarter).
 
+### 164g. Former Nifty 500 members — page era Jun-2006..Mar-2016 re-read with the §160 rules (D3, 2026-09-26)
+`scripts/_shp_164g_pages.py` runs the §160 page-era script (`_shp_aspx_rowfix.py`, DII session) read-only over the 753 former
+members with a BSE code (`DII_ROWFIX_WORK` = a work dir holding their pages; `n500_syms.json` = the former members); its
+§160-marked writer is not used — `export` turns the proposals into a §164 proposal file for `_shp_164_write.py 164g`.
+**Pages:** 12,331 ShareholdingPattern.aspx pages: 9,569 fetched 25-Sep 17:5x–22:44 IST with the plain client (0 failures),
+2,723 fetched before 17:45 with the disguised client (see the BSE access rule in 164b; already on disk, not re-fetched), 40 from the
+DII session's cache. shpperent.aspx (>1% holders) tables: 3,437 fetched with the plain client — the classify reads them only for
+symbols with generic rows AND a BSE list; a second reverse-order stream (23:30-00:09) fetched ~1,700 the classify never read
+(symbols without a list) — stopped once measured. 224 former members have no BSE SHP list: classify runs them with no filer map
+(no generic-row resolution); the seam pass is given the same (an overlay list dir with an empty list for them), so the 88/89
+reconstruction falls back to curated verdicts / name markers / the sibling-table prefix.
+**Result:** 12,321 pages read, 11,407 unchanged, 79 no-match (46 no table, 25 promoter mismatch), 195 skipped (already §164).
+650 cells / 152 symbols proposed = 640 label-rule + 10 seam reconstructions (2 held: SHRIRAMCIT Mar-16, VAIBHAVGBL Mar-16 —
+outside the neighbours' band); fii up on 526 (never down), 129 move >= 3 pp; dii up 74 / down 115 (the institutional Any-Others
+block's foreign sub-rows leave dii: HDFC Jun-2008 "FDI - Foreign Institutions" 16.80 -> fii 75.89, dii 27.45 -> 10.66 — the
+page's own rows checked); promoter 2 cells. Largest: HATHWAY Dec-14..Jun-15 fii ~15 -> ~39.8 ("Foreign Portolio Investor
+(Corporate)" 24.50 inside the institutional Any-Others; Sep-15 already 39.7), UTTAMSTL Sep-15 2.31 -> 27.19 (non-inst "Foreign
+Portfolio Investors" 24.88; Jun-15 stays 2.55 — its 27.40 Any-Others row carries no sub-rows, nothing to read), SOUTHBANK,
+JISLJALEQS, SINTEX. Seams on the former members: fii Sep-15 -> Dec-15 >= 3 pp 45 -> 28, Jun -> Sep-15 30 -> 26, Mar -> Jun-16
+31 -> 28; fii QoQ >= 5 pp Jun-06..Jun-16 531 -> 510; dii QoQ 253 -> 237. Written: 610 new + 40 superseding, 0 skipped. On a store
+copy (bse_hist -> refine -> mf -> ins -> cell_fix, CI order) 650 / 650 hold exactly; guard_shp_revisions + guard_shp_definition
+OK. (182 older §164a/§164 cells sit <= 0.01 pp off their entry — within `_cell_eq`'s one-2dp-step tolerance, by design; none
+from this batch.) The §160 script's scratch-only `seam88`/`shpperent` imports (which broke it on a clean checkout for
+generic-row symbols) were removed by the DII session in 8a008be1a after this run hit them.
+
 ## 166. OLD official splits the bin never received — `self_heal` now detects them network-free and heals them ledger-driven; RASOYPR 1:15 healed  (2026-09-25, found by the Quantmac backtest-indicator reconciliation)
 
 ### 166a. The defect
