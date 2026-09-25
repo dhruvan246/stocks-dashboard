@@ -7,7 +7,9 @@
 "Materiality: a cell is entered only when dii or fii moves >= 0.05pp. Evidence per cell: file, stored split, every rule hit with labels and holder names.",
 "2026-09-25: per-cell evidence restored from 00792eb00 (the 9609c489a follow-up write had replaced the file with its 2 corrected cells); the 2 corrections (HAL Sep-2021, SUNDARMFIN Mar-2016) and the follow-up section are kept on top",
 "§158 row-level DII heal (2026-09-25 §158a), old-format XBRL era Jun-2015..Jun-2022, Nifty 500. DII = Institutions(Domestic) in every format.",
-"§158a (2026-09-25) R1 rest-follows: where the block's >=1% holders form orphan groups (no category row) the unnamed rest was left uncovered in the stored split; when every classified named holder is foreign and no row is domestic, the rest joins fii (evidence tag R1-rest-follows-foreign-holders). Written only for the 86 cells the user approved."
+"§158a (2026-09-25) R1 rest-follows: where the block's >=1% holders form orphan groups (no category row) the unnamed rest was left uncovered in the stored split; when every classified named holder is foreign and no row is domestic, the rest joins fii (evidence tag R1-rest-follows-foreign-holders). Written only for the 86 cells the user approved.",
+"§158 row-level DII heal (2026-09-25 §158b), old-format XBRL era Jun-2015..Jun-2022, Nifty 500. DII = Institutions(Domestic) in every format.",
+"§158a (2026-09-25) R1 rest-follows: where the block's >=1% holders form orphan groups (no category row) the unnamed rest was left uncovered in the stored split; when every classified named holder is foreign and no row is domestic, the rest joins fii (evidence tag R1-rest-follows-foreign-holders). Written for the 86 cells the user approved (§158a, 63 moved) and then the 48 same-pattern cells the 86-count had missed (§158b, user: \"fix the remaining 48 cells too\")."
 ],
 "cells": {
 "3MINDIA|2016-06-30": {
@@ -22313,13 +22315,13 @@
 },
 "EXIDEIND|2017-09-30": {
 "file": "500086_1710201719427_SHP.xml",
-"split": "a",
-"d_dii": -2.63,
-"d_fii": 3.69,
+"split": "p",
+"d_dii": -0.07,
+"d_fii": 0.07,
 "to_public": 0.0,
-"to_fii": 3.69,
+"to_fii": 3.76,
 "keep_dom": 0.0,
-"unresolved": 0.07,
+"unresolved": 0.0,
 "add_dii": 1.06,
 "add_ins": 1.06,
 "ev": [
@@ -22331,7 +22333,7 @@
 "GOVERNMENT PENSION FUND GLOBAL 3.69 foreign->fii(regex)"
 ],
 [
-"R1-uncovered-remainder",
+"R1-rest-follows-foreign-holders",
 0.07
 ],
 [
@@ -22373,13 +22375,13 @@
 },
 "EXIDEIND|2018-03-31": {
 "file": "500086_194201814325_SHP.xml",
-"split": "a",
-"d_dii": -0.95,
-"d_fii": 3.11,
+"split": "p",
+"d_dii": -0.07,
+"d_fii": 0.07,
 "to_public": 0.0,
-"to_fii": 3.11,
+"to_fii": 3.18,
 "keep_dom": 0.0,
-"unresolved": 0.07,
+"unresolved": 0.0,
 "add_dii": 2.16,
 "add_ins": 2.16,
 "ev": [
@@ -22391,7 +22393,7 @@
 "GOVERNMENT PENSION FUND GLOBAL 3.11 foreign->fii(regex)"
 ],
 [
-"R1-uncovered-remainder",
+"R1-rest-follows-foreign-holders",
 0.07
 ],
 [
@@ -22443,13 +22445,13 @@
 },
 "EXIDEIND|2018-09-30": {
 "file": "500086_91020181870_SHP.xml",
-"split": "a",
-"d_dii": -0.97,
-"d_fii": 2.1,
+"split": "p",
+"d_dii": -0.11,
+"d_fii": 0.11,
 "to_public": 0.0,
-"to_fii": 2.1,
+"to_fii": 2.21,
 "keep_dom": 0.0,
-"unresolved": 0.11,
+"unresolved": 0.0,
 "add_dii": 1.13,
 "add_ins": 1.13,
 "ev": [
@@ -22461,7 +22463,7 @@
 "GOVERNMENT PENSION FUND GLOBAL 2.10 foreign->fii(regex)"
 ],
 [
-"R1-uncovered-remainder",
+"R1-rest-follows-foreign-holders",
 0.11
 ],
 [
@@ -27079,13 +27081,13 @@
 },
 "GRASIM|2017-12-31": {
 "file": "500300_2912018194914_SHP.xml",
-"split": "a",
-"d_dii": -0.56,
-"d_fii": 1.58,
+"split": "p",
+"d_dii": -0.44,
+"d_fii": 0.44,
 "to_public": 0.0,
-"to_fii": 1.58,
+"to_fii": 2.02,
 "keep_dom": 0.0,
-"unresolved": 0.44,
+"unresolved": 0.0,
 "add_dii": 1.02,
 "add_ins": 1.01,
 "ev": [
@@ -27097,7 +27099,7 @@
 "EUROPACIFIC GROWTH FUND 1.58 foreign->fii(curated)"
 ],
 [
-"R1-uncovered-remainder",
+"R1-rest-follows-foreign-holders",
 0.44
 ],
 [
@@ -31496,12 +31498,12 @@
 "IEX|2018-06-30": {
 "file": "540750_1972018211710_SHP.xml",
 "split": "a",
-"d_dii": -11.29,
-"d_fii": 0.0,
+"d_dii": -9.04,
+"d_fii": 9.04,
 "to_public": 13.86,
-"to_fii": 0.0,
+"to_fii": 9.04,
 "keep_dom": 0.0,
-"unresolved": 9.04,
+"unresolved": 0.0,
 "add_dii": 2.57,
 "add_ins": 2.49,
 "ev": [
@@ -31570,7 +31572,7 @@
 "keyword"
 ],
 [
-"R1-uncovered-remainder",
+"R1-rest-follows-foreign-holders",
 9.04
 ],
 [
@@ -31590,12 +31592,12 @@
 "IEX|2018-09-30": {
 "file": "540750_1510201818050_SHP.xml",
 "split": "a",
-"d_dii": -11.54,
-"d_fii": 0.0,
+"d_dii": -9.04,
+"d_fii": 9.04,
 "to_public": 13.86,
-"to_fii": 0.0,
+"to_fii": 9.04,
 "keep_dom": 0.0,
-"unresolved": 9.04,
+"unresolved": 0.0,
 "add_dii": 2.32,
 "add_ins": 2.25,
 "ev": [
@@ -31664,7 +31666,7 @@
 "keyword"
 ],
 [
-"R1-uncovered-remainder",
+"R1-rest-follows-foreign-holders",
 9.04
 ],
 [
@@ -31722,12 +31724,12 @@
 "IEX|2019-03-31": {
 "file": "540750_1942019134247_SHP.xml",
 "split": "a",
-"d_dii": -11.51,
-"d_fii": 0.0,
+"d_dii": -8.27,
+"d_fii": 8.27,
 "to_public": 13.83,
-"to_fii": 0.0,
+"to_fii": 8.27,
 "keep_dom": 0.0,
-"unresolved": 8.27,
+"unresolved": 0.0,
 "add_dii": 2.32,
 "add_ins": 2.25,
 "ev": [
@@ -31788,7 +31790,7 @@
 "keyword"
 ],
 [
-"R1-uncovered-remainder",
+"R1-rest-follows-foreign-holders",
 8.27
 ],
 [
@@ -53687,12 +53689,12 @@
 "PVRINOX|2017-09-30": {
 "file": "532689_12102017103957_SHP.xml",
 "split": "a",
-"d_dii": -15.67,
-"d_fii": 0.0,
+"d_dii": -0.91,
+"d_fii": 0.91,
 "to_public": 15.67,
-"to_fii": 0.0,
+"to_fii": 0.91,
 "keep_dom": 0.0,
-"unresolved": 0.91,
+"unresolved": 0.0,
 "add_dii": 0.0,
 "add_ins": 0.0,
 "ev": [
@@ -53718,7 +53720,7 @@
 "PLENTY PRIVATE EQUITY FUND I LIMITED 4.21 foreign->public(new-format:ForeignCompanies)"
 ],
 [
-"R1-uncovered-remainder",
+"R1-rest-follows-foreign-holders",
 0.91
 ]
 ],
@@ -53727,12 +53729,12 @@
 "PVRINOX|2017-12-31": {
 "file": "532689_312018164828_SHP.xml",
 "split": "a",
-"d_dii": -15.67,
-"d_fii": 0.0,
+"d_dii": -0.51,
+"d_fii": 0.51,
 "to_public": 15.67,
-"to_fii": 0.0,
+"to_fii": 0.51,
 "keep_dom": 0.0,
-"unresolved": 0.51,
+"unresolved": 0.0,
 "add_dii": 0.0,
 "add_ins": 0.0,
 "ev": [
@@ -53758,7 +53760,7 @@
 "PLENTY PRIVATE EQUITY FUND I LIMITED 4.21 foreign->public(new-format:ForeignCompanies)"
 ],
 [
-"R1-uncovered-remainder",
+"R1-rest-follows-foreign-holders",
 0.51
 ]
 ],
@@ -53767,12 +53769,12 @@
 "PVRINOX|2018-03-31": {
 "file": "532689_194201816109_SHP.xml",
 "split": "a",
-"d_dii": -15.66,
-"d_fii": 0.0,
+"d_dii": -0.29,
+"d_fii": 0.29,
 "to_public": 15.67,
-"to_fii": 0.0,
+"to_fii": 0.29,
 "keep_dom": 0.0,
-"unresolved": 0.29,
+"unresolved": 0.0,
 "add_dii": 0.01,
 "add_ins": 0.0,
 "ev": [
@@ -53798,7 +53800,7 @@
 "PLENTY  PRIVATE EQUITY FUND LIMITED 4.21 foreign->public(new-format~:ForeignCompanies)"
 ],
 [
-"R1-uncovered-remainder",
+"R1-rest-follows-foreign-holders",
 0.29
 ],
 [
@@ -53812,12 +53814,12 @@
 "PVRINOX|2018-06-30": {
 "file": "532689_672018104833_SHP.xml",
 "split": "a",
-"d_dii": -15.66,
-"d_fii": 0.0,
+"d_dii": -0.29,
+"d_fii": 0.29,
 "to_public": 15.67,
-"to_fii": 0.0,
+"to_fii": 0.29,
 "keep_dom": 0.0,
-"unresolved": 0.29,
+"unresolved": 0.0,
 "add_dii": 0.01,
 "add_ins": 0.0,
 "ev": [
@@ -53846,7 +53848,7 @@
 "keyword"
 ],
 [
-"R1-uncovered-remainder",
+"R1-rest-follows-foreign-holders",
 0.29
 ],
 [
@@ -53860,12 +53862,12 @@
 "PVRINOX|2018-09-30": {
 "file": "532689_1810201893020_SHP.xml",
 "split": "a",
-"d_dii": -15.62,
-"d_fii": 0.0,
+"d_dii": -0.29,
+"d_fii": 0.29,
 "to_public": 15.67,
-"to_fii": 0.0,
+"to_fii": 0.29,
 "keep_dom": 0.0,
-"unresolved": 0.29,
+"unresolved": 0.0,
 "add_dii": 0.05,
 "add_ins": 0.0,
 "ev": [
@@ -53894,7 +53896,7 @@
 "keyword"
 ],
 [
-"R1-uncovered-remainder",
+"R1-rest-follows-foreign-holders",
 0.29
 ],
 [
@@ -53914,12 +53916,12 @@
 "PVRINOX|2018-12-31": {
 "file": "532689_1712019133510_SHP.xml",
 "split": "a",
-"d_dii": -15.53,
-"d_fii": 0.0,
+"d_dii": -0.29,
+"d_fii": 0.29,
 "to_public": 15.67,
-"to_fii": 0.0,
+"to_fii": 0.29,
 "keep_dom": 0.0,
-"unresolved": 0.29,
+"unresolved": 0.0,
 "add_dii": 0.14,
 "add_ins": 0.0,
 "ev": [
@@ -53948,7 +53950,7 @@
 "keyword"
 ],
 [
-"R1-uncovered-remainder",
+"R1-rest-follows-foreign-holders",
 0.29
 ],
 [
@@ -53968,12 +53970,12 @@
 "PVRINOX|2019-03-31": {
 "file": "532689_54201917136_SHP.xml",
 "split": "a",
-"d_dii": -15.47,
-"d_fii": 0.0,
+"d_dii": -0.29,
+"d_fii": 0.29,
 "to_public": 15.67,
-"to_fii": 0.0,
+"to_fii": 0.29,
 "keep_dom": 0.0,
-"unresolved": 0.29,
+"unresolved": 0.0,
 "add_dii": 0.2,
 "add_ins": 0.0,
 "ev": [
@@ -54002,7 +54004,7 @@
 "keyword"
 ],
 [
-"R1-uncovered-remainder",
+"R1-rest-follows-foreign-holders",
 0.29
 ],
 [
@@ -54022,12 +54024,12 @@
 "PVRINOX|2019-06-30": {
 "file": "532689_177201916919_SHP.xml",
 "split": "a",
-"d_dii": -15.18,
-"d_fii": 0.0,
+"d_dii": -0.3,
+"d_fii": 0.3,
 "to_public": 15.65,
-"to_fii": 0.0,
+"to_fii": 0.3,
 "keep_dom": 0.0,
-"unresolved": 0.3,
+"unresolved": 0.0,
 "add_dii": 0.47,
 "add_ins": 0.0,
 "ev": [
@@ -54056,7 +54058,7 @@
 "keyword"
 ],
 [
-"R1-uncovered-remainder",
+"R1-rest-follows-foreign-holders",
 0.3
 ],
 [
@@ -54076,12 +54078,12 @@
 "PVRINOX|2019-09-30": {
 "file": "532689_18102019102350_SHP.xml",
 "split": "a",
-"d_dii": -14.52,
-"d_fii": 0.0,
+"d_dii": -0.29,
+"d_fii": 0.29,
 "to_public": 15.13,
-"to_fii": 0.0,
+"to_fii": 0.29,
 "keep_dom": 0.0,
-"unresolved": 0.29,
+"unresolved": 0.0,
 "add_dii": 0.61,
 "add_ins": 0.0,
 "ev": [
@@ -54110,7 +54112,7 @@
 "keyword"
 ],
 [
-"R1-uncovered-remainder",
+"R1-rest-follows-foreign-holders",
 0.29
 ],
 [
@@ -54131,12 +54133,12 @@
 "PVRINOX|2019-12-31": {
 "file": "532689_522020171634_SHP.xml",
 "split": "a",
-"d_dii": -14.26,
-"d_fii": 0.0,
+"d_dii": -0.27,
+"d_fii": 0.27,
 "to_public": 14.26,
-"to_fii": 0.0,
+"to_fii": 0.27,
 "keep_dom": 0.0,
-"unresolved": 0.27,
+"unresolved": 0.0,
 "add_dii": 0.0,
 "add_ins": 0.0,
 "ev": [
@@ -54162,7 +54164,7 @@
 "PLENTY PRIVATE EQUITY FUND I LIMITED 3.83 foreign->public(new-format:ForeignCompanies)"
 ],
 [
-"R1-uncovered-remainder",
+"R1-rest-follows-foreign-holders",
 0.27
 ]
 ],
@@ -54171,12 +54173,12 @@
 "PVRINOX|2020-03-31": {
 "file": "532689_1742020111935_SHP.xml",
 "split": "a",
-"d_dii": -14.26,
-"d_fii": 0.0,
+"d_dii": -0.27,
+"d_fii": 0.27,
 "to_public": 14.26,
-"to_fii": 0.0,
+"to_fii": 0.27,
 "keep_dom": 0.0,
-"unresolved": 0.27,
+"unresolved": 0.0,
 "add_dii": 0.0,
 "add_ins": 0.0,
 "ev": [
@@ -54205,7 +54207,7 @@
 "keyword"
 ],
 [
-"R1-uncovered-remainder",
+"R1-rest-follows-foreign-holders",
 0.27
 ]
 ],
@@ -54214,12 +54216,12 @@
 "PVRINOX|2020-06-30": {
 "file": "532689_27202014123_SHP.xml",
 "split": "a",
-"d_dii": -14.26,
-"d_fii": 0.0,
+"d_dii": -0.27,
+"d_fii": 0.27,
 "to_public": 14.26,
-"to_fii": 0.0,
+"to_fii": 0.27,
 "keep_dom": 0.0,
-"unresolved": 0.27,
+"unresolved": 0.0,
 "add_dii": 0.0,
 "add_ins": 0.0,
 "ev": [
@@ -54245,7 +54247,7 @@
 "PLENTY PRIVATE EQUITY FUND I LIMITED 3.83 foreign->public(new-format:ForeignCompanies)"
 ],
 [
-"R1-uncovered-remainder",
+"R1-rest-follows-foreign-holders",
 0.27
 ]
 ],
@@ -54254,12 +54256,12 @@
 "PVRINOX|2020-09-30": {
 "file": "532689_8102020174844_SHP.xml",
 "split": "a",
-"d_dii": -11.55,
-"d_fii": 0.0,
+"d_dii": -0.28,
+"d_fii": 0.28,
 "to_public": 14.09,
-"to_fii": 0.0,
+"to_fii": 0.28,
 "keep_dom": 0.0,
-"unresolved": 0.28,
+"unresolved": 0.0,
 "add_dii": 2.54,
 "add_ins": 2.2,
 "ev": [
@@ -54288,7 +54290,7 @@
 "keyword"
 ],
 [
-"R1-uncovered-remainder",
+"R1-rest-follows-foreign-holders",
 0.28
 ],
 [
@@ -54309,12 +54311,12 @@
 "PVRINOX|2020-12-31": {
 "file": "532689_81202116131_SHP.xml",
 "split": "a",
-"d_dii": -9.89,
-"d_fii": 0.0,
+"d_dii": -0.28,
+"d_fii": 0.28,
 "to_public": 12.47,
-"to_fii": 0.0,
+"to_fii": 0.28,
 "keep_dom": 0.0,
-"unresolved": 0.28,
+"unresolved": 0.0,
 "add_dii": 2.58,
 "add_ins": 2.58,
 "ev": [
@@ -54340,7 +54342,7 @@
 "PLENTY PRIVATE EQUITY FUND I LIMITED 3.90 foreign->public(new-format:ForeignCompanies)"
 ],
 [
-"R1-uncovered-remainder",
+"R1-rest-follows-foreign-holders",
 0.28
 ],
 [
@@ -54355,12 +54357,12 @@
 "PVRINOX|2021-03-31": {
 "file": "532689_164202117359_SHP.xml",
 "split": "a",
-"d_dii": -4.51,
-"d_fii": 0.0,
+"d_dii": -0.25,
+"d_fii": 0.25,
 "to_public": 7.94,
-"to_fii": 0.0,
+"to_fii": 0.25,
 "keep_dom": 0.0,
-"unresolved": 0.25,
+"unresolved": 0.0,
 "add_dii": 3.43,
 "add_ins": 3.43,
 "ev": [
@@ -54381,7 +54383,7 @@
 "keyword"
 ],
 [
-"R1-uncovered-remainder",
+"R1-rest-follows-foreign-holders",
 0.25
 ],
 [
@@ -54402,12 +54404,12 @@
 "PVRINOX|2021-06-30": {
 "file": "532689_1472021132619_SHP.xml",
 "split": "a",
-"d_dii": -3.55,
-"d_fii": 0.0,
+"d_dii": -0.25,
+"d_fii": 0.25,
 "to_public": 7.94,
-"to_fii": 0.0,
+"to_fii": 0.25,
 "keep_dom": 0.0,
-"unresolved": 0.25,
+"unresolved": 0.0,
 "add_dii": 4.39,
 "add_ins": 4.39,
 "ev": [
@@ -54426,7 +54428,7 @@
 "PLENTY PRIVATE EQUITY FUND I LIMITED 3.54 foreign->public(new-format:ForeignCompanies)"
 ],
 [
-"R1-uncovered-remainder",
+"R1-rest-follows-foreign-holders",
 0.25
 ],
 [
@@ -54447,12 +54449,12 @@
 "PVRINOX|2021-09-30": {
 "file": "532689_21102021133059_SHP.xml",
 "split": "a",
-"d_dii": -1.14,
-"d_fii": 0.0,
+"d_dii": -0.25,
+"d_fii": 0.25,
 "to_public": 7.93,
-"to_fii": 0.0,
+"to_fii": 0.25,
 "keep_dom": 0.0,
-"unresolved": 0.25,
+"unresolved": 0.0,
 "add_dii": 6.79,
 "add_ins": 4.87,
 "ev": [
@@ -54473,7 +54475,7 @@
 "keyword"
 ],
 [
-"R1-uncovered-remainder",
+"R1-rest-follows-foreign-holders",
 0.25
 ],
 [
@@ -54499,12 +54501,12 @@
 "PVRINOX|2021-12-31": {
 "file": "532689_1412022125549_SHP.xml",
 "split": "a",
-"d_dii": -0.36,
-"d_fii": 0.0,
+"d_dii": -0.26,
+"d_fii": 0.26,
 "to_public": 7.91,
-"to_fii": 0.0,
+"to_fii": 0.26,
 "keep_dom": 0.0,
-"unresolved": 0.26,
+"unresolved": 0.0,
 "add_dii": 7.55,
 "add_ins": 4.92,
 "ev": [
@@ -54525,7 +54527,7 @@
 "keyword"
 ],
 [
-"R1-uncovered-remainder",
+"R1-rest-follows-foreign-holders",
 0.26
 ],
 [
@@ -54546,12 +54548,12 @@
 "PVRINOX|2022-03-31": {
 "file": "532689_184202219647_SHP.xml",
 "split": "a",
-"d_dii": -0.12,
-"d_fii": 0.0,
+"d_dii": -0.25,
+"d_fii": 0.25,
 "to_public": 7.91,
-"to_fii": 0.0,
+"to_fii": 0.25,
 "keep_dom": 0.0,
-"unresolved": 0.25,
+"unresolved": 0.0,
 "add_dii": 7.79,
 "add_ins": 7.79,
 "ev": [
@@ -54572,7 +54574,7 @@
 "keyword"
 ],
 [
-"R1-uncovered-remainder",
+"R1-rest-follows-foreign-holders",
 0.25
 ],
 [
@@ -54599,12 +54601,12 @@
 "PVRINOX|2022-06-30": {
 "file": "532689_1972022124935_SHP.xml",
 "split": "a",
-"d_dii": -2.38,
-"d_fii": 0.0,
+"d_dii": -0.25,
+"d_fii": 0.25,
 "to_public": 7.9,
-"to_fii": 0.0,
+"to_fii": 0.25,
 "keep_dom": 0.0,
-"unresolved": 0.25,
+"unresolved": 0.0,
 "add_dii": 5.52,
 "add_ins": 5.52,
 "ev": [
@@ -54625,7 +54627,7 @@
 "keyword"
 ],
 [
-"R1-uncovered-remainder",
+"R1-rest-follows-foreign-holders",
 0.25
 ],
 [
@@ -54677,13 +54679,13 @@
 },
 "RADICO|2016-09-30": {
 "file": "532497_17102016173115_SHP.xml",
-"split": "a",
-"d_dii": -0.59,
-"d_fii": 1.0,
+"split": "p",
+"d_dii": -0.83,
+"d_fii": 0.83,
 "to_public": 0.0,
-"to_fii": 1.0,
+"to_fii": 1.83,
 "keep_dom": 0.0,
-"unresolved": 0.83,
+"unresolved": 0.0,
 "add_dii": 0.41,
 "add_ins": 0.0,
 "ev": [
@@ -54695,7 +54697,7 @@
 "ACACIA PARTNERS L P 1.00 foreign->fii(curated)"
 ],
 [
-"R1-uncovered-remainder",
+"R1-rest-follows-foreign-holders",
 0.83
 ],
 [
@@ -66583,6 +66585,666 @@
 ]
 ],
 "newmap_file": null
+},
+"ADANIENT|2016-09-30": {
+"file": "512599_15102016164338_SHP.xml",
+"split": "p",
+"d_dii": -1.9355,
+"d_fii": 1.9355,
+"to_public": 0.0,
+"to_fii": 4.9,
+"keep_dom": 0.0,
+"unresolved": 0.0,
+"add_dii": 0.0,
+"add_ins": 0.0,
+"ev": [
+[
+"R1-foreign-holders",
+"Other",
+0.0,
+"public=0.00 fii=2.96",
+"Elara India Opportunities Fund Limited 2.96 foreign->fii(curated)"
+],
+[
+"R1-rest-follows-foreign-holders",
+1.94
+]
+],
+"newmap_file": "512599_1910202215543_SHP.xml"
+},
+"BHARATFORG|2016-12-31": {
+"file": "500493_1712017151756_SHP.xml",
+"split": "p",
+"d_dii": -6.0121,
+"d_fii": 6.0115,
+"to_public": 0.0,
+"to_fii": 7.13,
+"keep_dom": 0.0,
+"unresolved": 0.0,
+"add_dii": 0.0,
+"add_ins": 0.0,
+"ev": [
+[
+"R1-foreign-holders",
+"Other",
+0.0,
+"public=0.00 fii=1.12",
+"AMANSA HOLDINGS PRIVATE LIMITED 1.12 foreign->fii(curated)"
+],
+[
+"R1-rest-follows-foreign-holders",
+6.01
+]
+],
+"newmap_file": "500493_21102022123143_SHP.xml"
+},
+"BHARATFORG|2017-03-31": {
+"file": "500493_3152022182317_SHP.xml",
+"split": "p",
+"d_dii": -3.4109,
+"d_fii": 3.4109,
+"to_public": 0.0,
+"to_fii": 4.61,
+"keep_dom": 0.0,
+"unresolved": 0.0,
+"add_dii": 0.0,
+"add_ins": 0.0,
+"ev": [
+[
+"R1-foreign-holders",
+"Other",
+0.0,
+"public=0.00 fii=1.20",
+"AMANSA HOLDINGS PRIVATE LIMITED 1.20 foreign->fii(curated)"
+],
+[
+"R1-rest-follows-foreign-holders",
+3.41
+]
+],
+"newmap_file": "500493_21102022123143_SHP.xml"
+},
+"KARURVYSYA|2016-06-30": {
+"file": "590003_982016172216_SHP.xml",
+"split": "p",
+"d_dii": -1.4214,
+"d_fii": 1.4214,
+"to_public": 0.0,
+"to_fii": 8.11,
+"keep_dom": 0.0,
+"unresolved": 0.0,
+"add_dii": 0.0,
+"add_ins": 0.0,
+"ev": [
+[
+"R1-foreign-holders",
+"Other",
+0.0,
+"public=0.00 fii=4.35",
+"Warhol Ltd (FII) 4.35 foreign->fii(curated)"
+],
+[
+"R1-foreign-holders",
+"Other",
+0.0,
+"public=0.00 fii=2.34",
+"Saif Advisors Mauritius Ltd A/C Saif India IV (FII) 2.34 foreign->fii(curated)"
+],
+[
+"R1-rest-follows-foreign-holders",
+1.42
+]
+],
+"newmap_file": null
+},
+"LINDEINDIA|2017-06-30": {
+"file": "523457_1972017183438_SHP.xml",
+"split": "p",
+"d_dii": -1.6547,
+"d_fii": 1.6547,
+"to_public": 0.0,
+"to_fii": 3.72,
+"keep_dom": 0.0,
+"unresolved": 0.0,
+"add_dii": 0.0,
+"add_ins": 0.0,
+"ev": [
+[
+"R1-foreign-holders",
+"Other",
+0.0,
+"public=0.00 fii=1.04",
+"First State Investments Icvc- Stewart Investors Indian Subcontinent Fund 1.04 foreign->fii(curated)"
+],
+[
+"R1-foreign-holders",
+"Other",
+0.0,
+"public=0.00 fii=1.02",
+"First State Indian Subcontinent Fund 1.02 foreign->fii(curated)"
+],
+[
+"R1-rest-follows-foreign-holders",
+1.66
+]
+],
+"newmap_file": "523457_20102022152621_SHP.xml"
+},
+"MGL|2016-06-30": {
+"file": "539957_1172016225624_SHP.xml",
+"split": "p",
+"d_dii": -3.5834,
+"d_fii": 3.5834,
+"to_public": 0.0,
+"to_fii": 4.64,
+"keep_dom": 0.0,
+"unresolved": 0.0,
+"add_dii": 0.0,
+"add_ins": 0.0,
+"ev": [
+[
+"R1-foreign-holders",
+"Other",
+0.0,
+"public=0.00 fii=1.06",
+"MORGAN STANLEY MAURITIUS COMPANY LIMITED 1.06 foreign->fii(curated)"
+],
+[
+"R1-rest-follows-foreign-holders",
+3.58
+]
+],
+"newmap_file": "539957_2110202213497_SHP.xml"
+},
+"NATCOPHARM|2016-06-30": {
+"file": "524816_2972016141521_SHP.xml",
+"split": "p",
+"d_dii": -4.4203,
+"d_fii": 4.4203,
+"to_public": 0.0,
+"to_fii": 6.64,
+"keep_dom": 0.0,
+"unresolved": 0.0,
+"add_dii": 0.0,
+"add_ins": 0.0,
+"ev": [
+[
+"R1-foreign-holders",
+"Other",
+0.0,
+"public=0.00 fii=1.03",
+"NOMURA SINGAPORE LIMITED 1.03 foreign->fii(curated)"
+],
+[
+"R1-foreign-holders",
+"Other",
+0.0,
+"public=0.00 fii=1.19",
+"EM RESURGENT FUND 1.19 foreign->fii(curated)"
+],
+[
+"R1-rest-follows-foreign-holders",
+4.42
+]
+],
+"newmap_file": "524816_15102022121649_SHP.xml"
+},
+"NATCOPHARM|2016-09-30": {
+"file": "524816_7102016155113_SHP.xml",
+"split": "p",
+"d_dii": -4.0337,
+"d_fii": 4.0337,
+"to_public": 0.0,
+"to_fii": 5.06,
+"keep_dom": 0.0,
+"unresolved": 0.0,
+"add_dii": 0.0,
+"add_ins": 0.0,
+"ev": [
+[
+"R1-foreign-holders",
+"Other",
+0.0,
+"public=0.00 fii=1.03",
+"NOMURA SINGAPORE LIMITED 1.03 foreign->fii(curated)"
+],
+[
+"R1-rest-follows-foreign-holders",
+4.03
+]
+],
+"newmap_file": "524816_15102022121649_SHP.xml"
+},
+"NATCOPHARM|2016-12-31": {
+"file": "524816_71201713447_SHP.xml",
+"split": "p",
+"d_dii": -2.7022,
+"d_fii": 2.7022,
+"to_public": 0.0,
+"to_fii": 3.74,
+"keep_dom": 0.0,
+"unresolved": 0.0,
+"add_dii": 0.0,
+"add_ins": 0.0,
+"ev": [
+[
+"R1-foreign-holders",
+"Other",
+0.0,
+"public=0.00 fii=1.04",
+"NOMURA SINGAPORE LIMITED 1.04 foreign->fii(curated)"
+],
+[
+"R1-rest-follows-foreign-holders",
+2.7
+]
+],
+"newmap_file": "524816_15102022121649_SHP.xml"
+},
+"NH|2018-03-31": {
+"file": "539551_64201816166_SHP.xml",
+"split": "p",
+"d_dii": -3.843,
+"d_fii": 3.843,
+"to_public": 0.0,
+"to_fii": 9.6,
+"keep_dom": 0.0,
+"unresolved": 0.0,
+"add_dii": 0.0,
+"add_ins": 0.0,
+"ev": [
+[
+"R1-foreign-holders",
+"Other",
+0.0,
+"public=0.00 fii=5.76",
+"CDC GROUP PLC 5.76 foreign->fii(curated)"
+],
+[
+"R1-unresolved",
+"Bodies Corporate",
+0.0,
+"CDC INDIA OPPORTUNITIES LIMITED 2.13 ?->-(-)",
+"keyword"
+],
+[
+"R1-rest-follows-foreign-holders",
+3.84
+]
+],
+"newmap_file": "539551_1910202218459_SHP.xml"
+},
+"NH|2018-06-30": {
+"file": "539551_1872018181025_SHP.xml",
+"split": "p",
+"d_dii": -3.543,
+"d_fii": 3.543,
+"to_public": 0.0,
+"to_fii": 9.3,
+"keep_dom": 0.0,
+"unresolved": 0.0,
+"add_dii": 0.0,
+"add_ins": 0.0,
+"ev": [
+[
+"R1-public-label",
+"Overseas Corporate Bodies",
+0.0,
+"public=0.00 fii=5.76",
+"CDC Group PLC 5.76 foreign->fii(curated)",
+"keyword"
+],
+[
+"R1-unresolved",
+"Bodies Corporate",
+0.0,
+"CDC India Opportunities Limited 2.13 ?->-(-)",
+"keyword"
+],
+[
+"R1-rest-follows-foreign-holders",
+3.54
+]
+],
+"newmap_file": "539551_1910202218459_SHP.xml"
+},
+"NH|2018-09-30": {
+"file": "539551_10102018172725_SHP.xml",
+"split": "p",
+"d_dii": -3.423,
+"d_fii": 3.423,
+"to_public": 0.0,
+"to_fii": 9.18,
+"keep_dom": 0.0,
+"unresolved": 0.03,
+"add_dii": 0.0,
+"add_ins": 0.0,
+"ev": [
+[
+"R1-unresolved",
+"Clearing Member",
+0.03,
+"",
+"keyword"
+],
+[
+"R1-public-label",
+"Overseas Corporate Bodies",
+0.0,
+"public=0.00 fii=5.76",
+"CDC Group PLC 5.76 foreign->fii(curated)",
+"keyword"
+],
+[
+"R1-unresolved",
+"Bodies Corporate",
+0.0,
+"CDC India Opportunities Limited 2.13 ?->-(-)",
+"keyword"
+],
+[
+"R1-rest-follows-foreign-holders",
+3.42
+]
+],
+"newmap_file": "539551_1910202218459_SHP.xml"
+},
+"NH|2018-12-31": {
+"file": "539551_91201914233_SHP.xml",
+"split": "p",
+"d_dii": -3.423,
+"d_fii": 3.423,
+"to_public": 0.0,
+"to_fii": 9.18,
+"keep_dom": 0.0,
+"unresolved": 0.01,
+"add_dii": 0.0,
+"add_ins": 0.0,
+"ev": [
+[
+"R1-unresolved",
+"Clearing Member",
+0.01,
+"",
+"keyword"
+],
+[
+"R1-public-label",
+"Overseas Corporate Bodies",
+0.0,
+"public=0.00 fii=5.76",
+"CDC Group PLC 5.76 foreign->fii(curated)",
+"keyword"
+],
+[
+"R1-unresolved",
+"Bodies Corporate",
+0.0,
+"CDC INDIA OPPORTUNITIES LIMITED 2.13 ?->-(-)",
+"keyword"
+],
+[
+"R1-rest-follows-foreign-holders",
+3.42
+]
+],
+"newmap_file": "539551_1910202218459_SHP.xml"
+},
+"NH|2019-03-31": {
+"file": "539551_94201917329_SHP.xml",
+"split": "p",
+"d_dii": -3.363,
+"d_fii": 3.363,
+"to_public": 0.0,
+"to_fii": 9.12,
+"keep_dom": 0.0,
+"unresolved": 0.02,
+"add_dii": 0.0,
+"add_ins": 0.0,
+"ev": [
+[
+"R1-unresolved",
+"Clearing Member",
+0.02,
+"",
+"keyword"
+],
+[
+"R1-public-label",
+"Overseas Corporate Bodies",
+0.0,
+"public=0.00 fii=5.76",
+"CDC GROUP PLC 5.76 foreign->fii(curated)",
+"keyword"
+],
+[
+"R1-unresolved",
+"Bodies Corporate",
+0.0,
+"CDC INDIA OPPORTUNITIES LIMITED 2.13 ?->-(-)",
+"keyword"
+],
+[
+"R1-rest-follows-foreign-holders",
+3.36
+]
+],
+"newmap_file": "539551_1910202218459_SHP.xml"
+},
+"NH|2019-06-30": {
+"file": "539551_1772019133816_SHP.xml",
+"split": "p",
+"d_dii": -3.333,
+"d_fii": 3.333,
+"to_public": 0.0,
+"to_fii": 9.09,
+"keep_dom": 0.0,
+"unresolved": 0.0,
+"add_dii": 0.0,
+"add_ins": 0.0,
+"ev": [
+[
+"R1-public-label",
+"Overseas Corporate Bodies",
+0.0,
+"public=0.00 fii=5.76",
+"CDC GROUP PLC 5.76 foreign->fii(curated)",
+"keyword"
+],
+[
+"R1-unresolved",
+"Bodies Corporate",
+0.0,
+"CDC INDIA OPPORTUNITIES LIMITED 2.13 ?->-(-)",
+"keyword"
+],
+[
+"R1-rest-follows-foreign-holders",
+3.33
+]
+],
+"newmap_file": "539551_1910202218459_SHP.xml"
+},
+"PHOENIXLTD|2016-06-30": {
+"file": "503100_1872016111748_SHP.xml",
+"split": "p",
+"d_dii": -9.1734,
+"d_fii": 9.1734,
+"to_public": 0.0,
+"to_fii": 16.81,
+"keep_dom": 0.0,
+"unresolved": 0.0,
+"add_dii": 0.0,
+"add_ins": 0.0,
+"ev": [
+[
+"R1-foreign-holders",
+"Other",
+0.0,
+"public=0.00 fii=4.31",
+"Fidelity Investment Trust Fidelity Series Emerging Markets Fund 4.31 foreign->fii(curated)"
+],
+[
+"R1-foreign-holders",
+"Other",
+0.0,
+"public=0.00 fii=1.15",
+"College Retirement Equities Fund - Stock Account 1.15 foreign->fii(curated)"
+],
+[
+"R1-foreign-holders",
+"Other",
+0.0,
+"public=0.00 fii=1.13",
+"Mondrian Emerging Markets Small Cap Equity Fund,L.P. 1.13 foreign->fii(curated)"
+],
+[
+"R1-foreign-holders",
+"Other",
+0.0,
+"public=0.00 fii=1.04",
+"Nordea Far East Fund 1.04 foreign->fii(curated)"
+],
+[
+"R1-rest-follows-foreign-holders",
+9.18
+]
+],
+"newmap_file": "503100_20102022174424_SHP.xml"
+},
+"PHOENIXLTD|2016-09-30": {
+"file": "503100_12102016174628_SHP.xml",
+"split": "p",
+"d_dii": -8.061,
+"d_fii": 8.061,
+"to_public": 0.0,
+"to_fii": 15.55,
+"keep_dom": 0.0,
+"unresolved": 0.0,
+"add_dii": 0.0,
+"add_ins": 0.0,
+"ev": [
+[
+"R1-foreign-holders",
+"Other",
+0.0,
+"public=0.00 fii=4.29",
+"Fidelity Investment Trust Fidelity Series Emerging Markets Fund 4.29 foreign->fii(curated)"
+],
+[
+"R1-foreign-holders",
+"Other",
+0.0,
+"public=0.00 fii=1.15",
+"Nordea Far East Fund 1.15 foreign->fii(curated)"
+],
+[
+"R1-foreign-holders",
+"Other",
+0.0,
+"public=0.00 fii=1.04",
+"Van Eck Funds - Emerging Markets Fund 1.04 foreign->fii(curated)"
+],
+[
+"R1-foreign-holders",
+"Other",
+0.0,
+"public=0.00 fii=1.01",
+"Tiaa-Cref Funds - Tiaa-Cref Emerging Markets Equity Fund 1.01 foreign->fii(curated)"
+],
+[
+"R1-rest-follows-foreign-holders",
+8.06
+]
+],
+"newmap_file": "503100_20102022174424_SHP.xml"
+},
+"RAMCOCEM|2016-06-30": {
+"file": "500260_2272016103947_SHP.xml",
+"split": "p",
+"d_dii": -5.2242,
+"d_fii": 5.2242,
+"to_public": 0.0,
+"to_fii": 6.35,
+"keep_dom": 0.0,
+"unresolved": 0.0,
+"add_dii": 0.0,
+"add_ins": 0.0,
+"ev": [
+[
+"R1-unresolved",
+"Other",
+0.0,
+"AMRIT PETROLEUMS PVT LIMITED 2.10 ?->-(-)",
+"keyword"
+],
+[
+"R1-foreign-holders",
+"Other",
+0.0,
+"public=0.00 fii=1.13",
+"AMANSA HOLDINGS PRIVATE LIMITED 1.13 foreign->fii(curated)"
+],
+[
+"R1-rest-follows-foreign-holders",
+5.22
+]
+],
+"newmap_file": "500260_21102022151026_SHP.xml"
+},
+"SAMMAANCAP|2016-06-30": {
+"file": "535789_2072016165357_SHP.xml",
+"split": "p",
+"d_dii": -0.2502,
+"d_fii": 0.2502,
+"to_public": 0.0,
+"to_fii": 31.31,
+"keep_dom": 0.0,
+"unresolved": 0.0,
+"add_dii": 0.0,
+"add_ins": 0.0,
+"ev": [
+[
+"R1-fii-label",
+"Other Foreign Institutional Investors",
+31.31,
+"public=0.00 fii=30.22",
+"EUROPACIFIC GROWTH FUND 6.27 foreign->fii(curated); MERRILL LYNCH CAPITAL MARKETS ESPANA S.A. S.V. 3.88 foreign->fii(curated); COPTHALL MAURITIUS INVESTMENT LIMITED 2.23 foreign->fii(regex); SWISS FINANCE CORPORATION (MAURITIUS) LIMITED 1.39 foreign->fii(curated); ABU DHABI INVESTMENT AUTHORITY - BGO-EM 1.09 ?->-(-); NEW WORLD FUND INC 1.05 foreign->fii(curated)",
+"keyword"
+],
+[
+"R1-rest-follows-foreign-holders",
+1.09
+]
+],
+"newmap_file": "535789_201020222329_SHP.xml"
+},
+"SAMMAANCAP|2016-09-30": {
+"file": "535789_18102016104650_SHP.xml",
+"split": "p",
+"d_dii": -0.1652,
+"d_fii": 0.1652,
+"to_public": 0.0,
+"to_fii": 21.13,
+"keep_dom": 0.0,
+"unresolved": 0.0,
+"add_dii": 0.0,
+"add_ins": 0.0,
+"ev": [
+[
+"R1-fii-label",
+"Other Foreign Institutional Investors",
+21.13,
+"public=0.00 fii=19.54",
+"COPTHALL MAURITIUS INVESTMENT LIMITED 2.12 foreign->fii(regex); ABU DHABI INVESTMENT AUTHORITY - BEHAVE 1.59 ?->-(-); SWISS FINANCE CORPORATION (MAURITIUS) LIMITED 1.40 foreign->fii(curated); EASTSPRING INVESTMENTS (SINGAPORE) LIMITED A/C THEPRUDENTIAL ASSURANCE COMPANY LIMITED 1.32 foreign->fii(regex); MORGAN STANLEY MAURITIUS COMPANY LIMITED 1.11 foreign->fii(curated); VANGUARD EMERGING MARKETS STOCK INDEX FUND, ASERIES OF VANGUARD INTERNATIONAL EQUITY INDE X FUND 1.02 foreign->fii(curated)",
+"keyword"
+],
+[
+"R1-rest-follows-foreign-holders",
+1.59
+]
+],
+"newmap_file": "535789_201020222329_SHP.xml"
 }
 },
 "revisions": {
@@ -66881,6 +67543,29 @@
 "2024-03-27",
 83271,
 "bsexbrl:512070_2632024184723_SHP.xml"
+]
+},
+"BHARATFORG|2016-12-31": {
+"how": "re-filing document 500493_3152022195521_SHP.xml re-read: R1-foreign-holders Other 0.0 public=0.00 fii=1.12 AMANSA HOLDINGS PRIVATE LIMITED 1.12 foreign->fii(curated); R1-rest-follows-foreign-holders 6.01",
+"was": [
+46.24,
+11.6986,
+23.2801,
+7.2877,
+1.2883,
+"2022-06-01",
+104787,
+"bsexbrl:500493_3152022195521_SHP.xml"
+],
+"cell": [
+46.24,
+18.8286,
+16.1501,
+7.2877,
+1.2883,
+"2022-06-01",
+104787,
+"bsexbrl:500493_3152022195521_SHP.xml §158 heal:re-read"
 ]
 }
 },

@@ -51,7 +51,7 @@ LAB_PUB=re.compile(r"overseas corporate|\bocb\b|foreig\w* compan|foreig\w* (corp
 FORLAB=re.compile(r'foreig|muscat|s\.?a\.?o\.?g\b|overseas|\bfpi\b|\bfii\b|\bocb\b|non.?resident|\bnri\b|mauritius|singapore|\bpte\b|\bb\.?v\.?\b|\bllc\b|\bl\.?p\.?\b|\binc\b|\bplc\b|\bltd\.? *\((uk|usa|us)\)|university|college|\bsa\b|\bag\b|\bgmbh\b|\bnv\b|luxembourg|cayman|netherlands|\busa\b|\buk\b|japan|korea|hong ?kong|cyprus|delaware|\bsarl\b|\bs\.?a\.?r\.?l\b|holdings? (ii|iii|iv|v)\b|\bpty\b|\bcapital partners\b|\bglobal\b|international|\bsicav\b|\bucits\b|\boeic\b', re.I)
 DOMSTRONG=re.compile(r"insur|assurance|provident|pension|nps trust|national pension|mutual fund|\bmagnum\b|\blic\b|\blici\b|qualified inst|q[au]+lified|instit\w* buyers?|\bqib", re.I)
 DOMLAB=re.compile(r"insur|assurance|provident|pension|nps trust|national pension|mutual fund|\blic\b|\blici\b|qualified inst|q[au]+lified|instit\w* buyers?|\bqib|\bnbfc|non.?banking|financial institution|\bbank|alternat(e|ive) investment|venture capital|asset reconstruct|general insurance corp", re.I)
-REST_FOLLOWS=True     # §158a; False reproduces the §158 (2026-09-24) evaluation exactly
+REST_FOLLOWS=True     # §158a/§158b (2026-09-25): with the rule on, a full N500 run proposes 0 on the live store; False = the §158 (2026-09-24) evaluation
 INSURER=re.compile(r'insur|assurance|\blic\b|\blici\b|life ins', re.I)
 def qe_of(qtr):
     q=(qtr or "").strip().split()
@@ -481,7 +481,7 @@ def write(stamp=None):
         "R2 Non-institutions->Any Other rows labelled as domestic institutions (Qualified Institutional Buyer, insurance, provident/pension, NBFC, FI, bank, AIF) join dii in full; generic labels contribute only their NAMED domestic-institution holders (>=1% rows). Named insurers also raise the ins slot.",
         "R3 the old-format NBFC row joins dii (the 2022 form lists NBFCs inside Institutions(Domestic)).",
         "Materiality: a cell is entered only when dii or fii moves >= 0.05pp. Evidence per cell: file, stored split, every rule hit with labels and holder names.",
-        "§158a (2026-09-25) R1 rest-follows: where the block's >=1% holders form orphan groups (no category row) the unnamed rest was left uncovered in the stored split; when every classified named holder is foreign and no row is domestic, the rest joins fii (evidence tag R1-rest-follows-foreign-holders). Written only for the 86 cells the user approved."],"cells":{}}
+        "§158a (2026-09-25) R1 rest-follows: where the block's >=1% holders form orphan groups (no category row) the unnamed rest was left uncovered in the stored split; when every classified named holder is foreign and no row is domestic, the rest joins fii (evidence tag R1-rest-follows-foreign-holders). Written for the 86 cells the user approved (§158a, 63 moved) and then the 48 same-pattern cells the 86-count had missed (§158b, user: \"fix the remaining 48 cells too\")."],"cells":{}}
     for k,v in sorted(P.items()):
         sym,qe=k.split("|"); cur=(hist.get(sym) or {}).get(qe)
         if cur is None or not F._cell_eq(cur,v["was"]): n_skip+=1; continue

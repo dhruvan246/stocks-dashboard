@@ -19137,6 +19137,21 @@ can no longer hide it.
 2016-07-14 and re-filing 2022-06-01); the other 23 of the 86 are unchanged. LICHSGFIN Jun-2016 live fii 31.49 / dii 7.05.
 `refresh-stock-fin.yml` dispatched after the store commit.
 
+## §158b — THE 48 SAME-PATTERN CELLS THE 86-COUNT MISSED (2026-09-25, user: "fix the remaining 48 cells too")
+
+**What they are.** Same defect and same rule as §158a (orphan-group filings; every classified named holder foreign, no domestic row; the
+unnamed rest joins fii). The ledger-text count that produced "86" missed them: 3 IEX Jun-18 / Sep-18 / Mar-19 cells whose §158 why was cut
+at 900 chars before the remainder (9.04 / 9.04 / 8.27 pp), 20 whose top entry was an older pass (SW-2 ×18: PHOENIXLTD, NH ×6, NATCOPHARM ×3,
+RAMCOCEM, MGL, LINDEINDIA, KARURVYSYA, ADANIENT, …; §142k and a bulk stamp on BHARATFORG Dec-16 / Mar-17), and 25 under 1 pp (PVRINOX ×20,
+EXIDEIND ×3, RADICO, GRASIM/SAMMAANCAP). The FII session excluded these keys from its D1-wide pass (it runs over the §158b store).
+
+**Checks.** Full N500 re-evaluation on store a56e15cd3 with the rule on: exactly 48 proposals, the same keys and healed cells as the §158a
+dry run, every one carrying `R1-rest-follows-foreign-holders` and nothing else (dii −107.19 pp, fii +107.19 pp). verify: 48 applied,
+0 was-mismatches, no sanity flags; Sep-2022 seam unchanged; Mar→Jun-2016 dii movers ≥ 3 pp 22 → 20. Re-filing row BHARATFORG Dec-2016
+(500493_3152022195521, raw fii/dii differ from the original) re-read from its own document: Amansa 1.12 → fii, rest 6.01 → fii,
+18.83 / 16.15 = the original quarter's healed 18.83 / 16.15. Guards gate / definition / revisions green. Audit: 2,596 cells (+20 SW-2-era
+keys that had no §158 record), 20 revisions. After §158b a full re-run with the rule on proposes 0.
+
 ## §159 — FII = INSTITUTIONS (FOREIGN) IN EVERY FORMAT: ROW-LEVEL HEAL OF THE 2015-2022 NON-INSTITUTIONS "ANY OTHER" ROWS (2026-09-24, FII twin of §158)
 
 **Why.** After §158 the Sep-2022 seam still had FII-side artefacts that no DII rule touches: PAYTM 5.45 → 77.26, ETERNAL 9.98 →
