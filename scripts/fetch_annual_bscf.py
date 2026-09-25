@@ -253,6 +253,45 @@ CF_PAGE = re.compile(r'cash\s*flow', re.I)
 CF_REAL = re.compile(r'operating\s+activit|investing\s+activit|financing\s+activit', re.I)
 CONSOL  = re.compile(r'consolidated', re.I)
 STANDAL = re.compile(r'standalone', re.I)
+# RELAXED markers — used ONLY by locate()'s second pass, after the strict rules above found no
+# consolidated BS. Measured misses of the strict ones (2026-09-26, 40 failing filings): BEL prints
+# "Assets & Liabilities"; ANANTRAJ "Total of equity and liabilities"; ASTRAL/BEL put the title +
+# Total Assets on one page and "Trade payables" + the "Total equity and liabilities" footing on the
+# NEXT, untitled page, so no single page carries all three strict markers.
+BS_PAGE2 = re.compile(r'balance\s*sheet|assets\s*(?:and|&)\s*liabilities|statement\s+of\s+assets', re.I)
+BS_FOOT  = re.compile(r'total[\s\-–—:.]{0,4}(?:of\s+)?equity\s*(?:and|&)\s*liabilit', re.I)  # the liabilities-side FOOTING line
+BS_LIAB2 = re.compile(r'trade\s*payables?|' + BS_FOOT.pattern, re.I)
+
+def _relaxed_bs(texts):
+    """Second-pass BS/CF page finder: {'bs_con','bs_std': [pages] | None, 'cf_con','cf_std': i | None}.
+    Three shapes: (1) one page with title + liabilities marker + a total; (2) title + totals on page
+    i with the FOOTING on page i+1; (3) title + footing on page i with Total Assets on page i-1.
+    Shapes 2/3 require the "total equity and liabilities" FOOTING, which a cash-flow page ("trade
+    payables" as a working-capital line) and a per-segment assets & liabilities schedule never
+    carry — so a segment page followed by a cash-flow page (BHARTIARTL p3->p4) cannot pair up."""
+    n = len(texts)
+    title = [bool(BS_PAGE2.search(t)) for t in texts]
+    liab  = [bool(BS_LIAB2.search(t)) for t in texts]
+    foot  = [bool(BS_FOOT.search(t)) for t in texts]
+    asset = [bool(BS_ASSET.search(t)) for t in texts]
+    tot   = [bool(BS_REAL.search(t)) or asset[i] for i, t in enumerate(texts)]
+    con   = [bool(CONSOL.search(t)) for t in texts]
+    R = {'bs_con': None, 'bs_std': None, 'cf_con': None, 'cf_std': None}
+    for i in range(n):
+        pages = None
+        if title[i] and liab[i] and tot[i]:
+            pages = [i - 1, i] if (not asset[i] and i > 0 and asset[i - 1] and not liab[i - 1]) else [i]
+        elif title[i] and tot[i] and not liab[i] and i + 1 < n and foot[i + 1]:
+            pages = [i, i + 1]
+        elif title[i] and foot[i] and not tot[i] and i > 0 and asset[i - 1]:
+            pages = [i - 1, i]
+        if pages:
+            k = 'bs_con' if any(con[p] for p in pages) else 'bs_std'
+            if R[k] is None: R[k] = pages
+        if CF_PAGE.search(texts[i]) and CF_REAL.search(texts[i]):
+            k = 'cf_con' if con[i] else 'cf_std'
+            if R[k] is None: R[k] = i
+    return R
 
 def fy_end_hit(text, want_year):
     """True if `text` names the fiscal-year-end 31 March <want_year>, in ANY of the printed
@@ -313,12 +352,30 @@ def locate(pdf, want_year, want_basis=None):
         return [i]
     # a FILL year must come from the basis the gate validated — prefer that page when the filing
     # carries both (PROZONER FY22: con page read fine but the validated basis is std, §148)
+    strict = None
     if want_basis == 's' and bs_std is not None:
-        return 's', bs_pages(bs_std), (cf_std if cf_std is not None else cf_con)
-    if bs_con is not None:
-        return 'c', bs_pages(bs_con), (cf_con if cf_con is not None else cf_std)
-    if bs_std is not None:
-        return 's', bs_pages(bs_std), (cf_std if cf_std is not None else cf_con)
+        strict = ('s', bs_pages(bs_std), (cf_std if cf_std is not None else cf_con))
+    elif bs_con is not None:
+        strict = ('c', bs_pages(bs_con), (cf_con if cf_con is not None else cf_std))
+    elif bs_std is not None:
+        strict = ('s', bs_pages(bs_std), (cf_std if cf_std is not None else cf_con))
+    if strict is not None and strict[0] == 'c':
+        return strict                                   # strict rules found the consolidated BS: unchanged
+    # RELAXED second pass — only when the strict markers found nothing, or found only a standalone
+    # BS while a consolidated one exists (consolidated-first is the intended precedence; the strict
+    # markers just missed it). Regression-tested 2026-09-26 on 24 filings that already landed: 23
+    # identical, 1 now auto-located on exactly the pages its hand-read values came from (ASTRAL FY22).
+    R = _relaxed_bs(texts)
+    if strict is not None:
+        if want_basis != 's' and R['bs_con'] is not None:
+            return 'c', R['bs_con'], R['cf_con']        # CF on the SAME basis or none — never mix bases in a cell
+        return strict
+    if want_basis == 's' and R['bs_std'] is not None:
+        return 's', R['bs_std'], R['cf_std']
+    if R['bs_con'] is not None:
+        return 'c', R['bs_con'], R['cf_con']
+    if R['bs_std'] is not None:
+        return 's', R['bs_std'], R['cf_std']
     return None
 
 def _as_list(x):
@@ -463,7 +520,8 @@ def key_basis(x, qe):
 # compact page (GRASIM: standalone p8 TotAssets 77,980 vs consolidated assets p29 500,535 + liab
 # p31). These helpers re-pick the right BS by the ACTUAL answer key (validate) or by Total-Assets
 # size (fills: consolidation only ADDS subsidiary assets, so the largest Total Assets IS the
-# consolidated one). Used in prep only; locate() (text-pass + main-fill) is unchanged.
+# consolidated one). Used in prep only. (locate() runs its strict markers first; its relaxed second
+# pass only fires when those find no consolidated BS — see _relaxed_bs.)
 _TA_RX = re.compile(r'^\s*total\s+assets\b', re.I)
 _PPE_RX = re.compile(r'property,?\s*plant\s+and\s+equipment\b(?!.*expenditure)', re.I)
 _ROU_RX = re.compile(r'right[\-\s]*of[\-\s]*use\s+asset', re.I)
@@ -597,8 +655,8 @@ def prep(outdir, limit, only):
             for ann, att in fl[:8]:
                 pdf = download(o, att)
                 if not pdf: continue
-                loc = locate(pdf, fy)
-                if not loc: continue
+                loc = locate(pdf, fy, kbasis)   # the validated basis, as the text pass already does (PROZONER, §148): without it
+                if not loc: continue            # a standalone-key filer's fill got the consolidated page -> basis-mix skip at merge
                 b, bs_pi, cf_pi = loc
                 # CONSOLIDATED-BS recovery: locate() may have picked the standalone BS. For the
                 # validate year, ONLY when locate's page does not already satisfy the key, re-pick
