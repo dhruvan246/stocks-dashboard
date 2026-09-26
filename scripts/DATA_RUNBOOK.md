@@ -20078,6 +20078,63 @@ the lag re-assert (which only re-dates a stored `was`). Measured on a local rebu
 values untouched. Scan used: every `shp_fill_thirdparty` cell tagged QE+21 whose live row is dated, minus those with a
 `shp_sub_dates` entry (319, evidence: BSE announcement stream / SHPQNewFormat) or a `days_earlier` / NSE-broadcast lag entry.
 
+### 164i. Single-quarter holes in the page era filled from BSE's own pages (2026-09-26, Quantmac reply v3)
+Quantmac v3 listed filings they hold and we lacked; 13 were regular Mar-2016 quarters (RELIANCE, WIPRO, BRITANNIA, LICHSGFIN,
+ARVIND, DISHMAN, DISHTV, KWALITY, NATCOPHARM, SOMANYCERA, TIMKEN, VRLLOG, BHARATFORG). Cause: every page download (§160, §164g)
+fetched only quarters that already had a store row, so a missing row never got its page. Measured on the engine view (FUND_ALIAS
+fold): 941 quarter holes bracketed by stored quarters inside a Nifty 500 member's window (755 page era, 186 XBRL era).
+`scripts/_shp_164i_fill_holes.py`: `fetch` = plain, honestly identified GET of www.bseindia.com ShareholdingPattern.aspx (one at a
+time, ~1 s apart; it never imports fetch_shp_bse_aspx, whose bse_headers import would add browser-imitating headers to every
+urllib request in the process) into `~/stocks-cache/shp/holes/cache`; `parse` = fetch_shp_bse_aspx.cell_of on the cached pages
+only (CACHE_ONLY, bse_headers and curl_cffi stubbed), neighbours from the store; `write` = fill-only merge into
+`shp_fill_bse_aspx.json.gz` (`_meta.s164i`). 746 page-era holes with a BSE code (9 without: CONSOFINVT 7, CAROLINFO 2); 744 pages
+fetched, 0 failures. **583 cells pass the parser's own gates and were added**; refused: 76 zero-vs-neighbour (the Dec-2015/Mar-2016
+layout prints the FII row inside a lump — RELIANCE, WIPRO, BRITANNIA, LICHSGFIN, ARVIND, CIPLA Mar-16 are here: they need the §160
+seam reconstruction, not written), 75 absent under the primary Flag (the other Flag not yet fetched), 7 recon, 5 no-fii. On a
+store copy apply_bse_hist_ledger adds exactly the 583 with their fii. Pre-2016 fills are served un-dated (quarter-end + 28) unless
+shp_sub_dates holds a measured date. Only 2 of the 583 fall inside Quantmac's month-end coverage (UBHOLDINGS Sep/Dec-2012: ours
+13.85 / 4.13 against the stored Mar-2013 4.31 — they still serve Jun-2012's 15.63). XBRL-era holes (186) need the filing list
+(api) — open.
+
+### 164j. Quantmac reply v3 (26-Sep): foreign-labelled rows were read as domestic; named foreign holders now need a document
+**Bug (reported by Quantmac for CUMMINSIND / IPCALAB, measured on origin).** `_shp_dii_rowfix.eval_filing` R1 set a category label
+to "domestic" when DOMLAB matched ("mutual fund", "financial institution", "\bbank") and LAB_FII did not — so "Foreign Mutual
+Fund", "Foreign Financial Institution(s) / Banks" and "Bank Foreign" rows inside the institutional Any-Other block went to DII
+(CUMMINSIND Jun-16: §158 moved 0.90 fii -> dii, reversing §156's correct move). 84 ledger cells carried the defect: 41 §158
+(DII session: BSOFT, CANFINHOME, CUMMINSIND, ELGIEQUIP, FSL, IPCALAB, JPPOWER, OFSS, SCHAEFFLER) and 43 §164d (FII session's
+former-member re-read reuses R1: CENTENKA, DCW, GHCL, LMW, MONSANTO, RAJESHEXPO, RAYMOND, SHANTIGEAR). Fix: `FORWORD`
+(foreig|overseas) — a label naming a foreign institution is never a domestic label (R1 line and the R2 non-institution
+skip). A mixed "Foreign Companies/Banks" lump now reads public (company label), not domestic (FSL Dec-18, 1 cell).
+**Proof standard (user decision 26-Sep, "require documents").** A holder whose only sign of being foreign is its NAME (FORLAB
+markers such as Mauritius / Pte / LLC / Global, or the sovereign-name rule) counts as FII only with a document on file in
+`scripts/shp_foreign_holder_evidence.json` (1,167 names): (filing) the holder is listed under a foreign-institution row (FPI/FII/
+FVCI/FDI/foreign SWF/Institutions (Foreign)) in another cached BSE SHP XBRL — scan of 33,898 cached XBRLs, no domestic listing or
+>= 90% of >= 5 listings (Government Pension Fund Global 2,239 vs 8 filer slips) — 1,150 names; or (gleif) a GLEIF LEI record with the
+same legal name (or previous legal name: FIL Capital Management (Mauritius) = Eight Roads Management Mauritius I) and a legal
+jurisdiction outside India — 16 names (Broad Street Investments (Singapore), Carrier International Mauritius, Indium V (Mauritius),
+Zend Mauritius VC, Silver Leaf Oak, DVI Fund, WestBridge Crossover, Lightspeed VIII, MBD Bridge Street 2013/2016, DF International,
+Goldman Sachs International — the filing spells it "Goldman Sach"). No document found (unresolved, never FII by name): MKCP
+Institutional Investor (Mauritius) II, BRIC II Mauritius Trading, SG BRIC III Trading, JPMorgan Mauritius Holdings IV, Arcee
+Holdings, NSR-PE Mauritius, Arisag Partners (Asia), Matthews Asia Small Companies Fund, Acacia Partners. `holder_class` returns
+"documented:<proof>" for listed names and "name-only (... no document)" otherwise; in R1 an unproven named holder follows the
+filer's own row LABEL (OCB -> public, FII label -> fii, domestic label -> dii — exactly where it went before) and in an unlabelled
+group keeps the stored split (never swept into fii by §158a rest-follows: IEX 2018-19 SG BRIC III stays public by its OCB label).
+The filer's own documents (labels, "(FPI)" tags, 2022-form placement, other filings' FPI rows) remain proof: ZENSARTECH Marina
+Holdco (FPI), MFSL Parkville (filer's FDI row), AUBANK IFC (2022 form) are unchanged — Quantmac's extra consistency test on
+post-2022 placements is theirs, not ours.
+**Lists.** 385 current-member BSE lists were lost to the /private/tmp cleanup and api.bseindia.com refuses our plain client, so the
+affected symbols' lists were rebuilt from the cached XBRLs (qtr from each file's DateOfReport, order from the file-name creation
+time; `~/stocks-cache/shp/lists_164j`, rows tagged `_synth`); 7 real lists survived and were used as-is.
+**Re-runs (tracked code).** §158 via the DII session's own `classify(only=...)` + `write()` for 14 current members: 53 cells
+(18 new, 35 superseding; audit merged 2,596 -> 2,614, none dropped); cells whose chain is §164 are skipped there. `_shp_d1_rowfix`
+for the 13 former members (+ `D1_ACCEPT_R1` for current members' §164 cells — none changed): 33 cells (3 new, 30 superseding),
+written with `_shp_164_write.py 164j` after the new `export` stage. Two runner fixes found on the way: `prior_inputs` now reads a
+former member's own §164 audit (mv159 into ext_fii, add_dii into add_prev) — without it 25 cells were `split_unknown`; and the
+R2-FII move is REPLACED, not added again (RAJESHEXPO 2017-21 would have double-counted ~2.4 pp). 17 label-bug cells move < 0.05 pp
+(0.01-0.03 rows: DCW, RAJESHEXPO 2017-18, CENTENKA, RAYMOND Jun-18) and stay below the materiality floor. Store copy in CI order:
+86 / 86 hold; guard_shp_revisions + guard_shp_definition OK. The DII session was offline (other machine); the user approved this
+session changing the shared classifier ("I fix it now").
+
 ## 166. OLD official splits the bin never received — `self_heal` now detects them network-free and heals them ledger-driven; RASOYPR 1:15 healed  (2026-09-25, found by the Quantmac backtest-indicator reconciliation)
 
 ### 166a. The defect

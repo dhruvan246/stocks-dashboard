@@ -332,7 +332,7 @@ def holder_cls_full(ctx, n, v, oldmap, pagemap, known):
     """(class, source) for a named holder from the filer's own evidence, strongest first; None when nothing the filer itself said decides."""
     key=nkey(re.sub(r"^\s*(fii|fpi|qfi)s?\s*[-:]\s*","",n,flags=re.I))
     c,dest,src=ctx.hclass(n,v)
-    if src.startswith("new-format") or src in ("curated","memory","memory~"):
+    if src.startswith("new-format") or src.startswith("documented") or src in ("curated","memory","memory~"):
         if c=="foreign" and dest=="fii": return "fii",src
         if c=="foreign" and dest=="public": return "public",src
         if c=="domestic": return "domestic",src

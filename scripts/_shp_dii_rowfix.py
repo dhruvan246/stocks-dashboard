@@ -135,6 +135,22 @@ def groups(rows, axis):
         target["holders"].append((p,name))
     return sorted([g for g in cats if g["pct"]>0.0049 or g["holders"]],key=lambda g:g["seq"])
 def norm(n): return re.sub(r'[^A-Z0-9]','',(n or '').upper())
+FORWORD=re.compile(r"foreig|overseas", re.I)      # §164j: a label naming a FOREIGN institution ("Foreign Mutual Fund", "Foreign Financial Institutions / Banks", "Bank Foreign") is never a domestic label, whatever domestic keyword it also carries
+def _load_evidence():
+    """§164j (user 2026-09-26: named foreign holders need DOCUMENTARY proof): norm(name) -> entry from scripts/shp_foreign_holder_evidence.json."""
+    try: e=json.load(open(os.path.join(REPO,"scripts","shp_foreign_holder_evidence.json"),encoding="utf-8")).get("names") or {}
+    except (OSError,ValueError): e={}
+    return {norm(k):v for k,v in e.items()}
+EVIDENCE=_load_evidence()
+def _documented_foreign(n, what):
+    """A name whose only sign of being foreign is the name itself: FII only with a document on file (GLEIF / another filing's
+    foreign-institution row); otherwise unresolved — never foreign by name alone."""
+    e=EVIDENCE.get(n)
+    if e is None and len(n)>=12:
+        for k,v in EVIDENCE.items():
+            if k[:12]==n[:12] and difflib.SequenceMatcher(None,n,k).ratio()>=0.92: e=v; break
+    if e: return "foreign","fii","documented:"+e.get("proof","")
+    return None,None,"name-only (%s; no document)"%what
 def load_verdicts():
     a=json.load(open(os.path.join(REPO,"scripts","_shp_other_inst_audit.json")))
     return {norm(k):v for k,v in (a.get("name_verdicts") or {}).items()}
@@ -159,9 +175,9 @@ def holder_class(name, verdicts, newmap, pct=None):
         return "domestic",None,how
     if n in verdicts: return verdicts[n], ("fii" if verdicts[n]=="foreign" else None), "curated"
     if DOMSTRONG.search(name) and not FORLAB.search(name.replace("International","").replace("INTERNATIONAL","")): return "domestic", None, "regex"
-    if DOMSTRONG.search(name) and re.search(r"pension fund global|government of|monetary authority|\bsingapore\b|\bnorges\b|abu dhabi|\bqatar\b|\bkuwait\b", name, re.I): return "foreign","fii","regex"
+    if DOMSTRONG.search(name) and re.search(r"pension fund global|government of|monetary authority|\bsingapore\b|\bnorges\b|abu dhabi|\bqatar\b|\bkuwait\b", name, re.I): return _documented_foreign(n,"sovereign name")
     if DOMSTRONG.search(name): return "domestic", None, "regex"
-    if FORLAB.search(name): return "foreign", "fii", "regex"
+    if FORLAB.search(name): return _documented_foreign(n,"name marker")
     if DOMLAB.search(name): return "domestic", None, "regex"
     return None, None, ""
 NEWFOR={"InstitutionsForeignPortfolioInvestorCatergoryOneMember","InstitutionsForeignPortfolioInvestorCatergoryTwoMember","ForeignDirectInvestmentMember","ForeignVentureCapitalInvestorsMember","SovereignWealthFundsMember","OtherInstitutionsForeignMember","ForeignPortfolioInvestorMember"}
@@ -204,7 +220,7 @@ class SymCtx:
         if self.newmap is None: self.newmap,self.newfile=newmap_for(self.sym,self.bse_rows)
         c,dest,src=holder_class(hn,self.verdicts,self.newmap,pct)
         n=norm(hn)
-        if src.startswith("new-format") or src=="curated": self.memory[n]=(c,dest,src)
+        if src.startswith("new-format") or src=="curated" or src.startswith("documented"): self.memory[n]=(c,dest,src)
         elif n in self.memory: c,dest,src=self.memory[n]; src="memory"
         else:
             for k,v in self.memory.items():
@@ -228,7 +244,7 @@ def eval_filing(ctx, qe, txt, bd, res, cur, final=True, unres_log=None, ext_fii=
         if not gi: unres+=oth_inst; ev.append(("R1-unresolved","no typed rows",round(oth_inst,4)))
         for g in gi:
             lab=g["label"]; hs=[(hp,hn)+ctx.hclass(hn,hp) for hp,hn in g["holders"]]
-            lab_kind=("domestic" if (DOMLAB.search(lab) and not LAB_FII.search(lab)) else "public" if LAB_PUB.search(lab) else "fii" if (LAB_FII.search(lab) or FORLAB.search(lab)) else None)
+            lab_kind=("domestic" if (DOMLAB.search(lab) and not LAB_FII.search(lab) and not FORWORD.search(lab)) else "public" if LAB_PUB.search(lab) else "fii" if (LAB_FII.search(lab) or FORLAB.search(lab)) else None)
             lab_src="keyword"
             if lab_kind is None and not g["holders"]:
                 ltxt=re.sub(r"^(other|others|any other)\s*","",lab,flags=re.I).strip()
@@ -246,6 +262,15 @@ def eval_filing(ctx, qe, txt, bd, res, cur, final=True, unres_log=None, ext_fii=
                     else: dest=lab_kind
                 hs2.append((hp,hn,c,dest,src))
             hs=hs2
+            # §164j: a named holder that is foreign ONLY by its name and has no document on file (holder_class -> "name-only")
+            # is not foreign by inference. Under a labelled row it follows the filer's own label (the label documents the row);
+            # in an unlabelled group it keeps the stored split (unres) — never swept into fii by the rest-follows rule below.
+            lh=[h for h in hs if h[2] is None and str(h[4]).startswith("name-only")]; lsum=sum(h[0] for h in lh)
+            if lsum>0.0:
+                if lab_kind=="domestic": keep+=lsum
+                elif lab_kind=="fii": mv_fii+=lsum
+                elif lab_kind=="public": mv_pub+=lsum
+                else: unres+=lsum; ev.append(("R1-name-only-unproven",lab,round(lsum,4),"; ".join("%s %.2f"%(h[1],h[0]) for h in lh)))
             fh=[h for h in hs if h[2]=="foreign"]; dh=[h for h in hs if h[2]=="domestic"]
             named_f_pub=sum(h[0] for h in fh if h[3]=="public"); named_f_fii=sum(h[0] for h in fh if h[3]=="fii"); named_d=sum(h[0] for h in dh)
             contained=(sum(h[0] for h in hs)<=g["pct"]+0.02)
@@ -290,7 +315,7 @@ def eval_filing(ctx, qe, txt, bd, res, cur, final=True, unres_log=None, ext_fii=
     add_dii=add_ins=0.0
     for g in gn:
         lab=g["label"]
-        if (LAB_PUB.search(lab) or LAB_FII.search(lab) or FORLAB.search(lab)) and not DOMLAB.search(lab): continue
+        if (LAB_PUB.search(lab) or LAB_FII.search(lab) or FORLAB.search(lab)) and (not DOMLAB.search(lab) or FORWORD.search(lab)): continue
         hs=[(hp,hn)+ctx.hclass(hn,hp) for hp,hn in g["holders"]] if g["holders"] else []
         dh=[h for h in hs if h[2]=="domestic" and (DOMLAB.search(h[1]) or h[4].startswith("new-format"))]
         fh=[h for h in hs if h[2]=="foreign"]

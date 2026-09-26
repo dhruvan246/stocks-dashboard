@@ -37,6 +37,9 @@ F=D.F
 WORK=os.environ.get("D1_ROWFIX_WORK") or X.WORK
 MARK="§164 row-level remainder rule"
 D1_FROM="2015-12-31"
+# §164j (user 2026-09-26): current members whose §164 cells the DII runner skips (chain_has §164) may take the corrected R1
+# result here — the rule itself was fixed (foreign labels, documentary proof), not re-judged. Comma list in D1_ACCEPT_R1.
+ACCEPT_R1=set(x for x in os.environ.get("D1_ACCEPT_R1","").split(",") if x)
 AUDIT_PATH=os.path.join(SCRIPTS,"_shp_d1_rowfix_audit.json")
 NAMED=re.compile(r"(.{2,90}?) (\d+\.\d+) (?:foreign|domestic|\?)->")
 
@@ -71,25 +74,33 @@ def d1_delta(r, bd, res, cur, ext_fii, add_prev):
             if ns<=pct+0.02 and pct-ns>0.004: rests+=pct-ns; ev.append(("D1-rest-beside-domestic-row-in-mixed-block",e[1],round(pct-ns,4)))
     return round(mov+rests,4), ev
 
-def prior_inputs(led, sym, qe, cur, audit158):
-    prior=(led.get(sym) or {}).get(qe); ext_fii=0.0; add_prev=0.0
-    chain=prior; depth=0
+def prior_inputs(led, sym, qe, cur, audit158, audit164=None):
+    prior=(led.get(sym) or {}).get(qe); ext_fii=0.0; add_prev=0.0; mv159_prev=0.0
+    chain=prior; depth=0; seen164=False
     while chain and depth<8:
         w=chain.get("why") or ""
         if "§159 row-level FII heal" in w and chain.get("was") and chain.get("cell"):
             ext_fii+=round(float(chain["cell"][1])-float(chain["was"][1]),4)
         if "§158 row-level DII heal" in w and not add_prev: add_prev=float((audit158.get("%s|%s"%(sym,qe)) or {}).get("add_dii") or 0.0)
+        # §164j: a former member's own §164 entry carries its R2-FII (§159-rule) move and R2 dii adds in the §164 audit, not in a
+        # separate §159/§158 entry — count them, or the stored split looks inexplicable and the cell is skipped (split_unknown)
+        if "§164 row-level remainder rule" in w and not seen164 and audit164 is not None:
+            a=audit164.get("%s|%s"%(sym,qe)) or {}; seen164=True
+            mv159_prev=float(a.get("mv159") or 0.0); ext_fii+=mv159_prev
+            if not add_prev: add_prev=float(a.get("add_dii") or 0.0)
         chain=chain.get("superseded") if isinstance(chain.get("superseded"),dict) else None; depth+=1
     healed=False; chain=prior; depth=0
     while chain and depth<8:
         if F.VALUE_HEAL_MARK.search(str(chain.get("why") or "")): healed=True; break
         chain=chain.get("superseded") if isinstance(chain.get("superseded"),dict) else None; depth+=1
-    return prior, ext_fii, add_prev, healed
+    return prior, ext_fii, add_prev, healed, mv159_prev
 
 def classify(syms, tag, ex_set):
     hist=json.load(open(os.path.join(REPO,"scripts","shp_history.json")))
     led=json.load(open(os.path.join(REPO,"scripts","shp_cell_fix.json"))).get("fix",{})
     audit158=(json.load(open(os.path.join(SCRIPTS,"_shp_dii_rowfix_audit.json"))).get("cells") or {})
+    try: audit164=(json.load(open(os.path.join(SCRIPTS,"_shp_164_audit.json"),encoding="utf-8")).get("cells") or {})
+    except (OSError,ValueError): audit164={}
     verdicts=D.load_verdicts(); P={}; st=collections.Counter(); t0=time.time()
     for si,sym in enumerate(syms):
         lp=os.path.join(D.LISTS,sym+".json")
@@ -104,7 +115,7 @@ def classify(syms, tag, ex_set):
             if not cur:
                 if final: st["no_store_row"]+=1
                 continue
-            prior,ext_fii,add_prev,healed=prior_inputs(led,sym,qe,cur,audit158)
+            prior,ext_fii,add_prev,healed,mv159_prev=prior_inputs(led,sym,qe,cur,audit158,audit164)
             chosen=D.match_filing(fl,qe,cur,None,ext_fii,healed)
             if not chosen:
                 pk=X.pick_filing(sym,qe,cur,fl,led)            # §158's own recorded file, else a parse matching a `was` in the chain
@@ -122,18 +133,24 @@ def classify(syms, tag, ex_set):
             if r is None: st["split_unknown"]+=1; continue
             t_fii,t_dii=r["t_fii"],r["t_dii"]; ev=list(r["ev"]); parts=[]
             base_moved=abs(t_fii-(cur[1] or 0))>=0.05 or abs(t_dii-(cur[2] or 0))>=0.05
-            if base_moved and not is_ex:
+            if base_moved and not is_ex and sym not in ACCEPT_R1:
                 # a current member's only R1 difference may be §158a rest-follows the DII session did not write (its 48 extras):
                 # that is a D1 case (unnamed rest -> fii); any other R1 difference is the DII session's, left untouched
                 rf=sum(float(e[1]) for e in r["ev"] if e[0]=="R1-rest-follows-foreign-holders")
                 dfi=t_fii-(cur[1] or 0); ddi=t_dii-(cur[2] or 0)
                 if rf>=0.05 and abs(dfi-rf)<=0.06 and abs(ddi+rf)<=0.06: parts.append("D1 (rest beside foreign holders, §158a semantics)"); st["current_rest_follows_extra"]+=1
                 else: st["current_member_R1_moves_(left_to_the_DII_session)"]+=1; t_fii,t_dii=cur[1] or 0,cur[2] or 0
+            elif base_moved and not is_ex: parts.append("R1-R3 re-read (§164j: foreign-labelled rows are never a domestic label; name-only holders need a document)")
             elif base_moved: parts.append("R1-R3 (§158 rules, first read)")
             mv159=0.0
             if is_ex:
                 rf=X.eval_fii(fctx,qe,txt,bd,res,cur); mv159=rf["mv"] if not any(e[0]=="R2FII-overflow" for e in rf["ev"]) else 0.0
-                if mv159>=0.05: t_fii=round(t_fii+mv159,4); ev+=rf["ev"]; parts.append("R2-FII (§159 rules)")
+                # eval_filing's t_fii already carries the R2-FII move recorded in this cell's own §164 entry (mv159_prev, via
+                # ext_fii): REPLACE it with today's reading, never add a second one (§164j; RAJESHEXPO 2017-21 double-counted)
+                new159=mv159 if mv159>=0.05 else 0.0
+                if abs(new159-mv159_prev)>=0.005 or new159>=0.05:
+                    t_fii=round(t_fii-mv159_prev+new159,4)
+                    if new159>=0.05: ev+=rf["ev"]; parts.append("R2-FII (§159 rules)")
             dd=0.0
             if qe>=D1_FROM:
                 dd,dev=d1_delta(r,bd,res,cur,ext_fii,add_prev)
@@ -172,6 +189,27 @@ def verify(tags):
         for sl,nm in ((1,"fii"),(2,"dii")): print("  %s %s->%s |jump|>=3pp: before %s after %s"%(nm,qa,qb,seam(hist,qa,qb,sl),seam(H,qa,qb,sl)))
     json.dump(H,open(os.path.join(WORK,"shp_history_d1.json"),"w"),separators=(",",":"))
 
+def export(tag, out, section="", only164=False):
+    """d1_proposals_<tag>.json -> a proposal file for scripts/_shp_164_write.py (was/cell/src/why + audit fields). With only164,
+    keep only cells whose current ledger entry is already a §164 cell or a former member's (current members' other cells
+    belong to the DII session's writer)."""
+    P=json.load(open(os.path.join(WORK,"d1_proposals_%s.json"%tag)))
+    led=json.load(open(os.path.join(SCRIPTS,"shp_cell_fix.json"))).get("fix",{})
+    stamp=time.strftime("%Y-%m-%d"); O={}
+    for k,v in sorted(P.items()):
+        s_,q=k.split("|"); top=((led.get(s_) or {}).get(q) or {}).get("why","")
+        if only164 and not (v.get("ex_member") or "\u00a7164" in top): continue
+        cur,new=v["was"],v["cell"]
+        why=("%s (%s%s; %s): fii %.2f -> %.2f, dii %.2f -> %.2f. %s. §158 rules (R1 institutional Any-Other holders placed as the "
+             "filer's own 2022 form places them, R2 domestic institutions parked under non-institutions, R3 NBFC row) + §159 rule "
+             "(non-institutional foreign holders the filer's 2022 form lists under Institutions (Foreign)) + D1 (unnamed rest of the "
+             "institutional block = FII in the 2015-22 form unless every named holder is domestic). | %s")%(
+             MARK,stamp,(" "+section) if section else "","FORMER Nifty 500 member" if v.get("ex_member") else "current member",
+             cur[1],new[1],cur[2],new[2],", ".join(v.get("parts") or []),"; ".join(" ".join(str(x) for x in e) for e in v.get("ev") or [])[:700])
+        O[k]={"was":cur,"cell":new,"src":"bsexbrl:%s"%v["file"],"why":why,"parts":v.get("parts"),"ev":v.get("ev"),"d1":v.get("d1"),
+              "mv159":v.get("mv159"),"ex_member":v.get("ex_member"),"newmap_file":v.get("newmap_file"),"add_dii":v.get("add_dii")}
+    json.dump(O,open(out,"w"),indent=0); print("export %s: %d proposals -> %s"%(tag,len(O),out))
+
 if __name__=="__main__":
     st=sys.argv[1]
     if st=="classify":
@@ -179,3 +217,4 @@ if __name__=="__main__":
         syms=sc["current"] if which=="current" else sc["ex"] if which=="ex" else which.split(",")
         classify(syms,which if which in ("current","ex") else "one",ex)
     elif st=="verify": verify(sys.argv[2].split(","))
+    elif st=="export": export(sys.argv[2], sys.argv[3], section=(sys.argv[4] if len(sys.argv)>4 else ""), only164=("--only164" in sys.argv))
