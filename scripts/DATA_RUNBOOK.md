@@ -20873,3 +20873,19 @@ all unattributable, dropped. New `scripts/xbrl_symbol.py resolve(sym, xml)`: pla
 (EQUITY_L + SME_EQUITY_L from nsearchives, committed tape meta as fallback), else the file is skipped. ABANS ENTERPRISES
 (ISIN INE365O01028) → ABANSENT now holds its own Mar/Jun-2026 detail. NSE's filing LIST always carries the real symbol
 (0 placeholder rows in 31,693 financial rows 2025-26) — only the XBRL bodies carry it.
+
+## §178 — BSE quarterly-results XBRL route, fill-only (2026-09-26, user: "use bse way")
+`scripts/fetch_bse_results_xbrl.py` + `.github/workflows/bse-results-xbrl.yml` (daily 09:50 IST + dispatch). List =
+api `Result_Arch_ng?scrip_cd=`; files = www `/XBRLFILES/…` (memory reference-bse-results-xbrl-route). One plain,
+honestly identified client, one request at a time; a 403 prints BSE-REFUSED, writes nothing, job stays green.
+Identity from the FILE: ScripCode must equal the scrip asked for; OneD gives the period (80-100 d quarter; 170-190 d
+half-year kept only for SME M/MT/MS filers, stored h=1); NatureOfReport gives the basis. An ISIN that maps to an NSE
+listing (xbrl_symbol) sends the numbers to that NSE page's stores; otherwise docs/bse_fundamentals.json (src
+"bse-xbrl"). Detail via build_xbrl_extra.parse_file(sym_override=…) — new optional arg, default behaviour unchanged.
+Everything fill-only (an NSE XBRL value always wins; a BSE ticker that is also an NSE key never takes detail — §76).
+Two stages (--fetch → fills json; --apply fills) so the workflow re-applies on a rejected push instead of merging.
+Offline test on the 11 probe files (`--from-dir ~/stocks-cache/bse_xbrl_probe`): 10 fills, all values exact (NIRLON
+Jun-26 168.31/69.38, ABBOTINDIA 1813.68/428.52, BAYERCROP 1835.0/321.6, MCX std 666.59/327.32 con 702.0/413.44);
+apply on a scratch copy: ABBOTINDIA Jun-26 revenue + 145 detail fields filled, existing PAT/announce date untouched.
+First live listing NOT yet seen (api 403 at build time) — read the first run's log before trusting ann dates
+(Filing_Date_Time format unverified; unparseable → 0, never guessed).

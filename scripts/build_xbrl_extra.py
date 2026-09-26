@@ -268,15 +268,17 @@ def parse_bs_only(xml, fname, sym, ctx, end):
     return out
 
 
-def parse_file(path, fname):
+def parse_file(path, fname, sym_override=None):
     xml = open(path, encoding="utf-8", errors="replace").read()
     sm = RE_SYM.search(xml) or RE_SYM2.search(xml)
-    if not sm:
+    if not sm and not sym_override:
         return None
     # XBRL escapes '&' — upper-casing the RAW capture keyed M&M as "M&AMP;M" (13 ledger keys, 267
     # Nifty-500 quarters invisible; the §115 phantom class, fixed in build_revop but not here).
-    sym = html_lib.unescape(sm.group(1).strip()).upper()
-    sym = xbrl_symbol.resolve(sym, xml)          # §177: "NOTLISTED"/"NA" placeholder -> NSE symbol by ISIN, else skip
+    # sym_override: the caller already proved the company (fetch_bse_results_xbrl: the file's own ScripCode) —
+    # BSE result files carry no NSE symbol ("NOTLISTED"/"NA"/absent).
+    sym = sym_override or html_lib.unescape(sm.group(1).strip()).upper()
+    sym = sym if sym_override else xbrl_symbol.resolve(sym, xml)          # §177: "NOTLISTED"/"NA" placeholder -> NSE symbol by ISIN, else skip
     if not sym:
         return None
     sym = sym.upper()
