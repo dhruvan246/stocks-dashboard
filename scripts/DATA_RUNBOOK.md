@@ -21059,3 +21059,9 @@ proof); 84 BSE cells held (old-format row-level 48 incl. 19 × a 0.07 % institut
 idempotent; hold-out 0 fires on 40,063 filings with institutions; pages vs a baseline built from the same main data: 0 fields
 lost/changed, 92 gain shareholding, 20 new pages; 7 random BSE cells vs Screener (by BSE code) all equal (DII ±0.01 =
 Screener's SWF subtraction), incl. 2 proven zeros with matching holder counts. Remaining batches land as the shards finish.
+
+**§181b — refresh-bse no longer overwrites bse_fundamentals.json (2026-09-26).** Its commit step `cp`'d the whole file over
+origin's after `reset --hard`, which would have erased every quarter the new bse-results-xbrl job (and the history/vision
+merges) landed while it ran. It now runs `scripts/union_bse_fundamentals.py`: the run's cells are ADDED where origin lacks
+them, origin wins where both hold a cell. Unit-tested (job-only cell added, another writer's cell kept, conflict keeps
+current). The other files it commits have no other writer and are still copied.

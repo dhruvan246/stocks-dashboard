@@ -86,9 +86,12 @@ jobs:
           for attempt in 1 2 3 4 5; do
             git fetch origin main
             git reset --hard origin/main
-            for f in docs/bse_universe.json docs/bse_fundamentals.json docs/bse_prices.bin docs/bse_results.json scripts/_bse_fund_done.json scripts/_bse_fund_fail.json scripts/_bse_sectors.json scripts/bse_seen_scrips.json; do
+            for f in docs/bse_universe.json docs/bse_prices.bin docs/bse_results.json scripts/_bse_fund_done.json scripts/_bse_fund_fail.json scripts/_bse_sectors.json scripts/bse_seen_scrips.json; do
               cp "/tmp/$(basename $f)" "$f" 2>/dev/null || true
             done
+            # bse_fundamentals.json has OTHER writers (bse-results-xbrl.yml, history/vision merges): UNION this run's
+            # cells into origin's copy instead of overwriting it (runbook §181b)
+            python3 -X utf8 scripts/union_bse_fundamentals.py /tmp/bse_fundamentals.json docs/bse_fundamentals.json
             git add docs/bse_universe.json docs/bse_fundamentals.json docs/bse_prices.bin docs/bse_results.json scripts/_bse_fund_done.json scripts/_bse_fund_fail.json scripts/_bse_sectors.json scripts/bse_seen_scrips.json
             if git diff --cached --quiet; then echo "No BSE changes"; exit 0; fi
             git commit -m "BSE-only coverage refresh $(TZ=Asia/Kolkata date +'%Y-%m-%d %H:%M IST')"
