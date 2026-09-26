@@ -495,12 +495,16 @@ def build(cache):
             return "file ScripCode %s is not the requested scrip %s" % (a["scrip"], code), []
         fi = a.get("isin") or ""
         known = code_isins.get(code, set()) | set().union(*[isins.get(x, set()) for x in ({sym} | relatives(sym))])
-        if not fi or not known: return "no ISIN to prove identity (file %s, known %s)" % (fi or "-", sorted(known)[:2]), []
-        if fi[:7] not in issuers(known) and norm_isin(fi) not in known:
-            return "file ISIN %s does not match scrip %s / %s ISINs %s" % (fi, code, sym, sorted(known)[:3]), []
+        if fi:
+            if not known: return "no ISIN on record for scrip %s / %s" % (code, sym), []
+            if fi[:7] not in issuers(known) and norm_isin(fi) not in known:
+                return "file ISIN %s does not match scrip %s / %s ISINs %s" % (fi, code, sym, sorted(known)[:3]), []
+        elif a.get("scrip") != code:
+            # no ISIN in the file: only BSE's own ScripCode fact (equal to the scrip whose list named the file) proves it
+            return "file carries neither ISIN nor the requested ScripCode", []
         if a["bse_grp"] == "BSE-only":
-            nse_is = isins.get(sym, set())
-            if nse_is and fi[:7] not in issuers(nse_is):
+            nse_is, own = isins.get(sym, set()), code_isins.get(code, set()) | ({fi} if fi else set())
+            if nse_is and own and not (issuers(own) & issuers(nse_is)):
                 return "BSE ticker %s is also an NSE ticker of another company (%s)" % (sym, sorted(nse_is)[:2]), []
             if by_id_sym.get(code) and by_id_sym[code] != sym:
                 return "dashboard ticker %s differs from bse_scrips ticker %s for scrip %s" % (sym, by_id_sym[code], code), []

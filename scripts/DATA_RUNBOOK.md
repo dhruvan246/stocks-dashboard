@@ -21050,4 +21050,12 @@ also covers promoter-less companies (Public shares == total shares) and a Govern
 (TANFACIND: Public == Institutions + Non-institutions without it); hold-out after the change: 0 fires on 39,341 filings with
 an institutional holding. `build_stock_fin`: a BSE-only ticker's OWN shareholding rows (ledger `_bse_keys`, same scrip code)
 no longer block its fundamentals fold — measured on a trial: without the fix 9 BSE-only pages (NSDL, KESAR, SELECTRIC …)
-lost their results; with it 0 fields lost on 6,125 pages. Results to follow in this section.
+lost their results; with it 0 fields lost on 6,125 pages.
+**Identity refinement:** a BSE file with no ISIN fact (VALIANT's older filings) is accepted only when its ScripCode fact equals
+the scrip whose list named it; the BSE-ticker-vs-NSE-ticker collision test uses the scrip's registered ISIN.
+**Batch 1 LANDED (19:1x IST):** 1,764 BSE cells / 111 BSE-only tickers (+1 NSE cell: SHAIVAL Mar-2025, government-as-promoter
+proof); 84 BSE cells held (old-format row-level 48 incl. 19 × a 0.07 % institutional Any-Other row, identity 40 = REMAGNET 26
++ scrip mismatches, continuity 28 …). Checks: 3,511 earlier cells identical; 0 existing store cells changed; guards OK; apply
+idempotent; hold-out 0 fires on 40,063 filings with institutions; pages vs a baseline built from the same main data: 0 fields
+lost/changed, 92 gain shareholding, 20 new pages; 7 random BSE cells vs Screener (by BSE code) all equal (DII ±0.01 =
+Screener's SWF subtraction), incl. 2 proven zeros with matching holder counts. Remaining batches land as the shards finish.
