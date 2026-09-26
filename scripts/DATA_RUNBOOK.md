@@ -20113,6 +20113,18 @@ quarters — RELIANCE/WIPRO/BRITANNIA/LICHSGFIN/CIPLA/ARVIND Mar-16 among them, 
 revision-only; 46 not listed), 16 were already filled by then. One-sided outlier kept as filed: SPTL Sep-17 fii 24.02 vs Dec-17
 17.51. The fills are the parser's raw reading; the row-level rules (§158/§159/D1) apply at the next re-run of those symbols.
 
+### 164l. Dec-2015 / Mar-2016 lump-page holes (2026-09-27)
+The 62 §164i holes at qtrid 88/89 that `cell_of` refused (the page prints the FII row inside an unlabelled Any-Others lump, so
+it reads fii 0 beside the neighbours). `scripts/_shp_164l_seam_holes.py`: the >1% holders tables (shpperent.aspx, qtrid 88 and 89)
+fetched with the honest header set (118, 0 failures); cell = cell_of's own page reading with fii replaced by the §160 seam
+reconstruction. Accepted only when the FII total is READ — no lump on the page, the >1% table's FII/FPI CATEGORY row, or the §160
+whole-block rule — AND inside the neighbouring stored quarters' range +-3 pp. Named >1% holders alone under-count (the table omits
+holders below 1%): the first cut without this rule matched Quantmac only where a category row existed (DISHMAN 20.57 = 20.57,
+TIMKEN 1.77 = 1.7705) and fell short elsewhere (VRLLOG 13.60 vs 17.06, SOMANYCERA 5.48 vs 8.22, KWALITY 0.31 vs 1.87). **17 cells
+added** (fill-only, `shp_fill_seam_aspx.json.gz`); **45 held**: 26 incomplete (lump with no FII category row), 19 outside the band
+— RELIANCE / WIPRO / BRITANNIA / LICHSGFIN / ARVIND / NATCOPHARM / DISHTV / BHARATFORG Mar-2016 among them. Those need a document
+that states the quarter's FII total (the company's own filing PDF on BSE's announcements, or Quantmac's source).
+
 ### 164j. Quantmac reply v3 (26-Sep): foreign-labelled rows were read as domestic; named foreign holders now need a document
 **Bug (reported by Quantmac for CUMMINSIND / IPCALAB, measured on origin).** `_shp_dii_rowfix.eval_filing` R1 set a category label
 to "domestic" when DOMLAB matched ("mutual fund", "financial institution", "\bbank") and LAB_FII did not — so "Foreign Mutual
