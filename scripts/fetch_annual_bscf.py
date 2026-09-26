@@ -205,12 +205,15 @@ def rows_tok(page, garbled_as_none=False):
     rows = []
     for _, toks in merged:
         toks.sort()
+        toks = _join_split_figures(toks)
         label = ' '.join(t for _, t in toks)
         nums = []
         seen_num = False
         last_word_x = max([x for x, t in toks if re.search(r'[A-Za-z]', t)] or [-1.0])
+        prev = ''
         for x, t in toks:
             t = t.strip()
+            before, prev = prev, t
             if DASH.match(t):
                 if seen_num or nums or _right_of_label(x, toks):
                     nums.append((t, 0.0))
@@ -220,6 +223,11 @@ def rows_tok(page, garbled_as_none=False):
                     nums.append((t, None)); seen_num = True
                 continue
             if note_x and NOTE_REF.match(t) and any(abs(x - nx) <= 30 for nx in note_x):
+                continue
+            # a note reference INSIDE the label: "(Refer Note 2)" / "(Note 6 and 7)" / "Note 12" — BPCL FY20-22
+            # stored share capital 2.0 / 2.0 / 3.0 from "(Refer Note 2)" (2026-09-26, runbook §168k)
+            if (NOTE_INLINE.match(t) and any(NOTE_WORD.search(w) for xw, w in toks if xw < x)) or \
+               (NOTE_REF.match(t) and NOTE_HDR.match(before)):
                 continue
             # an unreadable figure keeps its column as None — dropping it would shift the prior-year
             # number into the current-year slot (the same reason a dash is kept as 0)
@@ -236,6 +244,25 @@ def _right_of_label(x, toks):
 DASH = re.compile(r'^[-\u2013\u2014]{1,3}$|^nil$', re.I)
 NOTE_HDR = re.compile(r'^notes?\.?$|^note\s*no\.?$', re.I)
 NOTE_REF = re.compile(r'^\d{1,2}(?:\.\d{1,2})?[a-z]?$', re.I)
+NOTE_INLINE = re.compile(r'^\d{1,2}(?:\.\d{1,2})?[a-z]?\)$', re.I)     # "2)" closing "(Refer Note 2)"
+NOTE_WORD = re.compile(r'\bnotes?\b', re.I)
+
+# An OCR'd figure split after a comma: "1,37, 101.38" / "2,32, 786.59" / "2, 12,366.62" (BALMLAWRIE FY21 other
+# equity stored 1.37, LMW FY23 2.32, EPIGRAL FY23 1.02 \u2014 the first piece). Rejoined only when the result is a
+# properly grouped number (Indian 1,37,101.38 or Western 1,371,013.8), so two real columns never merge.
+_SPLIT_HEAD = re.compile(r'^\(?\d{1,3}(?:,\d{2,3})*,$')
+_SPLIT_REST = re.compile(r'^\d[\d,]*(?:\.\d+)?\)?$')
+_GROUPED = re.compile(r'^\(?(?:\d{1,3}(?:,\d{2})*,\d{3}|\d{1,3}(?:,\d{3})+)(?:\.\d+)?\)?$')
+def _join_split_figures(toks):
+    out = []
+    for x, t in toks:
+        s = t.strip()
+        if out and _SPLIT_HEAD.match(out[-1][1].strip()) and _SPLIT_REST.match(s) \
+                and _GROUPED.match(out[-1][1].strip() + s):
+            out[-1] = (out[-1][0], out[-1][1].strip() + s)
+            continue
+        out.append((x, t))
+    return out
 
 def parse_rows(rows, specs_one, specs_sum):
     out = {}

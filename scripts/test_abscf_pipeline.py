@@ -173,6 +173,18 @@ r = cf_of('Cash generated from operations 2,887.78 5,091.23', 'Less: Direct taxe
           'Net cash generated from operating activities 2,103.70 4,110.45', 'Net cash used in investing activities (221.97) (2,289.32)',
           'D. DECREASE IN CASH AND CASH EQUIVALENTS (A+B+C) (93.60) (30.69)', *BASE)
 check('HEROMOTOCO FY22: "Less: Direct taxes paid 784.08" is SUBTRACTED (2,887.78 - 784.08 = 2,103.70) -> +784.08, paid', r.get('cf_tax') == 784.08)
+# ---- 3d. note references and split figures on the balance sheet (runbook §168k) --------------------------
+BSN = ('Consolidated Balance Sheet as at 31 March 2025\n(Rs. in crore)\nProperty, plant and equipment 400.00 380.00\n'
+       'Total assets 1000.00 950.00\n(a) Equity Share Capital (Refer Note 2) 1,966.88 1,966.88\n'
+       '(b) Other Equity 1,37, 101.38 1,38,282.87\nTrade payables 50.00 45.00\nTotal equity and liabilities 1000.00 950.00')
+pn = F.text_read(mkpdf(YE, BSN), [1], None)
+check('BPCL FY20: "(Refer Note 2)" is a note reference, never share capital 2.0 -> 1,966.88', pn.get('sc') == 1966.88)
+check('BALMLAWRIE FY21: an OCR split "1,37, 101.38" is rejoined -> 137,101.38, never 1.37', pn.get('oeq') == 137101.38)
+BSN2 = BSN.replace('(Refer Note 2) 1,966.88 1,966.88', 'Note 12 1,966.88 1,966.88').replace('1,37, 101.38 1,38,282.87', '1,234, 5,678.90')
+pn2 = F.text_read(mkpdf(YE, BSN2), [1], None)
+check('a number right after the word "Note" is a note, not the value', pn2.get('sc') == 1966.88)
+check('two real columns never merge ("1,234," + "5,678.90" is not a grouped number)', pn2.get('oeq') != 12345678.9)
+
 # ---- 3c. income tax is SIGNED by the statement's own arithmetic (+ paid, - net refund; runbook §168j) --------
 r = cf_of('Cash generated from operations 1313.09 1535.74', 'Direct taxes paid/ (refund) 9.47 (1.57)',
           'Net cash (used in)/generated from operating activities 1322.56 1534.17', *BASE)

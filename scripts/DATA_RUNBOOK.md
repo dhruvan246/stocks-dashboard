@@ -20385,6 +20385,28 @@ User asked whether the negative tax-paid figures were refunds or sign slips ("fi
 - Open: GOLDTECH FY22 ledger magnitudes look off by powers of ten (direction proven refund); the 210 text-unprovable values
   need an image read (ask the user first — memory feedback-vision-reads-last-ask-first).
 
+### 168k. Two text-reader misreads found by the Screener arbitration — note references and split figures (2026-09-26)
+Arbitrating the Screener FARs on SHOWN values (verify/verdicts_shown.json: 107 cos / 1,183 values, MATCH 885 / CLOSE 170 /
+FAR 102) with the filing itself and the next year's comparative column (tools/arbitrate_far.py) turned up two reader bugs:
+- **A note reference inside the label read as the value** — "(a) Equity Share Capital (Refer Note 2) 1,966.88" → the token
+  "2)" is ISNUM, so BPCL FY20-22 stored share capital 2.0 / 2.0 / 3.0; "Borrowings (Refer Note 4) 5,87,554.84" dropped the
+  real non-current borrowings (ASHOKA FY21 shown 287 cr of debt for 6,163; EPIGRAL FY22 221 for 989; PTC FY20 1,604 for 10,089);
+  HNDFDS FY23 goodwill 0.03 for 3.02. rows_tok now skips "N)" when a word "note" sits left of it, and a bare small number
+  right after "Note"/"Notes".
+- **An OCR'd figure split after a comma** ("1,37, 101.38") kept its head: BALMLAWRIE FY21 other equity 1.37 (1,371.01),
+  LMW FY23 2.32 (2,327.87), EPIGRAL FY23 1.02 (1,027.55). `_join_split_figures` rejoins a comma-ended piece with the next
+  one ONLY when the result is a properly grouped number (Indian 1,37,101.38 / Western 1,371,013.80) — two real columns
+  ("1,234," + "5,678.90") never merge (test).
+- Old-vs-new reader over all 259 locatable text cells: exactly 12 readings change, all of these two kinds (two are ROU
+  lines no cell stores). Also corrected by reading the page: VEDL FY22 other equity 6,501 → 65,011 ("65,01 I"; owners'
+  equity 65,383 − share capital 372), APLLTD FY21 iuad 237.39 (the image read missed the line; Screener's CWIP = cwip+iuad
+  matched), ROUTE FY22 CWIP 1.05 → nil (1.05 was the prior year). 13 cells, old values in `fix`.
+- The rest of the 102, by evidence: restated by the company the next year, Screener shows the restated figure (ANGELONE FY21
+  CFO, ASHOKA FY20 CWIP, CGPOWER FY21, COCHINSHIP FY21, TRENT FY21, KPIL FY22 [JMC merger], QUESS FY20) — the site shows the
+  first-filed figure by design; the company reprinted OUR number the next year (CGPOWER FY20, GESHIP FY20, NAVA FY20,
+  TATACONSUM FY21, ULTRACEMCO FY20, IDEA FY20, SUNPHARMA FY20) — Screener's figure comes from elsewhere; ~60 values with no
+  text evidence (scans / no next-year PDF cached) → open, image reads need the user's OK.
+
 ## 169. Our-side price errors found by the Quantmac indicator reconciliation — 3 wrong boundaries, 2 rights factors, 1 duplicate rights row, 2 unjoined renames, 1 missing listing week, 34 stray fragment bars  (2026-09-26, user: "investigate" the possibly-ours cells; "don't assume" either side)
 **NO ASSUMPTIONS** — reference = NSE's own files, cached durably: every bhavcopy 2008-2026 (`~/stocks-cache/nse_bhav/full/`, 4,640
 sessions, file TIMESTAMP == URL date) and the corporates-corporateActions feed 2008-2026 with subject text (`~/stocks-cache/nse_ca/`,
