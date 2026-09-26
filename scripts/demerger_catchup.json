@@ -1,5 +1,5 @@
 {
- "_doc": "DATA_RUNBOOK §170 (2026-09-26, user-approved): the pre-2020 Nifty-500 demergers the feed-driven builder never adjusted (build_demerger_adj.py sweeps 2016+ and only 'demerger/spin-off' wording; these were filed as 'Scheme of Arrangement') + KESORAMIND 2025 (95% gap, the builder's by-hand floor). Every event is a spin-off with shares of the resulting company issued to holders (filing quote per event). Factor rule: ex-day OPEN / previous close where the open was a real auction - every ex-date from 2015-10-01, when NSE's special pre-open call auction became mandatory on corporate-restructuring ex-dates (NSE/CMTR/57270), and older days where (the day's price band was reset around it, or the day traded within 5% of it) - the post-2020 rule; ex-day CLOSE / previous close where it was not (open pinned at the old price band vs the previous close, or a lone print the day traded >5% away from). For 'close' events the ex-day's own open/high/low are set to the close by update_sf_data.flatten_demerger_exdays (flatten_exday=true): those prints were at the old company's price level (ADANIENT 2015-06-03 opened 573.30 at the -10% band, closed 109.75). previous close = our previous bar's raw NSE close (PGIL: NSE re-based PREVCLOSE to 170, real close 228.30). Same 2% materiality rule as the builder (factor >= 0.98 -> not adjusted). The ledger rows themselves live in demerger_adj.json; this file is their provenance + the flatten list. Also (user-approved the same day): the 7 pre-2016 rows ledgered BEFORE this rule that priced by the open where the rule says close are re-priced (field repriced_from = the old factor); 3 of them closed above the previous close, so their factor is 1.0 - kept as a row so self_heal UNDOES the old adjustment (deleting the row would leave it baked in). §170d (user, 2026-09-26): the 2% materiality floor is DROPPED (build_demerger_adj.MIN_GAP 1.0) - every gap is adjusted, only an open/close at or above the previous close means no adjustment; the 12 Nifty-500 spin-offs the old floor skipped are added here with the same pricing rule.",
+ "_doc": "DATA_RUNBOOK §170 (2026-09-26, user-approved): the pre-2020 Nifty-500 demergers the feed-driven builder never adjusted (build_demerger_adj.py sweeps 2016+ and only 'demerger/spin-off' wording; these were filed as 'Scheme of Arrangement') + KESORAMIND 2025 (95% gap, the builder's by-hand floor). Every event is a spin-off with shares of the resulting company issued to holders (filing quote per event). Factor rule: ex-day OPEN / previous close where the open was a real auction - every ex-date from 2015-10-01, when NSE's special pre-open call auction became mandatory on corporate-restructuring ex-dates (NSE/CMTR/57270), and older days where (the day's price band was reset around it, or the day traded within 5% of it) - the post-2020 rule; ex-day CLOSE / previous close where it was not (open pinned at the old price band vs the previous close, or a lone print the day traded >5% away from). For 'close' events the ex-day's own open/high/low are set to the close by update_sf_data.flatten_demerger_exdays (flatten_exday=true): those prints were at the old company's price level (ADANIENT 2015-06-03 opened 573.30 at the -10% band, closed 109.75). previous close = our previous bar's raw NSE close (PGIL: NSE re-based PREVCLOSE to 170, real close 228.30). Same 2% materiality rule as the builder (factor >= 0.98 -> not adjusted). The ledger rows themselves live in demerger_adj.json; this file is their provenance + the flatten list. Also (user-approved the same day): the 7 pre-2016 rows ledgered BEFORE this rule that priced by the open where the rule says close are re-priced (field repriced_from = the old factor); 3 of them closed above the previous close, so their factor is 1.0 - kept as a row so self_heal UNDOES the old adjustment (deleting the row would leave it baked in). §170d (user, 2026-09-26): the 2% materiality floor is DROPPED (build_demerger_adj.MIN_GAP 1.0) - every gap is adjusted, only an open/close at or above the previous close means no adjustment; the 12 Nifty-500 spin-offs the old floor skipped are added here with the same pricing rule. CORRECTION (2026-09-26, user-approved): UNIONBANK 2009-05-13 was wrongly re-priced here as an 'older demerger row' - it is a §102e large-dividend separation (Rs 5, 3.03%, (prev-div)/prev = 0.9697, user-approved 2026-08-23, commit 59b967a18), not a demerger; its row is restored to 0.9697 and it is no longer listed here.",
  "events": [
   {
    "sym": "RELIANCE",
@@ -309,26 +309,6 @@
    "flatten_exday": false,
    "why": "auction open: the day's price band was reset around the open (low 30.00 / high 36.70)",
    "filing": "08-Apr-2009: In this connection the Company has now informed the Exchange that it has been decided to fix April 24, 2009 as the record date for the purpose of ascertaining the entitlement of shares of Bhilwara Technical Textiles Limited, as per the exchange ratio decided and informed earlier, to the Shareholders of the Company pursuant to Scheme of Arrangement/De-merger as approved by the Hon'ble High Court of Rajasthan at Jodhpu"
-  },
-  {
-   "sym": "UNIONBANK",
-   "ex": 20090513,
-   "prev_d": 20090512,
-   "prev_close": 165.0,
-   "nse_prevclose": 165.0,
-   "open": 160.1,
-   "high": 170.8,
-   "low": 160.1,
-   "close": 168.5,
-   "era_symbol": "UNIONBANK",
-   "rule": "close",
-   "cls": "stray",
-   "factor": 1.0,
-   "raw_drop": 1.0212,
-   "flatten_exday": false,
-   "repriced_from": 0.9697,
-   "why": "open 160.10 was a lone print the day traded >5% away from (low 160.10 / high 170.80 / close 168.50); ex-date before NSE's 2015-10-01 restructuring auction - and it closed ABOVE the previous close (168.50 vs 165.00): close-rule factor 1.0212 >= 0.98 -> no adjustment; factor 1.0 makes self_heal undo the old open-based 0.9697",
-   "filing": "row pre-dates §170 (ledgered earlier as a demerger); §170 re-prices it under the approved rule"
   },
   {
    "sym": "SMARTLINK",

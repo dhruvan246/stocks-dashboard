@@ -20575,6 +20575,14 @@ share (NSE 21-Nov-2008), not equity in a spun-off company -> belongs to the bonu
 - **Verified** (release base after §170, real `main()`, NSE blocked): baseline 0 changes; fixed "Self-heal corrected 15" + 3 ex-day bars;
   exactly 15 symbols changed (price arrays only); 359,580 cells = exact correction within rounding; 15/15 boundaries exact; second
   pass 0. Quantmac 96.52% -> 96.49% (+14 / -84).
+### 170e. CORRECTION — UNIONBANK 2009-05-13 restored (2026-09-26, user-approved)
+The 7 "older rows re-priced" in §170a included UNIONBANK 20090513 — but that row is NOT a demerger: it is one of the 4
+large-dividend separations of the user-approved 2026-08-23 dividend sweep (59b967a18; Rs 5 = 3.03% of 165.00, (prev-div)/prev =
+0.9697, §102e convention). The re-pricing set it to 1.0 and self_heal undid the approved adjustment live. Restored to 0.9697 and
+removed from demerger_catchup.json. The other 6 re-priced rows are demergers on NSE's own record (GTL 2006 "Scheme Of Demerger",
+UNITDSPR 2006 "Sch Of Arngment-Demerger", ZEEL 2006 scheme + Div-100%, MANINDS 2007 "Scheme Of Demerger", RELIANCE 2006 and
+ALEMBICLTD 2011 record-verified). ⚠️ demerger_adj.json also carries large-dividend rows (CHENNPETRO 2026, MRPL 2026, APTECHT 2014,
+UNIONBANK 2009, HGS 2022): classify a row by its commit/feed record before applying a demerger rule to it.
 ### 170c. Open
 - MRPL 20260303 (a large-dividend separation from the 2026-08-23 dividend sweep, 59b967a18) is dated on a day MRPL did not trade:
   it sits on the 2026-03-04 bar (raw +1.5%) while the drop it describes is 2026-03-02 (-4.1%). Left as is (2% band) — needs its own fix.
