@@ -20889,3 +20889,35 @@ Jun-26 168.31/69.38, ABBOTINDIA 1813.68/428.52, BAYERCROP 1835.0/321.6, MCX std 
 apply on a scratch copy: ABBOTINDIA Jun-26 revenue + 145 detail fields filled, existing PAT/announce date untouched.
 First live listing NOT yet seen (api 403 at build time) — read the first run's log before trusting ann dates
 (Filing_Date_Time format unverified; unparseable → 0, never guessed).
+
+## §179 — Our-side price fixes from the quantmac cell audit: 11 missing Nifty-500 bars, 4 phantom "bonus" steps, LAKSHVILAS 2014 rights (2026-09-26, user: "correct everywhere you think we can be wrong. Don't assume we are right")
+**1. Missing bars → `bar_inserts.json` (+11 rows).** Scan = live bin vs NSE's full bhavcopies 2008-01-01..2026-09-24
+(`~/stocks-cache/qm-recon-tools/bar_gap_scan.py`): 21,678 NSE stock-days the bin lacks (almost all BE/BZ small caps) but only
+**523 for point-in-time Nifty-500 members**, and 512 of those are the ANSALINFRA dead fragment (the real bars live under ANSALAPI —
+a scan-key artefact, not a gap). The real member holes are 11:
+- 2008-02-19 ALLCARGO, ANSALAPI (printed ANSALINFRA), BAJFINANCE (printed BAJAUTOFIN) — a §106b session; the 2026-08-23 insert
+  skipped them and the §106i harvest only revisited 2009+.
+- BE-only (trade-for-trade) days the bin lacked while holding the BE days around them: DMART/AFFLE/PCJEWELLER 2020-04-13,
+  HATHWAY 2020-09-28, JSWENERGY/TRIDENT/TTML/FLUOROCHEM 2022-03-07 (why the original ingest skipped them: not measured).
+Rows = raw `cm<date>bhav.csv.zip` values; anchor = the previous bar, raw close == the row's PREVCLOSE (all 11); two-sided f agreement
+(all 11); MTO delivery with traded == TOTTRDQTY for the 3 EQ rows; BE rows dv = 100 (the dv_fill BE/T2T convention — NSE's MTO file
+lists EQ rows only). Member-days where the bin holds a bar NSE does not: 0.
+**2. Phantom steps → `phantom_crashes.json` + `crash_raw_prices.json`** (the §169c witness-pending list, decided on NSE's own record).
+On each date NSE's PREVCLOSE equals the prior close (no base change) and NSE's CA feed has nothing within 45 days, yet an old build had
+divided out a guessed factor:
+- ELDERPHARM 2013-05-13 (0.75): pledge-invocation crash — the company's 13-May-2013 NSE filing says Ratnakar Bank sold pledged shares
+  on 10-11 May. Stored +20.00% → −10.00% (= NSE).
+- WELCORP 2010-12-03 (0.75): −26.98% on 24.7 M shares (~50x normal volume); only a press communication filed. −2.64% → −26.98%.
+- RNRL 2010-07-05 (0.75): −27.60% the morning after the board approved the amalgamation into RPOWER (5-Jul-2010 filing). −3.46% → −27.60%.
+- LAKSHVILAS 2014-07-28 (2/3): one bar AFTER the real rights ex-date. +45.81% → −2.78%.
+**3. LAKSHVILAS 2014-07-25 rights → `rights_adj.json` TARGET 0.748922** (was NOT_COMPUTED — the feed states no price). NSE announcement
+16-Jul-2014: 5 for 6 at Rs 50 (FV 10 + premium 40); record date 28-Jul → ex 25-Jul; cum 111.70 → TERP 83.6545. Ex-day −26.10% (raw) →
+−1.31% (TERP-adjusted).
+**Out of scope (not Nifty-500 members on the date), same phantom class, left as is:** CLASSIC 2013-05-13, ELGIRUBBER + SHREERAMA
+2010-10-27, FCONSUMER 2023-08-25.
+**Verified** (release base end 2026-09-25, real `main()`, CI-sim): exactly 15 symbols differ from the unchanged pipeline (11 gain one
+bar; 4 re-scale pre-event history only — latest bars untouched), 0 others; second pass 0; every touched day move equals NSE's.
+**Checked, NOT a defect — keep:** before Oct-2015 NSE REMOVED a demerging company from its indices on the ex-date and re-added it
+months later (`_staleness_fix/IndexInclExcl.xls`: Wipro out of Nifty 50/500 on 2013-04-01, back in the Nifty 500 2013-08-07 and the
+Nifty 50 2013-09-27; Cadila, RSWM, Jindal Saw, Zuari, Orient Paper, Jindal Poly, Century Ply, Marico, Balkrishna the same).
+`indices_history.json` follows it — do not "repair" those gaps.
