@@ -7,8 +7,8 @@ Usage: python3 scripts/bse_ann_harvest.py --codes <sym->[how,code,...] json> --c
 # §55a: an EMPTY Table is often rate-limiting, not absence -> retry on a fresh session before recording 'empty'.
 import json, os, sys, time, requests, collections
 S = os.path.dirname(os.path.abspath(__file__)); CACHE = os.path.join(S, 'cache')
-UA = 'Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/124.0 Safari/537.36'
-H = {'User-Agent': UA, 'Referer': 'https://www.bseindia.com/', 'Accept': 'application/json, text/plain, */*'}
+sys.path.insert(0, S); import bse_headers  # §181: full standard header set, or BSE answers 403
+H = dict(bse_headers.HEADERS)
 import argparse
 ap = argparse.ArgumentParser(); ap.add_argument('--codes', required=True); ap.add_argument('--cache', required=True)
 A = ap.parse_args(); CACHE = A.cache; os.makedirs(CACHE, exist_ok=True)
