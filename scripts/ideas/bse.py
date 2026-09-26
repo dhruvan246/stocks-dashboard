@@ -18,9 +18,9 @@ import csv, io, json, os, sys, time, datetime, urllib.request, urllib.parse, url
 sys.path.insert(0, os.path.dirname(os.path.abspath(__file__)))
 import ist
 
-UA = ('Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 '
-      '(KHTML, like Gecko) Chrome/128.0 Safari/537.36')
-HDR = {'User-Agent': UA, 'Referer': 'https://www.bseindia.com/', 'Origin': 'https://www.bseindia.com',
+# Honest identification, same set as scripts/bse_headers.py (no browser impersonation; runbook §181).
+UA = 'stocks-dashboard-research/1.0'
+HDR = {'User-Agent': UA, 'Referer': 'https://www.bseindia.com/', 'Accept-Language': 'en-US,en;q=0.9',
        'Accept': 'application/json, text/plain, */*'}
 CACHE = os.environ.get('IDEAS_CACHE', os.path.join(os.path.dirname(os.path.abspath(__file__)), '_cache'))
 os.makedirs(CACHE, exist_ok=True)
