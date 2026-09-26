@@ -20622,3 +20622,33 @@ reads, so they never got a store/page (OPEN: make them visible — user rule: na
 **Store:** `scripts/build_bse_offsite_prices.py` → `scripts/bse_offsite_prices.json.gz` (DATA ONLY, no consumer): 479
 scrips, 178,819 RAW bars [d,o,h,l,c,v,turnover ₹] + §149 `splits`/`unexpl` per scrip; 93 traded within ~3 months of the
 cache end; 0 bars with close outside [low, high].
+
+## §173 — Rights issues rebuilt as bar-exact textbook targets: 148 Nifty-500 rights 2006-2026, 71 bars corrected  (2026-09-26, task 2 of the user's "1 and 2 first")
+**Why:** `rights_terp.json` took the premium alone as the issue price — the face value was dropped (3IINFOLTD 2025 "Rights 2:9 @ Premium
+Rs 7", FV 10: ledger 0.8715 = TERP at Rs7; textbook at Rs17 = 0.9478). Its anchor-based apply also mis-fired on rows dated after the
+real ex-date: of 15 N500 rows dated on the wrong session, 3 baked a stray step on an ordinary day (NEULANDLAB 2014-08-18 -11.6%, SPARC
+2016-03-21, M&MFIN 2020-07-23 -8.75%) and 12 never applied at all (INDHOTEL 2017, CANBK 2017, SBT 2015 …); most pre-2014 rights were
+never ledgered.
+**New:** `scripts/rights_adj.json` — `rows` [symbol, ex trading day, target, NSE raw close ratio across that bar] + `provenance` for every
+N500 rights row on NSE's feed 2006-2026. `update_sf_data.reconcile_rights()` measures the factor baked at each EXACT bar (raw ratio /
+stored ratio) and rescales the pre-bar history to the target when it differs by more than the 2-decimal rounding floor; target-1.0 rows
+undo the stray steps. Any MANUAL_RIGHTS / rights_terp.json row within 30 days of a rights_adj row is superseded (128 rows) — the old
+anchor logic never touches those events again. Non-N500 rows keep the old mechanism (scope rule).
+**Method:** TERP = (A·cum + B·issue)/(A+B) for "Rights B:A"; issue = face value AT THE EVENT + premium; FV = NSE EQUITY_L.csv walked back
+through every later FV split/consolidation on the feed (the feed's `faceVal` is today's FV); "@ Par Rs X" = X (ALOKINDS 2013 — its FV was
+later cut by an IBC capital reduction the FV walk cannot see); cum = NSE's raw close the session before the ex trading day; factor capped
+at 1 (JKTYRE 2008: issue 85 above cum 82.95 → the rights carried no value, the old 0.9825 is removed).
+**Tape check (the filed terms vs what traded):** 11 of 150 differ by >8%. EXCLUDED, left as is, need a filing check: WHEELS 2014 ("51:20"
+looks reversed/incomplete), NEULANDLAB 2012 (no drop on the filed ex-date), GTLINFRA 2007. Kept: ordinary ex-day market moves (M&MFIN
+2020 — its textbook TERP was matched to the decimal by Trendlyne/StockView, §MANUAL_RIGHTS note; HCC 2025, DHANBANK/GEOJIT 2024,
+DISHTV 2008 capped at 1, BAJAJHIND 2011, REIAGROLTD 2010 = the §169 seam value).
+**Not computed (left as is):** 18 — partly paid (ABFRL 2020, TATASTEEL 2018), warrants / NCD / PCCPS / DVR-mixed, no price filed
+(LAKSHVILAS 2006 + 2014, SINTEX 2016, OCL 2006, ORIENTPPR 2007, TATASTEEL 2007, UNIWESTBNK 2006), bond/PCD rights (LGBBROSLTD 2007,
+TATACOFFEE 2006). **Not applied:** ALOKINDS 2013-02-15, CHEMPLASTS 2009-03-17 — our series has no bar on the ex day (NSE does); targets
+kept in `provenance` for when the missing bar is fixed.
+**Verified** (release after §170d, current main's code incl. §171 as the baseline, real `main()`, NSE blocked): 71 bars reconciled — 44
+wrong factors corrected, 23 never-applied rights added, 4 removed (the 3 stray steps + JKTYRE); exactly 58 symbols changed (price arrays
+only); 148/148 bars at target; every changed price = baseline × the exact correction (17 M&MFIN cells ≤0.023% off from sequential
+rounding); second pass 0 changes. Quantmac 96.49% → 96.40% (+194 / -462): their implied rights factors (own 200DMA, 29 events) follow no
+single rule — 9 equal our old factor (several = no adjustment at all), 2 the textbook, 2 raw, 16 neither (KTKBANK 2016 0.9457 vs
+textbook 0.8145; KARURVYSYA 2017 1.0747 > 1). Tools: `~/stocks-cache/qm-recon-tools/rights_rebuild2.py`.

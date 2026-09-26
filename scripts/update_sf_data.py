@@ -440,6 +440,27 @@ try:
 except Exception as _e:
     print("  (rights_terp.json not loaded: %s)" % _e)
 
+# --- §173 (2026-09-26, user-approved): Nifty-500 rights issues as ABSOLUTE bar-exact targets (scripts/rights_adj.json):
+# [sym, ex trading day, target = min(1, TERP/cum) with issue = face value AT THE EVENT + premium, NSE raw close ratio across
+# that bar]. rights_terp.json took the premium alone as the issue price (face value dropped: 3IINFOLTD 2025 0.8715 vs textbook
+# 0.9478), and its anchor-based apply mis-fired on rows dated after the real ex-date (NEULANDLAB 2014, SPARC 2016, M&MFIN 2020
+# baked a step on an ordinary session; INDHOTEL 2017 and 11 more never applied). reconcile_rights() measures what is baked and
+# converges to the target whatever the old rows did; target-1.0 rows undo the stray steps. Any MANUAL_RIGHTS row within 30 days
+# of a rights_adj row for the same symbol is superseded here — never applied by apply_manual_rights again.
+try:
+    RIGHTS_ADJ = {(x[0], int(x[1])): (float(x[2]), float(x[3]))
+                  for x in (json.load(open(os.path.join(ROOT, "scripts", "rights_adj.json"))) or {}).get("rows") or []}
+except Exception as _e:
+    RIGHTS_ADJ = {}
+    print("  (rights_adj.json not loaded: %s)" % _e)
+if RIGHTS_ADJ:
+    def _ord(y): return datetime.date(y // 10000, y // 100 % 100, y % 100).toordinal()
+    _ra_by = {}
+    for (_s, _b) in RIGHTS_ADJ: _ra_by.setdefault(_s, []).append(_ord(_b))
+    _kept = [r for r in MANUAL_RIGHTS if not any(abs(_ord(int(r[1])) - b) <= 30 for b in _ra_by.get(r[0], ()))]
+    print("  rights_adj.json: %d bar targets; %d MANUAL_RIGHTS/rights_terp rows superseded" % (len(RIGHTS_ADJ), len(MANUAL_RIGHTS) - len(_kept)))
+    MANUAL_RIGHTS = _kept
+
 # --- DEMERGER price adjustment (2026-08-03). A demerger is not a loss — holders receive the
 # spin-off's shares — but the raw tape keeps the ex-date value separation as a price fall, so every
 # trailing-window factor (ret6m/mdd6/d52/rangePos/...) read a spin-off as a crash for the following
@@ -509,6 +530,29 @@ def apply_manual_rights(data):
                 if key in e: e[key] = [round(x * factor, 2) for x in e[key][:j]] + e[key][j:]
             n += 1
             print("  MANUAL-RIGHTS %s ex %d x%.4f (%d pre-ex points -> Trendlyne parity)" % (sym, ex, factor, j))
+    return n
+
+
+def reconcile_rights(data):
+    """§173: converge every rights_adj.json bar to its target. applied = NSE raw ratio / stored ratio at the EXACT bar
+    (a row whose date is not a bar is reported, never guessed onto a neighbour); corr = target / applied; rescale the
+    pre-bar history when |corr-1| exceeds the 2-decimal rounding floor (max 0.15%, 0.011/price). Sub-Rs0.25 boundaries
+    are skipped (rounding noise, §self_heal quantization guard). Idempotent: a converged bar reads corr ~ 1."""
+    n = 0
+    for (sym, bar), (target, raw) in sorted(RIGHTS_ADJ.items(), key=lambda kv: kv[0][1]):
+        e = data.get(sym); ds = e.get("d") if e else None
+        if not ds: continue
+        j = next((k for k in range(len(ds)) if ds[k] >= bar), None)
+        if j is None or j < 1 or ds[j] != bar:
+            print("::warning::§173 rights_adj %s %d: no bar on that date — row skipped" % (sym, bar)); continue
+        c = e["c"]
+        if min(c[j], c[j - 1]) < 0.25: continue
+        applied = raw / (c[j] / c[j - 1]); corr = target / applied
+        if abs(corr - 1) > max(0.0015, 0.011 / min(c[j], c[j - 1])):
+            for key in ("c", "h", "l", "op", "vw"):
+                if key in e: e[key] = [round(x * corr, 2) for x in e[key][:j]] + e[key][j:]
+            n += 1
+            print("  RIGHTS-RECONCILE %s %d: baked %.4f -> target %.4f (%d pre-bar points x%.4f)" % (sym, bar, applied, target, j, corr))
     return n
 
 
@@ -1688,6 +1732,8 @@ def main():
     sg = apply_series_surgery(data, meta, cal=cal)   # wrong-company stitch repair (DVL/DTIL, §89) — before the
                                                      # day loop so appends land on the repaired series
     mr = apply_manual_rights(data)   # hand-verified per-stock rights adjustments to match Trendlyne
+    ra = reconcile_rights(data)      # §173: Nifty-500 rights at their textbook TERP, bar-exact (supersedes the rows above)
+    if ra: print("Rights (§173): %d bar(s) reconciled to their textbook TERP." % ra)
     ao = apply_ca_arbitrated(data)   # official splits the close-ratio guard rejected, confirmed by the ex-day OPEN (§87g)
     if ao: print("Open-arbitrated corporate actions: %d applied." % ao)
     wk = insert_weekend_sessions(data, j, {(o["old"] if isinstance(o, dict) else o): n for n, o in MANUAL_MERGE.items()})   # backfill missing weekend special sessions (budget Sats etc.); old->new so merged-away tickers' sessions land on the survivor
@@ -1843,8 +1889,8 @@ def main():
     # refreshes the on-disk bin but does NOT publish the release, bump clients, or commit a marker.
     blob = gzip.compress(json.dumps(D, separators=(",", ":")).encode(), 6)
     open(OUT, "wb").write(blob)
-    if not appended and not healed and not merged and not mr and not ao and not dvf and not dvo and not wk and not bi and not bz and not bzf and not sm and not sg and not tunits and not dead and not _n and not ph and not fx:
-        print("No new day / heal / merge / manual-rights / open-arbitrated CA / dv-fill / dv-overwrite / weekend-insert / bar-insert / BZ-backfill / SME-backfill / series-surgery / turnover-unit fix / aliveness decay / industry fill / phantom-session drop / demerger ex-day flatten — rewrote merged base to %s (%.2f MB); nothing to publish." % (OUT, len(blob) / 1048576)); return
+    if not appended and not healed and not merged and not mr and not ao and not dvf and not dvo and not wk and not bi and not bz and not bzf and not sm and not sg and not tunits and not dead and not _n and not ph and not fx and not ra:
+        print("No new day / heal / merge / manual-rights / rights-reconcile / open-arbitrated CA / dv-fill / dv-overwrite / weekend-insert / bar-insert / BZ-backfill / SME-backfill / series-surgery / turnover-unit fix / aliveness decay / industry fill / phantom-session drop / demerger ex-day flatten — rewrote merged base to %s (%.2f MB); nothing to publish." % (OUT, len(blob) / 1048576)); return
     open(MARK, "w").write(D["end"])
     # tiny version marker — committed daily, lets the browser cache the big bin in IndexedDB
     # keyed to this `end` and skip re-downloading 80 MB until the data actually changes.
