@@ -166,8 +166,18 @@ def rows_of(k, path):
 
 
 def build():
+    ser, days, dropped = build_series()
+    blob = json.dumps({"built": datetime.date.today().isoformat(), "days": days, "dropped_reserved": dropped,
+                       "series": ser}, separators=(",", ":")).encode()
+    open(OUT, "wb").write(gzip.compress(blob, 9))
+    print("build: %d day files (%d re-served dropped), %d scrips ever on SME, %s" % (days, dropped, len(ser), OUT))
+
+
+def build_series(codes=None):
+    """{code: series} from the cache — every scrip EVER on SME (default), or exactly `codes` (a set of scripcodes,
+    any group), or "ALL" scrips (build_bse_sme_prepend --mainboard). Returns (series, day files used, re-served files dropped)."""
     files = sorted(f for f in os.listdir(CACHE) if f[:8].isdigit())
-    ever, days, dropped = set(), [], 0
+    ever, days, dropped = (None if codes == "ALL" else set(codes or ())), [], 0
     prev_sig = None
     for f in files:
         k = int(f[:8]); rs = rows_of(k, os.path.join(CACHE, f))
@@ -178,11 +188,12 @@ def build():
             dropped += 1; continue                       # identical to the previous day = a re-served file
         prev_sig = sig
         days.append((k, rs))
-        ever.update(code for code, g, *_ in rs if g in SME)
+        if codes is None:
+            ever.update(code for code, g, *_ in rs if g in SME)
     ser = {}
     for k, rs in days:
         for code, g, c, pc, v, isin, tk in rs:
-            if code not in ever or c <= 0:
+            if (ever is not None and code not in ever) or c <= 0:
                 continue
             s = ser.setdefault(code, {"d": [], "rc": [], "isd": [], "v": [], "g": [], "isin": isin, "tk": tk})
             s["d"].append(k); s["rc"].append(c); s["isd"].append(isin); s["v"].append(v); s["g"].append(g)
@@ -217,10 +228,7 @@ def build():
         del s["isd"], s["g"]
     print("adjust: %d ISIN-confirmed splits applied, %d unexplained one-day drops >30%% flagged (bonus or crash — "
           "needs BSE corporate actions)" % (n_split, n_unexpl))
-    blob = json.dumps({"built": datetime.date.today().isoformat(), "days": len(days), "dropped_reserved": dropped,
-                       "series": ser}, separators=(",", ":")).encode()
-    open(OUT, "wb").write(gzip.compress(blob, 9))
-    print("build: %d day files (%d re-served dropped), %d scrips ever on SME, %s" % (len(days), dropped, len(ser), OUT))
+    return ser, len(days), dropped
 
 
 if __name__ == "__main__":

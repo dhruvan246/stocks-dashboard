@@ -20541,3 +20541,25 @@ share (NSE 21-Nov-2008), not equity in a spun-off company -> belongs to the bonu
 - KOTHARIPRO 2008 -> the bonus-debenture / preference-share policy question (user's item 3, asked after the rights rebuild).
 - Workflow race: refresh-backtest-data.yml copies `scripts/demerger_adj.json` to /tmp and re-commits it after `git reset --hard` — a run that
   started before a ledger push can revert it. After pushing ledger rows, confirm the committed file still holds them after the next marker.
+
+## §171 — BSE MAIN-BOARD ERA OF NAMES THAT LISTED ON NSE LATER, 2020→ (2026-09-26, user: "every single stock … from 2020 till date")
+**Gap (measured on live sf-data rev b66344e4dd):** a company that traded only on BSE and later got an NSE listing (the
+2026-04-17/20 and 2026-08-14/17 permitted-to-trade batches — NIRLON, TIMEX, ELANTAS, DISAQ, HAWKINCOOK …; SANDUMA 2023)
+had NO price before its NSE first day: docs/bse_prices.bin keeps only CURRENT BSE-only scrips, and §149 prepended only
+ex-BSE-SME names.
+**Fix:** `build_bse_sme_prepend.py --mainboard` builds BSE series for EVERY scrip in the §149 bhavcopy cache
+(`build_bse_sme_backfill.build_series("ALL")`, refactor verified byte-identical on the SME build: 713 series) and joins by
+exact ISIN, else issuer isin[:7] when exactly one BSE equity scrip carries it. Same ledger (`bse_sme_prepend.json.gz`),
+same consumer (`update_sf_data.insert_sme_history`, unchanged). Main-board-only gates:
+1. identity = MEDIAN NSE-stored / BSE-raw ratio over the first ≤10 common sessions within 3 % of the NSE corporate-action
+   product (day-1 alone refused 73 thin names on a 3-15 % cross-exchange spread);
+2. scale = the CA product itself (anchor.raw = stored/product; `bse_raw`, `median_ratio`, `n` kept for provenance) —
+   no day-1 spread baked into years of history;
+3. any BSE bar-to-bar move outside [0.7, 1/0.7] cuts the block after it (BSE price bands; the SME `unexpl` list holds
+   falls only), and a SEAM outside that band refuses the block — capital reductions/relistings printed +1,000 %
+   (DIACABS, UEL, ACL, AQYLON, MICEL).
+**Result:** 384 blocks / 407,234 bars; applied through the real consumer on the live 2019+ tape: 384 extended, arrays
+aligned, seam median 2.25 % (max 20 % = circuit), second run inserts 0. 52 refused and OPEN: 3IINFOLTD ACL AKSHAR ALOKINDS AQYLON ASMS AVANTEL AVONMORE BAIDFIN BHAGCHEM BSLSENETFG COASTCORP CURAA DAVANGERE DCCL DCMSRIND DIACABS DIGJAMLMTD DOLPHIN EMPOWER EQUIPPP GRADIENTE KAMANWALA KEEPLEARN LADDERUP LLOYDSENT MHLXMIRU MICEL MODTHREAD NGIL RAJRILTD ROML RRECL S&SPOWER SAB SADHNANIQ SAICAPI SEJALLTD SELMC SICALLOG SIMPLXREA SONAL STLSTRINF SWANDEF THACKER THAKDEV TICL UDAICEMENT UEL UGROCAP UPHOT VHLTD 
+(persistent unexplained ratio = an NSE-side adjustment we can't source, seam break, or no BSE row on the NSE first day).
+**Cache:** the 1,672-file BSE bhavcopy cache lives at `~/stocks-cache/bse_bhav` (copied from the fa-backfill worktree,
+which gc could delete); run with `BSE_BHAV_CACHE=~/stocks-cache/bse_bhav`.

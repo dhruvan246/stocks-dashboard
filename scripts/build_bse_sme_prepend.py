@@ -13,7 +13,12 @@ SAFETY: identity = the NSE symbol's ISIN issuer (isin[:7]) must equal the BSE sc
 equal the product of the NSE series' own corporate actions after the anchor (within 3 %) or the block is refused;
 the NSE series must start exactly on a BSE trading day (same-day anchor). Existing blocks are kept.
 
-Run: python3 -X utf8 scripts/build_bse_sme_prepend.py --tape docs/sf_stock_data.bin [--only SYM,…] [--dry]
+--mainboard (§171): the same blocks for MAIN-BOARD BSE scrips that listed on NSE later (NIRLON, TIMEX, ELANTAS … the
+2026-04-20 permitted-to-trade batch; SANDUMA 2023). Their BSE series are built straight from the bhavcopy cache (any
+group), matched to the NSE symbol by EXACT ISIN, else by issuer (isin[:7]) when exactly one BSE equity scrip carries
+it; every gate above applies unchanged. Blocks land in the same ledger (note says "BSE main board").
+
+Run: python3 -X utf8 scripts/build_bse_sme_prepend.py --tape docs/sf_stock_data.bin [--only SYM,…] [--mainboard] [--dry]
 """
 import os, sys, io, csv, json, gzip, zipfile, datetime
 HERE = os.path.dirname(os.path.abspath(__file__))
@@ -79,6 +84,25 @@ def main():
         for r in _csv.DictReader(open(a[a.index("--equity-l") + 1], encoding="utf-8", errors="replace")):
             r = {k.strip(): (v or "").strip() for k, v in r.items()}
             if r.get("SYMBOL") and r.get("ISIN NUMBER"): nse_isin[r["SYMBOL"]] = r["ISIN NUMBER"]
+    board = "BSE SME"
+    if "--mainboard" in a:
+        import build_bse_sme_backfill as BB
+        board = "BSE main board"
+        allser, _, _ = BB.build_series("ALL")
+        full = {i: s_ for s_, i in nse_isin.items() if i}
+        by_iss = {}
+        for code, bs in allser.items():
+            if (bs.get("isin") or "")[:3] in ("INE", "IN9"): by_iss.setdefault(bs["isin"][:7], []).append(code)
+        BS = {}
+        for code, bs in allser.items():
+            i = bs.get("isin") or ""
+            sym = full.get(i)
+            if not sym and len(by_iss.get(i[:7], [])) == 1:
+                sym = next((s_ for s_, i2 in nse_isin.items() if i2 and i2[:7] == i[:7]), None)
+            e = T["data"].get(sym) if sym else None
+            if e and e["d"] and bs["d"][0] < e["d"][0]:
+                BS[code] = bs; isin2sym.setdefault(i, sym)
+        print("mainboard: %d BSE series in the cache, %d start before their NSE symbol's tape" % (len(allser), len(BS)))
     cand = {}
     for code, bs in BS.items():
         sym = isin2sym.get(bs.get("isin")) or code2sym.get(code)
@@ -112,7 +136,22 @@ def main():
         exp = 1.0
         for dd, ff in sorted(CA.get(sym, {}).items()):
             if dd > a0: exp *= ff
-        if abs(s / exp - 1) > 0.03:
+        anchor = {"ymd": a0, "raw": raw0}
+        if board == "BSE main board":
+            # A thin name's FIRST NSE close can sit several % off BSE's that day (73 of 81 day-1 refusals, 3-15 %) —
+            # a cross-exchange spread, not a corporate action. Main-board blocks therefore (a) test identity on the
+            # MEDIAN NSE-stored / BSE-raw ratio over the first <=10 common sessions and (b) scale the BSE era by the
+            # NSE corporate-action product itself (BSE raw x the same factors the NSE series carries), so no spread
+            # is baked into years of history; the seam keeps the real day-1 gap. anchor.raw = stored/product so the
+            # consumer's stored/raw rescale equals the product; bse_raw keeps BSE's printed close for provenance.
+            rat = sorted(c_ / R[d_][3] for d_, c_ in list(zip(e["d"], e["c"]))[:10] if d_ in R and R[d_][3] > 0)
+            med = rat[len(rat) // 2] if rat else 0
+            if not rat or abs(med / exp - 1) > 0.03:
+                refused.append((sym, "median NSE/BSE ratio %.4f over %d common days (day-1 %.4f) not explained by NSE corporate actions after %d (product %.4f)"
+                                % (med, len(rat), s, a0, exp))); continue
+            anchor = {"ymd": a0, "raw": round(e["c"][0] / exp, 4), "bse_raw": raw0, "median_ratio": round(med, 4), "n": len(rat)}
+            s = exp
+        elif abs(s / exp - 1) > 0.03:
             refused.append((sym, "rescale %.4f not explained by NSE corporate actions after %d (product %.4f)" % (s, a0, exp))); continue
         splits = [(d, f) for d, f in bs.get("splits", []) if d <= a0]
         unexpl = [d for d, _ in bs.get("unexpl", []) if d <= a0]
@@ -128,12 +167,25 @@ def main():
             vw = (t / v) if v else c
             bars.append([d, round(c * m, 2), round(t / 1e5, 2), round(hi * m, 2), round(lo * m, 2),
                          round(o * m, 2), int(v / m), 0, round(vw * m, 2)])
+        if board == "BSE main board" and bars:
+            # RISES too (§171): the SME `unexpl` list holds only >30 % FALLS; a main-board relisting after a capital
+            # reduction prints +1,000 % across the gap (DIACABS, UEL, ACL, AQYLON, MICEL in the first dry run). BSE's
+            # price bands cap a normal session far below this, so any bar-to-bar move outside [0.7, 1/0.7] is treated
+            # as an unconfirmed action: keep only the bars after the last one, and refuse a block whose SEAM (last
+            # BSE bar on the NSE level vs the NSE first close) breaks the same band.
+            cut = max((i for i in range(1, len(bars)) if not 0.7 <= bars[i][1] / bars[i - 1][1] <= 1 / 0.7), default=0)
+            if cut:
+                start = max(start, bars[cut - 1][0]); bars = bars[cut:]
+            seam = e["c"][0] / (bars[-1][1] * s) if bars else 1
+            if not 0.7 <= seam <= 1 / 0.7:
+                refused.append((sym, "seam %.3f (last BSE %d -> NSE first %d) outside the price band — unconfirmed action at the join"
+                                % (seam, bars[-1][0], a0))); continue
         if not bars:
             refused.append((sym, "no bars left before the anchor")); continue
-        led["prepend"][sym] = {"target": sym, "bars": bars, "anchor": {"ymd": a0, "raw": raw0},
+        led["prepend"][sym] = {"target": sym, "bars": bars, "anchor": anchor,
                                "meta": {"isin": bs.get("isin")},
-                               "note": "BSE SME %s: %d bars %d -> %d; splits %s; truncated after unconfirmed fall %s; rescale %.4f"
-                                       % (code, len(bars), bars[0][0], bars[-1][0], splits or "none", start or "none", s)}
+                               "note": "%s %s: %d bars %d -> %d; splits %s; truncated after unconfirmed move %s; rescale %.4f"
+                                       % (board, code, len(bars), bars[0][0], bars[-1][0], splits or "none", start or "none", s)}
         made.append((sym, code, len(bars), bars[0][0], bars[-1][0], round(s, 4), start or ""))
     for m in made: print("  ADD  %-12s BSE %s  %4d bars %d→%d  rescale %.4f  %s" % (m[0], m[1], m[2], m[3], m[4], m[5], ("after unexpl %s" % m[6]) if m[6] else ""))
     for r in refused: print("  SKIP %-12s %s" % r)
