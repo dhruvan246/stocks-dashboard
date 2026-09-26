@@ -20621,7 +20621,9 @@ UNIONBANK 2009, HGS 2022): classify a row by its commit/feed record before apply
 ### 170c. Open
 - MRPL 20260303 (a large-dividend separation from the 2026-08-23 dividend sweep, 59b967a18) is dated on a day MRPL did not trade:
   it sits on the 2026-03-04 bar (raw +1.5%) while the drop it describes is 2026-03-02 (-4.1%). Left as is (2% band) — needs its own fix.
-  MANDHANA 20160922 is keyed to a symbol the bin no longer has (GBGLOBAL seam) — never applied.
+  MANDHANA 20160922 was keyed to a symbol the bin no longer has — RESOLVED 2026-09-26: the 0.369 factor was already baked in GBGLOBAL
+  (NSE raw 121.95 → 42.75 on MANDHANA's row, stored ratio 0.9500); the row is re-keyed to GBGLOBAL so self_heal keeps asserting it
+  (dry run: 0 bars change).
 - KOTHARIPRO 2008 -> the bonus-debenture / preference-share policy question (user's item 3, asked after the rights rebuild).
 - Workflow race: refresh-backtest-data.yml copies `scripts/demerger_adj.json` to /tmp and re-commits it after `git reset --hard` — a run that
   started before a ledger push can revert it. After pushing ledger rows, confirm the committed file still holds them after the next marker.
@@ -20726,6 +20728,8 @@ applied — a 1.0 row would have mis-healed the 2026-03-04 bar). No dividend cod
 **Verified** (release 2026-09-26 after §173, real `main()`, NSE blocked): exactly 4 symbols change, only before their ex-dates (UNIONBANK
 2009-05-12 160.00 → 165.00, CHENNPETRO 2026-08-06 1,238.31 → 1,292.33, HGS 2022-01-14 1,509.18 → 1,584.11 = raw/2 within 4 paise of
 apply-then-undo rounding); ex-days and later bars unchanged; MRPL unchanged; second pass 0.
+LIVE-verified (rev fbdc308e2b). docs/movers.html footnote corrected: its Change % was labelled "split/bonus/dividend-adjusted" but the
+dashboard data is Yahoo's plain Close (fetch_all.py reads quote.close, never adjclose) — now "split/bonus-adjusted, dividends not adjusted".
 
 ## §174 — BSE QUARTERS NOW FILL ANY STOCK THAT LACKS THEM (2026-09-26, user: "fix all")
 **Defect (measured origin 6031e907a):** `build_stock_fin.py` skipped a BSE scrip ENTIRELY when its ticker already had
