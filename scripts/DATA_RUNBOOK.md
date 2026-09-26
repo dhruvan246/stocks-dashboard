@@ -20929,6 +20929,20 @@ bar; 4 re-scale pre-event history only — latest bars untouched), 0 others; sec
 months later (`_staleness_fix/IndexInclExcl.xls`: Wipro out of Nifty 50/500 on 2013-04-01, back in the Nifty 500 2013-08-07 and the
 Nifty 50 2013-09-27; Cadila, RSWM, Jindal Saw, Zuari, Orient Paper, Jindal Poly, Century Ply, Marico, Balkrishna the same).
 `indices_history.json` follows it — do not "repair" those gaps.
+### 179a. Rights: WHEELS 2014 on the ACTUAL shares issued; ALOKINDS 2013 on its era series (2026-09-26, quantmac cell reconciliation)
+- **WHEELS 2014-02-13** "Rights 51:20 @ Premium Rs.390" was a SEBI minimum-public-shareholding rights issue: the promoters FORWENT
+  their entitlement (NSE filings 11/16-Dec-2013), so 51-for-20 went to PUBLIC holders only — 21,62,835 shares offered on 98,69,444
+  existing (04-Feb-2014 filing). TERP on the actual shares = (98,69,444 x 1054.55 + 21,62,835 x 400) / 1,20,32,279 = 936.89 →
+  **0.888429** (`rights_adj.json`). The series had baked 0.5542 (51:20 applied to every holder, an old rights_terp row §173 left as
+  EXCLUDED): a fake **+28.25%** ex-day, now **−20.00%** (thin-float stock re-rated below TERP; −37% by 02-17). RULE for any MPS-type
+  rights issue: the ratio is actual shares offered ÷ existing shares, never the public-holder entitlement.
+- **ALOKINDS 2013-02-15** (2:3 @ par, factor 0.99801) sat under ALOKINDS, whose series starts 2020 ("NOT APPLIED: no bar") — keyed to
+  the era key **ALOKTEXT** (our 2013 series). −1.00% raw → −0.80% adjusted.
+- Resolved, no data change: CHEMPLASTS 2009 (issue Rs 9 > cum 3.65 → capped 1.0; era key CHEMPLAST); NEULANDLAB 2012 (company filing
+  14-Mar-2012 confirms 5:12 @ Rs 45, record date 23-Mar; the baked textbook 0.866 at NSE's ex-date stays — the tape is flat 21-23 Mar,
+  the stock repriced from 29-Mar). Open: GTLINFRA 2007 (before the quantmac window).
+- Verified: dry run on the release (end 2026-09-25): exactly WHEELS + ALOKTEXT differ (history only; latest bars untouched); second
+  pass 0.
 ## §180 — EVERY BSE JOB WAS DARK 20→26 SEP: the requests lacked standard headers, not access (2026-09-26, user: "find a way")
 **Measured (every run log since 20-Sep, times UTC):** refresh-bse 12/13 runs refused (first 20-Sep 11:47), refresh 52/55
 (21-Sep), refresh-announcements 13/26 (21-Sep), refresh-results-hourly 9/20 (23-Sep), refresh-fundamentals 7/60 (24-Sep),
