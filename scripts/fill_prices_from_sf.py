@@ -111,7 +111,6 @@ def ca_factor(r):
 
 
 CA_LEDGER = ROOT / "scripts" / "bse_ca_checks.json"   # {"code|ymd": verdict} — BSE's own record per candidate step
-_UA = "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/120 Safari/537.36"
 
 
 def bse_official(code, ymd, cache):
@@ -128,7 +127,7 @@ def bse_official(code, ymd, cache):
            "&segment=0&strSearch=S&TDate=%s" % (f, code, t))
     try:
         import subprocess
-        out = subprocess.run(["curl", "-s", "--max-time", "30", "-A", _UA, *BH.CURL_ARGS, url], capture_output=True, timeout=45).stdout
+        out = subprocess.run(["curl", "-s", "--max-time", "30", "-A", BH.UA, *BH.CURL_ARGS, url], capture_output=True, timeout=45).stdout
         rows = json.loads(out or b"[]")
     except Exception:
         return "unknown"                                     # not cached: retried next run

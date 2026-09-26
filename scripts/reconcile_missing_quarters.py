@@ -74,7 +74,6 @@ PDFCACHE = os.path.join(HERE, "_revgap_pdfcache")   # shared with backfill_revop
 MIN_LAG_DAYS = 10        # nobody files inside the first 10 days after a quarter-end
 RECHECK_DAYS = 3         # re-ask BSE for a still-unfiled name every 3 days
 MAX_FETCH = 400          # BSE calls per run (rate-limit courtesy, §55a); the rest wait a night
-UA = "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/125.0 Safari/537.36"
 
 
 # ---------------------------------------------------------------- small utils
@@ -128,30 +127,17 @@ def save_json(p, obj):
     os.replace(tmp, p)
 
 
-# ---------------------------------------------------------------- BSE access (curl_cffi first, urllib fallback)
-_sess = {"cffi": None, "urllib": None}
-
+# ---------------------------------------------------------------- BSE access (honest urllib, runbook §181)
 def _http(url, binary=False):
+    """One BSE GET with the one BSE header set (bse_headers.HEADERS): our own User-Agent, no browser
+    impersonation (the curl_cffi impersonate="chrome" first leg was dropped 2026-09-26 -- urllib +
+    BH.HEADERS measured 200 on the API, attachment and /XBRL1/ hosts)."""
+    import urllib.request
     try:
-        if _sess["cffi"] is None:
-            from curl_cffi import requests as cr
-            s = cr.Session(impersonate="chrome")
-            s.get("https://www.bseindia.com/", timeout=30)
-            _sess["cffi"] = s
-        r = _sess["cffi"].get(url, headers={"Referer": "https://www.bseindia.com/",
-                                            "Origin": "https://www.bseindia.com",
-                                            "Accept": "application/json,*/*"}, timeout=90)
-        if r.status_code != 200:
-            raise RuntimeError("HTTP %d" % r.status_code)
-        return r.content if binary else r.text
-    except Exception as e1:
-        import urllib.request
-        req = urllib.request.Request(url, headers={"User-Agent": UA, "Referer": "https://www.bseindia.com/"})
-        try:
-            body = urllib.request.urlopen(req, timeout=90).read()
-        except Exception as e2:
-            raise RuntimeError("bse fetch failed: %s / %s" % (str(e1)[:60], str(e2)[:60]))
-        return body if binary else body.decode("utf-8", "replace")
+        body = urllib.request.urlopen(urllib.request.Request(url, headers=BH.HEADERS), timeout=90).read()
+    except Exception as e:
+        raise RuntimeError("bse fetch failed: %s" % str(e)[:120])
+    return body if binary else body.decode("utf-8", "replace")
 
 def bse_result_filings(code, lo, hi):
     """[(DT_TM iso, attachment, NEWSSUB)] result filings for scrip `code` between lo..hi (YYYYMMDD)."""

@@ -15,6 +15,7 @@ quarter) x the Lakh/Crore unit, and write bse_fundamentals.json.
 
 Run: python -X utf8 bse_vision.py SBILIFE HDFCLIFE ICICIGI --quarters 4
 """
+import os as _o, sys as _s; _s.path.insert(0, _o.path.dirname(_o.path.abspath(__file__))); import bse_headers as BH  # §181 BSE headers
 import urllib.request, json, gzip, io, re, time, http.cookiejar, os, sys, socket, concurrent.futures, fitz
 import numpy as np, cv2
 from rapidocr_onnxruntime import RapidOCR
@@ -31,7 +32,8 @@ def watchdog(fn, secs, *a):
         _WEX[0].shutdown(wait=False); _WEX[0] = None   # drop the stuck thread, fresh executor next call
         raise TimeoutError('watchdog')
 
-UA = 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/120 Safari/537.36'
+UA = BH.UA   # honest BSE identity (§181) -- no browser impersonation
+_UA_OTHER = 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/120 Safari/537.36'  # non-BSE hosts only, unchanged
 OCR = RapidOCR()
 HERE = os.path.dirname(os.path.abspath(__file__))
 VP = os.path.join(HERE, os.environ.get("VPDIR", "_vp")); os.makedirs(VP, exist_ok=True)
@@ -51,12 +53,12 @@ PAT = [r'net profit after tax', r'profit\s*/?\s*\(?loss\)?\s*after tax', r'\bpro
 
 def session():
     o = urllib.request.build_opener(urllib.request.HTTPCookieProcessor(http.cookiejar.CookieJar()))
-    try: o.open(urllib.request.Request('https://www.bseindia.com/', headers={'User-Agent': UA}), timeout=30).read()
+    try: o.open(urllib.request.Request('https://www.bseindia.com/', headers=BH.HEADERS), timeout=30).read()
     except Exception: pass
     return o
 
 def get(o, u, b=False):
-    r = o.open(urllib.request.Request(u, headers={'User-Agent': UA, 'Referer': 'https://www.bseindia.com/'}), timeout=60)
+    r = o.open(urllib.request.Request(u, headers=BH.HEADERS if BH.is_bse(u) else {'User-Agent': _UA_OTHER, 'Referer': 'https://www.bseindia.com/'}), timeout=60)
     raw = r.read()
     if r.headers.get('Content-Encoding') == 'gzip': raw = gzip.decompress(raw)
     return raw if b else raw.decode('utf-8', 'replace')

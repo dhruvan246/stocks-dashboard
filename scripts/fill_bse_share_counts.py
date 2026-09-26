@@ -41,11 +41,10 @@ PAYLOAD = os.path.join(HERE, "stock_data.json")
 BSE_JSON = "/tmp/bse.json"
 LEDGER = os.path.join(HERE, "shares_bse_only.json")
 MAX_AGE_DAYS = 100                           # one quarter's filing season, plus slack
-UA = "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/120 Safari/537.36"
 
 
 def curl(url):
-    r = subprocess.run(["curl", "-s", "--max-time", "40", "-A", UA, *BH.CURL_ARGS, url],
+    r = subprocess.run(["curl", "-s", "--max-time", "40", "-A", BH.UA, *BH.CURL_ARGS, url],
                        capture_output=True, timeout=60)
     return r.stdout
 

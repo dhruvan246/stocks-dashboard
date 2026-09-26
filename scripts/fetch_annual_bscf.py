@@ -42,7 +42,7 @@ DOCS = os.path.join(HERE, "..", "docs")
 LEDGER = os.path.join(HERE, "annual_bscf.json")
 GATE_REPORT = os.path.join(HERE, "annual_bscf_gate.json")   # TRACKED (not scripts/_*, which is gitignored) so resume persists in CI
 FYS = [2025, 2024, 2023, 2022, 2021, 2020]      # FY-ends to fill, newest first
-UA = "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/124 Safari/537.36"
+UA = BH.UA   # honest BSE identity (§181) -- no browser impersonation
 
 # ---- queue-advance cooldowns (so the --limit walk moves past attempted-but-unfilled symbols) --
 TTRY_COOLDOWN_DAYS = 7    # a token-free text gate-fail is not re-attempted by main() for this long
@@ -62,7 +62,7 @@ def _fresh(datestr, days):
 # ---- BSE fetch (narrow window + strCat=Result — BSE now rejects wide ranges) ------------------
 def session():
     o = urllib.request.build_opener(urllib.request.HTTPCookieProcessor(http.cookiejar.CookieJar()))
-    try: o.open(urllib.request.Request('https://www.bseindia.com/', headers={'User-Agent': UA}), timeout=30).read()
+    try: o.open(urllib.request.Request('https://www.bseindia.com/', headers=BH.HEADERS), timeout=30).read()
     except Exception: pass
     return o
 
@@ -73,7 +73,7 @@ def get(o, u, b=False):
     w = MIN_GAP - (time.time() - _LAST_CALL[0])
     if w > 0: time.sleep(w)
     _LAST_CALL[0] = time.time()
-    r = o.open(urllib.request.Request(u, headers={'User-Agent': UA, 'Referer': 'https://www.bseindia.com/'}), timeout=60)
+    r = o.open(urllib.request.Request(u, headers=BH.HEADERS), timeout=60)
     raw = r.read()
     if r.headers.get('Content-Encoding') == 'gzip': raw = gzip.decompress(raw)
     return raw if b else raw.decode('utf-8', 'replace')

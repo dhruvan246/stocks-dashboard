@@ -37,14 +37,13 @@ ROOT = os.path.dirname(HERE)
 sys.path.insert(0, HERE)
 os.environ.setdefault("VPDIR", "_vp_v111")
 import bse_vision as V  # noqa: E402
+import bse_headers as BH  # noqa: E402  honest BSE header set (§181)
 
 SP = os.environ.get("V111_WORK", HERE)
 DOCS = os.path.join(SP, "_vintage111_docs")
 MANI = os.environ.get("V111_MANI") or os.path.join(SP, "_vintage111_docs.json")
 DECL = os.path.join(SP, "declined67.json")
 BSE_MASTER = "/Users/dhruvan/stocks-wt/vintage108/scripts/_bse_master_all.json"
-UA = ("Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) "
-      "Chrome/120 Safari/537.36")
 os.makedirs(DOCS, exist_ok=True)
 CAP = 6          # candidates fetched per window, RANKED first (see main); drops are logged
 
@@ -142,8 +141,7 @@ def fetch(o, att):
     for attempt in range(3):
         try:
             u = "https://www.bseindia.com/stockinfo/AnnPdfOpen.aspx?Pname=" + att
-            r = o.open(urllib.request.Request(u, headers={"User-Agent": UA,
-                                                         "Referer": "https://www.bseindia.com/"}),
+            r = o.open(urllib.request.Request(u, headers=BH.HEADERS),
                        timeout=90)
             d = r.read()
             if d[:4] == b"%PDF":

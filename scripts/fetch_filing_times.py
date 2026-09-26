@@ -15,11 +15,9 @@ import os as _o, sys as _s; _s.path.insert(0, _o.path.dirname(_o.path.abspath(__
 import urllib.request, json, gzip, http.cookiejar, time, sys, os
 
 HERE = os.path.dirname(os.path.abspath(__file__))
-UA = 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/120 Safari/537.36'
 
 def _req(u, ref='https://www.bseindia.com/corporates/ann.html'):
-    return urllib.request.Request(u, headers={'User-Agent': UA, 'Accept': '*/*',
-                                              'Referer': ref, 'Origin': 'https://www.bseindia.com'})
+    return urllib.request.Request(u, headers=dict(BH.HEADERS, Referer=ref))   # honest BSE header set (§181)
 
 op = urllib.request.build_opener(urllib.request.HTTPCookieProcessor(http.cookiejar.CookieJar()))
 op.open(_req('https://www.bseindia.com/'), timeout=30).read()

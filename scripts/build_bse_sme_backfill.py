@@ -24,6 +24,7 @@ consumers to avoid until BSE's corporate-action list confirms it. Raw closes are
 Run: python3 -X utf8 scripts/build_bse_sme_backfill.py --fetch [--from 20200101] [--to YYYYMMDD]
      python3 -X utf8 scripts/build_bse_sme_backfill.py --build
 """
+import os as _o, sys as _s; _s.path.insert(0, _o.path.dirname(_o.path.abspath(__file__))); import bse_headers as BH  # §181 BSE headers
 import os, sys, io, csv, json, gzip, time, zipfile, datetime, urllib.request, urllib.error
 
 HERE = os.path.dirname(os.path.abspath(__file__))
@@ -37,8 +38,7 @@ OLDEST = "https://www.bseindia.com/download/BhavCopy/Equity/EQ%s_CSV.ZIP"       
 # BSE answers a file it does not serve with a 200 "Access Denied" page (14,287 B), exactly like a block. A file we
 # KNOW exists is the canary: if it still downloads, the denial meant "not at this address" (measured 2026-09-23).
 CANARY = "https://www.bseindia.com/download/BhavCopy/Equity/EQ_ISINCODE_220523.zip"
-UA = {"User-Agent": "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) "
-                    "Chrome/124 Safari/537.36", "Referer": "https://www.bseindia.com/"}
+UA = BH.HEADERS   # honest BSE header set (§181) -- no browser impersonation
 SME = {"M", "MT", "MS"}
 # weekend special sessions (budget Saturdays, muhurat Sundays, DR drills) — the same list fetch_bse_bhav heals
 WEEKEND = {20150228, 20161030, 20191027, 20200201, 20201114, 20231112, 20240120, 20240302, 20240518, 20241101,

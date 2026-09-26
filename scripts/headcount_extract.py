@@ -52,7 +52,7 @@ def _get(url, timeout=60, binary=False):
     if wait > 0:
         time.sleep(wait)
     PACE["last"] = time.time()
-    req = urllib.request.Request(url, headers=HDR)
+    req = urllib.request.Request(url, headers=BH.HEADERS if BH.is_bse(url) else HDR)   # honest BSE set (§181)
     r = urllib.request.urlopen(req, timeout=timeout)
     raw = r.read()
     if r.headers.get("Content-Encoding") == "gzip":

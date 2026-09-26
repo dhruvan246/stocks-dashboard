@@ -28,11 +28,10 @@ LEDGER = os.path.join(HERE, "bse_last_trade.json")
 ARCHIVE = os.path.join(HERE, "bse_last_trade_archive.json")
 UNIV = os.path.join(ROOT, "docs", "bse_universe.json")
 MAX_AGE_DAYS = 7
-UA = "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/120 Safari/537.36"
 
 
 def header(code):
-    out = subprocess.run(["curl", "-s", "--max-time", "30", "-A", UA, *BH.CURL_ARGS,
+    out = subprocess.run(["curl", "-s", "--max-time", "30", "-A", BH.UA, *BH.CURL_ARGS,
                           "https://api.bseindia.com/BseIndiaAPI/api/getScripHeaderData/w?Debtflag=&scripcode=%s&seriesid=" % code],
                          capture_output=True, timeout=45).stdout
     return (json.loads(out or b"{}") or {}).get("Header") or {}

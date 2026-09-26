@@ -29,6 +29,7 @@ con==std match is therefore worth eyeballing rather than trusting.
 Run:  python -X utf8 scripts/fill2020_tools/fill_std_pat_detres.py [--apply] [--only SYM,SYM]
       (default DRY RUN.)
 """
+import os as _o, sys as _s; _s.path.append(_o.path.dirname(_o.path.dirname(_o.path.abspath(__file__)))); import bse_headers as BH  # §181 BSE headers (append: never shadow local modules)
 import json
 import os
 import sys
@@ -43,8 +44,6 @@ LEDGER = os.path.join(ROOT, "scripts", "std_pat_detres_fills.json")
 
 API = ("https://api.bseindia.com/BseIndiaAPI/api/Corp_detailedResult_Transpose_ng/w"
        "?scrip_cd=%s&qtr=%s")
-UA = ("Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) "
-      "Chrome/124.0 Safari/537.36")
 EPS_TOL = 0.06                 # runbook §42: EPS-recon gate is +/-6%
 FY_ABS, FY_REL = 3.0, 0.03     # runbook §42 FY-consistency gate: max(3cr, 3%)
 MONTHS = {"Jan": 1, "Feb": 2, "Mar": 3, "Apr": 4, "May": 5, "Jun": 6,
@@ -65,7 +64,7 @@ def qid(qe):
 
 def get(scrip, q):
     req = urllib.request.Request(API % (scrip, q),
-                                 headers={"User-Agent": UA, "Referer": "https://www.bseindia.com/"})
+                                 headers=BH.HEADERS)
     with urllib.request.urlopen(req, timeout=40) as r:
         return json.loads(r.read().decode("utf-8", "replace"))
 

@@ -4,17 +4,17 @@ Usage: python3 scripts/scan_bse_archive_last_trade.py CODES.json   (a JSON list 
 Scan BSE's daily equity archive backwards (2023-12-03 -> 2007-01-01) for the LAST trade of a set of
 scrip codes. Most-recent-first; a code is done at its first hit. Per-day results cached in CACHE so a
 rerun resumes. Files: EQ_ISINCODE_DDMMYY.zip (has TRADING_DATE inside) else EQDDMMYY_CSV.ZIP."""
+import os as _o, sys as _s; _s.path.insert(0, _o.path.dirname(_o.path.abspath(__file__))); import bse_headers as BH  # §181 BSE headers
 import os, sys, io, csv, json, zipfile, hashlib, datetime, subprocess, threading, time
 from concurrent.futures import ThreadPoolExecutor
 
 SC = os.path.dirname(os.path.abspath(__file__))
 CACHE = os.path.join(SC, "_bse_arch")   # gitignored (scripts/_*); os.makedirs(CACHE, exist_ok=True)
-UA = "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/120 Safari/537.36"
 CODES = set(json.load(open(sys.argv[1])))
 START, END = datetime.date(2023, 12, 3), datetime.date(2007, 1, 1)
 
 def get(url):
-    r = subprocess.run(["curl", "-s", "--max-time", "60", "-A", UA, "-H", "Referer: https://www.bseindia.com/", url],
+    r = subprocess.run(["curl", "-s", "--max-time", "60", "-A", BH.UA, *BH.CURL_ARGS, url],
                        capture_output=True, timeout=75)
     return r.stdout
 

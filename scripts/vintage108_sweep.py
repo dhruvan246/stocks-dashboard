@@ -40,6 +40,7 @@ HERE = os.path.dirname(os.path.abspath(__file__))
 ROOT = os.path.dirname(HERE)
 sys.path.insert(0, HERE)
 import bse_resolve  # noqa: E402
+import bse_headers as BH  # noqa: E402  honest BSE header set (§181)
 
 FUND = os.path.join(ROOT, "docs", "sf_fundamentals.json")
 SCAN = os.path.join(HERE, "_vintage108_scan.json")
@@ -47,8 +48,6 @@ RAW = os.path.join(HERE, "_vintage108_raw.json")
 
 API = ("https://api.bseindia.com/BseIndiaAPI/api/Corp_detailedResult_Transpose_ng/w"
        "?scrip_cd=%s&qtr=%s")
-UA = ("Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) "
-      "Chrome/124.0 Safari/537.36")
 MONTHS = {"Jan": 1, "Feb": 2, "Mar": 3, "Apr": 4, "May": 5, "Jun": 6,
           "Jul": 7, "Aug": 8, "Sep": 9, "Oct": 10, "Nov": 11, "Dec": 12}
 
@@ -125,7 +124,7 @@ def fetch(scrip, q, tries=4):
         try:
             req = urllib.request.Request(
                 API % (scrip, q),
-                headers={"User-Agent": UA, "Referer": "https://www.bseindia.com/"})
+                headers=BH.HEADERS)
             with urllib.request.urlopen(req, timeout=45) as r:
                 raw = r.read()
             if len(raw) <= 200:            # §0: the 162-byte body is the rate-limit stub

@@ -37,21 +37,20 @@ import gemini_vision as GV   # FREE Gemini vision fallback (no billing) for text
 
 MON = ["", "Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sep", "Oct", "Nov", "Dec"]
 
-_UA = ("Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) "
-       "Chrome/120 Safari/537.36")
+_UA = BH.UA   # honest BSE identity (§181) -- no browser impersonation
 
 
 def bse_session():
     o = urllib.request.build_opener(urllib.request.HTTPCookieProcessor(http.cookiejar.CookieJar()))
     try:
-        o.open(urllib.request.Request("https://www.bseindia.com/", headers={"User-Agent": _UA}), timeout=30).read()
+        o.open(urllib.request.Request("https://www.bseindia.com/", headers=BH.HEADERS), timeout=30).read()
     except Exception:
         pass
     return o
 
 
 def bse_get(o, u, b=False):
-    r = o.open(urllib.request.Request(u, headers={"User-Agent": _UA, "Referer": "https://www.bseindia.com/"}), timeout=60)
+    r = o.open(urllib.request.Request(u, headers=BH.HEADERS), timeout=60)
     raw = r.read()
     if r.headers.get("Content-Encoding") == "gzip":
         raw = gzip.decompress(raw)
