@@ -1,5 +1,5 @@
 {
- "_doc": "DATA_RUNBOOK §170 (2026-09-26, user-approved): the pre-2020 Nifty-500 demergers the feed-driven builder never adjusted (build_demerger_adj.py sweeps 2016+ and only 'demerger/spin-off' wording; these were filed as 'Scheme of Arrangement') + KESORAMIND 2025 (95% gap, the builder's by-hand floor). Every event is a spin-off with shares of the resulting company issued to holders (filing quote per event). Factor rule: ex-day OPEN / previous close where the open was a real auction - every ex-date from 2015-10-01, when NSE's special pre-open call auction became mandatory on corporate-restructuring ex-dates (NSE/CMTR/57270), and older days where (the day's price band was reset around it, or the day traded within 5% of it) - the post-2020 rule; ex-day CLOSE / previous close where it was not (open pinned at the old price band vs the previous close, or a lone print the day traded >5% away from). For 'close' events the ex-day's own open/high/low are set to the close by update_sf_data.flatten_demerger_exdays (flatten_exday=true): those prints were at the old company's price level (ADANIENT 2015-06-03 opened 573.30 at the -10% band, closed 109.75). previous close = our previous bar's raw NSE close (PGIL: NSE re-based PREVCLOSE to 170, real close 228.30). Same 2% materiality rule as the builder (factor >= 0.98 -> not adjusted). The ledger rows themselves live in demerger_adj.json; this file is their provenance + the flatten list. Also (user-approved the same day): the 7 pre-2016 rows ledgered BEFORE this rule that priced by the open where the rule says close are re-priced (field repriced_from = the old factor); 3 of them closed above the previous close, so their factor is 1.0 - kept as a row so self_heal UNDOES the old adjustment (deleting the row would leave it baked in).",
+ "_doc": "DATA_RUNBOOK §170 (2026-09-26, user-approved): the pre-2020 Nifty-500 demergers the feed-driven builder never adjusted (build_demerger_adj.py sweeps 2016+ and only 'demerger/spin-off' wording; these were filed as 'Scheme of Arrangement') + KESORAMIND 2025 (95% gap, the builder's by-hand floor). Every event is a spin-off with shares of the resulting company issued to holders (filing quote per event). Factor rule: ex-day OPEN / previous close where the open was a real auction - every ex-date from 2015-10-01, when NSE's special pre-open call auction became mandatory on corporate-restructuring ex-dates (NSE/CMTR/57270), and older days where (the day's price band was reset around it, or the day traded within 5% of it) - the post-2020 rule; ex-day CLOSE / previous close where it was not (open pinned at the old price band vs the previous close, or a lone print the day traded >5% away from). For 'close' events the ex-day's own open/high/low are set to the close by update_sf_data.flatten_demerger_exdays (flatten_exday=true): those prints were at the old company's price level (ADANIENT 2015-06-03 opened 573.30 at the -10% band, closed 109.75). previous close = our previous bar's raw NSE close (PGIL: NSE re-based PREVCLOSE to 170, real close 228.30). Same 2% materiality rule as the builder (factor >= 0.98 -> not adjusted). The ledger rows themselves live in demerger_adj.json; this file is their provenance + the flatten list. Also (user-approved the same day): the 7 pre-2016 rows ledgered BEFORE this rule that priced by the open where the rule says close are re-priced (field repriced_from = the old factor); 3 of them closed above the previous close, so their factor is 1.0 - kept as a row so self_heal UNDOES the old adjustment (deleting the row would leave it baked in). §170d (user, 2026-09-26): the 2% materiality floor is DROPPED (build_demerger_adj.MIN_GAP 1.0) - every gap is adjusted, only an open/close at or above the previous close means no adjustment; the 12 Nifty-500 spin-offs the old floor skipped are added here with the same pricing rule.",
  "events": [
   {
    "sym": "RELIANCE",
@@ -502,6 +502,24 @@
    "filing": "17-Mar-2010: demerger of the Real Estate & Warehousing division - the existing shareholders of TCI will get 1 (one) equity share of Rs.10 each in the Transferee Company [TCI Developers Ltd]; record date October 21, 2010 (NSE 08-Oct-2010)"
   },
   {
+   "sym": "JUBLPHARMA",
+   "ex": 20101125,
+   "prev_d": 20101124,
+   "prev_close": 303.25,
+   "nse_prevclose": 303.25,
+   "open": 300.0,
+   "high": 300.0,
+   "low": 280.0,
+   "close": 286.5,
+   "rule": "close",
+   "cls": "stray",
+   "factor": 0.9448,
+   "raw_drop": 0.9448,
+   "flatten_exday": true,
+   "why": "open 300.00 was a lone print: the day traded >5% away from it (low 280.00 / high 300.00 / close 286.50); below the old 2% floor (dropped by the user 2026-09-26)",
+   "filing": "16-Nov-2010: Record Date November 26, 2010 for ascertaining the shareholders of Jubilant Life Sciences entitled for allotment of shares of Jubilant Industries Limited in the ratio of 1 equity share of Rs 10 for every 20 equity shares of Re 1 held [Agri & Performance Polymers business demerged]; Jubilant Industries first traded on NSE 2011-02-14"
+  },
+  {
    "sym": "NEXTMEDIA",
    "ex": 20110120,
    "prev_d": 20110119,
@@ -519,6 +537,24 @@
    "flatten_exday": true,
    "why": "open 8.00 was a lone print: the day traded >5% away from it (low 5.25 / high 9.00 / close 8.65)",
    "filing": "11-Jan-2011: Mid-Day Multimedia Limited has informed the Exchange that the Meeting of the Board of Directors of the Company was held on January 10, 2011, the Company has fixed January 21, 2011 as the Record Date for the purpose of determining the entitlement for issue of Equity Shares of Jagran Prakashan Limited to the Equity shareholders of Mid-Day Multimedia Limited, pursuant to the Scheme of Arrangement between Mid-Day Multime"
+  },
+  {
+   "sym": "VTL",
+   "ex": 20110329,
+   "prev_d": 20110328,
+   "prev_close": 274.2,
+   "nse_prevclose": 274.2,
+   "open": 269.9,
+   "high": 269.9,
+   "low": 255.0,
+   "close": 256.9,
+   "rule": "close",
+   "cls": "stray",
+   "factor": 0.9369,
+   "raw_drop": 0.9369,
+   "flatten_exday": true,
+   "why": "open 269.90 was a lone print: the day traded >5% away from it (low 255.00 / high 269.90 / close 256.90); below the old 2% floor (dropped by the user 2026-09-26)",
+   "filing": "18-Mar-2011: Record date March 30, 2011 for the entitlement of Vardhman Textiles shareholders to shares of Vardhman Special Steels - 1 equity share of Rs.10 of VSSL for every 5 held [Scheme of Arrangement and Demerger of the Steel Business]; VSSL first traded 2012-05-17"
   },
   {
    "sym": "ALEMBICLTD",
@@ -539,6 +575,24 @@
    "repriced_from": 0.4606,
    "why": "open 32.40 was a lone print the day traded >5% away from (low 21.15 / high 32.40 / close 24.90); ex-date before NSE's 2015-10-01 restructuring auction",
    "filing": "row pre-dates §170 (ledgered earlier as a demerger); §170 re-prices it under the approved rule"
+  },
+  {
+   "sym": "EMBDL",
+   "ex": 20110421,
+   "prev_d": 20110420,
+   "prev_close": 149.6,
+   "nse_prevclose": 149.6,
+   "open": 149.2,
+   "high": 150.9,
+   "low": 139.15,
+   "close": 140.35,
+   "rule": "close",
+   "cls": "stray",
+   "factor": 0.9382,
+   "raw_drop": 0.9382,
+   "flatten_exday": true,
+   "why": "open 149.20 was a lone print: the day traded >5% away from it (low 139.15 / high 150.90 / close 140.35); below the old 2% floor (dropped by the user 2026-09-26)",
+   "filing": "08-Apr-2011: Record Date April 25, 2011 for shareholders of Indiabulls Real Estate entitled to be allotted shares in Indiabulls Wholesale Services Limited (the Resulting Company) - demerger of the wholesale trading business"
   },
   {
    "sym": "TRIVENI",
@@ -712,6 +766,24 @@
    "filing": "30-May-2013: record date June 24, 2013 for share entitlement - 1 fully paid Equity Share of Rs. 2 each of Future Lifestyle Fashions Limited for every 3 Equity Shares of Rs. 2 each held in the Company (Symbol: FRL)"
   },
   {
+   "sym": "JINDALPOLY",
+   "ex": 20130717,
+   "prev_d": 20130716,
+   "prev_close": 151.3,
+   "nse_prevclose": 151.3,
+   "open": 150.0,
+   "high": 150.0,
+   "low": 143.75,
+   "close": 146.55,
+   "rule": "open",
+   "cls": "around",
+   "factor": 0.9914,
+   "raw_drop": 0.9686,
+   "flatten_exday": false,
+   "why": "open representative: the whole day traded within 5% of it (low 143.75 / high 150.00); below the old 2% floor (dropped by the user 2026-09-26)",
+   "filing": "04-Jul-2013: Record Date July 18, 2013 - 1 fully paid up equity share of Jindal Poly Investment and Finance Company Limited issued for every 4 existing shares [Scheme of Demerger]; JPOLYINVST first traded 2013-11-11"
+  },
+  {
    "sym": "CENTURYPLY",
    "ex": 20130718,
    "prev_d": 20130717,
@@ -731,6 +803,42 @@
    "filing": "09-Jul-2013: 1 each in Star Ferro and Cement Limited (Resulting Company) will be issued and allotted for every 1(one) existing fully paid up equity share of Re."
   },
   {
+   "sym": "MARICO",
+   "ex": 20131101,
+   "prev_d": 20131031,
+   "prev_close": 211.95,
+   "nse_prevclose": 211.95,
+   "open": 208.7,
+   "high": 213.0,
+   "low": 208.0,
+   "close": 209.5,
+   "rule": "open",
+   "cls": "rebased",
+   "factor": 0.9847,
+   "raw_drop": 0.9884,
+   "flatten_exday": false,
+   "why": "auction open: the day's price band was reset around the open (low 208.00 / high 213.00); below the old 2% floor (dropped by the user 2026-09-26)",
+   "filing": "18-Oct-2013: Record Date November 05, 2013 - 1 fully paid-up Equity Share of INR 10 of Marico Kaya shall be issued and allotted for every 50 fully paid-up Equity Shares of INR 1 held in Marico [the same feed row also carries the first interim dividend; our series never adjusts dividends, so that part rides in the factor]"
+  },
+  {
+   "sym": "WELCORP",
+   "ex": 20140218,
+   "prev_d": 20140217,
+   "prev_close": 64.05,
+   "nse_prevclose": 64.05,
+   "open": 63.3,
+   "high": 64.0,
+   "low": 60.15,
+   "close": 63.2,
+   "rule": "open",
+   "cls": "rebased",
+   "factor": 0.9883,
+   "raw_drop": 0.9867,
+   "flatten_exday": false,
+   "why": "auction open: the day's price band was reset around the open (low 60.15 / high 64.00); below the old 2% floor (dropped by the user 2026-09-26)",
+   "filing": "12-Feb-2014: demerger of the other businesses of Welspun Corp (Demerged Company) into Welspun Enterprises (Resulting Company) effective January 24, 2014; Record Date February 20, 2014 for members to whom Securities of the Resulting Company will be allotted"
+  },
+  {
    "sym": "PGIL",
    "ex": 20140602,
    "prev_d": 20140529,
@@ -748,6 +856,24 @@
    "flatten_exday": true,
    "why": "open 161.50 pinned at the price band vs the previous close (0.9500 of 170.00) - not a valuation",
    "filing": "27-May-2014: Pearl Global Industries Limited has informed the Exchange that the Company has fixed Record Date as June 2, 2014 for exchange of equity shares of the Company in ratio of 6 equity shares of PDS Multinational Fashions Limited for every 5 equity shares held in Pearl Global Industries Limited, in terms of Scheme of Arrangement between the Pearl Global Industries Limited and PDS Multinational Fashions Limited, as sanction"
+  },
+  {
+   "sym": "BALKRISIND",
+   "ex": 20150324,
+   "prev_d": 20150323,
+   "prev_close": 615.3,
+   "nse_prevclose": 615.3,
+   "open": 610.0,
+   "high": 636.0,
+   "low": 598.0,
+   "close": 604.6,
+   "rule": "open",
+   "cls": "rebased",
+   "factor": 0.9914,
+   "raw_drop": 0.9826,
+   "flatten_exday": false,
+   "why": "auction open: the day's price band was reset around the open (low 598.00 / high 636.00); below the old 2% floor (dropped by the user 2026-09-26)",
+   "filing": "16-Mar-2015: Record Date March 25, 2015 for allotment of shares of Nirvikara Paper Mills Limited pursuant to the Scheme of Arrangement between Balkrishna Industries, Balkrishna Paper Mills and Nirvikara Paper Mills; NIRVIKARA first traded 2015-07-28"
   },
   {
    "sym": "ADANIENT",
@@ -1035,6 +1161,42 @@
    "filing": "25-Sep-2017: Zee Media Corporation Limited has informed the Exchange that the Company has fixed Record Date as October 6, 2017 for the purpose of determining shareholders of the Company who would be eligible for issuance of Equity shares of Dligent Media Corporation Limited(DMCL)."
   },
   {
+   "sym": "IIFL",
+   "ex": 20171017,
+   "prev_d": 20171016,
+   "prev_close": 615.45,
+   "nse_prevclose": 615.45,
+   "open": 604.0,
+   "high": 615.0,
+   "low": 573.8,
+   "close": 610.8,
+   "rule": "open",
+   "cls": "spos",
+   "factor": 0.9814,
+   "raw_drop": 0.9924,
+   "flatten_exday": false,
+   "why": "auction open: ex-date on/after 2015-10-01 (NSE/CMTR/57270); below the old 2% floor (dropped by the user 2026-09-26)",
+   "filing": "06-Oct-2017: equity shares of Rs 10 of 5Paisa Capital Limited shall be issued and allotted to the shareholders of the Company for every 25 fully paid up equity shares [demerger of the 5paisa digital undertaking]; 5PAISA first traded 2017-11-16"
+  },
+  {
+   "sym": "FRETAIL",
+   "ex": 20171129,
+   "prev_d": 20171128,
+   "prev_close": 565.9,
+   "nse_prevclose": 565.9,
+   "open": 565.0,
+   "high": 577.5,
+   "low": 536.75,
+   "close": 573.2,
+   "rule": "open",
+   "cls": "spos",
+   "factor": 0.9984,
+   "raw_drop": 1.0129,
+   "flatten_exday": false,
+   "why": "auction open: ex-date on/after 2015-10-01 (NSE/CMTR/57270); below the old 2% floor (dropped by the user 2026-09-26)",
+   "filing": "20/21-Nov-2017: Composite Scheme of Arrangement between Future Retail, Bluerock eServices and Praxis Home Retail; Record Date November 30, 2017 [home-retail business to Praxis]; PRAXIS first traded 2018-01-31"
+  },
+  {
    "sym": "ORIENTPPR",
    "ex": 20180111,
    "prev_d": 20180110,
@@ -1225,6 +1387,42 @@
    "filing": "12-Jun-2019: 2/- each of ISL for every 1 (one) fully paid up Equity Shares of Rs."
   },
   {
+   "sym": "GREENPLY",
+   "ex": 20190712,
+   "prev_d": 20190711,
+   "prev_close": 168.45,
+   "nse_prevclose": 168.45,
+   "open": 167.0,
+   "high": 167.0,
+   "low": 158.65,
+   "close": 158.65,
+   "rule": "open",
+   "cls": "spos",
+   "factor": 0.9914,
+   "raw_drop": 0.9418,
+   "flatten_exday": false,
+   "why": "auction open: ex-date on/after 2015-10-01 (NSE/CMTR/57270); below the old 2% floor (dropped by the user 2026-09-26)",
+   "filing": "12-Mar-2019: Composite Scheme of Arrangement between Greenply Industries (Demerged Company) and Greenpanel Industries (Resulting Company); 04-Jul-2019: Record Date July 15, 2019; GREENPANEL first traded 2019-10-23"
+  },
+  {
+   "sym": "CCAVENUE",
+   "ex": 20201210,
+   "prev_d": 20201209,
+   "prev_close": 88.85,
+   "nse_prevclose": 88.85,
+   "open": 88.0,
+   "high": 90.7,
+   "low": 83.6,
+   "close": 86.25,
+   "rule": "open",
+   "cls": "spos",
+   "factor": 0.9904,
+   "raw_drop": 0.9707,
+   "flatten_exday": false,
+   "why": "auction open: ex-date on/after 2015-10-01 (NSE/CMTR/57270); below the old 2% floor (dropped by the user 2026-09-26)",
+   "filing": "28-Nov-2020 (then INFIBEAM): Record date 11-Dec-2020 for issue and allotment of equity shares to the shareholders of Infibeam pursuant to the Composite Scheme (Infibeam, Suvidhaa Infoserve, DRC Systems India, NSI Infinium); 06-Jan-2021 cost of acquisition apportioned between Infibeam, Suvidhaa and DRC Systems; DRCSYSTEMS first traded 2021-03-10"
+  },
+  {
    "sym": "KESORAMIND",
    "ex": 20250310,
    "prev_d": 20250307,
@@ -1242,6 +1440,24 @@
    "flatten_exday": false,
    "why": "auction open: ex-date on/after 2015-10-01, when NSE's special pre-open call auction became mandatory on every corporate-restructuring ex-date (NSE/CMTR/57270)",
    "filing": "19-Nov-2024: Kesoram Industries Limited has informed the Exchange about Order of Hon ble NCLT, Kolkata sanctioning Scheme for Demerger of Cement Division of the Company."
+  },
+  {
+   "sym": "HINDUNILVR",
+   "ex": 20251205,
+   "prev_d": 20251204,
+   "prev_close": 2462.2,
+   "nse_prevclose": 2462.2,
+   "open": 2422.0,
+   "high": 2422.0,
+   "low": 2286.7,
+   "close": 2338.6,
+   "rule": "open",
+   "cls": "spos",
+   "factor": 0.9837,
+   "raw_drop": 0.9498,
+   "flatten_exday": false,
+   "why": "auction open: ex-date on/after 2015-10-01 (NSE/CMTR/57270); below the old 2% floor (dropped by the user 2026-09-26)",
+   "filing": "29-Nov-2025: FAQs on the allotment of shares of Kwality Wall's (India) Limited pursuant to the approved Scheme of Arrangement [ice-cream business demerged]"
   }
  ],
  "not_adjusted": [
@@ -1253,7 +1469,17 @@
   {
    "sym": "RELMEDIA",
    "ex": 20090731,
-   "reason": "close-rule factor 1.0139 >= 0.98: the stock closed/opened no more than 2% below the previous close (338.95 -> open 271.20, close 343.65) - no material value separation, same rule as build_demerger_adj.py"
+   "reason": "open pinned at the -20% band (271.20) but CLOSED ABOVE the previous close (343.65 vs 338.95): close-rule factor 1.0139 >= 1.0 - by this measure no value left the stock (a spin-off cannot add value), so no adjustment"
+  },
+  {
+   "sym": "INTELLECT",
+   "ex": 20150116,
+   "reason": "NSE 08-Jan-2015: record date for members to be offered Non-Convertible Debentures IN PLACE OF their equity shares - an optional swap, not a distribution of another company's shares; not a spin-off"
+  },
+  {
+   "sym": "IDFC",
+   "ex": 20150929,
+   "reason": "duplicate feed row of the IDFC Bank demerger (NSE 21-Sep-2015: record date October 5, 2015) that is already ledgered at its real ex trading day 2015-10-01; 2015-09-29 was an ordinary session (open -0.9%)"
   }
  ]
 }

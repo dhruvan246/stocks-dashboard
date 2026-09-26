@@ -20511,7 +20511,33 @@ share (NSE 21-Nov-2008), not equity in a spun-off company -> belongs to the bonu
 - Quantmac parity (engine dump on both bins, 292,556 joined cells, tol 0.05pp): 96.69% -> 96.52% (+85 / -573, all 2009-2020; KESORAMIND
   alone -167). Their 52w high/low ignore demergers (HIGH52 = our pre-ex high / factor on 20 of 25 existing ledger events) while their
   200DMA applies our factor exactly — so any demerger fix costs 52w parity by construction.
+### 170d. The 2% floor dropped + a scheme warning  (2026-09-26, user: "drop it: adjust all" / "yes, add the warning")
+- **Why the floor existed:** added with the ledger on 2026-08-03 (2da6142ab, comment "above this = noise"), never a user decision. Measured:
+  a Nifty-500 stock's ordinary opening gap is median 0.38%, 95th pct 1.91% (228,117 stock-days 2024-25) — but HINDUNILVR's is median
+  0.24%, 90th pct 0.70%, so its 1.6% Kwality Wall's gap (2025-12-05) was real. The floor lived in TWO places: `build_demerger_adj.MIN_GAP`
+  AND self_heal's `abs(corr-1) > 0.02` band — lowering only the builder's still skipped every row worth <2% (dry run: 3 of 15 applied).
+- **Now:** MIN_GAP 1.0 (skip only an open at/above the previous close — a spin-off cannot add value); self_heal reconciles a demerger
+  row that names its EXACT ex trading day to the 2-decimal rounding floor `max(0.0015, 0.011/min(prev, ex close))`; a row dated on a
+  non-trading day keeps the 2% band (MRPL 20260303 -> bar 20260304 would otherwise be "corrected" onto the wrong bar). Measured on the
+  live bin: the tighter band touches exactly the 15 new rows — no existing row moves.
+- **Rows:** 12 Nifty-500 spin-offs the floor skipped, each checked in NSE's filings, priced by the §170 rule (quote per event in
+  `demerger_catchup.json`): JUBLPHARMA 2010-11-25 0.9448 (close), VTL 2011-03-29 0.9369 (close), EMBDL 2011-04-21 0.9382 (close),
+  JINDALPOLY 2013-07-17 0.9914, MARICO 2013-11-01 0.9847 (the same feed row carries the first interim dividend), WELCORP 2014-02-18
+  0.9883, BALKRISIND 2015-03-24 0.9914, IIFL 2017-10-17 0.9814, FRETAIL 2017-11-29 0.9984, GREENPLY 2019-07-12 0.9914, CCAVENUE
+  2020-12-10 0.9904, HINDUNILVR 2025-12-05 0.9837. Not spin-offs: INTELLECT 2015-01-16 (option to take NCDs IN PLACE OF shares),
+  IDFC 2015-09-29 (duplicate feed row of the 2015-10-01 IDFC Bank demerger already ledgered). The builder, re-run locally with the new
+  floor, added 3 feed "Demerger" rows outside N500: SHARDAMOTR 2020-03-26 0.9930, GENUSPOWER 2026-02-06 0.9844, INOXGREEN 2026-07-31
+  0.9929 (TTML 2019 and DALMIASUG 2025 opened exactly at the previous close -> still none).
+- **Warning:** the builder prints `::warning::§170d scheme ex-date on a Nifty-500 stock with NO demerger_adj row ...` for every scheme /
+  amalgamation / capital-reduction ex-date of the last 30 days on a stock that was an N500 member that day (indices_history.json),
+  with its measured open/close gap. Warns only. Tested with a fake TCS row (fired, gaps printed) + an old and a non-member row (silent).
+- **Verified** (release base after §170, real `main()`, NSE blocked): baseline 0 changes; fixed "Self-heal corrected 15" + 3 ex-day bars;
+  exactly 15 symbols changed (price arrays only); 359,580 cells = exact correction within rounding; 15/15 boundaries exact; second
+  pass 0. Quantmac 96.52% -> 96.49% (+14 / -84).
 ### 170c. Open
+- MRPL 20260303 (a large-dividend separation from the 2026-08-23 dividend sweep, 59b967a18) is dated on a day MRPL did not trade:
+  it sits on the 2026-03-04 bar (raw +1.5%) while the drop it describes is 2026-03-02 (-4.1%). Left as is (2% band) — needs its own fix.
+  MANDHANA 20160922 is keyed to a symbol the bin no longer has (GBGLOBAL seam) — never applied.
 - KOTHARIPRO 2008 -> the bonus-debenture / preference-share policy question (user's item 3, asked after the rights rebuild).
 - Workflow race: refresh-backtest-data.yml copies `scripts/demerger_adj.json` to /tmp and re-commits it after `git reset --hard` — a run that
   started before a ledger push can revert it. After pushing ledger rows, confirm the committed file still holds them after the next marker.

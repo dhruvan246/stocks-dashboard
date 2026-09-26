@@ -324,11 +324,11 @@ def self_heal(data, CA_OFF, NOADJ, end_ymd, jar, window_days=28):
         # demerger with a ledger factor on THIS EXACT bar boundary? its committed raw ex-day ratio
         # spares the bhavcopy refetch. Bar-exact only — a nearby event (phantom crash a day later)
         # must NOT borrow the factor; it falls through to the raw-price reconciliation below.
-        dem = None
+        dem = None; dem_exact = False
         if is_dem:
             for dex, dv in dem_by_sym.get(sym, []):
                 jj = next((k for k in range(len(ds)) if ds[k] >= dex), None)
-                if jj == j: dem = dv; break
+                if jj == j: dem = dv; dem_exact = (ds[jj] == dex); break
         if dem is not None:
             raw_ratio = dem[1]
         else:
@@ -367,7 +367,12 @@ def self_heal(data, CA_OFF, NOADJ, end_ymd, jar, window_days=28):
                     "seen": datetime.date.today().isoformat(),
                     "note": "official factor %s contradicted by the ex-day close AND open — kept raw" % off})
         corr = correct_f / applied_f
-        if abs(corr - 1) > 0.02:   # baked-in treatment disagrees with the rebuild's -> fix
+        # §170d (user, 2026-09-26: "drop the 2% rule"): a demerger-ledger row that names its exact ex TRADING day carries an
+        # exact factor, so it is reconciled to the rounding floor (2-decimal closes: ~0.011/price, never below 0.15%) instead
+        # of the 2% band — the band silently blocked every spin-off worth <2% (HINDUNILVR 2025: 1.6%). Rows dated on a
+        # non-trading day (MRPL 20260303 -> bar 20260304) keep the old 2% band: their bar is not the one they describe.
+        tol = max(0.0015, 0.011 / min(c[j], c[j - 1])) if (dem is not None and dem_exact) else 0.02
+        if abs(corr - 1) > tol:   # baked-in treatment disagrees with the rebuild's -> fix
             for key in ("c", "h", "l", "op", "vw"):
                 if key in e: e[key] = [round(x * corr, 2) for x in e[key][:j]] + e[key][j:]
             kind = ("demerger f=%.4f" % correct_f) if dem is not None else \
