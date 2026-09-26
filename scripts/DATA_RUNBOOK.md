@@ -20448,3 +20448,46 @@ under the rescale (ratios are otherwise invariant) — the known storage-precisi
   series): fixing it needs TMPV←TATAMOTORS merged (seam = post-2003 non-CA_OFF factors, needs NSE's 2003-12-26 file) or an
   era-aware fold. MRPL 2026-03-03 dividend separation never applied (baked 1.0). TMPV/TATAMTRDVR 2015 rights baked 0.9478 vs
   textbook 0.989.
+
+## 170. Demerger catch-up — 58 pre-2020 Nifty-500 spin-offs (+KESORAMIND 2025) adjusted; auction-open rule anchored to NSE's own date  (2026-09-26, rule chosen by the user)
+**Why:** `build_demerger_adj.py` sweeps the CA feed only from 2016 and only "demerger/spin-off" wording, so 59 N500 spin-offs NSE filed as
+"Scheme Of Arrangement" (2008-2019) were never adjusted, and KESORAMIND 2025-03-10 (-95%) hit the builder's by-hand floor — each ex-date
+drop read as a crash in d52 / momentum / 200DMA for a year. Found by §169's reverse sweep (`~/stocks-cache/qm-recon-tools/missing_ca_sweep.py`);
+NSE's corporate announcements for every event (`~/stocks-cache/nse_ann/`) show shares of the resulting company allotted to holders
+(one quote per event in `scripts/demerger_catchup.json`; era symbols matter — LGB's 2008 filings are under LGBROS, SMARTLINK's under D-LINK).
+**Rule (user):** factor = ex-day OPEN / previous close where the open was an auction price — every ex-date from **2015-10-01** (NSE/CMTR/57270,
+consolidated circular 26-Jun-2023: the special pre-open session is "applicable for all stocks in the following cases with effect from
+October 01, 2015: i. Corporate Restructuring: Merger, demerger ... scheme of arrangement"; NSE's zip kept in `~/stocks-cache/nse_circ/`) and
+older days where NSE reset the day's price band around the open or the whole day traded within 5% of it — else ex-day CLOSE / previous close:
+the open was pinned at the old band (ADANIENT 2015-06-03 opened 573.30 = 0.9 x 637.00, closed 109.75) or was a lone print the day traded >5%
+away from (ZEEMEDIA 2010-04-15 opened 38.90, low ~11.30, closed 18.35). For close-priced events the ex-day bar's open/high/low are set to the
+close (`update_sf_data.flatten_demerger_exdays`) — otherwise the stale early prints (Adani's 573.30) sit in the 52-week high for a year.
+Previous close = OUR previous bar's raw NSE close (PGIL 2014-06-02: NSE re-based PREVCLOSE to 170.00, the real 2014-05-29 close was 228.30).
+Same 2% materiality rule as the builder (factor >= 0.98 -> no adjustment). ⚠️ An intraday-range test cannot tell a genuine auction from a
+first trade once the auction exists — SIEMENS 2025 auctioned at 2450 then traded +26% — so the date, not the range, decides from 2015-10-01.
+**Not adjusted:** KOTHARIPRO 2008-12-03 — holders received 10 x 6% non-cumulative REDEEMABLE non-convertible PREFERENCE shares of Pan Parag per
+share (NSE 21-Nov-2008), not equity in a spun-off company -> belongs to the bonus-debenture / preference-share policy question. RELMEDIA
+2009-07-31 — open pinned at -20% but closed ABOVE the previous close (343.65 vs 338.95): close-rule factor 1.0139 >= 0.98.
+### 170a. What changed
+- `scripts/demerger_adj.json` +58 rows (103 -> 161): 35 open-priced, 23 close-priced. PLUS the 7 pre-2016 rows ledgered before this rule
+  that priced by the open where the rule says close are RE-PRICED (user-approved the same day): RELIANCE 2006-01-18 0.6248 -> 0.7471 (the
+  580.10 open was the day's low, close 693.70), GTL 2006-07-07 0.8657 -> 0.8328, ZEEL 2006-12-18 0.8152 -> 0.7963, ALEMBICLTD 2011-04-11
+  0.4606 -> 0.3539, and -> 1.0 (they closed ABOVE the previous close) UNITDSPR 2006-10-17 (was 0.9355), MANINDS 2007-04-13 (0.944),
+  UNIONBANK 2009-05-13 (0.9697). A 1.0 row is KEPT, not deleted: self_heal then UNDOES the old adjustment (a deleted row would leave it
+  baked in). 2006-07 prices from NSE's own files (`~/stocks-cache/nse_bhav/old_cache/`). `scripts/demerger_catchup.json` (new): per-event
+  provenance for all 65 (prices, rule, class, filing quote, `repriced_from`), the 27 `flatten_exday` flags, and the 2 not-adjusted events.
+- `update_sf_data.py`: `flatten_demerger_exdays()` right after `self_heal` — only ex-day bars flagged `flatten_exday` that ALSO have a
+  ledger row; close / turnover / volume / vw never touched; idempotent — plus `fx` in the publish gate.
+### 170b. Verification (release base end 2026-09-25, real `main()`, NSE fetches blocked = CI; tools in `~/stocks-cache/qm-recon-tools/`)
+- `dry_main.py` baseline vs release: 0 symbols changed. Fixed: "Self-heal corrected 65" + 27 ex-day bars; exactly 56 symbols changed, only
+  c/h/l/op/vw; 5,260 symbols / 9,910,731 bars unchanged. Second pass on the fixed bin: 0 changes (`fp_bin.py` + `cmp_fp.py`).
+- `audit170.py`: all 1,553,990 price cells on the 56 symbols = baseline x self_heal's exact correction within 2-decimal rounding, all 27
+  flattened bars read o=h=l=c; 64/65 boundaries read raw_drop/factor within 0.2% (ORIENTPPR 2013-03-07 0.948 vs 0.950 — Rs4.5-4.8). Precision:
+  ORIENTPPR 1997-2004 now carries 745 closes below Rs0.25 (history x0.066); none in 2009+.
+- Quantmac parity (engine dump on both bins, 292,556 joined cells, tol 0.05pp): 96.69% -> 96.52% (+85 / -573, all 2009-2020; KESORAMIND
+  alone -167). Their 52w high/low ignore demergers (HIGH52 = our pre-ex high / factor on 20 of 25 existing ledger events) while their
+  200DMA applies our factor exactly — so any demerger fix costs 52w parity by construction.
+### 170c. Open
+- KOTHARIPRO 2008 -> the bonus-debenture / preference-share policy question (user's item 3, asked after the rights rebuild).
+- Workflow race: refresh-backtest-data.yml copies `scripts/demerger_adj.json` to /tmp and re-commits it after `git reset --hard` — a run that
+  started before a ledger push can revert it. After pushing ledger rows, confirm the committed file still holds them after the next marker.

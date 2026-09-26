@@ -454,6 +454,38 @@ except Exception as _e:
     MANUAL_DEMERGERS = {}
     print("  (demerger_adj.json not loaded: %s)" % _e)
 
+# --- §170 (2026-09-26, user-approved): demerger ex-days priced by the CLOSE. The pre-2020 catch-up events in
+# scripts/demerger_catchup.json whose ex-day OPEN was not an auction price (pinned at the old price band, or a lone
+# print the day traded >5% away from) carry factor = close/prev in demerger_adj.json — and that day's own open/high/low
+# were printed at the OLD company's price level (ADANIENT 2015-06-03 opened 573.30 at the -10% band, closed 109.75),
+# so left alone they would sit in the 52-week high/low for a year. Convention: set them to the day's close. Touches only
+# the ex-day bar of events flagged flatten_exday AND present in the demerger ledger; the close, turnover, volume and vw
+# are never changed. Idempotent: a converged bar already reads o=h=l=c and is skipped.
+DEMERGER_CATCHUP = os.path.join(HERE, "demerger_catchup.json")
+
+def flatten_demerger_exdays(data):
+    try:
+        events = (json.load(open(DEMERGER_CATCHUP)) or {}).get("events") or []
+    except Exception as e:
+        print("  (demerger_catchup.json not loaded: %s)" % e); return 0
+    n = 0
+    for x in events:
+        if not x.get("flatten_exday"): continue
+        sym, ex = x["sym"], int(x["ex"])
+        if (sym, ex) not in MANUAL_DEMERGERS:
+            print("::warning::§170 flatten: %s %d has no demerger_adj.json row — ex-day bar left as traded" % (sym, ex)); continue
+        e = data.get(sym); ds = e.get("d") if e else None
+        if not ds: continue
+        j = next((k for k in range(len(ds)) if ds[k] >= ex), None)
+        if j is None or ds[j] != ex:
+            print("::warning::§170 flatten: %s has no bar on its ex-day %d — nothing flattened" % (sym, ex)); continue
+        c = e["c"][j]; changed = False
+        for key in ("op", "h", "l"):
+            if key in e and e[key][j] != c:
+                e[key][j] = c; changed = True
+        n += changed
+    return n
+
 def apply_manual_rights(data):
     """Scale each MANUAL_RIGHTS stock's pre-ex prices by its TERP factor. Idempotent WITHOUT a marker:
     the ex-date ratio in the series is `raw_drop` before adjustment and `raw_drop/factor` after, so we
@@ -1720,6 +1752,8 @@ def main():
     # earlier run mis-handled (action published after its ex-date was already processed).
     healed = self_heal(data, CA_OFF, NOADJ, int(D["end"].replace("-", "")), j)
     if healed: print("Self-heal corrected %d corporate action(s)." % healed)
+    fx = flatten_demerger_exdays(data)   # §170: close-priced demerger ex-days -> o/h/l = close
+    if fx: print("Demerger ex-days (§170): set open/high/low to the close on %d bar(s)." % fx)
     # §161 queue upkeep: an UNCONFIRMED move is resolved once an official record covers its ex-date
     # (split/bonus -> reconciled by self_heal above; demerger/scheme -> the raw drop is already the
     # right treatment) or it is a verified crash in phantom_crashes / LEGACY_FALSE_CA. The rest stay
@@ -1794,8 +1828,8 @@ def main():
     # refreshes the on-disk bin but does NOT publish the release, bump clients, or commit a marker.
     blob = gzip.compress(json.dumps(D, separators=(",", ":")).encode(), 6)
     open(OUT, "wb").write(blob)
-    if not appended and not healed and not merged and not mr and not ao and not dvf and not dvo and not wk and not bi and not bz and not bzf and not sm and not sg and not tunits and not dead and not _n and not ph:
-        print("No new day / heal / merge / manual-rights / open-arbitrated CA / dv-fill / dv-overwrite / weekend-insert / bar-insert / BZ-backfill / SME-backfill / series-surgery / turnover-unit fix / aliveness decay / industry fill / phantom-session drop — rewrote merged base to %s (%.2f MB); nothing to publish." % (OUT, len(blob) / 1048576)); return
+    if not appended and not healed and not merged and not mr and not ao and not dvf and not dvo and not wk and not bi and not bz and not bzf and not sm and not sg and not tunits and not dead and not _n and not ph and not fx:
+        print("No new day / heal / merge / manual-rights / open-arbitrated CA / dv-fill / dv-overwrite / weekend-insert / bar-insert / BZ-backfill / SME-backfill / series-surgery / turnover-unit fix / aliveness decay / industry fill / phantom-session drop / demerger ex-day flatten — rewrote merged base to %s (%.2f MB); nothing to publish." % (OUT, len(blob) / 1048576)); return
     open(MARK, "w").write(D["end"])
     # tiny version marker — committed daily, lets the browser cache the big bin in IndexedDB
     # keyed to this `end` and skip re-downloading 80 MB until the data actually changes.
