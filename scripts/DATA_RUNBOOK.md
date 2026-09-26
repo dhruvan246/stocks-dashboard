@@ -21037,3 +21037,17 @@ other nsh-gate hit is still HELD. (3) The build now treats its OWN previous ledg
 landing used to see every cell as "already stored" and wrote a near-empty ledger (caught before commit). Run `build` only on
 a worktree whose ledger file is the committed one; a rebuild must reproduce the committed cell set (verified: 3,511 = 3,511,
 slots 0-5 identical, only the 680 holder counts differ).
+
+## §180b — BSE-only shareholding: the paced BSE pass (2026-09-26, user: "work on them now") — IN PROGRESS
+Stage `fetch_shp_allstocks.py bse [--shard k/n] [--cap N] [--max-minutes M]`: per target scrip in
+`scripts/_shp_bse_targets.json` (2,598 = 2,261 BSE-only + 337 NSE-listed scrips whose quarter NSE never served), ONE request
+at a time via `bse_headers` (§181): SHPQNewFormat list, then only the quarter-end XBRL files the store lacks (original
+'New' row per quarter; revision-only quarters take the earliest revision, dated by its own stamp). Split three ways by
+scrip code: shard 0/3 on this Mac, 1/3 and 2/3 on GitHub Actions (`shp-bse-fill.yml`, artifact only, writes nothing).
+Build: BSE copies used only where NSE supplied nothing; identity = file ScripCode + ISIN issuer; a BSE-only key that is an
+NSE ticker of another company, or differs from bse_scrips' ticker for the code (REMAGNET/MIDWEST), is HELD. Zero proof now
+also covers promoter-less companies (Public shares == total shares) and a Government tag carrying a PROMOTER stake
+(TANFACIND: Public == Institutions + Non-institutions without it); hold-out after the change: 0 fires on 39,341 filings with
+an institutional holding. `build_stock_fin`: a BSE-only ticker's OWN shareholding rows (ledger `_bse_keys`, same scrip code)
+no longer block its fundamentals fold — measured on a trial: without the fix 9 BSE-only pages (NSDL, KESAR, SELECTRIC …)
+lost their results; with it 0 fields lost on 6,125 pages. Results to follow in this section.

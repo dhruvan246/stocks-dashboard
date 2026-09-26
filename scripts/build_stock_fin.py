@@ -251,6 +251,19 @@ def main():
             for s_, i_ in tape_isin.items():
                 isin2nse.setdefault(i_, set()).add(s_)
             taken = {slug(s) for s in (set(fund) | set(revop) | set(shp_rows) | set(hist_rows))}
+            # §180b: a BSE-only ticker now carries its OWN shareholding rows (shp_fill_allstocks ledger, keyed by the same
+            # ticker and scrip code). Those rows claim its slug, which used to block the fundamentals fold below and would
+            # have left the page with holdings but no results. Allow the fold when the slug is claimed by nothing except
+            # this very ticker AND the ledger records this ticker for this scrip code.
+            owners = {}
+            for s_ in (set(fund) | set(revop) | set(shp_rows) | set(hist_rows)):
+                owners.setdefault(slug(s_), set()).add(s_)
+            bse_shp_keys = {}
+            try:
+                with gzip.open(os.path.join(HERE, "shp_fill_allstocks.json.gz"), "rt", encoding="utf-8") as fh_:
+                    bse_shp_keys = json.load(fh_).get("_bse_keys") or {}
+            except Exception as e:
+                print("WARN: shp_fill_allstocks.json.gz unreadable (%s) — BSE-only SHP keys not exempted" % e)
             for code, qmap in bfin.items():
                 if not isinstance(qmap, dict):
                     continue
@@ -266,7 +279,8 @@ def main():
                         # an NSE tape key at all (a BSE-ticker key), or an NSE key whose ISIN issuer matches the scrip.
                         if ti is None or (isin and ti[:7] == isin[:7]):
                             targets.append(sym)
-                    elif slug(sym) not in taken:
+                    elif slug(sym) not in taken or (bse_shp_keys.get(sym) == str(code)
+                                                    and owners.get(slug(sym), set()) <= {sym}):
                         targets.append(sym)                     # brand-new BSE-only slice (the original behaviour)
                 for s_ in sorted(isin2nse.get(isin, ())):       # the NSE listing of the same ISIN (a BSE->NSE migrant
                     if s_ not in targets:                       # whose BSE quarters sit under its scripcode)

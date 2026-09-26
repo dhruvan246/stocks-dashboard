@@ -1,0 +1,56 @@
+name: BSE shareholding fill (sharded, one-off)
+
+# Runbook §180b. Fetches BSE SHPQNewFormat lists + the missing quarter-end SHP XBRL files for the BSE-only / NSE-gap
+# scrips in scripts/_shp_bse_targets.json, ONE request at a time (~1 req/s, runbook §181), for the shards given, and
+# uploads them as an artifact. It writes nothing to the repo: the ledger is built and landed from the artifact by
+# `fetch_shp_allstocks.py build` with every §180 gate. Each matrix job runs on its own runner (its own address).
+on:
+  workflow_dispatch:
+    inputs:
+      shards:
+        description: 'JSON list of k/n shards for this run'
+        default: '["1/3","2/3"]'
+      cap:
+        description: 'per-shard file cap'
+        default: '20000'
+
+permissions:
+  contents: read
+
+jobs:
+  fetch:
+    runs-on: ubuntu-latest
+    timeout-minutes: 350
+    strategy:
+      fail-fast: false
+      matrix:
+        shard: ${{ fromJSON(inputs.shards) }}
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v5
+
+      - name: Set up Python
+        uses: actions/setup-python@v6
+        with:
+          python-version: "3.11"
+
+      - name: Fetch this shard (single-threaded, stops cleanly before the job limit)
+        run: |
+          mkdir -p "$RUNNER_TEMP/c"
+          cp scripts/_shp_bse_targets.json "$RUNNER_TEMP/c/bse_targets.json"
+          python3 scripts/fetch_shp_allstocks.py bse --cache "$RUNNER_TEMP/c" --shard "${{ matrix.shard }}" \
+            --cap "${{ inputs.cap }}" --max-minutes 320 || echo "::warning::bse stage exited non-zero — see the log in the artifact"
+          tail -5 "$RUNNER_TEMP/c/bse_stage.log" || true
+          echo "lists: $(ls "$RUNNER_TEMP/c/bse_lists_v2" 2>/dev/null | wc -l)  files: $(ls "$RUNNER_TEMP/c/xbrl_bse_v2" 2>/dev/null | wc -l)"
+
+      - name: Upload lists + filings
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: shp-bse-shard-${{ strategy.job-index }}
+          path: |
+            ${{ runner.temp }}/c/bse_lists_v2
+            ${{ runner.temp }}/c/xbrl_bse_v2
+            ${{ runner.temp }}/c/bse_stage.log
+          retention-days: 7
+          if-no-files-found: warn

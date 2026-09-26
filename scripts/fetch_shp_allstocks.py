@@ -98,9 +98,13 @@ def zero_proof(pct, shc):
     prom = pct.get("ShareholdingOfPromoterAndPromoterGroupMember")
     pub = pct.get("PublicShareholdingMember")
     sp, sn = shc.get("PublicShareholdingMember"), shc.get("NonInstitutionsMember")
+    if prom is None and sp and shc.get("ShareholdingPatternMember") == sp:
+        prom = 0.0                                                   # no promoter group: Public IS every share (share for share)
     if None in (prom, pub, sp, sn) or sp <= 0: return False
     gov = max([shc.get(k, 0.0) for k in GOV_PARENTS] + [0.0])
-    if abs(sp - (sn + gov)) >= 0.5: return False                     # share counts are integers
+    # Government may sit in Public, or its tag may carry a PROMOTER stake (PSU / state co-promoter, TANFACIND) and then
+    # is not part of Public at all: either exact identity leaves nothing for institutions.
+    if abs(sp - (sn + gov)) >= 0.5 and abs(sp - sn) >= 0.5: return False   # share counts are integers
     tot = pct.get("ShareholdingPatternMember")
     third = max([pct.get(k, 0.0) for k in THIRD] + [0.0])
     a = tot if tot is not None else prom + pub + third
@@ -125,11 +129,12 @@ def analyse(txt, qe):
             if st == "explicitMember": mems.append((x.text or "").split(":")[-1].strip())
             elif st == "typedMember": typed = True
         ctx[c.get("id")] = (mems, typed)
-    pct, shc, holders, symtag, isin = {}, {}, {}, None, None
+    pct, shc, holders, symtag, isin, scrip = {}, {}, {}, None, None, None
     inst_lbl, non_lbl = [], []
     for f in root.iter():
         t = STRIP(f.tag)
         if t == "Symbol" and f.text and not symtag: symtag = f.text.strip().upper()
+        elif t == "ScripCode" and f.text and not scrip: scrip = f.text.strip()
         elif t == "ISIN" and f.text and not isin: isin = f.text.strip().upper()
         elif t == "CategoryOfOtherInstitutions" and f.text: inst_lbl.append(f.text.strip())
         elif t in ("CategoryOfOtherNonInstitutions", "CategoryOfOtherIndianShareholders",
@@ -149,7 +154,7 @@ def analyse(txt, qe):
           ("old" if "InstitutionsMember" in mem else "unknown")
     cell = F.parse_shp(root, qe)
     shares = F.parse_shares(root)
-    out = {"fmt": fmt, "schema": schema, "isin": isin, "symtag": symtag, "shares": shares, "flags": [],
+    out = {"fmt": fmt, "schema": schema, "isin": isin, "symtag": symtag, "scrip": scrip, "shares": shares, "flags": [],
            "ambiguity": [], "zero_proof": False, "partition_closes": None, "cell": cell}
     prom = pct.get("ShareholdingOfPromoterAndPromoterGroupMember")
     pub = pct.get("PublicShareholdingMember")
@@ -163,7 +168,8 @@ def analyse(txt, qe):
     if cell is None and fmt == "unknown" and zero_proof(pct, shc):
         s = scale_of()
         out["zero_proof"] = True
-        out["cell"] = {"prom": round(prom * s, 4), "pub": round(pub * s, 4), "fii": 0.0, "dii": 0.0, "mf": 0.0, "ins": 0.0}
+        p_ = prom if prom is not None else 0.0                        # zero_proof proved a promoter-less company
+        out["cell"] = {"prom": round(p_ * s, 4), "pub": round(pub * s, 4), "fii": 0.0, "dii": 0.0, "mf": 0.0, "ins": 0.0}
         # shareholder count, same rule as parse_shp: whole-company count, dropped when below the public count
         nsh, nsh_pub = holders.get("ShareholdingPatternMember"), holders.get("PublicShareholdingMember")
         if nsh and nsh > 0 and not (nsh_pub and nsh < nsh_pub): out["cell"]["nsh"] = nsh
@@ -172,7 +178,9 @@ def analyse(txt, qe):
                   "CentralGovernmentOrStateGovernmentSOrPresidentOfIndiaMember",
                   "CentralGovernmentOrStateGovernmentSMember", "GovernmentsMember", "GovermentsMember",
                   "NonInstitutionsMember")
-        out["partition_closes"] = abs(sh_pub - sum(shc.get(k, 0.0) for k in blocks)) < 0.5   # shares are integers
+        no_gov = [k for k in blocks if k not in GOV_PARENTS]
+        out["partition_closes"] = (abs(sh_pub - sum(shc.get(k, 0.0) for k in blocks)) < 0.5 or      # shares are integers
+                                   abs(sh_pub - sum(shc.get(k, 0.0) for k in no_gov)) < 0.5)      # government = promoter
     if fmt == "old":
         o_other = pct.get("OtherInstitutionsMember") or 0.0
         if o_other or inst_lbl:
@@ -309,6 +317,109 @@ def stage_download(cache, workers=4):
     print("download done: %d fetched, %d failed (404 = NSE lists the filing but serves no file)" % (len(todo) - len(fail), len(fail)))
 
 
+# ------------------------------------------------------------------------------------------ BSE stage (runbook §180b)
+MONTHS = {m: i for i, m in enumerate(["January", "February", "March", "April", "May", "June", "July", "August",
+                                      "September", "October", "November", "December"], 1)}
+QE_DAY = {3: "03-31", 6: "06-30", 9: "09-30", 12: "12-31"}
+
+
+def bse_label_qe(label):
+    """'June 2026' -> '2026-06-30'; event labels ('07 Jul 2026') and anything else -> None."""
+    m = re.fullmatch(r"(January|February|March|April|May|June|July|August|September|October|November|December) (\d{4})",
+                     str(label or "").strip())
+    if not m or MONTHS[m.group(1)] not in QE_DAY: return None
+    return "%s-%s" % (m.group(2), QE_DAY[MONTHS[m.group(1)]])
+
+
+def bse_pick(rows):
+    """{QE: row} — per quarter-end the ORIGINAL filing ('New', earliest filing_date_time); a quarter whose only rows are
+    revisions takes the earliest revision (BSE sometimes keeps only the revision, §164b). Each picked row gains _date
+    (calendar day of its own timestamp) and _kind."""
+    by = collections.defaultdict(list)
+    for r in rows or []:
+        qe = bse_label_qe(r.get("qtr"))
+        xf = str(r.get("XbrlFile") or "").strip()
+        if not qe or not xf.lower().endswith(".xml") or not (FIRST_QE <= qe <= LAST_QE): continue
+        by[qe].append(r)
+    out = {}
+    for qe, rs in by.items():
+        new = sorted([r for r in rs if str(r.get("status")) == "New" and r.get("filing_date_time")],
+                     key=lambda r: r["filing_date_time"])
+        if new:
+            r = dict(new[0]); r["_date"] = str(new[0]["filing_date_time"])[:10]; r["_kind"] = "original"
+        else:
+            rev = sorted([r for r in rs if r.get("revised_date_time")], key=lambda r: r["revised_date_time"])
+            if not rev: continue
+            r = dict(rev[0]); r["_date"] = str(rev[0]["revised_date_time"])[:10]; r["_kind"] = "revision-only"
+        out[qe] = r
+    return out
+
+
+def stage_bse(cache, cap=20000, shard="0/1", max_minutes=0):
+    """ONE request at a time (runbook §181): per target scrip, the SHPQNewFormat list on api.bseindia.com, then only the
+    quarter-end XBRL files the store lacks from www.bseindia.com/XBRLFILES. Largest companies first; resumable (lists and
+    files already on disk are never fetched again); stops after repeated refusals instead of retrying fast."""
+    import urllib.request, urllib.error
+    import bse_headers                                            # noqa: F401  (installs the standard header set)
+    T = json.load(open(os.path.join(cache, "bse_targets.json")))
+    LD, XD = os.path.join(cache, "bse_lists_v2"), os.path.join(cache, "xbrl_bse_v2")
+    os.makedirs(LD, exist_ok=True); os.makedirs(XD, exist_ok=True)
+    hist, relatives, isins, man = load_inputs(cache)
+    try:
+        d = json.loads(gzip.open(os.path.join(REPO, "docs", "stock_data.bin")).read())
+        mc = {m.get("symbol"): (m.get("mcap") or 0) for k, m in d["meta"].items() if k.endswith(".BO")}
+    except Exception:
+        mc = {}
+    codes = sorted((c for c, v in T.items() if not v.get("isin_conflict")), key=lambda c: -(mc.get(T[c]["sym"]) or 0))
+    k_, n_ = (int(x) for x in shard.split("/"))
+    codes = [c for c in codes if int(c) % n_ == k_]              # deterministic split across machines (--shard k/n)
+    log = open(os.path.join(cache, "bse_stage.log"), "a")
+    def say(*a): print(time.strftime("%H:%M:%S"), *a, file=log, flush=True)
+    fails, n_req, n_files, n_lists = 0, 0, 0, 0
+    def get(url, kind):
+        nonlocal fails, n_req
+        for attempt in range(2):
+            n_req += 1
+            try:
+                with urllib.request.urlopen(url, timeout=60) as r: b = r.read()
+                ok = (b[:1] in (b"{", b"[")) if kind == "list" else (b"xbrl" in b[:4000].lower() and len(b) > 1500)
+                if ok: fails = 0; time.sleep(0.6); return b
+                why = "not %s (%d bytes)" % (kind, len(b))
+            except urllib.error.HTTPError as e:
+                why = "HTTP %d" % e.code
+                if e.code == 404: time.sleep(0.6); return None
+            except Exception as e:
+                why = "%s: %s" % (type(e).__name__, str(e)[:60])
+            fails += 1; say("refused/failed", url.rsplit("/", 1)[-1], why)
+            if fails >= 3:
+                say("3 refusals in a row -> pausing 10 min"); time.sleep(600)
+                if fails >= 6: raise SystemExit("BSE refusing repeatedly; stopped (resume later, nothing is lost)")
+            time.sleep(2)
+        return None
+    say("start: %d target scrips (shard %s), cap %d files" % (len(codes), shard, cap))
+    t_end = time.time() + max_minutes * 60 if max_minutes else None
+    for i, code in enumerate(codes):
+        if t_end and time.time() > t_end: say("time limit reached — stopping cleanly"); return
+        sym = T[code]["sym"]
+        lp = os.path.join(LD, code + ".json")
+        if not os.path.exists(lp):
+            b = get("https://api.bseindia.com/BseIndiaAPI/api/SHPQNewFormat/w?scripcode=%s" % code, "list")
+            if b is None: say("no list", code, sym); continue
+            open(lp, "wb").write(b); n_lists += 1
+        try: rows = json.load(open(lp)).get("Table") or []
+        except Exception: say("bad list json", code); continue
+        fam = {sym} | relatives(sym)
+        for qe, r in sorted(bse_pick(rows).items(), reverse=True):
+            if any(qe in (hist.get(x) or {}) for x in fam): continue          # only what is missing
+            xf = r["XbrlFile"].strip(); xp = os.path.join(XD, xf + ".gz")
+            if os.path.exists(xp): continue
+            if n_files >= cap: say("per-run cap reached"); return
+            b = get("https://www.bseindia.com/XBRLFILES/SHPXBRLDataXML/" + xf, "xbrl")
+            if b: open(xp, "wb").write(gzip.compress(b)); n_files += 1
+        if (i + 1) % 50 == 0: say("progress %d/%d scrips, %d lists, %d files, %d requests" % (i + 1, len(codes), n_lists, n_files, n_req))
+    say("DONE %d scrips, %d lists, %d files, %d requests" % (len(codes), n_lists, n_files, n_req))
+
+
 # ------------------------------------------------------------------------------------------ build
 def build(cache):
     hist, relatives, isins, man = load_inputs(cache)
@@ -334,13 +445,66 @@ def build(cache):
                   "revised": str(v.get("revised") or "").lower() == "revised",
                   "src": "nse:" + str(v.get("url", "")).rsplit("/", 1)[-1]})
         docs[(sym, qe)] = a
-    print("analysed %d filings in %.0fs" % (len(docs), time.time() - t0))
+    # BSE copies (stage `bse`): only for (key, quarter) pairs NSE did not supply. Key = the dashboard symbol of the
+    # target scrip (BSE-only tickers, or the NSE symbol for NSE-listed companies whose quarter NSE never served).
+    T = json.load(open(os.path.join(cache, "bse_targets.json"))) if os.path.exists(os.path.join(cache, "bse_targets.json")) else {}
+    LD, XD = os.path.join(cache, "bse_lists_v2"), os.path.join(cache, "xbrl_bse_v2")
+    bse_code_of, n_bse = {}, 0
+    for code, tv in T.items():
+        lp = os.path.join(LD, code + ".json")
+        if tv.get("isin_conflict") or not os.path.exists(lp): continue
+        try: rows = json.load(open(lp)).get("Table") or []
+        except Exception: continue
+        for qe, r in bse_pick(rows).items():
+            xp = os.path.join(XD, r["XbrlFile"].strip() + ".gz")
+            key = (tv["sym"], qe)
+            if key in docs or not os.path.exists(xp): continue
+            try:
+                a = analyse(read_doc(xp), qe)
+            except Exception as e:
+                a = {"error": "%s: %s" % (type(e).__name__, str(e)[:80])}
+            a.pop("_pct", None); a.pop("_shc", None)
+            a.update({"sub": r["_date"], "submissionDate": None, "idx": "bse-" + tv["grp"], "revised": r["_kind"] != "original",
+                      "src": "bsexbrl:" + r["XbrlFile"].strip(), "bse_code": code, "bse_grp": tv["grp"]})
+            docs[key] = a; bse_code_of[tv["sym"]] = code; n_bse += 1
+    print("analysed %d filings (%d BSE copies) in %.0fs" % (len(docs), n_bse, time.time() - t0))
 
     def issuers(isl): return {i[:7] for i in isl}
     def norm_isin(i):
         """Filer typos seen in the corpus: letter O for zero, letter I for one (INEOMTP01013 for INE0MTP01013).
         Used ONLY for an exact 12-character match against an ISIN the symbol really traded under."""
         return i[:3] + i[3:11].replace("O", "0").replace("I", "1") + i[11:] if i else i
+
+    bs = json.load(open(os.path.join(HERE, "bse_scrips.json"), encoding="utf-8"))
+    code_isins = collections.defaultdict(set)
+    for isin_, code_ in bs.get("by_isin", {}).items(): code_isins[str(code_)].add(isin_.upper())
+    try:
+        for r_ in json.load(open(os.path.join(REPO, "docs", "bse_universe.json"), encoding="utf-8"))["rows"]:
+            if r_[3]: code_isins[str(r_[0])].add(str(r_[3]).upper())
+    except Exception as e:
+        print("WARN bse_universe.json unreadable (%s)" % e)
+    by_id_sym = {str(v): k for k, v in bs.get("by_id", {}).items()}
+
+    def identity_bse(sym, a):
+        """A BSE copy belongs to `sym` when the FILE's ScripCode is the scrip we asked for and its ISIN issuer is one that
+        scrip (or, for an NSE key, the NSE symbol) carries. A BSE-only key must also not be an NSE ticker of another company
+        (the engines and the stock page key on it), and must be the ticker bse_scrips.json gives that code (the key
+        build_stock_fin folds BSE fundamentals under)."""
+        code = a["bse_code"]
+        if a.get("scrip") and a["scrip"] != code:
+            return "file ScripCode %s is not the requested scrip %s" % (a["scrip"], code), []
+        fi = a.get("isin") or ""
+        known = code_isins.get(code, set()) | set().union(*[isins.get(x, set()) for x in ({sym} | relatives(sym))])
+        if not fi or not known: return "no ISIN to prove identity (file %s, known %s)" % (fi or "-", sorted(known)[:2]), []
+        if fi[:7] not in issuers(known) and norm_isin(fi) not in known:
+            return "file ISIN %s does not match scrip %s / %s ISINs %s" % (fi, code, sym, sorted(known)[:3]), []
+        if a["bse_grp"] == "BSE-only":
+            nse_is = isins.get(sym, set())
+            if nse_is and fi[:7] not in issuers(nse_is):
+                return "BSE ticker %s is also an NSE ticker of another company (%s)" % (sym, sorted(nse_is)[:2]), []
+            if by_id_sym.get(code) and by_id_sym[code] != sym:
+                return "dashboard ticker %s differs from bse_scrips ticker %s for scrip %s" % (sym, by_id_sym[code], code), []
+        return None, []
 
     def identity(sym, a):
         """-> (reason or None, extra former tickers). The NSE master pairs `sym` with this document; the document's
@@ -375,6 +539,7 @@ def build(cache):
         its own later broadcast day, so a re-filing's numbers are never served from the original's date (§142j/k).
         The creation stamp is used only to classify original-vs-refiling, never as a date (memory: not a filing time)."""
         bday = a.get("sub")
+        if a.get("bse_code"): return bday, ("bse-" + ("revision-only" if a.get("revised") else "original"))
         subd = F.iso_date(a.get("submissionDate"))
         m = re.search(r"_(\d{2})(\d{2})(\d{4})\d{6}_WEB\.xml$", a.get("src") or "")
         if not (bday and subd and m): return bday, ""
@@ -429,7 +594,7 @@ def build(cache):
         if qe in stored: stat[(a.get("idx"), "already stored")] += 1; continue
         if "error" in a: hold("unreadable XML: " + a["error"]); continue
         if sym in bse_clash: hold("slug collision: " + bse_clash[sym]); continue
-        bad, extra = identity(sym, a)
+        bad, extra = identity_bse(sym, a) if a.get("bse_code") else identity(sym, a)
         if bad: hold("identity: " + bad); continue
         former = [x for x in (relatives(sym) | set(extra)) if qe in (hist.get(x) or {})]
         if former: stat[(a.get("idx"), "stored under a former ticker")] += 1; continue
@@ -478,7 +643,7 @@ def build(cache):
     sh = collections.defaultdict(dict)
     for (sym, qe), a in docs.items():
         n = a.get("shares")
-        if "error" in a or not n or n <= 0 or identity(sym, a)[0]: continue
+        if "error" in a or not n or n <= 0 or (identity_bse(sym, a) if a.get("bse_code") else identity(sym, a))[0]: continue
         sh[sym][qe] = [int(n), visibility(a)[0], a["src"]]
     sh_hold = 0
     for sym, qs in sh.items():
@@ -497,7 +662,9 @@ def build(cache):
 
     built = (datetime.datetime.utcnow() + datetime.timedelta(hours=5, minutes=30)).strftime("%Y-%m-%d %H:%M IST")
     n_cells = sum(len(v) for v in fills.values())
-    led = {"_meta": {"source": "NSE corporate-share-holdings-master XBRL (equities + SME boards)",
+    bse_keys = {s_: bse_code_of[s_] for s_ in fills if s_ in bse_code_of and T.get(bse_code_of[s_], {}).get("grp") == "BSE-only"}
+    led = {"_bse_keys": dict(sorted(bse_keys.items())),
+           "_meta": {"source": "NSE corporate-share-holdings-master XBRL (equities + SME boards) + BSE SHPQNewFormat XBRL",
                      "built": built, "runbook": "§180", "symbols": len(fills), "cells": n_cells,
                      "rule": "fill-only; parse_shp unchanged + partition-proven zeros; holds in _shp_allstocks_holds.json"},
            "fills": {s: dict(sorted(q.items())) for s, q in sorted(fills.items())}}
@@ -520,7 +687,11 @@ def build(cache):
 
 if __name__ == "__main__":
     ap = argparse.ArgumentParser()
-    ap.add_argument("stage", choices=["master", "download", "build"])
+    ap.add_argument("stage", choices=["master", "download", "bse", "build"])
     ap.add_argument("--cache", default=CACHE)
+    ap.add_argument("--shard", default="0/1", help="bse stage: k/n — this machine takes scrip codes with code %% n == k")
+    ap.add_argument("--cap", type=int, default=20000, help="bse stage: per-run file cap (runbook §181)")
+    ap.add_argument("--max-minutes", type=int, default=0, help="bse stage: stop cleanly after this many minutes (CI)")
     a = ap.parse_args()
-    {"master": stage_master, "download": stage_download, "build": build}[a.stage](a.cache)
+    if a.stage == "bse": stage_bse(a.cache, cap=a.cap, shard=a.shard, max_minutes=a.max_minutes)
+    else: {"master": stage_master, "download": stage_download, "build": build}[a.stage](a.cache)
