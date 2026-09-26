@@ -8,8 +8,11 @@ get read from their own filing PDF.
 
 No API key needed — the reading is done by the routine's own Claude, on the user's plan.
 
-Output: <outdir>/manifest.json = [{exch:"NSE"|"BSE", sym, scrip, name, mcap, pngs:[abs paths]}], NSE first
-then biggest-mcap.
+Output: <outdir>/manifest.json = [{exch:"NSE"|"BSE", sym, scrip, name, mcap, pngs:[abs paths],
+qe, quarters:{cur, prev, yago}}], NSE first then biggest-mcap. `qe` (YYYYMMDD) is the quarter each company
+is to be read for and `quarters` the three column headings to read, e.g. {"cur":"30 September 2026",
+"prev":"30 June 2026","yago":"30 September 2025"}; the reader echoes `qe` back so merge_bse_vision
+files the figures under the right quarters.
 
 Run: python -X utf8 scripts/bse_vision_prep.py [--limit N] [--outdir DIR]
 """
@@ -18,6 +21,7 @@ import os, sys, re, json, time
 sys.path.insert(0, os.path.dirname(os.path.abspath(__file__)))
 import fitz, bse_render
 import bse_fetch as B
+import qe_util as QU
 import fetch_announcements as FA
 from results_pending import find_pending, find_unknown_qe   # shared with build_results_coverage.py
 
@@ -149,14 +153,14 @@ def pick_unknown(qelimit):
     rows.sort(key=lambda r: (int(att.get("%s|%s" % (r[0], r[4]), 0)), -(r[2] or 0)))
     return rows[:qelimit], att
 
-def enrich_scrips(limit):
+def enrich_scrips(limit, qe):
     """BSE-only companies we already cover but that are MISSING the year-ago quarter (filled by the
     fast OCR pass, which only grabbed the current quarter) — re-render so vision can add YoY/QoQ."""
     bf = json.load(open(os.path.join(D, "bse_fundamentals.json"), encoding="utf-8"))["px"]
     univ = {str(r[0]): r for r in json.load(open(os.path.join(D, "bse_universe.json"), encoding="utf-8"))["rows"]}
     out = []
     for scrip, qs in bf.items():
-        if "20260630" in qs and "20250630" not in qs and scrip in univ:   # has current, missing year-ago
+        if str(qe) in qs and str(QU.yago(qe)) not in qs and scrip in univ:   # has current, missing year-ago
             r = univ[scrip]; out.append((scrip, (r[1].upper(), r[2], r[6])))
     out.sort(key=lambda kv: -(kv[1][2] or 0))
     return out[:limit]
@@ -260,7 +264,8 @@ def main():
     outdir = sys.argv[sys.argv.index("--outdir") + 1] if "--outdir" in sys.argv else os.path.join(os.environ.get("TEMP", "/tmp"), "bse_pending")
     os.makedirs(outdir, exist_ok=True)
     if "--enrich" in sys.argv:                       # re-render already-covered names missing year-ago
-        qe, nse, bse = 20260630, [], enrich_scrips(limit)
+        qe = json.load(open(os.path.join(D, "quarterly_results.json"), encoding="utf-8"))["quarters"][0]
+        nse, bse = [], enrich_scrips(limit, qe)
     else:
         qe, nse, bse = find_pending(limit)
     print("target quarter %d — pending: %d NSE, %d BSE-only" % (qe, len(nse), len(bse)))
@@ -458,6 +463,9 @@ def main():
     except Exception as ex:
         print("  ⚠ could not write %s (%s) — next run reverts to mcap-only order" % (QEFAIL, ex))
 
+    quarters = {"cur": QU.label(qe), "prev": QU.label(QU.prevq(qe)), "yago": QU.label(QU.yago(qe))}
+    for m in manifest:                                   # every company this run is read for the target quarter
+        m["qe"] = str(qe); m["quarters"] = quarters
     json.dump(manifest, open(os.path.join(outdir, "manifest.json"), "w"))
     print("WROTE %s/manifest.json: %d companies ready to vision-read" % (outdir, len(manifest)))
 

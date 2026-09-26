@@ -34,6 +34,8 @@ _strag_*
 
 # BSE-only coverage state (must persist across CI runs)
 !scripts/_bse_fund_done.json
+# newest result filing already handled per scrip — lets a DONE scrip re-open for the next quarter
+!scripts/_bse_fund_seen.json
 !scripts/_bse_sectors.json
 # BSE historical (pre-current-quarter) vision backfill resume ledger — must persist so the
 # window walks deeper toward 2020 each run instead of re-probing the same filings.

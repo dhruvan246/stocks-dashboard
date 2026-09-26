@@ -21288,3 +21288,38 @@ origin's after `reset --hard`, which would have erased every quarter the new bse
 merges) landed while it ran. It now runs `scripts/union_bse_fundamentals.py`: the run's cells are ADDED where origin lacks
 them, origin wins where both hold a cell. Unit-tested (job-only cell added, another writer's cell kept, conflict keeps
 current). The other files it commits have no other writer and are still copied.
+
+## §182 — THE BSE RESULTS READERS NO LONGER HARD-CODE THE JUNE-2026 QUARTER (2026-09-27, user: "fix all")
+**Found by a prompt audit, measured on origin/main 99e9129d0.** Every reader of a scanned result filing was pinned to Q1 FY27:
+`fetch_bse_fund.py`'s vision fallback asked Claude/Gemini for "30 June 2026" and filed the answer under `20260630` with a
+made-up `ann=20260715`; `merge_bse_vision.py` mapped `jun2026/mar2026/jun2025` keys onto fixed quarters and **overwrote** whole
+cells; the `bse-vision-fill` routine prompt told its readers to extract the June/March/June-2025 columns; `bse_vision_prep
+--enrich` looked only for `20260630`. And `_bse_fund_done.json` only ever grew (2,796 codes = the whole BSE-only universe), so
+the OCR grind would have skipped every company in the Sep-2026 season. A Sep filing read under those rules re-reads its
+June ("previous quarter") column — and the merge would have written that over the stored June cell.
+
+**Now (one rule: the quarter comes from the filing, never from the code):**
+- `scripts/qe_util.py` — `prevq / yago / label / last_qe_before(date)` (latest quarter end STRICTLY before a filing date).
+- `fetch_bse_fund.py` — new ledger **`scripts/_bse_fund_seen.json`** (code → newest declared result filing date already
+  handled; gitignore negation + refresh-bse commit lists). A DONE scrip re-opens when `declared_recently()` (now
+  `{code: newest NEWS_DT}`) shows a filing newer than both SEEN and every stored quarter's `ann`; its fail count resets. The
+  first run with no ledger SEEDS it from the current declared list (DONE scrips only) → no re-read wave (live 2026-09-27: 1,584
+  declared, 1,526 seeded, 0 re-opened). A `--scrips` run never seeds/writes it. Vision fallback target = the quarter OCR read
+  off the newest filing, else `last_qe_before(its announcement date)`; Claude uses `vision_extract_periods` (every column with
+  its printed date + unit; only `kind=Q` columns equal to the target or its year-ago are kept, converted in code with
+  thousand=1e-4), Gemini gets the labels. `ann` = the real announcement date.
+- `bse_vision_prep.py` — every manifest entry carries `qe` + `quarters:{cur,prev,yago}`; `--enrich` uses
+  `quarterly_results.json` quarters[0].
+- `merge_bse_vision.py` — reads `{qe, cur, prev, yago}` (legacy `jun2026/…` still accepted for this season's leftovers) and is
+  **FILL-ONLY**: adds a figure only where the stored cell lacks it, same basis only; never replaces or re-dates. `ann` for the
+  current quarter only when the feed's newest filing IS that quarter.
+- Routine `bse-vision-fill` (trig_01N3H7t8Dgn2XmLqwBg94j2r) prompt: passes `qe`/`quarters` to its readers, output keys
+  `cur/prev/yago` + `qe`, "if the statement's own current quarter is not quarters.cur → ok:false, never re-date a column".
+- **Verified:** date helpers (8 cases incl. on-quarter-end filing date); merge on real cells (CELLA: Sep read filled 20260930 +
+  20250930, June untouched; legacy June read and a C-vs-S read changed nothing; no-quarter read skipped); grind fallback with a
+  mocked Sep filing (June + full-year columns ignored, lakh ÷100, Gemini labels = 30 Sep 2026 / 30 Jun 2026 / 30 Sep 2025);
+  three simulated season runs (re-open, no loop, MAX_FAIL retire); live grind `--budget 3`; live prep `--enrich --limit 2`
+  (VEEFIN, AJCJEWEL stamped `qe=20260630` with labels).
+- **Left as is:** `bse_vision_api.vision_extract` (+ its Jun-2026 `_PROMPT/_SCHEMA`) now has no caller. Known limitation kept:
+  companies that file results under a non-Result BSE category never enter `declared_recently`, so the grind won't re-open
+  them — the vision routine (feed-driven) still catches them.
