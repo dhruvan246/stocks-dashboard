@@ -21124,7 +21124,22 @@ pages, PUNJCOMMU + WARRENTEA also gain their BSE fundamentals (the `_bse_keys` e
 cells: 6 equal to 2 dp incl. holder counts (RALEGRA proven zero); METSL Jun-2024 DII ours 0.35 vs Screener 0.00 = the filing's
 Institutions(Domestic) block is 19,353 shares of "NBFCs registered with RBI" — our DII is B1 by rule (§158), Screener puts
 that row in Public (a definition difference, not a parse error). Holds 239 BSE cells (row-level 122, identity 99, continuity
-37 …). Remaining shards land when they finish.
+37 …).
+**Headers (22:12→22:58 IST):** fetching stopped while the old bse_headers sent a Chrome UA + sec-ch-ua + Sec-Fetch-* (a
+browser disguise); resumed on the HONEST set (1fcdbd0c7: own UA "stocks-dashboard-research/1.0" + Accept + Accept-Language +
+Referer) — measured 200 on SHPQNewFormat and XBRLFILES from this Mac.
+**Round 2 (ca102bdff):** `bse --codes FILE`; 197 BSE companies first traded on NSE in Apr/Aug 2026 (NSE symbol == BSE id,
+coverage session's list) join as grp NSE-new (in `_bse_keys`). Actions run 36259144594 takes the 769 codes neither round-1
+shard listed (`_shp_bse_round2.json`); the Mac shard takes code % 3 == 0. NSE-hole / NSE-new targets sort LAST in each
+shard (no .BO market cap), so no batch before round 2 contains them.
+**Batch 3 LANDED (2026-09-26 ~23:10 IST, round-1 Actions artifacts 547 + 527 lists merged + Mac shard):** +23,037 BSE cells /
+1,112 new symbols (ledger 34,138 cells / 2,253 symbols, `_bse_keys` 1,511). All 31,295 cached files validated as XBRL.
+Checks: 11,101 committed cells identical; 0 existing store cells changed; 4 guards OK; apply idempotent; hold-out 0 fires on
+53,220 filings with an institutional holding; pages vs baseline: 0 fields lost/changed, 897 gain shareholding, 220 new pages,
+KINETICENG gains its BSE fundamentals. Screener, 7 random: 5 exact; HIGHENE / SUDTIND-B promoter 0.01 lower on Screener =
+Screener truncates the share-count % (43.0656 → 43.06) while we keep the filing's printed 43.07; SUDTIND-B's 0.004 %
+bank holding sits in the filing's Institutions(Domestic) (= our DII). Holds 933 BSE cells (row-level 435, identity 337 —
+incl. filer ISIN typos like INE195101013 that norm_isin does not repair on the KNOWN side, left held).
 
 **§181b — refresh-bse no longer overwrites bse_fundamentals.json (2026-09-26).** Its commit step `cp`'d the whole file over
 origin's after `reset --hard`, which would have erased every quarter the new bse-results-xbrl job (and the history/vision
