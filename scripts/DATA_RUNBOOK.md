@@ -18691,6 +18691,11 @@ unverified years) waits for the api to answer scripts; runner `~/stocks-wt/fa-ba
 wrote its stale copy of all 1,466 entries back. Now annual-bscf.yml snapshots the gate at checkout
 (`/tmp/abscf/gate_orig.json`) and `--gate-orig` merges only symbols the run CHANGED. Tested on the real case:
 old merge → 149 stamps back, new merge → 0, run's own edits + a routine's new entry both kept.
+**§148e — FY2026 counts as a validation year at the door too (2026-09-26).** The gate already tries FY26
+(`vheld[2026]`), but `if not held:` (FY20-25 only) refused first: 130 of the 865 queued companies (INA and other
+ex-SME filers whose only XBRL balance sheet is FY26) were stamped `no-xbrl-year-to-validate` and that verdict was
+skipped forever. Now both the door and the skip check FY26: 57 of the 67 stamped entries retry (ABBOTINDIA etc).
+INA itself then gate-fails on TEXT: its FY26 results PDF is a scan (no text layer) → needs the vision read.
 
 ## 149. ★★★ MIDNIGHT VISIBILITY RULE — the 15:30 filing-time gate RETIRED, every shift reversed on the data side  (2026-09-23)
 **User decision (2026-09-23, confirmed three times, then "ok do it"):** "I exit the stocks on rebalance-day close

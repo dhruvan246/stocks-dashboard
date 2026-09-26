@@ -1059,8 +1059,10 @@ def main():
         if not code: continue
         if not redo and only is None:
             gv = gate.get(sym)
-            if gv and (gv.get('verdict') in ('trusted', 'no-xbrl-year-to-validate') or gv.get('vtry')):
+            if gv and (gv.get('verdict') == 'trusted' or gv.get('vtry')):
                 continue                                                  # settled; a text-only gate-fail is retried once a vision key exists
+            if gv and gv.get('verdict') == 'no-xbrl-year-to-validate' and not held_bs(slice_x(sym), '20260331'):
+                continue                                                  # still nothing to validate on (FY26 counts — §148e)
             # queue-advance: don't re-chew a symbol the token-free pass just tried, or one prep
             # can't render. Without this the --limit window re-attempts the same head every run
             # and never reaches the tail (the 2026-09 jam). Skips expire (TTRY/VNIL cooldowns).
@@ -1074,7 +1076,8 @@ def main():
         held = {fy: k for fy, k in held.items() if k}
         miss = [fy for fy in FYS if '%d0331' % fy not in [q for q in x if held_bs(x, q)]
                 and fy not in held]
-        if not held:
+        if not held and not held_bs(x, '20260331'):   # FY2026 is a validation year too (below): a filer whose
+            # only XBRL balance sheet is FY26 (130 of the 865 queued, e.g. INA — SME years on BSE only) was refused here
             gate.setdefault(sym, {}).update({'verdict': 'no-xbrl-year-to-validate'})
             json.dump(gate, open(GATE_REPORT, 'w'), separators=(',', ':'), sort_keys=True); continue
         # the gate: try each XBRL-held year newest first (FY2026 included — a validation year, never
