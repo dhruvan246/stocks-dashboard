@@ -43,6 +43,31 @@ def ensure_dv(s):
     if len(dvl) < len(s["d"]): dvl.extend([0] * (len(s["d"]) - len(dvl)))
     return dvl
 
+# Every equity scrip BSE printed, with its latest trade day (§172): BSE's ListofScripData "Active" list — the source of
+# bse_universe.json — omits scrips that still trade (surveillance names printing once a week: 77 on 21-Sep-2026 had no
+# presence anywhere on the site). build_bse_universe.py adds scrips seen here within its window. {code: [tk, name,
+# isin, group, last YYYYMMDD]} — ISIN INE…01… / IN9 only, so bonds, debentures and fund units never enter.
+SEEN_OUT = os.path.join(HERE, "bse_seen_scrips.json")
+SEEN = {}
+
+
+def note_seen(code, tk, name, isin, grp, ymd):
+    if not ((isin.startswith("INE") and isin[7:9] == "01") or isin.startswith("IN9")): return
+    old = SEEN.get(code)
+    if not old or ymd >= old[4]: SEEN[code] = [tk, name, isin, grp, ymd]
+
+
+def save_seen():
+    if not SEEN: return
+    try:
+        cur = json.load(open(SEEN_OUT, encoding="utf-8"))
+    except (OSError, ValueError):
+        cur = {}
+    for code, row in SEEN.items():
+        if code not in cur or row[4] >= cur[code][4]: cur[code] = row
+    json.dump(cur, open(SEEN_OUT, "w", encoding="utf-8"), ensure_ascii=False, separators=(",", ":"), sort_keys=True)
+
+
 def save_prices(d):
     # keep every scrip's series in ascending date order (backfill may add OLDER dates than existing)
     for s in d["px"].values():
@@ -52,6 +77,7 @@ def save_prices(d):
             for f in ("d", "c", "v", "dv"):
                 s[f] = [s[f][i] for i in order]
     open(OUT, "wb").write(gzip.compress(json.dumps(d, separators=(",", ":")).encode("utf8"), 6))
+    save_seen()
 
 def bse_only_codes():
     u = json.load(open(UNIV, encoding="utf-8"))
@@ -148,6 +174,14 @@ def day_closes(op, d):
         try: v = int(float(r.get("TtlTradgVol") or 0))
         except Exception: v = 0
         out[code] = (c, v)
+        if (r.get("FinInstrmTp") or "STK").strip() == "STK":
+            try:
+                ymd = int((r.get("TradDt") or "").replace("-", ""))
+            except ValueError:
+                ymd = 0
+            if ymd:
+                note_seen(code, (r.get("TckrSymb") or "").strip(), (r.get("FinInstrmNm") or "").strip(),
+                          (r.get("ISIN") or "").strip(), (r.get("SctySrs") or "").strip(), ymd)
     return out if len(out) > 500 else None
 
 def main():

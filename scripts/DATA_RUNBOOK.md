@@ -20622,6 +20622,20 @@ reads, so they never got a store/page (OPEN: make them visible — user rule: na
 **Store:** `scripts/build_bse_offsite_prices.py` → `scripts/bse_offsite_prices.json.gz` (DATA ONLY, no consumer): 479
 scrips, 178,819 RAW bars [d,o,h,l,c,v,turnover ₹] + §149 `splits`/`unexpl` per scrip; 93 traded within ~3 months of the
 cache end; 0 bars with close outside [low, high].
+**§172a — the still-trading ones made visible (same day).** BSE's Active list is not the set of trading scrips.
+`fetch_bse_bhav.day_closes` now records every equity scrip each daily file prints (`note_seen` → committed
+`scripts/bse_seen_scrips.json`, {code: [tk, name, isin, group, last]}; seeded from the cache's 2026 files: 4,878), and
+`build_bse_universe.seen_extra` adds scrips seen within 120 days that are missing from the Active list, not on NSE by
+ISIN/issuer (EQUITY_L + the committed tape's meta ISINs), and whose ticker is not an NSE tape key (`nse_tape_meta` decodes
+only the bin's trailing meta, 0.5 s). The tape-key rule matters: 24 first-pass candidates were NSE-owned — dead on NSE but
+printing on BSE (RAMAPETRO NSE 1996-99, SILVERLINE, KANDAGIRI) or BZ names outside EQUITY_L (BLUECHIP, LASA, ORTEL) — and
+would have become duplicate pages (OPEN: append their BSE-era bars after the NSE series). Seeded today: +134 universe rows
+(2,589 → 2,723; mcap 0 / face value 0 = unknown, sector for 29 from the cache, CI enriches the rest), +94 in
+`bse_scrips.json` by_id/by_isin (0 ticker or ISIN collisions), `merge_bse_px_from_cache` +82,351 rows (overlap 2,455,485
+closes agree, 0 differ) → store 2,789 scrips from 2020-01-01; `build_bse_slices` → 130 of 134 get a page (4 have <20 bars).
+The weekly-printing names previously also lost their series when they dropped off the Active list (49 of the first 158
+candidates were already in the store, frozen). `bse_offsite_prices.json.gz` rebuilt after the fill: 376 scrips / 115,145
+bars = the DATA-ONLY remainder. refresh-bse.yml commits bse_seen_scrips.json with the other BSE files.
 
 ## §173 — Rights issues rebuilt as bar-exact textbook targets: 148 Nifty-500 rights 2006-2026, 71 bars corrected  (2026-09-26, task 2 of the user's "1 and 2 first")
 **Why:** `rights_terp.json` took the premium alone as the issue price — the face value was dropped (3IINFOLTD 2025 "Rights 2:9 @ Premium
