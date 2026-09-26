@@ -42,9 +42,12 @@ def ohlc_rows(codes):
                 if len(r) < len(h) - 3: continue
                 code = r[ix["SC_CODE"]].strip()
                 if code not in out: continue
-                if td is not None and r[td].strip() and \
-                        int(datetime.datetime.strptime(r[td].strip(), "%d-%b-%y").strftime("%Y%m%d")) != k:
-                    break
+                if td is not None and r[td].strip():
+                    try:
+                        if int(datetime.datetime.strptime(r[td].strip(), "%d-%b-%y").strftime("%Y%m%d")) != k:
+                            break
+                    except ValueError:
+                        continue      # a record broken across lines (newline inside a name) — rows_of skips it too
                 try:
                     out[code][k] = tuple(float(r[ix[x]] or 0) for x in ("OPEN", "HIGH", "LOW", "CLOSE", "NO_OF_SHRS", "NET_TURNOV"))
                 except ValueError:

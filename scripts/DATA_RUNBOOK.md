@@ -20563,3 +20563,21 @@ aligned, seam median 2.25 % (max 20 % = circuit), second run inserts 0. 52 refus
 (persistent unexplained ratio = an NSE-side adjustment we can't source, seam break, or no BSE row on the NSE first day).
 **Cache:** the 1,672-file BSE bhavcopy cache lives at `~/stocks-cache/bse_bhav` (copied from the fa-backfill worktree,
 which gc could delete); run with `BSE_BHAV_CACHE=~/stocks-cache/bse_bhav`.
+**§171a — HOLE-FILL (same day).** The first live apply (run 36229690070, rev a97169c04b) extended 357 of 384: the other
+27 (NIRLON, GOODYEAR, KOVAI, HAWKINCOOK, IONEXCHANG, SAURASHCEM, ZFSTEERING …) carry an OLDER NSE era (1996-2015) before
+the block, so `insert_sme_history` read "series starts before the block" as "already covered" and skipped them SILENTLY.
+The consumer now fills the hole when the bin's next bar after the block start IS the anchor (nothing stored inside the
+block window); idempotent because the block's first bar is then present. Tested on the full live bin: exactly those 27
+changed (34,279 bars), seams −6.5..+10 %, second run 0. `ohlc_rows` now skips a record broken across lines instead of
+crashing (it only ever hit codes outside the earlier runs).
+
+## §172 — BSE SCRIPS WITH ZERO PRESENCE ON THE SITE, 2020→ (2026-09-26, user: "all the stocks that has no presence in our site")
+**Census (§149 cache 2020-01-01→2026-09-23, equity ISINs only = INE…01… or IN9; bonds/debentures carry INE too and
+inflated a first count to 3,594):** 2,547 BSE scrips are on NSE by exact ISIN, 2 by issuer, 2,449 in docs/bse_prices.bin,
+**479 in NEITHER store** (last BSE trade: 2020 56 · 2021 67 · 2022 65 · 2023 52 · 2024 59 · 2025 46 · 2026 134). None of
+the 479 is in dash_slim, search_index or bse_universe. 77 still traded in Sep-2026 — mostly groups XT/Z trading once a week
+(67 printed only on Monday 21-Sep): alive, but absent from BSE's ListofScripData "Active" list that build_bse_universe.py
+reads, so they never got a store/page (OPEN: make them visible — user rule: names no longer trading stay data-only).
+**Store:** `scripts/build_bse_offsite_prices.py` → `scripts/bse_offsite_prices.json.gz` (DATA ONLY, no consumer): 479
+scrips, 178,819 RAW bars [d,o,h,l,c,v,turnover ₹] + §149 `splits`/`unexpl` per scrip; 93 traded within ~3 months of the
+cache end; 0 bars with close outside [low, high].

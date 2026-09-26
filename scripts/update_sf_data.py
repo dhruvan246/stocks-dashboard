@@ -1135,20 +1135,30 @@ def insert_sme_history(data, meta, cal=None):
         tgt = spec.get("target"); e = data.get(tgt); anc = spec.get("anchor") or {}
         bars = clean(sym, spec.get("bars") or [])
         if not e or not e.get("d") or not bars: skipped += 1; continue
-        if e["d"][0] <= bars[0][0]: continue           # already applied (or covered) — zero-cost steady state
-        if e["d"][0] != int(anc.get("ymd") or 0):
+        a0 = int(anc.get("ymd") or 0)
+        pos = 0
+        if e["d"][0] <= bars[0][0]:
+            # HOLE (§171): the series has an OLDER era before the block (NIRLON on NSE 1996-2002, relisted 2026-04-20),
+            # so the block is not a prepend but fills the gap. Only when the bin's next bar after the block start IS the
+            # anchor (nothing stored inside the block window); once filled the block's first bar is present -> no-op.
+            pos = bisect.bisect_left(e["d"], bars[0][0])
+            if pos >= len(e["d"]) or e["d"][pos] != a0:
+                continue                                 # already applied (or covered) — zero-cost steady state
+        elif e["d"][0] != a0:
             print("  SME-BACKFILL %s->%s: bin now starts %d, anchor was %s — not applied (verify by hand)"
                   % (sym, tgt, e["d"][0], anc.get("ymd"))); skipped += 1; continue
-        if bars[-1][0] >= e["d"][0]:
+        if bars[-1][0] >= e["d"][pos]:
             print("  SME-BACKFILL %s->%s: ledger overlaps the bin — not applied" % (sym, tgt)); skipped += 1; continue
         raw0 = float(anc.get("raw") or 0)
         if raw0 <= 0: skipped += 1; continue
-        s = e["c"][0] / raw0                             # stored / raw on the anchor bar = the bin's adjustment level
+        s = e["c"][pos] / raw0                           # stored / raw on the anchor bar = the bin's adjustment level
         for i, k in enumerate(KEYS):
             vals = [b[i] for b in bars]
             if k in ("c", "h", "l", "op", "vw") and abs(s - 1.0) > 1e-9:
                 vals = [round(x * s, 2) for x in vals]
-            e[k][0:0] = vals
+            e[k][pos:pos] = vals
+        if pos:
+            print("  SME-BACKFILL %s->%s: %d bars filled the hole %d -> %d before the anchor" % (sym, tgt, len(bars), e["d"][pos - 1], a0))
         mm = meta.setdefault(tgt, {})
         if not mm.get("isin") and (spec.get("meta") or {}).get("isin"): mm["isin"] = spec["meta"]["isin"]
         if abs(s - 1.0) > 1e-9:
