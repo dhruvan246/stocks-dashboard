@@ -20585,6 +20585,46 @@ attachment is a 1-page cover letter). **Landed: all 40 companies, 107 FY2020-22 
   wave 1 932 OK, wave 2 508 OK, wave 3 434 OK, 0 mismatch. ⚠️ zsh: `git show $c:path` applies the `:s` modifier — write
   `"${c}:path"` (the round-3 20-min recheck silently compared a commit header, not the ledger, until fixed).
 
+### 168o. Round 5 (user "take 100 next", 2026-09-26) — only 71 candidates were left; 68 landed, +191 FY2020-22 years
+Targets: after rounds 1-4 only 71 companies in `~/stocks-cache/abscf/w3_candidates.json` still lacked FY2020-22 (user told;
+all 71 taken — `~/stocks-cache/abscf/w5_targets.json`, code + key basis + validate year). **Landed: 68 companies, 191
+FY2020-22 years + 2 FY2025 validate-year cash flows (SYMPHONY, ZEEL) = 193 cells** (ledger 513/1,093 → 581/1,286; 157
+consolidated, 36 standalone), every company through the answer-key gate. Pushed in 4 waves: 21292d32f (17 cos, 47 cells),
+6733db56f (36, 103), 1e59e640d (12, 35 — the user paused the round here for token budget), 49548c191 (3, 8 — after "resume").
+- Pipeline = §168n with tools `~/stocks-cache/abscf/tools/w5_*` (state `wave5/`, keys `abscf-keys/w5/`): in-page discovery on
+  www.bseindia.com → SHA-verified chunks → `filings_w5.json` (71 codes, 954 attachments, all in `pdfcache/`) → 284 statement
+  sets → 28 first-pass + 6 all-pages second-pass finder batches → 20 reader stages (t1-t15 + re-reads t3u t6u t7u t10u t14u;
+  43 batches) → `w5_join.sh` → `w5_merge_stage.sh` → waves → `w3_live_check.py`. A reader stopped mid-batch (the pause) is
+  re-run whole; its join goes in a NEW stage dir (`join_t10b`) so already-merged companies are not re-sent to Screener.
+- **Units only from the same filing** (§168n rule): a statement printing no unit took the unit of the same filing's other
+  statement or results page ONLY where a printed figure tied digit for digit (closing cash, share capital, other equity or
+  PBT) — TIMETECHNO FY20-21 CF, ZEEL FY20 CF, TCI FY21, CAMPUS FY22 (results page "INR millions"; share capital 1,521.63 and
+  other equity 1,663.19 tie), SADBHAV FY21, PSPPROJECT FY20, KSCL ×4, RAJESHEXPO FY24, PNCINFRA FY20. No tie → not landed:
+  SADBHAV FY20 (closing cash 0.30 lakh off), BALAMINES FY22 CF (absolute rupees, no note).
+- **One source document per cell:** a cash flow filed in a different attachment is not joined to the balance sheet —
+  BALAMINES FY20-21, RAJESHEXPO FY22 (its 21-Jun-2022 letter: the cash-flow statements were left out of the 30-May PDF).
+  RAJESHEXPO FY20 and STARCEMENT FY20 filings hold no cash-flow statement (every page checked). 6 landed cells are BS-only.
+- **Screener verify-only** (latest run per company, landed cells): 1,323 comparisons — MATCH 1,158, CLOSE 83, FAR 48, n/a 34.
+  **All 48 FAR = the figure printed on the filing page** (blind reader + an independent line-check reader, `wave5/far1-6`,
+  matched mechanically to the stored value; no uncertain digit reported). 33 of the 48 were also read in the company's next
+  filing: Screener carries that prior-year column — restated (SUNTECK FY20 "Restated (Refer note 6)": cfo 4,987.63 →
+  (634.11) lakh) or changed without a mark (JINDWORLD FY21 A/B/C 9,787.60 / 6,695.37 / (15,177.34) → 8,328.70 / 6,525.42 /
+  (13,548.49) lakh; SUNTECK FY21 financing once the FY22 filing began deducting bank overdrafts from cash) — or Screener
+  adds the FX-translation line, printed after the net-change line outside the three sections, into investing (HIMATSEIDE
+  FY21, RENUKA FY20-22, POLYPLEX). 15 were checked on the as-filed page only: 14 FY2022 cells (no FY2023 filing in this
+  set — CAMPUS ×3, DBL, GREAVESCOT, LXCHEM, POLYPLEX, RENUKA, SHK, SONATSOFTW, VAKRANGEE ×4) and RAJESHEXPO FY21 investing
+  (its FY22 cash flow, att 7126ade5 p2, prints no prior-year column). DBL FY22 investing +44,535.46 lakh: A+B+C ties the
+  printed net change, and Screener agrees with our operating and financing. Ours stays as first filed.
+- **Not landed (22 of 213 fill-years):** no result filing that year (first filing in the discovered list is later) — CLEAN
+  FY20-21 (2021-08-09), RAILTEL FY20 (2021-06-25), CAMPUS FY20-21 (2022-05-30), LXCHEM FY20 (2021-05-25); the annual results
+  filing is not in the discovered list (the in-window attachments are cover letters, an RPT note or Q1 results — text
+  checked) — DISHTV FY21, STARCEMENT FY21, GARFIBRES FY20, GREAVESCOT FY20; no consolidated statements against a
+  consolidated key — IOLCP FY20-21, SPARC FY20-22, TCIEXP FY20-22; no FY2025 filing to gate on — GAYAPROJ FY20-22; unit
+  unresolved — SADBHAV FY20.
+- LIVE per field (`w3_live_check.py`, baseline before each push; a missing baseline is rebuilt from `git show
+  "${c}:docs/fin/<slug>.json"` of the pre-push commit): wave 1 854 OK, wave 2 1,838 OK, wave 3 628 OK, wave 4 157 OK —
+  0 mismatch; XBRL-held fields kept their pre-push values (gap-fill).
+
 ## 169. Our-side price errors found by the Quantmac indicator reconciliation — 3 wrong boundaries, 2 rights factors, 1 duplicate rights row, 2 unjoined renames, 1 missing listing week, 34 stray fragment bars  (2026-09-26, user: "investigate" the possibly-ours cells; "don't assume" either side)
 **NO ASSUMPTIONS** — reference = NSE's own files, cached durably: every bhavcopy 2008-2026 (`~/stocks-cache/nse_bhav/full/`, 4,640
 sessions, file TIMESTAMP == URL date) and the corporates-corporateActions feed 2008-2026 with subject text (`~/stocks-cache/nse_ca/`,
