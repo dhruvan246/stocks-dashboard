@@ -56852,6 +56852,150 @@
    },
    "note": "2015-09-03 was a \u00a7106b missing session; the session-insert skipped RASOYPR because its immediately-prior bars (2015-09-01/02) store close=0.0 (the bin-wide zero-close penny-stock defect, project-stocks-zero-close-price-defect), giving the inserter f=0. RASOYPR has NO corporate action in 2015 (last CA 2013-03-21), so the adjustment scale is 1.0: verified against the nearest REAL-close bar 2015-08-31 (stored 0.25 == NSE raw close 0.25). Anchored there. Delivery 99.66 from MTO_03092015.DAT (traded 1,926,142 == the price-file volume). The surrounding zero-close bars are a SEPARATE defect, not touched here.",
    "src": "NSE cm03SEP2015bhav.csv.zip (OHLC 0.25/0.25/0.20/0.25, vol 1,926,142, turnover \u20b9424,160.65 -> 4.2416 lacs) + MTO_03092015.DAT delivery 99.66; anchor raw close from cm31AUG2015bhav.csv.zip"
+  },
+  {
+   "sym": "TMPV",
+   "ymd": 20040417,
+   "as": "TATAMOTORS",
+   "o": 511.0,
+   "h": 511.5,
+   "l": 504.35,
+   "c": 505.6,
+   "v": 737562,
+   "tl": 3736.5913,
+   "dv": 0,
+   "anchor": {
+    "ymd": 20040416,
+    "c": 508.8
+   },
+   "note": "\u00a7169: session held only by the dead TATAMOTORS fragment",
+   "src": "scripts/weekend_sessions.json.gz rows (NSE bhavcopy 20040417, prior session 20040416)"
+  },
+  {
+   "sym": "TMPV",
+   "ymd": 20041009,
+   "as": "TATAMOTORS",
+   "o": 426.5,
+   "h": 426.5,
+   "l": 421.0,
+   "c": 424.25,
+   "v": 388396,
+   "tl": 1647.8173,
+   "dv": 0,
+   "anchor": {
+    "ymd": 20041008,
+    "c": 423.65
+   },
+   "note": "\u00a7169: session held only by the dead TATAMOTORS fragment",
+   "src": "scripts/weekend_sessions.json.gz rows (NSE bhavcopy 20041009, prior session 20041008)"
+  },
+  {
+   "sym": "TMPV",
+   "ymd": 20050604,
+   "as": "TATAMOTORS",
+   "o": 439.5,
+   "h": 439.5,
+   "l": 435.1,
+   "c": 437.1,
+   "v": 175556,
+   "tl": 767.5332,
+   "dv": 0,
+   "anchor": {
+    "ymd": 20050603,
+    "c": 438.4
+   },
+   "note": "\u00a7169: session held only by the dead TATAMOTORS fragment",
+   "src": "scripts/weekend_sessions.json.gz rows (NSE bhavcopy 20050604, prior session 20050603)"
+  },
+  {
+   "sym": "TMPV",
+   "ymd": 20051126,
+   "as": "TATAMOTORS",
+   "o": 575.0,
+   "h": 580.0,
+   "l": 571.0,
+   "c": 572.85,
+   "v": 770201,
+   "tl": 4433.3929,
+   "dv": 0,
+   "anchor": {
+    "ymd": 20051125,
+    "c": 573.7
+   },
+   "note": "\u00a7169: session held only by the dead TATAMOTORS fragment",
+   "src": "scripts/weekend_sessions.json.gz rows (NSE bhavcopy 20051126, prior session 20051125)"
+  },
+  {
+   "sym": "TMPV",
+   "ymd": 20060429,
+   "as": "TATAMOTORS",
+   "o": 934.9,
+   "h": 955.0,
+   "l": 934.7,
+   "c": 951.55,
+   "v": 406716,
+   "tl": 3856.2429,
+   "dv": 0,
+   "anchor": {
+    "ymd": 20060428,
+    "c": 927.45
+   },
+   "note": "\u00a7169: session held only by the dead TATAMOTORS fragment",
+   "src": "scripts/weekend_sessions.json.gz rows (NSE bhavcopy 20060429, prior session 20060428)"
+  },
+  {
+   "sym": "TMPV",
+   "ymd": 20060625,
+   "as": "TATAMOTORS",
+   "o": 785.0,
+   "h": 799.0,
+   "l": 770.2,
+   "c": 775.8,
+   "v": 112753,
+   "tl": 879.1213,
+   "dv": 0,
+   "anchor": {
+    "ymd": 20060623,
+    "c": 777.2
+   },
+   "note": "\u00a7169: session held only by the dead TATAMOTORS fragment",
+   "src": "scripts/weekend_sessions.json.gz rows (NSE bhavcopy 20060625, prior session 20060623)"
+  },
+  {
+   "sym": "TMPV",
+   "ymd": 20061021,
+   "as": "TATAMOTORS",
+   "o": 894.75,
+   "h": 897.45,
+   "l": 883.0,
+   "c": 885.3,
+   "v": 87938,
+   "tl": 779.9178,
+   "dv": 0,
+   "anchor": {
+    "ymd": 20061020,
+    "c": 888.55
+   },
+   "note": "\u00a7169: session held only by the dead TATAMOTORS fragment",
+   "src": "scripts/weekend_sessions.json.gz rows (NSE bhavcopy 20061021, prior session 20061020)"
+  },
+  {
+   "sym": "TMPV",
+   "ymd": 20080219,
+   "as": "TATAMOTORS",
+   "o": 740.0,
+   "h": 750.8,
+   "l": 735.1,
+   "c": 739.65,
+   "v": 945757,
+   "tl": 7047.8666,
+   "dv": 0,
+   "anchor": {
+    "ymd": 20080218,
+    "c": 732.7
+   },
+   "note": "\u00a7169: session held only by the dead TATAMOTORS fragment",
+   "src": "scripts/weekend_sessions.json.gz rows (NSE bhavcopy 20080219, prior session 20080218) = nsearchives 19-FEB-2008"
   }
  ]
 }

@@ -409,6 +409,16 @@ MANUAL_RIGHTS = [
     ("UPL",        20241126, 0.9592, 0.9705),   # Rights 1:8  @ 360,  cum 568.55 -> TERP 545.38
     ("M&MFIN",     20250514, 0.9731, 1.0131),   # Rights 1:8  @ 194,  cum 256.30 -> TERP 249.42 (2nd rights)
     ("ADANIENT",   20251117, 0.9695, 0.9782),   # Rights 3:25 @ 1800, cum 2516.80 -> TERP 2440.00
+    # --- 2026-09-26 (DATA_RUNBOOK §169): RESIDUAL corrections against the factor the bin ALREADY bakes (M&MFIN
+    # precedent). Target = textbook TERP from NSE's own record (issue = face value + premium; cum = NSE close the
+    # session before ex). These entries shadow any rights_terp.json row for the same (sym, ex).
+    # INTELLECT "Rights 5:22 @ Premium Rs 81/-" (FV 5 -> 86, cum 130.60) TERP 0.936759. rights_terp's row (0.9356,
+    # anchor 0.9517) was applied TWICE: its anchor was not the raw ratio (0.9051), so after one application the
+    # series still read "unapplied" — baked 0.875345 = 0.9356^2. x1.070160 restores ONE textbook adjustment.
+    ("INTELLECT",  20170717, 1.070160, 1.033940),
+    # IDEA "Rights 87:38 @ Premium Of Rs 2.50" (FV 10 -> 12.50, cum 29.00) TERP 0.604000; the old build baked a 2/3
+    # split-inference on the ex-date (0.666552) and the rights sweep skipped it. x0.906156 -> textbook TERP.
+    ("IDEA",       20190329, 0.906156, 0.944128),
 ]
 # --- 2026-07-10: POLICY WIDENED (user) — TERP-adjust EVERY parseable rights issue, so d52 is correct at ANY
 # filter threshold (10, 25, ...), not just the cells hand-flagged above. scripts/rights_terp.json holds the
@@ -916,6 +926,19 @@ def _phantom_session_dates():
         return set()
 
 
+def _phantom_symbol_dates():
+    """§169: per-SYMBOL stray bars of scripts/sf_phantom_sessions.json ("symbol_dates": {sym: {"dates": [...]}}) —
+    real sessions stored on the WRONG key (a dead rename fragment), each proven in the ledger. {} when absent."""
+    try:
+        sd = json.load(open(PHANTOM_SESSIONS)).get("symbol_dates") or {}
+        return {s: {int(d) for d in (v.get("dates") or [])} for s, v in sd.items()}
+    except FileNotFoundError:
+        return {}
+    except Exception as ex:
+        print("::warning::sf_phantom_sessions.json symbol_dates unreadable (%s) — per-symbol drop SKIPPED" % ex)
+        return {}
+
+
 def drop_phantom_sessions(data):
     """§167: FULL-UNIVERSE phantom sessions. On an exchange holiday NSE's per-day URL re-served the previous
     session's file and an old full build stored it as a trading day, so ~1,600-2,100 symbols each carry a bar
@@ -925,24 +948,28 @@ def drop_phantom_sessions(data):
     scripts/sf_phantom_sessions.json is DROPPED from every array of every symbol — never filled, never
     re-dated (the copied session is already in the bin). Runs FIRST, before any pass reads the calendar or a
     bar's neighbours. Idempotent: a converged bin drops 0. Returns the number of bars dropped."""
-    dates = _phantom_session_dates()
-    if not dates: return 0
-    dropped = 0; per_date = {}; skipped = []
+    dates = _phantom_session_dates(); by_sym = _phantom_symbol_dates()
+    if not dates and not by_sym: return 0
+    dropped = 0; per_date = {}; skipped = []; sym_dropped = {}
     for sym, e in data.items():
         ds = e.get("d") if isinstance(e, dict) else None
-        if not ds or dates.isdisjoint(ds): continue
+        cut = dates | by_sym.get(sym, set())
+        if not ds or cut.isdisjoint(ds): continue
         n = len(ds)
         if any(k in e and len(e[k]) != n for k in _BAR_KEYS):
             skipped.append(sym); continue          # ragged arrays: cutting by index would misalign them
-        keep = [i for i, d in enumerate(ds) if d not in dates]
+        keep = [i for i, d in enumerate(ds) if d not in cut]
         for d in ds:
             if d in dates: per_date[d] = per_date.get(d, 0) + 1
+            elif d in cut: sym_dropped[sym] = sym_dropped.get(sym, 0) + 1
         for k in _BAR_KEYS:
             if k in e: e[k] = [e[k][i] for i in keep]
         dropped += n - len(keep)
-    if dropped:
+    if per_date:
         print("Phantom sessions (§167): dropped %d bar(s) on %d exchange-holiday date(s): %s"
-              % (dropped, len(per_date), ", ".join("%d(%d)" % (d, per_date[d]) for d in sorted(per_date))))
+              % (sum(per_date.values()), len(per_date), ", ".join("%d(%d)" % (d, per_date[d]) for d in sorted(per_date))))
+    if sym_dropped:
+        print("Stray per-symbol bars (§169): dropped %s" % ", ".join("%s(%d)" % (s, n) for s, n in sorted(sym_dropped.items())))
     if skipped:
         print("::warning::Phantom sessions (§167): %d symbol(s) with ragged bar arrays left untouched: %s"
               % (len(skipped), ", ".join(sorted(skipped)[:20])))
@@ -1011,6 +1038,15 @@ def insert_sme_history(data, meta, cal=None):
                 led.setdefault("prepend", {}).setdefault(k2, v2)
         except Exception as ex:
             print("  bse_sme_prepend ledger unreadable (%s) — skipped" % ex)
+    # MAIN-BOARD bars NSE traded before a series' first bin bar (scripts/mainboard_prepend.json, §169 — OBEROIRLTY's listing
+    # week, traded as OBEROIREAL). Same "prepend" contract and guards; its own file so no SME rebuild can drop it.
+    mp = os.path.join(HERE, "mainboard_prepend.json")
+    if os.path.exists(mp):
+        try:
+            for k2, v2 in (json.load(open(mp, encoding="utf-8")).get("prepend") or {}).items():
+                led.setdefault("prepend", {}).setdefault(k2, v2)
+        except Exception as ex:
+            print("  mainboard_prepend ledger unreadable (%s) — skipped" % ex)
     KEYS = ("d", "c", "t", "h", "l", "op", "v", "dv", "vw")
     def clean(sym, bars):
         if cal is None: return bars
@@ -1473,7 +1509,13 @@ def main():
                     "SMLMAH": "SMLISUZU",      # SML Isuzu pre-2011 fragment (drift 1.002, 3d)
                     "TTML": "TATATELSER",      # Tata Tele (M) pre-2003 fragment (drift 0.960, 1d)
                     "XLENERGY": "XLTELENE",    # XL Telecom pre-2009 fragment (drift 0.950, 1d)
-                    "IBULLSLTD": "YAARI"}      # Yaari Digital 2013-2020 fragment (drift 0.927, 1d)
+                    "IBULLSLTD": "YAARI",      # Yaari Digital 2013-2020 fragment (drift 0.927, 1d)
+                    # --- 2026-09-26 (DATA_RUNBOOK §169), found by the Quantmac indicator reconciliation: NSE chains the old
+                    # and new symbol itself — PREVCLOSE on the new symbol's first session == the old symbol's last close.
+                    # TUBEINVEST (INE149A01025, last 2017-08-23 793.20) -> TIFIN 2017-09-25 (INE149A01033, PREVCLOSE 793.20)
+                    # = CHOLAHLDNG. The month-long gap is the 2017 scheme; NSE's CA feed has NO demerger record for it, so
+                    # the raw -25.7% stays a move (§161) — no demerger factor. FUND_ALIAS already folds TUBEINVEST/TIFIN.
+                    "CHOLAHLDNG": "TUBEINVEST"}
     # --- 2026-08-23 ISIN-SEAM batch (DATA_RUNBOOK §95g's open queue, landed in §105): the 103 seams
     # the issuer-prefix sweep CONFIRMED as one company (scripts/_isin_seam_verdicts.json) were never
     # stitched because the ISIN CHANGED at each seam (face-value change, scheme) — the auto-merge must
@@ -1520,6 +1562,11 @@ def main():
         "SPLPETRO": {"old": "SUPPETRO", "seam": 1},   # SUPPETRO 20220406→20220524: NSE prevclose 921.3/close 921.3; CA-adj 0.5, drift 0.918, gap 48d, 5336 bars
         "SUBEXLTD": {"old": "SUBEX", "seam": 1},   # SUBEX 20201021→20201105: NSE prevclose 16.95/close 16.95; CA-adj 1, drift 1.103, gap 15d, 4240 bars
         "TVSHLTD": {"old": "SUNCLAYTON", "seam": 1},   # SUNCLAYTON 20120906→20121023: NSE prevclose 185.45/close 185.45; CA-adj 1, drift 1.084, gap 47d, 1034 bars
+        # §169 (2026-09-26): REIAGRO 20080919 -> REIAGROLTD 20081125, NSE PREVCLOSE 950.65 == REIAGRO's last close (same security,
+        # renamed across a suspension). CA-adj 0.1 = the 2009-02-05 FV split (loop applies it). seam 0.654635 = the 2010-06-07
+        # rights adjustment already baked into REIAGROLTD's early bars (textbook TERP of "Rights 2:1 @ Premium Rs.18.50",
+        # FV 1, cum 40.45 = 0.6547; non-CA_OFF, so the loop would not apply it). Join then reads NSE's raw -49.4% move.
+        "REIAGROLTD": {"old": "REIAGRO", "seam": 0.654635},
     }
     MANUAL_MERGE.update(SEAM_MERGES)
     merged = 0

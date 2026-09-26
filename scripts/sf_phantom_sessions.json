@@ -111,5 +111,46 @@
    "nse_holiday_list": true,
    "bse_archive": "outside scan span"
   }
+ },
+ "symbol_dates": {
+  "TATAMOTORS": {
+   "dates": [
+    20040417,
+    20041009,
+    20050604,
+    20051126,
+    20060429,
+    20060625,
+    20061021,
+    20080219,
+    20091017,
+    20100206,
+    20120107,
+    20120303,
+    20120428,
+    20120908,
+    20130511,
+    20131103,
+    20140221,
+    20140322,
+    20140725,
+    20141014,
+    20150228,
+    20160817,
+    20161030,
+    20161117,
+    20170324,
+    20170327,
+    20191027,
+    20200201,
+    20201114,
+    20231112,
+    20240120,
+    20240302,
+    20240518,
+    20250201
+   ],
+   "why": "Dead rename fragment (TELCO->TATAMOTORS 1996-2003-12-24; the live series is TMPV from 2003-12-26). Weekend/missing-session inserts put these 34 bars on the fragment before §106h/§106i routed them to the live successor; 26 are exact duplicates of TMPV bars, 8 (2004-04-17..2008-02-19) are anchored on the stale 2003 close (≈430 while Tata Motors traded 505-951) and land in TMPV from scripts/bar_inserts.json instead. While present they made the engine resolve TATAMOTORS (quantmac/F&O rosters) to a series that ends in 2003 for 14 days after each session. DATA_RUNBOOK §169."
+  }
  }
 }

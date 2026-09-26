@@ -20336,3 +20336,45 @@ the cash identity, gated by merge. Traps, each measured on a real filing:
   line agreed), JAICORPLTD FY25 cfi 141.04 (111.04). Corrected with `fix` trails. Remaining Screener FAR/CLOSE on
   values touched this session are restated comparatives (point-in-time as-filed values are kept), Screener's own
   definitions (Reserves incl. perpetual securities; CWIP without iuad for some filers), or unchecked.
+
+## 169. Our-side price errors found by the Quantmac indicator reconciliation — 3 wrong boundaries, 2 rights factors, 1 duplicate rights row, 2 unjoined renames, 1 missing listing week, 34 stray fragment bars  (2026-09-26, user: "investigate" the possibly-ours cells; "don't assume" either side)
+**NO ASSUMPTIONS** — reference = NSE's own files, cached durably: every bhavcopy 2008-2026 (`~/stocks-cache/nse_bhav/full/`, 4,640
+sessions, file TIMESTAMP == URL date) and the corporates-corporateActions feed 2008-2026 with subject text (`~/stocks-cache/nse_ca/`,
+40,096 rows). ⚠️ The bhavcopy PREVCLOSE on an ex-date is the UNADJUSTED previous close (RELIANCE 2017-09-07 bonus: 1645.40) — it
+cannot referee a factor; the referee is NSE's CA record + the ex-date tape. Conventions measured from each side's own numbers:
+365-calendar-day 52w window and NSE's official CLOSE on BOTH sides (quantmac LTP hypothesis rejected: 5 of 96,648 cells).
+**Evidence standard = §161j's** (the parallel exact-tape audit): a factor is undone only with an independent witness.
+### 169a. What changed (each boundary now reads NSE's raw move / the textbook factor — dry-run verified)
+| Key | Defect (evidence) | Fix |
+|---|---|---|
+| CANFINHOME | `rights_terp.json` held the ONE NSE record (Rights 3:10 @ Prem 440, ex 23-Jan-2015) twice; both applied → extra ×0.9292 on 27-Jan (tape −2.6%) | row removed; `phantom_crashes` + raw closes keep 27-Jan raw |
+| INTELLECT | rights row (0.9356, anchor 0.9517 ≠ raw 0.9051) applied TWICE: baked 0.875345 = 0.9356² | MANUAL_RIGHTS residual ×1.070160 → textbook 0.936759 |
+| IDEA | 2019 Rights 87:38 @ Prem 2.50 (FV 10, cum 29.00) baked as a 2/3 split-inference | MANUAL_RIGHTS residual ×0.906156 → textbook 0.604000 |
+| FEL | "Agm/Div-30%/Bon **1dvr**:10eq" parsed as an EQUITY bonus 10/11; the bonus was DVR shares, tape 237.20→236.70 | factor removed from `corp_actions_hist` (+ `corp_actions`); crash ledger keeps raw |
+| IBULLSLTD | IBULISL→YAARII seam 2020-12-08 lacked the later 2022 demerger ×0.8829 (MANUAL_MERGE applies CA_OFF only) → fake +13.25%; Yahoo shows the raw +4.97% | crash ledger keeps raw → pre-seam ×0.883 |
+| OBEROIRLTY | listed 2010-10-20 as OBEROIREAL; bin started 10-27 (the §106i insert cannot anchor before a first bar) — the 52w high 306.35 sat in the gap | new `mainboard_prepend.json` (SME "prepend" contract), 5 NSE bars |
+| REIAGROLTD | history left under REIAGRO (2004-2008-09-19); NSE PREVCLOSE on REIAGROLTD's first session = 950.65 = REIAGRO's last close | SEAM_MERGES seam 0.654635 (= baked 2010 rights TERP, non-CA_OFF) × CA-adj 0.1 |
+| CHOLAHLDNG | history left under TUBEINVEST (1996-2017-08-23); TIFIN 2017-09-25 PREVCLOSE 793.20 = TUBEINVEST's last close | MANUAL_MERGE seam 1 — NO demerger factor: NSE's feed has no demerger record for the 2017 scheme (§161) |
+| TATAMOTORS/TMPV | dead fragment held 34 post-2003 session bars (26 duplicates of TMPV, 8 anchored on the stale 2003 close); engine resolved roster TATAMOTORS to it for 14 days after each | `sf_phantom_sessions.json` `symbol_dates` drop (new per-symbol arm of the §167 pass); the 8 real sessions → `bar_inserts.json` for TMPV |
+Also verified NOT errors: REIAGROLTD 2010 rights (baked 0.6547 = textbook for Rights 2:1 @ Prem 18.50, FV 1 — the 0.8728 row is a
+residual on a baked 3/4), GBGLOBAL 2016 (0.369 = SPOS open/prev = demerger policy), WHEELS 2014 (0.5542 = textbook TERP), the four
+§102e large-dividend separations (user-approved), VALIANTORG/SRIPIPES pre-NSE bars (BSE-SME prepend policy).
+### 169b. Verification (release base 2026-09-25 19:19Z, real `main()`, NSE fetches blocked = CI)
+Exactly 12 keys differ from the current-code output (10 changed + REIAGRO/TUBEINVEST folded); 0 of the other 5,248 symbols; bars
+−21 (−34 +8 +5). Second pass: 0 differences. Bar audit vs NSE: removed steps = exactly the defective ones; missing NSE rows
+CHOLAHLDNG 2,387→0, REIAGROLTD 180→0, OBEROIRLTY 5→0, TMPV 1→0; no new bad bars. Quantmac agreement +58 cells (d52 +26, d52low
++3, vs200 +29); 28 cells on CANFINHOME/IDEA 2009-2017 moved across the 0.05pp line by 0.03-0.07pp = re-rounding of 2-dp prices
+under the rescale (ratios are otherwise invariant) — the known storage-precision limit.
+### 169c. ★ Open (NOT fixed here — each needs its own decision)
+- **`rights_terp.json` is built with the wrong issue price**: "@ Premium Rs X" was taken as the price, dropping the face value
+  (GREENPOWER "10:51 @ Prem 3", FV 10: ledger 0.8567 = TERP at Rs3; textbook at Rs13 = 0.9255). 94 of ~260 entries differ from the
+  textbook TERP by >1%; ~10 rows carry a late ex-date so the adjustment never applied (INDHOTEL 2017, KARURVYSYA 2017, SBT 2015 …);
+  several events have a second row (NEULANDLAB applied twice). Needs a rebuild of the ledger + residual reconciliation.
+- Witness-pending phantoms (no NSE record, tape inconsistent with the factor, no Yahoo series / filings unresolved): ELDERPHARM
+  2013-05-13, RNRL 2010-07-05, LAKSHVILAS 2014-07-28, ELGIRUBBER 2010-10-27, FCONSUMER 2023-08-25. Yahoo AGREES with the
+  adjustment on WELCORP 2010-12-03 and SHREERAMA 2010-10-27 — possibly real actions missing from NSE's feed. JMFINANCIL 2008:
+  NSE record says ÷25, Yahoo and our bin ÷20.
+- TATAMOTORS F&O rosters (2004-2025) still resolve to the 1996-2003 fragment (`backtest-engine.js:491` folds only names with no
+  series): fixing it needs TMPV←TATAMOTORS merged (seam = post-2003 non-CA_OFF factors, needs NSE's 2003-12-26 file) or an
+  era-aware fold. MRPL 2026-03-03 dividend separation never applied (baked 1.0). TMPV/TATAMTRDVR 2015 rights baked 0.9478 vs
+  textbook 0.989.

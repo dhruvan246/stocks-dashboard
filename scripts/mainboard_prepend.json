@@ -1,0 +1,71 @@
+{
+ "_doc": "DATA_RUNBOOK §169. MAIN-BOARD bars NSE traded before a series' first bar in the bin — same \"prepend\" contract as the SME ledgers (update_sf_data.insert_sme_history): applied only while the bin starts exactly on `anchor.ymd`, rescaled by stored/raw on that bar, dropped if off the market calendar, a no-op once applied. Rows = NSE bhavcopy EQ rows (TOTTRDVAL/1e5 -> lacs; VWAP = TOTTRDVAL/TOTTRDQTY; delivery % unknown -> 0), each file's TIMESTAMP equal to its URL date.",
+ "prepend": {
+  "OBEROIREAL": {
+   "target": "OBEROIRLTY",
+   "anchor": {
+    "ymd": 20101027,
+    "raw": 290.15
+   },
+   "bars": [
+    [
+     20101020,
+     282.9,
+     119279.4,
+     299.0,
+     271.1,
+     271.1,
+     41372574,
+     0,
+     288.31
+    ],
+    [
+     20101021,
+     298.75,
+     23528.2,
+     304.9,
+     275.8,
+     281.7,
+     8078620,
+     0,
+     291.24
+    ],
+    [
+     20101022,
+     295.0,
+     8499.3,
+     301.5,
+     288.5,
+     300.0,
+     2887285,
+     0,
+     294.37
+    ],
+    [
+     20101025,
+     302.15,
+     7096.9,
+     306.35,
+     292.7,
+     295.55,
+     2361102,
+     0,
+     300.57
+    ],
+    [
+     20101026,
+     285.2,
+     2374.0,
+     302.15,
+     283.15,
+     302.15,
+     815185,
+     0,
+     291.22
+    ]
+   ],
+   "meta": {},
+   "src": "nsearchives cm{20..26}OCT2010bhav.csv.zip — Oberoi Realty listed 2010-10-20 (PREVCLOSE 260 = IPO price)"
+  }
+ }
+}
