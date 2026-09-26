@@ -20431,6 +20431,47 @@ by contact-sheet page finders) TRANSCRIBED lines only — every verdict is arith
   named per symbol+year overwrite each other when a symbol has several filings (name them per filing); a page holding only
   the OTHER basis is not comparable (KPIL, ITDC, CERA) — the evaluator now refuses it.
 
+### 168m. Round 3 (user "do round 3 next 20 companies", 2026-09-26) — 19 of 20 landed, +54 FY2020-22 years; VISUAL page finders replace prep's first-filing pick
+Targets: the next 20 by market cap among PIT Nifty-500 names not in the ledger, text-gate-failed, non-financial, holding
+FY2023-25 and missing FY2020-22. **Landed 19 companies / 54 company-years** (ledger 454/930 → 473/984), every one through the
+FY2025 answer-key gate (Total Assets + PP&E within 1%, ROU-aware): COROMANDEL EXIDEIND FLUOROCHEM FORTIS GLENMARK GODREJIND
+KIRLOSENG NAVINFLUOR RADICO RVNL SUMICHEM SUNDRMFAST SUZLON THERMAX UBL UNOMINDA VOLTAS WOCKPHARMA ZFCVINDIA.
+Not landed, with the evidence: **ACC** — its year ended 31 December until 2021 ("Previous year ended 31-12-2020 Audited";
+the April filings are Jan-Mar quarters), so no March FY2020-22 balance sheet exists; **ZFCVINDIA FY2020/21** — no subsidiary
+until 5 Jan 2022 (FY22 filing), so no consolidated statements exist, and a standalone year may not sit in a consolidated
+series; **SUZLON FY2021** — the audited annual filing is not in the discovered list (only the Aug-2021 Q1); **EXIDEIND FY2022
+cash flow** withheld — the statement splits continuing/discontinued (life-insurance sale); the exchange XBRL already holds the
+COMBINED figures (61.25 / 66.33 / −172.32 = the reader's own sum), so the continuing-only lines were not landed; **RVNL FY2020
+cff** — the filing's cash flow stops at the dividend line (no financing total, net change or closing cash); cfo/cfi landed.
+- **Why prep() was not used:** it takes the FIRST locatable filing of a year and keeps whatever basis locate() returns — it
+  rendered STANDALONE pages for companies whose key is CONSOLIDATED (SUNDRMFAST all four years, NAVINFLUOR FY25/22, FORTIS FY22,
+  ACC, FLUOROCHEM FY25) and found nothing for 8 of 20 (OCR-garbled titles: GLENMARK "Statement of aueta and liabilities";
+  SUNDRMFAST's two balance sheets carry no basis word — only the NCI/goodwill lines tell them apart; EXIDEIND FY25's located
+  filing held the standalone set with the consolidated one on image-only pages). A stricter text finder (every filing,
+  consolidated-only) still missed 32 of 76 statements and, where it disagreed with the visual finders (7 cases), picked a
+  P&L or notes page every time.
+- **Visual page finders** (tools in `~/stocks-cache/abscf/tools/`): `w3_sheets.py` — contact sheets PER FILING of candidate
+  pages (text-flagged BS/CF/Total-Assets pages PLUS every image-only page: FORTIS FY21's statements were image pages inside a
+  104-page text PDF), each thumbnail labelled with its page number and [C]/[S]/[NCI] text hints; 8 finder agents; a second pass
+  `w3_sheets2.py` (every page of one filing) for the 14 statements the first pass missed; `w3_render.py` renders the picks
+  (higher dpi for physically small pages — WOCKPHARMA FY20 is 298×421 pt) and cross-checks each pick's text Total Assets
+  against the filing's other BS pages (all 5 flags were OCR artefacts: SUNDRMFAST FY20 "1,550" = printed 3,550.01).
+- **Blindness:** the answer keys never enter the readers' tree — manifests and joins live in `~/stocks-cache/abscf-keys/w3/`;
+  a `grep '"key"'` over the reader dirs is empty before launch. Readers (10 batches + 1 re-read) were Opus agents with
+  per-batch scratch dirs for crops.
+- **A statement page without a unit note:** ZFCVINDIA's consolidated BS/CF ("Notes 1/2") print none; the reader correctly
+  left every value unconverted. The unit came from the SAME filing's consolidated-results header ("Rupees in lakhs except EPS
+  information", FY25 p15 and the scanned FY22 p6), added to the re-read as `<SYM>_<FY>_unit.png` — never infer a unit from
+  the key (that would make the gate pass by construction).
+- **Screener verify-only (54 cells, 378 comparisons): MATCH 336, CLOSE 32, FAR 6, n/a 4.** Every FAR adjudicated from the
+  companies' own next-year filings: RADICO FY20 cff (FY21 filing restates FY20 — cash credit had been inside cash); UNOMINDA
+  FY20 assets/cff (FY21 filing restates FY20 total assets 4,838.85 → 5,580.85, same share capital 52.44); RVNL FY21 cfo/cfi
+  (FY22 filing moves 237.8 cr from operating to investing: 657.21/74.69 → 419.41/312.48, same sum 731.9, cff 415.69 unchanged);
+  THERMAX FY20 cfi — THERMAX's own FY21 filing reprints OUR −168.51 (Screener differs from the print). FORTIS total assets sit
+  ~3% from Screener every year; its FY22 filing reprints FY21 as 11,15,468 lakh = ours. Ours stays the as-first-filed figure.
+- LIVE: pushes 07b655da0 (13 cos / 36 cells: 672 fields verified on the live slices, 0 mismatch — 101 were XBRL-held and
+  correctly left as XBRL), 7ba06eab6 (THERMAX, WOCKPHARMA), then GODREJIND, KIRLOSENG, GLENMARK, RVNL.
+
 ## 169. Our-side price errors found by the Quantmac indicator reconciliation — 3 wrong boundaries, 2 rights factors, 1 duplicate rights row, 2 unjoined renames, 1 missing listing week, 34 stray fragment bars  (2026-09-26, user: "investigate" the possibly-ours cells; "don't assume" either side)
 **NO ASSUMPTIONS** — reference = NSE's own files, cached durably: every bhavcopy 2008-2026 (`~/stocks-cache/nse_bhav/full/`, 4,640
 sessions, file TIMESTAMP == URL date) and the corporates-corporateActions feed 2008-2026 with subject text (`~/stocks-cache/nse_ca/`,
