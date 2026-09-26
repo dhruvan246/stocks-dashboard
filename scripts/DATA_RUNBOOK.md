@@ -20096,6 +20096,18 @@ shp_sub_dates holds a measured date. Only 2 of the 583 fall inside Quantmac's mo
 13.85 / 4.13 against the stored Mar-2013 4.31 — they still serve Jun-2012's 15.63). XBRL-era holes (186) need the filing list
 (api) — open.
 
+### 164k. Quarter holes from Dec-2015 on filled from the ORIGINAL BSE XBRL (2026-09-26)
+The 186 XBRL-era holes of §164i's census (+ the Dec-2015/Mar-2016 holes, 269 with a BSE code) needed BSE's SHP filing lists,
+lost to the /private/tmp cleanup. BSE's API serves the repo's HONEST header set (scripts/bse_headers.py since 1fcdbd0c7: own
+User-Agent, no browser impersonation): 924 lists re-fetched one at a time ~1 s apart, 0 failures, into `~/stocks-cache/shp/bse_all`
+(1,639 lists). `scripts/_shp_164k_fill_xbrl_holes.py` takes the quarter's ORIGINAL filing (the list row with an XbrlFile and a
+filing_date_time; a quarter listed only as a revision is skipped — a re-filing never dates a row), downloads its XBRL, parses it
+with `fetch_shareholding.parse_shp` and serves it from the original's calendar day (midnight rule); fill-only into
+`shp_fill_n500_gaps.json.gz` (`_meta.s164k`). **97 cells added** (2016-2022); 172 have no original XBRL on BSE's list (76 page-only
+quarters — RELIANCE/WIPRO/BRITANNIA/LICHSGFIN/CIPLA/ARVIND Mar-16 among them, still open for the §160 seam reconstruction; 50
+revision-only; 46 not listed), 16 were already filled by then. One-sided outlier kept as filed: SPTL Sep-17 fii 24.02 vs Dec-17
+17.51. The fills are the parser's raw reading; the row-level rules (§158/§159/D1) apply at the next re-run of those symbols.
+
 ### 164j. Quantmac reply v3 (26-Sep): foreign-labelled rows were read as domestic; named foreign holders now need a document
 **Bug (reported by Quantmac for CUMMINSIND / IPCALAB, measured on origin).** `_shp_dii_rowfix.eval_filing` R1 set a category label
 to "domestic" when DOMLAB matched ("mutual fund", "financial institution", "\bbank") and LAB_FII did not — so "Foreign Mutual
