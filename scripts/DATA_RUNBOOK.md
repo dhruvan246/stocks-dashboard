@@ -20903,8 +20903,12 @@ Rows = raw `cm<date>bhav.csv.zip` values; anchor = the previous bar, raw close =
 (all 11); MTO delivery with traded == TOTTRDQTY for the 3 EQ rows; BE rows dv = 100 (the dv_fill BE/T2T convention — NSE's MTO file
 lists EQ rows only). Member-days where the bin holds a bar NSE does not: 0.
 **2. Phantom steps → `phantom_crashes.json` + `crash_raw_prices.json`** (the §169c witness-pending list, decided on NSE's own record).
-On each date NSE's PREVCLOSE equals the prior close (no base change) and NSE's CA feed has nothing within 45 days, yet an old build had
-divided out a guessed factor:
+On each date NSE's CA feed has nothing within 45 days, the ex-day OPEN sits on the OLD basis (§87c: a real 1:3 bonus opens ~25% lower —
+ELDERPHARM opened 225.00 and traded locked at 225.00 = exactly -10% of 250.00, i.e. NSE's price band still used the unadjusted close;
+WELCORP opened 190.50 vs 164.55 ex-bonus; RNRL 51.20 vs 47.96; LAKSHVILAS 07-28 82.00 vs 55.03) and the company's own NSE filing
+explains the fall — yet an old build had divided out a guessed factor. (NOT evidence either way: the cm-bhavcopy PREVCLOSE — it is the
+UNADJUSTED prior close even on real splits/bonuses, e.g. INFIBEAM 2017-08-31 1:10 PREVCLOSE 1470.30 / open 147.95, BIOCON 2008-09-11
+1:1 PREVCLOSE 397.70 / open 202.00.)
 - ELDERPHARM 2013-05-13 (0.75): pledge-invocation crash — the company's 13-May-2013 NSE filing says Ratnakar Bank sold pledged shares
   on 10-11 May. Stored +20.00% → −10.00% (= NSE).
 - WELCORP 2010-12-03 (0.75): −26.98% on 24.7 M shares (~50x normal volume); only a press communication filed. −2.64% → −26.98%.
