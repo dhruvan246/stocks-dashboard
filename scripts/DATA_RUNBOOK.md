@@ -20898,7 +20898,11 @@ a scan-key artefact, not a gap). The real member holes are 11:
 - 2008-02-19 ALLCARGO, ANSALAPI (printed ANSALINFRA), BAJFINANCE (printed BAJAUTOFIN) — a §106b session; the 2026-08-23 insert
   skipped them and the §106i harvest only revisited 2009+.
 - BE-only (trade-for-trade) days the bin lacked while holding the BE days around them: DMART/AFFLE/PCJEWELLER 2020-04-13,
-  HATHWAY 2020-09-28, JSWENERGY/TRIDENT/TTML/FLUOROCHEM 2022-03-07 (why the original ingest skipped them: not measured).
+  HATHWAY 2020-09-28, JSWENERGY/TRIDENT/TTML/FLUOROCHEM 2022-03-07. Cause (measured): NSE's `sec_bhavdata_full_<date>.csv` for
+  exactly those 3 dates carries ZERO BE-series rows (cm bhavcopy the same day: 123 / 135 / 241 BE rows; neighbouring days' two files
+  agree, e.g. 2020-04-15 117/117, 2022-03-08 210/210), so an ingest built on sec_bhavdata_full dropped them; the trades are real —
+  NSE's next-session PREVCLOSE equals each inserted close (all 11 rows, incl. the three 2008-02-19 ones). Quantmac's series lacks the
+  same bars (46 of their cells matched our OLD gap and now differ) — same upstream file.
 Rows = raw `cm<date>bhav.csv.zip` values; anchor = the previous bar, raw close == the row's PREVCLOSE (all 11); two-sided f agreement
 (all 11); MTO delivery with traded == TOTTRDQTY for the 3 EQ rows; BE rows dv = 100 (the dv_fill BE/T2T convention — NSE's MTO file
 lists EQ rows only). Member-days where the bin holds a bar NSE does not: 0.
