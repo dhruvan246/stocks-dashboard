@@ -20726,3 +20726,18 @@ applied — a 1.0 row would have mis-healed the 2026-03-04 bar). No dividend cod
 **Verified** (release 2026-09-26 after §173, real `main()`, NSE blocked): exactly 4 symbols change, only before their ex-dates (UNIONBANK
 2009-05-12 160.00 → 165.00, CHENNPETRO 2026-08-06 1,238.31 → 1,292.33, HGS 2022-01-14 1,509.18 → 1,584.11 = raw/2 within 4 paise of
 apply-then-undo rounding); ex-days and later bars unchanged; MRPL unchanged; second pass 0.
+
+## §174 — BSE QUARTERS NOW FILL ANY STOCK THAT LACKS THEM (2026-09-26, user: "fix all")
+**Defect (measured origin 6031e907a):** `build_stock_fin.py` skipped a BSE scrip ENTIRELY when its ticker already had
+any row in sf_fundamentals/sf_revop ("already have real data"). 343 BSE-only tickers carried a few quarters written there
+by older campaigns, so every quarter the bse-fund-history reads added later never reached the page (DHINDIA frozen at
+Mar-2026 though Jun-2026 ₹65.96 Cr / ₹1.98 Cr was read; ABATEAS at Mar-2024). Of 2,159 trading BSE-only stocks, 359 lacked
+Jun-2026 results on the page for this reason alone; NSE names that were BSE-only before listing lost 155 quarters + 50
+revenues the same way.
+**Fix:** fill-only merge per quarter: a fund row only where the quarter is absent, a revop quarter only where absent, a
+revenue only where both revenue slots are empty. Targets: the BSE ticker (when it is not an NSE tape key, or its tape ISIN
+issuer equals the scrip's — §76 ticker-collision guard) plus every NSE symbol with the scrip's exact ISIN (`nse_tape_isin`,
+the committed tape's trailing meta). Old vs new full build from identical inputs: 0 existing values changed; +2,296 fund
+rows, +389 revop quarters on files that had revop, +2 revenue fills, +5 files; symbols with revenue 5,049 → 5,449.
+Seen while checking, NOT touched: ELANTAS Mar-2026 PAT −0.03 and DHINDIA Mar-2026 PAT 232.17 (on ~₹66 Cr revenue) in
+sf_fundamentals look wrong — OPEN.

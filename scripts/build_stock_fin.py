@@ -77,6 +77,17 @@ def slug(sym):
     return _UNSAFE.sub("_", sym)
 
 
+def nse_tape_isin():
+    """{NSE symbol: ISIN} from the committed docs/sf_stock_data.bin — only its trailing "meta" object is decoded
+    (0.5 s; bars never parsed). Empty if absent. Used to prove a BSE scrip and an NSE key are one company."""
+    try:
+        b = gzip.decompress(open(os.path.join(DOCS, "sf_stock_data.bin"), "rb").read())
+        m, _ = json.JSONDecoder().raw_decode(b[b.rfind(b'"meta":') + 7:].decode("utf-8"))
+        return {k: v["isin"] for k, v in m.items() if isinstance(v, dict) and v.get("isin")}
+    except (OSError, ValueError):
+        return {}
+
+
 def load(path, what):
     if not os.path.exists(path):
         print("WARN: %s missing — %s will be absent from every slice" % (os.path.basename(path), what))
@@ -228,38 +239,75 @@ def main():
     #     has no EBITDA/EPS); basis S|C routes pat into the std or con slot; ann is the announce date
     #     (0 → unknown). Never overwrites a symbol that already has NSE data, and skips any ticker whose
     #     slug clashes with an existing name (recycled tickers) so the collision guard never trips. ----
-    bse_added = 0
+    bse_added, bse_filled = 0, 0
     if os.path.exists(BSEFUND_J) and os.path.exists(BSESCRIP_J):
         try:
             bfin = json.load(open(BSEFUND_J, encoding="utf-8")).get("px", {})
-            code2sym = {str(v): k for k, v in json.load(open(BSESCRIP_J, encoding="utf-8")).get("by_id", {}).items()}
+            bsj = json.load(open(BSESCRIP_J, encoding="utf-8"))
+            code2sym = {str(v): k for k, v in bsj.get("by_id", {}).items()}
+            code2isin = {str(v): k for k, v in bsj.get("by_isin", {}).items()}
+            tape_isin = nse_tape_isin()                          # NSE symbol -> ISIN (committed tape meta)
+            isin2nse = {}
+            for s_, i_ in tape_isin.items():
+                isin2nse.setdefault(i_, set()).add(s_)
             taken = {slug(s) for s in (set(fund) | set(revop) | set(shp_rows) | set(hist_rows))}
             for code, qmap in bfin.items():
+                if not isinstance(qmap, dict):
+                    continue
+                isin = code2isin.get(str(code), "")
+                targets = []
                 sym = code2sym.get(str(code))
-                if not sym or sym in fund or sym in revop or not isinstance(qmap, dict):
-                    continue                                    # already have real data, or unmappable
-                if slug(sym) in taken:
-                    continue                                    # ticker-string clash with an NSE name
-                frows, rv = [], {}
-                for qe, cell in qmap.items():
-                    if not isinstance(cell, dict) or not qe.isdigit():
-                        continue
-                    pat, rev = cell.get("pat"), cell.get("rev")
-                    ann = cell.get("ann") or None               # 0 → unknown announce date
-                    con = (cell.get("basis") == "C")
-                    qei = int(qe)
-                    if pat is not None:                         # fund: [qEnd, npStd, annStd, npCon, annCon]
-                        frows.append([qei, None, None, pat, ann] if con else [qei, pat, ann, None, None])
-                    # revop: [revStd, revCon, opStd, opCon, patStd, patCon, fin, ebitStd, ebitCon]
-                    rv[qe] = ([None, rev, None, None, None, pat, 0, None, None] if con
-                              else [rev, None, None, None, pat, None, 0, None, None])
-                if frows:
-                    fund[sym] = sorted(frows, key=lambda r: r[0])
-                if rv:
-                    revop[sym] = rv
-                if frows or rv:
-                    taken.add(slug(sym)); bse_added += 1
-            print("BSE-only fundamentals folded in: %d symbols" % bse_added)
+                if sym:
+                    ti = tape_isin.get(sym)
+                    if sym in fund or sym in revop:
+                        # §174: this used to SKIP the whole scrip, freezing 343 BSE-only pages at whatever an older
+                        # campaign had written under the ticker (DHINDIA stopped at Mar-2026 though Jun-2026 was read,
+                        # ABATEAS at Mar-2024). Now fill-only — but only when the ticker is provably this company: not
+                        # an NSE tape key at all (a BSE-ticker key), or an NSE key whose ISIN issuer matches the scrip.
+                        if ti is None or (isin and ti[:7] == isin[:7]):
+                            targets.append(sym)
+                    elif slug(sym) not in taken:
+                        targets.append(sym)                     # brand-new BSE-only slice (the original behaviour)
+                for s_ in sorted(isin2nse.get(isin, ())):       # the NSE listing of the same ISIN (a BSE->NSE migrant
+                    if s_ not in targets:                       # whose BSE quarters sit under its scripcode)
+                        targets.append(s_)
+                for tsym in targets:
+                    fresh = tsym not in fund and tsym not in revop
+                    have = {r[0] for r in fund.get(tsym, [])}
+                    rvt = revop.setdefault(tsym, {})
+                    frows = fund.setdefault(tsym, [])
+                    added = 0
+                    for qe, cell in qmap.items():
+                        if not isinstance(cell, dict) or not qe.isdigit():
+                            continue
+                        pat, rev = cell.get("pat"), cell.get("rev")
+                        ann = cell.get("ann") or None           # 0 → unknown announce date
+                        con = (cell.get("basis") == "C")
+                        qei = int(qe)
+                        if pat is not None and qei not in have:   # fund: [qEnd, npStd, annStd, npCon, annCon]
+                            frows.append([qei, None, None, pat, ann] if con else [qei, pat, ann, None, None])
+                            added += 1
+                        # revop: [revStd, revCon, opStd, opCon, patStd, patCon, fin, ebitStd, ebitCon]
+                        cur = rvt.get(qe)
+                        if cur is None:
+                            rvt[qe] = ([None, rev, None, None, None, pat, 0, None, None] if con
+                                       else [rev, None, None, None, pat, None, 0, None, None])
+                            added += 1
+                        elif rev is not None and cur[0] is None and cur[1] is None:
+                            cur = list(cur); cur[1 if con else 0] = rev; rvt[qe] = cur   # revenue-only fill
+                            added += 1
+                    if not rvt:
+                        del revop[tsym]
+                    if frows:
+                        frows.sort(key=lambda r: r[0])
+                    else:
+                        del fund[tsym]
+                    if added:
+                        taken.add(slug(tsym))
+                        if fresh: bse_added += 1
+                        else: bse_filled += 1
+            print("BSE fundamentals folded in: %d new symbols, %d existing symbols gap-filled (fill-only)"
+                  % (bse_added, bse_filled))
         except Exception as e:
             print("WARN: could not fold bse_fundamentals.json (%s) — BSE-only names get no fin slice" % e)
 
