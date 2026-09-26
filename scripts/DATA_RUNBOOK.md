@@ -20472,6 +20472,41 @@ cff** — the filing's cash flow stops at the dividend line (no financing total,
 - LIVE: pushes 07b655da0 (13 cos / 36 cells: 672 fields verified on the live slices, 0 mismatch — 101 were XBRL-held and
   correctly left as XBRL), 7ba06eab6 (THERMAX, WOCKPHARMA), then GODREJIND, KIRLOSENG, GLENMARK, RVNL.
 
+### 168n. Round 4 (user "do round 4 next 40 companies, fast with more workers", 2026-09-26) — 40 of 40 landed, pipelined finders/readers
+Targets: the next 40 by market cap from `~/stocks-cache/abscf/w3_candidates.json` after round 3's 20 (+FACT, ACC), re-checked
+against the live slices (still missing FY2020-22 and not in the ledger) — `~/stocks-cache/abscf/w4_targets.json`. Key basis per
+company from the slice (`key_basis`): 37 consolidated, 3 STANDALONE-only (TATAELXSI, ASTRAZEN, SPLPETRO — no subsidiaries); the
+validate year is the newest XBRL-held one ≤ FY2025 (GRINDWELL FY2024; ASTRAZEN moved to FY2024 because its FY2025 "results"
+attachment is a 1-page cover letter). **Landed: all 40 companies, 107 FY2020-22 years + 2 FY2025 validate-year cash flows = 109 cells** (ledger 473/984 → 513/1,093), every company through the answer-key gate.
+- **Discovery** (BSE API still 403 from Python, measured): in-page fetch on www.bseindia.com, Result + Board-Meeting categories,
+  windows Apr-Oct (late filers) for FY2020-22 + Apr-Aug FY2025, 4 parallel fetchers, 322 calls, 0 errors; round-3 SKIP filter
+  applied in the page; 519 filings moved to disk in 4 chunks, each SHA-256-verified (a mistyped chunk would be caught).
+  ⚠️ Type codes FROM the target file, never from memory: 4 of 40 hand-typed codes were wrong (KIRLOSBROS 533293 = KIRLOSENG).
+- **Speed = pipelining, not bigger agents:** 8 parallel downloaders (519 PDFs), 5 parallel sheet builders, 14 page finders +
+  5 second-pass finders, 23 reader batches, each finder batch staged for reading (`tools/w4_stage.sh`: render → own png dir →
+  mkbatches → keys moved to `~/stocks-cache/abscf-keys/w4/<stage>`, grep for "key" must be empty) the moment it returned;
+  each stage joined + gated (`w4_join.sh`) and merged + Screener-checked (`w4_merge_stage.sh`) as its readers finished; pushed
+  in waves (7989e5bf4 20 cos, 8f0f1f6e3 11, c6db933f7 9, then FINPIPE + GALLANTT FY2020 with this note).
+- **Finder misses fixed by the all-pages second pass** (`w4_sheets2.py`): statements on pages the text filter did not flag —
+  image pages and OCR-garbled pages (FINPIPE/GALLANTT FY2020 filings had NO candidate page at all, so the first pass never saw
+  them: a filing without candidates must still be offered to a finder).
+- **Units must come from the same filing:** ZFCVINDIA (round 3), GALLANTT FY2021 (results pages "Rs. lakhs"), GALLANTT FY2020
+  (consolidated results header "Rs. In Lakhs", re-read with `<SYM>_<FY>_unit.png`), POLYMED FY2020 (notes quote "lacs"; the FY2021
+  filing reprints the same digits under "₹ in lacs"). Readers that inferred a unit from another year were re-checked.
+- **Screener verify-only: 749 comparisons — MATCH 694, CLOSE 28, FAR 24, n/a 3.** Every FAR adjudicated on the filing itself or the company's next filing — as printed:
+  INOXWIND FY22 other equity 1,60,658 lakh; FINPIPE FY20 investing +58.94 (consolidated column); FINEORG FY22, ZENSARTECH FY22, KIRLOSBROS FY22, CAPLIPOINT FY22, PCJEWELLER FY21 cash
+  flows; RAINBOW FY22 share capital 1,049.98 mn (pre-IPO); restated later by the company: ZENSARTECH FY20, SUVEN FY20, IRCON FY20
+  (TA 12,878 → 10,181 in the FY21 filing), CAPLIPOINT FY21 investing (29.45 in the FY22 filing); definitional: SUVEN FY21 other
+  equity excludes the printed warrant-money line, PCJEWELLER FY21 CWIP (IAUD 0.86 vs Screener's 0). Ours stays as first filed.
+- **Not landed (13 fill-years; FINPIPE and GALLANTT FY2020 were recovered by the second pass):** no BSE result filing in the window — GLAND FY20, DELHIVERY FY20-21, RAINBOW
+  FY20-21, PARADEEP FY20-21, NAZARA FY20, ANURAS FY20, SHYAMMETL FY20 (their first filings in the discovered list are 2021-22);
+  no consolidated statements that year — PGEL FY20, GALLANTT FY22; FY2020 annual filing not in the Apr-Oct window — PCBL FY20.
+  GALLANTT FY21 cash flow dropped by the merge (printed investing/financing totals misadd); EXIDEIND-style continuing-only
+  splits: RKFORGE FY25 read as combined continuing + discontinued.
+- LIVE: waves verified per field with `tools/w3_live_check.py` (baseline before each push; gap-fill fields keep XBRL):
+  wave 1 932 OK, wave 2 508 OK, wave 3 434 OK, 0 mismatch. ⚠️ zsh: `git show $c:path` applies the `:s` modifier — write
+  `"${c}:path"` (the round-3 20-min recheck silently compared a commit header, not the ledger, until fixed).
+
 ## 169. Our-side price errors found by the Quantmac indicator reconciliation — 3 wrong boundaries, 2 rights factors, 1 duplicate rights row, 2 unjoined renames, 1 missing listing week, 34 stray fragment bars  (2026-09-26, user: "investigate" the possibly-ours cells; "don't assume" either side)
 **NO ASSUMPTIONS** — reference = NSE's own files, cached durably: every bhavcopy 2008-2026 (`~/stocks-cache/nse_bhav/full/`, 4,640
 sessions, file TIMESTAMP == URL date) and the corporates-corporateActions feed 2008-2026 with subject text (`~/stocks-cache/nse_ca/`,
