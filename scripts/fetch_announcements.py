@@ -14,7 +14,7 @@ session (plain urllib + Chrome UA + cookie warmup — same as the daily fundamen
 
 Run: python -X utf8 scripts/fetch_announcements.py
 """
-import os as _o, sys as _s; _s.path.insert(0, _o.path.dirname(_o.path.abspath(__file__))); import bse_headers as BH  # §179 BSE headers
+import os as _o, sys as _s; _s.path.insert(0, _o.path.dirname(_o.path.abspath(__file__))); import bse_headers as BH  # §181 BSE headers
 import os, sys, json, datetime, re, time
 sys.path.insert(0, os.path.dirname(os.path.abspath(__file__)))
 import build_fundamentals as B  # _get / nse_jar / UA

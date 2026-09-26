@@ -6,7 +6,7 @@ ROUTE (measured 2026-09-26, memory reference-bse-results-xbrl-route):
   list   api.bseindia.com/BseIndiaAPI/api/Result_Arch_ng/w?scrip_cd=<code>  → {"Table":[{stand_xbrl_link | conso_xbrl_link,
          Filing_Date_Time, Quarter, qtr, Status, …}]}
   file   www.bseindia.com + link  (/XBRLFILES/FourOneUploadDocument/… to Dec-2024, /XBRLFILES/IFIndasUploadDocument/… 2025+)
-Plain urllib with the full standard browser header set (bse_fetch.HEADERS, §179), one request at a time. When the api
+Plain urllib with the full standard browser header set (bse_fetch.HEADERS, §181), one request at a time. When the api
 answers 403 the run prints BSE-REFUSED and writes nothing.
 
 IDENTITY comes from the FILE, not the listing: the XML's ScripCode must equal the requested scrip; its OneD context gives
@@ -267,7 +267,7 @@ def fetch(budget, fills_path, from_dir=None):
             if lq is None or lq not in want:
                 skipped += 1; continue
             if DL[0] >= MAX_FILES:
-                break                                        # hard per-run cap on downloads (politeness, §180a)
+                break                                        # hard per-run cap on downloads (politeness, §181a)
             fname = link.rsplit("/", 1)[-1]; p = os.path.join(tmpd, fname)
             if not os.path.exists(p):
                 try:

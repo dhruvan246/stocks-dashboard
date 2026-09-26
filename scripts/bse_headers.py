@@ -1,5 +1,5 @@
 # -*- coding: utf-8 -*-
-"""The one header set every BSE request carries (runbook §179, 2026-09-26).
+"""The one header set every BSE request carries (runbook §181, 2026-09-26).
 
 From 20-Sep-2026 BSE's front door answered 403 "Access Denied" to any request that carried only a User-Agent (+Referer):
 seven daily jobs went dark for six days while staying green. A request carrying the full STANDARD header set a browser

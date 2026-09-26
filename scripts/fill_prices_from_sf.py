@@ -22,7 +22,7 @@ payload still ships, and the step prints a ::warning:: so the gap is visible, no
 
 Env: SF_BIN=<path> reads a local bin instead of downloading the release asset (tests).
 """
-import os as _o, sys as _s; _s.path.insert(0, _o.path.dirname(_o.path.abspath(__file__))); import bse_headers as BH  # §179 BSE headers
+import os as _o, sys as _s; _s.path.insert(0, _o.path.dirname(_o.path.abspath(__file__))); import bse_headers as BH  # §181 BSE headers
 import os, sys, json, gzip, time, datetime, urllib.request
 from pathlib import Path
 

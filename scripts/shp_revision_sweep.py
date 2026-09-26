@@ -31,7 +31,7 @@ assumed a dict with a "stale" key and would have thrown on every Sunday run INSI
 continue-on-error: a guard that appears to run weekly and never reports. If this record shape
 ever changes, update the workflow summariser in the same commit.
 """
-import os as _o, sys as _s; _s.path.insert(0, _o.path.dirname(_o.path.abspath(__file__))); import bse_headers as BH  # §179 BSE headers
+import os as _o, sys as _s; _s.path.insert(0, _o.path.dirname(_o.path.abspath(__file__))); import bse_headers as BH  # §181 BSE headers
 import os, sys, json, time, argparse, collections, threading, urllib.request
 from concurrent.futures import ThreadPoolExecutor
 

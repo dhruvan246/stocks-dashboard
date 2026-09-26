@@ -16,7 +16,7 @@ the SAME ticker as docs/stock_data.bin's meta (e.g. "RELIANCE.NS", "500325.BO"),
 so the Sector-Index browser can group stocks at any level without touching the
 central stock_data.bin pipeline. Additive + isolated by design.
 """
-import os as _o, sys as _s; _s.path.insert(0, _o.path.dirname(_o.path.abspath(__file__))); import bse_headers as BH  # §179 BSE headers
+import os as _o, sys as _s; _s.path.insert(0, _o.path.dirname(_o.path.abspath(__file__))); import bse_headers as BH  # §181 BSE headers
 import json, gzip, subprocess, concurrent.futures, time, csv, os, tempfile
 from pathlib import Path
 from collections import Counter

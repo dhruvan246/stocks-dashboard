@@ -19,7 +19,7 @@ Routes follow scripts/fetch_release_bin.py (§146): the public download URL firs
 from the RELEASE-id listing (the tag listing lags a re-upload by >1 h). `gh` provides auth in CI
 (GH_TOKEN); the repo is public, so `pull` works without it too.
 """
-import os as _o, sys as _s; _s.path.insert(0, _o.path.dirname(_o.path.abspath(__file__))); import bse_headers as BH  # §179 BSE headers
+import os as _o, sys as _s; _s.path.insert(0, _o.path.dirname(_o.path.abspath(__file__))); import bse_headers as BH  # §181 BSE headers
 import argparse, datetime, gzip, json, os, shutil, subprocess, sys, tempfile, time
 
 sys.path.insert(0, os.path.dirname(os.path.abspath(__file__)))

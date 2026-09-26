@@ -11,7 +11,7 @@ with filings, so this is ~300 requests, not ~3,800.
 Output: scripts/_filing_times.json = { "YYYYMMDD": { "<scripcode>": ["ISO_ts", ...] } }
 Resumable: skips dates already present. Run again to fill any that failed.
 """
-import os as _o, sys as _s; _s.path.insert(0, _o.path.dirname(_o.path.abspath(__file__))); import bse_headers as BH  # §179 BSE headers
+import os as _o, sys as _s; _s.path.insert(0, _o.path.dirname(_o.path.abspath(__file__))); import bse_headers as BH  # §181 BSE headers
 import urllib.request, json, gzip, http.cookiejar, time, sys, os
 
 HERE = os.path.dirname(os.path.abspath(__file__))

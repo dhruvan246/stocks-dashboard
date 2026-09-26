@@ -27,7 +27,7 @@ Run (refresh.yml does this after fetch_all.py; non-fatal):
   python3 scripts/fill_bse_share_counts.py            # uses /tmp/bse.json + scripts/stock_data.json
   python3 scripts/fill_bse_share_counts.py --tickers PETPLST.BO,TVOLCON.BO
 """
-import os as _o, sys as _s; _s.path.insert(0, _o.path.dirname(_o.path.abspath(__file__))); import bse_headers as BH  # §179 BSE headers
+import os as _o, sys as _s; _s.path.insert(0, _o.path.dirname(_o.path.abspath(__file__))); import bse_headers as BH  # §181 BSE headers
 import os, sys, json, time, datetime, subprocess
 import xml.etree.ElementTree as ET
 

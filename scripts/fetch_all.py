@@ -14,7 +14,7 @@ master, else BSE) and one or two alternate tickers. We try them in order; if
 all fail, the stock still ships in the dashboard with empty series so the row
 shows up with metadata + "—" prices.
 """
-import os as _o, sys as _s; _s.path.insert(0, _o.path.dirname(_o.path.abspath(__file__))); import bse_headers as BH  # §179 BSE headers
+import os as _o, sys as _s; _s.path.insert(0, _o.path.dirname(_o.path.abspath(__file__))); import bse_headers as BH  # §181 BSE headers
 import os, sys, json, csv, re, time, subprocess, concurrent.futures, datetime as _dt
 from pathlib import Path
 

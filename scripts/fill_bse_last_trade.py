@@ -14,7 +14,7 @@ Output: meta[ticker]["lastTrade"] = {"d": "YYYY-MM-DD" | null, "p": float | null
 scripts/stock_data.json, and a ticker-keyed cache scripts/bse_last_trade.json (re-checked after
 MAX_AGE_DAYS, so a normal run makes few BSE calls). Non-fatal in refresh.yml.
 """
-import os as _o, sys as _s; _s.path.insert(0, _o.path.dirname(_o.path.abspath(__file__))); import bse_headers as BH  # §179 BSE headers
+import os as _o, sys as _s; _s.path.insert(0, _o.path.dirname(_o.path.abspath(__file__))); import bse_headers as BH  # §181 BSE headers
 import os, sys, json, time, datetime, subprocess
 
 HERE = os.path.dirname(os.path.abspath(__file__))
