@@ -20709,3 +20709,20 @@ only); 148/148 bars at target; every changed price = baseline × the exact corre
 rounding); second pass 0 changes. Quantmac 96.49% → 96.40% (+194 / -462): their implied rights factors (own 200DMA, 29 events) follow no
 single rule — 9 equal our old factor (several = no adjustment at all), 2 the textbook, 2 raw, 16 neither (KTKBANK 2016 0.9457 vs
 textbook 0.8145; KARURVYSYA 2017 1.0747 > 1). Tools: `~/stocks-cache/qm-recon-tools/rights_rebuild2.py`.
+
+## §174 — No dividend adjustments: follow the other sites (2026-09-26, user: "we need to follow like others")
+**Measured first** (7 sources, NSE raw as reference): CHENNPETRO 2026-08-06→07 (Rs54 dividend on 1,292.30) and HGS 2022-01-14→17 (Rs150 special
+on 3,168.30; every site halves it for the later 1:1 bonus). Moneycontrol, Screener, Groww, Tickertape, Upstox and Yahoo's plain Close all show
+the raw drop (CHENNPETRO 1,292.30 → 1,275.40); quantmac's own 200DMA implies factor 1.0 on all 5. Only Yahoo's "Adj Close" removes dividends —
+EVERY dividend (a total-return series; 1,238.30 for CHENNPETRO). Bonus debentures / bonus preference shares: NTPC 2015 (Rs12.50 8.49% debenture
+per share, NSE/CML/29275), BRITANNIA 2019, TVSHLTD 2023 — Yahoo, Moneycontrol, Screener, quantmac and NSE F&O all unadjusted (Moneycontrol's
+TVSHLTD pre-2023 history is ~116x too low — it divided by the NCRPS ratio).
+**Decision:** plain traded prices — no dividend of any size is adjusted, and bonus debentures / NCRPS / preference-share payouts stay raw
+(KOTHARIPRO 2008 included). This REVERSES the §102e special-dividend class (HGS 2022, e85afde10) and the 2026-08-23 large-dividend sweep
+(59b967a18). Splits, bonuses, rights (§173) and demergers (§170) are unaffected.
+**Change:** demerger_adj.json rows HGS 20220117, CHENNPETRO 20260807, APTECHT 20140204, UNIONBANK 20090513 → factor 1.0 (self_heal UNDOES the
+baked scaling; the rows stay so the undo is re-asserted every run); MRPL 20260303 deleted (dated on a day MRPL did not trade, it never
+applied — a 1.0 row would have mis-healed the 2026-03-04 bar). No dividend code exists anywhere (both policy commits only added ledger rows).
+**Verified** (release 2026-09-26 after §173, real `main()`, NSE blocked): exactly 4 symbols change, only before their ex-dates (UNIONBANK
+2009-05-12 160.00 → 165.00, CHENNPETRO 2026-08-06 1,238.31 → 1,292.33, HGS 2022-01-14 1,509.18 → 1,584.11 = raw/2 within 4 paise of
+apply-then-undo rounding); ex-days and later bars unchanged; MRPL unchanged; second pass 0.
