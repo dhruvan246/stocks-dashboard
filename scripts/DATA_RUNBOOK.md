@@ -20952,3 +20952,60 @@ Verification of the push moved to GitHub Actions (different addresses).
 Filing_Date_Time — the listing RE-STAMPS older rows (360ONE Sep-2019: listing 2020-08-28, file 22-10-2019); ambiguous
 name readings (3-07-2022 vs 30-7-2022) stay 0 = unknown. First live run: 5 scrips → 20 fills, 18 dated.
 **OPEN:** make the BSE steps FAIL the job (or alert) on a refusal — a silent six-day outage must not repeat.
+
+## §180 — SHAREHOLDING + PER-QUARTER SHARE COUNTS FOR EVERY NSE STOCK (main board + SME), 2020→2026 (2026-09-26, user: "fill market cap and shareholding for all the stocks in our dashboard … don't make any mistakes")
+**Why:** the FII/DII-vs-market-cap study (memory project-stocks-fii-dii-mcap-threshold-study) needs both series for every
+dashboard stock. Measured on origin 47af401f1 (cells 2020Q1-2026Q2 vs quarters each stock traded): N500 99.2% · NSE main
+non-N500 94.7% · **NSE SME 0% (548 symbols)** · BSE-only 0.5% (2,179). Share counts existed only as ONE latest number per
+symbol (`shares_outstanding.json`), so no stock had a market-cap history.
+
+**Tool:** `scripts/fetch_shp_allstocks.py master|download|build` (cache `~/stocks-cache/shp/all_fill`). NSE
+`corporate-share-holdings-master` for BOTH boards (`index=equities` and `index=sme`), every quarter-end 2020-03..2026-06;
+every listed XBRL from nsearchives (43,904 filings; 7,228 reused from earlier caches, 311 are listed but 404). Outputs:
+`scripts/shp_fill_allstocks.json.gz` (registered LAST in `BSE_HIST_LEDGERS`, fill-only), `scripts/_shp_allstocks_holds.json`
+(every cell NOT written + reason; force-added, scripts/_* is ignored), `scripts/shares_history.json`
+`{SYM: {QE: [shares, visible_date, src]}}` — NEW file, not a slot in shp_history (four readers index cells by position).
+
+**Gates** (built from a checklist of every SHP defect in this runbook + memory; full list in the script docstring):
+parse_shp UNCHANGED; identity = the file's ISIN (issuer prefix, or the full ISIN after the filer's O→0 / I→1 typo) against
+the symbol's traded ISINs — a different Symbol tag inside the file is a rename (LAWSIKHO→ADDICTIVE, SILLYMONKS→CRESTO), and a
+quarter already stored under that former ticker or any `_rename_map`/`FUND_ALIAS` relative is skipped, never duplicated;
+old-format filings with an institutional Any-Other row or a non-institution row LABELLED as an institution are HELD (the
+§158/§159 row-level heals exist only for N500); 2022-form public block must close in SHARES; mf/ins ≤ dii+0.05; nsh gate;
+continuity (fii >5pp / dii >10pp from every neighbour) HOLDS; a new key that equals an unrelated BSE-only scrip id is HELD
+(build_stock_fin counts shareholding keys as "taken" slugs — INNOVATIVE: NSE SME INE070Y vs BSE 541983 INE492Y).
+
+**The one new rule — PROVEN ZERO.** parse_shp refuses filings with no institution members ("no institutions" and "unknown
+vintage" look alike, §22b). `zero_proof()` accepts fii = dii = mf = ins = 0 only when the filing's own SHARE COUNTS give
+Public == Non-institutions + Government (parent row) exactly and promoter+public(+trust bucket) closes to [98,102].
+**Hold-out on all 43,904 filings: never fires on any of the 39,033 filings that report an institutional holding; fires on
+4,844 of 4,870 zero-institution filings.** A 0.011pp PERCENTAGE tolerance was tried first and let 59 filings with a real
+0.01-0.02% holding through (the §22j rounding-zero class) — never use percentages for this test.
+
+**Dates:** calendar day of NSE's broadcast (midnight rule) — except when the broadcast is a re-stamp of the ORIGINAL
+document: file created ≤ submission day+1 (name stamp `SHP_<id>_<ddmmyyyyHHMMSS>_WEB.xml`, used only to classify
+original-vs-refiling, never as a date) and broadcast >2 days after submission → the submission day (172 cells; PARIN
+Sep-2021 filed 13-Oct-2021, broadcast re-stamped 12-Jan-2022). A document created after its submission is a RE-FILING and
+keeps its own later broadcast day (44 cells) — its numbers are never served from the original's date (§142j/k).
+Median lag 18 d, 288 cells > 120 d (late SME filers / re-filings; dated late = conservative).
+
+**Result (store 97,806 cells, +3,512; 0 existing cells changed or removed; second apply byte-identical):**
+3,511 ledger cells / 742 symbols = SME 3,260 + main board 251 (one cell, MORARJEE Jun-2024, is served from
+`shp_fill_nse_gaps` which sits earlier in the list and dates the same numbers by the submission day). NSE SME symbols with
+any cell 0 → 534 of 548 (55.1% of calendar quarters — most SME companies file half-yearly, Mar/Sep); NSE main non-N500
+94.7% → 95.5%. HELD 47 cells: continuity 20, identity 12, slug collision 7, parser refused 3, old-format row-level 2, nsh 1,
+zero-beside-neighbour 1, unreadable 1. Share counts: 43,677 cells / 2,996 symbols, 24 held (>5× off every neighbour).
+**Verified:** guards gate / definition / revisions / feed OK; `build_stock_fin --out <scratch>` vs the committed slices —
+0 fields lost or changed on any of 6,110 pages, 539 gain shareholding, 15 new pages; share counts identical to CI's
+`shares_outstanding.json` on 2,971/2,971 same-quarter pairs; 8 random cells vs Screener: FII/DII equal on all 8 (3 proven
+zeros show no institutional row there); ASPIRE Dec-2025 promoter 72.37 (NSE's re-filed document, 10,983,674/15,178,000)
+vs Screener 72.35 (the original).
+**Consequences:** FII/DII strategies on the no-index ("All stocks") universe now see SME names (the engine screens every
+tape series, SME included since §145); Nifty-500 backtests are unaffected. Market cap for a quarter =
+shares(QE) × RAW close(QE) — never an adjusted close (100 names differ >10% from today's BSE mcap because a split/bonus
+followed their last filing, e.g. ZFCVINDIA 18.97 M shares at Mar-2026, today's close ₹2,354).
+**NOT filled — needs BSE:** BSE-only companies (2,179) and NSE main-board quarters NSE does not serve (thin before
+Sep-2021; recent BSE-only filers). The SHPQNewFormat list API refused this Mac's plain client (403) and an in-app-browser
+harvest was blocked by the permission system — its 250 scrip lists + 4,904 XBRLs sit UNUSED in
+`~/stocks-cache/shp/all_fill/_bse_route_on_hold/` (do not use without the user's OK). §179's header module is the
+sanctioned route; this Mac was rate-limited from ~17:00 IST, so a BSE pass must run paced (single thread) in Actions.

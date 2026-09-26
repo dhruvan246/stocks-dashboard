@@ -287,7 +287,12 @@ BSE_HIST_LEDGERS = [os.path.join(HERE, "shp_fill_thirdparty.json.gz"),
                     # companies BSE never carried. Overlap-gated against the BSE-derived cells (98.6% agree ≤0.11pp),
                     # point-in-time N500 member quarters only, ins=None (lump), sub=QE+21d -> served UN-DATED (§120).
                     # Fill-only, LAST: every BSE-derived cell wins where both hold a quarter.
-                    os.path.join(HERE, "shp_fill_nse_shpdetails.json.gz")]
+                    os.path.join(HERE, "shp_fill_nse_shpdetails.json.gz"),
+                    # ALL-STOCKS fill (2026-09-26, runbook §180, fetch_shp_allstocks.py): NSE's own SHP XBRL for every
+                    # NSE main-board and SME quarter-end filing 2020-03..2026-06 the store lacked. parse_shp unchanged,
+                    # plus zeros PROVEN by share-count arithmetic (Public == Non-institutions share for share); every
+                    # refused/ambiguous cell is in _shp_allstocks_holds.json, not here. Fill-only, LAST in the list.
+                    os.path.join(HERE, "shp_fill_allstocks.json.gz")]
 def apply_bse_hist_ledger(h):
     n_total = 0
     for path in BSE_HIST_LEDGERS:
