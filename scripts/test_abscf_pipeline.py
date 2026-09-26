@@ -12,6 +12,8 @@ like a real filing that was measured failing:
      drops cfo/cfi/cff when the statement's own identity cfo + cfi + cff (+ FX effect) = net change in
      cash FAILS.
   4. iuad (intangible assets under development) is its own line — never folded into intg or cwip.
+  3c. income tax is SIGNED by the statement's own arithmetic, + paid / - net refund (§168j; GESHIP FY22 adds its
+     9.47 = a refund, ATUL FY20 subtracts an unbracketed 216.77 = a payment); unprovable -> unread.
   5. merge: iuad lands; the validate year's cash flow lands as a CF-only cell (v=1) when the slice has
      no CF for that year (PFIZER FY25), never when it has; a fill whose CF identity fails keeps its BS
      but loses its CF; 'supplement' entries only fill null fields of the SAME document's cell, and only
@@ -106,7 +108,7 @@ BS = ('Consolidated Balance Sheet as at 31 March 2025\n(Rs. in crore)\nProperty,
       'Total assets 1000.00\nEquity share capital 10.00\nOther equity 600.00\nTrade payables 50.00\n'
       'Total equity and liabilities 1000.00')
 CF1 = ('Consolidated Statement of Cash Flows for the year ended 31 March 2025\n(Rs. in crore)\n'
-       'A. Cash flow from operating activities\nIncome taxes paid (net) (25.00)\n'
+       'A. Cash flow from operating activities\nCash generated from operations 115.00\nIncome taxes paid (net) (25.00)\n'
        'Net cash inflow from operating activities (A) 90.00')
 CF2 = ('Particulars\nB. Cash flow from investing activities\nPurchase of property, plant and equipment (35.00)\n'
        'Proceeds from sale of property, plant and equipment 5.00\n'
@@ -165,10 +167,28 @@ check('APLAPOLLO FY21: "977,11" (a decimal comma) is unreadable, never 97,711', 
 r = cf_of('Net cash flow from I (used in) from operating activities before income-tax 1,804.06 378.51', 'Income-tax paid (197.48) (106.85)',
           'Net cash flow from I (used in) operating activities 1,609.65 271.66', 'Net cash flow from I (used in) investing activities (150.74) (307.91)',
           'Net cash from I (used in ) financing activities (1,459.54) (36.64)', 'Net change in cash and cash equivalents (0.63) (72.89)', *BASE)
-check('BAJAJHLDNG FY22: the before-tax operating sub-total is skipped (cfo 1,609.65)', r.get('cfo') == 1609.65 and r.get('cf_tax') == 197.48)
-r = cf_of('Less: Direct taxes paid (net of refund) 784.08 980.78', 'Net cash used in investing activities (221.97) (2,289.32)',
+check('BAJAJHLDNG FY22: the before-tax operating sub-total is skipped (cfo 1,609.65); tax unread — 1,804.06 - 197.48 != 1,609.65, so its direction is unprovable',
+      r.get('cfo') == 1609.65 and r.get('cf_tax') is None)
+r = cf_of('Cash generated from operations 2,887.78 5,091.23', 'Less: Direct taxes paid (net of refund) 784.08 980.78',
+          'Net cash generated from operating activities 2,103.70 4,110.45', 'Net cash used in investing activities (221.97) (2,289.32)',
           'D. DECREASE IN CASH AND CASH EQUIVALENTS (A+B+C) (93.60) (30.69)', *BASE)
-check('HEROMOTOCO FY22: taxes paid printed positive under "Less:" still lands positive', r.get('cf_tax') == 784.08)
+check('HEROMOTOCO FY22: "Less: Direct taxes paid 784.08" is SUBTRACTED (2,887.78 - 784.08 = 2,103.70) -> +784.08, paid', r.get('cf_tax') == 784.08)
+# ---- 3c. income tax is SIGNED by the statement's own arithmetic (+ paid, - net refund; runbook §168j) --------
+r = cf_of('Cash generated from operations 1313.09 1535.74', 'Direct taxes paid/ (refund) 9.47 (1.57)',
+          'Net cash (used in)/generated from operating activities 1322.56 1534.17', *BASE)
+check('GESHIP FY22: "Direct taxes paid/ (refund) 9.47" is ADDED (1,313.09 + 9.47 = 1,322.56) -> -9.47, a refund', r.get('cf_tax') == -9.47)
+r = cf_of('Cash generated from operating activities 1,098.15 657.72', 'Income tax paid (net of refund) 216.77 254.14',
+          'Net cash flow from operating activities A 881.38 403.58', *BASE)
+check('ATUL FY20: an unbracketed 216.77 that is SUBTRACTED (1,098.15 - 216.77 = 881.38) -> +216.77, paid', r.get('cf_tax') == 216.77)
+r = cf_of('Cash generated from operations 251.39 300.00', 'Income taxes paid (258.00) (100.00)', 'Refund of income taxes 666.88 26.26',
+          'Net cash from operating activities 660.27 226.26', *BASE)
+check('BHEL FY22: payment and refund on separate lines -> their net, -408.88 (a net refund)', r.get('cf_tax') == -408.88)
+r = cf_of('Income tax paid (50.00) (40.00)', 'Net cash from operating activities 100.00 90.00', *BASE)
+check('no "cash generated from operations" line -> direction unprovable -> tax unread (never a guess)', r.get('cf_tax') is None and r.get('cfo') == 100.0)
+r = cf_of('Cash generated from operations 100.00 90.00', 'Income tax paid (0.01) (0.02)', 'Net cash from operating activities 99.99 89.98', *BASE)
+check('a tax line too small to tell paid from refund at the printed precision -> unread', r.get('cf_tax') is None)
+r = cf_of('Cash generated from operations 1676 1500', 'Income taxes paid (284) (250)', 'Net cash from operating activities 1392 1250', *BASE)
+check('whole-crore statement (TORNTPHARM-style): 1,676 - 284 = 1,392 -> +284', r.get('cf_tax') == 284.0)
 r = cf_of('NET CASH FROM OPERATING ACTIVITIES (82594) 703380 (102915) 702125', 'NET CASH FROM INVESTING ACTIVITIES (33251) (50923) (12930) (49668)',
           'NET CASH FROM FINANCING ACTIVITIES 114494 (650477) 114494 (650477)', 'Depreciation 10 9 11 10', 'Interest paid (5) (4) (6) (5)')
 check('NFL FY22: standalone + consolidated side by side (4 columns) -> cash flow NOT read from text',
@@ -281,7 +301,8 @@ json.dump({'HERO': {'20220331': {'b': 'c', 'm': 'text', 'src': 'bse:h.pdf', 'ass
            'VIND': {'20200331': {'b': 's', 'm': 'text', 'src': 'bse:v.pdf', 'assets': 900.0, 'ppe': 100.0,
                                  'cfo': 20.49, 'cfi': -0.08, 'cff': -48.28}},
            'KEEP': {'20210331': {'b': 'c', 'm': 'text', 'src': 'bse:k.pdf', 'assets': 500.0, 'ppe': 50.0, 'cfo': 30.0, 'cfi': -10.0, 'cff': -5.0}},
-           'VISN': {'20210331': {'b': 'c', 'm': 'vision', 'src': 'bse:n.pdf', 'assets': 500.0, 'ppe': 50.0, 'cfo': 30.0, 'cfi': -10.0, 'cff': -5.0}}},
+           'VISN': {'20210331': {'b': 'c', 'm': 'vision', 'src': 'bse:n.pdf', 'assets': 500.0, 'ppe': 50.0, 'cfo': 30.0, 'cfi': -10.0, 'cff': -5.0}},
+           'GESH': {'20220331': {'b': 'c', 'm': 'text', 'src': 'bse:g.pdf', 'assets': 9000.0, 'ppe': 700.0, 'cfo': 1322.56, 'cf_tax': 9.47}}},
           open(M.LEDGER, 'w'))
 reads = [  # HERO: re-read cannot read the split CFO; the statement's own net change (-93.60) contradicts the stored triple
          {'sym': 'HERO', 'fy': 2022, 'role': 'correct', 'basis': 'c', 'src': 'bse:h.pdf', 'assets': 24000.0,
@@ -292,7 +313,9 @@ reads = [  # HERO: re-read cannot read the split CFO; the statement's own net ch
          # KEEP: re-read disagrees but NOTHING verifies it (no net line) -> untouched
          {'sym': 'KEEP', 'fy': 2021, 'role': 'correct', 'basis': 'c', 'src': 'bse:k.pdf', 'assets': 500.0, 'cfo': 31.0, 'cfi': -10.0, 'cff': -5.0},
          # VISN: a vision cell is never "corrected" by a text re-read
-         {'sym': 'VISN', 'fy': 2021, 'role': 'correct', 'basis': 'c', 'src': 'bse:n.pdf', 'assets': 500.0, 'cfo': 40.0, 'cfi': -10.0, 'cff': -5.0, 'cf_net': 25.0}]
+         {'sym': 'VISN', 'fy': 2021, 'role': 'correct', 'basis': 'c', 'src': 'bse:n.pdf', 'assets': 500.0, 'cfo': 40.0, 'cfi': -10.0, 'cff': -5.0, 'cf_net': 25.0},
+         # GESH: the signed re-read says the 9.47 was a REFUND -> the stored +9.47 (the old positive-only rule) flips
+         {'sym': 'GESH', 'fy': 2022, 'role': 'correct', 'basis': 'c', 'src': 'bse:g.pdf', 'assets': 9000.0, 'cfo': 1322.56, 'cf_tax': -9.47}]
 json.dump(reads, open(rp, 'w')); sys.argv = [sys.argv[0], rp]
 M.main()
 L = json.load(open(M.LEDGER))
@@ -303,6 +326,9 @@ v = L['VIND']['20200331']
 check('VIND FY20: a re-read that passes the cash identity replaces the misread cfi (-0.08 -> 29.72)', v['cfi'] == 29.72 and v.get('fix') == {'cfi': -0.08})
 check('an unverified disagreement changes nothing', L['KEEP']['20210331'] == {'b': 'c', 'm': 'text', 'src': 'bse:k.pdf', 'assets': 500.0, 'ppe': 50.0, 'cfo': 30.0, 'cfi': -10.0, 'cff': -5.0})
 check('a vision cell is never corrected by a text re-read', L['VISN']['20210331']['cfo'] == 30.0 and 'fix' not in L['VISN']['20210331'])
+g = L['GESH']['20220331']
+check('GESH FY22: a stored +9.47 that the signed re-read proves a refund becomes -9.47 (old value kept in fix)',
+      g['cf_tax'] == -9.47 and g.get('fix') == {'cf_tax': 9.47})
 
 # ---- 7. unit slip: every shared field exactly k x the independent re-read -> rescale ------------
 json.dump({'ETRN': {'20220331': {'b': 'c', 'm': 'text', 'src': 'bse:e.pdf', 'assets': 173270.0, 'sc': 7643.0, 'oeq': 157412.0,

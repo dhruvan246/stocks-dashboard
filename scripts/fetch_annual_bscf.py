@@ -291,7 +291,7 @@ CF_ONE = [
     ('cfo',    r'net\s+cash[^\n]{0,50}?operating\s+activit(?![^\n]*before\s+(?:income[\s\-]*)?tax|[^\n]*before\s+exceptional)', 1),
     ('cfi',    r'net\s+cash[^\n]{0,50}?investing\s+activit', 1),
     ('cff',    r'net\s+cash[^\n]{0,50}?financing\s+activit', 1),
-    ('cf_tax', r'(?:income\s+)?tax(?:es)?\s+paid\b|direct\s+taxes\s+paid', 1),     # abs() in _cf_parse
+    ('cf_tax', r'(?:income\s+)?tax(?:es)?\s+paid\b|direct\s+taxes\s+paid', 1),     # signed by _tax_direction (§168j)
     ('capex',  r'(?:purchases?|acquisitions?|payments?\s+(?:for|towards)|additions?\s+to|(?:capital\s+)?expenditure\s+on)\b'
                r'[^\n]{0,30}?(?:property,?\s*plant|fixed\s+assets|\btangible\s+assets|\bppe\b)', 1),   # abs() in _cf_parse
     # the net change in cash — "Net increase/(decrease) in cash ..." or a bare "D. DECREASE IN CASH ..."
@@ -308,6 +308,49 @@ CF_FX = re.compile(r'(?:effects?|impact)\s+of\b[^\n]{0,60}?(?:exchange|currenc)[
 _BARE_INT = re.compile(r'^\(?-?\d{1,3}\)?[.,;:]?$')          # "2", "(8)", "103" — no grouping, no decimals
 _SPLIT_TAIL = re.compile(r'^\(?-?\d{3}(?:\.\d+)?\)?[.,;:]?$')  # "103", "403.70": the rest of a split figure
 
+# Income tax in the cash flow is stored SIGNED in the exchange-data (XBRL) convention: + paid, - net refund.
+# The direction comes from the statement's own arithmetic, never its label or brackets (runbook §168j):
+# GESHIP FY22 "Direct taxes paid/ (refund) 9.47" is ADDED (1,313.09 + 9.47 = 1,322.56: a refund), ATUL FY20
+# "Income tax paid (net of refund) 216.77" is SUBTRACTED (1,098.15 - 216.77 = 881.38: a payment).
+CF_GEN = re.compile(r'cash\s+(?:flows?\s+)?(?:generated|used|\(used\s+in\)|inflow|outflow|from)[^\n]{0,60}?(?:operations?\b|operating\s+activit)'
+                    r'|(?:post|after)\s+working\s+capital|operating\s+(?:profit|cash\s*flow)[^\n]{0,40}?(?:after|post)\s+(?:working|changes)'
+                    r'|operating\s+activit[^\n]{0,20}?before\s+(?:income[\s\-]*)?tax', re.I)
+CF_TAXLINE = re.compile(r'tax(?:es)?\b[^\n]{0,30}?(?:paid|refund|received)|(?:paid|refund(?:ed)?|received)[^\n]{0,20}?\btax'
+                        r'|direct\s+tax(?:es)?|income[\s\-]*tax(?:es)?\s*(?:\(net\)|,?\s*net\b)|tax(?:es)?\s*\(net\)', re.I)
+CF_TAXNOT = re.compile(r'before\s+(?:income[\s\-]*)?tax|tax\s+expense|deferred|provision\s+for\s+tax|tax\s+deducted|dividend', re.I)
+_NETLINE = re.compile(r'^\s*(?:\(?[a-e]\)?[.:]?\s+)?net\b(?![^\n]*before\s+(?:income[\s\-]*)?tax)', re.I)
+
+def _tax_direction(fixed, rows, cfo):
+    """The operating section's net income-tax cash flow, signed + paid / - net refund, or None.
+    C = the net-operating-cash line that carries `cfo`; O = the 'cash generated from operations' line
+    above it; S = C - O - (every other line between them, as printed) is what the tax line(s) did to cash.
+    Accepted only when |S| equals the printed tax amount (several tax lines — BHEL FY22 prints the payment
+    and the refund apart — are summed as printed) and the amount is large enough that the two directions
+    cannot be confused at the statement's printed precision. Anything else: None, never a guess."""
+    if cfo is None:
+        return None
+    rx_cfo = re.compile(CF_ONE[0][1], re.I)
+    for ic, (lab, n) in enumerate(fixed):
+        if not (rx_cfo.search(lab) and n and n[0] is not None and abs(n[0] - cfo) < 0.005):
+            continue
+        io = next((i for i in range(ic - 1, max(-1, ic - 9), -1)
+                   if fixed[i][1] and CF_GEN.search(fixed[i][0]) and not _NETLINE.search(fixed[i][0])), None)
+        if io is None or fixed[io][1][0] is None:
+            return None
+        taxes = [i for i in range(io + 1, ic) if fixed[i][1] and CF_TAXLINE.search(fixed[i][0]) and not CF_TAXNOT.search(fixed[i][0])]
+        others = [i for i in range(io + 1, ic) if fixed[i][1] and i not in taxes]
+        if not taxes or any(fixed[i][1][0] is None for i in taxes + others):
+            return None
+        T = sum(fixed[i][1][0] for i in taxes)
+        S = cfo - fixed[io][1][0] - sum(fixed[i][1][0] for i in others)
+        toks = [toks[0][0] for i in [io, ic] + taxes + others for toks in [rows[i][1]] if toks]
+        res = 1.0 if all('.' not in t for t in toks) else 0.01
+        tol = res * 0.5 * (2 + len(taxes) + len(others)) + 1e-9     # half a printed unit per term
+        if abs(T) <= 2 * tol or abs(abs(S) - abs(T)) > tol:
+            return None
+        return round(-S, 2)
+    return None
+
 def _cf_parse(rows):
     """CF_ONE over a cash-flow statement's token rows (rows_tok), with guards measured on real filings
     (2026-09-26). Returns the fields plus '_cf_ok' (the identity verdict) and '_cf_layout'.
@@ -320,7 +363,9 @@ def _cf_parse(rows):
         is left unread (HEROMOTOCO FY22 printed 2,103.70 as "2 103 70" -> stored CFO 2.0); one extra bare
         integer <= 50 before a complete figure is a note / section marker and is dropped (KRBL FY21 capex
         "1 (4,142)", VINDHYATEL FY20 "(B)" OCR'd as "(8)");
-      * capex and taxes paid are outflows by definition: abs(), whatever sign convention the filer uses;
+      * capex is an outflow by definition: abs(), whatever sign convention the filer uses. Income tax is
+        NOT: a net refund is an inflow, so cf_tax is signed by the statement's own arithmetic
+        (_tax_direction: + paid, - refund) and left unread when that cannot be proven (§168j);
       * cfo/cfi/cff are dropped when the statement's own identity cfo + cfi + cff (+ any FX-effect line)
         = net change in cash is checkable and fails (APLAPOLLO FY21 "977,11"; IPCALAB FY20's text layer
         says 554.27 where the page prints 564.27)."""
@@ -346,9 +391,9 @@ def _cf_parse(rows):
                     nums = [None]
         fixed.append((lab, nums))
     cf = parse_rows(fixed, CF_ONE, [])
-    for k in ('capex', 'cf_tax'):
-        if cf.get(k) is not None:
-            cf[k] = abs(cf[k])
+    if cf.get('capex') is not None:
+        cf['capex'] = abs(cf['capex'])
+    cf.pop('cf_tax', None)                       # re-derived, signed, below
     a, b, c, net = cf.get('cfo'), cf.get('cfi'), cf.get('cff'), cf.get('_cf_net')
     chk = cf_identity(a, b, c, net)
     fxs = [n[0] for lab, n in fixed if n and n[0] is not None and CF_FX.search(lab)]
@@ -368,6 +413,10 @@ def _cf_parse(rows):
             (a, b, c), f = next(iter(sols.items()))
             cf.update({'cfo': a, 'cfi': b, 'cff': c}); chk = True
             if f is not None: cf['_cf_fx'] = f
+    # before a failed identity drops cfo: the tax arithmetic checks the operating line on its own terms
+    tax = _tax_direction(fixed, rows, cf.get('cfo'))
+    if tax is not None:
+        cf['cf_tax'] = tax
     if chk is False:
         for k in ('cfo', 'cfi', 'cff'):
             cf.pop(k, None)
@@ -703,7 +752,9 @@ _VPROMPT = (
     "Receivables; pay=total Trade Payables; invnt=Inventories; cfo=Net Cash Flow FROM OPERATING "
     "activities; cfi=Net Cash Flow FROM INVESTING activities; cff=Net Cash Flow FROM FINANCING "
     "activities; capex=cash spent on purchase of PP&E/intangibles (investing outflow, as a positive "
-    "number); cf_tax=income taxes paid (operating, positive number); cf_net=Net increase/(decrease) in "
+    "number); cf_tax=net income tax in the operating section, POSITIVE if tax was paid, NEGATIVE if a net refund "
+    "came in — decide by the statement's arithmetic (cash generated from operations +/- this line = net cash from "
+    "operating activities), never by its label or brackets; null if that cannot be seen; cf_net=Net increase/(decrease) in "
     "cash and cash equivalents; cf_fx=effect of exchange-rate changes on cash (null if not printed). The "
     "cash-flow statement may continue onto a second image — read both. If these are the wrong company or "
     "you cannot find a balance sheet, set ok=false. Return ONLY the JSON object."

@@ -20349,6 +20349,42 @@ the cash identity, gated by merge. Traps, each measured on a real filing:
   values touched this session are restated comparatives (point-in-time as-filed values are kept), Screener's own
   definitions (Reserves incl. perpetual securities; CWIP without iuad for some filers), or unchecked.
 
+### 168j. ★★ Income tax in the cash flow is SIGNED (+ paid, − net refund) — the positive-only rule wrote refunds as payments (2026-09-26)
+User asked whether the negative tax-paid figures were refunds or sign slips ("find it now"). **They are refunds.**
+- **Exchange data (XBRL), every filing in `scripts/_xbrl_cache` re-parsed with `build_xbrl_extra.parse_file` + the operating
+  lines around the tax** (`~/stocks-cache/xbrl_taxsign/scan_taxsign.py`, `classify.py`): the filer's own identity
+  `CashFlowsFromUsedInOperations − IncomeTaxesPaidRefund (± interest/dividend/other operating lines) =
+  CashFlowsFromUsedInOperatingActivities` closes under the TAXONOMY convention (+ paid) for 34,161 of 34,805 non-zero stored
+  cells — 30,377 positive AND 3,784 negative (= a net refund came in) — and under the "brackets typed as minus" convention for
+  **0**. 642 are too small to tell, 2 close neither way. **A negative XBRL cf_tax is a refund, never assume a sign slip.**
+  Read two filings to confirm: GESHIP FY22 con prints "Direct taxes paid/ (refund) 9.47" and ADDS it (1,313.09 + 9.47 =
+  1,322.56); MAHLOG FY21 con 242.21 + 51.49 = 293.70. The label and the brackets do not give the direction; the arithmetic does.
+- **Display bug (fixed):** stock.html showed `−|cf_tax|`, so every refund year appeared as a payment (in the annual columns
+  alone: 1,079 XBRL cells, 286 of them PIT-Nifty-500 / 139 companies). Now `−cf_tax`, row "Income tax paid / refund", note
+  says negative = paid, positive = net refund; exact zero no longer prints "-0". sw v184.
+- **Our PDF ledger mixed conventions** (text reader `abs()`, vision prompt "positive number", and `merge.correct()` turning
+  a stored negative positive whenever a re-read gave the same size — that last rule flipped the GESHIP FY22 and MAHLOG FY21
+  refunds into payments during §168g). Audit of all 795 non-zero ledger values against their OWN filing's arithmetic, tax row
+  found BY AMOUNT, next year's comparative column as the second printing (`ledger_tax_audit2.py`, strict: same column, every
+  line between counted): 546 proven right, **19 wrong sign** (15 payments stored negative, 4 refunds stored positive) →
+  sign-fixed (old value in `fix`); ASIANTILES FY20/FY25 were not tax at all — the old label pattern matched "Cash generated from
+  operations **Before Income Tax Paid**" (−68.17 / −87.07 → paid 14.26 / 5.65 by 6,817.45 − 1,426.02 = 5,391.43 and
+  8,707.15 − 564.91 = 8,142.24, Rs lakh); 20 SHOWN negatives the text could not prove were read by eye: 12 proven refunds
+  (JINDALSTEL FY21, JPPOWER FY21/22, POONAWALLA FY20, MAHSCOOTER FY20 = 386 refund − 312 paid, BATAINDIA FY21, IRFC FY22 …),
+  6 withheld (BEML FY20, ITI FY20, JINDALSTEL FY20, MAGADSUGAR FY20, ITDC FY20, MAXHEALTH FY21 — scans / basis unclear; old
+  value in `fix`). Why withhold negatives but not positives: among proven cells a stored negative was wrong 15 of 44 times, a
+  stored positive 4 of 521. Of the 230 the automated text check could not decide, those 20 shown negatives were settled by
+  eye; the other 210 (mostly scans — positives shown as payments as before, or values hidden behind XBRL) remain unproven.
+- **Code:** `fetch_annual_bscf._tax_direction()` — C = the net-operating line carrying cfo, O = "cash generated from
+  operations" (incl. "… before income tax" sub-totals) above it, S = C − O − (every other line between, as printed); accepted
+  only when |S| equals the printed tax (several tax lines summed — BHEL FY22 prints payment and refund apart) and the amount
+  is > 2 × half-a-printed-unit per term; cf_tax = −S, else **unread**. `merge.correct()` now flips either way when the
+  signed re-read has the same magnitude. The routine SKILL.md, `~/stocks-cache/abscf/tools/reader_prompt.md` and the API
+  schema ask for the signed value by the same arithmetic. Tests: `scripts/test_abscf_pipeline.py` 58 (GESHIP refund, ATUL
+  unbracketed payment, BHEL two-line net refund, no "cash generated" line → unread, too small → unread, whole-crore statement).
+- Open: GOLDTECH FY22 ledger magnitudes look off by powers of ten (direction proven refund); the 210 text-unprovable values
+  need an image read (ask the user first — memory feedback-vision-reads-last-ask-first).
+
 ## 169. Our-side price errors found by the Quantmac indicator reconciliation — 3 wrong boundaries, 2 rights factors, 1 duplicate rights row, 2 unjoined renames, 1 missing listing week, 34 stray fragment bars  (2026-09-26, user: "investigate" the possibly-ours cells; "don't assume" either side)
 **NO ASSUMPTIONS** — reference = NSE's own files, cached durably: every bhavcopy 2008-2026 (`~/stocks-cache/nse_bhav/full/`, 4,640
 sessions, file TIMESTAMP == URL date) and the corporates-corporateActions feed 2008-2026 with subject text (`~/stocks-cache/nse_ca/`,

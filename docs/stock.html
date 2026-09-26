@@ -1117,7 +1117,9 @@ function renderDeep(ends,patFn,revFn,opFn,isFin){
       const cfoOp=fy=>{ const x=C(fy),o=fyOp(fy); return (x.cfo!=null&&o)?x.cfo/o*100:null; };
       const rows=[
         {label:'Cash from Operating', get:fy=>C(fy).cfo, fmt:crS, bold:true, neg:true, id:'cfo', sub:[
-          {label:'Income tax paid', get:fy=>{ const t=C(fy).cf_tax; return t==null?null:-Math.abs(t); }, fmt:crS, neg:true},
+          // cf_tax is signed like the exchange data: + tax paid, − net refund received (runbook §168j) — so a
+          // payment shows as an outflow and a refund as an inflow (−|t| showed every refund as a payment)
+          {label:'Income tax paid / refund', get:fy=>{ const t=C(fy).cf_tax; return t==null?null:(-t||0); }, fmt:crS, neg:true},
         ]},
         {label:'Cash from Investing', get:fy=>C(fy).cfi, fmt:crS, neg:true},
         {label:'Cash from Financing', get:fy=>C(fy).cff, fmt:crS, neg:true},
@@ -1126,7 +1128,7 @@ function renderDeep(ends,patFn,revFn,opFn,isFin){
         {label:'CFO / OP', get:cfoOp, fmt:v=>v.toFixed(0)+'%', faint:true},
       ];
       html=matrix(cfFys, rows);
-      note='₹ crore, full-year cash flows (period ≥ 300 days), '+(bcB==='std'?'standalone':'consolidated where filed')+'. Net Cash Flow = operating + investing + financing; Free Cash Flow = CFO − capex; CFO/OP = operating cash ÷ operating profit.';
+      note='₹ crore, full-year cash flows (period ≥ 300 days), '+(bcB==='std'?'standalone':'consolidated where filed')+'. Net Cash Flow = operating + investing + financing; Free Cash Flow = CFO − capex; CFO/OP = operating cash ÷ operating profit. Income tax: negative = tax paid, positive = a net refund received that year.';
     }else if(cur==='ratio'){
       const B=fy=>{ const c=bsOf(fy); return c?c.x:{}; };
       const dOn=(amt,fy)=>{ const r=fyRev(fy); return (amt!=null&&r)?amt/r*365:null; };

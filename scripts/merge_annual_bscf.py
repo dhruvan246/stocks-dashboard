@@ -126,7 +126,9 @@ def correct(cell, e):
       * otherwise, if the STORED triple contradicts the statement's own net change in cash, each stored
         value the re-read cannot reproduce is removed (HEROMOTOCO FY22 CFO 2.0 from "2 103 70";
         APLAPOLLO FY21 CFO 97,711 from "977,11") — a gap, never a guess;
-      * a negative stored cf_tax the re-read reproduces as positive is sign-fixed.
+      * a stored cf_tax the re-read reproduces with the OTHER sign takes the re-read's sign — the reader
+        signs income tax by the statement's own arithmetic (+ paid, - net refund; §168j). The old rule
+        only ever turned negatives positive, and so wrote GESHIP FY22 / MAHLOG FY21 refunds as payments.
     Never touches a vision cell; requires the same document, basis, and Total Assets within 0.5%.
     The old values stay in the cell under 'fix' (audit trail)."""
     if not cell or cell.get("m") != "text" or e.get("src") != cell.get("src") or e.get("basis") != cell.get("b"):
@@ -143,7 +145,7 @@ def correct(cell, e):
             if cell.get(f) is not None and not _same(cell[f], e.get(f)):
                 fix[f] = cell.pop(f)
     t = cell.get("cf_tax")
-    if t is not None and t < 0 and _same(-t, e.get("cf_tax")):
+    if t and e.get("cf_tax") is not None and _same(-t, e["cf_tax"]):
         fix["cf_tax"] = t; cell["cf_tax"] = e["cf_tax"]
     if fix:
         cell["fix"] = dict(cell.get("fix", {}), **fix)
