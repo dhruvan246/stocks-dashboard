@@ -3,7 +3,7 @@
   "built": "2026-09-21",
   "rule": "RAW NSE bhavcopy OHLC/volume/turnover(lacs) + MTO delivery %; scaled at apply time by f = stored close of the anchor bar / anchor raw close (update_sf_data.apply_bar_inserts); fill-only where the (sym,date) bar is absent; rows apply in (sym,date) order so 2010-10-26 / 2017-03-27 anchor on the ledger's own 2010-10-14 / 2017-03-24 rows",
   "why": "the \u00a7106b missing-session insert skipped these rows: TMPV because the as-printed symbol TATAMOTORS is itself a (dead) bin key so _survivor() kept the bar on that fragment; BAJFINANCE because its cumulative adjustment (two 1:10 splits) put f=0.0097 under the inserter's 0.01 floor. DATA_RUNBOOK \u00a7106h",
-  "src": "cm<DDMONYYYY>bhav.csv.zip + MTO_DDMMYYYY.DAT from nsearchives.nseindia.com, fetched 2026-09-21; anchor raw close == the session's own PREVCLOSE (except 2010-10-26 rows, see note); two-sided f agreement within 0.5% + 2-dp rounding on every directly-anchored row | 2026-09-21b: 2110 rows on the 11 weekend special sessions + 11 \u00a7106b sessions recovered by the inserter fixes (see rows' note) | 2026-09-21c: 22 rows for members whose split ex-date fell ON a missing session (anchor expressed post-split with the official factor) | 2026-09-21d: FCSSOFT 2009-10-17 dropped (two-sided check +9.5%); every other row validated two-sided against the next stored bar (2132 ok, 13 chained on bars the session insert creates first \u2014 verified in the local full-sequence run) | 2026-09-21e: 957 renamed-key rows on the 2019-2026 weekend special sessions (dry-run harvest, two-sided validated; 1 flagged rows dropped) | 2026-09-21f: RASOYPR 2015-09-03 (the last quantmac no-bar cell) \u2014 anchored on the real-close 08-31 bar (f=1, no 2015 CA) past its zero-close 09-01/02 neighbours | 2026-09-25 (\u00a7163): the 2 AGCNET-keyed rows (2009-10-17, 2010-02-06) re-keyed to BBOX after the AGCNET->BBOX seam merge \u2014 else they would print 'series absent' and drop"
+  "src": "cm<DDMONYYYY>bhav.csv.zip + MTO_DDMMYYYY.DAT from nsearchives.nseindia.com, fetched 2026-09-21; anchor raw close == the session's own PREVCLOSE (except 2010-10-26 rows, see note); two-sided f agreement within 0.5% + 2-dp rounding on every directly-anchored row | 2026-09-21b: 2110 rows on the 11 weekend special sessions + 11 \u00a7106b sessions recovered by the inserter fixes (see rows' note) | 2026-09-21c: 22 rows for members whose split ex-date fell ON a missing session (anchor expressed post-split with the official factor) | 2026-09-21d: FCSSOFT 2009-10-17 dropped (two-sided check +9.5%); every other row validated two-sided against the next stored bar (2132 ok, 13 chained on bars the session insert creates first \u2014 verified in the local full-sequence run) | 2026-09-21e: 957 renamed-key rows on the 2019-2026 weekend special sessions (dry-run harvest, two-sided validated; 1 flagged rows dropped) | 2026-09-21f: RASOYPR 2015-09-03 (the last quantmac no-bar cell) \u2014 anchored on the real-close 08-31 bar (f=1, no 2015 CA) past its zero-close 09-01/02 neighbours | 2026-09-25 (\u00a7163): the 2 AGCNET-keyed rows (2009-10-17, 2010-02-06) re-keyed to BBOX after the AGCNET->BBOX seam merge \u2014 else they would print 'series absent' and drop | 2026-09-26 (\u00a7179): 11 Nifty-500 member bars NSE printed that the bin lacked (live-bin vs NSE full-bhavcopy scan, 2008-2026): ALLCARGO/ANSALAPI(as ANSALINFRA)/BAJFINANCE(as BAJAUTOFIN) on the \u00a7106b session 2008-02-19 (outside the \u00a7106i 2009+ harvest) + 8 BE-only (trade-for-trade) days: DMART/AFFLE/PCJEWELLER 2020-04-13, HATHWAY 2020-09-28, JSWENERGY/TRIDENT/TTML/FLUOROCHEM 2022-03-07; anchor raw close == PREVCLOSE and two-sided f agreement on all 11"
  },
  "rows": [
   {
@@ -56996,6 +56996,215 @@
    },
    "note": "\u00a7169: session held only by the dead TATAMOTORS fragment",
    "src": "scripts/weekend_sessions.json.gz rows (NSE bhavcopy 20080219, prior session 20080218) = nsearchives 19-FEB-2008"
+  },
+  {
+   "sym": "ALLCARGO",
+   "ymd": 20080219,
+   "as": "ALLCARGO",
+   "o": 725.0,
+   "h": 739.95,
+   "l": 690.2,
+   "c": 712.35,
+   "v": 10739,
+   "tl": 76.9631,
+   "vw": 716.6695,
+   "dv": 45.73,
+   "anchor": {
+    "ymd": 20080218,
+    "c": 702.55
+   },
+   "note": "\u00a7179: Nifty-500 member bar NSE printed (series EQ) that the bin lacked; \u00a7106b session row the 2026-08-23 insert skipped (2008 is outside the \u00a7106i 2009+ harvest)",
+   "src": "nsearchives cm19FEB2008bhav.csv.zip (TOTTRDVAL/1e5 -> lacs) + MTO_19022008.DAT traded 10739 == TOTTRDQTY"
+  },
+  {
+   "sym": "ANSALAPI",
+   "ymd": 20080219,
+   "as": "ANSALINFRA",
+   "o": 218.55,
+   "h": 225.0,
+   "l": 218.1,
+   "c": 220.5,
+   "v": 659248,
+   "tl": 1464.133,
+   "vw": 222.0914,
+   "dv": 45.76,
+   "anchor": {
+    "ymd": 20080218,
+    "c": 216.3
+   },
+   "note": "\u00a7179: Nifty-500 member bar NSE printed (series EQ) that the bin lacked; \u00a7106b session row the 2026-08-23 insert skipped (2008 is outside the \u00a7106i 2009+ harvest)",
+   "src": "nsearchives cm19FEB2008bhav.csv.zip (TOTTRDVAL/1e5 -> lacs) + MTO_19022008.DAT traded 659248 == TOTTRDQTY"
+  },
+  {
+   "sym": "BAJFINANCE",
+   "ymd": 20080219,
+   "as": "BAJAUTOFIN",
+   "o": 422.7,
+   "h": 445.0,
+   "l": 400.5,
+   "c": 435.4,
+   "v": 21105,
+   "tl": 91.4265,
+   "vw": 433.1981,
+   "dv": 54.79,
+   "anchor": {
+    "ymd": 20080218,
+    "c": 420.0
+   },
+   "note": "\u00a7179: Nifty-500 member bar NSE printed (series EQ) that the bin lacked; \u00a7106b session row the 2026-08-23 insert skipped (2008 is outside the \u00a7106i 2009+ harvest)",
+   "src": "nsearchives cm19FEB2008bhav.csv.zip (TOTTRDVAL/1e5 -> lacs) + MTO_19022008.DAT traded 21105 == TOTTRDQTY"
+  },
+  {
+   "sym": "DMART",
+   "ymd": 20200413,
+   "as": "DMART",
+   "o": 2320.0,
+   "h": 2320.0,
+   "l": 2273.05,
+   "c": 2273.05,
+   "v": 272324,
+   "tl": 6197.1331,
+   "vw": 2275.6471,
+   "dv": 100.0,
+   "anchor": {
+    "ymd": 20200409,
+    "c": 2392.65
+   },
+   "note": "\u00a7179: Nifty-500 member bar NSE printed (series BE) that the bin lacked; the day's only row was BE (trade-for-trade)",
+   "src": "nsearchives cm13APR2020bhav.csv.zip (TOTTRDVAL/1e5 -> lacs); series BE = trade-for-trade, compulsory delivery -> dv 100 (the dv_fill BE/T2T convention; MTO lists EQ rows only)"
+  },
+  {
+   "sym": "AFFLE",
+   "ymd": 20200413,
+   "as": "AFFLE",
+   "o": 1161.4,
+   "h": 1161.4,
+   "l": 1161.4,
+   "c": 1161.4,
+   "v": 10218,
+   "tl": 118.6719,
+   "vw": 1161.4,
+   "dv": 100.0,
+   "anchor": {
+    "ymd": 20200409,
+    "c": 1106.1
+   },
+   "note": "\u00a7179: Nifty-500 member bar NSE printed (series BE) that the bin lacked; the day's only row was BE (trade-for-trade)",
+   "src": "nsearchives cm13APR2020bhav.csv.zip (TOTTRDVAL/1e5 -> lacs); series BE = trade-for-trade, compulsory delivery -> dv 100 (the dv_fill BE/T2T convention; MTO lists EQ rows only)"
+  },
+  {
+   "sym": "PCJEWELLER",
+   "ymd": 20200413,
+   "as": "PCJEWELLER",
+   "o": 11.4,
+   "h": 12.0,
+   "l": 11.4,
+   "c": 11.4,
+   "v": 347091,
+   "tl": 39.5899,
+   "vw": 11.4062,
+   "dv": 100.0,
+   "anchor": {
+    "ymd": 20200409,
+    "c": 12.0
+   },
+   "note": "\u00a7179: Nifty-500 member bar NSE printed (series BE) that the bin lacked; the day's only row was BE (trade-for-trade)",
+   "src": "nsearchives cm13APR2020bhav.csv.zip (TOTTRDVAL/1e5 -> lacs); series BE = trade-for-trade, compulsory delivery -> dv 100 (the dv_fill BE/T2T convention; MTO lists EQ rows only)"
+  },
+  {
+   "sym": "HATHWAY",
+   "ymd": 20200928,
+   "as": "HATHWAY",
+   "o": 30.85,
+   "h": 31.15,
+   "l": 30.1,
+   "c": 31.15,
+   "v": 144393,
+   "tl": 44.391,
+   "vw": 30.7432,
+   "dv": 100.0,
+   "anchor": {
+    "ymd": 20200925,
+    "c": 29.7
+   },
+   "note": "\u00a7179: Nifty-500 member bar NSE printed (series BE) that the bin lacked; the day's only row was BE (trade-for-trade)",
+   "src": "nsearchives cm28SEP2020bhav.csv.zip (TOTTRDVAL/1e5 -> lacs); series BE = trade-for-trade, compulsory delivery -> dv 100 (the dv_fill BE/T2T convention; MTO lists EQ rows only)"
+  },
+  {
+   "sym": "JSWENERGY",
+   "ymd": 20220307,
+   "as": "JSWENERGY",
+   "o": 318.05,
+   "h": 322.25,
+   "l": 312.6,
+   "c": 312.7,
+   "v": 865738,
+   "tl": 2730.0483,
+   "vw": 315.3435,
+   "dv": 100.0,
+   "anchor": {
+    "ymd": 20220304,
+    "c": 329.05
+   },
+   "note": "\u00a7179: Nifty-500 member bar NSE printed (series BE) that the bin lacked; the day's only row was BE (trade-for-trade)",
+   "src": "nsearchives cm07MAR2022bhav.csv.zip (TOTTRDVAL/1e5 -> lacs); series BE = trade-for-trade, compulsory delivery -> dv 100 (the dv_fill BE/T2T convention; MTO lists EQ rows only)"
+  },
+  {
+   "sym": "TRIDENT",
+   "ymd": 20220307,
+   "as": "TRIDENT",
+   "o": 48.55,
+   "h": 50.0,
+   "l": 48.55,
+   "c": 48.7,
+   "v": 7542675,
+   "tl": 3689.1832,
+   "vw": 48.9108,
+   "dv": 100.0,
+   "anchor": {
+    "ymd": 20220304,
+    "c": 51.1
+   },
+   "note": "\u00a7179: Nifty-500 member bar NSE printed (series BE) that the bin lacked; the day's only row was BE (trade-for-trade)",
+   "src": "nsearchives cm07MAR2022bhav.csv.zip (TOTTRDVAL/1e5 -> lacs); series BE = trade-for-trade, compulsory delivery -> dv 100 (the dv_fill BE/T2T convention; MTO lists EQ rows only)"
+  },
+  {
+   "sym": "TTML",
+   "ymd": 20220307,
+   "as": "TTML",
+   "o": 97.6,
+   "h": 97.6,
+   "l": 97.6,
+   "c": 97.6,
+   "v": 808691,
+   "tl": 789.2824,
+   "vw": 97.6,
+   "dv": 100.0,
+   "anchor": {
+    "ymd": 20220304,
+    "c": 102.7
+   },
+   "note": "\u00a7179: Nifty-500 member bar NSE printed (series BE) that the bin lacked; the day's only row was BE (trade-for-trade)",
+   "src": "nsearchives cm07MAR2022bhav.csv.zip (TOTTRDVAL/1e5 -> lacs); series BE = trade-for-trade, compulsory delivery -> dv 100 (the dv_fill BE/T2T convention; MTO lists EQ rows only)"
+  },
+  {
+   "sym": "FLUOROCHEM",
+   "ymd": 20220307,
+   "as": "FLUOROCHEM",
+   "o": 2452.6,
+   "h": 2545.0,
+   "l": 2428.8,
+   "c": 2508.8,
+   "v": 97513,
+   "tl": 2419.9411,
+   "vw": 2481.6599,
+   "dv": 100.0,
+   "anchor": {
+    "ymd": 20220304,
+    "c": 2556.6
+   },
+   "note": "\u00a7179: Nifty-500 member bar NSE printed (series BE) that the bin lacked; the day's only row was BE (trade-for-trade)",
+   "src": "nsearchives cm07MAR2022bhav.csv.zip (TOTTRDVAL/1e5 -> lacs); series BE = trade-for-trade, compulsory delivery -> dv 100 (the dv_fill BE/T2T convention; MTO lists EQ rows only)"
   }
  ]
 }
