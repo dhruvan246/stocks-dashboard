@@ -3089,6 +3089,9 @@ table (still live, calendar-adjacent raises). The findings below stand — cite 
   the FII direction adds ~nothing at quarterly granularity with a 3-week filing lag (signal ≈ control ≈
   baseline), and longer streaks HURT. The `ewall` baseline chip exists precisely so the page says this
   itself — keep it when adding variants.
+- **★ 2026-09-26 RE-TEST ON 2001→2026, 91,237 filing-events (§177):** same verdict at basket level (streak ≥3 18.9 % CAGR vs
+  all-filers 22.8 %); the typical stock tilts +3-5 pp / 12 m only at 5-6+ quarter streaks (55 % hit); the BIGGEST
+  single-quarter FII/DII jumps are a NEGATIVE signal (−7 to −17 pp mean, 42-48 % hit). Tab not built.
 
 ### 22d. FII/DII FACTORS IN THE STRATEGY BUILDER  (added 2026-07-16)
 **`fiiPct` / `fiiChgPp` / `diiPct` / `diiChgPp`** are sort+filter factors in BOTH engines
@@ -20767,3 +20770,85 @@ _rename_map chain contributes its quarters FILL-ONLY (own data wins) to fund / r
 former key that filed ANY quarter the current symbol also filed was a concurrent company (merger partner) → never merged.
 Old vs new full build, identical inputs: 0 existing values changed; +2,692 x quarters, +700 revop quarters, +825 fund rows,
 +513 shpH rows (ORCHPHARMA, SWANDEF, PIRAMALFIN, AQYLON, GUJENERGY largest).
+
+## §177 — FII/DII ACCUMULATION-STREAK EVENT STUDY, 2001→2026: the typical stock tilts a little at 5+ quarters, a basket gains nothing, and the BIGGEST jumps are a NEGATIVE signal (2026-09-26, user: "research well whether FII buying N quarters in a row makes the stock run; if so add a Daily-Ideas tab")
+**Question.** The user saw FII/DII jump in Sterlite Tech and Pine Labs and asked for (a) research on whether K consecutive
+quarters of FII (or DII) raising, or the biggest single-quarter jumps, predict how much a stock runs, and (b) IF the data
+says yes, a daily job + a "biggest jump by FII/DII" lane on `docs/ideas.html`. §22c had tested the streak idea on
+Jul-2020→2026 only (verdict: no edge over equal-weight). The store now reaches 2001, so this is the 25-year re-test.
+
+**Tools (tracked):** `scripts/shp_streak_study.py` (build ≈20 s; `report` mode re-prints from the saved events) → full
+printout `scripts/SHP_STREAK_STUDY_REPORT.txt` (614 lines, every table below and more); working copies + `events.json`
+in `~/stocks-cache/shp/streak_study/`. Prices = the LIVE bin fetched to `~/stocks-cache/sf-live/` (end 2026-09-25,
+5,260 symbols) — never the committed docs bin (§0).
+
+**Method (point-in-time, same rules as the engines).** Signal = `docs/shp_engine.json` quarter-end rows only (event rows
+have no calendar-previous quarter); a delta only against the CALENDAR-previous quarter (a gap breaks the streak); no delta
+across the Jun→Sep-2022 SEBI format change (§22b); streak = consecutive quarters with ΔFII ≥ +0.05 pp (the
+shareholding.html 🔥 definition). Visibility = the stored submission date, or qe+28 d for the 25,906 undated pre-2014
+rows (§120 convention — this can only make pre-2014 look BETTER for the signal, a few % of cells are seen days early).
+Entry = close of the first trading day strictly AFTER visibility. Forward return over 30/91/182/365 calendar days; a
+delisted name exits at its last close (survivorship-free bin). **Excess = the stock minus its SAME-QUARTER cohort of the
+same table's population** — mean vs the cohort mean (what an equal-weight basket earns), median/hit-rate vs the cohort
+median (what the typical stock does). 95 % CIs bootstrap QUARTERS (events inside a quarter are correlated). Universe tag =
+point-in-time Nifty 500 member at entry (`_n500_member_bin`). 94,632 rows → **91,237 events** (3,395 had no price series),
+65,331 dated / 25,906 convention; 49,210 N500 / 42,027 non-members; eras A 2001-13 25,767 · B 2014-Jun19 13,442 · C
+Sep19-26 52,028.
+
+**1. FII raising streak → next 12 months, all filers with a comparable prior quarter (excess vs same-quarter cohort, pp):**
+
+| streak | n | mean excess (CI95) | median excess (CI95) | hit % |
+|---|---|---|---|---|
+| 0 | 50,758 | +0.79 (−0.32, +1.93) | −0.45 | 49.5 |
+| 1 | 12,720 | −3.43 (−5.41, −1.67) | −0.01 | 49.9 |
+| 2 | 5,831 | −3.73 (−6.78, −0.85) | +0.62 | 50.8 |
+| 3 | 3,098 | −4.74 (−8.88, −1.41) | −0.14 | 49.7 |
+| 4 | 1,743 | −4.61 (−7.82, −1.35) | +1.56 | 52.2 |
+| 5 | 985 | −3.10 (−7.59, +0.63) | **+3.22 (+0.34, +6.97)** | 54.6 |
+| 6+ | 1,349 | −2.41 (−6.33, +1.22) | **+5.13 (+1.47, +7.97)** | 55.0 |
+
+Restricted to stocks FIIs actually own (FII ≥ 1 %, cohort = same): k=5 mean −0.36 / median +3.43 (+0.31, +6.14) / 53.9 %;
+k=6+ mean +0.10 (−2.97, +3.01) / median +4.22 (+1.74, +7.97) / 55.0 %. N500 members with FII ≥ 1 %: k=6+ mean +1.46
+(−1.32, +4.30) / median +4.93 (+2.00, +8.29) / 55.7 %. Same shape in every era for the median (k=6+: A +7.36, B +3.77,
+C +2.79) while the era-C means are negative for every k ≥ 1 (−2.3 to −3.9). **Reading: a stock FIIs have bought for 5-6+
+quarters in a row beats its peers slightly more often than not (55/45) and by +3 to +5 pp in the typical case — but the
+basket of such stocks earns NOTHING extra (mean CI straddles zero), because these are already-discovered names with fewer
+blow-ups AND fewer multi-baggers** (FII ≥ 1 %, 12 m raw, all eras: P(2×) 11.4 % at streak 0 → 7.8 % at 6+; P(<−30 %)
+16.1 % → 12.0 %). §22c's 2020-26 verdict stands on 25 years.
+
+**2. Chained quarterly equal-weight baskets (per-stock entry on visibility, 91 d hold, 2001→Mar-2026), CAGR / maxDD:**
+ALL filers 22.8 % / −57 · FII up this qtr 21.6 · streak ≥2 21.2 · **streak ≥3 18.9** · ≥4 18.6 · FII CUT ≥2 (control)
+16.3 · DII ≥3 18.0 · both ≥2 18.7 · **FII jump ≥ 2 pp 15.0 / −60.5** · DII jump ≥ 2 pp 19.0. Inside Nifty 500: all
+members 18.9 · FII ≥ 1 % 17.8 · streak ≥3 17.9 · ≥4 18.1 · **jump ≥ 2 pp 11.3**. No streak basket beats its own baseline.
+
+**3. The BIGGEST jumps are a negative signal (the tab the user asked about).** 12 m excess vs same-quarter cohort, all
+filers: ΔFII +2..5 pp n=2,858 mean **−8.05 (−12.0, −4.1)**, median −1.63, hit 47.9 %; ΔFII > +5 pp n=896 mean −7.51,
+median −3.49, hit 46.3 %; the top-20 FII jumps of every quarter (n=1,920) mean −7.55 (−11.6, −3.2), median −2.45, hit
+47.4 %. Relative jump on a prior stake ≥ 2 %: FII stake +50..100 % → mean −7.73 / median −5.64 / 45.2 %; **more than
+doubled → −13.1 (−19.5, −7.1) / −8.16 / 42.2 %**. By era (jump ≥ 2 pp vs rest): A −4.24/−1.50 · B −1.05/−0.18 · **C
+−16.9 mean / −5.42 median / 45.3 % hit, t −9.8** — strongest in the modern, fully dated era. With the promoter moving
+≥ 1 pp in the same quarter (block deals / preferential / dilution) −10.6 mean, 44.6 % hit; promoter steady −6.85 /
+−0.92 / 48.7 %. DII mirrors it (ΔDII +2..5 pp −5.77 mean; > +5 pp −6.45, median −2.09, hit 48.6 %). Reading: by the time
+a big institutional purchase is FILED (≈3 weeks after quarter end), the stock has typically already moved; chasing the
+filing loses to the cohort. The anchors the user named say the same — STLTECH's +459 % six-month run started from its
+Dec-2025 filing where FII had CUT 0.34 pp (streak 0); the Sep-2025 +4.54 pp jump was followed by −22 % over three months
+before the run; the Jun-2026 +6.75 pp (streak 2) is +25.6 % at 30 d, 91 d not yet complete. PINELABS Jun-2026 (+4.69 pp
+FII, +13.0 pp DII) is +6.2 % at 30 d.
+
+**4. It is mostly momentum, and price wins when they disagree.** Trailing-6 m momentum terciles × streak, 182 d: mom HIGH
+& streak ≥3 mean +1.13 / median +3.78 / 56.3 % vs mom HIGH & streak 0-2 +3.04 / +1.98 / 53.0 %; **mom LOW & streak ≥3 =
+the worst cell, −6.44 (−8.9, −3.8) / −2.94 / 44.5 %** vs mom LOW & 0-2 −2.91 / −2.59 / 45.7 %. FIIs buying a falling stock
+for three quarters is a value-trap marker, not a floor.
+**5. The behaviour persists; the price edge does not.** P(FII raises again next quarter | streak k): 24.2 % (k=0), 47.6,
+54.8, 57.8, 58.5, 57.9, 60.7 % (k=6+).
+**6. Timing confound to remember.** Pooled RAW 12 m returns FALL with streak length in era C (FII ≥ 1 %: median 12.9 % at
+k=0 → 1.3 % at k=5, P(2×) 13.5 % → 5.1 %) because long streaks pile up late in bull runs; the same-quarter tables above are
+the fair test — never quote the pooled raw table as the effect.
+
+**Verdict / decision (reported to the user, tab NOT built):** the premise the tab was conditioned on ("biggest FII/DII jump →
+the stock runs") is contradicted in every era; the streak variant gives a small typical-stock tilt at k ≥ 5 with zero
+basket edge, and shareholding.html already serves that list (🔥 streak filter, §22). If the user still wants an ideas lane,
+the honest version is a "5+ quarter FII accumulation" watch-list with these odds printed beside it (55 % hit, median +3-5 pp
+over 12 m, no basket edge) and fresh ≥ 2 pp jumps flagged as *historically underperform — do not chase*. Caveats: no
+costs; sector not controlled (cohort excess removes the market only); 365 d windows complete for filings visible ≤
+2025-09-25; FII per §151/§158/§164 definitions.
