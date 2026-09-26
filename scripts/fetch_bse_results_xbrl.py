@@ -39,6 +39,8 @@ STATE = os.path.join(HERE, "_bse_xbrl_state.json")
 NSE_T = os.path.join(HERE, "bse_xbrl_nse_targets.json")
 FLOOR = 20200331
 RELIST_DAYS = 20
+MAX_FILES = int(os.environ.get("BSE_XBRL_MAX_FILES") or 600)   # downloads per run, all scrips together
+DL = [0]
 RE_CTX = re.compile(r'<xbrli:context id="OneD">.*?<xbrli:startDate>([\d-]+)</xbrli:startDate>\s*<xbrli:endDate>([\d-]+)<', re.S)
 RE_SCRIP = re.compile(r"<in-(?:capmkt|bse-fin):ScripCode[^>]*>\s*([^<\s]+)\s*<")
 RE_NAT = re.compile(r"NatureOfReportStandaloneConsolidated[^>]*>\s*([^<]+)<")
@@ -124,6 +126,22 @@ def ann_from_name(fname, qe, fdt):
         if any(abs((ld - c).days) <= 1 for c in cands) or (not m and qd < ld <= qd + datetime.timedelta(days=400)):
             return lst
     return ymd(min(cands)) if len(cands) == 1 else 0
+
+
+MON = {m: i for i, m in enumerate(("Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sep", "Oct", "Nov", "Dec"), 1)}
+QEND = {3: 31, 6: 30, 9: 30, 12: 31}
+
+
+def label_qe(label):
+    """Listing row 'Standalone-Sep-19;SQ2019-2020;103.00;D' → 20190930 (period end), else None. Used ONLY to decide
+    which files to download — identity and period are re-read from the file itself before anything is kept."""
+    m = re.match(r"\s*(?:Standalone|Consolidated)-([A-Za-z]{3})-(\d{2})\b", label or "")
+    if not m or m.group(1).title() not in MON:
+        return None
+    mo = MON[m.group(1).title()]
+    if mo not in QEND:
+        return None
+    return (2000 + int(m.group(2))) * 10000 + mo * 100 + QEND[mo]
 
 
 def read_file(xml, code):
@@ -214,7 +232,7 @@ def fetch(budget, fills_path, from_dir=None):
             fills += handle(code, s, sme, q, files, code2tk, xbrl_symbol)
         json.dump(fills, open(fills_path, "w")); print("fills (offline):", len(fills)); return
     for code, sym, kind, sme, miss in tlist:
-        if listed >= budget:
+        if listed >= budget or DL[0] >= MAX_FILES:
             break
         last = int(state.get(code) or 0)
         if last and (today - datetime.date(last // 10000, last // 100 % 100, last % 100)).days < RELIST_DAYS:
@@ -239,10 +257,17 @@ def fetch(budget, fills_path, from_dir=None):
                 if not link.lower().endswith(".xml"):
                     continue                                 # empty, or the bare /XBRLFILES/…/ directory (= no file)
                 files.append((link, row.get("Filing_Date_Time") or "", row.get("Quarter") or ""))
-        seen, dl = set(), []
+        # DOWNLOAD ONLY WHAT IS MISSING (2026-09-26): the first CI run fetched every listed file (60-200 per scrip)
+        # before checking the quarter — thousands of requests for a 30-scrip budget, the kind of burst BSE rate-limits.
+        seen, dl, skipped = set(), [], 0
         for link, fdt, qlabel in files:
             if link in seen: continue
             seen.add(link)
+            lq = label_qe(qlabel)
+            if lq is None or lq not in want:
+                skipped += 1; continue
+            if DL[0] >= MAX_FILES:
+                break                                        # hard per-run cap on downloads (politeness, §180a)
             fname = link.rsplit("/", 1)[-1]; p = os.path.join(tmpd, fname)
             if not os.path.exists(p):
                 try:
@@ -251,14 +276,16 @@ def fetch(budget, fills_path, from_dir=None):
                     print("  BSE-REFUSED file %s: %s" % (fname, e)); break
                 except Exception:
                     continue
-                time.sleep(0.5)
+                time.sleep(0.5); DL[0] += 1
             dl.append((p, fname, fdt))
         got = handle(code, sym, sme, miss, dl, code2tk, xbrl_symbol)
         fills += got; files_ok += len(dl)
+        print("  %s %s: %d listed files, %d downloaded for %d missing quarters, %d fills"
+              % (code, sym or "", len(seen), len(dl), len(want), len(got)), flush=True)
         time.sleep(0.8)
     json.dump(state, open(STATE, "w"), separators=(",", ":"), sort_keys=True)
     json.dump(fills, open(fills_path, "w"))
-    print("listed %d scrips, %d files read, %d fills → %s" % (listed, files_ok, len(fills), fills_path))
+    print("listed %d scrips, %d files downloaded (cap %d), %d fills → %s" % (listed, DL[0], MAX_FILES, len(fills), fills_path))
 
 
 def handle(code, sym, sme, miss, dl, code2tk, xbrl_symbol):

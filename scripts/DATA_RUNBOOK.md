@@ -20929,7 +20929,7 @@ bar; 4 re-scale pre-event history only — latest bars untouched), 0 others; sec
 months later (`_staleness_fix/IndexInclExcl.xls`: Wipro out of Nifty 50/500 on 2013-04-01, back in the Nifty 500 2013-08-07 and the
 Nifty 50 2013-09-27; Cadila, RSWM, Jindal Saw, Zuari, Orient Paper, Jindal Poly, Century Ply, Marico, Balkrishna the same).
 `indices_history.json` follows it — do not "repair" those gaps.
-## §179 — EVERY BSE JOB WAS DARK 20→26 SEP: the requests lacked standard headers, not access (2026-09-26, user: "find a way")
+## §180 — EVERY BSE JOB WAS DARK 20→26 SEP: the requests lacked standard headers, not access (2026-09-26, user: "find a way")
 **Measured (every run log since 20-Sep, times UTC):** refresh-bse 12/13 runs refused (first 20-Sep 11:47), refresh 52/55
 (21-Sep), refresh-announcements 13/26 (21-Sep), refresh-results-hourly 9/20 (23-Sep), refresh-fundamentals 7/60 (24-Sep),
 annual-bscf 8/27 (25-Sep); refresh-actions / refresh-shareholding / verify-ca-review clean. All stayed GREEN — the BSE
@@ -20948,7 +20948,9 @@ urllib (urlopen + cookie opener) 200, fill_bse_share_counts.curl 200, fetch_clas
 ⚠️ Then an accidental full run of fetch_classification (it downloads + fetches 4,691 codes at IMPORT time, 12 workers × 4
 passes) tripped BSE's rate limit: from ~17:00 IST this Mac got 403 on every endpoint. Never import that module to test it.
 Verification of the push moved to GitHub Actions (different addresses).
-**Also:** §178's job announce date = BSE's upload stamp in the XBRL file name, cross-checked with the listing's
+**Also (§180a):** the first CI run of the §178 job downloaded EVERY listed file per scrip before checking the quarter
+(60-200 per scrip) — cancelled; it now downloads only files whose listing label names a missing quarter (`label_qe`),
+then re-proves identity and period from the file. §178's job announce date = BSE's upload stamp in the XBRL file name, cross-checked with the listing's
 Filing_Date_Time — the listing RE-STAMPS older rows (360ONE Sep-2019: listing 2020-08-28, file 22-10-2019); ambiguous
 name readings (3-07-2022 vs 30-7-2022) stay 0 = unknown. First live run: 5 scrips → 20 fills, 18 dated.
 **OPEN:** make the BSE steps FAIL the job (or alert) on a refusal — a silent six-day outage must not repeat.
