@@ -35,7 +35,9 @@ Gates (each one names the past defect it prevents; checklist compiled from the r
     non-institutional row LABELLED as a domestic/foreign institution (§158 R1/R2, §159) -> HOLD: the
     row-level placement heals exist only for Nifty-500 names and are not re-run here.
   * mf, ins <= dii + 0.05; prom + fii + dii <= 100.5.
-  * nsh gate (§22g-2): shareholder count < 5% of the max over strictly earlier quarters -> HOLD (wrong class).
+  * nsh gate (§22g-2): shareholder count < 5% of the max over strictly earlier quarters -> HOLD (wrong class),
+    unless the same filings show the share capital collapsing (insolvency capital reduction) or the symbol's event
+    is on the cell_fix accept list -> the share-count-proven percentages are written WITHOUT the doubtful count.
   * continuity (§127g/§127j): fii > 5pp or dii > 10pp away from EVERY stored/candidate neighbour within two
     quarters -> HOLD; an exact 0 beside a neighbour > 1% without a partition proof -> HOLD.
   * date = the calendar day of NSE's broadcast (visible_iso, midnight rule §149), EXCEPT when the broadcast is a
@@ -123,7 +125,7 @@ def analyse(txt, qe):
             if st == "explicitMember": mems.append((x.text or "").split(":")[-1].strip())
             elif st == "typedMember": typed = True
         ctx[c.get("id")] = (mems, typed)
-    pct, shc, symtag, isin = {}, {}, None, None
+    pct, shc, holders, symtag, isin = {}, {}, {}, None, None
     inst_lbl, non_lbl = [], []
     for f in root.iter():
         t = STRIP(f.tag)
@@ -132,6 +134,11 @@ def analyse(txt, qe):
         elif t == "CategoryOfOtherInstitutions" and f.text: inst_lbl.append(f.text.strip())
         elif t in ("CategoryOfOtherNonInstitutions", "CategoryOfOtherIndianShareholders",
                    "CategoryOfOtherForeignShareholders") and f.text: non_lbl.append(f.text.strip())
+        elif t == "NumberOfShareholders":
+            mems, typed = ctx.get(f.get("contextRef"), ([], True))
+            if not typed and len(mems) == 1 and mems[0] in ("ShareholdingPatternMember", "PublicShareholdingMember"):
+                try: holders[mems[0]] = int(float(f.text))
+                except (TypeError, ValueError): pass
         elif t in ("ShareholdingAsAPercentageOfTotalNumberOfShares", "NumberOfShares"):
             mems, typed = ctx.get(f.get("contextRef"), ([], True))
             if typed or len(mems) != 1: continue
@@ -157,6 +164,9 @@ def analyse(txt, qe):
         s = scale_of()
         out["zero_proof"] = True
         out["cell"] = {"prom": round(prom * s, 4), "pub": round(pub * s, 4), "fii": 0.0, "dii": 0.0, "mf": 0.0, "ins": 0.0}
+        # shareholder count, same rule as parse_shp: whole-company count, dropped when below the public count
+        nsh, nsh_pub = holders.get("ShareholdingPatternMember"), holders.get("PublicShareholdingMember")
+        if nsh and nsh > 0 and not (nsh_pub and nsh < nsh_pub): out["cell"]["nsh"] = nsh
     if fmt == "new" and sh_pub is not None:
         blocks = ("InstitutionsDomesticMember", "InstitutionsForeignMember",
                   "CentralGovernmentOrStateGovernmentSOrPresidentOfIndiaMember",
@@ -302,6 +312,14 @@ def stage_download(cache, workers=4):
 # ------------------------------------------------------------------------------------------ build
 def build(cache):
     hist, relatives, isins, man = load_inputs(cache)
+    # Re-runs must reproduce the ledger: cells this ledger itself landed are treated as NOT stored (otherwise a
+    # rebuild after landing sees every cell as "already stored" and writes an empty ledger that CI then applies).
+    if os.path.exists(LEDGER):
+        prev = json.load(gzip.open(LEDGER, "rt", encoding="utf-8")).get("fills", {})
+        for s_, qs_ in prev.items():
+            for q_ in qs_:
+                if q_ in (hist.get(s_) or {}): del hist[s_][q_]
+        print("previous ledger: %d cells treated as not yet stored" % sum(len(v) for v in prev.values()))
     t0 = time.time()
     docs = {}                                                    # (sym, qe) -> analysis + meta
     for k, v in man.items():
@@ -397,6 +415,10 @@ def build(cache):
             bse_clash[sym_] = "ticker %s is also BSE scrip %s (%s), a different company; landing would change the " \
                               "fundamentals build_stock_fin folds into that slug" % (sym_, code_, bi)
 
+    accept_syms = set((json.load(open(os.path.join(HERE, "shp_cell_fix.json"), encoding="utf-8")).get("accept") or {}))
+    share_series = collections.defaultdict(dict)               # total shares per filing, for the capital-collapse test
+    for (s_, q_), a_ in docs.items():
+        if a_.get("shares"): share_series[s_][q_] = [a_["shares"]]
     fills, holds = collections.defaultdict(dict), collections.defaultdict(dict)
     stat = collections.Counter(); why = collections.Counter()
     for (sym, qe), a in sorted(docs.items()):
@@ -423,7 +445,21 @@ def build(cache):
         if lag < 0: hold("visibility date %s before quarter end" % sub); continue
         nsh = c.get("nsh")
         earlier = [v[2] for q, v in series[sym].items() if q < qe and v[2]]
-        if nsh and earlier and nsh < 0.05 * max(earlier): hold("nsh gate: %d vs %d earlier" % (nsh, max(earlier))); continue
+        nsh_note = ""
+        if nsh and earlier and nsh < 0.05 * max(earlier):
+            # §22g-2: a collapsed holder count can mean the filing describes another share class. When the SAME
+            # filings show the share capital itself collapsing (insolvency capital reduction: PUNJLLOYD 335.6 M -> 0.5 M
+            # shares, acquirer 95 %) or the symbol's event is already adjudicated on the cell_fix accept list
+            # (DSKULKARNI), the percentages stand on share counts; only the holder count is doubtful -> write the cell
+            # WITHOUT it. Anything else is held.
+            n_now = a.get("shares") or 0
+            n_before = [v[0] for q, v in (share_series.get(sym) or {}).items() if q < qe and v]
+            collapsed = bool(n_now and n_before and n_now < 0.5 * max(n_before))
+            if collapsed or sym in accept_syms:
+                nsh_note = " nsh-withheld(%d vs %d earlier; %s)" % (nsh, max(earlier), "capital collapse" if collapsed else "accept-list event")
+                nsh = None
+            else:
+                hold("nsh gate: %d vs %d earlier" % (nsh, max(earlier))); continue
         i = QES.index(qe)
         nb = [series[sym][QES[j]] for j in (i - 2, i - 1, i + 1, i + 2)
               if 0 <= j < len(QES) and QES[j] in series[sym]]
@@ -433,7 +469,7 @@ def build(cache):
         if not proven and any(c[s] == 0.0 and nb and any(n[ix] > 1.0 for n in nb) for s, ix in (("fii", 0), ("dii", 1))):
             hold("exact 0 beside a neighbour above 1% without a partition proof"); continue
         tag = a["src"] + (" proven-zero" if a["zero_proof"] else "") + (" nse-refiling" if a["revised"] else "") \
-              + (" " + how if how else "") + (" lag%dd" % lag if lag > 120 else "")
+              + (" " + how if how else "") + (" lag%dd" % lag if lag > 120 else "") + nsh_note
         fills[sym][qe] = [round(c["prom"], 4), round(c["fii"], 4), round(c["dii"], 4), round(c["mf"], 4),
                           round(c["ins"], 4), sub, nsh if nsh else None, tag]
         stat[(a.get("idx"), "FILL")] += 1

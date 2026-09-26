@@ -21025,3 +21025,14 @@ Sep-2021; recent BSE-only filers). The SHPQNewFormat list API refused this Mac's
 harvest was blocked by the permission system — its 250 scrip lists + 4,904 XBRLs sit UNUSED in
 `~/stocks-cache/shp/all_fill/_bse_route_on_hold/` (do not use without the user's OK). §179's header module is the
 sanctioned route; this Mac was rate-limited from ~17:00 IST, so a BSE pass must run paced (single thread) in Actions.
+
+**§180 addendum (same evening).** (1) Proven-zero cells now carry the filing's shareholder count (parse_shp's rule:
+whole-company NumberOfShareholders, dropped below the public count) — +680 counts via `_shp_merge_nsh.py` (slot 6 only,
+0 percentage drift); the live BOSS page showed "—" where Screener shows 341/324. (2) Carrying those counts made the nsh gate
+fire on DSKULKARNI Jun-25, OMKARCHEM Jun-26, PUNJLLOYD Jun-26 (8 / 2 / 2 holders): all three are insolvency capital
+reductions visible in the same filings (PUNJLLOYD 335,595,745 -> 500,000 shares, OMKARCHEM 20,578,004 -> 5,000,000,
+acquirer 95 %), so the share-count-proven percentages stay and the doubtful count is withheld (tag `nsh-withheld`); any
+other nsh-gate hit is still HELD. (3) The build now treats its OWN previous ledger's cells as not yet stored: a rebuild after
+landing used to see every cell as "already stored" and wrote a near-empty ledger (caught before commit). Run `build` only on
+a worktree whose ledger file is the committed one; a rebuild must reproduce the committed cell set (verified: 3,511 = 3,511,
+slots 0-5 identical, only the 680 holder counts differ).
