@@ -20741,3 +20741,25 @@ the committed tape's trailing meta). Old vs new full build from identical inputs
 rows, +389 revop quarters on files that had revop, +2 revenue fills, +5 files; symbols with revenue 5,049 → 5,449.
 Seen while checking, NOT touched: ELANTAS Mar-2026 PAT −0.03 and DHINDIA Mar-2026 PAT 232.17 (on ~₹66 Cr revenue) in
 sf_fundamentals look wrong — OPEN.
+
+## §175 — NSE main-board point-in-time gap hunt (2026-09-26, user: "I want 100 % for NSE rows for all months", "do all")
+Coverage tool `~/stocks-cache/univ/coverage_pit.py` (strict; board point-in-time via the §149/§171 prepend anchors).
+NSE main PIT gaps: results 2,345 stock-quarters / detail 4,538 / shareholding 1,847 (after accepting a NEWER pattern than
+the due quarter, e.g. a pre-listing filing: 1,682). The local 104k-file XBRL cache held 31 / 0 of them.
+- **Shareholding from NSE:** `fetch_shp_nse_gaps.py --gaps FILE` (new: explicit {SYM:[QE]} target list instead of
+  point-in-time N500 members; everything else unchanged) → +40 cells in `shp_fill_nse_gaps.json.gz`. The other 1,623
+  asked: 1,432 "no row in NSE's archive" (NSE's master thins out before Sep-2021; 437 are Mar/Jun-2026 patterns of names
+  that filed on BSE before their NSE listing) + 185 dead XBRL links (404) + 6 parse refusals → BSE route needed.
+- **BSE access 2026-09-26:** api.bseindia.com 403 from this Mac AND GitHub Actions (refresh-bse run 36176164838 logged 403
+  on ListofScripData yet stayed green — the step is non-fatal). BSE results-XBRL route documented in memory
+  reference-bse-results-xbrl-route (Result_Arch_ng list + XBRLFILES files; existing parsers read them exactly). Not
+  driven through a browser (BSE access rule §164b). Causes 2/3 of the BSE-only results gap wait on it.
+
+## §176 — FORMER-SYMBOL QUARTERS REACH THE CURRENT PAGE (2026-09-26)
+`build_stock_fin.resolve()` used another key only when the symbol had NOTHING, so a renamed company's history under its
+old ticker vanished once it filed under the new one (360ONE ← IIFLWAM, ABREL ← CENTURYTEX): 1,649 of the 4,538 NSE PIT
+detail gaps and 41 revenue gaps were this. Now every former symbol that resolves to the page's symbol through the
+_rename_map chain contributes its quarters FILL-ONLY (own data wins) to fund / revop / x / shpH / shpGov. Guard: a
+former key that filed ANY quarter the current symbol also filed was a concurrent company (merger partner) → never merged.
+Old vs new full build, identical inputs: 0 existing values changed; +2,692 x quarters, +700 revop quarters, +825 fund rows,
++513 shpH rows (ORCHPHARMA, SWANDEF, PIRAMALFIN, AQYLON, GUJENERGY largest).

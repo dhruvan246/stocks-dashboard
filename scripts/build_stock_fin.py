@@ -324,6 +324,48 @@ def main():
         alias = aliases.get(sym)
         return src.get(alias) if alias else None
 
+    # §176 FORMER SYMBOLS: resolve() above only falls back to another key when this symbol has NOTHING, so once a
+    # renamed company files under its new ticker every quarter stored under the old one vanished from its page
+    # (360ONE's 2019-20 detail sits under IIFLWAM, ABREL's under CENTURYTEX: 1,649 of 4,538 NSE point-in-time
+    # detail gaps). Quarters of every former symbol that resolves (rename chain) to this one are now merged in
+    # FILL-ONLY — own data always wins. Guard: a former key that filed ANY quarter this symbol also filed was a
+    # concurrently listed company (merger partner, not a rename) and is never merged.
+    def _chain(s0):
+        seen_ = set()
+        while s0 in aliases and s0 not in seen_ and aliases[s0] != s0:
+            seen_.add(s0); s0 = aliases[s0]
+        return s0
+    formers = {}
+    for old_ in aliases:
+        new_ = _chain(old_)
+        if new_ != old_:
+            formers.setdefault(new_, []).append(old_)
+    fq = lambda s0: {r[0] for r in (fund.get(s0) or [])}
+    ok_formers = {}
+    for new_, olds in formers.items():
+        mine = fq(new_)
+        ok_formers[new_] = sorted(o for o in olds if not (fq(o) & mine))
+
+    def merged(src, sym, kind):
+        base = resolve(src, sym)
+        olds = [o for o in ok_formers.get(sym, ()) if src.get(o)]
+        if not olds:
+            return base
+        if kind == "dict":
+            out = dict(base or {})
+            for o in olds:
+                for q, v in src[o].items():
+                    out.setdefault(q, v)
+            return out or None
+        rows = list(base or [])                     # list of rows keyed by row[0] (fund / shp history)
+        have_ = {r[0] for r in rows}
+        for o in olds:
+            for r in src[o]:
+                if r[0] not in have_:
+                    rows.append(r); have_.add(r[0])
+        rows.sort(key=lambda r: r[0])
+        return rows or None
+
     if os.path.isdir(out_dir):
         shutil.rmtree(out_dir)         # drop slices for symbols that left the feeds
     os.makedirs(out_dir, exist_ok=True)
@@ -336,23 +378,23 @@ def main():
         seen[sl] = sym
 
         payload = {"sym": sym}
-        f = resolve(fund, sym)
+        f = merged(fund, sym, "list")
         if f:
             payload["fund"] = f
-        r = resolve(revop, sym)
+        r = merged(revop, sym, "dict")
         if r:
             payload["revop"] = r
         row = resolve(shp_rows, sym)
         if row and row[4]:
             payload["shpQ"] = shp_q
             payload["shp"] = row[4]
-        h = resolve(hist_rows, sym)
+        h = merged(hist_rows, sym, "list")
         if h:
             payload["shpH"] = h
-        gv = resolve(gov_rows, sym)
+        gv = merged(gov_rows, sym, "dict")
         if gv:
             payload["shpGov"] = gv          # {QE: gov%} — Screener's separate Government row
-        xt = resolve(xtra, sym)
+        xt = merged(xtra, sym, "dict")
         if xt:
             payload["x"] = xt
         kp = resolve(kpi, sym)

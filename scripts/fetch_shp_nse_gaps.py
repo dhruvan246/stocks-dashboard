@@ -43,6 +43,9 @@ def main():
     ap = argparse.ArgumentParser()
     ap.add_argument("--from-qe", default="2019-09-30")
     ap.add_argument("--symbols", default="")
+    # §175: an explicit {SYM: [QE iso, ...]} target list (e.g. every NSE main-board point-in-time hole, not only
+    # Nifty-500 members). Replaces the membership loop; every other rule (fill-only, absent memo) is unchanged.
+    ap.add_argument("--gaps", default="")
     a = ap.parse_args()
 
     hist = FS.load_hist()
@@ -85,8 +88,10 @@ def main():
                   if a.from_qe <= q <= last], reverse=True)
 
     gaps = collections.defaultdict(list)
+    explicit = json.load(open(a.gaps, encoding="utf-8")) if a.gaps else None
     for qe in qes:
-        for s in sorted(set(members(qe))):
+        pool = sorted({norm(k) for k, v in explicit.items() if qe in v}) if explicit is not None else sorted(set(members(qe)))
+        for s in pool:
             if only and s not in only:
                 continue
             if qe in have.get(s, {}) or qe in fills.get(keyfor.get(s, s), {}) or (s, qe) in absent:
