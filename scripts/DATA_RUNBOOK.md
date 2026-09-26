@@ -21058,7 +21058,16 @@ proof); 84 BSE cells held (old-format row-level 48 incl. 19 × a 0.07 % institut
 + scrip mismatches, continuity 28 …). Checks: 3,511 earlier cells identical; 0 existing store cells changed; guards OK; apply
 idempotent; hold-out 0 fires on 40,063 filings with institutions; pages vs a baseline built from the same main data: 0 fields
 lost/changed, 92 gain shareholding, 20 new pages; 7 random BSE cells vs Screener (by BSE code) all equal (DII ±0.01 =
-Screener's SWF subtraction), incl. 2 proven zeros with matching holder counts. Remaining batches land as the shards finish.
+Screener's SWF subtraction), incl. 2 proven zeros with matching holder counts.
+**Batch 2 LANDED (2026-09-26 ~21:45 IST, Mac shard at 350/890 scrips + batch-1 files):** +5,825 BSE cells / 271 new symbols
+(ledger 11,101 cells / 1,129 symbols, `_bse_keys` 387). Checks: the 5,276 committed cells identical (0 dropped/changed); 0
+existing store cells changed; 4 guards OK; apply idempotent (md5 equal on re-apply); hold-out 0 fires on 42,728 filings with an
+institutional holding; pages vs a baseline built from the same main data: 0 fields lost/changed, 231 gain shareholding, 46 new
+pages, PUNJCOMMU + WARRENTEA also gain their BSE fundamentals (the `_bse_keys` exemption, same scrip code). Screener, 7 random
+cells: 6 equal to 2 dp incl. holder counts (RALEGRA proven zero); METSL Jun-2024 DII ours 0.35 vs Screener 0.00 = the filing's
+Institutions(Domestic) block is 19,353 shares of "NBFCs registered with RBI" — our DII is B1 by rule (§158), Screener puts
+that row in Public (a definition difference, not a parse error). Holds 239 BSE cells (row-level 122, identity 99, continuity
+37 …). Remaining shards land when they finish.
 
 **§181b — refresh-bse no longer overwrites bse_fundamentals.json (2026-09-26).** Its commit step `cp`'d the whole file over
 origin's after `reset --hard`, which would have erased every quarter the new bse-results-xbrl job (and the history/vision
