@@ -20623,10 +20623,20 @@ consolidated, 36 standalone), every company through the answer-key gate. Pushed 
   (634.11) lakh) or changed without a mark (JINDWORLD FY21 A/B/C 9,787.60 / 6,695.37 / (15,177.34) → 8,328.70 / 6,525.42 /
   (13,548.49) lakh; SUNTECK FY21 financing once the FY22 filing began deducting bank overdrafts from cash) — or Screener
   adds the FX-translation line, printed after the net-change line outside the three sections, into investing (HIMATSEIDE
-  FY21, RENUKA FY20-22, POLYPLEX). 15 were checked on the as-filed page only: 14 FY2022 cells (no FY2023 filing in this
-  set — CAMPUS ×3, DBL, GREAVESCOT, LXCHEM, POLYPLEX, RENUKA, SHK, SONATSOFTW, VAKRANGEE ×4) and RAJESHEXPO FY21 investing
-  (its FY22 cash flow, att 7126ade5 p2, prints no prior-year column). DBL FY22 investing +44,535.46 lakh: A+B+C ties the
-  printed net change, and Screener agrees with our operating and financing. Ours stays as first filed.
+  FY21, RENUKA FY20-22, POLYPLEX). The other 15 were first checked on the as-filed page only; the 14 FY2022 ones were then
+  read again in each company's FY2023 results filing (user "yes", 2026-09-27; `~/stocks-cache/abscf/fy23chk/`: 21
+  attachments fetched through `bse_headers`, one request at a time, all 200; two independent readers, not shown our values)
+  and Screener was tested against LABELLED CANDIDATE values in one fetch per company (`fy23chk/scr_candidates.py`,
+  verify-only, honest User-Agent). **Ours = the original FY2022 filing in all 14** (and = the company's own XBRL in 11 —
+  the site held it before the push). Screener = the later filing's changed column — CAMPUS ×3 (FY22 standalone statements
+  revised after a merger, re-approved 23-Sep-2022; other equity 1,663.19 → 2,754.24 mn), VAKRANGEE ×4 ("Restated*, refer
+  note 6": total assets 2,935.96 → 333.40 cr), GREAVESCOT cfo (regrouped: (62.77) → (56.27) cr) — or Screener moves a line
+  printed BELOW the net-change line into investing: DBL ("other bank balances not forming part of cash", 239.84 cr, in the
+  FY23 column), LXCHEM (business-purchase cash 21.29 cr), POLYPLEX and RENUKA (FX translation), SHK (cash taken over on
+  acquisition + FX). SONATSOFTW FY22 investing (118.93) stays unexplained (FY22 filing = XBRL, FY23 column (118.80); no
+  candidate matched). RAJESHEXPO FY21 investing stays single-document (no XBRL; its FY22 cash flow, att 7126ade5 p2, prints
+  no prior-year column). Ours stays as first filed (§42 store convention: a later restatement stored under the original
+  year is a look-ahead).
 - **Not landed (22 of 213 fill-years):** no result filing that year (first filing in the discovered list is later) — CLEAN
   FY20-21 (2021-08-09), RAILTEL FY20 (2021-06-25), CAMPUS FY20-21 (2022-05-30), LXCHEM FY20 (2021-05-25); the annual results
   filing is not in the discovered list (the in-window attachments are cover letters, an RPT note or Q1 results — text
