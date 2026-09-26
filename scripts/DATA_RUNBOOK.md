@@ -20662,6 +20662,54 @@ consolidated, 36 standalone), every company through the answer-key gate. Pushed 
   "${c}:docs/fin/<slug>.json"` of the pre-push commit): wave 1 854 OK, wave 2 1,838 OK, wave 3 628 OK, wave 4 157 OK —
   0 mismatch; XBRL-held fields kept their pre-push values (gap-fill).
 
+### 168p. ★★ JAMNAAUTO FY2021 cash flow: THREE company vintages, and XBRL splits that differ from the print  (2026-09-27, user: "decide from the documents")
+Question: the live slice's FY2021 consolidated cash flow, 208.49 / −18.11 / −153.07 cr (cfo / cfi / cff), matched neither the
+original filing (214.74 / −17.94 / −159.49) nor the FY2022 filing's restated column (100.05 / −17.94 / −44.81). All three net to +37.31.
+- **Path, measured:** NSE results-API `xbrl` link → `scripts/_xbrl_cache/INDAS_70794_454078_01062021115928_WEB_xml` →
+  `build_xbrl_extra.parse_file` → `xbrl_extra.json.gz` JAMNAAUTO/20210331/c → `build_stock_fin.py` (XBRL wins; `annual_bscf.json`
+  fills only the balance sheet; the cell has no `xo`) → `docs/fin/JAMNAAUTO.json`. Every stored value equals its tag (rupees ÷ 1e7, 2 dp).
+- **Verdict: a genuine company filing, not a pipeline error.** The company's XBRL is identical on both exchanges: the NSE file above
+  and BSE `Main_Ind_As_520051_162021114540.xml` (Result_Arch_ng `Filing_Date_Time` 2021-06-01 13:05:02, board meeting 2021-05-31,
+  fetched through `bse_headers`, 200). They share 185 facts with 0 value differences. It tags **interest paid 642.48 lakh and
+  interest received 17.61 lakh as OPERATING**. The signed statement (BSE att `10d894cd-…`, p10) prints interest received under
+  investing and interest paid under financing. Every other line is identical to the lakh: cash generated 24,244.29; tax 2,770.76;
+  PPE −3,260.62 / +1,459.32; FD −9.97; borrowings −5,491.96 − 8,607.19 = −14,099.15; lease −211.65; dividend −995.81; cash
+  71.33 → 3,802.11 (= the BSE XBRL's balance-sheet cash, 38.02 cr). Standalone is the same (p13: interest paid 566.42 and
+  received 24.05 lakh moved into operating).
+- **The three vintages (₹ cr, cfo / cfi / cff; nets: consolidated +37.31, standalone +34.52 in all three):**
+  V1 printed 31-May-2021 (att 10d894cd p10/p13): con 214.74 / −17.94 / −159.49, std 201.51 / −18.72 / −148.28. The ledger holds
+  con V1, which is not shown because the site is gap-fill.
+  V2 XBRL 01-Jun-2021 (NSE + BSE): con 208.49 / −18.11 / −153.07, std 196.09 / −18.96 / −142.61. **This is what the site shows.**
+  V3 restated in the FY2022 filing, 21-May-2022 (att `46c4b373-…` p8/p15, "(Restated) Refer note 12"): con 100.05 / −17.94 / −44.81,
+  std 86.83 / −18.72 / −33.60. Note 12 is an Ind AS 8 correction: 11,468.13 lakh of bill-discounted receivables had been netted
+  against a bank liability. The restatement moves that amount from receivables (operating) to short-term borrowings (financing);
+  interest stays in investing/financing as in V1. Screener shows V3 (the user's measurement).
+- **FY2022, same company, same kind:** its XBRL (NSE `INDAS_85084_658469_22052022033321_WEB`; BSE `Main_Ind_As_520051_2252022153640.xml`,
+  board meeting 2022-05-21) tags "Direct taxes paid (net)", 5,420.28 lakh, as `IncomeTaxesPaidRefundClassifiedAsFinancingActivities`
+  (std 4,886.38). The site therefore shows con 55.29 / −36.16 / −34.62 with a tax row of 0, where the print has 1.09 / −36.16 / +19.59
+  and 54.20 cr of tax paid (net −15.49 on both).
+- **No data changed.** §168l's `xo` needs the tag to FAIL the printed net change, and these tags close it. Whether the page should
+  prefer the printed split over a closing tag with a different classification is a definition choice, put to the user (open).
+- **Sizing across the whole ledger:** 1,026 cells hold a printed CF triple; 629 overlap an XBRL triple; 77 differ by more than
+  max(0.5%, 0.02 cr); `xo` already covers 2 (CYIENT FY22, JUBLPHARMA FY21).
+  **18 cells / 15 symbols have the SAME net change (split only):** BCG ×2 (s), COROMANDEL, DATAPATTNS (s), FINCABLES, FINPIPE,
+  JAMNAAUTO ×2, KIMS, KSCL, LUPIN ×2, OMAXE, SUVEN, THYROCARE, TTKPRESTIG, VENKEYS (s), ZENTEC. Only 3 are explained by the
+  interest/tax tags (JAMNAAUTO FY21 and FY22; DATAPATTNS FY22, tax 28.36 tagged investing). The other 15 move other lines, not read yet.
+  **57 have a DIFFERENT net change** (2 of them under `xo`). Every one of those tags closes its OWN tagged net, so closing is no
+  evidence. They include 4 whole-filing ×1/100 XBRL filings with no `scale_fix` entry:
+  IRCON 20220331 and UBL 20220331 (the LIVE `sf_revop` / `sf_fundamentals` Mar-2022 revenue and PAT are 1/100: IRCON PAT
+  1.97 / 2.42, UBL 1.63 / 1.63 cr); TRENT 20220331 (con PAT 0.16; revop already right); JINDALSAW 20210331 (xbrl_extra only). They also
+  include 4 one-section sign flips: SFL FY21 cfi, JBCHEPHARM FY21 cff, STEELXIND FY21 cfi, DSSL FY21 cfi + cff. Tools and outputs
+  are in `~/stocks-cache/cf_xbrl_vs_print/` (`index_cache.py`, `classify.py` → `classified.json`, `cfd_test.py` → `cfd_test.json`,
+  `bse/` exchange copies).
+- **`cf_d` labels full-year cash flows as ~90 days** in two filing layouts. FY2021 puts the cash flow on OneD. FY2023-24 put it
+  on FourD, whose context block says Jan–Mar while its own `DateOfStartOfReportingPeriod` fact says 1-Apr. March cells in
+  xbrl_extra with the cash flow on a ≤100-day context: FY21 2,944 / FY23 3,168 / FY24 3,448. The D&A add-back test on the cached
+  filings proves full year in 2,360 / 2,896 / 3,122 of them and a quarter in 0 (TFCILTD FY21 has a zero-filled quarter P&L, so it
+  is undecidable); the rest are undecidable by that test. Effect: stock.html's cash-flow tab and `fetch_capex.py` already treat the
+  March cell as the year. Only the stock page's CFO/PAT card requires `cf_d ≥ 300`, and it takes the newest year that passes.
+  A builder fix (take the CF period from the filing's own DateOfStart fact) was not made (open).
+
 ## 169. Our-side price errors found by the Quantmac indicator reconciliation — 3 wrong boundaries, 2 rights factors, 1 duplicate rights row, 2 unjoined renames, 1 missing listing week, 34 stray fragment bars  (2026-09-26, user: "investigate" the possibly-ours cells; "don't assume" either side)
 **NO ASSUMPTIONS** — reference = NSE's own files, cached durably: every bhavcopy 2008-2026 (`~/stocks-cache/nse_bhav/full/`, 4,640
 sessions, file TIMESTAMP == URL date) and the corporates-corporateActions feed 2008-2026 with subject text (`~/stocks-cache/nse_ca/`,
