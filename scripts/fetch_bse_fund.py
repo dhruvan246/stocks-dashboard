@@ -82,7 +82,7 @@ def row_first_num(boxes, label_box):
 def parse_pl(boxes):
     """Return (rev, pat, unit) from a P&L page's OCR boxes. unit scales to ₹ crore."""
     unit = 0.01 if any(re.search(r"in lakh", b["t"], re.I) for b in boxes) else \
-           (10.0 if any(re.search(r"in million", b["t"], re.I) for b in boxes) else
+           (0.1 if any(re.search(r"in million", b["t"], re.I) for b in boxes) else
             (1.0 if any(re.search(r"in (crore|cr\.)", b["t"], re.I) for b in boxes) else None))
     rev = pat = None
     for b in boxes:

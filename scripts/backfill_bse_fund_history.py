@@ -83,7 +83,7 @@ def result_filings(op, code, from_ymd, to_ymd, status=None):
     return out
 
 
-UNIT_CR = {"crore": 1.0, "lakh": 0.01, "million": 0.1, "thousand": 1e-5, "absolute": 1e-7}
+UNIT_CR = {"crore": 1.0, "lakh": 0.01, "million": 0.1, "thousand": 1e-4, "absolute": 1e-7}
 
 
 def render_pl_pngs(doc, max_pages=4):

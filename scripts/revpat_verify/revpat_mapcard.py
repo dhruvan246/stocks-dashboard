@@ -30,7 +30,7 @@ import os, sys, json, argparse, collections, statistics
 TREE = os.path.dirname(os.path.dirname(os.path.dirname(os.path.abspath(__file__))))   # repo root of THIS checkout
 OURS = ["revS", "revC", "patS", "patC"]
 # scale candidates: site prints crore(1), million(/10), lakh(/100), thousand, or raw rupees
-SCALES = [("crore", 1.0), ("million", 0.1), ("lakh", 0.01), ("thousand", 0.001),
+SCALES = [("crore", 1.0), ("million", 0.1), ("lakh", 0.01), ("thousand", 1e-4),
           ("rupees", 1e-7), ("x10", 10.0), ("x100", 100.0)]
 # a cell MATCHES when within the larger of an absolute floor and a relative band
 ABS_FLOOR = 0.5          # Rs 0.5 crore -- absorbs 2dp-crore rounding differences across sites

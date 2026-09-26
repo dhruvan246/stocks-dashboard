@@ -30,7 +30,7 @@ _PROMPT = (
     "the image). Company: %s.\nExtract, in ₹ CRORE, for the quarter ended 30 June 2026 (Q1 FY27) and the "
     "year-ago quarter ended 30 June 2025:\n- Revenue from Operations (use Total Income only if 'from "
     "operations' isn't shown)\n- Profit After Tax / Profit for the period.\nMind the unit note: 'in Lakhs' "
-    "→ divide by 100; 'in Thousands' → /1e5; absolute ₹ → /1e7; 'in Crores' → keep. Prefer CONSOLIDATED if "
+    "→ divide by 100; 'in Thousands' → /1e4; absolute ₹ → /1e7; 'in Crores' → keep. Prefer CONSOLIDATED if "
     "both shown. If the images are a different company or you can't find the P&L, set ok=false and null the "
     "figures. Return ONLY the JSON object."
 )

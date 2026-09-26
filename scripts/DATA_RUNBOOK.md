@@ -21323,3 +21323,45 @@ June ("previous quarter") column — and the merge would have written that over 
 - **Left as is:** `bse_vision_api.vision_extract` (+ its Jun-2026 `_PROMPT/_SCHEMA`) now has no caller. Known limitation kept:
   companies that file results under a non-Result BSE category never enter `declared_recently`, so the grind won't re-open
   them — the vision routine (feed-driven) still catches them.
+
+## §183 — THE "THOUSAND" FACTOR WAS 10× WRONG IN 7 CODE SITES; MEASURED STORE DAMAGE = 0 CELLS (2026-09-27)
+
+1 crore = 1e7 ₹, 1 thousand = 1e3 ₹ → **thousand→crore = ×1e-4 (÷10,000)**, never 1e-5 (§17 line "UNIT: thousands →
+crore is ÷10,000" already said so for the routine prompts; the CODE still carried the old value). Fixed (commit below):
+
+| site | kind | was → now |
+|---|---|---|
+| `backfill_bse_fund_history.py` UNIT_CR | real conversion of `vision_extract_periods` output | 1e-5 → 1e-4 |
+| `vintage111_read.py`, `vintage113_forward.py` SCALES; `vintage111_adjudicate.py`, `vintage113_p2p3.py` SCALEF | candidate-scale lists (a figure × scale must equal a known crore value) — 1e-5 was NOT intended, it just made a thousands page unmatchable | 1e-5 → 1e-4 |
+| `revpat_verify/revpat_mapcard.py` SCALES (site→ours mapper; writes no store) | candidate list | 0.001 → 1e-4 |
+| `bse_vision_api.py` `_PROMPT` (Q1FY27 `vision_extract`) | model-side conversion text | "/1e5" → "/1e4" |
+| `gemini_vision.py` `_PROMPT` (insurers) + `_CORP_PROMPT` | model-side conversion text | "÷100000" → "÷10000" |
+| **also** `fetch_bse_fund.parse_pl` "in million" | real conversion (OCR path) | **×10.0 → ×0.1** (was 100× high) |
+
+**What the wrong factors could have written, measured (origin/main 99e9129d0 + 22f2671f4):**
+- `backfill_bse_fund_history.py` tags `src:"hist"` → **0 rows** in `docs/bse_fundamentals.json` carry it. The 16,627
+  `vision-hist` rows come from `merge_bse_hist.py` (cloud routine subagents convert units themselves; their current
+  prompt says ÷10000; the 2026-09-06 first-run log truncates the prompt at the unit line, so the rule in force for
+  past runs is **unknown from provenance** — no row records its unit).
+- So measured by an independent reader instead: every `vision-hist` cell that sits ≈10× BELOW its neighbours
+  (171 cells / 145 scrips, the signature a ÷1e5 slip leaves) was checked against BSE's own results XBRL
+  (`fetch_bse_results_xbrl.read_file/parse_values`, one request at a time, `bse_headers`): 164 got an XBRL read,
+  **147 match to 2%** on BOTH pat and rev (the step is real business), **0 show the unit signature** (pat AND rev
+  both ×0.1). Plus 26 `vision-hist` cells overlapping 310 cached BSE XBRL files: 24 exact, 2 owners-vs-total, 0 ×10.
+- `bse_vision_api.vision_extract` ("/1e5") wrote `src:"vision", ann:20260715` → 11 scrips; `gemini` (÷100000) → 6
+  scrips / 12 cells. All 34 cells (both quarters) re-read: 30 via BSE XBRL, 4 (507948, 539016 — NBFC XBRL 404s) via
+  the result PDF (both print "in Lakhs"; 507948 PAT 924.40 lakh = stored 9.24). **0 are off by a power of ten.**
+- `fund_cell_fix.json` (the vintage111/113 landings): 58 `confirmed_by_document` verdicts — 32 cite crore/lakh/₹ mn,
+  3 rest on XBRL, the rest are "searched, not found" (no page read). **0 rest on a thousand-scale read.**
+- `parse_pl` million: no no-`src` (OCR-path) row sits ~100× above its neighbours → 0 measured.
+- Annual BS/CF (`fetch_annual_bscf.py` 1e4), `_nse_archive_revop.py`, `xtra_nse_html.py`, `backfill_ipo_bases.py`,
+  `vintage108_documents.py`, `stdcon_audit/probe.py`, `fill2020_tools/insurer_con_rev.py` were already correct.
+- Gemini insurer reads (`fetch_insurers.gemini_extract`) persist no `via` in the store → per-cell provenance
+  **unknown**; the write is gated by the year-ago anchor (skipped only when that cell is empty) + per-insurer range.
+
+**Found on the way, NOT unit defects, NOT healed here** (XBRL disagrees with the stored vision value):
+519475 Mar-2022 (pat −0.12 vs −1.28, rev 0.67 vs 23.33), 531278 Mar-2021 (0.17/0.05 vs 1.84/4.73), 505840 Jun-2025,
+514460 Jun-2025/Jun-2026, 522134 Jun-2025 pat, 532067 Sep-2022/Jun-2023 pat (+15%), and 8 more PAT-only mismatches
+in `~/stocks-cache/thousand_audit/low10_xbrl.json`. Heal route when taken up: §178 XBRL values via the
+`vision-unitfix`-style tagged overwrite with provenance (commit 4a8a1f385 precedent).
+Tools: `~/stocks-cache/thousand_audit/{compare.py,check_low10.py}` (cached listings + XML there).
