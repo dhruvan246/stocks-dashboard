@@ -20218,6 +20218,18 @@ bars, and its "≥100 symbol-bars = session" rule certified these ten holidays b
 Guard both shapes: sparse (`phantom_date_audit`) AND dense (`phantom_session_audit`, repeat share). Agreement dips confined to
 particular years are a calendar smell — the first read here ("volatility × tolerance") was wrong.
 
+
+### 167e. The calendar itself now applies the carry-forward test  (2026-09-26, user: "add the test to the calendar")
+§167 left `session_calendar` count-only, so a NEW dense phantom would be warned about by `phantom_session_audit` yet still
+certified as a session, and the splice ledgers (BZ, SME, §89 surgery, bar_inserts) could emit bars onto it. Now a date inside
+[dailyFrom, end] with >= 100 bars of which >= `PHANTOM_REPEAT` (90 %) repeat each symbol's previous close is left OUT of the
+calendar, with a `::warning::Session calendar (§167a)` line naming it. Only the calendar changes — base bars are never dropped by
+this (a date is removed only once proven and listed in `sf_phantom_sessions.json`); confirmed `WEEKEND_SESSIONS` stay in.
+Verified: synthetic tests (copied date out, real dates in, outside-window dates untouched, splice guard refuses the copied date,
+weekend special kept, ragged `c` tolerated); LIVE bin rev 11ce29c1a2 (5,262 symbols): new calendar == old calendar, 6,547 dates
+(6,146 judged) — the function is read-only and the calendar is its only output, so the nightly output is unchanged. Highest
+repeat share of any date in the live bin: 31.4 % (1998). `test_no_ca_inference.py` ALL PASS.
+
 ## 168. ANNUAL BS/CF (annual_bscf.json) — Board-Meeting filings, continued cash flows, the CASH IDENTITY, iuad, validate-year cash flows  (2026-09-26, user: "do all 5 steps")
 Measured on real filings first, then fixed test-first (`scripts/test_abscf_pipeline.py`, 40 cases; the old code fails
 the discovery cases and has no continued-cash-flow support). Regression on 37 cached result PDFs: 0 balance-sheet fields

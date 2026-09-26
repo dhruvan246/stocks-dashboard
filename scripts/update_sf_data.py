@@ -862,13 +862,31 @@ def session_calendar(data, lo, hi, floor=SESSION_FLOOR):
     (WEEKEND_SESSIONS) so the verdict does not depend on which heal ran first. Dates outside the
     window are NOT judged: the pre-`dailyFrom` era is sparse by construction (1,072 real dates under
     100 bars in 1996-2001) and dates past `end` belong to the daily walk, which has its own misdirect
-    guard. Returns (calendar_set, lo, hi) — the tuple the splice guards take. DATA_RUNBOOK §89f."""
+    guard. Returns (calendar_set, lo, hi) — the tuple the splice guards take. DATA_RUNBOOK §89f.
+
+    §167a CARRY-FORWARD TEST: a bar COUNT cannot tell a session from a holiday file stored as one (the
+    ten §167 dates held 1,610-2,134 bars each and passed the count). A date inside [lo, hi] whose bars
+    repeat each symbol's previous close on >= PHANTOM_REPEAT of them (over >= floor bars) is NOT a
+    session here, so no ledger can splice onto it. Only the calendar is affected — the base bars stay
+    (phantom_session_audit names the date; drop it only once proven, via sf_phantom_sessions.json).
+    Measured 2026-09-26 on the live bin: real sessions 2-6%, the highest share of any date 31.4%."""
     import collections
-    cnt = collections.Counter()
+    cnt = collections.Counter(); rep = collections.Counter()
     for e in data.values():
         ds = e.get("d") if isinstance(e, dict) else None
-        if ds: cnt.update(ds)
-    cal = {d for d, n in cnt.items() if n >= floor}
+        if not ds: continue
+        cnt.update(ds)
+        c = e.get("c")
+        if not c or len(c) != len(ds): continue
+        for i in range(1, len(ds)):
+            if lo <= ds[i] <= hi and c[i] == c[i - 1]: rep[ds[i]] += 1
+    copied = sorted(d for d, n in cnt.items() if n >= floor and lo <= d <= hi and rep[d] >= PHANTOM_REPEAT * n)
+    cal = {d for d, n in cnt.items() if n >= floor} - set(copied)
+    if copied:
+        print("::warning::Session calendar (§167a): %d date(s) with >= %d bars NOT counted as sessions — >= %d%% of "
+              "their bars repeat the previous close (a holiday file stored as a session): %s"
+              % (len(copied), floor, round(PHANTOM_REPEAT * 100),
+                 ", ".join("%d(%d/%d)" % (d, rep[d], cnt[d]) for d in copied)))
     cal.update(int(x.strftime("%Y%m%d")) for x in WEEKEND_SESSIONS)
     return cal, lo, hi
 
