@@ -140,14 +140,14 @@ def detail(path, fname, sym):
 
 def targets(today):
     """[(code, target_sym or None, kind, sme, [missing qe])] — NSE targets first, then BSE-only by mcap."""
-    import fetch_bse_fund as bf
+    bf_out = os.path.join(DOCS, "bse_fundamentals.json")    # (no fetch_bse_fund import: it pulls in PyMuPDF)
     out = []
     if os.path.exists(NSE_T):
         for sym, t in sorted(json.load(open(NSE_T)).items()):
             out.append((str(t["code"]), sym, "nse", False, sorted(int(q) for q in t["q"])))
     univ = json.load(open(os.path.join(DOCS, "bse_universe.json")))["rows"]
     univ.sort(key=lambda r: r[6] or 0, reverse=True)
-    px = json.load(open(bf.OUT, encoding="utf-8")).get("px", {}) if os.path.exists(bf.OUT) else {}
+    px = json.load(open(bf_out, encoding="utf-8")).get("px", {}) if os.path.exists(bf_out) else {}
     due = due_quarters(today)
     for r in univ:
         code = str(r[0]); sme = (r[4] or "") in ("M", "MT", "MS")
