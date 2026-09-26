@@ -162,7 +162,7 @@ def main():
             # PDF year's CWIP read low against the XBRL years beside it (BEL, AUROPHARMA, 2026-09-26)
             PDF_FIELDS = {"assets", "sc", "oeq", "borr", "blt", "bst", "ppe", "cwip", "iuad", "gw", "intg", "invprop",
                           "invst", "rec", "pay", "invnt", "cfo", "cfi", "cff", "capex", "cf_tax"}
-            nfill = 0
+            nfill = nover = 0
             for sym, qs in abscf.items():
                 if sym.startswith("_") or not isinstance(qs, dict): continue
                 for qe, cell in qs.items():
@@ -170,11 +170,17 @@ def main():
                     b = cell.get("b") or "c"
                     tgt = xtra.setdefault(sym, {}).setdefault(qe, {}).setdefault(b, {})
                     added = False
+                    # 'xo' = fields whose PRINTED value is proven over the XBRL tag (the statement's own cash identity
+                    # closes with the print and not with the tag — CYIENT FY22 tagged CFO 1,060.7 against a printed
+                    # 634.5; runbook §168l). Only those fields override; everything else stays gap-fill.
+                    xo = set(cell.get("xo") or ())
                     for k, v in cell.items():
-                        if k in PDF_FIELDS and v is not None and tgt.get(k) is None:
+                        if k in PDF_FIELDS and v is not None and (tgt.get(k) is None or k in xo):
+                            if tgt.get(k) is not None and k in xo and tgt[k] != v: nover += 1
                             tgt[k] = v; added = True
                     if added: tgt["pdf"] = 1; nfill += 1
-            print("annual BS/CF PDF fills: %d cells gap-filled (from %s)" % (nfill, os.path.basename(abscf_p)))
+            print("annual BS/CF PDF fills: %d cells gap-filled, %d XBRL values overridden by proven prints (from %s)"
+                  % (nfill, nover, os.path.basename(abscf_p)))
         except Exception as e:
             print("WARN: annual_bscf.json unreadable (%s) — skipped" % e)
 

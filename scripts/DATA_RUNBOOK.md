@@ -20407,6 +20407,30 @@ FAR 102) with the filing itself and the next year's comparative column (tools/ar
   TATACONSUM FY21, ULTRACEMCO FY20, IDEA FY20, SUNPHARMA FY20) — Screener's figure comes from elsewhere; ~60 values with no
   text evidence (scans / no next-year PDF cached) → open, image reads need the user's OK.
 
+### 168l. Image reads of the scanned filings (user "yes", 2026-09-26) — tax directions, Screener gaps, XBRL override `xo`
+The text layer could not settle 216 tax directions or ~70 Screener FARs (scans). 29 blind reader batches (Opus; pages
+rendered from each cell's own src PDF, plus next year's filing for the comparative column; 22 image-only filings located
+by contact-sheet page finders) TRANSCRIBED lines only — every verdict is arithmetic (`~/stocks-cache/vis26-keys/evaluate.py`):
+- **Tax** (S = net operating − cash generated − other lines between must equal the printed tax line(s); the read must match
+  our own cfo or |tax| and our basis; a digit the reader flagged unclear may confirm, never change): 159 already right,
+  5 wrong signs, 8 wrong amounts (BIRLACORPN FY20 41.83 not 10.29; BAJAJHLDNG FY22 194.41 net of a 3.07 refund; KPIL FY22 150
+  not 1.0; GTPL FY21 50.79 not −150.78 …), 3 withheld refunds restored (BEML FY20, JINDALSTEL FY20 — 9,522.98 + 3.46 =
+  9,526.44 —, MAXHEALTH FY21, two independent reads), 6 hand-checked misreads (ALEMBICLTD FY22 stored the PRIOR-year column;
+  CHENNPETRO FY21 cfo 7.0 → 452.25 with the printed triple; MAGADSUGAR FY20, MOLDTKPAC FY22, SHEMAROO FY22, SURYALAXMI FY22);
+  32 not provable from the page (no "cash generated" line, tax inside the working-capital block, a sub-total layout) — left.
+- **Screener FARs** (own current column vs next year's prior column): 26 restated by the company the next year to Screener's
+  figure (ours = first filed, by design); 14 reprinted OUR number the next year (Screener differs); 7 restated to a third
+  figure; 7 ours ≠ the print → fixed: BIRLACORPN FY20 CWIP and SHILPAMED FY22 other equity were the PRIOR-year column, GRANULES
+  FY22 CWIP line missing, and two **XBRL tags that fail their own statement**: CYIENT FY22 (tagged CFO 1,060.7 / CFF −540.9,
+  sum +137.5 vs printed net change −292.3; printed 634.5 − 382.3 − 544.5 = −292.3) and JUBLPHARMA FY21 (89-day tags CFO
+  1,482.37 / CFI +720.83 / CFF +3,453.29 against printed 1,784.27 / −739.01 / −1,709.39).
+- **`xo` (build_stock_fin.py):** a ledger cell may list fields whose PRINTED value is proven over the XBRL tag; only those
+  fields override (the old tags kept in `xo_was`). Everything else stays gap-fill — the build log counts the overrides
+  ("6 XBRL values overridden"). Use it only with the statement's own identity closing on the print and failing on the tag.
+- Traps met: readers sharing one scratch folder can see each other's crops (give each batch its own folder); contact sheets
+  named per symbol+year overwrite each other when a symbol has several filings (name them per filing); a page holding only
+  the OTHER basis is not comparable (KPIL, ITDC, CERA) — the evaluator now refuses it.
+
 ## 169. Our-side price errors found by the Quantmac indicator reconciliation — 3 wrong boundaries, 2 rights factors, 1 duplicate rights row, 2 unjoined renames, 1 missing listing week, 34 stray fragment bars  (2026-09-26, user: "investigate" the possibly-ours cells; "don't assume" either side)
 **NO ASSUMPTIONS** — reference = NSE's own files, cached durably: every bhavcopy 2008-2026 (`~/stocks-cache/nse_bhav/full/`, 4,640
 sessions, file TIMESTAMP == URL date) and the corporates-corporateActions feed 2008-2026 with subject text (`~/stocks-cache/nse_ca/`,
