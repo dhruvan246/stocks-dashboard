@@ -1,5 +1,5 @@
 {
- "_doc": "DATA_RUNBOOK §173 (2026-09-26, user-approved task 2): Nifty-500 rights issues as ABSOLUTE bar-exact targets. rows = [symbol, ex trading day, target factor, NSE raw close ratio across that bar]. target = min(1, TERP/cum), TERP = (A*cum + B*issue)/(A+B) for 'Rights B:A', issue = face value AT THE EVENT + premium ('@ Par Rs X' = X), face value = NSE EQUITY_L.csv walked back through every later FV split/consolidation on NSE's feed (the feed's faceVal is the CURRENT FV), cum = NSE's raw close the session before the ex trading day. update_sf_data.reconcile_rights measures the factor baked at each bar (raw ratio / stored ratio) and rescales the pre-bar history to the target (idempotent, rounding-aware tolerance). Rows with target 1.0 on an ordinary session UNDO a fake step an old late-dated row baked there. Any MANUAL_RIGHTS / rights_terp.json row within 30 days of a row here is superseded (not applied). 'provenance' lists every N500 rights row on NSE's feed 2006-2026 incl. the ones NOT computed (partly paid, warrants, NCD, no price) or EXCLUDED because the tape contradicts the filed terms - those keep whatever they had. | 2026-09-26 §179: LAKSHVILAS 2014-07-25 (Rights 5:6) added — issue price Rs 50 (FV 10 + premium 40) read from NSE's own corporate announcement of 16-Jul-2014 (the feed row states no price).",
+ "_doc": "DATA_RUNBOOK §173 (2026-09-26, user-approved task 2): Nifty-500 rights issues as ABSOLUTE bar-exact targets. rows = [symbol, ex trading day, target factor, NSE raw close ratio across that bar]. target = min(1, TERP/cum), TERP = (A*cum + B*issue)/(A+B) for 'Rights B:A', issue = face value AT THE EVENT + premium ('@ Par Rs X' = X), face value = NSE EQUITY_L.csv walked back through every later FV split/consolidation on NSE's feed (the feed's faceVal is the CURRENT FV), cum = NSE's raw close the session before the ex trading day. update_sf_data.reconcile_rights measures the factor baked at each bar (raw ratio / stored ratio) and rescales the pre-bar history to the target (idempotent, rounding-aware tolerance). Rows with target 1.0 on an ordinary session UNDO a fake step an old late-dated row baked there. Any MANUAL_RIGHTS / rights_terp.json row within 30 days of a row here is superseded (not applied). 'provenance' lists every N500 rights row on NSE's feed 2006-2026 incl. the ones NOT computed (partly paid, warrants, NCD, no price) or EXCLUDED because the tape contradicts the filed terms - those keep whatever they had. | 2026-09-26 §179: LAKSHVILAS 2014-07-25 (Rights 5:6) added — issue price Rs 50 (FV 10 + premium 40) read from NSE's own corporate announcement of 16-Jul-2014 (the feed row states no price). | 2026-09-26 §179: WHEELS 2014-02-13 TERP on the ACTUAL shares issued (promoters forwent — SEBI MPS rights), ALOKINDS 2013 row keyed to era key ALOKTEXT; CHEMPLASTS 2009 / NEULANDLAB 2012 statuses resolved.",
  "rows": [
   [
    "3IINFOLTD",
@@ -894,6 +894,18 @@
    20140725,
    0.748922,
    0.739033
+  ],
+  [
+   "WHEELS",
+   20140213,
+   0.888429,
+   0.710777
+  ],
+  [
+   "ALOKTEXT",
+   20130215,
+   0.99801,
+   0.99005
   ]
  ],
  "provenance": [
@@ -993,7 +1005,7 @@
    "feed_sym": "ALOKTEXT",
    "feed_ex": 20130215,
    "subject": "Rights - 2:3@ Par Rs 10 Per Share",
-   "status": "NOT APPLIED: our price data has no bar on the ex trading day (NSE has one) - a missing-bar gap to fix first; target kept here for then",
+   "status": "TARGET (applied to era key ALOKTEXT — our 2013 series; was NOT APPLIED: the row sat under ALOKINDS whose series starts 2020)",
    "bar": 20130215,
    "prev_bar": 20130214,
    "new_per_held": "2:3",
@@ -1474,7 +1486,7 @@
    "feed_sym": "CHEMPLAST",
    "feed_ex": 20090317,
    "subject": "Rght 2:3@Prem Rs.4 Per Shpurpose Revised",
-   "status": "NOT APPLIED: our price data has no bar on the ex trading day (NSE has one) - a missing-bar gap to fix first; target kept here for then",
+   "status": "NO ADJUSTMENT: issue Rs 9 above the cum close 3.65 -> factor capped at 1.0 (era key CHEMPLAST; stored ex-day move = raw)",
    "bar": 20090317,
    "prev_bar": 20090316,
    "new_per_held": "2:3",
@@ -2982,7 +2994,7 @@
    "feed_sym": "NEULANDLAB",
    "feed_ex": 20120321,
    "subject": "Rights 5:12 @ Premium Rs.35/- Per Share",
-   "status": "EXCLUDED (left as is): tape -0.9% on the feed's ex-date vs formula -13%: the rights did not go ex that day; research the real ex-date",
+   "status": "KEPT AS BAKED 0.866 at 20120321 (rights_terp row): company filing 14-Mar-2012 confirms 5 for 12 at Rs 45 (premium 35), record date 23-Mar-2012; textbook TERP 0.8659; the tape shows no drop on 21/22/23-Mar (the stock repriced from 29-Mar) — §179 check",
    "bar": 20120321
   },
   {
@@ -4199,8 +4211,17 @@
    "feed_sym": "WHEELS",
    "feed_ex": 20140213,
    "subject": "Rights 51:20 @ Premium Rs.390/- Per Equity Share",
-   "status": "EXCLUDED (left as is): tape -29% vs formula -45% for 'Rights 51:20 @ Premium Rs.390' - the filed ratio looks reversed/incomplete; research before adjusting",
-   "bar": 20140213
+   "status": "TARGET",
+   "bar": 20140213,
+   "prev_bar": 20140212,
+   "new_per_held": "51:20 (public holders only)",
+   "issue": 400.0,
+   "cum": 1054.55,
+   "ex_close": 749.55,
+   "terp": 936.89285,
+   "factor": 0.888429,
+   "capped": false,
+   "issue_src": "§179 (2026-09-26): NSE announcement 04-Feb-2014: Rs 400 (premium 390), 51 for 20 — but a SEBI minimum-public-shareholding rights issue (16-Dec-2013 filing: promoters FOREGO their entitlement), 21,62,835 shares offered on 98,69,444 existing -> TERP on the actual shares = (98,69,444 x 1054.55 + 21,62,835 x 400) / 1,20,32,279. The old 0.5542 (51:20 applied to every holder) put a fake +28% on the ex-day."
   },
   {
    "sym": "WOCKPHARMA",
