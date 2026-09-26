@@ -37,6 +37,7 @@ Output: scripts/revop_fundamentals.json = { SYM: { "QE": [revStd, revCon, opStd,
 Run:  python -X utf8 build_revop.py [--limit N] [--fresh]
 Resumable: checkpoints to scripts/_revop_progress.json every 10k files.
 """
+import xbrl_symbol
 import html
 import os, re, sys, json, glob, concurrent.futures
 import scale_fix
@@ -412,6 +413,12 @@ def parse_file(path, fname):
     # unescape BEFORE upper(): `&amp;` -> `&` -> `M&M`. (Upper-first also happens to work because
     # HTML5 defines `&AMP;`, but relying on that is how the bug reads as harmless.)
     sym = html.unescape(sm.group(1)).strip().upper()
+    # §177: a filer not (yet) listed on NSE tags its symbol "NOTLISTED"/"NA" — resolve it by the file's ISIN, or skip
+    # the file (never key a bogus record that merges several companies).
+    sym = xbrl_symbol.resolve(sym, xml)
+    if not sym:
+        return None
+    sym = sym.upper()
     fin = 1 if ("InterestEarned" in xml or "NetPremiumIncome" in xml or "PremiumEarned" in xml
                 or fname.startswith("BANKING") or "NBFC" in fname
                 or "_LI_" in fname or "_GI_" in fname) else 0

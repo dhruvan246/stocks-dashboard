@@ -20852,3 +20852,24 @@ the honest version is a "5+ quarter FII accumulation" watch-list with these odds
 over 12 m, no basket edge) and fresh ≥ 2 pp jumps flagged as *historically underperform — do not chase*. Caveats: no
 costs; sector not controlled (cohort excess removes the market only); 365 d windows complete for filings visible ≤
 2025-09-25; FII per §151/§158/§164 definitions.
+
+## §177 — NSE results XBRL for the NSE main-board PIT gaps + the "NOTLISTED" symbol merge (2026-09-26)
+**Fetch:** 1,368 gap symbols listed through `/api/corporates-financial-results?symbol=` (classic filings, to Dec-2024) +
+`/api/integrated-filing-results?symbol=` (2025+); quarterly-period rows (80-100 days) for missing quarters only → 976 files
+in `~/stocks-cache/xbrl_fill/` (meta: `~/stocks-cache/univ/nse_gap_meta.json`, url + broadcast + basis). ~2,470 gap quarters
+have NO financial filing on NSE's lists (for 2025-26 many list only an INTEGRATED_FILING_GOVERNANCE file — board/committee
+data, no P&L; 287 such files parsed to nothing, correctly).
+**Apply (fill-only, the daily upsert's rules; tool `~/stocks-cache/univ/apply_nse_gap_xbrl.py`):** +248 revop quarters
+(docs/sf_revop.json + scripts/revop_fundamentals.json), +1 PAT; announce date = gated_ann(broadcast). Identity: file OneD
+period must equal the listed quarter; file symbol must resolve to the listed one → 36 refused (DVL files tagged DTIL — the
+recycled-ticker pair; PATANJALI's RUCHI-era files, RUCHI not in _rename_map).
+Detail via `build_xbrl_extra.py --incremental` over the new files: +11 quarters, +11 fields into existing cells, 2 values
+changed = SAH (→AERONEU) Jun-2024 tax 60.86 → 0.07 because NSE holds a REVISED filing of 15-Oct-2024 (latest-wins, the
+ledger's rule).
+**Defect fixed — placeholder symbols:** a company filing on NSE before its NSE listing tags `Symbol`/NSESymbol "NOTLISTED"
+(or "NA"). build_revop.py and build_xbrl_extra.py keyed those files under the literal, merging several companies into one
+record: committed xbrl_extra had NOTLISTED Dec-25/Mar-26/Jun-26, sf_revop + revop_fundamentals NOTLISTED Dec-25/Mar-26 —
+all unattributable, dropped. New `scripts/xbrl_symbol.py resolve(sym, xml)`: placeholder → the file's ISIN → NSE symbol
+(EQUITY_L + SME_EQUITY_L from nsearchives, committed tape meta as fallback), else the file is skipped. ABANS ENTERPRISES
+(ISIN INE365O01028) → ABANSENT now holds its own Mar/Jun-2026 detail. NSE's filing LIST always carries the real symbol
+(0 placeholder rows in 31,693 financial rows 2025-26) — only the XBRL bodies carry it.

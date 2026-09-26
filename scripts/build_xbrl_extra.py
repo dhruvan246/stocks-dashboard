@@ -40,6 +40,7 @@ Resumable: checkpoints to scripts/_xtra_progress.json every 10k files.
 import os, re, sys, json, datetime, concurrent.futures, html as html_lib
 sys.path.insert(0, os.path.dirname(os.path.abspath(__file__)))
 import scale_fix
+import xbrl_symbol
 
 HERE = os.path.dirname(os.path.abspath(__file__))
 # XBRL_CACHE override: the nightly top-up routine runs from its OWN worktree (one writer per
@@ -275,6 +276,10 @@ def parse_file(path, fname):
     # XBRL escapes '&' — upper-casing the RAW capture keyed M&M as "M&AMP;M" (13 ledger keys, 267
     # Nifty-500 quarters invisible; the §115 phantom class, fixed in build_revop but not here).
     sym = html_lib.unescape(sm.group(1).strip()).upper()
+    sym = xbrl_symbol.resolve(sym, xml)          # §177: "NOTLISTED"/"NA" placeholder -> NSE symbol by ISIN, else skip
+    if not sym:
+        return None
+    sym = sym.upper()
 
     # ---- contexts --------------------------------------------------------------------------
     ctx = {}  # cid -> ('I', date) | ('D', start, end)
