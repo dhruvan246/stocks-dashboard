@@ -13,6 +13,9 @@ on:
       cap:
         description: 'per-shard file cap'
         default: '20000'
+      codes:
+        description: 'optional JSON file of scrip codes to restrict this run to (a later round), e.g. scripts/_shp_bse_round2.json'
+        default: ''
 
 permissions:
   contents: read
@@ -38,8 +41,9 @@ jobs:
         run: |
           mkdir -p "$RUNNER_TEMP/c"
           cp scripts/_shp_bse_targets.json "$RUNNER_TEMP/c/bse_targets.json"
+          CODES="${{ inputs.codes }}"
           python3 scripts/fetch_shp_allstocks.py bse --cache "$RUNNER_TEMP/c" --shard "${{ matrix.shard }}" \
-            --cap "${{ inputs.cap }}" --max-minutes 320 || echo "::warning::bse stage exited non-zero — see the log in the artifact"
+            --cap "${{ inputs.cap }}" --max-minutes 320 ${CODES:+--codes "$CODES"} || echo "::warning::bse stage exited non-zero — see the log in the artifact"
           tail -5 "$RUNNER_TEMP/c/bse_stage.log" || true
           echo "lists: $(ls "$RUNNER_TEMP/c/bse_lists_v2" 2>/dev/null | wc -l)  files: $(ls "$RUNNER_TEMP/c/xbrl_bse_v2" 2>/dev/null | wc -l)"
 

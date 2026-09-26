@@ -355,7 +355,7 @@ def bse_pick(rows):
     return out
 
 
-def stage_bse(cache, cap=20000, shard="0/1", max_minutes=0):
+def stage_bse(cache, cap=20000, shard="0/1", max_minutes=0, codes_file=None):
     """ONE request at a time (runbook §181): per target scrip, the SHPQNewFormat list on api.bseindia.com, then only the
     quarter-end XBRL files the store lacks from www.bseindia.com/XBRLFILES. Largest companies first; resumable (lists and
     files already on disk are never fetched again); stops after repeated refusals instead of retrying fast."""
@@ -371,6 +371,9 @@ def stage_bse(cache, cap=20000, shard="0/1", max_minutes=0):
     except Exception:
         mc = {}
     codes = sorted((c for c, v in T.items() if not v.get("isin_conflict")), key=lambda c: -(mc.get(T[c]["sym"]) or 0))
+    if codes_file:                                               # a later round: only the codes a list names
+        want = {str(c) for c in json.load(open(codes_file))}
+        codes = [c for c in codes if c in want]
     k_, n_ = (int(x) for x in shard.split("/"))
     codes = [c for c in codes if int(c) % n_ == k_]              # deterministic split across machines (--shard k/n)
     log = open(os.path.join(cache, "bse_stage.log"), "a")
@@ -666,7 +669,9 @@ def build(cache):
 
     built = (datetime.datetime.utcnow() + datetime.timedelta(hours=5, minutes=30)).strftime("%Y-%m-%d %H:%M IST")
     n_cells = sum(len(v) for v in fills.values())
-    bse_keys = {s_: bse_code_of[s_] for s_ in fills if s_ in bse_code_of and T.get(bse_code_of[s_], {}).get("grp") == "BSE-only"}
+    # BSE-only tickers, and NSE listings of 2026 whose NSE symbol IS their BSE id (grp NSE-new): their own SHP rows must
+    # not make build_stock_fin treat the slug as taken and skip the same scrip's BSE fundamentals.
+    bse_keys = {s_: bse_code_of[s_] for s_ in fills if s_ in bse_code_of and T.get(bse_code_of[s_], {}).get("grp") in ("BSE-only", "NSE-new")}
     led = {"_bse_keys": dict(sorted(bse_keys.items())),
            "_meta": {"source": "NSE corporate-share-holdings-master XBRL (equities + SME boards) + BSE SHPQNewFormat XBRL",
                      "built": built, "runbook": "§180", "symbols": len(fills), "cells": n_cells,
@@ -696,6 +701,7 @@ if __name__ == "__main__":
     ap.add_argument("--shard", default="0/1", help="bse stage: k/n — this machine takes scrip codes with code %% n == k")
     ap.add_argument("--cap", type=int, default=20000, help="bse stage: per-run file cap (runbook §181)")
     ap.add_argument("--max-minutes", type=int, default=0, help="bse stage: stop cleanly after this many minutes (CI)")
+    ap.add_argument("--codes", default=None, help="bse stage: JSON list of scrip codes to restrict this run to (later rounds)")
     a = ap.parse_args()
-    if a.stage == "bse": stage_bse(a.cache, cap=a.cap, shard=a.shard, max_minutes=a.max_minutes)
+    if a.stage == "bse": stage_bse(a.cache, cap=a.cap, shard=a.shard, max_minutes=a.max_minutes, codes_file=a.codes)
     else: {"master": stage_master, "download": stage_download, "build": build}[a.stage](a.cache)
