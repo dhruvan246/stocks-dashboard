@@ -1,7 +1,7 @@
 {
- "generated_utc": "2026-09-24T23:57:11Z",
+ "generated_utc": "2026-09-26T00:00:09Z",
  "ok": true,
- "checked": 81,
+ "checked": 82,
  "bad": [],
  "feeds": [
   {
@@ -15,8 +15,8 @@
    "static": false,
    "status": "ok",
    "detail": "",
-   "bytes": 5629424,
-   "age_hours": 4.1
+   "bytes": 5796028,
+   "age_hours": 4.2
   },
   {
    "file": "discovery.json",
@@ -29,8 +29,8 @@
    "static": false,
    "status": "ok",
    "detail": "",
-   "bytes": 1351213,
-   "age_hours": 4.1
+   "bytes": 1356661,
+   "age_hours": 4.2
   },
   {
    "file": "order_values.json",
@@ -43,8 +43,8 @@
    "static": false,
    "status": "ok",
    "detail": "",
-   "bytes": 20569,
-   "age_hours": 4.1
+   "bytes": 20047,
+   "age_hours": 4.2
   },
   {
    "file": "order_shares.json",
@@ -58,7 +58,7 @@
    "status": "ok",
    "detail": "",
    "bytes": 134,
-   "age_hours": 4.1
+   "age_hours": 4.2
   },
   {
    "file": "deals.json",
@@ -72,7 +72,7 @@
    "static": false,
    "status": "ok",
    "detail": "",
-   "bytes": 919111,
+   "bytes": 944439,
    "age_hours": 4.2
   },
   {
@@ -87,7 +87,7 @@
    "static": false,
    "status": "ok",
    "detail": "",
-   "bytes": 458332,
+   "bytes": 457006,
    "age_hours": 4.0
   },
   {
@@ -102,7 +102,7 @@
    "static": false,
    "status": "ok",
    "detail": "",
-   "bytes": 176953,
+   "bytes": 171757,
    "age_hours": 4.4
   },
   {
@@ -114,7 +114,7 @@
    "static": false,
    "status": "ok",
    "detail": "",
-   "bytes": 3997075,
+   "bytes": 4003970,
    "age_hours": 4.4
   },
   {
@@ -128,7 +128,7 @@
    "static": false,
    "status": "ok",
    "detail": "",
-   "bytes": 27090,
+   "bytes": 28716,
    "age_hours": 4.4
   },
   {
@@ -142,7 +142,7 @@
    "static": false,
    "status": "ok",
    "detail": "",
-   "bytes": 121401,
+   "bytes": 121376,
    "age_hours": 4.4
   },
   {
@@ -156,7 +156,7 @@
    "static": false,
    "status": "ok",
    "detail": "",
-   "bytes": 89737,
+   "bytes": 89691,
    "age_hours": 4.5
   },
   {
@@ -168,7 +168,7 @@
    "static": false,
    "status": "ok",
    "detail": "",
-   "bytes": 343107,
+   "bytes": 350177,
    "age_hours": 4.5
   },
   {
@@ -182,7 +182,7 @@
    "static": false,
    "status": "ok",
    "detail": "",
-   "bytes": 10896,
+   "bytes": 10926,
    "age_hours": 6.1
   },
   {
@@ -196,8 +196,8 @@
    "static": false,
    "status": "ok",
    "detail": "",
-   "bytes": 60909,
-   "age_hours": 6.1
+   "bytes": 59973,
+   "age_hours": 6.0
   },
   {
    "file": "results_feed.json",
@@ -210,7 +210,7 @@
    "static": false,
    "status": "ok",
    "detail": "",
-   "bytes": 26164,
+   "bytes": 24245,
    "age_hours": 2.4
   },
   {
@@ -224,8 +224,8 @@
    "static": false,
    "status": "ok",
    "detail": "",
-   "bytes": 3794,
-   "age_hours": 3.7
+   "bytes": 5196,
+   "age_hours": 3.8
   },
   {
    "file": "quarterly_results.json",
@@ -238,7 +238,7 @@
    "static": false,
    "status": "ok",
    "detail": "",
-   "bytes": 2069513,
+   "bytes": 2069816,
    "age_hours": 8.2
   },
   {
@@ -252,8 +252,8 @@
    "static": false,
    "status": "ok",
    "detail": "",
-   "bytes": 4430663,
-   "age_hours": 8.2
+   "bytes": 4430761,
+   "age_hours": 11.5
   },
   {
    "file": "sf_revop.json",
@@ -264,8 +264,8 @@
    "static": false,
    "status": "ok",
    "detail": "",
-   "bytes": 6246977,
-   "age_hours": 8.2
+   "bytes": 6247124,
+   "age_hours": 11.5
   },
   {
    "file": "results_season.json",
@@ -292,8 +292,8 @@
    "static": false,
    "status": "ok",
    "detail": "",
-   "bytes": 14121,
-   "age_hours": 5.3
+   "bytes": 14278,
+   "age_hours": 5.1
   },
   {
    "file": "fii_dii_monthly.json",
@@ -307,7 +307,7 @@
    "status": "ok",
    "detail": "",
    "bytes": 12306,
-   "age_hours": 5.3
+   "age_hours": 5.1
   },
   {
    "file": "fii_fo.json",
@@ -320,8 +320,22 @@
    "static": false,
    "status": "ok",
    "detail": "",
-   "bytes": 1377221,
-   "age_hours": 5.3
+   "bytes": 1476650,
+   "age_hours": 5.1
+  },
+  {
+   "file": "fii_fo_lots.json",
+   "name": "Index-futures OI by index + lot (lot-adjusted F&O positions)",
+   "workflow": "refresh-fii-dii.yml",
+   "cadence": "weekdays 20:15 IST",
+   "pages": [
+    "fii-dii.html"
+   ],
+   "static": false,
+   "status": "ok",
+   "detail": "",
+   "bytes": 766925,
+   "age_hours": 5.1
   },
   {
    "file": "nifty.json",
@@ -338,8 +352,8 @@
    "static": false,
    "status": "ok",
    "detail": "",
-   "bytes": 127029,
-   "age_hours": 5.3
+   "bytes": 127050,
+   "age_hours": 5.1
   },
   {
    "file": "nifty500.json",
@@ -353,8 +367,8 @@
    "static": false,
    "status": "ok",
    "detail": "",
-   "bytes": 75745,
-   "age_hours": 5.3
+   "bytes": 75766,
+   "age_hours": 5.1
   },
   {
    "file": "nifty_bank.json",
@@ -367,8 +381,8 @@
    "static": false,
    "status": "ok",
    "detail": "",
-   "bytes": 77921,
-   "age_hours": 5.3
+   "bytes": 77942,
+   "age_hours": 5.1
   },
   {
    "file": "india_vix.json",
@@ -381,8 +395,8 @@
    "static": false,
    "status": "ok",
    "detail": "",
-   "bytes": 68271,
-   "age_hours": 5.3
+   "bytes": 68290,
+   "age_hours": 5.1
   },
   {
    "file": "nifty500_turnover.json",
@@ -396,7 +410,7 @@
    "status": "ok",
    "detail": "",
    "bytes": 5244,
-   "age_hours": 7.8
+   "age_hours": 4.0
   },
   {
    "file": "market_breadth.json",
@@ -410,8 +424,8 @@
    "static": false,
    "status": "ok",
    "detail": "",
-   "bytes": 205325,
-   "age_hours": 7.8
+   "bytes": 205034,
+   "age_hours": 4.0
   },
   {
    "file": "market_breadth_pit.json",
@@ -424,8 +438,8 @@
    "static": false,
    "status": "ok",
    "detail": "",
-   "bytes": 487527,
-   "age_hours": 7.8
+   "bytes": 486853,
+   "age_hours": 4.0
   },
   {
    "file": "survivorship/nifty500.json",
@@ -438,8 +452,8 @@
    "static": false,
    "status": "ok",
    "detail": "",
-   "bytes": 391308,
-   "age_hours": 7.8
+   "bytes": 391103,
+   "age_hours": 4.0
   },
   {
    "file": "survivorship/nifty50.json",
@@ -452,8 +466,8 @@
    "static": false,
    "status": "ok",
    "detail": "",
-   "bytes": 38486,
-   "age_hours": 7.8
+   "bytes": 38505,
+   "age_hours": 7.9
   },
   {
    "file": "survivorship/niftybank.json",
@@ -466,8 +480,8 @@
    "static": false,
    "status": "ok",
    "detail": "",
-   "bytes": 7251,
-   "age_hours": 7.8
+   "bytes": 7241,
+   "age_hours": 7.9
   },
   {
    "file": "shareholding.json",
@@ -480,7 +494,7 @@
    "static": true,
    "status": "ok",
    "detail": "",
-   "bytes": 1026259,
+   "bytes": 1026386,
    "age_hours": null
   },
   {
@@ -509,7 +523,7 @@
    "static": true,
    "status": "ok",
    "detail": "",
-   "bytes": 4581597,
+   "bytes": 4582630,
    "age_hours": null
   },
   {
@@ -524,7 +538,7 @@
    "status": "ok",
    "detail": "",
    "bytes": 25371,
-   "age_hours": 53.5
+   "age_hours": 77.6
   },
   {
    "file": "macro.json",
@@ -537,7 +551,7 @@
    "static": false,
    "status": "ok",
    "detail": "",
-   "bytes": 1032160,
+   "bytes": 1032498,
    "age_hours": 4.8
   },
   {
@@ -565,7 +579,7 @@
    "static": false,
    "status": "ok",
    "detail": "",
-   "bytes": 22997,
+   "bytes": 23011,
    "age_hours": 4.0
   },
   {
@@ -580,7 +594,7 @@
    "status": "ok",
    "detail": "",
    "bytes": 826829,
-   "age_hours": 125.7
+   "age_hours": 149.8
   },
   {
    "file": "bse_universe.json",
@@ -592,7 +606,7 @@
    "status": "ok",
    "detail": "",
    "bytes": 259837,
-   "age_hours": 35.5
+   "age_hours": 59.5
   },
   {
    "file": "bse_fundamentals.json",
@@ -603,8 +617,8 @@
    "static": false,
    "status": "ok",
    "detail": "",
-   "bytes": 1705223,
-   "age_hours": 5.2
+   "bytes": 1705228,
+   "age_hours": 5.1
   },
   {
    "file": "bse_results.json",
@@ -617,8 +631,8 @@
    "static": false,
    "status": "ok",
    "detail": "",
-   "bytes": 994853,
-   "age_hours": 5.2
+   "bytes": 994828,
+   "age_hours": 5.1
   },
   {
    "file": "bse_prices.bin",
@@ -631,8 +645,8 @@
    "static": false,
    "status": "ok",
    "detail": "",
-   "bytes": 19908850,
-   "age_hours": 5.2
+   "bytes": 19925326,
+   "age_hours": 5.1
   },
   {
    "file": "sf_meta.json",
@@ -647,7 +661,7 @@
    "status": "ok",
    "detail": "",
    "bytes": 21,
-   "age_hours": 8.5
+   "age_hours": 9.7
   },
   {
    "file": "stock_data.bin",
@@ -662,8 +676,8 @@
    "static": false,
    "status": "ok",
    "detail": "",
-   "bytes": 18465556,
-   "age_hours": 13.6
+   "bytes": 18409995,
+   "age_hours": 13.7
   },
   {
    "file": "dash_slim.bin",
@@ -677,7 +691,7 @@
    "static": false,
    "status": "ok",
    "detail": "",
-   "bytes": 2303609,
+   "bytes": 2320564,
    "age_hours": 7.5
   },
   {
@@ -692,8 +706,8 @@
    "static": false,
    "status": "ok",
    "detail": "",
-   "bytes": 99133,
-   "age_hours": 8.1
+   "bytes": 100318,
+   "age_hours": 9.0
   },
   {
    "file": "results_coverage.json",
@@ -707,7 +721,7 @@
    "status": "ok",
    "detail": "",
    "bytes": 393,
-   "age_hours": 3.7
+   "age_hours": 3.8
   },
   {
    "file": "coverage/index.json",
@@ -732,7 +746,7 @@
    "static": false,
    "status": "ok",
    "detail": "",
-   "bytes": 49647,
+   "bytes": 49754,
    "age_hours": 2.4
   },
   {
@@ -744,7 +758,7 @@
    "static": false,
    "status": "ok",
    "detail": "",
-   "bytes": 554201,
+   "bytes": 553349,
    "age_hours": 3.7
   },
   {
@@ -796,7 +810,7 @@
    "static": false,
    "status": "ok",
    "detail": "",
-   "bytes": 874336,
+   "bytes": 874334,
    "age_hours": 3.7
   },
   {
@@ -810,7 +824,7 @@
    "static": false,
    "status": "ok",
    "detail": "",
-   "bytes": 7816100,
+   "bytes": 7822300,
    "age_hours": 3.7
   },
   {
@@ -860,8 +874,8 @@
    "static": false,
    "status": "ok",
    "detail": "",
-   "bytes": 1029,
-   "age_hours": 5.8
+   "bytes": 3086,
+   "age_hours": 8.6
   },
   {
    "file": "ideas/ideas.json",
@@ -874,7 +888,7 @@
    "static": true,
    "status": "ok",
    "detail": "",
-   "bytes": 47568,
+   "bytes": 85298,
    "age_hours": null
   },
   {
@@ -888,8 +902,8 @@
    "static": false,
    "status": "ok",
    "detail": "",
-   "bytes": 2069,
-   "age_hours": 5.5
+   "bytes": 3301,
+   "age_hours": 5.9
   },
   {
    "file": "ideas/universe.json",
@@ -903,7 +917,7 @@
    "status": "ok",
    "detail": "",
    "bytes": 252498,
-   "age_hours": 32.9
+   "age_hours": 57.0
   },
   {
    "file": "ideas/signals.json",
@@ -916,8 +930,8 @@
    "static": false,
    "status": "ok",
    "detail": "",
-   "bytes": 1307077,
-   "age_hours": 5.5
+   "bytes": 1306860,
+   "age_hours": 5.9
   },
   {
    "file": "ideas/spot.json",
@@ -930,8 +944,8 @@
    "static": false,
    "status": "ok",
    "detail": "",
-   "bytes": 9573,
-   "age_hours": 5.5
+   "bytes": 9279,
+   "age_hours": 5.9
   },
   {
    "file": "ideas/trade/meta.json",
@@ -945,7 +959,7 @@
    "status": "ok",
    "detail": "",
    "bytes": 3541,
-   "age_hours": 58.8
+   "age_hours": 82.9
   },
   {
    "file": "ideas/wpi.json.gz",
@@ -959,7 +973,7 @@
    "status": "ok",
    "detail": "",
    "bytes": 244301,
-   "age_hours": 5.5
+   "age_hours": 5.9
   },
   {
    "file": "ideas/govt.json",
@@ -972,8 +986,8 @@
    "static": false,
    "status": "ok",
    "detail": "",
-   "bytes": 444,
-   "age_hours": 5.5
+   "bytes": 12334,
+   "age_hours": 5.9
   },
   {
    "file": "ideas/theme_map.json",
@@ -987,7 +1001,7 @@
    "status": "ok",
    "detail": "",
    "bytes": 43355,
-   "age_hours": 55.5
+   "age_hours": 79.6
   },
   {
    "file": "ideas/india_spot.json",
@@ -1000,8 +1014,8 @@
    "static": false,
    "status": "ok",
    "detail": "",
-   "bytes": 77355,
-   "age_hours": 5.5
+   "bytes": 77360,
+   "age_hours": 5.9
   },
   {
    "file": "ideas/nmdc_history.json",
@@ -1015,7 +1029,7 @@
    "status": "ok",
    "detail": "",
    "bytes": 52695,
-   "age_hours": 5.5
+   "age_hours": 5.9
   },
   {
    "file": "ideas/india_history.json.gz",
@@ -1028,8 +1042,8 @@
    "static": false,
    "status": "ok",
    "detail": "",
-   "bytes": 284166,
-   "age_hours": 5.5
+   "bytes": 284754,
+   "age_hours": 5.9
   },
   {
    "file": "ideas/minsteel_mumbai.json",
@@ -1043,7 +1057,7 @@
    "status": "ok",
    "detail": "",
    "bytes": 12812,
-   "age_hours": 5.5
+   "age_hours": 5.9
   },
   {
    "file": "ideas/feeds_status.json",
@@ -1057,7 +1071,7 @@
    "status": "ok",
    "detail": "",
    "bytes": 1843,
-   "age_hours": 5.5
+   "age_hours": 5.9
   },
   {
    "file": "results_feed.json",
@@ -1070,7 +1084,7 @@
    "status": "ok",
    "detail": "",
    "bytes": null,
-   "age_hours": 59.0
+   "age_hours": 83.1
   },
   {
    "file": "release_asset",
@@ -1082,7 +1096,7 @@
    "static": false,
    "status": "ok",
    "detail": "",
-   "bytes": 201706944,
+   "bytes": 201626136,
    "age_hours": 4.7
   },
   {
@@ -1096,7 +1110,7 @@
    "status": "ok",
    "detail": "",
    "bytes": null,
-   "age_hours": 4.7
+   "age_hours": 4.6
   },
   {
    "file": "supabase_rpc",
