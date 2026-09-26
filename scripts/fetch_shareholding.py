@@ -1176,11 +1176,43 @@ def refresh_quarters(qes, reparse=False, only=None, fill_shares=False):
     print("history: %d cells (%+d), %d symbols" % (after, after - before, sum(1 for k in hist if not k.startswith("_"))))
     return stats
 
+EVENT_REDATE = os.path.join(HERE, "shp_event_redate.json")
+def apply_event_redate(ev):
+    """§164m: move EVENT rows whose as-on date is wrong (NSE's master 'date' = the allotment date or a mistyped year) to the
+    filing's own XBRL DateOfReport, per scripts/shp_event_redate.json. Runs in load_events AND save_events, so every reader
+    sees the corrected date and a re-ingest cannot write the wrong key back. The same filing already at the target (equal
+    values) merges and keeps its EARLIEST publication; a different filing at the target is left alone. -> rows moved."""
+    try:
+        led = json.load(open(EVENT_REDATE, encoding="utf-8")).get("redate") or {}
+    except (OSError, ValueError):
+        return 0
+    n = 0
+    for k, v in led.items():
+        sym, src = k.split("|", 1); to = (v or {}).get("to"); rows = ev.get(sym)
+        if not to or not isinstance(rows, dict) or src not in rows:
+            continue
+        row = rows[src]; tgt = rows.get(to)
+        if tgt is not None:
+            if not all(abs((tgt[i] or 0) - (row[i] or 0)) <= 1e-6 for i in range(5)):
+                continue                      # a different filing already sits at the target date: re-adjudicate
+            if str(row[5]) < str(tgt[5]):
+                tgt[5] = row[5]               # the same filing twice: keep its earliest publication
+        else:
+            rows[to] = row
+        del rows[src]
+        lat = (ev.get("_latest") or {}).get(sym)
+        if isinstance(lat, dict) and src in lat:
+            lat.setdefault(to, lat.pop(src))
+        n += 1
+    return n
+
 def load_events():
     try:
-        return json.load(open(EVENTS, encoding="utf-8"))
+        ev = json.load(open(EVENTS, encoding="utf-8"))
     except Exception:
         return {}
+    apply_event_redate(ev)
+    return ev
 
 REVS = os.path.join(HERE, "shp_revisions.json")
 def load_revs():
@@ -1252,6 +1284,7 @@ def _same_cell(a, b):
     return a is not None and b is not None and all(abs(float(x) - float(y)) <= 0.0100001 for x, y in zip(a[:5], b[:5]))
 
 def save_events(e):
+    apply_event_redate(e)                 # §164m: never write a known-wrong as-on date back
     tmp = EVENTS + ".tmp"
     json.dump(e, open(tmp, "w", encoding="utf-8"), separators=(",", ":"), sort_keys=True)
     os.replace(tmp, EVENTS)

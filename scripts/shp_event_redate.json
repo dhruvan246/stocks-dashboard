@@ -1,0 +1,32 @@
+{
+ "_doc": [
+  "§164m (2026-09-27): EVENT (mid-quarter, Reg 31(1)(c)) shareholding rows whose stored as-on date is wrong by months or years. The as-on date comes from NSE's corporate-share-holdings-master 'date' field; for these filings it carries the allotment date or a mistyped year, while the filing's own XBRL DateOfReport says the pattern's real date. fetch_shareholding.apply_event_redate() moves the row (load_events AND save_events, so a re-ingest cannot bring the wrong key back). If the target date already holds the SAME filing (equal values) the two merge and keep the earliest publication; a different filing at the target is left alone (re-adjudicate).",
+  "Found answering Quantmac v3 (JUSTDIAL blanked Feb-Jun 2019: the 400-day cap met an as-on 2018 row filed 2019). Scan: 62 event rows filed > 90 days after their as-on date; 36 match the XBRL DateOfReport, 16 differ — 10 by a few days (allotment vs report date, no effect on the series, left), 3 would land on a quarter-end that already has the quarterly row (ERIS 2019-12-31, MBLINFRA 2024-06-30 x2 — left, re-adjudicate), 6 moved here. Evidence: ~/stocks-cache/shp/eventdates/asons.json."
+ ],
+ "redate": {
+  "JUSTDIAL|2018-01-15": {
+   "to": "2019-01-18",
+   "evidence": "BSE SHPQNewFormat row as-on 2018-01-15 (the filer's DateOfAllotment 2018-01-15) filed 2019-01-24T18:23:24, file 535648_2412019181838_SHP.xml; the XBRL's own DateOfReport = 2019-01-18 — the as-on 2018-01-15 came from NSE's master 'date' field, the allotment date / a mistyped year"
+  },
+  "RAMASTEEL|2022-08-17": {
+   "to": "2023-08-17",
+   "evidence": "BSE SHPQNewFormat row as-on 2022-08-17 (the filer's DateOfAllotment 2022-08-17) filed 2023-08-23T15:15:49.41, file 539309_2382023151544_SHP.xml; the XBRL's own DateOfReport = 2023-08-17 — the as-on 2022-08-17 came from NSE's master 'date' field, the allotment date / a mistyped year"
+  },
+  "ASMS|2022-03-10": {
+   "to": "2024-06-20",
+   "evidence": "BSE SHPQNewFormat row as-on 2022-03-10 (the filer's DateOfAllotment 2022-03-10) filed 2024-06-20T11:54:25.883, file 532694_2062024115423_SHP.xml; the XBRL's own DateOfReport = 2024-06-20 — the as-on 2022-03-10 came from NSE's master 'date' field, the allotment date / a mistyped year"
+  },
+  "DIACABS|2022-09-17": {
+   "to": "2024-02-29",
+   "evidence": "BSE SHPQNewFormat row as-on 2022-09-17 (the filer's DateOfAllotment 2022-09-17) filed 2024-02-29T17:23:29.33, file 522163_2922024172326_SHP.xml; the XBRL's own DateOfReport = 2024-02-29 — the as-on 2022-09-17 came from NSE's master 'date' field, the allotment date / a mistyped year"
+  },
+  "JYOTISTRUC|2023-05-12": {
+   "to": "2024-03-01",
+   "evidence": "BSE SHPQNewFormat row as-on 2023-05-12 (the filer's DateOfAllotment 2023-05-12) filed 2024-03-01T20:00:25.813, file 513250_13202420021_SHP.xml; the XBRL's own DateOfReport = 2024-03-01 — the as-on 2023-05-12 came from NSE's master 'date' field, the allotment date / a mistyped year"
+  },
+  "SWANDEF|2023-12-08": {
+   "to": "2024-10-25",
+   "evidence": "BSE SHPQNewFormat row as-on 2023-12-08 (the filer's DateOfAllotment 2023-12-08) filed 2024-12-17T15:36:33.18, file 533107_17122024153631_SHP.xml; the XBRL's own DateOfReport = 2024-10-25 — the as-on 2023-12-08 came from NSE's master 'date' field, the allotment date / a mistyped year"
+  }
+ }
+}

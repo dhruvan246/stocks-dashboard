@@ -20125,6 +20125,21 @@ added** (fill-only, `shp_fill_seam_aspx.json.gz`); **45 held**: 26 incomplete (l
 — RELIANCE / WIPRO / BRITANNIA / LICHSGFIN / ARVIND / NATCOPHARM / DISHTV / BHARATFORG Mar-2016 among them. Those need a document
 that states the quarter's FII total (the company's own filing PDF on BSE's announcements, or Quantmac's source).
 
+### 164m. Event rows re-dated to the filing's own report date (2026-09-27)
+JUSTDIAL's mid-quarter filing made on 24-Jan-2019 was stored as-on 2018-01-15: NSE's master 'date' carried the filer's
+DateOfAllotment, and its year was mistyped. Served from 2019-01-24 with an as-on in 2018, it was the latest-visible row at every
+month-end Feb-Jun 2019, and the 400-day staleness cap then blanked those cells (Quantmac v3 "please check your side"). It also
+placed a false FII spike (41.74) between Dec-2017 (35.21) and Mar-2018 (35.93). Scan of every event row filed > 90 days after its
+as-on date: 62 rows; the filing's own XBRL DateOfReport (BSE list row -> XBRL, honest headers) matches in 36, differs in 16 —
+10 by a few days (allotment vs report date; no effect on the series; left), 3 would land on a quarter-end that already holds the
+quarterly row (ERIS 2019-12-31, MBLINFRA 2024-06-30 x2; left, re-adjudicate), **6 moved**: JUSTDIAL 2018-01-15 -> 2019-01-18,
+RAMASTEEL 2022-08-17 -> 2023-08-17 (same filing already there: merged, earliest publication 2023-08-23 kept), ASMS 2022-03-10 ->
+2024-06-20, DIACABS 2022-09-17 -> 2024-02-29, JYOTISTRUC 2023-05-12 -> 2024-03-01, SWANDEF 2023-12-08 -> 2024-10-25.
+Mechanism: `scripts/shp_event_redate.json` (per row: target date + the BSE list row, file and DateOfReport) applied by
+`fetch_shareholding.apply_event_redate()` in `load_events` AND `save_events` — every reader sees the corrected date and a re-ingest
+from NSE cannot write the wrong key back. Local rebuild: exactly 12 engine rows change on the 6 symbols; JUSTDIAL Jan-Jun 2019
+month-ends now serve the Jan-2019 filing. Their four `shp_lag_fix` entries at the old keys are no-ops (days_later 0).
+
 ### 164j. Quantmac reply v3 (26-Sep): foreign-labelled rows were read as domestic; named foreign holders now need a document
 **Bug (reported by Quantmac for CUMMINSIND / IPCALAB, measured on origin).** `_shp_dii_rowfix.eval_filing` R1 set a category label
 to "domestic" when DOMLAB matched ("mutual fund", "financial institution", "\bbank") and LAB_FII did not — so "Foreign Mutual
