@@ -14,6 +14,7 @@ Output: meta[ticker]["lastTrade"] = {"d": "YYYY-MM-DD" | null, "p": float | null
 scripts/stock_data.json, and a ticker-keyed cache scripts/bse_last_trade.json (re-checked after
 MAX_AGE_DAYS, so a normal run makes few BSE calls). Non-fatal in refresh.yml.
 """
+import os as _o, sys as _s; _s.path.insert(0, _o.path.dirname(_o.path.abspath(__file__))); import bse_headers as BH  # §179 BSE headers
 import os, sys, json, time, datetime, subprocess
 
 HERE = os.path.dirname(os.path.abspath(__file__))
@@ -31,8 +32,7 @@ UA = "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like 
 
 
 def header(code):
-    out = subprocess.run(["curl", "-s", "--max-time", "30", "-A", UA, "-H", "Referer: https://www.bseindia.com/",
-                          "-H", "Origin: https://www.bseindia.com",
+    out = subprocess.run(["curl", "-s", "--max-time", "30", "-A", UA, *BH.CURL_ARGS,
                           "https://api.bseindia.com/BseIndiaAPI/api/getScripHeaderData/w?Debtflag=&scripcode=%s&seriesid=" % code],
                          capture_output=True, timeout=45).stdout
     return (json.loads(out or b"{}") or {}).get("Header") or {}

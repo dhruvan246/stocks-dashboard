@@ -20,6 +20,7 @@ Stages:
   python3 fetch_shp_bse_aspx.py harvest    # full frontier -> ledger shp_fill_bse_aspx.json.gz
 Writes ONLY inside its --dir (default: alongside this script). Read-only on the repo.
 """
+import os as _o, sys as _s; _s.path.insert(0, _o.path.dirname(_o.path.abspath(__file__))); import bse_headers as BH  # §179 BSE headers
 import os, sys, json, re, gzip, time, datetime, subprocess, argparse, threading
 from collections import defaultdict, Counter
 from concurrent.futures import ThreadPoolExecutor

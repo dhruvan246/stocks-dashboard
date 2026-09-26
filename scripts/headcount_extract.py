@@ -20,6 +20,7 @@ we cannot read stays absent.
 Fetch/list logic adapted from kpi_docs.py (the INSIGHTS-card BSE document ladder). Depends only on
 scripts/bse_scrips.json (symbol→BSE code) + PyMuPDF.
 """
+import os as _o, sys as _s; _s.path.insert(0, _o.path.dirname(_o.path.abspath(__file__))); import bse_headers as BH  # §179 BSE headers
 import gzip
 import json
 import os

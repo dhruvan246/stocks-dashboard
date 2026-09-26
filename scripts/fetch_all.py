@@ -14,6 +14,7 @@ master, else BSE) and one or two alternate tickers. We try them in order; if
 all fail, the stock still ships in the dashboard with empty series so the row
 shows up with metadata + "—" prices.
 """
+import os as _o, sys as _s; _s.path.insert(0, _o.path.dirname(_o.path.abspath(__file__))); import bse_headers as BH  # §179 BSE headers
 import os, sys, json, csv, re, time, subprocess, concurrent.futures, datetime as _dt
 from pathlib import Path
 
@@ -157,7 +158,7 @@ NEW_LISTING_MAX_AGE_S = 7 * 86400   # a one-bar series is a listing-day stock on
 def fetch_chart(ticker, p1, p2, interval):
     url = f"https://query1.finance.yahoo.com/v8/finance/chart/{ticker}?period1={p1}&period2={p2}&interval={interval}"
     try:
-        res = subprocess.run(["curl","-s","--max-time","12","-A",UA,url],
+        res = subprocess.run(["curl","-s","--max-time","12","-A",UA, *BH.CURL_ARGS,url],
                              capture_output=True, timeout=15)
         body = res.stdout
         if not body: return None

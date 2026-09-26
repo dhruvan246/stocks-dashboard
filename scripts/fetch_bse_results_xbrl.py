@@ -6,8 +6,8 @@ ROUTE (measured 2026-09-26, memory reference-bse-results-xbrl-route):
   list   api.bseindia.com/BseIndiaAPI/api/Result_Arch_ng/w?scrip_cd=<code>  → {"Table":[{stand_xbrl_link | conso_xbrl_link,
          Filing_Date_Time, Quarter, qtr, Status, …}]}
   file   www.bseindia.com + link  (/XBRLFILES/FourOneUploadDocument/… to Dec-2024, /XBRLFILES/IFIndasUploadDocument/… 2025+)
-One plain, honestly identified client, one request at a time (runbook §164b BSE access rule). When the api answers
-403 the run prints BSE-REFUSED and writes nothing — it never retries harder, never impersonates.
+Plain urllib with the full standard browser header set (bse_fetch.HEADERS, §179), one request at a time. When the api
+answers 403 the run prints BSE-REFUSED and writes nothing.
 
 IDENTITY comes from the FILE, not the listing: the XML's ScripCode must equal the requested scrip; its OneD context gives
 the period (3-month = quarter; ~6-month = half-year, kept only for SME half-yearly filers, stored with h=1); NatureOf-
@@ -33,7 +33,6 @@ ROOT = os.path.dirname(HERE)
 DOCS = os.path.join(ROOT, "docs")
 sys.path.insert(0, HERE)
 
-UA = "stocks-dashboard data refresh (github.com/dhruvan246/stocks-dashboard)"
 LIST = "https://api.bseindia.com/BseIndiaAPI/api/Result_Arch_ng/w?scrip_cd=%s"
 WWW = "https://www.bseindia.com"
 STATE = os.path.join(HERE, "_bse_xbrl_state.json")
@@ -51,10 +50,13 @@ class Refused(RuntimeError):
 
 
 def get(url, want_json=False):
-    req = urllib.request.Request(url, headers={"User-Agent": UA, "Referer": "https://www.bseindia.com/",
-                                               "Accept": "application/json" if want_json else "*/*"})
+    import bse_fetch as B                                    # the shared, full standard header set (§179)
+    h = dict(B.HEADERS); h["Accept"] = "application/json, text/plain, */*" if want_json else "*/*"
+    req = urllib.request.Request(url, headers=h)
     try:
-        b = urllib.request.urlopen(req, timeout=60).read()
+        r = urllib.request.urlopen(req, timeout=60); b = r.read()
+        if r.headers.get("Content-Encoding") == "gzip":
+            import gzip as _gz; b = _gz.decompress(b)
     except urllib.error.HTTPError as e:
         if e.code in (401, 403, 429):
             raise Refused("HTTP %d %s" % (e.code, url))
@@ -93,6 +95,35 @@ def ann_of(s):
             continue
     m = re.match(r"(\d{4})-(\d{2})-(\d{2})", s)
     return int("".join(m.groups())) if m else 0
+
+
+def ann_from_name(fname, qe, fdt):
+    """Announce date for a BSE XBRL = BSE's upload stamp in the file name (Main_Ind_As_<scrip>_<DMYYYYHMMSS>.xml, digits
+    NOT zero-padded), cross-checked with the listing's Filing_Date_Time. Measured 2026-09-26 (§179): the listing re-stamps
+    older rows (360ONE Sep-2019: Filing_Date_Time 2020-08-28, file uploaded 22-10-2019), so the listing date alone is not
+    the publication day. Rule: the listing date wins when it agrees with a valid reading of the name (±1 day); else the
+    ONE name reading that falls inside (qe, qe+400 d]; else 0 = unknown, never guessed."""
+    m = re.search(r"_(\d{11,14})\.xml$", fname, re.I)
+    qd = datetime.date(qe // 10000, qe // 100 % 100, qe % 100)
+    cands = set()
+    if m:
+        digits = m.group(1)
+        for dl in (1, 2):
+            for ml in (1, 2):
+                d_, m_, y_ = digits[:dl], digits[dl:dl + ml], digits[dl + ml:dl + ml + 4]
+                if len(y_) == 4 and d_.isdigit() and m_.isdigit():
+                    try:
+                        c = datetime.date(int(y_), int(m_), int(d_))
+                    except ValueError:
+                        continue
+                    if qd < c <= qd + datetime.timedelta(days=400):
+                        cands.add(c)
+    lst = ann_of(fdt)
+    if lst:
+        ld = datetime.date(lst // 10000, lst // 100 % 100, lst % 100)
+        if any(abs((ld - c).days) <= 1 for c in cands) or (not m and qd < ld <= qd + datetime.timedelta(days=400)):
+            return lst
+    return ymd(min(cands)) if len(cands) == 1 else 0
 
 
 def read_file(xml, code):
@@ -248,7 +279,7 @@ def handle(code, sym, sme, miss, dl, code2tk, xbrl_symbol):
         tgt = sym or xbrl_symbol.resolve("NOTLISTED", xml)   # an NSE listing of the same ISIN owns the page
         kind = "nse" if tgt else "bse"
         vals = parse_values(xml, basis)
-        rec = {"code": code, "qe": qe, "basis": basis, "half": half, "ann": ann_of(fdt), "file": fname,
+        rec = {"code": code, "qe": qe, "basis": basis, "half": half, "ann": ann_from_name(fname, qe, fdt), "file": fname,
                "kind": kind, "sym": tgt or code2tk.get(code), **vals}
         if not half and rec["sym"]:
             rec["detail"] = detail(p, fname, rec["sym"])
@@ -295,8 +326,10 @@ def apply(fills_path):
                 rows.append([qe, s_, ann if s_ is not None else None, c_, ann if c_ is not None else None])
                 rows.sort(key=lambda r: r[0]); C["nse pat"] += 1
             elif row is not None:
-                if s_ is not None and row[1] is None: row[1], row[2] = s_, ann; C["nse pat"] += 1
-                if c_ is not None and row[3] is None: row[3], row[4] = c_, ann; C["nse pat"] += 1
+                # fill-only INCLUDING the announce slot: a stored date is never replaced (A2ZINFRA Dec-2021 carried
+                # annCon 20220209 with an empty con value — the 2026-09-26 live test overwrote it with the file's 20220210)
+                if s_ is not None and row[1] is None: row[1] = s_; row[2] = row[2] or ann; C["nse pat"] += 1
+                if c_ is not None and row[3] is None: row[3] = c_; row[4] = row[4] or ann; C["nse pat"] += 1
             for store in (rv, rl):
                 d = store.setdefault(sym, {})
                 rr = list(d.get(str(qe)) or [None, None, None, None, None, None, 0, None, None]); rr += [None] * (9 - len(rr))

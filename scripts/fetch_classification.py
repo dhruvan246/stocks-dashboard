@@ -16,6 +16,7 @@ the SAME ticker as docs/stock_data.bin's meta (e.g. "RELIANCE.NS", "500325.BO"),
 so the Sector-Index browser can group stocks at any level without touching the
 central stock_data.bin pipeline. Additive + isolated by design.
 """
+import os as _o, sys as _s; _s.path.insert(0, _o.path.dirname(_o.path.abspath(__file__))); import bse_headers as BH  # §179 BSE headers
 import json, gzip, subprocess, concurrent.futures, time, csv, os, tempfile
 from pathlib import Path
 from collections import Counter
@@ -30,7 +31,7 @@ UA = "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36"
 # --- 0. download the scrip masters (same URLs/headers as .github/workflows/refresh.yml) ---
 def dl(url, out, extra_headers=()):
     for attempt in range(3):
-        cmd = ["curl", "-s", "--max-time", "40", "-A", UA]
+        cmd = ["curl", "-s", "--max-time", "40", "-A", UA, *BH.CURL_ARGS]
         for h in extra_headers:
             cmd += ["-H", h]
         cmd += [url, "-o", out]
@@ -46,7 +47,7 @@ if not (os.path.exists(NSE_CSV) and os.path.getsize(NSE_CSV) > 1000):
 if not (os.path.exists(BSE_JSON) and os.path.getsize(BSE_JSON) > 1000):
     print("Downloading BSE ListofScripData ...", flush=True)
     dl("https://api.bseindia.com/BseIndiaAPI/api/ListofScripData/w?Group=&Scripcode=&industry=&segment=Equity&status=Active",
-       BSE_JSON, ["Referer: https://www.bseindia.com/"])
+       BSE_JSON)
 print(f"NSE master: {os.path.getsize(NSE_CSV)} bytes | BSE master: {os.path.getsize(BSE_JSON)} bytes", flush=True)
 
 bse = json.load(open(BSE_JSON, encoding="utf-8"))
@@ -93,9 +94,7 @@ def fetch(code):
     url = f"https://api.bseindia.com/BseIndiaAPI/api/ComHeadernew/w?quotetype=EQ&scripcode={code}"
     try:
         r = subprocess.run(
-            ["curl", "-s", "--max-time", "8", "-A", UA,
-             "-H", "Referer: https://www.bseindia.com/",
-             "-H", "Origin: https://www.bseindia.com",
+            ["curl", "-s", "--max-time", "8", "-A", UA, *BH.CURL_ARGS,
              "-H", "Accept: application/json, text/plain, */*",
              url], capture_output=True, timeout=10)
         d = json.loads(r.stdout)

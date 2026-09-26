@@ -22,6 +22,7 @@ payload still ships, and the step prints a ::warning:: so the gap is visible, no
 
 Env: SF_BIN=<path> reads a local bin instead of downloading the release asset (tests).
 """
+import os as _o, sys as _s; _s.path.insert(0, _o.path.dirname(_o.path.abspath(__file__))); import bse_headers as BH  # §179 BSE headers
 import os, sys, json, gzip, time, datetime, urllib.request
 from pathlib import Path
 
@@ -127,8 +128,7 @@ def bse_official(code, ymd, cache):
            "&segment=0&strSearch=S&TDate=%s" % (f, code, t))
     try:
         import subprocess
-        out = subprocess.run(["curl", "-s", "--max-time", "30", "-A", _UA, "-H", "Referer: https://www.bseindia.com/",
-                              "-H", "Origin: https://www.bseindia.com", url], capture_output=True, timeout=45).stdout
+        out = subprocess.run(["curl", "-s", "--max-time", "30", "-A", _UA, *BH.CURL_ARGS, url], capture_output=True, timeout=45).stdout
         rows = json.loads(out or b"[]")
     except Exception:
         return "unknown"                                     # not cached: retried next run

@@ -30,6 +30,7 @@ fields: assets, sc, oeq, borr, blt, bst, ppe, cwip, iuad, gw, intg, invst, invpr
 Resumable: one symbol at a time, checkpoints after each; --only / --limit / --redo.
 Run: python -X utf8 scripts/fetch_annual_bscf.py [--only SYM,SYM] [--limit N] [--redo]
 """
+import os as _o, sys as _s; _s.path.insert(0, _o.path.dirname(_o.path.abspath(__file__))); import bse_headers as BH  # §179 BSE headers
 import urllib.request, json, gzip, re, http.cookiejar, os, sys, time, base64, datetime
 import fitz  # PyMuPDF
 sys.path.insert(0, os.path.dirname(os.path.abspath(__file__)))

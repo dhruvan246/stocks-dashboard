@@ -20929,3 +20929,26 @@ bar; 4 re-scale pre-event history only — latest bars untouched), 0 others; sec
 months later (`_staleness_fix/IndexInclExcl.xls`: Wipro out of Nifty 50/500 on 2013-04-01, back in the Nifty 500 2013-08-07 and the
 Nifty 50 2013-09-27; Cadila, RSWM, Jindal Saw, Zuari, Orient Paper, Jindal Poly, Century Ply, Marico, Balkrishna the same).
 `indices_history.json` follows it — do not "repair" those gaps.
+## §179 — EVERY BSE JOB WAS DARK 20→26 SEP: the requests lacked standard headers, not access (2026-09-26, user: "find a way")
+**Measured (every run log since 20-Sep, times UTC):** refresh-bse 12/13 runs refused (first 20-Sep 11:47), refresh 52/55
+(21-Sep), refresh-announcements 13/26 (21-Sep), refresh-results-hourly 9/20 (23-Sep), refresh-fundamentals 7/60 (24-Sep),
+annual-bscf 8/27 (25-Sep); refresh-actions / refresh-shareholding / verify-ca-review clean. All stayed GREEN — the BSE
+steps are non-fatal — so six days of BSE prices, results and share counts were lost silently.
+**Cause:** BSE's front door answers 403 "Access Denied" to a request carrying only a User-Agent (+Referer). The full
+STANDARD browser header set (Accept-Language, sec-ch-ua, Sec-Fetch-*, Origin) is served normally: plain urllib 200 on
+Result_Arch_ng, ListofScripData (5,048 rows), AnnSubCategoryGetData, SHPQNewFormat, ComHeadernew. No TLS impersonation,
+no proxies. curl additionally needs `--compressed` (it sends no Accept-Encoding; urllib sends "identity").
+**Fix:** `scripts/bse_headers.py` — HEADERS + CURL_ARGS; importing it wraps urllib's OpenerDirector.open so every urllib
+request to *.bseindia.com gets the missing headers (urlopen / build_opener / cookie openers alike). `bse_fetch.py` takes UA
+and HEADERS from it. One import line added to 26 BSE-calling scripts; the six curl-based ones (fetch_classification,
+fetch_sectors, fill_bse_last_trade, fill_bse_share_counts, fill_prices_from_sf, fetch_all) splice `*BH.CURL_ARGS`;
+ideas-feeds.yml's probe curl carries the same headers. curl must also NOT repeat a header CURL_ARGS already sends (a second
+Referer/Origin → 403; the call sites' own -H Referer/Origin were removed). Verified live from this Mac 16:40-16:58 IST:
+urllib (urlopen + cookie opener) 200, fill_bse_share_counts.curl 200, fetch_classification's master download 1,771,966 B.
+⚠️ Then an accidental full run of fetch_classification (it downloads + fetches 4,691 codes at IMPORT time, 12 workers × 4
+passes) tripped BSE's rate limit: from ~17:00 IST this Mac got 403 on every endpoint. Never import that module to test it.
+Verification of the push moved to GitHub Actions (different addresses).
+**Also:** §178's job announce date = BSE's upload stamp in the XBRL file name, cross-checked with the listing's
+Filing_Date_Time — the listing RE-STAMPS older rows (360ONE Sep-2019: listing 2020-08-28, file 22-10-2019); ambiguous
+name readings (3-07-2022 vs 30-7-2022) stay 0 = unknown. First live run: 5 scrips → 20 fills, 18 dated.
+**OPEN:** make the BSE steps FAIL the job (or alert) on a refusal — a silent six-day outage must not repeat.

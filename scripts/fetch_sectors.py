@@ -15,6 +15,7 @@ Older versions of this script discarded a row unless `Sector` was non-empty.
 That dropped a lot of legit data (BSE sometimes nulls Sector but populates
 the rest), so now we accept any row with at least one classification field.
 """
+import os as _o, sys as _s; _s.path.insert(0, _o.path.dirname(_o.path.abspath(__file__))); import bse_headers as BH  # §179 BSE headers
 import os, json, subprocess, concurrent.futures, time, re
 from pathlib import Path
 
@@ -41,9 +42,8 @@ def fetch(entry):
     url = f"https://api.bseindia.com/BseIndiaAPI/api/ComHeadernew/w?quotetype=EQ&scripcode={code}"
     try:
         r = subprocess.run(
-            ["curl","-s","--max-time","8","-A",UA,
+            ["curl","-s","--max-time","8","-A",UA, *BH.CURL_ARGS,
              "-H",f"Referer: {ref}",
-             "-H","Origin: https://www.bseindia.com",
              "-H","Accept: application/json, text/plain, */*",
              url],
             capture_output=True, timeout=10)

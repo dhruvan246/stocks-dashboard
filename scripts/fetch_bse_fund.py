@@ -17,6 +17,7 @@ Store: {"updated", "px":{ "<scripcode>": { "<QE YYYYMMDD>": {"rev":cr,"pat":cr,"
 
 Run: python -X utf8 scripts/fetch_bse_fund.py [--budget N] [--scrips 532701,...] [--min-mcap CR] [--months M]
 """
+import os as _o, sys as _s; _s.path.insert(0, _o.path.dirname(_o.path.abspath(__file__))); import bse_headers as BH  # §179 BSE headers
 import os, sys, json, io, time, datetime, re
 sys.path.insert(0, os.path.dirname(os.path.abspath(__file__)))
 import bse_fetch as B

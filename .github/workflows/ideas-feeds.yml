@@ -67,7 +67,7 @@ jobs:
           : > /tmp/ideas/probe.txt
           while read -r h; do
             [ -z "$h" ] && continue
-            code=$(curl -s -m 30 -o /dev/null -w '%{http_code}' -A "$UA" -H "Referer: https://www.bseindia.com/" -k "$h" || echo 000)
+            code=$(curl -s -m 30 -o /dev/null -w '%{http_code}' -A "$UA" -H "Referer: https://www.bseindia.com/" -H "Accept: application/json, text/plain, */*" -H "Accept-Language: en-US,en;q=0.9" -H "Origin: https://www.bseindia.com" -H "Sec-Fetch-Dest: empty" -H "Sec-Fetch-Mode: cors" -H "Sec-Fetch-Site: same-site" --compressed -k "$h" || echo 000)
             printf '%s %s\n' "$code" "$h" | tee -a /tmp/ideas/probe.txt
           done <<'EOF'
           https://www.pib.gov.in/allRel.aspx?reg=3&lang=1

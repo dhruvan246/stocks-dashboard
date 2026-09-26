@@ -17,6 +17,7 @@ Output: {"updated","count", "rows":[[scrip_cd, ticker, name, isin, group, faceva
 
 Run: python -X utf8 scripts/build_bse_universe.py [--sector-budget N]
 """
+import os as _o, sys as _s; _s.path.insert(0, _o.path.dirname(_o.path.abspath(__file__))); import bse_headers as BH  # §179 BSE headers
 import os, sys, json, io, csv, time, datetime
 sys.path.insert(0, os.path.dirname(os.path.abspath(__file__)))
 import bse_fetch as B

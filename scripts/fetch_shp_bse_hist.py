@@ -17,6 +17,7 @@ applied fill-only by fetch_shareholding.apply_bse_hist_ledger().
   python3 -X utf8 scripts/fetch_shp_bse_hist.py --from-qe 2020-03-31
 Resumable: re-running skips everything already in the ledger and every (sym,qe) proven absent.
 """
+import os as _o, sys as _s; _s.path.insert(0, _o.path.dirname(_o.path.abspath(__file__))); import bse_headers as BH  # §179 BSE headers
 import os, sys, json, gzip, time, argparse, threading, collections
 import urllib.request, urllib.error
 import xml.etree.ElementTree as ET
