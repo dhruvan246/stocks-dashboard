@@ -1,5 +1,5 @@
 {
- "_doc": "DATA_RUNBOOK §173 (2026-09-26, user-approved task 2): Nifty-500 rights issues as ABSOLUTE bar-exact targets. rows = [symbol, ex trading day, target factor, NSE raw close ratio across that bar]. target = min(1, TERP/cum), TERP = (A*cum + B*issue)/(A+B) for 'Rights B:A', issue = face value AT THE EVENT + premium ('@ Par Rs X' = X), face value = NSE EQUITY_L.csv walked back through every later FV split/consolidation on NSE's feed (the feed's faceVal is the CURRENT FV), cum = NSE's raw close the session before the ex trading day. update_sf_data.reconcile_rights measures the factor baked at each bar (raw ratio / stored ratio) and rescales the pre-bar history to the target (idempotent, rounding-aware tolerance). Rows with target 1.0 on an ordinary session UNDO a fake step an old late-dated row baked there. Any MANUAL_RIGHTS / rights_terp.json row within 30 days of a row here is superseded (not applied). 'provenance' lists every N500 rights row on NSE's feed 2006-2026 incl. the ones NOT computed (partly paid, warrants, NCD, no price) or EXCLUDED because the tape contradicts the filed terms - those keep whatever they had.",
+ "_doc": "DATA_RUNBOOK §173 (2026-09-26, user-approved task 2): Nifty-500 rights issues as ABSOLUTE bar-exact targets. rows = [symbol, ex trading day, target factor, NSE raw close ratio across that bar]. target = min(1, TERP/cum), TERP = (A*cum + B*issue)/(A+B) for 'Rights B:A', issue = face value AT THE EVENT + premium ('@ Par Rs X' = X), face value = NSE EQUITY_L.csv walked back through every later FV split/consolidation on NSE's feed (the feed's faceVal is the CURRENT FV), cum = NSE's raw close the session before the ex trading day. update_sf_data.reconcile_rights measures the factor baked at each bar (raw ratio / stored ratio) and rescales the pre-bar history to the target (idempotent, rounding-aware tolerance). Rows with target 1.0 on an ordinary session UNDO a fake step an old late-dated row baked there. Any MANUAL_RIGHTS / rights_terp.json row within 30 days of a row here is superseded (not applied). 'provenance' lists every N500 rights row on NSE's feed 2006-2026 incl. the ones NOT computed (partly paid, warrants, NCD, no price) or EXCLUDED because the tape contradicts the filed terms - those keep whatever they had. | 2026-09-26 §179: LAKSHVILAS 2014-07-25 (Rights 5:6) added — issue price Rs 50 (FV 10 + premium 40) read from NSE's own corporate announcement of 16-Jul-2014 (the feed row states no price).",
  "rows": [
   [
    "3IINFOLTD",
@@ -888,6 +888,12 @@
    20160321,
    1.0,
    1.015275
+  ],
+  [
+   "LAKSHVILAS",
+   20140725,
+   0.748922,
+   0.739033
   ]
  ],
  "provenance": [
@@ -2667,7 +2673,22 @@
    "feed_sym": "LAKSHVILAS",
    "feed_ex": 20140725,
    "subject": "Dividend Re1/- Per Share + Rights Issue 5:6",
-   "status": "NOT_COMPUTED: issue price not stated"
+   "status": "TARGET",
+   "bar": 20140725,
+   "prev_bar": 20140724,
+   "new_per_held": "5:6",
+   "fv_now": 10.0,
+   "fv_src": "NSE feed faceVal (delisted - the feed's last FV)",
+   "fv_moves": [],
+   "fv_then": 10.0,
+   "premium": 40.0,
+   "issue": 50.0,
+   "cum": 111.7,
+   "ex_close": 82.55,
+   "terp": 83.654545,
+   "factor": 0.748922,
+   "capped": false,
+   "issue_src": "§179 (2026-09-26): the feed states no price -> NSE corporate announcement 16-Jul-2014 17:08 'Rights Issue of equity shares at Rs.50/- per Rights Equity share (including premium of Rs.40/- per right equity share) in the ratio of 5 Equity shares for every 6 Equity shares'; record date 28-Jul-2014 (announcement 17-Jul-2014) -> ex trading day 25-Jul-2014 = the feed's exDate. Was NOT_COMPUTED; an old build had instead baked a phantom 2/3 on the NEXT bar (20140728), healed via phantom_crashes.json"
   },
   {
    "sym": "LAKSHVILAS",
