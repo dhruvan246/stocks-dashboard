@@ -21609,6 +21609,25 @@ read or set aside this run; every other ledger / committed-ledger cell, re-filin
 **§197 backfill:** the 11 other BSE alias-collision companies' own filings (their 2020-25 quarters had been the other company's
 NSE-era data, retracted by §197): 89 files, +89 cells (MIL 25, COLORCHIPS 24, CREATIVE 24, DPL 7, HSIL 5, SHREE 4; ARL, AZTEC,
 BCCL, MUDRA already had theirs, RDEL listed 2025); 240/240 in-window Screener fields match; 0 existing cells changed.
+**Same-day re-filings + a landed cell survives a later rename merge (2026-09-27 ~22:30 IST).** (1) The build dropped a
+re-filing unless it was dated AFTER the original (`rdate <= original`), so a correction filed hours later the same day was lost:
+now only a "revision" dated BEFORE the original is dropped. The 13 re-filing files never downloaded were fetched (one at a time,
+bse_headers) → +8 sidecar rows: 7 same-day (BMBMUMG Jun-24 promoter 100 → 12.09, RKDAGRRTL Dec-22 0 → 73.54, MTPL Jun-24 62.21 →
+72.77, EDVENSWA Sep-22 71.15 → 69.40, EPUJA Dec-24, HBGHOTELS Mar-26, SUCROSA Sep-25) + COLORCHIPS Dec-22 (29.43 → 74.88, 5 days
+later). BMBMUMG / RKDAGRRTL / MTPL / COLORCHIPS: the re-filing restores the value of the quarters before AND after. Screener equals
+the re-filing for SUCROSA / EPUJA / HBGHOTELS; for MTPL it still shows the original 62.21 (neighbours 72.77 on both sides — the
+company's own same-day correction is kept). (2) **Engine feed (`build_engine_feed`)**: it skipped every re-filing with
+`rsub <= original sub`, so a same-day correction never reached the backtest. Both rows carry the same visibility date, so no screen
+date ever saw the original alone: the quarter's one engine row now carries the correction (a second row with the same qe|sub would
+collide in the alias merge). 7 rows changed, exactly the 7 above; the 6 same-day NSE rows the daily job already had (BBOX, DELPHIFX,
+MICEL, OILCOUNTUB, SHIVAMAUTO, SIGNPOST) were untouched — §135 had re-asserted an earlier date on their originals, so they were
+already served as a separate later row. (3) **HEG → HEGAM (§199)**: once HEG's NSE rows sat under a rename relative, a full build
+treated the six HEGAM quarters this fill had landed from BSE 509631 (2020-03..2021-06, values identical to the store) as "stored under
+a former ticker" and DROPPED them from the ledger. A cell this fill already landed (released from the previous / committed ledger) is
+now re-judged even when a former ticker holds the quarter → full build = committed ledger exactly (57,608 cells, 0 changed), share
+counts identical. Page feed: 3 cells change (EPUJA / HBGHOTELS / SUCROSA, inside the 8-quarter window); the commit carries main's feed
+with only those 3 cells — a local rebuild would also have shipped the "-$" company names that today's 19:54 daily refresh put into
+dash_slim.bin (310 names; 0 on 25-Sep), which is that pipeline's defect, flagged separately.
 ## §182 — THE BSE RESULTS READERS NO LONGER HARD-CODE THE JUNE-2026 QUARTER (2026-09-27, user: "fix all")
 **Found by a prompt audit, measured on origin/main 99e9129d0.** Every reader of a scanned result filing was pinned to Q1 FY27:
 `fetch_bse_fund.py`'s vision fallback asked Claude/Gemini for "30 June 2026" and filed the answer under `20260630` with a

@@ -831,11 +831,12 @@ def build(cache, window=None):
     prev_led = json.load(gzip.open(LEDGER, "rt", encoding="utf-8")) if os.path.exists(LEDGER) else {}
     # Re-runs must reproduce the ledger: cells this ledger itself landed are treated as NOT stored (otherwise a
     # rebuild after landing sees every cell as "already stored" and writes an empty ledger that CI then applies).
+    released = set()                                             # (sym, qe) this fill landed and now re-judges
     if os.path.exists(LEDGER) and not window:
         prev = json.load(gzip.open(LEDGER, "rt", encoding="utf-8")).get("fills", {})
         for s_, qs_ in prev.items():
             for q_ in qs_:
-                if q_ in (hist.get(s_) or {}): del hist[s_][q_]
+                if q_ in (hist.get(s_) or {}): del hist[s_][q_]; released.add((s_, q_))
         print("previous ledger: %d cells treated as not yet stored" % sum(len(v) for v in prev.values()))
     # §180c: so is every store cell the COMMITTED ledger wrote (identical values) — a rebuild that removes a wrong cell
     # (BRIGHT: Bright Solar's quarters) must see its quarter as open, or the right company's filing is skipped as
@@ -850,7 +851,7 @@ def build(cache, window=None):
     for s_, qs_ in head.items():
         for q_, c_ in qs_.items():
             cur_ = (hist.get(s_) or {}).get(q_)
-            if cur_ is not None and list(cur_[:6]) == list(c_[:6]): del hist[s_][q_]; n_head += 1
+            if cur_ is not None and list(cur_[:6]) == list(c_[:6]): del hist[s_][q_]; n_head += 1; released.add((s_, q_))
     if n_head: print("committed ledger: %d more stored cells written by this fill treated as open" % n_head)
     t0 = time.time()
     docs = {}                                                    # (sym, qe) -> analysis + meta
@@ -1145,7 +1146,10 @@ def build(cache, window=None):
         bad, extra = identity_bse(sym, a) if a.get("bse_code") else identity(sym, a)
         if bad: hold("identity: " + bad); continue
         former = [x for x in (relatives(sym) | set(extra)) if qe in (hist.get(x) or {})]
-        if former: stat[(a.get("idx"), "stored under a former ticker")] += 1; continue
+        # a cell this fill already landed under `sym` is re-judged even when a rename merged later brings the same quarter
+        # under a former ticker (HEG -> HEGAM §199: HEG's NSE rows joined the six HEGAM quarters this fill had landed from
+        # BSE 509631) — the landed cell stays in the ledger; only a quarter nobody has landed yet is skipped here
+        if former and (sym, qe) not in released: stat[(a.get("idx"), "stored under a former ticker")] += 1; continue
         c = a.get("cell")
         if c is None: hold("parser refused (format %s) and no partition proof" % a["fmt"]); continue
         if a["ambiguity"]: hold("old-format row needing row-level placement: " + "; ".join(a["ambiguity"])[:160]); continue
@@ -1247,7 +1251,9 @@ def build(cache, window=None):
             if rc["mf"] > rc["dii"] + 0.05 or rc["ins"] > rc["dii"] + 0.05 or rc["prom"] + rc["fii"] + rc["dii"] > 100.5:
                 rev_stat["revision fails the bounds"] += 1; continue
             rdate = str(r["revised_date_time"])[:10]
-            if rdate <= cell[5]: rev_stat["revision not after the original"] += 1; continue
+            # a SAME-DAY correction (EPUJA Dec-2024, HBGHOTELS Mar-2026: revised hours after the original) was public that
+            # day under the midnight rule — recorded with that date; only a "revision" dated BEFORE the original is dropped
+            if rdate < cell[5]: rev_stat["revision dated before the original"] += 1; continue
             new = [round(rc["prom"], 4), round(rc["fii"], 4), round(rc["dii"], 4), round(rc["mf"], 4), round(rc["ins"], 4)]
             if max(abs(new[i] - cell[i]) for i in range(5)) < 0.005: rev_stat["revision repeats the original"] += 1; continue
             revisions[sym][qe] = new + [rdate, rc.get("nsh"), "bsexbrl:%s bse-revision" % xf]
