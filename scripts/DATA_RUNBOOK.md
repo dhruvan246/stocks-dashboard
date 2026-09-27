@@ -20130,6 +20130,7 @@ TIMKEN 1.77 = 1.7705) and fell short elsewhere (VRLLOG 13.60 vs 17.06, SOMANYCER
 added** (fill-only, `shp_fill_seam_aspx.json.gz`); **45 held**: 26 incomplete (lump with no FII category row), 19 outside the band
 — RELIANCE / WIPRO / BRITANNIA / LICHSGFIN / ARVIND / NATCOPHARM / DISHTV / BHARATFORG Mar-2016 among them. Those need a document
 that states the quarter's FII total (the company's own filing PDF on BSE's announcements, or Quantmac's source).
+**Repaired in §164p(b):** 13 of these 17 left dii holding the block moved to fii (counted twice); SBT Dec-15 retracted.
 
 ### 164m. Event rows re-dated to the filing's own report date (2026-09-27)
 JUSTDIAL's mid-quarter filing made on 24-Jan-2019 was stored as-on 2018-01-15: NSE's master 'date' carried the filer's
@@ -20186,6 +20187,50 @@ BSE code (`~/stocks-cache/shp/w164o`); 179 pages + 38 XBRLs fetched. XBRL era: 7
 named Indian bank). Page era: 7 cells — **3IINFOTECH 2011-2013 "Foreign Bank" row (6.5-6.8) moved dii -> fii** (Mar-13 0.16 -> 6.91,
 equal to Quantmac's figure) and ALOKTEXT Sep-15 +0.22 FPI; 172 pages unchanged (CASTROL, COLGATE … already consistent).
 249 / 249 hold on a store copy; guards green.
+
+### 164p. Seam-quarter share base, §164l double count, and a wrong-company Wayback family (2026-09-27)
+`scripts/_shp_164p_seam_base.py` (stages rebase / wrongco / fix164l / drops; caches `~/stocks-cache/shp/seambase`). Found closing the
+reply-#4 open item "DRREDDY Dec-15 FII 46.16 beside 36.7 / 35.4". **NO ASSUMPTIONS** — every count below is a printed document.
+(a) **Dec-2015 / Mar-2016 pages that drop block C.** BSE's qtrid 88/89 pages re-render the SEBI-2015 filing in the Clause-35 table;
+for some companies they leave the depository-receipt / employee-trust shares out of the total, so every percentage is of a smaller
+base (DRREDDY Dec-15 page 139,758,553 vs Sep-15 page 170,588,515 incl. 31,102,332 ADR shares; THERMAX Mar-16 drops the 6,541,440 trust
+shares its own Dec-15 page still prints). Documented full count N = the Sep-2015 page total + the change in paid-up equity capital
+between the company's ORIGINAL NSE results filings for Sep-2015 and the seam quarter (nsearchives financial_res HTML; later Ind-AS
+comparatives print the CURRENT capital against old periods — DRREDDY Jun-15 original 8528 vs 2016 comparative 8530 lakh — so only
+the earliest broadcast counts; the unit is calibrated on the Sep-2015 page; a constant offset such as forfeited-share money cancels;
+paid-up capital alone is NOT a share count: TMPV/JISLJALEQS carry a second class, ACC/AJANTPHARM forfeited money). Re-based only when
+the company is on the FULL-count basis (not §164a), the stored cell IS the page reading (promoter within 0.011) and N exceeds the page
+total by > max(2 x the filings' rounding, 0.1%): every slot x page_total / N. **28 cells / 18 symbols** (2 superseding ASHOKLEY's
+§160 entries): DRREDDY Dec-15 fii 46.16 -> 37.82, Mar-16 43.24 -> 36.00; ASHOKLEY 29.12 -> 25.52 / 21.58 -> 18.90; GRASIM 26.55 ->
+22.79 / 26.35 -> 22.83; HINDALCO 21.94 -> 20.27 / 21.11 -> 19.50; VEDL 15.03 -> 13.86 / 13.54 -> 12.48; JSL, PAISALO (41% GDR block),
+VIDEOIND, KESORAMIND (Mar-16: a rights issue masked the omission), THERMAX, TUBEINVEST, ULTRACEMCO Dec-15, BOMDYEING Dec-15, DCW
+(paid-up capital +6,187,000 shares in the quarter the page omits), ADVANTA, AKSHOPTFBR, VAIBHAVGBL, ESSAROIL Dec-15. **Check that the
+count is right:** the re-based PROMOTER lands on the company's own Sep-15 full-base figure (DRREDDY 25.57 vs 25.51, ASHOKLEY 38.82 =
+38.82, HINDALCO 36.99 = 36.99, JSL 49.56 = 49.56, PAISALO 26.04 = 26.04, THERMAX 61.99 vs 61.98). Left as is: APOLLOHOSP / ULTRACEMCO
+Mar-16 (Trendlyne fills already on the full count), BOMDYEING / VAIBHAVGBL Mar-16 (not the page's reading); 11 omissions < 0.1%
+(INFY Dec-15 0.13% page gap unexplained, within the rule's floor); held: COX&KINGS Dec-15, STERLINBIO Mar-16 (no NSE results filing
+with paid-up capital). Scope: seam pages were read for every stored company whose Sep-2015 page prints C > 0 plus the base-change
+signature list (DRREDDY, VEDL, LITL, KSOILS ...); a company with no C on its Sep-2015 page cannot lose C at the seam.
+(b) **§164l double count (my 27-Sep fill).** `cell_of`'s dii = mf + banks + ins (+VCF) and, when the institutions sub-total reconciles,
+the page's unlabelled institutional Any-Others block; §164l replaced fii with the reconstruction (which IS that block, or FII
+holders inside it) but left dii alone -> the block counted twice (ASTRAL Mar-16 fii 11.31 + dii 16.88 on an institutions total of
+16.88). `seam_correct` takes the moved shares out of dii; FIIs are institutions, so the fii added never exceeds the block — ADANIENT
+Dec-15 also listed "Emerging India Focus Funds (Foreign Institutional Investor)" 2.84 INSIDE the category row 10.89 (fii 13.72 ->
+10.89). **13 cells repaired** (dii down 1.44-13.94; fii unchanged except ADANIENT), **SBT Dec-15 retracted** (its "Foreign Institutional
+Institution" 0.88 equals the page's Financial Institutions / Banks row — contradictory labels, held), BRFL / ABFRL / TIMKEN never
+double-counted. `_shp_164l_seam_holes.py` now calls `seam_correct`, so a re-run cannot recreate it.
+(c) **Wrong-company Wayback cells.** `shp_fill_hist_2010_2016` (Wayback captures of Moneycontrol) held Prism Cement's (PRSMJOHNSN) own
+quarterly pattern under 13 other companies whose captured page had redirected — exact 4-slot match to PRSMJOHNSN's BSE / Trendlyne
+cell of the same quarter (a store-wide scan of non-trivial cells equal across unrelated companies found no other family; the rest are
+old/new tickers of one company or demerger twins). SBBJ Sep-15 and REIAGROLTD Sep-14 had been caught one at a time (§142e). BSE lists
+no filing for the quarter -> **retracted** (RANBAXY, ESSAROIL Mar-16; WYETH, FIRSTLEASE x2; UTVSOF; SHREEASHTA); a filing exists ->
+the company's own page via `cell_of` (+ `seam_correct` on 88/89): **BRFL Sep-15** 92.10 / 0.91, **RNAVAL Sep-14** 44.50 / 2.28 / 14.03,
+**KSOILS Mar-16** 7.54 / 4.82 / 0.76; the page cannot be read inside the §164l gates -> retracted (AGRODUTCH x2, SAMTEL x2, POLARIS,
+LITL Mar-16 — LITL then takes the ledger's own genuine Wayback read 70.55 / 0.65 / 4.32). The 16 Prism entries are also REMOVED from
+the Wayback ledger (`_meta.retracted_164p`): the store's copies of four of them carry a sub date re-dated from BSE's announcement
+stream, so the fill re-added them with the ledger's QE+21 date and the drop (which compares the date exactly) no longer matched.
+**Totals:** 59 cells change (28 re-based, 3 replaced, 13 repaired, 15 retracted; LITL refilled), 151,059 -> 151,045 cells;
+applied on a worktree copy with `--apply-ledgers`: 59 / 59 as intended, 0 unintended changes, no Prism copy left.
 
 ### 164j. Quantmac reply v3 (26-Sep): foreign-labelled rows were read as domestic; named foreign holders now need a document
 **Bug (reported by Quantmac for CUMMINSIND / IPCALAB, measured on origin).** `_shp_dii_rowfix.eval_filing` R1 set a category label

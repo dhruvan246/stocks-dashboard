@@ -4440,6 +4440,26 @@
     ],
     "src": "bsexbrl:533758_1542019105021_SHP.xml",
     "why": "\u00a7159 row-level FII heal (2026-09-24, FII = Institutions(Foreign) in every format): fii 0.00 -> 1.00 (+1.00 from Non-institutions Any-Other rows the filer's 2022 form lists under B2). R2FII-holders Overseas Corporate Bodies 24.34 1.0 KITARA PIIN 1001 12.58 stay(new-format:ForeignCompanies); KITARA PIIN 1101 3.57 stay(new-format~:ForeignCompanies); GOLDMAN SACHS INDIA LIMITED 3.41 stay(label); EMBLEM FII 1.00 fii(inst-tag). Evidence: _shp_fii_rowfix_audit.json"
+   },
+   "2015-12-31": {
+    "cell": [
+     40.6388,
+     3.1529,
+     33.4142,
+     16.5311,
+     0.0,
+     "2016-01-21"
+    ],
+    "was": [
+     40.6388,
+     3.1529,
+     36.5671,
+     16.5311,
+     0.0,
+     "2016-01-21"
+    ],
+    "src": "bseaspx:533758:88:New+seam164l",
+    "why": "\u00a7164p repair of a \u00a7164l seam fill (2026-09-27): dii 36.5671 - 3.1529 moved to fii (page institutions: mf/banks/ins in dii, the FII block in fii, never both)."
    }
   },
   "APTUS": {
@@ -17240,6 +17260,26 @@
     ],
     "src": "bsexbrl:500117_2012017113456_SHP.xml",
     "why": "\u00a7164 row-level remainder rule (2026-09-26 \u00a7164j: foreign-labelled rows never domestic; name-only holders need a document; FORMER Nifty 500 member): fii 5.85 -> 5.97, dii 3.42 -> 3.31. D1 unnamed remainder -> FII. \u00a7158 rules (R1 institutional Any-Other holders placed as the filer's own 2022 form places them, R2 domestic institutions parked under non-institutions, R3 NBFC row) + \u00a7159 rule (non-institutional foreign holders the filer's 2022 form lists under Institutions (Foreign)) + D1 (unnamed rest of the institutional block = FII in the 2015-22 form unless every named holder is domestic). | R1-fii-label Other Any Other(FII'S) 0.02 public=0.00 fii=0.02  keyword; R1-fii-label Other Any Other(FOREIGN FINANCIAL INSTITUTIONS / BANKS) 0.02 public=0.00 fii=0.02  keyword; R1-uncovered-remainder 0.08; R3-nbfc NBFCsRegisteredWithRbi 0.01; D1-unnamed-remainder-in-dii 0.08"
+   },
+   "2015-12-31": {
+    "cell": [
+     46.8022,
+     6.7645,
+     3.9315,
+     0.0096,
+     3.5846,
+     "2016-02-04"
+    ],
+    "was": [
+     48.57,
+     7.02,
+     4.08,
+     0.01,
+     3.72,
+     "2016-02-04"
+    ],
+    "src": "bseaspx:500117:88+nseresults:1005575",
+    "why": "\u00a7164p seam-quarter base (2026-09-27): BSE's Dec-2015 page (qtrid 88) prints percentages of 211,685,907 shares \u2014 it leaves out 7,995,750 shares that the Sep-2015 page (213,494,657, block C 2,708,750) and the company's paid-up capital still count (NSE original results filings: Sep-2015 #1003608 paid-up 4269.89, 2015-12-31 #1005575 paid-up 4393.63, face value 2.0). The company is on the FULL-count basis (D2 / \u00a7164a) and its stored Sep-2015 and Jun-2016 cells are on it, so every slot is re-expressed on the documented count 219,681,657 (\u00b1 500 shares, the filings' rounding): x 0.963603."
    }
   },
   "DEEPAKFERT": {
@@ -28476,6 +28516,46 @@
     ],
     "src": "bsexbrl:500440_1912021114151_SHP.xml",
     "why": "\u00a7158 row-level DII heal (2026-09-24, DII = Institutions(Domestic) in every format): dii 22.07 -> 24.22, fii 22.79 -> 22.79. R2-named Bodies Corporate 1.14 ICICI PRUDENTIAL LIFE INSURANCE COMPANY LIMITED 1.14(new-format:InsuranceCompanies); R2-named Bodies Corporate 1.01 SBI LIFE INSURANCE CO. LTD 1.01(new-format:InsuranceCompanies). Evidence: _shp_dii_rowfix_audit.json"
+   },
+   "2015-12-31": {
+    "cell": [
+     36.9899,
+     20.2687,
+     18.6428,
+     2.3096,
+     16.0468,
+     "2016-01-28"
+    ],
+    "was": [
+     40.04,
+     21.94,
+     20.18,
+     2.5,
+     17.37,
+     "2016-01-28"
+    ],
+    "src": "bseaspx:500440:88+nseresults:1005147",
+    "why": "\u00a7164p seam-quarter base (2026-09-27): BSE's Dec-2015 page (qtrid 88) prints percentages of 1,907,683,909 shares \u2014 it leaves out 157,301,851 shares that the Sep-2015 page (2,064,985,760, block C 157,329,848) and the company's paid-up capital still count (NSE original results filings: Sep-2015 #1003613 paid-up 20652.0, 2015-12-31 #1005147 paid-up 20652.0, face value 1.0). The company is on the FULL-count basis (D2 / \u00a7164a) and its stored Sep-2015 and Jun-2016 cells are on it, so every slot is re-expressed on the documented count 2,064,985,760 (\u00b1 100,000 shares, the filings' rounding): x 0.923824."
+   },
+   "2016-03-31": {
+    "cell": [
+     36.9887,
+     19.5013,
+     18.9747,
+     2.4388,
+     16.2772,
+     "2016-05-10"
+    ],
+    "was": [
+     40.04,
+     21.11,
+     20.54,
+     2.64,
+     17.62,
+     "2016-05-10"
+    ],
+    "src": "bseaspx:500440:89+nseresults:1009596",
+    "why": "\u00a7164p seam-quarter base (2026-09-27): BSE's Mar-2016 page (qtrid 89) prints percentages of 1,907,618,909 shares \u2014 it leaves out 157,366,851 shares that the Sep-2015 page (2,064,985,760, block C 157,329,848) and the company's paid-up capital still count (NSE original results filings: Sep-2015 #1003613 paid-up 20652.0, 2016-03-31 #1009596 paid-up 20652.0, face value 1.0). The company is on the FULL-count basis (D2 / \u00a7164a) and its stored Sep-2015 and Jun-2016 cells are on it, so every slot is re-expressed on the documented count 2,064,985,760 (\u00b1 100,000 shares, the filings' rounding): x 0.923793."
    }
   },
   "HINDMOTORS": {
@@ -39043,6 +39123,26 @@
      124649
     ],
     "why": "BULK STAMP: 23 quarters of this symbol all carry the single submission date 2025-08-26, which is 148 days after this quarter ended. The DATA is real and per-quarter (the fii/dii values differ quarter to quarter) \u2014 only the DATE is a scrape date written into the filing slot. Replaced with the QE+21d convention already used by the MC/Wayback ledgers, and the modal lag of our own clean rows (36.8% of 87,977 dated rows sit at exactly +21d; median +19d)."
+   },
+   "2016-03-31": {
+    "cell": [
+     7.5356,
+     4.82,
+     0.7564,
+     0.0,
+     0.0,
+     "2016-04-21"
+    ],
+    "was": [
+     74.87,
+     9.61,
+     6.41,
+     6.4,
+     0.0,
+     "2016-04-21"
+    ],
+    "src": "bseaspx:526209:89",
+    "why": "\u00a7164p wrong-company cell (2026-09-27): this Wayback-sourced value (wb:20160518202052:ksoils:approx+21d;UNVERIFIED-split;UNVERIF) equals PRSMJOHNSN's own 2016-03-31 pattern slot for slot ([74.87, 9.61, 6.41, 6.4]) \u2014 the captured page had redirected to that company. Replaced by the company's own BSE page (qtrid 89) read by fetch_shp_bse_aspx.cell_of with fii from the \u00a7160 seam reconstruction (\u00a7164l gates)."
    }
   },
   "LAL": {
@@ -55526,6 +55626,26 @@
     ],
     "src": "bseaspx:533107_81",
     "why": "\u00a7164g page-era re-read of a former Nifty 500 member (2026-09-26; \u00a7160 rules \u2014 DII = Institutions(Domestic), FII = Institutions(Foreign) in every format): fii 2.20 -> 3.01, dii 14.26 -> 14.26. std-fii-rows FPI/QFI/FVCI rows in institutions 0.81. Evidence: _shp_164_audit.json"
+   },
+   "2014-09-30": {
+    "cell": [
+     44.5013,
+     2.2798,
+     14.028,
+     1.3209,
+     7.9415,
+     "2014-10-21"
+    ],
+    "was": [
+     74.87,
+     3.76,
+     7.95,
+     7.95,
+     0.0,
+     "2014-10-21"
+    ],
+    "src": "bseaspx:533107:83",
+    "why": "\u00a7164p wrong-company cell (2026-09-27): this Wayback-sourced value (wb:20150630060823:pipavavdefenceoffshoreengineeringcompany:a) equals PRSMJOHNSN's own 2014-09-30 pattern slot for slot ([74.87, 3.76, 7.95, 7.95]) \u2014 the captured page had redirected to that company. Replaced by the company's own BSE page (qtrid 83) read by fetch_shp_bse_aspx.cell_of."
    }
   },
   "RUCHINFRA": {
@@ -65284,6 +65404,26 @@
     ],
     "src": "bsexbrl:532538_157202217222_SHP.xml",
     "why": "\u00a7158 row-level DII heal (2026-09-24, DII = Institutions(Domestic) in every format): dii 18.16 -> 18.26, fii 13.12 -> 13.12. R3-nbfc NBFCsRegisteredWithRbi 0.1. Evidence: _shp_dii_rowfix_audit.json"
+   },
+   "2015-12-31": {
+    "cell": [
+     61.6802,
+     18.11,
+     7.4287,
+     4.1959,
+     3.0167,
+     "2016-01-28"
+    ],
+    "was": [
+     62.77,
+     18.43,
+     7.56,
+     4.27,
+     3.07,
+     "2016-01-28"
+    ],
+    "src": "bseaspx:532538:88+nseresults:1004208",
+    "why": "\u00a7164p seam-quarter base (2026-09-27): BSE's Dec-2015 page (qtrid 88) prints percentages of 269,646,432 shares \u2014 it leaves out 4,764,300 shares that the Sep-2015 page (274,410,732, block C 4,784,663) and the company's paid-up capital still count (NSE original results filings: Sep-2015 #1002174 paid-up 27441.0, 2015-12-31 #1004208 paid-up 27442.0, face value 10.0). The company is on the FULL-count basis (D2 / \u00a7164a) and its stored Sep-2015 and Jun-2016 cells are on it, so every slot is re-expressed on the documented count 274,410,732 (\u00b1 10,000 shares, the filings' rounding): x 0.982638."
    }
   },
   "UMESLTD": {
@@ -69034,6 +69174,46 @@
      336816
     ],
     "why": "BULK STAMP: 7 quarters of this symbol all carry the single submission date 2023-02-01, which is 124 days after this quarter ended. The DATA is real and per-quarter (the fii/dii values differ quarter to quarter) \u2014 only the DATE is a scrape date written into the filing slot. Replaced with the QE+21d convention already used by the MC/Wayback ledgers, and the modal lag of our own clean rows (36.8% of 87,977 dated rows sit at exactly +21d; median +19d)."
+   },
+   "2015-12-31": {
+    "cell": [
+     65.7703,
+     3.2696,
+     7.9756,
+     0.0176,
+     5.4375,
+     "2016-01-27"
+    ],
+    "was": [
+     74.63,
+     3.71,
+     9.05,
+     0.02,
+     6.17,
+     "2016-01-27"
+    ],
+    "src": "bseaspx:511389:88+nseresults:1006179",
+    "why": "\u00a7164p seam-quarter base (2026-09-27): BSE's Dec-2015 page (qtrid 88) prints percentages of 294,753,494 shares \u2014 it leaves out 39,705,381 shares that the Sep-2015 page (334,458,875, block C 41,201,226) and the company's paid-up capital still count (NSE original results filings: Sep-2015 #1003921 paid-up 33446.0, 2015-12-31 #1006179 paid-up 33446.0, face value 10.0). The company is on the FULL-count basis (D2 / \u00a7164a) and its stored Sep-2015 and Jun-2016 cells are on it, so every slot is re-expressed on the documented count 334,458,875 (\u00b1 10,000 shares, the filings' rounding): x 0.881285."
+   },
+   "2016-03-31": {
+    "cell": [
+     65.9203,
+     3.5974,
+     7.9727,
+     0.0177,
+     5.4359,
+     "2016-04-22"
+    ],
+    "was": [
+     74.58,
+     4.07,
+     9.02,
+     0.02,
+     6.15,
+     "2016-04-22"
+    ],
+    "src": "bseaspx:511389:89+nseresults:1007194",
+    "why": "\u00a7164p seam-quarter base (2026-09-27): BSE's Mar-2016 page (qtrid 89) prints percentages of 295,623,696 shares \u2014 it leaves out 38,835,179 shares that the Sep-2015 page (334,458,875, block C 41,201,226) and the company's paid-up capital still count (NSE original results filings: Sep-2015 #1003921 paid-up 33446.0, 2016-03-31 #1007194 paid-up 33446.0, face value 10.0). The company is on the FULL-count basis (D2 / \u00a7164a) and its stored Sep-2015 and Jun-2016 cells are on it, so every slot is re-expressed on the documented count 334,458,875 (\u00b1 10,000 shares, the filings' rounding): x 0.883887."
    }
   },
   "VIDHIING": {
@@ -74803,6 +74983,26 @@
     ],
     "src": "bsexbrl:539254_107201715385_SHP.xml",
     "why": "\u00a7158 row-level DII heal (2026-09-24, DII = Institutions(Domestic) in every format): dii 2.87 -> 2.77, fii 18.27 -> 18.37. R1-fii-label Other Foreign Institutional Investor 0.1 public=0.00 fii=0.10  keyword. Evidence: _shp_dii_rowfix_audit.json"
+   },
+   "2016-03-31": {
+    "cell": [
+     75.0,
+     10.1739,
+     2.8606,
+     0.2013,
+     0.0,
+     "2016-04-21"
+    ],
+    "was": [
+     75.0,
+     10.1739,
+     13.0345,
+     0.2013,
+     0.0,
+     "2016-04-21"
+    ],
+    "src": "bseaspx:539254:89:New+seam164l",
+    "why": "\u00a7164p repair of a \u00a7164l seam fill (2026-09-27): dii 13.0345 - 10.1739 moved to fii (page institutions: mf/banks/ins in dii, the FII block in fii, never both)."
    }
   },
   "ADANIENT": {
@@ -74999,6 +75199,26 @@
     ],
     "src": "bseaspx:512599_89 shpperent",
     "why": "\u00a7160 page-era row-level heal (2026-09-25, DII = Institutions(Domestic), FII = Institutions(Foreign) in every format): fii 10.67 -> 17.67, dii 3.14 -> 3.14. filer-document Mar-16: the filer's 'Overseas corporate bodies' lump 76,979,180 (= annual report FY2015-16 'Foreign Bodies' 76,979,180) = Emerging India Focus 31,219,800 + Elara 27,288,157 + Albula 18,206,131 (76,714,088) + 265,092; Cresta sits in the FII lump; the same funds are foreign institutions in the filer's Jun-2016 XBRL -> fii (series 18.31 Jun-15 -> 17.67 -> 18.25 Jun-16). Evidence: _shp_aspx_rowfix_audit.json (\u00a7160f)"
+   },
+   "2015-12-31": {
+    "cell": [
+     75.0,
+     10.8858,
+     2.882,
+     0.245,
+     0.0,
+     "2016-01-21"
+    ],
+    "was": [
+     75.0,
+     13.7245,
+     13.7678,
+     0.245,
+     0.0,
+     "2016-01-21"
+    ],
+    "src": "bseaspx:512599:88:New+seam164l",
+    "why": "\u00a7164p repair of a \u00a7164l seam fill (2026-09-27): fii add 13.7245 > institutional block 10.89: kept the category row 'Foreign Institutional Investor' = the block; 'Emerging India Focus Funds (Foreign Institutional Investor)' 2.8387 listed inside it; dii 13.7678 - 10.8858 moved to fii (page institutions: mf/banks/ins in dii, the FII block in fii, never both)."
    }
   },
   "ADANIPORTS": {
@@ -76701,6 +76921,26 @@
       "why": "SW-2 other-institutions sweep 2026-08-30: filing's Any-Other institutions block (2.17pp, holders: FII; TREE LINE ASIA MASTER FUND (SINGAPORE) PTE LTD) is FOREIGN \u2014 belongs in fii, not dii. dii -> domestic-only 8.0270 (MF+AIF+VCF+Banks+Ins+PF from the filing's own share counts), fii += the block. Evidence: _shp_other_inst_audit.json"
      }
     }
+   },
+   "2016-03-31": {
+    "cell": [
+     59.345,
+     11.3113,
+     5.5673,
+     5.5614,
+     0.0,
+     "2016-04-21"
+    ],
+    "was": [
+     59.345,
+     11.3113,
+     16.8786,
+     5.5614,
+     0.0,
+     "2016-04-21"
+    ],
+    "src": "bseaspx:532830:89:New+seam164l",
+    "why": "\u00a7164p repair of a \u00a7164l seam fill (2026-09-27): dii 16.8786 - 11.3113 moved to fii (page institutions: mf/banks/ins in dii, the FII block in fii, never both)."
    }
   },
   "AVANTIFEED": {
@@ -78661,6 +78901,26 @@
     ],
     "src": "bsexbrl:532930_197201912174_SHP.xml",
     "why": "\u00a7164 row-level remainder rule (2026-09-25, user: \"adopt all three recommendations\"; FORMER Nifty 500 member, first row-level read): fii 1.02 -> 1.02, dii 2.26 -> 2.41. R1-R3 (\u00a7158 rules, first read). \u00a7158 rules (R1 institutional Any-Other holders placed as the filer's own 2022 form places them, R2 domestic institutions parked under non-institutions, R3 NBFC row) + \u00a7159 rule (non-institutional foreign holders the filer's 2022 form lists under Institutions (Foreign)) + D1 (unnamed rest of the institutional block = FII in the 2015-22 form unless every named holder is domestic).  | R1: R3-nbfc NBFCsRegisteredWithRbi 0.15. Evidence: _shp_164_audit.json"
+   },
+   "2015-12-31": {
+    "cell": [
+     75.0,
+     1.4586,
+     2.8242,
+     2.468,
+     0.2563,
+     "2016-01-21"
+    ],
+    "was": [
+     75.0,
+     1.4586,
+     4.2628,
+     2.468,
+     0.2563,
+     "2016-01-21"
+    ],
+    "src": "bseaspx:532930:88:New+seam164l",
+    "why": "\u00a7164p repair of a \u00a7164l seam fill (2026-09-27): dii 4.2628 - 1.4386 moved to fii (page institutions: mf/banks/ins in dii, the FII block in fii, never both)."
    }
   },
   "BIOCON": {
@@ -79651,6 +79911,26 @@
     ],
     "src": "bseaspx:500020_85",
     "why": "\u00a7164g page-era re-read of a former Nifty 500 member (2026-09-26; \u00a7160 rules \u2014 DII = Institutions(Domestic), FII = Institutions(Foreign) in every format): fii 6.75 -> 7.05, dii 9.69 -> 9.69. inst-sub-fii Foreign Portolio Investor ( Corporate) 0.3. Evidence: _shp_164_audit.json"
+   },
+   "2015-12-31": {
+    "cell": [
+     52.3459,
+     13.5452,
+     7.991,
+     3.4332,
+     4.2224,
+     "2016-02-03"
+    ],
+    "was": [
+     53.06,
+     13.73,
+     8.1,
+     3.48,
+     4.28,
+     "2016-02-03"
+    ],
+    "src": "bseaspx:500020:88+nseresults:1005025",
+    "why": "\u00a7164p seam-quarter base (2026-09-27): BSE's Dec-2015 page (qtrid 88) prints percentages of 203,755,475 shares \u2014 it leaves out 2,779,425 shares that the Sep-2015 page (206,534,900, block C 2,779,425) and the company's paid-up capital still count (NSE original results filings: Sep-2015 #1002751 paid-up 4131.0, 2015-12-31 #1005025 paid-up 4131.0, face value 2.0). The company is on the FULL-count basis (D2 / \u00a7164a) and its stored Sep-2015 and Jun-2016 cells are on it, so every slot is re-expressed on the documented count 206,534,900 (\u00b1 50,000 shares, the filings' rounding): x 0.986543."
    }
   },
   "BRITANNIA": {
@@ -84123,6 +84403,26 @@
     ],
     "src": "bseaspx:500087_88",
     "why": "\u00a7164a depository-receipt basis (2026-09-25, user: \"adopt all three recommendations\"): this company's own first XBRL prints Promoter + Public = 100 with the custodian (shares underlying ADRs/GDRs) OUTSIDE the 100, so its pre-2016 page values are moved from the page's % of (A+B+C) column onto (A+B): all slots x 1.021426 = total (A+B+C) 803238846 shares / (A+B) 786390004 shares on the same quarter's BSE page; fii 22.61 -> 23.09, dii 12.18 -> 12.44."
+   },
+   "2016-03-31": {
+    "cell": [
+     36.7802,
+     19.6707,
+     14.4951,
+     7.7451,
+     6.2109,
+     "2016-04-21"
+    ],
+    "was": [
+     36.7802,
+     19.6707,
+     25.1958,
+     7.7451,
+     6.2109,
+     "2016-04-21"
+    ],
+    "src": "bseaspx:500087:89:New+seam164l",
+    "why": "\u00a7164p repair of a \u00a7164l seam fill (2026-09-27): dii 25.1958 - 10.7007 moved to fii (page institutions: mf/banks/ins in dii, the FII block in fii, never both)."
    }
   },
   "CONTROLPR": {
@@ -86961,6 +87261,26 @@
     ],
     "src": "bsexbrl:532526_19102016172832_SHP.xml",
     "why": "\u00a7164 row-level remainder rule (2026-09-27 \u00a7164n: named holders of unknown class are never swept into fii; documented holders take their class; FORMER Nifty 500 member): fii 8.05 -> 15.75, dii 14.96 -> 7.26. R1-R3 (\u00a7158 rules, first read). \u00a7158 rules (R1 institutional Any-Other holders placed as the filer's own 2022 form places them, R2 domestic institutions parked under non-institutions, R3 NBFC row) + \u00a7159 rule (non-institutional foreign holders the filer's 2022 form lists under Institutions (Foreign)) + D1 (unnamed rest of the institutional block = FII in the 2015-22 form unless every named holder is domestic). | R1-fii-label Other Foreign Institutional Investors 7.7 public=0.00 fii=7.70 Morgan Stanley Mauritius Company Limited 1.49 foreign->fii(curated); Lsv Emerging Markets Equity Fund Lp 1.45 foreign->fii(documented:filing) keyword"
+   },
+   "2016-03-31": {
+    "cell": [
+     61.4005,
+     20.5747,
+     4.6298,
+     3.7431,
+     0.0,
+     "2016-04-21"
+    ],
+    "was": [
+     61.4005,
+     20.5747,
+     14.2845,
+     3.7431,
+     0.0,
+     "2016-04-21"
+    ],
+    "src": "bseaspx:532526:89:New+seam164l",
+    "why": "\u00a7164p repair of a \u00a7164l seam fill (2026-09-27): dii 14.2845 - 9.6547 moved to fii (page institutions: mf/banks/ins in dii, the FII block in fii, never both)."
    }
   },
   "DODLA": {
@@ -91709,6 +92029,46 @@
     ],
     "src": "bsexbrl:500300_1872022192051_SHP.xml",
     "why": "\u00a7158 row-level DII heal (2026-09-24, DII = Institutions(Domestic) in every format): dii 15.35 -> 16.00, fii 11.49 -> 11.49. R2-label Others Qualified Institutional Buyer 0.65 . Evidence: _shp_dii_rowfix_audit.json"
+   },
+   "2015-12-31": {
+    "cell": [
+     25.5075,
+     22.7868,
+     17.4398,
+     8.3766,
+     8.8658,
+     "2016-01-27"
+    ],
+    "was": [
+     29.72,
+     26.55,
+     20.32,
+     9.76,
+     10.33,
+     "2016-01-27"
+    ],
+    "src": "bseaspx:500300:88+nseresults:1004554",
+    "why": "\u00a7164p seam-quarter base (2026-09-27): BSE's Dec-2015 page (qtrid 88) prints percentages of 78,845,418 shares \u2014 it leaves out 13,021,231 shares that the Sep-2015 page (91,866,649, block C 13,026,919) and the company's paid-up capital still count (NSE original results filings: Sep-2015 #1002460 paid-up 9188.0, 2015-12-31 #1004554 paid-up 9188.0, face value 10.0). The company is on the FULL-count basis (D2 / \u00a7164a) and its stored Sep-2015 and Jun-2016 cells are on it, so every slot is re-expressed on the documented count 91,866,649 (\u00b1 10,000 shares, the filings' rounding): x 0.858259."
+   },
+   "2016-03-31": {
+    "cell": [
+     25.9798,
+     22.8342,
+     17.1581,
+     8.865,
+     8.1198,
+     "2016-04-20"
+    ],
+    "was": [
+     29.98,
+     26.35,
+     19.8,
+     10.23,
+     9.37,
+     "2016-04-20"
+    ],
+    "src": "bseaspx:500300:89+nseresults:1007110",
+    "why": "\u00a7164p seam-quarter base (2026-09-27): BSE's Mar-2016 page (qtrid 89) prints percentages of 80,891,534 shares \u2014 it leaves out 12,455,115 shares that the Sep-2015 page (91,866,649, block C 13,026,919) and the company's paid-up capital still count (NSE original results filings: Sep-2015 #1002460 paid-up 9188.0, 2016-03-31 #1007110 paid-up 9336.0, face value 10.0). The company is on the FULL-count basis (D2 / \u00a7164a) and its stored Sep-2015 and Jun-2016 cells are on it, so every slot is re-expressed on the documented count 93,346,649 (\u00b1 10,000 shares, the filings' rounding): x 0.866571."
    }
   },
   "GREENPLY": {
@@ -98735,6 +99095,26 @@
     ],
     "src": "bsexbrl:533293_2172026152617_SHP.xml",
     "why": "\u00a7142i 2026-09-22 dark-window repair: the daily fetch re-dated this row to a later re-publication (NSE moves broadcastDate to the latest version); BSE's ORIGINAL filing 533293_2172026152617_SHP.xml was public 2026-07-21 (gated). Values and date restored from that original document (runbook \u00a7142g rule)."
+   },
+   "2015-12-31": {
+    "cell": [
+     59.3048,
+     12.16,
+     8.8215,
+     1.0073,
+     4.0377,
+     "2016-01-21"
+    ],
+    "was": [
+     59.3048,
+     12.16,
+     19.0515,
+     1.0073,
+     4.0377,
+     "2016-01-21"
+    ],
+    "src": "bseaspx:533293:88:New+seam164l",
+    "why": "\u00a7164p repair of a \u00a7164l seam fill (2026-09-27): dii 19.0515 - 10.2300 moved to fii (page institutions: mf/banks/ins in dii, the FII block in fii, never both)."
    }
   },
   "LAOPALA": {
@@ -110119,6 +110499,26 @@
     ],
     "src": "bsexbrl:500390_2110202119428_SHP.xml",
     "why": "\u00a7164 row-level remainder rule (2026-09-25, user: \"adopt all three recommendations\"; FORMER Nifty 500 member, first row-level read): fii 1.22 -> 1.32, dii 5.17 -> 5.07. R1-R3 (\u00a7158 rules, first read). \u00a7158 rules (R1 institutional Any-Other holders placed as the filer's own 2022 form places them, R2 domestic institutions parked under non-institutions, R3 NBFC row) + \u00a7159 rule (non-institutional foreign holders the filer's 2022 form lists under Institutions (Foreign)) + D1 (unnamed rest of the institutional block = FII in the 2015-22 form unless every named holder is domestic).  | R1: R1-fii-label Other Foreign Institutional Investors (FII) 0.1 public=0.00 fii=0.10  keyword. Evidence: _shp_164_audit.json"
+   },
+   "2016-03-31": {
+    "cell": [
+     48.3581,
+     20.111,
+     15.9878,
+     0.1079,
+     15.4593,
+     "2016-04-21"
+    ],
+    "was": [
+     48.3581,
+     20.111,
+     24.0388,
+     0.1079,
+     15.4593,
+     "2016-04-21"
+    ],
+    "src": "bseaspx:500390:89:New+seam164l",
+    "why": "\u00a7164p repair of a \u00a7164l seam fill (2026-09-27): dii 24.0388 - 8.0510 moved to fii (page institutions: mf/banks/ins in dii, the FII block in fii, never both)."
    }
   },
   "RENUKA": {
@@ -118009,6 +118409,26 @@
     ],
     "src": "bsexbrl event filing (BSE SHPQNewFormat list, label 29 Nov 2019)",
     "why": "quantmac FII reconciliation 2026-09-22 (runbook \u00a7142e): event-row institutions Any-Others block 10.47 = NALANDA INDIA FUND LIMITED (FII), the SAME holder the SW-2 sweep confirmed foreign in the adjacent quarter-ends (2019-09-30 10.27 / 2019-12-31 10.44 foreign-confirmed). Event rows had no ledger route until apply_cell_fix_events (this commit). fii += block, dii -= block."
+   },
+   "2015-12-31": {
+    "cell": [
+     56.2234,
+     18.7382,
+     0.0088,
+     0.0,
+     0.0,
+     "2016-01-23"
+    ],
+    "was": [
+     64.0,
+     21.33,
+     0.01,
+     0.0,
+     0.0,
+     "2016-01-23"
+    ],
+    "src": "bseaspx:532156:88+nseresults:1004341",
+    "why": "\u00a7164p seam-quarter base (2026-09-27): BSE's Dec-2015 page (qtrid 88) prints percentages of 28,558,005 shares \u2014 it leaves out 3,950,014 shares that the Sep-2015 page (32,477,919, block C 3,950,000) and the company's paid-up capital still count (NSE original results filings: Sep-2015 #1002945 paid-up 3246.18, 2015-12-31 #1004341 paid-up 3249.19, face value 10.0). The company is on the FULL-count basis (D2 / \u00a7164a) and its stored Sep-2015 and Jun-2016 cells are on it, so every slot is re-expressed on the documented count 32,508,019 (\u00b1 100 shares, the filings' rounding): x 0.878491."
    }
   },
   "VEEDOL": {
@@ -120231,6 +120651,26 @@
     ],
     "src": "bsexbrl:509966_1972018113556_SHP.xml",
     "why": "\u00a7164 row-level remainder rule (2026-09-25, user: \"adopt all three recommendations\"; FORMER Nifty 500 member, first row-level read): fii 9.52 -> 9.52, dii 15.50 -> 16.99. R1-R3 (\u00a7158 rules, first read). \u00a7158 rules (R1 institutional Any-Other holders placed as the filer's own 2022 form places them, R2 domestic institutions parked under non-institutions, R3 NBFC row) + \u00a7159 rule (non-institutional foreign holders the filer's 2022 form lists under Institutions (Foreign)) + D1 (unnamed rest of the institutional block = FII in the 2015-22 form unless every named holder is domestic).  | R1: R2-named Bodies Corporate 1.49 ICICI  Lombard General Insurance Co. Ltd. 1.49(regex). Evidence: _shp_164_audit.json"
+   },
+   "2016-03-31": {
+    "cell": [
+     32.1586,
+     13.8852,
+     12.7803,
+     10.0546,
+     2.6301,
+     "2016-04-21"
+    ],
+    "was": [
+     32.1586,
+     13.8852,
+     22.1355,
+     10.0546,
+     2.6301,
+     "2016-04-21"
+    ],
+    "src": "bseaspx:509966:89:New+seam164l",
+    "why": "\u00a7164p repair of a \u00a7164l seam fill (2026-09-27): dii 22.1355 - 9.3552 moved to fii (page institutions: mf/banks/ins in dii, the FII block in fii, never both)."
    }
   },
   "WESTLIFE": {
@@ -121633,6 +122073,46 @@
     ],
     "src": "bsexbrl:532900_1672022201326_SHP.xml",
     "why": "\u00a7164 row-level remainder rule (2026-09-25, user: \"adopt all three recommendations\"; FORMER Nifty 500 member, first row-level read): fii 19.86 -> 19.86, dii 14.51 -> 14.57. R1-R3 (\u00a7158 rules, first read). \u00a7158 rules (R1 institutional Any-Other holders placed as the filer's own 2022 form places them, R2 domestic institutions parked under non-institutions, R3 NBFC row) + \u00a7159 rule (non-institutional foreign holders the filer's 2022 form lists under Institutions (Foreign)) + D1 (unnamed rest of the institutional block = FII in the 2015-22 form unless every named holder is domestic).  | R1: R3-nbfc NBFCsRegisteredWithRbi 0.06. Evidence: _shp_164_audit.json"
+   },
+   "2015-12-31": {
+    "cell": [
+     26.0351,
+     16.6332,
+     2.387,
+     0.0,
+     0.0,
+     "2016-03-17"
+    ],
+    "was": [
+     44.5,
+     28.43,
+     4.08,
+     0.0,
+     0.0,
+     "2016-03-17"
+    ],
+    "src": "bseaspx:532900:88+nseresults:1004937",
+    "why": "\u00a7164p seam-quarter base (2026-09-27): BSE's Dec-2015 page (qtrid 88) prints percentages of 23,730,000 shares \u2014 it leaves out 16,830,000 shares that the Sep-2015 page (40,560,000, block C 16,830,000) and the company's paid-up capital still count (NSE original results filings: Sep-2015 #1002230 paid-up 4056.0, 2015-12-31 #1004937 paid-up 4056.0, face value 10.0). The company is on the FULL-count basis (D2 / \u00a7164a) and its stored Sep-2015 and Jun-2016 cells are on it, so every slot is re-expressed on the documented count 40,560,000 (\u00b1 10,000 shares, the filings' rounding): x 0.585059."
+   },
+   "2016-03-31": {
+    "cell": [
+     26.0351,
+     16.6274,
+     2.387,
+     0.0,
+     0.0,
+     "2016-05-12"
+    ],
+    "was": [
+     44.5,
+     28.42,
+     4.08,
+     0.0,
+     0.0,
+     "2016-05-12"
+    ],
+    "src": "bseaspx:532900:89+nseresults:1008332",
+    "why": "\u00a7164p seam-quarter base (2026-09-27): BSE's Mar-2016 page (qtrid 89) prints percentages of 23,730,000 shares \u2014 it leaves out 16,830,000 shares that the Sep-2015 page (40,560,000, block C 16,830,000) and the company's paid-up capital still count (NSE original results filings: Sep-2015 #1002230 paid-up 4056.0, 2016-03-31 #1008332 paid-up 4056.0, face value 10.0). The company is on the FULL-count basis (D2 / \u00a7164a) and its stored Sep-2015 and Jun-2016 cells are on it, so every slot is re-expressed on the documented count 40,560,000 (\u00b1 10,000 shares, the filings' rounding): x 0.585059."
    }
   },
   "MRPL": {
@@ -128095,6 +128575,46 @@
     ],
     "src": "bseaspx:532508_74",
     "why": "\u00a7160 page-era row-level heal (2026-09-25, DII = Institutions(Domestic), FII = Institutions(Foreign) in every format): fii 23.00 -> 28.27, dii 15.31 -> 10.05. dii-block-out Foreign Bank 5.27 stored dii held the institutional Any-Others block; this fii sub-row is not a domestic institution; inst-sub-fii Foreign Bank 5.27. Evidence: _shp_aspx_rowfix_audit.json (\u00a7160c)"
+   },
+   "2015-12-31": {
+    "cell": [
+     49.5554,
+     17.4331,
+     6.1713,
+     5.0165,
+     1.0532,
+     "2016-02-08"
+    ],
+    "was": [
+     53.64,
+     18.87,
+     6.68,
+     5.43,
+     1.14,
+     "2016-02-08"
+    ],
+    "src": "bseaspx:532508:88+nseresults:1004649",
+    "why": "\u00a7164p seam-quarter base (2026-09-27): BSE's Dec-2015 page (qtrid 88) prints percentages of 213,581,111 shares \u2014 it leaves out 17,604,334 shares that the Sep-2015 page (231,185,445, block C 17,604,334) and the company's paid-up capital still count (NSE original results filings: Sep-2015 #1003271 paid-up 46.24, 2015-12-31 #1004649 paid-up 4624.0, face value 2.0). The company is on the FULL-count basis (D2 / \u00a7164a) and its stored Sep-2015 and Jun-2016 cells are on it, so every slot is re-expressed on the documented count 231,185,445 (\u00b1 50,000 shares, the filings' rounding): x 0.923852."
+   },
+   "2016-03-31": {
+    "cell": [
+     49.5554,
+     17.4238,
+     6.0789,
+     4.8964,
+     1.0532,
+     "2016-04-20"
+    ],
+    "was": [
+     53.64,
+     18.86,
+     6.58,
+     5.3,
+     1.14,
+     "2016-04-20"
+    ],
+    "src": "bseaspx:532508:89+nseresults:1009287",
+    "why": "\u00a7164p seam-quarter base (2026-09-27): BSE's Mar-2016 page (qtrid 89) prints percentages of 213,581,111 shares \u2014 it leaves out 17,604,334 shares that the Sep-2015 page (231,185,445, block C 17,604,334) and the company's paid-up capital still count (NSE original results filings: Sep-2015 #1003271 paid-up 46.24, 2016-03-31 #1009287 paid-up 4624.0, face value 2.0). The company is on the FULL-count basis (D2 / \u00a7164a) and its stored Sep-2015 and Jun-2016 cells are on it, so every slot is re-expressed on the documented count 231,185,445 (\u00b1 50,000 shares, the filings' rounding): x 0.923852."
    }
   },
   "ITC": {
@@ -148565,6 +149085,26 @@
      "src": "bseaspx:532840:qtrid84",
      "why": "SW-2 phase-2 2026-08-30: pre-2016 family convention is dii = mf+banks+ins(+vcf); this cell's dii equals that PLUS the institutions Any-Other row (2.57pp) folded in by a minority route. Healed to the page's own domestic rows (1.3051). fii left as authored (block nationality not adjudicated here). Census: _shp_oth_p2_census.jsonl"
     }
+   },
+   "2015-12-31": {
+    "cell": [
+     59.1244,
+     14.2242,
+     0.5751,
+     0.567,
+     0.0,
+     "2016-02-08"
+    ],
+    "was": [
+     72.99,
+     17.56,
+     0.71,
+     0.7,
+     0.0,
+     "2016-02-08"
+    ],
+    "src": "bseaspx:532840:88+nseresults:1008143",
+    "why": "\u00a7164p seam-quarter base (2026-09-27): BSE's Dec-2015 page (qtrid 88) prints percentages of 84,686,235 shares \u2014 it leaves out 19,860,270 shares that the Sep-2015 page (100,545,505, block C 15,888,280) and the company's paid-up capital still count (NSE original results filings: Sep-2015 #1002369 paid-up 2010.91, 2015-12-31 #1008143 paid-up 2090.93, face value 2.0). The company is on the FULL-count basis (D2 / \u00a7164a) and its stored Sep-2015 and Jun-2016 cells are on it, so every slot is re-expressed on the documented count 104,546,505 (\u00b1 500 shares, the filings' rounding): x 0.810034."
    }
   },
   "DENABANK": {
@@ -155049,6 +155589,26 @@
     ],
     "src": "bsexbrl:539332_2042019171419_SHP.xml",
     "why": "\u00a7164 row-level remainder rule (2026-09-25, user: \"adopt all three recommendations\"; FORMER Nifty 500 member, first row-level read): fii 0.74 -> 0.74, dii 11.18 -> 11.85. R1-R3 (\u00a7158 rules, first read). \u00a7158 rules (R1 institutional Any-Other holders placed as the filer's own 2022 form places them, R2 domestic institutions parked under non-institutions, R3 NBFC row) + \u00a7159 rule (non-institutional foreign holders the filer's 2022 form lists under Institutions (Foreign)) + D1 (unnamed rest of the institutional block = FII in the 2015-22 form unless every named holder is domestic).  | R1: R3-nbfc NBFCsRegisteredWithRbi 0.67. Evidence: _shp_164_audit.json"
+   },
+   "2015-12-31": {
+    "cell": [
+     72.8559,
+     5.9715,
+     17.3902,
+     17.0231,
+     0.0,
+     "2016-01-21"
+    ],
+    "was": [
+     72.8559,
+     5.9715,
+     20.6617,
+     17.0231,
+     0.0,
+     "2016-01-21"
+    ],
+    "src": "bseaspx:539332:88:New+seam164l",
+    "why": "\u00a7164p repair of a \u00a7164l seam fill (2026-09-27): dii 20.6617 - 3.2715 moved to fii (page institutions: mf/banks/ins in dii, the FII block in fii, never both)."
    }
   },
   "TAKE": {
@@ -168626,6 +169186,14 @@
    },
    "2015-12-31": {
     "cell": [
+     38.8168,
+     25.5164,
+     9.6823,
+     3.1457,
+     1.437,
+     "2016-01-29"
+    ],
+    "was": [
      44.3,
      29.1208,
      11.05,
@@ -168633,19 +169201,39 @@
      1.64,
      "2016-01-29"
     ],
-    "was": [
-     44.3,
-     4.98,
-     11.05,
-     3.59,
-     1.64,
-     "2016-01-29"
-    ],
-    "src": "bseaspx:500477_88 shpperent",
-    "why": "\u00a7160 page-era row-level heal (2026-09-24, DII = Institutions(Domestic), FII = Institutions(Foreign) in every format): fii 4.98 -> 29.12, dii 11.05 -> 11.05. seam-fii-reconstruction base 4.98 24.1408; lump-fii Foreign Institutional Institution 23.7368; lump-fii Foreign Port Folio Investor- Corporate 0.404. Evidence: _shp_aspx_rowfix_audit.json"
+    "src": "bseaspx:500477:88+nseresults:1005432",
+    "why": "\u00a7164p seam-quarter base (2026-09-27): BSE's Dec-2015 page (qtrid 88) prints percentages of 2,493,630,994 shares \u2014 it leaves out 352,245,640 shares that the Sep-2015 page (2,845,876,634, block C 352,245,640) and the company's paid-up capital still count (NSE original results filings: Sep-2015 #1002962 paid-up 28458.8, 2015-12-31 #1005432 paid-up 28458.8, face value 1.0). The company is on the FULL-count basis (D2 / \u00a7164a) and its stored Sep-2015 and Jun-2016 cells are on it, so every slot is re-expressed on the documented count 2,845,876,634 (\u00b1 10,000 shares, the filings' rounding): x 0.876226.",
+    "superseded": {
+     "cell": [
+      44.3,
+      29.1208,
+      11.05,
+      3.59,
+      1.64,
+      "2016-01-29"
+     ],
+     "was": [
+      44.3,
+      4.98,
+      11.05,
+      3.59,
+      1.64,
+      "2016-01-29"
+     ],
+     "src": "bseaspx:500477_88 shpperent",
+     "why": "\u00a7160 page-era row-level heal (2026-09-24, DII = Institutions(Domestic), FII = Institutions(Foreign) in every format): fii 4.98 -> 29.12, dii 11.05 -> 11.05. seam-fii-reconstruction base 4.98 24.1408; lump-fii Foreign Institutional Institution 23.7368; lump-fii Foreign Port Folio Investor- Corporate 0.404. Evidence: _shp_aspx_rowfix_audit.json"
+    }
    },
    "2016-03-31": {
     "cell": [
+     38.8168,
+     18.9048,
+     9.8926,
+     4.0219,
+     1.2705,
+     "2016-04-16"
+    ],
+    "was": [
      44.3,
      21.5752,
      11.29,
@@ -168653,16 +169241,28 @@
      1.45,
      "2016-04-16"
     ],
-    "was": [
-     44.3,
-     7.25,
-     11.29,
-     4.59,
-     1.45,
-     "2016-04-16"
-    ],
-    "src": "bseaspx:500477_89 shpperent",
-    "why": "\u00a7160 page-era row-level heal (2026-09-24, DII = Institutions(Domestic), FII = Institutions(Foreign) in every format): fii 7.25 -> 21.58, dii 11.29 -> 11.29. seam-fii-reconstruction base 7.25 14.3252; lump-fii FOREIGN INSTITUTIONAL INVESTORS 14.3252. Evidence: _shp_aspx_rowfix_audit.json"
+    "src": "bseaspx:500477:89+nseresults:1008206",
+    "why": "\u00a7164p seam-quarter base (2026-09-27): BSE's Mar-2016 page (qtrid 89) prints percentages of 2,493,630,994 shares \u2014 it leaves out 352,245,640 shares that the Sep-2015 page (2,845,876,634, block C 352,245,640) and the company's paid-up capital still count (NSE original results filings: Sep-2015 #1002962 paid-up 28458.8, 2016-03-31 #1008206 paid-up 28458.8, face value 1.0). The company is on the FULL-count basis (D2 / \u00a7164a) and its stored Sep-2015 and Jun-2016 cells are on it, so every slot is re-expressed on the documented count 2,845,876,634 (\u00b1 10,000 shares, the filings' rounding): x 0.876226.",
+    "superseded": {
+     "cell": [
+      44.3,
+      21.5752,
+      11.29,
+      4.59,
+      1.45,
+      "2016-04-16"
+     ],
+     "was": [
+      44.3,
+      7.25,
+      11.29,
+      4.59,
+      1.45,
+      "2016-04-16"
+     ],
+     "src": "bseaspx:500477_89 shpperent",
+     "why": "\u00a7160 page-era row-level heal (2026-09-24, DII = Institutions(Domestic), FII = Institutions(Foreign) in every format): fii 7.25 -> 21.58, dii 11.29 -> 11.29. seam-fii-reconstruction base 7.25 14.3252; lump-fii FOREIGN INSTITUTIONAL INVESTORS 14.3252. Evidence: _shp_aspx_rowfix_audit.json"
+    }
    },
    "2015-06-30": {
     "cell": [
@@ -174100,6 +174700,26 @@
     ],
     "src": "bseaspx:500411_53",
     "why": "\u00a7160 page-era row-level heal (2026-09-24, DII = Institutions(Domestic), FII = Institutions(Foreign) in every format): fii 4.57 -> 4.74, dii 16.30 -> 16.31. inst-sub-fii Foreign Mutual Fund 0.17. Evidence: _shp_aspx_rowfix_audit.json | 2026-09-24: cell aligned to shp_refine_4dp's share-count dii/ins (the page's 2-dp value was re-derived after apply_cell_fix; proposed [16.31, 0.8765])"
+   },
+   "2016-03-31": {
+    "cell": [
+     61.9892,
+     15.8305,
+     9.262,
+     7.5797,
+     1.5027,
+     "2016-06-23"
+    ],
+    "was": [
+     65.59,
+     16.75,
+     9.8,
+     8.02,
+     1.59,
+     "2016-06-23"
+    ],
+    "src": "bseaspx:500411:89+nseresults:1008475",
+    "why": "\u00a7164p seam-quarter base (2026-09-27): BSE's Mar-2016 page (qtrid 89) prints percentages of 112,614,860 shares \u2014 it leaves out 6,541,440 shares that the Sep-2015 page (119,156,300, block C 0) and the company's paid-up capital still count (NSE original results filings: Sep-2015 #1002332 paid-up 2383.13, 2016-03-31 #1008475 paid-up 2383.0, face value 2.0). The company is on the FULL-count basis (D2 / \u00a7164a) and its stored Sep-2015 and Jun-2016 cells are on it, so every slot is re-expressed on the documented count 119,156,300 (\u00b1 25,250 shares, the filings' rounding): x 0.945102."
    }
   },
   "TRACXN": {
@@ -176422,6 +177042,26 @@
     ],
     "src": "bsexbrl:532725_3072019174825_SHP.xml",
     "why": "\u00a7158 row-level DII heal (2026-09-24, DII = Institutions(Domestic) in every format): dii 20.26 -> 20.31, fii 1.76 -> 1.76. R3-nbfc NBFCsRegisteredWithRbi 0.05. Evidence: _shp_dii_rowfix_audit.json"
+   },
+   "2015-12-31": {
+    "cell": [
+     72.9815,
+     2.4078,
+     20.6067,
+     17.9364,
+     2.6672,
+     "2016-01-21"
+    ],
+    "was": [
+     72.9815,
+     2.4078,
+     22.5045,
+     17.9364,
+     2.6672,
+     "2016-01-21"
+    ],
+    "src": "bseaspx:532725:88:New+seam164l",
+    "why": "\u00a7164p repair of a \u00a7164l seam fill (2026-09-27): dii 22.5045 - 1.8978 moved to fii (page institutions: mf/banks/ins in dii, the FII block in fii, never both)."
    }
   },
   "PVSL": {
@@ -183736,6 +184376,46 @@
     ],
     "src": "bsexbrl:500124_2072021123650_SHP.xml",
     "why": "\u00a7158 row-level DII heal (2026-09-24, DII = Institutions(Domestic) in every format): dii 15.74 -> 18.39, fii 29.04 -> 29.04. R2-named Bodies Corporate 1.38 ICICI PRUDENTIAL LIFE INSURANCE COMPANY LIMITED 1.38(new-format:InsuranceCompanies); R2-named Trusts 1.27 NPS TRUST - A/C 1.27(regex). Evidence: _shp_dii_rowfix_audit.json"
+   },
+   "2015-12-31": {
+    "cell": [
+     25.5695,
+     37.8176,
+     5.6858,
+     3.1706,
+     2.3431,
+     "2016-02-24"
+    ],
+    "was": [
+     31.21,
+     46.16,
+     6.94,
+     3.87,
+     2.86,
+     "2016-02-24"
+    ],
+    "src": "bseaspx:500124:88+nseresults:1005098",
+    "why": "\u00a7164p seam-quarter base (2026-09-27): BSE's Dec-2015 page (qtrid 88) prints percentages of 139,758,553 shares \u2014 it leaves out 30,829,962 shares that the Sep-2015 page (170,588,515, block C 31,102,332) and the company's paid-up capital still count (NSE original results filings: Sep-2015 #1002435 paid-up 8529.0, 2015-12-31 #1005098 paid-up 8530.0, face value 5.0). The company is on the FULL-count basis (D2 / \u00a7164a) and its stored Sep-2015 and Jun-2016 cells are on it, so every slot is re-expressed on the documented count 170,588,515 (\u00b1 110,000 shares, the filings' rounding): x 0.819273."
+   },
+   "2016-03-31": {
+    "cell": [
+     25.5878,
+     35.9993,
+     6.0239,
+     3.1924,
+     2.6723,
+     "2016-04-22"
+    ],
+    "was": [
+     30.7339,
+     43.2394,
+     7.2354,
+     3.8345,
+     3.2097,
+     "2016-04-22"
+    ],
+    "src": "bseaspx:500124:89+nseresults:1006978",
+    "why": "\u00a7164p seam-quarter base (2026-09-27): BSE's Mar-2016 page (qtrid 89) prints percentages of 142,024,844 shares \u2014 it leaves out 28,563,671 shares that the Sep-2015 page (170,588,515, block C 31,102,332) and the company's paid-up capital still count (NSE original results filings: Sep-2015 #1002435 paid-up 8529.0, 2016-03-31 #1006978 paid-up 8530.0, face value 5.0). The company is on the FULL-count basis (D2 / \u00a7164a) and its stored Sep-2015 and Jun-2016 cells are on it, so every slot is re-expressed on the documented count 170,588,515 (\u00b1 110,000 shares, the filings' rounding): x 0.832558."
    }
   },
   "ESTER": {
@@ -196803,6 +197483,46 @@
     ],
     "src": "bsexbrl:502937_672022121711_SHP.xml",
     "why": "\u00a7164 row-level remainder rule (2026-09-25, user: \"adopt all three recommendations\"; FORMER Nifty 500 member, first row-level read): fii 0.30 -> 0.30, dii 8.50 -> 8.61. R1-R3 (\u00a7158 rules, first read). \u00a7158 rules (R1 institutional Any-Other holders placed as the filer's own 2022 form places them, R2 domestic institutions parked under non-institutions, R3 NBFC row) + \u00a7159 rule (non-institutional foreign holders the filer's 2022 form lists under Institutions (Foreign)) + D1 (unnamed rest of the institutional block = FII in the 2015-22 form unless every named holder is domestic).  | R1: R3-nbfc NBFCsRegisteredWithRbi 0.11. Evidence: _shp_164_audit.json"
+   },
+   "2015-12-31": {
+    "cell": [
+     46.0063,
+     4.1177,
+     5.456,
+     0.2808,
+     3.8463,
+     "2016-02-19"
+    ],
+    "was": [
+     49.16,
+     4.4,
+     5.83,
+     0.3,
+     4.11,
+     "2016-02-19"
+    ],
+    "src": "bseaspx:502937:88+nseresults:1004272",
+    "why": "\u00a7164p seam-quarter base (2026-09-27): BSE's Dec-2015 page (qtrid 88) prints percentages of 102,726,775 shares \u2014 it leaves out 7,041,875 shares that the Sep-2015 page (109,768,650, block C 7,041,875) and the company's paid-up capital still count (NSE original results filings: Sep-2015 #1004126 paid-up 10977.0, 2015-12-31 #1004272 paid-up 10977.0, face value 10.0). The company is on the FULL-count basis (D2 / \u00a7164a) and its stored Sep-2015 and Jun-2016 cells are on it, so every slot is re-expressed on the documented count 109,768,650 (\u00b1 10,000 shares, the filings' rounding): x 0.935848."
+   },
+   "2016-03-31": {
+    "cell": [
+     49.4602,
+     2.7353,
+     4.9629,
+     0.1316,
+     3.6094,
+     "2016-04-21"
+    ],
+    "was": [
+     52.62,
+     2.91,
+     5.28,
+     0.14,
+     3.84,
+     "2016-04-21"
+    ],
+    "src": "bseaspx:502937:89+nseresults:1008248",
+    "why": "\u00a7164p seam-quarter base (2026-09-27): BSE's Mar-2016 page (qtrid 89) prints percentages of 110,226,775 shares \u2014 it leaves out 7,041,875 shares that the Sep-2015 page (109,768,650, block C 7,041,875) and the company's paid-up capital still count (NSE original results filings: Sep-2015 #1004126 paid-up 10977.0, 2016-03-31 #1008248 paid-up 11727.0, face value 10.0). The company is on the FULL-count basis (D2 / \u00a7164a) and its stored Sep-2015 and Jun-2016 cells are on it, so every slot is re-expressed on the documented count 117,268,650 (\u00b1 10,000 shares, the filings' rounding): x 0.939951."
    }
   },
   "AXISBANK": {
@@ -241355,6 +242075,46 @@
     ],
     "src": "bsexbrl:500295_18120201682_SHP.xml",
     "why": "\u00a7158 row-level DII heal (2026-09-24, DII = Institutions(Domestic) in every format): dii 18.63 -> 19.18, fii 16.39 -> 16.39. R2-label Others THIS REPRESENTS QUALIFIED INSTITUTIONAL BUYER 0.55 . Evidence: _shp_dii_rowfix_audit.json"
+   },
+   "2015-12-31": {
+    "cell": [
+     59.5255,
+     13.8558,
+     8.6288,
+     3.6138,
+     0.968,
+     "2016-01-29"
+    ],
+    "was": [
+     64.57,
+     15.03,
+     9.36,
+     3.92,
+     1.05,
+     "2016-01-29"
+    ],
+    "src": "bseaspx:500295:88+nseresults:1004455",
+    "why": "\u00a7164p seam-quarter base (2026-09-27): BSE's Dec-2015 page (qtrid 88) prints percentages of 2,733,079,034 shares \u2014 it leaves out 231,615,205 shares that the Sep-2015 page (2,964,694,239, block C 224,627,524) and the company's paid-up capital still count (NSE original results filings: Sep-2015 #1002405 paid-up 29650.0, 2015-12-31 #1004455 paid-up 29650.0, face value 1.0). The company is on the FULL-count basis (D2 / \u00a7164a) and its stored Sep-2015 and Jun-2016 cells are on it, so every slot is re-expressed on the documented count 2,964,694,239 (\u00b1 1,000,000 shares, the filings' rounding): x 0.921876."
+   },
+   "2016-03-31": {
+    "cell": [
+     59.5219,
+     12.4776,
+     8.9573,
+     3.9442,
+     0.9492,
+     "2016-04-21"
+    ],
+    "was": [
+     64.59,
+     13.54,
+     9.72,
+     4.28,
+     1.03,
+     "2016-04-21"
+    ],
+    "src": "bseaspx:500295:89+nseresults:1006484",
+    "why": "\u00a7164p seam-quarter base (2026-09-27): BSE's Mar-2016 page (qtrid 89) prints percentages of 2,732,067,720 shares \u2014 it leaves out 232,626,519 shares that the Sep-2015 page (2,964,694,239, block C 224,627,524) and the company's paid-up capital still count (NSE original results filings: Sep-2015 #1002405 paid-up 29650.0, 2016-03-31 #1006484 paid-up 29650.0, face value 1.0). The company is on the FULL-count basis (D2 / \u00a7164a) and its stored Sep-2015 and Jun-2016 cells are on it, so every slot is re-expressed on the documented count 2,964,694,239 (\u00b1 1,000,000 shares, the filings' rounding): x 0.921534."
    }
   },
   "VOLTAS": {
@@ -245601,6 +246361,26 @@
     ],
     "src": "bsexbrl:532811_1012019114921_SHP.xml",
     "why": "\u00a7164 row-level remainder rule (2026-09-25, user: \"adopt all three recommendations\"; FORMER Nifty 500 member, first row-level read): fii 17.14 -> 17.14, dii 20.32 -> 20.39. R1-R3 (\u00a7158 rules, first read). \u00a7158 rules (R1 institutional Any-Other holders placed as the filer's own 2022 form places them, R2 domestic institutions parked under non-institutions, R3 NBFC row) + \u00a7159 rule (non-institutional foreign holders the filer's 2022 form lists under Institutions (Foreign)) + D1 (unnamed rest of the institutional block = FII in the 2015-22 form unless every named holder is domestic).  | R1: R3-nbfc NBFCsRegisteredWithRbi 0.07. Evidence: _shp_164_audit.json"
+   },
+   "2015-12-31": {
+    "cell": [
+     62.4339,
+     19.2949,
+     9.4772,
+     9.4695,
+     0.0,
+     "2016-01-21"
+    ],
+    "was": [
+     62.4339,
+     19.2949,
+     23.4221,
+     9.4695,
+     0.0,
+     "2016-01-21"
+    ],
+    "src": "bseaspx:532811:88:New+seam164l",
+    "why": "\u00a7164p repair of a \u00a7164l seam fill (2026-09-27): dii 23.4221 - 13.9449 moved to fii (page institutions: mf/banks/ins in dii, the FII block in fii, never both)."
    }
   },
   "ASHIMASYN": {
@@ -247603,6 +248383,26 @@
     ],
     "src": "bsexbrl:532678_2152022202319_SHP.xml",
     "why": "\u00a7164 row-level remainder rule (2026-09-25, user: \"adopt all three recommendations\"; FORMER Nifty 500 member, first row-level read): fii 0.22 -> 2.15, dii 53.81 -> 51.88. R1-R3 (\u00a7158 rules, first read). \u00a7158 rules (R1 institutional Any-Other holders placed as the filer's own 2022 form places them, R2 domestic institutions parked under non-institutions, R3 NBFC row) + \u00a7159 rule (non-institutional foreign holders the filer's 2022 form lists under Institutions (Foreign)) + D1 (unnamed rest of the institutional block = FII in the 2015-22 form unless every named holder is domestic).  | R1: R1-foreign-holders Other 0.0 public=0.00 fii=1.93 Standard Chartered Bank 1.93 foreign->fii(new-format:OtherInstitutionsForeign). Evidence: _shp_164_audit.json"
+   },
+   "2015-09-30": {
+    "cell": [
+     92.0989,
+     0.9128,
+     0.5066,
+     0.0,
+     0.0,
+     "2015-10-21"
+    ],
+    "was": [
+     74.87,
+     9.72,
+     6.7,
+     6.69,
+     0.0,
+     "2015-10-21"
+    ],
+    "src": "bseaspx:532678:87",
+    "why": "\u00a7164p wrong-company cell (2026-09-27): this Wayback-sourced value (wb:20151012221300:bombayrayonfashions:approx+21d) equals PRSMJOHNSN's own 2015-09-30 pattern slot for slot ([74.87, 9.72, 6.7, 6.69]) \u2014 the captured page had redirected to that company. Replaced by the company's own BSE page (qtrid 87) read by fetch_shp_bse_aspx.cell_of."
    }
   },
   "BSL": {
@@ -272015,6 +272815,46 @@
     ],
     "src": "bsexbrl:504973_2142017183051_SHP.xml",
     "why": "\u00a7164 row-level remainder rule (2026-09-25, user: \"adopt all three recommendations\"; FORMER Nifty 500 member, first row-level read): fii 13.24 -> 13.24, dii 14.70 -> 14.86. R1-R3 (\u00a7158 rules, first read). \u00a7158 rules (R1 institutional Any-Other holders placed as the filer's own 2022 form places them, R2 domestic institutions parked under non-institutions, R3 NBFC row) + \u00a7159 rule (non-institutional foreign holders the filer's 2022 form lists under Institutions (Foreign)) + D1 (unnamed rest of the institutional block = FII in the 2015-22 form unless every named holder is domestic).  | R1: R3-nbfc NBFCsRegisteredWithRbi 0.16. Evidence: _shp_164_audit.json"
+   },
+   "2015-12-31": {
+    "cell": [
+     48.8108,
+     14.0461,
+     11.6499,
+     9.2537,
+     1.8994,
+     "2016-02-08"
+    ],
+    "was": [
+     50.11,
+     14.42,
+     11.96,
+     9.5,
+     1.95,
+     "2016-02-08"
+    ],
+    "src": "bseaspx:504973:88+nseresults:1004683",
+    "why": "\u00a7164p seam-quarter base (2026-09-27): BSE's Dec-2015 page (qtrid 88) prints percentages of 182,462,328 shares \u2014 it leaves out 4,856,594 shares that the Sep-2015 page (187,218,922, block C 4,830,630) and the company's paid-up capital still count (NSE original results filings: Sep-2015 #1002834 paid-up 3744.0, 2015-12-31 #1004683 paid-up 3746.0, face value 2.0). The company is on the FULL-count basis (D2 / \u00a7164a) and its stored Sep-2015 and Jun-2016 cells are on it, so every slot is re-expressed on the documented count 187,318,922 (\u00b1 50,000 shares, the filings' rounding): x 0.974073."
+   },
+   "2016-03-31": {
+    "cell": [
+     48.7973,
+     14.7543,
+     11.1169,
+     8.9813,
+     1.648,
+     "2016-04-22"
+    ],
+    "was": [
+     50.04,
+     15.13,
+     11.4,
+     9.21,
+     1.69,
+     "2016-04-22"
+    ],
+    "src": "bseaspx:504973:89+nseresults:1006631",
+    "why": "\u00a7164p seam-quarter base (2026-09-27): BSE's Mar-2016 page (qtrid 89) prints percentages of 182,715,907 shares \u2014 it leaves out 4,653,015 shares that the Sep-2015 page (187,218,922, block C 4,830,630) and the company's paid-up capital still count (NSE original results filings: Sep-2015 #1002834 paid-up 3744.0, 2016-03-31 #1006631 paid-up 3747.0, face value 2.0). The company is on the FULL-count basis (D2 / \u00a7164a) and its stored Sep-2015 and Jun-2016 cells are on it, so every slot is re-expressed on the documented count 187,368,922 (\u00b1 50,000 shares, the filings' rounding): x 0.975167."
    }
   },
   "TVSSRICHAK": {
@@ -274061,6 +274901,26 @@
     ],
     "src": "bseaspx:532351_67",
     "why": "\u00a7164g page-era re-read of a former Nifty 500 member (2026-09-26; \u00a7160 rules \u2014 DII = Institutions(Domestic), FII = Institutions(Foreign) in every format): fii 0.93 -> 1.41, dii 0.00 -> 0.00. noninst-fii Foreign Banks 0.48. Evidence: _shp_164_audit.json"
+   },
+   "2015-12-31": {
+    "cell": [
+     29.7554,
+     0.0497,
+     1.4997,
+     0.1291,
+     0.0,
+     "2016-02-04"
+    ],
+    "was": [
+     29.96,
+     0.05,
+     1.51,
+     0.13,
+     0.0,
+     "2016-02-04"
+    ],
+    "src": "bseaspx:532351:88+nseresults:1005534",
+    "why": "\u00a7164p seam-quarter base (2026-09-27): BSE's Dec-2015 page (qtrid 88) prints percentages of 161,553,960 shares \u2014 it leaves out 1,111,056 shares that the Sep-2015 page (157,109,816, block C 1,111,110) and the company's paid-up capital still count (NSE original results filings: Sep-2015 #1003898 paid-up 7855.49, 2015-12-31 #1005534 paid-up 8133.25, face value 5.0). The company is on the FULL-count basis (D2 / \u00a7164a) and its stored Sep-2015 and Jun-2016 cells are on it, so every slot is re-expressed on the documented count 162,665,016 (\u00b1 200 shares, the filings' rounding): x 0.993170."
    }
   },
   "ALEMBICLTD": {
@@ -282218,6 +283078,28 @@
     "src": "bseaspx:532628_79",
     "why": "\u00a7164o page-era re-read of an OLD-ticker store key (never re-read) (2026-09-27; \u00a7160 rules \u2014 DII = Institutions(Domestic), FII = Institutions(Foreign) in every format): fii 0.12 -> 6.86, dii 55.27 -> 48.53. dii-block-out Foreign Bank 6.74 stored dii held the institutional Any-Others block; this fii sub-row is not a domestic institution; inst-sub-fii Foreign Bank 6.74. Evidence: _shp_164_audit.json"
    }
+  },
+  "ESSAROIL": {
+   "2015-12-31": {
+    "cell": [
+     31.5358,
+     0.3337,
+     0.0,
+     0.0,
+     0.0,
+     "2016-02-03"
+    ],
+    "was": [
+     91.68,
+     0.97,
+     0.0,
+     0.0,
+     0.0,
+     "2016-02-03"
+    ],
+    "src": "bseaspx:500134:88+nseresults:1005156",
+    "why": "\u00a7164p seam-quarter base (2026-09-27): BSE's Dec-2015 page (qtrid 88) prints percentages of 499,204,505 shares \u2014 it leaves out 952,069,893 shares that the Sep-2015 page (1,450,124,398, block C 951,463,854) and the company's paid-up capital still count (NSE original results filings: Sep-2015 #1003077 paid-up 144952.0, 2015-12-31 #1005156 paid-up 145067.0, face value 10.0). The company is on the FULL-count basis (D2 / \u00a7164a) and its stored Sep-2015 and Jun-2016 cells are on it, so every slot is re-expressed on the documented count 1,451,274,398 (\u00b1 10,000 shares, the filings' rounding): x 0.343977."
+   }
   }
  },
  "retired": {
@@ -282885,6 +283767,193 @@
      "2016-04-21"
     ],
     "why": "\u00a7156 2026-09-24: Trendlyne seam fill held \u2014 the page's unlabelled Any-Other institutional row (RELIANCE 12.75 pp / 791 holders = the legacy FII registrations) was routed to dii by the seam formula; the independent reader shows FII 5-13 pp higher. The cell is a partial reading, not a filing: absent until BSE's Mar-2016 page can be read (api 403 since 23-Sep)."
+   }
+  },
+  "AGRODUTCH": {
+   "2015-12-31": {
+    "was": [
+     74.87,
+     8.59,
+     6.53,
+     6.51,
+     0.0,
+     "2016-02-10"
+    ],
+    "why": "\u00a7164p wrong-company cell (2026-09-27): this Wayback-sourced value (wb:20160206010818:agrodutchindustries:approx+21d;UNVERIFIED-) equals PRSMJOHNSN's own 2015-12-31 pattern slot for slot ([74.87, 8.59, 6.53, 6.51]) \u2014 the captured page had redirected to that company. BSE has a filing for this quarter but its page could not be read inside the gates (seam page lump 5.47 with no FII category row (named holders alone under-count)), so the wrong value is retracted, not estimated."
+   },
+   "2016-03-31": {
+    "was": [
+     74.87,
+     9.61,
+     6.41,
+     6.4,
+     0.0,
+     "2016-04-20"
+    ],
+    "why": "\u00a7164p wrong-company cell (2026-09-27): this Wayback-sourced value (wb:20160513182644:agrodutchindustries:approx+21d;UNVERIFIED-) equals PRSMJOHNSN's own 2016-03-31 pattern slot for slot ([74.87, 9.61, 6.41, 6.4]) \u2014 the captured page had redirected to that company. BSE has a filing for this quarter but its page could not be read inside the gates (seam page lump 5.47 with no FII category row (named holders alone under-count)), so the wrong value is retracted, not estimated."
+   }
+  },
+  "ESSAROIL": {
+   "2016-03-31": {
+    "was": [
+     74.87,
+     9.61,
+     6.41,
+     6.4,
+     0.0,
+     "2016-04-21"
+    ],
+    "why": "\u00a7164p wrong-company cell (2026-09-27): this Wayback-sourced value (wb:20160415232748:essaroil:approx+21d;UNVERIFIED-split;UNVER) equals PRSMJOHNSN's own 2016-03-31 pattern slot for slot ([74.87, 9.61, 6.41, 6.4]) \u2014 the captured page had redirected to that company. BSE lists no shareholding filing for ESSAROIL (code 500134) for this quarter, so the cell is retracted."
+   }
+  },
+  "FIRSTLEASE": {
+   "2015-12-31": {
+    "was": [
+     74.87,
+     8.59,
+     6.53,
+     6.51,
+     0.0,
+     "2016-01-21"
+    ],
+    "why": "\u00a7164p wrong-company cell (2026-09-27): this Wayback-sourced value (wb:20160326105620:firstleasingcompanyindia:approx+21d;UNVERI) equals PRSMJOHNSN's own 2015-12-31 pattern slot for slot ([74.87, 8.59, 6.53, 6.51]) \u2014 the captured page had redirected to that company. BSE lists no shareholding filing for FIRSTLEASE (code None) for this quarter, so the cell is retracted."
+   },
+   "2016-03-31": {
+    "was": [
+     74.87,
+     9.61,
+     6.41,
+     6.4,
+     0.0,
+     "2016-04-21"
+    ],
+    "why": "\u00a7164p wrong-company cell (2026-09-27): this Wayback-sourced value (wb:20160423224913:firstleasingcompanyindia:approx+21d;UNVERI) equals PRSMJOHNSN's own 2016-03-31 pattern slot for slot ([74.87, 9.61, 6.41, 6.4]) \u2014 the captured page had redirected to that company. BSE lists no shareholding filing for FIRSTLEASE (code None) for this quarter, so the cell is retracted."
+   }
+  },
+  "LITL": {
+   "2016-03-31": {
+    "was": [
+     74.87,
+     9.61,
+     6.41,
+     6.4,
+     0.0,
+     "2016-04-20"
+    ],
+    "why": "\u00a7164p wrong-company cell (2026-09-27): this Wayback-sourced value (wb:20160515232419:lancoinfratech:approx+21d) equals PRSMJOHNSN's own 2016-03-31 pattern slot for slot ([74.87, 9.61, 6.41, 6.4]) \u2014 the captured page had redirected to that company. BSE has a filing for this quarter but its page could not be read inside the gates (seam page lump 4.06 with no FII category row (named holders alone under-count)), so the wrong value is retracted, not estimated."
+   }
+  },
+  "POLARIS": {
+   "2016-03-31": {
+    "was": [
+     74.87,
+     9.61,
+     6.41,
+     6.4,
+     0.0,
+     "2016-05-13"
+    ],
+    "why": "\u00a7164p wrong-company cell (2026-09-27): this Wayback-sourced value (wb:20160513214644:polarisconsultingservices:approx+21d) equals PRSMJOHNSN's own 2016-03-31 pattern slot for slot ([74.87, 9.61, 6.41, 6.4]) \u2014 the captured page had redirected to that company. BSE has a filing for this quarter but its page could not be read inside the gates (seam page lump 81.21 with no FII category row (named holders alone under-count)), so the wrong value is retracted, not estimated."
+   }
+  },
+  "RANBAXY": {
+   "2016-03-31": {
+    "was": [
+     74.87,
+     9.61,
+     6.41,
+     6.4,
+     0.0,
+     "2016-04-21"
+    ],
+    "why": "\u00a7164p wrong-company cell (2026-09-27): this Wayback-sourced value (wb:20160608222239:ranbaxylaboratories:approx+21d;UNVERIFIED-) equals PRSMJOHNSN's own 2016-03-31 pattern slot for slot ([74.87, 9.61, 6.41, 6.4]) \u2014 the captured page had redirected to that company. BSE lists no shareholding filing for RANBAXY (code None) for this quarter, so the cell is retracted."
+   }
+  },
+  "SAMTEL": {
+   "2015-12-31": {
+    "was": [
+     74.87,
+     8.59,
+     6.53,
+     6.51,
+     0.0,
+     "2016-01-21"
+    ],
+    "why": "\u00a7164p wrong-company cell (2026-09-27): this Wayback-sourced value (wb:20160207020847:samtelcolour:approx+21d;UNVERIFIED-split;U) equals PRSMJOHNSN's own 2015-12-31 pattern slot for slot ([74.87, 8.59, 6.53, 6.51]) \u2014 the captured page had redirected to that company. BSE has a filing for this quarter but its page could not be read inside the gates (seam page lump 4.94 with no FII category row (named holders alone under-count)), so the wrong value is retracted, not estimated."
+   },
+   "2016-03-31": {
+    "was": [
+     74.87,
+     9.61,
+     6.41,
+     6.4,
+     0.0,
+     "2016-05-12"
+    ],
+    "why": "\u00a7164p wrong-company cell (2026-09-27): this Wayback-sourced value (wb:20160530010236:samtelcolour:approx+21d;UNVERIFIED-split;U) equals PRSMJOHNSN's own 2016-03-31 pattern slot for slot ([74.87, 9.61, 6.41, 6.4]) \u2014 the captured page had redirected to that company. BSE has a filing for this quarter but its page could not be read inside the gates (seam page lump 4.90 with no FII category row (named holders alone under-count)), so the wrong value is retracted, not estimated."
+   }
+  },
+  "SHREEASHTA": {
+   "2014-09-30": {
+    "was": [
+     74.87,
+     3.76,
+     7.95,
+     7.95,
+     0.0,
+     "2014-10-21"
+    ],
+    "why": "\u00a7164p wrong-company cell (2026-09-27): this Wayback-sourced value (wb:20150630090424:shreeashtavinayakcinevision:approx+21d) equals PRSMJOHNSN's own 2014-09-30 pattern slot for slot ([74.87, 3.76, 7.95, 7.95]) \u2014 the captured page had redirected to that company. BSE lists no shareholding filing for SHREEASHTA (code None) for this quarter, so the cell is retracted."
+   }
+  },
+  "UTVSOF": {
+   "2015-12-31": {
+    "was": [
+     74.87,
+     8.59,
+     6.53,
+     6.51,
+     0.0,
+     "2016-01-21"
+    ],
+    "why": "\u00a7164p wrong-company cell (2026-09-27): this Wayback-sourced value (wb:20160412092153:utvsoftwarecommunications:approx+21d;UNVER) equals PRSMJOHNSN's own 2015-12-31 pattern slot for slot ([74.87, 8.59, 6.53, 6.51]) \u2014 the captured page had redirected to that company. BSE lists no shareholding filing for UTVSOF (code None) for this quarter, so the cell is retracted."
+   }
+  },
+  "WYETH": {
+   "2015-12-31": {
+    "was": [
+     74.87,
+     8.59,
+     6.53,
+     6.51,
+     0.0,
+     "2016-01-21"
+    ],
+    "why": "\u00a7164p wrong-company cell (2026-09-27): this Wayback-sourced value (wb:20160207090127:wyeth:approx+21d;UNVERIFIED-split;UNVERIFI) equals PRSMJOHNSN's own 2015-12-31 pattern slot for slot ([74.87, 8.59, 6.53, 6.51]) \u2014 the captured page had redirected to that company. BSE lists no shareholding filing for WYETH (code None) for this quarter, so the cell is retracted."
+   },
+   "2016-03-31": {
+    "was": [
+     74.87,
+     9.61,
+     6.41,
+     6.4,
+     0.0,
+     "2016-04-21"
+    ],
+    "why": "\u00a7164p wrong-company cell (2026-09-27): this Wayback-sourced value (wb:20160530191334:wyeth:approx+21d;UNVERIFIED-split;UNVERIFI) equals PRSMJOHNSN's own 2016-03-31 pattern slot for slot ([74.87, 9.61, 6.41, 6.4]) \u2014 the captured page had redirected to that company. BSE lists no shareholding filing for WYETH (code None) for this quarter, so the cell is retracted."
+   }
+  },
+  "SBT": {
+   "2015-12-31": {
+    "was": [
+     79.0893,
+     0.8948,
+     2.0112,
+     1.0093,
+     0.1167,
+     "2016-01-21"
+    ],
+    "why": "\u00a7164p repair of a \u00a7164l seam fill (2026-09-27): fii add 0.8848 exceeds the page's institutional Any-Others block 0.00 and no category row equals the block \u2014 the fill is retracted (held), the quarter stays unread."
    }
   }
  }

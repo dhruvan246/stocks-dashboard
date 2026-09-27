@@ -3,7 +3,8 @@
 fii 0 beside the neighbours). Cell = fetch_shp_bse_aspx.cell_of's own reading of the page (promoter, dii, mf, ins, holders)
 with fii replaced by the §160 seam reconstruction (_shp_aspx_rowfix.reconstruct: the page's standard foreign rows + the
 >1% holders table's FII/FPI lump or its FII/FPI-prefixed / documented-foreign named holders). Accepted only inside the
-neighbouring stored quarters' range +- 3 pp; everything else is held, never estimated.
+neighbouring stored quarters' range +- 3 pp; everything else is held, never estimated. §164p (2026-09-27): the shares moved
+to fii are taken out of dii (_shp_164p_seam_base.seam_correct) — the first run left them in both (13 cells repaired by cell_fix).
 Transport: scripts/bse_headers.py (honest headers). Stages (work dir argv[2]):
   fetch <work> <holes.json>   the >1% holders tables (shpperent.aspx) for qtrid 88 AND 89 of each hole's company, cached
   parse <work> <holes.json>   offline: cell_of (CACHE_ONLY, no neighbour gate) + reconstruct -> proposals.json / held.json;
@@ -69,7 +70,11 @@ def parse(work, holes):
         kinds={e[0] for e in r["ev"]}
         if not (r["lumps"]<0.05 or "lump-fii" in kinds or r.get("whole_block")):
             held["%s|%s"%(s,qe)]="incomplete: page lump %.2f with no FII category row in the >1%% table (named holders only would under-count; t_fii %.2f)"%(r["lumps"],r["t_fii"]); continue
-        new=list(cell); new[1]=round(r["t_fii"],4); new[7]=str(new[7])+"+seam164l"
+        # §164p: take the shares moved to fii OUT of dii (cell_of's dii already holds the institutional Any-Others block)
+        from _shp_164p_seam_base import seam_correct
+        new,why=seam_correct(list(cell),r,gzip.open(os.path.join(work,"aspx_pages","%d_%d.html.gz"%(code,q)),"rt",encoding="utf-8").read())
+        if new is None: held["%s|%s"%(s,qe)]="seam_correct: %s"%why; continue
+        new[7]=str(new[7])+"+seam164l"
         props.setdefault(s,{})[qe]=new
         props[s][qe+"#ev"]=[str(e) for e in r["ev"]][:12]
     json.dump(props,open(os.path.join(work,"proposals.json"),"w"),indent=1); json.dump(held,open(os.path.join(work,"held.json"),"w"),indent=1)
