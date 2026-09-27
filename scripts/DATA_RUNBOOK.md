@@ -22585,3 +22585,34 @@ set FUND by hand now also set FUNDM (grid_search*.js from docs/, grid_search_meg
 XBRL does not) — its TTM windows that need them stay blank. Per-basis marks (a row whose two bases prove different lengths
 stays unmarked — VIVIANA Mar-2026). The engines' TTM ends at each basis's latest visible row and the page's at the latest
 row on file (unchanged convention; they differ only where the data differs, above).
+
+**§197a — LANDED + verified live (2026-09-27 18:53 → 19:35 IST).**
+- ⚠️ **A key retraction must re-key the fill/heal LEDGERS in the same push.** The store retraction (0c474bf44) left 14
+  ledger entries journalling the removed keys (`mc_history_fills` CREATIVE ×8 = Moneycontrol sc_id CPD, Creative Newtech;
+  `pat_defects` + `stdpat_mirror_heals` WORTH ×3 each = Worth Peripherals' std PAT 3.15/7.24/4.07). `verify_fills_live.py`
+  read them MISSING — and it is BLOCKING in refresh-fundamentals, so the next 30-min run would have refused to commit. The
+  pre-commit hook printed it (non-blocking); fixed in d387e9af9 three minutes before the 19:01 run (which went green):
+  `retract_bse_alias_collision_rows.py` step 4 re-keys every ledger verify_fills_live registers (LEDGERS + BASIS_KEYED +
+  NESTED) + stdpat_adjud_verdicts → 9 re-keyed, 6 marked skip where CNL already journals the same cell. MISSING 0.
+- Tape: the push of update_sf_data.py triggered refresh-backtest-data (run 36322231891): `MANUAL RENAME MERGE WORTH ->
+  WORTHPERI (499 pts, adj=1.0000)`, `CREATIVE -> CNL (331 pts)`, release asset re-published, sf-data rev bff178d816,
+  nTot 5260 → 5258. Live: stk/WORTH = "Worth Investment & Trading Co Ltd" alive 2020-01-06 → 2026-09-25 ₹3.28 (BSE
+  slice); stk/CREATIVE = Creative Castings; WORTHPERI now starts 2017-09-27 (carries INE196Y01018), CNL 2017-04-12. The same
+  local run twice on the release asset: only those 2 keys removed / 2 series changed, the second run changed 0 series.
+- Live stock.html?sym=WORTH: no redirect, Worth Investment's 24 own quarters (fin slice rebuilt by CI 18:54); GUJGASLTD
+  still redirects to GUJENERGY; WORTHPERI shows 24 XBRL-detail quarters (was 4). 20 min later: none of the 5 keys back in
+  any store on origin or live. The Yahoo live quote for WORTH.NS / CREATIVE.NS / HSIL.NS / SHREE.NS / ARL.NS answers 502
+  (no data) — no other company's LTP can reach these pages (the console 502 is the no-quote path every BSE-only page takes).
+- Shareholding (private worktree ~/stocks-wt/shp-worth): the BSE pass had never fetched Worth Investment's filings — the
+  download skip (`fam = {sym} | relatives(sym)`) and the build's "stored under a former ticker" both saw WORTHPERI's quarters
+  through the rename edges. `load_inputs` now drops rename edges on ledger keys. `bse --codes [538451] --cap 40`: 25 files /
+  25 requests / 0 refusals. `build`: 57,484 committed cells identical (0 lost / 0 changed), +26 = WORTH 2020-03 → 2026-06
+  (all proven-zero FII/DII, id note "NSE ticker WORTH is another company outside the dashboard"), holds 269 → 268,
+  revisions 615 = 615. `--apply-ledgers`: shp_history / shares_history / shareholding.json / shp_engine.json gained ONLY
+  WORTH (0 existing cells changed); second apply: shp_history + shares_history byte-identical, the two feeds content-
+  identical (shareholding.json `updated` stamp; shp_engine key order is not deterministic). Guards gate / definition /
+  revisions / feed OK. Pages vs a baseline from the same main: only WORTH.json changes (+shp/shpQ/shpH), 6,592 identical.
+  Raw filings read directly: Jun-2026 ScripCode 538451, "Worth Investment & Trading Co Ltd", promoter 0.5711, holders
+  14,481; Dec-2022 promoter 54.61, holders 698 — the older filings carry ISIN INE114O01012, later ones INE114O01020.
+- Still open: Worth Investment's own Jun-22..Jun-23 XBRL (rounding "Lakhs", revenue tag 858,365,000 = 85.84 cr beside
+  ~0.5-1.4 cr quarters, paid-up capital tag 633,000,000,000) needs a §184 adjudication — shown on its page as filed.
