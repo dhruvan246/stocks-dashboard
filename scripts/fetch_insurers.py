@@ -149,7 +149,11 @@ def _tv(w):
         return None
 
 
-def datebound(o, code, lo, hi):
+def datebound(o, code, lo, hi, with_headline=False):
+    """Result filings for `code` in [lo, hi]: [(YYYYMMDD, attachment, text)], newest first. text is the
+    NEWSSUB; with_headline=True appends the HEADLINE, which is often the only field naming the period
+    (RANJITSE 2026-05-31: NEWSSUB 'Results Financial Year 31-03-2026', HEADLINE '…quarter and year ended
+    31.03.2026') — without it the date matcher preferred a later re-submission that did name it."""
     out = []
     for pg in range(1, 4):
         u = ("https://api.bseindia.com/BseIndiaAPI/api/AnnSubCategoryGetData/w?pageno=%d&strCat=-1"
@@ -161,7 +165,12 @@ def datebound(o, code, lo, hi):
         for r in rows:
             if is_result_filing(r) and r.get("ATTACHMENTNAME"):
                 a = re.sub(r"[^0-9]", "", (r.get("NEWS_DT") or ""))[:8]
-                out.append((int(a) if a else 0, r["ATTACHMENTNAME"], r.get("NEWSSUB", "") or ""))
+                txt = r.get("NEWSSUB", "") or ""
+                if with_headline:
+                    txt = txt + " | " + (r.get("HEADLINE", "") or "")
+                    if (r.get("SUBCATNAME", "") or "").strip().lower() == "financial results":
+                        txt += " [[FR]]"            # BSE filed it under Financial Results (see backfill resolve)
+                out.append((int(a) if a else 0, r["ATTACHMENTNAME"], txt))
         if len(rows) < 50:
             break
     return sorted(set(out), reverse=True)

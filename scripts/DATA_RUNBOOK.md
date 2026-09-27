@@ -22052,3 +22052,22 @@ Mar-25 kept, Mar-26 left out with the note; RELIANCE every tab + cards identical
   BSE SME half-years are stored as quarters without `h=1` (AAYUSHBULL, SUPERSHAKT, DHARNI, MAIDEN rows). Not fixed here.
 - The TTM cards (`renderFunds` `window4`) and both backtest engines still add four rows that can include a half-year
   (QMSMEDI / ZEAL-type dual filers). Not touched.
+## §192 — REAL FILING DATES FOR THE 1,805 MAR-2026 BSE CELLS §187 CLEARED (2026-09-27, user: "yes run the backfill for the march dates")
+`backfill_ann_dates_bse.py --bse [--qe Q] [--only scrips] [--reapply]` — BSE-only mode over docs/bse_fundamentals.json
+(keyed by scrip; own ledger **scripts/ann_date_fills_bse.json**, skips `_ann_date_skips_bse.json`), fill-only on ann==0.
+Result: **1,809 Mar-2026 dates** (exact 1,655 · seq 150 · exact-fr 4); 7 left 0 (6 other-period, 1 ambiguous);
+all dates Apr-Aug 2026, none after the company's own Jun-2026 filing. Hand-checked: 514326 05-26, 531802 05-08,
+531380 05-30, RANJITSE 05-31, AJWAFUN 05-29, 542938 05-28, 526899/539519 05-30, 512618 05-27, 522235 06-04.
+**Four defects found on the way (all fixed):**
+1. The fill mode asked BSE for a window ending 240 days after the quarter — after TODAY for any recent quarter; BSE
+   answers `{"Status":false,"Message":"To Date cannot be greater than current Date."}`, the empty-streak guard then
+   aborted as "rate-limiting". Windows are capped at today (IST) in both modes.
+2. `datebound` passed only NEWSSUB, but the HEADLINE is often the only field naming the period, so a later
+   re-submission that named it won (RANJITSE 09-01 vs real 05-31, AJWAFUN 09-12 vs 05-29).
+   `datebound(..., with_headline=True)` (default off — other callers unchanged).
+3. A first declaration after the NEXT quarter's filing is a re-submission → `resolve()` drops such exact dates
+   (applies to the NSE mode too).
+4. "Result Financial For 31.03.2026" is unreadable to parse_qe (numeric "for dd.mm.yyyy" is deliberately not an
+   anchor — a meeting date reads the same). `exact-fr`: an earlier filing BSE itself filed under "Financial Results",
+   naming no period, in the band before the first period-naming one, wins — unless it is a postponement/intimation
+   notice (522235 05-29 "Intimation relating to Postponement of Board meeting").
