@@ -114,7 +114,7 @@
           <span class="vbtn on" data-u="all">All</span>
           <span class="vbtn" data-u="fno">F&amp;O</span>
           <span class="vbtn" data-u="n500">Nifty 500</span>
-          <span class="vbtn" data-u="sme" title="NSE SME platform (Emerge) listings only">SME</span>
+          <span class="vbtn" data-u="sme" title="SME platform listings — NSE Emerge + BSE SME">SME</span>
         </div>
       </div>
       <div class="flex flex-col gap-1.5">
@@ -182,7 +182,7 @@
     </div>
 
     <p class="text-[11px] text-slate-500 mt-4 leading-relaxed">
-      <b>Change %</b> is measured on split/bonus-adjusted closes (dividends are not adjusted — the ex-dividend drop counts as a move, as on NSE, Moneycontrol and Screener): <b>1D</b> = latest close vs the previous trading close, <b>1W/1M/3M/6M/1Y</b> = latest close vs the adjusted close roughly 7 / 30 / 91 / 182 / 365 calendar days earlier (a stock listed more recently than that is left out of the window). <b>1D–6M</b> paint instantly from the slim recent feed (~8 months); picking <b>1Y</b> loads the full price history once. <b>From 52W high / low</b> compares the latest close to the stock's own highest / lowest close in the trailing year (blank until a stock has a full year of history). <b>SME</b> = NSE SME platform (Emerge) listings only; picking it switches the liquidity floor to "Include micro-caps" since most SME names are below ₹100 Cr. Market-cap bands: <b>Large</b> ≥ ₹20,000 Cr, <b>Mid</b> ₹5,000–20,000 Cr, <b>Small</b> &lt; ₹5,000 Cr. The <b>liquidity floor</b> hides tiny illiquid tickers by minimum market cap (this feed doesn't carry intraday turnover, so we gate on size rather than a rupee-turnover floor). Prices are end-of-day from official NSE bhavcopies. Educational only — not investment advice.
+      <b>Change %</b> is measured on split/bonus-adjusted closes (dividends are not adjusted — the ex-dividend drop counts as a move, as on NSE, Moneycontrol and Screener): <b>1D</b> = latest close vs the previous trading close, <b>1W/1M/3M/6M/1Y</b> = latest close vs the adjusted close roughly 7 / 30 / 91 / 182 / 365 calendar days earlier (a stock listed more recently than that is left out of the window). <b>1D–6M</b> paint instantly from the slim recent feed (~8 months); picking <b>1Y</b> loads the full price history once. <b>From 52W high / low</b> compares the latest close to the stock's own highest / lowest close in the trailing year (blank until a stock has a full year of history). <b>SME</b> = SME-platform listings on both exchanges — NSE Emerge and BSE SME (BSE groups M / MT, the stocks behind the BSE SME IPO index); each row says which; picking it switches the liquidity floor to "Include micro-caps" since most SME names are below ₹100 Cr. Market-cap bands: <b>Large</b> ≥ ₹20,000 Cr, <b>Mid</b> ₹5,000–20,000 Cr, <b>Small</b> &lt; ₹5,000 Cr. The <b>liquidity floor</b> hides tiny illiquid tickers by minimum market cap (this feed doesn't carry intraday turnover, so we gate on size rather than a rupee-turnover floor). Prices are end-of-day from official NSE bhavcopies; BSE-only names (.BO) are priced from their BSE listing. Educational only — not investment advice.
     </p>
   </div>
 </main>
@@ -200,6 +200,16 @@ const inr2 = n => n == null ? '—' : Number(n).toLocaleString('en-IN', { minimu
 let META = {}, SERIES = {}, START_TS = 0, END_TS = 0, END_OFF = 0;
 let FNO = new Set(), N500 = new Set();
 let FULL_LOADED = false, FULL_LOADING = null;
+// BSE SME platform names (.BO keys) — BSE groups M / MT in bse_universe.json; the whole BSE SME IPO index sits in
+// these groups (measured 2026-09-27: 160/160). Loaded only when the SME universe is first picked.
+let BSE_SME = new Set(), BSE_SME_LOADING = null;
+async function ensureBseSme(){
+  if (!BSE_SME_LOADING) BSE_SME_LOADING = fetch('./bse_universe.json').then(r => r.json()).then(U => {
+    BSE_SME = new Set((U.rows || []).filter(r => r[4] === 'M' || r[4] === 'MT').map(r => r[1] + '.BO'));
+  }).catch(e => { BSE_SME_LOADING = null; throw e; });
+  await BSE_SME_LOADING;
+}
+const isSme = tkr => !!(META[tkr] && META[tkr].sme) || BSE_SME.has(tkr);
 
 let W = '1D', UNIV = 'all', CAP = 'all', SECTOR = 'all', FLOOR = 100, TAB = 'gain', SORT_KEY = 'changePercent', SORT_DIR = -1;
 let ROWS = [];       // last computed rows (all stocks passing universe/cap/sector/floor)
@@ -258,7 +268,7 @@ function compute(){
     const base = tkr.endsWith('.NS') ? tkr.slice(0, -3) : tkr;
     if (UNIV === 'fno'  && !FNO.has(base)) continue;
     if (UNIV === 'n500' && !N500.has(base)) continue;
-    if (UNIV === 'sme'  && !m.sme) continue;       // NSE SME platform flag from dash_slim meta (runbook §145)
+    if (UNIV === 'sme'  && !isSme(tkr)) continue;  // NSE SME (meta.sme, runbook §145) + BSE SME (groups M/MT)
     const indKey = (m.industry && m.industry.trim()) || m.sector || 'Uncategorized';
     if (SECTOR !== 'all' && indKey !== SECTOR) continue;
 
@@ -339,7 +349,7 @@ function cmp(a,b){
 function render(){
   const v = currentView();
   const tb = $('tBody');
-  const MAX = UNIV === 'sme' ? 1000 : 300;   // SME view lists every SME name (~570) so the whole platform sits on one page
+  const MAX = UNIV === 'sme' ? 2000 : 300;   // SME view lists every SME name (NSE ~570 + BSE ~500) on one page
   const show = v.slice(0, MAX);
   if (!show.length){ tb.innerHTML = '<tr><td colspan="9" class="text-center text-slate-400 py-14 text-sm">No stocks match these filters.</td></tr>'; }
   else {
@@ -353,7 +363,7 @@ function render(){
       out.push(
         '<tr data-tkr="'+esc(r.tkr)+'">'+
         '<td class="l rk">'+(i+1)+'</td>'+
-        '<td class="l"><div class="sym">'+esc(r.symbol)+'</div><div class="nm">'+esc(r.name||'')+'</div></td>'+
+        '<td class="l"><div class="sym">'+esc(r.symbol)+'</div><div class="nm">'+esc(r.name||'')+(UNIV==='sme' ? ' · '+(r.tkr.endsWith('.BO')?'BSE':'NSE')+' SME' : '')+'</div></td>'+
         '<td class="hide-sm">'+inlineSparkline(r.ser, up)+'</td>'+
         '<td>'+inr2(r.toPrice)+'</td>'+
         '<td><span class="chg '+chgCls+'">'+arw+' '+sgn+r.changePercent.toFixed(2)+'%</span></td>'+
@@ -432,7 +442,11 @@ async function setWindow(w){
 /* ---------- events ---------- */
 function wire(){
   $('fWindow').addEventListener('click', e => { const b = e.target.closest('.vbtn'); if (b) setWindow(b.dataset.w); });
-  $('fUniv').addEventListener('click', e => { const b = e.target.closest('.vbtn'); if (!b) return;
+  $('fUniv').addEventListener('click', async e => { const b = e.target.closest('.vbtn'); if (!b) return;
+    if (b.dataset.u === 'sme'){
+      try { await ensureBseSme(); }
+      catch(err){ $('rowCount').textContent = 'BSE SME list did not load — showing NSE SME only'; }
+    }
     UNIV = b.dataset.u; document.querySelectorAll('#fUniv .vbtn').forEach(x=>x.classList.toggle('on',x===b));
     // SME names are mostly below the ₹100 Cr default floor — drop the floor so the SME view shows them all
     if (UNIV === 'sme' && FLOOR > 0){ FLOOR = 0; $('fFloor').value = '0'; }
