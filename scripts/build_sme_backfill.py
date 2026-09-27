@@ -204,6 +204,13 @@ def ca_factor(r):
         if abs(r / f - 1) <= 0.08: return f
     return 1.0
 
+def _chain(s, m):
+    """Follow an old -> new rename map to the end of the chain (cycle-safe)."""
+    seen = {s}
+    while s in m and m[s] not in seen:
+        s = m[s]; seen.add(s)
+    return s
+
 def load_cache():
     """-> (days: [(ymd, obj)] in date order, misdirects, dupes). A file whose inside date differs
     from its URL date is NSE re-serving another session (§89f) and is dropped; an exact repeat of
@@ -283,6 +290,10 @@ def build(bin_path):
     D = json.loads(gzip.decompress(open(bin_path, "rb").read()))
     data, meta = D["data"], D["meta"]
     bin_isin = {m.get("isin"): k for k, m in meta.items() if isinstance(m, dict) and m.get("isin")}
+    try:
+        rename = json.load(open(os.path.join(HERE, "_rename_map.json"), encoding="utf-8"))   # NSE old -> new symbol
+    except Exception as e:
+        rename = {}; print("  (_rename_map.json unavailable: %s — successors found by key/ISIN only)" % e)
     bin_end = int(D["end"].replace("-", ""))
     print("bin: %s end=%s symbols=%d" % (os.path.basename(bin_path), D["end"], len(data)), flush=True)
     names = names_from_nse_lists()
@@ -297,7 +308,11 @@ def build(bin_path):
         if not obs: stats["empty"] += 1; continue
         # --- adjusted series, build_sf_data.main's loop -----------------------------------
         ds, cs, ts, hr, lr, orr, vol, dv, vr = [], [], [], [], [], [], [], [], []
-        adj = None; offlist = CA_OFF.get(sym, []); oi = 0; applied = inferred = 0
+        # §197: NSE files a renamed security's corporate actions under its CURRENT symbol — CREATIVE's official
+        # 2019-06-25 x0.5 sits under CNL — so the SME era also reads the rename successor's list (a factor still
+        # applies only where the day's own close ratio matches it, below)
+        offlist = CA_OFF.get(sym) or CA_OFF.get(_chain(sym, rename)) or []
+        adj = None; oi = 0; applied = inferred = 0
         while oi < len(offlist) and offlist[oi][0] <= obs[0][0]: oi += 1
         for i, (ymd, c, p, t, h, l, o, v, dlv, vw) in enumerate(obs):
             if adj is None:
@@ -334,6 +349,13 @@ def build(bin_path):
         stats["ca_official"] += applied; stats["ca_inferred"] += inferred
         # --- where does it go? ------------------------------------------------------------
         target = sym if sym in data else (bin_isin.get(isin) if isin else None)
+        if target is None and rename.get(sym):
+            # §197: the successor's bin meta often carries NO isin and NSE may have renamed it since the migration
+            # (WORTH SM -> WORTH EQ 2020-08-04 -> WORTHPERI 2025-10-10), so neither test above finds it and the SME
+            # era was CREATED as a key of its own — which then shadowed an unrelated BSE company trading as WORTH.
+            # Follow NSE's own rename chain; the PREV_CLOSE exit control below still adjudicates the join.
+            t2 = _chain(sym, rename)
+            if t2 in data: target = t2
         if target is None:
             nm = names.get(sym, (sym, ""))
             ledger["create"][sym] = {"bars": bars, "meta": {"name": nm[0], "isin": isin or nm[1], "ind": "Unknown", "sme": True,
@@ -341,6 +363,8 @@ def build(bin_path):
             stats["create"] += 1; stats["create_bars"] += len(bars); continue
         e = data[target]; F = e["d"][0]
         t_isin = (meta.get(target) or {}).get("isin")
+        if target != sym and t_isin and isin and t_isin[:7] != isin[:7]:
+            stats["recycled_key"] += 1; reasons.append("%s->%s: rename target holds ISIN %s, SME rows carry %s — different issuer, skipped" % (sym, target, t_isin, isin)); continue
         if target == sym and t_isin and isin and t_isin != isin:
             # Same ISSUER prefix (isin[:7], the §95 sweep's grouping) = the same company whose
             # face-value change minted a new security series (AAKASH INE087Z01016 -> ...024 at
@@ -352,7 +376,9 @@ def build(bin_path):
             print("  %s: ISIN %s -> %s within issuer %s (face-value change at the seam) — joined on PREV_CLOSE" % (sym, isin, t_isin, isin[:7]))
         if bars[-1][0] >= F:
             stats["overlap"] += 1; reasons.append("%s->%s: ledger runs to %d but bin starts %d — overlap, skipped" % (sym, target, bars[-1][0], F)); continue
-        anc = (main_px.get(F) or {}).get(target)
+        # the main-board row on F is filed under the symbol that traded THAT day — the SME symbol itself when the
+        # rename came later (WORTH on 2020-08-04, five years before WORTHPERI)
+        anc = (main_px.get(F) or {}).get(target) or (main_px.get(F) or {}).get(sym)
         if not anc:
             stats["no_anchor"] += 1; reasons.append("%s->%s: bin first bar %d has no main-board row in the scan (not a scanned day) — skipped" % (sym, target, F)); continue
         raw_F, prev_F = anc

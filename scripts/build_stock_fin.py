@@ -66,6 +66,7 @@ RENAME  = os.path.join(HERE, "_rename_map.json")
 BSEFUND_J = os.path.join(DOCS, "bse_fundamentals.json")   # BSE-ONLY rev/PAT, keyed by scripcode
 BSESCRIP_J = os.path.join(HERE, "bse_scrips.json")        # {by_id:{SYM:scripcode}} → sym lookup
 ROWP_J  = os.path.join(HERE, "row_periods.json")          # rows proven to cover 6/12 months (build_row_periods.py)
+COLLIDE_J = os.path.join(DOCS, "bse_alias_collisions.json")  # BSE tickers the NSE rename aliases must not touch (§197)
 
 # per-quarter detail fields the PAGE consumes — the rest of the ledger stays local-only
 XTRA_KEEP = {"eps_b", "eps_d", "oi", "fc", "dep", "tax", "exc", "pbt", "emp", "mat",
@@ -241,6 +242,17 @@ def main():
             aliases = json.load(open(RENAME, "r", encoding="utf-8"))
         except Exception as e:
             print("WARN: could not read _rename_map.json (%s) — renamed tickers will show no financials" % e)
+    # §197: a BSE-only ticker that is also a FORMER NSE ticker of another company (WORTH = Worth Investment on BSE,
+    # WORTH -> WORTHPERI on NSE) is the BSE company on this site. The NSE alias stays true for the NSE namespace but
+    # is never applied to it here: no fallback to the other company's rows, and no folding into its page as a former.
+    try:
+        collide = set(json.load(open(COLLIDE_J, encoding="utf-8")).get("collisions") or {})
+    except Exception as e:
+        sys.exit("ABORT: %s unreadable (%s) — refusing to build slices that could alias a BSE ticker onto another "
+                 "company" % (os.path.basename(COLLIDE_J), e))
+    dropped = sorted(o for o in collide if o in aliases)
+    aliases = {o: n for o, n in aliases.items() if o not in collide}
+    print("rename aliases: %d (%d BSE-ticker collisions not aliased: %s)" % (len(aliases), len(dropped), ", ".join(dropped)))
 
     # --- BSE-ONLY names: fold docs/bse_fundamentals.json (keyed by scripcode) into fund/revop so a
     #     fin slice is emitted for them too. build_bse_slices.py cuts their PRICE slice; without this

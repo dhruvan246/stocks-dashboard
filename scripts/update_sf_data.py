@@ -1624,7 +1624,17 @@ def main():
                     # TUBEINVEST (INE149A01025, last 2017-08-23 793.20) -> TIFIN 2017-09-25 (INE149A01033, PREVCLOSE 793.20)
                     # = CHOLAHLDNG. The month-long gap is the 2017 scheme; NSE's CA feed has NO demerger record for it, so
                     # the raw -25.7% stays a move (§161) — no demerger factor. FUND_ALIAS already folds TUBEINVEST/TIFIN.
-                    "CHOLAHLDNG": "TUBEINVEST"}
+                    "CHOLAHLDNG": "TUBEINVEST",
+                    # --- 2026-09-27 (DATA_RUNBOOK §197): two NSE SME-era fragments that §145's ledger CREATED as keys of
+                    # their own because the main-board successor's meta carried no ISIN and the successor had since been
+                    # renamed. Each key is a BSE-only company on the site (WORTH = Worth Investment, BSE 538451; CREATIVE =
+                    # Creative Castings, BSE 539527), so the dead NSE fragment took the ticker's price slice. NSE chains
+                    # each pair itself (bhavcopy): WORTH SM last 2020-07-31 43.50 -> WORTH EQ 2020-08-04 PREVCLOSE 43.50
+                    # (INE196Y01018; symbol -> WORTHPERI 2025-10-10); CREATIVE SM last 2019-08-01 64.50 -> CREATIVE EQ
+                    # 2019-08-05 PREVCLOSE 64.50 (INE985W01018; -> CNL). No successor factor after either SME end (CNL's
+                    # 2019-06-25 x0.5 is already inside the fragment's own adjustment), so adj = 1.
+                    "WORTHPERI": "WORTH",
+                    "CNL": "CREATIVE"}
     # --- 2026-08-23 ISIN-SEAM batch (DATA_RUNBOOK §95g's open queue, landed in §105): the 103 seams
     # the issuer-prefix sweep CONFIRMED as one company (scripts/_isin_seam_verdicts.json) were never
     # stitched because the ISIN CHANGED at each seam (face-value change, scheme) — the auto-merge must

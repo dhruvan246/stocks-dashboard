@@ -246,10 +246,17 @@ def load_inputs(cache):
     js = open(os.path.join(REPO, "docs", "backtest-engine.js"), encoding="utf-8").read()
     m = re.search(r"const FUND_ALIAS\s*=\s*(\{.*?\});", js, re.S)
     fund_alias = json.loads(m.group(1)) if m else {}
+    # §197: a BSE-only ticker that is also a FORMER NSE ticker of another company (docs/bse_alias_collisions.json —
+    # WORTH = Worth Investment, NSE's WORTH -> WORTHPERI) is not a relative of that company: the rename edges on it are
+    # NSE facts. Linking them made every WORTH quarter "stored under a former ticker" (WORTHPERI's) and never fetched.
+    try:
+        coll = set(json.load(open(os.path.join(REPO, "docs", "bse_alias_collisions.json"), encoding="utf-8"))["collisions"])
+    except Exception as e:
+        sys.exit("ABORT: docs/bse_alias_collisions.json unreadable (%s)" % e)
     rel = collections.defaultdict(set)                           # every rename relative of a symbol
     for mp in (rename, fund_alias):
         for old, new in mp.items():
-            if isinstance(new, str) and new != old:
+            if isinstance(new, str) and new != old and old not in coll and new not in coll:
                 rel[old].add(new); rel[new].add(old)
     def relatives(sym):
         seen, todo = {sym}, [sym]
@@ -782,6 +789,13 @@ def build(cache):
     _m = re.search(r"const FUND_ALIAS\s*=\s*(\{.*?\});", _js, re.S)
     _fa = json.loads(_m.group(1)) if _m else {}
     fund_alias_keys = set(_fa) | {v for v in _fa.values() if isinstance(v, str)}
+    # §197: an alias whose OLD key is a PROVEN BSE-ticker collision (docs/bse_alias_collisions.json — the BSE scrip's
+    # ISIN issuer is none of the target's) is an NSE fact about another company; it no longer makes the key ambiguous.
+    try:
+        _coll = json.load(open(os.path.join(REPO, "docs", "bse_alias_collisions.json"), encoding="utf-8"))["collisions"]
+    except Exception as e:
+        sys.exit("ABORT: docs/bse_alias_collisions.json unreadable (%s)" % e)
+    fund_alias_keys -= {o for o, c in _coll.items() if _fa.get(o) == c.get("target")}
     def name_ok(a, sym, code=None):
         on_record = names_sym.get(sym, set()) | (names_code.get(str(code), set()) if code else set())
         return bool(a.get("cname")) and any(names_match(a["cname"], n_) for n_ in on_record)

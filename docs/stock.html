@@ -244,6 +244,16 @@ let TKR=null, CHART=null, RANGE='Max';
    fell back to loading the whole-market engine, the old ~137 MB path — see boot(). FIN_STATE tracks
    the financials file so the quarterly table can say "loading" instead of "nothing on file". */
 let SLICE=null, FIN_STATE='pending';
+/* FUND_ALIAS is an NSE fact (old NSE symbol -> current one). A few BSE-only companies trade under a
+   scrip_id that is ALSO a former NSE ticker of an unrelated company — WORTH is Worth Investment on BSE
+   while NSE's WORTH became WORTHPERI — and following the alias sent their page to the other company
+   (runbook §197). docs/bse_alias_collisions.json lists the proven cases; it is read only on the paths
+   that would otherwise follow an alias. A failed read is not cached and falls back to the old behaviour. */
+let COLLIDE=null;
+async function aliasCollides(sym){
+  if(!COLLIDE){ try{ COLLIDE=(await (await fetch('./bse_alias_collisions.json')).json()).collisions||{}; }catch(e){ return false; } }
+  return !!COLLIDE[sym];
+}
 /* Provisional LIVE bar state — see the live-price block at the bottom of this file. LIVE_OFF is
    the day offset of the spliced bar (null = none on the series); LIVE_END0 / LIVE_RAW0 hold the
    pre-splice SF_END_OFF and META.raw so clearLiveBar() can put the series back exactly as baked. */
@@ -1689,7 +1699,9 @@ function loadPreIPO(){
 function renderPreIPO(){
   const card=$('preipoCard'); if(!card) return;
   const hide=()=>{ card.style.display='none'; };
-  const j=PREIPO_DATA, key=(typeof FUND_ALIAS!=='undefined'&&FUND_ALIAS[SYM])||SYM;
+  // a LIVE page is its own company: an alias only ever stands in for a dead old symbol (§197)
+  const al=(typeof FUND_ALIAS!=='undefined'&&FUND_ALIAS[SYM])||null;
+  const j=PREIPO_DATA, key=(al&&!(SLICE&&SLICE.alive)&&!(COLLIDE&&COLLIDE[SYM]))?al:SYM;
   const e=j&&j.data&&(j.data[SYM]||j.data[key]);
   if(!e||e.status!=='filled'||!Array.isArray(e.rows)||!e.rows.length) return hide();
   let rows=e.rows.filter(r=>Array.isArray(r)&&r[0]);            // [fyYear, revenue, netProfit]
@@ -1898,7 +1910,7 @@ async function liveQuote(){
   // instead of booting the 17 MB engine just to fail (GUJGASLTD→GUJENERGY class, §30).
   // An old name that still ships a DEAD stub slice (3IINFOTECH→3IINFOLTD) would otherwise
   // render that stub as the company, so hop whenever the old name is not alive (2026-09-05).
-  if(typeof FUND_ALIAS!=='undefined' && FUND_ALIAS[SYM] && (!slice || !slice.alive)){
+  if(typeof FUND_ALIAS!=='undefined' && FUND_ALIAS[SYM] && (!slice || !slice.alive) && !(await aliasCollides(SYM))){
     location.replace('stock.html?sym='+encodeURIComponent(FUND_ALIAS[SYM])); return;
   }
 
@@ -1931,7 +1943,7 @@ async function liveQuote(){
     catch(e){ fail('Could not load market data: '+(e&&e.message||e)); return; }
     if(!META[SYM]){
       const nw=(typeof FUND_ALIAS!=='undefined'&&FUND_ALIAS[SYM])||null;
-      if(nw&&META[nw]){ location.replace('stock.html?sym='+encodeURIComponent(nw)); return; }
+      if(nw&&META[nw]&&!(await aliasCollides(SYM))){ location.replace('stock.html?sym='+encodeURIComponent(nw)); return; }
       fail('“'+SYM+'” not found in the dataset.'); return;
     }
     TKR=SYM;

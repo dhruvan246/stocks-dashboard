@@ -35,6 +35,7 @@ on:
       - "scripts/row_periods.json"        # half-year / full-year result rows (runbook §191)
       - "scripts/build_stock_fin.py"
       - "scripts/_rename_map.json"
+      - "docs/bse_alias_collisions.json"   # BSE tickers the NSE rename aliases must not touch (runbook §197)
   workflow_dispatch: {}
 
 permissions:

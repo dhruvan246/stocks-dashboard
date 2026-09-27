@@ -1,0 +1,217 @@
+{
+ "_README": "BSE-only dashboard tickers that are ALSO a former NSE ticker of a DIFFERENT company (ISIN issuers differ). The NSE rename alias OLD -> target (scripts/_rename_map.json, the engine's FUND_ALIAS) stays right for the NSE namespace (price tape, rosters, old NSE filings) and must never be applied to the site's OLD, which is the BSE company. Consumed by build_stock_fin.py, stock.html, fetch_shp_allstocks.py, check_fund_alias.py. Regenerate with scripts/scan_bse_alias_collisions.py --write (fill-only, never removes). Runbook §197.",
+ "collisions": {
+  "ARL": {
+   "target": "ARVINDREM",
+   "bse_code": "542721",
+   "bse_name": "Anand Rayons Ltd",
+   "bse_isin": "INE02GA01012",
+   "target_name": "Anand Rayons Ltd",
+   "target_isins": {
+    "INE211C01037": [
+     "sf-data tape meta"
+    ]
+   },
+   "in_fund_alias": true,
+   "in_rename_map": true,
+   "found": "2026-09-27"
+  },
+  "AZTEC": {
+   "target": "AZTECSOFT",
+   "bse_code": "544177",
+   "bse_name": "Aztec Fluids & Machinery Ltd",
+   "bse_isin": "INE0SCB01016",
+   "target_name": "Aztecsoft Ltd",
+   "target_isins": {
+    "INE651B01010": [
+     "BSE master 532385 Aztecsoft Ltd (Delisted; name = tape name)"
+    ]
+   },
+   "in_fund_alias": false,
+   "in_rename_map": true,
+   "found": "2026-09-27"
+  },
+  "BCCL": {
+   "target": "ABCIL",
+   "bse_code": "543497",
+   "bse_name": "Bhatia Colour Chem Ltd",
+   "bse_isin": "INE0KQ001017",
+   "target_name": "ABCIL",
+   "target_isins": {
+    "INE605B01016": [
+     "sf-data tape meta"
+    ]
+   },
+   "in_fund_alias": false,
+   "in_rename_map": true,
+   "found": "2026-09-27"
+  },
+  "COLORCHIPS": {
+   "target": "ADROITINFO",
+   "bse_code": "540023",
+   "bse_name": "Colorchips New Media Ltd",
+   "bse_isin": "INE621I01042",
+   "target_name": "Adroit Infotech Ltd",
+   "target_isins": {
+    "INE737B01033": [
+     "bse_scrips 532172",
+     "sf-data tape meta",
+     "nse_sym_isin_2020",
+     "EQUITY_L",
+     "BSE master 532172 Adroit Infotech Ltd (Active; name = tape name)"
+    ]
+   },
+   "in_fund_alias": true,
+   "in_rename_map": true,
+   "found": "2026-09-27"
+  },
+  "CREATIVE": {
+   "target": "CNL",
+   "bse_code": "539527",
+   "bse_name": "Creative Castings Ltd",
+   "bse_isin": "INE146E01015",
+   "target_name": "Creative Newtech Ltd",
+   "target_isins": {
+    "INE985W01018": [
+     "bse_scrips 544631",
+     "nse_sym_isin_2020",
+     "EQUITY_L",
+     "BSE master 544631 Creative Newtech Ltd (Active; name = tape name)"
+    ]
+   },
+   "in_fund_alias": true,
+   "in_rename_map": true,
+   "found": "2026-09-27"
+  },
+  "DPL": {
+   "target": "DVL",
+   "bse_code": "543594",
+   "bse_name": "Dipna Pharmachem Ltd",
+   "bse_isin": "INE0MC401013",
+   "target_name": "Dhunseri Ventures Ltd",
+   "target_isins": {
+    "INE477B01010": [
+     "bse_scrips 523736",
+     "sf-data tape meta",
+     "nse_sym_isin_2020",
+     "EQUITY_L",
+     "BSE master 523736 Dhunseri Ventures Ltd (Active; name = tape name)"
+    ]
+   },
+   "in_fund_alias": true,
+   "in_rename_map": true,
+   "found": "2026-09-27"
+  },
+  "HSIL": {
+   "target": "AGI",
+   "bse_code": "543916",
+   "bse_name": "Hemant Surgical Industries Ltd",
+   "bse_isin": "INE0GYI01028",
+   "target_name": "Agi Greenpac Ltd",
+   "target_isins": {
+    "INE415A01038": [
+     "bse_scrips 500187",
+     "sf-data tape meta",
+     "nse_sym_isin_2020",
+     "EQUITY_L",
+     "BSE master 500187 Agi Greenpac Ltd (Active; name = tape name)"
+    ]
+   },
+   "in_fund_alias": true,
+   "in_rename_map": true,
+   "found": "2026-09-27"
+  },
+  "MIL": {
+   "target": "GBGLOBAL",
+   "bse_code": "539938",
+   "bse_name": "Medico Intercontinental Ltd",
+   "bse_isin": "INE858Q01019",
+   "target_name": "GB Global Ltd",
+   "target_isins": {
+    "INE087J01028": [
+     "sf-data tape meta",
+     "nse_sym_isin_2020",
+     "BSE master 533204 GB Global Ltd (Suspended; name = tape name)"
+    ]
+   },
+   "in_fund_alias": false,
+   "in_rename_map": true,
+   "found": "2026-09-27"
+  },
+  "MUDRA": {
+   "target": "ELAND",
+   "bse_code": "539819",
+   "bse_name": "Mudra Financial Services Ltd",
+   "bse_isin": "INE967S01014",
+   "target_name": "E-Land Apparel Ltd",
+   "target_isins": {
+    "INE311H01018": [
+     "bse_scrips 532820",
+     "sf-data tape meta",
+     "BSE master 532820 E-Land Apparel Ltd (Active; name = tape name)"
+    ]
+   },
+   "in_fund_alias": true,
+   "in_rename_map": true,
+   "found": "2026-09-27"
+  },
+  "RDEL": {
+   "target": "SWANDEF",
+   "bse_code": "544640",
+   "bse_name": "Riddhi Display Equipments Ltd",
+   "bse_isin": "INE1DKT01011",
+   "target_name": "Swan Defence And Heavy Industries Ltd",
+   "target_isins": {
+    "INE542F01020": [
+     "bse_scrips 533107",
+     "nse_sym_isin_2020",
+     "EQUITY_L",
+     "BSE master 533107 Swan Defence And Heavy Industries Ltd (Active; name = tape name)"
+    ]
+   },
+   "in_fund_alias": true,
+   "in_rename_map": true,
+   "found": "2026-09-27"
+  },
+  "SHREE": {
+   "target": "AJMERA",
+   "bse_code": "544083",
+   "bse_name": "Shree Marutinandan Tubes Ltd",
+   "bse_isin": "INE0QIS01011",
+   "target_name": "Ajmera Realty & Infra India Ltd",
+   "target_isins": {
+    "INE298G01027": [
+     "sf-data tape meta",
+     "nse_sym_isin_2020"
+    ],
+    "INE298G01035": [
+     "bse_scrips 513349",
+     "nse_sym_isin_2020",
+     "EQUITY_L",
+     "BSE master 513349 Ajmera Realty & Infra India Ltd (Active; name = tape name)"
+    ]
+   },
+   "in_fund_alias": true,
+   "in_rename_map": true,
+   "found": "2026-09-27"
+  },
+  "WORTH": {
+   "target": "WORTHPERI",
+   "bse_code": "538451",
+   "bse_name": "Worth Investment & Trading Co Ltd",
+   "bse_isin": "INE114O01020",
+   "target_name": "Worth Peripherals Ltd",
+   "target_isins": {
+    "INE196Y01018": [
+     "bse_scrips 544577",
+     "nse_sym_isin_2020",
+     "EQUITY_L",
+     "BSE master 544577 Worth Peripherals Ltd (Active; name = tape name)"
+    ]
+   },
+   "in_fund_alias": true,
+   "in_rename_map": true,
+   "found": "2026-09-27"
+  }
+ }
+}
