@@ -151,11 +151,18 @@ def correct(cell, e):
         cell["fix"] = dict(cell.get("fix", {}), **fix)
     return fix
 
+def qe_of(e):
+    """The ledger key of an entry's year-end: <fy> + its year-end MMDD. Default 31 March; a Dec- or June-year-end
+    filer's entries carry "ye": "1231" / "0630" (stock page renderDeep() anchors those companies on that month)."""
+    ye = str(e.get("ye") or "0331")
+    return "%d%s" % (int(e["fy"]), ye if re.fullmatch(r"(0[1-9]|1[0-2])(0[1-9]|[12]\d|3[01])", ye) else "0331")
+
 def asat_ok(e):
     """A fill's balance sheet must be the FISCAL-YEAR-END audited statement, not an interim or
     off-cycle one. Calendar-year filers (e.g. Ambuja pre-2022) print an "as at 30-Jun" interim BS
     that locate() can mistake for the March year-end. If the reader reported the statement date
-    (asat), require it within a few days of <fy>-03-31; if it didn't, fall back to trusting it."""
+    (asat), require it within a few days of the entry's year-end (<fy>-03-31 unless "ye" says
+    otherwise); if it didn't, fall back to trusting it."""
     a = e.get("asat")
     if not a:
         return True
@@ -165,7 +172,8 @@ def asat_ok(e):
     g = [int(x) for x in m.groups()]
     y, mo, d = (g if g[0] > 31 else [g[2], g[1], g[0]])
     try:
-        return abs((date(y, mo, d) - date(int(e["fy"]), 3, 31)).days) <= 5
+        q = qe_of(e)
+        return abs((date(y, mo, d) - date(int(q[:4]), int(q[4:6]), int(q[6:8]))).days) <= 5
     except Exception:
         return True
 
@@ -208,12 +216,12 @@ def main():
         # corrections, then supplements: re-reads of an already-landed cell's own document — no gate run,
         # they re-anchor on the stored cell instead
         for e in (x for x in entries if x.get("role") == "correct"):
-            q = "%d0331" % int(e["fy"])
+            q = qe_of(e)
             fx = correct((ledger.get(sym) or {}).get(q), e)
             if fx:
                 fixes.append("%s %s:%s" % (sym, q[:4], ",".join("%s %s->%s" % (f, fx[f], (ledger[sym][q].get(f))) for f in sorted(fx))))
         for e in (x for x in entries if x.get("role") == "supplement"):
-            q = "%d0331" % int(e["fy"])
+            q = qe_of(e)
             k = unit_slip((ledger.get(sym) or {}).get(q), e)
             if k:
                 rescale(ledger[sym][q], k); fixes.append("%s %s: unit slip, every field /%s" % (sym, q[:4], k))
@@ -227,7 +235,7 @@ def main():
         if not ok:
             rejected.append(sym); continue
         trusted += 1
-        vq = "%d0331" % int(val["fy"])
+        vq = qe_of(val)
         if vq not in (ledger.get(sym) or {}):
             vc = validate_cf_cell(val, (slice_x(sym).get(vq) or {}).get(val.get("basis")),
                                   val.get("basis"), "vision", val.get("src", ""))
@@ -250,7 +258,7 @@ def main():
                 for f in ("cfo", "cfi", "cff"):   # the statement's own cash identity failed: keep the BS,
                     cell.pop(f, None)             # never land a cash flow that doesn't add up
                 cfdrop.append("%s %s" % (sym, e.get("fy")))
-            ledger.setdefault(sym, {})["%d0331" % int(e["fy"])] = cell
+            ledger.setdefault(sym, {})[qe_of(e)] = cell
             landed += 1
     json.dump(ledger, open(LEDGER, "w"), separators=(",", ":"), sort_keys=True)
     print("trusted %d symbols, landed %d fill-years + %d validate-year cash flows. gate-rejected %d: %s | "
