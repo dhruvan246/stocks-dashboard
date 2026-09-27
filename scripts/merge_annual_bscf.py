@@ -197,10 +197,12 @@ def gate_ok(read, key):
         return (abs(rp) <= max(1.0, 0.005 * abs(ka))), False
     if not kp or rp is None:
         return False, False
-    if abs(rp - kp) / abs(kp) <= 0.01:
+    # the key is stored to 0.01 crore, so a near-zero PP&E also matches within half that storage unit
+    # (HEMIPROP FY25: key 0.01 vs printed 0.93 lakh = 0.0093 — the 1% test alone rejects a true match)
+    if abs(rp - kp) / abs(kp) <= 0.01 or abs(rp - kp) <= 0.005:
         return True, False
     rou = read.get("rou") or 0
-    if abs((rp + rou) - kp) / abs(kp) <= 0.01:
+    if abs((rp + rou) - kp) / abs(kp) <= 0.01 or abs((rp + rou) - kp) <= 0.005:
         return True, True
     return False, False
 
