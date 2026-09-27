@@ -23097,6 +23097,12 @@ docs on localhost + the new slices; price slices copied from sf-data into the gi
 back to the full engine, which ignores `pd`): ZEAL Mar-26 std "6 mo" op 11.4 / OPM 10.0 % (live before: 8.5 / 7.5 %), EBIT
 8.5, TTM revenue ₹285 cr / profit ₹12 cr unchanged; ATMASTCO Mar-26 std op 25.3 / EBIT 23.4, Jun-26 op 7.5; RELIANCE
 unchanged; 0 console errors; 375 px no page overflow, dark (fresh load) + light.
+**LIVE (pushed 7b4e10009 at 00:14 IST 2026-09-28; refresh-stock-fin 36341737860 green → Pages).** The served
+sf_revop.json (Last-Modified 00:20 IST, a deploy AFTER other CI commits landed on top) holds all 929 entries at their
+`fixed` value; fin slices (00:16 IST): ZEAL Mar-26 op 11.37 / 10.90 (EBIT 8.50 / 8.02), ATMASTCO op 25.28 / 30.36 + EBIT
+23.42 / 28.30, VGINFOTECH 27.71, CELLECOR 37.19, GIRIRAJ 13.23 / 13.01, RELIANCE unchanged; the live stock page renders ZEAL
+Mar-26 "6 mo" op 11.4 / OPM 10.0 % / EBIT 8.5 with 0 console errors. The bse-results-xbrl job re-applies fill-only on a
+fresh reset (it cannot copy an older payload over the heal); the nightly re-applies revop_cell_fix after its merge.
 **Held / open.** SIMCA Mar-26 (the file states paid-up capital ₹8.8 lakh crore — filer power of ten, needs scale_fix §184);
 GOLDKART Mar-26 std, SHANTI Mar-26 std, LGHL Dec-25 std (the filing prints NEGATIVE depreciation — op would drop below EBIT
 and build_revop's ebit ≤ op guard would null it); GULPOLY Dec-19 (Ind-AS file with no depreciation tag); the 13 bse-results-xbrl
