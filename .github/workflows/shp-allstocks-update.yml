@@ -1,0 +1,103 @@
+name: Shareholding update — BSE-only + SME companies (new quarters)
+
+# Runbook §180e. The daily "refresh-shareholding" job fetches NSE main-board holdings only; for NSE SME companies it banks
+# share counts but not holdings, and BSE-only companies get nothing. This job keeps the all-stocks fill (§180-§180d)
+# current: for the last two closed quarters it asks NSE's SME master (honest, own User-Agent) and BSE's SHPQNewFormat
+# lists (scripts/bse_headers.py, one request at a time) ONLY for companies still owing a quarter, downloads just those
+# filings, and runs `fetch_shp_allstocks.py update` = the full build's gates in WINDOW mode, merged fill-only onto the
+# committed ledger (tested: a June-2026 window rebuild reproduced all 2,282 cells and 4,476 share counts exactly).
+# Runs around each filing deadline (SEBI: 21 days after the quarter) plus two late-filer sweeps the month after.
+on:
+  schedule:
+    - cron: "30 13 12,19,22,26 1,4,7,10 *"   # 19:00 IST around the deadline of the Dec/Mar/Jun/Sep quarters
+    - cron: "30 13 5,20 2,5,8,11 *"          # late filers
+  workflow_dispatch:
+    inputs:
+      quarters:
+        description: 'optional comma list of quarter-ends (default: the last two closed)'
+        default: ''
+      max_minutes:
+        description: 'stop fetching after this many minutes (the next run continues)'
+        default: '150'
+
+permissions:
+  contents: write
+  actions: write   # dispatch pages.yml + the stock-page slices after a change
+
+concurrency:
+  group: refresh-shareholding   # never overlaps the daily shareholding job (both write scripts/shp_history.json)
+  cancel-in-progress: false
+
+jobs:
+  update:
+    runs-on: ubuntu-latest
+    timeout-minutes: 200
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v5
+
+      - name: Set up Python
+        uses: actions/setup-python@v6
+        with:
+          python-version: "3.11"
+
+      - name: Symbol -> ISIN tape (release asset, rebuilt daily)
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: gh release download data -p sf_stock_data.bin -D "$RUNNER_TEMP"
+
+      - name: Fetch new quarters and build (window mode)
+        env:
+          SHP_ISIN_TAPE: ${{ runner.temp }}/sf_stock_data.bin
+        run: |
+          Q="${{ inputs.quarters }}"
+          python3 scripts/fetch_shp_allstocks.py update --cache "$RUNNER_TEMP/c" \
+            --max-minutes "${{ inputs.max_minutes || '150' }}" ${Q:+--quarters "$Q"}
+
+      - name: Apply + guards
+        run: |
+          python3 -X utf8 scripts/fetch_shareholding.py --apply-ledgers
+          python3 scripts/guard_shp_gate.py
+          python3 scripts/guard_shp_definition.py
+          python3 scripts/guard_shp_revisions.py
+          python3 scripts/guard_feed.py
+
+      - name: Commit (reset-and-replay onto the newest main)
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          git config user.name  "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          # this job's own outputs; everything derived is re-applied on top of the newest main below
+          mkdir -p /tmp/upd
+          cp scripts/shp_fill_allstocks.json.gz scripts/_shp_allstocks_holds.json scripts/shares_history.json /tmp/upd/
+          for attempt in 1 2 3 4 5; do
+            git fetch origin main
+            git reset --hard origin/main
+            cp /tmp/upd/shp_fill_allstocks.json.gz /tmp/upd/_shp_allstocks_holds.json /tmp/upd/shares_history.json scripts/
+            python3 -X utf8 scripts/fetch_shareholding.py --apply-ledgers > /tmp/upd/apply.log 2>&1 || { tail -20 /tmp/upd/apply.log; exit 1; }
+            grep -E "history:|re-filings" /tmp/upd/apply.log || true
+            git add scripts/shp_fill_allstocks.json.gz scripts/shares_history.json scripts/shp_history.json \
+                    scripts/shp_revisions.json docs/shareholding.json docs/shp_engine.json
+            git add -f scripts/_shp_allstocks_holds.json
+            [ -f docs/shp_meta.json ] && git add docs/shp_meta.json || true
+            if git diff --cached --quiet; then echo "No new quarters landed — nothing to commit"; exit 0; fi
+            git commit -m "Shareholding all-stocks update $(TZ=Asia/Kolkata date +'%Y-%m-%d %H:%M IST') (runbook §180e)"
+            if git push origin HEAD:main; then
+              echo "Pushed on attempt #$attempt"
+              gh workflow run pages.yml || echo "(pages dispatch failed — publishes on the next push)"
+              gh workflow run refresh-stock-fin.yml || echo "(slices dispatch failed — rebuilt by their own schedule)"
+              exit 0
+            fi
+            echo "Push attempt #$attempt rejected; resetting and retrying"; sleep $(( attempt * 3 ))
+          done
+          echo "Failed to push after 5 attempts"; exit 1
+
+      - name: Keep the run log
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: shp-allstocks-update-log
+          path: ${{ runner.temp }}/c/update.log
+          retention-days: 14
+          if-no-files-found: ignore

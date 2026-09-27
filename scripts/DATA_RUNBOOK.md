@@ -21572,6 +21572,21 @@ misses many dual-listed codes, RELINFRA). Result: +16 cells (GENSOL 2020-23 ×13
 NOT fillable by machine: 130 NSE-only companies / 417 cells — NSE's XBRL link is 404 (203 dead links in the manifest) or NSE lists no
 filing before Sep-2021, and they are not on BSE (only their announcement PDFs remain -> vision, user's call). Stranded renames found:
 HEG -> HEGAM (not flagged by the tripwire) and SILLYMONKS -> CRESTO (flagged, unmerged) — separate §30 task.
+**§180e — keeping it current (2026-09-27, user: "do step 1"; user rule: NO pre-2020 data for non-Nifty-500 companies).** The daily
+refresh-shareholding job fetches NSE MAIN-board holdings only (its SME pass banks share counts, never holdings; BSE-only companies
+get nothing), so from each new quarter the fill would decay. New workflow **`.github/workflows/shp-allstocks-update.yml`** runs
+`fetch_shp_allstocks.py update`: for the last two CLOSED quarters (`LAST_QE` now follows the calendar) it asks NSE's SME master
+(own User-Agent `stocks-dashboard-research/1.0` — measured 200, no browser identity) and, one request at a time via bse_headers,
+BSE's lists ONLY for BSE-only companies still owing a quarter (rename relatives count as stored; half-yearly BSE SME filers owe no
+Jun/Dec quarter; companies with nothing in the four preceding quarters are dormant and skipped), downloads just those filings, then
+`build(window=...)`: every gate of the full build on the window quarters, merged fill-only onto the committed ledger (landed cells
+never re-judged; a window hold replaced by this run's verdict; share counts screened against the stored series). Regression test:
+June 2026 removed from a copy and rebuilt in window mode = 2,282/2,282 cells identical incl. tags, 4,476/4,476 share counts; the full
+build after the change = the committed ledger exactly. Runner inputs: release asset data/sf_stock_data.bin (SHP_ISIN_TAPE) +
+committed scripts/_nse_sym_isin_2020.json. Schedule: 19:00 IST on the 12th/19th/22nd/26th of Jan/Apr/Jul/Oct + 5th/20th of
+Feb/May/Aug/Nov; concurrency group refresh-shareholding (never overlaps the daily job); reset-and-replay push re-applies the ledger
+on the newest main; dispatches pages + refresh-stock-fin. Local dry run (window Mar/Jun-2026): 255 companies asked, 12 files, 0 new
+cells (6 held — CREATIVE/WORTH/HSIL alias identity, GLOBALLOG continuity — 6 under a former ticker), UNIHEALTH's NSE link 404.
 ## §182 — THE BSE RESULTS READERS NO LONGER HARD-CODE THE JUNE-2026 QUARTER (2026-09-27, user: "fix all")
 **Found by a prompt audit, measured on origin/main 99e9129d0.** Every reader of a scanned result filing was pinned to Q1 FY27:
 `fetch_bse_fund.py`'s vision fallback asked Claude/Gemini for "30 June 2026" and filed the answer under `20260630` with a

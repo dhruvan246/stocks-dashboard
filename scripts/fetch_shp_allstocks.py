@@ -67,7 +67,13 @@ CACHE = os.path.expanduser("~/stocks-cache/shp/all_fill")
 LEDGER = os.path.join(HERE, "shp_fill_allstocks.json.gz")
 HOLDS = os.path.join(HERE, "_shp_allstocks_holds.json")
 SHARES_HIST = os.path.join(HERE, "shares_history.json")
-FIRST_QE, LAST_QE = "2020-03-31", "2026-06-30"
+def _last_qe(today=None):
+    """The latest quarter-end on or before today (IST): quarters the calendar has closed. Filings for it may still be
+    arriving (SEBI deadline: 21 days), which the incremental `update` stage picks up run by run (§180e)."""
+    d = today or (datetime.datetime.utcnow() + datetime.timedelta(hours=5, minutes=30)).date()
+    ends = [datetime.date(y, m, dd) for y in (d.year - 1, d.year) for m, dd in ((3, 31), (6, 30), (9, 30), (12, 31))]
+    return max(e for e in ends if e <= d).isoformat()
+FIRST_QE, LAST_QE = "2020-03-31", _last_qe()
 STRIP = lambda t: t.split("}", 1)[-1]
 DOM_LBL = re.compile(r"QIB|qualified institutional|insurance|insurer|provident|pension|\bNPS\b|NBFC|non.?banking|"
                      r"financial institution|\bbanks?\b|alternat\w* investment|\bAIF\b|mutual fund", re.I)
@@ -76,7 +82,7 @@ FOR_LBL = re.compile(r"\bFIIs?\b|\bFPIs?\b|foreign portfolio|foreign institution
 
 def qes():
     out = []
-    for y in range(2020, 2027):
+    for y in range(2020, int(LAST_QE[:4]) + 1):
         for md in ("03-31", "06-30", "09-30", "12-31"):
             q = "%d-%s" % (y, md)
             if FIRST_QE <= q <= LAST_QE: out.append(q)
@@ -265,11 +271,14 @@ def load_inputs(cache):
                 if n not in seen: seen.add(n); todo.append(n)
         return seen - {sym}
     isins = collections.defaultdict(set)
-    p = os.path.expanduser("~/stocks-cache/univ/nse_sym_isin_2020.json")
+    # symbol -> ISIN sources; a GitHub runner passes the survivorship-free tape (release asset `data/sf_stock_data.bin`,
+    # meta[sym].isin, rebuilt daily) via SHP_ISIN_TAPE and has no ~/stocks-cache (§180e)
+    p = os.environ.get("SHP_NSE_SYM_ISIN") or os.path.join(HERE, "_nse_sym_isin_2020.json")   # committed copy (NSE symbol -> ISINs since 2020)
+    if not os.path.exists(p): p = os.path.expanduser("~/stocks-cache/univ/nse_sym_isin_2020.json")
     if os.path.exists(p):
         for s, lst in json.load(open(p)).items():
             isins[s.upper()] |= {i.upper() for i in lst}
-    p = os.path.expanduser("~/stocks-cache/univ/sf_recent_now.bin")
+    p = os.environ.get("SHP_ISIN_TAPE") or os.path.expanduser("~/stocks-cache/univ/sf_recent_now.bin")
     if os.path.exists(p):
         tape = json.loads(gzip.open(p).read())
         for s, mt in (tape.get("meta") or {}).items():
@@ -675,12 +684,154 @@ def stage_rowlevel(cache):
     print("ROWLEVEL %d held old-format cells: %s" % (len(want), dict(st)))
 
 
+# ------------------------------------------------------------------------------------------ incremental update (§180e)
+HONEST_UA = "stocks-dashboard-research/1.0"          # our own name; NSE's master API and nsearchives serve it (measured 2026-09-27)
+MASTER_WINDOW_DAYS = 200
+
+
+def window_qes(n=2, today=None):
+    """The last n quarter-ends the calendar has closed — the quarters whose filings can still be arriving."""
+    last = _last_qe(today); out = []
+    y, m = int(last[:4]), int(last[5:7])
+    for _ in range(n):
+        out.append("%d-%s" % (y, {3: "03-31", 6: "06-30", 9: "09-30", 12: "12-31"}[m]))
+        m -= 3
+        if m == 0: m, y = 12, y - 1
+    return sorted(out)
+
+
+def stage_update(cache, quarters=None, max_minutes=0):
+    """§180e — keep the all-stocks fill current for the companies the daily job does not fetch holdings for: NSE SME
+    (the daily SME pass banks share counts only) and BSE-only companies (nothing daily). For the open quarters only:
+    NSE's SME master (honest request) -> the XBRL files of quarters not yet stored; BSE SHPQNewFormat lists (bse_headers,
+    one request at a time) for BSE-only companies still missing a window quarter -> their files. Then `build` in WINDOW
+    mode: every gate of the full build, new (symbol, quarter) cells only, merged onto the committed ledger."""
+    import urllib.request, urllib.error
+    import bse_headers                                            # noqa: F401  (honest header set on *.bseindia.com)
+    qes = sorted(quarters or window_qes())
+    t_end = time.time() + max_minutes * 60 if max_minutes else None
+    os.makedirs(cache, exist_ok=True)
+    X, LD, XD = os.path.join(cache, "xbrl_nse_all"), os.path.join(cache, "bse_lists_v2"), os.path.join(cache, "xbrl_bse_v2")
+    for d_ in (X, LD, XD): os.makedirs(d_, exist_ok=True)
+    log = open(os.path.join(cache, "update.log"), "a")
+    def say(*a): print(time.strftime("%H:%M:%S"), *a, file=log, flush=True); print(*a, flush=True)
+    hist, relatives, _isins, _man = load_inputs(cache)
+    led = json.load(gzip.open(LEDGER, "rt", encoding="utf-8")).get("fills", {}) if os.path.exists(LEDGER) else {}
+    # stored under the symbol or any rename relative (a quarter kept under a former ticker is not owed again)
+    have = lambda s_, q_: any(q_ in (hist.get(x) or {}) or q_ in (led.get(x) or {}) for x in {s_} | relatives(s_))
+    meta = json.loads(gzip.open(os.path.join(REPO, "docs", "stock_data.bin")).read())["meta"]
+    bysym = collections.defaultdict(set)
+    for k_, m_ in meta.items(): bysym[m_.get("symbol") or k_.split(".")[0]].add(k_)
+    sme = {s_ for s_, ks in bysym.items() for k_ in ks if k_.endswith(".NS") and meta[k_].get("sme")}
+    say("update window %s | NSE SME symbols %d" % (qes, len(sme)))
+    # ---- NSE SME board
+    H = {"User-Agent": HONEST_UA, "Accept": "application/json, text/plain, */*", "Accept-Language": "en-US,en;q=0.9",
+         "Referer": "https://www.nseindia.com/"}
+    def get(url, timeout=120):
+        return urllib.request.urlopen(urllib.request.Request(url, headers=H), timeout=timeout).read()
+    MP = os.path.join(cache, "manifest_nse_all.json")
+    man = json.load(open(MP)) if os.path.exists(MP) else {}
+    today = (datetime.datetime.utcnow() + datetime.timedelta(hours=5, minutes=30)).date()
+    n_nse = 0
+    for qe in qes:
+        d = datetime.date.fromisoformat(qe); to = max(d, min(today, d + datetime.timedelta(days=MASTER_WINDOW_DAYS)))
+        f_ = lambda x: "%02d-%02d-%04d" % (x.day, x.month, x.year)
+        try:
+            recs = json.loads(get("https://www.nseindia.com/api/corporate-share-holdings-master?index=sme&from_date=%s&to_date=%s" % (f_(d), f_(to))))
+            recs = recs if isinstance(recs, list) else recs.get("data", [])
+        except Exception as e:
+            say("NSE SME master %s failed: %s" % (qe, e)); continue
+        want = {}
+        for r in recs:
+            sym = str(r.get("symbol") or "").upper().strip()
+            if F.iso_date(r.get("date")) != qe or sym not in sme or have(sym, qe) or not str(r.get("xbrl") or "").startswith("http"): continue
+            k, sub = "%s|%s" % (sym, qe), F.visible_iso(r) or ""
+            if k not in want or sub >= want[k]["sub"]:
+                want[k] = {"url": r["xbrl"], "sub": sub, "submissionDate": r.get("submissionDate"), "broadcastDate": r.get("broadcastDate"),
+                           "revised": str(r.get("revisedData") or ""), "idx": "sme"}
+        say("NSE SME %s: %d master rows, %d new quarter-end filings to fetch" % (qe, len(recs), len(want)))
+        for k, v in sorted(want.items()):
+            if t_end and time.time() > t_end: say("time limit reached"); break
+            path = os.path.join(X, k.replace("|", "_") + ".xml.gz")
+            try:
+                b = get(v["url"])
+                if len(b) < 2000 or b"Shareholding" not in b: raise ValueError("short/odd body %d" % len(b))
+                open(path, "wb").write(gzip.compress(b)); man[k] = dict(v, path=path); n_nse += 1
+            except Exception as e:
+                man[k] = dict(v, error="%s: %s" % (type(e).__name__, str(e)[:80]))
+            time.sleep(0.5)
+    json.dump(man, open(MP, "w"))
+    # ---- BSE-only companies: the committed targets + any BSE-only dashboard company bse_universe maps a code to
+    T = json.load(open(os.path.join(HERE, "_shp_bse_targets.json")))
+    try:
+        for r_ in json.load(open(os.path.join(REPO, "docs", "bse_universe.json"), encoding="utf-8"))["rows"]:
+            c_, s_ = str(r_[0]), r_[1]
+            if c_ not in T and s_ and (s_ + ".NS") not in meta and any(k_.endswith(".BO") for k_ in bysym.get(s_, ())):
+                T[c_] = {"sym": s_, "grp": "BSE-only", "name": r_[2], "why": "§180e: BSE-only dashboard company (bse_universe)"}
+    except Exception as e:
+        say("WARN bse_universe unreadable (%s)" % e)
+    json.dump(T, open(os.path.join(cache, "bse_targets.json"), "w"), indent=0)
+    # a HALF-YEARLY filer (BSE SME: every cell of the last two years is a Mar/Sep quarter) owes no Jun/Dec quarter; a DORMANT
+    # company (nothing in the four quarters before the window) is not re-asked every run — both measured 2026-09-27: 203
+    # half-yearly filers, 57 dormant of 2,262 BSE-only companies
+    def owed(sym):
+        qs_ = set().union(*[set(hist.get(x) or {}) | set(led.get(x) or {}) for x in {sym} | relatives(sym)])
+        lo = QES[max(0, QES.index(qes[0]) - 8)] if qes[0] in QES else "0000"
+        recent = [q_ for q_ in qs_ if lo <= q_ < qes[0]]
+        half = len(recent) >= 3 and all(q_[5:7] in ("03", "09") for q_ in recent)
+        if qs_ and not any(QES[max(0, QES.index(qes[0]) - 4)] <= q_ for q_ in qs_ if qes[0] in QES): return []
+        return [q_ for q_ in qes if not have(sym, q_) and not (half and q_[5:7] in ("06", "12"))]
+    codes = sorted(c_ for c_, v in T.items() if v.get("grp") == "BSE-only" and not v.get("isin_conflict") and owed(v["sym"]))
+    say("BSE-only companies owing a window quarter: %d" % len(codes))
+    fails = n_req = n_files = 0
+    def bget(url, kind):
+        nonlocal fails, n_req
+        for attempt in range(2):
+            n_req += 1
+            try:
+                with urllib.request.urlopen(url, timeout=60) as r: b = r.read()
+                ok = (b[:1] in (b"{", b"[")) if kind == "list" else (b"xbrl" in b[:4000].lower() and len(b) > 1500)
+                if ok: fails = 0; time.sleep(0.6); return b
+                why = "not %s (%d bytes)" % (kind, len(b))
+            except urllib.error.HTTPError as e:
+                why = "HTTP %d" % e.code
+                if e.code == 404: time.sleep(0.6); return None
+            except Exception as e:
+                why = "%s: %s" % (type(e).__name__, str(e)[:60])
+            fails += 1; say("refused/failed", url.rsplit("/", 1)[-1][:60], why)
+            if fails >= 3:
+                say("3 refusals in a row -> pausing 10 min"); time.sleep(600)
+                if fails >= 6: raise SystemExit("BSE refusing repeatedly; stopped (the next run resumes)")
+            time.sleep(2)
+        return None
+    for i, code in enumerate(codes):
+        if t_end and time.time() > t_end: say("time limit reached — the next run continues"); break
+        b = bget("https://api.bseindia.com/BseIndiaAPI/api/SHPQNewFormat/w?scripcode=%s" % code, "list")
+        if b is None: continue
+        open(os.path.join(LD, code + ".json"), "wb").write(b)
+        try: rows = json.loads(b).get("Table") or []
+        except Exception: continue
+        sym = T[code]["sym"]
+        for qe, r in bse_pick(rows).items():
+            if qe not in qes or have(sym, qe): continue
+            xf = r["XbrlFile"].strip(); xp = os.path.join(XD, xf + ".gz")
+            if os.path.exists(xp): continue
+            fb = bget("https://www.bseindia.com/XBRLFILES/SHPXBRLDataXML/" + xf, "xbrl")
+            if fb: open(xp, "wb").write(gzip.compress(fb)); n_files += 1
+        if (i + 1) % 100 == 0: say("BSE progress %d/%d, %d files, %d requests" % (i + 1, len(codes), n_files, n_req))
+    say("fetched: NSE SME %d files | BSE %d files (%d requests)" % (n_nse, n_files, n_req))
+    build(cache, window=qes)
+
+
 # ------------------------------------------------------------------------------------------ build
-def build(cache):
+def build(cache, window=None):
     hist, relatives, isins, man = load_inputs(cache)
+    # WINDOW mode (§180e, stage `update`): only the given quarters are evaluated, on top of the store as it is — every
+    # landed cell stays landed (fill-only), and the result is MERGED onto the committed ledger at the end.
+    prev_led = json.load(gzip.open(LEDGER, "rt", encoding="utf-8")) if os.path.exists(LEDGER) else {}
     # Re-runs must reproduce the ledger: cells this ledger itself landed are treated as NOT stored (otherwise a
     # rebuild after landing sees every cell as "already stored" and writes an empty ledger that CI then applies).
-    if os.path.exists(LEDGER):
+    if os.path.exists(LEDGER) and not window:
         prev = json.load(gzip.open(LEDGER, "rt", encoding="utf-8")).get("fills", {})
         for s_, qs_ in prev.items():
             for q_ in qs_:
@@ -692,7 +843,7 @@ def build(cache):
     try:
         import subprocess
         _b = subprocess.run(["git", "-C", REPO, "show", "HEAD:scripts/shp_fill_allstocks.json.gz"], capture_output=True).stdout
-        head = json.loads(gzip.decompress(_b)).get("fills", {}) if _b else {}
+        head = json.loads(gzip.decompress(_b)).get("fills", {}) if (_b and not window) else {}
     except Exception as e:
         print("WARN committed ledger unreadable (%s)" % e); head = {}
     n_head = 0
@@ -706,6 +857,7 @@ def build(cache):
     for k, v in man.items():
         sym, qe = k.split("|")
         if not (FIRST_QE <= qe <= LAST_QE): continue
+        if window and qe not in window: continue
         try:
             a = analyse(read_doc(v["path"]), qe)
         except Exception as e:
@@ -748,6 +900,7 @@ def build(cache):
         try: rows = json.load(open(lp)).get("Table") or []
         except Exception: continue
         for qe, r in bse_pick(rows).items():
+            if window and qe not in window: continue
             xp = os.path.join(XD, r["XbrlFile"].strip() + ".gz")
             key = (tv["sym"], qe)
             # an NSE document that could not be read (NAVKARURB Dec-2024: truncated XML) yields to the BSE copy
@@ -969,6 +1122,10 @@ def build(cache):
     share_series = collections.defaultdict(dict)               # total shares per filing, for the capital-collapse test
     for (s_, q_), a_ in docs.items():
         if a_.get("shares"): share_series[s_][q_] = [a_["shares"]]
+    if window and os.path.exists(SHARES_HIST):                 # window mode: earlier quarters come from the stored series
+        for s_, qs_ in json.load(open(SHARES_HIST, encoding="utf-8")).items():
+            if s_ == "_meta": continue
+            for q_, v_ in qs_.items(): share_series[s_].setdefault(q_, [v_[0]])
     fills, holds = collections.defaultdict(dict), collections.defaultdict(dict)
     stat = collections.Counter(); why = collections.Counter()
     for (sym_, qe_), a_ in set_aside.items():
@@ -1104,10 +1261,16 @@ def build(cache):
         if "error" in a or not n or n <= 0 or (identity_bse(sym, a) if a.get("bse_code") else identity(sym, a))[0]: continue
         sh[sym][qe] = [int(n), visibility(a)[0], a["src"]]
     sh_hold = 0
+    prev_sh = {}
+    if window and os.path.exists(SHARES_HIST):
+        prev_sh = json.load(open(SHARES_HIST, encoding="utf-8")); prev_sh.pop("_meta", None)
     for sym, qs in sh.items():
+        if window:                                               # neighbours = the stored series + this window
+            for q_, v_ in (prev_sh.get(sym) or {}).items(): qs.setdefault(q_, v_)
         ks = sorted(qs)
         bad = []                                                 # decide on the untouched series, drop afterwards
         for idx, qe in enumerate(ks):
+            if window and qe not in window: continue
             nb = [qs[ks[j]][0] for j in (idx - 2, idx - 1, idx + 1, idx + 2) if 0 <= j < len(ks)]
             n = qs[qe][0]
             if nb and all(n < x / 5 or n > x * 5 for x in nb):
@@ -1119,10 +1282,31 @@ def build(cache):
     sh = {s: qs for s, qs in sh.items() if qs}
 
     built = (datetime.datetime.utcnow() + datetime.timedelta(hours=5, minutes=30)).strftime("%Y-%m-%d %H:%M IST")
+    if window:
+        # MERGE onto the committed ledger: landed cells are never replaced here (fill-only), a window quarter evaluated
+        # this run takes this run's hold (or loses a stale one), and share counts / re-filings are added the same way
+        n_new = sum(len(v) for v in fills.values())
+        merged = {s_: dict(q_) for s_, q_ in (prev_led.get("fills") or {}).items()}
+        for s_, qs_ in fills.items():
+            for q_, c_ in qs_.items(): merged.setdefault(s_, {}).setdefault(q_, c_)
+        fills = merged
+        rv = {s_: dict(q_) for s_, q_ in (prev_led.get("revisions") or {}).items()}
+        for s_, qs_ in revisions.items():
+            for q_, c_ in qs_.items(): rv.setdefault(s_, {})[q_] = c_
+        revisions = rv
+        ph = (json.load(open(HOLDS, encoding="utf-8")).get("holds") or {}) if os.path.exists(HOLDS) else {}
+        evaluated = set(docs)
+        for s_, qs_ in ph.items():
+            for q_, v_ in qs_.items():
+                if (s_, q_) not in evaluated and q_ not in holds.get(s_, {}): holds[s_][q_] = v_
+        for s_, qs_ in prev_sh.items():
+            for q_, v_ in qs_.items(): sh.setdefault(s_, {}).setdefault(q_, v_)
+        print("WINDOW %s: %d new cells merged onto the committed ledger" % (window, n_new))
     n_cells = sum(len(v) for v in fills.values())
     # BSE-only tickers, and NSE listings of 2026 whose NSE symbol IS their BSE id (grp NSE-new): their own SHP rows must
     # not make build_stock_fin treat the slug as taken and skip the same scrip's BSE fundamentals.
     bse_keys = {s_: bse_code_of[s_] for s_ in fills if s_ in bse_code_of and T.get(bse_code_of[s_], {}).get("grp") in ("BSE-only", "NSE-new")}
+    if window: bse_keys = dict(prev_led.get("_bse_keys") or {}, **bse_keys)
     led = {"_bse_keys": dict(sorted(bse_keys.items())),
            "_meta": {"source": "NSE corporate-share-holdings-master XBRL (equities + SME boards) + BSE SHPQNewFormat XBRL",
                      "built": built, "runbook": "§180", "symbols": len(fills), "cells": n_cells,
@@ -1148,7 +1332,8 @@ def build(cache):
 
 if __name__ == "__main__":
     ap = argparse.ArgumentParser()
-    ap.add_argument("stage", choices=["master", "download", "bse", "rowlevel", "build"])
+    ap.add_argument("stage", choices=["master", "download", "bse", "rowlevel", "build", "update"])
+    ap.add_argument("--quarters", default=None, help="update/build: comma list of quarter-ends (default: the last two closed)")
     ap.add_argument("--cache", default=CACHE)
     ap.add_argument("--shard", default="0/1", help="bse stage: k/n — this machine takes scrip codes with code %% n == k")
     ap.add_argument("--cap", type=int, default=20000, help="bse stage: per-run file cap (runbook §181)")
@@ -1156,4 +1341,5 @@ if __name__ == "__main__":
     ap.add_argument("--codes", default=None, help="bse stage: JSON list of scrip codes to restrict this run to (later rounds)")
     a = ap.parse_args()
     if a.stage == "bse": stage_bse(a.cache, cap=a.cap, shard=a.shard, max_minutes=a.max_minutes, codes_file=a.codes)
+    elif a.stage == "update": stage_update(a.cache, quarters=a.quarters.split(",") if a.quarters else None, max_minutes=a.max_minutes)
     else: {"master": stage_master, "download": stage_download, "rowlevel": stage_rowlevel, "build": build}[a.stage](a.cache)
