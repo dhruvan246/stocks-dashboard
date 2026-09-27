@@ -22941,3 +22941,14 @@ ZEAL Mar-26 8.50 vs 11.37); the stock page falls back to `SYM.BO` for sector (ZE
 the four BSE-owned keys still show the stopped NSE twin's price slice (KEL: no name, no market cap, reactions on Kundan's
 prices); BRIGHT's 8 stored rows match neither company's filings; px[540654] Globalspace Mar-22 220,157.83 cr PAT
 (unit error, its own cell).
+
+**§195 fundamentals — every BSE SME IPO member's SME-era results 2020→ (user 2026-09-27: "fetch fundamentals of all bse sme ipo
+point in time from 2020 till date").** `scripts/fetch_bse_sme_ipo_fundamentals.py` — a driver over fetch_bse_results_xbrl
+(own targets: the 504 scrips in stints.json, SME-era Sep/Mar halves only, era end = the member price ledger's last SME-group
+bar; the daily job's 20-day re-list pause lifted). `--plan` / `--fetch FILLS` then `fetch_bse_results_xbrl.py --apply FILLS`
+on a FRESH main (re-apply, never merge, on a rejected push). Run 27-Sep: 489 scrips, 2,494 files, 1,586 fills (1,585 proven,
+1 provisional), +1,157 cells on main; coverage 616 → 1,818 / 2,267 due halves (27 → 80 %). Held, with reasons in the log
+(~/stocks-cache/sme_ipo_fund_fetch.log): 219 first-year Mar halves (no Sep filing — listed mid-year), 89 years that do not
+close, 60 halves of scrips now listed on NSE (the NSE stores carry no row-length flag); 38 fills have ann=0 (no filing
+time on the listing or file name) — stored as unknown. Trap: a stale `_bse_xbrl_state.json` blocks `git checkout
+origin/main`, and the apply then runs on the OLD tree — reset the state file first.
