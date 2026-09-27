@@ -22979,7 +22979,7 @@ page derived 6.73 − 6.31 = 0.42. **Open (measured, not fixed here):** QMSMEDI'
 NCI-bearing non-Ind-AS SME; 465 SME half-year sf_revop rows carry EBIT in the op slot (op = EBIT + depreciation elsewhere;
 ZEAL Mar-26 8.50 vs 11.37) → HEALED §205; the stock page falls back to `SYM.BO` for sector (ZEAL still shows Zeal Aqua's "Seafood") and
 the four BSE-owned keys still show the stopped NSE twin's price slice (KEL: no name, no market cap, reactions on Kundan's
-prices); BRIGHT's 8 stored rows match neither company's filings; px[540654] Globalspace Mar-22 220,157.83 cr PAT
+prices) → both FIXED §207 (plus SIIL, a fifth BSE-owned key, and the FOCUS / KALYANI tape names); BRIGHT's 8 stored rows match neither company's filings; px[540654] Globalspace Mar-22 220,157.83 cr PAT
 (unit error, its own cell).
 
 **§195 fundamentals — every BSE SME IPO member's SME-era results 2020→ (user 2026-09-27: "fetch fundamentals of all bse sme ipo
@@ -23143,3 +23143,77 @@ superseded MANUAL_RIGHTS/rights_terp count unchanged (129). PRESSTONIC 28-Jan 50
 **Keep it current:** new SME/main-board rights are NOT picked up automatically — re-run the measure against the feed
 (`~/stocks-cache/rights-sme/measure.py <feed.json> <out.json>`) and append rows. Push does not trigger refresh-backtest-data.yml
 (paths = update_sf_data.py) — dispatch it after a ledger-only change.
+
+## §207 — WHOSE PAGE A TICKER IS DECIDES ITS PRICE SLICE, SECTOR AND LIVE QUOTE: 76 BSE companies' pages stop showing the NSE tape of the same string; KEL→VISDEM and DRL→DIRL merged; FOCUS/KALYANI tape names (2026-09-28, user: "BSE prices on all 76", "merge both")
+**NO ASSUMPTIONS, NO GUESSWORK — every value below was measured this session (live release tape end 2026-09-25 rev c407c3db2b,
+docs/stock_data.bin meta, docs/bse_prices.bin end 2026-09-25, NSE's own bhavcopies / symbolchange.csv / SME_EQUITY_L / EQUITY_L).**
+**The three page-side defects §203 left open.** (1) `build_bse_slices` skipped every BSE ticker the NSE tape also holds ("NSE data
+always wins"), so a page the site gives to a BSE company showed the tape's series of the same string. Live: KEL = "KEL · NSE SME ·
+₹81.55 · last traded 2026-08-05 · market cap —", React Mar-26 −7.39% / Jun-25 −4.08% measured on Kundan Edifice's prices beside
+Kotia's results. (2) `stock.html renderClass()` read `map[SYM.NS] || map[SYM.BO]`: the only NSE pages that ever reached the `.BO`
+entry are the 7 §203 conflict tickers (ZEAL, GSTL, MAL, SEL, RAJPUTANA, FOCUS, KALYANI; measured over every tape key) and all 7 got
+the BSE twin's sector — live ZEAL "Fast Moving Consumer Goods › Food Products › Seafood" (Zeal Aqua). (3) The tape meta named
+FOCUS "Focus Business Solution Ltd" / "Information Technology" (BSE 543312) beside Focus Lighting's ISIN; KALYANI's name was its ticker.
+**Population (tape 5,251 keys vs stock_data.bin meta).** 3,156 NSE-owned (SYM.NS), 2,017 on neither (delisted NSE history), 78
+BSE-owned (only SYM.BO): 5 another issuer — KEL, DRL, INNOVATIVE, BRIGHT and **SIIL** (INE971P, dead 2020-05-04, vs Sabrimala
+Industries BSE 540132 INE400R — missed by §203) —, 41 the same issuer (a dead NSE listing: SPICEJET "DELISTED ₹31.70, last traded
+2023-04-28" while BSE 500285 printed ₹9.85 on 2026-09-25, ₹1,503 cr; TANFACIND ₹14.20 of 2014-12-26 vs BSE ₹3,422.50, ₹7,259 cr;
+HINDMOTORS 2025-10-01), 32 with no NSE ISIN on record (NSE series all ended ≤ 2010). 76 of the 78 have a BSE series ≥ 20 days
+(BIRLACOT / JIYAECO have none — they keep the NSE slice). None of the 78 is a Nifty 500 member today; 15 were once (HINDMOTORS
+1998-2010, SPICEJET 2019-12 → 2022-08 …) — backtests read the tape, which this change leaves as it was.
+**User decisions (2026-09-28).** "BSE prices on all 76" (not only the 5; not an NSE+BSE splice) and "merge both" (the two renames
+NSE itself filed, prices only).
+**Fix, per consumer:**
+- `build_bse_slices.owner_takeovers()` — tape tickers whose page is the BSE company (`bse_resolve.page_company == "bse"`) and whose
+  BSE scrip has ≥ min-days sessions: the BSE series REPLACES the tape's slice (log line "§207 page owner: …"). `SF_BIN=` reads a
+  tape other than the frozen committed copy. BSE prices are raw BSE closes from 2020 (as on every BSE-only page); the pre-2020
+  NSE chart history leaves those pages only.
+- `build_search_index` imports the same helper: a takeover row carries the BSE universe name / alive / industry / mcap, so the
+  search box and the slice can never name two different owners.
+- `stock.html`: `renderClass` reads `.BO` only on a BSE slice (`SLICE.bse`) and `.NS` otherwise; `liveQuote` returns on a BSE slice
+  — it asked Yahoo for `SYM.NS`, the NSE namespace (BRIGHT.NS = Bright Solar's 2024 quote), and a rejected splice still writes
+  the quote into the header.
+- `build_sf_data.current_universe()` (source of the tape's name / industry / alive tag): the NSE row of dash_slim wins; a `.BO` row
+  fills only a symbol with no NSE row and never when ISIN proves another company (the old loop was "last row wins"). Order-
+  independent; on today's dash_slim exactly 8 symbols change (BRIGHT, CREATIVE, DRL, HSIL, INNOVATIVE, KEL, SIIL, WORTH — their
+  BSE rows no longer name or mark alive an NSE series of another company); FOCUS → "Focus Lighting and Fixtures Limited".
+- `update_sf_data` `META_FIX` (guarded: a field changes only while it still holds the recorded value; counted in `mh`): FOCUS name /
+  ind / isin → "Focus Lighting and Fixtures Limited" / "Uncategorized" (what the fixed map yields) / INE593W01028 (EQUITY_L);
+  KALYANI → "Kalyani Commercials Limited", INE610E01010.
+**The two merges (prices only — KEL / DRL keep Kotia's / Disha's financials, SHP and pages; no FUND_ALIAS: an old-symbol link must
+not redirect, §197).** NSE's symbolchange.csv: "Visdem Technosys Limited,KEL,VISDEM,06-AUG-2026", "Dhanuka Infra Realty Limited,DRL,
+DIRL,02-JAN-2026"; bhavcopy PREV_CLOSE on the new symbol's first session = the old last close (VISDEM 06-Aug-2026 81.55; DIRL
+09-Feb-2026 19.90); SME_EQUITY_L dates VISDEM's listing 26-Sep-23 and DIRL's 18-Oct-16 = each fragment's first bar. Fragment vs NSE
+raw (~/stocks-cache/nse_bhav/full): KEL 620/620 closes equal (ISIN INE0OWX01025 throughout); DRL 372/465 — the 93 bars before
+2018-01-10 sat at ×0.6 of raw while NSE's CA feed (2018 SME, filed under the CURRENT symbol DIRL) says "BONUS 1:1" ex 09-Jan-2018:
+the lot went 3,000 → 6,000 (gcd of traded quantities before / after) and the ex-day OPEN 20.50 ≈ 41.25 × 0.5 (§87c) — §145 had
+inferred ×0.6 from the raw 41.25 → 24.75 step, and the §161j audit listed that boundary as "NO_RECORD / UNRESOLVED" because it looked
+the factor up under DRL. **Mechanism:** MANUAL_MERGE `"VISDEM": "KEL"`, `"DIRL": {"old": "DRL", "inlife": [[20180110, 0.5, 41.25,
+24.75]]}` — "inlife" = an official factor of the NEW key dated inside the old fragment's life, re-baked during the merge (baked =
+raw ratio / stored ratio, reconcile_rights' test, to the 2-decimal floor). `sme_backfill.json.gz`: the KEL / DRL `create` blocks →
+`prepend` onto VISDEM (anchor 20260806 raw 84.35 prev 81.55) / DIRL (anchor 20260209 raw 19.90 prev 19.90), bars = the live tape
+fragments (identical to the old create bars), DRL's re-baked exactly as the merge does — without the switch the next nightly would
+re-create both keys (a create fires whenever its key is absent). INNOVATIVE → ITTL is NOT a merge: ISIN INE070Y01015 → …023 after a
+2024-06-25 → 2024-12-30 gap and no symbolchange entry. BRIGHT (Bright Solar) and SIIL have no successor.
+**Verified (before the push):** `update_sf_data.py --base <live release>` run 1 = exactly "MANUAL RENAME MERGE KEL -> VISDEM (620 pts
+prepended, adj=1.0000)", "DRL -> DIRL: in-life official factor at 20180110: baked 0.6000 -> 0.5000 (93 earlier bars x0.833333)",
+"DRL -> DIRL (465 pts …)" and the 5 META FIX lines; tape diff 5,251 → 5,249 keys (KEL, DRL gone), series changed ONLY DIRL + VISDEM,
+meta ONLY FOCUS + KALYANI; successor bars byte-identical to today's live slices; merged old parts == the ledger prepend bars (the
+rebuild path agrees); DIRL absent from self-heal's "left for a human" list. Run 2 on run 1's output: 0 of 5,249 series/meta differ,
+no merge / fix line. build_bse_slices on the merged key set: 74 takeovers (3 another company BRIGHT / INNOVATIVE / SIIL, 39 same
+issuer, 32 unproven) + KEL / DRL as plain BSE-only slices = the 76. Search index cut: 175 rows change = the 74 takeovers + KEL / DRL /
+FOCUS / KALYANI + 97 BSE-only names losing "-$" (§204's bse_universe refresh, not this change). Browser, localhost, real stock.html on
+slices cut from the merged tape: KEL "Kotia Enterprises Ltd ₹26.07 as of 2026-09-25", market cap ₹18 cr, React Mar-26 −3.69% (was
+−7.39%) / Jun-25 +0.00% (was −4.08%), Kotia's own sector chain; DRL Disha ₹35.62 (₹26 cr); INNOVATIVE ₹19.20; BRIGHT ₹348.05 (₹760 cr);
+SIIL ₹15.80; SPICEJET ₹9.85, ₹1,503 cr, not delisted, React filled for 2025-26; TANFACIND ₹3,423, ₹7,259 cr, P/E 107.3; VISDEM 649 bars
+from 2023-09-26; DIRL 539 bars from 2016-10-18; the 7 NSE conflict pages show no borrowed sector (as every unclassified NSE SME, e.g.
+SUNLITE); RELIANCE control unchanged. Zero console errors in a fresh tab; the only error seen, the quotes worker's 502 for
+`VISDEM.NS`, is identical on the live page; BSE pages make no worker call. 375 px: no sideways scroll; dark + light via the real
+theme buttons (localhost, bt_owner_key absent).
+**Open (measured, not changed here):** 285 alive tape symbols are named by their ticker although dash_slim has the NSE register
+name (BSE, CDSL, …) — keys the day loop appends start with name = ticker and nothing fills them. Self-heal's "left for a human"
+list holds ~10 SME boundaries baked ×0.6 against an official ×0.5 (VERTOZ, CONTI, TEMBO, QUADPRO, KODYTECH, MOS, SAHAJSOLAR, USHAFIN,
+RAJMET …) — likely DRL's class, not adjudicated. INNOVATIVE / BRIGHT / SIIL stay dead NSE tape keys (their pages are the BSE
+companies'). BSE pages get no live quote (the worker serves `SYM.BO`: KEL.BO = Kotia ₹26.07, SPICEJET.BO ₹9.85 — not built).
+stock.html scrolls sideways at a 1,024 px viewport (live KEL 1,075 vs 1,014; RELIANCE 1,280) — pre-existing. KALYANI's tape holds 1
+bar (2026-08-28) though EQUITY_L lists it since 2017 (series BE) — not investigated.

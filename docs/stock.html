@@ -1595,7 +1595,11 @@ async function renderClass(){
   const el=$('sCls'); if(!el||!TKR) return;
   if(!CLS_MAP) CLS_MAP=await loadClass();
   const map=CLS_MAP; if(!map) return;
-  const c=map[TKR+'.NS']||map[TKR+'.BO']||map[TKR]; if(!c) return;   // 477 tickers (mostly renames) aren't filed yet
+  // Whose page this is picks the exchange's entry (§203/§207): a BSE slice (SLICE.bse) is the BSE company's page and
+  // reads only SYM.BO; every other page is the NSE company's and reads only SYM.NS. The old NS-then-BO fallback gave
+  // the 7 NSE pages whose ticker is also another company's BSE scrip_id (ZEAL, GSTL, MAL, SEL, RAJPUTANA, FOCUS,
+  // KALYANI — measured: the only NSE pages that ever reached .BO) that company's sector: ZEAL showed Zeal Aqua's Seafood.
+  const c=(SLICE&&SLICE.bse)?(map[TKR+'.BO']||map[TKR]):(map[TKR+'.NS']||map[TKR]); if(!c) return;   // 477 tickers (mostly renames) aren't filed yet
   const chain=CLS_CHAIN.map(([f,lvl,lbl])=>({f,lvl,lbl,name:clsNorm(c[f])})).filter(x=>x.name);
   if(!chain.length) return;
   const sets=chain.map(()=>new Set());                               // one pass: who else sits in each rung
@@ -1931,6 +1935,10 @@ function spliceLiveBar(mt){
 }
 async function liveQuote(){
   if(ASOF!=null) return;                    // rewound view: the header must stay at the past date
+  // A BSE company's page (SLICE.bse) never asks Yahoo for SYM.NS: that is the NSE namespace, where the same string can
+  // be another company (BRIGHT.NS = Bright Solar on the Bright Outdoor Media page; KEL.NS = Kundan Edifice), and a
+  // rejected splice still writes the quote into the header below (§207).
+  if(SLICE&&SLICE.bse) return;
   const m=META[TKR]; if(!m||!m.alive) return;
   try{
     const j=await (await fetch(WORKER+'/?chart='+encodeURIComponent(m.symbol+'.NS'),{cache:'no-store'})).json();
