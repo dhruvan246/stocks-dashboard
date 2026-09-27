@@ -21504,7 +21504,18 @@ correct filing; 7 pairs stay undecided (each sits next to a decided candidate). 
 IGL 20230630 std rev 37.62 (×100 → 3,761.85; the con slot says 3,761.85), PAYTM 20221231 con rev 206.22 / PAT −39.2 (×10 → 2,062.2 /
 −392.0), RKFORGE 20241231 con rev 10,737.82 / PAT 996.14 (÷10), M&MFIN 20210331 std+con, LICHSGFIN 20211231 std+con, APOLLOTYRE 20210331
 std, BIRLACORPN 20210930 std, MHRIL 20190630 con, SFL 20201231 + 20210630 std+con, WHEELS 20221231 std+con. None armed here: each needs
-its own adjudication (was guards, parse_only, owners pins), as above. List: `~/stocks-cache/scalefix-mar22/ytd_candidates_triaged.json`.
+its own adjudication (was guards, parse_only, owners pins), as above.
+**Re-run:** `XBRL_CACHE=/Users/dhruvan/stocks-dashboard/scripts/_xbrl_cache python3 -X utf8 scripts/detect_scale_ytd.py --out <file>`
+(~20 s, read-only; it reproduces every number above). This run's list: `scripts/scale_fix_candidates_2026-09-27.json`.
+**Second reader, Moneycontrol** (`pat_suspects_mc_2026-09-05.json`): of its cells where MC / ours is an exact 10^k, 9 are screen
+candidates and MC equals raw × 10^−k to ~1% (PAYTM 20221231 con −392.0; M&MFIN 20210331 std / con 149.97 / 216.34; SFL 20201231
+std / con 77.99 / 99.28 and 20210630 std 19.22; CAPLIPOINT 20200630 std / con 42.02 / 54.53; MHRIL 20190630 con 3.68) — that
+journal had called every one of them "store-confirmed by the quarter's own filing", i.e. it compared the store with the same
+scaled file. MC also names cells the chain did NOT flag: DLF 20181231 std (2.04 vs 204.22), SFL 20200930 std / con (0.47 / 0.69 vs
+47.18 / 68.97), KSB 20181231 std (2.53 vs 25.3), ADANIENSOL 20220630 std (−0.17 vs −16.96). The last exposes a screen limit: its
+store triage keys on the FILING's ticker (ADANITRANS), so a renamed company's store row reads "none" — resolve renames
+(`_rename_map.json`) before trusting a candidate's store class.
+
 ## §185 — AUDIT OF THE BSE RESULTS READERS AFTER §182: nine defects fixed, one ruled out (2026-09-27, user: "find more n more bugs … fix")
 All of it is quarter-agnostic: every target quarter comes from the filing (its printed period, else its filing date).
 1. **An older text filing hid the new scanned one.** `extract()` ran vision only when OCR found NOTHING, so a
