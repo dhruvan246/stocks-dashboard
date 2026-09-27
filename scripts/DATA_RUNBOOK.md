@@ -22411,6 +22411,11 @@ only the quote worker's 502 for SME symbols (as §191).
 Jun / Sep-25 312.11 / 750.05, SVJ Mar-26 6,201.0 — the page shows them beside the BSE revenue. (2) The xbrl-extra nightly
 copies its whole gz over origin's after its reset, so any detail heal pushed during its ~00:10 IST run would be undone.
 (3) The TTM cards (`window4`) still sum four contiguous rows without checking `pd` (§191 open).
+**First CI run on the new code (d01285185, 18:59 IST):** 20 SME half-year cells on 4 scrips, every one h=1 with an exact
+pair (FILTRA 539098 FY21-FY26, MALPANI 544351, REPONO 544463, SAFE 544257); "held" lines printed for the rest (e.g.
+544351 Mar-25: no Sep-24 filing). Their files never reached this Mac — `build_row_periods.py` marked all 20 from the
+carried pf alone (list 1,587 → 1,607, +20 −0; only those 4 slices gained `pd`; FILTRA now shows Ratios FY21-FY26).
+Regenerate the list the same way after CI SME fills; no file download is needed for pf-proven rows.
 
 ## §197 — A BSE TICKER THAT IS ALSO A FORMER NSE TICKER OF ANOTHER COMPANY: the rename alias is an NSE fact, never applied to the BSE company (2026-09-27, user: "fix the alias at its source so WORTH shows Worth Investment's own data")
 **NO ASSUMPTIONS, NO GUESSWORK — every value below was measured this session.**
