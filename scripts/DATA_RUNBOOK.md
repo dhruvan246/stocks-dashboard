@@ -22812,3 +22812,21 @@ the DVL/DTIL/RASOYPR series-surgery and RASOYPR bar-insert ledgers re-apply ever
 **Measured, left for its own review:** 12 OLDER merges carry their old ticker as the name from the same copy — BANKADD,
 GOLDADD, ITADD, NIFTYADD, SUMMIT, XLENERGY, ASHCONIUL, BELLCERATL, MORARJEE, NCOPPER, NTL, RMMIL. The heal only touches
 entries whose spec states a name/isin, so they are unchanged.
+
+## §201 — THE DAILY SEARCH-INDEX JOB CUT THE INDEX FROM THE FROZEN BIN FOR WEEKS (2026-09-27, user: "make refresh-search-index.yml build from the live release asset")
+**Measured.** Live `docs/search_index.json` read `"v": "2026-06-13"` while sf-data's `sf_meta.json` end was 2026-09-25:
+`refresh-search-index.yml` (daily 07:07 IST, added after refresh-backtest-data's price-day gate froze the index) ran
+`build_search_index.py` right after `git reset --hard origin/main`, i.e. on the COMMITTED `docs/sf_stock_data.bin` — the
+frozen snapshot of §0 (end 2026-06-13). refresh-backtest-data does cut the index from its fresh bin, but only on a publish,
+and the next 07:07 run overwrote it with the June cut again. Consequences: `check_fund_alias.py` (the nightly `fund_alias`
+feed) refused every night ("stale", > MAX_META_AGE_DAYS) so FUND_ALIAS drift went unchecked; search carried June names /
+alive flags and missed later series (the §145 SME names, §197/§200 merges).
+**Fix.** The workflow downloads the `data` release asset once (`curl -sfL --retry 4`, fails the job on any HTTP error — no
+fallback to the committed bin; the committed index stays) and runs `SF_BIN=$RUNNER_TEMP/sf_stock_data.bin`.
+`build_search_index.py` gained a **no-regression guard**: a bin whose `end` is older than the `v` already in
+docs/search_index.json ABORTs before writing (every caller, local runs included) — the unstamped / truncated-meta aborts stay.
+**Verified locally (2026-09-27 20:4x IST, release asset end 2026-09-25):** committed bin → `ABORT: … cut from 2026-06-13 but
+search_index.json already carries 2026-09-25`, file untouched; release asset → v 2026-09-25, 7,425 symbols (5,320 live,
+2,174 BSE-only appended), byte-identical to the cut refresh-backtest-data committed; selftest OK.
+`check_fund_alias.py` on it: **in step — expected 571, missing 0, conflicts 0, extra 60** (the older hand-curated layer, the 12
+§197 collision entries and §200's GODHA/KEERTI), both copies byte-identical, exit 0.

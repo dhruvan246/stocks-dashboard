@@ -284,6 +284,18 @@ def main():
     if not re.match(r"^\d{4}-\d{2}-\d{2}$", end):
         sys.exit("ABORT: no usable top-level `end` in %s (got %r) — refusing to publish an "
                  "index with no staleness stamp" % (os.path.basename(SF), end))
+    # NEVER REGRESS. The daily refresh-search-index job cut the index from the committed docs/sf_stock_data.bin (frozen
+    # 2026-06-13) for weeks and overwrote every fresh cut refresh-backtest-data made — live "v" sat 106 days old, which
+    # also kept check_fund_alias.py on "stale" (it judges on this file). A bin OLDER than the index already on disk is
+    # the wrong bin, whoever called us: refuse rather than overwrite a newer cut with an older one.
+    try:
+        with open(OUT, encoding="utf-8") as fh:
+            have = json.load(fh).get("v") or ""
+    except (OSError, ValueError):
+        have = ""
+    if re.match(r"^\d{4}-\d{2}-\d{2}$", have) and end < have:
+        sys.exit("ABORT: %s is cut from %s but %s already carries %s — refusing to regress the index "
+                 "(point SF_BIN at the live release asset)" % (os.path.basename(SF), end, os.path.basename(OUT), have))
 
     mcap = {}
     if os.path.exists(SLIM):

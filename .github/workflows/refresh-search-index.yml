@@ -31,16 +31,27 @@ jobs:
         with:
           python-version: "3.11"
 
+      # The LIVE price bin is the `data` release asset (refresh-backtest-data re-uploads it every trading day).
+      # docs/sf_stock_data.bin in the checkout is a FROZEN snapshot (DATA_RUNBOOK §0, end 2026-06-13): cutting the
+      # index from it shipped "v": "2026-06-13" for 106 days, erased every fresh cut refresh-backtest-data made,
+      # and kept check_fund_alias.py (which judges on this file) on "stale". Never fall back to it: if the
+      # download fails the job fails and the committed index stays (runbook §201).
+      - name: Download the live price bin (release asset)
+        run: |
+          curl -sfL --retry 4 --retry-delay 15 -o "$RUNNER_TEMP/sf_stock_data.bin" \
+            "https://github.com/dhruvan246/stocks-dashboard/releases/download/data/sf_stock_data.bin"
+          ls -l "$RUNNER_TEMP/sf_stock_data.bin"
+
       - name: Rebuild + commit the search index (file-scoped, reset-safe)
         run: |
           git config user.name  "github-actions[bot]"
           git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
           for attempt in 1 2 3 4 5; do
             git fetch origin main -q && git reset --hard origin/main -q
-            # build_search_index reads docs/sf_stock_data.bin (NSE + delisted) and appends the BSE-only
-            # names that carry a price series — it ABORTs on a truncated meta or an unstamped `end`, so a
-            # bad build never commits. Re-run after reset each attempt (it's a fresh, deterministic cut).
-            python3 scripts/build_search_index.py
+            # build_search_index reads the live bin's meta (NSE + delisted) and appends the BSE-only names that
+            # carry a price series — it ABORTs on a truncated meta, an unstamped `end`, or a bin OLDER than the
+            # committed index, so a bad build never commits. Re-run after reset each attempt (deterministic cut).
+            SF_BIN="$RUNNER_TEMP/sf_stock_data.bin" python3 scripts/build_search_index.py
             git add docs/search_index.json
             if git diff --cached --quiet; then echo "search index unchanged"; exit 0; fi
             git commit -m "Search index refresh $(TZ=Asia/Kolkata date +'%Y-%m-%d %H:%M IST')"
