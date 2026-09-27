@@ -55,7 +55,7 @@ that sits below 1/5 or above 5x BOTH neighbours within two quarters is HELD (stu
 
 Run:  python3 scripts/fetch_shp_allstocks.py master|download|build [--cache DIR]   (default cache ~/stocks-cache/shp/all_fill)
 """
-import os, sys, re, json, gzip, time, argparse, collections, datetime
+import os, sys, re, json, gzip, time, argparse, collections, datetime, difflib, statistics
 import xml.etree.ElementTree as ET
 
 HERE = os.path.dirname(os.path.abspath(__file__))
@@ -107,15 +107,33 @@ def zero_proof(pct, shc):
     # A filing that itself names institutional shares is never a proof of zero, whatever else it says (DELTA 539596
     # Jun/Sep-2024: Public == Non-institutions share for share, yet Institutions(Foreign) = 423,696 shares, 7.86 %).
     if any((shc.get(k) or 0) > 0 or (pct.get(k) or 0) > 0 for k in INST_PARENTS): return False
-    gov = max([shc.get(k, 0.0) for k in GOV_PARENTS] + [0.0])
-    # Government may sit in Public, or its tag may carry a PROMOTER stake (PSU / state co-promoter, TANFACIND) and then
-    # is not part of Public at all: either exact identity leaves nothing for institutions.
-    if abs(sp - (sn + gov)) >= 0.5 and abs(sp - sn) >= 0.5: return False   # share counts are integers
+    # Government may sit in Public, or its tag may carry a PROMOTER stake (PSU / state co-promoter, TANFACIND), and a filing
+    # can carry both (ELNET: CentralGovernmentOrStateGovernmentS = the promoter, Goverments = a public holding): the exact
+    # identity Public == Non-institutions + SOME subset of the government tags present leaves nothing for institutions.
+    govs = [shc.get(k, 0.0) for k in GOV_PARENTS if shc.get(k)]
+    sums = {0.0}
+    for g_ in govs: sums |= {x + g_ for x in sums}
+    if not any(abs(sp - (sn + x)) < 0.5 for x in sums): return False      # share counts are integers
     tot = pct.get("ShareholdingPatternMember")
     third = max([pct.get(k, 0.0) for k in THIRD] + [0.0])
     a = tot if tot is not None else prom + pub + third
     sc = 100.0 if 0.9 <= a <= 1.1 else 1.0
     return 98.0 <= (prom + pub + third) * sc <= 102.0 or 98.0 <= (prom + pub) * sc <= 102.0
+
+
+NAME_STOP = {"LIMITED", "LTD", "THE", "PVT", "PRIVATE", "CO", "COMPANY", "CORP", "CORPORATION", "INC"}
+
+
+def cname_norm(x):
+    x = re.sub(r"[^A-Z0-9 ]", " ", str(x or "").upper().replace("&", " AND "))
+    return "".join(t for t in x.split() if t not in NAME_STOP)
+
+
+def names_match(a, b):
+    """Company-name identity for a filing whose ISIN field is a filer typo (§180c): equal after normalising case,
+    punctuation, '&' and the legal suffix, or a >= 0.92 character match (spacing / abbreviation noise)."""
+    A, B = cname_norm(a), cname_norm(b)
+    return bool(A and B) and (A == B or difflib.SequenceMatcher(None, A, B).ratio() >= 0.92)
 
 
 # ------------------------------------------------------------------------------------------ document analysis
@@ -135,13 +153,14 @@ def analyse(txt, qe):
             if st == "explicitMember": mems.append((x.text or "").split(":")[-1].strip())
             elif st == "typedMember": typed = True
         ctx[c.get("id")] = (mems, typed)
-    pct, shc, holders, symtag, isin, scrip = {}, {}, {}, None, None, None
+    pct, shc, holders, symtag, isin, scrip, cname = {}, {}, {}, None, None, None, None
     inst_lbl, non_lbl = [], []
     for f in root.iter():
         t = STRIP(f.tag)
         if t == "Symbol" and f.text and not symtag: symtag = f.text.strip().upper()
         elif t == "ScripCode" and f.text and not scrip: scrip = f.text.strip()
         elif t == "ISIN" and f.text and not isin: isin = f.text.strip().upper()
+        elif t == "NameOfTheCompany" and f.text and not cname: cname = f.text.strip()
         elif t == "CategoryOfOtherInstitutions" and f.text: inst_lbl.append(f.text.strip())
         elif t in ("CategoryOfOtherNonInstitutions", "CategoryOfOtherIndianShareholders",
                    "CategoryOfOtherForeignShareholders") and f.text: non_lbl.append(f.text.strip())
@@ -160,7 +179,7 @@ def analyse(txt, qe):
           ("old" if "InstitutionsMember" in mem else "unknown")
     cell = F.parse_shp(root, qe)
     shares = F.parse_shares(root)
-    out = {"fmt": fmt, "schema": schema, "isin": isin, "symtag": symtag, "scrip": scrip, "shares": shares, "flags": [],
+    out = {"fmt": fmt, "schema": schema, "isin": isin, "symtag": symtag, "scrip": scrip, "cname": cname, "shares": shares, "flags": [],
            "ambiguity": [], "zero_proof": False, "partition_closes": None, "cell": cell}
     prom = pct.get("ShareholdingOfPromoterAndPromoterGroupMember")
     pub = pct.get("PublicShareholdingMember")
@@ -171,7 +190,15 @@ def analyse(txt, qe):
         return 100.0 if 0.9 <= a <= 1.1 else 1.0
     sh_pub = shc.get("PublicShareholdingMember")
     out["_pct"], out["_shc"] = pct, shc                          # kept for the hold-out test; dropped before output
-    if cell is None and fmt == "unknown" and zero_proof(pct, shc):
+    sh_tot, sh_prom = shc.get("ShareholdingPatternMember"), shc.get("ShareholdingOfPromoterAndPromoterGroupMember")
+    if cell is None and fmt == "unknown" and pub is None and sh_tot and sh_prom is not None and abs(sh_tot - sh_prom) < 0.5:
+        # §180c: promoters hold EVERY share (pre-listing / no public float: BGIL, ISERA 2022-23): no public block, so no
+        # institutions — proven by the share counts themselves
+        out["zero_proof"] = True
+        out["cell"] = {"prom": 100.0, "pub": 0.0, "fii": 0.0, "dii": 0.0, "mf": 0.0, "ins": 0.0}
+        nsh = holders.get("ShareholdingPatternMember")
+        if nsh and nsh > 0: out["cell"]["nsh"] = nsh
+    if cell is None and fmt == "unknown" and not out["zero_proof"] and zero_proof(pct, shc):
         s = scale_of()
         out["zero_proof"] = True
         p_ = prom if prom is not None else 0.0                        # zero_proof proved a promoter-less company
@@ -185,8 +212,23 @@ def analyse(txt, qe):
                   "CentralGovernmentOrStateGovernmentSMember", "GovernmentsMember", "GovermentsMember",
                   "NonInstitutionsMember")
         no_gov = [k for k in blocks if k not in GOV_PARENTS]
-        out["partition_closes"] = (abs(sh_pub - sum(shc.get(k, 0.0) for k in blocks)) < 0.5 or      # shares are integers
-                                   abs(sh_pub - sum(shc.get(k, 0.0) for k in no_gov)) < 0.5)      # government = promoter
+        # Government tags sit in either block: a PSU's promoter stake under one tag, a public-side government holding under
+        # another (GUJSTATFIN: CentralGovernmentOrStateGovernmentS 49,090,400 = the promoter; Goverments 3,742,400 = public).
+        # Public closes when the non-government blocks plus SOME subset of the government tags present equal it share for share.
+        gov_present = [k for k in GOV_PARENTS if shc.get(k)]
+        base = sum(shc.get(k, 0.0) for k in no_gov)
+        subsets = [[]]
+        for g_ in gov_present: subsets += [x + [g_] for x in subsets]
+        out["partition_closes"] = any(abs(sh_pub - base - sum(shc.get(g_, 0.0) for g_ in sub)) < 0.5 for sub in subsets)
+    if fmt == "old" and shc.get("InstitutionsMember") is not None:
+        # §180c old-format split proof: the institutions total equals its sub-rows share for share, so a side whose rows are
+        # all empty is PROVEN to hold nothing (APLAB Jun-2022: 2,300 shares, all MutualFundsOrUti -> no FPI).
+        f_rows = ("InstitutionsForeignPortfolioInvestorMember", "ForeignVentureCapitalInvestorsMember")
+        d_rows = ("MutualFundsOrUtiMember", "MutualFundsOrUTIMember", "AlternativeInvestmentFundsMember", "VentureCapitalFundsMember",
+                  "FinancialInstitutionOrBanksMember", "ProvidentFundsOrPensionFundsMember", "InsuranceCompaniesMember",
+                  "OtherInstitutionsMember")
+        fs, ds = sum(shc.get(k, 0.0) for k in f_rows), sum(shc.get(k, 0.0) for k in d_rows)
+        out["old_split"] = {"closes": abs(shc["InstitutionsMember"] - fs - ds) < 0.5, "fii_rows": fs, "dii_rows": ds}
     if fmt == "old":
         o_other = pct.get("OtherInstitutionsMember") or 0.0
         if o_other or inst_lbl:
@@ -429,6 +471,203 @@ def stage_bse(cache, cap=20000, shard="0/1", max_minutes=0, codes_file=None):
     say("DONE %d scrips, %d lists, %d files, %d requests" % (len(codes), n_lists, n_files, n_req))
 
 
+# ------------------------------------------------------------------------------------------ row-level stage (§180c)
+ROWLEVEL = os.path.join(HERE, "_shp_allstocks_rowlevel.json")
+GENERIC_LBL = re.compile(r"(?i)(no typed rows|any other|others?|other institutions?|)")
+
+
+def stage_rowlevel(cache):
+    """Row-level placement for old-format (Dec-2015..Jun-2022 form) filings the build HELD as ambiguous (institutional
+    "Any Other" row, or a non-institution row labelled as an institution). Runs the SAME functions the Nifty-500 heals use,
+    unchanged: §158 R1-R3 + §158a rest-follows (_shp_dii_rowfix.eval_filing), §159 R2-FII (_shp_fii_rowfix.eval_fii) and
+    §164 D1 unnamed-remainder -> FII (_shp_d1_rowfix.d1_delta), with the filer's own first 2022-form filing as the holder
+    map and the two-pass holder memory (newest first warms, chronological pass is final). A held quarter has no stored row,
+    so the starting point is the raw reading of the held file itself (Any-Other in dii, the parser's default).
+    Output: scripts/_shp_allstocks_rowlevel.json {"SYM|QE": {file, status, fii, dii, ins, parts, ev}}; the build applies a
+    "resolved" entry only to the SAME file and then runs every other gate on the result."""
+    import _shp_d1_rowfix as D1                                  # imports _shp_dii_rowfix / _shp_fii_rowfix read-only
+    D, X = D1.D, D1.X
+    holds = json.load(open(HOLDS, encoding="utf-8"))["holds"]
+    want = {(s_, q_): v for s_, qs in holds.items() for q_, v in qs.items()
+            if isinstance(v, dict) and str(v.get("why", "")).startswith("old-format row")}
+    # cells an earlier run resolved are no longer in the holds file (the build applied them): keep re-evaluating them,
+    # or the next build would lose their placement
+    if os.path.exists(ROWLEVEL):
+        for k_, e_ in (json.load(open(ROWLEVEL, encoding="utf-8")).get("cells") or {}).items():
+            s_, q_ = k_.split("|")
+            if (s_, q_) not in want and e_.get("file"):
+                want[(s_, q_)] = {"src": e_.get("src") or ("bsexbrl:" + e_["file"] if not e_["file"].startswith("SHP_") else "nse:" + e_["file"])}
+    T = json.load(open(os.path.join(cache, "bse_targets.json")))
+    code_of = {v["sym"]: c for c, v in T.items()}
+    man = json.load(open(os.path.join(cache, "manifest_nse_all.json")))
+    LD, XD = os.path.join(cache, "bse_lists_v2"), os.path.join(cache, "xbrl_bse_v2")
+    plain = os.path.join(cache, "rowlevel_xml"); os.makedirs(plain, exist_ok=True)
+    D.CACHES[:] = [plain]                                         # find_file() looks here (plain XML, as the heal tools expect)
+    hist = json.load(open(os.path.join(HERE, "shp_history.json"), encoding="utf-8"))
+    fills_led = json.load(gzip.open(LEDGER, "rt", encoding="utf-8")).get("fills", {}) if os.path.exists(LEDGER) else {}
+    verdicts = D.load_verdicts()
+    def held_doc(sym, qe, src):
+        kind, f = src.split(":", 1); f = f.split()[0]
+        path = os.path.join(XD, f + ".gz") if kind == "bsexbrl" else (man.get("%s|%s" % (sym, qe)) or {}).get("path")
+        return f, (read_doc(path) if path and os.path.exists(path) else None)
+    out, st, sym_inputs = {}, collections.Counter(), {}
+    for sym in sorted({s_ for s_, q_ in want}):
+        code = code_of.get(sym)
+        lp = os.path.join(LD, "%s.json" % code) if code else None
+        bse_rows = (json.load(open(lp)).get("Table") or []) if lp and os.path.exists(lp) else []
+        for r in bse_rows:                                        # plain copies of this scrip's cached filings
+            xf = str(r.get("XbrlFile") or "").strip()
+            if xf and os.path.exists(os.path.join(XD, xf + ".gz")) and not os.path.exists(os.path.join(plain, xf)):
+                open(os.path.join(plain, xf), "wb").write(read_doc(os.path.join(XD, xf + ".gz")))
+        byq = D.quarter_files(bse_rows)
+        ctx, fctx = D.SymCtx(sym, bse_rows, verdicts), X.FiiCtx(sym, bse_rows, verdicts)
+        sym_inputs[sym] = (bse_rows, byq)
+        quarters = sorted(set(byq) | {q_ for s_, q_ in want if s_ == sym})
+        for qe, final in [(q_, False) for q_ in reversed(quarters)] + [(q_, True) for q_ in quarters]:
+            key = (sym, qe)
+            if key in want:
+                f, txt = held_doc(sym, qe, want[key]["src"])
+                if txt is None:
+                    if final: out["%s|%s" % key] = {"status": "file not cached"}; st["file not cached"] += 1
+                    continue
+                bd = D.breakdown(txt); res = F.parse_shp(txt, qe)
+                if not res:
+                    if final: out["%s|%s" % key] = {"file": f, "status": "parse refused"}; st["parse refused"] += 1
+                    continue
+                cur = [res["prom"], res["fii"], res["dii"], res.get("mf"), res.get("ins"), None, None]
+            else:
+                cur = (hist.get(sym) or {}).get(qe)
+                if not cur: continue
+                ch = D.match_filing(byq.get(qe, []), qe, cur)
+                if not ch: continue
+                f, txt, bd, res = ch
+            r = D.eval_filing(ctx, qe, txt, bd, res, cur, final, None, 0.0, 0.0)
+            rf = X.eval_fii(fctx, qe, txt, bd, res, cur)
+            if not final or key not in want: continue
+            if r is None: out["%s|%s" % key] = {"file": f, "status": "split unknown"}; st["split unknown"] += 1; continue
+            if r.get("overflow"):
+                out["%s|%s" % key] = {"file": f, "status": "rows claim more than the block (R1 overflow)", "ev": [str(e) for e in r["ev"]]}
+                st["R1 overflow"] += 1; continue
+            ev = list(r["ev"])
+            mv159 = rf["mv"] if not any(e[0] == "R2FII-overflow" for e in rf["ev"]) else 0.0
+            if mv159 >= 0.005: ev += rf["ev"]
+            dd = 0.0
+            if qe >= D1.D1_FROM:
+                dd, dev = D1.d1_delta(r, bd, res, cur, 0.0, 0.0); dd = min(dd, r["t_dii"])
+                # a LABELLED row R1 could not class (Bodies Corporate, HUF, Clearing Member, Trust ...) is not an unnamed
+                # remainder: it stays where the filer put it (Institutions, i.e. dii) — COSYN Jun-2022, whose Sep-2022 2022-form
+                # filing keeps the same shares in Institutions (Domestic)
+                lab_unres = sum(float(e[2]) for e in r["ev"] if e[0] == "R1-unresolved" and not GENERIC_LBL.fullmatch(str(e[1]).strip()))
+                # a NAMED holder of unknown class under an unclassed label ("R1-named-unresolved-kept": SAMTELIN's I L AND FS
+                # TRUST CO. LTD. 9.39 under "Bodies Corporate") stays where the filer put it — D1 moves only UNNAMED shares
+                lab_unres += sum(float(e[2]) for e in r["ev"] if e[0] == "R1-named-unresolved-kept")
+                dd = max(0.0, round(dd - lab_unres, 4))
+                if dd >= 0.005: ev += dev
+                if lab_unres >= 0.005: ev.append(("labelled rows kept in dii (not an unnamed remainder)", round(lab_unres, 4)))
+            ins = res.get("ins")
+            if r["add_ins"] > 0 and ins is not None: ins = round(r["ins_base"] + r["add_ins"], 4)
+            out["%s|%s" % key] = {"file": f, "src": want[key]["src"], "status": "pending", "raw": [round(x, 4) if isinstance(x, float) else x for x in cur[:5]],
+                                  "fii_r": r["t_fii"], "dii_r": r["t_dii"], "m159": round(mv159, 4) if mv159 >= 0.005 else 0.0,
+                                  "m159_labels": sorted({str(e[1]) for e in rf["ev"] if e[0] == "R2FII-label"}) if mv159 >= 0.005 else [],
+                                  "d1": dd if dd >= 0.005 else 0.0, "ins": ins, "newmap_file": ctx.newfile, "ev": [str(e) for e in ev]}
+            st["evaluated"] += 1
+    # ---- the two CONVENTION moves (§159 R2-FII on an FPI-labelled non-institution row, §164c D1 unnamed remainder) are
+    # taken only where the company's OWN first 2022-form filing shows where those shares sit: the form has separate
+    # Institutions (Domestic) / (Foreign) blocks, so the Jun-2022 -> Sep-2022 seam is the filer's own classification.
+    # Measured 2026-09-27 on these held filings: taken blindly, the two rules moved shares to FII that the filer's next
+    # filing keeps outside it for 13 companies (KUNSTOFF's 0.86 % "FPI (Category III)" row sits under non-institutions in
+    # its 2022-form filings too; TEAM24's unnamed 0.11 stays domestic) -> a fake FII exit at the seam. Earlier quarters take
+    # the seam's decision only while the moved amount is unchanged; anything unconfirmed stays HELD.
+    store_or_fill = lambda s_, q_: (hist.get(s_) or {}).get(q_) or (fills_led.get(s_) or {}).get(q_)
+
+    def seam_components(sym, inputs, qe):
+        bse_rows, byq = inputs
+        fl = byq.get(qe) or []
+        for fd, f in fl:
+            if not D.find_file(f):
+                try:
+                    import urllib.request
+                    b = urllib.request.urlopen("https://www.bseindia.com/XBRLFILES/SHPXBRLDataXML/" + f, timeout=60).read()
+                    time.sleep(0.8)
+                    if b"xbrl" in b[:4000].lower(): open(os.path.join(plain, f), "wb").write(b)
+                except Exception as e:
+                    print("  seam fetch failed", sym, f, type(e).__name__)
+            p_ = D.find_file(f)
+            if not p_: continue
+            txt = open(p_, "rb").read(); bd = D.breakdown(txt); res = F.parse_shp(txt, qe)
+            if not res or "InstitutionsMember" not in bd: continue
+            cur = [res["prom"], res["fii"], res["dii"], res.get("mf"), res.get("ins"), None, None]
+            c1, c2 = D.SymCtx(sym, bse_rows, verdicts), X.FiiCtx(sym, bse_rows, verdicts)
+            r = D.eval_filing(c1, qe, txt, bd, res, cur, True, None, 0.0, 0.0)
+            rf = X.eval_fii(c2, qe, txt, bd, res, cur)
+            if r is None or r.get("overflow"): return None
+            mv = rf["mv"] if not any(e[0] == "R2FII-overflow" for e in rf["ev"]) else 0.0
+            dd, _ = D1.d1_delta(r, bd, res, cur, 0.0, 0.0); dd = min(dd, r["t_dii"])
+            lab = sum(float(e[2]) for e in r["ev"] if e[0] == "R1-unresolved" and not GENERIC_LBL.fullmatch(str(e[1]).strip()))
+            lab += sum(float(e[2]) for e in r["ev"] if e[0] == "R1-named-unresolved-kept")
+            dd = max(0.0, round(dd - lab, 4))
+            return {"seam_only": True, "fii_r": r["t_fii"], "dii_r": r["t_dii"], "m159": round(mv, 4) if mv >= 0.005 else 0.0,
+                    "m159_labels": sorted({str(e[1]) for e in rf["ev"] if e[0] == "R2FII-label"}) if mv >= 0.005 else [],
+                    "d1": dd if dd >= 0.005 else 0.0}
+        return None
+    for sym in sorted({k.split("|")[0] for k in out}):
+        cells = {k.split("|")[1]: v for k, v in out.items() if k.split("|")[0] == sym and v.get("status") == "pending"}
+        if not cells: continue
+        decided = {}                                          # component -> (destination, amount at the seam)
+        L = max(cells); E = store_or_fill(sym, "2022-09-30")
+        seam_cell = cells[L] if L == "2022-06-30" else None
+        if E and seam_cell is None and L < "2022-06-30" and sym in sym_inputs:
+            # the held chain ends before Jun-2022 (that quarter is stored): read the stored quarter's own filing for the seam
+            seam_cell = seam_components(sym, sym_inputs[sym], "2022-06-30")
+            if seam_cell: cells = dict(cells, **{"2022-06-30": seam_cell}); L = "2022-06-30"
+        if E and seam_cell:
+            c = seam_cell; fb, db, m, d = c["fii_r"], c["dii_r"], c["m159"], c["d1"]
+            # m159 (an FPI-labelled NON-institution row): stays public, or fii.  d1 (unnamed institutional remainder): stays
+            # dii, fii, or public — ALNATRD's filer lists its whole 27.35 % public float as institutional "Any Other" until
+            # Jun-2022 and, promoter unchanged, under Non-institutions from Sep-2022: those shares were never institutional.
+            def at(md, dd_):
+                f_ = fb + (m if md == "fii" else 0) + (d if dd_ == "fii" else 0)
+                d_ = db - (d if dd_ in ("fii", "public") else 0)
+                return abs(E[1] - f_) + abs(E[2] - d_)
+            variants = {(md, dd_): at(md, dd_) for md in (("stay", "fii") if m else ("stay",))
+                        for dd_ in (("stay", "fii", "public") if d else ("stay",))}
+            best = sorted(variants.items(), key=lambda x: x[1])
+            amt = min([x for x in (m, d) if x] or [0.0])
+            if best and best[0][1] <= 0.05 + 0.1 * (m + d) and (len(best) == 1 or best[1][1] - best[0][1] >= 0.5 * amt):
+                (md, dd_), err = best[0]
+                if m: decided["m159"] = (md, m)
+                if d: decided["d1"] = (dd_, d)
+        live = dict(decided)
+        seam_labels = (seam_cell or {}).get("m159_labels") or []
+        for q in sorted(cells, reverse=True):
+            c = cells[q]; ok, note = True, []
+            if c.get("seam_only"): continue
+            fii, dii = c["fii_r"], c["dii_r"]
+            for comp in ("m159", "d1"):
+                amt = c[comp]
+                if not amt: continue
+                dec = live.get(comp)
+                same_row = comp == "m159" and dec is not None and seam_labels and c.get("m159_labels") == seam_labels
+                if dec is None or (not same_row and abs(amt - dec[1]) > max(0.02, 0.03 * dec[1])):
+                    ok = False; live.pop(comp, None); note.append("%s %.4f unconfirmed by the 2022-form seam" % (comp, amt)); continue
+                if dec[0] == "fii":
+                    fii += amt; dii -= amt if comp == "d1" else 0.0; note.append("%s %.4f -> fii (seam-confirmed)" % (comp, amt))
+                elif dec[0] == "public":
+                    dii -= amt; note.append("%s %.4f -> public (seam: the filer's 2022 form lists it under Non-institutions)" % (comp, amt))
+                else: note.append("%s %.4f stays (the 2022-form seam keeps it where the raw reading has it)" % (comp, amt))
+            parts = ["R1-R3 (§158)"] + (["R2-FII (§159)"] if c["m159"] and decided.get("m159", ("stay",))[0] == "fii" else []) + \
+                    (["D1 unnamed remainder -> FII (§164c)"] if c["d1"] and decided.get("d1", ("stay",))[0] == "fii" else []) + \
+                    (["unnamed remainder -> public (seam)"] if c["d1"] and decided.get("d1", ("stay",))[0] == "public" else [])
+            if ok:
+                c.update(status="resolved", fii=round(max(fii, 0.0), 4), dii=round(max(dii, 0.0), 4), parts=parts, seam=note)
+                st["resolved"] += 1
+            else:
+                c.update(status="convention move unconfirmed", seam=note); st["held: convention move unconfirmed"] += 1
+    json.dump({"_meta": {"built": time.strftime("%Y-%m-%d %H:%M IST"), "rule": stage_rowlevel.__doc__.split(". ")[0]},
+               "cells": out}, open(ROWLEVEL, "w", encoding="utf-8"), indent=0, ensure_ascii=False)
+    print("ROWLEVEL %d held old-format cells: %s" % (len(want), dict(st)))
+
+
 # ------------------------------------------------------------------------------------------ build
 def build(cache):
     hist, relatives, isins, man = load_inputs(cache)
@@ -440,6 +679,21 @@ def build(cache):
             for q_ in qs_:
                 if q_ in (hist.get(s_) or {}): del hist[s_][q_]
         print("previous ledger: %d cells treated as not yet stored" % sum(len(v) for v in prev.values()))
+    # §180c: so is every store cell the COMMITTED ledger wrote (identical values) — a rebuild that removes a wrong cell
+    # (BRIGHT: Bright Solar's quarters) must see its quarter as open, or the right company's filing is skipped as
+    # "already stored" behind the wrong value it is meant to replace
+    try:
+        import subprocess
+        _b = subprocess.run(["git", "-C", REPO, "show", "HEAD:scripts/shp_fill_allstocks.json.gz"], capture_output=True).stdout
+        head = json.loads(gzip.decompress(_b)).get("fills", {}) if _b else {}
+    except Exception as e:
+        print("WARN committed ledger unreadable (%s)" % e); head = {}
+    n_head = 0
+    for s_, qs_ in head.items():
+        for q_, c_ in qs_.items():
+            cur_ = (hist.get(s_) or {}).get(q_)
+            if cur_ is not None and list(cur_[:6]) == list(c_[:6]): del hist[s_][q_]; n_head += 1
+    if n_head: print("committed ledger: %d more stored cells written by this fill treated as open" % n_head)
     t0 = time.time()
     docs = {}                                                    # (sym, qe) -> analysis + meta
     for k, v in man.items():
@@ -459,6 +713,28 @@ def build(cache):
     T = json.load(open(os.path.join(cache, "bse_targets.json"))) if os.path.exists(os.path.join(cache, "bse_targets.json")) else {}
     LD, XD = os.path.join(cache, "bse_lists_v2"), os.path.join(cache, "xbrl_bse_v2")
     bse_code_of, n_bse = {}, 0
+    # §180c: an NSE filing must never fill a key the dashboard uses for a DIFFERENT BSE company. BRIGHT = Bright Outdoor Media
+    # (BSE 543831, BRIGHT.BO only) but NSE's SME ticker BRIGHT is Bright Solar Ltd (INE684Z01010): 14 of Bright Solar's
+    # quarters landed under Bright Outdoor's key (§180 NSE fill). For a BSE-only target whose own ISIN issuer differs from
+    # every ISIN the NSE ticker traded under, the NSE documents are set aside (held) and the scrip's BSE copies are used.
+    _bs = json.load(open(os.path.join(HERE, "bse_scrips.json"), encoding="utf-8"))
+    _code_is = collections.defaultdict(set)
+    for i_, c_ in _bs.get("by_isin", {}).items(): _code_is[str(c_)].add(i_.upper()[:7])
+    try:
+        for r_ in json.load(open(os.path.join(REPO, "docs", "bse_universe.json"), encoding="utf-8"))["rows"]:
+            if r_[3]: _code_is[str(r_[0])].add(str(r_[3]).upper()[:7])
+    except Exception: pass
+    nse_other = {}
+    for code_, tv_ in T.items():
+        if tv_.get("grp") != "BSE-only": continue
+        n_is = {i_[:7] for i_ in isins.get(tv_["sym"], set())}
+        if n_is and _code_is.get(code_) and not (n_is & _code_is[code_]):
+            nse_other[tv_["sym"]] = "NSE ticker %s is another company (%s) than the dashboard's BSE scrip %s (%s)" % (
+                tv_["sym"], sorted(n_is)[0], code_, sorted(_code_is[code_])[0])
+    set_aside = {}
+    for key_ in [k_ for k_ in docs if k_[0] in nse_other]:
+        set_aside[key_] = docs.pop(key_)
+    if set_aside: print("NSE documents set aside (another company under a dashboard BSE key): %d" % len(set_aside))
     for code, tv in T.items():
         lp = os.path.join(LD, code + ".json")
         if tv.get("isin_conflict") or not os.path.exists(lp): continue
@@ -467,7 +743,8 @@ def build(cache):
         for qe, r in bse_pick(rows).items():
             xp = os.path.join(XD, r["XbrlFile"].strip() + ".gz")
             key = (tv["sym"], qe)
-            if key in docs or not os.path.exists(xp): continue
+            # an NSE document that could not be read (NAVKARURB Dec-2024: truncated XML) yields to the BSE copy
+            if (key in docs and "error" not in docs[key]) or not os.path.exists(xp): continue
             try:
                 a = analyse(read_doc(xp), qe)
             except Exception as e:
@@ -479,6 +756,35 @@ def build(cache):
     print("analysed %d filings (%d BSE copies) in %.0fs" % (len(docs), n_bse, time.time() - t0))
 
     def issuers(isl): return {i[:7] for i in isl}
+    # company names on record (§180c): dashboard meta, bse_universe, the BSE target list
+    names_sym, names_code = collections.defaultdict(set), collections.defaultdict(set)
+    try:
+        _meta = json.loads(gzip.open(os.path.join(REPO, "docs", "stock_data.bin")).read())["meta"]   # one load (large file)
+    except Exception as e:
+        print("WARN stock_data.bin unreadable (%s)" % e); _meta = {}
+    for k_, m_ in _meta.items():
+        if m_.get("name"): names_sym[m_.get("symbol") or k_.split(".")[0]].add(m_["name"])
+    dash_keys = set(_meta); del _meta
+    try:
+        for r_ in json.load(open(os.path.join(REPO, "docs", "bse_universe.json"), encoding="utf-8"))["rows"]:
+            if r_[2]: names_code[str(r_[0])].add(r_[2])
+    except Exception as e:
+        print("WARN bse_universe names unreadable (%s)" % e)
+    for c_, t_ in T.items():
+        if t_.get("name"): names_code[c_].add(t_["name"])
+    uni_ticker = {}                                              # bse_universe: scrip code -> the dashboard's ticker
+    try:
+        for r_ in json.load(open(os.path.join(REPO, "docs", "bse_universe.json"), encoding="utf-8"))["rows"]:
+            uni_ticker[str(r_[0])] = r_[1]
+    except Exception as e:
+        print("WARN bse_universe tickers unreadable (%s)" % e)
+    _js = open(os.path.join(REPO, "docs", "backtest-engine.js"), encoding="utf-8").read()
+    _m = re.search(r"const FUND_ALIAS\s*=\s*(\{.*?\});", _js, re.S)
+    _fa = json.loads(_m.group(1)) if _m else {}
+    fund_alias_keys = set(_fa) | {v for v in _fa.values() if isinstance(v, str)}
+    def name_ok(a, sym, code=None):
+        on_record = names_sym.get(sym, set()) | (names_code.get(str(code), set()) if code else set())
+        return bool(a.get("cname")) and any(names_match(a["cname"], n_) for n_ in on_record)
     def norm_isin(i):
         """Filer typos seen in the corpus: letter O for zero, letter I for one (INEOMTP01013 for INE0MTP01013).
         Used ONLY for an exact 12-character match against an ISIN the symbol really traded under."""
@@ -500,23 +806,50 @@ def build(cache):
         (the engines and the stock page key on it), and must be the ticker bse_scrips.json gives that code (the key
         build_stock_fin folds BSE fundamentals under)."""
         code = a["bse_code"]
-        if a.get("scrip") and a["scrip"] != code:
-            return "file ScripCode %s is not the requested scrip %s" % (a["scrip"], code), []
         fi = a.get("isin") or ""
         known = code_isins.get(code, set()) | set().union(*[isins.get(x, set()) for x in ({sym} | relatives(sym))])
-        if fi:
-            if not known: return "no ISIN on record for scrip %s / %s" % (code, sym), []
-            if fi[:7] not in issuers(known) and norm_isin(fi) not in known:
-                return "file ISIN %s does not match scrip %s / %s ISINs %s" % (fi, code, sym, sorted(known)[:3]), []
+        nknown = {norm_isin(k) for k in known}
+        isin_ok = bool(fi) and (norm_isin(fi) in nknown or norm_isin(fi)[:7] in issuers(nknown))
+        # an ISIN within two characters of the scrip's own (a typo or two transposed digits: INE209E01011 / INE290E01011)
+        isin_near = bool(fi) and any(len(fi) == len(k) and sum(x != y for x, y in zip(norm_isin(fi), k)) <= 2 for k in nknown)
+        if a.get("scrip") and a["scrip"] != code:
+            # a wrong ScripCode fact (WHEELS files "600001") passes only when the company name agrees AND the ISIN agrees or
+            # the file carries none (BSE's own list for the requested scrip named the file)
+            if not ((isin_ok or not fi) and name_ok(a, sym, code)):
+                return "file ScripCode %s is not the requested scrip %s" % (a["scrip"], code), []
+            a["id_note"] = "file ScripCode %s is a filer error: %scompany name match" % (a["scrip"], "ISIN + " if fi else "")
+        if fi and not isin_ok:
+            # the file's ISIN field is a filer typo (INR614R01014, IN8744C01028, INF759F01012 ...) or the scrip has no ISIN on
+            # record: identity then rests on BSE's own ScripCode fact AND either the company name printed in the filing or an
+            # ISIN within two characters of the scrip's own (renamed companies file under their former name: FRATELLI = Tinna Trade)
+            if a.get("scrip") == code and name_ok(a, sym, code):
+                a["id_note"] = "file ISIN %s is a filer typo: ScripCode + company name match" % fi
+            elif a.get("scrip") == code and isin_near:
+                a["id_note"] = "file ISIN %s is a filer typo: ScripCode match + ISIN within two characters of %s" % (fi, sorted(known)[:2])
+            elif not known: return "no ISIN on record for scrip %s / %s" % (code, sym), []
+            else: return "file ISIN %s does not match scrip %s / %s ISINs %s" % (fi, code, sym, sorted(known)[:3]), []
         elif a.get("scrip") != code:
             # no ISIN in the file: only BSE's own ScripCode fact (equal to the scrip whose list named the file) proves it
             return "file carries neither ISIN nor the requested ScripCode", []
         if a["bse_grp"] == "BSE-only":
+            # §180c: the key is safe when the dashboard carries ONE company under it — the BSE listing bse_universe maps to
+            # this ticker (or whose name matches this filing) — no NSE listing of that ticker in the dashboard and no
+            # FUND_ALIAS entry on it (WORTH -> WORTHPERI points the ticker at another company).
+            # (no condition on rows already stored under the ticker: the dashboard key names the company, so a stored row
+            # from another company is itself an error to heal — BRIGHT — and must not flip this decision between rebuilds)
+            sole_key = (sym + ".BO") in dash_keys and (sym + ".NS") not in dash_keys and sym not in fund_alias_keys \
+                and (uni_ticker.get(str(code)) == sym or name_ok(a, sym, code))
             nse_is, own = isins.get(sym, set()), code_isins.get(code, set()) | ({fi} if fi else set())
             if nse_is and own and not (issuers(own) & issuers(nse_is)):
-                return "BSE ticker %s is also an NSE ticker of another company (%s)" % (sym, sorted(nse_is)[:2]), []
+                if not sole_key:
+                    return "BSE ticker %s is also an NSE ticker of another company (%s)" % (sym, sorted(nse_is)[:2]), []
+                a["id_note"] = (a.get("id_note", "") + "; " if a.get("id_note") else "") + \
+                    "NSE ticker %s is another company outside the dashboard; the dashboard key is this BSE scrip" % sym
             if by_id_sym.get(code) and by_id_sym[code] != sym:
-                return "dashboard ticker %s differs from bse_scrips ticker %s for scrip %s" % (sym, by_id_sym[code], code), []
+                if not sole_key:
+                    return "dashboard ticker %s differs from bse_scrips ticker %s for scrip %s" % (sym, by_id_sym[code], code), []
+                a["id_note"] = (a.get("id_note", "") + "; " if a.get("id_note") else "") + \
+                    "dashboard ticker %s (bse_universe) for scrip %s, bse_scrips still has %s" % (sym, code, by_id_sym[code])
         return None, []
 
     def identity(sym, a):
@@ -529,11 +862,16 @@ def build(cache):
         fi, tag = a.get("isin"), a.get("symtag")
         tag_ok = tag and tag != "NOTLISTED" and tag not in fam
         if fi:
+            nknown = {norm_isin(k) for k in known}
             if known:
-                if fi[:7] not in issuers(known) and norm_isin(fi) not in known:
-                    return "file ISIN %s does not match %s's ISINs %s" % (fi, sym, sorted(known)[:3]), []
+                if norm_isin(fi)[:7] not in issuers(nknown) and norm_isin(fi) not in nknown:
+                    if not name_ok(a, sym):
+                        return "file ISIN %s does not match %s's ISINs %s" % (fi, sym, sorted(known)[:3]), []
+                    a["id_note"] = "file ISIN %s is a filer typo: company name matches %s" % (fi, sym)
             elif not (tag_ok and (fi[:7] in issuers(isins.get(tag, set())) or norm_isin(fi) in isins.get(tag, set()))):
-                return "no ISIN on record for %s and the file's own symbol does not vouch for %s" % (sym, fi), []
+                if not name_ok(a, sym):
+                    return "no ISIN on record for %s and the file's own symbol does not vouch for %s" % (sym, fi), []
+                a["id_note"] = "no ISIN on record for %s: company name matches" % sym
             extra = [tag] if tag_ok and (fi[:7] in issuers(isins.get(tag, set())) or norm_isin(fi) in isins.get(tag, set())) else []
             return None, extra
         if tag and tag not in fam and tag != "NOTLISTED":
@@ -565,6 +903,25 @@ def build(cache):
             return subd, "dated-by-submission(broadcast %s is a re-stamp of the original)" % bday
         return bday, ""
 
+    # §180c: an old-format filing held as ambiguous takes its row-level placement (stage `rowlevel`) when one was
+    # resolved for this very file; every later gate still runs on the result.
+    rl = (json.load(open(ROWLEVEL, encoding="utf-8")).get("cells") or {}) if os.path.exists(ROWLEVEL) else {}
+    # §180c second reading of a held quarter (Screener verify-only, or the filing's own named holders): lets THAT file pass
+    # the continuity / unproven-zero / holder-count gates; identity, format and bounds gates still apply
+    sr_path = os.path.join(HERE, "_shp_allstocks_second_reader.json")
+    second = (json.load(open(sr_path, encoding="utf-8")).get("cells") or {}) if os.path.exists(sr_path) else {}
+    def second_ok(sym_, qe_, a_):
+        e_ = second.get("%s|%s" % (sym_, qe_))
+        return e_ if e_ and str(a_.get("src", "")).split(":", 1)[-1].split()[0] == e_.get("file") else None
+    n_rl = 0
+    for (sym, qe), a in docs.items():
+        e = rl.get("%s|%s" % (sym, qe))
+        if not (a.get("ambiguity") and a.get("cell") and e and e.get("status") == "resolved"): continue
+        if str(a.get("src", "")).split(":", 1)[-1].split()[0] != e["file"]: continue
+        a["cell"] = dict(a["cell"], fii=e["fii"], dii=e["dii"], **({"ins": e["ins"]} if e.get("ins") is not None else {}))
+        a["rowlevel"] = " + ".join(e["parts"]); a["ambiguity"] = []; n_rl += 1
+    print("row-level placements applied: %d" % n_rl)
+
     # ---- series view for neighbour gates: stored cells + parsed candidates
     series = collections.defaultdict(dict)
     for sym, qs in hist.items():
@@ -585,13 +942,14 @@ def build(cache):
         except Exception as e: print("WARN %s unreadable (%s)" % (fn, e))
     bs = json.load(open(os.path.join(HERE, "bse_scrips.json"), encoding="utf-8"))
     code_isin = {str(v): k for k, v in bs.get("by_isin", {}).items()}
-    bse_clash = {}
+    bse_clash, bse_clash_code = {}, {}
     for sym_, code_ in bs.get("by_id", {}).items():
         if sym_ in hist or slug(sym_) in claimed: continue
         bi = code_isin.get(str(code_), "")
         if bi and isins.get(sym_) and bi[:7] not in issuers(isins[sym_]):
             bse_clash[sym_] = "ticker %s is also BSE scrip %s (%s), a different company; landing would change the " \
                               "fundamentals build_stock_fin folds into that slug" % (sym_, code_, bi)
+            bse_clash_code[sym_] = str(code_)
 
     accept_syms = set((json.load(open(os.path.join(HERE, "shp_cell_fix.json"), encoding="utf-8")).get("accept") or {}))
     share_series = collections.defaultdict(dict)               # total shares per filing, for the capital-collapse test
@@ -599,6 +957,10 @@ def build(cache):
         if a_.get("shares"): share_series[s_][q_] = [a_["shares"]]
     fills, holds = collections.defaultdict(dict), collections.defaultdict(dict)
     stat = collections.Counter(); why = collections.Counter()
+    for (sym_, qe_), a_ in set_aside.items():
+        if (sym_, qe_) not in docs:
+            holds[sym_][qe_] = {"why": "identity: " + nse_other[sym_], "src": a_.get("src"), "cell": a_.get("cell"), "fmt": a_.get("fmt")}
+            why["identity"] += 1
     for (sym, qe), a in sorted(docs.items()):
         def hold(reason):
             holds[sym][qe] = {"why": reason, "src": a.get("src"), "cell": a.get("cell"), "fmt": a.get("fmt")}
@@ -606,7 +968,9 @@ def build(cache):
         stored = hist.get(sym) or {}
         if qe in stored: stat[(a.get("idx"), "already stored")] += 1; continue
         if "error" in a: hold("unreadable XML: " + a["error"]); continue
-        if sym in bse_clash: hold("slug collision: " + bse_clash[sym]); continue
+        # the clash protects the BSE scrip that owns this ticker from ANOTHER company's filings; that scrip's own filings
+        # (same scrip code: SIIL = 540132 Sabrimala, INNOVATIVE = 541983) are exactly what belongs under it
+        if sym in bse_clash and str(a.get("bse_code") or "") != bse_clash_code[sym]: hold("slug collision: " + bse_clash[sym]); continue
         bad, extra = identity_bse(sym, a) if a.get("bse_code") else identity(sym, a)
         if bad: hold("identity: " + bad); continue
         former = [x for x in (relatives(sym) | set(extra)) if qe in (hist.get(x) or {})]
@@ -622,9 +986,17 @@ def build(cache):
         lag = (datetime.date.fromisoformat(sub) - datetime.date.fromisoformat(qe)).days
         if lag < 0: hold("visibility date %s before quarter end" % sub); continue
         nsh = c.get("nsh")
-        earlier = [v[2] for q, v in series[sym].items() if q < qe and v[2]]
+        earlier = [v[2] for q, v in sorted(series[sym].items()) if q < qe and v[2]]
+        later = [v[2] for q, v in sorted(series[sym].items()) if q > qe and v[2]]
         nsh_note = ""
-        if nsh and earlier and nsh < 0.05 * max(earlier):
+        # §180c one-quarter SPIKE: far above BOTH neighbours while they agree — the filer typed share counts into a holder
+        # field (PARMAX Sep-2022: KeyManagerialPersonnel "100000" holders -> company total 101,650 between 1,590 and 2,035)
+        if nsh and earlier and later and max(earlier[-1], later[0]) <= 3 * min(earlier[-1], later[0]) \
+                and nsh > 20 * max(earlier[-1], later[0]):
+            nsh_note = " nsh-withheld(%d one-quarter spike vs %d / %d: holder fields carry share counts)" % (nsh, earlier[-1], later[0])
+            nsh = None
+        # the collapse test compares with the MEDIAN of earlier quarters, so one spiked quarter cannot hold every later one
+        if nsh and earlier and nsh < 0.05 * statistics.median(earlier):
             # §22g-2: a collapsed holder count can mean the filing describes another share class. When the SAME
             # filings show the share capital itself collapsing (insolvency capital reduction: PUNJLLOYD 335.6 M -> 0.5 M
             # shares, acquirer 95 %) or the symbol's event is already adjudicated on the cell_fix accept list
@@ -633,24 +1005,83 @@ def build(cache):
             n_now = a.get("shares") or 0
             n_before = [v[0] for q, v in (share_series.get(sym) or {}).items() if q < qe and v]
             collapsed = bool(n_now and n_before and n_now < 0.5 * max(n_before))
-            if collapsed or sym in accept_syms:
-                nsh_note = " nsh-withheld(%d vs %d earlier; %s)" % (nsh, max(earlier), "capital collapse" if collapsed else "accept-list event")
+            # §180c: the SAME share capital as the earlier filings (within 5 % of their median) means the same share class,
+            # so the percentages stand; only the holder count is doubtful (AARCON Dec-2025: 2,245 -> 85 after an open offer)
+            same_class = bool(n_now and n_before and abs(n_now - statistics.median(n_before)) <= 0.05 * statistics.median(n_before))
+            sr_ = second_ok(sym, qe, a)
+            if sr_ and sr_.get("nsh_confirmed"): nsh_note = " nsh-corroborated(second reader)"
+            elif collapsed or sym in accept_syms or same_class or sr_:
+                nsh_note = " nsh-withheld(%d vs %d earlier; %s)" % (nsh, statistics.median(earlier), "capital collapse" if collapsed
+                                                                    else "accept-list event" if sym in accept_syms
+                                                                    else "same share capital" if same_class else "second reader: percentages")
                 nsh = None
             else:
-                hold("nsh gate: %d vs %d earlier" % (nsh, max(earlier))); continue
+                hold("nsh gate: %d vs %d earlier" % (nsh, statistics.median(earlier))); continue
         i = QES.index(qe)
         nb = [series[sym][QES[j]] for j in (i - 2, i - 1, i + 1, i + 2)
               if 0 <= j < len(QES) and QES[j] in series[sym]]
-        if nb and all(abs(c["fii"] - n[0]) > 5 for n in nb): hold("continuity: fii >5pp from every neighbour"); continue
-        if nb and all(abs(c["dii"] - n[1]) > 10 for n in nb): hold("continuity: dii >10pp from every neighbour"); continue
+        sr_ = second_ok(sym, qe, a)
+        if sr_: nsh_note += " second-reader"
+        if not sr_ and nb and all(abs(c["fii"] - n[0]) > 5 for n in nb): hold("continuity: fii >5pp from every neighbour"); continue
+        if not sr_ and nb and all(abs(c["dii"] - n[1]) > 10 for n in nb): hold("continuity: dii >10pp from every neighbour"); continue
         proven = a["zero_proof"] or a["partition_closes"]
-        if not proven and any(c[s] == 0.0 and nb and any(n[ix] > 1.0 for n in nb) for s, ix in (("fii", 0), ("dii", 1))):
+        osp = a.get("old_split") or {}
+        def slot_proven(s_, ix_):
+            if proven: return True
+            if not (osp.get("closes") and osp.get(s_ + "_rows", 1) == 0): return False
+            # a FLIP is not an exit: the other slot here equals this slot in a neighbour (GLOBUSCON: the same 17,810,728 shares
+            # filed as FPI in Jun-2021 and as Financial Institutions/Banks in Sep-2021)
+            other = c["dii" if s_ == "fii" else "fii"]
+            return not any(n[ix_] > 1.0 and abs(n[ix_] - other) <= max(0.05, 0.005 * other) for n in nb)
+        if not sr_ and any(c[s] == 0.0 and nb and any(n[ix] > 1.0 for n in nb) and not slot_proven(s, ix) for s, ix in (("fii", 0), ("dii", 1))):
             hold("exact 0 beside a neighbour above 1% without a partition proof"); continue
         tag = a["src"] + (" proven-zero" if a["zero_proof"] else "") + (" nse-refiling" if a["revised"] else "") \
               + (" " + how if how else "") + (" lag%dd" % lag if lag > 120 else "") + nsh_note
+        if a.get("rowlevel"): tag += " rowlevel:" + a["rowlevel"]
+        if a.get("id_note"): tag += " id:" + a["id_note"]
         fills[sym][qe] = [round(c["prom"], 4), round(c["fii"], 4), round(c["dii"], 4), round(c["mf"], 4),
                           round(c["ins"], 4), sub, nsh if nsh else None, tag]
         stat[(a.get("idx"), "FILL")] += 1
+
+    # ---- §180c re-filings: a filled BSE quarter whose company later REVISED it. The store keeps the original at its own
+    # date; the latest revision goes to shp_revisions.json (option C, §142k) dated by ITS OWN publication day, so a screen
+    # sees the original until the correction was public and the correction after (the stock page shows the correction).
+    # Same identity / format gates as an original; an old-format revision that would need row-level placement is left out
+    # (never guessed); only a revision whose numbers differ is recorded (Screener shows the revision: 186 of 198 FARs).
+    revisions, rev_stat = collections.defaultdict(dict), collections.Counter()
+    for sym, qs in fills.items():
+        code = bse_code_of.get(sym)
+        lp = os.path.join(LD, "%s.json" % code) if code else None
+        if not lp or not os.path.exists(lp): continue
+        try: rows = json.load(open(lp)).get("Table") or []
+        except Exception: continue
+        tv = T.get(code) or {}
+        for qe, cell in qs.items():
+            if not cell[7].startswith("bsexbrl") or "bse-original" not in cell[7]: continue
+            rv = sorted([r for r in rows if bse_label_qe(r.get("qtr")) == qe and str(r.get("status")) != "New" and r.get("revised_date_time")],
+                        key=lambda r: r["revised_date_time"])
+            if not rv: continue
+            r = rv[-1]; xf = str(r.get("XbrlFile") or "").strip(); xp = os.path.join(XD, xf + ".gz")
+            if not os.path.exists(xp): rev_stat["revision file not cached"] += 1; continue
+            try: ra = analyse(read_doc(xp), qe)
+            except Exception: rev_stat["revision unreadable"] += 1; continue
+            ra.pop("_pct", None); ra.pop("_shc", None)
+            ra.update({"bse_code": code, "bse_grp": tv.get("grp"), "src": "bsexbrl:" + xf})
+            bad, _ = identity_bse(sym, ra)
+            rc = ra.get("cell")
+            if bad: rev_stat["revision identity: " + bad[:40]] += 1; continue
+            if rc is None: rev_stat["revision parser refused"] += 1; continue
+            if ra["ambiguity"]: rev_stat["revision needs row-level placement (left out)"] += 1; continue
+            if ra["fmt"] == "new" and ra["partition_closes"] is False: rev_stat["revision public block does not close"] += 1; continue
+            if rc["mf"] > rc["dii"] + 0.05 or rc["ins"] > rc["dii"] + 0.05 or rc["prom"] + rc["fii"] + rc["dii"] > 100.5:
+                rev_stat["revision fails the bounds"] += 1; continue
+            rdate = str(r["revised_date_time"])[:10]
+            if rdate <= cell[5]: rev_stat["revision not after the original"] += 1; continue
+            new = [round(rc["prom"], 4), round(rc["fii"], 4), round(rc["dii"], 4), round(rc["mf"], 4), round(rc["ins"], 4)]
+            if max(abs(new[i] - cell[i]) for i in range(5)) < 0.005: rev_stat["revision repeats the original"] += 1; continue
+            revisions[sym][qe] = new + [rdate, rc.get("nsh"), "bsexbrl:%s bse-revision" % xf]
+            rev_stat["revision recorded"] += 1
+    print("RE-FILINGS %s" % dict(rev_stat))
 
     # ---- share counts: one per (sym, qe), identity-gated, stub/wrong-class screen against neighbours
     sh = collections.defaultdict(dict)
@@ -682,7 +1113,8 @@ def build(cache):
            "_meta": {"source": "NSE corporate-share-holdings-master XBRL (equities + SME boards) + BSE SHPQNewFormat XBRL",
                      "built": built, "runbook": "§180", "symbols": len(fills), "cells": n_cells,
                      "rule": "fill-only; parse_shp unchanged + partition-proven zeros; holds in _shp_allstocks_holds.json"},
-           "fills": {s: dict(sorted(q.items())) for s, q in sorted(fills.items())}}
+           "fills": {s: dict(sorted(q.items())) for s, q in sorted(fills.items())},
+           "revisions": {s: dict(sorted(q.items())) for s, q in sorted(revisions.items()) if q}}
     with gzip.open(LEDGER, "wt", encoding="utf-8") as fh:
         json.dump(led, fh, separators=(",", ":"), sort_keys=False)
     json.dump({"_meta": {"built": built, "cells": sum(len(v) for v in holds.values())},
@@ -702,7 +1134,7 @@ def build(cache):
 
 if __name__ == "__main__":
     ap = argparse.ArgumentParser()
-    ap.add_argument("stage", choices=["master", "download", "bse", "build"])
+    ap.add_argument("stage", choices=["master", "download", "bse", "rowlevel", "build"])
     ap.add_argument("--cache", default=CACHE)
     ap.add_argument("--shard", default="0/1", help="bse stage: k/n — this machine takes scrip codes with code %% n == k")
     ap.add_argument("--cap", type=int, default=20000, help="bse stage: per-run file cap (runbook §181)")
@@ -710,4 +1142,4 @@ if __name__ == "__main__":
     ap.add_argument("--codes", default=None, help="bse stage: JSON list of scrip codes to restrict this run to (later rounds)")
     a = ap.parse_args()
     if a.stage == "bse": stage_bse(a.cache, cap=a.cap, shard=a.shard, max_minutes=a.max_minutes, codes_file=a.codes)
-    else: {"master": stage_master, "download": stage_download, "build": build}[a.stage](a.cache)
+    else: {"master": stage_master, "download": stage_download, "rowlevel": stage_rowlevel, "build": build}[a.stage](a.cache)

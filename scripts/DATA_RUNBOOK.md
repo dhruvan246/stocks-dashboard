@@ -21504,6 +21504,63 @@ merges) landed while it ran. It now runs `scripts/union_bse_fundamentals.py`: th
 them, origin wins where both hold a cell. Unit-tested (job-only cell added, another writer's cell kept, conflict keeps
 current). The other files it commits have no other writer and are still copied.
 
+## §180c — Shareholding fill: the held cells resolved, re-filings added, one wrong company removed (2026-09-27, user: "fix the held ones too" / "i hope u hv verified the data")
+All in `scripts/fetch_shp_allstocks.py` (stages `rowlevel` + `build`); every rule names the case that forced it.
+**Row-level placement (stage `rowlevel`, `scripts/_shp_allstocks_rowlevel.json`).** Old-format filings held for an institutional
+"Any Other" row or a labelled non-institution row run the SAME functions as the Nifty-500 heals, unchanged: §158 R1-R3 (+§158a),
+§159 R2-FII, §164c D1, starting from the raw reading. The two CONVENTION moves (§159 FPI-labelled non-institution rows, §164c
+unnamed remainder -> FII) are taken only where the company's own first 2022-form filing (Sep-2022, its separate Institutions
+Domestic/Foreign blocks) shows where those shares sit; destinations stay / fii / public (ALNATRD: its whole 27.35 % float was filed
+as institutional "Any Other" until Jun-2022 and under Non-institutions from Sep-2022). Measured: applied blindly, the rules moved
+shares to FII that the filer's next filing kept outside it in 13 companies (KUNSTOFF's 0.86 % "FPI (Category III)" row sits under
+non-institutions in its 2022-form filings too). Earlier quarters take the seam's decision while the amount (or, for an FPI-labelled
+row, the label) is unchanged. D1 never moves a LABELLED row (COSYN "Bodies Corporate"/"Other HUF") or a NAMED holder (SAMTELIN's
+I L AND FS TRUST 9.39, "R1-named-unresolved-kept" — a gap in d1_delta's bookkeeping). Explicit FII labels keep their R1 placement
+even where the filer's 2022 form contradicts them (ROOPAIND, RESONANCE). Unconfirmed moves stay HELD (not guessed).
+**Identity.** ISIN compared after O/0, I/1 repair on BOTH sides; a filer-typo ISIN (INR614R01014, IN8744C01028, INF759F01012)
+passes only with BSE's ScripCode AND (the filing's company name OR an ISIN within two characters of the scrip's own — renamed
+companies file under the former name: FRATELLI = Tinna Trade). A wrong ScripCode fact (WHEELS "600001") passes only with name +
+ISIN (or no ISIN). BSE-only keys the dashboard owns alone (bse_universe maps the code to it, no .NS listing, no FUND_ALIAS entry)
+land even when bse_scrips keeps a former ticker (AMPL/CGFL, RAAMA/RLFL, REMAGNET/MIDWEST) or NSE uses the ticker for a company
+outside the dashboard (KEL). WORTH stays held: FUND_ALIAS maps WORTH -> WORTHPERI (another company) — open item.
+**BRIGHT (live defect, fixed):** the §180 NSE fill wrote 14 quarters of Bright SOLAR (NSE SME ticker BRIGHT, INE684Z01010) under
+BRIGHT = Bright Outdoor Media (BSE 543831, the dashboard's company). The NSE guard skipped keys already claimed by fundamentals.
+Now an NSE filing never fills a BSE-only key whose own ISIN issuer differs from every ISIN of the NSE ticker; the scrip's BSE
+copies are used instead (7 half-yearly quarters), the wrong cells retracted via shp_cell_fix (`drop` / `fix` with `was`).
+Whole-ledger identity audit afterwards: every live cell's filing = the dashboard company by ISIN issuer, BSE ScripCode or name,
+except BRIGHT; AGASTYAEN = SANGINITA renamed (same ISIN).
+**Zeros.** `zero_proof` refuses any filing that names institutional shares (DELTA 539596); Public == Non-institutions + SOME subset
+of the government tags present (ELNET/GUJSTATFIN: a PSU promoter tag and a public government tag in one filing); promoter shares
+== total shares (no public float: BGIL, ISERA 2022-23) proves 0. Old form: institutions total == its sub-rows share for share and
+one side's rows empty proves that side 0 — except a FLIP (GLOBUSCON: the same 17,810,728 shares filed as FPI, then as FI/Banks).
+Public-block closure uses the same government-subset rule. Hold-out after every change: 0 fires on 62,741 filings with institutions.
+**Holder counts.** A one-quarter spike (> 20x both neighbours, which agree within 3x) is withheld — the filer typed share counts into
+a holder field (PARMAX Sep-2022 KMP "100000"): 6 live cells healed (nsh only). The collapse test uses the MEDIAN of earlier
+quarters; a collapse on the SAME share capital writes the percentages without the count (AARCON after its open offer).
+**Continuity / zero / holder gates: second reading** (`scripts/_shp_allstocks_second_reader.json`): Screener, verify-only (verdict,
+no figures), agreed with the held value on 66 of 75 in-window quarters; named >= 1% FPI holders explained 3 out-of-window
+transitions. Only the same filing passes, every other gate still runs. Spikes/dips without a second reading stay held.
+**Re-filings (`revisions` in the ledger -> shp_revisions.json, fill-only via apply_ledger_revisions).** The fill stored originals
+only; Screener shows revisions (186 of 198 revision FARs confirmed equal to the revised filing). Now each filled BSE quarter's
+LATEST revision, same identity/format gates, numbers different from the original, is served from its own publication day.
+**Landed 2026-09-27 (~18:30 IST).** Holds 1,646 -> 218: 173 old-format placements the 2022-form seam cannot confirm (+8 whose
+rows claim more than their block), 20 identity (different ISIN AND name, Bright Solar's NSE filings, WORTH's alias), 9 continuity,
+7 unproven zeros and 5 holder counts without a second reading, 2 DELTA (self-contradictory), 2 unparseable. Store +1,409 cells;
+shp_revisions.json +613 re-filings (0 existing rows touched); shp_cell_fix +12 fix / +8 drop (BRIGHT 6 + 8, holder-count spikes 6);
+shares_history +607 and BRIGHT / INNOVATIVE share counts replaced by their own BSE filings (both had carried the NSE ticker's
+other company). Checks: two consecutive builds identical (fills, revisions, _bse_keys); every zero FII/DII cell re-read against
+its filing's share counts (the 103 with shares are <= 200 shares, <= 0.00043 %, below the 4-dp store precision); hold-out 0 fires
+on 62,741 filings with institutions; existing store cells changed = exactly the 20 heals; apply idempotent; guard_shp_gate /
+_definition / _revisions OK; guard_feed flags only the INTENDED shrink of _shp_allstocks_holds.json (472,785 -> 71,326 B; the
+guard reads per-file floors for docs/ files only); pages vs a baseline from the same main: 0 non-shareholding fields lost or
+changed, 479 pages' shareholding changed, 5 new pages; 7/7 random new cells equal Screener on every field (incl. KEL key, ISIN
+typo, government-tag partition, holder-count heal); identity audit of all live cells and all share counts: only BRIGHT /
+INNOVATIVE were another company (both fixed).
+**Screener sweep (verify-only, 1,689 of 3,348 companies at landing):** promoter 98.8 % exact, FII 99.8 %, DII 98.9 %, holders
+98.8 %. Every FAR's stored value equals the filing's own raw fact (read from the XBRL, not through parse_shp); 186 of the first
+198 revision-class FARs equal the company's REVISED filing (now served from its date via the re-filings above), 41 are the NBFC
+row inside Institutions(Domestic), the rest ARC / FPI-row / rounding conventions. Tools: ~/stocks-cache/shp/verify/.
+
 ## §182 — THE BSE RESULTS READERS NO LONGER HARD-CODE THE JUNE-2026 QUARTER (2026-09-27, user: "fix all")
 **Found by a prompt audit, measured on origin/main 99e9129d0.** Every reader of a scanned result filing was pinned to Q1 FY27:
 `fetch_bse_fund.py`'s vision fallback asked Claude/Gemini for "30 June 2026" and filed the answer under `20260630` with a

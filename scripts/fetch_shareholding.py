@@ -313,6 +313,26 @@ def apply_bse_hist_ledger(h):
         n_total += n
     return n_total
 
+def apply_ledger_revisions(revs):
+    """§180c: a fill ledger may carry the LATEST re-filing of a quarter it filled (`revisions`, same row shape as
+    shp_revisions.json, dated by the re-filing's own publication day). Merged fill-only — a sidecar row that exists is
+    never replaced (the regular re-filing pass owns it). Returns the number of rows added."""
+    n = 0
+    for path in BSE_HIST_LEDGERS:
+        if not os.path.exists(path): continue
+        try:
+            with gzip.open(path, "rt", encoding="utf-8") as fh:
+                rv = json.load(fh).get("revisions") or {}
+        except Exception as e:
+            print("%s unreadable (%s) — revisions skipped" % (os.path.basename(path), e)); continue
+        for sym, qs in rv.items():
+            dest = revs.setdefault(sym, {})
+            for key, row in qs.items():
+                if key in dest: continue
+                dest[key] = list(row); n += 1
+    if n: print("ledger re-filings added to shp_revisions.json: %d" % n)
+    return n
+
 # §22j PRECISION REFRESH ledger (scripts/fetch_shp_bse_hist.py --refine). Cells parsed before the
 # share-count pass carry the filer's 2dp percentage; these are the SAME filings re-read so
 # parse_shp recomputes them at 4dp. REFINE-ONLY: a cell is replaced only when the new value is
@@ -1038,6 +1058,7 @@ def refresh_quarters(qes, reparse=False, only=None, fill_shares=False):
     before = cells_of(hist)
     stats = []
     revs = load_revs(); rev_new = 0                    # §142k re-filings sidecar
+    apply_ledger_revisions(revs)                       # §180c fill-ledger re-filings, fill-only (no-op once merged)
 
     for qe in qes:
         recs = fetch_master(jar, qe)
@@ -1632,6 +1653,8 @@ if __name__ == "__main__":
             print("ABORT: history would shrink %d -> %d" % (before, after)); sys.exit(1)
         save_hist(h)
         print("history: %d cells (%+d) after ledgers" % (after, after - before))
+        _revs = load_revs()
+        if apply_ledger_revisions(_revs): save_revs(_revs)   # §180c fill-ledger re-filings, fill-only
         ev = load_events()
         if apply_cell_fix_events(ev): save_events(ev)     # §142e: event rows take cell_fix too
         build_feed()
