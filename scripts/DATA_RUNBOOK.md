@@ -65,6 +65,7 @@ loads every session. (README.md is just a short pointer here — this file is th
 - **§71** ★★★ THE ADJUDICATION THAT WAS ABANDONED — when your "truth" source is the corrupted one
 - **§72** ★★★ VERIFYING REV/PAT vs EXTERNAL SITES — sites reach 10 of 95 quarters; con PAT has no site quorum
 - **§76** ★★★ A `scrip_id` EQUAL TO THE TICKER IS A COINCIDENCE — gate symbol→BSE-scrip on ISIN (**read before any BSE-keyed fill**)
+- **§197** ★★★ A BSE-ONLY TICKER CAN BE A FORMER NSE TICKER OF ANOTHER COMPANY — `_rename_map`/FUND_ALIAS are NSE facts; the site never applies them to a ticker in `docs/bse_alias_collisions.json` (WORTH = Worth Investment, not WORTHPERI; 12 found) (**read before any alias/rename consumer that serves a page, and before merging an SME fragment**)
 - **§59** ★★ STANDALONE-SLOT-HOLDS-CONSOLIDATED AUDIT — the screen is not a defect count (**read before acting on any std/con equality screen**)
 - **§80** ★★★ SERIES **BZ** WAS NEVER INGESTED — a live trading series discarded for years (**read before touching the bhavcopy filter or a price-series gap**)
 - **§91** ★★★ postDrift COVERAGE — annual ≠ rebalance coverage; the `ann=0` LOOK-AHEAD (`0 != null` is TRUE in JS); sf_fundamentals starts Dec-2002 (**read before any point-in-time factor-coverage claim**)
@@ -22410,3 +22411,70 @@ only the quote worker's 502 for SME symbols (as §191).
 Jun / Sep-25 312.11 / 750.05, SVJ Mar-26 6,201.0 — the page shows them beside the BSE revenue. (2) The xbrl-extra nightly
 copies its whole gz over origin's after its reset, so any detail heal pushed during its ~00:10 IST run would be undone.
 (3) The TTM cards (`window4`) still sum four contiguous rows without checking `pd` (§191 open).
+
+## §197 — A BSE TICKER THAT IS ALSO A FORMER NSE TICKER OF ANOTHER COMPANY: the rename alias is an NSE fact, never applied to the BSE company (2026-09-27, user: "fix the alias at its source so WORTH shows Worth Investment's own data")
+**NO ASSUMPTIONS, NO GUESSWORK — every value below was measured this session.**
+**The case.** The dashboard's WORTH is Worth Investment & Trading (BSE 538451, ISIN **INE114O01020** per BSE's master,
+bse_universe and bse_scrips — not ...012). NSE's WORTH was Worth Peripherals (INE196Y01018): SME series SM 2017-09-27 →
+2020-07-31, main board EQ from 2020-08-04 (bhavcopy PREVCLOSE 43.50 = the SME last close), symbol → WORTHPERI 2025-10-10
+(symchg.csv). So `WORTH → WORTHPERI` in `_rename_map.json` / the baked `FUND_ALIAS` is TRUE — for the NSE namespace.
+Live before the fix: `stock.html?sym=WORTH` loaded `sf-data/stk/WORTH.json` = Worth Peripherals' dead SME fragment and
+**redirected to WORTHPERI**; `docs/fin/WORTH.json` carried WORTHPERI's shareholding byte-for-byte plus Worth Peripherals'
+NSE-era rows stored under the old symbol (`sf_revop['WORTH']` 20 quarters = WORTHPERI's, `sf_fundamentals['WORTH']` 3);
+`docs/discovery.json` listed "Worth Investment & Trading Co Ltd" with Worth Peripherals' Dec-21 PAT +187%; §180c held
+Worth Investment's own shareholding because of the alias.
+**Why the alias can't just be deleted.** It serves the NSE namespace: the engine's `membersAsOf` maps a roster name with no
+series through FUND_ALIAS (RDEL sits in `fnoHistory` and needs RDEL → SWANDEF), `fundFor`/SHPD resolve old tape keys,
+build_revop / membership joins fold old NSE symbols. The defect is SITE consumers applying an NSE fact to a BSE ticker.
+**The class (scan: `scripts/scan_bse_alias_collisions.py`, ledger: `docs/bse_alias_collisions.json`, served + tracked).**
+Every alias OLD → TARGET (FUND_ALIAS ∪ `_rename_map` chained) where the dashboard lists OLD as a BSE-only company (OLD.BO in
+stock_data.bin meta, no OLD.NS, a bse_universe scrip mapped to OLD): ISIN issuer (isin[:7]) of that scrip vs every ISIN on
+record for TARGET (its own BSE listing, BSE's all-scrips master incl. delisted — only when BSE's name equals the tape's name,
+the §76 guard —, sf-data tape meta, nse_sym_isin_2020, EQUITY_L). Result: **12 of 12 are different companies, 0 same-company,
+0 unproven** — ARL (Anand Rayons ≠ ARVINDREM INE211C), AZTEC (Aztec Fluids ≠ Aztecsoft INE651B, BSE 532385 delisted), BCCL
+(Bhatia Colour ≠ ABCIL INE605B), COLORCHIPS (≠ ADROITINFO), CREATIVE (Creative Castings ≠ CNL INE985W), DPL (Dipna ≠ DVL),
+HSIL (Hemant Surgical ≠ AGI), MIL (Medico ≠ GBGLOBAL), MUDRA (Mudra Financial ≠ ELAND), RDEL (Riddhi Display ≠ SWANDEF),
+SHREE (Shree Marutinandan ≠ AJMERA), WORTH. Live damage measured per page: SHREE served AJMERA's fund/revop/SHP/XBRL
+entirely; DPL/HSIL/MIL the target's profit + SHP; COLORCHIPS ADROITINFO's SHP + XBRL; AZTEC AZTECSOFT's revenue + XBRL;
+WORTH/CREATIVE redirected; and the reverse — AZTECSOFT's page (dead 2009) and GBGLOBAL's absorbed the BSE company's rows as
+a "former symbol". `--write` is fill-only; exit 1 on a new or unproven pair.
+**The fix, per consumer (the engine's NSE-namespace FUND_ALIAS and `_rename_map` are left exactly as they were):**
+- `build_stock_fin.py` drops ledger keys from its alias view: no fallback to the target's rows, no folding into the
+  target's page as a former. ABORTs if the ledger is unreadable (would otherwise alias silently).
+- `stock.html`: `aliasCollides(sym)` reads the ledger only on the two redirect paths (dead slice / no slice); the pre-IPO
+  card never borrows an alias's data on a LIVE page (an alias only ever stands in for a dead old symbol).
+- `fetch_shp_allstocks.py`: a FUND_ALIAS entry on a ledger key (same target) no longer counts against `sole_key`.
+- Stores (`scripts/retract_bse_alias_collision_rows.py`, reversible log `scripts/bse_alias_collision_retractions.json`):
+  the target's NSE-era rows under a ledger key are §30-step-4 moved, FILL-ONLY and only where the served target headline
+  agrees (every shared revop slot except 5 = PAT mirror, 6 = bank flag): revop null slots / missing quarters, xbrl_extra
+  whole quarter or basis BLOCKS the target lacks (a block is one filing — never blend two filings' fields); everything
+  else dropped + logged; the old key removed. Key-level proof first: ≥1 quarter agreeing with the target AND 0 with the BSE
+  company's own filings — AZTEC (2023-26 rows, target dead since 2009) is NOT proven and left as is (open item below).
+  Landed: WORTH/CREATIVE/DPL/HSIL/MIL keys removed from sf_revop, revop_fundamentals, xbrl_extra (+ WORTH from both fund
+  stores); targets gained only — WORTHPERI +20 quarters of its own XBRL detail, CNL +24 quarter blocks and null-slot fills
+  (e.g. Mar-21 con op 5.88), AGI +13, GBGLOBAL +1, DVL +1 (Sep-18). DVL loses Mar-18/Jun-18 standalone blocks that came from
+  DPL's as-filed results and contradicted DVL's own headline (PBT −15.01 + tax −2.54 ⇒ PAT −12.47 beside a served −9.53).
+  Check: store diff = 5 keys removed + additive target changes only; fin slices built both ways from the same inputs —
+  14 changed + 3 removed (DPL/RDEL/SHREE had nothing of their own), every other of 6,593 slices byte-identical.
+- Price tape: WORTH and CREATIVE were §145 SME fragments CREATED as keys because the successor's bin meta has no ISIN and
+  NSE renamed it later — the dead NSE fragment then owned the ticker's price slice (build_bse_slices never overwrites an
+  NSE slice). `update_sf_data.py` MANUAL_MERGE += WORTHPERI←WORTH, CNL←CREATIVE (NSE chains both: CREATIVE SM last
+  2019-08-01 64.50 → CREATIVE EQ 2019-08-05 PREVCLOSE 64.50; no successor factor after either SME end, adj = 1 — CNL's
+  2019-06-25 ×0.5 is inside the fragment's own adjustment). `sme_backfill.json.gz`: the two `create` blocks → `prepend`
+  (anchors 20200804 raw 47.75 prev 43.50 / 20190805 raw 67.70 prev 64.50) — without this the next nightly RE-CREATES the
+  key the merge removed (a create fires whenever its key is absent). `build_sme_backfill.py`: a symbol absent from the bin
+  follows NSE's rename chain to its successor, the anchor row is read under the symbol that traded THAT day, and the
+  successor's official CA list is read for the SME era (CREATIVE's ×0.5 is filed under CNL; §161 forbids inferring it).
+  Verified on NSE's own bhavcopies (829 sessions 2017-04 → 2020-08): the fixed builder emits both as prepends with exactly
+  those anchors, bars identical to the committed ones on date/close/high/low/open/volume, exit control passed.
+- Nightly guard: `check_fund_alias.py` (the `fund_alias` feed) now runs `collision_audit` BEFORE its META gate: ledger target
+  = the aliases' chain end, and no served store re-seeded with the target's rows under a ledger key. Tested silent on the
+  healed stores, flags all 5 keys on the pre-fix stores, flags a moved chain.
+**Open (measured, not fixed here):** AZTEC's 8 `sf_fundamentals` rows (2023-09 → 2026-03, con PAT 458.14/422.68/298.25
+repeating on a small SME) match neither Aztecsoft nor BSE 544177's filings — provenance unknown. Worth Investment's own
+`bse_fundamentals` px[538451] Jun-22 → Jun-23 read 85.84/56.79/147.16/91.47 revenue beside ~0.5-1.4 neighbours (a lakh-as-crore
+pattern, §184) — unverified against the filings. Five more §145 SME fragments sit as dead keys beside their renamed
+successors (GODHA→AURIGROW, KEERTI→GTECJAINX, SONAMCLOCK→SONAMLTD, URAVI→URAVIDEF, WFL→WEL) — not BSE collisions, need
+the same PREVCLOSE check before a merge. MUDRA has 7 BSE price days (< the 20-day slice floor), so its page now says "not
+found" instead of redirecting to ELAND. `refresh-search-index.yml` cuts the index from the frozen committed bin (v 2026-06-13),
+which keeps the `fund_alias` check on "stale".
