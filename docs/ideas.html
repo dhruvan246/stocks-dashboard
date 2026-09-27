@@ -68,7 +68,20 @@
     table.md td:first-child { font-weight: 500; }
 
     /* ---- idea card ---- */
-    .idea { padding: 0; overflow: hidden; }
+    .idea { padding: 0; overflow: hidden; transition: box-shadow .15s ease, border-color .15s ease; }
+    .idea.open { grid-column: 1 / -1; }
+    .idea .itop { cursor: pointer; outline: none; }
+    .idea:not(.open):hover { border-color: var(--border-strong, var(--accent)); box-shadow: var(--shadow, 0 2px 10px rgba(0,0,0,.06)); }
+    .idea .itop:focus-visible { box-shadow: inset 0 0 0 2px var(--accent); }
+    .idea:not(.open) .trig .tx { display: -webkit-box; -webkit-line-clamp: 3; -webkit-box-orient: vertical; overflow: hidden; }
+    @media (max-width: 640px) { .idea:not(.open) .trig .tx { -webkit-line-clamp: 2; } .idea .ihead { padding: 14px 14px 10px; } .kpis > div { padding: 8px 12px; } }
+    .idea .ifull { display: none; }
+    .idea.open .ifull { display: block; }
+    .chev { display: inline-flex; align-items: center; gap: 6px; font-size: 12.5px; font-weight: 600; color: var(--accent); margin-top: 10px; }
+    .chev svg { transition: transform .2s ease; }
+    .idea.open .chev svg { transform: rotate(180deg); }
+    .collapse-btn { display: flex; justify-content: center; width: 100%; padding: 10px; font-size: 12.5px; font-weight: 600; color: var(--accent); border-top: 1px solid var(--border); }
+    .collapse-btn:hover { background: var(--surface); }
     .idea .ihead { padding: 16px 18px 12px; border-bottom: 1px solid var(--border); }
     .idea h3 { font-size: 1.15rem; font-weight: 700; line-height: 1.3; }
     .tick { font-family: var(--mono, ui-monospace, monospace); font-size: 11px; font-weight: 600; padding: 2px 7px; border-radius: 6px; border: 1px solid var(--border); color: var(--text-muted); vertical-align: 2px; margin-left: 4px; }
@@ -143,7 +156,7 @@
       <span id="day-chips"></span>
     </div>
     <p id="day-note" class="muted text-sm mb-3" hidden></p>
-    <div id="ideas-list" class="grid gap-5"></div>
+    <div id="ideas-list" class="grid gap-4 md:grid-cols-2 items-start"></div>
   </section>
 
   <section id="govt" class="mb-8" data-jump="Government">
@@ -430,6 +443,18 @@
     document.querySelectorAll('#lane button').forEach(x => x.classList.toggle('on', x === b));
     renderIdeas();
   });
+  // Every idea starts as a compact card (name, key figures, trigger). A click opens the full note
+  // across the whole row; a second click (or "Collapse") closes it. Open cards survive a lane / date
+  // switch, and ?idea=<id> deep-links straight to one opened note.
+  const OPEN = new Set();
+  const CHEV = '<svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><polyline points="6 9 12 15 18 9"></polyline></svg>';
+  const setIdeaParam = (id) => {
+    try {
+      const u = new URL(location.href);
+      if (id) u.searchParams.set('idea', id); else u.searchParams.delete('idea');
+      history.replaceState(null, '', u);
+    } catch (e) {}
+  };
   function drawIdea(it) {
     const t = trackBy[it.id] || {};
     const priced = t.status === 'ok';
@@ -443,48 +468,59 @@
     const kpi = (k, v, d) => `<div><div class="k">${k}</div><div class="v">${v}</div>${d ? `<div class="d">${d}</div>` : ''}</div>`;
     const el = document.createElement('article');
     el.className = 'card idea';
+    el.id = 'idea-' + it.id;
     el.innerHTML = `
-      <div class="ihead">
-        <div class="flex justify-between items-start gap-3">
-          <div class="min-w-0">
-            <h3>${esc(it.name)}<span class="tick">${esc(it.ticker || it.scrip || '')}</span>${it.sme && lane !== 'sme' ? '<span class="tag">SME</span>' : ''}</h3>
-            <div class="imeta"><span>Published ${esc(it.date)}</span><span>Mcap ₹${fmt(it.mcap, 0)} cr</span>${it.industry ? `<span>${esc(it.industry)}</span>` : ''}${it.nse ? `<span>NSE ${esc(it.nse)}</span>` : ''}${/^\d+$/.test(String(it.scrip || '')) ? `<span>BSE ${esc(it.scrip)}</span>` : ''}</div>
+      <div class="itop" role="button" tabindex="0" aria-expanded="false">
+        <div class="ihead">
+          <div class="flex justify-between items-start gap-3">
+            <div class="min-w-0">
+              <h3>${esc(it.name)}<span class="tick">${esc(it.ticker || it.scrip || '')}</span>${it.sme && lane !== 'sme' ? '<span class="tag">SME</span>' : ''}</h3>
+              <div class="imeta"><span>Published ${esc(it.date)}</span><span>Mcap ₹${fmt(it.mcap, 0)} cr</span>${it.industry ? `<span>${esc(it.industry)}</span>` : ''}${it.nse ? `<span>NSE ${esc(it.nse)}</span>` : ''}${/^\d+$/.test(String(it.scrip || '')) ? `<span>BSE ${esc(it.scrip)}</span>` : ''}</div>
+            </div>
+            <span class="lane ${lane}">${esc(LANE_LABEL[lane])}</span>
           </div>
-          <span class="lane ${lane}">${esc(LANE_LABEL[lane])}</span>
+        </div>
+        <div class="kpis">
+          ${kpi('Call close', '₹' + fmt(it.call_close, 2), esc(it.call_date))}
+          ${priced ? kpi('Latest close', '₹' + fmt(t.last_close, 2), esc(t.last_date) + (t.stale ? ' · stale' : '')) : kpi('Latest close', '—', 'not scored yet')}
+          ${priced ? kpi('Since call', pct(t.ret_pct), t.days + ' day' + (t.days === 1 ? '' : 's')) : kpi('Since call', '—', '')}
+          ${priced ? kpi('Best close', pct(t.peak_pct), '₹' + fmt(t.peak_close, 2) + ' · ' + esc(t.peak_date)) : kpi('Best close', '—', '')}
+        </div>
+        <div class="ibody" style="padding-bottom:12px">
+          <div class="trig"><span class="muted text-xs font-semibold" style="text-transform:uppercase;letter-spacing:.05em">Trigger</span><div class="tx">${inl(trig)}</div></div>
+          <div class="chev"><span class="lbl">Read the full research</span>${CHEV}</div>
         </div>
       </div>
-      <div class="kpis">
-        ${kpi('Call close', '₹' + fmt(it.call_close, 2), esc(it.call_date))}
-        ${priced ? kpi('Latest close', '₹' + fmt(t.last_close, 2), esc(t.last_date) + (t.stale ? ' · stale' : '')) : kpi('Latest close', '—', 'not scored yet')}
-        ${priced ? kpi('Since call', pct(t.ret_pct), t.days + ' day' + (t.days === 1 ? '' : 's')) : kpi('Since call', '—', '')}
-        ${priced ? kpi('Best close', pct(t.peak_pct), '₹' + fmt(t.peak_close, 2) + ' · ' + esc(t.peak_date)) : kpi('Best close', '—', '')}
-      </div>
-      <div class="ibody">
-        <div class="trig"><span class="muted text-xs font-semibold" style="text-transform:uppercase;letter-spacing:.05em">Trigger</span><br>${inl(trig)}</div>
-        <div class="note thesis mt-3">${md(it.thesis)}</div>
-      </div>
-      ${sec('model', 'Model')}${sec('valuation', 'Valuation')}${sec('red_flags', 'Red flags and risks')}${sec('verify', 'Still to verify')}${sec('unknowns', 'Unknowns')}
-      <details class="isec"><summary>Sources (${(it.sources || []).length})</summary><div class="note"><ol class="srcl">${(it.sources || []).map(s => `<li><a href="${esc(s.url)}" target="_blank" rel="noopener">${esc(s.title)}</a></li>`).join('')}</ol></div></details>
-      <div class="ifoot">${confLevel ? `<span>Confidence <span class="conf ${confLevel}">${confLevel}</span></span>` : ''}${confText ? `<span>${esc(confText)}</span>` : ''}</div>`;
+      <div class="ifull">
+        <div class="ibody" style="padding-top:0"><div class="note thesis">${md(it.thesis)}</div></div>
+        ${sec('model', 'Model')}${sec('valuation', 'Valuation')}${sec('red_flags', 'Red flags and risks')}${sec('verify', 'Still to verify')}${sec('unknowns', 'Unknowns')}
+        <details class="isec"><summary>Sources (${(it.sources || []).length})</summary><div class="note"><ol class="srcl">${(it.sources || []).map(s => `<li><a href="${esc(s.url)}" target="_blank" rel="noopener">${esc(s.title)}</a></li>`).join('')}</ol></div></details>
+        <div class="ifoot">${confLevel ? `<span>Confidence <span class="conf ${confLevel}">${confLevel}</span></span>` : ''}${confText ? `<span>${esc(confText)}</span>` : ''}</div>
+        <button type="button" class="collapse-btn">Collapse ↑</button>
+      </div>`;
+    const top = el.querySelector('.itop');
+    const setOpen = (open, scroll) => {
+      el.classList.toggle('open', open);
+      top.setAttribute('aria-expanded', open ? 'true' : 'false');
+      el.querySelector('.chev .lbl').textContent = open ? 'Hide the full research' : 'Read the full research';
+      if (open) OPEN.add(it.id); else OPEN.delete(it.id);
+      setIdeaParam(open ? it.id : (OPEN.size ? [...OPEN][OPEN.size - 1] : ''));
+      // An opened card jumps to full width, so the grid reflows: bring its top back into view.
+      if (scroll) requestAnimationFrame(() => el.scrollIntoView({ block: 'start', behavior: 'smooth' }));
+    };
+    top.addEventListener('click', (e) => { if (e.target.closest('a')) return; setOpen(!el.classList.contains('open'), true); });
+    top.addEventListener('keydown', (e) => { if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); setOpen(!el.classList.contains('open'), true); } });
+    el.querySelector('.collapse-btn').addEventListener('click', () => setOpen(false, true));
+    if (OPEN.has(it.id)) setOpen(true, false);
     list.appendChild(el);
-    // Long theses open clamped with a fade; one click shows the whole note.
-    const th = el.querySelector('.thesis');
-    requestAnimationFrame(() => {
-      // Clamp below the first table so a note's headline numbers are never hidden behind the fold.
-      const t1 = th.querySelector('.md-tw');
-      const cap = Math.max(620, t1 ? t1.offsetTop - th.offsetTop + t1.offsetHeight + 60 : 0);
-      if (th.scrollHeight <= cap + 200) return;
-      th.style.setProperty('--cap', cap + 'px');
-      th.classList.add('clamp');
-      const btn = document.createElement('button');
-      btn.type = 'button'; btn.className = 'more'; btn.textContent = 'Read the full thesis ↓';
-      btn.addEventListener('click', () => {
-        const open = th.classList.toggle('clamp');
-        btn.textContent = open ? 'Read the full thesis ↓' : 'Show less ↑';
-        if (open) el.scrollIntoView({ block: 'start', behavior: 'smooth' });
-      });
-      th.after(btn);
-    });
+  }
+  {
+    let want = '';
+    try { want = new URLSearchParams(location.search).get('idea') || ''; } catch (e) {}
+    if (want && all.some(it => it.id === want)) {
+      OPEN.add(want);
+      setTimeout(() => { const n = document.getElementById('idea-' + want); if (n) n.scrollIntoView({ block: 'start' }); }, 300);
+    }
   }
   renderIdeas();
 
