@@ -45,6 +45,7 @@ HERE = os.path.dirname(os.path.abspath(__file__))
 ROOT = os.path.dirname(HERE)
 DOCS = os.path.join(ROOT, "docs")
 sys.path.insert(0, HERE)
+import bse_resolve                                            # §203: whose page a ticker is, by ISIN
 
 LIST = "https://api.bseindia.com/BseIndiaAPI/api/Result_Arch_ng/w?scrip_cd=%s"
 WWW = "https://www.bseindia.com"
@@ -543,6 +544,8 @@ def targets(today):
         have = {int(q) for q, c in (px.get(code) or {}).items()
                 if str(q).isdigit() and not (isinstance(c, dict) and c.get("prov"))}   # a provisional H1 stays wanted
         tk = code2tk.get(code)
+        if tk and bse_resolve.bse_blocked_under(tk, r[3] if len(r) > 3 else None, code):
+            tk = None                                          # §203: the ticker's page is another company — never chased
         if tk and tk.upper() not in tape and not sme:          # SME half-year files carry no quarterly detail
             dq = {int(q) for q in (xl.get(tk) or {}) if str(q).isdigit()}
             have = {q for q in have if q in dq}
@@ -688,7 +691,7 @@ def handle(code, sym, sme, miss, dl, code2tk, xbrl_symbol):
         kind = "nse" if tgt else "bse"
         vals = parse_values(xml, basis, fname)
         rec = {"code": code, "qe": qe, "basis": basis, "half": half, "ann": ann_from_name(fname, qe, fdt), "file": fname,
-               "kind": kind, "sym": tgt or code2tk.get(code), **vals}
+               "kind": kind, "sym": tgt or code2tk.get(code), "isin": isin, **vals}
         if not half and rec["sym"]:
             rec["detail"] = detail(p, fname, rec["sym"])
         out.append(rec)
@@ -739,8 +742,9 @@ def handle_sme(code, miss, dl, code2tk, xbrl_symbol, stored=None):
                     "ebit_s": None, "ebit_c": None, "fin": 0}
             b = "c" if basis == "C" else "s"
             vals["pat_" + b], vals["rev_" + b] = cr(d["pat"]), cr(d["rev"])
+        mi = RE_ISIN.search(src["xml"])
         rec = {"code": code, "qe": qe, "basis": basis, "half": d["how"] == "half", "ann": src["ann"], "file": src["fname"],
-               "kind": kind, "sym": tgt or code2tk.get(code), **vals}
+               "kind": kind, "sym": tgt or code2tk.get(code), "isin": mi.group(1) if mi else "", **vals}
         if d.get("pf"):
             rec["pf"] = d["pf"]
         if d.get("prov"):
@@ -780,7 +784,8 @@ def apply(fills_path):
         tape_keys = set(json.JSONDecoder().raw_decode(b[b.rfind(b'"meta":') + 7:].decode())[0])
     except (OSError, ValueError):
         pass
-    C = {"bse q": 0, "nse pat": 0, "nse rev": 0, "detail q": 0, "detail f": 0, "skip ticker clash": 0}
+    C = {"bse q": 0, "nse pat": 0, "nse rev": 0, "detail q": 0, "detail f": 0, "skip ticker clash": 0,
+         "skip other company's page": 0}
     C["prov withdrawn"] = 0
     for f in fills:
         if f.get("withdraw_prov"):
@@ -807,6 +812,9 @@ def apply(fills_path):
                     cur[str(qe)] = rec; C["bse q"] += 1
         else:
             sym = f["sym"]; ann = f["ann"] or None
+            if bse_resolve.nse_blocked_under(sym, f.get("isin")):
+                C["skip other company's page"] += 1; continue  # §203: the site's page for sym is a BSE company of
+                #                                                another issuer (its NSE twin stopped trading: KEL)
             rows = sf.setdefault(sym, [])
             row = next((r for r in rows if r[0] == qe), None)
             s_, c_ = f["pat_s"], f["pat_c"]
@@ -834,6 +842,9 @@ def apply(fills_path):
         if dt and f["sym"]:
             if f["kind"] == "bse" and f["sym"].upper() in tape_keys:
                 C["skip ticker clash"] += 1; continue          # a BSE ticker that is also an NSE key (§76) — never mix
+            if f["kind"] == "bse" and bse_resolve.bse_blocked_under(f["sym"], None, f["code"]):
+                C["skip other company's page"] += 1; continue  # §203: an SME/NSE company's page (ZEAL = Zeal Global,
+                #                                                not BSE 539963 Zeal Aqua) — the tape above has no SME key
             cell = xl.setdefault(f["sym"], {}).setdefault(str(qe), {})
             new_q = not cell
             for b in ("s", "c"):
@@ -895,6 +906,8 @@ def heal_sme(src_dir, dry=False):
         files = sme_files(code, [(os.path.join(src_dir, f), f, fdt.get(f, "")) for f in byc.get(code, [])])
         dec = {(d["qe"], d["basis"]): d for d in sme_decide(files, stored_rows(px[code]))}
         tk = code2tk.get(code)
+        if tk and bse_resolve.bse_blocked_under(tk, None, code):
+            tk = None                                        # §203: xl[tk] is another company's detail — never edited
         for qe in pop[code]:
             cell = px[code][qe]
             d = dec.get((int(qe), cell.get("basis")))

@@ -278,6 +278,10 @@ def main():
             code2sym = {str(v): k for k, v in bsj.get("by_id", {}).items()}
             code2isin = {str(v): k for k, v in bsj.get("by_isin", {}).items()}
             tape_isin = nse_tape_isin()                          # NSE symbol -> ISIN (committed tape meta)
+            sys.path.insert(0, HERE)
+            import bse_resolve                                   # §203: whose page a ticker is, by ISIN
+            bse_resolve.identities(tape_isin)
+            not_this_page = {}                                   # ticker -> why a BSE scrip is kept off its page
             isin2nse = {}
             for s_, i_ in tape_isin.items():
                 isin2nse.setdefault(i_, set()).add(s_)
@@ -301,6 +305,13 @@ def main():
                 isin = code2isin.get(str(code), "")
                 targets = []
                 sym = code2sym.get(str(code))
+                # §203: the ticker string is also the NSE symbol of ANOTHER company whose page this is (ZEAL = Zeal
+                # Global on NSE SME, BSE 539963 = Zeal Aqua). The tape ISIN check below never saw it: the committed
+                # tape carries no SME symbol, so `ti` was None and the other company's quarters were folded in.
+                why = bse_resolve.bse_blocked_under(sym, isin, code) if sym else None
+                if why:
+                    not_this_page[sym] = why
+                    sym = None
                 if sym:
                     ti = tape_isin.get(sym)
                     if sym in fund or sym in revop:
@@ -353,6 +364,8 @@ def main():
                         else: bse_filled += 1
             print("BSE fundamentals folded in: %d new symbols, %d existing symbols gap-filled (fill-only)"
                   % (bse_added, bse_filled))
+            print("BSE scrips kept off another company's page (§203): %d — %s"
+                  % (len(not_this_page), ", ".join(sorted(not_this_page)[:12])))
         except Exception as e:
             print("WARN: could not fold bse_fundamentals.json (%s) — BSE-only names get no fin slice" % e)
 

@@ -41,6 +41,7 @@ import os, re, sys, json, datetime, concurrent.futures, html as html_lib
 sys.path.insert(0, os.path.dirname(os.path.abspath(__file__)))
 import scale_fix
 import xbrl_symbol
+import bse_resolve
 
 HERE = os.path.dirname(os.path.abspath(__file__))
 # XBRL_CACHE override: the nightly top-up routine runs from its OWN worktree (one writer per
@@ -282,6 +283,12 @@ def parse_file(path, fname, sym_override=None):
     if not sym:
         return None
     sym = sym.upper()
+    if not sym_override:
+        # §203: the site's page for this ticker can be a BSE company of another issuer — KEL is Kotia Enterprises
+        # (BSE 539599) since NSE's KEL, Kundan Edifice, stopped trading; that filing is never keyed under it
+        mi = xbrl_symbol.RE_ISIN.search(xml)
+        if bse_resolve.nse_blocked_under(sym, mi.group(1) if mi else None):
+            return None
 
     # ---- contexts --------------------------------------------------------------------------
     ctx = {}  # cid -> ('I', date) | ('D', start, end)
