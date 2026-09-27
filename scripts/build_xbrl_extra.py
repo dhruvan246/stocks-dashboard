@@ -97,7 +97,10 @@ RE_SEGCID = re.compile(r"^(One|Four)(?:Reportable|Segment)\d+D$")
 # ---- tag tables: short key -> XBRL local names to try, in order ------------------------------
 PNL = {  # quarter money, ₹ -> cr
     "oi": ["OtherIncome"], "fc": ["FinanceCosts"],
-    "dep": ["DepreciationDepletionAndAmortisationExpense"],
+    # trailing name = the NON-Ind-AS spelling (NSE "NONINDAS" files — every SME half-year / quarter,
+    # older small filers — and BSE's "NonBanking" / "IFOtherthan" SME files); same rule as below,
+    # it only applies where the Ind-AS tag is absent (build_revop.metrics_for reads both, §205)
+    "dep": ["DepreciationDepletionAndAmortisationExpense", "DepreciationAndAmortisationExpense"],
     "tax": ["TaxExpense"], "tax_c": ["CurrentTax"], "tax_d": ["DeferredTax"],
     # trailing names are the BANKING-taxonomy spellings (measured on KTKBANK/HDFCBANK files
     # 2026-09-05); facts_by_ctx takes the first name that has any facts, so they only apply
@@ -105,7 +108,8 @@ PNL = {  # quarter money, ₹ -> cr
     "exc": ["ExceptionalItemsBeforeTax", "ExceptionalItems"],
     "pbt": ["ProfitBeforeTax", "ProfitLossBeforeTax", "ProfitOrLossBeforeTax",
             "ProfitLossFromOrdinaryActivitiesBeforeTax"],
-    "pbet": ["ProfitBeforeExceptionalItemsAndTax"],
+    # non-Ind-AS: "Profit before exceptional and extraordinary items and tax" — the pre-exceptional line
+    "pbet": ["ProfitBeforeExceptionalItemsAndTax", "ProfitBeforeExceptionalAndExtraordinaryItemsAndTax"],
     "emp": ["EmployeeBenefitExpense", "EmployeesCost"], "mat": ["CostOfMaterialsConsumed"],
     "oci": ["OtherComprehensiveIncomeNetOfTaxes"],
     "assoc": ["ShareOfProfitLossOfAssociatesAndJointVenturesAccountedForUsingEquityMethod"],
