@@ -22784,3 +22784,15 @@ page and only churn ledgers (mc_history_fills KEERTI ×2, _reattr_owners), so ve
 (adj 0.0500 / 1.0000 / 0.2500 / 1.0000 / 0.1000), only the five old keys removed and the five successors changed (post-join
 bars byte-identical, ISIN now in meta); joins read NSE's raw day-1 moves (GTECJAINX 0.9531, SONAMLTD 1.0704, URAVIDEF
 0.9888; AURIGROW/WEL within 2-dp rounding); run 2 = 0 series changed, no key re-created.
+
+**§195 Option A — provisional SME H1 (user, 2026-09-27: SME IPO members' results must show after the Sep quarter, "OPTION A").**
+`fetch_bse_results_xbrl.sme_decide`: a Sep SME file with NO Mar filing yet for its fiscal year whose FourD context runs
+1-Apr → 30-Sep (`prov_h1`; all 46 cached Sep files with FourD do; 9 without FourD stay HELD) stores FourD as H1 with
+`h=1, prov=1, pf.prov=1`. `targets()` treats prov cells as still missing (re-listed until the Mar filing lands); when it
+does, the year's arithmetic re-decides the cell — `apply` overwrites a prov cell with the proven half, and a held
+re-decision emits `withdraw_prov` so a disproved provisional is deleted (never a proven cell). Measured on the 128 cached
+SME files by dropping each year's Mar filing: 46/48 provisional H1s equal the later proven H1; 2 would be withdrawn
+(543799 FY25, 540402 FY22). BSE SME IPO members now list first among BSE-only targets (smallest caps came last by mcap).
+`build_bse_results` puts `1` at q-row [9] for a prov cell → quarterly-results.html shows "H1 · unconfirmed".
+OPEN: `build_row_periods.pf_ok` does not yet accept prov cells (needs h2/fy) — a prov Sep row is not marked 6 months on
+the stock page until handled (no prov cell can exist before the Oct-Nov 2026 Sep filings).

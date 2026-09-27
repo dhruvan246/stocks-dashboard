@@ -494,7 +494,7 @@ function recsFor(qi){
     out.push({ sym, c, rev, op, pat,
       ry:ry&&ry.pct, rq:rq&&rq.pct, py:gy&&gy.pct, pq:gq&&gq.pct,
       pfY:pf, pfQ:patFlag(gq), opm:o1, dOpm, rec, streak, verdict, score,
-      ann:row[6]||null, rx:row[7], sr:row[8] });
+      ann:row[6]||null, rx:row[7], sr:row[8], prov:row[9]===1 });
   }
   CACHE[key]=out; return out;
 }
@@ -845,7 +845,7 @@ function renderResults(){
     const c=r.c, due=(c.e&&!c.q[0])?'<span class="badge ml-1" title="Next result expected '+esc(c.e)+'">📅</span>':'';
     return '<tr class="hover:bg-slate-50 cursor-pointer" data-open="'+esc(r.sym)+'">'+
     '<td class="pl-3 pr-1"><span class="star'+(WATCH.has(r.sym)?' on':'')+'" data-star="'+esc(r.sym)+'" title="Watchlist">★</span></td>'+
-    '<td class="px-2 py-2"><div class="font-extrabold text-slate-900 leading-tight">'+esc(r.sym)+(c.bse?' <span class="badge" title="Listed on BSE only — not on NSE">BSE</span>':'')+(c.f?' <span class="badge" title="Bank/NBFC — revenue = total income; operating margin not comparable">🏦</span>':'')+due+'</div>'+
+    '<td class="px-2 py-2"><div class="font-extrabold text-slate-900 leading-tight">'+esc(r.sym)+(c.bse?' <span class="badge" title="Listed on BSE only — not on NSE">BSE</span>':'')+(r.prov?' <span class="badge" title="SME half-year (Apr–Sep) from the September filing — confirmed or corrected when the March full-year filing arrives">H1 · unconfirmed</span>':'')+(c.f?' <span class="badge" title="Bank/NBFC — revenue = total income; operating margin not comparable">🏦</span>':'')+due+'</div>'+
       '<div class="text-[10.5px] text-slate-400 truncate max-w-[190px]">'+esc(c.n)+' · '+esc(c.s)+'</div></td>'+
     '<td class="text-right px-2 text-slate-500 font-semibold whitespace-nowrap">'+(c.m?fmtCr(c.m):'—')+'</td>'+
     '<td class="text-right px-2 font-bold text-slate-800">'+fmtCr(r.rev)+'</td>'+

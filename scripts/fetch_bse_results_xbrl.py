@@ -59,6 +59,7 @@ RE_SCRIP = re.compile(r"<in-(?:capmkt|bse-fin):ScripCode[^>]*>\s*([^<\s]+)\s*<")
 RE_NAT = re.compile(r"NatureOfReportStandaloneConsolidated[^>]*>\s*([^<]+)<")
 RE_ISIN = re.compile(r"<in-(?:capmkt|bse-fin):ISIN[^>]*>\s*([A-Z0-9]{12})\s*<")
 RE_END4 = re.compile(r'<xbrli:context id="FourD">.*?<xbrli:endDate>([\d-]+)<', re.S)
+RE_START4 = re.compile(r'<xbrli:context id="FourD">.*?<xbrli:startDate>([\d-]+)<', re.S)
 SME_GROUPS = ("M", "MT", "MS")                               # BSE SME board groups (docs/bse_universe.json col 4)
 
 
@@ -393,6 +394,17 @@ def stored_rows(cells):
     return out
 
 
+def prov_h1(s):
+    """A Sep SME file whose FourD is provably the Apr-Sep year-to-date: FourD present with revenue, starting 1-Apr of the
+    same fiscal year and ending on the file's 30-Sep. Files without FourD (9 of 55 cached Sep files) stay held — their
+    OneD may be the half or a quarter."""
+    f4 = s.get("four")
+    if not f4 or f4.get("rev") is None or not s.get("xml"):
+        return False
+    m = RE_START4.search(s["xml"])
+    return bool(m) and m.group(1) == "%d-04-01" % (s["qe"] // 10000)
+
+
 def sme_decide(files, stored=None):
     """Every Sep / Mar row one SME scrip's results files decide (runbook §194). files: sme_read() dicts + fname / ann;
     stored: stored_rows() of the scrip (the June quarter that proves a quarterly year).
@@ -422,6 +434,16 @@ def sme_decide(files, stored=None):
                 h1 = s[c]["rev"]
                 d.update(how="half", rev=h1, pat=s[c]["pat"], pf=proof(s, c, m, how),
                          one_is_row=bool(s["one"]) and not (differs(s["one"]["rev"], h1) or differs(s["one"]["pat"], s[c]["pat"])))
+            elif not ms and prov_h1(s):
+                # PROVISIONAL H1 (user, 2026-09-27: "Option A" — SME results must show after the Sep quarter, not a year
+                # later): no Mar filing yet, and the Sep file's FourD column is the Apr-Sep year-to-date by its own
+                # context (1-Apr → 30-Sep; all 46 cached Sep files with FourD measured so) — stored with h=1 + prov,
+                # re-decided by the year's arithmetic the day the Mar filing lands (targets() re-lists prov cells).
+                c4 = lambda v: None if v is None else round(v / 1e7, 4)
+                f4 = s["four"]
+                d.update(how="half", prov=1, rev=f4["rev"], pat=f4["pat"],
+                         pf={"prov": 1, "h1": c4(f4["rev"]), "pat": [c4(f4["pat"]), None, None], "f": [s["fname"]]},
+                         one_is_row=bool(s["one"]) and not (differs(s["one"]["rev"], f4["rev"]) or differs(s["one"]["pat"], f4["pat"])))
             else:
                 d.update(how="hold", why="no Mar %d filing to close H1 + H2 = FY" % y if not ms else
                          "no Mar %d filing closes H1 + H2 = FY" % y + (" (OneD %s ≠ FourD %s)" % (
@@ -495,6 +517,12 @@ def targets(today):
                 out.append((str(t["code"]), sym, "nse", False, q))
     univ = json.load(open(os.path.join(DOCS, "bse_universe.json")))["rows"]
     univ.sort(key=lambda r: r[6] or 0, reverse=True)
+    # BSE SME IPO members first (runbook §195): the smallest caps, so by mcap they came last in every 300-scrip cycle
+    try:
+        ipo = {m["code"] for m in json.load(open(os.path.join(DOCS, "bse_sme_ipo", "members.json")))["members"]}
+    except (OSError, ValueError, KeyError):
+        ipo = set()
+    univ.sort(key=lambda r: str(r[0]) not in ipo)
     px = json.load(open(bf_out, encoding="utf-8")).get("px", {}) if os.path.exists(bf_out) else {}
     # A quarter is also MISSING when its results exist but its financial DETAIL does not (2026-09-27): the older BSE
     # routes (history / vision) stored rev+PAT without detail, so the page lacked detail for those quarters and the
@@ -504,7 +532,8 @@ def targets(today):
     due = due_quarters(today)
     for r in univ:
         code = str(r[0]); sme = (r[4] or "") in SME_GROUPS
-        have = {int(q) for q in (px.get(code) or {}) if str(q).isdigit()}
+        have = {int(q) for q, c in (px.get(code) or {}).items()
+                if str(q).isdigit() and not (isinstance(c, dict) and c.get("prov"))}   # a provisional H1 stays wanted
         tk = code2tk.get(code)
         if tk and tk.upper() not in tape and not sme:          # SME half-year files carry no quarterly detail
             dq = {int(q) for q in (xl.get(tk) or {}) if str(q).isdigit()}
@@ -706,13 +735,26 @@ def handle_sme(code, miss, dl, code2tk, xbrl_symbol, stored=None):
                "kind": kind, "sym": tgt or code2tk.get(code), **vals}
         if d.get("pf"):
             rec["pf"] = d["pf"]
+        if d.get("prov"):
+            rec["prov"] = 1
         if rec["sym"]:
             rec["detail"] = detail(src["p"], src["fname"], rec["sym"], pnl=d["one_is_row"])
         out.append(rec)
+    # a PROVISIONAL cell stored earlier whose year the Mar filing now fails to close is withdrawn, not left standing
+    try:
+        cells = json.load(open(os.path.join(DOCS, "bse_fundamentals.json"), encoding="utf-8")).get("px", {}).get(str(code)) or {}
+    except (OSError, ValueError):
+        cells = {}
+    for qe in list(held):
+        c = cells.get(str(qe))
+        if isinstance(c, dict) and c.get("prov") and not any(r["qe"] == qe for r in out):
+            out.append({"code": code, "qe": qe, "withdraw_prov": 1, "why": held[qe]})
+            print("  %s %s provisional H1 withdrawn: %s" % (code, qe, held[qe]))
+    filled = {r["qe"] for r in out if not r.get("withdraw_prov")}
     for qe, why in sorted(held.items()):
-        if not any(r["qe"] == qe for r in out):
+        if qe not in filled:
             print("  %s %s held: %s" % (code, qe, why))
-    return out, {q: w for q, w in held.items() if not any(r["qe"] == q for r in out)}
+    return out, {q: w for q, w in held.items() if q not in filled}
 
 
 def apply(fills_path):
@@ -731,14 +773,21 @@ def apply(fills_path):
     except (OSError, ValueError):
         pass
     C = {"bse q": 0, "nse pat": 0, "nse rev": 0, "detail q": 0, "detail f": 0, "skip ticker clash": 0}
+    C["prov withdrawn"] = 0
     for f in fills:
+        if f.get("withdraw_prov"):
+            cur = px.get(str(f["code"])) or {}
+            c = cur.get(str(f["qe"]))
+            if isinstance(c, dict) and c.get("prov"):
+                del cur[str(f["qe"])]; C["prov withdrawn"] += 1
+            continue
         qe, basis = f["qe"], f["basis"]
         pat = f["pat_c"] if basis == "C" else f["pat_s"]
         rev = f["rev_c"] if basis == "C" else f["rev_s"]
         if f["kind"] == "bse":
             cur = px.setdefault(str(f["code"]), {})
             old = cur.get(str(qe))
-            if (pat is not None or rev is not None) and (old is None or (old.get("basis") == "S" and basis == "C"
+            if (pat is not None or rev is not None) and (old is None or old.get("prov") or (old.get("basis") == "S" and basis == "C"
                                                                          and old.get("src") == "bse-xbrl")):
                 if old is None or old.get("src") == "bse-xbrl":   # consolidated outranks standalone within this route only
                     rec = {"pat": pat, "ann": f["ann"] or 0, "basis": basis, "src": "bse-xbrl"}
@@ -746,6 +795,7 @@ def apply(fills_path):
                     if f["half"]:
                         rec["h"] = 1
                         if f.get("pf"): rec["pf"] = f["pf"]        # the arithmetic that proved it (§194)
+                        if f.get("prov"): rec["prov"] = 1          # Apr-Sep YTD, not yet closed by the Mar filing
                     cur[str(qe)] = rec; C["bse q"] += 1
         else:
             sym = f["sym"]; ann = f["ann"] or None

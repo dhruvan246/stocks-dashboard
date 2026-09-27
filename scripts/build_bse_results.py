@@ -83,7 +83,10 @@ def main():
         if not ann_ok(qe, ann): ann = 0
         rx, sr = reaction(series, ann, RT.after_close(ann, scrip=scrip)) if ann else (None, None)
         v = [rec.get("rev"), rec.get("op"), rec.get("pat")]
-        return (([None] * 3 + v) if rec.get("basis") == "C" else (v + [None] * 3)) + [ann or None, rx, sr]
+        out = (([None] * 3 + v) if rec.get("basis") == "C" else (v + [None] * 3)) + [ann or None, rx, sr]
+        if rec.get("prov"):
+            out.append(1)      # [9] = provisional Apr-Sep half, not yet closed by the Mar filing (runbook §195, Option A)
+        return out
     for code, qs in fund.items():
         u = univ.get(code)
         if not u: continue
