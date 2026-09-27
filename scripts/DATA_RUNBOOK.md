@@ -21642,6 +21642,12 @@ time 1.2 s apart, 0 failures) and Moneycontrol where the MC journal has the cell
   clobber detector checks the four cells (0 MISSING, DRIFT list unchanged); feed guard OK; revop_sanity 0; owners pass 0. Only the
   PAYTM and CAPLIPOINT slices changed, each only in the target quarter. Page (local, fin-slice path): PAYTM Jun-22 1,680 (Jun-23
   YoY now +39.41%); CAPLIPOINT Dec-20 274 / op 83.9 / OPM 30.6% / EBIT 74.7 / PAT 64.5 (Dec-21 YoY now +18.88%, was +164.9%).
+- **PAYTM Jun-22 con op / EBIT filled (user: "fill the PAYTM Jun-22 op and EBIT too")** with the tracked BSE route, offline:
+  `fetch_bse_results_xbrl.py --fetch --from-dir <dir holding Main_Ind_As_543396_58202221213.xml>` then `--apply` (fill-only; the
+  tool resolved PAYTM from the file's ISIN). op −633.90 / EBIT −731.10 — the Sep-22 con filing agrees exactly (H1 −1,171.70 − Q2
+  −537.80; EBIT −1,373.20 − −642.10). Also filled, same filing, fill-only: the con PAT mirror (−644.40 = npCon) and the con
+  xbrl_extra detail (17 fields: D&A 97.2, tax 4.8, EPS −10.0, NCI −1.0 …). `docs/bse_fundamentals.json` is re-stamped by --apply
+  even when no BSE-only row changes — restore it rather than committing a timestamp-only diff.
 
 ## §185 — AUDIT OF THE BSE RESULTS READERS AFTER §182: nine defects fixed, one ruled out (2026-09-27, user: "find more n more bugs … fix")
 All of it is quarter-agnostic: every target quarter comes from the filing (its printed period, else its filing date).
