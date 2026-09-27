@@ -183,6 +183,7 @@ def extract(op, code, name, months, deadline=None, have=()):
     # It runs whenever that quarter is missing — not only when OCR found nothing: an older text-layer filing
     # parsing fine must not hide a scanned new one (it did until 2026-09-27).
     tq = want_quarter(cands, raws)
+    LAST_TARGET[code] = tq                               # main() judges success against THIS quarter
     if tq and tq not in res and str(tq) not in have and (deadline is None or time.time() < deadline):
         try: pngs, ann_i = _render_pl_pngs(op, cands, raws, tq)
         except Exception as ex:
@@ -190,6 +191,8 @@ def extract(op, code, name, months, deadline=None, have=()):
         if pngs:
             _vision_fill(res, name, pngs, tq, ann_i)
     return res
+
+LAST_TARGET = {}   # code -> the quarter extract() read the newest filing as (want_quarter), for main()'s success test
 
 def want_quarter(cands, raws=None):
     """The quarter the newest result filing reports: the period its own text states (a late filer's June
@@ -340,7 +343,9 @@ def main():
         # run added something. Just re-parsing an OLDER filing whose numbers are already stored is not
         # success — it used to mark the scrip done/seen and the new quarter was never read.
         if code in declared:
-            wq = QU.last_qe_before(declared[code]) if declared[code] else 0
+            # the quarter the newest filing REPORTS (its printed period — a late March result filed in
+            # September is March), not the last quarter end before the declared date
+            wq = LAST_TARGET.get(code) or (QU.last_qe_before(declared[code]) if declared[code] else 0)
             ok = added > 0 or (wq and (cur.get(str(wq)) or {}).get("pat") is not None)
         else:
             ok = bool(recs)

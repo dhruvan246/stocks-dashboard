@@ -25,16 +25,21 @@ VFILLS = os.path.join(HERE, "..", "docs", "vision_fills.json")   # NSE overlay t
 QFIX = os.path.join(HERE, "..", "docs", "feed_qe_fix.json")      # "SYM|YYYY-MM-DD" -> real quarter-end
 
 def feed_ann():
-    """Real filing date (YYYYMMDD int) per ticker from the results feed — so the result-day price
-    reaction computes off the actual announcement day, not a hardcoded date."""
+    """{(TICKER, quarter-end int): earliest filing date YYYYMMDD int} from the results feed — the day that
+    QUARTER was first declared. Keyed by quarter: the ticker's newest row is often another quarter (a late
+    March result, a re-submission), which gave every late-filer read ann=0 and could stamp a June read with
+    a September re-filing's date (2026-09-27 audit)."""
     try:
         rows = json.load(open(os.path.join(HERE, "..", "docs", "results_feed.json"), encoding="utf-8"))["rows"]
     except Exception:
         return {}
     out = {}
     for r in rows:
-        d = int(r[2][:10].replace("-", ""))
-        if r[0] not in out or d > out[r[0]]: out[r[0]] = d
+        try: d = int(r[2][:10].replace("-", "")); q = int(r[3] or 0)
+        except (ValueError, TypeError, IndexError): continue
+        if not q: continue
+        k = (str(r[0]).upper(), q)
+        if k not in out or d < out[k]: out[k] = d
     return out
 
 LEGACY = [("jun2026", 20260630), ("mar2026", 20260331), ("jun2025", 20250630)]   # old reader output keys
@@ -95,7 +100,18 @@ def reapply_qefix(path):
     print("  qefix: re-applied %d of %d into feed_qe_fix.json (%d total) — %s"
           % (len(add), len(run), len(cur), ", ".join("%s=%s" % kv for kv in sorted(add.items()))))
 
-def _num(v): return round(float(v), 2) if v is not None else None
+def _num(v):
+    """A reader's figure -> float rounded to 2 dp, or None. Tolerates '1,234.50' and '(2.10)' (a bracket =
+    negative); anything else unreadable is None for THAT figure only — one bad value used to raise and abort
+    the whole merge, losing every good read in the batch."""
+    if v is None: return None
+    if isinstance(v, (int, float)): return round(float(v), 2)
+    s = str(v).strip().replace(",", "").replace("₹", "")
+    neg = s.startswith("(") and s.endswith(")")
+    try: x = float(s.strip("()"))
+    except ValueError:
+        print("  ⚠ unreadable figure %r — skipped" % (v,)); return None
+    return round(-x if neg else x, 2)
 
 
 def main():
@@ -135,8 +151,7 @@ def main():
         else:
             scrip = str(it["scrip"])
             # real filing date → reaction computes; only when the feed's newest filing IS this quarter's
-            ann = fann.get(sym, 0)
-            if QU.last_qe_before(ann) != int(cq): ann = 0
+            ann = fann.get((sym, int(cq)), 0)     # the day THIS quarter was declared (0 = not in the feed window)
             cells = px.setdefault(scrip, {})
             added = sum(fill(cells, qe, q, basis, ann=(ann if qe == cq else 0)) for qe, q in qs)
             if not cells: px.pop(scrip, None)

@@ -152,7 +152,7 @@ _DMY_RE = re.compile(r"(\d{1,2})(?:st|nd|rd|th)?[\s,.\-]+([A-Za-z]{3,9})\.?[,\s.
 _MDY_RE = re.compile(r"([A-Za-z]{3,9})\.?\s+(\d{1,2})(?:st|nd|rd|th)?,?\s*(\d{4})", re.I)        # + "June 30,2026", "june 30th 2026", "Sept. 30, 2026"
 _ISO_RE = re.compile(r"\b(20\d{2})-(\d{2})-(\d{2})\b")                                 # "2026-06-30" -> "30.06.2026"
 _YY_RE = re.compile(r"\b(\d{1,2})([./])(\d{1,2})\2(\d{2})\b(?![./\d])")                  # "30/06/26" -> "30/06/2026"
-_TIME_RE = re.compile(r"\bat\s+\d{1,2}[.:]\d{2}|\d{1,2}[.:]\d{2}\s*(?:a\.?m|p\.?m|hrs)\b", re.I)   # a meeting's clock time
+_TIME_RE = re.compile(r"\bat\s+\d{1,2}:\d{2}\b|\d{1,2}[.:]\d{2}\s*(?:a\.?m|p\.?m|hrs)\b", re.I)   # "at 4:30" / "4.30 PM" — NOT "ended at 30.06.2026"   # a meeting's clock time
 _NUM_RE = re.compile(r"(\d{1,2})[.\-/](\d{1,2})[.\-/](\d{4})")
 _MY_RE = re.compile(r"([A-Za-z]{3,9})[,\s]+(\d{4})", re.I)          # "March, 2026" (day unstated)
 # "F.Y. 2025-26" / "FY 2025-2026" / "financial year 2025-26" -> March of the END year. Unambiguous

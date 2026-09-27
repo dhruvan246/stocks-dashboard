@@ -92,7 +92,7 @@ jobs:
             done
             # bse_fundamentals.json has OTHER writers (bse-results-xbrl.yml, history/vision merges): UNION this run's
             # cells into origin's copy instead of overwriting it (runbook §181b)
-            python3 -X utf8 scripts/union_bse_fundamentals.py /tmp/bse_fundamentals.json docs/bse_fundamentals.json
+            python3 -X utf8 scripts/union_bse_fundamentals.py /tmp/bse_fundamentals.json docs/bse_fundamentals.json --base "$BASE_SHA"
             # the done/fail ledgers are ALSO written by the vision routine's merge: apply only THIS job's changes
             # (vs the commit it started from) on top of origin's copies instead of overwriting them
             python3 -X utf8 scripts/merge_bse_ledgers.py "$BASE_SHA" /tmp

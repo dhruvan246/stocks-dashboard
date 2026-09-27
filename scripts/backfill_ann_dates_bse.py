@@ -125,7 +125,7 @@ def resolve(cands, qe, prev_ann=None, next_ann=None):
     parsed = [(c[0], parse_qe(c[2])) for c in cands]
     # a quarter's FIRST declaration can't come after the NEXT quarter's: a later filing naming this
     # quarter is a re-submission (AJWAFUN Mar-26: 2026-09-12 re-filing vs the real 2026-05-29)
-    exact = [d for d, pq in parsed if pq == qe and (not next_ann or d < next_ann)]
+    exact = [d for d, pq in parsed if pq == qe and (not next_ann or d <= next_ann)]   # same day as the next quarter is legal (MINID Mar/Jun-20 both 20200731)
     if exact:
         # An EARLIER filing BSE itself categorised "Financial Results" whose text names no period is the
         # first declaration when it sits in the band before the first period-naming one (542938 Mar-26:

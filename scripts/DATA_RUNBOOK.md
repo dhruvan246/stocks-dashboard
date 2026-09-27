@@ -22222,3 +22222,46 @@ close(next session) / close(filing day). **The visibility date is unchanged** �
   companies; results filed under another BSE category — e.g. RELIANCE Jun-26 on 2026-07-20). **9,185 reactions
   moved**; checked on raw closes: ESDS Jun-26 (filed 24-Sep 20:30) +4.66 → −5.00 (1853.15 → 1760.50), RELIANCE
   Mar-26 (filed 24-Apr after close) −1.16 → +2.86 (27-Apr), PERNIASPOP −3.40 → +2.86, TCS Mar-26 1.16 → −2.50.
+
+## §194 — THIRD RESULTS-PIPELINE AUDIT: undone heals, power-of-ten profits, workflow clobbers, and my own §182-§193 bugs (2026-09-27, user: "find more bugs in the results pipeline" → "fix all")
+Three auditors (adversarial review of today's commits / NSE ingestion / vision round trip + workflows); every item re-checked.
+**Data heals (all through reviewed ledgers, re-asserted nightly; `apply_owners_full` / `apply_fund_cell_fix` / `apply_revop_cell_fix` /
+`backfill_ann_dates_bse --reapply` each re-run → 0):**
+- **Tag-swap heals reverted nightly.** `attr_swap_fixes.json` (2026-07-30) was replayed by no applier, so `apply_owners_full` wrote the
+  swapped `_reattr_owners` value back every night: GLENMARK Mar-26 con −0.1 (true 301.41), KIRLOSBROS Jun-25 0.8 (66.7), GSPCROP Mar-26
+  −0.84 (20.48), TALBROAUTO Mar-25 0.0 (26.58), NITCO Mar-25 −0.05 (−2.85), TRU Mar-26 0.0 (−58.6). Pinned in `owners_basis_heals.json`
+  + registered in `pat_defects.json` (§131b rule) + `revop_cell_fix.json` pat_con mirror; `apply_owners_full.py` now also reads
+  `attr_swap_fixes.json` (setdefault — a pinned ledger wins).
+- **Power-of-ten profits.** 21 cells where sf_fundamentals PAT = 10^k × the same quarter's sf_revop PAT. Filings not in `_xbrl_cache`
+  (no YTD anchor), so anchor (c) neighbours + the quarter's revenue decided: **15 healed** in `fund_cell_fix.json` (con ones also pinned):
+  APLAB Dec-20/Sep-21/Dec-21 std, BAJAJST Dec-25 std (671.01→6.71) + con (671.01 was the std value copied → 5.91 = the con filing's own
+  parse), BLACKROSE Dec-25/Mar-26 con, GRAUWEIL Dec-25 con / Mar-26 con+std, PANCHSHEEL Sep-25, SAKTHIFIN Jun-21, SHINDL Dec-25 std+con,
+  WATERBASE Dec-19. **Flagged, not healed** (no way to prove the factor / the side): NOVARTIND Jun-20/Dec-20/Sep-21/Dec-21 (which copy
+  is wrong is undecidable), QUINT (whole-filer, §11 known-unfixed), BAJAJST Dec-24 5,637.73 & Sep-25 1,481.68, BLACKROSE Mar-25 59,715,
+  PANCHSHEEL Sep-24 378.7 & Jun-25 184.52, GRAUWEIL std Dec-25 2,577 (not an exact power vs 33.66), SHINDL Mar-26 revop 0.05 vs 5.43.
+- **Filing dates 1-3 days after quarter end** (188 cells / 123 sym-quarters): BSE archive `resolve` with headline-aware candidates →
+  **60 `exact` ledger entries** in `ann_date_fills.json` (e.g. DRREDDY Mar-13 04-03→05-14, BMW Jun-21 07-01→08-14, DAMODARIND Mar-26
+  04-02→05-15); 43 left (only a `seq`/other-period match, e.g. HIMATSEIDE Sep-24), 15 no scrip, 5 already ledgered.
+- **KOHINOOR Jun-25** standalone rev/op/PAT/EBIT sat in the con slots of sf_revop + revop_fundamentals (the "Non-Consolidated" ⊃
+  "consol" bug) → moved to std.
+**Code:**
+- `build_revop.xbrl_revop` uses `build_fundamentals.is_con_basis` (the §8/2026-08-06 substring bug was still live for rev/op/EBIT).
+- `build_fundamentals` manual run: the web copy is a FILL-MERGE of the master mirror (it replaced docs with the mirror, which lacks ~800
+  symbols / ~27k rows).
+- My §182-§193 bugs: `merge_bse_vision` dated a read from the feed row OF THAT QUARTER (late filers got ann=0; a current read could take a
+  re-submission's date) + tolerant `_num` ("1,234.50", "(2.10)"; one bad figure no longer aborts the merge); `union_bse_fundamentals
+  --base <sha>` is THREE-WAY (the two-way union re-added all 1,805 fake 06-15 dates in a simulated overlap); `resolve` allows a declaration
+  ON the next quarter's day (`<=`); `_TIME_RE` no longer eats "ended at 30.06.2026"; the grind judges success against the quarter
+  `want_quarter` read (`LAST_TARGET`); the results page shows every figure of a row from ONE basis (no std revenue beside con PAT —
+  26 rows); `reaction_timing` loads the feed per row.
+**Workflows:** refresh-fundamentals — nightly steps gated on `github.event.schedule == '45 15 * * *'`, not the clock hour (GitHub started
+the nightly after 17:00 UTC on 5 of 23 September nights, skipping the whole nightly workload); results_season / _season_coverage /
+quarterly_results REBUILT inside the commit loop after reset + merge + ledger re-assert (a pre-reset cp put back the pre-KENNAMET-heal
+payload 3 min after the heal on 27-Sep 09:42 UTC); broadcast-time caches union-merged by day. refresh-results-hourly — coverage rebuilt
+after the reset (was a pre-reset cp). tl-reconcile joins the `results-feed-writers` concurrency group. Routine `bse-vision-fill` moved
+from 23:30 to **00:15 IST (cron `45 18 * * *`)**: the 22:30 IST feed top-up landed at 23:31-23:38 IST, after the routine had read the
+feed; the season-restore reminder routine updated to match. Coverage page: late filers for the two previous quarters (`late` in
+results_coverage.json), `stat.open` counts unknown_qe like byExch, next-run text = 00:15 IST.
+**Checked, no change:** 922 dates on rows with no value (0 reach the results page; an arriving value writes its own date); 58 renamed
+tickers stored under both names (never both on the page; the engine folds aliases); sibling-basis date copy in update_fundamentals kept
+(61/12,433 rows where both bases are known differ ≥7 d; without the copy the engine drops the quarter; copied dates can't be told apart).

@@ -83,14 +83,16 @@ jobs:
           git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
           cp docs/results_feed.json     /tmp/results_feed.json
           cp docs/results_calendar.json /tmp/results_calendar.json
-          cp docs/results_coverage.json /tmp/results_coverage.json
           for attempt in 1 2 3 4 5; do
             git fetch origin main
             git reset --hard origin/main
             cp /tmp/results_feed.json     docs/results_feed.json
             cp /tmp/results_calendar.json docs/results_calendar.json
-            cp /tmp/results_coverage.json docs/results_coverage.json
-            git add docs/results_feed.json docs/results_calendar.json docs/results_coverage.json
+            # coverage is DERIVED from the feed + the stores: rebuild it here on the post-reset tree. The old
+            # cp of the pre-reset build republished a stale (or, after a failed build, the checkout-time) copy.
+            python3 -X utf8 scripts/build_results_coverage.py > /tmp/cov.log 2>&1 && git add docs/results_coverage.json \
+              || { tail -3 /tmp/cov.log; echo "::warning::coverage rebuild failed — origin's copy kept"; }
+            git add docs/results_feed.json docs/results_calendar.json
             if git diff --cached --quiet; then
               echo "No new result filings — nothing to commit"
               echo "changed=false" >> "$GITHUB_OUTPUT"

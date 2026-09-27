@@ -14,7 +14,10 @@ permissions:
   issues: write
 
 concurrency:
-  group: tl-reconcile
+  # SHARED with refresh-results-hourly.yml + refresh-announcements.yml: all three commit
+  # docs/results_feed.json / results_calendar.json by copy-after-reset, so an overlapping run's
+  # push replaced the other's rows (2026-09-27 audit; runbook §194). One group queues them.
+  group: results-feed-writers
   cancel-in-progress: false
 
 jobs:

@@ -358,21 +358,25 @@ def xbrl_revop(xml, basis_hint=None):
     fin = 1 if ("InterestEarned" in xml or "NetPremiumIncome" in xml or "PremiumEarned" in xml) else 0
     rev_std = op_std = ebit_std = rev_con = op_con = ebit_con = None
     one_nat = nat.get("OneD", "") or hint
+    # build_fundamentals.is_con_basis, never `"consol" in …`: NSE's hint label "Non-Consolidated" CONTAINS
+    # "consol", so a standalone filing without the nature tag put its rev/op/EBIT in the con slots (KOHINOOR
+    # Jun-25, runbook §194). Imported here, not at module scope (build_fundamentals imports this module lazily).
+    from build_fundamentals import is_con_basis
     # Only read a context whose period IS a quarter -- a 182-day OneD is the half-year cumulative
     # and storing it as the quarter is the Sep-2025 bug (see is_quarter_ctx).
     if is_quarter_ctx(xml, "OneD"):
         rev, op, ebit, _, _ = metrics_for(xml, "OneD")
         if rev is not None or op is not None:
-            if "consol" in one_nat:
+            if is_con_basis(one_nat):
                 rev_con, op_con, ebit_con = rev, op, ebit
             else:
                 rev_std, op_std, ebit_std = rev, op, ebit
     four_nat = nat.get("FourD", "")
     if four_nat and four_nat != one_nat and is_quarter_ctx(xml, "FourD"):
         rev, op, ebit, _, _ = metrics_for(xml, "FourD")   # combined filing: FourD is the OTHER basis
-        if "consol" in four_nat and rev_con is None:
+        if is_con_basis(four_nat) and rev_con is None:
             rev_con, op_con, ebit_con = rev, op, ebit
-        elif "consol" not in four_nat and rev_std is None:
+        elif not is_con_basis(four_nat) and rev_std is None:
             rev_std, op_std, ebit_std = rev, op, ebit
     r2 = lambda x: round(x, 2) if x is not None else None
     return r2(rev_std), r2(op_std), r2(ebit_std), r2(rev_con), r2(op_con), r2(ebit_con), fin

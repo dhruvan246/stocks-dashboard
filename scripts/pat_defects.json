@@ -230,6 +230,14 @@
    "stored_pat_con": 8.0
   }
  },
+ "BAJAJST": {
+  "20251231": {
+   "correct_pat_con": 5.91,
+   "defect": "std mis-scaled value in the con slot (runbook \u00a7194)",
+   "source": "BAJAJST Dec-25 consolidated: stored 671.01 is the standalone slot's mis-scaled value (both bases held 671.01; the std cell is healed to 6.71 in this ledger). The consolidated filing's own second parse (sf_revop con row) reads rev 125.27 / op 9.31 / PAT 5.91, in line with the neighbouring consolidated quarters (Mar-26 2.32, Jun-26 -0.27; Mar-25 17.47, Jun-25 7.4). Runbook \u00a7194.",
+   "stored_pat_con": 671.01
+  }
+ },
  "BALKRISIND": {
   "20260630": {
    "applied": "2026-09-05",
@@ -376,6 +384,20 @@
    "defect": "stored value was the printed TOTAL (row 9); replaced with the printed OWNERS profit (row 13), which is this project's declared basis for npCon. owners + NCI reproduces the printed total to the paisa, and the filing's own basic EPS reproduces the owners figure.",
    "source": "Bharat Forge Ltd consolidated financial results, the company's own filing for each quarter (BSE announcements, scrip 500493; two quarters sit under the 'Board Meeting' category because 'Result' returns empty for this scrip). Statements declare '(\u20b9 in Million)'.",
    "stored_pat_con": 127.74
+  }
+ },
+ "BLACKROSE": {
+  "20251231": {
+   "correct_pat_con": 4.41,
+   "defect": "power-of-ten ingestion error (runbook \u00a7194)",
+   "source": "Power-of-ten ingestion error: stored 440.78 is exactly 100 x the same quarter's sf_revop PAT 4.4 (a second parse). Anchor (c) neighbours (runbook \u00a711/\u00a7194): the quarter's revenue is 75.15 and the neighbouring quarters' PAT are 20250630:4.24, 20250930:4.43, 20260331:94159.0, 20260630:10.39 \u2014 only /100 lands the cell in range; the stored figure exceeds or dwarfs the quarter's revenue. The company's filings are not in scripts/_xbrl_cache, so no YTD anchor was available.",
+   "stored_pat_con": 440.78
+  },
+  "20260331": {
+   "correct_pat_con": 9.41,
+   "defect": "power-of-ten ingestion error (runbook \u00a7194)",
+   "source": "Power-of-ten ingestion error: stored 94159.0 is exactly 10006 x the same quarter's sf_revop PAT 9.41 (a second parse). Anchor (c) neighbours (runbook \u00a711/\u00a7194): the quarter's revenue is 104.04 and the neighbouring quarters' PAT are 20250930:4.43, 20251231:440.78, 20260630:10.39 \u2014 only /10006 lands the cell in range; the stored figure exceeds or dwarfs the quarter's revenue. The company's filings are not in scripts/_xbrl_cache, so no YTD anchor was available.",
+   "stored_pat_con": 94159.0
   }
  },
  "BLUEBLENDS": {
@@ -1091,6 +1113,14 @@
   },
   "_note": "GIC Re standalone Annexure-I, Rs-in-lakh /100. FY21 quarter PATs read off the filings are -557.47 / +230.05 / +987.42 / +1260.44, which sum to 1920.44 = the FY21 PAT printed in GIC Re's own FY21 'Summary of Revenue and Profit and Loss Account' (Rs crore) - so the four corrections below are self-consistent and independently confirmed. Stored Mar-20 (1197.41) and Jun-20 (-557.47) are CORRECT and were filled normally."
  },
+ "GLENMARK": {
+  "20260331": {
+   "correct_pat_con": 301.41,
+   "defect": "owners/NCI tag swap (xbrl-owners-nci-tag-swap) \u2014 healed 2026-07-30 in attr_swap_fixes.json but reverted nightly; pinned 2026-09-27 (runbook \u00a7194)",
+   "source": "XBRL EPS 10.68 x 282.2mn sh (FV1); BSE PDF eaa8333a-8c8e-4df4-a107-ffe1aa68e817 owners 3014.14mn NCI -0.95mn; Screener con total 301",
+   "stored_pat_con": -0.1
+  }
+ },
  "GLOTTIS": {
   "20250930": {
    "correct_pat": 12.36,
@@ -1136,6 +1166,20 @@
    "stored_pat_con": 1617.0
   }
  },
+ "GRAUWEIL": {
+  "20251231": {
+   "correct_pat_con": 32.33,
+   "defect": "power-of-ten ingestion error (runbook \u00a7194)",
+   "source": "Power-of-ten ingestion error: stored 3233.0 is exactly 100 x the same quarter's sf_revop PAT 32.33 (a second parse). Anchor (c) neighbours (runbook \u00a711/\u00a7194): the quarter's revenue is 290.63 and the neighbouring quarters' PAT are 20250331:25.74, 20250630:43.61, 20260331:4951.0, 20260630:39.81 \u2014 only /100 lands the cell in range; the stored figure exceeds or dwarfs the quarter's revenue. The company's filings are not in scripts/_xbrl_cache, so no YTD anchor was available.",
+   "stored_pat_con": 3233.0
+  },
+  "20260331": {
+   "correct_pat_con": 49.51,
+   "defect": "power-of-ten ingestion error (runbook \u00a7194)",
+   "source": "Power-of-ten ingestion error: stored 4951.0 is exactly 100 x the same quarter's sf_revop PAT 49.51 (a second parse). Anchor (c) neighbours (runbook \u00a711/\u00a7194): the quarter's revenue is 355.37 and the neighbouring quarters' PAT are 20250630:43.61, 20251231:3233.0, 20260630:39.81 \u2014 only /100 lands the cell in range; the stored figure exceeds or dwarfs the quarter's revenue. The company's filings are not in scripts/_xbrl_cache, so no YTD anchor was available.",
+   "stored_pat_con": 4951.0
+  }
+ },
  "GREAVESCOT": {
   "20190331": {
    "correct_pat": 37.39,
@@ -1150,6 +1194,14 @@
    "defect": "adjacent-quarter dup: Mar-2019 std held Jun-2019's value (stored revS Mar-19 1707.7 is ALSO Jun's; true Mar rev 2138.42 - rev follow-up)",
    "source": "nse xbrl INDAS_48315_135073_04092019110019_WEB.xml: FourD DECLARED 2019-01-01..2019-03-31 AUDITED pat 99.76cr EPS 2.50 EXACT (39.85cr sh); OneD Apr-Jun 63.33 EPS 1.59 EXACT stays (rev 1707.7 == revS Jun)",
    "stored_pat": 63.33
+  }
+ },
+ "GSPCROP": {
+  "20260331": {
+   "correct_pat_con": 20.48,
+   "defect": "owners/NCI tag swap (xbrl-owners-nci-tag-swap) \u2014 healed 2026-07-30 in attr_swap_fixes.json but reverted nightly; pinned 2026-09-27 (runbook \u00a7194)",
+   "source": "BSE PDF 808d4ff5-21e3-4736-9aca-941765142f13 equity holders 204.80mn NCI -8.41mn (sum = total 196.39mn); XBRL sum-check; EPS 5.09 is weighted-avg-shares (IPO mid-quarter) hence sweep verdict MANUAL",
+   "stored_pat_con": -0.84
   }
  },
  "GUJAPOLLO": {
@@ -1689,6 +1741,14 @@
    "stored_pat_con": 23.4
   }
  },
+ "KIRLOSBROS": {
+  "20250630": {
+   "correct_pat_con": 66.7,
+   "defect": "owners/NCI tag swap (xbrl-owners-nci-tag-swap) \u2014 healed 2026-07-30 in attr_swap_fixes.json but reverted nightly; pinned 2026-09-27 (runbook \u00a7194)",
+   "source": "XBRL EPS 8.40 x 79.5mn sh (FV2); BSE PDF 33b0cd82-f6be-417d-940e-80b2d3ebc2ee equity holders 667mn NCI 8mn",
+   "stored_pat_con": 0.8
+  }
+ },
  "KRBL": {
   "20160331": {
    "correct_pat": 105.77,
@@ -2033,6 +2093,14 @@
    "defect": "adjacent-quarter dup: Mar-2018 std held Jun-2018's value",
    "source": "nse xbrl INDAS_38905_35095_14082018044645_WEB.xml: FourD DECLARED 2018-01-01..2018-03-31 AUDITED pat -153.1446cr EPS -27.08 EXACT (5.65445cr sh); OneD Apr-Jun -122.3673 EPS -21.64 EXACT stays (rev 14.9767 == revS Jun)",
    "stored_pat": -122.37
+  }
+ },
+ "NITCO": {
+  "20250331": {
+   "correct_pat_con": -2.85,
+   "defect": "owners/NCI tag swap (xbrl-owners-nci-tag-swap) \u2014 healed 2026-07-30 in attr_swap_fixes.json but reverted nightly; pinned 2026-09-27 (runbook \u00a7194)",
+   "source": "BSE PDF df8552ac-4628-4c04-bcd9-cc0f0186d106 owners -285.40 lakh NCI -5.07 lakh (all 5 cols reconcile exactly); XBRL total -2.90 = -0.05 + -2.85",
+   "stored_pat_con": -0.05
   }
  },
  "NITINFIRE": {
@@ -2672,6 +2740,14 @@
    "stored_pat_con": 2.34
   }
  },
+ "SHINDL": {
+  "20251231": {
+   "correct_pat_con": 4.74,
+   "defect": "power-of-ten ingestion error (runbook \u00a7194)",
+   "source": "Power-of-ten ingestion error: stored 473.87 is exactly 100 x the same quarter's sf_revop PAT 4.74 (a second parse). Anchor (c) neighbours (runbook \u00a711/\u00a7194): the quarter's revenue is 142.54 and the neighbouring quarters' PAT are 20250630:5.37, 20250930:5.74, 20260331:5.43, 20260630:6.28 \u2014 only /100 lands the cell in range; the stored figure exceeds or dwarfs the quarter's revenue. The company's filings are not in scripts/_xbrl_cache, so no YTD anchor was available.",
+   "stored_pat_con": 473.87
+  }
+ },
  "SHIVAMAUTO": {
   "20260331": {
    "correct_pat": -26.72,
@@ -2970,6 +3046,14 @@
    "stored_pat": 0.0
   }
  },
+ "TALBROAUTO": {
+  "20250331": {
+   "correct_pat_con": 26.58,
+   "defect": "owners/NCI tag swap (xbrl-owners-nci-tag-swap) \u2014 healed 2026-07-30 in attr_swap_fixes.json but reverted nightly; pinned 2026-09-27 (runbook \u00a7194)",
+   "source": "XBRL EPS 4.31 x 61.7mn sh (FV2); BSE PDF f8b79287-f3ce-491b-b522-5522d2f37f59 owners 2658.10 lakh NCI nil",
+   "stored_pat_con": 0.0
+  }
+ },
  "TATACOFFEE": {
   "20170930": {
    "applied": "2026-09-05",
@@ -3088,6 +3172,14 @@
    "defect": "adjacent-quarter dup: Mar-2019 std held Jun-2019's value",
    "source": "nse xbrl INDAS_48305_134958_03092019053324_WEB.xml: FourD DECLARED 2019-01-01..2019-03-31 pat 9.53cr EPS 4.34 EXACT (2.19575cr sh); OneD Apr-Jun -1.41 EPS -0.64 EXACT stays (rev 142.27 == revS Jun)",
    "stored_pat": -1.41
+  }
+ },
+ "TRU": {
+  "20260331": {
+   "correct_pat_con": -58.6,
+   "defect": "owners/NCI tag swap (xbrl-attr-tags-empty-zero (pre-July parser stored the literal 0 owners tag; ELECON-class)) \u2014 healed 2026-07-30 in attr_swap_fixes.json but reverted nightly; pinned 2026-09-27 (runbook \u00a7194)",
+   "source": "ORIGINAL 25-May con XBRL NBFC_INDAS_1672820 total -586.012mn, owners/NCI tags 0, NCI nil; sf_revop patCon already -58.6 (later cron re-visit with fixed parser, same filing)",
+   "stored_pat_con": 0.0
   }
  },
  "TSFINV": {

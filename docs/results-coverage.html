@@ -90,8 +90,17 @@
     </div>
     <div id="openWrap" class="card overflow-x-auto scrollbar"></div>
 
+    <!-- late filers for earlier quarters (the vision routine reads these too) -->
+    <div id="lateBox" class="mt-6" hidden>
+      <div class="mb-2 flex items-baseline justify-between gap-3">
+        <h2 class="text-sm font-bold text-slate-700">Late filings for earlier quarters, still missing numbers</h2>
+        <span id="lateCount" class="text-[11px] text-slate-400"></span>
+      </div>
+      <div id="lateWrap" class="card overflow-x-auto scrollbar"></div>
+    </div>
+
     <p class="text-[11px] text-slate-400 mt-6">
-      <b>Pending</b> = the filing has an attachment, so the vision routine will read it on its next run (03:00 PM / 11:00 PM IST).
+      <b>Pending</b> = the filing has an attachment, so the vision routine will read it on its next run (once a day, late evening IST; more often in results season).
       <b>No PDF</b> = the filing carried no attachment to read; these can only be filled when the exchange posts the XBRL.
       Vision-read figures for NSE names are an overlay applied only to empty cells — real XBRL always supersedes them.
       Counts come from the same module the routine uses to pick its work (<code>scripts/results_pending.py</code>), so this page and the routine can never disagree.
@@ -112,11 +121,11 @@
   var LBL = { pending:'Pending', no_pdf:'No PDF', filled:'Filled', bse_dup:'Via BSE' };
 
   // Next scheduled vision-routine run (fires ≈3 PM and ≈11 PM IST; crons drift ~45 min late).
+  // The bse-vision-fill routine runs once a day at 00:15 IST (18:45 UTC) off-season; in results season it
+  // also runs at 13:30 / 16:30 / 20:30 IST (runbook §194 / §17b). This shows the off-season slot.
   function nextRun(){
     var n = new Date(), h = (n.getUTCHours() + n.getUTCMinutes()/60 + 5.5) % 24;
-    if (h < 15) return 'today ≈3 PM IST';
-    if (h < 23) return 'today ≈11 PM IST';
-    return 'tomorrow ≈3 PM IST';
+    return h < 0.25 ? 'in a few minutes (≈12:15 AM IST)' : 'tonight ≈12:15 AM IST';
   }
   // Why a row has no numbers yet, and when it should get them.
   function reason(status, exch){
@@ -186,6 +195,22 @@
         (k==='BSE'?'<span class="font-normal text-slate-400"> only</span>':'')+'</span>' +
         '<span class="text-xs font-extrabold '+(e.open?'text-amber-600':'text-emerald-600')+'">'+e.filled+'/'+e.declared+'</span></div>' +
         '<div class="bar mt-1.5"><span style="background:#22c55e;width:'+p+'%"></span></div></div>';
+    }).join('');
+
+    var late = d.late || [], nLate = late.reduce(function(a, g){ return a + g.rows.length; }, 0);
+    document.getElementById('lateBox').hidden = !nLate;
+    document.getElementById('lateCount').textContent = nLate ? nLate + ' filing' + (nLate===1?'':'s') : '';
+    document.getElementById('lateWrap').innerHTML = late.map(function(g){
+      return '<div class="px-3 pt-3 text-[11px] font-bold uppercase tracking-wide text-slate-400">' + esc(g.qlabel) + '</div>' +
+        '<table class="w-full text-sm sw-cards"><tbody>' + g.rows.map(function(r){
+          return '<tr class="border-b border-slate-100 last:border-0">' +
+            '<td class="px-3 py-2"><span class="font-bold text-slate-900">'+esc(r[0])+'</span>' +
+              '<div class="text-[11px] text-slate-400">'+esc(r[1])+'</div></td>' +
+            '<td class="px-3 py-2 text-xs font-semibold text-slate-500">'+esc(r[2])+'</td>' +
+            '<td class="px-3 py-2 text-right tabular-nums text-slate-600">'+fmtCr(r[3])+'</td>' +
+            '<td class="px-3 py-2 text-xs text-slate-500">filed '+esc(r[4])+'</td>' +
+            '<td class="px-3 py-2"><span class="pill '+esc(r[5])+'">'+esc(LBL[r[5]]||r[5])+'</span></td></tr>';
+        }).join('') + '</tbody></table>';
     }).join('');
 
     var rows = d.rows || [];

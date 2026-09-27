@@ -31,10 +31,11 @@ on:
     # ~nothing and does NOT bloat git history. Actions minutes are free (public repo).
     - cron: "0 4-14 * * *"
     # 15:45 UTC (21:15 IST) — the FULL nightly run: insurer vision fill + IPO-base fill +
-    # an UNGATED baker rebuild (so reactions/drift track the 20:45 IST prices). It gets
-    # hours 15 AND 16 UTC to itself — no dense cron there — because the steps below detect
-    # it by wall-clock hour, and a run that drifts past the hour boundary must still count
-    # as the nightly (see the 15|16 gate). Don't add a cron in hour 15/16.
+    # an UNGATED baker rebuild (so reactions/drift track the 20:45 IST prices). The steps below
+    # recognise it by github.event.schedule == '45 15 * * *' — NOT the wall-clock hour: GitHub
+    # starts crons late (measured 2026-09: runs at 17:30 and 19:22 UTC), and the old "hour 15|16"
+    # gate then skipped the whole nightly workload (5 of 23 September nights). Keep this string
+    # identical to the gates if the time ever changes.
     - cron: "45 15 * * *"
     # 17:45 UTC (23:15 IST) — final light top-up for late-evening filings.
     - cron: "45 17 * * *"
@@ -131,7 +132,7 @@ jobs:
           # nightly cron lives in hours 15–16, so the wider window can't double-fire.
           EV="${{ github.event_name }}"; ACTION="${{ github.event.action }}"; RUN=0
           [ "$EV" = "workflow_dispatch" ] && RUN=1
-          [ "$EV" = "schedule" ] && case "$(date -u +%H)" in 15|16) RUN=1;; esac
+          [ "${{ github.event.schedule }}" = "45 15 * * *" ] && RUN=1
           [ "$EV" = "repository_dispatch" ] && [ "$ACTION" = "insurer-refresh" ] && RUN=1
           if [ "$RUN" != "1" ]; then echo "Not an insurer-fill trigger ($EV/$ACTION) — skipping"; exit 0; fi
           pip install -q pymupdf curl_cffi
@@ -162,7 +163,7 @@ jobs:
         run: |
           EV="${{ github.event_name }}"; ACTION="${{ github.event.action }}"; RUN=0
           [ "$EV" = "workflow_dispatch" ] && RUN=1
-          [ "$EV" = "schedule" ] && case "$(date -u +%H)" in 15|16) RUN=1;; esac
+          [ "${{ github.event.schedule }}" = "45 15 * * *" ] && RUN=1
           [ "$EV" = "repository_dispatch" ] && [ "$ACTION" = "insurer-refresh" ] && RUN=1
           if [ "$RUN" != "1" ]; then echo "Not a nightly trigger ($EV/$ACTION) — skipping missing-quarter reconcile"; exit 0; fi
           pip install -q pymupdf curl_cffi
@@ -175,7 +176,7 @@ jobs:
           EV="${{ github.event_name }}"; ACTION="${{ github.event.action }}"; RUN=0
           [ "$EV" = "workflow_dispatch" ] && RUN=1
           # Hour 15 OR 16 UTC — drift-tolerant, same reasoning as the insurer gate above.
-          [ "$EV" = "schedule" ] && case "$(date -u +%H)" in 15|16) RUN=1;; esac
+          [ "${{ github.event.schedule }}" = "45 15 * * *" ] && RUN=1
           [ "$EV" = "repository_dispatch" ] && [ "$ACTION" = "insurer-refresh" ] && RUN=1
           if [ "$RUN" != "1" ]; then echo "Not a nightly trigger ($EV/$ACTION) — skipping IPO-base fill"; exit 0; fi
           pip install -q pymupdf
@@ -282,7 +283,7 @@ jobs:
       # reaction. The visibility date (ann) is NOT touched: midnight rule, §149.
       - name: Fetch BSE broadcast times for results-page filing days
         run: |
-          NIGHTLY=0; case "$(date -u +%H)" in 15|16) NIGHTLY=1;; esac      # same gate as the payload rebuild below
+          NIGHTLY=0; [ "${{ github.event.schedule }}" = "45 15 * * *" ] && NIGHTLY=1      # same gate as the payload rebuild below
           if [ ! -f docs/.fund_updated ] && [ "$NIGHTLY" != "1" ]; then echo "no rebuild this run — skipped"; exit 0; fi
           python3 -X utf8 scripts/fetch_filing_times.py --result-dates --max-minutes 12 \
             || echo "::warning::result broadcast-time fetch failed — reactions for new filings use the filing day until the next run"
@@ -295,7 +296,7 @@ jobs:
           # for nothing); the nightly run always rebuilds so reactions/drift track daily
           # prices (published ~20:45 IST). Hour 15 OR 16 UTC = nightly, drift-tolerant —
           # same reasoning as the insurer/IPO-base gates above.
-          NIGHTLY=0; case "$(date -u +%H)" in 15|16) NIGHTLY=1;; esac
+          NIGHTLY=0; [ "${{ github.event.schedule }}" = "45 15 * * *" ] && NIGHTLY=1
           if [ ! -f docs/.fund_updated ] && [ "$NIGHTLY" != "1" ]; then
             echo "No new earnings this run — skipping payload rebuild"
             exit 0
@@ -307,6 +308,7 @@ jobs:
             echo "::warning::fresh sf_stock_data.bin download failed — building from the committed bin; reactions may lag"
             python3 -X utf8 scripts/build_quarterly_results.py
           fi
+          touch /tmp/qr_built    # the commit loop rebuilds it again on the post-reset data (runbook §194)
 
       - name: Guard — refuse to commit a broken or shrunken feed
         run: python3 scripts/guard_feed.py
@@ -332,7 +334,7 @@ jobs:
           RUN=0
           EV="${{ github.event_name }}"
           [ "$EV" = "workflow_dispatch" ] && RUN=1
-          [ "$EV" = "schedule" ] && case "$(date -u +%H)" in 15|16) RUN=1;; esac
+          [ "${{ github.event.schedule }}" = "45 15 * * *" ] && RUN=1
           [ "$RUN" = "1" ] || { echo "not the nightly — skipped"; exit 0; }
           ( set -e
             [ -f scripts/filing_times_cache.json.gz ] && gunzip -c scripts/filing_times_cache.json.gz > scripts/_filing_times.json
@@ -351,9 +353,6 @@ jobs:
           FUND=0; [ -f docs/.fund_updated ] && FUND=1
           cp docs/sf_fundamentals.json /tmp/sf_fundamentals.json
           cp docs/sf_revop.json        /tmp/sf_revop.json
-          cp docs/results_season.json  /tmp/results_season.json
-          [ -f docs/_season_coverage.json ] && cp docs/_season_coverage.json /tmp/_season_coverage.json
-          cp docs/quarterly_results.json /tmp/quarterly_results.json
           # IPO-base fill ledger + skip tracker (small; the big scripts/ mirrors are NOT committed from CI)
           [ -f scripts/ipo_base_fills.json ] && cp scripts/ipo_base_fills.json /tmp/ipo_base_fills.json
           [ -f scripts/_ipo_base_skips.json ] && cp scripts/_ipo_base_skips.json /tmp/_ipo_base_skips.json
@@ -394,16 +393,15 @@ jobs:
             python3 -X utf8 scripts/settle_stale_holds.py --apply \
               || echo "::warning::settle_stale_holds: something needs adjudication (see the blocking step above)"
             git add scripts/mc_pat_fills.json scripts/mc_history_fills.json
-            # season chart + coverage commit UNCONDITIONALLY (2026-07-21): they also move when the
-            # vision routine committed new fills — i.e. exactly when no .fund_updated exists
-            cp /tmp/results_season.json  docs/results_season.json
-            git add docs/results_season.json
-            [ -f /tmp/_season_coverage.json ] && cp /tmp/_season_coverage.json docs/_season_coverage.json && git add docs/_season_coverage.json
-            cp /tmp/quarterly_results.json docs/quarterly_results.json
-            git add docs/quarterly_results.json
             [ -f /tmp/_ipo_base_skips.json ] && cp /tmp/_ipo_base_skips.json scripts/_ipo_base_skips.json && git add scripts/_ipo_base_skips.json
-            [ -f /tmp/filing_times_cache.json.gz ] && cp /tmp/filing_times_cache.json.gz scripts/filing_times_cache.json.gz && git add scripts/filing_times_cache.json.gz
-            [ -f /tmp/result_times_cache.json.gz ] && cp /tmp/result_times_cache.json.gz scripts/result_times_cache.json.gz && git add scripts/result_times_cache.json.gz
+            # broadcast-time caches: UNION by day (origin's days kept, this run's fetched days added/refreshed) —
+            # a plain cp restored the job's snapshot over days another run had fetched (09-17, 09-23)
+            for TC in filing_times_cache.json.gz result_times_cache.json.gz; do
+              if [ -f "/tmp/$TC" ]; then
+                python3 -c "import gzip,json,os; t='scripts/$TC'; s=json.loads(gzip.decompress(open('/tmp/$TC','rb').read())); c=json.loads(gzip.decompress(open(t,'rb').read())) if os.path.exists(t) else {}; c.update(s); open(t,'wb').write(gzip.compress(json.dumps(c,separators=(',',':'),sort_keys=True).encode())); print(t,'days',len(c))" \
+                  && git add "scripts/$TC" || echo "::warning::$TC union failed"
+              fi
+            done
             # ★ ann-date truth (runbook 104): persist ledger + skips, then RE-ASSERT the override
             # ledger onto the post-reset/post-merge payload — same rationale as settle_stale_holds
             # above: the reset threw away the pre-reset application, and other writers' payloads
@@ -435,6 +433,19 @@ jobs:
             python3 -X utf8 scripts/apply_fund_cell_fix.py --apply  || echo "::warning::fund_cell_fix reapply failed"
             python3 -X utf8 scripts/apply_revop_cell_fix.py --apply || echo "::warning::revop_cell_fix reapply failed"
             git add docs/sf_fundamentals.json docs/sf_revop.json
+            # DERIVED PAYLOADS, rebuilt HERE from the post-reset, post-merge, post-heal data — never a
+            # pre-reset copy. A cp of this job's own build reverted newer payloads: 2026-09-27 09:42 UTC it
+            # put back the exact pre-KENNAMET-heal quarterly_results.json 3 min after the heal (runbook §194).
+            # Season chart + coverage every run (they also move when the vision routine lands fills);
+            # the results payload only when this run built it (new earnings or the nightly).
+            python3 scripts/build_results_season.py > /tmp/season.log 2>&1 && git add docs/results_season.json \
+              || { tail -5 /tmp/season.log; echo "::warning::results_season rebuild failed"; }
+            python3 -X utf8 scripts/check_season_coverage.py > /tmp/scov.log 2>&1; [ -f docs/_season_coverage.json ] && git add docs/_season_coverage.json
+            if [ -f /tmp/qr_built ]; then
+              if [ -f /tmp/qr/sf_stock_data.bin ]; then QRBIN=/tmp/qr/sf_stock_data.bin; else QRBIN=docs/sf_stock_data.bin; fi
+              SF_BIN=$QRBIN python3 -X utf8 scripts/build_quarterly_results.py && git add docs/quarterly_results.json \
+                || echo "::warning::quarterly_results rebuild failed — the payload keeps origin's copy"
+            fi
             # Fill-coverage scoreboard (docs/fill-coverage.html) — built HERE, inside the loop and
             # AFTER the three-way merge, deliberately. It is derived from sf_revop + sf_fundamentals,
             # so building it earlier would compute over pre-merge data and then be wiped by the

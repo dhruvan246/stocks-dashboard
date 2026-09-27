@@ -673,6 +673,13 @@
    "owners": 791.44,
    "was": 8.0
   },
+  "BAJAJST|20251231|patC": {
+   "cause": "std mis-scaled value in the con slot",
+   "found_by": "2026-09-27 audit; fund_cell_fix entry (runbook \u00a7194)",
+   "owners": 5.91,
+   "src": "BAJAJST Dec-25 consolidated: stored 671.01 is the standalone slot's mis-scaled value (both bases held 671.01; the std cell is healed to 6.71 in this ledger). The consolidated filing's own second parse (sf_revop con row) reads rev 125.27 / op 9.31 / PAT 5.91, in line with the neighbouring consolidated quarters (Mar-26 2.32, Jun-26 -0.27; Mar-25 17.47, Jun-25 7.4). Runbook \u00a7194.",
+   "was_served": 671.01
+  },
   "BALKRISIND|20260630|patC": {
    "applied": "2026-09-05",
    "found_by": "Moneycontrol-vs-store PAT screen + row screen, 2026-09-05 (runbook \u00a7133)",
@@ -888,6 +895,20 @@
    "owners": 202.8,
    "src": "vision, BSE ann Jan-2020 consolidated P&L (Q3FY20 col, Rs million 2303/275/2028)",
    "total_was": 230.3
+  },
+  "BLACKROSE|20251231|patC": {
+   "cause": "power-of-ten ingestion error",
+   "found_by": "2026-09-27 audit; fund_cell_fix entry (runbook \u00a7194)",
+   "owners": 4.41,
+   "src": "Power-of-ten ingestion error: stored 440.78 is exactly 100 x the same quarter's sf_revop PAT 4.4 (a second parse). Anchor (c) neighbours (runbook \u00a711/\u00a7194): the quarter's revenue is 75.15 and the neighbouring quarters' PAT are 20250630:4.24, 20250930:4.43, 20260331:94159.0, 20260630:10.39 \u2014 only /100 lands the cell in range; the stored figure exceeds or dwarfs the quarter's revenue. The company's filings are not in scripts/_xbrl_cache, so no YTD anchor was available.",
+   "was_served": 440.78
+  },
+  "BLACKROSE|20260331|patC": {
+   "cause": "power-of-ten ingestion error",
+   "found_by": "2026-09-27 audit; fund_cell_fix entry (runbook \u00a7194)",
+   "owners": 9.41,
+   "src": "Power-of-ten ingestion error: stored 94159.0 is exactly 10006 x the same quarter's sf_revop PAT 9.41 (a second parse). Anchor (c) neighbours (runbook \u00a711/\u00a7194): the quarter's revenue is 104.04 and the neighbouring quarters' PAT are 20250930:4.43, 20251231:440.78, 20260630:10.39 \u2014 only /10006 lands the cell in range; the stored figure exceeds or dwarfs the quarter's revenue. The company's filings are not in scripts/_xbrl_cache, so no YTD anchor was available.",
+   "was_served": 94159.0
   },
   "BLS|20190331|patC": {
    "found_by": "\u00a7116e Nifty-500 pass (vision read of scanned filing), 2026-08-27",
@@ -1576,6 +1597,13 @@
    "src": "GFLLIMITED own consolidated result PDF filed to BSE, explicit 'Profit for the period attributable to: Owners of the Company' line (G1 heal 2026-09-03)",
    "total_was": 59.47
   },
+  "GLENMARK|20260331|patC": {
+   "cause": "xbrl-owners-nci-tag-swap",
+   "found_by": "attr_swap_fixes.json (2026-07-30 tag-swap sweep); pinned 2026-09-27 \u2014 no applier replayed that journal, so apply_owners_full reverted it nightly (runbook \u00a7194)",
+   "owners": 301.41,
+   "src": "XBRL EPS 10.68 x 282.2mn sh (FV1); BSE PDF eaa8333a-8c8e-4df4-a107-ffe1aa68e817 owners 3014.14mn NCI -0.95mn; Screener con total 301",
+   "was_served": -0.1
+  },
   "GMRP&UI|20220331|patC": {
    "found_by": "\u00a7116c screen over all 60,768 con cells, 2026-08-26",
    "nci": -58.43,
@@ -1727,6 +1755,20 @@
    "src": "vision, BSE consolidated P&L Q1FY22 (continuing owners 427.16 + discontinued 7.71)",
    "total_was": 437.25
   },
+  "GRAUWEIL|20251231|patC": {
+   "cause": "power-of-ten ingestion error",
+   "found_by": "2026-09-27 audit; fund_cell_fix entry (runbook \u00a7194)",
+   "owners": 32.33,
+   "src": "Power-of-ten ingestion error: stored 3233.0 is exactly 100 x the same quarter's sf_revop PAT 32.33 (a second parse). Anchor (c) neighbours (runbook \u00a711/\u00a7194): the quarter's revenue is 290.63 and the neighbouring quarters' PAT are 20250331:25.74, 20250630:43.61, 20260331:4951.0, 20260630:39.81 \u2014 only /100 lands the cell in range; the stored figure exceeds or dwarfs the quarter's revenue. The company's filings are not in scripts/_xbrl_cache, so no YTD anchor was available.",
+   "was_served": 3233.0
+  },
+  "GRAUWEIL|20260331|patC": {
+   "cause": "power-of-ten ingestion error",
+   "found_by": "2026-09-27 audit; fund_cell_fix entry (runbook \u00a7194)",
+   "owners": 49.51,
+   "src": "Power-of-ten ingestion error: stored 4951.0 is exactly 100 x the same quarter's sf_revop PAT 49.51 (a second parse). Anchor (c) neighbours (runbook \u00a711/\u00a7194): the quarter's revenue is 355.37 and the neighbouring quarters' PAT are 20250630:43.61, 20251231:3233.0, 20260630:39.81 \u2014 only /100 lands the cell in range; the stored figure exceeds or dwarfs the quarter's revenue. The company's filings are not in scripts/_xbrl_cache, so no YTD anchor was available.",
+   "was_served": 4951.0
+  },
   "GRINDWELL|20170331|patC": {
    "identity": "Jun-17: owners 3,003 lakhs and total 3,032 are printed IDENTICALLY in both the quarter's own Q1FY18 filing (2017-08-02 p4) and the Q1FY19 comparative \u2014 so 30.32 is the total row, not a restatement. Mar-17: owners 3,373 printed in the Q1FY18 filing's audited Mar-17 column against the stored total 3,418.",
    "note": "its own Q4FY17 filing was NOT read this session, so the announce date moves to the filing actually read \u2014 later is never look-ahead.",
@@ -1750,6 +1792,13 @@
    "source": "GRINDWELL NORTON 'Unaudited Consolidated Financial Results for the quarter ended June 30, 2018' - the quarter's OWN consolidated filing (NSE con row toDate 20180630, filingDate 07-Aug-2018 19:26) p4, column '30-06-2018 (Unaudited)'; reprinted identically in the Q2FY19 con filing (22-Nov-2018) p3 column '30-06-2018'",
    "stored_before": null,
    "when": "2026-08-18 00:03 IST"
+  },
+  "GSPCROP|20260331|patC": {
+   "cause": "xbrl-owners-nci-tag-swap",
+   "found_by": "attr_swap_fixes.json (2026-07-30 tag-swap sweep); pinned 2026-09-27 \u2014 no applier replayed that journal, so apply_owners_full reverted it nightly (runbook \u00a7194)",
+   "owners": 20.48,
+   "src": "BSE PDF 808d4ff5-21e3-4736-9aca-941765142f13 equity holders 204.80mn NCI -8.41mn (sum = total 196.39mn); XBRL sum-check; EPS 5.09 is weighted-avg-shares (IPO mid-quarter) hence sweep verdict MANUAL",
+   "was_served": -0.84
   },
   "HALDER|20251231|patC": {
    "nci": 0.1459,
@@ -2160,6 +2209,13 @@
    "stored_before": 84.19,
    "when": "2026-08-17 23:49 IST"
   },
+  "KIRLOSBROS|20250630|patC": {
+   "cause": "xbrl-owners-nci-tag-swap",
+   "found_by": "attr_swap_fixes.json (2026-07-30 tag-swap sweep); pinned 2026-09-27 \u2014 no applier replayed that journal, so apply_owners_full reverted it nightly (runbook \u00a7194)",
+   "owners": 66.7,
+   "src": "XBRL EPS 8.40 x 79.5mn sh (FV2); BSE PDF 33b0cd82-f6be-417d-940e-80b2d3ebc2ee equity holders 667mn NCI 8mn",
+   "was_served": 0.8
+  },
   "KPIL|20180930|patC": {
    "identity": "Cross-filing and exact: H1 Sep-2018 owners 200 (Q2FY20) + Dec-2018 quarter owners 109 (Q3FY20) = 309 == the printed 9M Dec-2018 owners column 309 EXACT. In-table: owners 115 + NCI 3 = 118 == printed Sep-2018 'Profit for the period' 118 EXACT; owners 109 + NCI 5 = 114 == printed Dec-2018 'Profit for the period' 114 EXACT. Row identity: the Q2FY20 key-standalone table prints Sep-2018 net profit after tax 91, matching stored stdPAT 91.37 at this filing's whole-crore grain. Pre-existing anomaly NOT touched: stored Mar-2019 con 134.22 matches neither FY19 owners 467 - 9M owners 309 = 158 nor the total-basis 487-321 = 166; reported in refusals_C.json.",
    "note": "printed comparative; owners 115, NCI 3, profit for the period 118. Declared '(Rs. in Crores)' - no conversion. No consolidated filing of its own exists for Sep-2018 (NSE con list starts 20190331).",
@@ -2496,6 +2552,13 @@
    "owners": 64.6,
    "src": "vision, BSE consolidated P&L Q2FY21 (row 8 total, owners 64.60)",
    "total_was": 69.7
+  },
+  "NITCO|20250331|patC": {
+   "cause": "xbrl-owners-nci-tag-swap",
+   "found_by": "attr_swap_fixes.json (2026-07-30 tag-swap sweep); pinned 2026-09-27 \u2014 no applier replayed that journal, so apply_owners_full reverted it nightly (runbook \u00a7194)",
+   "owners": -2.85,
+   "src": "BSE PDF df8552ac-4628-4c04-bcd9-cc0f0186d106 owners -285.40 lakh NCI -5.07 lakh (all 5 cols reconcile exactly); XBRL total -2.90 = -0.05 + -2.85",
+   "was_served": -0.05
   },
   "NMDC|20200331|patC": {
    "found_by": "\u00a7116e Nifty-500 pass (vision read of scanned filing), 2026-08-27",
@@ -3214,6 +3277,13 @@
    "owners": 0.85,
    "was": 2.34
   },
+  "SHINDL|20251231|patC": {
+   "cause": "power-of-ten ingestion error",
+   "found_by": "2026-09-27 audit; fund_cell_fix entry (runbook \u00a7194)",
+   "owners": 4.74,
+   "src": "Power-of-ten ingestion error: stored 473.87 is exactly 100 x the same quarter's sf_revop PAT 4.74 (a second parse). Anchor (c) neighbours (runbook \u00a711/\u00a7194): the quarter's revenue is 142.54 and the neighbouring quarters' PAT are 20250630:5.37, 20250930:5.74, 20260331:5.43, 20260630:6.28 \u2014 only /100 lands the cell in range; the stored figure exceeds or dwarfs the quarter's revenue. The company's filings are not in scripts/_xbrl_cache, so no YTD anchor was available.",
+   "was_served": 473.87
+  },
   "SHREECEM|20180930|patC": {
    "identity": "Six Months Ended 30-Sep-2018 owners = 339.78 cr (printed). Stored Jun-2018 con 279.36 + this cell 60.42 = 339.78 -> closes EXACTLY to the paisa. Same-table control: H1FY20 owners 690.29 = 379.67 + 310.62, also exact.",
    "note": "statement is in crore, no conversion. Total for that column is 63.77 with NCI 3.35 (60.42 + 3.35 = 63.77). CAVEAT on the announce date: 20191019 is the NSE filingDate of the filing actually read. Stored con for Dec-2018 carries ann 20190123, implying a consolidated Q3FY19 result existed off-NSE (NSE lists no consolidated filing for 20180930 or 20181231) whose Sep-2018 comparative column would have made this value public earlier. That filing was NOT read, so the conservative verified date is used - late, never look-ahead.",
@@ -3490,6 +3560,13 @@
    "stored_before": null,
    "when": "2026-08-18 00:12 IST"
   },
+  "TALBROAUTO|20250331|patC": {
+   "cause": "xbrl-owners-nci-tag-swap",
+   "found_by": "attr_swap_fixes.json (2026-07-30 tag-swap sweep); pinned 2026-09-27 \u2014 no applier replayed that journal, so apply_owners_full reverted it nightly (runbook \u00a7194)",
+   "owners": 26.58,
+   "src": "XBRL EPS 4.31 x 61.7mn sh (FV2); BSE PDF f8b79287-f3ce-491b-b522-5522d2f37f59 owners 2658.10 lakh NCI nil",
+   "was_served": 0.0
+  },
   "TATACOFFEE|20170930|patC": {
    "applied": "2026-09-05",
    "found_by": "Moneycontrol-vs-store PAT screen + row screen, 2026-09-05 (runbook \u00a7133)",
@@ -3575,6 +3652,13 @@
    "source": "TRENT Q4FY22 'Statement of Standalone and Consolidated Financial Results for the Quarter and Year ended 31st March, 2022' (NSE filed 2022-04-27 21:35, na_audit/cache/F_TRENT_20220331.pdf p22, consolidated block, 'For Quarter ended 31st March, 2022'), row 11",
    "stored_before": 0.0,
    "when": "2026-08-17 23:49 IST"
+  },
+  "TRU|20260331|patC": {
+   "cause": "xbrl-attr-tags-empty-zero (pre-July parser stored the literal 0 owners tag; ELECON-class)",
+   "found_by": "attr_swap_fixes.json (2026-07-30 tag-swap sweep); pinned 2026-09-27 \u2014 no applier replayed that journal, so apply_owners_full reverted it nightly (runbook \u00a7194)",
+   "owners": -58.6,
+   "src": "ORIGINAL 25-May con XBRL NBFC_INDAS_1672820 total -586.012mn, owners/NCI tags 0, NCI nil; sf_revop patCon already -58.6 (later cron re-visit with fixed parser, same filing)",
+   "was_served": 0.0
   },
   "TTKPRESTIG|20180930|patC": {
    "identity": "In-table: H1 FY19 con 89.32 - Sep-2018 con 53.50 = 35.82 implied Jun-2018 (that cell is NOT written - not in batch I's assignment). Cross-filing: 9M Dec-2018 con 147.58 (Q3FY20 p3, read by batch C from the same cached PDF family) - Dec-2018 58.25 (stored, printed in Q3FY20) = 89.33 vs the H1 89.32 printed here - delta 0.01, TTK's documented rounding family (spec_ttkprestig.json batch C recorded the same 0.01 on 9M+Q4 vs FY19). FY19 sanity: 89.32 + 58.25 + 44.76 = 192.33 vs printed Year column 192.35 here and in Q4FY20 - delta 0.02 from three independent 2dp roundings; the cell written is a PRINTED quarter column, nothing is derived through these residues. Standalone row-identity on the same page pins the columns: std Sep-19 80.28, Jun-19 36.47, Sep-18 53.77 ALL == stored stdPAT EXACTLY.",

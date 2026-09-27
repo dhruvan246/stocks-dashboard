@@ -6,7 +6,11 @@ refresh-bse.yml used to `cp` its whole file over origin's at commit time, silent
 cells only the job has are ADDED; where both hold a cell the CURRENT (origin) one wins — the job's own fetch is
 fill-only, so a differing cell means someone else changed it after the job checked out.
 
-Run: python3 scripts/union_bse_fundamentals.py <job_copy.json> [target=docs/bse_fundamentals.json]
+THREE-WAY with --base <sha> (2026-09-27): only cells the JOB CHANGED relative to the commit it started from
+are considered. A two-way union re-added whatever origin had removed or cleared meanwhile — a job that
+checked out before the §187 heal would have put back all 1,805 fake 2026-06-15 dates ("a date origin lacks").
+
+Run: python3 scripts/union_bse_fundamentals.py <job_copy.json> [target=docs/bse_fundamentals.json] [--base SHA]
 """
 import json, os, sys
 sys.path.insert(0, os.path.dirname(os.path.abspath(__file__)))
@@ -15,9 +19,26 @@ import qe_util as QU
 HERE = os.path.dirname(os.path.abspath(__file__))
 
 
+def _base_px(sha):
+    """px of docs/bse_fundamentals.json at `sha` (the job's starting commit), or None when unreadable."""
+    import subprocess
+    try:
+        raw = subprocess.run(["git", "show", "%s:docs/bse_fundamentals.json" % sha], capture_output=True,
+                             check=True, cwd=os.path.join(HERE, "..")).stdout
+        return json.loads(raw).get("px") or {}
+    except (subprocess.CalledProcessError, ValueError, OSError):
+        return None
+
+
 def main():
-    mine_p = sys.argv[1]
-    tgt_p = sys.argv[2] if len(sys.argv) > 2 else os.path.join(HERE, "..", "docs", "bse_fundamentals.json")
+    args = [a for a in sys.argv[1:] if not a.startswith("--")]
+    base = None
+    if "--base" in sys.argv:
+        base = _base_px(sys.argv[sys.argv.index("--base") + 1])
+        args = [a for a in args if a != sys.argv[sys.argv.index("--base") + 1]]
+        if base is None: print("union_bse_fundamentals: base unreadable — two-way fallback")
+    mine_p = args[0]
+    tgt_p = args[1] if len(args) > 1 else os.path.join(HERE, "..", "docs", "bse_fundamentals.json")
     mine = json.load(open(mine_p, encoding="utf-8"))
     try:
         cur = json.load(open(tgt_p, encoding="utf-8"))
@@ -29,6 +50,8 @@ def main():
         dst = px.setdefault(code, {})
         for qe, cell in qmap.items():
             if not str(qe).isdigit() or not QU.is_qe(int(qe)): continue   # an OCR-garbled key (26310331)
+            if base is not None and (base.get(code) or {}).get(qe) == cell:
+                continue          # the job did not change this cell: origin's version (heal, removal) stands
             if qe in dst:
                 old = dst[qe]
                 # a figure origin's cell LACKS (e.g. a revenue-only vision read) may be added, same basis only

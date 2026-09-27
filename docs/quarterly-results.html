@@ -452,6 +452,7 @@ function rowBasis(q,qi){
   const cur=q[qi], base=q[qi+4], ord=basisOrder();
   for(const b of ord){ if(cur&&base&&cur[IDX.pat[b]]!=null&&base[IDX.pat[b]]!=null) return b; }
   for(const b of ord){ if(cur&&cur[IDX.pat[b]]!=null) return b; }
+  for(const b of ord){ if(cur&&(cur[IDX.rev[b]]!=null||cur[IDX.op[b]]!=null)) return b; }   // no PAT: the basis that has figures
   return ord[0];
 }
 
@@ -464,7 +465,9 @@ function recsFor(qi){
   for(const sym in CO){
     const c=CO[sym], row=c.q[qi];
     if(!row) continue;
-    const rb=rowBasis(c.q,qi), pk=(m)=>{ const v=row[IDX[m][rb]]; return v!=null?v:pick(row,m)[0]; };
+    // every figure on the row from ONE basis: a missing con revenue shows "—", never the std figure beside a
+    // con PAT (26 rows did that in Jun-26 — AAKASH, CSBBANK …)
+    const rb=rowBasis(c.q,qi), pk=(m)=>row[IDX[m][rb]];
     const rev=pk('rev'), pat=pk('pat'), op=pk('op');
     if(rev==null&&pat==null&&op==null) continue;
     const gy=growth(c.q,qi,'pat',4), gq=growth(c.q,qi,'pat',1);
