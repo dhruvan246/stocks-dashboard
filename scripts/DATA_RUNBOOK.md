@@ -23036,6 +23036,7 @@ marked names, each by the stripped `-$`.
 - **Not touched (flagged):** `scripts/ideas/universe.py:45` (Daily Ideas universe, 112 marked names in docs/ideas/universe.json)
   reads `Scrip_Name` raw — another session had uncommitted work in scripts/ideas/ at the time; `build_bse_sme_ipo_pit.py` reads a
   local master, SME groups carry 0 marks.
+  **Ideas FIXED 2026-09-28 (827d4db1d):** universe/scan/dossier clean via `clean_scrip_name()` + new `clean_ann_subject()` (NEWSSUB carries the marker MID-string: "Linc Ltd-$ - 531241 - …", invisible to `--check`), scan.py heals earlier scan files; ideas-feeds run 36344172861 → d74b58fc9, LIVE universe.json (1,202) + scan/2026-09-21…25 = 0 "-$" anywhere — but that dispatch's whole-file copy dropped 3afd6f4's KORE/FONEBOX track.json rows (restored by a score.py re-run, 4d651db61): after any dispatch, diff its files against every docs/ideas/ commit that landed DURING the run.
 
 **Not the marker (measured, same report):** a local shareholding-feed rebuild against the 27-Sep dash_slim shows 35 mcaps → 0 and
 32 bare-ticker names. 32 of the 35 (HEG, SPELS, MANBRO, CDG, …) are ABSENT from BSE's live 27-Sep Active list — they were Active
