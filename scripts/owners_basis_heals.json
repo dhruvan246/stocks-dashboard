@@ -14,7 +14,8 @@
   "2026-08-27 \u00a7116e-vision: 8 more cells from SCANNED-image filings the text pass could not read, read by vision from the rendered consolidated P&L page and gated identically (owners+NCI==total exactly, total==stored). JINDALSTEL 20201231 2566.68->2254.66 (owners=continuing+discontinuing attribution, 312cr), LLOYDSENT 20251231 37.93->-7.86 (owners LOSS, minority took the profit), WAAREEENER 20251231 1106.79->1062.46, ADANIPORTS 20250630 3310.60->3314.59, KANORICHEM x4 (row cleared). NOTE: several high-proxy scanned cells were REFUSED as a DIFFERENT defect class -- their stored value does not match the filing total at all (ADANIENT 20250331 stored 1382.17 vs filed total 4014.90/owners 3844.91; AARTIIND 20210331 stored 692.34 vs 139.34; RAYMOND 20211231 stored 266.67 vs 101.07) -- flagged for separate investigation, NOT owners-vs-total.",
   "2026-08-27 \u00a7116e Nifty-500 pass: worked the 88 unhealed 460-residue cells in current Nifty-500 members. 45 healed (1 text + 44 vision from scanned filings via render_pl.py): BIOCON x3 (Syngene NCI, ~30cr), NAVA 338.99->298.61 (Zambia power), IFCI 20241231 -8.74->-30.66, NMDC x5, BLUESTARCO x7 (row cleared), KANORICHEM x4 (row cleared), NCC, GPIL, WOCKPHARMA x2, ZENTEC x3, PIDILITIND x2, POLYCAB x2, TIINDIA, ULTRACEMCO... Not healed: NMDC 20240930/INFY/AJANTPHARM/NUVOCO/AFCONS already store owners (no-op); KAYNES x4 have NO NCI (in the residue only via XBRL power-of-ten garbage); ASIANPAINT/KAYNES 20230331 are STORED-VALUE anomalies (stored != filing total, logged in owners_total_stored_anomalies.json); GLENMARK x3/PHOENIXLTD/ONESOURCE/IFCI 20220331/CHOICEIN/PVRINOX/BEML/VBL/HINDCOPPER deferred (complex continuing+discontinuing, restatements, TCI-only, or extract-only pages). ~11 more file image P&Ls the OCR page-finder cannot key (mostly nil/tiny NCI).",
   "2026-09-03 (G1): GFLLIMITED 20170331/20170930/20171231 con PAT held the TOTAL 'Profit for the period' where every neighbouring quarter stores owners; healed to owners from each quarter's OWN BSE consolidated attribution block (Owners (12,220)/7,149/7,019 L). Identity owners+NCI==total and GATE S' (std 52.43/88.74/94.66) both close. 2012Q1-2013Q1 filed no quarterly con statement -> LEFT.",
-  "2026-09-27 (runbook \u00a7184): IRCON and UBL 20220331 con owners pinned at the exact x100 figure of their 1/100 XBRL (scale_fix.json k=-2) -- without a pin apply_owners_full writes _reattr_owners' 2-dp scaled value / 0.01."
+  "2026-09-27 (runbook \u00a7184): IRCON and UBL 20220331 con owners pinned at the exact x100 figure of their 1/100 XBRL (scale_fix.json k=-2) -- without a pin apply_owners_full writes _reattr_owners' 2-dp scaled value / 0.01.",
+  "2026-09-27 (runbook \u00a7184a): exact con owners for the batch-2 scale_fix filings pinned (k<0 filings whose _reattr_owners holds the scaled 2-dp value), plus two filings whose owners tag is unusable (ICIL 20210930 mis-tag, RML 20211231 owners=0) pinned from the filings' own arithmetic."
  ],
  "cells": {
   "20MICRONS|20190630|patC": {
@@ -448,6 +449,15 @@
    "note": "own Mar-2026 filing p5 (lakhs); column anchored on stored Dec-25 5.18 and Mar-25 7.70; FY26 identity 12.70+13.08+5.18+0.50 = 31.46 closes exactly",
    "owners": 0.5,
    "stored_before": 1.28
+  },
+  "ARROWGREEN|20190930|patC": {
+   "found_by": "scale_fix batch-2 adjudication 2026-09-27 (runbook \u00a7184a)",
+   "identity": "owners -2.33 = this filing's ProfitOrLossAttributableToOwnersOfParent x10^2 (total -2.39, NCI -0.06). ",
+   "note": "Pinned because apply_owners_full derives npCon as _reattr_owners (2-dp, read from the same 10^-2 filing) / the scale_fix factor, which loses the last digits; the exact figure is pinned here.",
+   "owners": -2.33,
+   "src": "own consolidated XBRL INDAS_50967_171267_15112019024943_WEB_xml ctx OneD, scale_fix.json k=-2",
+   "stored_before": -0.02,
+   "when": "2026-09-27 14:00 IST"
   },
   "ASAHIINDIA|20230630|patC": {
    "found_by": "\u00a7116e Nifty-500 pass (vision read of scanned filing), 2026-08-27",
@@ -991,6 +1001,15 @@
    "stored_before": null,
    "when": "2026-08-17 20:47 IST"
   },
+  "CAPLIPOINT|20200630|patC": {
+   "found_by": "scale_fix batch-2 adjudication 2026-09-27 (runbook \u00a7184a)",
+   "identity": "owners 54.54 = this filing's ProfitOrLossAttributableToOwnersOfParent x10^2 (total 54.55, NCI 0.01). FY pat identity: 54.54 + 56.89 + 64.46 + 66.37 = 242.26 vs FY 242.28.",
+   "note": "Pinned because apply_owners_full derives npCon as _reattr_owners (2-dp, read from the same 10^-2 filing) / the scale_fix factor, which loses the last digits; the exact figure is pinned here.",
+   "owners": 54.54,
+   "src": "own consolidated XBRL INDAS_59822_305040_11082020025358_WEB_xml ctx OneD, scale_fix.json k=-2",
+   "stored_before": 0.55,
+   "when": "2026-09-27 14:00 IST"
+  },
   "CAPLIPOINT|20201231|patC": {
    "applied": "2026-09-05",
    "found_by": "Moneycontrol-vs-store PAT screen + row screen, 2026-09-05 (runbook \u00a7133)",
@@ -1331,6 +1350,15 @@
    "source": "ESCORTS Q1FY20 consolidated filing (filed 2019-09-12) p2, column Mar-2019: owners 116.70, NCI (0.28), period 116.42",
    "stored_before": 116.42,
    "when": "2026-08-17 21:07 IST"
+  },
+  "ESSARSHPNG|20251231|patC": {
+   "found_by": "scale_fix batch-2 adjudication 2026-09-27 (runbook \u00a7184a)",
+   "identity": "owners -82.39 = this filing's ProfitOrLossAttributableToOwnersOfParent x10^2 (total -88.2, NCI -5.81). FY pat identity: 27.36 + -15.65 + -82.39 + -35.57 = -106.25 vs FY -112.07.",
+   "note": "Pinned because apply_owners_full derives npCon as _reattr_owners (2-dp, read from the same 10^-2 filing) / the scale_fix factor, which loses the last digits; the exact figure is pinned here.",
+   "owners": -82.39,
+   "src": "own consolidated XBRL INTEGRATED_FILING_INDAS_1625779_13022026100321_WEB_xml ctx OneD, scale_fix.json k=-2",
+   "stored_before": -0.82,
+   "when": "2026-09-27 14:00 IST"
   },
   "EXCELCROP|20180630|patC": {
    "identity": "Every column reconciles PBT - tax to the paisa (vision-read, Rs lakhs): Mar-19 quarter 690.70 - 75.07 + 131.41 - 248.79 = 498.25; Jun-19 3460.17 - 1071.75 - 77.73 + 11.18 = 2321.87; Jun-18 5932.91 - 1893.42 - 146.87 = 3892.62; FY19 13345.87 - 4554.59 + 86.31 - 248.79 = 8628.80. FY19 consolidated annual 8628.80 is printed IDENTICALLY in both filings (FY19 audited p8; Q1FY20 p7 'Year Ended 31st March 2019 (Audited)'). Implied 9M FY19 con = 8628.80 - 498.25 = 8130.55, never printed anywhere (consistent: no FY19 con quarterlies were ever filed). Coherence: con FY19 86.29 vs std FY19 87.47 (subsidiaries net drag); Mar-19 con 4.98 vs std 4.73; Jun-18 con 38.93 vs std 38.50.",
@@ -1744,6 +1772,15 @@
    "owners": 387.27,
    "was": 530.54
   },
+  "HCC|20200930|patC": {
+   "found_by": "scale_fix batch-2 adjudication 2026-09-27 (runbook \u00a7184a)",
+   "identity": "owners -476.61 = this filing's ProfitOrLossAttributableToOwnersOfParent x10^2 (total -476.61, NCI 0.0). FY pat identity: -409.26 + -476.61 + 118.58 + 157.28 = -610.01 vs FY -610.02.",
+   "note": "Pinned because apply_owners_full derives npCon as _reattr_owners (2-dp, read from the same 10^-2 filing) / the scale_fix factor, which loses the last digits; the exact figure is pinned here.",
+   "owners": -476.61,
+   "src": "own consolidated XBRL INDAS_64812_360860_12112020054057_WEB_xml ctx OneD, scale_fix.json k=-2",
+   "stored_before": -4.77,
+   "when": "2026-09-27 14:00 IST"
+  },
   "HDFC|20190930|patC": {
    "identity": "9MFY20 closes TO THE PAISA through the target in the Q3FY20 filing: Jun-2019 3,094.38 + Sep-2019 10,388.61 + Dec-2019 3,835.38 = 17,318.37 == printed Nine Months owners EXACT (NCI: 445.34+360.08+361.10 = 1,166.52 == printed; NP: 3,539.72+10,748.69+4,196.48 = 18,484.89 == printed). FY20 closes TO THE PAISA through the target across filings: 3,094.38 + 10,388.61 + 3,835.38 + 4,116.20 = 21,434.57 == printed FY20 owners in BOTH the Q4FY20 (p23) and Q1FY21 (p12) filings. Within the Q2FY20 filing, H1FY20 owners 10,388.61 + 3,094.38 = 13,482.99 == printed EXACT. CAVEAT (filer-side, does not touch any quarter column): the FY19 YEAR comparative was RESTATED between filings - Q2FY20 prints FY19 owners 22,708.08 / NP 24,056.83 / PBT 28,575.28, while Q3FY20/Q4FY20 print FY19 owners 16,231.76 / NP 17,580.51 / PBT 22,098.96 (delta 6,476.32 pre-tax, GRUH/Bandhan merger-related re-presentation; NCI 1,348.75 unchanged). Per protocol gate 3 only printed quarter columns are written; nothing here is derived through the restated FY19 annual.",
    "note": "Already in crore, no unit conversion. Printed TWICE: Q2FY20 filing p16 (current quarter) and Q3FY20 filing p10 (preceding quarter) - identical 10,388.61. The quarter includes the GRUH-Bandhan one-offs (realised gain 1,473.75 + fair-value gain 6,526.54 in revenue). ann=20191231 is honest and NOT backdatable: HDFC filed NO consolidated for Q1FY20 or Q2FY20 with the 19-Nov-2019 standalone results; the Sep-2019 quarter con statement and the H1FY20 con statement (seq 1070124, same PDF) were both first filed 31-Dec-2019 14:30 (NSE list measured). BONUS not specced (batch says 20190930 ONLY): Jun-2019 con owners 3,094.38 is printed in the same p16 table (and re-printed in Q3FY20 9M identity and Q1FY21 corresponding column) and would carry the same ann 20191231; stored 20190630 con is currently null.",
@@ -1791,6 +1828,33 @@
    "source": "HEG Q3FY21 consolidated statement (NSE filingDate 2021-02-09) p11, column 'Quarter Ended 31-12-2020' (Unaudited)",
    "stored_before": 0.0,
    "when": "2026-08-17 21:07 IST"
+  },
+  "HERANBA|20221231|patC": {
+   "found_by": "scale_fix batch-2 adjudication 2026-09-27 (runbook \u00a7184a)",
+   "identity": "owners 12.76 = this filing's ProfitOrLossAttributableToOwnersOfParent x10^1 (total 12.64, NCI -0.12). FY pat identity: 33.44 + 47.15 + 12.76 + 11.15 = 104.5 vs FY 104.37.",
+   "note": "Pinned because apply_owners_full derives npCon as _reattr_owners (2-dp, read from the same 10^-1 filing) / the scale_fix factor, which loses the last digits; the exact figure is pinned here.",
+   "owners": 12.76,
+   "src": "own consolidated XBRL INDAS_88005_779872_28012023034142_WEB_xml ctx OneD, scale_fix.json k=-1",
+   "stored_before": 1.28,
+   "when": "2026-09-27 14:00 IST"
+  },
+  "ICIL|20210930|patC": {
+   "found_by": "scale_fix batch-2 adjudication 2026-09-27 (runbook \u00a7184a)",
+   "identity": "The Sep-21 filing's owners tags are mis-tagged (quarter 28,300 and H1 -1,19,000 raw against totals 8,48,200 / 20,21,100; the NCI they imply, 81.99 cr, is impossible for ICIL: Jun-21 NCI was -0.07). The NEXT filing supplies the figure: Dec-21 con 9M owners 27,328,000 raw x100 = 273.28, minus Jun-21 owners 117.36 (Crores filing, true scale) minus Dec-21 owners 71.05 (x100) = 84.87. Corroborated by the Sep-21 filing's own EPS 4.30 x 19.74 cr shares = 84.88, and by its total 84.82 (NCI -0.05). BSE's own copy Main_Ind_As_521016_2710202111539.xml carries the same tags (0 monetary differences).",
+   "note": "The filing's owners tag is unusable (see identity); pinned from the filings' own arithmetic.",
+   "owners": 84.87,
+   "src": "own consolidated XBRL INDAS_76816_546614_27102021122730_WEB_xml ctx OneD, scale_fix.json k=-2",
+   "stored_before": 0.03,
+   "when": "2026-09-27 14:00 IST"
+  },
+  "ICIL|20211231|patC": {
+   "found_by": "scale_fix batch-2 adjudication 2026-09-27 (runbook \u00a7184a)",
+   "identity": "owners 71.05 = this filing's ProfitOrLossAttributableToOwnersOfParent x10^2 (total 71.19, NCI 0.14). FY pat identity: 117.36 + 0.03 + 71.05 + 85.31 = 273.75 vs FY -26.8.",
+   "note": "Pinned because apply_owners_full derives npCon as _reattr_owners (2-dp, read from the same 10^-2 filing) / the scale_fix factor, which loses the last digits; the exact figure is pinned here.",
+   "owners": 71.05,
+   "src": "own consolidated XBRL INDAS_81448_604116_07022022055707_WEB_xml ctx OneD, scale_fix.json k=-2",
+   "stored_before": 0.71,
+   "when": "2026-09-27 14:00 IST"
   },
   "IFCI|20241231|patC": {
    "found_by": "\u00a7116e Nifty-500 pass (vision read of scanned filing), 2026-08-27",
@@ -2247,6 +2311,15 @@
    "owners": 203.04,
    "src": "vision, BSE consolidated P&L Q3FY23 (row 7 total, row 10 owners)",
    "total_was": 202.54
+  },
+  "LICHSGFIN|20211231|patC": {
+   "found_by": "scale_fix batch-2 adjudication 2026-09-27 (runbook \u00a7184a)",
+   "identity": "owners 771.24 = this filing's ProfitOrLossAttributableToOwnersOfParent x10^2 (total 770.65, NCI -0.59). FY pat identity: 151.0 + 249.74 + 771.24 + 1113.68 = 2285.66 vs FY 2285.65.",
+   "note": "Pinned because apply_owners_full derives npCon as _reattr_owners (2-dp, read from the same 10^-2 filing) / the scale_fix factor, which loses the last digits; the exact figure is pinned here.",
+   "owners": 771.24,
+   "src": "own consolidated XBRL NBFC_INDAS_80576_599535_27012022072841_WEB_xml ctx OneD, scale_fix.json k=-2",
+   "stored_before": 7.71,
+   "when": "2026-09-27 14:00 IST"
   },
   "LLOYDSENT|20250930|patC": {
    "found_by": "\u00a7116e per-cell document read of the company's own BSE-filed consolidated result, 2026-08-27",
@@ -2778,6 +2851,15 @@
    "stored_before": null,
    "when": "2026-08-17 20:13 IST"
   },
+  "RML|20211231|patC": {
+   "found_by": "scale_fix batch-2 adjudication 2026-09-27 (runbook \u00a7184a)",
+   "identity": "owners tag is 0 (mis-tag); total -43,100 raw x100 = -4.31. FY22 con identity closes EXACTLY with it: revenue 340.29 + 458.41 + 437.79 + 505.43 = 1,741.92 and PAT 15.23 + 2.28 - 4.31 - 2.54 = 10.66 = the Mar-22 filing's FY x100; EPS -2.80 x 1.542 cr shares = -4.32.",
+   "note": "The filing's owners tag is unusable (see identity); pinned from the filings' own arithmetic.",
+   "owners": -4.31,
+   "src": "own consolidated XBRL INDAS_80374_598089_24012022025813_WEB_xml ctx OneD, scale_fix.json k=-2",
+   "stored_before": 0.0,
+   "when": "2026-09-27 14:00 IST"
+  },
   "ROUTE|20191231|patC": {
    "identity": "9M FY21 owners printed 9,795.15 lakh; with owners for all three quarters 27.09 + 32.87 + 37.99 = 97.95 = 9,795.15/100 -> closes EXACTLY. With the stored (total-row) Dec-2020 37.62 it gives 97.58 and does NOT close - which is what pins the convention as owners. For the target's own year: FY20 annual owners 5,826.99 - 9M FY20 owners 4,475.90 = 1,351.09 = 13.51 == stored Mar-2020 EXACT.",
    "note": "1,877.25 lakh / 100 = 18.7725 -> 18.77. Total for the same column is 1,717.80 = 17.18 (NCI -159.45); owners is written because the stored series is owners on every cell except the defective Dec-2020. Filing note 3: the Dec-2019 quarter is 'compiled by the management in accordance with Ind AS, which have not been subjected to review or audit by statutory auditors' - it is nonetheless a printed, board-approved column in an exchange filing, and Route Mobile listed only 2020-09-21 so no as-filed Dec-2019 result exists.",
@@ -3052,6 +3134,33 @@
    "note": "own XBRL INDAS_60911_312485_01092020121553: owners -2.8 + NCI -3.56 = total -6.36 closes; EPS x shares = -2.81; stored -6.36 is the TOTAL (\u00a7116 class); Moneycontrol -2.8",
    "owners": -2.8,
    "was": -6.36
+  },
+  "SFL|20200930|patC": {
+   "found_by": "scale_fix batch-2 adjudication 2026-09-27 (runbook \u00a7184a)",
+   "identity": "owners 68.97 = this filing's ProfitOrLossAttributableToOwnersOfParent x10^2 (total 69.84, NCI 0.87). FY pat identity: 0.12 + 68.97 + 0.99 + 58.37 = 128.45 vs FY 240.15.",
+   "note": "Pinned because apply_owners_full derives npCon as _reattr_owners (2-dp, read from the same 10^-2 filing) / the scale_fix factor, which loses the last digits; the exact figure is pinned here.",
+   "owners": 68.97,
+   "src": "own consolidated XBRL INDAS_62833_353488_01112020035213_WEB_xml ctx OneD, scale_fix.json k=-2",
+   "stored_before": 0.69,
+   "when": "2026-09-27 14:00 IST"
+  },
+  "SFL|20201231|patC": {
+   "found_by": "scale_fix batch-2 adjudication 2026-09-27 (runbook \u00a7184a)",
+   "identity": "owners 99.28 = this filing's ProfitOrLossAttributableToOwnersOfParent x10^2 (total 100.14, NCI 0.86). FY pat identity: 0.12 + 0.69 + 99.28 + 58.37 = 158.46 vs FY 240.15.",
+   "note": "Pinned because apply_owners_full derives npCon as _reattr_owners (2-dp, read from the same 10^-2 filing) / the scale_fix factor, which loses the last digits; the exact figure is pinned here.",
+   "owners": 99.28,
+   "src": "own consolidated XBRL INDAS_66930_401601_03022021052154_WEB_xml ctx OneD, scale_fix.json k=-2",
+   "stored_before": 0.99,
+   "when": "2026-09-27 14:00 IST"
+  },
+  "SFL|20210630|patC": {
+   "found_by": "scale_fix batch-2 adjudication 2026-09-27 (runbook \u00a7184a)",
+   "identity": "owners 24.81 = this filing's ProfitOrLossAttributableToOwnersOfParent x10^2 (total 25.12, NCI 0.31). FY pat identity: 24.81 + 76.94 + 66.87 + 49.3 = 217.92 vs FY 0.0.",
+   "note": "Pinned because apply_owners_full derives npCon as _reattr_owners (2-dp, read from the same 10^-2 filing) / the scale_fix factor, which loses the last digits; the exact figure is pinned here.",
+   "owners": 24.81,
+   "src": "own consolidated XBRL INDAS_76072_508055_14082021063114_WEB_xml ctx OneD, scale_fix.json k=-2",
+   "stored_before": 0.25,
+   "when": "2026-09-27 14:00 IST"
   },
   "SHILPAMED|20220630|patC": {
    "applied": "2026-09-05",

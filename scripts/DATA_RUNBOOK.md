@@ -96,7 +96,7 @@ loads every session. (README.md is just a short pointer here — this file is th
 - **§130** ★★★ THE LINE-ITEM BLOCK (EPS/OI/interest/dep/tax) BEFORE 2018 — NSE lists an XBRL URL only from Mar-2018; 2005-2017 come from the archive HTML pages (PAT-anchored, GATE E) and 2002-04/residue from Moneycontrol (gate T/C/R). BANKING XBRL 2018-22 has NO context block (OneD = quarter, FourD = YTD, 'Half yearly'/'Yearly' name the filing). A LOCAL `--fresh` rebuild DROPS the cloud nightly's newest cells unless unioned with the committed .gz (**read before touching build_xbrl_extra.py or judging pre-2018 coverage**)
 - **§161** ★★★ NO SPLIT/BONUS IS EVER INFERRED FROM A PRICE MOVE — `ca_factor()` split POLICYBZR's −36% crash (2026-09-24) into a phantom 2/3 and scaled its whole history; official record → exact factor, none → raw move kept + parked in `scripts/unconfirmed_ca.json`; the published bins' every applied factor is recoverable as `vw ÷ (turnover/volume)` (**read before touching any corporate-action code or ledger**)
 - **§147** ★★★ A scale_fix entry does NOT heal xbrl_extra by itself (the nightly is incremental) — run `scale_fix.py --apply-xtra` with XBRL_CACHE. A mis-scaled filing's EPS is almost always CORRECT (36/37), so flag `eps_scaled` only where it isn't. Use `parse_only` where the owners store already holds a figure from a different, correctly scaled filing. Arm a filing only on an exact YTD power of ten (**read before adding any scale_fix entry**)
-- **§184** ★★★ A 1/100 FILING IS INVISIBLE to `detect_scale_errors.py` (it flags only cells ≥50× LARGER) — screen with the YTD chain over the whole cache, and decide WHICH filing is wrong (a pair's ratio proves only that the two disagree). For k < 0 record `was_*` at raw precision; pin con owners in `owners_basis_heals.json` (the nightly otherwise writes `_reattr_owners` 2-dp ÷ factor); `fill_null` refills slots `revop_sanity` emptied. 50 cells in 62 candidate filings still hold scaled values, NOT armed (**read before adding any scale_fix entry**)
+- **§184** ★★★ A 1/100 FILING IS INVISIBLE to `detect_scale_errors.py` (it flags only cells ≥50× LARGER) — screen with the YTD chain over the whole cache, and decide WHICH filing is wrong (a pair's ratio proves only that the two disagree). For k < 0 record `was_*` at raw precision; pin con owners in `owners_basis_heals.json` (the nightly otherwise writes `_reattr_owners` 2-dp ÷ factor); `fill_null` refills slots `revop_sanity` emptied. **§184a** armed 64 more after a per-filing adjudication (a ratio of 1 hides a scaled NEIGHBOUR — check the chain's end; BSE's own copy is a second reader); MASKINVEST refused (**read before adding any scale_fix entry**)
 - **§181** ★★★ HOW TO ACCESS BSE — every BSE request carries the FULL standard browser header set: `import bse_headers` in any script that touches *.bseindia.com (urllib is covered automatically); curl calls splice `*BH.CURL_ARGS` (includes `--compressed`) and NEVER add a second `-H Referer`/`-H Origin` (a duplicated header → 403). BSE data is public: a 403 means OUR request is incomplete or too fast — fix the request, never record "BSE is blocked". Pace: one request at a time, a per-run cap, download only what is missing; never fan out parallel BSE workers from an interactive session, and never import `fetch_classification.py` to test it (it runs ~18k requests at import) (**read before writing or running ANY BSE fetch**)
 - **★★★ NO ASSUMPTIONS. NO GUESSWORK. EVER.** User-mandated 2026-08-10; standing rule across
   this runbook AND every campaign/playbook doc (each carries the same line). Every value written
@@ -21541,7 +21541,7 @@ correct filing; 7 pairs stay undecided (each sits next to a decided candidate). 
 IGL 20230630 std rev 37.62 (×100 → 3,761.85; the con slot says 3,761.85), PAYTM 20221231 con rev 206.22 / PAT −39.2 (×10 → 2,062.2 /
 −392.0), RKFORGE 20241231 con rev 10,737.82 / PAT 996.14 (÷10), M&MFIN 20210331 std+con, LICHSGFIN 20211231 std+con, APOLLOTYRE 20210331
 std, BIRLACORPN 20210930 std, MHRIL 20190630 con, SFL 20201231 + 20210630 std+con, WHEELS 20221231 std+con. None armed here: each needs
-its own adjudication (was guards, parse_only, owners pins), as above.
+its own adjudication (was guards, parse_only, owners pins), as above — done in §184a.
 **Re-run:** `XBRL_CACHE=/Users/dhruvan/stocks-dashboard/scripts/_xbrl_cache python3 -X utf8 scripts/detect_scale_ytd.py --out <file>`
 (~20 s, read-only; it reproduces every number above). This run's list: `scripts/scale_fix_candidates_2026-09-27.json`.
 **Second reader, Moneycontrol** (`pat_suspects_mc_2026-09-05.json`): of its cells where MC / ours is an exact 10^k, 9 are screen
@@ -21552,6 +21552,56 @@ scaled file. MC also names cells the chain did NOT flag: DLF 20181231 std (2.04 
 47.18 / 68.97), KSB 20181231 std (2.53 vs 25.3), ADANIENSOL 20220630 std (−0.17 vs −16.96). The last exposes a screen limit: its
 store triage keys on the FILING's ticker (ADANITRANS), so a renamed company's store row reads "none" — resolve renames
 (`_rename_map.json`) before trusting a candidate's store class.
+
+
+### §184a — BATCH 2: 64 more filer power-of-ten filings armed (63 cells, 42 companies), each adjudicated with the §184 checks (2026-09-27, user: "fix the 50 others one by one")
+**Per filing, by hand, from an evidence card** (`~/stocks-cache/scalefix-mar22/batch2/`: `evidence.py` → `cards*.json`, `show.py`):
+the YTD ratio against BOTH neighbouring filings on 11 P&L tags; paid-up capital against the company's median over all its
+filings; the filed EPS against the fixed profit; the FY identity after the fix; every store's current value; which ledgers claim
+the cell; the xbrl_extra state. Then a **BSE second reader** (`bse_second_reader.py`: 93 requests through `bse_headers`, one at a
+time 1.2 s apart, 0 failures) and Moneycontrol where the MC journal has the cell.
+- **49 of the 50 screened cells armed; MASKINVEST 20211231 std REFUSED**: its ratios are only ~100 (99.87–100.44), paid-up says
+  ×10,000 and the EPS fits neither — not one clean power of ten.
+- **14 more found on the way, each with its own anchor.** Hidden siblings — a neighbour at the SAME scale shows ratio 1, so the
+  chain cannot flag it: LICHSGFIN 20220331 std (with Dec-21 fixed, FY22 revenue 19,919.07 and PAT 2,287.27 close exactly), SFL
+  20200630 + 20200930 std/con (Jun→Sep→Dec-20 all 1/100; FY21 std 1,689.49 / 181.15 and con revenue 2,435.36 close exactly), RML
+  20211231 con + 20220331 std/con (FY22 con 1,741.92 / 10.66 close exactly). Moneycontrol-found: DLF 20181231 std (FY19 3,295.39 /
+  687.60 close exactly; paid-up ×100 = the pre-QIP 356.9 cr), KSB 20181231 std (see below). The JINDALSAW shape (stores right from
+  elsewhere, detail 1/100 — `parse_only`): DLF 20190630 con, PFC 20231231 con, PIDILITIND 20190930 con. VENUSREM 20190930 std (×10;
+  an undecided pair resolved by paid-up: Sep-19 1,234,200,000 vs the true 123,420,000).
+- **BSE confirms the side.** Seven BSE copies carry the CORRECT figures, exactly ×10^−k of the NSE copy: PFC 20231231 con and
+  PIDILITIND 20190930 con (100×), HCC 20211231 std (its REVISED copy, 100×), ARROWGREEN 20190930 con (~100×; NSE rounded to
+  thousands), AUTOAXLES 20190930 std and RAMKY 20190930 con (0.1×), MENONBE 20231231 std (revised, 0.1×). All other copies carry the
+  NSE copy's values (the filer's error on both exchanges); 11 quarters have no BSE XBRL row (DLF ×2, KSB, WHEELS ×2, REPCOHOME,
+  VENUSREM, MIC, CAPLIPOINT con) or no scrip code (VISESHINFO).
+- **Special cases.** ADANITRANS 20220630 std: the cache holds the filing under two names (`_WEB_xml`, `_WEB.xml`) and the stores
+  under two tickers (ADANITRANS / ADANIENSOL) — one entry per name/key. ICIL 20210930 con: 1/100 AND a mis-tagged owners line
+  (2.83 against total 84.82; NCI would be 81.99 cr) — npCon pinned at 84.87 from the Dec-21 filing's own 9M owners (273.28 − 117.36
+  − 71.05), which the Sep-21 EPS confirms (4.30 × 19.74 cr = 84.88); BSE's copy has the same tags. RML 20211231 con: owners tag 0 —
+  pinned at the total −4.31 (the FY identity closes exactly with it). KSB 20181231 std (Jan–Dec FY, YTD column zero-filled): NO YTD
+  anchor, armed on paid-up exactly 0.1× the other filings, EPS 7.27 exact, MC 25.3 = raw ×10, and ×10 the only power that fits the
+  neighbours. HCC 20211231 std and RKFORGE 20241231 con: revenue closes, PAT does not, because the NEXT year-end filing restated the
+  9M profit — the as-filed quarter is written. ESSARSHPNG 20251231 con: as-filed owners −82.39 written (the Mar-26 FY owners
+  implies −88.21 = its total). VISESHINFO 20180930 con: owners tag 0 (§116 class) — npCon and the mirror left; ARROWGREEN
+  20190930 std: the filing is zero-filled, not scaled — left.
+- **Applied** (`apply2.sh` → `finalize.py`, `scale_fix.py --apply`, `--apply-xtra`, `apply_owners_full.py`): 290 slots that held the
+  scaled value fixed (0 missed; M&MFIN Mar-21 ebit included: today's NBFC parser returns no EBIT, yet the stored series
+  carries op − D&A and that slot held 12.2253 / 14.2986 raw) + 12 owners pins; 582 store cells changed, EVERY one equal to a recorded fixed value or pin (0
+  unexpected, `check_apply2.py`); 701 xbrl_extra fields, all in target cells at old × 10^−k; 49 fin slices (targets + former
+  tickers: ADANITRANS, ARROWCOAT, BIRLAJUTE, HINDCONS, INDOCOUNT, KSBPUMPS, MICEL…) each changed only in target quarters. Five
+  other slices that differed (BYLD, OLYMTFI, OSWAYRN, QUADRANT, SIKOZY) carry other sessions' pending data and were left to CI.
+- **Gates:** `guard_feed` OK; `revop_sanity --dry` 0; `verify_fills_live` identical to its pre-apply run (0 MISSING, the same 26
+  DRIFT, 0 RESURRECTED); `apply_owners_full --dry` 0 changes (the nightly will not move a cell); a second `--apply` leaves all four
+  stores byte-identical. Stock page (local, fin-slice path): IGL std Jun-23 3,762 / 438; PAYTM con Dec-22 2,062 / −392; RKFORGE
+  con Dec-24 1,074 / 99.6; ICIL con Sep-21 739 / 84.9; SFL con Jun-20→Jun-21 269 / 608 / 826 / 733 / 551; LICHSGFIN std Mar-22
+  5,300 / 1,119; the next year's YoY now reads off the healed base.
+- **Screen after the batch:** 155 of 171 anomalous pairs are explained by armed filings; recall 108 of 125 cached ledger filings;
+  the only live-scaled candidate left is MASKINVEST (refused); 9 are superseded by a later correct filing (stores right).
+- **Seen on the way — other defects, NOT changed:** CAPLIPOINT 20201231 con revenue 123.16 is the std figure (FY implies ~274.38);
+  PAYTM 20220630 con revenue 3,535.28 (FY23 implies 1,679.6); RML 20211231 std missing (the Mar-22 FY implies 391.08 / 7.71);
+  ICIL 20220331 con owners tag −12.96
+  (mis-tag); PIDILITIND 20190930 con npCon 322.66 vs the filing's owners ×100 322.34; ORTEL 20200630 std revenue 18.0 vs the
+  filing's 18.18.
 
 ## §185 — AUDIT OF THE BSE RESULTS READERS AFTER §182: nine defects fixed, one ruled out (2026-09-27, user: "find more n more bugs … fix")
 All of it is quarter-agnostic: every target quarter comes from the filing (its printed period, else its filing date).
