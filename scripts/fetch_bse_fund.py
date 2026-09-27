@@ -237,11 +237,15 @@ def _vision_fill(res, name, pngs, tq, ann_i):
                 if g and g.get("ok") and g.get("company_matches"):
                     for qe, key in ((tq, "cur"), (ya, "yago")):
                         d = g.get(key) or {}
-                        pat = d.get("con") if d.get("con") is not None else d.get("std")
+                        std, con = d.get("std"), d.get("con")
+                        # read_corp_results copies a single statement into BOTH slots, so con == std means
+                        # standalone-only; only a con that differs from std (or has no std) is consolidated.
+                        # (Until 2026-09-27 every Gemini cell was labelled C — BYLD's standalone-only filing.)
+                        if con is not None and con != std: pat, basis = con, "C"
+                        else: pat, basis = (std if std is not None else con), "S"
                         if pat is None: continue
                         res[qe] = {"pat": round(float(pat), 2), "src": "gemini",
-                                   "ann": (ann_i if qe == tq else 0),
-                                   "basis": "C" if d.get("con") is not None else "S"}
+                                   "ann": (ann_i if qe == tq else 0), "basis": basis}
         except Exception as ex:
             print("    gemini fallback err:", str(ex)[:70])
 

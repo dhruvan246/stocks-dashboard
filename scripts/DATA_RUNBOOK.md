@@ -21547,3 +21547,8 @@ All of it is quarter-agnostic: every target quarter comes from the filing (its p
 9. One unit table: `bse_vision_api.TO_CRORE` (grind + history import it). 10. Removed `bse_vision_api.vision_extract`
    (Jun-2026-pinned, no caller).
 **Live checks:** grind on 4 re-opened names picks their real Jun filings; 3-way ledger merge run against HEAD.
+**§185a — Gemini cells were all labelled consolidated (2026-09-27).** `read_corp_results` copies a single statement
+into both std and con, and the grind preferred con → basis "C" for every Gemini read (16 cells on origin, all C;
+BYLD 511730's filing is standalone-only — text has no "consolidated"; its figures 5.59 / (18.79) lakh match the stored
+0.06 / −0.19 cr). Now con ≠ std (or no std) ⇒ C, else S. The 16 existing cells are NOT relabelled: which are truly
+consolidated is unknown without re-reading each filing (open).
