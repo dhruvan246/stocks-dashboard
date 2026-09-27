@@ -21853,6 +21853,16 @@ time 1.2 s apart, 0 failures) and Moneycontrol where the MC journal has the cell
   move 10 unrelated build-mirror cells (pre-existing drift, the docs payload is in sync). Series check vs BSE's Result
   broadcasts: every other stored RML date 2018-2025 matches EXCEPT Sep-18 (stored 20181029, broadcast 2018-10-25) and Mar-19
   con (20190524 vs 20190523); Jun-19 is absent from the store (BSE broadcast 2019-07-24) — reported, not changed.
+- **RML Jun-19 quarter FILLED + Sep-18 / Mar-19-con dates corrected (user: "yes" to the three).** (1) Jun-19 (std + con)
+  was absent from every store: BSE's own XBRL (Main_Ind_As_532661_2472019175554 std / _2472019175621 con), tracked route offline →
+  std revenue 295.90 / op 24.21 / EBIT 11.41 / PAT 3.24, con 344.86 / 15.19 / −0.65 / −10.27, + xbrl_extra detail. Anchors: the NSE
+  Sep-19 filings' H1 − Q2 = these quarters on all 13 P&L tags checked, both bases; the Jun-19 results PDF prints the same lines
+  (std total income from operations 29,590.37 lakh / PBT 490.33 / PAT 324.40 / EPS 2.71; con 34,485.52 / (860.89) / (1,026.82) /
+  (8.58)); con EPS × 1.1973 cr shares = the total (no NCI). ann 20190724 = BSE broadcast 2019-07-24 15:59 (the XBRL list says
+  2019-07-25). (2) Dates via `ann_date_fills.json` overrides (earlier-only), applied for those keys only: Sep-18 20181029 →
+  20181025 (both bases) and Mar-19 con 20190524 → 20190523 (std already 20190523) — each = BSE's Result broadcast of the
+  'Outcome of Board Meeting held on <that day>' letter enclosing the results (2018-10-25 14:31, 2019-05-23 14:06). After this,
+  every stored RML date 2017-12 → 2025-09 equals BSE's broadcast day.
 
 ## §185 — AUDIT OF THE BSE RESULTS READERS AFTER §182: nine defects fixed, one ruled out (2026-09-27, user: "find more n more bugs … fix")
 All of it is quarter-agnostic: every target quarter comes from the filing (its printed period, else its filing date).
