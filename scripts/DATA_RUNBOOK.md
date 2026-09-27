@@ -20825,7 +20825,7 @@ original filing (214.74 / −17.94 / −159.49) nor the FY2022 filing's restated
   March cell as the year. Only the stock page's CFO/PAT card requires `cf_d ≥ 300`, and it takes the newest year that passes.
   A builder fix (take the CF period from the filing's own DateOfStart fact) was not made (open).
 
-### 168q. Round 6 (user "ok follow ur order n start", 2026-09-27) — never-tried N500 companies + December year-end filers; PAUSED by the user (tokens) after 2 pushes
+### 168q. Round 6 (user "ok follow ur order n start", 2026-09-27) — never-tried N500 companies + December year-end filers; PAUSED by the user (tokens) after 3 pushes
 Plan context: after round 5, 493 of 762 PIT-N500 stocks lacked a complete card (1,106 stock-years), grouped by what each needs.
 This round = group 1 (non-financial, never attempted, holds an FY2023-25 XBRL key) + group 4 (non-March filers).
 - **Group 4 was NOT a page fix (measured):** stock.html renderDeep() already anchors Dec/Jun filers (FYM); a page-faithful
@@ -20845,8 +20845,10 @@ This round = group 1 (non-financial, never attempted, holds an FY2023-25 XBRL ke
   b00 — fixed, INDIAMART was already merged), `wave6/launched.txt` registry, Screener checks serialised by a mkdir lock (per-stage
   background runs overlapped). 37 finder batches + second pass, 48 reader batches read, every company answer-key gated.
 - **Same-filing units applied by the orchestrator** (reader recorded the raw print + the tie): ADANIGREEN FY20 CF, MARUTI FY20-22 CF,
-  HBLENGINE FY20 CF, HIKAL FY20-22 BS, TARIL FY21 BS — each tie is a printed cash figure equal to the unit-labelled statement's
-  cash line in the SAME filing. ASTERDM FY21 BS not applied (only a cross-filing chain).
+  HBLENGINE FY20 CF, HIKAL FY20-22 BS, TARIL FY21 BS, NEWGEN FY22 CF (BS "Amount in Rupees lakhs"), JKCEMENT FY20 CF (CF closing
+  cash 3,850.17 = BS cash line, BS "₹ in lacs"; raw print CFO+CFI+CFF = net and opening + net + FX = closing re-checked to the paisa)
+  — each tie is a printed cash figure equal to the unit-labelled statement's cash line in the SAME filing. ASTERDM FY21 BS not
+  applied (only a cross-filing chain).
 - **Gate:** every staged company passed except MAHSEAMLES (FY25 page prints no unit). `gate_ok` now also accepts PP&E within 0.005
   crore (half the key's storage unit): HEMIPROP key 0.01 vs printed 0.0093 was a true match rejected by the 1% test.
 - **LANDED:** ea9a19a1a (193 cells / 77 companies incl. CIEINDIA CRISIL VBL VESUVIUS Dec cells) + 001ee1829 (7 new cells + cash
@@ -20854,12 +20856,31 @@ This round = group 1 (non-financial, never attempted, holds an FY2023-25 XBRL ke
   time now show our printed value (all 22 = ours; e.g. HBLENGINE FY22 XBRL capex −68.13 vs printed 68.13). Part 2: 181 fields
   OK + 2 of the same class (TARIL FY21 cfo 96.43 / cf_tax −0.12 printed; XBRL 96.26 / 0.12 gone at rebuild). Complete cards on
   main a5edcfb5d: 316 of 762 (41.5%, was 269); FY20/21/22 BS 57.7% / 63.9% / 67.7% (was 48.6 / 54.2 / 57.6).
-- **Screener verify-only:** 1,221 MATCH / 78 CLOSE / 79 FAR / 85 n/a — FARs NOT adjudicated yet (concentrated in LTM, NMDC, JSL
-  FY22 whole-year and in years the readers saw restated by the next filing: OIL, COALINDIA, WABAG FY20-21).
-- **Paused, open:** 12 reader batches (b27/01 b28 b29 q00-q03 d00 d02); second-pass finds for 12 sets (out2/g0-g2) + batches
-  g3-g5, gd0 not run; unit pass via the results page (LTFOODS FY20-22, MAHSEAMLES FY22/25, DHANUKA FY20-21, OLECTRA FY20, JKCEMENT
-  FY22, ASTERDM FY21); standalone-key retry for first-subsidiary-later companies (ABB, SCHAEFFLER, HATSUN, HINDZINC, INDIGOPNTS,
-  IRCTC, GABRIEL, MGL, JWL, TATASTLLP FY22); AETHER FY25 filing not discovered; FACT (590024) returned no filings.
+  Part 3: 392b5d9f6 (53 new cells + cash flows on 2 — HERITGFOOD FY20/21, same PDF as the stored BS; 28 companies, 22 new) →
+  round total 253 new cells + cash flows on 6 existing cells, 101 companies. The push's own slice run was cancelled; the next
+  dispatch run (26ec6e081 → slices df1743933, Pages 10:56 UTC) carried it. LIVE part 3 (identical at the 16:46 IST re-check, 22 min
+  after the push): 982 fields OK (209 equal their pre-push
+  XBRL value) + 4 of the gone-at-rebuild class — JWL FY22 cfo/cfi/cff/capex now show the printed 59.5192 / −49.1075 / −16.7593 /
+  36.6838 (lakh ÷ 100) where XBRL had 59.52 / −49.11 / −16.76 / 36.68, the same figures at 2 dp. Complete cards
+  (`tools/card_audit.py`, the §186 site measure) on synced main df1743933: **331 of 762 (43.4%)**; FY20/21/22 BS 61.7% / 66.6% /
+  71.7%. Against the 13:43 run that gave 316: +19 / −4 — 16 of the +19 are part-3 companies, but CRISIL VBL VESUVIUS (+) and
+  BATAINDIA JYOTHYLAB NMDC SHYAMMETL (−) were not in part 3, BATAINDIA's slice is unchanged since 26-Sep and card_audit.py was
+  last edited at 13:39 — cause not measured, so 316 is not a like-for-like base. Compare only runs on a stated synced sha.
+- **Screener verify-only** (latest verdict per field over every round-6 stage, after part 3): 1,478 MATCH / 88 CLOSE / 89 FAR /
+  95 n/a of 1,750 — FARs NOT adjudicated yet (concentrated in LTM, NMDC, JSL FY22 whole-year and in years the readers saw restated
+  by the next filing: OIL, COALINDIA, WABAG FY20-21; part 3 adds ICIL FY21-22 cfo + FY22 cfi, RELINFRA FY21 cfi + oeq, GRINFRA FY22
+  cfo, HERITGFOOD FY20 cff). User rule: a FAR is checked against two or three more sources before either side is called wrong.
+- **Paused (user, 27-Sep, after part 3), open:** every launched reader batch is merged and LIVE, incl. the 12 second-pass sets
+  (out2/g0-g2, read as stage `p2a`, 15 reads; the 8 already-gated companies' validate reads were appended from their first-pass
+  joins). Open: second-pass g3 finds for 6 sets NOT read (`find/out2/g3.json`: GVPIL FY21, MARUTI FY25 CF, ASHOKLEY FY22,
+  INDIACEM FY21, ICRA FY21, GAYAPROJ FY22 — GAYAPROJ has no validate year); finder batches g4, g5, gd0 not run; RELINFRA FY21
+  ppe / invst / rec left null by the reader (dithered scan: the printed subtotals cannot separate three uncertain 6/8 digits —
+  ppe 8,785.69 vs 8,765.69, NC invst 1,768.10 vs 1,788.10, NC rec 66.37 vs 86.37) → re-read from a higher-dpi crop; unit pass via
+  the results page (LTFOODS FY20-22, MAHSEAMLES FY22/25, DHANUKA FY20-21, OLECTRA FY20, JKCEMENT FY22, ASTERDM FY21, RAIN all Dec
+  years incl. validate); standalone-key retry for first-subsidiary-later companies (ABB, SCHAEFFLER, HATSUN, HINDZINC FY20-21,
+  INDIGOPNTS, IRCTC, GABRIEL, MGL, JWL FY20-21, TATASTLLP FY22 — JWL FY22 and TATASTLLP FY20-21 landed in part 3); Screener FARs;
+  AETHER FY25 filing not discovered; FACT (590024) returned no filings; plan groups 2 (financials), 3 (banks), 5 (residue) and
+  6 (recent listings) not started. Worktree `~/stocks-wt/abscf-w6` kept for the resume.
 
 ## 169. Our-side price errors found by the Quantmac indicator reconciliation — 3 wrong boundaries, 2 rights factors, 1 duplicate rights row, 2 unjoined renames, 1 missing listing week, 34 stray fragment bars  (2026-09-26, user: "investigate" the possibly-ours cells; "don't assume" either side)
 **NO ASSUMPTIONS** — reference = NSE's own files, cached durably: every bhavcopy 2008-2026 (`~/stocks-cache/nse_bhav/full/`, 4,640
