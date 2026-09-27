@@ -23391,3 +23391,35 @@ NESTLEIND / ETERNAL / UNITDSPR Jun-23) — refresh-fundamentals rebuilds it when
 **Lesson.** A silent `or 0.0` on a component row is §205's lesson in a second writer: 0 is a plausible other income, finance cost or
 depreciation, so PBT passed for operating profit for two months. And a "depreciation > 0" screen over 2-dp detail flags rounding
 (0.005 → 0.01) — adjudicate against the filing's unrounded value before calling a cell wrong: 107 of the 187 are right as stored and 30 more carry the right op.
+
+**§209a — LIVE, then the printed-PDF rung for the 7 held rows (2026-09-28, user: "Yes, heal all 4" · "Vision-read the original" · "Hand to the con-nofile campaign").**
+**Batch 1 LIVE.** Pushed ed0552414 (01:08 IST); refresh-stock-fin 36345090351 green → slices 68d8b051c; Pages 36345090273 + 36345134582 green.
+Served sf_revop.json (Last-Modified 19:40:17 GMT) holds 90/90 entries at `fixed`; the 18 served fin slices 90/90. Live stock page: EXIDEIND Mar-25
+std op 467 / OPM 11.2 % / EBIT 340 (was 356 / 8.6 % / 356); INDUSTOWER Jun-22 revenue 6,897 / op 2,263 / EBIT 924 (was 1,667 / 618), Jun-19 1,724 /
+923 (was 1.72 / 0.7); 0 console errors. `quarterly_results.json` carries 6 of the cells and is rebuilt only when new earnings land or nightly, so it was
+rebuilt here (SF_BIN = `fetch_release_bin.py` output, end 2026-09-25) **with TZ=UTC**: its since-result drift window is relative to TODAY's date, and
+on this Mac's IST date (already Sep 28 while CI's UTC date was Sep 27) PAISALO Mar-26 fell out of the 140-day window — a clock artefact, not data.
+On the UTC clock the diff vs origin = exactly the 7 healed values; guard_feed OK; pushed 7af2261c2; live build 01:13 IST verified.
+**NSE's results API answered again** (`corporates-financial-results`, one request per symbol) — the July lockdown has lifted.
+**Per row (primary document · second reader):**
+* FINCABLES 20190331 std — its own results PDF has a clean text layer (Rs crore): revenue 823.08, other income 23.97, total income 847.05,
+  finance 0.27, depreciation 10.05, PBT 139.94, PAT 84.90 = stored · Moneycontrol line items → **healed** (revenue was the total-income line).
+* ARE&M 20170331 std, FINCABLES 20171231 std, GUJALKALI 20171231 std — the originals on BSE are scans, but the NEXT filings (Mar-18 / Dec-18 /
+  Dec-18) print the quarter in their comparative column with a text layer, equal to NSE's archive page of the ORIGINAL on every line the archive
+  prints correctly (not restated) → **healed**; finance costs (1.50 / nil / 3.71) come from the comparative only. ⚠ **The archive's 2016-17 Ind-AS
+  template prints the TAX figure in its "(f) Finance costs" cell** (ARE&M 4,885 lakh in both; PBT − 4,885 = PAT) — see the open item below.
+* KEC 20160630 con — every BSE copy (original, Sep-16, Jun-17 filings) is a scan; the original's consolidated page read by vision at 420 dpi,
+  cropped to the rows (every printed subtotal closes: 178,473 − 166,420 = 12,053; + 501 − 7,200 = 5,354; − 2,260 − 3 = 3,091 = stored PAT) ·
+  NSE's archive page of the same filing, identical on every line → **healed** (revenue 2,848.64 → 1,784.73, op → 149.58, EBIT → 120.53); the same
+  filing's standalone column (150,734 + 2,173 = 152,907) proves the store's revenue line = "Total income from operations (net)".
+* SUNTV 20190331 con / BEML 20180630 con — **the consolidated quarter was not published at the time**: SUNTV's Mar-19 filing gives consolidated
+  figures for the YEAR only (its consolidated XBRL's OneD is all zero; the JV-share line appears only in the annual columns; NSE's listed con XBRL
+  `…_WEB_2.xml` now 404s); BEML's Aug-2018 filing is standalone only and NSE dates the Jun-18 consolidated result 2019-08-02 (the Jun-19 filing's
+  comparative). Both carry con revenue / op / PAT under a 2018-19 announce date → **handed to the con-nofile open list (§100), untouched** (user).
+**Batch 2.** `revop_cell_fix.json` +14 (found "…printed-PDF rung (runbook §209)"): applier 14 + 14, second run 0; verify_fills_live 36,644 →
+36,658 (+14), MISSING / REVERTED / RESURRECTED 0, DRIFT unchanged; slices both ways: 4 of 6,600 change (ARE_M, FINCABLES, GUJALKALI, KEC), `revop`
+only, only the healed quarters; fund_months byte-identical. **§209 total: 47 cells / 104 values healed.** Of the 187: 107 correct as stored, 47
+healed, 29 NBFC-convention, RHIM + RMCL held, SUNTV + BEML → con-nofile.
+**New open item — xbrl_extra finance costs = tax on 2,320 archive-era cells** (2016: 248, 2017: 2,061, older 11; e.g. CONCOR Dec-17 std fc 129.65
+= tax): `xtra_nse_html` reads the archive's "(f) Finance costs" cell as printed, so the stock page's detail "Finance costs" row shows the tax for
+those quarters. Not healed here; source for a fix = each company's next filings' comparative columns (as above) or MC.

@@ -26926,6 +26926,146 @@
    "why": "§208 (the §205 class): the op slot held EBIT — build_revop.metrics_for read only the Ind-AS tag DepreciationDepletionAndAmortisationExpense until c588e7466, and this filing tags DepreciationAndAmortisationExpense (depreciation read as 0). filing INTEGRATED_FILING_INDAS_1508323_11082025041409 (First quarter, uploaded 2025-08-11, Standalone; an INDAS-named filing that tags the non-Ind-AS elements): its current-period column reproduces the stored revenue 168.53 and EBIT 23.32 to the paisa (= PBT 22.68 + finance costs 1.53 − other income 0.89); op = PBET 22.68 + finance costs 1.53 + depreciation 4.12 − other income 0.89 = 27.44 cr; the same column's expenses route (revenue − (expenses − finance costs − depreciation)) = 27.44. Identity: ISIN INE803H01014 = the company (the file's own ISIN fact). second check: no later filing of this financial year is on file yet to close its depreciation.",
    "wrong_value_class": "parser tag-name gap: non-Ind-AS depreciation read as 0 (op == EBIT) in an INDAS-named filing; parser fixed c588e7466",
    "found": "non-Ind-AS tags in INDAS-named filings (runbook §208)"
+  },
+  {
+   "sym": "FINCABLES",
+   "qe": "20190331",
+   "basis": "std",
+   "was": 847.05,
+   "fixed": 823.08,
+   "why": "§209 FINCABLES 20190331: the company's own results PDF on BSE (attachment 08e57783-5e0b-49eb-8a4a-0952c552997c.PDF, filed 2019-05-29, page 3 'Statement of Standalone Financial Results for the Quarter and Year ended 31 March, 2019', Rs. in crore, column 'Quarter ended 31-Mar-19'; clean digital text layer). Lines: revenue from operations 823.08, other income 23.97, total income 847.05, finance costs 0.27, depreciation 10.05, total expenses 707.11, profit before tax 139.94 (no exceptional row), profit for the period 84.90 = the stored PAT. EBIT = 139.94 + 0.27 - 23.97 = 116.24; op = 126.29; expenses route 823.08 - (707.11 - 0.27 - 10.05) = 126.29. Second reader: Moneycontrol line items (xbrl_extra mc:FC01:quarterly) give op 126.29 / EBIT 116.24. No XBRL exists for this quarter (BSE rows link a bare directory; NSE lists xbrl '-'). stored revenue 847.05 is the TOTAL INCOME line (revenue + other income) — written by the BSE-result-PDF revenue backfill (scripts/backfill_revop_gaps.py --n500 --all-quarters, commit 67063e8cb, 2026-07-21).",
+   "wrong_value_class": "BSE-PDF text sweep (backfill_revop_gaps.metrics_at): a P&L row it could not find was read as 0 / a mis-aligned row; not a scale issue (scale_fix n/a)",
+   "found": "main-board op==EBIT audit 2026-09-28, printed-PDF rung (runbook §209)"
+  },
+  {
+   "sym": "FINCABLES",
+   "qe": "20190331",
+   "basis": "op_std",
+   "was": 139.94,
+   "fixed": 126.29,
+   "why": "§209 FINCABLES 20190331: the company's own results PDF on BSE (attachment 08e57783-5e0b-49eb-8a4a-0952c552997c.PDF, filed 2019-05-29, page 3 'Statement of Standalone Financial Results for the Quarter and Year ended 31 March, 2019', Rs. in crore, column 'Quarter ended 31-Mar-19'; clean digital text layer). Lines: revenue from operations 823.08, other income 23.97, total income 847.05, finance costs 0.27, depreciation 10.05, total expenses 707.11, profit before tax 139.94 (no exceptional row), profit for the period 84.90 = the stored PAT. EBIT = 139.94 + 0.27 - 23.97 = 116.24; op = 126.29; expenses route 823.08 - (707.11 - 0.27 - 10.05) = 126.29. Second reader: Moneycontrol line items (xbrl_extra mc:FC01:quarterly) give op 126.29 / EBIT 116.24. No XBRL exists for this quarter (BSE rows link a bare directory; NSE lists xbrl '-'). stored op 139.94 was the profit before tax (finance-cost, other-income and depreciation rows read as 0) — written by the BSE-result-PDF revenue backfill (scripts/backfill_revop_gaps.py --n500 --all-quarters, commit 67063e8cb, 2026-07-21).",
+   "wrong_value_class": "BSE-PDF text sweep (backfill_revop_gaps.metrics_at): a P&L row it could not find was read as 0 / a mis-aligned row; not a scale issue (scale_fix n/a)",
+   "found": "main-board op==EBIT audit 2026-09-28, printed-PDF rung (runbook §209)"
+  },
+  {
+   "sym": "FINCABLES",
+   "qe": "20190331",
+   "basis": "ebit_std",
+   "was": 139.94,
+   "fixed": 116.24,
+   "why": "§209 FINCABLES 20190331: the company's own results PDF on BSE (attachment 08e57783-5e0b-49eb-8a4a-0952c552997c.PDF, filed 2019-05-29, page 3 'Statement of Standalone Financial Results for the Quarter and Year ended 31 March, 2019', Rs. in crore, column 'Quarter ended 31-Mar-19'; clean digital text layer). Lines: revenue from operations 823.08, other income 23.97, total income 847.05, finance costs 0.27, depreciation 10.05, total expenses 707.11, profit before tax 139.94 (no exceptional row), profit for the period 84.90 = the stored PAT. EBIT = 139.94 + 0.27 - 23.97 = 116.24; op = 126.29; expenses route 823.08 - (707.11 - 0.27 - 10.05) = 126.29. Second reader: Moneycontrol line items (xbrl_extra mc:FC01:quarterly) give op 126.29 / EBIT 116.24. No XBRL exists for this quarter (BSE rows link a bare directory; NSE lists xbrl '-'). stored EBIT 139.94 was the profit before tax — written by the BSE-result-PDF revenue backfill (scripts/backfill_revop_gaps.py --n500 --all-quarters, commit 67063e8cb, 2026-07-21).",
+   "wrong_value_class": "BSE-PDF text sweep (backfill_revop_gaps.metrics_at): a P&L row it could not find was read as 0 / a mis-aligned row; not a scale issue (scale_fix n/a)",
+   "found": "main-board op==EBIT audit 2026-09-28, printed-PDF rung (runbook §209)"
+  },
+  {
+   "sym": "ARE&M",
+   "qe": "20170331",
+   "basis": "std",
+   "was": 2180.96,
+   "fixed": 1511.93,
+   "why": "§209 ARE&M 20170331 (Amara Raja Batteries, then AMARAJABAT): the quarter as the company printed it in its Mar-2018 results (BSE attachment f4c7dc24-7b5e-4205-ae42-c47146ad8a01.pdf, filed 2018-05-18, 'Statement of financial results for the Quarter and Year ended March 31, 2018', Rs. in crores, column 'Quarter ended 31.03.2017'; text layer). Lines: revenue from operations 1511.93 (excise-inclusive, the basis of the stored Dec-16 1502.00 / Jun-17 1671.28), other income 15.06, total income 1526.99, finance costs 1.50, depreciation 49.89, total expenses 1378.95, profit before tax 148.04, tax 48.85, net profit 99.19 = the stored PAT. EBIT = 148.04 + 1.50 - 15.06 = 134.48; op = 184.37; expenses route 1511.93 - (1378.95 - 1.50 - 49.89) = 184.37. Second reader: NSE's archive page of the ORIGINAL Mar-2017 filing (financial_res_ARE&M_1023437.html, broadcast 2017-05-26) prints the same revenue 151193, total income 152699, depreciation 4989, total expenses 137895, PBT 14804, tax 4885 and PAT 9919 (Rs lakh) — not restated; its '(f) Finance costs' cell repeats the tax (4885, the archive's 2016-17 template flaw), so finance costs 1.50 are from the Mar-2018 filing alone (the original BSE PDF 59056a22-..., 2017-05-24, is a scan). stored revenue 2180.96 matches no line of either document — written by the BSE-result-PDF revenue backfill (scripts/backfill_revop_gaps.py --n500 --all-quarters, commit 67063e8cb, 2026-07-21).",
+   "wrong_value_class": "BSE-PDF text sweep (backfill_revop_gaps.metrics_at): a P&L row it could not find was read as 0 / a mis-aligned row; not a scale issue (scale_fix n/a)",
+   "found": "main-board op==EBIT audit 2026-09-28, printed-PDF rung (runbook §209)"
+  },
+  {
+   "sym": "ARE&M",
+   "qe": "20170331",
+   "basis": "op_std",
+   "was": 132.8,
+   "fixed": 184.37,
+   "why": "§209 ARE&M 20170331 (Amara Raja Batteries, then AMARAJABAT): the quarter as the company printed it in its Mar-2018 results (BSE attachment f4c7dc24-7b5e-4205-ae42-c47146ad8a01.pdf, filed 2018-05-18, 'Statement of financial results for the Quarter and Year ended March 31, 2018', Rs. in crores, column 'Quarter ended 31.03.2017'; text layer). Lines: revenue from operations 1511.93 (excise-inclusive, the basis of the stored Dec-16 1502.00 / Jun-17 1671.28), other income 15.06, total income 1526.99, finance costs 1.50, depreciation 49.89, total expenses 1378.95, profit before tax 148.04, tax 48.85, net profit 99.19 = the stored PAT. EBIT = 148.04 + 1.50 - 15.06 = 134.48; op = 184.37; expenses route 1511.93 - (1378.95 - 1.50 - 49.89) = 184.37. Second reader: NSE's archive page of the ORIGINAL Mar-2017 filing (financial_res_ARE&M_1023437.html, broadcast 2017-05-26) prints the same revenue 151193, total income 152699, depreciation 4989, total expenses 137895, PBT 14804, tax 4885 and PAT 9919 (Rs lakh) — not restated; its '(f) Finance costs' cell repeats the tax (4885, the archive's 2016-17 template flaw), so finance costs 1.50 are from the Mar-2018 filing alone (the original BSE PDF 59056a22-..., 2017-05-24, is a scan). stored op 132.8 matches no line of either document (it is near PBT - other income, 132.98) — written by the BSE-result-PDF revenue backfill (scripts/backfill_revop_gaps.py --n500 --all-quarters, commit 67063e8cb, 2026-07-21).",
+   "wrong_value_class": "BSE-PDF text sweep (backfill_revop_gaps.metrics_at): a P&L row it could not find was read as 0 / a mis-aligned row; not a scale issue (scale_fix n/a)",
+   "found": "main-board op==EBIT audit 2026-09-28, printed-PDF rung (runbook §209)"
+  },
+  {
+   "sym": "ARE&M",
+   "qe": "20170331",
+   "basis": "ebit_std",
+   "was": 132.8,
+   "fixed": 134.48,
+   "why": "§209 ARE&M 20170331 (Amara Raja Batteries, then AMARAJABAT): the quarter as the company printed it in its Mar-2018 results (BSE attachment f4c7dc24-7b5e-4205-ae42-c47146ad8a01.pdf, filed 2018-05-18, 'Statement of financial results for the Quarter and Year ended March 31, 2018', Rs. in crores, column 'Quarter ended 31.03.2017'; text layer). Lines: revenue from operations 1511.93 (excise-inclusive, the basis of the stored Dec-16 1502.00 / Jun-17 1671.28), other income 15.06, total income 1526.99, finance costs 1.50, depreciation 49.89, total expenses 1378.95, profit before tax 148.04, tax 48.85, net profit 99.19 = the stored PAT. EBIT = 148.04 + 1.50 - 15.06 = 134.48; op = 184.37; expenses route 1511.93 - (1378.95 - 1.50 - 49.89) = 184.37. Second reader: NSE's archive page of the ORIGINAL Mar-2017 filing (financial_res_ARE&M_1023437.html, broadcast 2017-05-26) prints the same revenue 151193, total income 152699, depreciation 4989, total expenses 137895, PBT 14804, tax 4885 and PAT 9919 (Rs lakh) — not restated; its '(f) Finance costs' cell repeats the tax (4885, the archive's 2016-17 template flaw), so finance costs 1.50 are from the Mar-2018 filing alone (the original BSE PDF 59056a22-..., 2017-05-24, is a scan). stored EBIT 132.8 matches no line of either document — written by the BSE-result-PDF revenue backfill (scripts/backfill_revop_gaps.py --n500 --all-quarters, commit 67063e8cb, 2026-07-21).",
+   "wrong_value_class": "BSE-PDF text sweep (backfill_revop_gaps.metrics_at): a P&L row it could not find was read as 0 / a mis-aligned row; not a scale issue (scale_fix n/a)",
+   "found": "main-board op==EBIT audit 2026-09-28, printed-PDF rung (runbook §209)"
+  },
+  {
+   "sym": "FINCABLES",
+   "qe": "20171231",
+   "basis": "std",
+   "was": 674.58,
+   "fixed": 656.78,
+   "why": "§209 FINCABLES 20171231: the quarter as the company printed it in its Dec-2018 results (BSE attachment 7e724837-e06a-4959-bfe9-eb28ce531019.PDF, filed 2019-02-14, page 3 'Statement of Standalone Unaudited Financial Results', Rs. in crore, column 'Quarter ended 31.12.2017'; text layer). Lines: revenue from operations 656.78, other income 17.80, total income 674.58, finance costs '-' (nil), depreciation 10.65, total expenses 569.35, profit before tax 105.23, profit for the period 74.87 = the stored PAT. EBIT = 105.23 + 0 - 17.80 = 87.43; op = 98.08; expenses route 656.78 - (569.35 - 0 - 10.65) = 98.08. Second reader: NSE's archive page of the ORIGINAL Dec-2017 filing (financial_res_FINCABLES_1037310.html, broadcast 2018-02-12) prints the same net sales 65678, total income 67458, depreciation 1065, total expenses 56935, PBT 10523 and PAT 7487 (Rs lakh) — not restated; its finance-cost cell repeats the tax (3036, template flaw), so the nil finance cost is from the Dec-2018 filing alone (the original BSE PDF 3bb06046-..., 2018-02-12, is a scan). stored revenue 674.58 is the TOTAL INCOME line (revenue + other income) — written by the BSE-result-PDF revenue backfill (scripts/backfill_revop_gaps.py --n500 --all-quarters, commit 67063e8cb, 2026-07-21).",
+   "wrong_value_class": "BSE-PDF text sweep (backfill_revop_gaps.metrics_at): a P&L row it could not find was read as 0 / a mis-aligned row; not a scale issue (scale_fix n/a)",
+   "found": "main-board op==EBIT audit 2026-09-28, printed-PDF rung (runbook §209)"
+  },
+  {
+   "sym": "FINCABLES",
+   "qe": "20171231",
+   "basis": "op_std",
+   "was": 105.23,
+   "fixed": 98.08,
+   "why": "§209 FINCABLES 20171231: the quarter as the company printed it in its Dec-2018 results (BSE attachment 7e724837-e06a-4959-bfe9-eb28ce531019.PDF, filed 2019-02-14, page 3 'Statement of Standalone Unaudited Financial Results', Rs. in crore, column 'Quarter ended 31.12.2017'; text layer). Lines: revenue from operations 656.78, other income 17.80, total income 674.58, finance costs '-' (nil), depreciation 10.65, total expenses 569.35, profit before tax 105.23, profit for the period 74.87 = the stored PAT. EBIT = 105.23 + 0 - 17.80 = 87.43; op = 98.08; expenses route 656.78 - (569.35 - 0 - 10.65) = 98.08. Second reader: NSE's archive page of the ORIGINAL Dec-2017 filing (financial_res_FINCABLES_1037310.html, broadcast 2018-02-12) prints the same net sales 65678, total income 67458, depreciation 1065, total expenses 56935, PBT 10523 and PAT 7487 (Rs lakh) — not restated; its finance-cost cell repeats the tax (3036, template flaw), so the nil finance cost is from the Dec-2018 filing alone (the original BSE PDF 3bb06046-..., 2018-02-12, is a scan). stored op 105.23 was the profit before tax — written by the BSE-result-PDF revenue backfill (scripts/backfill_revop_gaps.py --n500 --all-quarters, commit 67063e8cb, 2026-07-21).",
+   "wrong_value_class": "BSE-PDF text sweep (backfill_revop_gaps.metrics_at): a P&L row it could not find was read as 0 / a mis-aligned row; not a scale issue (scale_fix n/a)",
+   "found": "main-board op==EBIT audit 2026-09-28, printed-PDF rung (runbook §209)"
+  },
+  {
+   "sym": "FINCABLES",
+   "qe": "20171231",
+   "basis": "ebit_std",
+   "was": 105.23,
+   "fixed": 87.43,
+   "why": "§209 FINCABLES 20171231: the quarter as the company printed it in its Dec-2018 results (BSE attachment 7e724837-e06a-4959-bfe9-eb28ce531019.PDF, filed 2019-02-14, page 3 'Statement of Standalone Unaudited Financial Results', Rs. in crore, column 'Quarter ended 31.12.2017'; text layer). Lines: revenue from operations 656.78, other income 17.80, total income 674.58, finance costs '-' (nil), depreciation 10.65, total expenses 569.35, profit before tax 105.23, profit for the period 74.87 = the stored PAT. EBIT = 105.23 + 0 - 17.80 = 87.43; op = 98.08; expenses route 656.78 - (569.35 - 0 - 10.65) = 98.08. Second reader: NSE's archive page of the ORIGINAL Dec-2017 filing (financial_res_FINCABLES_1037310.html, broadcast 2018-02-12) prints the same net sales 65678, total income 67458, depreciation 1065, total expenses 56935, PBT 10523 and PAT 7487 (Rs lakh) — not restated; its finance-cost cell repeats the tax (3036, template flaw), so the nil finance cost is from the Dec-2018 filing alone (the original BSE PDF 3bb06046-..., 2018-02-12, is a scan). stored EBIT 105.23 was the profit before tax — written by the BSE-result-PDF revenue backfill (scripts/backfill_revop_gaps.py --n500 --all-quarters, commit 67063e8cb, 2026-07-21).",
+   "wrong_value_class": "BSE-PDF text sweep (backfill_revop_gaps.metrics_at): a P&L row it could not find was read as 0 / a mis-aligned row; not a scale issue (scale_fix n/a)",
+   "found": "main-board op==EBIT audit 2026-09-28, printed-PDF rung (runbook §209)"
+  },
+  {
+   "sym": "GUJALKALI",
+   "qe": "20171231",
+   "basis": "op_std",
+   "was": 154.11,
+   "fixed": 179.0,
+   "why": "§209 GUJALKALI 20171231: the quarter as the company printed it in its Dec-2018 results (BSE attachment 295727f2-a547-4bbd-b2d7-e1f04ba70a8c.pdf, filed 2019-01-31, 'Statement of Unaudited Standalone Financial Results', Rs. in lakhs, column '31/12/2017'; text layer). Lines: revenue from operations 61761 (617.61 = the stored revenue), other income 993, total income 62754, finance costs 371, depreciation 3111, total expenses 47343, profit before tax 15411, profit for the period 11221 (112.21 = the stored PAT). EBIT = 154.11 + 3.71 - 9.93 = 147.89; op = 179.00; expenses route 617.61 - (473.43 - 3.71 - 31.11) = 179.00. Second reader: NSE's archive page of the ORIGINAL Dec-2017 filing (financial_res_GUJALKALI_1036312.html, broadcast 2018-02-06) prints the same lines — not restated; its finance-cost cell repeats the tax (4190, template flaw), so finance costs 3.71 are from the Dec-2018 filing alone (the original BSE PDF 1b84e876-..., 2018-02-06, is a scan). stored op 154.11 was the profit before tax — written by the BSE-result-PDF revenue backfill ever-member sweep (scripts/backfill_revop_gaps.py --symfile, commit 4d63e91d8, 2026-07-22).",
+   "wrong_value_class": "BSE-PDF text sweep (backfill_revop_gaps.metrics_at): a P&L row it could not find was read as 0 / a mis-aligned row; not a scale issue (scale_fix n/a)",
+   "found": "main-board op==EBIT audit 2026-09-28, printed-PDF rung (runbook §209)"
+  },
+  {
+   "sym": "GUJALKALI",
+   "qe": "20171231",
+   "basis": "ebit_std",
+   "was": 154.11,
+   "fixed": 147.89,
+   "why": "§209 GUJALKALI 20171231: the quarter as the company printed it in its Dec-2018 results (BSE attachment 295727f2-a547-4bbd-b2d7-e1f04ba70a8c.pdf, filed 2019-01-31, 'Statement of Unaudited Standalone Financial Results', Rs. in lakhs, column '31/12/2017'; text layer). Lines: revenue from operations 61761 (617.61 = the stored revenue), other income 993, total income 62754, finance costs 371, depreciation 3111, total expenses 47343, profit before tax 15411, profit for the period 11221 (112.21 = the stored PAT). EBIT = 154.11 + 3.71 - 9.93 = 147.89; op = 179.00; expenses route 617.61 - (473.43 - 3.71 - 31.11) = 179.00. Second reader: NSE's archive page of the ORIGINAL Dec-2017 filing (financial_res_GUJALKALI_1036312.html, broadcast 2018-02-06) prints the same lines — not restated; its finance-cost cell repeats the tax (4190, template flaw), so finance costs 3.71 are from the Dec-2018 filing alone (the original BSE PDF 1b84e876-..., 2018-02-06, is a scan). stored EBIT 154.11 was the profit before tax — written by the BSE-result-PDF revenue backfill ever-member sweep (scripts/backfill_revop_gaps.py --symfile, commit 4d63e91d8, 2026-07-22).",
+   "wrong_value_class": "BSE-PDF text sweep (backfill_revop_gaps.metrics_at): a P&L row it could not find was read as 0 / a mis-aligned row; not a scale issue (scale_fix n/a)",
+   "found": "main-board op==EBIT audit 2026-09-28, printed-PDF rung (runbook §209)"
+  },
+  {
+   "sym": "KEC",
+   "qe": "20160630",
+   "basis": "con",
+   "was": 2848.64,
+   "fixed": 1784.73,
+   "why": "§209 KEC 20160630 consolidated: the ORIGINAL filing on BSE (attachment 5F5967D2_9E8C_426E_A085_42646B6191FC_154324.pdf, filed 2016-07-29, page 2 'Statement of Consolidated Unaudited Financial Results for the Quarter ended June 30, 2016', Rs. in lacs, column 'June 30, 2016 (Unaudited)'). The PDF is a scan: read by vision at 420 dpi cropped to the rows (user-approved 2026-09-28); every printed subtotal closes. Lines: total income from operations (net) 178473 (net sales 176300 + other operating income 2173), total expenses 166420 (incl. depreciation 2905), profit from operations before other income, finance costs and exceptional items 12053, other income 501, finance costs 7200, profit before exceptional items and tax 5354, exceptional nil, tax 2260, net profit after minority and associate 3091 = the stored PAT 30.91. EBIT = 120.53; op = 5354 + 7200 + 2905 - 501 = 149.58 cr; expenses route 178473 - (166420 - 2905) = 14958. Revenue line = the store's basis: the same filing's standalone column prints 150734 + 2173 = 152907 = the stored standalone revenue 1529.07. Second reader: NSE's archive page of the same filing (financial_res_KEC_1013240.html) prints every line identically. stored revenue 2848.64 matches no line of the filing — written by the BSE-result-PDF revenue backfill (scripts/backfill_revop_gaps.py --n500 --all-quarters, commit 67063e8cb, 2026-07-21).",
+   "wrong_value_class": "BSE-PDF text sweep (backfill_revop_gaps.metrics_at): a P&L row it could not find was read as 0 / a mis-aligned row; not a scale issue (scale_fix n/a)",
+   "found": "main-board op==EBIT audit 2026-09-28, printed-PDF rung (runbook §209)"
+  },
+  {
+   "sym": "KEC",
+   "qe": "20160630",
+   "basis": "op_con",
+   "was": 136.24,
+   "fixed": 149.58,
+   "why": "§209 KEC 20160630 consolidated: the ORIGINAL filing on BSE (attachment 5F5967D2_9E8C_426E_A085_42646B6191FC_154324.pdf, filed 2016-07-29, page 2 'Statement of Consolidated Unaudited Financial Results for the Quarter ended June 30, 2016', Rs. in lacs, column 'June 30, 2016 (Unaudited)'). The PDF is a scan: read by vision at 420 dpi cropped to the rows (user-approved 2026-09-28); every printed subtotal closes. Lines: total income from operations (net) 178473 (net sales 176300 + other operating income 2173), total expenses 166420 (incl. depreciation 2905), profit from operations before other income, finance costs and exceptional items 12053, other income 501, finance costs 7200, profit before exceptional items and tax 5354, exceptional nil, tax 2260, net profit after minority and associate 3091 = the stored PAT 30.91. EBIT = 120.53; op = 5354 + 7200 + 2905 - 501 = 149.58 cr; expenses route 178473 - (166420 - 2905) = 14958. Revenue line = the store's basis: the same filing's standalone column prints 150734 + 2173 = 152907 = the stored standalone revenue 1529.07. Second reader: NSE's archive page of the same filing (financial_res_KEC_1013240.html) prints every line identically. stored op 136.24 matches no line of the filing — written by the BSE-result-PDF revenue backfill (scripts/backfill_revop_gaps.py --n500 --all-quarters, commit 67063e8cb, 2026-07-21).",
+   "wrong_value_class": "BSE-PDF text sweep (backfill_revop_gaps.metrics_at): a P&L row it could not find was read as 0 / a mis-aligned row; not a scale issue (scale_fix n/a)",
+   "found": "main-board op==EBIT audit 2026-09-28, printed-PDF rung (runbook §209)"
+  },
+  {
+   "sym": "KEC",
+   "qe": "20160630",
+   "basis": "ebit_con",
+   "was": 136.24,
+   "fixed": 120.53,
+   "why": "§209 KEC 20160630 consolidated: the ORIGINAL filing on BSE (attachment 5F5967D2_9E8C_426E_A085_42646B6191FC_154324.pdf, filed 2016-07-29, page 2 'Statement of Consolidated Unaudited Financial Results for the Quarter ended June 30, 2016', Rs. in lacs, column 'June 30, 2016 (Unaudited)'). The PDF is a scan: read by vision at 420 dpi cropped to the rows (user-approved 2026-09-28); every printed subtotal closes. Lines: total income from operations (net) 178473 (net sales 176300 + other operating income 2173), total expenses 166420 (incl. depreciation 2905), profit from operations before other income, finance costs and exceptional items 12053, other income 501, finance costs 7200, profit before exceptional items and tax 5354, exceptional nil, tax 2260, net profit after minority and associate 3091 = the stored PAT 30.91. EBIT = 120.53; op = 5354 + 7200 + 2905 - 501 = 149.58 cr; expenses route 178473 - (166420 - 2905) = 14958. Revenue line = the store's basis: the same filing's standalone column prints 150734 + 2173 = 152907 = the stored standalone revenue 1529.07. Second reader: NSE's archive page of the same filing (financial_res_KEC_1013240.html) prints every line identically. stored EBIT 136.24 matches no line of the filing — written by the BSE-result-PDF revenue backfill (scripts/backfill_revop_gaps.py --n500 --all-quarters, commit 67063e8cb, 2026-07-21).",
+   "wrong_value_class": "BSE-PDF text sweep (backfill_revop_gaps.metrics_at): a P&L row it could not find was read as 0 / a mis-aligned row; not a scale issue (scale_fix n/a)",
+   "found": "main-board op==EBIT audit 2026-09-28, printed-PDF rung (runbook §209)"
   }
  ],
  "retracted": [
