@@ -16593,6 +16593,99 @@
    "fixed": 5665.48,
    "why": "Primary: Mar-2026 results filing e00f1a51-5219-4749-aedd-bca6f33a1765.pdf (BSE AttachHis) p6 'Statement of standalone financial results', column 'Quarter ended March 31, 2025' (Rs crore, audited): Total revenue from operations 5,665.48 (interest income 5,094.03 + ...); Other income 30.15; Total Income (1+2) 5,695.63; PAT 654.79. NBFC convention (build_revop): revenue = RevenueFromOperations. Second reader: Screener's quarterly figure 5,665 (recorded in filing_verdict_heals.json on 2026-08-07). Mechanism: stored 5,695.63 = the Total Income (1+2) row of that column, read by the 2026-08-07 adjudication (entry updated); the value before it, 5,094.03, was the INTEREST-INCOME line. NOTE (vintage, NOT changed here): this column is RESTATED for the amalgamation of Tata Motors Finance Ltd into Tata Capital (appointed date 1-Apr-2024, effective 8-May-2025 -- note 3 of the Dec-2025 filing); no as-filed (pre-merger) filing of this quarter is on BSE's results archive for scrip 544574 (listed Oct-2025) or in our NSE XBRL cache, and the row's PAT (Screener-sourced) is the same restated column -- an open §108 question for TATACAP's pre-listing rows. Not a scale issue.",
    "found": "§189c series + total-income heal 2026-09-27 (user-approved 'both'): each cell re-read from the company's own XBRL (NSE cache / BSE Result_Arch_ng) with build_revop.metrics_for + an independent second reader; evidence in ~/stocks-cache/negop-heal/"
+  },
+  {
+   "sym": "ZEAL",
+   "qe": "20260331",
+   "basis": "pat_std",
+   "was": 2.04,
+   "fixed": 7.15,
+   "why": "§203: the profit mirror of ZEAL 20260331 held Zeal Aqua Ltd's (BSE 539963) quarter profit 2.04; Zeal Global Services Limited's own filing prints 7.15 (see fund_cell_fix §203 entries for the documents).",
+   "found": "ticker-collision heal 2026-09-27 (runbook §203)"
+  },
+  {
+   "sym": "ZEAL",
+   "qe": "20260331",
+   "basis": "pat_con",
+   "was": 2.04,
+   "fixed": 6.53,
+   "why": "§203: the profit mirror of ZEAL 20260331 held Zeal Aqua Ltd's (BSE 539963) quarter profit 2.04; Zeal Global Services Limited's own filing prints 6.53 (see fund_cell_fix §203 entries for the documents).",
+   "found": "ticker-collision heal 2026-09-27 (runbook §203)"
+  },
+  {
+   "sym": "VIVIANA",
+   "qe": "20260331",
+   "basis": "std",
+   "was": 0.0,
+   "fixed": 432.34,
+   "why": "H2-FY26 standalone revenue: re-filed XBRL 1672854 OneD 432.3408 cr (the original 1672853's OneD was all zeros); PDF https://nsearchives.nseindia.com/corporate/VIVIANA_25052026225416_OUTCOME_OF_BM_25052026.pdf p8 half-year column 43,234.08 lakh; FY 501.6728 - H1 69.33 = 432.34.",
+   "wrong_value_class": "placeholder zeros of a superseded original filing",
+   "found": "single-cell heal 2026-09-27 (runbook §203)"
+  },
+  {
+   "sym": "VIVIANA",
+   "qe": "20260331",
+   "basis": "op_std",
+   "was": 0.0,
+   "fixed": 59.83,
+   "why": "H2-FY26 standalone operating profit (this dataset's op = revenue - (total expenses - finance costs - depreciation)): PDF https://nsearchives.nseindia.com/corporate/VIVIANA_25052026225416_OUTCOME_OF_BM_25052026.pdf p8 (Rs lakh) 43,234.08 - (37,911.52 - 640.61 - 19.63) = 5,982.80 = 59.83 cr; the same lines in the re-filed XBRL 1672854. Stored 0.00 came from the zero original 1672853.",
+   "wrong_value_class": "placeholder zeros of a superseded original filing",
+   "found": "single-cell heal 2026-09-27 (runbook §203)"
+  },
+  {
+   "sym": "VIVIANA",
+   "qe": "20260331",
+   "basis": "ebit_std",
+   "was": 0.0,
+   "fixed": 59.63,
+   "why": "H2-FY26 standalone EBIT (PBT + finance costs - other income): PDF https://nsearchives.nseindia.com/corporate/VIVIANA_25052026225416_OUTCOME_OF_BM_25052026.pdf p8 (Rs lakh) 5,618.92 + 640.61 - 296.36 = 5,963.17 = 59.63 cr (consolidated stored ebitC 57.89 / opC 58.22 tie to p22 by the same rule). Stored 0.00 came from the zero original 1672853.",
+   "wrong_value_class": "placeholder zeros of a superseded original filing",
+   "found": "single-cell heal 2026-09-27 (runbook §203)"
+  },
+  {
+   "sym": "VIVIANA",
+   "qe": "20260331",
+   "basis": "pat_std",
+   "was": 0.0,
+   "fixed": 43.26,
+   "why": "profit mirror of the fund_cell_fix VIVIANA 20260331 std entry (same documents).",
+   "found": "single-cell heal 2026-09-27 (runbook §203)"
+  },
+  {
+   "sym": "VIVIANA",
+   "qe": "20260331",
+   "basis": "pat_con",
+   "was": 0.0,
+   "fixed": 43.81,
+   "why": "profit mirror of the fund_cell_fix VIVIANA 20260331 con entry (same documents).",
+   "found": "single-cell heal 2026-09-27 (runbook §203)"
+  },
+  {
+   "sym": "VIVIANA",
+   "qe": "20250331",
+   "basis": "pat_std",
+   "was": 17.01,
+   "fixed": 12.52,
+   "why": "profit mirror of the fund_cell_fix VIVIANA 20250331 std entry (same documents).",
+   "found": "single-cell heal 2026-09-27 (runbook §203)"
+  },
+  {
+   "sym": "QMSMEDI",
+   "qe": "20250331",
+   "basis": "pat_std",
+   "was": 0.1,
+   "fixed": 5.41,
+   "why": "profit mirror of the fund_cell_fix QMSMEDI 20250331 std entry (same documents).",
+   "found": "single-cell heal 2026-09-27 (runbook §203)"
+  },
+  {
+   "sym": "QMSMEDI",
+   "qe": "20250630",
+   "basis": "pat_con",
+   "was": 6.31,
+   "fixed": 2.93,
+   "why": "profit mirror of the fund_cell_fix QMSMEDI 20250630 con entry (same documents).",
+   "found": "single-cell heal 2026-09-27 (runbook §203)"
   }
  ],
  "retracted": [

@@ -66,6 +66,7 @@ loads every session. (README.md is just a short pointer here — this file is th
 - **§72** ★★★ VERIFYING REV/PAT vs EXTERNAL SITES — sites reach 10 of 95 quarters; con PAT has no site quorum
 - **§76** ★★★ A `scrip_id` EQUAL TO THE TICKER IS A COINCIDENCE — gate symbol→BSE-scrip on ISIN (**read before any BSE-keyed fill**)
 - **§197** ★★★ A BSE-ONLY TICKER CAN BE A FORMER NSE TICKER OF ANOTHER COMPANY — `_rename_map`/FUND_ALIAS are NSE facts; the site never applies them to a ticker in `docs/bse_alias_collisions.json` (WORTH = Worth Investment, not WORTHPERI; 12 found) (**read before any alias/rename consumer that serves a page, and before merging an SME fragment**)
+- **§203** ★★★ ONE TICKER, TWO COMPANIES — an NSE (SME) symbol that is also another company's BSE scrip_id: the BSE fold, BSE detail, NSE-twin filings and the sector map now need ISIN proof of the PAGE's company (`bse_resolve.page_company`, `bse_blocked_under`, `nse_blocked_under`); ZEAL/GSTL/KEL/DRL/INNOVATIVE/BRIGHT healed, VIVIANA/QMSMEDI cells from the PDFs (**read before keying any filing by a bare ticker**)
 - **§200** ★★ FIVE MORE §145 SME FRAGMENTS MERGED (GODHA, KEERTI, SONAMCLOCK, URAVI, WFL) — a merge needs the SM→EQ PREVCLOSE proof, the successor factors after the SME end == its stored/raw level at the join, AND the ledger create→prepend in the same push (**read before merging any SME fragment**)
 - **§198** ★★ TTM = EXACTLY THE LATEST 12 MONTHS (Screener's rule) — stock.html TTM cards, per-row YoY and BOTH engines tile 12 months from rows of PROVEN length (slice `pd`/`pp`, docs/fund_months.json); a quarter is split off a half only on a proven quarter; profit on a half counts only when it equals its filing's (**read before touching renderFunds TTM, profitMetrics TTM/YoY, or build_row_periods.py**)
 - **§59** ★★ STANDALONE-SLOT-HOLDS-CONSOLIDATED AUDIT — the screen is not a defect count (**read before acting on any std/con equality screen**)
@@ -22865,3 +22866,78 @@ is right (3.28 cr to 2022, 6.33 cr 2022-23).
 **Open (measured, not changed):** the vision-hist Sep-23 / Dec-23 cells (0.99 / 0.53, 1.08 / 1.36) do not close FY24 PAT (2.4746 filed,
 1.85 from the stored quarters; revenue closes) — Dec-23 PAT above its revenue looks like a mis-read. Worth Investment's Sep-25 and
 Dec-25 quarters are not in px (their XBRLs sit under `Integrated_Finance_…` links that 404 at the listed path).
+## §203 — ONE TICKER STRING, TWO COMPANIES: an NSE (SME) symbol that is ALSO another company's BSE scrip_id got both companies' rows — fold + writers now need ISIN proof of the PAGE's company; stores healed (2026-09-27, user: "Code fix + heal", Group 2 "Live BSE company", single cells "Heal after reading PDFs")
+**NO ASSUMPTIONS, NO GUESSWORK — every value below was measured this session (filings, stores, builds).**
+**The case.** ZEAL on this site is Zeal Global Services (NSE SME, INE0PPS01018, files half-years); BSE's scrip_id "ZEAL" is
+Zeal Aqua (539963, INE819S01025). Live before the fix the ZEAL page carried Zeal Aqua's 29 quarterly profits (2018-09 →
+2026-03) beside Zeal Global's four half-year revenues — e.g. Sep-24 revenue 170.37 (Zeal Global H1) with PAT 2.35 (Zeal Aqua
+Q2) — and xbrl_extra[ZEAL] was 604 fields of Zeal Aqua's detail (2020-03 → 2026-06) against 132 of Zeal Global's balance
+sheet. The §76 guard and the §187 conflict ledger did not reach it: `build_stock_fin`'s BSE fold proved identity only
+against the committed tape's ISINs (`sf_stock_data.bin` meta), which hold NO SME symbol (ZEAL's `ti` was None, so the fold
+went ahead), and `fetch_bse_results_xbrl.apply`'s clash guard knew only those same tape keys.
+**Whose page a ticker is** = `docs/stock_data.bin` meta: `SYM.NS` present → the NSE company; only `SYM.BO` → the BSE
+company. `bse_resolve.page_company()` reads it; NSE ISINs come from the tape meta, `_nse_sym_isin_2020.json` (SME
+included), `ideas/nse_sme.csv` and the conflict ledger (of the site's 3,157 NSE tickers only 2 have none: AGASTYAEN,
+AXIOMGAS). `bse_blocked_under(sym, isin, code)` refuses a BSE scrip under `sym` when `sym` is a recorded conflict of it, or when
+the page is an NSE company and the scrip's ISIN issuer is not one of that company's (an unknown ISIN refuses too).
+`nse_blocked_under(sym, isin)`: an NSE filing is never filed under a page that is a BSE company of another issuer.
+**The population (19 ticker strings with an NSE identity and a BSE scrip of another issuer, measured):**
+- NSE page, BSE twin mixed in: ZEAL (stores + detail + fold), GSTL (Globesecure; detail 1,036 Globalspace fields, 22
+  folded rows incl. its 220,157.83 cr unit error), MAL / SEL / RAJPUTANA (2 folded June rows each), FOCUS (clean key, but
+  px[543312] Focus Business Solution held 3 Focus Lighting vision cells), KALYANI (healed in §76).
+- BSE page, stopped NSE twin mixed in: KEL (Kotia 539599 vs Kundan Edifice, last NSE bar 2026-08-05: 4 fund + 4 revop rows,
+  5 BS blocks, 2 row marks), DRL (Disha 531553 vs Dhanuka Realty: 2 + 2 rows, 8 blocks), INNOVATIVE (2 blocks), BRIGHT
+  (3 blocks). Their SHP was already the BSE company's (§180b `_bse_keys`).
+- §197 keys (ARL, CREATIVE, DPL, HSIL, MIL, MUDRA, RDEL, WORTH): the BSE company's own rows, nothing to do.
+**Writers (measured).** ZEAL's 29 fund rows: the 2026-06-15 BSE text-layer campaign (7cfe34163, keyed by the BSE ticker),
+mirrored by 82a6dbfdc. Detail: `fetch_bse_results_xbrl` (the only writer that files a BSE file by ticker). The June rows
+of MAL/SEL/RAJPUTANA and all of GSTL's page rows: the in-memory BSE fold in `build_stock_fin`. KEL/DRL rows: NSE SME
+filings keyed by the symbol. px[543312]: `merge_bse_vision` via the pre-§187 prep that mapped tickers without the guard.
+**Code (every change measured old-vs-new):**
+- `build_stock_fin` fold: `bse_blocked_under` before `code2sym`; on unchanged data exactly GSTL, MAL, RAJPUTANA, SEL, ZEAL
+  change of 6,596 slices ("BSE scrips kept off another company's page (§203): 5" in the build log).
+- `fetch_bse_results_xbrl`: detail of a BSE file never under a blocked ticker; an NSE-kind row never under a BSE-owned page
+  (fill records now carry the file's ISIN); `targets()` stops chasing detail for blocked tickers (Zeal Aqua / Globalspace
+  were re-listed forever); `heal_sme` never edits another company's detail. Synthetic apply test: Zeal Aqua → px only,
+  Kotia → px + xl[KEL], Kundan → refused, RELIANCE → written.
+- `build_xbrl_extra.parse_file` (so `fetch_sme_xbrl --merge` and `xtra_nightly` too) and `build_row_periods` refuse an NSE
+  twin's filing under a BSE-owned page (19 filings on the current cache).
+- `fetch_classification`: an NSE symbol's scrip_id code is kept only when its ISIN does not contradict (BSE's Active list:
+  exactly the 7 conflict tickers change). `scan_scrip_isin_conflicts`: a BSE-owned page is never recorded as a conflict
+  (a conflict entry would strip the BSE company of its own data). `_nosub_con_lag_apply` skips retired verdicts (a re-run
+  would have written Zeal Aqua's 2.04 back).
+**Heal — `scripts/retract_ticker_collision_rows.py` (dry run default, reversible log `scripts/ticker_collision_retractions.json`):**
+key-level proof first (≥ 2 served profit rows equal the twin's own px profit: ZEAL 23; GSTL by detail, 21 blocks whose
+pbt − tax = Globalspace's profit). ZEAL: the 25 other Zeal Aqua rows dropped (equal to its px, or a June/December quarter
+of a half-year filer, or before Zeal Global's first period), the 4 half-year rows REWRITTEN from Zeal Global's own XBRL —
+std 8.76 / 5.60 / 4.39 / 7.15, con (owners) 9.19 / 5.39 / 4.62 / 6.53, each proven H1 + H2 = the Yearly filing's FY
+(14.36, 14.58, 11.54, 11.15), announce = the XBRL filing day — journalled in `fund_cell_fix` (8) / `revop_cell_fix` (2);
+xbrl_extra keeps only fields its own filings yield through `parse_file` (132). GSTL: 66 own fields kept. KEL / DRL /
+INNOVATIVE / BRIGHT: every row / field equal to the NSE twin's filing removed. px[543312]: 3 cells removed. px[539599]
+(Kotia, now shown on KEL): its 3 vision cells were 100× (lakh as crore) — Mar-26 131.00 / −222.17 → 1.31 / −2.22 from
+its XBRL (13,100,000 / −22,217,000 INR; FY −24,992,000 = the four quarters), Jun-25 −5.45 → −0.05, Jun-26 5.25 → 0.05.
+Ledgers retired: pat_defects ZEAL ×3 → `_RETRACTED_<qe>`; owners_basis_heals ZEAL|20260331|patC re-pointed 2.04 → 6.53
+(apply_owners_full re-asserts it nightly); nosub_con_lag verdicts ×4 `retired`; ZEAL out of `never_filed_con`;
+sector_classification: the 7 conflict tickers' `.NS` entries were byte-identical to the BSE twin's — removed.
+**Single cells (read from the results PDFs, second document each, `fund_cell_fix` / `revop_cell_fix`):**
+VIVIANA Mar-26 std 0.00 → 43.26, rev 432.34, op 59.83, EBIT 59.63 (the original std XBRL 1672853 printed zeros in OneD;
+re-filed 5 min later; PDF p8 4,326.46 lakh) · VIVIANA Mar-26 con 0.00 → 43.81 owners (PDF p22 4,381.35 after minority 11.63;
+the July XBRL revision "to align with the PDF"; the original's 43.93 is before minority) · VIVIANA Mar-25 std 17.01 → 12.52
+(17.01 is the FY25 annual; the half column prints 1,251.80) · QMSMEDI Mar-25 std 0.10 → 5.41 (Yearly XBRL 5.4138; FY26
+PDF "6 Months Ended 31.03.2025" 541.37; the only 0.10 in that PDF is a tax-provision line) · QMSMEDI Jun-25 con 6.31 → 2.93
+owners (Q1 PDF: 315.33 total, 292.85 owners, 22.49 NCI; the XBRL's 6.3065 = the three lines summed).
+**Verified:** store diff = only the keys above; verify_fills_live MISSING 0 / REVERTED 0 / RESURRECTED 0 (26 DRIFT, all
+pre-existing); fund/revop cell-fix appliers "already correct" after the heal; slices built both ways on the same origin —
+exactly 11 of 6,596 change (the 9 keys + QMSMEDI + VIVIANA), fund_months changes KEL, MAL, QMSMEDI, VIVIANA, ZEAL; the
+real stock.html in node (22 slices, both bases) and in the browser (desktop, 375 px, dark + light): ZEAL TTM 286 cr /
+11 cr (was blank), MAL / SEL / RAJPUTANA / VIVIANA gain a TTM; both engines in sync on 238,726 calls. `row_periods.json`
+changes only for the touched symbols (other symbols' marks from newer px cells are left to the next regeneration).
+**Consequence to know:** QMSMEDI's profit TTM is now blank on both bases — Jun-25 con (2.93 owners) matches no XBRL tag, so
+the row is not profit-proven (`pp` is per quarter) and the Jul–Sep-25 quarter cannot be split off the half. Before, the
+page derived 6.73 − 6.31 = 0.42. **Open (measured, not fixed here):** QMSMEDI's non-Ind-AS con rows hold TOTAL profit
+(its filings tag no owners' share: Sep-25 6.73 vs owners 6.05, Dec-25 3.17 vs 2.36, Mar-26 5.19 vs 4.08) — likely every
+NCI-bearing non-Ind-AS SME; 465 SME half-year sf_revop rows carry EBIT in the op slot (op = EBIT + depreciation elsewhere;
+ZEAL Mar-26 8.50 vs 11.37); the stock page falls back to `SYM.BO` for sector (ZEAL still shows Zeal Aqua's "Seafood") and
+the four BSE-owned keys still show the stopped NSE twin's price slice (KEL: no name, no market cap, reactions on Kundan's
+prices); BRIGHT's 8 stored rows match neither company's filings; px[540654] Globalspace Mar-22 220,157.83 cr PAT
+(unit error, its own cell).
