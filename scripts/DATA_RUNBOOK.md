@@ -21309,6 +21309,23 @@ Screener truncates the share-count % (43.0656 → 43.06) while we keep the filin
 bank holding sits in the filing's Institutions(Domestic) (= our DII). Holds 933 BSE cells (row-level 435, identity 337 —
 incl. filer ISIN typos like INE195101013 that norm_isin does not repair on the KNOWN side, left held).
 
+**§181d — NSE SME half-year results from the §148 SME XBRL cache (2026-09-27, 1d69dbd6a).** NSE SME companies (almost
+none are on BSE: 3 of ~650) had profit/revenue only for the Mar cells; every Sep (H1) cell was empty, so SME "results" sat
+near 0% before 2026. The §148 cache (scripts/_xbrl_cache_sme, 6,261 files) already held the filings; §148 merged only their
+balance sheets. Filler `~/stocks-cache/univ/apply_sme_halfyear.py` (inventory `sme_inventory.py`): period from the file
+HEADER (ReportingQuarter + DateOfStart/EndOfReportingPeriod — 2024 NONINDAS H1 files mislabel OneD as Jul-Sep); Half yearly
+Apr-Sep → Sep cell = H1 (OneD); Yearly with header Oct-Mar → Mar cell = H2 (OneD; FourD = FY, not stored) — the series
+convention, verified: ABSMARINE Mar-25 stored 99.8/19.66 == its Yearly OneD; quarterly SME filers by their header quarter.
+**Arithmetic gate:** a cell is written only when its FY closes exactly — H1+H2 == FY (Yearly FourD), or Q1..Q4 == FY (Q4
+FourD) — revenue always, profit when printed on both sides. Measured before the gate: 1,126 revenue-years closed, 307 did
+not (NPST H1 125.6 + H2 26.3 vs FY 173.12). Identity: SME tape symbol + ISIN (same 7-char issuer prefix accepted = FV
+change; DUCOL/ANYA/AKANKSHA/ETL typo ISINs held). Original filing (earliest upload stamp) wins; ann = its upload day.
+Ledger holds respected: cells verify_fills_live reports RESURRECTED are taken back (UNIINFO con Jun/Sep/Dec-25,
+mc_history_fills). **Landed:** +1,027 quarter rows, 1,393 profit cells, 1,428 revenue cells (sf_fundamentals + sf_revop +
+revop_fundamentals); 0 existing values changed; held 1,790 (1,746 FY does not close / no FY partner, 44 ISIN); 3 of 1,419
+new revenue cells >10× their neighbours (QUICKTOUCH, AHIMSA, EMKAYTOOLS Sep-25) — each closes its FY exactly, kept.
+**Open:** SME 2020-2023 — NSE lists no XBRL for them (placeholder link, §148), PDFs only.
+
 **§181c — bse-results-xbrl also targets quarters whose DETAIL is missing (2026-09-27).** `targets()` counted a BSE-only
 quarter as done when `bse_fundamentals` px held it, but the older BSE routes (history / vision) stored rev+PAT with no
 financial detail, so those quarters were never fetched: at month-end 2026-09-25 BSE-only detail for the due Jun-2026
