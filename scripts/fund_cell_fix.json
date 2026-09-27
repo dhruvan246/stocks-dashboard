@@ -5273,6 +5273,123 @@
    "fixed": 36.2,
    "why": "TWO independent as-filed documents agree against the stored (aggregator-derived) cell: (1) BSE's ARCHIVED results page (Wayback, bseindia.com/qresann/result.asp scripcd=500002, DQ2001-2002, Value(Rs. million)) prints Net Profit 362.0 mn = 36.20 cr for 01-Oct-2001..31-Dec-2001, page arithmetic closes; (2) NSE's archived results.jsp annual page (Audited Cumulative 01-JAN-2001..31-DEC-2001, Rs lakhs) prints FY PAT 6,532.59 lakh = 65.3259 cr, and 65.3259 - (stored Mar 4.72 + Jun 9.68 + Sep 14.72) = 36.21 (\u00a745 FY quarter-sum identity). ABB is a calendar-year filer.",
    "found": "scripts/wayback_nse/bse_pat.py anchor test (WP-P1, runbook \u00a7134/\u00a7134f): the archive page conflicted with the stored series on this one quarter; adjudicated via the NSE annual page. stdpat_bsearchive_suspects.json"
+  },
+  {
+   "sym": "KENNAMET",
+   "qe": "20190930",
+   "basis": "con",
+   "was": 20.3,
+   "fixed": 20.5,
+   "why": "As-filed consolidated net profit (owners; no minority) from the company's own BSE XBRL Main_Ind_As_505890_14112019113032.xml = 20.5 cr, EPS 9.32. Second reader: Sep-2020 filing 5564d5a9-d270-46fd-a29a-590a38039814.pdf consolidated year-ago column: net profit 205 mn. stored 20.3 was a copy of the STANDALONE figure; Kennametal filed consolidated results Jun-2019..Sep-2022 (subsidiary WITPL) and the consolidated statement prints a different number. Rs MILLION filer.",
+   "found": "KENNAMET PAT audit 2026-09-27 (runbook \u00a7189a): all 43 of the company's own BSE XBRL filings vs sf_fundamentals; second readers = the printed results PDFs (BSE announcements) and BSE Corp_detailedResult_Transpose_ng (as-filed standalone); copies in ~/stocks-cache/kennamet-op/"
+  },
+  {
+   "sym": "KENNAMET",
+   "qe": "20191231",
+   "basis": "con",
+   "was": 12.3,
+   "fixed": 13.2,
+   "why": "As-filed consolidated net profit (owners; no minority) from the company's own BSE XBRL Main_Ind_As_505890_622020152144.xml = 13.2 cr, EPS 6.01. Second reader: Dec-2020 filing 5b618fc1-2028-49b8-8578-5c7987ba39b2.pdf consolidated year-ago column: net profit 132 mn. stored 12.3 was a copy of the STANDALONE figure; Kennametal filed consolidated results Jun-2019..Sep-2022 (subsidiary WITPL) and the consolidated statement prints a different number. Rs MILLION filer.",
+   "found": "KENNAMET PAT audit 2026-09-27 (runbook \u00a7189a): all 43 of the company's own BSE XBRL filings vs sf_fundamentals; second readers = the printed results PDFs (BSE announcements) and BSE Corp_detailedResult_Transpose_ng (as-filed standalone); copies in ~/stocks-cache/kennamet-op/"
+  },
+  {
+   "sym": "KENNAMET",
+   "qe": "20200331",
+   "basis": "con",
+   "was": 8.5,
+   "fixed": 9.7,
+   "why": "As-filed consolidated net profit (owners; no minority) from the company's own BSE XBRL Main_Ind_As_505890_145202016219.xml = 9.7 cr, EPS 4.41. Second reader: Mar-2021 filing fb00cd83-a505-45cd-a79b-e4f9d86fae02.pdf consolidated year-ago column: net profit 97 mn. stored 8.5 was a copy of the STANDALONE figure; Kennametal filed consolidated results Jun-2019..Sep-2022 (subsidiary WITPL) and the consolidated statement prints a different number. Rs MILLION filer.",
+   "found": "KENNAMET PAT audit 2026-09-27 (runbook \u00a7189a): all 43 of the company's own BSE XBRL filings vs sf_fundamentals; second readers = the printed results PDFs (BSE announcements) and BSE Corp_detailedResult_Transpose_ng (as-filed standalone); copies in ~/stocks-cache/kennamet-op/"
+  },
+  {
+   "sym": "KENNAMET",
+   "qe": "20200630",
+   "basis": "con",
+   "was": -8.5,
+   "fixed": -9.5,
+   "why": "As-filed consolidated net profit (owners; no minority) from the company's own BSE XBRL Main_Ind_As_505890_2082020152339.xml = -9.5 cr, EPS -4.32. Second reader: own filing 224d86c9-6528-4170-b963-d03b89c1e1fc.pdf consolidated current column: net loss (95) mn. stored -8.5 was a copy of the STANDALONE figure; Kennametal filed consolidated results Jun-2019..Sep-2022 (subsidiary WITPL) and the consolidated statement prints a different number. Rs MILLION filer.",
+   "found": "KENNAMET PAT audit 2026-09-27 (runbook \u00a7189a): all 43 of the company's own BSE XBRL filings vs sf_fundamentals; second readers = the printed results PDFs (BSE announcements) and BSE Corp_detailedResult_Transpose_ng (as-filed standalone); copies in ~/stocks-cache/kennamet-op/"
+  },
+  {
+   "sym": "KENNAMET",
+   "qe": "20200930",
+   "basis": "con",
+   "was": 10.9,
+   "fixed": 13.2,
+   "why": "As-filed consolidated net profit (owners; no minority) from the company's own BSE XBRL Main_Ind_As_505890_1411202014148.xml = 13.2 cr, EPS 6.01. Second reader: own filing 5564d5a9-d270-46fd-a29a-590a38039814.pdf consolidated current column: net profit 132 mn. The XBRL owners tag is 0.0 (filer mis-tag, \u00a72d/\u00a7116); total ProfitLossForPeriod 13.2 = owners (no minority: wholly-owned subsidiary), EPS 6.01 x 2.198 cr shares = 13.2. stored 10.9 was a copy of the STANDALONE figure; Kennametal filed consolidated results Jun-2019..Sep-2022 (subsidiary WITPL) and the consolidated statement prints a different number. Rs MILLION filer.",
+   "found": "KENNAMET PAT audit 2026-09-27 (runbook \u00a7189a): all 43 of the company's own BSE XBRL filings vs sf_fundamentals; second readers = the printed results PDFs (BSE announcements) and BSE Corp_detailedResult_Transpose_ng (as-filed standalone); copies in ~/stocks-cache/kennamet-op/"
+  },
+  {
+   "sym": "KENNAMET",
+   "qe": "20201231",
+   "basis": "con",
+   "was": 13.0,
+   "fixed": 16.5,
+   "why": "As-filed consolidated net profit (owners; no minority) from the company's own BSE XBRL Main_Ind_As_505890_622021135239.xml = 16.5 cr, EPS 7.51. Second reader: own filing 5b618fc1-2028-49b8-8578-5c7987ba39b2.pdf consolidated current column: net profit 165 mn. stored 13.0 was a copy of the STANDALONE figure; Kennametal filed consolidated results Jun-2019..Sep-2022 (subsidiary WITPL) and the consolidated statement prints a different number. Rs MILLION filer.",
+   "found": "KENNAMET PAT audit 2026-09-27 (runbook \u00a7189a): all 43 of the company's own BSE XBRL filings vs sf_fundamentals; second readers = the printed results PDFs (BSE announcements) and BSE Corp_detailedResult_Transpose_ng (as-filed standalone); copies in ~/stocks-cache/kennamet-op/"
+  },
+  {
+   "sym": "KENNAMET",
+   "qe": "20210331",
+   "basis": "con",
+   "was": 21.0,
+   "fixed": 22.0,
+   "why": "As-filed consolidated net profit (owners; no minority) from the company's own BSE XBRL Main_Ind_As_505890_1452021151550.xml = 22.0 cr, EPS 9.99. Second reader: own filing fb00cd83-a505-45cd-a79b-e4f9d86fae02.pdf consolidated current column: net profit 220 mn. stored 21.0 was a copy of the STANDALONE figure; Kennametal filed consolidated results Jun-2019..Sep-2022 (subsidiary WITPL) and the consolidated statement prints a different number. Rs MILLION filer.",
+   "found": "KENNAMET PAT audit 2026-09-27 (runbook \u00a7189a): all 43 of the company's own BSE XBRL filings vs sf_fundamentals; second readers = the printed results PDFs (BSE announcements) and BSE Corp_detailedResult_Transpose_ng (as-filed standalone); copies in ~/stocks-cache/kennamet-op/"
+  },
+  {
+   "sym": "KENNAMET",
+   "qe": "20210630",
+   "basis": "con",
+   "was": 21.7,
+   "fixed": 21.6,
+   "why": "As-filed consolidated net profit (owners; no minority) from the company's own BSE XBRL Main_Ind_As_505890_1982021171856.xml = 21.6 cr, EPS 9.84. Second reader: Sep-2021 filing 34035ae3-a223-457b-a344-20a3762590fa.pdf consolidated previous-quarter column: net profit 216 mn. stored 21.7 was a copy of the STANDALONE figure; Kennametal filed consolidated results Jun-2019..Sep-2022 (subsidiary WITPL) and the consolidated statement prints a different number. Rs MILLION filer.",
+   "found": "KENNAMET PAT audit 2026-09-27 (runbook \u00a7189a): all 43 of the company's own BSE XBRL filings vs sf_fundamentals; second readers = the printed results PDFs (BSE announcements) and BSE Corp_detailedResult_Transpose_ng (as-filed standalone); copies in ~/stocks-cache/kennamet-op/"
+  },
+  {
+   "sym": "KENNAMET",
+   "qe": "20211231",
+   "basis": "con",
+   "was": 30.4,
+   "fixed": 30.6,
+   "why": "As-filed consolidated net profit (owners; no minority) from the company's own BSE XBRL Main_Ind_As_505890_422022135955.xml = 30.6 cr, EPS 13.92. Second reader: own filing fc1f264d-6b1f-471b-b0c5-e208a261a624.pdf consolidated current column: net profit 306 mn. stored 30.4 was a copy of the STANDALONE figure; Kennametal filed consolidated results Jun-2019..Sep-2022 (subsidiary WITPL) and the consolidated statement prints a different number. Rs MILLION filer.",
+   "found": "KENNAMET PAT audit 2026-09-27 (runbook \u00a7189a): all 43 of the company's own BSE XBRL filings vs sf_fundamentals; second readers = the printed results PDFs (BSE announcements) and BSE Corp_detailedResult_Transpose_ng (as-filed standalone); copies in ~/stocks-cache/kennamet-op/"
+  },
+  {
+   "sym": "KENNAMET",
+   "qe": "20220331",
+   "basis": "con",
+   "was": 27.25,
+   "fixed": 26.9,
+   "why": "As-filed consolidated net profit (owners; no minority) from the company's own BSE XBRL Main_Ind_As_505890_1252022115336.xml = 26.9 cr, EPS 12.24. Second reader: Jun-2022 filing 9b56685b-fc23-4b41-9f07-ee38412b2011.pdf consolidated previous-quarter column: net profit 269 mn. stored 27.25 was a copy of the STANDALONE figure; Kennametal filed consolidated results Jun-2019..Sep-2022 (subsidiary WITPL) and the consolidated statement prints a different number. Rs MILLION filer.",
+   "found": "KENNAMET PAT audit 2026-09-27 (runbook \u00a7189a): all 43 of the company's own BSE XBRL filings vs sf_fundamentals; second readers = the printed results PDFs (BSE announcements) and BSE Corp_detailedResult_Transpose_ng (as-filed standalone); copies in ~/stocks-cache/kennamet-op/"
+  },
+  {
+   "sym": "KENNAMET",
+   "qe": "20220331",
+   "basis": "std",
+   "was": 27.25,
+   "fixed": 27.6,
+   "why": "As-filed standalone net profit (owners; no minority) from the company's own BSE XBRL Main_Ind_As_505890_1252022115237.xml = 27.6 cr, EPS 12.57. Second reader: Jun-2022 filing 9b56685b-fc23-4b41-9f07-ee38412b2011.pdf standalone previous-quarter column: net profit 276 mn; BSE detailed results 113.00 (01-Jan-22..31-Mar-22) Net Profit 276. stored 27.25 is not the as-filed standalone figure: Jun-22 28.1 / Sep-22 31.5 equal the post-merger RESTATED comparatives printed a year later (WITPL amalgamation accounted from 1-Jul-2021), a \u00a7108-class vintage error -- the store keeps as-filed; Mar-22 27.25 matches no Kennametal document (its filings print 27.6 standalone / 26.9 consolidated). Rs MILLION filer.",
+   "found": "KENNAMET PAT audit 2026-09-27 (runbook \u00a7189a): all 43 of the company's own BSE XBRL filings vs sf_fundamentals; second readers = the printed results PDFs (BSE announcements) and BSE Corp_detailedResult_Transpose_ng (as-filed standalone); copies in ~/stocks-cache/kennamet-op/"
+  },
+  {
+   "sym": "KENNAMET",
+   "qe": "20220630",
+   "basis": "std",
+   "was": 28.1,
+   "fixed": 28.3,
+   "why": "As-filed standalone net profit (owners; no minority) from the company's own BSE XBRL Main_Ind_As_505890_1382022133430.xml = 28.3 cr, EPS 12.85. Second reader: own filing 9b56685b-fc23-4b41-9f07-ee38412b2011.pdf standalone current column: net profit 283 mn; BSE detailed results 114.00 Net Profit 283. stored 28.1 is not the as-filed standalone figure: Jun-22 28.1 / Sep-22 31.5 equal the post-merger RESTATED comparatives printed a year later (WITPL amalgamation accounted from 1-Jul-2021), a \u00a7108-class vintage error -- the store keeps as-filed; Mar-22 27.25 matches no Kennametal document (its filings print 27.6 standalone / 26.9 consolidated). Rs MILLION filer.",
+   "found": "KENNAMET PAT audit 2026-09-27 (runbook \u00a7189a): all 43 of the company's own BSE XBRL filings vs sf_fundamentals; second readers = the printed results PDFs (BSE announcements) and BSE Corp_detailedResult_Transpose_ng (as-filed standalone); copies in ~/stocks-cache/kennamet-op/"
+  },
+  {
+   "sym": "KENNAMET",
+   "qe": "20220930",
+   "basis": "std",
+   "was": 31.5,
+   "fixed": 31.4,
+   "why": "As-filed standalone net profit (owners; no minority) from the company's own BSE XBRL Main_Ind_As_505890_10112022193742.xml = 31.4 cr, EPS 14.31. Second reader: BSE detailed results 115.00 (01-Jul-22..30-Sep-22, as filed) Net Profit 314 mn, EPS 14.31 (the own filing's statement pages are image-only). stored 31.5 is not the as-filed standalone figure: Jun-22 28.1 / Sep-22 31.5 equal the post-merger RESTATED comparatives printed a year later (WITPL amalgamation accounted from 1-Jul-2021), a \u00a7108-class vintage error -- the store keeps as-filed; Mar-22 27.25 matches no Kennametal document (its filings print 27.6 standalone / 26.9 consolidated). Rs MILLION filer.",
+   "found": "KENNAMET PAT audit 2026-09-27 (runbook \u00a7189a): all 43 of the company's own BSE XBRL filings vs sf_fundamentals; second readers = the printed results PDFs (BSE announcements) and BSE Corp_detailedResult_Transpose_ng (as-filed standalone); copies in ~/stocks-cache/kennamet-op/"
   }
  ],
  "retracted": [
