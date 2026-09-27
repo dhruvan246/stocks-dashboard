@@ -14935,6 +14935,66 @@
    "fixed": 24.5,
    "why": "Kennametal India prints in Rs MILLION (fiscal year Jul-Jun). XBRL Main_Ind_As_505890_911202318363.xml (BSE, filed 2023-11-13; OneD = the quarter, ScripCode 505890, ISIN INE717A01029, standalone) -> build_revop.xbrl_revop ebit 24.5. Printed PDF d17d5db1-905f-4762-bfef-e8c6f8966e99.pdf (current-quarter column, standalone statement) prints PBET 262 + finance costs 0 + depreciation 104 - other income 17 = op 349 mn (ebit = op - dep 245) = 24.5 cr. stored -223.0 is a copy of the wrong standalone cell. No consolidated statement exists for this quarter: Kennametal's only subsidiary WITPL was amalgamated into the company (NCLT Bengaluru order 17-Oct-2022, received 16-Nov-2022; appointed date 1-Apr-2021 -- note in this filing), the filing has zero 'consolidat' mentions and BSE's results index lists no consolidated result after Sep-2022. The con slot therefore carries the standalone figure by identity -- the convention the store already applies to KENNAMET's npCon (§73b KENNAMET_DEC24). Not a scale issue (scale_fix n/a).",
    "found": "KENNAMET negative-op audit 2026-09-27 (runbook §189): all 43 of the company's own BSE XBRL filings (Result_Arch_ng scrip 505890, every row Status New = as-filed) re-parsed with build_revop.xbrl_revop, second reader = the printed results PDFs (BSE announcement attachments); copies in ~/stocks-cache/kennamet-op/"
+  },
+  {
+   "sym": "RML",
+   "qe": "20181231",
+   "basis": "pat_con",
+   "was": 0.0,
+   "fixed": -0.69,
+   "why": "§70 PAT mirror synced to the owners heal of RML 20181231 con (npCon 0.0 -> -0.69, pat_defects.json + owners_basis_heals.json): the filer tags owners AND NCI 0.00 with the real result only in ProfitLossForPeriod, and the mirror had copied the 0.00. Runbook §184b.",
+   "wrong_value_class": "owners=0 filer mis-tag copied into the §70 PAT mirror",
+   "found": "RML consolidated row screen, 2026-09-27 (2026-09-27 17:36 IST)"
+  },
+  {
+   "sym": "RML",
+   "qe": "20211231",
+   "basis": "pat_con",
+   "was": 0.0,
+   "fixed": -4.31,
+   "why": "§70 PAT mirror synced to the owners heal of RML 20211231 con (npCon 0.0 -> -4.31, pat_defects.json + owners_basis_heals.json): the filer tags owners AND NCI 0.00 with the real result only in ProfitLossForPeriod, and the mirror had copied the 0.00. Runbook §184b.",
+   "wrong_value_class": "owners=0 filer mis-tag copied into the §70 PAT mirror",
+   "found": "RML consolidated row screen, 2026-09-27 (2026-09-27 17:36 IST)"
+  },
+  {
+   "sym": "RML",
+   "qe": "20220930",
+   "basis": "pat_con",
+   "was": 0.0,
+   "fixed": 0.05,
+   "why": "§70 PAT mirror synced to the owners heal of RML 20220930 con (npCon 0.0 -> 0.05, pat_defects.json + owners_basis_heals.json): the filer tags owners AND NCI 0.00 with the real result only in ProfitLossForPeriod, and the mirror had copied the 0.00. Runbook §184b.",
+   "wrong_value_class": "owners=0 filer mis-tag copied into the §70 PAT mirror",
+   "found": "RML consolidated row screen, 2026-09-27 (2026-09-27 17:36 IST)"
+  },
+  {
+   "sym": "RML",
+   "qe": "20221231",
+   "basis": "pat_con",
+   "was": 0.0,
+   "fixed": 23.71,
+   "why": "§70 PAT mirror synced to the owners heal of RML 20221231 con (npCon 0.0 -> 23.71, pat_defects.json + owners_basis_heals.json): the filer tags owners AND NCI 0.00 with the real result only in ProfitLossForPeriod, and the mirror had copied the 0.00. Runbook §184b.",
+   "wrong_value_class": "owners=0 filer mis-tag copied into the §70 PAT mirror",
+   "found": "RML consolidated row screen, 2026-09-27 (2026-09-27 17:36 IST)"
+  },
+  {
+   "sym": "RML",
+   "qe": "20240930",
+   "basis": "pat_con",
+   "was": 0.0,
+   "fixed": -0.68,
+   "why": "§70 PAT mirror synced to the owners heal of RML 20240930 con (npCon 0.0 -> -0.68, pat_defects.json + owners_basis_heals.json): the filer tags owners AND NCI 0.00 with the real result only in ProfitLossForPeriod, and the mirror had copied the 0.00. Runbook §184b.",
+   "wrong_value_class": "owners=0 filer mis-tag copied into the §70 PAT mirror",
+   "found": "RML consolidated row screen, 2026-09-27 (2026-09-27 17:36 IST)"
+  },
+  {
+   "sym": "RML",
+   "qe": "20241231",
+   "basis": "pat_con",
+   "was": 0.0,
+   "fixed": -0.22,
+   "why": "§70 PAT mirror synced to the owners heal of RML 20241231 con (npCon 0.0 -> -0.22, pat_defects.json + owners_basis_heals.json): the filer tags owners AND NCI 0.00 with the real result only in ProfitLossForPeriod, and the mirror had copied the 0.00. Runbook §184b.",
+   "wrong_value_class": "owners=0 filer mis-tag copied into the §70 PAT mirror",
+   "found": "RML consolidated row screen, 2026-09-27 (2026-09-27 17:36 IST)"
   }
  ],
  "retracted": [

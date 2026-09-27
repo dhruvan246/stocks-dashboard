@@ -21752,6 +21752,19 @@ time 1.2 s apart, 0 failures) and Moneycontrol where the MC journal has the cell
   was armed (its `why` now records it). Other income / other expenses do NOT close (3.17 in the FY column, 6.04 in Sep-21's H1):
   the filer's own regrouping between the two lines, revenue and PBT untouched. The con PAT mirror (sf_revop slot 5) stays 0.0
   from the owners=0 mis-tag; stock.html never renders the mirror (npCon −4.31 is the pinned figure).
+- **RML consolidated net profit 0 on five quarters FIXED (user: "fix the five RML consolidated quarters too").** RML tags owners
+  AND NCI 0.00 (or omits them) on EVERY consolidated filing; the real result sits only in ProfitLossForPeriod. The store held that
+  total on 24 of the 29 cached quarters and a literal 0.0 on five: Dec-18 −0.69, Sep-22 +0.05, Dec-22 +23.71 (the ×100 filing,
+  §184a), Sep-24 −0.68, Dec-24 −0.22 (`_reattr_owners` holds 0.0 for all five; the old `abs(r[3])>2` owners guard zeroed small
+  cells nightly — today's guard never zeroes a nonzero cell, but nothing refilled these). Owners = total because RML has NO NCI:
+  basic EPS × period-end shares reproduces the total on 27 of 29 quarters (misses = share-count timing: Mar-20 issue inside the
+  quarter; Mar-25 EPS on the post-amalgamation 2.764 cr shares) and on all five targets (Dec-22 14.58 × 1.627 = 23.72). Each
+  quarter's YTD chain closes (Dec-18 H1 10.90 − 0.69 = 9M 10.21; Dec-22 9M 20.48 = H1 −3.23 + 23.71 and FY23 30.02 = 20.48 + 9.54;
+  Sep-22 H1 −3.23 = Jun-22 −3.28 + 0.05; Sep-24 H1 2.73 = 3.41 − 0.68; Dec-24 9M 2.51 = 2.73 − 0.22). Per §131b: `pat_defects.json`
+  (verifier-registered) + `owners_basis_heals.json` pins, applied by `pat_defect_fix.py --apply --only RML` (docs + build mirror);
+  the §70 PAT mirror (sf_revop slot 5, 0.0 on all six) synced through `revop_cell_fix.json`. RML Dec-21 con (−4.31, pinned in
+  §184a without a pat_defects entry) registered the same way. `apply_owners_full --dry` 0, `settle_stale_holds` 0 resurrected,
+  second applier runs write 0; only the RML slice changed (npCon on the five, mirror on six).
 
 ## §185 — AUDIT OF THE BSE RESULTS READERS AFTER §182: nine defects fixed, one ruled out (2026-09-27, user: "find more n more bugs … fix")
 All of it is quarter-agnostic: every target quarter comes from the filing (its printed period, else its filing date).

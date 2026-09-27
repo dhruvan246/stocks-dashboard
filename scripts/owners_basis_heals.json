@@ -2851,6 +2851,15 @@
    "stored_before": null,
    "when": "2026-08-17 20:13 IST"
   },
+  "RML|20181231|patC": {
+   "found_by": "RML consolidated row screen after the \u00a7184a scale fix, 2026-09-27 (runbook \u00a7184b; user: \"fix the five RML consolidated quarters too\")",
+   "identity": "owners AND NCI tagged 0.00; ProfitLossForPeriod -0.69; basic EPS -0.59 x 1.1973 cr shares = -0.71; YTD: Sep-18 filing H1 10.90 + this quarter -0.69 = this filing's 9M 10.21; FY19 (INDAS_44655) 2.42 = 10.21 + Q4 -7.79",
+   "note": "RML tags owners 0.00 (or omits it) on EVERY consolidated filing; pinned at the total, which the filing's own EPS reproduces (no NCI).",
+   "owners": -0.69,
+   "src": "own consolidated XBRL INDAS_41621_76684_22012019033646_WEB_2_xml ctx OneD",
+   "stored_before": 0.0,
+   "when": "2026-09-27 17:36 IST"
+  },
   "RML|20211231|patC": {
    "found_by": "scale_fix batch-2 adjudication 2026-09-27 (runbook \u00a7184a)",
    "identity": "owners tag is 0 (mis-tag); total -43,100 raw x100 = -4.31. FY22 con identity closes EXACTLY with it: revenue 340.29 + 458.41 + 437.79 + 505.43 = 1,741.92 and PAT 15.23 + 2.28 - 4.31 - 2.54 = 10.66 = the Mar-22 filing's FY x100; EPS -2.80 x 1.542 cr shares = -4.32.",
@@ -2859,6 +2868,42 @@
    "src": "own consolidated XBRL INDAS_80374_598089_24012022025813_WEB_xml ctx OneD, scale_fix.json k=-2",
    "stored_before": 0.0,
    "when": "2026-09-27 14:00 IST"
+  },
+  "RML|20220930|patC": {
+   "found_by": "RML consolidated row screen after the \u00a7184a scale fix, 2026-09-27 (runbook \u00a7184b; user: \"fix the five RML consolidated quarters too\")",
+   "identity": "owners AND NCI tagged 0.00; ProfitLossForPeriod 0.05; basic EPS 0.03 x 1.627 cr shares = 0.05; YTD: this filing's H1 -3.23 = stored Jun-22 npCon -3.28 + 0.05; the Dec-22 filing's 9M 20.48 = -3.23 + 23.71",
+   "note": "RML tags owners 0.00 (or omits it) on EVERY consolidated filing; pinned at the total, which the filing's own EPS reproduces (no NCI).",
+   "owners": 0.05,
+   "src": "own consolidated XBRL INDAS_785659_5300_21102022150310_WEB_xml ctx OneD",
+   "stored_before": 0.0,
+   "when": "2026-09-27 17:36 IST"
+  },
+  "RML|20221231|patC": {
+   "found_by": "RML consolidated row screen after the \u00a7184a scale fix, 2026-09-27 (runbook \u00a7184b; user: \"fix the five RML consolidated quarters too\")",
+   "identity": "owners AND NCI tagged 0.00; ProfitLossForPeriod 23.71 (raw 0.2371 x100); basic EPS 14.58 x 1.627 cr shares = 23.72; YTD: 9M 20.48 = Sep-22 H1 -3.23 + 23.71; FY23 (INDAS_91229, also k=-2) 30.02 = 20.48 + Q4 9.54",
+   "note": "RML tags owners 0.00 (or omits it) on EVERY consolidated filing; pinned at the total, which the filing's own EPS reproduces (no NCI).",
+   "owners": 23.71,
+   "src": "own consolidated XBRL INDAS_88959_788523_08022023032844_xml ctx OneD, scale_fix.json k=-2",
+   "stored_before": 0.0,
+   "when": "2026-09-27 17:36 IST"
+  },
+  "RML|20240930|patC": {
+   "found_by": "RML consolidated row screen after the \u00a7184a scale fix, 2026-09-27 (runbook \u00a7184b; user: \"fix the five RML consolidated quarters too\")",
+   "identity": "owners AND NCI tagged 0.00; ProfitLossForPeriod -0.68; basic EPS -0.42 x 1.627 cr shares = -0.68; YTD: this filing's H1 2.73 = stored Jun-24 3.41 + -0.68",
+   "note": "RML tags owners 0.00 (or omits it) on EVERY consolidated filing; pinned at the total, which the filing's own EPS reproduces (no NCI).",
+   "owners": -0.68,
+   "src": "own consolidated XBRL INDAS_113192_1287109_24102024043308_xml ctx OneD",
+   "stored_before": 0.0,
+   "when": "2026-09-27 17:36 IST"
+  },
+  "RML|20241231|patC": {
+   "found_by": "RML consolidated row screen after the \u00a7184a scale fix, 2026-09-27 (runbook \u00a7184b; user: \"fix the five RML consolidated quarters too\")",
+   "identity": "owners AND NCI tagged 0.00; ProfitLossForPeriod -0.22; basic EPS -0.14 x 1.627 cr shares = -0.23; YTD: 9M 2.51 = Sep-24 H1 2.73 + -0.22 (FY25 is restated for the amalgamation and does not chain)",
+   "note": "RML tags owners 0.00 (or omits it) on EVERY consolidated filing; pinned at the total, which the filing's own EPS reproduces (no NCI).",
+   "owners": -0.22,
+   "src": "own consolidated XBRL INDAS_118206_1366531_30012025072049_xml ctx OneD",
+   "stored_before": 0.0,
+   "when": "2026-09-27 17:36 IST"
   },
   "ROUTE|20191231|patC": {
    "identity": "9M FY21 owners printed 9,795.15 lakh; with owners for all three quarters 27.09 + 32.87 + 37.99 = 97.95 = 9,795.15/100 -> closes EXACTLY. With the stored (total-row) Dec-2020 37.62 it gives 97.58 and does NOT close - which is what pins the convention as owners. For the target's own year: FY20 annual owners 5,826.99 - 9M FY20 owners 4,475.90 = 1,351.09 = 13.51 == stored Mar-2020 EXACT.",
