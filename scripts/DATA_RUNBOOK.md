@@ -20764,7 +20764,9 @@ This round = group 1 (non-financial, never attempted, holds an FY2023-25 XBRL ke
   crore (half the key's storage unit): HEMIPROP key 0.01 vs printed 0.0093 was a true match rejected by the 1% test.
 - **LANDED:** ea9a19a1a (193 cells / 77 companies incl. CIEINDIA CRISIL VBL VESUVIUS Dec cells) + 001ee1829 (7 new cells + cash
   flows on 4) = 200 cells / 79 companies. LIVE part 1: 3,437 fields OK; 22 fields whose pre-push XBRL value was gone at rebuild
-  time now show our printed value (all 22 = ours; e.g. HBLENGINE FY22 XBRL capex −68.13 vs printed 68.13).
+  time now show our printed value (all 22 = ours; e.g. HBLENGINE FY22 XBRL capex −68.13 vs printed 68.13). Part 2: 181 fields
+  OK + 2 of the same class (TARIL FY21 cfo 96.43 / cf_tax −0.12 printed; XBRL 96.26 / 0.12 gone at rebuild). Complete cards on
+  main a5edcfb5d: 316 of 762 (41.5%, was 269); FY20/21/22 BS 57.7% / 63.9% / 67.7% (was 48.6 / 54.2 / 57.6).
 - **Screener verify-only:** 1,221 MATCH / 78 CLOSE / 79 FAR / 85 n/a — FARs NOT adjudicated yet (concentrated in LTM, NMDC, JSL
   FY22 whole-year and in years the readers saw restated by the next filing: OIL, COALINDIA, WABAG FY20-21).
 - **Paused, open:** 12 reader batches (b27/01 b28 b29 q00-q03 d00 d02); second-pass finds for 12 sets (out2/g0-g2) + batches
