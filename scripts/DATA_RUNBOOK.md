@@ -21476,6 +21476,17 @@ Screener 0.01 (+ a 0.00 FII line = foreign nationals 0.002 %, public by our rule
 identity 521 (mostly filer ISIN typos: INF759F01012, INI058F01019 …), slug collision 65 (DRL, SIIL, INNOVATIVE), continuity,
 partition. The one isin_conflict target was never fetched.
 
+**§181e — NSE SME 2019-2023 half-year results from results PDFs, cross-verified (2026-09-27, 2a252f538).** NSE has no
+SME XBRL before FY24 (placeholder links), so the 2019-23 half-years came from the results PDFs. Pipeline in
+`~/stocks-cache/sme_pdf/`: `fetch_sme_pdfs.py` (honest requests, NSE results lists index=sme + that day's announcement
+attachments; 394 gap companies, 4,255 files = 1,336 unique PDFs) → `ocr_sme_pdfs.py` (text layer, else RapidOCR one thread per
+worker; rows rebuilt from word positions; OCR also when the text layer is labels-only or garbage) → reader agents
+transcribe per `READER_INSTRUCTIONS.md` (copy as printed, null when unclear, never arithmetic/other filing) → `verify_sme.py`.
+**Acceptance:** a value is written only when 2+ distinct filing DOCUMENTS print it (byte-duplicates count once), or one filing
++ H1+H2 == FY with the other two terms accepted by two sources; statements whose notes show inferred placement are dropped.
+Landed: +163 rows, 173 profit + 192 revenue cells, 0 existing changed; the one overlap with a stored XBRL value agrees.
+Open: 167 of 337 companies not yet read (reader agents paused by the user — token cost); 857 values seen in one filing only.
+
 **§181d — NSE SME half-year results from the §148 SME XBRL cache (2026-09-27, 1d69dbd6a).** NSE SME companies (almost
 none are on BSE: 3 of ~650) had profit/revenue only for the Mar cells; every Sep (H1) cell was empty, so SME "results" sat
 near 0% before 2026. The §148 cache (scripts/_xbrl_cache_sme, 6,261 files) already held the filings; §148 merged only their
