@@ -20168,6 +20168,21 @@ members §164d/§164g never reached (no BSE code then; resolved via FUND_ALIAS a
 **Open:** the former-member XBRL run could not read 1,002 rows whose XBRL was never cached (lists re-fetched only now); those cells
 keep their values — fetch and re-run. 16 of Quantmac's former tickers still have no BSE code (MATRIXLABS, CHETTINAD, NAGARFERT …).
 
+### 164o. Former members' never-cached XBRLs + OLD-ticker store keys re-read (2026-09-27)
+(a) §164n's former-member run could not read 1,002 rows whose XBRL had never been downloaded. With the filing lists restored,
+1,007 files were fetched with the honest header set (998 ok, 9 failed) into `~/stocks-cache/shp/ex_xbrl`; the re-run over 757
+former members read 10,466 rows (115 still uncached) and proposed **235 cells on 36 symbols** (223 first reads, 12 superseding):
+R1-R3 on 205, R2-FII on 24, D1 on 6; fii up on 39 (3 moves >= 3 pp: UJJIVAN Sep-16, HEXAWARE Sep/Dec-16 — T. Rowe Price
+International documented foreign, the undocumented T Rowe Price Discovery Fund kept, not swept), SINTEX 2016 Government of Singapore
+(the filer's 2022 form lists it under Institutions (Foreign)).
+(b) Every row-level pass ran per CURRENT ticker, so store rows kept under an OLD ticker (FUND_ALIAS old names; the engine folds them
+into the new key) were never re-read: 13 keys, 179 page-era + 62 XBRL-era quarters (3IINFOTECH, SUPPETRO, ORCHIDPHAR, ALOKTEXT,
+CASTROL, PROVOGUE, COLGATE, LGBROS, BILT, GESHIPPING, SABTN, DIGJAMLTD, HOTELEELA). Lists = the new key's list, code = the new key's
+BSE code (`~/stocks-cache/shp/w164o`); 179 pages + 38 XBRLs fetched. XBRL era: 7 cells (3IINFOTECH 2019-21 small dii: NBFC row, a
+named Indian bank). Page era: 7 cells — **3IINFOTECH 2011-2013 "Foreign Bank" row (6.5-6.8) moved dii -> fii** (Mar-13 0.16 -> 6.91,
+equal to Quantmac's figure) and ALOKTEXT Sep-15 +0.22 FPI; 172 pages unchanged (CASTROL, COLGATE … already consistent).
+249 / 249 hold on a store copy; guards green.
+
 ### 164j. Quantmac reply v3 (26-Sep): foreign-labelled rows were read as domestic; named foreign holders now need a document
 **Bug (reported by Quantmac for CUMMINSIND / IPCALAB, measured on origin).** `_shp_dii_rowfix.eval_filing` R1 set a category label
 to "domestic" when DOMLAB matched ("mutual fund", "financial institution", "\bbank") and LAB_FII did not — so "Foreign Mutual
