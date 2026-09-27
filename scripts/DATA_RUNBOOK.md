@@ -65,6 +65,7 @@ loads every session. (README.md is just a short pointer here — this file is th
 - **§71** ★★★ THE ADJUDICATION THAT WAS ABANDONED — when your "truth" source is the corrupted one
 - **§72** ★★★ VERIFYING REV/PAT vs EXTERNAL SITES — sites reach 10 of 95 quarters; con PAT has no site quorum
 - **§76** ★★★ A `scrip_id` EQUAL TO THE TICKER IS A COINCIDENCE — gate symbol→BSE-scrip on ISIN (**read before any BSE-keyed fill**)
+- **§204** ★★★ BSE NAMES COME IN TWO VARIANTS ("UNO Minda Ltd-$" / "UNO Minda Ltd", flips between requests) — publish a BSE name only through `bse_names.clean_scrip_name()`; `bse_names.py --check` guards refresh.yml + refresh-bse.yml (**read before adding any reader of a BSE name field**)
 - **§197** ★★★ A BSE-ONLY TICKER CAN BE A FORMER NSE TICKER OF ANOTHER COMPANY — `_rename_map`/FUND_ALIAS are NSE facts; the site never applies them to a ticker in `docs/bse_alias_collisions.json` (WORTH = Worth Investment, not WORTHPERI; 12 found) (**read before any alias/rename consumer that serves a page, and before merging an SME fragment**)
 - **§203** ★★★ ONE TICKER, TWO COMPANIES — an NSE (SME) symbol that is also another company's BSE scrip_id: the BSE fold, BSE detail, NSE-twin filings and the sector map now need ISIN proof of the PAGE's company (`bse_resolve.page_company`, `bse_blocked_under`, `nse_blocked_under`); ZEAL/GSTL/KEL/DRL/INNOVATIVE/BRIGHT healed, VIVIANA/QMSMEDI cells from the PDFs (**read before keying any filing by a bare ticker**)
 - **§200** ★★ FIVE MORE §145 SME FRAGMENTS MERGED (GODHA, KEERTI, SONAMCLOCK, URAVI, WFL) — a merge needs the SM→EQ PREVCLOSE proof, the successor factors after the SME end == its stored/raw level at the join, AND the ledger create→prepend in the same push (**read before merging any SME fragment**)
@@ -107,6 +108,7 @@ loads every session. (README.md is just a short pointer here — this file is th
 - **§147** ★★★ A scale_fix entry does NOT heal xbrl_extra by itself (the nightly is incremental) — run `scale_fix.py --apply-xtra` with XBRL_CACHE. A mis-scaled filing's EPS is almost always CORRECT (36/37), so flag `eps_scaled` only where it isn't. Use `parse_only` where the owners store already holds a figure from a different, correctly scaled filing. Arm a filing only on an exact YTD power of ten (**read before adding any scale_fix entry**)
 - **§184** ★★★ A 1/100 FILING IS INVISIBLE to `detect_scale_errors.py` (it flags only cells ≥50× LARGER) — screen with the YTD chain over the whole cache, and decide WHICH filing is wrong (a pair's ratio proves only that the two disagree). For k < 0 record `was_*` at raw precision; pin con owners in `owners_basis_heals.json` (the nightly otherwise writes `_reattr_owners` 2-dp ÷ factor); `fill_null` refills slots `revop_sanity` emptied. **§184a** armed 64 more after a per-filing adjudication (a ratio of 1 hides a scaled NEIGHBOUR — check the chain's end; BSE's own copy is a second reader); MASKINVEST refused (**read before adding any scale_fix entry**)
 - **§181** ★★★ HOW TO ACCESS BSE — every BSE request carries the FULL standard browser header set: `import bse_headers` in any script that touches *.bseindia.com (urllib is covered automatically); curl calls splice `*BH.CURL_ARGS` (includes `--compressed`) and NEVER add a second `-H Referer`/`-H Origin` (a duplicated header → 403). BSE data is public: a 403 means OUR request is incomplete or too fast — fix the request, never record "BSE is blocked". Pace: one request at a time, a per-run cap, download only what is missing; never fan out parallel BSE workers from an interactive session, and never import `fetch_classification.py` to test it (it runs ~18k requests at import) (**read before writing or running ANY BSE fetch**)
+- **§204** ★★★ BSE SERVES EVERY NAME IN TWO VARIANTS — ~310 scrips come back as `"UNO Minda Ltd-$"` or `"UNO Minda Ltd"` depending on the request (flips inside one day; `Scrip_Name` and the announcement `SLONGNAME` both, `Issuer_Name` never). Any code that publishes a BSE-served name goes through `bse_names.clean_scrip_name()`; `python3 scripts/bse_names.py --check <file>` must print "clean" for every name-bearing feed (**read before adding any reader of a BSE name field**)
 - **★★★ NO ASSUMPTIONS. NO GUESSWORK. EVER.** User-mandated 2026-08-10; standing rule across
   this runbook AND every campaign/playbook doc (each carries the same line). Every value written
   and every claim made ("exists", "absent", "fixed", "live", "matches") must trace to something
@@ -4308,6 +4310,7 @@ A named unverified corner costs one sentence; the same corner found by the user 
 | **DVL and DTIL carried a daily bar on 12 Sundays of Oct–Dec 2019 that no other symbol had** (2 symbol-bars per date, live for six weeks). NSE's `sec_bhavdata_full` route re-served Friday's file under each Sunday URL (`DATE1` = the Friday) while the zip route 404'd; the symbol-level rebuild's whole-file signature dedup hashed Friday's zip (1,682 rows) and Sunday's csv (1,670 rows) differently, and `apply_series_surgery` spliced whatever the ledger said (2026-09-21, §89f) | **new** — (a) **the date INSIDE a dated exchange file decides, never the URL** (`build_sf_data.file_date`), and a dedup must be per-symbol identity, not a whole-file hash, because two routes serve one session in two formats; (b) **every ledger that emits bars is gated on the market calendar at the splice** (`session_calendar` ≥100 symbol-bars from `dailyFrom`, dated floor — 1996-2001 is sparse by construction) so a rebuild cannot put a bar on a day the market did not trade; (c) a per-date TRIPWIRE for dates with TOO FEW bars (`phantom_date_audit`, `PHANTOM-DATE` lines) — a universe-level count check never sees a phantom only two symbols carry |
 | `refresh-membership.yml`'s "membership unchanged" guard never fired, so each run committed another ~18 MB `docs/stock_data.bin`. `gzip.compress` stamps the current time into the header, and the job re-compressed refresh.yml's level-9 file at level 6 (2026-09-23, §103a) | **new** — a `git diff --quiet` guard on a generated gzip works only if the writer is byte-deterministic. Run the writer twice on the same input and `cmp` the outputs. Then feed it the OTHER writer's copy of the same content: it must leave the file untouched |
 | On phones, switching theme with the site buttons left every pinned first-column cell on the OLD theme's background (white quarter labels in dark on stock.html, contrast 1.16) — `scrollifyTable` resolved `--sw-pin-body` by walking up from the pinned cell, and that cell PAINTS the previous answer (theme.css `background:var(--sw-pin-body,…)`), so the 260 ms re-resolve read its own stale copy and froze it; fresh loads were fine, so no load-time check could see it (2026-09-05) | **4** — theme checks must exercise the SWITCH, not only a fresh load per theme: click each theme button on a ≤640px table page and re-run the contrast walk after the transition; any cached/derived colour must be cleared before it is re-derived (`removeProperty` first), or the second pass reads its own output |
+| 310 dashboard names shipped as `"UNO Minda Ltd-$"` on 2026-09-27 — and ~0-310 on every build since at least 16-Jul (noted as "Deepak Nitrite Ltd-$" in the Aug UI campaign, never fixed): BSE alternates two variants of `Scrip_Name` and `fetch_all.py` copied whichever came back; BSE-only stock pages (VALIANT…), search, discovery and the results feed carried it too (§204) | **3** — an upstream field that can vary between requests is an unhappy path: diff the SAME field across ≥2 builds of the published file (a flip-flopping count is the signature), and run `bse_names.py --check` on every name-bearing feed |
 ### If a bug ships anyway
 Fix the **class**, not just the instance: ask *"what check would have caught this?"* and add it to the
 gate above. That is what keeps this list from growing.
@@ -22989,3 +22992,54 @@ on a FRESH main (re-apply, never merge, on a rejected push). Run 27-Sep: 489 scr
 close, 60 halves of scrips now listed on NSE (the NSE stores carry no row-length flag); 38 fills have ann=0 (no filing
 time on the listing or file name) — stored as unknown. Trap: a stale `_bse_xbrl_state.json` blocks `git checkout
 origin/main`, and the apply then runs on the OLD tree — reset the state file first.
+
+## §204 — BSE SERVES EVERY COMPANY NAME IN TWO VARIANTS: the "-$" scrip-name marker (2026-09-28, user: "find which name source … started emitting the '-$' suffix … fix it at the source … add the check to the runbook")
+**Report:** `docs/dash_slim.bin` went from 0 names ending in `-$` (179381178, 25-Sep 22:01 IST) to 310 (6b9768901, 27-Sep
+19:54 IST) — UNOMINDA "UNO Minda Ltd" → "UNO Minda Ltd-$", NAVINFLUOR, BALKRISIND, CUPID, UBL, GABRIEL, FORCEMOT, ANANTRAJ…
+
+**It did not "start" on 27-Sep — it has flip-flopped for months.** One dash_slim build per day since July (git history):
+16-Jul 312 · 17-Jul 311 · 20-Jul 317 · 21-Jul→28-Jul 0 · 29-Jul 311 · 30-Jul→05-Aug 0 · 06-Aug 310 … 18-Sep 310 · 21-Sep 316 ·
+22→25-Sep 0 · 27-Sep 310; and inside ONE day (19-Aug builds 10:09 / 11:36 / 11:57 / 16:21 IST): 310 / 0 / 310 / 0. The same
+companies each time (07-16 vs 09-27: 272 common; the rest are .BO↔.NS key moves). The 22-25 Sep builds were clean only because
+BSE refused the refresh's `ListofScripData` call (HTTP 403 ×6, runbook §179/§181) and the job ran on the §150 fallback SEED built
+from `scripts/_bse_master_all.json` (2026-08-05, the clean variant); cba5bd746 fixed the headers, 27-Sep fetched LIVE and got the
+marked variant. Earlier sessions had seen it ("Deepak Nitrite Ltd-$", Aug UI campaign; §180e's note) but never fixed it.
+
+**The source:** BSE's own responses. The live master the 27-Sep run used (release asset `bse_scrip_master.json.gz`, fetched
+2026-09-27T14:14:00Z): 5,043 Active/Equity rows, **310 `Scrip_Name` end in `-$`**, 0 carry `$` anywhere else, every other field
+clean (`Issuer_Name` = "UNO Minda Limited"). The announcement API's `SLONGNAME` carries the same marker ("Orient Ceratech Ltd-$" in
+results_feed.json). Meaning of `$`: NOT established — the 310 span groups B 145 / X 85 / A 34 / T 22 / XT 21 / Z 3, none in the
+SME groups M/MT; it is not needed for the fix. The pipeline copied the field verbatim in three writers:
+| writer | field | published into (measured 27-Sep, names ending `-$`) |
+|---|---|---|
+| `fetch_all.py` (refresh.yml) | ListofScripData `Scrip_Name` | dash_slim.bin 310, stock_data.bin 310 → discovery.json 1,274 strings; the next shareholding feed would have had 307 |
+| `build_bse_universe.py` (refresh-bse.yml) | ListofScripData `Scrip_Name` | bse_universe.json 112 → bse_results.json 109, search_index.json 97, BSE-only stock pages (live `stk/VALIANT.json` = "Valiant Communications Ltd-$") |
+| `fetch_bse_results.py` (announcements / hourly) | announcement `SLONGNAME` | results_feed.json 5 |
+
+**Fix (at the source, one predicate everywhere):** `scripts/bse_names.py` — `clean_scrip_name()` strips a trailing `-$` and nothing
+else; the three writers call it (fetch_bse_results also cleans the rows it carries from earlier runs, so the 31-day window heals
+on its next run). Proof the strip reproduces the clean variant exactly: 287/287 marked names equal the 09-Sep live (clean) build's
+name, 309/309 equal the 25-Sep seed build's. Replay of fetch_all's universe step (tracked source, FETCH_ALL_DRY, the 27-Sep master +
+same-day NSE masters): origin/main code reproduces the committed 27-Sep names exactly; the fixed code differs on exactly the 310
+marked names, each by the stripped `-$`.
+- `stock_bin_stale.py` now also commits `docs/stock_data.bin` when a company NAME changed (stock-backtest.html shows that file's
+  meta names). Without it the fix would have waited for the prices to go >5 days stale (they were 2.8 d old). Calibration over 59
+  consecutive dash_slim builds: after cleaning, a name never changed without the symbol set changing too → no extra 17 MB commits.
+- **The check** — `python3 scripts/bse_names.py --check FILE...` (gzip or plain; exit 1 + examples when any JSON string ends in
+  `-$`). Wired as a hard guard in refresh.yml (dash_slim.bin + stock_data.bin, just built) and refresh-bse.yml (bse_universe.json,
+  only when this run rewrote it, so a failed universe fetch never trips on an inherited copy). Same predicate as the cleaner → it
+  fires only when a writer bypasses `clean_scrip_name()`, never on BSE's data. Manual sweep after any name work:
+  `python3 scripts/bse_names.py --check docs/dash_slim.bin docs/stock_data.bin docs/bse_universe.json docs/results_feed.json docs/discovery.json docs/search_index.json docs/bse_results.json docs/shareholding.json`
+- **Rule:** a BSE name field is a two-variant field. Any NEW reader that publishes or compares a BSE-served name calls
+  `clean_scrip_name()` (comparison normalisers that drop non-alphanumerics — `fetch_bse_results.nname`,
+  `scan_bse_alias_collisions.norm_name`, `fetch_shp_bse_hist.clean_name` — are already immune).
+- **Not touched (flagged):** `scripts/ideas/universe.py:45` (Daily Ideas universe, 112 marked names in docs/ideas/universe.json)
+  reads `Scrip_Name` raw — another session had uncommitted work in scripts/ideas/ at the time; `build_bse_sme_ipo_pit.py` reads a
+  local master, SME groups carry 0 marks.
+
+**Not the marker (measured, same report):** a local shareholding-feed rebuild against the 27-Sep dash_slim shows 35 mcaps → 0 and
+32 bare-ticker names. 32 of the 35 (HEG, SPELS, MANBRO, CDG, …) are ABSENT from BSE's live 27-Sep Active list — they were Active
+only in the 2026-08-05 identities the 23-Sep fallback seed carried (HEG is now HEGAM, §199); the other 3 (HVL, TYPHOON, OSEASPR,
+no trade since 2007) carry BSE's own live Mktcap 0.00 where the seed had a stale figure. Also 68 names moved "…Limited" (NSE
+register) → "…Ltd" (BSE) because the live master has those scrips again. That is the universe catching up with BSE, not a defect
+of the name path.

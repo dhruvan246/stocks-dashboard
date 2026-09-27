@@ -73,6 +73,17 @@ jobs:
       - name: Rebuild BSE results payload
         run: python3 -X utf8 scripts/build_bse_results.py
 
+      - name: Guard — no BSE "-$" scrip-name marker in the universe this run built
+        # build_bse_universe.py cleans names with bse_names.clean_scrip_name(); same predicate here, so it
+        # fails only when a writer bypasses the cleaner. Checked only when this run rewrote the file (its
+        # "updated" stamp always changes), so a failed universe fetch never trips on an inherited copy. §204.
+        run: |
+          if git diff --quiet HEAD -- docs/bse_universe.json; then
+            echo "bse_universe.json not rebuilt this run — name-marker check skipped"
+          else
+            python3 scripts/bse_names.py --check docs/bse_universe.json
+          fi
+
       - name: Guard — refuse to commit a broken or shrunken feed
         run: python3 scripts/guard_feed.py
 

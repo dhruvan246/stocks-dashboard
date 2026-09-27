@@ -21,6 +21,7 @@ import os as _o, sys as _s; _s.path.insert(0, _o.path.dirname(_o.path.abspath(__
 import os, sys, json, io, csv, time, datetime
 sys.path.insert(0, os.path.dirname(os.path.abspath(__file__)))
 import bse_fetch as B
+import bse_names as BN   # §204: BSE's "-$" scrip-name marker never reaches a published name
 
 HERE = os.path.dirname(os.path.abspath(__file__))
 OUT = os.path.join(HERE, "..", "docs", "bse_universe.json")
@@ -146,7 +147,7 @@ def main():
         try: fv = round(float(x.get("FACE_VALUE") or 0), 2)
         except Exception: fv = 0
         rows.append([int(code), (x.get("scrip_id") or "").strip().upper(),
-                     (x.get("Scrip_Name") or "").strip(), (x.get("ISIN_NUMBER") or "").strip(),
+                     BN.clean_scrip_name(x.get("Scrip_Name")), (x.get("ISIN_NUMBER") or "").strip(),
                      (x.get("GROUP") or "").strip(), fv, mcap(x), sec])
     json.dump(cache, open(SEC_CACHE, "w"))
 

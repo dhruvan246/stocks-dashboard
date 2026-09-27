@@ -15,6 +15,7 @@ all fail, the stock still ships in the dashboard with empty series so the row
 shows up with metadata + "—" prices.
 """
 import os as _o, sys as _s; _s.path.insert(0, _o.path.dirname(_o.path.abspath(__file__))); import bse_headers as BH  # §181 BSE headers
+import bse_names as BN   # §204: BSE's "-$" scrip-name marker never reaches a published name
 import os, sys, json, csv, re, time, subprocess, concurrent.futures, datetime as _dt
 from pathlib import Path
 
@@ -81,7 +82,7 @@ for b in bse_scrips:
     if b.get("Status") != "Active" or b.get("Segment") != "Equity": continue
     sid  = (b.get("scrip_id") or "").strip()
     code = (b.get("SCRIP_CD") or "").strip()
-    name = (b.get("Scrip_Name") or "").strip()
+    name = BN.clean_scrip_name(b.get("Scrip_Name"))   # BSE alternates "UNO Minda Ltd-$" / "UNO Minda Ltd" (§204)
     isin = (b.get("ISIN_NUMBER") or "").strip()
     try: mcap = float(b.get("Mktcap") or 0)
     except: mcap = 0

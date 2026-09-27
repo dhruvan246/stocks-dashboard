@@ -21,6 +21,7 @@ import os as _o, sys as _s; _s.path.insert(0, _o.path.dirname(_o.path.abspath(__
 import os, sys, json, re, time, datetime
 sys.path.insert(0, os.path.dirname(os.path.abspath(__file__)))
 import bse_fetch as B
+import bse_names as BN   # §204: BSE's "-$" scrip-name marker never reaches a published name
 
 HERE = os.path.dirname(os.path.abspath(__file__))
 DOCS = os.path.join(HERE, "..", "docs")
@@ -205,7 +206,7 @@ def main():
         file = (BSE_ATT + att) if att else ""
         cap = re.sub(r"\s+", " ", str(r.get("HEADLINE") or r.get("NEWSSUB") or "")).strip()
         if len(cap) > 220: cap = cap[:219] + "…"
-        feed.setdefault("rows", []).append([sym, re.sub(r"\s+", " ", str(r.get("SLONGNAME") or sym)).strip(),
+        feed.setdefault("rows", []).append([sym, BN.clean_scrip_name(re.sub(r"\s+", " ", str(r.get("SLONGNAME") or sym))),
                                             dt, _qe_sane(qe_from_head(r.get("HEADLINE"), r.get("NEWSSUB"), r.get("MORE")), dt[:10]), cap, file])
         added += 1
     # ---- 1b. inject BSE-only results we've CONFIRMED via OCR (bse_fundamentals.json) ----
@@ -233,11 +234,16 @@ def main():
                 cap = "%s results: PAT ₹%s cr" % (qlabel(int(qe)), ("%.2f" % pat) if pat is not None else "—")
                 if revv is not None: cap += " · Revenue ₹%.2f cr" % revv
                 file = "https://www.bseindia.com/stock-share-price/x/x/%s/" % scrip
-                feed.setdefault("rows", []).append([tkr, re.sub(r"\s+", " ", str(name)).strip(), dt, int(qe), cap, file])
+                feed.setdefault("rows", []).append([tkr, BN.clean_scrip_name(re.sub(r"\s+", " ", str(name))), dt, int(qe), cap, file])
                 fadd += 1
         if fadd: print("results_feed.json: +%d BSE-only confirmed-result rows (from bse_fundamentals)" % fadd)
     except Exception as ex:
         print("BSE fundamentals->feed inject skipped:", str(ex)[:80])
+
+    # rows carried from earlier runs (up to 31 days old) were written before §204 — clean them too
+    for r in feed["rows"]:
+        if isinstance(r, list) and len(r) > 1 and isinstance(r[1], str):
+            r[1] = BN.clean_scrip_name(r[1])
 
     # trim to window + sort newest-first
     lo_iso = lo.isoformat()
