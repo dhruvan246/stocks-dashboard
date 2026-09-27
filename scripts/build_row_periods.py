@@ -23,8 +23,16 @@ quarter, MAIDEN's Mar-2024 OneD is the whole year, DHARNI's Sep-2023 OneD is the
     the same length — a Mar row holding the H2 on one basis and the full year on the other proves nothing;
   * no pair counts for a basis whose rows of that year include a Jun or Dec row and already sum to its printed FY as
     quarters: then H1 + H2 == FY held only because some quarters were zero (BOHRAIND, SRPL: 0 + 0 == 0).
-  Revenue only: PAT tags are unreliable in these files (consolidated SME Yearly files print PAT 0.0 beside real
-  revenue), and every flow the card sums over a year is revenue-based or sits on the same row.
+  * a pair with a ZERO half proves nothing by itself (0 + x == x holds for an all-zero placeholder column too — VIVO
+    FY26 0 + 3.25 = 3.25, ASLIND 0 + 0 = 0; runbook §194): it counts only when PAT closes the same way from the same
+    columns with all three figures non-zero (AAYUSHBULL FY23 revenue 0 + 13.23 = 13.23, PAT 0.06 + 0.20 = 0.26), tested
+    to the filings' own rounding (fetch_bse_results_xbrl.closes).
+  Revenue is what is matched: PAT tags are unreliable in these files (consolidated SME Yearly files print PAT 0.0 beside
+  real revenue), and every flow the card sums over a year is revenue-based or sits on the same row.
+  BSE SME HALF-YEARS PROVEN BY THE FETCHER (§194): docs/bse_fundamentals.json cells with h=1 carry the arithmetic that
+  proved them ("pf": h1 + h2 = fy, PAT, the two filings). Their files usually live only on a CI runner, so this builder
+  re-checks that arithmetic itself — the h flag alone is a label and never counts — and marks the row when the revenue
+  the slice publishes is the proven half (entries tagged "src": "bse-pf", re-derived every run, never carried forward).
 
 OUTPUT  {SYM: {qEnd: {"m": 6|12, "s": revStd, "c": revCon, "f": [evidence file names]}}} for the symbols of
 docs/fin. docs/fin/<SYM>.json gets `pd` = {qEnd: m} from build_stock_fin.py, which re-checks "s"/"c" against the
@@ -51,6 +59,7 @@ TAGS = ("ReportingQuarter", "DateOfStartOfReportingPeriod", "DateOfEndOfReportin
         "NatureOfReportStandaloneConsolidated", "Symbol", "ISIN", "ScripCode")
 RE_TAG = {k: re.compile(r"<[\w-]+:%s(?:\s[^>]*)?>\s*([^<]*?)\s*<" % k) for k in TAGS}
 RE_REV = {c: re.compile(r'<[\w-]+:RevenueFromOperations contextRef="%s"[^>]*>([^<]*)<' % c) for c in ("OneD", "FourD")}
+RE_PAT = {c: re.compile(r'<[\w-]+:ProfitLossFor(?:The)?Period contextRef="%s"[^>]*>([^<]*)<' % c) for c in ("OneD", "FourD")}
 RE_END = re.compile(r'<xbrli:context id="OneD">.*?<xbrli:endDate>([\d-]+)<', re.S)
 
 
@@ -62,6 +71,13 @@ def read(path):
 def crore(m):
     try:
         return round(float(m.group(1)) / 1e7, 2) if m and m.group(1).strip() else None
+    except ValueError:
+        return None
+
+
+def rupees(m):
+    try:
+        return round(float(m.group(1))) if m and m.group(1).strip() else None
     except ValueError:
         return None
 
@@ -79,7 +95,8 @@ def parse(path):
     return {"f": os.path.basename(path), "qe": int(end.replace("-", "")), "rq": h["ReportingQuarter"] or "",
             "b": "c" if (h["NatureOfReportStandaloneConsolidated"] or "").lower().startswith("consol") else "s",
             "sym": (h["Symbol"] or "").upper(), "isin": h["ISIN"] or "", "code": h["ScripCode"] or "",
-            "one": crore(RE_REV["OneD"].search(s)), "four": crore(RE_REV["FourD"].search(s))}
+            "one": crore(RE_REV["OneD"].search(s)), "four": crore(RE_REV["FourD"].search(s)),
+            "raw": {c: (rupees(RE_REV[c].search(s)), rupees(RE_PAT[c].search(s))) for c in ("OneD", "FourD")}}
 
 
 def same_sum(a, b):          # the §181d year gate: H1 + H2 == FY
@@ -88,6 +105,35 @@ def same_sum(a, b):          # the §181d year gate: H1 + H2 == FY
 
 def same_row(a, b):          # a stored figure equals the filing's (both 2-dp crore)
     return abs(a - b) <= 0.02
+
+
+def proves(s, col, m):
+    """A revenue pair (Sep filing s's column col + Mar filing m's OneD == its FourD) proves the year unless a half is zero:
+    then only a PAT closure from the same columns, all three figures non-zero, counts (0 + x == x holds for an all-zero
+    placeholder column as well — runbook §194)."""
+    from fetch_bse_results_xbrl import closes
+    (r1, p1), (r2, p2), pf = s["raw"][col], m["raw"]["OneD"], m["raw"]["FourD"][1]
+    if r1 and r2:
+        return True
+    return bool(p1 and p2 and pf) and closes(p1, p2, pf)
+
+
+def pf_ok(qe, cell):
+    """Re-check the arithmetic a BSE h=1 cell carries (fetch_bse_results_xbrl.proof) — never the flag itself: h1 + h2 ==
+    fy with neither half zero unless PAT closes non-zero the same way; 'fy' (H2 = FY - H1) needs the Mar filing's own
+    OneD to have repeated the year (or been empty) and 0 < h1 < fy; the stored revenue must be h1 (Sep) or h2 (Mar)."""
+    pf = cell.get("pf") or {}
+    h1, h2, fy, how = pf.get("h1"), pf.get("h2"), pf.get("fy"), pf.get("how")
+    rev = cell.get("rev")
+    if None in (h1, h2, fy, rev) or how not in ("pair", "fy") or not same_sum(h1 + h2, fy):
+        return False
+    if how == "pair" and not (h1 and h2):
+        p = pf.get("pat") or [None, None, None]
+        if not (len(p) == 3 and all(p) and same_sum(p[0] + p[1], p[2])):
+            return False
+    if how == "fy" and not (0 < h1 < fy and (pf.get("m1") is None or same_row(pf["m1"], fy) or pf["m1"] == 0)):
+        return False
+    return same_row(rev, h1 if qe % 10000 == 930 else h2)
 
 
 def main():
@@ -152,9 +198,9 @@ def main():
                          and qe % 10000 in (930, 331)}):
             sep, mar = (y - 1) * 10000 + 930, y * 10000 + 331
             S, M = files.get((sym, sep), []), files.get((sym, mar), [])
-            h1s = [(v, f) for f in S for v in {f["one"], f["four"]} if v is not None]
+            h1s = [(f[k], f, c) for f in S for k, c in (("one", "OneD"), ("four", "FourD")) if f[k] is not None]
             pairs = [(h1, f1, m) for m in M if m["one"] is not None and m["four"] is not None
-                     for h1, f1 in h1s if same_sum(h1 + m["one"], m["four"])]
+                     for h1, f1, c1 in h1s if same_sum(h1 + m["one"], m["four"]) and proves(f1, c1, m)]
             # QUARTERS THAT ALREADY TILE THE YEAR veto the pair: when a basis also holds a Jun or Dec row and its rows
             # sum to that basis's printed FY as quarters, H1 + H2 == FY held only because quarters were zero
             # (BOHRAIND / SRPL sell nothing: 0 + 0 == 0 "proved" their Sep and Mar quarters were half-years).
@@ -198,26 +244,60 @@ def main():
         if marks:
             out[sym] = marks; n_rows += len(marks)
 
-    # carry forward entries this run could not re-check (their evidence files were not scanned)
+    # BSE SME half-years the fetcher proved (h=1 + pf, runbook §194) whose files this run did not pair: re-check the
+    # arithmetic they carry and mark the row when the slice publishes exactly the proven revenue on that basis, the
+    # other basis is empty or the same figure, and the basis's rows of the year do not already tile it as quarters.
+    n_pf = 0
+    bf = json.load(open(os.path.join(ROOT, "docs", "bse_fundamentals.json"), encoding="utf-8")).get("px", {})
+    for code, cells in sorted(bf.items()):
+        sym = code2tk.get(str(code))
+        if not sym or slug(sym) not in have or not isinstance(cells, dict):
+            continue
+        rv = None
+        for qe, c in sorted(cells.items()):
+            if not (str(qe).isdigit() and isinstance(c, dict) and c.get("h") == 1 and pf_ok(int(qe), c)):
+                continue
+            if qe in out.get(sym, {}):
+                continue                                    # the files already decided this row
+            if rv is None:
+                rv = json.load(open(os.path.join(a.fin, slug(sym) + ".json"), encoding="utf-8")).get("revop") or {}
+            row = rv.get(qe) or []
+            i = 1 if c.get("basis") == "C" else 0
+            v, other = (row[i] if len(row) > i else None), (row[1 - i] if len(row) > 1 - i else None)
+            if v is None or not same_row(v, c["rev"]) or (other is not None and not same_row(other, v)):
+                continue
+            y = int(qe) // 10000 + (1 if int(qe) % 10000 == 930 else 0)
+            qs = [str(q) for q in ((y - 1) * 10000 + 630, (y - 1) * 10000 + 930, (y - 1) * 10000 + 1231, y * 10000 + 331)]
+            vals = [rv[q][i] for q in qs if len(rv.get(q) or ()) > i and rv[q][i] is not None]
+            if any(len(rv.get(q) or ()) > i and rv[q][i] is not None for q in (qs[0], qs[2])) and \
+                    same_sum(sum(vals), c["pf"]["fy"]):
+                continue                                    # quarters already tile the year (the file rule's veto)
+            out.setdefault(sym, {})[qe] = {"m": 6, "s": row[0] if row else None, "c": row[1] if len(row) > 1 else None,
+                                          "f": sorted(c["pf"].get("f") or []), "src": "bse-pf"}
+            n_rows += 1; n_pf += 1
+
+    # carry forward entries this run could not re-check (their evidence files were not scanned); "bse-pf" entries are
+    # re-derived from docs/bse_fundamentals.json every run, so one that no longer proves is dropped, not carried
     old = {}
     if os.path.exists(a.out):
         old = {k: v for k, v in json.load(open(a.out, encoding="utf-8")).items() if not k.startswith("_")}
     kept = 0
     for sym, qs in old.items():
         for qe, e in qs.items():
-            if qe not in out.get(sym, {}) and not (set(e.get("f") or ()) & scanned):
+            if qe not in out.get(sym, {}) and not (set(e.get("f") or ()) & scanned) and e.get("src") != "bse-pf":
                 out.setdefault(sym, {})[qe] = e; kept += 1
     added = sum(1 for s in out for q in out[s] if q not in old.get(s, {}))
     dropped = sum(1 for s in old for q in old[s] if q not in out.get(s, {}))
     n6 = sum(1 for s in out for q in out[s] if out[s][q]["m"] == 6)
     print("filings read %d (%d undated, %d not on a published page); rows proven %d (6-month %d, 12-month %d) on "
-          "%d symbols; carried forward %d; vs the committed list: +%d −%d"
+          "%d symbols, %d of them from BSE h=1 proofs; carried forward %d; vs the committed list: +%d −%d"
           % (len(paths), sum(1 for x in facts if not x), unmatched, n_rows + kept, n6, n_rows + kept - n6,
-             len(out), kept, added, dropped))
+             len(out), n_pf, kept, added, dropped))
     if a.dry:
         return
-    doc = {"_note": "Result rows proven to cover 6 or 12 months (runbook §191) — built by scripts/build_row_periods.py; "
-                    "never edit by hand. {SYM: {qEnd: {m: months, s/c: the revenue proven, f: evidence filings}}}"}
+    doc = {"_note": "Result rows proven to cover 6 or 12 months (runbook §191, §194) — built by scripts/build_row_periods.py; "
+                    "never edit by hand. {SYM: {qEnd: {m: months, s/c: the revenue proven, f: evidence filings, "
+                    "src: 'bse-pf' when proven by a BSE h=1 cell's arithmetic}}}"}
     doc.update({s: dict(sorted(out[s].items())) for s in sorted(out)})
     with open(a.out, "w", encoding="utf-8") as fh:
         json.dump(doc, fh, ensure_ascii=False, separators=(",", ":"))
