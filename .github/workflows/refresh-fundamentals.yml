@@ -276,6 +276,17 @@ jobs:
       # `data` release asset like refresh-market-mood does, via fetch_release_bin.py (never
       # `gh release download`, whose tag listing can lag a re-upload, DATA_RUNBOOK §146).
       # Non-fatal on download failure, but it now leaves a visible ::warning:: in the run.
+      # Result-day reaction timing (runbook §193): a result broadcast after the 15:30 close is first traded the
+      # NEXT session, so the payload builder needs each filing day's BSE broadcast times. Fetch only days not
+      # yet cached (+ the last 3, still filling); bounded and non-fatal — an unknown time keeps the filing-day
+      # reaction. The visibility date (ann) is NOT touched: midnight rule, §149.
+      - name: Fetch BSE broadcast times for results-page filing days
+        run: |
+          NIGHTLY=0; case "$(date -u +%H)" in 15|16) NIGHTLY=1;; esac      # same gate as the payload rebuild below
+          if [ ! -f docs/.fund_updated ] && [ "$NIGHTLY" != "1" ]; then echo "no rebuild this run — skipped"; exit 0; fi
+          python3 -X utf8 scripts/fetch_filing_times.py --result-dates --max-minutes 12 \
+            || echo "::warning::result broadcast-time fetch failed — reactions for new filings use the filing day until the next run"
+
       - name: Rebuild Quarterly Results payload (fresh prices)
         env:
           GH_TOKEN: ${{ github.token }}
@@ -348,6 +359,7 @@ jobs:
           [ -f scripts/_ipo_base_skips.json ] && cp scripts/_ipo_base_skips.json /tmp/_ipo_base_skips.json
           [ -f scripts/excise_duty.json ] && cp scripts/excise_duty.json /tmp/excise_duty.json
           [ -f scripts/filing_times_cache.json.gz ] && cp scripts/filing_times_cache.json.gz /tmp/filing_times_cache.json.gz
+          [ -f scripts/result_times_cache.json.gz ] && cp scripts/result_times_cache.json.gz /tmp/result_times_cache.json.gz
           # ann-date truth ledger + reconcile skip tracker (runbook 104) — written by the reconcile
           # step earlier in this job; must survive the reset --hard below or every night refetches
           [ -f scripts/ann_date_fills.json ] && cp scripts/ann_date_fills.json /tmp/ann_date_fills.json
@@ -391,6 +403,7 @@ jobs:
             git add docs/quarterly_results.json
             [ -f /tmp/_ipo_base_skips.json ] && cp /tmp/_ipo_base_skips.json scripts/_ipo_base_skips.json && git add scripts/_ipo_base_skips.json
             [ -f /tmp/filing_times_cache.json.gz ] && cp /tmp/filing_times_cache.json.gz scripts/filing_times_cache.json.gz && git add scripts/filing_times_cache.json.gz
+            [ -f /tmp/result_times_cache.json.gz ] && cp /tmp/result_times_cache.json.gz scripts/result_times_cache.json.gz && git add scripts/result_times_cache.json.gz
             # ★ ann-date truth (runbook 104): persist ledger + skips, then RE-ASSERT the override
             # ledger onto the post-reset/post-merge payload — same rationale as settle_stale_holds
             # above: the reset threw away the pre-reset application, and other writers' payloads

@@ -25,6 +25,8 @@ Run: python -X utf8 scripts/build_quarterly_results.py
 """
 import os, json, gzip, datetime, statistics
 from bisect import bisect_left
+import sys as _sys; _sys.path.insert(0, os.path.dirname(os.path.abspath(__file__)))
+import reaction_timing as RT
 
 HERE = os.path.dirname(os.path.abspath(__file__))
 DOCS = os.path.join(HERE, "..", "docs")
@@ -132,6 +134,12 @@ def main():
     sr_cut = int((today - datetime.timedelta(days=SR_WINDOW_DAYS)).strftime("%Y%m%d"))
 
     out_co, n_rx, n_sr = {}, 0, 0
+    n_after = n_known = 0
+    try:
+        import bse_resolve                         # NSE symbol -> BSE scrip, ISIN-guarded, for broadcast times
+        _scrips = bse_resolve.by_id()
+    except Exception:
+        _scrips = {}
     syms = set(fund) | set(revop)
     for sym in sorted(syms):
         pdata = px.get(sym)
@@ -197,11 +205,15 @@ def main():
         if all(r is None for r in rows):
             continue
 
-        # price reaction + drift
+        # price reaction + drift. A filing broadcast after the 15:30 close is first traded the NEXT session
+        # (runbook §193): its reaction = close(next session) / close(filing day). ann itself stays the
+        # calendar filing day (midnight visibility rule, §149). No broadcast record -> the filing day, as before.
         for qe, ann in anns.items():
             i = qidx[qe]
-            j = bisect_left(d, ann)
-            if j <= 0 or j >= len(d): continue
+            ac = RT.after_close(ann, scrip=_scrips.get(sym), sym=sym)
+            n_after += bool(ac); n_known += ac is not None
+            j = RT.reaction_index(d, ann, ac)
+            if j is None or j <= 0: continue
             # reaction day must be within ~10 calendar days of ann (suspended names drop out)
             dd = datetime.date(d[j] // 10000, (d[j] // 100) % 100, d[j] % 100)
             ad = datetime.date(ann // 10000, (ann // 100) % 100, ann % 100)
@@ -249,6 +261,8 @@ def main():
     n_lq = sum(1 for v in out_co.values() if v["q"][0] is not None)
     print("WROTE %s: %d companies, %.1f MB (reactions %d, drift %d, latest-qtr reporters %d)"
           % (os.path.normpath(OUT), len(out_co), mb, n_rx, n_sr, n_lq))
+    print("  broadcast time known for %d filings; %d after the 15:30 close -> reaction read on the next session"
+          % (n_known, n_after))
 
 if __name__ == "__main__":
     main()

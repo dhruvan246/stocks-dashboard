@@ -22115,3 +22115,23 @@ all dates Apr-Aug 2026, none after the company's own Jun-2026 filing. Hand-check
    anchor — a meeting date reads the same). `exact-fr`: an earlier filing BSE itself filed under "Financial Results",
    naming no period, in the band before the first period-naming one, wins — unless it is a postponement/intimation
    notice (522235 05-29 "Intimation relating to Postponement of Board meeting").
+
+## §193 — RESULT-DAY REACTION = THE FIRST SESSION THAT COULD TRADE THE RESULT (2026-09-27, user: "Yes")
+**Decision:** a result broadcast after the 15:30 close is first priced the NEXT session, so the results page's
+"result-day reaction" (q-row index 7, and the since-result drift index 8 from that bar) for an after-close filing =
+close(next session) / close(filing day). **The visibility date is unchanged** — `ann` stays the calendar filing day
+(midnight rule §149; `guard_visibility_rule.py` still passes); only the reaction arithmetic reads a later bar.
+- `scripts/reaction_timing.py` — `after_close(ann, scrip, sym)`: True only when EVERY BSE Result-category broadcast
+  that company made that day was after 15:30 (a pre-close one = tradable that day → False); None when no record →
+  the builders keep the filing-day bar (old behaviour, never a guess). `reaction_index()` = the bar. Evidence:
+  `scripts/result_times_cache.json.gz` (NEW, tracked: `fetch_filing_times.py --result-dates` = every results-page
+  filing day, 795 days / 0 failures on first fill), the month-end `filing_times_cache.json.gz`, and results_feed.json
+  times by symbol (last 31 days). NSE symbols map to BSE scrips via `bse_resolve.by_id()` (ISIN-guarded).
+- Both builders use it: `build_quarterly_results.py` (prints "broadcast time known for N; M after the close"),
+  `build_bse_results.py`. refresh-fundamentals.yml fetches new days' times (bounded 12 min, non-fatal, same gate as
+  the payload rebuild) before rebuilding and persists the cache in its commit loop.
+- **Coverage (27-Sep build, data end 2026-09-25):** NSE rows 17,249 of 28,934 filings timed (10,286 after close);
+  BSE-only 4,299 of 5,101 (3,286 after close). Untimed = no BSE Result-category broadcast that day (NSE-only
+  companies; results filed under another BSE category — e.g. RELIANCE Jun-26 on 2026-07-20). **9,185 reactions
+  moved**; checked on raw closes: ESDS Jun-26 (filed 24-Sep 20:30) +4.66 → −5.00 (1853.15 → 1760.50), RELIANCE
+  Mar-26 (filed 24-Apr after close) −1.16 → +2.86 (27-Apr), PERNIASPOP −3.40 → +2.86, TCS Mar-26 1.16 → −2.50.

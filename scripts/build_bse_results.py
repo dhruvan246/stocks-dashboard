@@ -16,6 +16,7 @@ Run: python -X utf8 scripts/build_bse_results.py
 """
 import os as _o, sys as _s; _s.path.insert(0, _o.path.dirname(_o.path.abspath(__file__))); import bse_headers as BH  # §181 BSE headers
 import os, sys, json, gzip, datetime
+import reaction_timing as RT
 HERE = os.path.dirname(os.path.abspath(__file__))
 D = os.path.join(HERE, "..", "docs")
 QR = os.path.join(D, "quarterly_results.json")
@@ -45,13 +46,14 @@ def ann_ok(qe, ann):
 
 MAX_GAP = 10     # calendar days: a close further away than this is not "the session" around the filing
 
-def reaction(series, ann):
+def reaction(series, ann, after=None):
     """(result-day move %, since-result drift %) from a scrip's close series and an ann date int.
     Both the reaction bar and the PRIOR close must sit within MAX_GAP days of the filing — a suspended
     or thinly-traded scrip otherwise compared against a close from years earlier (BIRLACOT +16,284%)."""
     if not series or not ann: return None, None
     d, c = series["d"], series["c"]
-    j = next((i for i, x in enumerate(d) if x >= ann), None)
+    # after-close filing (broadcast after 15:30) -> the NEXT session is the reaction bar (runbook §193)
+    j = RT.reaction_index(d, ann, after)
     if j is None or j == 0: return None, None
     if (_day(d[j]) - _day(ann)).days > MAX_GAP or (_day(ann) - _day(d[j - 1])).days > MAX_GAP:
         return None, None
@@ -73,13 +75,13 @@ def main():
     import bse_resolve
     co, overlay = {}, {}
 
-    def row(rec, qe, series):
+    def row(rec, qe, series, scrip):
         """q row [revS,opS,patS,revC,opC,patC,ann,rx,sr]: the figures go ONLY into their own basis
         slots — copying one number into both made the page compare a consolidated quarter with a
         standalone one (664 mixed YoY pairs, CELLA +26,474%)."""
         ann = rec.get("ann") or 0
         if not ann_ok(qe, ann): ann = 0
-        rx, sr = reaction(series, ann) if ann else (None, None)
+        rx, sr = reaction(series, ann, RT.after_close(ann, scrip=scrip)) if ann else (None, None)
         v = [rec.get("rev"), rec.get("op"), rec.get("pat")]
         return (([None] * 3 + v) if rec.get("basis") == "C" else (v + [None] * 3)) + [ann or None, rx, sr]
     for code, qs in fund.items():
@@ -103,7 +105,7 @@ def main():
             for qe, rec in qs.items():
                 if qidx.get(int(qe)) is None: continue
                 if rec.get("rev") is None and rec.get("pat") is None and rec.get("op") is None: continue
-                e[str(int(qe))] = row(rec, qe, series_o)
+                e[str(int(qe))] = row(rec, qe, series_o, code)
             if not e: overlay.pop(tkr, None)
             continue
         q = [None] * len(quarters)
@@ -112,7 +114,7 @@ def main():
         for qe, rec in qs.items():
             qi = qidx.get(int(qe))
             if qi is None: continue
-            q[qi] = row(rec, qe, series)
+            q[qi] = row(rec, qe, series, code)
             any_num = True
         if not any_num: continue
         f = 1 if (sec in FIN_SECTORS) else 0

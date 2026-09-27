@@ -57,7 +57,53 @@ def fetch_date(dstr):
         time.sleep(0.4)
     return out
 
+RESULT_CACHE = os.path.join(HERE, 'result_times_cache.json.gz')
+
+def result_dates():
+    """Every filing day shown on the results page (docs/quarterly_results.json + docs/bse_results.json
+    q-row index 6) — the days whose broadcast TIMES decide the result-day reaction bar (runbook §193)."""
+    out = set()
+    for name in ('quarterly_results.json', 'bse_results.json'):
+        try: d = json.load(open(os.path.join(HERE, '..', 'docs', name), encoding='utf-8'))
+        except (OSError, ValueError): continue
+        for c in (d.get('co') or {}).values():
+            for r in c.get('q') or []:
+                if r and len(r) > 6 and r[6]: out.add(str(r[6]))
+    return sorted(out)
+
+def main_result_dates():
+    """--result-dates [--max-minutes N]: fill scripts/result_times_cache.json.gz for every results-page filing
+    day not yet stored (month-ends already in filing_times_cache.json.gz are skipped). The last 3 days are
+    re-fetched every run (a day's broadcasts are still arriving). Resumable; saves after every date."""
+    mm = float(sys.argv[sys.argv.index('--max-minutes') + 1]) if '--max-minutes' in sys.argv else 0
+    try: store = json.loads(gzip.decompress(open(RESULT_CACHE, 'rb').read()))
+    except (OSError, ValueError): store = {}
+    try: monthend = set(json.loads(gzip.decompress(open(os.path.join(HERE, 'filing_times_cache.json.gz'), 'rb').read())))
+    except (OSError, ValueError): monthend = set()
+    ist_today = time.strftime('%Y%m%d', time.gmtime(time.time() + 5.5 * 3600))
+    recent = time.strftime('%Y%m%d', time.gmtime(time.time() + 5.5 * 3600 - 3 * 86400))
+    dates = [d for d in result_dates() if d <= ist_today]
+    todo = [d for d in dates if (d not in store and d not in monthend) or d >= recent]
+    print(f'{len(dates)} results-page filing days, {len(todo)} to fetch', flush=True)
+    t0 = time.time(); fails = 0
+    for i, d in enumerate(todo):
+        if mm and (time.time() - t0) / 60 > mm:
+            print('time budget reached — stopping (resumable)', flush=True); break
+        try:
+            store[d] = fetch_date(d)
+            print(f'[{i+1}/{len(todo)}] {d}: {len(store[d])} scrips', flush=True)
+        except Exception as e:
+            fails += 1
+            print(f'[{i+1}/{len(todo)}] {d}: FAILED {e}', flush=True)
+        if (i + 1) % 10 == 0 or i + 1 == len(todo):
+            open(RESULT_CACHE, 'wb').write(gzip.compress(json.dumps(store, separators=(',', ':'), sort_keys=True).encode()))
+        time.sleep(0.3)
+    open(RESULT_CACHE, 'wb').write(gzip.compress(json.dumps(store, separators=(',', ':'), sort_keys=True).encode()))
+    print('done; result-time days stored:', len(store), '| failed this run:', fails, flush=True)
+
 def main():
+    if '--result-dates' in sys.argv:
+        return main_result_dates()
     dates = [str(x) for x in json.load(open(os.path.join(HERE, '_gate_dates.json')))]
     path = os.path.join(HERE, '_filing_times.json')
     store = json.load(open(path)) if os.path.exists(path) else {}
