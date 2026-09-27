@@ -1507,7 +1507,8 @@ function shpHistView(){
     if(r[6]) return r[6]<=iso;
     const qe=new Date(r[0]); qe.setDate(qe.getDate()+45);
     return qe.toISOString().slice(0,10)<=iso;
-  });
+  // a re-filed quarter (§142k: [8] re-filing date, [9] original five %) shows the ORIGINAL until the re-filing was public
+  }).map(r=>(r[8]&&r[8]>iso&&Array.isArray(r[9]))?[r[0],...r[9],r[6],r[7]]:r);
 }
 function renderSHPdeep(){
   const view=shpHistView();

@@ -21629,6 +21629,16 @@ now re-judged even when a former ticker holds the quarter → full build = commi
 counts identical. Page feed: 3 cells change (EPUJA / HBGHOTELS / SUCROSA, inside the 8-quarter window); the commit carries main's feed
 with only those 3 cells — a local rebuild would also have shipped the "-$" company names that today's 19:54 daily refresh put into
 dash_slim.bin (310 names; 0 on 25-Sep), which is that pipeline's defect, flagged separately.
+**Stock page showed the ORIGINAL of every re-filed quarter (found the same night, LIVE check of HBGHOTELS).** §142k's rule is
+"the stock page shows the latest re-filing", and sw v157 shipped that for the 8-quarter feed — but the page PREFERS the slice's full
+history `shpH`, which `build_stock_fin.py` cut straight from shp_history.json (originals only), so HBGHOTELS MAR 2026 read 69.35%
+beside a feed/engine 69.80%, and none of the 930 re-filed quarters (§180c's 623 included) reached the page. Fix: `build_stock_fin`
+overlays scripts/shp_revisions.json onto shpH exactly as build_feed does (re-filing's five %, the original's date + holder count;
+identical re-publications skipped) and appends [8] the re-filing's date + [9] the original five; `stock.html shpHistView()` shows [9]
+when Rewind is before [8]. Slices rebuilt to scratch: 1,059 shpH rows on 577 slices change (930 store pairs + old-name slices that
+fold the same rows), every other slice field byte-identical. Tested on the live page with the rebuilt rows injected: 360ONE Mar-26
+rewound to 5-May → DII 12.86 (original, re-filing public 25-May), to 10-Jun → 12.75, live → 12.75 with Jun-26 shown; trend chart
+draws. sw v201.
 ## §182 — THE BSE RESULTS READERS NO LONGER HARD-CODE THE JUNE-2026 QUARTER (2026-09-27, user: "fix all")
 **Found by a prompt audit, measured on origin/main 99e9129d0.** Every reader of a scanned result filing was pinned to Q1 FY27:
 `fetch_bse_fund.py`'s vision fallback asked Claude/Gemini for "30 June 2026" and filed the answer under `20260630` with a
