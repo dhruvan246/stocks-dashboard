@@ -21562,6 +21562,14 @@ INNOVATIVE were another company (both fixed).
 198 revision-class FARs equal the company's REVISED filing (now served from its date via the re-filings above), 41 are the NBFC
 row inside Institutions(Domestic), the rest ARC / FPI-row / rounding conventions. Tools: ~/stocks-cache/shp/verify/.
 
+**§180d gap round (2026-09-27 ~18:45 IST).** Remaining 2020-2026 gaps measured by cause on main: stored under a former ticker 338 (on
+the live pages — 169/169 checked), held 163, BSE list fetched but no filing 3,081 (2,620 of the BSE-only ones are Jun/Dec of
+half-yearly BSE SME filers — nothing exists), and ~470 fillable. ISIN -> BSE code from the BSE bhavcopies (9,806 ISINs; bse_scrips
+misses many dual-listed codes, RELINFRA). Result: +16 cells (GENSOL 2020-23 ×13, AGSTRA, BLUECHIP, GFSTEELS) + 2 re-filings
+(GENSOL Mar-2022 71.17 = Screener; LASTMILE Mar-2024); 7/7 Screener second readings match except GENSOL Mar-2022 = its revision.
+NOT fillable by machine: 130 NSE-only companies / 417 cells — NSE's XBRL link is 404 (203 dead links in the manifest) or NSE lists no
+filing before Sep-2021, and they are not on BSE (only their announcement PDFs remain -> vision, user's call). Stranded renames found:
+HEG -> HEGAM (not flagged by the tripwire) and SILLYMONKS -> CRESTO (flagged, unmerged) — separate §30 task.
 ## §182 — THE BSE RESULTS READERS NO LONGER HARD-CODE THE JUNE-2026 QUARTER (2026-09-27, user: "fix all")
 **Found by a prompt audit, measured on origin/main 99e9129d0.** Every reader of a scanned result filing was pinned to Q1 FY27:
 `fetch_bse_fund.py`'s vision fallback asked Claude/Gemini for "30 June 2026" and filed the answer under `20260630` with a
