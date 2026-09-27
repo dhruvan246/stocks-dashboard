@@ -85,6 +85,26 @@
    "stored_pat_con": -3.64
   }
  },
+ "APLAB": {
+  "20201231": {
+   "correct_pat_con": -0.47,
+   "defect": "mis-scaled std value in the con slot (runbook \u00a7194)",
+   "source": "Consolidated slot held the mis-scaled standalone figure (-46.73 = 100 x the healed std -0.47; std healed in this ledger, runbook \u00a7194). APLAB reports consolidated == standalone in all 9 other quarters where both are stored, so con = std = -0.47. Found by the 20-minute live re-check after the \u00a7194 push.",
+   "stored_pat_con": -46.73
+  },
+  "20210930": {
+   "correct_pat_con": -2.62,
+   "defect": "mis-scaled std value in the con slot (runbook \u00a7194)",
+   "source": "Consolidated slot held the mis-scaled standalone figure (-262.12 = 100 x the healed std -2.62; std healed in this ledger, runbook \u00a7194). APLAB reports consolidated == standalone in all 9 other quarters where both are stored, so con = std = -2.62. Found by the 20-minute live re-check after the \u00a7194 push.",
+   "stored_pat_con": -262.12
+  },
+  "20211231": {
+   "correct_pat_con": 0.78,
+   "defect": "mis-scaled std value in the con slot (runbook \u00a7194)",
+   "source": "Consolidated slot held the mis-scaled standalone figure (78.18 = 100 x the healed std 0.78; std healed in this ledger, runbook \u00a7194). APLAB reports consolidated == standalone in all 9 other quarters where both are stored, so con = std = 0.78. Found by the 20-minute live re-check after the \u00a7194 push.",
+   "stored_pat_con": 78.18
+  }
+ },
  "APLLTD": {
   "20190331": {
    "applied": "2026-09-05",
@@ -2161,6 +2181,14 @@
    "stored_pat": 17.94
   }
  },
+ "PANCHSHEEL": {
+  "20250930": {
+   "correct_pat_con": 2.61,
+   "defect": "mis-scaled std value in the con slot (runbook \u00a7194)",
+   "source": "Consolidated slot held the mis-scaled standalone figure (260.57 = 100 x the healed std 2.61; std healed in this ledger, runbook \u00a7194). PANCHSHEEL reports consolidated == standalone in all 24 other quarters where both are stored, so con = std = 2.61. Found by the 20-minute live re-check after the \u00a7194 push.",
+   "stored_pat_con": 260.57
+  }
+ },
  "PARACABLES": {
   "20180630": {
    "correct_pat_con": 3.28,
@@ -2444,6 +2472,14 @@
    "defect": "std-PAT two-files adjudication 2026-08-10",
    "source": "arithmetic-error correction: original 05-Nov-23 filing (8.0694) fails its own EPS (implied 2.42 vs printed 2.98) AND its own H1 (7.3461+8.0694!=17.3278); revised 15-Jan-24 filing INDAS_101053: 9.9817, EPS 2.988==2.98, H1 7.3461+9.9817=17.3278 EXACT",
    "stored_pat": 8.07
+  }
+ },
+ "SAKTHIFIN": {
+  "20210630": {
+   "correct_pat_con": 2.68,
+   "defect": "mis-scaled std value in the con slot (runbook \u00a7194)",
+   "source": "Consolidated slot held the mis-scaled standalone figure (267.54 = 100 x the healed std 2.68; std healed in this ledger, runbook \u00a7194). SAKTHIFIN reports consolidated == standalone in all 16 other quarters where both are stored, so con = std = 2.68. Found by the 20-minute live re-check after the \u00a7194 push.",
+   "stored_pat_con": 267.54
   }
  },
  "SAMMAANCAP": {

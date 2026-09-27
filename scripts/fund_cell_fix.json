@@ -5525,6 +5525,51 @@
    "fixed": 5.91,
    "why": "BAJAJST Dec-25 consolidated: stored 671.01 is the standalone slot's mis-scaled value (both bases held 671.01; the std cell is healed to 6.71 in this ledger). The consolidated filing's own second parse (sf_revop con row) reads rev 125.27 / op 9.31 / PAT 5.91, in line with the neighbouring consolidated quarters (Mar-26 2.32, Jun-26 -0.27; Mar-25 17.47, Jun-25 7.4). Runbook \u00a7194.",
    "found": "2026-09-27 results-pipeline audit (payload spot-check after the std heal)"
+  },
+  {
+   "sym": "APLAB",
+   "qe": "20201231",
+   "basis": "con",
+   "was": -46.73,
+   "fixed": -0.47,
+   "why": "Consolidated slot held the mis-scaled standalone figure (-46.73 = 100 x the healed std -0.47; std healed in this ledger, runbook \u00a7194). APLAB reports consolidated == standalone in all 9 other quarters where both are stored, so con = std = -0.47. Found by the 20-minute live re-check after the \u00a7194 push.",
+   "found": "2026-09-27 \u00a7194 live re-check"
+  },
+  {
+   "sym": "APLAB",
+   "qe": "20210930",
+   "basis": "con",
+   "was": -262.12,
+   "fixed": -2.62,
+   "why": "Consolidated slot held the mis-scaled standalone figure (-262.12 = 100 x the healed std -2.62; std healed in this ledger, runbook \u00a7194). APLAB reports consolidated == standalone in all 9 other quarters where both are stored, so con = std = -2.62. Found by the 20-minute live re-check after the \u00a7194 push.",
+   "found": "2026-09-27 \u00a7194 live re-check"
+  },
+  {
+   "sym": "APLAB",
+   "qe": "20211231",
+   "basis": "con",
+   "was": 78.18,
+   "fixed": 0.78,
+   "why": "Consolidated slot held the mis-scaled standalone figure (78.18 = 100 x the healed std 0.78; std healed in this ledger, runbook \u00a7194). APLAB reports consolidated == standalone in all 9 other quarters where both are stored, so con = std = 0.78. Found by the 20-minute live re-check after the \u00a7194 push.",
+   "found": "2026-09-27 \u00a7194 live re-check"
+  },
+  {
+   "sym": "SAKTHIFIN",
+   "qe": "20210630",
+   "basis": "con",
+   "was": 267.54,
+   "fixed": 2.68,
+   "why": "Consolidated slot held the mis-scaled standalone figure (267.54 = 100 x the healed std 2.68; std healed in this ledger, runbook \u00a7194). SAKTHIFIN reports consolidated == standalone in all 16 other quarters where both are stored, so con = std = 2.68. Found by the 20-minute live re-check after the \u00a7194 push.",
+   "found": "2026-09-27 \u00a7194 live re-check"
+  },
+  {
+   "sym": "PANCHSHEEL",
+   "qe": "20250930",
+   "basis": "con",
+   "was": 260.57,
+   "fixed": 2.61,
+   "why": "Consolidated slot held the mis-scaled standalone figure (260.57 = 100 x the healed std 2.61; std healed in this ledger, runbook \u00a7194). PANCHSHEEL reports consolidated == standalone in all 24 other quarters where both are stored, so con = std = 2.61. Found by the 20-minute live re-check after the \u00a7194 push.",
+   "found": "2026-09-27 \u00a7194 live re-check"
   }
  ],
  "retracted": [

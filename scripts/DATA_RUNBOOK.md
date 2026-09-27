@@ -22309,3 +22309,9 @@ archive). Home card (`data-kind="eod"`, no live poll; levels ≥1 lakh print wit
 `index-chart.html?ix=smeipo` (REG entry `bse:true`: BSE source note, no Yahoo poll; linear axis clamps at 0).
 **Next (stage 2):** point-in-time membership 2012→ rebuilt from the BSE bhavcopy cache (§149) by the rule above, checked
 against today's official list and against the official level; then `survivorship/bsesmeipo.json` + every page's universe.
+**§194a — the consolidated twins of five scale heals (2026-09-27, the 20-min live re-check).** The §194 screen compared each basis with
+its own sf_revop slot, so where sf_revop has NO con PAT the con slot kept the same mis-scaled number the std slot had: APLAB Dec-20
+(−46.73), Sep-21 (−262.12), Dec-21 (78.18), SAKTHIFIN Jun-21 (267.54), PANCHSHEEL Sep-25 (260.57) — each exactly 100 × the healed std.
+All three report con == std in every other stored quarter (7 / 16 / 24 quarters), so con = the healed std (fund_cell_fix + owners pin +
+pat_defects). **Rule:** a scale heal on one basis must check the other basis's cell of the same quarter — equal-to-the-old-value means
+the same defect. WATERBASE Dec-19 con 8.55 (std healed 73.2→0.73) is NOT such a copy and was left.
