@@ -446,7 +446,7 @@
         <div class="flex justify-between items-start gap-3">
           <div class="min-w-0">
             <h3>${esc(it.name)}<span class="tick">${esc(it.ticker || it.scrip || '')}</span>${it.sme && lane !== 'sme' ? '<span class="tag">SME</span>' : ''}</h3>
-            <div class="imeta"><span>Published ${esc(it.date)}</span><span>Mcap ₹${fmt(it.mcap, 0)} cr</span>${it.industry ? `<span>${esc(it.industry)}</span>` : ''}${it.nse ? `<span>NSE ${esc(it.nse)}</span>` : ''}<span>BSE ${esc(it.scrip || '')}</span></div>
+            <div class="imeta"><span>Published ${esc(it.date)}</span><span>Mcap ₹${fmt(it.mcap, 0)} cr</span>${it.industry ? `<span>${esc(it.industry)}</span>` : ''}${it.nse ? `<span>NSE ${esc(it.nse)}</span>` : ''}${/^\d+$/.test(String(it.scrip || '')) ? `<span>BSE ${esc(it.scrip)}</span>` : ''}</div>
           </div>
           <span class="lane ${lane}">${esc(LANE_LABEL[lane])}</span>
         </div>
@@ -518,7 +518,8 @@
     const tr = document.createElement('tr');
     if (r.stale) tr.className = 'is-stale';
     const flag = r.stale ? ` <span class="pill" title="${esc(r.stale_reason || '')}">stale</span>`
-      : (r.source === 'bhavcopy' ? ` <span class="pill" title="${esc(r.adj_note || '')}">bhavcopy</span>` : '');
+      : (r.source === 'bhavcopy' ? ` <span class="pill" title="${esc(r.adj_note || '')}">bhavcopy</span>`
+        : r.source === 'nse-bhavcopy' ? ` <span class="pill" title="${esc(r.adj_note || '')}">NSE</span>` : '');
     tr.innerHTML = `<td>${esc(r.name || r.ticker)}${flag}</td><td>${esc(r.call_date)}</td><td class="n">${fmt(r.call_close, 2)}</td><td class="n">${fmt(r.last_close, 2)} <span class="muted">${esc(r.last_date || '')}</span></td><td class="n">${pct(r.ret_pct)}</td><td class="n">${fmt(r.peak_close, 2)} <span class="muted">${esc(r.peak_date)}</span></td><td class="n">${pct(r.peak_pct)}</td><td class="n">${r.days}</td>`;
     tb.appendChild(tr);
   });
