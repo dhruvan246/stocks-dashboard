@@ -31,6 +31,7 @@
     .lane { font-size: 11px; padding: 2px 8px; border-radius: 999px; border: 1px solid var(--border); }
     .lane.govt { border-color: #7c3aed66; color: #7c3aed; } .lane.price { border-color: #0891b266; color: #0891b2; }
     .lane.filing { border-color: #ca8a0466; color: #ca8a04; } .lane.earnings { border-color: #16a34a66; color: #16a34a; }
+    .lane.sme { border-color: #db277766; color: #db2777; }
     .disc { font-size: 12px; color: var(--text-muted); border-left: 3px solid var(--border); padding-left: 10px; }
     /* A lane that could not be read is not a quiet lane. Anything built from a file older than the
        run's own as-of date says so here, in the section it belongs to, not only in the run log. */
@@ -83,7 +84,7 @@
   <section id="ideas" class="mb-8" data-jump="Ideas">
     <div class="flex flex-wrap items-center gap-2 mb-3">
       <h2 class="text-lg font-semibold">Ideas</h2>
-      <span class="seg" id="lane"><button data-v="" class="on">All</button><button data-v="govt">Government</button><button data-v="price">Commodity</button><button data-v="filing">Filing</button><button data-v="earnings">Earnings</button></span>
+      <span class="seg" id="lane"><button data-v="" class="on">All</button><button data-v="govt">Government</button><button data-v="price">Commodity</button><button data-v="filing">Filing</button><button data-v="earnings">Earnings</button><button data-v="sme">SME</button></span>
     </div>
     <div class="daypick mb-3" id="daypick">
       <label for="day" class="muted">Published on</label>
@@ -192,6 +193,8 @@
 
   // which lane an idea came from: the run writes trigger = "price: ...", "filing: ...", "govt: ...", "earnings: ..."
   const laneOf = (it) => {
+    // SME deep-dives written on request carry lane = "sme" (trigger "sme: ...")
+    if (String(it.lane || '').toLowerCase() === 'sme') return 'sme';
     const t = String(it.scope === 'govt' ? 'govt' : (it.lane || it.trigger || '')).toLowerCase();
     // anchor the WHOLE alternation: /^govt|government/ would match "government" anywhere in the trigger
     if (/^(govt|government|scheme|cabinet|news \(govt)/.test(t)) return 'govt';
@@ -199,7 +202,7 @@
     if (/^(earn)/.test(t)) return 'earnings';
     return 'filing';
   };
-  const LANE_LABEL = { govt: 'Government', price: 'Commodity', filing: 'Filing', earnings: 'Earnings' };
+  const LANE_LABEL = { govt: 'Government', price: 'Commodity', filing: 'Filing', earnings: 'Earnings', sme: 'SME' };
 
   // ---- government announcements that cleared the bar ----
   if (govt) {
