@@ -43,6 +43,9 @@ jobs:
             git fetch origin main && git reset --hard origin/main
             cp "$RUNNER_TEMP/state.json" scripts/_bse_xbrl_state.json 2>/dev/null || true
             if [ "$N" -gt 0 ]; then python3 -X utf8 scripts/fetch_bse_results_xbrl.py --apply "$RUNNER_TEMP/fills.json"; fi
+            # BSE-only fills reach the results page only through bse_results.json — rebuild it here too
+            # (it used to wait for the next refresh-bse run)
+            if [ "$N" -gt 0 ]; then python3 -X utf8 scripts/build_bse_results.py && git add docs/bse_results.json; fi
             git add docs/bse_fundamentals.json docs/sf_fundamentals.json docs/sf_revop.json scripts/revop_fundamentals.json scripts/xbrl_extra.json.gz
             git add -f scripts/_bse_xbrl_state.json 2>/dev/null || true
             if git diff --cached --quiet; then echo "nothing to commit"; exit 0; fi

@@ -47,7 +47,7 @@ def parse_dt(rec):
 def key_of(r): return "|".join((r[0], r[2], r[3], r[5]))
 
 def main():
-    today = datetime.date.today()
+    today = (datetime.datetime.utcnow() + datetime.timedelta(hours=5, minutes=30)).date()   # IST, not the runner's UTC
     start = today - datetime.timedelta(days=WINDOW_DAYS - 1)
     hdr = {"User-Agent": B.UA, "Accept": "application/json, text/plain, */*",
            "Referer": "https://www.nseindia.com/companies-listing/corporate-filings-announcements"}
@@ -131,7 +131,7 @@ def main():
 # --- Results feed (docs/results_feed.json) — the tiny slice the Quarterly Results page polls ---
 RESULT_CAP_RE = re.compile(r"financial\s+results?\s+for\s+the\s+(?:period|quarter|year)|"
                            r"submitted.{0,40}financial\s+results?", re.I)
-RESULT_CAT_RE = re.compile(r"^financial\s+result", re.I)
+RESULT_CAT_RE = re.compile(r"^(?:financial\s+result|integrated\s+filing\s*[-–]?\s*financial)", re.I)   # NSE's "Integrated Filing- Financial" (TEMPSENS, NAGAFERT)
 # ⚠️ A results filing in Jul/Aug/Sep is often a LATE March (Q4/annual) result, not the current June
 # quarter — so read the reporting period per filing and ANCHOR on an "ended" clause (never assume the
 # current season). Snap to a quarter-end month; 0 (no badge) when the period isn't stated.
@@ -148,8 +148,11 @@ _ANCHOR_RES = [
     re.compile(r"for\s+the\s+(?:quarter\s+and\s+)?(?:financial\s+)?year\s+(.{0,25}?\d{4})", re.I),  # "for the quarter and financial year March 31, 2026"
     re.compile(r"\bfor\s+((?:[A-Za-z]{3,9}\s+\d{1,2},?|\d{1,2}(?:st|nd|rd|th)?\s+[A-Za-z]{3,9}[,\s.\-]*|[A-Za-z]{3,9}[,\s.\-]*)\s*\d{4})", re.I),  # "For March 31, 2026" / "for 30th June-2026" / "for September 2025" (month+year can't be a meeting date)
 ]
-_DMY_RE = re.compile(r"(\d{1,2})(?:st|nd|rd|th)?[\s,]+([A-Za-z]{3,9})[,\s.\-]+(\d{4})", re.I)
-_MDY_RE = re.compile(r"([A-Za-z]{3,9})\s+(\d{1,2}),?\s+(\d{4})", re.I)
+_DMY_RE = re.compile(r"(\d{1,2})(?:st|nd|rd|th)?[\s,.\-]+([A-Za-z]{3,9})\.?[,\s.\-]+(\d{4})", re.I)   # + "30-Jun-2026"
+_MDY_RE = re.compile(r"([A-Za-z]{3,9})\.?\s+(\d{1,2})(?:st|nd|rd|th)?,?\s*(\d{4})", re.I)        # + "June 30,2026", "june 30th 2026", "Sept. 30, 2026"
+_ISO_RE = re.compile(r"\b(20\d{2})-(\d{2})-(\d{2})\b")                                 # "2026-06-30" -> "30.06.2026"
+_YY_RE = re.compile(r"\b(\d{1,2})([./])(\d{1,2})\2(\d{2})\b(?![./\d])")                  # "30/06/26" -> "30/06/2026"
+_TIME_RE = re.compile(r"\bat\s+\d{1,2}[.:]\d{2}|\d{1,2}[.:]\d{2}\s*(?:a\.?m|p\.?m|hrs)\b", re.I)   # a meeting's clock time
 _NUM_RE = re.compile(r"(\d{1,2})[.\-/](\d{1,2})[.\-/](\d{4})")
 _MY_RE = re.compile(r"([A-Za-z]{3,9})[,\s]+(\d{4})", re.I)          # "March, 2026" (day unstated)
 # "F.Y. 2025-26" / "FY 2025-2026" / "financial year 2025-26" -> March of the END year. Unambiguous
@@ -168,9 +171,13 @@ def qe_sane(qe, filed):
 
 def parse_qe(*texts):
     h = " ".join(str(t or "") for t in texts)
+    h = _ISO_RE.sub(lambda m: "%s.%s.%s" % (m.group(3), m.group(2), m.group(1)), h)
+    h = _YY_RE.sub(lambda m: "%s%s%s%s20%s" % (m.group(1), m.group(2), m.group(3), m.group(2), m.group(4)), h)
     for rx in _ANCHOR_RES:
         for mm in rx.finditer(h):
             seg = mm.group(1)
+            # "…meeting ended at 4.30 PM on 30th June 2026" — that 'ended' is the MEETING, not a period
+            if _TIME_RE.search(seg): continue
             m = _DMY_RE.search(seg)
             if m:
                 qe = _qe_mk(MON.get(m.group(2).lower()[:3], 0), int(m.group(3)))
@@ -233,7 +240,7 @@ def write_results_feed(allrows):
         if fx: r = [r[0], r[1], r[2], qe_sane(fx, r[2][:10]), r[4], r[5]]
         feed.append(r); have.add((r[0], r[2][:10]))
     # trim to a rolling 31-day window (matches fetch_bse_results) so preserved BSE rows don't accrete
-    cut = (datetime.date.today() - datetime.timedelta(days=31)).isoformat()
+    cut = ((datetime.datetime.utcnow() + datetime.timedelta(hours=5, minutes=30)).date() - datetime.timedelta(days=31)).isoformat()
     feed = [r for r in feed if r[2][:10] >= cut]
     feed.sort(key=lambda r: (r[2], r[0]), reverse=True)
     ist = datetime.datetime.utcnow() + datetime.timedelta(hours=5, minutes=30)

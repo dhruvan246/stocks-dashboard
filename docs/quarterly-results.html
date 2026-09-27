@@ -432,14 +432,27 @@ function patFlag(g){                              // profit→loss detection nee
   if(g.cur<0 && g.base>0) return 'PL';
   return null;
 }
-function opm(row){                                // [opm%, basis] same-basis op/rev
+function opmB(row,b){ if(!row) return null; const op=row[IDX.op[b]], rev=row[IDX.rev[b]];
+  return (op!=null&&rev!=null&&rev>0) ? op/rev*100 : null; }
+function opm(row){                                // opm% on the first basis that has one
   if(!row) return null;
-  const order = ST.basis==='con' ? ['c'] : ST.basis==='std' ? ['s'] : ['c','s'];
-  for(const b of order){
-    const op=row[IDX.op[b]], rev=row[IDX.rev[b]];
-    if(op!=null&&rev!=null&&rev>0) return op/rev*100;
-  }
+  for(const b of basisOrder()){ const v=opmB(row,b); if(v!=null) return v; }
   return null;
+}
+function opmPair(r1,r0){                          // [opm now, opm year-ago] on ONE basis for both — a
+  for(const b of basisOrder()){                   // con margin vs a std margin flipped 74 verdicts
+    const a=opmB(r1,b), z=opmB(r0,b); if(a!=null&&z!=null) return [a,z]; }
+  return [opm(r1), null];
+}
+function basisOrder(){ return ST.basis==='con' ? ['c'] : ST.basis==='std' ? ['s'] : ['c','s']; }
+/* The basis a row's DISPLAYED figures use: the one its YoY PAT growth can use (same basis both
+   quarters), else the first with a value — so the PAT shown sits next to the growth computed from it
+   (AEQUS Mar-26 showed con −53.72 beside a std-based +164.7%). */
+function rowBasis(q,qi){
+  const cur=q[qi], base=q[qi+4], ord=basisOrder();
+  for(const b of ord){ if(cur&&base&&cur[IDX.pat[b]]!=null&&base[IDX.pat[b]]!=null) return b; }
+  for(const b of ord){ if(cur&&cur[IDX.pat[b]]!=null) return b; }
+  return ord[0];
 }
 
 /* per-quarter computed records, cached per (qi|basis) */
@@ -451,11 +464,12 @@ function recsFor(qi){
   for(const sym in CO){
     const c=CO[sym], row=c.q[qi];
     if(!row) continue;
-    const [rev]=pick(row,'rev'), [pat]=pick(row,'pat'), [op]=pick(row,'op');
+    const rb=rowBasis(c.q,qi), pk=(m)=>{ const v=row[IDX[m][rb]]; return v!=null?v:pick(row,m)[0]; };
+    const rev=pk('rev'), pat=pk('pat'), op=pk('op');
     if(rev==null&&pat==null&&op==null) continue;
     const gy=growth(c.q,qi,'pat',4), gq=growth(c.q,qi,'pat',1);
     const ry=growth(c.q,qi,'rev',4), rq=growth(c.q,qi,'rev',1);
-    const o1=c.f?null:opm(row), o0=c.f?null:opm(c.q[qi+4]);
+    const [o1,o0]=c.f?[null,null]:opmPair(row,c.q[qi+4]);
     const dOpm=(o1!=null&&o0!=null)? (o1-o0)*100 : null;   // bps
     // record PAT: highest positive PAT across the stored window
     let rec=false;
@@ -570,7 +584,7 @@ function rsTickAge(){
 setInterval(rsTickAge, 30000);
 setInterval(()=>{ if(document.visibilityState==='visible') ensureRS(null,true); }, 300000);  // 5 min
 function rsMedianFor(qe){
-  if(RS_STATE!==2||!RS_DATA||ST.mode!=='yoy'||ST.sector!=='all'||ST.mcap!=='all') return null;
+  if(RS_STATE!==2||!RS_DATA||ST.mode!=='yoy'||ST.sector!=='all'||ST.mcap!=='all'||ST.basis!=='auto') return null;   // RS medians are auto-basis
   const key=OV2RS[ST.uni]; if(!key) return null;
   const u=(RS_DATA.universes||[]).find(x=>x.key===key); if(!u) return null;
   const q=(u.quarters||[]).find(x=>x.qe===qe); if(!q) return null;
@@ -890,7 +904,8 @@ function feedCard(it){
     const o0=opm(c.q[qi]);
     if(o0!=null){
       const o1=i1>=0?opm(c.q[i1]):null, o4=i4>=0?opm(c.q[i4]):null;
-      const d=o4!=null?Math.round((o0-o4)*100):null;
+      const pr=i4>=0?opmPair(c.q[qi],c.q[i4]):[o0,null];          // bps change on ONE basis
+      const d=pr[1]!=null?Math.round((pr[0]-pr[1])*100):null;
       body+='<tr><td>OPM</td><td class="'+(d==null?'text-slate-400':(d>=0?'pos':'neg'))+' font-bold" title="Margin change vs year-ago quarter, basis points">'+
         (d==null?'—':(d>=0?'⇡ ':'⇣ ')+Math.abs(d)+'bps')+'</td>'+
         '<td class="text-slate-800">'+o0.toFixed(1)+'%</td><td class="text-slate-800">'+(o1==null?'—':o1.toFixed(1)+'%')+'</td><td class="text-slate-800">'+(o4==null?'—':o4.toFixed(1)+'%')+'</td></tr>';
@@ -1483,7 +1498,13 @@ async function load(){
           const cur=c.q[qi], has=cur&&(cur[2]!=null||cur[5]!=null);
           if(has) continue;                                 // real number present → don't overlay
           const f=vfill[sym][qk], rev=f.rev==null?null:+f.rev, pat=f.pat==null?null:+f.pat, op=f.op==null?null:+f.op;
-          c.q[qi]=[rev,op,pat,rev,op,pat,+qk===20260630?20260715:0,null,null]; c.vfill=1;
+          // Into the estimate's OWN basis slots only (a con estimate in the std slot made std YoY compare
+          // it with a real std base — GOLDSTAR +1955% vs −127% same-basis), filling only empty slots so a
+          // real revenue/OP already parsed stays, and keeping the row's real ann/rx/sr. No invented date:
+          // vision_fills carries none (the old "+qk===20260630?20260715" stamped 15-Jul on every June cell).
+          const r=cur?cur.slice():[null,null,null,null,null,null,null,null,null], b=f.basis==='S'?0:3;
+          [rev,op,pat].forEach((v,k)=>{ if(v!=null&&r[b+k]==null) r[b+k]=v; });
+          c.q[qi]=r; c.vfill=1;
         } } }
     liveKeys=new Set(FEEDROWS.map(feedKey));
     $('updatedBox').innerHTML='Numbers '+esc(qr.updated)+'<br>Prices as of '+esc(qr.asof);

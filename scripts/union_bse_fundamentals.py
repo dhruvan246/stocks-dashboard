@@ -9,6 +9,8 @@ fill-only, so a differing cell means someone else changed it after the job check
 Run: python3 scripts/union_bse_fundamentals.py <job_copy.json> [target=docs/bse_fundamentals.json]
 """
 import json, os, sys
+sys.path.insert(0, os.path.dirname(os.path.abspath(__file__)))
+import qe_util as QU
 
 HERE = os.path.dirname(os.path.abspath(__file__))
 
@@ -26,12 +28,14 @@ def main():
     for code, qmap in (mine.get("px") or {}).items():
         dst = px.setdefault(code, {})
         for qe, cell in qmap.items():
+            if not str(qe).isdigit() or not QU.is_qe(int(qe)): continue   # an OCR-garbled key (26310331)
             if qe in dst:
                 old = dst[qe]
                 # a figure origin's cell LACKS (e.g. a revenue-only vision read) may be added, same basis only
                 if old.get("basis", cell.get("basis")) == cell.get("basis"):
                     for k in ("pat", "rev", "op"):
                         if old.get(k) is None and cell.get(k) is not None: old[k] = cell[k]; added += 1
+                    if not old.get("ann") and cell.get("ann"): old["ann"] = cell["ann"]; added += 1   # a date origin lacks
                 kept += old != cell
                 continue
             dst[qe] = cell; added += 1

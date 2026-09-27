@@ -144,10 +144,12 @@ RESULT_LANG = re.compile(r"(?:un-?audited|audited|financial|quarterly)\s+(?:fina
                          r"|results?\s+for\s+the\s+(?:quarter|year|period|half)", re.I)
 
 def main():
-    by_id = json.load(open(os.path.join(HERE, "bse_scrips.json"), encoding="utf-8"))["by_id"]
+    import bse_resolve                                    # ISIN-guarded: a BSE code whose ticker is an
+    by_id = bse_resolve.by_id()                           # unrelated NSE symbol is NOT that symbol (§76)
     rev = {int(v): k for k, v in by_id.items()}          # scripcode -> NSE symbol
     o = B.session(); time.sleep(1)
-    today = datetime.date.today()
+    # IST, not the runner's UTC: the 00:30 IST run used to scan up to YESTERDAY and miss post-midnight filings
+    today = (datetime.datetime.utcnow() + datetime.timedelta(hours=5, minutes=30)).date()
 
     # ---- 1. result filings feed ----
     lo = today - datetime.timedelta(days=FEED_WINDOW_DAYS - 1)
@@ -183,19 +185,22 @@ def main():
 
     feed = load(FEED, {"updated": "", "rows": []})
     have = set((r[0], r[2][:10]) for r in feed.get("rows", []) if isinstance(r, list) and len(r) >= 3)
-    have_names = set(nname(r[1]) for r in feed.get("rows", []) if isinstance(r, list) and len(r) >= 2)
+    # (company name, filing DATE): the name part catches a dual-listed co reaching us under two tickers
+    # on the same filing; the date part keeps a company's NEXT filing (a late March result, then June
+    # three weeks later) — name alone dropped every second filing inside the 31-day window.
+    have_names = set((nname(r[1]), r[2][:10]) for r in feed.get("rows", []) if isinstance(r, list) and len(r) >= 3)
     added = 0
     for r in bse_rows:
         try: sc = int(r.get("SCRIP_CD"))
         except Exception: continue
         dt = parse_dt(r.get("NEWS_DT") or r.get("DT_TM"))
         if not dt: continue
-        sym = rev.get(sc) or ticker_from_url(r.get("NSURL"), r.get("SLONGNAME"))
+        sym = rev.get(sc) or bse_resolve.bse_key(ticker_from_url(r.get("NSURL"), r.get("SLONGNAME")))
         if (sym, dt[:10]) in have: continue           # already carried by the NSE feed
         # a dual-listed co can reach us under a DIFFERENT ticker than the NSE row (INDBNK vs
         # INDBANK, resolver or fallback) — dedup by normalized company name too, unconditionally
-        if nname(r.get("SLONGNAME")) in have_names: continue
-        have.add((sym, dt[:10])); have_names.add(nname(r.get("SLONGNAME")))
+        if (nname(r.get("SLONGNAME")), dt[:10]) in have_names: continue
+        have.add((sym, dt[:10])); have_names.add((nname(r.get("SLONGNAME")), dt[:10]))
         att = str(r.get("ATTACHMENTNAME") or "").strip()
         file = (BSE_ATT + att) if att else ""
         cap = re.sub(r"\s+", " ", str(r.get("HEADLINE") or r.get("NEWSSUB") or "")).strip()
@@ -216,14 +221,14 @@ def main():
         for code, qs in fund.items():
             u = univ.get(code)
             if not u: continue
-            scrip, tkr, name = u[0], (u[1] or "").upper(), u[2]
+            scrip, tkr, name = u[0], bse_resolve.bse_key(u[1]), u[2]
             if not tkr: continue
             for qe, rec in qs.items():
                 ann = rec.get("ann") or 0
                 if ann < lo_i: continue                      # only recent (in the feed window)
                 dt = "%s-%s-%s 17:30:00" % (str(ann)[:4], str(ann)[4:6], str(ann)[6:8])
-                if (tkr, dt[:10]) in have or nname(name) in have_names: continue
-                have.add((tkr, dt[:10])); have_names.add(nname(name))
+                if (tkr, dt[:10]) in have or (nname(name), dt[:10]) in have_names: continue
+                have.add((tkr, dt[:10])); have_names.add((nname(name), dt[:10]))
                 pat = rec.get("pat"); revv = rec.get("rev")
                 cap = "%s results: PAT ₹%s cr" % (qlabel(int(qe)), ("%.2f" % pat) if pat is not None else "—")
                 if revv is not None: cap += " · Revenue ₹%.2f cr" % revv
@@ -251,17 +256,18 @@ def main():
     cal = load(CAL, None)
     if cal and isinstance(fr, list) and fr:
         chave = set((r[0], r[2]) for r in cal.get("rows", []) if isinstance(r, list) and len(r) >= 3)
-        cnames = set(nname(r[1]) for r in cal.get("rows", []) if isinstance(r, list) and len(r) >= 2)
+        cnames = set((nname(r[1]), r[2]) for r in cal.get("rows", []) if isinstance(r, list) and len(r) >= 3)
         cadd = 0
         for r in fr:
             d = parse_cal_date(r.get("meeting_date"))
             if not d or d < today.isoformat(): continue
             try: sc = int(r.get("scrip_Code"))
             except Exception: sc = None
-            sym = (sc and rev.get(sc)) or str(r.get("short_name") or "").strip().upper() or ticker_from_url(r.get("URL"), r.get("Long_Name"))
+            sym = (sc and rev.get(sc)) or bse_resolve.bse_key(str(r.get("short_name") or "").strip().upper()
+                                                             or ticker_from_url(r.get("URL"), r.get("Long_Name")))
             if (sym, d) in chave: continue
-            if nname(r.get("Long_Name")) in cnames: continue
-            chave.add((sym, d)); cnames.add(nname(r.get("Long_Name")))
+            if (nname(r.get("Long_Name")), d) in cnames: continue
+            chave.add((sym, d)); cnames.add((nname(r.get("Long_Name")), d))
             cal.setdefault("rows", []).append([sym, re.sub(r"\s+", " ", str(r.get("Long_Name") or sym)).strip(),
                                                d, "Financial Results"])
             cadd += 1

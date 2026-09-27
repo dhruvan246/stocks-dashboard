@@ -34,12 +34,27 @@ def load_prices():
         except Exception: pass
     return {"px": {}, "end": 0}
 
+def _day(i):
+    return datetime.date(i // 10000, i // 100 % 100, i % 100)
+
+def ann_ok(qe, ann):
+    """A results filing date must fall AFTER its quarter end and within ~13 months of it. Anything else
+    is a mis-read (MILEFUR Sep-23 carried ann 20260318) and must neither be shown nor price a reaction."""
+    try: return bool(ann) and 0 < (_day(ann) - _day(int(qe))).days <= 400
+    except ValueError: return False
+
+MAX_GAP = 10     # calendar days: a close further away than this is not "the session" around the filing
+
 def reaction(series, ann):
-    """(result-day move %, since-result drift %) from a scrip's close series and an ann date int."""
+    """(result-day move %, since-result drift %) from a scrip's close series and an ann date int.
+    Both the reaction bar and the PRIOR close must sit within MAX_GAP days of the filing — a suspended
+    or thinly-traded scrip otherwise compared against a close from years earlier (BIRLACOT +16,284%)."""
     if not series or not ann: return None, None
     d, c = series["d"], series["c"]
     j = next((i for i, x in enumerate(d) if x >= ann), None)
     if j is None or j == 0: return None, None
+    if (_day(d[j]) - _day(ann)).days > MAX_GAP or (_day(ann) - _day(d[j - 1])).days > MAX_GAP:
+        return None, None
     rd = (c[j] / c[j - 1] - 1) * 100 if c[j - 1] else None       # result-day vs prior close
     sr = (c[-1] / c[j] - 1) * 100 if c[j] else None              # drift to latest close
     return (round(rd, 2) if rd is not None else None,
@@ -55,12 +70,23 @@ def main():
     fund = json.load(open(FUND, encoding="utf-8"))["px"] if os.path.exists(FUND) else {}
     prices = load_prices()["px"]
 
+    import bse_resolve
     co, overlay = {}, {}
+
+    def row(rec, qe, series):
+        """q row [revS,opS,patS,revC,opC,patC,ann,rx,sr]: the figures go ONLY into their own basis
+        slots — copying one number into both made the page compare a consolidated quarter with a
+        standalone one (664 mixed YoY pairs, CELLA +26,474%)."""
+        ann = rec.get("ann") or 0
+        if not ann_ok(qe, ann): ann = 0
+        rx, sr = reaction(series, ann) if ann else (None, None)
+        v = [rec.get("rev"), rec.get("op"), rec.get("pat")]
+        return (([None] * 3 + v) if rec.get("basis") == "C" else (v + [None] * 3)) + [ann or None, rx, sr]
     for code, qs in fund.items():
         u = univ.get(code)
         if not u: continue
         scrip, tkr, name, isin, grp, fv, mc, sec = u
-        tkr = (tkr or "").upper()
+        tkr = bse_resolve.bse_key(tkr)            # 'GSTL-BSE' when GSTL is an unrelated NSE company
         if not tkr or tkr in co: continue
         # ⚠️ A ticker that IS an NSE symbol must never SHADOW the NSE company's row — but dropping it
         # outright strands the numbers. Our NSE-keyed pipeline and the BSE grind cover different
@@ -77,10 +103,7 @@ def main():
             for qe, rec in qs.items():
                 if qidx.get(int(qe)) is None: continue
                 if rec.get("rev") is None and rec.get("pat") is None and rec.get("op") is None: continue
-                ann = rec.get("ann") or 0
-                rx, sr = reaction(series_o, ann) if ann else (None, None)
-                e[str(int(qe))] = [rec.get("rev"), rec.get("op"), rec.get("pat"),
-                                   rec.get("rev"), rec.get("op"), rec.get("pat"), ann or None, rx, sr]
+                e[str(int(qe))] = row(rec, qe, series_o)
             if not e: overlay.pop(tkr, None)
             continue
         q = [None] * len(quarters)
@@ -89,10 +112,7 @@ def main():
         for qe, rec in qs.items():
             qi = qidx.get(int(qe))
             if qi is None: continue
-            rev = rec.get("rev"); pat = rec.get("pat"); op = rec.get("op"); ann = rec.get("ann") or 0
-            rx, sr = reaction(series, ann) if ann else (None, None)
-            # std and con slots both carry the (standalone) value; op filled when the filing reports it
-            q[qi] = [rev, op, pat, rev, op, pat, ann or None, rx, sr]
+            q[qi] = row(rec, qe, series)
             any_num = True
         if not any_num: continue
         f = 1 if (sec in FIN_SECTORS) else 0
@@ -107,7 +127,7 @@ def main():
         fails = json.load(open(FAILS))
         for code, n in fails.items():
             if n >= PDF_ONLY_MIN and str(code) in univ:
-                tkr = (univ[str(code)][1] or "").upper()
+                tkr = bse_resolve.bse_key(univ[str(code)][1])
                 if tkr and tkr not in co and tkr not in nse_syms: pdf_only.append(tkr)
     except Exception:
         pass

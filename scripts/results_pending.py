@@ -40,14 +40,17 @@ def _has_pat(cells, qe):
     return ((cells or {}).get(str(qe)) or {}).get("pat") is not None
 
 
-def classify():
-    """Return (qe, rows) where rows = [{sym,name,exch,scrip,mcap,status,ann,pdf}] for every
-    company that declared a result for the current quarter."""
+def classify(qe=None, unknown=True):
+    """Return (qe, rows) where rows = [{sym,name,exch,scrip,mcap,status,ann,pdf,qe}] for every
+    company that declared a result for quarter `qe` (default: the current quarter). The qe==0
+    (period-unread) rows are appended only when `unknown` is true — they belong to the current pass."""
+    import bse_resolve
     qr = _load("quarterly_results.json") or {}
-    qe = qr["quarters"][0]
+    qe = qe or qr["quarters"][0]
     CO = qr["co"]
     feed = (_load("results_feed.json") or {"rows": []})["rows"]
-    univ = {r[1].upper(): r for r in (_load("bse_universe.json") or {"rows": []})["rows"]}
+    # keyed the way the feed files a BSE-only company: 'GSTL-BSE' when GSTL is an unrelated NSE symbol
+    univ = {bse_resolve.bse_key(r[1]): r for r in (_load("bse_universe.json") or {"rows": []})["rows"]}
     bf = (_load("bse_fundamentals.json") or {}).get("px", {})
     sf = _load("sf_fundamentals.json") or {}
     vf = _load("vision_fills.json") or {}
@@ -92,8 +95,11 @@ def classify():
         # filename does not block them; NSE names are fetched from the feed's own PDF path.
         if e["status"] == "pending" and e["exch"] == "NSE" and not e["pdf"]:
             e["status"] = "no_pdf"
+        e["qe"] = qe
         seen[sym] = e
         out.append(e)
+    if not unknown:
+        return qe, out
 
     # qe==0 rows: the filing's stated period couldn't be parsed (headline had no "ended <date>"
     # clause). Before 2026-07-21 these were counted NOWHERE — not pending, not declared, invisible
@@ -115,6 +121,7 @@ def classify():
             c = CO.get(sym)
             e = {"sym": sym, "name": (c["n"] if c else r[1]), "exch": "NSE", "scrip": "",
                  "mcap": (c.get("m") if c else 0) or 0, "status": "unknown_qe", "ann": ann, "pdf": pdf}
+        e["qe"] = 0
         seen[sym] = e
         out.append(e)
     return qe, out
@@ -129,13 +136,32 @@ def find_unknown_qe(limit=12):
     return un[:limit]
 
 
-def find_pending(limit):
-    """(qe, nse, bse) in the shape bse_vision_prep expects — biggest-mcap first."""
-    qe, rows = classify()
+def _split(rows, limit):
     nse = [(e["sym"], e["name"], e["mcap"], e["pdf"], e["ann"])
            for e in rows if e["status"] == "pending" and e["exch"] == "NSE"]
     bse = [(e["scrip"], (e["sym"], e["name"], e["mcap"]))
            for e in rows if e["status"] == "pending" and e["exch"] == "BSE"]
     nse.sort(key=lambda x: -(x[2] or 0))
     bse.sort(key=lambda kv: -(kv[1][2] or 0))
-    return qe, nse[:limit], bse[:limit]
+    return nse[:limit], bse[:limit]
+
+
+def find_pending(limit):
+    """(qe, nse, bse) in the shape bse_vision_prep expects — biggest-mcap first."""
+    qe, rows = classify()
+    nse, bse = _split(rows, limit)
+    return qe, nse, bse
+
+
+def find_pending_late(limit, depth=2):
+    """[(qe, nse, bse)] for the `depth` quarters BEFORE the current one: late filers. When the newest
+    quarter flips (Jun -> Sep), every Jun filing still unread used to fall off the vision to-do list,
+    because only quarters[0] was ever classified (2026-09-27: 18 older-quarter feed rows unqueued)."""
+    qr = _load("quarterly_results.json") or {}
+    out = []
+    for qe in (qr.get("quarters") or [])[1:1 + depth]:
+        _, rows = classify(qe, unknown=False)
+        nse, bse = _split(rows, limit)
+        if nse or bse:
+            out.append((qe, nse, bse))
+    return out

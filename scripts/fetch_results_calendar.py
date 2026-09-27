@@ -37,7 +37,7 @@ def parse_date(s):
     return None
 
 def main():
-    today = datetime.date.today()
+    today = (datetime.datetime.utcnow() + datetime.timedelta(hours=5, minutes=30)).date()   # IST, not the runner's UTC
     lo, hi = today - datetime.timedelta(days=RC_BACK), today + datetime.timedelta(days=RC_FWD)
     jar = B.nse_jar()
     hdr = {"User-Agent": B.UA, "Accept": "application/json, text/plain, */*",

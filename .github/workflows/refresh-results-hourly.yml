@@ -31,7 +31,10 @@ permissions:
   actions: write
 
 concurrency:
-  group: refresh-results-hourly
+  # SHARED with refresh-announcements.yml: both rebuild and commit docs/results_feed.json by
+  # copy-after-reset, and both fire at 03:00 UTC — in separate groups the later push replaced the
+  # other's rows. One group queues them instead.
+  group: results-feed-writers
   cancel-in-progress: false
 
 jobs:

@@ -21751,3 +21751,48 @@ PAT-only): SWORDEDGE Jun-26 225.00 lakh → 2.25 cr (Jun-25 cell printed blank �
 between owners and non-controlling interests (Jun-26 total (3.63) = owners (1.64) + NCI (1.99); Jun-25 (3.08) =
 (1.39) + (1.69); printed EPS is on the TOTAL). Stored PAT = the owners' share (−0.02 / −0.01 cr); user chose the site
 rule (owners' share where minority holders exist) and basis **C**. Total, if ever wanted: −0.04 / −0.03 cr.
+
+## §187 — RESULTS-PIPELINE AUDIT: wrong-company rows, mixed bases, unbounded reactions, dropped filings (2026-09-27, user: "find more bugs in the results pipeline" → "yes fix all")
+Three read-only auditors (BSE assembly / feed + pending / NSE numbers + page) at 01712ad98; every item re-checked before fixing.
+1. **Another company's numbers on NSE rows.** The BSE overlay (and the feed, and prep's BSE fallback) matched on the TICKER
+   string. `scan_scrip_isin_conflicts.py` only read NSE's main-board EQUITY_L, so every SME ticker was "uncheckable": GSTL
+   (Globesecure vs BSE Globalspace), MAL, SEL, RAJPUTANA, ZEAL were never flagged (only KALYANI, FOCUS were). The scan now
+   also reads `SME_EQUITY_L.csv` (column `ISIN_NUMBER`) and the results-page symbols, and compares the ISIN ISSUER code
+   (chars 0-7) — a split changes only the tail (KIRLPNU INE811A01038 vs BSE master …01020 = same company; 4 such false
+   alarms suppressed). 7 conflicts recorded. `bse_resolve.bse_key(tkr)` files a clashing BSE-only company as
+   `<TICKER>-BSE`; used by build_bse_results, results_pending, fetch_bse_results (feed + calendar + inject), prep (by_id).
+   Result: overlay 9 tickers → KEL, SPELS only; GSTL-BSE, MAL-BSE, SEL-BSE, RAJPUTANA-BSE, ZEAL-BSE, FOCUS-BSE,
+   KALYANI-BSE get their own rows.
+2. **Std/con mixed.** build_bse_results copied every value into BOTH slots; the page's vision overlay did the same. Now a
+   value goes only into its own basis slots (`basis` C → 3-5, else 0-2); growth across bases becomes "—" instead of a
+   mixed number (CELLA +26,474%, GOLDSTAR +1955% → −126.8% same-basis). Page also: OPM change pairs one basis for both
+   quarters (`opmPair`, both call sites), the displayed PAT/rev/op use the basis the YoY growth used (`rowBasis`; AEQUS
+   now shows std 52.16 beside +164.7%), Season-Trends median tiles only on Auto basis. SW cache v186.
+3. **Unbounded price reactions.** build_bse_results: `ann` must fall in (quarter end, +400 d] (`ann_ok`), and both the
+   reaction bar and the PRIOR close within 10 d of the filing (4,837 → 4,627 rx cells; BIRLACOT +16,284% gone).
+   build_quarterly_results: the prior-close bound added (MODTHREAD +2000% vs a 2000 close). Its docstring no longer claims
+   the retired 15:30 gate. OPEN (user decision): for a filing after 15:30 the reaction is the filing day's move, before
+   the market could trade it — the next-session variant is NOT implemented (it is not the §149 visibility rule, but close to it).
+4. **Fake dates.** Page: vision cells no longer get `ann = 20260715`. Data: 1,805 `src:vision` Mar-2026 cells carried the
+   old merge default `ann = 20260615` (a comparative column of the June filing) — 5/5 sampled filed their March results
+   8-30 May, none on 15 Jun → set to 0 (unknown). `scripts/backfill_ann_dates_bse.py` could restore real dates (not run).
+5. **Dropped filings.** fetch_bse_results deduped by company NAME alone across the 31-day window → a company's second
+   filing (late March, then June) never entered the feed. Now (name, date), also in the calendar. Live run: +9 rows
+   (NOVIS, INDAGIV — June filings — BKMINDST ×2, ASTONEALAB …).
+6. **Only quarters[0] queued.** `results_pending.find_pending_late()` classifies the two previous quarters; bse_vision_prep
+   renders them in extra passes (`_render_nse`/`_render_bse` lifted out of main, PNG names carry the quarter, manifest
+   `qe` per company). Live: Mar-26 ELITECON, SETCO, ONEINDIG, GOWRALE; Dec-25 CMICABLES, BKMINDST rendered.
+7. **Stale payload commits.** refresh-bse rebuilds bse_results.json AFTER the union + ledger merge (it copied back a
+   pre-union build — 534 cells behind on 27-Sep 00:45); bse-results-xbrl rebuilds it when it has fills.
+8. **Season quarter list** ended at a hard-coded 2026-12 → now the last quarter that has ended (IST).
+9. **UTC dates on runners**: fetch_bse_results / fetch_announcements / fetch_results_calendar use the IST date;
+   results_coverage `updated` is labelled IST.
+10. **parse_qe**: + "30-Jun-2026", "June 30,2026", "june 30th 2026", "Sept. 30, 2026", ISO dates, 2-digit years; a segment
+   with a clock time ("ended at 4.30 PM on …") is skipped; NSE "Integrated Filing- Financial" is a results category.
+   On 59,626 real captions: 232 changed, ALL from 0 (unread) to a quarter; none previously parsed changed.
+11. refresh-announcements + refresh-results-hourly share one concurrency group (both write results_feed.json).
+12. union_bse_fundamentals fills a missing `ann`; drops garbled keys. Grind never stores a non-quarter key. 3 garbled cells
+   deleted (AGOL 26310331, BABA 10260331, PCCOSMA 12060331 — each scrip's real 20260331 cell exists).
+13. **WINSOME|2026-09-23** was ledgered to Jun-2025 off a cover-letter typo; the table heads 30.06.2026 → fix = 20260630.
+   prep's NSE path now treats "parsed X but the filing also prints the target quarter" as ambiguous (no ledger write),
+   like its qe==0 path.

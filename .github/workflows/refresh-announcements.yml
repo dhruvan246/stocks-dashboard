@@ -18,7 +18,10 @@ permissions:
   actions: write   # dispatch pages.yml after a change so the data publishes itself
 
 concurrency:
-  group: refresh-announcements
+  # SHARED with refresh-results-hourly.yml: both rebuild and commit docs/results_feed.json by
+  # copy-after-reset, and both fire at 03:00 UTC — in separate groups the later push replaced the
+  # other's rows. One group queues them instead.
+  group: results-feed-writers
   cancel-in-progress: false
 
 jobs:

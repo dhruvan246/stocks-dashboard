@@ -60,7 +60,7 @@ def main():
     # "open" = declared but no numbers yet, i.e. what the routine still owes you
     stat["open"] = stat["pending"] + stat["no_pdf"]
     doc = {
-        "updated": time.strftime("%Y-%m-%d %H:%M:%S"),
+        "updated": time.strftime("%Y-%m-%d %H:%M IST", time.gmtime(time.time() + 5.5 * 3600)),   # runners are UTC
         "qe": qe,
         "qlabel": qlabel(qe),
         "stat": stat,

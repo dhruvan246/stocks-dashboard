@@ -7,9 +7,11 @@ announce date, result-day price reaction and since-result drift (from the price 
 sector / industry / mcap / index-membership tags and a cadence-PREDICTED next result date.
 
 Price bin: env SF_BIN if set, else docs/sf_stock_data.bin. In CI the workflow downloads the fresh
-`data` release asset first (the committed docs bin is a stale snapshot — runbook §0). Reaction uses
-the 15:30-gated ann-date (runbook §12), so close(annDay)/close(prev trading day) is look-ahead-clean
-for pre-close AND post-close filings alike.
+`data` release asset first (the committed docs bin is a stale snapshot — runbook §0). Reaction =
+close(annDay)/close(prev trading day), where ann is the CALENDAR filing day (midnight rule, runbook
+§149 — the old 15:30 gate is retired). So for a filing made after 15:30 this is the move on the day
+it was filed, before the market could trade on it; whether to measure the next session instead is an
+open question for the user (runbook §187), not yet changed. Both closes must lie within 10 days.
 
 Output (compact):
 {"updated","asof","quarters":[QE ints newest-first ×13],
@@ -204,6 +206,10 @@ def main():
             dd = datetime.date(d[j] // 10000, (d[j] // 100) % 100, d[j] % 100)
             ad = datetime.date(ann // 10000, (ann // 100) % 100, ann % 100)
             if (dd - ad).days > 10: continue
+            # …and so must the PRIOR close: a gap before the filing (suspension, IPO, sparse tape) made the
+            # "result-day move" span years (MODTHREAD Dec-23 +2000% vs a close from 2000-12-21)
+            pd_ = datetime.date(d[j - 1] // 10000, (d[j - 1] // 100) % 100, d[j - 1] % 100)
+            if (ad - pd_).days > 10: continue
             if c[j - 1]:
                 rows[i][7] = round((c[j] / c[j - 1] - 1) * 100, 2); n_rx += 1
             if ann >= sr_cut and c[j]:

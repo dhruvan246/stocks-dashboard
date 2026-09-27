@@ -327,6 +327,7 @@ def main():
         except Exception as ex:
             print("  %s %s ERR %s" % (code, tkr, str(ex)[:60])); recs = {}
         added = 0
+        recs = {q: r for q, r in recs.items() if QU.is_qe(q)}   # never store a garbled period (26310331)
         for qe, rec in recs.items():                            # fill-only: add a quarter, or a figure
             old = cur.get(str(qe))                              # a stored cell lacks (same basis only)
             if old is None:
