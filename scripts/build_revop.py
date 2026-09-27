@@ -88,6 +88,8 @@ def ctx_period(xml, cid):
 TAGS = ("RevenueFromOperations", "OtherIncome", "FinanceCosts",
         "DepreciationDepletionAndAmortisationExpense",
         "ProfitBeforeExceptionalItemsAndTax", "ProfitBeforeTax",
+        # non-Ind-AS (NONINDAS: SME + older small filers) spellings of the same two lines (runbook §204)
+        "DepreciationAndAmortisationExpense", "ProfitBeforeExceptionalAndExtraordinaryItemsAndTax",
         "ProfitLossForPeriod", "ProfitOrLossAttributableToOwnersOfParent",
         # bank / NBFC formats (Trendlyne-parity, 2026-07-10)
         "ProfitLossForThePeriod",                    # banks tag PAT with 'The'
@@ -318,8 +320,18 @@ def metrics_for(xml, ctx):
     rev = fnum(xml, "RevenueFromOperations", ctx)
     oi = fnum(xml, "OtherIncome", ctx) or 0.0
     fc = fnum(xml, "FinanceCosts", ctx) or 0.0
-    dep = fnum(xml, "DepreciationDepletionAndAmortisationExpense", ctx) or 0.0
+    # ★ NON-IND-AS SPELLINGS (runbook §204). A NONINDAS filing (every NSE SME half-year, older small filers) tags
+    # depreciation as DepreciationAndAmortisationExpense and its pre-exceptional line as
+    # ProfitBeforeExceptionalAndExtraordinaryItemsAndTax. Reading only the Ind-AS names made dep 0 — op == ebit on
+    # 836 cells (ZEAL Mar-26 op 8.50 for 11.37) — and pbet fell through to PBT after exceptional items (ATMASTCO
+    # Mar-26 ebit 15.31 for 23.42). Measured: that pbet ties to Income - Expenses on all 4,696 file-columns printing both.
+    dep = fnum(xml, "DepreciationDepletionAndAmortisationExpense", ctx)
+    if dep is None:
+        dep = fnum(xml, "DepreciationAndAmortisationExpense", ctx)
+    dep = dep or 0.0
     pbet = fnum(xml, "ProfitBeforeExceptionalItemsAndTax", ctx)
+    if pbet is None:
+        pbet = fnum(xml, "ProfitBeforeExceptionalAndExtraordinaryItemsAndTax", ctx)
     if pbet is None:
         pbet = fnum(xml, "ProfitBeforeTax", ctx)
     if ie is not None:                                    # NBFC Ind-AS format
