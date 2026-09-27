@@ -54,6 +54,7 @@ loads every session. (README.md is just a short pointer here — this file is th
 - **§39** ★ SHIP-IT QUALITY GATE — nothing goes out unverified (**read before ANY UI / design / feature work**)
 - **§40** STOCK PAGE = PER-STOCK SLICES · **§40b** ★ REPORTING BASIS — one basis per comparison
 - **§41** ★ PUBLISHING A DATA HEAL — "live on the server" ≠ "the site uses it" (**read before ANY heal / backfill**)
+- **§186** ★★ FISCAL YEAR-ENDS ARE PER YEAR — the stock page's Financial-detail card reads each year's end from the cash-flow period the filing tags (Jun / Dec / Sep filers; transition years when a company moves its year-end) (**read before touching renderDeep / fiscalYears() / card_audit.py**)
 - **§42–§58** ROUTE & SOURCE DISCOVERIES (detres JSON, FY identity, pre-2020 std/con ceilings, CI clobber, the ROUTE LADDER, the STANDARD BACKFILL READ)
 - **§70** ★★★ sf_fundamentals vs sf_revop DISAGREE — authority is fundamentals; the mirror is not rendered · §70d the mirror is also SPARSE — never measure PAT coverage from sf_revop idx4/5
 - **§71** ★★★ THE ADJUDICATION THAT WAS ABANDONED — when your "truth" source is the corrupted one
@@ -21552,3 +21553,58 @@ into both std and con, and the grind preferred con → basis "C" for every Gemin
 BYLD 511730's filing is standalone-only — text has no "consolidated"; its figures 5.59 / (18.79) lakh match the stored
 0.06 / −0.19 cr). Now con ≠ std (or no std) ⇒ C, else S. The 16 existing cells are NOT relabelled: which are truly
 consolidated is unknown without re-reading each filing (open).
+
+## §186 — FISCAL YEAR-ENDS ARE READ YEAR BY YEAR: stock page Financial-detail card + CFO/PAT card (2026-09-27, user: "fix the fiscal-year-end detection")
+**Defect.** `renderDeep()` picked ONE year-end month per stock from balance-sheet dates (Dec if ≥2 Dec-BS years and more
+than March, else Jun). A June filer files a balance sheet every December too (its H1), so KENNAMET / WIDIA / ACCELYA /
+KALECONSUL (Jul–Jun) got Dec and showed half-year balance sheets and 183-day cash flows as annual "Dec YYYY" columns;
+STOVACQ (Jan–Dec) got Jun and showed Jan–Jun half-years (cf_d 180) as annual; SIEMENS and ENRIN (Oct–Sep) got March and
+showed Oct–Mar half-years (cf_d 181) as annual; COCKERILL / ELANTAS / MAHINDCIE / MAHINDFORG (Dec) fell to March and
+showed no balance sheet at all; a company that moved its year-end could show only one era. The CFO/PAT card bucketed
+with the Apr–Mar `fyOf()`, pairing a Dec filer's Jan–Dec cash flow with Apr–Mar profit: ABB read 0.41 "FY26" where the
+same 12 months give 0.73 (its Mar-2026 quarter holds a 1,783.65 cr profit).
+**Measured (docs/fin at 502ed53ea, 4,669 stocks with detail cells).** `cf_d` takes only 89–91, 180–189, 270s and 360s
+days — no other lengths. Non-March cash-flow evidence in 51 stocks; the old rule picked non-March for 34, and 12 of those
+showed a wrong year somewhere (ACCELYA EMERCK GILLETTE IGIL INDSHAVING KALECONSUL KENNAMET PGHH PGHL P_G STOVACQ WIDIA).
+**Rule — `fiscalYears()` in docs/stock.html (mirrored line for line in ~/stocks-cache/abscf/tools/card_audit.py).**
+A year-to-date cash flow STARTS the day after a year-end, so a 12-month (≥300 d), 9-month (250–290 d) or half-year
+(150–200 d) flow ending at quarter t puts a year-end at t−12/9/6 months and none inside that span. A 12-month flow also
+closes a year at t — unless another 12-month flow ends less than a year later: then t is the 12-month point of a longer
+transition year and the later flow closes it (its own start is not used — see below). Quarter-length (~90 d) flows are
+no evidence (full years are often mis-tagged that way, §168p). Between two year-end months, years extend 12 months at a
+time only onto dates that hold a balance sheet, so a transition year's length comes from the filings. Balance-sheet
+dates alone never choose the month. Banks, and stocks with no such cash flow, keep March. Each year is keyed by its own
+year-end (yyyymmdd); a transition year's column reads "Mar 2025 · 9 mo" with a tooltip naming its span.
+**Ground truth — every transition in the data reproduced exactly** (company announcements): P&G Hygiene, Gillette and
+P&G Health (also INDSHAVING / P_G / EMERCK, same data): 9 months Jul-2024–Mar-2025; ACC, Ambuja (and GUJAMBCEM) and
+Linde India (BOC and IOL carry identical data): 15 months Jan-2022–Mar-2023; IGIL: 15 months Jan-2025–Mar-2026 (board
+5-Nov-2025); Siemens: 18 months Oct-2024–Mar-2026 (board 8-Aug-2025). Kennametal India and Accelya Jul–Jun, Stovec Jan–Dec.
+**A transition year's cash flow is withheld.** The filings tag only their last 12 months: ACC / Ambuja Mar-2023 XBRL
+FourD `DateOfStartOfReportingPeriod` = 2022-04-01 (the context block says Jan–Mar, the §168p mislabel); IGIL / Siemens
+Mar-2026 FourD = 2025-04-01 → 2026-03-31. So a transition column shows its balance sheet (a snapshot) and shows a cash
+flow only when cf_d ≈ the transition length (±20 d) — none today — and the note says why. P&L columns are complete 12-month
+years only, and the P&L note names a skipped transition year. Flows (`fySum`) are null for a transition year; a 12-month
+year still sums whatever rows it holds, because an SME half-yearly filer's H1 (Sep) + H2 (Mar) rows ARE its year (§181d) —
+a 4-quarter requirement would have blanked SME Ratio columns (checked on AAYUSHBULL: identical to live).
+**CFO/PAT card** pairs the ≥300-day cash flow with exactly the four quarters ending on its date; label "FY26" for a
+March year, "year to Dec 2025" for another regular year, "12 months to Mar 2026" when that date closes a transition year.
+**Phones.** The matrix's blank corner header made theme.js pin column 2 (it reads a blank first header as a rank gutter),
+i.e. the oldest YEAR, and scroll the row labels away — on live too, all four matrix tabs. The corner now carries a visually
+hidden "Metric", and stock.html lifts the pinned corner to z-index 5 (theme.css does that only for `.sw-pin2`).
+**Verified.** Page JS (run in node) vs the Python replica vs the card_audit port: 0 mismatches over 4,669 stocks. Old vs new
+render over the universe: exactly 24 stocks change — ACC ACCELYA AMBUJACEM BOC COCKERILL ELANTAS EMERCK ENRIN GILLETTE GUJAMBCEM
+IGIL INDSHAVING IOL KALECONSUL KENNAMET LINDEINDIA MAHINDCIE MAHINDFORG PGHH PGHL P_G SIEMENS STOVACQ WIDIA; every other stock
+renders identically. Browser (worktree docs on localhost, price slices from sf-data): per-tab fingerprints identical to LIVE
+for RELIANCE, HDFCBANK, INFY and AAYUSHBULL; ABB and CASTROLIND identical except the CFO/PAT card; the changed stocks as
+above; rewind (`?asof=2024-01-15`, `2025-07-01`) and the basis switch; 375 px (no page overflow, labels pinned); dark and
+light; console clean.
+**card_audit.py** now uses the same rule, anchors each year on its own closing quarter, takes quarters from the page's
+`ends` (profit ∪ revenue rows), and uses the page's one-basis-per-card choice. Versus the March-only version: TRULY EMPTY
+14 → 2 (ABB, CASTROLIND, CIEINDIA, CRISIL, HEXT, HUHTAMAKI, KENNAMET, KSB, RAIN, SANOFI, SCHAEFFLER, VBL and VESUVIUS were
+Dec/Jun filers read on March cells); complete cards 269 → 266 (BATAINDIA, JYOTHYLAB, SHYAMMETL each have a year whose
+balance sheet exists only on the basis the page does not show).
+**Limits / open.** Before a stock's first cash-flow evidence (the earliest ≥150-day flow on file is Mar-2018; PGHL's is
+Jun-2021) the earliest detected month is carried back: PGHL / EMERCK (formerly Merck Ltd) show pre-2020 P&L in Jul–Jun years — whether those years ended in June
+is not measured (no older cash-flow evidence in docs/fin). Not touched here: KENNAMET's stored quarterly operating profit is
+about −200 cr in 8 quarters of 2021-23 while revenue is ~250 cr (sf_revop); 1,213 Ratio columns (1,145 stocks) come from
+years holding fewer than four quarterly rows — SME H1+H2 pairs are legitimate, quarterly filers with a missing quarter are not.

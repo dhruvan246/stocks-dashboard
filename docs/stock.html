@@ -35,6 +35,9 @@
     #peers .pname{display:none}
     #peers .psym{font-size:inherit;color:inherit;margin-left:0;font-weight:inherit}
   }
+  /* Financial detail pins its ROW LABELS on phones (§186). Every header cell there is sticky at z-index 4 and
+     theme.css lifts the pinned corner only for .sw-pin2, so without this the scrolled years paint over it. */
+  @media (max-width:640px){ html[data-theme] #deepBody .sw-scrollx.tscroll table thead th:first-child{z-index:5} }
   #tip{position:absolute;pointer-events:none;display:none;background:var(--surface,#fff);border:1px solid var(--border,#e2e8f0);border-radius:.5rem;padding:.35rem .55rem;font-size:.72rem;box-shadow:0 6px 18px -8px rgba(0,0,0,.35);white-space:nowrap;z-index:5}
 </style>
 </head>
@@ -777,6 +780,7 @@ function renderFunds(){
   const hdr=$('fundHdrSub');
   if(hdr) hdr.textContent='— point-in-time (₹ cr), '+(B==='std'?'standalone (parent only)':'consolidated where filed')+', YoY growth';
   const isFin=ends.some(e=>raw(e,6)===1);
+  const FYS=fiscalYears(ends,isFin);                     // year-ends, year by year — CFO/PAT card + renderDeep()
   const fq=e=>{ const s=String(e); return s.slice(0,4)+'-'+s.slice(4,6); };
 
   // ---- TTM: the last 4 CONTIGUOUS quarters (and the 4 before, for YoY) ----
@@ -845,20 +849,23 @@ function renderFunds(){
     if(eq) extra.push(card('Debt / Equity',(borr/eq).toFixed(2),sub('borrowings ₹'+crS(borr)+' cr')));
     if(mcap&&eq) extra.push(card('P/B',(mcap/eq).toFixed(2),sub('book value ₹'+crS(eq)+' cr')));
     if(!isFin&&ebitT!=null&&fcT) extra.push(card('Interest cover',(ebitT/fcT).toFixed(1)+'×',sub('EBIT ÷ interest, TTM')));
-    for(let i=ends.length-1;i>=0;i--){                     // CFO/PAT — cash conversion, latest full FY
+    for(let i=ends.length-1;i>=0;i--){                     // CFO/PAT — cash conversion, latest 12-month cash flow
       const e=ends[i], x=xCell(e);
       if(x&&x.cf_d>=300&&x.cfo!=null){
-        const fy=fyOf(e), qs=ends.filter(q=>fyOf(q)===fy);
+        // the flow covers the 12 months ENDING at e, whatever the year-end month — pair it with exactly those
+        // four quarters (an Apr–Mar bucket paired ABB's Jan–Dec cash with Apr–Mar profit, §186)
+        const qs=ends.filter(q=>q>e-10000&&q<=e);
         if(qs.length===4&&qs.every(q=>pat(q)!=null)){
-          const pf=qs.reduce((t,q)=>t+pat(q),0);
-          if(pf) extra.push(card('CFO / PAT',(x.cfo/pf).toFixed(2),sub('FY'+String(fy).slice(2)+' cash conversion'),(x.cfo/pf)<0?'neg':'text-slate-900'));
+          const pf=qs.reduce((t,q)=>t+pat(q),0), m=Math.floor(e/100)%100, yr=FYS.of(e)===e&&FYS.months(e)===12;
+          const lbl=(yr&&m===3)?'FY'+String(Math.floor(e/10000)).slice(2):(yr?'year to ':'12 months to ')+FY_MON[m]+' '+Math.floor(e/10000);
+          if(pf) extra.push(card('CFO / PAT',(x.cfo/pf).toFixed(2),sub(lbl+' cash conversion'),(x.cfo/pf)<0?'neg':'text-slate-900'));
         }
         break;
       }
     }
     if(extra.length) $('fundCards').innerHTML+=extra.join('');
   }
-  try{ renderDeep(ends,pat,rev,op,isFin); }catch(e){ console.error(e); }
+  try{ renderDeep(ends,pat,rev,op,isFin,FYS); }catch(e){ console.error(e); }
 
   // ---- last-result reaction + drift since (result-day convention documented at reactionAt) ----
   const s2=SERIES[TKR];
@@ -929,37 +936,92 @@ const xCell=e=>{ const c=FIN_X&&FIN_X[String(e)]; if(!c) return null;
   return FB_EFF==='std'?(c.s||null):(c.c||c.s||null); };                       // follows the basis switch
 const xBasis=e=>{ const c=FIN_X&&FIN_X[String(e)]; if(!c) return '';
   return FB_EFF==='std'?(c.s?'std':''):(c.c?'con':(c.s?'std':'')); };
-const fyOf=e=>{ const m=Math.floor(e/100)%100; return m<=3?Math.floor(e/10000):Math.floor(e/10000)+1; };
+/* ---- fiscal year-ends, year by year (runbook §186) ------------------------------------------------
+   A year-end is not always March (ABB/Castrol Dec, Kennametal/Accelya Jun, Siemens Energy Sep) and a
+   company can MOVE it: P&G group Jun→Mar through a 9-month year to Mar-2025, ACC/Ambuja/Linde Dec→Mar
+   through 15 months to Mar-2023, IGIL Dec→Mar (15 months) and Siemens Sep→Mar (18 months) to Mar-2026.
+   Evidence = the cash-flow period each filing tagged (x.cf_d, days). A year-to-date flow starts the day
+   after a year-end, so a 12-month (≥300 d), 9-month (250–290 d) or half-year (150–200 d) flow ending at
+   quarter t puts a year-end at t−12/9/6 months and none inside that span. A 12-month flow also closes a
+   year at t — unless another 12-month flow ends less than a year later: then t is the 12-month point of
+   a longer transition year (Siemens Sep-2025, IGIL Dec-2025) and the later flow closes it (its filing
+   tags only its own last 12 months, so its start proves nothing). Quarter-length (~90 d) flows are no
+   evidence: full years are often mis-tagged that way (§168p). Between two year-end months, years extend
+   12 months at a time only onto dates that hold a balance sheet, so a transition year's length comes
+   from the filings, never from a guess. Balance-sheet dates alone never pick the month — a June filer
+   has one every December too, and reading those half-years as annual was the old bug. Banks, and any
+   stock with no such cash flow, keep March. Mirrored in ~/stocks-cache/abscf/tools/card_audit.py. */
+const FY_MON=['','Jan','Feb','Mar','Apr','May','Jun','Jul','Aug','Sep','Oct','Nov','Dec'];
+function fiscalYears(ends,isFin){
+  const mo=e=>Math.floor(e/100)%100;
+  const qA=(e,k)=>{ const i=Math.floor(e/10000)*4+mo(e)/3-1+k, m=(i%4+1)*3;          // k quarter-ends on
+    return Math.floor(i/4)*10000+m*100+((m===3||m===12)?31:30); };
+  if(!ends.length) return {of:()=>null, months:()=>12, prev:()=>null};
+  const ev={}, BS=new Set();                     // quarter-end → longest year-to-date flow (quarters); BS dates
+  for(const k in (FIN_X||{})){ const e=+k, c=FIN_X[k]||{};
+    for(const b of ['c','s']){ const v=c[b]; if(!v) continue;
+      if(v.assets!=null||v.eq!=null) BS.add(e);
+      const d=v.cf_d, L=d>=300?4:((d>=250&&d<=290)?3:((d>=150&&d<=200)?2:0));
+      if(L>(ev[e]||0)) ev[e]=L; } }
+  const mk=new Set(), F=new Set();               // year-end markers; quarter-ends that cannot be one
+  const forbid=(a,b,incl)=>{ for(let t=qA(a,1);t<b||(incl&&t===b);t=qA(t,1)) F.add(t); };
+  if(!isFin){
+    const Y=Object.keys(ev).map(Number).filter(e=>ev[e]===4).sort((a,b)=>a-b);
+    for(const t of Y){
+      const later=Y.filter(u=>u>t&&u<qA(t,4));
+      if(later.length){ mk.add(qA(t,-4)); forbid(qA(t,-4),later[later.length-1],false); }   // inside a long year
+      else if(Y.some(u=>u<t&&u>qA(t,-4))) mk.add(t);                                     // that long year's close
+      else{ mk.add(t); mk.add(qA(t,-4)); forbid(qA(t,-4),t,false); }
+    }
+    for(const k in ev){ const e=+k, L=ev[k]; if(L<4){ mk.add(qA(e,-L)); forbid(qA(e,-L),e,true); } }
+    F.forEach(t=>mk.delete(t));
+  }
+  const lo=ends[0], hi=ends[ends.length-1], YE=new Set(), ms=[...mk].sort((a,b)=>a-b);
+  if(!ms.length){ for(let t=(Math.floor(hi/10000)+1)*10000+331;t>=qA(lo,-4);t=qA(t,-4)) YE.add(t); }
+  else{
+    const runs=[];                               // consecutive markers sharing one year-end month
+    for(const t of ms){ const r=runs[runs.length-1]; if(r&&mo(r[r.length-1])===mo(t)) r.push(t); else runs.push([t]); }
+    for(const r of runs) for(let t=r[0];t<=r[r.length-1];t=qA(t,4)) if(!F.has(t)) YE.add(t);
+    for(let i=1;i<runs.length;i++){              // a changed year-end: extend each side only onto balance-sheet dates
+      const a=runs[i-1][runs[i-1].length-1], b=runs[i][0]; let last=a;
+      for(let t=qA(a,4);t<b&&!F.has(t)&&BS.has(t);t=qA(t,4)){ YE.add(t); last=t; }
+      for(let t=qA(b,-4);t>last&&!F.has(t)&&BS.has(t);t=qA(t,-4)) YE.add(t);
+    }
+    for(let t=qA(ms[0],-4);t>=qA(lo,-4);t=qA(t,-4)) YE.add(t);                   // before the first evidence
+    for(let t=qA(ms[ms.length-1],4);t<=qA(hi,4);t=qA(t,4)) if(!F.has(t)) YE.add(t);   // after the last
+  }
+  const ye=[...YE].sort((a,b)=>a-b);
+  const of=q=>{ for(const y of ye) if(y>=q) return y; return null; };            // the year-end closing quarter q
+  const prev=y=>{ const i=ye.indexOf(y); return i>0?ye[i-1]:null; };
+  const months=y=>{ const p=prev(y); return p==null?12:(Math.floor(y/10000)-Math.floor(p/10000))*12+mo(y)-mo(p); };
+  return {of,months,prev};
+}
 const crS=v=>v==null?'—':Math.round(v).toLocaleString('en-IN');
 function latestBS(ends){
   for(let i=ends.length-1;i>=0;i--){ const x=xCell(ends[i]); if(x&&x.eq!=null) return {e:ends[i],x}; }
   return null;
 }
-function renderDeep(ends,patFn,revFn,opFn,isFin){
+function renderDeep(ends,patFn,revFn,opFn,isFin,FYS){
   const card=$('deepCard'); if(!card) return;
   if(!FIN_X||!ends.some(e=>xCell(e))){ card.style.display='none'; return; }
   card.style.display='';
   const vOf=x=>x?x.v:null;
-  // ---- fiscal-year bucketing — honor non-March (Dec / June) year-end filers ----
-  // fyOf() assumes an Apr–Mar fiscal year. A Dec- or June-year-end filer (ABB, Castrol, P&G Hygiene,
-  // Sanofi…) tags its annual balance sheet on Dec-31 / Jun-30, so the Apr–Mar buckets anchor its year
-  // on the wrong quarter — its columns read "Mar YYYY" and show a stray interim instead of the real
-  // year-end. Detect the fiscal year-end MONTH and bucket by it. Default March; override only on
-  // strong Dec/Jun annual-balance-sheet evidence (≥2 years and more than March), never for banks.
-  const _mo=e=>Math.floor(e/100)%100;
-  const _bsYrs=m=>{ let s=new Set(); for(const k in (FIN_X||{})){ const e=+k; if(_mo(e)===m){ const c=FIN_X[k], d=c&&(c.c||c.s); if(d&&(d.assets!=null||d.eq!=null)) s.add(Math.floor(e/10000)); } } return s.size; };
-  let FYM=3; if(!isFin){ const a=_bsYrs(3), d=_bsYrs(12), j=_bsYrs(6); if(d>=2&&d>a) FYM=12; else if(j>=2&&j>a) FYM=6; }
-  const MON={1:'Jan',2:'Feb',3:'Mar',4:'Apr',5:'May',6:'Jun',7:'Jul',8:'Aug',9:'Sep',10:'Oct',11:'Nov',12:'Dec'};
-  const fyOfX=e=>{ const m=_mo(e); return m<=FYM?Math.floor(e/10000):Math.floor(e/10000)+1; };   // == fyOf() when FYM===3
+  // ---- fiscal years, year by year — each keyed by its own year-end (yyyymmdd), see fiscalYears() ----
+  // A year's month can differ from March and can change mid-history (Jun→Mar at P&G, Dec→Mar at ACC):
+  // one year-end month for the whole history read Kennametal's half-year Decembers as its annual
+  // balance sheets and could not show both of P&G's eras (§186).
+  const FY=FYS||fiscalYears(ends,isFin), _mo=e=>Math.floor(e/100)%100, MON=FY_MON;
   const byFy={};
-  ends.forEach(e=>{ (byFy[fyOfX(e)]=byFy[fyOfX(e)]||[]).push(e); });
+  ends.forEach(e=>{ const y=FY.of(e); if(y!=null) (byFy[y]=byFy[y]||[]).push(e); });
   Object.values(byFy).forEach(a=>a.sort((a,b)=>a-b));
   const fyAll=Object.keys(byFy).map(Number).sort((a,b)=>b-a);      // newest first
-  const fys=fyAll.filter(fy=>byFy[fy].length===4&&byFy[fy].every(e=>patFn(e)!=null));   // complete FYs (P&L)
-  // year-end anchor = the quarter ending IN the fiscal year-end month (the FY's audited year-end
-  // instant; cash flow is filed year-to-date so that quarter carries the full-year figures). Never a
-  // stray interim or an incomplete current year — a half-year balance sheet must not read as an annual.
-  const yearEndE=fy=>{ const q=byFy[fy]; for(let i=q.length-1;i>=0;i--) if(_mo(q[i])===FYM) return q[i]; return null; };
+  // a complete 12-month year — never a transition year (9 / 15 / 18 months) or one with a quarter missing
+  const full=fy=>FY.months(fy)===12&&byFy[fy].length===4;
+  const fys=fyAll.filter(fy=>full(fy)&&byFy[fy].every(e=>patFn(e)!=null));   // complete FYs (P&L)
+  // year-end anchor = the quarter that closes the year (its audited year-end instant; cash flow is filed
+  // year-to-date so that quarter carries the full-year figures). Never a stray interim or an incomplete
+  // current year — a half-year balance sheet must not read as an annual.
+  const yearEndE=fy=>byFy[fy].includes(fy)?fy:null;
   // Balance-sheet / cash-flow basis: prefer the page basis, but render the whole card in the OTHER
   // basis if the page basis carries none and the other does — a standalone-only filer (Colgate, AU
   // Bank) or one that tags BS/CF only on standalone (Tata Elxsi, MOIL) would otherwise show no card.
@@ -970,8 +1032,13 @@ function renderDeep(ends,patFn,revFn,opFn,isFin){
   const bcB=bscfCnt(otherB)>bscfCnt(pageB)?otherB:pageB;   // whichever basis carries MORE year-end BS/CF; page basis (consolidated) wins ties
   const strictCell=e=>cellIn(e,bcB);
   const bsOf=fy=>{ const e=yearEndE(fy); if(e==null) return null; const d=strictCell(e); return (d&&(d.assets!=null||d.eq!=null))?{e,x:d}:null; };
-  const cfOf=fy=>{ const e=yearEndE(fy); if(e==null) return null; const d=strictCell(e); return (d&&d.cfo!=null)?{e,x:d}:null; };
-  const fySum=(fy,get)=>{ let t=0,any=false; for(const e of byFy[fy]){ const v=get(e); if(v==null) return null; t+=v; any=true; } return any?t:null; };
+  // a transition year's cash flow counts only when its tagged period spans that whole year: the filings
+  // tag just their last 12 months (ACC/Ambuja Mar-2023 start 1-Apr-2022; IGIL/Siemens Mar-2026 1-Apr-2025)
+  const cfSpans=(fy,d)=>FY.months(fy)===12||(d.cf_d!=null&&Math.abs(d.cf_d-FY.months(fy)*30.44)<=20);
+  const cfOf=fy=>{ const e=yearEndE(fy); if(e==null) return null; const d=strictCell(e); return (d&&d.cfo!=null&&cfSpans(fy,d))?{e,x:d}:null; };
+  // flows (sales, profit, EBIT) never over a transition year — a 9- or 15-month sum is not annual. A 12-month
+  // year still sums whatever rows it holds: an SME half-yearly filer's H1 (Sep) + H2 (Mar) rows ARE its year (§181d)
+  const fySum=(fy,get)=>{ if(FY.months(fy)!==12) return null; let t=0,any=false; for(const e of byFy[fy]){ const v=get(e); if(v==null) return null; t+=v; any=true; } return any?t:null; };
   const fyRev=fy=>fySum(fy,e=>vOf(revFn(e))), fyOp=fy=>fySum(fy,e=>vOf(opFn(e)));
   const fyEbit=fy=>fySum(fy,e=>{ const o=opFn(e), d=(xCell(e)||{}).dep; return (o&&o.v!=null&&d!=null)?o.v-d:null; });
   const bsFys=fyAll.filter(fy=>bsOf(fy)).slice(0,12);
@@ -994,10 +1061,21 @@ function renderDeep(ends,patFn,revFn,opFn,isFin){
   // keep the open tab across a re-render (flipping the basis switch re-runs this whole card)
   let cur=(DEEP_TAB&&tabs.some(([k])=>k===DEEP_TAB))?DEEP_TAB:tabs[0][0];
   // ---- shared transposed table (Screener layout: metric rows × year columns, oldest→newest) ----
-  const yL=fy=>MON[FYM]+' '+fy;   // column label uses the real fiscal year-end month (Mar / Dec / Jun)
+  // column label = the year's own year-end (Mar / Dec / Jun / Sep YYYY); a transition year also says its length
+  const yL0=fy=>MON[_mo(fy)]+' '+Math.floor(fy/10000);
+  const trTxt=fy=>{ const p=FY.prev(fy), m=FY.months(fy); if(p==null) return '';
+    const from=MON[_mo(p)%12+1]+' '+(Math.floor(p/10000)+(_mo(p)===12?1:0));
+    return m+'-month year, '+from+' – '+yL0(fy)+(_mo(p)!==_mo(fy)?': the company moved its year-end from '+MON[_mo(p)]+' to '+MON[_mo(fy)]:''); };
+  const yL=fy=>yL0(fy)+(FY.months(fy)===12?'':`<span class="normal-case font-normal"> · ${FY.months(fy)} mo</span>`);
+  const trList=fys=>fys.map(fy=>'the '+FY.months(fy)+'-month transition year to '+yL0(fy)).join(' and ');
+  // the year-end months a set of columns uses: "Apr–Mar", or "Apr–Mar from Mar 2026; Jul–Jun to Jun 2024"
+  const spanTxt=fyDesc=>{ const g=[]; fyDesc.forEach(fy=>{ const m=_mo(fy), l=g[g.length-1]; if(l&&l.m===m) l.o=fy; else g.push({m,n:fy,o:fy}); });
+    const r=m=>MON[m%12+1]+'–'+MON[m];
+    if(g.length<2) return r(g.length?g[0].m:3);
+    return g.map((x,i)=>r(x.m)+(i===0?' from '+yL0(x.o):(i===g.length-1?' to '+yL0(x.n):' '+yL0(x.o)+' to '+yL0(x.n)))).join('; '); };
   function matrix(fyDesc, rows){
     const cols=fyDesc.slice().reverse();                          // display oldest → newest
-    const th=cols.map(fy=>`<th class="text-right px-2 py-1 whitespace-nowrap">${yL(fy)}</th>`).join('');
+    const th=cols.map(fy=>`<th class="text-right px-2 py-1 whitespace-nowrap"${FY.months(fy)===12?'':` title="${esc(trTxt(fy))}"`}>${yL(fy)}</th>`).join('');
     const cellsFor=(get,fmt,neg,cls)=>cols.map(fy=>{ const v=get(fy);
       const nc=(neg&&v!=null&&v<0)?'neg':(cls||''); return `<td class="text-right px-2 py-1.5 whitespace-nowrap ${nc}">${v==null?'<span class="text-slate-300">—</span>':fmt(v)}</td>`; }).join('');
     let body='';
@@ -1012,7 +1090,9 @@ function renderDeep(ends,patFn,revFn,opFn,isFin){
       subs.forEach(s=>{ body+=`<tr class="deep-sub deep-sub-${r.id} hidden text-slate-500 border-b border-slate-50"><td class="py-1 pr-2 pl-5 whitespace-nowrap">${s.label}</td>`+
         cellsFor(s.get,s.fmt,s.neg,'text-slate-500')+`</tr>`; });
     });
-    return `<div class="sw-scrollx tscroll overflow-x-auto"><table class="w-full text-sm"><thead class="text-[11px] uppercase text-slate-500 border-b border-slate-200"><tr><th class="text-left py-1 pr-2"></th>${th}</tr></thead><tbody>${body}</tbody></table></div>`;
+    // the corner cell carries a visually-hidden "Metric": theme.js pins column 2 on phones when the first
+    // header is blank (a rank gutter), which pinned the oldest YEAR and scrolled the row labels away
+    return `<div class="sw-scrollx tscroll overflow-x-auto"><table class="w-full text-sm"><thead class="text-[11px] uppercase text-slate-500 border-b border-slate-200"><tr><th class="text-left py-1 pr-2"><span style="position:absolute;width:1px;height:1px;overflow:hidden;clip:rect(0 0 0 0);white-space:nowrap">Metric</span></th>${th}</tr></thead><tbody>${body}</tbody></table></div>`;
   }
   const draw=()=>{
     $('deepTabs').innerHTML=tabs.map(([k,l])=>`<button data-t="${k}" class="px-2.5 py-1 rounded-lg text-xs font-semibold border shrink-0 ${k===cur?'bg-slate-800 text-white border-slate-800':'text-slate-500 border-slate-200 hover:bg-slate-50'}">${l}</button>`).join('');
@@ -1075,7 +1155,8 @@ function renderDeep(ends,patFn,revFn,opFn,isFin){
       const gspan=(lbl,get)=>{ const bits=[[10,'10y'],[5,'5y'],[3,'3y']].map(([n,t])=>{ const g=cagr(get,n); return g==null?null:`${t} <b class="${g>=0?'pos':'neg'}">${g.toFixed(0)}%</b>`; }).filter(Boolean); return bits.length?`<span class="mr-4"><span class="text-slate-400">${lbl} CAGR:</span> ${bits.join(' · ')}</span>`:''; };
       const strip=gspan('Sales',fyRev)+gspan('Profit',fyNet);
       if(strip) html+=`<div class="text-[12px] mt-2 pt-2 border-t border-slate-100">${strip}</div>`;
-      note='₹ crore, complete financial years (Apr–Mar). '+(FB_EFF==='std'?'Standalone (parent only).':'Consolidated where filed.')+' Expenses = Sales − Operating profit; Operating profit = EBITDA. '+(hasMinority?'Net Profit is the total group profit (Screener basis); expand it for the associate / minority split — “Owners’ profit” is what drives our EPS, P/E and backtests, and a year is shown at owners’ profit only where minority interest was not separately filed. ':'Net Profit is owners-attributable. ')+'EPS is as originally filed (not adjusted for later bonus issues or splits). Dividend payout = dividends paid ÷ net profit. '+(isFin?'<span class="text-amber-600">Bank/NBFC:</span> “Sales” is interest earned — margins are not comparable to industrials.':'');
+      const trP=fyAll.filter(fy=>FY.months(fy)!==12&&yearEndE(fy)!=null&&pfy.length&&fy>pfy[pfy.length-1]);   // transition years skipped
+      note='₹ crore, complete 12-month financial years ('+spanTxt(pfy)+'). '+(trP.length?'Left out: '+trList(trP)+' — not comparable with a 12-month year. ':'')+(FB_EFF==='std'?'Standalone (parent only).':'Consolidated where filed.')+' Expenses = Sales − Operating profit; Operating profit = EBITDA. '+(hasMinority?'Net Profit is the total group profit (Screener basis); expand it for the associate / minority split — “Owners’ profit” is what drives our EPS, P/E and backtests, and a year is shown at owners’ profit only where minority interest was not separately filed. ':'Net Profit is owners-attributable. ')+'EPS is as originally filed (not adjusted for later bonus issues or splits). Dividend payout = dividends paid ÷ net profit. '+(isFin?'<span class="text-amber-600">Bank/NBFC:</span> “Sales” is interest earned — margins are not comparable to industrials.':'');
     }else if(cur==='bs'){
       const B=fy=>{ const c=bsOf(fy); return c?c.x:{}; };
       const nw=fy=>{ const x=B(fy); if(x.eq!=null) return x.eq; if(x.sc!=null&&x.oeq!=null) return x.sc+x.oeq; return null; };
@@ -1109,7 +1190,8 @@ function renderDeep(ends,patFn,revFn,opFn,isFin){
         {label:'Total Assets', get:fy=>B(fy).assets, fmt:crS, bold:true, top:true},
       ];
       html=matrix(bsFys, rows);
-      note='₹ crore, '+(bcB==='std'?'standalone':'consolidated where filed')+', as filed at each year-end — point-in-time, later restatements are not back-applied. Fixed Assets = net block + investment property + goodwill + other intangibles + biological/producing assets; CWIP includes intangibles under development; Other Liabilities and Other Assets balance the sheet (Screener convention). Lease liabilities appear under Borrowings only where the filer tags them separately.';
+      note='₹ crore, '+(bcB==='std'?'standalone':'consolidated where filed')+', as filed at each year-end — point-in-time, later restatements are not back-applied. Fixed Assets = net block + investment property + goodwill + other intangibles + biological/producing assets; CWIP includes intangibles under development; Other Liabilities and Other Assets balance the sheet (Screener convention). Lease liabilities appear under Borrowings only where the filer tags them separately.'+
+        bsFys.filter(fy=>FY.months(fy)!==12).map(fy=>' '+yL0(fy)+' closes the '+trTxt(fy)+'.').join('');
     }else if(cur==='cf'){
       const C=fy=>{ const c=cfOf(fy); return c?c.x:{}; };
       const net=fy=>{ const x=C(fy); return (x.cfo!=null&&x.cfi!=null&&x.cff!=null)?x.cfo+x.cfi+x.cff:null; };
@@ -1128,7 +1210,11 @@ function renderDeep(ends,patFn,revFn,opFn,isFin){
         {label:'CFO / OP', get:cfoOp, fmt:v=>v.toFixed(0)+'%', faint:true},
       ];
       html=matrix(cfFys, rows);
-      note='₹ crore, full-year cash flows (period ≥ 300 days), '+(bcB==='std'?'standalone':'consolidated where filed')+'. Net Cash Flow = operating + investing + financing; Free Cash Flow = CFO − capex; CFO/OP = operating cash ÷ operating profit. Income tax: negative = tax paid, positive = a net refund received that year.';
+      // a transition year whose filed cash flow covers a different span gets no column — say so, don't leave a silent gap
+      const trC=fyAll.filter(fy=>FY.months(fy)!==12&&yearEndE(fy)!=null&&!cfOf(fy)&&(strictCell(fy)||{}).cfo!=null);
+      note='₹ crore, the cash flow of each financial year as filed at its year-end, '+(bcB==='std'?'standalone':'consolidated where filed')+'. Net Cash Flow = operating + investing + financing; Free Cash Flow = CFO − capex; CFO/OP = operating cash ÷ operating profit. Income tax: negative = tax paid, positive = a net refund received that year.'+
+        cfFys.filter(fy=>FY.months(fy)!==12).map(fy=>' '+yL0(fy)+' closes the '+trTxt(fy)+'.').join('')+
+        (trC.length?' No column for '+trList(trC)+': the cash flow filed then does not cover that whole period.':'');
     }else if(cur==='ratio'){
       const B=fy=>{ const c=bsOf(fy); return c?c.x:{}; };
       const dOn=(amt,fy)=>{ const r=fyRev(fy); return (amt!=null&&r)?amt/r*365:null; };
