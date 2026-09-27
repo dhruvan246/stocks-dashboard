@@ -20231,6 +20231,29 @@ the Wayback ledger (`_meta.retracted_164p`): the store's copies of four of them 
 stream, so the fill re-added them with the ledger's QE+21 date and the drop (which compares the date exactly) no longer matched.
 **Totals:** 59 cells change (28 re-based, 3 replaced, 13 repaired, 15 retracted; LITL refilled), 151,059 -> 151,045 cells;
 applied on a worktree copy with `--apply-ledgers`: 59 / 59 as intended, 0 unintended changes, no Prism copy left.
+**LIVE 2026-09-27 ~15:55 IST:** commit d80e8efe3, refresh-shareholding run 36311996438 (store a5c1fdb03), Pages 36312054583; the live
+shp_engine.json equals origin's CI build and holds all 59 changes (DRREDDY Dec-15 37.8176 = Quantmac 37.8162).
+
+### 164q. Old-form EVENT rows get the row-level rules (2026-09-27)
+**Gap.** §158/§159/§164c-o re-read every QUARTERLY cell of the 2015-22 form; the mid-quarter EVENT rows (`scripts/shp_events.json`,
+§22k) of the same form were never touched — parse_shp alone, so an unlabelled institutional Any-Other block sat in dii
+(IDFCFIRSTB 06-Apr-2021 fii 10.33 / dii 19.26 beside the Mar-2021 quarter's 20.19; POONAWALLA 12-Apr-2018 23.77 / 38.98 beside 47.73;
+ETERNAL 10-Aug-2022 17.26 beside 42.34 / 57.87). The engine serves an event row whenever it is the newest quarter already public, so
+1,271 old-form event rows were the served value at >= 1 month-end. **Tool:** `scripts/_shp_164q_events.py` feeds the event filings
+through `_shp_d1_rowfix.classify` UNCHANGED (full chain R1/R2/R3 + R2-FII + D1, the former-member "first read" path): the event
+store stands in for shp_history and BSE's own list rows for the event ("06 Apr 2021", qtrid 109.01) for the quarterly files
+(±7 days when NSE's as-on and BSE's label differ; `match_filing` still demands the parse equal the stored row). Documents: 1,306
+event XBRLs + 167 lists fetched with the honest header set (0 failures), 45 lists from §180b's code-keyed `bse_lists_v2`.
+**Scope = the population whose quarters took the same rules** (N500 roster + every former member, `exmember_scope.json`, FUND_ALIAS
+folded): outside it the quarters are raw, and healing only the events made a series disagree with itself (ARMANFIN Oct/Dec-2019
+events 0.05 -> 21-22 beside raw 0.06 quarters) — 88 such proposals dropped. **Result:** 986 in-scope rows, 936 matched their
+filing, **405 corrected** (404 new + 1 superseding a §142e entry; ledger key = the event date, `apply_cell_fix_events`), 531 unchanged,
+37 no matching filing, 1 no list. IDFCFIRSTB 06-Apr-21 10.33 -> 19.57, POONAWALLA 12-Apr-18 23.77 -> 40.76, ETERNAL Aug-22 17.26 ->
+46.56 (§159: the filer's 2022 form lists its foreign companies under Institutions (Foreign)), SINTEX Sep-16 15.38 -> 30.75, RBLBANK
+Aug-17 13.60 -> 20.97. Quantmac v3 cells whose served row changes: 126, 112 of them closer to Quantmac. Applied on a worktree copy:
+405 / 405 event rows as intended, 0 other rows, quarterly store unchanged; guard_shp_definition / _gate / _revisions green.
+Left: event rows of the ~65 NSE-only companies (no BSE document; NSE's master API is locked and its cached windows hold
+quarter-ends only).
 
 ### 164j. Quantmac reply v3 (26-Sep): foreign-labelled rows were read as domestic; named foreign holders now need a document
 **Bug (reported by Quantmac for CUMMINSIND / IPCALAB, measured on origin).** `_shp_dii_rowfix.eval_filing` R1 set a category label
