@@ -21838,6 +21838,21 @@ time 1.2 s apart, 0 failures) and Moneycontrol where the MC journal has the cell
   Pre-Nov-2018 BSE PDFs sit on `xml-data/corpfiling/CorpAttachment/<Y>/<M>/` (AttachHis/AttachLive 404, AnnPdfOpen bounced).
   Still absent: Mar-18 (no BSE XBRL; the Mar-18 results PDF of 2018-05-03 would carry std). Seen, not changed: Dec-18 ann
   20190124 is 2 days after BSE's broadcast 2019-01-22 14:07.
+- **RML Mar-18 std FILLED + Dec-18 announcement date corrected (user: "both").** (1) Mar-18 was absent (no BSE XBRL
+  file; the NSE cache starts later). Read from the company's own PDFs: Q4 = FY18 − 9M — the Jun-18 statement's note 5 says the
+  Mar-18 quarter IS that balancing figure. Every line of FY18 (Jun-18 statement) minus 9M Dec-17 (Dec-17 statement) equals the
+  Mar-18 column printed in the Mar-18 extract and the Jun-18 statement, except D&A, where both OCR layers are garbled and the
+  identity (1,328.43 lakh) closes the expense total exactly. Stored: revenue 347.99 (incl. other operating income 13.24 — the XBRL
+  RevenueFromOperations convention) / op 41.66 / EBIT 28.37 / PAT 16.47 (EPS 14.19 × 1.16075 cr = 16.47); the same extract's
+  Dec-17 PAT 1,422.24 = our stored 14.22 and FY18 PAT closes with stored Sep-17 8.40. ann 20180430 = BSE broadcast 2018-04-30
+  14:33 (the XBRL list says 2018-05-03). Standalone only: the Mar-18 statement has no consolidated quarter. Journalled in
+  `named_pat_cell_fills.json` + `named_rev_cell_fills.json` (verifier-registered), written fill-only through
+  `fetch_bse_results_xbrl.py --apply` with a hand-built record (no xbrl_extra detail from a PDF read). (2) Dec-18 ann 20190124 →
+  20190122 = BSE's broadcast (14:07) of the board-meeting outcome that approved and enclosed the results ('meeting(s) held today
+  (January 22, 2019)'): `ann_date_fills.json` override (earlier-only), applied for that one key — a full `--reapply` would also
+  move 10 unrelated build-mirror cells (pre-existing drift, the docs payload is in sync). Series check vs BSE's Result
+  broadcasts: every other stored RML date 2018-2025 matches EXCEPT Sep-18 (stored 20181029, broadcast 2018-10-25) and Mar-19
+  con (20190524 vs 20190523); Jun-19 is absent from the store (BSE broadcast 2019-07-24) — reported, not changed.
 
 ## §185 — AUDIT OF THE BSE RESULTS READERS AFTER §182: nine defects fixed, one ruled out (2026-09-27, user: "find more n more bugs … fix")
 All of it is quarter-agnostic: every target quarter comes from the filing (its printed period, else its filing date).
