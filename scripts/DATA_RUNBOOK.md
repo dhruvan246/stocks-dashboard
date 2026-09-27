@@ -21654,3 +21654,11 @@ BYLD 5.59 / (18.79) — all = stored; SWORDEDGE, OSWAYRN, SIKOZY, OLYMTFI rows t
 Other `ann=20260715` cells on origin: 11 routine-vision cells whose companies DID file on 07-15 (left); 530521
 (src none) has 07-15 but no BSE filing that day — real date unknown (open). Direct edit of bse_fundamentals.json is
 durable: every other writer is fill-only / origin-wins (§181b).
+**§185c — vision check of the 4 unverifiable Gemini cells (2026-09-27, user: "yes do the vision reads").** Read by eye
+from each company's own June-quarter results filing (₹ lakh): SWORDEDGE (6.62)/(19.40), SIKOZY 5.17/(3.74), OLYMTFI
+1.04/(4.08) — all = stored PAT; EPS cross-check passes for SIKOZY and OLYMTFI. Revenue added fill-only (the Gemini reader is
+PAT-only): SWORDEDGE Jun-26 225.00 lakh → 2.25 cr (Jun-25 cell printed blank → left empty), SIKOZY 0.00/0.00, OLYMTFI
+4.68/2.60 lakh → 0.05/0.03 cr. **OSWAYRN 514460:** cover letter says "Standalone", but the table splits the loss
+between owners and non-controlling interests (Jun-26 total (3.63) = owners (1.64) + NCI (1.99); Jun-25 (3.08) =
+(1.39) + (1.69); printed EPS is on the TOTAL). Stored PAT = the owners' share (−0.02 / −0.01 cr); user chose the site
+rule (owners' share where minority holders exist) and basis **C**. Total, if ever wanted: −0.04 / −0.03 cr.
