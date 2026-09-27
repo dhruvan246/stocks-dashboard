@@ -56,6 +56,7 @@ loads every session. (README.md is just a short pointer here — this file is th
 - **§41** ★ PUBLISHING A DATA HEAL — "live on the server" ≠ "the site uses it" (**read before ANY heal / backfill**)
 - **§186** ★★ FISCAL YEAR-ENDS ARE PER YEAR — the stock page's Financial-detail card reads each year's end from the cash-flow period the filing tags (Jun / Dec / Sep filers; transition years when a company moves its year-end) (**read before touching renderDeep / fiscalYears() / card_audit.py**)
 - **§191** ★★ A YEAR COUNTS ONLY WHEN ITS RESULT ROWS TILE ITS 12 MONTHS — SME half-year rows are proven from the filings (H1 + H2 = printed FY) into `scripts/row_periods.json` → slice `pd`; every other row is one quarter. REGENERATE the list after new SME half-year fills (**read before touching fySum / tiles / rowMonths / build_row_periods.py**)
+- **§196** ★★ BSE SME HALF-YEARS ARE DECIDED BY THE YEAR'S ARITHMETIC — `fetch_bse_results_xbrl.sme_decide`: H1 + H2 = FY closing to the filings' rounding (a zero half needs PAT too), H2 = FY − H1 when the Mar OneD repeats the year; h=1 + proof ("pf") on proven halves, everything else HELD; `--heal-sme` re-decided the stored cells; build_row_periods re-checks the proof, never the flag (**read before touching the BSE results route for SME scrips or build_row_periods.py**)
 - **§188** ★ TWO GREEN-BUT-BROKEN BSE JOBS AFTER §181 — annual-bscf needs `--max-minutes` under its job timeout; refresh-fundamentals' ann-date step installs its own pymupdf (**read before adding a BSE step to a CI job**)
 - **§190** ★★ NO BROWSER IMPERSONATION LEFT FOR BSE — curl_cffi `impersonate="chrome"` bypasses the urllib override: use `BH.get` / `BH.Session`; curl callers `-A BH.UA` and NEVER a second Referer (**read before adding any BSE fetch**)
 - **§189** ★★★ SIGN-SANE BUT WRONG: KENNAMET op was −(TOTAL EXPENSES) from a 2026-07-27 BSE-PDF text sweep — healed via revop_cell_fix (+46) / con_nofile_retractions (+3) from the company's own BSE XBRL + PDFs; `scan_negop_vs_filings.py` separates genuine negative op (other income > operating base, 3,840 cells) from filing-contradicted cells (119 / 61 stocks, only KENNAMET healed) (**read before healing any op cell or re-running backfill_revop_gaps.py**)
@@ -21250,8 +21251,8 @@ all unattributable, dropped. New `scripts/xbrl_symbol.py resolve(sym, xml)`: pla
 `scripts/fetch_bse_results_xbrl.py` + `.github/workflows/bse-results-xbrl.yml` (daily 09:50 IST + dispatch). List =
 api `Result_Arch_ng?scrip_cd=`; files = www `/XBRLFILES/…` (memory reference-bse-results-xbrl-route). One plain,
 honestly identified client, one request at a time; a 403 prints BSE-REFUSED, writes nothing, job stays green.
-Identity from the FILE: ScripCode must equal the scrip asked for; OneD gives the period (80-100 d quarter; 170-190 d
-half-year kept only for SME M/MT/MS filers, stored h=1); NatureOfReport gives the basis. An ISIN that maps to an NSE
+Identity from the FILE: ScripCode must equal the scrip asked for; OneD gives the period (80-100 d quarter; SME M/MT/MS
+filers: the period comes from the year's arithmetic, never the OneD label — §196); NatureOfReport gives the basis. An ISIN that maps to an NSE
 listing (xbrl_symbol) sends the numbers to that NSE page's stores; otherwise docs/bse_fundamentals.json (src
 "bse-xbrl"). Detail via build_xbrl_extra.parse_file(sym_override=…) — new optional arg, default behaviour unchanged.
 Everything fill-only (an NSE XBRL value always wins; a BSE ticker that is also an NSE key never takes detail — §76).
@@ -22205,8 +22206,8 @@ Mar-25 kept, Mar-26 left out with the note; RELIANCE every tab + cards identical
   Mar = full year (DHARIWAL, INFLUX), H1 + H2 ≠ FY by 0.6–4.4 % on one basis (IPHL, SOTAC, QUICKTOUCH, DIGIKORE Mar-25, SPUNWEB).
   Per-basis marks would keep the standalone view of most — not built.
 - 638 SME cache files carry neither a period header nor an OneD context — undatable, unused.
-- `fetch_bse_results_xbrl.read_file` dates a file by its OneD context block, which says Jul–Sep for an SME Apr–Sep half:
-  BSE SME half-years are stored as quarters without `h=1` (AAYUSHBULL, SUPERSHAKT, DHARNI, MAIDEN rows). Not fixed here.
+- `fetch_bse_results_xbrl.read_file` dated a file by its OneD context block, which says Jul–Sep for an SME Apr–Sep half:
+  BSE SME half-years were stored as quarters without `h=1` (AAYUSHBULL, SUPERSHAKT, DHARNI, MAIDEN rows). FIXED in §196.
 - The TTM cards (`renderFunds` `window4`) and both backtest engines still add four rows that can include a half-year
   (QMSMEDI / ZEAL-type dual filers). Not touched.
 ## §192 — REAL FILING DATES FOR THE 1,805 MAR-2026 BSE CELLS §187 CLEARED (2026-09-27, user: "yes run the backfill for the march dates")
@@ -22316,3 +22317,88 @@ its own sf_revop slot, so where sf_revop has NO con PAT the con slot kept the sa
 All three report con == std in every other stored quarter (7 / 16 / 24 quarters), so con = the healed std (fund_cell_fix + owners pin +
 pat_defects). **Rule:** a scale heal on one basis must check the other basis's cell of the same quarter — equal-to-the-old-value means
 the same defect. WATERBASE Dec-19 con 8.55 (std healed 73.2→0.73) is NOT such a copy and was left.
+
+## §196 — BSE SME HALF-YEARS: THE PERIOD FROM THE YEAR'S ARITHMETIC, NOT THE OneD LABEL (2026-09-27, user: "decide each file's period from the file's own arithmetic … set h=1 only on proven half-years")
+**Defect (measured on origin 7f5794cc5).** `fetch_bse_results_xbrl.read_file` took a filing's period from the OneD context
+block. BSE SME half-year files label OneD Jul–Sep (Yearly files Jan–Mar) while the money is the 6-month half (SUPERSHAKT
+Sep-22 OneD = FourD = 359.29), an all-zero placeholder (DHARNI Sep-23: OneD carries only ScripCode; the H1 4.79 sits in
+FourD) or the whole year (MAIDEN Mar-24 OneD = FourD = 236.1). The 170–190-day branch never fired — build_revop /
+build_fundamentals reject a 6-month OneD, so 0 cells carried `h` anywhere — and every SME half that reached
+docs/bse_fundamentals.json came in through a mislabelled 92-day OneD: stored as a quarter, its OneD P&L taken as quarterly
+detail. Population = every bse-xbrl cell of an M/MT/MS scrip (bse_universe col 4): **44 cells / 22 scrips** at 7f5794cc5;
+the old code in CI added 8 more (CPML 542727 ×3, CLARA 543435, DRONACHRYA 543713 ×3, ACFSL 536737) before the fix
+landed → 52 / 26.
+
+**Rule — `sme_decide`, ONE classifier for the fetch, the offline test and the heal.** Per scrip and fiscal year the Sep and
+Mar filings decide together. H1 = the Sep filing's Apr–Sep figure (OneD or FourD), FY = the Mar filing's FourD, H2 = its
+OneD when H1 + H2 == FY closes to the filings' own rounding (`closes`: 1.5 × the coarsest rounding unit of the three rupee
+figures — on the cached files 75 same-basis years close to ≤ ₹1,000 and EARKART FY26 to ₹43,000 against a Mar file
+rounded to ₹1 lakh; combinations that are not a year miss by ≥ ₹2.9 lakh, most by crores). A zero half
+proves nothing by itself (0 + x = x holds for an empty column): PAT must then close the same way with all three figures
+non-zero (AAYUSHBULL FY23 0.06 + 0.20 = 0.26; MANAS FY21 −0.36 − 0.75 = −1.11). 'fy': the Mar filing repeats the year in
+OneD (or leaves it empty) while the same-basis Sep filing has one unambiguous non-zero Apr–Sep figure → H2 = FY − H1. A
+column is EMPTY when it carries no revenue, no income and no expenses. A Sep filing whose two columns differ is a QUARTER
+only when the June quarter on file (same basis, any route) closes Q1 + OneD = FourD (SUDARSHAN Sep-25 145.26 + 168.87 =
+314.13; MRP 21.10 + 10.11 = 31.21) → that year is quarterly: its Mar row is a Jan–Mar OneD that does not pair, and a Yearly
+file's Oct–Mar OneD is held. Everything else is HELD and printed, never stored (§181d's rule). A proven half is stored with
+`h=1` + `pf` {h1, h2, fy, pat [h1, h2, fy], how pair|fy, f [Sep file, Mar file], m1 (the Mar OneD, 'fy' only)} in ₹ crore to
+4 dp; its detail keeps the balance sheet and the cash flow (which carries its own cf_d) and drops the OneD P&L / EPS /
+ratios / segments unless OneD IS that half. fetch() also downloads each missing SME quarter's partner filing; held
+quarters go into the state file with their link set (`held`) and are re-read only when a filing changes. New flags:
+`--codes C1,C2` (manual / test run), `--from-dir` groups files per scrip and reads cached list_<scrip>.json listing dates,
+`--heal-sme DIR [--dry]`.
+
+**MAIDEN FY24, second reader.** Its result PDFs (May-24, Nov-24, May-25) are scans with no text layer — a vision read was
+NOT run (needs the user's OK). The filer's own cash flow decides instead: the Mar-24 file's FourD statement opens at the
+31-Mar-2023 cash balance (3.1855) and carries the April-2023 IPO proceeds (20.53), so that column is Apr-23–Mar-24 and
+OneD = FourD = 236.1 is the whole year: H2 = 236.0954 − 115.5004 = 120.59 (PAT 9.72 − 4.18 = 5.54). Later years agree in
+size: FY25 212.91 (109.09 + 103.82), FY26 231.61 (109.44 + 122.17).
+
+**Heal (`--heal-sme ~/stocks-cache/bse_sme_xbrl`, re-run on fresh origin 2871e823a).** Files: 20 from §191 + 102 fetched
+this session (22 Result_Arch_ng listings + the files for every stored cell and its partner, one request at a time 1.5 s apart
+through bse_headers, 0 failures) + 6 kept from the live test: 128 XMLs + 26 listings; PDFs in ~/stocks-cache/bse_sme_pdf.
+52 cells →
+- half 33: h=1 + pf, value untouched;
+- half-fixed 8 (old values, and basis, kept in `was`; `ann` never touched): empty-OneD placeholders 0.00 / 0.00 → the Sep
+  FourD H1 — closing the year exactly for DHARNI Sep-23 4.79 / 1.52 and Sep-24 2.92 / 1.85, ASARFI Sep-23 40.32 / 2.07,
+  EARKART Sep-25 22.29 / 1.85, DRONACHRYA Sep-24 26.90 / 1.51, and via 'fy' for DRONACHRYA Sep-23 20.89 / 3.96 (its
+  Mar-24 files print only the year); MAIDEN Mar-24 236.10 / 9.72 (the
+  whole year) → 120.59 / 5.54; DRONACHRYA Mar-24 consolidated 0.00 / 0.00 (empty OneD, no consolidated Sep filing) → the
+  proven standalone H2 14.31 / 2.22;
+- quarter 2: MRP Sep-25, SUDARSHAN Sep-25 (their June quarters close the split) — unchanged;
+- mismatch 1: SISL Sep-23 — OneD carries ₹7,600 of expenses and nothing else; the proven H1 3.26 / 0.39 is NOT applied;
+- undecided 8, unchanged: MANAS Sep-21 (FY22 PAT open by ₹1.07 lakh, revenue 0 throughout); MRP Mar-25 (a "Fourth
+  quarter" OneD 23.35 that does not pair with H1 32.74); DHARNI / RESGEN / MAIDEN Mar-23 and CPML Mar-20 (no Sep filing
+  before the listing); SVJ Mar-24 (no Sep-23 filing; its two Mar-24 files disagree, OneD 1.29 / 2.54); SVJ Sep-24
+  (revenue 0 in both columns, PAT −2.59, FY25 does not close).
+Proven fills, fill-only (`--from-dir` → `--apply`, the same files): +30 half-year cells with h=1, incl. MAIDEN Sep-24 →
+Mar-26 and SVJ Sep-25 / Mar-26. xbrl_extra: 181 P&L fields removed from the 12 half-year cells whose OneD is empty or the
+year, 618 balance-sheet fields added for new cells, 0 changed. Second `--heal-sme --dry`: 0 changes (idempotent).
+
+**build_row_periods.py.** (1) A pair with a zero half counts only when PAT closes non-zero the same way. Over the committed
+list 18 marks rested on a zero half; PAT proves 16 (VIVO FY26 −2.03 + 1.17 = −0.86 exactly) → drops SECL Mar-26 (PAT open
+by 0.31 cr) and never adds MANAS Sep-21. (2) BSE h=1 cells whose files are not on this Mac (CI downloads to a temp dir):
+the carried pf is re-checked — identity, zero-half PAT, 'fy' needs m1 = FY (or empty) and 0 < h1 < fy, stored revenue = h1
+(Sep) / h2 (Mar), the slice publishes that revenue — the flag alone never counts; marks tagged "src": "bse-pf", re-derived
+every run, never carried forward. List 1,531 → 1,587 (+57 on 22 BSE SME symbols, 4 of them via pf: MAIDEN and DRONACHRYA
+Sep-23 / Mar-24; −1 SECL Mar-26). **Upkeep:** after an SME fill, copy its files into ~/stocks-cache/bse_sme_xbrl when you
+have them; the pf path covers the rest.
+
+**Verified.** 20 synthetic cases (rounding closures, MANAS PAT open, placeholders, 'fy', MRP with / without its June row,
+unpaired Sep / Mar held, the original filing wins); pf re-check 71 / 71 real h=1 cells, broken variants rejected.
+Main-board path unchanged: §178's 11 probe files → 11 identical fills, old vs new code. Live CI path (`--codes
+543874,543799`): 2 listings + 11 files, 6 proven fills, SVJ Mar-25 held with its link set. Stores on fresh origin:
+bse_fundamentals +30 added / 33 flag-only / 8 value fixes, 0 removed, no `ann` or `src` moved; sf_fundamentals /
+sf_revop / revop_fundamentals byte-identical; verify_fills_live MISSING 0 / REVERTED 0 / RESURRECTED 0. Slices: 23 differ
+(the 22 symbols + SECL), the other 6,565 byte-identical. bse_results.json: 12 companies, only the touched quarters.
+Browser (worktree docs on localhost, live price slices): MAIDEN Mar-24 121 / PAT 5.5 and a new FY24 Ratios column
+(debtor days 34 on 236.1); DHARNI Sep-23 4.8 / Sep-24 2.9 and FY24 + FY25 Ratios; EARKART and AAYUSHBULL new year columns;
+SUPERSHAKT Ratios FY23–FY25; SECL / RELIANCE / AAKAAR unchanged (AAKAAR Mar-26 203 days); 375 px no page overflow; console:
+only the quote worker's 502 for SME symbols (as §191).
+
+**Seen on the way — NOT changed.** (1) Several of these BSE-only SME tickers also carry sf_fundamentals rows
+(scripts/fundamentals.json) that outrank the BSE PAT in the slice fold and hold other or mis-scaled numbers: MANAS
+20190930 139,779,672.0 (raw rupees), SUPERSHAKT Mar-25 con 1,706.57, EXHICON Jun / Sep-24 con 767.67 / 654.92, ASARFI
+Jun / Sep-25 312.11 / 750.05, SVJ Mar-26 6,201.0 — the page shows them beside the BSE revenue. (2) The xbrl-extra nightly
+copies its whole gz over origin's after its reset, so any detail heal pushed during its ~00:10 IST run would be undone.
+(3) The TTM cards (`window4`) still sum four contiguous rows without checking `pd` (§191 open).

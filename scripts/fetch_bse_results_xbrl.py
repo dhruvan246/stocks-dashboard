@@ -309,7 +309,9 @@ def _unit(v):
 
 def closes(a, b, total):
     """a + b == total to within the filings' own rounding (three independently rounded figures: 1.5 units). Measured on
-    the 30 cached SME Sep/Mar pairs: every genuine year closes to <= ₹1,000; the non-pairs miss by >= ₹2.9 lakh."""
+    the 126 cached SME files (2026-09-27): 75 same-basis years close to <= ₹1,000; EARKART FY26 to ₹43,000 against a Mar
+    file rounded to ₹1 lakh (₹1.5 lakh allowed); combinations that are not a year miss by >= ₹2.9 lakh (MRP std H1 + con
+    H2), most by crores."""
     if a is None or b is None or total is None:
         return False
     return abs(a + b - total) <= 1.5 * max(_unit(a), _unit(b), _unit(total), 1)
@@ -803,8 +805,12 @@ def heal_sme(src_dir, dry=False):
       quarter        a quarter of a year the company reported quarterly — unchanged
       undecided      no proof either way (reason printed) — unchanged
       mismatch       decided, but the stored figure is neither the proven one nor an explained placeholder — unchanged
-    Detail (scripts/xbrl_extra.json.gz, keyed by the BSE ticker): on a decided half-year whose filing's OneD is NOT that
-    half, the P&L / EPS / ratio / segment fields parse_file read from OneD are removed (balance sheet and cash flow stay)."""
+      (a stored 0.00 / 0.00 read off an EMPTY OneD whose own basis proves nothing is replaced by the OTHER basis's
+      proven half of that quarter — DRONACHRYA Mar-24: consolidated placeholder → standalone H2 = FY - H1; "was" keeps
+      the old basis too)
+    Detail (scripts/xbrl_extra.json.gz, keyed by the BSE ticker): on a healed half-year row, the P&L / EPS / ratio /
+    segment fields parse_file read from OneD are removed on each basis whose OneD is NOT that half or is empty in every
+    filing of the quarter (balance sheet and cash flow stay)."""
     import collections
     bf_p, x_p = os.path.join(DOCS, "bse_fundamentals.json"), os.path.join(HERE, "xbrl_extra.json.gz")
     bfd = json.load(open(bf_p, encoding="utf-8")); px = bfd.get("px", {})
@@ -835,15 +841,20 @@ def heal_sme(src_dir, dry=False):
             cell = px[code][qe]
             d = dec.get((int(qe), cell.get("basis")))
             r0, p0 = cell.get("rev"), cell.get("pat")
-            if d is None or d["how"] == "hold":
+            same_q = [f for f in files if f["qe"] == int(qe) and f["basis"] == cell.get("basis")]
+            placeholder = eq(r0, 0.0) and eq(p0, 0.0) and any(f["one"] is None for f in same_q)   # 0 / 0 off an EMPTY OneD
+            other = dec.get((int(qe), "S" if cell.get("basis") == "C" else "C"))
+            if (d is None or d["how"] == "hold") and placeholder and other and other["how"] == "half":
+                d, v = other, "half-fixed"                   # the other basis's proven half replaces the placeholder
+                note = "stored %s %s / %s = the empty OneD placeholder → the proven %s half %s / %s" % (
+                    cell.get("basis"), r0, p0, d["basis"], cr(d["rev"]), cr(d["pat"]))
+            elif d is None or d["how"] == "hold":
                 v, note = "undecided", (d["why"] if d else "no %s filing of this quarter in the directory" % cell.get("basis"))
             elif d["how"] == "quarter":
                 v, note = ("quarter", "") if eq(r0, cr(d["rev"])) and eq(p0, cr(d["pat"])) else ("mismatch", "quarter %s / %s" % (cr(d["rev"]), cr(d["pat"])))
             elif eq(r0, cr(d["rev"])) and (eq(p0, cr(d["pat"])) or d["pat"] is None):
                 v, note = "half", ""
             else:
-                same_q = [f for f in files if f["qe"] == int(qe) and f["basis"] == cell.get("basis")]
-                placeholder = int(qe) % 10000 == 930 and eq(r0, 0.0) and eq(p0, 0.0) and any(f["one"] is None for f in same_q)
                 whole_year = d["pf"]["how"] == "fy" and any(f["four"] and eq(r0, cr(f["four"]["rev"])) for f in same_q)
                 v = "half-fixed" if placeholder or whole_year else "mismatch"
                 note = ("stored %s / %s = the %s → %s / %s" % (r0, p0, "empty OneD placeholder" if placeholder else "whole year",
@@ -855,12 +866,16 @@ def heal_sme(src_dir, dry=False):
             if v in ("half", "half-fixed"):
                 if v == "half-fixed":
                     cell["was"] = {"rev": r0, "pat": p0}
+                    if d["basis"] != cell.get("basis"):
+                        cell["was"]["basis"] = cell.get("basis"); cell["basis"] = d["basis"]
                     cell["rev"], cell["pat"] = cr(d["rev"]), cr(d["pat"])
                 cell["h"] = 1; cell["pf"] = d["pf"]
                 for b in ("s", "c"):                         # the detail parse_file read from OneD, on both bases
                     xc = (xl.get(tk) or {}).get(qe, {}).get(b)
                     db = dec.get((int(qe), b.upper()))
-                    if xc and db and db["how"] == "half" and not db["one_is_row"]:
+                    fb = [f for f in files if f["qe"] == int(qe) and f["basis"] == b.upper()]
+                    if xc and ((db and db["how"] == "half" and not db["one_is_row"])
+                               or (fb and all(f["one"] is None for f in fb))):   # OneD empty in every such filing
                         gone = [k for k in xc if k in pnl]
                         for k in gone:
                             del xc[k]
