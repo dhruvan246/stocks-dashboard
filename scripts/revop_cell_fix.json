@@ -26876,6 +26876,56 @@
    "why": "§209 UNITDSPR 20230630: NSE XBRL INDAS_94311_895900_20072023070658_xml (Standalone, First quarter, period 2023-04-01..2023-06-30, presented in Millions). Identity: BSE scrip 532432 (ISIN-mapped); the column reproduces the stored PAT 238.20. Lines (crore): revenue 5312.50, other income 20.90, finance costs 4.30, depreciation 65.00, PBET 336.70, exceptional -17.10, PBT 319.60. op = PBET + finance costs + depreciation - other income = 385.10; EBIT = 320.10; the same column's expenses route (revenue - (expenses - finance costs - depreciation)) = 385.10. stored ebit 5334.0 was a value that matches no line of the filing column (a mis-aligned row/column read) — written by the comparative-rescue pass of scripts/backfill_revop_gaps.py --rescue (commit 6b908f6bb, 2026-07-22). second reader: Moneycontrol line items (mc:MC08:quarterly) give op 385.10 / EBIT 320.10.",
    "wrong_value_class": "BSE-PDF text sweep (backfill_revop_gaps.metrics_at): a P&L row it could not find was read as 0 / a mis-aligned row; not a scale issue (scale_fix n/a)",
    "found": "main-board op==EBIT audit 2026-09-28 (runbook §209)"
+  },
+  {
+   "sym": "LT",
+   "qe": "20250331",
+   "basis": "op_con",
+   "was": 7624.9,
+   "fixed": 8202.54,
+   "why": "§208 (the §205 class): the op slot held EBIT — build_revop.metrics_for read only the Ind-AS tag DepreciationDepletionAndAmortisationExpense until c588e7466, and this filing tags DepreciationAndAmortisationExpense (depreciation read as 0). filing INTEGRATED_FILING_INDAS_1434675_09052025014028 (Fourth quarter, uploaded 2025-05-09, Consolidated; an INDAS-named filing that tags the non-Ind-AS elements): its current-period column reproduces the stored revenue 74392.28 and EBIT 7624.90 to the paisa (= PBT 8014.02 + finance costs 745.93 − other income 1135.05); op = PBET 7539.24 (profit before exceptional and extraordinary items; PBT 8014.02 after exceptional 474.78 / extraordinary 0.00) + finance costs 745.93 + depreciation 1052.42 − other income 1135.05 = 8202.54 cr; the same column's expenses route (revenue − (expenses − finance costs − depreciation)) = 8202.54. Identity: ISIN INE018A01030 = the company (the file's own ISIN fact). second check: the year closes on depreciation — Q1..Q4 as filed 997.92 + 1023.84 + 1047.00 + 1052.42 = 4121.18 = the full-year 4121.18 printed in this filing's year column.",
+   "wrong_value_class": "parser tag-name gap: non-Ind-AS depreciation read as 0 (op == EBIT) in an INDAS-named filing; parser fixed c588e7466",
+   "found": "non-Ind-AS tags in INDAS-named filings (runbook §208)"
+  },
+  {
+   "sym": "LT",
+   "qe": "20250331",
+   "basis": "ebit_con",
+   "was": 7624.9,
+   "fixed": 7150.12,
+   "why": "§208 (the §205 class): EBIT included exceptional items — metrics_for fell through to ProfitBeforeTax because it did not read the non-Ind-AS pre-exceptional tag ProfitBeforeExceptionalAndExtraordinaryItemsAndTax. filing INTEGRATED_FILING_INDAS_1434675_09052025014028 (Fourth quarter, uploaded 2025-05-09, Consolidated; an INDAS-named filing that tags the non-Ind-AS elements): its current-period column reproduces the stored revenue 74392.28 and EBIT 7624.90 to the paisa (= PBT 8014.02 + finance costs 745.93 − other income 1135.05); EBIT = PBET 7539.24 + finance costs 745.93 − other income 1135.05 = 7150.12 cr (PBT 8014.02, exceptional 474.78, extraordinary 0.00). Convention = pre-exceptional, the rule every Ind-AS row follows (user decision 2026-09-27). Identity: ISIN INE018A01030 = the company (the file's own ISIN fact).",
+   "wrong_value_class": "parser tag-name gap: non-Ind-AS pre-exceptional profit not read (EBIT after exceptional items) in an INDAS-named filing; parser fixed c588e7466",
+   "found": "non-Ind-AS tags in INDAS-named filings (runbook §208)"
+  },
+  {
+   "sym": "LT",
+   "qe": "20250331",
+   "basis": "op_std",
+   "was": 3744.91,
+   "fixed": 3757.51,
+   "why": "§208 (the §205 class): the op slot held EBIT — build_revop.metrics_for read only the Ind-AS tag DepreciationDepletionAndAmortisationExpense until c588e7466, and this filing tags DepreciationAndAmortisationExpense (depreciation read as 0). filing INTEGRATED_FILING_INDAS_1434686_09052025015921 (Fourth quarter, uploaded 2025-05-09, Standalone; an INDAS-named filing that tags the non-Ind-AS elements): its current-period column reproduces the stored revenue 42328.96 and EBIT 3744.91 to the paisa (= PBT 4438.82 + finance costs 502.65 − other income 1196.56); op = PBET 3964.04 (profit before exceptional and extraordinary items; PBT 4438.82 after exceptional 474.78 / extraordinary 0.00) + finance costs 502.65 + depreciation 487.38 − other income 1196.56 = 3757.51 cr; the same column's expenses route (revenue − (expenses − finance costs − depreciation)) = 3757.51. Identity: ISIN INE018A01030 = the company (the file's own ISIN fact). second check: this year's depreciation does not close across filings — the quarters as filed 480.78 + 504.86 + 487.96 + 487.38 = 1960.98 vs the full-year 1963.02 printed in this filing (2.04 cr apart: an earlier quarter was revised in the year-end filing); the value here is the as-filed column of the row, as §205.",
+   "wrong_value_class": "parser tag-name gap: non-Ind-AS depreciation read as 0 (op == EBIT) in an INDAS-named filing; parser fixed c588e7466",
+   "found": "non-Ind-AS tags in INDAS-named filings (runbook §208)"
+  },
+  {
+   "sym": "LT",
+   "qe": "20250331",
+   "basis": "ebit_std",
+   "was": 3744.91,
+   "fixed": 3270.13,
+   "why": "§208 (the §205 class): EBIT included exceptional items — metrics_for fell through to ProfitBeforeTax because it did not read the non-Ind-AS pre-exceptional tag ProfitBeforeExceptionalAndExtraordinaryItemsAndTax. filing INTEGRATED_FILING_INDAS_1434686_09052025015921 (Fourth quarter, uploaded 2025-05-09, Standalone; an INDAS-named filing that tags the non-Ind-AS elements): its current-period column reproduces the stored revenue 42328.96 and EBIT 3744.91 to the paisa (= PBT 4438.82 + finance costs 502.65 − other income 1196.56); EBIT = PBET 3964.04 + finance costs 502.65 − other income 1196.56 = 3270.13 cr (PBT 4438.82, exceptional 474.78, extraordinary 0.00). Convention = pre-exceptional, the rule every Ind-AS row follows (user decision 2026-09-27). Identity: ISIN INE018A01030 = the company (the file's own ISIN fact).",
+   "wrong_value_class": "parser tag-name gap: non-Ind-AS pre-exceptional profit not read (EBIT after exceptional items) in an INDAS-named filing; parser fixed c588e7466",
+   "found": "non-Ind-AS tags in INDAS-named filings (runbook §208)"
+  },
+  {
+   "sym": "RUCHIRA",
+   "qe": "20250630",
+   "basis": "op_std",
+   "was": 23.32,
+   "fixed": 27.44,
+   "why": "§208 (the §205 class): the op slot held EBIT — build_revop.metrics_for read only the Ind-AS tag DepreciationDepletionAndAmortisationExpense until c588e7466, and this filing tags DepreciationAndAmortisationExpense (depreciation read as 0). filing INTEGRATED_FILING_INDAS_1508323_11082025041409 (First quarter, uploaded 2025-08-11, Standalone; an INDAS-named filing that tags the non-Ind-AS elements): its current-period column reproduces the stored revenue 168.53 and EBIT 23.32 to the paisa (= PBT 22.68 + finance costs 1.53 − other income 0.89); op = PBET 22.68 + finance costs 1.53 + depreciation 4.12 − other income 0.89 = 27.44 cr; the same column's expenses route (revenue − (expenses − finance costs − depreciation)) = 27.44. Identity: ISIN INE803H01014 = the company (the file's own ISIN fact). second check: no later filing of this financial year is on file yet to close its depreciation.",
+   "wrong_value_class": "parser tag-name gap: non-Ind-AS depreciation read as 0 (op == EBIT) in an INDAS-named filing; parser fixed c588e7466",
+   "found": "non-Ind-AS tags in INDAS-named filings (runbook §208)"
   }
  ],
  "retracted": [

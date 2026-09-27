@@ -23269,21 +23269,48 @@ passed RELATIVE census paths from another cwd: every NSE file failed to open und
   SME cache's quarterly files were never merged (--merge = BS-only; the nightly lists only a 14-day window).
 - Sized for a future half-year path: **1,911 half-year basis-cells on 454 SME symbols** are proven 6-month by
   `row_periods.json` with the file's OneD revenue = the proven half and a depreciation tag in OneD (ZEAL Mar-26 among them).
-**Fill plan (built, NOT applied — proposed to the user first).** 87 cells on 49 symbols: every stored period field of the
-cell is reproduced by a replay of its own filings (63 exactly; 24 differ only by `exc: 0.0`, parsed in CI before §130's
-`ExceptionalItems` fallback) AND the filing declares a quarter (NSE: ReportingQuarter First..Fourth quarter, reporting
-period ≤ 100 days) or `sme_decide` says OneD is the row (BSE: 13 halves `one_is_row`, MRP Sep-25 con a proven quarter).
-Op identity (pbet + fc + dep − oi vs revop_fundamentals op): 29 ok, 56 no revop op (SME quarters absent from
-revop_fundamentals, BSE tickers), 2 off — both the §205 defect in revop, not in the fill (next item). **Held 11:** 8
-"Half yearly"/"Yearly" filings whose OneD spans ~90 days (AFFORDABLE Sep-24 s/c, JAIPURKURT Mar-24 s/c, LATTEYS Mar-23,
-MELSTAR Sep-24, RPEL Sep-24 s/c — §191's labels-lie class: their stored P&L is itself unproven); MANAS Sep-21 and MRP
-Mar-25 (sme_decide: hold); MRP Sep-25 std — sme_decide now says a half whose OneD is NOT the half, yet the stored cell
-still carries that OneD P&L (open: a heal_sme re-run with the current files).
-**Side finding — §205's op == EBIT class in INDAS-named files (not fixed here).** LT Mar-25 con: stored op 7,624.90 =
-PBT 8,014.02 + fc 745.93 − oi 1,135.05 (dep read as 0, pbet fell through to post-exceptional PBT); the filing: pbet
-7,539.24 + fc 745.93 + dep 1,052.42 − oi 1,135.05 = **op 8,202.54**. LT Mar-25 std (op = EBIT 3,744.91, filing dep 487.38)
-and RUCHIRA Jun-25 std (23.32 = EBIT; dep 4.12 → 27.44) likewise. §205 matched NONINDAS-named files only; the other 23
-INDAS-named parses already hold op = pbet + fc + dep − oi.
+**Landed (user 2026-09-28: fill "Yes, all 87" · SME quarters "Yes, the 39" · half-year path "Separate task" · revop
+"Yes, heal the 3").** Lander + plans: `~/stocks-cache/xtra_nonindas_fix/` (`_land_fill.py PLAN_A CELLS PLAN_B --apply`,
+`_land_d.py entries_d.json`, `push.sh`) — run on a tree reset to fresh origin, never merge the payloads.
+- **A — dep + pbet into 87 cells on 49 symbols**, fill-only. The lander re-checks on the CURRENT ledger that each cell still
+  exists, lacks both fields and holds exactly the period fields it held when measured. Proof per cell: a replay of its own
+  filings reproduces every stored period field (63 exactly; 24 differ only by `exc: 0.0` — parsed in CI before §130's
+  `ExceptionalItems` fallback, left as stored) AND the filing declares a quarter (NSE: ReportingQuarter First..Fourth
+  quarter, reporting period ≤ 100 d) or `sme_decide` says OneD is the row (BSE: 13 halves `one_is_row`, MRP Sep-25 con a
+  proven quarter). **Held 11:** 8 "Half yearly"/"Yearly" filings whose OneD spans ~90 days (AFFORDABLE Sep-24 s/c,
+  JAIPURKURT Mar-24 s/c, LATTEYS Mar-23, MELSTAR Sep-24, RPEL Sep-24 s/c — §191's labels-lie class: their stored P&L is
+  itself unproven); MANAS Sep-21 and MRP Mar-25 (sme_decide: hold); MRP Sep-25 std — sme_decide now says a half whose OneD
+  is NOT the half, yet the stored cell carries that OneD P&L (open: a `--heal-sme` re-run with the current files).
+- **B — 31 never-merged SME quarter cells on 17 symbols** (22 new cells, 9 into balance-sheet-only cells; 720 fields,
+  fill-only — 0 stored fields disagreed with the filing). Gates: the filing declares a quarter; the page has a row for that
+  quarter; the filing's own revenue (`build_revop.xbrl_revop`, the stores' reader) equals the served sf_revop revenue of that
+  basis to 0.011 (op equal too on the 29 with a served op). Of the 148 NSE candidates, **109 have no page row** — mostly
+  dual filers' Q1/Q3 (ALLETEC Jun-25: the stores keep its proven halves) — and **8 held on revenue**: AMBEY Mar-26 s/c (the
+  filing is the Jan–Mar quarter, 40.54; the served Mar-26 row is 73.36), DURLAX Mar-26 (76.81 vs 116.37), DENTALKART Mar-25
+  s/c, FELIX Jun-25 s/c, GANESHIN Dec-25 c (no served revenue to prove against). 6 BSE files (HEALTHYLIFE Mar-26,
+  PREVEST Mar-25, VEEFIN Mar-26) were being downloaded by another session during this one — not touched.
+- **D — §205's op == EBIT class in INDAS-named filings: `revop_cell_fix.json` +5** (found "non-Ind-AS tags in INDAS-named
+  filings (runbook §208)"): LT Mar-25 con op 7,624.90 → **8,202.54**, EBIT → 7,150.12 (pre-exceptional; exceptional 474.78);
+  LT Mar-25 std op 3,744.91 → **3,757.51**, EBIT → 3,270.13; RUCHIRA Jun-25 std op 23.32 → **27.44** (no exceptional, EBIT
+  unchanged). The stored value was PBT + finance costs − other income to the paisa in all three (depreciation read as 0,
+  pbet fell through to post-exceptional PBT); the same column's expenses route gives the new op exactly. Year closure on
+  depreciation: LT con closes (997.92 + 1,023.84 + 1,047.00 + 1,052.42 = 4,121.18 = the printed full year); LT std does not
+  (1,960.98 vs the printed 1,963.02 — a quarter revised in the year-end filing; the as-filed column is written, as §205);
+  RUCHIRA Q1 has no closing filing yet. Of the 46 INDAS-named files, the other 23 P&L parses already held op =
+  pbet + fc + dep − oi. `verify_fills_live`: checked 36,549 → 36,554, MISSING / REVERTED / RESURRECTED 0, DRIFT 26
+  (pre-existing).
+- **C — the ZEAL-type half-year P&L path** (1,911 proven cells, 454 SME symbols; needs a P&L tab that accepts two proven
+  halves and a label for 6-month rows in Quarterly detail) → raised as its own task.
+**Verified before the push (origin d96a84cad).** Ledger diff = exactly the plan (87 A cells +dep +pbet, 31 B cells +720
+fields; 0 removed, 0 changed). Slices built both ways (`build_stock_fin.py --out`, same inputs): **61 of 6,600 change** = the
+58 planned symbols + 3 rename aliases carrying their target's data (HORIZONBAT / HORIZONINF ← SKIL, "L&T" ← LT); only `x`
+changes (+ `revop` on LT / L&T / RUCHIRA); `fund_months.json` byte-identical; `pbet` is not in XTRA_KEEP, so slices gain
+`dep` only. Page — the preview-server cap (5 per folder) was full with other sessions' servers, so the LIVE stock.html was
+fed the new slice through its own install path (`installStockFin` + FIN_X/FIN_PD/FIN_PP + `renderFunds()`), the page code
+being untouched by this change: GICL (standalone view) P&L tab gains a "Depreciation" row (FY26 0.29 cr → "0") and
+Quarterly-detail Depr 2025-06/09/12 "—" → 0.1; LT P&L Mar 2025 Depreciation "—" → 1,961, Operating Profit 11,579 → 11,591,
+results row Mar-25 op 3,758 / EBIT 3,270; VIVIANA gains Quarterly rows 2025-06 and 2025-12; 0 console errors. No UI file
+changed → no service-worker bump, no mobile/theme pass.
 **Also seen (open).** 367 main-cache NONINDAS files of 2018-19 parse to None in both parsers: no context block and no
 DateOf…ReportingPeriod facts, only ReportingQuarter ("Yearly" 152, "First quarter" 83, "Third quarter" 66, "Half yearly"
 64, "Fifth quarter" 2) — the builder's banking fallback needs DateOfEndOfReportingPeriod + DateOfStartOfFinancialYear.
