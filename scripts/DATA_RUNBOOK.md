@@ -23229,3 +23229,63 @@ RAJMET …) — likely DRL's class, not adjudicated. INNOVATIVE / BRIGHT / SIIL 
 companies'). BSE pages get no live quote (the worker serves `SYM.BO`: KEL.BO = Kotia ₹26.07, SPICEJET.BO ₹9.85 — not built).
 stock.html scrolls sideways at a 1,024 px viewport (live KEL 1,075 vs 1,014; RELIANCE 1,280) — pre-existing. KALYANI's tape holds 1
 bar (2026-08-28) though EQUITY_L lists it since 2017 (series BE) — not investigated.
+## §208 — THE DETAIL LEDGER'S dep / pbet TABLES LEARN THE NON-IND-AS NAMES; NSE SME HALF-YEAR ROWS STAY BALANCE-SHEET-ONLY (2026-09-28, user: "add the non-Ind-AS names as trailing fallbacks … prove it … propose before re-merging")
+**NO ASSUMPTIONS, NO GUESSWORK — every number below was measured this session (ledger + stores at origin e61314e0e).**
+**Defect (§205's class, in `scripts/xbrl_extra.json.gz`).** `build_xbrl_extra.PNL` read depreciation only as
+`DepreciationDepletionAndAmortisationExpense` and pre-exceptional profit only as `ProfitBeforeExceptionalItemsAndTax`.
+Every non-Ind-AS filing tags `DepreciationAndAmortisationExpense` / `ProfitBeforeExceptionalAndExtraordinaryItemsAndTax`:
+NSE NONINDAS files, BSE's SME `NonBanking_*` / `IFOtherthan_*` files (120 of 120 on this Mac; no "NONINDAS" in the name,
+so their cells carry no `tx` marker), and 46 INDAS-named NSE files (26 main cache, 19 SME cache, 1 NBFC — e.g. LT Mar-25
+con, KANSAINER Mar-25, AARTIIND Mar-25) whose filers used the non-Ind-AS elements.
+**Code (pushed, commit "build_xbrl_extra: read the non-Ind-AS depreciation and pre-exceptional tags").** Both names are
+TRAILING fallbacks; `facts_by_ctx` takes the first name with any facts in the file, so a file tagging the Ind-AS name
+parses exactly as before. The BSE route's SME strip is unaffected: `pnl_keys()` is built from the PNL keys, so
+`detail(pnl=False)` / `heal_sme` drop dep + pbet with the rest of the OneD P&L (checked: SUPERSHAKT Sep-21 NonBanking file,
+pnl=True keeps dep 2.39 / pbet 13.2, pnl=False leaves no period key).
+**Proof — old vs new `parse_file` on every file on this Mac** (main cache 104,538, SME cache 6,261, `~/stocks-cache/xbrl_fill`
+976, `~/stocks-cache/bse_sme_xbrl`; harness compares the json of both parsers, an exception counts as a failure, never as
+"same"). Census by grep: 4,698 files carry a non-Ind-AS name. The 107,366 that carry neither: 107,362 byte-identical
+(incl. a seeded 12,000-file random Ind-AS sample: 11,756 identical + 244 None in both); the other 4 were BSE SME files
+another session downloaded AFTER the census — they carry the names. Of the 4,702 that do: **330 change, every one by
+ADDING exactly {dep, pbet}** (0 removed, 0 changed, 0 of them balance-sheet-only — so `fetch_sme_xbrl --merge`, which takes
+BS-only rows only, is unchanged); the rest are identical (Ind-AS name present, or a BS-only / None parse). ⚠️ The first run
+passed RELATIVE census paths from another cwd: every NSE file failed to open under BOTH parsers and counted as "same" —
+0 NSE diffs, 1.3 s for 4,698 files. A comparison harness must treat a double exception as a failure.
+**Population today (task 1).**
+- NSE non-Ind-AS P&L cells (`tx: "na"` + period fields): **144**; **76 lack dep AND pbet**; the other 68 hold both from a
+  later Ind-AS re-filing of the same quarter (NONINDAS original + INDAS revision: AGI Jun-23, DYCL Mar-26, GFLLIMITED
+  Jun-24) — a replay of their filings reproduces them, nothing to do.
+- **NSE SME half-year / yearly rows: 2,536 `tx: "na"` basis-cells are balance-sheet-only BY DESIGN** (§148 `parse_bs_only`:
+  a filing whose own reporting period spans > 100 days never files P&L under a quarter; `--merge` takes BS-only rows only).
+  **No tag list can give them depreciation.** ZEAL Mar-26 (`INTEGRATED_FILING_NONINDAS_1678012`, "Yearly", 2025-10-01 →
+  2026-03-31; OneD revenue 114.00, dep 2.87, pbet 9.62; FourD = the year, dep 5.59) parses BS-only. On the page: the P&L
+  tab needs four quarter rows (`full`), so an SME half-yearly filer never gets one; its Ratios tab's ROCE row needs `x.dep`
+  on every row of the year (`fyEbit`) and stays hidden.
+- BSE route (keyed by BSE ticker): 17 stored cells lack dep/pbet where the filing is on this Mac (13 proven halves, MRP
+  Sep-25 con quarter, 3 held — below).
+- **SME quarterly P&L never merged:** 125 (sym, qe, basis) quarter parses from the SME cache have NO ledger cell, and 29
+  BS-only cells have a declared-quarter filing of their own (AMBEY Mar-26: "Fourth quarter", 2026-01-01 → 03-31) — the
+  SME cache's quarterly files were never merged (--merge = BS-only; the nightly lists only a 14-day window).
+- Sized for a future half-year path: **1,911 half-year basis-cells on 454 SME symbols** are proven 6-month by
+  `row_periods.json` with the file's OneD revenue = the proven half and a depreciation tag in OneD (ZEAL Mar-26 among them).
+**Fill plan (built, NOT applied — proposed to the user first).** 87 cells on 49 symbols: every stored period field of the
+cell is reproduced by a replay of its own filings (63 exactly; 24 differ only by `exc: 0.0`, parsed in CI before §130's
+`ExceptionalItems` fallback) AND the filing declares a quarter (NSE: ReportingQuarter First..Fourth quarter, reporting
+period ≤ 100 days) or `sme_decide` says OneD is the row (BSE: 13 halves `one_is_row`, MRP Sep-25 con a proven quarter).
+Op identity (pbet + fc + dep − oi vs revop_fundamentals op): 29 ok, 56 no revop op (SME quarters absent from
+revop_fundamentals, BSE tickers), 2 off — both the §205 defect in revop, not in the fill (next item). **Held 11:** 8
+"Half yearly"/"Yearly" filings whose OneD spans ~90 days (AFFORDABLE Sep-24 s/c, JAIPURKURT Mar-24 s/c, LATTEYS Mar-23,
+MELSTAR Sep-24, RPEL Sep-24 s/c — §191's labels-lie class: their stored P&L is itself unproven); MANAS Sep-21 and MRP
+Mar-25 (sme_decide: hold); MRP Sep-25 std — sme_decide now says a half whose OneD is NOT the half, yet the stored cell
+still carries that OneD P&L (open: a heal_sme re-run with the current files).
+**Side finding — §205's op == EBIT class in INDAS-named files (not fixed here).** LT Mar-25 con: stored op 7,624.90 =
+PBT 8,014.02 + fc 745.93 − oi 1,135.05 (dep read as 0, pbet fell through to post-exceptional PBT); the filing: pbet
+7,539.24 + fc 745.93 + dep 1,052.42 − oi 1,135.05 = **op 8,202.54**. LT Mar-25 std (op = EBIT 3,744.91, filing dep 487.38)
+and RUCHIRA Jun-25 std (23.32 = EBIT; dep 4.12 → 27.44) likewise. §205 matched NONINDAS-named files only; the other 23
+INDAS-named parses already hold op = pbet + fc + dep − oi.
+**Also seen (open).** 367 main-cache NONINDAS files of 2018-19 parse to None in both parsers: no context block and no
+DateOf…ReportingPeriod facts, only ReportingQuarter ("Yearly" 152, "First quarter" 83, "Third quarter" 66, "Half yearly"
+64, "Fifth quarter" 2) — the builder's banking fallback needs DateOfEndOfReportingPeriod + DateOfStartOfFinancialYear.
+**Lesson.** Same as §205, one level down: a fix to ONE parser of a shared vocabulary leaves every sibling parser of the
+same files wrong — `grep` every tag table that names the old spelling (here `build_revop.TAGS` was fixed, the detail
+ledger's `PNL` was not) and diff each against the file census.
