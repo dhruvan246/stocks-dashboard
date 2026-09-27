@@ -21765,6 +21765,22 @@ time 1.2 s apart, 0 failures) and Moneycontrol where the MC journal has the cell
   the §70 PAT mirror (sf_revop slot 5, 0.0 on all six) synced through `revop_cell_fix.json`. RML Dec-21 con (−4.31, pinned in
   §184a without a pat_defects entry) registered the same way. `apply_owners_full --dry` 0, `settle_stale_holds` 0 resurrected,
   second applier runs write 0; only the RML slice changed (npCon on the five, mirror on six).
+- **RML Dec-17 con RETRACTED + Jun-18 quarter FILLED (user: "yes" to both).** (1) Dec-17 npCon −0.69 was the Dec-18
+  consolidated total one year early — the row first carried the Dec-18 date 20190124 (`ann_date_fills` 'was'). RML filed NO
+  consolidated result for Dec-17, three readers: BSE's results index ('Standalone-Dec-17' only; quarterly con starts Jun-18),
+  the Dec-17 results PDF (standalone statement only), and the auditor's report in the Jun-18 results ("opted to publish the
+  consolidated financial results every quarter beginning from the quarter ended June 30, 2018"). Retracted through
+  `con_nofile_retractions.json` (`held`) + `apply_con_nofile_retractions.py --apply` (npCon AND annCon nulled, docs + build
+  mirror). NOT back-filled from the Dec-18 results' comparative column: that figure was first public 2019-01-22, and the row's
+  one `ann_date_fills` date (20180123, applied to BOTH bases) would re-date it a year early — a look-ahead. (2) Jun-18 (std +
+  con) was absent from every store: BSE's own XBRL (Main_Ind_As_532661_2572018165426 / _257201816553), tracked route offline →
+  std revenue 343.87 / op 31.74 / EBIT 19.47 / PAT 13.44, con 394.22 / 27.85 / 12.54 / 4.08, + xbrl_extra detail. Anchors: the
+  NSE Sep-18 filings' H1 − Q2 = these quarters on revenue, other income, materials, finance cost, D&A, total expenses, PBT, tax,
+  PAT and EPS (employee / other expenses regrouped 0.28 inside H1); the Jun-18 results PDF prints the same revenue, PBT, PAT and
+  EPS on both bases. ann 20180725 = BSE's broadcast 2018-07-25 15:58 (NEWS_DT; the XBRL list's 2018-07-26 is a re-stamp).
+  Pre-Nov-2018 BSE PDFs sit on `xml-data/corpfiling/CorpAttachment/<Y>/<M>/` (AttachHis/AttachLive 404, AnnPdfOpen bounced).
+  Still absent: Mar-18 (no BSE XBRL; the Mar-18 results PDF of 2018-05-03 would carry std). Seen, not changed: Dec-18 ann
+  20190124 is 2 days after BSE's broadcast 2019-01-22 14:07.
 
 ## §185 — AUDIT OF THE BSE RESULTS READERS AFTER §182: nine defects fixed, one ruled out (2026-09-27, user: "find more n more bugs … fix")
 All of it is quarter-agnostic: every target quarter comes from the filing (its printed period, else its filing date).
