@@ -23,6 +23,10 @@ WHAT IT DOES, per collision key OLD -> TARGET, per store:
      holds every quarter, and PAT authority stays with its own rows.
   3. DROP everything else and the OLD key itself. Every removed value is written to
      scripts/bse_alias_collision_retractions.json with its action, so the retraction is reversible.
+  4. RE-KEY the fill/heal LEDGERS that journal a cell under OLD (every file verify_fills_live.py registers,
+     + stdpat_adjud_verdicts.json) to TARGET — else verify_fills_live reads them MISSING (it BLOCKS the
+     nightly refresh-fundamentals commit) and a replay would write the other company back under OLD.
+     An entry the target already journals is marked skip instead (first run: 9 re-keyed, 6 skipped).
 Idempotent: a second run finds no OLD rows and writes nothing.
 
 Run:  python3 scripts/retract_bse_alias_collision_rows.py [--apply]     (default: dry run, prints the plan)
@@ -58,6 +62,77 @@ def agrees(a, b):
     """Every slot in AGREE_IDX that both rows carry is equal, and they share at least one."""
     shared = [i for i in AGREE_IDX if i < len(a) and i < len(b) and a[i] is not None and b[i] is not None]
     return bool(shared) and all(_same(a[i], b[i]) for i in shared)
+
+
+def rekey_ledgers(coll, proven, run):
+    """4. FILL / HEAL LEDGERS that journal a cell under a proven collision key. They are re-applied and re-checked
+    against the served stores (verify_fills_live.py — BLOCKING in refresh-fundamentals), so once the key is gone
+    they read MISSING, and a replay would write the other company back under the BSE ticker. The value is the
+    target's (proven above), so the entry moves to the target's key when the target has none for that cell;
+    otherwise it is marked skip. Ledgers scanned: every file verify_fills_live registers (LEDGERS, BASIS_KEYED,
+    NESTED) + stdpat_adjud_verdicts.
+    -> {path: (data, trailing_newline)} of ledgers changed."""
+    sys.path.insert(0, HERE)
+    import verify_fills_live as V
+    names = sorted({l[0] for reg in (V.LEDGERS, getattr(V, "BASIS_KEYED", []), getattr(V, "NESTED", [])) for l in reg}
+                   | {"stdpat_adjud_verdicts.json"})
+    out = {}
+
+    def note(old, c):
+        return ("§197: re-keyed from %s — %s on this site is %s (BSE %s); this cell is %s's"
+                % (old, old, c["bse_name"], c["bse_code"], c["target"]))
+
+    def move(container, k, newk, old, c, log_):
+        v = container[k]
+        if isinstance(v, dict) and v.get("skip") and v.get("rekeyed"):
+            return                                                        # skipped by an earlier run
+        if newk not in container:
+            container[newk] = container.pop(k)
+            if isinstance(container[newk], dict):
+                container[newk]["rekeyed"] = note(old, c)
+            log_.append({"key": k, "to": newk, "action": "re-keyed"})
+        elif isinstance(v, dict):
+            v["skip"] = True; v["rekeyed"] = note(old, c) + " (target already journals this cell — skipped)"
+            log_.append({"key": k, "to": newk, "action": "skip (target entry exists)"})
+
+    for n in names:
+        p = os.path.join(HERE, n)
+        if not os.path.exists(p):
+            continue
+        raw = open(p, encoding="utf-8").read()
+        d = json.loads(raw)
+        if not isinstance(d, dict):
+            continue
+        log_ = []
+        for old in sorted(proven):
+            c = coll[old]; tgt = c["target"]
+            if isinstance(d.get(old), dict):                                  # SYM -> {QE: entry}
+                if tgt not in d:
+                    d[tgt] = d.pop(old)
+                    for e in d[tgt].values():
+                        if isinstance(e, dict): e["rekeyed"] = note(old, c)
+                    log_.append({"key": old, "to": tgt, "action": "re-keyed"})
+                else:
+                    for q in list(d[old]):
+                        if q not in d[tgt]:
+                            d[tgt][q] = d[old].pop(q)
+                            if isinstance(d[tgt][q], dict): d[tgt][q]["rekeyed"] = note(old, c)
+                            log_.append({"key": "%s/%s" % (old, q), "to": "%s/%s" % (tgt, q), "action": "re-keyed"})
+                        elif isinstance(d[old][q], dict) and not (d[old][q].get("skip") and d[old][q].get("rekeyed")):
+                            d[old][q]["skip"] = True; d[old][q]["rekeyed"] = note(old, c) + " (target already journals it)"
+                            log_.append({"key": "%s/%s" % (old, q), "action": "skip (target entry exists)"})
+                    if not d[old]: d.pop(old)
+            if isinstance(d.get(old), dict) and all(isinstance(e, dict) and e.get("skip") for e in d[old].values()):
+                pass                                                      # only skipped entries left: nothing to do
+            for cont in [d] + [v for v in d.values() if isinstance(v, dict)]:  # "SYM|QE…" keys, top level or one down
+                for k in [k for k in cont if isinstance(k, str) and k.startswith(old + "|")]:
+                    move(cont, k, tgt + k[len(old):], old, c, log_)
+        if log_:
+            out[p] = (d, raw.endswith("\n"))
+            run.setdefault("ledgers", {})[n] = log_
+            print("ledger %-32s %d entr(ies) re-keyed/skipped: %s" % (n, len(log_), ", ".join(
+                "%s->%s" % (e["key"], e.get("to", "skip")) for e in log_[:4]) + (" ..." if len(log_) > 4 else "")))
+    return out
 
 
 def main():
@@ -160,14 +235,22 @@ def main():
         print("%-10s -> %-10s proven by %d quarter(s); rows per store %s; %d moved/merged into %s, rest dropped"
               % (old, tgt, rec["proof_count"], n, mv, tgt))
 
-    if not changed:
+    # a key is proven once any run moved/dropped its store rows (this run or an earlier one in the log)
+    proven = {o for r in log["runs"] + [run] for o, v in r["keys"].items() if v.get("stores")}
+    led_changed = rekey_ledgers(coll, proven, run)
+
+    if not changed and not led_changed:
         print("nothing to retract (already applied)")
         return 0
     if not apply:
-        print("DRY RUN — re-run with --apply to write %d store(s) + %s" % (len(changed), os.path.relpath(OUT, ROOT)))
+        print("DRY RUN — re-run with --apply to write %d store(s) + %d ledger(s) + %s"
+              % (len(changed), len(led_changed), os.path.relpath(OUT, ROOT)))
         return 0
     for p in changed:
         _save(p, xtra if p == XTRA else (fund[p] if p in fund else revop[p]))
+    for p, (d, nl) in led_changed.items():
+        with open(p, "w", encoding="utf-8") as fh:
+            fh.write(json.dumps(d, indent=1) + ("\n" if nl else ""))
     log["runs"].append(run)
     with open(OUT, "w", encoding="utf-8") as fh:
         json.dump(log, fh, indent=1, ensure_ascii=False)

@@ -3399,26 +3399,6 @@
    "stored_pat_con": 0.0
   }
  },
- "WORTH": {
-  "20210331": {
-   "correct_pat": 3.15,
-   "defect": "std-PAT two-files adjudication 2026-08-10",
-   "source": "WORTHPERI (renamed) Mar-21 std XBRL INDAS_71580_461781_21062021064015: PAT 3.1539, EPS 2.00 == implied 2.002 (shares 1.5751e7); revop already held 3.15",
-   "stored_pat": -1148.31
-  },
-  "20211231": {
-   "correct_pat": 7.24,
-   "defect": "std-PAT two-files adjudication 2026-08-10",
-   "source": "INDAS_82051_607001_11022022095312: PAT 7.2423, EPS 4.60==4.598; 9M FY22 chain 3.8254+4.0166+7.2423=15.0843 == filing's own YTD EXACT",
-   "stored_pat": 2076.33
-  },
-  "20220331": {
-   "correct_pat": 4.07,
-   "defect": "std-PAT two-files adjudication 2026-08-10",
-   "source": "INDAS_86130_665313_28052022043028: PAT 4.0748, EPS 2.59==2.587; FY22 chain 15.0843+4.0748=19.1591 == filing FY EXACT",
-   "stored_pat": -2312.36
-  }
- },
  "ZEAL": {
   "20250331": {
    "correct_pat": 5.42,
@@ -3546,5 +3526,28 @@
    "stored_pat": 54.76
   }
  },
- "_README": "Confirmed WRONG stored PAT cells in docs/sf_fundamentals.json, with the as-filed correct value and its source. Found while rev-backfilling: the cell's revenue could not be written because the stored PAT failed the anchor rule (see scripts/_apply_reads.py). sf_fundamentals is CI-rebuilt and is owned by refresh.yml / the bse-vision-fill routine (DATA_RUNBOOK hot-file ownership), so DO NOT hand-edit it from another tree - route the fix through that lane, then re-run the rev applier and these cells will anchor and fill."
+ "_README": "Confirmed WRONG stored PAT cells in docs/sf_fundamentals.json, with the as-filed correct value and its source. Found while rev-backfilling: the cell's revenue could not be written because the stored PAT failed the anchor rule (see scripts/_apply_reads.py). sf_fundamentals is CI-rebuilt and is owned by refresh.yml / the bse-vision-fill routine (DATA_RUNBOOK hot-file ownership), so DO NOT hand-edit it from another tree - route the fix through that lane, then re-run the rev applier and these cells will anchor and fill.",
+ "WORTHPERI": {
+  "20210331": {
+   "correct_pat": 3.15,
+   "defect": "std-PAT two-files adjudication 2026-08-10",
+   "source": "WORTHPERI (renamed) Mar-21 std XBRL INDAS_71580_461781_21062021064015: PAT 3.1539, EPS 2.00 == implied 2.002 (shares 1.5751e7); revop already held 3.15",
+   "stored_pat": -1148.31,
+   "rekeyed": "\u00a7197: re-keyed from WORTH \u2014 WORTH on this site is Worth Investment & Trading Co Ltd (BSE 538451); this cell is WORTHPERI's"
+  },
+  "20211231": {
+   "correct_pat": 7.24,
+   "defect": "std-PAT two-files adjudication 2026-08-10",
+   "source": "INDAS_82051_607001_11022022095312: PAT 7.2423, EPS 4.60==4.598; 9M FY22 chain 3.8254+4.0166+7.2423=15.0843 == filing's own YTD EXACT",
+   "stored_pat": 2076.33,
+   "rekeyed": "\u00a7197: re-keyed from WORTH \u2014 WORTH on this site is Worth Investment & Trading Co Ltd (BSE 538451); this cell is WORTHPERI's"
+  },
+  "20220331": {
+   "correct_pat": 4.07,
+   "defect": "std-PAT two-files adjudication 2026-08-10",
+   "source": "INDAS_86130_665313_28052022043028: PAT 4.0748, EPS 2.59==2.587; FY22 chain 15.0843+4.0748=19.1591 == filing FY EXACT",
+   "stored_pat": -2312.36,
+   "rekeyed": "\u00a7197: re-keyed from WORTH \u2014 WORTH on this site is Worth Investment & Trading Co Ltd (BSE 538451); this cell is WORTHPERI's"
+  }
+ }
 }
