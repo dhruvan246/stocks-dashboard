@@ -23043,6 +23043,18 @@ only in the 2026-08-05 identities the 23-Sep fallback seed carried (HEG is now H
 no trade since 2007) carry BSE's own live Mktcap 0.00 where the seed had a stale figure. Also 68 names moved "…Limited" (NSE
 register) → "…Ltd" (BSE) because the live master has those scrips again. That is the universe catching up with BSE, not a defect
 of the name path.
+**Rebuilt via the pipeline + LIVE-verified (2026-09-28 00:21–00:45 IST).** refresh.yml 36341606191 on dea76b734 (LIVE BSE master,
+5,048 scrips): guard "dash_slim.bin clean / stock_data.bin clean"; `stock_bin_stale` "company names changed on 310 symbols" → both
+committed (911d0da84). refresh-bse.yml 36341608089 (`fund_budget=0` — "processed 0 scrips", no OCR/vision spend): universe guard
+clean → d0e8003fe. Then refresh-backtest-data.yml (2,174 BSE stk slices re-cut, sf-data force-pushed, search index rebuilt) and
+refresh-announcements.yml (discovery + results feed). NOTE: refresh.yml pushes with the Actions token, which does NOT trigger
+pages.yml — its commit went live only when pages.yml was dispatched (§41). LIVE (`https://dhruvan246.github.io/stocks-dashboard/…`
+with a cache-buster, run through `bse_names.py --check`): dash_slim.bin, stock_data.bin, bse_universe.json, results_feed.json,
+discovery.json, search_index.json, bse_results.json, shareholding.json — all 0 names ending in `-$`; sf-data `stk/VALIANT.json` /
+`ADCINDIA.json` clean. In the browser: dashboard META 5,481 names / 0 marked, table search "UNO Minda" → "UNO Minda Ltd";
+stock.html?sym=UNOMINDA "UNO Minda Ltd" (0 markers on the page incl. Peers); stock.html?sym=VALIANT (BSE-only) "Valiant
+Communications Ltd", console clean; site search "valiant" → "Valiant Communications Ltd". A shareholding rebuild against the clean
+dash_slim gives 0 marked names (the committed feed was already clean; the next scheduled run keeps it so).
 
 ## §205 — NON-IND-AS FILINGS: THE op SLOT HELD EBIT (depreciation read as 0) AND EBIT INCLUDED EXCEPTIONAL ITEMS — parser fixed, 929 cells healed through revop_cell_fix (2026-09-28, user: "All 821 proven cells" · "Pre-exceptional op AND ebit" · "metrics_for only" · "Fetch and include")
 **NO ASSUMPTIONS, NO GUESSWORK — every value below was measured this session (filings, stores, builds, git history).**
