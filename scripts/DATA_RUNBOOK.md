@@ -20738,6 +20738,40 @@ original filing (214.74 / −17.94 / −159.49) nor the FY2022 filing's restated
   March cell as the year. Only the stock page's CFO/PAT card requires `cf_d ≥ 300`, and it takes the newest year that passes.
   A builder fix (take the CF period from the filing's own DateOfStart fact) was not made (open).
 
+### 168q. Round 6 (user "ok follow ur order n start", 2026-09-27) — never-tried N500 companies + December year-end filers; PAUSED by the user (tokens) after 2 pushes
+Plan context: after round 5, 493 of 762 PIT-N500 stocks lacked a complete card (1,106 stock-years), grouped by what each needs.
+This round = group 1 (non-financial, never attempted, holds an FY2023-25 XBRL key) + group 4 (non-March filers).
+- **Group 4 was NOT a page fix (measured):** stock.html renderDeep() already anchors Dec/Jun filers (FYM); a page-faithful
+  re-measure gives the same 269 complete cards. The 17 lack DATA (Dec-2020/21 balance sheets mostly). Two page bugs found and
+  spun off: KENNAMET (June FY) shows its Dec HALF-YEAR BS/6-month CF as annual (the Dec test runs before Jun); GILLETTE/PGHH/PGHL
+  switched to a March year-end in 2024-25, which one FYM per company cannot show. `tools/card_audit.py` still uses a March-only fyOf.
+- **Targets:** 115 (`~/stocks-cache/abscf/w6_targets.json`): 107 by `bse_scrips.json` by_id + 8 codes resolved by ISIN from BSE's own
+  `ListofScripData` (Active/Delisted/Suspended; BSE Ltd and CDSL have no BSE listing). Dropped as structural: ACC, AMBUJACEM
+  (Dec year-end in FY20-22), SPARC, TCIEXP (standalone only vs a consolidated key), SIEMENS (September FY: its 31-March statements
+  are half-year interims). GUJENERGY = Gujarat Gas (GUJGASLTD renamed, §30; identical slices). Dec batch: 11 clean Dec filers
+  (`w6dj_targets.json`), keyed `<fy>1231` via the new optional `"ye"` field (`merge_annual_bscf.qe_of`, asat_ok follows it).
+- **Discovery trap:** `AnnSubCategoryGetData` answers HTTP 200 with ZERO rows for a date range over ~1 year (2020-04-01..2022-10-31
+  gave nothing) — query one Apr-Oct window per year. 990 requests via `bse_headers`, one at a time 1 s apart, all 200 (one read
+  timeout, resumed). Downloads: 1,420 PDFs sequentially; a subject filter skipped 760 explicit June-quarter/half-year/unaudited/RPT
+  attachments (kept whenever the subject names a March year-end — a 2020 filing may combine FY20 audited + Q1 unaudited).
+- **Pipeline:** tools `w6_*` (w5 copies repointed), `w6_stagebatch.sh` (fp/fd/fq → b/d/q stages; a first version staged fq0 over
+  b00 — fixed, INDIAMART was already merged), `wave6/launched.txt` registry, Screener checks serialised by a mkdir lock (per-stage
+  background runs overlapped). 37 finder batches + second pass, 48 reader batches read, every company answer-key gated.
+- **Same-filing units applied by the orchestrator** (reader recorded the raw print + the tie): ADANIGREEN FY20 CF, MARUTI FY20-22 CF,
+  HBLENGINE FY20 CF, HIKAL FY20-22 BS, TARIL FY21 BS — each tie is a printed cash figure equal to the unit-labelled statement's
+  cash line in the SAME filing. ASTERDM FY21 BS not applied (only a cross-filing chain).
+- **Gate:** every staged company passed except MAHSEAMLES (FY25 page prints no unit). `gate_ok` now also accepts PP&E within 0.005
+  crore (half the key's storage unit): HEMIPROP key 0.01 vs printed 0.0093 was a true match rejected by the 1% test.
+- **LANDED:** ea9a19a1a (193 cells / 77 companies incl. CIEINDIA CRISIL VBL VESUVIUS Dec cells) + 001ee1829 (7 new cells + cash
+  flows on 4) = 200 cells / 79 companies. LIVE part 1: 3,437 fields OK; 22 fields whose pre-push XBRL value was gone at rebuild
+  time now show our printed value (all 22 = ours; e.g. HBLENGINE FY22 XBRL capex −68.13 vs printed 68.13).
+- **Screener verify-only:** 1,221 MATCH / 78 CLOSE / 79 FAR / 85 n/a — FARs NOT adjudicated yet (concentrated in LTM, NMDC, JSL
+  FY22 whole-year and in years the readers saw restated by the next filing: OIL, COALINDIA, WABAG FY20-21).
+- **Paused, open:** 12 reader batches (b27/01 b28 b29 q00-q03 d00 d02); second-pass finds for 12 sets (out2/g0-g2) + batches
+  g3-g5, gd0 not run; unit pass via the results page (LTFOODS FY20-22, MAHSEAMLES FY22/25, DHANUKA FY20-21, OLECTRA FY20, JKCEMENT
+  FY22, ASTERDM FY21); standalone-key retry for first-subsidiary-later companies (ABB, SCHAEFFLER, HATSUN, HINDZINC, INDIGOPNTS,
+  IRCTC, GABRIEL, MGL, JWL, TATASTLLP FY22); AETHER FY25 filing not discovered; FACT (590024) returned no filings.
+
 ## 169. Our-side price errors found by the Quantmac indicator reconciliation — 3 wrong boundaries, 2 rights factors, 1 duplicate rights row, 2 unjoined renames, 1 missing listing week, 34 stray fragment bars  (2026-09-26, user: "investigate" the possibly-ours cells; "don't assume" either side)
 **NO ASSUMPTIONS** — reference = NSE's own files, cached durably: every bhavcopy 2008-2026 (`~/stocks-cache/nse_bhav/full/`, 4,640
 sessions, file TIMESTAMP == URL date) and the corporates-corporateActions feed 2008-2026 with subject text (`~/stocks-cache/nse_ca/`,
