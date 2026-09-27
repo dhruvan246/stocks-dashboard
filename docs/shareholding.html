@@ -176,12 +176,20 @@ function loadIndexes(){
   // BSE SME IPO (runbook §195): BSE's official constituent list, as the bare BSE ids this page keys rows by.
   // Optional — a failed fetch only drops this one option.
   const sme=fetch('./bse_sme_ipo/members.json',{cache:'no-store'}).then(r=>r.ok?r.json():null).catch(()=>null);
-  Promise.all([fetch('./indices.json').then(r=>{ if(!r.ok) throw 0; return r.json(); }), sme]).then(([j,sm])=>{
+  // Nifty SME Emerge (runbook §210): NSE's official constituent list (indices.json carries its level, not its members).
+  const smem=fetch('./nse_sme_emerge/members.json',{cache:'no-store'}).then(r=>r.ok?r.json():null).catch(()=>null);
+  Promise.all([fetch('./indices.json').then(r=>{ if(!r.ok) throw 0; return r.json(); }), sme, smem]).then(([j,sm,se])=>{
     const labels=Object.assign({},j.group_labels||{}), order=(j.groups||[]).slice();
     const withMem=(j.indices||[]).filter(x=>x.n && x.members && x.members.length);
     if(sm && sm.members && sm.members.length){
       withMem.push({n:'BSE SME IPO', g:'__bse', members:sm.members.map(m=>(m.sym||'').replace(/\.BO$/,'')).filter(Boolean)});
       order.push('__bse'); labels.__bse='BSE';
+    }
+    if(se && se.members && se.members.length){
+      // niftyindices.com files it under thematic indices (indices.json has it in "Bonds & Other")
+      const g=order.includes('thematic')?'thematic':'__nsesme';
+      if(g==='__nsesme'){ order.push(g); labels[g]='NSE SME'; }
+      withMem.push({n:'Nifty SME Emerge', g, members:se.members.map(m=>m.sym).filter(Boolean)});
     }
     if(!withMem.length) return;
     withMem.forEach(x=>IDX.set(x.n, new Set(x.members)));

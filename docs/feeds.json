@@ -365,6 +365,60 @@
    ]
   },
   {
+   "file": "nifty_sme_emerge.json",
+   "name": "Nifty SME Emerge index history (official NSE closes)",
+   "workflow": "refresh-nse-sme-emerge.yml",
+   "cadence": "daily 19:30 + 09:15 IST",
+   "max_age_hours": 110,
+   "min_bytes": 40000,
+   "min_ratio": 0.9,
+   "pages": [
+    "index.html",
+    "index-chart.html"
+   ]
+  },
+  {
+   "file": "nse_sme_emerge/members.json",
+   "name": "Nifty SME Emerge official member list (daily capture)",
+   "workflow": "refresh-nse-sme-emerge.yml",
+   "cadence": "daily 19:30 + 09:15 IST",
+   "max_age_hours": 110,
+   "min_bytes": 20000,
+   "min_ratio": 0.5,
+   "pages": [
+    "index-chart.html"
+   ]
+  },
+  {
+   "file": "nse_sme_emerge/history.json",
+   "name": "Nifty SME Emerge point-in-time membership 2020→ (NSE Indices press releases)",
+   "workflow": "refresh-nse-sme-emerge.yml",
+   "cadence": "daily 19:30 + 09:15 IST",
+   "max_age_hours": 400,
+   "min_bytes": 50000,
+   "min_ratio": 0.8,
+   "pages": [
+    "nse-bse-dashboard.html",
+    "movers.html",
+    "sectors.html",
+    "quarterly-results.html",
+    "shareholding.html",
+    "stock.html"
+   ]
+  },
+  {
+   "file": "survivorship/niftysmeemerge.json",
+   "name": "Nifty SME Emerge survivorship — every member since 2020 (index-chart.html)",
+   "workflow": "refresh-market-mood.yml",
+   "cadence": "weekdays 21:35 IST",
+   "max_age_hours": 110,
+   "min_bytes": 50000,
+   "min_ratio": 0.8,
+   "pages": [
+    "index-chart.html"
+   ]
+  },
+  {
    "file": "india_vix.json",
    "name": "India VIX history",
    "workflow": "refresh-fii-dii.yml",

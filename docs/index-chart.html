@@ -329,14 +329,20 @@ var REG = {
   // BSE SME IPO: official BSE end-of-day levels (scripts/fetch_bse_sme_ipo.py, runbook §195). No Yahoo symbol → no
   // live poll; `bse` switches the NSE wording (source notes, 1D fallback) to BSE.
   smeipo:    { src:'bse_sme_ipo.json', ysym:null,       key:null,         name:'BSE SME IPO', kind:'index', surv:'bsesmeipo', bse:true,
-               sub:'Every company listed on BSE’s SME platform in roughly the last year — IPOs join on their 2nd trading day, leave after one year.' }
+               sub:'Every company listed on BSE’s SME platform in roughly the last year — IPOs join on their 2nd trading day, leave after one year.' },
+  // Nifty SME Emerge: NSE's official end-of-day closes (scripts/fetch_nse_sme_emerge.py, runbook §210). No Yahoo
+  // symbol → no live poll; `key` pulls its P/E · P/B · yield row from indices.json.
+  smeemerge: { src:'nifty_sme_emerge.json', ysym:null, key:'NIFTY SME EMERGE', name:'NIFTY SME EMERGE', kind:'index', surv:'niftysmeemerge', nseEod:true,
+               sub:'SME companies listed on NSE’s Emerge platform that trade often enough — reviewed every quarter, weighted by free-float market cap.' }
 };
 var ALIAS = { nifty50:'nifty', 'nifty 50':'nifty', n50:'nifty', nsei:'nifty',
               'nifty 500':'nifty500', n500:'nifty500', crsldx:'nifty500',
               nifty_bank:'banknifty', niftybank:'banknifty', 'nifty bank':'banknifty', bank:'banknifty', nsebank:'banknifty',
               indiavix:'vix', 'india vix':'vix', 'india_vix':'vix',
-              bsesmeipo:'smeipo', 'bse sme ipo':'smeipo', 'sme ipo':'smeipo', bse_sme_ipo:'smeipo' };
-var ORDER = ['nifty','nifty500','banknifty','vix','smeipo'];
+              bsesmeipo:'smeipo', 'bse sme ipo':'smeipo', 'sme ipo':'smeipo', bse_sme_ipo:'smeipo',
+              niftysmeemerge:'smeemerge', 'nifty sme emerge':'smeemerge', 'sme emerge':'smeemerge', nifty_sme_emerge:'smeemerge',
+              emerge:'smeemerge' };
+var ORDER = ['nifty','nifty500','banknifty','vix','smeipo','smeemerge'];
 
 var $ = function (id) { return document.getElementById(id); };
 var esc = function (s) { return String(s == null ? '' : s).replace(/[&<>"]/g, function (c) { return ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'})[c]; }); };
@@ -1195,6 +1201,9 @@ function renderLinks() {
   $('srcNote').innerHTML = CFG.bse
     ? 'Daily closes: BSE’s official end-of-day index values (from the base date ' + prettyDate(D[0]) + ' = 100, refreshed every evening). ' +
       'No live intraday feed — the level shown is the latest close. Members: BSE’s official constituent list, captured daily.'
+    : CFG.nseEod
+    ? 'Daily closes: NSE’s official end-of-day index values (from the launch ' + prettyDate(D[0]) + '; base 1 Dec 2016 = 1,000; refreshed every evening). ' +
+      'No live intraday feed — the level shown is the latest close. Members: NSE’s official constituent list, captured daily; past members from NSE Indices’ press releases.'
     : 'Daily closes: NSE end-of-day (from ' + prettyDate(D[0]) + ', refreshed every evening). ' +
     (MC.length && MSRC ? 'Month-end history: ' + MSRC + '. ' : '') +
     'Live price: Yahoo via our Cloudflare Worker, ~15 minutes delayed, polled during market hours.';
@@ -1464,7 +1473,7 @@ function boot() {
       }
       // ---- live quote + polling
       var poll = function () {
-        if (!CFG.ysym) return;                       // end-of-day-only index (BSE SME IPO): nothing live to poll
+        if (!CFG.ysym) return;                       // end-of-day-only index (BSE SME IPO, Nifty SME Emerge): nothing live to poll
         fetchLive(CFG.ysym).then(function (q) {
           LIVE = q; renderHeader();
           if (RANGE === '1D') drawChart();

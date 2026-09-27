@@ -127,6 +127,7 @@
           <option value="nse">NSE-listed only</option>
           <option value="bse">BSE-listed only</option>
           <option value="smeipo">BSE SME IPO index</option>
+          <option value="smeemerge">Nifty SME Emerge index</option>
           <option value="watch">⭐ My watchlist</option>
         </select>
         <select id="selMcap" class="px-2.5 py-1.5 rounded-lg border border-slate-300 bg-white text-xs font-bold focus:outline-none focus:ring-2 focus:ring-blue-500">
@@ -509,11 +510,20 @@ function loadSmeIpo(){
     SMEIPO_SET=new Set((M.members||[]).map(m=>(m.sym||'').replace(/\.BO$/,'')).filter(Boolean)); }).catch(e=>{ SMEIPO_P=null; throw e; });
   return SMEIPO_P;
 }
+// Nifty SME Emerge (runbook §210): the index's CURRENT constituents from NSE's official list (nse_sme_emerge/members.json),
+// bare NSE symbols as this page keys them. Loaded on first use.
+let SMEEM_SET=null, SMEEM_P=null;
+function loadSmeEmerge(){
+  if(!SMEEM_P) SMEEM_P=fetch('./nse_sme_emerge/members.json',{cache:'no-store'}).then(r=>r.json()).then(M=>{
+    SMEEM_SET=new Set((M.members||[]).map(m=>m.sym).filter(Boolean)); }).catch(e=>{ SMEEM_P=null; throw e; });
+  return SMEEM_P;
+}
 function passFilters(r){
   const c=r.c;
   if(ST.uni==='watch'){ if(!WATCH.has(r.sym)) return false; }
   else if(ST.uni==='idx'){ if(!ST.uniSet||!ST.uniSet.has(r.sym)) return false; }
   else if(ST.uni==='smeipo'){ if(!SMEIPO_SET||!SMEIPO_SET.has(r.sym)) return false; }
+  else if(ST.uni==='smeemerge'){ if(!SMEEM_SET||!SMEEM_SET.has(r.sym)) return false; }
   else if(ST.uni==='bse'){ if(!c.bse) return false; }
   else if(ST.uni==='nse'){ if(c.bse) return false; }
   else if(ST.uni!=='all'){ if(!(c.x & UNIBIT[ST.uni])) return false; }
@@ -1450,6 +1460,7 @@ function wire(){
   seg('segMode','mode'); seg('segBasis','basis'); seg('segHeat','heat',renderOverview); seg('segCal','cal',renderCalendar);
   $('selUni').onchange=e=>{ ST.uni=e.target.value; ST.shown=100;
     if(ST.uni==='smeipo'&&!SMEIPO_SET){ loadSmeIpo().then(render).catch(()=>{ ST.uni='all'; $('selUni').value='all'; render(); }); return; }
+    if(ST.uni==='smeemerge'&&!SMEEM_SET){ loadSmeEmerge().then(render).catch(()=>{ ST.uni='all'; $('selUni').value='all'; render(); }); return; }
     render(); };
   $('selMcap').onchange=e=>{ ST.mcap=e.target.value; ST.shown=100; render(); };
   $('selSector').onchange=e=>{ ST.sector=e.target.value; ST.shown=100; render(); };
@@ -1530,8 +1541,9 @@ async function load(){
     // Deep link: ?tab=results&qe=20260630&uni=n500 pre-selects that quarter + universe
     // (what the Season Trends quarter click-through writes to the URL, so it's shareable).
     const uq=p.get('uni');
-    if(uq&&['all','n50','n100','n500','m150','s250','fno','nse','bse','watch','smeipo'].includes(uq)) ST.uni=uq;
+    if(uq&&['all','n50','n100','n500','m150','s250','fno','nse','bse','watch','smeipo','smeemerge'].includes(uq)) ST.uni=uq;
     if(ST.uni==='smeipo'){ try{ await loadSmeIpo(); }catch(e){ ST.uni='all'; } }
+    if(ST.uni==='smeemerge'){ try{ await loadSmeEmerge(); }catch(e){ ST.uni='all'; } }
     const dqi=QTRS.indexOf(+(p.get('qe')||0));
     if(dqi>=0&&dqi<Math.min(8,QTRS.length-4)) ST.qi=dqi;
     // ?uniIdx=Nifty%20Bank → filter by that index's current member list (from results_season.json,

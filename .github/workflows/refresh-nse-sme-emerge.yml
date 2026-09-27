@@ -1,0 +1,81 @@
+name: Refresh Nifty SME Emerge index
+
+# Nifty SME Emerge (runbook §210): NSE's official end-of-day level (docs/nifty_sme_emerge.json — home card +
+# index-chart.html?ix=smeemerge), NSE's official constituent list (captured every run; changes land in
+# docs/nse_sme_emerge/changes.json), NSE Indices' press releases (every change to the index is announced in one:
+# new ones are parsed into scripts/nse_sme_emerge_events.json) and the point-in-time membership rebuilt from them
+# (docs/nse_sme_emerge/history.json + stints.json). The every-member table (docs/survivorship/niftysmeemerge.json)
+# needs the sf price bin and is rebuilt by refresh-market-mood.yml each weekday evening.
+
+on:
+  schedule:
+    - cron: "0 14 * * *"    # 19:30 IST daily — after NSE publishes the day's index close file
+    - cron: "45 3 * * *"    # 09:15 IST daily — catch-up (lists / releases published overnight)
+  workflow_dispatch: {}
+  push:
+    paths:
+      - "scripts/fetch_nse_sme_emerge.py"
+      - "scripts/nse_sme_emerge_prs.py"
+      - "scripts/build_nse_sme_emerge_pit.py"
+      - ".github/workflows/refresh-nse-sme-emerge.yml"
+
+permissions:
+  contents: write
+  actions: write   # dispatch pages.yml after a bot commit (loop guard blocks auto-trigger)
+
+concurrency:
+  group: refresh-nse-sme-emerge
+  cancel-in-progress: false
+
+jobs:
+  refresh:
+    runs-on: ubuntu-latest
+    timeout-minutes: 30
+    steps:
+      - uses: actions/checkout@v5
+      - uses: actions/setup-python@v6
+        with:
+          python-version: "3.11"
+      - name: Install deps
+        run: pip install pypdf
+
+      # NSE_INDCLOSE_CACHE: a temp dir — the level is fetched from 7 days before the last stored session.
+      - name: Fetch the official level, member list, renames and new press releases
+        env:
+          NSE_INDCLOSE_CACHE: /tmp/nse_ind_close
+        run: python3 -X utf8 scripts/fetch_nse_sme_emerge.py
+
+      - name: Rebuild point-in-time membership
+        run: python3 -X utf8 scripts/build_nse_sme_emerge_pit.py
+
+      - name: Guard — refuse to commit a broken or shrunken feed
+        run: python3 scripts/guard_feed.py
+
+      # ⚠️ reset-and-replay (runbook §18): everything the fetch wrote rides /tmp across the reset.
+      - name: Commit (only if changed)
+        id: commit
+        run: |
+          git config user.name  "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          rm -rf /tmp/smeem && mkdir -p /tmp/smeem
+          cp docs/nifty_sme_emerge.json scripts/nse_sme_emerge_events.json scripts/nse_sme_emerge_renames.json /tmp/smeem/
+          cp -r docs/nse_sme_emerge /tmp/smeem/dir
+          for attempt in 1 2 3 4 5; do
+            git fetch origin main
+            git reset --hard origin/main
+            cp /tmp/smeem/nifty_sme_emerge.json docs/
+            cp /tmp/smeem/nse_sme_emerge_events.json /tmp/smeem/nse_sme_emerge_renames.json scripts/
+            mkdir -p docs/nse_sme_emerge && cp -r /tmp/smeem/dir/. docs/nse_sme_emerge/
+            git add docs/nifty_sme_emerge.json docs/nse_sme_emerge scripts/nse_sme_emerge_events.json scripts/nse_sme_emerge_renames.json
+            if git diff --cached --quiet; then echo "unchanged"; echo "changed=false" >> "$GITHUB_OUTPUT"; exit 0; fi
+            git commit -m "Nifty SME Emerge index refresh $(TZ=Asia/Kolkata date +'%Y-%m-%d %H:%M IST')"
+            if git push origin HEAD:main; then echo "changed=true" >> "$GITHUB_OUTPUT"; exit 0; fi
+            echo "push #$attempt rejected; retry"; sleep $((attempt*3))
+          done
+          echo "push failed"; exit 1
+
+      - name: Publish to Pages
+        if: steps.commit.outputs.changed == 'true'
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: gh workflow run pages.yml || echo "(pages dispatch failed — next push publishes)"

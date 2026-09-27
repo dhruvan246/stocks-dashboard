@@ -330,6 +330,27 @@ function smeIpoChip(dayISO, rewound){
     if(/Not in any tracked index/.test(el.textContent)) el.innerHTML=chip; else el.insertAdjacentHTML('beforeend',chip);
   });
 }
+/* Nifty SME Emerge chip (runbook §210). Its membership is not in indicesHistory (own file, NSE Indices' press releases),
+   so slices carry no chip for it: the page reads nse_sme_emerge/ever.json ({sym: [[join, leave|null]…]}, 25 KB, symbols in
+   today's spelling = TKR) and chips the stock when a stint covers the shown day. Fetched only where it can matter — a
+   rewind of an NSE page (a past member may since have moved to the main board) or a live NSE SME page. A BSE-only page
+   never borrows it (§76). */
+let SMEEM_E=null, SMEEM_SEQ=0;
+function smeEmergeChip(dayISO, rewound){
+  const seq=++SMEEM_SEQ;
+  if(SLICE&&SLICE.bse) return;
+  const mm=META[TKR]||{};
+  if(!rewound&&!(mm.sme||mm.sector==='NSE-SME'||(SLICE&&SLICE.sme))) return;   // live: only an NSE SME listing can be a member
+  const tk=TKR;
+  (SMEEM_E||(SMEEM_E=fetch('./nse_sme_emerge/ever.json').then(r=>r.ok?r.json():null).catch(()=>null))).then(j=>{
+    if(!j||TKR!==tk||seq!==SMEEM_SEQ) return;
+    const has=((j.members||{})[tk]||[]).some(x=>x[0]<=dayISO&&(x[1]==null||dayISO<x[1]));
+    const el=$('sChips'); if(!el||!has||el.querySelector('[data-smeem]')) return;
+    const chip='<a data-smeem href="./index-chart.html?ix=smeemerge" title="A constituent of NSE\'s Nifty SME Emerge index — open the index" '+
+      'class="text-[10px] font-semibold bg-amber-50 text-amber-700 px-2 py-0.5 rounded-full hover:underline">Nifty SME Emerge</a>';
+    if(/Not in any tracked index/.test(el.textContent)) el.innerHTML=chip; else el.insertAdjacentHTML('beforeend',chip);
+  });
+}
 const asofYmd=()=>ASOF==null?99999999:+isoOff(ASOF).replace(/-/g,'');
 
 const EV_TYPES={R:['Results','#6366f1'],D:['Dividend','#f59e0b'],C:['Corp action','#8b5cf6'],K:['Deals','#0ea5e9'],I:['Insider','#14b8a6'],T:['Triggers','#f43f5e']};
@@ -635,6 +656,7 @@ function render(){
   $('sChips').innerHTML=(fno?`<span class="text-[10px] font-bold bg-indigo-50 text-indigo-700 px-2 py-0.5 rounded-full">F&amp;O</span>`:'')+
     chips.map(c=>`<span class="text-[10px] font-semibold bg-slate-100 text-slate-600 px-2 py-0.5 rounded-full">${esc(c)}</span>`).join('')||'<span class="text-[11px] text-slate-400">Not in any tracked index currently.</span>';
   smeIpoChip(today, !!rw);
+  smeEmergeChip(today, !!rw);
   // next result date + latest results-filing PDF (daily slice; absent on the fallback path)
   const meta2=[];
   if(SLICE&&SLICE.nr) meta2.push(`<span>🗓️ Next result: <b>${esc(SLICE.nr)}</b></span>`);

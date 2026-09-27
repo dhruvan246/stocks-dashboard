@@ -108,8 +108,19 @@ INDEXES = {
     "niftyoilgas":           ("Nifty Oil & Gas",        None, "NIFTY OIL AND GAS"),
     "niftypsubank":          ("Nifty PSU Bank",         None, "NIFTY PSU BANK"),
     "niftymnc":              ("Nifty MNC",              None, "NIFTY MNC"),
+    "niftysmeemerge":        ("Nifty SME Emerge",       "nifty_sme_emerge.json", None),
 }
-DEFAULT = ["nifty500", "nifty50", "niftybank"]     # the member-bearing indices index-chart.html serves
+DEFAULT = ["nifty500", "nifty50", "niftybank", "niftysmeemerge"]     # the member-bearing indices index-chart.html serves
+# Indices whose point-in-time membership is NOT in indicesHistory (built from their own source, never merged into
+# scripts/indices_history.json whose ~30 builders expect the main-board universe): slug -> (docs/ path, member note)
+OWN_HISTORY = {
+    "niftysmeemerge": ("nse_sme_emerge/history.json",
+                       "Membership: NSE Indices\u2019 own press releases \u2014 every quarterly review and every one-off exclusion "
+                       "since 2019 \u2014 walked back from NSE\u2019s official constituent list, with ticker renames folded to "
+                       "today\u2019s symbol; checked against NSE\u2019s archived official list of 3 Aug 2023 (147 of 147). "
+                       "Record starts 1 Jan 2020. Aug\u2013Sep 2021 is open: "
+                       "two of NSE\u2019s releases for that window are scanned images not yet read."),
+}
 
 COLS = ["sym", "name", "sector", "industry", "isin", "mcap", "status", "first", "fromStart", "last",
         "n", "days", "joinPx", "exitPx", "lastPx", "lastD", "retIn", "cagrIn", "retSince", "retAfter",
@@ -266,7 +277,12 @@ def stints_from_snapshots(snaps):
 
 def build_index(slug, D, slim, rmap, sect, log=print):
     name, daily_file, monthly_key = INDEXES[slug]
-    raw = slim.get("indicesHistory", {}).get(name, [])
+    own = OWN_HISTORY.get(slug)
+    if own:
+        with open(os.path.join(ROOT, "docs", own[0]), encoding="utf-8") as f:
+            raw = json.load(f).get(name, [])
+    else:
+        raw = slim.get("indicesHistory", {}).get(name, [])
     if not raw:
         raise SystemExit("no membership snapshots for %r in %s" % (name, SLIM))
     data, meta = D["data"], D.get("meta", {})
@@ -284,6 +300,14 @@ def build_index(slug, D, slim, rmap, sect, log=print):
 
     ids, ils, idx_prov = load_index_levels(daily_file, monthly_key)
     smeta = slim.get("meta", {})
+    # own-history indices: NSE's official list names each CURRENT member's industry (the SME rows' dash meta only says
+    # "NSE-SME" / "Unknown") — used as the sector column; past members keep what the metadata has
+    own_ind = {}
+    if own:
+        mp = os.path.join(ROOT, "docs", os.path.dirname(own[0]), "members.json")
+        if os.path.exists(mp):
+            with open(mp, encoding="utf-8") as f:
+                own_ind = {m["sym"]: m.get("industry") for m in json.load(f).get("members", [])}
     per_name = stints_from_snapshots(snaps)
 
     # group roster names by resolved bin key (two old names -> one series = one row)
@@ -377,8 +401,8 @@ def build_index(slug, D, slim, rmap, sect, log=print):
         rel = ((1 + ret_in / 100) / (1 + idx_in / 100) - 1) * 100 if (ret_in is not None and idx_in is not None) else None
         rows.append([
             gk, m.get("name") or sm.get("name") or gk,
-            sm.get("sector") or sc.get("macro") or None,
-            sc.get("industry") or sm.get("industry") or m.get("ind") or None,
+            own_ind.get(gk) or (None if sm.get("sector") == "NSE-SME" else sm.get("sector")) or sc.get("macro") or None,
+            next((v for v in (sc.get("industry"), sm.get("industry"), m.get("ind")) if v and not (own and v == "Unknown")), None),
             m.get("isin"), r2(sm.get("mcap")) if sm.get("mcap") else None,
             status, to_iso(applied[0]["join"]), bool(applied[0].get("fromStart")),
             to_iso(applied[-1]["leave"]) if applied[-1]["leave"] is not None else None,
@@ -395,11 +419,14 @@ def build_index(slug, D, slim, rmap, sect, log=print):
         "rosterAsOf": to_iso(roster_asof), "upcoming": to_iso(upcoming_eff) if upcoming_eff else None,
         "nIn": n_in, "nOut": n_out, "nDead": n_dead, "nUntraced": n_untraced,
         "idxSeries": idx_prov,
-        "source": "membership: dash_slim.bin indicesHistory[%s] (%d snapshots %s..%s); prices: sf bin adjusted closes to %s; "
-                  "roster names resolved %s" % (name, len(snaps), to_iso(snaps[0][0]), to_iso(snaps[-1][0]), D["end"],
+        "source": "membership: %s[%s] (%d snapshots %s..%s); prices: sf bin adjusted closes to %s; "
+                  "roster names resolved %s" % (("docs/" + own[0]) if own else "dash_slim.bin indicesHistory", name,
+                                                 len(snaps), to_iso(snaps[0][0]), to_iso(snaps[-1][0]), D["end"],
                                                  json.dumps(how_tot, sort_keys=True)),
         "cols": COLS, "rows": rows,
     }
+    if own:
+        out["memberNote"] = own[1]
     log("%s: %d rows (in %d, out %d, dead %d, untraced %d) from %d snapshots; roster in force %s; upcoming %s; names %s"
         % (name, len(rows), n_in, n_out, n_dead, n_untraced, len(snaps), to_iso(roster_asof),
            to_iso(upcoming_eff) if upcoming_eff else "-", how_tot))

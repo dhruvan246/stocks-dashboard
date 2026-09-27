@@ -151,7 +151,7 @@ const LEVELS=[
   {key:'sub',      label:'Sub-Sectors',    field:'sector'},
   {key:'industry', label:'Industries',     field:'igroup'},
   {key:'basic',    label:'Sub-Industries', field:'industry'},
-  {key:'nse',      label:'Indices',        field:null},   // NSE indices + BSE SME IPO (runbook §195); key kept for saved links
+  {key:'nse',      label:'Indices',        field:null},   // NSE indices + BSE SME IPO (§195) + Nifty SME Emerge (§210); key kept for saved links
 ];
 const PERIODS=[['1W',7],['1M',30],['3M',91],['6M',182],['YTD',-1],['1Y',365],['3Y',1095]];
 const ST={ level:'industry', mover:'all', period:'6M', weight:'equal', view:'cards', sort:'ret', q:'' };
@@ -689,12 +689,14 @@ async function gunzipJSON(url){ const buf=await(await fetch(url)).arrayBuffer();
     // P/E joins the boot fetch now that every CARD carries a median, not just the detail modal.
     // 14 KB gzipped against dash_slim's megabytes, in parallel — it lands long before the prices do,
     // and ensurePE() never rejects, so a missing feed costs the cards their P/E and nothing else.
-    const [slim,cls,nifty,smeipo]=await Promise.all([
+    const [slim,cls,nifty,smeipo,smeem]=await Promise.all([
       gunzipJSON('./dash_slim.bin'),
       fetch('./sector_classification.json').then(r=>r.json()),
       fetch('./nifty.json').then(r=>r.json()).catch(()=>({px:{}})),
       // BSE SME IPO membership history (runbook §195) — own file, full "<ID>.BO" keys; a missing file costs only this group
       fetch('./bse_sme_ipo/history.json',{cache:'no-store'}).then(r=>r.json()).catch(()=>null),
+      // Nifty SME Emerge membership history (runbook §210) — bare NSE tickers, resolved like Nifty's by buildGroups()
+      fetch('./nse_sme_emerge/history.json',{cache:'no-store'}).then(r=>r.json()).catch(()=>null),
       ensurePE(),
     ]);
     START_TS=slim.startTs; META=slim.meta; SERIES=slim.series; IDXH=Object.assign({},slim.indicesHistory||{}); CLS=cls;
@@ -703,6 +705,8 @@ async function gunzipJSON(url){ const buf=await(await fetch(url)).arrayBuffer();
       const boKey={}; for(const k in META) if(k.endsWith('.BO')&&META[k]&&META[k].symbol) boKey[META[k].symbol+'.BO']=k;
       IDXH['BSE SME IPO']=smeipo['BSE SME IPO'].map(s=>({effectiveDate:s.effectiveDate,symbols:s.symbols.map(x=>SERIES[x]?x:(boKey[x]||x))}));
     }
+    if(smeem&&Array.isArray(smeem['Nifty SME Emerge'])&&smeem['Nifty SME Emerge'].length)
+      IDXH['Nifty SME Emerge']=smeem['Nifty SME Emerge'].map(s=>({effectiveDate:s.effectiveDate,symbols:s.symbols}));
     EARLIEST=slim.recentCutoffOff||0;
     // latest offset with data
     let mx=0; for(const k in SERIES){ const d=SERIES[k].d; if(d&&d.length){ const v=d[d.length-1]; if(v>mx)mx=v; } } END_OFF=mx;

@@ -23487,3 +23487,47 @@ healed, 29 NBFC-convention, RHIM + RMCL held, SUNTV + BEML → con-nofile.
 **New open item — xbrl_extra finance costs = tax on 2,320 archive-era cells** (2016: 248, 2017: 2,061, older 11; e.g. CONCOR Dec-17 std fc 129.65
 = tax): `xtra_nse_html` reads the archive's "(f) Finance costs" cell as printed, so the stock page's detail "Finance costs" row shows the tax for
 those quarters. Not healed here; source for a fix = each company's next filings' comparative columns (as above) or MC.
+
+## §210 — NIFTY SME EMERGE ON THE SITE: official NSE level + point-in-time membership 2020→ from NSE Indices' press releases (2026-09-28, user: "do everything same like u did for bse sme ipo")
+**NO ASSUMPTIONS, NO GUESSWORK — every number below was measured this session.** NSE twin of §195.
+**Routes (measured 2026-09-28).**
+- Level: `nsearchives.nseindia.com/content/indices/ind_close_all_DDMMYYYY.csv`, row `NIFTY SME EMERGE` (close, P/E, P/B, yield;
+  open/high/low/volume print "-"). First row 20-Nov-2017 (launch; base 01-Dec-2016 = 1,000). ⚠️ The row's own date must equal the
+  file's day — and three files (06/10/11-Apr-2023) print it MONTH-FIRST (04-06-2023 = 6 Apr): both orders are accepted, one must match.
+  2,194 sessions to 25-Sep-2026; dates equal NSE's bhavcopy calendar exactly (2,193 / 2,193 to 24-Sep).
+- Current list: `www.niftyindices.com/IndexConstituent/ind_niftysmelist.csv` (the index page's "Index Constituent" link — the
+  name is NOT ...smeemerge...; guessed names return niftyindices' 200 HTML 404 page). 528 rows on 28-Sep; undated.
+- Press releases: the niftyindices.com /media page lists every release (1,495 links, 1,000 since 2019). 161 releases 2019→ name the
+  index: quarterly reviews inside the big "Replacements in indices" releases (heading forms `4) Nifty SME Emerge`, `a) …`,
+  `y) NIFTY SME EMERGE`, `B. Exclusion from Nifty SME Emerge index …`), one-offs (migration to the main board, suspension, Z category),
+  revocations ("revoke its earlier decision of inclusion of …") and re-dated exclusions. ⚠️ `ind_prs29052026.pdf` (VIVIANA's
+  exclusion) is listed but 404s on niftyindices — `nsearchives.nseindia.com/content/indices/<stem>.pdf` serves it; the fetcher
+  falls back there. Methodology (Sept-2019 doc): quarterly review effective the working day after the last Thursday of
+  Mar/Jun/Sep/Dec; entry ≥25 % of trading days (min 10) in the previous 3 months; a member is dropped below 10 %; ad-hoc
+  exclusion on suspension / delisting / scheme / migration; min 20 constituents.
+**Membership method** (`scripts/build_nse_sme_emerge_pit.py`): walk BACK from NSE's official list, undoing every event, every symbol
+in today's spelling (`scripts/nse_sme_emerge_renames.json` = NSE symbolchange.csv + two renames NSE's file lacks, found by ISIN in
+the bhavcopies: DSML→DIL 2022-01-14, DUDIGITAL→DUGLOBAL 2022-03-17). Prose-only changes are ledger entries with their release
+(`scripts/nse_sme_emerge_events.json` → void / adjust / unread): the March-2020 review is VOID ("shall stand null and void",
+ind_prs13052020); MWL / KRISHIVAL / INNOVATIVE exclusions re-dated; Emkay Tools (demerged, held as DUMMYEMKTL from 04-Dec-2024)
+is a member from its 08-Jul-2025 listing to its 23-Jul-2025 exclusion. A change dated after the capture (the 30-Sep-2026 review,
+17 changes) is an ANNOUNCED snapshot, never applied to today.
+**Result.** 528 today · 132 on 1-Jan-2020 · 125 snapshots · 853 dated changes · 768 stints · 687 companies ever. Check: NSE's
+archived list of 3-Aug-2023 (Wayback, the only in-scope capture) = rebuilt roster, 147 / 147. **OPEN — Aug–Sep 2021:** two releases
+are image-only PDFs with no text layer (`ind_prs23082021` = the Sep-2021 quarterly review, `ind_prs23082021_1` = a 30-Aug-2021
+one-off), and the walk shows exactly the events they must hold: 5 conflicts (RELIABLE out, NARMADA in, TRANSWIND in, NANDANI/
+JAIPURKURT out, AURDIS/ALCODIS in) and 2 stocks sitting in the roster before their first SME trade (AILIMITED listed 21-Jun-2021,
+WALPAR 13-Jul-2021 — both must have been included in Sep-2021). So rosters 1-Jan-2020 → Sep-2021 carry those 7 names wrong
+until the two scans are read (vision — needs the user's OK, memory feedback-vision-reads-last-ask-first). `validation.json` lists them.
+**Shipped.** `scripts/fetch_nse_sme_emerge.py` (level / members / renames / releases), `scripts/nse_sme_emerge_prs.py` (the one
+parser), `scripts/build_nse_sme_emerge_pit.py` → `docs/nse_sme_emerge/{members,changes,history,stints,events,ever,validation}.json`,
+`docs/nifty_sme_emerge.json`; `refresh-nse-sme-emerge.yml` twice daily. `build_index_survivorship.py` gains `OWN_HISTORY` (an index
+whose membership is its own file — never merged into indices_history.json) → `docs/survivorship/niftysmeemerge.json`, 687 rows
+(528 in / 117 out / 42 dead / 0 untraced), rebuilt by refresh-market-mood.yml; Nifty 50 / 500 / Bank tables byte-identical to the
+old builder's on the same bin. Pages: home card (the index grid is now 4 × 2 — seven across left 87 px per card at 1440 px and
+the price overflowed), `index-chart.html?ix=smeemerge` (`nseEod`: NSE source note, no live poll; P/E-P/B from indices.json),
+dashboard + build_compressed template (history merged client-side, "Nifty SME Emerge (528)"), movers button, sectors "Indices"
+group, quarterly-results `?uni=smeemerge`, shareholding (Thematic group — niftyindices files it there), stock-page chip from
+`ever.json` (25 KB; fetched only on a live NSE SME page or a rewound NSE page; never on a BSE page). sw v210.
+**Backtests** are not wired, as for BSE SME IPO (§195 Option 2) — here only because "same as BSE" was the ask: these ARE NSE symbols
+and the engine could take them via indicesHistory. Offer it, don't assume it.
