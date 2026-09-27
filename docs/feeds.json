@@ -328,6 +328,31 @@
    ]
   },
   {
+   "file": "bse_sme_ipo.json",
+   "name": "BSE SME IPO index history (official BSE closes)",
+   "workflow": "refresh-bse-sme-ipo.yml",
+   "cadence": "weekdays 19:45 IST",
+   "max_age_hours": 110,
+   "min_bytes": 50000,
+   "min_ratio": 0.9,
+   "pages": [
+    "index.html",
+    "index-chart.html"
+   ]
+  },
+  {
+   "file": "bse_sme_ipo/members.json",
+   "name": "BSE SME IPO official member list (daily capture)",
+   "workflow": "refresh-bse-sme-ipo.yml",
+   "cadence": "weekdays 19:45 IST",
+   "max_age_hours": 110,
+   "min_bytes": 2000,
+   "min_ratio": 0.3,
+   "pages": [
+    "index-chart.html"
+   ]
+  },
+  {
    "file": "india_vix.json",
    "name": "India VIX history",
    "workflow": "refresh-fii-dii.yml",

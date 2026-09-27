@@ -77,7 +77,7 @@
   #tTools{grid-column:span 12;grid-row:span 1;flex-direction:row;align-items:center;gap:12px;}
 
   /* indices sub-grid: the 5 live cards */
-  .ixg{display:grid;grid-template-columns:repeat(5,minmax(0,1fr));gap:12px;flex:1;align-items:center;margin-top:4px;}
+  .ixg{display:grid;grid-template-columns:repeat(6,minmax(0,1fr));gap:12px;flex:1;align-items:center;margin-top:4px;}
   .ix{display:flex;flex-direction:column;gap:2px;border-radius:10px;padding:6px 8px;transition:background var(--tr);min-width:0;}
   .ix:hover{background:var(--surface-2);}
   .ix .nm{font-size:10.5px;font-weight:700;color:var(--text-muted);white-space:nowrap;overflow:hidden;text-overflow:ellipsis;}
@@ -131,7 +131,7 @@
     #tIndices,#tGlobal,#tHeat,#tTools{grid-column:1/-1;grid-row:auto;}
     #tBreadth,#tFlows,#tSeason,#tIpo{grid-column:auto;grid-row:auto;min-height:96px;}
     .ixg{grid-template-columns:repeat(2,minmax(0,1fr));}
-    .ixg .ix:last-child{grid-column:1/-1;}
+    .ixg .ix:last-child:nth-child(odd){grid-column:1/-1;}   /* only an odd card out spans the row */
   }
   @media (max-width:520px){
     .ctr{padding:22px 0 16px;}
@@ -202,6 +202,8 @@
              via the Worker's ?gift=1 route, falling back to public CORS proxies. -->
         <a class="ix" href="https://www.nseix.com/markets/derivatives-watch" target="_blank" rel="noopener"
                                                              data-name="GIFT NIFTY" data-kind="gift"></a>
+        <!-- BSE SME IPO: official BSE end-of-day level (scripts/fetch_bse_sme_ipo.py, runbook §195) — no live feed -->
+        <a class="ix" href="./index-chart.html?ix=smeipo"    data-src="bse_sme_ipo.json" data-name="BSE SME IPO" data-kind="eod"></a>
       </div>
     </div>
 
@@ -272,7 +274,8 @@
   'use strict';
 
   // ---- index tiles (same data plumbing as the old ticker, bento layout) ------
-  var fmt = function (n) { return n.toLocaleString('en-IN', { minimumFractionDigits: 2, maximumFractionDigits: 2 }); };
+  // levels of 1 lakh+ (BSE SME IPO ≈ 1,21,244) drop the paise so the figure fits a 1/6-width card
+  var fmt = function (n) { var d = Math.abs(n) >= 100000 ? 0 : 2; return n.toLocaleString('en-IN', { minimumFractionDigits: d, maximumFractionDigits: d }); };
 
   function spark(closes, up) {
     var pts = closes.slice(-30);
@@ -459,6 +462,7 @@
   function pollOnce(all) {
     statusLine();
     cards.forEach(function (el) {
+      if (el.getAttribute('data-kind') === 'eod') return;   // end-of-day only: the committed close IS the value
       var open = el.getAttribute('data-kind') === 'gift' ? giftOpen() : marketOpen();
       if (all || open) refreshLive(el);
     });

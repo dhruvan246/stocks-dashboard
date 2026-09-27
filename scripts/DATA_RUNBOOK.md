@@ -22265,3 +22265,22 @@ results_coverage.json), `stat.open` counts unknown_qe like byExch, next-run text
 **Checked, no change:** 922 dates on rows with no value (0 reach the results page; an arriving value writes its own date); 58 renamed
 tickers stored under both names (never both on the page; the engine folds aliases); sibling-basis date copy in update_fundamentals kept
 (61/12,433 rows where both bases are known differ ≥7 d; without the copy the engine drops the quarter; copied dates can't be told apart).
+## §195 — BSE SME IPO INDEX ON THE SITE: official level + daily official member list (2026-09-27, user: "create this index on my website and also home page … rebalance them with every change")
+**Routes (found in bseindia.com's own JS bundle, measured 2026-09-27, all via `bse_headers`):**
+- level history: `api.bseindia.com/BseIndiaAPI/api/IndexArchDailyPAR/w?fmdt=DD/MM/YYYY&index=SMEIPO&period=D&todt=DD/MM/YYYY`
+  → `Table[{tdate, I_open, I_high, I_low, I_close, …}]`; full history from the base date 16-Aug-2012 = 100.00 (3,479
+  sessions to 25-Sep-2026 = 121,243.82, equal to IndexMasterNew_ng's LTP). Index code list: `/FillddlIndex/w?fmdt=&todt=`.
+- current members: `/NS_IndexWeight_SPDJ_ng/w?iname=SMEIPO` → 160 rows with Date, Scrip_code, ISIN, Weightage, MKT_CAP,
+  FreeFloat_MktCap. **Only the CURRENT list is served** (stamped with the date it applies to — Sun 27-Sep gave 28-Sep).
+  `/HeatMapData/w?flag=HEAT&indexcode=76` returned an empty string off-hours — not a member route.
+- Methodology (BSE Indices Methodology, Sept-2026, p.60): IPO on BSE SME platform joins on its 2nd listing day; leaves
+  at the open of the Monday after the 3rd Friday of the month after one year of listing, or on migration to the main
+  board; min 10 constituents; float-mcap weighted; launch 14-Dec-2012, base 16-Aug-2012 = 100 (back-test began with 5
+  names); 3-year stay before 19-Dec-2016. All 160 members are BSE-only (0 ISINs on NSE SME or main board), groups M/MT.
+**Shipped:** `scripts/fetch_bse_sme_ipo.py` → `docs/bse_sme_ipo.json` (nifty500.json shape), `docs/bse_sme_ipo/members.json`,
+`changes.json` (add/remove events between captures, dated by BSE's list Date), `snapshots/<date>.json`;
+`.github/workflows/refresh-bse-sme-ipo.yml` twice daily incl. weekends (a day not captured is a list lost — BSE has no
+archive). Home card (`data-kind="eod"`, no live poll; levels ≥1 lakh print without paise to fit a 1/6 card) and
+`index-chart.html?ix=smeipo` (REG entry `bse:true`: BSE source note, no Yahoo poll; linear axis clamps at 0).
+**Next (stage 2):** point-in-time membership 2012→ rebuilt from the BSE bhavcopy cache (§149) by the rule above, checked
+against today's official list and against the official level; then `survivorship/bsesmeipo.json` + every page's universe.

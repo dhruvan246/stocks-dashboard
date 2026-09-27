@@ -325,13 +325,18 @@ var REG = {
   banknifty: { src:'nifty_bank.json', ysym:'^NSEBANK',  key:'NIFTY BANK', name:'NIFTY BANK', kind:'index', surv:'niftybank',
                sub:'The most-traded banking index — the market’s risk barometer.' },
   vix:       { src:'india_vix.json',  ysym:'^INDIAVIX', key:null,         name:'INDIA VIX',  kind:'vix',
-               sub:'Expected 30-day Nifty volatility, implied by option prices — the “fear gauge”.' }
+               sub:'Expected 30-day Nifty volatility, implied by option prices — the “fear gauge”.' },
+  // BSE SME IPO: official BSE end-of-day levels (scripts/fetch_bse_sme_ipo.py, runbook §195). No Yahoo symbol → no
+  // live poll; `bse` switches the NSE wording (source notes, 1D fallback) to BSE.
+  smeipo:    { src:'bse_sme_ipo.json', ysym:null,       key:null,         name:'BSE SME IPO', kind:'index', surv:null, bse:true,   // surv: 'bsesmeipo' once survivorship/bsesmeipo.json ships (§195 stage 2)
+               sub:'Every company listed on BSE’s SME platform in roughly the last year — IPOs join on their 2nd trading day, leave after one year.' }
 };
 var ALIAS = { nifty50:'nifty', 'nifty 50':'nifty', n50:'nifty', nsei:'nifty',
               'nifty 500':'nifty500', n500:'nifty500', crsldx:'nifty500',
               nifty_bank:'banknifty', niftybank:'banknifty', 'nifty bank':'banknifty', bank:'banknifty', nsebank:'banknifty',
-              indiavix:'vix', 'india vix':'vix', 'india_vix':'vix' };
-var ORDER = ['nifty','nifty500','banknifty','vix'];
+              indiavix:'vix', 'india vix':'vix', 'india_vix':'vix',
+              bsesmeipo:'smeipo', 'bse sme ipo':'smeipo', 'sme ipo':'smeipo', bse_sme_ipo:'smeipo' };
+var ORDER = ['nifty','nifty500','banknifty','vix','smeipo'];
 
 var $ = function (id) { return document.getElementById(id); };
 var esc = function (s) { return String(s == null ? '' : s).replace(/[&<>"]/g, function (c) { return ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'})[c]; }); };
@@ -641,7 +646,8 @@ function rangePoints() {
     if (LIVE && LIVE.series.length > 1) return { pts: LIVE.series.slice(), intraday: true };
     var n = Math.min(6, D.length), out = [];
     for (var i = D.length - n; i < D.length; i++) out.push([Date.parse(D[i]), P[i]]);
-    return { pts: out, intraday: false, note: 'live intraday unavailable — showing the last few sessions' };
+    return { pts: out, intraday: false, note: CFG.ysym ? 'live intraday unavailable — showing the last few sessions'
+                                                        : 'end-of-day index — showing the last few sessions' };
   }
   var lastD = D[D.length - 1], from;
   var days = (RANGES.filter(function (r) { return r[0] === RANGE; })[0] || [null, 1e9])[1];
@@ -693,6 +699,9 @@ function drawChart() {
   if (DDMODE) yMax = 0;
   if (yMin === yMax) { yMin -= 1; yMax += 1; }
   var padY = (yMax - yMin) * 0.06; yMin -= padY; yMax += DDMODE ? 0 : padY;
+  // a price level never goes below zero: an index that starts near 0 (BSE SME IPO = 100 in 2012, 1.2 lakh now) would
+  // otherwise pad its axis to a negative label
+  if (!DDMODE && !cmpNorm && !LOG && yMin < 0 && Math.min.apply(null, allY) >= 0) yMin = 0;
 
   // Draw in the container's OWN pixels (viewBox width = CSS width) so labels render
   // 1:1 at every screen size — a fixed 960-wide viewBox squeezes a phone chart to
@@ -1183,7 +1192,10 @@ function renderLinks() {
            ['./stock-backtest.html', '🧪 Backtest a strategy']];
   if (CFG.kind !== 'vix') l.splice(4, 0, ['./index-chart.html?ix=vix', '🌪️ India VIX — the fear gauge']);
   $('links').innerHTML = l.map(function (x) { return '<a class="chip" href="' + x[0] + '">' + x[1] + '</a>'; }).join('');
-  $('srcNote').innerHTML = 'Daily closes: NSE end-of-day (from ' + prettyDate(D[0]) + ', refreshed every evening). ' +
+  $('srcNote').innerHTML = CFG.bse
+    ? 'Daily closes: BSE’s official end-of-day index values (from the base date ' + prettyDate(D[0]) + ' = 100, refreshed every evening). ' +
+      'No live intraday feed — the level shown is the latest close. Members: BSE’s official constituent list, captured daily.'
+    : 'Daily closes: NSE end-of-day (from ' + prettyDate(D[0]) + ', refreshed every evening). ' +
     (MC.length && MSRC ? 'Month-end history: ' + MSRC + '. ' : '') +
     'Live price: Yahoo via our Cloudflare Worker, ~15 minutes delayed, polled during market hours.';
 }
@@ -1359,9 +1371,9 @@ function renderSurv() {
   $('survShown').textContent = 'Showing ' + fmt(shown.length, 0) + ' of ' + fmt(rows.length, 0) + (SV.asof ? ' members on ' + prettyDate(SV.asof) : '') +
     (rows.length !== tot ? ' matching' : '') + ' · sorted by ' + sname + (SV.dir > 0 ? ' ↑' : ' ↓') +
     ' · click any column header to sort · scroll the grid sideways for all ' + SCOLS.length + ' columns';
-  $('survFoot').innerHTML = 'Membership: NSE index reconstitutions — ' + SURV.snaps + ' dated rosters from ' + prettyDate(SURV.firstSnap) +
+  $('survFoot').innerHTML = (SURV.memberNote ? esc(SURV.memberNote) + ' ' : 'Membership: NSE index reconstitutions — ' + SURV.snaps + ' dated rosters from ' + prettyDate(SURV.firstSnap) +
     ' (roster in force ' + prettyDate(SURV.rosterAsOf) +
-    (SURV.upcoming ? '; a reshuffle announced for ' + prettyDate(SURV.upcoming) + ' shows under “Announced”' : '') + '). ' +
+    (SURV.upcoming ? '; a reshuffle announced for ' + prettyDate(SURV.upcoming) + ' shows under “Announced”' : '') + '). ') +
     '“≤ date” = already a member when the record begins. Prices are corporate-action-adjusted closes on the first day in and the last day before leaving. ' +
     '“Return in index” compounds every stint (an open stint runs to the last close); “Index, same span” is the ' + esc(CFG.name) +
     ' level over the same windows (month-end levels before daily history) and “vs index” the member relative to it. ' +
@@ -1452,6 +1464,7 @@ function boot() {
       }
       // ---- live quote + polling
       var poll = function () {
+        if (!CFG.ysym) return;                       // end-of-day-only index (BSE SME IPO): nothing live to poll
         fetchLive(CFG.ysym).then(function (q) {
           LIVE = q; renderHeader();
           if (RANGE === '1D') drawChart();

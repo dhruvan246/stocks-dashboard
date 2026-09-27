@@ -1,0 +1,69 @@
+name: Refresh BSE SME IPO index
+
+# BSE SME IPO (runbook §195): BSE's official end-of-day index level (docs/bse_sme_ipo.json, the home card +
+# index-chart.html?ix=smeipo) and BSE's official constituent list, captured every run so each add/remove BSE makes
+# lands in docs/bse_sme_ipo/changes.json with the date on BSE's own list. BSE serves only the CURRENT list — a day
+# this job does not run is a day whose list is never captured, so it runs twice a day, weekends included (the
+# list for a Monday is already published over the weekend: measured Sun 27-Sep → list dated 28-Sep).
+
+on:
+  schedule:
+    - cron: "15 14 * * *"   # 19:45 IST daily — after BSE publishes the day's index close
+    - cron: "30 3 * * *"    # 09:00 IST daily — catch-up capture before the open
+  workflow_dispatch: {}
+  push:
+    paths:
+      - "scripts/fetch_bse_sme_ipo.py"
+      - ".github/workflows/refresh-bse-sme-ipo.yml"
+
+permissions:
+  contents: write
+  actions: write   # dispatch pages.yml after a bot commit (loop guard blocks auto-trigger)
+
+concurrency:
+  group: refresh-bse-sme-ipo
+  cancel-in-progress: false
+
+jobs:
+  refresh:
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    steps:
+      - uses: actions/checkout@v5
+      - uses: actions/setup-python@v6
+        with:
+          python-version: "3.11"
+
+      - name: Fetch the official level + member list
+        run: python3 -X utf8 scripts/fetch_bse_sme_ipo.py
+
+      - name: Guard — refuse to commit a broken or shrunken feed
+        run: python3 scripts/guard_feed.py
+
+      # ⚠️ reset-and-replay (runbook §18): everything the fetch wrote rides /tmp across the reset.
+      - name: Commit (only if changed)
+        id: commit
+        run: |
+          git config user.name  "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          rm -rf /tmp/smeipo && mkdir -p /tmp/smeipo
+          cp docs/bse_sme_ipo.json /tmp/smeipo/
+          cp -r docs/bse_sme_ipo /tmp/smeipo/dir
+          for attempt in 1 2 3 4 5; do
+            git fetch origin main
+            git reset --hard origin/main
+            cp /tmp/smeipo/bse_sme_ipo.json docs/bse_sme_ipo.json
+            mkdir -p docs/bse_sme_ipo && cp -r /tmp/smeipo/dir/. docs/bse_sme_ipo/
+            git add docs/bse_sme_ipo.json docs/bse_sme_ipo
+            if git diff --cached --quiet; then echo "unchanged"; echo "changed=false" >> "$GITHUB_OUTPUT"; exit 0; fi
+            git commit -m "BSE SME IPO index refresh $(TZ=Asia/Kolkata date +'%Y-%m-%d %H:%M IST')"
+            if git push origin HEAD:main; then echo "changed=true" >> "$GITHUB_OUTPUT"; exit 0; fi
+            echo "push #$attempt rejected; retry"; sleep $((attempt*3))
+          done
+          echo "push failed"; exit 1
+
+      - name: Publish to Pages
+        if: steps.commit.outputs.changed == 'true'
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: gh workflow run pages.yml || echo "(pages dispatch failed — next push publishes)"
