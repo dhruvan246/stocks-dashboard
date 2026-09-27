@@ -62,7 +62,7 @@
   </div>
   <p class="disc mb-5">Research notes, not investment advice. Each number carries a source link; where a datum could not be found the note says "unknown" rather than guessing. Small caps in this band are thinly traded: the scorecard measures closing prices, not what a real order would have achieved.</p>
 
-  <section id="govt" class="mb-8">
+  <section id="govt" class="mb-8" data-jump="Government">
     <div class="flex flex-wrap items-baseline justify-between gap-2 mb-1">
       <h2 class="text-lg font-semibold">Government announcements worth acting on</h2>
       <span id="govt-meta" class="muted text-xs"></span>
@@ -71,7 +71,7 @@
     <div id="govt-list" class="grid gap-3"></div>
   </section>
 
-  <section id="commodity" class="mb-8">
+  <section id="commodity" class="mb-8" data-jump="Commodities">
     <div class="flex flex-wrap items-baseline justify-between gap-2 mb-1">
       <h2 class="text-lg font-semibold">Commodities on the move</h2>
       <span class="muted text-xs"><a class="hover:underline" style="color:var(--accent)" href="./commodities.html">open Commodity Watch →</a></span>
@@ -80,7 +80,7 @@
     <div id="commodity-list" class="grid gap-3 md:grid-cols-2"></div>
   </section>
 
-  <section id="ideas" class="mb-8">
+  <section id="ideas" class="mb-8" data-jump="Ideas">
     <div class="flex flex-wrap items-center gap-2 mb-3">
       <h2 class="text-lg font-semibold">Ideas</h2>
       <span class="seg" id="lane"><button data-v="" class="on">All</button><button data-v="govt">Government</button><button data-v="price">Commodity</button><button data-v="filing">Filing</button><button data-v="earnings">Earnings</button></span>
@@ -95,25 +95,25 @@
     <div id="ideas-list" class="grid gap-4 md:grid-cols-2"></div>
   </section>
 
-  <section id="run" class="mb-8">
+  <section id="run" class="mb-8" data-jump="Last run">
     <h2 class="text-lg font-semibold mb-1" id="run-title">Researched in the last run</h2>
     <p id="run-summary" class="muted text-sm mb-3"></p>
     <div id="run-list" class="grid gap-3 md:grid-cols-2"></div>
   </section>
 
-  <section id="track" class="mb-8">
+  <section id="track" class="mb-8" data-jump="Scorecard">
     <h2 class="text-lg font-semibold mb-1">Scorecard</h2>
     <p id="track-summary" class="muted text-sm mb-3"></p>
     <div class="card"><table class="sw" id="track-table"><thead><tr><th>Idea</th><th>Called</th><th>Call close</th><th>Now</th><th>Return</th><th>Best close</th><th>Peak</th><th>Days</th></tr></thead><tbody></tbody></table></div>
   </section>
 
-  <section id="scan" class="mb-8">
+  <section id="scan" class="mb-8" data-jump="Scan">
     <h2 class="text-lg font-semibold mb-1">What the scan flagged</h2>
     <p id="scan-summary" class="muted text-sm mb-3"></p>
     <div class="card"><table class="sw" id="scan-table"><thead><tr><th>Score</th><th>Company</th><th>Mcap ₹cr</th><th>Signals</th><th>1d</th><th>20d</th><th>Vol vs 60d</th><th>Med. turnover</th><th>Filings today</th></tr></thead><tbody></tbody></table></div>
   </section>
 
-  <section id="method" class="mb-8">
+  <section id="method" class="mb-8" data-jump="Method">
     <details class="card"><summary class="font-semibold">How ideas are produced</summary>
       <div class="text-sm mt-2 space-y-2">
         <p><b>Universe.</b> Every active BSE equity with market cap between ₹200 cr and ₹2,000 cr on BSE's scrip master, refreshed daily (about 1,180 names, including BSE SME). Suspended groups are excluded. NSE-only SME names are not yet covered because no public market-cap feed exists for them.</p>

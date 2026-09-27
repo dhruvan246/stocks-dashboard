@@ -50,8 +50,8 @@
 
       <!-- ---------- DAILY ---------- -->
       <div id="view-daily">
-      <div id="cards" class="grid grid-cols-2 md:grid-cols-4 gap-3 mb-5"></div>
-      <div class="card p-4 mb-4">
+      <div id="cards" class="grid grid-cols-2 md:grid-cols-4 gap-3 mb-5" data-jump="Overview"></div>
+      <div class="card p-4 mb-4" data-jump="Table">
         <div class="text-sm font-semibold text-slate-700 mb-2">Daily table <span class="text-[11px] font-normal text-slate-400">(click a header to sort · hover a row for the buy/sell breakdown)</span></div>
         <div class="overflow-x-auto tscroll rounded-lg border border-slate-100" style="--tscroll-h:20rem">
           <table class="w-full text-sm" id="tbl">
@@ -66,11 +66,11 @@
           </table>
         </div>
       </div>
-      <div class="card p-4 mb-4">
+      <div class="card p-4 mb-4" data-jump="Net flow">
         <div class="text-sm font-semibold text-slate-700 mb-2">Daily net flow — <span class="text-blue-700">FII</span> vs <span class="text-amber-600">DII</span> <span class="text-slate-400 font-normal">(bars, ₹cr)</span> &amp; <span class="text-slate-500">Nifty 50</span> <span class="text-slate-400 font-normal">(line)</span></div>
         <div id="chartNet" class="overflow-x-auto"></div>
       </div>
-      <div class="card p-4 mb-4">
+      <div class="card p-4 mb-4" data-jump="Cumulative">
         <div class="text-sm font-semibold text-slate-700 mb-2">Cumulative net flow over the window — <span class="text-blue-700">FII</span> &amp; <span class="text-amber-600">DII</span></div>
         <div id="chartCum"></div>
       </div>
@@ -79,15 +79,15 @@
 
       <!-- ---------- MONTHLY ---------- -->
       <div id="view-monthly" class="hidden">
-        <div id="monCards" class="grid grid-cols-2 md:grid-cols-4 gap-3 mb-5"></div>
-        <div class="card p-4 mb-4">
+        <div id="monCards" class="grid grid-cols-2 md:grid-cols-4 gap-3 mb-5" data-jump="Overview"></div>
+        <div class="card p-4 mb-4" data-jump="Net flow">
           <div class="flex items-center justify-between mb-2 flex-wrap gap-2">
             <div class="text-sm font-semibold text-slate-700">Monthly net flow — <span class="text-blue-700">FII</span> vs <span class="text-amber-600">DII</span> <span class="text-slate-400 font-normal">(bars, ₹cr)</span> &amp; <span class="text-slate-500">Nifty 50</span> <span class="text-slate-400 font-normal">(line)</span></div>
             <div id="monRangeBtns" class="flex flex-wrap items-center gap-1 text-xs"></div>
           </div>
           <div id="monChart" class="overflow-x-auto"></div>
         </div>
-        <div class="card p-4">
+        <div class="card p-4" data-jump="Table">
           <div class="text-sm font-semibold text-slate-700 mb-2">Monthly table <span class="text-[11px] font-normal text-slate-400">(₹ crore · newest first · Chg% = Nifty month-on-month)</span></div>
           <div class="overflow-x-auto tscroll rounded-lg border border-slate-100" style="--tscroll-h:30rem">
             <table class="w-full text-sm">
@@ -108,12 +108,12 @@
 
       <!-- ---------- YEARLY ---------- -->
       <div id="view-yearly" class="hidden">
-        <div id="yrCards" class="grid grid-cols-2 md:grid-cols-4 gap-3 mb-5"></div>
-        <div class="card p-4 mb-4">
+        <div id="yrCards" class="grid grid-cols-2 md:grid-cols-4 gap-3 mb-5" data-jump="Overview"></div>
+        <div class="card p-4 mb-4" data-jump="Net flow">
           <div class="text-sm font-semibold text-slate-700 mb-2">Yearly net flow — <span class="text-blue-700">FII</span> vs <span class="text-amber-600">DII</span> <span class="text-slate-400 font-normal">(bars, ₹cr)</span> &amp; <span class="text-slate-500">Nifty 50 year-end</span> <span class="text-slate-400 font-normal">(line)</span></div>
           <div id="yrChart" class="overflow-x-auto"></div>
         </div>
-        <div class="card p-4">
+        <div class="card p-4" data-jump="Table">
           <div class="text-sm font-semibold text-slate-700 mb-2">Yearly table <span class="text-[11px] font-normal text-slate-400">(₹ crore · newest first · Chg% = Nifty year-on-year)</span></div>
           <div class="overflow-x-auto">
             <table class="w-full text-sm">
@@ -144,14 +144,14 @@
         </div>
 
         <!-- 1. HEATMAP -->
-        <div class="card p-4 mb-4">
+        <div class="card p-4 mb-4" data-jump="Heatmap">
           <div class="text-sm font-semibold text-slate-700 mb-0.5"><span id="hmTitle">FII</span> monthly net-flow heatmap <span class="text-slate-400 font-normal">(₹ ’000 cr · green = net buy, red = net sell)</span></div>
           <div class="text-[11px] text-slate-400 mb-3">Every month since 2014 in one grid — spot the regimes at a glance.</div>
           <div id="heatmap" class="overflow-x-auto"></div>
         </div>
 
         <!-- 2. TUG OF WAR -->
-        <div class="card p-4 mb-4">
+        <div class="card p-4 mb-4" data-jump="Tug of war">
           <div class="text-sm font-semibold text-slate-700 mb-0.5">FII vs DII — the tug of war <span class="text-slate-400 font-normal">(cumulative net since Jan 2014, ₹ lakh cr)</span></div>
           <div class="text-[11px] text-slate-400 mb-3">How domestic money (<span class="text-amber-600 font-semibold">DII</span>) has absorbed the foreign exit (<span class="text-blue-700 font-semibold">FII</span>).</div>
           <div id="tugStat" class="grid grid-cols-2 md:grid-cols-3 gap-3 mb-4"></div>
@@ -159,14 +159,14 @@
         </div>
 
         <!-- 3. SEASONALITY -->
-        <div class="card p-4 mb-4">
+        <div class="card p-4 mb-4" data-jump="Seasonality">
           <div class="text-sm font-semibold text-slate-700 mb-0.5"><span id="seasTitle">FII</span> seasonality <span class="text-slate-400 font-normal">(average net flow by calendar month, ₹cr)</span></div>
           <div class="text-[11px] text-slate-400 mb-3">Which months institutions have tended to buy or sell — averaged across every year on record.</div>
           <div id="seasChart"></div>
         </div>
 
         <!-- 4. FLOW vs RETURNS -->
-        <div class="card p-4 mb-4">
+        <div class="card p-4 mb-4" data-jump="Flow vs returns">
           <div class="text-sm font-semibold text-slate-700 mb-0.5">Does <span id="frTitle">FII</span> flow move the market? <span class="text-slate-400 font-normal">(monthly net vs Nifty's same-month return)</span></div>
           <div class="text-[11px] text-slate-400 mb-3">Each dot is one month. If flow drove price, dots would line up bottom-left to top-right.</div>
           <div id="frVerdict" class="mb-3"></div>
@@ -183,21 +183,21 @@
         <span class="text-[11px] text-slate-400">Daily positions &amp; turnover · Monthly = month-end snapshot since 2012 · <b>Lot-adjusted</b> = index &amp; stock futures contracts restated in today's lot sizes</span>
       </div>
       <div id="fo-daily">
-      <div id="foCards" class="grid grid-cols-2 md:grid-cols-4 gap-3 mb-5"></div>
+      <div id="foCards" class="grid grid-cols-2 md:grid-cols-4 gap-3 mb-5" data-jump="Overview"></div>
       <div id="foChartsSection">
       <div class="flex items-center gap-2 mb-3 text-xs">
         <span class="text-slate-500 font-medium">Chart view:</span>
         <div id="foViewBtns" class="flex gap-1"></div>
         <span class="text-slate-400">— overlay = shared plot · split = stacked panes (Nifty on top)</span>
       </div>
-      <div class="card p-4 mb-4">
+      <div class="card p-4 mb-4" data-jump="Index futures">
         <div class="flex items-center justify-between mb-2 flex-wrap gap-2">
           <div class="text-sm font-semibold text-slate-700"><span class="text-red-700">FII Index-Futures net</span> vs <span class="text-amber-600">Nifty 50</span> <span class="text-slate-400 font-normal">(long − short, <span class="foLL">contracts</span>; hover for values)</span></div>
           <div id="foRangeBtns" class="flex flex-wrap items-center gap-1 text-xs"></div>
         </div>
         <div id="foChart"></div>
       </div>
-      <div class="card p-4 mb-4">
+      <div class="card p-4 mb-4" data-jump="Long/Short">
         <div class="flex items-center justify-between mb-2 flex-wrap gap-2">
           <div class="text-sm font-semibold text-slate-700"><span class="text-blue-700">FII Long/Short ratio</span> vs <span class="text-amber-600">Nifty 50</span> <span class="text-slate-400 font-normal">(index futures; ratio &lt; 1 = net short — does positioning lead price?)</span></div>
           <div id="foRatioBtns" class="flex flex-wrap items-center gap-1 text-xs"></div>
@@ -206,7 +206,7 @@
       </div>
       </div><!-- /foChartsSection -->
       <div id="foTablesSection">
-      <div class="card p-4 mb-4">
+      <div class="card p-4 mb-4" data-jump="Buy/Sell">
         <div class="text-sm font-semibold text-slate-700 mb-2">FII derivative buy / sell — latest day <span id="foDate1" class="text-slate-400 font-normal"></span> <span class="text-slate-400 font-normal">(₹ crore)</span></div>
         <div class="overflow-x-auto">
           <table class="w-full text-sm"><thead class="text-[11px] uppercase text-slate-500 border-b border-slate-200"><tr>
@@ -214,7 +214,7 @@
             <tbody id="foBS"></tbody></table>
         </div>
       </div>
-      <div class="card p-4">
+      <div class="card p-4" data-jump="Participants">
         <div class="text-sm font-semibold text-slate-700 mb-2">Participant net positions — latest day <span id="foDate2" class="text-slate-400 font-normal"></span> <span class="text-slate-400 font-normal">(no. of contracts · Idx-Fut &amp; Stk-Fut columns <span class="foLL">contracts</span>)</span></div>
         <div class="overflow-x-auto">
           <table class="w-full text-sm"><thead class="text-[11px] uppercase text-slate-500 border-b border-slate-200"><tr>
@@ -224,7 +224,7 @@
             <tbody id="foOI"></tbody></table>
         </div>
       </div>
-      <div class="card p-4 mt-4">
+      <div class="card p-4 mt-4" data-jump="Day-wise">
         <div class="flex items-center justify-between mb-3 flex-wrap gap-2">
           <div class="text-sm font-semibold text-slate-700">Day-wise positions <span class="text-slate-400 font-normal">(open interest, <span id="foDailyLL">no. of contracts</span>)</span></div>
           <div class="flex items-center gap-2 text-xs flex-wrap">
@@ -250,17 +250,17 @@
 
       <!-- ---------- F&O MONTHLY (month-end snapshot) ---------- -->
       <div id="fo-monthly" class="hidden">
-        <div id="foMonCards" class="grid grid-cols-2 md:grid-cols-4 gap-3 mb-5"></div>
+        <div id="foMonCards" class="grid grid-cols-2 md:grid-cols-4 gap-3 mb-5" data-jump="Overview"></div>
         <div class="flex items-center gap-2 mb-3 text-xs">
           <span class="text-slate-500 font-medium">Chart view:</span>
           <div id="foMonViewBtns" class="flex gap-1"></div>
           <span class="text-slate-400">— month-end FII index-futures net position vs Nifty</span>
         </div>
-        <div class="card p-4 mb-4">
+        <div class="card p-4 mb-4" data-jump="Index futures">
           <div class="text-sm font-semibold text-slate-700 mb-2"><span class="text-red-700">FII Index-Futures net</span> — month-end <span class="text-slate-400 font-normal">(long − short, <span class="foLL">contracts</span>)</span> vs <span class="text-amber-600">Nifty 50</span></div>
           <div id="foMonChart"></div>
         </div>
-        <div class="card p-4">
+        <div class="card p-4" data-jump="Positions">
           <div class="text-sm font-semibold text-slate-700 mb-2">Month-end positions <span class="text-[11px] font-normal text-slate-400">(newest first · net contracts = long − short · idx-fut &amp; stk-fut columns <span class="foLL">contracts</span>)</span></div>
           <div class="overflow-x-auto tscroll rounded-lg border border-slate-100" style="--tscroll-h:30rem">
             <table class="w-full text-sm"><thead class="text-[11px] uppercase text-slate-500 border-b border-slate-200 sticky top-0 bg-white"><tr>

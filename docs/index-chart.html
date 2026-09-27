@@ -187,7 +187,7 @@
   <div class="switch" id="switch"></div>
 
   <!-- price header -->
-  <section class="card hero-card">
+  <section class="card hero-card" data-jump="Overview">
     <div>
       <h1 id="ixName" class="skel">NIFTY 50</h1>
       <div class="sub" id="ixSub">&nbsp;</div>
@@ -201,7 +201,7 @@
   </section>
 
   <!-- chart -->
-  <section class="card">
+  <section class="card" data-jump="Chart">
     <div class="card-h">
       <h2>Chart <span class="mut" id="rngNote"></span></h2>
       <div class="ctrls">
@@ -216,7 +216,7 @@
   <!-- headline stats -->
   <section class="tiles" id="statTiles"></section>
 
-  <div class="grid2">
+  <div class="grid2" data-jump="Returns">
     <!-- returns -->
     <section class="card">
       <h2>Returns <span class="mut">— absolute &amp; annualised</span></h2>
@@ -231,44 +231,44 @@
   </div>
 
   <!-- month-by-month -->
-  <section class="card">
+  <section class="card" data-jump="Monthly">
     <h2>Month-by-month <span class="mut" id="mhNote"></span></h2>
     <div id="monthly" class="faint" style="font-size:12px">Loading…</div>
   </section>
 
   <!-- seasonality -->
-  <section class="card">
+  <section class="card" data-jump="Seasonality">
     <h2>Seasonality <span class="mut" id="seasNote"></span></h2>
     <div id="season" class="faint" style="font-size:12px">Loading…</div>
   </section>
 
   <!-- rolling returns -->
-  <section class="card" id="rollCard">
+  <section class="card" id="rollCard" data-jump="Rolling returns">
     <h2>Rolling returns <span class="mut">— every possible holding period, annualised (CAGR)</span></h2>
     <div id="rolling" class="faint" style="font-size:12px">Loading…</div>
     <div class="note">Every start month in the history is tested. “% positive” is the share of those windows that ended in profit — the practical answer to “what if I had bought at the worst possible time?”</div>
   </section>
 
   <!-- calendar years -->
-  <section class="card">
+  <section class="card" data-jump="Calendar years">
     <h2>Calendar-year returns</h2>
     <div id="yearly" class="faint" style="font-size:12px">Loading…</div>
   </section>
 
   <!-- drawdowns -->
-  <section class="card" id="ddCard">
+  <section class="card" id="ddCard" data-jump="Drawdowns">
     <h2>Biggest falls <span class="mut">— peak-to-trough drawdowns &amp; recovery</span></h2>
     <div id="dd" class="faint" style="font-size:12px">Loading…</div>
   </section>
 
   <!-- VIX-only extras -->
-  <section class="card hidden" id="vixCard">
+  <section class="card hidden" id="vixCard" data-jump="Volatility">
     <h2>Where volatility sits today</h2>
     <div id="vixBody"></div>
   </section>
 
   <!-- constituents -->
-  <section class="card hidden" id="memCard">
+  <section class="card hidden" id="memCard" data-jump="Constituents">
     <h2>Constituents <span class="mut" id="memNote"></span></h2>
     <div id="members" class="chips"></div>
     <div class="note"><button class="tgl" id="memMore" type="button">Show all</button></div>
@@ -276,7 +276,7 @@
 
   <!-- related -->
   <!-- every member, ever — survivorship table (lazy; hidden until ./survivorship/<ix>.json lands) -->
-  <section class="card hidden" id="survCard">
+  <section class="card hidden" id="survCard" data-jump="All members">
     <div class="card-h">
       <h2>Every member, ever <span class="mut" id="survNote"></span></h2>
       <div class="ctrls">

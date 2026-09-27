@@ -39,7 +39,7 @@
   <div id="content" class="hidden">
     <div id="cards" class="grid grid-cols-2 md:grid-cols-4 gap-3 mb-5"></div>
 
-    <div class="card p-4 mb-4">
+    <div class="card p-4 mb-4" data-jump="Turnover">
       <div class="flex items-center justify-between mb-2 flex-wrap gap-2">
         <div class="text-sm font-semibold text-slate-700">Total monthly trade in Nifty 500 <span class="text-slate-400 font-normal">(₹ lakh crore — hover for values)</span></div>
         <div id="rangeBtns" class="flex flex-wrap items-center gap-1 text-xs"></div>
@@ -51,7 +51,7 @@
       <div id="chart"></div>
     </div>
 
-    <div class="mt-6 mb-4 flex items-start justify-between gap-3 flex-wrap">
+    <div class="mt-6 mb-4 flex items-start justify-between gap-3 flex-wrap" data-jump="Breadth">
       <div class="min-w-0 flex-1">
         <h2 class="text-lg font-bold text-slate-900">Market breadth — how many stocks are joining the move</h2>
         <p class="text-sm text-slate-500 mt-0.5"><span id="buniDesc">Computed daily across the point-in-time Nifty 500.</span> Broad participation confirms a trend; a rally with narrow breadth is fragile, and washed-out breadth has historically marked bottoms. <span id="bupdated" class="text-slate-400"></span></p>
@@ -72,13 +72,13 @@
         <p id="bcov" class="text-[11px] text-slate-400 mt-0.5"></p>
       </div>
 
-      <div class="card p-4 mb-4">
+      <div class="card p-4 mb-4" data-jump="Highs/Lows">
         <div class="text-sm font-semibold text-slate-700 mb-2">New 52-week highs vs new lows <span id="bhlNote" class="text-slate-400 font-normal"></span></div>
         <div id="bchartHL"></div>
       </div>
     </div>
 
-    <div class="card p-4">
+    <div class="card p-4" data-jump="History">
       <div class="text-sm font-semibold text-slate-700 mb-2">Monthly history <span class="text-[11px] font-normal text-slate-400">(newest first — full history, scroll for more)</span></div>
       <div class="overflow-auto" style="max-height:480px">
         <table class="w-full text-sm">

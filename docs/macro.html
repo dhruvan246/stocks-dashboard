@@ -121,7 +121,7 @@
     <div id="pulse" class="grid grid-cols-2 md:grid-cols-3 xl:grid-cols-6 gap-3 mb-5"></div>
 
     <!-- regime gauge + weekly movers -->
-    <div class="card p-4 mb-5" id="regimeCard" style="display:none">
+    <div class="card p-4 mb-5" id="regimeCard" data-jump="Regime" style="display:none">
       <div class="grid md:grid-cols-2 gap-x-8 gap-y-5">
         <div id="regime"></div>
         <div id="movers"></div>
@@ -129,7 +129,7 @@
     </div>
 
     <!-- controls -->
-    <div class="flex items-center justify-between gap-3 flex-wrap mb-4">
+    <div class="flex items-center justify-between gap-3 flex-wrap mb-4" data-jump="Indicators">
       <div id="grpseg" class="flex items-center gap-1.5 flex-wrap"></div>
       <div id="seg" class="flex items-center gap-1.5 flex-wrap"></div>
     </div>
@@ -138,7 +138,7 @@
     <div id="tiles" class="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-3.5"></div>
 
     <!-- quarterly heat grid -->
-    <div class="card p-4 mt-5">
+    <div class="card p-4 mt-5" data-jump="Quarters">
       <div class="mb-3">
         <div class="secttl">Twelve quarters at a glance</div>
         <div class="sectsub">Each row shaded against its own 12-quarter range — green favourable, red adverse (CPI inverted: cooling inflation reads green). Blank = no reading that quarter. GDP feed paused Nov-24.</div>
@@ -147,7 +147,7 @@
     </div>
 
     <!-- sector rotation -->
-    <div class="card p-4 mt-5">
+    <div class="card p-4 mt-5" data-jump="Rotation">
       <div class="mb-3 flex items-start justify-between gap-3 flex-wrap">
         <div>
           <div class="secttl">Sector rotation</div>

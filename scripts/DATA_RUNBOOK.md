@@ -4237,6 +4237,7 @@ outrank it — the same precedence that saved NUCLEUS in §71c.
   gets a `--write` generator plus a nightly check (`scripts/check_fund_alias.py`, §30 step 4c).
 - Changed a JSON's shape → check every reader of that JSON, plus the writer that bakes it.
 - New page → `NAV_GROUPS` in theme.js + an `index.html` blurb (§34), else it exists but is unreachable.
+- New page / new card with many stacked sections → tag each top-level section `data-jump="Label"` (short, 1–2 words); theme.js `buildSecNav` builds the sticky screener-style jump bar under the header from the VISIBLE tagged sections (≥3). The attribute is `data-jump`, NOT `data-sec` — `data-sec` is already a page-local attribute on movers / quarterly-results / terminal (2026-09-27).
 
 **3. The unhappy paths — this is where site bugs actually live, not the happy path.**
 Empty array · exactly 1 row · all-null column · missing key · stock with no history / pre-IPO date ·

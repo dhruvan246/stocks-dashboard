@@ -168,7 +168,7 @@
     </div>
 
     <!-- summary -->
-    <div class="grid grid-cols-2 sm:grid-cols-4 gap-3 mb-4">
+    <div class="grid grid-cols-2 sm:grid-cols-4 gap-3 mb-4" data-jump="Overview">
       <div class="card p-3"><div class="text-[11px] uppercase tracking-wide text-slate-400 font-semibold">Members now</div><div id="sMem" class="text-2xl font-extrabold text-slate-800">–</div><div id="sMemSub" class="text-[11px] text-slate-400"></div></div>
       <div class="card p-3"><div class="text-[11px] uppercase tracking-wide text-slate-400 font-semibold">Parameters</div><div id="sPar" class="text-2xl font-extrabold text-slate-800">–</div><div id="sParSub" class="text-[11px] text-slate-400">in this matrix</div></div>
       <div class="card p-3"><div class="text-[11px] uppercase tracking-wide text-slate-400 font-semibold">Full-coverage families</div><div id="sFull" class="text-2xl font-extrabold text-emerald-600">–</div><div class="text-[11px] text-slate-400">≥99% at the latest date</div></div>
@@ -178,7 +178,7 @@
 
     <div id="unote" class="text-[11px] text-slate-500 mb-2"></div>
 
-    <div class="mwrap mb-2"><table class="mx sw-grid"><thead id="mhead"></thead><tbody id="mbody"></tbody></table></div>
+    <div class="mwrap mb-2" data-jump="Matrix"><table class="mx sw-grid"><thead id="mhead"></thead><tbody id="mbody"></tbody></table></div>
 
     <div class="flex flex-wrap items-center gap-x-4 gap-y-1 text-[11px] text-slate-500 mb-6">
       <span class="font-semibold text-slate-600">Tint = share of members covered</span>
@@ -190,7 +190,7 @@
     </div>
 
     <!-- red flags -->
-    <div id="flagsBox" class="card p-4 mb-6">
+    <div id="flagsBox" class="card p-4 mb-6" data-jump="Red flags">
       <div class="text-xs font-bold uppercase tracking-wide text-slate-500 mb-2">Red flags <span id="flagN" class="text-rose-600"></span></div>
       <p class="text-[11px] text-slate-500 mb-3">
         A date is flagged when its coverage sits <b>below half its own neighbourhood median</b> (±6 month-ends,
@@ -203,12 +203,12 @@
     </div>
 
     <!-- what each parameter means -->
-    <div class="card p-4 mb-6">
+    <div class="card p-4 mb-6" data-jump="Columns">
       <div class="text-xs font-bold uppercase tracking-wide text-slate-500 mb-2">What each column counts</div>
       <div id="rules" class="grid sm:grid-cols-2 gap-x-6 gap-y-2 text-[11px]"></div>
     </div>
 
-    <div class="card p-4 mb-8">
+    <div class="card p-4 mb-8" data-jump="Absent">
       <div class="text-xs font-bold uppercase tracking-wide text-slate-500 mb-2">Deliberately absent</div>
       <p class="text-[11px] text-slate-500 mb-2">These exist as fields but have no point-in-time history to count, so they get no column rather than a column of zeroes.</p>
       <ul id="nohist" class="text-[11px] text-slate-600 space-y-1"></ul>

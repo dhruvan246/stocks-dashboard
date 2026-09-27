@@ -231,6 +231,16 @@
       '.sw-tab.on{background:var(--surface);color:var(--text);box-shadow:0 1px 2px rgba(0,0,0,.18),inset 0 0 0 1px var(--border-strong);}' +
       '.sw-tab.on .sw-i{opacity:1;color:var(--accent-text);}' +
       '@media (max-width:640px){.sw-tab{padding:6px 10px;font-size:12.5px;}}' +
+      '.sw-secnav{border-top:1px solid var(--border);}' +
+      'html[data-theme] header>.sw-secnav{padding:0;}' +
+      '.sw-secnav[hidden]{display:none!important;}' +
+      '.sw-secnav-in{margin:0 auto;display:flex;align-items:center;gap:2px;padding-top:5px;padding-bottom:5px;overflow-x:auto;scrollbar-width:none;-webkit-overflow-scrolling:touch;}' +
+      '.sw-secnav-in::-webkit-scrollbar{display:none;}' +
+      '.sw-jump{flex:none;white-space:nowrap;padding:4px 11px;border-radius:999px;font-size:12.5px;font-weight:600;line-height:1.35;color:var(--text-muted);text-decoration:none;transition:var(--tr);}' +
+      '@media (hover:hover){.sw-jump:hover{color:var(--text);background:var(--surface-2);}}' +
+      '.sw-jump.on{color:var(--accent-text);background:var(--accent-soft);}' +
+      '@media (max-width:640px){.sw-jump{padding:4px 9px;font-size:12px;}}' +
+      '@media print{.sw-secnav{display:none!important;}}' +
       '@media (max-width:760px){.sw-group{display:none;}.sw-menu{display:block;}}' +
       '@media (max-width:430px){.sw-cta{padding:7px 9px;}.sw-cta .sw-cta-lb{display:none;}}' +
       '@media (max-width:520px){.sw-menu-panel{position:fixed;left:10px;right:10px;top:60px;min-width:0;max-width:none;}}' +
@@ -1465,6 +1475,118 @@
     window.addEventListener('load', fitViewport);          // late images / async renders
   }
 
+  // =========================================================================
+  // SECTION BAR — a sticky "jump to" strip under the header (screener.in's
+  // Summary · Chart · Peers · Quarters… row). A page opts in by tagging its
+  // sections: <div class="card" data-jump="Peers">. The bar lists only the
+  // sections currently VISIBLE (cards a page reveals late, or hides in rewind
+  // mode, come and go), shows itself only when 3+ are visible, and highlights
+  // the one you are reading. It lives INSIDE <header>, so it rides the header's
+  // existing stickiness and frosted backdrop — no second top offset to keep in
+  // sync. Pages that toggle sections outside the DOM observer's view can call
+  // window.swSecNav.refresh().
+  // =========================================================================
+  function buildSecNav() {
+    try {
+      var header = document.querySelector('header');
+      if (!header || !document.querySelector('[data-jump]')) return;
+      var row = header.firstElementChild;
+      var bar = document.createElement('div');
+      bar.className = 'sw-secnav'; bar.hidden = true;
+      bar.setAttribute('role', 'navigation'); bar.setAttribute('aria-label', 'On this page');
+      var strip = document.createElement('div'); strip.className = 'sw-secnav-in';
+      bar.appendChild(strip); header.appendChild(bar);
+
+      var secs = [], chips = [], sig = '', active = -1, lock = -1, lockT = null;
+      var align = function () {            // line the chips up with the header's own content box
+        if (!row) return;
+        var cs = getComputedStyle(row);
+        strip.style.maxWidth = cs.maxWidth;
+        strip.style.paddingLeft = cs.paddingLeft; strip.style.paddingRight = cs.paddingRight;
+      };
+      var shown = function (el) { return !!(el.offsetParent || el.getClientRects().length) && el.offsetHeight > 0; };
+      var offset = function () { return header.getBoundingClientRect().height + 10; };
+      var setActive = function (i) {
+        if (i === active) return;
+        active = i;
+        for (var k = 0; k < chips.length; k++) {
+          chips[k].classList.toggle('on', k === i);
+          if (k === i) chips[k].setAttribute('aria-current', 'true'); else chips[k].removeAttribute('aria-current');
+        }
+        var c = chips[i];                  // keep the active chip in view WITHOUT scrolling the page
+        if (c && strip.scrollWidth > strip.clientWidth) {
+          var l = c.offsetLeft - strip.offsetLeft, r = l + c.offsetWidth;
+          if (l < strip.scrollLeft + 24 || r > strip.scrollLeft + strip.clientWidth - 24)
+            strip.scrollTo({ left: Math.max(0, l - 40), behavior: 'smooth' });
+        }
+      };
+      var spy = function () {
+        if (!secs.length) return;
+        if (lock >= 0) { setActive(lock); return; }
+        var line = offset() + 40, i = 0;
+        for (var k = 0; k < secs.length; k++) if (secs[k].getBoundingClientRect().top <= line) i = k;
+        var root = document.documentElement;
+        if (window.innerHeight + (window.scrollY || root.scrollTop) >= root.scrollHeight - 4) {
+          for (var j = secs.length - 1; j > i; j--)          // at the very bottom: short last cards can't
+            if (secs[j].getBoundingClientRect().top < window.innerHeight) { i = j; break; }   // reach the line
+        }
+        setActive(i);
+      };
+      var unlock = function () { lock = -1; if (lockT) { clearTimeout(lockT); lockT = null; } spy(); };
+      var jump = function (i, ev) {
+        if (ev) ev.preventDefault();
+        var el = secs[i]; if (!el) return;
+        var y = el.getBoundingClientRect().top + (window.scrollY || document.documentElement.scrollTop) - offset();
+        lock = i; setActive(i);
+        if (lockT) clearTimeout(lockT);
+        lockT = setTimeout(unlock, 1200);   // fallback where 'scrollend' is not supported
+        window.scrollTo({ top: Math.max(0, y), behavior: 'smooth' });
+      };
+      var refresh = function () {
+        var all = document.querySelectorAll('[data-jump]'), vis = [];
+        for (var k = 0; k < all.length; k++) if (shown(all[k]) && !bar.contains(all[k])) vis.push(all[k]);
+        var s = vis.map(function (el) { return el.getAttribute('data-jump'); }).join('\u0001');
+        secs = vis;
+        if (s === sig) { spy(); return; }
+        sig = s; active = -1;
+        if (vis.length < 3) { bar.hidden = true; chips = []; strip.innerHTML = ''; return; }
+        strip.innerHTML = vis.map(function (el, i) {
+          return '<a class="sw-jump" href="#" data-i="' + i + '">' + esc(el.getAttribute('data-jump')) + '</a>';
+        }).join('');
+        chips = [].slice.call(strip.children);
+        bar.hidden = false; align(); spy();
+      };
+      strip.addEventListener('click', function (e) {
+        var a = e.target.closest && e.target.closest('.sw-jump');
+        if (a) jump(+a.getAttribute('data-i'), e);
+      });
+      var rq = false;
+      window.addEventListener('scroll', function () {
+        if (rq) return; rq = true;
+        requestAnimationFrame(function () { rq = false; spy(); });
+      }, { passive: true });
+      window.addEventListener('scrollend', function () { if (lock >= 0) setTimeout(unlock, 60); });
+      ['wheel', 'touchstart', 'keydown'].forEach(function (t) {   // the user took over mid-jump
+        window.addEventListener(t, function () { if (lock >= 0) unlock(); }, { passive: true });
+      });
+      var rz = null;
+      window.addEventListener('resize', function () {
+        if (rz) clearTimeout(rz); rz = setTimeout(function () { align(); refresh(); }, 150);
+      }, { passive: true });
+      if ('MutationObserver' in window) {  // sections a page reveals / hides after load
+        var t = null;
+        new MutationObserver(function (muts) {
+          for (var k = 0; k < muts.length; k++) if (bar.contains(muts[k].target)) return;   // our own chip redraws
+          if (t) clearTimeout(t);
+          t = setTimeout(refresh, 200);
+        }).observe(document.body, { childList: true, subtree: true, attributes: true, attributeFilter: ['style', 'class', 'hidden'] });
+      }
+      window.addEventListener('load', refresh);
+      window.swSecNav = { refresh: refresh };
+      refresh();
+    } catch (e) {}
+  }
+
   // Load the site-features layer on every page: sw-sync.js (Supabase kv/analytics)
   // then sw-watchlist.js (star buttons). Order matters — the watchlist decides
   // local-vs-synced mode by asking swSync. Both are tiny and fail-safe offline.
@@ -1489,7 +1611,7 @@
     } catch (e) {}
   }
 
-  function init() { buildNav(); buildSearch(); buildTabs(); buildGlossary(); buildFooter(); buildBottomBar(); buildInstall(); build(); watchHeader(); watchTables(); loadFeatures(); }
+  function init() { buildNav(); buildSearch(); buildTabs(); buildGlossary(); buildFooter(); buildBottomBar(); buildInstall(); build(); buildSecNav(); watchHeader(); watchTables(); loadFeatures(); }
   if (document.readyState === 'loading') document.addEventListener('DOMContentLoaded', init);
   else init();
 })();

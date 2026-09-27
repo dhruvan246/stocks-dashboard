@@ -104,7 +104,7 @@
   <div class="min-w-0">
 
   <!-- Positions builder -->
-  <div class="card p-4 mb-3">
+  <div class="card p-4 mb-3" data-jump="Positions">
     <div class="flex items-center justify-between flex-wrap gap-2 mb-3">
       <h3 class="font-bold text-slate-700 text-sm">POSITIONS</h3>
       <div class="flex items-center gap-2 text-[11.5px]">
@@ -148,7 +148,7 @@
   </div>
 
   <!-- Entry / exit rules -->
-  <div class="card p-4 mb-3">
+  <div class="card p-4 mb-3" data-jump="Entry/Exit">
     <div class="grid md:grid-cols-2 gap-4 text-xs">
       <div>
         <h4 class="font-bold text-slate-600 mb-2">Entry (at day close)</h4>
@@ -192,7 +192,7 @@
   </div>
 
   <!-- Dates + run -->
-  <div class="card p-4 mb-3">
+  <div class="card p-4 mb-3" data-jump="Run">
     <div class="flex flex-wrap items-end gap-3 text-xs">
       <label>From<br><input type="date" id="fromD" class="border border-slate-300 rounded-lg px-2 py-1.5"></label>
       <label>To<br><input type="date" id="toD" class="border border-slate-300 rounded-lg px-2 py-1.5"></label>
@@ -214,7 +214,7 @@
 
   <!-- Results -->
   <div id="results" class="hidden">
-    <div class="card p-4 mb-3">
+    <div class="card p-4 mb-3" data-jump="Results">
       <div class="flex items-center justify-between flex-wrap gap-2 mb-3">
         <h3 class="font-bold text-slate-700 text-sm">RESULTS <span id="resMeta" class="font-normal text-slate-400 text-[11.5px]"></span></h3>
         <div class="flex items-center gap-2 text-[11.5px]">
@@ -227,10 +227,10 @@
       <div id="moreStatsBox" class="hidden grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-6 gap-2 mt-3"></div>
     </div>
 
-    <div class="card p-4 mb-3 overflow-x-auto"><h4 class="font-bold text-slate-600 text-xs mb-2">DAY-WISE BREAKUP</h4><table class="bk w-full" id="dayWiseT"></table></div>
-    <div class="card p-4 mb-3 overflow-x-auto"><h4 class="font-bold text-slate-600 text-xs mb-2">MONTHLY BREAKUP</h4><table class="bk w-full" id="monWiseT"></table></div>
+    <div class="card p-4 mb-3 overflow-x-auto" data-jump="Day-wise"><h4 class="font-bold text-slate-600 text-xs mb-2">DAY-WISE BREAKUP</h4><table class="bk w-full" id="dayWiseT"></table></div>
+    <div class="card p-4 mb-3 overflow-x-auto" data-jump="Monthly"><h4 class="font-bold text-slate-600 text-xs mb-2">MONTHLY BREAKUP</h4><table class="bk w-full" id="monWiseT"></table></div>
 
-    <div class="card p-4 mb-3">
+    <div class="card p-4 mb-3" data-jump="Chart">
       <div class="flex gap-1 text-xs mb-2" id="chartTabs">
         <button class="chip on" data-c="pnl">Trade P&amp;L</button>
         <button class="chip" data-c="cum">Cumulative</button>
@@ -240,7 +240,7 @@
       <div id="chartHover" class="text-[11px] text-slate-500 h-4 mt-1"></div>
     </div>
 
-    <div class="card p-4 mb-3">
+    <div class="card p-4 mb-3" data-jump="Trades">
       <div class="flex items-center justify-between flex-wrap gap-2 mb-2">
         <h4 class="font-bold text-slate-600 text-xs">TRADES <span class="text-slate-400 font-normal" id="tradeCount"></span></h4>
         <input id="tradeSearch" type="search" placeholder="filter: date / day / exit" class="border border-slate-300 rounded-lg px-2 py-1 text-xs">
@@ -268,7 +268,7 @@
       </div>
     </aside>
     <div class="min-w-0">
-      <div class="card p-4 mb-3">
+      <div class="card p-4 mb-3" data-jump="Strategies">
         <div class="flex items-center justify-between flex-wrap gap-2 mb-2">
           <h3 class="font-bold text-slate-700 text-sm" id="bkTitle">STRATEGIES</h3>
           <button id="bkAdd" class="chip">+ Add saved strategy</button>
@@ -284,10 +284,10 @@
         <div id="bkLoad" class="hidden mt-2 text-xs text-slate-500"></div>
       </div>
       <div id="bkResults" class="hidden">
-        <div class="card p-4 mb-3"><h4 class="font-bold text-slate-600 text-xs mb-2">COMBINED</h4><div id="bkStatCards" class="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-5 gap-2"></div></div>
-        <div class="card p-4 mb-3 overflow-x-auto"><h4 class="font-bold text-slate-600 text-xs mb-2">COMPARE STATS <span class="text-slate-400 font-normal">(uncheck / multiply to optimize — recomputes live)</span></h4><table class="bk w-full" id="bkCompareT"></table></div>
-        <div class="card p-4 mb-3"><div class="flex gap-1 text-xs mb-2" id="bkChartTabs"><button class="chip on" data-c="cum">Cumulative</button><button class="chip" data-c="pnl">Daily P&amp;L</button><button class="chip" data-c="dd">Drawdown</button></div><canvas id="bkChart" class="w-full" height="240"></canvas></div>
-        <div class="card p-4 mb-3 overflow-x-auto"><h4 class="font-bold text-slate-600 text-xs mb-2">DATE-WISE (combine + per strategy)</h4><div class="max-h-[420px] overflow-y-auto"><table class="tbl w-full" id="bkDateT"></table></div></div>
+        <div class="card p-4 mb-3" data-jump="Combined"><h4 class="font-bold text-slate-600 text-xs mb-2">COMBINED</h4><div id="bkStatCards" class="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-5 gap-2"></div></div>
+        <div class="card p-4 mb-3 overflow-x-auto" data-jump="Compare"><h4 class="font-bold text-slate-600 text-xs mb-2">COMPARE STATS <span class="text-slate-400 font-normal">(uncheck / multiply to optimize — recomputes live)</span></h4><table class="bk w-full" id="bkCompareT"></table></div>
+        <div class="card p-4 mb-3" data-jump="Chart"><div class="flex gap-1 text-xs mb-2" id="bkChartTabs"><button class="chip on" data-c="cum">Cumulative</button><button class="chip" data-c="pnl">Daily P&amp;L</button><button class="chip" data-c="dd">Drawdown</button></div><canvas id="bkChart" class="w-full" height="240"></canvas></div>
+        <div class="card p-4 mb-3 overflow-x-auto" data-jump="Date-wise"><h4 class="font-bold text-slate-600 text-xs mb-2">DATE-WISE (combine + per strategy)</h4><div class="max-h-[420px] overflow-y-auto"><table class="tbl w-full" id="bkDateT"></table></div></div>
       </div>
     </div>
   </div>

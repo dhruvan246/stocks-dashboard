@@ -59,7 +59,7 @@
   <h1 class="text-xl font-bold text-slate-900">Strategy Mixer — blend strategies into one portfolio</h1>
   <p class="text-sm text-slate-500 mt-1 mb-5 max-w-3xl">Pick a few of your saved strategies, decide how many rupees go into each, and see how the <b>combined portfolio</b> would have done — growth, worst fall, how much the strategies overlap, and whether mixing them actually made the ride smoother. Choose whether each strategy runs on <b>its own money</b> or everything goes into <b>one shared basket</b> (where a stock two strategies both pick gets double the money). Every strategy runs over the <b>same dates</b> with the same engine as its own backtest page.</p>
 
-  <div class="grid gap-4 lg:grid-cols-2 items-start">
+  <div class="grid gap-4 lg:grid-cols-2 items-start" data-jump="Setup">
     <!-- 1 · pick -->
     <section class="card p-4">
       <div class="flex items-center justify-between gap-2 mb-2">
@@ -109,9 +109,9 @@
 
   <!-- results -->
   <div id="results" class="hidden">
-    <div id="tiles" class="grid gap-3 mt-6 mb-4" style="grid-template-columns:repeat(auto-fit,minmax(150px,1fr))"></div>
+    <div id="tiles" data-jump="Summary" class="grid gap-3 mt-6 mb-4" style="grid-template-columns:repeat(auto-fit,minmax(150px,1fr))"></div>
 
-    <section class="card p-4 mb-4">
+    <section class="card p-4 mb-4" data-jump="Growth">
       <div class="flex items-center justify-between flex-wrap gap-2 mb-1">
         <div class="text-sm font-bold text-slate-900">Growth of the mix</div>
         <div class="text-[11px] text-slate-400">click a name to hide/show its line · hover for values</div>
@@ -120,7 +120,7 @@
       <div id="eqWrap"></div>
     </section>
 
-    <section class="card p-4 mb-4">
+    <section class="card p-4 mb-4" data-jump="Drawdown">
       <div class="flex items-start justify-between flex-wrap gap-2 mb-1">
         <div>
           <div class="text-sm font-bold text-slate-900">Drawdown — how far below its peak the mix was</div>
@@ -134,26 +134,26 @@
       <div id="ddWrap"></div>
     </section>
 
-    <section class="card p-4 mb-4">
+    <section class="card p-4 mb-4" data-jump="Monthly">
       <div class="text-sm font-bold text-slate-900 mb-1">Month by month — the mix's return each month</div>
       <div class="text-[11px] text-slate-400 mb-2">Blue = the mix ended the month higher, red = lower. Hover a bar for the exact move.</div>
       <div id="mrWrap" style="overflow-x:auto"></div>
     </section>
 
-    <section class="card p-4 mb-4">
+    <section class="card p-4 mb-4" data-jump="Strategies">
       <div class="text-sm font-bold text-slate-900 mb-2">Each strategy inside the mix</div>
       <div class="overflow-x-auto"><table class="w-full text-sm border-collapse" id="perStrat"></table></div>
       <div class="text-[11px] text-slate-400 mt-2">Profit = final value minus what was put in. Win % = that strategy's own positive rebalance periods. This table always shows each strategy run <b>on its own</b> with that money, so in <b>one combined portfolio</b> mode it is the comparison rather than what the mix did.</div>
     </section>
 
-    <section class="card p-4 mb-4">
+    <section class="card p-4 mb-4" data-jump="Overlap">
       <div class="text-sm font-bold text-slate-900 mb-1">Stock overlap — are you buying the same stocks twice?</div>
       <div class="text-[11px] text-slate-400 mb-3">Each strategy's basket as of its last rebalance in the window. The diagonal is the basket size; every other cell = stocks the two share (and what share of the smaller basket that is). Hover a cell to see which stocks.</div>
       <div class="overflow-x-auto"><table class="border-collapse" id="ovMatrix"></table></div>
       <div id="sharedChips" class="mt-3"></div>
     </section>
 
-    <section class="card p-4 mb-4">
+    <section class="card p-4 mb-4" data-jump="Portfolio">
       <div class="text-sm font-bold text-slate-900 mb-1">The combined portfolio</div>
       <div class="text-[11px] text-slate-400 mb-2" id="holdSub"></div>
       <div id="splitMath" class="hidden text-[12px] mb-3 rounded-lg px-3 py-2" style="background:var(--surface-2,#f8fafc)"></div>
@@ -161,20 +161,20 @@
     </section>
 
     <!-- pooled mode only: how the split moved from one rebalance to the next -->
-    <section class="card p-4 mb-4 hidden" id="poolRebCard">
+    <section class="card p-4 mb-4 hidden" id="poolRebCard" data-jump="Split Changes">
       <div class="text-sm font-bold text-slate-900 mb-1">How the split changed each rebalance</div>
       <div class="text-[11px] text-slate-400 mb-2">Newest first. Every time any strategy reshuffles, the whole portfolio is re-spread across the new set of picks. <span class="kx">×2</span> means two strategies were picking that stock that month, so it got two shares of the money. 🆕 = wasn't held the previous rebalance.</div>
       <div id="poolRebOut"></div>
       <div id="poolRebMore" class="mt-2"></div>
     </section>
 
-    <section class="card p-4 mb-4" id="corrCard">
+    <section class="card p-4 mb-4" id="corrCard" data-jump="Correlation">
       <div class="text-sm font-bold text-slate-900 mb-1">Do the strategies move together? (correlation of monthly returns)</div>
       <div class="text-[11px] text-slate-400 mb-3">1 = they swing together (mixing adds little) · near 0 = unrelated (good diversification) · negative = one zigs when the other zags (best). <span class="font-semibold">Green ≤ 0.4 · amber 0.4–0.7 · red &gt; 0.7.</span></div>
       <div class="overflow-x-auto"><table class="border-collapse" id="corrTbl"></table></div>
     </section>
 
-    <section class="card p-4 mb-4">
+    <section class="card p-4 mb-4" data-jump="Yearly">
       <div class="text-sm font-bold text-slate-900 mb-2">Year by year</div>
       <div class="overflow-x-auto"><table class="w-full text-sm border-collapse" id="yearTbl"></table></div>
       <div class="text-[11px] text-slate-400 mt-2">* partial year (the window starts or ends inside it).</div>
@@ -182,7 +182,7 @@
 
     <!-- Rebalance + trade logs: the strategy page shows ONE strategy's, so here every row is tagged
          with which strategy it belongs to and the picker narrows to one at a time. -->
-    <section class="card p-4 mb-4">
+    <section class="card p-4 mb-4" data-jump="Rebalances">
       <div class="flex items-center justify-between flex-wrap gap-2 mb-1">
         <div class="text-sm font-bold text-slate-900">Rebalance log — every reshuffle in the mix</div>
         <select id="rbWho" class="inp" style="width:auto;padding:.3rem .5rem;font-size:12px"></select>
@@ -192,7 +192,7 @@
       <div id="rbMore" class="mt-2"></div>
     </section>
 
-    <section class="card p-4 mb-4">
+    <section class="card p-4 mb-4" data-jump="Trades">
       <div class="flex items-center justify-between flex-wrap gap-2 mb-1">
         <div class="text-sm font-bold text-slate-900">Trade log — every position the mix took</div>
         <div class="flex items-center gap-1.5 flex-wrap">

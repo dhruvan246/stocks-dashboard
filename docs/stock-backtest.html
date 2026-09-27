@@ -64,7 +64,7 @@
   </div>
 
   <!-- controls -->
-  <div id="cfgCard" class="card p-4 mb-4">
+  <div id="cfgCard" class="card p-4 mb-4" data-jump="Setup">
     <div class="flex items-center gap-2 mb-3 flex-wrap">
       <span class="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-lg text-xs font-semibold bg-emerald-600 text-white shadow-sm shrink-0"><svg class="sw-i" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"/><polyline points="22 4 12 14.01 9 11.01"/></svg> Survivorship-free</span>
       <span id="modeNote" class="text-[11px] text-slate-500 flex-1 min-w-[200px]"></span>
@@ -1447,7 +1447,7 @@ function renderSaved(saved, cfg){
       <span class="text-sm font-semibold text-amber-800">Saved result</span>
       <span class="text-xs text-amber-700">stored numbers shown — not re-run. Click <b>Run Backtest</b> for the live equity curve, rebalance log &amp; today's picks.</span>
     </div>`;
-  html+=`<div class="grid grid-cols-2 md:grid-cols-4 lg:grid-cols-6 gap-3 mb-4">
+  html+=`<div class="grid grid-cols-2 md:grid-cols-4 lg:grid-cols-6 gap-3 mb-4" data-jump="Summary">
     ${card('Final value', m.finalV!=null?fmtINR(m.finalV):'—', 'from '+fmtINR(cfg.capital), (m.finalV!=null&&m.finalV>=cfg.capital)?'pos':'neg')}
     ${card('CAGR', m.cagr!=null?pct(m.cagr):'—', m.years!=null?(+m.years).toFixed(1)+' years':'', m.cagr>=0?'pos':'neg')}
     ${card('Nifty 500 CAGR', m.benchCagr!=null?pct(m.benchCagr):'—', beat?'strategy wins ✓':'benchmark', beat?'pos':'neg')}
@@ -1457,7 +1457,7 @@ function renderSaved(saved, cfg){
   </div>`;
   { const _ms=cfg.indexName?membershipStart(cfg.indexName):null; html+=shpNoteCard(shpConventionNote(cfg,(_ms&&cfg.start<_ms)?_ms:cfg.start)); }
   if(yby&&yby.length){
-    html+=`<div class="card p-4 mb-4"><div class="text-sm font-semibold text-slate-700 mb-2">Calendar-year returns <span class="text-slate-400 font-normal">— saved (Strategy vs Nifty 500)</span></div>
+    html+=`<div class="card p-4 mb-4" data-jump="Yearly"><div class="text-sm font-semibold text-slate-700 mb-2">Calendar-year returns <span class="text-slate-400 font-normal">— saved (Strategy vs Nifty 500)</span></div>
       <div class="overflow-x-auto"><table class="w-full text-sm"><thead class="text-[11px] uppercase text-slate-500 border-b"><tr><th class="text-left py-1 px-2 sticky left-0 bg-white">&nbsp;</th>${yby.map(y=>`<th class="text-right px-2">${y[0]}</th>`).join('')}</tr></thead><tbody>
         <tr class="border-b border-slate-50"><td class="px-2 py-1 font-medium text-blue-700 sticky left-0 bg-white">Strategy</td>${yby.map(y=>`<td class="text-right px-2 font-semibold ${y[1]>=0?'pos':'neg'}">${pct(y[1])}</td>`).join('')}</tr>
         <tr><td class="px-2 py-1 font-medium text-amber-600 sticky left-0 bg-white">Nifty 500</td>${yby.map(y=>{const n=y[2];return `<td class="text-right px-2 text-xs ${n!=null&&n>=0?'pos':'neg'}">${n!=null?pct(n):'—'}</td>`;}).join('')}</tr>
@@ -1468,7 +1468,7 @@ function renderSaved(saved, cfg){
 function render(r,cfg){
   const card=(t,v,sub,cls)=>`<div class="card p-3"><div class="text-[10px] uppercase text-slate-500">${t}</div><div class="text-lg font-bold ${cls||''}">${v}</div><div class="text-[11px] text-slate-400">${sub||''}</div></div>`;
   const beat=r.benchCagr!=null && r.cagr>=r.benchCagr;
-  let html=`<div class="grid grid-cols-2 md:grid-cols-4 lg:grid-cols-6 gap-3 mb-4">
+  let html=`<div class="grid grid-cols-2 md:grid-cols-4 lg:grid-cols-6 gap-3 mb-4" data-jump="Summary">
     ${card('Final value', fmtINR(r.finalV), 'from '+fmtINR(cfg.capital), r.finalV>=cfg.capital?'pos':'neg')}
     ${card('CAGR', pct(r.cagr), r.years.toFixed(1)+' years', r.cagr>=0?'pos':'neg')}
     ${card('Nifty 500 CAGR', r.benchCagr!=null?pct(r.benchCagr):'—', beat?'strategy wins ✓':'benchmark', beat?'pos':'neg')}
@@ -1487,9 +1487,9 @@ function render(r,cfg){
       <span id="saveMsg" class="text-xs text-green-700"></span>
       <a href="./backtest-history.html" class="text-xs text-indigo-600 hover:underline ml-auto">View history →</a>
     </div>`;
-  html+=`<div class="card p-4 mb-4"><div class="text-sm font-semibold text-slate-700 mb-2"><span class="text-blue-700">Strategy</span> vs <span class="text-amber-600">Nifty 500</span> — ₹${cfg.capital.toLocaleString('en-IN')} grows to… <span class="text-slate-400 font-normal">(hover for values)</span></div><div id="eqc"></div></div>`;
+  html+=`<div class="card p-4 mb-4" data-jump="Growth"><div class="text-sm font-semibold text-slate-700 mb-2"><span class="text-blue-700">Strategy</span> vs <span class="text-amber-600">Nifty 500</span> — ₹${cfg.capital.toLocaleString('en-IN')} grows to… <span class="text-slate-400 font-normal">(hover for values)</span></div><div id="eqc"></div></div>`;
   // ----- drawdown (underwater) curve: % below the running peak, strategy vs benchmark -----
-  html+=`<div class="card p-4 mb-4">
+  html+=`<div class="card p-4 mb-4" data-jump="Drawdown">
     <div class="flex flex-wrap items-center gap-2 mb-2">
       <div class="text-sm font-semibold text-slate-700">Drawdown — <span class="text-blue-700">Strategy</span> vs <span class="text-amber-600">Nifty 500</span> <span class="text-slate-400 font-normal">— % below the running peak; 0% = at a new high, the deepest dip = max drawdown (hover for values)</span></div>
       <div id="ddTog" class="ml-auto inline-flex rounded-lg border border-slate-200 overflow-hidden text-xs font-semibold shrink-0" title="Month-end marks miss intramonth lows; Daily marks every trading day's close">
@@ -1499,9 +1499,9 @@ function render(r,cfg){
     </div>
     <div id="ddc"></div></div>`;
   // ----- returns over the backtest period (per-rebalance bar chart) -----
-  html+=`<div class="card p-4 mb-4"><div class="text-sm font-semibold text-slate-700 mb-2">Returns over the backtest period <span class="text-slate-400 font-normal">— each rebalance period's return (blue = up, red = down)</span></div><div id="prc" class="overflow-x-auto"></div></div>`;
+  html+=`<div class="card p-4 mb-4" data-jump="Returns"><div class="text-sm font-semibold text-slate-700 mb-2">Returns over the backtest period <span class="text-slate-400 font-normal">— each rebalance period's return (blue = up, red = down)</span></div><div id="prc" class="overflow-x-auto"></div></div>`;
   // ----- qualifying universe over time (count of ALL stocks meeting the strategy's filters) -----
-  html+=`<div class="card p-4 mb-4">
+  html+=`<div class="card p-4 mb-4" data-jump="Qualifying">
     <div class="flex flex-wrap items-center gap-2 mb-2">
       <div class="text-sm font-semibold text-slate-700">Qualifying stocks over time <span class="text-slate-400 font-normal">— how many stocks meet your filters each period (the pool your top-${cfg.topN} is picked from)</span></div>
       <div id="qsTog" class="ml-auto inline-flex rounded-lg border border-slate-200 overflow-hidden text-xs font-semibold">
@@ -1514,7 +1514,7 @@ function render(r,cfg){
     <div id="qsc"></div></div>`;
   // ----- calendar-year returns (strategy vs Nifty 500) -----
   { const sy=yByY(r.equity), nm={}; yByY((r.bench500&&r.bench500.length?r.bench500:r.bench)||[]).forEach(x=>{nm[x[0]]=x[1];});
-    html+=`<div class="card p-4 mb-4"><div class="text-sm font-semibold text-slate-700 mb-2">Calendar-year returns <span class="text-slate-400 font-normal">— each year Jan→Dec (first/last year partial)</span></div>
+    html+=`<div class="card p-4 mb-4" data-jump="Yearly"><div class="text-sm font-semibold text-slate-700 mb-2">Calendar-year returns <span class="text-slate-400 font-normal">— each year Jan→Dec (first/last year partial)</span></div>
       <div class="overflow-x-auto"><table class="w-full text-sm"><thead class="text-[11px] uppercase text-slate-500 border-b"><tr><th class="text-left py-1 px-2 sticky left-0 bg-white">&nbsp;</th>${sy.map(y=>`<th class="text-right px-2">${y[0]}</th>`).join('')}</tr></thead><tbody>
         <tr class="border-b border-slate-50"><td class="px-2 py-1 font-medium text-blue-700 sticky left-0 bg-white">Strategy</td>${sy.map(y=>`<td class="text-right px-2 font-semibold ${y[1]>=0?'pos':'neg'}">${pct(y[1])}</td>`).join('')}</tr>
         <tr><td class="px-2 py-1 font-medium text-amber-600 sticky left-0 bg-white">Nifty 500</td>${sy.map(y=>{const n=nm[y[0]];return `<td class="text-right px-2 text-xs ${n>=0?'pos':'neg'}">${n!=null?pct(n):'—'}</td>`;}).join('')}</tr>
@@ -1522,7 +1522,7 @@ function render(r,cfg){
   // Today's picks — the LIVE screen (goLive re-runs the whole strategy at today's date on live prices,
   // exactly like the strategy page's 🎯 Live Picks tab). Until it finishes, show the basket the
   // simulation ended on, clearly stamped with its date so the two are never confused.
-  html+=`<div class="card p-4 mb-4">
+  html+=`<div class="card p-4 mb-4" data-jump="Live Picks">
     <div class="flex flex-wrap items-center gap-2 mb-2">
       <div class="text-sm font-semibold text-slate-700">Live picks — what qualifies right now <span class="text-slate-400 font-normal">(the whole screen re-run on today's prices &amp; today's filings — top ${cfg.topN} ⭐ = the basket)</span></div>
       <button id="btGoLive" class="ml-auto px-2.5 py-1 rounded-lg text-xs font-semibold bg-rose-600 text-white hover:bg-rose-700"><svg class="sw-i" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><polygon points="13 2 3 14 12 14 11 22 21 10 12 10 13 2"/></svg> Go Live</button>
@@ -1535,7 +1535,7 @@ function render(r,cfg){
     </tbody></table></div></div>
     <div id="liveNote" class="text-[11px] text-slate-400 mt-2">Held basket as of the last rebalance (${r.rebs.length?r.rebs[r.rebs.length-1].date:cfg.end}) — click <b>⚡ Go Live</b> to re-screen on today's prices and filings.</div></div>`;
   // ----- rebalance log (expandable, with per-rebalance holdings: weight, NEW, factor) -----
-  html+=`<div class="card p-4 mb-4"><div class="flex flex-wrap items-center justify-between gap-2 mb-2"><div class="text-sm font-semibold text-slate-700">Rebalance log <span class="text-slate-400 font-normal">(${r.rebs.length} rebalances — click any to see that period's basket, weights &amp; new entries)</span></div>
+  html+=`<div class="card p-4 mb-4" data-jump="Rebalances"><div class="flex flex-wrap items-center justify-between gap-2 mb-2"><div class="text-sm font-semibold text-slate-700">Rebalance log <span class="text-slate-400 font-normal">(${r.rebs.length} rebalances — click any to see that period's basket, weights &amp; new entries)</span></div>
       <button id="dlRebalCsv" class="shrink-0 inline-flex items-center gap-1 px-3 py-1.5 rounded-lg text-xs font-semibold bg-emerald-600 text-white hover:bg-emerald-700"><svg class="sw-i" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg> Download CSV</button></div>
     ${r.rebs.slice().reverse().map((rb,ri)=>{const idx=r.rebs.length-ri;
       return `<details class="border border-slate-200 rounded-lg mb-2"><summary class="px-3 py-2 cursor-pointer select-none text-sm hover:bg-slate-50 rounded-lg flex flex-wrap items-center gap-x-3">
@@ -1551,7 +1551,7 @@ function render(r,cfg){
   // ----- trade log (moved to the very end) -----
   const tr=r.trades; const winsT=tr.filter(t=>t.retPct>0).length;
   const avgT=tr.length?tr.reduce((s,t)=>s+t.retPct,0)/tr.length:0;
-  html+=`<div class="card p-4"><div class="flex flex-wrap items-center justify-between gap-2 mb-2"><div class="text-sm font-semibold text-slate-700">Trade log <span class="text-slate-400 font-normal">— ${tr.length} round-trips · ${tr.length?Math.round(100*winsT/tr.length):0}% winners · avg ${pct(avgT)} · shows the ${r.fLabel} at entry (why it was picked)</span></div>
+  html+=`<div class="card p-4" data-jump="Trades"><div class="flex flex-wrap items-center justify-between gap-2 mb-2"><div class="text-sm font-semibold text-slate-700">Trade log <span class="text-slate-400 font-normal">— ${tr.length} round-trips · ${tr.length?Math.round(100*winsT/tr.length):0}% winners · avg ${pct(avgT)} · shows the ${r.fLabel} at entry (why it was picked)</span></div>
       <button id="dlTradeCsv" class="shrink-0 inline-flex items-center gap-1 px-3 py-1.5 rounded-lg text-xs font-semibold bg-emerald-600 text-white hover:bg-emerald-700"><svg class="sw-i" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg> Download CSV</button></div>
     <div class="overflow-x-auto"><table class="w-full text-sm"><thead class="text-[11px] uppercase text-slate-500 border-b bg-white"><tr>
       <th class="text-left py-1 px-2">#</th><th class="text-left px-2">Stock</th><th class="text-left px-2">Entry</th><th class="text-right px-2">Entry ₹</th><th class="text-left px-2">Exit</th><th class="text-right px-2">Exit ₹</th><th class="text-right px-2">Return</th><th class="text-right px-2">${r.fLabel}@entry</th><th class="text-right px-2">RSI@entry</th></tr></thead><tbody id="tradeBody"></tbody></table></div>
