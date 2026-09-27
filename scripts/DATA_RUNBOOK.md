@@ -56,6 +56,7 @@ loads every session. (README.md is just a short pointer here — this file is th
 - **§41** ★ PUBLISHING A DATA HEAL — "live on the server" ≠ "the site uses it" (**read before ANY heal / backfill**)
 - **§186** ★★ FISCAL YEAR-ENDS ARE PER YEAR — the stock page's Financial-detail card reads each year's end from the cash-flow period the filing tags (Jun / Dec / Sep filers; transition years when a company moves its year-end) (**read before touching renderDeep / fiscalYears() / card_audit.py**)
 - **§188** ★ TWO GREEN-BUT-BROKEN BSE JOBS AFTER §181 — annual-bscf needs `--max-minutes` under its job timeout; refresh-fundamentals' ann-date step installs its own pymupdf (**read before adding a BSE step to a CI job**)
+- **§190** ★★ NO BROWSER IMPERSONATION LEFT FOR BSE — curl_cffi `impersonate="chrome"` bypasses the urllib override: use `BH.get` / `BH.Session`; curl callers `-A BH.UA` and NEVER a second Referer (**read before adding any BSE fetch**)
 - **§189** ★★★ SIGN-SANE BUT WRONG: KENNAMET op was −(TOTAL EXPENSES) from a 2026-07-27 BSE-PDF text sweep — healed via revop_cell_fix (+46) / con_nofile_retractions (+3) from the company's own BSE XBRL + PDFs; `scan_negop_vs_filings.py` separates genuine negative op (other income > operating base, 3,840 cells) from filing-contradicted cells (119 / 61 stocks, only KENNAMET healed) (**read before healing any op cell or re-running backfill_revop_gaps.py**)
 - **§42–§58** ROUTE & SOURCE DISCOVERIES (detres JSON, FY identity, pre-2020 std/con ceilings, CI clobber, the ROUTE LADDER, the STANDARD BACKFILL READ)
 - **§70** ★★★ sf_fundamentals vs sf_revop DISAGREE — authority is fundamentals; the mirror is not rendered · §70d the mirror is also SPARSE — never measure PAT coverage from sf_revop idx4/5
@@ -21889,3 +21890,21 @@ Mar-19 27.4, Sep-19 30.4, Dec-23..Sep-25 42.7 / 45.0 / 48.7 / 42.4 / 40.6 / 39.9
 (add the quarters to `bse_xbrl_nse_targets.json` or run `fetch_bse_results_xbrl.py`), not done here. (4) con copies left
 alone: Mar-19 revC 234.6 (no con document), Dec-18 patC/npCon 30.7. (5) `backfill_revop_gaps.metrics_at` still cannot
 reject op = −(total expenses) or a missing depreciation row — guard it before that sweep is ever re-run.
+
+## §190 — THE LAST CHROME-UA / IMPERSONATING BSE CALLERS, AND fetch_sectors' SECOND REFERER (2026-09-27, user: "check the other scripts still using chrome UA and fix them")
+**Sweep:** every tracked .py/.yml touching bseindia with Mozilla/Chrome/sec-ch-ua/Sec-Fetch/impersonate (26 files). Already
+honest or not BSE: ideas-feeds.yml + refresh.yml (the Chrome UA is for NSE/other hosts; their BSE branch is honest),
+bse_vision / fetch_and_match / kpi_docs / headcount_extract (route by host), bse_vision_prep's Sec-Fetch set (NSE archive only),
+fetch_insurers + revpat_verify/exchange_fetch (`impersonate="chrome"` on their NSE sessions only — NSE is out of this scope),
+_shp_164f / _shp_164g / _shp_d1 (curl_cffi shimmed to a plain GET), fill_prices_from_sf (GitHub release URL).
+**Fixed (4ff0fac9f):** `bse_headers.get()` / `bse_headers.Session()` — urllib, requests-shaped (status_code/text/content/json()),
+HTTP errors returned not raised — replace curl_cffi `impersonate="chrome"`, which never passed through the urllib override:
+fetch_shp_bse_aspx (master + ShareholdingPattern.aspx), bse_fetch_fy (Session), _shp_anchor_regression, _shp_aspx_rowfix,
+_shp_dii_rowfix, _shp_zero_fii_adjudicate. curl: fetch_classification + fetch_sectors send `-A BH.UA` and no extra Accept.
+india_spot imports bse_headers (its NMDC BSE calls get the honest set). _wf_gen's agent prompt no longer says "impersonate".
+**Real outage found:** fetch_sectors (refresh.yml, weekdays) still added its per-scrip `-H Referer` on top of CURL_ARGS' Referer.
+Measured from this Mac 2026-09-27: ComHeadernew with the duplicate → **403**; without → **200** (RELIANCE Energy / Oil, Gas…).
+Its last run (25-Sep) got 0/4,926 and kept the previous build's labels (§150 fallback). First post-fix check: the next
+weekday refresh.yml log must show "Total sector rows" ≈ 4,9xx, not 0.
+**Live test (one request each, ~1.2 s apart, all 200):** BH.get ShareholdingPattern.aspx 49,714 B; BH.Session
+AnnSubCategoryGetData 2 rows; curl ComHeadernew new form. india_spot's Chrome UA is rewritten to `stocks-dashboard-research/1.0`.
