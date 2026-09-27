@@ -29,7 +29,11 @@
   "20250930; 36 of 37 armed filings file a CORRECT EPS beside x10^k money, so EPS is left alone by default).",
   "`parse_only: true` -- factor_cell() skips it: the owners/P&L stores already hold a figure from a",
   "DIFFERENT, correctly scaled filing (JINDALSAW 20240930 con). xbrl_extra.json.gz is healed by",
-  "`XBRL_CACHE=<main checkout>/scripts/_xbrl_cache python3 -X utf8 scripts/scale_fix.py --apply-xtra`."
+  "`XBRL_CACHE=<main checkout>/scripts/_xbrl_cache python3 -X utf8 scripts/scale_fix.py --apply-xtra`.",
+  "`fill_null: [slots]` -- `--apply` also writes those sf_revop slots when they are EMPTY: revop_sanity's tiny-con",
+  "rule (con rev < 5% of std and < 20 cr) nulls con rev/op/ebit beside a 1/100 con filing, leaving no scaled value to",
+  "match (TRENT 20220331, JINDALSAW 20210331). For k < 0 record `was_*` at the RAW precision (value/1e7 unrounded):",
+  "the fix is was/10^k, so a 2-dp was_* loses the last two digits (2.42 -> 242.00 for a true 241.88; runbook 184)."
  ],
  "fixes": [
   {
@@ -1169,6 +1173,144 @@
    },
    "was_fund": -0.0796,
    "fixed_fund": -0.8
+  },
+  {
+   "sym": "IRCON",
+   "qe": "20220331",
+   "basis": "std",
+   "k": -2,
+   "file": "INDAS_85861_663808_27052022060726_WEB_xml",
+   "why": "Filer-side power-of-ten, k=-2: the filer typed crore figures into a lakh-scaled template (LevelOfRoundingUsedInFinancialStatements=Lakhs, decimals=-5), so every monetary tag is 1/100 of true. YTD ANCHOR (the filing's own YTD minus its quarter against the earlier quarters' YTD from a DIFFERENT filing): PAT: this filing YTD 54432000 - quarter 19709000 = 34723000 vs 20211231 YTD 3472300000 in INDAS_82964_610399_14022022062523_WEB_xml -> ratio 0.01000 ; rev: this filing YTD 691015000 - quarter 279708000 = 411307000 vs 20211231 YTD 41130700000 in INDAS_82964_610399_14022022062523_WEB_xml -> ratio 0.01000; exactly 0.01000 on all 10 P&L tags tested. PaidUpValueOfEquityShareCapital 18,810,000 vs 1,881,000,000 in that Dec-21 filing (₹188.10 cr). EPS filed CORRECTLY (Q4 2.10, FY 5.79: PAT 197.09 cr / 94.05 cr shares = 2.10). FY identity after the fix: stored Jun/Sep/Dec-21 PAT 84.70 + 132.63 + 129.90 + 197.09 = 544.32 = FY 54,432,000 x100 exactly. BSE's own copy Main_Ind_As_541956_275202217252.xml (Result_Arch_ng, filed 2022-05-30, Status New, no revision) carries identical values: 0 monetary differences over 201 common facts. Found by the annual_bscf printed-vs-XBRL cash-flow comparison (runbook §168p); adjudicated runbook §184. 2026-09-27 13:05 IST",
+   "was_revop": {
+    "rev": 27.9708,
+    "op": 0.9914,
+    "pat": 1.9709,
+    "ebit": 0.8996
+   },
+   "fixed_revop": {
+    "rev": 2797.08,
+    "op": 99.14,
+    "pat": 197.09,
+    "ebit": 89.96
+   },
+   "was_fund": 1.9709,
+   "fixed_fund": 197.09
+  },
+  {
+   "sym": "IRCON",
+   "qe": "20220331",
+   "basis": "con",
+   "k": -2,
+   "file": "INDAS_85862_663811_27052022060840_WEB_xml",
+   "why": "Filer-side power-of-ten, k=-2: the filer typed crore figures into a lakh-scaled template (LevelOfRoundingUsedInFinancialStatements=Lakhs, decimals=-5), so every monetary tag is 1/100 of true. YTD ANCHOR (the filing's own YTD minus its quarter against the earlier quarters' YTD from a DIFFERENT filing): owners: this filing YTD 59234000 - quarter 24188000 = 35046000 vs 20211231 YTD 3504600000 in INDAS_82965_610402_14022022062618_WEB_xml -> ratio 0.01000 ; rev: this filing YTD 737967000 - quarter 295259000 = 442708000 vs 20211231 YTD 44270800000 in INDAS_82965_610402_14022022062618_WEB_xml -> ratio 0.01000; exactly 0.01000 on all 11 P&L tags tested. Consolidated half of the std entry (same paid-up 18,810,000 vs 1,881,000,000; EPS 2.57 filed correctly). The printed FY22 consolidated cash flow (annual_bscf.json, BSE att b0c2c332) is 1,405.40 / -1,227.17 / 679.41 = 100x this file's 14.05 / -12.27 / 6.79. FY identity after the fix: stored con owners 88.99 + 125.94 + 135.53 + 241.88 = 592.34 = FY 59,234,000 x100 exactly. BSE copy Main_Ind_As_541956_275202217418.xml: 0 monetary differences over 197 common facts. NOT parse_only: _reattr_owners holds the scaled 2.42 (factor_cell -> 242.00); the exact 241.88 is pinned in owners_basis_heals.json. Found by the annual_bscf printed-vs-XBRL cash-flow comparison (runbook §168p); adjudicated runbook §184. 2026-09-27 13:05 IST",
+   "was_revop": {
+    "rev": 29.5259,
+    "op": 1.8504,
+    "pat": 2.4188,
+    "ebit": 1.5868
+   },
+   "fixed_revop": {
+    "rev": 2952.59,
+    "op": 185.04,
+    "pat": 241.88,
+    "ebit": 158.68
+   },
+   "was_fund": 2.4188,
+   "fixed_fund": 241.88
+  },
+  {
+   "sym": "UBL",
+   "qe": "20220331",
+   "basis": "std",
+   "k": -2,
+   "file": "INDAS_83646_648488_27042022035056_WEB_xml",
+   "why": "Filer-side power-of-ten, k=-2: the filer typed crore figures into a lakh-scaled template (LevelOfRoundingUsedInFinancialStatements=Lakhs, decimals=-5), so every monetary tag is 1/100 of true. YTD ANCHOR (the filing's own YTD minus its quarter against the earlier quarters' YTD from a DIFFERENT filing): PAT: this filing YTD 36501000 - quarter 16296000 = 20205000 vs 20211231 YTD 2020500000 in INDAS_80757_600538_29012022124422_WEB_xml -> ratio 0.01000 ; rev: this filing YTD 1311741000 - quarter 366240000 = 945501000 vs 20211231 YTD 94550100000 in INDAS_80757_600538_29012022124422_WEB_xml -> ratio 0.01000; exactly 0.01000 on all 10 P&L tags tested. PaidUpValueOfEquityShareCapital 2,644,000 vs 264,400,000 in that Dec-21 filing. EPS 6.17 filed correctly. FY identity after the fix: stored std PAT 30.84 + 80.65 + 90.56 + 162.96 = 365.01 = FY x100 exactly; revenue 2,651.18 + 3,293.91 + 3,509.92 + 3,662.40 = 13,117.41 = FY x100 exactly. BSE copy Main_Ind_As_532478_2742022154250.xml: 0 monetary differences over 205 common facts. Found by the annual_bscf printed-vs-XBRL cash-flow comparison (runbook §168p); adjudicated runbook §184. 2026-09-27 13:05 IST",
+   "was_revop": {
+    "rev": 36.624,
+    "op": 2.6033,
+    "pat": 1.6296,
+    "ebit": 2.0715
+   },
+   "fixed_revop": {
+    "rev": 3662.4,
+    "op": 260.33,
+    "pat": 162.96,
+    "ebit": 207.15
+   },
+   "was_fund": 1.6296,
+   "fixed_fund": 162.96
+  },
+  {
+   "sym": "UBL",
+   "qe": "20220331",
+   "basis": "con",
+   "k": -2,
+   "file": "INDAS_83647_648491_27042022035502_WEB_xml",
+   "why": "Filer-side power-of-ten, k=-2: the filer typed crore figures into a lakh-scaled template (LevelOfRoundingUsedInFinancialStatements=Lakhs, decimals=-5), so every monetary tag is 1/100 of true. YTD ANCHOR (the filing's own YTD minus its quarter against the earlier quarters' YTD from a DIFFERENT filing): owners: this filing YTD 36546000 - quarter 16340000 = 20206000 vs 20211231 YTD 2020600000 in INDAS_80759_600544_29012022124806_WEB_xml -> ratio 0.01000 ; rev: this filing YTD 1312392000 - quarter 366471000 = 945921000 vs 20211231 YTD 94592100000 in INDAS_80759_600544_29012022124806_WEB_xml -> ratio 0.01000; exactly 0.01000 on all 11 P&L tags tested. Moneycontrol con PAT 163.4 (scripts/pat_suspects_mc_2026-09-05.json, whose 'store-confirmed' verdict compared the store with this same scaled file) = owners 16,340,000 x100. Printed FY22 con cash flow (annual_bscf.json, BSE att 4348e9eb) 899.62 / -160.07 / -286.65 = 100x the XBRL. FY identity after the fix: owners 30.89 + 80.38 + 90.79 + 163.40 = 365.46 = FY x100 exactly. BSE copy Main_Ind_As_532478_2742022154433.xml: 0 monetary differences over 209 common facts. NOT parse_only: _reattr_owners holds the scaled 1.63 (factor_cell -> 163.00); the exact 163.40 is pinned in owners_basis_heals.json. Found by the annual_bscf printed-vs-XBRL cash-flow comparison (runbook §168p); adjudicated runbook §184. 2026-09-27 13:05 IST",
+   "was_revop": {
+    "rev": 36.6471,
+    "op": 2.6147,
+    "pat": 1.634,
+    "ebit": 2.0823
+   },
+   "fixed_revop": {
+    "rev": 3664.71,
+    "op": 261.47,
+    "pat": 163.4,
+    "ebit": 208.23
+   },
+   "was_fund": 1.634,
+   "fixed_fund": 163.4
+  },
+  {
+   "sym": "TRENT",
+   "qe": "20220331",
+   "basis": "con",
+   "k": -2,
+   "file": "INDAS_83675_648744_27042022093546_WEB_xml",
+   "why": "Filer-side power-of-ten, k=-2: the filer typed crore figures into a lakh-scaled template (LevelOfRoundingUsedInFinancialStatements=Lakhs, decimals=-5), so every monetary tag is 1/100 of true. YTD ANCHOR (the filing's own YTD minus its quarter against the earlier quarters' YTD from a DIFFERENT filing): owners: this filing YTD 10583000 - quarter 16000 = 10567000 vs 20211231 YTD 1056700000 in INDAS_82035_606915_10022022084122_WEB_xml -> ratio 0.01000 ; rev: this filing YTD 449802000 - quarter 132886000 = 316916000 vs 20211231 YTD 31691600000 in INDAS_82035_606915_10022022084122_WEB_xml -> ratio 0.01000; exactly 0.01000 on all 11 P&L tags tested. The company's printed Q4 (owners_basis_heals.json TRENT|20220331|patC, NSE PDF p22) owners 0.16 / NCI (21.03) / total (20.87) = this file's 16,000 / -2,103,000 / -2,087,000 x100 exactly; printed FY22 con cash flow 58.48 / 56.03 / -107.98 = 100x the XBRL. The std filing INDAS_83674 is NOT scaled (Crores; YTD ratio rev 1.000000, PAT 1.000057). parse_only: npCon 0.16 is the document-proven heal (owners_basis_heals outranks apply_owners_full) and _reattr_owners holds 0.0. revC stays 1,328.84 (annual_derived_fills, Screener FY 4,498 crore-rounded minus 3 quarters); this filing x100 says 1,328.86, which closes FY 4,498.02 exactly -- the 0.02 is left for a decision. fill_null: revop_sanity's tiny-con rule (con < 5% of std and < 20 cr) had emptied opC/ebitC because of this 1/100 filing; --apply refills them from the filing x100 (134.63 / 45.65). Found by the annual_bscf printed-vs-XBRL cash-flow comparison (runbook §168p); adjudicated runbook §184. 2026-09-27 13:05 IST",
+   "was_revop": {
+    "rev": 13.2886,
+    "op": 1.3463,
+    "pat": 0.0016,
+    "ebit": 0.4565
+   },
+   "fixed_revop": {
+    "rev": 1328.86,
+    "op": 134.63,
+    "pat": 0.16,
+    "ebit": 45.65
+   },
+   "parse_only": true,
+   "fill_null": [
+    "op",
+    "ebit"
+   ]
+  },
+  {
+   "sym": "JINDALSAW",
+   "qe": "20210331",
+   "basis": "con",
+   "k": -2,
+   "file": "INDAS_70544_452333_28052021121908_WEB_xml",
+   "why": "Filer-side power-of-ten, k=-2: the filer typed crore figures into a lakh-scaled template (LevelOfRoundingUsedInFinancialStatements=Lakhs, decimals=-5), so every monetary tag is 1/100 of true. YTD ANCHOR (the filing's own YTD minus its quarter against the earlier quarters' YTD from a DIFFERENT filing): owners: this filing YTD 31883000 - quarter 18410000 = 13473000 vs 20201231 YTD 1347300000 in INDAS_67247_402992_05022021074326_WEB_xml -> ratio 0.01000 ; rev: this filing YTD 1066364000 - quarter 378385000 = 687979000 vs 20201231 YTD 68797900000 in INDAS_67247_402992_05022021074326_WEB_xml -> ratio 0.01000; exactly 0.01000 on rev / PAT / owners / D&A / employee / tax (Income 0.010003, Expenses 0.010002, PBT 0.010012, finance cost 0.010017, other income 0.010115: FY regrouping against the 9M, still 1/100). Printed FY21 con cash flow (annual_bscf.json, BSE att 6bafdd5d) 1,557.14 / -346.02 / -831.15 = 100x the XBRL. The std filing INDAS_70543 is NOT scaled (Crores; YTD ratio 1.000000 on all 10 tags). BSE copy Main_Ind_As_500378_285202112106.xml: 0 monetary differences over 210 common facts. parse_only: sf_revop revC 3,783.85 and npCon / _reattr_owners 184.10 already equal this file x100 (source not recorded in any ledger), so factor_cell would have written 18,410. fill_null: revop_sanity's tiny-con rule had emptied opC/ebitC; --apply refills them from the filing x100 (474.98 / 350.46). Found by the annual_bscf printed-vs-XBRL cash-flow comparison (runbook §168p); adjudicated runbook §184. 2026-09-27 13:05 IST",
+   "was_revop": {
+    "rev": 37.8385,
+    "op": 4.7498,
+    "pat": 1.841,
+    "ebit": 3.5046
+   },
+   "fixed_revop": {
+    "rev": 3783.85,
+    "op": 474.98,
+    "pat": 184.1,
+    "ebit": 350.46
+   },
+   "parse_only": true,
+   "fill_null": [
+    "op",
+    "ebit"
+   ]
   }
  ]
 }

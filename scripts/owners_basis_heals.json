@@ -13,7 +13,8 @@
   "2026-08-27 \u00a7116e: 48 more cells healed total->owners, resolving part of the 460-cell \u00a7116d residue that the XBRL identity could NOT close. Each was read from the company's OWN BSE-filed consolidated result PDF (owners_total_verify.py): the filing's profit-attribution block gives owners + NCI == ProfitLossForPeriod EXACTLY (<=0.02cr), the column pinned by total==stored. Gate beyond \u00a7116d: an EXPLICIT profit-total row is required (a reconstructed owners+nci total can be the Total-Comprehensive-Income attribution, off by OCI -- that dropped MANINFRA/JAYAGROGN 0.05-0.08cr). 34 symbols incl. ADANIENT 20210331 332.53->233.95 (NCI 98.58), CHOLAHLDNG 20200331 79.57->39.91 (the exact cell \u00a7116d named unresolvable via XBRL), INDHOTEL/LUPIN/TECHM/RAIN/JINDALSAW. Deferred: the ~324 cells whose BSE P&L is a SCANNED image (free OCR mis-reads the owners line) and the older 'profit for period / less NCI / profit after NCI' format (GOLDIAM class) -- need vision or extractor work.",
   "2026-08-27 \u00a7116e-vision: 8 more cells from SCANNED-image filings the text pass could not read, read by vision from the rendered consolidated P&L page and gated identically (owners+NCI==total exactly, total==stored). JINDALSTEL 20201231 2566.68->2254.66 (owners=continuing+discontinuing attribution, 312cr), LLOYDSENT 20251231 37.93->-7.86 (owners LOSS, minority took the profit), WAAREEENER 20251231 1106.79->1062.46, ADANIPORTS 20250630 3310.60->3314.59, KANORICHEM x4 (row cleared). NOTE: several high-proxy scanned cells were REFUSED as a DIFFERENT defect class -- their stored value does not match the filing total at all (ADANIENT 20250331 stored 1382.17 vs filed total 4014.90/owners 3844.91; AARTIIND 20210331 stored 692.34 vs 139.34; RAYMOND 20211231 stored 266.67 vs 101.07) -- flagged for separate investigation, NOT owners-vs-total.",
   "2026-08-27 \u00a7116e Nifty-500 pass: worked the 88 unhealed 460-residue cells in current Nifty-500 members. 45 healed (1 text + 44 vision from scanned filings via render_pl.py): BIOCON x3 (Syngene NCI, ~30cr), NAVA 338.99->298.61 (Zambia power), IFCI 20241231 -8.74->-30.66, NMDC x5, BLUESTARCO x7 (row cleared), KANORICHEM x4 (row cleared), NCC, GPIL, WOCKPHARMA x2, ZENTEC x3, PIDILITIND x2, POLYCAB x2, TIINDIA, ULTRACEMCO... Not healed: NMDC 20240930/INFY/AJANTPHARM/NUVOCO/AFCONS already store owners (no-op); KAYNES x4 have NO NCI (in the residue only via XBRL power-of-ten garbage); ASIANPAINT/KAYNES 20230331 are STORED-VALUE anomalies (stored != filing total, logged in owners_total_stored_anomalies.json); GLENMARK x3/PHOENIXLTD/ONESOURCE/IFCI 20220331/CHOICEIN/PVRINOX/BEML/VBL/HINDCOPPER deferred (complex continuing+discontinuing, restatements, TCI-only, or extract-only pages). ~11 more file image P&Ls the OCR page-finder cannot key (mostly nil/tiny NCI).",
-  "2026-09-03 (G1): GFLLIMITED 20170331/20170930/20171231 con PAT held the TOTAL 'Profit for the period' where every neighbouring quarter stores owners; healed to owners from each quarter's OWN BSE consolidated attribution block (Owners (12,220)/7,149/7,019 L). Identity owners+NCI==total and GATE S' (std 52.43/88.74/94.66) both close. 2012Q1-2013Q1 filed no quarterly con statement -> LEFT."
+  "2026-09-03 (G1): GFLLIMITED 20170331/20170930/20171231 con PAT held the TOTAL 'Profit for the period' where every neighbouring quarter stores owners; healed to owners from each quarter's OWN BSE consolidated attribution block (Owners (12,220)/7,149/7,019 L). Identity owners+NCI==total and GATE S' (std 52.43/88.74/94.66) both close. 2012Q1-2013Q1 filed no quarterly con statement -> LEFT.",
+  "2026-09-27 (runbook \u00a7184): IRCON and UBL 20220331 con owners pinned at the exact x100 figure of their 1/100 XBRL (scale_fix.json k=-2) -- without a pin apply_owners_full writes _reattr_owners' 2-dp scaled value / 0.01."
  ],
  "cells": {
   "20MICRONS|20190630|patC": {
@@ -1893,6 +1894,17 @@
    "stored_before": 109.47,
    "when": "2026-08-17 19:58 IST"
   },
+  "IRCON|20220331|patC": {
+   "found_by": "scale_fix k=-2 adjudication 2026-09-27 (runbook \u00a7184)",
+   "identity": "owners 241.88 + NCI (0.07) = total 241.81 = this filing's ProfitOrLossAttributableToOwnersOfParent 24,188,000 / NonControllingInterests -7,000 / ProfitLossForPeriod 24,181,000 x100. FY22 con owners 592.34 (FourD 59,234,000 x100) = stored con quarters 88.99 + 125.94 + 135.53 + 241.88 to the paisa; (FY - Q4) / Dec-21 9M = 0.01000 on every P&L tag.",
+   "nci": -0.07,
+   "note": "Pinned because apply_owners_full derives npCon as _reattr_owners (2-dp, read from this same 1/100 filing: 2.42) / scale_fix factor 0.01 = 242.00 every night, while the filing's exact owners figure is 241.88. The scale_fix.json entry stays armed (NOT parse_only), so if this pin is ever removed the nightly still lands within 0.12.",
+   "owners": 241.88,
+   "src": "own consolidated XBRL INDAS_85862_663811_27052022060840_WEB_xml ctx OneD x100 (scale_fix.json k=-2); BSE copy Main_Ind_As_541956_275202217418.xml identical",
+   "stored_before": 2.42,
+   "total": 241.81,
+   "when": "2026-09-27 13:05 IST"
+  },
   "JHS|20180930|patC": {
    "nci": -0.04,
    "note": "Sep-2019 filing p4 (lakhs), year-ago column; OCR digits pinned by four on-page identities -- see apply_jhs_2026_08_09.py",
@@ -3441,6 +3453,17 @@
    "owners": 9.59,
    "src": "own consolidated result PDF, BSE ann 20250527, 10bc9fb1-c7f6-47ca-9f53-16376b0b62ca.pdf (page 9)",
    "total_was": 9.65
+  },
+  "UBL|20220331|patC": {
+   "found_by": "scale_fix k=-2 adjudication 2026-09-27 (runbook \u00a7184)",
+   "identity": "owners 163.40 + NCI 0.38 = total 163.78 = this filing's ProfitOrLossAttributableToOwnersOfParent 16,340,000 / NonControllingInterests 38,000 / ProfitLossForPeriod 16,378,000 x100. FY22 con owners 365.46 = stored con quarters 30.89 + 80.38 + 90.79 + 163.40 to the paisa; Moneycontrol con PAT 163.4.",
+   "nci": 0.38,
+   "note": "Pinned because apply_owners_full derives npCon as _reattr_owners (2-dp, read from this same 1/100 filing: 1.63) / scale_fix factor 0.01 = 163.00 every night, while the filing's exact owners figure is 163.40. The scale_fix.json entry stays armed (NOT parse_only), so if this pin is ever removed the nightly still lands within 0.40.",
+   "owners": 163.4,
+   "src": "own consolidated XBRL INDAS_83647_648491_27042022035502_WEB_xml ctx OneD x100 (scale_fix.json k=-2); BSE copy Main_Ind_As_532478_2742022154433.xml identical",
+   "stored_before": 1.63,
+   "total": 163.78,
+   "when": "2026-09-27 13:05 IST"
   },
   "UNIONBANK|20190331|patC": {
    "identity": "FOUR-QUARTER YEAR CLOSE, EXACT TO THE PAISA, and it uses three already-stored cells plus the new one: stored Jun-2018 140.50 + stored Sep-2018 85.63 + stored Dec-2018 182.97 + new Mar-2019 -3331.45 = -2922.35, which is exactly the printed FY19 consolidated annual (-2,92,235 lacs), a figure printed identically in BOTH the Q1FY20 filing and the Q4FY20 filing. Equivalently, note 2 of the Q1FY20 filing states 'The figures of the last quarter in each of the financial years are the balancing figures between audited figures in respect of the full financial year and the published year to date figures upto the end of third quarter' - so Mar-2019 is by construction FY19 minus 9M FY19, and FY19 -2922.35 minus 9M FY19 (140.50+85.63+182.97 = 409.10) = -3331.45, matching the printed column exactly. No residue anywhere in this chain. Within-column arithmetic also verified: row H -333,262 + row K associates 117 (row J minority nil) = row L -333,145.",

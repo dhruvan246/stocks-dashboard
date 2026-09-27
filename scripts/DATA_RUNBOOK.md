@@ -95,6 +95,7 @@ loads every session. (README.md is just a short pointer here — this file is th
 - **§130** ★★★ THE LINE-ITEM BLOCK (EPS/OI/interest/dep/tax) BEFORE 2018 — NSE lists an XBRL URL only from Mar-2018; 2005-2017 come from the archive HTML pages (PAT-anchored, GATE E) and 2002-04/residue from Moneycontrol (gate T/C/R). BANKING XBRL 2018-22 has NO context block (OneD = quarter, FourD = YTD, 'Half yearly'/'Yearly' name the filing). A LOCAL `--fresh` rebuild DROPS the cloud nightly's newest cells unless unioned with the committed .gz (**read before touching build_xbrl_extra.py or judging pre-2018 coverage**)
 - **§161** ★★★ NO SPLIT/BONUS IS EVER INFERRED FROM A PRICE MOVE — `ca_factor()` split POLICYBZR's −36% crash (2026-09-24) into a phantom 2/3 and scaled its whole history; official record → exact factor, none → raw move kept + parked in `scripts/unconfirmed_ca.json`; the published bins' every applied factor is recoverable as `vw ÷ (turnover/volume)` (**read before touching any corporate-action code or ledger**)
 - **§147** ★★★ A scale_fix entry does NOT heal xbrl_extra by itself (the nightly is incremental) — run `scale_fix.py --apply-xtra` with XBRL_CACHE. A mis-scaled filing's EPS is almost always CORRECT (36/37), so flag `eps_scaled` only where it isn't. Use `parse_only` where the owners store already holds a figure from a different, correctly scaled filing. Arm a filing only on an exact YTD power of ten (**read before adding any scale_fix entry**)
+- **§184** ★★★ A 1/100 FILING IS INVISIBLE to `detect_scale_errors.py` (it flags only cells ≥50× LARGER) — screen with the YTD chain over the whole cache, and decide WHICH filing is wrong (a pair's ratio proves only that the two disagree). For k < 0 record `was_*` at raw precision; pin con owners in `owners_basis_heals.json` (the nightly otherwise writes `_reattr_owners` 2-dp ÷ factor); `fill_null` refills slots `revop_sanity` emptied. 50 cells in 62 candidate filings still hold scaled values, NOT armed (**read before adding any scale_fix entry**)
 - **§181** ★★★ HOW TO ACCESS BSE — every BSE request carries the FULL standard browser header set: `import bse_headers` in any script that touches *.bseindia.com (urllib is covered automatically); curl calls splice `*BH.CURL_ARGS` (includes `--compressed`) and NEVER add a second `-H Referer`/`-H Origin` (a duplicated header → 403). BSE data is public: a 403 means OUR request is incomplete or too fast — fix the request, never record "BSE is blocked". Pace: one request at a time, a per-run cap, download only what is missing; never fan out parallel BSE workers from an interactive session, and never import `fetch_classification.py` to test it (it runs ~18k requests at import) (**read before writing or running ANY BSE fetch**)
 - **★★★ NO ASSUMPTIONS. NO GUESSWORK. EVER.** User-mandated 2026-08-10; standing rule across
   this runbook AND every campaign/playbook doc (each carries the same line). Every value written
@@ -21417,3 +21418,73 @@ crore is ÷10,000" already said so for the routine prompts; the CODE still carri
 in `~/stocks-cache/thousand_audit/low10_xbrl.json`. Heal route when taken up: §178 XBRL values via the
 `vision-unitfix`-style tagged overwrite with provenance (commit 4a8a1f385 precedent).
 Tools: `~/stocks-cache/thousand_audit/{compare.py,check_low10.py}` (cached listings + XML there).
+
+## §184 — FOUR 1/100 XBRL FILINGS ARMED (k=−2): IRCON + UBL Mar-22 std/con, TRENT Mar-22 con, JINDALSAW Mar-21 con; the ÷ direction `detect_scale_errors.py` cannot see (2026-09-27)
+**NO ASSUMPTIONS (§0).** Measured this session from the main checkout's `scripts/_xbrl_cache` (read-only), BSE's own XBRL copies
+(4 `Result_Arch_ng` lists + 8 `/XBRLFILES/FourOneUploadDocument/…` files through `bse_headers`, one at a time 1.2 s apart; one list
+read timed out and returned 200 on retry), and origin/main. Tools + outputs: `~/stocks-cache/scalefix-mar22/`.
+
+**The class.** The filer typed crore figures into a lakh-scaled template (`LevelOfRoundingUsedInFinancialStatements` = Lakhs,
+`decimals="-5"`): EVERY monetary tag — P&L, cash flow, cash, and `PaidUpValueOfEquityShareCapital` — is 1/100 of true; EPS is filed
+correctly. Found by §168p (the printed annual cash flow is exactly 100× the XBRL).
+
+| filing (NSE cache) | YTD anchor: (FY − Q4) ÷ the Dec 9M of a different filing | other anchors |
+|---|---|---|
+| IRCON 20220331 std `INDAS_85861_663808_…` | 0.010000 on all 10 P&L tags | paid-up 18,810,000 vs 1,881,000,000 (Dec-21 filing); FY PAT 544.32 = stored 3 quarters + 197.09 exactly |
+| IRCON 20220331 con `INDAS_85862_663811_…` | 0.010000 on all 11 | printed CF 1,405.40 / −1,227.17 / 679.41; FY owners 592.34 closes to the paisa |
+| UBL 20220331 std `INDAS_83646_648488_…` | 0.010000 on all 10 | paid-up 2,644,000 vs 264,400,000; FY PAT 365.01 and revenue 13,117.41 close exactly |
+| UBL 20220331 con `INDAS_83647_648491_…` | 0.010000 on all 11 | Moneycontrol con PAT 163.4 = owners 16,340,000 ×100; printed CF 899.62 / −160.07 / −286.65; FY owners 365.46 closes |
+| TRENT 20220331 con `INDAS_83675_648744_…` | 0.010000 on all 11 | printed Q4 owners 0.16 / NCI (21.03) / total (20.87) = 16,000 / −2,103,000 / −2,087,000 ×100; printed CF 58.48 / 56.03 / −107.98 |
+| JINDALSAW 20210331 con `INDAS_70544_452333_…` | 0.010000 on rev / PAT / owners / D&A / employee / tax (income, expenses, PBT, finance cost, other income 0.010002–0.010115: FY regrouping) | printed CF 1,557.14 / −346.02 / −831.15; the stores already held ×100 (rev 3,783.85, owners 184.10) |
+
+NOT scaled: TRENT std `INDAS_83674` and JINDALSAW std `INDAS_70543` (Crores; YTD ratio 1.000000). BSE lists no revised filing for any
+of these quarters, and BSE's own copies carry the same scaled values (0 monetary differences over 197–210 common facts; TRENT con differs
+only by extra digits on a few cash-flow lines) — the filer's error on both exchanges, not ours.
+**Correction to the brief:** TRENT Mar-22 con npCon **0.16 is right** — the printed owners figure (vision heal in
+`owners_basis_heals.json`; FY owners 105.83 closes). Only xbrl_extra and the sf_revop con op/ebit/mirror carried the defect.
+
+**Entries** (`scale_fix.json`, 66 now; no `eps_scaled` — EPS is correct in all six). IRCON std/con and UBL std/con are armed, NOT
+`parse_only` (their `_reattr_owners` holds the scaled 2-dp value, so `factor_cell` is the right fallback). TRENT con and JINDALSAW con are
+`parse_only`: JINDALSAW's `_reattr_owners` already holds 184.10 (no ledger records where that came from), and without the flag the
+nightly `apply_owners_full` writes **18,410.0** (simulated on a scratch mirror); TRENT's npCon is pinned by the vision heal.
+**Two rules this added:**
+1. **For k < 0, record `was_*` at RAW precision** (value / 1e7, unrounded). `--apply` writes was / 10^k, so a 2-dp was (2.42) would
+   write 242.00 for a true 241.88.
+2. **`fill_null: [slots]`** (new, `scale_fix.py _fix_revop`). `revop_sanity.py`'s tiny-con rule (con rev < 5% of std and < 20 cr)
+   had EMPTIED TRENT/JINDALSAW con op/ebit beside the 1/100 filing, leaving no scaled value to match. The flag lets `--apply` refill an
+   empty slot from the filing ×10^−k (TRENT 134.63 / 45.65, JINDALSAW 474.98 / 350.46).
+
+**Owners pins.** The nightly `apply_owners_full.py` derives npCon = `_reattr_owners` ÷ factor, i.e. 242.00 / 163.00 for IRCON / UBL
+(simulated). The exact 241.88 / 163.40 are pinned in `owners_basis_heals.json` (a heal ledger outranks the cache); with the pins the
+simulated owners pass changes 0 cells.
+**Applied** on fresh origin: `--apply` 21 sf_revop + 21 revop_fundamentals + 4 sf_fundamentals + 4 fundamentals cells (its counter
+reads 23 / 5 — three pre-existing no-op rewrites, RANEENGINE −0.01 and RMCL 0.0); `--apply-xtra` 107 fields in exactly the 6 cells,
+each ≈100× (EPS untouched). The printed cash flows (`annual_bscf.json`) now equal the healed XBRL on 20 / 20 fields to the paisa.
+Slices rebuilt: IRCON, UBL, TRENT, LAKME (→TRENT), JINDALSAW, SAWPIPES (→JINDALSAW); the other 6,430 were byte-identical.
+**Gates:** `verify_fills_live.py` identical to its pre-change baseline (0 MISSING, same DRIFT list, 0 RESURRECTED); `guard_feed.py` OK;
+`revop_sanity.py --dry` nulls 0. Stock page, local, on the fin-slice path: IRCON Mar-22 revenue 2,953 / op 185 / PAT 242, UBL 3,665 /
+261 / 163, TRENT op 135 / EBIT 45.7, JINDALSAW op 475 / EBIT 350; FY cash-flow tabs CFO 1,405 / 900 / 58 / 1,557; 0 console errors.
+**Left open (measured, not changed):** TRENT revC 1,328.84 is a Screener crore-rounded derivation (`annual_derived_fills.json`); the
+filing ×100 says 1,328.86, which closes FY 4,498.02 exactly. `build_fundamentals.xbrl_profit` rounds to 2 dp BEFORE dividing by the
+factor, so a FULL rebuild would write 197.00 for IRCON std npStd (true 197.09); the pins cover npCon only. IRCON's stored Jun-21 revenue
+(std 1,051.09 / con 1,140.11) sits 2.01 / 1.93 below the Dec-21 9M-implied figure — a different defect. `pat_suspects_mc_2026-09-05.json`
+calls UBL 20220331 con "store-confirmed by the quarter's own filing": it compared the store with the same scaled file, and
+Moneycontrol's 163.4 was right.
+
+**Detection.** `detect_scale_errors.py` flags only cells ≥ 50× LARGER than their neighbours, so a 1/100 filing is invisible to it by
+construction (it lists 714 revop + 927 PAT "suspects", mostly real). What finds this class is the YTD chain over the whole cache:
+for every single-basis filing with a YTD column, r = (YTD − quarter) ÷ the previous quarter's YTD = s_F / s_P. An exact 10^k on
+revenue AND PAT proves the two filings disagree by 10^k — **not which one is wrong**. (A first pass that read the paid-up ratio between
+the two filings as "F is scaled" blamed the neighbours of armed filings, e.g. BATAINDIA Sep-19 next to the armed Jun-19.) Decide the side
+with (a) an armed neighbour that explains the pair, (b) the filing's own paid-up capital against the company's median over all its
+filings, (c) the chain (the filing that disagrees with a consistent neighbour). Run 2026-09-27 over 100,414 parsed filings: 71,213
+pairs, 171 anomalous; 79 explained by armed filings; recall on the ledger 53 of 61 cached filings (misses: the two Q1 filings with no YTD
+column, RML Mar-23 whose previous filing is also scaled, RMCL whose revenue is 0, JPPOWER Mar-23 std/con, SILGO Mar-21).
+**92 unexplained pairs → 64 candidate filings (62 cells) NOT in the ledger. On 50 cells the served store holds the scaled figure**
+(revenue 42, PAT 46; spot-checked LIVE for IGL, PAYTM, RKFORGE); 3 more have correct stores from elsewhere but a scaled latest filing
+(DLF 20190630 con, PFC 20231231 con, PIDILITIND 20190930 con — the JINDALSAW shape, xbrl_extra exposure); 9 are superseded by a later
+correct filing; 7 pairs stay undecided (each sits next to a decided candidate). Examples of the 50:
+IGL 20230630 std rev 37.62 (×100 → 3,761.85; the con slot says 3,761.85), PAYTM 20221231 con rev 206.22 / PAT −39.2 (×10 → 2,062.2 /
+−392.0), RKFORGE 20241231 con rev 10,737.82 / PAT 996.14 (÷10), M&MFIN 20210331 std+con, LICHSGFIN 20211231 std+con, APOLLOTYRE 20210331
+std, BIRLACORPN 20210930 std, MHRIL 20190630 con, SFL 20201231 + 20210630 std+con, WHEELS 20221231 std+con. None armed here: each needs
+its own adjudication (was guards, parse_only, owners pins), as above. List: `~/stocks-cache/scalefix-mar22/ytd_candidates_triaged.json`.

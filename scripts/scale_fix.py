@@ -18,7 +18,8 @@ Two consumers, one ledger (scale_fix.json):
   * PARSE time — build_revop.py and build_fundamentals.py call factor(filename) and divide, so
     a full rebuild off _xbrl_cache stays clean.
   * ONE-OFF — `python -X utf8 scale_fix.py --apply` repairs the already-built JSONs in place,
-    guarded on the recorded pre-fix values so it can never double-divide.
+    guarded on the recorded pre-fix values so it can never double-divide. An entry's optional
+    `fill_null` list also lets it write an EMPTY sf_revop slot (a sanity rule had nulled it).
 
 Adding an entry requires a real anchor — see the ledger's _README. Surface candidates with
 detect_scale_errors.py, then adjudicate BY HAND: the disease is not auto-detectable, and a
@@ -115,11 +116,15 @@ def _fix_revop(path, fixes):
             continue
         if len(row) < 9:
             row += [None] * (9 - len(row))
+        # `fill_null`: slots the entry may also write when EMPTY. revop_sanity's tiny-con rule (con rev
+        # < 5% of std and < 20 cr) nulls con rev/op/ebit beside a 1/100 con filing, so there is no scaled
+        # value left to match (TRENT 20220331, JINDALSAW 20210331 op/ebit; runbook §184)
+        fill = set(e.get("fill_null") or ())
         for name, slot in SLOTS[e["basis"]].items():
             want = e["was_revop"].get(name)
             if want is None:
                 continue
-            if _close(row[slot], want):                      # still the scaled value -> repair
+            if _close(row[slot], want) or (row[slot] is None and name in fill):   # still scaled / emptied -> repair
                 row[slot] = round(want / 10.0 ** e["k"], 2)
                 n += 1
         data[e["sym"]][e["qe"]] = row
