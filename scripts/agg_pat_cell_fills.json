@@ -78627,217 +78627,6 @@
   "state": "FILLED-ROUNDED",
   "std": 265.68
  },
- "HEG|19991231": {
-  "ann_basis": "CONVENTION, not a filing date: quarter-end+45d, the default 20,818 of the 21,515 dated pre-2015 cells already carry (runbook \u00a752), FLOORED at the symbol's first traded bar so a pre-listing quarter cannot claim it was public before the company had a tape (\u00a799). Moneycontrol's feed carries no filing date.",
-  "ann_floor": null,
-  "ann_written": 20000214,
-  "applied": "2026-09-05 std-PAT 2002-07 coverage (PLAN_STDPAT_SHP_COVERAGE_2002 WP-P1/P2/P3) \u2014 Moneycontrol GATE E2b",
-  "calibration": "era_calibrate_e2.py hold-out on stored pre-2009 cells (agg_era_gate.py header: maxbad=10/15%, mismatch 1.17%); store holds 0 rows before 2001 so 1999-2000 targets have NO calibration base; archive second reader: 3 overlaps, 3 agree, the rest unevidenced",
-  "corroborated_by": [],
-  "evidence": "GATE E2b (pre-2015, runbook \u00a790): E1 identity -- that site's own pat_total series reproduces 84 of our stored quarters, worst anchor error 0.03, 10 disagreement(s) anywhere and NONE within \u00b16q; nearest anchor 7 quarter(s) from the target. E2 the site's OWN FY quarter-sum identity closes at the target FY (30.39 vs annual 30.39). E3 target and both neighbour periods present. Precision rounded(0.03). E2b: the next FY is RESTATED on the site and did NOT veto -- a neighbour restatement is evidence about the NEIGHBOUR; hold-out calibrated on stored pre-2009 cells, and our store holds 0 rows before 2001, so a target before 2001 has no calibration base.",
-  "field": "patS",
-  "fy_check": {
-   "next": {
-    "annual": 40.11,
-    "diff": -4.4,
-    "fy_end": 20010331,
-    "sum4Q": 35.71,
-    "verdict": "RESTATED"
-   },
-   "prev": {
-    "annual": 36.16,
-    "diff": 0.0,
-    "fy_end": 19990331,
-    "sum4Q": 36.16,
-    "verdict": "OK"
-   },
-   "target": {
-    "annual": 30.39,
-    "diff": 0.0,
-    "fy_end": 20000331,
-    "sum4Q": 30.39,
-    "verdict": "OK"
-   }
-  },
-  "gate": "E2b",
-  "precision": "rounded(0.03)",
-  "resolved_via": "symbol",
-  "row_label": "Net Profit/(Loss) For the Period",
-  "site_reach": {
-   "mc": "mc: 117 periods 19970630..20260630"
-  },
-  "src": "moneycontrol quarterly-results API (runbook \u00a781)",
-  "state": "FILLED-ROUNDED",
-  "std": 8.08
- },
- "HEG|20000331": {
-  "ann_basis": "CONVENTION, not a filing date: quarter-end+45d, the default 20,818 of the 21,515 dated pre-2015 cells already carry (runbook \u00a752), FLOORED at the symbol's first traded bar so a pre-listing quarter cannot claim it was public before the company had a tape (\u00a799). Moneycontrol's feed carries no filing date.",
-  "ann_floor": null,
-  "ann_written": 20000515,
-  "applied": "2026-09-05 std-PAT 2002-07 coverage (PLAN_STDPAT_SHP_COVERAGE_2002 WP-P1/P2/P3) \u2014 Moneycontrol GATE E2b",
-  "calibration": "era_calibrate_e2.py hold-out on stored pre-2009 cells (agg_era_gate.py header: maxbad=10/15%, mismatch 1.17%); store holds 0 rows before 2001 so 1999-2000 targets have NO calibration base; archive second reader: 3 overlaps, 3 agree, the rest unevidenced",
-  "corroborated_by": [],
-  "evidence": "GATE E2b (pre-2015, runbook \u00a790): E1 identity -- that site's own pat_total series reproduces 84 of our stored quarters, worst anchor error 0.03, 10 disagreement(s) anywhere and NONE within \u00b16q; nearest anchor 6 quarter(s) from the target. E2 the site's OWN FY quarter-sum identity closes at the target FY (30.39 vs annual 30.39). E3 target and both neighbour periods present. Precision rounded(0.03). E2b: the next FY is RESTATED on the site and did NOT veto -- a neighbour restatement is evidence about the NEIGHBOUR; hold-out calibrated on stored pre-2009 cells, and our store holds 0 rows before 2001, so a target before 2001 has no calibration base.",
-  "field": "patS",
-  "fy_check": {
-   "next": {
-    "annual": 40.11,
-    "diff": -4.4,
-    "fy_end": 20010331,
-    "sum4Q": 35.71,
-    "verdict": "RESTATED"
-   },
-   "prev": {
-    "annual": 36.16,
-    "diff": 0.0,
-    "fy_end": 19990331,
-    "sum4Q": 36.16,
-    "verdict": "OK"
-   },
-   "target": {
-    "annual": 30.39,
-    "diff": 0.0,
-    "fy_end": 20000331,
-    "sum4Q": 30.39,
-    "verdict": "OK"
-   }
-  },
-  "gate": "E2b",
-  "precision": "rounded(0.03)",
-  "resolved_via": "symbol",
-  "row_label": "Net Profit/(Loss) For the Period",
-  "site_reach": {
-   "mc": "mc: 117 periods 19970630..20260630"
-  },
-  "src": "moneycontrol quarterly-results API (runbook \u00a781)",
-  "state": "FILLED-ROUNDED",
-  "std": 3.51
- },
- "HEG|20010630": {
-  "ann_basis": "CONVENTION, not a filing date: quarter-end+45d, the default 20,818 of the 21,515 dated pre-2015 cells already carry (runbook \u00a752), FLOORED at the symbol's first traded bar so a pre-listing quarter cannot claim it was public before the company had a tape (\u00a799). Moneycontrol's feed carries no filing date.",
-  "ann_floor": null,
-  "ann_written": 20010814,
-  "applied": "2026-09-05 std-PAT 2002-07 coverage (PLAN_STDPAT_SHP_COVERAGE_2002 WP-P1/P2/P3) \u2014 Moneycontrol GATE E2b",
-  "calibration": "era_calibrate_e2.py hold-out on stored pre-2009 cells (agg_era_gate.py header: maxbad=10/15%, mismatch 1.17%); store holds 0 rows before 2001 so 1999-2000 targets have NO calibration base; archive second reader: 3 overlaps, 3 agree, the rest unevidenced",
-  "corroborated_by": [],
-  "evidence": "GATE E2b (pre-2015, runbook \u00a790): E1 identity -- that site's own pat_total series reproduces 84 of our stored quarters, worst anchor error 0.03, 10 disagreement(s) anywhere and NONE within \u00b16q; nearest anchor 1 quarter(s) from the target. E2 the site's OWN FY quarter-sum identity closes at the target FY (30.47 vs annual 30.94). E3 target and both neighbour periods present. Precision rounded(0.03). E2b: the prev/next FY is RESTATED on the site and did NOT veto -- a neighbour restatement is evidence about the NEIGHBOUR; hold-out calibrated on stored pre-2009 cells, and our store holds 0 rows before 2001, so a target before 2001 has no calibration base.",
-  "field": "patS",
-  "fy_check": {
-   "next": {
-    "annual": 37.28,
-    "diff": 4.19,
-    "fy_end": 20030331,
-    "sum4Q": 41.47,
-    "verdict": "RESTATED"
-   },
-   "prev": {
-    "annual": 40.11,
-    "diff": -4.4,
-    "fy_end": 20010331,
-    "sum4Q": 35.71,
-    "verdict": "RESTATED"
-   },
-   "target": {
-    "annual": 30.94,
-    "diff": -0.47,
-    "fy_end": 20020331,
-    "sum4Q": 30.47,
-    "verdict": "OK"
-   }
-  },
-  "gate": "E2b",
-  "precision": "rounded(0.03)",
-  "resolved_via": "symbol",
-  "row_label": "Net Profit/(Loss) For the Period",
-  "site_reach": {
-   "mc": "mc: 117 periods 19970630..20260630"
-  },
-  "src": "moneycontrol quarterly-results API (runbook \u00a781)",
-  "state": "FILLED-ROUNDED",
-  "std": 9.01
- },
- "HEG|20010930": {
-  "ann_basis": "CONVENTION, not a filing date: quarter-end+45d, the default 20,818 of the 21,515 dated pre-2015 cells already carry (runbook \u00a752), FLOORED at the symbol's first traded bar so a pre-listing quarter cannot claim it was public before the company had a tape (\u00a799). Moneycontrol's feed carries no filing date.",
-  "ann_floor": null,
-  "ann_written": 20011114,
-  "applied": "2026-08-26 aggregator pre-2015 std-PAT sweep",
-  "corroborated_by": [],
-  "evidence": "gate A/A2 passed: that site's own patS series reproduces 82 of our stored quarters with zero disagreements in the local window, worst anchor error 0.0300; nearest anchor within 4 quarters",
-  "field": "patS",
-  "fy_check": {
-   "next": {
-    "annual": 37.28,
-    "diff": 4.19,
-    "fy_end": 20030331,
-    "sum4Q": 41.47,
-    "verdict": "RESTATED"
-   },
-   "prev": {
-    "annual": 40.11,
-    "diff": -4.4,
-    "fy_end": 20010331,
-    "sum4Q": 35.71,
-    "verdict": "RESTATED"
-   },
-   "target": {
-    "annual": 30.94,
-    "diff": -0.47,
-    "fy_end": 20020331,
-    "sum4Q": 30.47,
-    "verdict": "OK"
-   }
-  },
-  "precision": "rounded(0.03)",
-  "resolved_via": "symbol",
-  "row_label": "Net Profit/(Loss) For the Period",
-  "site_reach": {
-   "mc": "mc: 117 periods 19970630..20260630"
-  },
-  "src": "moneycontrol quarterly-results API (runbook \u00a781)",
-  "state": "FILLED-ROUNDED",
-  "std": 9.53
- },
- "HEG|20011231": {
-  "ann_basis": "CONVENTION, not a filing date: quarter-end+45d, the default 20,818 of the 21,515 dated pre-2015 cells already carry (runbook \u00a752), FLOORED at the symbol's first traded bar so a pre-listing quarter cannot claim it was public before the company had a tape (\u00a799). Moneycontrol's feed carries no filing date.",
-  "ann_floor": null,
-  "ann_written": 20020214,
-  "applied": "2026-08-26 aggregator pre-2015 std-PAT sweep",
-  "corroborated_by": [],
-  "evidence": "gate A/A2 passed: that site's own patS series reproduces 82 of our stored quarters with zero disagreements in the local window, worst anchor error 0.0300; nearest anchor within 4 quarters",
-  "field": "patS",
-  "fy_check": {
-   "next": {
-    "annual": 37.28,
-    "diff": 4.19,
-    "fy_end": 20030331,
-    "sum4Q": 41.47,
-    "verdict": "RESTATED"
-   },
-   "prev": {
-    "annual": 40.11,
-    "diff": -4.4,
-    "fy_end": 20010331,
-    "sum4Q": 35.71,
-    "verdict": "RESTATED"
-   },
-   "target": {
-    "annual": 30.94,
-    "diff": -0.47,
-    "fy_end": 20020331,
-    "sum4Q": 30.47,
-    "verdict": "OK"
-   }
-  },
-  "precision": "rounded(0.03)",
-  "resolved_via": "symbol",
-  "row_label": "Net Profit/(Loss) For the Period",
-  "site_reach": {
-   "mc": "mc: 117 periods 19970630..20260630"
-  },
-  "src": "moneycontrol quarterly-results API (runbook \u00a781)",
-  "state": "FILLED-ROUNDED",
-  "std": 9.21
- },
  "HEIDELBERG|20000630": {
   "ann_basis": "CONVENTION, not a filing date: quarter-end+45d, the default 20,818 of the 21,515 dated pre-2015 cells already carry (runbook \u00a752), FLOORED at the symbol's first traded bar so a pre-listing quarter cannot claim it was public before the company had a tape (\u00a799). Moneycontrol's feed carries no filing date.",
   "ann_floor": null,
@@ -215913,5 +215702,221 @@
   "src": "moneycontrol quarterly-results API (runbook \u00a781)",
   "state": "FILLED-EXACT",
   "std": 18.64
+ },
+ "HEGAM|19991231": {
+  "ann_basis": "CONVENTION, not a filing date: quarter-end+45d, the default 20,818 of the 21,515 dated pre-2015 cells already carry (runbook \u00a752), FLOORED at the symbol's first traded bar so a pre-listing quarter cannot claim it was public before the company had a tape (\u00a799). Moneycontrol's feed carries no filing date.",
+  "ann_floor": null,
+  "ann_written": 20000214,
+  "applied": "2026-09-05 std-PAT 2002-07 coverage (PLAN_STDPAT_SHP_COVERAGE_2002 WP-P1/P2/P3) \u2014 Moneycontrol GATE E2b",
+  "calibration": "era_calibrate_e2.py hold-out on stored pre-2009 cells (agg_era_gate.py header: maxbad=10/15%, mismatch 1.17%); store holds 0 rows before 2001 so 1999-2000 targets have NO calibration base; archive second reader: 3 overlaps, 3 agree, the rest unevidenced",
+  "corroborated_by": [],
+  "evidence": "GATE E2b (pre-2015, runbook \u00a790): E1 identity -- that site's own pat_total series reproduces 84 of our stored quarters, worst anchor error 0.03, 10 disagreement(s) anywhere and NONE within \u00b16q; nearest anchor 7 quarter(s) from the target. E2 the site's OWN FY quarter-sum identity closes at the target FY (30.39 vs annual 30.39). E3 target and both neighbour periods present. Precision rounded(0.03). E2b: the next FY is RESTATED on the site and did NOT veto -- a neighbour restatement is evidence about the NEIGHBOUR; hold-out calibrated on stored pre-2009 cells, and our store holds 0 rows before 2001, so a target before 2001 has no calibration base.",
+  "field": "patS",
+  "fy_check": {
+   "next": {
+    "annual": 40.11,
+    "diff": -4.4,
+    "fy_end": 20010331,
+    "sum4Q": 35.71,
+    "verdict": "RESTATED"
+   },
+   "prev": {
+    "annual": 36.16,
+    "diff": 0.0,
+    "fy_end": 19990331,
+    "sum4Q": 36.16,
+    "verdict": "OK"
+   },
+   "target": {
+    "annual": 30.39,
+    "diff": 0.0,
+    "fy_end": 20000331,
+    "sum4Q": 30.39,
+    "verdict": "OK"
+   }
+  },
+  "gate": "E2b",
+  "precision": "rounded(0.03)",
+  "resolved_via": "symbol",
+  "row_label": "Net Profit/(Loss) For the Period",
+  "site_reach": {
+   "mc": "mc: 117 periods 19970630..20260630"
+  },
+  "src": "moneycontrol quarterly-results API (runbook \u00a781)",
+  "state": "FILLED-ROUNDED",
+  "std": 8.08,
+  "rekeyed": "\u00a7199: re-keyed from HEG \u2014 NSE renamed HEG -> HEGAM (symbolchange.csv), the history moved to the new key"
+ },
+ "HEGAM|20000331": {
+  "ann_basis": "CONVENTION, not a filing date: quarter-end+45d, the default 20,818 of the 21,515 dated pre-2015 cells already carry (runbook \u00a752), FLOORED at the symbol's first traded bar so a pre-listing quarter cannot claim it was public before the company had a tape (\u00a799). Moneycontrol's feed carries no filing date.",
+  "ann_floor": null,
+  "ann_written": 20000515,
+  "applied": "2026-09-05 std-PAT 2002-07 coverage (PLAN_STDPAT_SHP_COVERAGE_2002 WP-P1/P2/P3) \u2014 Moneycontrol GATE E2b",
+  "calibration": "era_calibrate_e2.py hold-out on stored pre-2009 cells (agg_era_gate.py header: maxbad=10/15%, mismatch 1.17%); store holds 0 rows before 2001 so 1999-2000 targets have NO calibration base; archive second reader: 3 overlaps, 3 agree, the rest unevidenced",
+  "corroborated_by": [],
+  "evidence": "GATE E2b (pre-2015, runbook \u00a790): E1 identity -- that site's own pat_total series reproduces 84 of our stored quarters, worst anchor error 0.03, 10 disagreement(s) anywhere and NONE within \u00b16q; nearest anchor 6 quarter(s) from the target. E2 the site's OWN FY quarter-sum identity closes at the target FY (30.39 vs annual 30.39). E3 target and both neighbour periods present. Precision rounded(0.03). E2b: the next FY is RESTATED on the site and did NOT veto -- a neighbour restatement is evidence about the NEIGHBOUR; hold-out calibrated on stored pre-2009 cells, and our store holds 0 rows before 2001, so a target before 2001 has no calibration base.",
+  "field": "patS",
+  "fy_check": {
+   "next": {
+    "annual": 40.11,
+    "diff": -4.4,
+    "fy_end": 20010331,
+    "sum4Q": 35.71,
+    "verdict": "RESTATED"
+   },
+   "prev": {
+    "annual": 36.16,
+    "diff": 0.0,
+    "fy_end": 19990331,
+    "sum4Q": 36.16,
+    "verdict": "OK"
+   },
+   "target": {
+    "annual": 30.39,
+    "diff": 0.0,
+    "fy_end": 20000331,
+    "sum4Q": 30.39,
+    "verdict": "OK"
+   }
+  },
+  "gate": "E2b",
+  "precision": "rounded(0.03)",
+  "resolved_via": "symbol",
+  "row_label": "Net Profit/(Loss) For the Period",
+  "site_reach": {
+   "mc": "mc: 117 periods 19970630..20260630"
+  },
+  "src": "moneycontrol quarterly-results API (runbook \u00a781)",
+  "state": "FILLED-ROUNDED",
+  "std": 3.51,
+  "rekeyed": "\u00a7199: re-keyed from HEG \u2014 NSE renamed HEG -> HEGAM (symbolchange.csv), the history moved to the new key"
+ },
+ "HEGAM|20010630": {
+  "ann_basis": "CONVENTION, not a filing date: quarter-end+45d, the default 20,818 of the 21,515 dated pre-2015 cells already carry (runbook \u00a752), FLOORED at the symbol's first traded bar so a pre-listing quarter cannot claim it was public before the company had a tape (\u00a799). Moneycontrol's feed carries no filing date.",
+  "ann_floor": null,
+  "ann_written": 20010814,
+  "applied": "2026-09-05 std-PAT 2002-07 coverage (PLAN_STDPAT_SHP_COVERAGE_2002 WP-P1/P2/P3) \u2014 Moneycontrol GATE E2b",
+  "calibration": "era_calibrate_e2.py hold-out on stored pre-2009 cells (agg_era_gate.py header: maxbad=10/15%, mismatch 1.17%); store holds 0 rows before 2001 so 1999-2000 targets have NO calibration base; archive second reader: 3 overlaps, 3 agree, the rest unevidenced",
+  "corroborated_by": [],
+  "evidence": "GATE E2b (pre-2015, runbook \u00a790): E1 identity -- that site's own pat_total series reproduces 84 of our stored quarters, worst anchor error 0.03, 10 disagreement(s) anywhere and NONE within \u00b16q; nearest anchor 1 quarter(s) from the target. E2 the site's OWN FY quarter-sum identity closes at the target FY (30.47 vs annual 30.94). E3 target and both neighbour periods present. Precision rounded(0.03). E2b: the prev/next FY is RESTATED on the site and did NOT veto -- a neighbour restatement is evidence about the NEIGHBOUR; hold-out calibrated on stored pre-2009 cells, and our store holds 0 rows before 2001, so a target before 2001 has no calibration base.",
+  "field": "patS",
+  "fy_check": {
+   "next": {
+    "annual": 37.28,
+    "diff": 4.19,
+    "fy_end": 20030331,
+    "sum4Q": 41.47,
+    "verdict": "RESTATED"
+   },
+   "prev": {
+    "annual": 40.11,
+    "diff": -4.4,
+    "fy_end": 20010331,
+    "sum4Q": 35.71,
+    "verdict": "RESTATED"
+   },
+   "target": {
+    "annual": 30.94,
+    "diff": -0.47,
+    "fy_end": 20020331,
+    "sum4Q": 30.47,
+    "verdict": "OK"
+   }
+  },
+  "gate": "E2b",
+  "precision": "rounded(0.03)",
+  "resolved_via": "symbol",
+  "row_label": "Net Profit/(Loss) For the Period",
+  "site_reach": {
+   "mc": "mc: 117 periods 19970630..20260630"
+  },
+  "src": "moneycontrol quarterly-results API (runbook \u00a781)",
+  "state": "FILLED-ROUNDED",
+  "std": 9.01,
+  "rekeyed": "\u00a7199: re-keyed from HEG \u2014 NSE renamed HEG -> HEGAM (symbolchange.csv), the history moved to the new key"
+ },
+ "HEGAM|20010930": {
+  "ann_basis": "CONVENTION, not a filing date: quarter-end+45d, the default 20,818 of the 21,515 dated pre-2015 cells already carry (runbook \u00a752), FLOORED at the symbol's first traded bar so a pre-listing quarter cannot claim it was public before the company had a tape (\u00a799). Moneycontrol's feed carries no filing date.",
+  "ann_floor": null,
+  "ann_written": 20011114,
+  "applied": "2026-08-26 aggregator pre-2015 std-PAT sweep",
+  "corroborated_by": [],
+  "evidence": "gate A/A2 passed: that site's own patS series reproduces 82 of our stored quarters with zero disagreements in the local window, worst anchor error 0.0300; nearest anchor within 4 quarters",
+  "field": "patS",
+  "fy_check": {
+   "next": {
+    "annual": 37.28,
+    "diff": 4.19,
+    "fy_end": 20030331,
+    "sum4Q": 41.47,
+    "verdict": "RESTATED"
+   },
+   "prev": {
+    "annual": 40.11,
+    "diff": -4.4,
+    "fy_end": 20010331,
+    "sum4Q": 35.71,
+    "verdict": "RESTATED"
+   },
+   "target": {
+    "annual": 30.94,
+    "diff": -0.47,
+    "fy_end": 20020331,
+    "sum4Q": 30.47,
+    "verdict": "OK"
+   }
+  },
+  "precision": "rounded(0.03)",
+  "resolved_via": "symbol",
+  "row_label": "Net Profit/(Loss) For the Period",
+  "site_reach": {
+   "mc": "mc: 117 periods 19970630..20260630"
+  },
+  "src": "moneycontrol quarterly-results API (runbook \u00a781)",
+  "state": "FILLED-ROUNDED",
+  "std": 9.53,
+  "rekeyed": "\u00a7199: re-keyed from HEG \u2014 NSE renamed HEG -> HEGAM (symbolchange.csv), the history moved to the new key"
+ },
+ "HEGAM|20011231": {
+  "ann_basis": "CONVENTION, not a filing date: quarter-end+45d, the default 20,818 of the 21,515 dated pre-2015 cells already carry (runbook \u00a752), FLOORED at the symbol's first traded bar so a pre-listing quarter cannot claim it was public before the company had a tape (\u00a799). Moneycontrol's feed carries no filing date.",
+  "ann_floor": null,
+  "ann_written": 20020214,
+  "applied": "2026-08-26 aggregator pre-2015 std-PAT sweep",
+  "corroborated_by": [],
+  "evidence": "gate A/A2 passed: that site's own patS series reproduces 82 of our stored quarters with zero disagreements in the local window, worst anchor error 0.0300; nearest anchor within 4 quarters",
+  "field": "patS",
+  "fy_check": {
+   "next": {
+    "annual": 37.28,
+    "diff": 4.19,
+    "fy_end": 20030331,
+    "sum4Q": 41.47,
+    "verdict": "RESTATED"
+   },
+   "prev": {
+    "annual": 40.11,
+    "diff": -4.4,
+    "fy_end": 20010331,
+    "sum4Q": 35.71,
+    "verdict": "RESTATED"
+   },
+   "target": {
+    "annual": 30.94,
+    "diff": -0.47,
+    "fy_end": 20020331,
+    "sum4Q": 30.47,
+    "verdict": "OK"
+   }
+  },
+  "precision": "rounded(0.03)",
+  "resolved_via": "symbol",
+  "row_label": "Net Profit/(Loss) For the Period",
+  "site_reach": {
+   "mc": "mc: 117 periods 19970630..20260630"
+  },
+  "src": "moneycontrol quarterly-results API (runbook \u00a781)",
+  "state": "FILLED-ROUNDED",
+  "std": 9.21,
+  "rekeyed": "\u00a7199: re-keyed from HEG \u2014 NSE renamed HEG -> HEGAM (symbolchange.csv), the history moved to the new key"
  }
 }

@@ -3629,6 +3629,7 @@ Fix sweep (all steps, in order — verify against the LIVE release asset, never 
    Both are fill-only/identity-preferring, so they self-disarm once the bin catches up. **After ANY future
    rename, re-check every bin↔fundamentals join** (`grep -l sf_stock_data.bin scripts/*.py`) — a renamed
    co disappearing is SILENT, there is no error.
+7c. **Re-key every PRICE ledger that names the OLD key, and drop another tape's bars on the NEW key (§199).** `demerger_adj.json` (and any crash/rights/bar-insert row) is keyed by symbol — left on the OLD key it silently no-ops once the merge removes that key, and a feed `noadjust` re-keyed to the NEW symbol then UNDOES the adjustment (HEG 2026-09-07: ×2.80 on every pre-ex bar). If the NEW key holds bars from before its own first NSE session (a §171 BSE prepend: HEGAM), give the merge `{"old": OLD, "new_from": first-own-NSE-session}`; `"name"` sets the register name. The tripwire now judges official pairs on NSE's change date, so such a pair stays flagged.
 8. **Leave alone:** `ipo_base_fills.json` (fill-only reapply → harmless no-op once cells are non-null),
    `_reattr_owners.json` (OLD-key convention), `shp_history.json` (SHP fetcher already migrates),
    stock_data.bin `.NS` series (self-consolidates from the EQUITY_L universe on its own refresh).
@@ -22654,3 +22655,72 @@ index-chart.html "Every member, ever"; ⚠ on rows with an unconfirmed >30 % one
 BSE's captured list to history.json (the record from then on is BSE's own list). OPEN: nightly price refresh of the
 survivorship table (builders read the local bhavcopy cache; CI has none); BSE-only stocks are absent from the backtest engine
 (sf bins are NSE-only) — a BSE SME IPO universe there screens zero names until BSE-only prices+fundamentals join the sf data.
+
+## §199 — TWO STRANDED NSE RENAMES MERGED (HEG→HEGAM, SILLYMONKS→CRESTO) + WHY THE TRIPWIRE LOST HEG: a §171 BSE prepend back-dated the new key (2026-09-27, user: "follow the §30 playbook for both pairs, fix the tripwire gap")
+**NO ASSUMPTIONS, NO GUESSWORK — every value below was measured this session (worktree ~/stocks-wt/rename-heg-cresto, base 47ec00da4).**
+**The pairs (NSE `symbolchange.csv`, both chained by NSE itself: PREVCLOSE on the new symbol's first session = the old symbol's last close):**
+- SILLYMONKS → CRESTO, 10-SEP-2026, "CRESTO TECHNO LIMITED", INE203Y01012 (EQUITY_L; the bin meta of SILLYMONKS has the same). SILLYMONKS
+  EQ last 2026-09-09 close 16.00 → CRESTO 2026-09-10 PREVCLOSE 16.00. CRESTO's only official factor (2020-02-11 ×0.454545) predates the join.
+- HEG → HEGAM, 22-SEP-2026, "HEG Advanced Materials Limited", INE545A01024. HEG went to series BE on the 2026-09-07 graphite demerger
+  (EQ 04-Sep close 728.25 → BE 07-Sep open 260.00 close 272.20) and traded as HEG through 21-Sep (BE close 248.50) → HEGAM EQ 22-Sep
+  PREVCLOSE 248.50. **Not a new ISIN** (§141d said it was): BSE's own bhavcopy prints 509631 HEG LTD as INE545A01016 up to 2024-10-17 and
+  INE545A01024 from 2024-10-18, the 1:5 split's ex-date. Our bin meta for HEG still held the pre-split INE545A01016.
+**Live before the fix (measured ~19:00 IST):** `stk/HEGAM.json` 13 bars from 2026-09-08, name "HEGAM", ind Unknown, while `stk/HEG.json` kept
+the 6,456-bar history (alive). `fin/HEGAM.json`: fund 1 · revop 1 · x 1 · shpH 9 · no kpi (HEG: 97 · 92 · 79 · 102 · shpGov 20 · kpi).
+`fin/CRESTO.json`: fund 3 · revop 3 · shpH 2 · no x (SILLYMONKS: 24 · 24 · 24 · 24). FUND_ALIAS and `_rename_map` had neither pair, so the
+engine also read no old-name fundamentals or shareholding for either.
+**Why the tripwire "missed" HEG (it didn't — it lost it).** `_rename_suspects.json` carried HEG→HEGAM on the 22, 23, 24 and 25-Sep runs.
+On 26-Sep the §171 main-board prepend (6e693f9aa) added a `bse_sme_prepend` block for HEGAM: 9 BSE bars 20260908→20260921 (scrip 509631,
+"truncated after unconfirmed move 20260907"). §171 matches a BSE series to the NSE symbol by EXACT ISIN — INE545A01024 resolved to HEGAM
+(EQUITY_L no longer lists HEG; HEG's meta ISIN was the stale pre-split one), and HEGAM's NSE tape "started later" than BSE's. The block put
+BSE closes (238.55 / 247.85 on 18/21-Sep vs NSE's 237.05 / 248.50) on dates NSE printed under HEG and moved HEGAM's first bar before HEG's
+last, so `detect_renames` branch (a) — `old_last < new_first` — went false. The same run dropped AMIRCHAND→AEROPLANE and ASHIKA→ASHIKAG
+(both official pairs whose new keys also got §171 blocks). Two more causes that apply to every current rename: NSE's
+`sec_bhavdata_full` has no ISIN column, so a day-one row never carries one and the same-ISIN auto-merge in `update_sf_data.py` cannot fire
+(HEGAM's meta ISIN came from the §171 block's meta); and a meta ISIN is never refreshed after a face-value split.
+**What landed (§30 steps, both pairs):**
+- `update_sf_data.py` MANUAL_MERGE: `"CRESTO": {"old": "SILLYMONKS", "name": ...}`, `"HEGAM": {"old": "HEG", "new_from": 20260922, "name": ...}`.
+  New spec keys: `new_from` drops the NEW key's bars dated before its own first NSE session while the OLD series still exists (the 9 BSE
+  bars), so HEG's NSE bars take those dates; `name` sets NSE's register name (EQUITY_L) at the merge — the stub/old metas said "HEGAM" /
+  "SILLYMONKS". adj = 1 for both (every official factor on the new keys predates the joins).
+- `demerger_adj.json`: the §170 row ["HEG", 20260907, 0.357, 0.3738] → "HEGAM". ⚠️ Without it the merge would UNDO the demerger
+  adjustment: `corp_actions.json` files the 2026-09-07 `noadjust` under HEGAM (the feed re-keys to the current symbol), self_heal finds no
+  ledger factor for HEGAM on that bar and, whenever NSE's archive answers (raw_close follows `_rename_map` to HEG's rows), computes
+  correct_f = 1.0 → rescales every pre-ex bar ×2.80 (1/0.357). **After any rename, re-key every price ledger that names the OLD key** (demerger_adj,
+  crash_raw_prices, rights, bar_inserts…): MANUAL_DEMERGERS is keyed by symbol and silently no-ops on a key that left the bin.
+- `bse_sme_prepend.json.gz`: HEGAM block removed. `sme_backfill.json.gz`: SILLYMONKS' SME-era block (312 bars 2018-01-18→2020-07-02,
+  anchor 20200708) now targets CRESTO (§197 WORTH→WORTHPERI precedent) — a from-scratch rebuild merges first, then prepends onto CRESTO.
+- `symchg.csv` refreshed from NSE (+14 rows, additions only). `_rename_map.json` += HEG→HEGAM, SILLYMONKS→CRESTO. `check_fund_alias.py
+  --write` (SF_BIN = the merged dry-run bin; report: missing exactly these 2, 0 conflicts) → FUND_ALIAS 629 entries, both twins
+  byte-identical, `node --check` OK; sw CACHE bumped. `apply_owners_full.py` ALIAS += both. `bse_scrips.json` by_id HEG → HEGAM (509631).
+- Fundamentals key-move (`sf_fundamentals`, `fundamentals`, `sf_revop`, `revop_fundamentals`), OLD rows win slot by slot, **0 value
+  conflicts**: HEG's Jun-26 row equals HEGAM's in both served stores (revop_fundamentals: HEGAM's Jun-26 kept, HEG lacked it). CRESTO:
+  Mar-26 same values, ann OLD 20260530 kept (the filing is `SILLYMONKS_30052026171038_Outcome.pdf`; CRESTO's copy said 20260601);
+  Dec-25 con PAT −0.67 / con revenue kept from CRESTO's IPO-base backfill (read from that Mar-26 filing's comparative column) — its
+  stored ann 20260214 was carried as it was, NOT verified. Each store's diff = exactly the 4 keys.
+- Fill/heal ledgers re-keyed HEG → HEGAM (§197's method, `rekey_ledgers`): every file `verify_fills_live` registers + `revop_cell_fix.json` (a LIST replayed nightly by `apply_revop_cell_fix.py` — an absent sym is "cell-absent", so left on HEG its two §108 Dec-2015 corrections would silently stop protecting HEGAM's cells). 43 entries in 7 files (agg_cell_fills 19, agg_pat_cell_fills 5, conpat_filing_fills 6, mc_history_fills 4, mc_quarterly_fills 3, op_slot_corrections 4, revop_cell_fix 2), each tagged `rekeyed`; none for SILLYMONKS. Without it the key-move read **MISSING 37** in `verify_fills_live` (BLOCKING in refresh-fundamentals); after: 0.
+- `kpi_insights/HEG.json` → `HEGAM.json` (5 metrics, 15 documents) replacing the routine's empty "no BSE scrip code" placeholder (the
+  routine walks the latest N500 roster, which lists HEGAM, and finds the code via by_id). **Left alone (§30 step 8 + later practice):**
+  `shp_history.json` / `xbrl_extra.json.gz` (served through `build_stock_fin`'s §176 former-symbol fold, same as GUJGASLTD/MIRCELECTR —
+  the fold only works once the OLD key has no overlapping fund quarter, which the key-move ensures; HEGAM's 9 SHP rows are HEG's quarters — 8 identical, 2025-12-31 differs in the 4th decimal, visibility dates 0-7 days apart — and win on overlap),
+  `ipo_base_fills.json`, `_reattr_owners.json`. F&O history: neither symbol in any snapshot.
+- Tripwire: `detect_renames.py` branch (a) judges official pairs on NSE's change DATE — both keys in the bin, change within WINDOW_NEW,
+  OLD's last bar < change date ≤ NEW's last bar — and notes how many bars the new key holds before that date. The early exit on "no new
+  series" is gone (a long prepend makes the new key not "new"). On the pre-merge live bin it flags HEG→HEGAM (9 bars before), SILLYMONKS→
+  CRESTO, AMIRCHAND→AEROPLANE (72), ASHIKA→ASHIKAG (850), **MANBRO→KDGREEN (889 — never flagged before)**, SANGINITA→AGASTYAEN, KEL→VISDEM,
+  plus the old name-match SABEVENTS→SAB. Branch (b) (name match) still compares tape starts.
+- `build_bse_sme_prepend.py` RENAME GUARD: a candidate that is the NEW symbol of a `symchg.csv` pair whose OLD symbol traded on NSE within
+  45 days of the change date is refused ("a §30 MANUAL_MERGE, not a later listing"). Existing blocks are untouched.
+**Verification (release asset end 2026-09-25, `~/stocks-cache/qm-recon-tools/dry_main.py`, NSE archive stubbed = CI):** baseline vs fixed
+bins differ in exactly 4 data keys + 4 meta keys (HEG/HEGAM/SILLYMONKS/CRESTO); every other symbol identical. HEGAM = HEG's 6,456 bars
+(byte-equal) + its own 4 NSE bars; 2026-09-04→07 still 259.97→272.20 (the 0.357 demerger factor kept); join 248.50→232.90. CRESTO =
+SILLYMONKS' 1,844 bars + 11; join 16.00→16.01. Metas: "HEG Advanced Materials Limited" / "CRESTO TECHNO LIMITED". `test_no_ca_inference.py`
+ALL PASS. `scan_bse_alias_collisions.py`: 12 collisions, 0 new (neither old ticker is a BSE-only company). `build_stock_fin.py --out`
+(scratch): HEGAM fund 97 · revop 92 · shpH 102 · shpGov 20 · x 79 · kpi; CRESTO fund 24 · revop 24 · shpH 26 · x 24.
+**Open (measured, not fixed here):** (1) AMIRCHAND→AEROPLANE, ASHIKA→ASHIKAG, MANBRO→KDGREEN carry prepended bars before their change
+dates — each needs its own §30 sweep with `new_from` = the new key's first OWN NSE session (read the bhavcopy; the tripwire's `newFirst`
+is only the first bar on/after the change date); SANGINITA→AGASTYAEN and KEL→VISDEM are still unmerged; SABEVENTS→SAB is a name match only.
+(2) CRESTO@20200211: official ×0.454545 vs the boundary the bin bakes 0.5026 (Silly Monks SME era; NSE SM 10-Feb-2020 close 85.00, next
+trade 19-Feb-2020 44.00 with PREVCLOSE 85.00) — now visible to self_heal's old-factor check under CRESTO ("matches neither"), left for a
+human; the bars themselves are unchanged by the merge. (3) An in-flight CI run whose base still held HEG/SILLYMONKS can re-add those keys
+through `ci_preserve_merge.py` (a row origin lacks = "CI's row wins") — re-verify the stores ~20 min after the push.

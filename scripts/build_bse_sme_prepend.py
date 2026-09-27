@@ -18,6 +18,11 @@ the NSE series must start exactly on a BSE trading day (same-day anchor). Existi
 group), matched to the NSE symbol by EXACT ISIN, else by issuer (isin[:7]) when exactly one BSE equity scrip carries
 it; every gate above applies unchanged. Blocks land in the same ledger (note says "BSE main board").
 
+RENAME GUARD (§199): an NSE symbol change is not a later listing. The NEW symbol of a scripts/symchg.csv pair whose OLD
+symbol traded on NSE within 45 days of the change date starts a fresh-looking tape (HEGAM 2026-09-22), but NSE printed
+the company under the OLD symbol all along — a BSE block would re-print those sessions from another exchange and put
+bars in front of the new key (which also blinded detect_renames). Refused; that pair is a §30 MANUAL_MERGE.
+
 Run: python3 -X utf8 scripts/build_bse_sme_prepend.py --tape docs/sf_stock_data.bin [--only SYM,…] [--mainboard] [--dry]
 """
 import os, sys, io, csv, json, gzip, zipfile, datetime
@@ -106,12 +111,29 @@ def main():
             if e and e["d"] and bs["d"][0] < e["d"][0]:
                 BS[code] = bs; isin2sym.setdefault(i, sym)
         print("mainboard: %d BSE series in the cache, %d start before their NSE symbol's tape" % (len(allser), len(BS)))
+    # §199 rename guard: new symbol -> [(old symbol, change date)] from NSE's symbol-change master
+    ren = {}
+    mon = {m: i + 1 for i, m in enumerate(("JAN", "FEB", "MAR", "APR", "MAY", "JUN", "JUL", "AUG", "SEP", "OCT", "NOV", "DEC"))}
+    try:
+        for r in csv.reader(open(os.path.join(HERE, "symchg.csv"), encoding="utf-8", errors="replace")):
+            c = [x.strip() for x in r]
+            if len(c) >= 4 and c[1] and c[2] and len(c[3].split("-")) == 3 and c[3].split("-")[1].upper() in mon:
+                dd, mm, yy = c[3].split("-")
+                ren.setdefault(c[2].upper(), []).append((c[1].upper(), int(yy) * 10000 + mon[mm.upper()] * 100 + int(dd)))
+    except OSError as ex:
+        sys.exit("ABORT: scripts/symchg.csv unreadable (%s) — the rename guard cannot run" % ex)
+    def _od(y): return datetime.date(y // 10000, y // 100 % 100, y % 100).toordinal()
     cand = {}
     for code, bs in BS.items():
         sym = isin2sym.get(bs.get("isin")) or code2sym.get(code)
         e = T["data"].get(sym) if sym else None
         if not e or not e["d"] or bs["d"][0] >= e["d"][0]: continue
         if only and sym not in only: continue
+        prev = [(o, dch) for o, dch in ren.get(sym, ()) if (T["data"].get(o) or {}).get("d")
+                and 0 <= _od(dch) - _od(T["data"][o]["d"][-1]) <= 45]
+        if prev:
+            print("  SKIP %-12s NSE rename %s -> %s on %d: the company traded on NSE as %s — a §30 MANUAL_MERGE, not a "
+                  "later listing (§199)" % (sym, prev[0][0], sym, prev[0][1], prev[0][0])); continue
         ni, bi = nse_isin.get(sym, ""), bs.get("isin", "")
         if not ni or not bi or ni[:7] != bi[:7]:
             print("  SKIP %-12s identity: NSE ISIN %s vs BSE %s ISIN %s" % (sym, ni or "unknown", code, bi or "unknown")); continue

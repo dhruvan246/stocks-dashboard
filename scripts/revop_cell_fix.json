@@ -4263,23 +4263,25 @@
    "found": "vintage108 sweep 2026-08-24 (NSE dual-vintage + provenance + detres)"
   },
   {
-   "sym": "HEG",
+   "sym": "HEGAM",
    "qe": "20151231",
    "basis": "ebit_std",
    "was": null,
    "fixed": 19.22,
    "why": "Runbook §108 restated-comparative vintage. NSE's results archive holds two filings of this quarter: the ORIGINAL, filed 20160201 (Non-Ind-AS, seq 1004365), operating profit 19.22 cr, and a RESTATEMENT filed 20170211 (Ind-AS, seq 1018963), operating profit 19.73 cr — the stored value. Our ann date for the cell is 20160127, 381 days BEFORE that restatement was filed, so the stored figure was not public on the date the cell claims.",
    "found": "vintage108 sweep 2026-08-24 (NSE dual-vintage + provenance + detres)",
-   "retargeted": "2026-09-05 op-slot heal (runbook §129g): this corrected value is the after-depreciation SEBI subtotal (= this dataset's ebit), so it now lives in ebit_std (slot 7); opS was re-derived as ebit + depreciation or gated from Moneycontrol (see op_slot_corrections.json). was=None: the ebit slot was empty."
+   "retargeted": "2026-09-05 op-slot heal (runbook §129g): this corrected value is the after-depreciation SEBI subtotal (= this dataset's ebit), so it now lives in ebit_std (slot 7); opS was re-derived as ebit + depreciation or gated from Moneycontrol (see op_slot_corrections.json). was=None: the ebit slot was empty.",
+   "rekeyed": "§199: re-keyed from HEG — NSE renamed HEG -> HEGAM (symbolchange.csv), the history moved to the new key"
   },
   {
-   "sym": "HEG",
+   "sym": "HEGAM",
    "qe": "20151231",
    "basis": "std",
    "was": 200.63,
    "fixed": 178.59,
    "why": "Runbook §108 restated-comparative vintage. NSE's results archive holds two filings of this quarter: the ORIGINAL, filed 20160201 (Non-Ind-AS, seq 1004365), revenue from operations 178.59 cr, and a RESTATEMENT filed 20170211 (Ind-AS, seq 1018963), revenue from operations 200.63 cr — the stored value. Our ann date for the cell is 20160127, 381 days BEFORE that restatement was filed, so the stored figure was not public on the date the cell claims.",
-   "found": "vintage108 sweep 2026-08-24 (NSE dual-vintage + provenance + detres)"
+   "found": "vintage108 sweep 2026-08-24 (NSE dual-vintage + provenance + detres)",
+   "rekeyed": "§199: re-keyed from HEG — NSE renamed HEG -> HEGAM (symbolchange.csv), the history moved to the new key"
   },
   {
    "sym": "HEIDELBERG",

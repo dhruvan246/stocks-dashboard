@@ -1634,7 +1634,20 @@ def main():
                     # 2019-08-05 PREVCLOSE 64.50 (INE985W01018; -> CNL). No successor factor after either SME end (CNL's
                     # 2019-06-25 x0.5 is already inside the fragment's own adjustment), so adj = 1.
                     "WORTHPERI": "WORTH",
-                    "CNL": "CREATIVE"}
+                    "CNL": "CREATIVE",
+                    # --- 2026-09-27 (DATA_RUNBOOK §30 / §199): two stranded NSE renames, symbolchange.csv pairs that NSE
+                    # chains itself (PREVCLOSE on the new symbol's first session == the old symbol's last close), ISIN
+                    # unchanged. SILLYMONKS last 2026-09-09 16.00 -> CRESTO 2026-09-10 PREVCLOSE 16.00 (INE203Y01012);
+                    # CRESTO's only official factor (2020-02-11 x0.4545) predates the join -> adj = 1.
+                    # "name" = NSE's current register name (EQUITY_L), set once at the merge: the stub meta says "CRESTO"
+                    # and the old meta says "SILLYMONKS" — both tickers, not a company name.
+                    "CRESTO": {"old": "SILLYMONKS", "name": "CRESTO TECHNO LIMITED"},
+                    # HEG (series BE since the 2026-09-07 graphite demerger) last 2026-09-21 248.50 -> HEGAM 2026-09-22
+                    # PREVCLOSE 248.50 (INE545A01024 = HEG's ISIN since the 2024-10-18 1:5 split; the bin meta still held
+                    # the pre-split INE545A01016). HEGAM's official factor (2024-10-18 x0.2) predates the join -> adj = 1.
+                    # new_from: HEGAM's bars before 20260922 are BSE 509631's (the §171 prepend of 2026-09-26) for sessions
+                    # NSE printed under HEG — they are dropped and HEG's own NSE bars take those dates.
+                    "HEGAM": {"old": "HEG", "new_from": 20260922, "name": "HEG Advanced Materials Limited"}}
     # --- 2026-08-23 ISIN-SEAM batch (DATA_RUNBOOK §95g's open queue, landed in §105): the 103 seams
     # the issuer-prefix sweep CONFIRMED as one company (scripts/_isin_seam_verdicts.json) were never
     # stitched because the ISIN CHANGED at each seam (face-value change, scheme) — the auto-merge must
@@ -1693,6 +1706,16 @@ def main():
         old = spec["old"] if isinstance(spec, dict) else spec
         seam = float(spec.get("seam", 1.0)) if isinstance(spec, dict) else 1.0
         on = data.get(new); oo = data.get(old)
+        # "new_from" (§199): bars the NEW key holds from before its own first NSE session came from another tape (HEGAM:
+        # a §171 BSE prepend over sessions NSE printed under HEG). Dropped while the OLD series still exists, so the OLD
+        # series' NSE bars take those dates; once the merge has run the OLD key is gone and this never fires again.
+        nf = int(spec.get("new_from") or 0) if isinstance(spec, dict) else 0
+        if nf and on and oo and on["d"] and oo["d"] and on["d"][0] < nf:
+            k = sum(1 for dd in on["d"] if dd < nf)
+            for f in ("d", "c", "t", "h", "l", "op", "v", "dv", "vw"):
+                if f in on: on[f] = on[f][k:]
+            print("  MANUAL RENAME MERGE %s -> %s: dropped %d bar(s) of %s dated before %d (not %s's own NSE tape)"
+                  % (old, new, k, new, nf, new))
         if on and oo and on["d"] and oo["d"] and oo["d"][0] < on["d"][0]:
             idx = [i for i, dd in enumerate(oo["d"]) if dd < on["d"][0]]
             if idx:
@@ -1719,6 +1742,7 @@ def main():
                 if nm.get("name") in (None, new) and om.get("name"): nm["name"] = om["name"]
                 if nm.get("ind") in (None, "Unknown") and om.get("ind"): nm["ind"] = om["ind"]
                 if not nm.get("isin") and om.get("isin"): nm["isin"] = om["isin"]
+                if isinstance(spec, dict) and spec.get("name"): nm["name"] = spec["name"]   # §199: register name at the rename
                 # repoint the ISIN index at the survivor so same-ISIN auto-merge protection covers
                 # any FUTURE rename of this security within the same run (the index was built from
                 # pre-merge meta and would otherwise still point at the just-deleted old symbol)

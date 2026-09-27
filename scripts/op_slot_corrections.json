@@ -29872,86 +29872,6 @@
   "op_class": "derived:stored-ebit+MC-dep (company check (ii) exact, worst 0.01 on 15 rows)",
   "precision": "site-exact"
  },
- "HEG|20150630": {
-  "applied": "2026-09-05 op-slot heal",
-  "company_check_depreciation": "exact",
-  "company_check_depreciation_worst": 0.01,
-  "company_check_detail": {
-   "depreciation": "34/34 rows agree (worst 0.01)",
-   "ebit_convention": "34/34 rows agree (worst 0.01)"
-  },
-  "company_check_ebit_convention": "exact",
-  "company_check_rows": 34,
-  "ebitS": 4.19,
-  "ebit_class": "moved:exact-convention-match",
-  "evidence": "stored opS 4.19 equals MC standalone 'P/L Before Other Inc., Int., Excpt. Items & Tax' 4.19 for this quarter (after-depreciation EBIT); ebitS slot was empty; runbook \u00a7129b/\u00a7129g",
-  "mc_dep": 18.86,
-  "mc_ebit_pre": 4.19,
-  "opS": 23.05,
-  "opS_was": 4.19,
-  "op_class": "derived:stored-ebit+MC-dep (company check (ii) exact, worst 0.01 on 34 rows)",
-  "precision": "site-exact"
- },
- "HEG|20150930": {
-  "applied": "2026-09-05 op-slot heal",
-  "company_check_depreciation": "exact",
-  "company_check_depreciation_worst": 0.01,
-  "company_check_detail": {
-   "depreciation": "34/34 rows agree (worst 0.01)",
-   "ebit_convention": "34/34 rows agree (worst 0.01)"
-  },
-  "company_check_ebit_convention": "exact",
-  "company_check_rows": 34,
-  "ebitS": 33.3,
-  "ebit_class": "moved:exact-convention-match",
-  "evidence": "stored opS 33.3 equals MC standalone 'P/L Before Other Inc., Int., Excpt. Items & Tax' 33.3 for this quarter (after-depreciation EBIT); ebitS slot was empty; runbook \u00a7129b/\u00a7129g",
-  "mc_dep": 20.19,
-  "mc_ebit_pre": 33.3,
-  "opS": 53.49,
-  "opS_was": 33.3,
-  "op_class": "derived:stored-ebit+MC-dep (company check (ii) exact, worst 0.01 on 34 rows)",
-  "precision": "site-exact"
- },
- "HEG|20151231": {
-  "applied": "2026-09-05 op-slot heal",
-  "company_check_depreciation": "exact",
-  "company_check_depreciation_worst": 0.01,
-  "company_check_detail": {
-   "depreciation": "34/34 rows agree (worst 0.01)",
-   "ebit_convention": "34/34 rows agree (worst 0.01)"
-  },
-  "company_check_ebit_convention": "exact",
-  "company_check_rows": 34,
-  "ebitS": 19.22,
-  "ebit_class": "moved:exact-convention-match",
-  "evidence": "stored opS 19.22 equals MC standalone 'P/L Before Other Inc., Int., Excpt. Items & Tax' 19.22 for this quarter (after-depreciation EBIT); ebitS slot was empty; runbook \u00a7129b/\u00a7129g",
-  "mc_dep": 20.12,
-  "mc_ebit_pre": 19.22,
-  "opS": 39.34,
-  "opS_was": 19.22,
-  "op_class": "derived:stored-ebit+MC-dep (company check (ii) exact, worst 0.01 on 34 rows)",
-  "precision": "site-exact"
- },
- "HEG|20160331": {
-  "applied": "2026-09-05 op-slot heal",
-  "company_check_depreciation": "exact",
-  "company_check_depreciation_worst": 0.01,
-  "company_check_detail": {
-   "depreciation": "34/34 rows agree (worst 0.01)",
-   "ebit_convention": "34/34 rows agree (worst 0.01)"
-  },
-  "company_check_ebit_convention": "exact",
-  "company_check_rows": 34,
-  "ebitS": -11.49,
-  "ebit_class": "moved:exact-convention-match",
-  "evidence": "stored opS -11.49 equals MC standalone 'P/L Before Other Inc., Int., Excpt. Items & Tax' -11.49 for this quarter (after-depreciation EBIT); ebitS slot was empty; runbook \u00a7129b/\u00a7129g",
-  "mc_dep": 20.05,
-  "mc_ebit_pre": -11.49,
-  "opS": 8.56,
-  "opS_was": -11.49,
-  "op_class": "derived:stored-ebit+MC-dep (company check (ii) exact, worst 0.01 on 34 rows)",
-  "precision": "site-exact"
- },
  "HEIDELBERG|20160331": {
   "applied": "2026-09-05 op-slot heal",
   "company_check_depreciation": "exact",
@@ -75733,5 +75653,89 @@
   "op_class": "derived:stored-ebit+MC-dep (company check (ii) exact, worst 0.0 on 30 rows)",
   "precision": "site-exact"
  },
- "_doc": "Corrections for the EBIT-in-op-slot class (runbook \u00a7129b/\u00a7129g): the stored opS was the after-depreciation SEBI subtotal (= MC 'P/L Before Other Inc., Int., Excpt. Items & Tax'). ebitS = that value where the company's ebit convention matches; opS = gate-E value, or stored+MC depreciation where the company's own 2018+ rows prove that derivation, else nulled and HELD (opS_refused must stay absent). Applied by agg_tools/apply_op_slot_heal.py."
+ "_doc": "Corrections for the EBIT-in-op-slot class (runbook \u00a7129b/\u00a7129g): the stored opS was the after-depreciation SEBI subtotal (= MC 'P/L Before Other Inc., Int., Excpt. Items & Tax'). ebitS = that value where the company's ebit convention matches; opS = gate-E value, or stored+MC depreciation where the company's own 2018+ rows prove that derivation, else nulled and HELD (opS_refused must stay absent). Applied by agg_tools/apply_op_slot_heal.py.",
+ "HEGAM|20150630": {
+  "applied": "2026-09-05 op-slot heal",
+  "company_check_depreciation": "exact",
+  "company_check_depreciation_worst": 0.01,
+  "company_check_detail": {
+   "depreciation": "34/34 rows agree (worst 0.01)",
+   "ebit_convention": "34/34 rows agree (worst 0.01)"
+  },
+  "company_check_ebit_convention": "exact",
+  "company_check_rows": 34,
+  "ebitS": 4.19,
+  "ebit_class": "moved:exact-convention-match",
+  "evidence": "stored opS 4.19 equals MC standalone 'P/L Before Other Inc., Int., Excpt. Items & Tax' 4.19 for this quarter (after-depreciation EBIT); ebitS slot was empty; runbook \u00a7129b/\u00a7129g",
+  "mc_dep": 18.86,
+  "mc_ebit_pre": 4.19,
+  "opS": 23.05,
+  "opS_was": 4.19,
+  "op_class": "derived:stored-ebit+MC-dep (company check (ii) exact, worst 0.01 on 34 rows)",
+  "precision": "site-exact",
+  "rekeyed": "\u00a7199: re-keyed from HEG \u2014 NSE renamed HEG -> HEGAM (symbolchange.csv), the history moved to the new key"
+ },
+ "HEGAM|20150930": {
+  "applied": "2026-09-05 op-slot heal",
+  "company_check_depreciation": "exact",
+  "company_check_depreciation_worst": 0.01,
+  "company_check_detail": {
+   "depreciation": "34/34 rows agree (worst 0.01)",
+   "ebit_convention": "34/34 rows agree (worst 0.01)"
+  },
+  "company_check_ebit_convention": "exact",
+  "company_check_rows": 34,
+  "ebitS": 33.3,
+  "ebit_class": "moved:exact-convention-match",
+  "evidence": "stored opS 33.3 equals MC standalone 'P/L Before Other Inc., Int., Excpt. Items & Tax' 33.3 for this quarter (after-depreciation EBIT); ebitS slot was empty; runbook \u00a7129b/\u00a7129g",
+  "mc_dep": 20.19,
+  "mc_ebit_pre": 33.3,
+  "opS": 53.49,
+  "opS_was": 33.3,
+  "op_class": "derived:stored-ebit+MC-dep (company check (ii) exact, worst 0.01 on 34 rows)",
+  "precision": "site-exact",
+  "rekeyed": "\u00a7199: re-keyed from HEG \u2014 NSE renamed HEG -> HEGAM (symbolchange.csv), the history moved to the new key"
+ },
+ "HEGAM|20151231": {
+  "applied": "2026-09-05 op-slot heal",
+  "company_check_depreciation": "exact",
+  "company_check_depreciation_worst": 0.01,
+  "company_check_detail": {
+   "depreciation": "34/34 rows agree (worst 0.01)",
+   "ebit_convention": "34/34 rows agree (worst 0.01)"
+  },
+  "company_check_ebit_convention": "exact",
+  "company_check_rows": 34,
+  "ebitS": 19.22,
+  "ebit_class": "moved:exact-convention-match",
+  "evidence": "stored opS 19.22 equals MC standalone 'P/L Before Other Inc., Int., Excpt. Items & Tax' 19.22 for this quarter (after-depreciation EBIT); ebitS slot was empty; runbook \u00a7129b/\u00a7129g",
+  "mc_dep": 20.12,
+  "mc_ebit_pre": 19.22,
+  "opS": 39.34,
+  "opS_was": 19.22,
+  "op_class": "derived:stored-ebit+MC-dep (company check (ii) exact, worst 0.01 on 34 rows)",
+  "precision": "site-exact",
+  "rekeyed": "\u00a7199: re-keyed from HEG \u2014 NSE renamed HEG -> HEGAM (symbolchange.csv), the history moved to the new key"
+ },
+ "HEGAM|20160331": {
+  "applied": "2026-09-05 op-slot heal",
+  "company_check_depreciation": "exact",
+  "company_check_depreciation_worst": 0.01,
+  "company_check_detail": {
+   "depreciation": "34/34 rows agree (worst 0.01)",
+   "ebit_convention": "34/34 rows agree (worst 0.01)"
+  },
+  "company_check_ebit_convention": "exact",
+  "company_check_rows": 34,
+  "ebitS": -11.49,
+  "ebit_class": "moved:exact-convention-match",
+  "evidence": "stored opS -11.49 equals MC standalone 'P/L Before Other Inc., Int., Excpt. Items & Tax' -11.49 for this quarter (after-depreciation EBIT); ebitS slot was empty; runbook \u00a7129b/\u00a7129g",
+  "mc_dep": 20.05,
+  "mc_ebit_pre": -11.49,
+  "opS": 8.56,
+  "opS_was": -11.49,
+  "op_class": "derived:stored-ebit+MC-dep (company check (ii) exact, worst 0.01 on 34 rows)",
+  "precision": "site-exact",
+  "rekeyed": "\u00a7199: re-keyed from HEG \u2014 NSE renamed HEG -> HEGAM (symbolchange.csv), the history moved to the new key"
+ }
 }
