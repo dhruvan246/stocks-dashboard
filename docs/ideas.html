@@ -44,6 +44,73 @@
                                 background: var(--surface-2); color: inherit; color-scheme: light dark; }
     .daypick button { font-size: 11px; padding: 2px 8px; border-radius: 999px; border: 1px solid var(--border); background: var(--surface-2); }
     .daypick button.on { background: var(--accent); color: #fff; border-color: var(--accent); }
+
+    /* ---- research-note typography (md() output) ---- */
+    .note { font-size: 14px; line-height: 1.6; }
+    .note p { margin: 8px 0; }
+    .note ul, .note ol { padding-left: 1.3rem; margin: 6px 0 10px; }
+    .note ul { list-style: disc; } .note ol { list-style: decimal; }
+    .note li { margin: 3px 0; }
+    .note li::marker { color: var(--text-muted); }
+    .note b { font-weight: 650; }
+    .note code { font-family: var(--mono, ui-monospace, monospace); font-size: 12px; padding: 1px 5px; border-radius: 5px; background: var(--surface-3, var(--surface-2)); border: 1px solid var(--border); }
+    .note a { color: var(--accent); text-decoration: underline; text-underline-offset: 2px; }
+    .note .md-h { font-size: 13px; font-weight: 700; text-transform: uppercase; letter-spacing: .04em; color: var(--text-muted); margin: 14px 0 4px; }
+    .note .lead { margin-top: 14px; }
+    .md-tw { overflow-x: auto; margin: 10px 0 14px; border: 1px solid var(--border); border-radius: 10px; background: var(--surface, transparent); }
+    table.md { width: 100%; border-collapse: collapse; font-size: 13px; font-variant-numeric: tabular-nums; }
+    table.md th, table.md td { padding: 7px 10px; border-bottom: 1px solid var(--border); text-align: left; vertical-align: top; }
+    table.md th { font-size: 11.5px; font-weight: 600; letter-spacing: .02em; color: var(--text-muted); background: var(--surface-2); white-space: nowrap; }
+    table.md tbody tr:last-child td { border-bottom: 0; }
+    table.md tbody tr:nth-child(even) td { background: color-mix(in srgb, var(--surface-2) 55%, transparent); }
+    table.md td.n, table.md th.n { text-align: right; white-space: nowrap; }
+    table.md td.c, table.md th.c { text-align: center; }
+    table.md td:first-child { font-weight: 500; }
+
+    /* ---- idea card ---- */
+    .idea { padding: 0; overflow: hidden; }
+    .idea .ihead { padding: 16px 18px 12px; border-bottom: 1px solid var(--border); }
+    .idea h3 { font-size: 1.15rem; font-weight: 700; line-height: 1.3; }
+    .tick { font-family: var(--mono, ui-monospace, monospace); font-size: 11px; font-weight: 600; padding: 2px 7px; border-radius: 6px; border: 1px solid var(--border); color: var(--text-muted); vertical-align: 2px; margin-left: 4px; }
+    .tag { font-size: 10.5px; font-weight: 600; letter-spacing: .03em; padding: 2px 7px; border-radius: 6px; background: var(--accent-soft, var(--surface-2)); color: var(--accent); vertical-align: 2px; margin-left: 4px; }
+    .imeta { font-size: 12px; color: var(--text-muted); margin-top: 4px; display: flex; flex-wrap: wrap; gap: 4px 12px; }
+    .kpis { display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); gap: 1px; background: var(--border); border-bottom: 1px solid var(--border); }
+    .kpis > div { background: var(--surface-2); padding: 10px 14px; }
+    .kpis .k { font-size: 10.5px; text-transform: uppercase; letter-spacing: .05em; color: var(--text-muted); }
+    .kpis .v { font-size: 15px; font-weight: 650; font-variant-numeric: tabular-nums; margin-top: 2px; }
+    .kpis .d { font-size: 11px; color: var(--text-muted); }
+    @media (max-width: 640px) { .kpis { grid-template-columns: repeat(2, minmax(0, 1fr)); } }
+    .ibody { padding: 14px 18px 16px; }
+    .trig { font-size: 13px; line-height: 1.5; padding: 10px 12px; border-radius: 10px; background: var(--surface); border: 1px solid var(--border); border-left: 3px solid var(--accent); }
+    .clamp { position: relative; max-height: var(--cap, 620px); overflow: hidden; }
+    .clamp::after { content: ''; position: absolute; left: 0; right: 0; bottom: 0; height: 90px; background: linear-gradient(to bottom, transparent, var(--surface-2)); pointer-events: none; }
+    .more { font-size: 12.5px; font-weight: 600; color: var(--accent); margin-top: 6px; }
+    .isec { border-top: 1px solid var(--border); }
+    .isec > summary { list-style: none; display: flex; align-items: center; justify-content: space-between; padding: 11px 18px; font-size: 13.5px; font-weight: 600; }
+    .isec > summary::-webkit-details-marker { display: none; }
+    .isec > summary::after { content: '+'; font-weight: 400; font-size: 18px; line-height: 1; color: var(--text-muted); }
+    .isec[open] > summary::after { content: '−'; }
+    .isec > summary:hover { background: var(--surface); }
+    .isec > .note { padding: 0 18px 14px; }
+    .ifoot { border-top: 1px solid var(--border); padding: 10px 18px; font-size: 12px; color: var(--text-muted); display: flex; flex-wrap: wrap; gap: 4px 14px; }
+    .conf { font-weight: 600; text-transform: capitalize; }
+    .conf.high { color: var(--pos, #16a34a); } .conf.medium { color: var(--warn, #ca8a04); } .conf.low { color: var(--neg, #dc2626); }
+    .srcl { counter-reset: s; list-style: none !important; padding-left: 0 !important; }
+    .srcl li { counter-increment: s; padding-left: 28px; position: relative; }
+    .srcl li::before { content: counter(s); position: absolute; left: 0; top: 1px; font-size: 10.5px; color: var(--text-muted); width: 20px; text-align: right; font-variant-numeric: tabular-nums; }
+    .seg .cnt { opacity: .65; margin-left: 4px; font-variant-numeric: tabular-nums; }
+
+    /* ---- page-level summary strip + tables ---- */
+    .stats { display: grid; grid-template-columns: repeat(5, minmax(0, 1fr)); gap: 10px; }
+    .stats > div { background: var(--surface-2); border: 1px solid var(--border); border-radius: 12px; padding: 12px 14px; }
+    .stats .k { font-size: 11px; text-transform: uppercase; letter-spacing: .05em; color: var(--text-muted); }
+    .stats .v { font-size: 20px; font-weight: 700; font-variant-numeric: tabular-nums; margin-top: 2px; }
+    .stats .d { font-size: 11.5px; color: var(--text-muted); }
+    @media (max-width: 760px) { .stats { grid-template-columns: repeat(2, minmax(0, 1fr)); } .stats > div:last-child { grid-column: 1 / -1; } }
+    table.sw { font-variant-numeric: tabular-nums; }
+    table.sw td.n, table.sw th.n { text-align: right; }
+    table.sw tbody tr:hover td { background: var(--surface); }
+    .sechead { display: flex; flex-wrap: wrap; align-items: baseline; justify-content: space-between; gap: 6px 12px; margin-bottom: 4px; }
   </style>
 </head>
 <body>
@@ -62,6 +129,7 @@
     <div id="meta" class="text-sm muted"></div>
   </div>
   <p class="disc mb-5">Research notes, not investment advice. Each number carries a source link; where a datum could not be found the note says "unknown" rather than guessing. Small caps in this band are thinly traded: the scorecard measures closing prices, not what a real order would have achieved.</p>
+  <div id="stats" class="stats mb-8"></div>
 
   <section id="govt" class="mb-8" data-jump="Government">
     <div class="flex flex-wrap items-baseline justify-between gap-2 mb-1">
@@ -93,7 +161,7 @@
       <span id="day-chips"></span>
     </div>
     <p id="day-note" class="muted text-sm mb-3" hidden></p>
-    <div id="ideas-list" class="grid gap-4 md:grid-cols-2"></div>
+    <div id="ideas-list" class="grid gap-5"></div>
   </section>
 
   <section id="run" class="mb-8" data-jump="Last run">
@@ -105,7 +173,7 @@
   <section id="track" class="mb-8" data-jump="Scorecard">
     <h2 class="text-lg font-semibold mb-1">Scorecard</h2>
     <p id="track-summary" class="muted text-sm mb-3"></p>
-    <div class="card"><table class="sw" id="track-table"><thead><tr><th>Idea</th><th>Called</th><th>Call close</th><th>Now</th><th>Return</th><th>Best close</th><th>Peak</th><th>Days</th></tr></thead><tbody></tbody></table></div>
+    <div class="card"><table class="sw" id="track-table"><thead><tr><th>Idea</th><th>Called</th><th class="n">Call close</th><th class="n">Now</th><th class="n">Return</th><th class="n">Best close</th><th class="n">Peak</th><th class="n">Days</th></tr></thead><tbody></tbody></table></div>
   </section>
 
   <section id="scan" class="mb-8" data-jump="Scan">
@@ -140,16 +208,60 @@
   const esc = (s) => String(s == null ? '' : s).replace(/[&<>"']/g, (c) => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
   const fmt = (x, d = 1) => (x == null || isNaN(x)) ? '—' : Number(x).toLocaleString('en-IN', { maximumFractionDigits: d });
   const pct = (x) => (x == null || isNaN(x)) ? '—' : `<span class="${x >= 0 ? 'pos' : 'neg'}">${x >= 0 ? '+' : ''}${fmt(x)}%</span>`;
-  const md = (s) => {
-    // minimal markdown: paragraphs, bullets, bold
-    const lines = String(s || '').split('\n');
-    let html = '', inList = false;
-    for (let l of lines) {
-      l = esc(l).replace(/\*\*(.+?)\*\*/g, '<b>$1</b>');
-      if (/^\s*[-*] /.test(l)) { if (!inList) { html += '<ul>'; inList = true; } html += `<li>${l.replace(/^\s*[-*] /, '')}</li>`; }
-      else { if (inList) { html += '</ul>'; inList = false; } if (l.trim()) html += `<p>${l}</p>`; }
+  // Research-note markdown: paragraphs, bullet and numbered lists, pipe tables, ### headings,
+  // **bold**, *italic*, `code` and [links](https://...). Everything is escaped first; only these
+  // constructs become HTML. A table's numeric columns are right-aligned.
+  const inl = (t) => esc(t)
+    .replace(/`([^`]+)`/g, '<code>$1</code>')
+    .replace(/\*\*(.+?)\*\*/g, '<b>$1</b>')
+    .replace(/(^|[^*\w])\*(?=\S)([^*]+?)\*(?![\w*])/g, '$1<i>$2</i>')
+    .replace(/\[([^\]]+)\]\((https?:\/\/[^\s)]+)\)/g, '<a href="$2" target="_blank" rel="noopener">$1</a>');
+  const cellsOf = (l) => l.trim().replace(/^\|/, '').replace(/\|$/, '').split('|').map(c => c.trim());
+  const isNum = (t) => /^[\s(+\-−–~≈<>]*(?:Rs\.?|₹|US\$|\$)?\s*[\d][\d,.]*\s*(?:%|x|×|cr|lakh|L|pp|bn|mn|k|MT|MW|units?|days?)?\)?\s*(?:[-–—→\/]\s*[\d][\d,.]*\s*(?:%|x|×|cr)?)?\s*$/i.test(t.replace(/<[^>]+>|\*\*/g, ''));
+  const table = (rows) => {
+    const head = cellsOf(rows[0]);
+    const spec = cellsOf(rows[1]).map(c => /^:-+:$/.test(c) ? 'c' : /-:$/.test(c) ? 'n' : /^:-/.test(c) ? 'l' : '');
+    const body = rows.slice(2).map(cellsOf);
+    const al = head.map((_, j) => {
+      if (spec[j]) return spec[j] === 'l' ? '' : spec[j];
+      if (j === 0) return '';
+      const vals = body.map(r => r[j] || '').filter(v => v && v !== '—' && v !== '-');
+      return vals.length && vals.filter(isNum).length >= vals.length * 0.6 ? 'n' : '';
+    });
+    const td = (tag, c, j) => `<${tag}${al[j] ? ` class="${al[j]}"` : ''}>${inl(c)}</${tag}>`;
+    return `<div class="md-tw"><table class="md"><thead><tr>${head.map((c, j) => td('th', c, j)).join('')}</tr></thead><tbody>${
+      body.map(r => `<tr>${head.map((_, j) => td('td', r[j] || '', j)).join('')}</tr>`).join('')}</tbody></table></div>`;
+  };
+  const md = (src) => {
+    const L = String(src || '').replace(/\r/g, '').split('\n');
+    const isRow = (l) => /^\s*\|.*\|\s*$/.test(l);
+    const isSep = (l) => /^\s*\|?\s*:?-{2,}:?\s*(\|\s*:?-{2,}:?\s*)*\|?\s*$/.test(l || '');
+    let html = '', i = 0;
+    while (i < L.length) {
+      const l = L[i];
+      if (!l.trim()) { i++; continue; }
+      if (isRow(l) && isSep(L[i + 1])) {
+        const rows = [l, L[i + 1]]; i += 2;
+        while (i < L.length && isRow(L[i])) rows.push(L[i++]);
+        html += table(rows); continue;
+      }
+      let m = l.match(/^\s*#{1,6}\s+(.*)$/);
+      if (m) { html += `<h4 class="md-h">${inl(m[1])}</h4>`; i++; continue; }
+      if (/^\s*[-*•]\s+/.test(l)) {
+        html += '<ul>';
+        while (i < L.length && /^\s*[-*•]\s+/.test(L[i])) html += `<li>${inl(L[i++].replace(/^\s*[-*•]\s+/, ''))}</li>`;
+        html += '</ul>'; continue;
+      }
+      m = l.match(/^\s*(\d+)[.)]\s+/);
+      if (m) {
+        html += `<ol start="${m[1]}">`;
+        while (i < L.length && /^\s*\d+[.)]\s+/.test(L[i])) html += `<li>${inl(L[i++].replace(/^\s*\d+[.)]\s+/, ''))}</li>`;
+        html += '</ol>'; continue;
+      }
+      // a paragraph that is only a bold lead-in ("**Growth.**") opens a sub-section
+      html += /^\s*\*\*[^*]+\*\*\s*$/.test(l) ? `<p class="lead">${inl(l)}</p>` : `<p>${inl(l)}</p>`;
+      i++;
     }
-    if (inList) html += '</ul>';
     return html;
   };
   let latest = null, ideas = null, track = null, scan = null, run = null;
@@ -202,7 +314,7 @@
     if (/^(earn)/.test(t)) return 'earnings';
     return 'filing';
   };
-  const LANE_LABEL = { govt: 'Government', price: 'Commodity', filing: 'Filing', earnings: 'Earnings', sme: 'SME' };
+  const LANE_LABEL = { govt: 'Government', price: 'Commodity', filing: 'Filing', earnings: 'Earnings', sme: 'SME deep-dive' };
 
   // ---- government announcements that cleared the bar ----
   if (govt) {
@@ -286,7 +398,7 @@
   (track && track.rows || []).forEach(r => { trackBy[r.idea_id] = r; });
   const all = (ideas && ideas.ideas || []).slice().sort((a, b) => (b.date || '').localeCompare(a.date || ''));
   let LANE = '', DAY = '';
-  const renderIdeas = () => {
+  let renderIdeas = () => {
     list.innerHTML = '';
     const onDay = all.filter(it => !DAY || it.date === DAY);
     const show = onDay.filter(it => !LANE || laneOf(it) === LANE);
@@ -299,6 +411,17 @@
     }
     for (const it of show) drawIdea(it);
   };
+  const _renderIdeas = renderIdeas;
+  renderIdeas = () => { _renderIdeas(); laneCounts(); };
+  const laneCounts = () => {
+    const onDay = all.filter(it => !DAY || it.date === DAY);
+    document.querySelectorAll('#lane button').forEach(b => {
+      const n = onDay.filter(it => !b.dataset.v || laneOf(it) === b.dataset.v).length;
+      let c = b.querySelector('.cnt');
+      if (!c) { c = document.createElement('span'); c.className = 'cnt'; b.appendChild(c); }
+      c.textContent = n;
+    });
+  };
   $('#lane').addEventListener('click', (e) => {
     const b = e.target.closest('button'); if (!b) return;
     LANE = b.dataset.v;
@@ -307,29 +430,76 @@
   });
   function drawIdea(it) {
     const t = trackBy[it.id] || {};
-    const el = document.createElement('div');
+    const priced = t.status === 'ok';
+    const lane = laneOf(it);
+    const conf = String(it.confidence || '');
+    const cm = conf.match(/^\s*(high|medium|low)\s*[:—-]\s*/i);
+    const confLevel = cm ? cm[1].toLowerCase() : '';
+    const confText = cm ? conf.slice(cm[0].length) : conf;
+    const trig = String(it.trigger || '').replace(/^\s*(sme|price|filing|govt|earnings?|commodity)\s*:\s*/i, '');
+    const sec = (key, label) => it[key] ? `<details class="isec"><summary>${label}</summary><div class="note">${md(it[key])}</div></details>` : '';
+    const kpi = (k, v, d) => `<div><div class="k">${k}</div><div class="v">${v}</div>${d ? `<div class="d">${d}</div>` : ''}</div>`;
+    const el = document.createElement('article');
     el.className = 'card idea';
     el.innerHTML = `
-      <div class="flex justify-between items-start gap-2">
-        <div><h3>${esc(it.name)} <span class="muted text-sm">${esc(it.ticker || '')}${it.nse ? ' · NSE ' + esc(it.nse) : ''}</span></h3>
-        <div class="muted text-xs">${esc(it.date)} · mcap ₹${fmt(it.mcap, 0)} cr · ${esc(it.industry || '')}${it.sme ? ' · SME' : ''}</div></div>
-        <div class="text-right text-sm">${t.status === 'ok' ? `since call ${pct(t.ret_pct)}<br><span class="muted text-xs">peak ${pct(t.peak_pct)}</span>` : ''}</div>
+      <div class="ihead">
+        <div class="flex justify-between items-start gap-3">
+          <div class="min-w-0">
+            <h3>${esc(it.name)}<span class="tick">${esc(it.ticker || it.scrip || '')}</span>${it.sme && lane !== 'sme' ? '<span class="tag">SME</span>' : ''}</h3>
+            <div class="imeta"><span>Published ${esc(it.date)}</span><span>Mcap ₹${fmt(it.mcap, 0)} cr</span>${it.industry ? `<span>${esc(it.industry)}</span>` : ''}${it.nse ? `<span>NSE ${esc(it.nse)}</span>` : ''}<span>BSE ${esc(it.scrip || '')}</span></div>
+          </div>
+          <span class="lane ${lane}">${esc(LANE_LABEL[lane])}</span>
+        </div>
       </div>
-      <div class="mt-2"><span class="lane ${laneOf(it)}">${esc(LANE_LABEL[laneOf(it)])}</span> <span class="text-sm">${esc(it.trigger)}</span></div>
-      <div class="thesis text-sm mt-2">${md(it.thesis)}</div>
-      ${it.model ? `<details class="mt-2 text-sm"><summary class="font-semibold">Model</summary><div class="mt-1">${md(it.model)}</div></details>` : ''}
-      ${it.valuation ? `<details class="mt-1 text-sm"><summary class="font-semibold">Valuation</summary><div class="mt-1">${md(it.valuation)}</div></details>` : ''}
-      ${it.red_flags ? `<details class="mt-1 text-sm"><summary class="font-semibold">Red flags and risks</summary><div class="mt-1">${md(it.red_flags)}</div></details>` : ''}
-      ${it.verify ? `<details class="mt-1 text-sm"><summary class="font-semibold">Still to verify</summary><div class="mt-1">${md(it.verify)}</div></details>` : ''}
-      ${it.unknowns ? `<details class="mt-1 text-sm"><summary class="font-semibold">Unknowns</summary><div class="mt-1">${md(it.unknowns)}</div></details>` : ''}
-      <details class="mt-1 text-sm src"><summary class="font-semibold">Sources (${(it.sources || []).length})</summary><ul class="mt-1">${(it.sources || []).map(s => `<li><a href="${esc(s.url)}" target="_blank" rel="noopener">${esc(s.title)}</a></li>`).join('')}</ul></details>
-      <div class="muted text-xs mt-2">Call close ₹${fmt(it.call_close, 2)} on ${esc(it.call_date)} · confidence ${esc(it.confidence || '')}</div>`;
+      <div class="kpis">
+        ${kpi('Call close', '₹' + fmt(it.call_close, 2), esc(it.call_date))}
+        ${priced ? kpi('Latest close', '₹' + fmt(t.last_close, 2), esc(t.last_date) + (t.stale ? ' · stale' : '')) : kpi('Latest close', '—', 'not scored yet')}
+        ${priced ? kpi('Since call', pct(t.ret_pct), t.days + ' day' + (t.days === 1 ? '' : 's')) : kpi('Since call', '—', '')}
+        ${priced ? kpi('Best close', pct(t.peak_pct), '₹' + fmt(t.peak_close, 2) + ' · ' + esc(t.peak_date)) : kpi('Best close', '—', '')}
+      </div>
+      <div class="ibody">
+        <div class="trig"><span class="muted text-xs font-semibold" style="text-transform:uppercase;letter-spacing:.05em">Trigger</span><br>${inl(trig)}</div>
+        <div class="note thesis mt-3">${md(it.thesis)}</div>
+      </div>
+      ${sec('model', 'Model')}${sec('valuation', 'Valuation')}${sec('red_flags', 'Red flags and risks')}${sec('verify', 'Still to verify')}${sec('unknowns', 'Unknowns')}
+      <details class="isec"><summary>Sources (${(it.sources || []).length})</summary><div class="note"><ol class="srcl">${(it.sources || []).map(s => `<li><a href="${esc(s.url)}" target="_blank" rel="noopener">${esc(s.title)}</a></li>`).join('')}</ol></div></details>
+      <div class="ifoot">${confLevel ? `<span>Confidence <span class="conf ${confLevel}">${confLevel}</span></span>` : ''}${confText ? `<span>${esc(confText)}</span>` : ''}</div>`;
     list.appendChild(el);
+    // Long theses open clamped with a fade; one click shows the whole note.
+    const th = el.querySelector('.thesis');
+    requestAnimationFrame(() => {
+      // Clamp below the first table so a note's headline numbers are never hidden behind the fold.
+      const t1 = th.querySelector('.md-tw');
+      const cap = Math.max(620, t1 ? t1.offsetTop - th.offsetTop + t1.offsetHeight + 60 : 0);
+      if (th.scrollHeight <= cap + 200) return;
+      th.style.setProperty('--cap', cap + 'px');
+      th.classList.add('clamp');
+      const btn = document.createElement('button');
+      btn.type = 'button'; btn.className = 'more'; btn.textContent = 'Read the full thesis ↓';
+      btn.addEventListener('click', () => {
+        const open = th.classList.toggle('clamp');
+        btn.textContent = open ? 'Read the full thesis ↓' : 'Show less ↑';
+        if (open) el.scrollIntoView({ block: 'start', behavior: 'smooth' });
+      });
+      th.after(btn);
+    });
   }
   renderIdeas();
 
   // scorecard
   const ts = track && track.summary || {};
+  {
+    const st = (k, v, d) => `<div><div class="k">${k}</div><div class="v">${v}</div>${d ? `<div class="d">${d}</div>` : ''}</div>`;
+    const nIdeas = all.length;
+    const nSme = all.filter(it => it.sme).length;
+    const best = (track && track.rows || []).filter(r => r.status === 'ok').sort((a, b) => (b.ret_pct || 0) - (a.ret_pct || 0))[0];
+    $('#stats').innerHTML =
+      st('Ideas published', fmt(nIdeas, 0), `${nSme} SME · ${fmt(nIdeas - nSme, 0)} main board`) +
+      st('Scored', fmt(ts.count || 0, 0), track ? `updated ${esc(track.updated || '')}` : 'no scorecard yet') +
+      st('Median return', ts.count ? pct(ts.median_ret) : '—', ts.count ? `${ts.up} of ${ts.count} above call price` : '') +
+      st('Best since call', best ? pct(best.ret_pct) : '—', best ? esc(best.name || best.ticker) : '') +
+      st('Last research run', latest ? esc(dayOf(latest.updated) || latest.scan_date || '—') : '—', latest ? `${fmt(latest.universe, 0)} names in universe` : '');
+  }
   const trackRows = (track && track.rows || []).filter(r => r.status === 'ok');
   const nStale = trackRows.filter(r => r.stale).length;
   $('#track-summary').textContent = ts.count
@@ -349,7 +519,7 @@
     if (r.stale) tr.className = 'is-stale';
     const flag = r.stale ? ` <span class="pill" title="${esc(r.stale_reason || '')}">stale</span>`
       : (r.source === 'bhavcopy' ? ` <span class="pill" title="${esc(r.adj_note || '')}">bhavcopy</span>` : '');
-    tr.innerHTML = `<td>${esc(r.name || r.ticker)}${flag}</td><td>${esc(r.call_date)}</td><td>${fmt(r.call_close, 2)}</td><td>${fmt(r.last_close, 2)} <span class="muted">${esc(r.last_date || '')}</span></td><td>${pct(r.ret_pct)}</td><td>${fmt(r.peak_close, 2)} <span class="muted">${esc(r.peak_date)}</span></td><td>${pct(r.peak_pct)}</td><td>${r.days}</td>`;
+    tr.innerHTML = `<td>${esc(r.name || r.ticker)}${flag}</td><td>${esc(r.call_date)}</td><td class="n">${fmt(r.call_close, 2)}</td><td class="n">${fmt(r.last_close, 2)} <span class="muted">${esc(r.last_date || '')}</span></td><td class="n">${pct(r.ret_pct)}</td><td class="n">${fmt(r.peak_close, 2)} <span class="muted">${esc(r.peak_date)}</span></td><td class="n">${pct(r.peak_pct)}</td><td class="n">${r.days}</td>`;
     tb.appendChild(tr);
   });
 

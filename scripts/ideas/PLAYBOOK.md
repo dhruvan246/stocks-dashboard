@@ -186,6 +186,12 @@ These are working constants, not facts about any particular company; always pref
 ```
 `call_date` is the scan date; `call_close` is that day's BSE close from the scan file. The scorecard measures from there.
 
+Markdown the page renders (docs/ideas.html `md()`): paragraphs, `- ` bullets, `1. ` numbered lists, `### ` sub-headings,
+`**bold**`, `*italic*`, `` `code` ``, `[text](https://…)` links, and **pipe tables** (header row + `|---|` separator row;
+`---:` right-aligns a column, and numeric columns right-align on their own). Put every multi-period or multi-company
+comparison (growth by year, half-years, balance sheet, peers, valuation multiples) in a table, never in prose.
+Optional `"lane": "sme"` files an on-request SME deep-dive under the page's SME tab.
+
 ## Hard rules
 
 - Numbers only from documents read in this run or from the exchange data files the scripts produced. If a filing is
