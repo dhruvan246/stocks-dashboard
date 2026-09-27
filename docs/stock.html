@@ -308,6 +308,28 @@ function noSymbol(){
    Current-only sections (activity, peers, strategies, technicals with tail-limited inputs)
    hide rather than silently show today's data. */
 let ASOF=null;
+/* BSE SME IPO chip (runbook §195). BSE-only slices (SLICE.bse) carry no index chips, so the page asks BSE's own list:
+   the current constituents (bse_sme_ipo/members.json, 31 KB) on the live view, the dated history (history.json) when
+   rewound. Only on a BSE-only page — a BSE id equal to an unrelated NSE symbol must never borrow the chip (§76). */
+let SMEIPO_M=null, SMEIPO_H=null, SMEIPO_SEQ=0;
+function smeIpoChip(dayISO, rewound){
+  const seq=++SMEIPO_SEQ;                 // only the LATEST render may paint: a live render's fetch can land after a
+  if(!(SLICE&&SLICE.bse)) return;          // rewind re-render and would chip a date the stock was not yet in the index
+  const tk=TKR, key=tk+'.BO';
+  const p=rewound
+    ? (SMEIPO_H||(SMEIPO_H=fetch('./bse_sme_ipo/history.json').then(r=>r.ok?r.json():null).catch(()=>null)))
+    : (SMEIPO_M||(SMEIPO_M=fetch('./bse_sme_ipo/members.json',{cache:'no-store'}).then(r=>r.ok?r.json():null).catch(()=>null)));
+  p.then(j=>{
+    if(!j||TKR!==tk||seq!==SMEIPO_SEQ) return;
+    let has=false;
+    if(rewound){ const s=(j['BSE SME IPO']||[]).filter(x=>x.effectiveDate<=dayISO).pop(); has=!!(s&&s.symbols.indexOf(key)>=0); }
+    else has=(j.members||[]).some(m=>m.sym===key);
+    const el=$('sChips'); if(!el||!has||el.querySelector('[data-smeipo]')) return;
+    const chip='<a data-smeipo href="./index-chart.html?ix=smeipo" title="A constituent of BSE\'s SME IPO index — open the index" '+
+      'class="text-[10px] font-semibold bg-amber-50 text-amber-700 px-2 py-0.5 rounded-full hover:underline">BSE SME IPO</a>';
+    if(/Not in any tracked index/.test(el.textContent)) el.innerHTML=chip; else el.insertAdjacentHTML('beforeend',chip);
+  });
+}
 const asofYmd=()=>ASOF==null?99999999:+isoOff(ASOF).replace(/-/g,'');
 
 const EV_TYPES={R:['Results','#6366f1'],D:['Dividend','#f59e0b'],C:['Corp action','#8b5cf6'],K:['Deals','#0ea5e9'],I:['Insider','#14b8a6'],T:['Triggers','#f43f5e']};
@@ -612,6 +634,7 @@ function render(){
   }
   $('sChips').innerHTML=(fno?`<span class="text-[10px] font-bold bg-indigo-50 text-indigo-700 px-2 py-0.5 rounded-full">F&amp;O</span>`:'')+
     chips.map(c=>`<span class="text-[10px] font-semibold bg-slate-100 text-slate-600 px-2 py-0.5 rounded-full">${esc(c)}</span>`).join('')||'<span class="text-[11px] text-slate-400">Not in any tracked index currently.</span>';
+  smeIpoChip(today, !!rw);
   // next result date + latest results-filing PDF (daily slice; absent on the fallback path)
   const meta2=[];
   if(SLICE&&SLICE.nr) meta2.push(`<span>🗓️ Next result: <b>${esc(SLICE.nr)}</b></span>`);

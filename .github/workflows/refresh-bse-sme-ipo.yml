@@ -14,6 +14,8 @@ on:
   push:
     paths:
       - "scripts/fetch_bse_sme_ipo.py"
+      - "scripts/bse_sme_ipo_px.py"
+      - "scripts/build_bse_sme_ipo_survivorship.py"
       - ".github/workflows/refresh-bse-sme-ipo.yml"
 
 permissions:
@@ -27,7 +29,7 @@ concurrency:
 jobs:
   refresh:
     runs-on: ubuntu-latest
-    timeout-minutes: 15
+    timeout-minutes: 30
     steps:
       - uses: actions/checkout@v5
       - uses: actions/setup-python@v6
@@ -36,6 +38,14 @@ jobs:
 
       - name: Fetch the official level + member list
         run: python3 -X utf8 scripts/fetch_bse_sme_ipo.py
+
+      # Every-member table (index-chart.html): append the BSE bhavcopies published since the ledger's last day
+      # (1-2 files, one request at a time), then rebuild the table. Non-fatal: a failed download keeps yesterday's
+      # prices and says so in the log — membership above is independent of it.
+      - name: Refresh the member price ledger + every-member table
+        run: |
+          python3 -X utf8 scripts/bse_sme_ipo_px.py update || echo "::warning::BSE bhavcopy update failed — member table keeps its previous prices"
+          python3 -X utf8 scripts/build_bse_sme_ipo_survivorship.py
 
       - name: Guard — refuse to commit a broken or shrunken feed
         run: python3 scripts/guard_feed.py
@@ -49,12 +59,14 @@ jobs:
           rm -rf /tmp/smeipo && mkdir -p /tmp/smeipo
           cp docs/bse_sme_ipo.json /tmp/smeipo/
           cp -r docs/bse_sme_ipo /tmp/smeipo/dir
+          cp scripts/bse_sme_ipo_px.json.gz docs/survivorship/bsesmeipo.json /tmp/smeipo/
           for attempt in 1 2 3 4 5; do
             git fetch origin main
             git reset --hard origin/main
             cp /tmp/smeipo/bse_sme_ipo.json docs/bse_sme_ipo.json
             mkdir -p docs/bse_sme_ipo && cp -r /tmp/smeipo/dir/. docs/bse_sme_ipo/
-            git add docs/bse_sme_ipo.json docs/bse_sme_ipo
+            cp /tmp/smeipo/bse_sme_ipo_px.json.gz scripts/ && cp /tmp/smeipo/bsesmeipo.json docs/survivorship/
+            git add docs/bse_sme_ipo.json docs/bse_sme_ipo scripts/bse_sme_ipo_px.json.gz docs/survivorship/bsesmeipo.json
             if git diff --cached --quiet; then echo "unchanged"; echo "changed=false" >> "$GITHUB_OUTPUT"; exit 0; fi
             git commit -m "BSE SME IPO index refresh $(TZ=Asia/Kolkata date +'%Y-%m-%d %H:%M IST')"
             if git push origin HEAD:main; then echo "changed=true" >> "$GITHUB_OUTPUT"; exit 0; fi

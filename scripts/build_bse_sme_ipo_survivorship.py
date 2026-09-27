@@ -11,7 +11,8 @@ built from:
   index level docs/bse_sme_ipo.json px (BSE's official closes)
 sym = the BSE scrip id (stock.html?sym=<id> serves BSE-only names from their slices). status: in (member on dataEnd) /
 out (left, still trading within 30 days of dataEnd) / dead (left, no trade in the last 30 days) / untraced (no series).
-Run: BSE_BHAV_CACHE=~/stocks-cache/bse_bhav python3 scripts/build_bse_sme_ipo_survivorship.py
+Run: python3 scripts/build_bse_sme_ipo_survivorship.py            (prices from scripts/bse_sme_ipo_px.json.gz — CI)
+     BSE_BHAV_CACHE=~/stocks-cache/bse_bhav python3 scripts/build_bse_sme_ipo_survivorship.py --cache
 """
 import os, sys, json, bisect, datetime, math
 HERE = os.path.dirname(os.path.abspath(__file__)); sys.path.insert(0, HERE)
@@ -52,7 +53,11 @@ def main():
     ld = sorted(I(k) for k in lvl); lv = [lvl[S(k)] for k in ld]
     uni = {str(r[0]): r for r in json.load(open(os.path.join(DOCS, "bse_universe.json")))["rows"]}
     codes = {s["code"] for s in stints}
-    ser, _, _ = BB.build_series(codes)
+    if "--cache" in sys.argv:                     # local: straight from ~/stocks-cache/bse_bhav
+        ser, _, _ = BB.build_series(codes)
+    else:                                         # default (CI): the repo's price ledger, refreshed nightly
+        import bse_sme_ipo_px as PX
+        ser, _ = PX.series(codes)
     data_end = max(max(s["d"]) for s in ser.values())
 
     def at_or_after(s, k):

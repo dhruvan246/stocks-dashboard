@@ -199,6 +199,13 @@ def build_series(codes=None):
             s["d"].append(k); s["rc"].append(c); s["isd"].append(isin); s["v"].append(v); s["g"].append(g)
             if isin: s["isin"] = isin
             s["tk"] = tk or s["tk"]
+    return adjust_series(ser), len(days), dropped
+
+
+def adjust_series(ser):
+    """In place: add c (adjusted close), splits, unexpl, first_sme, last_sme to each series {d, rc, isd, v, g, isin, tk};
+    drops isd/g. Shared by build_series() and scripts/bse_sme_ipo_px.py (the BSE SME IPO price ledger) so the two
+    can never adjust differently."""
     # ADJUSTMENT (measured 2026-09-23): BSE's PREVCLOSE is NEVER ex-adjusted in these files (0 of 198 one-day
     # drops >30% carried an adjusted prev close), so it cannot find corporate actions. What IS reliable:
     #   * a face-value SPLIT changes the ISIN on the ex-date (INA 24-Jan-2025 INE0LGX01016 -> ...01024, 2,940.2 ->
@@ -228,7 +235,7 @@ def build_series(codes=None):
         del s["isd"], s["g"]
     print("adjust: %d ISIN-confirmed splits applied, %d unexplained one-day drops >30%% flagged (bonus or crash — "
           "needs BSE corporate actions)" % (n_split, n_unexpl))
-    return ser, len(days), dropped
+    return ser
 
 
 if __name__ == "__main__":

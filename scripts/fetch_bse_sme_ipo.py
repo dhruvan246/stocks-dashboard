@@ -165,6 +165,29 @@ def fetch_members():
                 json.dump(h, f, separators=(",", ":"))
             os.replace(hp + ".tmp", hp)
             print("history: snapshot %s (%d members) %s" % (asof, len(syms), "replaced" if asof == last["effectiveDate"] else "appended"))
+    # stints (the every-member table's membership): open a stint for a code that appears on BSE's list, close the open
+    # stint of a code that left it — dated by the list's own Date, source "official list"
+    sp = os.path.join(DIR, "stints.json")
+    sj = load(sp, None)
+    if sj and sj.get("stints") is not None:
+        st = sj["stints"]
+        cur = {m["code"]: m for m in mem}
+        open_ = {x["code"]: x for x in st if x.get("join") and x.get("leave") is None}
+        changed = 0
+        for code, m in cur.items():
+            if code not in open_:
+                st.append({"code": code, "id": (m["sym"] or "")[:-3] or None, "isin": m["isin"], "name": m["name"],
+                           "status": "Active", "listing": None, "join": asof, "leave": None,
+                           "join_src": "official list " + asof, "leave_src": None, "from_start": False})
+                changed += 1
+        for code, x in open_.items():
+            if code not in cur and x["join"] < asof:
+                x["leave"], x["leave_src"] = asof, "official list " + asof
+                changed += 1
+        if changed:
+            sj["updated"] = datetime.datetime.now().strftime("%Y-%m-%dT%H:%M:%S")
+            dump(sp, sj)
+            print("stints: %d change(s) from the %s list" % (changed, asof))
 
 
 def _num(v):
