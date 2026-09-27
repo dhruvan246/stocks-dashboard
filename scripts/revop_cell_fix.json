@@ -14481,6 +14481,46 @@
    "was": 59.47,
    "fixed": 70.19,
    "why": "§70 PAT mirror sync to the owners-basis heal of sf_fundamentals npCon (G1 2026-09-03). Q3FY18 consolidated P&L (BSE 7b04de95...): Owners 7,019L + NCI (1,074)L = 5,945L total; std 94.66 reproduced."
+  },
+  {
+   "sym": "PAYTM",
+   "qe": "20220630",
+   "basis": "con",
+   "was": 3535.28,
+   "fixed": 1679.6,
+   "why": "PAYTM consolidated Q1FY23 revenue from operations. The stored 3,535.28 came from annual_derived_fills (Screener FY23 7,990 minus the three stored quarters) at a time when Dec-22 held the 1/100 XBRL value 206.22 (scale_fix k=-1, runbook §184a), so ~1,856 cr of Dec-22 revenue was pushed into Jun-22. PRIMARY: the company's own Jun-22 consolidated XBRL on BSE (Main_Ind_As_543396_58202221213.xml, filed 2022-08-08, Status New) RevenueFromOperations 16,796,000,000 = 1,679.60 cr (owners PAT -644.40 = our stored npCon). THREE MORE filings agree exactly: Sep-22 con H1 3,593.6 - Q2 1,914.0 = 1,679.6; Dec-22 con 9M 565.58 x10 - 1,914.0 - 2,062.2 = 1,679.6; Mar-23 con FY 7,990.3 - 1,914.0 - 2,062.2 - 2,334.5 = 1,679.6. Runbook §184b.",
+   "wrong_value_class": "derived fill poisoned by a neighbouring scale error (NOT scale itself); no NSE Jun-22 con XBRL in the cache",
+   "found": "scale_fix batch-2 FY identity, 2026-09-27 (2026-09-27 14:09 IST)"
+  },
+  {
+   "sym": "CAPLIPOINT",
+   "qe": "20201231",
+   "basis": "con",
+   "was": 123.16,
+   "fixed": 274.39,
+   "why": "CAPLIPOINT consolidated Q3FY21. The ORIGINAL consolidated XBRL (NSE INDAS_67068_402274_04022021072232, filed 2021-02-04) carries the STANDALONE figures verbatim (revenue 123.16, 9M 359.80, PAT 41.48 = the std filing INDAS_67093 to the paisa), so every con slot of this row was a copy of std. The company's REVISED consolidated XBRL (NSE INDAS_67360_403477_08022021110948, filed 2021-02-08; copy in ~/stocks-wt/eps-block/scripts/_xbrl_fill/) carries the real consolidated statement: revenue 274.39, 9M 782.58, owners PAT 64.46 (= the npCon already healed in owners_basis_heals), NCI 1.68. SECOND, INDEPENDENT source: the Mar-21 consolidated filing INDAS_69734_446285_07052021013808 -- FY21 revenue 1,061.29 minus Jun-20 240.08, Sep-20 268.12, Mar-21 278.71 = 274.38; FY21 op 328.64 minus 71.60 + 87.43 + 85.69 = 83.92. The revised filing's own 9M closes too (revenue 240.08 + 268.12 + 274.39 = 782.59 vs 782.58; op 242.96 vs 242.94). op = PBEIT 80.20 + finance cost 0.28 + D&A 9.27 - other income 5.82; ebit = op - D&A. BSE lists the quarter but links no XBRL file. Runbook §184b.",
+   "wrong_value_class": "con slot holds the std figure: the ORIGINAL con XBRL was filed with standalone numbers; a revised con XBRL exists",
+   "found": "scale_fix batch-2 FY identity, 2026-09-27 (2026-09-27 14:09 IST)"
+  },
+  {
+   "sym": "CAPLIPOINT",
+   "qe": "20201231",
+   "basis": "op_con",
+   "was": 56.98,
+   "fixed": 83.93,
+   "why": "CAPLIPOINT consolidated Q3FY21. The ORIGINAL consolidated XBRL (NSE INDAS_67068_402274_04022021072232, filed 2021-02-04) carries the STANDALONE figures verbatim (revenue 123.16, 9M 359.80, PAT 41.48 = the std filing INDAS_67093 to the paisa), so every con slot of this row was a copy of std. The company's REVISED consolidated XBRL (NSE INDAS_67360_403477_08022021110948, filed 2021-02-08; copy in ~/stocks-wt/eps-block/scripts/_xbrl_fill/) carries the real consolidated statement: revenue 274.39, 9M 782.58, owners PAT 64.46 (= the npCon already healed in owners_basis_heals), NCI 1.68. SECOND, INDEPENDENT source: the Mar-21 consolidated filing INDAS_69734_446285_07052021013808 -- FY21 revenue 1,061.29 minus Jun-20 240.08, Sep-20 268.12, Mar-21 278.71 = 274.38; FY21 op 328.64 minus 71.60 + 87.43 + 85.69 = 83.92. The revised filing's own 9M closes too (revenue 240.08 + 268.12 + 274.39 = 782.59 vs 782.58; op 242.96 vs 242.94). op = PBEIT 80.20 + finance cost 0.28 + D&A 9.27 - other income 5.82; ebit = op - D&A. BSE lists the quarter but links no XBRL file. Runbook §184b.",
+   "wrong_value_class": "con slot holds the std figure (same filing defect as the revenue entry)",
+   "found": "scale_fix batch-2 FY identity, 2026-09-27 (2026-09-27 14:09 IST)"
+  },
+  {
+   "sym": "CAPLIPOINT",
+   "qe": "20201231",
+   "basis": "ebit_con",
+   "was": 51.37,
+   "fixed": 74.66,
+   "why": "CAPLIPOINT consolidated Q3FY21. The ORIGINAL consolidated XBRL (NSE INDAS_67068_402274_04022021072232, filed 2021-02-04) carries the STANDALONE figures verbatim (revenue 123.16, 9M 359.80, PAT 41.48 = the std filing INDAS_67093 to the paisa), so every con slot of this row was a copy of std. The company's REVISED consolidated XBRL (NSE INDAS_67360_403477_08022021110948, filed 2021-02-08; copy in ~/stocks-wt/eps-block/scripts/_xbrl_fill/) carries the real consolidated statement: revenue 274.39, 9M 782.58, owners PAT 64.46 (= the npCon already healed in owners_basis_heals), NCI 1.68. SECOND, INDEPENDENT source: the Mar-21 consolidated filing INDAS_69734_446285_07052021013808 -- FY21 revenue 1,061.29 minus Jun-20 240.08, Sep-20 268.12, Mar-21 278.71 = 274.38; FY21 op 328.64 minus 71.60 + 87.43 + 85.69 = 83.92. The revised filing's own 9M closes too (revenue 240.08 + 268.12 + 274.39 = 782.59 vs 782.58; op 242.96 vs 242.94). op = PBEIT 80.20 + finance cost 0.28 + D&A 9.27 - other income 5.82; ebit = op - D&A. BSE lists the quarter but links no XBRL file. Runbook §184b.",
+   "wrong_value_class": "con slot holds the std figure (same filing defect as the revenue entry)",
+   "found": "scale_fix batch-2 FY identity, 2026-09-27 (2026-09-27 14:09 IST)"
   }
  ],
  "retracted": [

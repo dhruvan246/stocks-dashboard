@@ -21618,6 +21618,30 @@ time 1.2 s apart, 0 failures) and Moneycontrol where the MC journal has the cell
   (mis-tag); PIDILITIND 20190930 con npCon 322.66 vs the filing's owners ×100 322.34; ORTEL 20200630 std revenue 18.0 vs the
   filing's 18.18.
 
+
+### §184b — PAYTM 20220630 and CAPLIPOINT 20201231 consolidated revenue fixed through revop_cell_fix (2026-09-27, user: "fix the PAYTM and CAPLIPOINT revenue defects too")
+- **PAYTM Jun-22 con revenue 3,535.28 → 1,679.60.** The 3,535.28 was an `annual_derived_fills.json` cell (Screener FY23 7,990 minus
+  the three stored quarters) derived while Dec-22 still held its 1/100 XBRL value 206.22 (§184a), so ~1,856 cr of Dec-22 was pushed
+  into Jun-22. **A derived fill inherits every error in the quarters it subtracts** — its `siblings` field records exactly which
+  stored values it used, so after any heal, scan it (done: 213 derived fills × 125 scaled revenues → PAYTM is the only one).
+  Primary: BSE's copy of the company's Jun-22 con XBRL (`Main_Ind_As_543396_58202221213.xml`, filed 2022-08-08) 1,679.60 (its
+  owners PAT −644.40 = our npCon); three more filings agree EXACTLY: Sep-22 H1 3,593.6 − 1,914.0; Dec-22 9M 565.58 ×10 − 1,914.0
+  − 2,062.2; Mar-23 FY 7,990.3 − 1,914.0 − 2,062.2 − 2,334.5. The derived entry is kept with `skip` (the reason inside); the
+  row's con op/EBIT stay EMPTY (no NSE Jun-22 con XBRL in the cache), so the page shows it as "mix".
+- **CAPLIPOINT Dec-20 con revenue / op / EBIT 123.16 / 56.98 / 51.37 → 274.39 / 83.93 / 74.66.** The ORIGINAL con XBRL
+  (NSE `INDAS_67068_402274_04022021072232`, 2021-02-04) carries the STANDALONE statement verbatim (123.16, 9M 359.80, PAT 41.48);
+  the company's REVISED con XBRL (`INDAS_67360_403477_08022021110948`, 2021-02-08 — not in the main cache; a copy sits in
+  `~/stocks-wt/eps-block/scripts/_xbrl_fill/`) carries the real one: revenue 274.39, 9M 782.58, PBT 80.20, owners 64.46 (= the
+  npCon already healed in owners_basis_heals), NCI 1.68. Second, independent source: the Mar-21 con filing's FY — revenue
+  1,061.29 − 240.08 − 268.12 − 278.71 = 274.38, op 328.64 − 71.60 − 87.43 − 85.69 = 83.92; the revised filing's own 9M closes too.
+  BSE lists the quarter but links no XBRL file. The xbrl_extra con DETAIL (14 fields, e.g. PBT 80.20, tax 14.06, EPS 8.52, NCI
+  1.68) was the same std copy — re-asserted from the revised filing by `~/stocks-cache/scalefix-mar22/batch3/caplipoint_xtra.py`
+  (replaces only fields still equal to the ORIGINAL filing's parse; a second run replaces 0).
+- **Durability / gates:** `apply_revop_cell_fix.py` runs in refresh-fundamentals every run (a second apply writes 0); the
+  clobber detector checks the four cells (0 MISSING, DRIFT list unchanged); feed guard OK; revop_sanity 0; owners pass 0. Only the
+  PAYTM and CAPLIPOINT slices changed, each only in the target quarter. Page (local, fin-slice path): PAYTM Jun-22 1,680 (Jun-23
+  YoY now +39.41%); CAPLIPOINT Dec-20 274 / op 83.9 / OPM 30.6% / EBIT 74.7 / PAT 64.5 (Dec-21 YoY now +18.88%, was +164.9%).
+
 ## §185 — AUDIT OF THE BSE RESULTS READERS AFTER §182: nine defects fixed, one ruled out (2026-09-27, user: "find more n more bugs … fix")
 All of it is quarter-agnostic: every target quarter comes from the filing (its printed period, else its filing date).
 1. **An older text filing hid the new scanned one.** `extract()` ran vision only when OCR found NOTHING, so a
