@@ -205,8 +205,9 @@ def read_file(xml, code):
     return ymd(e), (e - s).days + 1, basis, (isin.group(1) if isin else "")
 
 
-def parse_values(xml, basis):
+def parse_values(xml, basis, fname=None):
     import build_fundamentals as B
+    import scale_fix
     from build_revop import xbrl_revop
     hint = "Consolidated" if basis == "C" else "Standalone"
     try:
@@ -217,8 +218,15 @@ def parse_values(xml, basis):
         rs, os_, es, rc, oc, ec, fin = xbrl_revop(xml, basis_hint=hint)
     except Exception:
         rs = os_ = es = rc = oc = ec = None; fin = 0
-    return {"pat_s": std, "pat_c": con, "rev_s": rs, "rev_c": rc, "op_s": os_, "op_c": oc, "ebit_s": es,
-            "ebit_c": ec, "fin": fin}
+    out = {"pat_s": std, "pat_c": con, "rev_s": rs, "rev_c": rc, "op_s": os_, "op_c": oc, "ebit_s": es,
+           "ebit_c": ec, "fin": fin}
+    # A filing whose XBRL is itself scaled by 10^k (the filer's error — runbook §11 / §184 / §202) is a reviewed
+    # scale_fix.json entry keyed by FILE NAME, the same hook build_revop / build_fundamentals / build_xbrl_extra use.
+    # Without it this route stored WORTH's Jun-22 revenue as 85.84 cr for a printed 85.84 LAKH.
+    sc = scale_fix.factor(fname) if fname else None
+    if sc:
+        out = {k: (round(v / sc, 2) if isinstance(v, (int, float)) and k != "fin" else v) for k, v in out.items()}
+    return out
 
 
 def detail(path, fname, sym, pnl=True):
@@ -678,7 +686,7 @@ def handle(code, sym, sme, miss, dl, code2tk, xbrl_symbol):
             continue
         tgt = sym or xbrl_symbol.resolve("NOTLISTED", xml)   # an NSE listing of the same ISIN owns the page
         kind = "nse" if tgt else "bse"
-        vals = parse_values(xml, basis)
+        vals = parse_values(xml, basis, fname)
         rec = {"code": code, "qe": qe, "basis": basis, "half": half, "ann": ann_from_name(fname, qe, fdt), "file": fname,
                "kind": kind, "sym": tgt or code2tk.get(code), **vals}
         if not half and rec["sym"]:
@@ -725,7 +733,7 @@ def handle_sme(code, miss, dl, code2tk, xbrl_symbol, stored=None):
             continue
         kind = "nse" if tgt else "bse"
         if d["how"] == "quarter":
-            vals = parse_values(src["xml"], basis)           # the OneD quarter, exactly as a main-board filing
+            vals = parse_values(src["xml"], basis, src.get("fname"))   # the OneD quarter, exactly as a main-board filing
         else:
             vals = {"pat_s": None, "pat_c": None, "rev_s": None, "rev_c": None, "op_s": None, "op_c": None,
                     "ebit_s": None, "ebit_c": None, "fin": 0}

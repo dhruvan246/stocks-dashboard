@@ -22830,3 +22830,38 @@ search_index.json already carries 2026-09-25`, file untouched; release asset →
 2,174 BSE-only appended), byte-identical to the cut refresh-backtest-data committed; selftest OK.
 `check_fund_alias.py` on it: **in step — expected 571, missing 0, conflicts 0, extra 60** (the older hand-curated layer, the 12
 §197 collision entries and §200's GODHA/KEERTI), both copies byte-identical, exit 0.
+
+## §202 — WORTH INVESTMENT (BSE 538451): SEVEN ×100 BSE XBRL FILINGS HEALED THROUGH scale_fix (2026-09-27, user: "adjudicate per filing whether it is mis-scaled … heal through the proper ledger")
+**NO ASSUMPTIONS — every value below was read this session.** Sources: BSE `Result_Arch_ng` list for 538451 + 19 standalone
+XBRLs (`/XBRLFILES/NBFCUploadDocument/…`, 19 requests via the shared headers, 1.2 s apart, 0 refusals; the 8 `Integrated_Finance_…`
+2025+ links 404 at the listed path) and the company's own result PDFs from the announcement route (text layer, no vision):
+Jun-22, Jun-23, Mar-21 (audited), Sep-20, plus the 2023 AGM corrigendum. All in `~/stocks-cache/worth_scale/` (`card.py` rebuilds
+the evidence card). The PDFs print in **Rs '000**; every XBRL declares `LevelOfRounding = Lakhs`.
+**Verdict per filing (k = 2: true = filed ÷ 100; every other 2019-24 filing is correct as filed — its EPS fits unscaled):**
+| quarter / file | filed rev / PAT cr | true | anchors |
+|---|---|---|---|
+| Jun-20 `NBFC_538451_2782020105057` | 3.6256 / 3.6250 | 0.0363 / 0.0363 | Sep-20 XBRL H1 − its quarter = filed ÷ 100 exactly (both lines); EPS 0.11 over 3.28 M shares |
+| Dec-20 `NBFC_538451_1322021172314` | 10.308 / 6.4284 | 0.1031 / 0.0643 | Mar-21 audited PDF prints Dec-20 as 1,030.80 / 642.84 ('000); EPS 0.20; Mar-21 XBRL FY − Q4 = this 9M revenue ÷ 100 exactly |
+| Jun-21 `NBFC_538451_108202116014` | 10.7832 / 7.6837 | 0.1078 / 0.0768 | Sep-21 H1 chain exact; Jun-22 PDF prints Jun-21 1,078.32 / 768.37; EPS 0.23; FY22 16,195.72 / 3,006.24 ('000) close exactly |
+| Jun-22 `NBFC_538451_1082022174549` | 85.8365 / 50.0333 | 0.8584 / 0.5003 | own PDF 8,583.65 / 5,003.33 ('000), reprinted in the Jun-23 PDF; EPS 1.53 |
+| Sep-22 `NBFC_538451_12112022174846` | 56.7941 / 15.5497 | 0.5679 / 0.1555 | its H1 = Jun + Sep at Jun-22's scale; Dec-22's comparative equals it; EPS 0.25 over 6.33 M |
+| Dec-22 `NBFC_538451_722023174942` | 147.161 / 20.795 | 1.4716 / 0.2080 | the Mar-23 filing (unscaled, EPS 0.06) prints Dec-22 as 1.4716 / 0.2080; EPS 0.33 |
+| Jun-23 `NBFC_538451_1482023104847` | 91.4719 / 53.9187 | 0.9147 / 0.5392 | own PDF 9,147.19 / 5,391.87 ('000); EPS 0.85 over 6,330,000 shares (the AGM corrigendum's count) |
+FY23 closes to the rupee with Jun/Sep/Dec-22 ÷ 100: revenue 8,583.65 + 5,679.41 + 14,716.10 + 7,473.05 = 36,452.21, PAT 8,990.29 ('000),
+as printed. EPS was filed correctly in all seven (no `eps_scaled`). `PaidUpValueOfEquityShareCapital` is garbage at varying scales
+in most filings (×10,000 / ×100,000 / ×0.1) — not usable as an anchor here; the balance-sheet share capital the detail parser reads
+is right (3.28 cr to 2022, 6.33 cr 2022-23).
+**Heal (the route had no ledger — its apply is fill-only, so a re-fetch never repairs a stored cell):**
+- `scale_fix.json` +7 entries keyed by the BSE FILE name (`bse_code: 538451`, `was_*` at raw precision) — the same file hook
+  build_xbrl_extra.parse_file already honours, so the nightly detail fetch (WORTH stopped being a tape key in §197) parses these
+  seven files ÷ 100 instead of storing ×100 detail.
+- `fetch_bse_results_xbrl.parse_values(xml, basis, fname)` now divides by `scale_fix.factor(fname)` (both call sites pass the
+  file) — tested: Jun-22 0.86 / 0.50, Jun-23 0.91 / 0.54, EPS 1.53 / 0.85 untouched, Mar-23 unchanged.
+- `scale_fix.py --apply` gained `_fix_bse`: for an entry with `bse_code`, px[code][qe] rev / pat are replaced only while they still
+  equal the recorded scaled value (same basis) — idempotent. Applied on fresh origin: exactly the 14 values in the 7 cells
+  (e.g. Jun-22 85.84 / 50.03 → 0.86 / 0.50), `ann` / `src` / `basis` untouched; second run 0; the four NSE stores content-identical.
+**Checks:** fin slices built both ways from the same inputs — only WORTH.json differs of 6,596, fund_months.json identical;
+`build_bse_results.py` — only WORTH's entry changes (Jun-23 0.91 / 0.54); verify_fills_live MISSING 0.
+**Open (measured, not changed):** the vision-hist Sep-23 / Dec-23 cells (0.99 / 0.53, 1.08 / 1.36) do not close FY24 PAT (2.4746 filed,
+1.85 from the stored quarters; revenue closes) — Dec-23 PAT above its revenue looks like a mis-read. Worth Investment's Sep-25 and
+Dec-25 quarters are not in px (their XBRLs sit under `Integrated_Finance_…` links that 404 at the listed path).
