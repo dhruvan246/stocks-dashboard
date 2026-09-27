@@ -31,6 +31,12 @@ WHAT IT REPLACES
          built by build_xbrl_extra.py): {qEnd: {s:{...}, c:{...}}} — EPS, interest/
          depreciation/tax/exceptional, balance sheet, cash flow (+cf_d period days),
          segments, bank NPA/CET1/ROA, audited flag. ₹ crore / ₹ per share / %.
+  pd     {qEnd: 6|12} — result rows that cover six (or twelve) months, not one quarter:
+         an SME half-yearly filer's Sep row is Apr-Sep and its Mar row Oct-Mar. Proven
+         from the filings by scripts/build_row_periods.py (scripts/row_periods.json) and
+         kept here only while the revenue the row publishes is still the proven one.
+         Absent = every row is a quarter. The page counts a year only when its rows
+         tile the 12 months (runbook §191).
 
 RENAMES
   Fundamentals are keyed by a company's CURRENT ticker while its price history
@@ -59,6 +65,7 @@ XTRA_GZ = XTRA_J + ".gz"                             # …the committed copy CI 
 RENAME  = os.path.join(HERE, "_rename_map.json")
 BSEFUND_J = os.path.join(DOCS, "bse_fundamentals.json")   # BSE-ONLY rev/PAT, keyed by scripcode
 BSESCRIP_J = os.path.join(HERE, "bse_scrips.json")        # {by_id:{SYM:scripcode}} → sym lookup
+ROWP_J  = os.path.join(HERE, "row_periods.json")          # rows proven to cover 6/12 months (build_row_periods.py)
 
 # per-quarter detail fields the PAGE consumes — the rest of the ledger stays local-only
 XTRA_KEEP = {"eps_b", "eps_d", "oi", "fc", "dep", "tax", "exc", "pbt", "emp", "mat",
@@ -104,6 +111,8 @@ def main():
 
     fund  = load(FUND_J,  "net profit")
     revop = load(REVOP_J, "revenue/margins")
+    rowp  = {k: v for k, v in load(ROWP_J, "half-year row marks (SME half-years will read as quarters)").items()
+             if not k.startswith("_")}
     shpj  = load(SHP_J,   "shareholding")
     shph  = load(SHPH_J,  "shareholding history")
     govj  = load(GOV_J,   "government holding")
@@ -384,7 +393,11 @@ def main():
         shutil.rmtree(out_dir)         # drop slices for symbols that left the feeds
     os.makedirs(out_dir, exist_ok=True)
 
+    def same(a, b):
+        return (a is None and b is None) or (a is not None and b is not None and abs(a - b) < 1e-9)
+
     seen, written, total = {}, 0, 0
+    pd_rows = pd_syms = pd_stale = 0
     for sym in sorted(syms):
         sl = slug(sym)
         if sl in seen:
@@ -398,6 +411,18 @@ def main():
         r = merged(revop, sym, "dict")
         if r:
             payload["revop"] = r
+        # row lengths (runbook §191): a mark is published only while the row still carries the revenue it was proven on
+        # — a row another writer changed afterwards reads as a quarter again (its year goes blank, never wrong)
+        pd = {}
+        for qe, e in (resolve(rowp, sym) or {}).items():
+            row = (r or {}).get(qe) or []
+            if row and same(row[0], e.get("s")) and same(row[1] if len(row) > 1 else None, e.get("c")):
+                pd[qe] = e["m"]
+            else:
+                pd_stale += 1
+        if pd:
+            payload["pd"] = pd
+            pd_rows += len(pd); pd_syms += 1
         row = resolve(shp_rows, sym)
         if row and row[4]:
             payload["shpQ"] = shp_q
@@ -427,6 +452,8 @@ def main():
           "%.1f MB raw, avg %.1f KB"
           % (written, len(fund), len(revop), len(shp_rows), len(hist_rows), total / 1e6,
              total / max(written, 1) / 1024))
+    print("row periods (half-year / full-year rows, §191): %d rows on %d slices; %d marks dropped because the row's "
+          "revenue changed since it was proven" % (pd_rows, pd_syms, pd_stale))
 
 
 if __name__ == "__main__":

@@ -855,7 +855,8 @@ function renderFunds(){
         // the flow covers the 12 months ENDING at e, whatever the year-end month — pair it with exactly those
         // four quarters (an Apr–Mar bucket paired ABB's Jan–Dec cash with Apr–Mar profit, §186)
         const qs=ends.filter(q=>q>e-10000&&q<=e);
-        if(qs.length===4&&qs.every(q=>pat(q)!=null)){
+        // four QUARTERS: a half-year row among them (a filer of both, QMSMEDI) would count months twice (§191)
+        if(qs.length===4&&qs.every(q=>pat(q)!=null&&rowMonths(q)===3)){
           const pf=qs.reduce((t,q)=>t+pat(q),0), m=Math.floor(e/100)%100, yr=FYS.of(e)===e&&FYS.months(e)===12;
           const lbl=(yr&&m===3)?'FY'+String(Math.floor(e/10000)).slice(2):(yr?'year to ':'12 months to ')+FY_MON[m]+' '+Math.floor(e/10000);
           if(pf) extra.push(card('CFO / PAT',(x.cfo/pf).toFixed(2),sub(lbl+' cash conversion'),(x.cfo/pf)<0?'neg':'text-slate-900'));
@@ -931,7 +932,12 @@ function renderFunds(){
    FIN_X = {qEnd: {s:{...}, c:{...}}}: EPS, interest/depreciation/tax, balance sheet (half-yearly),
    cash flow (+cf_d period days — filers tag quarter, H1 or FY periods), segments, bank health.
    Consolidated preferred per quarter, standalone fallback — same rule as the summary table. */
-let FIN_X=null, DEEP_TAB=null;
+let FIN_X=null, FIN_PD=null, DEEP_TAB=null;
+/* How many months a result row covers (runbook §191). Rows are keyed by quarter-end only, so a quarter and a half-year
+   look alike: an SME half-yearly filer's Sep row is Apr–Sep and its Mar row Oct–Mar. The fin slice's `pd` lists the rows
+   the filings PROVE are 6 (or 12) months — scripts/build_row_periods.py, H1 + H2 = the printed full year; every other
+   row is one quarter. A year's sums count only when its rows tile its 12 months (renderDeep, CFO/PAT card). */
+const rowMonths=e=>{ const m=FIN_PD&&FIN_PD[String(e)]; return (m===6||m===12)?m:3; };
 const xCell=e=>{ const c=FIN_X&&FIN_X[String(e)]; if(!c) return null;
   return FB_EFF==='std'?(c.s||null):(c.c||c.s||null); };                       // follows the basis switch
 const xBasis=e=>{ const c=FIN_X&&FIN_X[String(e)]; if(!c) return '';
@@ -1015,8 +1021,16 @@ function renderDeep(ends,patFn,revFn,opFn,isFin,FYS){
   ends.forEach(e=>{ const y=FY.of(e); if(y!=null) (byFy[y]=byFy[y]||[]).push(e); });
   Object.values(byFy).forEach(a=>a.sort((a,b)=>a-b));
   const fyAll=Object.keys(byFy).map(Number).sort((a,b)=>b-a);      // newest first
-  // a complete 12-month year — never a transition year (9 / 15 / 18 months) or one with a quarter missing
-  const full=fy=>FY.months(fy)===12&&byFy[fy].length===4;
+  // a year's rows TILE its 12 months when each starts where the previous one ended (rowMonths: one quarter unless the
+  // filings proved a half-year / full year, §191). An SME half-yearly filer's Apr–Sep + Oct–Mar rows are its year
+  // (§181d); a quarterly filer's Dec + Mar quarters are not (AARNAV Mar-2026 read ₹231 cr as a year's sales), nor is
+  // Q1 + H1 + Q3 + H2 (QMSMEDI counts six months twice). Never a transition year (9 / 15 / 18 months).
+  const mIdx=e=>Math.floor(e/10000)*12+_mo(e);
+  const tiles=fy=>{ if(FY.months(fy)!==12) return false; let c=mIdx(fy)-12;
+    for(const e of byFy[fy]){ const m=mIdx(e); if(m-rowMonths(e)!==c) return false; c=m; }
+    return c===mIdx(fy); };
+  // a complete year of four quarters (P&L) — never a transition year or one with a quarter missing
+  const full=fy=>byFy[fy].length===4&&tiles(fy);
   const fys=fyAll.filter(fy=>full(fy)&&byFy[fy].every(e=>patFn(e)!=null));   // complete FYs (P&L)
   // year-end anchor = the quarter that closes the year (its audited year-end instant; cash flow is filed
   // year-to-date so that quarter carries the full-year figures). Never a stray interim or an incomplete
@@ -1036,9 +1050,8 @@ function renderDeep(ends,patFn,revFn,opFn,isFin,FYS){
   // tag just their last 12 months (ACC/Ambuja Mar-2023 start 1-Apr-2022; IGIL/Siemens Mar-2026 1-Apr-2025)
   const cfSpans=(fy,d)=>FY.months(fy)===12||(d.cf_d!=null&&Math.abs(d.cf_d-FY.months(fy)*30.44)<=20);
   const cfOf=fy=>{ const e=yearEndE(fy); if(e==null) return null; const d=strictCell(e); return (d&&d.cfo!=null&&cfSpans(fy,d))?{e,x:d}:null; };
-  // flows (sales, profit, EBIT) never over a transition year — a 9- or 15-month sum is not annual. A 12-month
-  // year still sums whatever rows it holds: an SME half-yearly filer's H1 (Sep) + H2 (Mar) rows ARE its year (§181d)
-  const fySum=(fy,get)=>{ if(FY.months(fy)!==12) return null; let t=0,any=false; for(const e of byFy[fy]){ const v=get(e); if(v==null) return null; t+=v; any=true; } return any?t:null; };
+  // flows (sales, profit, EBIT) only over a year whose rows tile its 12 months — see tiles() above
+  const fySum=(fy,get)=>{ if(!tiles(fy)) return null; let t=0; for(const e of byFy[fy]){ const v=get(e); if(v==null) return null; t+=v; } return t; };
   const fyRev=fy=>fySum(fy,e=>vOf(revFn(e))), fyOp=fy=>fySum(fy,e=>vOf(opFn(e)));
   const fyEbit=fy=>fySum(fy,e=>{ const o=opFn(e), d=(xCell(e)||{}).dep; return (o&&o.v!=null&&d!=null)?o.v-d:null; });
   const bsFys=fyAll.filter(fy=>bsOf(fy)).slice(0,12);
@@ -1063,6 +1076,9 @@ function renderDeep(ends,patFn,revFn,opFn,isFin,FYS){
   // ---- shared transposed table (Screener layout: metric rows × year columns, oldest→newest) ----
   // column label = the year's own year-end (Mar / Dec / Jun / Sep YYYY); a transition year also says its length
   const yL0=fy=>MON[_mo(fy)]+' '+Math.floor(fy/10000);
+  // 12-month years left out of a sum because their rows on file do not tile the year — named in the Ratios / Cash-flow notes
+  const partTxt=fys=>fys.slice(0,3).map(yL0).join(', ')+(fys.length>3?' and '+(fys.length-3)+' earlier':'');
+  const partWhy=n=>': the results on file for '+(n===1?'that year do not add up to exactly its':'those years do not add up to exactly their')+' 12 months (a quarter or half-year missing, or counted twice)';
   const trTxt=fy=>{ const p=FY.prev(fy), m=FY.months(fy); if(p==null) return '';
     const from=MON[_mo(p)%12+1]+' '+(Math.floor(p/10000)+(_mo(p)===12?1:0));
     return m+'-month year, '+from+' – '+yL0(fy)+(_mo(p)!==_mo(fy)?': the company moved its year-end from '+MON[_mo(p)]+' to '+MON[_mo(fy)]:''); };
@@ -1212,9 +1228,12 @@ function renderDeep(ends,patFn,revFn,opFn,isFin,FYS){
       html=matrix(cfFys, rows);
       // a transition year whose filed cash flow covers a different span gets no column — say so, don't leave a silent gap
       const trC=fyAll.filter(fy=>FY.months(fy)!==12&&yearEndE(fy)!=null&&!cfOf(fy)&&(strictCell(fy)||{}).cfo!=null);
+      // a 12-month year whose result rows do not tile it has no annual operating profit to divide by (§191)
+      const partC=cfFys.filter(fy=>FY.months(fy)===12&&!tiles(fy)&&C(fy).cfo!=null);
       note='₹ crore, the cash flow of each financial year as filed at its year-end, '+(bcB==='std'?'standalone':'consolidated where filed')+'. Net Cash Flow = operating + investing + financing; Free Cash Flow = CFO − capex; CFO/OP = operating cash ÷ operating profit. Income tax: negative = tax paid, positive = a net refund received that year.'+
         cfFys.filter(fy=>FY.months(fy)!==12).map(fy=>' '+yL0(fy)+' closes the '+trTxt(fy)+'.').join('')+
-        (trC.length?' No column for '+trList(trC)+': the cash flow filed then does not cover that whole period.':'');
+        (trC.length?' No column for '+trList(trC)+': the cash flow filed then does not cover that whole period.':'')+
+        (partC.length?' CFO/OP is blank for '+partTxt(partC)+partWhy(partC.length)+'.':'');
     }else if(cur==='ratio'){
       const B=fy=>{ const c=bsOf(fy); return c?c.x:{}; };
       const dOn=(amt,fy)=>{ const r=fyRev(fy); return (amt!=null&&r)?amt/r*365:null; };
@@ -1230,7 +1249,11 @@ function renderDeep(ends,patFn,revFn,opFn,isFin,FYS){
         {label:'ROCE %', get:roce, fmt:p0, bold:true},
       ];
       html=matrix(ratioFys, rows);
-      note='Debtor / inventory / payable days use annual sales as the base (Screener convention); the cash-conversion cycle is debtor + inventory − payable days, and a negative figure means the business runs on supplier credit. ROCE = EBIT ÷ (equity + borrowings). '+(isFin?'Not shown for banks/NBFCs, where these concepts do not apply.':'');
+      // a year with a balance sheet but result rows that do not tile its 12 months gets no column (§191) — name it
+      const lo=ratioFys[ratioFys.length-1];
+      const partR=fyAll.filter(fy=>fy>lo&&FY.months(fy)===12&&!tiles(fy)&&(c=>!!c&&(c.x.rec!=null||c.x.invnt!=null||c.x.pay!=null))(bsOf(fy)));
+      note='Debtor / inventory / payable days use annual sales as the base (Screener convention); the cash-conversion cycle is debtor + inventory − payable days, and a negative figure means the business runs on supplier credit. ROCE = EBIT ÷ (equity + borrowings). '+(isFin?'Not shown for banks/NBFCs, where these concepts do not apply. ':'')+
+        (partR.length?'No column for '+partTxt(partR)+partWhy(partR.length)+', so annual sales cannot be read from them.':'');
     }else if(cur==='seg'){
       let segE=null; for(let i=ends.length-1;i>=0;i--){ const x=xCell(ends[i]); if(x&&x.seg){ segE=ends[i]; break; } }
       const x=xCell(segE), tot=x.seg.reduce((t,s)=>t+(s[1]||0),0);
@@ -1890,6 +1913,7 @@ async function liveQuote(){
       installStockFin(TKR,F);
       REVOP={}; if(F&&F.revop) REVOP[TKR]=F.revop;
       FIN_X=(F&&F.x)||null;
+      FIN_PD=(F&&F.pd)||null;                                            // half-year / full-year rows (§191)
       SHP_GOV=(F&&F.shpGov)||null;                                       // Government row lookup
       try{ renderFunds(); }catch(e){ console.error(e); }
       try{ renderKPI((F&&F.kpi)||null); }catch(e){ console.error(e); }   // Insights card (runbook §137)
