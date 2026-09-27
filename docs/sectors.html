@@ -698,7 +698,11 @@ async function gunzipJSON(url){ const buf=await(await fetch(url)).arrayBuffer();
       ensurePE(),
     ]);
     START_TS=slim.startTs; META=slim.meta; SERIES=slim.series; IDXH=Object.assign({},slim.indicesHistory||{}); CLS=cls;
-    if(smeipo&&Array.isArray(smeipo['BSE SME IPO'])&&smeipo['BSE SME IPO'].length) IDXH['BSE SME IPO']=smeipo['BSE SME IPO'];
+    if(smeipo&&Array.isArray(smeipo['BSE SME IPO'])&&smeipo['BSE SME IPO'].length){
+      // a BSE-only row can be keyed by its scrip CODE ("544671.BO") rather than its id — map id → the key SERIES uses
+      const boKey={}; for(const k in META) if(k.endsWith('.BO')&&META[k]&&META[k].symbol) boKey[META[k].symbol+'.BO']=k;
+      IDXH['BSE SME IPO']=smeipo['BSE SME IPO'].map(s=>({effectiveDate:s.effectiveDate,symbols:s.symbols.map(x=>SERIES[x]?x:(boKey[x]||x))}));
+    }
     EARLIEST=slim.recentCutoffOff||0;
     // latest offset with data
     let mx=0; for(const k in SERIES){ const d=SERIES[k].d; if(d&&d.length){ const v=d[d.length-1]; if(v>mx)mx=v; } } END_OFF=mx;

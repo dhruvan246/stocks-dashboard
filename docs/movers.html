@@ -215,7 +215,8 @@ const isSme = tkr => !!(META[tkr] && META[tkr].sme) || BSE_SME.has(tkr);
 let SMEIPO = new Set(), SMEIPO_LOADING = null;
 async function ensureSmeIpo(){
   if (!SMEIPO_LOADING) SMEIPO_LOADING = fetch('./bse_sme_ipo/members.json', { cache: 'no-store' }).then(r => r.json()).then(M => {
-    SMEIPO = new Set((M.members || []).map(m => m.sym).filter(Boolean));
+    // a BSE-only row may be keyed by its scrip CODE ("544671.BO") instead of its id — accept both
+    SMEIPO = new Set((M.members || []).flatMap(m => [m.sym, m.code ? m.code + '.BO' : null]).filter(Boolean));
   }).catch(e => { SMEIPO_LOADING = null; throw e; });
   await SMEIPO_LOADING;
 }

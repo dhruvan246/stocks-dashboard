@@ -501,7 +501,13 @@ async function loadAndInit() {
     // Its symbols are full "<BSE ID>.BO" keys, which the filter below looks up whole.
     try {
       const hx = await (await fetch('./bse_sme_ipo/history.json', { cache: 'no-store' })).json();
-      if (hx && Array.isArray(hx['BSE SME IPO']) && hx['BSE SME IPO'].length) INDICES_HISTORY['BSE SME IPO'] = hx['BSE SME IPO'];
+      if (hx && Array.isArray(hx['BSE SME IPO']) && hx['BSE SME IPO'].length) {
+        // a BSE-only row can be keyed by its scrip CODE ("544671.BO") rather than its id ("ATIL.BO") — map id → key
+        const boKey = {};
+        for (const k of UNIVERSE) if (k.endsWith('.BO') && META[k] && META[k].symbol) boKey[META[k].symbol + '.BO'] = k;
+        INDICES_HISTORY['BSE SME IPO'] = hx['BSE SME IPO'].map(s => ({ effectiveDate: s.effectiveDate,
+          symbols: s.symbols.map(x => META[x] ? x : (boKey[x] || x)) }));
+      }
     } catch (e) { console.warn('BSE SME IPO history unavailable', e); }
     FNO_TODAY = new Set(D.fnoToday || []);
     FNO_HISTORY = D.fnoHistory || [];
