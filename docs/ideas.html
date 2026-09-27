@@ -131,6 +131,21 @@
   <p class="disc mb-5">Research notes, not investment advice. Each number carries a source link; where a datum could not be found the note says "unknown" rather than guessing. Small caps in this band are thinly traded: the scorecard measures closing prices, not what a real order would have achieved.</p>
   <div id="stats" class="stats mb-8"></div>
 
+  <section id="ideas" class="mb-8" data-jump="Ideas">
+    <div class="flex flex-wrap items-center gap-2 mb-3">
+      <h2 class="text-lg font-semibold">Ideas</h2>
+      <span class="seg" id="lane"><button data-v="" class="on">All</button><button data-v="govt">Government</button><button data-v="price">Commodity</button><button data-v="filing">Filing</button><button data-v="earnings">Earnings</button><button data-v="sme">SME</button></span>
+    </div>
+    <div class="daypick mb-3" id="daypick">
+      <label for="day" class="muted">Published on</label>
+      <input type="date" id="day" />
+      <button type="button" data-d="" class="on" id="day-all">All dates</button>
+      <span id="day-chips"></span>
+    </div>
+    <p id="day-note" class="muted text-sm mb-3" hidden></p>
+    <div id="ideas-list" class="grid gap-5"></div>
+  </section>
+
   <section id="govt" class="mb-8" data-jump="Government">
     <div class="flex flex-wrap items-baseline justify-between gap-2 mb-1">
       <h2 class="text-lg font-semibold">Government announcements worth acting on</h2>
@@ -147,21 +162,6 @@
     </div>
     <p id="commodity-meta" class="muted text-sm mb-3"></p>
     <div id="commodity-list" class="grid gap-3 md:grid-cols-2"></div>
-  </section>
-
-  <section id="ideas" class="mb-8" data-jump="Ideas">
-    <div class="flex flex-wrap items-center gap-2 mb-3">
-      <h2 class="text-lg font-semibold">Ideas</h2>
-      <span class="seg" id="lane"><button data-v="" class="on">All</button><button data-v="govt">Government</button><button data-v="price">Commodity</button><button data-v="filing">Filing</button><button data-v="earnings">Earnings</button><button data-v="sme">SME</button></span>
-    </div>
-    <div class="daypick mb-3" id="daypick">
-      <label for="day" class="muted">Published on</label>
-      <input type="date" id="day" />
-      <button type="button" data-d="" class="on" id="day-all">All dates</button>
-      <span id="day-chips"></span>
-    </div>
-    <p id="day-note" class="muted text-sm mb-3" hidden></p>
-    <div id="ideas-list" class="grid gap-5"></div>
   </section>
 
   <section id="run" class="mb-8" data-jump="Last run">
