@@ -1282,6 +1282,26 @@ def build(cache, window=None):
     sh = {s: qs for s, qs in sh.items() if qs}
 
     built = (datetime.datetime.utcnow() + datetime.timedelta(hours=5, minutes=30)).strftime("%Y-%m-%d %H:%M IST")
+    if not window and (prev_led or head):
+        # §180e: a full build re-judges only the quarters whose FILING it read (or set aside) this run. A ledger cell whose
+        # document is not on this machine — landed by the GitHub update job, whose files live only on its runner — is
+        # carried over unchanged, never dropped for a missing local file (measured: a local full build after the first CI
+        # run would have dropped all 9 cells that run landed).
+        judged = set(docs) | set(set_aside)
+        carried = 0
+        for src_ in ((prev_led.get("fills") or {}), head):              # the ledger on disk and the committed one
+            for s_, qs_ in src_.items():
+                for q_, c_ in qs_.items():
+                    if (s_, q_) not in judged and q_ not in fills.get(s_, {}): fills[s_][q_] = c_; carried += 1
+        for s_, qs_ in (prev_led.get("revisions") or {}).items():
+            for q_, c_ in qs_.items():
+                if (s_, q_) not in judged and q_ not in revisions.get(s_, {}): revisions[s_][q_] = c_
+        if os.path.exists(SHARES_HIST):
+            for s_, qs_ in json.load(open(SHARES_HIST, encoding="utf-8")).items():
+                if s_ == "_meta": continue
+                for q_, v_ in qs_.items():
+                    if (s_, q_) not in judged and q_ not in (sh.get(s_) or {}): sh.setdefault(s_, {})[q_] = v_
+        if carried: print("carried over %d ledger cells whose filing is not on this machine" % carried)
     if window:
         # MERGE onto the committed ledger: landed cells are never replaced here (fill-only), a window quarter evaluated
         # this run takes this run's hold (or loses a stale one), and share counts / re-filings are added the same way

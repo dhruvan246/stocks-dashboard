@@ -21599,6 +21599,14 @@ committed scripts/_nse_sym_isin_2020.json. Schedule: 19:00 IST on the 12th/19th/
 Feb/May/Aug/Nov; concurrency group refresh-shareholding (never overlaps the daily job); reset-and-replay push re-applies the ledger
 on the newest main; dispatches pages + refresh-stock-fin. Local dry run (window Mar/Jun-2026): 255 companies asked, 12 files, 0 new
 cells (6 held — CREATIVE/WORTH/HSIL alias identity, GLOBALLOG continuity — 6 under a former ticker), UNIHEALTH's NSE link 404.
+**First GitHub run (36324520916, 27-Sep 19:41 IST, commit 9fd752067):** 254 companies asked, 10 files, 9 new cells (COLORCHIPS,
+CREATIVE, DPL, HSIL, RDEL, SHREE Mar/Jun-2026 — released by §197's alias-collision fix), all 9 equal Screener on every field.
+**Carry-over rule (found the same evening):** a LOCAL full build re-judged every ledger cell from the files on this Mac and so
+DROPPED the 9 cells whose files live only on the runner. A full build now re-judges only (symbol, quarter) pairs whose filing it
+read or set aside this run; every other ledger / committed-ledger cell, re-filing and share count is carried over unchanged.
+**§197 backfill:** the 11 other BSE alias-collision companies' own filings (their 2020-25 quarters had been the other company's
+NSE-era data, retracted by §197): 89 files, +89 cells (MIL 25, COLORCHIPS 24, CREATIVE 24, DPL 7, HSIL 5, SHREE 4; ARL, AZTEC,
+BCCL, MUDRA already had theirs, RDEL listed 2025); 240/240 in-window Screener fields match; 0 existing cells changed.
 ## §182 — THE BSE RESULTS READERS NO LONGER HARD-CODE THE JUNE-2026 QUARTER (2026-09-27, user: "fix all")
 **Found by a prompt audit, measured on origin/main 99e9129d0.** Every reader of a scanned result filing was pinned to Q1 FY27:
 `fetch_bse_fund.py`'s vision fallback asked Claude/Gemini for "30 June 2026" and filed the answer under `20260630` with a
