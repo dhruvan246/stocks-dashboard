@@ -23471,6 +23471,7 @@ On the UTC clock the diff vs origin = exactly the 7 healed values; guard_feed OK
 36,658 (+14), MISSING / REVERTED / RESURRECTED 0, DRIFT unchanged; slices both ways: 4 of 6,600 change (ARE_M, FINCABLES, GUJALKALI, KEC), `revop`
 only, only the healed quarters; fund_months byte-identical. **§209 total: 47 cells / 104 values healed.** Of the 187: 107 correct as stored, 47
 healed, 29 NBFC-convention, RHIM + RMCL held, SUNTV + BEML → con-nofile.
+**Batch 2 LIVE.** Pushed 02e7aea06 (01:25 IST); refresh-stock-fin → slices d532bdf3a; Pages green. Served sf_revop.json (Last-Modified 19:59:12 GMT) and the 20 healed symbols' served fin slices hold all 104 §209 values at `fixed` (both batches, after the intervening hourly-feed and BSE-XBRL CI commits); quarterly_results 7/7. Live stock page FINCABLES std: Mar-19 revenue 823 / op 126 / OPM 15.3 % / EBIT 116, Dec-17 657 / 98.1 / 14.9 % / 87.4; 0 console errors.
 **New open item — xbrl_extra finance costs = tax on 2,320 archive-era cells** (2016: 248, 2017: 2,061, older 11; e.g. CONCOR Dec-17 std fc 129.65
 = tax): `xtra_nse_html` reads the archive's "(f) Finance costs" cell as printed, so the stock page's detail "Finance costs" row shows the tax for
 those quarters. Not healed here; source for a fix = each company's next filings' comparative columns (as above) or MC.
