@@ -14521,6 +14521,420 @@
    "why": "CAPLIPOINT consolidated Q3FY21. The ORIGINAL consolidated XBRL (NSE INDAS_67068_402274_04022021072232, filed 2021-02-04) carries the STANDALONE figures verbatim (revenue 123.16, 9M 359.80, PAT 41.48 = the std filing INDAS_67093 to the paisa), so every con slot of this row was a copy of std. The company's REVISED consolidated XBRL (NSE INDAS_67360_403477_08022021110948, filed 2021-02-08; copy in ~/stocks-wt/eps-block/scripts/_xbrl_fill/) carries the real consolidated statement: revenue 274.39, 9M 782.58, owners PAT 64.46 (= the npCon already healed in owners_basis_heals), NCI 1.68. SECOND, INDEPENDENT source: the Mar-21 consolidated filing INDAS_69734_446285_07052021013808 -- FY21 revenue 1,061.29 minus Jun-20 240.08, Sep-20 268.12, Mar-21 278.71 = 274.38; FY21 op 328.64 minus 71.60 + 87.43 + 85.69 = 83.92. The revised filing's own 9M closes too (revenue 240.08 + 268.12 + 274.39 = 782.59 vs 782.58; op 242.96 vs 242.94). op = PBEIT 80.20 + finance cost 0.28 + D&A 9.27 - other income 5.82; ebit = op - D&A. BSE lists the quarter but links no XBRL file. Runbook §184b.",
    "wrong_value_class": "con slot holds the std figure (same filing defect as the revenue entry)",
    "found": "scale_fix batch-2 FY identity, 2026-09-27 (2026-09-27 14:09 IST)"
+  },
+  {
+   "sym": "KENNAMET",
+   "qe": "20200630",
+   "basis": "op_std",
+   "was": -23.4,
+   "fixed": -13.6,
+   "why": "Kennametal India prints in Rs MILLION (fiscal year Jul-Jun). XBRL Main_Ind_As_505890_2082020152242.xml (BSE, filed 2020-08-20; OneD = the quarter, ScripCode 505890, ISIN INE717A01029, standalone) -> build_revop.xbrl_revop op -13.6. Printed PDF 224d86c9-6528-4170-b963-d03b89c1e1fc.pdf (current-quarter column, standalone statement) prints PBET -132 + finance costs 3 + depreciation 95 - other income 102 = op -136 mn = -13.6 cr. stored -23.4 is a row mis-read by the 2026-07-27 BSE-PDF text sweep (backfill_revop_gaps, commit c4af852fa); see runbook §189 for the per-quarter mechanism. Not a scale issue (scale_fix n/a).",
+   "found": "KENNAMET negative-op audit 2026-09-27 (runbook §189): all 43 of the company's own BSE XBRL filings (Result_Arch_ng scrip 505890, every row Status New = as-filed) re-parsed with build_revop.xbrl_revop, second reader = the printed results PDFs (BSE announcement attachments); copies in ~/stocks-cache/kennamet-op/"
+  },
+  {
+   "sym": "KENNAMET",
+   "qe": "20200630",
+   "basis": "ebit_std",
+   "was": -23.4,
+   "fixed": -23.1,
+   "why": "Kennametal India prints in Rs MILLION (fiscal year Jul-Jun). XBRL Main_Ind_As_505890_2082020152242.xml (BSE, filed 2020-08-20; OneD = the quarter, ScripCode 505890, ISIN INE717A01029, standalone) -> build_revop.xbrl_revop ebit -23.1. Printed PDF 224d86c9-6528-4170-b963-d03b89c1e1fc.pdf (current-quarter column, standalone statement) prints PBET -132 + finance costs 3 + depreciation 95 - other income 102 = op -136 mn (ebit = op - dep -231) = -23.1 cr. stored -23.4 is a row mis-read by the 2026-07-27 BSE-PDF text sweep (backfill_revop_gaps, commit c4af852fa); see runbook §189 for the per-quarter mechanism. Not a scale issue (scale_fix n/a).",
+   "found": "KENNAMET negative-op audit 2026-09-27 (runbook §189): all 43 of the company's own BSE XBRL filings (Result_Arch_ng scrip 505890, every row Status New = as-filed) re-parsed with build_revop.xbrl_revop, second reader = the printed results PDFs (BSE announcement attachments); copies in ~/stocks-cache/kennamet-op/"
+  },
+  {
+   "sym": "KENNAMET",
+   "qe": "20210331",
+   "basis": "op_std",
+   "was": -202.2,
+   "fixed": 35.1,
+   "why": "Kennametal India prints in Rs MILLION (fiscal year Jul-Jun). XBRL Main_Ind_As_505890_145202115145.xml (BSE, filed 2021-05-14; OneD = the quarter, ScripCode 505890, ISIN INE717A01029, standalone) -> build_revop.xbrl_revop op 35.1. Printed PDF fb00cd83-a505-45cd-a79b-e4f9d86fae02.pdf (current-quarter column, standalone statement) prints PBET 273 + finance costs 0 + depreciation 94 - other income 16 = op 351 mn = 35.1 cr. stored -202.2 = -(Total expenses 2022 mn): the 2026-07-27 BSE-PDF text sweep (backfill_revop_gaps, commit c4af852fa) took the Total-income row as Other income and dropped depreciation (ebit == op). Not a scale issue (scale_fix n/a).",
+   "found": "KENNAMET negative-op audit 2026-09-27 (runbook §189): all 43 of the company's own BSE XBRL filings (Result_Arch_ng scrip 505890, every row Status New = as-filed) re-parsed with build_revop.xbrl_revop, second reader = the printed results PDFs (BSE announcement attachments); copies in ~/stocks-cache/kennamet-op/"
+  },
+  {
+   "sym": "KENNAMET",
+   "qe": "20210331",
+   "basis": "ebit_std",
+   "was": -202.2,
+   "fixed": 25.7,
+   "why": "Kennametal India prints in Rs MILLION (fiscal year Jul-Jun). XBRL Main_Ind_As_505890_145202115145.xml (BSE, filed 2021-05-14; OneD = the quarter, ScripCode 505890, ISIN INE717A01029, standalone) -> build_revop.xbrl_revop ebit 25.7. Printed PDF fb00cd83-a505-45cd-a79b-e4f9d86fae02.pdf (current-quarter column, standalone statement) prints PBET 273 + finance costs 0 + depreciation 94 - other income 16 = op 351 mn (ebit = op - dep 257) = 25.7 cr. stored -202.2 = -(Total expenses 2022 mn): the 2026-07-27 BSE-PDF text sweep (backfill_revop_gaps, commit c4af852fa) took the Total-income row as Other income and dropped depreciation (ebit == op). Not a scale issue (scale_fix n/a).",
+   "found": "KENNAMET negative-op audit 2026-09-27 (runbook §189): all 43 of the company's own BSE XBRL filings (Result_Arch_ng scrip 505890, every row Status New = as-filed) re-parsed with build_revop.xbrl_revop, second reader = the printed results PDFs (BSE announcement attachments); copies in ~/stocks-cache/kennamet-op/"
+  },
+  {
+   "sym": "KENNAMET",
+   "qe": "20210630",
+   "basis": "op_std",
+   "was": -184.1,
+   "fixed": 37.2,
+   "why": "Kennametal India prints in Rs MILLION (fiscal year Jul-Jun). XBRL Main_Ind_As_505890_198202117183.xml (BSE, filed 2021-08-19; OneD = the quarter, ScripCode 505890, ISIN INE717A01029, standalone) -> build_revop.xbrl_revop op 37.2. Printed PDF 34035ae3-a223-457b-a344-20a3762590fa.pdf (previous-quarter column, standalone statement) prints PBET 292 + finance costs 0 + depreciation 94 - other income 14 = op 372 mn = 37.2 cr. stored -184.1 = -(Total expenses 1841 mn): the 2026-07-27 BSE-PDF text sweep (backfill_revop_gaps, commit c4af852fa) took the Total-income row as Other income and dropped depreciation (ebit == op). Not a scale issue (scale_fix n/a).",
+   "found": "KENNAMET negative-op audit 2026-09-27 (runbook §189): all 43 of the company's own BSE XBRL filings (Result_Arch_ng scrip 505890, every row Status New = as-filed) re-parsed with build_revop.xbrl_revop, second reader = the printed results PDFs (BSE announcement attachments); copies in ~/stocks-cache/kennamet-op/"
+  },
+  {
+   "sym": "KENNAMET",
+   "qe": "20210630",
+   "basis": "ebit_std",
+   "was": -184.1,
+   "fixed": 27.8,
+   "why": "Kennametal India prints in Rs MILLION (fiscal year Jul-Jun). XBRL Main_Ind_As_505890_198202117183.xml (BSE, filed 2021-08-19; OneD = the quarter, ScripCode 505890, ISIN INE717A01029, standalone) -> build_revop.xbrl_revop ebit 27.8. Printed PDF 34035ae3-a223-457b-a344-20a3762590fa.pdf (previous-quarter column, standalone statement) prints PBET 292 + finance costs 0 + depreciation 94 - other income 14 = op 372 mn (ebit = op - dep 278) = 27.8 cr. stored -184.1 = -(Total expenses 1841 mn): the 2026-07-27 BSE-PDF text sweep (backfill_revop_gaps, commit c4af852fa) took the Total-income row as Other income and dropped depreciation (ebit == op). Not a scale issue (scale_fix n/a).",
+   "found": "KENNAMET negative-op audit 2026-09-27 (runbook §189): all 43 of the company's own BSE XBRL filings (Result_Arch_ng scrip 505890, every row Status New = as-filed) re-parsed with build_revop.xbrl_revop, second reader = the printed results PDFs (BSE announcement attachments); copies in ~/stocks-cache/kennamet-op/"
+  },
+  {
+   "sym": "KENNAMET",
+   "qe": "20210930",
+   "basis": "op_std",
+   "was": -232.1,
+   "fixed": 45.3,
+   "why": "Kennametal India prints in Rs MILLION (fiscal year Jul-Jun). XBRL Main_Ind_As_505890_10112021162740.xml (BSE, filed 2021-11-10; OneD = the quarter, ScripCode 505890, ISIN INE717A01029, standalone) -> build_revop.xbrl_revop op 45.3. Printed PDF 34035ae3-a223-457b-a344-20a3762590fa.pdf (current-quarter column, standalone statement) prints PBET 378 + finance costs 0 + depreciation 92 - other income 17 = op 453 mn = 45.3 cr. stored -232.1 is a row mis-read by the 2026-07-27 BSE-PDF text sweep (backfill_revop_gaps, commit c4af852fa); see runbook §189 for the per-quarter mechanism. Not a scale issue (scale_fix n/a).",
+   "found": "KENNAMET negative-op audit 2026-09-27 (runbook §189): all 43 of the company's own BSE XBRL filings (Result_Arch_ng scrip 505890, every row Status New = as-filed) re-parsed with build_revop.xbrl_revop, second reader = the printed results PDFs (BSE announcement attachments); copies in ~/stocks-cache/kennamet-op/"
+  },
+  {
+   "sym": "KENNAMET",
+   "qe": "20210930",
+   "basis": "ebit_std",
+   "was": -232.1,
+   "fixed": 36.1,
+   "why": "Kennametal India prints in Rs MILLION (fiscal year Jul-Jun). XBRL Main_Ind_As_505890_10112021162740.xml (BSE, filed 2021-11-10; OneD = the quarter, ScripCode 505890, ISIN INE717A01029, standalone) -> build_revop.xbrl_revop ebit 36.1. Printed PDF 34035ae3-a223-457b-a344-20a3762590fa.pdf (current-quarter column, standalone statement) prints PBET 378 + finance costs 0 + depreciation 92 - other income 17 = op 453 mn (ebit = op - dep 361) = 36.1 cr. stored -232.1 is a row mis-read by the 2026-07-27 BSE-PDF text sweep (backfill_revop_gaps, commit c4af852fa); see runbook §189 for the per-quarter mechanism. Not a scale issue (scale_fix n/a).",
+   "found": "KENNAMET negative-op audit 2026-09-27 (runbook §189): all 43 of the company's own BSE XBRL filings (Result_Arch_ng scrip 505890, every row Status New = as-filed) re-parsed with build_revop.xbrl_revop, second reader = the printed results PDFs (BSE announcement attachments); copies in ~/stocks-cache/kennamet-op/"
+  },
+  {
+   "sym": "KENNAMET",
+   "qe": "20211231",
+   "basis": "op_std",
+   "was": -202.0,
+   "fixed": 45.9,
+   "why": "Kennametal India prints in Rs MILLION (fiscal year Jul-Jun). XBRL Main_Ind_As_505890_422022135747.xml (BSE, filed 2022-02-04; OneD = the quarter, ScripCode 505890, ISIN INE717A01029, standalone) -> build_revop.xbrl_revop op 45.9. Printed PDF fc1f264d-6b1f-471b-b0c5-e208a261a624.pdf (current-quarter column, standalone statement) prints PBET 404 + finance costs 0 + depreciation 89 - other income 34 = op 459 mn = 45.9 cr. stored -202.0 = -(Total expenses 2020 mn): the 2026-07-27 BSE-PDF text sweep (backfill_revop_gaps, commit c4af852fa) took the Total-income row as Other income and dropped depreciation (ebit == op). Not a scale issue (scale_fix n/a).",
+   "found": "KENNAMET negative-op audit 2026-09-27 (runbook §189): all 43 of the company's own BSE XBRL filings (Result_Arch_ng scrip 505890, every row Status New = as-filed) re-parsed with build_revop.xbrl_revop, second reader = the printed results PDFs (BSE announcement attachments); copies in ~/stocks-cache/kennamet-op/"
+  },
+  {
+   "sym": "KENNAMET",
+   "qe": "20211231",
+   "basis": "ebit_std",
+   "was": -202.0,
+   "fixed": 37.0,
+   "why": "Kennametal India prints in Rs MILLION (fiscal year Jul-Jun). XBRL Main_Ind_As_505890_422022135747.xml (BSE, filed 2022-02-04; OneD = the quarter, ScripCode 505890, ISIN INE717A01029, standalone) -> build_revop.xbrl_revop ebit 37.0. Printed PDF fc1f264d-6b1f-471b-b0c5-e208a261a624.pdf (current-quarter column, standalone statement) prints PBET 404 + finance costs 0 + depreciation 89 - other income 34 = op 459 mn (ebit = op - dep 370) = 37.0 cr. stored -202.0 = -(Total expenses 2020 mn): the 2026-07-27 BSE-PDF text sweep (backfill_revop_gaps, commit c4af852fa) took the Total-income row as Other income and dropped depreciation (ebit == op). Not a scale issue (scale_fix n/a).",
+   "found": "KENNAMET negative-op audit 2026-09-27 (runbook §189): all 43 of the company's own BSE XBRL filings (Result_Arch_ng scrip 505890, every row Status New = as-filed) re-parsed with build_revop.xbrl_revop, second reader = the printed results PDFs (BSE announcement attachments); copies in ~/stocks-cache/kennamet-op/"
+  },
+  {
+   "sym": "KENNAMET",
+   "qe": "20220630",
+   "basis": "op_std",
+   "was": -232.3,
+   "fixed": 45.3,
+   "why": "Kennametal India prints in Rs MILLION (fiscal year Jul-Jun). XBRL Main_Ind_As_505890_1382022133430.xml (BSE, filed 2022-09-06; OneD = the quarter, ScripCode 505890, ISIN INE717A01029, standalone) -> build_revop.xbrl_revop op 45.3. Printed PDF 9b56685b-fc23-4b41-9f07-ee38412b2011.pdf (current-quarter column, standalone statement) prints PBET 383 + finance costs 0 + depreciation 88 - other income 18 = op 453 mn = 45.3 cr. stored -232.3 is a row mis-read by the 2026-07-27 BSE-PDF text sweep (backfill_revop_gaps, commit c4af852fa); see runbook §189 for the per-quarter mechanism. Not a scale issue (scale_fix n/a).",
+   "found": "KENNAMET negative-op audit 2026-09-27 (runbook §189): all 43 of the company's own BSE XBRL filings (Result_Arch_ng scrip 505890, every row Status New = as-filed) re-parsed with build_revop.xbrl_revop, second reader = the printed results PDFs (BSE announcement attachments); copies in ~/stocks-cache/kennamet-op/"
+  },
+  {
+   "sym": "KENNAMET",
+   "qe": "20220630",
+   "basis": "ebit_std",
+   "was": -232.3,
+   "fixed": 36.5,
+   "why": "Kennametal India prints in Rs MILLION (fiscal year Jul-Jun). XBRL Main_Ind_As_505890_1382022133430.xml (BSE, filed 2022-09-06; OneD = the quarter, ScripCode 505890, ISIN INE717A01029, standalone) -> build_revop.xbrl_revop ebit 36.5. Printed PDF 9b56685b-fc23-4b41-9f07-ee38412b2011.pdf (current-quarter column, standalone statement) prints PBET 383 + finance costs 0 + depreciation 88 - other income 18 = op 453 mn (ebit = op - dep 365) = 36.5 cr. stored -232.3 is a row mis-read by the 2026-07-27 BSE-PDF text sweep (backfill_revop_gaps, commit c4af852fa); see runbook §189 for the per-quarter mechanism. Not a scale issue (scale_fix n/a).",
+   "found": "KENNAMET negative-op audit 2026-09-27 (runbook §189): all 43 of the company's own BSE XBRL filings (Result_Arch_ng scrip 505890, every row Status New = as-filed) re-parsed with build_revop.xbrl_revop, second reader = the printed results PDFs (BSE announcement attachments); copies in ~/stocks-cache/kennamet-op/"
+  },
+  {
+   "sym": "KENNAMET",
+   "qe": "20221231",
+   "basis": "op_std",
+   "was": -246.4,
+   "fixed": 37.7,
+   "why": "Kennametal India prints in Rs MILLION (fiscal year Jul-Jun). XBRL Main_Ind_As_505890_1022023204850.xml (BSE, filed 2023-02-11; OneD = the quarter, ScripCode 505890, ISIN INE717A01029, standalone) -> build_revop.xbrl_revop op 37.7. Printed PDF 4c212665-3ec4-4d03-be84-24ae2194311a.pdf (current-quarter column, standalone statement) prints PBET 296 + finance costs 0 + depreciation 93 - other income 12 = op 377 mn = 37.7 cr. stored -246.4 = -(Total expenses 2464 mn): the 2026-07-27 BSE-PDF text sweep (backfill_revop_gaps, commit c4af852fa) took the Total-income row as Other income and dropped depreciation (ebit == op). Not a scale issue (scale_fix n/a).",
+   "found": "KENNAMET negative-op audit 2026-09-27 (runbook §189): all 43 of the company's own BSE XBRL filings (Result_Arch_ng scrip 505890, every row Status New = as-filed) re-parsed with build_revop.xbrl_revop, second reader = the printed results PDFs (BSE announcement attachments); copies in ~/stocks-cache/kennamet-op/"
+  },
+  {
+   "sym": "KENNAMET",
+   "qe": "20221231",
+   "basis": "ebit_std",
+   "was": -246.4,
+   "fixed": 28.4,
+   "why": "Kennametal India prints in Rs MILLION (fiscal year Jul-Jun). XBRL Main_Ind_As_505890_1022023204850.xml (BSE, filed 2023-02-11; OneD = the quarter, ScripCode 505890, ISIN INE717A01029, standalone) -> build_revop.xbrl_revop ebit 28.4. Printed PDF 4c212665-3ec4-4d03-be84-24ae2194311a.pdf (current-quarter column, standalone statement) prints PBET 296 + finance costs 0 + depreciation 93 - other income 12 = op 377 mn (ebit = op - dep 284) = 28.4 cr. stored -246.4 = -(Total expenses 2464 mn): the 2026-07-27 BSE-PDF text sweep (backfill_revop_gaps, commit c4af852fa) took the Total-income row as Other income and dropped depreciation (ebit == op). Not a scale issue (scale_fix n/a).",
+   "found": "KENNAMET negative-op audit 2026-09-27 (runbook §189): all 43 of the company's own BSE XBRL filings (Result_Arch_ng scrip 505890, every row Status New = as-filed) re-parsed with build_revop.xbrl_revop, second reader = the printed results PDFs (BSE announcement attachments); copies in ~/stocks-cache/kennamet-op/"
+  },
+  {
+   "sym": "KENNAMET",
+   "qe": "20230331",
+   "basis": "op_std",
+   "was": -235.1,
+   "fixed": 30.5,
+   "why": "Kennametal India prints in Rs MILLION (fiscal year Jul-Jun). XBRL Main_Ind_As_505890_125202317557.xml (BSE, filed 2023-05-13; OneD = the quarter, ScripCode 505890, ISIN INE717A01029, standalone) -> build_revop.xbrl_revop op 30.5. Printed PDF 0f84e812-047a-487b-8a89-c060a6dacc47.pdf (current-quarter column, standalone statement) prints PBET 220 + finance costs 0 + depreciation 99 - other income 14 = op 305 mn = 30.5 cr. stored -235.1 = -(Total expenses 2351 mn): the 2026-07-27 BSE-PDF text sweep (backfill_revop_gaps, commit c4af852fa) took the Total-income row as Other income and dropped depreciation (ebit == op). Not a scale issue (scale_fix n/a).",
+   "found": "KENNAMET negative-op audit 2026-09-27 (runbook §189): all 43 of the company's own BSE XBRL filings (Result_Arch_ng scrip 505890, every row Status New = as-filed) re-parsed with build_revop.xbrl_revop, second reader = the printed results PDFs (BSE announcement attachments); copies in ~/stocks-cache/kennamet-op/"
+  },
+  {
+   "sym": "KENNAMET",
+   "qe": "20230331",
+   "basis": "ebit_std",
+   "was": -235.1,
+   "fixed": 20.6,
+   "why": "Kennametal India prints in Rs MILLION (fiscal year Jul-Jun). XBRL Main_Ind_As_505890_125202317557.xml (BSE, filed 2023-05-13; OneD = the quarter, ScripCode 505890, ISIN INE717A01029, standalone) -> build_revop.xbrl_revop ebit 20.6. Printed PDF 0f84e812-047a-487b-8a89-c060a6dacc47.pdf (current-quarter column, standalone statement) prints PBET 220 + finance costs 0 + depreciation 99 - other income 14 = op 305 mn (ebit = op - dep 206) = 20.6 cr. stored -235.1 = -(Total expenses 2351 mn): the 2026-07-27 BSE-PDF text sweep (backfill_revop_gaps, commit c4af852fa) took the Total-income row as Other income and dropped depreciation (ebit == op). Not a scale issue (scale_fix n/a).",
+   "found": "KENNAMET negative-op audit 2026-09-27 (runbook §189): all 43 of the company's own BSE XBRL filings (Result_Arch_ng scrip 505890, every row Status New = as-filed) re-parsed with build_revop.xbrl_revop, second reader = the printed results PDFs (BSE announcement attachments); copies in ~/stocks-cache/kennamet-op/"
+  },
+  {
+   "sym": "KENNAMET",
+   "qe": "20230630",
+   "basis": "op_std",
+   "was": 48.5,
+   "fixed": 36.5,
+   "why": "Kennametal India prints in Rs MILLION (fiscal year Jul-Jun). XBRL Main_Ind_As_505890_118202318352.xml (BSE, filed 2023-08-11; OneD = the quarter, ScripCode 505890, ISIN INE717A01029, standalone) -> build_revop.xbrl_revop op 36.5. Printed PDF d17d5db1-905f-4762-bfef-e8c6f8966e99.pdf (previous-quarter column, standalone statement) prints PBET 269 + finance costs 2 + depreciation 108 - other income 14 = op 365 mn = 36.5 cr. stored 48.5 is a row mis-read by the 2026-07-27 BSE-PDF text sweep (backfill_revop_gaps, commit c4af852fa); see runbook §189 for the per-quarter mechanism. Not a scale issue (scale_fix n/a).",
+   "found": "KENNAMET negative-op audit 2026-09-27 (runbook §189): all 43 of the company's own BSE XBRL filings (Result_Arch_ng scrip 505890, every row Status New = as-filed) re-parsed with build_revop.xbrl_revop, second reader = the printed results PDFs (BSE announcement attachments); copies in ~/stocks-cache/kennamet-op/"
+  },
+  {
+   "sym": "KENNAMET",
+   "qe": "20230630",
+   "basis": "ebit_std",
+   "was": 37.7,
+   "fixed": 25.7,
+   "why": "Kennametal India prints in Rs MILLION (fiscal year Jul-Jun). XBRL Main_Ind_As_505890_118202318352.xml (BSE, filed 2023-08-11; OneD = the quarter, ScripCode 505890, ISIN INE717A01029, standalone) -> build_revop.xbrl_revop ebit 25.7. Printed PDF d17d5db1-905f-4762-bfef-e8c6f8966e99.pdf (previous-quarter column, standalone statement) prints PBET 269 + finance costs 2 + depreciation 108 - other income 14 = op 365 mn (ebit = op - dep 257) = 25.7 cr. stored 37.7 is a row mis-read by the 2026-07-27 BSE-PDF text sweep (backfill_revop_gaps, commit c4af852fa); see runbook §189 for the per-quarter mechanism. Not a scale issue (scale_fix n/a).",
+   "found": "KENNAMET negative-op audit 2026-09-27 (runbook §189): all 43 of the company's own BSE XBRL filings (Result_Arch_ng scrip 505890, every row Status New = as-filed) re-parsed with build_revop.xbrl_revop, second reader = the printed results PDFs (BSE announcement attachments); copies in ~/stocks-cache/kennamet-op/"
+  },
+  {
+   "sym": "KENNAMET",
+   "qe": "20230930",
+   "basis": "op_std",
+   "was": -212.6,
+   "fixed": 34.9,
+   "why": "Kennametal India prints in Rs MILLION (fiscal year Jul-Jun). XBRL Main_Ind_As_505890_911202318363.xml (BSE, filed 2023-11-13; OneD = the quarter, ScripCode 505890, ISIN INE717A01029, standalone) -> build_revop.xbrl_revop op 34.9. Printed PDF d17d5db1-905f-4762-bfef-e8c6f8966e99.pdf (current-quarter column, standalone statement) prints PBET 262 + finance costs 0 + depreciation 104 - other income 17 = op 349 mn = 34.9 cr. stored -212.6 is a row mis-read by the 2026-07-27 BSE-PDF text sweep (backfill_revop_gaps, commit c4af852fa); see runbook §189 for the per-quarter mechanism. Not a scale issue (scale_fix n/a).",
+   "found": "KENNAMET negative-op audit 2026-09-27 (runbook §189): all 43 of the company's own BSE XBRL filings (Result_Arch_ng scrip 505890, every row Status New = as-filed) re-parsed with build_revop.xbrl_revop, second reader = the printed results PDFs (BSE announcement attachments); copies in ~/stocks-cache/kennamet-op/"
+  },
+  {
+   "sym": "KENNAMET",
+   "qe": "20230930",
+   "basis": "ebit_std",
+   "was": -223.0,
+   "fixed": 24.5,
+   "why": "Kennametal India prints in Rs MILLION (fiscal year Jul-Jun). XBRL Main_Ind_As_505890_911202318363.xml (BSE, filed 2023-11-13; OneD = the quarter, ScripCode 505890, ISIN INE717A01029, standalone) -> build_revop.xbrl_revop ebit 24.5. Printed PDF d17d5db1-905f-4762-bfef-e8c6f8966e99.pdf (current-quarter column, standalone statement) prints PBET 262 + finance costs 0 + depreciation 104 - other income 17 = op 349 mn (ebit = op - dep 245) = 24.5 cr. stored -223.0 is a row mis-read by the 2026-07-27 BSE-PDF text sweep (backfill_revop_gaps, commit c4af852fa); see runbook §189 for the per-quarter mechanism. Not a scale issue (scale_fix n/a).",
+   "found": "KENNAMET negative-op audit 2026-09-27 (runbook §189): all 43 of the company's own BSE XBRL filings (Result_Arch_ng scrip 505890, every row Status New = as-filed) re-parsed with build_revop.xbrl_revop, second reader = the printed results PDFs (BSE announcement attachments); copies in ~/stocks-cache/kennamet-op/"
+  },
+  {
+   "sym": "KENNAMET",
+   "qe": "20210930",
+   "basis": "std",
+   "was": 268.6,
+   "fixed": 237.5,
+   "why": "Kennametal India prints in Rs MILLION (fiscal year Jul-Jun). XBRL Main_Ind_As_505890_10112021162740.xml (BSE, filed 2021-11-10; OneD = the quarter, ScripCode 505890, ISIN INE717A01029, standalone) -> build_revop.xbrl_revop rev 237.5. Printed PDF 34035ae3-a223-457b-a344-20a3762590fa.pdf (current-quarter column, standalone statement) prints revenue from operations 2375 mn = 237.5 cr. stored 268.6 is the Jun-2022 standalone quarter (revenue 2,686 mn) keyed to Sep-2021 by the 2026-07-27 BSE-PDF text sweep (backfill_revop_gaps, commit c4af852fa): both quarters print PAT 283 mn, so its PAT anchor matched the wrong column. Not a scale issue (scale_fix n/a).",
+   "found": "KENNAMET negative-op audit 2026-09-27 (runbook §189): all 43 of the company's own BSE XBRL filings (Result_Arch_ng scrip 505890, every row Status New = as-filed) re-parsed with build_revop.xbrl_revop, second reader = the printed results PDFs (BSE announcement attachments); copies in ~/stocks-cache/kennamet-op/"
+  },
+  {
+   "sym": "KENNAMET",
+   "qe": "20200630",
+   "basis": "op_con",
+   "was": -23.4,
+   "fixed": -12.7,
+   "why": "Kennametal India prints in Rs MILLION (fiscal year Jul-Jun). XBRL Main_Ind_As_505890_2082020152339.xml (BSE, filed 2020-08-20; OneD = the quarter, ScripCode 505890, ISIN INE717A01029, consolidated) -> build_revop.xbrl_revop op -12.7. Printed PDF 224d86c9-6528-4170-b963-d03b89c1e1fc.pdf (current-quarter column, consolidated statement) prints PBET -137 + finance costs 3 + depreciation 96 - other income 89 = op -127 mn = -12.7 cr. stored -23.4 is a row mis-read by the 2026-07-27 BSE-PDF text sweep (backfill_revop_gaps, commit c4af852fa); see runbook §189 for the per-quarter mechanism. Not a scale issue (scale_fix n/a).",
+   "found": "KENNAMET negative-op audit 2026-09-27 (runbook §189): all 43 of the company's own BSE XBRL filings (Result_Arch_ng scrip 505890, every row Status New = as-filed) re-parsed with build_revop.xbrl_revop, second reader = the printed results PDFs (BSE announcement attachments); copies in ~/stocks-cache/kennamet-op/"
+  },
+  {
+   "sym": "KENNAMET",
+   "qe": "20200630",
+   "basis": "ebit_con",
+   "was": -23.4,
+   "fixed": -22.3,
+   "why": "Kennametal India prints in Rs MILLION (fiscal year Jul-Jun). XBRL Main_Ind_As_505890_2082020152339.xml (BSE, filed 2020-08-20; OneD = the quarter, ScripCode 505890, ISIN INE717A01029, consolidated) -> build_revop.xbrl_revop ebit -22.3. Printed PDF 224d86c9-6528-4170-b963-d03b89c1e1fc.pdf (current-quarter column, consolidated statement) prints PBET -137 + finance costs 3 + depreciation 96 - other income 89 = op -127 mn (ebit = op - dep -223) = -22.3 cr. stored -23.4 is a row mis-read by the 2026-07-27 BSE-PDF text sweep (backfill_revop_gaps, commit c4af852fa); see runbook §189 for the per-quarter mechanism. Not a scale issue (scale_fix n/a).",
+   "found": "KENNAMET negative-op audit 2026-09-27 (runbook §189): all 43 of the company's own BSE XBRL filings (Result_Arch_ng scrip 505890, every row Status New = as-filed) re-parsed with build_revop.xbrl_revop, second reader = the printed results PDFs (BSE announcement attachments); copies in ~/stocks-cache/kennamet-op/"
+  },
+  {
+   "sym": "KENNAMET",
+   "qe": "20210331",
+   "basis": "op_con",
+   "was": -202.2,
+   "fixed": 34.9,
+   "why": "Kennametal India prints in Rs MILLION (fiscal year Jul-Jun). XBRL Main_Ind_As_505890_1452021151550.xml (BSE, filed 2021-05-14; OneD = the quarter, ScripCode 505890, ISIN INE717A01029, consolidated) -> build_revop.xbrl_revop op 34.9. Printed PDF fb00cd83-a505-45cd-a79b-e4f9d86fae02.pdf (current-quarter column, consolidated statement) prints PBET 287 + finance costs 0 + depreciation 94 - other income 32 = op 349 mn = 34.9 cr. stored -202.2 is a row mis-read by the 2026-07-27 BSE-PDF text sweep (backfill_revop_gaps, commit c4af852fa); see runbook §189 for the per-quarter mechanism. Not a scale issue (scale_fix n/a).",
+   "found": "KENNAMET negative-op audit 2026-09-27 (runbook §189): all 43 of the company's own BSE XBRL filings (Result_Arch_ng scrip 505890, every row Status New = as-filed) re-parsed with build_revop.xbrl_revop, second reader = the printed results PDFs (BSE announcement attachments); copies in ~/stocks-cache/kennamet-op/"
+  },
+  {
+   "sym": "KENNAMET",
+   "qe": "20210331",
+   "basis": "ebit_con",
+   "was": -202.2,
+   "fixed": 25.5,
+   "why": "Kennametal India prints in Rs MILLION (fiscal year Jul-Jun). XBRL Main_Ind_As_505890_1452021151550.xml (BSE, filed 2021-05-14; OneD = the quarter, ScripCode 505890, ISIN INE717A01029, consolidated) -> build_revop.xbrl_revop ebit 25.5. Printed PDF fb00cd83-a505-45cd-a79b-e4f9d86fae02.pdf (current-quarter column, consolidated statement) prints PBET 287 + finance costs 0 + depreciation 94 - other income 32 = op 349 mn (ebit = op - dep 255) = 25.5 cr. stored -202.2 is a row mis-read by the 2026-07-27 BSE-PDF text sweep (backfill_revop_gaps, commit c4af852fa); see runbook §189 for the per-quarter mechanism. Not a scale issue (scale_fix n/a).",
+   "found": "KENNAMET negative-op audit 2026-09-27 (runbook §189): all 43 of the company's own BSE XBRL filings (Result_Arch_ng scrip 505890, every row Status New = as-filed) re-parsed with build_revop.xbrl_revop, second reader = the printed results PDFs (BSE announcement attachments); copies in ~/stocks-cache/kennamet-op/"
+  },
+  {
+   "sym": "KENNAMET",
+   "qe": "20210630",
+   "basis": "op_con",
+   "was": -184.1,
+   "fixed": 37.3,
+   "why": "Kennametal India prints in Rs MILLION (fiscal year Jul-Jun). XBRL Main_Ind_As_505890_1982021171856.xml (BSE, filed 2021-08-19; OneD = the quarter, ScripCode 505890, ISIN INE717A01029, consolidated) -> build_revop.xbrl_revop op 37.3. Printed PDF 34035ae3-a223-457b-a344-20a3762590fa.pdf (previous-quarter column, consolidated statement) prints PBET 292 + finance costs 0 + depreciation 94 - other income 13 = op 373 mn = 37.3 cr. stored -184.1 is a row mis-read by the 2026-07-27 BSE-PDF text sweep (backfill_revop_gaps, commit c4af852fa); see runbook §189 for the per-quarter mechanism. Not a scale issue (scale_fix n/a).",
+   "found": "KENNAMET negative-op audit 2026-09-27 (runbook §189): all 43 of the company's own BSE XBRL filings (Result_Arch_ng scrip 505890, every row Status New = as-filed) re-parsed with build_revop.xbrl_revop, second reader = the printed results PDFs (BSE announcement attachments); copies in ~/stocks-cache/kennamet-op/"
+  },
+  {
+   "sym": "KENNAMET",
+   "qe": "20210630",
+   "basis": "ebit_con",
+   "was": -184.1,
+   "fixed": 27.9,
+   "why": "Kennametal India prints in Rs MILLION (fiscal year Jul-Jun). XBRL Main_Ind_As_505890_1982021171856.xml (BSE, filed 2021-08-19; OneD = the quarter, ScripCode 505890, ISIN INE717A01029, consolidated) -> build_revop.xbrl_revop ebit 27.9. Printed PDF 34035ae3-a223-457b-a344-20a3762590fa.pdf (previous-quarter column, consolidated statement) prints PBET 292 + finance costs 0 + depreciation 94 - other income 13 = op 373 mn (ebit = op - dep 279) = 27.9 cr. stored -184.1 is a row mis-read by the 2026-07-27 BSE-PDF text sweep (backfill_revop_gaps, commit c4af852fa); see runbook §189 for the per-quarter mechanism. Not a scale issue (scale_fix n/a).",
+   "found": "KENNAMET negative-op audit 2026-09-27 (runbook §189): all 43 of the company's own BSE XBRL filings (Result_Arch_ng scrip 505890, every row Status New = as-filed) re-parsed with build_revop.xbrl_revop, second reader = the printed results PDFs (BSE announcement attachments); copies in ~/stocks-cache/kennamet-op/"
+  },
+  {
+   "sym": "KENNAMET",
+   "qe": "20210930",
+   "basis": "op_con",
+   "was": -201.5,
+   "fixed": 45.2,
+   "why": "Kennametal India prints in Rs MILLION (fiscal year Jul-Jun). XBRL Main_Ind_As_505890_10112021162940.xml (BSE, filed 2021-11-10; OneD = the quarter, ScripCode 505890, ISIN INE717A01029, consolidated) -> build_revop.xbrl_revop op 45.2. Printed PDF 34035ae3-a223-457b-a344-20a3762590fa.pdf (current-quarter column, consolidated statement) prints PBET 378 + finance costs 0 + depreciation 92 - other income 18 = op 452 mn = 45.2 cr. stored -201.5 = -(Total expenses 2015 mn): the 2026-07-27 BSE-PDF text sweep (backfill_revop_gaps, commit c4af852fa) took the Total-income row as Other income and dropped depreciation (ebit == op). Not a scale issue (scale_fix n/a).",
+   "found": "KENNAMET negative-op audit 2026-09-27 (runbook §189): all 43 of the company's own BSE XBRL filings (Result_Arch_ng scrip 505890, every row Status New = as-filed) re-parsed with build_revop.xbrl_revop, second reader = the printed results PDFs (BSE announcement attachments); copies in ~/stocks-cache/kennamet-op/"
+  },
+  {
+   "sym": "KENNAMET",
+   "qe": "20210930",
+   "basis": "ebit_con",
+   "was": -201.5,
+   "fixed": 36.0,
+   "why": "Kennametal India prints in Rs MILLION (fiscal year Jul-Jun). XBRL Main_Ind_As_505890_10112021162940.xml (BSE, filed 2021-11-10; OneD = the quarter, ScripCode 505890, ISIN INE717A01029, consolidated) -> build_revop.xbrl_revop ebit 36.0. Printed PDF 34035ae3-a223-457b-a344-20a3762590fa.pdf (current-quarter column, consolidated statement) prints PBET 378 + finance costs 0 + depreciation 92 - other income 18 = op 452 mn (ebit = op - dep 360) = 36.0 cr. stored -201.5 = -(Total expenses 2015 mn): the 2026-07-27 BSE-PDF text sweep (backfill_revop_gaps, commit c4af852fa) took the Total-income row as Other income and dropped depreciation (ebit == op). Not a scale issue (scale_fix n/a).",
+   "found": "KENNAMET negative-op audit 2026-09-27 (runbook §189): all 43 of the company's own BSE XBRL filings (Result_Arch_ng scrip 505890, every row Status New = as-filed) re-parsed with build_revop.xbrl_revop, second reader = the printed results PDFs (BSE announcement attachments); copies in ~/stocks-cache/kennamet-op/"
+  },
+  {
+   "sym": "KENNAMET",
+   "qe": "20211231",
+   "basis": "op_con",
+   "was": -202.0,
+   "fixed": 46.0,
+   "why": "Kennametal India prints in Rs MILLION (fiscal year Jul-Jun). XBRL Main_Ind_As_505890_422022135955.xml (BSE, filed 2022-02-04; OneD = the quarter, ScripCode 505890, ISIN INE717A01029, consolidated) -> build_revop.xbrl_revop op 46.0. Printed PDF fc1f264d-6b1f-471b-b0c5-e208a261a624.pdf (current-quarter column, consolidated statement) prints PBET 406 + finance costs 0 + depreciation 89 - other income 35 = op 460 mn = 46.0 cr. stored -202.0 is a row mis-read by the 2026-07-27 BSE-PDF text sweep (backfill_revop_gaps, commit c4af852fa); see runbook §189 for the per-quarter mechanism. Not a scale issue (scale_fix n/a).",
+   "found": "KENNAMET negative-op audit 2026-09-27 (runbook §189): all 43 of the company's own BSE XBRL filings (Result_Arch_ng scrip 505890, every row Status New = as-filed) re-parsed with build_revop.xbrl_revop, second reader = the printed results PDFs (BSE announcement attachments); copies in ~/stocks-cache/kennamet-op/"
+  },
+  {
+   "sym": "KENNAMET",
+   "qe": "20211231",
+   "basis": "ebit_con",
+   "was": -202.0,
+   "fixed": 37.1,
+   "why": "Kennametal India prints in Rs MILLION (fiscal year Jul-Jun). XBRL Main_Ind_As_505890_422022135955.xml (BSE, filed 2022-02-04; OneD = the quarter, ScripCode 505890, ISIN INE717A01029, consolidated) -> build_revop.xbrl_revop ebit 37.1. Printed PDF fc1f264d-6b1f-471b-b0c5-e208a261a624.pdf (current-quarter column, consolidated statement) prints PBET 406 + finance costs 0 + depreciation 89 - other income 35 = op 460 mn (ebit = op - dep 371) = 37.1 cr. stored -202.0 is a row mis-read by the 2026-07-27 BSE-PDF text sweep (backfill_revop_gaps, commit c4af852fa); see runbook §189 for the per-quarter mechanism. Not a scale issue (scale_fix n/a).",
+   "found": "KENNAMET negative-op audit 2026-09-27 (runbook §189): all 43 of the company's own BSE XBRL filings (Result_Arch_ng scrip 505890, every row Status New = as-filed) re-parsed with build_revop.xbrl_revop, second reader = the printed results PDFs (BSE announcement attachments); copies in ~/stocks-cache/kennamet-op/"
+  },
+  {
+   "sym": "KENNAMET",
+   "qe": "20220630",
+   "basis": "op_con",
+   "was": -232.3,
+   "fixed": 45.1,
+   "why": "Kennametal India prints in Rs MILLION (fiscal year Jul-Jun). XBRL Main_Ind_As_505890_1382022133612.xml (BSE, filed 2022-09-06; OneD = the quarter, ScripCode 505890, ISIN INE717A01029, consolidated) -> build_revop.xbrl_revop op 45.1. Printed PDF 9b56685b-fc23-4b41-9f07-ee38412b2011.pdf (current-quarter column, consolidated statement) prints PBET 382 + finance costs 0 + depreciation 88 - other income 19 = op 451 mn = 45.1 cr. stored -232.3 = -(Total expenses 2323 mn): the 2026-07-27 BSE-PDF text sweep (backfill_revop_gaps, commit c4af852fa) took the Total-income row as Other income and dropped depreciation (ebit == op). Not a scale issue (scale_fix n/a).",
+   "found": "KENNAMET negative-op audit 2026-09-27 (runbook §189): all 43 of the company's own BSE XBRL filings (Result_Arch_ng scrip 505890, every row Status New = as-filed) re-parsed with build_revop.xbrl_revop, second reader = the printed results PDFs (BSE announcement attachments); copies in ~/stocks-cache/kennamet-op/"
+  },
+  {
+   "sym": "KENNAMET",
+   "qe": "20220630",
+   "basis": "ebit_con",
+   "was": -232.3,
+   "fixed": 36.3,
+   "why": "Kennametal India prints in Rs MILLION (fiscal year Jul-Jun). XBRL Main_Ind_As_505890_1382022133612.xml (BSE, filed 2022-09-06; OneD = the quarter, ScripCode 505890, ISIN INE717A01029, consolidated) -> build_revop.xbrl_revop ebit 36.3. Printed PDF 9b56685b-fc23-4b41-9f07-ee38412b2011.pdf (current-quarter column, consolidated statement) prints PBET 382 + finance costs 0 + depreciation 88 - other income 19 = op 451 mn (ebit = op - dep 363) = 36.3 cr. stored -232.3 = -(Total expenses 2323 mn): the 2026-07-27 BSE-PDF text sweep (backfill_revop_gaps, commit c4af852fa) took the Total-income row as Other income and dropped depreciation (ebit == op). Not a scale issue (scale_fix n/a).",
+   "found": "KENNAMET negative-op audit 2026-09-27 (runbook §189): all 43 of the company's own BSE XBRL filings (Result_Arch_ng scrip 505890, every row Status New = as-filed) re-parsed with build_revop.xbrl_revop, second reader = the printed results PDFs (BSE announcement attachments); copies in ~/stocks-cache/kennamet-op/"
+  },
+  {
+   "sym": "KENNAMET",
+   "qe": "20190930",
+   "basis": "con",
+   "was": 197.9,
+   "fixed": 217.3,
+   "why": "Kennametal India prints in Rs MILLION (fiscal year Jul-Jun). XBRL Main_Ind_As_505890_14112019113032.xml (BSE, filed 2019-11-18; OneD = the quarter, ScripCode 505890, ISIN INE717A01029, consolidated) -> build_revop.xbrl_revop rev 217.3. Printed PDF 1b1e6c84-d2ac-45a4-88b0-f981acd4fc2c.pdf (current-quarter column, consolidated statement) prints revenue from operations 2173 mn = 217.3 cr. stored 197.9 is the STANDALONE revenue copied into the consolidated slot; the consolidated statement prints revenue from operations 2173 mn. Not a scale issue (scale_fix n/a).",
+   "found": "KENNAMET negative-op audit 2026-09-27 (runbook §189): all 43 of the company's own BSE XBRL filings (Result_Arch_ng scrip 505890, every row Status New = as-filed) re-parsed with build_revop.xbrl_revop, second reader = the printed results PDFs (BSE announcement attachments); copies in ~/stocks-cache/kennamet-op/"
+  },
+  {
+   "sym": "KENNAMET",
+   "qe": "20191231",
+   "basis": "con",
+   "was": 189.7,
+   "fixed": 208.2,
+   "why": "Kennametal India prints in Rs MILLION (fiscal year Jul-Jun). XBRL Main_Ind_As_505890_622020152144.xml (BSE, filed 2020-02-06; OneD = the quarter, ScripCode 505890, ISIN INE717A01029, consolidated) -> build_revop.xbrl_revop rev 208.2. Printed PDF 5b618fc1-2028-49b8-8578-5c7987ba39b2.pdf (year-ago column, consolidated statement) prints revenue from operations 2082 mn = 208.2 cr. stored 189.7 is the STANDALONE revenue copied into the consolidated slot; the consolidated statement prints revenue from operations 2082 mn. Not a scale issue (scale_fix n/a).",
+   "found": "KENNAMET negative-op audit 2026-09-27 (runbook §189): all 43 of the company's own BSE XBRL filings (Result_Arch_ng scrip 505890, every row Status New = as-filed) re-parsed with build_revop.xbrl_revop, second reader = the printed results PDFs (BSE announcement attachments); copies in ~/stocks-cache/kennamet-op/"
+  },
+  {
+   "sym": "KENNAMET",
+   "qe": "20200630",
+   "basis": "con",
+   "was": 87.3,
+   "fixed": 95.6,
+   "why": "Kennametal India prints in Rs MILLION (fiscal year Jul-Jun). XBRL Main_Ind_As_505890_2082020152339.xml (BSE, filed 2020-08-20; OneD = the quarter, ScripCode 505890, ISIN INE717A01029, consolidated) -> build_revop.xbrl_revop rev 95.6. Printed PDF 224d86c9-6528-4170-b963-d03b89c1e1fc.pdf (current-quarter column, consolidated statement) prints revenue from operations 956 mn = 95.6 cr. stored 87.3 is the STANDALONE revenue copied into the consolidated slot; the consolidated statement prints revenue from operations 956 mn. Not a scale issue (scale_fix n/a).",
+   "found": "KENNAMET negative-op audit 2026-09-27 (runbook §189): all 43 of the company's own BSE XBRL filings (Result_Arch_ng scrip 505890, every row Status New = as-filed) re-parsed with build_revop.xbrl_revop, second reader = the printed results PDFs (BSE announcement attachments); copies in ~/stocks-cache/kennamet-op/"
+  },
+  {
+   "sym": "KENNAMET",
+   "qe": "20200930",
+   "basis": "con",
+   "was": 178.3,
+   "fixed": 197.1,
+   "why": "Kennametal India prints in Rs MILLION (fiscal year Jul-Jun). XBRL Main_Ind_As_505890_1411202014148.xml (BSE, filed 2020-11-19; OneD = the quarter, ScripCode 505890, ISIN INE717A01029, consolidated) -> build_revop.xbrl_revop rev 197.1. Printed PDF 5564d5a9-d270-46fd-a29a-590a38039814.pdf (current-quarter column, consolidated statement) prints revenue from operations 1971 mn = 197.1 cr. stored 178.3 is the STANDALONE revenue copied into the consolidated slot; the consolidated statement prints revenue from operations 1971 mn. Not a scale issue (scale_fix n/a).",
+   "found": "KENNAMET negative-op audit 2026-09-27 (runbook §189): all 43 of the company's own BSE XBRL filings (Result_Arch_ng scrip 505890, every row Status New = as-filed) re-parsed with build_revop.xbrl_revop, second reader = the printed results PDFs (BSE announcement attachments); copies in ~/stocks-cache/kennamet-op/"
+  },
+  {
+   "sym": "KENNAMET",
+   "qe": "20201231",
+   "basis": "con",
+   "was": 193.3,
+   "fixed": 216.8,
+   "why": "Kennametal India prints in Rs MILLION (fiscal year Jul-Jun). XBRL Main_Ind_As_505890_622021135239.xml (BSE, filed 2021-02-06; OneD = the quarter, ScripCode 505890, ISIN INE717A01029, consolidated) -> build_revop.xbrl_revop rev 216.8. Printed PDF 5b618fc1-2028-49b8-8578-5c7987ba39b2.pdf (current-quarter column, consolidated statement) prints revenue from operations 2168 mn = 216.8 cr. stored 193.3 is the STANDALONE revenue copied into the consolidated slot; the consolidated statement prints revenue from operations 2168 mn. Not a scale issue (scale_fix n/a).",
+   "found": "KENNAMET negative-op audit 2026-09-27 (runbook §189): all 43 of the company's own BSE XBRL filings (Result_Arch_ng scrip 505890, every row Status New = as-filed) re-parsed with build_revop.xbrl_revop, second reader = the printed results PDFs (BSE announcement attachments); copies in ~/stocks-cache/kennamet-op/"
+  },
+  {
+   "sym": "KENNAMET",
+   "qe": "20221231",
+   "basis": "op_con",
+   "was": -246.4,
+   "fixed": 37.7,
+   "why": "Kennametal India prints in Rs MILLION (fiscal year Jul-Jun). XBRL Main_Ind_As_505890_1022023204850.xml (BSE, filed 2023-02-11; OneD = the quarter, ScripCode 505890, ISIN INE717A01029, standalone) -> build_revop.xbrl_revop op 37.7. Printed PDF 4c212665-3ec4-4d03-be84-24ae2194311a.pdf (current-quarter column, standalone statement) prints PBET 296 + finance costs 0 + depreciation 93 - other income 12 = op 377 mn = 37.7 cr. stored -246.4 is a copy of the wrong standalone cell. No consolidated statement exists for this quarter: Kennametal's only subsidiary WITPL was amalgamated into the company (NCLT Bengaluru order 17-Oct-2022, received 16-Nov-2022; appointed date 1-Apr-2021 -- note in this filing), the filing has zero 'consolidat' mentions and BSE's results index lists no consolidated result after Sep-2022. The con slot therefore carries the standalone figure by identity -- the convention the store already applies to KENNAMET's npCon (§73b KENNAMET_DEC24). Not a scale issue (scale_fix n/a).",
+   "found": "KENNAMET negative-op audit 2026-09-27 (runbook §189): all 43 of the company's own BSE XBRL filings (Result_Arch_ng scrip 505890, every row Status New = as-filed) re-parsed with build_revop.xbrl_revop, second reader = the printed results PDFs (BSE announcement attachments); copies in ~/stocks-cache/kennamet-op/"
+  },
+  {
+   "sym": "KENNAMET",
+   "qe": "20221231",
+   "basis": "ebit_con",
+   "was": -246.4,
+   "fixed": 28.4,
+   "why": "Kennametal India prints in Rs MILLION (fiscal year Jul-Jun). XBRL Main_Ind_As_505890_1022023204850.xml (BSE, filed 2023-02-11; OneD = the quarter, ScripCode 505890, ISIN INE717A01029, standalone) -> build_revop.xbrl_revop ebit 28.4. Printed PDF 4c212665-3ec4-4d03-be84-24ae2194311a.pdf (current-quarter column, standalone statement) prints PBET 296 + finance costs 0 + depreciation 93 - other income 12 = op 377 mn (ebit = op - dep 284) = 28.4 cr. stored -246.4 is a copy of the wrong standalone cell. No consolidated statement exists for this quarter: Kennametal's only subsidiary WITPL was amalgamated into the company (NCLT Bengaluru order 17-Oct-2022, received 16-Nov-2022; appointed date 1-Apr-2021 -- note in this filing), the filing has zero 'consolidat' mentions and BSE's results index lists no consolidated result after Sep-2022. The con slot therefore carries the standalone figure by identity -- the convention the store already applies to KENNAMET's npCon (§73b KENNAMET_DEC24). Not a scale issue (scale_fix n/a).",
+   "found": "KENNAMET negative-op audit 2026-09-27 (runbook §189): all 43 of the company's own BSE XBRL filings (Result_Arch_ng scrip 505890, every row Status New = as-filed) re-parsed with build_revop.xbrl_revop, second reader = the printed results PDFs (BSE announcement attachments); copies in ~/stocks-cache/kennamet-op/"
+  },
+  {
+   "sym": "KENNAMET",
+   "qe": "20230331",
+   "basis": "op_con",
+   "was": -235.1,
+   "fixed": 30.5,
+   "why": "Kennametal India prints in Rs MILLION (fiscal year Jul-Jun). XBRL Main_Ind_As_505890_125202317557.xml (BSE, filed 2023-05-13; OneD = the quarter, ScripCode 505890, ISIN INE717A01029, standalone) -> build_revop.xbrl_revop op 30.5. Printed PDF 0f84e812-047a-487b-8a89-c060a6dacc47.pdf (current-quarter column, standalone statement) prints PBET 220 + finance costs 0 + depreciation 99 - other income 14 = op 305 mn = 30.5 cr. stored -235.1 is a copy of the wrong standalone cell. No consolidated statement exists for this quarter: Kennametal's only subsidiary WITPL was amalgamated into the company (NCLT Bengaluru order 17-Oct-2022, received 16-Nov-2022; appointed date 1-Apr-2021 -- note in this filing), the filing has zero 'consolidat' mentions and BSE's results index lists no consolidated result after Sep-2022. The con slot therefore carries the standalone figure by identity -- the convention the store already applies to KENNAMET's npCon (§73b KENNAMET_DEC24). Not a scale issue (scale_fix n/a).",
+   "found": "KENNAMET negative-op audit 2026-09-27 (runbook §189): all 43 of the company's own BSE XBRL filings (Result_Arch_ng scrip 505890, every row Status New = as-filed) re-parsed with build_revop.xbrl_revop, second reader = the printed results PDFs (BSE announcement attachments); copies in ~/stocks-cache/kennamet-op/"
+  },
+  {
+   "sym": "KENNAMET",
+   "qe": "20230331",
+   "basis": "ebit_con",
+   "was": -235.1,
+   "fixed": 20.6,
+   "why": "Kennametal India prints in Rs MILLION (fiscal year Jul-Jun). XBRL Main_Ind_As_505890_125202317557.xml (BSE, filed 2023-05-13; OneD = the quarter, ScripCode 505890, ISIN INE717A01029, standalone) -> build_revop.xbrl_revop ebit 20.6. Printed PDF 0f84e812-047a-487b-8a89-c060a6dacc47.pdf (current-quarter column, standalone statement) prints PBET 220 + finance costs 0 + depreciation 99 - other income 14 = op 305 mn (ebit = op - dep 206) = 20.6 cr. stored -235.1 is a copy of the wrong standalone cell. No consolidated statement exists for this quarter: Kennametal's only subsidiary WITPL was amalgamated into the company (NCLT Bengaluru order 17-Oct-2022, received 16-Nov-2022; appointed date 1-Apr-2021 -- note in this filing), the filing has zero 'consolidat' mentions and BSE's results index lists no consolidated result after Sep-2022. The con slot therefore carries the standalone figure by identity -- the convention the store already applies to KENNAMET's npCon (§73b KENNAMET_DEC24). Not a scale issue (scale_fix n/a).",
+   "found": "KENNAMET negative-op audit 2026-09-27 (runbook §189): all 43 of the company's own BSE XBRL filings (Result_Arch_ng scrip 505890, every row Status New = as-filed) re-parsed with build_revop.xbrl_revop, second reader = the printed results PDFs (BSE announcement attachments); copies in ~/stocks-cache/kennamet-op/"
+  },
+  {
+   "sym": "KENNAMET",
+   "qe": "20230630",
+   "basis": "op_con",
+   "was": 48.5,
+   "fixed": 36.5,
+   "why": "Kennametal India prints in Rs MILLION (fiscal year Jul-Jun). XBRL Main_Ind_As_505890_118202318352.xml (BSE, filed 2023-08-11; OneD = the quarter, ScripCode 505890, ISIN INE717A01029, standalone) -> build_revop.xbrl_revop op 36.5. Printed PDF d17d5db1-905f-4762-bfef-e8c6f8966e99.pdf (previous-quarter column, standalone statement) prints PBET 269 + finance costs 2 + depreciation 108 - other income 14 = op 365 mn = 36.5 cr. stored 48.5 is a copy of the wrong standalone cell. No consolidated statement exists for this quarter: Kennametal's only subsidiary WITPL was amalgamated into the company (NCLT Bengaluru order 17-Oct-2022, received 16-Nov-2022; appointed date 1-Apr-2021 -- note in this filing), the filing has zero 'consolidat' mentions and BSE's results index lists no consolidated result after Sep-2022. The con slot therefore carries the standalone figure by identity -- the convention the store already applies to KENNAMET's npCon (§73b KENNAMET_DEC24). Not a scale issue (scale_fix n/a).",
+   "found": "KENNAMET negative-op audit 2026-09-27 (runbook §189): all 43 of the company's own BSE XBRL filings (Result_Arch_ng scrip 505890, every row Status New = as-filed) re-parsed with build_revop.xbrl_revop, second reader = the printed results PDFs (BSE announcement attachments); copies in ~/stocks-cache/kennamet-op/"
+  },
+  {
+   "sym": "KENNAMET",
+   "qe": "20230630",
+   "basis": "ebit_con",
+   "was": 37.7,
+   "fixed": 25.7,
+   "why": "Kennametal India prints in Rs MILLION (fiscal year Jul-Jun). XBRL Main_Ind_As_505890_118202318352.xml (BSE, filed 2023-08-11; OneD = the quarter, ScripCode 505890, ISIN INE717A01029, standalone) -> build_revop.xbrl_revop ebit 25.7. Printed PDF d17d5db1-905f-4762-bfef-e8c6f8966e99.pdf (previous-quarter column, standalone statement) prints PBET 269 + finance costs 2 + depreciation 108 - other income 14 = op 365 mn (ebit = op - dep 257) = 25.7 cr. stored 37.7 is a copy of the wrong standalone cell. No consolidated statement exists for this quarter: Kennametal's only subsidiary WITPL was amalgamated into the company (NCLT Bengaluru order 17-Oct-2022, received 16-Nov-2022; appointed date 1-Apr-2021 -- note in this filing), the filing has zero 'consolidat' mentions and BSE's results index lists no consolidated result after Sep-2022. The con slot therefore carries the standalone figure by identity -- the convention the store already applies to KENNAMET's npCon (§73b KENNAMET_DEC24). Not a scale issue (scale_fix n/a).",
+   "found": "KENNAMET negative-op audit 2026-09-27 (runbook §189): all 43 of the company's own BSE XBRL filings (Result_Arch_ng scrip 505890, every row Status New = as-filed) re-parsed with build_revop.xbrl_revop, second reader = the printed results PDFs (BSE announcement attachments); copies in ~/stocks-cache/kennamet-op/"
+  },
+  {
+   "sym": "KENNAMET",
+   "qe": "20230930",
+   "basis": "op_con",
+   "was": -212.6,
+   "fixed": 34.9,
+   "why": "Kennametal India prints in Rs MILLION (fiscal year Jul-Jun). XBRL Main_Ind_As_505890_911202318363.xml (BSE, filed 2023-11-13; OneD = the quarter, ScripCode 505890, ISIN INE717A01029, standalone) -> build_revop.xbrl_revop op 34.9. Printed PDF d17d5db1-905f-4762-bfef-e8c6f8966e99.pdf (current-quarter column, standalone statement) prints PBET 262 + finance costs 0 + depreciation 104 - other income 17 = op 349 mn = 34.9 cr. stored -212.6 is a copy of the wrong standalone cell. No consolidated statement exists for this quarter: Kennametal's only subsidiary WITPL was amalgamated into the company (NCLT Bengaluru order 17-Oct-2022, received 16-Nov-2022; appointed date 1-Apr-2021 -- note in this filing), the filing has zero 'consolidat' mentions and BSE's results index lists no consolidated result after Sep-2022. The con slot therefore carries the standalone figure by identity -- the convention the store already applies to KENNAMET's npCon (§73b KENNAMET_DEC24). Not a scale issue (scale_fix n/a).",
+   "found": "KENNAMET negative-op audit 2026-09-27 (runbook §189): all 43 of the company's own BSE XBRL filings (Result_Arch_ng scrip 505890, every row Status New = as-filed) re-parsed with build_revop.xbrl_revop, second reader = the printed results PDFs (BSE announcement attachments); copies in ~/stocks-cache/kennamet-op/"
+  },
+  {
+   "sym": "KENNAMET",
+   "qe": "20230930",
+   "basis": "ebit_con",
+   "was": -223.0,
+   "fixed": 24.5,
+   "why": "Kennametal India prints in Rs MILLION (fiscal year Jul-Jun). XBRL Main_Ind_As_505890_911202318363.xml (BSE, filed 2023-11-13; OneD = the quarter, ScripCode 505890, ISIN INE717A01029, standalone) -> build_revop.xbrl_revop ebit 24.5. Printed PDF d17d5db1-905f-4762-bfef-e8c6f8966e99.pdf (current-quarter column, standalone statement) prints PBET 262 + finance costs 0 + depreciation 104 - other income 17 = op 349 mn (ebit = op - dep 245) = 24.5 cr. stored -223.0 is a copy of the wrong standalone cell. No consolidated statement exists for this quarter: Kennametal's only subsidiary WITPL was amalgamated into the company (NCLT Bengaluru order 17-Oct-2022, received 16-Nov-2022; appointed date 1-Apr-2021 -- note in this filing), the filing has zero 'consolidat' mentions and BSE's results index lists no consolidated result after Sep-2022. The con slot therefore carries the standalone figure by identity -- the convention the store already applies to KENNAMET's npCon (§73b KENNAMET_DEC24). Not a scale issue (scale_fix n/a).",
+   "found": "KENNAMET negative-op audit 2026-09-27 (runbook §189): all 43 of the company's own BSE XBRL filings (Result_Arch_ng scrip 505890, every row Status New = as-filed) re-parsed with build_revop.xbrl_revop, second reader = the printed results PDFs (BSE announcement attachments); copies in ~/stocks-cache/kennamet-op/"
   }
  ],
  "retracted": [

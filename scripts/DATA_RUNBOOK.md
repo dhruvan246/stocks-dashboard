@@ -56,6 +56,7 @@ loads every session. (README.md is just a short pointer here — this file is th
 - **§41** ★ PUBLISHING A DATA HEAL — "live on the server" ≠ "the site uses it" (**read before ANY heal / backfill**)
 - **§186** ★★ FISCAL YEAR-ENDS ARE PER YEAR — the stock page's Financial-detail card reads each year's end from the cash-flow period the filing tags (Jun / Dec / Sep filers; transition years when a company moves its year-end) (**read before touching renderDeep / fiscalYears() / card_audit.py**)
 - **§188** ★ TWO GREEN-BUT-BROKEN BSE JOBS AFTER §181 — annual-bscf needs `--max-minutes` under its job timeout; refresh-fundamentals' ann-date step installs its own pymupdf (**read before adding a BSE step to a CI job**)
+- **§189** ★★★ SIGN-SANE BUT WRONG: KENNAMET op was −(TOTAL EXPENSES) from a 2026-07-27 BSE-PDF text sweep — healed via revop_cell_fix (+46) / con_nofile_retractions (+3) from the company's own BSE XBRL + PDFs; `scan_negop_vs_filings.py` separates genuine negative op (other income > operating base, 3,840 cells) from filing-contradicted cells (119 / 61 stocks, only KENNAMET healed) (**read before healing any op cell or re-running backfill_revop_gaps.py**)
 - **§42–§58** ROUTE & SOURCE DISCOVERIES (detres JSON, FY identity, pre-2020 std/con ceilings, CI clobber, the ROUTE LADDER, the STANDARD BACKFILL READ)
 - **§70** ★★★ sf_fundamentals vs sf_revop DISAGREE — authority is fundamentals; the mirror is not rendered · §70d the mirror is also SPARSE — never measure PAT coverage from sf_revop idx4/5
 - **§71** ★★★ THE ADJUDICATION THAT WAS ABANDONED — when your "truth" source is the corrupted one
@@ -21737,7 +21738,7 @@ Dec/Jun filers read on March cells); complete cards 269 → 266 (BATAINDIA, JYOT
 balance sheet exists only on the basis the page does not show).
 **Limits / open.** Before a stock's first cash-flow evidence (the earliest ≥150-day flow on file is Mar-2018; PGHL's is
 Jun-2021) the earliest detected month is carried back: PGHL / EMERCK (formerly Merck Ltd) show pre-2020 P&L in Jul–Jun years — whether those years ended in June
-is not measured (no older cash-flow evidence in docs/fin). Not touched here: KENNAMET's stored quarterly operating profit is
+is not measured (no older cash-flow evidence in docs/fin). Not touched here (healed later the same day, §189): KENNAMET's stored quarterly operating profit is
 about −200 cr in 8 quarters of 2021-23 while revenue is ~250 cr (sf_revop); 1,213 Ratio columns (1,145 stocks) come from
 years holding fewer than four quarterly rows — SME H1+H2 pairs are legitimate, quarterly filers with a missing quarter are not.
 **§185b — the 16 Gemini cells relabelled (2026-09-27, user: "yes relabel them").** Decided from each filing's TEXT
@@ -21818,3 +21819,73 @@ printed nothing). Fix 63b83773a: `--max-minutes N` stops BETWEEN symbols (each i
 import (`No module named 'fitz'`, swallowed by `|| echo`) in every sampled run back to 2026-09-10, unrelated to §181. Fix:
 the step installs `pymupdf curl_cffi` itself. Verified run 36306439855: 120 dated cells checked, 0 lagged, 0 tracebacks.
 **Rule:** every CI step installs what ITS script imports — never rely on an earlier, conditionally-skipped step.
+## §189 — KENNAMET "OPERATING PROFIT" WAS −(TOTAL EXPENSES): a 2026-07-27 BSE-PDF text-sweep mis-read, healed from the company's own XBRL + PDFs; population screen (2026-09-27, user: "find where op comes from … heal through the matching ledger … report the population before fixing")
+**Defect.** `sf_revop` KENNAMET held op ≈ −200 cr in 8 quarters of 2021-23 on ~230-280 cr revenue while profitable
+(e.g. 20210331 rev 227.9 / op −202.2), so the stock page showed Jul–Jun years FY2021-23 at −40…−60 % OPM.
+**Where op came from — measured, not the XBRL cache.** `scripts/_xbrl_cache` holds ZERO KENNAMET/WIDIA files (NSE's results
+list never carried the company: `_nsearch_skips` "no-nse-filings-any-era"). Bisecting the 1,160 commits that touch
+`docs/sf_revop.json` (tree-level `git show`, one blob per probe) puts the bad cells in **c4af852fa (2026-07-27, "Rev
+recovery … local-OCR residual pass")** — `backfill_revop_gaps.py`'s BSE-PDF text sweep. Its provenance ledger
+`_revgap_done.json` (the current copy) holds no KENNAMET entry. The same values were already in the first docs/fin slices (2026-07-28).
+**Mechanism (every cell decomposed against the company's own statement, ₹ million):** 13 of the 21 wrong op cells are
+exactly **−(Total expenses)** — 7 directly (std Mar-21, Jun-21, Dec-21, Dec-22, Mar-23; con Sep-21, Jun-22; e.g. Mar-21
+std −202.2 = −2,022) and 6 as copies of the standalone figure in the con slot (Mar-21, Jun-21, Dec-21, Dec-22, Mar-23,
+Dec-18). Numerically that is PBET − (revenue + other income): the Total-income row was used as "Other income" and
+depreciation was dropped (ebit == op). The sweep's op guard only rejects op > revenue; nothing rejects op < 0 beside
+PBT > 0.
+Variants from the same sweep: Jun-20 = PBET − OI (FC, dep dropped); **Sep-21 std = the Jun-22 column** (revenue 268.6 and
+−2,321) — both quarters print PAT 283 mn, so the PAT anchor matched the wrong column; Jun-22 std = −(con total expenses);
+Jun-23 48.5/37.7 = a mis-read of a SCANNED filing whose text layer is garbled (op − ebit = dep 10.8, so only the pre-dep
+components); Sep-23 = FC read as the depreciation figure + OI read as Total income. The con slots held copies of these.
+**Decided from the filings, two readers per cell.** Primary: all **43** of KENNAMET's own XBRL filings on BSE
+(`Result_Arch_ng/w?scrip_cd=505890`, 151 rows, every row Status `New` = as-filed; ScripCode, ISIN INE717A01029, OneD
+90-92 days and NatureOfReport re-read from each file) through `build_revop.xbrl_revop` — the nightly's own parser.
+Second: the printed results PDFs (BSE announcement attachments; 19 fetched; own-quarter column, or the next filing's
+comparative column where the own PDF is a scan). **46/46 cells agree to 0.1 cr** (e.g. Mar-21 std: 273 + 0 + 94 − 16 =
+351 mn = 35.1 cr). Copies: `~/stocks-cache/kennamet-op/` (XBRL, PDFs + text, manifest, `heal_cells.json`, tools/).
+**Consolidated history (decides the con slots).** BSE lists consolidated results **Jun-2019 → Sep-2022 only**.
+Dec-2018: the filing says the company "availed the option not to submit the consolidated financial statements" (subsidiary
+WITPL, not yet operating) → **no document; retracted**. From Dec-2022: WITPL was **amalgamated into the company** (NCLT
+Bengaluru order 17-Oct-2022, appointed date 1-Apr-2021 — note in the Dec-22/Mar-23/Sep-23 filings; zero "consolidat") →
+single entity → con = std by identity, the convention the store already applies to KENNAMET npCon (§73b KENNAMET_DEC24);
+those con op/ebit cells are healed to the standalone figure, not retracted.
+**Heal — ledgers, never the derived files.** `scripts/revop_cell_fix.json` **+46**: op/ebit std 20 (10 quarters: Jun-20,
+Mar-21, Jun-21, Sep-21, Dec-21, Jun-22, Dec-22, Mar-23, Jun-23, Sep-23); std revenue Sep-21 268.6 → 237.5; op/ebit con 12
+(Jun-20, Mar-21, Jun-21, Sep-21, Dec-21, Jun-22); con revenue 5 that were standalone copies in real-con quarters (Sep-19
+197.9 → 217.3, Dec-19 189.7 → 208.2, Jun-20 87.3 → 95.6, Sep-20 178.3 → 197.1, Dec-20 193.3 → 216.8); op/ebit con 8 in
+the identity quarters Dec-22..Sep-23. `scripts/con_nofile_retractions.json` **+3** (20181231 revC 239.0 — matches no line
+of that statement — opC/ebitC −201.9) + `_evidence.KENNAMET`. Every entry names the XBRL file, the PDF + column and the
+arithmetic. Applied with `apply_revop_cell_fix.py --apply` + `apply_con_nofile_retractions.py --apply`: **49 cells,
+KENNAMET only**, in both `docs/sf_revop.json` and `scripts/revop_fundamentals.json` (semantic diff; sf_fundamentals /
+fundamentals.json rewritten byte-identical). `docs/fin/KENNAMET.json` + `WIDIA.json` from `build_stock_fin.py --out` —
+identical to the committed slices except the healed cells.
+**WIDIA** has no rows of its own in any store: `docs/fin/WIDIA.json` is the FUND_ALIAS copy of KENNAMET's slice and
+`stock.html?sym=WIDIA` hops to KENNAMET (sf-data has no `stk/WIDIA.json` — that 404 is the designed hop, also live).
+**Durability, proven by running it.** CI re-applies `revop_cell_fix` at the end of every refresh-fundamentals run (§109j):
+a healed cell forced back to its old value was restored byte-identically by the applier; a second run writes 0.
+`verify_fills_live.py`: 35,366 cells, MISSING 0, RESURRECTED 0; negative control on my own tree — revert Mar-21 op_std and
+resurrect Dec-18 opC → exit 1 with `REVERTED revop_cell_fix.json KENNAMET 20210331 op_std` and `RESURRECTED
+con_nofile_retractions.json KENNAMET 20181231 opC`; restored → exit 0.
+**Page (worktree docs on localhost, live price slice).** Quarterly table (con): Mar-21 34.9 / 15.3 %, Jun-21 37.3 / 17.6 %,
+Sep-21 45.2 / 19.0 %, Dec-21 46.0 / 19.2 %, Jun-22 45.1 / 16.8 %, Dec-22 37.7 / 13.7 %, Mar-23 30.5 / 11.9 %, Jun-23 36.5 /
+13.1 %, Sep-23 34.9 / 13.5 %; the only negative op left is Jun-20 (−12.7, −13.3 %) — genuine, the filing prints a pre-tax
+loss. P&L tab con FY2021 131 / 15 %, FY2022 179 / 18 %, FY2023 152 / 14 % (= sums of the healed quarters); std 120 / 180 /
+152. 375 px: no page overflow. Console: only the stk/ 404s above.
+**Population — `scripts/scan_negop_vs_filings.py` (read-only; XBRL_CACHE from the main checkout; ~4.5 min).** On origin
+63b83773a, BEFORE the heal: op < 0 while PBT (else PAT) > 0 = **4,132 cells / 850 symbols**; strongly negative (op < −50 %
+of revenue) 946 / 268. **3,840 are what the company's own numbers say** (line items give the same op: other income larger
+than the operating base — holding/investment companies). **119 cells / 61 symbols are contradicted**: KENNAMET 12;
+**same mechanism (op = −total expenses) KPIL 7, CCAVENUE 1, MAHSCOOTER 1**; other 2018+ mechanisms 21 (KPIL 7 more con
+cells vs its XBRL, VIYASH 3 incl. −1,038 on 42 cr revenue, AERONEU 2, HINDALCO Dec-18 con −2,386 vs 3,810, ZYDUSLIFE,
+LMW, CHOLAFIN, PAISALO, DHANBANK, DCM, UPL, ALPINEHOU); pre-2018 archive-HTML-era mismatches 77 (COALINDIA, RPOWER, CAIRN,
+MTNL … — different readers/definitions, not adjudicated). 173 cells (32 strong) have no local filing to check. After the
+heal the screen reports 107 / 60 with KENNAMET gone. **Only KENNAMET was healed; the rest await the user.**
+**Open (each with its reason).** (1) the population above — heal per cell only after reading each filing (XBRL on BSE for
+2018+) + a second reader. (2) KENNAMET PAT (`sf_fundamentals`, not touched — PAT authority, §70): 12 cells differ from the
+filings — con PAT is a copy of std through the con era 2019-09..2021-12 (e.g. Mar-21 stored 21.0, filed con 22.0), npStd
+Mar-22 27.25 vs 27.6, Jun-22 28.1 vs 28.3, Sep-22 31.5 vs 31.4; the con reading of Sep-20 (owners tag 0.0) needs the
+§116 owners-mis-tag check first. (3) KENNAMET op is BLANK (not wrong) in 12 cells the BSE XBRL has: std Dec-18 38.7,
+Mar-19 27.4, Sep-19 30.4, Dec-23..Sep-25 42.7 / 45.0 / 48.7 / 42.4 / 40.6 / 39.9 / 49.4 / 52.7; con Sep-19 32.9 — a fill
+(add the quarters to `bse_xbrl_nse_targets.json` or run `fetch_bse_results_xbrl.py`), not done here. (4) con copies left
+alone: Mar-19 revC 234.6 (no con document), Dec-18 patC/npCon 30.7. (5) `backfill_revop_gaps.metrics_at` still cannot
+reject op = −(total expenses) or a missing depreciation row — guard it before that sweep is ever re-run.
