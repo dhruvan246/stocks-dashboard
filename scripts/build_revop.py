@@ -88,7 +88,7 @@ def ctx_period(xml, cid):
 TAGS = ("RevenueFromOperations", "OtherIncome", "FinanceCosts",
         "DepreciationDepletionAndAmortisationExpense",
         "ProfitBeforeExceptionalItemsAndTax", "ProfitBeforeTax",
-        # non-Ind-AS (NONINDAS: SME + older small filers) spellings of the same two lines (runbook §204)
+        # non-Ind-AS (NONINDAS: SME + older small filers) spellings of the same two lines (runbook §205)
         "DepreciationAndAmortisationExpense", "ProfitBeforeExceptionalAndExtraordinaryItemsAndTax",
         "ProfitLossForPeriod", "ProfitOrLossAttributableToOwnersOfParent",
         # bank / NBFC formats (Trendlyne-parity, 2026-07-10)
@@ -320,7 +320,7 @@ def metrics_for(xml, ctx):
     rev = fnum(xml, "RevenueFromOperations", ctx)
     oi = fnum(xml, "OtherIncome", ctx) or 0.0
     fc = fnum(xml, "FinanceCosts", ctx) or 0.0
-    # ★ NON-IND-AS SPELLINGS (runbook §204). A NONINDAS filing (every NSE SME half-year, older small filers) tags
+    # ★ NON-IND-AS SPELLINGS (runbook §205). A NONINDAS filing (every NSE SME half-year, older small filers) tags
     # depreciation as DepreciationAndAmortisationExpense and its pre-exceptional line as
     # ProfitBeforeExceptionalAndExtraordinaryItemsAndTax. Reading only the Ind-AS names made dep 0 — op == ebit on
     # 836 cells (ZEAL Mar-26 op 8.50 for 11.37) — and pbet fell through to PBT after exceptional items (ATMASTCO

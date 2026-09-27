@@ -22977,7 +22977,7 @@ the row is not profit-proven (`pp` is per quarter) and the Jul–Sep-25 quarter 
 page derived 6.73 − 6.31 = 0.42. **Open (measured, not fixed here):** QMSMEDI's non-Ind-AS con rows hold TOTAL profit
 (its filings tag no owners' share: Sep-25 6.73 vs owners 6.05, Dec-25 3.17 vs 2.36, Mar-26 5.19 vs 4.08) — likely every
 NCI-bearing non-Ind-AS SME; 465 SME half-year sf_revop rows carry EBIT in the op slot (op = EBIT + depreciation elsewhere;
-ZEAL Mar-26 8.50 vs 11.37); the stock page falls back to `SYM.BO` for sector (ZEAL still shows Zeal Aqua's "Seafood") and
+ZEAL Mar-26 8.50 vs 11.37) → HEALED §205; the stock page falls back to `SYM.BO` for sector (ZEAL still shows Zeal Aqua's "Seafood") and
 the four BSE-owned keys still show the stopped NSE twin's price slice (KEL: no name, no market cap, reactions on Kundan's
 prices); BRIGHT's 8 stored rows match neither company's filings; px[540654] Globalspace Mar-22 220,157.83 cr PAT
 (unit error, its own cell).
@@ -23043,3 +23043,68 @@ only in the 2026-08-05 identities the 23-Sep fallback seed carried (HEG is now H
 no trade since 2007) carry BSE's own live Mktcap 0.00 where the seed had a stale figure. Also 68 names moved "…Limited" (NSE
 register) → "…Ltd" (BSE) because the live master has those scrips again. That is the universe catching up with BSE, not a defect
 of the name path.
+
+## §205 — NON-IND-AS FILINGS: THE op SLOT HELD EBIT (depreciation read as 0) AND EBIT INCLUDED EXCEPTIONAL ITEMS — parser fixed, 929 cells healed through revop_cell_fix (2026-09-28, user: "All 821 proven cells" · "Pre-exceptional op AND ebit" · "metrics_for only" · "Fetch and include")
+**NO ASSUMPTIONS, NO GUESSWORK — every value below was measured this session (filings, stores, builds, git history).**
+**Defect.** `build_revop.metrics_for` read only the Ind-AS names `DepreciationDepletionAndAmortisationExpense` and
+`ProfitBeforeExceptionalItemsAndTax`. A NONINDAS filing — every NSE SME half-year and quarter, older small filers — tags
+`DepreciationAndAmortisationExpense` (4,532 of 4,590 NONINDAS files) and `ProfitBeforeExceptionalAndExtraordinaryItemsAndTax`,
+so depreciation read as 0 through `or 0.0` (op == EBIT) and pbet fell through to PBT after exceptional/extraordinary items.
+ZEAL Mar-26 std (INTEGRATED_FILING_NONINDAS_1678012): PBT 9.62 + finance costs 1.12 − other income 2.24 = EBIT 8.50, stored in
+BOTH slots; depreciation 2.87 → op 11.37 (con 8.02 → 10.90). ATMASTCO Mar-26 std: PBT 9.46 after an exceptional −8.11 → stored
+op = EBIT = 15.31; pre-exceptional EBIT 23.42, op 25.28.
+**Writers (bisected over docs/sf_revop.json history).** 690 of the SME Sep/Mar cells landed in ONE CI commit, 90fb26702
+(2026-07-21 14:51 IST) — the first `update_fundamentals.py` run after 48f0a400b (2026-07-20) added the SME board
+(`index=sme`); `xbrl_revop` had no 182-day check until the Aug-09 cumulative fix, so half-year files passed straight through.
+The rest: 41 cells already present on 2026-07-17, single cells from later 15-min runs, 17 from the §177 NSE gap fill
+(a87f719d0, `apply_nse_gap_xbrl.py` → `xbrl_revop`), and — live until this fix — the bse-results-xbrl job (13 cells between
+the 8eb0377ba measurement and the fix: BSELINFRA ×2, ZODJRDMKJ ×11). The §181d filler writes revenue/profit only — not a
+writer. One parser, so every writer carried it: update_fundamentals, fetch_bse_results_xbrl, fill_revop_from_xbrl, the gap
+fill, build_revop.
+**Population.** 3,279 sf_revop cells hold op == EBIT. A cell was matched to its own filing — SME cache (6,261 files), the main
+cache's 674 NONINDAS files, `~/stocks-cache/xbrl_fill`, and 16 Jun-2026 SME files fetched this session (one at a time,
+fetch_sme_xbrl.NSE) — only when that filing's current column reproduces the stored revenue, op AND EBIT to the paisa (43 undated
+2019-22 files by upload date 0–200 days after the quarter + reporting type + exact values; zero rows never matched): 907 cells.
+Verdicts: **836 heal** (564 rows, 490 symbols), 47 correct as filed (the filing prints depreciation 0), 19 unchanged at 2 dp
+(depreciation < 0.005 cr), 5 held. The user's population — the 468 Sep/Mar rows of `ideas/nse_sme.csv` symbols (465 at the
+earlier count + 3 new) — is fully matched: 460 rows (672 cells) healed, 6 rows correct / unchanged, 2 held. Beyond it, the
+same proof on 164 cells: 51 half-years of ex-SME companies, 56 quarters of SME quarterly filers (15 from the fetched Jun-2026
+files), 57 quarters of other non-Ind-AS filers (2019-2026). Identity: 786 by ISIN, 7 by ISIN after the §180c O/0, I/1 repair
+(TRUST ×2, QLINE ×2, ARCIIL, AMIABLE, TUNWAL), 43 undated files by the file's own NSE symbol.
+**Heal.** `scripts/revop_cell_fix.json` +929 entries — 832 `op_*` + 97 `ebit_*` (the pre-exceptional convention on the 100
+exceptional-item cells; the 7 one-paisa moves were dropped, they sit inside apply_revop_cell_fix's TOL 0.01 and are never
+written). Each `why` names the file, the lines in crore, the identity and the year-closure status. Was-guarded, re-applied
+nightly after the three-way merge, checked by verify_fills_live: checked 35,620 → 36,549 (+929 exactly), MISSING 0, REVERTED 0,
+RESURRECTED 0, DRIFT 26 (pre-existing). `scripts/revop_fundamentals.json`: 82 slots via the applier + 630 EMPTY slots mirrored
+(fill-only, never a new row; 224 cells have no rl row) so the nightly applier prints no new MOVED-ON. Spec, lander and the
+re-runnable measurement: `~/stocks-cache/op_nonindas_fix/` (`entries_204.json`, `land.py` — run from a tree on fresh origin,
+never merge the payloads; `analysis/*.py`).
+**Code.** `metrics_for` takes the non-Ind-AS names as fallbacks (dep: Ind-AS, then non-Ind-AS; pbet: Ind-AS, then non-Ind-AS
+pre-exceptional, then PBT). Old vs new over 7,927 NONINDAS/SME/gap-fill files + 6,000 random main-cache Ind-AS files: every
+Ind-AS context identical (12,000 main, 4,756 SME, 1,846 gap-fill); only op/EBIT move, only where the non-Ind-AS tags exist;
+revenue/PAT/owners never move. The fixed parser reproduces all 836 healed cells exactly (no drift on a future re-parse). The
+non-Ind-AS pbet ties to Income − Expenses on all 4,696 file-columns that print both. Pushed first (c588e7466 — its message says §204; renumbered to §205 when another session took §204) to stop new cells.
+**Second document — the year closes on depreciation** (H1 + H2, or Q1..Q4, = the FY depreciation printed in the year-end
+filing): 598 close; 199 have no partner filing yet; 39 do not — 11 where revenue closes (the filer revised depreciation in the
+annual: GICL FY26 prints FY25's 0.4085; FOCE, FWSTC, GPECO, FINBUD, TECHLABS, UCL) and 28 where revenue does not close either
+(the row's period is unproven, §191: SHRENIK/LIBAS 2019-20 were quarterly filers whose "Half yearly"/"Yearly" files carry the
+QUARTER in OneD; BETA, KOTYARK, LEMERITE, KRISHNADEF, SHIVAUM, VITAL Sep-25 …). The entry writes the as-filed column of the
+row either way.
+**Verified.** Blast radius: docs/sf_revop.json 929 slots, revop_fundamentals.json 712 — every changed slot a §205 entry moving
+was → fixed. Slices built both ways on the same data (build_stock_fin): 491 of 6,598 change = the 488 healed symbols + 3 rename
+aliases (HORIZONBAT / HORIZONINF ← SKIL, ROMAN ← TARMAT); only `revop` moves; fund_months.json byte-identical. Browser (worktree
+docs on localhost + the new slices; price slices copied from sf-data into the gitignored docs/stk — without them localhost falls
+back to the full engine, which ignores `pd`): ZEAL Mar-26 std "6 mo" op 11.4 / OPM 10.0 % (live before: 8.5 / 7.5 %), EBIT
+8.5, TTM revenue ₹285 cr / profit ₹12 cr unchanged; ATMASTCO Mar-26 std op 25.3 / EBIT 23.4, Jun-26 op 7.5; RELIANCE
+unchanged; 0 console errors; 375 px no page overflow, dark (fresh load) + light.
+**Held / open.** SIMCA Mar-26 (the file states paid-up capital ₹8.8 lakh crore — filer power of ten, needs scale_fix §184);
+GOLDKART Mar-26 std, SHANTI Mar-26 std, LGHL Dec-25 std (the filing prints NEGATIVE depreciation — op would drop below EBIT
+and build_revop's ebit ≤ op guard would null it); GULPOLY Dec-19 (Ind-AS file with no depreciation tag); the 13 bse-results-xbrl
+cells written before the fix (BSE XBRL not cached); 186 op == EBIT cells that xbrl_extra contradicts with depreciation > 0 —
+main-board names from OTHER writers (EXIDEIND Mar-25 std op 355.97 = EBIT, detail dep 126.77), not this class; 199 op == EBIT
+cells with no depreciation on record anywhere; ARE&M 2022 (4 cells matching none of its filings); SHANTI Mar-26 con (the revised
+filing's revenue beside the original's op/EBIT); `build_xbrl_extra`'s `dep` / `pbet` tables still lack the non-Ind-AS names, so
+the stock page's annual "Depreciation" row stays blank for SME years.
+**Lesson.** A tag list is a silent filter: a taxonomy the list does not name reads as 0 through `or 0.0`, and 0 depreciation is a
+plausible number, so nothing downstream complained for ten weeks. Before pointing a writer at a new board or taxonomy, diff the
+new files' tag census against the parser's names (here: 4 names over 4,590 files, 30 seconds).
