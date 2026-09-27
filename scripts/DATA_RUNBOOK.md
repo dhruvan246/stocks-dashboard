@@ -21650,6 +21650,18 @@ time 1.2 s apart, 0 failures) and Moneycontrol where the MC journal has the cell
   −537.80; EBIT −1,373.20 − −642.10). Also filled, same filing, fill-only: the con PAT mirror (−644.40 = npCon) and the con
   xbrl_extra detail (17 fields: D&A 97.2, tax 4.8, EPS −10.0, NCI −1.0 …). `docs/bse_fundamentals.json` is re-stamped by --apply
   even when no BSE-only row changes — restore it rather than committing a timestamp-only diff.
+- **RML Dec-21 STANDALONE quarter filled (user: "fill the RML Dec-21 standalone quarter too").** The stores had no Dec-21 std
+  row: NSE's std XBRL for it is not in the cache (only the con one, INDAS_80374). Tracked BSE route, offline:
+  `fetch_bse_results_xbrl.py --fetch --from-dir <dir holding Main_Ind_As_532661_241202214531.xml>` then `--apply` (fill-only; RML
+  resolved from the file's ISIN; ann 20220124 = the upload stamp in the file name = the listing's Filing_Date_Time 2022-01-24
+  17:35, the con filing's day). Revenue 391.08 / op 28.27 / EBIT 12.87 / PAT 7.71 (npStd) + 16 std xbrl_extra fields (D&A 15.4,
+  finance costs 5.53, other income 2.87, tax 2.5, EPS 5.0 …). Correctly scaled (Crores; paid-up 15.42 cr = Sep-21's; EPS 5.0 =
+  7.71 cr / 1.542 cr shares). Anchors: its 9M minus the quarter = the NSE Sep-21 std H1 on 14 of 14 P&L tags (ratio 1.00000);
+  with §184a's Mar-22 std fix the four quarters sum to the FY exactly — revenue 299.79 + 412.27 + 391.08 + 451.86 = 1,555.0,
+  PAT 3.72 + 8.48 + 7.71 + 16.70 = 36.61, PBT / tax / D&A / finance costs too — the FY identity the Mar-22 std entry lacked when it
+  was armed (its `why` now records it). Other income / other expenses do NOT close (3.17 in the FY column, 6.04 in Sep-21's H1):
+  the filer's own regrouping between the two lines, revenue and PBT untouched. The con PAT mirror (sf_revop slot 5) stays 0.0
+  from the owners=0 mis-tag; stock.html never renders the mirror (npCon −4.31 is the pinned figure).
 
 ## §185 — AUDIT OF THE BSE RESULTS READERS AFTER §182: nine defects fixed, one ruled out (2026-09-27, user: "find more n more bugs … fix")
 All of it is quarter-agnostic: every target quarter comes from the filing (its printed period, else its filing date).
