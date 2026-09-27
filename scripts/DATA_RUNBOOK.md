@@ -55,6 +55,7 @@ loads every session. (README.md is just a short pointer here — this file is th
 - **§40** STOCK PAGE = PER-STOCK SLICES · **§40b** ★ REPORTING BASIS — one basis per comparison
 - **§41** ★ PUBLISHING A DATA HEAL — "live on the server" ≠ "the site uses it" (**read before ANY heal / backfill**)
 - **§186** ★★ FISCAL YEAR-ENDS ARE PER YEAR — the stock page's Financial-detail card reads each year's end from the cash-flow period the filing tags (Jun / Dec / Sep filers; transition years when a company moves its year-end) (**read before touching renderDeep / fiscalYears() / card_audit.py**)
+- **§191** ★★ A YEAR COUNTS ONLY WHEN ITS RESULT ROWS TILE ITS 12 MONTHS — SME half-year rows are proven from the filings (H1 + H2 = printed FY) into `scripts/row_periods.json` → slice `pd`; every other row is one quarter. REGENERATE the list after new SME half-year fills (**read before touching fySum / tiles / rowMonths / build_row_periods.py**)
 - **§188** ★ TWO GREEN-BUT-BROKEN BSE JOBS AFTER §181 — annual-bscf needs `--max-minutes` under its job timeout; refresh-fundamentals' ann-date step installs its own pymupdf (**read before adding a BSE step to a CI job**)
 - **§190** ★★ NO BROWSER IMPERSONATION LEFT FOR BSE — curl_cffi `impersonate="chrome"` bypasses the urllib override: use `BH.get` / `BH.Session`; curl callers `-A BH.UA` and NEVER a second Referer (**read before adding any BSE fetch**)
 - **§189** ★★★ SIGN-SANE BUT WRONG: KENNAMET op was −(TOTAL EXPENSES) from a 2026-07-27 BSE-PDF text sweep — healed via revop_cell_fix (+46) / con_nofile_retractions (+3) from the company's own BSE XBRL + PDFs; `scan_negop_vs_filings.py` separates genuine negative op (other income > operating base, 3,840 cells) from filing-contradicted cells (119 / 61 stocks, only KENNAMET healed) (**read before healing any op cell or re-running backfill_revop_gaps.py**)
@@ -21753,7 +21754,8 @@ balance sheet exists only on the basis the page does not show).
 Jun-2021) the earliest detected month is carried back: PGHL / EMERCK (formerly Merck Ltd) show pre-2020 P&L in Jul–Jun years — whether those years ended in June
 is not measured (no older cash-flow evidence in docs/fin). Not touched here (healed later the same day, §189): KENNAMET's stored quarterly operating profit is
 about −200 cr in 8 quarters of 2021-23 while revenue is ~250 cr (sf_revop); 1,213 Ratio columns (1,145 stocks) come from
-years holding fewer than four quarterly rows — SME H1+H2 pairs are legitimate, quarterly filers with a missing quarter are not.
+years holding fewer than four quarterly rows — SME H1+H2 pairs are legitimate, quarterly filers with a missing quarter are not
+(fixed the same day, §191: re-measured 1,433 columns / 1,104 stocks; a year now counts only when its rows tile 12 months).
 **§185b — the 16 Gemini cells relabelled (2026-09-27, user: "yes relabel them").** Decided from each filing's TEXT
 LAYER, no vision read: all 8 companies' June-quarter filings have zero "consolidat" mentions (most say "standalone")
 → all 16 cells `basis: S` (BYLD, FRESITA, OLYMTFI, OSWAYRN, QUADRANT, SIKOZY, SWORDEDGE, TNSTLTU). Five also carried the
@@ -21921,3 +21923,82 @@ Its last run (25-Sep) got 0/4,926 and kept the previous build's labels (§150 fa
 weekday refresh.yml log must show "Total sector rows" ≈ 4,9xx, not 0.
 **Live test (one request each, ~1.2 s apart, all 200):** BH.get ShareholdingPattern.aspx 49,714 B; BH.Session
 AnnSubCategoryGetData 2 rows; curl ComHeadernew new form. india_spot's Chrome UA is rewritten to `stocks-dashboard-research/1.0`.
+
+## §191 — A YEAR COUNTS ONLY WHEN ITS RESULT ROWS TILE ITS 12 MONTHS: half-year rows proven from the filings (stock page Financial-detail card, 2026-09-27, user: "measure both populations … decide how to mark row periods")
+**Defect.** `renderDeep()`'s `fySum()` summed whatever result rows a 12-month year held. It feeds the Ratios tab (debtor /
+inventory / payable days on annual sales, ROCE on EBIT) and the Cash-flow tab's CFO/OP. Rows are keyed by quarter-end
+only (`fund` / `revop`), so a quarter and a half-year look the same: an SME half-yearly filer's Sep row (Apr–Sep) + Mar row
+(Oct–Mar) IS its year (§181d), a quarterly filer's Dec + Mar quarters are half of one.
+**Measured (docs/fin at 63b83773a, 6,588 slices, consolidated view = page default; the Python replica of the page's own
+column rule).** 13,102 Ratio columns; 1,433 (1,104 stocks) from years with fewer than four rows [standalone view 1,380].
+§186's "1,213 / 1,145" could not be reproduced on the same data (only 8 slices differed) — use these. Checked against each
+company's own XBRL (NSE SME cache, 6,261 files):
+- SME half-years — both rows equal the Half-yearly / Yearly filings' figures: 737 columns (AAKAAR Mar-26: 25.32 + 41.64 =
+  66.96 = its printed FY). 703 sum exactly to the printed FY; 34 pair a consolidated H2 with a standalone H1 (the page
+  picks consolidated per row). The final rule keeps 725 (477 stocks) — see Limits for the 12 it cannot prove, incl.
+  DHARIWAL / INFLUX Mar-26 whose consolidated Mar row holds the FULL year (the consolidated view double-counted H1).
+- Quarterly filers with quarters missing: 382 / 375 (AARNAV Mar-26: Dec + Mar = 231 cr read as a year → debtor days 207;
+  4THDIM Mar-23 three quarters → 3,305 days; ABINFRA Mar-25).
+- One row in the year: 306 — 89 Oct–Mar only (ACCORD Mar-26: 17.68 of a printed 36.82 → 189 days instead of ~91), 13 a
+  Jan–Mar quarter only, 202 a single quarter with no half-year filing (167 are the first row of a stock's history: AEIM
+  Mar-20), 2 whose filing prints one number as both Oct–Mar and full year (AVATAR, BMLL — unprovable).
+- Sep + Mar pairs with no filing in the local caches: 8. Fetched 20 BSE results XBRL (Result_Arch_ng links, one at a time,
+  `bse_headers`) + read the NSE main cache: PROVEN AAYUSHBULL Mar-23 (H1 0.00 + 13.23 = FY 13.23), SUPERSHAKT Mar-23
+  (359.29 + 370.53 = 729.82) and Mar-24 (345.65 + 385.76 = 731.41); WRONG DHARNI Mar-24 (our Sep 0.00 is the Jul–Sep
+  quarter, H1 was 4.79), MAIDEN Mar-24 (our Mar 236.1 is the whole year), GANESHIN Mar-25 (our Mar 158.64 vs the filing's
+  Oct–Mar 307.83, FY 538.22), KSHITIJPOL Mar-23 and TARACHAND Mar-24 (quarter figures filed as "Half yearly"/"Yearly").
+- Four-row years that double count — companies filing quarters AND half-years: QMSMEDI Mar-26 (Q1 + H1 + Q3 + H2 = 224 cr
+  vs FY 152), ZEAL Mar-25/26 (624 vs 368), GSTL, VIVIANA.
+- CFO/OP: 678 cells sit on short years — none SME (our SME half-year data carries no cash flow).
+- `x.cf_d` cannot mark rows: all 737 SME Sep rows carry NO cash flow, while 88 of the wrong quarterly years have a 182-day
+  Sep flow (every listed company files an H1 cash flow).
+**Labels lie; only the arithmetic proves.** "Half yearly"/"Yearly" name the FILING (§130). Headers and context blocks both
+misstate periods: ABINFRA's "Oct–Mar" Yearly OneD is its Jan–Mar quarter, BSE SME half-year files label OneD Jul–Sep while
+FourD is Apr–Sep (DHARNI OneD = the quarter, SUPERSHAKT OneD = the half), MAIDEN's Yearly OneD = FourD = the whole year.
+**Fix (user chose "proof list from the filings").**
+- `scripts/build_row_periods.py` → `scripts/row_periods.json` {SYM: {qEnd: {m, s, c, f}}}. Year to Mar y: a Mar-y filing
+  (basis b) with OneD h2 and FourD FY, and a Sep-(y−1) filing (any basis) with OneD or FourD h1, PAIR when h1 + h2 = FY
+  (§181d tolerance). Our Sep revenue = an h1 of its own basis → 6 months; our Mar revenue = h2 → 6; else = FY and ≠ OneD →
+  12 (none today). A quarter-end is marked only when EVERY revenue figure stored there (std and con) proves the same
+  length. VETO: a basis whose rows of that year include a Jun/Dec row and already sum to its FY as quarters — then
+  H1 + H2 = FY held only because quarters were zero (BOHRAIND, SRPL: 0 + 0 = 0 had "proved" their Sep/Mar quarters were
+  halves and dropped their P&L year and CFO/PAT card). Revenue only (consolidated SME Yearly files print PAT 0.0).
+  1,531 rows / 507 symbols; `f` = the evidence files. Entries whose evidence is not in the scanned dirs are carried forward.
+- `build_stock_fin.py` → slice `pd` {qEnd: 6|12}, published only while the row still carries the proven revenue (a
+  later writer's change drops the mark: the year goes blank, never wrong; the build log prints the count).
+- `docs/stock.html`: `rowMonths(e)` (3 unless `pd` says 6/12); `renderDeep` `tiles(fy)` — each row starts where the
+  previous ended and the last ends at the year-end; `fySum` returns null unless the year tiles; P&L `full` = four rows
+  that tile; the CFO/PAT card needs four 3-month rows; the Ratios / Cash-flow notes name a year left out ("No column for
+  Mar 2026: the results on file for that year do not add up to exactly its 12 months …").
+- `refresh-stock-fin.yml` rebuilds the slices when `scripts/row_periods.json` changes.
+**Upkeep.** After new SME half-year results land (§181d filler / `fetch_sme_xbrl.py`), run on the Mac:
+`SME_CACHE=/Users/dhruvan/stocks-dashboard/scripts/_xbrl_cache_sme python3 scripts/build_row_periods.py` and commit the
+list (CI rebuilds the slices). BSE SME filers: download their Result_Arch_ng XBRL into `~/stocks-cache/bse_sme_xbrl/`
+first (one request at a time, §181). Until a new half-year is on the list, its year simply shows no Ratio column.
+**Result (old vs new page over all 6,588 slices, data at origin 87ce9742d).** Consolidated view: 729 Ratio columns removed
+(698 stocks), 0 added, 0 kept columns changed value; 678 CFO/OP cells blanked (618 stocks); 6 P&L columns removed (the
+double-counting years of GSTL, QMSMEDI, VIVIANA, ZEAL); 0 CFO/PAT cards changed. Standalone view: 684 (656) / 661 (604) /
+4. Kept: 725 SME half-year columns + AAYUSHBULL Mar-23 + SUPERSHAKT Mar-23/Mar-24.
+**Verified.** Node run of the REAL page — origin's stock.html vs this one, `renderFunds` + every deep-card tab,
+both bases — over all 6,588 slices, against the Python replica (`predict.py`): Ratio columns, P&L columns and CFO/OP
+cells identical on all 9,331 card-bearing stock-views, old and new; the node old-vs-new diff equals the prediction
+exactly (the Result numbers above are node-measured); Quarterly / Balance sheet / Segments / Bank tabs and the ratio
+cards byte-identical; 0 render errors. Re-run on the 1,772 slices whose data moved during the session (origin
+87ce9742d): 1,176 / 1,176 identical. Builder: slices rebuilt locally equal CI's except the added `pd` (6,073
+byte-identical + 510 `pd`-only at 63b83773a; the other 5 were CI lag of §185b). The veto was found by this diff
+(BOHRAIND / SRPL in the P&L-removed list), not by reading code. Browser (worktree docs on localhost, price slices from
+sf-data): AAKAAR Mar-26 kept (203 days, as before); AARNAV loses its Ratios tab and the Cash-flow note names Mar 2026;
+QMSMEDI Mar-25 kept, Mar-26 left out with the note; AAYUSHBULL Mar-23 kept + "No column for Mar 2024"; SUPERSHAKT
+Mar-23/24 kept; ZEAL's double-counted Mar-25 P&L column gone; RELIANCE every tab + cards identical to LIVE; APRAMEYA
+basis switch; rewind ?asof=2023-07-01 (Mar-23 shown) / 2023-03-01 (no Ratios tab); 375 px no page overflow; dark
+(fresh load) and light; console: only the quote worker's 502 for SME symbols (same on live).
+**Limits / open.**
+- 12 SME years (con view; 10 on std) stay blank because ANOTHER figure stored on the same date is unproven: consolidated
+  0.00 placeholders (SIGNORIA, VELS, VIJAYPD Mar-26), superseded original filings (TRUST, FRESHARA Mar-26), consolidated
+  Mar = full year (DHARIWAL, INFLUX), H1 + H2 ≠ FY by 0.6–4.4 % on one basis (IPHL, SOTAC, QUICKTOUCH, DIGIKORE Mar-25, SPUNWEB).
+  Per-basis marks would keep the standalone view of most — not built.
+- 638 SME cache files carry neither a period header nor an OneD context — undatable, unused.
+- `fetch_bse_results_xbrl.read_file` dates a file by its OneD context block, which says Jul–Sep for an SME Apr–Sep half:
+  BSE SME half-years are stored as quarters without `h=1` (AAYUSHBULL, SUPERSHAKT, DHARNI, MAIDEN rows). Not fixed here.
+- The TTM cards (`renderFunds` `window4`) and both backtest engines still add four rows that can include a half-year
+  (QMSMEDI / ZEAL-type dual filers). Not touched.
