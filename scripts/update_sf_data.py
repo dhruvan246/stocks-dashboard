@@ -1647,7 +1647,17 @@ def main():
                     # the pre-split INE545A01016). HEGAM's official factor (2024-10-18 x0.2) predates the join -> adj = 1.
                     # new_from: HEGAM's bars before 20260922 are BSE 509631's (the §171 prepend of 2026-09-26) for sessions
                     # NSE printed under HEG — they are dropped and HEG's own NSE bars take those dates.
-                    "HEGAM": {"old": "HEG", "new_from": 20260922, "name": "HEG Advanced Materials Limited"}}
+                    "HEGAM": {"old": "HEG", "new_from": 20260922, "name": "HEG Advanced Materials Limited"},
+                    # --- 2026-09-27 (DATA_RUNBOOK §200): the other five §145 SME fragments created as dead keys beside
+                    # their renamed main-board successor. Each measured on NSE's bhavcopy: same ISIN on the SM last day and
+                    # the EQ first day (still filed under the old symbol), EQ PREVCLOSE == SM last close. Every fragment
+                    # close == NSE raw x its in-life official factors (URAVI x0.5 20220711, WFL x0.625 20211006 already
+                    # inside); the successor's official factors after the SME end == its stored/raw level at the join.
+                    "AURIGROW": "GODHA",       # INE925Y01010: SM 20201223 34.60 -> EQ 20201224 prev 34.60; adj 0.05 (0.5 x 0.1)
+                    "GTECJAINX": "KEERTI",     # INE586X01012: SM 20201112 30.90 -> EQ 20201113 prev 30.90; adj 1
+                    "SONAMLTD": "SONAMCLOCK",  # INE00LM01011: SM 20220406 79.00 -> EQ 20220407 prev 79.00; adj 0.25 (0.5 x 0.5)
+                    "URAVIDEF": "URAVI",       # INE568Z01015: SM 20230704 280.55 -> EQ 20230705 prev 280.55; adj 1
+                    "WEL": "WFL"}              # INE02WG01016: SM 20220114 116.65 -> EQ 20220117 prev 116.65; adj 0.1
     # --- 2026-08-23 ISIN-SEAM batch (DATA_RUNBOOK §95g's open queue, landed in §105): the 103 seams
     # the issuer-prefix sweep CONFIRMED as one company (scripts/_isin_seam_verdicts.json) were never
     # stitched because the ISIN CHANGED at each seam (face-value change, scheme) — the auto-merge must

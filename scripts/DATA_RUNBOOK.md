@@ -66,6 +66,7 @@ loads every session. (README.md is just a short pointer here — this file is th
 - **§72** ★★★ VERIFYING REV/PAT vs EXTERNAL SITES — sites reach 10 of 95 quarters; con PAT has no site quorum
 - **§76** ★★★ A `scrip_id` EQUAL TO THE TICKER IS A COINCIDENCE — gate symbol→BSE-scrip on ISIN (**read before any BSE-keyed fill**)
 - **§197** ★★★ A BSE-ONLY TICKER CAN BE A FORMER NSE TICKER OF ANOTHER COMPANY — `_rename_map`/FUND_ALIAS are NSE facts; the site never applies them to a ticker in `docs/bse_alias_collisions.json` (WORTH = Worth Investment, not WORTHPERI; 12 found) (**read before any alias/rename consumer that serves a page, and before merging an SME fragment**)
+- **§200** ★★ FIVE MORE §145 SME FRAGMENTS MERGED (GODHA, KEERTI, SONAMCLOCK, URAVI, WFL) — a merge needs the SM→EQ PREVCLOSE proof, the successor factors after the SME end == its stored/raw level at the join, AND the ledger create→prepend in the same push (**read before merging any SME fragment**)
 - **§198** ★★ TTM = EXACTLY THE LATEST 12 MONTHS (Screener's rule) — stock.html TTM cards, per-row YoY and BOTH engines tile 12 months from rows of PROVEN length (slice `pd`/`pp`, docs/fund_months.json); a quarter is split off a half only on a proven quarter; profit on a half counts only when it equals its filing's (**read before touching renderFunds TTM, profitMetrics TTM/YoY, or build_row_periods.py**)
 - **§59** ★★ STANDALONE-SLOT-HOLDS-CONSOLIDATED AUDIT — the screen is not a defect count (**read before acting on any std/con equality screen**)
 - **§80** ★★★ SERIES **BZ** WAS NEVER INGESTED — a live trading series discarded for years (**read before touching the bhavcopy filter or a price-series gap**)
@@ -22745,3 +22746,41 @@ is only the first bar on/after the change date); SANGINITA→AGASTYAEN and KEL�
 trade 19-Feb-2020 44.00 with PREVCLOSE 85.00) — now visible to self_heal's old-factor check under CRESTO ("matches neither"), left for a
 human; the bars themselves are unchanged by the merge. (3) An in-flight CI run whose base still held HEG/SILLYMONKS can re-add those keys
 through `ci_preserve_merge.py` (a row origin lacks = "CI's row wins") — re-verify the stores ~20 min after the push.
+
+## §200 — THE OTHER FIVE §145 SME FRAGMENTS MERGED INTO THEIR RENAMED SUCCESSORS (GODHA, KEERTI, SONAMCLOCK, URAVI, WFL) (2026-09-27, §197's open item)
+**NO ASSUMPTIONS, NO GUESSWORK — every value below was measured this session.**
+**The defect.** `scripts/sme_backfill.json.gz` held five `create` blocks whose NSE symbol has a rename chain in `_rename_map`
+to a live bin key. §145's builder could not see the successor (its bin meta has no ISIN, and NSE renamed it after the
+SME→main-board move), so each SME era became a DEAD key: in backtests the old key dies mid-history (a −100 % exit) while
+the successor's history starts late. Same class as WORTH/CREATIVE (§197), builder fixed there.
+**Evidence per pair (NSE's own bhavcopies, ~/stocks-cache/nse_bhav/full):** on the successor's first main-board day the EQ
+row is still filed under the OLD symbol, same ISIN as the SM rows, and PREVCLOSE == the SM last close:
+| pair | ISIN | SM last close | EQ day-1 prev / close | successor stored÷raw at join | official factors after SME end |
+|---|---|---|---|---|---|
+| GODHA → AURIGROW | INE925Y01010 | 2020-12-23 34.60 | 34.60 / 36.30 | 0.0501 | 20220120 ×0.5, 20220324 ×0.1 = 0.05 |
+| KEERTI → GTECJAINX | INE586X01012 | 2020-11-12 30.90 | 30.90 / 29.45 | 1.000 | none = 1 |
+| SONAMCLOCK → SONAMLTD | INE00LM01011 | 2022-04-06 79.00 | 79.00 / 84.55 | 0.2500 | 20220714 ×0.5, 20240510 ×0.5 = 0.25 |
+| URAVI → URAVIDEF | INE568Z01015 | 2023-07-04 280.55 | 280.55 / 277.40 | 1.000 | none after = 1 |
+| WFL → WEL | INE02WG01016 | 2022-01-14 116.65 | 116.65 / 122.45 | 0.0999 | 20241112 ×0.1 = 0.1 |
+Fragment integrity: all 1,716 fragment closes == NSE raw × the official factors inside their own life (URAVI ×0.5
+2022-07-11 and WFL ×0.625 2021-10-06 are already in the bars) — 0 mismatches, so MANUAL_MERGE (which applies only factors
+dated after the fragment ends) cannot double-apply them. None of the five old keys is a BSE-only dashboard ticker
+(no .NS/.BO in stock_data.bin, not in bse_universe/bse_scrips; collision scan still 12, 0 new).
+**Fix.** `update_sf_data.py` MANUAL_MERGE += AURIGROW←GODHA, GTECJAINX←KEERTI, SONAMLTD←SONAMCLOCK, URAVIDEF←URAVI, WEL←WFL.
+`sme_backfill.json.gz`: the five `create` blocks → `prepend` (else the next nightly re-creates each key the merge removes);
+anchors from the bhavcopy (20201224 36.30/34.60, 20201113 29.45/30.90, 20220407 84.55/79.00, 20230705 277.40/280.55,
+20220117 122.45/116.65); bars = the LIVE tape fragments, not the committed create bars — the committed WFL block was 0.9375
+low before 2021-10-06 (the old builder inferred ×2/3 for the official ×0.625; the tape had since been healed). Cross-check:
+the §197-fixed builder, run on 1,471 NSE sessions 2017-08 → 2023-07 against a 5-key bin, emits all five as prepends with
+the same anchors and bars equal to the tape on date/close/high/low/open/volume (t/dv/vw differ only because the local 2020+
+files are the old format; it also emits the 2021-11-04 muhurat bar the tape does not carry). FUND_ALIAS (both baked copies,
+byte-identical) += GODHA→AURIGROW, KEERTI→GTECJAINX so an old-symbol link redirects instead of "not found" (SONAMCLOCK/URAVI/
+WFL already had theirs; the targets' META aliveness makes these two hand-curated "extra" entries, §95f).
+**Left as is, measured:** sf_revop / revop_fundamentals / xbrl_extra hold the old keys' NSE-era SME filings (GODHA 19, KEERTI
+11, SONAMCLOCK 7, URAVI 7, WFL 3 quarters) — every one is already on the successor's page (build_stock_fin's former-symbol
+fold); the engine never reads sf_revop and the old keys hold no sf_fundamentals / shp_engine rows. A move would change no
+page and only churn ledgers (mc_history_fills KEERTI ×2, _reattr_owners), so verify_fills_live is untouched.
+**Local test (update_sf_data.py --base <live release asset>, twice):** run 1 = exactly the five MANUAL RENAME MERGE lines
+(adj 0.0500 / 1.0000 / 0.2500 / 1.0000 / 0.1000), only the five old keys removed and the five successors changed (post-join
+bars byte-identical, ISIN now in meta); joins read NSE's raw day-1 moves (GTECJAINX 0.9531, SONAMLTD 1.0704, URAVIDEF
+0.9888; AURIGROW/WEL within 2-dp rounding); run 2 = 0 series changed, no key re-created.
