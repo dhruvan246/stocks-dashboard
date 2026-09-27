@@ -206,9 +206,18 @@ def targets(today):
     """[(code, target_sym or None, kind, sme, [missing qe])] — NSE targets first, then BSE-only by mcap."""
     bf_out = os.path.join(DOCS, "bse_fundamentals.json")    # (no fetch_bse_fund import: it pulls in PyMuPDF)
     out = []
+    xl, tape = load_detail_keys()
     if os.path.exists(NSE_T):
+        # NSE targets shrink as they fill (2026-09-27): a listed quarter stays only while the NSE symbol still lacks its
+        # profit, revenue or detail — the static list alone re-listed all 1,107 names every run after the §181c state change.
+        sf = json.load(open(os.path.join(DOCS, "sf_fundamentals.json"))); rvp = json.load(open(os.path.join(DOCS, "sf_revop.json")))
         for sym, t in sorted(json.load(open(NSE_T)).items()):
-            out.append((str(t["code"]), sym, "nse", False, sorted(int(q) for q in t["q"])))
+            pat = {r[0] for r in sf.get(sym, []) if r[1] is not None or r[3] is not None}
+            rev = {int(q) for q, r in (rvp.get(sym) or {}).items() if r[0] is not None or r[1] is not None}
+            det = {int(q) for q in (xl.get(sym) or {}) if str(q).isdigit()}
+            q = sorted(int(x) for x in t["q"] if not (int(x) in pat and int(x) in rev and int(x) in det))
+            if q:
+                out.append((str(t["code"]), sym, "nse", False, q))
     univ = json.load(open(os.path.join(DOCS, "bse_universe.json")))["rows"]
     univ.sort(key=lambda r: r[6] or 0, reverse=True)
     px = json.load(open(bf_out, encoding="utf-8")).get("px", {}) if os.path.exists(bf_out) else {}
@@ -216,7 +225,6 @@ def targets(today):
     # routes (history / vision) stored rev+PAT without detail, so the page lacked detail for those quarters and the
     # px-only test never targeted them (BSE-only detail at the latest Jun quarter: 7 of 2,159). Detail is keyed by the
     # BSE ticker; a ticker that is also an NSE tape key never takes BSE detail (apply's clash guard), so it is not chased.
-    xl, tape = load_detail_keys()
     code2tk = {str(v): k for k, v in json.load(open(os.path.join(HERE, "bse_scrips.json")))["by_id"].items()}
     due = due_quarters(today)
     for r in univ:
@@ -261,7 +269,9 @@ def fetch(budget, fills_path, from_dir=None):
             break
         st = state.get(code)                                 # {"d": YYYYMMDD, "q": [quarters asked]} (old form: int)
         last = int((st.get("d") if isinstance(st, dict) else st) or 0)
-        asked = set(st.get("q") or []) if isinstance(st, dict) else None
+        asked = set(st.get("q") or []) if isinstance(st, dict) else (set(miss) if kind == "nse" else None)
+        # (old int entries: an NSE target's quarters are the ones it was already asked for; a BSE-only scrip may now
+        # want detail quarters it was never asked for, so it is listed again)
         if last and (today - datetime.date(last // 10000, last // 100 % 100, last % 100)).days < RELIST_DAYS \
                 and asked is not None and set(miss) <= asked:
             continue                                         # listed recently for these same quarters — nothing new
