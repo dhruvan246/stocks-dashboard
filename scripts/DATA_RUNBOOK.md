@@ -21309,7 +21309,7 @@ KINETICENG gains its BSE fundamentals. Screener, 7 random: 5 exact; HIGHENE / SU
 Screener truncates the share-count % (43.0656 → 43.06) while we keep the filing's printed 43.07; SUDTIND-B's 0.004 %
 bank holding sits in the filing's Institutions(Domestic) (= our DII). Holds 933 BSE cells (row-level 435, identity 337 —
 incl. filer ISIN typos like INE195101013 that norm_isin does not repair on the KNOWN side, left held).
-**Final batch LANDED (2026-09-27 ~13:40 IST):** round 2 (Actions run 36259144594, 389 + 380 scrips, 0 refusals) + the Mac
+**Final batch LANDED (2026-09-27 ~13:20 IST, 7826137c1; slices be2a3aeb7; 469/469 cells exact on 25 live pages):** round 2 (Actions run 36259144594, 389 + 380 scrips, 0 refusals) + the Mac
 shard (952 scrips, DONE 02:20) + a 39-file retry for DESHRAK / FRONTFN (interrupted by the 22:12 cancel). Every listed
 target now has its list; every listed quarter the store lacks has its file (54,150 files, all validated as XBRL).
 +21,929 cells: BSE-only 15,829, NSE-new 4,935 (all 197 companies), NSE-hole 1,165. Ledger 56,067 cells / 3,348 symbols,
