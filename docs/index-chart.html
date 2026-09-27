@@ -328,7 +328,7 @@ var REG = {
                sub:'Expected 30-day Nifty volatility, implied by option prices — the “fear gauge”.' },
   // BSE SME IPO: official BSE end-of-day levels (scripts/fetch_bse_sme_ipo.py, runbook §195). No Yahoo symbol → no
   // live poll; `bse` switches the NSE wording (source notes, 1D fallback) to BSE.
-  smeipo:    { src:'bse_sme_ipo.json', ysym:null,       key:null,         name:'BSE SME IPO', kind:'index', surv:null, bse:true,   // surv: 'bsesmeipo' once survivorship/bsesmeipo.json ships (§195 stage 2)
+  smeipo:    { src:'bse_sme_ipo.json', ysym:null,       key:null,         name:'BSE SME IPO', kind:'index', surv:'bsesmeipo', bse:true,
                sub:'Every company listed on BSE’s SME platform in roughly the last year — IPOs join on their 2nd trading day, leave after one year.' }
 };
 var ALIAS = { nifty50:'nifty', 'nifty 50':'nifty', n50:'nifty', nsei:'nifty',
@@ -1274,7 +1274,7 @@ function survCell(r, k) {
     case 'sym':
       return '<a class="lnk" href="./stock.html?sym=' + encodeURIComponent(r.sym) + (SV.asof ? '&amp;asof=' + esc(SV.asof) : '') + '"' +
         (SV.asof ? ' title="Open ' + esc(r.sym) + ' as the market saw it on ' + prettyDate(SV.asof) + '"' : '') + '>' + esc(r.sym) + '</a>';
-    case 'name': return '<span class="nm" title="' + esc(v) + '">' + esc(v) + '</span>';
+    case 'name': return '<span class="nm" title="' + esc(v + (r.note ? ' — ' + r.note : '')) + '">' + esc(v) + (r.note ? ' <span class="faint">⚠</span>' : '') + '</span>';
     case 'status': l = SLAB[v] || [v, '']; return '<span class="st ' + l[1] + '">' + l[0] + '</span>';
     case 'first': return (r.fromStart ? '<span class="faint" title="Already a member when the record begins — the real join is earlier">≤ </span>' : '') + prettyDate(v);
     case 'last': case 'lastD': return v ? prettyDate(v) : '—';

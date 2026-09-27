@@ -22616,3 +22616,26 @@ row on file (unchanged convention; they differ only where the data differs, abov
   14,481; Dec-2022 promoter 54.61, holders 698 — the older filings carry ISIN INE114O01012, later ones INE114O01020.
 - Still open: Worth Investment's own Jun-22..Jun-23 XBRL (rounding "Lakhs", revenue tag 858,365,000 = 85.84 cr beside
   ~0.5-1.4 cr quarters, paid-up capital tag 633,000,000,000) needs a §184 adjudication — shown on its page as filed.
+
+**§195 stage 2 — point-in-time membership 2020→ (user scope 2026-09-27: "take data only from January 1, 2020").**
+Sources: all 1,408 BSE Index Services notices (`scripts/fetch_bse_index_notices.py`; list API
+`bseindices.com/AsiaIndexAPI/api/GetNoticesadvancesearch_newcomb/w`, PDFs via `NoticesAsiaDownload/w?NoticeId=` — FileName is
+null on 1,466/1,582 rows; cache ~/stocks-cache/bse_index_notices) → `scripts/parse_bse_sme_ipo_notices.py` (tables read by
+their header column order + "--"/"- -" empty slots; a second reader for the notices' own sentences; 1,263 events). Mid-2024→
+quarterly notices print only counts and put names in an Excel that is NOT in the PDF: the archived Excels
+(web.archive.org of asiaindex.co.in/…/ChangestotheSPBSEFMCIndices<Mon><YYYY>.xlsx) are in `scripts/bse_sme_ipo_excel_drops.json`
+(19 drops). `scripts/build_bse_sme_ipo_pit.py` → docs/bse_sme_ipo/{stints,history,validation}.json; rule only where no notice
+names a scrip (exit = Monday after the 3rd Friday of the first month whose 3rd Friday ≥ anniversary−1 day; 92/98 notice drops,
+all Excel lists, 7/9 count-only months exact). **Traps measured:** (1) a pre-2020 scrip's first 2020 bar is NOT its listing —
+illiquid SME scrips first trade weeks into January; date the listing from the ADD notice; (2) index math must use LAST TRADED
+prices (skipping no-trade days cost 8 pp in Apr-2023); (3) BSE's IWF ≈ the IPO's fresh float (0.18–0.41, median 0.27), NOT
+100−promoter% (corr 0.08); (4) a Saturday anniversary is decided both ways in BSE's own record (SILVERPRL/SWANAGRO same month,
+QUESTFLOW/LTELEVATOR next) — the captured official list overrules the rule; (5) from Jan-2026 BSE's index turnover includes
+listing-day trading of next-day joiners (50/51 low-ratio days are listing days). **Checks:** roster on 28-Sep-2026 = BSE's
+official 160, code for code; Σ member turnover ÷ BSE's official index turnover median 1.000–1.004 every year 2020–2026
+(84–89 % of days within ±2 % in 2022–25); a float-weight fit reproduces BSE's official level 2023 +95.3 vs +94.9, 2024 +155.5
+vs +156.3 (daily corr 0.9997). `scripts/build_bse_sme_ipo_survivorship.py` → docs/survivorship/bsesmeipo.json (504 members,
+index-chart.html "Every member, ever"; ⚠ on rows with an unconfirmed >30 % one-day fall). From 2026-09-28 the daily job appends
+BSE's captured list to history.json (the record from then on is BSE's own list). OPEN: nightly price refresh of the
+survivorship table (builders read the local bhavcopy cache; CI has none); BSE-only stocks are absent from the backtest engine
+(sf bins are NSE-only) — a BSE SME IPO universe there screens zero names until BSE-only prices+fundamentals join the sf data.

@@ -9,7 +9,8 @@ WHAT. Two BSE api feeds (both measured 2026-09-27, found in bseindia.com's own J
            (BSE serves only the CURRENT list, stamped with the date it applies to — no archive of past lists)
 
 OUTPUT.
-  docs/bse_sme_ipo.json                   {updated, px:{YYYY-MM-DD: close}}   (same shape as nifty500.json — the
+  docs/bse_sme_ipo.json                   {updated, px:{YYYY-MM-DD: close}, to:{date: turnover ₹cr}, vol:{date: shares cr}}
+                                          (px = the nifty500.json shape — the
                                           home card + index-chart.html read it)
   docs/bse_sme_ipo/members.json           {asof, source, members:[{code,name,isin,sym,weight,mcap,ffmcap,close}]}
   docs/bse_sme_ipo/changes.json           {events:[{date, action:add|remove, code, name, isin}]} — every change BSE's
@@ -74,6 +75,8 @@ def dump(p, obj, compact=False):
 def fetch_level(full):
     cur = load(OUT_LEVEL, {"px": {}})
     px = dict(cur.get("px") or {})
+    to = dict(cur.get("to") or {})              # BSE's daily turnover of the constituents (₹ cr) — the membership check
+    vol = dict(cur.get("vol") or {})            # shares traded (crore) — same use
     today = datetime.date.today()
     start = BASE if (full or not px) else datetime.date.fromisoformat(max(px)) - datetime.timedelta(days=15)
     got = 0
@@ -88,12 +91,18 @@ def fetch_level(full):
             if len(d) == 10 and isinstance(c, (int, float)) and c > 0:
                 px[d] = round(float(c), 2)
                 got += 1
+                for key, dst in (("Turnover", to), ("TOTAL_SHARES_TRADED", vol)):
+                    try:
+                        dst[d] = float(r.get(key))
+                    except (TypeError, ValueError):
+                        pass                    # BSE prints "-" on some days: leave the day out, never 0
         y = end + datetime.timedelta(days=1)
         time.sleep(1.5)
     if len(px) < 3000:                          # measured 2026-09-27: 2012-08-16 → today ≈ 3,450 sessions
         raise SystemExit("level history too short (%d) — refusing to write" % len(px))
     dump(OUT_LEVEL, {"updated": datetime.datetime.now().strftime("%Y-%m-%dT%H:%M:%S"),
-                     "source": "BSE IndexArchDailyPAR index=SMEIPO", "px": dict(sorted(px.items()))}, compact=True)
+                     "source": "BSE IndexArchDailyPAR index=SMEIPO", "px": dict(sorted(px.items())),
+                     "to": dict(sorted(to.items())), "vol": dict(sorted(vol.items()))}, compact=True)
     print("level: %d rows read, %d stored, last %s = %s" % (got, len(px), max(px), px[max(px)]))
 
 
@@ -139,6 +148,23 @@ def fetch_members():
     dump(OUT_MEM, {"asof": asof, "source": "BSE NS_IndexWeight_SPDJ_ng iname=SMEIPO",
                    "updated": datetime.datetime.now().strftime("%Y-%m-%dT%H:%M:%S"), "members": mem})
     print("members: %d as of %s (%d mapped to a BSE key)" % (len(mem), asof, sum(1 for m in mem if m["sym"])))
+    # point-in-time history (docs/bse_sme_ipo/history.json, built 2020→ by build_bse_sme_ipo_pit.py): from here on BSE's
+    # own captured list IS the record — append a snapshot dated by the list whenever the member set changes
+    hp = os.path.join(DIR, "history.json")
+    h = load(hp, None)
+    if h and h.get("BSE SME IPO"):
+        snaps = h["BSE SME IPO"]
+        syms = sorted((m["sym"] or m["code"]) for m in mem)
+        last = snaps[-1]
+        if asof >= last["effectiveDate"] and syms != last["symbols"]:
+            if asof == last["effectiveDate"]:
+                last["symbols"] = syms
+            else:
+                snaps.append({"effectiveDate": asof, "symbols": syms})
+            with open(hp + ".tmp", "w") as f:
+                json.dump(h, f, separators=(",", ":"))
+            os.replace(hp + ".tmp", hp)
+            print("history: snapshot %s (%d members) %s" % (asof, len(syms), "replaced" if asof == last["effectiveDate"] else "appended"))
 
 
 def _num(v):
