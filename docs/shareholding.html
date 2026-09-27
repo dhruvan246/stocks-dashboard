@@ -173,9 +173,16 @@ function load(){
    page ships no extra data of its own. Loaded AFTER the table renders — the filter is a bonus,
    never a reason to delay first paint, and a failed fetch just leaves "All indices". */
 function loadIndexes(){
-  fetch('./indices.json').then(r=>{ if(!r.ok) throw 0; return r.json(); }).then(j=>{
-    const labels=j.group_labels||{}, order=j.groups||[];
+  // BSE SME IPO (runbook §195): BSE's official constituent list, as the bare BSE ids this page keys rows by.
+  // Optional — a failed fetch only drops this one option.
+  const sme=fetch('./bse_sme_ipo/members.json',{cache:'no-store'}).then(r=>r.ok?r.json():null).catch(()=>null);
+  Promise.all([fetch('./indices.json').then(r=>{ if(!r.ok) throw 0; return r.json(); }), sme]).then(([j,sm])=>{
+    const labels=Object.assign({},j.group_labels||{}), order=(j.groups||[]).slice();
     const withMem=(j.indices||[]).filter(x=>x.n && x.members && x.members.length);
+    if(sm && sm.members && sm.members.length){
+      withMem.push({n:'BSE SME IPO', g:'__bse', members:sm.members.map(m=>(m.sym||'').replace(/\.BO$/,'')).filter(Boolean)});
+      order.push('__bse'); labels.__bse='BSE';
+    }
     if(!withMem.length) return;
     withMem.forEach(x=>IDX.set(x.n, new Set(x.members)));
     // headline broad indices first, then natural order ("Nifty 50" before "Nifty 100", not after)
