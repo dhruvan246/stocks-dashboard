@@ -21608,3 +21608,13 @@ Jun-2021) the earliest detected month is carried back: PGHL / EMERCK (formerly M
 is not measured (no older cash-flow evidence in docs/fin). Not touched here: KENNAMET's stored quarterly operating profit is
 about −200 cr in 8 quarters of 2021-23 while revenue is ~250 cr (sf_revop); 1,213 Ratio columns (1,145 stocks) come from
 years holding fewer than four quarterly rows — SME H1+H2 pairs are legitimate, quarterly filers with a missing quarter are not.
+**§185b — the 16 Gemini cells relabelled (2026-09-27, user: "yes relabel them").** Decided from each filing's TEXT
+LAYER, no vision read: all 8 companies' June-quarter filings have zero "consolidat" mentions (most say "standalone")
+→ all 16 cells `basis: S` (BYLD, FRESITA, OLYMTFI, OSWAYRN, QUADRANT, SIKOZY, SWORDEDGE, TNSTLTU). Five also carried the
+old hard-coded `ann: 20260715` with NO BSE filing that day; re-dated to the real results filing: QUADRANT 20260811,
+SWORDEDGE 20260810, TNSTLTU 20260814, OSWAYRN 20260728, SIKOZY 20260813 (FRESITA really filed 07-15). PAT checked
+against the text where readable: QUADRANT 324.80 / (1,382.37) lakh, TNSTLTU 2.03 / 4.98, FRESITA 165.97 / (49.34),
+BYLD 5.59 / (18.79) — all = stored; SWORDEDGE, OSWAYRN, SIKOZY, OLYMTFI rows too garbled to verify (open).
+Other `ann=20260715` cells on origin: 11 routine-vision cells whose companies DID file on 07-15 (left); 530521
+(src none) has 07-15 but no BSE filing that day — real date unknown (open). Direct edit of bse_fundamentals.json is
+durable: every other writer is fill-only / origin-wins (§181b).
