@@ -23362,6 +23362,18 @@ being untouched by this change: GICL (standalone view) P&L tab gains a "Deprecia
 Quarterly-detail Depr 2025-06/09/12 "—" → 0.1; LT P&L Mar 2025 Depreciation "—" → 1,961, Operating Profit 11,579 → 11,591,
 results row Mar-25 op 3,758 / EBIT 3,270; VIVIANA gains Quarterly rows 2025-06 and 2025-12; 0 console errors. No UI file
 changed → no service-worker bump, no mobile/theme pass.
+**LIVE (pushed 5b5423ba1 at 01:14 IST 2026-09-28; refresh-stock-fin 36345490193 → slices 32b12fd68; Pages 36345623505 green
+01:19 IST).** curl, cache-busted: fin slices GICL Jun/Sep/Dec-25 dep (0.07/0.09, 0.06/0.09, 0.06/0.08), LT Mar-25 dep 487.38 /
+1,052.42 + the healed revop row, CHANDAN Mar-26 dep 2.34 / 2.45; served sf_revop LT Mar-25 op 3,757.51 / 8,202.54, EBIT 3,270.13 /
+7,150.12, RUCHIRA Jun-25 op 27.44. Browser, real loads — first the pane's own copy of the pre-push slice had to be refreshed:
+Pages sends max-age=600 and the pre-push check had fetched it (transferSize 0, 1 ms, no `dep`); `fetch(url,{cache:'reload'})`
+then reload. GICL: P&L tab "Depreciation" row present in both bases (FY26 std 0.29 / con 0.39 → "0"), Quarterly Depr 0.1 on
+Jun/Sep/Dec-25; LT: P&L Mar 2025 Depreciation **4,121** con / **1,961** std (was "—"), results row Mar-25 con op 8,203 · OPM 11.0 %
+· EBIT 7,150; CHANDAN: Quarterly row 2026-03 (EPS 2.79 · Depr 2.3 · PBT 9, audited); VIVIANA: rows 2025-06 and 2025-12; 0 console
+errors (CHANDAN's only failed request is the quote worker's 502 for SME symbols, pre-existing §191). **Re-verified 01:35 IST** on
+origin after three later commits to the same payloads (two BSE-job fills, §209a): A 87 / B 31 / D 10 intact
+(`~/stocks-cache/xtra_nonindas_fix/check_origin.py`). The xbrl-extra nightly (~03:00 IST in practice) checks out after this push,
+so its whole-gz copy carries the fill.
 **Also seen (open).** 367 main-cache NONINDAS files of 2018-19 parse to None in both parsers: no context block and no
 DateOf…ReportingPeriod facts, only ReportingQuarter ("Yearly" 152, "First quarter" 83, "Third quarter" 66, "Half yearly"
 64, "Fifth quarter" 2) — the builder's banking fallback needs DateOfEndOfReportingPeriod + DateOfStartOfFinancialYear.
