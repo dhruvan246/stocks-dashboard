@@ -55,6 +55,7 @@ loads every session. (README.md is just a short pointer here — this file is th
 - **§40** STOCK PAGE = PER-STOCK SLICES · **§40b** ★ REPORTING BASIS — one basis per comparison
 - **§41** ★ PUBLISHING A DATA HEAL — "live on the server" ≠ "the site uses it" (**read before ANY heal / backfill**)
 - **§186** ★★ FISCAL YEAR-ENDS ARE PER YEAR — the stock page's Financial-detail card reads each year's end from the cash-flow period the filing tags (Jun / Dec / Sep filers; transition years when a company moves its year-end) (**read before touching renderDeep / fiscalYears() / card_audit.py**)
+- **§188** ★ TWO GREEN-BUT-BROKEN BSE JOBS AFTER §181 — annual-bscf needs `--max-minutes` under its job timeout; refresh-fundamentals' ann-date step installs its own pymupdf (**read before adding a BSE step to a CI job**)
 - **§42–§58** ROUTE & SOURCE DISCOVERIES (detres JSON, FY identity, pre-2020 std/con ceilings, CI clobber, the ROUTE LADDER, the STANDARD BACKFILL READ)
 - **§70** ★★★ sf_fundamentals vs sf_revop DISAGREE — authority is fundamentals; the mirror is not rendered · §70d the mirror is also SPARSE — never measure PAT coverage from sf_revop idx4/5
 - **§71** ★★★ THE ADJUDICATION THAT WAS ABANDONED — when your "truth" source is the corrupted one
@@ -21796,3 +21797,18 @@ Three read-only auditors (BSE assembly / feed + pending / NSE numbers + page) at
 13. **WINSOME|2026-09-23** was ledgered to Jun-2025 off a cover-letter typo; the table heads 30.06.2026 → fix = 20260630.
    prep's NSE path now treats "parsed X but the filing also prints the target quarter" as ambiguous (no ledger write),
    like its qe==0 path.
+
+## §188 — TWO JOBS STILL BROKEN THE NIGHT AFTER THE §181 FIX, BOTH HIDDEN (2026-09-27, user: "check all cron jobs worked … fix both")
+**Audit (every BSE-touching run 26-Sep 17:30Z → 27-Sep 08:10Z):** refresh-bse, refresh-results-hourly, refresh-announcements,
+refresh-fundamentals, refresh-shareholding all green with ZERO real 403/Access-Denied lines (grep hits on "403"/"refused" were
+numbers and summary-table labels — read the lines, never trust a count). Positive evidence: ListofScripData 5,048 active;
+bse_prices end=20260925; 102 BSE result + 206 board-meeting filings; 10,831 filings in the 120-day window.
+**(a) annual-bscf:** with BSE answering again, the text pass does real work — 3 runs in a row hit the 55-min job timeout
+inside `fetch_annual_bscf.py` and were CANCELLED before the commit step, so each lost its whole batch (and, block-buffered,
+printed nothing). Fix 63b83773a: `--max-minutes N` stops BETWEEN symbols (each is already checkpointed); the workflow runs
+`python3 -u … --max-minutes 40`. Verified run 36305938524: 77 symbols, "time budget 40 min reached", pushed attempt #1.
+**(b) refresh-fundamentals "Reconcile announcement dates vs BSE":** `backfill_ann_dates_bse.py` imports fetch_insurers →
+`fitz`; pymupdf was installed only by the insurer/reconcile steps, which skip on the 30-min triggers — so the step died on
+import (`No module named 'fitz'`, swallowed by `|| echo`) in every sampled run back to 2026-09-10, unrelated to §181. Fix:
+the step installs `pymupdf curl_cffi` itself. Verified run 36306439855: 120 dated cells checked, 0 lagged, 0 tracebacks.
+**Rule:** every CI step installs what ITS script imports — never rely on an earlier, conditionally-skipped step.
