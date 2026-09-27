@@ -7,7 +7,10 @@ dropped. NSE symbols are joined by ISIN from the two NSE lists when present next
 """
 import json, os, sys, csv, datetime, argparse
 sys.path.insert(0, os.path.dirname(os.path.abspath(__file__)))
+# scripts/, for bse_names (runbook §204). Appended, so this folder's bse.py / ist.py still resolve first.
+sys.path.append(os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
 import bse
+import bse_names
 import ist
 
 HERE = os.path.dirname(os.path.abspath(__file__))
@@ -42,7 +45,7 @@ def build(lo, hi):
             continue
         isin = (x.get('ISIN_NUMBER') or '').strip()
         n = nse.get(isin, ('', ''))
-        uni.append(dict(scrip=str(x['SCRIP_CD']).strip(), id=(x.get('scrip_id') or '').strip(), name=(x.get('Scrip_Name') or '').strip(),
+        uni.append(dict(scrip=str(x['SCRIP_CD']).strip(), id=(x.get('scrip_id') or '').strip(), name=bse_names.clean_scrip_name(x.get('Scrip_Name')),
                         issuer=(x.get('Issuer_Name') or '').strip(), isin=isin, group=grp, mcap=round(mcap, 1),
                         face_value=x.get('FACE_VALUE'), nse=n[0], nse_seg=n[1],
                         sme=grp in ('M', 'MT', 'MS')))

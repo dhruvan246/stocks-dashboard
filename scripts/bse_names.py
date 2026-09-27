@@ -32,6 +32,21 @@ def clean_scrip_name(name):
     return s
 
 
+def clean_ann_subject(subject, scrip):
+    """A BSE announcement subject (NEWSSUB) with its leading company name cleaned. NEWSSUB is
+    "<SLONGNAME> - <scrip code> - <subject>", so it carries the marker mid-string whenever the name does
+    ("Linc Ltd-$ - 531241 - Disclosures under Reg. 29(...") -- invisible to --check, which sees string ends
+    only. Measured over 2,552 cached rows (17-Jun-2025, 21/22-Sep-2026): every NEWSSUB starts with that
+    prefix and the 142 marked ones carry "-$" there and nowhere else. Only the part before the row's own
+    " - <scrip> - " is touched."""
+    s = str(subject or "").strip()
+    sep = " - %s - " % str(scrip or "").strip()
+    i = s.find(sep)
+    if i > 0:
+        s = clean_scrip_name(s[:i]) + s[i:]
+    return s
+
+
 def marked_strings(raw):
     """JSON string values in `raw` (bytes) that end in the marker. A `"` right after `$` is always an
     unescaped string end, so counting `-$"` is exact; the value is recovered back to its opening quote."""
