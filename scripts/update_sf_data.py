@@ -1653,11 +1653,13 @@ def main():
                     # the EQ first day (still filed under the old symbol), EQ PREVCLOSE == SM last close. Every fragment
                     # close == NSE raw x its in-life official factors (URAVI x0.5 20220711, WFL x0.625 20211006 already
                     # inside); the successor's official factors after the SME end == its stored/raw level at the join.
-                    "AURIGROW": "GODHA",       # INE925Y01010: SM 20201223 34.60 -> EQ 20201224 prev 34.60; adj 0.05 (0.5 x 0.1)
-                    "GTECJAINX": "KEERTI",     # INE586X01012: SM 20201112 30.90 -> EQ 20201113 prev 30.90; adj 1
-                    "SONAMLTD": "SONAMCLOCK",  # INE00LM01011: SM 20220406 79.00 -> EQ 20220407 prev 79.00; adj 0.25 (0.5 x 0.5)
+                    # "name"/"isin" = NSE's register (EQUITY_L 2026-09-26) — SONAMLTD/WEL have since minted a new ISIN of the
+                    # same issuer (face-value change); AURIGROW is no longer in the register, so it keeps its ticker (§200).
+                    "AURIGROW": {"old": "GODHA", "name": "AURIGROW"},  # not in NSE's register any more: the ticker. INE925Y01010: SM 20201223 34.60 -> EQ 20201224 prev 34.60; adj 0.05 (0.5 x 0.1)
+                    "GTECJAINX": {"old": "KEERTI", "name": "G-TEC JAINX EDUCATION LIMITED"},     # INE586X01012: SM 20201112 30.90 -> EQ 20201113 prev 30.90; adj 1
+                    "SONAMLTD": {"old": "SONAMCLOCK", "name": "SONAM LIMITED", "isin": "INE00LM01029"},  # INE00LM01011: SM 20220406 79.00 -> EQ 20220407 prev 79.00; adj 0.25 (0.5 x 0.5)
                     "URAVIDEF": "URAVI",       # INE568Z01015: SM 20230704 280.55 -> EQ 20230705 prev 280.55; adj 1
-                    "WEL": "WFL"}              # INE02WG01016: SM 20220114 116.65 -> EQ 20220117 prev 116.65; adj 0.1
+                    "WEL": {"old": "WFL", "isin": "INE02WG01024"}}  # INE02WG01016: SM 20220114 116.65 -> EQ 20220117 prev 116.65; adj 0.1
     # --- 2026-08-23 ISIN-SEAM batch (DATA_RUNBOOK §95g's open queue, landed in §105): the 103 seams
     # the issuer-prefix sweep CONFIRMED as one company (scripts/_isin_seam_verdicts.json) were never
     # stitched because the ISIN CHANGED at each seam (face-value change, scheme) — the auto-merge must
@@ -1749,7 +1751,9 @@ def main():
                 # stub has none: verified unchanged for GUJENERGY vs EQUITY_L; changed-ISIN pairs like
                 # PATANJALI already carry their new ISIN from the daily appends, so this never clobbers).
                 om = meta.get(old) or {}; nm = meta.setdefault(new, {})
-                if nm.get("name") in (None, new) and om.get("name"): nm["name"] = om["name"]
+                # (an old name that is only the old TICKER is a placeholder too — §145 SME stubs carry name=symbol —
+                # and copying it made AURIGROW read "GODHA" on its own page, §200)
+                if nm.get("name") in (None, new) and om.get("name") and om["name"] != old: nm["name"] = om["name"]
                 if nm.get("ind") in (None, "Unknown") and om.get("ind"): nm["ind"] = om["ind"]
                 if not nm.get("isin") and om.get("isin"): nm["isin"] = om["isin"]
                 if isinstance(spec, dict) and spec.get("name"): nm["name"] = spec["name"]   # §199: register name at the rename
@@ -1759,6 +1763,28 @@ def main():
                 if nm.get("isin"): isin2sym[nm["isin"]] = new
                 data.pop(old, None); meta.pop(old, None); merged += 1
                 print("  MANUAL RENAME MERGE %s -> %s (%d pts prepended, adj=%.4f)" % (old, new, len(idx), adj))
+    # §200 META HEAL for merges that already ran: the first §200 run copied each fragment's placeholder name (the old
+    # ticker) onto its successor, so AURIGROW / GTECJAINX / SONAMLTD read "GODHA" / "KEERTI" / "SONAMCLOCK", and the
+    # carried ISIN was the SM-era one where NSE has since minted a new series (face-value change, same issuer). Once the
+    # OLD key is gone: a name equal to the old ticker (or to the new ticker, when the spec knows the register name) takes
+    # the spec's NSE register name (EQUITY_L) else the current ticker; a spec "isin" (EQUITY_L's current ISIN) replaces
+    # the carried one. Idempotent — a converged meta reports 0; counted in the publish gate (a heal outside it is lost).
+    # Only entries that SAY what they want (a spec "name" / "isin") are healed: 12 older merges (BANKADD, MORARJEE, NTL …)
+    # also carry their old ticker as a name from the same copy, measured 2026-09-27 and left for their own review.
+    mh = 0
+    for new, spec in MANUAL_MERGE.items():
+        if not isinstance(spec, dict) or not (spec.get("name") or spec.get("isin")):
+            continue
+        old = spec["old"]; nm = meta.get(new)
+        if old in data or not isinstance(nm, dict) or new not in data:
+            continue
+        want = spec.get("name")
+        if want and nm.get("name") in (None, new, old) and nm.get("name") != want:
+            nm["name"] = want; mh += 1
+            print("  MANUAL MERGE META %s: name -> %r" % (new, nm["name"]))
+        if spec.get("isin") and nm.get("isin") != spec["isin"]:
+            print("  MANUAL MERGE META %s: isin %s -> %s" % (new, nm.get("isin"), spec["isin"]))
+            nm["isin"] = spec["isin"]; isin2sym[nm["isin"]] = new; mh += 1
     # BEFORE anything that reads a bar's neighbours: the series-BZ history our old ("EQ","BE") filter
     # dropped. Runs after MANUAL_MERGE so the ledger's current tickers are already consolidated, and
     # before the day loop because appending today's BZ row onto a years-stale series would hand
@@ -1933,7 +1959,7 @@ def main():
     # refreshes the on-disk bin but does NOT publish the release, bump clients, or commit a marker.
     blob = gzip.compress(json.dumps(D, separators=(",", ":")).encode(), 6)
     open(OUT, "wb").write(blob)
-    if not appended and not healed and not merged and not mr and not ao and not dvf and not dvo and not wk and not bi and not bz and not bzf and not sm and not sg and not tunits and not dead and not _n and not ph and not fx and not ra:
+    if not appended and not healed and not merged and not mr and not ao and not dvf and not dvo and not wk and not bi and not bz and not bzf and not sm and not sg and not tunits and not dead and not _n and not ph and not fx and not ra and not mh:
         print("No new day / heal / merge / manual-rights / rights-reconcile / open-arbitrated CA / dv-fill / dv-overwrite / weekend-insert / bar-insert / BZ-backfill / SME-backfill / series-surgery / turnover-unit fix / aliveness decay / industry fill / phantom-session drop / demerger ex-day flatten — rewrote merged base to %s (%.2f MB); nothing to publish." % (OUT, len(blob) / 1048576)); return
     open(MARK, "w").write(D["end"])
     # tiny version marker — committed daily, lets the browser cache the big bin in IndexedDB

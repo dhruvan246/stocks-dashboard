@@ -22796,3 +22796,18 @@ SME files by dropping each year's Mar filing: 46/48 provisional H1s equal the la
 `build_bse_results` puts `1` at q-row [9] for a prov cell → quarterly-results.html shows "H1 · unconfirmed".
 OPEN: `build_row_periods.pf_ok` does not yet accept prov cells (needs h2/fy) — a prov Sep row is not marked 6 months on
 the stock page until handled (no prov cell can exist before the Oct-Nov 2026 Sep filings).
+**§200a — LIVE, and one regression the merge itself caused (2026-09-27 ~20:15-20:40 IST).** CI run 36326676000 (f282b7b91):
+the five MANUAL RENAME MERGE lines with the same adj, release re-published, sf-data rev 5531b96cc3, nTot 5256 → 5251; live
+stk/AURIGROW from 2018-05-11, GTECJAINX 2017-08-07, SONAMLTD 2018-06-14, URAVIDEF 2018-03-28, WEL 2019-08-06; the five old
+stk slices 404; tape meta carries each successor's ISIN; FUND_ALIAS GODHA/KEERTI and sw v199 live.
+⚠️ **But the merge copied the OLD meta name onto the successor** (`nm.name in (None, new)` → `om.name`), and a §145 SME
+stub's name is just its ticker — so AURIGROW / GTECJAINX / SONAMLTD went live named "GODHA" / "KEERTI" / "SONAMCLOCK".
+Fixed at source: the copy now skips an old name equal to the old ticker; a post-merge META HEAL applies a spec's NSE
+register name (EQUITY_L 2026-09-26: "G-TEC JAINX EDUCATION LIMITED", "SONAM LIMITED"; AURIGROW is no longer in the register →
+its ticker) and a spec "isin" — SONAMLTD INE00LM01011 → INE00LM01029, WEL INE02WG01016 → INE02WG01024 (NSE minted new series,
+same issuer; the merge had carried the SM-era ISIN). Counted in the publish gate (`mh`). Tested twice on the live release:
+run 1 = 0 series changed, meta changed on exactly those 4 keys; run 2 = 0 series / 0 meta. (Run 2 still writes .sf_updated —
+the DVL/DTIL/RASOYPR series-surgery and RASOYPR bar-insert ledgers re-apply every run with identical output; pre-existing.)
+**Measured, left for its own review:** 12 OLDER merges carry their old ticker as the name from the same copy — BANKADD,
+GOLDADD, ITADD, NIFTYADD, SUMMIT, XLENERGY, ASHCONIUL, BELLCERATL, MORARJEE, NCOPPER, NTL, RMMIL. The heal only touches
+entries whose spec states a name/isin, so they are unchanged.
