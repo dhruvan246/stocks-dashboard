@@ -77,6 +77,10 @@ def dump(p, o, compact=False):
     os.replace(p + ".tmp", p)
 
 
+def ist_today():
+    return (datetime.datetime.now(datetime.timezone.utc) + datetime.timedelta(hours=5, minutes=30)).date()
+
+
 def _f(v):
     try:
         return float(v)
@@ -109,7 +113,7 @@ def level_row(day):
         os.makedirs(CACHE, exist_ok=True)
         if b is not None:
             open(fn, "wb").write(b)
-        elif (datetime.date.today() - day).days > 10:
+        elif (ist_today() - day).days > 10:
             with open(os.path.join(CACHE, "_miss.txt"), "a") as f:
                 f.write(s + "\n")
             _MISS.add(s)
@@ -134,7 +138,7 @@ def level_row(day):
 def fetch_level(full=False):
     cur = load(OUT_LEVEL, {}) or {}
     px, pe, pb, dy = (dict(cur.get(k) or {}) for k in ("px", "pe", "pb", "dy"))
-    today = datetime.date.today()
+    today = ist_today()
     d = LAUNCH if (full or not px) else datetime.date.fromisoformat(max(px)) - datetime.timedelta(days=7)
     got = 0
     while d <= today:
@@ -163,11 +167,13 @@ def fetch_members():
     rows = list(csv.DictReader(io.StringIO(b.decode("utf-8-sig", "replace"))))
     if len(rows) < 20 or "Symbol" not in rows[0]:     # methodology floor: at least 20 constituents
         raise SystemExit("constituent list has %d rows / header %s — refusing" % (len(rows), list(rows[0]) if rows else []))
-    asof = datetime.date.today().isoformat()
+    asof = ist_today().isoformat()             # the capture day in IST — a CI runner's clock is UTC (20:08 UTC = 01:38 IST next day)
     mem = sorted(({"sym": r["Symbol"].strip(), "name": r["Company Name"].strip(), "industry": r["Industry"].strip(),
                    "series": r["Series"].strip(), "isin": r["ISIN Code"].strip()} for r in rows), key=lambda m: m["sym"])
     prev = load(os.path.join(DIR, "members.json"))
     chg = load(os.path.join(DIR, "changes.json"), {"events": []})
+    if prev and prev["asof"] > asof:
+        asof = prev["asof"]                    # never move the capture date backwards (the old UTC stamps)
     if prev and prev["asof"] <= asof:
         old = {m["sym"]: m for m in prev["members"]}
         new = {m["sym"]: m for m in mem}
@@ -225,7 +231,7 @@ def fetch_releases(days=30):
     L = load(LEDGER, {}) or {}
     rel = L.setdefault("releases", {})
     probed = set(L.get("probed", []))
-    today = datetime.date.today()
+    today = ist_today()
     new = 0
     for i in range(days):
         d = today - datetime.timedelta(days=i)
