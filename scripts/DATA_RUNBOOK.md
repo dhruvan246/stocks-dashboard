@@ -21992,6 +21992,11 @@ QMSMEDI Mar-25 kept, Mar-26 left out with the note; AAYUSHBULL Mar-23 kept + "No
 Mar-23/24 kept; ZEAL's double-counted Mar-25 P&L column gone; RELIANCE every tab + cards identical to LIVE; APRAMEYA
 basis switch; rewind ?asof=2023-07-01 (Mar-23 shown) / 2023-03-01 (no Ratios tab); 375 px no page overflow; dark
 (fresh load) and light; console: only the quote worker's 502 for SME symbols (same on live).
+**LIVE (pushed 1d4537763, Pages run 36311451324 green 15:37 IST).** curl: stock.html carries `rowMonths` / `tiles`, sw.js
+`sw-shell-v187`, fin slices carry `pd` (AAKAAR, AAYUSHBULL, SUPERSHAKT, QMSMEDI; none on AARNAV / RELIANCE). CI's own
+refresh-stock-fin rebuild right after (2561070b2) changed 2 unrelated slices and kept every `pd`. Browser on the live site
+(new code running, `FIN_PD` defined): AAKAAR Mar-26 203 days; AARNAV no Ratios tab + the Cash-flow note; QMSMEDI
+Mar-25 kept, Mar-26 left out with the note; RELIANCE every tab + cards identical to its pre-change live fingerprints.
 **Limits / open.**
 - 12 SME years (con view; 10 on std) stay blank because ANOTHER figure stored on the same date is unproven: consolidated
   0.00 placeholders (SIGNORIA, VELS, VIJAYPD Mar-26), superseded original filings (TRUST, FRESHARA Mar-26), consolidated
