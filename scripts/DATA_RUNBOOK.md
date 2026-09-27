@@ -20140,6 +20140,32 @@ Mechanism: `scripts/shp_event_redate.json` (per row: target date + the BSE list 
 from NSE cannot write the wrong key back. Local rebuild: exactly 12 engine rows change on the 6 symbols; JUSTDIAL Jan-Jun 2019
 month-ends now serve the Jan-2019 filing. Their four `shp_lag_fix` entries at the old keys are no-ops (days_later 0).
 
+### 164n. Named holders of unknown class are never swept into FII; documented holders take their class (2026-09-27)
+Found re-reading former members that §164d/§164g had missed: §158a's rest-follows rule (and the D1 runs built on it) put
+NAMED holders of unknown class into fii whenever the other named holders of the block were foreign — the "rest" was computed as
+block minus CLASSIFIED holders, so an unresolved name fell into it (MAXINDIA Sep-16 XENOK LIMITED 9.02 = the rest moved; BHARATFIN
+Jun-16 Sandstone 4.05 + Kismet 1.60 = 5.64). 64 live entries (53 §158, 11 §164) on 17 symbols, ~509 pp, e.g. LAURUSLABS 2016-19
+Bluewater Investment ~19.8 pp. Under the user's documentary-proof decision (§164j) a named holder may count as FII only with a
+document. Proof search for the ~50 names: 17 documented foreign (10 by other filings' foreign-institution rows — Bridge India Fund,
+WF Asian Reconnaissance, Fidelity Puritan, CDC India Opportunities …; 7 by GLEIF MU/GB — Bluewater Investment, LeapFrog, Kismet
+SKS II, AFHoldings, Kotak India PE Fund …), 1 documented DOMESTIC (India Business Excellence Fund IIA: listed only under AIF rows),
+the rest none (XENOK, Sandstone, Dynasty Acquisition FDI, Madison India Opportunities III, Siguler Guff …).
+Changes (`_shp_dii_rowfix`): holder_class consults `shp_foreign_holder_evidence.json` for EVERY name (entries now carry class
+foreign|domestic; exact / >= 20-char prefix / >= 0.92 match) right after the curated verdicts; in R1 every named holder of unknown
+class follows the filer's row label (OCB -> public, FII label -> fii, domestic label -> keep) or, in an unlabelled group, keeps
+the stored split (unres) — so rest-follows moves only a truly unnamed remainder. Consequence: foreign holders a filer lists under
+an institutional "Overseas Corporate Bodies" / "Foreign Bodies Corporate" row go to public by that label — the rule already applied
+in 211 cells (PVRINOX, ADANIPOWER, POWERGRID, AXISBANK, IDFCFIRSTB …); LAURUSLABS Mar-18..Mar-20 (~30 -> ~10) and IEX 2018-20 had
+reached fii only through the sweep. Quantmac counts documented funds under such rows as FII (their rule; reply #4 Rule 3 class).
+Re-runs with the tracked code (lists from `~/stocks-cache/shp/bse_all`, 498/500 current): §158 classify over all current members
+-> 30 cells (13 new, 17 superseding) via the DII writer; `_shp_d1_rowfix` over current members' §164 cells (D1_ACCEPT_R1) -> 7 and
+over 757 former members -> 136 (TANLA 2019-20 Banyan Investments 16.17 under an OCB row -> public; EQUITAS Jun-16 CDC/IFC, which its
+own 2022 form lists as Foreign Companies -> public; UJJIVAN Dec-16 first read) — 99 new + 44 superseding; page era for 20 former
+members §164d/§164g never reached (no BSE code then; resolved via FUND_ALIAS and Quantmac's document URLs): 5 cells (MERCATOR Jun-15
++10.37 FPI "Others" row, BHARATFIN, INDIABULLS, TATASTLLP, HINDMOTOR). 178 / 178 hold on a store copy; guards green.
+**Open:** the former-member XBRL run could not read 1,002 rows whose XBRL was never cached (lists re-fetched only now); those cells
+keep their values — fetch and re-run. 16 of Quantmac's former tickers still have no BSE code (MATRIXLABS, CHETTINAD, NAGARFERT …).
+
 ### 164j. Quantmac reply v3 (26-Sep): foreign-labelled rows were read as domestic; named foreign holders now need a document
 **Bug (reported by Quantmac for CUMMINSIND / IPCALAB, measured on origin).** `_shp_dii_rowfix.eval_filing` R1 set a category label
 to "domestic" when DOMLAB matched ("mutual fund", "financial institution", "\bbank") and LAB_FII did not — so "Foreign Mutual

@@ -1,7 +1,8 @@
 {
  "_doc": [
   "§164j (2026-09-26, user decision on Quantmac reply v3: named foreign holders need DOCUMENTARY proof). A holder whose only sign of being foreign is its name (jurisdiction/entity markers, _shp_dii_rowfix.FORLAB or the sovereign-name rule) counts as FII only when listed here. Proof = (filing) the holder appears under a foreign-institution row (FPI/FII/FVCI/FDI/foreign SWF/Institutions(Foreign)) in another cached BSE SHP XBRL, with no domestic listing or >= 90% of >= 5 listings; or (gleif) a GLEIF LEI record with the same legal name (or previous legal name) and a legal jurisdiction outside India. Unlisted name-only holders are unresolved (never FII by name alone).",
-  "Built from ~/stocks-cache/shp/proof (corpus_axes.json over 33898 cached XBRLs; proof_gleif.json)."
+  "Built from ~/stocks-cache/shp/proof (corpus_axes.json over 33898 cached XBRLs; proof_gleif.json).",
+  "§164n (2026-09-27): + holders the §158a/§164 rest-follows rule had swept into fii while UNRESOLVED (named, no class): 17 documented foreign (other filings' foreign-institution rows / GLEIF), 1 documented DOMESTIC (listed only under Indian rows: INDIA BUSINESS EXCELLENCE FUND IIA = an AIF). Entries now carry class foreign|domestic; holder_class consults this list for EVERY name (exact, or a >= 20-char prefix / >= 0.92 match)."
  ],
  "names": {
   "NATIONALWESTMINSTERBANKPLCASTRUSTEEOFTHEJU": {
@@ -7005,6 +7006,114 @@
    "class": "foreign",
    "proof": "gleif",
    "detail": "GLEIF LEI W22LROWP2IHZNBB6K528 GOLDMAN SACHS INTERNATIONAL, legal jurisdiction GB (the filing spells it 'Goldman Sach International')"
+  },
+  "ABUDHABIINVESTMENTAUTHORITYBEHAVE": {
+   "name": "ABU DHABI INVESTMENT AUTHORITY - BEHAVE",
+   "class": "foreign",
+   "proof": "filing",
+   "detail": "listed under a foreign-institution row in 272 cached BSE filing(s), e.g. 540047_6102017122018_SHP.xml InstitutionsForeignPortfolioInvestor"
+  },
+  "ABUDHABIINVESTMENTAUTHORITYBGOEM": {
+   "name": "ABU DHABI INVESTMENT AUTHORITY - BGO-EM",
+   "class": "foreign",
+   "proof": "filing",
+   "detail": "listed under a foreign-institution row in 1 cached BSE filing(s), e.g. 532720_822018162126_SHP.xml InstitutionsForeignPortfolioInvestor"
+  },
+  "AFHOLDINGS": {
+   "name": "AFHOLDINGS",
+   "class": "foreign",
+   "proof": "gleif",
+   "detail": "GLEIF LEI 254900OW5JZ574XZS861 AFHoldings, legal jurisdiction MU"
+  },
+  "BAYCAPITALINDIAFIXEDINCOMEFUNDLTD": {
+   "name": "BAY CAPITAL INDIA FIXED INCOME FUND LTD",
+   "class": "foreign",
+   "proof": "gleif",
+   "detail": "GLEIF LEI 549300C1KE3Y4GGRBC91 BAY CAPITAL INDIA FIXED INCOME FUND LTD, legal jurisdiction MU"
+  },
+  "BAYPONDMB": {
+   "name": "BAY POND MB",
+   "class": "foreign",
+   "proof": "filing",
+   "detail": "listed under a foreign-institution row in 13 cached BSE filing(s), e.g. 531595_157201713490_SHP.xml InstitutionsForeignPortfolioInvestor"
+  },
+  "BLUEWATERINVESTMENTLTD": {
+   "name": "BLUEWATER INVESTMENT LTD",
+   "class": "foreign",
+   "proof": "gleif",
+   "detail": "GLEIF LEI 549300EJPJXGBSFZVX72 BLUEWATER INVESTMENT LTD, legal jurisdiction MU"
+  },
+  "BRIDGEINDIAFUND": {
+   "name": "BRIDGE INDIA FUND",
+   "class": "foreign",
+   "proof": "filing",
+   "detail": "listed under a foreign-institution row in 127 cached BSE filing(s), e.g. 532187_1710202516354_SHP.xml InstitutionsForeignPortfolioInvestorOne"
+  },
+  "CDCINDIAOPPORTUNITIESLIMITED": {
+   "name": "CDC India Opportunities Limited",
+   "class": "foreign",
+   "proof": "filing",
+   "detail": "listed under a foreign-institution row in 3 cached BSE filing(s), e.g. 543524_1810202219018_SHP.xml ForeignVentureCapitalInvestors"
+  },
+  "FIDELITYPURITANTRUSTFIDELITYLOWPRICED": {
+   "name": "FIDELITY PURITAN TRUST-FIDELITY LOW-PRICED",
+   "class": "foreign",
+   "proof": "filing",
+   "detail": "listed under a foreign-institution row in 40 cached BSE filing(s), e.g. 533106_20102022164256_SHP.xml InstitutionsForeignPortfolioInvestorOne"
+  },
+  "INDIABUSINESSEXCELLENCEFUNDIIA": {
+   "name": "INDIA BUSINESS EXCELLENCE FUND - IIA",
+   "class": "domestic",
+   "proof": "filing",
+   "detail": "listed only under domestic rows (5), e.g. 544057_1042024142345_SHP.xml AlternativeInvestmentFunds"
+  },
+  "KISMETSKSII": {
+   "name": "KISMET SKS II",
+   "class": "foreign",
+   "proof": "gleif",
+   "detail": "GLEIF LEI 25490068D8C68MQF4485 Kismet SKS II, legal jurisdiction MU"
+  },
+  "KOTAKINDIAPRIVATEEQUITYFUND": {
+   "name": "KOTAK INDIA PRIVATE EQUITY FUND",
+   "class": "foreign",
+   "proof": "gleif",
+   "detail": "GLEIF LEI 549300TBPWFMD35TTX25 KOTAK INDIA PRIVATE EQUITY FUND, legal jurisdiction MU"
+  },
+  "LEAPFROGFINANCIALINCLUSIONINDIAHOLDINGSLIMITED": {
+   "name": "LeapFrog Financial Inclusion India Holdings Limited",
+   "class": "foreign",
+   "proof": "gleif",
+   "detail": "GLEIF LEI 2138005DQM4U9PQ69J54 LEAPFROG FINANCIAL INCLUSION INDIA HOLDINGS LTD, legal jurisdiction MU"
+  },
+  "MERRILLLYNCHCAPITALMARKETSESPANA": {
+   "name": "MERRILL LYNCH CAPITAL MARKETS ESPANA",
+   "class": "foreign",
+   "proof": "filing",
+   "detail": "listed under a foreign-institution row in 2 cached BSE filing(s), e.g. 507815_1872016142252_SHP.xml InstitutionsForeignPortfolioInvestor"
+  },
+  "MOUSSEGANESHLIMITED": {
+   "name": "MOUSSEGANESH LIMITED",
+   "class": "foreign",
+   "proof": "filing",
+   "detail": "listed under a foreign-institution row in 11 cached BSE filing(s), e.g. 530549_2172018165519_SHP.xml InstitutionsForeignPortfolioInvestor"
+  },
+  "PARIWASHINGTONCOMPANYPVTLTDACPARIWASHINGTONINDIAMASTERFUNDLTD": {
+   "name": "PARI WASHINGTON COMPANY PVT. LTD. A/C PARI WASHINGTON INDIA MASTER FUND, LTD",
+   "class": "foreign",
+   "proof": "filing",
+   "detail": "listed under a foreign-institution row in 6 cached BSE filing(s), e.g. 522074_2072016174137_SHP.xml InstitutionsForeignPortfolioInvestor"
+  },
+  "SOCITDEPROMOTIONETDEPARTICIPATIONPOURLACOOPRATIONECONOMIQUE": {
+   "name": "Société De Promotion Et De Participation Pour La Coopération Economique",
+   "class": "foreign",
+   "proof": "gleif",
+   "detail": "GLEIF LEI 969500MRC3KUWRJZP418 SOCIETE DE PROMOTION ET DE PARTICIPATION POUR LA COOPERATION ECONOMIQUE, legal jurisdiction FR"
+  },
+  "WFASIANRECONNAISSANCEFUNDLIMITED": {
+   "name": "WF ASIAN RECONNAISSANCE FUND LIMITED",
+   "class": "foreign",
+   "proof": "filing",
+   "detail": "listed under a foreign-institution row in 174 cached BSE filing(s), e.g. 543335_1842022191116_SHP.xml InstitutionsForeignPortfolioInvestor"
   }
  }
 }

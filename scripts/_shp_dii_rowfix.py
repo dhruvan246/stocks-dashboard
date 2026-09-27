@@ -142,14 +142,21 @@ def _load_evidence():
     except (OSError,ValueError): e={}
     return {norm(k):v for k,v in e.items()}
 EVIDENCE=_load_evidence()
-def _documented_foreign(n, what):
-    """A name whose only sign of being foreign is the name itself: FII only with a document on file (GLEIF / another filing's
-    foreign-institution row); otherwise unresolved — never foreign by name alone."""
+def _evidence(n):
+    """The documented entry for a normalised name: exact, a >= 20-char prefix of the other (filers truncate names at ~40
+    chars), or a >= 0.92 match sharing the first 12 characters."""
     e=EVIDENCE.get(n)
     if e is None and len(n)>=12:
         for k,v in EVIDENCE.items():
-            if k[:12]==n[:12] and difflib.SequenceMatcher(None,n,k).ratio()>=0.92: e=v; break
-    if e: return "foreign","fii","documented:"+e.get("proof","")
+            if k[:12]!=n[:12]: continue
+            if (len(n)>=20 and k.startswith(n)) or (len(k)>=20 and n.startswith(k)) or difflib.SequenceMatcher(None,n,k).ratio()>=0.92: e=v; break
+    return e
+def _documented_foreign(n, what):
+    """A name whose only sign of being foreign is the name itself: FII only with a document on file (GLEIF / another filing's
+    foreign-institution row); otherwise unresolved — never foreign by name alone."""
+    e=_evidence(n)
+    if e and e.get("class","foreign")=="foreign": return "foreign","fii","documented:"+e.get("proof","")
+    if e and e.get("class")=="domestic": return "domestic",None,"documented:"+e.get("proof","")
     return None,None,"name-only (%s; no document)"%what
 def load_verdicts():
     a=json.load(open(os.path.join(REPO,"scripts","_shp_other_inst_audit.json")))
@@ -174,6 +181,8 @@ def holder_class(name, verdicts, newmap, pct=None):
         if cls=="public": return "foreign","public",how
         return "domestic",None,how
     if n in verdicts: return verdicts[n], ("fii" if verdicts[n]=="foreign" else None), "curated"
+    e=_evidence(n)         # §164n: a documented holder takes its class whatever its name looks like (Bluewater Investment Ltd, GLEIF MU)
+    if e: return ("foreign","fii","documented:"+e.get("proof","")) if e.get("class","foreign")=="foreign" else ("domestic",None,"documented:"+e.get("proof",""))
     if DOMSTRONG.search(name) and not FORLAB.search(name.replace("International","").replace("INTERNATIONAL","")): return "domestic", None, "regex"
     if DOMSTRONG.search(name) and re.search(r"pension fund global|government of|monetary authority|\bsingapore\b|\bnorges\b|abu dhabi|\bqatar\b|\bkuwait\b", name, re.I): return _documented_foreign(n,"sovereign name")
     if DOMSTRONG.search(name): return "domestic", None, "regex"
@@ -265,12 +274,14 @@ def eval_filing(ctx, qe, txt, bd, res, cur, final=True, unres_log=None, ext_fii=
             # §164j: a named holder that is foreign ONLY by its name and has no document on file (holder_class -> "name-only")
             # is not foreign by inference. Under a labelled row it follows the filer's own label (the label documents the row);
             # in an unlabelled group it keeps the stored split (unres) — never swept into fii by the rest-follows rule below.
-            lh=[h for h in hs if h[2] is None and str(h[4]).startswith("name-only")]; lsum=sum(h[0] for h in lh)
+            # §164n: EVERY named holder of unknown class (not only name-only ones) — a named holder is never swept into fii by the
+            # rest-follows rule (MAXINDIA XENOK 9.02, BHARATFIN Sandstone/Kismet, LAURUSLABS Bluewater before its GLEIF record)
+            lh=[h for h in hs if h[2] is None]; lsum=sum(h[0] for h in lh)
             if lsum>0.0:
                 if lab_kind=="domestic": keep+=lsum
                 elif lab_kind=="fii": mv_fii+=lsum
                 elif lab_kind=="public": mv_pub+=lsum
-                else: unres+=lsum; ev.append(("R1-name-only-unproven",lab,round(lsum,4),"; ".join("%s %.2f"%(h[1],h[0]) for h in lh)))
+                else: unres+=lsum; ev.append(("R1-named-unresolved-kept",lab,round(lsum,4),"; ".join("%s %.2f"%(h[1],h[0]) for h in lh)))
             fh=[h for h in hs if h[2]=="foreign"]; dh=[h for h in hs if h[2]=="domestic"]
             named_f_pub=sum(h[0] for h in fh if h[3]=="public"); named_f_fii=sum(h[0] for h in fh if h[3]=="fii"); named_d=sum(h[0] for h in dh)
             contained=(sum(h[0] for h in hs)<=g["pct"]+0.02)

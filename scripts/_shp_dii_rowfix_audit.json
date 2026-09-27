@@ -10,7 +10,8 @@
 "§158a (2026-09-25) R1 rest-follows: where the block's >=1% holders form orphan groups (no category row) the unnamed rest was left uncovered in the stored split; when every classified named holder is foreign and no row is domestic, the rest joins fii (evidence tag R1-rest-follows-foreign-holders). Written only for the 86 cells the user approved.",
 "§158 row-level DII heal (2026-09-25 §158b), old-format XBRL era Jun-2015..Jun-2022, Nifty 500. DII = Institutions(Domestic) in every format.",
 "§158a (2026-09-25) R1 rest-follows: where the block's >=1% holders form orphan groups (no category row) the unnamed rest was left uncovered in the stored split; when every classified named holder is foreign and no row is domestic, the rest joins fii (evidence tag R1-rest-follows-foreign-holders). Written for the 86 cells the user approved (§158a, 63 moved) and then the 48 same-pattern cells the 86-count had missed (§158b, user: \"fix the remaining 48 cells too\").",
-"§158 row-level DII heal (2026-09-26), old-format XBRL era Jun-2015..Jun-2022, Nifty 500. DII = Institutions(Domestic) in every format."
+"§158 row-level DII heal (2026-09-26), old-format XBRL era Jun-2015..Jun-2022, Nifty 500. DII = Institutions(Domestic) in every format.",
+"§158 row-level DII heal (2026-09-27), old-format XBRL era Jun-2015..Jun-2022, Nifty 500. DII = Institutions(Domestic) in every format."
 ],
 "cells": {
 "3MINDIA|2016-06-30": {
@@ -31412,13 +31413,13 @@
 },
 "IEX|2017-12-31": {
 "file": "540750_1912018134420_SHP.xml",
-"split": "p",
-"d_dii": -9.04,
-"d_fii": 9.04,
+"split": "b",
+"d_dii": 2.68,
+"d_fii": -2.68,
 "to_public": 0.0,
-"to_fii": 22.9,
-"keep_dom": 0.0,
-"unresolved": 0.0,
+"to_fii": 14.56,
+"keep_dom": 2.68,
+"unresolved": 5.66,
 "add_dii": 2.86,
 "add_ins": 2.65,
 "ev": [
@@ -31427,28 +31428,33 @@
 "Other",
 0.0,
 "public=0.00 fii=4.75",
-"WESTBRIDGE CROSSOVER FUND, LLC 4.75 foreign->fii(regex)"
+"WESTBRIDGE CROSSOVER FUND, LLC 4.75 foreign->fii(documented:gleif)"
 ],
 [
-"R1-unresolved",
+"R1-domestic-holders",
 "Other",
 0.0,
-"INDIA BUSINESS EXCELLENCE FUND - IIA 2.68 ?->-(-)",
-"keyword"
+"INDIA BUSINESS EXCELLENCE FUND - IIA 2.68 domestic->-(documented:filing)"
 ],
 [
 "R1-foreign-holders",
 "Other",
 0.0,
 "public=0.00 fii=3.00",
-"LIGHTSPEED VENTURE PARTNERS VIII MAURITIUS 3.00 foreign->fii(regex)"
+"LIGHTSPEED VENTURE PARTNERS VIII MAURITIUS 3.00 foreign->fii(documented:gleif)"
 ],
 [
 "R1-foreign-holders",
 "Other",
 0.0,
 "public=0.00 fii=4.50",
-"RIMCO (MAURITIUS) LIMITED 4.50 foreign->fii(regex)"
+"RIMCO (MAURITIUS) LIMITED 4.50 foreign->fii(documented:filing)"
+],
+[
+"R1-named-unresolved-kept",
+"Other",
+1.03,
+"MADISON INDIA OPPORTUNITIES III 1.03"
 ],
 [
 "R1-unresolved",
@@ -31458,18 +31464,30 @@
 "keyword"
 ],
 [
-"R1-unresolved",
-"Other",
-0.0,
-"AFHOLDINGS 2.31 ?->-(-)",
-"keyword"
-],
-[
 "R1-foreign-holders",
 "Other",
 0.0,
-"public=0.00 fii=1.61",
-"SG BRIC III TRADING LLC 1.61 foreign->fii(regex)"
+"public=0.00 fii=2.31",
+"AFHOLDINGS 2.31 foreign->fii(documented:gleif)"
+],
+[
+"R1-named-unresolved-kept",
+"Other",
+1.61,
+"SG BRIC III TRADING LLC 1.61"
+],
+[
+"R1-unresolved",
+"Other",
+0.0,
+"SG BRIC III TRADING LLC 1.61 ?->-(name-only (name marker; no document))",
+"keyword"
+],
+[
+"R1-named-unresolved-kept",
+"Other",
+3.02,
+"SIGULER GUFF NJDM INVESTMENT HOLDINGS LTD 3.02"
 ],
 [
 "R1-unresolved",
@@ -31477,10 +31495,6 @@
 0.0,
 "SIGULER GUFF NJDM INVESTMENT HOLDINGS LTD 3.02 ?->-(-)",
 "keyword"
-],
-[
-"R1-rest-follows-foreign-holders",
-9.04
 ],
 [
 "R2-named",
@@ -31498,12 +31512,12 @@
 },
 "IEX|2018-06-30": {
 "file": "540750_1972018211710_SHP.xml",
-"split": "a",
-"d_dii": -9.04,
-"d_fii": 9.04,
-"to_public": 13.86,
-"to_fii": 9.04,
-"keep_dom": 0.0,
+"split": "p",
+"d_dii": 2.68,
+"d_fii": -9.04,
+"to_public": 20.22,
+"to_fii": 0.0,
+"keep_dom": 2.68,
 "unresolved": 0.0,
 "add_dii": 2.57,
 "add_ins": 2.49,
@@ -31513,7 +31527,7 @@
 "Overseas Corporate Bodies",
 0.0,
 "public=4.75 fii=0.00",
-"WESTBRIDGE CROSSOVER FUND, LLC 4.75 foreign->public(regex)",
+"WESTBRIDGE CROSSOVER FUND, LLC 4.75 foreign->public(documented:gleif)",
 "keyword"
 ],
 [
@@ -31521,7 +31535,7 @@
 "Overseas Corporate Bodies",
 0.0,
 "public=0.00 fii=0.00",
-"INDIA BUSINESS EXCELLENCE FUND - IIA 2.68 ?->-(-)",
+"INDIA BUSINESS EXCELLENCE FUND - IIA 2.68 domestic->-(documented:filing)",
 "keyword"
 ],
 [
@@ -31529,7 +31543,7 @@
 "Overseas Corporate Bodies",
 0.0,
 "public=3.00 fii=0.00",
-"LIGHTSPEED VENTURE PARTNERS VIII MAURITIUS 3.00 foreign->public(regex)",
+"LIGHTSPEED VENTURE PARTNERS VIII MAURITIUS 3.00 foreign->public(documented:gleif)",
 "keyword"
 ],
 [
@@ -31537,7 +31551,7 @@
 "Overseas Corporate Bodies",
 0.0,
 "public=4.50 fii=0.00",
-"RIMCO (MAURITIUS) LIMITED 4.50 foreign->public(regex)",
+"RIMCO (MAURITIUS) LIMITED 4.50 foreign->public(documented:filing)",
 "keyword"
 ],
 [
@@ -31552,16 +31566,16 @@
 "R1-public-label",
 "Overseas Corporate Bodies",
 0.0,
-"public=0.00 fii=0.00",
-"AFHOLDINGS 2.31 ?->-(-)",
+"public=2.31 fii=0.00",
+"AFHOLDINGS 2.31 foreign->public(documented:gleif)",
 "keyword"
 ],
 [
 "R1-public-label",
 "Overseas Corporate Bodies",
 0.0,
-"public=1.61 fii=0.00",
-"SG BRIC III TRADING LLC 1.61 foreign->public(regex)",
+"public=0.00 fii=0.00",
+"SG BRIC III TRADING LLC 1.61 ?->-(name-only (name marker; no document))",
 "keyword"
 ],
 [
@@ -31571,10 +31585,6 @@
 "public=0.00 fii=0.00",
 "SIGULER GUFF NJDM INVESTMENT HOLDINGS LTD 3.02 ?->-(-)",
 "keyword"
-],
-[
-"R1-rest-follows-foreign-holders",
-9.04
 ],
 [
 "R2-named",
@@ -31592,12 +31602,12 @@
 },
 "IEX|2018-09-30": {
 "file": "540750_1510201818050_SHP.xml",
-"split": "a",
-"d_dii": -9.04,
-"d_fii": 9.04,
-"to_public": 13.86,
-"to_fii": 9.04,
-"keep_dom": 0.0,
+"split": "p",
+"d_dii": 2.68,
+"d_fii": -9.04,
+"to_public": 20.22,
+"to_fii": 0.0,
+"keep_dom": 2.68,
 "unresolved": 0.0,
 "add_dii": 2.32,
 "add_ins": 2.25,
@@ -31607,7 +31617,7 @@
 "Overseas Corporate Bodies",
 0.0,
 "public=4.75 fii=0.00",
-"WESTBRIDGE CROSSOVER FUND, LLC 4.75 foreign->public(regex)",
+"WESTBRIDGE CROSSOVER FUND, LLC 4.75 foreign->public(documented:gleif)",
 "keyword"
 ],
 [
@@ -31615,7 +31625,7 @@
 "Overseas Corporate Bodies",
 0.0,
 "public=0.00 fii=0.00",
-"INDIA BUSINESS EXCELLENCE FUND IIA 2.68 ?->-(-)",
+"INDIA BUSINESS EXCELLENCE FUND IIA 2.68 domestic->-(documented:filing)",
 "keyword"
 ],
 [
@@ -31623,7 +31633,7 @@
 "Overseas Corporate Bodies",
 0.0,
 "public=3.00 fii=0.00",
-"LIGHTSPEED VENTURE PARTNERS VIII MAURITIUS 3.00 foreign->public(regex)",
+"LIGHTSPEED VENTURE PARTNERS VIII MAURITIUS 3.00 foreign->public(documented:gleif)",
 "keyword"
 ],
 [
@@ -31631,7 +31641,7 @@
 "Overseas Corporate Bodies",
 0.0,
 "public=4.50 fii=0.00",
-"RIMCO (MAURITIUS) LIMITED 4.50 foreign->public(regex)",
+"RIMCO (MAURITIUS) LIMITED 4.50 foreign->public(documented:filing)",
 "keyword"
 ],
 [
@@ -31646,16 +31656,16 @@
 "R1-public-label",
 "Overseas Corporate Bodies",
 0.0,
-"public=0.00 fii=0.00",
-"AFHOLDINGS 2.31 ?->-(-)",
+"public=2.31 fii=0.00",
+"AFHOLDINGS 2.31 foreign->public(documented:gleif)",
 "keyword"
 ],
 [
 "R1-public-label",
 "Overseas Corporate Bodies",
 0.0,
-"public=1.61 fii=0.00",
-"SG BRIC III TRADING LLC 1.61 foreign->public(regex)",
+"public=0.00 fii=0.00",
+"SG BRIC III TRADING LLC 1.61 ?->-(name-only (name marker; no document))",
 "keyword"
 ],
 [
@@ -31665,10 +31675,6 @@
 "public=0.00 fii=0.00",
 "SIGULER GUFF NJDM INVESTMENT HOLDINGS LTD 3.02 ?->-(-)",
 "keyword"
-],
-[
-"R1-rest-follows-foreign-holders",
-9.04
 ],
 [
 "R2-named",
@@ -31686,12 +31692,12 @@
 },
 "IEX|2018-12-31": {
 "file": "540750_1712019112651_SHP.xml",
-"split": "a",
-"d_dii": -8.01,
-"d_fii": 8.01,
-"to_public": 14.56,
-"to_fii": 8.01,
-"keep_dom": 0.0,
+"split": "p",
+"d_dii": 2.68,
+"d_fii": -8.01,
+"to_public": 19.89,
+"to_fii": 0.0,
+"keep_dom": 2.68,
 "unresolved": 0.0,
 "add_dii": 2.32,
 "add_ins": 2.25,
@@ -31700,13 +31706,9 @@
 "R1-public-label",
 "Overseas Corporate Bodies",
 22.57,
-"public=14.56 fii=0.00",
-"WESTBRIDGE CROSSOVER FUND, LLC 4.75 foreign->public(regex); RIMCO (MAURITIUS) LIMITED 4.50 foreign->public(regex); SIGULER GUFF NJDM INVESTMENT HOLDINGS LTD 3.02 ?->-(-); LIGHTSPEED VENTURE PARTNERS VIII MAURITIUS 3.00 foreign->public(regex); INDIA BUSINESS EXCELLENCE FUND IIA 2.68 ?->-(-); AFHOLDINGS 2.31 ?->-(-); SG BRIC III TRADING LLC 1.61 foreign->public(regex)",
+"public=15.26 fii=0.00",
+"WESTBRIDGE CROSSOVER FUND, LLC 4.75 foreign->public(documented:gleif); RIMCO (MAURITIUS) LIMITED 4.50 foreign->public(documented:filing); SIGULER GUFF NJDM INVESTMENT HOLDINGS LTD 3.02 ?->-(-); LIGHTSPEED VENTURE PARTNERS VIII MAURITIUS 3.00 foreign->public(documented:gleif); INDIA BUSINESS EXCELLENCE FUND IIA 2.68 domestic->-(documented:filing); AFHOLDINGS 2.31 foreign->public(documented:gleif); SG BRIC III TRADING LLC 1.61 ?->-(name-only (name marker; no document))",
 "keyword"
-],
-[
-"R1-rest-follows-foreign-holders",
-8.01
 ],
 [
 "R2-named",
@@ -31724,13 +31726,13 @@
 },
 "IEX|2019-03-31": {
 "file": "540750_1942019134247_SHP.xml",
-"split": "a",
-"d_dii": -8.27,
-"d_fii": 8.27,
-"to_public": 13.83,
-"to_fii": 8.27,
-"keep_dom": 0.0,
-"unresolved": 0.0,
+"split": "p",
+"d_dii": 2.68,
+"d_fii": -8.01,
+"to_public": 19.16,
+"to_fii": 0.0,
+"keep_dom": 2.68,
+"unresolved": 0.26,
 "add_dii": 2.32,
 "add_ins": 2.25,
 "ev": [
@@ -31739,7 +31741,7 @@
 "Overseas Corporate Bodies",
 0.0,
 "public=4.72 fii=0.00",
-"WESTBRIDGE CROSSOVER FUND, LLC 4.72 foreign->public(regex)",
+"WESTBRIDGE CROSSOVER FUND, LLC 4.72 foreign->public(documented:gleif)",
 "keyword"
 ],
 [
@@ -31747,7 +31749,7 @@
 "Overseas Corporate Bodies",
 0.0,
 "public=0.00 fii=0.00",
-"INDIA BUSINESS EXCELLENCE FUND IIA 2.68 ?->-(-)",
+"INDIA BUSINESS EXCELLENCE FUND IIA 2.68 domestic->-(documented:filing)",
 "keyword"
 ],
 [
@@ -31755,7 +31757,7 @@
 "Overseas Corporate Bodies",
 0.0,
 "public=3.00 fii=0.00",
-"LIGHTSPEED VENTURE PARTNERS VIII MAURITIUS 3.00 foreign->public(regex)",
+"LIGHTSPEED VENTURE PARTNERS VIII MAURITIUS 3.00 foreign->public(documented:gleif)",
 "keyword"
 ],
 [
@@ -31763,7 +31765,15 @@
 "Overseas Corporate Bodies",
 0.0,
 "public=4.50 fii=0.00",
-"RIMCO (MAURITIUS) LIMITED 4.50 foreign->public(regex)",
+"RIMCO (MAURITIUS) LIMITED 4.50 foreign->public(documented:filing)",
+"keyword"
+],
+[
+"R1-public-label",
+"Overseas Corporate Bodies",
+0.0,
+"public=2.31 fii=0.00",
+"AFHOLDINGS 2.31 foreign->public(documented:gleif)",
 "keyword"
 ],
 [
@@ -31771,15 +31781,7 @@
 "Overseas Corporate Bodies",
 0.0,
 "public=0.00 fii=0.00",
-"AFHOLDINGS 2.31 ?->-(-)",
-"keyword"
-],
-[
-"R1-public-label",
-"Overseas Corporate Bodies",
-0.0,
-"public=1.61 fii=0.00",
-"SG BRIC III TRADING LLC 1.61 foreign->public(regex)",
+"SG BRIC III TRADING LLC 1.61 ?->-(name-only (name marker; no document))",
 "keyword"
 ],
 [
@@ -31791,8 +31793,8 @@
 "keyword"
 ],
 [
-"R1-rest-follows-foreign-holders",
-8.27
+"R1-uncovered-remainder",
+0.26
 ],
 [
 "R2-named",
@@ -31810,12 +31812,12 @@
 },
 "IEX|2019-06-30": {
 "file": "540750_217201913240_SHP.xml",
-"split": "a",
-"d_dii": -5.05,
-"d_fii": 5.05,
-"to_public": 12.37,
-"to_fii": 5.05,
-"keep_dom": 0.0,
+"split": "p",
+"d_dii": 2.71,
+"d_fii": -5.05,
+"to_public": 14.71,
+"to_fii": 0.0,
+"keep_dom": 2.71,
 "unresolved": 0.0,
 "add_dii": 2.23,
 "add_ins": 2.23,
@@ -31825,7 +31827,7 @@
 "Overseas Corporate Bodies",
 0.0,
 "public=4.78 fii=0.00",
-"WESTBRIDGE CROSSOVER FUND, LLC 4.78 foreign->public(regex)",
+"WESTBRIDGE CROSSOVER FUND, LLC 4.78 foreign->public(documented:gleif)",
 "keyword"
 ],
 [
@@ -31833,7 +31835,7 @@
 "Overseas Corporate Bodies",
 0.0,
 "public=0.00 fii=0.00",
-"INDIA BUSINESS EXCELLENCE FUND IIA 2.71 ?->-(-)",
+"INDIA BUSINESS EXCELLENCE FUND IIA 2.71 domestic->-(documented:filing)",
 "keyword"
 ],
 [
@@ -31841,7 +31843,7 @@
 "Overseas Corporate Bodies",
 0.0,
 "public=3.04 fii=0.00",
-"LIGHTSPEED VENTURE PARTNERS VIII MAURITIUS 3.04 foreign->public(regex)",
+"LIGHTSPEED VENTURE PARTNERS VIII MAURITIUS 3.04 foreign->public(documented:gleif)",
 "keyword"
 ],
 [
@@ -31849,20 +31851,16 @@
 "Overseas Corporate Bodies",
 0.0,
 "public=4.55 fii=0.00",
-"RIMCO (MAURITIUS) LIMITED 4.55 foreign->public(regex)",
+"RIMCO (MAURITIUS) LIMITED 4.55 foreign->public(documented:filing)",
 "keyword"
 ],
 [
 "R1-public-label",
 "Overseas Corporate Bodies",
 0.0,
-"public=0.00 fii=0.00",
-"AFHOLDINGS 2.34 ?->-(-)",
+"public=2.34 fii=0.00",
+"AFHOLDINGS 2.34 foreign->public(documented:gleif)",
 "keyword"
-],
-[
-"R1-rest-follows-foreign-holders",
-5.05
 ],
 [
 "R2-named",
@@ -31875,12 +31873,12 @@
 },
 "IEX|2019-09-30": {
 "file": "540750_15102019154347_SHP.xml",
-"split": "a",
-"d_dii": -2.71,
-"d_fii": 2.71,
+"split": "p",
+"d_dii": 2.71,
+"d_fii": -2.71,
 "to_public": 12.37,
-"to_fii": 2.71,
-"keep_dom": 0.0,
+"to_fii": 0.0,
+"keep_dom": 2.71,
 "unresolved": 0.0,
 "add_dii": 2.89,
 "add_ins": 2.09,
@@ -31890,7 +31888,7 @@
 "Overseas Corporate Bodies",
 0.0,
 "public=4.78 fii=0.00",
-"WESTBRIDGE CROSSOVER FUND, LLC 4.78 foreign->public(regex)",
+"WESTBRIDGE CROSSOVER FUND, LLC 4.78 foreign->public(documented:gleif)",
 "keyword"
 ],
 [
@@ -31898,7 +31896,7 @@
 "Overseas Corporate Bodies",
 0.0,
 "public=0.00 fii=0.00",
-"INDIA BUSINESS EXCELLENCE FUND IIA 2.71 ?->-(-)",
+"INDIA BUSINESS EXCELLENCE FUND IIA 2.71 domestic->-(documented:filing)",
 "keyword"
 ],
 [
@@ -31906,7 +31904,7 @@
 "Overseas Corporate Bodies",
 0.0,
 "public=3.04 fii=0.00",
-"LIGHTSPEED VENTURE PARTNERS VIII MAURITIUS 3.04 foreign->public(regex)",
+"LIGHTSPEED VENTURE PARTNERS VIII MAURITIUS 3.04 foreign->public(documented:gleif)",
 "keyword"
 ],
 [
@@ -31914,12 +31912,8 @@
 "Overseas Corporate Bodies",
 0.0,
 "public=4.55 fii=0.00",
-"RIMCO (MAURITIUS) LIMITED 4.55 foreign->public(regex)",
+"RIMCO (MAURITIUS) LIMITED 4.55 foreign->public(documented:filing)",
 "keyword"
-],
-[
-"R1-rest-follows-foreign-holders",
-2.71
 ],
 [
 "R2-label",
@@ -31937,12 +31931,12 @@
 },
 "IEX|2019-12-31": {
 "file": "540750_2112020163952_SHP.xml",
-"split": "a",
-"d_dii": -2.71,
-"d_fii": 2.71,
+"split": "p",
+"d_dii": 2.71,
+"d_fii": -2.71,
 "to_public": 12.37,
-"to_fii": 2.71,
-"keep_dom": 0.0,
+"to_fii": 0.0,
+"keep_dom": 2.71,
 "unresolved": 0.0,
 "add_dii": 2.8,
 "add_ins": 2.05,
@@ -31952,7 +31946,7 @@
 "Overseas Corporate Bodies",
 0.0,
 "public=4.78 fii=0.00",
-"WESTBRIDGE CROSSOVER FUND, LLC 4.78 foreign->public(regex)",
+"WESTBRIDGE CROSSOVER FUND, LLC 4.78 foreign->public(documented:gleif)",
 "keyword"
 ],
 [
@@ -31960,7 +31954,7 @@
 "Overseas Corporate Bodies",
 0.0,
 "public=0.00 fii=0.00",
-"INDIA BUSINESS EXCELLENCE FUND IIA 2.71 ?->-(-)",
+"INDIA BUSINESS EXCELLENCE FUND IIA 2.71 domestic->-(documented:filing)",
 "keyword"
 ],
 [
@@ -31968,7 +31962,7 @@
 "Overseas Corporate Bodies",
 0.0,
 "public=3.04 fii=0.00",
-"LIGHTSPEED VENTURE PARTNERS VIII MAURITIUS 3.04 foreign->public(regex)",
+"LIGHTSPEED VENTURE PARTNERS VIII MAURITIUS 3.04 foreign->public(documented:gleif)",
 "keyword"
 ],
 [
@@ -31976,12 +31970,8 @@
 "Overseas Corporate Bodies",
 0.0,
 "public=4.55 fii=0.00",
-"RIMCO (MAURITIUS) LIMITED 4.55 foreign->public(regex)",
+"RIMCO (MAURITIUS) LIMITED 4.55 foreign->public(documented:filing)",
 "keyword"
-],
-[
-"R1-rest-follows-foreign-holders",
-2.71
 ],
 [
 "R2-label",
@@ -31999,12 +31989,12 @@
 },
 "IEX|2020-03-31": {
 "file": "540750_75202012275_SHP.xml",
-"split": "a",
-"d_dii": -2.43,
-"d_fii": 2.43,
+"split": "p",
+"d_dii": 2.43,
+"d_fii": -2.43,
 "to_public": 9.31,
-"to_fii": 2.43,
-"keep_dom": 0.0,
+"to_fii": 0.0,
+"keep_dom": 2.43,
 "unresolved": 0.0,
 "add_dii": 2.72,
 "add_ins": 2.05,
@@ -32014,7 +32004,7 @@
 "Overseas Corporate Bodies",
 0.0,
 "public=4.76 fii=0.00",
-"WESTBRIDGE CROSSOVER FUND, LLC 4.76 foreign->public(regex)",
+"WESTBRIDGE CROSSOVER FUND, LLC 4.76 foreign->public(documented:gleif)",
 "keyword"
 ],
 [
@@ -32022,7 +32012,7 @@
 "Overseas Corporate Bodies",
 0.0,
 "public=0.00 fii=0.00",
-"INDIA BUSINESS EXCELLENCE FUND IIA 2.43 ?->-(-)",
+"INDIA BUSINESS EXCELLENCE FUND IIA 2.43 domestic->-(documented:filing)",
 "keyword"
 ],
 [
@@ -32030,12 +32020,8 @@
 "Overseas Corporate Bodies",
 0.0,
 "public=4.55 fii=0.00",
-"RIMCO (MAURITIUS) LIMITED 4.55 foreign->public(regex)",
+"RIMCO (MAURITIUS) LIMITED 4.55 foreign->public(documented:filing)",
 "keyword"
-],
-[
-"R1-rest-follows-foreign-holders",
-2.43
 ],
 [
 "R2-label",
@@ -41206,11 +41192,11 @@
 },
 "LAURUSLABS|2018-03-31": {
 "file": "540222_542018191119_SHP.xml",
-"split": "a",
-"d_dii": -19.87,
-"d_fii": 19.87,
-"to_public": 11.54,
-"to_fii": 19.87,
+"split": "p",
+"d_dii": 0.0,
+"d_fii": -19.8,
+"to_public": 31.34,
+"to_fii": 0.07,
 "keep_dom": 0.0,
 "unresolved": 0.0,
 "add_dii": 0.17,
@@ -41221,20 +41207,20 @@
 "Overseas Corporate Bodies",
 0.0,
 "public=11.54 fii=0.00",
-"FIL CAPITAL MANAGEMENT (MAURITIUS) LIMITED 11.54 foreign->public(regex)",
+"FIL CAPITAL MANAGEMENT (MAURITIUS) LIMITED 11.54 foreign->public(documented:gleif)",
 "keyword"
 ],
 [
 "R1-public-label",
 "Overseas Corporate Bodies",
 0.0,
-"public=0.00 fii=0.00",
-"BLUEWATER INVESTMENT LTD 19.80 ?->-(-)",
+"public=19.80 fii=0.00",
+"BLUEWATER INVESTMENT LTD 19.80 foreign->public(documented:gleif)",
 "keyword"
 ],
 [
 "R1-rest-follows-foreign-holders",
-19.87
+0.07
 ],
 [
 "R3-nbfc",
@@ -41246,11 +41232,11 @@
 },
 "LAURUSLABS|2018-06-30": {
 "file": "540222_772018174326_SHP.xml",
-"split": "a",
-"d_dii": -19.87,
-"d_fii": 19.87,
-"to_public": 11.54,
-"to_fii": 19.87,
+"split": "p",
+"d_dii": 0.0,
+"d_fii": -19.8,
+"to_public": 31.34,
+"to_fii": 0.07,
 "keep_dom": 0.0,
 "unresolved": 0.0,
 "add_dii": 0.0,
@@ -41261,31 +41247,31 @@
 "Overseas Corporate Bodies",
 0.0,
 "public=11.54 fii=0.00",
-"FIL CAPITAL MANAGEMENT (MAURITIUS) LIMITED 11.54 foreign->public(regex)",
+"FIL CAPITAL MANAGEMENT (MAURITIUS) LIMITED 11.54 foreign->public(documented:gleif)",
 "keyword"
 ],
 [
 "R1-public-label",
 "Overseas Corporate Bodies",
 0.0,
-"public=0.00 fii=0.00",
-"BLUEWATER INVESTMENT LTD 19.80 ?->-(-)",
+"public=19.80 fii=0.00",
+"BLUEWATER INVESTMENT LTD 19.80 foreign->public(documented:gleif)",
 "keyword"
 ],
 [
 "R1-rest-follows-foreign-holders",
-19.87
+0.07
 ]
 ],
 "newmap_file": "540222_1910202210432_SHP.xml"
 },
 "LAURUSLABS|2018-09-30": {
 "file": "540222_12102018165042_SHP.xml",
-"split": "a",
-"d_dii": -19.79,
-"d_fii": 19.79,
-"to_public": 11.5,
-"to_fii": 19.79,
+"split": "p",
+"d_dii": 0.0,
+"d_fii": -19.72,
+"to_public": 31.22,
+"to_fii": 0.07,
 "keep_dom": 0.0,
 "unresolved": 0.0,
 "add_dii": 0.0,
@@ -41296,31 +41282,31 @@
 "Overseas Corporate Bodies",
 0.0,
 "public=11.50 fii=0.00",
-"FIL CAPITAL MANAGEMENT (MAURITIUS) LIMITED 11.50 foreign->public(regex)",
+"FIL CAPITAL MANAGEMENT (MAURITIUS) LIMITED 11.50 foreign->public(documented:gleif)",
 "keyword"
 ],
 [
 "R1-public-label",
 "Overseas Corporate Bodies",
 0.0,
-"public=0.00 fii=0.00",
-"BLUEWATER INVESTMENT LTD 19.72 ?->-(-)",
+"public=19.72 fii=0.00",
+"BLUEWATER INVESTMENT LTD 19.72 foreign->public(documented:gleif)",
 "keyword"
 ],
 [
 "R1-rest-follows-foreign-holders",
-19.79
+0.07
 ]
 ],
 "newmap_file": "540222_1910202210432_SHP.xml"
 },
 "LAURUSLABS|2018-12-31": {
 "file": "540222_712019185832_SHP.xml",
-"split": "a",
-"d_dii": -19.79,
-"d_fii": 19.79,
-"to_public": 11.5,
-"to_fii": 19.79,
+"split": "p",
+"d_dii": 0.0,
+"d_fii": -19.72,
+"to_public": 31.22,
+"to_fii": 0.07,
 "keep_dom": 0.0,
 "unresolved": 0.0,
 "add_dii": 0.0,
@@ -41331,31 +41317,31 @@
 "Overseas Corporate Bodies",
 0.0,
 "public=11.50 fii=0.00",
-"FIL CAPITAL MANAGEMENT (MAURITIUS) LIMITED 11.50 foreign->public(regex)",
+"FIL CAPITAL MANAGEMENT (MAURITIUS) LIMITED 11.50 foreign->public(documented:gleif)",
 "keyword"
 ],
 [
 "R1-public-label",
 "Overseas Corporate Bodies",
 0.0,
-"public=0.00 fii=0.00",
-"BLUEWATER INVESTMENT LTD 19.72 ?->-(-)",
+"public=19.72 fii=0.00",
+"BLUEWATER INVESTMENT LTD 19.72 foreign->public(documented:gleif)",
 "keyword"
 ],
 [
 "R1-rest-follows-foreign-holders",
-19.79
+0.07
 ]
 ],
 "newmap_file": "540222_1910202210432_SHP.xml"
 },
 "LAURUSLABS|2019-03-31": {
 "file": "540222_542019175450_SHP.xml",
-"split": "a",
-"d_dii": -19.74,
-"d_fii": 19.74,
-"to_public": 5.75,
-"to_fii": 19.74,
+"split": "p",
+"d_dii": 0.0,
+"d_fii": -19.74,
+"to_public": 25.47,
+"to_fii": 0.0,
 "keep_dom": 0.0,
 "unresolved": 0.0,
 "add_dii": 0.0,
@@ -41366,31 +41352,27 @@
 "Overseas Corporate Bodies",
 0.0,
 "public=5.75 fii=0.00",
-"FIL CAPITAL MANAGEMENT (MAURITIUS) LIMITED 5.75 foreign->public(regex)",
+"FIL CAPITAL MANAGEMENT (MAURITIUS) LIMITED 5.75 foreign->public(documented:gleif)",
 "keyword"
 ],
 [
 "R1-public-label",
 "Overseas Corporate Bodies",
 0.0,
-"public=0.00 fii=0.00",
-"BLUEWATER INVESTMENT LTD 19.72 ?->-(-)",
+"public=19.72 fii=0.00",
+"BLUEWATER INVESTMENT LTD 19.72 foreign->public(documented:gleif)",
 "keyword"
-],
-[
-"R1-rest-follows-foreign-holders",
-19.74
 ]
 ],
 "newmap_file": "540222_1910202210432_SHP.xml"
 },
 "LAURUSLABS|2019-06-30": {
 "file": "540222_187201913054_SHP.xml",
-"split": "a",
-"d_dii": -19.96,
-"d_fii": 19.96,
-"to_public": 5.75,
-"to_fii": 19.96,
+"split": "p",
+"d_dii": 0.0,
+"d_fii": -19.72,
+"to_public": 25.47,
+"to_fii": 0.24,
 "keep_dom": 0.0,
 "unresolved": 0.0,
 "add_dii": 0.0,
@@ -41401,20 +41383,20 @@
 "Overseas Corporate Bodies",
 0.0,
 "public=5.75 fii=0.00",
-"FIL CAPITAL MANAGEMENT (MAURITIUS) LIMITED 5.75 foreign->public(regex)",
+"FIL CAPITAL MANAGEMENT (MAURITIUS) LIMITED 5.75 foreign->public(documented:gleif)",
 "keyword"
 ],
 [
 "R1-public-label",
 "Overseas Corporate Bodies",
 0.0,
-"public=0.00 fii=0.00",
-"BLUEWATER INVESTMENT LTD 19.72 ?->-(-)",
+"public=19.72 fii=0.00",
+"BLUEWATER INVESTMENT LTD 19.72 foreign->public(documented:gleif)",
 "keyword"
 ],
 [
 "R1-rest-follows-foreign-holders",
-19.96
+0.24
 ]
 ],
 "newmap_file": "540222_1910202210432_SHP.xml"
@@ -51936,13 +51918,13 @@
 "POLYCAB|2021-03-31": {
 "file": "542652_194202193353_SHP.xml",
 "split": "b",
-"d_dii": 2.2882,
-"d_fii": 0.0013,
+"d_dii": -2.29,
+"d_fii": 0.0,
 "to_public": 0.0,
 "to_fii": 2.54,
 "keep_dom": 0.0,
 "unresolved": 0.0,
-"add_dii": 2.29,
+"add_dii": 0.0,
 "add_ins": 0.0,
 "ev": [
 [
@@ -51952,12 +51934,6 @@
 "public=0.00 fii=2.54",
 "INTERNATIONAL FINANCE CORPORATION 2.54 foreign->fii(curated)",
 "keyword"
-],
-[
-"R2-label",
-"Others QIB, Foreign Nationals",
-2.29,
-""
 ]
 ],
 "newmap_file": "542652_21102022184624_SHP.xml"
@@ -53593,11 +53569,11 @@
 },
 "PVRINOX|2016-12-31": {
 "file": "532689_412017164217_SHP.xml",
-"split": "a",
-"d_dii": -1.93,
-"d_fii": 1.93,
-"to_public": 15.96,
-"to_fii": 1.93,
+"split": "p",
+"d_dii": 0.0,
+"d_fii": -1.93,
+"to_public": 17.89,
+"to_fii": 0.0,
 "keep_dom": 0.0,
 "unresolved": 0.0,
 "add_dii": 0.2,
@@ -53610,10 +53586,6 @@
 "public=15.96 fii=0.00",
 "PLENTY PRIVATE EQUITY FUND I LIMITED 8.81 foreign->public(new-format:ForeignCompanies); MULTIPLES PRIVATE EQUITY FUND I LIMITED 6.22 foreign->public(new-format~:ForeignCompanies); MAJOR CINEPLEX GROUP PUBLIC COMPANY LIMITED 1.93 ?->-(-)",
 "keyword"
-],
-[
-"R1-rest-follows-foreign-holders",
-1.93
 ],
 [
 "R2-label",
@@ -67689,6 +67661,308 @@
 ]
 ],
 "newmap_file": "532466_18102022131641_SHP.xml"
+},
+"CGPOWER|2021-12-31": {
+"file": "500093_1812022201914_SHP.xml",
+"split": "a",
+"d_dii": 1.04,
+"d_fii": 0.0,
+"to_public": 0.0,
+"to_fii": 0.0,
+"keep_dom": 0.15,
+"unresolved": 0.0,
+"add_dii": 1.04,
+"add_ins": 0.0,
+"ev": [
+[
+"R1-domestic-label",
+"Other Qualified Institutional Buyer",
+0.15,
+"public=0.00 fii=0.00",
+"",
+"keyword"
+],
+[
+"R2-label",
+"Others STANDARD CHARTERED BANK (SINGAPORE) LIMITED",
+1.02,
+"STANDARD CHARTERED BANK (SINGAPORE) LIMITED 1.02"
+],
+[
+"R3-nbfc",
+"NBFCsRegisteredWithRbi",
+0.02
+]
+],
+"newmap_file": "500093_2110202218415_SHP.xml"
+},
+"CGPOWER|2022-03-31": {
+"file": "500093_2042022192554_SHP.xml",
+"split": "a",
+"d_dii": 0.98,
+"d_fii": 0.0,
+"to_public": 0.0,
+"to_fii": 0.0,
+"keep_dom": 0.15,
+"unresolved": 0.0,
+"add_dii": 0.98,
+"add_ins": 0.0,
+"ev": [
+[
+"R1-domestic-label",
+"Other Qualified Institutional Buyer",
+0.15,
+"public=0.00 fii=0.00",
+"",
+"keyword"
+],
+[
+"R2-label",
+"Others STANDARD CHARTERED BANK (SINGAPORE) LIMITED",
+0.96,
+"STANDARD CHARTERED BANK (SINGAPORE) LIMITED 0.96"
+],
+[
+"R3-nbfc",
+"NBFCsRegisteredWithRbi",
+0.02
+]
+],
+"newmap_file": "500093_2110202218415_SHP.xml"
+},
+"CGPOWER|2022-06-30": {
+"file": "500093_187202211487_SHP.xml",
+"split": "a",
+"d_dii": 0.93,
+"d_fii": 0.0,
+"to_public": 0.0,
+"to_fii": 0.0,
+"keep_dom": 0.09,
+"unresolved": 0.0,
+"add_dii": 0.93,
+"add_ins": 0.0,
+"ev": [
+[
+"R1-domestic-label",
+"Other Qualified Institutional Buyer",
+0.09,
+"public=0.00 fii=0.00",
+"",
+"keyword"
+],
+[
+"R2-label",
+"Others STANDARD CHARTERED BANK (SINGAPORE) LIMITED",
+0.91,
+"STANDARD CHARTERED BANK (SINGAPORE) LIMITED 0.91"
+],
+[
+"R3-nbfc",
+"NBFCsRegisteredWithRbi",
+0.02
+]
+],
+"newmap_file": "500093_2110202218415_SHP.xml"
+},
+"POLYMED|2017-03-31": {
+"file": "531768_18420171801_SHP.xml",
+"split": "a",
+"d_dii": 0.26,
+"d_fii": 0.0,
+"to_public": 0.0,
+"to_fii": 0.0,
+"keep_dom": 0.0,
+"unresolved": 0.0,
+"add_dii": 0.26,
+"add_ins": 0.0,
+"ev": [
+[
+"R3-nbfc",
+"NBFCsRegisteredWithRbi",
+0.26
+]
+],
+"newmap_file": "531768_19102022133920_SHP.xml"
+},
+"POLYMED|2017-06-30": {
+"file": "531768_187201718141_SHP.xml",
+"split": "a",
+"d_dii": 0.27,
+"d_fii": 0.0,
+"to_public": 0.0,
+"to_fii": 0.0,
+"keep_dom": 0.0,
+"unresolved": 0.0,
+"add_dii": 0.27,
+"add_ins": 0.0,
+"ev": [
+[
+"R3-nbfc",
+"NBFCsRegisteredWithRbi",
+0.27
+]
+],
+"newmap_file": "531768_19102022133920_SHP.xml"
+},
+"POLYMED|2017-09-30": {
+"file": "531768_1610201718329_SHP.xml",
+"split": "a",
+"d_dii": 0.27,
+"d_fii": 0.0,
+"to_public": 0.0,
+"to_fii": 0.0,
+"keep_dom": 0.0,
+"unresolved": 0.0,
+"add_dii": 0.27,
+"add_ins": 0.0,
+"ev": [
+[
+"R3-nbfc",
+"NBFCsRegisteredWithRbi",
+0.27
+]
+],
+"newmap_file": "531768_19102022133920_SHP.xml"
+},
+"POLYMED|2017-12-31": {
+"file": "531768_2012018114756_SHP.xml",
+"split": "a",
+"d_dii": 0.26,
+"d_fii": 0.0,
+"to_public": 0.0,
+"to_fii": 0.0,
+"keep_dom": 0.0,
+"unresolved": 0.0,
+"add_dii": 0.26,
+"add_ins": 0.0,
+"ev": [
+[
+"R3-nbfc",
+"NBFCsRegisteredWithRbi",
+0.26
+]
+],
+"newmap_file": "531768_19102022133920_SHP.xml"
+},
+"POLYMED|2018-03-31": {
+"file": "531768_1742018174335_SHP.xml",
+"split": "a",
+"d_dii": 0.26,
+"d_fii": 0.0,
+"to_public": 0.0,
+"to_fii": 0.0,
+"keep_dom": 0.0,
+"unresolved": 0.0,
+"add_dii": 0.26,
+"add_ins": 0.0,
+"ev": [
+[
+"R3-nbfc",
+"NBFCsRegisteredWithRbi",
+0.26
+]
+],
+"newmap_file": "531768_19102022133920_SHP.xml"
+},
+"POLYMED|2018-06-30": {
+"file": "531768_1872018123556_SHP.xml",
+"split": "a",
+"d_dii": 0.26,
+"d_fii": 0.0,
+"to_public": 0.0,
+"to_fii": 0.0,
+"keep_dom": 0.0,
+"unresolved": 0.0,
+"add_dii": 0.26,
+"add_ins": 0.0,
+"ev": [
+[
+"R3-nbfc",
+"NBFCsRegisteredWithRbi",
+0.26
+]
+],
+"newmap_file": "531768_19102022133920_SHP.xml"
+},
+"POLYMED|2018-09-30": {
+"file": "531768_1210201816537_SHP.xml",
+"split": "a",
+"d_dii": 0.26,
+"d_fii": 0.0,
+"to_public": 0.0,
+"to_fii": 0.0,
+"keep_dom": 0.0,
+"unresolved": 0.0,
+"add_dii": 0.26,
+"add_ins": 0.0,
+"ev": [
+[
+"R3-nbfc",
+"NBFCsRegisteredWithRbi",
+0.26
+]
+],
+"newmap_file": "531768_19102022133920_SHP.xml"
+},
+"POLYMED|2018-12-31": {
+"file": "531768_1612019151119_SHP.xml",
+"split": "a",
+"d_dii": 0.25,
+"d_fii": 0.0,
+"to_public": 0.0,
+"to_fii": 0.0,
+"keep_dom": 0.0,
+"unresolved": 0.0,
+"add_dii": 0.25,
+"add_ins": 0.0,
+"ev": [
+[
+"R3-nbfc",
+"NBFCsRegisteredWithRbi",
+0.25
+]
+],
+"newmap_file": "531768_19102022133920_SHP.xml"
+},
+"POLYMED|2019-03-31": {
+"file": "531768_174201915436_SHP.xml",
+"split": "a",
+"d_dii": 0.25,
+"d_fii": 0.0,
+"to_public": 0.0,
+"to_fii": 0.0,
+"keep_dom": 0.0,
+"unresolved": 0.0,
+"add_dii": 0.25,
+"add_ins": 0.0,
+"ev": [
+[
+"R3-nbfc",
+"NBFCsRegisteredWithRbi",
+0.25
+]
+],
+"newmap_file": "531768_19102022133920_SHP.xml"
+},
+"POLYMED|2019-06-30": {
+"file": "531768_1872019121313_SHP.xml",
+"split": "a",
+"d_dii": 0.23,
+"d_fii": 0.0,
+"to_public": 0.0,
+"to_fii": 0.0,
+"keep_dom": 0.0,
+"unresolved": 0.0,
+"add_dii": 0.23,
+"add_ins": 0.0,
+"ev": [
+[
+"R3-nbfc",
+"NBFCsRegisteredWithRbi",
+0.23
+]
+],
+"newmap_file": "531768_19102022133920_SHP.xml"
 }
 },
 "revisions": {

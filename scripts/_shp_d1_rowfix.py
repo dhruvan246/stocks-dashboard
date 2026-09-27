@@ -14,6 +14,7 @@ sys.path.insert(0, SCRIPTS)
 # curl_cffi impersonate="chrome" cache-miss fallbacks; this shim answers them with a PLAIN, honestly identified request
 # (fixed User-Agent, www.bseindia.com only — it serves such clients). api.bseindia.com refuses plain clients: refused here.
 import types as _t, urllib.request as _ur, urllib.error as _ue, time as _tm
+import bse_headers  # §181: the repo's honest header set (own UA, Accept-Language, Referer) on every *.bseindia.com urllib request
 _UA="stocks-dashboard-data-fetch/1.0 (+personal research; contact via github dhruvan246)"
 class _Resp:
     def __init__(s, code, body): s.status_code=code; s.content=body; s.text=body.decode("utf-8","ignore")

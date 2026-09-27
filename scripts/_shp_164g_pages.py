@@ -11,6 +11,7 @@ SCRIPTS=os.path.dirname(os.path.abspath(__file__)); sys.path.insert(0, SCRIPTS)
 # No browser impersonation, ever (feedback-no-browser-impersonation-to-pass-bse-filter). §160's shpperent cache-miss fallback
 # calls curl_cffi impersonate="chrome"; this shim answers it with a PLAIN, honestly identified request (www.bseindia.com only).
 import types as _t, urllib.request as _ur, urllib.error as _ue, time as _tm
+import bse_headers  # §181: the repo's honest header set (own UA, Accept-Language, Referer) on every *.bseindia.com urllib request
 _UA="stocks-dashboard-data-fetch/1.0 (+personal research; contact via github dhruvan246)"
 class _Resp:
     def __init__(s, code, body): s.status_code=code; s.content=body; s.text=body.decode("utf-8","ignore")
