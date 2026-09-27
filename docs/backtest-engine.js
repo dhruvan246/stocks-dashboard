@@ -321,6 +321,9 @@ function installStockSlice(S) {
 }
 function installStockFin(sym, F) {
   FUND = {}; if (F && F.fund) FUND[sym] = F.fund;   // already alias-resolved at build time
+  // the slice's own row lengths (pd, and pp = profit proven) in fund_months.json's shape (§198)
+  FUNDM = {}; _FM.clear();
+  if (F && F.pd) { const pp = new Set(F.pp || []), m = {}; for (const k in F.pd) m[k] = pp.has(k) ? F.pd[k] : -F.pd[k]; FUNDM[sym] = m; }
 }
 
 /* ---- LIVE intraday overlay (optional — used by the 🎯 Live Picks screen) ----------------------
@@ -582,6 +585,51 @@ function needsFund(cfg) { return FUND_FIELDS.has(cfg.sortBy) || (cfg.filters || 
 // Strategy-name DISPLAY helpers (basisSuffix / nameWithBasis / strategyEnglish) live in the shared
 // bt-names.js — loaded by every page that shows a strategy name, including the slim ones that don't
 // load this engine (live-tracking, backtest-history, stock-backtest). Not duplicated here.
+// ---- RESULT-ROW LENGTHS (runbook §198) ----------------------------------------------------------------------
+// sf_fundamentals rows are keyed by quarter-end only, so an SME's Apr–Sep half-year and a Jul–Sep quarter look alike:
+// four rows added up QMSMEDI's Q1 + H1 + Q3 + H2 (18 months) as a year, and a half-year set against the quarter a year
+// earlier read as growth. docs/fund_months.json (build_stock_fin.py, from the filings' own arithmetic in
+// scripts/row_periods.json) lists per stock the rows whose length is PROVEN: m = 3|6|12 months with the row's profit
+// proven too, -m = proven on revenue only (its profit then counts toward nothing). In a year that holds a 6/12-month
+// row every other row is of UNKNOWN length. A stock absent from the file — every Nifty 500 member ever, measured
+// 2026-09-27 — takes exactly the old code path. The same rule as docs/stock.html renderFunds. (Sync: stock-backtest.html)
+let FUNDM = {};
+const _FM = new Map();
+function fundMonthsFor(sym) {
+  const M = FUNDM[sym] || (FUND_ALIAS[sym] ? FUNDM[FUND_ALIAS[sym]] : null);
+  if (!M || typeof M !== 'object') return null;
+  let o = _FM.get(M); if (o) return o;
+  const fy = e => { const y = Math.floor(e / 10000); return Math.floor(e / 100) % 100 > 3 ? y + 1 : y; };   // Apr–Mar year
+  const hy = new Set(); for (const k in M) { const a = Math.abs(M[k]); if (a === 6 || a === 12) hy.add(fy(+k)); }
+  o = { len: e => { const v = M[e]; return v != null ? (v > 0 ? v : 0) : (hy.has(fy(e)) ? 0 : 3); },   // 0 = unknown
+        q3: e => M[e] === 3 };
+  _FM.set(M, o); return o;
+}
+// the quarter-end k months (a multiple of 3) before quarter-end e
+function _qBack(e, k) {
+  const i = Math.floor(e / 10000) * 4 + Math.floor((Math.floor(e / 100) % 100 - 1) / 3) - k / 3, y = Math.floor(i / 4), m = (i % 4 + 1) * 3;
+  return y * 10000 + m * 100 + ((m === 3 || m === 12) ? 31 : 30);
+}
+// Screener's TTM: the pieces covering EXACTLY the 12 months to quarter-end E — row keys, or {h, q} = a proven half minus
+// a proven quarter (Jul–Sep = Apr–Sep − Apr–Jun, Jan–Mar = Oct–Mar − Oct–Dec); null when the rows cannot tile them.
+function _tile12(has, len, q3, E) {
+  const w = [];
+  const go = (c, left) => {
+    if (!left) return true;
+    const L = has(c) ? len(c) : 0;
+    if (L && L <= left) { w.push(c); if (go(_qBack(c, L), left - L)) return true; w.pop(); }
+    const m = Math.floor(c / 100) % 100, q = _qBack(c, 3);
+    if ((m === 9 || m === 3) && left >= 3 && L === 6 && has(q) && len(q) === 3 && q3(q)) {
+      w.push({ h: c, q }); if (go(q, left - 3)) return true; w.pop(); }
+    return false;
+  };
+  return go(E, 12) ? w : null;
+}
+async function loadFundMonths() {
+  try { const r = await fetch('./fund_months.json'); FUNDM = (r && r.ok) ? ((await r.json()) || {}) : {}; }
+  catch (e) { FUNDM = {}; }
+  _FM.clear();
+}
 function dateIntOff(off) { return parseInt(isoOff(off).replace(/-/g, ''), 10); }
 // A consolidated series that STOPPED while standalone kept filing must not serve a years-stale
 // YoY at a fresh screen date. BANDHANBNK is the proof case (quantmac reconciliation v2,
@@ -623,6 +671,8 @@ function profitAt(sym, dateInt, basis) {
     const baseEnd = cur[0] - 10000; let base = null;
     for (const q of arr) { if (q[0] === baseEnd && q[npIdx] != null) { base = q; break; } }
     if (!base) continue;
+    // like for like (§198): a half-year against the quarter a year earlier is no growth figure
+    const fm = fundMonthsFor(sym); if (fm) { const L = fm.len(cur[0]); if (!L || fm.len(baseEnd) !== L) continue; }
     const b = base[npIdx], c = cur[npIdx];
     // YoY% for EVERY stock with a non-zero base — tiny (₹0.01cr) and negative/loss bases included.
     // Divide by |base| so loss→profit reads positive. Null only when base is exactly 0 (÷0).
@@ -660,12 +710,16 @@ function profitMetrics(sym, dateInt, basis) {
   // Dead-con guard: same rule as profitAt — a con series whose latest visible quarter trails
   // standalone's by >12 months is skipped, not paired years-stale (BANDHANBNK, quantmac v2).
   const tries = basis === 'std' ? [[1, 2]] : basis === 'conOnly' ? [[3, 4]] : _conFreshEnough(arr, dateInt) ? [[3, 4], [1, 2]] : [[1, 2]];
+  const fm = fundMonthsFor(sym);   // null for a stock with no proven half-year row: every line below behaves as before (§198)
   for (const [ni, ai] of tries) {
     // ann > 0, not != null — see profitAt above (0 = date-unknown sentinel, runbook §15/§91).
     let ci = -1; for (let i = arr.length - 1; i >= 0; i--) { if (arr[i][ni] != null && arr[i][ai] > 0 && arr[i][ai] <= dateInt) { ci = i; break; } }
     if (ci < 0) continue;
     const npAt = qe => { const q = arr.find(x => x[0] === qe); return (q && q[ni] != null) ? q[ni] : null; };
-    const yoyOf = q => { const c = q[ni], b = npAt(q[0] - 10000); return (c != null && b != null && b !== 0) ? (c - b) / Math.abs(b) * 100 : null; };
+    // like for like (§198): a row against the row a year earlier only when both are of the same known length — quarter
+    // vs quarter, half vs half (GICL's Sep-2025 quarter against its Apr–Sep 2024 half is no growth figure)
+    const yoyOf = q => { if (fm) { const L = fm.len(q[0]); if (!L || fm.len(q[0] - 10000) !== L) return null; }
+      const c = q[ni], b = npAt(q[0] - 10000); return (c != null && b != null && b !== 0) ? (c - b) / Math.abs(b) * 100 : null; };
     const cur = arr[ci], yoy = yoyOf(cur);
     if (yoy == null) continue;
     const base = npAt(cur[0] - 10000);
@@ -676,7 +730,16 @@ function profitMetrics(sym, dateInt, basis) {
     const monthIdx = d => Math.floor(d / 10000) * 12 + Math.floor(d / 100) % 100;
     let accel = null; { const pq = arr.find(x => monthIdx(x[0]) === monthIdx(cur[0]) - 3 && x[ni] != null);
       if (pq) { const py = yoyOf(pq); if (py != null) accel = yoy - py; } }
-    let ttm = null; { let ok = true, last4 = [], prev4 = [];
+    let ttm = null;
+    if (fm) {   // §198: the rows that cover EXACTLY the latest 12 months, and the 12 before — see _tile12
+      const byQ = new Map(); for (const q of arr) if (!byQ.has(q[0])) byQ.set(q[0], q);   // first row per quarter-end, as npAt
+      const has = e => byQ.has(e), val = e => { const q = byQ.get(e); return (q && q[ni] != null) ? q[ni] : null; };
+      const sumW = w => { if (!w) return null; let t = 0;
+        for (const s of w) { const v = typeof s === 'number' ? val(s) : ((a, b) => (a == null || b == null) ? null : a - b)(val(s.h), val(s.q));
+          if (v == null) return null; t += v; } return t; };
+      const w1 = _tile12(has, fm.len, fm.q3, cur[0]), s1 = sumW(w1), s0 = w1 ? sumW(_tile12(has, fm.len, fm.q3, _qBack(cur[0], 12))) : null;
+      if (s1 != null && s0 != null) ttm = s0 !== 0 ? (s1 - s0) / Math.abs(s0) * 100 : null;
+    } else { let ok = true, last4 = [], prev4 = [];
       for (let k = 0; k < 4; k++) { const q = arr[ci - k]; const v = q ? q[ni] : null; if (v == null) { ok = false; break; } last4.push(v); }
       // last4 is 4 ARRAY-adjacent rows, not 4 CALENDAR-adjacent quarters — a quarter our data never
       // captured is silently stepped over, so the "4Q vs prior 4Q" window can quietly widen past 12
@@ -744,6 +807,7 @@ async function loadFund() {
   if (Object.keys(FUND).length) return;
   try { FUND = await (await fetch('./sf_fundamentals.json')).json(); } catch (e) { console.warn('no fundamentals data', e); FUND = {}; }
   foldFundAliases();
+  await loadFundMonths();   // proven half-year rows (§198) — absent file = every row a quarter, the old behaviour
 }
 // Merge renamed tickers' fundamentals under the CURRENT key — the same fold loadShp() already does
 // for shareholding. fundFor() resolves OLD->new, which covers a series still keyed by the old name;

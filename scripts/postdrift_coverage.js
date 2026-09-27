@@ -45,6 +45,7 @@
   SF={meta,series:ser,turn,startTs:ts,endOff,start:SFD.start,end:SFD.end,nDead:Object.values(meta).filter(m=>!m.alive).length,nTot:Object.keys(meta).length};
   activateSF();
   FUND = Jf(LIVE('fund_live.json'));
+  FUNDM = Jf(LIVE('fund_months_live.json')); _FM.clear();   // proven half-year rows — the engine's YoY rule (runbook §198)
   console.error('loaded: stocks=' + SF.nTot + ' end=' + SF.end + ' fund=' + Object.keys(FUND).length);
 
   const START = process.argv[2] || '2002-03-31';

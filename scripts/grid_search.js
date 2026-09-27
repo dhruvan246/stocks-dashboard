@@ -76,6 +76,7 @@
          nDead: Object.values(meta).filter(m => !m.alive).length, nTot: Object.keys(meta).length };
   activateSF();
   FUND = J('docs/sf_fundamentals.json');
+  FUNDM = J('docs/fund_months.json'); _FM.clear();   // proven half-year rows — profit TTM / YoY (runbook §198)
   console.error('loaded: stocks=' + SF.nTot + ' end=' + SF.end + ' fund=' + Object.keys(FUND).length);
 
   // ===== EDIT HERE for a different search =====

@@ -60,6 +60,7 @@
   const endOff = Math.floor((Date.parse((SFD.end||'2024-01-01')+'T00:00:00Z')/1000 - ts)/DAY);
   SF={meta,series:ser,turn,startTs:ts,endOff,start:SFD.start,end:SFD.end,nDead:Object.values(meta).filter(m=>!m.alive).length,nTot:Object.keys(meta).length};
   activateSF(); FUND = J('docs/sf_fundamentals.json');
+  FUNDM = J('docs/fund_months.json'); _FM.clear();   // proven half-year rows — profit TTM / YoY (runbook §198)
   console.error('loaded: stocks='+SF.nTot+' end='+SF.end+' fund='+Object.keys(FUND).length);
 
   // ===== search space =====

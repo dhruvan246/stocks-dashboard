@@ -31,12 +31,19 @@ WHAT IT REPLACES
          built by build_xbrl_extra.py): {qEnd: {s:{...}, c:{...}}} — EPS, interest/
          depreciation/tax/exceptional, balance sheet, cash flow (+cf_d period days),
          segments, bank NPA/CET1/ROA, audited flag. ₹ crore / ₹ per share / %.
-  pd     {qEnd: 6|12} — result rows that cover six (or twelve) months, not one quarter:
-         an SME half-yearly filer's Sep row is Apr-Sep and its Mar row Oct-Mar. Proven
-         from the filings by scripts/build_row_periods.py (scripts/row_periods.json) and
-         kept here only while the revenue the row publishes is still the proven one.
+  pd     {qEnd: 3|6|12} — result rows whose length the filings PROVE: 6 (or 12) for a
+         half-year (an SME half-yearly filer's Sep row is Apr-Sep, its Mar row Oct-Mar),
+         3 for a quarter inside a year that also holds a half-year (a filer of Q1 + H1 +
+         Q3 + H2, QMSMEDI). Proven by scripts/build_row_periods.py (scripts/row_periods.json)
+         and kept here only while the revenue the row publishes is still the proven one.
          Absent = every row is a quarter. The page counts a year only when its rows
-         tile the 12 months (runbook §191).
+         tile the 12 months (runbook §191); the TTM cards and the backtest engines read
+         any other row of a year that holds a half-year as UNKNOWN length (§198).
+  pp     [qEnd, …] — the rows of pd whose PROFIT is proven too (it equals what the proving
+         filing prints); a pd row's profit counts toward a TTM only when listed here (§198).
+  docs/fund_months.json (one whole-market file, for the backtest engines, which read
+         sf_fundamentals and never load a slice): {SYM: {qEnd: m}} — the same marks,
+         m = the row's length when its profit is proven, -m when only its revenue is.
 
 RENAMES
   Fundamentals are keyed by a company's CURRENT ticker while its price history
@@ -107,8 +114,11 @@ def load(path, what):
 def main():
     ap = argparse.ArgumentParser()
     ap.add_argument("--out", default=OUT, help="output dir (default docs/fin — CI path)")
+    ap.add_argument("--months", default=None,
+                    help="engines' row-length file (default: fund_months.json beside the output dir → docs/)")
     args = ap.parse_args()
     out_dir = args.out
+    months_path = args.months or os.path.join(os.path.dirname(os.path.abspath(out_dir)), "fund_months.json")
 
     fund  = load(FUND_J,  "net profit")
     revop = load(REVOP_J, "revenue/margins")
@@ -409,7 +419,8 @@ def main():
         return (a is None and b is None) or (a is not None and b is not None and abs(a - b) < 1e-9)
 
     seen, written, total = {}, 0, 0
-    pd_rows = pd_syms = pd_stale = 0
+    pd_rows = pd_syms = pd_stale = pp_off = 0
+    months = {}                        # docs/fund_months.json for the backtest engines (§198)
     for sym in sorted(syms):
         sl = slug(sym)
         if sl in seen:
@@ -425,15 +436,25 @@ def main():
             payload["revop"] = r
         # row lengths (runbook §191): a mark is published only while the row still carries the revenue it was proven on
         # — a row another writer changed afterwards reads as a quarter again (its year goes blank, never wrong)
-        pd = {}
+        pd, pp = {}, []
+        fq = {str(x[0]): x for x in (f or [])}
         for qe, e in (resolve(rowp, sym) or {}).items():
             row = (r or {}).get(qe) or []
             if row and same(row[0], e.get("s")) and same(row[1] if len(row) > 1 else None, e.get("c")):
                 pd[qe] = e["m"]
+                # §198: the row's PROFIT counts for that length only while every profit stored on it is the proven one
+                fr = fq.get(qe) or [None] * 5
+                if all(v is None or same(v, e.get(k)) for k, v in (("ps", fr[1]), ("pc", fr[3]))):
+                    pp.append(qe)
+                else:
+                    pp_off += 1
             else:
                 pd_stale += 1
         if pd:
             payload["pd"] = pd
+            if pp:
+                payload["pp"] = pp
+            months[sym] = {qe: (m if qe in pp else -m) for qe, m in pd.items()}
             pd_rows += len(pd); pd_syms += 1
         row = resolve(shp_rows, sym)
         if row and row[4]:
@@ -466,6 +487,18 @@ def main():
              total / max(written, 1) / 1024))
     print("row periods (half-year / full-year rows, §191): %d rows on %d slices; %d marks dropped because the row's "
           "revenue changed since it was proven" % (pd_rows, pd_syms, pd_stale))
+    # §198: the backtest engines read sf_fundamentals, not the slices — give them the same marks in one small file.
+    # m = the row's length when its profit is proven, -m when only its revenue is (its profit then counts toward nothing).
+    doc = {"_note": "Result rows of proven length (runbook §191/§198) — built by scripts/build_stock_fin.py from "
+                    "scripts/row_periods.json; never edit by hand. {SYM: {qEnd: m}}: m = 3|6|12 months with the "
+                    "row's profit proven, -m = length proven on revenue only. Any other row of a year that holds a "
+                    "6/12-month row is of unknown length."}
+    doc.update({s: months[s] for s in sorted(months)})
+    blob = json.dumps(doc, separators=(",", ":"), ensure_ascii=False)
+    with open(months_path, "w", encoding="utf-8") as fh:
+        fh.write(blob + "\n")
+    print("fund_months.json: %d symbols, %d rows (%d with profit not proven) -> %s"
+          % (len(months), sum(len(v) for v in months.values()), pp_off, os.path.relpath(months_path, ROOT)))
 
 
 if __name__ == "__main__":

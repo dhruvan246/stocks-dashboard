@@ -49,6 +49,7 @@
   SF={meta,series:ser,turn,startTs:ts,endOff,start:SFD.start,end:SFD.end,nDead:Object.values(meta).filter(m=>!m.alive).length,nTot:Object.keys(meta).length};
   activateSF();
   FUND = Jf(LIVE('fund_live.json'));
+  FUNDM = Jf(LIVE('fund_months_live.json')); _FM.clear();   // proven half-year rows — profit TTM / YoY (runbook §198)
   SHPD = Jf(LIVE('shp_live.json'));
   // merge renamed tickers' SHP eras under the CURRENT key (mirror of loadShp())
   for (const old in FUND_ALIAS) {

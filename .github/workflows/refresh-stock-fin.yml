@@ -9,7 +9,8 @@ name: Rebuild per-stock financial slices
 # grows by kilobytes, not by the 40 MB/day the PRICE slices would cost (those are force-pushed
 # to the sf-data repo by refresh-backtest-data.yml instead).
 #
-# No self-trigger: this job only ever commits docs/fin/**, which is not in the paths filter.
+# No self-trigger: this job only ever commits docs/fin/** and docs/fund_months.json (the same row-length marks,
+# whole-market, for the backtest engines — runbook §198), neither of which is in the paths filter.
 #
 # It must dispatch pages.yml explicitly, though — runbook §41b. This job pushes as the default
 # GITHUB_TOKEN, and GitHub's recursion guard means a GITHUB_TOKEN push creates no new workflow
@@ -73,11 +74,11 @@ jobs:
         run: |
           git config user.name  "github-actions[bot]"
           git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
-          rm -rf /tmp/fin && cp -r docs/fin /tmp/fin
+          rm -rf /tmp/fin && cp -r docs/fin /tmp/fin && cp docs/fund_months.json /tmp/fund_months.json
           for attempt in 1 2 3 4 5; do
             git fetch origin main && git reset --hard origin/main
-            rm -rf docs/fin && cp -r /tmp/fin docs/fin
-            git add --all -- docs/fin
+            rm -rf docs/fin && cp -r /tmp/fin docs/fin && cp /tmp/fund_months.json docs/fund_months.json
+            git add --all -- docs/fin docs/fund_months.json
             if git diff --cached --quiet; then echo "financial slices unchanged"; exit 0; fi
             git commit -q -m "Per-stock financial slices $(TZ=Asia/Kolkata date +'%Y-%m-%d %H:%M IST')"
             if git push origin HEAD:main; then

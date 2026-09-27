@@ -793,15 +793,46 @@ function renderFunds(){
   const FYS=fiscalYears(ends,isFin);                     // year-ends, year by year — CFO/PAT card + renderDeep()
   const fq=e=>{ const s=String(e); return s.slice(0,4)+'-'+s.slice(4,6); };
 
-  // ---- TTM: the last 4 CONTIGUOUS quarters (and the 4 before, for YoY) ----
-  const window4=endIdx=>{ const w=ends.slice(endIdx-3,endIdx+1);
-    if(w.length<4) return null;
-    for(let i=1;i<4;i++) if(qIdx(w[i])!==qIdx(w[i-1])+1) return null;
-    return w; };
-  const sum=(w,get)=>{ if(!w) return null; let t=0; for(const e of w){ const v=get(e); if(v==null) return null; t+=v; } return t; };
-  const cur4=window4(ends.length-1), prev4=(ends.length>=8&&cur4)?window4(ends.length-5):null;
-  const contiguous=!!(cur4&&prev4&&qIdx(cur4[0])===qIdx(prev4[3])+1);
-  const revT=sum(cur4,e=>vOf(rev(e))), opT=sum(cur4,e=>vOf(op(e))), patT=sum(cur4,e=>pat(e));
+  // ---- TTM = the rows that cover EXACTLY the latest 12 months (and the 12 before, for YoY) — runbook §198 ----
+  // Rows are keyed by quarter-end only, so a quarter and a half-year look alike; a row is one quarter unless the filings
+  // prove otherwise (slice `pd`, §191). Screener's rule, on what our filings prove: an SME half-yearly filer's TTM is
+  // its last two halves (Apr–Sep + Oct–Mar — Screener prices those companies' P/E on them); a switcher's is its last
+  // Oct–Mar half + two quarters; a filer of Q1 + H1 + Q3 + H2 (QMSMEDI, which summed 18 months as 12) gets the missing
+  // quarter split off the half the way Screener does — Jul–Sep = Apr–Sep − Apr–Jun, Jan–Mar = Oct–Mar − Oct–Dec — but
+  // only off a quarter the filings prove (pd 3: Oct–Dec by the company's own nine-month total). In a year that holds a
+  // proven half every other row is of UNKNOWN length; a window that cannot be tiled is blank, never summed. Profit on a
+  // proven row counts only when the proving filing prints the same profit (`pp` — ZEAL's is another company's).
+  const FYq=e=>{ const y=Math.floor(e/10000); return Math.floor(e/100)%100>3?y+1:y; };   // the Apr–Mar year of a quarter-end
+  const HY=new Set(); for(const k in (FIN_PD||{})){ const m=FIN_PD[k]; if(m===6||m===12) HY.add(FYq(+k)); }
+  const PP=new Set(FIN_PP||[]);
+  const lenRev=e=>{ const m=FIN_PD&&FIN_PD[String(e)]; return (m===3||m===6||m===12)?m:(HY.has(FYq(e))?0:3); };   // 0 = unknown
+  const lenPat=e=>(FIN_PD&&FIN_PD[String(e)]&&!PP.has(String(e)))?0:lenRev(e);
+  const endSet=new Set(ends);
+  const qBack=(e,k)=>{ const i=qIdx(e)-k/3, y=Math.floor(i/4), m=(i%4+1)*3; return y*10000+m*100+((m===3||m===12)?31:30); };
+  // the pieces covering exactly the 12 months to quarter-end E, OLDEST first (the order the four quarters were always
+  // added in — floating-point sums depend on it, and a changed order moved ₹4,010 cr to ₹4,009 cr on APOLLOHOSP):
+  // row keys, or {h,q} = half h minus proven quarter q
+  const tile=(E,len)=>{ const w=[];
+    const go=(c,left)=>{ if(!left) return true;
+      const L=endSet.has(c)?len(c):0;
+      if(L&&L<=left){ w.push(c); if(go(qBack(c,L),left-L)) return true; w.pop(); }
+      const q=qBack(c,3), m=Math.floor(c/100)%100;
+      if((m===9||m===3)&&left>=3&&L===6&&endSet.has(q)&&len(q)===3&&FIN_PD&&FIN_PD[String(q)]===3){
+        w.push({h:c,q}); if(go(q,left-3)) return true; w.pop(); }
+      return false; };
+    return go(E,12)?w.reverse():null; };
+  const diff=(a,b)=>(a==null||b==null)?null:a-b;
+  // one getter over a window: a row through it; a split-off quarter as half − quarter (the getter is one basis)
+  const sum=(w,get)=>{ if(!w) return null; let t=0; for(const s of w){ const v=typeof s==='number'?get(s):diff(get(s.h),get(s.q)); if(v==null) return null; t+=v; } return t; };
+  // a LEVEL takes consolidated where filed, else standalone, row by row — but a split-off quarter takes both of its
+  // operands from ONE basis (a consolidated half minus a standalone quarter is a number of nothing)
+  const sumL=(w,lvl,gc,gs)=>{ if(!w) return null; let t=0;
+    for(const s of w){ let v; if(typeof s==='number') v=lvl(s); else{ v=B!=='std'?diff(gc(s.h),gc(s.q)):null; if(v==null) v=diff(gs(s.h),gs(s.q)); }
+      if(v==null) return null; t+=v; } return t; };
+  const tE=ends[ends.length-1], tE0=qBack(tE,12);
+  const curR=tile(tE,lenRev), prevR=curR&&tile(tE0,lenRev), curP=tile(tE,lenPat), prevP=curP&&tile(tE0,lenPat);
+  const conRev=e=>raw(e,1), stdRev=e=>raw(e,0);
+  const revT=sumL(curR,e=>vOf(rev(e)),conRev,stdRev), opT=sumL(curR,e=>vOf(op(e)),e=>raw(e,3),e=>raw(e,2)), patT=sumL(curP,pat,conPat,stdPat);
   /* GROWTH IS COMPUTED ON ONE BASIS, NEVER ACROSS TWO. Consolidated revenue mostly starts 2020
      while standalone runs back to 2015, so the naive con-preferred pair compares this year's
      consolidated against last year's standalone and invents group-sized "growth" (measured
@@ -810,16 +841,18 @@ function renderFunds(){
   const yoyOn=(getCon,getStd,a,b)=>{ if(!a||!b) return null;
     if(B!=='std'){ const x=sum(a,getCon), y=sum(b,getCon); if(x!=null&&y!=null) return growth(x,y); }
     const x=sum(a,getStd), y=sum(b,getStd); return (x!=null&&y!=null)?growth(x,y):null; };
-  const conRev=e=>raw(e,1), stdRev=e=>raw(e,0);
-  const revG=contiguous?yoyOn(conRev,stdRev,cur4,prev4):null;
-  const patG=contiguous?yoyOn(conPat,stdPat,cur4,prev4):null;
-  const qYoY=(gc,gs)=>e=>yoyOn(gc,gs,[e],[e-10000]);        // per-quarter, same rule
-  const revYoY=qYoY(conRev,stdRev), patYoY=qYoY(conPat,stdPat);
+  const revG=yoyOn(conRev,stdRev,curR,prevR);
+  const patG=yoyOn(conPat,stdPat,curP,prevP);
+  // per-row YoY, same basis rule — and LIKE FOR LIKE (Screener: quarter vs quarter, half vs half): a row against the row
+  // a year earlier only when both are of the same known length (GICL's Sep-2025 quarter against its Sep-2024 Apr–Sep
+  // half read −46.5%, §198)
+  const qYoY=(gc,gs,len)=>e=>{ const L=len(e); return (L&&len(e-10000)===L)?yoyOn(gc,gs,[e],[e-10000]):null; };
+  const revYoY=qYoY(conRev,stdRev,lenRev), patYoY=qYoY(conPat,stdPat,lenPat);
   // …and so is a margin: consolidated op profit over STANDALONE revenue is not a margin of anything.
   const marginOn=w=>{ if(!w) return null;
     if(B!=='std'){ const r=sum(w,conRev), o=sum(w,e=>raw(e,3)); if(r&&o!=null) return o/r*100; }
     const r=sum(w,stdRev), o=sum(w,e=>raw(e,2)); return (r&&o!=null)?o/r*100:null; };
-  const opmT=marginOn(cur4);
+  const opmT=marginOn(curR);
 
   // ---- valuation: mcap re-priced off THIS page's last close, so a stale bake can't skew P/E ----
   // (in rewind: re-priced to the as-of close — share count assumed constant, a fair first cut)
@@ -849,8 +882,9 @@ function renderFunds(){
   const bs=latestBS(ends);
   if(bs){
     const eq=bs.x.eq, borr=bs.x.borr||0;
-    const ebitT=sum(cur4,e=>vOf(ebit(e)));
-    const fcT=sum(cur4,e=>{ const x=xCell(e); return x&&x.fc!=null?x.fc:null; });
+    const ebitT=sumL(curR,e=>vOf(ebit(e)),e=>raw(e,8),e=>raw(e,7));
+    const fcB=(e,b)=>{ const c=FIN_X&&FIN_X[String(e)], d=c&&(b==='c'?c.c:c.s); return d&&d.fc!=null?d.fc:null; };
+    const fcT=sumL(curR,e=>{ const x=xCell(e); return x&&x.fc!=null?x.fc:null; },e=>fcB(e,'c'),e=>fcB(e,'s'));
     const extra=[];
     if(patT!=null&&eq){ const roe=patT/eq*100;
       extra.push(card('ROE (TTM)',roe.toFixed(1)+'%',sub('on latest equity, '+fmtQtr(bs.e)),roe<0?'neg':'text-slate-900')); }
@@ -902,13 +936,19 @@ function renderFunds(){
     return `<td class="text-right px-2 ${rr==null?'':(rr.rx>=0?'pos':'neg')}">${rr==null?'—':pct(rr.rx)}</td>`; };
   const annCell=e=>{ const q=fundBy[e], a=q?annOf(q):null;
     return `<td class="text-right px-2 text-slate-500 whitespace-nowrap">${a==null?'—':ymd2iso(a)}</td>`; };
+  // "Apr–Sep 2025" / "Oct 2025 – Mar 2026": the m months ending at quarter-end e
+  const spanOf=(e,m)=>{ const y=Math.floor(e/10000), mo=Math.floor(e/100)%100, i=y*12+mo-m, sy=Math.floor(i/12), sm=i%12+1;
+    return sy===y?FY_MON[sm]+'–'+FY_MON[mo]+' '+y:FY_MON[sm]+' '+sy+' – '+FY_MON[mo]+' '+y; };
+  // a proven half-year / full-year row says so: its figures cover six (twelve) months, not a quarter (§191/§198)
+  const lenTag=e=>{ const m=FIN_PD&&FIN_PD[String(e)]; if(m!==6&&m!==12) return '';
+    return ` <span class="text-[10px] font-normal text-slate-400" title="${m===12?'Full-year':'Half-year'} result: ${spanOf(e,m)} (${m} months in one filing, proven from the company’s filings)">${m} mo</span>`; };
   $('funds').innerHTML=`<table class="w-full text-sm"><thead class="text-[11px] uppercase text-slate-500 border-b border-slate-200"><tr>`+
     `<th class="text-left py-1 pr-2">Quarter end</th><th class="text-right px-2">Revenue</th><th class="text-right px-2">Rev YoY</th>`+
     `<th class="text-right px-2">Op profit</th><th class="text-right px-2">OPM</th><th class="text-right px-2">EBIT</th>`+
     `<th class="text-right px-2">Net profit</th><th class="text-right px-2">PAT YoY</th><th class="text-right px-2" title="Date the result was filed with the exchange">Announced</th><th class="text-right px-2">React</th><th class="text-right px-2">Basis</th>`+
     `</tr></thead><tbody>`+
     show.map(e=>{ const p=pat(e), r=vOf(rev(e)), o=vOf(op(e)), eb=vOf(ebit(e)), mg=opm(e);
-      return `<tr class="border-b border-slate-50"><td class="py-1 pr-2 font-medium whitespace-nowrap">${fq(e)}</td>`+
+      return `<tr class="border-b border-slate-50"><td class="py-1 pr-2 font-medium whitespace-nowrap">${fq(e)}${lenTag(e)}</td>`+
         num(r)+gCell(revYoY(e))+
         num(o,o!=null&&o<0?'neg':'')+
         `<td class="text-right px-2 ${mg==null?'':(mg>=0?'':'neg')}">${mg==null?'—':mg.toFixed(1)+'%'}</td>`+
@@ -933,8 +973,22 @@ function renderFunds(){
     if(mx) bits.push(mx+' '+(mx===1?'row is':'rows are')+' part-consolidated — consolidated for the figures filed that way, standalone for the rest (<span class="uppercase">mix</span>)');
     if(bits.length) notes.push('Showing <b>consolidated</b> figures where filed: '+bits.join('; ')+'.'); }
   if(isFin) notes.push('<span class="text-amber-600">Bank / NBFC:</span> “revenue” is interest earned plus other operating income and “op profit” is pre-provision — neither margin is comparable to a non-financial company.');
+  // half-year rows, and what the TTM cards were built from (§198)
+  if(show.some(e=>{ const m=FIN_PD&&FIN_PD[String(e)]; return m===6||m===12; }))
+    notes.push('Rows tagged “6 mo” are <b>half-year results</b> — the company filed six months in one result (Apr–Sep or Oct–Mar). Their YoY compares with the same half a year earlier, and is blank where the row a year earlier covers a different length.');
+  const tEl=FY_MON[Math.floor(tE/100)%100]+' '+Math.floor(tE/10000);
+  const piece=s=>{ if(typeof s!=='number') return spanOf(s.h,3)+' (the '+spanOf(s.h,6)+' half less the '+spanOf(s.q,3)+' quarter)';
+    const L=lenRev(s); return 'the '+spanOf(s,L)+(L===3?' quarter':(L===6?' half':' year')); };
+  const hyNear=HY.has(FYq(tE))||HY.has(FYq(qBack(tE,9)));   // do the latest 12 months touch a year that holds a half?
+  let hyBlank=false;
+  if(curR&&curR.some(s=>typeof s!=='number'||lenRev(s)!==3))
+    notes.push('TTM = the 12 months to '+tEl+': '+curR.map(piece).join(' + ')+' — Screener’s arithmetic; a quarter is split off a half only where the company’s own filings prove that quarter.');
+  else if(!curR&&hyNear){ hyBlank=true;
+    notes.push('The TTM cards are blank: the results on file for the 12 months to '+tEl+' include a half-year (Apr–Sep or Oct–Mar) that can’t be split into quarters from the company’s filings, so they don’t add up to exactly 12 months.'); }
+  if(curR&&!curP&&hyNear)
+    notes.push('Net profit (TTM), P/E and ROE are blank: the profit stored on a half-year row in these 12 months doesn’t match the profit its filing prints, so it isn’t counted.');
   if(!Object.keys(rv).length) notes.push('Revenue, margins and EBIT aren’t on file for this stock yet — only net profit is shown. <a class="text-indigo-500 hover:underline" href="./results-season.html">How coverage is built →</a>');
-  else if(revT==null) notes.push('Revenue (TTM) is blank because one of the last four quarters has no revenue on file — a partial sum would understate the year.');
+  else if(revT==null&&!hyBlank) notes.push('Revenue (TTM) is blank because one of the last four quarters has no revenue on file — a partial sum would understate the year.');
   $('fundNote').innerHTML=notes.join('<br>');
 }
 
@@ -942,7 +996,7 @@ function renderFunds(){
    FIN_X = {qEnd: {s:{...}, c:{...}}}: EPS, interest/depreciation/tax, balance sheet (half-yearly),
    cash flow (+cf_d period days — filers tag quarter, H1 or FY periods), segments, bank health.
    Consolidated preferred per quarter, standalone fallback — same rule as the summary table. */
-let FIN_X=null, FIN_PD=null, DEEP_TAB=null;
+let FIN_X=null, FIN_PD=null, FIN_PP=null, DEEP_TAB=null;
 /* How many months a result row covers (runbook §191). Rows are keyed by quarter-end only, so a quarter and a half-year
    look alike: an SME half-yearly filer's Sep row is Apr–Sep and its Mar row Oct–Mar. The fin slice's `pd` lists the rows
    the filings PROVE are 6 (or 12) months — scripts/build_row_periods.py, H1 + H2 = the printed full year; every other
@@ -1926,6 +1980,7 @@ async function liveQuote(){
       REVOP={}; if(F&&F.revop) REVOP[TKR]=F.revop;
       FIN_X=(F&&F.x)||null;
       FIN_PD=(F&&F.pd)||null;                                            // half-year / full-year rows (§191)
+      FIN_PP=(F&&F.pp)||null;                                            // …whose profit is proven too (§198)
       SHP_GOV=(F&&F.shpGov)||null;                                       // Government row lookup
       try{ renderFunds(); }catch(e){ console.error(e); }
       try{ renderKPI((F&&F.kpi)||null); }catch(e){ console.error(e); }   // Insights card (runbook §137)

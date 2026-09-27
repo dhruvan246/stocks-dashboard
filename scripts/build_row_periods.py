@@ -34,9 +34,32 @@ quarter, MAIDEN's Mar-2024 OneD is the whole year, DHARNI's Sep-2023 OneD is the
   re-checks that arithmetic itself — the h flag alone is a label and never counts — and marks the row when the revenue
   the slice publishes is the proven half (entries tagged "src": "bse-pf", re-derived every run, never carried forward).
 
-OUTPUT  {SYM: {qEnd: {"m": 6|12, "s": revStd, "c": revCon, "f": [evidence file names]}}} for the symbols of
-docs/fin. docs/fin/<SYM>.json gets `pd` = {qEnd: m} from build_stock_fin.py, which re-checks "s"/"c" against the
-revenue it is about to publish — a row a later writer changed loses its mark (the year goes blank, never wrong).
+PROFIT ON A MARKED ROW (runbook §198 — TTM profit, P/E and the backtest engines read it): the profit stored on a
+marked row counts for that length only when it equals the profit printed by the filing (same context) that proved the
+row — "ps" / "pc" record the stored standalone / consolidated profit that passed, null when the row holds none on that
+basis or the filing contradicts it (ZEAL's stored profit is another company's, §198). A "bse-pf" row: the profit
+its BSE cell's proof carries for that half (pf.pat, which must close h1 + h2 == fy). Total or owners' share both
+count: the check is about the period, not the basis rule.
+
+QUARTERS INSIDE A HALF-YEAR YEAR (m = 3, runbook §198). A company can file Q1 + H1 + Q3 + H2 (QMSMEDI): its Jun and Dec
+rows are quarters, and Screener splits the halves (Jul-Sep = H1 - Q1, Jan-Mar = H2 - Q3). A split is allowed only on
+proven quarters, so in a year whose Sep row is a proven half-year:
+  * the Dec row is 3 months when its revenue equals a filing's OneD figure whose FourD (nine months) == H1 + OneD —
+    arithmetic; refused when H1 <= 0 or OneD == FourD (the degenerate cases, where a nine-month row fits too), or
+    when the Jan-Mar left over (H2 - Q3) would not be a positive sale;
+  * the Jun row is 3 months when its revenue equals the OneD figure of a filing whose header AND OneD context both
+    say Apr 1 - Jun 30, whose FourD (if printed) is the same figure, and H1 - Q1 is a positive sale. No filing prints
+    a second figure that could check Apr-Jun, so this one rests on the filing's own period (both labels agreeing);
+  * as for halves, EVERY revenue figure stored on the row must be proven. "ps"/"pc": the profit equals the filing's
+    OneD profit, and for Dec also H1 profit + Q3 profit == the filing's nine-month profit.
+  Every other row of a year that holds a proven half-year is of UNKNOWN length to the TTM / YoY readers (§198).
+
+OUTPUT  {SYM: {qEnd: {"m": 3|6|12, "s": revStd, "c": revCon, "ps": patStd, "pc": patCon, "f": [evidence files],
+"src": "bse-pf" when proven by a BSE h=1 cell's arithmetic}}}
+for the symbols of docs/fin. docs/fin/<SYM>.json gets `pd` = {qEnd: m} and `pp` = [qEnd, ...] (rows whose profit is
+proven too) from build_stock_fin.py, which re-checks "s"/"c" and "ps"/"pc" against what it is about to publish — a row
+a later writer changed loses its mark (the year goes blank, never wrong). The same marks go to docs/fund_months.json
+for the backtest engines.
 
 INPUTS  (local caches — gitignored; run on the Mac after new SME half-year results are loaded, §181d / §191)
   --sme-cache DIR   NSE SME XBRL cache (default scripts/_xbrl_cache_sme, or $SME_CACHE) — fetch_sme_xbrl.py, §148
@@ -61,6 +84,12 @@ RE_TAG = {k: re.compile(r"<[\w-]+:%s(?:\s[^>]*)?>\s*([^<]*?)\s*<" % k) for k in 
 RE_REV = {c: re.compile(r'<[\w-]+:RevenueFromOperations contextRef="%s"[^>]*>([^<]*)<' % c) for c in ("OneD", "FourD")}
 RE_PAT = {c: re.compile(r'<[\w-]+:ProfitLossFor(?:The)?Period contextRef="%s"[^>]*>([^<]*)<' % c) for c in ("OneD", "FourD")}
 RE_END = re.compile(r'<xbrli:context id="OneD">.*?<xbrli:endDate>([\d-]+)<', re.S)
+RE_ONE = re.compile(r'<xbrli:context id="OneD">(.*?)</xbrli:context>', re.S)
+# profit for the period: IndAS total / owners' share, old-format (NONINDAS) after-minority / before-minority
+PAT_TAGS = ("ProfitLossForPeriod", "ProfitOrLossAttributableToOwnersOfParent", "ProfitLossForThePeriod",
+            "ProfitLossForPeriodBeforeMinorityInterest")
+RE_PATS = {(t, c): re.compile(r'<[\w-]+:%s contextRef="%s"[^>]*>([^<]*)<' % (t, c))
+           for t in PAT_TAGS for c in ("OneD", "FourD")}
 
 
 def read(path):
@@ -83,7 +112,7 @@ def rupees(m):
 
 
 def parse(path):
-    """Header facts + OneD / FourD revenue (₹ crore) of one results XBRL file, or None if unreadable."""
+    """Header facts + OneD / FourD revenue and profit (₹ crore) of one results XBRL file, or None if unreadable."""
     try:
         s = read(path)
     except Exception:
@@ -92,11 +121,19 @@ def parse(path):
     end = h["DateOfEndOfReportingPeriod"] or ((m.group(1)) if (m := RE_END.search(s)) else None)
     if not end or not re.fullmatch(r"\d{4}-\d{2}-\d{2}", end):
         return None
+    one = RE_ONE.search(s)
+    ostart = (re.search(r"<xbrli:startDate>([\d-]+)<", one.group(1)) if one else None)
+    oend = (re.search(r"<xbrli:endDate>([\d-]+)<", one.group(1)) if one else None)
+    pats = {c: sorted({v for t in PAT_TAGS if (v := crore(RE_PATS[(t, c)].search(s))) is not None})
+            for c in ("OneD", "FourD")}
     return {"f": os.path.basename(path), "qe": int(end.replace("-", "")), "rq": h["ReportingQuarter"] or "",
             "b": "c" if (h["NatureOfReportStandaloneConsolidated"] or "").lower().startswith("consol") else "s",
             "sym": (h["Symbol"] or "").upper(), "isin": h["ISIN"] or "", "code": h["ScripCode"] or "",
             "one": crore(RE_REV["OneD"].search(s)), "four": crore(RE_REV["FourD"].search(s)),
-            "raw": {c: (rupees(RE_REV[c].search(s)), rupees(RE_PAT[c].search(s))) for c in ("OneD", "FourD")}}
+            "raw": {c: (rupees(RE_REV[c].search(s)), rupees(RE_PAT[c].search(s))) for c in ("OneD", "FourD")},
+            "start": h["DateOfStartOfReportingPeriod"] or "",
+            "ostart": ostart.group(1) if ostart else "", "oend": oend.group(1) if oend else "",
+            "pone": pats["OneD"], "pfour": pats["FourD"]}
 
 
 def same_sum(a, b):          # the §181d year gate: H1 + H2 == FY
@@ -193,6 +230,10 @@ def main():
     for sym in sorted({s for s, _ in files}):
         F = json.load(open(os.path.join(a.fin, slug(sym) + ".json"), encoding="utf-8"))
         rv = F.get("revop") or {}
+        fundrows = {r[0]: r for r in (F.get("fund") or [])}      # [qEnd, patStd, annStd, patCon, annCon]
+        def spat(q, b, fundrows=fundrows):
+            r = fundrows.get(q)
+            return (r[1] if b == "s" else r[3]) if r else None
         marks = {}
         for y in sorted({qe // 10000 + (1 if qe % 10000 == 930 else 0) for s_, qe in files if s_ == sym
                          and qe % 10000 in (930, 331)}):
@@ -241,6 +282,75 @@ def main():
                 ms = set(got.values())
                 if got and len(ms) == 1 and None not in ms:
                     marks[str(qe)] = {"m": ms.pop(), "s": row[0], "c": row[1] if len(row) > 1 else None, "f": sorted(ev)}
+                    # PROFIT on the marked row (§198): the filings (and contexts) that prove its length, per basis
+                    mk = marks[str(qe)]
+                    for b, i in (("s", 0), ("c", 1)):
+                        v = row[i] if len(row) > i else None
+                        if qe == sep:
+                            cands = [(f1, c) for h1, f1, m in pairs if f1["b"] == b and (v is None or same_row(v, h1))
+                                     for c in ("one", "four") if f1[c] == h1]
+                        elif mk["m"] == 6:
+                            cands = [(m, "one") for h1, f1, m in pairs if m["b"] == b and (v is None or same_row(v, m["one"]))]
+                        else:
+                            cands = [(m, "four") for m in M if m["b"] == b and v is not None and m["four"] is not None
+                                     and same_row(v, m["four"])]
+                        p = spat(qe, b)
+                        mk["p" + b] = p if (p is not None and any(same_row(p, x) for f_, c in cands
+                                                                  for x in f_["p" + c])) else None
+        # QUARTERS INSIDE A HALF-YEAR YEAR (§198): a filer of Q1 + H1 + Q3 + H2 (QMSMEDI). The Dec row is Oct-Dec when
+        # H1 + its OneD == the same filing's nine-month FourD; the Jun row is Apr-Jun on its own filing's period (header
+        # and OneD context agree, FourD if printed is the same figure). Both only when the split leaves a positive sale.
+        for skey, e6 in sorted(marks.items()):
+            sep = int(skey)
+            if sep % 10000 != 930 or e6["m"] != 6:
+                continue
+            y = sep // 10000 + 1
+            jun, dec, mar = (y - 1) * 10000 + 630, (y - 1) * 10000 + 1231, y * 10000 + 331
+            e2 = marks.get(str(mar)) if (marks.get(str(mar)) or {}).get("m") == 6 else None
+            for qe in (jun, dec):
+                row = rv.get(str(qe))
+                if not row:
+                    continue
+                got, ev, proof = {}, set(), {}
+                for b, i in (("s", 0), ("c", 1)):
+                    v = row[i] if len(row) > i else None
+                    if v is None:
+                        continue
+                    h1 = e6[b]                         # the proven Apr-Sep revenue on this basis (None: not on file)
+                    ok = None
+                    for f in files.get((sym, qe), []):
+                        if f["b"] != b or f["one"] is None or not same_row(v, f["one"]) or h1 is None or v < 0:
+                            continue
+                        if qe == jun:
+                            y0 = "%d-" % (y - 1)
+                            if not (f["start"] == y0 + "04-01" and f["ostart"] == y0 + "04-01" and f["oend"] == y0 + "06-30"):
+                                continue
+                            if f["four"] is not None and not same_row(f["four"], f["one"]):
+                                continue
+                            if not h1 - v > 0.005:
+                                continue
+                        else:
+                            if f["four"] is None or same_row(f["four"], f["one"]) or not h1 > 0.005:
+                                continue
+                            if not same_sum(h1 + f["one"], f["four"]):
+                                continue
+                            if e2 is not None and e2[b] is not None and not e2[b] - v > 0.005:
+                                continue
+                        ok = f
+                        break
+                    got[b] = 3 if ok else None
+                    if ok:
+                        proof[b] = ok; ev.add(ok["f"])
+                if got and all(m_ == 3 for m_ in got.values()):
+                    mk = {"m": 3, "s": row[0], "c": row[1] if len(row) > 1 else None, "f": sorted(ev | set(e6["f"]))}
+                    for b in ("s", "c"):
+                        p, f = spat(qe, b), proof.get(b)
+                        good = p is not None and f is not None and any(same_row(p, x) for x in f["pone"])
+                        if good and qe == dec:           # H1 profit (itself proven) + Q3 profit == the nine-month profit
+                            ph1 = e6.get("p" + b)
+                            good = ph1 is not None and any(same_sum(ph1 + p, x) for x in f["pfour"])
+                        mk["p" + b] = p if good else None
+                    marks[str(qe)] = mk
         if marks:
             out[sym] = marks; n_rows += len(marks)
 
@@ -248,6 +358,7 @@ def main():
     # arithmetic they carry and mark the row when the slice publishes exactly the proven revenue on that basis, the
     # other basis is empty or the same figure, and the basis's rows of the year do not already tile it as quarters.
     n_pf = 0
+    fund_all = None
     bf = json.load(open(os.path.join(ROOT, "docs", "bse_fundamentals.json"), encoding="utf-8")).get("px", {})
     for code, cells in sorted(bf.items()):
         sym = code2tk.get(str(code))
@@ -272,8 +383,24 @@ def main():
             if any(len(rv.get(q) or ()) > i and rv[q][i] is not None for q in (qs[0], qs[2])) and \
                     same_sum(sum(vals), c["pf"]["fy"]):
                 continue                                    # quarters already tile the year (the file rule's veto)
-            out.setdefault(sym, {})[qe] = {"m": 6, "s": row[0] if row else None, "c": row[1] if len(row) > 1 else None,
-                                          "f": sorted(c["pf"].get("f") or []), "src": "bse-pf"}
+            e_ = {"m": 6, "s": row[0] if row else None, "c": row[1] if len(row) > 1 else None,
+                  "f": sorted(c["pf"].get("f") or []), "src": "bse-pf"}
+            # §198: the half's PROFIT counts when the stored profit on the cell's basis is the one the proof carries
+            # (pf.pat = [h1, h2, fy], which must close); the other basis may hold only the same figure (as for revenue)
+            pp_ = c["pf"].get("pat") or []
+            if fund_all is None:
+                fund_all = {}
+            if sym not in fund_all:
+                fund_all[sym] = {r[0]: r for r in (json.load(open(os.path.join(a.fin, slug(sym) + ".json"),
+                                                                  encoding="utf-8")).get("fund") or [])}
+            fr = fund_all[sym].get(int(qe)) or [None] * 5
+            pv, po = fr[3 if i == 1 else 1], fr[1 if i == 1 else 3]
+            half = (pp_[0] if int(qe) % 10000 == 930 else pp_[1]) if len(pp_) == 3 and all(x is not None for x in pp_) else None
+            ok_ = (half is not None and same_sum(pp_[0] + pp_[1], pp_[2]) and pv is not None and same_row(pv, half)
+                   and (po is None or same_row(po, pv)))
+            e_["p" + ("c" if i == 1 else "s")] = pv if ok_ else None
+            e_["p" + ("s" if i == 1 else "c")] = po if ok_ else None
+            out.setdefault(sym, {})[qe] = e_
             n_rows += 1; n_pf += 1
 
     # carry forward entries this run could not re-check (their evidence files were not scanned); "bse-pf" entries are
@@ -288,15 +415,16 @@ def main():
                 out.setdefault(sym, {})[qe] = e; kept += 1
     added = sum(1 for s in out for q in out[s] if q not in old.get(s, {}))
     dropped = sum(1 for s in old for q in old[s] if q not in out.get(s, {}))
-    n6 = sum(1 for s in out for q in out[s] if out[s][q]["m"] == 6)
-    print("filings read %d (%d undated, %d not on a published page); rows proven %d (6-month %d, 12-month %d) on "
-          "%d symbols, %d of them from BSE h=1 proofs; carried forward %d; vs the committed list: +%d −%d"
-          % (len(paths), sum(1 for x in facts if not x), unmatched, n_rows + kept, n6, n_rows + kept - n6,
+    cnt = {m_: sum(1 for s in out for q in out[s] if out[s][q]["m"] == m_) for m_ in (3, 6, 12)}
+    print("filings read %d (%d undated, %d not on a published page); rows proven %d (3-month %d, 6-month %d, "
+          "12-month %d) on %d symbols, %d of them from BSE h=1 proofs; carried forward %d; vs the committed list: +%d −%d"
+          % (len(paths), sum(1 for x in facts if not x), unmatched, n_rows + kept, cnt[3], cnt[6], cnt[12],
              len(out), n_pf, kept, added, dropped))
     if a.dry:
         return
-    doc = {"_note": "Result rows proven to cover 6 or 12 months (runbook §191, §194) — built by scripts/build_row_periods.py; "
-                    "never edit by hand. {SYM: {qEnd: {m: months, s/c: the revenue proven, f: evidence filings, "
+    doc = {"_note": "Result rows proven to cover 3, 6 or 12 months (runbook §191, §194, §198) — built by "
+                    "scripts/build_row_periods.py; never edit by hand. {SYM: {qEnd: {m: months, s/c: the revenue "
+                    "proven, ps/pc: the profit proven (null = none or contradicted), f: evidence filings, "
                     "src: 'bse-pf' when proven by a BSE h=1 cell's arithmetic}}}"}
     doc.update({s: dict(sorted(out[s].items())) for s in sorted(out)})
     with open(a.out, "w", encoding="utf-8") as fh:

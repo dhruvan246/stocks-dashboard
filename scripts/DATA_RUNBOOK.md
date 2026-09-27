@@ -66,6 +66,7 @@ loads every session. (README.md is just a short pointer here — this file is th
 - **§72** ★★★ VERIFYING REV/PAT vs EXTERNAL SITES — sites reach 10 of 95 quarters; con PAT has no site quorum
 - **§76** ★★★ A `scrip_id` EQUAL TO THE TICKER IS A COINCIDENCE — gate symbol→BSE-scrip on ISIN (**read before any BSE-keyed fill**)
 - **§197** ★★★ A BSE-ONLY TICKER CAN BE A FORMER NSE TICKER OF ANOTHER COMPANY — `_rename_map`/FUND_ALIAS are NSE facts; the site never applies them to a ticker in `docs/bse_alias_collisions.json` (WORTH = Worth Investment, not WORTHPERI; 12 found) (**read before any alias/rename consumer that serves a page, and before merging an SME fragment**)
+- **§198** ★★ TTM = EXACTLY THE LATEST 12 MONTHS (Screener's rule) — stock.html TTM cards, per-row YoY and BOTH engines tile 12 months from rows of PROVEN length (slice `pd`/`pp`, docs/fund_months.json); a quarter is split off a half only on a proven quarter; profit on a half counts only when it equals its filing's (**read before touching renderFunds TTM, profitMetrics TTM/YoY, or build_row_periods.py**)
 - **§59** ★★ STANDALONE-SLOT-HOLDS-CONSOLIDATED AUDIT — the screen is not a defect count (**read before acting on any std/con equality screen**)
 - **§80** ★★★ SERIES **BZ** WAS NEVER INGESTED — a live trading series discarded for years (**read before touching the bhavcopy filter or a price-series gap**)
 - **§91** ★★★ postDrift COVERAGE — annual ≠ rebalance coverage; the `ann=0` LOOK-AHEAD (`0 != null` is TRUE in JS); sf_fundamentals starts Dec-2002 (**read before any point-in-time factor-coverage claim**)
@@ -22218,7 +22219,7 @@ Mar-25 kept, Mar-26 left out with the note; RELIANCE every tab + cards identical
 - `fetch_bse_results_xbrl.read_file` dated a file by its OneD context block, which says Jul–Sep for an SME Apr–Sep half:
   BSE SME half-years were stored as quarters without `h=1` (AAYUSHBULL, SUPERSHAKT, DHARNI, MAIDEN rows). FIXED in §196.
 - The TTM cards (`renderFunds` `window4`) and both backtest engines still add four rows that can include a half-year
-  (QMSMEDI / ZEAL-type dual filers). Not touched.
+  (QMSMEDI / ZEAL-type dual filers). FIXED in §198 (Screener's exact-12-months rule on rows of proven length).
 ## §192 — REAL FILING DATES FOR THE 1,805 MAR-2026 BSE CELLS §187 CLEARED (2026-09-27, user: "yes run the backfill for the march dates")
 `backfill_ann_dates_bse.py --bse [--qe Q] [--only scrips] [--reapply]` — BSE-only mode over docs/bse_fundamentals.json
 (keyed by scrip; own ledger **scripts/ann_date_fills_bse.json**, skips `_ann_date_skips_bse.json`), fill-only on ann==0.
@@ -22483,3 +22484,104 @@ successors (GODHA→AURIGROW, KEERTI→GTECJAINX, SONAMCLOCK→SONAMLTD, URAVI�
 the same PREVCLOSE check before a merge. MUDRA has 7 BSE price days (< the 20-day slice floor), so its page now says "not
 found" instead of redirecting to ELAND. `refresh-search-index.yml` cuts the index from the frozen committed bin (v 2026-06-13),
 which keeps the `fund_alias` check on "stale".
+## §198 — TTM = EXACTLY THE LATEST 12 MONTHS, SCREENER'S RULE ON WHAT THE FILINGS PROVE: half-year rows in the stock page's TTM cards, per-row YoY and both backtest engines (2026-09-27, user: "check what screener does" → "Yes, all of it")
+**Defect (left open in §191).** `renderFunds()` built every TTM card (revenue / op profit / net profit TTM, OPM, P/E, P/S,
+ROE, ROCE, interest cover, the two TTM YoY tags) from `window4()` — the last four CONTIGUOUS quarter-ends — without
+reading row lengths, and both engines' `profitMetrics` TTM did the same from sf_fundamentals, which carries no lengths at
+all. A company that files Q1 + H1 + Q3 + H2 had 18 months summed as a year; one that moved from half-yearly to quarterly
+had its last Oct–Mar half + three quarters (15 months) summed; the quarter table and the engines' profit YoY / accel /
+streak set a half-year against the quarter a year earlier.
+**Measured (origin 7f5794cc5, Python replica of the page + engine code over all 6,588 slices).** 507 slices carried
+proven half-years (none of them ever in a Nifty 500 snapshot). Live cards summing a half as a quarter: QMSMEDI (revenue
+TTM ₹267 cr), VIVIANA (₹722 cr), ZEAL (₹659 cr + both YoY tags), GSTL (₹52 cr); the other 492 showed NO TTM at all (their
+rows are never four consecutive quarters). Rewind: 20 of the 63 TTM windows these stocks ever had included a half-year
+(9 stocks — the four above + GICL, JSLL, KRISHIVAL, PASHUPATI, RMDRIP, the switchers; JSLL ₹841 cr in Feb-2026). Engines:
+ZEAL only, 7 states. Per-row YoY with rows of different lengths: 80 table rows / 61 stocks, 72 engine states.
+**What Screener does** (read on its QMSMEDI, VIVIANA, GICL and AAKAAR pages, 2026-09-27): (1) TTM = the sum of the last
+four TRUE quarters, never a half-year: for a filer of Q1 + H1 + Q3 + FY it splits the halves — QMSMEDI Sep-2025 = 91.19 −
+46.49 = 44.70, Mar-2026 = 172.88 − 128.45 = 44.42 → TTM ₹183 cr; VIVIANA ₹572 cr. (2) A switcher's half-year era shows
+true quarters (GICL Jun-2024 30.73 + Sep-2024 39.49 = our H1 70.22) read from the "same quarter last year" column of the
+company's LATER quarterly PDFs — a column NSE XBRL does not carry (§ feedback-nse-xbrl-has-no-comparative-quarter), so
+that part is not reproducible here. (3) A half-yearly-only filer (AAKAAR) gets "Half Yearly Results" and no TTM column,
+but its P/E = market cap ÷ its last two halves (₹99.2 cr ÷ 6.64 = 14.9 — also its latest FY, so which of the two it uses
+is unknown). (4) Growth like for like: quarter vs the same quarter, half vs the same half (AAKAAR H2 vs H2 +22.9%).
+**Rule (user chose "all of it").**
+- *Row lengths* (`scripts/build_row_periods.py` → `scripts/row_periods.json`): the §191/§196 half-year marks, plus
+  `ps`/`pc` = the stored profit when it equals the profit printed by the filing (same context) that proved the row
+  (IndAS total/owners, NONINDAS after/before minority — the check is the PERIOD, not the basis rule; a "bse-pf" row: its
+  cell's `pf.pat` for that half, which must close h1 + h2 = fy), plus **3-month marks** for the Jun / Dec rows of a year
+  whose Sep row is a proven half: Dec = Oct–Dec when H1 + its OneD == the same filing's nine-month FourD (arithmetic;
+  refused on H1 ≤ 0, OneD == FourD, or H2 − Q3 ≤ 0), Jun = Apr–Jun when its revenue equals a filing whose header AND OneD
+  context both say Apr 1 – Jun 30 (FourD, if printed, the same figure) and H1 − Q1 > 0 — no filing prints a second figure
+  that could check Apr–Jun, so this one rests on the filing's own period; every revenue figure on the row must pass, and
+  for Dec the profit must close H1 + Q3 = nine months too. Result (origin 60a740650, merged with §196's builder: its
+  1,607 marks byte-identical): +4 quarter marks (QMSMEDI and VIVIANA Jun/Dec-2025); profit proven on 2,188 of the 2,230
+  profit figures stored on marked rows — the 42 that are not (15 stocks) include MANAS Sep-2020 −3,591,333 cr (a unit
+  error), EXHICON 630.78 / 654.92 cr, ZEAL (another company, below), QMSMEDI Mar-25 standalone 0.10 vs its filing's 5.41,
+  VIVIANA Mar-25 standalone 17.01 vs 12.52.
+- *Published* (`build_stock_fin.py`): slice `pd` {qe: 3|6|12} and `pp` [qe…] (profit proven — only while every stored
+  profit on the row still equals `ps`/`pc`), and **`docs/fund_months.json`** {SYM: {qe: ±m}} (m = length with profit
+  proven, −m = revenue only) for the engines, committed by refresh-stock-fin.yml beside docs/fin.
+- *Lengths read* (page `lenRev`/`lenPat`, engines `fundMonthsFor().len`): a marked row its mark (profit: 0 unless in
+  `pp`); any OTHER row of an Apr–Mar year that holds a 6/12-month mark is UNKNOWN (0); every other row 3. Marks come from
+  the whole file, so a rewind inside a half-year year can blank one row earlier than the filings then on file would —
+  never the reverse.
+- *TTM* = `tile(E)` / `_tile12`: walking back from the latest row (engines: the latest visible row of the basis), rows
+  whose lengths add up to EXACTLY 12 months; where a 6-month row overshoots, the quarter split off it (Jul–Sep = Apr–Sep
+  − Apr–Jun, Jan–Mar = Oct–Mar − Oct–Dec) only onto a pd-3 quarter; both operands of a split come from ONE basis. Blank
+  when no tiling exists. The window is summed OLDEST first, the old order: newest-first moved APOLLOHOSP's op TTM ₹4,010 →
+  ₹4,009 cr and 23 stocks without a single mark "changed" in the first old-vs-new run (fixed before anything shipped).
+  YoY tags: the tiling of the 12 months before, one basis for both. A stock with no mark behaves exactly as before
+  (page: identical renders; engines: `fm` null → the old code path).
+- *Per-row YoY* (quarter table, engines' profitYoyPct / accel / streak, profitAt): only when both rows are of the same
+  KNOWN length. The table tags proven half/full-year rows "6 mo" (tooltip names the span); notes say what the TTM was
+  built from ("TTM = the 12 months to Jun 2026: Jul–Sep 2025 (the Apr–Sep 2025 half less the Apr–Jun 2025 quarter) + …")
+  or why it is blank. `stock-backtest.html` ENGINE_VER e19 → e20 (snapshots re-keyed); sw v193.
+**Found on the way (not fixed here — task raised).** ZEAL and GSTL are not dual filers: each slice mixes TWO companies.
+ZEAL's halves are Zeal Global Services (NSE SME, INE0PPS01018) but its Jun/Dec rows and every profit figure (23 rows in
+sf_fundamentals too) are BSE 539963 (INE819S01025); GSTL 22 rows from BSE 540654; KEL, MAL, RAJPUTANA, SEL 2 each —
+build_stock_fin's BSE fold accepts a target whose symbol has no NSE tape ISIN (every NSE SME symbol) without matching the
+scrip's ISIN. Rewinding ZEAL to 2024-10-29 still tiles Zeal Aqua's Dec/Mar-2024 quarters onto Zeal Global's H1 (₹372 cr;
+was ₹459 cr) until that heal. QMSMEDI Jun-2025 consolidated profit 6.31 (its XBRL) vs Screener 3.16 (EPS 1.52) — so our
+derived QMSMEDI profit TTM (₹9 cr) differs from Screener's ₹13 cr while revenue matches (₹183 cr). VIVIANA Mar-2026
+standalone 0.00/0.00 is the superseded original filing (the revised filings print 432.34 / 43.26) — its FY26 stays unsplit.
+The market-cap card calls `lastRaw.toFixed(2)` whenever a baked mcap exists but the rewound price is null (a code path,
+pre-existing; hit only by the node harness, not reproduced with real data — renderFunds' caller catches it).
+**Verified** (worktree code vs origin's, data at 60a740650; harnesses in the session scratchpad — `page_run.js` runs the
+REAL renderFunds + every deep tab in node, `engine_run.js` loads the old engine, the new one and stock-backtest.html's
+inline engine in three vm contexts on the real sf_fundamentals, `replica.py` / `engine_replica.py` are independent Python
+copies of the rule):
+- Slices: rebuilt locally = CI's for 6,069 of 6,593; the other 524 differ ONLY in `pd`/`pp`.
+- Page, live, all 6,593 slices × both bases: exactly the 529 slices with marks change (1,058 views: table tags + notes on
+  all, cards on 839), 0 without marks, 0 exceptions / console errors, no Financial-detail tab changes. Latest P/E appears
+  on 374 stocks (consolidated view) and blanks on 3. Python replica = node on every value: 36,600 TTM cards, 24,400 TTM
+  YoY tags, 682,488 quarter-table YoY cells.
+- Page, rewind (every announce date as as-of, both bases): 529 marked + 400 random unmarked controls, 24,892 states —
+  controls identical; marked 3,760 changed (revenue TTM appears in 2,162 states / 508 stocks, P/E in 1,940 / 474; blanked
+  where 12 months cannot be proven: revenue 31 states / 9 stocks, profit 64 / 14); a TTM VALUE changes only on QMSMEDI
+  (Jun-2026 as-of ₹183 cr; Mar-2026 as-of ₹173 cr = its printed consolidated FY 172.88, profit ₹12 cr = 11.92; standalone
+  ₹152 cr = 152.3) and ZEAL (Zeal Global's own FY25 ₹368 cr = 367.81 and FY26 ₹286/285 cr, were ₹624/631 cr).
+- Engines, 238,764 profitMetrics + profitAt calls (every symbol × every announce date × con/std): new backtest-engine.js ≡
+  stock-backtest.html on EVERY call; old → new differs on 783 states / 313 stocks, all in fund_months.json, and the Python
+  replica agrees on all 783 (new TTM for half-yearly filers e.g. AGNI +35.48 %, YoY blanked where lengths differ, 11
+  streaks shortened, 0 existing TTM values moved to another value).
+- Page vs engine: the same number (or both blank) on 1,036 of 1,058 marked stock-views; the 22 others are DATA, not rule —
+  sf_fundamentals holds no rows for the BSE-folded AAYUSHBULL, COSPOWER, DHARNI, FILTRA, MAIDEN, SAFE; a BSE-folded Jun-2026
+  row the engines lack moves the window end (ASARFI, CPML); and the two-company Jun rows (GSTL, RAJPUTANA, SEL).
+- Saved strategies: 0 of the 54 public ones use an "All stocks"/turnover universe with a profit factor — no saved basket can
+  move; only ad-hoc All-stocks screens can reach these ~530 names.
+- Browser (localhost, worktree docs + rebuilt slices + live sf-data price slices): QMSMEDI ₹183 cr (Screener 183) / ₹162 cr
+  standalone, "6 mo" tags, the TTM note; AAKAAR P/E 14.9 (Screener 14.9); VIVIANA Jun-2026 YoY +128.50 % sales / +84.10 %
+  profit (= Screener's quarterly variances); ZEAL, VIVIANA, GSTL blank with the note; GICL rewind 2026-02-15 blank (was
+  ₹207 cr of 15 months), 2025-11-20 ₹159 cr (Screener's four quarters 159.39); RELIANCE identical; basis switch; 375 px no
+  page overflow; dark (tag contrast 3.73) and light (3.10 = the Basis column); stock-backtest.html e20 + the inline engine
+  and backtest-engine.js load fund_months.json in the browser (AGNI +35.48 % = its page); saved-strategies and
+  quarterly-results load clean; console: only the quote worker's 502 for SME symbols (pre-existing).
+**Upkeep.** Same as §191: after new SME half-year results land, re-run `build_row_periods.py` on the Mac and commit the list;
+CI rebuilds the slices AND docs/fund_months.json (refresh-stock-fin.yml commits both). The grid / coverage node scripts that
+set FUND by hand now also set FUNDM (grid_search*.js from docs/, grid_search_mega + postdrift_coverage from
+`_live/fund_months_live.json`, staged by gridmega_fetch_live.py).
+**Limits / open.** A switcher's pre-migration quarters exist only in later PDFs' comparative columns (Screener has them; our
+XBRL does not) — its TTM windows that need them stay blank. Per-basis marks (a row whose two bases prove different lengths
+stays unmarked — VIVIANA Mar-2026). The engines' TTM ends at each basis's latest visible row and the page's at the latest
+row on file (unchanged convention; they differ only where the data differs, above).
