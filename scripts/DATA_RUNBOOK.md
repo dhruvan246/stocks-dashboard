@@ -21283,6 +21283,15 @@ Screener truncates the share-count % (43.0656 → 43.06) while we keep the filin
 bank holding sits in the filing's Institutions(Domestic) (= our DII). Holds 933 BSE cells (row-level 435, identity 337 —
 incl. filer ISIN typos like INE195101013 that norm_isin does not repair on the KNOWN side, left held).
 
+**§181c — bse-results-xbrl also targets quarters whose DETAIL is missing (2026-09-27).** `targets()` counted a BSE-only
+quarter as done when `bse_fundamentals` px held it, but the older BSE routes (history / vision) stored rev+PAT with no
+financial detail, so those quarters were never fetched: at month-end 2026-09-25 BSE-only detail for the due Jun-2026
+quarter was 7 of 2,159 (Sep/Dec quarters, which px lacked, filled fine). Now a quarter is missing unless px AND the
+`xbrl_extra` ledger (keyed by the BSE ticker) both hold it; tickers that are NSE tape keys (apply's clash guard) and SME
+half-year filers are exempt. Offline targets: BSE scrip-quarters 37,483 → 57,810 (Jun-2026 460 → 2,062). State file
+entries are now `{"d": date, "q": [quarters asked]}`: a scrip is listed again within 20 days only when new quarters are
+wanted, and a scrip cut short by the per-run file cap is not marked done.
+
 **§181b — refresh-bse no longer overwrites bse_fundamentals.json (2026-09-26).** Its commit step `cp`'d the whole file over
 origin's after `reset --hard`, which would have erased every quarter the new bse-results-xbrl job (and the history/vision
 merges) landed while it ran. It now runs `scripts/union_bse_fundamentals.py`: the run's cells are ADDED where origin lacks

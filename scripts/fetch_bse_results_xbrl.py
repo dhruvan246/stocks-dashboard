@@ -187,6 +187,21 @@ def detail(path, fname, sym):
     return {"s": r.get("s") or {}, "c": r.get("c") or {}}
 
 
+def load_detail_keys():
+    """(xbrl_extra ledger, NSE tape keys) — the detail store and the clash guard's key set."""
+    xl, tape = {}, set()
+    try:
+        xl = json.loads(gzip.decompress(open(os.path.join(HERE, "xbrl_extra.json.gz"), "rb").read()))
+    except (OSError, ValueError):
+        pass
+    try:
+        b = gzip.decompress(open(os.path.join(DOCS, "sf_stock_data.bin"), "rb").read())
+        tape = set(json.JSONDecoder().raw_decode(b[b.rfind(b'"meta":') + 7:].decode())[0])
+    except (OSError, ValueError):
+        pass
+    return xl, tape
+
+
 def targets(today):
     """[(code, target_sym or None, kind, sme, [missing qe])] — NSE targets first, then BSE-only by mcap."""
     bf_out = os.path.join(DOCS, "bse_fundamentals.json")    # (no fetch_bse_fund import: it pulls in PyMuPDF)
@@ -197,10 +212,20 @@ def targets(today):
     univ = json.load(open(os.path.join(DOCS, "bse_universe.json")))["rows"]
     univ.sort(key=lambda r: r[6] or 0, reverse=True)
     px = json.load(open(bf_out, encoding="utf-8")).get("px", {}) if os.path.exists(bf_out) else {}
+    # A quarter is also MISSING when its results exist but its financial DETAIL does not (2026-09-27): the older BSE
+    # routes (history / vision) stored rev+PAT without detail, so the page lacked detail for those quarters and the
+    # px-only test never targeted them (BSE-only detail at the latest Jun quarter: 7 of 2,159). Detail is keyed by the
+    # BSE ticker; a ticker that is also an NSE tape key never takes BSE detail (apply's clash guard), so it is not chased.
+    xl, tape = load_detail_keys()
+    code2tk = {str(v): k for k, v in json.load(open(os.path.join(HERE, "bse_scrips.json")))["by_id"].items()}
     due = due_quarters(today)
     for r in univ:
         code = str(r[0]); sme = (r[4] or "") in ("M", "MT", "MS")
         have = {int(q) for q in (px.get(code) or {}) if str(q).isdigit()}
+        tk = code2tk.get(code)
+        if tk and tk.upper() not in tape and not sme:          # SME half-year files carry no quarterly detail
+            dq = {int(q) for q in (xl.get(tk) or {}) if str(q).isdigit()}
+            have = {q for q in have if q in dq}
         miss = [q for q in due if q not in have and not (sme and q % 10000 in (630, 1231))]
         if miss:
             out.append((code, None, "bse", sme, miss))
@@ -234,9 +259,12 @@ def fetch(budget, fills_path, from_dir=None):
     for code, sym, kind, sme, miss in tlist:
         if listed >= budget or DL[0] >= MAX_FILES:
             break
-        last = int(state.get(code) or 0)
-        if last and (today - datetime.date(last // 10000, last // 100 % 100, last % 100)).days < RELIST_DAYS:
-            continue
+        st = state.get(code)                                 # {"d": YYYYMMDD, "q": [quarters asked]} (old form: int)
+        last = int((st.get("d") if isinstance(st, dict) else st) or 0)
+        asked = set(st.get("q") or []) if isinstance(st, dict) else None
+        if last and (today - datetime.date(last // 10000, last // 100 % 100, last % 100)).days < RELIST_DAYS \
+                and asked is not None and set(miss) <= asked:
+            continue                                         # listed recently for these same quarters — nothing new
         try:
             body = get(LIST % code, want_json=True)
         except Refused as e:
@@ -244,7 +272,7 @@ def fetch(budget, fills_path, from_dir=None):
             break
         except Exception as e:
             print("  %s list error %s" % (code, str(e)[:80])); continue
-        listed += 1; state[code] = ymd(today)
+        listed += 1
         try:
             rows = (json.loads(body).get("Table") or [])
         except ValueError:
@@ -278,6 +306,8 @@ def fetch(budget, fills_path, from_dir=None):
                     continue
                 time.sleep(0.5); DL[0] += 1
             dl.append((p, fname, fdt))
+        if DL[0] < MAX_FILES:                                # a scrip cut short by the per-run cap is listed again next run
+            state[code] = {"d": ymd(today), "q": sorted(miss)}
         got = handle(code, sym, sme, miss, dl, code2tk, xbrl_symbol)
         fills += got; files_ok += len(dl)
         print("  %s %s: %d listed files, %d downloaded for %d missing quarters, %d fills"
