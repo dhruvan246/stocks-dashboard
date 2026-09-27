@@ -23114,3 +23114,32 @@ the stock page's annual "Depreciation" row stays blank for SME years.
 **Lesson.** A tag list is a silent filter: a taxonomy the list does not name reads as 0 through `or 0.0`, and 0 depreciation is a
 plausible number, so nothing downstream complained for ten weeks. Before pointing a writer at a new board or taxonomy, diff the
 new files' tag census against the parser's names (here: 4 names over 4,590 files, 30 seconds).
+
+## §206 — RIGHTS ISSUES ON THE NSE SME BOARD WERE NEVER ADJUSTED; 25 SME + 8 main-board 2026 rights added to rights_adj.json (2026-09-28, user: "Textbook, exact bar" · main board "Yes, same method")
+**Finding:** PRESSTONIC (SME, INE0R1601012) "RIGHTS 1:1 @ PREMIUM RS 25/-" ex 29-Jan-2026: cum close 50.10, ex-day open 42.55 = TERP
+(50.10+35)/2 exactly, factor 0.8493 — the stored series was raw across the ex-date. **How rights are handled (measured):**
+`build_sme_backfill.py` applies only official split/bonus factors (post-2016 an unfiled move stays raw), so the SME store carries
+NO rights adjustment; rights are applied downstream by `update_sf_data` — `reconcile_rights()` (§173, `rights_adj.json`, textbook,
+bar-exact; was Nifty-500 only) and `apply_manual_rights()` (`MANUAL_RIGHTS` + `rights_terp.json`, the July-2026 one-off sweep of
+the MAIN-board feed, premium-only issue-price bug, never re-run). No SME-feed rights row was in either ledger.
+**Measured** (live release bin end 2026-09-25; NSE corporates-corporateActions `index=sme` 2008-2026 as cached 26-Sep in
+`~/stocks-cache/nse_ca/`; raw closes from `sec_bhavdata_full` for the ex bar and the bar before): **36 SME rights rows (2022-2026),
+32 wrong on the live site** — 28 raw, 4 with a split-INFERENCE step baked on the rights date (DESTINY 2023-01-27 ×0.667,
+MPEL 2026-08-31 ×0.667 vs textbook 0.609, RCDL 2026-08-24 ×0.75 vs 0.675, DHARIWAL 2026-02-27 ×0.50 vs 0.516 — the IDEA/M&MFIN
+class, in `sme_backfill.json.gz` itself); 3 correctly flat (issue ≥ cum: BRIGHT, PARTYCRUS, OLIL). Main board 2026: 13 rights rows
+covered by no ledger.
+**Change:** 33 rows appended to `rights_adj.json` (25 SME incl. MPEL + DHARIWAL corrections; 8 main board: ESSENTIA, RELTD, SHANTIGOLD,
+VHLTD, RATNAVEER, DUCON, JAYKAY, CENTEXT) + provenance for all 49 feed rows (`board` = sme/equities). SME FV = the SME feed row's
+`faceVal`, which is AT-EVENT on that board (BTML/ABINFRA rows keep FV 10 across their later main-board splits; the four names with a
+split BEFORE the rights — DUGLOBAL, CLOUD, COOLCAPS, DHARIWAL — carry the post-split FV). Main-board FV: no FV change on the feed
+after any of the 8 ex-dates.
+**Held (provenance EXCLUDED / NOT_COMPUTED, keep what they have — each needs a filing check):** ex-day open vs TERP > 8%: COOLCAPS
+1.12, IEML 1.12, ROCKINGDCE 0.84, RCDL 1.09 (its 0.75 inference step stays until then), SADHNANIQ 1.10, GANGAFORGE 1.18; SUNREST — the
+SME feed lists the SAME "1:1 @ 25" twice (23-Mar and 10-Aug-2026) and 23-Mar shows no drop at the open (the CANFINHOME one-event-twice
+trap, §169); DESTINY ×2 — "RIGHTS 1:1" with no price (the 2023-01-27 ×0.667 inference stays); QUINT — CCPS + warrants.
+**Verified (dry run on the live bin, the updater's own functions):** pass 1 = 32 bars reconciled, exactly 32 symbols changed (SHANTIGOLD's
+0.9995 is under the rounding floor), every new bar at target within 2-dp rounding, pass 2 = 0, no Nifty-500 series touched,
+superseded MANUAL_RIGHTS/rights_terp count unchanged (129). PRESSTONIC 28-Jan 50.10 → 42.55, first bar 147.00 → 124.85.
+**Keep it current:** new SME/main-board rights are NOT picked up automatically — re-run the measure against the feed
+(`~/stocks-cache/rights-sme/measure.py <feed.json> <out.json>`) and append rows. Push does not trigger refresh-backtest-data.yml
+(paths = update_sf_data.py) — dispatch it after a ledger-only change.

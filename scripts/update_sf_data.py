@@ -441,6 +441,8 @@ except Exception as _e:
     print("  (rights_terp.json not loaded: %s)" % _e)
 
 # --- §173 (2026-09-26, user-approved): Nifty-500 rights issues as ABSOLUTE bar-exact targets (scripts/rights_adj.json):
+# §206 (2026-09-28, user-approved): scope widened to the NSE SME board (feed index=sme) + main-board rights no ledger covered in
+# 2026 — same rule, same function; the SME store (sme_backfill.json.gz) itself stays raw across rights and is corrected here.
 # [sym, ex trading day, target = min(1, TERP/cum) with issue = face value AT THE EVENT + premium, NSE raw close ratio across
 # that bar]. rights_terp.json took the premium alone as the issue price (face value dropped: 3IINFOLTD 2025 0.8715 vs textbook
 # 0.9478), and its anchor-based apply mis-fired on rows dated after the real ex-date (NEULANDLAB 2014, SPARC 2016, M&MFIN 2020
