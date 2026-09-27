@@ -200,6 +200,10 @@ jobs:
       #             stored date by >=2d. Stops the class regrowing on new quarters.
       - name: Reconcile announcement dates vs BSE first-public record (runbook 104)
         run: |
+          # own deps: backfill_ann_dates_bse imports fetch_insurers (-> fitz). The steps above install
+          # pymupdf only on nightly/insurer triggers, so on every 30-min run this step died on import
+          # ("No module named 'fitz'", hidden by the || echo) — measured in every run back to 2026-09-10.
+          pip install -q pymupdf curl_cffi
           python3 -X utf8 scripts/backfill_ann_dates_bse.py --reapply || echo "(ledger reapply failed — stale dates stay this run)"
           python3 -X utf8 scripts/backfill_ann_dates_bse.py --recent 220 --limit 120 --max-minutes 6 || echo "(BSE reconcile failed — lagged dates stay this run)"
 

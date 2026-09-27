@@ -44,7 +44,9 @@ jobs:
       - name: Fill annual BS/CF (text pass)
         run: |
           mkdir -p /tmp/abscf && cp scripts/annual_bscf_gate.json /tmp/abscf/gate_orig.json   # gate AT CHECKOUT (§148d)
-          python3 -X utf8 scripts/fetch_annual_bscf.py --limit "${{ github.event.inputs.limit || 150 }}"
+          # -u: unbuffered, so a killed run still shows what it did. --max-minutes 40 < the 55-min job
+          # timeout: the batch stops between symbols and the commit step below still runs (2026-09-27).
+          python3 -u -X utf8 scripts/fetch_annual_bscf.py --limit "${{ github.event.inputs.limit || 150 }}" --max-minutes 40
 
       - name: Commit ledger
         run: |

@@ -1039,6 +1039,11 @@ def main():
     only = None; limit = None; redo = '--redo' in args
     if '--only' in args: only = set(s.strip().upper() for s in args[args.index('--only') + 1].split(','))
     if '--limit' in args: limit = int(args[args.index('--limit') + 1])
+    # wall-clock budget: stop BETWEEN symbols (each is already checkpointed) so CI's commit step runs
+    # before the job timeout. 2026-09-27: with BSE answering again, 3 runs hit the 55-min timeout
+    # mid-batch and were killed before committing — every symbol they worked was lost.
+    max_min = float(args[args.index('--max-minutes') + 1]) if '--max-minutes' in args else None
+    t0 = time.time()
     byid = json.load(open(os.path.join(HERE, "bse_scrips.json")))['by_id']
     m = json.load(open(os.path.join(DOCS, "nifty500_members_2025.json")))
     n500 = []
@@ -1055,6 +1060,8 @@ def main():
     o = session(); processed = 0
     for sym in todo:
         if limit and processed >= limit: break
+        if max_min and time.time() - t0 > max_min * 60:
+            print('time budget %.0f min reached after %d symbols — stopping; progress is saved' % (max_min, processed)); break
         code = byid.get(sym)
         if not code: continue
         if not redo and only is None:
