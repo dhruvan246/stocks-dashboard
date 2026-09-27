@@ -18709,6 +18709,13 @@ old merge → 149 stamps back, new merge → 0, run's own edits + a routine's ne
 ex-SME filers whose only XBRL balance sheet is FY26) were stamped `no-xbrl-year-to-validate` and that verdict was
 skipped forever. Now both the door and the skip check FY26: 57 of the 67 stamped entries retry (ABBOTINDIA etc).
 INA itself then gate-fails on TEXT: its FY26 results PDF is a scan (no text layer) → needs the vision read.
+**§148f — the 865-company text pass (2026-09-26 23:42 → 09-27 22:39 IST, honest bse_headers, 2 s gap, 0 blocks).**
+Queue = 316 falsely-403'd + 113 cos whose old-reader cells never shipped (re-read, not carried) + 459 FY23-25 targets.
+Result: 106 trusted, 759 gate-failed (text layer unusable → vision queue); 53 new symbol-years, verifier: 34 agree /
+13 unknown / 6 grey. CROSS-CHECK vs 17 cells the vision loop landed meanwhile: 12 identical, but HAPPSTMNDS PP&E
+0.69 both years (vision 22.19 / 54.68) with Total Assets EXACT — a text misread the 7x assets guard cannot see
+(its x2 was 0 / -1). So only x2 = 1 cells ship (PP&E AND assets within 2% of next year's comparative): 24 added,
+12 held (x2 0/-1) in ~/stocks-wt/fa-run. Merge 3-way (never overwrite a cell another writer landed).
 
 ## 149. ★★★ MIDNIGHT VISIBILITY RULE — the 15:30 filing-time gate RETIRED, every shift reversed on the data side  (2026-09-23)
 **User decision (2026-09-23, confirmed three times, then "ok do it"):** "I exit the stocks on rebalance-day close
