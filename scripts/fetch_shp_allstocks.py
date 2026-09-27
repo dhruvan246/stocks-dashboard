@@ -90,6 +90,9 @@ THIRD = ("SharesHeldByNonPromoterNonPublicShareholdersMember", "EmployeeBenefits
          "SharesHeldByEmployeeTrustsMember", "TradingMembersAndAssociatesOfTradingMembers")
 
 
+INST_PARENTS = ("InstitutionsDomesticMember", "InstitutionsForeignMember", "InstitutionsMember")
+
+
 def zero_proof(pct, shc):
     """True when the filing's own SHARE COUNTS prove that institutions hold nothing:
     Public == Non-institutions + Government (parent row only; its sub-rows would double count), share for share,
@@ -101,6 +104,9 @@ def zero_proof(pct, shc):
     if prom is None and sp and shc.get("ShareholdingPatternMember") == sp:
         prom = 0.0                                                   # no promoter group: Public IS every share (share for share)
     if None in (prom, pub, sp, sn) or sp <= 0: return False
+    # A filing that itself names institutional shares is never a proof of zero, whatever else it says (DELTA 539596
+    # Jun/Sep-2024: Public == Non-institutions share for share, yet Institutions(Foreign) = 423,696 shares, 7.86 %).
+    if any((shc.get(k) or 0) > 0 or (pct.get(k) or 0) > 0 for k in INST_PARENTS): return False
     gov = max([shc.get(k, 0.0) for k in GOV_PARENTS] + [0.0])
     # Government may sit in Public, or its tag may carry a PROMOTER stake (PSU / state co-promoter, TANFACIND) and then
     # is not part of Public at all: either exact identity leaves nothing for institutions.

@@ -21264,7 +21264,7 @@ landing used to see every cell as "already stored" and wrote a near-empty ledger
 a worktree whose ledger file is the committed one; a rebuild must reproduce the committed cell set (verified: 3,511 = 3,511,
 slots 0-5 identical, only the 680 holder counts differ).
 
-## §180b — BSE-only shareholding: the paced BSE pass (2026-09-26, user: "work on them now") — IN PROGRESS
+## §180b — BSE-only shareholding: the paced BSE pass (2026-09-26, user: "work on them now") — DONE 2026-09-27
 Stage `fetch_shp_allstocks.py bse [--shard k/n] [--cap N] [--max-minutes M]`: per target scrip in
 `scripts/_shp_bse_targets.json` (2,598 = 2,261 BSE-only + 337 NSE-listed scrips whose quarter NSE never served), ONE request
 at a time via `bse_headers` (§181): SHPQNewFormat list, then only the quarter-end XBRL files the store lacks (original
@@ -21309,6 +21309,23 @@ KINETICENG gains its BSE fundamentals. Screener, 7 random: 5 exact; HIGHENE / SU
 Screener truncates the share-count % (43.0656 → 43.06) while we keep the filing's printed 43.07; SUDTIND-B's 0.004 %
 bank holding sits in the filing's Institutions(Domestic) (= our DII). Holds 933 BSE cells (row-level 435, identity 337 —
 incl. filer ISIN typos like INE195101013 that norm_isin does not repair on the KNOWN side, left held).
+**Final batch LANDED (2026-09-27 ~13:40 IST):** round 2 (Actions run 36259144594, 389 + 380 scrips, 0 refusals) + the Mac
+shard (952 scrips, DONE 02:20) + a 39-file retry for DESHRAK / FRONTFN (interrupted by the 22:12 cancel). Every listed
+target now has its list; every listed quarter the store lacks has its file (54,150 files, all validated as XBRL).
++21,929 cells: BSE-only 15,829, NSE-new 4,935 (all 197 companies), NSE-hole 1,165. Ledger 56,067 cells / 3,348 symbols,
+`_bse_keys` 2,398. **Zero proof hardened:** the hold-out flagged DELTA 539596 Jun/Sep-2024 — Public == Non-institutions
+share for share while the same filing names Institutions(Foreign) 423,696 shares (7.86 %); the build had already held both
+("public block does not close"), but `zero_proof` now also refuses any filing that names institutional shares
+(INST_PARENTS). Ledger identical before/after; hold-out 0 fires on 62,741 filings with an institutional holding.
+Checks: 34,138 committed cells identical; 0 existing store cells changed (MORARJEE Jun-2024: an older ledger cell with a
+re-filing date never re-dates the stored row — fill-only, as §A-refiling requires); 4 guards OK; idempotent; pages vs
+baseline 0 fields lost/changed, 773 gain shareholding, 145 new pages, all 197 NSE-new pages keep their fundamentals.
+Screener, 7 random (3 NSE-new, 2 NSE-hole, 2 BSE-only incl. a promoter-less company): 5 exact; PRAVEG DII 4.85 (filing's
+Institutions(Domestic) 4.8537 by shares) vs Screener 4.86, and BIRLAPREC DII 0.0194 = MF + banks + NBFC + other FI vs
+Screener 0.01 (+ a 0.00 FII line = foreign nationals 0.002 %, public by our rule) — definition/rounding, not parse errors.
+**Held (not landed, reasons in `_shp_allstocks_holds.json`):** ~1,550 BSE cells — old-format row-level placement 765,
+identity 521 (mostly filer ISIN typos: INF759F01012, INI058F01019 …), slug collision 65 (DRL, SIIL, INNOVATIVE), continuity,
+partition. The one isin_conflict target was never fetched.
 
 **§181d — NSE SME half-year results from the §148 SME XBRL cache (2026-09-27, 1d69dbd6a).** NSE SME companies (almost
 none are on BSE: 3 of ~650) had profit/revenue only for the Mar cells; every Sep (H1) cell was empty, so SME "results" sat
