@@ -21505,3 +21505,34 @@ IGL 20230630 std rev 37.62 (×100 → 3,761.85; the con slot says 3,761.85), PAY
 −392.0), RKFORGE 20241231 con rev 10,737.82 / PAT 996.14 (÷10), M&MFIN 20210331 std+con, LICHSGFIN 20211231 std+con, APOLLOTYRE 20210331
 std, BIRLACORPN 20210930 std, MHRIL 20190630 con, SFL 20201231 + 20210630 std+con, WHEELS 20221231 std+con. None armed here: each needs
 its own adjudication (was guards, parse_only, owners pins), as above. List: `~/stocks-cache/scalefix-mar22/ytd_candidates_triaged.json`.
+## §185 — AUDIT OF THE BSE RESULTS READERS AFTER §182: nine defects fixed, one ruled out (2026-09-27, user: "find more n more bugs … fix")
+All of it is quarter-agnostic: every target quarter comes from the filing (its printed period, else its filing date).
+1. **An older text filing hid the new scanned one.** `extract()` ran vision only when OCR found NOTHING, so a
+   parsed June filing in the newest-3 meant the scanned Sep filing was never read — and §182's ledger then marked
+   the scrip done+seen for good. Now vision runs whenever the NEWEST filing's quarter (`want_quarter`) is missing
+   and not already stored with a PAT; a declared scrip counts as handled only once that quarter has a PAT or the
+   run added something (else fail → retry → MAX_FAIL). The grind's own write is now field-level fill-only (adds a
+   missing PAT/rev on the same basis).
+2. **Period parser missed the usual headings** ("30th June", "quarter AND HALF YEAR ended 30TH SEPTEMBER",
+   "six months ended", "30.09.2026", "31st March"). One reader now: `qe_util.stated_quarter()` — reads the date only
+   right after a whole-word "quarter"/"three months" phrase, after undoing PDF damage (line breaks inside dates,
+   glued "FoRTHEQUARTERENDED30thJUNE", "30-Sep-2026"). Used by `fetch_bse_fund.qe_from_text` (also the history
+   backfill) and `bse_vision_prep.pdf_period` (the routine's tripwire; old reading kept as the fallback).
+   Measured: 16/16 headings; 27 real filings — 23 same, 2 where the old read 0 and the new matches the filing's own
+   title (522001), and **OLYMTFI 511632: old tripwire read its June filing as MARCH** (a "Quarter Ended 31.03.2026"
+   column before a damaged "30th JUNE,⏎2026") and would have skipped the right filing. "Headquarter" no longer anchors.
+3. **Grind matched HEADLINE only** (§17 forbids). `scrip_announcements` now = `bse_render.announcements`.
+4. **Wrong document rendered.** The grind rendered the newest headline match, no tripwire. Now it walks the
+   candidates with the prep's `pdf_period` tripwire and density renderer. `bse_render`: AGM scrutiniser / e-voting
+   reports are not candidates (OLYMTFI's newest "result" was one), and **newspaper ads sort after every real
+   filing** (UPROTECH's newest was an ad reprinting the results) — for the routine too.
+5. **refresh-bse `cp`'d done/fail over origin** although merge_bse_vision also writes them. Now
+   `scripts/merge_bse_ledgers.py <start-sha> /tmp` applies only this job's changes (3-way) to done/fail/seen.
+6. **merge_bse_vision cleared fails / marked done even when it added nothing** (rejected basis). Now only if added.
+7. (ruled out) board-meeting intimations do NOT appear in strCat=Result: 1-5 Aug 2026 = 385 rows, all
+   "Financial Results"; the 3 "intimation"-worded ones were results filings.
+8. **A revenue-only read counted as filled.** `results_pending` now needs a PAT; `union_bse_fundamentals` may add a
+   figure origin's cell lacks (same basis).
+9. One unit table: `bse_vision_api.TO_CRORE` (grind + history import it). 10. Removed `bse_vision_api.vision_extract`
+   (Jun-2026-pinned, no caller).
+**Live checks:** grind on 4 re-opened names picks their real Jun filings; 3-way ledger merge run against HEAD.

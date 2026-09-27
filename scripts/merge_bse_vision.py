@@ -140,7 +140,9 @@ def main():
             cells = px.setdefault(scrip, {})
             added = sum(fill(cells, qe, q, basis, ann=(ann if qe == cq else 0)) for qe, q in qs)
             if not cells: px.pop(scrip, None)
-            fails.pop(scrip, None); done.add(scrip); nb += 1
+            if added:                                   # a rejected read (other basis / nothing new) must not
+                fails.pop(scrip, None); done.add(scrip)  # clear the fail count or mark the scrip handled
+            nb += 1
             print("  ✓ BSE %-11s (%s) %s rev=%s pat=%s op=%s (%d quarter(s) filled)"
                   % (sym, scrip, cq, cur.get("rev"), cur.get("pat"), cur.get("op"), added))
     json.dump(data, open(FUND, "w", encoding="utf-8"), ensure_ascii=False, separators=(",", ":"))

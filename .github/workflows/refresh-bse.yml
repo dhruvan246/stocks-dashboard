@@ -83,15 +83,19 @@ jobs:
           for f in docs/bse_universe.json docs/bse_fundamentals.json docs/bse_prices.bin docs/bse_results.json scripts/_bse_fund_done.json scripts/_bse_fund_fail.json scripts/_bse_fund_seen.json scripts/_bse_sectors.json scripts/bse_seen_scrips.json; do
             cp "$f" "/tmp/$(basename $f)" 2>/dev/null || true
           done
+          BASE_SHA=$(git rev-parse HEAD)          # the commit this job's ledgers started from
           for attempt in 1 2 3 4 5; do
             git fetch origin main
             git reset --hard origin/main
-            for f in docs/bse_universe.json docs/bse_prices.bin docs/bse_results.json scripts/_bse_fund_done.json scripts/_bse_fund_fail.json scripts/_bse_fund_seen.json scripts/_bse_sectors.json scripts/bse_seen_scrips.json; do
+            for f in docs/bse_universe.json docs/bse_prices.bin docs/bse_results.json scripts/_bse_sectors.json scripts/bse_seen_scrips.json; do
               cp "/tmp/$(basename $f)" "$f" 2>/dev/null || true
             done
             # bse_fundamentals.json has OTHER writers (bse-results-xbrl.yml, history/vision merges): UNION this run's
             # cells into origin's copy instead of overwriting it (runbook §181b)
             python3 -X utf8 scripts/union_bse_fundamentals.py /tmp/bse_fundamentals.json docs/bse_fundamentals.json
+            # the done/fail ledgers are ALSO written by the vision routine's merge: apply only THIS job's changes
+            # (vs the commit it started from) on top of origin's copies instead of overwriting them
+            python3 -X utf8 scripts/merge_bse_ledgers.py "$BASE_SHA" /tmp
             git add docs/bse_universe.json docs/bse_fundamentals.json docs/bse_prices.bin docs/bse_results.json scripts/_bse_fund_done.json scripts/_bse_fund_fail.json scripts/_bse_fund_seen.json scripts/_bse_sectors.json scripts/bse_seen_scrips.json
             if git diff --cached --quiet; then echo "No BSE changes"; exit 0; fi
             git commit -m "BSE-only coverage refresh $(TZ=Asia/Kolkata date +'%Y-%m-%d %H:%M IST')"

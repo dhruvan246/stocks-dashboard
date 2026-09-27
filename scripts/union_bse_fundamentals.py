@@ -27,7 +27,12 @@ def main():
         dst = px.setdefault(code, {})
         for qe, cell in qmap.items():
             if qe in dst:
-                kept += dst[qe] != cell
+                old = dst[qe]
+                # a figure origin's cell LACKS (e.g. a revenue-only vision read) may be added, same basis only
+                if old.get("basis", cell.get("basis")) == cell.get("basis"):
+                    for k in ("pat", "rev", "op"):
+                        if old.get(k) is None and cell.get(k) is not None: old[k] = cell[k]; added += 1
+                kept += old != cell
                 continue
             dst[qe] = cell; added += 1
     if mine.get("updated") and mine["updated"] > (cur.get("updated") or ""):

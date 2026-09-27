@@ -51,6 +51,9 @@ def num(s):
     return -v if s.startswith("(") else v
 
 def qe_from_text(blob):
+    """The quarter a results page states (qe_util.stated_quarter), else the original two patterns."""
+    q = QU.stated_quarter(blob)
+    if q: return q
     m = re.search(r"quarter (and year )?ended\s*(on\s*)?(\d{1,2})[\s.\-/]*([A-Za-z]{3,9})[,\s.\-/]*(\d{4})", blob, re.I)
     if m:
         mo = MON.get(m.group(4).lower()[:3], 0)
@@ -122,20 +125,11 @@ def declared_recently(op, univ_codes, days=110):
     return got
 
 def scrip_announcements(op, code, months):
-    hi = datetime.date.today(); lo = hi - datetime.timedelta(days=30 * months)
-    url = ("https://api.bseindia.com/BseIndiaAPI/api/AnnSubCategoryGetData/w?pageno=1&strCat=-1"
-           "&strPrevDate=%s&strToDate=%s&strScrip=%s&strSearch=P&strType=C&subcategory=-1"
-           % (lo.strftime("%Y%m%d"), hi.strftime("%Y%m%d"), code))
-    try:
-        tab = json.loads(B.get(op, url)).get("Table", []) or []
-    except Exception:
-        return []
-    out = []
-    for r in tab:
-        hd = str(r.get("HEADLINE") or ""); att = r.get("ATTACHMENTNAME")
-        if att and RESULT_HEAD.search(hd):
-            out.append((str(r.get("NEWS_DT") or "")[:10], att, hd))
-    return out
+    """Result-filing candidates, newest first: [(YYYY-MM-DD, attachment, 'HEADLINE | NEWSSUB')]. Shared with
+    the vision routine (bse_render.announcements): matches HEADLINE + NEWSSUB (runbook §17 — a headline of
+    'Please refer the attachment' hid real filings) and drops CFO/newspaper/AGM notices."""
+    import bse_render
+    return bse_render.announcements(op, code, months)
 
 def fetch_pdf(op, att):
     for base in ("https://www.bseindia.com/xml-data/corpfiling/AttachLive/",
@@ -146,16 +140,19 @@ def fetch_pdf(op, att):
         except Exception: pass
     return None
 
-def extract(op, code, name, months, deadline=None):
+def extract(op, code, name, months, deadline=None, have=()):
     """Return {QE: {rev,pat,ann,basis}} for a scrip from its own filings, identity-guarded.
-    `deadline` (epoch secs) caps per-scrip work so one heavy filer can't starve a bounded run."""
+    `deadline` (epoch secs) caps per-scrip work so one heavy filer can't starve a bounded run.
+    `have` = quarter keys already stored with a PAT (the vision fallback never re-reads those)."""
     toks = [w for w in re.split(r"[^A-Za-z]+", name.upper()) if len(w) >= 4][:2]
     res = {}
-    newest = None                                       # (annd, qe OCR read) of the newest filing
-    for annd, att, hd in scrip_announcements(op, code, months)[:3]:
+    cands = scrip_announcements(op, code, months)[:3]
+    raws = {}                                           # att -> PDF bytes, reused by the vision fallback
+    for annd, att, hd in cands:
         if deadline and time.time() > deadline: break
         raw = fetch_pdf(op, att)
         if not raw: continue
+        raws[att] = raw
         try: doc = fitz.open(stream=raw, filetype="pdf")
         except Exception: continue
         qe = 0; rev = pat = None; unit = None; ident = False
@@ -172,7 +169,6 @@ def extract(op, code, name, months, deadline=None):
                 pat = pat if pat is not None else p2
                 unit = unit or u2
             if ident and qe and pat is not None: break
-        if newest is None: newest = (annd, qe)
         if ident and qe and unit and pat is not None:
             anni = int(annd.replace("-", "")) if annd else 0
             rec = {"pat": round(pat * unit, 2), "ann": anni, "basis": "C" if "consol" in hd.lower() else "S"}
@@ -180,23 +176,34 @@ def extract(op, code, name, months, deadline=None):
             # keep the most recent filing per quarter-end
             if qe not in res or anni >= res[qe].get("ann", 0):
                 res[qe] = rec
-    # VISION FALLBACK: OCR found nothing anchored → render the P&L pages and ask a vision reader.
-    # CI has no Claude, so this is what fills scanned filings unattended. Two readers, tried in order:
-    #   1. bse_vision_api (Anthropic)  — no-op when ANTHROPIC_API_KEY is unset (it is, as of 2026-09-27)
-    #   2. gemini_vision.read_corp_results — Google AI Studio FREE tier, the key we actually hold.
-    # The quarter asked for comes from the FILING: the period OCR read off it, else the last quarter end
-    # before its announcement date. It was hard-coded to Jun-2026 until 2026-09-27, which would have asked
-    # every Sep-2026 filing for its June column.
-    if not res and (deadline is None or time.time() < deadline):
-        try: pngs, annd = _render_pl_pngs(op, code)
+    # VISION FALLBACK: the newest filing's quarter is still missing (a scanned PDF OCR can't anchor) →
+    # render its P&L pages and ask a vision reader. CI has no Claude, so this is what fills scanned filings
+    # unattended. Readers, in order: bse_vision_api (Anthropic; no-op without ANTHROPIC_API_KEY — unset as
+    # of 2026-09-27) then gemini_vision.read_corp_results (Google AI Studio free tier, the key we hold).
+    # It runs whenever that quarter is missing — not only when OCR found nothing: an older text-layer filing
+    # parsing fine must not hide a scanned new one (it did until 2026-09-27).
+    tq = want_quarter(cands, raws)
+    if tq and tq not in res and str(tq) not in have and (deadline is None or time.time() < deadline):
+        try: pngs, ann_i = _render_pl_pngs(op, cands, raws, tq)
         except Exception as ex:
-            print("    vision render err:", str(ex)[:70]); pngs, annd = [], ""
-        ann_i = int(annd.replace("-", "")) if annd else 0
-        tq = newest[1] if newest and newest[0] == annd and QU.is_qe(newest[1]) else QU.last_qe_before(ann_i)
-        if tq and ann_i and tq >= ann_i: tq = 0          # a period can't end on/after its own filing date
-        if pngs and tq:
+            print("    vision render err:", str(ex)[:70]); pngs, ann_i = [], 0
+        if pngs:
             _vision_fill(res, name, pngs, tq, ann_i)
     return res
+
+def want_quarter(cands, raws=None):
+    """The quarter the newest result filing reports: the period its own text states (a late filer's June
+    results filed in October say June), else — scanned, no text layer — the last quarter end before its
+    filing date."""
+    if not cands: return 0
+    annd, att, hd = cands[0]
+    guess = QU.last_qe_before(annd)
+    raw = (raws or {}).get(att)
+    if raw:
+        import bse_vision_prep as VP
+        real = VP.pdf_period(raw)
+        if QU.is_qe(real) and real <= guess: return real   # never a period ending on/after the filing date
+    return guess
 
 def _vision_fill(res, name, pngs, tq, ann_i):
     """Fill res[tq] (and its year-ago quarter) from the rendered P&L pages. Values must come back labelled
@@ -205,7 +212,7 @@ def _vision_fill(res, name, pngs, tq, ann_i):
     try:
         import bse_vision_api
         v = bse_vision_api.vision_extract_periods(name, pngs)   # reads EVERY printed column with its date
-        f = _TO_CRORE.get((v or {}).get("unit"))
+        f = bse_vision_api.TO_CRORE.get((v or {}).get("unit"))
         if v and v.get("ok") and f is not None:
             basis = v.get("basis", "S")
             for p in v.get("periods") or []:
@@ -238,27 +245,21 @@ def _vision_fill(res, name, pngs, tq, ann_i):
         except Exception as ex:
             print("    gemini fallback err:", str(ex)[:70])
 
-# ₹ crore per 1 printed unit (vision_extract_periods reports values as printed + the unit note).
-# 1 crore = 1e7 rupees, so 'thousand' is 1e3/1e7 = 1e-4.
-_TO_CRORE = {"crore": 1.0, "lakh": 0.01, "million": 0.1, "thousand": 1e-4, "absolute": 1e-7}
 
-def _render_pl_pngs(op, code):
-    """Render the P&L-bearing pages of a scrip's latest result filing to PNGs (for the vision fallback).
-    Returns (pngs, announcement date 'YYYY-MM-DD' of the filing they came from)."""
-    import bse_render
-    pngs = []
-    for annd, att, hd in scrip_announcements(op, code, 5)[:1]:
-        raw = fetch_pdf(op, att)
+def _render_pl_pngs(op, cands, raws, tq):
+    """PNG pages of the first candidate filing (newest first) that could be the tq results filing, via the
+    vision routine's own renderer (numeric-density page pick, runbook §17c). TRIPWIRE, same as
+    bse_vision_prep: a filing whose text states another quarter is the WRONG announcement — skip it.
+    Returns (pngs, announcement date int)."""
+    import bse_vision_prep as VP
+    for annd, att, hd in cands:
+        raw = raws.get(att) or fetch_pdf(op, att)
         if not raw: continue
-        try: doc = fitz.open(stream=raw, filetype="pdf")
-        except Exception: continue
-        for pi in range(min(len(doc), 8)):
-            txt = doc[pi].get_text()
-            if txt.strip() and not bse_render.PL_HINT.search(txt): continue
-            pngs.append(doc[pi].get_pixmap(dpi=200).tobytes("png"))
-            if len(pngs) >= 4: break
-        if pngs: return pngs, annd
-    return [], ""
+        real = VP.pdf_period(raw)                      # 0 = scanned / unstated: can't tell, don't block
+        if real and real != tq: continue
+        pngs = VP.render_pdf_pages(raw)
+        if pngs: return pngs, int(annd.replace("-", ""))
+    return [], 0
 
 def main():
     budget = int(sys.argv[sys.argv.index("--budget") + 1]) if "--budget" in sys.argv else 60
@@ -315,22 +316,37 @@ def main():
             if code not in declared and mc < min_mcap: continue
         if spent >= budget or (time.time() - t_start) / 60 >= max_min: break
         spent += 1
+        cur = data["px"].get(code, {})
+        have = {q for q, c in cur.items() if c.get("pat") is not None}
         try:
-            recs = extract(op, code, name, months, deadline=time.time() + 120)   # ≤2 min/scrip
+            recs = extract(op, code, name, months, deadline=time.time() + 120, have=have)   # ≤2 min/scrip
         except Exception as ex:
             print("  %s %s ERR %s" % (code, tkr, str(ex)[:60])); recs = {}
-        if recs:
-            cur = data["px"].get(code, {})
-            for qe, rec in recs.items():
-                if str(qe) not in cur:                          # fill-only
-                    cur[str(qe)] = rec
-            data["px"][code] = cur
-            latest = max(recs)
-            print("  ✓ %s %-12s %s PAT=%s rev=%s" % (code, tkr, latest, recs[latest]["pat"], recs[latest].get("rev")))
+        added = 0
+        for qe, rec in recs.items():                            # fill-only: add a quarter, or a figure
+            old = cur.get(str(qe))                              # a stored cell lacks (same basis only)
+            if old is None:
+                cur[str(qe)] = rec; added += 1
+            elif old.get("basis", rec.get("basis")) == rec.get("basis"):
+                for k in ("pat", "rev"):
+                    if old.get(k) is None and rec.get(k) is not None: old[k] = rec[k]; added += 1
+        if cur: data["px"][code] = cur
+        # SUCCESS. A declared scrip is handled once its newest filing's quarter is stored with a PAT, or this
+        # run added something. Just re-parsing an OLDER filing whose numbers are already stored is not
+        # success — it used to mark the scrip done/seen and the new quarter was never read.
+        if code in declared:
+            wq = QU.last_qe_before(declared[code]) if declared[code] else 0
+            ok = added > 0 or (wq and (cur.get(str(wq)) or {}).get("pat") is not None)
+        else:
+            ok = bool(recs)
+        if ok:
+            latest = max(recs) if recs else None
+            print("  ✓ %s %-12s %s PAT=%s rev=%s (+%d)" % (code, tkr, latest, (recs.get(latest) or {}).get("pat"),
+                                                       (recs.get(latest) or {}).get("rev"), added))
             done.add(code); fails.pop(code, None)
             if declared.get(code): seen[code] = declared[code]
         else:
-            print("  · %s %-12s (no anchored result)" % (code, tkr))
+            print("  · %s %-12s (no anchored result%s)" % (code, tkr, " for its newest filing" if recs else ""))
             # Record the failed attempt for EVERY scrip (declared or targeted) — this count drives the
             # page's "filing available — PDF only" label once a filed co has resisted parsing (fail>=2),
             # so users know its number isn't merely queued. A DECLARED scrip keeps retrying up to

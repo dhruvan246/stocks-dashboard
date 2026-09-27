@@ -94,7 +94,10 @@ def pdf_period(raw):
     try: doc = fitz.open(stream=raw, filetype="pdf")
     except Exception: return 0
     txt = " ".join(doc[pi].get_text() for pi in range(min(len(doc), 4)))
-    return FA.parse_qe(txt)
+    # the quarter the statement NAMES first ('quarter ended 30th June, 2026'); only then any date after an
+    # 'ended'. The bare parse read OLYMTFI's June filing as March (a 'Quarter Ended 31.03.2026' column
+    # printed before the damaged '30th JUNE,\n2026' heading) and the tripwire skipped the right filing.
+    return QU.stated_quarter(txt) or FA.parse_qe(txt)            # fallback = the old reading, unchanged
 
 MONTHS = ["january", "february", "march", "april", "may", "june",
           "july", "august", "september", "october", "november", "december"]

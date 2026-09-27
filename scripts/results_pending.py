@@ -34,6 +34,12 @@ def rows_of(qs):
     return qs if isinstance(qs, list) else list(qs.values())
 
 
+def _has_pat(cells, qe):
+    """A quarter counts as filled only when its PAT is stored — a revenue-only read (PAT unreadable) must stay
+    pending so the next reader can add the profit, not drop off the queue."""
+    return ((cells or {}).get(str(qe)) or {}).get("pat") is not None
+
+
 def classify():
     """Return (qe, rows) where rows = [{sym,name,exch,scrip,mcap,status,ann,pdf}] for every
     company that declared a result for the current quarter."""
@@ -66,16 +72,16 @@ def classify():
 
         if sym in univ:                                    # BSE-only name
             u = univ[sym]; scrip = str(u[0])
-            filled = scrip in bf and str(qe) in bf[scrip]
+            filled = _has_pat(bf.get(scrip), qe)
             e = {"sym": sym, "name": u[2], "exch": "BSE", "scrip": scrip, "mcap": u[6] or 0,
                  "status": "filled" if filled else "pending", "ann": ann, "pdf": pdf}
         elif sym in CO and not CO[sym].get("bse"):         # NSE name with a price-universe row
-            filled = sym in nse_have or (sym in vf and str(qe) in vf.get(sym, {}))
+            filled = sym in nse_have or _has_pat(vf.get(sym), qe)
             e = {"sym": sym, "name": CO[sym]["n"], "exch": "NSE", "scrip": "",
                  "mcap": CO[sym].get("m") or 0,
                  "status": "filled" if filled else "pending", "ann": ann, "pdf": pdf}
         elif sym not in CO:                                # orphan NSE (no price row, not BSE-listed)
-            filled = sym in vf and str(qe) in vf.get(sym, {})
+            filled = _has_pat(vf.get(sym), qe)
             e = {"sym": sym, "name": r[1], "exch": "NSE", "scrip": "", "mcap": 0,
                  "status": "filled" if filled else "pending", "ann": ann, "pdf": pdf}
         else:                                              # NSE row flagged also-BSE-listed
