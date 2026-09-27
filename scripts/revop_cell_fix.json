@@ -15124,6 +15124,537 @@
    "was": 0.0,
    "fixed": -58.6,
    "why": "PAT mirror sync to the owners/NCI tag-swap heal in attr_swap_fixes.json (2026-07-30; anchors: ORIGINAL 25-May con XBRL NBFC_INDAS_1672820 total -586.012mn, owners/NCI tags 0, NCI nil; sf_revop patCon already -58.6 (later cron re-visit with fixed parser, same filing)). The mirror kept the swapped value (runbook §194)."
+  },
+  {
+   "sym": "KPIL",
+   "qe": "20190930",
+   "basis": "op_con",
+   "was": -2883.0,
+   "fixed": 420.0,
+   "why": "Primary: NSE XBRL INDAS_49809_163802_11112019010430_WEB (con) -> op 420.0. Second reader: own filing d582054a-e692-47c7-9620-8c0c9b761aae.pdf consolidated: PBET(before JV share, the tagged line) 221 + finance 133 + dep 79 - other income 13 = 420; ebit 341. Mechanism: stored value = -(total expenses) / total income read as 'other income' with depreciation dropped (the §189 text-sweep signature). Not a scale issue.",
+   "found": "§189b negative-op population heal 2026-09-27 (user-approved): each cell re-read from the company's own XBRL (NSE cache / BSE Result_Arch_ng) with build_revop.metrics_for + an independent second reader; evidence in ~/stocks-cache/negop-heal/"
+  },
+  {
+   "sym": "KPIL",
+   "qe": "20190930",
+   "basis": "ebit_con",
+   "was": -2883.0,
+   "fixed": 341.0,
+   "why": "Primary: NSE XBRL INDAS_49809_163802_11112019010430_WEB (con) -> ebit 341.0. Second reader: own filing d582054a-e692-47c7-9620-8c0c9b761aae.pdf consolidated: PBET(before JV share, the tagged line) 221 + finance 133 + dep 79 - other income 13 = 420; ebit 341. Mechanism: stored value = -(total expenses) / total income read as 'other income' with depreciation dropped (the §189 text-sweep signature). Not a scale issue.",
+   "found": "§189b negative-op population heal 2026-09-27 (user-approved): each cell re-read from the company's own XBRL (NSE cache / BSE Result_Arch_ng) with build_revop.metrics_for + an independent second reader; evidence in ~/stocks-cache/negop-heal/"
+  },
+  {
+   "sym": "KPIL",
+   "qe": "20191231",
+   "basis": "op_con",
+   "was": -2869.0,
+   "fixed": 388.0,
+   "why": "Primary: NSE XBRL INDAS_53228_218083_11022020042841_WEB (con) -> op 388.0. Second reader: own filing 50c686f1-bc6f-4fb8-9587-804c7de310d4.pdf consolidated: 179 + 128 + 91 - 10 = 388; ebit 297. Mechanism: stored value = -(total expenses) / total income read as 'other income' with depreciation dropped (the §189 text-sweep signature). Not a scale issue.",
+   "found": "§189b negative-op population heal 2026-09-27 (user-approved): each cell re-read from the company's own XBRL (NSE cache / BSE Result_Arch_ng) with build_revop.metrics_for + an independent second reader; evidence in ~/stocks-cache/negop-heal/"
+  },
+  {
+   "sym": "KPIL",
+   "qe": "20191231",
+   "basis": "ebit_con",
+   "was": -2869.0,
+   "fixed": 297.0,
+   "why": "Primary: NSE XBRL INDAS_53228_218083_11022020042841_WEB (con) -> ebit 297.0. Second reader: own filing 50c686f1-bc6f-4fb8-9587-804c7de310d4.pdf consolidated: 179 + 128 + 91 - 10 = 388; ebit 297. Mechanism: stored value = -(total expenses) / total income read as 'other income' with depreciation dropped (the §189 text-sweep signature). Not a scale issue.",
+   "found": "§189b negative-op population heal 2026-09-27 (user-approved): each cell re-read from the company's own XBRL (NSE cache / BSE Result_Arch_ng) with build_revop.metrics_for + an independent second reader; evidence in ~/stocks-cache/negop-heal/"
+  },
+  {
+   "sym": "KPIL",
+   "qe": "20200331",
+   "basis": "op_std",
+   "was": -2125.0,
+   "fixed": 253.0,
+   "why": "Primary: NSE XBRL INDAS_55248_260116_21052020013447_WEB (std) -> op 253.0. Second reader: BSE detailed results (as filed, standalone) 105.00: op 253.0 / ebit 224.0. Mechanism: stored value = -(total expenses) / total income read as 'other income' with depreciation dropped (the §189 text-sweep signature). Not a scale issue.",
+   "found": "§189b negative-op population heal 2026-09-27 (user-approved): each cell re-read from the company's own XBRL (NSE cache / BSE Result_Arch_ng) with build_revop.metrics_for + an independent second reader; evidence in ~/stocks-cache/negop-heal/"
+  },
+  {
+   "sym": "KPIL",
+   "qe": "20200331",
+   "basis": "ebit_std",
+   "was": -2125.0,
+   "fixed": 224.0,
+   "why": "Primary: NSE XBRL INDAS_55248_260116_21052020013447_WEB (std) -> ebit 224.0. Second reader: BSE detailed results (as filed, standalone) 105.00: op 253.0 / ebit 224.0. Mechanism: stored value = -(total expenses) / total income read as 'other income' with depreciation dropped (the §189 text-sweep signature). Not a scale issue.",
+   "found": "§189b negative-op population heal 2026-09-27 (user-approved): each cell re-read from the company's own XBRL (NSE cache / BSE Result_Arch_ng) with build_revop.metrics_for + an independent second reader; evidence in ~/stocks-cache/negop-heal/"
+  },
+  {
+   "sym": "KPIL",
+   "qe": "20200930",
+   "basis": "op_std",
+   "was": -1732.0,
+   "fixed": 202.0,
+   "why": "Primary: NSE XBRL INDAS_63126_354907_05112020021859_WEB (std) -> op 202.0. Second reader: BSE detailed results (as filed, standalone) 107.00: op 202.0 / ebit 173.0. Mechanism: stored value = -(total expenses) / total income read as 'other income' with depreciation dropped (the §189 text-sweep signature). Not a scale issue.",
+   "found": "§189b negative-op population heal 2026-09-27 (user-approved): each cell re-read from the company's own XBRL (NSE cache / BSE Result_Arch_ng) with build_revop.metrics_for + an independent second reader; evidence in ~/stocks-cache/negop-heal/"
+  },
+  {
+   "sym": "KPIL",
+   "qe": "20200930",
+   "basis": "ebit_std",
+   "was": -1732.0,
+   "fixed": 173.0,
+   "why": "Primary: NSE XBRL INDAS_63126_354907_05112020021859_WEB (std) -> ebit 173.0. Second reader: BSE detailed results (as filed, standalone) 107.00: op 202.0 / ebit 173.0. Mechanism: stored value = -(total expenses) / total income read as 'other income' with depreciation dropped (the §189 text-sweep signature). Not a scale issue.",
+   "found": "§189b negative-op population heal 2026-09-27 (user-approved): each cell re-read from the company's own XBRL (NSE cache / BSE Result_Arch_ng) with build_revop.metrics_for + an independent second reader; evidence in ~/stocks-cache/negop-heal/"
+  },
+  {
+   "sym": "KPIL",
+   "qe": "20200930",
+   "basis": "op_con",
+   "was": -2750.0,
+   "fixed": 388.0,
+   "why": "Primary: NSE XBRL INDAS_63127_354910_05112020022147_WEB (con) -> op 388.0. Second reader: own filing 0e4d5112-1221-4944-94d5-17c29d97e87e.pdf consolidated: 202 + 113 + 98 - 25 = 388; ebit 290. Mechanism: stored value = -(total expenses) / total income read as 'other income' with depreciation dropped (the §189 text-sweep signature). Not a scale issue.",
+   "found": "§189b negative-op population heal 2026-09-27 (user-approved): each cell re-read from the company's own XBRL (NSE cache / BSE Result_Arch_ng) with build_revop.metrics_for + an independent second reader; evidence in ~/stocks-cache/negop-heal/"
+  },
+  {
+   "sym": "KPIL",
+   "qe": "20200930",
+   "basis": "ebit_con",
+   "was": -2750.0,
+   "fixed": 290.0,
+   "why": "Primary: NSE XBRL INDAS_63127_354910_05112020022147_WEB (con) -> ebit 290.0. Second reader: own filing 0e4d5112-1221-4944-94d5-17c29d97e87e.pdf consolidated: 202 + 113 + 98 - 25 = 388; ebit 290. Mechanism: stored value = -(total expenses) / total income read as 'other income' with depreciation dropped (the §189 text-sweep signature). Not a scale issue.",
+   "found": "§189b negative-op population heal 2026-09-27 (user-approved): each cell re-read from the company's own XBRL (NSE cache / BSE Result_Arch_ng) with build_revop.metrics_for + an independent second reader; evidence in ~/stocks-cache/negop-heal/"
+  },
+  {
+   "sym": "KPIL",
+   "qe": "20201231",
+   "basis": "op_std",
+   "was": -1838.0,
+   "fixed": 207.0,
+   "why": "Primary: NSE XBRL INDAS_69165_410132_14022021050337_WEB (std) -> op 207.0. Second reader: BSE detailed results (as filed, standalone) 108.00: op 207.0 / ebit 178.0. Mechanism: stored value = -(total expenses) / total income read as 'other income' with depreciation dropped (the §189 text-sweep signature). Not a scale issue.",
+   "found": "§189b negative-op population heal 2026-09-27 (user-approved): each cell re-read from the company's own XBRL (NSE cache / BSE Result_Arch_ng) with build_revop.metrics_for + an independent second reader; evidence in ~/stocks-cache/negop-heal/"
+  },
+  {
+   "sym": "KPIL",
+   "qe": "20201231",
+   "basis": "ebit_std",
+   "was": -1838.0,
+   "fixed": 178.0,
+   "why": "Primary: NSE XBRL INDAS_69165_410132_14022021050337_WEB (std) -> ebit 178.0. Second reader: BSE detailed results (as filed, standalone) 108.00: op 207.0 / ebit 178.0. Mechanism: stored value = -(total expenses) / total income read as 'other income' with depreciation dropped (the §189 text-sweep signature). Not a scale issue.",
+   "found": "§189b negative-op population heal 2026-09-27 (user-approved): each cell re-read from the company's own XBRL (NSE cache / BSE Result_Arch_ng) with build_revop.metrics_for + an independent second reader; evidence in ~/stocks-cache/negop-heal/"
+  },
+  {
+   "sym": "KPIL",
+   "qe": "20201231",
+   "basis": "op_con",
+   "was": -3007.0,
+   "fixed": 383.0,
+   "why": "Primary: NSE XBRL INDAS_69166_410135_14022021050625_WEB (con) -> op 383.0. Second reader: Moneycontrol consolidated quarterly line items (xbrl_extra src mc:KPT) give op 383.0 / ebit 288.0. Mechanism: stored value = -(total expenses) / total income read as 'other income' with depreciation dropped (the §189 text-sweep signature). Not a scale issue.",
+   "found": "§189b negative-op population heal 2026-09-27 (user-approved): each cell re-read from the company's own XBRL (NSE cache / BSE Result_Arch_ng) with build_revop.metrics_for + an independent second reader; evidence in ~/stocks-cache/negop-heal/"
+  },
+  {
+   "sym": "KPIL",
+   "qe": "20201231",
+   "basis": "ebit_con",
+   "was": -3007.0,
+   "fixed": 288.0,
+   "why": "Primary: NSE XBRL INDAS_69166_410135_14022021050625_WEB (con) -> ebit 288.0. Second reader: Moneycontrol consolidated quarterly line items (xbrl_extra src mc:KPT) give op 383.0 / ebit 288.0. Mechanism: stored value = -(total expenses) / total income read as 'other income' with depreciation dropped (the §189 text-sweep signature). Not a scale issue.",
+   "found": "§189b negative-op population heal 2026-09-27 (user-approved): each cell re-read from the company's own XBRL (NSE cache / BSE Result_Arch_ng) with build_revop.metrics_for + an independent second reader; evidence in ~/stocks-cache/negop-heal/"
+  },
+  {
+   "sym": "KPIL",
+   "qe": "20210331",
+   "basis": "op_std",
+   "was": -2150.0,
+   "fixed": 243.0,
+   "why": "Primary: NSE XBRL INDAS_69867_447230_12052021011627_WEB (std) -> op 243.0. Second reader: BSE detailed results (as filed, standalone) 109.00: op 243.0 / ebit 215.0. Mechanism: stored value = -(total expenses) / total income read as 'other income' with depreciation dropped (the §189 text-sweep signature). Not a scale issue.",
+   "found": "§189b negative-op population heal 2026-09-27 (user-approved): each cell re-read from the company's own XBRL (NSE cache / BSE Result_Arch_ng) with build_revop.metrics_for + an independent second reader; evidence in ~/stocks-cache/negop-heal/"
+  },
+  {
+   "sym": "KPIL",
+   "qe": "20210331",
+   "basis": "ebit_std",
+   "was": -2150.0,
+   "fixed": 215.0,
+   "why": "Primary: NSE XBRL INDAS_69867_447230_12052021011627_WEB (std) -> ebit 215.0. Second reader: BSE detailed results (as filed, standalone) 109.00: op 243.0 / ebit 215.0. Mechanism: stored value = -(total expenses) / total income read as 'other income' with depreciation dropped (the §189 text-sweep signature). Not a scale issue.",
+   "found": "§189b negative-op population heal 2026-09-27 (user-approved): each cell re-read from the company's own XBRL (NSE cache / BSE Result_Arch_ng) with build_revop.metrics_for + an independent second reader; evidence in ~/stocks-cache/negop-heal/"
+  },
+  {
+   "sym": "KPIL",
+   "qe": "20210331",
+   "basis": "op_con",
+   "was": -3821.0,
+   "fixed": 455.0,
+   "why": "Primary: NSE XBRL INDAS_69868_447233_12052021011801_WEB (con) -> op 455.0. Second reader: Moneycontrol consolidated quarterly line items (xbrl_extra src mc:KPT) give op 455.0 / ebit 371.0. Mechanism: stored value = -(total expenses) / total income read as 'other income' with depreciation dropped (the §189 text-sweep signature). Not a scale issue.",
+   "found": "§189b negative-op population heal 2026-09-27 (user-approved): each cell re-read from the company's own XBRL (NSE cache / BSE Result_Arch_ng) with build_revop.metrics_for + an independent second reader; evidence in ~/stocks-cache/negop-heal/"
+  },
+  {
+   "sym": "KPIL",
+   "qe": "20210331",
+   "basis": "ebit_con",
+   "was": -3821.0,
+   "fixed": 371.0,
+   "why": "Primary: NSE XBRL INDAS_69868_447233_12052021011801_WEB (con) -> ebit 371.0. Second reader: Moneycontrol consolidated quarterly line items (xbrl_extra src mc:KPT) give op 455.0 / ebit 371.0. Mechanism: stored value = -(total expenses) / total income read as 'other income' with depreciation dropped (the §189 text-sweep signature). Not a scale issue.",
+   "found": "§189b negative-op population heal 2026-09-27 (user-approved): each cell re-read from the company's own XBRL (NSE cache / BSE Result_Arch_ng) with build_revop.metrics_for + an independent second reader; evidence in ~/stocks-cache/negop-heal/"
+  },
+  {
+   "sym": "KPIL",
+   "qe": "20211231",
+   "basis": "op_std",
+   "was": -1738.0,
+   "fixed": 168.0,
+   "why": "Primary: NSE XBRL INDAS_82374_608289_11022022070221_WEB (std) -> op 168.0. Second reader: BSE detailed results (as filed, standalone) 112.00: op 168.0 / ebit 142.0. Mechanism: stored value = -(total expenses) / total income read as 'other income' with depreciation dropped (the §189 text-sweep signature). Not a scale issue.",
+   "found": "§189b negative-op population heal 2026-09-27 (user-approved): each cell re-read from the company's own XBRL (NSE cache / BSE Result_Arch_ng) with build_revop.metrics_for + an independent second reader; evidence in ~/stocks-cache/negop-heal/"
+  },
+  {
+   "sym": "KPIL",
+   "qe": "20211231",
+   "basis": "ebit_std",
+   "was": -1738.0,
+   "fixed": 142.0,
+   "why": "Primary: NSE XBRL INDAS_82374_608289_11022022070221_WEB (std) -> ebit 142.0. Second reader: BSE detailed results (as filed, standalone) 112.00: op 168.0 / ebit 142.0. Mechanism: stored value = -(total expenses) / total income read as 'other income' with depreciation dropped (the §189 text-sweep signature). Not a scale issue.",
+   "found": "§189b negative-op population heal 2026-09-27 (user-approved): each cell re-read from the company's own XBRL (NSE cache / BSE Result_Arch_ng) with build_revop.metrics_for + an independent second reader; evidence in ~/stocks-cache/negop-heal/"
+  },
+  {
+   "sym": "KPIL",
+   "qe": "20211231",
+   "basis": "op_con",
+   "was": -3666.0,
+   "fixed": 316.0,
+   "why": "Primary: NSE XBRL INDAS_82376_608300_11022022070648_WEB (con) -> op 316.0. Second reader: own filing 7b4f1f26-d2f6-4566-9603-d145361267ed.pdf consolidated: PBET after JV share (line 7, the tagged line) 148 + 102 + 93 - 27 = 316; ebit 223. Mechanism: stored value = -(total expenses) / total income read as 'other income' with depreciation dropped (the §189 text-sweep signature). Not a scale issue.",
+   "found": "§189b negative-op population heal 2026-09-27 (user-approved): each cell re-read from the company's own XBRL (NSE cache / BSE Result_Arch_ng) with build_revop.metrics_for + an independent second reader; evidence in ~/stocks-cache/negop-heal/"
+  },
+  {
+   "sym": "KPIL",
+   "qe": "20211231",
+   "basis": "ebit_con",
+   "was": -3666.0,
+   "fixed": 223.0,
+   "why": "Primary: NSE XBRL INDAS_82376_608300_11022022070648_WEB (con) -> ebit 223.0. Second reader: own filing 7b4f1f26-d2f6-4566-9603-d145361267ed.pdf consolidated: PBET after JV share (line 7, the tagged line) 148 + 102 + 93 - 27 = 316; ebit 223. Mechanism: stored value = -(total expenses) / total income read as 'other income' with depreciation dropped (the §189 text-sweep signature). Not a scale issue.",
+   "found": "§189b negative-op population heal 2026-09-27 (user-approved): each cell re-read from the company's own XBRL (NSE cache / BSE Result_Arch_ng) with build_revop.metrics_for + an independent second reader; evidence in ~/stocks-cache/negop-heal/"
+  },
+  {
+   "sym": "KPIL",
+   "qe": "20220331",
+   "basis": "op_con",
+   "was": -4012.0,
+   "fixed": 302.0,
+   "why": "Primary: NSE XBRL INDAS_84547_654908_14052022102256_WEB (con) -> op 302.0. Second reader: Moneycontrol consolidated quarterly line items (xbrl_extra src mc:KPT) give op 302.0 / ebit 221.0. Mechanism: stored value = -(total expenses) / total income read as 'other income' with depreciation dropped (the §189 text-sweep signature). Not a scale issue.",
+   "found": "§189b negative-op population heal 2026-09-27 (user-approved): each cell re-read from the company's own XBRL (NSE cache / BSE Result_Arch_ng) with build_revop.metrics_for + an independent second reader; evidence in ~/stocks-cache/negop-heal/"
+  },
+  {
+   "sym": "KPIL",
+   "qe": "20220331",
+   "basis": "ebit_con",
+   "was": -4012.0,
+   "fixed": 221.0,
+   "why": "Primary: NSE XBRL INDAS_84547_654908_14052022102256_WEB (con) -> ebit 221.0. Second reader: Moneycontrol consolidated quarterly line items (xbrl_extra src mc:KPT) give op 302.0 / ebit 221.0. Mechanism: stored value = -(total expenses) / total income read as 'other income' with depreciation dropped (the §189 text-sweep signature). Not a scale issue.",
+   "found": "§189b negative-op population heal 2026-09-27 (user-approved): each cell re-read from the company's own XBRL (NSE cache / BSE Result_Arch_ng) with build_revop.metrics_for + an independent second reader; evidence in ~/stocks-cache/negop-heal/"
+  },
+  {
+   "sym": "KPIL",
+   "qe": "20221231",
+   "basis": "op_std",
+   "was": 165.0,
+   "fixed": 305.0,
+   "why": "Primary: NSE XBRL INDAS_89258_790170_09022023084502 (std) -> op 305.0. Second reader: BSE detailed results (as filed, standalone) 116.00: op 305.0 / ebit 230.0. Mechanism: stored 165.0 = PBET with finance costs/depreciation dropped (ebit == op): the same text-sweep row mis-read, positive so no negative-op screen saw it. Not a scale issue.",
+   "found": "§189b negative-op population heal 2026-09-27 (user-approved): each cell re-read from the company's own XBRL (NSE cache / BSE Result_Arch_ng) with build_revop.metrics_for + an independent second reader; evidence in ~/stocks-cache/negop-heal/"
+  },
+  {
+   "sym": "KPIL",
+   "qe": "20221231",
+   "basis": "ebit_std",
+   "was": 165.0,
+   "fixed": 230.0,
+   "why": "Primary: NSE XBRL INDAS_89258_790170_09022023084502 (std) -> ebit 230.0. Second reader: BSE detailed results (as filed, standalone) 116.00: op 305.0 / ebit 230.0. Mechanism: stored 165.0 = PBET with finance costs/depreciation dropped (ebit == op): the same text-sweep row mis-read, positive so no negative-op screen saw it. Not a scale issue.",
+   "found": "§189b negative-op population heal 2026-09-27 (user-approved): each cell re-read from the company's own XBRL (NSE cache / BSE Result_Arch_ng) with build_revop.metrics_for + an independent second reader; evidence in ~/stocks-cache/negop-heal/"
+  },
+  {
+   "sym": "KPIL",
+   "qe": "20221231",
+   "basis": "op_con",
+   "was": -3728.0,
+   "fixed": 374.0,
+   "why": "Primary: NSE XBRL INDAS_89259_790173_09022023084815 (con) -> op 374.0. Second reader: Moneycontrol consolidated quarterly line items (xbrl_extra src mc:KPT) give op 374.0 / ebit 276.0. Mechanism: stored value = -(total expenses) / total income read as 'other income' with depreciation dropped (the §189 text-sweep signature). Not a scale issue.",
+   "found": "§189b negative-op population heal 2026-09-27 (user-approved): each cell re-read from the company's own XBRL (NSE cache / BSE Result_Arch_ng) with build_revop.metrics_for + an independent second reader; evidence in ~/stocks-cache/negop-heal/"
+  },
+  {
+   "sym": "KPIL",
+   "qe": "20221231",
+   "basis": "ebit_con",
+   "was": -3728.0,
+   "fixed": 276.0,
+   "why": "Primary: NSE XBRL INDAS_89259_790173_09022023084815 (con) -> ebit 276.0. Second reader: Moneycontrol consolidated quarterly line items (xbrl_extra src mc:KPT) give op 374.0 / ebit 276.0. Mechanism: stored value = -(total expenses) / total income read as 'other income' with depreciation dropped (the §189 text-sweep signature). Not a scale issue.",
+   "found": "§189b negative-op population heal 2026-09-27 (user-approved): each cell re-read from the company's own XBRL (NSE cache / BSE Result_Arch_ng) with build_revop.metrics_for + an independent second reader; evidence in ~/stocks-cache/negop-heal/"
+  },
+  {
+   "sym": "KPIL",
+   "qe": "20230331",
+   "basis": "op_std",
+   "was": 166.0,
+   "fixed": 311.0,
+   "why": "Primary: NSE XBRL INDAS_91395_839463_09052023041141 (std) -> op 311.0. Second reader: BSE detailed results (as filed, standalone) 117.00: op 311.0 / ebit 228.0. Mechanism: stored 166.0 = PBET with finance costs/depreciation dropped (ebit == op): the same text-sweep row mis-read, positive so no negative-op screen saw it. Not a scale issue.",
+   "found": "§189b negative-op population heal 2026-09-27 (user-approved): each cell re-read from the company's own XBRL (NSE cache / BSE Result_Arch_ng) with build_revop.metrics_for + an independent second reader; evidence in ~/stocks-cache/negop-heal/"
+  },
+  {
+   "sym": "KPIL",
+   "qe": "20230331",
+   "basis": "ebit_std",
+   "was": 166.0,
+   "fixed": 228.0,
+   "why": "Primary: NSE XBRL INDAS_91395_839463_09052023041141 (std) -> ebit 228.0. Second reader: BSE detailed results (as filed, standalone) 117.00: op 311.0 / ebit 228.0. Mechanism: stored 166.0 = PBET with finance costs/depreciation dropped (ebit == op): the same text-sweep row mis-read, positive so no negative-op screen saw it. Not a scale issue.",
+   "found": "§189b negative-op population heal 2026-09-27 (user-approved): each cell re-read from the company's own XBRL (NSE cache / BSE Result_Arch_ng) with build_revop.metrics_for + an independent second reader; evidence in ~/stocks-cache/negop-heal/"
+  },
+  {
+   "sym": "KPIL",
+   "qe": "20230331",
+   "basis": "op_con",
+   "was": -4550.0,
+   "fixed": 332.0,
+   "why": "Primary: NSE XBRL INDAS_91397_839471_09052023041337 (con) -> op 332.0. Second reader: Moneycontrol consolidated quarterly line items (xbrl_extra src mc:KPT) give op 332.0 / ebit 222.0. Mechanism: stored value = -(total expenses) / total income read as 'other income' with depreciation dropped (the §189 text-sweep signature). Not a scale issue.",
+   "found": "§189b negative-op population heal 2026-09-27 (user-approved): each cell re-read from the company's own XBRL (NSE cache / BSE Result_Arch_ng) with build_revop.metrics_for + an independent second reader; evidence in ~/stocks-cache/negop-heal/"
+  },
+  {
+   "sym": "KPIL",
+   "qe": "20230331",
+   "basis": "ebit_con",
+   "was": -4660.0,
+   "fixed": 222.0,
+   "why": "Primary: NSE XBRL INDAS_91397_839471_09052023041337 (con) -> ebit 222.0. Second reader: Moneycontrol consolidated quarterly line items (xbrl_extra src mc:KPT) give op 332.0 / ebit 222.0. Mechanism: stored value = -(total expenses) / total income read as 'other income' with depreciation dropped (the §189 text-sweep signature). Not a scale issue.",
+   "found": "§189b negative-op population heal 2026-09-27 (user-approved): each cell re-read from the company's own XBRL (NSE cache / BSE Result_Arch_ng) with build_revop.metrics_for + an independent second reader; evidence in ~/stocks-cache/negop-heal/"
+  },
+  {
+   "sym": "CCAVENUE",
+   "qe": "20200331",
+   "basis": "op_std",
+   "was": -114.01,
+   "fixed": 32.87,
+   "why": "Primary: NSE XBRL INDAS_55649_263818_05062020081833_WEB (std) -> op 32.87. Second reader: BSE detailed results 105.00: op 32.87 / ebit 10.1. Mechanism: stored -114.01 = -(Expenses 114.01) exactly. Not a scale issue.",
+   "found": "§189b negative-op population heal 2026-09-27 (user-approved): each cell re-read from the company's own XBRL (NSE cache / BSE Result_Arch_ng) with build_revop.metrics_for + an independent second reader; evidence in ~/stocks-cache/negop-heal/"
+  },
+  {
+   "sym": "CCAVENUE",
+   "qe": "20200331",
+   "basis": "ebit_std",
+   "was": -114.01,
+   "fixed": 10.1,
+   "why": "Primary: same XBRL -> ebit 10.1. Second reader: BSE detailed results 105.00: ebit 10.1. Mechanism: ebit == op, both -(Expenses). Not a scale issue.",
+   "found": "§189b negative-op population heal 2026-09-27 (user-approved): each cell re-read from the company's own XBRL (NSE cache / BSE Result_Arch_ng) with build_revop.metrics_for + an independent second reader; evidence in ~/stocks-cache/negop-heal/"
+  },
+  {
+   "sym": "ZYDUSLIFE",
+   "qe": "20181231",
+   "basis": "op_std",
+   "was": -15.07,
+   "fixed": 456.2,
+   "why": "Primary: NSE XBRL INDAS_42417_80266_07022019035828_WEB (std) -> op 456.2 (FinanceCosts is a net CREDIT, -15.5). Second reader: BSE detailed results 100.00: PBET 4315 + finance (+155 printed as a credit) -> 431.5 - 15.5 + 89.8 - 49.6 = 456.2. Mechanism: row mis-read (ebit == op). Not a scale issue.",
+   "found": "§189b negative-op population heal 2026-09-27 (user-approved): each cell re-read from the company's own XBRL (NSE cache / BSE Result_Arch_ng) with build_revop.metrics_for + an independent second reader; evidence in ~/stocks-cache/negop-heal/"
+  },
+  {
+   "sym": "ZYDUSLIFE",
+   "qe": "20181231",
+   "basis": "ebit_std",
+   "was": -15.07,
+   "fixed": 366.4,
+   "why": "Primary: same XBRL -> ebit 366.4. Second reader: BSE detailed results 100.00: ebit 366.4. Mechanism: ebit == op. Not a scale issue.",
+   "found": "§189b negative-op population heal 2026-09-27 (user-approved): each cell re-read from the company's own XBRL (NSE cache / BSE Result_Arch_ng) with build_revop.metrics_for + an independent second reader; evidence in ~/stocks-cache/negop-heal/"
+  },
+  {
+   "sym": "LMW",
+   "qe": "20240331",
+   "basis": "std",
+   "was": 1043.68,
+   "fixed": 951.76,
+   "why": "Primary: NSE XBRL (std, latest filing) -> revenue from operations 951.76. Second reader: BSE detailed results 121.00: Net Sales/Revenue From Operations 9517.6 mn. Mechanism: 2026-07-27 vision-manual OCR read (vision_rev_fills) took a wrong line; entry updated. Not a scale issue.",
+   "found": "§189b negative-op population heal 2026-09-27 (user-approved): each cell re-read from the company's own XBRL (NSE cache / BSE Result_Arch_ng) with build_revop.metrics_for + an independent second reader; evidence in ~/stocks-cache/negop-heal/"
+  },
+  {
+   "sym": "LMW",
+   "qe": "20240331",
+   "basis": "op_std",
+   "was": -15.52,
+   "fixed": 71.75,
+   "why": "Primary: NSE XBRL (std) -> op 71.75. Second reader: BSE detailed results 121.00: op 71.75 / ebit 46.43. Mechanism: same OCR read. Not a scale issue.",
+   "found": "§189b negative-op population heal 2026-09-27 (user-approved): each cell re-read from the company's own XBRL (NSE cache / BSE Result_Arch_ng) with build_revop.metrics_for + an independent second reader; evidence in ~/stocks-cache/negop-heal/"
+  },
+  {
+   "sym": "VIYASH",
+   "qe": "20240331",
+   "basis": "op_std",
+   "was": -11.94,
+   "fixed": -5.74,
+   "why": "Primary: NSE XBRL (std) -> op -5.74 (a genuine operating loss). Second reader: BSE detailed results 121.00: op -5.74 / ebit -7.85. Mechanism: row mis-read (magnitude wrong). Not a scale issue.",
+   "found": "§189b negative-op population heal 2026-09-27 (user-approved): each cell re-read from the company's own XBRL (NSE cache / BSE Result_Arch_ng) with build_revop.metrics_for + an independent second reader; evidence in ~/stocks-cache/negop-heal/"
+  },
+  {
+   "sym": "VIYASH",
+   "qe": "20240331",
+   "basis": "ebit_std",
+   "was": -11.95,
+   "fixed": -7.85,
+   "why": "Primary: same XBRL -> ebit -7.85. Second reader: BSE detailed results 121.00: ebit -7.85. Mechanism: row mis-read. Not a scale issue.",
+   "found": "§189b negative-op population heal 2026-09-27 (user-approved): each cell re-read from the company's own XBRL (NSE cache / BSE Result_Arch_ng) with build_revop.metrics_for + an independent second reader; evidence in ~/stocks-cache/negop-heal/"
+  },
+  {
+   "sym": "VIYASH",
+   "qe": "20240930",
+   "basis": "op_std",
+   "was": -1038.28,
+   "fixed": -2.1,
+   "why": "Primary: NSE XBRL (std) -> op -2.1. Second reader: BSE detailed results 123.00: op -2.1 / ebit -4.22; BSE XBRL copy Main_Ind_As_512529_141120241232 -> op -2.1. Mechanism: row mis-read (-1038 on 42 cr revenue). Not a scale issue.",
+   "found": "§189b negative-op population heal 2026-09-27 (user-approved): each cell re-read from the company's own XBRL (NSE cache / BSE Result_Arch_ng) with build_revop.metrics_for + an independent second reader; evidence in ~/stocks-cache/negop-heal/"
+  },
+  {
+   "sym": "VIYASH",
+   "qe": "20240930",
+   "basis": "op_con",
+   "was": 22.0,
+   "fixed": 39.1,
+   "why": "Primary: NSE XBRL (con) -> op 39.1, ebit 22.0. Second reader: BSE XBRL copy Main_Ind_As_512529_1411202412612 (con) -> op 39.1 / ebit 22.0. Mechanism: stored op held the EBIT figure (22.0) -- slot mix-up. Not a scale issue.",
+   "found": "§189b negative-op population heal 2026-09-27 (user-approved): each cell re-read from the company's own XBRL (NSE cache / BSE Result_Arch_ng) with build_revop.metrics_for + an independent second reader; evidence in ~/stocks-cache/negop-heal/"
+  },
+  {
+   "sym": "VIYASH",
+   "qe": "20241231",
+   "basis": "op_std",
+   "was": -5.58,
+   "fixed": -4.48,
+   "why": "Primary: NSE XBRL (std) -> op -4.48. Second reader: BSE detailed results 124.00: op -4.48 / ebit -6.72. Mechanism: row mis-read. Not a scale issue.",
+   "found": "§189b negative-op population heal 2026-09-27 (user-approved): each cell re-read from the company's own XBRL (NSE cache / BSE Result_Arch_ng) with build_revop.metrics_for + an independent second reader; evidence in ~/stocks-cache/negop-heal/"
+  },
+  {
+   "sym": "VIYASH",
+   "qe": "20241231",
+   "basis": "ebit_std",
+   "was": -7.82,
+   "fixed": -6.72,
+   "why": "Primary: same XBRL -> ebit -6.72. Second reader: BSE detailed results 124.00: ebit -6.72. Mechanism: row mis-read. Not a scale issue.",
+   "found": "§189b negative-op population heal 2026-09-27 (user-approved): each cell re-read from the company's own XBRL (NSE cache / BSE Result_Arch_ng) with build_revop.metrics_for + an independent second reader; evidence in ~/stocks-cache/negop-heal/"
+  },
+  {
+   "sym": "AERONEU",
+   "qe": "20231231",
+   "basis": "con",
+   "was": 63.02,
+   "fixed": 25.95,
+   "why": "Primary: NSE XBRL INDAS_102947_1049190_09022024123409 (con) -> revenue 25.95. Second reader: BSE XBRL copy Main_Ind_As_543743_922024123254 (con) -> 25.95. Mechanism: 63.02 matches no line of the consolidated statement. Not a scale issue.",
+   "found": "§189b negative-op population heal 2026-09-27 (user-approved): each cell re-read from the company's own XBRL (NSE cache / BSE Result_Arch_ng) with build_revop.metrics_for + an independent second reader; evidence in ~/stocks-cache/negop-heal/"
+  },
+  {
+   "sym": "AERONEU",
+   "qe": "20231231",
+   "basis": "op_con",
+   "was": -60.54,
+   "fixed": 0.79,
+   "why": "Primary: same NSE XBRL -> op 0.79 (ebit 0.17 already stored). Second reader: BSE XBRL copy -> op 0.79 / ebit 0.17. Mechanism: row mis-read. Not a scale issue.",
+   "found": "§189b negative-op population heal 2026-09-27 (user-approved): each cell re-read from the company's own XBRL (NSE cache / BSE Result_Arch_ng) with build_revop.metrics_for + an independent second reader; evidence in ~/stocks-cache/negop-heal/"
+  },
+  {
+   "sym": "AERONEU",
+   "qe": "20240331",
+   "basis": "con",
+   "was": 32.82,
+   "fixed": 32.4,
+   "why": "Primary: NSE XBRL INDAS_105226_1114684_03052024044557 (con) -> revenue from operations 32.40. Second reader: Mar-2025 filing b37c2926-dae3-4171-960d-c5e5e8b4d4e3.pdf consolidated corresponding-quarter column: revenue 3,240.44 lakh; Total Income 3,281.68 lakh = the stored 32.82. Mechanism: the 2026-08-07 adjudication read the Total Income (1+2) row as revenue; filing_verdict_heals entry updated. Not a scale issue.",
+   "found": "§189b negative-op population heal 2026-09-27 (user-approved): each cell re-read from the company's own XBRL (NSE cache / BSE Result_Arch_ng) with build_revop.metrics_for + an independent second reader; evidence in ~/stocks-cache/negop-heal/"
+  },
+  {
+   "sym": "AERONEU",
+   "qe": "20240331",
+   "basis": "op_con",
+   "was": -48.14,
+   "fixed": 1.19,
+   "why": "Primary: same NSE XBRL -> op 1.19 (ebit 0.56 already stored). Second reader: Mar-2025 filing corresponding column: PBET 17.69 + finance 79.67 + dep 62.94 - other income 41.24 = 119.06 lakh. Mechanism: row mis-read. Not a scale issue.",
+   "found": "§189b negative-op population heal 2026-09-27 (user-approved): each cell re-read from the company's own XBRL (NSE cache / BSE Result_Arch_ng) with build_revop.metrics_for + an independent second reader; evidence in ~/stocks-cache/negop-heal/"
+  },
+  {
+   "sym": "ALPINEHOU",
+   "qe": "20230930",
+   "basis": "op_std",
+   "was": -11.61,
+   "fixed": 1.43,
+   "why": "Primary: BSE XBRL Main_Ind_As_526519_11112023175235 (std) -> op 1.43 (ebit 1.26 already stored). Second reader: BSE detailed results 119.00: op 1.43 / ebit 1.26. Mechanism: stored = PBET + finance + dep - TOTAL income (other income read as total income). Not a scale issue.",
+   "found": "§189b negative-op population heal 2026-09-27 (user-approved): each cell re-read from the company's own XBRL (NSE cache / BSE Result_Arch_ng) with build_revop.metrics_for + an independent second reader; evidence in ~/stocks-cache/negop-heal/"
+  },
+  {
+   "sym": "ALPINEHOU",
+   "qe": "20230930",
+   "basis": "op_con",
+   "was": -11.61,
+   "fixed": 1.43,
+   "why": "Primary: identity: BSE lists 0 consolidated results for scrip 526519 (115 listing rows); the con slots already carry the standalone copy (rev 13.04, PAT 0.86). Second reader: = the healed standalone op (two readers above). Mechanism: the con copy of the wrong standalone op. Not a scale issue.",
+   "found": "§189b negative-op population heal 2026-09-27 (user-approved): each cell re-read from the company's own XBRL (NSE cache / BSE Result_Arch_ng) with build_revop.metrics_for + an independent second reader; evidence in ~/stocks-cache/negop-heal/"
+  },
+  {
+   "sym": "CHOLAFIN",
+   "qe": "20180630",
+   "basis": "std",
+   "was": 1379.85,
+   "fixed": 1597.03,
+   "why": "Primary: BSE XBRL Main_Ind_As_511243_277201813254 (std) -> revenue from operations 1597.03. Second reader: BSE detailed results 98.00: Net Sales/Revenue From Operations 15970.3 mn. Mechanism: revenue matches no line of the filing; neighbours 1511 (Mar-18) / 1676 (Sep-18). Not a scale issue.",
+   "found": "§189b negative-op population heal 2026-09-27 (user-approved): each cell re-read from the company's own XBRL (NSE cache / BSE Result_Arch_ng) with build_revop.metrics_for + an independent second reader; evidence in ~/stocks-cache/negop-heal/"
+  },
+  {
+   "sym": "CHOLAFIN",
+   "qe": "20180630",
+   "basis": "op_std",
+   "was": -298.92,
+   "fixed": 1253.07,
+   "why": "Primary: same XBRL -> op 1253.07 (NBFC: PBET 438.78 + finance 801.83 + dep 12.66 - other income 0.2); ebit stays blank (lender, §p3). Second reader: BSE detailed results 98.00: op 1253.07; Moneycontrol standalone line items op 1253.07. Mechanism: row mis-read. Not a scale issue.",
+   "found": "§189b negative-op population heal 2026-09-27 (user-approved): each cell re-read from the company's own XBRL (NSE cache / BSE Result_Arch_ng) with build_revop.metrics_for + an independent second reader; evidence in ~/stocks-cache/negop-heal/"
+  },
+  {
+   "sym": "MAHSCOOTER",
+   "qe": "20220930",
+   "basis": "op_std",
+   "was": -6.82,
+   "fixed": 186.06,
+   "why": "Primary: BSE XBRL NBFC_500266_20102022144533 (std) -> op 186.06. Second reader: own filing 0e27453c-8fa9-4afa-96ac-4634b021c47e.pdf (Rs lakh): PBT 18,561 + dep 49 - other income 4 = 18,606. Mechanism: stored -6.82 = -(Total expenses 682 lakh). Not a scale issue.",
+   "found": "§189b negative-op population heal 2026-09-27 (user-approved): each cell re-read from the company's own XBRL (NSE cache / BSE Result_Arch_ng) with build_revop.metrics_for + an independent second reader; evidence in ~/stocks-cache/negop-heal/"
+  },
+  {
+   "sym": "MAHSCOOTER",
+   "qe": "20220930",
+   "basis": "ebit_std",
+   "was": -6.82,
+   "fixed": 185.57,
+   "why": "Primary: op - depreciation 0.49 (the series convention: Dec-22 3.36 -> 2.85). Second reader: own filing: 18,606 - 49 = 18,557 lakh. Mechanism: ebit == op, both -(Total expenses). Not a scale issue.",
+   "found": "§189b negative-op population heal 2026-09-27 (user-approved): each cell re-read from the company's own XBRL (NSE cache / BSE Result_Arch_ng) with build_revop.metrics_for + an independent second reader; evidence in ~/stocks-cache/negop-heal/"
+  },
+  {
+   "sym": "PAISALO",
+   "qe": "20190930",
+   "basis": "op_std",
+   "was": -25.66,
+   "fixed": 57.43,
+   "why": "Primary: own filing 82bbcff0-78f0-404c-9d9b-236954e630df.pdf standalone (Rs lakh; BSE lists no standalone XBRL): PBET 2,415.38 + finance 3,222.76 + dep 105.15 - other income 0 = 5,743.29. Second reader: Dec-2019 filing previous-quarter column: identical PBET / finance / dep. Mechanism: stored = PBET + finance + dep - TOTAL income. Not a scale issue.",
+   "found": "§189b negative-op population heal 2026-09-27 (user-approved): each cell re-read from the company's own XBRL (NSE cache / BSE Result_Arch_ng) with build_revop.metrics_for + an independent second reader; evidence in ~/stocks-cache/negop-heal/"
+  },
+  {
+   "sym": "PAISALO",
+   "qe": "20190930",
+   "basis": "op_con",
+   "was": -28.81,
+   "fixed": 63.92,
+   "why": "Primary: BSE XBRL NBFC_532900_16102019122839 (con) -> op 63.92. Second reader: own filing consolidated (Rs lakh): 2,443.39 + 3,843.45 + 105.56 = 6,392.40. Mechanism: stored = PBET + finance + dep - TOTAL income. Not a scale issue.",
+   "found": "§189b negative-op population heal 2026-09-27 (user-approved): each cell re-read from the company's own XBRL (NSE cache / BSE Result_Arch_ng) with build_revop.metrics_for + an independent second reader; evidence in ~/stocks-cache/negop-heal/"
+  },
+  {
+   "sym": "UPL",
+   "qe": "20250331",
+   "basis": "op_std",
+   "was": -145.0,
+   "fixed": -70.0,
+   "why": "Primary: BSE XBRL Integrated_Finance_Ind_As_512070_1062025221112 (std) -> op -70.0 (a genuine standalone operating loss; PAT is from a 1,857 cr exceptional gain). Second reader: BSE detailed results 125.00: op -70.0 / ebit -104.0; Moneycontrol line items op -70.0. Mechanism: stored -145.0 = PBET alone (finance, dep, other income dropped). Not a scale issue.",
+   "found": "§189b negative-op population heal 2026-09-27 (user-approved): each cell re-read from the company's own XBRL (NSE cache / BSE Result_Arch_ng) with build_revop.metrics_for + an independent second reader; evidence in ~/stocks-cache/negop-heal/"
+  },
+  {
+   "sym": "HINDALCO",
+   "qe": "20181231",
+   "basis": "op_con",
+   "was": -2386.0,
+   "fixed": 3810.0,
+   "why": "Primary: no consolidated statement was filed for Q3 FY19 (Feb-2019 filings = standalone + a standalone-plus-Utkal press release; quarterly consolidated results compulsory from FY2020, §51a). The row's con revenue 33,213 already comes from the Dec-2019 filing (0fee6aeb-7cdf-41b3-9b37-4324e37ea168.pdf), whose consolidated Q3 FY19 comparative prints EBITDA 4,080 / other income 270 / finance 929 / D&A 1,221 / PBT-before-exceptional 1,931 -> op 3,810 (crore, as the row's other cells). Second reader: Moneycontrol consolidated quarterly line items: op 3,810.38. Mechanism: stored -2,386 matches nothing; NOTE the whole con row (rev, PAT, op) comes from a Feb-2020 comparative under a Feb-2019 ann date -- a pre-existing point-in-time question, not changed here. Not a scale issue.",
+   "found": "§189b negative-op population heal 2026-09-27 (user-approved): each cell re-read from the company's own XBRL (NSE cache / BSE Result_Arch_ng) with build_revop.metrics_for + an independent second reader; evidence in ~/stocks-cache/negop-heal/"
+  },
+  {
+   "sym": "HINDALCO",
+   "qe": "20181231",
+   "basis": "ebit_con",
+   "was": -2508.0,
+   "fixed": 2589.0,
+   "why": "Primary: op 3,810 - D&A 1,221 (same Dec-2019 comparative). Second reader: Moneycontrol: 3,810.38 - 1,222.19 = 2,588.19. Mechanism: ebit from the same mis-read. Not a scale issue.",
+   "found": "§189b negative-op population heal 2026-09-27 (user-approved): each cell re-read from the company's own XBRL (NSE cache / BSE Result_Arch_ng) with build_revop.metrics_for + an independent second reader; evidence in ~/stocks-cache/negop-heal/"
   }
  ],
  "retracted": [
