@@ -5,7 +5,7 @@ anything outside this folder except the Python standard library.
 All calls go to public BSE endpoints that were verified to work on 2026-09-22:
   - scrip master   : api.bseindia.com/BseIndiaAPI/api/ListofScripData/w  (mcap in Rs crore)
   - daily bhavcopy : www.bseindia.com/download/BhavCopy/Equity/BhavCopy_BSE_CM_0_0_0_YYYYMMDD_F_0000.CSV
-  - announcements  : api.bseindia.com/BseIndiaAPI/api/AnnSubCategoryGetData/w (50 rows/page)
+  - announcements  : api.bseindia.com/BseIndiaAPI/api/AnnSubCategoryGetData/w (50 rows/page; Table1 ROWCNT = BSE's count)
   - price history  : api.bseindia.com/BseIndiaAPI/api/StockPriceCSVDownload/w
   - corp actions   : api.bseindia.com/BseIndiaAPI/api/CorporateAction/w
   - attachment     : www.bseindia.com/xml-data/corpfiling/AttachLive/<ATTACHMENTNAME>
@@ -218,26 +218,52 @@ def bhav_history(scrips, d_from, d_to=None, max_days=800):
     return out
 
 
-# Set by announcements() on every call: True when a page failed and the list came back short, so a
-# caller can tell "the feed was blocked" from "a quiet day". Both look like zero rows otherwise.
+# Set by announcements() on every call, so a caller can say how complete the list it got is:
+#   partial  - a page failed and the list came back short: "the feed was blocked" and "a quiet day"
+#              both look like few rows otherwise.
+#   capped   - every page loaded, but the read stopped before the count BSE itself reports (the page
+#              guard, or a page that came back short of it): the list is the newest N rows, not the day.
+#   reported - BSE's own count for the range when the read began (Table1[0].ROWCNT), None if not given.
+#   read_at  - IST stamp of when BSE's list was read; a read on the day itself misses later filings.
 last_announcements_partial = False
+last_announcements_capped = False
+last_announcements_reported = None
+last_announcements_read_at = None
 
 
-def announcements(d_from, d_to=None, max_pages=40):
-    """All BSE announcements between two dates (inclusive), as the API rows (paginated, 50/page)."""
-    global last_announcements_partial
-    last_announcements_partial = False
+def announcements(d_from, d_to=None, max_pages=200):
+    """All BSE announcements between two dates (inclusive), as the API rows (paginated, 50/page, newest first).
+
+    Pages until it has read the count BSE reports for the range (Table1[0].ROWCNT) or a page comes back
+    short. max_pages is only a runaway guard: 200 pages = 10,000 rows, and the busiest day measured on
+    2026-09-28 was 4,255 (2025-11-14, a results deadline; 86 pages, every one served). The old guard of
+    40 pages (2,000 rows) was below 26 of ~110 days measured and cached the truncated list as the whole
+    day (2026-09-25: 2,000 read of 2,084; runbook 144f). A read that stops short of BSE's count is never
+    cached and sets last_announcements_capped.
+    """
+    global last_announcements_partial, last_announcements_capped, last_announcements_reported, last_announcements_read_at
+    last_announcements_partial = last_announcements_capped = False
+    last_announcements_reported = last_announcements_read_at = None
     d_to = d_to or d_from
-    fn = os.path.join(CACHE, f'ann_{d_from:%Y%m%d}_{d_to:%Y%m%d}.json')
+    # v2 cache = {rows, reported, read_at}, written only for a complete read. The v1 files (a bare list
+    # under ann_<from>_<to>.json) are never read again: the 40-page guard wrote them, and a day that
+    # hit it was cached truncated with nothing in the file to say so.
+    fn = os.path.join(CACHE, f'ann2_{d_from:%Y%m%d}_{d_to:%Y%m%d}.json')
     if os.path.exists(fn) and d_to < ist.today():
-        return json.load(open(fn))
-    rows = []
-    partial = False
+        try:
+            c = json.load(open(fn))
+            last_announcements_reported, last_announcements_read_at = c.get('reported'), c.get('read_at')
+            return c['rows']
+        except Exception:
+            pass    # unreadable cache: read BSE again
+    rows, seen = [], set()
+    partial = full_last = False
+    reported = None
     for p in range(1, max_pages + 1):
         url = ('https://api.bseindia.com/BseIndiaAPI/api/AnnSubCategoryGetData/w?pageno=%d&strCat=-1&strPrevDate=%s'
                '&strScrip=&strSearch=P&strToDate=%s&strType=C&subcategory=-1' % (p, d_from.strftime('%Y%m%d'), d_to.strftime('%Y%m%d')))
         try:
-            t = json.loads(_get(url, sleep=0.4)).get('Table') or []
+            j = json.loads(_get(url, sleep=0.6))
         except Exception as e:
             # One failed page used to end the loop quietly and then CACHE the short list, so a
             # transient error became a permanently thin announcement set for that date, with nothing
@@ -247,11 +273,39 @@ def announcements(d_from, d_to=None, max_pages=40):
             partial = True
             last_announcements_partial = True
             break
-        rows += t
-        if len(t) < 50:
+        t = j.get('Table') or []
+        if reported is None:
+            # The count when the read began. Filings that land during a same-day read go to the top of
+            # page 1, which this read has passed, so they are neither read nor owed.
+            try:
+                reported = int((j.get('Table1') or [{}])[0].get('ROWCNT'))
+            except (TypeError, ValueError, IndexError, AttributeError):
+                pass
+        # Newest first: a filing that lands mid-read shifts every row down one, so the row that ended
+        # page p opens page p+1 as well. Keep the first copy, so the count is of distinct filings.
+        for r in t:
+            k = r.get('NEWSID')
+            if k is None or k not in seen:
+                seen.add(k)
+                rows.append(r)
+        full_last = len(t) >= 50
+        if not full_last or (reported is not None and len(rows) >= reported):
             break
+    capped = False
     if not partial:
-        json.dump(rows, open(fn, 'w'))
+        # Complete = BSE's own count reached, or (no count given) the list ended on a short page.
+        # Anything else stopped early: at max_pages, or on a page that came back short of the count.
+        capped = (len(rows) < reported) if reported is not None else full_last
+        if capped:
+            print(f'announcements {d_from}..{d_to}: read {len(rows)} rows but BSE reports '
+                  f'{reported if reported is not None else "an unknown number (no ROWCNT)"} for this range '
+                  f'({"stopped at the " + str(max_pages) + "-page guard" if full_last else "a page came back short of that count"}); '
+                  'these are the NEWEST rows, not the whole range - NOT caching this read')
+    last_announcements_capped = capped
+    last_announcements_reported = reported
+    last_announcements_read_at = ist.stamp()
+    if not partial and not capped:
+        json.dump(dict(rows=rows, reported=reported, read_at=last_announcements_read_at), open(fn, 'w'))
     return rows
 
 

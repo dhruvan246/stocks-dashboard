@@ -19,6 +19,10 @@ valid answer; nothing is investment advice.
 - One run per trading day after BSE has published the bhavcopy (evening IST). Steps, in order:
   1. `python3 scripts/ideas/universe.py`
   2. `python3 scripts/ideas/scan.py` → `docs/ideas/scan/<date>.json` (candidates = score ≥ 4)
+     The scan says how complete its filing list is: `announcements_reported` (BSE's own count for the day),
+     `announcements_capped` (the read stopped short of that count: the counts are a floor) and
+     `announcements_read_at` (a read on the day itself misses the evening's filings). Quote them in
+     `filings_status`; never call `announcements_total` "the day's filings" when it is capped or read same-day.
   2a. Government announcements: `python3 scripts/ideas/govt.py` → `docs/ideas/govt.json` (see "Government-driven ideas")
   2b. Commodity panels (the price-driven half of the method, see "Price-driven ideas" below):
       `python3 scripts/ideas/spot.py` (daily global spot) · `python3 scripts/ideas/india_spot.py` (daily INDIAN prints: MetalBook

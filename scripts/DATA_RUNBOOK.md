@@ -17406,6 +17406,57 @@ additive — `cd scripts && python3 _idx_official_fetch.py --only "<tier>" …`,
 quarter (was 495/500). Residue in `scripts/_missing_quarter_pending.json`: BAGMANE/BIRET/EMBASSY/DUMMYHEG (no BSE scrip code —
 REITs + a placeholder ticker) and CLEANMAX Mar-2026 (image PDF; Gemini quota) — the guard re-lists them nightly until resolved.
 
+### 144f. ★★★ THE 2,000-ROW ANNOUNCEMENT CAP: A TRUNCATED LIST CACHED AS THE WHOLE DAY (2026-09-28)
+
+**What happened.** `bse.announcements()` paged BSE's `AnnSubCategoryGetData` with `max_pages=40` (40 x 50 = 2,000 rows)
+and stopped early only on a short page. A day with more than 2,000 filings ran into the guard with a FULL last page,
+set no flag, was cached as complete (`_cache/ann_<d>_<d>.json`) and was written to the scan as the day's total. The
+ideas-feeds run 36344172861 (2026-09-28 00:56 IST) re-scanned 2026-09-25 and published `announcements_total: 2000`,
+`announcements_blocked: false`, and the page said "73 classified filings out of 2000 BSE announcements that day".
+
+**Measured (2026-09-28 01:0x IST, from this Mac, one request at a time with bse.py's honest headers, all 200).**
+Every page of the response carries BSE's own count in `Table1[0].ROWCNT`. 2026-09-25: ROWCNT 2,084 on all 42 pages,
+2,084 rows read, 2,084 distinct NEWSIDs, last page 34 rows. The 84 the guard dropped were the day's EARLIEST (the list
+is newest first): 00:10 -> 10:52 IST. They held 4 universe filings; re-scanned, EVEXIA becomes a candidate (DEAL x2,
+score 2 -> 4), VASCONEQ gains an ORDER (1 -> 3), GHCLTEXTIL and RIKHAV gain one filing each; 73 -> 77 classified,
+17 -> 18 candidates. ROWCNT over ~110 days (2026-07-01..09-27 daily plus the Nov-2025 / Feb-2026 / May-2026
+results deadlines): **26 days above 2,000** - every results-deadline week, the early-September AGM days, and 09-25.
+Busiest: **2025-11-14 = 4,255** (paged end to end: 86 pages, all served, 4,255 distinct rows), 2026-05-29 3,808,
+2026-08-14 3,746, 2026-08-13 3,437, 2026-05-30 3,204, 2026-02-13 3,023. BSE serves pages past 40; the cap was ours.
+
+**Fix (scripts/ideas/bse.py, scan.py, docs/ideas.html).**
+- `announcements()` pages until it has read ROWCNT rows (the count when the read began) or a page comes back short;
+  `max_pages` is now a 200-page runaway guard (10,000 rows, 2.35x the measured maximum). Rows are de-duplicated by
+  NEWSID (a filing landing during a same-day read shifts every row down one page). Pace 0.6 s between pages.
+- New module flags beside `last_announcements_partial`: `last_announcements_capped` (every page loaded but the read
+  stopped short of ROWCNT - at the guard, or on a page that came back short of it - or, with no ROWCNT, ended on a
+  full page), `last_announcements_reported` (ROWCNT), `last_announcements_read_at` (IST stamp). A capped read is
+  printed as such and NEVER cached.
+- Cache v2: `_cache/ann2_<from>_<to>.json` = `{rows, reported, read_at}`, written only for a complete read. The v1
+  `ann_*.json` files are never read again - the Actions cache (`restore-keys: ideas-feeds-`) still carried the
+  2,000-row 09-25 file, and nothing inside a v1 file says whether it was truncated.
+- `scan.py` writes `announcements_reported`, `announcements_capped`, `announcements_read_at` (null on the NSE
+  fallback, whose count they would misdescribe) and prints `announcements N total of M BSE reports (CAPPED ...)` when
+  capped, `(BSE count M, read <stamp>)` otherwise. A capped list does NOT fall back to NSE: 2,000 BSE rows beat NSE's
+  NSE-symbol-only subset; the flag carries the gap instead.
+- `ideas.html` renderScan: capped -> "N BSE announcements read, of the M BSE lists for that day" + an amber note ("the
+  read stopped at N ... the missing ones are the day's earliest ... counts are a floor, an empty cell means unknown");
+  a same-day read -> "listed by HH:MM IST that day". And one contradiction the same re-scan exposed: latest.json's
+  `filings_status` is the research run's account of ITS read, and it was rendered as "BSE's filings feed did not load
+  for this scan" over a file Actions had since re-read from BSE. When the scan's `announcements_read_at` is later than
+  `latest.updated`, that note is suppressed and the summary says "Filings re-read from BSE at <read_at>, after the
+  day's research run (<updated>), which worked from an earlier read."
+
+**Tested.** 20 assertions over a stubbed `_get` (2,084-row day complete + cached v2, cache hit restores the flags,
+40-page guard -> capped + not cached, exactly 2,000 at the guard -> complete, failed page -> partial, no ROWCNT
+short/full, short page before the count -> capped, mid-read arrivals -> no duplicates and complete, legacy v1 cache
+ignored, zero day). Live: `scan.py --date 2026-09-25` read 2,084 = ROWCNT. Page: the real ideas.html in headless Chrome
+with fetch shimmed to 8 data cases (real, capped, capped without ROWCNT, same-day read with/without a run note, NSE
+fallback, pre-fix legacy file, the committed 2,000 file) and the ?date= selector; 0 JS errors; 375 px light + dark.
+
+**The rule.** A paginated read is complete only when it reaches the count the source states, and a source that states
+a count must be asked for it. "Stopped on a full page" is not the end of a list.
+
 ### 144e. ★★★ THE TWO-HOST FAILURE, AND WHY A BLOCKED RUN MUST NEVER LOOK LIKE A QUIET ONE (2026-09-24)
 
 **What happened.** From about 20:07 IST on 2026-09-23 to past 20:00 IST on 2026-09-24, **api.bseindia.com

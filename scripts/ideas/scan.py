@@ -155,11 +155,17 @@ def run(date, days):
     # which it was: on 2026-09-24 the feed 403'd all run and every candidate's empty filing list was
     # UNKNOWN, not empty. The page and the run log both need to be able to say so.
     ann_blocked = bse.last_announcements_partial
+    # And a list that loaded fine can still be less than the day: stopped short of the count BSE itself
+    # reports (the 2,000-row page guard did that on 2026-09-25: 2,000 read of 2,084, runbook 144f), or
+    # read on the day itself, before the evening's filings. Record both so neither reads as the day.
+    ann_capped, ann_reported, ann_read_at = (bse.last_announcements_capped, bse.last_announcements_reported,
+                                             bse.last_announcements_read_at)
     ann_source, ann_total = 'bse', len(ann)
     if ann_blocked:
         nse_rows, ann_total, ann_source = nse_announcements(asof, by_scrip)
         print(f'announcements: BSE feed blocked -> {len(nse_rows)} universe rows of {ann_total} that day from {ann_source}')
         ann = nse_rows
+        ann_capped, ann_reported, ann_read_at = False, None, None   # they describe BSE's list, which is not used
     ann_by = collections.defaultdict(list)
     for a in ann:
         s = str(a.get('SCRIP_CD') or '').strip()
@@ -194,12 +200,15 @@ def run(date, days):
     out = dict(date=asof.isoformat(), window_days=len(tdays), window_from=min(tdays).isoformat(), universe=len(rows),
                announcements_total=ann_total, announcements_in_universe=sum(len(v) for v in ann_by.values()),
                announcements_blocked=ann_blocked, announcements_source=ann_source,
+               announcements_reported=ann_reported, announcements_capped=ann_capped, announcements_read_at=ann_read_at,
                candidates=len(cands), rows_with_signals=len(kept), rows=kept)
     os.makedirs(os.path.join(DOCS, 'scan'), exist_ok=True)
     fn = os.path.join(DOCS, 'scan', f'{asof.isoformat()}.json')
     json.dump(out, open(fn, 'w'), separators=(',', ':'))
     print(f'scan {asof}: window {len(tdays)}d from {min(tdays)} | universe {len(rows)} | announcements {ann_total} total'
-          f'{" (BSE FEED BLOCKED - " + ann_source + "; this count is a floor, not the day)" if ann_blocked else ""}, '
+          f'{" (BSE FEED BLOCKED - " + ann_source + "; this count is a floor, not the day)" if ann_blocked else ""}'
+          f'{f" of {ann_reported} BSE reports (CAPPED - the read stopped short; this count is a floor, not the day)" if ann_capped else ""}'
+          f'{f" (BSE count {ann_reported}, read {ann_read_at})" if not ann_blocked and not ann_capped else ""}, '
           f'{out["announcements_in_universe"]} classified in universe | candidates {len(cands)} -> {fn}')
     for r in cands[:25]:
         f = r['features'] or {}

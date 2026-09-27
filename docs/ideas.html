@@ -572,10 +572,29 @@
     // Where the filings came from: BSE's own list, or (when that was blocked) the NSE feed the repo builds
     // from Actions - which covers only names with an NSE symbol. The scan file says which (runbook 144e).
     const viaNse = /^nse/i.test(scan.announcements_source || '');
-    const feedName = viaNse ? 'NSE announcements that day (BSE’s list was unreachable)' : 'BSE announcements that day';
-    $('#scan-summary').textContent = `Scan of ${scan.date}: ${scan.universe} names, ${scan.announcements_in_universe} classified filings out of ${scan.announcements_total} ${feedName}, ${scan.candidates} candidates at score ≥ 4. Window: ${scan.window_days} trading days from ${scan.window_from}.`;
+    // A BSE list that loaded can still be less than the day: the read stopped short of BSE's own count
+    // (announcements_capped - the old 2,000-row page guard did this on 2026-09-25, 2,000 of 2,084), or it
+    // was read on the day itself, before the evening's filings (announcements_read_at). runbook 144f.
+    const rep = scan.announcements_reported;
+    const readAt = scan.announcements_read_at || '';
+    const readTime = (readAt.match(/\d{2}:\d{2}/) || [''])[0];
+    const sameDay = !viaNse && !scan.announcements_blocked && readTime && dayOf(readAt) === scan.date;
+    const feedName = viaNse ? 'NSE announcements that day (BSE’s list was unreachable)'
+      : scan.announcements_capped ? (rep != null ? `BSE announcements read, of the ${rep} BSE lists for that day` : 'BSE announcements read (BSE gave no total for the day)')
+      : sameDay ? `BSE announcements listed by ${readTime} IST that day`
+      : 'BSE announcements that day';
+    // latest.json's filings_status is the research run's account of ITS read. ideas-feeds.yml can re-read the
+    // same day afterwards (2026-09-28 re-read 2026-09-25 from BSE; the run had read NSE), and then that note
+    // describes a list this file no longer holds.
+    const rebuilt = !!(filingsStatus && readAt && latest && latest.updated && readAt > latest.updated);
+    $('#scan-summary').textContent = `Scan of ${scan.date}: ${scan.universe} names, ${scan.announcements_in_universe} classified filings out of ${scan.announcements_total} ${feedName}, ${scan.candidates} candidates at score ≥ 4. Window: ${scan.window_days} trading days from ${scan.window_from}.`
+      + (rebuilt ? ` Filings re-read from BSE at ${readAt}, after the day’s research run (${latest.updated}), which worked from an earlier read.` : '');
+    if (scan.announcements_capped) {
+      $('#scan-summary').insertAdjacentHTML('afterend', staleNote(
+        `<b>This scan read only part of BSE’s list for ${esc(scan.date)}.</b> ${rep != null ? `BSE lists ${esc(rep)} announcements for the day; the read stopped at ${esc(scan.announcements_total)}.` : `The read stopped at ${esc(scan.announcements_total)} with every page still full, and BSE gave no total for the day.`} BSE lists newest first, so the missing ones are the day’s earliest. The filing counts above are a floor, and an empty "Filings today" cell below means <b>unknown</b>, not none.`));
+    }
     // A blocked announcement feed and a quiet day both show zero filings. Only the scan knows which.
-    if (scan.announcements_blocked || filingsStatus) {
+    if (scan.announcements_blocked || (filingsStatus && !rebuilt)) {
       const gap = viaNse
         ? `Filings were read from the NSE feed instead (${esc(scan.announcements_source)}), so names without an NSE symbol - BSE-only and SME - show no filings here even if they filed, and the feed's last build predates the post-close flood.`
         : `The filing counts above are a floor, and an empty "Filings today" cell below means <b>unknown</b>, not none.`;
