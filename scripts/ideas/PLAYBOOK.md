@@ -190,7 +190,7 @@ Markdown the page renders (docs/ideas.html `md()`): paragraphs, `- ` bullets, `1
 `**bold**`, `*italic*`, `` `code` ``, `[text](https://…)` links, and **pipe tables** (header row + `|---|` separator row;
 `---:` right-aligns a column, and numeric columns right-align on their own). Put every multi-period or multi-company
 comparison (growth by year, half-years, balance sheet, peers, valuation multiples) in a table, never in prose.
-Optional `"lane": "sme"` files an on-request SME deep-dive under the page's SME tab. A name with no BSE scrip (NSE Emerge / NSE-only) carries `"scrip": ""` and `"exchange": "NSE"` with `nse` set; score.py then prices it from NSE's daily UDiFF bhavcopies (bse.nse_bhav_history) instead of BSE.
+Optional `"lane": "sme"` files an on-request SME deep-dive under the page's SME tab. A main-board deep-dive written on request uses `"lane": "deep"` (Deep-dive tab). A name with no BSE scrip (NSE Emerge / NSE-only) carries `"scrip": ""` and `"exchange": "NSE"` with `nse` set; score.py then prices it from NSE's daily UDiFF bhavcopies (bse.nse_bhav_history) instead of BSE.
 
 ## Hard rules
 
