@@ -97,6 +97,8 @@ def in_force(path, ledger_path):
 def series_key(r):
     """The one name a print goes by - in the CSV, the history file, signals.json and the page."""
     return ' | '.join(str(r.get(k)) for k in ('city', 'market', 'name', 'grade', 'slug') if r.get(k))
+import os as _o, sys as _s; _s.path.insert(0, _o.path.dirname(_o.path.dirname(_o.path.abspath(__file__))))
+import bse_headers  # noqa: E402 — BSE hosts (NMDC filings) get the honest header set, replacing UA below (§190)
 UA = 'Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/128.0 Safari/537.36'
 HDR = {'User-Agent': UA, 'Accept': 'text/html,application/json,*/*', 'Accept-Language': 'en-IN,en;q=0.9'}
 LAX = ssl.create_default_context(); LAX.check_hostname = False; LAX.verify_mode = ssl.CERT_NONE

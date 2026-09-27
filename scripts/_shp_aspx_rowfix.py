@@ -72,11 +72,11 @@ H={"Referer":"https://www.bseindia.com/corporates/ShareholdingPattern.aspx","Acc
 def fetch(code, qtrid, comp="X", qname="X"):
     p="shpperent/%d_%d.html.gz"%(code,qtrid)
     if os.path.exists(p): return gzip.open(p,'rt',encoding='utf-8').read()
-    from curl_cffi import requests as cr
+    import bse_headers as BH   # honest headers, no impersonation (§190)
     u="https://www.bseindia.com/corporates/shpperent.aspx?scripcd=%d&qtrid=%d&CompName=%s&QtrName=%s"%(code,qtrid,urllib.parse.quote(comp),urllib.parse.quote(qname))
     for a in range(3):
         try:
-            r=cr.get(u,headers=H,impersonate="chrome",timeout=60)
+            r=BH.get(u,headers=H,timeout=60)
             if r.status_code==200 and len(r.text)>2000:
                 with gzip.open(p,'wt',encoding='utf-8') as fh: fh.write(r.text)
                 time.sleep(0.8); return r.text

@@ -31,7 +31,7 @@ UA = "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36"
 # --- 0. download the scrip masters (same URLs/headers as .github/workflows/refresh.yml) ---
 def dl(url, out, extra_headers=()):
     for attempt in range(3):
-        cmd = ["curl", "-s", "--max-time", "40", "-A", UA, *BH.CURL_ARGS]
+        cmd = ["curl", "-s", "--max-time", "40", "-A", BH.UA if BH.is_bse(url) else UA, *BH.CURL_ARGS]   # honest UA to BSE (§190)
         for h in extra_headers:
             cmd += ["-H", h]
         cmd += [url, "-o", out]
@@ -94,8 +94,7 @@ def fetch(code):
     url = f"https://api.bseindia.com/BseIndiaAPI/api/ComHeadernew/w?quotetype=EQ&scripcode={code}"
     try:
         r = subprocess.run(
-            ["curl", "-s", "--max-time", "8", "-A", UA, *BH.CURL_ARGS,
-             "-H", "Accept: application/json, text/plain, */*",
+            ["curl", "-s", "--max-time", "8", "-A", BH.UA, *BH.CURL_ARGS,   # honest UA; CURL_ARGS has Accept (§190)
              url], capture_output=True, timeout=10)
         d = json.loads(r.stdout)
         macro    = (d.get("Sector")      or "").strip()

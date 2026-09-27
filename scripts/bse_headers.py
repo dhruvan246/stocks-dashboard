@@ -64,3 +64,47 @@ def install():
 
 
 install()
+
+
+# ---- plain GET for callers that used curl_cffi impersonate="chrome" (2026-09-27, runbook §190) -------------------------
+# curl_cffi bypasses urllib, so importing this module never reached those requests: they kept posing as Chrome. BH.get /
+# BH.Session are drop-in stand-ins with the requests-shaped surface those callers read (status_code, text, content,
+# json(), headers). HTTP errors come back as a response (like requests/curl_cffi), network errors raise.
+class Response:
+    def __init__(self, status_code, content, headers=None, url=""):
+        self.status_code, self.content, self.headers, self.url = status_code, content, dict(headers or {}), url
+        self.ok = 200 <= status_code < 400
+
+    @property
+    def text(self):
+        return self.content.decode("utf-8", "replace")
+
+    def json(self):
+        import json
+        return json.loads(self.text)
+
+
+class Session:
+    """Cookie-keeping GET session (replaces curl_cffi.requests.Session(impersonate="chrome")); honest headers via install()."""
+    def __init__(self, **_ignored):                      # impersonate= and friends are accepted and IGNORED
+        import http.cookiejar
+        self.headers = {}
+        self._op = urllib.request.build_opener(urllib.request.HTTPCookieProcessor(http.cookiejar.CookieJar()))
+
+    def get(self, url, headers=None, timeout=60, params=None, **_ignored):
+        import urllib.error
+        from urllib.parse import urlencode
+        if params:
+            url += ("&" if "?" in url else "?") + urlencode(params)
+        h = dict(self.headers); h.update(headers or {})
+        req = urllib.request.Request(url, headers=h)
+        try:
+            with self._op.open(req, timeout=timeout) as r:
+                return Response(r.status, r.read(), r.headers, r.geturl())
+        except urllib.error.HTTPError as e:
+            return Response(e.code, e.read() or b"", e.headers, url)
+
+
+def get(url, headers=None, timeout=60, **kw):
+    """One plain GET (replaces curl_cffi.requests.get(..., impersonate="chrome")); impersonate= is ignored."""
+    return Session().get(url, headers=headers, timeout=timeout, **kw)

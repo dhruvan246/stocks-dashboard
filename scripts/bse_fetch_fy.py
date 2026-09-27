@@ -1,11 +1,11 @@
 # -*- coding: utf-8 -*-
-"""Fetch fy_end-March AUDITED results PDF from BSE (curl_cffi) for reconstruction candidates. Saves
+"""Fetch fy_end-March AUDITED results PDF from BSE (honest bse_headers session, §190) for reconstruction candidates. Saves
 _vpdf/SYM_<fyendMar>_bse.pdf. Run: python -X utf8 bse_fetch_fy.py <listfile.json>  (list=[[SYM,fyendMar],...])
 """
 import os, sys, json, time
 sys.path.insert(0, os.path.dirname(os.path.abspath(__file__)))
 import congap_recover as C
-from curl_cffi import requests as cr
+import bse_headers as BH
 
 HERE = os.path.dirname(os.path.abspath(__file__)); VPDF = os.path.join(HERE, "_vpdf")
 LOG = os.path.join(HERE, "_bsefy_log.json")
@@ -13,7 +13,7 @@ LOG = os.path.join(HERE, "_bsefy_log.json")
 def main():
     targets = json.load(open(sys.argv[1]))
     log = json.load(open(LOG)) if os.path.exists(LOG) else {}
-    s = cr.Session(impersonate="chrome")
+    s = BH.Session()   # honest headers, no impersonation (§190)
     def sget(u, **k):
         k.setdefault("timeout", 45); k.setdefault("headers", {"Referer": "https://www.bseindia.com/"})
         for a in range(3):

@@ -199,8 +199,8 @@ def newmap_for(sym, bse_rows):
         p=find_file(f)
         if not p:
             try:
-                from curl_cffi import requests as cr
-                x=cr.get("https://www.bseindia.com/XBRLFILES/SHPXBRLDataXML/"+f,headers={"Referer":"https://www.bseindia.com/"},impersonate="chrome",timeout=60)
+                import bse_headers as BH   # honest headers, no impersonation (§190)
+                x=BH.get("https://www.bseindia.com/XBRLFILES/SHPXBRLDataXML/"+f,headers={"Referer":"https://www.bseindia.com/"},timeout=60)
                 if x.status_code==200 and len(x.content)>2000: open(os.path.join(CACHES[-1],f),"wb").write(x.content); p=os.path.join(CACHES[-1],f); time.sleep(0.5)
             except Exception as e: print("  newmap fetch err",sym,f,e,file=sys.stderr)
         if not p: continue

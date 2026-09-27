@@ -42,9 +42,9 @@ def fetch(entry):
     url = f"https://api.bseindia.com/BseIndiaAPI/api/ComHeadernew/w?quotetype=EQ&scripcode={code}"
     try:
         r = subprocess.run(
-            ["curl","-s","--max-time","8","-A",UA, *BH.CURL_ARGS,
-             "-H",f"Referer: {ref}",
-             "-H","Accept: application/json, text/plain, */*",
+            # honest UA; CURL_ARGS already carries Accept + Referer — a SECOND Referer is a 403 (§181, §190:
+            # this call still sent its per-scrip Referer, and got 0/4,926 on the last run)
+            ["curl","-s","--max-time","8","-A",BH.UA, *BH.CURL_ARGS,
              url],
             capture_output=True, timeout=10)
         d = json.loads(r.stdout)
