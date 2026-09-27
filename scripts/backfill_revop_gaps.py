@@ -258,9 +258,15 @@ def metrics_at(rows, x, scale):
     rev = val_at(rows.get("rev", []), x)
     if rev is None:
         return None
-    oi = val_at(rows.get("oi", []), x) or 0.0
-    fc = val_at(rows.get("fc", []), x) or 0.0
-    dep = val_at(rows.get("dep", []), x) or 0.0
+    # ★ A ROW THE PAGE DID NOT YIELD AT THIS COLUMN IS UNKNOWN, NOT 0 (runbook §209, 2026-09-28). These three
+    # used to read `or 0.0`, so a missed depreciation row gave op == ebit and a missed finance-cost / other-income
+    # row put PBT itself in both slots: 47 main-board cells written 2026-07-21..08-05 (EXIDEIND Mar-25 std op
+    # 355.97 = PBT 342.99 + finance costs 12.98; the filing's op is 466.69, EBIT 339.92). op/ebit are now derived
+    # only when all three rows carry a value at the anchored column; revenue is unaffected.
+    oi = val_at(rows.get("oi", []), x)
+    fc = val_at(rows.get("fc", []), x)
+    dep = val_at(rows.get("dep", []), x)
+    missing = [k for k, v in (("oi", oi), ("fc", fc), ("dep", dep)) if v is None]
     # Decimal-integrity check via Schedule III's identity: Total Income = rev + other income.
     # A decimal-dropped REVENUE cell (MCX printed 197.47 as 19747) shows up as rev > total income,
     # which is impossible -> reject. But if rev <= ti yet rev+oi != ti, it's the OTHER-INCOME cell
@@ -271,13 +277,13 @@ def metrics_at(rows, x, scale):
     if ti is not None:
         if rev > ti * 1.02 + 1:
             return None                                    # revenue can't exceed total income
-        if abs((rev + oi) - ti) > max(0.6, 0.006 * abs(ti)):
+        if abs((rev + (oi or 0.0)) - ti) > max(0.6, 0.006 * abs(ti)):
             comp_ok = False                                # a component (oi) mis-read -> op unreliable
     pbet = val_at(rows.get("pbet", []), x)
     if pbet is None:
         pbet = val_at(rows.get("pbt", []), x)
     op = ebit = None
-    if comp_ok and pbet is not None:
+    if comp_ok and pbet is not None and not missing:
         op = pbet + fc + dep - oi
         ebit = op - dep
         # Operating profit (≈EBITDA) can NEVER exceed revenue from operations for these filers — if

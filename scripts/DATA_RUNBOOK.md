@@ -23120,7 +23120,7 @@ fresh reset (it cannot copy an older payload over the heal); the nightly re-appl
 GOLDKART Mar-26 std, SHANTI Mar-26 std, LGHL Dec-25 std (the filing prints NEGATIVE depreciation — op would drop below EBIT
 and build_revop's ebit ≤ op guard would null it); GULPOLY Dec-19 (Ind-AS file with no depreciation tag); the 13 bse-results-xbrl
 cells written before the fix (BSE XBRL not cached); 186 op == EBIT cells that xbrl_extra contradicts with depreciation > 0 —
-main-board names from OTHER writers (EXIDEIND Mar-25 std op 355.97 = EBIT, detail dep 126.77), not this class; 199 op == EBIT
+main-board names from OTHER writers (EXIDEIND Mar-25 std op 355.97 = EBIT, detail dep 126.77), not this class → adjudicated §209 (187 re-measured: 107 correct as stored, 42 healed, 7 held for the PDF rung); 199 op == EBIT
 cells with no depreciation on record anywhere; ARE&M 2022 (4 cells matching none of its filings); SHANTI Mar-26 con (the revised
 filing's revenue beside the original's op/EBIT); `build_xbrl_extra`'s `dep` / `pbet` tables still lack the non-Ind-AS names, so
 the stock page's annual "Depreciation" row stays blank for SME years.
@@ -23290,3 +23290,77 @@ DateOf…ReportingPeriod facts, only ReportingQuarter ("Yearly" 152, "First quar
 **Lesson.** Same as §205, one level down: a fix to ONE parser of a shared vocabulary leaves every sibling parser of the
 same files wrong — `grep` every tag table that names the old spelling (here `build_revop.TAGS` was fixed, the detail
 ledger's `PNL` was not) and diff each against the file census.
+
+## §209 — MAIN-BOARD op == EBIT: THE BSE-PDF SWEEP READ A MISSING P&L ROW AS 0 (and KSL's non-Ind-AS filing copy) — 42 cells / 90 values healed through revop_cell_fix, the sweep guarded (2026-09-28, user: "All 42, 90 values" · "Read printed PDFs next" · "Yes, same push")
+**NO ASSUMPTIONS, NO GUESSWORK — every value below was measured this session (filings, stores, builds, git history).**
+**Population (§205's open item "186 contradicted").** Re-measured on origin e61314e0e and again on 902f3fa46: 2,448 sf_revop cells hold
+op == EBIT, 2,372 outside §205's non-Ind-AS match, **187** with xbrl_extra depreciation > 0. That test is fooled by 2-dp rounding
+(xbrl_extra stores 0.005–0.0149 cr as 0.01), so every cell was adjudicated against its OWN filing: a local index of 3,138 cached XBRL
+files for the 66 symbols (era names via _rename_map; ⚠ the 2025+ Integrated Filing carries the NSE symbol only in
+`<in-capmkt:Symbol>` — the entity identifier is the BSE ScripCode — so a grep for the NSESymbol identifier alone misses them) plus 51 BSE
+`Result_Arch_ng` XBRL files (26 scrip listings) fetched one at a time (§181 headers), identity by ISIN through bse_resolve (by_id alone is the KALYANI trap).
+
+| class | cells | verdict |
+|---|---|---|
+| the filing prints depreciation 0.005–0.009 cr, so op and EBIT round to the same 2-dp value | 107 (97 NSE cache, 10 BSE copies) | correct as stored |
+| NBFC-format filings: op == the filing; the EBIT slot holds a value metrics_for now leaves None for lenders | 29 | op right — lender-EBIT convention, open |
+| RHIM 20200930 con: NSE copy tags 3.44 as FinanceCosts (dep 0.0); BSE copy + Moneycontrol call it depreciation | 1 | op 29.42 right either way; EBIT (29.42 vs 25.98) held |
+| RMCL 20260630 std: no BSE listing, NSE file not cached | 1 | held; bound < 0.015 cr |
+| real defects | 49 | **42 healed**, 7 held |
+
+**Writers — joint bisection over the 1,201 commits touching docs/sf_revop.json** (78 snapshots streamed from raw.githubusercontent.com
+straight into Python: nothing on disk, no blob fetched into the partial clone). The rounding + NBFC cells: dbceaef01 (2026-07-01, the
+XBRL rebuild that added EBIT) and later CI / BSE-XBRL fills (BSELINFRA ×2, ZODJRDMKJ ×2 of §205's "13 BSE-job cells" are among the
+proven-correct). The 49 defects: **47 by `backfill_revop_gaps.py`, the BSE-result-PDF text sweep** — 67063e8cb / a1c5b8fc6 / 4d63e91d8
+(35; Nifty-500 + ever-member revenue backfill, 2026-07-21/22), c4af852fa (10; local-OCR residual pass, 2026-07-27 — §189's KENNAMET
+commit), 6b908f6bb (1; --rescue), d7c13a792 (1; Jun-2022 rescue); **2 by the daily refresh 80807c8eb (2026-08-07)**: KSL filed Jun-26
+twice on BSE — Integrated_Finance_Ind_As and a non-Ind-AS "IFOtherthan" copy tagging DepreciationAndAmortisationExpense — and
+update_fundamentals read the non-Ind-AS copy before the §205 parser fix (the §205 class in a main-board filer; §205 matched only
+NONINDAS-named cache files).
+**Mechanism — proven by replay.** `metrics_at` read other income / finance costs / depreciation with `or 0.0`, so a row the page did not
+yield counted as 0. No depreciation row → op == EBIT (NESTLEIND ×3, LINDEINDIA: EBIT right, op short by depreciation). No finance-cost
+or other-income row either → both slots = PBT/PBET (AEGISLOG ×7, INDUSTOWER std, EIDPARRY, BAJAJ-AUTO, FINCABLES). EXIDEIND Mar-25 std
+355.97 = PBT 342.99 + finance costs 12.98: old metrics_at fed those lines returns exactly 355.97/355.97; the filing's op is 466.69 and
+EBIT 339.92 — "stored EBIT + depreciation" would give 482.74, wrong by other income, so both slots were re-derived, never patched.
+Mis-aligned reads matching no line of the column: INDUSTOWER con ×4, KPITTECH (297.26 on revenue 354.79), PERSISTENT ×2, UNITDSPR
+(5,334 on revenue 5,312.5). **12 rows' revenue came from the same write**: Total income (FINCABLES Dec-21 991.54 → 972.95), the "Sales"
+sub-line (BAJAJ-AUTO Jun-22 7,768.89 → 8,004.97), ÷1,000 (INDUSTOWER Jun-19 1.72 → 1,724.3), INDUSTOWER Jun-22 1,667 → 6,897.3,
+AEGISLOG Mar-23 704.9 → 805.08, MAHSCOOTER Mar-21 7.46 → 7.53, whole-crore prints (ATGL ×4, ETERNAL Mar-23, UNITDSPR Jun-23). Every
+one was written in the same commit as its op onto an empty row — not a restated vintage (§108).
+**Proof per healed cell.** The column (NSE XBRL cache or BSE copy) is the company's (ISIN / BSE code ISIN-mapped / the file's own era NSE
+symbol), the quarter (OneD ≤ 100 days ending on qe) and the basis, and reproduces the stored PAT (exception LINDEINDIA Dec-22: stored
+112.87 vs filed 113.19 while revenue 697.00 and EBIT 119.74 reproduce exactly — PAT store not touched). op = PBET + FC + dep − OI via
+build_revop.metrics_for; the same column's expenses route (revenue − (expenses − FC − dep)) gives the same op on all 42. Second reader:
+Moneycontrol line items (xbrl_extra `mc:`) agree to 0.02 on 34 cells; the NSE + BSE XBRL copies agree on INDUSTOWER ×8 and ATGL Sep-20
+(Moneycontrol carries no FC/OI split for INDUSTOWER and no exceptional item (−9.99) for ATGL — its depreciation and PBT lines match);
+KSL: its two BSE filings + the nightly's detail read of the NSE copy; INDUSTOWER 20190331 con / 20220630 std have one XBRL copy each
+(BSE links a bare directory / NSE file not cached) + Moneycontrol's depreciation and PBT lines.
+**Heal.** `scripts/revop_cell_fix.json` **+90** (op_std 36, ebit_std 31, std 12, op_con 6, ebit_con 5 — 42 cells, 18 symbols), found
+tag "main-board op==EBIT audit 2026-09-28 (runbook §209)"; each `why` names the file, lines, identity, the stored value's mechanism,
+the writer commit and the second reader. apply_revop_cell_fix: docs/sf_revop.json 90 written (second run 0); revop_fundamentals.json
+85, plus UNITDSPR 20230630 std's three build-ledger slots, which still held the 2026-07-21 scale spike 64,223 / 2,755 / 2,077 (nulled
+in docs only, 67063e8cb), set to the healed values (user-approved); KSL has no build-ledger row. Blast radius vs HEAD: every changed
+slot is an entry moving was → fixed. verify_fills_live: checked 36,549 → 36,639 (+90), MISSING / REVERTED / RESURRECTED 0, DRIFT
+unchanged; negative control (EXIDEIND op_std forced back to 355.97) → REVERTED, restored → clean. Slices built both ways
+(build_stock_fin): 22 of 6,600 change = the 18 symbols + alias copies BOC / IOL (LINDEINDIA), CHLORIDIND (EXIDEIND), KALSTEELS (KSL);
+only `revop`, only the healed quarters; fund_months.json byte-identical. Re-runnable measurement + lander:
+`~/stocks-cache/op_ebit_mainboard/` (pop → xidx → match → classify → bisect_rv → fetch_bse → derive → final_d → make_entries → land.py
+— run land.py from a tree on fresh origin, never merge the minified payloads).
+**Code.** `backfill_revop_gaps.metrics_at` derives op/EBIT only when the other-income, finance-cost AND depreciation rows each carry a
+value at the anchored column (a printed 0.00 still counts; a line printed "–" has no number, so it now reads as missing — blank, not a
+wrong bar); revenue unaffected. Old vs new: identical with every row present; the EXIDEIND lines the sweep saw → old 355.97/355.97, new
+None/None. No CI job runs the sweep; deoverlay_rev_reader (its other caller) already handles None. Closes the missing-depreciation half of
+§189's open item (5).
+**Held / open.** (1) 7 rows need the printed result PDF (next rung, user-approved): ARE&M 20170331 std, FINCABLES 20171231 std,
+GUJALKALI 20171231 std, KEC 20160630 con — the 2016-17 NSE archive template prints the TAX figure in its "(f) Finance costs" row (ARE&M
+4,885 lakh in both; PBT − 4,885 = PAT), so op cannot come from the page, and the stored revenues differ from it too (ARE&M 2,180.96 vs
+1,511.93; FINCABLES 674.58 = Total income vs 656.78; KEC con 2,848.64 vs 1,784.73); SUNTV 20190331 con (BSE's consolidated Mar-19 XBRL
+carries the year only — OneD all zero); FINCABLES 20190331 std (BSE rows link a bare directory); BEML 20180630 con (no consolidated XBRL
+listed). (2) RHIM 20200930 con EBIT tag swap. (3) 29 NBFC-format EBIT values (lender convention — 04625cf06 / strip_lender_ebit).
+(4) RMCL 20260630 std. (5) LINDEINDIA 20221231 std PAT 112.87 vs filed 113.19 (sf_fundamentals, §70). (6) Siblings: "EBIT slot == PBT
+while FC − OI is material" outside the 187 finds DIVISLAB 20180930 con, TORNTPHARM 20220630 con, UNITDSPR 20210930 con (most other hits
+are Screener whole-crore fills) — not adjudicated. (7) quarterly_results.json carries 6 healed cells (EXIDEIND Mar-25, KSL Jun-26 ×2,
+NESTLEIND / ETERNAL / UNITDSPR Jun-23) — refresh-fundamentals rebuilds it when new earnings land.
+**Lesson.** A silent `or 0.0` on a component row is §205's lesson in a second writer: 0 is a plausible other income, finance cost or
+depreciation, so PBT passed for operating profit for two months. And a "depreciation > 0" screen over 2-dp detail flags rounding
+(0.005 → 0.01) — adjudicate against the filing's unrounded value before calling a cell wrong: 107 of the 187 are right as stored and 30 more carry the right op.

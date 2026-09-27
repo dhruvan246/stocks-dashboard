@@ -25976,6 +25976,906 @@
    "why": "§205: the op slot held EBIT — build_revop.metrics_for read only the Ind-AS tag DepreciationDepletionAndAmortisationExpense, and this non-Ind-AS filing tags DepreciationAndAmortisationExpense (depreciation read as 0). filing INTEGRATED_FILING_NONINDAS_1675518_28052026111453 (Yearly, uploaded 2026-05-28, Standalone): its current-period column reproduces the stored revenue 50.51 and EBIT 6.40 to the paisa; op = PBET 4.37 + finance costs 2.07 + depreciation 0.72 − other income 0.04 = 7.12 cr; the same column's expenses route (revenue − (expenses − finance costs − depreciation)) = 7.12. Identity: ISIN INE0OWX01025 = the company. second check: the year closes on depreciation — the parts of this financial year (as filed) add up to the full-year depreciation printed in the year-end filing.",
    "wrong_value_class": "parser tag-name gap: non-Ind-AS depreciation read as 0 (op == EBIT); fixed in build_revop.metrics_for in the same commit",
    "found": "non-Ind-AS op/EBIT audit 2026-09-27 (runbook §205)"
+  },
+  {
+   "sym": "AEGISLOG",
+   "qe": "20201231",
+   "basis": "op_std",
+   "was": 49.67,
+   "fixed": 54.36,
+   "why": "§209 AEGISLOG 20201231: NSE XBRL INDAS_66495_399333_28012021080002_WEB_xml (Standalone, Third quarter, period 2020-10-01..2020-12-31, presented in Lakhs). Identity: the file's own NSE symbol AEGISCHEM; the column reproduces the stored PAT 38.19 and revenue 196.84. Lines (crore): revenue 196.84, other income 8.70, finance costs 3.55, depreciation 9.84, PBET 49.67, PBT 49.67. op = PBET + finance costs + depreciation - other income = 54.36; EBIT = 44.52; the same column's expenses route (revenue - (expenses - finance costs - depreciation)) = 54.36. stored op 49.67 was the column's profit before exceptional items and tax (finance-cost, other-income and depreciation rows read as 0 by backfill_revop_gaps.metrics_at `or 0.0`) — written by the BSE-result-PDF revenue backfill (scripts/backfill_revop_gaps.py --n500 --all-quarters, commit 67063e8cb, 2026-07-21). second reader: Moneycontrol line items (mc:AC02:quarterly) give op 54.36 / EBIT 44.52.",
+   "wrong_value_class": "BSE-PDF text sweep (backfill_revop_gaps.metrics_at): a P&L row it could not find was read as 0 / a mis-aligned row; not a scale issue (scale_fix n/a)",
+   "found": "main-board op==EBIT audit 2026-09-28 (runbook §209)"
+  },
+  {
+   "sym": "AEGISLOG",
+   "qe": "20201231",
+   "basis": "ebit_std",
+   "was": 49.67,
+   "fixed": 44.52,
+   "why": "§209 AEGISLOG 20201231: NSE XBRL INDAS_66495_399333_28012021080002_WEB_xml (Standalone, Third quarter, period 2020-10-01..2020-12-31, presented in Lakhs). Identity: the file's own NSE symbol AEGISCHEM; the column reproduces the stored PAT 38.19 and revenue 196.84. Lines (crore): revenue 196.84, other income 8.70, finance costs 3.55, depreciation 9.84, PBET 49.67, PBT 49.67. op = PBET + finance costs + depreciation - other income = 54.36; EBIT = 44.52; the same column's expenses route (revenue - (expenses - finance costs - depreciation)) = 54.36. stored ebit 49.67 was the column's profit before exceptional items and tax (finance-cost, other-income and depreciation rows read as 0 by backfill_revop_gaps.metrics_at `or 0.0`) — written by the BSE-result-PDF revenue backfill (scripts/backfill_revop_gaps.py --n500 --all-quarters, commit 67063e8cb, 2026-07-21). second reader: Moneycontrol line items (mc:AC02:quarterly) give op 54.36 / EBIT 44.52.",
+   "wrong_value_class": "BSE-PDF text sweep (backfill_revop_gaps.metrics_at): a P&L row it could not find was read as 0 / a mis-aligned row; not a scale issue (scale_fix n/a)",
+   "found": "main-board op==EBIT audit 2026-09-28 (runbook §209)"
+  },
+  {
+   "sym": "AEGISLOG",
+   "qe": "20210630",
+   "basis": "op_std",
+   "was": 63.18,
+   "fixed": 71.49,
+   "why": "§209 AEGISLOG 20210630: NSE XBRL INDAS_73722_497801_30072021021741_WEB_xml (Standalone, First quarter, period 2021-04-01..2021-06-30, presented in Lakhs). Identity: the file's own NSE symbol AEGISCHEM; the column reproduces the stored PAT 47.89 and revenue 219.21. Lines (crore): revenue 219.21, other income 5.72, finance costs 3.63, depreciation 10.40, PBET 63.18, PBT 63.18. op = PBET + finance costs + depreciation - other income = 71.49; EBIT = 61.09; the same column's expenses route (revenue - (expenses - finance costs - depreciation)) = 71.49. stored op 63.18 was the column's profit before exceptional items and tax (finance-cost, other-income and depreciation rows read as 0 by backfill_revop_gaps.metrics_at `or 0.0`) — written by the BSE-result-PDF revenue backfill (scripts/backfill_revop_gaps.py --n500 --all-quarters, commit 67063e8cb, 2026-07-21). second reader: Moneycontrol line items (mc:AC02:quarterly) give op 71.49 / EBIT 61.09.",
+   "wrong_value_class": "BSE-PDF text sweep (backfill_revop_gaps.metrics_at): a P&L row it could not find was read as 0 / a mis-aligned row; not a scale issue (scale_fix n/a)",
+   "found": "main-board op==EBIT audit 2026-09-28 (runbook §209)"
+  },
+  {
+   "sym": "AEGISLOG",
+   "qe": "20210630",
+   "basis": "ebit_std",
+   "was": 63.18,
+   "fixed": 61.09,
+   "why": "§209 AEGISLOG 20210630: NSE XBRL INDAS_73722_497801_30072021021741_WEB_xml (Standalone, First quarter, period 2021-04-01..2021-06-30, presented in Lakhs). Identity: the file's own NSE symbol AEGISCHEM; the column reproduces the stored PAT 47.89 and revenue 219.21. Lines (crore): revenue 219.21, other income 5.72, finance costs 3.63, depreciation 10.40, PBET 63.18, PBT 63.18. op = PBET + finance costs + depreciation - other income = 71.49; EBIT = 61.09; the same column's expenses route (revenue - (expenses - finance costs - depreciation)) = 71.49. stored ebit 63.18 was the column's profit before exceptional items and tax (finance-cost, other-income and depreciation rows read as 0 by backfill_revop_gaps.metrics_at `or 0.0`) — written by the BSE-result-PDF revenue backfill (scripts/backfill_revop_gaps.py --n500 --all-quarters, commit 67063e8cb, 2026-07-21). second reader: Moneycontrol line items (mc:AC02:quarterly) give op 71.49 / EBIT 61.09.",
+   "wrong_value_class": "BSE-PDF text sweep (backfill_revop_gaps.metrics_at): a P&L row it could not find was read as 0 / a mis-aligned row; not a scale issue (scale_fix n/a)",
+   "found": "main-board op==EBIT audit 2026-09-28 (runbook §209)"
+  },
+  {
+   "sym": "AEGISLOG",
+   "qe": "20210930",
+   "basis": "op_std",
+   "was": 81.1,
+   "fixed": 88.0,
+   "why": "§209 AEGISLOG 20210930: NSE XBRL INDAS_76990_547601_28102021042030_WEB_xml (Standalone, Half yearly, period 2021-07-01..2021-09-30, presented in Lakhs). Identity: the file's own NSE symbol AEGISCHEM; the column reproduces the stored PAT 61.25 and revenue 257.88. Lines (crore): revenue 257.88, other income 6.78, finance costs 3.18, depreciation 10.50, PBET 81.10, PBT 81.10. op = PBET + finance costs + depreciation - other income = 88.00; EBIT = 77.50; the same column's expenses route (revenue - (expenses - finance costs - depreciation)) = 88.00. stored op 81.1 was the column's profit before exceptional items and tax (finance-cost, other-income and depreciation rows read as 0 by backfill_revop_gaps.metrics_at `or 0.0`) — written by the BSE-result-PDF revenue backfill (scripts/backfill_revop_gaps.py --n500 --all-quarters, commit 67063e8cb, 2026-07-21). second reader: Moneycontrol line items (mc:AC02:quarterly) give op 88.00 / EBIT 77.50.",
+   "wrong_value_class": "BSE-PDF text sweep (backfill_revop_gaps.metrics_at): a P&L row it could not find was read as 0 / a mis-aligned row; not a scale issue (scale_fix n/a)",
+   "found": "main-board op==EBIT audit 2026-09-28 (runbook §209)"
+  },
+  {
+   "sym": "AEGISLOG",
+   "qe": "20210930",
+   "basis": "ebit_std",
+   "was": 81.1,
+   "fixed": 77.5,
+   "why": "§209 AEGISLOG 20210930: NSE XBRL INDAS_76990_547601_28102021042030_WEB_xml (Standalone, Half yearly, period 2021-07-01..2021-09-30, presented in Lakhs). Identity: the file's own NSE symbol AEGISCHEM; the column reproduces the stored PAT 61.25 and revenue 257.88. Lines (crore): revenue 257.88, other income 6.78, finance costs 3.18, depreciation 10.50, PBET 81.10, PBT 81.10. op = PBET + finance costs + depreciation - other income = 88.00; EBIT = 77.50; the same column's expenses route (revenue - (expenses - finance costs - depreciation)) = 88.00. stored ebit 81.1 was the column's profit before exceptional items and tax (finance-cost, other-income and depreciation rows read as 0 by backfill_revop_gaps.metrics_at `or 0.0`) — written by the BSE-result-PDF revenue backfill (scripts/backfill_revop_gaps.py --n500 --all-quarters, commit 67063e8cb, 2026-07-21). second reader: Moneycontrol line items (mc:AC02:quarterly) give op 88.00 / EBIT 77.50.",
+   "wrong_value_class": "BSE-PDF text sweep (backfill_revop_gaps.metrics_at): a P&L row it could not find was read as 0 / a mis-aligned row; not a scale issue (scale_fix n/a)",
+   "found": "main-board op==EBIT audit 2026-09-28 (runbook §209)"
+  },
+  {
+   "sym": "AEGISLOG",
+   "qe": "20211231",
+   "basis": "op_std",
+   "was": 277.91,
+   "fixed": 90.03,
+   "why": "§209 AEGISLOG 20211231: NSE XBRL INDAS_82028_606885_10022022082038_WEB_xml (Standalone, Third quarter, period 2021-10-01..2021-12-31, presented in Lakhs). Identity: the file's own NSE symbol AEGISCHEM; the column reproduces the stored PAT 257.91 and revenue 316.96. Lines (crore): revenue 316.96, other income 203.68, finance costs 3.85, depreciation 11.95, PBET 277.91, PBT 277.91. op = PBET + finance costs + depreciation - other income = 90.03; EBIT = 78.08; the same column's expenses route (revenue - (expenses - finance costs - depreciation)) = 90.03. stored op 277.91 was the column's profit before exceptional items and tax (finance-cost, other-income and depreciation rows read as 0 by backfill_revop_gaps.metrics_at `or 0.0`) — written by the BSE-result-PDF revenue backfill (scripts/backfill_revop_gaps.py --n500 --all-quarters, commit 67063e8cb, 2026-07-21). second reader: Moneycontrol line items (mc:AC02:quarterly) give op 90.03 / EBIT 78.08.",
+   "wrong_value_class": "BSE-PDF text sweep (backfill_revop_gaps.metrics_at): a P&L row it could not find was read as 0 / a mis-aligned row; not a scale issue (scale_fix n/a)",
+   "found": "main-board op==EBIT audit 2026-09-28 (runbook §209)"
+  },
+  {
+   "sym": "AEGISLOG",
+   "qe": "20211231",
+   "basis": "ebit_std",
+   "was": 277.91,
+   "fixed": 78.08,
+   "why": "§209 AEGISLOG 20211231: NSE XBRL INDAS_82028_606885_10022022082038_WEB_xml (Standalone, Third quarter, period 2021-10-01..2021-12-31, presented in Lakhs). Identity: the file's own NSE symbol AEGISCHEM; the column reproduces the stored PAT 257.91 and revenue 316.96. Lines (crore): revenue 316.96, other income 203.68, finance costs 3.85, depreciation 11.95, PBET 277.91, PBT 277.91. op = PBET + finance costs + depreciation - other income = 90.03; EBIT = 78.08; the same column's expenses route (revenue - (expenses - finance costs - depreciation)) = 90.03. stored ebit 277.91 was the column's profit before exceptional items and tax (finance-cost, other-income and depreciation rows read as 0 by backfill_revop_gaps.metrics_at `or 0.0`) — written by the BSE-result-PDF revenue backfill (scripts/backfill_revop_gaps.py --n500 --all-quarters, commit 67063e8cb, 2026-07-21). second reader: Moneycontrol line items (mc:AC02:quarterly) give op 90.03 / EBIT 78.08.",
+   "wrong_value_class": "BSE-PDF text sweep (backfill_revop_gaps.metrics_at): a P&L row it could not find was read as 0 / a mis-aligned row; not a scale issue (scale_fix n/a)",
+   "found": "main-board op==EBIT audit 2026-09-28 (runbook §209)"
+  },
+  {
+   "sym": "AEGISLOG",
+   "qe": "20220331",
+   "basis": "op_std",
+   "was": 102.59,
+   "fixed": 76.76,
+   "why": "§209 AEGISLOG 20220331: NSE XBRL INDAS_85971_664439_27052022091500_WEB_xml (Standalone, Yearly, period 2022-01-01..2022-03-31, presented in Lakhs). Identity: the file's own NSE symbol AEGISCHEM; the column reproduces the stored PAT 84.85 and revenue 433.93. Lines (crore): revenue 433.93, other income 46.35, finance costs 8.10, depreciation 12.42, PBET 102.59, PBT 102.59. op = PBET + finance costs + depreciation - other income = 76.76; EBIT = 64.34; the same column's expenses route (revenue - (expenses - finance costs - depreciation)) = 76.76. stored op 102.59 was the column's profit before exceptional items and tax (finance-cost, other-income and depreciation rows read as 0 by backfill_revop_gaps.metrics_at `or 0.0`) — written by the BSE-result-PDF revenue backfill (scripts/backfill_revop_gaps.py --n500 --all-quarters, commit 67063e8cb, 2026-07-21). second reader: Moneycontrol line items (mc:AC02:quarterly) give op 76.76 / EBIT 64.34.",
+   "wrong_value_class": "BSE-PDF text sweep (backfill_revop_gaps.metrics_at): a P&L row it could not find was read as 0 / a mis-aligned row; not a scale issue (scale_fix n/a)",
+   "found": "main-board op==EBIT audit 2026-09-28 (runbook §209)"
+  },
+  {
+   "sym": "AEGISLOG",
+   "qe": "20220331",
+   "basis": "ebit_std",
+   "was": 102.59,
+   "fixed": 64.34,
+   "why": "§209 AEGISLOG 20220331: NSE XBRL INDAS_85971_664439_27052022091500_WEB_xml (Standalone, Yearly, period 2022-01-01..2022-03-31, presented in Lakhs). Identity: the file's own NSE symbol AEGISCHEM; the column reproduces the stored PAT 84.85 and revenue 433.93. Lines (crore): revenue 433.93, other income 46.35, finance costs 8.10, depreciation 12.42, PBET 102.59, PBT 102.59. op = PBET + finance costs + depreciation - other income = 76.76; EBIT = 64.34; the same column's expenses route (revenue - (expenses - finance costs - depreciation)) = 76.76. stored ebit 102.59 was the column's profit before exceptional items and tax (finance-cost, other-income and depreciation rows read as 0 by backfill_revop_gaps.metrics_at `or 0.0`) — written by the BSE-result-PDF revenue backfill (scripts/backfill_revop_gaps.py --n500 --all-quarters, commit 67063e8cb, 2026-07-21). second reader: Moneycontrol line items (mc:AC02:quarterly) give op 76.76 / EBIT 64.34.",
+   "wrong_value_class": "BSE-PDF text sweep (backfill_revop_gaps.metrics_at): a P&L row it could not find was read as 0 / a mis-aligned row; not a scale issue (scale_fix n/a)",
+   "found": "main-board op==EBIT audit 2026-09-28 (runbook §209)"
+  },
+  {
+   "sym": "AEGISLOG",
+   "qe": "20220630",
+   "basis": "op_std",
+   "was": 607.96,
+   "fixed": 92.55,
+   "why": "§209 AEGISLOG 20220630: NSE XBRL INDAS_659071_2385_12082022185629_WEB_xml (Standalone, First quarter, period 2022-04-01..2022-06-30, presented in Lakhs). Identity: ISIN INE208C01025; the column reproduces the stored PAT 474.45 and revenue 643.23. Lines (crore): revenue 643.23, other income 534.02, finance costs 6.89, depreciation 11.72, PBET 607.96, PBT 607.96. op = PBET + finance costs + depreciation - other income = 92.55; EBIT = 80.83; the same column's expenses route (revenue - (expenses - finance costs - depreciation)) = 92.55. stored op 607.96 was the column's profit before exceptional items and tax (finance-cost, other-income and depreciation rows read as 0 by backfill_revop_gaps.metrics_at `or 0.0`) — written by the BSE-result-PDF revenue backfill (scripts/backfill_revop_gaps.py --n500 --all-quarters, commit 67063e8cb, 2026-07-21). second reader: Moneycontrol line items (mc:AC02:quarterly) give op 92.55 / EBIT 80.83.",
+   "wrong_value_class": "BSE-PDF text sweep (backfill_revop_gaps.metrics_at): a P&L row it could not find was read as 0 / a mis-aligned row; not a scale issue (scale_fix n/a)",
+   "found": "main-board op==EBIT audit 2026-09-28 (runbook §209)"
+  },
+  {
+   "sym": "AEGISLOG",
+   "qe": "20220630",
+   "basis": "ebit_std",
+   "was": 607.96,
+   "fixed": 80.83,
+   "why": "§209 AEGISLOG 20220630: NSE XBRL INDAS_659071_2385_12082022185629_WEB_xml (Standalone, First quarter, period 2022-04-01..2022-06-30, presented in Lakhs). Identity: ISIN INE208C01025; the column reproduces the stored PAT 474.45 and revenue 643.23. Lines (crore): revenue 643.23, other income 534.02, finance costs 6.89, depreciation 11.72, PBET 607.96, PBT 607.96. op = PBET + finance costs + depreciation - other income = 92.55; EBIT = 80.83; the same column's expenses route (revenue - (expenses - finance costs - depreciation)) = 92.55. stored ebit 607.96 was the column's profit before exceptional items and tax (finance-cost, other-income and depreciation rows read as 0 by backfill_revop_gaps.metrics_at `or 0.0`) — written by the BSE-result-PDF revenue backfill (scripts/backfill_revop_gaps.py --n500 --all-quarters, commit 67063e8cb, 2026-07-21). second reader: Moneycontrol line items (mc:AC02:quarterly) give op 92.55 / EBIT 80.83.",
+   "wrong_value_class": "BSE-PDF text sweep (backfill_revop_gaps.metrics_at): a P&L row it could not find was read as 0 / a mis-aligned row; not a scale issue (scale_fix n/a)",
+   "found": "main-board op==EBIT audit 2026-09-28 (runbook §209)"
+  },
+  {
+   "sym": "AEGISLOG",
+   "qe": "20220930",
+   "basis": "op_std",
+   "was": 119.55,
+   "fixed": 74.41,
+   "why": "§209 AEGISLOG 20220930: NSE XBRL INDAS_846889_4726_08112022180249_WEB_xml (Standalone, Half yearly, period 2022-07-01..2022-09-30, presented in Lakhs). Identity: ISIN INE208C01025; the column reproduces the stored PAT 100.76 and revenue 750.23. Lines (crore): revenue 750.23, other income 52.18, finance costs 2.76, depreciation 4.28, PBET 119.55, PBT 119.55. op = PBET + finance costs + depreciation - other income = 74.41; EBIT = 70.13; the same column's expenses route (revenue - (expenses - finance costs - depreciation)) = 74.41. stored op 119.55 was the column's profit before exceptional items and tax (finance-cost, other-income and depreciation rows read as 0 by backfill_revop_gaps.metrics_at `or 0.0`) — written by the BSE-result-PDF revenue backfill (scripts/backfill_revop_gaps.py --n500 --all-quarters, commit 67063e8cb, 2026-07-21). second reader: Moneycontrol line items (mc:AC02:quarterly) give op 74.41 / EBIT 70.13.",
+   "wrong_value_class": "BSE-PDF text sweep (backfill_revop_gaps.metrics_at): a P&L row it could not find was read as 0 / a mis-aligned row; not a scale issue (scale_fix n/a)",
+   "found": "main-board op==EBIT audit 2026-09-28 (runbook §209)"
+  },
+  {
+   "sym": "AEGISLOG",
+   "qe": "20220930",
+   "basis": "ebit_std",
+   "was": 119.55,
+   "fixed": 70.13,
+   "why": "§209 AEGISLOG 20220930: NSE XBRL INDAS_846889_4726_08112022180249_WEB_xml (Standalone, Half yearly, period 2022-07-01..2022-09-30, presented in Lakhs). Identity: ISIN INE208C01025; the column reproduces the stored PAT 100.76 and revenue 750.23. Lines (crore): revenue 750.23, other income 52.18, finance costs 2.76, depreciation 4.28, PBET 119.55, PBT 119.55. op = PBET + finance costs + depreciation - other income = 74.41; EBIT = 70.13; the same column's expenses route (revenue - (expenses - finance costs - depreciation)) = 74.41. stored ebit 119.55 was the column's profit before exceptional items and tax (finance-cost, other-income and depreciation rows read as 0 by backfill_revop_gaps.metrics_at `or 0.0`) — written by the BSE-result-PDF revenue backfill (scripts/backfill_revop_gaps.py --n500 --all-quarters, commit 67063e8cb, 2026-07-21). second reader: Moneycontrol line items (mc:AC02:quarterly) give op 74.41 / EBIT 70.13.",
+   "wrong_value_class": "BSE-PDF text sweep (backfill_revop_gaps.metrics_at): a P&L row it could not find was read as 0 / a mis-aligned row; not a scale issue (scale_fix n/a)",
+   "found": "main-board op==EBIT audit 2026-09-28 (runbook §209)"
+  },
+  {
+   "sym": "AEGISLOG",
+   "qe": "20230331",
+   "basis": "std",
+   "was": 704.9,
+   "fixed": 805.08,
+   "why": "§209 AEGISLOG 20230331: NSE XBRL INDAS_93657_858770_30052023070525_xml (Standalone, Yearly, period 2023-01-01..2023-03-31, presented in Lakhs). Identity: BSE scrip 500003 (ISIN-mapped); the column reproduces the stored PAT 155.40. Lines (crore): revenue 805.08, other income 116.77, finance costs 3.88, depreciation 4.28, PBET 195.56, PBT 195.56. op = PBET + finance costs + depreciation - other income = 86.95; EBIT = 82.67; the same column's expenses route (revenue - (expenses - finance costs - depreciation)) = 86.95. stored revenue 704.9 is not the filed revenue from operations 805.08 (written in the same row by the BSE-result-PDF revenue backfill (scripts/backfill_revop_gaps.py --n500 --all-quarters, commit 67063e8cb, 2026-07-21)). second reader: Moneycontrol line items (mc:AC02:quarterly) give op 86.95 / EBIT 82.67.",
+   "wrong_value_class": "BSE-PDF text sweep (backfill_revop_gaps.metrics_at): a P&L row it could not find was read as 0 / a mis-aligned row; not a scale issue (scale_fix n/a)",
+   "found": "main-board op==EBIT audit 2026-09-28 (runbook §209)"
+  },
+  {
+   "sym": "AEGISLOG",
+   "qe": "20230331",
+   "basis": "op_std",
+   "was": 181.9,
+   "fixed": 86.95,
+   "why": "§209 AEGISLOG 20230331: NSE XBRL INDAS_93657_858770_30052023070525_xml (Standalone, Yearly, period 2023-01-01..2023-03-31, presented in Lakhs). Identity: BSE scrip 500003 (ISIN-mapped); the column reproduces the stored PAT 155.40. Lines (crore): revenue 805.08, other income 116.77, finance costs 3.88, depreciation 4.28, PBET 195.56, PBT 195.56. op = PBET + finance costs + depreciation - other income = 86.95; EBIT = 82.67; the same column's expenses route (revenue - (expenses - finance costs - depreciation)) = 86.95. stored op 181.9 was a value that matches no line of the filing column (a mis-aligned row/column read) — written by the BSE-result-PDF revenue backfill (scripts/backfill_revop_gaps.py --n500 --all-quarters, commit 67063e8cb, 2026-07-21). second reader: Moneycontrol line items (mc:AC02:quarterly) give op 86.95 / EBIT 82.67.",
+   "wrong_value_class": "BSE-PDF text sweep (backfill_revop_gaps.metrics_at): a P&L row it could not find was read as 0 / a mis-aligned row; not a scale issue (scale_fix n/a)",
+   "found": "main-board op==EBIT audit 2026-09-28 (runbook §209)"
+  },
+  {
+   "sym": "AEGISLOG",
+   "qe": "20230331",
+   "basis": "ebit_std",
+   "was": 181.9,
+   "fixed": 82.67,
+   "why": "§209 AEGISLOG 20230331: NSE XBRL INDAS_93657_858770_30052023070525_xml (Standalone, Yearly, period 2023-01-01..2023-03-31, presented in Lakhs). Identity: BSE scrip 500003 (ISIN-mapped); the column reproduces the stored PAT 155.40. Lines (crore): revenue 805.08, other income 116.77, finance costs 3.88, depreciation 4.28, PBET 195.56, PBT 195.56. op = PBET + finance costs + depreciation - other income = 86.95; EBIT = 82.67; the same column's expenses route (revenue - (expenses - finance costs - depreciation)) = 86.95. stored ebit 181.9 was a value that matches no line of the filing column (a mis-aligned row/column read) — written by the BSE-result-PDF revenue backfill (scripts/backfill_revop_gaps.py --n500 --all-quarters, commit 67063e8cb, 2026-07-21). second reader: Moneycontrol line items (mc:AC02:quarterly) give op 86.95 / EBIT 82.67.",
+   "wrong_value_class": "BSE-PDF text sweep (backfill_revop_gaps.metrics_at): a P&L row it could not find was read as 0 / a mis-aligned row; not a scale issue (scale_fix n/a)",
+   "found": "main-board op==EBIT audit 2026-09-28 (runbook §209)"
+  },
+  {
+   "sym": "ARE&M",
+   "qe": "20210630",
+   "basis": "op_std",
+   "was": 167.04,
+   "fixed": 249.86,
+   "why": "§209 ARE&M 20210630: NSE XBRL INDAS_76167_508392_15082021104003_WEB_xml (Standalone, First quarter, period 2021-04-01..2021-06-30, presented in Crores). Identity: the file's own NSE symbol AMARAJABAT; the column reproduces the stored PAT 123.94 and revenue 1885.86. Lines (crore): revenue 1885.86, other income 16.62, finance costs 3.15, depreciation 96.29, PBET 167.04, PBT 167.04. op = PBET + finance costs + depreciation - other income = 249.86; EBIT = 153.57; the same column's expenses route (revenue - (expenses - finance costs - depreciation)) = 249.86. stored op 167.04 was the column's profit before exceptional items and tax (finance-cost, other-income and depreciation rows read as 0 by backfill_revop_gaps.metrics_at `or 0.0`) — written by the BSE-result-PDF revenue backfill (scripts/backfill_revop_gaps.py --n500 --all-quarters, commit 67063e8cb, 2026-07-21). second reader: Moneycontrol line items (mc:ARB:quarterly) give op 249.86 / EBIT 153.57.",
+   "wrong_value_class": "BSE-PDF text sweep (backfill_revop_gaps.metrics_at): a P&L row it could not find was read as 0 / a mis-aligned row; not a scale issue (scale_fix n/a)",
+   "found": "main-board op==EBIT audit 2026-09-28 (runbook §209)"
+  },
+  {
+   "sym": "ARE&M",
+   "qe": "20210630",
+   "basis": "ebit_std",
+   "was": 167.04,
+   "fixed": 153.57,
+   "why": "§209 ARE&M 20210630: NSE XBRL INDAS_76167_508392_15082021104003_WEB_xml (Standalone, First quarter, period 2021-04-01..2021-06-30, presented in Crores). Identity: the file's own NSE symbol AMARAJABAT; the column reproduces the stored PAT 123.94 and revenue 1885.86. Lines (crore): revenue 1885.86, other income 16.62, finance costs 3.15, depreciation 96.29, PBET 167.04, PBT 167.04. op = PBET + finance costs + depreciation - other income = 249.86; EBIT = 153.57; the same column's expenses route (revenue - (expenses - finance costs - depreciation)) = 249.86. stored ebit 167.04 was the column's profit before exceptional items and tax (finance-cost, other-income and depreciation rows read as 0 by backfill_revop_gaps.metrics_at `or 0.0`) — written by the BSE-result-PDF revenue backfill (scripts/backfill_revop_gaps.py --n500 --all-quarters, commit 67063e8cb, 2026-07-21). second reader: Moneycontrol line items (mc:ARB:quarterly) give op 249.86 / EBIT 153.57.",
+   "wrong_value_class": "BSE-PDF text sweep (backfill_revop_gaps.metrics_at): a P&L row it could not find was read as 0 / a mis-aligned row; not a scale issue (scale_fix n/a)",
+   "found": "main-board op==EBIT audit 2026-09-28 (runbook §209)"
+  },
+  {
+   "sym": "ATGL",
+   "qe": "20190930",
+   "basis": "std",
+   "was": 503.0,
+   "fixed": 502.82,
+   "why": "§209 ATGL 20190930: NSE XBRL INDAS_50053_165211_12112019080015_WEB_xml (Standalone, Half yearly, period 2019-07-01..2019-09-30, presented in Crores). Identity: the file's own NSE symbol ADANIGAS; the column reproduces the stored PAT 120.43. Lines (crore): revenue 502.82, other income 11.61, finance costs 10.79, depreciation 11.67, PBET 124.98, PBT 124.98. op = PBET + finance costs + depreciation - other income = 135.83; EBIT = 124.16; the same column's expenses route (revenue - (expenses - finance costs - depreciation)) = 135.83. stored revenue 503.0 is not the filed revenue from operations 502.82 (written in the same row by the BSE-result-PDF revenue backfill (scripts/backfill_revop_gaps.py --n500 --all-quarters, commit 67063e8cb, 2026-07-21)). second reader: Moneycontrol line items (mc:ADG01:quarterly) give op 135.83 / EBIT 124.16.",
+   "wrong_value_class": "BSE-PDF text sweep (backfill_revop_gaps.metrics_at): a P&L row it could not find was read as 0 / a mis-aligned row; not a scale issue (scale_fix n/a)",
+   "found": "main-board op==EBIT audit 2026-09-28 (runbook §209)"
+  },
+  {
+   "sym": "ATGL",
+   "qe": "20190930",
+   "basis": "op_std",
+   "was": 125.0,
+   "fixed": 135.83,
+   "why": "§209 ATGL 20190930: NSE XBRL INDAS_50053_165211_12112019080015_WEB_xml (Standalone, Half yearly, period 2019-07-01..2019-09-30, presented in Crores). Identity: the file's own NSE symbol ADANIGAS; the column reproduces the stored PAT 120.43. Lines (crore): revenue 502.82, other income 11.61, finance costs 10.79, depreciation 11.67, PBET 124.98, PBT 124.98. op = PBET + finance costs + depreciation - other income = 135.83; EBIT = 124.16; the same column's expenses route (revenue - (expenses - finance costs - depreciation)) = 135.83. stored op 125.0 was a value that matches no line of the filing column (a mis-aligned row/column read) — written by the BSE-result-PDF revenue backfill (scripts/backfill_revop_gaps.py --n500 --all-quarters, commit 67063e8cb, 2026-07-21). second reader: Moneycontrol line items (mc:ADG01:quarterly) give op 135.83 / EBIT 124.16.",
+   "wrong_value_class": "BSE-PDF text sweep (backfill_revop_gaps.metrics_at): a P&L row it could not find was read as 0 / a mis-aligned row; not a scale issue (scale_fix n/a)",
+   "found": "main-board op==EBIT audit 2026-09-28 (runbook §209)"
+  },
+  {
+   "sym": "ATGL",
+   "qe": "20190930",
+   "basis": "ebit_std",
+   "was": 125.0,
+   "fixed": 124.16,
+   "why": "§209 ATGL 20190930: NSE XBRL INDAS_50053_165211_12112019080015_WEB_xml (Standalone, Half yearly, period 2019-07-01..2019-09-30, presented in Crores). Identity: the file's own NSE symbol ADANIGAS; the column reproduces the stored PAT 120.43. Lines (crore): revenue 502.82, other income 11.61, finance costs 10.79, depreciation 11.67, PBET 124.98, PBT 124.98. op = PBET + finance costs + depreciation - other income = 135.83; EBIT = 124.16; the same column's expenses route (revenue - (expenses - finance costs - depreciation)) = 135.83. stored ebit 125.0 was a value that matches no line of the filing column (a mis-aligned row/column read) — written by the BSE-result-PDF revenue backfill (scripts/backfill_revop_gaps.py --n500 --all-quarters, commit 67063e8cb, 2026-07-21). second reader: Moneycontrol line items (mc:ADG01:quarterly) give op 135.83 / EBIT 124.16.",
+   "wrong_value_class": "BSE-PDF text sweep (backfill_revop_gaps.metrics_at): a P&L row it could not find was read as 0 / a mis-aligned row; not a scale issue (scale_fix n/a)",
+   "found": "main-board op==EBIT audit 2026-09-28 (runbook §209)"
+  },
+  {
+   "sym": "ATGL",
+   "qe": "20200331",
+   "basis": "std",
+   "was": 490.3,
+   "fixed": 490.32,
+   "why": "§209 ATGL 20200331: NSE XBRL INDAS_55049_250908_09052020121743_WEB_xml (Standalone, Yearly, period 2020-01-01..2020-03-31, presented in Crores). Identity: the file's own NSE symbol ADANIGAS; the column reproduces the stored PAT 122.07. Lines (crore): revenue 490.32, other income 11.73, finance costs 10.03, depreciation 13.55, PBET 156.10, PBT 156.10. op = PBET + finance costs + depreciation - other income = 167.95; EBIT = 154.40; the same column's expenses route (revenue - (expenses - finance costs - depreciation)) = 167.95. stored revenue 490.3 is not the filed revenue from operations 490.32 (written in the same row by the local-OCR residual pass of scripts/backfill_revop_gaps.py (commit c4af852fa, 2026-07-27 — the §189 KENNAMET commit)). second reader: Moneycontrol line items (mc:ADG01:quarterly) give op 167.95 / EBIT 154.40.",
+   "wrong_value_class": "BSE-PDF text sweep (backfill_revop_gaps.metrics_at): a P&L row it could not find was read as 0 / a mis-aligned row; not a scale issue (scale_fix n/a)",
+   "found": "main-board op==EBIT audit 2026-09-28 (runbook §209)"
+  },
+  {
+   "sym": "ATGL",
+   "qe": "20200331",
+   "basis": "op_std",
+   "was": 156.0,
+   "fixed": 167.95,
+   "why": "§209 ATGL 20200331: NSE XBRL INDAS_55049_250908_09052020121743_WEB_xml (Standalone, Yearly, period 2020-01-01..2020-03-31, presented in Crores). Identity: the file's own NSE symbol ADANIGAS; the column reproduces the stored PAT 122.07. Lines (crore): revenue 490.32, other income 11.73, finance costs 10.03, depreciation 13.55, PBET 156.10, PBT 156.10. op = PBET + finance costs + depreciation - other income = 167.95; EBIT = 154.40; the same column's expenses route (revenue - (expenses - finance costs - depreciation)) = 167.95. stored op 156.0 was a value that matches no line of the filing column (a mis-aligned row/column read) — written by the local-OCR residual pass of scripts/backfill_revop_gaps.py (commit c4af852fa, 2026-07-27 — the §189 KENNAMET commit). second reader: Moneycontrol line items (mc:ADG01:quarterly) give op 167.95 / EBIT 154.40.",
+   "wrong_value_class": "BSE-PDF text sweep (backfill_revop_gaps.metrics_at): a P&L row it could not find was read as 0 / a mis-aligned row; not a scale issue (scale_fix n/a)",
+   "found": "main-board op==EBIT audit 2026-09-28 (runbook §209)"
+  },
+  {
+   "sym": "ATGL",
+   "qe": "20200331",
+   "basis": "ebit_std",
+   "was": 156.0,
+   "fixed": 154.4,
+   "why": "§209 ATGL 20200331: NSE XBRL INDAS_55049_250908_09052020121743_WEB_xml (Standalone, Yearly, period 2020-01-01..2020-03-31, presented in Crores). Identity: the file's own NSE symbol ADANIGAS; the column reproduces the stored PAT 122.07. Lines (crore): revenue 490.32, other income 11.73, finance costs 10.03, depreciation 13.55, PBET 156.10, PBT 156.10. op = PBET + finance costs + depreciation - other income = 167.95; EBIT = 154.40; the same column's expenses route (revenue - (expenses - finance costs - depreciation)) = 167.95. stored ebit 156.0 was a value that matches no line of the filing column (a mis-aligned row/column read) — written by the local-OCR residual pass of scripts/backfill_revop_gaps.py (commit c4af852fa, 2026-07-27 — the §189 KENNAMET commit). second reader: Moneycontrol line items (mc:ADG01:quarterly) give op 167.95 / EBIT 154.40.",
+   "wrong_value_class": "BSE-PDF text sweep (backfill_revop_gaps.metrics_at): a P&L row it could not find was read as 0 / a mis-aligned row; not a scale issue (scale_fix n/a)",
+   "found": "main-board op==EBIT audit 2026-09-28 (runbook §209)"
+  },
+  {
+   "sym": "ATGL",
+   "qe": "20200930",
+   "basis": "std",
+   "was": 441.0,
+   "fixed": 441.16,
+   "why": "§209 ATGL 20200930: NSE XBRL INDAS_63042_354492_04112020043245_WEB_xml (Standalone, Half yearly, period 2020-07-01..2020-09-30, presented in Crores). Identity: the file's own NSE symbol ADANIGAS; the column reproduces the stored PAT 135.67. Lines (crore): revenue 441.16, other income 8.04, finance costs 10.15, depreciation 15.02, PBET 192.40, exceptional -9.99, PBT 182.41. op = PBET + finance costs + depreciation - other income = 209.53; EBIT = 194.51; the same column's expenses route (revenue - (expenses - finance costs - depreciation)) = 209.53. stored revenue 441.0 is not the filed revenue from operations 441.16 (written in the same row by the BSE-result-PDF revenue backfill (scripts/backfill_revop_gaps.py --n500 --all-quarters, commit 67063e8cb, 2026-07-21)). second reader: BSE copy + NSE copy agree; Moneycontrol's depreciation/finance/other-income lines match but it records no separate exceptional item (-9.99), so its op is 9.99 lower.",
+   "wrong_value_class": "BSE-PDF text sweep (backfill_revop_gaps.metrics_at): a P&L row it could not find was read as 0 / a mis-aligned row; not a scale issue (scale_fix n/a)",
+   "found": "main-board op==EBIT audit 2026-09-28 (runbook §209)"
+  },
+  {
+   "sym": "ATGL",
+   "qe": "20200930",
+   "basis": "op_std",
+   "was": 192.0,
+   "fixed": 209.53,
+   "why": "§209 ATGL 20200930: NSE XBRL INDAS_63042_354492_04112020043245_WEB_xml (Standalone, Half yearly, period 2020-07-01..2020-09-30, presented in Crores). Identity: the file's own NSE symbol ADANIGAS; the column reproduces the stored PAT 135.67. Lines (crore): revenue 441.16, other income 8.04, finance costs 10.15, depreciation 15.02, PBET 192.40, exceptional -9.99, PBT 182.41. op = PBET + finance costs + depreciation - other income = 209.53; EBIT = 194.51; the same column's expenses route (revenue - (expenses - finance costs - depreciation)) = 209.53. stored op 192.0 was a value that matches no line of the filing column (a mis-aligned row/column read) — written by the BSE-result-PDF revenue backfill (scripts/backfill_revop_gaps.py --n500 --all-quarters, commit 67063e8cb, 2026-07-21). second reader: BSE copy + NSE copy agree; Moneycontrol's depreciation/finance/other-income lines match but it records no separate exceptional item (-9.99), so its op is 9.99 lower.",
+   "wrong_value_class": "BSE-PDF text sweep (backfill_revop_gaps.metrics_at): a P&L row it could not find was read as 0 / a mis-aligned row; not a scale issue (scale_fix n/a)",
+   "found": "main-board op==EBIT audit 2026-09-28 (runbook §209)"
+  },
+  {
+   "sym": "ATGL",
+   "qe": "20200930",
+   "basis": "ebit_std",
+   "was": 192.0,
+   "fixed": 194.51,
+   "why": "§209 ATGL 20200930: NSE XBRL INDAS_63042_354492_04112020043245_WEB_xml (Standalone, Half yearly, period 2020-07-01..2020-09-30, presented in Crores). Identity: the file's own NSE symbol ADANIGAS; the column reproduces the stored PAT 135.67. Lines (crore): revenue 441.16, other income 8.04, finance costs 10.15, depreciation 15.02, PBET 192.40, exceptional -9.99, PBT 182.41. op = PBET + finance costs + depreciation - other income = 209.53; EBIT = 194.51; the same column's expenses route (revenue - (expenses - finance costs - depreciation)) = 209.53. stored ebit 192.0 was a value that matches no line of the filing column (a mis-aligned row/column read) — written by the BSE-result-PDF revenue backfill (scripts/backfill_revop_gaps.py --n500 --all-quarters, commit 67063e8cb, 2026-07-21). second reader: BSE copy + NSE copy agree; Moneycontrol's depreciation/finance/other-income lines match but it records no separate exceptional item (-9.99), so its op is 9.99 lower.",
+   "wrong_value_class": "BSE-PDF text sweep (backfill_revop_gaps.metrics_at): a P&L row it could not find was read as 0 / a mis-aligned row; not a scale issue (scale_fix n/a)",
+   "found": "main-board op==EBIT audit 2026-09-28 (runbook §209)"
+  },
+  {
+   "sym": "ATGL",
+   "qe": "20220630",
+   "basis": "std",
+   "was": 1110.0,
+   "fixed": 1110.21,
+   "why": "§209 ATGL 20220630: BSE XBRL Main_Ind_As_542066_582022111729.xml (BSE Filing_Date_Time 2022-08-05) (Standalone, First quarter, period 2022-04-01..2022-06-30, presented in Crores). Identity: ISIN INE399L01023; the column reproduces the stored PAT 137.84. Lines (crore): revenue 1110.21, other income 9.11, finance costs 18.70, depreciation 23.75, PBET 185.21, PBT 185.21. op = PBET + finance costs + depreciation - other income = 218.55; EBIT = 194.80; the same column's expenses route (revenue - (expenses - finance costs - depreciation)) = 218.55. stored revenue 1110.0 is not the filed revenue from operations 1110.21 (written in the same row by the BSE-result-PDF revenue backfill (scripts/backfill_revop_gaps.py, checkpoint commit a1c5b8fc6, 2026-07-21)). second reader: Moneycontrol line items (mc:ADG01:quarterly) give op 218.55 / EBIT 194.80.",
+   "wrong_value_class": "BSE-PDF text sweep (backfill_revop_gaps.metrics_at): a P&L row it could not find was read as 0 / a mis-aligned row; not a scale issue (scale_fix n/a)",
+   "found": "main-board op==EBIT audit 2026-09-28 (runbook §209)"
+  },
+  {
+   "sym": "ATGL",
+   "qe": "20220630",
+   "basis": "op_std",
+   "was": 185.0,
+   "fixed": 218.55,
+   "why": "§209 ATGL 20220630: BSE XBRL Main_Ind_As_542066_582022111729.xml (BSE Filing_Date_Time 2022-08-05) (Standalone, First quarter, period 2022-04-01..2022-06-30, presented in Crores). Identity: ISIN INE399L01023; the column reproduces the stored PAT 137.84. Lines (crore): revenue 1110.21, other income 9.11, finance costs 18.70, depreciation 23.75, PBET 185.21, PBT 185.21. op = PBET + finance costs + depreciation - other income = 218.55; EBIT = 194.80; the same column's expenses route (revenue - (expenses - finance costs - depreciation)) = 218.55. stored op 185.0 was a value that matches no line of the filing column (a mis-aligned row/column read) — written by the BSE-result-PDF revenue backfill (scripts/backfill_revop_gaps.py, checkpoint commit a1c5b8fc6, 2026-07-21). second reader: Moneycontrol line items (mc:ADG01:quarterly) give op 218.55 / EBIT 194.80.",
+   "wrong_value_class": "BSE-PDF text sweep (backfill_revop_gaps.metrics_at): a P&L row it could not find was read as 0 / a mis-aligned row; not a scale issue (scale_fix n/a)",
+   "found": "main-board op==EBIT audit 2026-09-28 (runbook §209)"
+  },
+  {
+   "sym": "ATGL",
+   "qe": "20220630",
+   "basis": "ebit_std",
+   "was": 185.0,
+   "fixed": 194.8,
+   "why": "§209 ATGL 20220630: BSE XBRL Main_Ind_As_542066_582022111729.xml (BSE Filing_Date_Time 2022-08-05) (Standalone, First quarter, period 2022-04-01..2022-06-30, presented in Crores). Identity: ISIN INE399L01023; the column reproduces the stored PAT 137.84. Lines (crore): revenue 1110.21, other income 9.11, finance costs 18.70, depreciation 23.75, PBET 185.21, PBT 185.21. op = PBET + finance costs + depreciation - other income = 218.55; EBIT = 194.80; the same column's expenses route (revenue - (expenses - finance costs - depreciation)) = 218.55. stored ebit 185.0 was a value that matches no line of the filing column (a mis-aligned row/column read) — written by the BSE-result-PDF revenue backfill (scripts/backfill_revop_gaps.py, checkpoint commit a1c5b8fc6, 2026-07-21). second reader: Moneycontrol line items (mc:ADG01:quarterly) give op 218.55 / EBIT 194.80.",
+   "wrong_value_class": "BSE-PDF text sweep (backfill_revop_gaps.metrics_at): a P&L row it could not find was read as 0 / a mis-aligned row; not a scale issue (scale_fix n/a)",
+   "found": "main-board op==EBIT audit 2026-09-28 (runbook §209)"
+  },
+  {
+   "sym": "BAJAJ-AUTO",
+   "qe": "20220630",
+   "basis": "std",
+   "was": 7768.89,
+   "fixed": 8004.97,
+   "why": "§209 BAJAJ-AUTO 20220630: BSE XBRL Main_Ind_As_532977_2672022182014.xml (BSE Filing_Date_Time 2022-07-27) (Standalone, First quarter, period 2022-04-01..2022-06-30, presented in Crores). Identity: ISIN INE917I01010; the column reproduces the stored PAT 1173.30. Lines (crore): revenue 8004.97, other income 319.32, finance costs 4.34, depreciation 67.33, PBET 1544.67, PBT 1544.67. op = PBET + finance costs + depreciation - other income = 1297.02; EBIT = 1229.69; the same column's expenses route (revenue - (expenses - finance costs - depreciation)) = 1297.02. stored revenue 7768.89 is not the filed revenue from operations 8004.97 (written in the same row by the local-OCR residual pass of scripts/backfill_revop_gaps.py (commit c4af852fa, 2026-07-27 — the §189 KENNAMET commit)). second reader: Moneycontrol line items (mc:BA06:quarterly) give op 1297.02 / EBIT 1229.69.",
+   "wrong_value_class": "BSE-PDF text sweep (backfill_revop_gaps.metrics_at): a P&L row it could not find was read as 0 / a mis-aligned row; not a scale issue (scale_fix n/a)",
+   "found": "main-board op==EBIT audit 2026-09-28 (runbook §209)"
+  },
+  {
+   "sym": "BAJAJ-AUTO",
+   "qe": "20220630",
+   "basis": "op_std",
+   "was": 1544.67,
+   "fixed": 1297.02,
+   "why": "§209 BAJAJ-AUTO 20220630: BSE XBRL Main_Ind_As_532977_2672022182014.xml (BSE Filing_Date_Time 2022-07-27) (Standalone, First quarter, period 2022-04-01..2022-06-30, presented in Crores). Identity: ISIN INE917I01010; the column reproduces the stored PAT 1173.30. Lines (crore): revenue 8004.97, other income 319.32, finance costs 4.34, depreciation 67.33, PBET 1544.67, PBT 1544.67. op = PBET + finance costs + depreciation - other income = 1297.02; EBIT = 1229.69; the same column's expenses route (revenue - (expenses - finance costs - depreciation)) = 1297.02. stored op 1544.67 was the column's profit before exceptional items and tax (finance-cost, other-income and depreciation rows read as 0 by backfill_revop_gaps.metrics_at `or 0.0`) — written by the local-OCR residual pass of scripts/backfill_revop_gaps.py (commit c4af852fa, 2026-07-27 — the §189 KENNAMET commit). second reader: Moneycontrol line items (mc:BA06:quarterly) give op 1297.02 / EBIT 1229.69.",
+   "wrong_value_class": "BSE-PDF text sweep (backfill_revop_gaps.metrics_at): a P&L row it could not find was read as 0 / a mis-aligned row; not a scale issue (scale_fix n/a)",
+   "found": "main-board op==EBIT audit 2026-09-28 (runbook §209)"
+  },
+  {
+   "sym": "BAJAJ-AUTO",
+   "qe": "20220630",
+   "basis": "ebit_std",
+   "was": 1544.67,
+   "fixed": 1229.69,
+   "why": "§209 BAJAJ-AUTO 20220630: BSE XBRL Main_Ind_As_532977_2672022182014.xml (BSE Filing_Date_Time 2022-07-27) (Standalone, First quarter, period 2022-04-01..2022-06-30, presented in Crores). Identity: ISIN INE917I01010; the column reproduces the stored PAT 1173.30. Lines (crore): revenue 8004.97, other income 319.32, finance costs 4.34, depreciation 67.33, PBET 1544.67, PBT 1544.67. op = PBET + finance costs + depreciation - other income = 1297.02; EBIT = 1229.69; the same column's expenses route (revenue - (expenses - finance costs - depreciation)) = 1297.02. stored ebit 1544.67 was the column's profit before exceptional items and tax (finance-cost, other-income and depreciation rows read as 0 by backfill_revop_gaps.metrics_at `or 0.0`) — written by the local-OCR residual pass of scripts/backfill_revop_gaps.py (commit c4af852fa, 2026-07-27 — the §189 KENNAMET commit). second reader: Moneycontrol line items (mc:BA06:quarterly) give op 1297.02 / EBIT 1229.69.",
+   "wrong_value_class": "BSE-PDF text sweep (backfill_revop_gaps.metrics_at): a P&L row it could not find was read as 0 / a mis-aligned row; not a scale issue (scale_fix n/a)",
+   "found": "main-board op==EBIT audit 2026-09-28 (runbook §209)"
+  },
+  {
+   "sym": "BEML",
+   "qe": "20190630",
+   "basis": "op_con",
+   "was": -107.25,
+   "fixed": -77.26,
+   "why": "§209 BEML 20190630: BSE XBRL Main_Ind_As_500048_282019164130.xml (BSE Filing_Date_Time 2019-08-02) (Consolidated, First quarter, period 2019-04-01..2019-06-30, presented in Lakhs). Identity: ISIN INE258A01016; the column reproduces the stored PAT -98.21 and revenue 580.02. Lines (crore): revenue 580.02, other income 9.04, finance costs 11.72, depreciation 18.27, PBET -98.21, PBT -98.21. op = PBET + finance costs + depreciation - other income = -77.26; EBIT = -95.53; the same column's expenses route (revenue - (expenses - finance costs - depreciation)) = -77.26. stored op -107.25 was PBT - other income (the finance-cost and depreciation rows read as 0) — written by the BSE-result-PDF revenue backfill (scripts/backfill_revop_gaps.py --n500 --all-quarters, commit 67063e8cb, 2026-07-21). second reader: Moneycontrol line items (mc:BEM:cons_quarterly) give op -77.26 / EBIT -95.53.",
+   "wrong_value_class": "BSE-PDF text sweep (backfill_revop_gaps.metrics_at): a P&L row it could not find was read as 0 / a mis-aligned row; not a scale issue (scale_fix n/a)",
+   "found": "main-board op==EBIT audit 2026-09-28 (runbook §209)"
+  },
+  {
+   "sym": "BEML",
+   "qe": "20190630",
+   "basis": "ebit_con",
+   "was": -107.25,
+   "fixed": -95.53,
+   "why": "§209 BEML 20190630: BSE XBRL Main_Ind_As_500048_282019164130.xml (BSE Filing_Date_Time 2019-08-02) (Consolidated, First quarter, period 2019-04-01..2019-06-30, presented in Lakhs). Identity: ISIN INE258A01016; the column reproduces the stored PAT -98.21 and revenue 580.02. Lines (crore): revenue 580.02, other income 9.04, finance costs 11.72, depreciation 18.27, PBET -98.21, PBT -98.21. op = PBET + finance costs + depreciation - other income = -77.26; EBIT = -95.53; the same column's expenses route (revenue - (expenses - finance costs - depreciation)) = -77.26. stored ebit -107.25 was PBT - other income (the finance-cost and depreciation rows read as 0) — written by the BSE-result-PDF revenue backfill (scripts/backfill_revop_gaps.py --n500 --all-quarters, commit 67063e8cb, 2026-07-21). second reader: Moneycontrol line items (mc:BEM:cons_quarterly) give op -77.26 / EBIT -95.53.",
+   "wrong_value_class": "BSE-PDF text sweep (backfill_revop_gaps.metrics_at): a P&L row it could not find was read as 0 / a mis-aligned row; not a scale issue (scale_fix n/a)",
+   "found": "main-board op==EBIT audit 2026-09-28 (runbook §209)"
+  },
+  {
+   "sym": "DIXON",
+   "qe": "20220930",
+   "basis": "op_std",
+   "was": 74.51,
+   "fixed": 97.86,
+   "why": "§209 DIXON 20220930: BSE XBRL Main_Ind_As_540699_2110202211426.xml (BSE Filing_Date_Time 2022-10-22) (Standalone, Half yearly, period 2022-07-01..2022-09-30, presented in Lakhs). Identity: ISIN INE935N01020; the column reproduces the stored PAT 58.82 and revenue 2293.40. Lines (crore): revenue 2293.40, other income 2.81, finance costs 8.98, depreciation 14.37, PBET 77.32, PBT 77.32. op = PBET + finance costs + depreciation - other income = 97.86; EBIT = 83.49; the same column's expenses route (revenue - (expenses - finance costs - depreciation)) = 97.86. stored op 74.51 was PBT - other income (the finance-cost and depreciation rows read as 0) — written by the local-OCR residual pass of scripts/backfill_revop_gaps.py (commit c4af852fa, 2026-07-27 — the §189 KENNAMET commit). second reader: Moneycontrol line items (mc:DT07:quarterly) give op 97.86 / EBIT 83.49.",
+   "wrong_value_class": "BSE-PDF text sweep (backfill_revop_gaps.metrics_at): a P&L row it could not find was read as 0 / a mis-aligned row; not a scale issue (scale_fix n/a)",
+   "found": "main-board op==EBIT audit 2026-09-28 (runbook §209)"
+  },
+  {
+   "sym": "DIXON",
+   "qe": "20220930",
+   "basis": "ebit_std",
+   "was": 74.51,
+   "fixed": 83.49,
+   "why": "§209 DIXON 20220930: BSE XBRL Main_Ind_As_540699_2110202211426.xml (BSE Filing_Date_Time 2022-10-22) (Standalone, Half yearly, period 2022-07-01..2022-09-30, presented in Lakhs). Identity: ISIN INE935N01020; the column reproduces the stored PAT 58.82 and revenue 2293.40. Lines (crore): revenue 2293.40, other income 2.81, finance costs 8.98, depreciation 14.37, PBET 77.32, PBT 77.32. op = PBET + finance costs + depreciation - other income = 97.86; EBIT = 83.49; the same column's expenses route (revenue - (expenses - finance costs - depreciation)) = 97.86. stored ebit 74.51 was PBT - other income (the finance-cost and depreciation rows read as 0) — written by the local-OCR residual pass of scripts/backfill_revop_gaps.py (commit c4af852fa, 2026-07-27 — the §189 KENNAMET commit). second reader: Moneycontrol line items (mc:DT07:quarterly) give op 97.86 / EBIT 83.49.",
+   "wrong_value_class": "BSE-PDF text sweep (backfill_revop_gaps.metrics_at): a P&L row it could not find was read as 0 / a mis-aligned row; not a scale issue (scale_fix n/a)",
+   "found": "main-board op==EBIT audit 2026-09-28 (runbook §209)"
+  },
+  {
+   "sym": "EIDPARRY",
+   "qe": "20210331",
+   "basis": "op_std",
+   "was": 234.33,
+   "fixed": 157.7,
+   "why": "§209 EIDPARRY 20210331: BSE XBRL Main_Ind_As_500125_3062021191217.xml (BSE Filing_Date_Time 2021-06-30) (Standalone, Yearly, period 2021-01-01..2021-03-31, presented in Crores). Identity: ISIN INE126A01031; the column reproduces the stored PAT 168.60 and revenue 564.34. Lines (crore): revenue 564.34, other income 135.93, finance costs 17.40, depreciation 27.66, PBET 248.57, exceptional -14.24, PBT 234.33. op = PBET + finance costs + depreciation - other income = 157.70; EBIT = 130.04; the same column's expenses route (revenue - (expenses - finance costs - depreciation)) = 157.70. stored op 234.33 was the column's profit before tax (finance-cost, other-income and depreciation rows read as 0; pbet fell back to PBT) — written by the local-OCR residual pass of scripts/backfill_revop_gaps.py (commit c4af852fa, 2026-07-27 — the §189 KENNAMET commit). second reader: Moneycontrol line items (mc:EID:quarterly) give op 157.70 / EBIT 130.04.",
+   "wrong_value_class": "BSE-PDF text sweep (backfill_revop_gaps.metrics_at): a P&L row it could not find was read as 0 / a mis-aligned row; not a scale issue (scale_fix n/a)",
+   "found": "main-board op==EBIT audit 2026-09-28 (runbook §209)"
+  },
+  {
+   "sym": "EIDPARRY",
+   "qe": "20210331",
+   "basis": "ebit_std",
+   "was": 234.33,
+   "fixed": 130.04,
+   "why": "§209 EIDPARRY 20210331: BSE XBRL Main_Ind_As_500125_3062021191217.xml (BSE Filing_Date_Time 2021-06-30) (Standalone, Yearly, period 2021-01-01..2021-03-31, presented in Crores). Identity: ISIN INE126A01031; the column reproduces the stored PAT 168.60 and revenue 564.34. Lines (crore): revenue 564.34, other income 135.93, finance costs 17.40, depreciation 27.66, PBET 248.57, exceptional -14.24, PBT 234.33. op = PBET + finance costs + depreciation - other income = 157.70; EBIT = 130.04; the same column's expenses route (revenue - (expenses - finance costs - depreciation)) = 157.70. stored ebit 234.33 was the column's profit before tax (finance-cost, other-income and depreciation rows read as 0; pbet fell back to PBT) — written by the local-OCR residual pass of scripts/backfill_revop_gaps.py (commit c4af852fa, 2026-07-27 — the §189 KENNAMET commit). second reader: Moneycontrol line items (mc:EID:quarterly) give op 157.70 / EBIT 130.04.",
+   "wrong_value_class": "BSE-PDF text sweep (backfill_revop_gaps.metrics_at): a P&L row it could not find was read as 0 / a mis-aligned row; not a scale issue (scale_fix n/a)",
+   "found": "main-board op==EBIT audit 2026-09-28 (runbook §209)"
+  },
+  {
+   "sym": "ETERNAL",
+   "qe": "20230331",
+   "basis": "std",
+   "was": 1207.0,
+   "fixed": 1206.8,
+   "why": "§209 ETERNAL 20230331: NSE XBRL INDAS_92160_847517_19052023092145_xml (Standalone, Yearly, period 2023-01-01..2023-03-31, presented in Millions). Identity: BSE scrip 543320 (ISIN-mapped); the column reproduces the stored PAT 181.70. Lines (crore): revenue 1206.80, other income 204.00, finance costs 4.60, depreciation 21.80, PBET 181.70, PBT 181.70. op = PBET + finance costs + depreciation - other income = 4.10; EBIT = -17.70; the same column's expenses route (revenue - (expenses - finance costs - depreciation)) = 4.10. stored revenue 1207.0 is not the filed revenue from operations 1206.80 (written in the same row by the BSE-result-PDF revenue backfill (scripts/backfill_revop_gaps.py --n500 --all-quarters, commit 67063e8cb, 2026-07-21)). second reader: Moneycontrol line items (mc:Z01:quarterly) give op 4.10 / EBIT -17.70.",
+   "wrong_value_class": "BSE-PDF text sweep (backfill_revop_gaps.metrics_at): a P&L row it could not find was read as 0 / a mis-aligned row; not a scale issue (scale_fix n/a)",
+   "found": "main-board op==EBIT audit 2026-09-28 (runbook §209)"
+  },
+  {
+   "sym": "ETERNAL",
+   "qe": "20230331",
+   "basis": "op_std",
+   "was": -22.0,
+   "fixed": 4.1,
+   "why": "§209 ETERNAL 20230331: NSE XBRL INDAS_92160_847517_19052023092145_xml (Standalone, Yearly, period 2023-01-01..2023-03-31, presented in Millions). Identity: BSE scrip 543320 (ISIN-mapped); the column reproduces the stored PAT 181.70. Lines (crore): revenue 1206.80, other income 204.00, finance costs 4.60, depreciation 21.80, PBET 181.70, PBT 181.70. op = PBET + finance costs + depreciation - other income = 4.10; EBIT = -17.70; the same column's expenses route (revenue - (expenses - finance costs - depreciation)) = 4.10. stored op -22.0 was a value that matches no line of the filing column (a mis-aligned row/column read) — written by the BSE-result-PDF revenue backfill (scripts/backfill_revop_gaps.py --n500 --all-quarters, commit 67063e8cb, 2026-07-21). second reader: Moneycontrol line items (mc:Z01:quarterly) give op 4.10 / EBIT -17.70.",
+   "wrong_value_class": "BSE-PDF text sweep (backfill_revop_gaps.metrics_at): a P&L row it could not find was read as 0 / a mis-aligned row; not a scale issue (scale_fix n/a)",
+   "found": "main-board op==EBIT audit 2026-09-28 (runbook §209)"
+  },
+  {
+   "sym": "ETERNAL",
+   "qe": "20230331",
+   "basis": "ebit_std",
+   "was": -22.0,
+   "fixed": -17.7,
+   "why": "§209 ETERNAL 20230331: NSE XBRL INDAS_92160_847517_19052023092145_xml (Standalone, Yearly, period 2023-01-01..2023-03-31, presented in Millions). Identity: BSE scrip 543320 (ISIN-mapped); the column reproduces the stored PAT 181.70. Lines (crore): revenue 1206.80, other income 204.00, finance costs 4.60, depreciation 21.80, PBET 181.70, PBT 181.70. op = PBET + finance costs + depreciation - other income = 4.10; EBIT = -17.70; the same column's expenses route (revenue - (expenses - finance costs - depreciation)) = 4.10. stored ebit -22.0 was a value that matches no line of the filing column (a mis-aligned row/column read) — written by the BSE-result-PDF revenue backfill (scripts/backfill_revop_gaps.py --n500 --all-quarters, commit 67063e8cb, 2026-07-21). second reader: Moneycontrol line items (mc:Z01:quarterly) give op 4.10 / EBIT -17.70.",
+   "wrong_value_class": "BSE-PDF text sweep (backfill_revop_gaps.metrics_at): a P&L row it could not find was read as 0 / a mis-aligned row; not a scale issue (scale_fix n/a)",
+   "found": "main-board op==EBIT audit 2026-09-28 (runbook §209)"
+  },
+  {
+   "sym": "ETERNAL",
+   "qe": "20230630",
+   "basis": "op_std",
+   "was": 90.0,
+   "fixed": 113.0,
+   "why": "§209 ETERNAL 20230630: NSE XBRL INDAS_95260_907554_03082023064925_xml (Standalone, First quarter, period 2023-04-01..2023-06-30, presented in Crores). Identity: BSE scrip 543320 (ISIN-mapped); the column reproduces the stored PAT 276.00 and revenue 1420.00. Lines (crore): revenue 1420.00, other income 186.00, finance costs 5.00, depreciation 18.00, PBET 276.00, PBT 276.00. op = PBET + finance costs + depreciation - other income = 113.00; EBIT = 95.00; the same column's expenses route (revenue - (expenses - finance costs - depreciation)) = 113.00. stored op 90.0 was PBT - other income (the finance-cost and depreciation rows read as 0) — written by the BSE-result-PDF revenue backfill (scripts/backfill_revop_gaps.py --n500 --all-quarters, commit 67063e8cb, 2026-07-21). second reader: Moneycontrol line items (mc:Z01:quarterly) give op 113.00 / EBIT 95.00.",
+   "wrong_value_class": "BSE-PDF text sweep (backfill_revop_gaps.metrics_at): a P&L row it could not find was read as 0 / a mis-aligned row; not a scale issue (scale_fix n/a)",
+   "found": "main-board op==EBIT audit 2026-09-28 (runbook §209)"
+  },
+  {
+   "sym": "ETERNAL",
+   "qe": "20230630",
+   "basis": "ebit_std",
+   "was": 90.0,
+   "fixed": 95.0,
+   "why": "§209 ETERNAL 20230630: NSE XBRL INDAS_95260_907554_03082023064925_xml (Standalone, First quarter, period 2023-04-01..2023-06-30, presented in Crores). Identity: BSE scrip 543320 (ISIN-mapped); the column reproduces the stored PAT 276.00 and revenue 1420.00. Lines (crore): revenue 1420.00, other income 186.00, finance costs 5.00, depreciation 18.00, PBET 276.00, PBT 276.00. op = PBET + finance costs + depreciation - other income = 113.00; EBIT = 95.00; the same column's expenses route (revenue - (expenses - finance costs - depreciation)) = 113.00. stored ebit 90.0 was PBT - other income (the finance-cost and depreciation rows read as 0) — written by the BSE-result-PDF revenue backfill (scripts/backfill_revop_gaps.py --n500 --all-quarters, commit 67063e8cb, 2026-07-21). second reader: Moneycontrol line items (mc:Z01:quarterly) give op 113.00 / EBIT 95.00.",
+   "wrong_value_class": "BSE-PDF text sweep (backfill_revop_gaps.metrics_at): a P&L row it could not find was read as 0 / a mis-aligned row; not a scale issue (scale_fix n/a)",
+   "found": "main-board op==EBIT audit 2026-09-28 (runbook §209)"
+  },
+  {
+   "sym": "EXIDEIND",
+   "qe": "20250331",
+   "basis": "op_std",
+   "was": 355.97,
+   "fixed": 466.69,
+   "why": "§209 EXIDEIND 20250331: BSE XBRL Integrated_Finance_Ind_As_500086_126202514339.xml (BSE Filing_Date_Time 2025-06-12) (Standalone, Fourth quarter, period 2025-01-01..2025-03-31, no rounding level stated). Identity: ISIN INE302A01020; the column reproduces the stored PAT 254.60 and revenue 4159.42. Lines (crore): revenue 4159.42, other income 16.05, finance costs 12.98, depreciation 126.77, PBET 342.99, PBT 342.99. op = PBET + finance costs + depreciation - other income = 466.69; EBIT = 339.92; the same column's expenses route (revenue - (expenses - finance costs - depreciation)) = 466.69. stored op 355.97 was PBT + finance costs (the other-income and depreciation rows read as 0) — written by the BSE-result-PDF revenue backfill ever-member sweep (scripts/backfill_revop_gaps.py --symfile, commit 4d63e91d8, 2026-07-22). second reader: Moneycontrol line items (mc:EI:quarterly) give op 466.69 / EBIT 339.92.",
+   "wrong_value_class": "BSE-PDF text sweep (backfill_revop_gaps.metrics_at): a P&L row it could not find was read as 0 / a mis-aligned row; not a scale issue (scale_fix n/a)",
+   "found": "main-board op==EBIT audit 2026-09-28 (runbook §209)"
+  },
+  {
+   "sym": "EXIDEIND",
+   "qe": "20250331",
+   "basis": "ebit_std",
+   "was": 355.97,
+   "fixed": 339.92,
+   "why": "§209 EXIDEIND 20250331: BSE XBRL Integrated_Finance_Ind_As_500086_126202514339.xml (BSE Filing_Date_Time 2025-06-12) (Standalone, Fourth quarter, period 2025-01-01..2025-03-31, no rounding level stated). Identity: ISIN INE302A01020; the column reproduces the stored PAT 254.60 and revenue 4159.42. Lines (crore): revenue 4159.42, other income 16.05, finance costs 12.98, depreciation 126.77, PBET 342.99, PBT 342.99. op = PBET + finance costs + depreciation - other income = 466.69; EBIT = 339.92; the same column's expenses route (revenue - (expenses - finance costs - depreciation)) = 466.69. stored ebit 355.97 was PBT + finance costs (the other-income and depreciation rows read as 0) — written by the BSE-result-PDF revenue backfill ever-member sweep (scripts/backfill_revop_gaps.py --symfile, commit 4d63e91d8, 2026-07-22). second reader: Moneycontrol line items (mc:EI:quarterly) give op 466.69 / EBIT 339.92.",
+   "wrong_value_class": "BSE-PDF text sweep (backfill_revop_gaps.metrics_at): a P&L row it could not find was read as 0 / a mis-aligned row; not a scale issue (scale_fix n/a)",
+   "found": "main-board op==EBIT audit 2026-09-28 (runbook §209)"
+  },
+  {
+   "sym": "FINCABLES",
+   "qe": "20211231",
+   "basis": "std",
+   "was": 991.54,
+   "fixed": 972.95,
+   "why": "§209 FINCABLES 20211231: BSE XBRL Main_Ind_As_500144_102202215411.xml (BSE Filing_Date_Time 2022-02-10) (Standalone, Third quarter, period 2021-10-01..2021-12-31, presented in Crores). Identity: ISIN INE235A01022; the column reproduces the stored PAT 95.20. Lines (crore): revenue 972.95, other income 18.59, finance costs 0.09, depreciation 10.05, PBET 117.15, PBT 117.15. op = PBET + finance costs + depreciation - other income = 108.70; EBIT = 98.65; the same column's expenses route (revenue - (expenses - finance costs - depreciation)) = 108.70. stored revenue 991.54 is not the filed revenue from operations 972.95 (written in the same row by the BSE-result-PDF revenue backfill (scripts/backfill_revop_gaps.py --n500 --all-quarters, commit 67063e8cb, 2026-07-21)). second reader: Moneycontrol line items (mc:FC01:quarterly) give op 108.70 / EBIT 98.65.",
+   "wrong_value_class": "BSE-PDF text sweep (backfill_revop_gaps.metrics_at): a P&L row it could not find was read as 0 / a mis-aligned row; not a scale issue (scale_fix n/a)",
+   "found": "main-board op==EBIT audit 2026-09-28 (runbook §209)"
+  },
+  {
+   "sym": "FINCABLES",
+   "qe": "20211231",
+   "basis": "op_std",
+   "was": 117.15,
+   "fixed": 108.7,
+   "why": "§209 FINCABLES 20211231: BSE XBRL Main_Ind_As_500144_102202215411.xml (BSE Filing_Date_Time 2022-02-10) (Standalone, Third quarter, period 2021-10-01..2021-12-31, presented in Crores). Identity: ISIN INE235A01022; the column reproduces the stored PAT 95.20. Lines (crore): revenue 972.95, other income 18.59, finance costs 0.09, depreciation 10.05, PBET 117.15, PBT 117.15. op = PBET + finance costs + depreciation - other income = 108.70; EBIT = 98.65; the same column's expenses route (revenue - (expenses - finance costs - depreciation)) = 108.70. stored op 117.15 was the column's profit before exceptional items and tax (finance-cost, other-income and depreciation rows read as 0 by backfill_revop_gaps.metrics_at `or 0.0`) — written by the BSE-result-PDF revenue backfill (scripts/backfill_revop_gaps.py --n500 --all-quarters, commit 67063e8cb, 2026-07-21). second reader: Moneycontrol line items (mc:FC01:quarterly) give op 108.70 / EBIT 98.65.",
+   "wrong_value_class": "BSE-PDF text sweep (backfill_revop_gaps.metrics_at): a P&L row it could not find was read as 0 / a mis-aligned row; not a scale issue (scale_fix n/a)",
+   "found": "main-board op==EBIT audit 2026-09-28 (runbook §209)"
+  },
+  {
+   "sym": "FINCABLES",
+   "qe": "20211231",
+   "basis": "ebit_std",
+   "was": 117.15,
+   "fixed": 98.65,
+   "why": "§209 FINCABLES 20211231: BSE XBRL Main_Ind_As_500144_102202215411.xml (BSE Filing_Date_Time 2022-02-10) (Standalone, Third quarter, period 2021-10-01..2021-12-31, presented in Crores). Identity: ISIN INE235A01022; the column reproduces the stored PAT 95.20. Lines (crore): revenue 972.95, other income 18.59, finance costs 0.09, depreciation 10.05, PBET 117.15, PBT 117.15. op = PBET + finance costs + depreciation - other income = 108.70; EBIT = 98.65; the same column's expenses route (revenue - (expenses - finance costs - depreciation)) = 108.70. stored ebit 117.15 was the column's profit before exceptional items and tax (finance-cost, other-income and depreciation rows read as 0 by backfill_revop_gaps.metrics_at `or 0.0`) — written by the BSE-result-PDF revenue backfill (scripts/backfill_revop_gaps.py --n500 --all-quarters, commit 67063e8cb, 2026-07-21). second reader: Moneycontrol line items (mc:FC01:quarterly) give op 108.70 / EBIT 98.65.",
+   "wrong_value_class": "BSE-PDF text sweep (backfill_revop_gaps.metrics_at): a P&L row it could not find was read as 0 / a mis-aligned row; not a scale issue (scale_fix n/a)",
+   "found": "main-board op==EBIT audit 2026-09-28 (runbook §209)"
+  },
+  {
+   "sym": "INDUSTOWER",
+   "qe": "20180930",
+   "basis": "op_std",
+   "was": 621.9,
+   "fixed": 771.7,
+   "why": "§209 INDUSTOWER 20180930: NSE XBRL INDAS_39491_55007_25102018045646_WEB_xml (Standalone, Half yearly, period 2018-07-01..2018-09-30, presented in Millions). Identity: the file's own NSE symbol INFRATEL; the column reproduces the stored PAT 403.20 and revenue 1719.10. Lines (crore): revenue 1719.10, other income 20.20, finance costs -99.50, depreciation 269.50, PBET 621.90, PBT 621.90. op = PBET + finance costs + depreciation - other income = 771.70; EBIT = 502.20; the same column's expenses route (revenue - (expenses - finance costs - depreciation)) = 771.70. stored op 621.9 was the column's profit before exceptional items and tax (finance-cost, other-income and depreciation rows read as 0 by backfill_revop_gaps.metrics_at `or 0.0`) — written by the BSE-result-PDF revenue backfill (scripts/backfill_revop_gaps.py --n500 --all-quarters, commit 67063e8cb, 2026-07-21). second reader: BSE copy + NSE copy agree; Moneycontrol's depreciation 269.50 and PBT 621.90 lines match the filing (its rows carry no finance-cost/other-income split).",
+   "wrong_value_class": "BSE-PDF text sweep (backfill_revop_gaps.metrics_at): a P&L row it could not find was read as 0 / a mis-aligned row; not a scale issue (scale_fix n/a)",
+   "found": "main-board op==EBIT audit 2026-09-28 (runbook §209)"
+  },
+  {
+   "sym": "INDUSTOWER",
+   "qe": "20180930",
+   "basis": "ebit_std",
+   "was": 621.9,
+   "fixed": 502.2,
+   "why": "§209 INDUSTOWER 20180930: NSE XBRL INDAS_39491_55007_25102018045646_WEB_xml (Standalone, Half yearly, period 2018-07-01..2018-09-30, presented in Millions). Identity: the file's own NSE symbol INFRATEL; the column reproduces the stored PAT 403.20 and revenue 1719.10. Lines (crore): revenue 1719.10, other income 20.20, finance costs -99.50, depreciation 269.50, PBET 621.90, PBT 621.90. op = PBET + finance costs + depreciation - other income = 771.70; EBIT = 502.20; the same column's expenses route (revenue - (expenses - finance costs - depreciation)) = 771.70. stored ebit 621.9 was the column's profit before exceptional items and tax (finance-cost, other-income and depreciation rows read as 0 by backfill_revop_gaps.metrics_at `or 0.0`) — written by the BSE-result-PDF revenue backfill (scripts/backfill_revop_gaps.py --n500 --all-quarters, commit 67063e8cb, 2026-07-21). second reader: BSE copy + NSE copy agree; Moneycontrol's depreciation 269.50 and PBT 621.90 lines match the filing (its rows carry no finance-cost/other-income split).",
+   "wrong_value_class": "BSE-PDF text sweep (backfill_revop_gaps.metrics_at): a P&L row it could not find was read as 0 / a mis-aligned row; not a scale issue (scale_fix n/a)",
+   "found": "main-board op==EBIT audit 2026-09-28 (runbook §209)"
+  },
+  {
+   "sym": "INDUSTOWER",
+   "qe": "20190331",
+   "basis": "op_con",
+   "was": 859.4,
+   "fixed": 755.3,
+   "why": "§209 INDUSTOWER 20190331: NSE XBRL INDAS_43627_99102_25042019021426_WEB_xml (Consolidated, Yearly, period 2019-01-01..2019-03-31, presented in Millions). Identity: the file's own NSE symbol INFRATEL; the column reproduces the stored PAT 607.60 and revenue 1675.80. Lines (crore): revenue 1675.80, other income 18.60, finance costs -81.70, depreciation 254.70, PBET 600.90, PBT 600.90. op = PBET + finance costs + depreciation - other income = 755.30; EBIT = 500.60; the same column's expenses route (revenue - (expenses - finance costs - depreciation)) = 755.30. stored op 859.4 was a value that matches no line of the filing column (a mis-aligned row/column read) — written by the BSE-result-PDF revenue backfill (scripts/backfill_revop_gaps.py --n500 --all-quarters, commit 67063e8cb, 2026-07-21). second reader: NSE copy only; Moneycontrol's depreciation 254.70 and PBT 600.90 lines match the filing (its rows carry no finance-cost/other-income split).",
+   "wrong_value_class": "BSE-PDF text sweep (backfill_revop_gaps.metrics_at): a P&L row it could not find was read as 0 / a mis-aligned row; not a scale issue (scale_fix n/a)",
+   "found": "main-board op==EBIT audit 2026-09-28 (runbook §209)"
+  },
+  {
+   "sym": "INDUSTOWER",
+   "qe": "20190331",
+   "basis": "ebit_con",
+   "was": 859.4,
+   "fixed": 500.6,
+   "why": "§209 INDUSTOWER 20190331: NSE XBRL INDAS_43627_99102_25042019021426_WEB_xml (Consolidated, Yearly, period 2019-01-01..2019-03-31, presented in Millions). Identity: the file's own NSE symbol INFRATEL; the column reproduces the stored PAT 607.60 and revenue 1675.80. Lines (crore): revenue 1675.80, other income 18.60, finance costs -81.70, depreciation 254.70, PBET 600.90, PBT 600.90. op = PBET + finance costs + depreciation - other income = 755.30; EBIT = 500.60; the same column's expenses route (revenue - (expenses - finance costs - depreciation)) = 755.30. stored ebit 859.4 was a value that matches no line of the filing column (a mis-aligned row/column read) — written by the BSE-result-PDF revenue backfill (scripts/backfill_revop_gaps.py --n500 --all-quarters, commit 67063e8cb, 2026-07-21). second reader: NSE copy only; Moneycontrol's depreciation 254.70 and PBT 600.90 lines match the filing (its rows carry no finance-cost/other-income split).",
+   "wrong_value_class": "BSE-PDF text sweep (backfill_revop_gaps.metrics_at): a P&L row it could not find was read as 0 / a mis-aligned row; not a scale issue (scale_fix n/a)",
+   "found": "main-board op==EBIT audit 2026-09-28 (runbook §209)"
+  },
+  {
+   "sym": "INDUSTOWER",
+   "qe": "20190331",
+   "basis": "op_std",
+   "was": 614.4,
+   "fixed": 754.0,
+   "why": "§209 INDUSTOWER 20190331: NSE XBRL INDAS_43626_99100_25042019021122_WEB_xml (Standalone, Yearly, period 2019-01-01..2019-03-31, presented in Millions). Identity: the file's own NSE symbol INFRATEL; the column reproduces the stored PAT 389.00 and revenue 1674.60. Lines (crore): revenue 1674.60, other income 18.60, finance costs -81.70, depreciation 253.10, PBET 601.20, PBT 601.20. op = PBET + finance costs + depreciation - other income = 754.00; EBIT = 500.90; the same column's expenses route (revenue - (expenses - finance costs - depreciation)) = 754.00. stored op 614.4 was a value that matches no line of the filing column (a mis-aligned row/column read) — written by the BSE-result-PDF revenue backfill (scripts/backfill_revop_gaps.py --n500 --all-quarters, commit 67063e8cb, 2026-07-21). second reader: BSE copy + NSE copy agree; Moneycontrol's depreciation 253.10 and PBT 601.20 lines match the filing (its rows carry no finance-cost/other-income split).",
+   "wrong_value_class": "BSE-PDF text sweep (backfill_revop_gaps.metrics_at): a P&L row it could not find was read as 0 / a mis-aligned row; not a scale issue (scale_fix n/a)",
+   "found": "main-board op==EBIT audit 2026-09-28 (runbook §209)"
+  },
+  {
+   "sym": "INDUSTOWER",
+   "qe": "20190331",
+   "basis": "ebit_std",
+   "was": 614.4,
+   "fixed": 500.9,
+   "why": "§209 INDUSTOWER 20190331: NSE XBRL INDAS_43626_99100_25042019021122_WEB_xml (Standalone, Yearly, period 2019-01-01..2019-03-31, presented in Millions). Identity: the file's own NSE symbol INFRATEL; the column reproduces the stored PAT 389.00 and revenue 1674.60. Lines (crore): revenue 1674.60, other income 18.60, finance costs -81.70, depreciation 253.10, PBET 601.20, PBT 601.20. op = PBET + finance costs + depreciation - other income = 754.00; EBIT = 500.90; the same column's expenses route (revenue - (expenses - finance costs - depreciation)) = 754.00. stored ebit 614.4 was a value that matches no line of the filing column (a mis-aligned row/column read) — written by the BSE-result-PDF revenue backfill (scripts/backfill_revop_gaps.py --n500 --all-quarters, commit 67063e8cb, 2026-07-21). second reader: BSE copy + NSE copy agree; Moneycontrol's depreciation 253.10 and PBT 601.20 lines match the filing (its rows carry no finance-cost/other-income split).",
+   "wrong_value_class": "BSE-PDF text sweep (backfill_revop_gaps.metrics_at): a P&L row it could not find was read as 0 / a mis-aligned row; not a scale issue (scale_fix n/a)",
+   "found": "main-board op==EBIT audit 2026-09-28 (runbook §209)"
+  },
+  {
+   "sym": "INDUSTOWER",
+   "qe": "20190630",
+   "basis": "std",
+   "was": 1.72,
+   "fixed": 1724.3,
+   "why": "§209 INDUSTOWER 20190630: NSE XBRL INDAS_46220_125010_25072019044915_WEB_xml (Standalone, First quarter, period 2019-04-01..2019-06-30, presented in Millions). Identity: the file's own NSE symbol INFRATEL; the column reproduces the stored PAT 448.10. Lines (crore): revenue 1724.30, other income 52.80, finance costs -34.60, depreciation 311.60, PBET 698.80, PBT 698.80. op = PBET + finance costs + depreciation - other income = 923.00; EBIT = 611.40; the same column's expenses route (revenue - (expenses - finance costs - depreciation)) = 923.00. stored revenue 1.72 is not the filed revenue from operations 1724.30 (written in the same row by the BSE-result-PDF revenue backfill (scripts/backfill_revop_gaps.py --n500 --all-quarters, commit 67063e8cb, 2026-07-21)). second reader: BSE copy + NSE copy agree; Moneycontrol's depreciation 311.60 and PBT 698.80 lines match the filing (its rows carry no finance-cost/other-income split).",
+   "wrong_value_class": "BSE-PDF text sweep (backfill_revop_gaps.metrics_at): a P&L row it could not find was read as 0 / a mis-aligned row; not a scale issue (scale_fix n/a)",
+   "found": "main-board op==EBIT audit 2026-09-28 (runbook §209)"
+  },
+  {
+   "sym": "INDUSTOWER",
+   "qe": "20190630",
+   "basis": "op_std",
+   "was": 0.7,
+   "fixed": 923.0,
+   "why": "§209 INDUSTOWER 20190630: NSE XBRL INDAS_46220_125010_25072019044915_WEB_xml (Standalone, First quarter, period 2019-04-01..2019-06-30, presented in Millions). Identity: the file's own NSE symbol INFRATEL; the column reproduces the stored PAT 448.10. Lines (crore): revenue 1724.30, other income 52.80, finance costs -34.60, depreciation 311.60, PBET 698.80, PBT 698.80. op = PBET + finance costs + depreciation - other income = 923.00; EBIT = 611.40; the same column's expenses route (revenue - (expenses - finance costs - depreciation)) = 923.00. stored op 0.7 was a value that matches no line of the filing column (a mis-aligned row/column read) — written by the BSE-result-PDF revenue backfill (scripts/backfill_revop_gaps.py --n500 --all-quarters, commit 67063e8cb, 2026-07-21). second reader: BSE copy + NSE copy agree; Moneycontrol's depreciation 311.60 and PBT 698.80 lines match the filing (its rows carry no finance-cost/other-income split).",
+   "wrong_value_class": "BSE-PDF text sweep (backfill_revop_gaps.metrics_at): a P&L row it could not find was read as 0 / a mis-aligned row; not a scale issue (scale_fix n/a)",
+   "found": "main-board op==EBIT audit 2026-09-28 (runbook §209)"
+  },
+  {
+   "sym": "INDUSTOWER",
+   "qe": "20190630",
+   "basis": "ebit_std",
+   "was": 0.7,
+   "fixed": 611.4,
+   "why": "§209 INDUSTOWER 20190630: NSE XBRL INDAS_46220_125010_25072019044915_WEB_xml (Standalone, First quarter, period 2019-04-01..2019-06-30, presented in Millions). Identity: the file's own NSE symbol INFRATEL; the column reproduces the stored PAT 448.10. Lines (crore): revenue 1724.30, other income 52.80, finance costs -34.60, depreciation 311.60, PBET 698.80, PBT 698.80. op = PBET + finance costs + depreciation - other income = 923.00; EBIT = 611.40; the same column's expenses route (revenue - (expenses - finance costs - depreciation)) = 923.00. stored ebit 0.7 was a value that matches no line of the filing column (a mis-aligned row/column read) — written by the BSE-result-PDF revenue backfill (scripts/backfill_revop_gaps.py --n500 --all-quarters, commit 67063e8cb, 2026-07-21). second reader: BSE copy + NSE copy agree; Moneycontrol's depreciation 311.60 and PBT 698.80 lines match the filing (its rows carry no finance-cost/other-income split).",
+   "wrong_value_class": "BSE-PDF text sweep (backfill_revop_gaps.metrics_at): a P&L row it could not find was read as 0 / a mis-aligned row; not a scale issue (scale_fix n/a)",
+   "found": "main-board op==EBIT audit 2026-09-28 (runbook §209)"
+  },
+  {
+   "sym": "INDUSTOWER",
+   "qe": "20191231",
+   "basis": "op_con",
+   "was": 1009.8,
+   "fixed": 866.2,
+   "why": "§209 INDUSTOWER 20191231: NSE XBRL INDAS_52123_213523_31012020054900_WEB_xml (Consolidated, Third quarter, period 2019-10-01..2019-12-31, presented in Millions). Identity: the file's own NSE symbol INFRATEL; the column reproduces the stored PAT 798.70 and revenue 1667.20. Lines (crore): revenue 1667.20, other income 17.30, finance costs 20.30, depreciation 309.70, PBET 553.50, PBT 553.50. op = PBET + finance costs + depreciation - other income = 866.20; EBIT = 556.50; the same column's expenses route (revenue - (expenses - finance costs - depreciation)) = 866.20. stored op 1009.8 was a value that matches no line of the filing column (a mis-aligned row/column read) — written by the BSE-result-PDF revenue backfill (scripts/backfill_revop_gaps.py --n500 --all-quarters, commit 67063e8cb, 2026-07-21). second reader: BSE copy + NSE copy agree; Moneycontrol's depreciation 309.70 and PBT 553.50 lines match the filing (its rows carry no finance-cost/other-income split).",
+   "wrong_value_class": "BSE-PDF text sweep (backfill_revop_gaps.metrics_at): a P&L row it could not find was read as 0 / a mis-aligned row; not a scale issue (scale_fix n/a)",
+   "found": "main-board op==EBIT audit 2026-09-28 (runbook §209)"
+  },
+  {
+   "sym": "INDUSTOWER",
+   "qe": "20191231",
+   "basis": "ebit_con",
+   "was": 1009.8,
+   "fixed": 556.5,
+   "why": "§209 INDUSTOWER 20191231: NSE XBRL INDAS_52123_213523_31012020054900_WEB_xml (Consolidated, Third quarter, period 2019-10-01..2019-12-31, presented in Millions). Identity: the file's own NSE symbol INFRATEL; the column reproduces the stored PAT 798.70 and revenue 1667.20. Lines (crore): revenue 1667.20, other income 17.30, finance costs 20.30, depreciation 309.70, PBET 553.50, PBT 553.50. op = PBET + finance costs + depreciation - other income = 866.20; EBIT = 556.50; the same column's expenses route (revenue - (expenses - finance costs - depreciation)) = 866.20. stored ebit 1009.8 was a value that matches no line of the filing column (a mis-aligned row/column read) — written by the BSE-result-PDF revenue backfill (scripts/backfill_revop_gaps.py --n500 --all-quarters, commit 67063e8cb, 2026-07-21). second reader: BSE copy + NSE copy agree; Moneycontrol's depreciation 309.70 and PBT 553.50 lines match the filing (its rows carry no finance-cost/other-income split).",
+   "wrong_value_class": "BSE-PDF text sweep (backfill_revop_gaps.metrics_at): a P&L row it could not find was read as 0 / a mis-aligned row; not a scale issue (scale_fix n/a)",
+   "found": "main-board op==EBIT audit 2026-09-28 (runbook §209)"
+  },
+  {
+   "sym": "INDUSTOWER",
+   "qe": "20191231",
+   "basis": "op_std",
+   "was": 554.2,
+   "fixed": 866.3,
+   "why": "§209 INDUSTOWER 20191231: NSE XBRL INDAS_52126_213533_31012020055112_WEB_xml (Standalone, Third quarter, period 2019-10-01..2019-12-31, presented in Millions). Identity: the file's own NSE symbol INFRATEL; the column reproduces the stored PAT 414.10 and revenue 1665.90. Lines (crore): revenue 1665.90, other income 17.30, finance costs 19.90, depreciation 309.50, PBET 554.20, PBT 554.20. op = PBET + finance costs + depreciation - other income = 866.30; EBIT = 556.80; the same column's expenses route (revenue - (expenses - finance costs - depreciation)) = 866.30. stored op 554.2 was the column's profit before exceptional items and tax (finance-cost, other-income and depreciation rows read as 0 by backfill_revop_gaps.metrics_at `or 0.0`) — written by the BSE-result-PDF revenue backfill (scripts/backfill_revop_gaps.py --n500 --all-quarters, commit 67063e8cb, 2026-07-21). second reader: BSE copy + NSE copy agree; Moneycontrol's depreciation 309.50 and PBT 554.20 lines match the filing (its rows carry no finance-cost/other-income split).",
+   "wrong_value_class": "BSE-PDF text sweep (backfill_revop_gaps.metrics_at): a P&L row it could not find was read as 0 / a mis-aligned row; not a scale issue (scale_fix n/a)",
+   "found": "main-board op==EBIT audit 2026-09-28 (runbook §209)"
+  },
+  {
+   "sym": "INDUSTOWER",
+   "qe": "20191231",
+   "basis": "ebit_std",
+   "was": 554.2,
+   "fixed": 556.8,
+   "why": "§209 INDUSTOWER 20191231: NSE XBRL INDAS_52126_213533_31012020055112_WEB_xml (Standalone, Third quarter, period 2019-10-01..2019-12-31, presented in Millions). Identity: the file's own NSE symbol INFRATEL; the column reproduces the stored PAT 414.10 and revenue 1665.90. Lines (crore): revenue 1665.90, other income 17.30, finance costs 19.90, depreciation 309.50, PBET 554.20, PBT 554.20. op = PBET + finance costs + depreciation - other income = 866.30; EBIT = 556.80; the same column's expenses route (revenue - (expenses - finance costs - depreciation)) = 866.30. stored ebit 554.2 was the column's profit before exceptional items and tax (finance-cost, other-income and depreciation rows read as 0 by backfill_revop_gaps.metrics_at `or 0.0`) — written by the BSE-result-PDF revenue backfill (scripts/backfill_revop_gaps.py --n500 --all-quarters, commit 67063e8cb, 2026-07-21). second reader: BSE copy + NSE copy agree; Moneycontrol's depreciation 309.50 and PBT 554.20 lines match the filing (its rows carry no finance-cost/other-income split).",
+   "wrong_value_class": "BSE-PDF text sweep (backfill_revop_gaps.metrics_at): a P&L row it could not find was read as 0 / a mis-aligned row; not a scale issue (scale_fix n/a)",
+   "found": "main-board op==EBIT audit 2026-09-28 (runbook §209)"
+  },
+  {
+   "sym": "INDUSTOWER",
+   "qe": "20200331",
+   "basis": "op_con",
+   "was": 847.9,
+   "fixed": 863.4,
+   "why": "§209 INDUSTOWER 20200331: NSE XBRL INDAS_54943_243652_24042020033914_WEB_xml (Consolidated, Yearly, period 2020-01-01..2020-03-31, presented in Millions). Identity: the file's own NSE symbol INFRATEL; the column reproduces the stored PAT 649.50 and revenue 1682.10. Lines (crore): revenue 1682.10, other income 38.60, finance costs 15.70, depreciation 346.30, PBET 540.00, PBT 540.00. op = PBET + finance costs + depreciation - other income = 863.40; EBIT = 517.10; the same column's expenses route (revenue - (expenses - finance costs - depreciation)) = 863.40. stored op 847.9 was a value that matches no line of the filing column (a mis-aligned row/column read) — written by the BSE-result-PDF revenue backfill (scripts/backfill_revop_gaps.py --n500 --all-quarters, commit 67063e8cb, 2026-07-21). second reader: BSE copy + NSE copy agree; Moneycontrol's depreciation 346.30 and PBT 540.00 lines match the filing (its rows carry no finance-cost/other-income split).",
+   "wrong_value_class": "BSE-PDF text sweep (backfill_revop_gaps.metrics_at): a P&L row it could not find was read as 0 / a mis-aligned row; not a scale issue (scale_fix n/a)",
+   "found": "main-board op==EBIT audit 2026-09-28 (runbook §209)"
+  },
+  {
+   "sym": "INDUSTOWER",
+   "qe": "20200331",
+   "basis": "ebit_con",
+   "was": 847.9,
+   "fixed": 517.1,
+   "why": "§209 INDUSTOWER 20200331: NSE XBRL INDAS_54943_243652_24042020033914_WEB_xml (Consolidated, Yearly, period 2020-01-01..2020-03-31, presented in Millions). Identity: the file's own NSE symbol INFRATEL; the column reproduces the stored PAT 649.50 and revenue 1682.10. Lines (crore): revenue 1682.10, other income 38.60, finance costs 15.70, depreciation 346.30, PBET 540.00, PBT 540.00. op = PBET + finance costs + depreciation - other income = 863.40; EBIT = 517.10; the same column's expenses route (revenue - (expenses - finance costs - depreciation)) = 863.40. stored ebit 847.9 was a value that matches no line of the filing column (a mis-aligned row/column read) — written by the BSE-result-PDF revenue backfill (scripts/backfill_revop_gaps.py --n500 --all-quarters, commit 67063e8cb, 2026-07-21). second reader: BSE copy + NSE copy agree; Moneycontrol's depreciation 346.30 and PBT 540.00 lines match the filing (its rows carry no finance-cost/other-income split).",
+   "wrong_value_class": "BSE-PDF text sweep (backfill_revop_gaps.metrics_at): a P&L row it could not find was read as 0 / a mis-aligned row; not a scale issue (scale_fix n/a)",
+   "found": "main-board op==EBIT audit 2026-09-28 (runbook §209)"
+  },
+  {
+   "sym": "INDUSTOWER",
+   "qe": "20200331",
+   "basis": "op_std",
+   "was": 541.5,
+   "fixed": 862.8,
+   "why": "§209 INDUSTOWER 20200331: NSE XBRL INDAS_54944_243655_24042020034027_WEB_xml (Standalone, Yearly, period 2020-01-01..2020-03-31, presented in Millions). Identity: the file's own NSE symbol INFRATEL; the column reproduces the stored PAT 406.40 and revenue 1681.10. Lines (crore): revenue 1681.10, other income 38.60, finance costs 15.20, depreciation 344.70, PBET 541.50, PBT 541.50. op = PBET + finance costs + depreciation - other income = 862.80; EBIT = 518.10; the same column's expenses route (revenue - (expenses - finance costs - depreciation)) = 862.80. stored op 541.5 was the column's profit before exceptional items and tax (finance-cost, other-income and depreciation rows read as 0 by backfill_revop_gaps.metrics_at `or 0.0`) — written by the BSE-result-PDF revenue backfill (scripts/backfill_revop_gaps.py --n500 --all-quarters, commit 67063e8cb, 2026-07-21). second reader: BSE copy + NSE copy agree; Moneycontrol's depreciation 344.70 and PBT 541.50 lines match the filing (its rows carry no finance-cost/other-income split).",
+   "wrong_value_class": "BSE-PDF text sweep (backfill_revop_gaps.metrics_at): a P&L row it could not find was read as 0 / a mis-aligned row; not a scale issue (scale_fix n/a)",
+   "found": "main-board op==EBIT audit 2026-09-28 (runbook §209)"
+  },
+  {
+   "sym": "INDUSTOWER",
+   "qe": "20200331",
+   "basis": "ebit_std",
+   "was": 541.5,
+   "fixed": 518.1,
+   "why": "§209 INDUSTOWER 20200331: NSE XBRL INDAS_54944_243655_24042020034027_WEB_xml (Standalone, Yearly, period 2020-01-01..2020-03-31, presented in Millions). Identity: the file's own NSE symbol INFRATEL; the column reproduces the stored PAT 406.40 and revenue 1681.10. Lines (crore): revenue 1681.10, other income 38.60, finance costs 15.20, depreciation 344.70, PBET 541.50, PBT 541.50. op = PBET + finance costs + depreciation - other income = 862.80; EBIT = 518.10; the same column's expenses route (revenue - (expenses - finance costs - depreciation)) = 862.80. stored ebit 541.5 was the column's profit before exceptional items and tax (finance-cost, other-income and depreciation rows read as 0 by backfill_revop_gaps.metrics_at `or 0.0`) — written by the BSE-result-PDF revenue backfill (scripts/backfill_revop_gaps.py --n500 --all-quarters, commit 67063e8cb, 2026-07-21). second reader: BSE copy + NSE copy agree; Moneycontrol's depreciation 344.70 and PBT 541.50 lines match the filing (its rows carry no finance-cost/other-income split).",
+   "wrong_value_class": "BSE-PDF text sweep (backfill_revop_gaps.metrics_at): a P&L row it could not find was read as 0 / a mis-aligned row; not a scale issue (scale_fix n/a)",
+   "found": "main-board op==EBIT audit 2026-09-28 (runbook §209)"
+  },
+  {
+   "sym": "INDUSTOWER",
+   "qe": "20200630",
+   "basis": "op_con",
+   "was": 905.2,
+   "fixed": 832.6,
+   "why": "§209 INDUSTOWER 20200630: NSE XBRL INDAS_58365_297918_28072020040600_WEB_xml (Consolidated, First quarter, period 2020-04-01..2020-06-30, presented in Millions). Identity: the file's own NSE symbol INFRATEL; the column reproduces the stored PAT 703.60 and revenue 1635.40. Lines (crore): revenue 1635.40, other income 16.50, finance costs 13.70, depreciation 298.40, PBET 537.00, PBT 537.00. op = PBET + finance costs + depreciation - other income = 832.60; EBIT = 534.20; the same column's expenses route (revenue - (expenses - finance costs - depreciation)) = 832.60. stored op 905.2 was a value that matches no line of the filing column (a mis-aligned row/column read) — written by the BSE-result-PDF revenue backfill (scripts/backfill_revop_gaps.py --n500 --all-quarters, commit 67063e8cb, 2026-07-21). second reader: BSE copy + NSE copy agree; Moneycontrol's depreciation 298.40 and PBT 537.00 lines match the filing (its rows carry no finance-cost/other-income split).",
+   "wrong_value_class": "BSE-PDF text sweep (backfill_revop_gaps.metrics_at): a P&L row it could not find was read as 0 / a mis-aligned row; not a scale issue (scale_fix n/a)",
+   "found": "main-board op==EBIT audit 2026-09-28 (runbook §209)"
+  },
+  {
+   "sym": "INDUSTOWER",
+   "qe": "20200630",
+   "basis": "ebit_con",
+   "was": 905.2,
+   "fixed": 534.2,
+   "why": "§209 INDUSTOWER 20200630: NSE XBRL INDAS_58365_297918_28072020040600_WEB_xml (Consolidated, First quarter, period 2020-04-01..2020-06-30, presented in Millions). Identity: the file's own NSE symbol INFRATEL; the column reproduces the stored PAT 703.60 and revenue 1635.40. Lines (crore): revenue 1635.40, other income 16.50, finance costs 13.70, depreciation 298.40, PBET 537.00, PBT 537.00. op = PBET + finance costs + depreciation - other income = 832.60; EBIT = 534.20; the same column's expenses route (revenue - (expenses - finance costs - depreciation)) = 832.60. stored ebit 905.2 was a value that matches no line of the filing column (a mis-aligned row/column read) — written by the BSE-result-PDF revenue backfill (scripts/backfill_revop_gaps.py --n500 --all-quarters, commit 67063e8cb, 2026-07-21). second reader: BSE copy + NSE copy agree; Moneycontrol's depreciation 298.40 and PBT 537.00 lines match the filing (its rows carry no finance-cost/other-income split).",
+   "wrong_value_class": "BSE-PDF text sweep (backfill_revop_gaps.metrics_at): a P&L row it could not find was read as 0 / a mis-aligned row; not a scale issue (scale_fix n/a)",
+   "found": "main-board op==EBIT audit 2026-09-28 (runbook §209)"
+  },
+  {
+   "sym": "INDUSTOWER",
+   "qe": "20220630",
+   "basis": "std",
+   "was": 1667.0,
+   "fixed": 6897.3,
+   "why": "§209 INDUSTOWER 20220630: BSE XBRL Main_Ind_As_534816_382022191948.xml (BSE Filing_Date_Time 2022-08-04) (Standalone, First quarter, period 2022-04-01..2022-06-30, presented in Millions). Identity: ISIN INE121J01017; the column reproduces the stored PAT 478.90. Lines (crore): revenue 6897.30, other income 92.50, finance costs 372.00, depreciation 1338.70, PBET 644.30, PBT 644.30. op = PBET + finance costs + depreciation - other income = 2262.50; EBIT = 923.80; the same column's expenses route (revenue - (expenses - finance costs - depreciation)) = 2262.50. stored revenue 1667.0 is not the filed revenue from operations 6897.30 (written in the same row by the BSE-result-PDF revenue backfill ever-member sweep (scripts/backfill_revop_gaps.py --symfile, commit 4d63e91d8, 2026-07-22)). second reader: BSE copy only; Moneycontrol's depreciation 1338.70 and PBT 644.30 lines match the filing (its rows carry no finance-cost/other-income split).",
+   "wrong_value_class": "BSE-PDF text sweep (backfill_revop_gaps.metrics_at): a P&L row it could not find was read as 0 / a mis-aligned row; not a scale issue (scale_fix n/a)",
+   "found": "main-board op==EBIT audit 2026-09-28 (runbook §209)"
+  },
+  {
+   "sym": "INDUSTOWER",
+   "qe": "20220630",
+   "basis": "op_std",
+   "was": 617.7,
+   "fixed": 2262.5,
+   "why": "§209 INDUSTOWER 20220630: BSE XBRL Main_Ind_As_534816_382022191948.xml (BSE Filing_Date_Time 2022-08-04) (Standalone, First quarter, period 2022-04-01..2022-06-30, presented in Millions). Identity: ISIN INE121J01017; the column reproduces the stored PAT 478.90. Lines (crore): revenue 6897.30, other income 92.50, finance costs 372.00, depreciation 1338.70, PBET 644.30, PBT 644.30. op = PBET + finance costs + depreciation - other income = 2262.50; EBIT = 923.80; the same column's expenses route (revenue - (expenses - finance costs - depreciation)) = 2262.50. stored op 617.7 was a value that matches no line of the filing column (a mis-aligned row/column read) — written by the BSE-result-PDF revenue backfill ever-member sweep (scripts/backfill_revop_gaps.py --symfile, commit 4d63e91d8, 2026-07-22). second reader: BSE copy only; Moneycontrol's depreciation 1338.70 and PBT 644.30 lines match the filing (its rows carry no finance-cost/other-income split).",
+   "wrong_value_class": "BSE-PDF text sweep (backfill_revop_gaps.metrics_at): a P&L row it could not find was read as 0 / a mis-aligned row; not a scale issue (scale_fix n/a)",
+   "found": "main-board op==EBIT audit 2026-09-28 (runbook §209)"
+  },
+  {
+   "sym": "INDUSTOWER",
+   "qe": "20220630",
+   "basis": "ebit_std",
+   "was": 617.7,
+   "fixed": 923.8,
+   "why": "§209 INDUSTOWER 20220630: BSE XBRL Main_Ind_As_534816_382022191948.xml (BSE Filing_Date_Time 2022-08-04) (Standalone, First quarter, period 2022-04-01..2022-06-30, presented in Millions). Identity: ISIN INE121J01017; the column reproduces the stored PAT 478.90. Lines (crore): revenue 6897.30, other income 92.50, finance costs 372.00, depreciation 1338.70, PBET 644.30, PBT 644.30. op = PBET + finance costs + depreciation - other income = 2262.50; EBIT = 923.80; the same column's expenses route (revenue - (expenses - finance costs - depreciation)) = 2262.50. stored ebit 617.7 was a value that matches no line of the filing column (a mis-aligned row/column read) — written by the BSE-result-PDF revenue backfill ever-member sweep (scripts/backfill_revop_gaps.py --symfile, commit 4d63e91d8, 2026-07-22). second reader: BSE copy only; Moneycontrol's depreciation 1338.70 and PBT 644.30 lines match the filing (its rows carry no finance-cost/other-income split).",
+   "wrong_value_class": "BSE-PDF text sweep (backfill_revop_gaps.metrics_at): a P&L row it could not find was read as 0 / a mis-aligned row; not a scale issue (scale_fix n/a)",
+   "found": "main-board op==EBIT audit 2026-09-28 (runbook §209)"
+  },
+  {
+   "sym": "KPITTECH",
+   "qe": "20220630",
+   "basis": "op_std",
+   "was": 297.26,
+   "fixed": 108.89,
+   "why": "§209 KPITTECH 20220630: BSE XBRL Main_Ind_As_542651_2672022163330.xml (BSE Filing_Date_Time 2022-07-27) (Standalone, First quarter, period 2022-04-01..2022-06-30, presented in Millions). Identity: ISIN INE04I401011; the column reproduces the stored PAT 73.68 and revenue 354.79. Lines (crore): revenue 354.79, other income 11.36, finance costs 3.96, depreciation 21.23, PBET 95.06, PBT 95.06. op = PBET + finance costs + depreciation - other income = 108.89; EBIT = 87.66; the same column's expenses route (revenue - (expenses - finance costs - depreciation)) = 108.88. stored op 297.26 was a value that matches no line of the filing column (a mis-aligned row/column read) — written by the FILL-2020 Jun-2022 rescue sweep of scripts/backfill_revop_gaps.py --qe (commit d7c13a792, 2026-08-05). second reader: Moneycontrol line items (mc:KPITT54265:quarterly) give op 108.90 / EBIT 87.66.",
+   "wrong_value_class": "BSE-PDF text sweep (backfill_revop_gaps.metrics_at): a P&L row it could not find was read as 0 / a mis-aligned row; not a scale issue (scale_fix n/a)",
+   "found": "main-board op==EBIT audit 2026-09-28 (runbook §209)"
+  },
+  {
+   "sym": "KPITTECH",
+   "qe": "20220630",
+   "basis": "ebit_std",
+   "was": 297.26,
+   "fixed": 87.66,
+   "why": "§209 KPITTECH 20220630: BSE XBRL Main_Ind_As_542651_2672022163330.xml (BSE Filing_Date_Time 2022-07-27) (Standalone, First quarter, period 2022-04-01..2022-06-30, presented in Millions). Identity: ISIN INE04I401011; the column reproduces the stored PAT 73.68 and revenue 354.79. Lines (crore): revenue 354.79, other income 11.36, finance costs 3.96, depreciation 21.23, PBET 95.06, PBT 95.06. op = PBET + finance costs + depreciation - other income = 108.89; EBIT = 87.66; the same column's expenses route (revenue - (expenses - finance costs - depreciation)) = 108.88. stored ebit 297.26 was a value that matches no line of the filing column (a mis-aligned row/column read) — written by the FILL-2020 Jun-2022 rescue sweep of scripts/backfill_revop_gaps.py --qe (commit d7c13a792, 2026-08-05). second reader: Moneycontrol line items (mc:KPITT54265:quarterly) give op 108.90 / EBIT 87.66.",
+   "wrong_value_class": "BSE-PDF text sweep (backfill_revop_gaps.metrics_at): a P&L row it could not find was read as 0 / a mis-aligned row; not a scale issue (scale_fix n/a)",
+   "found": "main-board op==EBIT audit 2026-09-28 (runbook §209)"
+  },
+  {
+   "sym": "KSL",
+   "qe": "20260630",
+   "basis": "op_con",
+   "was": 77.83,
+   "fixed": 91.36,
+   "why": "§209 KSL 20260630: BSE XBRL IFOtherthan_500235_7820261804.xml (BSE Filing_Date_Time 2026-08-07) (Consolidated, First quarter, period 2026-04-01..2026-06-30, no rounding level stated). Identity: ISIN INE907A01026; the column reproduces the stored PAT 68.25 and revenue 464.58. Lines (crore): revenue 464.58, other income 15.80, finance costs 1.80, depreciation 13.53, PBET 91.83, PBT 91.83. op = PBET + finance costs + depreciation - other income = 91.36; EBIT = 77.83; the same column's expenses route (revenue - (expenses - finance costs - depreciation)) = 91.36. stored op 77.83 was the column's EBIT (right) — only depreciation was read as 0, so op == EBIT — written by the daily fundamentals refresh (update_fundamentals.py -> build_revop.xbrl_revop, commit 80807c8eb, 2026-08-07) reading the company's non-Ind-AS \"IFOtherthan\" copy of the filing before the §205 parser fix. second reader: the company filed the quarter twice on BSE (Ind-AS Integrated_Finance and non-Ind-AS IFOtherthan) — both give the same lines; the nightly's detail read of the NSE copy (xbrl_extra) gives EBIT 77.84 / depreciation 13.53.",
+   "wrong_value_class": "parser tag-name gap: an Ind-AS company's non-Ind-AS (\"IFOtherthan\") filing copy, depreciation read as 0 before §205",
+   "found": "main-board op==EBIT audit 2026-09-28 (runbook §209)"
+  },
+  {
+   "sym": "KSL",
+   "qe": "20260630",
+   "basis": "op_std",
+   "was": 77.83,
+   "fixed": 91.36,
+   "why": "§209 KSL 20260630: BSE XBRL IFOtherthan_500235_782026175919.xml (BSE Filing_Date_Time 2026-08-07) (Standalone, First quarter, period 2026-04-01..2026-06-30, no rounding level stated). Identity: ISIN INE907A01026; the column reproduces the stored PAT 67.61 and revenue 464.58. Lines (crore): revenue 464.58, other income 14.94, finance costs 1.80, depreciation 13.53, PBET 90.98, PBT 90.98. op = PBET + finance costs + depreciation - other income = 91.36; EBIT = 77.83; the same column's expenses route (revenue - (expenses - finance costs - depreciation)) = 91.36. stored op 77.83 was the column's EBIT (right) — only depreciation was read as 0, so op == EBIT — written by the daily fundamentals refresh (update_fundamentals.py -> build_revop.xbrl_revop, commit 80807c8eb, 2026-08-07) reading the company's non-Ind-AS \"IFOtherthan\" copy of the filing before the §205 parser fix. second reader: the company filed the quarter twice on BSE (Ind-AS Integrated_Finance and non-Ind-AS IFOtherthan) — both give the same lines; the nightly's detail read of the NSE copy (xbrl_extra) gives EBIT 77.84 / depreciation 13.53.",
+   "wrong_value_class": "parser tag-name gap: an Ind-AS company's non-Ind-AS (\"IFOtherthan\") filing copy, depreciation read as 0 before §205",
+   "found": "main-board op==EBIT audit 2026-09-28 (runbook §209)"
+  },
+  {
+   "sym": "LINDEINDIA",
+   "qe": "20221231",
+   "basis": "op_std",
+   "was": 119.74,
+   "fixed": 167.84,
+   "why": "§209 LINDEINDIA 20221231: BSE XBRL Main_Ind_As_523457_1422023153315.xml (BSE Filing_Date_Time 2023-02-14) (Standalone, Yearly, period 2022-10-01..2022-12-31, presented in Millions). Identity: ISIN INE473A01011; the column reproduces the stored PAT (NO: stored 112.87 vs filed 113.19 — PAT store not touched) and revenue 697.00. Lines (crore): revenue 697.00, other income 27.70, finance costs 1.11, depreciation 48.10, PBET 146.32, PBT 146.32. op = PBET + finance costs + depreciation - other income = 167.84; EBIT = 119.74; the same column's expenses route (revenue - (expenses - finance costs - depreciation)) = 167.84. stored op 119.74 was the column's EBIT (right) — only depreciation was read as 0, so op == EBIT — written by the local-OCR residual pass of scripts/backfill_revop_gaps.py (commit c4af852fa, 2026-07-27 — the §189 KENNAMET commit). second reader: Moneycontrol line items (mc:BOC:quarterly) give op 167.84 / EBIT 119.73.",
+   "wrong_value_class": "BSE-PDF text sweep (backfill_revop_gaps.metrics_at): a P&L row it could not find was read as 0 / a mis-aligned row; not a scale issue (scale_fix n/a)",
+   "found": "main-board op==EBIT audit 2026-09-28 (runbook §209)"
+  },
+  {
+   "sym": "MAHSCOOTER",
+   "qe": "20210331",
+   "basis": "std",
+   "was": 7.46,
+   "fixed": 7.53,
+   "why": "§209 MAHSCOOTER 20210331: BSE XBRL Main_Ind_As_500266_2942021124432.xml (BSE Filing_Date_Time 2021-04-29) (Standalone, Yearly, period 2021-01-01..2021-03-31, presented in Lakhs). Identity: ISIN INE288A01013; the column reproduces the stored PAT 2.81. Lines (crore): revenue 7.53, other income 3.72, finance costs 0.00, depreciation 0.49, PBET 2.84, PBT 2.84. op = PBET + finance costs + depreciation - other income = -0.39; EBIT = -0.88; the same column's expenses route (revenue - (expenses - finance costs - depreciation)) = -0.39. stored revenue 7.46 is not the filed revenue from operations 7.53 (written in the same row by the BSE-result-PDF revenue backfill ever-member sweep (scripts/backfill_revop_gaps.py --symfile, commit 4d63e91d8, 2026-07-22)). second reader: Moneycontrol line items (mc:MS01:quarterly) give op -0.39 / EBIT -0.88.",
+   "wrong_value_class": "BSE-PDF text sweep (backfill_revop_gaps.metrics_at): a P&L row it could not find was read as 0 / a mis-aligned row; not a scale issue (scale_fix n/a)",
+   "found": "main-board op==EBIT audit 2026-09-28 (runbook §209)"
+  },
+  {
+   "sym": "MAHSCOOTER",
+   "qe": "20210331",
+   "basis": "op_std",
+   "was": 2.84,
+   "fixed": -0.39,
+   "why": "§209 MAHSCOOTER 20210331: BSE XBRL Main_Ind_As_500266_2942021124432.xml (BSE Filing_Date_Time 2021-04-29) (Standalone, Yearly, period 2021-01-01..2021-03-31, presented in Lakhs). Identity: ISIN INE288A01013; the column reproduces the stored PAT 2.81. Lines (crore): revenue 7.53, other income 3.72, finance costs 0.00, depreciation 0.49, PBET 2.84, PBT 2.84. op = PBET + finance costs + depreciation - other income = -0.39; EBIT = -0.88; the same column's expenses route (revenue - (expenses - finance costs - depreciation)) = -0.39. stored op 2.84 was the column's profit before exceptional items and tax (finance-cost, other-income and depreciation rows read as 0 by backfill_revop_gaps.metrics_at `or 0.0`) — written by the BSE-result-PDF revenue backfill ever-member sweep (scripts/backfill_revop_gaps.py --symfile, commit 4d63e91d8, 2026-07-22). second reader: Moneycontrol line items (mc:MS01:quarterly) give op -0.39 / EBIT -0.88.",
+   "wrong_value_class": "BSE-PDF text sweep (backfill_revop_gaps.metrics_at): a P&L row it could not find was read as 0 / a mis-aligned row; not a scale issue (scale_fix n/a)",
+   "found": "main-board op==EBIT audit 2026-09-28 (runbook §209)"
+  },
+  {
+   "sym": "MAHSCOOTER",
+   "qe": "20210331",
+   "basis": "ebit_std",
+   "was": 2.84,
+   "fixed": -0.88,
+   "why": "§209 MAHSCOOTER 20210331: BSE XBRL Main_Ind_As_500266_2942021124432.xml (BSE Filing_Date_Time 2021-04-29) (Standalone, Yearly, period 2021-01-01..2021-03-31, presented in Lakhs). Identity: ISIN INE288A01013; the column reproduces the stored PAT 2.81. Lines (crore): revenue 7.53, other income 3.72, finance costs 0.00, depreciation 0.49, PBET 2.84, PBT 2.84. op = PBET + finance costs + depreciation - other income = -0.39; EBIT = -0.88; the same column's expenses route (revenue - (expenses - finance costs - depreciation)) = -0.39. stored ebit 2.84 was the column's profit before exceptional items and tax (finance-cost, other-income and depreciation rows read as 0 by backfill_revop_gaps.metrics_at `or 0.0`) — written by the BSE-result-PDF revenue backfill ever-member sweep (scripts/backfill_revop_gaps.py --symfile, commit 4d63e91d8, 2026-07-22). second reader: Moneycontrol line items (mc:MS01:quarterly) give op -0.39 / EBIT -0.88.",
+   "wrong_value_class": "BSE-PDF text sweep (backfill_revop_gaps.metrics_at): a P&L row it could not find was read as 0 / a mis-aligned row; not a scale issue (scale_fix n/a)",
+   "found": "main-board op==EBIT audit 2026-09-28 (runbook §209)"
+  },
+  {
+   "sym": "NESTLEIND",
+   "qe": "20201231",
+   "basis": "op_std",
+   "was": 681.54,
+   "fixed": 777.04,
+   "why": "§209 NESTLEIND 20201231: BSE XBRL Main_Ind_As_500790_1622021175341.xml (BSE Filing_Date_Time 2021-02-16) (Standalone, Yearly, period 2020-10-01..2020-12-31, presented in Millions). Identity: ISIN INE239A01016; the column reproduces the stored PAT 483.31 and revenue 3432.58. Lines (crore): revenue 3432.58, other income 30.60, finance costs 41.97, depreciation 95.50, PBET 670.17, PBT 670.17. op = PBET + finance costs + depreciation - other income = 777.04; EBIT = 681.54; the same column's expenses route (revenue - (expenses - finance costs - depreciation)) = 777.04. stored op 681.54 was the column's EBIT (right) — only depreciation was read as 0, so op == EBIT — written by the local-OCR residual pass of scripts/backfill_revop_gaps.py (commit c4af852fa, 2026-07-27 — the §189 KENNAMET commit). second reader: Moneycontrol line items (mc:NI:quarterly) give op 777.04 / EBIT 681.54.",
+   "wrong_value_class": "BSE-PDF text sweep (backfill_revop_gaps.metrics_at): a P&L row it could not find was read as 0 / a mis-aligned row; not a scale issue (scale_fix n/a)",
+   "found": "main-board op==EBIT audit 2026-09-28 (runbook §209)"
+  },
+  {
+   "sym": "NESTLEIND",
+   "qe": "20230331",
+   "basis": "op_std",
+   "was": 993.78,
+   "fixed": 1095.48,
+   "why": "§209 NESTLEIND 20230331: BSE XBRL Main_Ind_As_500790_2542023181342.xml (BSE Filing_Date_Time 2023-04-26) (Standalone, First quarter, period 2023-01-01..2023-03-31, presented in Millions). Identity: ISIN INE239A01016; the column reproduces the stored PAT 736.64 and revenue 4830.53. Lines (crore): revenue 4830.53, other income 33.69, finance costs 37.01, depreciation 101.70, PBET 990.46, PBT 990.46. op = PBET + finance costs + depreciation - other income = 1095.48; EBIT = 993.78; the same column's expenses route (revenue - (expenses - finance costs - depreciation)) = 1095.48. stored op 993.78 was the column's EBIT (right) — only depreciation was read as 0, so op == EBIT — written by the local-OCR residual pass of scripts/backfill_revop_gaps.py (commit c4af852fa, 2026-07-27 — the §189 KENNAMET commit). second reader: Moneycontrol line items (mc:NI:quarterly) give op 1095.48 / EBIT 993.78.",
+   "wrong_value_class": "BSE-PDF text sweep (backfill_revop_gaps.metrics_at): a P&L row it could not find was read as 0 / a mis-aligned row; not a scale issue (scale_fix n/a)",
+   "found": "main-board op==EBIT audit 2026-09-28 (runbook §209)"
+  },
+  {
+   "sym": "NESTLEIND",
+   "qe": "20230630",
+   "basis": "op_std",
+   "was": 948.16,
+   "fixed": 1055.52,
+   "why": "§209 NESTLEIND 20230630: BSE XBRL Main_Ind_As_500790_2772023184137.xml (BSE Filing_Date_Time 2023-08-14) (Standalone, Half yearly, period 2023-04-01..2023-06-30, presented in Millions). Identity: ISIN INE239A01016; the column reproduces the stored PAT 698.34 and revenue 4658.53. Lines (crore): revenue 4658.53, other income 23.95, finance costs 32.78, depreciation 107.36, PBET 939.33, PBT 939.33. op = PBET + finance costs + depreciation - other income = 1055.52; EBIT = 948.16; the same column's expenses route (revenue - (expenses - finance costs - depreciation)) = 1055.52. stored op 948.16 was the column's EBIT (right) — only depreciation was read as 0, so op == EBIT — written by the local-OCR residual pass of scripts/backfill_revop_gaps.py (commit c4af852fa, 2026-07-27 — the §189 KENNAMET commit). second reader: Moneycontrol line items (mc:NI:quarterly) give op 1055.52 / EBIT 948.16.",
+   "wrong_value_class": "BSE-PDF text sweep (backfill_revop_gaps.metrics_at): a P&L row it could not find was read as 0 / a mis-aligned row; not a scale issue (scale_fix n/a)",
+   "found": "main-board op==EBIT audit 2026-09-28 (runbook §209)"
+  },
+  {
+   "sym": "PERSISTENT",
+   "qe": "20200630",
+   "basis": "op_std",
+   "was": 158.96,
+   "fixed": 142.23,
+   "why": "§209 PERSISTENT 20200630: BSE XBRL Main_Ind_As_533179_2772020161321.xml (BSE Filing_Date_Time 2020-07-27) (Standalone, First quarter, period 2020-04-01..2020-06-30, presented in Millions). Identity: ISIN INE262H01016; the column reproduces the stored PAT 121.48 and revenue 556.14. Lines (crore): revenue 556.14, other income 29.38, finance costs 0.88, depreciation 13.18, PBET 157.55, PBT 157.55. op = PBET + finance costs + depreciation - other income = 142.23; EBIT = 129.05; the same column's expenses route (revenue - (expenses - finance costs - depreciation)) = 142.23. stored op 158.96 was a value that matches no line of the filing column (a mis-aligned row/column read) — written by the local-OCR residual pass of scripts/backfill_revop_gaps.py (commit c4af852fa, 2026-07-27 — the §189 KENNAMET commit). second reader: Moneycontrol line items (mc:PS15:quarterly) give op 142.23 / EBIT 129.05.",
+   "wrong_value_class": "BSE-PDF text sweep (backfill_revop_gaps.metrics_at): a P&L row it could not find was read as 0 / a mis-aligned row; not a scale issue (scale_fix n/a)",
+   "found": "main-board op==EBIT audit 2026-09-28 (runbook §209)"
+  },
+  {
+   "sym": "PERSISTENT",
+   "qe": "20200630",
+   "basis": "ebit_std",
+   "was": 158.96,
+   "fixed": 129.05,
+   "why": "§209 PERSISTENT 20200630: BSE XBRL Main_Ind_As_533179_2772020161321.xml (BSE Filing_Date_Time 2020-07-27) (Standalone, First quarter, period 2020-04-01..2020-06-30, presented in Millions). Identity: ISIN INE262H01016; the column reproduces the stored PAT 121.48 and revenue 556.14. Lines (crore): revenue 556.14, other income 29.38, finance costs 0.88, depreciation 13.18, PBET 157.55, PBT 157.55. op = PBET + finance costs + depreciation - other income = 142.23; EBIT = 129.05; the same column's expenses route (revenue - (expenses - finance costs - depreciation)) = 142.23. stored ebit 158.96 was a value that matches no line of the filing column (a mis-aligned row/column read) — written by the local-OCR residual pass of scripts/backfill_revop_gaps.py (commit c4af852fa, 2026-07-27 — the §189 KENNAMET commit). second reader: Moneycontrol line items (mc:PS15:quarterly) give op 142.23 / EBIT 129.05.",
+   "wrong_value_class": "BSE-PDF text sweep (backfill_revop_gaps.metrics_at): a P&L row it could not find was read as 0 / a mis-aligned row; not a scale issue (scale_fix n/a)",
+   "found": "main-board op==EBIT audit 2026-09-28 (runbook §209)"
+  },
+  {
+   "sym": "PERSISTENT",
+   "qe": "20220630",
+   "basis": "op_std",
+   "was": 238.98,
+   "fixed": 237.76,
+   "why": "§209 PERSISTENT 20220630: BSE XBRL Main_Ind_As_533179_2272022152921.xml (BSE Filing_Date_Time 2022-07-23) (Standalone, First quarter, period 2022-04-01..2022-06-30, presented in Millions). Identity: ISIN INE262H01016; the column reproduces the stored PAT 174.88 and revenue 1102.08. Lines (crore): revenue 1102.08, other income 23.78, finance costs 1.99, depreciation 28.45, PBET 231.10, PBT 231.10. op = PBET + finance costs + depreciation - other income = 237.76; EBIT = 209.31; the same column's expenses route (revenue - (expenses - finance costs - depreciation)) = 237.76. stored op 238.98 was a value that matches no line of the filing column (a mis-aligned row/column read) — written by the local-OCR residual pass of scripts/backfill_revop_gaps.py (commit c4af852fa, 2026-07-27 — the §189 KENNAMET commit). second reader: Moneycontrol line items (mc:PS15:quarterly) give op 237.76 / EBIT 209.31.",
+   "wrong_value_class": "BSE-PDF text sweep (backfill_revop_gaps.metrics_at): a P&L row it could not find was read as 0 / a mis-aligned row; not a scale issue (scale_fix n/a)",
+   "found": "main-board op==EBIT audit 2026-09-28 (runbook §209)"
+  },
+  {
+   "sym": "PERSISTENT",
+   "qe": "20220630",
+   "basis": "ebit_std",
+   "was": 238.98,
+   "fixed": 209.31,
+   "why": "§209 PERSISTENT 20220630: BSE XBRL Main_Ind_As_533179_2272022152921.xml (BSE Filing_Date_Time 2022-07-23) (Standalone, First quarter, period 2022-04-01..2022-06-30, presented in Millions). Identity: ISIN INE262H01016; the column reproduces the stored PAT 174.88 and revenue 1102.08. Lines (crore): revenue 1102.08, other income 23.78, finance costs 1.99, depreciation 28.45, PBET 231.10, PBT 231.10. op = PBET + finance costs + depreciation - other income = 237.76; EBIT = 209.31; the same column's expenses route (revenue - (expenses - finance costs - depreciation)) = 237.76. stored ebit 238.98 was a value that matches no line of the filing column (a mis-aligned row/column read) — written by the local-OCR residual pass of scripts/backfill_revop_gaps.py (commit c4af852fa, 2026-07-27 — the §189 KENNAMET commit). second reader: Moneycontrol line items (mc:PS15:quarterly) give op 237.76 / EBIT 209.31.",
+   "wrong_value_class": "BSE-PDF text sweep (backfill_revop_gaps.metrics_at): a P&L row it could not find was read as 0 / a mis-aligned row; not a scale issue (scale_fix n/a)",
+   "found": "main-board op==EBIT audit 2026-09-28 (runbook §209)"
+  },
+  {
+   "sym": "UNITDSPR",
+   "qe": "20230630",
+   "basis": "std",
+   "was": 5313.0,
+   "fixed": 5312.5,
+   "why": "§209 UNITDSPR 20230630: NSE XBRL INDAS_94311_895900_20072023070658_xml (Standalone, First quarter, period 2023-04-01..2023-06-30, presented in Millions). Identity: BSE scrip 532432 (ISIN-mapped); the column reproduces the stored PAT 238.20. Lines (crore): revenue 5312.50, other income 20.90, finance costs 4.30, depreciation 65.00, PBET 336.70, exceptional -17.10, PBT 319.60. op = PBET + finance costs + depreciation - other income = 385.10; EBIT = 320.10; the same column's expenses route (revenue - (expenses - finance costs - depreciation)) = 385.10. stored revenue 5313.0 is not the filed revenue from operations 5312.50 (written in the same row by the comparative-rescue pass of scripts/backfill_revop_gaps.py --rescue (commit 6b908f6bb, 2026-07-22)). second reader: Moneycontrol line items (mc:MC08:quarterly) give op 385.10 / EBIT 320.10.",
+   "wrong_value_class": "BSE-PDF text sweep (backfill_revop_gaps.metrics_at): a P&L row it could not find was read as 0 / a mis-aligned row; not a scale issue (scale_fix n/a)",
+   "found": "main-board op==EBIT audit 2026-09-28 (runbook §209)"
+  },
+  {
+   "sym": "UNITDSPR",
+   "qe": "20230630",
+   "basis": "op_std",
+   "was": 5334.0,
+   "fixed": 385.1,
+   "why": "§209 UNITDSPR 20230630: NSE XBRL INDAS_94311_895900_20072023070658_xml (Standalone, First quarter, period 2023-04-01..2023-06-30, presented in Millions). Identity: BSE scrip 532432 (ISIN-mapped); the column reproduces the stored PAT 238.20. Lines (crore): revenue 5312.50, other income 20.90, finance costs 4.30, depreciation 65.00, PBET 336.70, exceptional -17.10, PBT 319.60. op = PBET + finance costs + depreciation - other income = 385.10; EBIT = 320.10; the same column's expenses route (revenue - (expenses - finance costs - depreciation)) = 385.10. stored op 5334.0 was a value that matches no line of the filing column (a mis-aligned row/column read) — written by the comparative-rescue pass of scripts/backfill_revop_gaps.py --rescue (commit 6b908f6bb, 2026-07-22). second reader: Moneycontrol line items (mc:MC08:quarterly) give op 385.10 / EBIT 320.10.",
+   "wrong_value_class": "BSE-PDF text sweep (backfill_revop_gaps.metrics_at): a P&L row it could not find was read as 0 / a mis-aligned row; not a scale issue (scale_fix n/a)",
+   "found": "main-board op==EBIT audit 2026-09-28 (runbook §209)"
+  },
+  {
+   "sym": "UNITDSPR",
+   "qe": "20230630",
+   "basis": "ebit_std",
+   "was": 5334.0,
+   "fixed": 320.1,
+   "why": "§209 UNITDSPR 20230630: NSE XBRL INDAS_94311_895900_20072023070658_xml (Standalone, First quarter, period 2023-04-01..2023-06-30, presented in Millions). Identity: BSE scrip 532432 (ISIN-mapped); the column reproduces the stored PAT 238.20. Lines (crore): revenue 5312.50, other income 20.90, finance costs 4.30, depreciation 65.00, PBET 336.70, exceptional -17.10, PBT 319.60. op = PBET + finance costs + depreciation - other income = 385.10; EBIT = 320.10; the same column's expenses route (revenue - (expenses - finance costs - depreciation)) = 385.10. stored ebit 5334.0 was a value that matches no line of the filing column (a mis-aligned row/column read) — written by the comparative-rescue pass of scripts/backfill_revop_gaps.py --rescue (commit 6b908f6bb, 2026-07-22). second reader: Moneycontrol line items (mc:MC08:quarterly) give op 385.10 / EBIT 320.10.",
+   "wrong_value_class": "BSE-PDF text sweep (backfill_revop_gaps.metrics_at): a P&L row it could not find was read as 0 / a mis-aligned row; not a scale issue (scale_fix n/a)",
+   "found": "main-board op==EBIT audit 2026-09-28 (runbook §209)"
   }
  ],
  "retracted": [
