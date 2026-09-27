@@ -1,12 +1,12 @@
 {
- "built": "2026-09-25 23:31 IST",
+ "built": "2026-09-28 00:55 IST",
  "status": {
   "metalbook": "ok, 47 rows",
-  "ibja": "ok, 7 rows",
-  "rubber": "ok, 8 rows",
+  "ibja": "FAILED (ibja parsed too few rows) - previous rows kept",
+  "rubber": "ok, 4 rows",
   "sugar": "ok, 8 rows",
   "fuel": "ok, 8 rows",
-  "nmdc": "ok, 2 rows - DEGRADED: BSE unreachable, all 3 window(s) failed - these rows are the committed series re-published; a revision filed since the last run would NOT have been seen",
+  "nmdc": "ok, 2 rows",
   "minsteel": "ok, 3 rows",
   "te": "ok, 65 rows"
  },
@@ -78,14 +78,14 @@
   "rubber": {
    "source": "Rubber Board of India (rubberboard.gov.in)",
    "url": "https://rubberboard.gov.in/public",
-   "date": "25-09-2026",
+   "date": "26-09-2026",
    "rows": [
     {
      "market": "Kottayam",
      "name": "RSS4",
-     "price": 27700.0,
+     "price": 27800.0,
      "unit": "Rs/100kg",
-     "usd_per_100kg": 288.85,
+     "usd_per_100kg": 289.9,
      "key": "Kottayam | RSS4"
     },
     {
@@ -97,27 +97,11 @@
      "key": "Kottayam | RSS5"
     },
     {
-     "market": "Kottayam",
-     "name": "ISNR20",
-     "price": 26000.0,
-     "unit": "Rs/100kg",
-     "usd_per_100kg": 271.15,
-     "key": "Kottayam | ISNR20"
-    },
-    {
-     "market": "Kottayam",
-     "name": "Latex(60%)",
-     "price": 20395.0,
-     "unit": "Rs/100kg",
-     "usd_per_100kg": 212.7,
-     "key": "Kottayam | Latex(60%)"
-    },
-    {
      "market": "Kochi",
      "name": "RSS4",
-     "price": 27700.0,
+     "price": 27800.0,
      "unit": "Rs/100kg",
-     "usd_per_100kg": 288.85,
+     "usd_per_100kg": 289.9,
      "key": "Kochi | RSS4"
     },
     {
@@ -127,30 +111,14 @@
      "unit": "Rs/100kg",
      "usd_per_100kg": 283.65,
      "key": "Kochi | RSS5"
-    },
-    {
-     "market": "Agartala",
-     "name": "RSS4",
-     "price": 27000.0,
-     "unit": "Rs/100kg",
-     "usd_per_100kg": 281.55,
-     "key": "Agartala | RSS4"
-    },
-    {
-     "market": "Agartala",
-     "name": "RSS5",
-     "price": 26800.0,
-     "unit": "Rs/100kg",
-     "usd_per_100kg": 279.5,
-     "key": "Agartala | RSS5"
     }
    ],
-   "fetched": "2026-09-25 23:30 IST"
+   "fetched": "2026-09-28 00:55 IST"
   },
   "sugar": {
    "source": "Chinimandi sugar spot rates",
    "url": "https://www.chinimandi.com/",
-   "date": "25/09/2026 4.30 PM",
+   "date": "26/09/2026 4.30 PM",
    "rows": [
     {
      "city": "Delhi",
@@ -171,7 +139,7 @@
     {
      "city": "Kolhapur",
      "grade": "M/30",
-     "price": 4620.0,
+     "price": 4599.0,
      "unit": "Rs/quintal",
      "chg_1d": -21.0,
      "key": "Kolhapur | M/30"
@@ -179,9 +147,9 @@
     {
      "city": "Kolkata",
      "grade": "M/30",
-     "price": 4746.0,
+     "price": 4725.0,
      "unit": "Rs/quintal",
-     "chg_1d": -42.0,
+     "chg_1d": -21.0,
      "key": "Kolkata | M/30"
     },
     {
@@ -217,7 +185,7 @@
      "key": "Chennai | M/30"
     }
    ],
-   "fetched": "2026-09-25 23:30 IST"
+   "fetched": "2026-09-28 00:55 IST"
   },
   "fuel": {
    "source": "PPAC, Ministry of Petroleum (ppac.gov.in) daily metro prices",
@@ -281,7 +249,7 @@
      "key": "Kolkata | diesel"
     }
    ],
-   "fetched": "2026-09-25 23:30 IST"
+   "fetched": "2026-09-28 00:55 IST"
   },
   "te": {
    "source": "Trading Economics (tradingeconomics.com) commodity pages",
@@ -350,13 +318,13 @@
     {
      "slug": "coal",
      "name": "Coal",
-     "price": 143.5,
+     "price": 143.75,
      "unit": "USD/T",
-     "date": "September 24, 2026",
-     "chg_1d": -0.83,
-     "chg_1m": 9.0,
-     "chg_1y": 36.6,
-     "summary": "Coal fell to 143.50 USD/T on September 24, 2026, down 0.83% from the previous day. Over the past month, Coal's price has risen 9.00%, and is up 36.60% compared to the same time last year, according to trading on a contra",
+     "date": "September 25, 2026",
+     "chg_1d": 0.17,
+     "chg_1m": 9.52,
+     "chg_1y": 35.1,
+     "summary": "Coal rose to 143.75 USD/T on September 25, 2026, up 0.17% from the previous day. Over the past month, Coal's price has risen 9.52%, and is up 35.10% compared to the same time last year, according to trading on a contract",
      "key": "Coal | coal"
     },
     {
@@ -446,13 +414,13 @@
     {
      "slug": "uranium",
      "name": "Uranium",
-     "price": 89.45,
+     "price": 89.5,
      "unit": "USD/Lbs",
-     "date": "September 24, 2026",
-     "chg_1d": -0.11,
-     "chg_1m": -0.11,
-     "chg_1y": 7.19,
-     "summary": "Uranium fell to 89.45 USD/Lbs on September 24, 2026, down 0.11% from the previous day. Over the past month, Uranium's price has fallen 0.11%, but it is still 7.19% higher than a year ago, according to trading on a contra",
+     "date": "September 25, 2026",
+     "chg_1d": 0.06,
+     "chg_1m": -1.21,
+     "chg_1y": 8.48,
+     "summary": "Uranium rose to 89.50 USD/Lbs on September 25, 2026, up 0.06% from the previous day. Over the past month, Uranium's price has fallen 1.21%, but it is still 8.48% higher than a year ago, according to trading on a contract",
      "key": "Uranium | uranium"
     },
     {
@@ -482,13 +450,13 @@
     {
      "slug": "aluminum",
      "name": "Aluminum",
-     "price": 3281.25,
+     "price": 3281.5,
      "unit": "USD/T",
      "date": "September 25, 2026",
      "chg_1d": 0.78,
-     "chg_1m": 1.75,
-     "chg_1y": 23.7,
-     "summary": "Aluminum rose to 3,281.25 USD/T on September 25, 2026, up 0.78% from the previous day. Over the past month, Aluminum's price has risen 1.75%, and is up 23.70% compared to the same time last year, according to trading on ",
+     "chg_1m": 1.76,
+     "chg_1y": 23.71,
+     "summary": "Aluminum rose to 3,281.50 USD/T on September 25, 2026, up 0.78% from the previous day. Over the past month, Aluminum's price has risen 1.76%, and is up 23.71% compared to the same time last year, according to trading on ",
      "key": "Aluminum | aluminum"
     },
     {
@@ -497,70 +465,70 @@
      "price": 6.7,
      "unit": "USD/Lbs",
      "date": "September 25, 2026",
-     "chg_1d": -0.31,
-     "chg_1m": 1.49,
-     "chg_1y": 42.17,
-     "summary": "Copper fell to 6.70 USD/Lbs on September 25, 2026, down 0.31% from the previous day. Over the past month, Copper's price has risen 1.49%, and is up 42.17% compared to the same time last year, according to trading on a co",
+     "chg_1d": -0.34,
+     "chg_1m": 1.45,
+     "chg_1y": 42.12,
+     "summary": "Copper fell to 6.70 USD/Lbs on September 25, 2026, down 0.34% from the previous day. Over the past month, Copper's price has risen 1.45%, and is up 42.12% compared to the same time last year, according to trading on a co",
      "key": "Copper | copper"
     },
     {
      "slug": "zinc",
      "name": "Zinc",
-     "price": 3904.35,
+     "price": 3905.9,
      "unit": "USD/T",
      "date": "September 25, 2026",
-     "chg_1d": -1.82,
-     "chg_1m": 0.51,
-     "chg_1y": 34.94,
-     "summary": "Zinc fell to 3,904.35 USD/T on September 25, 2026, down 1.82% from the previous day. Over the past month, Zinc's price has risen 0.51%, and is up 34.94% compared to the same time last year, according to trading on a cont",
+     "chg_1d": null,
+     "chg_1m": 0.55,
+     "chg_1y": 34.99,
+     "summary": "Zinc traded flat at 3,905.90 USD/T on September 25, 2026. Over the past month, Zinc's price has risen 0.55%, and is up 34.99% compared to the same time last year, according to trading on a contract for difference (CFD) t",
      "key": "Zinc | zinc"
     },
     {
      "slug": "lead",
      "name": "Lead",
-     "price": 1941.85,
+     "price": 1942.18,
      "unit": "USD/T",
      "date": "September 25, 2026",
-     "chg_1d": 0.07,
-     "chg_1m": 1.54,
-     "chg_1y": -3.13,
-     "summary": "Lead rose to 1,941.85 USD/T on September 25, 2026, up 0.07% from the previous day. Over the past month, Lead's price has risen 1.54%, but it is still 3.13% lower than a year ago, according to trading on a contract for di",
+     "chg_1d": null,
+     "chg_1m": 1.56,
+     "chg_1y": -3.12,
+     "summary": "Lead traded flat at 1,942.18 USD/T on September 25, 2026. Over the past month, Lead's price has risen 1.56%, but it is still 3.12% lower than a year ago, according to trading on a contract for difference (CFD) that track",
      "key": "Lead | lead"
     },
     {
      "slug": "nickel",
      "name": "Nickel",
-     "price": 16385.0,
+     "price": 16359.75,
      "unit": "USD/T",
      "date": "September 25, 2026",
-     "chg_1d": -0.88,
-     "chg_1m": -3.16,
-     "chg_1y": 8.12,
-     "summary": "Nickel fell to 16,385 USD/T on September 25, 2026, down 0.88% from the previous day. Over the past month, Nickel's price has fallen 3.16%, but it is still 8.12% higher than a year ago, according to trading on a contract ",
+     "chg_1d": -0.15,
+     "chg_1m": -3.31,
+     "chg_1y": 7.95,
+     "summary": "Nickel fell to 16,359.75 USD/T on September 25, 2026, down 0.15% from the previous day. Over the past month, Nickel's price has fallen 3.31%, but it is still 7.95% higher than a year ago, according to trading on a contra",
      "key": "Nickel | nickel"
     },
     {
      "slug": "tin",
      "name": "Tin",
-     "price": 54010.0,
+     "price": 53863.0,
      "unit": "USD/T",
      "date": "September 24, 2026",
-     "chg_1d": 0.21,
-     "chg_1m": -3.3,
-     "chg_1y": 56.82,
-     "summary": "Tin rose to 54,010 USD/T on September 24, 2026, up 0.21% from the previous day. Over the past month, Tin's price has fallen 3.30%, but it is still 56.82% higher than a year ago, according to trading on a contract for dif",
+     "chg_1d": -0.27,
+     "chg_1m": -3.56,
+     "chg_1y": 56.4,
+     "summary": "Tin fell to 53,863 USD/T on September 24, 2026, down 0.27% from the previous day. Over the past month, Tin's price has fallen 3.56%, but it is still 56.40% higher than a year ago, according to trading on a contract for d",
      "key": "Tin | tin"
     },
     {
      "slug": "gold",
      "name": "Gold",
-     "price": 4283.03,
+     "price": 4285.0,
      "unit": "USD/t.oz",
      "date": "September 25, 2026",
-     "chg_1d": 0.2,
-     "chg_1m": -6.76,
-     "chg_1y": 13.65,
-     "summary": "Gold rose to 4,283.03 USD/t.oz on September 25, 2026, up 0.20% from the previous day. Over the past month, Gold's price has fallen 6.76%, but it is still 13.65% higher than a year ago, according to trading on a contract ",
+     "chg_1d": 0.24,
+     "chg_1m": -6.72,
+     "chg_1y": 13.7,
+     "summary": "Gold rose to 4,285 USD/t.oz on September 25, 2026, up 0.24% from the previous day. Over the past month, Gold's price has fallen 6.72%, but it is still 13.70% higher than a year ago, according to trading on a contract for",
      "key": "Gold | gold"
     },
     {
@@ -569,22 +537,22 @@
      "price": 64.26,
      "unit": "USD/t.oz",
      "date": "September 25, 2026",
-     "chg_1d": 0.69,
+     "chg_1d": 0.68,
      "chg_1m": -5.63,
      "chg_1y": 39.48,
-     "summary": "Silver rose to 64.26 USD/t.oz on September 25, 2026, up 0.69% from the previous day. Over the past month, Silver's price has fallen 5.63%, but it is still 39.48% higher than a year ago, according to trading on a contract",
+     "summary": "Silver rose to 64.26 USD/t.oz on September 25, 2026, up 0.68% from the previous day. Over the past month, Silver's price has fallen 5.63%, but it is still 39.48% higher than a year ago, according to trading on a contract",
      "key": "Silver | silver"
     },
     {
      "slug": "platinum",
      "name": "Platinum",
-     "price": 1777.0,
+     "price": 1777.6,
      "unit": "USD/t.oz",
      "date": "September 25, 2026",
-     "chg_1d": 1.43,
-     "chg_1m": -3.66,
-     "chg_1y": 11.85,
-     "summary": "Platinum rose to 1,777 USD/t.oz on September 25, 2026, up 1.43% from the previous day. Over the past month, Platinum's price has fallen 3.66%, but it is still 11.85% higher than a year ago, according to trading on a cont",
+     "chg_1d": 1.46,
+     "chg_1m": -3.63,
+     "chg_1y": 11.88,
+     "summary": "Platinum rose to 1,777.60 USD/t.oz on September 25, 2026, up 1.46% from the previous day. Over the past month, Platinum's price has fallen 3.63%, but it is still 11.88% higher than a year ago, according to trading on a c",
      "key": "Platinum | platinum"
     },
     {
@@ -593,22 +561,22 @@
      "price": 1276.0,
      "unit": "USD/t.oz",
      "date": "September 25, 2026",
-     "chg_1d": -0.43,
+     "chg_1d": -0.47,
      "chg_1m": -4.81,
      "chg_1y": -0.47,
-     "summary": "Palladium fell to 1,276 USD/t.oz on September 25, 2026, down 0.43% from the previous day. Over the past month, Palladium's price has fallen 4.81%, and is down 0.47% compared to the same time last year, according to tradi",
+     "summary": "Palladium fell to 1,276 USD/t.oz on September 25, 2026, down 0.47% from the previous day. Over the past month, Palladium's price has fallen 4.81%, and is down 0.47% compared to the same time last year, according to tradi",
      "key": "Palladium | palladium"
     },
     {
      "slug": "urea",
      "name": "Urea",
-     "price": 457.75,
+     "price": 457.25,
      "unit": "USD/T",
-     "date": "September 24, 2026",
-     "chg_1d": -0.05,
-     "chg_1m": 10.57,
-     "chg_1y": 20.94,
-     "summary": "Urea fell to 457.75 USD/T on September 24, 2026, down 0.05% from the previous day. Over the past month, Urea's price has risen 10.57%, and is up 20.94% compared to the same time last year, according to trading on a contr",
+     "date": "September 25, 2026",
+     "chg_1d": -0.11,
+     "chg_1m": 9.52,
+     "chg_1y": 19.86,
+     "summary": "Urea fell to 457.25 USD/T on September 25, 2026, down 0.11% from the previous day. Over the past month, Urea's price has risen 9.52%, and is up 19.86% compared to the same time last year, according to trading on a contra",
      "key": "Urea | urea"
     },
     {
@@ -616,11 +584,11 @@
      "name": "Di-ammonium",
      "price": 802.5,
      "unit": "USD/T",
-     "date": "September 24, 2026",
+     "date": "September 25, 2026",
      "chg_1d": null,
      "chg_1m": 1.26,
      "chg_1y": 6.29,
-     "summary": "Di-ammonium traded flat at 802.50 USD/T on September 24, 2026. Over the past month, Di-ammonium's price has risen 1.26%, and is up 6.29% compared to the same time last year, according to trading on a contract for differe",
+     "summary": "Di-ammonium traded flat at 802.50 USD/T on September 25, 2026. Over the past month, Di-ammonium's price has risen 1.26%, and is up 6.29% compared to the same time last year, according to trading on a contract for differe",
      "key": "Di-ammonium | di-ammonium"
     },
     {
@@ -722,25 +690,25 @@
     {
      "slug": "naphtha",
      "name": "Naphtha",
-     "price": 838.56,
+     "price": 811.83,
      "unit": "USD/T",
-     "date": "September 24, 2026",
-     "chg_1d": 0.6,
-     "chg_1m": 12.75,
-     "chg_1y": 48.68,
-     "summary": "Naphtha rose to 838.56 USD/T on September 24, 2026, up 0.60% from the previous day. Over the past month, Naphtha's price has risen 12.75%, and is up 48.68% compared to the same time last year, according to trading on a c",
+     "date": "September 25, 2026",
+     "chg_1d": -3.19,
+     "chg_1m": 9.05,
+     "chg_1y": 43.89,
+     "summary": "Naphtha fell to 811.83 USD/T on September 25, 2026, down 3.19% from the previous day. Over the past month, Naphtha's price has risen 9.05%, and is up 43.89% compared to the same time last year, according to trading on a ",
      "key": "Naphtha | naphtha"
     },
     {
      "slug": "ethanol",
      "name": "Ethanol",
-     "price": 2.1,
+     "price": 2.13,
      "unit": "USD/Gal",
      "date": "September 25, 2026",
-     "chg_1d": -0.83,
-     "chg_1m": 1.69,
-     "chg_1y": 12.3,
-     "summary": "Ethanol fell to 2.10 USD/Gal on September 25, 2026, down 0.83% from the previous day. Over the past month, Ethanol's price has risen 1.69%, and is up 12.30% compared to the same time last year, according to trading on a ",
+     "chg_1d": 0.59,
+     "chg_1m": 3.15,
+     "chg_1y": 13.9,
+     "summary": "Ethanol rose to 2.13 USD/Gal on September 25, 2026, up 0.59% from the previous day. Over the past month, Ethanol's price has risen 3.15%, and is up 13.90% compared to the same time last year, according to trading on a co",
      "key": "Ethanol | ethanol"
     },
     {
@@ -794,181 +762,181 @@
     {
      "slug": "brent-crude-oil",
      "name": "Brent",
-     "price": 104.02,
+     "price": 104.32,
      "unit": "USD/Bbl",
      "date": "September 25, 2026",
-     "chg_1d": -2.42,
-     "chg_1m": 19.65,
-     "chg_1y": 50.28,
-     "summary": "Brent fell to 104.02 USD/Bbl on September 25, 2026, down 2.42% from the previous day. Over the past month, Brent's price has risen 19.65%, and is up 50.28% compared to the same time last year, according to trading on a c",
+     "chg_1d": -2.14,
+     "chg_1m": 19.99,
+     "chg_1y": 50.71,
+     "summary": "Brent fell to 104.32 USD/Bbl on September 25, 2026, down 2.14% from the previous day. Over the past month, Brent's price has risen 19.99%, and is up 50.71% compared to the same time last year, according to trading on a c",
      "key": "Brent | brent-crude-oil"
     },
     {
      "slug": "crude-oil",
      "name": "Crude Oil",
-     "price": 92.18,
+     "price": 92.41,
      "unit": "USD/Bbl",
      "date": "September 25, 2026",
-     "chg_1d": -2.57,
-     "chg_1m": 12.1,
-     "chg_1y": 40.26,
-     "summary": "Crude Oil fell to 92.18 USD/Bbl on September 25, 2026, down 2.57% from the previous day. Over the past month, Crude Oil's price has risen 12.10%, and is up 40.26% compared to the same time last year, according to trading",
+     "chg_1d": -2.33,
+     "chg_1m": 12.38,
+     "chg_1y": 40.61,
+     "summary": "Crude Oil fell to 92.41 USD/Bbl on September 25, 2026, down 2.33% from the previous day. Over the past month, Crude Oil's price has risen 12.38%, and is up 40.61% compared to the same time last year, according to trading",
      "key": "Crude Oil | crude-oil"
     },
     {
      "slug": "natural-gas",
      "name": "Natural gas",
-     "price": 3.21,
+     "price": 3.2,
      "unit": "USD/MMBtu",
      "date": "September 25, 2026",
-     "chg_1d": -2.78,
-     "chg_1m": 11.53,
-     "chg_1y": -0.02,
-     "summary": "Natural gas fell to 3.21 USD/MMBtu on September 25, 2026, down 2.78% from the previous day. Over the past month, Natural gas's price has risen 11.53%, but it is still 0.02% lower than a year ago, according to trading on ",
+     "chg_1d": -3.06,
+     "chg_1m": 11.2,
+     "chg_1y": -0.31,
+     "summary": "Natural gas fell to 3.20 USD/MMBtu on September 25, 2026, down 3.06% from the previous day. Over the past month, Natural gas's price has risen 11.20%, but it is still 0.31% lower than a year ago, according to trading on ",
      "key": "Natural gas | natural-gas"
     },
     {
      "slug": "eu-natural-gas",
      "name": "EU Gas",
-     "price": 70.17,
+     "price": 71.89,
      "unit": "EUR/MWh",
      "date": "September 25, 2026",
-     "chg_1d": -6.37,
-     "chg_1m": 6.67,
-     "chg_1y": 111.76,
-     "summary": "EU Gas fell to 70.17 EUR/MWh on September 25, 2026, down 6.37% from the previous day. Over the past month, EU Gas's price has risen 6.67%, and is up 111.76% compared to the same time last year, according to trading on a ",
+     "chg_1d": -4.07,
+     "chg_1m": 9.29,
+     "chg_1y": 116.96,
+     "summary": "EU Gas fell to 71.89 EUR/MWh on September 25, 2026, down 4.07% from the previous day. Over the past month, EU Gas's price has risen 9.29%, and is up 116.96% compared to the same time last year, according to trading on a ",
      "key": "EU Gas | eu-natural-gas"
     },
     {
      "slug": "liquefied-natural-gas-japan-korea",
      "name": "LNG JKM",
-     "price": 26.38,
+     "price": 25.82,
      "unit": "USD/MMBTU",
-     "date": "September 24, 2026",
-     "chg_1d": 2.55,
-     "chg_1m": 13.12,
-     "chg_1y": 133.87,
-     "summary": "LNG JKM rose to 26.38 USD/MMBTU on September 24, 2026, up 2.55% from the previous day. Over the past month, LNG JKM's price has risen 13.12%, and is up 133.87% compared to the same time last year, according to trading on",
+     "date": "September 25, 2026",
+     "chg_1d": -2.14,
+     "chg_1m": 12.51,
+     "chg_1y": 128.55,
+     "summary": "LNG JKM fell to 25.82 USD/MMBTU on September 25, 2026, down 2.14% from the previous day. Over the past month, LNG JKM's price has risen 12.51%, and is up 128.55% compared to the same time last year, according to trading ",
      "key": "LNG JKM | liquefied-natural-gas-japan-korea"
     },
     {
      "slug": "propane",
      "name": "Propane",
-     "price": 0.89,
+     "price": 0.87,
      "unit": "USD/Gal",
-     "date": "September 24, 2026",
-     "chg_1d": 0.33,
-     "chg_1m": 24.29,
-     "chg_1y": 24.99,
-     "summary": "Propane rose to 0.89 USD/Gal on September 24, 2026, up 0.33% from the previous day. Over the past month, Propane's price has risen 24.29%, and is up 24.99% compared to the same time last year, according to trading on a c",
+     "date": "September 25, 2026",
+     "chg_1d": -2.06,
+     "chg_1m": 21.94,
+     "chg_1y": 22.23,
+     "summary": "Propane fell to 0.87 USD/Gal on September 25, 2026, down 2.06% from the previous day. Over the past month, Propane's price has risen 21.94%, and is up 22.23% compared to the same time last year, according to trading on a",
      "key": "Propane | propane"
     },
     {
      "slug": "cotton",
      "name": "Cotton",
-     "price": 82.82,
+     "price": 82.71,
      "unit": "USd/Lbs",
      "date": "September 25, 2026",
-     "chg_1d": -0.59,
-     "chg_1m": -7.09,
-     "chg_1y": 29.73,
-     "summary": "Cotton fell to 82.82 USd/Lbs on September 25, 2026, down 0.59% from the previous day. Over the past month, Cotton's price has fallen 7.09%, but it is still 29.73% higher than a year ago, according to trading on a contrac",
+     "chg_1d": -0.72,
+     "chg_1m": -7.21,
+     "chg_1y": 29.56,
+     "summary": "Cotton fell to 82.71 USd/Lbs on September 25, 2026, down 0.72% from the previous day. Over the past month, Cotton's price has fallen 7.21%, but it is still 29.56% higher than a year ago, according to trading on a contrac",
      "key": "Cotton | cotton"
     },
     {
      "slug": "sugar",
      "name": "Sugar",
-     "price": 18.54,
+     "price": 18.5,
      "unit": "USd/Lbs",
      "date": "September 25, 2026",
-     "chg_1d": -0.38,
-     "chg_1m": 5.4,
-     "chg_1y": 13.19,
-     "summary": "Sugar fell to 18.54 USd/Lbs on September 25, 2026, down 0.38% from the previous day. Over the past month, Sugar's price has risen 5.40%, and is up 13.19% compared to the same time last year, according to trading on a con",
+     "chg_1d": -0.59,
+     "chg_1m": 5.17,
+     "chg_1y": 12.94,
+     "summary": "Sugar fell to 18.50 USd/Lbs on September 25, 2026, down 0.59% from the previous day. Over the past month, Sugar's price has risen 5.17%, and is up 12.94% compared to the same time last year, according to trading on a con",
      "key": "Sugar | sugar"
     },
     {
      "slug": "coffee",
      "name": "Coffee",
-     "price": 277.9,
+     "price": 278.6,
      "unit": "USd/Lbs",
      "date": "September 25, 2026",
-     "chg_1d": 0.93,
-     "chg_1m": -13.74,
-     "chg_1y": -26.49,
-     "summary": "Coffee rose to 277.90 USd/Lbs on September 25, 2026, up 0.93% from the previous day. Over the past month, Coffee's price has fallen 13.74%, and is down 26.49% compared to the same time last year, according to trading on ",
+     "chg_1d": 1.18,
+     "chg_1m": -13.52,
+     "chg_1y": -26.31,
+     "summary": "Coffee rose to 278.60 USd/Lbs on September 25, 2026, up 1.18% from the previous day. Over the past month, Coffee's price has fallen 13.52%, and is down 26.31% compared to the same time last year, according to trading on ",
      "key": "Coffee | coffee"
     },
     {
      "slug": "cocoa",
      "name": "Cocoa",
-     "price": 5597.38,
+     "price": 5619.0,
      "unit": "USD/T",
      "date": "September 25, 2026",
-     "chg_1d": 0.13,
-     "chg_1m": -4.01,
-     "chg_1y": -18.97,
-     "summary": "Cocoa rose to 5,597.38 USD/T on September 25, 2026, up 0.13% from the previous day. Over the past month, Cocoa's price has fallen 4.01%, and is down 18.97% compared to the same time last year, according to trading on a c",
+     "chg_1d": 0.52,
+     "chg_1m": -3.64,
+     "chg_1y": -18.66,
+     "summary": "Cocoa rose to 5,619 USD/T on September 25, 2026, up 0.52% from the previous day. Over the past month, Cocoa's price has fallen 3.64%, and is down 18.66% compared to the same time last year, according to trading on a cont",
      "key": "Cocoa | cocoa"
     },
     {
      "slug": "tea",
      "name": "Tea",
-     "price": 202.51,
+     "price": 200.61,
      "unit": "INR/Kgs",
-     "date": "September 12, 2026",
-     "chg_1d": -0.54,
-     "chg_1m": -2.31,
-     "chg_1y": 7.92,
-     "summary": "Tea fell to 202.51 INR/Kgs on September 12, 2026, down 0.54% from the previous day. Over the past month, Tea's price has fallen 2.31%, but it is still 7.92% higher than a year ago, according to trading on a contract for ",
+     "date": "September 19, 2026",
+     "chg_1d": -0.35,
+     "chg_1m": -1.56,
+     "chg_1y": 6.16,
+     "summary": "Tea fell to 200.61 INR/Kgs on September 19, 2026, down 0.35% from the previous day. Over the past month, Tea's price has fallen 1.56%, but it is still 6.16% higher than a year ago, according to trading on a contract for ",
      "key": "Tea | tea"
     },
     {
      "slug": "wheat",
      "name": "Wheat",
-     "price": 703.59,
+     "price": 703.25,
      "unit": "USd/Bu",
      "date": "September 25, 2026",
-     "chg_1d": -0.48,
-     "chg_1m": -3.68,
-     "chg_1y": 35.37,
-     "summary": "Wheat fell to 703.59 USd/Bu on September 25, 2026, down 0.48% from the previous day. Over the past month, Wheat's price has fallen 3.68%, but it is still 35.37% higher than a year ago, according to trading on a contract ",
+     "chg_1d": -0.53,
+     "chg_1m": -3.73,
+     "chg_1y": 35.31,
+     "summary": "Wheat fell to 703.25 USd/Bu on September 25, 2026, down 0.53% from the previous day. Over the past month, Wheat's price has fallen 3.73%, but it is still 35.31% higher than a year ago, according to trading on a contract ",
      "key": "Wheat | wheat"
     },
     {
      "slug": "rice",
      "name": "Rice",
-     "price": 16.56,
+     "price": 16.59,
      "unit": "USD/cwt",
      "date": "September 25, 2026",
-     "chg_1d": -0.05,
-     "chg_1m": 11.61,
-     "chg_1y": 47.24,
-     "summary": "Rice fell to 16.56 USD/cwt on September 25, 2026, down 0.05% from the previous day. Over the past month, Rice's price has risen 11.61%, and is up 47.24% compared to the same time last year, according to trading on a cont",
+     "chg_1d": 0.12,
+     "chg_1m": 11.8,
+     "chg_1y": 47.49,
+     "summary": "Rice rose to 16.59 USD/cwt on September 25, 2026, up 0.12% from the previous day. Over the past month, Rice's price has risen 11.80%, and is up 47.49% compared to the same time last year, according to trading on a contra",
      "key": "Rice | rice"
     },
     {
      "slug": "corn",
      "name": "Corn",
-     "price": 527.21,
+     "price": 528.25,
      "unit": "USd/BU",
      "date": "September 25, 2026",
-     "chg_1d": -0.05,
-     "chg_1m": 2.57,
-     "chg_1y": 24.93,
-     "summary": "Corn fell to 527.21 USd/BU on September 25, 2026, down 0.05% from the previous day. Over the past month, Corn's price has risen 2.57%, and is up 24.93% compared to the same time last year, according to trading on a contr",
+     "chg_1d": 0.14,
+     "chg_1m": 2.77,
+     "chg_1y": 25.18,
+     "summary": "Corn rose to 528.25 USd/BU on September 25, 2026, up 0.14% from the previous day. Over the past month, Corn's price has risen 2.77%, and is up 25.18% compared to the same time last year, according to trading on a contrac",
      "key": "Corn | corn"
     },
     {
      "slug": "soybeans",
      "name": "Soybeans",
-     "price": 1319.47,
+     "price": 1319.0,
      "unit": "USd/Bu",
      "date": "September 25, 2026",
-     "chg_1d": 0.15,
-     "chg_1m": 5.2,
-     "chg_1y": 30.16,
-     "summary": "Soybeans rose to 1,319.47 USd/Bu on September 25, 2026, up 0.15% from the previous day. Over the past month, Soybeans's price has risen 5.20%, and is up 30.16% compared to the same time last year, according to trading on",
+     "chg_1d": 0.11,
+     "chg_1m": 5.16,
+     "chg_1y": 30.11,
+     "summary": "Soybeans rose to 1,319 USd/Bu on September 25, 2026, up 0.11% from the previous day. Over the past month, Soybeans's price has risen 5.16%, and is up 30.11% compared to the same time last year, according to trading on a ",
      "key": "Soybeans | soybeans"
     },
     {
@@ -986,25 +954,25 @@
     {
      "slug": "rapeseed-oil",
      "name": "Rapeseed",
-     "price": 548.78,
+     "price": 548.0,
      "unit": "EUR/T",
      "date": "September 25, 2026",
-     "chg_1d": -0.13,
-     "chg_1m": 1.96,
-     "chg_1y": 16.51,
-     "summary": "Rapeseed fell to 548.78 EUR/T on September 25, 2026, down 0.13% from the previous day. Over the past month, Rapeseed's price has risen 1.96%, and is up 16.51% compared to the same time last year, according to trading on ",
+     "chg_1d": -0.27,
+     "chg_1m": 1.81,
+     "chg_1y": 16.35,
+     "summary": "Rapeseed fell to 548 EUR/T on September 25, 2026, down 0.27% from the previous day. Over the past month, Rapeseed's price has risen 1.81%, and is up 16.35% compared to the same time last year, according to trading on a c",
      "key": "Rapeseed | rapeseed-oil"
     },
     {
      "slug": "sunflower-oil",
      "name": "Sunflower Oil",
-     "price": 1551.6,
+     "price": 1501.3,
      "unit": "INR/10 kg",
-     "date": "September 24, 2026",
-     "chg_1d": -1.82,
-     "chg_1m": -7.94,
-     "chg_1y": 15.19,
-     "summary": "Sunflower Oil fell to 1,551.60 INR/10 kg on September 24, 2026, down 1.82% from the previous day. Over the past month, Sunflower Oil's price has fallen 7.94%, but it is still 15.19% higher than a year ago, according to t",
+     "date": "September 25, 2026",
+     "chg_1d": -3.24,
+     "chg_1m": -10.45,
+     "chg_1y": 11.13,
+     "summary": "Sunflower Oil fell to 1,501.30 INR/10 kg on September 25, 2026, down 3.24% from the previous day. Over the past month, Sunflower Oil's price has fallen 10.45%, but it is still 11.13% higher than a year ago, according to ",
      "key": "Sunflower Oil | sunflower-oil"
     },
     {
@@ -1046,30 +1014,30 @@
     {
      "slug": "solar",
      "name": "Solar Energy Index",
-     "price": 43.94,
+     "price": 44.09,
      "unit": "USD",
      "date": "September 25, 2026",
-     "chg_1d": 0.09,
-     "chg_1m": -11.0,
-     "chg_1y": 1.2,
-     "summary": "Solar Energy Index rose to 43.94 USD on September 25, 2026, up 0.09% from the previous day. Over the past month, Solar Energy Index's price has fallen 11.00%, but it is still 1.20% higher than a year ago, according to tr",
+     "chg_1d": 0.43,
+     "chg_1m": -10.69,
+     "chg_1y": 1.54,
+     "summary": "Solar Energy Index rose to 44.09 USD on September 25, 2026, up 0.43% from the previous day. Over the past month, Solar Energy Index's price has fallen 10.69%, but it is still 1.54% higher than a year ago, according to tr",
      "key": "Solar Energy Index | solar"
     },
     {
      "slug": "carbon",
      "name": "EU Carbon Permits",
-     "price": 86.94,
+     "price": 86.78,
      "unit": "EUR",
      "date": "September 25, 2026",
-     "chg_1d": -0.02,
-     "chg_1m": 5.15,
-     "chg_1y": 14.42,
-     "summary": "EU Carbon Permits fell to 86.94 EUR on September 25, 2026, down 0.02% from the previous day. Over the past month, EU Carbon Permits's price has risen 5.15%, and is up 14.42% compared to the same time last year, according",
+     "chg_1d": -0.21,
+     "chg_1m": 4.96,
+     "chg_1y": 14.21,
+     "summary": "EU Carbon Permits fell to 86.78 EUR on September 25, 2026, down 0.21% from the previous day. Over the past month, EU Carbon Permits's price has risen 4.96%, and is up 14.21% compared to the same time last year, according",
      "key": "EU Carbon Permits | carbon"
     }
    ],
    "errors": [],
-   "fetched": "2026-09-25 23:31 IST"
+   "fetched": "2026-09-28 00:55 IST"
   },
   "metalbook": {
    "source": "MetalBook (metalbook.com) price records, data from SteelMint",
@@ -1640,7 +1608,7 @@
      "key": "Mumbai | Al Ingots ,99.70%"
     }
    ],
-   "fetched": "2026-09-25 23:30 IST"
+   "fetched": "2026-09-28 00:54 IST"
   },
   "nmdc": {
    "source": "NMDC Limited price letters filed with BSE (scrip 526371)",
@@ -2505,11 +2473,11 @@
      "key": "NMDC (administered) | Iron ore fines (64%, -10mm)"
     }
    ],
-   "degraded": "BSE unreachable, all 3 window(s) failed - these rows are the committed series re-published; a revision filed since the last run would NOT have been seen",
+   "degraded": null,
    "revisions": 85,
    "since": "2019-01-03",
    "unread": 49,
-   "fetched": "2026-09-25 23:31 IST"
+   "fetched": "2026-09-28 00:55 IST"
   },
   "minsteel": {
    "source": "Ministry of Steel monthly report (steel.gov.in): Mumbai retail price incl. GST",
@@ -3126,7 +3094,7 @@
      "key": "Mumbai | CR coil 0.63 mm"
     }
    ],
-   "fetched": "2026-09-25 23:31 IST"
+   "fetched": "2026-09-28 00:55 IST"
   }
  }
 }
