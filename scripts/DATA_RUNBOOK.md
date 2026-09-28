@@ -23871,3 +23871,78 @@ Measure the adjusted day-ratio on the live bin before re-landing anything.
 only where origin still holds BASE's copy. Rebuild what is derived. Never `cp` a whole file or directory back after
 `reset --hard`. A new workflow's commit step uses ci_land.py and gets a CFG entry in test_ci_land.py. Any state the job
 keeps OUTSIDE git must not advance when its landing is refused.
+
+## §213 — SME HALF-YEAR ROWS GET THEIR P&L DETAIL, OPERATING PROFIT AND AN ANNUAL P&L: the filing whose first column IS the proven half fills the detail ledger and the empty op / EBIT slots; the stock page sums two proven halves into a year (2026-09-28, user: "Proven rows, no EPS" · "Annual P&L + '6 mo' tag" · "Same formula" (ROCE) · "Fill op + EBIT" · stale row list "Yes, as its own commit first")
+**NO ASSUMPTIONS, NO GUESSWORK — every number below was measured this session (stores at origin dcb1b47a0, re-run on the landing tree).**
+**Defect (§208 option C).** NSE SME half-yearly filers' Sep (Apr–Sep) and Mar (Oct–Mar) rows carried revenue + profit only: their
+half-year / yearly XBRL files parse BALANCE-SHEET-ONLY by design (§148 `parse_bs_only`) and the §181d filler wrote revenue / profit.
+So no depreciation / interest / tax detail, no P&L tab (`renderDeep` `full` needed four quarter rows), no ROCE (`fyEbit` needs x.dep
+on every row), and operating profit EMPTY on 1,462 half-year cells (ZEAL Apr–Sep 2025: revenue 171.33, op —).
+**Measured.** row_periods (3,763 rows at 21c8f0f1b) marks 2,548 NSE half-year basis-cells 6 months (+1,886 proven by BSE h=1 cells —
+the BSE route's, §196). A filing whose OneD revenue EQUALS the proven half is on this Mac for 2,177 (2,708 of 2,708 such matches are
+exact to the paisa); 364 have no half-year XBRL here (§210a's PDF-proven 2020-23 halves; BSE-folded pages), 8 only a filing whose OneD
+is not the half (IEML Sep-24: OneD empty, the half in FourD; 6 PDF-proven rows whose XBRL prints another half — EMKAYTOOLS Sep-24
+stored 0.82 vs XBRL 54.76, ALUWIND Sep-25 65.44 vs 64.46, PARIN / PULZ Sep-24 — reported to §210a's session). The row's PROFIT must be
+printed by the same column: 5 held (DANISH Sep-25 s 28.84 vs 29.31, DIGIKORE Sep-23 s 6.24 vs 8.26 / c vs 6.15, EUROBOND Mar-24 7.96 vs
+7.87, IPSL Mar-25 c 0.00 vs 3.88, MAHICKRA Mar-25 2.53 vs 1.19) + 3 negative depreciation (GOLDKART Mar-26, ITALIANE Mar-25, ROXHITECH
+Mar-25 — §205's class). **Second document, the year:** of 984 years with both halves on one basis, H1 + H2 = the Mar filing's printed
+full-year column on every money line (dep, fc, oi, pbet, pbt, tax) within ₹2 lakh on 950 (ZEAL FY26 depreciation 2.72 + 2.87 = 5.59
+printed; the 34 others are small year-end revisions or one bad line — AVSL FY25 depreciation 8.65 + 1.58 vs 2.83); material / employee
+cost differ more often (104 / 24 years — regrouping in the annual). EPS does NOT add up on 252 (AIMTRON FY26 con 9.94 + 22.47 vs the
+printed 22.47 — the second column repeats the year) → EPS left out. The stores' own reader (`build_revop.metrics_for`) on the chosen
+column reproduces the op already stored on 706 of 707 halves (GOLDKART: the negative-depreciation hold).
+**Row list first (user: "Yes, as its own commit first").** `row_periods.json` was 15 h stale: the unchanged builder added 1,886 BSE h=1
+proofs + NSE rows; §210a's session pushed the regeneration first (c3bc1da64, 3,716 rows — byte-identical to this session's run on
+f8dfa6457), then 21c8f0f1b (+47 dual-basis nse-pdf rows). This session's check of c3bc1da64 (old list vs new, same page code, real
+page in node, all 6,600 slices × both bases): exactly the 481 slices whose pd/pp changed render differently, 0 errors; Ratios tab +308 /
++287, TTM cards +308 / +267, '6 mo' tags on all 481; P&L tab removed on MACHLTD, NISUS, SEML, TLL, ROBU (con, + its Ratios) — each a
+year summed as four quarters although two of its rows are proven halves (TLL FY25 Jun + H1 + Dec + H2 = 18 months), §191's double-count
+class; 60 of the changed fund_months symbols are sf_fundamentals keys, none in any Nifty 500 snapshot.
+**Fill (`scripts/fill_sme_halfyear_pnl.py`, dry run by default, `--apply`, `--check`; run on the Mac AFTER every row_periods
+regeneration — the SME cache is local).** Per row_periods m = 6 (not "bse-pf"), per basis whose revenue is proven: the half-year /
+yearly XBRL of that company (page by `build_row_periods.page_resolver` — the proof's own identity rule, §203 ISIN guards, refactored out
+of main() and proven byte-identical), routed BS-only by build_xbrl_extra, whose OneD revenue EQUALS the page row's proven half AND
+whose OneD profit equals the profit the page shows (the fin slice, what the proof was made against); the latest such filing.
+(1) `xbrl_extra.json.gz`: that column's P&L lines (build_xbrl_extra.PNL, money only — no EPS / ratios), audit flags and `"pm": 6`,
+only into a cell holding no P&L line yet (never blend two filings). (2) `docs/sf_revop.json` + `scripts/revop_fundamentals.json`:
+op / EBIT into EMPTY slots only, `metrics_for` on the same column, only when oi / fc / dep / pbet are all printed (§209: a missing line
+is never 0), never a new row, never a bank / NBFC row, `strip_lender_ebit`. Journal `scripts/sme_halfyear_fills.json`
+{"SYM|QE|std|con": {f, rev, pat, pnl, op, ebit}} — registered in `verify_fills_live` (BASIS_KEYED op / ebit → slots 2/3, 7/8).
+`build_xbrl_extra.accumulate`: a quarter parse into a `pm` cell only fills what the cell lacks (a later quarter filing for the same
+quarter-end can never blend into the half). `build_stock_fin.XTRA_KEEP` += "pm".
+**Landed (measured on the landing tree; see the commit).** 2,168 cells gain 24,326 P&L lines (28,700 fields with aud / qual / pm);
+sf_revop op 1,462 (std 1,068 / con 394) + EBIT 1,462; revop_fundamentals 1,457 + 1,457 (5 rows it lacks were not created); 0 fields
+removed or changed anywhere; sf_fundamentals untouched; a second `--apply` writes nothing; `--check` MISSING 0. verify_fills_live:
+checked 36,658 → 39,582 (+2,924 = 1,462 op + 1,462 EBIT exactly), MISSING / REVERTED / RESURRECTED 0, DRIFT 26 (pre-existing);
+negative control (ZEAL Sep-25 op_std nulled) → MISSING sme_halfyear_fills.json ZEAL 20250930 ledger=7.62; restored byte-identical.
+Slices built both ways: exactly the 505 filled symbols change (x; + revop on 485), 6,095 byte-identical, fund_months identical.
+**Page (docs/stock.html, sw v213).** (a) P&L tab: a year counts when its rows tile it AND either there are four of them (unchanged) or
+EVERY row's length is proven (slice pd) — two proven halves; lines = the halves' sum; EPS not summed for such a year (the decision
+above); the note names the half-year years. (b) Quarterly detail: a 6-month row carries the results table's "6 mo" tag (shared
+`spanOf` / `monTag`, moved to top level — the results table is byte-identical on all 6,600 slices) by pd, else by the cell's `pm`; a
+note line. (c) ROCE: unchanged formula, now reachable (x.dep on both halves). (d) A row's P&L LINES follow the basis of the row's
+own figures (`xPnlCell`): the consolidated cell unless it holds no P&L line while the standalone one does AND the results table shows
+no consolidated figure for the row — 100 SME halves (DELAPLEX Sep-24: consolidated statement = balance sheet only) + MAWANASUG / SIL
+Mar-21 (con cell = annual-PDF BS only); a row showing consolidated figures never takes standalone lines (52 main-board + 11 SME rows
+keep "—"). Also used for the TTM interest-cover card's interest.
+**Verified (real stock.html in node, all 6,600 slices × con + std, every Financial-detail tab — `~/stocks-cache/sme_halfyear_pnl/
+page_run.js` + `diff_runs.py`).** Code only (old data): 857 stocks change, 0 errors — P&L tab added on 805 (con) / 779 (std), 32
+existing P&L tabs gain half-year years (GICL FY25 = 157 cr), Quarterly-detail tags on 142 (BSE halves with OneD P&L, e.g. ASARFI);
+results table / cards / notes identical everywhere. Data (new code): exactly the 505 filled slices change, 0 errors — Quarterly
+detail added on 448 / 447, P&L lines on ~480, ROCE on 449 / 476, TTM cards (operating profit / ROCE / interest cover) on 411 / 407, no
+tab removed. Total: 870 stocks, 0 errors. Values: ZEAL std FY26 Sales 285 / OP 19 / Dep 6 / PBT 16 / Net profit 12 (= printed 285.33 /
+5.59 / 15.56 / 11.54), FY25 368 / 21; ROCE 17 % / 12 % (13.40 ÷ 109.99); cards OP (TTM) ₹19 cr, ROCE (TTM) 12.2 %, interest cover
+6.4×; results row Apr–Sep 2025 op 7.6 / OPM 4.4 % / EBIT 4.9. AAKAAR FY26 67 / 10 / 7, debtor days 203 (§191 value), P/E 14.9 (§198).
+Downstream payloads, old vs new store (same inputs otherwise): quarterly_results.json 36 values on 12 SME companies (op filled,
+KOTYARK 6.02 …); results_season.json 27 values in the "liquid" universe (op / EBIT counts +1-2, op total 10.9 → 11.0 %); discovery.json
+identical — CI rebuilds them. Browser (localhost, worktree docs + rebuilt slices + live sf-data price slices): ZEAL / AAKAAR / GICL /
+RELIANCE tabs and values as above, rewind ?asof=2025-12-01 → FY25 column only, 375 px no page overflow (the detail table scrolls in
+its holder), dark + light (a switch settles on the right pinned-cell colour); console: Tailwind CDN warning + the quote worker's 502
+for SME symbols (pre-existing).
+**Upkeep.** After every `build_row_periods.py` regeneration: `SME_CACHE=… XBRL_CACHE=… python3 scripts/fill_sme_halfyear_pnl.py`
+(dry) → `--apply` → commit xbrl_extra.json.gz + sf_revop.json + revop_fundamentals.json + sme_halfyear_fills.json (never merge the
+payloads — re-run on fresh origin).
+**Open.** EPS of half-year years (a proof per year would need the share count); the 364 halves with no XBRL here (PDF-era 2020-23:
+revenue / profit only); the P&L tab rounds to whole crores, so tiny SMEs read "0" / "1"; a consolidated view still mixes a standalone
+H1 with a consolidated H2 in one year where only H2 was filed consolidated (§191's per-row pick — SUNLITE FY26); fetch_bse_results_xbrl
+`heal_sme` does not know `pm` (0 of the 505 filled symbols are BSE tickers with h=1 cells today).
