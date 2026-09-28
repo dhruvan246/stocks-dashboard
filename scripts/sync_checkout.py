@@ -17,6 +17,8 @@ Modes:
   status [--tree PATH]                read-only classification, writes nothing
   sync   [--tree PATH] [--dry-run] [--trust SHA,..] [--no-fetch] [--for-hook]
   gc     [--dry-run] [--idle-hours N] [--for-hook]   remove worktrees with nothing unique
+         (unique includes GITIGNORED files not on origin — `git worktree remove` deletes those
+         silently, so such a worktree is kept and listed with why; runbook §107)
 
 Every decision is MEASURED (git blob ids / commit content), never guessed:
   commit  '+' (git cherry) is "upstream" iff every file it touched is byte-identical at
@@ -396,22 +398,97 @@ def worktrees():
 
 
 DISPOSABLE = ("/_cache/", "docs/.sf_updated", "/__pycache__/", ".DS_Store")
+# The worktree's own Claude Code config (launch.json, settings.local.json, scheduled_tasks.lock):
+# `.claude/*` is ignored except the tracked settings.json.  Measured 2026-09-28: 52/52
+# settings.local.json byte-identical to the shared checkout's, launch.json = older snapshots of
+# its preview list, the locks name dead pids.  User: disposable.  Untracked paths only.
+DISPOSABLE_ROOT = (".claude/",)
 
 
-def idle_hours(wt, files):
+def disposable(path, tracked=False):
+    return (not tracked and path.startswith(DISPOSABLE_ROOT)) or any(d in "/" + path for d in DISPOSABLE)
+
+
+def ignored_files(cwd):
+    """This tree's GITIGNORED files — what `git worktree remove` (no --force) deletes silently:
+    measured 2026-09-28, rc 0 and an ignored scripts/_wip.py gone.  `ls-files --others --ignored`
+    walks the working tree against the index: no blob reads (partial clone), ~0.1 s a tree.
+    None when git fails — the caller must then keep the tree, never remove it blind."""
+    rc, raw, _ = git(["ls-files", "-z", "--others", "--ignored", "--exclude-standard"], cwd, timeout=120)
+    return [p for p in raw.split("\0") if p] if rc == 0 else None
+
+
+_tree_cache = {}
+
+
+def target_blobs(cwd):
+    """{path: blob id} for every file TARGET tracks — one tree-level `ls-tree -r` per gc run
+    (all worktrees share the object store and origin/main)."""
+    sha = rev(cwd, TARGET)
+    if sha not in _tree_cache:
+        m = {}
+        for rec in out(["ls-tree", "-r", "-z", "--full-tree", sha], cwd, timeout=120).split("\0"):
+            meta, _, p = rec.partition("\t")
+            parts = meta.split()
+            if p and len(parts) == 3 and parts[1] == "blob":
+                m[p] = parts[2]
+        _tree_cache[sha] = m
+    return _tree_cache[sha]
+
+
+def ignored_unique(cwd, ignored, listed):
+    """[(path, detail, bytes)] for ignored files whose content exists nowhere else — gc must not
+    `git worktree remove` a tree holding them (runbook §107, trap 2026-09-28).  Not unique:
+    DISPOSABLE paths, and files byte-identical to TARGET's blob or an older blob origin
+    committed there (classify_file's same/old-build).  An ignored path TARGET tracks is normally
+    already in `listed` (ignored_in_the_way judged it); the classify_file branch is the backstop."""
+    tb = target_blobs(cwd)
+    res = []
+    for p in ignored:
+        if p in listed or disposable(p):
+            continue
+        full = os.path.join(cwd, p)
+        size = os.lstat(full).st_size if os.path.lexists(full) else 0
+        if os.path.islink(full) or not os.path.isfile(full):
+            res.append((p, "symlink" if os.path.islink(full) else "not a regular file", size))
+        elif p not in tb:
+            res.append((p, "not on origin", size))
+        elif classify_file(cwd, p, False)[0] not in ("same", "old-build"):
+            res.append((p, "differs from origin", size))
+    return res
+
+
+def ignored_summary(uniq, shown=4):
+    """'scripts/_live/ (7 files, 226.0 MB), scripts/_x.py (8 KB) …' — grouped by the first
+    directory under a top-level folder, so a 5,000-file cache is one entry."""
+    groups = {}
+    for p, detail, size in uniq:
+        parts = p.split("/")
+        key = "/".join(parts[:2]) + "/" if len(parts) > 2 else p
+        n, b, _ = groups.get(key, (0, 0, ""))
+        groups[key] = (n + 1, b + size, detail)
+    fmt = lambda b: "%.1f MB" % (b / 1e6) if b >= 1e6 else "%d KB" % max(1, round(b / 1e3))
+    items = sorted(groups.items(), key=lambda kv: -kv[1][1])
+    one = lambda b, d: d if d in ("symlink", "not a regular file") else fmt(b)
+    return ", ".join("%s (%s)" % (k, one(b, d) if n == 1 else "%d files, %s" % (n, fmt(b)))
+                     for k, (n, b, d) in items[:shown]) + (" …+%d more" % (len(items) - shown) if len(items) > shown else "")
+
+
+def idle_hours(wt, files, ignored=()):
     """Hours since the last WRITE in this worktree: newest of HEAD/ORIG_HEAD (commit, checkout,
-    reset) and any dirty/untracked file.  NOT the index (a read-only `git status` rewrites it)
-    and NOT logs/HEAD (reflog maintenance from the main repo touches every worktree's)."""
+    reset), any dirty/untracked file, and any gitignored file (a job writing scripts/_x.py or its
+    cache IS activity; git status never lists those).  NOT the index (a read-only `git status`
+    rewrites it) and NOT logs/HEAD (reflog maintenance from the main repo touches every worktree's)."""
     gd = out(["rev-parse", "--absolute-git-dir"], wt).strip()
     newest = 0
     for f in ("ORIG_HEAD", "HEAD"):
         p = os.path.join(gd, f)
         if os.path.exists(p):
             newest = max(newest, os.path.getmtime(p))
-    for entry in files:
-        p = os.path.join(wt, entry[1])
-        if os.path.exists(p):
-            newest = max(newest, os.path.getmtime(p))
+    for p in [entry[1] for entry in files] + list(ignored):
+        p = os.path.join(wt, p)
+        if os.path.lexists(p):
+            newest = max(newest, os.lstat(p).st_mtime)
     return (time.time() - newest) / 3600.0 if newest else 1e9
 
 
@@ -431,14 +508,19 @@ def do_gc(dry_run, idle_min, for_hook, protect, trusted=()):
         if not os.path.isdir(path):
             continue
         info = classify_tree(path, trusted)
-        idle = idle_hours(path, info["files"])
+        ignored = ignored_files(path)
+        idle = idle_hours(path, info["files"], ignored or ())
         unique_commits = [c for c in info["commits"] if c[1] == "unique"]
-        wip = [f for f in info["files"] if f[3] not in ("same", "old-build")
-               and not any(d in "/" + f[1] for d in DISPOSABLE)]
+        wip = [f for f in info["files"] if f[3] not in ("same", "old-build") and not disposable(f[1], f[2])]
+        listed = {f[1] for f in info["files"]}
+        ign = ignored_unique(path, ignored, listed) if ignored is not None else []
         label = "%s (%s, idle %.0fh, %d behind)" % (
             path.replace("/Users/dhruvan/", "~/"), (w.get("branch") or "detached").replace("refs/heads/", ""),
             idle, info["behind"])
-        if unique_commits or wip:
+        if ignored is None:
+            kept.append((label, ["`git ls-files --ignored` failed — gitignored files unknown, not removing blind"]))
+            continue
+        if unique_commits or wip or ign:
             why = []
             if unique_commits:
                 why.append("%d unpushed commit(s): %s" % (len(unique_commits), "; ".join(
@@ -446,14 +528,21 @@ def do_gc(dry_run, idle_min, for_hook, protect, trusted=()):
             if wip:
                 why.append("%d file(s) with content not on origin: %s" % (len(wip), ", ".join(
                     f[1] for f in wip[:4]) + (" …" if len(wip) > 4 else "")))
+            if ign:
+                why.append("%d gitignored file(s) not on origin — `git worktree remove` would delete "
+                           "them silently: %s" % (len(ign), ignored_summary(ign)))
             kept.append((label, why))
             continue
         if idle < idle_min:
             kept.append((label, ["active within %dh — nothing unique in it; gc later" % idle_min]))
             continue
         stale = [f for f in info["files"]]
+        extra = [p for p in ignored if p not in listed]
+        note = ", ".join(x for x in ("%d stale copies" % len(stale) if stale else "",
+                                     "%d ignored file(s), all disposable or on origin" % len(extra) if extra else "") if x)
+        label += " [%s]" % note if note else ""
         if dry_run:
-            removed.append(label + (" [%d stale copies]" % len(stale) if stale else ""))
+            removed.append(label)
             continue
         args = ["worktree", "remove"] + (["--force"] if stale else []) + [path]
         rc, o, err = git(args, MAIN, timeout=300)

@@ -12165,9 +12165,10 @@ coverage numbers or different backtest results. Can we solve all this at once?"
    on collision — verified in a scratch repo: WIP on an untouched file survives; WIP on a file
    origin changed → "Entry not uptodate. Cannot merge", HEAD unchanged). Dropped local commits stay
    reachable as `backup/<branch>-<stamp>`.
-4. `gc` removes a worktree only if it has no unique commit, no WIP, no untracked leftover (except
-   `_cache/`, `.sf_updated`, `__pycache__`), and nothing written for ≥ N hours (HEAD/ORIG_HEAD and
-   dirty-file mtimes — NOT the index, a read-only `git status` rewrites it; NOT `logs/HEAD`, reflog
+4. `gc` removes a worktree only if it has no unique commit, no WIP, no untracked leftover and (since
+   2026-09-28) no GITIGNORED file off origin (except `_cache/`, `.sf_updated`, `__pycache__`, `.DS_Store`,
+   and an untracked root `.claude/`), and nothing written for ≥ N hours (HEAD/ORIG_HEAD, dirty-file and
+   ignored-file mtimes — NOT the index, a read-only `git status` rewrites it; NOT `logs/HEAD`, reflog
    maintenance from the main repo touches every worktree's). Worktrees it keeps are listed with WHY.
 5. `_concurrency_guard.py session-start` runs `sync` then `gc --idle-hours 48` BEFORE the dirty-file
    banner — but only if its own hook timeout in `.claude/settings.json` is ≥ 300 s (a day of CI
@@ -12205,9 +12206,44 @@ ADDED paths can be untracked-and-invisible: a path HEAD tracks is in the index, 
 staged deletion (`git rm --cached` → `D `) and was already a `wip-collides` blocker (verified). Tested in
 scratch repos (differs → blocker, file untouched, HEAD unmoved; identical → backup + clean sync; older
 build → backup + refresh; dir/file shape conflicts → blocker) and in a real worktree of this partial clone
-parked just before `d0a748dfd`. **Still open:** `gc`'s `git worktree remove` (no `--force`) also deletes a
-worktree's ignored files without a word (measured: rc 0, `scripts/_wip.py` gone), so a worktree whose only
-unique content is an ignored script is not safe from `gc` yet.
+parked just before `d0a748dfd`. **Found the same day:** `gc`'s `git worktree remove` (no `--force`) also
+deletes a worktree's ignored files without a word (measured: rc 0, `scripts/_wip.py` gone), so a worktree
+whose only unique content is an ignored script was not safe from `gc` — fixed below.
+
+**gc fix 2026-09-28 — ignored files count as unique; the worktree is KEPT and listed.** `do_gc` lists each
+tree's ignored files with `git ls-files -z --others --ignored --exclude-standard` (working tree vs index, no
+blob reads; 0.05–0.12 s a tree, 7 s for all 88). Not unique: DISPOSABLE (`/_cache/`, `docs/.sf_updated`,
+`/__pycache__/`, `.DS_Store`) plus — user's call — an UNTRACKED worktree-root `.claude/` (measured: 52/52
+`settings.local.json` byte-identical to the shared checkout's; 34 `launch.json` in 29 variants, all older
+snapshots of its preview-server list; `scheduled_tasks.lock` = dead pids; the tracked `.claude/settings.json`
+stays WIP when edited); and bytes equal to origin/main's blob or an older origin blob (classify_file's
+same/old-build — in practice every ignored path origin tracks is already judged by `ignored_in_the_way`;
+`ls-tree -r` once per run finds the rest). Anything else keeps the tree with the line `N gitignored file(s)
+not on origin — git worktree remove would delete them silently: scripts/_live/ (7 files, 226.0 MB) …` —
+the user chose keep-and-print over backup-then-remove. Other cache dirs (`scripts/_bhav_cache/`,
+`_nsearch_cache/`, `_shp_bse_cache/`, `_mc_qcache/` …) are NOT disposable (`/_cache/` matches only a dir named
+exactly `_cache`): they keep their worktree until someone clears them by hand. `idle_hours` now also takes
+every ignored file's mtime (a job writing its `_x.py` or cache is activity). If `ls-files` fails, the tree is
+kept ("not removing blind"). **Scratch tests, origin's code vs fixed code, real `gc` (not dry-run), all trees
+back-dated 72 h:** ignored `scripts/_wip.py` — old: removed, file GONE; new: kept, file intact · only
+`__pycache__`/`.claude/*`/`.DS_Store`/`.sf_updated`/`_cache/` → removed (both) · ignored copy byte-identical to
+origin's → removed (both) · differing → kept (both) · `scripts/_bhav_cache/x.csv` — old: removed; new: kept ·
+only fresh write is an ignored `.pyc` — old: "idle 72h", removed; new: idle 0h, kept · edited tracked
+`.claude/settings.json` → kept (both) · broken ignored symlink → kept, listed "(symlink)" · `ls-files`
+forced to fail → all kept. **Real repo, `gc --dry-run --idle-hours 48`, origin's code (10:50 IST) vs fixed
+code:** both 0 removals (88 → 86 trees; `nse-html-unit`/`-base` vanished between the runs, both dry-runs).
+**6 trees whose only reason to stay is now ignored content** — before: "nothing unique; gc later":
+`~/stocks-wt/qm-recon` (idle 37 h: `scripts/_live/` 7 files 236.7 MB + `_bhav_cache/` 2.5 MB — ~11 h from
+silent deletion), `v4fix` + `shp-holds` (`_shp_refine_disagreements.json` 1.3 MB), `vigorous-bhabha`
+(`_bhav_cache/` 266 files 50.4 MB), `suspicious-sutherland` (`_bhav_cache/` 266 files), `gracious-kare`
+(`_equity_l.csv`, `_sme_equity_l.csv`). 11 already-kept trees gained the ignored reason (e.g. `fa-run`: its
+`scripts/_fa_resume.py` + state; `fa-backfill`: `_bse_bhav_cache/` 603.8 MB; `kpi-insights`: `docs/stk/` 5,148
+files). Idle fell where ignored files were newer than HEAD (`quizzical-leavitt` 34→17 h, `silly-faraday` 9→2
+h). Added cost 3.7 s over 87 trees (`ls-files` + lstat + one `ls-tree -r`). **Found alongside, open:** the
+session-start hook gives `gc` 90 s but a full run measured 4 min 19 s (load 4) to 16 min 50 s (load ≈90) over
+88 trees on 2026-09-28, so it is killed every session ("[gc]
+skipped: … timed out"); `do_gc` removes inline and prints only at the end, so a removal made before the kill
+goes unreported — the ignored check does not change that budget.
 
 **Standing rule (CLAUDE.md):** every number reported — coverage, backtest, cell count — is measured
 from the synced checkout (state its HEAD sha) or from LIVE, and the report says which. A checkout
