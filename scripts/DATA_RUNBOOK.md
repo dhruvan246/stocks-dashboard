@@ -17406,6 +17406,51 @@ additive — `cd scripts && python3 _idx_official_fetch.py --only "<tier>" …`,
 quarter (was 495/500). Residue in `scripts/_missing_quarter_pending.json`: BAGMANE/BIRET/EMBASSY/DUMMYHEG (no BSE scrip code —
 REITs + a placeholder ticker) and CLEANMAX Mar-2026 (image PDF; Gemini quota) — the guard re-lists them nightly until resolved.
 
+### 144g. ★★★ THE FEEDS WORKFLOW REVERTED OTHER WRITERS' COMMITS: LAND WHAT YOU CHANGED, REBUILD WHAT IS DERIVED (2026-09-28)
+
+**What happened.** `ideas-feeds.yml` builds docs/ideas/* from the commit it checked out (BASE), which takes ~4 min, and
+its commit step then did `git fetch; git reset --hard origin/main; cp -r /tmp/ideas/out/. .` - a WHOLE-file copy of every
+path in FILES/DIRS over whatever origin held at push time. Any docs/ideas/ commit landed during the run was silently
+reverted for those files. Run 36344172861 (dispatched 2026-09-28 00:53 IST on 827d4db1) checked out before 3afd6f4
+(00:55, a research session adding the KORE + FONEBOX ideas AND their track.json rows), rebuilt track.json from its own
+older ideas.json, and its commit d74b58fc9 took track.json from 11 rows back to 9; restored by hand in 4d651db61. The
+DIRS copy was worse than it looked: it rewrote EVERY scan/*.json, not only the one the run built.
+
+**Measured exposure (origin, 2026-09-24 -> 09-28, docs/ideas/ commits by author).** Written by someone other than the
+bot as well as by the bot: `track.json` 8 non-bot commits (every research session appends an idea + its row),
+`scan/2026-09-24.json` 3, `india_spot.json` / `india_history.json.gz` / `nmdc_history.json` 2 each, `signals.json` 1.
+And the "never during the routine" schedule is not a guarantee: the 2026-09-25 scheduled run (cron 13:20 UTC) was
+created at 17:58 UTC, 4 h 38 min late.
+
+**Fix: `scripts/ideas/land_feeds.py`, called by the commit step.**
+- `snapshot BASE OUT PATHS` (builders' tree, before any reset): copies to OUT only the files this run CHANGED against
+  BASE (`git status` - modified or new). A file the run left alone is never copied, so it can never revert anything.
+- `apply BASE OUT` (each push attempt, on a fresh `reset --hard origin/main`): for each changed file, if origin still
+  holds BASE's blob -> land the run's copy; origin holds the same bytes -> nothing; **origin changed it too -> origin's
+  copy stays and a `::warning::` names the file and origin's commit(s)**. A builder's files land together or not at
+  all (minsteel + india_spot's five files are one read; spot's three; trade/); each scan/<date>.json is its own group.
+- **Derived files are rebuilt, not copied, when anything they read moved on origin or was refused:** `track.json` by
+  `score.py` (reads ideas.json + the previous track.json; ~19 s on the runner, bhavcopy cache warm because
+  `scripts/ideas/_cache` is git-ignored and survives the reset) and `signals.json` by `signals.py` (panels only, no
+  network). The fresh tree's own script is run. A rebuild that exits non-zero or does not parse leaves origin's copy.
+- The decisions go to the commit body, the step summary and `feeds_status.json` -> `landing` (`base`, `onto`,
+  `moved_on_origin`, `landed`, `identical`, `refused[{file, why}]`, `rebuilt[{file, because}]`), so what a run did NOT
+  land is readable from the committed file. The routine's PLAYBOOK now points at `landing.refused`.
+
+**Tested (scratchpad `land_test.py`, 35 assertions, the step's `run:` block extracted verbatim from the YAML; bare
+origin + depth-1 runner clone like actions/checkout + a second clone landing commits).** S1 no race: 17 changed
+files land, no rebuild/warning. S2 the 09-28 incident: a commit adds an idea + its row mid-run -> track.json rebuilt
+by the real score.py: 14 rows = 14 ideas, the 13 existing rows' call_date/call_close/status unchanged, the new idea
+priced. S3 origin edits an older scan file -> kept, no warning. S4 origin heals nmdc_history.json -> all five india
+files stay origin's (5 warnings naming the commit), every other group lands, signals.json rebuilt. S5 origin re-scans
+the same day -> origin's scan kept, one warning. S6 a commit lands between land and push -> push #1 rejected, attempt
+#2 rebuilds on the new origin and covers the new idea. S7 origin ships a crashing score.py -> origin's track.json
+kept, warning. S8 identical bytes both sides -> counted identical, no warning.
+
+**The rule.** A job that builds from a snapshot and pushes later is a three-way merge, whether it says so or not.
+Land only what you changed; a file someone else changed meanwhile is theirs unless you can REBUILD it from the merged
+inputs; never copy a whole file over a newer one.
+
 ### 144f. ★★★ THE 2,000-ROW ANNOUNCEMENT CAP: A TRUNCATED LIST CACHED AS THE WHOLE DAY (2026-09-28)
 
 **What happened.** `bse.announcements()` paged BSE's `AnnSubCategoryGetData` with `max_pages=40` (40 x 50 = 2,000 rows)

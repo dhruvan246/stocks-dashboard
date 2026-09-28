@@ -174,8 +174,14 @@ jobs:
           path: scripts/ideas/_cache
           key: ideas-feeds-${{ github.run_id }}
 
-      # Explicit paths only (the repo rule), and the standard fetch/reset/copy/push loop every data
-      # workflow here uses — this checkout is the runner's own, so the reset is safe.
+      # Explicit paths only (the repo rule), and a fetch/reset/land/push loop — this checkout is the
+      # runner's own, so the reset is safe. What lands is NOT a whole-file copy over origin: other
+      # writers commit docs/ideas/ during the ~4-min run (a research session appends an idea and its
+      # scorecard row), and on 2026-09-28 the old copy reverted two track.json rows. land_feeds.py
+      # snapshots only the files this run changed against BASE (the commit every builder above read),
+      # and on each fresh origin/main lands a file only if origin left it as BASE had it; a file origin
+      # changed too stays origin's with a ::warning:: (with the rest of its builder's files), and
+      # track.json / signals.json are rebuilt on origin's tree when their inputs moved (runbook §144g).
       - name: Commit the feeds
         env:
           GH_TOKEN: ${{ github.token }}
@@ -189,14 +195,14 @@ jobs:
                  docs/ideas/universe.json docs/ideas/signals.json docs/ideas/track.json docs/ideas/feeds_status.json"
           DIRS="docs/ideas/trade docs/ideas/scan"
 
-          rm -rf /tmp/ideas/out && mkdir -p /tmp/ideas/out
-          for f in $FILES; do [ -f "$f" ] && { mkdir -p "/tmp/ideas/out/$(dirname "$f")"; cp "$f" "/tmp/ideas/out/$f"; }; done
-          for d in $DIRS;  do [ -d "$d" ] && { mkdir -p "/tmp/ideas/out/$d"; cp -r "$d/." "/tmp/ideas/out/$d/"; }; done
+          BASE=$(git rev-parse HEAD)   # nothing has committed yet: this is the tree every builder read
+          python3 -X utf8 scripts/ideas/land_feeds.py snapshot "$BASE" /tmp/ideas/out $FILES $DIRS
+          cp scripts/ideas/land_feeds.py /tmp/ideas/land_feeds.py   # the reset below must not swap it mid-loop
 
           for attempt in 1 2 3 4 5; do
             git fetch origin main
             git reset --hard origin/main
-            cp -r /tmp/ideas/out/. .
+            python3 -X utf8 /tmp/ideas/land_feeds.py apply "$BASE" /tmp/ideas/out
             git add $FILES $DIRS 2>/dev/null || true
 
             if git diff --cached --quiet; then
@@ -205,7 +211,7 @@ jobs:
             fi
             git diff --cached --stat | tail -20
 
-            git commit -m "Daily Ideas feeds $(TZ=Asia/Kolkata date +'%Y-%m-%d %H:%M IST')"
+            git commit -m "Daily Ideas feeds $(TZ=Asia/Kolkata date +'%Y-%m-%d %H:%M IST')" -m "$(cat /tmp/ideas/out/landing.txt)"
             if git push origin HEAD:main; then
               echo "Pushed on attempt #$attempt"
               gh workflow run pages.yml || echo "(pages deploy dispatch failed — will publish on the next push)"

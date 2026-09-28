@@ -15,7 +15,9 @@ valid answer; nothing is investment advice.
   routine's sandbox cannot reach PIB, the commodity hosts or (some days) BSE's api, so the routine's own builder
   runs are a re-check: they succeed and change nothing, or they fail and keep the rows the workflow wrote. Read
   `feeds_status.json` before reporting a lane as blocked — "blocked from the sandbox" and "blocked from Actions"
-  are different facts, and only the second means the day's data is genuinely missing.
+  are different facts, and only the second means the day's data is genuinely missing. Its `landing` block says
+  what the workflow could NOT land because another commit changed the same file during its run (runbook §144g):
+  a file listed under `landing.refused` holds that other commit's version, not the workflow's read of the day.
 - One run per trading day after BSE has published the bhavcopy (evening IST). Steps, in order:
   1. `python3 scripts/ideas/universe.py`
   2. `python3 scripts/ideas/scan.py` → `docs/ideas/scan/<date>.json` (candidates = score ≥ 4)
