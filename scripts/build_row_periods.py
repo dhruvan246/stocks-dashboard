@@ -438,7 +438,12 @@ def main():
                 i = 1 if b == "c" else 0
                 row = rv.get(qe) or []
                 v, other = (row[i] if len(row) > i else None), (row[1 - i] if len(row) > 1 - i else None)
-                if v is None or not same_row(v, half) or (other is not None and not same_row(other, v)):
+                ob = bases.get("s" if b == "c" else "c") or {}          # the other basis: empty, the same figure, or
+                o3 = ob.get("rev") or []                                 # its OWN proven half (PULZ files both)
+                o_ok = other is None or same_row(other, v) or (
+                    len(o3) == 3 and None not in o3 and same_sum(o3[0] + o3[1], o3[2]) and
+                    same_row(other, o3[0] if int(qe) % 10000 == 930 else o3[1]))
+                if v is None or not same_row(v, half) or not o_ok:
                     continue
                 y = int(qe) // 10000 + (1 if int(qe) % 10000 == 930 else 0)
                 if any(len(rv.get(str(q)) or ()) > i and rv[str(q)][i] is not None
@@ -449,8 +454,11 @@ def main():
                 fr = frows.get(int(qe)) or [None] * 5
                 pv, po = fr[3 if i == 1 else 1], fr[1 if i == 1 else 3]
                 ph = (p3[0] if int(qe) % 10000 == 930 else p3[1]) if len(p3) == 3 and None not in p3 else None
-                ok_ = ph is not None and same_sum(p3[0] + p3[1], p3[2]) and pv is not None and same_row(pv, ph) and \
-                    (po is None or same_row(po, pv))
+                op3 = ob.get("pat") or []
+                po_ok = po is None or same_row(po, pv if pv is not None else po) or (
+                    len(op3) == 3 and None not in op3 and same_sum(op3[0] + op3[1], op3[2]) and
+                    same_row(po, op3[0] if int(qe) % 10000 == 930 else op3[1]))
+                ok_ = ph is not None and same_sum(p3[0] + p3[1], p3[2]) and pv is not None and same_row(pv, ph) and po_ok
                 e_["p" + ("c" if i == 1 else "s")] = pv if ok_ else None
                 e_["p" + ("s" if i == 1 else "c")] = po if ok_ else None
                 out.setdefault(sym, {})[qe] = e_

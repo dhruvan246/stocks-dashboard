@@ -23688,3 +23688,7 @@ closed year; `build_row_periods.py` gains an "nse-pdf" path (re-checks h1 + h2 =
 Regenerate row_periods after refresh-stock-fin has published the new rows.
 **Open.** The rest of the gap is scans (no text layer) and statements the reader cannot place — vision reads need the user's OK
 (memory feedback-vision-reads-last-ask-first).
+**§210a addendum — dual-basis rows.** The first "nse-pdf" pass copied bse-pf's rule "the other basis is empty or the same figure",
+which skips every company filing standalone AND consolidated with different figures (PULZ Sep-22 s 13.57 / c 22.16). The
+other basis now also passes when it equals ITS OWN proven half (revenue and profit alike): +47 rows, 7 existing nse-pdf rows gain
+their profit mark (ALUWIND Sep-25 5.07 = 507.051 lakh), 0 removed; row_periods 3,716 → 3,763.
