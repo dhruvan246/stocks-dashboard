@@ -20440,6 +20440,16 @@ capture after quarter-end + 25 days for a follow-up. Across several captures of 
 exactly the 9,457 rows moved, each from un-dated (engine fallback quarter-end + 28) to its ledger date; 0 other rows; un-dated
 pre-Jun-2016 rows 27,359 -> 17,902. Against the + 28 fallback: 9,054 visible earlier (the filing was earlier), 370 later
 (fallback look-ahead removed), 33 the same. Guards green.
+**Batch 4 (2026-09-28): §164a depository-receipt re-base for the 7 companies it missed (`drrebase` -> shp_cell_fix, 180 cells).**
+Found while building the v4 reply: of Quantmac's 1,524 DR-basis cells, 1,053 (35 companies) are companies whose own first 2015-form
+XBRL reports on the FULL share count (Rule 2 keeps it: a true definition difference), 235 (8 companies: RANBAXY, PATNI, ESSAROIL …)
+never filed that form, and 236 (7 companies: ADVANTA, DCW, KGL, ORIENTHOT, PAISALO, ROLTA, STERLINBIO) have a first XBRL that puts
+the DR custodian OUTSIDE promoter + public = 100 (reply #4 d2_basis.json) — §164a's rule says re-base, yet §164a ran on current
+members + 4 more and never on these former members. Same method as `_shp_164a_dr_rebase.py` (per-cell basis test on the promoter /
+mutual-fund row printed in both page columns; all five slots x (A+B+C)/(A+B) shares of the same quarter's BSE page, fetched from
+www.bseindia.com with bse_headers). 180 re-based; 81 pages unreadable (2001-2006 empty shells mostly), 35 quarters without custodian
+shares. Independent check: of Quantmac's 300 cells for these companies, 287 equal the re-based value (13 differ for other reasons).
+Rebuilt feed: exactly the 180 cells moved, 0 other rows; guards green.
 
 ### 164j. Quantmac reply v3 (26-Sep): foreign-labelled rows were read as domestic; named foreign holders now need a document
 **Bug (reported by Quantmac for CUMMINSIND / IPCALAB, measured on origin).** `_shp_dii_rowfix.eval_filing` R1 set a category label

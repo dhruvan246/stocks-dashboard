@@ -410,6 +410,70 @@ def lag_write(path, ledger="shp_lag_fix.json"):
     open(lp, "w", encoding="utf-8").write(txt + ("\n" if raw.endswith("\n") else ""))
     print("%s: %d new, %d replaced (kept under 'replaced')" % (ledger, n_new, n_rep))
 
+DR7 = ["ADVANTA", "DCW", "KGL", "ORIENTHOT", "PAISALO", "ROLTA", "STERLINBIO"]
+def drrebase(out):
+    """§164a (D2) for the 7 companies it missed: each one's own first 2015-form XBRL prints Promoter + Public = 100 with the
+    depository-receipt custodian OUTSIDE the 100 (reply #4 d2_basis.json), so its pre-2016 cells read on the page's
+    % of (A+B+C) column move onto (A+B): all five slots x total(A+B+C)/total(A+B) shares from the SAME quarter's BSE page.
+    Same parse and per-cell basis test as scripts/_shp_164a_dr_rebase.py (promoter row, else mutual-fund row, decides
+    which column the stored cell was read on). Pages: www.bseindia.com ShareholdingPattern.aspx via bse_headers (honest)."""
+    import gzip, time, bse_headers as BH
+    b2 = json.load(open(os.path.join(C, "reply4", "d2_basis.json")))
+    hist = json.load(open(os.path.join(HERE, "shp_history.json"))); cache = os.path.join(W, "aspx_dr"); os.makedirs(cache, exist_ok=True)
+    NUM = r"\s+(\d+)\s+(\d+)\s+(\d+)\s+([\d.]+)\s+([\d.]+)"
+    def page(c, qi):
+        for pth in (os.path.join(cache, "%d_%d.html.gz" % (c, qi)), os.path.join(C, "seambase", "pages", "%d_%d.html.gz" % (c, qi))):
+            if os.path.exists(pth): return gzip.open(pth, "rt", encoding="utf-8", errors="ignore").read()
+        u = "https://www.bseindia.com/corporates/ShareholdingPattern.aspx?scripcd=%d&flag_qtr=1&qtrid=%d.00&Flag=New" % (c, qi)
+        for a in range(3):
+            r = BH.get(u, timeout=60); time.sleep(1.0)
+            if r.status_code == 200 and len(r.content) > 3000:
+                txt = r.content.decode("utf-8", "ignore")
+                with gzip.open(os.path.join(cache, "%d_%d.html.gz" % (c, qi)), "wt", encoding="utf-8") as fh: fh.write(txt)
+                return txt
+            if r.status_code in (403, 429, 500, 502, 503): time.sleep(30 * (a + 1)); continue
+            return None
+        return None
+    def parse(txt):
+        t = re.sub(r"\s+", " ", re.sub(r"<[^>]*>", " ", txt).replace("&nbsp;", " "))
+        g = lambda m: (int(m.group(2)), float(m.group(4)), float(m.group(5))) if m else None
+        m1 = re.search(r"Total \(A\)\+\(B\)" + NUM, t); m2 = re.search(r"Total \(A\)\+\(B\)\+\(C\)" + NUM, t)
+        if not (m1 and m2): return None
+        return dict(ab=g(m1), abc=g(m2), prom=g(re.search(r"Total shareholding of Promoter and Promoter Group \(A\)" + NUM, t)),
+                    mf=g(re.search(r"Mutual Funds */ *UTI" + NUM, t)))
+    P, st = {}, {}
+    for sym in DR7:
+        c = int(b2[sym]["file"].split("_")[0])
+        for q in sorted(hist.get(sym, {})):
+            if q > "2016-03-31" or q < "2001-03-31": continue
+            cell = hist[sym][q]; key = sym + "|" + q
+            txt = page(c, qtrid(q))
+            if not txt: st[key] = "no page"; continue
+            p = parse(txt)
+            if not p: st[key] = "page unparsed / new format"; continue
+            ab, abc = p["ab"][0], p["abc"][0]
+            if abc <= ab: st[key] = "no custodian shares this quarter"; continue
+            f = abc / ab
+            if p["prom"] and p["prom"][2] > 0.5: ref, stored = p["prom"], cell[0]
+            elif p["mf"] and p["mf"][2] > 0.3 and cell[3] is not None: ref, stored = p["mf"], cell[3]
+            else: st[key] = "no reference row"; continue
+            dAB, dABC = abs(stored - ref[1]), abs(stored - ref[2])
+            if dAB + 0.02 < dABC: st[key] = "already on (A+B)"; continue
+            if dABC > 0.06: st[key] = "stored reference matches neither column"; continue
+            new = list(cell)
+            for i in range(5):
+                if isinstance(new[i], (int, float)): new[i] = round(new[i] * f, 4)
+            P[key] = {"was": cell, "cell": new, "src": "bseaspx:%d_%d" % (c, qtrid(q)),
+                      "why": ("§164a depository-receipt basis (§164r 2026-09-28, the 7 companies §164a missed; found by the Quantmac v4 "
+                              "reply build): this company's own first XBRL (%s) prints Promoter + Public = 100 with the custodian (shares "
+                              "underlying ADRs/GDRs) OUTSIDE the 100, so its pre-2016 page values move from the page's %% of (A+B+C) column "
+                              "onto (A+B): all slots x %.6f = total (A+B+C) %d shares / (A+B) %d shares on the same quarter's BSE page; "
+                              "fii %.2f -> %.2f.") % (b2[sym]["file"], f, abc, ab, cell[1] or 0, new[1] or 0)}
+            st[key] = "REBASE"
+    import collections
+    print(collections.Counter(v for v in st.values())); print(collections.Counter(k.split("|")[0] for k in P))
+    json.dump(P, open(out, "w"), indent=1, ensure_ascii=False)
+
 def wb_older():
     """Pages whose NEWEST capture holds no filing table (BSE's own 'Error Code:404' page archived with HTTP 200 once the
     page was retired — HINDPETRO 2012-10-02) fall back to that scrip's earlier captures, newest first, up to 4 tries."""
@@ -562,6 +626,7 @@ if __name__ == "__main__":
     elif st == "wb-fetch": wb_fetch()
     elif st == "wb-decide": wb_decide(sys.argv[2])
     elif st == "wb-older": wb_older()
+    elif st == "drrebase": drrebase(sys.argv[2])
     elif st == "wb-early": wb_early(sys.argv[2])
     elif st == "lag-write": lag_write(sys.argv[2], sys.argv[3] if len(sys.argv) > 3 else "shp_lag_fix.json")
     elif st == "table3-write": table3_write(sys.argv[2])
