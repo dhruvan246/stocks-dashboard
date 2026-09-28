@@ -3342,6 +3342,30 @@
     ],
     "src": "bsexbrl:540902_522018131832_SHP.xml",
     "why": "\u00a7164 row-level remainder rule \u2014 \u00a7164q event row (2026-09-27 \u00a7164q event rows; mid-quarter EVENT row, first row-level read): fii 2.93 -> 6.11, dii 8.70 -> 5.52. D1 unnamed remainder -> FII. \u00a7158 rules (R1 institutional Any-Other holders placed as the filer's own 2022 form places them, R2 domestic institutions parked under non-institutions, R3 NBFC row) + \u00a7159 rule (non-institutional foreign holders the filer's 2022 form lists under Institutions (Foreign)) + D1 (unnamed rest of the institutional block = FII in the 2015-22 form unless every named holder is domestic). | R1-unresolved no typed rows 3.18; D1-unnamed-remainder-in-dii 3.18"
+   },
+   "2020-09-10": {
+    "cell": [
+     41.08,
+     16.669,
+     10.0298,
+     8.5775,
+     0.0,
+     "2020-09-11",
+     37190,
+     "nse:SHP_150793_315717_11092020032343_WEB.xml (copy supplied by Quantmac 2026-09-27; NSE upload stamp 11092020032343)"
+    ],
+    "was": [
+     41.08,
+     16.669,
+     8.5798,
+     8.5775,
+     0.0,
+     "2020-09-11",
+     37190,
+     "nse:SHP_150793_315717_11092020032343_WEB.xml (copy supplied by Quantmac 2026-09-27; NSE upload stamp 11092020032343)"
+    ],
+    "src": "bsexbrl:SHP_150793_315717_11092020032343_WEB.xml",
+    "why": "\u00a7164 row-level remainder rule \u2014 \u00a7164q event row (2026-09-28 \u00a7164q event rows; mid-quarter EVENT row, first row-level read): fii 16.67 -> 16.67, dii 8.58 -> 10.03. R1-R3 (\u00a7158 rules, first read). \u00a7158 rules (R1 institutional Any-Other holders placed as the filer's own 2022 form places them, R2 domestic institutions parked under non-institutions, R3 NBFC row) + \u00a7159 rule (non-institutional foreign holders the filer's 2022 form lists under Institutions (Foreign)) + D1 (unnamed rest of the institutional block = FII in the 2015-22 form unless every named holder is domestic). | R2-named Other Other 1.45 EDELWEISS ALTERNATIVE INVESTMENT OPPORTUNITIES TRU 1.45(regex)"
    }
   },
   "AMBICAAGAR": {
@@ -41526,6 +41550,30 @@
     ],
     "src": "bseaspx:500253_85",
     "why": "\u00a7160 page-era row-level heal (2026-09-24, DII = Institutions(Domestic), FII = Institutions(Foreign) in every format): fii 36.28 -> 36.28, dii 5.88 -> 5.94. std-vcf Venture Capital Funds row 0.05. Evidence: _shp_aspx_rowfix_audit.json"
+   },
+   "2021-09-08": {
+    "cell": [
+     45.24,
+     23.9375,
+     16.9818,
+     9.1764,
+     4.7649,
+     "2021-09-16",
+     375468,
+     "nse:SHP_160733_515200_16092021022552_WEB.xml (copy supplied by Quantmac 2026-09-27; NSE upload stamp 16092021022552)"
+    ],
+    "was": [
+     45.24,
+     23.9375,
+     14.6418,
+     9.1764,
+     4.7649,
+     "2021-09-16",
+     375468,
+     "nse:SHP_160733_515200_16092021022552_WEB.xml (copy supplied by Quantmac 2026-09-27; NSE upload stamp 16092021022552)"
+    ],
+    "src": "bsexbrl:SHP_160733_515200_16092021022552_WEB.xml",
+    "why": "\u00a7164 row-level remainder rule \u2014 \u00a7164q event row (2026-09-28 \u00a7164q event rows; mid-quarter EVENT row, first row-level read): fii 23.94 -> 23.94, dii 14.64 -> 16.98. R1-R3 (\u00a7158 rules, first read). \u00a7158 rules (R1 institutional Any-Other holders placed as the filer's own 2022 form places them, R2 domestic institutions parked under non-institutions, R3 NBFC row) + \u00a7159 rule (non-institutional foreign holders the filer's 2022 form lists under Institutions (Foreign)) + D1 (unnamed rest of the institutional block = FII in the 2015-22 form unless every named holder is domestic). | R2-named Trusts Trusts 2.34 Nps Trust- A/C Uti Retirement Solutions Pension Fund Scheme - State Govt 2.34(regex)"
    }
   },
   "LMW": {
@@ -74249,24 +74297,32 @@
    "2015-09-30": {
     "cell": [
      48.0297,
-     37.1,
-     0.58,
+     13.929,
+     0.5845,
      0.5611,
      0.0034,
      "2015-10-10"
     ],
     "was": [
      48.0297,
-     13.9344,
+     37.1,
      0.5845,
      0.5611,
      0.0034,
      "2015-10-10"
     ],
-    "src": "bseaspx:504067_87",
-    "why": "\u00a7160 page-era row-level heal (2026-09-24, DII = Institutions(Domestic), FII = Institutions(Foreign) in every format): fii 13.93 -> 37.10, dii 0.58 -> 0.58. handoff-fii Overseas Corporate Bodies 23.17 Marina Holdco (FPI) Ltd, curated FPI. Evidence: _shp_aspx_rowfix_audit.json",
+    "src": "bseaspx:504067:87 + shpperent",
+    "why": "\u00a7164r ZENSARTECH (2026-09-28, Quantmac v4): the page's Overseas Corporate Bodies row (10,301,294 shares of 44,457,644 = 23.1710%) is \"Electra Partners Mauritius Ltd\" in the company's own >1% table for this quarter, under a non-institution row and with no FPI mark; the \"Marina Holdco (FPI) Ltd\" name (and its FPI mark) appears only from Dec-2015, and no document proves Electra a foreign institution -> the block leaves FII (public; DII unchanged). The \u00a7160 hand-off had carried the later name back. fii 37.10 -> 13.93.",
     "superseded": {
      "cell": [
+      48.0297,
+      37.1,
+      0.58,
+      0.5611,
+      0.0034,
+      "2015-10-10"
+     ],
+     "was": [
       48.0297,
       13.9344,
       0.5845,
@@ -74274,16 +74330,28 @@
       0.0034,
       "2015-10-10"
      ],
-     "was": [
-      48.0297,
-      13.03,
-      0.5845,
-      0.5611,
-      0.0034,
-      "2015-10-10"
-     ],
-     "src": "bseaspx:504067:87:New",
-     "why": "quantmac FII reconciliation 2026-09-22 (runbook \u00a7142e): stored fii is the page's FII row alone; the same Clause-35 page also prints [('Foreign Portfolio Investments Corporat', 0.9)]. Re-derived by today's reader (fetch_shp_bse_aspx._attempt: FII+FPI+FVCI, dii=mf+banks+ins[+recon Any-Others]); sub date kept."
+     "src": "bseaspx:504067_87",
+     "why": "\u00a7160 page-era row-level heal (2026-09-24, DII = Institutions(Domestic), FII = Institutions(Foreign) in every format): fii 13.93 -> 37.10, dii 0.58 -> 0.58. handoff-fii Overseas Corporate Bodies 23.17 Marina Holdco (FPI) Ltd, curated FPI. Evidence: _shp_aspx_rowfix_audit.json",
+     "superseded": {
+      "cell": [
+       48.0297,
+       13.9344,
+       0.5845,
+       0.5611,
+       0.0034,
+       "2015-10-10"
+      ],
+      "was": [
+       48.0297,
+       13.03,
+       0.5845,
+       0.5611,
+       0.0034,
+       "2015-10-10"
+      ],
+      "src": "bseaspx:504067:87:New",
+      "why": "quantmac FII reconciliation 2026-09-22 (runbook \u00a7142e): stored fii is the page's FII row alone; the same Clause-35 page also prints [('Foreign Portfolio Investments Corporat', 0.9)]. Re-derived by today's reader (fetch_shp_bse_aspx._attempt: FII+FPI+FVCI, dii=mf+banks+ins[+recon Any-Others]); sub date kept."
+     }
     }
    },
    "2025-12-31": {
@@ -74333,145 +74401,293 @@
    "2009-03-31": {
     "cell": [
      53.1159,
-     22.55,
-     1.38,
+     1.0582,
+     1.3784,
      1.2787,
      0.0943,
      "2009-04-21"
     ],
     "was": [
      53.1159,
-     1.06,
+     22.55,
      1.3784,
      1.2787,
      0.0943,
      "2009-04-21"
     ],
-    "src": "bseaspx:504067_61",
-    "why": "\u00a7160 page-era row-level heal (2026-09-24, DII = Institutions(Domestic), FII = Institutions(Foreign) in every format): fii 1.06 -> 22.55, dii 1.38 -> 1.38. handoff-fii Overseas Corporate Bodies 21.49 Marina Holdco (FPI) Ltd, curated FPI. Evidence: _shp_aspx_rowfix_audit.json"
+    "src": "bseaspx:504067:61 + shpperent",
+    "why": "\u00a7164r ZENSARTECH (2026-09-28, Quantmac v4): the page's Overseas Corporate Bodies row (5,150,657 shares of 23,965,670 = 21.4918%) is \"Electra Partners Mauritius Ltd\" in the company's own >1% table for this quarter, under a non-institution row and with no FPI mark; the \"Marina Holdco (FPI) Ltd\" name (and its FPI mark) appears only from Dec-2015, and no document proves Electra a foreign institution -> the block leaves FII (public; DII unchanged). The \u00a7160 hand-off had carried the later name back. fii 22.55 -> 1.06.",
+    "superseded": {
+     "cell": [
+      53.1159,
+      22.55,
+      1.38,
+      1.2787,
+      0.0943,
+      "2009-04-21"
+     ],
+     "was": [
+      53.1159,
+      1.06,
+      1.3784,
+      1.2787,
+      0.0943,
+      "2009-04-21"
+     ],
+     "src": "bseaspx:504067_61",
+     "why": "\u00a7160 page-era row-level heal (2026-09-24, DII = Institutions(Domestic), FII = Institutions(Foreign) in every format): fii 1.06 -> 22.55, dii 1.38 -> 1.38. handoff-fii Overseas Corporate Bodies 21.49 Marina Holdco (FPI) Ltd, curated FPI. Evidence: _shp_aspx_rowfix_audit.json"
+    }
    },
    "2009-06-30": {
     "cell": [
      53.1159,
-     22.13,
-     1.38,
+     0.6382,
+     1.3784,
      1.2787,
      0.0943,
      "2009-07-21"
     ],
     "was": [
      53.1159,
-     0.6418,
+     22.13,
      1.3784,
      1.2787,
      0.0943,
      "2009-07-21"
     ],
-    "src": "bseaspx:504067_62",
-    "why": "\u00a7160 page-era row-level heal (2026-09-24, DII = Institutions(Domestic), FII = Institutions(Foreign) in every format): fii 0.64 -> 22.13, dii 1.38 -> 1.38. handoff-fii Overseas Corporate Bodies 21.49 Marina Holdco (FPI) Ltd, curated FPI. Evidence: _shp_aspx_rowfix_audit.json"
+    "src": "bseaspx:504067:62 + shpperent",
+    "why": "\u00a7164r ZENSARTECH (2026-09-28, Quantmac v4): the page's Overseas Corporate Bodies row (5,150,657 shares of 23,965,670 = 21.4918%) is \"Electra Partners Mauritius Ltd\" in the company's own >1% table for this quarter, under a non-institution row and with no FPI mark; the \"Marina Holdco (FPI) Ltd\" name (and its FPI mark) appears only from Dec-2015, and no document proves Electra a foreign institution -> the block leaves FII (public; DII unchanged). The \u00a7160 hand-off had carried the later name back. fii 22.13 -> 0.64.",
+    "superseded": {
+     "cell": [
+      53.1159,
+      22.13,
+      1.38,
+      1.2787,
+      0.0943,
+      "2009-07-21"
+     ],
+     "was": [
+      53.1159,
+      0.6418,
+      1.3784,
+      1.2787,
+      0.0943,
+      "2009-07-21"
+     ],
+     "src": "bseaspx:504067_62",
+     "why": "\u00a7160 page-era row-level heal (2026-09-24, DII = Institutions(Domestic), FII = Institutions(Foreign) in every format): fii 0.64 -> 22.13, dii 1.38 -> 1.38. handoff-fii Overseas Corporate Bodies 21.49 Marina Holdco (FPI) Ltd, curated FPI. Evidence: _shp_aspx_rowfix_audit.json"
+    }
    },
    "2009-09-30": {
     "cell": [
      53.0956,
-     21.87,
-     1.89,
-     1.7902,
-     0.0942,
-     "2009-10-21"
-    ],
-    "was": [
-     53.0956,
-     0.3945,
+     0.3864,
      1.8898,
      1.7902,
      0.0942,
      "2009-10-21"
     ],
-    "src": "bseaspx:504067_63",
-    "why": "\u00a7160 page-era row-level heal (2026-09-24, DII = Institutions(Domestic), FII = Institutions(Foreign) in every format): fii 0.39 -> 21.87, dii 1.89 -> 1.89. handoff-fii Overseas Corporate Bodies 21.48 Marina Holdco (FPI) Ltd, curated FPI. Evidence: _shp_aspx_rowfix_audit.json"
+    "was": [
+     53.0956,
+     21.87,
+     1.8898,
+     1.7902,
+     0.0942,
+     "2009-10-21"
+    ],
+    "src": "bseaspx:504067:63 + shpperent",
+    "why": "\u00a7164r ZENSARTECH (2026-09-28, Quantmac v4): the page's Overseas Corporate Bodies row (5,150,657 shares of 23,974,814 = 21.4836%) is \"Electra Partners Mauritius Ltd\" in the company's own >1% table for this quarter, under a non-institution row and with no FPI mark; the \"Marina Holdco (FPI) Ltd\" name (and its FPI mark) appears only from Dec-2015, and no document proves Electra a foreign institution -> the block leaves FII (public; DII unchanged). The \u00a7160 hand-off had carried the later name back. fii 21.87 -> 0.39.",
+    "superseded": {
+     "cell": [
+      53.0956,
+      21.87,
+      1.89,
+      1.7902,
+      0.0942,
+      "2009-10-21"
+     ],
+     "was": [
+      53.0956,
+      0.3945,
+      1.8898,
+      1.7902,
+      0.0942,
+      "2009-10-21"
+     ],
+     "src": "bseaspx:504067_63",
+     "why": "\u00a7160 page-era row-level heal (2026-09-24, DII = Institutions(Domestic), FII = Institutions(Foreign) in every format): fii 0.39 -> 21.87, dii 1.89 -> 1.89. handoff-fii Overseas Corporate Bodies 21.48 Marina Holdco (FPI) Ltd, curated FPI. Evidence: _shp_aspx_rowfix_audit.json"
+    }
    },
    "2009-12-31": {
     "cell": [
      53.0941,
-     21.91,
-     2.29,
-     2.2799,
-     0.0045,
-     "2010-01-21"
-    ],
-    "was": [
-     53.0941,
-     0.4294,
+     0.427,
      2.2897,
      2.2799,
      0.0045,
      "2010-01-21"
     ],
-    "src": "bseaspx:504067_64",
-    "why": "\u00a7160 page-era row-level heal (2026-09-24, DII = Institutions(Domestic), FII = Institutions(Foreign) in every format): fii 0.43 -> 21.91, dii 2.29 -> 2.29. handoff-fii Overseas Corporate Bodies 21.48 Marina Holdco (FPI) Ltd, curated FPI. Evidence: _shp_aspx_rowfix_audit.json"
+    "was": [
+     53.0941,
+     21.91,
+     2.2897,
+     2.2799,
+     0.0045,
+     "2010-01-21"
+    ],
+    "src": "bseaspx:504067:64 + shpperent",
+    "why": "\u00a7164r ZENSARTECH (2026-09-28, Quantmac v4): the page's Overseas Corporate Bodies row (5,150,657 shares of 23,975,495 = 21.4830%) is \"Electra Partners Mauritius Ltd\" in the company's own >1% table for this quarter, under a non-institution row and with no FPI mark; the \"Marina Holdco (FPI) Ltd\" name (and its FPI mark) appears only from Dec-2015, and no document proves Electra a foreign institution -> the block leaves FII (public; DII unchanged). The \u00a7160 hand-off had carried the later name back. fii 21.91 -> 0.43.",
+    "superseded": {
+     "cell": [
+      53.0941,
+      21.91,
+      2.29,
+      2.2799,
+      0.0045,
+      "2010-01-21"
+     ],
+     "was": [
+      53.0941,
+      0.4294,
+      2.2897,
+      2.2799,
+      0.0045,
+      "2010-01-21"
+     ],
+     "src": "bseaspx:504067_64",
+     "why": "\u00a7160 page-era row-level heal (2026-09-24, DII = Institutions(Domestic), FII = Institutions(Foreign) in every format): fii 0.43 -> 21.91, dii 2.29 -> 2.29. handoff-fii Overseas Corporate Bodies 21.48 Marina Holdco (FPI) Ltd, curated FPI. Evidence: _shp_aspx_rowfix_audit.json"
+    }
    },
    "2010-03-31": {
     "cell": [
      47.7867,
-     24.78,
-     2.72,
-     2.7081,
-     0.005,
-     "2010-04-21"
-    ],
-    "was": [
-     47.7867,
-     0.9111,
+     0.9077,
      2.719,
      2.7081,
      0.005,
      "2010-04-21"
     ],
-    "src": "bseaspx:504067_65",
-    "why": "\u00a7160 page-era row-level heal (2026-09-24, DII = Institutions(Domestic), FII = Institutions(Foreign) in every format): fii 0.91 -> 24.78, dii 2.72 -> 2.72. handoff-fii Overseas Corporate Bodies 23.87 Marina Holdco (FPI) Ltd, curated FPI. Evidence: _shp_aspx_rowfix_audit.json"
+    "was": [
+     47.7867,
+     24.78,
+     2.719,
+     2.7081,
+     0.005,
+     "2010-04-21"
+    ],
+    "src": "bseaspx:504067:65 + shpperent",
+    "why": "\u00a7164r ZENSARTECH (2026-09-28, Quantmac v4): the page's Overseas Corporate Bodies row (5,150,657 shares of 21,575,867 = 23.8723%) is \"Electra Partners Mauritius Ltd\" in the company's own >1% table for this quarter, under a non-institution row and with no FPI mark; the \"Marina Holdco (FPI) Ltd\" name (and its FPI mark) appears only from Dec-2015, and no document proves Electra a foreign institution -> the block leaves FII (public; DII unchanged). The \u00a7160 hand-off had carried the later name back. fii 24.78 -> 0.91.",
+    "superseded": {
+     "cell": [
+      47.7867,
+      24.78,
+      2.72,
+      2.7081,
+      0.005,
+      "2010-04-21"
+     ],
+     "was": [
+      47.7867,
+      0.9111,
+      2.719,
+      2.7081,
+      0.005,
+      "2010-04-21"
+     ],
+     "src": "bseaspx:504067_65",
+     "why": "\u00a7160 page-era row-level heal (2026-09-24, DII = Institutions(Domestic), FII = Institutions(Foreign) in every format): fii 0.91 -> 24.78, dii 2.72 -> 2.72. handoff-fii Overseas Corporate Bodies 23.87 Marina Holdco (FPI) Ltd, curated FPI. Evidence: _shp_aspx_rowfix_audit.json"
+    }
    },
    "2010-06-30": {
     "cell": [
      47.7608,
-     28.06,
-     2.95,
-     2.9373,
-     0.005,
-     "2010-07-21"
-    ],
-    "was": [
-     47.7608,
-     4.197,
+     4.2006,
      2.9526,
      2.9373,
      0.005,
      "2010-07-21"
     ],
-    "src": "bseaspx:504067_66",
-    "why": "\u00a7160 page-era row-level heal (2026-09-24, DII = Institutions(Domestic), FII = Institutions(Foreign) in every format): fii 4.20 -> 28.06, dii 2.95 -> 2.95. handoff-fii Overseas Corporate Bodies 23.86 Marina Holdco (FPI) Ltd, curated FPI. Evidence: _shp_aspx_rowfix_audit.json"
+    "was": [
+     47.7608,
+     28.06,
+     2.9526,
+     2.9373,
+     0.005,
+     "2010-07-21"
+    ],
+    "src": "bseaspx:504067:66 + shpperent",
+    "why": "\u00a7164r ZENSARTECH (2026-09-28, Quantmac v4): the page's Overseas Corporate Bodies row (5,150,657 shares of 21,587,568 = 23.8594%) is \"Electra Partners Mauritius Ltd\" in the company's own >1% table for this quarter, under a non-institution row and with no FPI mark; the \"Marina Holdco (FPI) Ltd\" name (and its FPI mark) appears only from Dec-2015, and no document proves Electra a foreign institution -> the block leaves FII (public; DII unchanged). The \u00a7160 hand-off had carried the later name back. fii 28.06 -> 4.20.",
+    "superseded": {
+     "cell": [
+      47.7608,
+      28.06,
+      2.95,
+      2.9373,
+      0.005,
+      "2010-07-21"
+     ],
+     "was": [
+      47.7608,
+      4.197,
+      2.9526,
+      2.9373,
+      0.005,
+      "2010-07-21"
+     ],
+     "src": "bseaspx:504067_66",
+     "why": "\u00a7160 page-era row-level heal (2026-09-24, DII = Institutions(Domestic), FII = Institutions(Foreign) in every format): fii 4.20 -> 28.06, dii 2.95 -> 2.95. handoff-fii Overseas Corporate Bodies 23.86 Marina Holdco (FPI) Ltd, curated FPI. Evidence: _shp_aspx_rowfix_audit.json"
+    }
    },
    "2010-09-30": {
     "cell": [
      47.6825,
-     29.4,
-     2.54,
+     5.5798,
+     2.5428,
      2.5289,
      0.005,
      "2010-10-21"
     ],
     "was": [
      47.6825,
-     5.5771,
+     29.4,
      2.5428,
      2.5289,
      0.005,
      "2010-10-21"
     ],
-    "src": "bseaspx:504067_67",
-    "why": "\u00a7160 page-era row-level heal (2026-09-24, DII = Institutions(Domestic), FII = Institutions(Foreign) in every format): fii 5.58 -> 29.40, dii 2.54 -> 2.54. handoff-fii Overseas Corporate Bodies 23.82 Marina Holdco (FPI) Ltd, curated FPI. Evidence: _shp_aspx_rowfix_audit.json"
+    "src": "bseaspx:504067:67 + shpperent",
+    "why": "\u00a7164r ZENSARTECH (2026-09-28, Quantmac v4): the page's Overseas Corporate Bodies row (10,301,294 shares of 43,246,034 = 23.8202%) is \"Electra Partners Mauritius Ltd\" in the company's own >1% table for this quarter, under a non-institution row and with no FPI mark; the \"Marina Holdco (FPI) Ltd\" name (and its FPI mark) appears only from Dec-2015, and no document proves Electra a foreign institution -> the block leaves FII (public; DII unchanged). The \u00a7160 hand-off had carried the later name back. fii 29.40 -> 5.58.",
+    "superseded": {
+     "cell": [
+      47.6825,
+      29.4,
+      2.54,
+      2.5289,
+      0.005,
+      "2010-10-21"
+     ],
+     "was": [
+      47.6825,
+      5.5771,
+      2.5428,
+      2.5289,
+      0.005,
+      "2010-10-21"
+     ],
+     "src": "bseaspx:504067_67",
+     "why": "\u00a7160 page-era row-level heal (2026-09-24, DII = Institutions(Domestic), FII = Institutions(Foreign) in every format): fii 5.58 -> 29.40, dii 2.54 -> 2.54. handoff-fii Overseas Corporate Bodies 23.82 Marina Holdco (FPI) Ltd, curated FPI. Evidence: _shp_aspx_rowfix_audit.json"
+    }
    },
    "2010-12-31": {
     "cell": [
+     47.6406,
+     6.4307,
+     2.3371,
+     2.3226,
+     0.005,
+     "2011-01-21"
+    ],
+    "was": [
      47.6406,
      30.23,
      2.3371,
@@ -74479,19 +74695,39 @@
      0.005,
      "2011-01-21"
     ],
-    "was": [
-     47.6406,
-     6.4349,
-     2.3371,
-     2.3226,
-     0.005,
-     "2011-01-21"
-    ],
-    "src": "bseaspx:504067_68",
-    "why": "\u00a7160 page-era row-level heal (2026-09-24, DII = Institutions(Domestic), FII = Institutions(Foreign) in every format): fii 6.43 -> 30.23, dii 2.34 -> 2.33. handoff-fii Overseas Corporate Bodies 23.8 Marina Holdco (FPI) Ltd, curated FPI. Evidence: _shp_aspx_rowfix_audit.json | 2026-09-24: cell aligned to shp_refine_4dp's share-count dii/ins (the page's 2-dp value was re-derived after apply_cell_fix; proposed [2.33, 0.005])"
+    "src": "bseaspx:504067:68 + shpperent",
+    "why": "\u00a7164r ZENSARTECH (2026-09-28, Quantmac v4): the page's Overseas Corporate Bodies row (10,301,294 shares of 43,284,060 = 23.7993%) is \"Electra Partners Mauritius Ltd\" in the company's own >1% table for this quarter, under a non-institution row and with no FPI mark; the \"Marina Holdco (FPI) Ltd\" name (and its FPI mark) appears only from Dec-2015, and no document proves Electra a foreign institution -> the block leaves FII (public; DII unchanged). The \u00a7160 hand-off had carried the later name back. fii 30.23 -> 6.43.",
+    "superseded": {
+     "cell": [
+      47.6406,
+      30.23,
+      2.3371,
+      2.3226,
+      0.005,
+      "2011-01-21"
+     ],
+     "was": [
+      47.6406,
+      6.4349,
+      2.3371,
+      2.3226,
+      0.005,
+      "2011-01-21"
+     ],
+     "src": "bseaspx:504067_68",
+     "why": "\u00a7160 page-era row-level heal (2026-09-24, DII = Institutions(Domestic), FII = Institutions(Foreign) in every format): fii 6.43 -> 30.23, dii 2.34 -> 2.33. handoff-fii Overseas Corporate Bodies 23.8 Marina Holdco (FPI) Ltd, curated FPI. Evidence: _shp_aspx_rowfix_audit.json | 2026-09-24: cell aligned to shp_refine_4dp's share-count dii/ins (the page's 2-dp value was re-derived after apply_cell_fix; proposed [2.33, 0.005])"
+    }
    },
    "2011-03-31": {
     "cell": [
+     47.6282,
+     7.1916,
+     2.5056,
+     2.4928,
+     0.005,
+     "2011-04-21"
+    ],
+    "was": [
      47.6282,
      30.98,
      2.5056,
@@ -74499,99 +74735,199 @@
      0.005,
      "2011-04-21"
     ],
-    "was": [
-     47.6282,
-     7.1897,
-     2.5056,
-     2.4928,
-     0.005,
-     "2011-04-21"
-    ],
-    "src": "bseaspx:504067_69",
-    "why": "\u00a7160 page-era row-level heal (2026-09-24, DII = Institutions(Domestic), FII = Institutions(Foreign) in every format): fii 7.19 -> 30.98, dii 2.51 -> 2.50. handoff-fii Overseas Corporate Bodies 23.79 Marina Holdco (FPI) Ltd, curated FPI. Evidence: _shp_aspx_rowfix_audit.json | 2026-09-24: cell aligned to shp_refine_4dp's share-count dii/ins (the page's 2-dp value was re-derived after apply_cell_fix; proposed [2.5, 0.005])"
+    "src": "bseaspx:504067:69 + shpperent",
+    "why": "\u00a7164r ZENSARTECH (2026-09-28, Quantmac v4): the page's Overseas Corporate Bodies row (10,301,294 shares of 43,303,786 = 23.7884%) is \"Electra Partners Mauritius Ltd\" in the company's own >1% table for this quarter, under a non-institution row and with no FPI mark; the \"Marina Holdco (FPI) Ltd\" name (and its FPI mark) appears only from Dec-2015, and no document proves Electra a foreign institution -> the block leaves FII (public; DII unchanged). The \u00a7160 hand-off had carried the later name back. fii 30.98 -> 7.19.",
+    "superseded": {
+     "cell": [
+      47.6282,
+      30.98,
+      2.5056,
+      2.4928,
+      0.005,
+      "2011-04-21"
+     ],
+     "was": [
+      47.6282,
+      7.1897,
+      2.5056,
+      2.4928,
+      0.005,
+      "2011-04-21"
+     ],
+     "src": "bseaspx:504067_69",
+     "why": "\u00a7160 page-era row-level heal (2026-09-24, DII = Institutions(Domestic), FII = Institutions(Foreign) in every format): fii 7.19 -> 30.98, dii 2.51 -> 2.50. handoff-fii Overseas Corporate Bodies 23.79 Marina Holdco (FPI) Ltd, curated FPI. Evidence: _shp_aspx_rowfix_audit.json | 2026-09-24: cell aligned to shp_refine_4dp's share-count dii/ins (the page's 2-dp value was re-derived after apply_cell_fix; proposed [2.5, 0.005])"
+    }
    },
    "2011-06-30": {
     "cell": [
      47.787,
-     31.77,
-     2.51,
-     2.5016,
-     0.005,
-     "2011-07-21"
-    ],
-    "was": [
-     47.787,
-     8.0168,
+     8.0231,
      2.5141,
      2.5016,
      0.005,
      "2011-07-21"
     ],
-    "src": "bseaspx:504067_70",
-    "why": "\u00a7160 page-era row-level heal (2026-09-24, DII = Institutions(Domestic), FII = Institutions(Foreign) in every format): fii 8.02 -> 31.77, dii 2.51 -> 2.51. handoff-fii Overseas Corporate Bodies 23.75 Marina Holdco (FPI) Ltd, curated FPI. Evidence: _shp_aspx_rowfix_audit.json"
+    "was": [
+     47.787,
+     31.77,
+     2.5141,
+     2.5016,
+     0.005,
+     "2011-07-21"
+    ],
+    "src": "bseaspx:504067:70 + shpperent",
+    "why": "\u00a7164r ZENSARTECH (2026-09-28, Quantmac v4): the page's Overseas Corporate Bodies row (10,301,294 shares of 43,379,586 = 23.7469%) is \"Electra Partners Mauritius Ltd\" in the company's own >1% table for this quarter, under a non-institution row and with no FPI mark; the \"Marina Holdco (FPI) Ltd\" name (and its FPI mark) appears only from Dec-2015, and no document proves Electra a foreign institution -> the block leaves FII (public; DII unchanged). The \u00a7160 hand-off had carried the later name back. fii 31.77 -> 8.02.",
+    "superseded": {
+     "cell": [
+      47.787,
+      31.77,
+      2.51,
+      2.5016,
+      0.005,
+      "2011-07-21"
+     ],
+     "was": [
+      47.787,
+      8.0168,
+      2.5141,
+      2.5016,
+      0.005,
+      "2011-07-21"
+     ],
+     "src": "bseaspx:504067_70",
+     "why": "\u00a7160 page-era row-level heal (2026-09-24, DII = Institutions(Domestic), FII = Institutions(Foreign) in every format): fii 8.02 -> 31.77, dii 2.51 -> 2.51. handoff-fii Overseas Corporate Bodies 23.75 Marina Holdco (FPI) Ltd, curated FPI. Evidence: _shp_aspx_rowfix_audit.json"
+    }
    },
    "2011-09-30": {
     "cell": [
      47.8196,
-     31.92,
-     2.32,
-     2.3095,
-     0.0048,
-     "2011-10-21"
-    ],
-    "was": [
-     47.8196,
-     8.1805,
+     8.1811,
      2.3202,
      2.3095,
      0.0048,
      "2011-10-21"
     ],
-    "src": "bseaspx:504067_71",
-    "why": "\u00a7160 page-era row-level heal (2026-09-24, DII = Institutions(Domestic), FII = Institutions(Foreign) in every format): fii 8.18 -> 31.92, dii 2.32 -> 2.32. handoff-fii Overseas Corporate Bodies 23.74 Marina Holdco (FPI) Ltd, curated FPI. Evidence: _shp_aspx_rowfix_audit.json"
+    "was": [
+     47.8196,
+     31.92,
+     2.3202,
+     2.3095,
+     0.0048,
+     "2011-10-21"
+    ],
+    "src": "bseaspx:504067:71 + shpperent",
+    "why": "\u00a7164r ZENSARTECH (2026-09-28, Quantmac v4): the page's Overseas Corporate Bodies row (10,301,294 shares of 43,394,154 = 23.7389%) is \"Electra Partners Mauritius Ltd\" in the company's own >1% table for this quarter, under a non-institution row and with no FPI mark; the \"Marina Holdco (FPI) Ltd\" name (and its FPI mark) appears only from Dec-2015, and no document proves Electra a foreign institution -> the block leaves FII (public; DII unchanged). The \u00a7160 hand-off had carried the later name back. fii 31.92 -> 8.18.",
+    "superseded": {
+     "cell": [
+      47.8196,
+      31.92,
+      2.32,
+      2.3095,
+      0.0048,
+      "2011-10-21"
+     ],
+     "was": [
+      47.8196,
+      8.1805,
+      2.3202,
+      2.3095,
+      0.0048,
+      "2011-10-21"
+     ],
+     "src": "bseaspx:504067_71",
+     "why": "\u00a7160 page-era row-level heal (2026-09-24, DII = Institutions(Domestic), FII = Institutions(Foreign) in every format): fii 8.18 -> 31.92, dii 2.32 -> 2.32. handoff-fii Overseas Corporate Bodies 23.74 Marina Holdco (FPI) Ltd, curated FPI. Evidence: _shp_aspx_rowfix_audit.json"
+    }
    },
    "2011-12-31": {
     "cell": [
      47.9267,
-     31.97,
-     2.62,
-     2.6113,
-     0.0048,
-     "2012-01-21"
-    ],
-    "was": [
-     47.9267,
-     8.2345,
+     8.2318,
      2.6221,
      2.6113,
      0.0048,
      "2012-01-21"
     ],
-    "src": "bseaspx:504067_72",
-    "why": "\u00a7160 page-era row-level heal (2026-09-24, DII = Institutions(Domestic), FII = Institutions(Foreign) in every format): fii 8.23 -> 31.97, dii 2.62 -> 2.62. handoff-fii Overseas Corporate Bodies 23.74 Marina Holdco (FPI) Ltd, curated FPI. Evidence: _shp_aspx_rowfix_audit.json"
+    "was": [
+     47.9267,
+     31.97,
+     2.6221,
+     2.6113,
+     0.0048,
+     "2012-01-21"
+    ],
+    "src": "bseaspx:504067:72 + shpperent",
+    "why": "\u00a7164r ZENSARTECH (2026-09-28, Quantmac v4): the page's Overseas Corporate Bodies row (10,301,294 shares of 43,395,446 = 23.7382%) is \"Electra Partners Mauritius Ltd\" in the company's own >1% table for this quarter, under a non-institution row and with no FPI mark; the \"Marina Holdco (FPI) Ltd\" name (and its FPI mark) appears only from Dec-2015, and no document proves Electra a foreign institution -> the block leaves FII (public; DII unchanged). The \u00a7160 hand-off had carried the later name back. fii 31.97 -> 8.23.",
+    "superseded": {
+     "cell": [
+      47.9267,
+      31.97,
+      2.62,
+      2.6113,
+      0.0048,
+      "2012-01-21"
+     ],
+     "was": [
+      47.9267,
+      8.2345,
+      2.6221,
+      2.6113,
+      0.0048,
+      "2012-01-21"
+     ],
+     "src": "bseaspx:504067_72",
+     "why": "\u00a7160 page-era row-level heal (2026-09-24, DII = Institutions(Domestic), FII = Institutions(Foreign) in every format): fii 8.23 -> 31.97, dii 2.62 -> 2.62. handoff-fii Overseas Corporate Bodies 23.74 Marina Holdco (FPI) Ltd, curated FPI. Evidence: _shp_aspx_rowfix_audit.json"
+    }
    },
    "2012-03-31": {
     "cell": [
      48.0509,
-     31.94,
-     2.79,
+     8.2096,
+     2.7897,
      2.779,
      0.0048,
      "2012-04-21"
     ],
     "was": [
      48.0509,
-     8.2149,
+     31.94,
      2.7897,
      2.779,
      0.0048,
      "2012-04-21"
     ],
-    "src": "bseaspx:504067_73",
-    "why": "\u00a7160 page-era row-level heal (2026-09-24, DII = Institutions(Domestic), FII = Institutions(Foreign) in every format): fii 8.21 -> 31.94, dii 2.79 -> 2.79. handoff-fii Overseas Corporate Bodies 23.73 Marina Holdco (FPI) Ltd, curated FPI. Evidence: _shp_aspx_rowfix_audit.json"
+    "src": "bseaspx:504067:73 + shpperent",
+    "why": "\u00a7164r ZENSARTECH (2026-09-28, Quantmac v4): the page's Overseas Corporate Bodies row (10,301,294 shares of 43,409,774 = 23.7304%) is \"Electra Partners Mauritius Ltd\" in the company's own >1% table for this quarter, under a non-institution row and with no FPI mark; the \"Marina Holdco (FPI) Ltd\" name (and its FPI mark) appears only from Dec-2015, and no document proves Electra a foreign institution -> the block leaves FII (public; DII unchanged). The \u00a7160 hand-off had carried the later name back. fii 31.94 -> 8.21.",
+    "superseded": {
+     "cell": [
+      48.0509,
+      31.94,
+      2.79,
+      2.779,
+      0.0048,
+      "2012-04-21"
+     ],
+     "was": [
+      48.0509,
+      8.2149,
+      2.7897,
+      2.779,
+      0.0048,
+      "2012-04-21"
+     ],
+     "src": "bseaspx:504067_73",
+     "why": "\u00a7160 page-era row-level heal (2026-09-24, DII = Institutions(Domestic), FII = Institutions(Foreign) in every format): fii 8.21 -> 31.94, dii 2.79 -> 2.79. handoff-fii Overseas Corporate Bodies 23.73 Marina Holdco (FPI) Ltd, curated FPI. Evidence: _shp_aspx_rowfix_audit.json"
+    }
    },
    "2012-06-30": {
     "cell": [
+     48.2991,
+     8.5301,
+     2.1664,
+     2.1497,
+     0.0048,
+     "2012-07-21"
+    ],
+    "was": [
      48.2991,
      32.25,
      2.1664,
@@ -74599,87 +74935,151 @@
      0.0048,
      "2012-07-21"
     ],
-    "was": [
-     48.2991,
-     8.5272,
-     2.1664,
-     2.1497,
-     0.0048,
-     "2012-07-21"
-    ],
-    "src": "bseaspx:504067_74",
-    "why": "\u00a7160 page-era row-level heal (2026-09-24, DII = Institutions(Domestic), FII = Institutions(Foreign) in every format): fii 8.53 -> 32.25, dii 2.17 -> 2.16. handoff-fii Overseas Corporate Bodies 23.72 Marina Holdco (FPI) Ltd, curated FPI. Evidence: _shp_aspx_rowfix_audit.json | 2026-09-24: cell aligned to shp_refine_4dp's share-count dii/ins (the page's 2-dp value was re-derived after apply_cell_fix; proposed [2.16, 0.0048])"
+    "src": "bseaspx:504067:74 + shpperent",
+    "why": "\u00a7164r ZENSARTECH (2026-09-28, Quantmac v4): the page's Overseas Corporate Bodies row (10,301,294 shares of 43,428,974 = 23.7199%) is \"Electra Partners Mauritius Ltd\" in the company's own >1% table for this quarter, under a non-institution row and with no FPI mark; the \"Marina Holdco (FPI) Ltd\" name (and its FPI mark) appears only from Dec-2015, and no document proves Electra a foreign institution -> the block leaves FII (public; DII unchanged). The \u00a7160 hand-off had carried the later name back. fii 32.25 -> 8.53.",
+    "superseded": {
+     "cell": [
+      48.2991,
+      32.25,
+      2.1664,
+      2.1497,
+      0.0048,
+      "2012-07-21"
+     ],
+     "was": [
+      48.2991,
+      8.5272,
+      2.1664,
+      2.1497,
+      0.0048,
+      "2012-07-21"
+     ],
+     "src": "bseaspx:504067_74",
+     "why": "\u00a7160 page-era row-level heal (2026-09-24, DII = Institutions(Domestic), FII = Institutions(Foreign) in every format): fii 8.53 -> 32.25, dii 2.17 -> 2.16. handoff-fii Overseas Corporate Bodies 23.72 Marina Holdco (FPI) Ltd, curated FPI. Evidence: _shp_aspx_rowfix_audit.json | 2026-09-24: cell aligned to shp_refine_4dp's share-count dii/ins (the page's 2-dp value was re-derived after apply_cell_fix; proposed [2.16, 0.0048])"
+    }
    },
    "2012-09-30": {
     "cell": [
      48.3487,
-     33.2,
-     1.71,
-     1.6895,
-     0.0048,
-     "2012-10-21"
-    ],
-    "was": [
-     48.3487,
-     9.5367,
+     9.539,
      1.7117,
      1.6895,
      0.0048,
      "2012-10-21"
     ],
-    "src": "bseaspx:504067_75",
-    "why": "\u00a7160 page-era row-level heal (2026-09-24, DII = Institutions(Domestic), FII = Institutions(Foreign) in every format): fii 9.54 -> 33.20, dii 1.71 -> 1.71. handoff-fii Overseas Corporate Bodies 23.66 Marina Holdco (FPI) Ltd, curated FPI. Evidence: _shp_aspx_rowfix_audit.json"
+    "was": [
+     48.3487,
+     33.2,
+     1.7117,
+     1.6895,
+     0.0048,
+     "2012-10-21"
+    ],
+    "src": "bseaspx:504067:75 + shpperent",
+    "why": "\u00a7164r ZENSARTECH (2026-09-28, Quantmac v4): the page's Overseas Corporate Bodies row (10,301,294 shares of 43,537,082 = 23.6610%) is \"Electra Partners Mauritius Ltd\" in the company's own >1% table for this quarter, under a non-institution row and with no FPI mark; the \"Marina Holdco (FPI) Ltd\" name (and its FPI mark) appears only from Dec-2015, and no document proves Electra a foreign institution -> the block leaves FII (public; DII unchanged). The \u00a7160 hand-off had carried the later name back. fii 33.20 -> 9.54.",
+    "superseded": {
+     "cell": [
+      48.3487,
+      33.2,
+      1.71,
+      1.6895,
+      0.0048,
+      "2012-10-21"
+     ],
+     "was": [
+      48.3487,
+      9.5367,
+      1.7117,
+      1.6895,
+      0.0048,
+      "2012-10-21"
+     ],
+     "src": "bseaspx:504067_75",
+     "why": "\u00a7160 page-era row-level heal (2026-09-24, DII = Institutions(Domestic), FII = Institutions(Foreign) in every format): fii 9.54 -> 33.20, dii 1.71 -> 1.71. handoff-fii Overseas Corporate Bodies 23.66 Marina Holdco (FPI) Ltd, curated FPI. Evidence: _shp_aspx_rowfix_audit.json"
+    }
    },
    "2012-12-31": {
     "cell": [
      48.354,
-     34.3,
-     1.25,
-     1.2329,
-     0.0045,
-     "2013-01-21"
-    ],
-    "was": [
-     48.354,
-     10.6474,
+     10.6499,
      1.2537,
      1.2329,
      0.0045,
      "2013-01-21"
     ],
-    "src": "bseaspx:504067_76",
-    "why": "\u00a7160 page-era row-level heal (2026-09-24, DII = Institutions(Domestic), FII = Institutions(Foreign) in every format): fii 10.65 -> 34.30, dii 1.25 -> 1.25. handoff-fii Overseas Corporate Bodies 23.65 Marina Holdco (FPI) Ltd, curated FPI. Evidence: _shp_aspx_rowfix_audit.json"
+    "was": [
+     48.354,
+     34.3,
+     1.2537,
+     1.2329,
+     0.0045,
+     "2013-01-21"
+    ],
+    "src": "bseaspx:504067:76 + shpperent",
+    "why": "\u00a7164r ZENSARTECH (2026-09-28, Quantmac v4): the page's Overseas Corporate Bodies row (10,301,294 shares of 43,557,122 = 23.6501%) is \"Electra Partners Mauritius Ltd\" in the company's own >1% table for this quarter, under a non-institution row and with no FPI mark; the \"Marina Holdco (FPI) Ltd\" name (and its FPI mark) appears only from Dec-2015, and no document proves Electra a foreign institution -> the block leaves FII (public; DII unchanged). The \u00a7160 hand-off had carried the later name back. fii 34.30 -> 10.65.",
+    "superseded": {
+     "cell": [
+      48.354,
+      34.3,
+      1.25,
+      1.2329,
+      0.0045,
+      "2013-01-21"
+     ],
+     "was": [
+      48.354,
+      10.6474,
+      1.2537,
+      1.2329,
+      0.0045,
+      "2013-01-21"
+     ],
+     "src": "bseaspx:504067_76",
+     "why": "\u00a7160 page-era row-level heal (2026-09-24, DII = Institutions(Domestic), FII = Institutions(Foreign) in every format): fii 10.65 -> 34.30, dii 1.25 -> 1.25. handoff-fii Overseas Corporate Bodies 23.65 Marina Holdco (FPI) Ltd, curated FPI. Evidence: _shp_aspx_rowfix_audit.json"
+    }
    },
    "2013-03-31": {
     "cell": [
      48.3601,
-     34.39,
-     1.28,
-     1.2552,
-     0.0045,
-     "2013-04-21"
-    ],
-    "was": [
-     48.3601,
-     10.753,
+     10.7529,
      1.277,
      1.2552,
      0.0045,
      "2013-04-21"
     ],
-    "src": "bseaspx:504067_77",
-    "why": "\u00a7160 page-era row-level heal (2026-09-24, DII = Institutions(Domestic), FII = Institutions(Foreign) in every format): fii 10.75 -> 34.39, dii 1.28 -> 1.28. handoff-fii Overseas Corporate Bodies 23.64 Marina Holdco (FPI) Ltd, curated FPI. Evidence: _shp_aspx_rowfix_audit.json"
+    "was": [
+     48.3601,
+     34.39,
+     1.277,
+     1.2552,
+     0.0045,
+     "2013-04-21"
+    ],
+    "src": "bseaspx:504067:77 + shpperent",
+    "why": "\u00a7164r ZENSARTECH (2026-09-28, Quantmac v4): the page's Overseas Corporate Bodies row (10,301,294 shares of 43,580,988 = 23.6371%) is \"Electra Partners Mauritius Ltd\" in the company's own >1% table for this quarter, under a non-institution row and with no FPI mark; the \"Marina Holdco (FPI) Ltd\" name (and its FPI mark) appears only from Dec-2015, and no document proves Electra a foreign institution -> the block leaves FII (public; DII unchanged). The \u00a7160 hand-off had carried the later name back. fii 34.39 -> 10.75.",
+    "superseded": {
+     "cell": [
+      48.3601,
+      34.39,
+      1.28,
+      1.2552,
+      0.0045,
+      "2013-04-21"
+     ],
+     "was": [
+      48.3601,
+      10.753,
+      1.277,
+      1.2552,
+      0.0045,
+      "2013-04-21"
+     ],
+     "src": "bseaspx:504067_77",
+     "why": "\u00a7160 page-era row-level heal (2026-09-24, DII = Institutions(Domestic), FII = Institutions(Foreign) in every format): fii 10.75 -> 34.39, dii 1.28 -> 1.28. handoff-fii Overseas Corporate Bodies 23.64 Marina Holdco (FPI) Ltd, curated FPI. Evidence: _shp_aspx_rowfix_audit.json"
+    }
    },
    "2013-06-30": {
     "cell": [
-     48.3485,
-     35.31,
-     1.2578,
-     1.2413,
-     0.0034,
-     "2013-07-21"
-    ],
-    "was": [
      48.3485,
      11.6847,
      1.2578,
@@ -74687,13 +75087,41 @@
      0.0034,
      "2013-07-21"
     ],
-    "src": "bseaspx:504067_78",
-    "why": "\u00a7160 page-era row-level heal (2026-09-24, DII = Institutions(Domestic), FII = Institutions(Foreign) in every format): fii 11.68 -> 35.31, dii 1.26 -> 1.25. handoff-fii Overseas Corporate Bodies 23.63 Marina Holdco (FPI) Ltd, curated FPI. Evidence: _shp_aspx_rowfix_audit.json | 2026-09-24: cell aligned to shp_refine_4dp's share-count dii/ins (the page's 2-dp value was re-derived after apply_cell_fix; proposed [1.25, 0.0034])"
+    "was": [
+     48.3485,
+     35.31,
+     1.2578,
+     1.2413,
+     0.0034,
+     "2013-07-21"
+    ],
+    "src": "bseaspx:504067:78 + shpperent",
+    "why": "\u00a7164r ZENSARTECH (2026-09-28, Quantmac v4): the page's Overseas Corporate Bodies row (10,301,294 shares of 43,602,788 = 23.6253%) is \"Electra Partners Mauritius Ltd\" in the company's own >1% table for this quarter, under a non-institution row and with no FPI mark; the \"Marina Holdco (FPI) Ltd\" name (and its FPI mark) appears only from Dec-2015, and no document proves Electra a foreign institution -> the block leaves FII (public; DII unchanged). The \u00a7160 hand-off had carried the later name back. fii 35.31 -> 11.68.",
+    "superseded": {
+     "cell": [
+      48.3485,
+      35.31,
+      1.2578,
+      1.2413,
+      0.0034,
+      "2013-07-21"
+     ],
+     "was": [
+      48.3485,
+      11.6847,
+      1.2578,
+      1.2413,
+      0.0034,
+      "2013-07-21"
+     ],
+     "src": "bseaspx:504067_78",
+     "why": "\u00a7160 page-era row-level heal (2026-09-24, DII = Institutions(Domestic), FII = Institutions(Foreign) in every format): fii 11.68 -> 35.31, dii 1.26 -> 1.25. handoff-fii Overseas Corporate Bodies 23.63 Marina Holdco (FPI) Ltd, curated FPI. Evidence: _shp_aspx_rowfix_audit.json | 2026-09-24: cell aligned to shp_refine_4dp's share-count dii/ins (the page's 2-dp value was re-derived after apply_cell_fix; proposed [1.25, 0.0034])"
+    }
    },
    "2013-09-30": {
     "cell": [
      48.2664,
-     35.58,
+     11.9948,
      0.9557,
      0.9378,
      0.0034,
@@ -74701,37 +75129,85 @@
     ],
     "was": [
      48.2664,
-     11.9924,
+     35.58,
      0.9557,
      0.9378,
      0.0034,
      "2013-10-21"
     ],
-    "src": "bseaspx:504067_79",
-    "why": "\u00a7160 page-era row-level heal (2026-09-24, DII = Institutions(Domestic), FII = Institutions(Foreign) in every format): fii 11.99 -> 35.58, dii 0.96 -> 0.95. handoff-fii Overseas Corporate Bodies 23.59 Marina Holdco (FPI) Ltd, curated FPI. Evidence: _shp_aspx_rowfix_audit.json | 2026-09-24: cell aligned to shp_refine_4dp's share-count dii/ins (the page's 2-dp value was re-derived after apply_cell_fix; proposed [0.95, 0.0034])"
+    "src": "bseaspx:504067:79 + shpperent",
+    "why": "\u00a7164r ZENSARTECH (2026-09-28, Quantmac v4): the page's Overseas Corporate Bodies row (10,301,294 shares of 43,676,947 = 23.5852%) is \"Electra Partners Mauritius Ltd\" in the company's own >1% table for this quarter, under a non-institution row and with no FPI mark; the \"Marina Holdco (FPI) Ltd\" name (and its FPI mark) appears only from Dec-2015, and no document proves Electra a foreign institution -> the block leaves FII (public; DII unchanged). The \u00a7160 hand-off had carried the later name back. fii 35.58 -> 11.99.",
+    "superseded": {
+     "cell": [
+      48.2664,
+      35.58,
+      0.9557,
+      0.9378,
+      0.0034,
+      "2013-10-21"
+     ],
+     "was": [
+      48.2664,
+      11.9924,
+      0.9557,
+      0.9378,
+      0.0034,
+      "2013-10-21"
+     ],
+     "src": "bseaspx:504067_79",
+     "why": "\u00a7160 page-era row-level heal (2026-09-24, DII = Institutions(Domestic), FII = Institutions(Foreign) in every format): fii 11.99 -> 35.58, dii 0.96 -> 0.95. handoff-fii Overseas Corporate Bodies 23.59 Marina Holdco (FPI) Ltd, curated FPI. Evidence: _shp_aspx_rowfix_audit.json | 2026-09-24: cell aligned to shp_refine_4dp's share-count dii/ins (the page's 2-dp value was re-derived after apply_cell_fix; proposed [0.95, 0.0034])"
+    }
    },
    "2013-12-31": {
     "cell": [
      48.2617,
-     35.58,
-     0.65,
-     0.6189,
-     0.0034,
-     "2014-01-21"
-    ],
-    "was": [
-     48.2617,
-     12.0067,
+     12.0091,
      0.6494,
      0.6189,
      0.0034,
      "2014-01-21"
     ],
-    "src": "bseaspx:504067_80",
-    "why": "\u00a7160 page-era row-level heal (2026-09-24, DII = Institutions(Domestic), FII = Institutions(Foreign) in every format): fii 12.01 -> 35.58, dii 0.65 -> 0.65. handoff-fii Overseas Corporate Bodies 23.57 Marina Holdco (FPI) Ltd, curated FPI. Evidence: _shp_aspx_rowfix_audit.json"
+    "was": [
+     48.2617,
+     35.58,
+     0.6494,
+     0.6189,
+     0.0034,
+     "2014-01-21"
+    ],
+    "src": "bseaspx:504067:80 + shpperent",
+    "why": "\u00a7164r ZENSARTECH (2026-09-28, Quantmac v4): the page's Overseas Corporate Bodies row (10,301,294 shares of 43,703,419 = 23.5709%) is \"Electra Partners Mauritius Ltd\" in the company's own >1% table for this quarter, under a non-institution row and with no FPI mark; the \"Marina Holdco (FPI) Ltd\" name (and its FPI mark) appears only from Dec-2015, and no document proves Electra a foreign institution -> the block leaves FII (public; DII unchanged). The \u00a7160 hand-off had carried the later name back. fii 35.58 -> 12.01.",
+    "superseded": {
+     "cell": [
+      48.2617,
+      35.58,
+      0.65,
+      0.6189,
+      0.0034,
+      "2014-01-21"
+     ],
+     "was": [
+      48.2617,
+      12.0067,
+      0.6494,
+      0.6189,
+      0.0034,
+      "2014-01-21"
+     ],
+     "src": "bseaspx:504067_80",
+     "why": "\u00a7160 page-era row-level heal (2026-09-24, DII = Institutions(Domestic), FII = Institutions(Foreign) in every format): fii 12.01 -> 35.58, dii 0.65 -> 0.65. handoff-fii Overseas Corporate Bodies 23.57 Marina Holdco (FPI) Ltd, curated FPI. Evidence: _shp_aspx_rowfix_audit.json"
+    }
    },
    "2014-03-31": {
     "cell": [
+     48.2779,
+     12.3136,
+     0.5356,
+     0.5123,
+     0.0034,
+     "2014-04-10"
+    ],
+    "was": [
      48.2779,
      35.85,
      0.5356,
@@ -74739,79 +75215,159 @@
      0.0034,
      "2014-04-10"
     ],
-    "was": [
-     48.2779,
-     12.3148,
-     0.5356,
-     0.5123,
-     0.0034,
-     "2014-04-10"
-    ],
-    "src": "bseaspx:504067_81",
-    "why": "\u00a7160 page-era row-level heal (2026-09-24, DII = Institutions(Domestic), FII = Institutions(Foreign) in every format): fii 12.31 -> 35.85, dii 0.54 -> 0.53. handoff-fii Overseas Corporate Bodies 23.54 Marina Holdco (FPI) Ltd, curated FPI. Evidence: _shp_aspx_rowfix_audit.json | 2026-09-24: cell aligned to shp_refine_4dp's share-count dii/ins (the page's 2-dp value was re-derived after apply_cell_fix; proposed [0.53, 0.0034])"
+    "src": "bseaspx:504067:81 + shpperent",
+    "why": "\u00a7164r ZENSARTECH (2026-09-28, Quantmac v4): the page's Overseas Corporate Bodies row (10,301,294 shares of 43,767,494 = 23.5364%) is \"Electra Partners Mauritius Ltd\" in the company's own >1% table for this quarter, under a non-institution row and with no FPI mark; the \"Marina Holdco (FPI) Ltd\" name (and its FPI mark) appears only from Dec-2015, and no document proves Electra a foreign institution -> the block leaves FII (public; DII unchanged). The \u00a7160 hand-off had carried the later name back. fii 35.85 -> 12.31.",
+    "superseded": {
+     "cell": [
+      48.2779,
+      35.85,
+      0.5356,
+      0.5123,
+      0.0034,
+      "2014-04-10"
+     ],
+     "was": [
+      48.2779,
+      12.3148,
+      0.5356,
+      0.5123,
+      0.0034,
+      "2014-04-10"
+     ],
+     "src": "bseaspx:504067_81",
+     "why": "\u00a7160 page-era row-level heal (2026-09-24, DII = Institutions(Domestic), FII = Institutions(Foreign) in every format): fii 12.31 -> 35.85, dii 0.54 -> 0.53. handoff-fii Overseas Corporate Bodies 23.54 Marina Holdco (FPI) Ltd, curated FPI. Evidence: _shp_aspx_rowfix_audit.json | 2026-09-24: cell aligned to shp_refine_4dp's share-count dii/ins (the page's 2-dp value was re-derived after apply_cell_fix; proposed [0.53, 0.0034])"
+    }
    },
    "2014-06-30": {
     "cell": [
      48.1826,
-     35.68,
-     0.46,
-     0.4382,
-     0.0034,
-     "2014-07-10"
-    ],
-    "was": [
-     48.1826,
-     12.1936,
+     12.1901,
      0.4636,
      0.4382,
      0.0034,
      "2014-07-10"
     ],
-    "src": "bseaspx:504067_82",
-    "why": "\u00a7160 page-era row-level heal (2026-09-24, DII = Institutions(Domestic), FII = Institutions(Foreign) in every format): fii 12.19 -> 35.68, dii 0.46 -> 0.46. handoff-fii Overseas Corporate Bodies 23.49 Marina Holdco (FPI) Ltd, curated FPI. Evidence: _shp_aspx_rowfix_audit.json"
+    "was": [
+     48.1826,
+     35.68,
+     0.4636,
+     0.4382,
+     0.0034,
+     "2014-07-10"
+    ],
+    "src": "bseaspx:504067:82 + shpperent",
+    "why": "\u00a7164r ZENSARTECH (2026-09-28, Quantmac v4): the page's Overseas Corporate Bodies row (10,301,294 shares of 43,854,060 = 23.4899%) is \"Electra Partners Mauritius Ltd\" in the company's own >1% table for this quarter, under a non-institution row and with no FPI mark; the \"Marina Holdco (FPI) Ltd\" name (and its FPI mark) appears only from Dec-2015, and no document proves Electra a foreign institution -> the block leaves FII (public; DII unchanged). The \u00a7160 hand-off had carried the later name back. fii 35.68 -> 12.19.",
+    "superseded": {
+     "cell": [
+      48.1826,
+      35.68,
+      0.46,
+      0.4382,
+      0.0034,
+      "2014-07-10"
+     ],
+     "was": [
+      48.1826,
+      12.1936,
+      0.4636,
+      0.4382,
+      0.0034,
+      "2014-07-10"
+     ],
+     "src": "bseaspx:504067_82",
+     "why": "\u00a7160 page-era row-level heal (2026-09-24, DII = Institutions(Domestic), FII = Institutions(Foreign) in every format): fii 12.19 -> 35.68, dii 0.46 -> 0.46. handoff-fii Overseas Corporate Bodies 23.49 Marina Holdco (FPI) Ltd, curated FPI. Evidence: _shp_aspx_rowfix_audit.json"
+    }
    },
    "2014-09-30": {
     "cell": [
      48.1031,
-     35.86,
-     0.39,
-     0.3682,
-     0.0034,
-     "2014-10-14"
-    ],
-    "was": [
-     48.1031,
-     12.4119,
+     12.4096,
      0.3871,
      0.3682,
      0.0034,
      "2014-10-14"
     ],
-    "src": "bseaspx:504067_83",
-    "why": "\u00a7160 page-era row-level heal (2026-09-24, DII = Institutions(Domestic), FII = Institutions(Foreign) in every format): fii 12.41 -> 35.86, dii 0.39 -> 0.39. handoff-fii Overseas Corporate Bodies 23.45 Marina Holdco (FPI) Ltd, curated FPI. Evidence: _shp_aspx_rowfix_audit.json"
+    "was": [
+     48.1031,
+     35.86,
+     0.3871,
+     0.3682,
+     0.0034,
+     "2014-10-14"
+    ],
+    "src": "bseaspx:504067:83 + shpperent",
+    "why": "\u00a7164r ZENSARTECH (2026-09-28, Quantmac v4): the page's Overseas Corporate Bodies row (10,301,294 shares of 43,928,092 = 23.4504%) is \"Electra Partners Mauritius Ltd\" in the company's own >1% table for this quarter, under a non-institution row and with no FPI mark; the \"Marina Holdco (FPI) Ltd\" name (and its FPI mark) appears only from Dec-2015, and no document proves Electra a foreign institution -> the block leaves FII (public; DII unchanged). The \u00a7160 hand-off had carried the later name back. fii 35.86 -> 12.41.",
+    "superseded": {
+     "cell": [
+      48.1031,
+      35.86,
+      0.39,
+      0.3682,
+      0.0034,
+      "2014-10-14"
+     ],
+     "was": [
+      48.1031,
+      12.4119,
+      0.3871,
+      0.3682,
+      0.0034,
+      "2014-10-14"
+     ],
+     "src": "bseaspx:504067_83",
+     "why": "\u00a7160 page-era row-level heal (2026-09-24, DII = Institutions(Domestic), FII = Institutions(Foreign) in every format): fii 12.41 -> 35.86, dii 0.39 -> 0.39. handoff-fii Overseas Corporate Bodies 23.45 Marina Holdco (FPI) Ltd, curated FPI. Evidence: _shp_aspx_rowfix_audit.json"
+    }
    },
    "2014-12-31": {
     "cell": [
      48.0675,
-     36.1,
-     0.03,
+     12.667,
+     0.0316,
      0.0022,
      0.0034,
      "2015-01-14"
     ],
     "was": [
      48.0675,
-     12.6722,
+     36.1,
      0.0316,
      0.0022,
      0.0034,
      "2015-01-14"
     ],
-    "src": "bseaspx:504067_84",
-    "why": "\u00a7160 page-era row-level heal (2026-09-24, DII = Institutions(Domestic), FII = Institutions(Foreign) in every format): fii 12.67 -> 36.10, dii 0.03 -> 0.03. handoff-fii Overseas Corporate Bodies 23.43 Marina Holdco (FPI) Ltd, curated FPI. Evidence: _shp_aspx_rowfix_audit.json"
+    "src": "bseaspx:504067:84 + shpperent",
+    "why": "\u00a7164r ZENSARTECH (2026-09-28, Quantmac v4): the page's Overseas Corporate Bodies row (10,301,294 shares of 43,960,662 = 23.4330%) is \"Electra Partners Mauritius Ltd\" in the company's own >1% table for this quarter, under a non-institution row and with no FPI mark; the \"Marina Holdco (FPI) Ltd\" name (and its FPI mark) appears only from Dec-2015, and no document proves Electra a foreign institution -> the block leaves FII (public; DII unchanged). The \u00a7160 hand-off had carried the later name back. fii 36.10 -> 12.67.",
+    "superseded": {
+     "cell": [
+      48.0675,
+      36.1,
+      0.03,
+      0.0022,
+      0.0034,
+      "2015-01-14"
+     ],
+     "was": [
+      48.0675,
+      12.6722,
+      0.0316,
+      0.0022,
+      0.0034,
+      "2015-01-14"
+     ],
+     "src": "bseaspx:504067_84",
+     "why": "\u00a7160 page-era row-level heal (2026-09-24, DII = Institutions(Domestic), FII = Institutions(Foreign) in every format): fii 12.67 -> 36.10, dii 0.03 -> 0.03. handoff-fii Overseas Corporate Bodies 23.43 Marina Holdco (FPI) Ltd, curated FPI. Evidence: _shp_aspx_rowfix_audit.json"
+    }
    },
    "2015-03-31": {
     "cell": [
+     47.6705,
+     13.0206,
+     0.5279,
+     0.5015,
+     0.0034,
+     "2015-04-14"
+    ],
+    "was": [
      47.6705,
      36.26,
      0.5279,
@@ -74819,19 +75375,39 @@
      0.0034,
      "2015-04-14"
     ],
-    "was": [
-     47.6705,
-     13.0213,
-     0.5279,
-     0.5015,
-     0.0034,
-     "2015-04-14"
-    ],
-    "src": "bseaspx:504067_85",
-    "why": "\u00a7160 page-era row-level heal (2026-09-24, DII = Institutions(Domestic), FII = Institutions(Foreign) in every format): fii 13.02 -> 36.26, dii 0.53 -> 0.52. handoff-fii Overseas Corporate Bodies 23.24 Marina Holdco (FPI) Ltd, curated FPI. Evidence: _shp_aspx_rowfix_audit.json | 2026-09-24: cell aligned to shp_refine_4dp's share-count dii/ins (the page's 2-dp value was re-derived after apply_cell_fix; proposed [0.52, 0.0034])"
+    "src": "bseaspx:504067:85 + shpperent",
+    "why": "\u00a7164r ZENSARTECH (2026-09-28, Quantmac v4): the page's Overseas Corporate Bodies row (10,301,294 shares of 44,326,774 = 23.2394%) is \"Electra Partners Mauritius Ltd\" in the company's own >1% table for this quarter, under a non-institution row and with no FPI mark; the \"Marina Holdco (FPI) Ltd\" name (and its FPI mark) appears only from Dec-2015, and no document proves Electra a foreign institution -> the block leaves FII (public; DII unchanged). The \u00a7160 hand-off had carried the later name back. fii 36.26 -> 13.02.",
+    "superseded": {
+     "cell": [
+      47.6705,
+      36.26,
+      0.5279,
+      0.5015,
+      0.0034,
+      "2015-04-14"
+     ],
+     "was": [
+      47.6705,
+      13.0213,
+      0.5279,
+      0.5015,
+      0.0034,
+      "2015-04-14"
+     ],
+     "src": "bseaspx:504067_85",
+     "why": "\u00a7160 page-era row-level heal (2026-09-24, DII = Institutions(Domestic), FII = Institutions(Foreign) in every format): fii 13.02 -> 36.26, dii 0.53 -> 0.52. handoff-fii Overseas Corporate Bodies 23.24 Marina Holdco (FPI) Ltd, curated FPI. Evidence: _shp_aspx_rowfix_audit.json | 2026-09-24: cell aligned to shp_refine_4dp's share-count dii/ins (the page's 2-dp value was re-derived after apply_cell_fix; proposed [0.52, 0.0034])"
+    }
    },
    "2015-06-30": {
     "cell": [
+     48.1495,
+     13.7912,
+     0.5416,
+     0.5126,
+     0.0034,
+     "2015-07-08"
+    ],
+    "was": [
      48.1495,
      37.02,
      0.5416,
@@ -74839,35 +75415,47 @@
      0.0034,
      "2015-07-08"
     ],
-    "was": [
-     48.1495,
-     36.31,
-     0.5416,
-     0.5126,
-     0.0034,
-     "2015-07-08"
-    ],
-    "src": "bseaspx:504067_86",
-    "why": "\u00a7160 page-era row-level heal (2026-09-25, DII = Institutions(Domestic), FII = Institutions(Foreign) in every format): fii 36.31 -> 37.02, dii 0.54 -> 0.54. generic-row-B Others 0.71 fii: next 'Foreign Portfolio Investments Corp' 17 holders 0.90; inst-sub-fii Others 0.71; handoff-fii Overseas Corporate Bodies 23.23 Marina Holdco (FPI) Ltd, curated FPI. Evidence: _shp_aspx_rowfix_audit.json (\u00a7160c)",
+    "src": "bseaspx:504067:86 + shpperent",
+    "why": "\u00a7164r ZENSARTECH (2026-09-28, Quantmac v4): the page's Overseas Corporate Bodies row (10,301,294 shares of 44,347,028 = 23.2288%) is \"Electra Partners Mauritius Ltd\" in the company's own >1% table for this quarter, under a non-institution row and with no FPI mark; the \"Marina Holdco (FPI) Ltd\" name (and its FPI mark) appears only from Dec-2015, and no document proves Electra a foreign institution -> the block leaves FII (public; DII unchanged). The \u00a7160 hand-off had carried the later name back. fii 37.02 -> 13.79.",
     "superseded": {
      "cell": [
       48.1495,
-      36.31,
-      0.54,
+      37.02,
+      0.5416,
       0.5126,
       0.0034,
       "2015-07-08"
      ],
      "was": [
       48.1495,
-      13.0794,
+      36.31,
       0.5416,
       0.5126,
       0.0034,
       "2015-07-08"
      ],
      "src": "bseaspx:504067_86",
-     "why": "\u00a7160 page-era row-level heal (2026-09-24, DII = Institutions(Domestic), FII = Institutions(Foreign) in every format): fii 13.08 -> 36.31, dii 0.54 -> 0.54. inst-sub-unresolved Others 0.71 stays as stored; handoff-fii Overseas Corporate Bodies 23.23 Marina Holdco (FPI) Ltd, curated FPI. Evidence: _shp_aspx_rowfix_audit.json"
+     "why": "\u00a7160 page-era row-level heal (2026-09-25, DII = Institutions(Domestic), FII = Institutions(Foreign) in every format): fii 36.31 -> 37.02, dii 0.54 -> 0.54. generic-row-B Others 0.71 fii: next 'Foreign Portfolio Investments Corp' 17 holders 0.90; inst-sub-fii Others 0.71; handoff-fii Overseas Corporate Bodies 23.23 Marina Holdco (FPI) Ltd, curated FPI. Evidence: _shp_aspx_rowfix_audit.json (\u00a7160c)",
+     "superseded": {
+      "cell": [
+       48.1495,
+       36.31,
+       0.54,
+       0.5126,
+       0.0034,
+       "2015-07-08"
+      ],
+      "was": [
+       48.1495,
+       13.0794,
+       0.5416,
+       0.5126,
+       0.0034,
+       "2015-07-08"
+      ],
+      "src": "bseaspx:504067_86",
+      "why": "\u00a7160 page-era row-level heal (2026-09-24, DII = Institutions(Domestic), FII = Institutions(Foreign) in every format): fii 13.08 -> 36.31, dii 0.54 -> 0.54. inst-sub-unresolved Others 0.71 stays as stored; handoff-fii Overseas Corporate Bodies 23.23 Marina Holdco (FPI) Ltd, curated FPI. Evidence: _shp_aspx_rowfix_audit.json"
+     }
     }
    },
    "2015-12-31": {
@@ -76123,6 +76711,30 @@
     ],
     "src": "bsexbrl:540691_1292017122534_SHP.xml",
     "why": "\u00a7164 row-level remainder rule \u2014 \u00a7164q event row (2026-09-27 \u00a7164q event rows; mid-quarter EVENT row, first row-level read): fii 9.98 -> 9.98, dii 5.99 -> 7.33. R1-R3 (\u00a7158 rules, first read). \u00a7158 rules (R1 institutional Any-Other holders placed as the filer's own 2022 form places them, R2 domestic institutions parked under non-institutions, R3 NBFC row) + \u00a7159 rule (non-institutional foreign holders the filer's 2022 form lists under Institutions (Foreign)) + D1 (unnamed rest of the institutional block = FII in the 2015-22 form unless every named holder is domestic). | R1-public-label Other Foreign Bodies -DR 0.86 public=0.86 fii=0.00  keyword; R2-named Trusts 2.2 PI OPPORTUNITIES FUND I 2.20(new-format:AlternativeInvestmentFunds)"
+   },
+   "2020-02-27": {
+    "cell": [
+     70.49,
+     6.4302,
+     8.434,
+     1.5695,
+     2.5949,
+     "2020-03-04",
+     509205,
+     "nse:SHP_145947_226957_04032020095032_WEB.xml (copy supplied by Quantmac 2026-09-27; NSE upload stamp 04032020095032)"
+    ],
+    "was": [
+     70.49,
+     2.2902,
+     8.424,
+     1.5695,
+     2.5949,
+     "2020-03-04",
+     509205,
+     "nse:SHP_145947_226957_04032020095032_WEB.xml (copy supplied by Quantmac 2026-09-27; NSE upload stamp 04032020095032)"
+    ],
+    "src": "bsexbrl:SHP_145947_226957_04032020095032_WEB.xml",
+    "why": "\u00a7164 row-level remainder rule \u2014 \u00a7164q event row (2026-09-28 \u00a7164q event rows; mid-quarter EVENT row, first row-level read): fii 2.29 -> 6.43, dii 8.42 -> 8.43. R2-FII (\u00a7159 rules). \u00a7158 rules (R1 institutional Any-Other holders placed as the filer's own 2022 form places them, R2 domestic institutions parked under non-institutions, R3 NBFC row) + \u00a7159 rule (non-institutional foreign holders the filer's 2022 form lists under Institutions (Foreign)) + D1 (unnamed rest of the institutional block = FII in the 2015-22 form unless every named holder is domestic). | R3-nbfc NBFCsRegisteredWithRbi 0.01; R2FII-holders Bodies Corporate Bodies Corporate 5.84 4.14 Jomei Investments Limited 4.14 fii(new-format:ForeignDirectInvestment)"
    }
   },
   "ACLGATI": {
@@ -79563,6 +80175,30 @@
     ],
     "src": "bsexbrl:541153_68202016421_SHP.xml",
     "why": "\u00a7164 row-level remainder rule \u2014 \u00a7164q event row (2026-09-27 \u00a7164q event rows; mid-quarter EVENT row, first row-level read): fii 27.33 -> 35.12, dii 13.32 -> 6.11. R1-R3 (\u00a7158 rules, first read). \u00a7158 rules (R1 institutional Any-Other holders placed as the filer's own 2022 form places them, R2 domestic institutions parked under non-institutions, R3 NBFC row) + \u00a7159 rule (non-institutional foreign holders the filer's 2022 form lists under Institutions (Foreign)) + D1 (unnamed rest of the institutional block = FII in the 2015-22 form unless every named holder is domestic). | R1-public-label Overseas Corporate Bodies 8.44 public=0.65 fii=7.79 CALADIUM INVESTMENT PTE LTD 7.79 foreign->fii(new-format:ForeignDirectInvestment) keyword; R2-label Others Qualified Institutional Buyer 1.23 "
+   },
+   "2019-10-21": {
+    "cell": [
+     60.96,
+     17.6496,
+     4.4236,
+     3.8339,
+     0.0,
+     "2019-10-22",
+     239997,
+     "nse:SHP_143264_156150_22102019110704_WEB.xml (copy supplied by Quantmac 2026-09-27; NSE upload stamp 22102019110704)"
+    ],
+    "was": [
+     60.96,
+     13.2696,
+     8.7936,
+     3.8339,
+     0.0,
+     "2019-10-22",
+     239997,
+     "nse:SHP_143264_156150_22102019110704_WEB.xml (copy supplied by Quantmac 2026-09-27; NSE upload stamp 22102019110704)"
+    ],
+    "src": "bsexbrl:SHP_143264_156150_22102019110704_WEB.xml",
+    "why": "\u00a7164 row-level remainder rule \u2014 \u00a7164q event row (2026-09-28 \u00a7164q event rows; mid-quarter EVENT row, first row-level read): fii 13.27 -> 17.65, dii 8.79 -> 4.42. R1-R3 (\u00a7158 rules, first read). \u00a7158 rules (R1 institutional Any-Other holders placed as the filer's own 2022 form places them, R2 domestic institutions parked under non-institutions, R3 NBFC row) + \u00a7159 rule (non-institutional foreign holders the filer's 2022 form lists under Institutions (Foreign)) + D1 (unnamed rest of the institutional block = FII in the 2015-22 form unless every named holder is domestic). | R1-foreign-holders Other Other 4.38 public=0.00 fii=4.38 CALADIUM INVESTMENT PTE LTD 3.39 foreign->fii(new-format:ForeignDirectInvestment); R3-nbfc NBFCsRegisteredWithRbi 0.01"
    }
   },
   "BANKINDIA": {
@@ -152589,6 +153225,30 @@
     ],
     "src": "bseaspx:534690_83",
     "why": "\u00a7164g page-era re-read of a former Nifty 500 member (2026-09-26; \u00a7160 rules \u2014 DII = Institutions(Domestic), FII = Institutions(Foreign) in every format): fii 9.72 -> 10.04, dii 9.04 -> 9.04. inst-sub-fii Foreign Portolio Investor ( Corporate) 0.32. Evidence: _shp_164_audit.json"
+   },
+   "2019-07-04": {
+    "cell": [
+     6.75,
+     15.6225,
+     11.0925,
+     0.0002,
+     8.1858,
+     "2019-07-09",
+     91084,
+     "nse:SHP_138205_111997_09072019102400_WEB.xml (copy supplied by Quantmac 2026-09-27; NSE upload stamp 09072019102400)"
+    ],
+    "was": [
+     6.75,
+     15.6225,
+     3.0525,
+     0.0002,
+     0.1758,
+     "2019-07-09",
+     91084,
+     "nse:SHP_138205_111997_09072019102400_WEB.xml (copy supplied by Quantmac 2026-09-27; NSE upload stamp 09072019102400)"
+    ],
+    "src": "bsexbrl:SHP_138205_111997_09072019102400_WEB.xml",
+    "why": "\u00a7164 row-level remainder rule \u2014 \u00a7164q event row (2026-09-28 \u00a7164q event rows; mid-quarter EVENT row, first row-level read): fii 15.62 -> 15.62, dii 3.05 -> 11.09. R1-R3 (\u00a7158 rules, first read). \u00a7158 rules (R1 institutional Any-Other holders placed as the filer's own 2022 form places them, R2 domestic institutions parked under non-institutions, R3 NBFC row) + \u00a7159 rule (non-institutional foreign holders the filer's 2022 form lists under Institutions (Foreign)) + D1 (unnamed rest of the institutional block = FII in the 2015-22 form unless every named holder is domestic). | R2-named Others Others 8.01 MAX  LIFE INSURANCE CO LTD A/C PARTICIPATING FUND 3.45(curated); DHFL PRAMERICA LIFE INSURANCE CO. LTD 2.73(regex); ADITYA BIRLA SUN LIFE INSURANCE COMPANY LIMITED 1.83(curated); R3-nbfc NBFCsRegisteredWithRbi 0.03"
    }
   },
   "ABGSHIP": {
@@ -182654,6 +183314,30 @@
     ],
     "src": "bsexbrl:532872_303202217413_SHP.xml",
     "why": "\u00a7164 row-level remainder rule \u2014 \u00a7164q event row (2026-09-27 \u00a7164q event rows; mid-quarter EVENT row, first row-level read): fii 2.40 -> 2.40, dii 0.76 -> 0.90. R1-R3 (\u00a7158 rules, first read). \u00a7158 rules (R1 institutional Any-Other holders placed as the filer's own 2022 form places them, R2 domestic institutions parked under non-institutions, R3 NBFC row) + \u00a7159 rule (non-institutional foreign holders the filer's 2022 form lists under Institutions (Foreign)) + D1 (unnamed rest of the institutional block = FII in the 2015-22 form unless every named holder is domestic). | R3-nbfc NBFCsRegisteredWithRbi 0.14"
+   },
+   "2018-08-03": {
+    "cell": [
+     68.11,
+     6.7336,
+     2.1427,
+     2.0003,
+     0.0,
+     "2018-08-16",
+     70549,
+     "nse:SHP_129300_35725_16082018115912_WEB.xml (copy supplied by Quantmac 2026-09-27; NSE upload stamp 16082018115912)"
+    ],
+    "was": [
+     68.11,
+     6.7336,
+     2.0927,
+     2.0003,
+     0.0,
+     "2018-08-16",
+     70549,
+     "nse:SHP_129300_35725_16082018115912_WEB.xml (copy supplied by Quantmac 2026-09-27; NSE upload stamp 16082018115912)"
+    ],
+    "src": "bsexbrl:SHP_129300_35725_16082018115912_WEB.xml",
+    "why": "\u00a7164 row-level remainder rule \u2014 \u00a7164q event row (2026-09-28 \u00a7164q event rows; mid-quarter EVENT row, first row-level read): fii 6.73 -> 6.73, dii 2.09 -> 2.14. R1-R3 (\u00a7158 rules, first read). \u00a7158 rules (R1 institutional Any-Other holders placed as the filer's own 2022 form places them, R2 domestic institutions parked under non-institutions, R3 NBFC row) + \u00a7159 rule (non-institutional foreign holders the filer's 2022 form lists under Institutions (Foreign)) + D1 (unnamed rest of the institutional block = FII in the 2015-22 form unless every named holder is domestic). | R3-nbfc NBFCsRegisteredWithRbi 0.05"
    }
   },
   "SUPERSPIN": {
@@ -210949,6 +211633,30 @@
     ],
     "src": "bseaspx:500620_88",
     "why": "\u00a7164a depository-receipt basis (2026-09-25, user: \"adopt all three recommendations\"): this company's own first XBRL prints Promoter + Public = 100 with the custodian (shares underlying ADRs/GDRs) OUTSIDE the 100, so its pre-2016 page values are moved from the page's % of (A+B+C) column onto (A+B): all slots x 1.003160 = total (A+B+C) 150777065 shares / (A+B) 150302044 shares on the same quarter's BSE page; fii 22.10 -> 22.17, dii 19.80 -> 19.86."
+   },
+   "2019-11-15": {
+    "cell": [
+     30.3,
+     22.015,
+     24.7056,
+     20.1033,
+     4.497,
+     "2019-11-25",
+     62161,
+     "nse:SHP_143379_175232_25112019104710_WEB.xml (copy supplied by Quantmac 2026-09-27; NSE upload stamp 25112019104710)"
+    ],
+    "was": [
+     30.3,
+     22.015,
+     22.6356,
+     20.1033,
+     2.437,
+     "2019-11-25",
+     62161,
+     "nse:SHP_143379_175232_25112019104710_WEB.xml (copy supplied by Quantmac 2026-09-27; NSE upload stamp 25112019104710)"
+    ],
+    "src": "bsexbrl:SHP_143379_175232_25112019104710_WEB.xml",
+    "why": "\u00a7164 row-level remainder rule \u2014 \u00a7164q event row (2026-09-28 \u00a7164q event rows; mid-quarter EVENT row, first row-level read): fii 22.02 -> 22.02, dii 22.64 -> 24.71. R1-R3 (\u00a7158 rules, first read). \u00a7158 rules (R1 institutional Any-Other holders placed as the filer's own 2022 form places them, R2 domestic institutions parked under non-institutions, R3 NBFC row) + \u00a7159 rule (non-institutional foreign holders the filer's 2022 form lists under Institutions (Foreign)) + D1 (unnamed rest of the institutional block = FII in the 2015-22 form unless every named holder is domestic). | R2-named Director or Director's Relatives Director or Director's Relatives 2.06 ICICI PRUDENTIAL LIFE INSURANCE COMPANY LIMITED 2.06(curated); R3-nbfc NBFCsRegisteredWithRbi 0.01"
    }
   },
   "GMRAIRPORT": {
@@ -229351,6 +230059,30 @@
     ],
     "src": "bsexbrl:500660_124202012118_SHP.xml",
     "why": "\u00a7158 row-level DII heal (2026-09-24, DII = Institutions(Domestic) in every format): dii 11.37 -> 11.97, fii 0.30 -> 0.30. R2-label Others Qualified Institutional Buyer 0.57 ; R3-nbfc NBFCsRegisteredWithRbi 0.03. Evidence: _shp_dii_rowfix_audit.json"
+   },
+   "2018-09-14": {
+    "cell": [
+     75.0,
+     1.4636,
+     10.9637,
+     2.7054,
+     0.0,
+     "2018-09-14",
+     91819,
+     "nse:SHP_129393_38414_14092018081257_WEB.xml (copy supplied by Quantmac 2026-09-27; NSE upload stamp 14092018081257)"
+    ],
+    "was": [
+     75.0,
+     1.4636,
+     10.9037,
+     2.7054,
+     0.0,
+     "2018-09-14",
+     91819,
+     "nse:SHP_129393_38414_14092018081257_WEB.xml (copy supplied by Quantmac 2026-09-27; NSE upload stamp 14092018081257)"
+    ],
+    "src": "bsexbrl:SHP_129393_38414_14092018081257_WEB.xml",
+    "why": "\u00a7164 row-level remainder rule \u2014 \u00a7164q event row (2026-09-28 \u00a7164q event rows; mid-quarter EVENT row, first row-level read): fii 1.46 -> 1.46, dii 10.90 -> 10.96. R1-R3 (\u00a7158 rules, first read). \u00a7158 rules (R1 institutional Any-Other holders placed as the filer's own 2022 form places them, R2 domestic institutions parked under non-institutions, R3 NBFC row) + \u00a7159 rule (non-institutional foreign holders the filer's 2022 form lists under Institutions (Foreign)) + D1 (unnamed rest of the institutional block = FII in the 2015-22 form unless every named holder is domestic). | R3-nbfc NBFCsRegisteredWithRbi 0.06"
    }
   },
   "GLENMARK": {
@@ -247999,6 +248731,30 @@
     ],
     "src": "bsexbrl:503806_1272022112523_SHP.xml",
     "why": "\u00a7158 row-level DII heal (2026-09-24, DII = Institutions(Domestic) in every format): dii 9.37 -> 14.03, fii 19.21 -> 19.21. R2-label Others ALTERNATIVE INVESTMENT FUND 0.26 ; R2-label Others Qualified Institutional Buyer 4.4 . Evidence: _shp_dii_rowfix_audit.json"
+   },
+   "2020-10-17": {
+    "cell": [
+     50.77,
+     17.8042,
+     13.3875,
+     11.8937,
+     1.4083,
+     "2020-10-17",
+     70182,
+     "nse:SHP_152277_344010_17102020034911_WEB.xml (copy supplied by Quantmac 2026-09-27; NSE upload stamp 17102020034911)"
+    ],
+    "was": [
+     50.77,
+     17.8042,
+     12.1675,
+     11.8937,
+     0.1883,
+     "2020-10-17",
+     70182,
+     "nse:SHP_152277_344010_17102020034911_WEB.xml (copy supplied by Quantmac 2026-09-27; NSE upload stamp 17102020034911)"
+    ],
+    "src": "bsexbrl:SHP_152277_344010_17102020034911_WEB.xml",
+    "why": "\u00a7164 row-level remainder rule \u2014 \u00a7164q event row (2026-09-28 \u00a7164q event rows; mid-quarter EVENT row, first row-level read): fii 17.80 -> 17.80, dii 12.17 -> 13.39. R1-R3 (\u00a7158 rules, first read). \u00a7158 rules (R1 institutional Any-Other holders placed as the filer's own 2022 form places them, R2 domestic institutions parked under non-institutions, R3 NBFC row) + \u00a7159 rule (non-institutional foreign holders the filer's 2022 form lists under Institutions (Foreign)) + D1 (unnamed rest of the institutional block = FII in the 2015-22 form unless every named holder is domestic). | R2-named Other Other 1.22 SBI LIFE INSURANCE CO. LTD 1.22(curated)"
    }
   },
   "SUNTV": {
@@ -266543,6 +267299,30 @@
     ],
     "src": "bsexbrl:541336_2062018145457_SHP.xml",
     "why": "\u00a7164 row-level remainder rule \u2014 \u00a7164q event row (2026-09-27 \u00a7164q event rows; mid-quarter EVENT row, first row-level read): fii 6.77 -> 6.77, dii 11.18 -> 11.61. R1-R3 (\u00a7158 rules, first read). \u00a7158 rules (R1 institutional Any-Other holders placed as the filer's own 2022 form places them, R2 domestic institutions parked under non-institutions, R3 NBFC row) + \u00a7159 rule (non-institutional foreign holders the filer's 2022 form lists under Institutions (Foreign)) + D1 (unnamed rest of the institutional block = FII in the 2015-22 form unless every named holder is domestic). | R3-nbfc NBFCsRegisteredWithRbi 0.43"
+   },
+   "2020-05-22": {
+    "cell": [
+     45.71,
+     3.8434,
+     13.2859,
+     7.9382,
+     2.9281,
+     "2020-05-27",
+     94113,
+     "nse:SHP_148531_261430_27052020052131_WEB.xml (copy supplied by Quantmac 2026-09-27; NSE upload stamp 27052020052131)"
+    ],
+    "was": [
+     45.71,
+     3.8434,
+     11.9559,
+     7.9382,
+     2.9281,
+     "2020-05-27",
+     94113,
+     "nse:SHP_148531_261430_27052020052131_WEB.xml (copy supplied by Quantmac 2026-09-27; NSE upload stamp 27052020052131)"
+    ],
+    "src": "bsexbrl:SHP_148531_261430_27052020052131_WEB.xml",
+    "why": "\u00a7164 row-level remainder rule \u2014 \u00a7164q event row (2026-09-28 \u00a7164q event rows; mid-quarter EVENT row, first row-level read): fii 3.84 -> 3.84, dii 11.96 -> 13.29. R1-R3 (\u00a7158 rules, first read). \u00a7158 rules (R1 institutional Any-Other holders placed as the filer's own 2022 form places them, R2 domestic institutions parked under non-institutions, R3 NBFC row) + \u00a7159 rule (non-institutional foreign holders the filer's 2022 form lists under Institutions (Foreign)) + D1 (unnamed rest of the institutional block = FII in the 2015-22 form unless every named holder is domestic). | R2-named Trusts Trusts 1.33 Edelweiss Alternative Investment Opportunities Trust - Edelweiss Crossover Opportunities Fund 1.33(regex)"
    }
   },
   "INFOMEDIA": {

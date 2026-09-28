@@ -1227,11 +1227,31 @@ def apply_event_redate(ev):
         n += 1
     return n
 
+EVENT_FILLS = os.path.join(HERE, "shp_event_fills.json")
+def apply_event_fills(ev):
+    """§164r: EVENT rows read from exchange documents the NSE fetch can no longer reach (NSE's master API is locked), per
+    scripts/shp_event_fills.json {"fills": {SYM: {ASON_ISO: [prom, fii, dii, mf, ins, sub, nsh, src]}}}. FILL-ONLY: a row is
+    added only where the symbol has none at that as-on date, so a fetched filing always wins and cell_fix / re-date /
+    revisions treat it like any fetched row. Runs in load_events AND save_events. -> rows added."""
+    try:
+        led = json.load(open(EVENT_FILLS, encoding="utf-8")).get("fills") or {}
+    except (OSError, ValueError):
+        return 0
+    n = 0
+    for sym, rows in led.items():
+        dst = ev.setdefault(sym, {})
+        if not isinstance(dst, dict): continue
+        for d, row in rows.items():
+            if d in dst: continue
+            dst[d] = list(row); n += 1
+    return n
+
 def load_events():
     try:
         ev = json.load(open(EVENTS, encoding="utf-8"))
     except Exception:
         return {}
+    apply_event_fills(ev)
     apply_event_redate(ev)
     return ev
 
@@ -1305,6 +1325,7 @@ def _same_cell(a, b):
     return a is not None and b is not None and all(abs(float(x) - float(y)) <= 0.0100001 for x, y in zip(a[:5], b[:5]))
 
 def save_events(e):
+    apply_event_fills(e)                  # §164r: document-read event rows the fetch cannot reach (fill-only)
     apply_event_redate(e)                 # §164m: never write a known-wrong as-on date back
     tmp = EVENTS + ".tmp"
     json.dump(e, open(tmp, "w", encoding="utf-8"), separators=(",", ":"), sort_keys=True)

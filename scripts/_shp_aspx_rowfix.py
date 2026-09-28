@@ -211,7 +211,11 @@ HANDOFF={  # symbol -> which row / holder the XBRL era shows to be B2-placed (FI
            # page's own row for that quarter, or the linked shpperent table's named holding for that quarter — never a number carried across quarters.
     "ITC":dict(rx=re.compile(r"foreign (bodies )?corporate|foreign compan|overseas corporate|foreign bod", re.I), names=re.compile(r"tobac+o manufactur|myddleton|rothmans", re.I),
                note="BAT entities (Tobacco Manufacturers, Myddleton, Rothmans), FDI in the 2022 form"),
-    "ZENSARTECH":dict(rx=re.compile(r"overseas corporate|foreign (bodies )?corporate|foreign compan", re.I), names=re.compile(r"marina holdco", re.I), note="Marina Holdco (FPI) Ltd, curated FPI"),
+    # from_q: the hand-off applies only from the quarter the filer's OWN >1% table names the FPI-marked holder. ZENSARTECH's
+    # 10,301,294-share block is "Electra Partners Mauritius Ltd" under Overseas Corporate Bodies Mar-2009..Sep-2015 (qtrid
+    # 61-87; Foreign Venture Capital Investors row Jun-2006..Dec-2008) and "Marina Holdco (FPI) Ltd" only from Dec-2015
+    # (qtrid 88): the "(FPI)" mark did not exist before, so those quarters stay public (§164r, Quantmac v4).
+    "ZENSARTECH":dict(rx=re.compile(r"overseas corporate|foreign (bodies )?corporate|foreign compan", re.I), names=re.compile(r"marina holdco", re.I), note="Marina Holdco (FPI) Ltd, curated FPI", from_q=88),
     "KOTAKBANK":dict(rx=re.compile(r"foreign bank", re.I), row_ok=False, names=re.compile(r"sumitomo mitsui", re.I), note="Sumitomo Mitsui Banking Corp, OtherInstitutionsForeign in the 2022 form (named holding only, never the 'Foreign Banks' row)"),
 }
 DOC_EVIDENCE={  # §160e — rows the filer's own annual reports / offer document decide (read 2026-09-25; PDFs cached in the session scratchpad)
@@ -359,6 +363,7 @@ def evaluate(h, cur, sym=None, qi=None, code=None, ctx=None, gctx=None):
     prom=b["prom"][-1][1] if b["prom"] else 0.0
     si,subi=classify_rows(b["inst"],"inst"); sn,subn=classify_rows(b["noninst"],"noninst")
     HO=HANDOFF.get(sym); hand=set()
+    if HO and qi is not None and qi < HO.get("from_q", 0): HO=None
     if HO:
         for lab,p,cls,io in subi+subn:
             if HO["rx"].search(lab.strip()) and p>=0.005: hand.add(lab)

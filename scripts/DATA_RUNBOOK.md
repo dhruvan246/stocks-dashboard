@@ -20368,6 +20368,45 @@ Aug-17 13.60 -> 20.97. Quantmac v3 cells whose served row changes: 126, 112 of t
 Left: event rows of the ~65 NSE-only companies (no BSE document; NSE's master API is locked and its cached windows hold
 quarter-ends only).
 
+### 164r. Quantmac reply v4 (28-Sep): our-side fixes — batch 1 (2026-09-28)
+Input `~/stocks-cache/shp/quantmac/v4` (their v4 workbook + `quantmac_documents_20260927.zip`, 66 files with sha256). They scored
+our 27-Sep feed from BEFORE §164p (DRREDDY 46.16); vs the 28-Sep live feed 166 of their 5,450 differing cells already agree.
+They ADOPTED Rule 1 (QIB = DII; exceptions COROMANDEL / POWERGRID / THERMAX where the filer's Sep-2022 filing puts the amount on
+the FPI line) and Rule 2 (DR base per company); NOT Rule 3 (a '(FPI)' holder inside an OCB row stays non-FII for them) — user
+28-Sep: keep ours (definition difference). Their BSE-access advice (Chrome UA + sec-ch-ua / Fetch-Metadata) is impersonation and is
+not adopted; our honest `bse_headers` reach every endpoint used here. Tool `scripts/_shp_164r_quantmac_v4.py` (stages below).
+(a) **ZENSARTECH Mar-2009..Sep-2015 (27 cells, their catch).** The §160 hand-off moved the page's Overseas Corporate Bodies row into
+FII as "Marina Holdco (FPI) Ltd"; the company's own >1% table names that 10,301,294-share block "Electra Partners Mauritius Ltd"
+for qtrid 61-87 and "Marina Holdco (FPI) Ltd" only from Dec-2015. No FPI mark then and no document proving Electra a foreign
+institution -> the block leaves FII (public; DII unchanged), e.g. Dec-2011 31.97 -> 8.23 (= Quantmac). Jun-2006..Dec-2008 the
+company filed it on the Foreign Venture Capital Investors row -> FII by its own mark, unchanged. `_shp_aspx_rowfix.HANDOFF`
+ZENSARTECH now carries `from_q=88` so a re-run cannot carry the name back.
+(b) **Mar-2016 lump quarters from BSE's own Table III (10 cells, `table3` + `table3-write` -> shp_fill_seam_aspx).** BSE api
+`Corp_shpSec_SHPPubShold_ng` (qtrid 89; copies supplied by Quantmac — the endpoint answers our honest client, the exact query
+parameters are still to find) read with the XBRL-era rules (FPI/FVCI = FII; Any-Other by labelled sub-rows, else named holders via
+the shared classifier + proof file, unnamed rest = FII unless every named holder is Indian (D1); NBFC = DII (R3); R2; depositories
+neither). ARVIND 22.59, BHARATFORG 15.93, BRITANNIA 17.96, DISHTV 19.39, KWALITY 1.87, LICHSGFIN 27.53, NATCOPHARM 19.35, RELIANCE
+20.14, SOMANYCERA 6.88, WIPRO 11.62 — 8 equal Quantmac; each sits between its own neighbours. ARVIND's label is misspelt "Foreign
+Instutional Investors" (typo-tolerant match). **VRLLOG held**: its only named holder NSR-PE Mauritius LLC has no document, and §164j
+keeps such holders where the store has them — a fresh quarter has no stored placement.
+(c) **Proof file +6 GLEIF records** (`shp_foreign_holder_evidence.json`): Mawer Investment Management Ltd (CA-AB), HSBC Bank
+(Mauritius) Ltd (MU), Arisaig Partners (Asia) Pte Ltd (SG; BRITANNIA misspells it "Arisag" in Mar/Jun-2016, correct in Sep-2016 —
+§164j had searched the misspelling), DB International (Asia) Ltd (SG), Standard Chartered IL&FS Asia Infrastructure Growth Fund (KY;
+the filer writes "IL AND FS"). Still no document: NSR-PE Mauritius LLC, MKCP Institutional Investor (Mauritius) II, JPMorgan
+Mauritius Holdings IV — all on the filers' own unlabelled Other-Institutions axis; their existing cells (VRLLOG / JISLJALEQS / NH
+Jun-2016) stay as stored per §164j (moving them to DII would put a foreign investor into DII: JISLJALEQS DII 3 -> 11). Open question
+for the user.
+(d) **NSE event filings supplied by Quantmac (`nsefill`)**: 37 NSE SHP XBRLs read by parse_shp, keyed by the file's OWN DateOfReport
+(EIHOTEL prints 2010-10-20 for its 20-Oct-2020 upload -> the upload day), identity = the file's Symbol, visible from the calendar
+day of NSE's upload stamp. 35 mid-quarter rows -> NEW fill-only ledger `scripts/shp_event_fills.json`, applied by
+`fetch_shareholding.apply_event_fills` in load_events and save_events (a fetched filing always wins); GFLLIMITED / MONSANTO Mar-2019
+quarterly -> shp_fill_n500_gaps. GAIL / INDIANB were quarterly filings we hold; VBL 29-Jul-2019 does not parse (held). The §164q
+runner (now reading the event store through load_events and each fill row's own file) gives them the row-level rules: 10 corrected
+(ABCAPITAL 27-Feb-2020 2.29 -> 6.43 = Quantmac; BANDHANBNK 21-Oct-2019 13.27 -> 17.65 = Quantmac; LAKSHVILAS: three Indian life
+insurers filed under non-institutions -> DII; GESHIP: ICICI Pru Life filed under "Director or Director's Relatives" -> DII).
+Applied on a worktree copy: 74 / 74 intended cells (39 quarterly, 35 event), 0 other rows; feed = origin's 5,828 symbols, 42 change;
+guards green. Batch 2 (dates) follows.
+
 ### 164j. Quantmac reply v3 (26-Sep): foreign-labelled rows were read as domestic; named foreign holders now need a document
 **Bug (reported by Quantmac for CUMMINSIND / IPCALAB, measured on origin).** `_shp_dii_rowfix.eval_filing` R1 set a category label
 to "domestic" when DOMLAB matched ("mutual fund", "financial institution", "\bbank") and LAB_FII did not — so "Foreign Mutual

@@ -1,0 +1,420 @@
+{
+ "_doc": [
+  "§164r (2026-09-28): EVENT rows read from exchange documents the NSE fetch cannot reach (NSE's master API is locked).",
+  "fetch_shareholding.apply_event_fills adds a row only where the symbol has none at that as-on date (fill-only, a fetched",
+  "filing always wins); cell_fix / shp_event_redate / revisions then treat it like any fetched row. Row = [prom, fii, dii,",
+  "mf, ins, visible-from (calendar day of the NSE upload stamp in the file name), holders, source]."
+ ],
+ "fills": {
+  "ABCAPITAL": {
+   "2019-10-16": [
+    73.57,
+    2.612,
+    8.4951,
+    1.3022,
+    2.7602,
+    "2019-10-18",
+    514619,
+    "nse:SHP_142574_153454_18102019043431_WEB.xml (copy supplied by Quantmac 2026-09-27; NSE upload stamp 18102019043431)"
+   ],
+   "2020-02-27": [
+    70.49,
+    2.2902,
+    8.424,
+    1.5695,
+    2.5949,
+    "2020-03-04",
+    509205,
+    "nse:SHP_145947_226957_04032020095032_WEB.xml (copy supplied by Quantmac 2026-09-27; NSE upload stamp 04032020095032)"
+   ]
+  },
+  "AMBER": {
+   "2020-09-10": [
+    41.08,
+    16.669,
+    8.5798,
+    8.5775,
+    0.0,
+    "2020-09-11",
+    37190,
+    "nse:SHP_150793_315717_11092020032343_WEB.xml (copy supplied by Quantmac 2026-09-27; NSE upload stamp 11092020032343)"
+   ]
+  },
+  "APOLLOHOSP": {
+   "2021-01-23": [
+    29.81,
+    53.5918,
+    10.4172,
+    6.8779,
+    3.3601,
+    "2021-01-25",
+    62162,
+    "nse:SHP_155562_398062_25012021124410_WEB.xml (copy supplied by Quantmac 2026-09-27; NSE upload stamp 25012021124410)"
+   ]
+  },
+  "BANDHANBNK": {
+   "2019-10-21": [
+    60.96,
+    13.2696,
+    8.7936,
+    3.8339,
+    0.0,
+    "2019-10-22",
+    239997,
+    "nse:SHP_143264_156150_22102019110704_WEB.xml (copy supplied by Quantmac 2026-09-27; NSE upload stamp 22102019110704)"
+   ]
+  },
+  "CENTRALBK": {
+   "2019-11-26": [
+    92.39,
+    0.1926,
+    4.589,
+    0.0268,
+    0.1144,
+    "2019-12-02",
+    170313,
+    "nse:SHP_143394_176965_02122019043223_WEB.xml (copy supplied by Quantmac 2026-09-27; NSE upload stamp 02122019043223)"
+   ]
+  },
+  "CUB": {
+   "2018-07-12": [
+    0.0,
+    28.2305,
+    22.8205,
+    18.8031,
+    0.2042,
+    "2018-07-18",
+    95597,
+    "nse:SHP_128391_25522_18072018120637_WEB.xml (copy supplied by Quantmac 2026-09-27; NSE upload stamp 18072018120637)"
+   ]
+  },
+  "EIHOTEL": {
+   "2020-10-20": [
+    35.74,
+    2.1927,
+    13.8717,
+    9.2,
+    3.2539,
+    "2020-10-20",
+    94781,
+    "nse:SHP_152969_347736_20102020113620_WEB.xml (copy supplied by Quantmac 2026-09-27; NSE upload stamp 20102020113620; the file's DateOfReport 2010-10-20 is not within 60 days before its upload (mistyped) -> keyed by the upload day)"
+   ]
+  },
+  "EMAMILTD": {
+   "2018-06-25": [
+    72.74,
+    12.0961,
+    6.0119,
+    5.7431,
+    0.0,
+    "2018-06-25",
+    58275,
+    "nse:SHP_126515_16025_25062018070643_WEB.xml (copy supplied by Quantmac 2026-09-27; NSE upload stamp 25062018070643)"
+   ]
+  },
+  "GESHIP": {
+   "2019-11-15": [
+    30.3,
+    22.015,
+    22.6356,
+    20.1033,
+    2.437,
+    "2019-11-25",
+    62161,
+    "nse:SHP_143379_175232_25112019104710_WEB.xml (copy supplied by Quantmac 2026-09-27; NSE upload stamp 25112019104710)"
+   ]
+  },
+  "GLAXO": {
+   "2018-09-14": [
+    75.0,
+    1.4636,
+    10.9037,
+    2.7054,
+    0.0,
+    "2018-09-14",
+    91819,
+    "nse:SHP_129393_38414_14092018081257_WEB.xml (copy supplied by Quantmac 2026-09-27; NSE upload stamp 14092018081257)"
+   ]
+  },
+  "HCLTECH": {
+   "2019-12-10": [
+    59.98,
+    27.4683,
+    8.4471,
+    5.6006,
+    1.9208,
+    "2019-12-11",
+    170765,
+    "nse:SHP_143437_179044_11122019014410_WEB.xml (copy supplied by Quantmac 2026-09-27; NSE upload stamp 11122019014410)"
+   ]
+  },
+  "HDFC": {
+   "2020-08-11": [
+    0.0,
+    70.0637,
+    18.6472,
+    9.5742,
+    8.7545,
+    "2020-08-11",
+    574367,
+    "nse:SHP_150732_305023_11082020021735_WEB.xml (copy supplied by Quantmac 2026-09-27; NSE upload stamp 11082020021735)"
+   ]
+  },
+  "IDBI": {
+   "2018-05-30": [
+    85.96,
+    1.1834,
+    9.1844,
+    0.5132,
+    8.2943,
+    "2018-05-30",
+    357468,
+    "nse:SHP_126458_13074_30052018040112_WEB.xml (copy supplied by Quantmac 2026-09-27; NSE upload stamp 30052018040112)"
+   ],
+   "2020-12-19": [
+    94.71,
+    0.5817,
+    3.0092,
+    0.0945,
+    0.3357,
+    "2020-12-19",
+    399558,
+    "nse:SHP_153391_371885_19122020063158_WEB.xml (copy supplied by Quantmac 2026-09-27; NSE upload stamp 19122020063158)"
+   ]
+  },
+  "INDOSTAR": {
+   "2020-05-22": [
+    45.71,
+    3.8434,
+    11.9559,
+    7.9382,
+    2.9281,
+    "2020-05-27",
+    94113,
+    "nse:SHP_148531_261430_27052020052131_WEB.xml (copy supplied by Quantmac 2026-09-27; NSE upload stamp 27052020052131)"
+   ]
+  },
+  "INTELLECT": {
+   "2018-09-11": [
+    31.66,
+    16.1214,
+    6.8456,
+    6.3935,
+    0.0,
+    "2018-09-11",
+    54727,
+    "nse:SHP_129387_38089_11092018030737_WEB.xml (copy supplied by Quantmac 2026-09-27; NSE upload stamp 11092018030737)"
+   ]
+  },
+  "JSL": {
+   "2021-09-22": [
+    69.0,
+    13.4768,
+    6.3881,
+    2.8708,
+    0.3842,
+    "2021-09-22",
+    105696,
+    "nse:SHP_160761_517076_22092021083113_WEB.xml (copy supplied by Quantmac 2026-09-27; NSE upload stamp 22092021083113)"
+   ]
+  },
+  "KARURVYSYA": {
+   "2018-08-20": [
+    2.1,
+    18.6642,
+    20.8768,
+    15.3268,
+    4.6123,
+    "2018-08-20",
+    143226,
+    "nse:SHP_129306_36215_20082018121827_WEB.xml (copy supplied by Quantmac 2026-09-27; NSE upload stamp 20082018121827)"
+   ]
+  },
+  "KTKBANK": {
+   "2020-03-18": [
+    0.0,
+    13.1233,
+    10.5472,
+    4.559,
+    5.7397,
+    "2020-03-19",
+    193816,
+    "nse:SHP_145978_231135_19032020111801_WEB.xml (copy supplied by Quantmac 2026-09-27; NSE upload stamp 19032020111801)"
+   ]
+  },
+  "LAKSHVILAS": {
+   "2019-07-04": [
+    6.75,
+    15.6225,
+    3.0525,
+    0.0002,
+    0.1758,
+    "2019-07-09",
+    91084,
+    "nse:SHP_138205_111997_09072019102400_WEB.xml (copy supplied by Quantmac 2026-09-27; NSE upload stamp 09072019102400)"
+   ]
+  },
+  "LICHSGFIN": {
+   "2021-09-08": [
+    45.24,
+    23.9375,
+    14.6418,
+    9.1764,
+    4.7649,
+    "2021-09-16",
+    375468,
+    "nse:SHP_160733_515200_16092021022552_WEB.xml (copy supplied by Quantmac 2026-09-27; NSE upload stamp 16092021022552)"
+   ]
+  },
+  "PNB": {
+   "2018-09-19": [
+    66.09,
+    4.5472,
+    20.5431,
+    7.7174,
+    12.5638,
+    "2018-09-25",
+    572550,
+    "nse:SHP_129426_39671_25092018121144_WEB.xml (copy supplied by Quantmac 2026-09-27; NSE upload stamp 25092018121144)"
+   ],
+   "2018-11-01": [
+    71.92,
+    3.0038,
+    16.483,
+    6.1099,
+    10.1658,
+    "2018-11-06",
+    615213,
+    "nse:SHP_132272_58181_06112018124719_WEB.xml (copy supplied by Quantmac 2026-09-27; NSE upload stamp 06112018124719)"
+   ],
+   "2020-04-01": [
+    85.59,
+    1.9383,
+    6.8433,
+    2.0862,
+    4.6782,
+    "2020-04-03",
+    954888,
+    "nse:SHP_146017_235605_03042020040019_WEB.xml (copy supplied by Quantmac 2026-09-27; NSE upload stamp 03042020040019)"
+   ],
+   "2020-12-21": [
+    76.87,
+    5.3914,
+    10.1591,
+    0.675,
+    8.2832,
+    "2020-12-21",
+    1142398,
+    "nse:SHP_153397_372275_21122020062123_WEB.xml (copy supplied by Quantmac 2026-09-27; NSE upload stamp 21122020062123)"
+   ]
+  },
+  "POWERGRID": {
+   "2021-08-03": [
+    51.34,
+    28.0497,
+    14.2189,
+    8.1171,
+    6.0594,
+    "2021-08-05",
+    704483,
+    "nse:SHP_160609_500232_05082021084602_WEB.xml (copy supplied by Quantmac 2026-09-27; NSE upload stamp 05082021084602)"
+   ]
+  },
+  "PRESTIGE": {
+   "2020-02-05": [
+    65.48,
+    29.5336,
+    4.0251,
+    2.7684,
+    1.0259,
+    "2020-02-06",
+    17528,
+    "nse:SHP_145895_215570_06022020034357_WEB.xml (copy supplied by Quantmac 2026-09-27; NSE upload stamp 06022020034357)"
+   ]
+  },
+  "SPARC": {
+   "2018-08-03": [
+    68.11,
+    6.7336,
+    2.0927,
+    2.0003,
+    0.0,
+    "2018-08-16",
+    70549,
+    "nse:SHP_129300_35725_16082018115912_WEB.xml (copy supplied by Quantmac 2026-09-27; NSE upload stamp 16082018115912)"
+   ]
+  },
+  "SRF": {
+   "2020-10-17": [
+    50.77,
+    17.8042,
+    12.1675,
+    11.8937,
+    0.1883,
+    "2020-10-17",
+    70182,
+    "nse:SHP_152277_344010_17102020034911_WEB.xml (copy supplied by Quantmac 2026-09-27; NSE upload stamp 17102020034911)"
+   ]
+  },
+  "TATAPOWER": {
+   "2020-08-13": [
+    46.86,
+    10.5405,
+    26.4194,
+    12.3782,
+    13.0056,
+    "2020-08-19",
+    448469,
+    "nse:SHP_150744_308478_19082020113253_WEB.xml (copy supplied by Quantmac 2026-09-27; NSE upload stamp 19082020113253)"
+   ]
+  },
+  "UNIONBANK": {
+   "2020-04-01": [
+    89.07,
+    0.8935,
+    5.1848,
+    1.3892,
+    3.6865,
+    "2020-04-04",
+    533474,
+    "nse:SHP_146026_235756_04042020023052_WEB.xml (copy supplied by Quantmac 2026-09-27; NSE upload stamp 04042020023052)"
+   ]
+  },
+  "VBL": {
+   "2019-09-09": [
+    69.81,
+    18.5131,
+    6.462,
+    6.1431,
+    0.0812,
+    "2019-09-09",
+    33791,
+    "nse:SHP_140709_135564_09092019041924_WEB.xml (copy supplied by Quantmac 2026-09-27; NSE upload stamp 09092019041924)"
+   ]
+  },
+  "VMART": {
+   "2021-02-03": [
+    46.67,
+    24.4003,
+    20.879,
+    20.879,
+    0.0,
+    "2021-02-03",
+    20722,
+    "nse:SHP_155576_401754_03022021075028_WEB.xml (copy supplied by Quantmac 2026-09-27; NSE upload stamp 03022021075028)"
+   ]
+  },
+  "ZYDUSWELL": {
+   "2020-09-29": [
+    64.82,
+    1.4021,
+    26.1322,
+    9.1023,
+    1.0348,
+    "2020-09-29",
+    43819,
+    "nse:SHP_150829_323447_29092020054322_WEB.xml (copy supplied by Quantmac 2026-09-27; NSE upload stamp 29092020054322)"
+   ]
+  }
+ }
+}

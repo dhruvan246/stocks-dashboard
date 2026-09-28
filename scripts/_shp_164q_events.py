@@ -19,7 +19,7 @@ C = os.path.expanduser("~/stocks-cache/shp"); W = os.path.join(C, "ev164q")
 LO, HI = "2015-12-01", "2022-12-31"          # old-form filings only: match_filing refuses 2022-form XBRLs by their members
 _dirs = sorted({d for d in glob.glob(os.path.join(C, "**", "xbrl*"), recursive=True) if os.path.isdir(d)} |
                {os.path.join(C, "ex_xbrl"), os.path.join(C, "fii_session/shp_src/xbrl_bse")})
-os.environ["DII_ROWFIX_CACHES"] = os.pathsep.join([os.path.join(W, "xbrl_bse")] + [d for d in _dirs if os.path.isdir(d)])
+os.environ["DII_ROWFIX_CACHES"] = os.pathsep.join([os.path.join(W, "xbrl_bse"), os.path.join(W, "xbrl_nse")] + [d for d in _dirs if os.path.isdir(d)])
 os.environ.setdefault("DII_ROWFIX_WORK", W)
 # bse_all + symbol-keyed links to §180b's code-keyed lists (all_fill/bse_lists_v2) for event symbols bse_all lacks
 os.environ.setdefault("DII_ROWFIX_LISTS", os.path.join(W, "lists_all") if os.path.isdir(os.path.join(W, "lists_all")) else os.path.join(C, "bse_all"))
@@ -55,8 +55,14 @@ def near_date_files(by, store_dates):
 def classify(out, only=None):
     import _shp_d1_rowfix as D1
     D = D1.D
-    ev = json.load(open(os.path.join(HERE, "shp_events.json")))
+    import fetch_shareholding as F
+    ev = F.load_events()                                                   # fills (§164r) + re-dates (§164m) applied
     ev = {s: v for s, v in ev.items() if not s.startswith("_") and isinstance(v, dict)}
+    nse = {}                                                               # rows read from a supplied NSE file: their own file
+    for s_, rows in ev.items():
+        for d_, row in rows.items():
+            m = re.search(r"nse:(SHP_\d+_\d+_(\d{14})_WEB\.xml)", str(row[7] if len(row) > 7 else ""))
+            if m: nse.setdefault(s_, {})[d_] = [(m.group(2), m.group(1))]
     code2sym = {}
     for s in ev:
         lp = os.path.join(D.LISTS, s + ".json")
@@ -69,7 +75,10 @@ def classify(out, only=None):
         by = event_files(bse_rows, lo, hi)
         code = next(((r.get("XbrlFile") or "").split("_")[0] for r in bse_rows or [] if (r.get("XbrlFile") or "").strip()), None)
         sym = code2sym.get(code)
-        return near_date_files(by, [d for d in (ev.get(sym) or {}) if lo <= d <= hi]) if sym else by
+        out = near_date_files(by, [d for d in (ev.get(sym) or {}) if lo <= d <= hi]) if sym else by
+        for d_, fl in (nse.get(sym) or {}).items():
+            if lo <= d_ <= hi: out.setdefault(d_, []); out[d_] = fl + [x for x in out[d_] if x not in fl]
+        return out
     tmp = tempfile.mkdtemp(prefix="ev164q_"); os.makedirs(os.path.join(tmp, "scripts"))
     json.dump(ev, open(os.path.join(tmp, "scripts", "shp_history.json"), "w"))          # the event store stands in for the history
     shutil.copy2(os.path.join(HERE, "shp_cell_fix.json"), os.path.join(tmp, "scripts", "shp_cell_fix.json"))
@@ -96,7 +105,7 @@ def classify(out, only=None):
 
 def write(path):
     import fetch_shareholding as F
-    P = json.load(open(path)); ev = json.load(open(os.path.join(HERE, "shp_events.json")))
+    P = json.load(open(path)); ev = F.load_events()
     lp = os.path.join(HERE, "shp_cell_fix.json"); raw = open(lp, encoding="utf-8").read(); led = json.loads(raw); fix = led.setdefault("fix", {})
     ap = os.path.join(HERE, "_shp_164_audit.json")
     audit = json.load(open(ap, encoding="utf-8")) if os.path.exists(ap) else {"_doc": [], "cells": {}}
