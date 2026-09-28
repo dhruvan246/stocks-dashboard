@@ -24283,3 +24283,8 @@ AVPINFRA Mar-26 std (held 193.11 / 23.17 vs 227.64 / 18.95), KRISHCA Mar-26 PAT 
 original filing's read; 18 reader rows named a file not in the candidate lists (dropped). verify_fills_live 0/0/0.
 **Resume:** launch b009… with the same PROMPT.md (one prompt per batch, 3 at a time), then --merge-vision → apply → push →
 row_periods after refresh-stock-fin.
+**§210d addendum — XBRL originals (2026-09-28, low-token pass).** For halves held only because their original filing was unread,
+the §148 SME XBRL cache (scripts/_xbrl_cache_sme, header period Apr–Sep / Oct–Mar) is that original filing: 2,622 XBRL
+statements added to reads.json as original-filing evidence (OneD RevenueFromOperations, rupees; date = the file's upload stamp)
+→ +14 std halves stored; held-for-original 362 → 336. KRISHCA / AVPINFRA / ABCOTS disagreements still open (KRISHCA's XBRL has no
+ProfitLossForPeriod tag — the stored 3.06 comes from another element, not traced).
