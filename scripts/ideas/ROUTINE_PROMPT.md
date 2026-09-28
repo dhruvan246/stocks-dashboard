@@ -48,7 +48,7 @@ CLOUD ROUTINE: fresh clone, throwaway VM, clock is UTC. Every timestamp must be 
 
 6. SCORE + POINTER
    python3 scripts/ideas/score.py
-   docs/ideas/latest.json: {"updated", "scan_date", "scan_file", "run_file", "ideas_count", "universe", "candidates", "signals_strong", "govt_kept"}. Check that ideas.json, latest.json, track.json, signals.json, govt.json, india_spot.json, nmdc_history.json, minsteel_mumbai.json, india_history.json.gz (gzip), theme_map.json and commodity_map.json all parse.
+   docs/ideas/latest.json: {"updated", "scan_date", "scan_file", "run_file" (relative to docs/ideas/, exactly "scan/<day>.json" and "runs/<day>.json" — no "ideas/" prefix), "ideas_count", "universe", "candidates", "signals_strong", "govt_kept"}. Check that ideas.json, latest.json, track.json, signals.json, govt.json, india_spot.json, nmdc_history.json, minsteel_mumbai.json, india_history.json.gz (gzip), theme_map.json and commodity_map.json all parse.
 
 7. LAND IT
    git add docs/ideas/universe.json docs/ideas/latest.json docs/ideas/ideas.json docs/ideas/track.json docs/ideas/scan/<asof>.json docs/ideas/runs/<asof>.json docs/ideas/signals.json docs/ideas/govt.json docs/ideas/theme_map.json docs/ideas/commodity_map.json docs/ideas/spot.json docs/ideas/spot_series.json docs/ideas/spot_history.csv docs/ideas/india_spot.json docs/ideas/india_spot_history.csv docs/ideas/nmdc_history.json docs/ideas/minsteel_mumbai.json docs/ideas/india_history.json.gz docs/ideas/wpi.json.gz docs/ideas/trade/   # explicit paths only; NEVER git add -A; never commit scripts/ideas/_cache

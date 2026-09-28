@@ -294,8 +294,10 @@
   try { latest = await (await fetch('./ideas/latest.json')).json(); } catch (e) {}
   try { ideas = await (await fetch('./ideas/ideas.json')).json(); } catch (e) {}
   try { track = await (await fetch('./ideas/track.json')).json(); } catch (e) {}
-  if (latest && latest.scan_file) { try { scan = await (await fetch('./ideas/' + latest.scan_file)).json(); } catch (e) {} }
-  if (latest && latest.run_file) { try { run = await (await fetch('./ideas/' + latest.run_file)).json(); } catch (e) {} }
+  // scan_file/run_file are relative to docs/ideas/ ("scan/<day>.json"); tolerate a run that wrote "ideas/scan/…".
+  const relIdeas = (f) => './ideas/' + String(f).replace(/^(\.\/)?(docs\/)?ideas\//, '');
+  if (latest && latest.scan_file) { try { scan = await (await fetch(relIdeas(latest.scan_file))).json(); } catch (e) {} }
+  if (latest && latest.run_file) { try { run = await (await fetch(relIdeas(latest.run_file))).json(); } catch (e) {} }
   // both in parallel: signals.json is over a megabyte and must not hold up the rest of the page
   const grab = (u) => fetch(u).then(r => r.ok ? r.json() : null).catch(() => null);
   const [govt, signals] = await Promise.all([grab('./ideas/govt.json'), grab('./ideas/signals.json')]);
