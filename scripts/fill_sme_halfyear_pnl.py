@@ -29,8 +29,13 @@ WRITES (fill-only; user decisions 2026-09-28: "Proven rows, no EPS", "Fill op + 
      depreciation - other income; EBIT = op - depreciation), only when all four lines are printed (a missing line is
      never read as 0 — §209), never a new row, never a bank / NBFC row, strip_lender_ebit applied. On these files the
      reader reproduces the op the stores already hold on 706 of 707 halves (GOLDKART: negative depreciation, held).
-  Journal: scripts/sme_halfyear_fills.json {"SYM|QE|std|con": {f, rev, pat, pnl: [lines], op, ebit}} — op / ebit only
-  when written here; verify_fills_live re-checks them after every refresh (BASIS_KEYED).
+  Journal: scripts/sme_halfyear_fills.json {"SYM|QE|std|con": {f, rev, pat, pnl: [lines], aq: [flags added], op, ebit}}
+  — op / ebit only when written here; verify_fills_live re-checks them after every refresh (BASIS_KEYED).
+  RETRACTION (every run, before filling): a journalled row that LOST ITS PROOF — row_periods no longer marks it six
+  months on that basis, or the page row no longer shows the revenue / profit the filing was matched on — gets back
+  exactly what was written: op / EBIT still holding the journalled value (a store row left with nothing else is
+  removed), the cell's P&L lines + pm (+ aq). A filing missing from this Mac is not a lost proof. More than max(50, 5 %)
+  of the journal at once aborts unless --force-retract (a wrong slice set must not take everything back).
   HELD (printed, never written): negative depreciation (GOLDKART, ITALIANE, ROXHITECH — §205's class); no filing prints
   the stored profit (IPSL con 0.00 vs 3.88; MAHICKRA 2.53 vs 1.19; …); no filing whose OneD is the half (IEML: OneD
   empty, the half is in FourD); a filing armed in scale_fix (its revenue is read unscaled here — none today).
@@ -136,6 +141,7 @@ def main():
     ap.add_argument("--apply", action="store_true")
     ap.add_argument("--plan", help="write every target with its verdict and values to this JSON")
     ap.add_argument("--check", action="store_true")
+    ap.add_argument("--force-retract", action="store_true", help="allow a retraction larger than max(50, 5%% of the journal)")
     a = ap.parse_args()
     if a.check:
         sys.exit(check())
@@ -177,6 +183,65 @@ def main():
                        **journal)
     C, H = Counter(), Counter()
     plan, n_lines, n_cells, n_op, n_ebit, n_rl = [], 0, 0, 0, 0, 0
+
+    # RETRACT FIRST: an entry whose ROW lost its proof — row_periods no longer marks it six months on that basis, or the
+    # page row no longer shows the revenue / profit the filing was matched on (another writer retracted or changed them)
+    # — takes back exactly what this script wrote there: op / EBIT still holding the journalled value, a store row left
+    # with nothing else in it, the cell's P&L lines + pm (+ the audit flags once the cell is balance-sheet-only again,
+    # which is what it was). A filing merely missing from this Mac is NOT a lost proof and retracts nothing.
+    # (§210c's retraction of 2020-25 PDF halves left 24 rows holding only this script's op / EBIT, 2026-09-28.)
+    def row_ok(key, v):
+        sym, qe, bs = key.split("|")
+        b, i = ("s", 0) if bs == "std" else ("c", 1)
+        e = (rp.get(sym) or {}).get(qe) or {}
+        if e.get("m") != 6 or e.get("src") == "bse-pf" or e.get(b) is None:
+            return False
+        F = slice_of(sym)
+        prow = (F.get("revop") or {}).get(qe) or []
+        prof = ({r[0]: r for r in (F.get("fund") or [])}.get(int(qe)) or [None] * 5)[1 if b == "s" else 3]
+        return (len(prow) > i and prow[i] is not None and abs(prow[i] - v["rev"]) <= EQ and prof is not None
+                and R.same_row(prof, v["pat"]))
+    stale = [k for k, v in journal.items() if k.count("|") == 2 and isinstance(v, dict) and not row_ok(k, v)]
+    n_jr = sum(1 for k in journal if k.count("|") == 2)
+    if len(stale) > max(50, n_jr // 20) and not a.force_retract:
+        sys.exit("ABORT: %d of %d journalled rows lost their proof — more than expected; check row_periods / the slices, "
+                 "or pass --force-retract" % (len(stale), n_jr))
+    n_ret, kept_other = Counter(), []
+    for key in stale:
+        v = journal.pop(key)
+        sym, qe, bs = key.split("|")
+        b, i = ("s", 0) if bs == "std" else ("c", 1)
+        for store, label in ((revop, "sf_revop"), (revl, "revop_fundamentals")):
+            row = (store.get(sym) or {}).get(qe)
+            if not row:
+                continue
+            nulled = False
+            for name, slot in (("op", 2 + i), ("ebit", 7 + i)):
+                if name in v and len(row) > slot and row[slot] is not None:
+                    if abs(row[slot] - v[name]) <= 0.011:
+                        row[slot] = None; nulled = True; n_ret[label + " " + name] += 1
+                    else:
+                        kept_other.append((key, label, name, row[slot], v[name]))   # another writer's value: untouched
+            if nulled and all(row[j] is None for j in (0, 1, 2, 3, 4, 5, 7, 8)):
+                del store[sym][qe]; n_ret[label + " rows left empty -> removed"] += 1
+                if not store[sym]:
+                    del store[sym]
+        cell = ((xl.get(sym) or {}).get(qe) or {}).get(b)
+        if cell and cell.get("pm") == 6:
+            for k in (v.get("pnl") or []) + ["pm"]:
+                cell.pop(k, None)
+            if not any(k in cell for k in PNL_ANY):
+                for k in v.get("aq", ("aud", "qual")):
+                    cell.pop(k, None)
+            if not cell:
+                del xl[sym][qe][b]
+                if not xl[sym][qe]:
+                    del xl[sym][qe]
+            n_ret["xbrl_extra cells"] += 1
+        print("  RETRACTED %s (row no longer proven / changed): %s" % (key, v.get("f", "")[:48]))
+    for x in kept_other:
+        print("  LEFT (another writer's value now):", x)
+
     for sym in sorted(rp):
         for qe, e in sorted(rp[sym].items()):
             if e.get("m") != 6:
@@ -232,12 +297,14 @@ def main():
                     if not cell:
                         C["P&L: cell created (no balance sheet on file)"] += 1
                     cell.update(ln)
-                    if x["aud"]:
-                        cell.setdefault("aud", x["aud"])
-                    if x["qual"]:
-                        cell.setdefault("qual", 1)
+                    aq = []
+                    for k_, v_ in (("aud", x["aud"]), ("qual", x["qual"] or None)):
+                        if v_ and k_ not in cell:
+                            cell[k_] = v_; aq.append(k_)
                     cell["pm"] = 6
                     entry["pnl"] = sorted(ln)
+                    if aq:
+                        entry["aq"] = aq                 # the flags this script added (a retraction takes back exactly these)
                     n_cells += 1; n_lines += len(ln)
                     C["P&L: cell filled"] += 1
                 rec["lines"] = ln
@@ -282,22 +349,26 @@ def main():
         print("  HELD %-53s %d" % (k, H[k]))
     print("write: %d cells gain %d P&L lines; op %d, EBIT %d slots in sf_revop (%d mirrored into revop_fundamentals)"
           % (n_cells, n_lines, n_op, n_ebit, n_rl))
+    print("retract: %d journalled rows lost their proof — %s" % (len(stale), dict(n_ret) or "nothing to take back"))
     if a.plan:
         json.dump(plan, open(a.plan, "w"), separators=(",", ":"))
     if not a.apply:
         print("(dry run — pass --apply to write)")
         return
-    if n_cells:
+    rx = n_ret.get("xbrl_extra cells", 0)
+    rs = sum(n for k, n in n_ret.items() if k.startswith("sf_revop"))
+    rl_ = sum(n for k, n in n_ret.items() if k.startswith("revop_fundamentals"))
+    if n_cells or rx:
         blob = json.dumps(xl, separators=(",", ":")).encode("utf-8")
         open(GZ, "wb").write(gzip.compress(blob, 9, mtime=0))
         print("wrote", os.path.relpath(GZ, ROOT))
-    if n_op or n_ebit:
+    if n_op or n_ebit or rs:
         json.dump(revop, open(REVOP, "w"), separators=(",", ":"))
         print("wrote", os.path.relpath(REVOP, ROOT))
-    if n_rl:
+    if n_rl or rl_:
         json.dump(revl, open(REVOP_L, "w"), separators=(",", ":"))
         print("wrote", os.path.relpath(REVOP_L, ROOT))
-    if n_cells or n_op or n_ebit:
+    if n_cells or n_op or n_ebit or stale:
         with open(JOURNAL, "w", encoding="utf-8") as fh:
             json.dump(journal, fh, ensure_ascii=False, indent=0, sort_keys=False)
             fh.write("\n")
