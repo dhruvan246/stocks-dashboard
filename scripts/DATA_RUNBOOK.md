@@ -23979,3 +23979,20 @@ may still come from any filing. **Heal:** all 306 cells retracted (rev / PAT slo
 exactly the §210a value; op / EBIT and every other slot untouched — measured 0 other-slot changes), 207 rows the fill had created
 removed, then re-applied: **170 cells (128 std + 42 con)**, 236 held pending the original filing's read. verify_fills_live 0/0/0.
 The image reads (§210d) must therefore also read the ORIGINAL September filing for H1.
+**§213a — the fill takes back what it wrote when a row LOSES its proof (2026-09-28 ~09:45 IST).** Twenty minutes after §213 landed,
+§210c (another session) retracted its §210a PDF halves (rev / PAT only) and row_periods dropped 113 rows (9453a6ca4). 24 of §213's
+filled cells sat on those rows (ANNAPURNA / AVSL / DRSDILIP / … Sep-23, DIVINEHIRA / ELGNZ / KKJEWELS / … Mar-25, PULZ Sep-23 s + c):
+their store rows now held ONLY §213's op / EBIT (ANNAPURNA 20230930 `[—, —, 12.99, —, —, —, 0, 11.19, —]`, no profit row) — a
+quarter-looking results row with a six-month op and no revenue. Their filings were late XBRL submissions (Jun–Aug 2024 for 2023
+halves), not the originals §210c now requires. **Rule added to `fill_sme_halfyear_pnl.py` (every run, before filling):** a journalled
+row whose proof is gone (row_periods no longer marks it six months on that basis, or the page row no longer shows the journalled revenue
+/ profit) gets back exactly what the script wrote — op / EBIT still equal to the journal value → None (a store row left with nothing else
+→ removed), the cell's P&L lines + pm (+ `aq`, the audit flags it added — recorded from now on) — and the journal entry goes; a filing
+merely missing from this Mac retracts nothing; more than max(50, 5 %) at once aborts without `--force-retract`. Landed: 24 retracted
+(48 op / EBIT values, 23 rows removed from each store, 24 detail cells back to balance-sheet-only) + 5 newly proven cells filled
+(AATMAJ Mar-25, ABCOTS Sep-23 / Sep-24, ABHAPOWER and ACTIVEINFR Mar-25 — §210c's original-filing re-store); journal 2,168 → 2,149;
+verify_fills_live 39,582 → 39,544 checked (−48 + 10), MISSING / REVERTED / RESURRECTED 0; a second run changes nothing;
+`verify_land2.py` (kit) proves every removal is a dropped entry's own value. Page (node, the 25 slices): 0 errors; ANNAPURNA's stray
+2023-09 row (op 13 / EBIT 11.2, no revenue) gone, ABHAPOWER Oct–Mar 2025 op 5.4 / OPM 15.1 %; 8 pages lose the Mar-2025 (SERVICE:
+Mar-2024) Balance-sheet column — the page shows a year-end balance sheet only where a result row exists, and those rows existed only
+between §210a and this retraction (none at session start, 0cb257d0c): the pages are back to this morning's state.
