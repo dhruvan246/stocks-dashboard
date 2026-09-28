@@ -23649,3 +23649,42 @@ cells hold fc 0.0 where Moneycontrol prints 0.27 / 19.51.
 every archive field for "equals another field of the same page" before trusting a template. And a value derived from the same
 page is a candidate, never proof: only a second reader (a vendor's transcription, the company's own year total, its PDF)
 proves a figure.
+
+## §210a — NIFTY SME EMERGE MEMBERS' SME-ERA RESULTS FROM THE FILINGS' PDFs, 2020→ (2026-09-28, user: "Text PDFs, then ask")
+**NO ASSUMPTIONS, NO GUESSWORK — every number below was measured this session.**
+**Why PDFs.** NSE lists no SME results XBRL before the FY24 year-end (§148/§181d: the listing's `xbrl` is ".../xbrl/-"), and
+its results-detail route (`/api/corporates-financial-results-data`) only echoes the query back. For the 687 members since 2020
+(ever.json) a half is DUE when its results fall due (period end + 60 d) after the first SME trading day, until the company left
+the SME series: 3,698 due, 1,764 held (47.7 %), 1,934 missing / 508 companies (the first count, 4,594, wrongly included halves
+ending up to a year before listing).
+**Source.** `corporate-announcements?index=sme&symbol=S&from_date=01-10-2019` (one request per symbol, every renamed symbol,
+raw rows in ~/stocks-cache/nse_sme_pdf/ann/) → the attachment of each result-type announcement ("result" in desc, or "Outcome of
+Board Meeting") in the March window (Apr 1 → Sep 30) and the next September window (Oct 1 → Jan 31 — a Sep filing reprints the
+prior year's H2 and year beside its H1). Top 4 per window by priority; 4,825 attachments fetched (8 workers, ~28 GB, 0 failed).
+An announcement is dated to the second; a later "financial results" LISTING date can lag it by weeks (DYNAMIC Sep-21: 14-Nov
+announcement vs 30-Nov listing filingDate) — the announcement is the point-in-time date.
+**What the attachments are (sample of 102):** 8 clean digital statements, 12 image-only scans, 18 scans with an OCR text layer
+(garbled: "Rovenue", "t0324.78", "442,86"), 60 cover letters / other documents.
+**Reader (`scripts/read_sme_result_pdf.py`, geometry via PyMuPDF words):** statement page = a revenue row (OCR-tolerant
+`r[eo]v[eo]nue from op…`) + the FINAL profit row (for the period / after tax; a label wrapped under "Profit/(Loss)" joins the
+line above); columns = the header LINE holding the most period-end dates (never the title's date — ACCENTMIC FY24); a row's
+figures = numbers under the date columns on the label line, the next two lines, or the line just above (scans print them
+higher — AARON FY20); a formula "(9 + 12)" is label text; basic EPS; unit phrase; OCR page = a >50 % page image.
+**Proof (`scripts/apply_nse_sme_results_pdf.py`):** a year counts only when it CLOSES in one filing — revenue H1 + H2 = FY to
+1.5 units of the last printed decimal, profit too when printed; an OCR'd page only when BOTH close (§168h). The unit printed
+must be PROVEN: a closed figure equals a value we hold (the XBRL-era cells), or basic EPS × the company's nearest share count
+(shares_history.json) lands within 2× of the profit in rupees (units differ by ≥ 10×), or a figure agrees with another proven
+filing; a match only at another power of ten = unit conflict, held. Quarterly filers are excluded (a filing with a Jun / Dec
+column, or a stored Jun / Dec row that year: their Sep / Mar cells are quarters — GANESHIN / CMRSL were caught this way).
+`ann` = the earliest proven filing that printed the figure. Fill-only.
+**Result.** 1,208 company-years read, 208 proved (standalone year closes); 367 statements close, 247 unit-proven, 9 unit
+conflicts held, 63 printed a unit not yet proven (held), 49 printed none (held). Written: **222 standalone + 84 consolidated
+half-year cells** (profit + revenue), 25 cells we already held agree exactly (the holdout), 1 disagrees and is NOT written —
+KRISHCA Mar-26 standalone profit held 3.06 vs the filing's 5.43 (its H1 618.01 + H2 542.56 = FY 1,160.57 lakh closes; stored
+value suspect, open). 10 halves held because a later filing reprints another figure. Coverage **1,764 → 1,993 of 3,698 (53.9 %)**.
+verify_fills_live: MISSING 0 / REVERTED 0 / RESURRECTED 0.
+**Row lengths.** `scripts/nse_sme_pdf_proofs.json` (tracked): every half whose stored revenue equals a proven PDF half, with its
+closed year; `build_row_periods.py` gains an "nse-pdf" path (re-checks h1 + h2 = fy and stored = half every run, like "bse-pf").
+Regenerate row_periods after refresh-stock-fin has published the new rows.
+**Open.** The rest of the gap is scans (no text layer) and statements the reader cannot place — vision reads need the user's OK
+(memory feedback-vision-reads-last-ask-first).

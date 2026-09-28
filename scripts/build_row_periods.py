@@ -415,6 +415,49 @@ def main():
             out.setdefault(sym, {})[qe] = e_
             n_rows += 1; n_pf += 1
 
+    # NSE SME half-years proven from result PDFs (scripts/nse_sme_pdf_proofs.json, runbook §210a): re-check the year the
+    # proof carries (h1 + h2 = fy), then mark the row when the slice publishes exactly the proven half on that basis, the
+    # other basis is empty or the same figure, and the year's quarters do not already tile it — the "bse-pf" rules.
+    n_pdf = 0
+    pp_path = os.path.join(HERE, "nse_sme_pdf_proofs.json")
+    PP = {k: v for k, v in json.load(open(pp_path, encoding="utf-8")).items() if not k.startswith("_")} \
+        if os.path.exists(pp_path) else {}
+    for sym, qs in sorted(PP.items()):
+        if slug(sym) not in have:
+            continue
+        F_ = json.load(open(os.path.join(a.fin, slug(sym) + ".json"), encoding="utf-8"))
+        rv, frows = F_.get("revop") or {}, {r[0]: r for r in (F_.get("fund") or [])}
+        for qe, bases in sorted(qs.items()):
+            if qe in out.get(sym, {}):
+                continue
+            for b, pr in sorted(bases.items()):
+                r3, p3 = pr.get("rev") or [], pr.get("pat") or []
+                if len(r3) != 3 or None in r3 or not same_sum(r3[0] + r3[1], r3[2]):
+                    continue
+                half = r3[0] if int(qe) % 10000 == 930 else r3[1]
+                i = 1 if b == "c" else 0
+                row = rv.get(qe) or []
+                v, other = (row[i] if len(row) > i else None), (row[1 - i] if len(row) > 1 - i else None)
+                if v is None or not same_row(v, half) or (other is not None and not same_row(other, v)):
+                    continue
+                y = int(qe) // 10000 + (1 if int(qe) % 10000 == 930 else 0)
+                if any(len(rv.get(str(q)) or ()) > i and rv[str(q)][i] is not None
+                       for q in ((y - 1) * 10000 + 630, (y - 1) * 10000 + 1231)):
+                    continue                                # a quarterly year: its Sep / Mar rows are quarters
+                e_ = {"m": 6, "s": row[0] if row else None, "c": row[1] if len(row) > 1 else None,
+                      "f": [pr.get("f")], "src": "nse-pdf"}
+                fr = frows.get(int(qe)) or [None] * 5
+                pv, po = fr[3 if i == 1 else 1], fr[1 if i == 1 else 3]
+                ph = (p3[0] if int(qe) % 10000 == 930 else p3[1]) if len(p3) == 3 and None not in p3 else None
+                ok_ = ph is not None and same_sum(p3[0] + p3[1], p3[2]) and pv is not None and same_row(pv, ph) and \
+                    (po is None or same_row(po, pv))
+                e_["p" + ("c" if i == 1 else "s")] = pv if ok_ else None
+                e_["p" + ("s" if i == 1 else "c")] = po if ok_ else None
+                out.setdefault(sym, {})[qe] = e_
+                n_rows += 1; n_pdf += 1
+                break
+    print("NSE SME result-PDF proofs: %d rows marked" % n_pdf)
+
     # carry forward entries this run could not re-check (their evidence files were not scanned); "bse-pf" entries are
     # re-derived from docs/bse_fundamentals.json every run, so one that no longer proves is dropped, not carried
     old = {}
@@ -423,7 +466,7 @@ def main():
     kept = 0
     for sym, qs in old.items():
         for qe, e in qs.items():
-            if qe not in out.get(sym, {}) and not (set(e.get("f") or ()) & scanned) and e.get("src") != "bse-pf":
+            if qe not in out.get(sym, {}) and not (set(e.get("f") or ()) & scanned) and e.get("src") not in ("bse-pf", "nse-pdf"):
                 out.setdefault(sym, {})[qe] = e; kept += 1
     added = sum(1 for s in out for q in out[s] if q not in old.get(s, {}))
     dropped = sum(1 for s in old for q in old[s] if q not in out.get(s, {}))
@@ -438,7 +481,7 @@ def main():
     doc = {"_note": "Result rows proven to cover 3, 6 or 12 months (runbook §191, §194, §198) — built by "
                     "scripts/build_row_periods.py; never edit by hand. {SYM: {qEnd: {m: months, s/c: the revenue "
                     "proven, ps/pc: the profit proven (null = none or contradicted), f: evidence filings, "
-                    "src: 'bse-pf' when proven by a BSE h=1 cell's arithmetic}}}"}
+                    "src: 'bse-pf' when proven by a BSE h=1 cell's arithmetic, 'nse-pdf' by a result PDF's year (§210a)}}}"}
     doc.update({s: dict(sorted(out[s].items())) for s in sorted(out)})
     with open(a.out, "w", encoding="utf-8") as fh:
         json.dump(doc, fh, ensure_ascii=False, separators=(",", ":"))
