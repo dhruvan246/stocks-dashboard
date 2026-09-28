@@ -28,7 +28,9 @@
  *        spurts, used by the Volume Shockers page), gainers / loosers (live top
  *        movers incl. the allSec whole-market bucket, used by the Top Movers page),
  *        fiidii (day's provisional FII/DII cash numbers, ~6pm — FII/DII page),
- *        large-deals (today's bulk/block deals snapshot, evening — Deals page).
+ *        large-deals (today's bulk/block deals snapshot, evening — Deals page),
+ *        traded (EVERY NSE stock that traded today, SME included — compacted to
+ *        {asOf,timestamp,data:{SYM:[ltp,prevClose,pchange]}}; live 1D on Top Movers).
  *        Response = NSE's own JSON + {asOf}; array responses ride under .data
  *        (volume-gainers data capped at 60 rows).
  *   GET ?ipo=CMLL                  -> live subscription for ONE open IPO (NSE
@@ -73,7 +75,28 @@ const NSE_LIVE = {
                      'https://www.nseindia.com/reports/fii-dii'],
   'large-deals':    ['/api/snapshot-capital-market-largedeal',
                      'https://www.nseindia.com/market-data/large-deals'],
+  'traded':         ['/api/live-analysis-stocksTraded',
+                     'https://www.nseindia.com/market-data/stocks-traded'],
 };
+
+// Series whose quote counts as the stock's price (EQ first; SME = SM/ST; BE/BZ = trade-for-trade).
+// Bonds/GS/ETF-like series are dropped. Lower index wins when a symbol trades in two series.
+const TRADED_SERIES = ['EQ', 'SM', 'ST', 'BE', 'BZ'];
+
+// ?nse=traded: NSE's whole-market "stocks traded" list is ~1 MB — ship only
+// {SYM:[ltp, prevClose, pchange]} (~100 KB) plus NSE's own timestamp.
+function compactTraded(j, now) {
+  const rows = (j && j.total && Array.isArray(j.total.data)) ? j.total.data : [];
+  const data = {}, rank = {};
+  for (const r of rows) {
+    const k = TRADED_SERIES.indexOf(r.series);
+    if (k < 0 || !r.symbol || !(r.lastPrice > 0) || !(r.previousClose > 0)) continue;
+    if (r.symbol in rank && rank[r.symbol] <= k) continue;
+    rank[r.symbol] = k;
+    data[r.symbol] = [r.lastPrice, r.previousClose, r.pchange];
+  }
+  return { asOf: now, source: 'nse', timestamp: j && j.timestamp, data };
+}
 
 export default {
   async fetch(request) {
@@ -210,6 +233,11 @@ async function nseLive(key) {
     });
     if (!r.ok) return json({ error: 'NSE HTTP ' + r.status }, 502);
     const j = await r.json();
+    if (key === 'traded') {
+      const text = JSON.stringify(compactTraded(j, now));
+      NSE_CACHE.set(key, { ts: now, text });
+      return new Response(text, { headers: { ...CORS, 'content-type': 'application/json' } });
+    }
     if (j && Array.isArray(j.data) && j.data.length > 60) j.data = j.data.slice(0, 60); // volume-gainers: cap payload
     // array responses (fiidii) ride under .data so the envelope stays an object
     const body = Array.isArray(j) ? { asOf: now, source: 'nse', data: j } : { asOf: now, source: 'nse', ...j };

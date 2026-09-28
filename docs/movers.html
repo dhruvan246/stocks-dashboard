@@ -84,13 +84,16 @@
         <div class="text-[11px] font-extrabold uppercase tracking-wide text-slate-400">
           <span style="color:#16a34a">● LIVE</span> this session · biggest moves right now <span id="liveAt" class="normal-case font-semibold"></span>
         </div>
-        <div class="text-[11px] text-slate-400">NSE raw session prices (vs prev close) · the table below is EOD &amp; corp-action-adjusted</div>
+        <div class="text-[11px] text-slate-400">NSE raw session prices (vs prev close) · top 10 each side</div>
       </div>
       <div class="grid md:grid-cols-2 gap-x-6 gap-y-1">
         <div><div class="text-[11px] font-bold mb-1" style="color:var(--gain)">▲ Top gainers (all securities)</div><div id="liveGain" class="flex flex-wrap gap-1.5"></div></div>
         <div><div class="text-[11px] font-bold mb-1" style="color:var(--loss)">▼ Top losers (all securities)</div><div id="liveLose" class="flex flex-wrap gap-1.5"></div></div>
       </div>
     </div>
+
+    <!-- which prices the table is using right now (live session vs last close) -->
+    <div id="modeNote" class="text-xs mb-3 px-3 py-2 rounded-lg hidden" style="background:var(--surface-2,rgba(100,116,139,.08))"></div>
 
     <!-- stat cards -->
     <div id="cards" class="grid grid-cols-2 md:grid-cols-4 gap-3 mb-4"></div>
@@ -200,6 +203,10 @@ const inr = n => n == null ? '—' : Number(n).toLocaleString('en-IN', { maximum
 const inr2 = n => n == null ? '—' : Number(n).toLocaleString('en-IN', { minimumFractionDigits: 2, maximumFractionDigits: 2 });
 
 let META = {}, SERIES = {}, START_TS = 0, END_TS = 0, END_OFF = 0;
+let LAST_BAR = '';   // ISO date most NSE series end on (NOT the file's build time; a midday refresh can add a partial bar)
+let STALE_1D = 0;    // EOD 1D rows whose own last bar is older than LAST_BAR (e.g. SME names — bhavcopy-only, no midday bar)
+let LIVE = null;     // {date:'YYYY-MM-DD', time:'HH:MM', data:{SYM:[ltp, prevClose, pchange]}} — NSE whole-market live feed
+let LIVE_SKIP = { bse: 0, untraded: 0 };
 let FNO = new Set(), N500 = new Set();
 let FULL_LOADED = false, FULL_LOADING = null;
 // BSE SME platform names (.BO keys) — BSE groups M / MT in bse_universe.json; the whole BSE SME IPO index sits in
@@ -276,9 +283,17 @@ const WIN_DAYS = { '1W':7, '1M':30, '3M':91, '6M':182, '1Y':365 };
 
 function capBand(mcap){ if (mcap >= 20000) return 'large'; if (mcap >= 5000) return 'mid'; return 'small'; }
 
+// Live 1D only when NSE's feed is for TODAY's session (IST). On a weekend/holiday the feed still
+// shows the last session, and the table falls back to stored closes.
+function todayIST(){ return new Date(Date.now() + 330*60000).toISOString().slice(0,10); }
+function liveMode(){ return W === '1D' && LIVE && LIVE.date === todayIST(); }
+
 // Build ROWS for the current window / universe / cap / sector / floor.
 function compute(){
   const rows = [];
+  const live = liveMode();
+  LIVE_SKIP = { bse: 0, untraded: 0 }; STALE_1D = 0;
+  const lastBarOff = LAST_BAR ? Math.round((Date.parse(LAST_BAR + 'T00:00:00Z')/1000 - START_TS) / DAY) : -1;
   for (const tkr in META){
     const m = META[tkr];
     const mcap = m.mcap || 0;
@@ -296,12 +311,22 @@ function compute(){
     const ser = SERIES[tkr];
     if (!ser || ser.d.length < 2) continue;
     const lastIdx = ser.d.length - 1;
-    const toPrice = ser.p[lastIdx] / 100;
-    let iFrom;
-    if (W === '1D'){ iFrom = lastIdx - 1; }
-    else { const target = ser.d[lastIdx] - WIN_DAYS[W]; iFrom = lastOnOrBefore(ser.d, target); if (iFrom === lastIdx) iFrom = lastIdx - 1; }
-    if (iFrom < 0) continue;                       // no prior close in the window
-    const fromPrice = ser.p[iFrom] / 100;
+    let toPrice, fromPrice;
+    if (live){
+      // today's session: NSE last price vs NSE previous close (NSE adjusts prev close on an ex-date)
+      if (!tkr.endsWith('.NS')){ LIVE_SKIP.bse++; continue; }   // BSE-only listing — no live feed
+      const q = LIVE.data[base];
+      if (!q){ LIVE_SKIP.untraded++; continue; }                // no trade on NSE yet today
+      toPrice = q[0]; fromPrice = q[1];
+    } else {
+      toPrice = ser.p[lastIdx] / 100;
+      let iFrom;
+      if (W === '1D'){ iFrom = lastIdx - 1; }
+      else { const target = ser.d[lastIdx] - WIN_DAYS[W]; iFrom = lastOnOrBefore(ser.d, target); if (iFrom === lastIdx) iFrom = lastIdx - 1; }
+      if (iFrom < 0) continue;                       // no prior close in the window
+      fromPrice = ser.p[iFrom] / 100;
+      if (W === '1D' && ser.d[lastIdx] < lastBarOff) STALE_1D++;
+    }
     if (!fromPrice || !toPrice) continue;
     const chg = (toPrice - fromPrice) / fromPrice * 100;
 
@@ -441,6 +466,42 @@ function refresh(){
   renderStats();
   renderSectorPulse();
   render();
+  renderModeNote();
+}
+
+function fmtDay(iso){ return new Date(iso + 'T00:00:00Z').toLocaleDateString('en-IN', {weekday:'short', day:'numeric', month:'short', year:'numeric', timeZone:'UTC'}); }
+function renderModeNote(){
+  const el = $('modeNote');
+  if (!LAST_BAR){ el.classList.add('hidden'); return; }
+  let h;
+  if (liveMode()){
+    const sk = [];
+    if (LIVE_SKIP.bse) sk.push(LIVE_SKIP.bse.toLocaleString('en-IN') + ' BSE-only listings (no live feed)');
+    if (LIVE_SKIP.untraded) sk.push(LIVE_SKIP.untraded.toLocaleString('en-IN') + ' not yet traded today');
+    h = '<b style="color:#16a34a">● LIVE</b> — 1D is today\'s move (NSE last price vs previous close), updated ' + esc(LIVE.time) +
+        ' IST, refreshes every minute.' + (sk.length ? ' Hidden: ' + sk.join(', ') + '.' : '') +
+        ' Other windows use stored prices up to ' + fmtDay(LAST_BAR) + '.';
+  } else if (W === '1D'){
+    h = '1D is the move on <b>' + fmtDay(LAST_BAR) + '</b> (latest prices in our data)' +
+        (STALE_1D ? '; ' + STALE_1D.toLocaleString('en-IN') + ' stocks whose latest price is older show their own last session\'s move' : '') +
+        (marketOpenIST() ? ' — <b>live prices did not load</b>, so this may not be today\'s move.' : '.');
+  } else {
+    h = 'Stored prices up to <b>' + fmtDay(LAST_BAR) + '</b>.';
+  }
+  el.innerHTML = h;
+  el.classList.remove('hidden');
+}
+
+/* ---- live 1D: NSE's whole-market "stocks traded" feed via our Worker (?nse=traded) ---- */
+const MON = {Jan:'01',Feb:'02',Mar:'03',Apr:'04',May:'05',Jun:'06',Jul:'07',Aug:'08',Sep:'09',Oct:'10',Nov:'11',Dec:'12'};
+async function loadLive(){
+  try {
+    const j = await fetch(WORKER + '/?nse=traded', {cache:'no-store'}).then(r => r.json());
+    const m = /^(\d{1,2})-([A-Za-z]{3})-(\d{4}) (\d{2}):(\d{2})/.exec((j && j.timestamp) || '');
+    if (!m || !MON[m[2]] || !j.data || !Object.keys(j.data).length) return;
+    LIVE = { date: m[3] + '-' + MON[m[2]] + '-' + m[1].padStart(2, '0'), time: m[4] + ':' + m[5], data: j.data };
+  } catch (e){ /* worker route missing / NSE hiccup — table stays on last close, the note says so */ }
+  if (W === '1D') refresh(); else renderModeNote();
 }
 
 /* ---------- window switch (lazy-load full history for 1Y) ---------- */
@@ -543,12 +604,19 @@ async function init(){
     const sel = $('fSector');
     [...secs].sort().forEach(s => { const o = document.createElement('option'); o.value = s; o.textContent = s; sel.appendChild(o); });
 
-    if (END_TS) $('updated').textContent = 'As of ' + new Date(END_TS*1000).toISOString().slice(0,10) + '.';
+    const endCnt = {};   // most common last-bar day across NSE series (max would let one odd series decide)
+    for (const t in SERIES){ if (!t.endsWith('.NS')) continue; const d = SERIES[t].d; if (d && d.length){ const k = d[d.length-1]; endCnt[k] = (endCnt[k] || 0) + 1; } }
+    let lastOff = -1, best = 0;
+    for (const k in endCnt) if (endCnt[k] > best){ best = endCnt[k]; lastOff = +k; }
+    if (lastOff >= 0) LAST_BAR = new Date((START_TS + lastOff*DAY)*1000).toISOString().slice(0,10);
+    if (LAST_BAR) $('updated').textContent = 'Stored prices up to ' + LAST_BAR + '.';
 
     wire();
     $('status').classList.add('hidden');
     $('content').classList.remove('hidden');
     refresh();
+    loadLive();
+    setInterval(() => { if (!document.hidden && marketOpenIST()) loadLive(); }, 60000);
   } catch (e){
     $('status').textContent = 'Failed to load market data: ' + e.message;
     console.error(e);
