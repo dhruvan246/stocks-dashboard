@@ -170,6 +170,28 @@ Then build the idea in this exact structure. Each field is mandatory; write "unk
 Style: plain sentences, numbers in tables or on their own lines, no hype words, no price targets, no "multibagger".
 Length: 400-900 words per idea. The reader is a careful investor, not the general public.
 
+## X (Twitter) sweep — every researched name (user rule, 2026-09-28)
+
+The user wants every idea checked against what people on X are saying, and verified data from there added. For each
+name you research (published or not):
+
+1. **Find posts.** WebSearch with `allowed_domains: ["x.com","twitter.com"]` for the company name, ticker, `$TICKER`,
+   `#Ticker` and the trigger event; also search thread-unroll copies (threadreaderapp.com) and the company's ValuePickr
+   thread. Search indexing lags a day or two, so a same-day post may not surface — say so rather than "nothing on X".
+   Never log in to X; x.com pages answer 402 to scripted fetches.
+2. **Read a post by id** (no login): `curl -s -A "stocks-dashboard-research/1.0"
+   "https://cdn.syndication.twimg.com/tweet-result?id=<ID>&token=a"` → JSON with `text` (long posts carry the full text in
+   `note_tweet`), `user.screen_name`, `created_at`. Verified working 2026-09-28.
+3. **Verify before use.** A number or fact from X enters the note only after it is matched to a primary document (filing,
+   annual report, results, presentation, transcript, rating rationale). Unmatched claims go under "Claims on X not
+   verified"; anything that contradicts the filings goes under "Where X disagrees with the filings". X is a lead, never a
+   source of record. Quote at most 15 words of any post.
+4. **Record it** in the idea as `"social"` (markdown: a one-paragraph **What X is saying**, a `### Posts found` table
+   `| Date | Handle | What it says | Link |`, `### New verified data from these posts` table `| Data point | Primary
+   source that confirms it |`, then the unverified / disagreement lists) and `"x_posts"`: `[{"handle","date","url",
+   "gist"}]`. The page renders it as the card's "On X (Twitter)" section and shows an 𝕏 count on the compact card.
+   If the sweep finds nothing, still write `social` saying what was searched, so "not checked" and "nothing found" differ.
+
 ## The conversion constants the style relies on (use only when the dossier gives the inputs)
 
 - Solar module maker: 1 crore imported cells ≈ ₹190-220 cr of module sales; 1 MW of modules ≈ ₹2 cr (DCR) or ₹1.3 cr (non-DCR).
