@@ -23594,6 +23594,7 @@ Ledger diff = exactly those 2,423 cells, only fc / src_fc, each `was` → `fixed
 (`build_stock_fin.py --out`): **587 of 6,600 change** (the 463 symbols + rename aliases), only `x`, only `fc`: 3,031 cell diffs,
 every one an entry's was → fixed. ARE&M standalone P&L "Interest": FY18 179.70 → **5.06** (= the Mar-2018 XBRL's FourD and its
 results PDF), FY17 53.12 → **5.77** (= that PDF's FY17 column). No UI file changed → no SW bump, no mobile/theme pass.
+**LIVE (2026-09-28 08:07-08:14 IST).** Pushed fde1e35d3 (reader + fix-list + runbook) and 9857ad6e4 (gz, first attempt); refresh-stock-fin 36370532868 green → slices 5a8e82ff6 (587 files, `x` identical to the local after-build on the sampled five); Pages 36370581384 green. Served `fin/<slug>.json` for all 468 symbols: **2,423 of 2,423 entries as healed** (2,194 values, 229 blanks), 0 mismatches. Live stock page, P&L tab, standalone: ARE&M Interest FY17 6 / FY18 5 (5.77 / 5.06, were 53 / 180); NCC FY18 379 (= the Mar-2018 XBRL year 378.94); AVANTIFEED FY17 "—" (blanked quarters); 0 console errors. Origin's gz re-checked after the next CI commits (a3c09a512): 2,194 set + 229 blank intact.
 **Open.** (1) The 229 blank cells → the vision step on the scanned 2016-17 originals (user: "later, as a separate step"; 14 had no
 filing in the ±6-day window of the stored announce date and some downloads failed — re-fetch those before calling them scans).
 (2) Side findings, not touched: RAIN Dec-2017 std's archive page is millions under a "lakhs" header (its detail cell reads 10×
