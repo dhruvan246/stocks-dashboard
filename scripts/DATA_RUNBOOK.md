@@ -20450,6 +20450,20 @@ mutual-fund row printed in both page columns; all five slots x (A+B+C)/(A+B) sha
 www.bseindia.com with bse_headers). 180 re-based; 81 pages unreadable (2001-2006 empty shells mostly), 35 quarters without custodian
 shares. Independent check: of Quantmac's 300 cells for these companies, 287 equal the re-based value (13 differ for other reasons).
 Rebuilt feed: exactly the 180 cells moved, 0 other rows; guards green.
+**Batch 5 (2026-09-28): D1 corroboration gate (user, 'Option A ... do this').** Building reply #5 we tested every differing cell
+against our OWN neighbouring quarters; 58 company-quarters broke from both while Quantmac's value fitted them. One class is the D1
+rule (§164c: the unnamed rest of the institutional Any-Other block counts as FII). Rule now (`_shp_d1_rowfix.d1_corroborated`,
+applied inside `classify`): an unnamed remainder of >= 1 pp moves dii -> fii only when the company's own neighbouring filing —
+the quarter-end before or after (for a mid-quarter event, the quarters around it) — holds FII at least halfway to the moved
+level; with no neighbour on one side the move is not tested. Of 130 recorded D1 moves >= 1 pp: 110 corroborated, 7 untestable
+(kept), 13 not corroborated -> the D1 amount ONLY goes back to dii (`d1gate` stage -> shp_cell_fix, superseding, MARK kept so
+the runner's chain reading holds; audit entries updated in place: d1 0, d1_held, d1_gate). CENTRALBK Jun-2018 9.39 -> 0.27
+(neighbours 0.21 / 0.35, Quantmac 0.29); PVRINOX Jun-2017 56.80 -> 39.68 and 30-Oct-2019 event 56.69 -> 42.14; BEML Sep-2017,
+IDFC Dec-2017 + 2-Jul-2018 event, IDFCFIRSTB 5-Jan-2019 event, JSWENERGY Jun-2016, COROMANDEL Sep-2020, SHILPAMED Jun-2016 (its
+other 7.8 pp from named-holder rules stays), SYNGENE Jun-2018, EQUITAS Mar-2020, 3MINDIA Jun-2022. NOTE: my first count ("21")
+took every §164 re-read entry that moved >= 1 pp; 11 of those moves came from the named-holder rules (R1-R3 / R2-FII), not D1,
+and are outside this decision. Verified: rebuilt feed (event fixes applied as CI does) moves exactly the 13 rows; re-running the
+gated runner on a CI-equivalent store (cell_fix applied to history) for the 10 companies: 250 rows, 0 proposals, 9 moves held.
 
 ### 164j. Quantmac reply v3 (26-Sep): foreign-labelled rows were read as domestic; named foreign holders now need a document
 **Bug (reported by Quantmac for CUMMINSIND / IPCALAB, measured on origin).** `_shp_dii_rowfix.eval_filing` R1 set a category label

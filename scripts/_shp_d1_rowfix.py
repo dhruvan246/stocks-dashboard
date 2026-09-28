@@ -75,6 +75,28 @@ def d1_delta(r, bd, res, cur, ext_fii, add_prev):
             if ns<=pct+0.02 and pct-ns>0.004: rests+=pct-ns; ev.append(("D1-rest-beside-domestic-row-in-mixed-block",e[1],round(pct-ns,4)))
     return round(mov+rests,4), ev
 
+# D1 corroboration gate (user 2026-09-28, "Option A ... do this"; runbook §164r batch 5): an unnamed remainder of >= 1 pp moves
+# dii -> fii only when the company's OWN neighbouring filing shows a foreign holding that size — the quarter-end filing before
+# or after (for a mid-quarter event, the quarters around it) holds FII at least halfway to the moved level. Measured: of 130
+# recorded moves >= 1 pp, 13 had no such support (CENTRALBK Jun-2018: an unnamed 9.12 % Other-Institutions block went to FII
+# 0.27 -> 9.39 while Mar / Sep-2018 print 0.21 / 0.35 and Quantmac serves 0.29; PVRINOX Jun-2017 39.68 -> 56.80 between 40.85
+# and 42.31). Without a neighbour on one side the move is not tested. Neighbours come from the REAL store (the §164q runner
+# swaps REPO for its event store).
+D1_GATE_MIN = 1.0
+_REAL_HIST = None
+def d1_corroborated(sym, qe, fii_after, dd):
+    global _REAL_HIST
+    if _REAL_HIST is None:
+        _REAL_HIST = json.load(open(os.path.join(SCRIPTS, "shp_history.json")))
+    qs = sorted(k for k in (_REAL_HIST.get(sym) or {}) if not k.startswith("_") and k[5:] in ("03-31", "06-30", "09-30", "12-31"))
+    prv = [k for k in qs if k < qe]; nxt = [k for k in qs if k > qe]
+    if not prv or not nxt: return True, "no neighbour on one side (not tested)"
+    p, n = prv[-1], nxt[0]; pv = _REAL_HIST[sym][p][1]; nv = _REAL_HIST[sym][n][1]
+    if pv is None or nv is None: return True, "neighbour without FII (not tested)"
+    need = fii_after - 0.5 * dd
+    ok = pv >= need or nv >= need
+    return ok, "%s FII %.2f, %s FII %.2f vs %.2f needed (moved level %.2f)" % (p, pv, n, nv, need, fii_after)
+
 def prior_inputs(led, sym, qe, cur, audit158, audit164=None):
     prior=(led.get(sym) or {}).get(qe); ext_fii=0.0; add_prev=0.0; mv159_prev=0.0
     chain=prior; depth=0; seen164=False
@@ -156,6 +178,9 @@ def classify(syms, tag, ex_set):
             if qe>=D1_FROM:
                 dd,dev=d1_delta(r,bd,res,cur,ext_fii,add_prev)
                 dd=min(dd,t_dii)
+                if dd>=D1_GATE_MIN:
+                    ok_g,why_g=d1_corroborated(sym,qe,t_fii+dd,dd)
+                    if not ok_g: ev.append(("D1-held-uncorroborated",round(dd,4),why_g)); st["d1_held_uncorroborated"]+=1; dd=0.0
                 if dd>=0.005: t_fii=round(t_fii+dd,4); t_dii=round(t_dii-dd,4); ev+=dev; parts.append("D1 unnamed remainder -> FII")
             if abs(t_fii-(cur[1] or 0))<0.05 and abs(t_dii-(cur[2] or 0))<0.05: st["unchanged"]+=1; continue
             new=list(cur); new[1]=round(t_fii,4); new[2]=round(t_dii,4)

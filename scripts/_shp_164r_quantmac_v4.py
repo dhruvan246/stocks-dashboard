@@ -474,6 +474,37 @@ def drrebase(out):
     print(collections.Counter(v for v in st.values())); print(collections.Counter(k.split("|")[0] for k in P))
     json.dump(P, open(out, "w"), indent=1, ensure_ascii=False)
 
+def d1gate(path):
+    """Option A (user 2026-09-28): write the D1 corroboration gate (scripts/_shp_d1_rowfix.d1_corroborated) onto the cells it
+    already moved. For each recorded unnamed-remainder move >= 1 pp that neither neighbouring filing supports, ONLY the D1
+    amount returns to dii (other rules' moves in the same entry stay); the prior entry is kept under `superseded`, the audit
+    entry is updated in place (d1 -> 0, d1_held, d1_gate) so the runner's chain reading stays valid."""
+    import fetch_shareholding as F, _shp_d1_rowfix as D1
+    cands = json.load(open(path)); hist = json.load(open(os.path.join(HERE, "shp_history.json"))); ev = F.load_events()
+    lp = os.path.join(HERE, "shp_cell_fix.json"); raw = open(lp, encoding="utf-8").read(); led = json.loads(raw); fix = led["fix"]
+    ap = os.path.join(HERE, "_shp_164_audit.json"); araw = open(ap, encoding="utf-8").read(); aud = json.loads(araw); cells = aud.get("cells", aud)
+    n = 0; skip = []
+    for c in cands:
+        sym, d = c["key"].split("|"); d1 = float(c["d1"])
+        cur = (ev.get(sym) or {}).get(d) if c["event"] else (hist.get(sym) or {}).get(d)
+        prior = (fix.get(sym) or {}).get(d)
+        if cur is None or not prior or not F._cell_eq(cur, prior.get("cell")): skip.append((c["key"], "store moved")); continue
+        ok, why_g = D1.d1_corroborated(sym, d, cur[1], d1)
+        if ok: skip.append((c["key"], "corroborated now")); continue
+        new = list(cur); new[1] = round(cur[1] - d1, 4); new[2] = round((cur[2] or 0) + d1, 4)
+        why = ("%s — D1 corroboration gate (§164r batch 5, user 2026-09-28 'Option A ... do this'): the unnamed Other-Institutions "
+               "remainder D1 had moved to FII (%.2f pp) goes back to DII: neither of the company's neighbouring filings shows a foreign "
+               "holding that size (%s). Only the D1 amount moves; fii %.2f -> %.2f, dii %.2f -> %.2f.") % (
+               D1.MARK, d1, why_g, cur[1], new[1], cur[2] or 0, new[2])
+        fix[sym][d] = {"cell": new, "was": list(cur), "src": prior.get("src"), "why": why, "superseded": prior}
+        a = cells.setdefault(c["key"], {})
+        a["d1_held"] = d1; a["d1"] = 0.0; a["d1_gate"] = why_g
+        a["parts"] = [x for x in (a.get("parts") or []) if not x.startswith("D1 unnamed")] + ["D1 held: not corroborated (§164r batch 5)"]
+        n += 1
+    json.dump(led, open(lp, "w", encoding="utf-8"), indent=1, ensure_ascii=("\\u00" in raw))
+    json.dump(aud, open(ap, "w", encoding="utf-8"), indent=0, ensure_ascii=("\\u00" in araw))
+    print("d1gate: %d written, skipped %s" % (n, skip))
+
 def wb_older():
     """Pages whose NEWEST capture holds no filing table (BSE's own 'Error Code:404' page archived with HTTP 200 once the
     page was retired — HINDPETRO 2012-10-02) fall back to that scrip's earlier captures, newest first, up to 4 tries."""
@@ -627,6 +658,7 @@ if __name__ == "__main__":
     elif st == "wb-decide": wb_decide(sys.argv[2])
     elif st == "wb-older": wb_older()
     elif st == "drrebase": drrebase(sys.argv[2])
+    elif st == "d1gate": d1gate(sys.argv[2])
     elif st == "wb-early": wb_early(sys.argv[2])
     elif st == "lag-write": lag_write(sys.argv[2], sys.argv[3] if len(sys.argv) > 3 else "shp_lag_fix.json")
     elif st == "table3-write": table3_write(sys.argv[2])
