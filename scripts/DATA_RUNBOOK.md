@@ -24415,6 +24415,34 @@ Page: data-checks.html "Dashboard shows" column + B tooltip "Reader B (Yahoo)"; 
 line set true (no owner key written — a seeded key is what wiped favourites on 2026-09-23): card, notes and 1,651 rows, 0 JS
 errors. sw.js v214 → v215.
 
+**F2 LIVE — 72 quarterly PAT cells corrected to the as-filed figure (user: "yes" to "fix the 73 figures now, and count the
+rule's wider effect for review").** Every value was RE-READ before writing (the triage's "correct" values were partly EPS × shares
+estimates — 26 of 73 moved on the re-read, up to Rs 40 cr: PFC Dec-23 is 4,727.40 profit-owners, not the 4,768.0 comprehensive-
+owners figure; HFCL Mar-22 65.32, not a bad owners tag's 62.32): reader 1 = the quarter's own result PDF from BSE for all 73 (old
+attachments via the AnnPdfOpen resolver, scanned pages re-read at ~400 dpi); reader 2 = Moneycontrol (63), the company's later
+filing's comparative column (8), raw XBRL (OLECTRA, ZENSARTECH). 72 CONFIRMED, 1 DISAGREE: SPICEJET Dec-21 standalone 23.28 is
+RIGHT (own PDF + the Dec-22 filing print 232.83 mn); the 42.45 the check compared against is the consolidated figure the filer
+put in its STANDALONE XBRL (the x detail lines are wrong there — an F4 cell, not a PAT one). Moneycontrol itself was wrong on 8
+(total / swapped owners-NCI / con-in-std: AVANTIFEED Sep-21, BALAMINES, GLENMARK Dec-22 & Jun-23, GODREJIND Jun-22, TATACOFFEE,
+PRAJIND Dec-25, SPICEJET Dec-21) — a single aggregator is never enough.
+Routing (runbook §116 precedence): 61 consolidated cells pinned in `owners_basis_heals.json` (apply_owners_full consults it
+BEFORE the _reattr_owners cache, so the nightly cannot revert them), 11 standalone in `fund_cell_fix.json` (re-applied at the end
+of refresh-fundamentals), 68 §70 mirror entries in `revop_cell_fix.json` (4 mirrors already held the value; WELCORP's mirror was
+wrong too, 170.53 → 88.50). Each entry carries both reads. Readings: scratchpad f2_readings.json, copied to
+`~/stocks-cache/xcheck/triage_0928/f2_readings.json`. Rehearsed locally in the nightly order (apply_owners_full → apply_fund_cell_fix
+→ apply_revop_cell_fix): exactly 72 cells in 70 rows of sf_fundamentals moved, each to its confirmed read, no other slot touched;
+66 mirror rows, PAT slots only. Classes: consolidated stored as the TOTAL incl. NCI (PFC ×4, AMBUJACEM, GLENMARK, AVANTIFEED,
+SYRMA, TARIL, NLCINDIA, MANKIND …), H1 in the quarter slot (SCHAEFFLER s/c, COHANCE), comprehensive income in the owners tag
+(APARINDS −138.56 → 467.45, PIIND, LTF Mar-21), bank pre-tax as profit (CANBK Mar-24 5,118.61 → 3,951.76), std/con swapped
+(SUNDRMFAST, MCX), superseded filing (FIRSTCRY Mar-26), restated comparative stored (CONCOR, EDELWEISS, CEMPRO).
+**The rule's wider reach, MEASURED, NOT CHANGED (awaiting the user):** a fresh screen of the XBRL cache with the shared parser
+(build_revop.parse_file + the NCI tag in the same context; 93,068 filings → 39,048 con quarters, latest filing per quarter) finds,
+for Nifty 500 members at the quarter with a minority share >= Rs 0.05 cr, 82 more con cells storing the TOTAL: 58 (46 stocks) where
+the owners tag is present but owners + NCI != total (39 already on the §116d unreconciled list), 13 (6 stocks) with NO owners tag
+(IOC Jun-18 NCI 87, TECHM Sep/Dec-24, NMDC, OLECTRA), 11 (9 stocks) with owners tag = 0 (NMDC Sep-24, VTL, OLECTRA Mar-26). Each needs
+its document read (the identity cannot gate a missing tag). Screen: scratchpad f2rule/owners_rule_screen.py, output
+`~/stocks-cache/xcheck/f2_owners_screen_raw.json` / `_n500.json`. Limit: filings before ~2018 are not in the cache (§116d).
+
 ## §215 — THE ARCHIVE PAGE'S "Amount(Rs. in lakhs)" IS NSE'S TEMPLATE, NOT THE FILER'S UNIT: 5 detail cells read 10×/100× small through the PAT anchor's 2-cr floor, TTKPRESTIG's stored PAT and revenue with them; the anchor gets a relative cap (2026-09-28, user: "yes" to heal the 3 cells + the TTKPRESTIG stored PAT/revenue and its 2 cells)
 **NO ASSUMPTIONS, NO GUESSWORK — every number below was measured this session (population on origin dcb1b47a0, landed on d5cbb8c11).**
 **Defect.** `xtra_nse_html.py` scaled every money row by the page's "Amount(Rs. in …)" header, and that header reads

@@ -15,7 +15,8 @@
   "2026-08-27 \u00a7116e Nifty-500 pass: worked the 88 unhealed 460-residue cells in current Nifty-500 members. 45 healed (1 text + 44 vision from scanned filings via render_pl.py): BIOCON x3 (Syngene NCI, ~30cr), NAVA 338.99->298.61 (Zambia power), IFCI 20241231 -8.74->-30.66, NMDC x5, BLUESTARCO x7 (row cleared), KANORICHEM x4 (row cleared), NCC, GPIL, WOCKPHARMA x2, ZENTEC x3, PIDILITIND x2, POLYCAB x2, TIINDIA, ULTRACEMCO... Not healed: NMDC 20240930/INFY/AJANTPHARM/NUVOCO/AFCONS already store owners (no-op); KAYNES x4 have NO NCI (in the residue only via XBRL power-of-ten garbage); ASIANPAINT/KAYNES 20230331 are STORED-VALUE anomalies (stored != filing total, logged in owners_total_stored_anomalies.json); GLENMARK x3/PHOENIXLTD/ONESOURCE/IFCI 20220331/CHOICEIN/PVRINOX/BEML/VBL/HINDCOPPER deferred (complex continuing+discontinuing, restatements, TCI-only, or extract-only pages). ~11 more file image P&Ls the OCR page-finder cannot key (mostly nil/tiny NCI).",
   "2026-09-03 (G1): GFLLIMITED 20170331/20170930/20171231 con PAT held the TOTAL 'Profit for the period' where every neighbouring quarter stores owners; healed to owners from each quarter's OWN BSE consolidated attribution block (Owners (12,220)/7,149/7,019 L). Identity owners+NCI==total and GATE S' (std 52.43/88.74/94.66) both close. 2012Q1-2013Q1 filed no quarterly con statement -> LEFT.",
   "2026-09-27 (runbook \u00a7184): IRCON and UBL 20220331 con owners pinned at the exact x100 figure of their 1/100 XBRL (scale_fix.json k=-2) -- without a pin apply_owners_full writes _reattr_owners' 2-dp scaled value / 0.01.",
-  "2026-09-27 (runbook \u00a7184a): exact con owners for the batch-2 scale_fix filings pinned (k<0 filings whose _reattr_owners holds the scaled 2-dp value), plus two filings whose owners tag is unusable (ICIL 20210930 mis-tag, RML 20211231 owners=0) pinned from the filings' own arithmetic."
+  "2026-09-27 (runbook \u00a7184a): exact con owners for the batch-2 scale_fix filings pinned (k<0 filings whose _reattr_owners holds the scaled 2-dp value), plus two filings whose owners tag is unusable (ICIL 20210930 mis-tag, RML 20211231 owners=0) pinned from the filings' own arithmetic.",
+  "2026-09-28 (runbook \u00a7214a F2): consolidated owners PAT pinned for the cells the second-reader audit proved wrong, each read from the company's own filing and confirmed by an independent second reader (the reads are in each cell's note)."
  ],
  "cells": {
   "20MICRONS|20190630|patC": {
@@ -3935,6 +3936,433 @@
    "owners": 54.77,
    "src": "vision, BSE consolidated P&L Q3FY26 (Rs lakhs 5570.69 total, owners 5476.71)",
    "total_was": 55.71
+  },
+  "ABREL|20260331|patC": {
+   "found_by": "second-reader audit triage 2026-09-28, F2 (runbook \u00a7214a)",
+   "owners": 10.84,
+   "total_was": -110.31,
+   "src": "BSE result PDF 8d0754e3-a15f-40c9-9c2d-af20a9e45640.pdf (Audited results FY26, filed 2026-05-06 13:40), p16 Audited Consolidated results, Rs. in Crores | Moneycontrol cons_quarterly CTI (cached ~/.cache/agg_reader/mc)",
+   "note": "Consolidated owners PAT -110.31 -> 10.84. READ 1: BSE result PDF 8d0754e3-a15f-40c9-9c2d-af20a9e45640.pdf (Audited results FY26, filed 2026-05-06 13:40), p16 Audited Consolidated results, Rs. in Crores \u2014 'Profit/(Loss) for the period/year attributable to: Owners of the Company 10.84' (Q4 col 31.03.2026); NCI (5.45); Net Profit (11+15) 5.39; loss from continuing ops (110.31); EPS cont+disc 0.98 (10.84). READ 2: Moneycontrol cons_quarterly CTI (cached ~/.cache/agg_reader/mc) \u2014 Net P/L After M.I & Associates 10.84 (Mar '26); also NSE XBRL INTEGRATED_FILING_INDAS_1664294 ProfitOrLossAttributableToOwnersOfParent 10.84, NCI -5.45 (10.84). stored -110.31 = loss from CONTINUING operations only (the XBRL ProfitLossForPeriod tag carries continuing ops); owners incl. discontinued = 10.84"
+  },
+  "ADANIENT|20250331|patC": {
+   "found_by": "second-reader audit triage 2026-09-28, F2 (runbook \u00a7214a)",
+   "owners": 3844.91,
+   "total_was": 1382.17,
+   "src": "BSE result PDF 74f4f7e5-4313-4944-89f3-b40f474576e2.pdf (filed 2025-05-01 16:24), p12 Statement of Audited Consolidated results, Rs crore | Moneycontrol cons_quarterly AE01",
+   "note": "Consolidated owners PAT 1382.17 -> 3844.91. READ 1: BSE result PDF 74f4f7e5-4313-4944-89f3-b40f474576e2.pdf (filed 2025-05-01 16:24), p12 Statement of Audited Consolidated results, Rs crore \u2014 '14 Net Profit/(Loss) attributable to: Owners of the Company 3,844.91' (Q4 31.03.2025 col); NCI 169.99; '11 Profit/(Loss) for the period 4,014.90'; EPS 32.98 (3844.91). READ 2: Moneycontrol cons_quarterly AE01 \u2014 Net P/L After M.I & Associates 3,844.91 (Mar '25); NSE XBRL INTEGRATED_FILING_INDAS_1430309 ProfitOrLossAttributableToOwnersOfParent 3844.91 (3844.91). stored 1382.17 = XBRL ProfitLossForPeriod tag (not the filing's 4,014.90 total nor owners)"
+  },
+  "AMBUJACEM|20230630|patC": {
+   "found_by": "second-reader audit triage 2026-09-28, F2 (runbook \u00a7214a)",
+   "owners": 905.61,
+   "total_was": 1135.46,
+   "src": "BSE result PDF 0f4e467e-bf94-4f13-97cb-bbc7d5e5f7c2.pdf (filed 2023-08-02), p9 consolidated unaudited results q/e 30-06-2023, 'Rs in crore' | Moneycontrol cons_quarterly GAC",
+   "note": "Consolidated owners PAT 1135.46 -> 905.61. READ 1: BSE result PDF 0f4e467e-bf94-4f13-97cb-bbc7d5e5f7c2.pdf (filed 2023-08-02), p9 consolidated unaudited results q/e 30-06-2023, 'Rs in crore' \u2014 '12 Profit for the period attributable to Owners of the Company 905.61' (3 months ended 30/06/2023); NCI 229.85; Profit after tax 1,135.46; EPS 4.56 (905.61). READ 2: Moneycontrol cons_quarterly GAC \u2014 Net P/L After M.I & Associates 905.61 (Jun '23); NSE XBRL INDAS_95059 carries the split in ComprehensiveIncome...AttributableToOwnersOfParent 905.61 / ...NCI 229.85 (sum = PAT 1135.46, not TCI 1133.04) (905.61). stored 1135.46 = TOTAL PAT incl. NCI"
+  },
+  "AMBUJACEM|20231231|patC": {
+   "found_by": "second-reader audit triage 2026-09-28, F2 (runbook \u00a7214a)",
+   "owners": 823.05,
+   "total_was": 1089.55,
+   "src": "BSE result PDF 1a8f5e09-2*.pdf (filed 2024-01-31), p9 consolidated unaudited results q/e 31-12-2023, '(Rs. in crore)' | Moneycontrol cons_quarterly GAC",
+   "note": "Consolidated owners PAT 1089.55 -> 823.05. READ 1: BSE result PDF 1a8f5e09-2*.pdf (filed 2024-01-31), p9 consolidated unaudited results q/e 31-12-2023, '(Rs. in crore)' \u2014 '12 Profit for the period attributable to Owners of the Company 823.05' (3 months ended 31/12/2023); NCI 266.50; Profit for the period 1,089.55; EPS 4.14 (823.05). READ 2: Moneycontrol cons_quarterly GAC \u2014 Net P/L After M.I & Associates 823.05 (Dec '23); NSE XBRL INDAS_101893 ComprehensiveIncome...OwnersOfParent tag 823.05 + NCI 266.50 = PAT 1089.55 (823.05). input candidate 822.06 was EPS-derived (4.14 x 198.57 cr sh); the filing prints 823.05 \u2014 write 823.05, not 822.06. stored 1089.55 = TOTAL"
+  },
+  "APARINDS|20260630|patC": {
+   "found_by": "second-reader audit triage 2026-09-28, F2 (runbook \u00a7214a)",
+   "owners": 467.45,
+   "total_was": -138.56,
+   "src": "BSE result PDF 3457916f-d79e-4117-a1e5-7d6c0742ae4f.pdf (filed 2026-07-24 12:49), p3 Statement of financial results q/e Jun 30 2026, Consolidated block, 'Rs. in crores' | Moneycontrol cons_quarterly AI40",
+   "note": "Consolidated owners PAT -138.56 -> 467.45. READ 1: BSE result PDF 3457916f-d79e-4117-a1e5-7d6c0742ae4f.pdf (filed 2026-07-24 12:49), p3 Statement of financial results q/e Jun 30 2026, Consolidated block, 'Rs. in crores' \u2014 '13 Profit after tax 467.45' and attributable '(a) Owners of the Company 467.45', '(b) Non-controlling interest -' (Jun 30, 2026 col); EPS 116.37 (467.45). READ 2: Moneycontrol cons_quarterly AI40 \u2014 Net P/L After M.I & Associates 467.45 (Jun '26); NSE XBRL INTEGRATED_FILING_INDAS_1701114 ProfitLossForPeriod 467.45 (467.45). stored -138.56 = OCI (the filer tagged OCI into ProfitOrLossAttributableToOwnersOfParent)"
+  },
+  "ASIANPAINT|20220630|patC": {
+   "found_by": "second-reader audit triage 2026-09-28, F2 (runbook \u00a7214a)",
+   "owners": 1016.93,
+   "total_was": 1084.45,
+   "src": "BSE result PDF c82f4c7f-acc*.pdf (filed 2022-07-26), p11 Unaudited Consolidated results q/e 30th June 2022 (Rs in Crores) | Moneycontrol cons_quarterly API",
+   "note": "Consolidated owners PAT 1084.45 -> 1016.93. READ 1: BSE result PDF c82f4c7f-acc*.pdf (filed 2022-07-26), p11 Unaudited Consolidated results q/e 30th June 2022 (Rs in Crores) \u2014 '14 Profit for the period attributable to: -Owners of the Company 1,016.93' (30.06.2022 col); NCI 19.10; '11 Profit for the period 1,036.03' (1016.93). READ 2: Moneycontrol cons_quarterly API \u2014 Net P/L After M.I & Associates 1,016.93 (Jun '22); NSE XBRL INDAS_605907 ProfitOrLossAttributableToOwnersOfParent 1016.93 (1016.93). stored 1084.45 = the XBRL ProfitLossForPeriod tag, which matches no printed PAT line (printed Profit for the period 1,036.03)"
+  },
+  "AVANTIFEED|20210930|patC": {
+   "found_by": "second-reader audit triage 2026-09-28, F2 (runbook \u00a7214a)",
+   "owners": 24.12,
+   "total_was": 33.07,
+   "src": "BSE result PDF 077c6323-2e61-45d8-a0c6-75ecd4cdf43a.pdf (filed 2021-11-12 13:50; same text in f42ebee8/dcf1c781 uploads), consolidated unaudited results q/e Sep 30 2021, 'Rs. in lakhs' | Avanti Feeds Dec-2021 result PDF f7b8c629-b3e*.pdf (filed 2022-02-12), p8 consolidated results, preceding-quarter column 'Sept 30, 2021'",
+   "note": "Consolidated owners PAT 33.07 -> 24.12. READ 1: BSE result PDF 077c6323-2e61-45d8-a0c6-75ecd4cdf43a.pdf (filed 2021-11-12 13:50; same text in f42ebee8/dcf1c781 uploads), consolidated unaudited results q/e Sep 30 2021, 'Rs. in lakhs' \u2014 '9 Net Profit attributable to: - Owners 2,411.87; - Non-controlling interests 894.86' lakhs (Sept 30, 2021 quarter col) = 24.1187 cr; '6 Net profit for the period 3,306.73' (24.12). READ 2: Avanti Feeds Dec-2021 result PDF f7b8c629-b3e*.pdf (filed 2022-02-12), p8 consolidated results, preceding-quarter column 'Sept 30, 2021' \u2014 '- Owners 2,411.87; - Non-controlling interests 894.86'; Net profit for the period 3,306.73 (identical to the as-filed quarter) (24.12). MC is NOT usable here (MC Net P/L After M.I = 33.07, the total). reader2 is the company's own next-quarter filing (comparative column, identical). EPS 1.77 x 13.62 cr sh = 24.1 corroborates. XBRL INDAS_78740 has no profit-owners tag (CI-owners 22.39 = TCI owners). stored 33.07 = TOTAL"
+  },
+  "AVANTIFEED|20230630|patC": {
+   "found_by": "second-reader audit triage 2026-09-28, F2 (runbook \u00a7214a)",
+   "owners": 106.38,
+   "total_was": 115.16,
+   "src": "BSE result PDF 5d10080d-7c61-453e-9bdf-226f44dcaa59.pdf (filed 2023-08-10), p2 consolidated unaudited results q/e June 30 2023, 'Rs. in lakhs' (rotated page) | Moneycontrol cons_quarterly AF21",
+   "note": "Consolidated owners PAT 115.16 -> 106.38. READ 1: BSE result PDF 5d10080d-7c61-453e-9bdf-226f44dcaa59.pdf (filed 2023-08-10), p2 consolidated unaudited results q/e June 30 2023, 'Rs. in lakhs' (rotated page) \u2014 '9 Net Profit attributable to: - Owners 10,637.65' lakhs = 106.3765 cr (June 30, 2023 col); NCI 878.80; Profit for the period 11,516.46; EPS 7.81 (106.38). READ 2: Moneycontrol cons_quarterly AF21 \u2014 Net P/L After M.I & Associates 106.38 (Jun '23); also Jun-2024 filing comparative col Owners 10,637.65 lakhs; NSE XBRL INDAS_96034 CI-owners tag 106.3765 (= profit owners, mis-tagged) (106.38). input candidate 106.41 was EPS-derived; printed owners = 10,637.65 lakhs -> 106.38. stored 115.16 = TOTAL"
+  },
+  "AVANTIFEED|20231231|patC": {
+   "found_by": "second-reader audit triage 2026-09-28, F2 (runbook \u00a7214a)",
+   "owners": 72.47,
+   "total_was": 83.31,
+   "src": "BSE result PDF d5974462-3ce7-4e97-9667-728567b81cd6.pdf (filed 2024-02-05), p5 consolidated unaudited results q/e Dec 31 2023, 'Rs. in lakhs' | Moneycontrol cons_quarterly AF21",
+   "note": "Consolidated owners PAT 83.31 -> 72.47. READ 1: BSE result PDF d5974462-3ce7-4e97-9667-728567b81cd6.pdf (filed 2024-02-05), p5 consolidated unaudited results q/e Dec 31 2023, 'Rs. in lakhs' \u2014 '9 Net Profit attributable to: - Owners 7,246.57' lakhs = 72.4657 cr (Dec 31, 2023 col); NCI 1,084.43; Profit for the period 8,331.00; EPS 5.32 (72.47). READ 2: Moneycontrol cons_quarterly AF21 \u2014 Net P/L After M.I & Associates 72.47 (Dec '23) (72.47). input candidate 72.48 was EPS-derived; printed 7,246.57 lakhs -> 72.47. stored 83.31 = TOTAL. XBRL has no profit-owners tag (CI-owners tag = OCI)"
+  },
+  "AVANTIFEED|20240630|patC": {
+   "found_by": "second-reader audit triage 2026-09-28, F2 (runbook \u00a7214a)",
+   "owners": 128.19,
+   "total_was": 137.57,
+   "src": "BSE result PDF f72b9057-a9ec-42cf-a4ea-43866b683fce.pdf (filed 2024-08-05), p7 consolidated unaudited results q/e June 30 2024, 'Rs. in lakhs' | Moneycontrol cons_quarterly AF21",
+   "note": "Consolidated owners PAT 137.57 -> 128.19. READ 1: BSE result PDF f72b9057-a9ec-42cf-a4ea-43866b683fce.pdf (filed 2024-08-05), p7 consolidated unaudited results q/e June 30 2024, 'Rs. in lakhs' \u2014 'Net Profit attributable to - Owners 12,818.53' lakhs = 128.1853 cr (June 30, 2024 col); NCI 938.53; Profit 13,757.06; EPS 9.41 (128.19). READ 2: Moneycontrol cons_quarterly AF21 \u2014 Net P/L After M.I & Associates 128.19 (Jun '24) (128.19). input candidate 128.21 was EPS-derived; printed 12,818.53 lakhs -> 128.19. XBRL CI-owners tag 127.8859 = TCI owners (12,788.59), not profit"
+  },
+  "BALAMINES|20220630|patC": {
+   "found_by": "second-reader audit triage 2026-09-28, F2 (runbook \u00a7214a)",
+   "owners": 122.97,
+   "total_was": 148.04,
+   "src": "BSE result PDF bb9d9613-021*.pdf (filed 2022-08-12 12:12, scanned; p4 image read, zoom-verified), Statement of Consolidated Unaudited results q/e June 30 2022, 'Rs. In Lakhs' | Balaji Amines Sep-2022 result PDF e63fa3ed-d90*.pdf (filed 2022-10-27), p4 consolidated results, preceding-quarter column 30.06.2022 (image read)",
+   "note": "Consolidated owners PAT 148.04 -> 122.97. READ 1: BSE result PDF bb9d9613-021*.pdf (filed 2022-08-12 12:12, scanned; p4 image read, zoom-verified), Statement of Consolidated Unaudited results q/e June 30 2022, 'Rs. In Lakhs' \u2014 '9 Net Profit for the period 14,803.94; Attributable to: (a) Shareholders of the Company 12,296.85; (b) Non-controlling interests 2,507.10' (30.06.2022 col) = 122.9685 cr; EPS 37.95 (122.97). READ 2: Balaji Amines Sep-2022 result PDF e63fa3ed-d90*.pdf (filed 2022-10-27), p4 consolidated results, preceding-quarter column 30.06.2022 (image read) \u2014 '(a) Shareholders of the Company 12,296.85; (b) Non-controlling interests 2,507.10'; Net Profit 14,803.94 (identical) (122.97). MC is NOT usable (MC Net P/L After M.I = 148.04, the total). XBRL INDAS_660433 tags owners/NCI 0.0. reader2 = company's own next-quarter filing comparative. Input candidate 122.96 was EPS-derived; printed 12,296.85 lakhs -> 122.97. stored 148.04 = TOTAL"
+  },
+  "BORORENEW|20230930|patC": {
+   "found_by": "second-reader audit triage 2026-09-28, F2 (runbook \u00a7214a)",
+   "owners": 25.05,
+   "total_was": 30.47,
+   "src": "BSE result PDF c4033487-aed*.pdf (filed 2023-11-06), p11-12 Statement of Unaudited Consolidated results q/e 30th Sep 2023, 'Rs in Lakhs' | Moneycontrol cons_quarterly BGW",
+   "note": "Consolidated owners PAT 30.47 -> 25.05. READ 1: BSE result PDF c4033487-aed*.pdf (filed 2023-11-06), p11-12 Statement of Unaudited Consolidated results q/e 30th Sep 2023, 'Rs in Lakhs' \u2014 '12 Profit/(Loss) attributable to: (i) Owners of the Company 2,505.40' lakhs = 25.054 cr (30.09.2023 col); NCI 542.00; '9 Profit/(Loss) for the period 3,047.40'; EPS 1.92 (25.05). READ 2: Moneycontrol cons_quarterly BGW \u2014 Net P/L After M.I & Associates 25.05 (Sep '23) (25.05). input candidate 25.06 was EPS-derived; printed 2,505.40 lakhs -> 25.05. stored 30.47 = TOTAL. XBRL owners/NCI tags are 0.0 (filer mis-tag)"
+  },
+  "CANBK|20240331|patC": {
+   "found_by": "second-reader audit triage 2026-09-28, F2 (runbook \u00a7214a)",
+   "owners": 3951.76,
+   "total_was": 5118.61,
+   "src": "BSE result PDF 946a72bb-1819-40cf-bb86-eaffd69e29ba.pdf (filed 2024-05-08, scanned; page 4 image read), Consolidated Financial Results q/e 31st March 2024, '(Rs. in Crore)' | Moneycontrol cons_quarterly CB06",
+   "note": "Consolidated owners PAT 5118.61 -> 3951.76. READ 1: BSE result PDF 946a72bb-1819-40cf-bb86-eaffd69e29ba.pdf (filed 2024-05-08, scanned; page 4 image read), Consolidated Financial Results q/e 31st March 2024, '(Rs. in Crore)' \u2014 '17 Net Profit (+)/Loss(-) after Minority Interest (14+15-16) 3,951.76' (31-03-2024 col); 14 Net Profit for the period 3,793.21; 15 share of associates 197.49; 16 minority 38.94; 10 PBT 4,960.06 (3951.76). READ 2: Moneycontrol cons_quarterly CB06 \u2014 Net P/L After M.I & Associates 3,951.76 (Mar '24) (3951.76). stored 5118.61 = XBRL ProfitLossAfterTaxesMinorityInterestAndShareOfProfitLossOfAssociates tag = PBT 4,960.06 + assoc 197.49 - MI 38.94 (pre-tax, filer mis-tag)"
+  },
+  "CELLO|20240630|patC": {
+   "found_by": "second-reader audit triage 2026-09-28, F2 (runbook \u00a7214a)",
+   "owners": 82.58,
+   "total_was": 89.12,
+   "src": "BSE result PDF f84c5cb8-4c05-4819-b453-8d903cab7ae2.pdf (filed 2024-08-11), p5 Consolidated Unaudited results q/e 30 June 2024, 'Rs in Lakhs' | Moneycontrol cons_quarterly CWL",
+   "note": "Consolidated owners PAT 89.12 -> 82.58. READ 1: BSE result PDF f84c5cb8-4c05-4819-b453-8d903cab7ae2.pdf (filed 2024-08-11), p5 Consolidated Unaudited results q/e 30 June 2024, 'Rs in Lakhs' \u2014 '11 Profit for the period attributable to - Owners of the group 8,258.36' lakhs = 82.5836 cr (30-Jun-24 col); NCI 654.12; Profit after tax 8,912.48 (82.58). READ 2: Moneycontrol cons_quarterly CWL \u2014 Net P/L After M.I & Associates 82.58 (Jun '24); Sep-2024 filing comparative col (30-Jun-24) Owners 8,258.36 (82.58). input candidate 82.56 was EPS-derived; printed 8,258.36 lakhs -> 82.58. stored 89.12 = TOTAL"
+  },
+  "CELLO|20240930|patC": {
+   "found_by": "second-reader audit triage 2026-09-28, F2 (runbook \u00a7214a)",
+   "owners": 81.64,
+   "total_was": 86.79,
+   "src": "BSE result PDF c3f11ae6-fa55-4634-ad5e-962db97f2d02.pdf (filed 2024-11-12), p11 Consolidated Unaudited results q/e Sep 30 2024, 'Rs in Lakhs' (image-verified crop) | Moneycontrol cons_quarterly CWL",
+   "note": "Consolidated owners PAT 86.79 -> 81.64. READ 1: BSE result PDF c3f11ae6-fa55-4634-ad5e-962db97f2d02.pdf (filed 2024-11-12), p11 Consolidated Unaudited results q/e Sep 30 2024, 'Rs in Lakhs' (image-verified crop) \u2014 '11 Profit for the period/year Attributable to - Owners of the group 8,164.39' lakhs = 81.6439 cr (30-Sep-24 col); NCI 514.47; PAT 8,678.86 (81.64). READ 2: Moneycontrol cons_quarterly CWL \u2014 Net P/L After M.I & Associates 81.64 (Sep '24) (81.64). input candidate 81.51 was EPS-derived; printed 8,164.39 lakhs -> 81.64. stored 86.79 = TOTAL"
+  },
+  "CEMPRO|20160331|patC": {
+   "found_by": "second-reader audit triage 2026-09-28, F2 (runbook \u00a7214a)",
+   "owners": 23.02,
+   "total_was": 21.76,
+   "src": "BSE result PDF C3ABD180_143A_44A4_B547_16465854FF2B_185652.pdf (filed 2016-05-12 18:56 as ITD Cementation India; fetched via BSE AnnPdfOpen resolver; scanned, p8 image read), Consolidated Unaudited results q/e 31 March 2016, 'Rupees in Lakhs' | Moneycontrol cons_quarterly THC",
+   "note": "Consolidated owners PAT 21.76 -> 23.02. READ 1: BSE result PDF C3ABD180_143A_44A4_B547_16465854FF2B_185652.pdf (filed 2016-05-12 18:56 as ITD Cementation India; fetched via BSE AnnPdfOpen resolver; scanned, p8 image read), Consolidated Unaudited results q/e 31 March 2016, 'Rupees in Lakhs' \u2014 '16 Net Profit/(loss) after taxes, minority interest and share of profit of associates (13+14+15) 2,301.96' lakhs = 23.0196 cr (3 months ended 31.03.2016); minority '-'; 13 Net profit 2,301.96 (23.02). READ 2: Moneycontrol cons_quarterly THC \u2014 Net Profit/(Loss) For the Period 23.02, Net P/L After M.I & Associates 23.02 (Mar '16) (23.02). stored 21.76 matches no line of this consolidated statement (not checked against the standalone page)"
+  },
+  "CEMPRO|20161231|patC": {
+   "found_by": "second-reader audit triage 2026-09-28, F2 (runbook \u00a7214a)",
+   "owners": 13.01,
+   "total_was": 11.88,
+   "src": "BSE result PDF B8F4FC37_11B5_4D26_B150_88CE43A04901_161234.pdf (filed 2017-02-21 16:12 as ITD Cementation India; fetched via BSE AnnPdfOpen resolver; scanned, p10 image read), Consolidated Audited results q/e and year ended 31 Dec 2016, 'Rupees in Lakhs' | Moneycontrol cons_quarterly THC",
+   "note": "Consolidated owners PAT 11.88 -> 13.01. READ 1: BSE result PDF B8F4FC37_11B5_4D26_B150_88CE43A04901_161234.pdf (filed 2017-02-21 16:12 as ITD Cementation India; fetched via BSE AnnPdfOpen resolver; scanned, p10 image read), Consolidated Audited results q/e and year ended 31 Dec 2016, 'Rupees in Lakhs' \u2014 '16 Net Profit/(loss) after taxes, minority interest and share of profit of associates 1,301.23' lakhs = 13.0123 cr (3 months ended 31.12.2016); minority '-'; 13 Net profit 1,301.23; EPS 0.84 (13.01). READ 2: Moneycontrol cons_quarterly THC \u2014 Net Profit/(Loss) For the Period 13.01, Net P/L After M.I & Associates 13.01 (Dec '16) (13.01). stored 11.88 matches no line of this consolidated statement"
+  },
+  "CGPOWER|20240930|patC": {
+   "found_by": "second-reader audit triage 2026-09-28, F2 (runbook \u00a7214a)",
+   "owners": 220.96,
+   "total_was": 271.97,
+   "src": "BSE result PDF 9c47b7f7-326*.pdf (filed 2024-10-21 14:36), p13 Statement of Consolidated results q/e 30th Sep 2024, '(Rs in crore)' (image-verified crop) | Moneycontrol cons_quarterly CG",
+   "note": "Consolidated owners PAT 271.97 -> 220.96. READ 1: BSE result PDF 9c47b7f7-326*.pdf (filed 2024-10-21 14:36), p13 Statement of Consolidated results q/e 30th Sep 2024, '(Rs in crore)' (image-verified crop) \u2014 '11 Profit after tax 219.63'; 'Profit after tax attributable to: (a) Owners of the Company 220.96; (b) Non-controlling interests 1.33' (30.09.2024 col); TCI owners 232.63; EPS 1.45 (220.96). READ 2: Moneycontrol cons_quarterly CG \u2014 Net Profit for the period 219.63, Minority Interest 1.33, Net P/L After M.I & Associates 220.96 (Sep '24) (220.96). RESOLVED two-candidate case: 219.63 is total PAT incl. NCI; owners = 220.96 (printed). The filing prints NCI '1.33' unbracketed although 220.96 - 1.33 = 219.63 (NCI is a loss). EPS 1.45 x 152.85 cr sh = 221.6 supports 220.96 (219.63 would print 1.44). XBRL INDAS_112955 tags owners/NCI 0.0. stored 271.97 = the 6-month owners figure tagged in the May-2025 integrated XBRL (INTEGRATED_FILING_INDAS_1434125, context 2024-04-01..2024-09-30)"
+  },
+  "CRAFTSMAN|20230930|patC": {
+   "found_by": "second-reader audit triage 2026-09-28, F2 (runbook \u00a7214a)",
+   "owners": 94.54,
+   "total_was": 104.49,
+   "src": "BSE result PDF 065bc933-75e*.pdf (filed 2023-10-30), p2 Statement of Consolidated results (image read), 'Rs in Lakhs' (whole lakhs) | Moneycontrol cons_quarterly CA07",
+   "note": "Consolidated owners PAT 104.49 -> 94.54. READ 1: BSE result PDF 065bc933-75e*.pdf (filed 2023-10-30), p2 Statement of Consolidated results (image read), 'Rs in Lakhs' (whole lakhs) \u2014 'Profit attributable to Owners 9,454' lakhs = 94.54 cr (30/09/2023 quarter col); NCI 995; '7 Profit for the period 10,449'; EPS 44.75 (94.54). READ 2: Moneycontrol cons_quarterly CA07 \u2014 Net P/L After M.I & Associates 94.54 (Sep '23) (94.54). input candidate 94.51 was EPS-derived; printed 9,454 lakhs -> 94.54. stored 104.49 = TOTAL"
+  },
+  "CRAFTSMAN|20240331|patC": {
+   "found_by": "second-reader audit triage 2026-09-28, F2 (runbook \u00a7214a)",
+   "owners": 62.33,
+   "total_was": 70.53,
+   "src": "BSE result PDF d33f8eb9-a01*.pdf (filed 2024-04-27), p2 Statement of Consolidated results (image read), 'Rs in Lakhs' (whole lakhs) | Moneycontrol cons_quarterly CA07",
+   "note": "Consolidated owners PAT 70.53 -> 62.33. READ 1: BSE result PDF d33f8eb9-a01*.pdf (filed 2024-04-27), p2 Statement of Consolidated results (image read), 'Rs in Lakhs' (whole lakhs) \u2014 'Profit attributable to Owners 6,233' lakhs = 62.33 cr (31/03/2024 quarter col); NCI 820; '7 Profit for the period 7,053'; EPS 29.50 (62.33). READ 2: Moneycontrol cons_quarterly CA07 \u2014 Net P/L After M.I & Associates 62.33 (Mar '24) (62.33). input candidate 62.30 was EPS-derived; printed 6,233 lakhs -> 62.33. stored 70.53 = TOTAL"
+  },
+  "EIDPARRY|20240630|patC": {
+   "found_by": "second-reader audit triage 2026-09-28, F2 (runbook \u00a7214a)",
+   "owners": 91.33,
+   "total_was": 225.87,
+   "src": "BSE result PDF 78efcd4c-dd4*.pdf (filed 2024-08-14 14:44), p9 Consolidated Unaudited results q/e June 30 2024, 'Rs. In Crore' | Moneycontrol cons_quarterly EID",
+   "note": "Consolidated owners PAT 225.87 -> 91.33. READ 1: BSE result PDF 78efcd4c-dd4*.pdf (filed 2024-08-14 14:44), p9 Consolidated Unaudited results q/e June 30 2024, 'Rs. In Crore' \u2014 'Profit for the period attributable to: a. Owners of the Company 91.33' (June 30, 2024 col); b. NCI 134.54; '6 Profit after Tax 225.87'; EPS 5.14 (91.33). READ 2: Moneycontrol cons_quarterly EID \u2014 Net P/L After M.I & Associates 91.33 (Jun '24) (91.33). stored 225.87 = TOTAL PAT incl. NCI (Coromandel minority). The company's own press release (same PDF p12) calls 225 cr 'profit after tax and non-controlling interest' - a mislabel; the statement's owners line is 91.33"
+  },
+  "GLENMARK|20211231|patC": {
+   "found_by": "second-reader audit triage 2026-09-28, F2 (runbook \u00a7214a)",
+   "owners": 221.9,
+   "total_was": 239.75,
+   "src": "BSE result PDF 97854b39-1e6*.pdf (filed 2022-02-11 22:40), p39 Consolidated unaudited results q/e 31 Dec 2021, 'All amounts in million of Indian Rupees' | Moneycontrol cons_quarterly GP08",
+   "note": "Consolidated owners PAT 239.75 -> 221.9. READ 1: BSE result PDF 97854b39-1e6*.pdf (filed 2022-02-11 22:40), p39 Consolidated unaudited results q/e 31 Dec 2021, 'All amounts in million of Indian Rupees' \u2014 'Profit/(loss) for the period attributable to: - Non-controlling interests 178.49; - Owners of the Company 2,219.02' mn = 221.902 cr (31/12/2021 col); Profit for the period 2,397.51 (2,219.02+178.49 closes) (221.9). READ 2: Moneycontrol cons_quarterly GP08 \u2014 Net P/L After M.I & Associates 221.90 (Dec '21) (221.9). input candidate 221.79 was EPS-derived; printed 2,219.02 mn -> 221.90. stored 239.75 = TOTAL. XBRL owners/NCI tags 0.0"
+  },
+  "GLENMARK|20220930|patC": {
+   "found_by": "second-reader audit triage 2026-09-28, F2 (runbook \u00a7214a)",
+   "owners": 260.44,
+   "total_was": 278.67,
+   "src": "BSE result PDF c213bac9-ece*.pdf (filed 2022-11-11 18:47), p39 Consolidated unaudited results q/e 30 Sep 2022, 'million of Indian Rupees' | Moneycontrol cons_quarterly GP08",
+   "note": "Consolidated owners PAT 278.67 -> 260.44. READ 1: BSE result PDF c213bac9-ece*.pdf (filed 2022-11-11 18:47), p39 Consolidated unaudited results q/e 30 Sep 2022, 'million of Indian Rupees' \u2014 '- Owners of the Company 2,604.40' mn (30/09/2022 col); NCI 182.29; Profit 2,786.69 (closes) (260.44). READ 2: Moneycontrol cons_quarterly GP08 \u2014 Net P/L After M.I & Associates 260.44 (Sep '22); also Dec-2022 and Sep-2023 filings' comparative cols print Owners 2,604.40 (260.44). stored 278.67 = TOTAL"
+  },
+  "GLENMARK|20221231|patC": {
+   "found_by": "second-reader audit triage 2026-09-28, F2 (runbook \u00a7214a)",
+   "owners": 272.58,
+   "total_was": 290.76,
+   "src": "BSE result PDF 66e798c3-956*.pdf (filed 2023-02-10 19:47), p22 Consolidated unaudited results q/e 31 Dec 2022, 'million of Indian Rupees' | Glenmark Mar-2023 result PDF c395378e-d7d*.pdf (filed 2023-05-19), p3 consolidated, preceding-quarter column 31/12/2022 (image read)",
+   "note": "Consolidated owners PAT 290.76 -> 272.58. READ 1: BSE result PDF 66e798c3-956*.pdf (filed 2023-02-10 19:47), p22 Consolidated unaudited results q/e 31 Dec 2022, 'million of Indian Rupees' \u2014 'Profit/(loss) for the period attributable to: - Non-controlling interests 181.83; - Owners of the Company 2,725.79' mn (31/12/2022 col) = 272.579 cr; Profit for the period 2,907.62 (closes) (272.58). READ 2: Glenmark Mar-2023 result PDF c395378e-d7d*.pdf (filed 2023-05-19), p3 consolidated, preceding-quarter column 31/12/2022 (image read) \u2014 '- Non-controlling interests 181.83; - Owners of the Company 2,725.79'; Profit for the period 2,907.62 (identical) (272.58). MC is NOT usable (MC Net P/L After M.I = 290.76, the total). XBRL INDAS_89662 carries only CI-attribution tags (269.681/18.099 = TCI split). reader2 = company's own next-quarter filing comparative. stored 290.76 = TOTAL"
+  },
+  "GLENMARK|20230630|patC": {
+   "found_by": "second-reader audit triage 2026-09-28, F2 (runbook \u00a7214a)",
+   "owners": 149.93,
+   "total_was": 23.19,
+   "src": "BSE result PDF 33e95a36-ca7*.pdf (filed 2023-08-11 18:01), p3 Consolidated unaudited results q/e 30 June 2023, 'million of Indian Rupees' | Glenmark Sep-2023 result PDF cd21a91c-231*.pdf (filed 2023-11-10) p3, preceding-quarter column 30/06/2023 (image-verified) + NSE XBRL INDAS_96727",
+   "note": "Consolidated owners PAT 23.19 -> 149.93. READ 1: BSE result PDF 33e95a36-ca7*.pdf (filed 2023-08-11 18:01), p3 Consolidated unaudited results q/e 30 June 2023, 'million of Indian Rupees' \u2014 'Profit for the period attributable to: - Non-controlling interests 231.94; - Owners of the Company 1,499.34' mn = 149.934 cr (30/06/2023 col); Profit 1,731.28 (closes); EPS 5.31 (149.93). READ 2: Glenmark Sep-2023 result PDF cd21a91c-231*.pdf (filed 2023-11-10) p3, preceding-quarter column 30/06/2023 (image-verified) + NSE XBRL INDAS_96727 \u2014 Sep-23 filing prints for 30/06/2023: NCI 231.94, Owners of the Company 1,499.34 (continuing+discontinuing). The Jun-23 XBRL carries 149.934 cr in the ...NonControllingInterests tag and 23.194 in ...OwnersOfParent (owners<->NCI TAG SWAP, runbook \u00a72d); EPS 5.31 x 28.217 cr sh = 149.8 arbitrates 149.93 as owners (149.93). MC is NOT usable here: MC Net P/L After M.I = 23.19 (MC ingested the swapped XBRL tags). reader2 is the company's own next-quarter filing (comparative col, identical) + the swapped XBRL tag. stored 23.19 = the NCI figure"
+  },
+  "GLENMARK|20230930|patC": {
+   "found_by": "second-reader audit triage 2026-09-28, F2 (runbook \u00a7214a)",
+   "owners": -81.95,
+   "total_was": -63.55,
+   "src": "BSE result PDF cd21a91c-231*.pdf (filed 2023-11-10 18:57), p3 Consolidated unaudited results q/e 30 Sep 2023, 'million of Indian Rupees' (image-verified) | Moneycontrol cons_quarterly GP08",
+   "note": "Consolidated owners PAT -63.55 -> -81.95. READ 1: BSE result PDF cd21a91c-231*.pdf (filed 2023-11-10 18:57), p3 Consolidated unaudited results q/e 30 Sep 2023, 'million of Indian Rupees' (image-verified) \u2014 'XVI Profit/(loss) for the period continuing and discontinuing operations attributable to: - NCI 203.83; - Owners of the Company (819.45)' mn = -81.945 cr (30/09/2023 col); XV total (615.62) (closes) (-81.95). READ 2: Moneycontrol cons_quarterly GP08 \u2014 Net P/L After M.I & Associates -81.95 (Sep '23); NSE XBRL INDAS_100573 ProfitOrLossAttributableToOwnersOfParent -819.49 mn (-81.949 cr) (-81.95). stored -63.55 = XBRL ProfitLossForPeriod (-635.54 mn), which is neither the PDF total (-615.62) nor owners. PDF -81.945 rounds to -81.95 (half away from zero); XBRL -81.949 -> -81.95"
+  },
+  "GODREJIND|20211231|patC": {
+   "found_by": "second-reader audit triage 2026-09-28, F2 (runbook \u00a7214a)",
+   "owners": 144.39,
+   "total_was": 182.78,
+   "src": "BSE result PDF c8a275c5-d3e*.pdf (filed 2022-02-11 13:21), p4 Unaudited results q/e Dec 31 2021, Consolidated block, 'Amounts in Rs. Crore' | Moneycontrol cons_quarterly GS",
+   "note": "Consolidated owners PAT 182.78 -> 144.39. READ 1: BSE result PDF c8a275c5-d3e*.pdf (filed 2022-02-11 13:21), p4 Unaudited results q/e Dec 31 2021, Consolidated block, 'Amounts in Rs. Crore' \u2014 'Net Profit/(Loss) Attributable to: a) Owners of the Company 144.39' (31 Dec 21 col); b) NCI 38.39; Profit After Tax 182.78 (144.39). READ 2: Moneycontrol cons_quarterly GS \u2014 Net P/L After M.I & Associates 144.39 (Dec '21) (144.39). input candidate 144.44 was EPS-derived; printed 144.39. stored 182.78 = TOTAL"
+  },
+  "GODREJIND|20220630|patC": {
+   "found_by": "second-reader audit triage 2026-09-28, F2 (runbook \u00a7214a)",
+   "owners": 203.95,
+   "total_was": 257.6,
+   "src": "BSE result PDF 6f480549-d41*.pdf (filed 2022-08-12 14:13, p10 image read), Unaudited results q/e June 30 2022, Consolidated block, 'Amounts in Rs. Crore' | Godrej Industries Sep-2022 result PDF 683451b8-e7d*.pdf (filed 2022-11-14), p13 consolidated, preceding-quarter column 30-Jun-22",
+   "note": "Consolidated owners PAT 257.6 -> 203.95. READ 1: BSE result PDF 6f480549-d41*.pdf (filed 2022-08-12 14:13, p10 image read), Unaudited results q/e June 30 2022, Consolidated block, 'Amounts in Rs. Crore' \u2014 'Net Profit/(Loss) Attributable to: a) Owners of the Company 203.95; b) Non-Controlling Interest 53.65' (30-Jun-22 col); Profit After Tax 257.60 (203.95). READ 2: Godrej Industries Sep-2022 result PDF 683451b8-e7d*.pdf (filed 2022-11-14), p13 consolidated, preceding-quarter column 30-Jun-22 \u2014 'a) Owners of the Company 203.95; b) Non-Controlling Interest 53.65' (identical) (203.95). MC is NOT usable (MC Net P/L After M.I = 257.60, the total). XBRL INDAS_658559 carries only CI-attribution tags (254.65/52.76 = TCI split). reader2 = company's own next-quarter filing comparative. Input candidate 203.95 matches. stored 257.60 = TOTAL"
+  },
+  "GSPL|20211231|patC": {
+   "found_by": "second-reader audit triage 2026-09-28, F2 (runbook \u00a7214a)",
+   "owners": 294.6,
+   "total_was": 350.96,
+   "src": "BSE result PDF 7c581d23-9607-4164-bdea-8cc68e1b9128.pdf (filed 2022-02-10 17:55, BSE code 532702; scanned, p5 image read/zoomed), Unaudited Consolidated results q/e 31st Dec 2021, 'Rs. in Lakhs' | Moneycontrol cons_quarterly GSP02",
+   "note": "Consolidated owners PAT 350.96 -> 294.6. READ 1: BSE result PDF 7c581d23-9607-4164-bdea-8cc68e1b9128.pdf (filed 2022-02-10 17:55, BSE code 532702; scanned, p5 image read/zoomed), Unaudited Consolidated results q/e 31st Dec 2021, 'Rs. in Lakhs' \u2014 'Profit attributable to: Owners of the Company 29,459.66; Non-Controlling Interest 5,636.33' (31.12.2021 col) = 294.5966 cr; '8 Net Profit after tax 35,095.98'; EPS 5.22 (294.6). READ 2: Moneycontrol cons_quarterly GSP02 \u2014 Net Profit 319.39 + assoc 31.57 - MI 56.36 -> Net P/L After M.I & Associates 294.60 (Dec '21) (294.6). input candidate 294.52 was EPS-derived; printed 29,459.66 lakhs -> 294.60. stored 350.96 = TOTAL. BSE code 532702 taken from the earlier eps investigator's scripcodes.json (bse_scrips.json lacks GSPL); the PDF itself names Gujarat State Petronet"
+  },
+  "HFCL|20220331|patC": {
+   "found_by": "second-reader audit triage 2026-09-28, F2 (runbook \u00a7214a)",
+   "owners": 65.32,
+   "total_was": 68.13,
+   "src": "BSE result PDF 3db9ff82-179f-4e0b-84f0-1523c0a66983.pdf (filed 2022-04-29 16:34), p11 Audited Standalone & Consolidated results Q4 FY22, 'Rs. in Crore' (image read) | Moneycontrol cons_quarterly HFC",
+   "note": "Consolidated owners PAT 68.13 -> 65.32. READ 1: BSE result PDF 3db9ff82-179f-4e0b-84f0-1523c0a66983.pdf (filed 2022-04-29 16:34), p11 Audited Standalone & Consolidated results Q4 FY22, 'Rs. in Crore' (image read) \u2014 Consolidated, three months ended March 31st 2022: 'XII Profit attributable to: Owners of the Parent 65.32; Non-controlling interests 2.81'; profit after tax 68.13 (closes); TCI owners 65.85 (65.32). READ 2: Moneycontrol cons_quarterly HFC \u2014 Net Profit 68.03 + assoc 0.10 - MI 2.81 -> Net P/L After M.I & Associates 65.32 (Mar '22) (65.32). input candidate 62.32 is WRONG: it is the filer's XBRL ProfitOrLossAttributableToOwnersOfParent tag (62.32), which disagrees with its own printed statement (65.32) and with its own NCI (62.32+2.81 != 68.13). Write 65.32. stored 68.13 = TOTAL"
+  },
+  "IIFL|20230630|patC": {
+   "found_by": "second-reader audit triage 2026-09-28, F2 (runbook \u00a7214a)",
+   "owners": 425.4,
+   "total_was": 472.86,
+   "src": "BSE result PDF abfb6a66-be8*.pdf (filed 2023-07-27 14:16), p11 Unaudited Consolidated results q/e June 30 2023, 'Rs in Crore' | Moneycontrol cons_quarterly II15",
+   "note": "Consolidated owners PAT 472.86 -> 425.4. READ 1: BSE result PDF abfb6a66-be8*.pdf (filed 2023-07-27 14:16), p11 Unaudited Consolidated results q/e June 30 2023, 'Rs in Crore' \u2014 '(VII) Net profit after tax 472.86'; attributable 'Owners of the Company 425.40; Non-controlling interest 47.46' (June 30, 2023 col); EPS 11.18 (425.4). READ 2: Moneycontrol cons_quarterly II15 \u2014 Net P/L After M.I & Associates 425.40 (Jun '23) (425.4). input candidate 425.48 was EPS-derived; printed 425.40. stored 472.86 = TOTAL. XBRL has no profit-owners tag (CI-owners 407.547 = TCI owners)"
+  },
+  "JKCEMENT|20190630|patC": {
+   "found_by": "second-reader audit triage 2026-09-28, F2 (runbook \u00a7214a)",
+   "owners": 132.31,
+   "total_was": 136.93,
+   "src": "BSE result PDF 21ee3081-af1*.pdf (filed 2019-08-03 15:37), p3 Consolidated Unaudited results q/e 30th June 2019, 'Rs in Lakhs' | Moneycontrol cons_quarterly JKC03",
+   "note": "Consolidated owners PAT 136.93 -> 132.31. READ 1: BSE result PDF 21ee3081-af1*.pdf (filed 2019-08-03 15:37), p3 Consolidated Unaudited results q/e 30th June 2019, 'Rs in Lakhs' \u2014 profit attributable to 'Equity Holders of the J K Cement Ltd 13,230.54' lakhs = 132.3054 cr (30.06.2019 col); Non Controlling Interest '-' (132.31). READ 2: Moneycontrol cons_quarterly JKC03 \u2014 Net P/L After M.I & Associates 132.31 (Jun '19); NSE XBRL INDAS_46699 ProfitOrLossAttributableToOwnersOfParent 132.3054 = ProfitLossForPeriod (132.31). stored 136.93 matches no line of this filing (first-ever quarterly consolidated result, note 5)"
+  },
+  "LTF|20210331|patC": {
+   "found_by": "second-reader audit triage 2026-09-28, F2 (runbook \u00a7214a)",
+   "owners": 266.85,
+   "total_was": 243.66,
+   "src": "BSE result PDF 6a36df53-547*.pdf (filed 2021-04-29 17:52), p8 Consolidated results q/e March 31 2021, 'Rs in Crore' | Moneycontrol cons_quarterly LFH",
+   "note": "Consolidated owners PAT 243.66 -> 266.85. READ 1: BSE result PDF 6a36df53-547*.pdf (filed 2021-04-29 17:52), p8 Consolidated results q/e March 31 2021, 'Rs in Crore' \u2014 'Profit for the period/year attributable to: Owners of the company 266.85; Non-controlling interest (0.88)' (Q4 col); PAT 265.97; TCI owners 243.66 (266.85). READ 2: Moneycontrol cons_quarterly LFH \u2014 Net Profit 265.97, MI 0.88, Net P/L After M.I & Associates 266.85 (Mar '21) (266.85). stored 243.66 = TOTAL COMPREHENSIVE income attributable to owners (the XBRL ProfitOrLossAttributableToOwnersOfParent tag held TCI owners)"
+  },
+  "MANKIND|20260630|patC": {
+   "found_by": "second-reader audit triage 2026-09-28, F2 (runbook \u00a7214a)",
+   "owners": 568.06,
+   "total_was": 574.09,
+   "src": "BSE result PDF 0a692344-6cb*.pdf (filed 2026-07-30 15:28), p13 unaudited consolidated results q/e June 30 2026, 'Rs Crores' | Moneycontrol cons_quarterly MP21",
+   "note": "Consolidated owners PAT 574.09 -> 568.06. READ 1: BSE result PDF 0a692344-6cb*.pdf (filed 2026-07-30 15:28), p13 unaudited consolidated results q/e June 30 2026, 'Rs Crores' \u2014 'Profit for the period attributable to: - Equity holders of the parent 568.06; - Non-controlling interests 6.03' (30.06.2026 col); IX Profit 574.09; EPS 13.76 (568.06). READ 2: Moneycontrol cons_quarterly MP21 \u2014 Net P/L After M.I & Associates 568.06 (Jun '26) (568.06). stored 574.09 = TOTAL; the XBRL (INTEGRATED_FILING_INDAS_1705654) carries no owners tag"
+  },
+  "MFSL|20241231|patC": {
+   "found_by": "second-reader audit triage 2026-09-28, F2 (runbook \u00a7214a)",
+   "owners": 56.04,
+   "total_was": 69.81,
+   "src": "BSE result PDF 1d575642-a9d*.pdf (filed 2025-02-04 19:33), p5 Consolidated results q/e Dec 31 2024, 'Rs in Crores' | Moneycontrol cons_quarterly MI",
+   "note": "Consolidated owners PAT 69.81 -> 56.04. READ 1: BSE result PDF 1d575642-a9d*.pdf (filed 2025-02-04 19:33), p5 Consolidated results q/e Dec 31 2024, 'Rs in Crores' \u2014 '13. Profit attributable to Owners of the company 56.04; Non-controlling interests 13.77' (31.12.2024 col); '9. Profit for the period 69.81'; EPS 1.62 (56.04). READ 2: Moneycontrol cons_quarterly MI \u2014 Net P/L After M.I & Associates 56.04 (Dec '24); also Dec-2025 filing comparative col (31.12.2024) Owners 56.04 (56.04). input candidate 55.63 was EPS-derived; printed 56.04. stored 69.81 = TOTAL. The owners line IS printed as a single number in this filing (cf. runbook insurer 'hard wall' note)"
+  },
+  "MFSL|20251231|patC": {
+   "found_by": "second-reader audit triage 2026-09-28, F2 (runbook \u00a7214a)",
+   "owners": 36.56,
+   "total_was": 44.76,
+   "src": "BSE result PDF 22fbfd01-03b*.pdf (filed 2026-02-11 18:08), p5 Consolidated results q/e Dec 31 2025, 'Rs. in Crores' | Moneycontrol cons_quarterly MI",
+   "note": "Consolidated owners PAT 44.76 -> 36.56. READ 1: BSE result PDF 22fbfd01-03b*.pdf (filed 2026-02-11 18:08), p5 Consolidated results q/e Dec 31 2025, 'Rs. in Crores' \u2014 '15. Profit attributable to Owners of the company 36.56; Non-controlling interests 8.20' (31.12.2025 col); '11. Profit for the period 44.76' (incl. discontinued 0.01); EPS 1.07 (36.56). READ 2: Moneycontrol cons_quarterly MI \u2014 Net P/L After M.I & Associates 36.56 (Dec '25) (36.56). input candidate 36.72 was EPS-derived; printed 36.56. stored 44.76 = TOTAL"
+  },
+  "NLCINDIA|20260630|patC": {
+   "found_by": "second-reader audit triage 2026-09-28, F2 (runbook \u00a7214a)",
+   "owners": 484.27,
+   "total_was": 436.33,
+   "src": "BSE result PDF 9b1e76d6-6477-4611-b278-e43e422965b8.pdf (filed 2026-08-07 16:33, 'Results- Financials For Quarter Ended 30th June 2026'; cached by the misc investigator), p10 Unaudited consolidated results, 'Rs Crore' (image read) | Moneycontrol cons_quarterly NLC",
+   "note": "Consolidated owners PAT 436.33 -> 484.27. READ 1: BSE result PDF 9b1e76d6-6477-4611-b278-e43e422965b8.pdf (filed 2026-08-07 16:33, 'Results- Financials For Quarter Ended 30th June 2026'; cached by the misc investigator), p10 Unaudited consolidated results, 'Rs Crore' (image read) \u2014 'XVI Profit attributable to: - Owners of the Company 484.27; - Non Controlling Interest (NCI) (47.94)' (30-06-2026 col); XIII Profit for the period 436.33; EPS after regulatory deferral 3.49 (484.27). READ 2: Moneycontrol cons_quarterly NLC \u2014 Net Profit 436.27 + assoc 0.06, Minority Interest 47.94 -> Net P/L After M.I & Associates 484.27 (Jun '26) (484.27). stored 436.33 = TOTAL (the BSE XBRL carries only ProfitLossForPeriod). Results were approved 2026-08-07, not the 2026-08-10 date held in sf_fundamentals ann col"
+  },
+  "OLECTRA|20260331|patC": {
+   "found_by": "second-reader audit triage 2026-09-28, F2 (runbook \u00a7214a)",
+   "owners": 55.52,
+   "total_was": 57.39,
+   "src": "BSE result PDF 76e988b8-90e*.pdf (filed 2026-05-29 19:38), p12 Statement of Consolidated results q/e 31 March 2026, 'Indian Rupees Lakhs' | NSE XBRL INTEGRATED_FILING_INDAS_1676969_29052026 (OneD 2026-01-01..03-31, Consolidated)",
+   "note": "Consolidated owners PAT 57.39 -> 55.52. READ 1: BSE result PDF 76e988b8-90e*.pdf (filed 2026-05-29 19:38), p12 Statement of Consolidated results q/e 31 March 2026, 'Indian Rupees Lakhs' \u2014 '11 Profit/(Loss) attributable to equity holders of the Parent 5,552.11' lakhs = 55.5211 cr (31.03.2026 col); '10 ... non controlling interest 187.04'; '9 Net Profit after tax 5,739.15'; EPS 6.76 (55.52). READ 2: NSE XBRL INTEGRATED_FILING_INDAS_1676969_29052026 (OneD 2026-01-01..03-31, Consolidated) \u2014 ProfitLossForPeriod 573,915,000 - ProfitOrLossAttributableToNonControllingInterests 18,704,000 = 555,211,000 Rs = 55.5211 cr (ProfitOrLossAttributableToOwnersOfParent tagged 0 - filer mis-tag) (55.52). Moneycontrol payload for OLECTRA not in the local cache (not fetched); reader2 is the XBRL PL-NCI rule from the same filing context. stored 57.39 = TOTAL"
+  },
+  "PFC|20221231|patC": {
+   "found_by": "second-reader audit triage 2026-09-28, F2 (runbook \u00a7214a)",
+   "owners": 3860.25,
+   "total_was": 5241.1,
+   "src": "BSE result PDF 00e69d8b-6798-4440-b9fd-93fbefadc0a8.pdf (filed 2023-02-13 16:25, scanned; p15 image read), Unaudited Consolidated results q/e 31.12.2022 (Rs crore) | Moneycontrol cons_quarterly PFC02",
+   "note": "Consolidated owners PAT 5241.1 -> 3860.25. READ 1: BSE result PDF 00e69d8b-6798-4440-b9fd-93fbefadc0a8.pdf (filed 2023-02-13 16:25, scanned; p15 image read), Unaudited Consolidated results q/e 31.12.2022 (Rs crore) \u2014 'Profit attributable to: - Owners of the Company 3,860.25; - Non-Controlling Interest 1,380.85; total 5,241.10' (quarter 31.12.2022 col); TCI owners 3,875.31; EPS 14.62 (3860.25). READ 2: Moneycontrol cons_quarterly PFC02 \u2014 Net Profit 5,241.09, MI -1,380.85, Net P/L After M.I & Associates 3,860.25 (Dec '22); also PFC Dec-2023 filing (d47f714d p16) corresponding-quarter col 31.12.2022 Owners 3,860.25 (3860.25). input candidate 3859.80 was EPS-derived; printed 3,860.25. stored 5241.10 = TOTAL. XBRL CI-owners tag 3875.31 = TCI owners"
+  },
+  "PFC|20230930|patC": {
+   "found_by": "second-reader audit triage 2026-09-28, F2 (runbook \u00a7214a)",
+   "owners": 4833.08,
+   "total_was": 6628.17,
+   "src": "BSE result PDF 69bed369-de2c-4d5b-a423-b46d2f98b527.pdf (filed 2023-11-08 19:53, scanned; p18 image read), Unaudited Consolidated results q/e 30.09.2023, 'Rs in crore' | Moneycontrol cons_quarterly PFC02",
+   "note": "Consolidated owners PAT 6628.17 -> 4833.08. READ 1: BSE result PDF 69bed369-de2c-4d5b-a423-b46d2f98b527.pdf (filed 2023-11-08 19:53, scanned; p18 image read), Unaudited Consolidated results q/e 30.09.2023, 'Rs in crore' \u2014 'Profit attributable to: - Owners of the Company 4,833.08; - Non-Controlling Interest 1,795.09; 6,628.17' (30.09.2023 col); EPS 14.65 (4833.08). READ 2: Moneycontrol cons_quarterly PFC02 \u2014 Net P/L After M.I & Associates 4,833.08 (Sep '23); also Dec-2023 filing preceding-quarter col (30.09.2023) Owners 4,833.08 (4833.08). input candidate 4834.65 was EPS-derived; printed 4,833.08. stored 6628.17 = TOTAL. XBRL owners/NCI tags 0.0"
+  },
+  "PFC|20231231|patC": {
+   "found_by": "second-reader audit triage 2026-09-28, F2 (runbook \u00a7214a)",
+   "owners": 4727.4,
+   "total_was": 6294.44,
+   "src": "BSE result PDF d47f714d-aff*.pdf (filed 2024-02-08 15:51), p15-16 Unaudited Consolidated results q/e 31.12.2023, 'Rs in crore' | Moneycontrol cons_quarterly PFC02",
+   "note": "Consolidated owners PAT 6294.44 -> 4727.4. READ 1: BSE result PDF d47f714d-aff*.pdf (filed 2024-02-08 15:51), p15-16 Unaudited Consolidated results q/e 31.12.2023, 'Rs in crore' \u2014 'Profit attributable to: - Owners of the Company 4,727.40; - Non-Controlling Interest 1,567.04; 6,294.44' (31.12.2023 col); TCI owners 4,767.76 (4727.4). READ 2: Moneycontrol cons_quarterly PFC02 \u2014 Net P/L After M.I & Associates 4,727.40 (Dec '23) (4727.4). input candidate 4768.0 is WRONG: it tracks the XBRL owners tag (47.6776 cr in a 1/100-scaled filing = 4,767.76 = TOTAL COMPREHENSIVE income owners), not profit owners. EPS 14.33 x 330.01 cr sh = 4,729 supports 4,727.40. stored 6294.44 = TOTAL"
+  },
+  "PFC|20250630|patC": {
+   "found_by": "second-reader audit triage 2026-09-28, F2 (runbook \u00a7214a)",
+   "owners": 6866.26,
+   "total_was": 8981.45,
+   "src": "BSE result PDF effa477e-ce6*.pdf (filed 2025-08-06 13:14), p16-17 Unaudited Consolidated results q/e 30.06.2025, 'Rs in crore' | Moneycontrol cons_quarterly PFC02",
+   "note": "Consolidated owners PAT 8981.45 -> 6866.26. READ 1: BSE result PDF effa477e-ce6*.pdf (filed 2025-08-06 13:14), p16-17 Unaudited Consolidated results q/e 30.06.2025, 'Rs in crore' \u2014 'Profit attributable to: - Owners of the Company 6,866.26; - Non-Controlling Interest 2,115.19' (30.06.2025 col); total 8,981.45 (6866.26). READ 2: Moneycontrol cons_quarterly PFC02 \u2014 Net P/L After M.I & Associates 6,866.26 (Jun '25) (6866.26). input candidate 6867.51 was EPS-derived; printed 6,866.26. stored 8981.45 = TOTAL"
+  },
+  "PIIND|20260630|patC": {
+   "found_by": "second-reader audit triage 2026-09-28, F2 (runbook \u00a7214a)",
+   "owners": 244.2,
+   "total_was": 276.2,
+   "src": "BSE result PDF 205743b2-00c*.pdf (filed 2026-08-11 19:20), p5 Statement of Consolidated Unaudited results q/e 30th June 2026, 'In Rs Million' (whole millions) | Moneycontrol cons_quarterly PII",
+   "note": "Consolidated owners PAT 276.2 -> 244.2. READ 1: BSE result PDF 205743b2-00c*.pdf (filed 2026-08-11 19:20), p5 Statement of Consolidated Unaudited results q/e 30th June 2026, 'In Rs Million' (whole millions) \u2014 'X Profit for the period/year (VIII-IX) 2,442' mn = 244.2 cr (30.06.2026 col); the statement prints NO owners/NCI split (no NCI line), so owners = profit for the period; TCI 2,762; EPS 16.10 (244.2). READ 2: Moneycontrol cons_quarterly PII \u2014 Net Profit 242.3 + share of associates 1.9 -> Net P/L After M.I & Associates 244.2 (Jun '26) (244.2). printed unit is whole Rs million, so precision is 0.1 cr. stored 276.2 = TOTAL COMPREHENSIVE income (2,762 mn) - owners tag held TCI. No NSE XBRL for this quarter in the local cache"
+  },
+  "PRAJIND|20230331|patC": {
+   "found_by": "second-reader audit triage 2026-09-28, F2 (runbook \u00a7214a)",
+   "owners": 88.11,
+   "total_was": 75.96,
+   "src": "BSE result PDF 35f515bd-de3*.pdf (filed 2023-05-25 16:04, scanned; p12 image read), Audited Consolidated results q/e 31 March 2023, 'Rupees in million' | Moneycontrol cons_quarterly PI17",
+   "note": "Consolidated owners PAT 75.96 -> 88.11. READ 1: BSE result PDF 35f515bd-de3*.pdf (filed 2023-05-25 16:04, scanned; p12 image read), Audited Consolidated results q/e 31 March 2023, 'Rupees in million' \u2014 '7 Profit for the year 881.151; 8 Attributable to: Non-controlling interest 0.084; Equity holder's of parents 881.067' mn = 88.1067 cr (31 March 2023 quarter col); EPS 4.80 (88.11). READ 2: Moneycontrol cons_quarterly PI17 \u2014 Net Profit 88.12, MI -0.01, Net P/L After M.I & Associates 88.11 (Mar '23) (88.11). NSE XBRL INDAS_92676 swaps the tags (NonControllingInterests 88.1067 / OwnersOfParent 0.0084). stored 75.96 matches no line of this filing"
+  },
+  "PRAJIND|20240930|patC": {
+   "found_by": "second-reader audit triage 2026-09-28, F2 (runbook \u00a7214a)",
+   "owners": 53.82,
+   "total_was": 56.92,
+   "src": "BSE result PDF 027043f6-214*.pdf (filed 2024-10-25 17:46), p10 Unaudited Consolidated results q/e 30 Sept 2024, 'Rupees in million' | Moneycontrol cons_quarterly PI17",
+   "note": "Consolidated owners PAT 56.92 -> 53.82. READ 1: BSE result PDF 027043f6-214*.pdf (filed 2024-10-25 17:46), p10 Unaudited Consolidated results q/e 30 Sept 2024, 'Rupees in million' \u2014 '7 Profit for the year 538.310; 8 Attributable to: Non-controlling interest 0.083; Equity holder's of parents 538.227' mn = 53.8227 cr (30 Sept 2024 col); EPS 2.93 (53.82). READ 2: Moneycontrol cons_quarterly PI17 \u2014 Net P/L After M.I & Associates 53.82 (Sep '24) (53.82). NSE XBRL INDAS_113384 swaps the tags (NCI 53.8227 / owners 0.0083). stored 56.92 matches no line of this filing"
+  },
+  "PRAJIND|20251231|patC": {
+   "found_by": "second-reader audit triage 2026-09-28, F2 (runbook \u00a7214a)",
+   "owners": -12.39,
+   "total_was": 16.35,
+   "src": "BSE result PDF fbe34eb6-500*.pdf (filed 2026-02-12 15:52), p9 Unaudited Consolidated results q/e 31 Dec 2025, 'Rupees in million' | Praj Mar-2026 result PDF e33e303c-f*.pdf (filed 2026-05-28, scanned; p13 image read), consolidated, preceding-quarter column 31 December 2025",
+   "note": "Consolidated owners PAT 16.35 -> -12.39. READ 1: BSE result PDF fbe34eb6-500*.pdf (filed 2026-02-12 15:52), p9 Unaudited Consolidated results q/e 31 Dec 2025, 'Rupees in million' \u2014 'Attributable to: Non-controlling interest (0.008); Owners of the Company (123.857)' mn (31 December 2025 col) = -12.3857 cr; EPS (0.67) (-12.39). READ 2: Praj Mar-2026 result PDF e33e303c-f*.pdf (filed 2026-05-28, scanned; p13 image read), consolidated, preceding-quarter column 31 December 2025 \u2014 '7 Profit for the year (123.865); 8 Attributable to: Non-controlling interest (0.008); Owners of the Company (123.857)' (identical) (-12.39). MC is NOT usable (MC Net P/L After M.I = 0.00: it ingested the filer's swapped XBRL tags - INTEGRATED_FILING_INDAS_1624038 puts -12.386 cr in ...NonControllingInterests and -0.001 in ...OwnersOfParent). EPS -0.67 x 18.38 cr sh = -12.3 corroborates. stored 16.35 = a different figure (standalone profit is 16.628 in the std XBRL)"
+  },
+  "PRESTIGE|20230630|patC": {
+   "found_by": "second-reader audit triage 2026-09-28, F2 (runbook \u00a7214a)",
+   "owners": 266.9,
+   "total_was": 317.8,
+   "src": "BSE result PDF 1958b5f7-831*.pdf (filed 2023-08-08 18:43), p12 Consolidated unaudited results q/e 30 June 2023, 'Rs. In Million' (whole millions) | Moneycontrol cons_quarterly PEP02",
+   "note": "Consolidated owners PAT 317.8 -> 266.9. READ 1: BSE result PDF 1958b5f7-831*.pdf (filed 2023-08-08 18:43), p12 Consolidated unaudited results q/e 30 June 2023, 'Rs. In Million' (whole millions) \u2014 '12 Profit for the period attributable to: Shareholders of the Company 2,669; Non controlling interests 509' mn (30 Jun 2023 col); '9 Net Profit 3,178'; EPS 6.66 (266.9). READ 2: Moneycontrol cons_quarterly PEP02 \u2014 Net Profit 322.1 - MI 50.9 + assoc -4.3 -> Net P/L After M.I & Associates 266.9 (Jun '23) (266.9). printed in whole Rs million -> 0.1 cr precision; input candidate 267.0 was EPS-derived; printed 2,669 mn -> 266.9. stored 317.8 = TOTAL"
+  },
+  "RITES|20190930|patC": {
+   "found_by": "second-reader audit triage 2026-09-28, F2 (runbook \u00a7214a)",
+   "owners": 232.58,
+   "total_was": 243.41,
+   "src": "BSE result PDF c4cde172-c3f*.pdf (filed 2019-11-13 15:50), p3 Statement of Consolidated results q/e 30 Sep 2019, 'Rs in crores' | Moneycontrol cons_quarterly R06",
+   "note": "Consolidated owners PAT 243.41 -> 232.58. READ 1: BSE result PDF c4cde172-c3f*.pdf (filed 2019-11-13 15:50), p3 Statement of Consolidated results q/e 30 Sep 2019, 'Rs in crores' \u2014 'Profit for the period 237.21'; '...attributable to non-controlling interests 4.63'; '...attributable to equity shareholders of the [company] 232.58' (30.09.2019 col); EPS 9.30 (232.58). READ 2: Moneycontrol cons_quarterly R06 \u2014 Net P/L After M.I & Associates 232.58 (Sep '19); NSE XBRL INDAS_50434 carries 232.58 in the ...NonControllingInterests tag and 4.63 in ...OwnersOfParent (tag swap) (232.58). stored 243.41 matches no line of this filing"
+  },
+  "RITES|20231231|patC": {
+   "found_by": "second-reader audit triage 2026-09-28, F2 (runbook \u00a7214a)",
+   "owners": 120.14,
+   "total_was": 128.78,
+   "src": "BSE result PDF d4a0996e-740*.pdf (filed 2024-02-01 15:51), p7 Consolidated Unaudited results q/e 31st Dec 2023, 'Rs in crores' (image read) | Moneycontrol cons_quarterly R06",
+   "note": "Consolidated owners PAT 128.78 -> 120.14. READ 1: BSE result PDF d4a0996e-740*.pdf (filed 2024-02-01 15:51), p7 Consolidated Unaudited results q/e 31st Dec 2023, 'Rs in crores' (image read) \u2014 'Profit/(Loss) for the Period/Year Attributable to Equity Shareholders of the Company 120.14' (31.12.2023 col); NCI 8.64; Profit for the Period 128.78; EPS 5.00 (120.14). READ 2: Moneycontrol cons_quarterly R06 \u2014 Net P/L After M.I & Associates 120.14 (Dec '23) (120.14). input candidate 120.15 was EPS-derived; printed 120.14. stored 128.78 = TOTAL"
+  },
+  "SCHAEFFLER|20260630|patC": {
+   "found_by": "second-reader audit triage 2026-09-28, F2 (runbook \u00a7214a)",
+   "owners": 325.78,
+   "total_was": 641.85,
+   "src": "BSE result PDF 57d4ef07-e9e*.pdf (filed 2026-07-22 20:31), p12 Unaudited Consolidated results q/e June 30 2026 (quarter and six months), 'Amount in million' | Moneycontrol cons_quarterly FPB",
+   "note": "Consolidated owners PAT 641.85 -> 325.78. READ 1: BSE result PDF 57d4ef07-e9e*.pdf (filed 2026-07-22 20:31), p12 Unaudited Consolidated results q/e June 30 2026 (quarter and six months), 'Amount in million' \u2014 '5 Profit for the period (3-4) 3,257.8' mn = 325.78 cr (quarter ended Jun 30, 2026 col); no owners/NCI split printed (owners = profit); YTD 6,418.5; EPS 20.8 (325.78). READ 2: Moneycontrol cons_quarterly FPB \u2014 Net P/L After M.I & Associates 325.78 (Jun '26) (325.78). stored 641.85 = the six-month (Jan-Jun 2026) figure; the NSE XBRL (INTEGRATED_FILING_INDAS_1699595) carried only a 180-day OneD context (calendar-year company, half-year filing)"
+  },
+  "SONACOMS|20260331|patC": {
+   "found_by": "second-reader audit triage 2026-09-28, F2 (runbook \u00a7214a)",
+   "owners": 191.92,
+   "total_was": 186.86,
+   "src": "BSE result PDF 4633aa50-003*.pdf (filed 2026-04-30 16:44, the Mar-26 quarter's OWN filing), p22 Consolidated Statement of P&L q/e March 31 2026, 'Figures in Rs Million' (image-verified) | Moneycontrol cons_quarterly SBP04",
+   "note": "Consolidated owners PAT 186.86 -> 191.92. READ 1: BSE result PDF 4633aa50-003*.pdf (filed 2026-04-30 16:44, the Mar-26 quarter's OWN filing), p22 Consolidated Statement of P&L q/e March 31 2026, 'Figures in Rs Million' (image-verified) \u2014 'Profit attributable to: a) Owners of the parent 1,919.15; b) Non-controlling interests (50.58)' (March 31, 2026 quarter col) = 191.915 cr; Profit for the period 1,868.57; EPS 3.09 (191.92). READ 2: Moneycontrol cons_quarterly SBP04 \u2014 Net Profit 186.86, MI +5.06, Net P/L After M.I & Associates 191.92 (Mar '26) (191.92). as-filed 1,919.15 mn = 191.915 cr -> 191.92 (half-up). The earlier candidate came from the Jun-26 filing's comparative (1,919.16); the quarter's own filing prints 1,919.15 - same 2-dp crore value. stored 186.86 = TOTAL; the Mar-26 XBRL has no owners tag"
+  },
+  "SUNDRMFAST|20211231|patC": {
+   "found_by": "second-reader audit triage 2026-09-28, F2 (runbook \u00a7214a)",
+   "owners": 108.07,
+   "total_was": 103.34,
+   "src": "BSE result PDF c6838b54-9fd*.pdf (filed 2022-02-10 12:57), p5 Unaudited Consolidated results q/e Dec 31 2021, 'Rs. in Crores' | Moneycontrol cons_quarterly SF",
+   "note": "Consolidated owners PAT 103.34 -> 108.07. READ 1: BSE result PDF c6838b54-9fd*.pdf (filed 2022-02-10 12:57), p5 Unaudited Consolidated results q/e Dec 31 2021, 'Rs. in Crores' \u2014 '8 Net profit attributable to a) Owners of the Company 108.07; b) Non controlling interest 1.93' (31-12-2021 col); '5 Profit for the period 110.00'; EPS 5.15 (108.07). READ 2: Moneycontrol cons_quarterly SF \u2014 Net Profit 110.00, MI -1.93, Net P/L After M.I & Associates 108.07 (Dec '21) (108.07). stored con 103.34 = the STANDALONE profit (std/con swapped)"
+  },
+  "SYRMA|20251231|patC": {
+   "found_by": "second-reader audit triage 2026-09-28, F2 (runbook \u00a7214a)",
+   "owners": 102.79,
+   "total_was": 110.31,
+   "src": "BSE result PDF 7b742fa5-068*.pdf (filed 2026-01-29 17:49), p10 Consolidated Unaudited results q/e 31 Dec 2025, 'Amount in Rs. Million' (image read) | Moneycontrol cons_quarterly SST07",
+   "note": "Consolidated owners PAT 110.31 -> 102.79. READ 1: BSE result PDF 7b742fa5-068*.pdf (filed 2026-01-29 17:49), p10 Consolidated Unaudited results q/e 31 Dec 2025, 'Amount in Rs. Million' (image read) \u2014 '10 Profit for the period attributable to Owners of the Holding Company 1,027.86; Non-controlling interests 75.28; 1,103.14' (31 December 2025 col) = 102.786 cr (102.79). READ 2: Moneycontrol cons_quarterly SST07 \u2014 Net P/L After M.I & Associates 102.79 (Dec '25); also Mar-2026 filing preceding-quarter col Owners 1,027.86 (102.79). input candidate 102.65 was EPS-derived; printed 1,027.86 mn -> 102.79. stored 110.31 = TOTAL; XBRL has no owners tag"
+  },
+  "SYRMA|20260331|patC": {
+   "found_by": "second-reader audit triage 2026-09-28, F2 (runbook \u00a7214a)",
+   "owners": 101.19,
+   "total_was": 119.23,
+   "src": "BSE result PDF 24b03c08-ead*.pdf (filed 2026-05-11 18:27, the Mar-26 quarter's OWN filing), p16 Statement of Consolidated results q/e 31 March 2026, 'Amount in Rs. Million' | Moneycontrol cons_quarterly SST07",
+   "note": "Consolidated owners PAT 119.23 -> 101.19. READ 1: BSE result PDF 24b03c08-ead*.pdf (filed 2026-05-11 18:27, the Mar-26 quarter's OWN filing), p16 Statement of Consolidated results q/e 31 March 2026, 'Amount in Rs. Million' \u2014 '10 Profit for the period attributable to Owners of the Holding Company 1,011.94; Non-controlling interests 180.37' (31 March 2026 col) = 101.194 cr; PAT 1,192.31; EPS 5.29 (101.19). READ 2: Moneycontrol cons_quarterly SST07 \u2014 Net Profit 119.23, MI -18.04, Net P/L After M.I & Associates 101.19 (Mar '26); also Jun-2026 filing comparative col Owners 1,011.94 (101.19). RESOLVED two-candidate case: 101.19 is the printed owners figure (own filing and Jun-26 comparative agree); 101.9 was EPS-derived (5.29 x 19.26 cr sh) and is not printed anywhere. stored 119.23 = TOTAL"
+  },
+  "SYRMA|20260630|patC": {
+   "found_by": "second-reader audit triage 2026-09-28, F2 (runbook \u00a7214a)",
+   "owners": 100.07,
+   "total_was": 105.69,
+   "src": "BSE result PDF b888114d-c0d*.pdf (filed 2026-07-29 15:46), p9 Consolidated Unaudited results q/e 30 June 2026, 'Amount in Rs. Million' | Moneycontrol cons_quarterly SST07",
+   "note": "Consolidated owners PAT 105.69 -> 100.07. READ 1: BSE result PDF b888114d-c0d*.pdf (filed 2026-07-29 15:46), p9 Consolidated Unaudited results q/e 30 June 2026, 'Amount in Rs. Million' \u2014 '10 Profit for the period attributable to Owners of the Holding Company 1,000.74; Non-controlling interests 56.18; 1,056.92' (30 June 2026 col) = 100.074 cr (100.07). READ 2: Moneycontrol cons_quarterly SST07 \u2014 Net Profit 105.69, MI -5.62, Net P/L After M.I & Associates 100.07 (Jun '26) (100.07). RESOLVED two-candidate case: 100.07 is printed; 99.96 was EPS-derived. stored 105.69 = TOTAL"
+  },
+  "TARIL|20250930|patC": {
+   "found_by": "second-reader audit triage 2026-09-28, F2 (runbook \u00a7214a)",
+   "owners": 33.91,
+   "total_was": 37.35,
+   "src": "BSE result PDF e225ab62-441*.pdf (filed 2025-11-08 19:26, scanned; p9 image read), Consolidated Unaudited results q/e 30th Sep 2025, 'Rs. In Crore' | Moneycontrol cons_quarterly TRI",
+   "note": "Consolidated owners PAT 37.35 -> 33.91. READ 1: BSE result PDF e225ab62-441*.pdf (filed 2025-11-08 19:26, scanned; p9 image read), Consolidated Unaudited results q/e 30th Sep 2025, 'Rs. In Crore' \u2014 'Profit for the year attributable to: - Owners of the Company 33.91; - Non-controlling interests 3.44' (30.09.2025 quarter col); '7 Profit for the period 37.35'; EPS 1.13 (33.91). READ 2: Moneycontrol cons_quarterly TRI \u2014 Net Profit 37.35, MI -3.44, Net P/L After M.I & Associates 33.91 (Sep '25) (33.91). input candidate 33.92 was EPS-derived; printed 33.91. stored 37.35 = TOTAL (XBRL owners/NCI tags 0.0; CI-owners 34.01 = TCI owners)"
+  },
+  "TARIL|20260331|patC": {
+   "found_by": "second-reader audit triage 2026-09-28, F2 (runbook \u00a7214a)",
+   "owners": 89.28,
+   "total_was": 91.39,
+   "src": "BSE result PDF 0d784a4f-24ee-4fef-b446-258d4b2a4d21.pdf (filed 2026-04-21 15:53, 'Board Meeting Outcome' category - the Mar-26 quarter's OWN filing), p16 Audited Consolidated results q/e 31st March 2026, 'Rs. In Crore' | Moneycontrol cons_quarterly TRI",
+   "note": "Consolidated owners PAT 91.39 -> 89.28. READ 1: BSE result PDF 0d784a4f-24ee-4fef-b446-258d4b2a4d21.pdf (filed 2026-04-21 15:53, 'Board Meeting Outcome' category - the Mar-26 quarter's OWN filing), p16 Audited Consolidated results q/e 31st March 2026, 'Rs. In Crore' \u2014 'Profit for the year attributable to: - Owners of the Company 89.28; - Non-controlling interests 2.11' (31.03.2026 quarter col); '7 Profit for the period 91.39'; EPS 3.04 (89.28). READ 2: Moneycontrol cons_quarterly TRI \u2014 Net Profit 91.39, MI -2.11, Net P/L After M.I & Associates 89.28 (Mar '26); Jun-2026 filing (e79978bb) comparative col 31.03.2026 Owners 89.28 (89.28). stored 91.39 = TOTAL. The Mar-26 XBRL (INTEGRATED_FILING_INDAS_1656620) tags owners/NCI 0.0 and carries the split in the ComprehensiveIncome...AttributableTo tags (89.28/2.11)"
+  },
+  "TARIL|20260630|patC": {
+   "found_by": "second-reader audit triage 2026-09-28, F2 (runbook \u00a7214a)",
+   "owners": 61.52,
+   "total_was": 64.29,
+   "src": "BSE result PDF e79978bb-220*.pdf (filed 2026-07-20 18:12), p7 Unaudited Consolidated results q/e June 30 2026, 'Rs. In Crore' | Moneycontrol cons_quarterly TRI",
+   "note": "Consolidated owners PAT 64.29 -> 61.52. READ 1: BSE result PDF e79978bb-220*.pdf (filed 2026-07-20 18:12), p7 Unaudited Consolidated results q/e June 30 2026, 'Rs. In Crore' \u2014 'Profit for the year attributable to: - Owners of the Company 61.52; - Non-controlling interests 2.77' (30.06.2026 col); '7 Profit for the period 64.29' (61.52). READ 2: Moneycontrol cons_quarterly TRI \u2014 Net Profit 64.29, MI -2.77, Net P/L After M.I & Associates 61.52 (Jun '26) (61.52). stored 64.29 = TOTAL (XBRL owners tag 0.0)"
+  },
+  "TATACOFFEE|20211231|patC": {
+   "found_by": "second-reader audit triage 2026-09-28, F2 (runbook \u00a7214a)",
+   "owners": 44.27,
+   "total_was": 69.46,
+   "src": "BSE result PDF 964026c8-7c89-401f-b499-ab9a068564e4.pdf (filed 2022-01-28 13:43, BSE code 532301), p10 Statement of Consolidated results q/e Dec 31 2021, 'Rs Lakh' (whole lakhs) | Tata Coffee Mar-2022 result PDF e96b04c8-c*.pdf (filed ~2022-04-27, scanned; p15 image read), consolidated, preceding-quarter column 'Quarter ended December 31, 2021'",
+   "note": "Consolidated owners PAT 69.46 -> 44.27. READ 1: BSE result PDF 964026c8-7c89-401f-b499-ab9a068564e4.pdf (filed 2022-01-28 13:43, BSE code 532301), p10 Statement of Consolidated results q/e Dec 31 2021, 'Rs Lakh' (whole lakhs) \u2014 'Net Profit/(Loss) attributable to: - Shareholders of the Company (B) 4427; - Non-controlling interest 2519' (quarter ended December 31, 2021 col) = 44.27 cr; '7 Profit for the period (A) 6946' (44.27). READ 2: Tata Coffee Mar-2022 result PDF e96b04c8-c*.pdf (filed ~2022-04-27, scanned; p15 image read), consolidated, preceding-quarter column 'Quarter ended December 31, 2021' \u2014 '- Shareholders of the Company (B) 4427; - Non-controlling interest 2519'; Profit for the period 6946 (identical) (44.27). MC is NOT usable (MC Net P/L After M.I = 69.46, the total). XBRL INDAS_80742 carries only CI-attribution tags (45.35/21.24 = TCI split). reader2 = company's own next-quarter filing comparative. stored 69.46 = TOTAL. BSE code 532301 from the earlier eps investigator's scripcodes.json (the PDF names Tata Coffee)"
+  },
+  "VEDL|20241231|patC": {
+   "found_by": "second-reader audit triage 2026-09-28, F2 (runbook \u00a7214a)",
+   "owners": 3547.0,
+   "total_was": 4876.0,
+   "src": "BSE result PDF 9d913fb2-f3e*.pdf (filed 2025-01-31 14:43), p9 Consolidated results q/e 31.12.2024, 'Rs in Crore' (whole crores) | Moneycontrol cons_quarterly SG",
+   "note": "Consolidated owners PAT 4876.0 -> 3547.0. READ 1: BSE result PDF 9d913fb2-f3e*.pdf (filed 2025-01-31 14:43), p9 Consolidated results q/e 31.12.2024, 'Rs in Crore' (whole crores) \u2014 '14 Profit attributable to: a) Owners of Vedanta Limited 3,547; b) Non-controlling interests 1,329' (31.12.2024 col); '17 Net profit after taxes, NCI and share in JV 3,547'; EPS 9.09 (3547.0). READ 2: Moneycontrol cons_quarterly SG \u2014 Net Profit 4,876, MI -1,329, Net P/L After M.I & Associates 3,547 (Dec '24) (3547.0). printed in whole Rs crore (precision 1 cr). stored 4876 = TOTAL. XBRL CI-owners tag 3,537 = TCI owners"
+  },
+  "ZENSARTECH|20200930|patC": {
+   "found_by": "second-reader audit triage 2026-09-28, F2 (runbook \u00a7214a)",
+   "owners": 0.5,
+   "total_was": 78.6,
+   "src": "BSE result PDF aef06ac0-e44*.pdf (filed 2020-10-29 20:34), p13 Unaudited Consolidated results q/e Sep 30 2020, 'INR Lakhs' (whole lakhs) | NSE XBRL INDAS_62649_352583 (OneD 2020-07-01..09-30, Consolidated)",
+   "note": "Consolidated owners PAT 78.6 -> 0.5. READ 1: BSE result PDF aef06ac0-e44*.pdf (filed 2020-10-29 20:34), p13 Unaudited Consolidated results q/e Sep 30 2020, 'INR Lakhs' (whole lakhs) \u2014 '10 Net Profit/(Loss) attributable to: - Owners 50; - Non-controlling interests 180' lakhs (30-Sep-2020 col); '9 Net Profit for the period 229'; PBT 3,514 after an exceptional item (pre-exceptional 12,387); EPS 0.02 (0.5). READ 2: NSE XBRL INDAS_62649_352583 (OneD 2020-07-01..09-30, Consolidated) \u2014 ProfitOrLossAttributableToOwnersOfParent 5,000,000 Rs = 0.50 cr; NCI 18,000,000; ProfitLossForPeriod 22,900,000; owners+NCI = PL closes (0.5). Moneycontrol shows 0.49 (Net 2.29 - MI 1.80) - equal within the printed whole-lakh unit; the filing's own owners line is 50 lakhs = 0.50 (input candidate 0.49 came from MC arithmetic). stored 78.60 matches no line of this filing"
   }
  },
  "generated": "2026-08-27 \u00a7116e-n500"
