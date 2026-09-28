@@ -16,9 +16,11 @@ backup), or real work-in-progress (never touched; sync refuses if it collides).
 Modes:
   status [--tree PATH]                read-only classification, writes nothing
   sync   [--tree PATH] [--dry-run] [--trust SHA,..] [--no-fetch] [--for-hook]
-  gc     [--dry-run] [--idle-hours N] [--for-hook]   remove worktrees with nothing unique
+  gc     [--dry-run] [--idle-hours N] [--budget S] [--for-hook]   remove worktrees with nothing unique
          (unique includes GITIGNORED files not on origin — `git worktree remove` deletes those
          silently, so such a worktree is kept and listed with why; runbook §107)
+         --budget S (the session-start hook): least-recently-checked trees first, fresh verdicts
+         skipped, stop cleanly at S seconds; per-tree verdicts in <git common dir>/sync_checkout_gc.json
 
 Every decision is MEASURED (git blob ids / commit content), never guessed:
   commit  '+' (git cherry) is "upstream" iff every file it touched is byte-identical at
@@ -39,7 +41,7 @@ any collision — never --hard.  Refreshed stale files are copied to
 ~/stocks-backups/sync-<stamp>/ first, and if local commits are dropped from `main` a
 `backup/main-<stamp>` branch keeps them reachable.
 """
-import argparse, datetime, os, shutil, subprocess, sys, time
+import argparse, datetime, fcntl, json, os, shutil, subprocess, sys, tempfile, time
 
 MAIN = "/Users/dhruvan/stocks-dashboard"
 TARGET = "origin/main"
@@ -49,9 +51,28 @@ BACKUP_ROOT = os.path.expanduser("~/stocks-backups")
 
 
 # ----------------------------------------------------------------------------- git plumbing
-def git(args, cwd, timeout=60, check=False):
-    r = subprocess.run(["git"] + list(args), cwd=cwd, capture_output=True, text=True,
-                       encoding="utf-8", errors="replace", timeout=timeout)
+class BudgetExhausted(Exception):
+    """A budgeted gc's deadline passed mid-check.  Checks are read-only: abandoning one is safe."""
+
+
+_deadline = None   # epoch; set by a budgeted gc (--budget) only around each tree's read-only check
+
+
+def git(args, cwd, timeout=60, check=False, input=None):
+    capped = False
+    if _deadline is not None:           # a git call never outlives the gc budget (runbook §107)
+        left = _deadline - time.time()
+        if left <= 0:
+            raise BudgetExhausted()
+        if left < timeout:
+            timeout, capped = left, True
+    try:
+        r = subprocess.run(["git"] + list(args), cwd=cwd, capture_output=True, text=True,
+                           encoding="utf-8", errors="replace", timeout=timeout, input=input)
+    except subprocess.TimeoutExpired:
+        if capped:                      # not a slow-git TimeoutExpired: callers' fallbacks must not run
+            raise BudgetExhausted()
+        raise
     if check and r.returncode != 0:
         raise RuntimeError("git %s failed: %s" % (" ".join(args), (r.stderr or r.stdout).strip()))
     return r.returncode, (r.stdout or ""), (r.stderr or "")
@@ -75,6 +96,46 @@ def hash_file(cwd, path):
     if not os.path.isfile(full):
         return None
     return out(["hash-object", "--", path], cwd, timeout=120).strip() or None
+
+
+# classify_tree's batch of classify_file inputs for ONE tree: {cwd: {"wt": {path: blob},
+# "HEAD": {path: id}, TARGET: {path: id}}}.  Filled on entry, dropped on exit (HEAD moves between
+# classify_tree calls in do_sync).  Runbook §107: gc measured 2026-09-28 spent 202 s of 274 s on
+# ONE tree — ~/stocks-wt/ann-residue's 6,008 untracked scratch files, three git processes each.
+_batch = {}
+_keep_paths = {}                        # commit sha -> ref_paths map, kept for TARGET only
+
+
+def ref_paths(cwd, sha, keep=False):
+    """{path: object id} for every blob, tree and submodule in commit `sha` — exactly what
+    `rev-parse sha:path` returns for a git-normalized path, for all paths in ONE tree-level
+    `ls-tree -r -t` (no blob reads in this partial clone).  {} when sha is None, like rev-parse."""
+    if sha in _keep_paths:
+        return _keep_paths[sha]
+    m = {}
+    if sha:
+        for rec in out(["ls-tree", "-r", "-t", "-z", "--full-tree", sha], cwd, timeout=120).split("\0"):
+            meta, _, p = rec.partition("\t")
+            if p and len(meta.split()) == 3:
+                m[p] = meta.split()[2]
+    if keep and sha:
+        _keep_paths.clear()             # origin/main moved (a fetch): the old map is dead weight
+        _keep_paths[sha] = m
+    return m
+
+
+def hash_many(cwd, paths):
+    """{path: blob id} for the regular files among `paths` — `hash_file` for all of them in ONE
+    `git hash-object --stdin-paths` (same filters: both hash the working-tree file by its path).
+    A path with a newline, or starting with '"' (stdin-paths C-unquotes those), is left out and
+    hashed singly by classify_file; any failure or count mismatch -> {} (all hashed singly)."""
+    files = [p for p in paths if "\n" not in p and not p.startswith('"')
+             and os.path.isfile(os.path.join(cwd, p))]
+    if not files:
+        return {}
+    rc, o, _ = git(["hash-object", "--stdin-paths"], cwd, timeout=300, input="\n".join(files) + "\n")
+    ids = o.split()
+    return dict(zip(files, ids)) if rc == 0 and len(ids) == len(files) else {}
 
 
 _hist_cache = {}
@@ -134,9 +195,14 @@ def classify_commit(cwd, sha, trusted):
 
 def classify_file(cwd, path, tracked):
     """-> (cls, detail).  cls in same | old-build | wip | wip-collides | leftover | untracked-collides | deleted"""
-    wt = hash_file(cwd, path)
-    tgt = blob_at(cwd, TARGET, path)
-    head = blob_at(cwd, "HEAD", path)
+    b = _batch.get(cwd)
+    if b is not None:                   # inside classify_tree: same answers, batched (see _batch)
+        wt = b["wt"].get(path) or hash_file(cwd, path)
+        tgt, head = b[TARGET].get(path), b["HEAD"].get(path)
+    else:
+        wt = hash_file(cwd, path)
+        tgt = blob_at(cwd, TARGET, path)
+        head = blob_at(cwd, "HEAD", path)
     if wt is None:                      # deleted in the working tree
         if tracked:
             return ("deleted-collides" if tgt != head else "deleted"), ""
@@ -230,8 +296,14 @@ def classify_tree(cwd, trusted=()):
     behind = out(["rev-list", "--count", "HEAD..%s" % TARGET], cwd).strip()
     commits = [(sha,) + classify_commit(cwd, sha, trusted) for sha in ahead]
     entries = status_entries(cwd)
-    files = [(xy, p, tracked) + classify_file(cwd, p, tracked) for xy, p, tracked in entries]
-    files += ignored_in_the_way(cwd, {p for _, p, _ in entries})
+    try:
+        if entries:
+            _batch[cwd] = {"wt": hash_many(cwd, [p for _, p, _ in entries]),
+                           "HEAD": ref_paths(cwd, head), TARGET: ref_paths(cwd, tgt, keep=True)}
+        files = [(xy, p, tracked) + classify_file(cwd, p, tracked) for xy, p, tracked in entries]
+        files += ignored_in_the_way(cwd, {p for _, p, _ in entries})
+    finally:
+        _batch.pop(cwd, None)
     return {"head": head, "target": tgt, "behind": int(behind or 0), "dup": dup,
             "commits": commits, "files": files}
 
@@ -492,78 +564,269 @@ def idle_hours(wt, files, ignored=()):
     return (time.time() - newest) / 3600.0 if newest else 1e9
 
 
-def do_gc(dry_run, idle_min, for_hook, protect, trusted=()):
-    log = []
-    say = log.append
-    git(["worktree", "prune"], MAIN)
-    wts = worktrees()
-    if not wts:
-        return log
-    main_path = os.path.realpath(wts[0]["path"])
-    removed, kept = [], []
-    for w in wts[1:]:
-        path = w["path"]
-        if os.path.realpath(path) == main_path or os.path.realpath(path) in protect:
-            continue
-        if not os.path.isdir(path):
-            continue
-        info = classify_tree(path, trusted)
-        ignored = ignored_files(path)
-        idle = idle_hours(path, info["files"], ignored or ())
-        unique_commits = [c for c in info["commits"] if c[1] == "unique"]
-        wip = [f for f in info["files"] if f[3] not in ("same", "old-build") and not disposable(f[1], f[2])]
-        listed = {f[1] for f in info["files"]}
-        ign = ignored_unique(path, ignored, listed) if ignored is not None else []
-        label = "%s (%s, idle %.0fh, %d behind)" % (
-            path.replace("/Users/dhruvan/", "~/"), (w.get("branch") or "detached").replace("refs/heads/", ""),
-            idle, info["behind"])
-        if ignored is None:
-            kept.append((label, ["`git ls-files --ignored` failed — gitignored files unknown, not removing blind"]))
-            continue
-        if unique_commits or wip or ign:
-            why = []
-            if unique_commits:
-                why.append("%d unpushed commit(s): %s" % (len(unique_commits), "; ".join(
-                    "%s %s" % (c[0][:9], c[2][:40]) for c in unique_commits[:2])))
-            if wip:
-                why.append("%d file(s) with content not on origin: %s" % (len(wip), ", ".join(
-                    f[1] for f in wip[:4]) + (" …" if len(wip) > 4 else "")))
-            if ign:
-                why.append("%d gitignored file(s) not on origin — `git worktree remove` would delete "
-                           "them silently: %s" % (len(ign), ignored_summary(ign)))
-            kept.append((label, why))
-            continue
-        if idle < idle_min:
-            kept.append((label, ["active within %dh — nothing unique in it; gc later" % idle_min]))
-            continue
-        stale = [f for f in info["files"]]
-        extra = [p for p in ignored if p not in listed]
-        note = ", ".join(x for x in ("%d stale copies" % len(stale) if stale else "",
-                                     "%d ignored file(s), all disposable or on origin" % len(extra) if extra else "") if x)
-        label += " [%s]" % note if note else ""
-        if dry_run:
-            removed.append(label)
-            continue
-        args = ["worktree", "remove"] + (["--force"] if stale else []) + [path]
-        rc, o, err = git(args, MAIN, timeout=300)
-        if rc == 0:
-            removed.append(label)
-        else:
-            kept.append((label, ["git worktree remove failed: " + (err or o).strip()[:120]]))
-    git(["worktree", "prune"], MAIN)
-    if removed:
-        say("[gc] %s %d worktree(s) holding nothing unique:" % ("would remove" if dry_run else "removed", len(removed)))
-        for r in removed:
-            say("[gc]   - " + r)
-    if kept:
-        say("[gc] kept %d worktree(s):" % len(kept))
-        for label, why in kept:
-            say("[gc]   - %s" % label)
-            for y in why:
-                say("[gc]       %s" % y)
-    if not removed and not kept:
-        say("[gc] no extra worktrees")
-    return log
+GC_STATE = "sync_checkout_gc.json"      # in the COMMON git dir — never a working-tree file
+GC_STATE_VERSION = 1
+RECHECK_KEPT_HOURS = 24
+
+
+def short(path):
+    return path.replace("/Users/dhruvan/", "~/")
+
+
+def common_dir():
+    c = out(["rev-parse", "--git-common-dir"], MAIN).strip()
+    return c if os.path.isabs(c) else os.path.join(MAIN, c)
+
+
+def gc_lock(cdir):
+    """Exclusive flock on <common git dir>/sync_checkout_gc.lock — the kernel drops it when this
+    process dies, even on SIGKILL, so there is no stale lock.  Two sessions starting together
+    must not check (or both try to remove) the same trees.  None = another gc holds it."""
+    f = open(os.path.join(cdir, "sync_checkout_gc.lock"), "a")
+    try:
+        fcntl.flock(f, fcntl.LOCK_EX | fcntl.LOCK_NB)
+        return f
+    except OSError:
+        f.close()
+        return None
+
+
+def load_gc_state(path):
+    """{worktree realpath: {"t": last check (epoch), "secs", "verdict", "why", "idle", ...}}"""
+    try:
+        with open(path, encoding="utf-8") as f:
+            s = json.load(f)
+        if isinstance(s, dict) and s.get("v") == GC_STATE_VERSION and isinstance(s.get("trees"), dict):
+            return s["trees"]
+    except (OSError, ValueError):
+        pass
+    return {}
+
+
+def save_gc_state(path, trees):
+    tmp = "%s.%d.tmp" % (path, os.getpid())
+    try:
+        with open(tmp, "w", encoding="utf-8") as f:
+            json.dump({"v": GC_STATE_VERSION, "trees": trees}, f, indent=1, sort_keys=True)
+        os.replace(tmp, path)            # atomic: a kill mid-write leaves the previous state
+    except OSError:
+        pass
+
+
+def verdict_fresh(e, idle_min, now):
+    """True while a stored verdict cannot yet have become 'remove' — budgeted runs skip such trees.
+    KEPT (something unique in it): re-checked after RECHECK_KEPT_HOURS.  ACTIVE: not before its
+    idle clock can reach idle_min (idle grows only with elapsed time).  Skipping only ever DELAYS a
+    removal, and every removal follows a fresh full check."""
+    v, t = e.get("verdict"), e.get("t", 0)
+    if v == "kept":
+        return now < t + RECHECK_KEPT_HOURS * 3600
+    if v == "active":
+        return now < t + max(0.0, idle_min - e.get("idle", 0)) * 3600
+    return False
+
+
+def pid_alive(pid):
+    try:
+        os.kill(int(pid), 0)
+        return True
+    except PermissionError:
+        return True
+    except (OSError, TypeError, ValueError):
+        return False
+
+
+def check_tree(w, idle_min, trusted):
+    """Read-only verdict for one worktree -> (verdict, label, why, idle, force), verdict in
+    remove (nothing unique, idle >= idle_min) | kept (something unique) | active."""
+    path = w["path"]
+    info = classify_tree(path, trusted)
+    ignored = ignored_files(path)
+    idle = idle_hours(path, info["files"], ignored or ())
+    unique_commits = [c for c in info["commits"] if c[1] == "unique"]
+    wip = [f for f in info["files"] if f[3] not in ("same", "old-build") and not disposable(f[1], f[2])]
+    listed = {f[1] for f in info["files"]}
+    ign = ignored_unique(path, ignored, listed) if ignored is not None else []
+    label = "%s (%s, idle %.0fh, %d behind)" % (
+        short(path), (w.get("branch") or "detached").replace("refs/heads/", ""), idle, info["behind"])
+    if ignored is None:
+        return "kept", label, ["`git ls-files --ignored` failed — gitignored files unknown, not removing blind"], idle, False
+    if unique_commits or wip or ign:
+        why = []
+        if unique_commits:
+            why.append("%d unpushed commit(s): %s" % (len(unique_commits), "; ".join(
+                "%s %s" % (c[0][:9], c[2][:40]) for c in unique_commits[:2])))
+        if wip:
+            why.append("%d file(s) with content not on origin: %s" % (len(wip), ", ".join(
+                f[1] for f in wip[:4]) + (" …" if len(wip) > 4 else "")))
+        if ign:
+            why.append("%d gitignored file(s) not on origin — `git worktree remove` would delete "
+                       "them silently: %s" % (len(ign), ignored_summary(ign)))
+        return "kept", label, why, idle, False
+    if idle < idle_min:
+        return "active", label, ["active within %dh — nothing unique in it; gc later" % idle_min], idle, False
+    stale = [f for f in info["files"]]
+    extra = [p for p in ignored if p not in listed]
+    note = ", ".join(x for x in ("%d stale copies" % len(stale) if stale else "",
+                                 "%d ignored file(s), all disposable or on origin" % len(extra) if extra else "") if x)
+    label += " [%s]" % note if note else ""
+    return "remove", label, [], idle, bool(stale)
+
+
+def remove_worktree(path, force, started):
+    """`git worktree remove` in its OWN session with output to a file, not a pipe: a gc killed
+    mid-removal (the guard's subprocess timeout kills this process; a harness may kill the whole
+    process group) must not stop git half-way.  Measured 2026-09-28, 20,000-file scratch tree: the
+    process group killed 0.4 s in -> 14,924 files left, 5,077 tracked files 'deleted', tree still
+    registered (every later gc: "kept, files not on origin").  Detached, git finishes on its own.
+    started(pid) runs before the wait so the state file names the process.  -> (rc|None, text)"""
+    with tempfile.TemporaryFile() as log:
+        p = subprocess.Popen(["git", "worktree", "remove"] + (["--force"] if force else []) + [path],
+                             cwd=MAIN, stdin=subprocess.DEVNULL, stdout=log, stderr=subprocess.STDOUT,
+                             start_new_session=True)
+        started(p.pid)
+        try:
+            rc = p.wait(timeout=300)
+        except subprocess.TimeoutExpired:
+            return None, "still running after 300 s (pid %d) — left to finish on its own" % p.pid
+        log.seek(0)
+        return rc, log.read().decode("utf-8", "replace").strip()
+
+
+def do_gc(dry_run, idle_min, for_hook, protect, trusted=(), budget=0):
+    """Remove worktrees holding nothing unique; each removal is printed (flushed) the moment it is
+    made.  budget > 0 (the session-start hook, killed at 90 s): trees go least-recently-checked
+    first, a tree whose stored verdict is still fresh is skipped, and past `budget` seconds no tree
+    is started and no git call keeps running — the rest wait for the next run.  Runbook §107
+    (2026-09-28): a full run took 4.5-17 min, the hook killed it every session, and it re-probed
+    the same first trees each time."""
+    global _deadline
+    t0 = time.time()
+    deadline = t0 + budget if budget > 0 else None
+    say = lambda s: print(s, flush=True)
+    cdir = common_dir()
+    lock = gc_lock(cdir)
+    if lock is None:
+        say("[gc] another gc is running — skipped this time (it reports in its own session)")
+        return
+    try:
+        git(["worktree", "prune"], MAIN)
+        wts = worktrees()
+        if not wts:
+            return
+        main_path = os.path.realpath(wts[0]["path"])
+        spath = os.path.join(cdir, GC_STATE)
+        state = load_gc_state(spath)
+        live = {os.path.realpath(w["path"]) for w in wts}
+        busy = set()                    # trees an earlier run's `git worktree remove` did not finish
+        for key, e in list(state.items()):
+            if key not in live:
+                if e.get("verdict") == "removing":
+                    say("[gc] removed %s — the removal an earlier gc started (%s) has finished"
+                        % (short(key), e.get("when", "?")))
+                del state[key]
+            elif e.get("verdict") == "removing":
+                if pid_alive(e.get("pid")) and time.time() - e.get("t", 0) < 3600:
+                    busy.add(key)
+                    say("[gc] %s: `git worktree remove` (pid %s) still running — left alone" % (short(key), e.get("pid")))
+                else:                   # a by-hand run (no budget) re-checks it: its deleted files read as WIP -> kept
+                    if deadline:
+                        busy.add(key)
+                    say("[gc] ⚠ %s: the `git worktree remove` an earlier gc started (%s) stopped part-way — "
+                        "still registered. It held nothing unique when checked; look at it, then "
+                        "`git worktree remove --force %s` (a by-hand `gc` re-checks it and clears this line)"
+                        % (short(key), e.get("when", "?"), key))
+        cands = [w for w in wts[1:] if os.path.realpath(w["path"]) not in protect | {main_path}
+                 and os.path.realpath(w["path"]) not in busy and os.path.isdir(w["path"])]
+        cands.sort(key=lambda w: state.get(os.path.realpath(w["path"]), {}).get("t", 0))  # never checked = 0
+        kept, cut, n_checked, n_removed, skipped, not_reached = [], [], 0, 0, 0, 0
+        for w in cands:
+            key = os.path.realpath(w["path"])
+            if deadline and verdict_fresh(state.get(key, {}), idle_min, time.time()):
+                skipped += 1
+                continue
+            # budgeted: don't start a tree whose last check won't fit in what is left — unless it is
+            # this run's first, so a tree slower than the whole budget still gets the full budget
+            need = state.get(key, {}).get("secs", 0) if n_checked else 0
+            if deadline and time.time() + need >= deadline:
+                not_reached += 1
+                continue
+            t = time.time()
+            _deadline = deadline
+            try:
+                verdict, label, why, idle, force = check_tree(w, idle_min, trusted)
+            except BudgetExhausted:
+                verdict, label, idle, force = "cut", short(w["path"]), None, False
+                why = ["check cut off by the %d s budget after %.1f s" % (budget, time.time() - t)]
+                cut.append(label)
+            except Exception as ex:     # one broken tree must not end the whole gc
+                verdict, label, idle, force = "error", short(w["path"]), None, False
+                why = ["check failed (%s: %s) — kept" % (type(ex).__name__, str(ex)[:120])]
+            finally:
+                _deadline = None
+            n_checked += 1
+            entry = {"t": int(t), "secs": round(time.time() - t, 1), "verdict": verdict, "why": why[:3]}
+            if verdict == "cut":            # time-to-cut is only a lower bound on what the check needs
+                entry["secs"] = max(entry["secs"], state.get(key, {}).get("secs", 0))
+            if idle is not None:
+                entry["idle"] = round(idle, 1)
+            if verdict == "remove" and dry_run:
+                say("[gc] would remove %s" % label)
+                n_removed += 1
+                entry["verdict"] = "removable"   # never "fresh": the next budgeted run re-checks it
+                state[key] = entry
+            elif verdict == "remove":
+                entry.update(verdict="removing", when=now_ist())
+
+                def started(pid, entry=entry, key=key):
+                    entry["pid"] = pid
+                    state[key] = entry
+                    save_gc_state(spath, state)
+                try:
+                    rc, msg = remove_worktree(w["path"], force, started)
+                except Exception as ex:     # git never started: nothing was deleted
+                    rc, msg = -1, "%s: %s" % (type(ex).__name__, ex)
+                if rc == 0:
+                    say("[gc] removed %s — held nothing unique" % label)
+                    n_removed += 1
+                    state.pop(key, None)
+                elif rc is None:
+                    say("[gc] removing %s: %s" % (label, msg))
+                else:
+                    entry.update(verdict="error", why=["git worktree remove failed: " + msg[:120]])
+                    entry.pop("pid", None)
+                    state[key] = entry
+                    kept.append((label, entry["why"]))
+            else:
+                state[key] = entry
+                if verdict != "cut":
+                    kept.append((label, why))
+            save_gc_state(spath, state)  # per tree: a killed run still advances the rotation
+        git(["worktree", "prune"], MAIN)
+        if kept:
+            say("[gc] kept %d worktree(s):" % len(kept))
+            for label, why in kept:
+                say("[gc]   - %s" % label)
+                for y in why:
+                    say("[gc]       %s" % y)
+        if not cands and not busy:
+            say("[gc] no extra worktrees")
+            return
+        parts = ["checked %d of %d worktree(s) in %.0f s%s" % (
+            n_checked, len(cands), time.time() - t0,
+            " (budget %d s, least-recently-checked first)" % budget if budget > 0 else "")]
+        parts.append("%d %s" % (n_removed, "would be removed" if dry_run else "removed"))
+        if cut:
+            parts.append("%d cut off by the budget mid-check, not judged, back of the queue (%s)"
+                         % (len(cut), ", ".join(cut)))
+        if skipped:
+            parts.append("%d skipped, verdict still fresh (kept: re-checked after %dh; active: once it "
+                         "can reach %dh idle)" % (skipped, RECHECK_KEPT_HOURS, idle_min))
+        if not_reached:
+            parts.append("%d not reached — the next session starts with them" % not_reached)
+        say("[gc] " + "; ".join(parts))
+    finally:
+        lock.close()
 
 
 # ----------------------------------------------------------------------------- cli
@@ -577,6 +840,8 @@ def main(argv):
     ap.add_argument("--idle-hours", type=float, default=24)
     ap.add_argument("--protect", default="", help="comma-separated worktree paths gc must never touch")
     ap.add_argument("--for-hook", action="store_true", help="terse output for the session-start banner")
+    ap.add_argument("--budget", type=float, default=0,
+                    help="gc: stop cleanly after this many seconds (0 = check every tree); see do_gc")
     a = ap.parse_args(argv)
     trusted = [t.strip() for t in a.trust.split(",") if t.strip()]
     tree = os.path.realpath(os.path.expanduser(a.tree))
@@ -598,7 +863,7 @@ def main(argv):
     if a.mode == "gc":
         protect = {os.path.realpath(os.path.expanduser(p)) for p in a.protect.split(",") if p.strip()}
         protect.add(os.path.realpath(os.getcwd()))
-        print("\n".join(do_gc(a.dry_run, a.idle_hours, a.for_hook, protect, trusted)))
+        do_gc(a.dry_run, a.idle_hours, a.for_hook, protect, trusted, a.budget)   # prints as it goes
         return 0
 
 

@@ -112,6 +112,8 @@ def pre_bash(h):
 
 
 SYNC_MIN_TIMEOUT = 300   # seconds; the SessionStart hook entry must allow at least this
+GC_TIMEOUT = 90          # backstop kill for the gc job
+GC_BUDGET = 60           # gc stops itself here: 30 s slack for the tree in flight, prune, report
 
 
 def hook_timeout():
@@ -141,8 +143,12 @@ def sync_and_gc(h):
         tail = ("[sync] auto-sync is OFF: this hook's timeout is %ds (< %ds). Run it by hand: "
                 "python3 scripts/sync_checkout.py sync   (then: gc --dry-run)" % (budget, SYNC_MIN_TIMEOUT))
     else:
+        # gc stops ITSELF at GC_BUDGET (least-recently-checked trees first; the rest wait for the
+        # next session) - the kill at GC_TIMEOUT is only a backstop. Runbook #107 (2026-09-28): a
+        # full gc took 4.5-17 min, so a bare 90 s kill cut it off every session.
         jobs = [(["sync", "--tree", MAIN, "--for-hook"], budget - 120),
-                (["gc", "--idle-hours", "48", "--for-hook", "--protect", h.get("cwd") or MAIN], 90)]
+                (["gc", "--idle-hours", "48", "--for-hook", "--budget", str(GC_BUDGET),
+                  "--protect", h.get("cwd") or MAIN], GC_TIMEOUT)]
         tail = ""
     notes = []
     for args, tmo in jobs:
@@ -150,8 +156,16 @@ def sync_and_gc(h):
             r = subprocess.run([sys.executable, tool] + args, cwd=MAIN, capture_output=True,
                                text=True, encoding="utf-8", errors="replace", timeout=max(tmo, 30))
             txt = (r.stdout or "").strip()
+            if r.returncode != 0:  # both jobs exit 0 in --for-hook mode: anything else is a crash/usage error
+                txt += ("\n" if txt else "") + "[%s] exited %d: %s" % (
+                    args[0], r.returncode, ((r.stderr or "").strip().splitlines() or ["(no stderr)"])[-1][:200])
             if txt:
                 notes.append(txt)
+        except subprocess.TimeoutExpired as e:  # keep what it printed before the kill (bytes, even with text=True)
+            part = e.stdout.decode("utf-8", "replace") if isinstance(e.stdout, bytes) else (e.stdout or "")
+            notes.append((part.strip() + "\n" if part.strip() else "") +
+                         "[%s] killed at %d s - lines above are all it reported; a worktree removal it had "
+                         "started runs detached and the next gc reports it" % (args[0], max(tmo, 30)))
         except Exception as e:  # never block a session on the sync
             notes.append("[%s] skipped: %s" % (args[0], str(e)[:160]))
     if tail:

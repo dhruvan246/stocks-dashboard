@@ -12239,11 +12239,56 @@ silent deletion), `v4fix` + `shp-holds` (`_shp_refine_disagreements.json` 1.3 MB
 (`_equity_l.csv`, `_sme_equity_l.csv`). 11 already-kept trees gained the ignored reason (e.g. `fa-run`: its
 `scripts/_fa_resume.py` + state; `fa-backfill`: `_bse_bhav_cache/` 603.8 MB; `kpi-insights`: `docs/stk/` 5,148
 files). Idle fell where ignored files were newer than HEAD (`quizzical-leavitt` 34→17 h, `silly-faraday` 9→2
-h). Added cost 3.7 s over 87 trees (`ls-files` + lstat + one `ls-tree -r`). **Found alongside, open:** the
-session-start hook gives `gc` 90 s but a full run measured 4 min 19 s (load 4) to 16 min 50 s (load ≈90) over
-88 trees on 2026-09-28, so it is killed every session ("[gc]
+h). Added cost 3.7 s over 87 trees (`ls-files` + lstat + one `ls-tree -r`). **Found alongside (fixed the same
+day, next paragraph):** the session-start hook gives `gc` 90 s but a full run measured 4 min 19 s (load 4) to
+16 min 50 s (load ≈90) over 88 trees on 2026-09-28, so it is killed every session ("[gc]
 skipped: … timed out"); `do_gc` removes inline and prints only at the end, so a removal made before the kill
 goes unreported — the ignored check does not change that budget.
+
+**gc budget fix 2026-09-28 — the hook's gc stops itself inside 90 s, and every tree gets checked across
+sessions.** *Where the time went* (origin `ec47d14d7`, `gc --dry-run --idle-hours 48`, 12:31 IST, load 5–7,
+every git call timed): 274 s, **20,793 git processes; one tree was 202 s of it** — `~/stocks-wt/ann-residue`,
+whose 6,008 untracked `scratch/` files each cost three processes in `classify_file` (`hash-object` +
+`rev-parse origin/main:p` + `rev-parse HEAD:p`). It is #63 of 89 in `git worktree list` order, so the hook died
+in or before it every session and trees #64–89 were never reached. The suspected `git cherry` is NOT the cost
+today: 34 calls, 29 s total, max 1.4 s; on trees 6,971 behind with 23–24 local commits it took 0.9–1.05 s and
+exits 0 under `GIT_NO_LAZY_FETCH=1` (no blob fetch). *What a kill does* (20,000-file scratch tree): the
+guard's `subprocess.run(timeout=)` kills only the Python child — the orphaned `git worktree remove` finished
+(tree gone, never reported); killing the whole process group left 14,924 of 20,000 files and the tree
+registered, which every later gc then kept forever as "2774 file(s) with content not on origin".
+*Fix* (`sync_checkout.py` + guard): (1) **batch** — `classify_tree` hashes every status path with ONE `git
+hash-object --stdin-paths` and reads HEAD's and origin's paths with ONE tree-level `ls-tree -r -t` each (the
+same ids `rev-parse ref:path` returns; paths with a newline or a leading `"` are hashed singly). Origin vs new
+`classify_tree` on all 89 real trees: **identical, 6,248 file verdicts**; 257 s → 64 s; `ann-residue` 192 s →
+1.7 s. (2) **`gc --budget S`** — the hook passes 60 (kill backstop stays 90 s): no tree is started and no git
+call stays alive past S (timeouts are capped at the deadline and raise `BudgetExhausted`, which the cherry
+fallback does not catch); a tree whose last measured check won't fit is not started, except as a run's first.
+(3) **state** `<git common dir>/sync_checkout_gc.json` (never a working-tree file): per tree last check,
+seconds, verdict, why. Budgeted runs go **least-recently-checked first** and **skip fresh verdicts** — kept
+(something unique) for 24 h, active until its idle clock can reach 48 h. Skipping only ever DELAYS a removal;
+every removal follows a fresh full check. By-hand `gc` (no `--budget`) still checks every tree. (4) **removal**
+runs `git worktree remove` in its own session with output to a file (no kill or SIGPIPE can stop it half-way);
+the state records `removing` + pid first, and `[gc] removed …` is printed and flushed the moment it's done. The
+next run reconciles: gone → "has finished"; pid alive → left alone; dead and still registered → ⚠ line with
+the by-hand command (a by-hand gc re-checks it — its deleted files read as WIP, so it is kept, never removed).
+(5) `flock` on `.git/sync_checkout_gc.lock` (the kernel drops it on any death): two sessions starting together
+don't gc twice. A tree whose check raises is kept ("check failed") and the run goes on. (6) the guard prints
+what gc streamed before a backstop kill (`TimeoutExpired.stdout` is bytes even with `text=True`), and a
+nonzero exit with stderr's last line (a guard newer than MAIN's tool would print "unrecognized arguments:
+--budget", not silence). *Scratch tests* (bare origin + clone + worktrees): origin vs new full dry-run → same
+9 removable / 5 kept, same reasons · `git status` slowed 1.5 s by a PATH shim, `--budget 4`, 8 runs → every run
+≤ 4.07 s wall, all 14 trees judged by the rotation, kept ones skipped once judged · process group SIGKILLed ~0.15
+s into removing the 20,000-file tree → origin code: 17,230 files left, registered, next gc "kept, 2774 files not
+on origin"; new: tree gone, next gc "removed … has finished" · guard with budget 0 and a 30 s kill → the 7
+removals made before the kill appear in the banner · concurrent gc → "another gc is running" · dead-pid
+`removing` entry → budgeted run warns and skips; by-hand run re-checks and clears it · a raising check → that
+tree "check failed", the rest judged. *Real repo, dry-run, new code:* budgeted from an EMPTY state (= the
+first hook run) 60.1 s wall, 55 of 88 judged, 1 cut cleanly, 33 left for the next run; 2nd run 27.9 s, the 34
+remaining judged, 54 skipped; 3rd run 0.1 s, all 88 skipped. Full unbudgeted run: new 99.5 s (load 7→18) vs
+origin 250.2 s (load 18→4), **both 0 removable / 88 kept, 87 of 88 with identical reasons** — the 88th,
+`~/stocks-wt/xcheck-fixes` (idle 0 h), was being edited between the runs; back-to-back re-check identical. Unchanged:
+the 90 s backstop (guard `GC_TIMEOUT`) and the 600 s SessionStart timeout in `.claude/settings.json`
+(human-only, §107a).
 
 **Standing rule (CLAUDE.md):** every number reported — coverage, backtest, cell count — is measured
 from the synced checkout (state its HEAD sha) or from LIVE, and the report says which. A checkout
