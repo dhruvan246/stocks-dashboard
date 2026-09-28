@@ -23946,3 +23946,17 @@ payloads — re-run on fresh origin).
 revenue / profit only); the P&L tab rounds to whole crores, so tiny SMEs read "0" / "1"; a consolidated view still mixes a standalone
 H1 with a consolidated H2 in one year where only H2 was filed consolidated (§191's per-row pick — SUNLITE FY26); fetch_bse_results_xbrl
 `heal_sme` does not know `pm` (0 of the 505 filled symbols are BSE tickers with h=1 cells today).
+
+## §210c — ORIGINAL FILING WINS for the PDF halves: 306 cells retracted, 170 re-stored (2026-09-28)
+**Found by the §213 session:** four §210a rows disagreed with an NSE XBRL original — EMKAYTOOLS Sep-24 0.82 vs 54.76 (the
+Mar-25 filing's comparative restated to continuing operations after the Dec-2024 demerger), ALUWIND Sep-25 65.44 vs 64.46,
+PARIN Sep-24 36.71 / 37.10 vs 35.96 / 36.03, PULZ Sep-24 std 17.77 vs 17.60. §210a proved a year from ANY filing that closes it,
+including a LATER filing's comparative columns — and those are often RESTATED. Measured over the 306 written cells: 113 proven by
+the original filing, 39 comparatives equal to what the original printed, **14 comparatives DIFFERENT from the original**, 140 with
+no original read. 14 of 53 checkable = 26 % restated ⇒ an unconfirmed comparative is not the as-published figure.
+**Rule (apply_nse_sme_results_pdf.original_ok):** a half is written only when the filing that FIRST published it (H1: Oct–Jan;
+H2: Apr–Sep) prints the same figure as a current period (text or image read); `ann` = that filing's date. The year proof itself
+may still come from any filing. **Heal:** all 306 cells retracted (rev / PAT slots only, and only where the store still held
+exactly the §210a value; op / EBIT and every other slot untouched — measured 0 other-slot changes), 207 rows the fill had created
+removed, then re-applied: **170 cells (128 std + 42 con)**, 236 held pending the original filing's read. verify_fills_live 0/0/0.
+The image reads (§210d) must therefore also read the ORIGINAL September filing for H1.

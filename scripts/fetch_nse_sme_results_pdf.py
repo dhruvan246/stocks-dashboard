@@ -319,6 +319,41 @@ def read_stage(limit=None):
     print("read: %d company-years, %d proved" % (len(reads), sum(1 for r in reads.values() if r["proved"])))
 
 
+def merge_vision():
+    """image reads (vision/out/b*.json, user-approved 2026-09-28) → reads.json statements tagged vision, held to the OCR
+    rule (revenue AND profit must close); the unit comes from the printed unit text via the reader's own patterns"""
+    import glob, re
+    import read_sme_result_pdf as R
+    reads = json.load(open(os.path.join(C, "reads.json")))
+    byfile = {}
+    for t in json.load(open(TARGETS)):
+        for win_q in (t["qe"] // 10000 * 10000 + 331, t["qe"] // 10000 * 10000 + 930, (t["qe"] // 10000 + 1) * 10000 + 331):
+            for c in candidates(dict(t, qe=win_q)):
+                byfile[c["url"].rsplit("/", 1)[-1]] = c
+    n = bad = 0
+    for f in sorted(glob.glob(os.path.join(C, "vision", "out", "b*.json"))):
+        for r in json.load(open(f)):
+            base = os.path.basename(r.get("file") or "").split("__")[0]
+            c = byfile.get(base)
+            if not c or not r.get("cols"):
+                bad += 1; continue
+            ut = (r.get("unit_text") or "").lower()
+            unit = next(((m, lab) for pat, m, lab in R.UNIT if re.search(pat, ut)), (None, None))
+            vals = [v for v in (r.get("rev") or []) + (r.get("pat") or []) if v is not None]
+            st = {"page": r.get("page"), "basis": r.get("basis") or "s", "unit": unit[0], "unit_txt": unit[1],
+                  "cols": [{"date": int(x["date"]), "x": i, "kind": x.get("kind")} for i, x in enumerate(r["cols"])],
+                  "rev": r.get("rev"), "pat": r.get("pat"), "eps": r.get("eps"), "ocr": True, "vision": True,
+                  "dec": max([len(str(v).split(".")[1]) if "." in str(v) else 0 for v in vals] or [0]),
+                  "url": c["url"], "dt": c["dt"], "desc": c["desc"], "file": os.path.basename(r.get("file") or "")}
+            key = "%s|%d" % (r["sym"], int(r["fy"]))
+            rec = reads.setdefault(key, {"sym": r["sym"], "fy": int(r["fy"]), "tried": [], "stmts": [], "proved": None})
+            if not any(x.get("vision") and x["file"] == st["file"] and x["page"] == st["page"] and x["basis"] == st["basis"]
+                       for x in rec["stmts"]):
+                rec["stmts"].append(st); n += 1
+    json.dump(reads, open(os.path.join(C, "reads.json"), "w"))
+    print("vision: %d statements merged, %d rows without a known filing / columns" % (n, bad))
+
+
 def merge_reads():
     import glob
     out = json.load(open(os.path.join(C, "reads.json"))) if os.path.exists(os.path.join(C, "reads.json")) else {}
@@ -332,6 +367,8 @@ if __name__ == "__main__":
     a = sys.argv[1:]
     if "--merge" in a:
         merge_reads()
+    if "--merge-vision" in a:
+        merge_vision()
     if "--targets" in a:
         build_targets()
     if "--inventory" in a:

@@ -197,8 +197,35 @@ def main():
     Cn["  unit printed, not yet proven"] = sum(1 for i, s in enumerate(stm) if s["unit"] and not proven[i] and not conflict[i])
     # 4. write fill-only
     from build_revop import strip_lender_ebit
+    # ORIGINAL FILING RULE (2026-09-28, runbook §210c): a comparative column in a later filing may be RESTATED (14 of 53
+    # cross-checkable halves differed — EMKAYTOOLS Sep-24 54.76 → 0.82 after its demerger). A half is written only when the
+    # filing that first published it (H1: the Oct–Jan filing; H2: the Apr–Sep filing) prints that same figure as a current
+    # period — read as text or image — and `ann` is that filing's date.
+    def original_ok(sym, qe, b, v):
+        y, m = qe // 10000, qe // 100 % 100
+        lo, hi = ((y * 10000 + 401, y * 10000 + 930) if m == 3 else (y * 10000 + 1001, (y + 1) * 10000 + 131))
+        best = None
+        for key, rec in reads.items():
+            if rec["sym"] != sym:
+                continue
+            for st in rec["stmts"]:
+                d = int(st["dt"][:10].replace("-", ""))
+                if st["basis"] != b or not st.get("unit") or not (lo <= d <= hi) or not st.get("rev"):
+                    continue
+                cols = [c_["date"] for c_ in st["cols"]]
+                if qe not in cols:
+                    continue
+                x = st["rev"][cols.index(qe)]
+                if x is not None and v is not None and near(x * st["unit"], v) and (best is None or d < best):
+                    best = d
+        return best
     for (sym, qe, b), c in sorted(cells.items()):
         rev, pat = c["v"]
+        od = original_ok(sym, qe, b, rev)
+        if od is None:
+            Cn["held: the original filing does not print this figure (or was not read)"] += 1
+            continue
+        c["ann"] = od
         hr, hp = held(sym, qe, b)
         if hr is not None or hp is not None:
             ok = (rev is None or hr is None or near(rev, hr)) and (pat is None or hp is None or near(pat, hp))
