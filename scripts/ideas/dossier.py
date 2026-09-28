@@ -114,14 +114,59 @@ def shareholding(scrip):
     return rows
 
 
+# Why the range is read in 90-day windows, every page of each: BSE refuses a range over 12 months with
+# {"Status":false,"Message":"Date range cannot exceed 12 months."} (no Table), which the old single read
+# turned into "0 filings" - Recode Studios 544755 at --days 500 on 2026-09-28, while 3-month windows
+# returned all 56. Measured the same day on 544755/500325/543272/532540: 365 days served, 366 refused
+# (366 served only when the span held 29-Feb, so the rule is one calendar year). The old read also took
+# page 1 only, so any range over 50 filings was cut to the newest 50 (500325 at 240 days: 50 of 115).
+# See scripts/ideas/PLAYBOOK.md.
+ANN_CHUNK_DAYS = 90
+last_ann_status = None   # 'complete', or 'SUSPECT - <reason>' when the list may be short; shown in dossier.md
+
+
 def announcements_for(scrip, days):
+    global last_ann_status
     d_to = ist.today(); d_from = d_to - datetime.timedelta(days=days)
-    url = ('https://api.bseindia.com/BseIndiaAPI/api/AnnSubCategoryGetData/w?pageno=1&strCat=-1&strPrevDate=%s&strScrip=%s'
-           '&strSearch=P&strToDate=%s&strType=C&subcategory=-1' % (d_from.strftime('%Y%m%d'), scrip, d_to.strftime('%Y%m%d')))
-    try:
-        rows = json.loads(bse._get(url)).get('Table') or []
-    except Exception:
-        rows = []
+    rows, seen, problems = [], set(), []
+    a = d_from
+    while a <= d_to:
+        b = min(a + datetime.timedelta(days=ANN_CHUNK_DAYS - 1), d_to)
+        got, reported = 0, None
+        for p in range(1, 41):   # 40 pages = 2,000 filings in 90 days for one scrip: a runaway guard only
+            url = ('https://api.bseindia.com/BseIndiaAPI/api/AnnSubCategoryGetData/w?pageno=%d&strCat=-1&strPrevDate=%s&strScrip=%s'
+                   '&strSearch=P&strToDate=%s&strType=C&subcategory=-1' % (p, a.strftime('%Y%m%d'), scrip, b.strftime('%Y%m%d')))
+            try:
+                j = json.loads(bse._get(url))
+            except Exception as e:
+                problems.append(f'{a}..{b} page {p} failed ({e})')
+                break
+            if 'Table' not in j:   # a refusal ({Status, Message}), not an empty list: never read it as "no filings"
+                problems.append(f'{a}..{b} refused by BSE: {j.get("Message") or j}')
+                break
+            t = j.get('Table') or []
+            if reported is None:
+                try:
+                    reported = int((j.get('Table1') or [{}])[0].get('ROWCNT'))
+                except (TypeError, ValueError, IndexError, AttributeError):
+                    pass
+            for r in t:
+                k = r.get('NEWSID')
+                if k is None or k not in seen:
+                    seen.add(k)
+                    rows.append(r)
+                    got += 1
+            if len(t) < 50 or (reported is not None and got >= reported):
+                break
+        else:
+            problems.append(f'{a}..{b} stopped at the 40-page guard')
+        if reported is not None and got < reported and not any(x.startswith(f'{a}..{b}') for x in problems):
+            problems.append(f'{a}..{b} read {got} of the {reported} filings BSE reports')
+        a = b + datetime.timedelta(days=1)
+    rows.sort(key=lambda r: r.get('NEWS_DT') or '', reverse=True)
+    last_ann_status = 'complete' if not problems else 'SUSPECT - ' + '; '.join(problems)
+    if problems:
+        print(f'announcements {scrip}: {last_ann_status}')
     return [dict(date=(r.get('NEWS_DT') or '')[:10], subject=bse_names.clean_ann_subject(r.get('NEWSSUB'), r.get('SCRIP_CD') or scrip), headline=(r.get('HEADLINE') or '').strip()[:400],
                  category=r.get('CATEGORYNAME'), sub=r.get('SUBCATNAME'), pdf=bse.attachment_url(r)) for r in rows]
 
@@ -280,7 +325,7 @@ def build(scrip, days, pdf=True):
                     key_docs.append(dict(file=os.path.basename(p), subject=f'Annual report {yr}', url=url))
     dj = dict(scrip=str(scrip), universe=u, header={k: hdr.get(k) for k in ('SecurityId', 'ISIN', 'Industry', 'Sector', 'IGroup', 'ISubGroup', 'Group', 'FaceVal', 'EPS', 'PE', 'PB', 'ROE', 'ConEPS', 'ConPE')},
               results=res, shareholding=shp, corporate_actions=[dict(ex=e[0].isoformat(), factor=e[1], label=e[2]) for e in acts],
-              announcements=ann, annual_reports=ars, price=st, price_adjustments=adj, peers=prs, key_docs=key_docs,
+              announcements=ann, announcements_status=last_ann_status, annual_reports=ars, price=st, price_adjustments=adj, peers=prs, key_docs=key_docs,
               built=ist.stamp())
     json.dump(dj, open(os.path.join(d, 'dossier.json'), 'w'), indent=1, default=str)
     L = [f"# Dossier: {u.get('name') or hdr.get('SecurityId')} (BSE {scrip}{', NSE ' + u['nse'] if u.get('nse') else ''})", '',
@@ -299,7 +344,10 @@ def build(scrip, days, pdf=True):
         L.append(f"- {s['quarter']} (filed {s['filed']}): promoter {s['promoter_pct'] if s['promoter_pct'] is not None else 'unknown, open the page'}% — {s['url']}")
     L += ['', '## Corporate actions (bonus/split)', '']
     L += [f"- {e[0]} x{e[1]:g} {e[2]}" for e in acts] or ['- none recorded']
-    L += ['', f'## Announcements, last {days} days ({len(ann)})', '']
+    L += ['', f'## Announcements, last {days} days ({len(ann)}{", newest 60 listed; all in dossier.json" if len(ann) > 60 else ""})', '']
+    if last_ann_status != 'complete':
+        L.append(f'**Read status: {last_ann_status}. This list may be short - re-run before treating a gap as "nothing filed".**')
+        L.append('')
     for a in ann[:60]:
         L.append(f"- {a['date']} [{a['category']}/{a['sub']}] {a['subject'][:110]} — {a['headline'][:160]} {('— ' + a['pdf']) if a['pdf'] else ''}")
     L += ['', '## Annual reports', ''] + [f"- {r['year']}: {r['url']}" for r in ars] or ['- none']

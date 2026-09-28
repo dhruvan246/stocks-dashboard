@@ -32,7 +32,7 @@ CLOUD ROUTINE: fresh clone, throwaway VM, clock is UTC. Every timestamp must be 
 
 4. TRIAGE + DOSSIERS (at most 4 names across all three lanes)
    Rank across lanes: a kept government decision beats a commodity signal, which beats an ordinary filing. For each name: python3 scripts/ideas/dossier.py <scrip> --days 240
-   NOTE: the BSE per-company announcement endpoint returns ONE page of at most 50 filings whatever window you ask for, so a 240-day window on an active company silently drops older ones; if a dossier looks thin, also run --days 60 and read both.
+   NOTE: dossier.py reads announcements in 90-day windows, every page (BSE refuses ranges over 12 months and pages at 50), so any --days value returns the full list. If dossier.md shows "Read status: SUSPECT", the list may be short: re-run before treating a gap as "nothing filed" (PLAYBOOK step 3).
    What each lane must prove from the company's OWN documents before you publish:
    - government: that the programme is material to this company (segment revenue, order book, a filing naming the programme), not just that it operates in that sector.
    - commodity: the share of revenue from the product whose price moved, the pricing mechanism (pass-through, formula, fixed contract) and the lag, and whether it holds inventory that revalues. Quote the Indian print (sources.india) where one exists, and treat a Trading Economics series as direction only - their 'steel' is Shanghai rebar in yuan, not Mumbai HRC.

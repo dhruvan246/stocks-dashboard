@@ -34,6 +34,14 @@ valid answer; nothing is investment advice.
       `python3 scripts/ideas/signals.py` → `docs/ideas/signals.json` (commodity groups ranked by strength, each with
       the listed beneficiaries and sufferers from `docs/ideas/commodity_map.json`)
   3. `python3 scripts/ideas/dossier.py <scrip> [<scrip> ...]` for the names chosen for research (see triage)
+     Announcements are read in 90-day windows, every page of each, deduped by NEWSID (fixed 2026-09-29).
+     Two silent caps made the old single read wrong: BSE REFUSES a range over 12 months
+     (`{"Status":false,"Message":"Date range cannot exceed 12 months."}`, measured 365 days served / 366
+     refused on 4 scrips), which read as "0 filings" (Recode Studios 544755 at --days 500: 0, vs 56 in
+     3-month windows); and only page 1 was read, so a range over 50 filings kept the newest 50 (Reliance
+     500325 at 240 days: 50 of 115). `dossier.json` → `announcements_status` is `complete` or
+     `SUSPECT - <reason>` (a refused/failed window, or fewer rows than BSE's ROWCNT); dossier.md prints a
+     SUSPECT line above the list. Never read an empty or SUSPECT list as "the company filed nothing".
   4. Research and write the ideas (this document, sections below) → append to `docs/ideas/ideas.json`
   5. `python3 scripts/ideas/score.py` → `docs/ideas/track.json`
   6. Write `docs/ideas/latest.json`, commit the touched files with explicit paths, push via a `claude/ideas-<ts>`
