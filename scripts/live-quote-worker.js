@@ -223,7 +223,11 @@ async function nseCookie() {
  * incl. SME groups M/MT — with last price and previous close. Its CORS only admits
  * bseindia.com, so the page can't read it directly. Honest headers per
  * scripts/bse_headers.py (own UA + Accept-Language + Referer; no browser impersonation).
- * Compacted to {asOf, timestamp, data:{scripCode:[ltp, prevClose, pchange, scripId]}}. */
+ * Compacted to {asOf, timestamp, data:{scripCode:[ltp, prevClose, pchange, scripId]}}.
+ * 2026-09-28 MEASURED: api.bseindia.com answers Akamai 403 "Access Denied" to Cloudflare's
+ * network (the byte-identical request incl. every CF-added header passes from a home IP;
+ * www.bseindia.com itself passes). Kept so the page picks BSE up if that ever changes;
+ * the page falls back to the site's own BSE snapshot meanwhile. */
 let BSE_CACHE = { ts: 0, text: null };
 async function bseLive() {
   const now = Date.now();
@@ -235,10 +239,12 @@ async function bseLive() {
         'User-Agent': 'stocks-dashboard-research/1.0',
         'Accept': 'application/json, text/plain, */*',
         'Accept-Language': 'en-US,en;q=0.9',
+        'Accept-Encoding': 'gzip, deflate, br',   // BSE 403s a request with no Accept-Encoding (measured)
         'Referer': 'https://www.bseindia.com/',
+        'Connection': 'keep-alive',
       },
     });
-    if (!r.ok) return json({ error: 'BSE HTTP ' + r.status }, 502);
+    if (!r.ok) return json({ error: 'BSE HTTP ' + r.status, body: (await r.text()).slice(0, 300) }, 502);
     const j = await r.json();
     const rows = (j && Array.isArray(j.Table)) ? j.Table : [];
     const data = {};
