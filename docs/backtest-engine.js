@@ -102,9 +102,23 @@ async function gunzipJSON(url) {
 // later and no caller ever reads. Slim's meta is also the fresher one (regenerated more often), and
 // it is only consumed by the stock page's fallback render — screening never reads mcap from here
 // (rowsAt takes META[sym].mcap, which the SF path sets to 0).
+// Indices whose point-in-time membership lives in its OWN file (never merged into indices_history.json, whose ~30
+// builders expect the main-board universe) — merged into IDXH here. Nifty SME Emerge: runbook §210 (bare NSE symbols in
+// today's spelling, record from 2020-01-01; an announced future snapshot is dropped). (Sync: stock-backtest.html)
+const OWN_INDEX = { 'Nifty SME Emerge': './nse_sme_emerge/history.json' };
+async function loadOwnIndices(h) {
+  for (const name in OWN_INDEX) {
+    try {
+      const j = await (await fetch(OWN_INDEX[name])).json();
+      const sn = (j && j[name]) || [];
+      if (sn.length) h[name] = sn.filter(x => !x.announced).map(x => ({ effectiveDate: x.effectiveDate, symbols: x.symbols }));
+    } catch (e) { /* not loaded: membersAsOf answers an EMPTY set for it, never "every stock" */ }
+  }
+}
 async function loadCore() {
   const D = await gunzipJSON('./dash_slim.bin');   // browser-cached (ETag); no cache-buster → instant on repeat loads
   IDXH = D.indicesHistory || {}; FNOH = D.fnoHistory || []; START_TS = D.startTs;
+  await loadOwnIndices(IDXH);
   CORE_META = D.meta || {};
   try { NIFTY = (await (await fetch('./nifty.json')).json()).px || {}; } catch (e) { NIFTY = {}; }
   try { NIFTY500 = (await (await fetch('./nifty500.json')).json()).px || {}; } catch (e) { NIFTY500 = {}; }
@@ -479,7 +493,7 @@ function snapList(name) { return (name === '__FNO__') ? (FNOH || []) : (IDXH[nam
 function membershipStart(name) { let m = null; for (const s of snapList(name)) { if (!m || s.effectiveDate < m) m = s.effectiveDate; } return m; }
 function membersAsOf(name, dstr) {
   const list = snapList(name);
-  if (!list.length) return null;                     // unknown universe -> caller's "no index filter" path
+  if (!list.length) return OWN_INDEX[name] ? new Set() : null;   // an own-file index that did not load screens nothing
   const snap = lastSnap(list, dstr);
   // Before the first snapshot membership is UNKNOWN — an EMPTY set (screen matches nothing, loudly)
   // is the honest answer. Returning null here would silently mean "every stock on the exchange".

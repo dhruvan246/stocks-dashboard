@@ -284,7 +284,7 @@ function loadMixes() { try { const v = JSON.parse(localStorage.getItem('mix_pres
   return Array.isArray(v) ? v.filter(p => p && p.label && Array.isArray(p.sel)) : []; } catch (e) { return []; } }
 function inKeySet(set, c) { return set.has(identityKey(c)) || set.has(ruleKey(c)); }
 // Display order: indices broad-to-narrow, then F&O, then turnover buckets ascending, then All stocks.
-const UNI_ORDER = ['Nifty 50', 'Nifty 100', 'Nifty 200', 'Nifty 500', 'Nifty Midcap 150', 'Nifty Smallcap 250', '__FNO__'];
+const UNI_ORDER = ['Nifty 50', 'Nifty 100', 'Nifty 200', 'Nifty 500', 'Nifty Midcap 150', 'Nifty Smallcap 250', 'Nifty SME Emerge', '__FNO__'];
 function uniRank(k) {
   const i = UNI_ORDER.indexOf(k); if (i >= 0) return i;
   if (k.slice(0, 5) === 'mcap:') return 100 + (+k.slice(5) || 0) / 1e9;

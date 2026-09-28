@@ -23731,3 +23731,12 @@ Regenerate row_periods after refresh-stock-fin has published the new rows.
 which skips every company filing standalone AND consolidated with different figures (PULZ Sep-22 s 13.57 / c 22.16). The
 other basis now also passes when it equals ITS OWN proven half (revenue and profit alike): +47 rows, 7 existing nse-pdf rows gain
 their profit mark (ALUWIND Sep-25 5.07 = 507.051 lakh), 0 removed; row_periods 3,716 → 3,763.
+
+## §210b — Nifty SME Emerge as a BACKTEST universe (2026-09-28, user: "Yes, add it")
+Both engines (backtest-engine.js `loadCore`, stock-backtest.html's inline engine where SURV is built) merge
+`docs/nse_sme_emerge/history.json` into IDXH through `OWN_INDEX` / `loadOwnIndices` (announced future snapshot dropped).
+**Guard:** `membersAsOf` of an OWN_INDEX name whose history did not load returns an EMPTY set (screens nothing, loudly) —
+never null, which the callers read as "no index filter = every stock". Tested in node (missing → Set(0); other unknown
+name → null as before). Dropdowns: stock-backtest (static, membership loads at Run), strategy-backtest; UNI_ORDER on
+saved-strategies / all-picks. Verified locally: "Top RSI · Nifty SME Emerge · quarterly" from 2022-03-31 ran (125 snapshots,
+149 members on 2023-06-30), every pick an index member. No ENGINE_VER bump — existing results cannot change.

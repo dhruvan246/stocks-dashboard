@@ -312,6 +312,7 @@ async function load(){
     const buf=await fetchProgress('./stock_data.bin','Loading market data');   // browser-cached (ETag); no cache-buster → instant on repeat loads
     const D=await gunzipBuf(buf);
     META=D.meta; SERIES=D.series; IDXH=D.indicesHistory||{}; FNOH=D.fnoHistory||[]; START_TS=D.startTs;
+    await loadOwnIndices(IDXH);
     SURV={meta:META, series:SERIES, idxh:IDXH, fnoh:FNOH, startTs:START_TS};
   }catch(e){ console.error(e); LoadUI.fail('Could not load market data — the daily build may still be running. Reload to try again.'); return; }
   try{ NIFTY=(await (await fetch('./nifty.json')).json()).px||{}; }catch(e){ NIFTY={}; }
@@ -440,7 +441,8 @@ function uniOptionsHTML(mode){
   const sf=mode==='sf';
   const caps = sf?TURN_OPTS:[['500','₹500 Cr+'],['2000','₹2,000 Cr+'],['5000','₹5,000 Cr+'],['20000','₹20,000 Cr+'],['100000','₹1,00,000 Cr+']];
   const def = 'Nifty 500';   // default universe
-  const indices=['Nifty 50','Nifty 100','Nifty 200','Nifty 500','Nifty Midcap 150','Nifty Smallcap 250'];
+  // membership loads lazily at Run; an own-file index whose history then fails to load screens NOTHING (membersAsOf)
+  const indices=['Nifty 50','Nifty 100','Nifty 200','Nifty 500','Nifty Midcap 150','Nifty Smallcap 250'].concat(Object.keys(OWN_INDEX));
   let h=`<option value="">All stocks</option>`;
   h+=`<optgroup label="Index constituents">`+indices.map(k=>`<option value="${k}"${k===def?' selected':''}>${k}</option>`).join('')+`</optgroup>`;
   h+=`<optgroup label="${sf?'Min daily turnover':'Min market cap (point-in-time)'}">`+
@@ -549,9 +551,17 @@ function rsi14(tkr, off){
   return 100-100/(1+avgG/(avgL||1e-9));
 }
 
+// Own-file indices (Nifty SME Emerge, runbook §210) merged into the membership map. (Sync: backtest-engine.js)
+const OWN_INDEX={'Nifty SME Emerge':'./nse_sme_emerge/history.json'};
+async function loadOwnIndices(h){
+  for(const name in OWN_INDEX){
+    try{ const j=await (await fetch(OWN_INDEX[name])).json(); const sn=(j&&j[name])||[];
+      if(sn.length) h[name]=sn.filter(x=>!x.announced).map(x=>({effectiveDate:x.effectiveDate,symbols:x.symbols})); }catch(e){}
+  }
+}
 function membersAsOf(name, dstr){
   const list=snapList(name);
-  if(!list.length) return null;                     // unknown universe -> caller's "no index filter" path
+  if(!list.length) return OWN_INDEX[name]?new Set():null;   // an own-file index that did not load screens nothing
   const snap=lastSnap(list,dstr);
   // Before the first snapshot membership is UNKNOWN — an EMPTY set is the honest answer; null here
   // would silently mean "every stock on the exchange". FUND_ALIAS fold — CONDITIONAL: rosters carry
@@ -782,6 +792,7 @@ async function ensureData(){
       const buf=await fetchProgress('./stock_data.bin','Loading market data');
       const D=await gunzipBuf(buf);
       SURV={meta:D.meta, series:D.series, idxh:D.indicesHistory||{}, fnoh:D.fnoHistory||[], startTs:D.startTs};
+      await loadOwnIndices(SURV.idxh);
       START_TS=D.startTs;
     }catch(e){ console.error(e); LoadUI.fail('Could not load market data — please try again.'); return false; }
     try{ if(!NIFTY||!Object.keys(NIFTY).length) NIFTY=(await (await fetch('./nifty.json')).json()).px||{}; }catch(e){}
