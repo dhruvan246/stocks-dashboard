@@ -24205,3 +24205,20 @@ flipped — ELECON Jun-15 c 0.71 vs −0.40, CAMLINFINE Sep-16 c 0.75 vs −0.80
 **Lesson.** A header that is the same on every page is not a declaration — measure what a field varies with before trusting it.
 An absolute tolerance must never exceed a fraction of the value it tests. And a verdict that reads the store's own source
 ("store-confirmed by the quarter's own filing") confirms nothing.
+
+## §210d — IMAGE READS of scanned SME result filings, round 1 (2026-09-28, user: "Read scans too" … "pause after this batch" / "push everything")
+Queue: 899 company-years with a scanned / unreadable candidate filing → 36 batches of 25 (~/stocks-cache/nse_sme_pdf/vision:
+batches/, PROMPT.md, contact.py = overview sheet to FIND the page (never read numbers there), page.py = 300–500 dpi band,
+check.py = the same closure gate). Readers: sonnet sub-agents; output = the reader's statement JSON, merged by
+`fetch_nse_sme_results_pdf.py --merge-vision` (tagged vision, held to the OCR rule: revenue AND profit must close) and applied by
+the same apply step (unit proof, quarterly exclusion, ORIGINAL-FILING rule §210c). Rules added during the round: rev = revenue from
+operations only; quarter columns tagged; rotated scans read whole-page after rotation; **never pick a digit because it makes the
+check close** (a b004 correction on BBTCL FY22 was re-read by eye before storing: 15,979.52 / 31,260.17 / 1,299.84 exactly as printed);
+batches from b004 also read the ORIGINAL September filing for H1 (o000 = that follow-up for b000–b003, 77 items, 88 statements).
+**Round 1 (paused by the user after b008):** b000–b008 + o000 done (≈290k–400k tokens per batch), 27 batches (b009–b035) NOT run.
+Stored: **+143 half-year cells (130 std + 13 con)**; coverage 1,993 → **2,031 of 3,698** (after §210c's retraction the base was
+lower; net vs the 1,764 start: +267). Held and reported, never written: ABCOTS Mar-25 (held quarter 84.95 vs H2 144.2),
+AVPINFRA Mar-26 std (held 193.11 / 23.17 vs 227.64 / 18.95), KRISHCA Mar-26 PAT (3.06 vs 5.43); 362 halves wait on their
+original filing's read; 18 reader rows named a file not in the candidate lists (dropped). verify_fills_live 0/0/0.
+**Resume:** launch b009… with the same PROMPT.md (one prompt per batch, 3 at a time), then --merge-vision → apply → push →
+row_periods after refresh-stock-fin.
