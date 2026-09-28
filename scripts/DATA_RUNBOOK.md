@@ -24596,6 +24596,16 @@ Store vs the NSE bhavcopy raw ratio at the ex bar: unadjusted (baked 1.00) KOPRA
 not measurable yet (the day's bhavcopy lists an older ticker): CHOLAFIN 11-Mar-2003 & 17-Mar-2004, HINDALCO 21-Nov-2005, FEL
 15-Dec-2005. BSE rows carry no terms — each needs its ratio/price read before a TERP. Scan output
 `~/stocks-cache/xcheck-px2/bse_rights_pre2006.json`, candidates `rights_missed_candidates.json`.
+**Live status of the two rights heals (2026-09-28 23:30 IST).** refresh-backtest-data 36457843878 logged RIGHTS-RECONCILE
+HINDOILEXP / FMGOETZE; the published release asset, read bar by bar against the previous one: 6,461 + 6,449 bars = old × target, 0 off
+(ex-days now +4.2 % / +0.4 %); its sf_meta-rev step passed, so the store-backed pages and engines serve it. BUT the dashboard's
+docs/stock_data.bin did NOT change: refresh.yml 36459493217 rebuilt it with the healed bars and then skipped the commit —
+`stock_bin_stale.py` commits that 17 MB file only when its newest prices are > 5 days old or the symbol set / a company name changed
+("prices are 0.7d old (<= 5.0d) — skipping commit"). A HISTORICAL heal that adds no session therefore reaches stock_data.bin only on
+the next such trigger (at the latest the first refresh after 2026-10-03). The earlier EIHOTEL/SUNDRMFAST/WOCKPHARMA/TRENT heal
+reached it only because that refresh (eaeae28e0) coincided with a trigger. Live bin generatedAt 16:25 UTC matched the PRE-heal store
+on all 2,922 bars of both symbols. Re-verify with scratchpad px2/verify_dash3.py once stock_data.bin is recommitted. A publish rule
+that also commits when historical bars change (a heal) would close this class — not built (a question for the user).
 
 ## §215 — THE ARCHIVE PAGE'S "Amount(Rs. in lakhs)" IS NSE'S TEMPLATE, NOT THE FILER'S UNIT: 5 detail cells read 10×/100× small through the PAT anchor's 2-cr floor, TTKPRESTIG's stored PAT and revenue with them; the anchor gets a relative cap (2026-09-28, user: "yes" to heal the 3 cells + the TTKPRESTIG stored PAT/revenue and its 2 cells)
 **NO ASSUMPTIONS, NO GUESSWORK — every number below was measured this session (population on origin dcb1b47a0, landed on d5cbb8c11).**
