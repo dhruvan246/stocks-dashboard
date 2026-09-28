@@ -27066,6 +27066,42 @@
    "why": "§209 KEC 20160630 consolidated: the ORIGINAL filing on BSE (attachment 5F5967D2_9E8C_426E_A085_42646B6191FC_154324.pdf, filed 2016-07-29, page 2 'Statement of Consolidated Unaudited Financial Results for the Quarter ended June 30, 2016', Rs. in lacs, column 'June 30, 2016 (Unaudited)'). The PDF is a scan: read by vision at 420 dpi cropped to the rows (user-approved 2026-09-28); every printed subtotal closes. Lines: total income from operations (net) 178473 (net sales 176300 + other operating income 2173), total expenses 166420 (incl. depreciation 2905), profit from operations before other income, finance costs and exceptional items 12053, other income 501, finance costs 7200, profit before exceptional items and tax 5354, exceptional nil, tax 2260, net profit after minority and associate 3091 = the stored PAT 30.91. EBIT = 120.53; op = 5354 + 7200 + 2905 - 501 = 149.58 cr; expenses route 178473 - (166420 - 2905) = 14958. Revenue line = the store's basis: the same filing's standalone column prints 150734 + 2173 = 152907 = the stored standalone revenue 1529.07. Second reader: NSE's archive page of the same filing (financial_res_KEC_1013240.html) prints every line identically. stored EBIT 136.24 matches no line of the filing — written by the BSE-result-PDF revenue backfill (scripts/backfill_revop_gaps.py --n500 --all-quarters, commit 67063e8cb, 2026-07-21).",
    "wrong_value_class": "BSE-PDF text sweep (backfill_revop_gaps.metrics_at): a P&L row it could not find was read as 0 / a mis-aligned row; not a scale issue (scale_fix n/a)",
    "found": "main-board op==EBIT audit 2026-09-28, printed-PDF rung (runbook §209)"
+  },
+  {
+   "sym": "TTKPRESTIG",
+   "qe": "20170930",
+   "basis": "std",
+   "was": 5.15,
+   "fixed": 514.66,
+   "why": "Q2-FY18 standalone revenue from operations: archive page financial_res_TTKPRESTIG_1031813.html prints 514.66 in CRORES under the fixed lakhs header (runbook §215) = Moneycontrol TTK02 Net Sales 514.66 = Mar-2018 XBRL INDAS_35446_10422_22052018013046_WEB_xml FY revenue 1,746.45 - Q4 416.36 - Jun-17 357.46 - Dec-17 457.97. The stored 5.15 = the 2026-07-27 vision-manual read of the same page as lakhs (vision_rev_fills.json).",
+   "found": "nse-html unit audit 2026-09-28 (runbook §215)"
+  },
+  {
+   "sym": "TTKPRESTIG",
+   "qe": "20170930",
+   "basis": "con",
+   "was": 5.45,
+   "fixed": 545.14,
+   "why": "Q2-FY18 consolidated revenue from operations: archive page financial_res_TTKPRESTIG_1031812.html prints 545.14 in CRORES under the fixed lakhs header (runbook §215) = Moneycontrol TTK02 cons Net Sales 545.14 = Mar-2018 XBRL INDAS_35446_10422_22052018013046_WEB_2_xml FY revenue 1,871.35 - Q4 443.66 - Jun-17 383.65 - Dec-17 498.90. The stored 5.45 = the 2026-07-27 vision-manual read of the same page as lakhs (vision_rev_fills.json).",
+   "found": "nse-html unit audit 2026-09-28 (runbook §215)"
+  },
+  {
+   "sym": "TTKPRESTIG",
+   "qe": "20170930",
+   "basis": "pat_std",
+   "was": 0.42,
+   "fixed": 41.89,
+   "why": "§70 PAT mirror of the fund_cell_fix heal TTKPRESTIG 20170930 std 0.42 -> 41.89 (runbook §215).",
+   "found": "nse-html unit audit 2026-09-28 (runbook §215)"
+  },
+  {
+   "sym": "TTKPRESTIG",
+   "qe": "20170930",
+   "basis": "pat_con",
+   "was": 0.43,
+   "fixed": 43.28,
+   "why": "§70 PAT mirror of the fund_cell_fix heal TTKPRESTIG 20170930 con 0.43 -> 43.28 (runbook §215).",
+   "found": "nse-html unit audit 2026-09-28 (runbook §215)"
   }
  ],
  "retracted": [

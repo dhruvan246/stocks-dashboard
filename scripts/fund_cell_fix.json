@@ -5687,6 +5687,24 @@
    "fixed": 2.93,
    "why": "Q1-FY26 consolidated profit, OWNERS' share. Results PDF https://nsearchives.nseindia.com/corporate/QMS_13082025173035_OutcomeSd.pdf p8 (Rs lakh), quarter ended 30.06.2025: Profit for the period 315.33, attributable to owners of the company 292.85 = 2.93 cr, non-controlling interest 22.49. SECOND document: the XBRL INTEGRATED_FILING_NONINDAS_1511662 (13-Aug-2025 18:05) tags ProfitLossForPeriodBeforeMinorityInterest 3.1531 (= 315.33) and ProfitLossOfMinorityInterest 0.2249 (= 22.49), but its ProfitLossForThePeriod 6.3065 (the stored 6.31) = 3.1531 + 2.9285 + 0.2249 \u2014 the three lines summed, the owners' 2.9285 filed under ShareOfProfitLossOfAssociates. (Screener's 3.16 is the total, not the owners' share.)",
    "found": "single-cell heal 2026-09-27 (runbook \u00a7203)"
+  },
+  {
+   "sym": "TTKPRESTIG",
+   "qe": "20170930",
+   "basis": "std",
+   "was": 0.42,
+   "fixed": 41.89,
+   "why": "Q2-FY18 standalone PAT. NSE archive results page financial_res_TTKPRESTIG_1031813.html (broadcast 26-Oct-2017 10:04; NSE lists no XBRL for the quarter, so scale_fix.json cannot key it) prints its P&L in CRORES under the archive's fixed 'Amount(Rs. in lakhs)' header (runbook \u00a7215): Net Profit / (Loss) for the period 41.89; the page's own EPS 36.16 x 1.156 cr shares (paid-up 1,156 lakh / Rs 10) = 41.80. SECOND: Moneycontrol TTK02 quarterly, Sep '17: Net Profit 41.89, Net Sales 514.66, EPS 36.16. THIRD: the company's Mar-2018 XBRL INDAS_35446_10422_22052018013046_WEB_xml: FY PAT 256.87 - Q4 37.04 - Jun-17 134.27 - Dec-17 43.67 = 41.89. The stored 0.42 = the same page read as lakhs (nse_pat_fills.json).",
+   "found": "nse-html unit audit 2026-09-28 (runbook \u00a7215)"
+  },
+  {
+   "sym": "TTKPRESTIG",
+   "qe": "20170930",
+   "basis": "con",
+   "was": 0.43,
+   "fixed": 43.28,
+   "why": "Q2-FY18 consolidated PAT (no minority, no associates on the page). NSE archive results page financial_res_TTKPRESTIG_1031812.html (same broadcast) prints its P&L in CRORES under the fixed lakhs header (runbook \u00a7215): Net Profit for the period = Consolidated Net Profit 43.28. SECOND: Moneycontrol TTK02 cons_quarterly, Sep '17: Net P/L After M.I & Associates 43.28, Net Sales 545.14, EPS 37.36. THIRD: Mar-2018 XBRL INDAS_35446_10422_22052018013046_WEB_2_xml: FY PAT 263.49 - Q4 37.44 - Jun-17 135.62 - Dec-17 47.15 = 43.28. The stored 0.43 = the same page read as lakhs (nse_pat_fills.json).",
+   "found": "nse-html unit audit 2026-09-28 (runbook \u00a7215)"
   }
  ],
  "retracted": [

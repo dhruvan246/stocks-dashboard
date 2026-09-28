@@ -1,0 +1,62 @@
+{
+  "_README": [
+    "NSE archive results pages (financial_res_<SYM>_<id>.html) whose figures are NOT in lakhs (runbook §215). The archive prints 'Amount(Rs. in lakhs)' on every page (4,701 of 4,701 cached, 2005-2017) whatever unit the filer typed, so the header proves nothing.",
+    "Read by xtra_nse_html.read_page(fname=...): the proven `unit` replaces lakhs for every money row, then the PAT anchor must still pass against the stored PAT - an entry cannot land a page the stored PAT does not confirm.",
+    "Why a reviewed ledger and not a rule: a power-of-ten PAT miss says only that the page and the stored PAT disagree. RAIN Dec-2017 std prints millions (stored PAT right); BFUTILITIE Mar-2017 std prints lakhs correctly (-0.31 cr = Moneycontrol) against a stored 0.00 that 'thousands' would match; TTKPRESTIG Sep-2017 prints crores and the STORED PAT carries the same 1/100.",
+    "An entry needs two readers beside the page's own PAT: Moneycontrol rows equal to page/10^k, a BSE filing, the ledger's neighbouring quarters, the company's year total, or the page's own paid-up capital.",
+    "xtra_nse_html.apply_reads refuses any journalled read of a listed page that was not made under the entry's unit (a replayed pre-§215 journal cannot bring the 10x back).",
+    "Re-read: XTRA_PAGES=<page dir> python3 scripts/xtra_unit_fix.py (dry run), --apply (re-reads the listed pages through read_page + apply_reads)."
+  ],
+  "fixes": [
+    {
+      "file": "financial_res_RAIN_1038434.html",
+      "sym": "RAIN",
+      "qe": "20171231",
+      "basis": "s",
+      "declared": "lakhs (the archive template header)",
+      "unit": "millions",
+      "why": "Page PAT -3.98 = -0.398 cr in millions = stored -0.40 (read as lakhs it was -0.04 cr and passed only through the anchor's 2-cr floor). Moneycontrol (PC13 quarterly, Dec '17) prints page/10 on every row it carries: Employees Cost 3.43 (page 34.26), depreciation 0.10 (1.01), Other Income 4.72 (Total Income 267.34 - operations 220.17 = 47.17), P/L Before Tax -0.40 (-3.98). BSE results PDF 163b9c15-c75d-4bc1-951c-c09baab3f62d.pdf (the Dec-2018 filing's Dec-2017 column, Rs million) prints finance costs 39.71 = 3.97 cr = Moneycontrol (runbook §211 C-read). The ledger's neighbouring quarters: emp 2.92 / 3.40 / 4.09, dep 0.09 / 0.10 / 0.10 against the lakh reading 0.34 / 0.01.",
+      "found": "RAIN side finding of §211; nse-html unit audit 2026-09-28 (runbook §215)"
+    },
+    {
+      "file": "financial_res_RAIN_1038435.html",
+      "sym": "RAIN",
+      "qe": "20161231",
+      "basis": "s",
+      "declared": "lakhs (the archive template header)",
+      "unit": "millions",
+      "why": "Moneycontrol (PC13 quarterly, Dec '16) prints page/10 to the paisa on the rows the filer did not re-cut: Net Sales 7.28 (page 72.81), depreciation 0.34 (3.37), Tax 0.12 (1.18). The ledger's neighbouring quarters: emp 2.19 / 2.29 / 2.52 / 2.92 against the lakh reading 0.24, dep 0.39 / 0.40 / 0.30 against 0.03. Page PAT -22.89 = -2.29 cr in millions against stored -2.13 (= Moneycontrol's figure; employees 2.35 vs 2.48, PBT -2.17 vs -2.02 differ the same way: a re-cut of the calendar-year Q4, not a unit) - passes the §215 anchor in millions, fails it in lakhs.",
+      "found": "nse-html unit audit 2026-09-28 (runbook §215): anchor refusal 'would pass in millions' + neighbour screen"
+    },
+    {
+      "file": "financial_res_LINDEINDIA_116882.html",
+      "sym": "LINDEINDIA",
+      "qe": "20140331",
+      "basis": "s",
+      "declared": "lakhs (the archive template header)",
+      "unit": "millions",
+      "why": "Page PAT -4.99 = -0.499 cr in millions = stored -0.50. Moneycontrol (standalone, Mar '14) prints page/10 on all seven rows: Interest 25.28 (page 252.83), depreciation 39.36 (393.57), Employees Cost 20.55 (205.54), Raw Materials 31.42 (314.23), Tax -7.34 (-73.41), P/L Before Tax -7.84 (-78.40), Other Income 0.42 (4.20). The page's own paid-up capital 852.86 = 85.29 cr = its 85.3 million Rs-10 shares (public 21,321,056 = 25%). The ledger's neighbouring quarters: emp 21.92 / 17.62 / 23.14 / 22.41, dep 32.13 / 32.73 / 44.72 / 42.07 against the lakh reading 2.06 / 3.94.",
+      "found": "nse-html unit audit 2026-09-28 (runbook §215): Moneycontrol 10^k screen + neighbour screen"
+    },
+    {
+      "file": "financial_res_TTKPRESTIG_1031813.html",
+      "sym": "TTKPRESTIG",
+      "qe": "20170930",
+      "basis": "s",
+      "declared": "lakhs (the archive template header)",
+      "unit": "crores",
+      "why": "P&L printed in CRORES under the lakhs header: PAT 41.89 = Moneycontrol (TTK02 quarterly, Sep '17) 41.89, revenue 514.66 = Moneycontrol 514.66; the page's own EPS 36.16 x 1.156 cr shares (paid-up 1,156 - this one row IS lakhs - / Rs 10) = 41.80 cr. The company's Mar-2018 XBRL (INDAS_35446_10422_22052018013046_WEB_xml) closes the quarter exactly: FY PAT 256.87 - Q4 37.04 - Jun-17 134.27 - Dec-17 43.67 = 41.89; FY revenue 1,746.45 - 416.36 - 357.46 - 457.97 = 514.66. Moneycontrol prints the page's rows as crores (Employees 32.97, depreciation 6.18, Raw Materials 82.03, Tax 19.49, P/L Before Tax 61.38); neighbouring quarters emp 31.18 / 33.99, dep 6.20 / 6.18. NSE lists no XBRL for this quarter (xbrl '-'): the STORED PAT 0.42 and sf_revop revenue 5.15 were read off this same page in lakhs, so the anchor refuses this entry until those are healed - the re-read waits for that heal.",
+      "found": "nse-html unit audit 2026-09-28 (runbook §215): Moneycontrol 10^k screen + neighbour screen"
+    },
+    {
+      "file": "financial_res_TTKPRESTIG_1031812.html",
+      "sym": "TTKPRESTIG",
+      "qe": "20170930",
+      "basis": "c",
+      "declared": "lakhs (the archive template header)",
+      "unit": "crores",
+      "why": "Consolidated twin of financial_res_TTKPRESTIG_1031813.html (same broadcast, 26-Oct-2017 10:04): P&L in crores under the lakhs header - PAT 43.28 = Moneycontrol (cons) 43.28, revenue 545.14 = Moneycontrol 545.14, Employees 36.79 / depreciation 6.37 / Tax 19.84 / PBT 63.12 = Moneycontrol. Mar-2018 XBRL (INDAS_35446_10422_22052018013046_WEB_2_xml): FY PAT 263.49 - Q4 37.44 - Jun-17 135.62 - Dec-17 47.15 = 43.28; FY revenue 1,871.35 - 443.66 - 383.65 - 498.90 = 545.14. The STORED PAT 0.43 (and sf_revop revenue 5.45) carry the same 1/100, so the anchor refuses this entry until those are healed.",
+      "found": "nse-html unit audit 2026-09-28 (runbook §215): Moneycontrol 10^k screen + neighbour screen"
+    }
+  ]
+}

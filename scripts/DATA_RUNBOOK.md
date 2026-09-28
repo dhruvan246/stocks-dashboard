@@ -104,7 +104,7 @@ loads every session. (README.md is just a short pointer here — this file is th
 - **§115** ★★★ THE PHANTOM CLASS IS CLOSED — root cause was `build_revop.py` upper-casing a RAW XML capture (XBRL escapes `&`), still firing in a 2026 filing; closing sf_revop ADDED +784 values / +63 quarters. FOUR gate defects: a retraction that RAISED a score, a derived flag voting, "target has no row" read as nothing-to-do, and the resume-cache treated as a mirror. A filing's own ScripCode OUTRANKS the overlap proxy (**read before trusting any agreement gate, and before retracting anything a gate could still harvest**)
 - **§116** ★★★ THE 46 CONTESTED con CELLS ADJUDICATED — the phantom read the OWNERS tag and WE had stored the TOTAL, so the phantom was RIGHT on 16 of 23; the other 7 are the filer's owners=0 mis-tag where the store was right. Swept the rest of each series: **53 cells healed** total→owners, 2018-2026. sf_revop's un-rendered mirror already held the owners figure on 45 of 53. **1,417 symbols / 18,175 con cells share the exposure — sized, not swept** (**read before trusting a con-PAT value for any symbol absent from _reattr_owners.json**)
 - **§116d** ★★★ THE SCREEN RUN OVER ALL 60,768 con CELLS — 52 more healed, **762 REFUSED because `owners+NCI==total` does NOT close** (302 have NCI=0 so the TAG is wrong not the store; 24 sign flips; 13 filer power-of-ten; 460 unreconciled → `owners_basis_unreconciled.json`). `_reattr_owners` coverage is per-CELL not per-SYMBOL. A hand-rolled context regex silently dropped every pre-2021 filing — use `build_revop.ctx_period`. **29,998 cells are older than the cache and remain UNSCREENED**
-- **§130** ★★★ THE LINE-ITEM BLOCK (EPS/OI/interest/dep/tax) BEFORE 2018 — NSE lists an XBRL URL only from Mar-2018; 2005-2017 come from the archive HTML pages (PAT-anchored, GATE E) and 2002-04/residue from Moneycontrol (gate T/C/R). BANKING XBRL 2018-22 has NO context block (OneD = quarter, FourD = YTD, 'Half yearly'/'Yearly' name the filing). A LOCAL `--fresh` rebuild DROPS the cloud nightly's newest cells unless unioned with the committed .gz (**read before touching build_xbrl_extra.py or judging pre-2018 coverage**). **§211**: the archive's Ind-AS 2016-17 page prints the TAX in its "(f) Finance costs" row — the reader refuses that cell; proven figures live in `scripts/xtra_fc_fix.json`, re-asserted by every build
+- **§130** ★★★ THE LINE-ITEM BLOCK (EPS/OI/interest/dep/tax) BEFORE 2018 — NSE lists an XBRL URL only from Mar-2018; 2005-2017 come from the archive HTML pages (PAT-anchored, GATE E) and 2002-04/residue from Moneycontrol (gate T/C/R). BANKING XBRL 2018-22 has NO context block (OneD = quarter, FourD = YTD, 'Half yearly'/'Yearly' name the filing). A LOCAL `--fresh` rebuild DROPS the cloud nightly's newest cells unless unioned with the committed .gz (**read before touching build_xbrl_extra.py or judging pre-2018 coverage**). **§211**: the archive's Ind-AS 2016-17 page prints the TAX in its "(f) Finance costs" row — the reader refuses that cell; proven figures live in `scripts/xtra_fc_fix.json`, re-asserted by every build **§215**: that page's "Amount(Rs. in lakhs)" header is template text (4,701 of 4,701 pages) — the PAT anchor has a relative cap (`xtra_nse_html.anchor_ok`); a page printed in millions/crores is read only through `scripts/xtra_unit_fix.json`
 - **§161** ★★★ NO SPLIT/BONUS IS EVER INFERRED FROM A PRICE MOVE — `ca_factor()` split POLICYBZR's −36% crash (2026-09-24) into a phantom 2/3 and scaled its whole history; official record → exact factor, none → raw move kept + parked in `scripts/unconfirmed_ca.json`; the published bins' every applied factor is recoverable as `vw ÷ (turnover/volume)` (**read before touching any corporate-action code or ledger**)
 - **§147** ★★★ A scale_fix entry does NOT heal xbrl_extra by itself (the nightly is incremental) — run `scale_fix.py --apply-xtra` with XBRL_CACHE. A mis-scaled filing's EPS is almost always CORRECT (36/37), so flag `eps_scaled` only where it isn't. Use `parse_only` where the owners store already holds a figure from a different, correctly scaled filing. Arm a filing only on an exact YTD power of ten (**read before adding any scale_fix entry**)
 - **§184** ★★★ A 1/100 FILING IS INVISIBLE to `detect_scale_errors.py` (it flags only cells ≥50× LARGER) — screen with the YTD chain over the whole cache, and decide WHICH filing is wrong (a pair's ratio proves only that the two disagree). For k < 0 record `was_*` at raw precision; pin con owners in `owners_basis_heals.json` (the nightly otherwise writes `_reattr_owners` 2-dp ÷ factor); `fill_null` refills slots `revop_sanity` emptied. **§184a** armed 64 more after a per-filing adjudication (a ratio of 1 hides a scaled NEIGHBOUR — check the chain's end; BSE's own copy is a second reader); MASKINVEST refused (**read before adding any scale_fix entry**)
@@ -24141,3 +24141,67 @@ demerger_adj + demerger_catchup (the same event twice squared the product).
 the only kind that catches a classification error like Quantmac's; SHP NSE vs BSE XBRL copies and SHP visibility vs BSE's first
 announcement store-wide (§164r's stream, extended past the late quarters); Q-sum = FY once an FY source is stored (§45 names a
 `_fy_identity.py` that does not exist); delivery % has no independent source (both stores read sec_bhavdata_full).
+
+## §215 — THE ARCHIVE PAGE'S "Amount(Rs. in lakhs)" IS NSE'S TEMPLATE, NOT THE FILER'S UNIT: 5 detail cells read 10×/100× small through the PAT anchor's 2-cr floor, TTKPRESTIG's stored PAT and revenue with them; the anchor gets a relative cap (2026-09-28, user: "yes" to heal the 3 cells + the TTKPRESTIG stored PAT/revenue and its 2 cells)
+**NO ASSUMPTIONS, NO GUESSWORK — every number below was measured this session (population on origin dcb1b47a0, landed on d5cbb8c11).**
+**Defect.** `xtra_nse_html.py` scaled every money row by the page's "Amount(Rs. in …)" header, and that header reads
+`Amount(Rs. in lakhs)` on **4,701 of 4,701** cached archive pages (2005-2017): it is the archive's template text, whatever the
+filer typed under it — RAIN / LINDEINDIA typed millions, TTKPRESTIG crores. The PAT anchor (`_nse_archive_revop.close`: max(2 cr,
+3%)) was therefore the only unit proof, and its 2-cr floor passes a 10× misread whenever the stored PAT is under 2.22 cr (100×:
+2.02; 10× large: 0.22; 100× large: 0.02). RAIN Dec-2017 std (§211's side finding): PAT −3.98 mn read as −0.04 cr against the stored
+−0.40 → pbt −0.04, emp 0.34, dep 0.01, oi 0.47 (Moneycontrol −0.40 / 3.43 / 0.10 / 4.72).
+**Measured over all 31,068 `nse-html` cells** (kit `~/stocks-cache/nse_unit/`, STATUS.md):
+- *correct stored PAT* — a unit error can pass only in the band |stored| ≤ 2.2223 cr: 1,488 cells (44 with none: all HEG std,
+  whose PAT moved to HEGAM in the 2026-09-22 rename — all 44 anchor against HEGAM and Moneycontrol agrees). 1,497 of 1,498 pages
+  fetched one request at a time (TATAINFO Jun-05 now 404 — pbt − tax = its stored PAT, fields on its neighbours' scale). The
+  reader of origin reproduces the ledger cell exactly on all 1,452 pages it reads. PAT-implied scale: 3 cells at 1/10.
+- *stored PAT carrying the same error* (the anchor then passes at any size) — Moneycontrol at 10^k over the 28,834 cells it
+  carries (cache only) + each cell's neighbouring quarters (30,733 cells with ≥ 2 comparable fields): TTKPRESTIG Sep-17 s + c at
+  1/100. The 76 cells neither screen could compare: pages read, 0 at a power of ten (PAT = stored, EPS × shares ≈ PAT). Every
+  other 10^k disagreement is Moneycontrol's own slip — MASTEK Dec-08 c, SHRENUJ Sep-05 s, ASAHIINDIA Jun-09 s (each page's EPS ×
+  shares = its PAT = ours) — or a business jump (ESSAROIL Mar-08, RELIGARE Mar-09, RTNPOWER Mar-13: Moneycontrol = ours).
+- the rev/op archive route (same anchor, `_nsearch_reads*.json`): 2,412 reads, 0 at a power of ten.
+- ⚠ §128d's queue HAD flagged TTKPRESTIG Sep-17 c (0.43 vs Moneycontrol 43.28) and closed it "store-confirmed by the quarter's
+  own filing (financial_res_TTKPRESTIG_1031812.html)" — the same page read as lakhs. A page cannot confirm a store it fed.
+**The class = 5 cells:** RAIN Dec-16 s + Dec-17 s, LINDEINDIA Mar-14 s (millions; stored PAT right); TTKPRESTIG Sep-17 s + c
+(crores; its stored PAT 0.42 / 0.43 = `nse_pat_fills.json` and sf_revop revenue 5.15 / 5.45 = `vision_rev_fills.json` 2026-07-27
+were read off the same pages as lakhs; NSE lists no XBRL for the quarter, so `scale_fix.json` cannot key it — §189c's VIYASH route).
+**Anchor (code).** `xtra_nse_html.anchor_ok` = `NAR.close` AND |page − stored| ≤ max(0.011, 0.5 × the larger); `page_pat` also
+offers every other PAT-labelled row, strictly last. On the 1,453 band pages with a stored PAT: all 1,426 within 50% read as before;
+of the 27 beyond it, 15 anchor on the right row (≤ 1%; EPS lands through GATE E — OMAXAUTO Dec-08's period row, 112 lakh, sits
+below an "ordinary activities after tax" row of 1 lakh that R_PAT_ANY and R_PAT_SIGNED both stop at), 1 at 2%, 11 refuse (the 3
+unit cells, BFUTILITIE Mar-17 s stored 0.00, 7 page-vs-store 2-8×). The reader NEVER adopts another unit itself — a power-of-ten
+miss says only that page and store disagree (BFUTILITIE's 0.00 would "prove" thousands; TTKPRESTIG's crores page is matched in
+lakhs by its 1/100 store); the refusal names the unit that would pass. A proven page goes into `scripts/xtra_unit_fix.json`
+(two readers beside the page's PAT); `read_page(fname=)` applies it, the anchor must still pass, and `apply_reads` refuses any
+journalled read of a listed page not made under the entry's unit. `NAR.close` (26 importers) is unchanged.
+**Landed** (replay: `~/stocks-cache/nse_unit/land_215.py` on a worktree at fresh origin; a second run is byte-identical):
+| ledger | entries | cells |
+|---|---|---|
+| `fund_cell_fix.json` | +2 | TTKPRESTIG 20170930 std 0.42 → **41.89**, con 0.43 → **43.28** (docs/sf_fundamentals + scripts/fundamentals) |
+| `revop_cell_fix.json` | +4 | revenue 5.15 → **514.66** / 5.45 → **545.14**; §70 PAT mirror (docs/sf_revop + scripts/revop_fundamentals) |
+| `xtra_unit_fix.json` (new) + `xtra_unit_fix.py` | 5 | xbrl_extra: 5 cells / 28 values (LINDEINDIA 7, RAIN Dec-16 5, Dec-17 4, TTKPRESTIG 6 + 6) |
+Readers per entry: RAIN Dec-17 — Moneycontrol page/10 on every row + BSE Dec-2018 filing's Dec-2017 column (finance costs 39.71 mn)
++ neighbours; RAIN Dec-16 — Moneycontrol page/10 to the paisa on sales / dep / tax + neighbours (its PAT, employees, PBT differ
+5-8% from the stored/Moneycontrol figure: the calendar-year Q4 was re-cut later — the as-filed page lands, oi 12.78 vs Moneycontrol
+4.39); LINDEINDIA — Moneycontrol page/10 on all 7 rows + its own paid-up 852.86 mn = 85.3 mn Rs-10 shares + neighbours;
+TTKPRESTIG — Moneycontrol (every row, to the paisa) + the Mar-2018 XBRL year minus the three stored quarters (PAT 256.87 − 37.04 −
+134.27 − 43.67 = 41.89; con 263.49 − 37.44 − 135.62 − 47.15 = 43.28; revenue 1,746.45 − 416.36 − 357.46 − 457.97 = 514.66; con
+545.14). Provenance kept, marked `superseded_by`: nse_pat_fills.json ×2, vision_rev_fills.json ×2; §128d verdict → HEALED.
+No higher-precedence ledger holds the TTKPRESTIG cell (_reattr_owners, owners_basis_heals, con_copy_heals, attr_swap_fixes,
+scale_fix checked). §211's fc survives the re-read (RAIN Dec-17 3.97 re-asserted; Dec-16 stays blank — its millions residual
+14.05 still disagrees with Moneycontrol 5.18; TTKPRESTIG 0.49 / 1.06).
+**Verified before the push.** Structural diffs = exactly the cells above; slices both ways (`build_stock_fin.py --out`): 7 of 6,602
+change (LINDEINDIA + BOC/IOL, RAIN + PRIYADCEM/RAINCOM, TTKPRESTIG), only `x` / `fund` / `revop`, and the before-build equals the
+committed slices byte for byte. Local page (`docs/` + rebuilt slices, price slices from sf-data): TTKPRESTIG P&L con FY2018 Sales
+1,871 / Net Profit 263 = the Mar-2018 XBRL year (1,871.35 / 263.49; were ~1,332 / 221); RAIN std Dec-2017 employee 12 (was 9),
+other income 59 (55); LINDEINDIA std Dec-2014 employee 91 / interest 103 / dep 181 / PBT 4 (were 72 / 80 / 146 / 11); 0 console
+errors on those loads. No UI file changed → no SW bump.
+**Not touched (open):** stored-PAT disagreements the cap surfaced — BFUTILITIE Mar-17 s 0.00 (page = Moneycontrol −0.31), BALLARPUR
+Jun-15 s 0.12 (0.47), UNITECH Jun-15 s 0.22 (1.71); as-filed page ≠ stored = Moneycontrol (vintage, §108 class) — HINDOILEXP Jun-15 s,
+JKCEMENT Jun-15 s, MONSANTO Sep-16 s, PRAKASH Sep-15 s, DELTACORP Jun-15 c; the 15 EPS gains wait for a re-read; the shared
+`NAR.close` keeps the bare floor (rev/op route: 116 of 2,412 reads accepted only through it, 8 beyond 50%, two with the sign
+flipped — ELECON Jun-15 c 0.71 vs −0.40, CAMLINFINE Sep-16 c 0.75 vs −0.80).
+**Lesson.** A header that is the same on every page is not a declaration — measure what a field varies with before trusting it.
+An absolute tolerance must never exceed a fraction of the value it tests. And a verdict that reads the store's own source
+("store-confirmed by the quarter's own filing") confirms nothing.

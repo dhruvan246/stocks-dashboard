@@ -42,11 +42,15 @@ LABEL TEMPLATES (census over 9,609 cached pages — three P&L templates plus the
 GATES (nothing lands without all of them):
   identity   page Symbol == the symbol asked (or one of its era names); Period Ended == qe;
              "Non-Cumulative" (a Cumulative page is YTD, refused); declared basis -> s|c.
-  anchor     the page's PAT (owners row / period row / signed template / consolidated-net row)
-             must reproduce the STORED PAT of that basis within max(2.0 cr, 3%) — the same anchor
-             _nse_archive_revop.py uses. It proves page, quarter, basis and the declared unit at
-             once; a page with no stored PAT on that basis is refused (`no-stored-anchor`), never
-             read blind.
+  anchor     the page's PAT (owners row / period row / signed template / consolidated-net row, then
+             every other PAT-labelled row, strictly last) must reproduce the STORED PAT of that basis
+             within max(2.0 cr, 3%) — the anchor _nse_archive_revop.py uses — AND within half of the
+             larger figure (§215, anchor_ok). It proves page, quarter, basis and UNIT at once: the
+             archive prints "Amount(Rs. in lakhs)" on every page (4,701 of 4,701 cached, 2005-2017)
+             whatever the filer typed — RAIN / LINDEINDIA typed millions, TTKPRESTIG crores — and the
+             2-cr floor alone let a 10x/100x reading through below ~2.2 cr. A proven other unit comes
+             only from xtra_unit_fix.json; a page with no stored PAT on that basis is refused
+             (`no-stored-anchor`), never read blind.
   eps        the basic-EPS row is cross-checked against PAT via paid-up equity / face value
              (PAT == eps × eqcap / fv within 6%, §53e GATE E). A miss refuses the EPS fields
              only; missing inputs are journalled as unchecked, not refused.
@@ -82,6 +86,33 @@ CACHE = NAR.CACHE
 MON = NAR.MON
 NUM = re.compile(r"^-?[\d,]+\.?\d*$")
 EPS_TOL = 0.06
+# §215: the PAT anchor. NAR.close()'s 2-cr absolute floor let a page read 10x or 100x off through whenever the
+# stored PAT is under ~2.2 cr (RAIN Dec-2017 std: "Amount(Rs. in lakhs)" over figures in MILLIONS, PAT -3.98 read
+# as -0.04 cr against the stored -0.40). The header is the archive's template text, the same on every page, so the
+# anchor is the only unit proof there is. A power-of-ten miss is always >= 90% of the larger figure, so the floor
+# may never exceed half of it; PAT_ABS_MIN is rounding (a 2-dp crore store against an exact page). Measured over
+# the 1,453 pages with a stored PAT under 2.23 cr: every page within 50% reads as before; of the 27 beyond it, 15
+# now anchor on the right PAT row, 1 at 2%, and 11 refuse (3 unit errors, 1 stored 0.00, 7 page-vs-store 2-8x).
+PAT_REL_CAP = 0.5
+PAT_ABS_MIN = 0.011
+UNIT_DIV = (("crores", 1.0), ("millions", 10.0), ("lakhs", 100.0), ("thousands", 10000.0))
+# A page whose figures are NOT in lakhs, proven per page by independent readers (§215). The reader never switches
+# units on the PAT anchor alone: a power-of-ten miss says only that the page and the stored PAT disagree —
+# BFUTILITIE Mar-2017 std prints lakhs correctly (-0.31 cr = Moneycontrol) against a stored 0.00 that "thousands"
+# would have matched, and TTKPRESTIG Sep-2017's crores page is matched in lakhs by a stored PAT 1/100 off.
+UNIT_FIX = os.path.join(HERE, "xtra_unit_fix.json")
+_UNIT_FIX = None
+
+
+def unit_fix():
+    """{archive file name: entry} from xtra_unit_fix.json (empty when the file is absent)."""
+    global _UNIT_FIX
+    if _UNIT_FIX is None:
+        _UNIT_FIX = {}
+        if os.path.exists(UNIT_FIX):
+            for e in json.load(open(UNIT_FIX)).get("fixes", []):
+                _UNIT_FIX[e["file"]] = e
+    return _UNIT_FIX
 
 # ---- row regexes: anchored, case-insensitive; tried in the listed order, first row in page order ----
 def rx(*pats):
@@ -200,6 +231,22 @@ def iso_qe(s):
     return NAR.iso_qe(s)
 
 
+def anchor_ok(page_pat, stored):
+    """NAR.close() (max 2 cr, 3%) with a relative cap on the absolute floor: a small figure must agree within
+    half of itself, so no power of ten can pass (runbook §215)."""
+    if not NAR.close(page_pat, stored):
+        return False
+    return abs(page_pat - stored) <= max(PAT_ABS_MIN, PAT_REL_CAP * max(abs(page_pat), abs(stored)))
+
+
+def other_unit(raw_pats, div, stored):
+    """Diagnosis for a refused anchor: the other units whose PAT would pass it. Never adopted here — either the
+    page is not in lakhs (RAIN Dec-2017: millions) or the stored PAT is off (BFUTILITIE Mar-2017: 0.00); a proven
+    page goes into xtra_unit_fix.json, a proven PAT through the fundamentals ledgers."""
+    return [unit for unit, d in UNIT_DIV
+            if d != div and any(anchor_ok(c / d, stored) for c in raw_pats)]
+
+
 R_EPS_HDR = re.compile(r"^earnings? per share.*\((before|after) extra\s?ordinary items\)", re.I)
 R_SUB_B = re.compile(r"^\(?a\)?\s*basic\b", re.I)
 R_SUB_D = re.compile(r"^\(?b\)?\s*diluted\b", re.I)
@@ -259,12 +306,28 @@ def page_pat(rows, basis, isbank):
         cands.append(pick(NAR.R_PAT_CONNET))
     if isbank:
         cands.append(pick(NAR.R_PAT_OWN))
-    return [c for c in cands if c is not None]
+    cands = [c for c in cands if c is not None]
+    # §215: every OTHER PAT-labelled row, in page order, strictly last. pick() returns one row per pattern, and on
+    # the 2005-2012 template R_PAT_ANY and R_PAT_SIGNED both stop at "Net Profit(+)/Loss(-) from Ordinary
+    # Activities after tax" — OMAXAUTO Dec-2008 std: 1 lakh there, 112 lakh (= the stored 1.12 cr) in "Net Profit
+    # (+) / Loss (-) for the period" below its extraordinary items. The 2-cr floor hid that; the relative cap does
+    # not. Tried last, so no page that resolves on the rows above changes.
+    pats = (NAR.R_PAT_OWN, NAR.R_PAT_ANY, NAR.R_PAT_SIGNED) + ((NAR.R_PAT_CONNET,) if basis == "c" else ())
+    for lab, v in r2:
+        if v not in cands and any(p.search(lab) or p.search(ROWNUM.sub("", lab)) for p in pats):
+            cands.append(v)
+    return cands
 
 
-def read_page(page, sym, qe, stored_pat_by_basis):
-    """-> (basis, fields, note) or (None, None, refusal). fields carry only what the page proves."""
+def read_page(page, sym, qe, stored_pat_by_basis, fname=None):
+    """-> (basis, fields, note) or (None, None, refusal). fields carry only what the page proves. `fname` (the
+    archive file name) looks the page up in xtra_unit_fix.json: a proven unit replaces the declared one."""
     meta, rows = parse_page(page)
+    ufix = unit_fix().get(fname) if fname else None
+    if ufix:
+        meta["unit_declared"] = meta.get("unit", "lakhs")
+        meta["unit"] = ufix["unit"]
+        meta["div"] = dict(UNIT_DIV)[ufix["unit"]]
     psym = (meta.get("Symbol") or "").strip().upper()
     ok_syms = {sym.upper()} | {a.upper() for a in NAR.aliases(sym)}
     if not psym:
@@ -283,11 +346,14 @@ def read_page(page, sym, qe, stored_pat_by_basis):
     stored = stored_pat_by_basis.get(basis)
     if stored is None:
         return basis, None, "no-stored-anchor(%s)" % basis
-    cands = [c / div for c in page_pat(rows, basis, isbank)]
-    hit = next((c for c in cands if NAR.close(c, stored)), None)
+    raw_pats = page_pat(rows, basis, isbank)
+    hit = next((c / div for c in raw_pats if anchor_ok(c / div, stored)), None)
     if hit is None:
-        return basis, None, "pat-anchor %s vs stored %s" % (
-            [round(c, 2) for c in cands[:3]] if cands else None, stored)
+        alt = other_unit(raw_pats, div, stored)
+        return basis, None, "pat-anchor %s vs stored %s%s" % (
+            [round(c / div, 2) for c in raw_pats[:3]] if raw_pats else None, stored,
+            " (would pass in %s: the page's unit or the stored PAT is off by a power of ten, §215)"
+            % "/".join(alt) if alt else "")
     money_vals = [v for lab, v, _ in rows if any(p.search(lab) for f in MONEY_FIELDS for p in R[f])]
     if abs(hit) < 1e-9 and money_vals and all(abs(v) < 1e-9 for v in money_vals):
         return basis, None, "blank-template(all-zero page)"
@@ -398,8 +464,9 @@ def read_page(page, sym, qe, stored_pat_by_basis):
         out["aud"] = "U" if aud.startswith("un") else "A"
     if not out:
         return basis, None, "no-rows-read"
+    unit_note = {"unit_declared": meta["unit_declared"]} if ufix else {}
     return basis, out, {"unit": meta.get("unit", "lakhs"), "fmt": meta.get("fmt", "?"),
-                        "anchor": round(hit, 2), "labels": jn, **eps_note, **fc_note}
+                        "anchor": round(hit, 2), "labels": jn, **unit_note, **eps_note, **fc_note}
 
 
 # ---------------------------------------------------------------------------------- targets ----
@@ -445,10 +512,14 @@ def load_ledger():
 
 
 def apply_reads(reads, ledger):
-    n = 0
+    n = stale = 0
     for sym, qs in reads.items():
         for qe, per_basis in qs.items():
             for b, ent in per_basis.items():
+                fname = str(ent.get("src", "")).split(":", 1)[-1]
+                if fname in unit_fix() and not (ent.get("chk") or {}).get("unit_declared"):
+                    stale += 1                            # read under the declared unit before §215 proved it wrong
+                    continue
                 cell = ledger.setdefault(sym, {}).setdefault(str(qe), {})
                 cur = cell.get(b)
                 if cur and "src" not in cur:
@@ -469,6 +540,8 @@ def apply_reads(reads, ledger):
     nf = xtra_fc_fix.reassert(ledger)
     if nf:
         print("xtra_fc_fix: re-asserted %d cells" % nf)
+    if stale:
+        print("xtra_unit_fix: skipped %d journal reads made under a page's wrong declared unit" % stale)
     return n
 
 
@@ -570,7 +643,7 @@ def main():
             except Exception as e:
                 skips["%s|%d|%s" % (sym, qe, row_basis)] = "fetch:%s" % type(e).__name__
                 continue
-            basis, fields, note = read_page(page, sym, qe, pending[qe])
+            basis, fields, note = read_page(page, sym, qe, pending[qe], fname=link.rsplit("/", 1)[-1])
             key = "%s|%d|%s" % (sym, qe, basis or row_basis)
             if fields is None:
                 skips[key] = note
