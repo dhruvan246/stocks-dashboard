@@ -121,6 +121,12 @@
       ['Other', function (f) { return num(f.b); }, 1], ['Other source', function (f) { return esc(f.b_src); }],
       ['Ratio', function (f) { return num(f.ratio, 4); }, 1]
     ],
+    shp_neighbours: [
+      ['Stock', function (f) { return '<a class="text-indigo-600 hover:underline" href="./stock.html?sym=' + encodeURIComponent(f.sym) + '">' + esc(f.sym) + '</a>'; }],
+      ['Quarter', function (f) { return esc(f.qe); }], ['Field', function (f) { return esc(f.field); }],
+      ['Before', function (f) { return num(f.prev); }, 1], ['This quarter', function (f) { return num(f.value); }, 1],
+      ['After', function (f) { return num(f.next); }, 1]
+    ],
     flows_month: [
       ['Month', function (f) { return esc(f.month); }], ['Field', function (f) { return esc(f.field); }],
       ['Daily sum', function (f) { return num(f.a); }, 1], ['Monthly', function (f) { return num(f.b); }, 1],
@@ -164,6 +170,7 @@
         '<span class="text-slate-500"><b>' + num(c.n_accepted, 0) + '</b> accepted</span>' +
         '<span class="text-slate-400">ran ' + esc(c.ran || '—') + '</span></div>' +
       (c.notes && c.notes.length ? '<div class="text-[11px] text-slate-400 mt-1">' + c.notes.map(esc).join(' · ') + '</div>' : '') +
+      (c.calibration ? '<div class="text-[11px] text-slate-400 mt-1"><b>Calibration</b> · ' + esc(c.calibration) + '</div>' : '') +
       (c.error ? '<div class="text-[11px] text-red-500 mt-1">Last run failed (' + esc(c.error_ran) + ') — showing the previous result.</div>' : '');
     var body =
       '<details class="mt-3"' + (c.n_open && c.n_open <= 25 ? ' open' : '') + '><summary class="text-xs font-semibold text-indigo-600">Open disagreements' +

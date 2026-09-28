@@ -24042,6 +24042,7 @@ streams one symbol at a time (5,249 series in ~1 s, 62 MB), `late_value` reads t
 | fund_pbt_tax | stored PAT | the filing's PBT − tax (± associates, minority) | 61,284 | 91.77 % | 5,042 |
 | fund_eps_shares | stored PAT | company EPS × SHP share count | 18,182 | 95.97 % | 733 |
 | mcap_shares | BSE Mktcap (dashboard) | shares_outstanding × NSE close | 495 | 97.78 % | 11 |
+| shp_neighbours (added same day) | served FII / DII of the quarter | the company's own filings either side | 95,720 | 99.75 % | 244 |
 | idx_levels | nifty/nifty500/nifty_bank feeds | niftyindices archive + NSE daily | 930 | 99.25 % | 7 |
 | flows_month | fii_dii daily summed | fii_dii_monthly | 8 | 100 % | 0 |
 **Price check method (the hard part).** A/B per session (2020+) and per ISO week before (Yahoo is weekly 2002-19: its close vs
@@ -24066,6 +24067,10 @@ demerger_adj + demerger_catchup (the same event twice squared the product).
 - vision vs XBRL: banks' / insurers' "revenue" differs by definition (ICICIBANK total income vs revenue from operations).
 - shares_outstanding stale after corporate actions (ASTERDM x1.68, TDPOWERSYS x2.0 vs BSE's market cap).
 - nifty.json lacks sessions other feeds have (28-Feb-2015 Budget Saturday, 29-Mar-2019).
+- shp_neighbours: a quarter off BOTH of the company's neighbouring filings while they agree (CENTRALBK Jun-2018 FII 9.39 between
+  0.32 and 0.35 — the unnamed-remainder rule moved an unnamed 9.12 % Other-Institutions block; RNAVAL Dec-2015 46.42 between 4.79 and
+  4.35). Calibration: it flags 12 of the 50 company-quarters the Quantmac v4 comparison showed to be ours (errors < 3 pp and
+  alternating series slip through) — a same-company test is a candidate list, not an outside reader.
 **Next (phase 2, not built yet):** sampled outside readers nightly (Screener / Moneycontrol / Trendlyne: revenue, PAT, FII %) —
 the only kind that catches a classification error like Quantmac's; SHP NSE vs BSE XBRL copies and SHP visibility vs BSE's first
 announcement store-wide (§164r's stream, extended past the late quarters); Q-sum = FY once an FY source is stored (§45 names a
