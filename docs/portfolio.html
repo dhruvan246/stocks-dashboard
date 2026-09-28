@@ -2237,6 +2237,26 @@ function zRender(){
     });
     out.push('</tbody></table></div><div class="khelp">Holdings P&L <b class="'+cls(tot)+' secret">'+inrSigned(tot)+'</b> · today <b class="'+cls(totDay)+' secret">'+inrSigned(totDay)+'</b></div>');
   }
+  /* MTF — your cash vs Zerodha's loan, per stock (user 2026-09-28: "i want to see this table in admin view").
+     Kite reports each MTF holding's value at purchase (mtf.value) and initial margin (mtf.initial_margin = the cash you
+     put in); the loan is the rest. "Your money now" = today's value − the loan = what selling it would hand back, before
+     the MTF interest and charges Zerodha bills separately. Negative = the stock is worth less than its loan. */
+  const mtfRows=D.hold.map(r=>{ const m=r.mtf||{}, n=+m.quantity||0; if(!(n>0)) return null;
+      const bought=(+m.value>0)?+m.value:n*(+m.average_price||0), own=+m.initial_margin||0, loan=Math.max(0,bought-own), now=n*(+r.last_price||0);
+      return {sym:r.tradingsymbol, bought:bought, own:own, loan:loan, lev:own>0?bought/own:null, now:now, mine:now-loan}; })
+    .filter(Boolean).sort((a,b)=>b.bought-a.bought);
+  if(mtfRows.length){
+    const L=v=>(v<0?'−':'')+'₹'+(Math.abs(v)/1e5).toLocaleString('en-IN',{minimumFractionDigits:1,maximumFractionDigits:1})+' L';
+    const T=mtfRows.reduce((t,r)=>{ t.bought+=r.bought; t.own+=r.own; t.loan+=r.loan; t.now+=r.now; t.mine+=r.mine; return t; },{bought:0,own:0,loan:0,now:0,mine:0});
+    const under=mtfRows.filter(r=>r.mine<0);
+    out.push('<h4>MTF — your cash vs Zerodha’s loan</h4><div class="twrap"><table id="zMtfCash"><thead><tr><th>Stock</th><th>Bought</th><th>Your cash</th><th>Zerodha loan</th><th>MTF ×</th><th>Worth now</th><th>Your money now</th></tr></thead><tbody>');
+    mtfRows.forEach(r=>out.push('<tr><td><b>'+esc(r.sym)+'</b></td><td class="secret">'+L(r.bought)+'</td><td class="secret">'+L(r.own)+'</td><td class="secret">'+L(r.loan)+'</td>'+
+      '<td>'+(r.lev!=null?r.lev.toFixed(2)+'×':'—')+'</td><td class="secret">'+L(r.now)+'</td><td class="'+(r.mine<0?'down':'')+' secret"><b>'+L(r.mine)+'</b></td></tr>'));
+    out.push('</tbody><tfoot><tr><td><b>Total</b></td><td class="secret"><b>'+L(T.bought)+'</b></td><td class="secret"><b>'+L(T.own)+'</b></td><td class="secret"><b>'+L(T.loan)+'</b></td>'+
+      '<td><b>'+(T.own>0?(T.bought/T.own).toFixed(2)+'×':'—')+'</b></td><td class="secret"><b>'+L(T.now)+'</b></td><td class="'+(T.mine<0?'down':'')+' secret"><b>'+L(T.mine)+'</b></td></tr></tfoot></table></div>');
+    out.push('<div class="khelp">Your cash = the initial margin Zerodha blocked when you bought; the rest was its loan. <b>Your money now</b> = today’s value − the loan: what selling would hand back, before MTF interest and charges (billed separately). Prices are Zerodha’s and can lag a few minutes.'+
+      (under.length?' <b class="down">'+under.map(r=>esc(r.sym)).join(', ')+(under.length===1?' is':' are')+' now worth less than '+(under.length===1?'its':'their')+' loan.</b>':'')+'</div>');
+  }
   if(!D.ord.length && !D.hold.length && !D.pos.length)
     out.push('<div class="khelp">Connected, but Zerodha returned no holdings, positions or orders.</div>');
   $('zBody').innerHTML=out.join('');
