@@ -12275,7 +12275,10 @@ the by-hand command (a by-hand gc re-checks it — its deleted files read as WIP
 don't gc twice. A tree whose check raises is kept ("check failed") and the run goes on. (6) the guard prints
 what gc streamed before a backstop kill (`TimeoutExpired.stdout` is bytes even with `text=True`), and a
 nonzero exit with stderr's last line (a guard newer than MAIN's tool would print "unrecognized arguments:
---budget", not silence). *Scratch tests* (bare origin + clone + worktrees): origin vs new full dry-run → same
+--budget", not silence). (7) `--for-hook` without `--budget` means `--budget 60`: when this landed, 89 of 90
+worktrees still carried the old guard (no `--budget`, 90 s kill), and a session may run its own tree's copy —
+tested: old guard + new tool → "(budget 60 s, least-recently-checked first)"; by hand without `--for-hook` →
+unbudgeted. *Scratch tests* (bare origin + clone + worktrees): origin vs new full dry-run → same
 9 removable / 5 kept, same reasons · `git status` slowed 1.5 s by a PATH shim, `--budget 4`, 8 runs → every run
 ≤ 4.07 s wall, all 14 trees judged by the rotation, kept ones skipped once judged · process group SIGKILLed ~0.15
 s into removing the 20,000-file tree → origin code: 17,230 files left, registered, next gc "kept, 2774 files not

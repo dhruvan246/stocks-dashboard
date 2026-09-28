@@ -567,6 +567,7 @@ def idle_hours(wt, files, ignored=()):
 GC_STATE = "sync_checkout_gc.json"      # in the COMMON git dir — never a working-tree file
 GC_STATE_VERSION = 1
 RECHECK_KEPT_HOURS = 24
+HOOK_GC_BUDGET = 60                     # --for-hook default; the guard kills gc at 90 s
 
 
 def short(path):
@@ -840,8 +841,9 @@ def main(argv):
     ap.add_argument("--idle-hours", type=float, default=24)
     ap.add_argument("--protect", default="", help="comma-separated worktree paths gc must never touch")
     ap.add_argument("--for-hook", action="store_true", help="terse output for the session-start banner")
-    ap.add_argument("--budget", type=float, default=0,
-                    help="gc: stop cleanly after this many seconds (0 = check every tree); see do_gc")
+    ap.add_argument("--budget", type=float, default=None,
+                    help="gc: stop cleanly after this many seconds (0 = check every tree; default 0, or "
+                         "%d with --for-hook); see do_gc" % HOOK_GC_BUDGET)
     a = ap.parse_args(argv)
     trusted = [t.strip() for t in a.trust.split(",") if t.strip()]
     tree = os.path.realpath(os.path.expanduser(a.tree))
@@ -863,7 +865,10 @@ def main(argv):
     if a.mode == "gc":
         protect = {os.path.realpath(os.path.expanduser(p)) for p in a.protect.split(",") if p.strip()}
         protect.add(os.path.realpath(os.getcwd()))
-        do_gc(a.dry_run, a.idle_hours, a.for_hook, protect, trusted, a.budget)   # prints as it goes
+        # A guard older than 2026-09-28 passes --for-hook without --budget (89 of 90 worktrees carried
+        # one when this landed) and kills gc at 90 s: give it the budgeted behaviour too.
+        budget = a.budget if a.budget is not None else (HOOK_GC_BUDGET if a.for_hook else 0)
+        do_gc(a.dry_run, a.idle_hours, a.for_hook, protect, trusted, budget)   # prints as it goes
         return 0
 
 
