@@ -1,0 +1,46 @@
+name: BSE live prices (Top Movers)
+
+# Polls BSE's whole-market list about once a minute in market hours and publishes it to
+# the single-commit data branch `live-bse` (NOT main — a main push under docs/ would
+# trigger a Pages deploy every minute). docs/movers.html reads it via raw.githubusercontent.
+# Why GitHub and not the Cloudflare Worker: BSE's API answers Akamai 403 to Cloudflare's
+# network (measured 2026-09-28). Runbook §216.
+#
+# Two runs a day because a job may run at most 6 h: the morning run stops at 12:30 IST and
+# the midday run (queued behind it by the concurrency group) carries on to 15:40 IST.
+# GitHub cron can start late or skip — the page then keeps the site's own BSE snapshot.
+
+on:
+  schedule:
+    - cron: "40 3 * * 1-5"    # 09:10 IST
+    - cron: "55 6 * * 1-5"    # 12:25 IST
+  workflow_dispatch: {}
+
+permissions:
+  contents: write
+
+concurrency:
+  group: bse-live
+  cancel-in-progress: false
+
+jobs:
+  poll:
+    runs-on: ubuntu-latest
+    timeout-minutes: 260
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 1
+          filter: blob:none
+          sparse-checkout: |
+            scripts/fetch_bse_live.py
+            scripts/bse_headers.py
+          sparse-checkout-cone-mode: false
+      - name: Poll BSE and publish to live-bse
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          H=$(TZ=Asia/Kolkata date +%H)
+          if [ "$H" -lt 12 ]; then UNTIL=12:30; else UNTIL=15:40; fi
+          echo "polling until $UNTIL IST"
+          python3 scripts/fetch_bse_live.py --until "$UNTIL" --interval 60

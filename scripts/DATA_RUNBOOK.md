@@ -24544,3 +24544,20 @@ the §148 SME XBRL cache (scripts/_xbrl_cache_sme, header period Apr–Sep / Oct
 statements added to reads.json as original-filing evidence (OneD RevenueFromOperations, rupees; date = the file's upload stamp)
 → +14 std halves stored; held-for-original 362 → 336. KRISHCA / AVPINFRA / ABCOTS disagreements still open (KRISHCA's XBRL has no
 ProfitLossForPeriod tag — the stored 3.06 comes from another element, not traced).
+
+## §216 — TOP MOVERS LIVE 1D: NSE VIA THE WORKER, BSE VIA A GITHUB POLLER (2026-09-28, user: "movers tab is not showing live prices … orian apower is 8 % up whereas it is 7 % down today"; "bse sme ipo is not live still"; "yes" to the GitHub poller)
+
+- **Bug:** movers 1D compared each series' last two stored bars. The midday refresh adds a partial Yahoo bar for main-board
+  names, but SME names (bhavcopy-only) keep the previous session → one column mixed two days (ORIANA showed Fri +8.9%
+  while −6.9% live). The "As of" label printed the bin's BUILD time, not the prices' date.
+- **NSE:** Worker `?nse=traded` = NSE `/api/live-analysis-stocksTraded` (every NSE stock that traded today, SME SM/ST
+  included) compacted to `{SYM:[ltp,prev,pchg]}`. Live 1D when NSE's timestamp date == today IST.
+- **BSE:** api.bseindia.com answers Akamai 403 "Access Denied" to Cloudflare's network — measured via a Worker diagnostic:
+  the byte-identical request incl. every CF-added header (Cdn-Loop, Cf-Ray, Cf-Worker, Cf-Visitor, Cf-Ew-Via) passes from
+  a home IP; www.bseindia.com itself passes from CF. So `.github/workflows/bse-live.yml` runs `scripts/fetch_bse_live.py`
+  (GetMktData, ~4,700 scrips incl. M/MT, once a minute 09:10–15:40 IST in two ≤6 h runs) and force-pushes ONE parentless
+  commit to branch `live-bse` (`bse_live.json`). NOT main: a docs/ push = a Pages deploy (pages.yml jam history).
+  The page reads raw.githubusercontent.com (CORS *; cached 300 s, a query string does NOT bust it — measured) → BSE up to
+  ~6 min behind. Fallback when that file isn't today's: a BSE-only name's same-day bar from the latest refresh, labelled
+  as a snapshot with its time; no same-day bar → hidden, counted in the note.
+- The Worker's `?bse=1` route stays (harmless, 403s today); the page no longer calls it.
