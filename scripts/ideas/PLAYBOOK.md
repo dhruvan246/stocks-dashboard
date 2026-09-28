@@ -192,6 +192,24 @@ name you research (published or not):
    "gist"}]`. The page renders it as the card's "On X (Twitter)" section and shows an 𝕏 count on the compact card.
    If the sweep finds nothing, still write `social` saying what was searched, so "not checked" and "nothing found" differ.
 
+## ValuePickr sweep — every researched name (user rule, 2026-09-28)
+
+ValuePickr (forum.valuepickr.com) is a Discourse forum readable without login (honest UA, ~1 request/second):
+`search.json?q=<name or ticker>` → topics and post blurbs; `t/<id>.json` → thread metadata and post ids;
+`raw/<id>?page=N` → the raw text of the whole thread. For each researched name:
+
+1. Find the dedicated thread (company name, short name, ticker) and substantive mentions in broad threads (SME /
+   smallcap-hunting threads) — a one-word listing is not a mention. Read the dedicated thread in full.
+2. Summarise in your own words: how active the thread is, the tone, the bull and bear arguments members raise.
+   Quote at most 15 words of any post, attributed by username.
+3. Verify exactly as for X: a number or fact from the forum enters the note only after it is matched to a primary
+   document; unmatched claims are listed as "not verified"; contradictions with the filings are flagged.
+4. Record it as `"valuepickr"` (markdown: **What ValuePickr is saying** paragraph, `### Threads` table
+   `| Thread | Kind | Posts | Active | Link |`, `### Points members raise` table `| Bull case raised | Bear case raised |`,
+   `### New verified data from the forum`, then the not-verified / disagreement lists) and `"vp_threads"`:
+   `[{"title","url","posts","first","last","kind"}]`. The page renders it as the card's "On ValuePickr" section.
+   No thread found → still write `valuepickr` saying what was searched.
+
 ## The conversion constants the style relies on (use only when the dossier gives the inputs)
 
 - Solar module maker: 1 crore imported cells ≈ ₹190-220 cr of module sales; 1 MW of modules ≈ ₹2 cr (DCR) or ₹1.3 cr (non-DCR).

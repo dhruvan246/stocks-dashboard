@@ -488,7 +488,7 @@
           <div class="flex justify-between items-start gap-3">
             <div class="min-w-0">
               <h3>${esc(it.name)}<span class="tick">${esc(it.ticker || it.scrip || '')}</span>${it.sme && lane !== 'sme' ? '<span class="tag">SME</span>' : ''}</h3>
-              <div class="imeta"><span>Published ${esc(it.date)}</span><span>Mcap ₹${fmt(it.mcap, 0)} cr</span>${it.industry ? `<span>${esc(it.industry)}</span>` : ''}${it.nse ? `<span>NSE ${esc(it.nse)}</span>` : ''}${/^\d+$/.test(String(it.scrip || '')) ? `<span>BSE ${esc(it.scrip)}</span>` : ''}${it.social ? `<span title="This note includes what X (Twitter) posts say, checked against the filings">𝕏 ${(it.x_posts || []).length ? (it.x_posts || []).length + ' post' + ((it.x_posts || []).length === 1 ? '' : 's') : 'checked'}</span>` : ''}</div>
+              <div class="imeta"><span>Published ${esc(it.date)}</span><span>Mcap ₹${fmt(it.mcap, 0)} cr</span>${it.industry ? `<span>${esc(it.industry)}</span>` : ''}${it.nse ? `<span>NSE ${esc(it.nse)}</span>` : ''}${/^\d+$/.test(String(it.scrip || '')) ? `<span>BSE ${esc(it.scrip)}</span>` : ''}${it.social ? `<span title="This note includes what X (Twitter) posts say, checked against the filings">𝕏 ${(it.x_posts || []).length ? (it.x_posts || []).length + ' post' + ((it.x_posts || []).length === 1 ? '' : 's') : 'checked'}</span>` : ''}${it.valuepickr ? `<span title="This note includes what ValuePickr forum members say, checked against the filings">VP ${(it.vp_threads || []).length ? (it.vp_threads || []).length + ' thread' + ((it.vp_threads || []).length === 1 ? '' : 's') : 'checked'}</span>` : ''}</div>
             </div>
             <span class="lane ${lane}">${esc(LANE_LABEL[lane])}</span>
           </div>
@@ -506,7 +506,7 @@
       </div>
       <div class="ifull">
         <div class="ibody" style="padding-top:0"><div class="note thesis">${md(it.thesis)}</div></div>
-        ${sec('model', 'Model')}${sec('valuation', 'Valuation')}${sec('red_flags', 'Red flags and risks')}${sec('verify', 'Still to verify')}${sec('unknowns', 'Unknowns')}${sec('social', 'On X (Twitter)' + ((it.x_posts || []).length ? ` · ${(it.x_posts || []).length} post${(it.x_posts || []).length === 1 ? '' : 's'}` : ''))}
+        ${sec('model', 'Model')}${sec('valuation', 'Valuation')}${sec('red_flags', 'Red flags and risks')}${sec('verify', 'Still to verify')}${sec('unknowns', 'Unknowns')}${sec('valuepickr', 'On ValuePickr' + ((it.vp_threads || []).length ? ` · ${(it.vp_threads || []).length} thread${(it.vp_threads || []).length === 1 ? '' : 's'}` : ''))}${sec('social', 'On X (Twitter)' + ((it.x_posts || []).length ? ` · ${(it.x_posts || []).length} post${(it.x_posts || []).length === 1 ? '' : 's'}` : ''))}
         <details class="isec"><summary>Sources (${(it.sources || []).length})</summary><div class="note"><ol class="srcl">${(it.sources || []).map(s => `<li><a href="${esc(s.url)}" target="_blank" rel="noopener">${esc(s.title)}</a></li>`).join('')}</ol></div></details>
         <div class="ifoot">${confLevel ? `<span>Confidence <span class="conf ${confLevel}">${confLevel}</span></span>` : ''}${confText ? `<span>${esc(confText)}</span>` : ''}</div>
         <button type="button" class="collapse-btn">Collapse ↑</button>
