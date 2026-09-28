@@ -211,6 +211,19 @@
   const $ = (s) => document.querySelector(s);
   // Owner-only page: same gate as the other private pages (theme.js PRIVATE_PAGES hides it from the nav for everyone else).
   let SW_OWNER = false; try { SW_OWNER = !!localStorage.getItem('bt_owner_key'); } catch (e) {}
+  // Share link: ideas.html?share=<code> opens THIS page only (no Admin nav, other private pages stay locked).
+  // Only the code's SHA-256 lives here; revoke every shared link by replacing IDEAS_SHARE_SHA with a new code's hash.
+  const IDEAS_SHARE_SHA = 'ba06500ee537850864d7dc582f1e72bab6112a9c74003550f9f6c076f086d0e7';
+  const sha256 = async (t) => { try { const b = await crypto.subtle.digest('SHA-256', new TextEncoder().encode(t));
+    return Array.from(new Uint8Array(b)).map(x => x.toString(16).padStart(2, '0')).join(''); } catch (e) { return ''; } };
+  if (!SW_OWNER) {
+    let code = '';
+    try { const u = new URL(location.href); code = u.searchParams.get('share') || '';
+      if (code) { u.searchParams.delete('share'); history.replaceState(null, '', u.pathname + u.search + u.hash); } } catch (e) {}
+    if (!code) { try { code = localStorage.getItem('ideas_share') || ''; } catch (e) {} }
+    if (code && await sha256(code) === IDEAS_SHARE_SHA) { SW_OWNER = true; try { localStorage.setItem('ideas_share', code); } catch (e) {} }
+    else { try { localStorage.removeItem('ideas_share'); } catch (e) {} }
+  }
   if (!SW_OWNER) {
     document.querySelector('main').innerHTML =
       '<div class="max-w-md mx-auto text-center py-20"><div class="text-5xl mb-4">🔒</div>' +
