@@ -24343,7 +24343,7 @@ stock-wise page https://claude.ai/artifact/SYaRCw8Rut6BPwiWSCrfve. Real errors f
 | class | real | e.g. | proposed route | status |
 |---|---|---|---|---|
 | F1 dashboard price (Yahoo) | 2,658 stretches / 263 stocks | TRENT 1Y −43.0 % vs −14.4 %; MOTILALOFS 3Y +17.5 % vs +369.9 % | replace with the NSE store | **LIVE (below)** |
-| F2 quarterly PAT | 73 cells / 45 | APARINDS Jun-26 −138.56 vs 467.45; SCHAEFFLER Jun-26 H1 in the quarter slot; CANBK Mar-24 pre-tax | fund cell ledger + owners-tag fallback rule | awaiting OK |
+| F2 quarterly PAT | 73 cells / 45 | APARINDS Jun-26 −138.56 vs 467.45; SCHAEFFLER Jun-26 H1 in the quarter slot; CANBK Mar-24 pre-tax | fund cell ledger + owners-tag fallback rule | **LIVE (below)**; the rule's wider reach awaits the user |
 | F3 x EPS | 60 / 39 | MARUTI Mar-24 c 251.42 vs 125.71; SWIGGY Jun-25 sign; ELGIEQUIP Mar-22 318.62 vs 2.31 | detail-cell ledger + sign guard | awaiting OK |
 | F4 x PBT/tax lines | 674 / 240 | bank "0.00" PBT stored as 0 (283); restated page read (196) | 4 reader fixes | awaiting OK |
 | F5 share counts | BSE Ltd 11 qtrs + 11 current | BSE SHP grand total wrong; ASTERDM/TDPOWERSYS changed after June | shares_history / event SHPs | awaiting OK |
@@ -24442,6 +24442,21 @@ the owners tag is present but owners + NCI != total (39 already on the §116d un
 (IOC Jun-18 NCI 87, TECHM Sep/Dec-24, NMDC, OLECTRA), 11 (9 stocks) with owners tag = 0 (NMDC Sep-24, VTL, OLECTRA Mar-26). Each needs
 its document read (the identity cannot gate a missing tag). Screen: scratchpad f2rule/owners_rule_screen.py, output
 `~/stocks-cache/xcheck/f2_owners_screen_raw.json` / `_n500.json`. Limit: filings before ~2018 are not in the cache (§116d).
+**F2 verified LIVE 2026-09-28 15:40 IST (pushed 6d2727965; Pages deploy success; the next refresh-fundamentals run 36406093691
+landed 496856b26 on top and kept every value).** Live `sf_fundamentals.json` 72/72 cells = the confirmed read; live `sf_revop.json`
+PAT mirror 72/72; origin after 496856b26 72/72 + 72/72 (nothing reverted); live `docs/fin/<SYM>.json` (per-stock slices rebuilt
+7e6049414) 72/72 across 45 stocks — e.g. APARINDS Jun-26 con 467.45, SCHAEFFLER Jun-26 336.73 / 325.78, PFC Dec-23 con 4,727.40.
+**Checks re-run, the F2 effect isolated** (each check run twice on today's files, once with the pre-6d2727965 sf_fundamentals /
+sf_revop swapped in; no other key moved): fund_eps_shares 733 → 678 open (the F2 cells it flagged 55 → 0); fund_vision_xbrl 89 → 81
+(9 → 1 — the one left is SONACOMS Mar-26 con REVENUE, not a PAT cell); fund_pbt_tax 5,041 → 5,057 (F2 cells flagged 28 → 44). The
+pbt_tax rise is the CHECK's blind spot, not a wrong value: it compares stored PAT with pbt − tax (+assoc − NCI) from the fin x
+lines, and on 38 of the 44 the x lines carry NO NCI line (nci null). On 36 of those 38 the old wrong value was the TOTAL, which
+equals pbt − tax to 0.02, so the check "agreed" with the error and now flags the owners figure (PFC Dec-22 old 5,241.10 = pbt −
+tax; owners 3,860.25); the other 2 also have x-line faults (CANBK Mar-24 tax line stored 0; NLCINDIA Jun-26 pbt − tax 359.18 is
+neither the total 436.33 nor owners). The 6 WITH an NCI line are x-line faults for F4/F7: ABREL Mar-26 + ADANIENT Mar-25 (pbt − tax
+covers continuing operations only), ASIANPAINT Jun-22, GLENMARK Jun-23 (the NCI slot holds the owners figure 149.93), GLENMARK
+Sep-23, PFC Dec-23 (NCI line 1,225.88 does not reconcile). List: `~/stocks-cache/xcheck/triage_0928/f2_pbt44.json`. So F7's check
+fix must learn the NCI share (or skip con cells whose x lines lack an NCI line) before these 44 can close.
 
 ## §215 — THE ARCHIVE PAGE'S "Amount(Rs. in lakhs)" IS NSE'S TEMPLATE, NOT THE FILER'S UNIT: 5 detail cells read 10×/100× small through the PAT anchor's 2-cr floor, TTKPRESTIG's stored PAT and revenue with them; the anchor gets a relative cap (2026-09-28, user: "yes" to heal the 3 cells + the TTKPRESTIG stored PAT/revenue and its 2 cells)
 **NO ASSUMPTIONS, NO GUESSWORK — every number below was measured this session (population on origin dcb1b47a0, landed on d5cbb8c11).**
