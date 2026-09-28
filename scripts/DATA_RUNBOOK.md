@@ -24479,6 +24479,16 @@ FINCABLES (191.71 / "-"), GMMPFAUDLR Sep-22 (64.98 / 31.91; Sep-21 34.60 / 4.20)
 (apply_owners_full → apply_fund_cell_fix → apply_revop_cell_fix): exactly 52 con slots of sf_fundamentals and 51 slot-5 cells of
 sf_revop moved, each to its read value, nothing else. Readings + writer: `~/stocks-cache/xcheck-f2b/` (f2b_readings.json,
 f2b_summary.md, write_ledgers_f2b.py, cells.json).
+**Verified LIVE 2026-09-28 ~17:30 IST** after refresh-fundamentals 36416921813 (landed 8d83b1e23 on top) and refresh-stock-fin
+36416925502 (ad6d55a12): live sf_fundamentals 52/52 at the read value, sf_revop mirror 51/51 (TMPV has no row), live
+`fin/<SYM>.json` 52/52 across 39 stocks — the refresh kept every value. Checks re-run with the effect isolated (pre-heal files
+swapped in; no other finding moved): fund_eps_shares 678 → 673 (these cells 8 → 3), fund_vision_xbrl 81 → 81 (1 → 1: PVRINOX Jun-25
+REVENUE, not PAT), fund_pbt_tax 5,057 → 5,063 (1 → 7). All 10 still flagged are NOT wrong profit figures: pbt_tax 7 = x-line faults
+the old stored TOTAL happened to agree with (AARTIIND Mar-21 x pbt 726.05 = the same broken filer XBRL; ABCAPITAL Dec-19 x NCI +9.43
+where the filing prints a (9.43) loss; BIOCON Jun-20, GMMPFAUDLR Sep-21/Sep-22, JKTYRE Dec-20 x NCI = the OCI/TCI split, not the
+printed profit split; COFORGE Jun-25 x pbt − tax 286.2 ≠ the printed total 356.4) → F4; eps 3 were flagged before the heal too
+(TECHM Sep-24 / Dec-24: the company's printed EPS 14.12 / 11.10 implies fewer shares than shares_history — denominator question
+for F7; INOXWIND Mar-25: printed EPS 1.15 does not reconcile with its printed owners profit 186.87).
 
 ## §215 — THE ARCHIVE PAGE'S "Amount(Rs. in lakhs)" IS NSE'S TEMPLATE, NOT THE FILER'S UNIT: 5 detail cells read 10×/100× small through the PAT anchor's 2-cr floor, TTKPRESTIG's stored PAT and revenue with them; the anchor gets a relative cap (2026-09-28, user: "yes" to heal the 3 cells + the TTKPRESTIG stored PAT/revenue and its 2 cells)
 **NO ASSUMPTIONS, NO GUESSWORK — every number below was measured this session (population on origin dcb1b47a0, landed on d5cbb8c11).**
