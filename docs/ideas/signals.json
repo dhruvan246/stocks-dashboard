@@ -1,10 +1,10 @@
 {
- "built": "2026-09-28 01:33 IST",
+ "built": "2026-09-28 08:18 IST",
  "thresholds": "strength 1.0 = spot +5% 1w / +10% 1m / +20% 3m; WPI +3% 1m / +8% 3m / +15% 12m; trade unit price +8% 1m / +15% 3m / +30% smoothed yoy",
- "spot_date": "2026-09-28 01:31 IST",
+ "spot_date": "2026-09-28 08:17 IST",
  "wpi_month": "2026-04",
  "trade_month": "2026-07",
- "india_built": "2026-09-28 01:32 IST",
+ "india_built": "2026-09-28 08:18 IST",
  "india_status": {
   "metalbook": "ok, 47 rows",
   "ibja": "FAILED (ibja parsed too few rows) - previous rows kept",
@@ -86,29 +86,41 @@
       "pos52": 67,
       "date": "2026-09-28",
       "n": 4
+     },
+     {
+      "name": "oil (wti)",
+      "last": 93.48,
+      "unit": "USD per Barrel",
+      "chg_1w": null,
+      "chg_1m": null,
+      "chg_3m": null,
+      "chg_6m": null,
+      "pos52": 62,
+      "date": "2026-09-28",
+      "n": 4
      }
     ],
     "te": [
      {
       "slug": "brent-crude-oil",
       "name": "Brent",
-      "last": 104.32,
+      "last": 106.28,
       "unit": "USD/Bbl",
-      "date": "September 25, 2026",
-      "chg_1d": -2.14,
-      "chg_1m": 19.99,
-      "chg_1y": 50.71,
+      "date": "September 28, 2026",
+      "chg_1d": 1.87,
+      "chg_1m": 17.44,
+      "chg_1y": 58.41,
       "id": "te|Brent | brent-crude-oil"
      },
      {
       "slug": "crude-oil",
       "name": "Crude Oil",
-      "last": 92.41,
+      "last": 93.45,
       "unit": "USD/Bbl",
-      "date": "September 25, 2026",
-      "chg_1d": -2.33,
-      "chg_1m": 12.38,
-      "chg_1y": 40.61,
+      "date": "September 28, 2026",
+      "chg_1d": 1.13,
+      "chg_1m": 8.97,
+      "chg_1y": 47.29,
       "id": "te|Crude Oil | crude-oil"
      }
     ],
@@ -834,12 +846,12 @@
      {
       "slug": "silver",
       "name": "Silver",
-      "last": 64.26,
+      "last": 61.97,
       "unit": "USD/t.oz",
-      "date": "September 25, 2026",
-      "chg_1d": 0.68,
-      "chg_1m": -5.63,
-      "chg_1y": 39.48,
+      "date": "September 28, 2026",
+      "chg_1d": -3.56,
+      "chg_1m": -6.84,
+      "chg_1y": 32.08,
       "id": "te|Silver | silver"
      }
     ],
@@ -3957,6 +3969,53 @@
    ]
   },
   {
+   "id": "shipping",
+   "name": "Freight rates (dry bulk, tankers)",
+   "hs": [],
+   "benefit": [
+    {
+     "symbol": "SCI",
+     "name": "Shipping Corporation of India",
+     "why": "fleet owner"
+    },
+    {
+     "symbol": "GESHIP",
+     "name": "Great Eastern Shipping",
+     "why": "fleet owner"
+    },
+    {
+     "symbol": "SEAMECLTD",
+     "name": "Seamec",
+     "why": "offshore vessels; charter rates"
+    }
+   ],
+   "suffer": [],
+   "history": null,
+   "note": "no free daily index wired yet; Baltic indices are paid",
+   "sources": {
+    "te": [
+     {
+      "slug": "containerized-freight-index",
+      "name": "Containerized Freight Index",
+      "last": 3686.62,
+      "unit": "Points",
+      "date": "September 28, 2026",
+      "chg_1d": null,
+      "chg_1m": 5.05,
+      "chg_1y": 230.78,
+      "id": "te|Containerized Freight Index | containerized-freight-index"
+     }
+    ]
+   },
+   "strength": 7.69,
+   "headline": "Containerized Freight Index (global) 1y +230.8%",
+   "direction": "up",
+   "evidence": [
+    "Containerized Freight Index (global) 1y +230.8%",
+    "Containerized Freight Index (global) 1m +5.0%"
+   ]
+  },
+  {
    "id": "sulphuric_acid",
    "name": "Sulphuric acid and sulphur",
    "hs": [
@@ -5542,53 +5601,6 @@
     "WPI Sulphuric Acid 12m +91.4%",
     "import unit price sy +174.6% \u00b7 HS 280700 sulphuric acid (1 codes, US$40.5mn/month)",
     "export unit price sy +161.9% \u00b7 HS 280700 sulphuric acid (1 codes, US$30.9mn/month)"
-   ]
-  },
-  {
-   "id": "shipping",
-   "name": "Freight rates (dry bulk, tankers)",
-   "hs": [],
-   "benefit": [
-    {
-     "symbol": "SCI",
-     "name": "Shipping Corporation of India",
-     "why": "fleet owner"
-    },
-    {
-     "symbol": "GESHIP",
-     "name": "Great Eastern Shipping",
-     "why": "fleet owner"
-    },
-    {
-     "symbol": "SEAMECLTD",
-     "name": "Seamec",
-     "why": "offshore vessels; charter rates"
-    }
-   ],
-   "suffer": [],
-   "history": null,
-   "note": "no free daily index wired yet; Baltic indices are paid",
-   "sources": {
-    "te": [
-     {
-      "slug": "containerized-freight-index",
-      "name": "Containerized Freight Index",
-      "last": 3686.62,
-      "unit": "Points",
-      "date": "September 25, 2026",
-      "chg_1d": null,
-      "chg_1m": 8.12,
-      "chg_1y": 207.68,
-      "id": "te|Containerized Freight Index | containerized-freight-index"
-     }
-    ]
-   },
-   "strength": 6.92,
-   "headline": "Containerized Freight Index (global) 1y +207.7%",
-   "direction": "up",
-   "evidence": [
-    "Containerized Freight Index (global) 1y +207.7%",
-    "Containerized Freight Index (global) 1m +8.1%"
    ]
   },
   {
@@ -7978,23 +7990,23 @@
      {
       "slug": "polyethylene",
       "name": "Polyethylene",
-      "last": 8130.0,
+      "last": 8143.0,
       "unit": "CNY/T",
-      "date": "September 25, 2026",
-      "chg_1d": null,
-      "chg_1m": 6.53,
+      "date": "September 28, 2026",
+      "chg_1d": 0.16,
+      "chg_1m": 2.67,
       "chg_1y": 14.46,
       "id": "te|Polyethylene | polyethylene"
      },
      {
       "slug": "polypropylene",
       "name": "Polypropylene",
-      "last": 8493.0,
+      "last": 8501.0,
       "unit": "CNY/T",
-      "date": "September 25, 2026",
-      "chg_1d": null,
-      "chg_1m": 7.85,
-      "chg_1y": 24.35,
+      "date": "September 28, 2026",
+      "chg_1d": 0.09,
+      "chg_1m": 3.54,
+      "chg_1y": 24.59,
       "id": "te|Polypropylene | polypropylene"
      }
     ],
@@ -11206,12 +11218,12 @@
      {
       "slug": "copper",
       "name": "Copper",
-      "last": 6.7,
+      "last": 6.6,
       "unit": "USD/Lbs",
-      "date": "September 25, 2026",
-      "chg_1d": -0.34,
-      "chg_1m": 1.45,
-      "chg_1y": 42.12,
+      "date": "September 28, 2026",
+      "chg_1d": -1.46,
+      "chg_1m": 0.06,
+      "chg_1y": 35.87,
       "id": "te|Copper | copper"
      }
     ],
@@ -14349,9 +14361,9 @@
     "import unit price sy +157.5% \u00b7 HS 7407 electrolytic copper rods or black copp (13 codes, US$18.1mn/month)",
     "export unit price sy +64.2% \u00b7 HS 7404 copper scrap covered by isri code barl (7 codes, US$30.7mn/month)",
     "export unit price sy +46.3% \u00b7 HS 7403 cathods and sectns of cathods of refin (8 codes, US$135.8mn/month)",
-    "Copper (global) 1y +42.1%",
     "import unit price sy +42.0% \u00b7 HS 7408 othr coppr wire wth max crs-sec diamtr (9 codes, US$85.6mn/month)",
-    "WPI Copper wire 12m +20.3%"
+    "WPI Copper wire 12m +20.3%",
+    "export unit price sy +39.4% \u00b7 HS 7407 electrolytic copper rods or black copp (13 codes, US$11.7mn/month)"
    ]
   },
   {
@@ -14415,12 +14427,12 @@
      {
       "slug": "natural-gas",
       "name": "Natural gas",
-      "last": 3.2,
+      "last": 3.11,
       "unit": "USD/MMBtu",
-      "date": "September 25, 2026",
-      "chg_1d": -3.06,
-      "chg_1m": 11.2,
-      "chg_1y": -0.31,
+      "date": "September 28, 2026",
+      "chg_1d": -2.61,
+      "chg_1m": 6.05,
+      "chg_1y": -4.73,
       "id": "te|Natural gas | natural-gas"
      },
      {
@@ -16898,23 +16910,23 @@
      {
       "slug": "zinc",
       "name": "Zinc",
-      "last": 3905.9,
+      "last": 3864.95,
       "unit": "USD/T",
-      "date": "September 25, 2026",
-      "chg_1d": null,
-      "chg_1m": 0.55,
-      "chg_1y": 34.99,
+      "date": "September 28, 2026",
+      "chg_1d": -1.05,
+      "chg_1m": -1.1,
+      "chg_1y": 31.24,
       "id": "te|Zinc | zinc"
      },
      {
       "slug": "lead",
       "name": "Lead",
-      "last": 1942.18,
+      "last": 1925.65,
       "unit": "USD/T",
-      "date": "September 25, 2026",
-      "chg_1d": null,
-      "chg_1m": 1.56,
-      "chg_1y": -3.12,
+      "date": "September 28, 2026",
+      "chg_1d": -0.85,
+      "chg_1m": 0.31,
+      "chg_1y": -3.69,
       "id": "te|Lead | lead"
      }
     ],
@@ -18919,8 +18931,8 @@
     "WPI Lead Concentrate 1m -10.3%",
     "WPI Lead Concentrate 3m -20.7%",
     "WPI Zinc Concentrate 3m +16.1%",
-    "Zinc (global) 1y +35.0%",
-    "export unit price sy +33.5% \u00b7 HS 7901 zinc,not alloyd,contng by wt>=99.99% z (4 codes, US$70.3mn/month)"
+    "export unit price sy +33.5% \u00b7 HS 7901 zinc,not alloyd,contng by wt>=99.99% z (4 codes, US$70.3mn/month)",
+    "WPI Lead Concentrate 12m -15.7%"
    ]
   },
   {
@@ -24588,12 +24600,12 @@
      {
       "slug": "gold",
       "name": "Gold",
-      "last": 4285.0,
+      "last": 4205.87,
       "unit": "USD/t.oz",
-      "date": "September 25, 2026",
-      "chg_1d": 0.24,
-      "chg_1m": -6.72,
-      "chg_1y": 13.7,
+      "date": "September 28, 2026",
+      "chg_1d": -1.85,
+      "chg_1m": -5.3,
+      "chg_1y": 9.72,
       "id": "te|Gold | gold"
      }
     ],
@@ -50510,23 +50522,23 @@
      {
       "slug": "wheat",
       "name": "Wheat",
-      "last": 703.25,
+      "last": 698.61,
       "unit": "USd/Bu",
-      "date": "September 25, 2026",
-      "chg_1d": -0.53,
-      "chg_1m": -3.73,
-      "chg_1y": 35.31,
+      "date": "September 28, 2026",
+      "chg_1d": -0.66,
+      "chg_1m": -7.65,
+      "chg_1y": 34.48,
       "id": "te|Wheat | wheat"
      },
      {
       "slug": "rice",
       "name": "Rice",
-      "last": 16.59,
+      "last": 16.47,
       "unit": "USD/cwt",
-      "date": "September 25, 2026",
-      "chg_1d": 0.12,
-      "chg_1m": 11.8,
-      "chg_1y": 47.49,
+      "date": "September 28, 2026",
+      "chg_1d": -0.67,
+      "chg_1m": 8.03,
+      "chg_1y": 45.02,
       "id": "te|Rice | rice"
      }
     ],
@@ -52110,10 +52122,10 @@
    "direction": "down",
    "evidence": [
     "export unit price sy -54.5% \u00b7 HS 1001 wheat (2 codes, US$11.2mn/month)",
-    "Rice (global) 1y +47.5%",
-    "Rice (global) 1m +11.8%",
-    "Wheat (global) 1y +35.3%",
+    "Rice (global) 1y +45.0%",
+    "Wheat (global) 1y +34.5%",
     "export unit price 3m +13.6% \u00b7 HS 1006 basmati rice (8 codes, US$845.1mn/month)",
+    "Rice (global) 1m +8.0%",
     "WPI Wheat 1m +2.3%"
    ]
   },
@@ -52171,12 +52183,12 @@
      {
       "slug": "polyvinyl",
       "name": "Polyvinyl",
-      "last": 4787.0,
+      "last": 4808.0,
       "unit": "CNY/T",
-      "date": "September 25, 2026",
-      "chg_1d": null,
-      "chg_1m": 6.45,
-      "chg_1y": -0.62,
+      "date": "September 28, 2026",
+      "chg_1d": 0.44,
+      "chg_1m": 2.39,
+      "chg_1y": -0.0,
       "id": "te|Polyvinyl | polyvinyl"
      }
     ],
@@ -54456,8 +54468,8 @@
     "import unit price 3m +16.5% \u00b7 HS 390410 suspension grade pvc resin (3 codes, US$153.9mn/month)",
     "WPI Poly Vinyl Chloride (PVC) 12m +15.6%",
     "WPI Poly Vinyl Chloride (PVC) 1m +3.0%",
-    "Polyvinyl (global) 1m +6.5%",
-    "import unit price sy +18.6% \u00b7 HS 390410 suspension grade pvc resin (3 codes, US$153.9mn/month)"
+    "import unit price sy +18.6% \u00b7 HS 390410 suspension grade pvc resin (3 codes, US$153.9mn/month)",
+    "export unit price sy +13.6% \u00b7 HS 390422 other poly (vinyl choride), mixed with (1 codes, US$2.6mn/month)"
    ]
   },
   {
@@ -56138,18 +56150,6 @@
       "chg_3m": null,
       "chg_6m": null,
       "pos52": 0,
-      "date": "2026-09-28",
-      "n": 4
-     },
-     {
-      "name": "soybean oil",
-      "last": 0.69,
-      "unit": "USD per lb.",
-      "chg_1w": null,
-      "chg_1m": null,
-      "chg_3m": null,
-      "chg_6m": null,
-      "pos52": 100,
       "date": "2026-09-28",
       "n": 4
      },
@@ -58600,12 +58600,12 @@
      {
       "slug": "cotton",
       "name": "Cotton",
-      "last": 82.71,
+      "last": 82.55,
       "unit": "USd/Lbs",
-      "date": "September 25, 2026",
-      "chg_1d": -0.72,
-      "chg_1m": -7.21,
-      "chg_1y": 29.56,
+      "date": "September 28, 2026",
+      "chg_1d": -0.2,
+      "chg_1m": -11.37,
+      "chg_1y": 31.24,
       "id": "te|Cotton | cotton"
      }
     ],
@@ -60155,10 +60155,10 @@
    "direction": "up",
    "evidence": [
     "WPI Raw Cotton 1m +4.7%",
+    "Cotton (global) 1m -11.4%",
     "export unit price 1m -10.5% \u00b7 HS 5201 cotton, other than indian, of staple l (8 codes, US$30.7mn/month)",
-    "Cotton (global) 1y +29.6%",
+    "Cotton (global) 1y +31.2%",
     "WPI Cotton Yarn 1m +2.3%",
-    "Cotton (global) 1m -7.2%",
     "export unit price 3m +8.8% \u00b7 HS 5205 grey (48 codes, US$355.8mn/month)"
    ]
   },
@@ -64381,12 +64381,12 @@
      {
       "slug": "corn",
       "name": "Corn",
-      "last": 528.25,
+      "last": 524.72,
       "unit": "USd/BU",
-      "date": "September 25, 2026",
-      "chg_1d": 0.14,
-      "chg_1m": 2.77,
-      "chg_1y": 25.18,
+      "date": "September 28, 2026",
+      "chg_1d": -0.67,
+      "chg_1m": 1.89,
+      "chg_1y": 24.49,
       "id": "te|Corn | corn"
      }
     ],
@@ -65930,7 +65930,7 @@
    "direction": "down",
    "evidence": [
     "WPI Maize 12m -13.2%",
-    "Corn (global) 1y +25.2%",
+    "Corn (global) 1y +24.5%",
     "WPI Vegetable starch 1m +1.7%",
     "export unit price sy -16.1% \u00b7 HS 1005 yellow (3 codes, US$12.9mn/month)",
     "WPI Vegetable starch 12m -6.8%",
@@ -68312,12 +68312,12 @@
      {
       "slug": "nickel",
       "name": "Nickel",
-      "last": 16359.75,
+      "last": 16231.75,
       "unit": "USD/T",
-      "date": "September 25, 2026",
-      "chg_1d": -0.15,
-      "chg_1m": -3.31,
-      "chg_1y": 7.95,
+      "date": "September 28, 2026",
+      "chg_1d": -0.94,
+      "chg_1m": -3.98,
+      "chg_1y": 5.92,
       "id": "te|Nickel | nickel"
      }
     ],
@@ -69086,8 +69086,8 @@
     "spot nickel 1m -5.0%",
     "import unit price 1m +4.3% \u00b7 HS 7502 nickel,not alloyed (3 codes, US$55.2mn/month)",
     "import unit price sy +12.1% \u00b7 HS 7502 nickel,not alloyed (3 codes, US$55.2mn/month)",
-    "Nickel (global) 1m -3.3%",
-    "Nickel (global) 1y +8.0%",
+    "Nickel (global) 1m -4.0%",
+    "Nickel (global) 1y +5.9%",
     "spot nickel 3m -3.1%"
    ]
   },
