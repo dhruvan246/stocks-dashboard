@@ -352,6 +352,15 @@ async function kiteSyms(list){
   }
 }
 const ordSym = s => KSYM.map[baseSym(s)] || s;   // unknown to the box → send our own name and let Zerodha's error speak
+/* the name tag beside a stock: "→ HFCL-BE" when Zerodha trades it under another name today (any series change, either way,
+   incl. SME → main board); a red "not listed today" when Zerodha lists it under NO name (renamed, suspended or delisted —
+   an order would be refused, so check it by hand). Nothing until the box has answered for that stock. */
+function nameTag(sym){ const m = KSYM.map[baseSym(sym)];
+  if (m === undefined || m === sym) return '';
+  if (m === null) return ' <span class="tag exit" title="Zerodha does not list ' + esc(sym) + ' on NSE today under any series \u2014 renamed, suspended or delisted? An order under this name would be refused; check it by hand before selling">not listed today</span>';
+  return ' <span class="sym" title="trades on Zerodha today as ' + esc(m) + ' \u2014 orders go out under that name automatically">\u2192 ' + esc(m) + '</span>'; }
+function nameSummary(syms){ const moved = [], gone = []; [...new Set(syms.map(baseSym))].forEach(s => { const m = KSYM.map[s]; if (m === null) gone.push(s); else if (m && m !== s) moved.push(s + '\u2192' + m); });
+  return { moved: moved, gone: gone, known: syms.filter(s => KSYM.map[baseSym(s)] !== undefined).length }; }
 async function zHoldRefresh(){
   const h = await zFetch('/holdings');
   if (h.st === 200 && h.j && h.j.data){
@@ -417,6 +426,10 @@ function wizardSteps(){
   S('zerodha', okc(Z.connected), Z.connected ? 'Zerodha connected \u2014 ' + Z.user : 'Zerodha not connected', Z.connected ? 'session ends 6:00 AM tomorrow' : 'daily login needed before anything can be sent', Z.connected ? '' : 'login');
   S('cloud', cloudOn() ? 'ok' : (CLOUD.ok === false ? 'warn' : 'off'), cloudOn() ? 'Cloud slicer on' : (CLOUD.ok === false ? 'Cloud slicer unavailable \u2014 baskets slice in this tab' : (cloudWanted() ? 'Cloud slicer: checking\u2026' : 'Cloud slicer switched off \u2014 in-tab slicing')), cloudOn() ? 'baskets keep running if this tab closes' : (CLOUD.ok === false ? 'keep this tab open while a basket runs' : ''), (!cloudOn() && CLOUD.ok !== false) ? 'cloud' : '');
   S('feed', okc(books.length), books.length ? books.length + ' strategy books loaded' : 'No strategy books \u2014 holdings feed missing', books.length ? '' : 'needs the pf token in this browser');
+  { const NS = nameSummary(books.flatMap(it => heldFor(it.cfg).rows.map(h => h.sym)));   // today's Zerodha names for everything the books hold
+    if (NS.gone.length) S('names', 'warn', NS.gone.length + ' held stock' + (NS.gone.length === 1 ? '' : 's') + ' not listed on Zerodha today: ' + NS.gone.join(', '), 'renamed, suspended or delisted? orders under the old name are refused \u2014 check by hand', '');
+    else if (NS.moved.length) S('names', 'ok', 'Zerodha names checked \u2014 ' + NS.moved.join(', '), 'orders go out under today\u2019s name automatically', '');
+    else if (NS.known) S('names', 'ok', 'Zerodha names checked \u2014 all held stocks trade under their usual name', '', ''); }
   S('picks', (loaded.length === list.length && list.length) ? 'ok' : 'bad', 'Picks loaded ' + loaded.length + '/' + list.length, '', loaded.length === list.length ? '' : 'load');
   if (leg === 'sell'){
     const mkt = marketOpen();
@@ -1346,7 +1359,7 @@ function sellCardHTML(it, disp, favNum){
     const rt = (pickSet || isReset) && todo.length ? sellRuntime(todo.map(r => ({ h: { sym: r.h.sym, qty: (r.remain != null ? r.remain : r.h.qty), avg: r.h.avg }, px: r.px }))) : null;
     const rtTxt = rt ? ' \u00b7 \u2248 ' + rt.tot + ' slice' + (rt.tot === 1 ? '' : 's') + ', ~' + rt.mins + ' min at ' + sliceGap() + 's gap' + (rt.startBy ? ' \u2014 start by ' + rt.startBy + ' for a 3:28 finish' : '') : '';
     body = '<div class="twrap"><table><thead><tr><th>Stock</th><th>Held</th><th>Live \u20b9</th><th>Value</th>' + pickColHead(X.cols) + '<th></th></tr></thead><tbody>' +
-      rows.map(r => '<tr' + (r.stays ? ' style="opacity:.45"' : '') + '><td><b>' + esc(r.h.sym) + '</b>' +
+      rows.map(r => '<tr' + (r.stays ? ' style="opacity:.45"' : '') + '><td><b>' + esc(r.h.sym) + '</b>' + nameTag(r.h.sym) +
         (r.bd ? ' <span class="tag" style="background:color-mix(in srgb,#c98500 18%,transparent);color:#c98500" title="' + esc(r.bd) + '">borderline</span>' : '') + '</td>' +
         '<td>' + r.h.qty.toLocaleString('en-IN') + (r.sent ? ' <span class="sym" title="sent to Zerodha this rebalance">sent ' + r.sent.toLocaleString('en-IN') + '</span>' : '') + '</td>' +
         '<td>' + (r.px != null ? '\u20b9' + r.px.toFixed(2) + baCell(r.h.sym) : '\u2014') + '</td>' +
