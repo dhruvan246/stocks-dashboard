@@ -69,7 +69,7 @@
   }
   function side(w) {
     if (w === 'A') return '<span class="xc-pill text-amber-600" title="Reader A (our NSE bin) jumps at the edge">A</span>';
-    if (w === 'B') return '<span class="xc-pill text-sky-600" title="Reader B (Yahoo dashboard bin) jumps at the edge">B</span>';
+    if (w === 'B') return '<span class="xc-pill text-sky-600" title="Reader B (Yahoo) jumps at the edge">B</span>';
     if (w === 'both') return '<span class="xc-pill text-slate-500">both</span>';
     return '<span class="text-slate-400">?</span>';
   }
@@ -88,6 +88,8 @@
       ['Points', function (f) { return num(f.n, 0); }, 1],
       ['A ÷ B', function (f) { return f.ratio == null ? '—' : num(f.ratio, 4); }, 1],
       ['Wrong side', function (f) { return side(f.wrong); }],
+      // §214a F1: which of the two the dashboard shows for this member (the store is always on the stock page / backtests)
+      ['Dashboard shows', function (f) { return f.served === 'store' ? 'A (NSE)' : f.served === 'yahoo' ? 'B (Yahoo)' : '—'; }],
       ['Where it ends', function (f) { return f.shape === 'session' ? esc((f.examples || []).slice(0, 4).map(function (x) { return x[0]; }).join(', ')) : edge(f.right); }],
       ['Note', function (f) { return esc(f.explained || f.accepted || (f.ledger_match ? 'ratio = our ' + f.ledger_match + ' factor' : '')); }]
     ],

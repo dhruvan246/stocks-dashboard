@@ -24334,6 +24334,38 @@ TRENT 1Y −14.4 %, MOTILALOFS 3Y +369.9 %, CGCL 3Y +30.4 %, GPIL 3Y +86.7 %, LM
 not the repeated 5,187.65); replace_one unit paths: 1-bar Yahoo tail, basis change → keeps Yahoo untouched, one stale print →
 replaced, suspended → keeps Yahoo; nse-bse-dashboard / movers / sectors load with 0 console errors (sectors' pe_ttm.json 404 is
 pre-existing: gitignored, 404 on Pages too).
+LIVE: refresh run 36393369384 on 35448911e → commit 7828b74 "Daily refresh 2026-09-28 13:26 IST": 1,001 replaced (one new
+member ticker since the rehearsal), tail = 1 Yahoo bar (28-Sep) × 1,001, 11 kept, guards OK; read back from the Pages site:
+stock_data.bin + dash_slim.bin carry 1,001 srcFrom rows, TRENT 1Y −15.7 % at 28-Sep's price, MOTILALOFS 3Y +363.5 %.
+
+**The price check's independent reader, rebuilt (user: "build it", on "the audit's price check can no longer compare these
+1,000 stocks against a second source").** `scripts/xcheck/yahoo_px.py` fetches Yahoo's .NS DAILY closes 1996 → now directly
+(fetch_all's request shape: curl + §181 headers, split-adjusted `close`; 8 workers, 3 tries, 12 h cache) for every member the
+dashboard now serves from the store; px_nse_yahoo reads the store against THAT (daily, 2002+), and against the dashboard bin only
+for members still served from Yahoo. Each finding carries `served` ("store"/"yahoo"; page column "Dashboard shows"). Rules added,
+each from a measured case:
+- served store + the edge shows Yahoo stepping (wrong B), or a spike where Yahoo repeated the prior close while NSE moved →
+  EXPLAINED (Yahoo's own error, not served). Wrong A stays open: the store is served everywhere.
+- Yahoo's close EXACTLY unchanged across an edge while NSE's moved > 1 % → side B (frozen/stale Yahoo: J&KBANK 157.96 2014-17,
+  HCL-INSYS 64.52, RAIN / COROMANDEL / MOTHERSON 2002-05). Without it the first daily run blamed the store for 58 such findings.
+- Consecutive DAILY sessions (<= 5 days apart): the side whose own close moves >= 10 points more than the other's stepped
+  (CONCOR's missed 1:4 bonus: Yahoo ×0.8 at 1-Jan-2025, NSE +0.4 %) — EXCEPT across one of OUR demerger/rights ex-dates, where
+  the store's factor is ex-OPEN / prev close and keeps the ex-day's intraday move: SIEMENS 07-Apr-2025 prev 4,928.15 → open 2,450
+  (0.4971, our ledger) → close 2,812.45 (+14.8 % store) while Yahoo folds it into its own ~0.587 — two conventions (explained).
+- > 20 % of store-served members with no Yahoo answer → the check raises (a missing second reader is an error, never a pass).
+First run (origin/main bb7bcaa74 + live store): 2,495,144 daily points compared (was 1,177,345 weekly/daily), 85.01 % agree,
+1,950 open / 1,873 explained; all 1,001 members fetched. It immediately found what the weekly triage could not name:
+the STORE lacks TRENT's rights adjustments — 08-May-2007 "Rght 1:5 @ Rs.500" (store −6.8 % on the day, Yahoo −1.3 %) and 08-Jul-2010
+"4 CCPS for 9 Eq Shares @ premium 540" (NSE prev 1,128.40 → open 1,130 → close 968.90, −14.1 %; TERP ≈ 0.842; Yahoo +1.9 %) — none in
+rights_adj.json; the triage had put TRENT 2002-2010 on Yahoo. 22 store-side (wrong A) findings on 11 members remain open for
+adjudication: TRENT ×2 (above), one-session store moves of ±20-50 % Yahoo does not show (UNITECH 24-Oct-2008 ×0.503, RELINFRA
+17-May-2004, SAIL 2003-08-18 / 2004-05-17, GREAVESCOT + GIPCL 15-Apr-2009, MUKTAARTS, TAJGVK, TNPETRO 2009, SRF 29-Nov-2013) and
+LINDEINDIA Feb-Jun 2002 — to be read against the raw bhavcopy before any heal. 1,884 store-served "?" remain: 1,513 are < 3 % before
+2020 (Yahoo's pre-2020 daily prints — last-traded vs closing price, rounding; low weight, bottom of the list); 109 are >= 10 %, mostly
+pre-2008 — the next to adjudicate.
+Page: data-checks.html "Dashboard shows" column + B tooltip "Reader B (Yahoo)"; rendered from a local copy with only the lock
+line set true (no owner key written — a seeded key is what wiped favourites on 2026-09-23): card, notes and 1,651 rows, 0 JS
+errors. sw.js v214 → v215.
 
 ## §215 — THE ARCHIVE PAGE'S "Amount(Rs. in lakhs)" IS NSE'S TEMPLATE, NOT THE FILER'S UNIT: 5 detail cells read 10×/100× small through the PAT anchor's 2-cr floor, TTKPRESTIG's stored PAT and revenue with them; the anchor gets a relative cap (2026-09-28, user: "yes" to heal the 3 cells + the TTKPRESTIG stored PAT/revenue and its 2 cells)
 **NO ASSUMPTIONS, NO GUESSWORK — every number below was measured this session (population on origin dcb1b47a0, landed on d5cbb8c11).**
