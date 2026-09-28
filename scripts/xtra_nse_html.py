@@ -26,6 +26,13 @@ LABEL TEMPLATES (census over 9,609 cached pages — three P&L templates plus the
               "(f) Finance costs", EPS rows "Basic EPS for continuing operations" and
               "... for continued and discontinued operations" — the latter is a 0.00 PLACEHOLDER on
               321 of 378 pages while the continuing-ops row carries the figure.
+              ⚠ The "(f) Finance costs" cell REPEATS the "Tax expense" figure (runbook §211: ARE&M
+              Mar-2017 4,885 lakh in both, PBT 14,804 − 4,885 = PAT 9,919; the filing's finance
+              costs are 150). The cell is refused; the page residual (Total expenses − every other
+              itemised expense row) is journalled as `fc_resid`, and a proven figure comes from
+              xtra_fc_fix.json — the residual alone is wrong wherever the filer spread its
+              expenses differently over NSE's form (NCC Dec-2017: 92.72 cr against 104.32).
+              "Profit / (Loss) from before exceptional items" prints 0.00 here and is not read.
   Banking     "Interest Expended" (int_exp), "Employees cost", "Other Income", "Tax Expense",
               "% of Gross/Net NPA" (TWO numbers after one label), "Return on Assets",
               "Capital Adequacy Ratio"; no finance-cost / depreciation / materials rows.
@@ -63,6 +70,7 @@ ROOT = os.path.dirname(HERE)
 sys.path.insert(0, HERE)
 import _nse_archive_revop as NAR          # list_rows / get_detail / aliases / cache / close()
 import _n500_member_bin as MB             # PIT Nifty-500 membership, rename-folded
+import xtra_fc_fix                        # §211: proven finance costs where the page printed the tax
 
 FUND = os.path.join(ROOT, "docs", "sf_fundamentals.json")
 LEDGER = os.path.join(HERE, "xbrl_extra.json")
@@ -105,6 +113,7 @@ R_EPS = {
 R_NPA = re.compile(r"^%\s*of gross\s*/\s*net npa", re.I)
 R_TOTINC = re.compile(r"^total income$", re.I)
 R_TOTOPS = re.compile(r"^total income from operations", re.I)
+R_TOTEXP = re.compile(r"^total expenses?$", re.I)
 R_EQCAP = re.compile(r"paid-?up equity share capital", re.I)
 R_FV = re.compile(r"^face value", re.I)
 ROWNUM = NAR.ROWNUM
@@ -161,6 +170,30 @@ def pick_row(rows, pats):
             if p.search(lab) or p.search(ROWNUM.sub("", lab)):
                 return lab, v
     return None, None
+
+
+def fc_block(rows):
+    """Ind-AS 2016-17 template: the expense rows sit between "Total Income" (a variant prints no such
+    row — HINDZINC Mar-2016 — and starts after "Total income from operations") and "Total expenses".
+    -> (finance-cost cell, residual) in the page's unit, residual = Total expenses − every other
+    itemised expense row; None when the page has no such block with exactly one finance-cost row
+    (the older templates print "Finance costs" below "Profit from operations before other income,
+    finance costs …" and are read as printed)."""
+    i_ti = next((i for i, r in enumerate(rows) if R_TOTINC.search(r[0])), None)
+    if i_ti is None:
+        i_ti = next((i for i, r in enumerate(rows) if R_TOTOPS.search(r[0])), None)
+    if i_ti is None:
+        return None
+    i_te = next((i for i in range(i_ti + 1, len(rows)) if R_TOTEXP.search(rows[i][0])), None)
+    if i_te is None:
+        return None
+    items = rows[i_ti + 1:i_te]
+    fcs = [k for k, r in enumerate(items)
+           if R["fc"][0].search(r[0]) or R["fc"][1].search(r[0]) or R["fc"][0].search(ROWNUM.sub("", r[0]))]
+    if len(fcs) != 1:
+        return None
+    others = sum(r[1] for k, r in enumerate(items) if k != fcs[0])
+    return items[fcs[0]][1], rows[i_te][1] - others
 
 
 def iso_qe(s):
@@ -269,6 +302,17 @@ def read_page(page, sym, qe, stored_pat_by_basis):
         if v is not None:
             out[f] = round(v / div, 2)
             jn[f] = lab[:50]
+    fc_note = {}
+    blk = None if isbank else fc_block(rows)
+    if blk is not None and "fc" in out:
+        _, tax_raw = pick_row(rows, R["tax"])
+        if tax_raw is not None and blk[0] == tax_raw:
+            # §211: this template repeats the TAX in its "(f) Finance costs" cell. Never land it; the
+            # residual is a candidate only (an un-itemised expense lands in it too) — xtra_fc_fix.json
+            # carries the figure each cell was proven to have, re-asserted in apply_reads.
+            out.pop("fc")
+            jn["fc"] = "refused: '(f) Finance costs' cell == 'Tax expense' (template defect, §211)"
+            fc_note["fc_resid"] = round(blk[1] / div, 2)
     if "oi" not in out:
         # Ind-AS 2016-17 template: no Other income row; Total Income − Total income from operations
         _, ti = pick_row(rows, [R_TOTINC])
@@ -355,7 +399,7 @@ def read_page(page, sym, qe, stored_pat_by_basis):
     if not out:
         return basis, None, "no-rows-read"
     return basis, out, {"unit": meta.get("unit", "lakhs"), "fmt": meta.get("fmt", "?"),
-                        "anchor": round(hit, 2), "labels": jn, **eps_note}
+                        "anchor": round(hit, 2), "labels": jn, **eps_note, **fc_note}
 
 
 # ---------------------------------------------------------------------------------- targets ----
@@ -420,6 +464,11 @@ def apply_reads(reads, ledger):
                         new["src_mc"] = keep
                 cell[b] = new
                 n += 1
+    # the proven finance costs of the §211 cells: a re-read leaves fc blank there (and an old journal
+    # still carries the tax) — re-assert them, or a replay would undo the heal
+    nf = xtra_fc_fix.reassert(ledger)
+    if nf:
+        print("xtra_fc_fix: re-asserted %d cells" % nf)
     return n
 
 

@@ -42,6 +42,7 @@ sys.path.insert(0, os.path.dirname(os.path.abspath(__file__)))
 import scale_fix
 import xbrl_symbol
 import bse_resolve
+import xtra_fc_fix
 
 HERE = os.path.dirname(os.path.abspath(__file__))
 # XBRL_CACHE override: the nightly top-up routine runs from its OWN worktree (one writer per
@@ -617,7 +618,12 @@ def main():
         total = len(files)
         print("incremental: %d new cache files, %d symbols in ledger" % (total, len(data)))
         if not files:
-            print("nothing new — ledger unchanged")
+            nf = xtra_fc_fix.reassert(data)
+            if nf:
+                json.dump(data, open(OUT, "w"), separators=(",", ":"))
+                print("nothing new; xtra_fc_fix re-asserted %d cells" % nf)
+            else:
+                print("nothing new — ledger unchanged")
             return
         start_i = 0
     else:
@@ -681,6 +687,12 @@ def main():
 
     if not incremental and not limit:
         union_committed(data)
+    # §211: the archive cells whose page printed the tax as finance costs carry their proven figure
+    # from xtra_fc_fix.json — re-assert it on every build, so a ledger copy from before the heal (a
+    # nightly that unpacked the .gz before the heal was pushed) cannot bring the tax back
+    nf = xtra_fc_fix.reassert(data)
+    if nf:
+        print("xtra_fc_fix: re-asserted %d cells" % nf)
     json.dump(data, open(OUT, "w"), separators=(",", ":"))
     if incremental:
         seen.update(files)

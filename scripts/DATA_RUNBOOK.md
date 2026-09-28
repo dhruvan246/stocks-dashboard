@@ -103,7 +103,7 @@ loads every session. (README.md is just a short pointer here — this file is th
 - **§115** ★★★ THE PHANTOM CLASS IS CLOSED — root cause was `build_revop.py` upper-casing a RAW XML capture (XBRL escapes `&`), still firing in a 2026 filing; closing sf_revop ADDED +784 values / +63 quarters. FOUR gate defects: a retraction that RAISED a score, a derived flag voting, "target has no row" read as nothing-to-do, and the resume-cache treated as a mirror. A filing's own ScripCode OUTRANKS the overlap proxy (**read before trusting any agreement gate, and before retracting anything a gate could still harvest**)
 - **§116** ★★★ THE 46 CONTESTED con CELLS ADJUDICATED — the phantom read the OWNERS tag and WE had stored the TOTAL, so the phantom was RIGHT on 16 of 23; the other 7 are the filer's owners=0 mis-tag where the store was right. Swept the rest of each series: **53 cells healed** total→owners, 2018-2026. sf_revop's un-rendered mirror already held the owners figure on 45 of 53. **1,417 symbols / 18,175 con cells share the exposure — sized, not swept** (**read before trusting a con-PAT value for any symbol absent from _reattr_owners.json**)
 - **§116d** ★★★ THE SCREEN RUN OVER ALL 60,768 con CELLS — 52 more healed, **762 REFUSED because `owners+NCI==total` does NOT close** (302 have NCI=0 so the TAG is wrong not the store; 24 sign flips; 13 filer power-of-ten; 460 unreconciled → `owners_basis_unreconciled.json`). `_reattr_owners` coverage is per-CELL not per-SYMBOL. A hand-rolled context regex silently dropped every pre-2021 filing — use `build_revop.ctx_period`. **29,998 cells are older than the cache and remain UNSCREENED**
-- **§130** ★★★ THE LINE-ITEM BLOCK (EPS/OI/interest/dep/tax) BEFORE 2018 — NSE lists an XBRL URL only from Mar-2018; 2005-2017 come from the archive HTML pages (PAT-anchored, GATE E) and 2002-04/residue from Moneycontrol (gate T/C/R). BANKING XBRL 2018-22 has NO context block (OneD = quarter, FourD = YTD, 'Half yearly'/'Yearly' name the filing). A LOCAL `--fresh` rebuild DROPS the cloud nightly's newest cells unless unioned with the committed .gz (**read before touching build_xbrl_extra.py or judging pre-2018 coverage**)
+- **§130** ★★★ THE LINE-ITEM BLOCK (EPS/OI/interest/dep/tax) BEFORE 2018 — NSE lists an XBRL URL only from Mar-2018; 2005-2017 come from the archive HTML pages (PAT-anchored, GATE E) and 2002-04/residue from Moneycontrol (gate T/C/R). BANKING XBRL 2018-22 has NO context block (OneD = quarter, FourD = YTD, 'Half yearly'/'Yearly' name the filing). A LOCAL `--fresh` rebuild DROPS the cloud nightly's newest cells unless unioned with the committed .gz (**read before touching build_xbrl_extra.py or judging pre-2018 coverage**). **§211**: the archive's Ind-AS 2016-17 page prints the TAX in its "(f) Finance costs" row — the reader refuses that cell; proven figures live in `scripts/xtra_fc_fix.json`, re-asserted by every build
 - **§161** ★★★ NO SPLIT/BONUS IS EVER INFERRED FROM A PRICE MOVE — `ca_factor()` split POLICYBZR's −36% crash (2026-09-24) into a phantom 2/3 and scaled its whole history; official record → exact factor, none → raw move kept + parked in `scripts/unconfirmed_ca.json`; the published bins' every applied factor is recoverable as `vw ÷ (turnover/volume)` (**read before touching any corporate-action code or ledger**)
 - **§147** ★★★ A scale_fix entry does NOT heal xbrl_extra by itself (the nightly is incremental) — run `scale_fix.py --apply-xtra` with XBRL_CACHE. A mis-scaled filing's EPS is almost always CORRECT (36/37), so flag `eps_scaled` only where it isn't. Use `parse_only` where the owners store already holds a figure from a different, correctly scaled filing. Arm a filing only on an exact YTD power of ten (**read before adding any scale_fix entry**)
 - **§184** ★★★ A 1/100 FILING IS INVISIBLE to `detect_scale_errors.py` (it flags only cells ≥50× LARGER) — screen with the YTD chain over the whole cache, and decide WHICH filing is wrong (a pair's ratio proves only that the two disagree). For k < 0 record `was_*` at raw precision; pin con owners in `owners_basis_heals.json` (the nightly otherwise writes `_reattr_owners` 2-dp ÷ factor); `fill_null` refills slots `revop_sanity` emptied. **§184a** armed 64 more after a per-filing adjudication (a ratio of 1 hides a scaled NEIGHBOUR — check the chain's end; BSE's own copy is a second reader); MASKINVEST refused (**read before adding any scale_fix entry**)
@@ -23484,7 +23484,7 @@ On the UTC clock the diff vs origin = exactly the 7 healed values; guard_feed OK
 only, only the healed quarters; fund_months byte-identical. **§209 total: 47 cells / 104 values healed.** Of the 187: 107 correct as stored, 47
 healed, 29 NBFC-convention, RHIM + RMCL held, SUNTV + BEML → con-nofile.
 **Batch 2 LIVE.** Pushed 02e7aea06 (01:25 IST); refresh-stock-fin → slices d532bdf3a; Pages green. Served sf_revop.json (Last-Modified 19:59:12 GMT) and the 20 healed symbols' served fin slices hold all 104 §209 values at `fixed` (both batches, after the intervening hourly-feed and BSE-XBRL CI commits); quarterly_results 7/7. Live stock page FINCABLES std: Mar-19 revenue 823 / op 126 / OPM 15.3 % / EBIT 116, Dec-17 657 / 98.1 / 14.9 % / 87.4; 0 console errors.
-**New open item — xbrl_extra finance costs = tax on 2,320 archive-era cells** (2016: 248, 2017: 2,061, older 11; e.g. CONCOR Dec-17 std fc 129.65
+**New open item (→ §211, healed 2026-09-28) — xbrl_extra finance costs = tax on 2,320 archive-era cells** (2016: 248, 2017: 2,061, older 11; e.g. CONCOR Dec-17 std fc 129.65
 = tax): `xtra_nse_html` reads the archive's "(f) Finance costs" cell as printed, so the stock page's detail "Finance costs" row shows the tax for
 those quarters. Not healed here; source for a fix = each company's next filings' comparative columns (as above) or MC.
 
@@ -23539,3 +23539,67 @@ Both are ledger releases with a `read` note. Rebuild: **0 conflicts, 0 members b
 archive still 147 / 147; 1-Jan-2020 roster 129 (was 132), 867 events, 776 stints. Every name the walk had flagged is in
 these two releases — the walk's conflict list predicted them exactly.
 
+## §211 — THE NSE ARCHIVE'S IND-AS 2016-17 PAGE PRINTS THE TAX IN ITS "(f) Finance costs" ROW: 2,194 detail cells healed from two independent readers, 229 blanked, the reader refuses the cell (2026-09-28, user: "Yes, heal all 2,177" · unproven "Blank them" (a cell the PDF read proves first gets its figure: +17) · scanned PDFs "Later, as a separate step")
+**NO ASSUMPTIONS, NO GUESSWORK — every number below was measured this session (population on origin 229a25581, re-checked cell by cell on 84c62a063 before landing).**
+**Defect.** `scripts/xbrl_extra.json.gz` (→ `docs/fin/<SYM>.json` key `x`; on the stock page it is the P&L tab's "Interest" row,
+FY2016-17 / FY2017-18 columns — the Quarterly-detail tab shows only the last 12 quarters) held **2,489** archive cells
+(`src nse-html:`) with fc == tax (2,320 non-zero: 2016 248 · 2017 2,061 · older 11; plus 169 where both are 0). NSE's archived
+results page in the **Ind-AS 2016-17 template** (a "Total Income" … "(f) Finance costs" … "Total expenses" block; the
+Mar-2016 → Dec-2017 quarters, a few Dec-2015) prints the "Tax expense" figure a second time in "(f) Finance costs" — on
+**2,423 of 2,423** such pages (all fetched again, `~/stocks-cache/fc_tax/pages/`, one request at a time); **none of 805 control
+pages** (every 2017 archive cell with fc ≠ tax + 400 random 2016 ones) uses the template. ARE&M Mar-2017
+(`financial_res_ARE&M_1023437`): "(f) Finance costs 4,885" = "Tax expense 4,885" lakh; PBT 14,804 − 4,885 = PAT 9,919; the
+company prints 150. `xtra_nse_html.py` read the cell as printed. **The other rows of the template** (task: "does it break other
+fields?"): "Profit / (Loss) from before exceptional items" is a 0.00 placeholder on 2,406 pages (no reader of any store uses it);
+"Total Income" is 0.00 on 7 (the oi derivation needs Total Income − Total income from operations ≥ 0, so no wrong oi lands);
+PBT − tax = continuing PAT on all 2,423, and Total Income − Total expenses − PBT is 0 (2,042) or +exceptional (362) — tax, PBT
+and exceptional rows are sound; oi / dep / emp / mat / EPS agree with Moneycontrol on 93-99% of the 2017 cells, like the
+older-template control cells. The other **66** equal cells are older templates printing their own row (MAHSCOOTER Mar-2016:
+Finance costs 0, Tax 0; 4 non-zero ones equal in Moneycontrol too) — genuine, untouched.
+**Readers for the real figure (≥ 2 independent ones per cell):**
+- *page residual* = Total expenses − every other itemised expense row (the page's own arithmetic, never the "(f)" cell).
+  Alone it is NOT proof: NCC Dec-2017 residual 92.72 vs 104.32, TTKPRESTIG Sep-2017 0.00 vs 0.49 (the filer spread its
+  expenses differently over NSE's form), RAIN Dec-2017 0.40 vs 3.97 (millions typed under a "lakhs" header).
+- *Moneycontrol "Interest"* (cached quarterly payloads, `~/.cache/agg_reader/mc`, T-anchor on the stored PAT): ≠ the tax on
+  2,018 of 2,024 anchored cells, so it is not read off NSE's page. For 2016 quarters it often carries the NEXT year's restated
+  comparatives (87 of the 101 2016 disagreements have Moneycontrol PBT/tax ≠ the as-filed page).
+- *FY18 closure*: Jun + Sep + Dec-2017 + the Mar-2018 NSE XBRL's OneD == its FourD (Apr-17..Mar-18; local `_xbrl_cache`,
+  515 of 615 sym-bases). Passes for 989 A-cells; a failure is not disproof (year-end reclassification: 121 A-cells).
+- *BSE results PDFs* (own, next-quarter, year-later filing; text layer; column anchored by the stored PAT; accepted only when
+  the column's PBT == our as-filed PBT, or adjudicated by hand): 246 cells tried, 17 accepted, 5 rejected (RCOM Sep-17 con:
+  comparative restated for discontinued operations, 51 vs as-filed; SONATSOFTW Dec-16 con: tax re-cut; MGL Dec-17: one
+  reader; GLAXO Mar-17 / LAOPALA Dec-16: garbled / wrong line). Of the 229 left open: 142 scans only, 72 mixed (scans /
+  failed downloads / text without an anchor), 14 no filing in the ±6-day window of the stored announce date, 1 no BSE
+  listing (BSE Ltd itself).
+  ⚠ Pre-Nov-2018 attachments resolve only through AnnPdfOpen — ask it first (1 request, not 3).
+**Landed.** `scripts/xtra_fc_fix.json` — 2,423 entries (found "fc==tax archive-template audit 2026-09-28 (runbook §211)"), each
+`why` naming the page, the residual's arithmetic and every reader's value:
+| class | cells | proof |
+|---|---|---|
+| A | 2,122 | residual == Moneycontrol (2,092 to the paisa; 30 within 0.01 → Moneycontrol's printed figure) |
+| B | 52 | residual + FY18 closure within 0.02 (Moneycontrol blank 51, different 1) |
+| C | 17 | BSE results PDF == residual (10) or Moneycontrol (7), column PBT = as-filed |
+| C2 | 3 | Mar-2018 XBRL year − its own quarter − two proven quarters == Moneycontrol (NCC Dec-17 104.32, TTKPRESTIG Sep-17 1.06 c / 0.49 s) |
+| blank | 229 | `fixed: null` — no two readers agree; the per-cell BSE PDF outcome is in `why` |
+Applier `scripts/xtra_fc_fix.py` (dry run; `--apply`). **Re-assert** (memory: a heal must be re-asserted at serve time):
+`xtra_nse_html.apply_reads` and `build_xbrl_extra.main` (nightly `--incremental`, including its nothing-new path, and every full
+rebuild) call `xtra_fc_fix.reassert` — directional: only while the cell is still the archive read (`src nse-html`) holding `was`
+or no fc; an XBRL cell outranks it; a healed cell carries `src_fc: "xtra_fc_fix"`. So a nightly that unpacked the .gz BEFORE this
+push re-heals on its next night (proved: the nothing-new path over the pre-heal ledger reproduces the landed ledger exactly).
+**Code.** `xtra_nse_html.read_page` refuses the "(f) Finance costs" cell when it equals "Tax expense" on a page with the
+Total-Income…Total-expenses block (the variant without a "Total Income" row — HINDZINC Mar-2016 — starts after "Total income from
+operations"), journals `fc_resid`; older templates (KEC Jun-2016 con: Finance costs 72.00 ≠ tax 22.60) read as before.
+**Verified before the push (origin 84c62a063).** Dry run: 2,423 cells change (2,194 set, 229 blank), 0 moved since 229a25581.
+Ledger diff = exactly those 2,423 cells, only fc / src_fc, each `was` → `fixed`; second run 0. Slices both ways
+(`build_stock_fin.py --out`): **587 of 6,600 change** (the 463 symbols + rename aliases), only `x`, only `fc`: 3,031 cell diffs,
+every one an entry's was → fixed. ARE&M standalone P&L "Interest": FY18 179.70 → **5.06** (= the Mar-2018 XBRL's FourD and its
+results PDF), FY17 53.12 → **5.77** (= that PDF's FY17 column). No UI file changed → no SW bump, no mobile/theme pass.
+**Open.** (1) The 229 blank cells → the vision step on the scanned 2016-17 originals (user: "later, as a separate step"; 14 had no
+filing in the ±6-day window of the stored announce date and some downloads failed — re-fetch those before calling them scans).
+(2) Side findings, not touched: RAIN Dec-2017 std's archive page is millions under a "lakhs" header (its detail cell reads 10×
+small: pbt −0.04 vs PAT −0.40 — the PAT anchor's 2-cr floor let it in); MAHSCOOTER Jun-2007 / PVRINOX Sep-2014 older-template
+cells hold fc 0.0 where Moneycontrol prints 0.27 / 19.51.
+**Lesson.** A template-level defect leaves a fingerprint in the data — here one field equal to another on 2,423 cells. Screen
+every archive field for "equals another field of the same page" before trusting a template. And a value derived from the same
+page is a candidate, never proof: only a second reader (a vendor's transcription, the company's own year total, its PDF)
+proves a figure.
