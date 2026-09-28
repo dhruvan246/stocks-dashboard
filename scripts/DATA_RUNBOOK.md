@@ -24516,6 +24516,11 @@ quarter — a scan of every slice for quarter pairs sharing ≥6 identical non-z
 Nifty 500 members: MMTC Jun-24 c (= Jun-25: oi, fc, dep, tax, exc, pbt, emp, eps, assoc), SIEMENS Jun-25 s and c (= Dec-25), LMW
 Jun-18 c (= Sep-18). The F3 EPS entries fix only the EPS of MMTC/SIEMENS; the other fields and the reader's context dating are open.
 Scan: `~/stocks-cache/xcheck-f3/row_leak_scan.json`.
+**F3 verified LIVE 2026-09-28 ~19:50 IST** (pushed 9b6dae7a0; the gz push triggered refresh-stock-fin 36433785350 → 91bd1f377;
+Pages deployed): live `fin/<SYM>.json` 107/107 cells at the printed value; the served stock page read in a browser —
+stock.html?sym=MARUTI, Financials, Consolidated: Mar-24 EPS 125.71; SWIGGY consolidated Jun-25 −5.04 in the `neg` style; console
+clean. fund_eps_shares re-run on the live slices: 673 → 613 open, the 60 cells flagged 0. Live check script:
+`~/stocks-cache/xcheck-f3/verify_live_f3.py`.
 
 ## §215 — THE ARCHIVE PAGE'S "Amount(Rs. in lakhs)" IS NSE'S TEMPLATE, NOT THE FILER'S UNIT: 5 detail cells read 10×/100× small through the PAT anchor's 2-cr floor, TTKPRESTIG's stored PAT and revenue with them; the anchor gets a relative cap (2026-09-28, user: "yes" to heal the 3 cells + the TTKPRESTIG stored PAT/revenue and its 2 cells)
 **NO ASSUMPTIONS, NO GUESSWORK — every number below was measured this session (population on origin dcb1b47a0, landed on d5cbb8c11).**
