@@ -1,3 +1,110 @@
 {
- "_doc": "Second-reader audit (runbook §214): disagreements ADJUDICATED as not-a-defect. {check id: {finding key: {why, by, ts}}}. A key here moves the finding from 'open' to 'accepted' on docs/data-checks.html. Add an entry only after reading the source that settles it, and say what was read in `why`. Real defects are never accepted here: they are healed through their own ledger and then disappear from the report."
+ "_doc": "Second-reader audit (runbook §214): disagreements ADJUDICATED as not-a-defect. {check id: {finding key: {why, by, ts}}}. A key here moves the finding from 'open' to 'accepted' on docs/data-checks.html. Add an entry only after reading the source that settles it, and say what was read in `why`. Real defects are never accepted here: they are healed through their own ledger and then disappear from the report.",
+ "px_nse_yahoo": {
+  "GIPCL|20090415": {
+   "why": "Yahoo is the wrong side, the NSE store is right: 2009-04-15: NSE close 69.20 (last 70.00, open 57.50), next PREVCLOSE 69.20, BSE 69.20, A 69.20 = raw x 1.0000; Yahoo 57.5 (= raw 57.50 at the store factor) Readers: store A (sf_stock_data.bin, bin end 2026-09-25) = 69.2; NSE bhavcopy cm2009-04-15 CLOSE / LAST (era symbol GIPCL) = [69.2, 70.0]; NSE bhavcopy next session 2009-04-16 PREVCLOSE = 69.2; BSE bhavcopy EQ150409_CSV = 69.2; Yahoo .NS daily (xcheck yahoo_daily cache fetched 2026-09-28 13:47) = 57.5",
+   "by": "§214a store-side price adjudication 2026-09-28 (user-approved 'yes, A')",
+   "ts": "2026-09-28 21:40 IST"
+  },
+  "GREAVESCOT|20090415": {
+   "why": "Yahoo is the wrong side, the NSE store is right: 2009-04-15: NSE close 92.80 (last 92.95, open 76.50), next PREVCLOSE 92.80, BSE 92.90, A 18.56 = raw x 0.2000; Yahoo 15.3 (= raw 76.50 at the store factor) Readers: store A (sf_stock_data.bin, bin end 2026-09-25) = 18.56; NSE bhavcopy cm2009-04-15 CLOSE / LAST (era symbol GREAVESCOT) = [92.8, 92.95]; NSE bhavcopy next session 2009-04-16 PREVCLOSE = 92.8; BSE bhavcopy EQ150409_CSV = 92.9; Yahoo .NS daily (xcheck yahoo_daily cache fetched 2026-09-28 13:47) = 15.3",
+   "by": "§214a store-side price adjudication 2026-09-28 (user-approved 'yes, A')",
+   "ts": "2026-09-28 21:40 IST"
+  },
+  "LINDEINDIA|20020214": {
+   "why": "Yahoo is the wrong side, the NSE store is right: 2002-02-14: NSE close 17.95 (last 19.00, open 17.25), next PREVCLOSE 17.95, BSE 18.95, A 17.95 = raw x 1.0000; Yahoo 15.5938 (= raw 15.59 at the store factor) Readers: store A (sf_stock_data.bin, bin end 2026-09-25) = 17.95; NSE bhavcopy cm2002-02-14 CLOSE / LAST (era symbol IOL) = [17.95, 19.0]; NSE bhavcopy next session 2002-02-15 PREVCLOSE = 17.95; BSE StockPriceCSVDownload (scrip 523457) = 18.95; Yahoo .NS daily (xcheck yahoo_daily cache fetched 2026-09-28 13:47) = 15.5938",
+   "by": "§214a store-side price adjudication 2026-09-28 (user-approved 'yes, A')",
+   "ts": "2026-09-28 21:40 IST"
+  },
+  "LINDEINDIA|20020215": {
+   "why": "Yahoo is the wrong side, the NSE store is right: 2002-02-15: NSE close 21.55 (last 21.55, open 19.20), next PREVCLOSE 21.55, BSE 22.70, A 21.55 = raw x 1.0000; Yahoo 16.1562 (= raw 16.16 at the store factor) | 2002-02-18: NSE close 20.70 (last 20.50, open 23.30), next PREVCLOSE 20.70, BSE 20.60, A 20.70 = raw x 1.0000; Yahoo 15.6562 (= raw 15.66 at the store factor) Readers: store A (sf_stock_data.bin, bin end 2026-09-25) = 21.55; NSE bhavcopy cm2002-02-15 CLOSE / LAST (era symbol IOL) = [21.55, 21.55]; NSE bhavcopy next session 2002-02-18 PREVCLOSE = 21.55; BSE StockPriceCSVDownload (scrip 523457) = 22.7; Yahoo .NS daily (xcheck yahoo_daily cache fetched 2026-09-28 13:47) = 16.1562",
+   "by": "§214a store-side price adjudication 2026-09-28 (user-approved 'yes, A')",
+   "ts": "2026-09-28 21:40 IST"
+  },
+  "LINDEINDIA|20020219": {
+   "why": "Yahoo is the wrong side, the NSE store is right: 2002-02-19: NSE close 19.60 (last 19.80, open 21.50), next PREVCLOSE 19.60, BSE 19.30, A 19.60 = raw x 1.0000; Yahoo 16.125 (= raw 16.12 at the store factor) | 2002-02-20: NSE close 19.25 (last 19.15, open 19.80), next PREVCLOSE 19.25, BSE 19.30, A 19.25 = raw x 1.0000; Yahoo 16.4062 (= raw 16.41 at the store factor) | 2002-02-21: NSE close 20.35 (last 20.40, open 20.70), next PREVCLOSE 20.35, BSE Readers: store A (sf_stock_data.bin, bin end 2026-09-25) = 19.6; NSE bhavcopy cm2002-02-19 CLOSE / LAST (era symbol IOL) = [19.6, 19.8]; NSE bhavcopy next session 2002-02-20 PREVCLOSE = 19.6; BSE StockPriceCSVDownload (scrip 523457) = 19.3; Yahoo .NS daily (xcheck yahoo_daily cache fetched 2026-09-28 13:47) = 16.125",
+   "by": "§214a store-side price adjudication 2026-09-28 (user-approved 'yes, A')",
+   "ts": "2026-09-28 21:40 IST"
+  },
+  "LINDEINDIA|20020311": {
+   "why": "Yahoo is the wrong side, the NSE store is right: 2002-03-11: NSE close 23.15 (last 23.10, open 19.75), next PREVCLOSE 23.15, BSE 23.05, A 23.15 = raw x 1.0000; Yahoo 16.3281 (= raw 16.33 at the store factor) Readers: store A (sf_stock_data.bin, bin end 2026-09-25) = 23.15; NSE bhavcopy cm2002-03-11 CLOSE / LAST (era symbol IOL) = [23.15, 23.1]; NSE bhavcopy next session 2002-03-12 PREVCLOSE = 23.15; BSE StockPriceCSVDownload (scrip 523457) = 23.05; Yahoo .NS daily (xcheck yahoo_daily cache fetched 2026-09-28 13:47) = 16.3281",
+   "by": "§214a store-side price adjudication 2026-09-28 (user-approved 'yes, A')",
+   "ts": "2026-09-28 21:40 IST"
+  },
+  "LINDEINDIA|20020315": {
+   "why": "Yahoo is the wrong side, the NSE store is right: 2002-03-15: NSE close 23.95 (last 23.80, open 22.00), next PREVCLOSE 23.95, BSE 23.95, A 23.95 = raw x 1.0000; Yahoo 16.7188 (= raw 16.72 at the store factor) | 2002-03-18: NSE close 25.25 (last 25.50, open 24.70), next PREVCLOSE 25.25, BSE 25.70, A 25.25 = raw x 1.0000; Yahoo 16.4062 (= raw 16.41 at the store factor) | 2002-03-19: NSE close 24.05 (last 23.80, open 25.80), next PREVCLOSE 24.05, BS Readers: store A (sf_stock_data.bin, bin end 2026-09-25) = 23.95; NSE bhavcopy cm2002-03-15 CLOSE / LAST (era symbol IOL) = [23.95, 23.8]; NSE bhavcopy next session 2002-03-18 PREVCLOSE = 23.95; BSE StockPriceCSVDownload (scrip 523457) = 23.95; Yahoo .NS daily (xcheck yahoo_daily cache fetched 2026-09-28 13:47) = 16.7188",
+   "by": "§214a store-side price adjudication 2026-09-28 (user-approved 'yes, A')",
+   "ts": "2026-09-28 21:40 IST"
+  },
+  "LINDEINDIA|20020405": {
+   "why": "Yahoo is the wrong side, the NSE store is right: 2002-04-05: NSE close 25.80 (last 25.50, open 23.40), next PREVCLOSE 25.80, BSE 25.75, A 25.80 = raw x 1.0000; Yahoo 16.4062 (= raw 16.41 at the store factor) Readers: store A (sf_stock_data.bin, bin end 2026-09-25) = 25.8; NSE bhavcopy cm2002-04-05 CLOSE / LAST (era symbol IOL) = [25.8, 25.5]; NSE bhavcopy next session 2002-04-08 PREVCLOSE = 25.8; BSE StockPriceCSVDownload (scrip 523457) = 25.75; Yahoo .NS daily (xcheck yahoo_daily cache fetched 2026-09-28 13:47) = 16.4062",
+   "by": "§214a store-side price adjudication 2026-09-28 (user-approved 'yes, A')",
+   "ts": "2026-09-28 21:40 IST"
+  },
+  "LINDEINDIA|20020605": {
+   "why": "Yahoo is the wrong side, the NSE store is right: 2002-06-05: NSE close 20.60 (last 20.70, open 21.30), next PREVCLOSE 20.60, BSE 20.80, A 20.60 = raw x 1.0000; Yahoo 15.5 (= raw 15.50 at the store factor) | 2002-06-06: NSE close 20.85 (last 20.85, open 21.25), next PREVCLOSE 20.85, BSE 20.90, A 20.85 = raw x 1.0000; Yahoo 16.2031 (= raw 16.20 at the store factor) | 2002-06-07: NSE close 20.05 (last 20.20, open 21.25), next PREVCLOSE 20.05, BSE 1 Readers: store A (sf_stock_data.bin, bin end 2026-09-25) = 20.6; NSE bhavcopy cm2002-06-05 CLOSE / LAST (era symbol IOL) = [20.6, 20.7]; NSE bhavcopy next session 2002-06-06 PREVCLOSE = 20.6; BSE StockPriceCSVDownload (scrip 523457) = 20.8; Yahoo .NS daily (xcheck yahoo_daily cache fetched 2026-09-28 13:47) = 15.5",
+   "by": "§214a store-side price adjudication 2026-09-28 (user-approved 'yes, A')",
+   "ts": "2026-09-28 21:40 IST"
+  },
+  "LINDEINDIA|20020614": {
+   "why": "Yahoo is the wrong side, the NSE store is right: 2002-06-14: NSE close 26.40 (last 26.55, open 22.50), next PREVCLOSE 26.40, BSE 26.85, A 26.40 = raw x 1.0000; Yahoo 16.6719 (= raw 16.67 at the store factor) Readers: store A (sf_stock_data.bin, bin end 2026-09-25) = 26.4; NSE bhavcopy cm2002-06-14 CLOSE / LAST (era symbol IOL) = [26.4, 26.55]; NSE bhavcopy next session 2002-06-17 PREVCLOSE = 26.4; BSE StockPriceCSVDownload (scrip 523457) = 26.85; Yahoo .NS daily (xcheck yahoo_daily cache fetched 2026-09-28 13:47) = 16.6719",
+   "by": "§214a store-side price adjudication 2026-09-28 (user-approved 'yes, A')",
+   "ts": "2026-09-28 21:40 IST"
+  },
+  "LINDEINDIA|20020619": {
+   "why": "Yahoo is the wrong side, the NSE store is right: 2002-06-19: NSE close 29.00 (last 29.50, open 31.50), next PREVCLOSE 29.00, BSE 29.15, A 29.00 = raw x 1.0000; Yahoo 16.25 (= raw 16.25 at the store factor) Readers: store A (sf_stock_data.bin, bin end 2026-09-25) = 29.0; NSE bhavcopy cm2002-06-19 CLOSE / LAST (era symbol IOL) = [29.0, 29.5]; NSE bhavcopy next session 2002-06-20 PREVCLOSE = 29.0; BSE StockPriceCSVDownload (scrip 523457) = 29.15; Yahoo .NS daily (xcheck yahoo_daily cache fetched 2026-09-28 13:47) = 16.25",
+   "by": "§214a store-side price adjudication 2026-09-28 (user-approved 'yes, A')",
+   "ts": "2026-09-28 21:40 IST"
+  },
+  "LINDEINDIA|20020620": {
+   "why": "Yahoo is the wrong side, the NSE store is right: 2002-06-20: NSE close 34.80 (last 34.80, open 30.25), next PREVCLOSE 34.80, BSE 34.95, A 34.80 = raw x 1.0000; Yahoo 16.2031 (= raw 16.20 at the store factor) Readers: store A (sf_stock_data.bin, bin end 2026-09-25) = 34.8; NSE bhavcopy cm2002-06-20 CLOSE / LAST (era symbol IOL) = [34.8, 34.8]; NSE bhavcopy next session 2002-06-21 PREVCLOSE = 34.8; BSE StockPriceCSVDownload (scrip 523457) = 34.95; Yahoo .NS daily (xcheck yahoo_daily cache fetched 2026-09-28 13:47) = 16.2031",
+   "by": "§214a store-side price adjudication 2026-09-28 (user-approved 'yes, A')",
+   "ts": "2026-09-28 21:40 IST"
+  },
+  "MUKTAARTS|20090604": {
+   "why": "Yahoo is the wrong side, the NSE store is right: 2009-06-04: NSE close 69.90 (last 69.90, open 56.00), next PREVCLOSE 69.90, BSE 70.10, A 69.90 = raw x 1.0000; Yahoo 56.0 (= raw 56.00 at the store factor) Readers: store A (sf_stock_data.bin, bin end 2026-09-25) = 69.9; NSE bhavcopy cm2009-06-04 CLOSE / LAST (era symbol MUKTAARTS) = [69.9, 69.9]; NSE bhavcopy next session 2009-06-05 PREVCLOSE = 69.9; BSE bhavcopy EQ040609_CSV = 70.1; Yahoo .NS daily (xcheck yahoo_daily cache fetched 2026-09-28 13:47) = 56.0",
+   "by": "§214a store-side price adjudication 2026-09-28 (user-approved 'yes, A')",
+   "ts": "2026-09-28 21:40 IST"
+  },
+  "RELINFRA|20040517": {
+   "why": "Yahoo is the wrong side, the NSE store is right: 2004-05-17: NSE close 476.50 (last 466.00, open 699.00), next PREVCLOSE 476.50, BSE 477.55, A 476.50 = raw x 1.0000; Yahoo 695.0 (= raw 695.00 at the store factor) Readers: store A (sf_stock_data.bin, bin end 2026-09-25) = 476.5; NSE bhavcopy cm2004-05-17 CLOSE / LAST (era symbol REL) = [476.5, 466.0]; NSE bhavcopy next session 2004-05-18 PREVCLOSE = 476.5; BSE StockPriceCSVDownload (scrip 500390) = 477.55; Yahoo .NS daily (xcheck yahoo_daily cache fetched 2026-09-28 13:47) = 695.0",
+   "by": "§214a store-side price adjudication 2026-09-28 (user-approved 'yes, A')",
+   "ts": "2026-09-28 21:40 IST"
+  },
+  "SAIL|20030818": {
+   "why": "Yahoo is the wrong side, the NSE store is right: 2003-08-18: NSE close 51.45 (last 51.80, open 40.60), next PREVCLOSE 51.45, BSE 51.45, A 51.45 = raw x 1.0000; Yahoo 40.0 (= raw 40.00 at the store factor) Readers: store A (sf_stock_data.bin, bin end 2026-09-25) = 51.45; NSE bhavcopy cm2003-08-18 CLOSE / LAST (era symbol SAIL) = [51.45, 51.8]; NSE bhavcopy next session 2003-08-19 PREVCLOSE = 51.45; BSE StockPriceCSVDownload (scrip 500113) = 51.45; Yahoo .NS daily (xcheck yahoo_daily cache fetched 2026-09-28 13:47) = 40.0",
+   "by": "§214a store-side price adjudication 2026-09-28 (user-approved 'yes, A')",
+   "ts": "2026-09-28 21:40 IST"
+  },
+  "SAIL|20040517": {
+   "why": "Yahoo is the wrong side, the NSE store is right: 2004-05-17: NSE close 23.70 (last 23.60, open 28.50), next PREVCLOSE 23.70, BSE 23.95, A 23.70 = raw x 1.0000; Yahoo 28.0 (= raw 28.00 at the store factor) Readers: store A (sf_stock_data.bin, bin end 2026-09-25) = 23.7; NSE bhavcopy cm2004-05-17 CLOSE / LAST (era symbol SAIL) = [23.7, 23.6]; NSE bhavcopy next session 2004-05-18 PREVCLOSE = 23.7; BSE StockPriceCSVDownload (scrip 500113) = 23.95; Yahoo .NS daily (xcheck yahoo_daily cache fetched 2026-09-28 13:47) = 28.0",
+   "by": "§214a store-side price adjudication 2026-09-28 (user-approved 'yes, A')",
+   "ts": "2026-09-28 21:40 IST"
+  },
+  "SRF|20131129": {
+   "why": "Yahoo is the wrong side, the NSE store is right: 2013-11-29: NSE close 206.80 (last 206.80, open 171.00), next PREVCLOSE 206.80, BSE 206.40, A 41.36 = raw x 0.2000; Yahoo 35.0 (= raw 175.00 at the store factor) Readers: store A (sf_stock_data.bin, bin end 2026-09-25) = 41.36; NSE bhavcopy cm2013-11-29 CLOSE / LAST (era symbol SRF) = [206.8, 206.8]; NSE bhavcopy next session 2013-12-02 PREVCLOSE = 206.8; BSE bhavcopy EQ291113_CSV = 206.4; Yahoo .NS daily (xcheck yahoo_daily cache fetched 2026-09-28 13:47) = 35.0",
+   "by": "§214a store-side price adjudication 2026-09-28 (user-approved 'yes, A')",
+   "ts": "2026-09-28 21:40 IST"
+  },
+  "TAJGVK|20090601": {
+   "why": "Yahoo is the wrong side, the NSE store is right: 2009-06-01: NSE close 111.70 (last 112.00, open 98.00), next PREVCLOSE 111.70, BSE 111.95, A 111.70 = raw x 1.0000; Yahoo 97.0 (= raw 97.00 at the store factor) Readers: store A (sf_stock_data.bin, bin end 2026-09-25) = 111.7; NSE bhavcopy cm2009-06-01 CLOSE / LAST (era symbol TAJGVK) = [111.7, 112.0]; NSE bhavcopy next session 2009-06-02 PREVCLOSE = 111.7; BSE bhavcopy EQ010609_CSV = 111.95; Yahoo .NS daily (xcheck yahoo_daily cache fetched 2026-09-28 13:47) = 97.0",
+   "by": "§214a store-side price adjudication 2026-09-28 (user-approved 'yes, A')",
+   "ts": "2026-09-28 21:40 IST"
+  },
+  "TNPETRO|20090522": {
+   "why": "Yahoo is the wrong side, the NSE store is right: 2009-05-22: NSE close 17.20 (last 17.30, open 13.90), next PREVCLOSE 17.20, BSE 17.30, A 17.20 = raw x 1.0000; Yahoo 15.45 (= raw 15.45 at the store factor) Readers: store A (sf_stock_data.bin, bin end 2026-09-25) = 17.2; NSE bhavcopy cm2009-05-22 CLOSE / LAST (era symbol TNPETRO) = [17.2, 17.3]; NSE bhavcopy next session 2009-05-25 PREVCLOSE = 17.2; BSE bhavcopy EQ220509_CSV = 17.3; Yahoo .NS daily (xcheck yahoo_daily cache fetched 2026-09-28 13:47) = 15.45",
+   "by": "§214a store-side price adjudication 2026-09-28 (user-approved 'yes, A')",
+   "ts": "2026-09-28 21:40 IST"
+  },
+  "TRENT|20100708": {
+   "why": "Yahoo is the wrong side, the NSE store is right: A is right over the whole span 2010-07-08..2025-12-31. Readers: Yahoo .NS daily = 2010-07-09 96.975 = raw 969.75 x 0.1 (no 2/3); 2025-12-31 4279.00 = raw; screener.in chart = 2010-07-09 64.65 = raw 969.75 x 0.066667 = A; our corp_actions.json = TRENT [[20160912, 0.1], [20260604, 0.666667]]; prior triage (NSE CA / BSE CA) = \"Bonus 1:2\" ex 04-Jun-2026",
+   "by": "§214a store-side price adjudication 2026-09-28 (user-approved 'yes, A')",
+   "ts": "2026-09-28 21:40 IST"
+  },
+  "UNITECH|20081024": {
+   "why": "Yahoo is the wrong side, the NSE store is right: 2008-10-24: NSE close 31.00 (last 29.00, open 56.00), next PREVCLOSE 31.00, BSE 30.10, A 30.99 = raw x 0.9997; Yahoo 61.7 (= raw 61.72 at the store factor) Readers: store A (sf_stock_data.bin, bin end 2026-09-25) = 30.99; NSE bhavcopy cm2008-10-24 CLOSE / LAST (era symbol UNITECH) = [31.0, 29.0]; NSE bhavcopy next session 2008-10-27 PREVCLOSE = 31.0; BSE bhavcopy EQ241008_CSV = 30.1; Yahoo .NS daily (xcheck yahoo_daily cache fetched 2026-09-28 13:47) = 61.7",
+   "by": "§214a store-side price adjudication 2026-09-28 (user-approved 'yes, A')",
+   "ts": "2026-09-28 21:40 IST"
+  }
+ }
 }

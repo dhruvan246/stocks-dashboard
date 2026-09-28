@@ -24545,6 +24545,31 @@ three minified files; resolved in the private worktree by taking origin's copies
 only dates differing from origin are the 86 ledger dates): live nifty/nifty500/nifty_bank.json 86/86 at the official close, date
 order kept; live index-chart.html NIFTY 50 Monthly 2015 row reads Feb +1.1 %, console clean; the idx_levels check re-run: 7 → 0 open.
 Next refresh-fii-dii run (14:45 UTC weekdays) is the first to re-apply the ledger itself — re-verify 2018-11-07 = 25,737.50 after it.
+**Store-side price findings adjudicated + healed (user picked them next, then "yes, A").** The rebuilt px check's full run lists 25
+findings blaming the STORE (A) on 14 stocks (18 A + 4 both served=store, 3 A served=yahoo; the capped report showed the same 25).
+One read-only agent (~260 k tokens, 20 min) read NSE bhavcopies (CLOSE/LAST and the next session's PREVCLOSE), BSE closes, NSE/BSE CA,
+company announcements, Yahoo and screener: **21 YAHOO_WRONG** (LINDEINDIA ×10 in 2002 — Yahoo at 15.5-17.3 while the stock traded
+17-35; UNITECH 24-Oct-2008 NSE 31.00 = next PREVCLOSE, BSE 30.10, Yahoo 61.70; RELINFRA/SAIL 17-May-2004, SAIL 18-Aug-2003, GIPCL,
+GREAVESCOT, MUKTAARTS, TAJGVK, TNPETRO 2009, SRF 29-Nov-2013; TRENT 2010-25 = Yahoo's 1-Jan cut of the 2026 bonus) → accepted in
+`scripts/xcheck_accept.json` (px_nse_yahoo, with the readers); **STORE_WRONG**: SUNDRMFAST 1:10 FV split NSE ex 23-Jan-2004 (BSE
+27-Jan), EIHOTEL split Rs10→2 + bonus 1:2 ex 12-Sep-2006 (2/15), WOCKPHARMA split Rs10→5 + bonus 1:2 NSE ex 29-Apr-2004 (1/3; named in
+Wockhardt's BSE announcements of 12-Feb / 22-Apr-2004 — the morning triage had called the identity unknown), and TRENT equity rights
+1:5 @ Rs500 ex 08-May-2007 (TERP 709.50 / cum 751.40 = 0.944237; not among the 25 — the finding list starts at that bar); **POLICY**:
+TRENT rights of 4 compulsorily-convertible preference shares per 9 @ Rs550 ex 08-Jul-2010 → user chose A = adjust like equity rights
+(0.842282 = Yahoo's step; screener and the store had none; the ex-day showed a false −14 %). Both TRENT events escaped the §173 sweep:
+its pattern needs a word break after 'rght' (feed: 'Rght1:5') and the 2010 row never says 'right' (HINDOILEXP 18-Aug-2006 may be
+another miss — not examined).
+**Routes.** EIHOTEL / WOCKPHARMA: factor in corp_actions_hist.json + corp_actions.json and raw prev/ex closes in crash_raw_prices.json →
+self_heal's OLD-factor reconcile (network-free). SUNDRMFAST: same record rows, but self_heal's baked-factor probe reads this 2004
+boundary at 0.9404 (turnover/volume units), neither 0.1 nor 1.0, so it parks it; applied instead by `ca_open_arbitrated.json` (close-
+ratio idempotence, the JINDALSTEL precedent). Known side effect: self_heal prints one ::warning:: every run for SUNDRMFAST@20040123
+("baked 0.094 matches neither") — expected, the close series is right. TRENT: two rights_adj.json rows + provenance (reconcile_rights).
+**Dry run** (scratchpad px2/dryrun.py: the 4 symbols streamed from the local store, update_sf_data's own passes in main()'s order,
+archive fetches returning nothing like CI): pass 1 = rights ×2, ca-arbitrated ×1, self-heal ×2; every bar scaled by exactly the
+expected product (0 wrong of 6,460 / 6,459 / 6,456 / 6,245), t/v/other fields untouched, ex-day steps now EIHOTEL +11.6 %, SUNDRMFAST
++8.3 %, WOCKPHARMA +8.1 %, TRENT −1.3 % / +1.9 %; pass 2 changes nothing. Sequence: push ledgers → refresh-backtest-data publishes the
+store → verify → THEN drop EIHOTEL / SUNDRMFAST / WOCKPHARMA from dash_px_keep_yahoo.json (never before: the dashboard fill would copy
+the unhealed store). Files `~/stocks-cache/xcheck-px2/`.
 
 ## §215 — THE ARCHIVE PAGE'S "Amount(Rs. in lakhs)" IS NSE'S TEMPLATE, NOT THE FILER'S UNIT: 5 detail cells read 10×/100× small through the PAT anchor's 2-cr floor, TTKPRESTIG's stored PAT and revenue with them; the anchor gets a relative cap (2026-09-28, user: "yes" to heal the 3 cells + the TTKPRESTIG stored PAT/revenue and its 2 cells)
 **NO ASSUMPTIONS, NO GUESSWORK — every number below was measured this session (population on origin dcb1b47a0, landed on d5cbb8c11).**

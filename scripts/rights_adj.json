@@ -1104,6 +1104,18 @@
    20260820,
    0.93721,
    0.894974
+  ],
+  [
+   "TRENT",
+   20070508,
+   0.944237,
+   0.93206
+  ],
+  [
+   "TRENT",
+   20100708,
+   0.842282,
+   0.858649
   ]
  ],
  "provenance": [
@@ -5443,6 +5455,43 @@
    "factor": 0.91015,
    "capped": false,
    "baked_before": 1.0
+  },
+  {
+   "sym": "TRENT",
+   "feed_sym": "TRENT",
+   "feed_ex": 20070508,
+   "subject": "Int.Div70%/Rght1:5@Rs.500purpose Revised",
+   "status": "TARGET",
+   "bar": 20070508,
+   "prev_bar": 20070507,
+   "new_per_held": "1:5",
+   "fv_then": 10.0,
+   "issue": 500.0,
+   "cum": 751.4,
+   "ex_close": 700.35,
+   "terp": 709.5,
+   "factor": 0.944237,
+   "capped": false,
+   "note": "§214a (2026-09-28, user-approved): missed by the §173 sweep (feed text 'Rght1:5' fails its word-break pattern). BSE CA 500251 'Right Issue of Equity Shares' ex 08-May-2007, record 15-May-2007; Yahoo's step on this bar and screener's both match 0.944237."
+  },
+  {
+   "sym": "TRENT",
+   "feed_sym": "TRENT",
+   "feed_ex": 20100708,
+   "subject": "4 Ccps (2 Series A Ccps And 2 Series B Ccps) Issued @ Premium Of Rs 540 Per Ccps For 9 Eq Shares",
+   "status": "TARGET",
+   "bar": 20100708,
+   "prev_bar": 20100707,
+   "new_per_held": "4:9",
+   "fv_then": 10.0,
+   "premium": 540.0,
+   "issue": 550.0,
+   "cum": 1128.4,
+   "ex_close": 968.9,
+   "terp": 950.4308,
+   "factor": 0.842282,
+   "capped": false,
+   "note": "§214a (2026-09-28): rights of COMPULSORILY convertible preference shares (each -> 1 equity share; Series A 01-Sep-2011, Series B later), BSE announcement 14-Jun-2010. USER DECISION 'A': adjusted like equity rights (Yahoo applies 0.842282; screener does not). Without it the series carries a false -14 % step on 08-Jul-2010."
   }
  ]
 }

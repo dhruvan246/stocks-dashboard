@@ -27,6 +27,10 @@
     [
       "JINDALSTEL", 20080121, 0.2, 0.146496,
       "1:5 split, ex 2008-01-21. Ledger factor 0.2 is record-verified (corp_actions_hist, 87 campaign). Live close 2393.99 -> 350.71 = 0.146496, so close-ratio/factor = 0.7325 -> just under the 0.75 reconcile floor -> rejected -> ca_factor(0.1465) snapped to nothing -> split KEPT. Measured live 2026-08-12 on sf_deep parts (rev 4f491f79ce): (a) OPEN GATE — ex-day open 493.50 / prev close 2393.99 = 0.20614, /0.2 = 1.0307, CA-like (<=1.12; crashes >=1.19); (b) TURNOVER STEP — r = t/(c*v) is the cumulative adjustment, and it is FLAT across the boundary (median step 0.9887 vs the 0.20 an applied factor would show), i.e. nothing was divided out; (c) VOLUME — 153,481 -> 1,579,112 shares, the ~1/factor rescale of a 1:5 split. 2008-01-21 was one of the worst single days in Indian market history: -26.8% from the adjusted basis, and F&O members (JINDALSTEL since 2005-04-29) carry no price band, which is why the close ratio lands 27% off the fraction."
+    ],
+    [
+      "SUNDRMFAST", 20040123, 0.1, 0.108357,
+      "1:10 face-value split Rs10 -> Re1, NSE ex 2004-01-23 (BSE went ex 27-Jan, record 02-Feb-2004; BSE announcements 12-Dec-2003 EGM approval and 08-Jan-2004 record date). NSE bhavcopy 22-Jan close 1052.55 -> 23-Jan open 108.00 / close 114.05 (PREVCLOSE 1052.55): ratio 0.108357, /0.1 = 1.0836. Store/Yahoo daily 10.000 over 390 sessions before, 1.000 after. The factor is in corp_actions_hist (record), but self_heal's network-free baked-factor probe reads this boundary at 0.9404 (2004 turnover/volume units), matching neither 0.1 nor 1.0, so it parks it; this close-ratio pass (apply_manual_rights idempotence test) applies it. §214a, 2026-09-28, user-approved."
     ]
   ]
 }
