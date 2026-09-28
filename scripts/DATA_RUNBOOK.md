@@ -23912,6 +23912,54 @@ is the line before the associate write-down (4,925 vs 4,854). BHARTIARTL files f
 **Lesson.** A result filter is a private regex — log what it drops. A resolver 404 is not an answer. And "PBT = our stored as-filed PBT"
 proves as-filed only when the stored row IS as-filed: read the page's filing date (its id range) before trusting a stored PBT.
 
+## §211b — THE 99 SCAN-ONLY fc==tax CELLS, ROUND 2b: 69 proven AS FILED from the scanned statements and LIVE, 2 landed figures corrected (`supersedes`), 14 restated-column rows + 16 held stay blank (2026-09-28, user: "Yes, land all 69" · the 14: "Leave them blank" · "Yes, fix both" · the 2 same-value cells: "Leave blank")
+**NO ASSUMPTIONS, NO GUESSWORK — every number below was measured this session (landed c1b59c549 on a2c7666ae).** Kit: `~/stocks-cache/fc_tax/r2_*`.
+**Read.** Local OCR first (`r2_ocr2.py`: detection-only screen of 1,237 image pages — orientation + a statement score — then full OCR of the
+390 statement-like pages, through the §211a reader and gate), then VISION: `r2_render.py` / `r2_vis.py` / `r2_sheet.py` render a filing page
+upright (a contact sheet finds the statement page; GDL's sits on page 22 of 25, past the OCR screen's first 15), Claude reads it, and
+`r2_addman.py` records the figure with the column, the rows written out to the printed total, PBT / PAT against ours and the second reader
+(`r2_manual.json`, copied into each entry's `why`). `--vintage` marks a figure read from a LATER filing's comparative — landed only on an
+explicit yes (it was declined).
+**Gate, unchanged:** the quarter's OWN statement; the column whose PAT AND PBT equal ours at the printed precision; its rows adding up to the
+printed total; a second reader (page residual, Moneycontrol, or the company's own year total) agreeing.
+**What the NSE page residual really measured (it is a claim about NSE's FORM, not the filing):**
+- 0.00 while the filing prints a finance line — the form's "Total expenses" leaves the finance costs out: the filing's own layout puts
+  them below its expense total (RAYMOND Jun-16 s 37.25, GMDCLTD Sep-16 s 0.30, MBLINFRA Dec-15), or the form dropped them (WELSPUNLIV
+  Mar-17 c 42.98: the filing's total 155,375 − 4,298 = the form's 151,077).
+- 51.06 on SKFINDIA Mar-17 s = the EXCISE duty (510.6 mn) the form had no row for; the filing has no finance-cost row → 0.00.
+- 151.56 on DALMIABHA Dec-17 c = the "Interest cost" sub-line only; the statement's (e) Finance Costs = 151.56 + other finance cost 13.12
+  = **164.68** (= Moneycontrol; the landed Sep-17 191.10 = 152.75 + 38.35 is the same convention).
+- 2.71 on AVANTIFEED Sep-16 s = the DEPRECIATION: page 1033061 put the finance cost (64.30 lakh) in its Depreciation row.
+**Consolidated rows with no own consolidated statement:** BIRLACORPN Dec-16 and KSK Jun-16 published only standalone quarters; our
+consolidated row IS the next year's comparative (BIRLACORPN 114.86, KSK 539.35) → the declined "restated column" class.
+**The FY18 cross-check (Jun + Sep + Dec-2017 + the Mar-2018 XBRL quarter = its year) fails for 13 proven cells, each traced:** TATAPOWER
+Sep-17 s — the Dec-2017 filing moved the SED business to discontinued operations (Sep-17 394.39 vs 396.64 as filed; nine months 1,098.72 =
+XBRL year 1,431.38 − Q4 332.66); QUESS ×3 c — the Dec-2017 filing restated Jun/Sep (+0.71 cr) and the Mar-2018 year a further 1.33 cr (not
+traced); RCOM Sep-17 s/c — FY18 restated for discontinued operations (XBRL con year 186); DALMIABHA Dec-17 c — the XBRL year 596.58 is the
+interest-cost sub-line only; DHANUKA ×3, LTM Jun-17 c, MGL ×2 — later re-presentations. The as-filed quarter decides; the note sits in `why`.
+**Corrected — `supersedes` (new in `xtra_fc_fix.py`):** LTM Jun-2017 std **3.50 → 0.00** and GLAXO Mar-2017 std **0.25 → 0.00**. Both came from
+a LATER statement that re-presented the quarter with PBT and PAT unchanged (LTM: the Jun-2018 comparative prints 35 mn; GLAXO: the Mar-2018
+comparative grosses finance costs 25 lakh out of other income); the quarter's own statement prints no finance-cost line and its rows close.
+An entry now lists the figure it landed before; a cell still marked `src_fc: xtra_fc_fix` and holding that figure is corrected, anything
+else is still another writer's and is left alone (branch-tested: A-G cases, second pass 0 changes).
+**Landed c1b59c549 (2026-09-28 14:03 IST):** 69 blank → figure + 2 corrections; `verify_diff.py HEAD --incremental` = exactly 71 cells,
+`fc` only; second apply 0. The ledger: 2,302 figures + 121 blanks. **LIVE:** 71 of 71 in the served `fin/` slices (slices bc5aa7c37, Pages run 36398038360 green); stock page P&L standalone: LTM FY2018 Interest **10** (was 14 with the superseded 3.50: 0.00 + 3.60 + 3.00 + 3.70), ULTRACEMCO FY2018 **1,186** (128.49 + 375.85 + 347.20 + 334.76; its Dec-17 quarter was blank before this landing); 0 console errors. The results-XBRL bot re-applies its fills on fresh origin (`reset --hard origin/main` + `--apply`), so it cannot replay an older ledger over these cells.
+**Blank (121).** 91 restated pages (§211a, by decision). 14 rows that ARE a later filing's restated comparative — stored PAT = PBT − tax and
+every line matches that later column (VIPIND Sep/Dec-16 s+c 0.09 / 0.11 vs 0.06 / 0.08 as filed, VINATIORGA Jun/Sep-16 s 1.51 / 0.67,
+KESORAMIND Sep/Dec-16 s 55.51 / 73.61, SMLMAH Sep-16 s 1.99, MBLINFRA Dec-15 s/c 33.31 / 36.10, VESUVIUS Mar-16 s 0.00, BIRLACORPN Dec-16 c,
+KSK Jun-16 c): left blank by decision (only as-filed figures land). 16 held: rows that mix two filings (PAT as filed, PBT from the restated
+page — BLISSGVS Dec-16, DYNAMATECH Jun-16 c, AVANTIFEED Sep-16, SUPREMEIND Mar-16, ZEELEARN Sep/Dec-16, TNPL Jun-15, LALPATHLAB Mar-17 s/c,
+COFORGE Mar-17 s; TATAELXSI Dec-16 s and HINDZINC Mar-16 s print the SAME figure in every vintage — 0.00 / 9.00 — still blank by decision),
+and definitions (BHARTIARTL Jun/Dec-17 gross vs net, INFY Mar-17 c holds standalone lines, BRIGADE Sep-17 c stored PAT 41.00 vs the
+filing's 40.86). Reasons per cell: `r2_held.json`.
+**Side findings (not touched).** AVANTIFEED Sep-16 s stored `dep` 0.64 is the finance cost (the filing's depreciation is 2.71).
+DALMIABHA FY18 con quarters mix conventions: Jun-17 211.69 = interest 162.13 + other 31.08 + the foreign-currency line 18.47 (DERIVED from
+the Dec-2017 and Mar-2018 statements' quarter / year columns), Sep-17 191.10 and Dec-17 164.68 exclude that line, Mar-18 130.14 (XBRL) is
+interest only. BRIGADE Sep-17 c stored PAT 41.00 vs 40.86 printed.
+**Lesson.** A residual equal to 0 — or to any figure — describes how the filer spread its lines over NSE's form; it proves nothing until the
+filing agrees. And a figure read from a LATER statement can pass "PBT = ours, PAT = ours" while being a re-presentation: the quarter's own
+statement decides, and a ledger must be able to correct what it landed (`supersedes`), not only fill blanks.
+
 ## §210a — NIFTY SME EMERGE MEMBERS' SME-ERA RESULTS FROM THE FILINGS' PDFs, 2020→ (2026-09-28, user: "Text PDFs, then ask")
 **NO ASSUMPTIONS, NO GUESSWORK — every number below was measured this session.**
 **Why PDFs.** NSE lists no SME results XBRL before the FY24 year-end (§148/§181d: the listing's `xbrl` is ".../xbrl/-"), and
