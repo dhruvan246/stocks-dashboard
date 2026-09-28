@@ -1,0 +1,611 @@
+{
+ "_README": [
+  "Official NSE closes for index sessions our feeds lack or carry wrong (runbook §214a F6). Applied by scripts/fetch_fii_dii.apply_index_fix() at the end of update_nifty() and update_yahoo_index(), AFTER each merge — nifty500/nifty_bank are re-read whole from Yahoo every run and Yahoo's value would otherwise overwrite a corrected date.",
+  "Entry {file, date, close, was, why}: lands when the date is absent or holds `was` (the value measured wrong); a date holding anything else is left alone and reported. Each close = NSE's ind_close_all file for the day, confirmed by the next session's file (its previous close) and our stored previous close (close - points change), and by niftyindices.com.",
+  "2026-09-28 (user \"yes\"): 85 missing sessions (NIFTY 50 33, NIFTY 500 29, NIFTY BANK 23) + NIFTY BANK 2018-11-07 Muhurat 25,769.70 -> 25,737.50. Left out: 2012-01-02 NIFTY 50 and 2012-01-07 (all three) — NSE has no daily file for them and Yahoo lacks them; niftyindices alone is one source."
+ ],
+ "fixes": [
+  {
+   "file": "nifty.json",
+   "date": "2012-03-03",
+   "close": 5359.4,
+   "was": null,
+   "why": "NSE ind_close_all_03032012: NIFTY 50 close 5359.4 (points change 0.05; close - change = our stored 2012-03-02 close 5359.35). The next session's file (2012-03-05) re-prints it as previous close 5359.4. niftyindices.com history: 5359.4. Missing from our feed (a special / Saturday / Muhurat / holiday-shifted session the source skipped)."
+  },
+  {
+   "file": "nifty.json",
+   "date": "2012-04-28",
+   "close": 5209.0,
+   "was": null,
+   "why": "NSE ind_close_all_28042012: NIFTY 50 close 5209.0 (points change 18.4; close - change = our stored 2012-04-27 close 5190.6). The next session's file (2012-04-30) re-prints it as previous close 5209.0. niftyindices.com history: 5209.0. Missing from our feed (a special / Saturday / Muhurat / holiday-shifted session the source skipped)."
+  },
+  {
+   "file": "nifty.json",
+   "date": "2012-05-21",
+   "close": 4906.05,
+   "was": null,
+   "why": "NSE ind_close_all_21052012: NIFTY 50 close 4906.05 (points change 14.6; close - change = our stored 2012-05-18 close 4891.45). The next session's file (2012-05-22) re-prints it as previous close 4906.05. niftyindices.com history: 4906.05. Missing from our feed (a special / Saturday / Muhurat / holiday-shifted session the source skipped)."
+  },
+  {
+   "file": "nifty.json",
+   "date": "2012-08-28",
+   "close": 5334.6,
+   "was": null,
+   "why": "NSE ind_close_all_28082012: NIFTY 50 close 5334.6 (points change -15.65; close - change = our stored 2012-08-27 close 5350.25). The next session's file (2012-08-29) re-prints it as previous close 5334.6. niftyindices.com history: 5334.6. Missing from our feed (a special / Saturday / Muhurat / holiday-shifted session the source skipped)."
+  },
+  {
+   "file": "nifty.json",
+   "date": "2012-09-08",
+   "close": 5358.7,
+   "was": null,
+   "why": "NSE ind_close_all_08092012: NIFTY 50 close 5358.7 (points change 16.6; close - change = our stored 2012-09-07 close 5342.1). The next session's file (2012-09-10) re-prints it as previous close 5358.7. niftyindices.com history: 5358.7. Missing from our feed (a special / Saturday / Muhurat / holiday-shifted session the source skipped)."
+  },
+  {
+   "file": "nifty.json",
+   "date": "2012-10-26",
+   "close": 5664.3,
+   "was": null,
+   "why": "NSE ind_close_all_26102012: NIFTY 50 close 5664.3 (points change -41.0; close - change = our stored 2012-10-25 close 5705.3). The next session's file (2012-10-29) re-prints it as previous close 5664.3. niftyindices.com history: 5664.3. Missing from our feed (a special / Saturday / Muhurat / holiday-shifted session the source skipped)."
+  },
+  {
+   "file": "nifty.json",
+   "date": "2012-11-13",
+   "close": 5666.95,
+   "was": null,
+   "why": "NSE ind_close_all_13112012: NIFTY 50 close 5666.95 (points change -16.75; close - change = our stored 2012-11-12 close 5683.7). The next session's file (2012-11-15) re-prints it as previous close 5666.95. niftyindices.com history: 5666.95. Missing from our feed (a special / Saturday / Muhurat / holiday-shifted session the source skipped)."
+  },
+  {
+   "file": "nifty.json",
+   "date": "2013-01-01",
+   "close": 5950.85,
+   "was": null,
+   "why": "NSE ind_close_all_01012013: NIFTY 50 close 5950.85 (points change 45.75; close - change = our stored 2012-12-31 close 5905.1). The next session's file (2013-01-02) re-prints it as previous close 5950.85. niftyindices.com history: 5950.85. Missing from our feed (a special / Saturday / Muhurat / holiday-shifted session the source skipped)."
+  },
+  {
+   "file": "nifty.json",
+   "date": "2013-05-11",
+   "close": 6107.25,
+   "was": null,
+   "why": "NSE ind_close_all_11052013: NIFTY 50 close 6107.25 (points change 12.5; close - change = our stored 2013-05-10 close 6094.75). The next session's file (2013-05-13) re-prints it as previous close 6107.25. niftyindices.com history: 6107.25. Missing from our feed (a special / Saturday / Muhurat / holiday-shifted session the source skipped)."
+  },
+  {
+   "file": "nifty.json",
+   "date": "2013-11-03",
+   "close": 6317.35,
+   "was": null,
+   "why": "NSE ind_close_all_03112013: NIFTY 50 close 6317.35 (points change 10.15; close - change = our stored 2013-11-01 close 6307.2). The next session's file (2013-11-05) re-prints it as previous close 6317.35. niftyindices.com history: 6317.35. Missing from our feed (a special / Saturday / Muhurat / holiday-shifted session the source skipped)."
+  },
+  {
+   "file": "nifty.json",
+   "date": "2014-01-01",
+   "close": 6301.65,
+   "was": null,
+   "why": "NSE ind_close_all_01012014: NIFTY 50 close 6301.65 (points change -2.35; close - change = our stored 2013-12-31 close 6304.0). The next session's file (2014-01-02) re-prints it as previous close 6301.65. niftyindices.com history: 6301.65. Missing from our feed (a special / Saturday / Muhurat / holiday-shifted session the source skipped)."
+  },
+  {
+   "file": "nifty.json",
+   "date": "2014-02-17",
+   "close": 6073.3,
+   "was": null,
+   "why": "NSE ind_close_all_17022014: NIFTY 50 close 6073.3 (points change 24.95; close - change = our stored 2014-02-14 close 6048.35). The next session's file (2014-02-18) re-prints it as previous close 6073.3. niftyindices.com history: 6073.3. Missing from our feed (a special / Saturday / Muhurat / holiday-shifted session the source skipped)."
+  },
+  {
+   "file": "nifty.json",
+   "date": "2014-03-22",
+   "close": 6494.9,
+   "was": null,
+   "why": "NSE ind_close_all_22032014: NIFTY 50 close 6494.9 (points change 1.7; close - change = our stored 2014-03-21 close 6493.2). The next session's file (2014-03-24) re-prints it as previous close 6494.9. niftyindices.com history: 6494.9. Missing from our feed (a special / Saturday / Muhurat / holiday-shifted session the source skipped)."
+  },
+  {
+   "file": "nifty.json",
+   "date": "2014-10-23",
+   "close": 8014.55,
+   "was": null,
+   "why": "NSE ind_close_all_23102014: NIFTY 50 close 8014.55 (points change 18.65; close - change = our stored 2014-10-22 close 7995.9). The next session's file (2014-10-27) re-prints it as previous close 8014.55. niftyindices.com history: 8014.55. Missing from our feed (a special / Saturday / Muhurat / holiday-shifted session the source skipped)."
+  },
+  {
+   "file": "nifty.json",
+   "date": "2015-01-01",
+   "close": 8284.0,
+   "was": null,
+   "why": "NSE ind_close_all_01012015: NIFTY 50 close 8284.0 (points change 1.3; close - change = our stored 2014-12-31 close 8282.7). The next session's file (2015-01-02) re-prints it as previous close 8284.0. niftyindices.com history: 8284.0. Missing from our feed (a special / Saturday / Muhurat / holiday-shifted session the source skipped)."
+  },
+  {
+   "file": "nifty.json",
+   "date": "2015-02-28",
+   "close": 8901.85,
+   "was": null,
+   "why": "NSE ind_close_all_28022015: NIFTY 50 close 8901.85 (points change 57.25; close - change = our stored 2015-02-27 close 8844.6). The next session's file (2015-03-02) re-prints it as previous close 8901.85. niftyindices.com history: 8901.85. Missing from our feed (a special / Saturday / Muhurat / holiday-shifted session the source skipped)."
+  },
+  {
+   "file": "nifty.json",
+   "date": "2015-04-15",
+   "close": 8750.2,
+   "was": null,
+   "why": "NSE ind_close_all_15042015: NIFTY 50 close 8750.2 (points change -83.8; close - change = our stored 2015-04-13 close 8834.0). The next session's file (2015-04-16) re-prints it as previous close 8750.2. niftyindices.com history: 8750.2. Missing from our feed (a special / Saturday / Muhurat / holiday-shifted session the source skipped)."
+  },
+  {
+   "file": "nifty.json",
+   "date": "2015-11-11",
+   "close": 7825.0,
+   "was": null,
+   "why": "NSE ind_close_all_11112015: NIFTY 50 close 7825.0 (points change 41.65; close - change = our stored 2015-11-10 close 7783.35). The next session's file (2015-11-13) re-prints it as previous close 7825.0. niftyindices.com history: 7825.0. Missing from our feed (a special / Saturday / Muhurat / holiday-shifted session the source skipped)."
+  },
+  {
+   "file": "nifty.json",
+   "date": "2016-01-01",
+   "close": 7963.2,
+   "was": null,
+   "why": "NSE ind_close_all_01012016: NIFTY 50 close 7963.2 (points change 16.85; close - change = our stored 2015-12-31 close 7946.35). The next session's file (2016-01-04) re-prints it as previous close 7963.2. niftyindices.com history: 7963.2. Missing from our feed (a special / Saturday / Muhurat / holiday-shifted session the source skipped)."
+  },
+  {
+   "file": "nifty.json",
+   "date": "2016-08-12",
+   "close": 8672.15,
+   "was": null,
+   "why": "NSE ind_close_all_12082016: NIFTY 50 close 8672.15 (points change 80.0; close - change = our stored 2016-08-11 close 8592.15). The next session's file (2016-08-16) re-prints it as previous close 8672.15. niftyindices.com history: 8672.15. Missing from our feed (a special / Saturday / Muhurat / holiday-shifted session the source skipped)."
+  },
+  {
+   "file": "nifty.json",
+   "date": "2016-10-30",
+   "close": 8625.7,
+   "was": null,
+   "why": "NSE ind_close_all_30102016: NIFTY 50 close 8625.7 (points change -12.3; close - change = our stored 2016-10-28 close 8638.0). The next session's file (2016-11-01) re-prints it as previous close 8625.7. niftyindices.com history: 8625.7. Missing from our feed (a special / Saturday / Muhurat / holiday-shifted session the source skipped)."
+  },
+  {
+   "file": "nifty.json",
+   "date": "2018-01-01",
+   "close": 10435.55,
+   "was": null,
+   "why": "NSE ind_close_all_01012018: NIFTY 50 close 10435.55 (points change -95.15; close - change = our stored 2017-12-29 close 10530.7). The next session's file (2018-01-02) re-prints it as previous close 10435.55. niftyindices.com history: 10435.55. Missing from our feed (a special / Saturday / Muhurat / holiday-shifted session the source skipped)."
+  },
+  {
+   "file": "nifty.json",
+   "date": "2019-01-01",
+   "close": 10910.1,
+   "was": null,
+   "why": "NSE ind_close_all_01012019: NIFTY 50 close 10910.1 (points change 47.55; close - change = our stored 2018-12-31 close 10862.55). The next session's file (2019-01-02) re-prints it as previous close 10910.1. niftyindices.com history: 10910.1. Missing from our feed (a special / Saturday / Muhurat / holiday-shifted session the source skipped)."
+  },
+  {
+   "file": "nifty.json",
+   "date": "2019-02-13",
+   "close": 10793.65,
+   "was": null,
+   "why": "NSE ind_close_all_13022019: NIFTY 50 close 10793.65 (points change -37.75; close - change = our stored 2019-02-12 close 10831.4). The next session's file (2019-02-14) re-prints it as previous close 10793.65. niftyindices.com history: 10793.65. Missing from our feed (a special / Saturday / Muhurat / holiday-shifted session the source skipped)."
+  },
+  {
+   "file": "nifty.json",
+   "date": "2019-03-29",
+   "close": 11623.9,
+   "was": null,
+   "why": "NSE ind_close_all_29032019: NIFTY 50 close 11623.9 (points change 53.9; close - change = our stored 2019-03-28 close 11570.0). The next session's file (2019-04-01) re-prints it as previous close 11623.9. niftyindices.com history: 11623.9. Missing from our feed (a special / Saturday / Muhurat / holiday-shifted session the source skipped)."
+  },
+  {
+   "file": "nifty.json",
+   "date": "2019-10-27",
+   "close": 11627.15,
+   "was": null,
+   "why": "NSE ind_close_all_27102019: NIFTY 50 close 11627.15 (points change 43.25; close - change = our stored 2019-10-25 close 11583.9). The next session's file (2019-10-29) re-prints it as previous close 11627.15. niftyindices.com history: 11627.15. Missing from our feed (a special / Saturday / Muhurat / holiday-shifted session the source skipped)."
+  },
+  {
+   "file": "nifty.json",
+   "date": "2020-02-01",
+   "close": 11661.85,
+   "was": null,
+   "why": "NSE ind_close_all_01022020: NIFTY 50 close 11661.85 (points change -300.25; close - change = our stored 2020-01-31 close 11962.1). The next session's file (2020-02-03) re-prints it as previous close 11661.85. niftyindices.com history: 11661.85. Missing from our feed (a special / Saturday / Muhurat / holiday-shifted session the source skipped)."
+  },
+  {
+   "file": "nifty.json",
+   "date": "2020-11-14",
+   "close": 12780.25,
+   "was": null,
+   "why": "NSE ind_close_all_14112020: NIFTY 50 close 12780.25 (points change 60.3; close - change = our stored 2020-11-13 close 12719.95). The next session's file (2020-11-17) re-prints it as previous close 12780.25. niftyindices.com history: 12780.25. Missing from our feed (a special / Saturday / Muhurat / holiday-shifted session the source skipped)."
+  },
+  {
+   "file": "nifty.json",
+   "date": "2023-11-12",
+   "close": 19525.55,
+   "was": null,
+   "why": "NSE ind_close_all_12112023: NIFTY 50 close 19525.55 (points change 100.2; close - change = our stored 2023-11-10 close 19425.35). The next session's file (2023-11-13) re-prints it as previous close 19525.55. niftyindices.com history: 19525.55. Missing from our feed (a special / Saturday / Muhurat / holiday-shifted session the source skipped)."
+  },
+  {
+   "file": "nifty.json",
+   "date": "2024-01-20",
+   "close": 21571.8,
+   "was": null,
+   "why": "NSE ind_close_all_20012024: NIFTY 50 close 21571.8 (points change -50.6; close - change = our stored 2024-01-19 close 21622.4). The next session's file (2024-01-23) re-prints it as previous close 21571.8. niftyindices.com history: 21571.8. Missing from our feed (a special / Saturday / Muhurat / holiday-shifted session the source skipped)."
+  },
+  {
+   "file": "nifty.json",
+   "date": "2024-03-02",
+   "close": 22378.4,
+   "was": null,
+   "why": "NSE ind_close_all_02032024: NIFTY 50 close 22378.4 (points change 39.65; close - change = our stored 2024-03-01 close 22338.75). The next session's file (2024-03-04) re-prints it as previous close 22378.4. niftyindices.com history: 22378.4. Missing from our feed (a special / Saturday / Muhurat / holiday-shifted session the source skipped)."
+  },
+  {
+   "file": "nifty.json",
+   "date": "2024-05-18",
+   "close": 22502.0,
+   "was": null,
+   "why": "NSE ind_close_all_18052024: NIFTY 50 close 22502.0 (points change 35.9; close - change = our stored 2024-05-17 close 22466.1). The next session's file (2024-05-21) re-prints it as previous close 22502.0. niftyindices.com history: 22502.0. Missing from our feed (a special / Saturday / Muhurat / holiday-shifted session the source skipped)."
+  },
+  {
+   "file": "nifty.json",
+   "date": "2026-02-01",
+   "close": 24825.45,
+   "was": null,
+   "why": "NSE ind_close_all_01022026: NIFTY 50 close 24825.45 (points change -495.2; close - change = our stored 2026-01-30 close 25320.65). The next session's file (2026-02-02) re-prints it as previous close 24825.45. niftyindices.com history: 24825.45. Missing from our feed (a special / Saturday / Muhurat / holiday-shifted session the source skipped)."
+  },
+  {
+   "file": "nifty500.json",
+   "date": "2012-03-03",
+   "close": 4256.0,
+   "was": null,
+   "why": "NSE ind_close_all_03032012: NIFTY 500 close 4256.0 (points change 1.5; close - change = our stored 2012-03-02 close 4254.5). The next session's file (2012-03-05) re-prints it as previous close 4256.0. niftyindices.com history: 4256.0. Missing from our feed (a special / Saturday / Muhurat / holiday-shifted session the source skipped)."
+  },
+  {
+   "file": "nifty500.json",
+   "date": "2012-04-28",
+   "close": 4147.1,
+   "was": null,
+   "why": "NSE ind_close_all_28042012: NIFTY 500 close 4147.1 (points change 15.95; close - change = our stored 2012-04-27 close 4131.15). The next session's file (2012-04-30) re-prints it as previous close 4147.1. niftyindices.com history: 4147.1. Missing from our feed (a special / Saturday / Muhurat / holiday-shifted session the source skipped)."
+  },
+  {
+   "file": "nifty500.json",
+   "date": "2012-09-08",
+   "close": 4210.9,
+   "was": null,
+   "why": "NSE ind_close_all_08092012: NIFTY 500 close 4210.9 (points change 15.15; close - change = our stored 2012-09-07 close 4195.75). The next session's file (2012-09-10) re-prints it as previous close 4210.9. niftyindices.com history: 4210.9. Missing from our feed (a special / Saturday / Muhurat / holiday-shifted session the source skipped)."
+  },
+  {
+   "file": "nifty500.json",
+   "date": "2012-10-26",
+   "close": 4480.3,
+   "was": null,
+   "why": "NSE ind_close_all_26102012: NIFTY 500 close 4480.3 (points change -38.1; close - change = our stored 2012-10-25 close 4518.4). The next session's file (2012-10-29) re-prints it as previous close 4480.3. niftyindices.com history: 4480.3. Missing from our feed (a special / Saturday / Muhurat / holiday-shifted session the source skipped)."
+  },
+  {
+   "file": "nifty500.json",
+   "date": "2012-11-13",
+   "close": 4518.1,
+   "was": null,
+   "why": "NSE ind_close_all_13112012: NIFTY 500 close 4518.1 (points change -1.15; close - change = our stored 2012-11-12 close 4519.25). The next session's file (2012-11-15) re-prints it as previous close 4518.1. niftyindices.com history: 4518.1. Missing from our feed (a special / Saturday / Muhurat / holiday-shifted session the source skipped)."
+  },
+  {
+   "file": "nifty500.json",
+   "date": "2013-05-11",
+   "close": 4779.75,
+   "was": null,
+   "why": "NSE ind_close_all_11052013: NIFTY 500 close 4779.75 (points change 10.55; close - change = our stored 2013-05-10 close 4769.2). The next session's file (2013-05-13) re-prints it as previous close 4779.75. niftyindices.com history: 4779.75. Missing from our feed (a special / Saturday / Muhurat / holiday-shifted session the source skipped)."
+  },
+  {
+   "file": "nifty500.json",
+   "date": "2013-11-03",
+   "close": 4840.15,
+   "was": null,
+   "why": "NSE ind_close_all_03112013: NIFTY 500 close 4840.15 (points change 17.15; close - change = our stored 2013-11-01 close 4823.0). The next session's file (2013-11-05) re-prints it as previous close 4840.15. niftyindices.com history: 4840.15. Missing from our feed (a special / Saturday / Muhurat / holiday-shifted session the source skipped)."
+  },
+  {
+   "file": "nifty500.json",
+   "date": "2014-03-22",
+   "close": 5037.5,
+   "was": null,
+   "why": "NSE ind_close_all_22032014: NIFTY 500 close 5037.5 (points change 6.45; close - change = our stored 2014-03-21 close 5031.05). The next session's file (2014-03-24) re-prints it as previous close 5037.5. niftyindices.com history: 5037.5. Missing from our feed (a special / Saturday / Muhurat / holiday-shifted session the source skipped)."
+  },
+  {
+   "file": "nifty500.json",
+   "date": "2014-10-23",
+   "close": 6463.25,
+   "was": null,
+   "why": "NSE ind_close_all_23102014: NIFTY 500 close 6463.25 (points change 26.7; close - change = our stored 2014-10-22 close 6436.55). The next session's file (2014-10-27) re-prints it as previous close 6463.25. niftyindices.com history: 6463.25. Missing from our feed (a special / Saturday / Muhurat / holiday-shifted session the source skipped)."
+  },
+  {
+   "file": "nifty500.json",
+   "date": "2015-02-28",
+   "close": 7239.45,
+   "was": null,
+   "why": "NSE ind_close_all_28022015: NIFTY 500 close 7239.45 (points change 29.15; close - change = our stored 2015-02-27 close 7210.3). The next session's file (2015-03-02) re-prints it as previous close 7239.45. niftyindices.com history: 7239.45. Missing from our feed (a special / Saturday / Muhurat / holiday-shifted session the source skipped)."
+  },
+  {
+   "file": "nifty500.json",
+   "date": "2015-11-11",
+   "close": 6585.15,
+   "was": null,
+   "why": "NSE ind_close_all_11112015: NIFTY 500 close 6585.15 (points change 48.7; close - change = our stored 2015-11-10 close 6536.45). The next session's file (2015-11-13) re-prints it as previous close 6585.15. niftyindices.com history: 6585.15. Missing from our feed (a special / Saturday / Muhurat / holiday-shifted session the source skipped)."
+  },
+  {
+   "file": "nifty500.json",
+   "date": "2016-10-30",
+   "close": 7501.45,
+   "was": null,
+   "why": "NSE ind_close_all_30102016: NIFTY 500 close 7501.45 (points change 7.35; close - change = our stored 2016-10-28 close 7494.1). The next session's file (2016-11-01) re-prints it as previous close 7501.45. niftyindices.com history: 7501.45. Missing from our feed (a special / Saturday / Muhurat / holiday-shifted session the source skipped)."
+  },
+  {
+   "file": "nifty500.json",
+   "date": "2019-02-13",
+   "close": 8887.9,
+   "was": null,
+   "why": "NSE ind_close_all_13022019: NIFTY 500 close 8887.9 (points change -37.4; close - change = our stored 2019-02-12 close 8925.3). The next session's file (2019-02-14) re-prints it as previous close 8887.9. niftyindices.com history: 8887.9. Missing from our feed (a special / Saturday / Muhurat / holiday-shifted session the source skipped)."
+  },
+  {
+   "file": "nifty500.json",
+   "date": "2019-03-29",
+   "close": 9663.7,
+   "was": null,
+   "why": "NSE ind_close_all_29032019: NIFTY 500 close 9663.7 (points change 61.75; close - change = our stored 2019-03-28 close 9601.95). The next session's file (2019-04-01) re-prints it as previous close 9663.7. niftyindices.com history: 9663.7. Missing from our feed (a special / Saturday / Muhurat / holiday-shifted session the source skipped)."
+  },
+  {
+   "file": "nifty500.json",
+   "date": "2019-10-27",
+   "close": 9478.35,
+   "was": null,
+   "why": "NSE ind_close_all_27102019: NIFTY 500 close 9478.35 (points change 47.25; close - change = our stored 2019-10-25 close 9431.1). The next session's file (2019-10-29) re-prints it as previous close 9478.35. niftyindices.com history: 9478.35. Missing from our feed (a special / Saturday / Muhurat / holiday-shifted session the source skipped)."
+  },
+  {
+   "file": "nifty500.json",
+   "date": "2020-02-01",
+   "close": 9606.05,
+   "was": null,
+   "why": "NSE ind_close_all_01022020: NIFTY 500 close 9606.05 (points change -255.4; close - change = our stored 2020-01-31 close 9861.45). The next session's file (2020-02-03) re-prints it as previous close 9606.05. niftyindices.com history: 9606.05. Missing from our feed (a special / Saturday / Muhurat / holiday-shifted session the source skipped)."
+  },
+  {
+   "file": "nifty500.json",
+   "date": "2020-11-14",
+   "close": 10440.35,
+   "was": null,
+   "why": "NSE ind_close_all_14112020: NIFTY 500 close 10440.35 (points change 53.15; close - change = our stored 2020-11-13 close 10387.2). The next session's file (2020-11-17) re-prints it as previous close 10440.35. niftyindices.com history: 10440.35. Missing from our feed (a special / Saturday / Muhurat / holiday-shifted session the source skipped)."
+  },
+  {
+   "file": "nifty500.json",
+   "date": "2021-01-01",
+   "close": 11574.85,
+   "was": null,
+   "why": "NSE ind_close_all_01012021: NIFTY 500 close 11574.85 (points change 56.55; close - change = our stored 2020-12-31 close 11518.3). The next session's file (2021-01-04) re-prints it as previous close 11574.85. niftyindices.com history: 11574.85. Missing from our feed (a special / Saturday / Muhurat / holiday-shifted session the source skipped)."
+  },
+  {
+   "file": "nifty500.json",
+   "date": "2022-12-26",
+   "close": 15298.55,
+   "was": null,
+   "why": "NSE ind_close_all_26122022: NIFTY 500 close 15298.55 (points change 252.55; close - change = our stored 2022-12-23 close 15046.0). The next session's file (2022-12-27) re-prints it as previous close 15298.55. niftyindices.com history: 15298.55. Missing from our feed (a special / Saturday / Muhurat / holiday-shifted session the source skipped)."
+  },
+  {
+   "file": "nifty500.json",
+   "date": "2023-11-12",
+   "close": 17361.1,
+   "was": null,
+   "why": "NSE ind_close_all_12112023: NIFTY 500 close 17361.1 (points change 104.5; close - change = our stored 2023-11-10 close 17256.6). The next session's file (2023-11-13) re-prints it as previous close 17361.1. niftyindices.com history: 17361.1. Missing from our feed (a special / Saturday / Muhurat / holiday-shifted session the source skipped)."
+  },
+  {
+   "file": "nifty500.json",
+   "date": "2024-01-01",
+   "close": 19469.5,
+   "was": null,
+   "why": "NSE ind_close_all_01012024: NIFTY 500 close 19469.5 (points change 40.35; close - change = our stored 2023-12-29 close 19429.15). The next session's file (2024-01-02) re-prints it as previous close 19469.5. niftyindices.com history: 19469.5. Missing from our feed (a special / Saturday / Muhurat / holiday-shifted session the source skipped)."
+  },
+  {
+   "file": "nifty500.json",
+   "date": "2024-01-20",
+   "close": 19601.9,
+   "was": null,
+   "why": "NSE ind_close_all_20012024: NIFTY 500 close 19601.9 (points change -4.5; close - change = our stored 2024-01-19 close 19606.4). The next session's file (2024-01-23) re-prints it as previous close 19601.9. niftyindices.com history: 19601.9. Missing from our feed (a special / Saturday / Muhurat / holiday-shifted session the source skipped)."
+  },
+  {
+   "file": "nifty500.json",
+   "date": "2024-02-19",
+   "close": 20241.1,
+   "was": null,
+   "why": "NSE ind_close_all_19022024: NIFTY 500 close 20241.1 (points change 76.2; close - change = our stored 2024-02-16 close 20164.9). The next session's file (2024-02-20) re-prints it as previous close 20241.1. niftyindices.com history: 20241.1. Missing from our feed (a special / Saturday / Muhurat / holiday-shifted session the source skipped)."
+  },
+  {
+   "file": "nifty500.json",
+   "date": "2024-03-02",
+   "close": 20421.35,
+   "was": null,
+   "why": "NSE ind_close_all_02032024: NIFTY 500 close 20421.35 (points change 71.55; close - change = our stored 2024-03-01 close 20349.8). The next session's file (2024-03-04) re-prints it as previous close 20421.35. niftyindices.com history: 20421.35. Missing from our feed (a special / Saturday / Muhurat / holiday-shifted session the source skipped)."
+  },
+  {
+   "file": "nifty500.json",
+   "date": "2024-05-18",
+   "close": 21144.45,
+   "was": null,
+   "why": "NSE ind_close_all_18052024: NIFTY 500 close 21144.45 (points change 79.9; close - change = our stored 2024-05-17 close 21064.55). The next session's file (2024-05-21) re-prints it as previous close 21144.45. niftyindices.com history: 21144.45. Missing from our feed (a special / Saturday / Muhurat / holiday-shifted session the source skipped)."
+  },
+  {
+   "file": "nifty500.json",
+   "date": "2025-01-01",
+   "close": 22481.8,
+   "was": null,
+   "why": "NSE ind_close_all_01012025: NIFTY 500 close 22481.8 (points change 106.4; close - change = our stored 2024-12-31 close 22375.4). The next session's file (2025-01-02) re-prints it as previous close 22481.8. niftyindices.com history: 22481.8. Missing from our feed (a special / Saturday / Muhurat / holiday-shifted session the source skipped)."
+  },
+  {
+   "file": "nifty500.json",
+   "date": "2025-02-01",
+   "close": 21581.75,
+   "was": null,
+   "why": "NSE ind_close_all_01022025: NIFTY 500 close 21581.75 (points change 0.85; close - change = our stored 2025-01-31 close 21580.9). The next session's file (2025-02-03) re-prints it as previous close 21581.75. niftyindices.com history: 21581.75. Missing from our feed (a special / Saturday / Muhurat / holiday-shifted session the source skipped)."
+  },
+  {
+   "file": "nifty500.json",
+   "date": "2026-01-01",
+   "close": 23909.55,
+   "was": null,
+   "why": "NSE ind_close_all_01012026: NIFTY 500 close 23909.55 (points change 38.0; close - change = our stored 2025-12-31 close 23871.55). The next session's file (2026-01-02) re-prints it as previous close 23909.55. niftyindices.com history: 23909.55. Missing from our feed (a special / Saturday / Muhurat / holiday-shifted session the source skipped)."
+  },
+  {
+   "file": "nifty500.json",
+   "date": "2026-02-01",
+   "close": 22611.3,
+   "was": null,
+   "why": "NSE ind_close_all_01022026: NIFTY 500 close 22611.3 (points change -468.2; close - change = our stored 2026-01-30 close 23079.5). The next session's file (2026-02-02) re-prints it as previous close 22611.3. niftyindices.com history: 22611.3. Missing from our feed (a special / Saturday / Muhurat / holiday-shifted session the source skipped)."
+  },
+  {
+   "file": "nifty_bank.json",
+   "date": "2012-03-03",
+   "close": 10450.25,
+   "was": null,
+   "why": "NSE ind_close_all_03032012: NIFTY BANK close 10450.25 (points change 15.95; close - change = our stored 2012-03-02 close 10434.3). The next session's file (2012-03-05) re-prints it as previous close 10450.25. niftyindices.com history: 10450.25. Missing from our feed (a special / Saturday / Muhurat / holiday-shifted session the source skipped)."
+  },
+  {
+   "file": "nifty_bank.json",
+   "date": "2012-04-28",
+   "close": 10212.65,
+   "was": null,
+   "why": "NSE ind_close_all_28042012: NIFTY BANK close 10212.65 (points change 63.95; close - change = our stored 2012-04-27 close 10148.7). The next session's file (2012-04-30) re-prints it as previous close 10212.65. niftyindices.com history: 10212.65. Missing from our feed (a special / Saturday / Muhurat / holiday-shifted session the source skipped)."
+  },
+  {
+   "file": "nifty_bank.json",
+   "date": "2012-09-08",
+   "close": 10147.05,
+   "was": null,
+   "why": "NSE ind_close_all_08092012: NIFTY BANK close 10147.05 (points change 25.05; close - change = our stored 2012-09-07 close 10122.0). The next session's file (2012-09-10) re-prints it as previous close 10147.05. niftyindices.com history: 10147.05. Missing from our feed (a special / Saturday / Muhurat / holiday-shifted session the source skipped)."
+  },
+  {
+   "file": "nifty_bank.json",
+   "date": "2012-10-26",
+   "close": 11509.15,
+   "was": null,
+   "why": "NSE ind_close_all_26102012: NIFTY BANK close 11509.15 (points change -105.35; close - change = our stored 2012-10-25 close 11614.5). The next session's file (2012-10-29) re-prints it as previous close 11509.15. niftyindices.com history: 11509.15. Missing from our feed (a special / Saturday / Muhurat / holiday-shifted session the source skipped)."
+  },
+  {
+   "file": "nifty_bank.json",
+   "date": "2012-11-13",
+   "close": 11533.9,
+   "was": null,
+   "why": "NSE ind_close_all_13112012: NIFTY BANK close 11533.9 (points change -49.95; close - change = our stored 2012-11-12 close 11583.85). The next session's file (2012-11-15) re-prints it as previous close 11533.9. niftyindices.com history: 11533.9. Missing from our feed (a special / Saturday / Muhurat / holiday-shifted session the source skipped)."
+  },
+  {
+   "file": "nifty_bank.json",
+   "date": "2013-05-11",
+   "close": 12780.15,
+   "was": null,
+   "why": "NSE ind_close_all_11052013: NIFTY BANK close 12780.15 (points change 27.85; close - change = our stored 2013-05-10 close 12752.3). The next session's file (2013-05-13) re-prints it as previous close 12780.15. niftyindices.com history: 12780.15. Missing from our feed (a special / Saturday / Muhurat / holiday-shifted session the source skipped)."
+  },
+  {
+   "file": "nifty_bank.json",
+   "date": "2013-11-03",
+   "close": 11614.05,
+   "was": null,
+   "why": "NSE ind_close_all_03112013: NIFTY BANK close 11614.05 (points change -14.6; close - change = our stored 2013-11-01 close 11628.65). The next session's file (2013-11-05) re-prints it as previous close 11614.05. niftyindices.com history: 11614.05. Missing from our feed (a special / Saturday / Muhurat / holiday-shifted session the source skipped)."
+  },
+  {
+   "file": "nifty_bank.json",
+   "date": "2014-03-22",
+   "close": 12075.8,
+   "was": null,
+   "why": "NSE ind_close_all_22032014: NIFTY BANK close 12075.8 (points change -16.55; close - change = our stored 2014-03-21 close 12092.35). The next session's file (2014-03-24) re-prints it as previous close 12075.8. niftyindices.com history: 12075.8. Missing from our feed (a special / Saturday / Muhurat / holiday-shifted session the source skipped)."
+  },
+  {
+   "file": "nifty_bank.json",
+   "date": "2014-10-23",
+   "close": 16470.05,
+   "was": null,
+   "why": "NSE ind_close_all_23102014: NIFTY BANK close 16470.05 (points change 25.35; close - change = our stored 2014-10-22 close 16444.7). The next session's file (2014-10-27) re-prints it as previous close 16470.05. niftyindices.com history: 16470.05. Missing from our feed (a special / Saturday / Muhurat / holiday-shifted session the source skipped)."
+  },
+  {
+   "file": "nifty_bank.json",
+   "date": "2015-02-28",
+   "close": 19691.2,
+   "was": null,
+   "why": "NSE ind_close_all_28022015: NIFTY BANK close 19691.2 (points change 616.65; close - change = our stored 2015-02-27 close 19074.55). The next session's file (2015-03-02) re-prints it as previous close 19691.2. niftyindices.com history: 19691.2. Missing from our feed (a special / Saturday / Muhurat / holiday-shifted session the source skipped)."
+  },
+  {
+   "file": "nifty_bank.json",
+   "date": "2015-11-11",
+   "close": 16956.0,
+   "was": null,
+   "why": "NSE ind_close_all_11112015: NIFTY BANK close 16956.0 (points change 120.0; close - change = our stored 2015-11-10 close 16836.0). The next session's file (2015-11-13) re-prints it as previous close 16956.0. niftyindices.com history: 16956.0. Missing from our feed (a special / Saturday / Muhurat / holiday-shifted session the source skipped)."
+  },
+  {
+   "file": "nifty_bank.json",
+   "date": "2016-10-30",
+   "close": 19523.55,
+   "was": null,
+   "why": "NSE ind_close_all_30102016: NIFTY BANK close 19523.55 (points change -32.4; close - change = our stored 2016-10-28 close 19555.95). The next session's file (2016-11-01) re-prints it as previous close 19523.55. niftyindices.com history: 19523.55. Missing from our feed (a special / Saturday / Muhurat / holiday-shifted session the source skipped)."
+  },
+  {
+   "file": "nifty_bank.json",
+   "date": "2018-11-07",
+   "close": 25737.5,
+   "was": 25769.7,
+   "why": "NSE ind_close_all_07112018: NIFTY BANK close 25737.5 (points change 139.5; close - change = our stored 2018-11-06 close 25598.0). The next session's file (2018-11-09) re-prints it as previous close 25737.5. Yahoo's feed carried 25769.7 for this Muhurat session."
+  },
+  {
+   "file": "nifty_bank.json",
+   "date": "2019-02-13",
+   "close": 26885.4,
+   "was": null,
+   "why": "NSE ind_close_all_13022019: NIFTY BANK close 26885.4 (points change -125.35; close - change = our stored 2019-02-12 close 27010.75). The next session's file (2019-02-14) re-prints it as previous close 26885.4. niftyindices.com history: 26885.4. Missing from our feed (a special / Saturday / Muhurat / holiday-shifted session the source skipped)."
+  },
+  {
+   "file": "nifty_bank.json",
+   "date": "2019-03-29",
+   "close": 30426.8,
+   "was": null,
+   "why": "NSE ind_close_all_29032019: NIFTY BANK close 30426.8 (points change 6.25; close - change = our stored 2019-03-28 close 30420.55). The next session's file (2019-04-01) re-prints it as previous close 30426.8. niftyindices.com history: 30426.8. Missing from our feed (a special / Saturday / Muhurat / holiday-shifted session the source skipped)."
+  },
+  {
+   "file": "nifty_bank.json",
+   "date": "2019-10-27",
+   "close": 29516.3,
+   "was": null,
+   "why": "NSE ind_close_all_27102019: NIFTY BANK close 29516.3 (points change 120.35; close - change = our stored 2019-10-25 close 29395.95). The next session's file (2019-10-29) re-prints it as previous close 29516.3. niftyindices.com history: 29516.3. Missing from our feed (a special / Saturday / Muhurat / holiday-shifted session the source skipped)."
+  },
+  {
+   "file": "nifty_bank.json",
+   "date": "2020-02-01",
+   "close": 29820.9,
+   "was": null,
+   "why": "NSE ind_close_all_01022020: NIFTY BANK close 29820.9 (points change -1012.7; close - change = our stored 2020-01-31 close 30833.6). The next session's file (2020-02-03) re-prints it as previous close 29820.9. niftyindices.com history: 29820.9. Missing from our feed (a special / Saturday / Muhurat / holiday-shifted session the source skipped)."
+  },
+  {
+   "file": "nifty_bank.json",
+   "date": "2020-11-14",
+   "close": 28594.3,
+   "was": null,
+   "why": "NSE ind_close_all_14112020: NIFTY BANK close 28594.3 (points change 128.6; close - change = our stored 2020-11-13 close 28465.7). The next session's file (2020-11-17) re-prints it as previous close 28594.3. niftyindices.com history: 28594.3. Missing from our feed (a special / Saturday / Muhurat / holiday-shifted session the source skipped)."
+  },
+  {
+   "file": "nifty_bank.json",
+   "date": "2023-11-12",
+   "close": 43996.65,
+   "was": null,
+   "why": "NSE ind_close_all_12112023: NIFTY BANK close 43996.65 (points change 176.55; close - change = our stored 2023-11-10 close 43820.1). The next session's file (2023-11-13) re-prints it as previous close 43996.65. niftyindices.com history: 43996.65. Missing from our feed (a special / Saturday / Muhurat / holiday-shifted session the source skipped)."
+  },
+  {
+   "file": "nifty_bank.json",
+   "date": "2024-01-20",
+   "close": 46058.2,
+   "was": null,
+   "why": "NSE ind_close_all_20012024: NIFTY BANK close 46058.2 (points change 357.05; close - change = our stored 2024-01-19 close 45701.15). The next session's file (2024-01-23) re-prints it as previous close 46058.2. niftyindices.com history: 46058.2. Missing from our feed (a special / Saturday / Muhurat / holiday-shifted session the source skipped)."
+  },
+  {
+   "file": "nifty_bank.json",
+   "date": "2024-03-02",
+   "close": 47297.5,
+   "was": null,
+   "why": "NSE ind_close_all_02032024: NIFTY BANK close 47297.5 (points change 10.6; close - change = our stored 2024-03-01 close 47286.9). The next session's file (2024-03-04) re-prints it as previous close 47297.5. niftyindices.com history: 47297.5. Missing from our feed (a special / Saturday / Muhurat / holiday-shifted session the source skipped)."
+  },
+  {
+   "file": "nifty_bank.json",
+   "date": "2024-05-18",
+   "close": 48199.5,
+   "was": null,
+   "why": "NSE ind_close_all_18052024: NIFTY BANK close 48199.5 (points change 83.85; close - change = our stored 2024-05-17 close 48115.65). The next session's file (2024-05-21) re-prints it as previous close 48199.5. niftyindices.com history: 48199.5. Missing from our feed (a special / Saturday / Muhurat / holiday-shifted session the source skipped)."
+  },
+  {
+   "file": "nifty_bank.json",
+   "date": "2025-02-01",
+   "close": 49506.95,
+   "was": null,
+   "why": "NSE ind_close_all_01022025: NIFTY BANK close 49506.95 (points change -80.25; close - change = our stored 2025-01-31 close 49587.2). The next session's file (2025-02-03) re-prints it as previous close 49506.95. niftyindices.com history: 49506.95. Missing from our feed (a special / Saturday / Muhurat / holiday-shifted session the source skipped)."
+  },
+  {
+   "file": "nifty_bank.json",
+   "date": "2026-02-01",
+   "close": 58417.2,
+   "was": null,
+   "why": "NSE ind_close_all_01022026: NIFTY BANK close 58417.2 (points change -1193.25; close - change = our stored 2026-01-30 close 59610.45). The next session's file (2026-02-02) re-prints it as previous close 58417.2. niftyindices.com history: 58417.2. Missing from our feed (a special / Saturday / Muhurat / holiday-shifted session the source skipped)."
+  }
+ ]
+}

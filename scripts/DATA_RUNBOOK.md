@@ -24521,6 +24521,25 @@ Pages deployed): live `fin/<SYM>.json` 107/107 cells at the printed value; the s
 stock.html?sym=MARUTI, Financials, Consolidated: Mar-24 EPS 125.71; SWIGGY consolidated Jun-25 −5.04 in the `neg` style; console
 clean. fund_eps_shares re-run on the live slices: 673 → 613 open, the 60 cells flagged 0. Live check script:
 `~/stocks-cache/xcheck-f3/verify_live_f3.py`.
+**F6 HEALED — 85 missing index sessions + NIFTY BANK 2018-11-07 (user chose F6 before F4/F5, then "yes"; the 4 early-Jan-2012
+closes left out).** Reader 1 = NSE's ind_close_all_DDMMYYYY.csv for each session (2,194 cached in `~/stocks-cache/nse_ind_close/`, the
+2012-16 files in `~/stocks-cache/xcheck-misc/`), with two identities on every value: the file's close − its points change = our stored
+previous-session close to 0.00 (the gap sits where we think), and the NEXT session's file re-prints it as its previous close (exact,
+all 86). Reader 2 = niftyindices.com full history (the §214 triage's whole-span audit, 2026-09-28): agrees on all 85. Missing: NIFTY 50
+33, NIFTY 500 29, NIFTY BANK 23 — Saturday / Budget / Muhurat-Sunday / holiday-shifted sessions and a few ordinary days the feeds
+skipped (e.g. 28-Feb-2015 Budget Saturday NIFTY 50 8,901.85 — the index page's Feb-2015 return was +0.4 % to 27-Feb, now +1.1 %).
+NIFTY BANK 2018-11-07 Muhurat: Yahoo 25,769.70 → official 25,737.50 (ind_close_all_07112018: +139.5 from 25,598.00). LEFT OUT: 2012-01-02
+NIFTY 50 and 2012-01-07 (all three) — nsearchives has no ind_close_all file before ~Mar-2012 (02/03/04/07/09/10-Jan-2012 all 404) and
+Yahoo ^NSEI lacks them; niftyindices alone is one source.
+**Mechanism.** fetch_fii_dii.update_yahoo_index re-reads nifty500 / nifty_bank WHOLE from Yahoo every run and overwrites every date
+Yahoo returns (inserted sessions survive, a corrected date does not), so a ledger: `scripts/index_close_fix.json` {file, date, close,
+was, why}, applied by the new `apply_index_fix()` at the end of update_nifty() and update_yahoo_index() (also on a failed fetch) —
+lands when the date is absent or holds `was`, leaves anything else with a ::warning::, re-sorts px by date (every consumer file was
+date-ordered; kept so). A broken ledger warns and the feed still updates. Tests: 7 cases incl. a simulated nightly where Yahoo returns
+25,769.70 (file ends at 25,737.50) and a failed fetch. One-time apply to the three docs files: exactly 86 dates changed (85 added, 1
+corrected), nothing removed, order kept. Only writer = refresh-fii-dii.yml (ci_land keeps origin's copy of a file changed mid-run).
+Pages read locally, console clean: index-chart.html (NIFTY 50 Monthly 2015 row: Feb +1.1 %, Mar −4.6 %), ?ix=banknifty, fii-dii.html,
+stock-backtest.html (loads the benchmark only on run). The SW never caches .json — no shell bump. Readings `~/stocks-cache/xcheck-f6/`.
 
 ## §215 — THE ARCHIVE PAGE'S "Amount(Rs. in lakhs)" IS NSE'S TEMPLATE, NOT THE FILER'S UNIT: 5 detail cells read 10×/100× small through the PAT anchor's 2-cr floor, TTKPRESTIG's stored PAT and revenue with them; the anchor gets a relative cap (2026-09-28, user: "yes" to heal the 3 cells + the TTKPRESTIG stored PAT/revenue and its 2 cells)
 **NO ASSUMPTIONS, NO GUESSWORK — every number below was measured this session (population on origin dcb1b47a0, landed on d5cbb8c11).**

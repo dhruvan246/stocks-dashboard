@@ -596,6 +596,37 @@ def update_fo(cash_dates, max_new=40):
     print("  fii_fo.json (derivatives): %d rows (was %d)" % (len(rows), n_before))
 
 
+INDEX_FIX = os.path.join(HERE, "index_close_fix.json")
+
+
+def apply_index_fix(out_path, px):
+    """Official NSE closes for sessions the feeds lack or carry wrong (scripts/index_close_fix.json, runbook §214a F6),
+    applied AFTER each merge (nifty500/nifty_bank are re-read whole from Yahoo every run, which would overwrite a
+    corrected date). An entry lands when the date is absent or holds `was`; anything else is left alone and reported.
+    Returns (px sorted by date, number of dates changed)."""
+    try:
+        fixes = json.load(open(INDEX_FIX, encoding="utf-8")).get("fixes") or []
+    except FileNotFoundError:
+        fixes = []
+    except Exception as e:                       # a broken ledger must never stop the feed update
+        print("::warning::index_close_fix.json unreadable (%s) — not applied" % e)
+        fixes = []
+    name, n = os.path.basename(out_path), 0
+    for f in fixes:
+        if f.get("file") != name:
+            continue
+        cur = px.get(f["date"])
+        if cur == f["close"]:
+            continue
+        if cur is None or cur == f.get("was"):
+            px[f["date"]] = f["close"]
+            n += 1
+        else:
+            print("::warning::index_close_fix %s %s: feed now holds %s (fix %s, expected %s) — left alone"
+                  % (name, f["date"], cur, f["close"], f.get("was")))
+    return dict(sorted(px.items())), n
+
+
 def update_nifty():
     """Keep docs/nifty.json current by merging the latest Nifty closes from the cash feed
     (historical 2012+ seed is committed once; daily runs just append new days)."""
@@ -607,6 +638,9 @@ def update_nifty():
     for r in _load_rows(OUT).values():
         if r.get("nifty") is not None and r["date"] not in px:
             px[r["date"]] = round(r["nifty"], 2)
+    px, nf = apply_index_fix(OUT_NIFTY, px)
+    if nf:
+        print("  nifty.json: index_close_fix applied %d" % nf)
     json.dump({"updated": time.strftime("%Y-%m-%dT%H:%M:%S"), "px": px},
               open(OUT_NIFTY, "w", encoding="utf-8"), separators=(",", ":"))
     print("  nifty.json: %d points (+%d)" % (len(px), len(px) - n0))
@@ -632,6 +666,9 @@ def update_yahoo_index(out_path, yahoo_symbol, label):
             px[time.strftime("%Y-%m-%d", time.gmtime(t))] = round(c, 2)
     except Exception as e:
         print("  %s: fetch failed (%s) — keeping existing" % (label, e))
+    px, nf = apply_index_fix(out_path, px)
+    if nf:
+        print("  %s: index_close_fix applied %d" % (label, nf))
     json.dump({"updated": time.strftime("%Y-%m-%dT%H:%M:%S"), "px": px},
               open(out_path, "w", encoding="utf-8"), separators=(",", ":"))
     print("  %s: %d points (+%d)" % (label, len(px), len(px) - n0))
