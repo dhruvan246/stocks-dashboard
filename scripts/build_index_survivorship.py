@@ -118,8 +118,7 @@ OWN_HISTORY = {
                        "Membership: NSE Indices\u2019 own press releases \u2014 every quarterly review and every one-off exclusion "
                        "since 2019 \u2014 walked back from NSE\u2019s official constituent list, with ticker renames folded to "
                        "today\u2019s symbol; checked against NSE\u2019s archived official list of 3 Aug 2023 (147 of 147). "
-                       "Record starts 1 Jan 2020. Aug\u2013Sep 2021 is open: "
-                       "two of NSE\u2019s releases for that window are scanned images not yet read."),
+                       "Record starts 1 Jan 2020."),
 }
 
 COLS = ["sym", "name", "sector", "industry", "isin", "mcap", "status", "first", "fromStart", "last",

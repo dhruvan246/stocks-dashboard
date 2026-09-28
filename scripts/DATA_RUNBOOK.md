@@ -23531,3 +23531,11 @@ group, quarterly-results `?uni=smeemerge`, shareholding (Thematic group — nift
 `ever.json` (25 KB; fetched only on a live NSE SME page or a rewound NSE page; never on a BSE page). sw v210.
 **Backtests** are not wired, as for BSE SME IPO (§195 Option 2) — here only because "same as BSE" was the ask: these ARE NSE symbols
 and the engine could take them via indicesHistory. Offer it, don't assume it.
+**§210 — Aug–Sep 2021 CLOSED (2026-09-28, user: "Yes, read them").** The two image-only releases read by eye (page images
+rendered with PyMuPDF): `ind_prs23082021` p1 "These changes shall become effective from September 30, 2021", p27 section
+32) NIFTY SME EMERGE — out AMJUMBO, GICL, URAVI; in AILIMITED, AURDIS, CROWN, KKVAPOW, MANAV, NARMADA, SPECTRUM, TRANSWIND,
+WALPAR. `ind_prs23082021_1`: effective August 30, 2021 — out JAIPURKURT (Nandani Creation), RELIABLE (proposed migration).
+Both are ledger releases with a `read` note. Rebuild: **0 conflicts, 0 members before their first SME trade**; 3-Aug-2023
+archive still 147 / 147; 1-Jan-2020 roster 129 (was 132), 867 events, 776 stints. Every name the walk had flagged is in
+these two releases — the walk's conflict list predicted them exactly.
+
