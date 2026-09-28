@@ -1,0 +1,71 @@
+{
+ "_doc": "Nifty 500 members whose dashboard price series KEEPS Yahoo although fill_prices_from_sf.py replaces every other member's with the NSE-bhavcopy store (§214a F1). Each is a member where the STORE carries a verified >= 10 % error that Yahoo does not (px_nse_yahoo triage 2026-09-28, ~/stocks-cache/xcheck/triage_0928/px_verdicts.json): replacing would put a known-wrong old price on the dashboard. Remove an entry once its store error is healed (runbook §214a L1).",
+ "keep": {
+  "EIHOTEL": {
+   "why": "Our NSE store is wrong 2002-01-11→2006-09-08 (store/Yahoo = 7.4995): Split Rs10->Rs2 + Bonus 1:2 ex 12-Sep-2006 (combined 2/15 = 0.1333) is not in our ledgers: A is the raw price x1 before the ex-date (7.5x too high).",
+   "evidence": "NSE CA: EIHOTEL \"Spl-Rs10 To Rs2/Bonus-1:2\" ex 12-Sep-2006; BSE CA \"Bonus issue 1:2\" 12-Sep-2006 (+ blank-purpose row same day); Yahoo split event 2006-09-12 5:1 (one leg) but Yahoo prices carry both legs; NSE bhavcopy 12-Sep-2006: open 124.70 close 120.85 vs prev 812.10 (open/prev 0.1536); screener",
+   "until": "the store is healed through the corporate-action ledgers (runbook §214a L1, pre-2016 CA campaign) — then delete this entry",
+   "ts": "2026-09-28"
+  },
+  "SHANTIGEAR": {
+   "why": "Our NSE store is wrong 2002-07-12→2004-07-23 (store/Yahoo = 19.9971): Bonus 1:1 + FV split (BSE rows ex 27-Jul-2004; FV today Re 1) = 1/20; A's own close drops x0.0601 on 27-Jul-2004 (unadjusted) while Yahoo is continuous (x1.20) -> A 20x too high before it.",
+   "evidence": "BSE CA 522034 \"Bonus issue 1:1\" + blank-purpose row ex 27-Jul-2004; no NSE bhavcopy row read for the date (UNKNOWN symbol spelling then); A/B median 19.9971 over 107 point(s) 2002-07-12..2004-07-23; per-point reading vs Yahoo live refetch 2026-09-28: {'Yahoo daily disagrees': 107}; stored B equals Y",
+   "until": "the store is healed through the corporate-action ledgers (runbook §214a L1, pre-2016 CA campaign) — then delete this entry",
+   "ts": "2026-09-28"
+  },
+  "UNICHEMLAB": {
+   "why": "Our NSE store is wrong 2002-07-05→2004-03-12 (store/Yahoo = 4.0): Bonus 1:1 + FV split (BSE rows ex 16-Mar-2004; tape re-bases x0.226 on 17-Mar-2004) = 1/4; A has no factor, so it is 4x too high before it; Yahoo applies 1/4 (its event lists only 2:1).",
+   "evidence": "BSE CA 506690 \"Bonus issue 1:1\" + blank-purpose row ex 16-Mar-2004; Yahoo split 2004-03-16 2:1; NSE bhavcopy 17-Mar-2004 open/prev 0.2263; FV today Rs 2; A/B median 4.0000 over 89 point(s) 2002-07-05..2004-03-12; per-point reading vs Yahoo live refetch 2026-09-28: {'Yahoo daily disagrees': 89}; stor",
+   "until": "the store is healed through the corporate-action ledgers (runbook §214a L1, pre-2016 CA campaign) — then delete this entry",
+   "ts": "2026-09-28"
+  },
+  "WOCKPHARMA": {
+   "why": "Our NSE store is wrong 2002-07-05→2004-04-23 (store/Yahoo = 3.0): A ~1/3 re-basing on 29-Apr-2004 is not in our ledgers: A is 3x too high before it; Yahoo adjusts it (B continuous).",
+   "evidence": "NSE bhavcopy 29-Apr-2004: open 300.00 close 320.40 vs prev 889.35 (open/prev 0.3373, close/prev 0.3603); No NSE CA (pre-2006 floor), no BSE CA row, no Yahoo split event found for it — the event identity (likely bonus 2:1) is UNKNOWN; evidence is the tape step + Yahoo prices; screener.in chart starts",
+   "until": "the store is healed through the corporate-action ledgers (runbook §214a L1, pre-2016 CA campaign) — then delete this entry",
+   "ts": "2026-09-28"
+  },
+  "SUNDRMFAST": {
+   "why": "Our NSE store is wrong 2002-07-05→2004-01-16 (store/Yahoo = 10.0): A 1:10 step on 23-Jan-2004 (FV split, Yahoo event 27-Jan-2004 10:1) is not in our ledgers: A is 10x too high before 23-Jan-2004.",
+   "evidence": "NSE bhavcopy 23-Jan-2004: open 108.00 close 114.05 vs prev 1052.55 (open/prev 0.1026) — a clean 1/10 re-basing, not a crash; Yahoo split event 2004-01-27 10:1; BSE CA 500403 ex 27-Jan-2004 (purpose blank); NSE CA has no 2004 split rows (pre-2006 feed floor); screener.in chart starts 2005 — no 3rd re",
+   "until": "the store is healed through the corporate-action ledgers (runbook §214a L1, pre-2016 CA campaign) — then delete this entry",
+   "ts": "2026-09-28"
+  },
+  "HLVLTD": {
+   "why": "Our NSE store is wrong 2002-07-05→2006-09-01 (store/Yahoo = 1.25): at the 2006-09-08 re-basing the NSE open/prev 0.2 fits Yahoo's factor 0.2000 (open/factor 1.000) not A's 0.2500; no official record read",
+   "evidence": "A/B median 1.2500 over 218 point(s) 2002-07-05..2006-09-01; per-point reading vs Yahoo live refetch 2026-09-28: {'Yahoo daily disagrees': 218}; stored B equals Yahoo live at 218/218 points; right daily edge 2006-09-08 (prev session 2006-09-07): A/Yahoo 1.2501 -> 1.0; A jumps x0.9501, Yahoo jumps x1.",
+   "until": "the store is healed through the corporate-action ledgers (runbook §214a L1, pre-2016 CA campaign) — then delete this entry",
+   "ts": "2026-09-28"
+  },
+  "CHOLAHLDNG": {
+   "why": "Our NSE store is wrong 2002-07-05→2017-05-19 (store/Yahoo = 1.5308): The 2017 spin-off of the manufacturing business (BSE: \"Spin Off\" + \"Reduction of Capital\" ex 24-Aug-2017) is in none of our demerger ledgers; A is the raw price across it (x0.743 on resumption 25-Sep-2017) while Yahoo applies 0.653. Per our policy A should car",
+   "evidence": "BSE CA 504973 ex 24-Aug-2017 \"Spin Off\" and \"Reduction of Capital\"; NSE bhavcopy 25-Sep-2017 TIFIN open/prev 0.7249; no NSE CA row in the cache; A/B median 1.5308 over 777 point(s) 2002-07-05..2017-05-19; per-point reading vs Yahoo live refetch 2026-09-28: {'Yahoo daily disagrees': 773, 'wk: Yahoo l",
+   "until": "the store is healed through the corporate-action ledgers (runbook §214a L1, pre-2016 CA campaign) — then delete this entry",
+   "ts": "2026-09-28"
+  },
+  "JMFINANCIL": {
+   "why": "Our NSE store is wrong 2007-09-28→2008-09-05 (store/Yahoo = 1.25): Split Rs10->Re1 + Bonus 3:2 ex 08-Sep-2008 = 0.1 x 2/5 = 0.04; A applies 0.05 (bonus read as 1:1?) so A is 25% too high before the ex-date; Yahoo applies 0.04.",
+   "evidence": "NSE CA JMFINANCIL \"Fv Spl-Rs10tore1/Bon-3:2\" ex 08-Sep-2008; BSE CA 523405 \"Bonus issue 3:2\" + split row 08-Sep-2008; A/B median 1.2500 over 50 point(s) 2007-09-28..2008-09-05; per-point reading vs Yahoo live refetch 2026-09-28: {'Yahoo daily disagrees': 49, 'wk: Yahoo lacks the week-end session (we",
+   "until": "the store is healed through the corporate-action ledgers (runbook §214a L1, pre-2016 CA campaign) — then delete this entry",
+   "ts": "2026-09-28"
+  },
+  "SECURKLOUD": {
+   "why": "Our NSE store is wrong 2016-04-01→2019-03-22 (store/Yahoo = 0.4): A carries an extra 0.4 factor on all bars before a 2019-09-23 -> 2020-09-07 trading gap; the only NSE/BSE event is the 10-Oct-2016 Bonus 1:3 + split 10->5 (0.375), which Yahoo applies correctly (B = raw after it).",
+   "evidence": "NSE CA SECURKLOUD \" Bonus 1:3/Face Value Split ... Rs 10 To Rs 5\" ex 10-Oct-2016; BSE CA 512161 same two rows; NSE bhavcopy 22-Mar-2019 8KMILES 102.95 = Yahoo; A 41.18 (x0.4); A/raw 1.0 from 07-Sep-2020; A/B median 0.4000 over 156 point(s) 2016-04-01..2019-03-22; per-point reading vs Yahoo live refe",
+   "until": "the store is healed through the corporate-action ledgers (runbook §214a L1, pre-2016 CA campaign) — then delete this entry",
+   "ts": "2026-09-28"
+  },
+  "VIVIDHA": {
+   "why": "Our NSE store is wrong 2015-05-29→2016-03-23 (store/Yahoo = 0.0237): A/raw drifts 0.0178 (2015) -> 0.0234 (Mar-2016) -> 0.0256 (2017) -> 0.0286 (2019) -> 1.0 (2022) although NSE CA lists only \"Bonus 1:3\" (30-Mar-2016); Yahoo = raw x 0.75 before it (right). A shows 0.02-2.30 for a stock NSE printed at 0.70-129.",
+   "evidence": "NSE bhavcopy 01-Jun-2015 VIVIDHA 129.15: A 2.30, Yahoo 96.86; NSE CA only \" Bonus 1:3\" ex 30-Mar-2016; A/B median 0.0237 over 44 point(s) 2015-05-29..2016-03-23; per-point reading vs Yahoo live refetch 2026-09-28: {'Yahoo daily disagrees': 44}; stored B equals Yahoo live at 44/44 points",
+   "until": "the store is healed through the corporate-action ledgers (runbook §214a L1, pre-2016 CA campaign) — then delete this entry",
+   "ts": "2026-09-28"
+  },
+  "ZEEL": {
+   "why": "Our NSE store is wrong 2002-07-05→2007-02-09 (store/Yahoo = 1.3038): Scheme of Arrangement ex 12-Feb-2007 (NSE + BSE) is not in our demerger ledgers (only the 18-Dec-2006 one is); A is raw across it (x0.715 = tape), Yahoo applies its own 0.837.",
+   "evidence": "NSE CA ZEEL \"Scheme Of Arrangement\" ex 12-Feb-2007; BSE CA 505537 same; NSE bhavcopy 12-Feb-2007 ZEETELE open/prev 0.6234; A/B median 1.3038 over 241 point(s) 2002-07-05..2007-02-09; per-point reading vs Yahoo live refetch 2026-09-28: {'Yahoo daily disagrees': 241}; stored B equals Yahoo live at 241",
+   "until": "the store is healed through the corporate-action ledgers (runbook §214a L1, pre-2016 CA campaign) — then delete this entry",
+   "ts": "2026-09-28"
+  }
+ }
+}

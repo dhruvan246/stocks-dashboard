@@ -67,6 +67,11 @@ def main():
         payload = json.load(fh)
     start_ts = payload["startTs"]
     series = payload["series"]
+    # Nifty 500 members whose Yahoo series fill_prices_from_sf.py REPLACED with the NSE-bhavcopy store
+    # (§214a F1). The floor and ledger passes below re-add bars from the last published build / the Yahoo
+    # gap ledger — Yahoo-basis closes — so they skip these rows (one source per ticker). The phantom pass
+    # still applies: it only drops, and a Yahoo tail bar on an exchange holiday is exactly its case.
+    replaced = {t for t, m in (payload.get("meta") or {}).items() if (m or {}).get("srcFrom") == "yahoo-replaced"}
 
     def off(ts):
         return int((ts - start_ts) // DAY)
@@ -173,6 +178,9 @@ def main():
             slim_newest = max((max(cs["d"]) for cs in slim["series"].values() if cs["d"]),
                               default=None)
             for tkr, cs in slim["series"].items():
+                if tkr in replaced:
+                    stat["skip_replaced_by_store"] += 1
+                    continue
                 mine = fresh.get(tkr)
                 if not mine:
                     stat["ticker_absent_from_fetch"] += 1
@@ -195,6 +203,9 @@ def main():
         with open(LEDGER, encoding="utf-8") as fh:
             fills = json.load(fh).get("fills", {})
         for tkr, rows in fills.items():
+            if tkr in replaced:
+                stat["ledger_skip_replaced_by_store"] += 1
+                continue
             mine = fresh.get(tkr)
             if not mine:
                 stat["ledger_ticker_absent"] += 1

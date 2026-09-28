@@ -24286,6 +24286,55 @@ the only kind that catches a classification error like Quantmac's; SHP NSE vs BS
 announcement store-wide (§164r's stream, extended past the late quarters); Q-sum = FY once an FY source is stored (§45 names a
 `_fy_identity.py` that does not exist); delivery % has no independent source (both stores read sec_bhavdata_full).
 
+## §214a — THE §214 FINDINGS TRIAGED AGAINST OUTSIDE SOURCES, THEN HEALED ONE APPROVED CLASS AT A TIME (2026-09-28, user: "fix the real errors … show me the errors … i ll approve it only then fix"; "do not fix anything without my aproval"; "F1 option 1"; "then rest u ask me one by one")
+**Triage (diagnosis only, nothing changed).** The full uncapped report (the live page lists 400 per check) was re-run from origin/main
+707d93de1 and every open finding re-read by four read-only investigators against the company's result PDF / raw NSE XBRL (the
+104k-file cache), Screener, NSE+BSE corporate-action records, NSE/BSE bhavcopies, Yahoo LIVE and niftyindices; headline claims were
+re-checked by hand. Verdicts + scripts: `~/stocks-cache/xcheck/triage_0928/` (px_/eps_/pbt_/misc_verdicts.json + *_summary.md);
+stock-wise page https://claude.ai/artifact/SYaRCw8Rut6BPwiWSCrfve. Real errors found (Nifty 500 PIT members only):
+| class | real | e.g. | proposed route | status |
+|---|---|---|---|---|
+| F1 dashboard price (Yahoo) | 2,658 stretches / 263 stocks | TRENT 1Y −43.0 % vs −14.4 %; MOTILALOFS 3Y +17.5 % vs +369.9 % | replace with the NSE store | **LIVE (below)** |
+| F2 quarterly PAT | 73 cells / 45 | APARINDS Jun-26 −138.56 vs 467.45; SCHAEFFLER Jun-26 H1 in the quarter slot; CANBK Mar-24 pre-tax | fund cell ledger + owners-tag fallback rule | awaiting OK |
+| F3 x EPS | 60 / 39 | MARUTI Mar-24 c 251.42 vs 125.71; SWIGGY Jun-25 sign; ELGIEQUIP Mar-22 318.62 vs 2.31 | detail-cell ledger + sign guard | awaiting OK |
+| F4 x PBT/tax lines | 674 / 240 | bank "0.00" PBT stored as 0 (283); restated page read (196) | 4 reader fixes | awaiting OK |
+| F5 share counts | BSE Ltd 11 qtrs + 11 current | BSE SHP grand total wrong; ASTERDM/TDPOWERSYS changed after June | shares_history / event SHPs | awaiting OK |
+| F6 index files | 35 / 30 / 24 missing sessions | 28-Feb-2015, 29-Mar-2019, 30-Oct-2016 | add niftyindices closes | awaiting OK |
+| F7 not-an-error | ~4,850 | discontinued ops (ITC/TMPV/HUL), regulatory deferral, DVR / post-QE split artefacts | xcheck_accept + check fixes | awaiting OK |
+| D2 YoY across a restatement | policy | COALINDIA Jun-26 revenue +29 % vs like-for-like +7.8 % | user decision | awaiting OK |
+| L1 NSE store old errors | 21 / 18 | EIHOTEL 2002-06 ×7.5; SUNDRMFAST ×10; 30-Sep-2005 missing | pre-2016 CA campaign | listed, not rushed |
+Named hypotheses the reads overturned: INDIACEM Dec-24 EPS 144.64 is the company's own printed figure (on total comprehensive income —
+our copy is faithful); CAIRN Dec-12 PAT 13,251 is as filed (an 11,599 cr credit on its own line); RCOM Mar-18 is discontinued ops.
+
+**F1 LIVE — the dashboard's price history for every ever-Nifty-500 member is now the NSE store (user: "F1 option 1").** Why a
+replacement: nothing replaced a bad Yahoo series (fill_prices_from_sf filled EMPTY series only; heal_price_series is fill-only;
+fetch_all refetches everything each run), and Yahoo LIVE still serves every bad value — a patch would be undone overnight.
+- `scripts/fill_prices_from_sf.py`: `.NS` tickers whose symbol is in ANY Nifty 500 snapshot (indices_history.json; 1,011 on the
+  dashboard) get the store's series (same weekly-before-2020 / daily shape, same Yahoo-calendar alignment as the SME fills).
+  The store is published ~20:45 IST and refresh.yml runs 15:30-17:00 IST, so Yahoo's bars AFTER the store's end are kept as the
+  tail (normally today's bar). SEAM GATE: of the last 5 shared sessions up to the store's end, >= 4 within 1 %, else the ticker
+  keeps Yahoo this run (a split one side applied in that window); a store series ending > 10 days before the store's end keeps
+  Yahoo. meta: src "nse-bhavcopy", srcFrom "yahoo-replaced", tailYahoo n. The store is now STREAMED (xcheck.common.iter_section:
+  26 s, 1.8 GB peak locally) instead of json.loads of the 582 MB bin; a latent crash (len(None) when no Yahoo calendar) removed.
+- `scripts/dash_px_keep_yahoo.json`: 11 members keep Yahoo because the STORE carries a verified >= 10 % error there that Yahoo
+  does not (EIHOTEL, SHANTIGEAR, UNICHEMLAB, WOCKPHARMA, SUNDRMFAST, HLVLTD, CHOLAHLDNG, JMFINANCIL, SECURKLOUD, VIVIDHA, ZEEL —
+  L1). Delete an entry when its store error is healed. The 7 members with only < 10 % store gaps (demerger/rights policy
+  factors: AMBUJACEM, BAJFINANCE, SUNPHARMA, TMPV, CHOLAFIN, TATASTEEL, MOTHERSON 2002) were switched.
+- `scripts/heal_price_series.py`: floor + ledger passes skip srcFrom "yahoo-replaced" rows (they re-add Yahoo-basis bars).
+- `scripts/xcheck/px_nse_yahoo.py`: replaced rows are skipped as not independent, and the note counts them separately.
+  CONSEQUENCE: for members the price check now compares nothing — the dashboard serves the store itself. An independent reader
+  of the store (a nightly Yahoo refetch inside xcheck, or a second price source) is an open follow-up, not built.
+- Side effect the user accepted with option 1: old prices now carry our demerger/rights adjustments like the stock page
+  (RAYMOND 10Y +123.9 % → +1,002.9 % across its 2024/2025 demergers). The dashboard and stock page now agree.
+Verified before push (local rehearsal from the published bin rebuilt into the Yahoo-stage payload, 591 fills blanked, real
+fill → heal → build_compressed → bse_names → guard_feed → guard_sessions; test_ci_land 451/451, test_no_ca_inference PASS):
+1,000 replaced / 11 kept by ledger / 0 seam fails; every non-member series identical to the published build except 85 rows
+that differ only because the store and the BSE last-trade step moved since that build (checked: ACCENTMIC = today's store);
+TRENT 1Y −14.4 %, MOTILALOFS 3Y +369.9 %, CGCL 3Y +30.4 %, GPIL 3Y +86.7 %, LMW 20Y +576 %, 18-Mar-2025 real closes (ABB 5,410.90
+not the repeated 5,187.65); replace_one unit paths: 1-bar Yahoo tail, basis change → keeps Yahoo untouched, one stale print →
+replaced, suspended → keeps Yahoo; nse-bse-dashboard / movers / sectors load with 0 console errors (sectors' pe_ttm.json 404 is
+pre-existing: gitignored, 404 on Pages too).
+
 ## §215 — THE ARCHIVE PAGE'S "Amount(Rs. in lakhs)" IS NSE'S TEMPLATE, NOT THE FILER'S UNIT: 5 detail cells read 10×/100× small through the PAT anchor's 2-cr floor, TTKPRESTIG's stored PAT and revenue with them; the anchor gets a relative cap (2026-09-28, user: "yes" to heal the 3 cells + the TTKPRESTIG stored PAT/revenue and its 2 cells)
 **NO ASSUMPTIONS, NO GUESSWORK — every number below was measured this session (population on origin dcb1b47a0, landed on d5cbb8c11).**
 **Defect.** `xtra_nse_html.py` scaled every money row by the page's "Amount(Rs. in …)" header, and that header reads

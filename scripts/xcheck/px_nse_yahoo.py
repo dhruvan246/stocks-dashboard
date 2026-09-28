@@ -70,16 +70,22 @@ class PxNseYahoo(C.Check):
             sym = (m or {}).get("symbol") or t.rsplit(".", 1)[0]
             if t.endswith(".NS") and sym in ever: want[t] = sym
         sf = C.sf_closes(set(want.values()))
-        skipped_bhav = unmapped = 0
+        skipped_bhav = replaced = unmapped = 0
         for t, ser in yser:
             sym = want.get(t)
             if not sym: continue
-            if (ymeta.get(t) or {}).get("src") == "nse-bhavcopy": skipped_bhav += 1; continue
+            m = ymeta.get(t) or {}
+            if m.get("src") == "nse-bhavcopy":
+                # the dashboard serves the NSE store itself here: comparing it with the store is not a second reading
+                if m.get("srcFrom") == "yahoo-replaced": replaced += 1
+                else: skipped_bhav += 1
+                continue
             a = sf.get(sym)
             if not a: unmapped += 1; continue
             self._one(sym, self._points(sym, a, ser, start), ev.get(sym, {}), last_d)
-        self.note("%d Yahoo series filled from the bhavcopy skipped (not independent); %d member tickers with no "
-                  "series in the NSE bin" % (skipped_bhav, unmapped))
+        self.note("%d member series REPLACED by the NSE store on the dashboard (§214a F1) and %d Yahoo-less series filled "
+                  "from it are skipped (not independent: the dashboard serves the store itself); %d member tickers "
+                  "with no series in the NSE bin" % (replaced, skipped_bhav, unmapped))
         # A session where one file is off for MANY members at once is one defect (Yahoo repeated the previous close for
         # 373 members on 18-Mar-2025), not hundreds: fold same-date spikes into a single session finding.
         by = {}
