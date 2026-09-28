@@ -185,7 +185,19 @@ def main():
             raw = open(src, "rb").read()
             if src.endswith(".gz"):
                 raw = gzip.decompress(raw)
-            for sym, qs in json.loads(raw).items():
+            xall = json.loads(raw)
+            # §214a F3: serve-time re-assert of the proven single cells (filer XBRL slips), so a ledger copy
+            # from before a heal cannot put the slip back on the page
+            try:
+                if HERE not in sys.path:
+                    sys.path.insert(0, HERE)
+                import xtra_cell_fix
+                nc = xtra_cell_fix.reassert(xall)
+                if nc:
+                    print("xtra_cell_fix: re-asserted %d cells at serve time" % nc)
+            except Exception as e:                  # a broken fix ledger must never drop the whole detail
+                print("::warning::xtra_cell_fix not applied at serve time (%s)" % e)
+            for sym, qs in xall.items():
                 keep = {}
                 for qe, cell in qs.items():
                     kc = {}

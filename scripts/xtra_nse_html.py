@@ -75,6 +75,7 @@ sys.path.insert(0, HERE)
 import _nse_archive_revop as NAR          # list_rows / get_detail / aliases / cache / close()
 import _n500_member_bin as MB             # PIT Nifty-500 membership, rename-folded
 import xtra_fc_fix                        # §211: proven finance costs where the page printed the tax
+import xtra_cell_fix                      # §214a F3: proven single cells (filer XBRL slips)
 
 FUND = os.path.join(ROOT, "docs", "sf_fundamentals.json")
 LEDGER = os.path.join(HERE, "xbrl_extra.json")
@@ -540,6 +541,9 @@ def apply_reads(reads, ledger):
     nf = xtra_fc_fix.reassert(ledger)
     if nf:
         print("xtra_fc_fix: re-asserted %d cells" % nf)
+    nc = xtra_cell_fix.reassert(ledger)
+    if nc:
+        print("xtra_cell_fix: re-asserted %d cells" % nc)
     if stale:
         print("xtra_unit_fix: skipped %d journal reads made under a page's wrong declared unit" % stale)
     return n

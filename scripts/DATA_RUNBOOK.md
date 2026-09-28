@@ -24489,6 +24489,33 @@ where the filing prints a (9.43) loss; BIOCON Jun-20, GMMPFAUDLR Sep-21/Sep-22, 
 printed profit split; COFORGE Jun-25 x pbt − tax 286.2 ≠ the printed total 356.4) → F4; eps 3 were flagged before the heal too
 (TECHM Sep-24 / Dec-24: the company's printed EPS 14.12 / 11.10 implies fewer shares than shares_history — denominator question
 for F7; INOXWIND Mar-25: printed EPS 1.15 does not reconcile with its printed owners profit 186.87).
+**F3 HEALED — 60 quarterly EPS cells (+47 diluted twins) to the printed figure (user: "yes" to read, then "yes" to write the list,
+the after-exceptional / after-regulatory-deferral line for the 13 two-line cases).** Each READ (one agent; it stalled once at 16/60
+and was resumed with per-cell saves + ≤60 s timeouts) — reader 1 = the quarter's own BSE result PDF on all 60 (scans rendered), reader 2
+= the next filing's comparative column (59; checked for no split/bonus in between) or Moneycontrol (EASEMYTRIP, whose next filing is
+split-restated); the readers agree to 2 decimals on all 60; 2 triage candidates moved (ADANIENSOL Mar-25 5.50 not 5.39, Sep-25 4.44
+not 4.45). Independent gate: every written EPS × the quarter-end share count reproduces the stored PAT within 5 % (the served values
+mostly did not). Lead-session spot reads: SHREECEM Jun-24 std page "Cash 259.84 / Basic and Diluted 88.06"; GLAXO Dec-23 con
+"before Exceptional 9.89 / after 2.70". All 60 are FILER XBRL slips copied faithfully: sign lost 19, continuing+discontinued doubled
+15, before-exceptional line 7, before regulatory-deferral line 6 (ADANIENSOL ×4, NLCINDIA, TATAPOWER — the line of the PAT we store),
+cash EPS in the basic tag 6 (SHREECEM), decimal/digit slips 3 (MFSL, VBL, EASEMYTRIP), weighted share count in the EPS tag 1
+(ELGIEQUIP), a later filing's contexts dated to this quarter 3 (MMTC Jun-24 c, SIEMENS Jun-25 s+c). Diluted: 13 already right and left
+alone; PVRINOX Mar-24 diluted −13.12 as filed (the next filing re-printed −13.21).
+**Mechanism (new, §39 gate run).** No ledger held deep-detail EPS, so `scripts/xtra_cell_fix.json` + `scripts/xtra_cell_fix.py`:
+entries {sym, qe, basis, field, was, fixed, why, found}; reassert() lands `fixed` only while the cell holds `was` or no value (a
+re-read that moved the cell is left alone and reported) and lists the field under the cell's `src_fix`. Re-asserted wherever
+xtra_fc_fix is (build_xbrl_extra full + --incremental incl. the "nothing new" path, xtra_nse_html.apply_reads) AND at serve time
+in build_stock_fin inside its own try (a broken fix ledger prints ::warning:: and the detail still ships — tested: 5,937 symbols
+kept). Tests: 9 reassert cases (set / idempotent / moved / no cell ×3 / field absent / marker only / two fields; missing and broken
+ledger); a full scratch build_stock_fin reproduced all 6,672 slices with ONLY the 107 cells changed plus the same fixes on the
+companies' old-ticker slices (ADANIEXPO, CROMPGREAV, DCMSRMCONS, HINDALC0, JSWSTL, MAX, NEYVELILIG, PRIYADCEM, RAINCOM, ZEETELE) and
+BLEL fund/revop (a slice already lagging the store, not this change); `--apply` on the committed gz changed exactly the 107 values
+(+60 src_fix markers), and a second run changes nothing. Readings: `~/stocks-cache/xcheck-f3/f3_readings.json`, f3_summary.md.
+**Side finding, NOT changed (to ask with F4):** whole detail rows leaked from a later filing whose contexts are dated to an earlier
+quarter — a scan of every slice for quarter pairs sharing ≥6 identical non-zero detail numbers incl. pbt or tax finds 89 pairs, 4 on
+Nifty 500 members: MMTC Jun-24 c (= Jun-25: oi, fc, dep, tax, exc, pbt, emp, eps, assoc), SIEMENS Jun-25 s and c (= Dec-25), LMW
+Jun-18 c (= Sep-18). The F3 EPS entries fix only the EPS of MMTC/SIEMENS; the other fields and the reader's context dating are open.
+Scan: `~/stocks-cache/xcheck-f3/row_leak_scan.json`.
 
 ## §215 — THE ARCHIVE PAGE'S "Amount(Rs. in lakhs)" IS NSE'S TEMPLATE, NOT THE FILER'S UNIT: 5 detail cells read 10×/100× small through the PAT anchor's 2-cr floor, TTKPRESTIG's stored PAT and revenue with them; the anchor gets a relative cap (2026-09-28, user: "yes" to heal the 3 cells + the TTKPRESTIG stored PAT/revenue and its 2 cells)
 **NO ASSUMPTIONS, NO GUESSWORK — every number below was measured this session (population on origin dcb1b47a0, landed on d5cbb8c11).**

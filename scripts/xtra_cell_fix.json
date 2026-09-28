@@ -1,0 +1,1078 @@
+{
+ "_README": [
+  "Proven values for single deep-detail cells of scripts/xbrl_extra.json (runbook §214a F3). Applier + rules: scripts/xtra_cell_fix.py. Each entry: the filer's XBRL tag held `was`; two independent readers of the printed result give `fixed`.",
+  "2026-09-28 (§214a F3, user \"yes\"): 60 basic-EPS cells + their diluted twins where the diluted tag carried the same slip — sign lost, continuing+discontinued doubled, cash EPS in the basic tag, before-exceptional / before-regulatory-deferral line, digits/decimal slips, a later filing's contexts dated to this quarter."
+ ],
+ "fixes": [
+  {
+   "sym": "ADANIENSOL",
+   "qe": "20250331",
+   "basis": "c",
+   "field": "eps_b",
+   "was": 6.57,
+   "fixed": 5.5,
+   "why": "XBRL total tag (BasicEarningsLossPerShareFromContinuingAndDiscontinuedOperations, and the diluted twin) holds the printed EPS BEFORE net movement in regulatory deferral balances (row 24); the printed bottom-line EPS on the profit for the period / owners is row 23 'after net movement in regulatory deferral balance'. READ 1: BSE result PDF 264ea732 (Audited results FY25, filed 2025-04-24 15:21), p10 Statement of Consolidated Financial Results q&y ended 31-Mar-2025, Rs crore (scanned, rotated page rendered ~190 dpi) — row 23 'Basic / Diluted Earnings per Equity Share (FV Rs 10) after net Movement in Regulatory Deferral Balance (not annualized)' 5.50; row 24 '... before net Movement' 6.57 (31-Mar-25 quarter col). Owners profit 647.15. Raw XBRL INTEGRATED_FILING (con, 2 copies): Basic/Diluted ContinuingAndDiscontinued = Continuing = 6.57, Discontinued 0. READ 2: BSE result PDF f45c43bb (Jun-25 results, filed 2025-07-24), p8 consolidated, 31-Mar-25 comparative col; no split/bonus between (paid-up 1,201.28 both) — row 23 after 5.50; row 24 before 6.57; also Mar-26 filing 16a326c3 p10 31-Mar-25 col after 5.50 / before 6.57; Moneycontrol cons Basic/Diluted 5.50.",
+   "found": "second-reader audit triage 2026-09-28, F3 (runbook §214a)"
+  },
+  {
+   "sym": "ADANIENSOL",
+   "qe": "20250331",
+   "basis": "c",
+   "field": "eps_d",
+   "was": 6.57,
+   "fixed": 5.5,
+   "why": "XBRL total tag (BasicEarningsLossPerShareFromContinuingAndDiscontinuedOperations, and the diluted twin) holds the printed EPS BEFORE net movement in regulatory deferral balances (row 24); the printed bottom-line EPS on the profit for the period / owners is row 23 'after net movement in regulatory deferral balance'. READ 1: BSE result PDF 264ea732 (Audited results FY25, filed 2025-04-24 15:21), p10 Statement of Consolidated Financial Results q&y ended 31-Mar-2025, Rs crore (scanned, rotated page rendered ~190 dpi) — row 23 'Basic / Diluted Earnings per Equity Share (FV Rs 10) after net Movement in Regulatory Deferral Balance (not annualized)' 5.50; row 24 '... before net Movement' 6.57 (31-Mar-25 quarter col). Owners profit 647.15. Raw XBRL INTEGRATED_FILING (con, 2 copies): Basic/Diluted ContinuingAndDiscontinued = Continuing = 6.57, Discontinued 0. READ 2: BSE result PDF f45c43bb (Jun-25 results, filed 2025-07-24), p8 consolidated, 31-Mar-25 comparative col; no split/bonus between (paid-up 1,201.28 both) — row 23 after 5.50; row 24 before 6.57; also Mar-26 filing 16a326c3 p10 31-Mar-25 col after 5.50 / before 6.57; Moneycontrol cons Basic/Diluted 5.50.",
+   "found": "second-reader audit triage 2026-09-28, F3 (runbook §214a)"
+  },
+  {
+   "sym": "ADANIENSOL",
+   "qe": "20250630",
+   "basis": "c",
+   "field": "eps_b",
+   "was": 6.88,
+   "fixed": 4.27,
+   "why": "XBRL total tag (BasicEarningsLossPerShareFromContinuingAndDiscontinuedOperations, and the diluted twin) holds the printed EPS BEFORE net movement in regulatory deferral balances (row 24); the printed bottom-line EPS on the profit for the period / owners is row 23 'after net movement in regulatory deferral balance'. READ 1: BSE result PDF f45c43bb (filed 2025-07-24 15:20), p8 Statement of Consolidated Unaudited Financial Results q.e. 30-Jun-2025, Rs crore (text PDF, rotated page rendered) — row 23 Basic / Diluted EPS after net Movement in Regulatory Deferral Balance 4.27; row 24 before 6.88 (30-Jun-25 col). Owners profit 512.48. Raw XBRL INTEGRATED_FILING_INDAS_1492682 (con): Basic/Diluted ContinuingAndDiscontinued = Continuing = 6.88, Discontinued 0. READ 2: BSE result PDF d7b66bd8 (Sep-25 results, filed 2025-10-27), p8 consolidated (scanned, rendered 216 dpi), 30-Jun-25 comparative col — row 23 after 4.27; row 24 before 6.88 (Moneycontrol cons 4.27, screener 4.27 also).",
+   "found": "second-reader audit triage 2026-09-28, F3 (runbook §214a)"
+  },
+  {
+   "sym": "ADANIENSOL",
+   "qe": "20250630",
+   "basis": "c",
+   "field": "eps_d",
+   "was": 6.88,
+   "fixed": 4.27,
+   "why": "XBRL total tag (BasicEarningsLossPerShareFromContinuingAndDiscontinuedOperations, and the diluted twin) holds the printed EPS BEFORE net movement in regulatory deferral balances (row 24); the printed bottom-line EPS on the profit for the period / owners is row 23 'after net movement in regulatory deferral balance'. READ 1: BSE result PDF f45c43bb (filed 2025-07-24 15:20), p8 Statement of Consolidated Unaudited Financial Results q.e. 30-Jun-2025, Rs crore (text PDF, rotated page rendered) — row 23 Basic / Diluted EPS after net Movement in Regulatory Deferral Balance 4.27; row 24 before 6.88 (30-Jun-25 col). Owners profit 512.48. Raw XBRL INTEGRATED_FILING_INDAS_1492682 (con): Basic/Diluted ContinuingAndDiscontinued = Continuing = 6.88, Discontinued 0. READ 2: BSE result PDF d7b66bd8 (Sep-25 results, filed 2025-10-27), p8 consolidated (scanned, rendered 216 dpi), 30-Jun-25 comparative col — row 23 after 4.27; row 24 before 6.88 (Moneycontrol cons 4.27, screener 4.27 also).",
+   "found": "second-reader audit triage 2026-09-28, F3 (runbook §214a)"
+  },
+  {
+   "sym": "ADANIENSOL",
+   "qe": "20250930",
+   "basis": "c",
+   "field": "eps_b",
+   "was": 6.19,
+   "fixed": 4.44,
+   "why": "XBRL total tag (BasicEarningsLossPerShareFromContinuingAndDiscontinuedOperations, and the diluted twin) holds the printed EPS BEFORE net movement in regulatory deferral balances (row 24); the printed bottom-line EPS on the profit for the period / owners is row 23 'after net movement in regulatory deferral balance'. READ 1: BSE result PDF d7b66bd8 (filed 2025-10-27 16:50), p8 Statement of Consolidated Unaudited Financial Results q&h.y. ended 30-Sep-2025, Rs crore (scanned, rendered 216 dpi) — row 23 Basic / Diluted EPS after net Movement in Regulatory Deferral Balance 4.44; row 24 before 6.19 (30-Sep-25 col). Owners profit 533.97. Raw XBRL (con): ContinuingAndDiscontinued = 6.19. READ 2: BSE result PDF 56394609 (Dec-25 results, filed 2026-01-22), p12 consolidated (text), 30-Sep-25 comparative col — row 23 after 4.44; row 24 before 6.19 (Moneycontrol 4.44, screener 4.44).",
+   "found": "second-reader audit triage 2026-09-28, F3 (runbook §214a)"
+  },
+  {
+   "sym": "ADANIENSOL",
+   "qe": "20250930",
+   "basis": "c",
+   "field": "eps_d",
+   "was": 6.19,
+   "fixed": 4.44,
+   "why": "XBRL total tag (BasicEarningsLossPerShareFromContinuingAndDiscontinuedOperations, and the diluted twin) holds the printed EPS BEFORE net movement in regulatory deferral balances (row 24); the printed bottom-line EPS on the profit for the period / owners is row 23 'after net movement in regulatory deferral balance'. READ 1: BSE result PDF d7b66bd8 (filed 2025-10-27 16:50), p8 Statement of Consolidated Unaudited Financial Results q&h.y. ended 30-Sep-2025, Rs crore (scanned, rendered 216 dpi) — row 23 Basic / Diluted EPS after net Movement in Regulatory Deferral Balance 4.44; row 24 before 6.19 (30-Sep-25 col). Owners profit 533.97. Raw XBRL (con): ContinuingAndDiscontinued = 6.19. READ 2: BSE result PDF 56394609 (Dec-25 results, filed 2026-01-22), p12 consolidated (text), 30-Sep-25 comparative col — row 23 after 4.44; row 24 before 6.19 (Moneycontrol 4.44, screener 4.44).",
+   "found": "second-reader audit triage 2026-09-28, F3 (runbook §214a)"
+  },
+  {
+   "sym": "ADANIENSOL",
+   "qe": "20251231",
+   "basis": "c",
+   "field": "eps_b",
+   "was": 6.34,
+   "fixed": 4.6,
+   "why": "XBRL total tag (BasicEarningsLossPerShareFromContinuingAndDiscontinuedOperations, and the diluted twin) holds the printed EPS BEFORE net movement in regulatory deferral balances (row 24); the printed bottom-line EPS on the profit for the period / owners is row 23 'after net movement in regulatory deferral balance'. READ 1: BSE result PDF 56394609 (filed 2026-01-22 15:40), p12 Statement of Consolidated Unaudited Financial Results q&9m ended 31-Dec-2025, Rs crore (text PDF) — row 23 Basic / Diluted EPS after net Movement in Regulatory Deferral Balance 4.60; row 24 before 6.34 (quarter 31-Dec-25 col). Owners profit 552.31. Raw XBRL (con): ContinuingAndDiscontinued = 6.34. READ 2: BSE result PDF 16a326c3 (Mar-26 audited results, filed 2026-04-23), p10 consolidated (text), 31-Dec-25 comparative col — row 23 after 4.60; row 24 before 6.34 (Moneycontrol 4.60, screener 4.60).",
+   "found": "second-reader audit triage 2026-09-28, F3 (runbook §214a)"
+  },
+  {
+   "sym": "ADANIENSOL",
+   "qe": "20251231",
+   "basis": "c",
+   "field": "eps_d",
+   "was": 6.34,
+   "fixed": 4.6,
+   "why": "XBRL total tag (BasicEarningsLossPerShareFromContinuingAndDiscontinuedOperations, and the diluted twin) holds the printed EPS BEFORE net movement in regulatory deferral balances (row 24); the printed bottom-line EPS on the profit for the period / owners is row 23 'after net movement in regulatory deferral balance'. READ 1: BSE result PDF 56394609 (filed 2026-01-22 15:40), p12 Statement of Consolidated Unaudited Financial Results q&9m ended 31-Dec-2025, Rs crore (text PDF) — row 23 Basic / Diluted EPS after net Movement in Regulatory Deferral Balance 4.60; row 24 before 6.34 (quarter 31-Dec-25 col). Owners profit 552.31. Raw XBRL (con): ContinuingAndDiscontinued = 6.34. READ 2: BSE result PDF 16a326c3 (Mar-26 audited results, filed 2026-04-23), p10 consolidated (text), 31-Dec-25 comparative col — row 23 after 4.60; row 24 before 6.34 (Moneycontrol 4.60, screener 4.60).",
+   "found": "second-reader audit triage 2026-09-28, F3 (runbook §214a)"
+  },
+  {
+   "sym": "ADANIENT",
+   "qe": "20220930",
+   "basis": "c",
+   "field": "eps_b",
+   "was": 8.1,
+   "fixed": 4.05,
+   "why": "XBRL continuing + discontinued doubled: filer typed the continuing EPS 4.05 into the Discontinued tags too, so the total tag = 8.10 (discontinued profit tag = 0). READ 1: BSE result PDF 2dd1527d (Q2 FY23 outcome, filed 2022-11-03 18:19), p3 Annexure A Statement of Unaudited Consolidated Financial Results q&h.y. ended 30-Sep-2022, Rs crore (rotated page rendered ~160 dpi) — 17 Earning per share in Rupees (FV Rs 1) (not annualised): Basic & Diluted 4.05 (Quarter Ended 30-09-2022 col); owners 460.94, NCI (28.64). Raw XBRL INDAS_837690 (con): Basic/Diluted ContinuingAndDiscontinued 8.1, Continuing 4.05, Discontinued 4.05. READ 2: BSE result PDF f836d859 (Q3 FY23, filed 2023-02-14), p3 consolidated, 30-09-2022 comparative col; paid-up 114.00 both, FV Re 1 both (no split/bonus) — 17 Basic & Diluted 4.05; owners 460.94 (Moneycontrol cons 4.05 also).",
+   "found": "second-reader audit triage 2026-09-28, F3 (runbook §214a)"
+  },
+  {
+   "sym": "ADANIENT",
+   "qe": "20220930",
+   "basis": "c",
+   "field": "eps_d",
+   "was": 8.1,
+   "fixed": 4.05,
+   "why": "XBRL continuing + discontinued doubled: filer typed the continuing EPS 4.05 into the Discontinued tags too, so the total tag = 8.10 (discontinued profit tag = 0). READ 1: BSE result PDF 2dd1527d (Q2 FY23 outcome, filed 2022-11-03 18:19), p3 Annexure A Statement of Unaudited Consolidated Financial Results q&h.y. ended 30-Sep-2022, Rs crore (rotated page rendered ~160 dpi) — 17 Earning per share in Rupees (FV Rs 1) (not annualised): Basic & Diluted 4.05 (Quarter Ended 30-09-2022 col); owners 460.94, NCI (28.64). Raw XBRL INDAS_837690 (con): Basic/Diluted ContinuingAndDiscontinued 8.1, Continuing 4.05, Discontinued 4.05. READ 2: BSE result PDF f836d859 (Q3 FY23, filed 2023-02-14), p3 consolidated, 30-09-2022 comparative col; paid-up 114.00 both, FV Re 1 both (no split/bonus) — 17 Basic & Diluted 4.05; owners 460.94 (Moneycontrol cons 4.05 also).",
+   "found": "second-reader audit triage 2026-09-28, F3 (runbook §214a)"
+  },
+  {
+   "sym": "ALOKINDS",
+   "qe": "20230930",
+   "basis": "s",
+   "field": "eps_b",
+   "was": 0.34,
+   "fixed": -0.34,
+   "why": "sign flipped: XBRL EPS tags carry +0.34 on a loss of Rs 170.53 cr (ProfitLossForPeriod -170.53 cr in the same file); the PDF prints (0.34). READ 1: BSE result PDF 36ef5dd8 (filed 2023-10-23 17:13), p8 Statement of Unaudited Standalone Financial Results q&h.y. ended 30-Sep-2023, Rs crore (scanned+OCR, EPS band rendered 158 dpi) — 10 Earnings per share (EPS) (of Re 1 each) (not annualised): Basic (Rs.) (0.34), Diluted (Rs.) (0.34) (30.09.2023 col); Net loss (170.53). Raw XBRL INDAS_97866 (std): Basic/Diluted ContinuingAndDiscontinued = Continuing = 0.34 (positive), Discontinued 0; ProfitLossForPeriod -1,705.3 mn. READ 2: BSE result PDF 5d7a05ef (Dec-23 results, filed 2024-01-17), p8 standalone, 30.09.2023 comparative col (FV Re 1 both, paid-up 496.53) — Basic (0.34), Diluted (0.34); net loss (170.53) (Moneycontrol std -0.34, screener -0.34).",
+   "found": "second-reader audit triage 2026-09-28, F3 (runbook §214a)"
+  },
+  {
+   "sym": "ALOKINDS",
+   "qe": "20230930",
+   "basis": "s",
+   "field": "eps_d",
+   "was": 0.34,
+   "fixed": -0.34,
+   "why": "sign flipped: XBRL EPS tags carry +0.34 on a loss of Rs 170.53 cr (ProfitLossForPeriod -170.53 cr in the same file); the PDF prints (0.34). READ 1: BSE result PDF 36ef5dd8 (filed 2023-10-23 17:13), p8 Statement of Unaudited Standalone Financial Results q&h.y. ended 30-Sep-2023, Rs crore (scanned+OCR, EPS band rendered 158 dpi) — 10 Earnings per share (EPS) (of Re 1 each) (not annualised): Basic (Rs.) (0.34), Diluted (Rs.) (0.34) (30.09.2023 col); Net loss (170.53). Raw XBRL INDAS_97866 (std): Basic/Diluted ContinuingAndDiscontinued = Continuing = 0.34 (positive), Discontinued 0; ProfitLossForPeriod -1,705.3 mn. READ 2: BSE result PDF 5d7a05ef (Dec-23 results, filed 2024-01-17), p8 standalone, 30.09.2023 comparative col (FV Re 1 both, paid-up 496.53) — Basic (0.34), Diluted (0.34); net loss (170.53) (Moneycontrol std -0.34, screener -0.34).",
+   "found": "second-reader audit triage 2026-09-28, F3 (runbook §214a)"
+  },
+  {
+   "sym": "BHARATFORG",
+   "qe": "20201231",
+   "basis": "c",
+   "field": "eps_b",
+   "was": 4.49,
+   "fixed": -4.49,
+   "why": "sign flipped: XBRL EPS tags carry +4.49 on a loss (ProfitLossForPeriod -2,104.48 mn in the same file); the PDF prints (4.49). READ 1: BSE result PDF adc3247f (filed 2021-02-12 13:15; duplicate 013b908d), p4 Statement of Consolidated Unaudited Financial Results q&9m ended 31-Dec-2020, Rs million (text PDF, EPS band rendered 144 dpi) — 15 Earnings per share, Basic and diluted (not annualized for quarters) (in Rs) (4.49) (December 31, 2020 quarter col); loss for the period (2,104.48) mn, owners (2,092.08) mn. Raw XBRL INDAS_68454 (con): Basic/Diluted ContinuingAndDiscontinued = Continuing = 4.49 (positive), Discontinued 0. READ 2: BSE result PDF 24aa2e8d (Mar-21 audited results, filed 2021-06-04), p5 consolidated, December 31, 2020 (Unaudited) comparative col; FV Rs 2 and equity 931.27 mn both — 15 Basic and diluted (not annualized) (4.49) (Moneycontrol cons -4.49 also).",
+   "found": "second-reader audit triage 2026-09-28, F3 (runbook §214a)"
+  },
+  {
+   "sym": "BHARATFORG",
+   "qe": "20201231",
+   "basis": "c",
+   "field": "eps_d",
+   "was": 4.49,
+   "fixed": -4.49,
+   "why": "sign flipped: XBRL EPS tags carry +4.49 on a loss (ProfitLossForPeriod -2,104.48 mn in the same file); the PDF prints (4.49). READ 1: BSE result PDF adc3247f (filed 2021-02-12 13:15; duplicate 013b908d), p4 Statement of Consolidated Unaudited Financial Results q&9m ended 31-Dec-2020, Rs million (text PDF, EPS band rendered 144 dpi) — 15 Earnings per share, Basic and diluted (not annualized for quarters) (in Rs) (4.49) (December 31, 2020 quarter col); loss for the period (2,104.48) mn, owners (2,092.08) mn. Raw XBRL INDAS_68454 (con): Basic/Diluted ContinuingAndDiscontinued = Continuing = 4.49 (positive), Discontinued 0. READ 2: BSE result PDF 24aa2e8d (Mar-21 audited results, filed 2021-06-04), p5 consolidated, December 31, 2020 (Unaudited) comparative col; FV Rs 2 and equity 931.27 mn both — 15 Basic and diluted (not annualized) (4.49) (Moneycontrol cons -4.49 also).",
+   "found": "second-reader audit triage 2026-09-28, F3 (runbook §214a)"
+  },
+  {
+   "sym": "CGPOWER",
+   "qe": "20220630",
+   "basis": "s",
+   "field": "eps_b",
+   "was": 1.68,
+   "fixed": 0.84,
+   "why": "XBRL continuing + discontinued doubled: filer typed the continuing EPS 0.84 into the Discontinued tags too, so the total tag = 1.68 (discontinued profit tag = 0; the standalone statement has no discontinued operations). READ 1: BSE result PDF 7c2b7aed (filed 2022-07-27 13:30), p3 Statement of Standalone Financial Results q.e. 30-Jun-2022, Rs crore (scanned+OCR, EPS band rendered 144 dpi) — 12 Earnings Per Share (not annualised): (a) Basic 0.84, (b) Diluted 0.84 (30.06.2022 col); PAT 124.39. Raw XBRL INDAS_609914 (std): Basic/Diluted ContinuingAndDiscontinued 1.68, Continuing 0.84, Discontinued 0.84. READ 2: BSE result PDF e3893803 (Sep-22 results, filed 2022-10-19), p5 standalone, 30.06.2022 comparative col (FV Rs 2 both) — (a) Basic 0.84, (b) Diluted 0.84 (OCR text layer; Moneycontrol std 0.84 also).",
+   "found": "second-reader audit triage 2026-09-28, F3 (runbook §214a)"
+  },
+  {
+   "sym": "CGPOWER",
+   "qe": "20220630",
+   "basis": "s",
+   "field": "eps_d",
+   "was": 1.68,
+   "fixed": 0.84,
+   "why": "XBRL continuing + discontinued doubled: filer typed the continuing EPS 0.84 into the Discontinued tags too, so the total tag = 1.68 (discontinued profit tag = 0; the standalone statement has no discontinued operations). READ 1: BSE result PDF 7c2b7aed (filed 2022-07-27 13:30), p3 Statement of Standalone Financial Results q.e. 30-Jun-2022, Rs crore (scanned+OCR, EPS band rendered 144 dpi) — 12 Earnings Per Share (not annualised): (a) Basic 0.84, (b) Diluted 0.84 (30.06.2022 col); PAT 124.39. Raw XBRL INDAS_609914 (std): Basic/Diluted ContinuingAndDiscontinued 1.68, Continuing 0.84, Discontinued 0.84. READ 2: BSE result PDF e3893803 (Sep-22 results, filed 2022-10-19), p5 standalone, 30.06.2022 comparative col (FV Rs 2 both) — (a) Basic 0.84, (b) Diluted 0.84 (OCR text layer; Moneycontrol std 0.84 also).",
+   "found": "second-reader audit triage 2026-09-28, F3 (runbook §214a)"
+  },
+  {
+   "sym": "DCMSHRIRAM",
+   "qe": "20260331",
+   "basis": "s",
+   "field": "eps_b",
+   "was": 22.47,
+   "fixed": 23.79,
+   "why": "filer XBRL put the printed BEFORE-exceptional EPS (22.47) in the Basic total tag and the AFTER-exceptional EPS (23.79) in the Diluted tag; the filing prints one combined basic/diluted line pair, so basic total = 23.79 (after exceptional, = PAT 370.99). READ 1: BSE result PDF 25f45f31 (Q4/FY26 audited, filed 2026-05-13 18:26), p7 Statement of Standalone Audited Financial Results q&y ended 31-Mar-2026, Rs crore (text PDF, EPS block rendered 158 dpi) — Earnings per equity share - basic/diluted (Rs.) (FV Rs 2): - Before exceptional item 22.47; - After exceptional item 23.79 (31.03.2026 quarter col); PAT 370.99. Raw XBRL INTEGRATED_FILING_INDAS_1666729 (std): Basic ContinuingAndDiscontinued = Continuing = 22.47; Diluted ContinuingAndDiscontinued = Continuing = 23.79. READ 2: BSE result PDF 107b2d12 (Jun-26 results, filed 2026-07-28), p3 standalone (scanned, rendered 216 dpi), 31.03.2026 comparative col; FV Rs 2 both — basic/diluted - Before exceptional item 22.47; - After exceptional item 23.79 (screener 23.79; Moneycontrol 22.47/23.79 = an echo of the XBRL tags, not used).",
+   "found": "second-reader audit triage 2026-09-28, F3 (runbook §214a)"
+  },
+  {
+   "sym": "DEVYANI",
+   "qe": "20250331",
+   "basis": "c",
+   "field": "eps_b",
+   "was": 0.12,
+   "fixed": -0.12,
+   "why": "sign flipped: XBRL EPS tags carry +0.12 on a loss (ProfitLossForPeriod -167.63 mn, owners -147.38 mn in the same file); the PDF prints (0.12). READ 1: BSE result PDF 04ce47b9 (Q4/FY25 audited, filed 2025-05-23 12:04), p2 Statement of consolidated financial results, INR million except share data (text PDF, rendered 144 dpi) — 17. (Loss)/earnings per share (of INR 1 each) (not annualised for quarters): Basic (INR) (0.12), Diluted (INR) (0.12) (31 March 2025 quarter col); owners (147.38) mn. Raw XBRL INTEGRATED_FILING_INDAS_1449070 (con): Basic/Diluted ContinuingAndDiscontinued = Continuing = 0.12 (positive), Discontinued 0. READ 2: BSE result PDF 285a0a10 (Jun-25 results, filed 2025-08-13), p2 consolidated, 31 March 2025 (refer note 2) comparative col; FV INR 1 both — 20. EPS from continuing and discontinuing operations: Basic (0.12), Diluted (0.12) (row 18 continuing also (0.12)); Moneycontrol cons -0.12, screener -0.12.",
+   "found": "second-reader audit triage 2026-09-28, F3 (runbook §214a)"
+  },
+  {
+   "sym": "DEVYANI",
+   "qe": "20250331",
+   "basis": "c",
+   "field": "eps_d",
+   "was": 0.12,
+   "fixed": -0.12,
+   "why": "sign flipped: XBRL EPS tags carry +0.12 on a loss (ProfitLossForPeriod -167.63 mn, owners -147.38 mn in the same file); the PDF prints (0.12). READ 1: BSE result PDF 04ce47b9 (Q4/FY25 audited, filed 2025-05-23 12:04), p2 Statement of consolidated financial results, INR million except share data (text PDF, rendered 144 dpi) — 17. (Loss)/earnings per share (of INR 1 each) (not annualised for quarters): Basic (INR) (0.12), Diluted (INR) (0.12) (31 March 2025 quarter col); owners (147.38) mn. Raw XBRL INTEGRATED_FILING_INDAS_1449070 (con): Basic/Diluted ContinuingAndDiscontinued = Continuing = 0.12 (positive), Discontinued 0. READ 2: BSE result PDF 285a0a10 (Jun-25 results, filed 2025-08-13), p2 consolidated, 31 March 2025 (refer note 2) comparative col; FV INR 1 both — 20. EPS from continuing and discontinuing operations: Basic (0.12), Diluted (0.12) (row 18 continuing also (0.12)); Moneycontrol cons -0.12, screener -0.12.",
+   "found": "second-reader audit triage 2026-09-28, F3 (runbook §214a)"
+  },
+  {
+   "sym": "EASEMYTRIP",
+   "qe": "20220930",
+   "basis": "s",
+   "field": "eps_b",
+   "was": 1.14,
+   "fixed": 1.41,
+   "why": "filer XBRL typo: digits transposed - EPS tags hold 1.14, the filing prints 1.41 (= PAT 306.32 mn / 217.29 mn shares). READ 1: BSE result PDF 72a45eae (filed 2022-11-12 19:07; duplicate 0b3c9286), p12 standalone statement q&h.y. ended 30-Sep-2022, INR million (text PDF) — 10. Earnings per equity share (face value INR 2 per equity share) (not annualised): (a) Basic 1.41, (b) Diluted 1.41 (quarter ended 30-Sep-2022 col); net profit 306.32 mn; paid-up 434.58 mn (217.29 mn shares of Rs 2). H1 basic 2.96 = Q1 1.55 + 1.41. Raw XBRL INDAS_866396 (std): Basic/Diluted ContinuingAndDiscontinued = Continuing = 1.14, Discontinued 0. READ 2: Moneycontrol standalone quarterly feed ETP01 (fetched live 2026-09-28 17:49, cached ~/stocks-cache/xcheck-f3/mc/) — Sep 22: Basic EPS 1.41, Diluted 1.41, net profit 30.63 cr, equity capital 43.46 cr (not an echo of the XBRL 1.14). Next filing (Dec-22, 896dbeb2 p11) prints the Sep-22 col RESTATED for the 2:1 split (record 22-Nov-2022) + 3:1 bonus (factor 8): 0.18 = 1.41/8 = 0.176 rounded (1.14/8 = 0.14 would not match) - consistent, not exact.",
+   "found": "second-reader audit triage 2026-09-28, F3 (runbook §214a)"
+  },
+  {
+   "sym": "EASEMYTRIP",
+   "qe": "20220930",
+   "basis": "s",
+   "field": "eps_d",
+   "was": 1.14,
+   "fixed": 1.41,
+   "why": "filer XBRL typo: digits transposed - EPS tags hold 1.14, the filing prints 1.41 (= PAT 306.32 mn / 217.29 mn shares). READ 1: BSE result PDF 72a45eae (filed 2022-11-12 19:07; duplicate 0b3c9286), p12 standalone statement q&h.y. ended 30-Sep-2022, INR million (text PDF) — 10. Earnings per equity share (face value INR 2 per equity share) (not annualised): (a) Basic 1.41, (b) Diluted 1.41 (quarter ended 30-Sep-2022 col); net profit 306.32 mn; paid-up 434.58 mn (217.29 mn shares of Rs 2). H1 basic 2.96 = Q1 1.55 + 1.41. Raw XBRL INDAS_866396 (std): Basic/Diluted ContinuingAndDiscontinued = Continuing = 1.14, Discontinued 0. READ 2: Moneycontrol standalone quarterly feed ETP01 (fetched live 2026-09-28 17:49, cached ~/stocks-cache/xcheck-f3/mc/) — Sep 22: Basic EPS 1.41, Diluted 1.41, net profit 30.63 cr, equity capital 43.46 cr (not an echo of the XBRL 1.14). Next filing (Dec-22, 896dbeb2 p11) prints the Sep-22 col RESTATED for the 2:1 split (record 22-Nov-2022) + 3:1 bonus (factor 8): 0.18 = 1.41/8 = 0.176 rounded (1.14/8 = 0.14 would not match) - consistent, not exact.",
+   "found": "second-reader audit triage 2026-09-28, F3 (runbook §214a)"
+  },
+  {
+   "sym": "EIHOTEL",
+   "qe": "20220331",
+   "basis": "s",
+   "field": "eps_b",
+   "was": 0.12,
+   "fixed": -0.12,
+   "why": "sign flipped: XBRL EPS tags carry +0.12 on a loss (ProfitLossForPeriod -73.0 mn in the same file); the PDF prints (0.12). READ 1: BSE result PDF 8b0a6188 (Q4/FY22 audited, filed 2022-05-04 17:09; duplicate 0aab03e5), p13 Statement of Financial Results for the quarter and year ended 31-Mar-2022, Rs crore (scanned, rotated page rendered 252 dpi) — Earnings per equity share for profit/(loss) from continuing and discontinued operations attributable to owners (Face Value Rs 2): (a) Basic (0.12), (b) Diluted (0.12) (Standalone, 3 months ended 31.03.2022 col); standalone loss (7.30). Raw XBRL INDAS_83973 (std): Basic/Diluted ContinuingAndDiscontinued = Continuing = 0.12 (positive), Discontinued 0. READ 2: BSE result PDF 239e576b (Jun-22 results, filed 2022-07-27), p6 standalone 3 months ended 31.03.2022 comparative col (scanned, rendered 115 dpi); FV Rs 2 and paid-up 125.07 both — EPS continuing and discontinued: (a) Basic (0.12), (b) Diluted (0.12); loss (7.30) (Moneycontrol std -0.12 also).",
+   "found": "second-reader audit triage 2026-09-28, F3 (runbook §214a)"
+  },
+  {
+   "sym": "EIHOTEL",
+   "qe": "20220331",
+   "basis": "s",
+   "field": "eps_d",
+   "was": 0.12,
+   "fixed": -0.12,
+   "why": "sign flipped: XBRL EPS tags carry +0.12 on a loss (ProfitLossForPeriod -73.0 mn in the same file); the PDF prints (0.12). READ 1: BSE result PDF 8b0a6188 (Q4/FY22 audited, filed 2022-05-04 17:09; duplicate 0aab03e5), p13 Statement of Financial Results for the quarter and year ended 31-Mar-2022, Rs crore (scanned, rotated page rendered 252 dpi) — Earnings per equity share for profit/(loss) from continuing and discontinued operations attributable to owners (Face Value Rs 2): (a) Basic (0.12), (b) Diluted (0.12) (Standalone, 3 months ended 31.03.2022 col); standalone loss (7.30). Raw XBRL INDAS_83973 (std): Basic/Diluted ContinuingAndDiscontinued = Continuing = 0.12 (positive), Discontinued 0. READ 2: BSE result PDF 239e576b (Jun-22 results, filed 2022-07-27), p6 standalone 3 months ended 31.03.2022 comparative col (scanned, rendered 115 dpi); FV Rs 2 and paid-up 125.07 both — EPS continuing and discontinued: (a) Basic (0.12), (b) Diluted (0.12); loss (7.30) (Moneycontrol std -0.12 also).",
+   "found": "second-reader audit triage 2026-09-28, F3 (runbook §214a)"
+  },
+  {
+   "sym": "ELGIEQUIP",
+   "qe": "20220331",
+   "basis": "c",
+   "field": "eps_b",
+   "was": 318.62,
+   "fixed": 2.31,
+   "why": "filer XBRL slip: the weighted-average share counts (316.31 mn basic / 316.64 mn diluted, printed row 11) were typed into the Continuing EPS tags and the real EPS 2.31 into the Discontinued tags, so the total tags = 318.62 / 318.95. READ 1: BSE result PDF b184bad9 (Q4/FY22, filed 2022-05-13 18:03), p5 Statement of Consolidated Financial Results q&y ended 31-Mar-2022, Rs million except per share (text PDF, rendered 144 dpi) — 12 Earnings per share (of Re 1 each) (not annualised): (a) Basic 2.31, (b) Diluted 2.31 (March 31, 2022 quarter col); row 11 weighted average shares basic 316.31 / diluted 316.64 (mn); net profit 730.60 mn. Raw XBRL INDAS_84454 (con): Basic ContinuingAndDiscontinued 318.62 = Continuing 316.31 + Discontinued 2.31; Diluted 318.95 = 316.64 + 2.31. READ 2: BSE result PDF 7bec1adc (Jun-22 results, filed 2022-08-12), p4 consolidated (scanned, rendered 216 dpi), March 31, 2022 (Audited) comparative col; FV Re 1 and paid-up 316.91 mn both — 12 (a) Basic 2.31, (b) Diluted 2.31; weighted shares 316.31 / 316.64 (Moneycontrol cons 2.31 also).",
+   "found": "second-reader audit triage 2026-09-28, F3 (runbook §214a)"
+  },
+  {
+   "sym": "ELGIEQUIP",
+   "qe": "20220331",
+   "basis": "c",
+   "field": "eps_d",
+   "was": 318.95,
+   "fixed": 2.31,
+   "why": "filer XBRL slip: the weighted-average share counts (316.31 mn basic / 316.64 mn diluted, printed row 11) were typed into the Continuing EPS tags and the real EPS 2.31 into the Discontinued tags, so the total tags = 318.62 / 318.95. READ 1: BSE result PDF b184bad9 (Q4/FY22, filed 2022-05-13 18:03), p5 Statement of Consolidated Financial Results q&y ended 31-Mar-2022, Rs million except per share (text PDF, rendered 144 dpi) — 12 Earnings per share (of Re 1 each) (not annualised): (a) Basic 2.31, (b) Diluted 2.31 (March 31, 2022 quarter col); row 11 weighted average shares basic 316.31 / diluted 316.64 (mn); net profit 730.60 mn. Raw XBRL INDAS_84454 (con): Basic ContinuingAndDiscontinued 318.62 = Continuing 316.31 + Discontinued 2.31; Diluted 318.95 = 316.64 + 2.31. READ 2: BSE result PDF 7bec1adc (Jun-22 results, filed 2022-08-12), p4 consolidated (scanned, rendered 216 dpi), March 31, 2022 (Audited) comparative col; FV Re 1 and paid-up 316.91 mn both — 12 (a) Basic 2.31, (b) Diluted 2.31; weighted shares 316.31 / 316.64 (Moneycontrol cons 2.31 also).",
+   "found": "second-reader audit triage 2026-09-28, F3 (runbook §214a)"
+  },
+  {
+   "sym": "FACT",
+   "qe": "20240630",
+   "basis": "c",
+   "field": "eps_b",
+   "was": 0.75,
+   "fixed": -0.75,
+   "why": "sign flipped: XBRL EPS tags carry +0.75 on a loss (ProfitLossForPeriod -486.7 mn in the same file); the PDF prints (0.75). READ 1: NSE corporate announcement PDF nsearchives.nseindia.com/corporate/UnauditedFin30062024_13082024135502.pdf (filed on NSE 2024-08-13 13:55; FACT's BSE code 590024 is a permitted-to-trade code - BSE lists no announcements for it), p8 Statement of CONSOLIDATED Audited [sic] Financial Results q.e. 30-Jun-2024, Rs lakhs (scanned, rendered 108 dpi) — XVIII Earnings per equity share of Rs 10 each (not annualised): (1) Basic -Rs (0.75), (2) Diluted -Rs (0.75) (30.06.2024 col); loss (4,867) lakhs. Raw XBRL INDAS_111804 (consolidated): Basic/Diluted ContinuingAndDiscontinued = Continuing = 0.75 (positive), Discontinued 0. READ 2: NSE corporate announcement PDF nsearchives.nseindia.com/corporate/UnauditedFinancialResults30092024_08112024134740.pdf (Sep-24 results, filed 2024-11-08), p10 consolidated, 30.06.2024 comparative col; FV Rs 10 and paid-up 64,707 lakhs both — XVIII (1) Basic (0.75), (2) Diluted (0.75) (Moneycontrol cons -0.75, screener -0.75 also).",
+   "found": "second-reader audit triage 2026-09-28, F3 (runbook §214a)"
+  },
+  {
+   "sym": "FACT",
+   "qe": "20240630",
+   "basis": "c",
+   "field": "eps_d",
+   "was": 0.75,
+   "fixed": -0.75,
+   "why": "sign flipped: XBRL EPS tags carry +0.75 on a loss (ProfitLossForPeriod -486.7 mn in the same file); the PDF prints (0.75). READ 1: NSE corporate announcement PDF nsearchives.nseindia.com/corporate/UnauditedFin30062024_13082024135502.pdf (filed on NSE 2024-08-13 13:55; FACT's BSE code 590024 is a permitted-to-trade code - BSE lists no announcements for it), p8 Statement of CONSOLIDATED Audited [sic] Financial Results q.e. 30-Jun-2024, Rs lakhs (scanned, rendered 108 dpi) — XVIII Earnings per equity share of Rs 10 each (not annualised): (1) Basic -Rs (0.75), (2) Diluted -Rs (0.75) (30.06.2024 col); loss (4,867) lakhs. Raw XBRL INDAS_111804 (consolidated): Basic/Diluted ContinuingAndDiscontinued = Continuing = 0.75 (positive), Discontinued 0. READ 2: NSE corporate announcement PDF nsearchives.nseindia.com/corporate/UnauditedFinancialResults30092024_08112024134740.pdf (Sep-24 results, filed 2024-11-08), p10 consolidated, 30.06.2024 comparative col; FV Rs 10 and paid-up 64,707 lakhs both — XVIII (1) Basic (0.75), (2) Diluted (0.75) (Moneycontrol cons -0.75, screener -0.75 also).",
+   "found": "second-reader audit triage 2026-09-28, F3 (runbook §214a)"
+  },
+  {
+   "sym": "FACT",
+   "qe": "20240630",
+   "basis": "s",
+   "field": "eps_b",
+   "was": 0.75,
+   "fixed": -0.75,
+   "why": "sign flipped: XBRL EPS tags carry +0.75 on a loss (ProfitLossForPeriod -486.7 mn in the same file); the PDF prints (0.75). READ 1: NSE corporate announcement PDF nsearchives.nseindia.com/corporate/UnauditedFin30062024_13082024135502.pdf (filed on NSE 2024-08-13 13:55; FACT's BSE code 590024 is a permitted-to-trade code - BSE lists no announcements for it), p5 Statement of STANDALONE Audited [sic] Financial Results q.e. 30-Jun-2024, Rs lakhs (scanned, rendered 108 dpi) — XVIII Earnings per equity share of Rs 10 each (not annualised): (1) Basic -Rs (0.75), (2) Diluted -Rs (0.75) (30.06.2024 col); loss (4,867) lakhs. Raw XBRL INDAS_111801 (standalone): Basic/Diluted ContinuingAndDiscontinued = Continuing = 0.75 (positive), Discontinued 0. READ 2: NSE corporate announcement PDF nsearchives.nseindia.com/corporate/UnauditedFinancialResults30092024_08112024134740.pdf (Sep-24 results, filed 2024-11-08), p3 standalone, 30.06.2024 comparative col; FV Rs 10 and paid-up 64,707 lakhs both — XVIII (1) Basic (0.75), (2) Diluted (0.75) (Moneycontrol std -0.75, screener -0.75 also).",
+   "found": "second-reader audit triage 2026-09-28, F3 (runbook §214a)"
+  },
+  {
+   "sym": "FACT",
+   "qe": "20240630",
+   "basis": "s",
+   "field": "eps_d",
+   "was": 0.75,
+   "fixed": -0.75,
+   "why": "sign flipped: XBRL EPS tags carry +0.75 on a loss (ProfitLossForPeriod -486.7 mn in the same file); the PDF prints (0.75). READ 1: NSE corporate announcement PDF nsearchives.nseindia.com/corporate/UnauditedFin30062024_13082024135502.pdf (filed on NSE 2024-08-13 13:55; FACT's BSE code 590024 is a permitted-to-trade code - BSE lists no announcements for it), p5 Statement of STANDALONE Audited [sic] Financial Results q.e. 30-Jun-2024, Rs lakhs (scanned, rendered 108 dpi) — XVIII Earnings per equity share of Rs 10 each (not annualised): (1) Basic -Rs (0.75), (2) Diluted -Rs (0.75) (30.06.2024 col); loss (4,867) lakhs. Raw XBRL INDAS_111801 (standalone): Basic/Diluted ContinuingAndDiscontinued = Continuing = 0.75 (positive), Discontinued 0. READ 2: NSE corporate announcement PDF nsearchives.nseindia.com/corporate/UnauditedFinancialResults30092024_08112024134740.pdf (Sep-24 results, filed 2024-11-08), p3 standalone, 30.06.2024 comparative col; FV Rs 10 and paid-up 64,707 lakhs both — XVIII (1) Basic (0.75), (2) Diluted (0.75) (Moneycontrol std -0.75, screener -0.75 also).",
+   "found": "second-reader audit triage 2026-09-28, F3 (runbook §214a)"
+  },
+  {
+   "sym": "GLAXO",
+   "qe": "20230630",
+   "basis": "c",
+   "field": "eps_b",
+   "was": 7.04,
+   "fixed": 7.81,
+   "why": "filer XBRL put the printed 'Basic and diluted EPS BEFORE exceptional items' in the Basic total tag and the AFTER-exceptional figure in the Diluted tag; the filing prints one 'basic and diluted' pair, so basic total = the after-exceptional line (= the stored PAT / 16.941 cr shares). READ 1: BSE result PDF eaa49b3b (filed 2023-07-26 13:45), p6 Statement of Consolidated Unaudited Financial Results q.e. 30-Jun-2023, Rs lakhs (scanned+OCR, rendered 144 dpi) — EPS (continuing and discontinued): Basic and diluted before Exceptional items 7.04; after Exceptional items 7.81 (30.06.2023 col). Raw XBRL INDAS_94652 (con): Basic ContinuingAndDiscontinued 7.04, Diluted 7.81. READ 2: BSE result PDF b74c9dfc (Sep-23 results, filed 2023-11-09), p3 consolidated, 30.06.2023 col — continuing and discontinued: before 7.04; after 7.81 (screener 7.81; Moneycontrol 7.04/7.81 echo).",
+   "found": "second-reader audit triage 2026-09-28, F3 (runbook §214a)"
+  },
+  {
+   "sym": "GLAXO",
+   "qe": "20230630",
+   "basis": "s",
+   "field": "eps_b",
+   "was": 6.94,
+   "fixed": 7.71,
+   "why": "filer XBRL put the printed 'Basic and diluted EPS BEFORE exceptional items' in the Basic total tag and the AFTER-exceptional figure in the Diluted tag; the filing prints one 'basic and diluted' pair, so basic total = the after-exceptional line (= the stored PAT / 16.941 cr shares). READ 1: BSE result PDF eaa49b3b (Q1 FY24, filed 2023-07-26 13:45; duplicate be947997), p3 Statement of Standalone Unaudited Financial Results q.e. 30-Jun-2023, Rs lakhs (scanned+OCR, rendered 144 dpi) — EPS (of Rs 10 each) (for continuing and discontinued operations): Basic and diluted EPS before Exceptional items 6.94; Basic and diluted EPS after Exceptional items 7.71 (3 months ended 30.06.2023 col; not annualised). Raw XBRL INDAS_94650 (std): Basic ContinuingAndDiscontinued 6.94, Diluted 7.71. READ 2: BSE result PDF b74c9dfc (Sep-23 results, filed 2023-11-09), p8 standalone, 30.06.2023 (preceding 3 months) col; FV Rs 10, paid-up 16,941 lakhs both — continuing and discontinued: before exceptional 6.94; after exceptional 7.71 (screener 7.71; Moneycontrol 6.94/7.71 = echo of the XBRL tags, not used).",
+   "found": "second-reader audit triage 2026-09-28, F3 (runbook §214a)"
+  },
+  {
+   "sym": "GLAXO",
+   "qe": "20231231",
+   "basis": "c",
+   "field": "eps_b",
+   "was": 9.89,
+   "fixed": 2.7,
+   "why": "filer XBRL put the printed 'Basic and diluted EPS BEFORE exceptional items' in the Basic total tag and the AFTER-exceptional figure in the Diluted tag; the filing prints one 'basic and diluted' pair, so basic total = the after-exceptional line (= the stored PAT / 16.941 cr shares). READ 1: BSE result PDF f9583a0a (filed 2024-02-12 16:55), p6 Statement of Consolidated Unaudited Financial Results q&9m ended 31-Dec-2023, Rs lakhs (scanned+OCR, rendered 144 dpi) — EPS (continuing and discontinued): Basic and diluted before Exceptional items 9.89; after Exceptional items 2.70 (quarter 31.12.2023 col). Raw XBRL INDAS_103491 (con): Basic 9.89, Diluted 2.70. READ 2: BSE result PDF fe7defcb (Q4 FY24, filed 2024-05-17), p9 consolidated, 31.12.2023 col — continuing and discontinued: before 9.89; after 2.70 (screener 2.70; Moneycontrol 9.89/2.70 echo).",
+   "found": "second-reader audit triage 2026-09-28, F3 (runbook §214a)"
+  },
+  {
+   "sym": "GLAXO",
+   "qe": "20231231",
+   "basis": "s",
+   "field": "eps_b",
+   "was": 9.88,
+   "fixed": 2.69,
+   "why": "filer XBRL put the printed 'Basic and diluted EPS BEFORE exceptional items' in the Basic total tag and the AFTER-exceptional figure in the Diluted tag; the filing prints one 'basic and diluted' pair, so basic total = the after-exceptional line (= the stored PAT / 16.941 cr shares). READ 1: BSE result PDF f9583a0a (Q3 FY24, filed 2024-02-12 16:55), p3 Statement of Standalone Unaudited Financial Results q&9m ended 31-Dec-2023, Rs lakhs (scanned+OCR, rendered 144 dpi) — EPS (continuing and discontinued): Basic and diluted before Exceptional items 9.88; after Exceptional items 2.69 (quarter 31.12.2023 col). Raw XBRL INDAS_103490 (std): Basic ContinuingAndDiscontinued 9.88, Diluted 2.69. READ 2: BSE result PDF fe7defcb (Q4 FY24, filed 2024-05-17), p4 standalone, 31.12.2023 col — continuing and discontinued: before 9.88; after 2.69 (screener 2.69; Moneycontrol 9.88/2.69 echo).",
+   "found": "second-reader audit triage 2026-09-28, F3 (runbook §214a)"
+  },
+  {
+   "sym": "GLAXO",
+   "qe": "20251231",
+   "basis": "c",
+   "field": "eps_b",
+   "was": 16.54,
+   "fixed": 17.45,
+   "why": "filer XBRL put the printed Basic and diluted EPS BEFORE exceptional items (16.54) in the Basic total tag and the AFTER-exceptional figure (17.45) in the Diluted tag; the filing prints one basic-and-diluted pair. READ 1: BSE result PDF 80302ab0 (Q3 FY26, filed 2026-02-09 15:31), p7 Statement of Consolidated Unaudited Financial Results q&9m ended 31-Dec-2025, Rs lakhs (scanned+OCR, rendered 144 dpi) — Earnings per share (EPS) (of Rs 10 each) (not annualised): Basic and diluted EPS before Exceptional items 16.54; Basic and diluted EPS after Exceptional items 17.45 (quarter 31.12.2025 col); no discontinued operations line. Raw XBRL INTEGRATED_FILING_INDAS_1621947 (con): Basic ContinuingAndDiscontinued 16.54, Diluted 17.45. READ 2: BSE result PDF 2f3be2e0 (Q4 FY26, filed 2026-05-13), p4 consolidated, 31.12.2025 comparative col; FV Rs 10, paid-up 16,941 lakhs both — before exceptional 16.54; after exceptional 17.45 (screener 17.45; Moneycontrol 16.54/16.54 is NOT the printed figure).",
+   "found": "second-reader audit triage 2026-09-28, F3 (runbook §214a)"
+  },
+  {
+   "sym": "HINDALCO",
+   "qe": "20220930",
+   "basis": "s",
+   "field": "eps_b",
+   "was": 4.92,
+   "fixed": 2.46,
+   "why": "XBRL continuing + discontinued doubled: filer typed the EPS 2.46 into both the Continuing and the Discontinued tags, so the total tag = 4.92 (discontinued profit tag = 0; the standalone statement has no discontinued operations). READ 1: BSE result PDF e6452ef2 (Q2 FY23 outcome incl. press release + presentation, filed 2022-11-11 13:42), p51 Statement of Standalone Unaudited Financial Results q&6m ended 30-Sep-2022, Rs crore (scanned, rendered 216 dpi) — Earnings Per Share: Basic (Rs) 2.46, Diluted (Rs) 2.46 (30/09/2022 quarter col); profit 548. Raw XBRL INDAS_863174 (std): Basic/Diluted ContinuingAndDiscontinued 4.92, Continuing 2.46, Discontinued 2.46. READ 2: BSE result PDF 44fd5326 (Q3 FY23, filed 2023-02-09), p56 standalone (text), 30/09/2022 comparative col; FV Re 1 and paid-up 222 cr both — Basic 2.46, Diluted 2.46; profit 548 (Moneycontrol std 2.46 also).",
+   "found": "second-reader audit triage 2026-09-28, F3 (runbook §214a)"
+  },
+  {
+   "sym": "HINDALCO",
+   "qe": "20220930",
+   "basis": "s",
+   "field": "eps_d",
+   "was": 4.92,
+   "fixed": 2.46,
+   "why": "XBRL continuing + discontinued doubled: filer typed the EPS 2.46 into both the Continuing and the Discontinued tags, so the total tag = 4.92 (discontinued profit tag = 0; the standalone statement has no discontinued operations). READ 1: BSE result PDF e6452ef2 (Q2 FY23 outcome incl. press release + presentation, filed 2022-11-11 13:42), p51 Statement of Standalone Unaudited Financial Results q&6m ended 30-Sep-2022, Rs crore (scanned, rendered 216 dpi) — Earnings Per Share: Basic (Rs) 2.46, Diluted (Rs) 2.46 (30/09/2022 quarter col); profit 548. Raw XBRL INDAS_863174 (std): Basic/Diluted ContinuingAndDiscontinued 4.92, Continuing 2.46, Discontinued 2.46. READ 2: BSE result PDF 44fd5326 (Q3 FY23, filed 2023-02-09), p56 standalone (text), 30/09/2022 comparative col; FV Re 1 and paid-up 222 cr both — Basic 2.46, Diluted 2.46; profit 548 (Moneycontrol std 2.46 also).",
+   "found": "second-reader audit triage 2026-09-28, F3 (runbook §214a)"
+  },
+  {
+   "sym": "HINDCOPPER",
+   "qe": "20220930",
+   "basis": "c",
+   "field": "eps_b",
+   "was": 0.54,
+   "fixed": 0.27,
+   "why": "XBRL continuing + discontinued doubled: filer typed the EPS 0.27 into both the Continuing and the Discontinued tags, so the total tag = 0.54 (discontinued profit tag = 0; the statement prints '-' for discontinued EPS). READ 1: BSE result PDF c8f00575 (filed 2022-11-12 18:28), p9 Statement of Consolidated Unaudited Financial Results q&h.y. ended 30-Sep-2022, Rs crore (scanned, rendered 115-288 dpi) — 17iii Earnings per share (for continuing and discontinued operations): Basic 0.27, second line 0.27 (Basic / Diluted) (30th Sep 2022 col); continuing Basic 0.27 / Diluted 0.27; discontinued '-'. Raw XBRL INDAS_866361: Basic/Diluted ContinuingAndDiscontinued 0.54, Continuing 0.27, Discontinued 0.27. READ 2: BSE result PDF 3e5c2a02 (Dec-22 results, filed 2023-02-01; duplicate 39e860b8), p6 consolidated (scanned, rendered 115 dpi), 30th Sep 2022 comparative col; FV Rs 5, paid-up 483.51 both — EPS (continuing and discontinued) Basic 0.27, Diluted 0.27 (Moneycontrol cons 0.27 also).",
+   "found": "second-reader audit triage 2026-09-28, F3 (runbook §214a)"
+  },
+  {
+   "sym": "HINDCOPPER",
+   "qe": "20220930",
+   "basis": "c",
+   "field": "eps_d",
+   "was": 0.54,
+   "fixed": 0.27,
+   "why": "XBRL continuing + discontinued doubled: filer typed the EPS 0.27 into both the Continuing and the Discontinued tags, so the total tag = 0.54 (discontinued profit tag = 0; the statement prints '-' for discontinued EPS). READ 1: BSE result PDF c8f00575 (filed 2022-11-12 18:28), p9 Statement of Consolidated Unaudited Financial Results q&h.y. ended 30-Sep-2022, Rs crore (scanned, rendered 115-288 dpi) — 17iii Earnings per share (for continuing and discontinued operations): Basic 0.27, second line 0.27 (Basic / Diluted) (30th Sep 2022 col); continuing Basic 0.27 / Diluted 0.27; discontinued '-'. Raw XBRL INDAS_866361: Basic/Diluted ContinuingAndDiscontinued 0.54, Continuing 0.27, Discontinued 0.27. READ 2: BSE result PDF 3e5c2a02 (Dec-22 results, filed 2023-02-01; duplicate 39e860b8), p6 consolidated (scanned, rendered 115 dpi), 30th Sep 2022 comparative col; FV Rs 5, paid-up 483.51 both — EPS (continuing and discontinued) Basic 0.27, Diluted 0.27 (Moneycontrol cons 0.27 also).",
+   "found": "second-reader audit triage 2026-09-28, F3 (runbook §214a)"
+  },
+  {
+   "sym": "HINDCOPPER",
+   "qe": "20220930",
+   "basis": "s",
+   "field": "eps_b",
+   "was": 0.54,
+   "fixed": 0.27,
+   "why": "XBRL continuing + discontinued doubled: filer typed the EPS 0.27 into both the Continuing and the Discontinued tags, so the total tag = 0.54 (discontinued profit tag = 0; the statement prints '-' for discontinued EPS). READ 1: BSE result PDF c8f00575 (filed 2022-11-12 18:28), p3 Statement of Standalone Unaudited Financial Results q&h.y. ended 30-Sep-2022, Rs crore (scanned, rendered 115-288 dpi) — 16iii Earnings per share (for continuing and discontinued operations): Basic 0.27, second line 0.27 (labelled 'Basic' twice - the diluted line mislabelled) (30th Sep 2022 col); continuing Basic 0.27 / Diluted 0.27; discontinued '-'. Raw XBRL INDAS_866353: Basic/Diluted ContinuingAndDiscontinued 0.54, Continuing 0.27, Discontinued 0.27. READ 2: BSE result PDF 3e5c2a02 (Dec-22 results, filed 2023-02-01; duplicate 39e860b8), p3 standalone (scanned, rendered 115 dpi), 30th Sep 2022 comparative col; FV Rs 5, paid-up 483.51 both — EPS (continuing and discontinued) Basic 0.27, Diluted 0.27 (Moneycontrol std 0.27 also).",
+   "found": "second-reader audit triage 2026-09-28, F3 (runbook §214a)"
+  },
+  {
+   "sym": "HINDCOPPER",
+   "qe": "20220930",
+   "basis": "s",
+   "field": "eps_d",
+   "was": 0.54,
+   "fixed": 0.27,
+   "why": "XBRL continuing + discontinued doubled: filer typed the EPS 0.27 into both the Continuing and the Discontinued tags, so the total tag = 0.54 (discontinued profit tag = 0; the statement prints '-' for discontinued EPS). READ 1: BSE result PDF c8f00575 (filed 2022-11-12 18:28), p3 Statement of Standalone Unaudited Financial Results q&h.y. ended 30-Sep-2022, Rs crore (scanned, rendered 115-288 dpi) — 16iii Earnings per share (for continuing and discontinued operations): Basic 0.27, second line 0.27 (labelled 'Basic' twice - the diluted line mislabelled) (30th Sep 2022 col); continuing Basic 0.27 / Diluted 0.27; discontinued '-'. Raw XBRL INDAS_866353: Basic/Diluted ContinuingAndDiscontinued 0.54, Continuing 0.27, Discontinued 0.27. READ 2: BSE result PDF 3e5c2a02 (Dec-22 results, filed 2023-02-01; duplicate 39e860b8), p3 standalone (scanned, rendered 115 dpi), 30th Sep 2022 comparative col; FV Rs 5, paid-up 483.51 both — EPS (continuing and discontinued) Basic 0.27, Diluted 0.27 (Moneycontrol std 0.27 also).",
+   "found": "second-reader audit triage 2026-09-28, F3 (runbook §214a)"
+  },
+  {
+   "sym": "IFBIND",
+   "qe": "20220331",
+   "basis": "c",
+   "field": "eps_b",
+   "was": 6.99,
+   "fixed": -6.99,
+   "why": "sign flipped: consolidated XBRL EPS tags carry +6.99 on a loss (ProfitLossForPeriod -282.9 mn in the same file; the standalone file carries -7.04 correctly); the PDF prints (6.99). READ 1: BSE result PDF 647a46c5 (Reg 33 disclosure Q4/FY22, filed 2022-05-28 17:26), p15 Statement of Consolidated Financial Results, Rs lacs (scanned, rotated page rendered 115-252 dpi) — 14 Earnings Per Share (of Rs 10 each) - Basic and Diluted - In Rs.: (6.99) (Quarter ended 31.03.2022 Audited(@) col; not annualised); loss for the period (2,829) lacs, owners (2,829). Raw XBRL INDAS_86323 (con): Basic/Diluted ContinuingAndDiscontinued = Continuing = 6.99 (positive). READ 2: BSE result PDF d446de09 (Jun-22 results, filed 2022-07-28), p7 consolidated (scanned, rotated, rendered 115 dpi), 31.03.2022 Audited(@) comparative col; FV Rs 10, paid-up 4,128 lacs both — 14 EPS Basic and Diluted (6.99); loss (2,829) lacs (Moneycontrol cons -6.99 also).",
+   "found": "second-reader audit triage 2026-09-28, F3 (runbook §214a)"
+  },
+  {
+   "sym": "IFBIND",
+   "qe": "20220331",
+   "basis": "c",
+   "field": "eps_d",
+   "was": 6.99,
+   "fixed": -6.99,
+   "why": "sign flipped: consolidated XBRL EPS tags carry +6.99 on a loss (ProfitLossForPeriod -282.9 mn in the same file; the standalone file carries -7.04 correctly); the PDF prints (6.99). READ 1: BSE result PDF 647a46c5 (Reg 33 disclosure Q4/FY22, filed 2022-05-28 17:26), p15 Statement of Consolidated Financial Results, Rs lacs (scanned, rotated page rendered 115-252 dpi) — 14 Earnings Per Share (of Rs 10 each) - Basic and Diluted - In Rs.: (6.99) (Quarter ended 31.03.2022 Audited(@) col; not annualised); loss for the period (2,829) lacs, owners (2,829). Raw XBRL INDAS_86323 (con): Basic/Diluted ContinuingAndDiscontinued = Continuing = 6.99 (positive). READ 2: BSE result PDF d446de09 (Jun-22 results, filed 2022-07-28), p7 consolidated (scanned, rotated, rendered 115 dpi), 31.03.2022 Audited(@) comparative col; FV Rs 10, paid-up 4,128 lacs both — 14 EPS Basic and Diluted (6.99); loss (2,829) lacs (Moneycontrol cons -6.99 also).",
+   "found": "second-reader audit triage 2026-09-28, F3 (runbook §214a)"
+  },
+  {
+   "sym": "JSWSTEEL",
+   "qe": "20220930",
+   "basis": "s",
+   "field": "eps_b",
+   "was": 0.38,
+   "fixed": -0.38,
+   "why": "sign flipped: standalone XBRL EPS tags carry +0.38 on a loss (ProfitLossForPeriod -910 mn in the same file); the PDF prints (0.38). READ 1: BSE result PDF 65777df2 (filed 2022-10-21 15:32), p3 Statement of Unaudited Standalone Financial Results q&h.y. ended 30-Sep-2022, Rs crore (scanned, rendered 130 dpi) — XII Earnings per equity share (not annualised): Basic (Rs.) (0.38), Diluted (Rs.) (0.38) (30.09.2022 col); net loss (91). Raw XBRL INDAS_788944 (std): Basic/Diluted ContinuingAndDiscontinued = 0.38 (positive). READ 2: BSE result PDF 8b271cc0 (Dec-22 results, filed 2023-01-20), p3 standalone (scanned, rendered 130 dpi), 30.09.2022 comparative col — XII Basic (0.38), Diluted (0.38); net loss (91) (Moneycontrol std -0.38 also).",
+   "found": "second-reader audit triage 2026-09-28, F3 (runbook §214a)"
+  },
+  {
+   "sym": "JSWSTEEL",
+   "qe": "20220930",
+   "basis": "s",
+   "field": "eps_d",
+   "was": 0.38,
+   "fixed": -0.38,
+   "why": "sign flipped: standalone XBRL EPS tags carry +0.38 on a loss (ProfitLossForPeriod -910 mn in the same file); the PDF prints (0.38). READ 1: BSE result PDF 65777df2 (filed 2022-10-21 15:32), p3 Statement of Unaudited Standalone Financial Results q&h.y. ended 30-Sep-2022, Rs crore (scanned, rendered 130 dpi) — XII Earnings per equity share (not annualised): Basic (Rs.) (0.38), Diluted (Rs.) (0.38) (30.09.2022 col); net loss (91). Raw XBRL INDAS_788944 (std): Basic/Diluted ContinuingAndDiscontinued = 0.38 (positive). READ 2: BSE result PDF 8b271cc0 (Dec-22 results, filed 2023-01-20), p3 standalone (scanned, rendered 130 dpi), 30.09.2022 comparative col — XII Basic (0.38), Diluted (0.38); net loss (91) (Moneycontrol std -0.38 also).",
+   "found": "second-reader audit triage 2026-09-28, F3 (runbook §214a)"
+  },
+  {
+   "sym": "LAURUSLABS",
+   "qe": "20230630",
+   "basis": "s",
+   "field": "eps_b",
+   "was": 0.48,
+   "fixed": 0.24,
+   "why": "XBRL continuing + discontinued doubled on basic (Continuing 0.24 + Discontinued 0.24 = total 0.48) and the diluted tags left at 0.00; the filing prints basic 0.24 / diluted 0.24 and has no discontinued operations. READ 1: BSE result PDF ab308b18 (Q1 FY24 results, filed 2023-07-27 14:54), p6 Statement of Unaudited Standalone Financial Results q.e. 30-Jun-2023, Rs crore (text PDF, rendered 144 dpi) — 10 Earnings per equity share (face value Rs 2 each): - Basic 0.24, - Diluted 0.24 (30-Jun-23 col, not annualised); net profit after tax 13.07. Raw XBRL INDAS_94671 (std): Basic ContinuingAndDiscontinued 0.48, Continuing 0.24, Discontinued 0.24; Diluted ContinuingAndDiscontinued / Continuing / Discontinued all 0.00. READ 2: BSE result PDF 9935c564 (Q2 FY24, filed 2023-10-20), p8 standalone (text), 30-Jun-23 comparative col; FV Rs 2, paid-up 107.73 both — -Basic 0.24, -Diluted 0.24; net profit 13.07 (Moneycontrol std 0.24/0.24 and screener 0.24 also).",
+   "found": "second-reader audit triage 2026-09-28, F3 (runbook §214a)"
+  },
+  {
+   "sym": "LAURUSLABS",
+   "qe": "20230630",
+   "basis": "s",
+   "field": "eps_d",
+   "was": 0.0,
+   "fixed": 0.24,
+   "why": "XBRL continuing + discontinued doubled on basic (Continuing 0.24 + Discontinued 0.24 = total 0.48) and the diluted tags left at 0.00; the filing prints basic 0.24 / diluted 0.24 and has no discontinued operations. READ 1: BSE result PDF ab308b18 (Q1 FY24 results, filed 2023-07-27 14:54), p6 Statement of Unaudited Standalone Financial Results q.e. 30-Jun-2023, Rs crore (text PDF, rendered 144 dpi) — 10 Earnings per equity share (face value Rs 2 each): - Basic 0.24, - Diluted 0.24 (30-Jun-23 col, not annualised); net profit after tax 13.07. Raw XBRL INDAS_94671 (std): Basic ContinuingAndDiscontinued 0.48, Continuing 0.24, Discontinued 0.24; Diluted ContinuingAndDiscontinued / Continuing / Discontinued all 0.00. READ 2: BSE result PDF 9935c564 (Q2 FY24, filed 2023-10-20), p8 standalone (text), 30-Jun-23 comparative col; FV Rs 2, paid-up 107.73 both — -Basic 0.24, -Diluted 0.24; net profit 13.07 (Moneycontrol std 0.24/0.24 and screener 0.24 also).",
+   "found": "second-reader audit triage 2026-09-28, F3 (runbook §214a)"
+  },
+  {
+   "sym": "MARUTI",
+   "qe": "20240331",
+   "basis": "c",
+   "field": "eps_b",
+   "was": 251.42,
+   "fixed": 125.71,
+   "why": "XBRL continuing + discontinued doubled: filer typed the continuing EPS 125.71 into the Discontinued tags too, so the ContinuingAndDiscontinued (total) tag = 251.42 (discontinued profit tag itself = 0). READ 1: BSE result PDF 987ffe0b-6de7-4497-b857-16ade74f8bc4.pdf (filed 2024-04-26 15:48), p7 Statement of Consolidated Unaudited/Audited Financial Results q&y ended 31-Mar-2024, INR million except per share (scanned, rendered 180 dpi) — XV Earnings Per Share (of INR 5 each) (not annualised): Basic 125.71, Diluted 125.71 (Quarter ended March 31, 2024 col); Profit for the period 39,523 mn, owners 39,523. Raw XBRL INDAS_104847_1109786_27042024102542: Basic/Diluted ContinuingAndDiscontinued 251.42, Continuing 125.71, Discontinued 125.71 (discontinued profit tag 0.00). READ 2: BSE result PDF 10dcc4ae (Jun-24 results, filed 2024-07-31), p4 Consolidated, March 31, 2024 (Refer Note 5) comparative column; no split/bonus in between (FV 5 both, paid-up 1,572 both) — XV EPS Basic 125.71, Diluted 125.71 (also Moneycontrol cons Basic/Diluted 125.71 and screener 125.71 - not an echo of the 251.42 total tag).",
+   "found": "second-reader audit triage 2026-09-28, F3 (runbook §214a)"
+  },
+  {
+   "sym": "MARUTI",
+   "qe": "20240331",
+   "basis": "c",
+   "field": "eps_d",
+   "was": 251.42,
+   "fixed": 125.71,
+   "why": "XBRL continuing + discontinued doubled: filer typed the continuing EPS 125.71 into the Discontinued tags too, so the ContinuingAndDiscontinued (total) tag = 251.42 (discontinued profit tag itself = 0). READ 1: BSE result PDF 987ffe0b-6de7-4497-b857-16ade74f8bc4.pdf (filed 2024-04-26 15:48), p7 Statement of Consolidated Unaudited/Audited Financial Results q&y ended 31-Mar-2024, INR million except per share (scanned, rendered 180 dpi) — XV Earnings Per Share (of INR 5 each) (not annualised): Basic 125.71, Diluted 125.71 (Quarter ended March 31, 2024 col); Profit for the period 39,523 mn, owners 39,523. Raw XBRL INDAS_104847_1109786_27042024102542: Basic/Diluted ContinuingAndDiscontinued 251.42, Continuing 125.71, Discontinued 125.71 (discontinued profit tag 0.00). READ 2: BSE result PDF 10dcc4ae (Jun-24 results, filed 2024-07-31), p4 Consolidated, March 31, 2024 (Refer Note 5) comparative column; no split/bonus in between (FV 5 both, paid-up 1,572 both) — XV EPS Basic 125.71, Diluted 125.71 (also Moneycontrol cons Basic/Diluted 125.71 and screener 125.71 - not an echo of the 251.42 total tag).",
+   "found": "second-reader audit triage 2026-09-28, F3 (runbook §214a)"
+  },
+  {
+   "sym": "MFSL",
+   "qe": "20230930",
+   "basis": "s",
+   "field": "eps_b",
+   "was": -0.8,
+   "fixed": -0.08,
+   "why": "filer XBRL decimal slip: EPS tags hold -0.80 where the filing prints (0.08) (= loss 2.72 cr / 34.51 cr shares of Rs 2). READ 1: BSE result PDF 368db174 (Reg 30 outcome, filed 2023-10-31 18:06), p13 Statement of Standalone Unaudited Financial Results q&h.y. ended 30-Sep-2023, Rs crore except per share (scanned, rendered 158 dpi) — 16 Earnings per share (EPS) (Rs.) (not annualised): (a) Basic EPS (0.08), (b) Diluted EPS (0.08) (3 months ended 30.09.2023 col); loss (2.72); paid-up 69.02 (FV Rs 2). Raw XBRL NBFC_INDAS_98349 (std): Basic/Diluted ContinuingAndDiscontinued = Continuing = -0.80. READ 2: BSE result PDF e8e0d029 (Dec-23 results, filed 2024-02-06), p11 standalone (scanned, rendered 158 dpi), 3 months ended 30.09.2023 comparative col; FV Rs 2, paid-up 69.02 both — 16 (a) Basic EPS (0.08), (b) Diluted EPS (0.08); loss (2.72) (Moneycontrol std -0.08 and screener -0.08 also).",
+   "found": "second-reader audit triage 2026-09-28, F3 (runbook §214a)"
+  },
+  {
+   "sym": "MFSL",
+   "qe": "20230930",
+   "basis": "s",
+   "field": "eps_d",
+   "was": -0.8,
+   "fixed": -0.08,
+   "why": "filer XBRL decimal slip: EPS tags hold -0.80 where the filing prints (0.08) (= loss 2.72 cr / 34.51 cr shares of Rs 2). READ 1: BSE result PDF 368db174 (Reg 30 outcome, filed 2023-10-31 18:06), p13 Statement of Standalone Unaudited Financial Results q&h.y. ended 30-Sep-2023, Rs crore except per share (scanned, rendered 158 dpi) — 16 Earnings per share (EPS) (Rs.) (not annualised): (a) Basic EPS (0.08), (b) Diluted EPS (0.08) (3 months ended 30.09.2023 col); loss (2.72); paid-up 69.02 (FV Rs 2). Raw XBRL NBFC_INDAS_98349 (std): Basic/Diluted ContinuingAndDiscontinued = Continuing = -0.80. READ 2: BSE result PDF e8e0d029 (Dec-23 results, filed 2024-02-06), p11 standalone (scanned, rendered 158 dpi), 3 months ended 30.09.2023 comparative col; FV Rs 2, paid-up 69.02 both — 16 (a) Basic EPS (0.08), (b) Diluted EPS (0.08); loss (2.72) (Moneycontrol std -0.08 and screener -0.08 also).",
+   "found": "second-reader audit triage 2026-09-28, F3 (runbook §214a)"
+  },
+  {
+   "sym": "MMTC",
+   "qe": "20240630",
+   "basis": "c",
+   "field": "eps_b",
+   "was": 0.3,
+   "fixed": 0.22,
+   "why": "READER_EPS_WRONG_PERIOD: the Jun-2025 quarter XBRL (INTEGRATED_FILING_INDAS_1505025, filed 2025-08-07) is dated by the filer 2024-04-01..2024-06-30, so our reader took Jun-25 EPS 0.30 (profit 44.26 cr) for Jun-24. The Jun-24 quarter own XBRL (INDAS_110993, filed 2024-08-09) carries 0.22 correctly. READ 1: BSE result PDF 6dd54036 (Q1 FY25, filed 2024-08-09 15:24), p13 Statement of Consolidated Unaudited Financial Results q.e. 30-Jun-2024, Rs crore except per share (scanned, upside-down page rendered 158 dpi) — Earnings per Equity Share (Rs) (FV Re 1): (a) Basic 0.22, (b) Diluted 0.22 (30-Jun-24 col); net profit 32.69. Raw XBRL INDAS_110993 (con, filed 2024-08-09): Basic/Diluted total 0.22; INTEGRATED_FILING_INDAS_1505025 (filed 2025-08-07, contexts dated 2024-04-01..2024-06-30): 0.3 with ProfitLossForPeriod 442.6 mn = the Jun-25 quarter. READ 2: BSE result PDF f9f7d5fb (Q1 FY26, filed 2025-08-07), p6 consolidated (scanned, rendered 158 dpi), 30-Jun-24 (Unaudited) comparative col; FV Re 1, paid-up 150.00 both — (a) Basic 0.22, (b) Diluted 0.22; net profit 32.69 (its 30-Jun-25 col prints 0.30 / 44.26 = the value we store); Moneycontrol cons 0.22 and screener 0.22 also.",
+   "found": "second-reader audit triage 2026-09-28, F3 (runbook §214a)"
+  },
+  {
+   "sym": "MMTC",
+   "qe": "20240630",
+   "basis": "c",
+   "field": "eps_d",
+   "was": 0.3,
+   "fixed": 0.22,
+   "why": "READER_EPS_WRONG_PERIOD: the Jun-2025 quarter XBRL (INTEGRATED_FILING_INDAS_1505025, filed 2025-08-07) is dated by the filer 2024-04-01..2024-06-30, so our reader took Jun-25 EPS 0.30 (profit 44.26 cr) for Jun-24. The Jun-24 quarter own XBRL (INDAS_110993, filed 2024-08-09) carries 0.22 correctly. READ 1: BSE result PDF 6dd54036 (Q1 FY25, filed 2024-08-09 15:24), p13 Statement of Consolidated Unaudited Financial Results q.e. 30-Jun-2024, Rs crore except per share (scanned, upside-down page rendered 158 dpi) — Earnings per Equity Share (Rs) (FV Re 1): (a) Basic 0.22, (b) Diluted 0.22 (30-Jun-24 col); net profit 32.69. Raw XBRL INDAS_110993 (con, filed 2024-08-09): Basic/Diluted total 0.22; INTEGRATED_FILING_INDAS_1505025 (filed 2025-08-07, contexts dated 2024-04-01..2024-06-30): 0.3 with ProfitLossForPeriod 442.6 mn = the Jun-25 quarter. READ 2: BSE result PDF f9f7d5fb (Q1 FY26, filed 2025-08-07), p6 consolidated (scanned, rendered 158 dpi), 30-Jun-24 (Unaudited) comparative col; FV Re 1, paid-up 150.00 both — (a) Basic 0.22, (b) Diluted 0.22; net profit 32.69 (its 30-Jun-25 col prints 0.30 / 44.26 = the value we store); Moneycontrol cons 0.22 and screener 0.22 also.",
+   "found": "second-reader audit triage 2026-09-28, F3 (runbook §214a)"
+  },
+  {
+   "sym": "MOTILALOFS",
+   "qe": "20250331",
+   "basis": "s",
+   "field": "eps_b",
+   "was": 0.14,
+   "fixed": -0.14,
+   "why": "sign flipped: standalone XBRL EPS tags carry +0.14 on a loss (ProfitLossForPeriod -81.5 mn in the same file); the PDF prints (0.14). READ 1: BSE result PDF 18e2354a (Q4/FY25, filed 2025-04-25 14:36), p19 Statement of Standalone Financial Results q&y ended 31-Mar-2025, Rs lakhs (scanned, rendered 115 dpi) — Earnings per share (EPS) (FV Re 1): Basic (0.14), Diluted (0.14) (31 March 2025 quarter col); (VII) loss after tax (815) lakhs. Raw XBRL INTEGRATED_FILING_NBFC_INDAS_1425705 (std): Basic/Diluted ContinuingAndDiscontinued = Continuing = 0.14 (positive). READ 2: BSE result PDF 13d9eeab (Q1 FY26, filed 2025-07-24), p11 standalone (scanned, rendered 144 dpi), 31 March 2025 (Audited) comparative col; FV Re 1 both, paid-up 5,993 lakhs — Basic (0.14), Diluted (0.14) (Moneycontrol std -0.14, screener -0.14 also).",
+   "found": "second-reader audit triage 2026-09-28, F3 (runbook §214a)"
+  },
+  {
+   "sym": "MOTILALOFS",
+   "qe": "20250331",
+   "basis": "s",
+   "field": "eps_d",
+   "was": 0.14,
+   "fixed": -0.14,
+   "why": "sign flipped: standalone XBRL EPS tags carry +0.14 on a loss (ProfitLossForPeriod -81.5 mn in the same file); the PDF prints (0.14). READ 1: BSE result PDF 18e2354a (Q4/FY25, filed 2025-04-25 14:36), p19 Statement of Standalone Financial Results q&y ended 31-Mar-2025, Rs lakhs (scanned, rendered 115 dpi) — Earnings per share (EPS) (FV Re 1): Basic (0.14), Diluted (0.14) (31 March 2025 quarter col); (VII) loss after tax (815) lakhs. Raw XBRL INTEGRATED_FILING_NBFC_INDAS_1425705 (std): Basic/Diluted ContinuingAndDiscontinued = Continuing = 0.14 (positive). READ 2: BSE result PDF 13d9eeab (Q1 FY26, filed 2025-07-24), p11 standalone (scanned, rendered 144 dpi), 31 March 2025 (Audited) comparative col; FV Re 1 both, paid-up 5,993 lakhs — Basic (0.14), Diluted (0.14) (Moneycontrol std -0.14, screener -0.14 also).",
+   "found": "second-reader audit triage 2026-09-28, F3 (runbook §214a)"
+  },
+  {
+   "sym": "NLCINDIA",
+   "qe": "20240930",
+   "basis": "s",
+   "field": "eps_b",
+   "was": 1.38,
+   "fixed": 2.45,
+   "why": "XBRL total tag (BasicEarningsLossPerShareFromContinuingAndDiscontinuedOperations + diluted twin) holds the printed EPS BEFORE adjustment of net regulatory deferral balances (row XIV, 1.38); the EPS of the profit for the period (339.39 cr / 138.66 cr shares) is row XV AFTER adjustment, 2.45. READ 1: BSE result PDF 46662fde (Q2 FY25, filed 2024-10-25 14:49), p2 Statement of Unaudited Standalone Financial Results q&h.y. ended 30-Sep-2024, Rs crore (scanned+OCR, rendered 115-252 dpi) — XIV EPS (Rs 10) from continuing operations (Before adjustment of Net Regulatory Deferral Balances): (1) Basic 1.38, (2) Diluted 1.38; XV EPS from continuing operations (After adjustment of Net Regulatory Deferral Balances): (1) Basic 2.45, (2) Diluted 2.45 (Quarter ended 30-09-2024 col); XI Profit for the period 339.39. Raw XBRL INDAS_113486 (std): Basic/Diluted ContinuingAndDiscontinued = Continuing = 1.38. READ 2: BSE result PDF faf8f8b9 (Q3 FY25, filed 2025-02-03), p3 standalone, 30-09-2024 comparative col; FV Rs 10 both — before adjustment Basic/Diluted 1.38; after adjustment Basic/Diluted 2.45 (Moneycontrol std 2.45, screener 2.45 also).",
+   "found": "second-reader audit triage 2026-09-28, F3 (runbook §214a)"
+  },
+  {
+   "sym": "NLCINDIA",
+   "qe": "20240930",
+   "basis": "s",
+   "field": "eps_d",
+   "was": 1.38,
+   "fixed": 2.45,
+   "why": "XBRL total tag (BasicEarningsLossPerShareFromContinuingAndDiscontinuedOperations + diluted twin) holds the printed EPS BEFORE adjustment of net regulatory deferral balances (row XIV, 1.38); the EPS of the profit for the period (339.39 cr / 138.66 cr shares) is row XV AFTER adjustment, 2.45. READ 1: BSE result PDF 46662fde (Q2 FY25, filed 2024-10-25 14:49), p2 Statement of Unaudited Standalone Financial Results q&h.y. ended 30-Sep-2024, Rs crore (scanned+OCR, rendered 115-252 dpi) — XIV EPS (Rs 10) from continuing operations (Before adjustment of Net Regulatory Deferral Balances): (1) Basic 1.38, (2) Diluted 1.38; XV EPS from continuing operations (After adjustment of Net Regulatory Deferral Balances): (1) Basic 2.45, (2) Diluted 2.45 (Quarter ended 30-09-2024 col); XI Profit for the period 339.39. Raw XBRL INDAS_113486 (std): Basic/Diluted ContinuingAndDiscontinued = Continuing = 1.38. READ 2: BSE result PDF faf8f8b9 (Q3 FY25, filed 2025-02-03), p3 standalone, 30-09-2024 comparative col; FV Rs 10 both — before adjustment Basic/Diluted 1.38; after adjustment Basic/Diluted 2.45 (Moneycontrol std 2.45, screener 2.45 also).",
+   "found": "second-reader audit triage 2026-09-28, F3 (runbook §214a)"
+  },
+  {
+   "sym": "PRINCEPIPE",
+   "qe": "20230930",
+   "basis": "s",
+   "field": "eps_b",
+   "was": 5.18,
+   "fixed": 6.39,
+   "why": "filer XBRL tagged the EPS EXCLUDING the exceptional item (5.18) in the total tags; the filing prints four lines and the EPS of the profit for the period (706.34 mn / 110.56 mn shares) is the INCLUDING-exceptional line 6.39. READ 1: BSE result PDF dc0bd2d7 (filed 2023-11-07 17:07), p4 Statement of Unaudited Financial Results for the Three Months and Six Months ended 30.09.2023, Rs million (text PDF, rendered 144 dpi) — EPS (FV Rs 10) (Not Annualised): Basic (excluding exceptional item) 5.18; Basic (including exceptional item) 6.39; Diluted (excluding) 5.18; Diluted (including) 6.39 (30.09.2023 col); profit after tax 706.34 mn incl. exceptional gain 179.27 mn. Raw XBRL INDAS_99182 (std): Basic/Diluted ContinuingAndDiscontinued = Continuing = 5.18. READ 2: BSE result PDF 37ea11e6 (Dec-23 results, filed 2024-02-05), p4 (text), 30.09.2023 comparative col; FV Rs 10 both — Basic excl 5.18 / incl 6.39; Diluted excl 5.18 / incl 6.39 (screener 6.39; Moneycontrol 5.18 = echo of the XBRL tag, not used).",
+   "found": "second-reader audit triage 2026-09-28, F3 (runbook §214a)"
+  },
+  {
+   "sym": "PRINCEPIPE",
+   "qe": "20230930",
+   "basis": "s",
+   "field": "eps_d",
+   "was": 5.18,
+   "fixed": 6.39,
+   "why": "filer XBRL tagged the EPS EXCLUDING the exceptional item (5.18) in the total tags; the filing prints four lines and the EPS of the profit for the period (706.34 mn / 110.56 mn shares) is the INCLUDING-exceptional line 6.39. READ 1: BSE result PDF dc0bd2d7 (filed 2023-11-07 17:07), p4 Statement of Unaudited Financial Results for the Three Months and Six Months ended 30.09.2023, Rs million (text PDF, rendered 144 dpi) — EPS (FV Rs 10) (Not Annualised): Basic (excluding exceptional item) 5.18; Basic (including exceptional item) 6.39; Diluted (excluding) 5.18; Diluted (including) 6.39 (30.09.2023 col); profit after tax 706.34 mn incl. exceptional gain 179.27 mn. Raw XBRL INDAS_99182 (std): Basic/Diluted ContinuingAndDiscontinued = Continuing = 5.18. READ 2: BSE result PDF 37ea11e6 (Dec-23 results, filed 2024-02-05), p4 (text), 30.09.2023 comparative col; FV Rs 10 both — Basic excl 5.18 / incl 6.39; Diluted excl 5.18 / incl 6.39 (screener 6.39; Moneycontrol 5.18 = echo of the XBRL tag, not used).",
+   "found": "second-reader audit triage 2026-09-28, F3 (runbook §214a)"
+  },
+  {
+   "sym": "PVRINOX",
+   "qe": "20240331",
+   "basis": "c",
+   "field": "eps_b",
+   "was": 13.21,
+   "fixed": -13.21,
+   "why": "sign flipped: consolidated XBRL EPS tags carry +13.21 / +13.12 on a loss (ProfitLossForPeriod -1,297 mn, owners -1,295 mn in the same file); the PDF prints (13.21) / (13.12). READ 1: BSE result PDF 199d50d6 (Q4/FY24 outcome, filed 2024-05-14 13:21), p16 Statement of Audited Consolidated Financial Results q&y ended 31-Mar-2024, Rs million except per share (text PDF, rendered 144 dpi); also p18 Reg 52(4) ratios table — 16 Earnings per share on net profit/(loss) after tax (FV Rs 10): Basic (13.21), Diluted (13.12) (3 months ended 31.03.2024 col); owners (1,295) mn; p18 repeats Basic (13.21) / Diluted (13.12). Raw XBRL INDAS_105859 (con): Basic total = Continuing = 13.21, Diluted 13.12 (both positive). READ 2: BSE result PDF 5e504078 (Q1 FY25, filed 2024-07-19), p8 consolidated, 31.03.2024 comparative col (basic); Moneycontrol cons quarterly PVR cached 2026-09 (diluted) — next filing: Basic (13.21), Diluted (13.21) - the DILUTED comparative was changed to equal basic (anti-dilution; the as-filed own figure (13.12) wins by rule). Moneycontrol cons Mar-24: Basic -13.21, Diluted -13.12 (not an echo: the XBRL tags are positive). Screener -13.20 (its own arithmetic, not used).",
+   "found": "second-reader audit triage 2026-09-28, F3 (runbook §214a)"
+  },
+  {
+   "sym": "PVRINOX",
+   "qe": "20240331",
+   "basis": "c",
+   "field": "eps_d",
+   "was": 13.12,
+   "fixed": -13.12,
+   "why": "sign flipped: consolidated XBRL EPS tags carry +13.21 / +13.12 on a loss (ProfitLossForPeriod -1,297 mn, owners -1,295 mn in the same file); the PDF prints (13.21) / (13.12). READ 1: BSE result PDF 199d50d6 (Q4/FY24 outcome, filed 2024-05-14 13:21), p16 Statement of Audited Consolidated Financial Results q&y ended 31-Mar-2024, Rs million except per share (text PDF, rendered 144 dpi); also p18 Reg 52(4) ratios table — 16 Earnings per share on net profit/(loss) after tax (FV Rs 10): Basic (13.21), Diluted (13.12) (3 months ended 31.03.2024 col); owners (1,295) mn; p18 repeats Basic (13.21) / Diluted (13.12). Raw XBRL INDAS_105859 (con): Basic total = Continuing = 13.21, Diluted 13.12 (both positive). READ 2: BSE result PDF 5e504078 (Q1 FY25, filed 2024-07-19), p8 consolidated, 31.03.2024 comparative col (basic); Moneycontrol cons quarterly PVR cached 2026-09 (diluted) — next filing: Basic (13.21), Diluted (13.21) - the DILUTED comparative was changed to equal basic (anti-dilution; the as-filed own figure (13.12) wins by rule). Moneycontrol cons Mar-24: Basic -13.21, Diluted -13.12 (not an echo: the XBRL tags are positive). Screener -13.20 (its own arithmetic, not used).",
+   "found": "second-reader audit triage 2026-09-28, F3 (runbook §214a)"
+  },
+  {
+   "sym": "RADICO",
+   "qe": "20210930",
+   "basis": "c",
+   "field": "eps_b",
+   "was": 10.94,
+   "fixed": 5.47,
+   "why": "XBRL continuing + discontinued doubled: filer typed the EPS 5.47 into both the Continuing and Discontinued tags, so the total tag = 10.94 (discontinued profit tag = 0). READ 1: BSE result PDF be0f49a7 (filed 2021-11-02 13:45; duplicate 34203ebc), p11 Statement of Unaudited Consolidated Financial Results q&6m ended 30-Sep-2021, Rs lakhs except EPS (scanned+OCR, rendered 144 dpi) — Earning per share (FV Rs 2) not annualized: Basic 5.47, Diluted 5.47 (Quarter ended 30.09.2021 col). Raw XBRL INDAS_77766: Basic/Diluted ContinuingAndDiscontinued 10.94, Continuing 5.47, Discontinued 5.47. READ 2: BSE result PDF 1e509c7b (Dec-21 results, filed 2022-02-03; duplicate fa9882f1), p9 consolidated (scanned, rendered 180 dpi), Quarter ended 30.09.2021 comparative col; FV Rs 2, paid-up 2,673.48 lakhs both — Basic 5.47, Diluted 5.47 (Moneycontrol cons 5.47 also).",
+   "found": "second-reader audit triage 2026-09-28, F3 (runbook §214a)"
+  },
+  {
+   "sym": "RADICO",
+   "qe": "20210930",
+   "basis": "c",
+   "field": "eps_d",
+   "was": 10.94,
+   "fixed": 5.47,
+   "why": "XBRL continuing + discontinued doubled: filer typed the EPS 5.47 into both the Continuing and Discontinued tags, so the total tag = 10.94 (discontinued profit tag = 0). READ 1: BSE result PDF be0f49a7 (filed 2021-11-02 13:45; duplicate 34203ebc), p11 Statement of Unaudited Consolidated Financial Results q&6m ended 30-Sep-2021, Rs lakhs except EPS (scanned+OCR, rendered 144 dpi) — Earning per share (FV Rs 2) not annualized: Basic 5.47, Diluted 5.47 (Quarter ended 30.09.2021 col). Raw XBRL INDAS_77766: Basic/Diluted ContinuingAndDiscontinued 10.94, Continuing 5.47, Discontinued 5.47. READ 2: BSE result PDF 1e509c7b (Dec-21 results, filed 2022-02-03; duplicate fa9882f1), p9 consolidated (scanned, rendered 180 dpi), Quarter ended 30.09.2021 comparative col; FV Rs 2, paid-up 2,673.48 lakhs both — Basic 5.47, Diluted 5.47 (Moneycontrol cons 5.47 also).",
+   "found": "second-reader audit triage 2026-09-28, F3 (runbook §214a)"
+  },
+  {
+   "sym": "RADICO",
+   "qe": "20210930",
+   "basis": "s",
+   "field": "eps_b",
+   "was": 10.36,
+   "fixed": 5.18,
+   "why": "XBRL continuing + discontinued doubled: filer typed the EPS 5.18 into both the Continuing and Discontinued tags, so the total tag = 10.36 (discontinued profit tag = 0). READ 1: BSE result PDF be0f49a7 (filed 2021-11-02 13:45; duplicate 34203ebc), p4 Statement of Unaudited Standalone Financial Results q&6m ended 30-Sep-2021, Rs lakhs except EPS (scanned+OCR, rendered 144 dpi) — Earning per share (FV Rs 2) not annualized: Basic 5.18, Diluted 5.18 (Quarter ended 30.09.2021 col). Raw XBRL INDAS_77741: Basic/Diluted ContinuingAndDiscontinued 10.36, Continuing 5.18, Discontinued 5.18. READ 2: BSE result PDF 1e509c7b (Dec-21 results, filed 2022-02-03; duplicate fa9882f1), p4 standalone (scanned, rendered 180 dpi), Quarter ended 30.09.2021 comparative col; FV Rs 2, paid-up 2,673.48 lakhs both — Basic 5.18, Diluted 5.18 (Moneycontrol std 5.18 also).",
+   "found": "second-reader audit triage 2026-09-28, F3 (runbook §214a)"
+  },
+  {
+   "sym": "RADICO",
+   "qe": "20210930",
+   "basis": "s",
+   "field": "eps_d",
+   "was": 10.36,
+   "fixed": 5.18,
+   "why": "XBRL continuing + discontinued doubled: filer typed the EPS 5.18 into both the Continuing and Discontinued tags, so the total tag = 10.36 (discontinued profit tag = 0). READ 1: BSE result PDF be0f49a7 (filed 2021-11-02 13:45; duplicate 34203ebc), p4 Statement of Unaudited Standalone Financial Results q&6m ended 30-Sep-2021, Rs lakhs except EPS (scanned+OCR, rendered 144 dpi) — Earning per share (FV Rs 2) not annualized: Basic 5.18, Diluted 5.18 (Quarter ended 30.09.2021 col). Raw XBRL INDAS_77741: Basic/Diluted ContinuingAndDiscontinued 10.36, Continuing 5.18, Discontinued 5.18. READ 2: BSE result PDF 1e509c7b (Dec-21 results, filed 2022-02-03; duplicate fa9882f1), p4 standalone (scanned, rendered 180 dpi), Quarter ended 30.09.2021 comparative col; FV Rs 2, paid-up 2,673.48 lakhs both — Basic 5.18, Diluted 5.18 (Moneycontrol std 5.18 also).",
+   "found": "second-reader audit triage 2026-09-28, F3 (runbook §214a)"
+  },
+  {
+   "sym": "RAIN",
+   "qe": "20211231",
+   "basis": "c",
+   "field": "eps_b",
+   "was": 2.88,
+   "fixed": -2.88,
+   "why": "sign flipped: consolidated XBRL EPS tags carry +2.88 on a loss (owners -969.59 mn in the same file); the PDF prints (2.88). READ 1: BSE result PDF 054b5a54 (annual audited CY2021, filed 2022-02-25 19:37), p8-9 Statement of Consolidated Audited Financial Results q&y ended 31-Dec-2021, Rs million except per share (text PDF, rendered 144 dpi) — 17 Earnings/(loss) Per Share - Basic and Diluted (of INR 2 each) (2.88) (Quarter ended December 31, 2021 col, not annualised); owners (969.59) mn, net loss (723.06) mn. Raw XBRL INDAS_83444 (con): Basic/Diluted ContinuingAndDiscontinued = Continuing = 2.88 (positive). READ 2: BSE result PDF 741e3b75 (Mar-22 quarter, filed 2022-05-04), p7 consolidated (text PDF), December 31, 2021 comparative col (net loss (723.06) same col); FV INR 2, paid-up 672.69 mn both — 17 EPS Basic and Diluted (2.88) (Moneycontrol cons -2.88 also).",
+   "found": "second-reader audit triage 2026-09-28, F3 (runbook §214a)"
+  },
+  {
+   "sym": "RAIN",
+   "qe": "20211231",
+   "basis": "c",
+   "field": "eps_d",
+   "was": 2.88,
+   "fixed": -2.88,
+   "why": "sign flipped: consolidated XBRL EPS tags carry +2.88 on a loss (owners -969.59 mn in the same file); the PDF prints (2.88). READ 1: BSE result PDF 054b5a54 (annual audited CY2021, filed 2022-02-25 19:37), p8-9 Statement of Consolidated Audited Financial Results q&y ended 31-Dec-2021, Rs million except per share (text PDF, rendered 144 dpi) — 17 Earnings/(loss) Per Share - Basic and Diluted (of INR 2 each) (2.88) (Quarter ended December 31, 2021 col, not annualised); owners (969.59) mn, net loss (723.06) mn. Raw XBRL INDAS_83444 (con): Basic/Diluted ContinuingAndDiscontinued = Continuing = 2.88 (positive). READ 2: BSE result PDF 741e3b75 (Mar-22 quarter, filed 2022-05-04), p7 consolidated (text PDF), December 31, 2021 comparative col (net loss (723.06) same col); FV INR 2, paid-up 672.69 mn both — 17 EPS Basic and Diluted (2.88) (Moneycontrol cons -2.88 also).",
+   "found": "second-reader audit triage 2026-09-28, F3 (runbook §214a)"
+  },
+  {
+   "sym": "RAJESHEXPO",
+   "qe": "20230331",
+   "basis": "s",
+   "field": "eps_b",
+   "was": 3.44,
+   "fixed": -3.44,
+   "why": "sign flipped on basic (XBRL basic tags +3.44 on a loss of 1,018.31 mn in the same file) and the diluted tags filed as 0.00; the PDF prints ONE figure (3.44) against (a) Basic / (b) Diluted. READ 1: BSE result PDF d2762d5d (Audited Stand Alone Results Mar-2023, filed 2023-05-30 23:11), p1 Statement of Stand Alone Audited Results q&y ended 31/03/2023, Rs millions (scanned, rendered 130-288 dpi) — 9 Earnings per share (EPS) (a) Basic (b) Diluted: one value (3.44) printed across both lines (31/03/2023 quarter col); net loss (1,018.31) mn; paid-up 295.26 mn (Re 1). Raw XBRL INDAS_94044 (std): Basic ContinuingAndDiscontinued = Continuing = 3.44 (positive); Diluted tags 0.00. READ 2: BSE result PDF b4d75170 (Jun-23 standalone results, filed 2023-08-14 21:49), p4 (scanned, rendered 130 dpi), 31/03/2023 Audited comparative col; Re 1 shares, paid-up 295.26 both — 9 EPS (a) Basic (b) Diluted: (3.44) (handwritten-corrected cell in the scan, clearly (3.44)); net loss (1,018.31) (Moneycontrol std -3.44/-3.44; screener -3.45 = its own arithmetic, not used).",
+   "found": "second-reader audit triage 2026-09-28, F3 (runbook §214a)"
+  },
+  {
+   "sym": "RAJESHEXPO",
+   "qe": "20230331",
+   "basis": "s",
+   "field": "eps_d",
+   "was": 0.0,
+   "fixed": -3.44,
+   "why": "sign flipped on basic (XBRL basic tags +3.44 on a loss of 1,018.31 mn in the same file) and the diluted tags filed as 0.00; the PDF prints ONE figure (3.44) against (a) Basic / (b) Diluted. READ 1: BSE result PDF d2762d5d (Audited Stand Alone Results Mar-2023, filed 2023-05-30 23:11), p1 Statement of Stand Alone Audited Results q&y ended 31/03/2023, Rs millions (scanned, rendered 130-288 dpi) — 9 Earnings per share (EPS) (a) Basic (b) Diluted: one value (3.44) printed across both lines (31/03/2023 quarter col); net loss (1,018.31) mn; paid-up 295.26 mn (Re 1). Raw XBRL INDAS_94044 (std): Basic ContinuingAndDiscontinued = Continuing = 3.44 (positive); Diluted tags 0.00. READ 2: BSE result PDF b4d75170 (Jun-23 standalone results, filed 2023-08-14 21:49), p4 (scanned, rendered 130 dpi), 31/03/2023 Audited comparative col; Re 1 shares, paid-up 295.26 both — 9 EPS (a) Basic (b) Diluted: (3.44) (handwritten-corrected cell in the scan, clearly (3.44)); net loss (1,018.31) (Moneycontrol std -3.44/-3.44; screener -3.45 = its own arithmetic, not used).",
+   "found": "second-reader audit triage 2026-09-28, F3 (runbook §214a)"
+  },
+  {
+   "sym": "RAJESHEXPO",
+   "qe": "20240331",
+   "basis": "c",
+   "field": "eps_b",
+   "was": 1.02,
+   "fixed": -1.02,
+   "why": "sign flipped on basic (XBRL basic tags +1.02 on a loss of 315.66 mn in the same file) and the diluted tags filed as 0.00; the PDF prints ONE figure (1.02) against (a) Basic / (b) Diluted. READ 1: BSE result PDF e6f953df (Consolidated Audited Results Mar-2024, filed 2024-05-31 00:40), p2 Statement of Consolidated Audited Results q&y ended 31/03/2024, Rs millions (scanned, rendered 130 dpi) — 9 Earnings per share (EPS) (a) Basic (b) Diluted: one value (1.02) (31/03/2024 quarter col); net loss (315.66) mn; paid-up 295.26 mn (Re 1). Raw XBRL INDAS_108653 (con): Basic ContinuingAndDiscontinued = Continuing = 1.02 (positive); Diluted tags 0.00. READ 2: BSE result PDF 01121639 (Jun-24 consolidated results, filed 2024-08-14 19:31), p4 (scanned, rendered 130 dpi), 31/03/2024 Audited comparative col; Re 1, paid-up 295.26 both — 9 EPS (a) Basic (b) Diluted: (1.02); net loss (315.66) (Moneycontrol cons -1.02/-1.02; screener -1.03 = its own arithmetic, not used).",
+   "found": "second-reader audit triage 2026-09-28, F3 (runbook §214a)"
+  },
+  {
+   "sym": "RAJESHEXPO",
+   "qe": "20240331",
+   "basis": "c",
+   "field": "eps_d",
+   "was": 0.0,
+   "fixed": -1.02,
+   "why": "sign flipped on basic (XBRL basic tags +1.02 on a loss of 315.66 mn in the same file) and the diluted tags filed as 0.00; the PDF prints ONE figure (1.02) against (a) Basic / (b) Diluted. READ 1: BSE result PDF e6f953df (Consolidated Audited Results Mar-2024, filed 2024-05-31 00:40), p2 Statement of Consolidated Audited Results q&y ended 31/03/2024, Rs millions (scanned, rendered 130 dpi) — 9 Earnings per share (EPS) (a) Basic (b) Diluted: one value (1.02) (31/03/2024 quarter col); net loss (315.66) mn; paid-up 295.26 mn (Re 1). Raw XBRL INDAS_108653 (con): Basic ContinuingAndDiscontinued = Continuing = 1.02 (positive); Diluted tags 0.00. READ 2: BSE result PDF 01121639 (Jun-24 consolidated results, filed 2024-08-14 19:31), p4 (scanned, rendered 130 dpi), 31/03/2024 Audited comparative col; Re 1, paid-up 295.26 both — 9 EPS (a) Basic (b) Diluted: (1.02); net loss (315.66) (Moneycontrol cons -1.02/-1.02; screener -1.03 = its own arithmetic, not used).",
+   "found": "second-reader audit triage 2026-09-28, F3 (runbook §214a)"
+  },
+  {
+   "sym": "RENUKA",
+   "qe": "20220630",
+   "basis": "c",
+   "field": "eps_b",
+   "was": 0.53,
+   "fixed": -0.53,
+   "why": "sign flipped: consolidated XBRL EPS tags carry +0.53 on a loss (ProfitLossForPeriod -1,139 mn, owners -1,133 mn in the same file); the PDF prints (0.53). READ 1: BSE result PDF 4f08c926 (filed 2022-08-09 17:38; duplicate 59319a15), p15 Statement of consolidated unaudited financial results q.e. June 30, 2022, INR million (scanned, rendered 130 dpi) — 15 Earnings per share (of Re 1 each) (not annualised): a) Basic (INR) (0.53), b) Diluted (INR) (0.53) (3 months ended June 30, 2022 col); owners (1,133) mn, net loss (1,139) mn. Raw XBRL INDAS_642321 (con): Basic/Diluted ContinuingAndDiscontinued = Continuing = 0.53 (positive). READ 2: BSE result PDF 8eb26f4c (Sep-22 results, filed 2022-11-10), p14 consolidated (scanned, rendered 180 dpi), 3 months ended June 30, 2022 comparative col; FV Re 1, paid-up 2,128 mn both — 17 a) Basic (0.53), b) Diluted (0.53) (Moneycontrol cons -0.53 also).",
+   "found": "second-reader audit triage 2026-09-28, F3 (runbook §214a)"
+  },
+  {
+   "sym": "RENUKA",
+   "qe": "20220630",
+   "basis": "c",
+   "field": "eps_d",
+   "was": 0.53,
+   "fixed": -0.53,
+   "why": "sign flipped: consolidated XBRL EPS tags carry +0.53 on a loss (ProfitLossForPeriod -1,139 mn, owners -1,133 mn in the same file); the PDF prints (0.53). READ 1: BSE result PDF 4f08c926 (filed 2022-08-09 17:38; duplicate 59319a15), p15 Statement of consolidated unaudited financial results q.e. June 30, 2022, INR million (scanned, rendered 130 dpi) — 15 Earnings per share (of Re 1 each) (not annualised): a) Basic (INR) (0.53), b) Diluted (INR) (0.53) (3 months ended June 30, 2022 col); owners (1,133) mn, net loss (1,139) mn. Raw XBRL INDAS_642321 (con): Basic/Diluted ContinuingAndDiscontinued = Continuing = 0.53 (positive). READ 2: BSE result PDF 8eb26f4c (Sep-22 results, filed 2022-11-10), p14 consolidated (scanned, rendered 180 dpi), 3 months ended June 30, 2022 comparative col; FV Re 1, paid-up 2,128 mn both — 17 a) Basic (0.53), b) Diluted (0.53) (Moneycontrol cons -0.53 also).",
+   "found": "second-reader audit triage 2026-09-28, F3 (runbook §214a)"
+  },
+  {
+   "sym": "RENUKA",
+   "qe": "20230630",
+   "basis": "s",
+   "field": "eps_b",
+   "was": 0.49,
+   "fixed": -0.49,
+   "why": "sign flipped: standalone XBRL EPS tags carry +0.49 on a loss (ProfitLossForPeriod -1,045 mn in the same file); the PDF prints (0.49). READ 1: BSE result PDF dc73532e (filed 2023-08-11 17:30), p8 Statement of standalone unaudited financial results q.e. June 30, 2023, INR million (scanned, rendered 130 dpi) — 15 Earnings per share (of Re 1 each) (not annualised): a) Basic (INR) (0.49), b) Diluted (INR) (0.49) (3 months ended June 30, 2023 col); net loss (1,045) mn. Raw XBRL INDAS_96655 (std): Basic/Diluted ContinuingAndDiscontinued = Continuing = 0.49 (positive). READ 2: BSE result PDF 62f01b20 (Sep-23 results, filed 2023-11-08), p3 standalone (scanned, rendered 158 dpi), 3 months ended June 30, 2023 comparative col (2nd col); FV Re 1, paid-up 2,128 mn both — 12 a) Basic (0.49), b) Diluted (0.49) (Moneycontrol std -0.49, screener -0.49 also).",
+   "found": "second-reader audit triage 2026-09-28, F3 (runbook §214a)"
+  },
+  {
+   "sym": "RENUKA",
+   "qe": "20230630",
+   "basis": "s",
+   "field": "eps_d",
+   "was": 0.49,
+   "fixed": -0.49,
+   "why": "sign flipped: standalone XBRL EPS tags carry +0.49 on a loss (ProfitLossForPeriod -1,045 mn in the same file); the PDF prints (0.49). READ 1: BSE result PDF dc73532e (filed 2023-08-11 17:30), p8 Statement of standalone unaudited financial results q.e. June 30, 2023, INR million (scanned, rendered 130 dpi) — 15 Earnings per share (of Re 1 each) (not annualised): a) Basic (INR) (0.49), b) Diluted (INR) (0.49) (3 months ended June 30, 2023 col); net loss (1,045) mn. Raw XBRL INDAS_96655 (std): Basic/Diluted ContinuingAndDiscontinued = Continuing = 0.49 (positive). READ 2: BSE result PDF 62f01b20 (Sep-23 results, filed 2023-11-08), p3 standalone (scanned, rendered 158 dpi), 3 months ended June 30, 2023 comparative col (2nd col); FV Re 1, paid-up 2,128 mn both — 12 a) Basic (0.49), b) Diluted (0.49) (Moneycontrol std -0.49, screener -0.49 also).",
+   "found": "second-reader audit triage 2026-09-28, F3 (runbook §214a)"
+  },
+  {
+   "sym": "RENUKA",
+   "qe": "20240630",
+   "basis": "c",
+   "field": "eps_b",
+   "was": -1.56,
+   "fixed": -0.78,
+   "why": "XBRL continuing + discontinued doubled: filer typed the EPS -0.78 into both the Continuing and Discontinued tags, so the total tag = -1.56 (discontinued profit tag = 0). READ 1: BSE result PDF 27b1df69 (filed 2024-08-02 18:40), p12 Statement of consolidated unaudited financial results q.e. June 30, 2024, INR million (scanned, rendered 130 dpi) — Earnings per share (of Re 1 each) (not annualised): a) Basic (INR) (0.78), b) Diluted (INR) (0.78) (3 months ended June 30, 2024 col); loss (1,662) mn, equity holders of the parent (1,655) mn. Raw XBRL INDAS_110237: Basic/Diluted ContinuingAndDiscontinued -1.56, Continuing -0.78, Discontinued -0.78. READ 2: BSE result PDF 0eecfa13 (Sep-24 results, filed 2024-10-28), p14 consolidated (scanned, rendered 144 dpi), June 30, 2024 comparative col; FV Re 1, paid-up 2,128 mn both — a) Basic (0.78), b) Diluted (0.78) (Moneycontrol cons -0.78 and screener -0.78 also).",
+   "found": "second-reader audit triage 2026-09-28, F3 (runbook §214a)"
+  },
+  {
+   "sym": "RENUKA",
+   "qe": "20240630",
+   "basis": "c",
+   "field": "eps_d",
+   "was": -1.56,
+   "fixed": -0.78,
+   "why": "XBRL continuing + discontinued doubled: filer typed the EPS -0.78 into both the Continuing and Discontinued tags, so the total tag = -1.56 (discontinued profit tag = 0). READ 1: BSE result PDF 27b1df69 (filed 2024-08-02 18:40), p12 Statement of consolidated unaudited financial results q.e. June 30, 2024, INR million (scanned, rendered 130 dpi) — Earnings per share (of Re 1 each) (not annualised): a) Basic (INR) (0.78), b) Diluted (INR) (0.78) (3 months ended June 30, 2024 col); loss (1,662) mn, equity holders of the parent (1,655) mn. Raw XBRL INDAS_110237: Basic/Diluted ContinuingAndDiscontinued -1.56, Continuing -0.78, Discontinued -0.78. READ 2: BSE result PDF 0eecfa13 (Sep-24 results, filed 2024-10-28), p14 consolidated (scanned, rendered 144 dpi), June 30, 2024 comparative col; FV Re 1, paid-up 2,128 mn both — a) Basic (0.78), b) Diluted (0.78) (Moneycontrol cons -0.78 and screener -0.78 also).",
+   "found": "second-reader audit triage 2026-09-28, F3 (runbook §214a)"
+  },
+  {
+   "sym": "RENUKA",
+   "qe": "20240630",
+   "basis": "s",
+   "field": "eps_b",
+   "was": -1.28,
+   "fixed": -0.64,
+   "why": "XBRL continuing + discontinued doubled: filer typed the EPS -0.64 into both the Continuing and Discontinued tags, so the total tag = -1.28 (discontinued profit tag = 0). READ 1: BSE result PDF 27b1df69 (filed 2024-08-02 18:40), p4 Statement of standalone unaudited financial results q.e. June 30, 2024, INR million (scanned, rendered 130 dpi) — Earnings per share (of Re 1 each) (not annualised): a) Basic (INR) (0.64), b) Diluted (INR) (0.64) (3 months ended June 30, 2024 col); loss for the period (1,352) mn. Raw XBRL INDAS_110235: Basic/Diluted ContinuingAndDiscontinued -1.28, Continuing -0.64, Discontinued -0.64. READ 2: BSE result PDF 0eecfa13 (Sep-24 results, filed 2024-10-28), p4 standalone (scanned, rendered 144 dpi), June 30, 2024 comparative col; FV Re 1, paid-up 2,128 mn both — a) Basic (0.64), b) Diluted (0.64) (Moneycontrol std -0.64 and screener -0.64 also).",
+   "found": "second-reader audit triage 2026-09-28, F3 (runbook §214a)"
+  },
+  {
+   "sym": "RENUKA",
+   "qe": "20240630",
+   "basis": "s",
+   "field": "eps_d",
+   "was": -1.28,
+   "fixed": -0.64,
+   "why": "XBRL continuing + discontinued doubled: filer typed the EPS -0.64 into both the Continuing and Discontinued tags, so the total tag = -1.28 (discontinued profit tag = 0). READ 1: BSE result PDF 27b1df69 (filed 2024-08-02 18:40), p4 Statement of standalone unaudited financial results q.e. June 30, 2024, INR million (scanned, rendered 130 dpi) — Earnings per share (of Re 1 each) (not annualised): a) Basic (INR) (0.64), b) Diluted (INR) (0.64) (3 months ended June 30, 2024 col); loss for the period (1,352) mn. Raw XBRL INDAS_110235: Basic/Diluted ContinuingAndDiscontinued -1.28, Continuing -0.64, Discontinued -0.64. READ 2: BSE result PDF 0eecfa13 (Sep-24 results, filed 2024-10-28), p4 standalone (scanned, rendered 144 dpi), June 30, 2024 comparative col; FV Re 1, paid-up 2,128 mn both — a) Basic (0.64), b) Diluted (0.64) (Moneycontrol std -0.64 and screener -0.64 also).",
+   "found": "second-reader audit triage 2026-09-28, F3 (runbook §214a)"
+  },
+  {
+   "sym": "RESPONIND",
+   "qe": "20210630",
+   "basis": "c",
+   "field": "eps_b",
+   "was": 0.1,
+   "fixed": -0.1,
+   "why": "sign flipped: consolidated XBRL EPS tags carry +0.10 on a loss (ProfitLossForPeriod -27.0 mn, owners -25.9 mn in the same file); the PDF prints (0.10). READ 1: BSE result PDF 53e72e9c (filed 2021-08-13 15:48; duplicate e0c1c23d), p4 Statement of Unaudited Consolidated Financial Results q.e. 30-Jun-2021, Rs lakhs (scanned, rendered 158 dpi) — 13 Earnings per share (EPS) of Re 1 each (not annualised): (a) Basic (0.10), (b) Diluted (0.10) (30.06.2021 col); owners (259.13) lakhs, net loss (270.08). Raw XBRL INDAS_75491 (con): Basic/Diluted ContinuingAndDiscontinued = Continuing = 0.10 (positive). READ 2: BSE result PDF 25b84c66 (Sep-21 results, filed 2021-10-28), p8 consolidated (scanned, rendered 288 dpi), 30.06.2021 comparative col; FV Re 1, paid-up 2,624.95 lakhs both — 13 (a) Basic (0.10), (b) Diluted (0.10); owners (259.13) (Moneycontrol cons -0.10 also).",
+   "found": "second-reader audit triage 2026-09-28, F3 (runbook §214a)"
+  },
+  {
+   "sym": "RESPONIND",
+   "qe": "20210630",
+   "basis": "c",
+   "field": "eps_d",
+   "was": 0.1,
+   "fixed": -0.1,
+   "why": "sign flipped: consolidated XBRL EPS tags carry +0.10 on a loss (ProfitLossForPeriod -27.0 mn, owners -25.9 mn in the same file); the PDF prints (0.10). READ 1: BSE result PDF 53e72e9c (filed 2021-08-13 15:48; duplicate e0c1c23d), p4 Statement of Unaudited Consolidated Financial Results q.e. 30-Jun-2021, Rs lakhs (scanned, rendered 158 dpi) — 13 Earnings per share (EPS) of Re 1 each (not annualised): (a) Basic (0.10), (b) Diluted (0.10) (30.06.2021 col); owners (259.13) lakhs, net loss (270.08). Raw XBRL INDAS_75491 (con): Basic/Diluted ContinuingAndDiscontinued = Continuing = 0.10 (positive). READ 2: BSE result PDF 25b84c66 (Sep-21 results, filed 2021-10-28), p8 consolidated (scanned, rendered 288 dpi), 30.06.2021 comparative col; FV Re 1, paid-up 2,624.95 lakhs both — 13 (a) Basic (0.10), (b) Diluted (0.10); owners (259.13) (Moneycontrol cons -0.10 also).",
+   "found": "second-reader audit triage 2026-09-28, F3 (runbook §214a)"
+  },
+  {
+   "sym": "SFL",
+   "qe": "20220930",
+   "basis": "c",
+   "field": "eps_b",
+   "was": 21.96,
+   "fixed": 10.98,
+   "why": "XBRL continuing + discontinued doubled: filer typed the EPS 10.98 into both the Continuing and Discontinued tags, so the total tag = 21.96 (discontinued profit tag = 0). READ 1: BSE result PDF 15b1903f (filed 2022-11-08 15:06), p9 Unaudited Statement of Consolidated Financial Results q&h.y. ended 30-Sep-2022, Rs crore (scanned, rendered 130 dpi) — Earning per share - Basic and Diluted 10.98 (Quarter ended September 30, 2022 col); owners 53.09; paid-up 24.39 (FV Rs 5). Raw XBRL INDAS_848383: Basic/Diluted ContinuingAndDiscontinued 21.96, Continuing 10.98, Discontinued 10.98. READ 2: BSE result PDF 47447dfd (Dec-22 results, filed 2023-02-02; duplicate 194470ca), p7 consolidated, September 30, 2022 comparative col - RESTATED for the 1:1 bonus approved 08-Nov-2022 (paid-up 24.39 -> 48.78, note: 'EPS for all periods presented have been adjusted') — Basic and Diluted 5.49 restated = 10.98 / 2 exactly (factor 2 from the 1:1 bonus) -> as-filed 10.98 reconciles. Moneycontrol cons 10.98 (= the as-filed figure; not the questioned total tag 21.96).",
+   "found": "second-reader audit triage 2026-09-28, F3 (runbook §214a)"
+  },
+  {
+   "sym": "SFL",
+   "qe": "20220930",
+   "basis": "c",
+   "field": "eps_d",
+   "was": 21.96,
+   "fixed": 10.98,
+   "why": "XBRL continuing + discontinued doubled: filer typed the EPS 10.98 into both the Continuing and Discontinued tags, so the total tag = 21.96 (discontinued profit tag = 0). READ 1: BSE result PDF 15b1903f (filed 2022-11-08 15:06), p9 Unaudited Statement of Consolidated Financial Results q&h.y. ended 30-Sep-2022, Rs crore (scanned, rendered 130 dpi) — Earning per share - Basic and Diluted 10.98 (Quarter ended September 30, 2022 col); owners 53.09; paid-up 24.39 (FV Rs 5). Raw XBRL INDAS_848383: Basic/Diluted ContinuingAndDiscontinued 21.96, Continuing 10.98, Discontinued 10.98. READ 2: BSE result PDF 47447dfd (Dec-22 results, filed 2023-02-02; duplicate 194470ca), p7 consolidated, September 30, 2022 comparative col - RESTATED for the 1:1 bonus approved 08-Nov-2022 (paid-up 24.39 -> 48.78, note: 'EPS for all periods presented have been adjusted') — Basic and Diluted 5.49 restated = 10.98 / 2 exactly (factor 2 from the 1:1 bonus) -> as-filed 10.98 reconciles. Moneycontrol cons 10.98 (= the as-filed figure; not the questioned total tag 21.96).",
+   "found": "second-reader audit triage 2026-09-28, F3 (runbook §214a)"
+  },
+  {
+   "sym": "SFL",
+   "qe": "20220930",
+   "basis": "s",
+   "field": "eps_b",
+   "was": 21.32,
+   "fixed": 10.66,
+   "why": "XBRL continuing + discontinued doubled: filer typed the EPS 10.66 into both the Continuing and Discontinued tags, so the total tag = 21.32 (discontinued profit tag = 0). READ 1: BSE result PDF 15b1903f (filed 2022-11-08 15:06), p3 Unaudited Statement of Standalone Financial Results q&h.y. ended 30-Sep-2022, Rs crore (scanned, rendered 130 dpi) — Earning per share - Basic and Diluted 10.66 (Quarter ended September 30, 2022 col); profit 52.02; paid-up 24.39 (FV Rs 5). Raw XBRL INDAS_848382: Basic/Diluted ContinuingAndDiscontinued 21.32, Continuing 10.66, Discontinued 10.66. READ 2: BSE result PDF 47447dfd (Dec-22 results, filed 2023-02-02; duplicate 194470ca), p3 standalone, September 30, 2022 comparative col - RESTATED for the 1:1 bonus approved 08-Nov-2022 (paid-up 24.39 -> 48.78, note: 'EPS for all periods presented have been adjusted') — Basic and Diluted 5.33 restated = 10.66 / 2 exactly (factor 2 from the 1:1 bonus) -> as-filed 10.66 reconciles. Moneycontrol std 10.66 (= the as-filed figure; not the questioned total tag 21.32).",
+   "found": "second-reader audit triage 2026-09-28, F3 (runbook §214a)"
+  },
+  {
+   "sym": "SFL",
+   "qe": "20220930",
+   "basis": "s",
+   "field": "eps_d",
+   "was": 21.32,
+   "fixed": 10.66,
+   "why": "XBRL continuing + discontinued doubled: filer typed the EPS 10.66 into both the Continuing and Discontinued tags, so the total tag = 21.32 (discontinued profit tag = 0). READ 1: BSE result PDF 15b1903f (filed 2022-11-08 15:06), p3 Unaudited Statement of Standalone Financial Results q&h.y. ended 30-Sep-2022, Rs crore (scanned, rendered 130 dpi) — Earning per share - Basic and Diluted 10.66 (Quarter ended September 30, 2022 col); profit 52.02; paid-up 24.39 (FV Rs 5). Raw XBRL INDAS_848382: Basic/Diluted ContinuingAndDiscontinued 21.32, Continuing 10.66, Discontinued 10.66. READ 2: BSE result PDF 47447dfd (Dec-22 results, filed 2023-02-02; duplicate 194470ca), p3 standalone, September 30, 2022 comparative col - RESTATED for the 1:1 bonus approved 08-Nov-2022 (paid-up 24.39 -> 48.78, note: 'EPS for all periods presented have been adjusted') — Basic and Diluted 5.33 restated = 10.66 / 2 exactly (factor 2 from the 1:1 bonus) -> as-filed 10.66 reconciles. Moneycontrol std 10.66 (= the as-filed figure; not the questioned total tag 21.32).",
+   "found": "second-reader audit triage 2026-09-28, F3 (runbook §214a)"
+  },
+  {
+   "sym": "SHREECEM",
+   "qe": "20240630",
+   "basis": "c",
+   "field": "eps_b",
+   "was": 263.74,
+   "fixed": 77.22,
+   "why": "filer XBRL put the printed CASH EPS (row XII 'Cash (in Rs.)') in the Basic tags; the Diluted tags hold the printed 'Basic and Diluted' EPS. The filing prints one Basic-and-Diluted line, so basic = that line. READ 1: BSE result PDF cfaecf77 (filed 2024-08-06 13:29), p7 Statement of Consolidated Unaudited Financial Results q.e. 30-Jun-2024, Rs crore (scanned, rendered 115-144 dpi) — XII Earnings Per Share (EPS) (of Rs 10 each) - Not Annualized: Cash (in Rs.) 263.74; Basic and Diluted (in Rs.) 77.22 (30.06.2024 quarter col); owners 278.61; paid-up 36.08. Raw XBRL INDAS_110519: Basic ContinuingAndDiscontinued = Continuing = 263.74 (the Cash EPS); Diluted = 77.22. READ 2: BSE result PDF fd9d48c8 (Sep-24 results, filed 2024-11-11), p10 consolidated, 30.06.2024 comparative col; FV Rs 10, paid-up 36.08 both — Cash 263.74; Basic and Diluted 77.22 (supporting only, not independent of the diluted tag: Moneycontrol cons basic 77.22 / diluted 77.22; screener 77.22).",
+   "found": "second-reader audit triage 2026-09-28, F3 (runbook §214a)"
+  },
+  {
+   "sym": "SHREECEM",
+   "qe": "20240630",
+   "basis": "s",
+   "field": "eps_b",
+   "was": 259.84,
+   "fixed": 88.06,
+   "why": "filer XBRL put the printed CASH EPS (row XII 'Cash (in Rs.)') in the Basic tags; the Diluted tags hold the printed 'Basic and Diluted' EPS. The filing prints one Basic-and-Diluted line, so basic = that line. READ 1: BSE result PDF cfaecf77 (filed 2024-08-06 13:29), p3 Statement of Standalone Unaudited Financial Results q.e. 30-Jun-2024, Rs crore (scanned, rendered 115-144 dpi) — XII Earnings Per Share (EPS) (of Rs 10 each) - Not Annualized: Cash (in Rs.) 259.84; Basic and Diluted (in Rs.) 88.06 (30.06.2024 quarter col); profit 317.71; paid-up 36.08. Raw XBRL INDAS_110518: Basic ContinuingAndDiscontinued = Continuing = 259.84 (the Cash EPS); Diluted = 88.06. READ 2: BSE result PDF fd9d48c8 (Sep-24 results, filed 2024-11-11), p3 standalone, 30.06.2024 comparative col; FV Rs 10, paid-up 36.08 both — Cash 259.84; Basic and Diluted 88.06 (supporting only, not independent of the diluted tag: Moneycontrol std basic 88.06 / diluted 88.06; screener 88.06).",
+   "found": "second-reader audit triage 2026-09-28, F3 (runbook §214a)"
+  },
+  {
+   "sym": "SHREECEM",
+   "qe": "20240930",
+   "basis": "c",
+   "field": "eps_b",
+   "was": 202.41,
+   "fixed": 21.18,
+   "why": "filer XBRL put the printed CASH EPS (row XII 'Cash (in Rs.)') in the Basic tags; the Diluted tags hold the printed 'Basic and Diluted' EPS. The filing prints one Basic-and-Diluted line, so basic = that line. READ 1: BSE result PDF fd9d48c8 (filed 2024-11-11 16:07), p10 Statement of Consolidated Unaudited Financial Results q&6m ended 30-Sep-2024, Rs crore (scanned, rendered 115-144 dpi) — XII Earnings Per Share (EPS) (of Rs 10 each) - Not Annualized: Cash (in Rs.) 202.41; Basic and Diluted (in Rs.) 21.18 (30.09.2024 quarter col); owners 76.44; paid-up 36.08. Raw XBRL INDAS_114872: Basic ContinuingAndDiscontinued = Continuing = 202.41 (the Cash EPS); Diluted = 21.18. READ 2: BSE result PDF 1f5b8e45 (Dec-24 results, filed 2025-01-30), p8 consolidated, 30.09.2024 comparative col; FV Rs 10, paid-up 36.08 both — Cash 202.41; Basic and Diluted 21.18 (supporting only, not independent of the diluted tag: Moneycontrol cons basic 21.18 / diluted 21.18; screener 21.19).",
+   "found": "second-reader audit triage 2026-09-28, F3 (runbook §214a)"
+  },
+  {
+   "sym": "SHREECEM",
+   "qe": "20240930",
+   "basis": "s",
+   "field": "eps_b",
+   "was": 196.63,
+   "fixed": 25.81,
+   "why": "filer XBRL put the printed CASH EPS (row XII 'Cash (in Rs.)') in the Basic tags; the Diluted tags hold the printed 'Basic and Diluted' EPS. The filing prints one Basic-and-Diluted line, so basic = that line. READ 1: BSE result PDF fd9d48c8 (filed 2024-11-11 16:07), p3 Statement of Standalone Unaudited Financial Results q&6m ended 30-Sep-2024, Rs crore (scanned, rendered 115-144 dpi) — XII Earnings Per Share (EPS) (of Rs 10 each) - Not Annualized: Cash (in Rs.) 196.63; Basic and Diluted (in Rs.) 25.81 (30.09.2024 quarter col); profit 93.13; paid-up 36.08. Raw XBRL INDAS_114863: Basic ContinuingAndDiscontinued = Continuing = 196.63 (the Cash EPS); Diluted = 25.81. READ 2: BSE result PDF 1f5b8e45 (Dec-24 results, filed 2025-01-30), p3 standalone, 30.09.2024 comparative col; FV Rs 10, paid-up 36.08 both — Cash 196.63; Basic and Diluted 25.81 (supporting only, not independent of the diluted tag: Moneycontrol std basic 25.81 / diluted 25.81; screener 25.81).",
+   "found": "second-reader audit triage 2026-09-28, F3 (runbook §214a)"
+  },
+  {
+   "sym": "SHREECEM",
+   "qe": "20241231",
+   "basis": "c",
+   "field": "eps_b",
+   "was": 268.34,
+   "fixed": 53.61,
+   "why": "filer XBRL put the printed CASH EPS (row XII 'Cash (in Rs.)') in the Basic tags; the Diluted tags hold the printed 'Basic and Diluted' EPS. The filing prints one Basic-and-Diluted line, so basic = that line. READ 1: BSE result PDF 1f5b8e45 (filed 2025-01-30 16:34), p8 Statement of Consolidated Unaudited Financial Results q&9m ended 31-Dec-2024, Rs crore (scanned, rendered 115-144 dpi) — XII Earnings Per Share (EPS) (of Rs 10 each) - Not Annualized: Cash (in Rs.) 268.34; Basic and Diluted (in Rs.) 53.61 (31.12.2024 quarter col); owners 193.40; paid-up 36.08. Raw XBRL INDAS_118194: Basic ContinuingAndDiscontinued = Continuing = 268.34 (the Cash EPS); Diluted = 53.61. READ 2: BSE result PDF 571e7d0e (Q4 FY25 audited, filed 2025-05-14), p13 consolidated, 31.12.2024 comparative col; FV Rs 10, paid-up 36.08 both — Cash 268.34; Basic and Diluted 53.61 (supporting only, not independent of the diluted tag: Moneycontrol cons basic 53.61 / diluted 53.61; screener 53.60).",
+   "found": "second-reader audit triage 2026-09-28, F3 (runbook §214a)"
+  },
+  {
+   "sym": "SHREECEM",
+   "qe": "20241231",
+   "basis": "s",
+   "field": "eps_b",
+   "was": 267.76,
+   "fixed": 63.58,
+   "why": "filer XBRL put the printed CASH EPS (row XII 'Cash (in Rs.)') in the Basic tags; the Diluted tags hold the printed 'Basic and Diluted' EPS. The filing prints one Basic-and-Diluted line, so basic = that line. READ 1: BSE result PDF 1f5b8e45 (filed 2025-01-30 16:34), p3 Statement of Standalone Unaudited Financial Results q&9m ended 31-Dec-2024, Rs crore (scanned, rendered 115-144 dpi) — XII Earnings Per Share (EPS) (of Rs 10 each) - Not Annualized: Cash (in Rs.) 267.76; Basic and Diluted (in Rs.) 63.58 (31.12.2024 quarter col); profit 229.41; paid-up 36.08. Raw XBRL INDAS_118191: Basic ContinuingAndDiscontinued = Continuing = 267.76 (the Cash EPS); Diluted = 63.58. READ 2: BSE result PDF 571e7d0e (Q4 FY25 audited, filed 2025-05-14), p5 standalone, 31.12.2024 comparative col; FV Rs 10, paid-up 36.08 both — Cash 267.76; Basic and Diluted 63.58 (supporting only, not independent of the diluted tag: Moneycontrol std basic 63.58 / diluted 63.58; screener 63.58).",
+   "found": "second-reader audit triage 2026-09-28, F3 (runbook §214a)"
+  },
+  {
+   "sym": "SHYAMMETL",
+   "qe": "20241231",
+   "basis": "s",
+   "field": "eps_b",
+   "was": 8.56,
+   "fixed": 4.28,
+   "why": "XBRL continuing + discontinued doubled: filer typed basic 4.28 / diluted 4.26 into both the Continuing and Discontinued tags, so the total tags = 8.56 / 8.52 (discontinued profit tag = 0). READ 1: BSE result PDF 3d328716 (filed 2025-01-28 13:10), p8 Statement of unaudited Standalone Financial Results q&9m ended 31-Dec-2024, Rs crore (scanned, rendered 130-288 dpi) — 15 Earnings per equity share (not annualised): (a) Basic 4.28, (b) Diluted 4.26 (31-Dec-24 quarter col); profit after tax 118.87; paid-up 278.04 (FV Rs 10). Raw XBRL INDAS_117884 (std): Basic ContinuingAndDiscontinued 8.56 = Continuing 4.28 + Discontinued 4.28; Diluted 8.52 = 4.26 + 4.26. READ 2: BSE result PDF d0e4b5ea (Q4 FY25 audited, filed 2025-05-09), p21 standalone (scanned, rendered 144 dpi), 31-Dec-24 (Unaudited) comparative col; FV Rs 10 both — 15 (a) Basic 4.28, (b) Diluted 4.26 (Moneycontrol std 4.28 / 4.26 also; screener 4.26 = its diluted).",
+   "found": "second-reader audit triage 2026-09-28, F3 (runbook §214a)"
+  },
+  {
+   "sym": "SHYAMMETL",
+   "qe": "20241231",
+   "basis": "s",
+   "field": "eps_d",
+   "was": 8.52,
+   "fixed": 4.26,
+   "why": "XBRL continuing + discontinued doubled: filer typed basic 4.28 / diluted 4.26 into both the Continuing and Discontinued tags, so the total tags = 8.56 / 8.52 (discontinued profit tag = 0). READ 1: BSE result PDF 3d328716 (filed 2025-01-28 13:10), p8 Statement of unaudited Standalone Financial Results q&9m ended 31-Dec-2024, Rs crore (scanned, rendered 130-288 dpi) — 15 Earnings per equity share (not annualised): (a) Basic 4.28, (b) Diluted 4.26 (31-Dec-24 quarter col); profit after tax 118.87; paid-up 278.04 (FV Rs 10). Raw XBRL INDAS_117884 (std): Basic ContinuingAndDiscontinued 8.56 = Continuing 4.28 + Discontinued 4.28; Diluted 8.52 = 4.26 + 4.26. READ 2: BSE result PDF d0e4b5ea (Q4 FY25 audited, filed 2025-05-09), p21 standalone (scanned, rendered 144 dpi), 31-Dec-24 (Unaudited) comparative col; FV Rs 10 both — 15 (a) Basic 4.28, (b) Diluted 4.26 (Moneycontrol std 4.28 / 4.26 also; screener 4.26 = its diluted).",
+   "found": "second-reader audit triage 2026-09-28, F3 (runbook §214a)"
+  },
+  {
+   "sym": "SIEMENS",
+   "qe": "20250630",
+   "basis": "c",
+   "field": "eps_b",
+   "was": 7.8,
+   "fixed": 11.89,
+   "why": "READER_EPS_WRONG_PERIOD: the Dec-2025 quarter XBRL (INTEGRATED_FILING_INDAS_1620200, filed 2026-02-06; Siemens moved to a Jan-Dec year) carries OneD contexts dated 2025-04-01..2025-06-30 while its DateOfEndOfReportingPeriod says 2025-12-31, so our reader took the Oct-Dec 2025 EPS 7.80 for Jun-25. The Jun-25 quarter's own XBRL (INTEGRATED_FILING_INDAS_1507700, filed 2025-08-08) carries 11.89 correctly. READ 1: BSE result PDF f11d3de9 (Financial Results Q3 FY2024-25, filed 2025-08-08 21:11), p9 Statement of consolidated unaudited financial results q&9m ended 30 June 2025, Rs million (text PDF, rendered 144 dpi) — 14 EPS of Rs 2 each (not annualised): Basic and diluted EPS from continuing operations 11.89; from discontinued operations -; from continuing and discontinued operations 11.89 (Quarter ended 30 June 2025 col); profit 4,234 mn, owners 4,229 mn. The later file's 7.80 is the Oct-Dec 2025 quarter (PDF 2a6f8d75, filed 2026-02-06, quarter ended 31 Dec 2025 col prints 7.80). READ 2: BSE result PDF 9bdb7dcd (quarter & twelve months ended 30-Sep-2025, filed 2025-11-14), p11 consolidated (text), Quarter ended 30 June 2025 comparative col; FV Rs 2, paid-up 712 mn both — Basic and diluted EPS from continuing and discontinued operations 11.89 (Moneycontrol cons 11.89; screener 11.88).",
+   "found": "second-reader audit triage 2026-09-28, F3 (runbook §214a)"
+  },
+  {
+   "sym": "SIEMENS",
+   "qe": "20250630",
+   "basis": "c",
+   "field": "eps_d",
+   "was": 7.8,
+   "fixed": 11.89,
+   "why": "READER_EPS_WRONG_PERIOD: the Dec-2025 quarter XBRL (INTEGRATED_FILING_INDAS_1620200, filed 2026-02-06; Siemens moved to a Jan-Dec year) carries OneD contexts dated 2025-04-01..2025-06-30 while its DateOfEndOfReportingPeriod says 2025-12-31, so our reader took the Oct-Dec 2025 EPS 7.80 for Jun-25. The Jun-25 quarter's own XBRL (INTEGRATED_FILING_INDAS_1507700, filed 2025-08-08) carries 11.89 correctly. READ 1: BSE result PDF f11d3de9 (Financial Results Q3 FY2024-25, filed 2025-08-08 21:11), p9 Statement of consolidated unaudited financial results q&9m ended 30 June 2025, Rs million (text PDF, rendered 144 dpi) — 14 EPS of Rs 2 each (not annualised): Basic and diluted EPS from continuing operations 11.89; from discontinued operations -; from continuing and discontinued operations 11.89 (Quarter ended 30 June 2025 col); profit 4,234 mn, owners 4,229 mn. The later file's 7.80 is the Oct-Dec 2025 quarter (PDF 2a6f8d75, filed 2026-02-06, quarter ended 31 Dec 2025 col prints 7.80). READ 2: BSE result PDF 9bdb7dcd (quarter & twelve months ended 30-Sep-2025, filed 2025-11-14), p11 consolidated (text), Quarter ended 30 June 2025 comparative col; FV Rs 2, paid-up 712 mn both — Basic and diluted EPS from continuing and discontinued operations 11.89 (Moneycontrol cons 11.89; screener 11.88).",
+   "found": "second-reader audit triage 2026-09-28, F3 (runbook §214a)"
+  },
+  {
+   "sym": "SIEMENS",
+   "qe": "20250630",
+   "basis": "s",
+   "field": "eps_b",
+   "was": 5.87,
+   "fixed": 10.37,
+   "why": "READER_EPS_WRONG_PERIOD: the Dec-2025 quarter XBRL (INTEGRATED_FILING_INDAS_1620148, filed 2026-02-06; Siemens moved to a Jan-Dec year) carries OneD contexts dated 2025-04-01..2025-06-30 while its DateOfEndOfReportingPeriod says 2025-12-31, so our reader took the Oct-Dec 2025 EPS 5.87 for Jun-25. The Jun-25 quarter's own XBRL (INTEGRATED_FILING_INDAS_1507699, filed 2025-08-08) carries 10.37 correctly. READ 1: BSE result PDF f11d3de9 (Financial Results Q3 FY2024-25, filed 2025-08-08 21:11), p4 Statement of standalone unaudited financial results q&9m ended 30 June 2025, Rs million (text PDF, rendered 144 dpi) — 14 EPS of Rs 2 each (not annualised): Basic and diluted EPS from continuing operations 10.37; from discontinued operations -; from continuing and discontinued operations 10.37 (Quarter ended 30 June 2025 col); profit 3,691 mn. The later file's 5.87 is the Oct-Dec 2025 quarter (PDF 2a6f8d75, filed 2026-02-06, quarter ended 31 Dec 2025 col prints 5.87). READ 2: BSE result PDF 9bdb7dcd (quarter & twelve months ended 30-Sep-2025, filed 2025-11-14), p4 standalone (text), Quarter ended 30 June 2025 comparative col; FV Rs 2, paid-up 712 mn both — Basic and diluted EPS from continuing and discontinued operations 10.37 (Moneycontrol std 10.37; screener 10.37).",
+   "found": "second-reader audit triage 2026-09-28, F3 (runbook §214a)"
+  },
+  {
+   "sym": "SIEMENS",
+   "qe": "20250630",
+   "basis": "s",
+   "field": "eps_d",
+   "was": 5.87,
+   "fixed": 10.37,
+   "why": "READER_EPS_WRONG_PERIOD: the Dec-2025 quarter XBRL (INTEGRATED_FILING_INDAS_1620148, filed 2026-02-06; Siemens moved to a Jan-Dec year) carries OneD contexts dated 2025-04-01..2025-06-30 while its DateOfEndOfReportingPeriod says 2025-12-31, so our reader took the Oct-Dec 2025 EPS 5.87 for Jun-25. The Jun-25 quarter's own XBRL (INTEGRATED_FILING_INDAS_1507699, filed 2025-08-08) carries 10.37 correctly. READ 1: BSE result PDF f11d3de9 (Financial Results Q3 FY2024-25, filed 2025-08-08 21:11), p4 Statement of standalone unaudited financial results q&9m ended 30 June 2025, Rs million (text PDF, rendered 144 dpi) — 14 EPS of Rs 2 each (not annualised): Basic and diluted EPS from continuing operations 10.37; from discontinued operations -; from continuing and discontinued operations 10.37 (Quarter ended 30 June 2025 col); profit 3,691 mn. The later file's 5.87 is the Oct-Dec 2025 quarter (PDF 2a6f8d75, filed 2026-02-06, quarter ended 31 Dec 2025 col prints 5.87). READ 2: BSE result PDF 9bdb7dcd (quarter & twelve months ended 30-Sep-2025, filed 2025-11-14), p4 standalone (text), Quarter ended 30 June 2025 comparative col; FV Rs 2, paid-up 712 mn both — Basic and diluted EPS from continuing and discontinued operations 10.37 (Moneycontrol std 10.37; screener 10.37).",
+   "found": "second-reader audit triage 2026-09-28, F3 (runbook §214a)"
+  },
+  {
+   "sym": "SWIGGY",
+   "qe": "20250630",
+   "basis": "c",
+   "field": "eps_b",
+   "was": 5.04,
+   "fixed": -5.04,
+   "why": "sign flipped: consolidated XBRL EPS tags carry +5.04 on a loss (ProfitLossForPeriod -11,970 mn, owners -11,970 mn in the same file; the standalone file carries -4.18 correctly); the PDF prints (5.04). READ 1: BSE result PDF cae825f3 (filed 2025-07-31 15:52), p5 Statement of consolidated financial results q.e. June 30, 2025, Rs crore (scanned, rendered 115 dpi) — XVII Earnings/(loss) per equity share (FV Re 1) (not annualised): (i) Basic (5.04), (ii) Diluted (5.04) (Jun 30, 2025 col); loss attributable to owners (1,197). Raw XBRL INTEGRATED_FILING_INDAS_1499092 (con): Basic/Diluted ContinuingAndDiscontinued = Continuing = 5.04 (positive). READ 2: BSE result PDF ae9e4f71 (Sep-25 results, filed 2025-10-30), p5 consolidated (scanned, rendered 144 dpi), Jun 30, 2025 comparative col; FV Re 1 both (paid-up 230) — XVII (i) Basic (5.04), (ii) Diluted (5.04) (Moneycontrol cons -5.04 also; screener -4.80 = its own arithmetic, not used).",
+   "found": "second-reader audit triage 2026-09-28, F3 (runbook §214a)"
+  },
+  {
+   "sym": "SWIGGY",
+   "qe": "20250630",
+   "basis": "c",
+   "field": "eps_d",
+   "was": 5.04,
+   "fixed": -5.04,
+   "why": "sign flipped: consolidated XBRL EPS tags carry +5.04 on a loss (ProfitLossForPeriod -11,970 mn, owners -11,970 mn in the same file; the standalone file carries -4.18 correctly); the PDF prints (5.04). READ 1: BSE result PDF cae825f3 (filed 2025-07-31 15:52), p5 Statement of consolidated financial results q.e. June 30, 2025, Rs crore (scanned, rendered 115 dpi) — XVII Earnings/(loss) per equity share (FV Re 1) (not annualised): (i) Basic (5.04), (ii) Diluted (5.04) (Jun 30, 2025 col); loss attributable to owners (1,197). Raw XBRL INTEGRATED_FILING_INDAS_1499092 (con): Basic/Diluted ContinuingAndDiscontinued = Continuing = 5.04 (positive). READ 2: BSE result PDF ae9e4f71 (Sep-25 results, filed 2025-10-30), p5 consolidated (scanned, rendered 144 dpi), Jun 30, 2025 comparative col; FV Re 1 both (paid-up 230) — XVII (i) Basic (5.04), (ii) Diluted (5.04) (Moneycontrol cons -5.04 also; screener -4.80 = its own arithmetic, not used).",
+   "found": "second-reader audit triage 2026-09-28, F3 (runbook §214a)"
+  },
+  {
+   "sym": "TATACHEM",
+   "qe": "20251231",
+   "basis": "c",
+   "field": "eps_b",
+   "was": 3.65,
+   "fixed": -3.65,
+   "why": "sign flipped: consolidated XBRL EPS tags carry +3.65 on a loss attributable to owners (owners -930 mn in the same file); the PDF prints (3.65). READ 1: BSE result PDF adf654cf (Q3 FY26, filed 2026-02-02 16:41), p6 Statement of Consolidated Financial Results q&9m ended 31-Dec-2025, Rs crore (text PDF, rendered 101 dpi) — 23 EPS continuing - Basic and Diluted (3.65)*; 24 discontinued -; 25 EPS continuing and discontinued - Basic and Diluted (3.65)* (Quarter ended 31 December 2025 col, not annualised). Raw XBRL INTEGRATED_FILING_INDAS_1616511 (con): Basic/Diluted ContinuingAndDiscontinued = Continuing = 3.65 (positive); owners -93 cr. READ 2: BSE result PDF 042bf953 (Q4 FY26 audited, filed 2026-05-04), p9 consolidated, 31 December 2025 (Unaudited) comparative col; FV Rs 10, paid-up 255 both — 25 EPS continuing and discontinued - Basic and Diluted (3.65)* (Moneycontrol cons -3.65, screener -3.65 also).",
+   "found": "second-reader audit triage 2026-09-28, F3 (runbook §214a)"
+  },
+  {
+   "sym": "TATACHEM",
+   "qe": "20251231",
+   "basis": "c",
+   "field": "eps_d",
+   "was": 3.65,
+   "fixed": -3.65,
+   "why": "sign flipped: consolidated XBRL EPS tags carry +3.65 on a loss attributable to owners (owners -930 mn in the same file); the PDF prints (3.65). READ 1: BSE result PDF adf654cf (Q3 FY26, filed 2026-02-02 16:41), p6 Statement of Consolidated Financial Results q&9m ended 31-Dec-2025, Rs crore (text PDF, rendered 101 dpi) — 23 EPS continuing - Basic and Diluted (3.65)*; 24 discontinued -; 25 EPS continuing and discontinued - Basic and Diluted (3.65)* (Quarter ended 31 December 2025 col, not annualised). Raw XBRL INTEGRATED_FILING_INDAS_1616511 (con): Basic/Diluted ContinuingAndDiscontinued = Continuing = 3.65 (positive); owners -93 cr. READ 2: BSE result PDF 042bf953 (Q4 FY26 audited, filed 2026-05-04), p9 consolidated, 31 December 2025 (Unaudited) comparative col; FV Rs 10, paid-up 255 both — 25 EPS continuing and discontinued - Basic and Diluted (3.65)* (Moneycontrol cons -3.65, screener -3.65 also).",
+   "found": "second-reader audit triage 2026-09-28, F3 (runbook §214a)"
+  },
+  {
+   "sym": "TATAPOWER",
+   "qe": "20231231",
+   "basis": "s",
+   "field": "eps_b",
+   "was": 1.33,
+   "fixed": 1.65,
+   "why": "filer XBRL put the printed EPS BEFORE net movement in regulatory deferral balances (1.33) in the Basic tags and the AFTER-movement EPS (1.65) in the Diluted tags; the filing prints one Basic-and-Diluted pair of lines, and the EPS of the net profit (527.08 cr / 319.53 cr shares) is the after-movement line 1.65. READ 1: BSE result PDF b577784f (Board meeting outcome Q3 FY24, filed 2024-02-09 17:06; duplicate b67842ba), p15 Statement of Standalone Audited Financial Results q&9m ended 31-Dec-2023, Rs crore (text PDF, rendered 144 dpi) — 14 Basic and Diluted Earnings Per Equity Share (of Re 1 each) (not annualised): Before Net Movement in Regulatory Deferral Balances 1.33; After Net Movement in Regulatory Deferral Balances 1.65 (31-Dec-23 col); net profit 527.08. Raw XBRL INDAS_103120 (std): Basic ContinuingAndDiscontinued 1.33, Diluted 1.65. READ 2: BSE result PDF 885f8406 (Q4 FY24, filed 2024-05-08), p21 standalone (scanned, rendered 144 dpi), 31-Dec-23 comparative col; FV Re 1, paid-up 319.56 both — Before net movement 1.33; After net movement 1.65 (screener 1.65; Moneycontrol 1.33/1.65 = echo of the XBRL tags, not used).",
+   "found": "second-reader audit triage 2026-09-28, F3 (runbook §214a)"
+  },
+  {
+   "sym": "ULTRACEMCO",
+   "qe": "20220331",
+   "basis": "s",
+   "field": "eps_b",
+   "was": 170.16,
+   "fixed": 85.08,
+   "why": "XBRL continuing + discontinued doubled: filer typed basic 85.08 / diluted 85.04 into both the Continuing and Discontinued tags, so the total tags = 170.16 / 170.09 (discontinued profit tag = 0; the standalone statement has no discontinued operations). READ 1: BSE result PDF b04d994a (Audited results Q4/FY22, filed 2022-04-29 14:26), p11 Statement of Audited Standalone Financial Results for the Three Months and Year Ended 31/03/2022, Rs crore (scanned, rendered 158 dpi) — 14 Earnings per equity share (of Rs 10 each) (Not Annualised): (a) Basic 85.08, (b) Diluted 85.04 (31/03/2022 three-months col); net profit 2,453.89. Raw XBRL INDAS_83782 (std): Basic ContinuingAndDiscontinued 170.16 = 85.08 + 85.08; Diluted 170.09 (= 85.04 + 85.04 to filer rounding). READ 2: BSE result PDF 00f8ee6f (Jun-22 results, filed 2022-07-22), p8 standalone (scanned, rendered 144 dpi), 31/03/2022 comparative col; FV Rs 10, paid-up 288.67 both — 12 (a) Basic 85.08, (b) Diluted 85.04 (Moneycontrol std 85.08 / 85.04 also).",
+   "found": "second-reader audit triage 2026-09-28, F3 (runbook §214a)"
+  },
+  {
+   "sym": "ULTRACEMCO",
+   "qe": "20220331",
+   "basis": "s",
+   "field": "eps_d",
+   "was": 170.09,
+   "fixed": 85.04,
+   "why": "XBRL continuing + discontinued doubled: filer typed basic 85.08 / diluted 85.04 into both the Continuing and Discontinued tags, so the total tags = 170.16 / 170.09 (discontinued profit tag = 0; the standalone statement has no discontinued operations). READ 1: BSE result PDF b04d994a (Audited results Q4/FY22, filed 2022-04-29 14:26), p11 Statement of Audited Standalone Financial Results for the Three Months and Year Ended 31/03/2022, Rs crore (scanned, rendered 158 dpi) — 14 Earnings per equity share (of Rs 10 each) (Not Annualised): (a) Basic 85.08, (b) Diluted 85.04 (31/03/2022 three-months col); net profit 2,453.89. Raw XBRL INDAS_83782 (std): Basic ContinuingAndDiscontinued 170.16 = 85.08 + 85.08; Diluted 170.09 (= 85.04 + 85.04 to filer rounding). READ 2: BSE result PDF 00f8ee6f (Jun-22 results, filed 2022-07-22), p8 standalone (scanned, rendered 144 dpi), 31/03/2022 comparative col; FV Rs 10, paid-up 288.67 both — 12 (a) Basic 85.08, (b) Diluted 85.04 (Moneycontrol std 85.08 / 85.04 also).",
+   "found": "second-reader audit triage 2026-09-28, F3 (runbook §214a)"
+  },
+  {
+   "sym": "VBL",
+   "qe": "20221231",
+   "basis": "s",
+   "field": "eps_b",
+   "was": 0.09,
+   "fixed": 0.91,
+   "why": "filer XBRL decimal slip: EPS tags hold 0.09 where the filing prints 0.91 (= profit 588.48 mn / 649.55 mn shares). READ 1: BSE result PDF 1dc7de6d (Reg 30 outcome Q4 CY22, filed 2023-02-06 11:53), p10 Statement of standalone financial results for the quarter and year ended 31-Dec-2022, Rs million except per share (text PDF, rendered 144 dpi) — 10 Earnings per share (of Rs 10 each) (not annualised for quarters): (a) Basic 0.91, (b) Diluted 0.91 (Three months ended 31 December 2022 col); net profit 588.48 mn; paid-up 6,495.50 mn. Raw XBRL INDAS_88729 (std): Basic/Diluted ContinuingAndDiscontinued = Continuing = 0.09. READ 2: BSE result PDF 12f54c60 (Mar-23 quarter, filed 2023-05-02), p7 standalone (text PDF), Three months ended 31 December 2022 comparative col; FV Rs 10, paid-up 6,495.50 mn in that col (no split/bonus between) — 10 (a) Basic 0.91, (b) Diluted 0.91; net profit 588.48 (Moneycontrol std 0.91 also - not an echo of the 0.09 tag).",
+   "found": "second-reader audit triage 2026-09-28, F3 (runbook §214a)"
+  },
+  {
+   "sym": "VBL",
+   "qe": "20221231",
+   "basis": "s",
+   "field": "eps_d",
+   "was": 0.09,
+   "fixed": 0.91,
+   "why": "filer XBRL decimal slip: EPS tags hold 0.09 where the filing prints 0.91 (= profit 588.48 mn / 649.55 mn shares). READ 1: BSE result PDF 1dc7de6d (Reg 30 outcome Q4 CY22, filed 2023-02-06 11:53), p10 Statement of standalone financial results for the quarter and year ended 31-Dec-2022, Rs million except per share (text PDF, rendered 144 dpi) — 10 Earnings per share (of Rs 10 each) (not annualised for quarters): (a) Basic 0.91, (b) Diluted 0.91 (Three months ended 31 December 2022 col); net profit 588.48 mn; paid-up 6,495.50 mn. Raw XBRL INDAS_88729 (std): Basic/Diluted ContinuingAndDiscontinued = Continuing = 0.09. READ 2: BSE result PDF 12f54c60 (Mar-23 quarter, filed 2023-05-02), p7 standalone (text PDF), Three months ended 31 December 2022 comparative col; FV Rs 10, paid-up 6,495.50 mn in that col (no split/bonus between) — 10 (a) Basic 0.91, (b) Diluted 0.91; net profit 588.48 (Moneycontrol std 0.91 also - not an echo of the 0.09 tag).",
+   "found": "second-reader audit triage 2026-09-28, F3 (runbook §214a)"
+  },
+  {
+   "sym": "ZEEL",
+   "qe": "20230630",
+   "basis": "s",
+   "field": "eps_b",
+   "was": 0.15,
+   "fixed": -0.15,
+   "why": "sign flipped: standalone XBRL EPS tags carry +0.15 on a loss (ProfitLossForPeriod -141.5 mn in the same file); the PDF prints (0.15). READ 1: BSE result PDF 4662f8f8 (filed 2023-08-09 17:36), p4 Statement of unaudited standalone financial results q.e. 30 June 2023, Rs lakhs (scanned, rendered 158 dpi) — 13 Earnings per share (not annualised): Basic (0.15), Diluted (0.15) (30-Jun-23 col); (loss) for the period (1,415) lakhs; paid-up 9,606 lakhs (Re 1). Raw XBRL INDAS_95943 (std): Basic/Diluted ContinuingAndDiscontinued = Continuing = 0.15 (positive). READ 2: BSE result PDF 248f3a3a (Sep-23 results, filed 2023-11-09), p5 standalone (scanned, rendered 144 dpi), quarter ended 30-Jun-23 comparative col; FV Re 1 both — 13 Basic (0.15), Diluted (0.15) (Moneycontrol std -0.15, screener -0.15 also).",
+   "found": "second-reader audit triage 2026-09-28, F3 (runbook §214a)"
+  },
+  {
+   "sym": "ZEEL",
+   "qe": "20230630",
+   "basis": "s",
+   "field": "eps_d",
+   "was": 0.15,
+   "fixed": -0.15,
+   "why": "sign flipped: standalone XBRL EPS tags carry +0.15 on a loss (ProfitLossForPeriod -141.5 mn in the same file); the PDF prints (0.15). READ 1: BSE result PDF 4662f8f8 (filed 2023-08-09 17:36), p4 Statement of unaudited standalone financial results q.e. 30 June 2023, Rs lakhs (scanned, rendered 158 dpi) — 13 Earnings per share (not annualised): Basic (0.15), Diluted (0.15) (30-Jun-23 col); (loss) for the period (1,415) lakhs; paid-up 9,606 lakhs (Re 1). Raw XBRL INDAS_95943 (std): Basic/Diluted ContinuingAndDiscontinued = Continuing = 0.15 (positive). READ 2: BSE result PDF 248f3a3a (Sep-23 results, filed 2023-11-09), p5 standalone (scanned, rendered 144 dpi), quarter ended 30-Jun-23 comparative col; FV Re 1 both — 13 Basic (0.15), Diluted (0.15) (Moneycontrol std -0.15, screener -0.15 also).",
+   "found": "second-reader audit triage 2026-09-28, F3 (runbook §214a)"
+  }
+ ]
+}

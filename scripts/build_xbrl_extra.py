@@ -43,6 +43,7 @@ import scale_fix
 import xbrl_symbol
 import bse_resolve
 import xtra_fc_fix
+import xtra_cell_fix
 
 HERE = os.path.dirname(os.path.abspath(__file__))
 # XBRL_CACHE override: the nightly top-up routine runs from its OWN worktree (one writer per
@@ -618,10 +619,10 @@ def main():
         total = len(files)
         print("incremental: %d new cache files, %d symbols in ledger" % (total, len(data)))
         if not files:
-            nf = xtra_fc_fix.reassert(data)
+            nf = xtra_fc_fix.reassert(data) + xtra_cell_fix.reassert(data)
             if nf:
                 json.dump(data, open(OUT, "w"), separators=(",", ":"))
-                print("nothing new; xtra_fc_fix re-asserted %d cells" % nf)
+                print("nothing new; xtra_fc_fix + xtra_cell_fix re-asserted %d cells" % nf)
             else:
                 print("nothing new — ledger unchanged")
             return
@@ -700,6 +701,10 @@ def main():
     nf = xtra_fc_fix.reassert(data)
     if nf:
         print("xtra_fc_fix: re-asserted %d cells" % nf)
+    # §214a F3: single cells whose filer XBRL tag is proven wrong (EPS sign / doubled / cash EPS …) — same rule
+    nc = xtra_cell_fix.reassert(data)
+    if nc:
+        print("xtra_cell_fix: re-asserted %d cells" % nc)
     json.dump(data, open(OUT, "w"), separators=(",", ":"))
     if incremental:
         seen.update(files)
