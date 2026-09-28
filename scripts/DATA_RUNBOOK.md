@@ -19873,7 +19873,7 @@ evidence, stated there and below).
 | REAL (exchange record matches) | 16 | recorded in corp_actions_hist.json (URAVI 2022, CASTROLIND 2010/2012, SUNTV 2007 = NSE "Spl/Bon-1:1" × Yahoo 2:1 …) |
 | REAL_TAPE (§87 tape-confirmed, no record) | 81 | none — data already right |
 | LEDGER_DEMERGER | 5 | none — demerger_adj already applies that factor |
-| WRONG_FACTOR | 3 | official factor → hist + unconfirmed_ca.json; self_heal reconciles (WFL 3:5 bonus 0.625 not 2/3; SEZALGLASS FV10→1 0.1 not 1/8; VITARACHEM 1998 bonus 1:1 0.5 not 0.6) |
+| WRONG_FACTOR | 3 | official factor → hist + unconfirmed_ca.json; self_heal reconciles (WFL 3:5 bonus 0.625 not 2/3; SEZALGLASS FV10→1 0.1 not 1/8; VITARACHEM 1998 bonus 1:1 0.5 not 0.6). Healed 09-25 by run 36119777689, which also pruned the queue; LIVE bin measured at the official factor 2026-09-28 (§212, closed item) |
 | rights (TERP inputs complete, TERP within 15% of tape) | 17 | rights_terp.json residual = TERP / factor actually baked |
 | rights, inputs missing | 8 | unresolved (no FV: delisted from EQUITY_L; or no premium stated) |
 | demerger without demerger_adj factor | 1 | EMKAYTOOLS 2024-12-04 → keep-drop (official record; the day-of policy) |
@@ -23858,16 +23858,26 @@ github-actions[bot] also committed in those 30 days. The non-bot counts are for 
 | refresh-fundamentals | ipo_base_fills 1 | `--each`, fills + skips one group |
 
 **Reverts that actually happened, byte for byte (a bot commit whose new blob = the blob a non-bot commit had just replaced):
-2, both refresh-backtest-data.**
+1, refresh-backtest-data.** The first count said 2. The second candidate was re-measured on 2026-09-28 and is not a revert
+(below).
 
-- **f6169f292 (09-25 15:20 IST)** put `scripts/unconfirmed_ca.json` back to `{}` ten minutes after **4d4be240c** (the §161g
-  routine) parked three WRONG_FACTOR events there (SEZALGLASS 2010-10-21, VITARACHEM 1998-09-02, WFL 2021-10-06). It is still
-  `{}` on origin today — see the **open item** below.
-- **c0971890e (09-26 14:34 IST)** undid **fb9ea4cde** (the UNIONBANK 2009 row) four minutes after it landed. That row was then
-  removed on purpose in 6031e907a (§174), so this one no longer matters.
+- **c0971890e (09-26 14:34 IST)** undid **fb9ea4cde** (the UNIONBANK 2009 row) four minutes after it landed. Its run
+  (36231080887) checked out 9ddba16a6, which does not contain fb9ea4cde. That row was then removed on purpose in 6031e907a
+  (§174), so this one no longer matters.
+- **Not a revert: f6169f292 (09-25 15:20 IST).** It set `scripts/unconfirmed_ca.json` to `{}` ten minutes after
+  **4d4be240c** (the §161g routine) parked three WRONG_FACTOR events there. But run 36119777689 wrote it, and that run's
+  checkout WAS 4d4be240c. Its self_heal read the three entries and fixed them. The log at 09:44:54Z shows
+  `SELF-HEAL SEZALGLASS ex 20101021: was f=0.1249 -> split/bonus f=0.1000`, VITARACHEM 0.6000 → 0.5000 and WFL 0.6667 → 0.6250.
+  prune_unconfirmed then measured all three as applied and removed them. The commit step landed the emptied queue. So
+  `{}` was the queue doing its job; the live-bin measurements are under the closed item below.
 
 An exact-byte scan only sees a copy of a file the run left alone. A revert folded into the run's own update leaves no such
-fingerprint, so 2 is a floor.
+fingerprint, so 1 is a floor.
+
+**Scan rule (binding): equal bytes do not prove a revert.** First find the run that made the bot commit
+(`gh run list --workflow <wf> --json databaseId,headSha,createdAt`) and check whether its checkout already contains the
+non-bot commit (`git merge-base --is-ancestor <non-bot> <headSha>`). If it does, the run read that change and replaced it on
+purpose: a queue consumed or a ledger rebuilt. Only a checkout that lacks the non-bot commit can revert it.
 
 **Not changed, per the task:** every other workflow's copied paths are bot-only in the window. They are backup-backtest-history,
 feed-monitor, refresh-actions, bse-results-xbrl (`_bse_xbrl_state.json`), refresh-bank-credit, refresh-announcements,
@@ -23940,10 +23950,31 @@ On the real tree, `snapshot` over scripts/headcount/ (733), docs/fo/, docs/survi
 xbrl_extra gz takes 0.2 s and finds exactly the edited and new files. `unchanged` correctly refused xbrl_extra.json.gz,
 which the bse-results-xbrl bot (e0208178f) had moved.
 
-**Open item — the §161g review-queue entries f6169f292 erased.** `scripts/unconfirmed_ca.json` has held `{}` since 09-25 15:20
-IST. 4d4be240c's version (blob 220894383) parked SEZALGLASS / VITARACHEM / WFL so self_heal would move each baked guess to
-the official factor. Unmeasured: whether the live bin carries the official factors anyway (via corp_actions_hist.json).
-Measure the adjusted day-ratio on the live bin before re-landing anything.
+**Closed 2026-09-28: the §161g review-queue entries were healed, not erased.** Measured on the LIVE `data` release asset
+`sf_stock_data.bin`: 209,037,933 B, uploaded 2026-09-28 03:46Z by run 36374661580, bin `end` 2026-09-25. The frozen
+docs copy was not used. For each event:
+
+- applied factor = raw close ratio ÷ adjusted close ratio across the ex bar
+- raw closes = 4d4be240c's NSE bhavcopy closes (blob 220894383; the same values are in crash_raw_prices.json)
+- second reader = the network-free vw ÷ (t·1e5/v) level shift (`_baked_factor`, median of 3 bars each side)
+
+| event | bars | raw ratio | adjusted ratio | applied | official | applied / official | vw reader |
+|---|---|---|---|---|---|---|---|
+| SEZALGLASS FV Rs10 → Re1 | 20101020 → 20101027 | 0.1017 | 1.0177 | 0.1000 | 0.100000 | 0.9995 | 0.1005 |
+| VITARACHEM bonus 1:1 | 19980831 → 19980907 | 0.5536 | 1.1071 | 0.5000 | 0.500000 | 1.0000 | 0.5032 |
+| WFL (now WEL) bonus 3:5 | 20211005 → 20211007 | 0.6561 | 1.0501 | 0.6248 | 0.625000 | 0.9998 | 0.6289 |
+
+- **Before:** the review audit's F was 0.1253 / 0.6081 / 0.6718. self_heal's own reading in run 36119777689, just before it
+  healed them, was 0.1249 / 0.6000 / 0.6667. No copy of the release bin from before the heal survives, so those two readings
+  are the only "before" figures; neither was re-measured this session.
+- **WFL is now WEL.** `_rename_map.json` maps WFL → WEL. A live-bin copy cached on 09-26 still held both keys, with WFL at
+  0.6250. The later rename merge kept the factor.
+- **Steady state.** Run 36374661580's update step printed no SELF-HEAL, park or prune line for any of the three. None of the
+  three is in its "matches neither the factor nor 1.0" warning, which lists all 38 of its entries.
+- **Nothing re-landed.** Re-parking blob 220894383 would have done nothing useful. Two entries would have been pruned again
+  as applied. Its `WFL` key names no series now, so prune_unconfirmed could never measure that entry and it would stay in the
+  queue for good.
+- ci_land.py stands on the real revert above (c0971890e).
 
 **The rule.** A CI job that builds from BASE and pushes later is doing a three-way merge. Land only what the run changed, and
 only where origin still holds BASE's copy. Rebuild what is derived. Never `cp` a whole file or directory back after
