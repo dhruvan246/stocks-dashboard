@@ -69,6 +69,8 @@ INPUTS  (local caches — gitignored; run on the Mac after new SME half-year res
   here, and the builder still re-validates their revenue).
 
 Run: python3 scripts/build_row_periods.py [--dry]
+Then: python3 scripts/fill_sme_halfyear_pnl.py [--apply] — the newly proven half-years get their P&L detail and op / EBIT
+      from the filing whose first column is the half (runbook §213).
 """
 import argparse, gzip, json, os, re, sys
 from collections import defaultdict
@@ -173,6 +175,49 @@ def pf_ok(qe, cell):
     return same_row(rev, h1 if qe % 10000 == 930 else h2)
 
 
+def page_resolver(fin_dir):
+    """Whose published page a results filing (parse()'s facts) belongs to — ONE rule for every reader of these files: this
+    builder proves row lengths with it, fill_sme_halfyear_pnl.py (runbook §213) fills the proven half-years' detail with
+    it. §203: a filing reaches a page only when ISIN says it is that company.
+    Returns (resolve, code2tk, have): resolve(x, kind) -> (page symbol, None) or (None, the ticker a §203 guard kept the
+    filing off, if any); kind is "nse" (NSE file: its own symbol) or "bse" (BSE file: its scrip code)."""
+    rmap = json.load(open(os.path.join(HERE, "_rename_map.json"), encoding="utf-8"))
+    def norm(s):
+        seen = set()
+        while s in rmap and s not in seen and rmap[s] != s:
+            seen.add(s); s = rmap[s]
+        return s
+    code2tk = {str(v): k for k, v in json.load(open(os.path.join(HERE, "bse_scrips.json"), encoding="utf-8"))["by_id"].items()}
+    have = {f[:-5] for f in os.listdir(fin_dir) if f.endswith(".json")}
+    sys.path.insert(0, HERE)
+    from build_stock_fin import slug, nse_tape_isin
+    import bse_resolve                      # §203: a filing marks a page's rows only when ISIN says it is that company
+    tape_isin = nse_tape_isin()
+    bse_resolve.identities(tape_isin)
+    isin2sym = {}
+    for s_, i_ in tape_isin.items():
+        isin2sym.setdefault(i_, s_)
+
+    def resolve(x, kind):
+        sym = blocked_sym = None
+        if kind == "bse":
+            sym = code2tk.get(x["code"])
+            if sym and bse_resolve.bse_blocked_under(sym, x["isin"], x["code"]):
+                blocked_sym, sym = sym, None    # ZEAL's page is Zeal Global (NSE SME), not BSE 539963
+        elif x["sym"] and x["sym"] not in ("NA", "NOTLISTED", "-"):
+            sym = norm(x["sym"])
+            if bse_resolve.nse_blocked_under(sym, x["isin"]):
+                blocked_sym, sym = sym, None    # KEL's page is Kotia (BSE); this is Kundan Edifice's NSE filing
+        if (not sym or slug(sym) not in have) and x["isin"]:
+            sym = isin2sym.get(x["isin"], sym)  # the listing of the same ISIN, if the tape knows one
+            if sym and sym == blocked_sym:
+                sym = None
+        if not sym or slug(sym) not in have:
+            return None, blocked_sym
+        return sym, None
+    return resolve, code2tk, have
+
+
 def main():
     ap = argparse.ArgumentParser()
     ap.add_argument("--sme-cache", default=os.environ.get("SME_CACHE") or os.path.join(HERE, "_xbrl_cache_sme"))
@@ -196,41 +241,16 @@ def main():
     scanned = {os.path.basename(p) for p, _ in paths}
 
     # filing -> the symbol its page is published under
-    rmap = json.load(open(os.path.join(HERE, "_rename_map.json"), encoding="utf-8"))
-    def norm(s):
-        seen = set()
-        while s in rmap and s not in seen and rmap[s] != s:
-            seen.add(s); s = rmap[s]
-        return s
-    code2tk = {str(v): k for k, v in json.load(open(os.path.join(HERE, "bse_scrips.json"), encoding="utf-8"))["by_id"].items()}
-    have = {f[:-5] for f in os.listdir(a.fin) if f.endswith(".json")}
-    sys.path.insert(0, HERE)
-    from build_stock_fin import slug, nse_tape_isin
-    import bse_resolve                      # §203: a filing marks a page's rows only when ISIN says it is that company
-    tape_isin = nse_tape_isin()
-    bse_resolve.identities(tape_isin)
-    isin2sym = {}
-    for s_, i_ in tape_isin.items():
-        isin2sym.setdefault(i_, s_)
+    resolve, code2tk, have = page_resolver(a.fin)
+    from build_stock_fin import slug
+    import bse_resolve
     files = defaultdict(list)               # (sym, qe) -> [fact]
     unmatched = other_co = 0
     for (p, kind), x in zip(paths, facts):
         if not x:
             continue
-        sym = blocked_sym = None
-        if kind == "bse":
-            sym = code2tk.get(x["code"])
-            if sym and bse_resolve.bse_blocked_under(sym, x["isin"], x["code"]):
-                blocked_sym, sym = sym, None    # ZEAL's page is Zeal Global (NSE SME), not BSE 539963
-        elif x["sym"] and x["sym"] not in ("NA", "NOTLISTED", "-"):
-            sym = norm(x["sym"])
-            if bse_resolve.nse_blocked_under(sym, x["isin"]):
-                blocked_sym, sym = sym, None    # KEL's page is Kotia (BSE); this is Kundan Edifice's NSE filing
-        if (not sym or slug(sym) not in have) and x["isin"]:
-            sym = isin2sym.get(x["isin"], sym)  # the listing of the same ISIN, if the tape knows one
-            if sym and sym == blocked_sym:
-                sym = None
-        if not sym or slug(sym) not in have:
+        sym, blocked_sym = resolve(x, kind)
+        if sym is None:
             if blocked_sym:
                 other_co += 1
             else:

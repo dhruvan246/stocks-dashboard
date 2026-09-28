@@ -929,7 +929,7 @@ function renderFunds(){
     const eq=bs.x.eq, borr=bs.x.borr||0;
     const ebitT=sumL(curR,e=>vOf(ebit(e)),e=>raw(e,8),e=>raw(e,7));
     const fcB=(e,b)=>{ const c=FIN_X&&FIN_X[String(e)], d=c&&(b==='c'?c.c:c.s); return d&&d.fc!=null?d.fc:null; };
-    const fcT=sumL(curR,e=>{ const x=xCell(e); return x&&x.fc!=null?x.fc:null; },e=>fcB(e,'c'),e=>fcB(e,'s'));
+    const fcT=sumL(curR,e=>{ const x=xPnlCell(e,rowCon); return x&&x.fc!=null?x.fc:null; },e=>fcB(e,'c'),e=>fcB(e,'s'));
     const extra=[];
     if(patT!=null&&eq){ const roe=patT/eq*100;
       extra.push(card('ROE (TTM)',roe.toFixed(1)+'%',sub('on latest equity, '+fmtQtr(bs.e)),roe<0?'neg':'text-slate-900')); }
@@ -955,7 +955,7 @@ function renderFunds(){
     }
     if(extra.length) $('fundCards').innerHTML+=extra.join('');
   }
-  try{ renderDeep(ends,pat,rev,op,isFin,FYS); }catch(e){ console.error(e); }
+  try{ renderDeep(ends,pat,rev,op,isFin,FYS,rowCon); }catch(e){ console.error(e); }
 
   // ---- last-result reaction + drift since (result-day convention documented at reactionAt) ----
   const s2=SERIES[TKR];
@@ -981,12 +981,8 @@ function renderFunds(){
     return `<td class="text-right px-2 ${rr==null?'':(rr.rx>=0?'pos':'neg')}">${rr==null?'—':pct(rr.rx)}</td>`; };
   const annCell=e=>{ const q=fundBy[e], a=q?annOf(q):null;
     return `<td class="text-right px-2 text-slate-500 whitespace-nowrap">${a==null?'—':ymd2iso(a)}</td>`; };
-  // "Apr–Sep 2025" / "Oct 2025 – Mar 2026": the m months ending at quarter-end e
-  const spanOf=(e,m)=>{ const y=Math.floor(e/10000), mo=Math.floor(e/100)%100, i=y*12+mo-m, sy=Math.floor(i/12), sm=i%12+1;
-    return sy===y?FY_MON[sm]+'–'+FY_MON[mo]+' '+y:FY_MON[sm]+' '+sy+' – '+FY_MON[mo]+' '+y; };
   // a proven half-year / full-year row says so: its figures cover six (twelve) months, not a quarter (§191/§198)
-  const lenTag=e=>{ const m=FIN_PD&&FIN_PD[String(e)]; if(m!==6&&m!==12) return '';
-    return ` <span class="text-[10px] font-normal text-slate-400" title="${m===12?'Full-year':'Half-year'} result: ${spanOf(e,m)} (${m} months in one filing, proven from the company’s filings)">${m} mo</span>`; };
+  const lenTag=e=>monTag(e,FIN_PD&&FIN_PD[String(e)]);
   $('funds').innerHTML=`<table class="w-full text-sm"><thead class="text-[11px] uppercase text-slate-500 border-b border-slate-200"><tr>`+
     `<th class="text-left py-1 pr-2">Quarter end</th><th class="text-right px-2">Revenue</th><th class="text-right px-2">Rev YoY</th>`+
     `<th class="text-right px-2">Op profit</th><th class="text-right px-2">OPM</th><th class="text-right px-2">EBIT</th>`+
@@ -1047,10 +1043,24 @@ let FIN_X=null, FIN_PD=null, FIN_PP=null, DEEP_TAB=null;
    the filings PROVE are 6 (or 12) months — scripts/build_row_periods.py, H1 + H2 = the printed full year; every other
    row is one quarter. A year's sums count only when its rows tile its 12 months (renderDeep, CFO/PAT card). */
 const rowMonths=e=>{ const m=FIN_PD&&FIN_PD[String(e)]; return (m===6||m===12)?m:3; };
+// "Apr–Sep 2025" / "Oct 2025 – Mar 2026": the m months ending at quarter-end e
+const spanOf=(e,m)=>{ const y=Math.floor(e/10000), mo=Math.floor(e/100)%100, i=y*12+mo-m, sy=Math.floor(i/12), sm=i%12+1;
+  return sy===y?FY_MON[sm]+'–'+FY_MON[mo]+' '+y:FY_MON[sm]+' '+sy+' – '+FY_MON[mo]+' '+y; };
+// the " 6 mo" tag a row of proven length carries — the results table and the Financial-detail card's Quarterly tab (§213)
+const monTag=(e,m)=>(m!==6&&m!==12)?'':` <span class="text-[10px] font-normal text-slate-400" title="${m===12?'Full-year':'Half-year'} result: ${spanOf(e,m)} (${m} months in one filing, proven from the company’s filings)">${m} mo</span>`;
 const xCell=e=>{ const c=FIN_X&&FIN_X[String(e)]; if(!c) return null;
   return FB_EFF==='std'?(c.s||null):(c.c||c.s||null); };                       // follows the basis switch
 const xBasis=e=>{ const c=FIN_X&&FIN_X[String(e)]; if(!c) return '';
   return FB_EFF==='std'?(c.s?'std':''):(c.c?'con':(c.s?'std':'')); };
+/* A row's P&L LINES follow the basis of the row's own figures (§213). xCell picks the consolidated cell wherever one
+   exists, but an SME half-year's consolidated statement can carry only a balance sheet while everything the results
+   table shows for the row — revenue, profit, and the detail filed with them — is standalone (DELAPLEX Sep-2024). Such a
+   row reads its P&L lines from the standalone cell; a row that shows any consolidated figure never does (no basis mix).
+   rowCon(e): does the results table show a consolidated figure for row e? */
+const X_PNL=['eps_b','oi','fc','dep','tax','exc','pbt','emp','mat'];
+const xPnlCell=(e,rowCon)=>{ const c=FIN_X&&FIN_X[String(e)]; if(!c) return null;
+  if(FB_EFF!=='std'&&c.c&&c.s&&rowCon&&!rowCon(e)&&!X_PNL.some(k=>c.c[k]!=null)&&X_PNL.some(k=>c.s[k]!=null)) return c.s;
+  return xCell(e); };
 /* ---- fiscal year-ends, year by year (runbook §186) ------------------------------------------------
    A year-end is not always March (ABB/Castrol Dec, Kennametal/Accelya Jun, Siemens Energy Sep) and a
    company can MOVE it: P&G group Jun→Mar through a 9-month year to Mar-2025, ACC/Ambuja/Linde Dec→Mar
@@ -1116,7 +1126,7 @@ function latestBS(ends){
   for(let i=ends.length-1;i>=0;i--){ const x=xCell(ends[i]); if(x&&x.eq!=null) return {e:ends[i],x}; }
   return null;
 }
-function renderDeep(ends,patFn,revFn,opFn,isFin,FYS){
+function renderDeep(ends,patFn,revFn,opFn,isFin,FYS,rowConFn){
   const card=$('deepCard'); if(!card) return;
   if(!FIN_X||!ends.some(e=>xCell(e))){ card.style.display='none'; return; }
   card.style.display='';
@@ -1138,8 +1148,11 @@ function renderDeep(ends,patFn,revFn,opFn,isFin,FYS){
   const tiles=fy=>{ if(FY.months(fy)!==12) return false; let c=mIdx(fy)-12;
     for(const e of byFy[fy]){ const m=mIdx(e); if(m-rowMonths(e)!==c) return false; c=m; }
     return c===mIdx(fy); };
-  // a complete year of four quarters (P&L) — never a transition year or one with a quarter missing
-  const full=fy=>byFy[fy].length===4&&tiles(fy);
+  // a complete year (P&L): four quarters that tile it — or rows whose lengths the filings PROVE (slice pd) tiling it, an
+  // SME half-yearly filer's Apr–Sep + Oct–Mar (§213); never a transition year, one with a row missing, or one whose rows
+  // are of unknown length (a proven half beside unmarked rows, §198)
+  const provenLen=e=>{ const m=FIN_PD&&FIN_PD[String(e)]; return m===3||m===6||m===12; };
+  const full=fy=>tiles(fy)&&(byFy[fy].length===4||byFy[fy].every(provenLen));
   const fys=fyAll.filter(fy=>full(fy)&&byFy[fy].every(e=>patFn(e)!=null));   // complete FYs (P&L)
   // year-end anchor = the quarter that closes the year (its audited year-end instant; cash flow is filed
   // year-to-date so that quarter carries the full-year figures). Never a stray interim or an incomplete
@@ -1162,7 +1175,8 @@ function renderDeep(ends,patFn,revFn,opFn,isFin,FYS){
   // flows (sales, profit, EBIT) only over a year whose rows tile its 12 months — see tiles() above
   const fySum=(fy,get)=>{ if(!tiles(fy)) return null; let t=0; for(const e of byFy[fy]){ const v=get(e); if(v==null) return null; t+=v; } return t; };
   const fyRev=fy=>fySum(fy,e=>vOf(revFn(e))), fyOp=fy=>fySum(fy,e=>vOf(opFn(e)));
-  const fyEbit=fy=>fySum(fy,e=>{ const o=opFn(e), d=(xCell(e)||{}).dep; return (o&&o.v!=null&&d!=null)?o.v-d:null; });
+  const pC=e=>xPnlCell(e,rowConFn);                                // a row's P&L lines, on the row's own basis (§213)
+  const fyEbit=fy=>fySum(fy,e=>{ const o=opFn(e), d=(pC(e)||{}).dep; return (o&&o.v!=null&&d!=null)?o.v-d:null; });
   const bsFys=fyAll.filter(fy=>bsOf(fy)).slice(0,12);
   const cfFys=fyAll.filter(fy=>cfOf(fy)).slice(0,12);
   const ratioFys=fyAll.filter(fy=>{ const c=bsOf(fy); return c&&(c.x.rec!=null||c.x.invnt!=null||c.x.pay!=null)&&fyRev(fy); }).slice(0,12);
@@ -1172,7 +1186,7 @@ function renderDeep(ends,patFn,revFn,opFn,isFin,FYS){
   const bsMeaningful=bsFys.some(fy=>{ const x=bsOf(fy).x; return x.sc!=null||x.eq!=null||x.ppe!=null||x.invst!=null||x.borr!=null; });
   // a quarter row needs P&L detail — a balance-sheet-only cell (SME half-year / yearly filings,
   // runbook §148) must not open an all-dash Quarterly table
-  const xPnl=e=>{ const x=xCell(e); return !!x&&['eps_b','oi','fc','dep','tax','exc','pbt','emp','mat'].some(k=>x[k]!=null); };
+  const xPnl=e=>{ const x=pC(e); return !!x&&X_PNL.some(k=>x[k]!=null); };
   const has={q:ends.some(xPnl), a:fys.length>0, bs:bsFys.length>0&&bsMeaningful, cf:cfFys.length>0, ratio:ratioFys.length>0,
     seg:ends.some(e=>(xCell(e)||{}).seg),
     bank:ends.slice(-12).some(e=>{const x=xCell(e); return x&&(x.gnpa_pct!=null||x.cet1!=null);})};
@@ -1228,23 +1242,31 @@ function renderDeep(ends,patFn,revFn,opFn,isFin,FYS){
     let html='',note='';
     if(cur==='q'){
       const rows=ends.filter(e=>xCell(e)).slice(-12).reverse();
+      // a half-year row says so (§213): its lines are six months, not a quarter — by the row's proven length, else by the
+      // detail cell's own mark (pm, written only from a filing proven to be that half)
+      const xMonths=e=>{ const m=FIN_PD&&FIN_PD[String(e)]; if(m===6||m===12) return m; const x=pC(e); return x&&x.pm===6?6:null; };
+      const hyRows=rows.some(e=>xMonths(e));
       html=`<div class="sw-scrollx overflow-x-auto"><table class="w-full text-sm"><thead class="text-[11px] uppercase text-slate-500 border-b border-slate-200"><tr>`+
         `<th class="text-left py-1 pr-2">Quarter</th>${th('EPS ₹')}${th('Other inc')}${th('Interest')}${th('Depr')}${th('Tax')}${th('Excep')}${th('PBT')}<th class="text-right px-2">Audited</th></tr></thead><tbody>`+
-        rows.map(e=>{ const x=xCell(e);
-          return `<tr class="border-b border-slate-50"><td class="py-1 pr-2 font-medium whitespace-nowrap">${fmtQtr(e)}</td>`+
+        rows.map(e=>{ const x=pC(e);
+          return `<tr class="border-b border-slate-50"><td class="py-1 pr-2 font-medium whitespace-nowrap">${fmtQtr(e)}${monTag(e,xMonths(e))}</td>`+
             td(x.eps_b==null?'—':x.eps_b.toLocaleString('en-IN'),x.eps_b!=null&&x.eps_b<0?'neg':'font-semibold')+
             money(x.oi)+money(x.fc)+money(x.dep)+money(x.tax)+money(x.exc)+money(x.pbt)+
             td(x.aud==='A'?'✓':(x.aud==='U'?'unaudited':'—'),x.qual?'neg':'text-slate-500 text-xs')+`</tr>`;
         }).join('')+`</tbody></table></div>`;
-      note='₹ crore except EPS (₹/share, basic). '+(FB_EFF==='std'?'Standalone (parent only).':'Consolidated where filed.')+' '+(ends.some(e=>(xCell(e)||{}).qual)?'<span class="neg">⚠ At least one filing carries an audit qualification.</span>':'');
+      note='₹ crore except EPS (₹/share, basic). '+(FB_EFF==='std'?'Standalone (parent only).':'Consolidated where filed.')+' '+(hyRows?'Rows tagged “6 mo” are <b>half-year results</b> — six months in one filing (Apr–Sep or Oct–Mar), not a quarter. ':'')+(ends.some(e=>(pC(e)||{}).qual)?'<span class="neg">⚠ At least one filing carries an audit qualification.</span>':'');
     }else if(cur==='a'){
       // Screener-style P&L: Sales, Expenses, Op profit, OPM, Other income, Interest, Depreciation,
       // PBT, Tax%, Net profit, EPS, Dividend payout — one column per complete FY.
       const pfy=fys.slice(0,12);
-      const fyX=(fy,k)=>fySum(fy,e=>{ const x=xCell(e); return x&&x[k]!=null?x[k]:null; });
+      const fyX=(fy,k)=>fySum(fy,e=>{ const x=pC(e); return x&&x[k]!=null?x[k]:null; });
+      // a year made of half-year results (§213): its lines add the Apr–Sep and Oct–Mar filings — but not EPS, which a
+      // half-year filing's second column often prints for the whole year (AIMTRON FY26: 9.94 + 22.47 vs the year's 22.47)
+      const hyY=fy=>byFy[fy].some(e=>rowMonths(e)!==3);
+      const hyP=pfy.filter(hyY);
       const fyOwn=fy=>fySum(fy,patFn);                        // owners-attributable (feeds EPS/PE/engine)
-      const fyNci=fy=>fySum(fy,e=>{ const x=xCell(e); return x&&x.nci!=null?x.nci:null; });
-      const fyAssoc=fy=>fySum(fy,e=>{ const x=xCell(e); return x&&x.assoc!=null?x.assoc:null; });
+      const fyNci=fy=>fySum(fy,e=>{ const x=pC(e); return x&&x.nci!=null?x.nci:null; });
+      const fyAssoc=fy=>fySum(fy,e=>{ const x=pC(e); return x&&x.assoc!=null?x.assoc:null; });
       // Screener shows the pre-minority GROUP profit as "Net Profit" (owners + minority); the
       // engine/PE keep owners. total = owners + minority where minority is filed, else owners.
       const fyNet=fy=>{ const o=fyOwn(fy); if(o==null) return null; const n=fyNci(fy); return n!=null?o+n:o; };
@@ -1272,7 +1294,7 @@ function renderDeep(ends,patFn,revFn,opFn,isFin,FYS){
           {label:'Minority interest', get:fyNci, fmt:crS, neg:true},
           {label:'Owners’ profit (for EPS / PE)', get:fyOwn, fmt:crS, neg:true},
         ]:null},
-        {label:'EPS in ₹', get:fy=>fyX(fy,'eps_b'), fmt:eps, neg:true},
+        {label:'EPS in ₹', get:fy=>hyY(fy)?null:fyX(fy,'eps_b'), fmt:eps, neg:true},
         {label:'Dividend Payout %', get:payout, fmt:pct1, faint:true},
       ];
       html=matrix(pfy, rows);
@@ -1281,7 +1303,7 @@ function renderDeep(ends,patFn,revFn,opFn,isFin,FYS){
       const strip=gspan('Sales',fyRev)+gspan('Profit',fyNet);
       if(strip) html+=`<div class="text-[12px] mt-2 pt-2 border-t border-slate-100">${strip}</div>`;
       const trP=fyAll.filter(fy=>FY.months(fy)!==12&&yearEndE(fy)!=null&&pfy.length&&fy>pfy[pfy.length-1]);   // transition years skipped
-      note='₹ crore, complete 12-month financial years ('+spanTxt(pfy)+'). '+(trP.length?'Left out: '+trList(trP)+' — not comparable with a 12-month year. ':'')+(FB_EFF==='std'?'Standalone (parent only).':'Consolidated where filed.')+' Expenses = Sales − Operating profit; Operating profit = EBITDA. '+(hasMinority?'Net Profit is the total group profit (Screener basis); expand it for the associate / minority split — “Owners’ profit” is what drives our EPS, P/E and backtests, and a year is shown at owners’ profit only where minority interest was not separately filed. ':'Net Profit is owners-attributable. ')+'EPS is as originally filed (not adjusted for later bonus issues or splits). Dividend payout = dividends paid ÷ net profit. '+(isFin?'<span class="text-amber-600">Bank/NBFC:</span> “Sales” is interest earned — margins are not comparable to industrials.':'');
+      note='₹ crore, complete 12-month financial years ('+spanTxt(pfy)+'). '+(hyP.length?(hyP.length===pfy.length?'Each year adds':partTxt(hyP)+(hyP.length===1?' adds':' add'))+' the company’s two <b>half-year results</b> (Apr–Sep + Oct–Mar); EPS is not summed for '+(hyP.length===1?'that year':'those years')+' — a half-year filing often prints the full year’s EPS in its second column. ':'')+(trP.length?'Left out: '+trList(trP)+' — not comparable with a 12-month year. ':'')+(FB_EFF==='std'?'Standalone (parent only).':'Consolidated where filed.')+' Expenses = Sales − Operating profit; Operating profit = EBITDA. '+(hasMinority?'Net Profit is the total group profit (Screener basis); expand it for the associate / minority split — “Owners’ profit” is what drives our EPS, P/E and backtests, and a year is shown at owners’ profit only where minority interest was not separately filed. ':'Net Profit is owners-attributable. ')+'EPS is as originally filed (not adjusted for later bonus issues or splits). Dividend payout = dividends paid ÷ net profit. '+(isFin?'<span class="text-amber-600">Bank/NBFC:</span> “Sales” is interest earned — margins are not comparable to industrials.':'');
     }else if(cur==='bs'){
       const B=fy=>{ const c=bsOf(fy); return c?c.x:{}; };
       const nw=fy=>{ const x=B(fy); if(x.eq!=null) return x.eq; if(x.sc!=null&&x.oeq!=null) return x.sc+x.oeq; return null; };

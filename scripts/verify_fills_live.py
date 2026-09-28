@@ -172,6 +172,11 @@ BASIS_KEYED = [
     ("con_nofile_retractions.json",    "revop", "was",     {"opC": 3}),
     ("con_nofile_retractions.json",    "revop", "was",     {"patC": 5}),
     ("con_nofile_retractions.json",    "revop", "was",     {"ebitC": 8}),
+    # §213 (2026-09-28): operating profit / EBIT written into EMPTY slots of SME rows proven to be half-years, from the
+    # filing whose first column is the half (fill_sme_halfyear_pnl.py). Keys "SYM|QE|std|con"; an entry carries op / ebit
+    # only when that script wrote it. Registered at creation.
+    ("sme_halfyear_fills.json",        "revop", "op",      {"std": 2, "con": 3}),
+    ("sme_halfyear_fills.json",        "revop", "ebit",    {"std": 7, "con": 8}),
 ]
 # "revS"/"revC" are accepted as basis tokens alongside "std"/"con": several ledgers key their third
 # part by FIELD rather than by BASIS, and the loop below silently `continue`s on any token it cannot

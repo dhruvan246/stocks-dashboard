@@ -33,6 +33,7 @@ WHAT IT REPLACES
          built by build_xbrl_extra.py): {qEnd: {s:{...}, c:{...}}} — EPS, interest/
          depreciation/tax/exceptional, balance sheet, cash flow (+cf_d period days),
          segments, bank NPA/CET1/ROA, audited flag. ₹ crore / ₹ per share / %.
+         pm = 6: the cell's P&L lines are a PROVEN half-year's (runbook §213).
   pd     {qEnd: 3|6|12} — result rows whose length the filings PROVE: 6 (or 12) for a
          half-year (an SME half-yearly filer's Sep row is Apr-Sep, its Mar row Oct-Mar),
          3 for a quarter inside a year that also holds a half-year (a filer of Q1 + H1 +
@@ -85,7 +86,8 @@ XTRA_KEEP = {"eps_b", "eps_d", "oi", "fc", "dep", "tax", "exc", "pbt", "emp", "m
              "ppe", "cwip", "iuad", "gw", "intg", "invst", "invprop", "bio", "prodprop",
              "cfo", "cfi", "cff", "capex", "divp", "cf_tax", "cf_d", "seg",
              "gnpa_pct", "nnpa_pct", "cet1", "car", "roa", "dep_amt", "adv", "int_exp",
-             "aud", "qual"}
+             "aud", "qual",
+             "pm"}   # 6 = the cell's P&L lines cover a PROVEN half-year (fill_sme_halfyear_pnl.py, runbook §213)
 
 _UNSAFE = re.compile(r"[^A-Za-z0-9._-]")
 

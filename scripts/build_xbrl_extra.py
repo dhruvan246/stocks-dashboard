@@ -657,6 +657,13 @@ def main():
             return
         for b in ("s", "c"):
             if r[b]:
+                if cell.get(b, {}).get("pm") == 6:
+                    # a PROVEN half-year's P&L lives here (fill_sme_halfyear_pnl.py, runbook §213): the page row is the
+                    # six months, so a quarter filing for the same quarter-end only fills what the cell lacks — it never
+                    # blends a quarter's lines into the half's
+                    for k, v in r[b].items():
+                        cell[b].setdefault(k, v)
+                    continue
                 if SRC_KEY in cell.get(b, {}):
                     cell[b] = {}                   # XBRL outranks an archive-HTML / MC cell: replace whole
                 cell.setdefault(b, {}).update(r[b])   # per-field latest-wins (non-null only, by construction)
