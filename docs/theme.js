@@ -301,6 +301,7 @@
       ['./backtest-history.html',  ic('history'), 'Backtest History'],
       ['./live-tracking.html',     ic('radio'), 'Live Tracking'],
       ['./status.html',            ic('pulse'), 'Data Health'],
+      ['./data-checks.html',       ic('swap'), 'Data Checks'],
       ['./results-coverage.html',  ic('check'), 'Results Coverage'],
       ['./fill-coverage.html',     ic('bars'), 'Fill Coverage'],
       ['./coverage.html',          ic('compass'), 'Coverage Matrix'],
@@ -345,6 +346,7 @@
     ] },
     { g: 'Owner console', tabs: [
       ['./status.html',            ic('pulse'), 'Data Health'],
+      ['./data-checks.html',       ic('swap'), 'Data Checks'],
       ['./results-coverage.html',  ic('check'), 'Results Coverage'],
       ['./fill-coverage.html',     ic('bars'), 'Fill Coverage'],
       ['./coverage.html',          ic('compass'), 'Coverage Matrix'],
@@ -372,7 +374,7 @@
     var _u = new URL(location.href), _ok = _u.searchParams.get('ownerkey');
     if (_ok) { localStorage.setItem('bt_owner_key', _ok); _u.searchParams.delete('ownerkey'); history.replaceState(null, '', _u.pathname + _u.search + _u.hash); }
   } catch (e) {}
-  var PRIVATE_PAGES = ['watchlist.html', 'live-tracking.html', 'insurer-inbox.html', 'analytics.html', 'status.html', 'results-coverage.html', 'fill-coverage.html', 'coverage.html',
+  var PRIVATE_PAGES = ['watchlist.html', 'live-tracking.html', 'insurer-inbox.html', 'analytics.html', 'status.html', 'data-checks.html', 'results-coverage.html', 'fill-coverage.html', 'coverage.html',
                        'ideas.html', 'commodities.html', 'bull-runs.html', 'strategy-phases.html', 'portfolio.html', 'pf-glance.html', 'terminal.html', 'private-import.html'];
   var IS_OWNER = false; try { IS_OWNER = !!localStorage.getItem('bt_owner_key'); } catch (e) {}
   // Every private page lives in ONE owner-only "Admin" section: entries listed in a public group above are

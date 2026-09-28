@@ -23996,3 +23996,53 @@ verify_fills_live 39,582 → 39,544 checked (−48 + 10), MISSING / REVERTED / R
 2023-09 row (op 13 / EBIT 11.2, no revenue) gone, ABHAPOWER Oct–Mar 2025 op 5.4 / OPM 15.1 %; 8 pages lose the Mar-2025 (SERVICE:
 Mar-2024) Balance-sheet column — the page shows a year-end balance sheet only where a result row exists, and those rows existed only
 between §210a and this retraction (none at session start, 0cb257d0c): the pages are back to this morning's state.
+
+## §214 — SECOND-READER AUDIT: every served number read against an independent source, nightly (2026-09-28, user: "Yes make it. and not just for fii dii holding but for all parameters")
+**Why.** Quantmac's reply v4 found real FII errors our checks had never flagged (§164r). Our automated checks are internal —
+sums to 100, size floors, jumps, same-parser re-reads (the 2026-09-01 audit found "0 disagreements >0.5pp" across the three SHP
+stores because all three came from ONE reading). A plausible wrong number passes every one of them; only an independent second
+reading of the same fact disagrees with it. This section is that second reader, built so our own errors surface here first.
+**What.** `scripts/xcheck_run.py` runs every check in `scripts/xcheck/` against the LIVE stores (docs/* + the release price bin;
+the repo's docs/sf_stock_data.bin is frozen — never read it) and writes `docs/xcheck.json`, rendered by the owner-only page
+`docs/data-checks.html` (nav: Data Checks, beside Data Health). Nightly by `.github/workflows/xcheck.yml` (07:10 IST, lands via
+ci_land.py, CFG entry in test_ci_land.py). Scope: point-in-time Nifty 500 members (user rule), so a (symbol, date) is audited
+only while it was a member. **Report-only**: a real defect is healed through its own ledger (rule 5) and then leaves the report;
+a disagreement adjudicated as NOT a defect goes into `scripts/xcheck_accept.json` {check: {key: {why}}} with what was read.
+Memory: the live bin is 582 MB decompressed — `json.load` builds ~10 GB and swapped this Mac to a halt; `common.iter_section`
+streams one symbol at a time (5,249 series in ~1 s, 62 MB), `late_value` reads the meta after the price arrays.
+**Checks (first run 2026-09-28, from this tree = origin/main f165f53ee + the live bin end 2026-09-25):**
+| id | reader A | reader B | compared | agree | open |
+|---|---|---|---|---|---|
+| px_nse_yahoo | sf bin (NSE bhavcopy, our CA ledgers) | stock_data.bin (Yahoo .NS) | 1,177,345 | 89.73 % | 2,768 (+149 explained) |
+| fund_vision_xbrl | sf_fundamentals / sf_revop (NSE XBRL) | vision_fills (PDF read) | 952 | 90.65 % | 89 |
+| fund_pbt_tax | stored PAT | the filing's PBT − tax (± associates, minority) | 61,284 | 91.77 % | 5,042 |
+| fund_eps_shares | stored PAT | company EPS × SHP share count | 18,182 | 95.97 % | 733 |
+| mcap_shares | BSE Mktcap (dashboard) | shares_outstanding × NSE close | 495 | 97.78 % | 11 |
+| idx_levels | nifty/nifty500/nifty_bank feeds | niftyindices archive + NSE daily | 930 | 99.25 % | 7 |
+| flows_month | fii_dii daily summed | fii_dii_monthly | 8 | 100 % | 0 |
+**Price check method (the hard part).** A/B per session (2020+) and per ISO week before (Yahoo is weekly 2002-19: its close vs
+A's last WEEKDAY session — the Budget-Saturday / Muhurat sessions are not in Yahoo's week; the weekly bar cut at Yahoo's daily
+start is partial and skipped). Disagreeing runs are cut into constant-ratio LEVELS (3 %), a 1-2 point excursion that returns is a
+blip inside the level (Yahoo repeated the prior close for 373 members on 18-Mar-2025), 1-2 "agreeing" points inside a level are
+bridged (HINDUNILVR's stale 18-Mar print sat within 1 % of ours and hid that the level runs to its 5-Dec-2025 demerger). At each
+level edge the two points either side are compared WITHIN each file: a correctly adjusted series is continuous across a split,
+so the file whose own close jumps by the gap is the wrong one (`wrong` A/B). A level whose ratio equals the product of OUR
+demerger/rights factors up to the next sustained agreement — or that ends at one of our demerger/rights dates — is EXPLAINED
+(Yahoo adjusts splits/bonus only, or uses its own factor: RELIANCE/Jio 0.923 vs our exchange-derived 0.9079). Same-date spikes
+on >= 25 members fold into one `session` finding. Ledger events are de-duplicated across corp_actions + corp_actions_hist and
+demerger_adj + demerger_catchup (the same event twice squared the product).
+**What the first run shows (candidates, NOT verdicts — each needs the source read before any heal):**
+- Yahoo dashboard bin: missing/double splits (MOTILALOFS, CGCL x0.25 to 1-Jan-2024; LMW x10 = Yahoo applied 0.1 twice), stale
+  sessions (18-Mar-2025 all members). Those are OUR served dashboard series — a heal would take the bin-derived series.
+- NSE bin pre-2008 levels (KANSAINER x20, VOLTAS x10 …) where one file adjusts a split the other does not — the pre-2016 CA
+  campaign's ground; `wrong` names the side for most.
+- fin `x` detail: EPS fields that cannot be the company's (INDIACEM Dec-2024 EPS 144.64 on a Rs 429 cr loss; ELGIEQUIP Mar-2022
+  318.62) — served on the stock page. PBT−tax misses include legitimate discontinued-operation gains (TMPV Sep-2025, ITC Mar-2025
+  demergers) — the store has no discontinued-ops line, so these need an accept entry or a new line, not a heal.
+- vision vs XBRL: banks' / insurers' "revenue" differs by definition (ICICIBANK total income vs revenue from operations).
+- shares_outstanding stale after corporate actions (ASTERDM x1.68, TDPOWERSYS x2.0 vs BSE's market cap).
+- nifty.json lacks sessions other feeds have (28-Feb-2015 Budget Saturday, 29-Mar-2019).
+**Next (phase 2, not built yet):** sampled outside readers nightly (Screener / Moneycontrol / Trendlyne: revenue, PAT, FII %) —
+the only kind that catches a classification error like Quantmac's; SHP NSE vs BSE XBRL copies and SHP visibility vs BSE's first
+announcement store-wide (§164r's stream, extended past the late quarters); Q-sum = FY once an FY source is stored (§45 names a
+`_fy_identity.py` that does not exist); delivery % has no independent source (both stores read sec_bhavdata_full).

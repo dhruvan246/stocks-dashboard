@@ -1,0 +1,95 @@
+name: Data checks (second-reader audit)
+
+# Re-runs scripts/xcheck_run.py — every served number read against a second, independent source
+# (NSE bin vs Yahoo bin prices, XBRL vs PDF results, PBT−tax and EPS×shares identities, BSE market cap
+# vs shares×close, index feeds vs the niftyindices archive, daily vs monthly flows) — and publishes
+# docs/xcheck.json for docs/data-checks.html (runbook §214). Report-only: it never edits data; a real
+# defect is healed through its own ledger, a non-defect is recorded in scripts/xcheck_accept.json.
+on:
+  schedule:
+    - cron: "40 1 * * *"        # 07:10 IST, after the overnight price / fundamentals / shareholding refreshes
+  workflow_dispatch: {}
+
+permissions:
+  contents: write
+  actions: write
+
+concurrency:
+  group: xcheck
+  cancel-in-progress: true
+
+jobs:
+  audit:
+    runs-on: ubuntu-latest
+    timeout-minutes: 30          # ~15 s of checks + a 210 MB release download
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v5
+
+      - name: Run every check
+        id: run
+        run: |
+          set +e
+          XCHECK_CACHE=/tmp/xcheck python3 -X utf8 scripts/xcheck_run.py
+          echo "rc=$?" >> "$GITHUB_OUTPUT"
+
+      - name: Guard — refuse to publish an empty or truncated report
+        run: |
+          python3 - <<'EOF'
+          import json, sys
+          r = json.load(open("docs/xcheck.json", encoding="utf-8"))
+          ok = [c for c in r["checks"].values() if (c.get("compared") or 0) > 0]
+          if len(ok) < 5:
+              sys.exit("only %d checks compared anything" % len(ok))
+          print("guard ok: %d checks, %d values compared" % (len(ok), sum(c["compared"] for c in ok)))
+          EOF
+
+      # Lands only what this run changed, and only where origin still holds the copy this run started from;
+      # a file another writer committed during the run stays theirs with a ::warning:: (runbook §212).
+      - name: Commit the report (only if changed)
+        id: commit
+        run: |
+          git config user.name  "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          BASE=$(git rev-parse HEAD)
+          python3 -X utf8 scripts/ci_land.py snapshot "$BASE" /tmp/land docs/xcheck.json
+          cp scripts/ci_land.py /tmp/ci_land.py
+          for attempt in 1 2 3 4 5; do
+            git fetch origin main
+            git reset --hard origin/main
+            python3 -X utf8 /tmp/ci_land.py apply "$BASE" /tmp/land
+            git add docs/xcheck.json
+            if git diff --cached --quiet; then
+              echo "Report unchanged — nothing to commit"
+              echo "changed=false" >> "$GITHUB_OUTPUT"
+              exit 0
+            fi
+            git commit -m "Data checks $(TZ=Asia/Kolkata date +'%Y-%m-%d %H:%M IST')" -m "$(cat /tmp/land/landing.txt)"
+            if git push origin HEAD:main; then
+              echo "Pushed on attempt #$attempt"
+              echo "changed=true" >> "$GITHUB_OUTPUT"
+              exit 0
+            fi
+            echo "Push attempt #$attempt rejected; resetting and retrying"
+            sleep $(( attempt * 3 ))
+          done
+          echo "Failed to push after 5 attempts"
+          exit 1
+
+      - name: Publish to Pages (only when the report changed)
+        if: steps.commit.outputs.changed == 'true'
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          for i in 1 2 3; do
+            gh workflow run pages.yml && exit 0
+            echo "::warning::pages dispatch attempt $i failed (GitHub-side); retrying in 15s"
+            sleep 15
+          done
+          echo "::warning::pages dispatch failed 3x — report is committed; next push or ci-janitor publishes it"
+
+      - name: Fail the run if a check crashed (the page shows the previous result for it)
+        if: steps.run.outputs.rc != '0'
+        run: |
+          echo "::error::a check raised — see the 'Run every check' step; its card shows the last good result"
+          exit 1

@@ -1,0 +1,199 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>STOCKSWORLD · Data checks</title>
+<meta name="description" content="Every served number read against a second, independent source — where the two readings disagree, and which side looks wrong." />
+<script src="https://cdn.tailwindcss.com"></script>
+<link rel="stylesheet" href="./theme.css" />
+<script src="./theme.js"></script>
+<style>
+  body { font-feature-settings: "tnum" 1; }
+  .card{background:#fff;border:1px solid #e2e8f0;border-radius:.75rem}
+  .xc-tab{overflow-x:auto;-webkit-overflow-scrolling:touch}
+  .xc-tab table{border-collapse:collapse;width:100%;font-size:12px}
+  .xc-tab th{font-size:10px;text-transform:uppercase;letter-spacing:.04em;text-align:left;padding:6px 8px;white-space:nowrap;opacity:.65}
+  .xc-tab td{padding:5px 8px;border-top:1px solid rgba(148,163,184,.25);white-space:nowrap;vertical-align:top}
+  .xc-tab td.num{text-align:right}
+  .xc-bar{height:6px;border-radius:9999px;background:rgba(148,163,184,.3);overflow:hidden}
+  .xc-bar > span{display:block;height:100%;background:#22c55e}
+  details > summary{cursor:pointer;list-style:none}
+  details > summary::-webkit-details-marker{display:none}
+  .xc-pill{display:inline-block;font-size:10px;font-weight:700;padding:1px 6px;border-radius:9999px;border:1px solid currentColor}
+</style>
+</head>
+<body class="bg-slate-50 min-h-screen text-slate-800">
+
+<header class="sticky top-0 z-40 bg-white/90 backdrop-blur-md border-b border-slate-200 shadow-sm">
+  <div class="max-w-screen-lg mx-auto px-4 h-14 flex items-center justify-between gap-4">
+    <a href="./index.html" class="flex items-center gap-2.5 shrink-0 group">
+      <span class="w-9 h-9 rounded-xl bg-gradient-to-br from-blue-600 via-indigo-600 to-violet-600 text-white flex items-center justify-center font-extrabold text-[13px] shadow-md group-hover:scale-105 transition">SW</span>
+      <span class="font-bold text-slate-900 tracking-tight hidden sm:block">STOCKS<span class="text-indigo-600">WORLD</span></span>
+    </a>
+    <nav></nav>
+  </div>
+</header>
+
+<main class="max-w-screen-lg mx-auto px-4 py-6">
+  <div class="mb-4">
+    <h1 class="text-xl sm:text-2xl font-extrabold text-slate-900 tracking-tight">Data checks</h1>
+    <p class="text-sm text-slate-500 mt-1">Each check reads the same number from <b>two independent sources</b> and lists where they disagree.
+      Sums and size checks cannot catch a plausible wrong number — a second reader can. Findings are reported, never auto-changed:
+      a real error is fixed through its correction ledger, and a difference that is not an error is recorded as <i>accepted</i> with the reason.</p>
+  </div>
+
+  <div id="banner" class="card p-4 mb-5 text-sm text-slate-500">Loading checks…</div>
+  <div id="checks"></div>
+
+  <p class="text-[11px] text-slate-400 mt-6">Scope: Nifty 500 members on each date. Source: <code>docs/xcheck.json</code>, built by
+    <code>scripts/xcheck_run.py</code> (runbook §214). “Explained” = a known, by-design difference (e.g. Yahoo never adjusts demergers);
+    “Wrong side” is read from the prices themselves: a correctly adjusted series is continuous across a split, so the file whose own price
+    jumps by the gap is the one that failed to adjust.</p>
+</main>
+
+<script>
+(function () {
+  function swLock(){ document.querySelector('main').innerHTML =
+    '<div class="max-w-md mx-auto text-center py-20"><div class="text-5xl mb-4">🔒</div>' +
+    '<h1 class="text-lg font-bold text-slate-800 mb-2">This page is private</h1>' +
+    '<p class="text-sm text-slate-500">It\'s a personal tool of the site owner. The rest of the site is open — head back to the <a class="text-indigo-600 font-semibold hover:underline" href="./index.html">home page</a>.</p></div>'; }
+  var SW_OWNER = (function(){ try { return !!localStorage.getItem('bt_owner_key'); } catch(e){ return false; } })();
+  if (!SW_OWNER) { swLock(); return; }
+
+  function esc(s) { return String(s == null ? '' : s).replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;'); }
+  function num(v, dp) {
+    if (v == null || v === '') return '—';
+    if (typeof v !== 'number') return esc(v);
+    return v.toLocaleString('en-IN', { maximumFractionDigits: dp == null ? 2 : dp });
+  }
+  function side(w) {
+    if (w === 'A') return '<span class="xc-pill text-amber-600" title="Reader A (our NSE bin) jumps at the edge">A</span>';
+    if (w === 'B') return '<span class="xc-pill text-sky-600" title="Reader B (Yahoo dashboard bin) jumps at the edge">B</span>';
+    if (w === 'both') return '<span class="xc-pill text-slate-500">both</span>';
+    return '<span class="text-slate-400">?</span>';
+  }
+  function edge(e) {
+    if (!e) return '—';
+    var l = (e.ledger && e.ledger.length) ? ' · ' + e.ledger.map(function (x) { return esc(x[1]) + ' ' + esc(x[0]); }).join(', ') : '';
+    return esc(e.to) + ' A×' + num(e.a_jump, 3) + ' B×' + num(e.b_jump, 3) + l;
+  }
+  // per-check columns: [header, fn(finding) -> html, numeric?]
+  var COLS = {
+    px_nse_yahoo: [
+      ['Stock', function (f) { return f.sym === '*' ? '<b>all members</b>' : '<a class="text-indigo-600 hover:underline" href="./stock.html?sym=' + encodeURIComponent(f.sym) + '">' + esc(f.sym) + '</a>'; }],
+      ['Shape', function (f) { return esc(f.shape); }],
+      ['From', function (f) { return esc(f.date_from); }],
+      ['To', function (f) { return esc(f.date_to); }],
+      ['Points', function (f) { return num(f.n, 0); }, 1],
+      ['A ÷ B', function (f) { return f.ratio == null ? '—' : num(f.ratio, 4); }, 1],
+      ['Wrong side', function (f) { return side(f.wrong); }],
+      ['Where it ends', function (f) { return f.shape === 'session' ? esc((f.examples || []).slice(0, 4).map(function (x) { return x[0]; }).join(', ')) : edge(f.right); }],
+      ['Note', function (f) { return esc(f.explained || f.accepted || (f.ledger_match ? 'ratio = our ' + f.ledger_match + ' factor' : '')); }]
+    ],
+    fund_vision_xbrl: [
+      ['Stock', function (f) { return esc(f.sym); }], ['Quarter', function (f) { return esc(f.qe); }],
+      ['Basis', function (f) { return esc(f.basis); }], ['Field', function (f) { return esc(f.field); }],
+      ['XBRL', function (f) { return num(f.a); }, 1], ['PDF read', function (f) { return num(f.b); }, 1],
+      ['Ratio', function (f) { return num(f.ratio, 3); }, 1]
+    ],
+    fund_pbt_tax: [
+      ['Stock', function (f) { return esc(f.sym); }], ['Quarter', function (f) { return esc(f.qe); }],
+      ['Basis', function (f) { return esc(f.basis); }], ['Stored PAT', function (f) { return num(f.pat); }, 1],
+      ['PBT', function (f) { return num(f.pbt); }, 1], ['Tax', function (f) { return num(f.tax); }, 1],
+      ['Closest', function (f) { return f.closest ? esc(f.closest[0]) + ' = ' + num(f.closest[1]) : '—'; }],
+      ['Ratio', function (f) { return num(f.ratio, 3); }, 1]
+    ],
+    fund_eps_shares: [
+      ['Stock', function (f) { return esc(f.sym); }], ['Quarter', function (f) { return esc(f.qe); }],
+      ['Basis', function (f) { return esc(f.basis); }], ['Stored PAT', function (f) { return num(f.pat); }, 1],
+      ['EPS', function (f) { return num(f.eps); }, 1], ['Shares', function (f) { return num(f.shares, 0); }, 1],
+      ['EPS × shares', function (f) { return num(f.implied); }, 1], ['Ratio', function (f) { return num(f.ratio, 3); }, 1]
+    ],
+    mcap_shares: [
+      ['Stock', function (f) { return esc(f.sym); }], ['BSE mcap (cr)', function (f) { return num(f.a, 0); }, 1],
+      ['Shares × close', function (f) { return num(f.b, 0); }, 1], ['Ratio', function (f) { return num(f.ratio, 3); }, 1],
+      ['Shares as of', function (f) { return esc(f.shares_asof); }]
+    ],
+    idx_levels: [
+      ['Index', function (f) { return esc(f.index); }], ['What', function (f) { return esc(f.what); }],
+      ['Date', function (f) { return esc(f.date); }], ['Feed', function (f) { return num(f.a); }, 1],
+      ['Other', function (f) { return num(f.b); }, 1], ['Other source', function (f) { return esc(f.b_src); }],
+      ['Ratio', function (f) { return num(f.ratio, 4); }, 1]
+    ],
+    flows_month: [
+      ['Month', function (f) { return esc(f.month); }], ['Field', function (f) { return esc(f.field); }],
+      ['Daily sum', function (f) { return num(f.a); }, 1], ['Monthly', function (f) { return num(f.b); }, 1],
+      ['Days', function (f) { return num(f.days, 0); }, 1]
+    ]
+  };
+  function generic() {
+    return [['Finding', function (f) { return esc(Object.keys(f).filter(function (k) { return k !== 'weight'; }).map(function (k) {
+      var v = f[k]; return k + '=' + (typeof v === 'object' ? JSON.stringify(v) : v); }).join(' · ')); }]];
+  }
+  function table(c, list) {
+    var cols = COLS[c.id] || generic();
+    if (!list || !list.length) return '<div class="text-xs text-slate-400 px-4 py-3">None.</div>';
+    return '<div class="xc-tab"><table><thead><tr>' + cols.map(function (x) { return '<th' + (x[2] ? ' style="text-align:right"' : '') + '>' + esc(x[0]) + '</th>'; }).join('') +
+      '</tr></thead><tbody>' + list.map(function (f) {
+        return '<tr>' + cols.map(function (x) { return '<td' + (x[2] ? ' class="num"' : '') + '>' + x[1](f) + '</td>'; }).join('') + '</tr>';
+      }).join('') + '</tbody></table></div>';
+  }
+  function card(c) {
+    if (c.error && c.compared == null) {
+      return '<div class="card p-4 mb-4"><div class="font-bold text-red-600">' + esc(c.title || c.id) + ' — did not run</div>' +
+        '<pre class="text-[11px] text-slate-500 whitespace-pre-wrap mt-2">' + esc(c.error) + '</pre></div>';
+    }
+    var pct = c.agree_pct == null ? null : c.agree_pct;
+    var shown = (c.open || []).length;
+    var head =
+      '<div class="flex flex-wrap items-baseline justify-between gap-2">' +
+        '<div class="min-w-0"><div class="text-[11px] uppercase tracking-wide text-slate-500 font-bold">' + esc(c.domain) + '</div>' +
+        '<div class="text-base font-bold text-slate-900">' + esc(c.title) + '</div></div>' +
+        '<div class="text-right"><div class="text-lg font-extrabold ' + (c.n_open ? 'text-amber-600' : 'text-emerald-600') + '">' +
+          (pct == null ? '—' : num(pct, 2) + '%') + '</div><div class="text-[11px] text-slate-400">agree</div></div>' +
+      '</div>' +
+      '<div class="xc-bar mt-2"><span style="width:' + (pct == null ? 0 : Math.max(0, Math.min(100, pct))) + '%"></span></div>' +
+      '<div class="text-xs text-slate-500 mt-2 leading-relaxed">' +
+        '<div><b>A</b> · ' + esc(c.reader_a) + '</div><div><b>B</b> · ' + esc(c.reader_b) + '</div>' +
+        '<div>Scope · ' + esc(c.scope) + ' · tolerance ' + esc(c.tolerance) + '</div></div>' +
+      '<div class="flex flex-wrap gap-x-4 gap-y-1 text-xs mt-2">' +
+        '<span><b>' + num(c.compared, 0) + '</b> compared</span>' +
+        '<span class="text-amber-600"><b>' + num(c.n_open, 0) + '</b> open</span>' +
+        '<span class="text-sky-600"><b>' + num(c.n_explained, 0) + '</b> explained</span>' +
+        '<span class="text-slate-500"><b>' + num(c.n_accepted, 0) + '</b> accepted</span>' +
+        '<span class="text-slate-400">ran ' + esc(c.ran || '—') + '</span></div>' +
+      (c.notes && c.notes.length ? '<div class="text-[11px] text-slate-400 mt-1">' + c.notes.map(esc).join(' · ') + '</div>' : '') +
+      (c.error ? '<div class="text-[11px] text-red-500 mt-1">Last run failed (' + esc(c.error_ran) + ') — showing the previous result.</div>' : '');
+    var body =
+      '<details class="mt-3"' + (c.n_open && c.n_open <= 25 ? ' open' : '') + '><summary class="text-xs font-semibold text-indigo-600">Open disagreements' +
+        (c.n_open > shown ? ' (largest ' + shown + ' of ' + num(c.n_open, 0) + ')' : ' (' + num(c.n_open, 0) + ')') + '</summary>' +
+        '<div class="mt-2 -mx-4 border-t border-slate-100">' + table(c, c.open) + '</div></details>' +
+      (c.n_explained ? '<details class="mt-2"><summary class="text-xs font-semibold text-sky-600">Explained (' + num(c.n_explained, 0) + ')</summary>' +
+        '<div class="mt-2 -mx-4 border-t border-slate-100">' + table(c, c.explained) + '</div></details>' : '') +
+      (c.n_accepted ? '<details class="mt-2"><summary class="text-xs font-semibold text-slate-500">Accepted (' + num(c.n_accepted, 0) + ')</summary>' +
+        '<div class="mt-2 -mx-4 border-t border-slate-100">' + table(c, c.accepted) + '</div></details>' : '');
+    return '<div class="card p-4 mb-4">' + head + body + '</div>';
+  }
+
+  fetch('./xcheck.json', { cache: 'no-store' })
+    .then(function (r) { if (!r.ok) throw new Error(r.status); return r.json(); })
+    .then(function (rep) {
+      var checks = (rep.order || Object.keys(rep.checks || {})).map(function (k) { return (rep.checks || {})[k]; }).filter(Boolean);
+      if (!checks.length) throw new Error('empty');
+      var comp = 0, agr = 0, open = 0;
+      checks.forEach(function (c) { comp += c.compared || 0; agr += c.agree || 0; open += c.n_open || 0; });
+      document.getElementById('banner').innerHTML =
+        '<div class="flex flex-wrap items-center gap-x-6 gap-y-1">' +
+        '<div><div class="text-lg font-extrabold text-slate-900">' + checks.length + ' checks · ' + num(comp, 0) + ' values compared</div>' +
+        '<div class="text-xs text-slate-400">Built ' + esc(rep.generated || '—') + '</div></div>' +
+        '<div class="text-sm"><b class="text-emerald-600">' + (comp ? num(100 * agr / comp, 2) : '—') + '%</b> agree · <b class="text-amber-600">' + num(open, 0) + '</b> open disagreements</div></div>';
+      document.getElementById('checks').innerHTML = checks.map(card).join('');
+    })
+    .catch(function () {
+      document.getElementById('banner').innerHTML = '<div class="text-sm text-slate-500">No check results yet — the audit runs nightly (workflow <code>xcheck</code>).</div>';
+    });
+})();
+</script>
+</body>
+</html>

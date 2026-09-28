@@ -55,6 +55,7 @@ def step_block(yml_text, marker):
 # Q: a quiet file the session changes in S2; extra: {path: content} seeded beside the defaults.
 CFG = {
     'monthly-returns': dict(outs=['docs/monthly_returns.json'], P='docs/monthly_returns.json'),
+    'xcheck': dict(outs=['docs/xcheck.json'], P='docs/xcheck.json'),
     'refresh-ipo-prehistory': dict(outs=['docs/ipo_prehistory.json'], P='docs/ipo_prehistory.json'),
     'refresh-capex': dict(outs=['docs/capex.json', 'scripts/capex_budget_ledger.json'], P='scripts/capex_budget_ledger.json',
                           mates=['docs/capex.json']),
