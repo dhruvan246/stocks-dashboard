@@ -124107,8 +124107,8 @@
    "2016-12-31": {
     "cell": [
      32.16,
-     9.6387,
-     16.5334,
+     9.7587,
+     16.4134,
      11.8747,
      4.4287,
      "2017-01-16",
@@ -124117,14 +124117,36 @@
     "was": [
      32.16,
      9.6387,
-     14.3834,
+     16.5334,
      11.8747,
-     2.2887,
+     4.4287,
      "2017-01-16",
      13460
     ],
     "src": "bsexbrl:509966_161201711101_SHP.xml",
-    "why": "\u00a7164 row-level remainder rule (2026-09-25, user: \"adopt all three recommendations\"; FORMER Nifty 500 member, first row-level read): fii 9.64 -> 9.64, dii 14.38 -> 16.53. R1-R3 (\u00a7158 rules, first read). \u00a7158 rules (R1 institutional Any-Other holders placed as the filer's own 2022 form places them, R2 domestic institutions parked under non-institutions, R3 NBFC row) + \u00a7159 rule (non-institutional foreign holders the filer's 2022 form lists under Institutions (Foreign)) + D1 (unnamed rest of the institutional block = FII in the 2015-22 form unless every named holder is domestic).  | R1: R1-fii-label Other Foreign Institutional Investors 0.12 public=0.00 fii=0.12  keyword; R1-foreign-holders Other 0.0 public=0.00 fii=7.68 Matthews India Fund 7.68 foreign->fii(curated); R1-overflow 7.8 0.12; R2-named Bodies Corporate 2.14 ICICI Lombard General Insurance Co. Ltd. 2.14(regex); R3-nbfc NBFCsRegisteredWithRbi 0.01. Evidence: _shp_164_audit.json"
+    "why": "\u00a7164r (2026-09-28, Quantmac v4): the filer's institutional Other row labelled 'Foreign Institutional Investors' (0.12%) is FII by its label, as in Sep-2016 and Mar-2017; R1 had dropped this quarter's evaluation on its overflow guard because the filing also lists Matthews India Fund 7.68 on that axis while the block totals 0.12 (the fund is in the FPI row). fii 9.6387 -> 9.7587, dii 16.5334 -> 16.4134.",
+    "superseded": {
+     "cell": [
+      32.16,
+      9.6387,
+      16.5334,
+      11.8747,
+      4.4287,
+      "2017-01-16",
+      13460
+     ],
+     "was": [
+      32.16,
+      9.6387,
+      14.3834,
+      11.8747,
+      2.2887,
+      "2017-01-16",
+      13460
+     ],
+     "src": "bsexbrl:509966_161201711101_SHP.xml",
+     "why": "\u00a7164 row-level remainder rule (2026-09-25, user: \"adopt all three recommendations\"; FORMER Nifty 500 member, first row-level read): fii 9.64 -> 9.64, dii 14.38 -> 16.53. R1-R3 (\u00a7158 rules, first read). \u00a7158 rules (R1 institutional Any-Other holders placed as the filer's own 2022 form places them, R2 domestic institutions parked under non-institutions, R3 NBFC row) + \u00a7159 rule (non-institutional foreign holders the filer's 2022 form lists under Institutions (Foreign)) + D1 (unnamed rest of the institutional block = FII in the 2015-22 form unless every named holder is domestic).  | R1: R1-fii-label Other Foreign Institutional Investors 0.12 public=0.00 fii=0.12  keyword; R1-foreign-holders Other 0.0 public=0.00 fii=7.68 Matthews India Fund 7.68 foreign->fii(curated); R1-overflow 7.8 0.12; R2-named Bodies Corporate 2.14 ICICI Lombard General Insurance Co. Ltd. 2.14(regex); R3-nbfc NBFCsRegisteredWithRbi 0.01. Evidence: _shp_164_audit.json"
+    }
    },
    "2017-03-31": {
     "cell": [

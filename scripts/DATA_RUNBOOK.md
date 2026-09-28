@@ -20407,6 +20407,25 @@ runner (now reading the event store through load_events and each fill row's own 
 insurers filed under non-institutions -> DII; GESHIP: ICICI Pru Life filed under "Director or Director's Relatives" -> DII).
 Applied on a worktree copy: 74 / 74 intended cells (39 quarterly, 35 event), 0 other rows; feed = origin's 5,828 symbols, 42 change;
 guards green. Batch 2 (dates) follows.
+**Batch 2 (2026-09-28): first-publication dates for late quarters + VSTIND Dec-2016.**
+(e) **Dates (`anndates-fetch` + `anndates-decide` + `lag-write` -> shp_lag_fix.json, 341 entries: 207 new, 134 replacing an
+older entry kept under `replaced`).** Population = every in-scope (current + former N500, FUND_ALIAS-folded) quarter 2014+ whose
+SERVED date (docs/shp_engine.json, after the date ledgers) is > 21 days after quarter-end: 2,729. BSE's announcement stream
+(`AnnSubCategoryGetData`, strCat -1, the scrip, window quarter-end -> served date, honest bse_headers, 1 req/s) fetched for 2,694.
+Accepted only BSE's own SHP wording ("Shareholding for the Period Ended <that quarter>" / "has submitted to BSE the Shareholding
+Pattern") — a looser "shareholding" match took HOCL's SEBI SAST Reg-30 disclosure. A date moves only when that announcement is
+EARLIER than both the served date and the filing's own stored day: 31 quarters whose stored day already equals the announcement
+and are served later only by the §142c holiday/weekend shift (JSWISPL Mar-2020: filed 1-May holiday, served 4-May) are left alone —
+the first cut moved 24 of them back onto non-trading days, caught by the served-date diff. Revision-only quarters (BSE lists no
+original) move only when an independent reading of the original equals our FII (Quantmac's equal reading: 33); 554 held.
+Median 15 days earlier, p90 83; largest ERIS Sep-2017 (announced 18-Oct-2017, served from 2022 by a later XBRL upload), HINDZINC
+Mar-2016 (-173 d), NAVA Mar-2021. Not moved: 1,302 announcements not earlier than ours, 466 quarters with no SHP announcement in
+the window. Rebuilt feed: exactly the 341 served dates moved, each to its ledger date; 0 other rows.
+(f) **VSTIND Dec-2016 (`vstind` -> shp_cell_fix, supersedes the older entry):** the filer's institutional Other row labelled
+"Foreign Institutional Investors" (0.12 %) is FII by its label, as in Sep-2016 / Mar-2017; R1 had dropped this quarter on its
+overflow guard because the filing also names Matthews India Fund 7.68 on that axis while the block totals 0.12 (the fund sits in the
+FPI row). fii 9.6387 -> 9.7587, dii 16.5334 -> 16.4134.
+Batch 3 (pre-2014 BSE filing times from Wayback captures of `shareholding/searchresult.asp`) follows.
 
 ### 164j. Quantmac reply v3 (26-Sep): foreign-labelled rows were read as domestic; named foreign holders now need a document
 **Bug (reported by Quantmac for CUMMINSIND / IPCALAB, measured on origin).** `_shp_dii_rowfix.eval_filing` R1 set a category label

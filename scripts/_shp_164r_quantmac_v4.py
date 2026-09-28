@@ -34,6 +34,17 @@ scripts/_shp_164q_events.py write (event keys). Every amount is read from the co
                        stamp in the file name. Mid-quarter rows -> scripts/shp_event_fills.json (fill-only, fetch_shareholding.
                        apply_event_fills); quarter-end rows -> shp_fill_n500_gaps.json.gz (fill-only). The §164q runner then gives
                        them the same row-level rules (it reads each row's own file).
+  wb-fetch             pre-2014 filing times: BSE's retired page shareholding/searchresult.asp?scripcd=<code> listed every SHP filing
+                       with 'For Quarter Ending | Date & Time' (e.g. NAGPUR POWER Dec-2011: Thursday, February 02, 2012 4:26:30 PM).
+                       Wayback holds 7,577 captures (2002-2012; 4,593 in 2008; 253 scrips have one from 2010+). The LATEST capture
+                       per scrip lists every filing up to that day. One capture per Nifty 500 (current + former) scrip, raw (id_),
+                       ~1.5 s apart, cached in ~/stocks-cache/shp/v4work/wb.
+  wb-decide <out.json> a store row dated only by the qe+21 convention (served UN-DATED today) gets a shp_sub_dates entry = the
+                       CALENDAR day of that filing time (midnight rule §149), when the capture's company name matches ours.
+  vstind <out.json>    VSTIND Dec-2016: the filing lists "Matthews India Fund 7.68" on the institutional Other axis while that block
+                       totals 0.12 (the fund sits in the FPI row), so R1 hit its overflow guard and dropped the whole evaluation —
+                       including the 0.12 row the filer LABELS "Foreign Institutional Investors" (counted in Sep-2016 and Mar-2017).
+                       That labelled row moves dii -> fii (Quantmac 9.7557).
 """
 import os, sys, re, json, gzip, html, glob
 HERE = os.path.dirname(os.path.abspath(__file__)); sys.path.insert(0, HERE)
@@ -177,13 +188,20 @@ def anndates_decide(out):
         hits = []
         for r in d["rows"]:
             txt = " ".join(str(r.get(k) or "") for k in ("NEWSSUB", "HEADLINE"))
-            if re.search(r"share\s*holding", txt, re.I) and rx.search(txt):
+            if (re.search(r"share\s*holding\s+(pattern\s+)?for\s+the\s+(period|quarter)\s+ended|submitted\s+to\s+bse\s+the\s+share\s*holding\s+pattern", txt, re.I)
+                    and rx.search(txt)):                       # BSE's own SHP announcement wording only (not SAST / Reg-30 disclosures)
                 ts = (r.get("NEWS_DT") or r.get("DT_TM") or "")[:19]
                 if ts: hits.append((ts, txt[:120], r.get("ATTACHMENTNAME")))
         if not hits: bump("no announcement of that quarter in the window"); continue
         ts, txt, att = min(hits); day = int(ts[:10].replace("-", ""))
+        if not (int(qe.replace("-", "")) < day <= int((date.fromisoformat(qe) + __import__("datetime").timedelta(days=400)).strftime("%Y%m%d"))):
+            bump("announcement outside [quarter-end, +400 d]"); continue
         subi = int(sub.replace("-", ""))
         if day >= subi: bump("announcement not earlier than our date"); continue
+        st_sub = int(str(cur[5]).replace("-", "")) if re.match(r"\d{4}-\d\d-\d\d$", str(cur[5])) else None
+        if st_sub and day >= st_sub:      # the filing's own stored day is already as early: the served date is a
+            bump("stored filing day already as early (served later by the holiday/weekend shift)"); continue   # non-trading-day shift (§142c), not a lag
+
         rows = _list(sym) or _list(_fa().get(sym) or "") or []
         qrows = [r for r in rows if (lambda x: len(x) == 2 and x[0] in MON_Q and "%s-%02d-%02d" % (x[1], MON_Q[x[0]], 31 if MON_Q[x[0]] in (3, 12) else 30) == qe)((r.get("qtr") or "").split())]
         rev_only = bool(qrows) and not any(r.get("filing_date_time") for r in qrows)
@@ -335,11 +353,163 @@ def table3_write(path):
     with gzip.open(p, "wt", encoding="utf-8") as fh: fh.write(json.dumps(led))
     print("table3-write: %d cells added, %d skipped" % (n, skip))
 
+WB = os.path.join(W, "wb")
+def wb_fetch():
+    import time, urllib.request, urllib.error
+    rows = json.load(open(os.path.join(WB, "cdx_searchresult.json")))
+    latest = {}
+    for ts, orig, st, ln in rows:
+        m = re.search(r"scripcd=(\d{6})", orig)
+        if m and (m.group(1) not in latest or ts > latest[m.group(1)][0]): latest[m.group(1)] = (ts, orig)
+    sc = _scope(); fa = _fa(); hist = json.load(open(os.path.join(HERE, "shp_history.json")))
+    want = {}
+    for sym in hist:
+        if sym.startswith("_") or not (sym in sc or fa.get(sym) in sc): continue
+        code = _code(_list(sym) or _list(fa.get(sym) or "") or [])
+        if code and code in latest: want[code] = sym
+    UA = {"User-Agent": "stocks-dashboard-research/1.0 (personal research)"}
+    # The archive refuses connections for minutes when paced at 1.5 s (measured 28-Sep 09:05) -> 4 s pace, and a refusal /
+    # 429 / 5xx waits 3-10 min and retries the SAME page (a transient is never counted as a missing page). Every page that
+    # still fails is written with its reason to wb/_fail.json — no silent skip.
+    PACE, fails = 4.0, {}
+    fp = os.path.join(WB, "_fail.json")
+    ok = bad = 0
+    for i, (code, sym) in enumerate(sorted(want.items())):
+        ts, orig = latest[code]; p = os.path.join(WB, "%s_%s.html" % (code, ts))
+        if os.path.exists(p): continue
+        u = "https://web.archive.org/web/%sid_/%s" % (ts, orig); b = b""; why = ""
+        for a in range(5):
+            try: b = urllib.request.urlopen(urllib.request.Request(u, headers=UA), timeout=90).read(); why = ""; break
+            except urllib.error.HTTPError as e:
+                why = "HTTP %d" % e.code
+                if e.code in (404, 403): break
+            except Exception as e: why = repr(e)[:120]
+            wait = min(600, 180 * (a + 1)); print("    %s %s -> wait %ds" % (code, why, wait), flush=True); time.sleep(wait)
+        time.sleep(PACE)
+        if b"For Quarter Ending" in b or b"Quarter Ended" in b: open(p, "wb").write(b); ok += 1; fails.pop(code, None)   # 2008+ / 2007 layout
+        else:
+            bad += 1; fails[code] = {"sym": sym, "ts": ts, "why": why or ("no filing table (%d bytes)" % len(b))}
+            json.dump(fails, open(fp, "w"), indent=0)
+        if i % 50 == 0: print("  %d/%d ok %d bad %d" % (i, len(want), ok, bad), flush=True)
+    print("WB FETCH DONE ok %d bad %d (of %d scope scrips with a capture)" % (ok, bad, len(want)), flush=True)
+def lag_write(path, ledger="shp_lag_fix.json"):
+    """Merge a decide-stage proposal file into scripts/<ledger> (flat {SYM|YYYYMMDD: entry}). An existing entry for the
+    key is kept under `replaced` (the decision that superseded it stays auditable)."""
+    P = json.load(open(path)); lp = os.path.join(HERE, ledger)
+    raw = open(lp, encoding="utf-8").read(); led = json.loads(raw); n_new = n_rep = 0
+    for k, v in sorted(P.items()):
+        ent = dict(v)
+        if k in led:
+            if led[k] == v: continue
+            ent["replaced"] = led[k]; n_rep += 1
+        else: n_new += 1
+        led[k] = ent
+    json.dump(led, open(lp, "w", encoding="utf-8"), indent=0, ensure_ascii=("\\u00" in raw))
+    print("%s: %d new, %d replaced (kept under 'replaced')" % (ledger, n_new, n_rep))
+
+def wb_older():
+    """Pages whose NEWEST capture holds no filing table (BSE's own 'Error Code:404' page archived with HTTP 200 once the
+    page was retired — HINDPETRO 2012-10-02) fall back to that scrip's earlier captures, newest first, up to 4 tries."""
+    import time, urllib.request, urllib.error
+    fp = os.path.join(WB, "_fail.json"); fails = json.load(open(fp))
+    rows = json.load(open(os.path.join(WB, "cdx_searchresult.json"))); caps = {}
+    for ts, orig, st, ln in rows:
+        m = re.search(r"scripcd=(\d{6})", orig)
+        if m and st == "200": caps.setdefault(m.group(1), []).append((ts, orig))
+    UA = {"User-Agent": "stocks-dashboard-research/1.0 (personal research)"}; ok = 0
+    for code, f in sorted(fails.items()):
+        if not f["why"].startswith("no filing table"): continue
+        tried = []
+        for ts, orig in sorted(caps.get(code, []), reverse=True):
+            if ts >= f["ts"] or len(tried) >= 4: continue
+            p = os.path.join(WB, "%s_%s.html" % (code, ts)); b = b""
+            for a in range(5):
+                try: b = urllib.request.urlopen(urllib.request.Request("https://web.archive.org/web/%sid_/%s" % (ts, orig.replace("&amp", "")), headers=UA), timeout=90).read(); break
+                except urllib.error.HTTPError as e:
+                    if e.code in (404, 403): break
+                    time.sleep(min(600, 180 * (a + 1)))
+                except Exception: time.sleep(min(600, 180 * (a + 1)))
+            time.sleep(4.0); tried.append(ts)
+            if b"For Quarter Ending" in b or b"Quarter Ended" in b:
+                open(p, "wb").write(b); f["why"] = "newest capture %s has no table; used %s" % (f["ts"], ts); f["ok"] = ts; ok += 1; break
+        else: f["tried"] = tried
+        json.dump(fails, open(fp, "w"), indent=0)
+    print("WB OLDER DONE %d recovered of %d" % (ok, sum(1 for f in fails.values() if f["why"].startswith(("no filing", "newest")))), flush=True)
+
+def wb_decide(out):
+    from datetime import datetime, date, timedelta
+    import difflib
+    hist = json.load(open(os.path.join(HERE, "shp_history.json"))); names = hist.get("_names") or {}
+    sub_led = json.load(open(os.path.join(HERE, "shp_sub_dates.json"), encoding="utf-8"))
+    sc = _scope(); fa = _fa(); code2 = {}
+    for sym in hist:
+        if sym.startswith("_") or not (sym in sc or fa.get(sym) in sc): continue
+        code = _code(_list(sym) or _list(fa.get(sym) or "") or [])
+        if code: code2.setdefault(code, []).append(sym)
+    MONQ = {"March": 3, "June": 6, "September": 9, "December": 12}
+    norm = lambda x: re.sub(r"[^a-z]", "", (x or "").lower().replace("limited", "").replace("ltd", ""))
+    P, st = {}, {}
+    def bump(k): st[k] = st.get(k, 0) + 1
+    for f in sorted(glob.glob(os.path.join(WB, "*.html"))):
+        code, ts = os.path.basename(f)[:-5].split("_")
+        t = open(f, encoding="utf8", errors="replace").read(); R = _rows(t)
+        title = next((r[0] for r in R if re.search(r"(LTD|LIMITED)\.?$", r[0], re.I) and len(r) == 1), "")
+        for sym in code2.get(code, []):
+            nm = names.get(sym, sym)
+            if title and difflib.SequenceMatcher(None, norm(title), norm(nm)).ratio() < 0.6 and norm(title)[:6] != norm(nm)[:6]:
+                bump("name mismatch (held)"); continue
+            for r in R:
+                if len(r) != 2: continue
+                lab = re.sub(r"^\s*Quarter\s+Ended\s+", "", r[0], flags=re.I).split()      # 2007 layout: 'Quarter Ended March 2007'
+                if len(lab) != 2 or lab[0] not in MONQ or not lab[1].isdigit(): continue
+                mo = MONQ[lab[0]]; y = int(lab[1]); qe = "%d-%02d-%02d" % (y, mo, 31 if mo in (3, 12) else 30)
+                try: dt = datetime.strptime(re.sub(r"\s+", " ", r[1].replace("\xa0", " ")).strip(), "%A, %B %d, %Y %I:%M:%S %p")
+                except ValueError: bump("unparsed time"); continue
+                cell = (hist.get(sym) or {}).get(qe)
+                if not cell or qe > "2016-03-31": continue
+                sub = str(cell[5]); subi = int(sub.replace("-", "")) if re.match(r"\d{4}-\d\d-\d\d$", sub) else None
+                conv = subi == int((date.fromisoformat(qe) + timedelta(days=21)).strftime("%Y%m%d"))
+                key = "%s|%s" % (sym, qe.replace("-", ""))
+                if not conv: bump("stored date already measured — left"); continue
+                if key in sub_led: bump("sub_dates entry exists — left"); continue
+                day = int(dt.strftime("%Y%m%d"))
+                if day < int(qe.replace("-", "")): bump("time before quarter-end (held)"); continue
+                P[key] = {"gated_1530": False, "prov": "wayback: BSE shareholding/searchresult.asp capture %s ('%s | %s'); CALENDAR day (midnight rule §149); §164r 2026-09-28" % (ts, r[0], r[1].replace("\xa0", " ")),
+                          "src": "wayback-bse", "sub": day, "ts": dt.strftime("%Y-%m-%dT%H:%M:%S"), "was": subi, "rule": "midnight-2026-09-23"}
+                bump("dated")
+    json.dump(P, open(out, "w"), indent=1, ensure_ascii=False); print("wb-decide:", st, "-> %d entries" % len(P))
+
+def vstind(out):
+    os.environ["DII_ROWFIX_WORK"] = os.path.join(C, "seamholes")
+    import _shp_dii_rowfix as D
+    hist = json.load(open(os.path.join(HERE, "shp_history.json"))); sym, qe = "VSTIND", "2016-12-31"; cur = hist[sym][qe]
+    files = {}
+    for d in [d for d in glob.glob(os.path.join(C, "**", "xbrl*"), recursive=True) if os.path.isdir(d)] + [os.path.join(C, "ex_xbrl")]:
+        try:
+            for x in os.listdir(d): files.setdefault(x, os.path.join(d, x))
+        except Exception: pass
+    a = json.load(open(os.path.join(HERE, "_shp_164_audit.json"), encoding="utf-8")); a = a.get("cells", a)
+    fn = (a.get("VSTIND|2016-12-31") or {}).get("src", "").replace("bsexbrl:", "")
+    rows = [r for r in D.rows_of(open(files[fn], "rb").read()) if r[0] == "OtherInstitutions" and re.search(r"foreign institutional investors", r[5] or "", re.I)]
+    if len(rows) != 1: print("row not unique", rows); return
+    amt = round(rows[0][2], 4); new = list(cur); new[1] = round(cur[1] + amt, 4); new[2] = round(cur[2] - amt, 4)
+    P = {"VSTIND|2016-12-31": {"was": cur, "cell": new, "src": "bsexbrl:" + fn,
+         "why": ("§164r (2026-09-28, Quantmac v4): the filer's institutional Other row labelled 'Foreign Institutional Investors' (%.2f%%) "
+                 "is FII by its label, as in Sep-2016 and Mar-2017; R1 had dropped this quarter's evaluation on its overflow guard because "
+                 "the filing also lists Matthews India Fund 7.68 on that axis while the block totals %.2f (the fund is in the FPI row). "
+                 "fii %.4f -> %.4f, dii %.4f -> %.4f.") % (amt, amt, cur[1], new[1], cur[2], new[2])}}
+    json.dump(P, open(out, "w"), indent=1, ensure_ascii=False); print("vstind:", new[:3])
+
 if __name__ == "__main__":
     st = sys.argv[1]
     if st == "zensar": zensar(sys.argv[2])
     elif st == "table3": table3(sys.argv[2])
     elif st == "nsefill": nsefill()
+    elif st == "vstind": vstind(sys.argv[2])
+    elif st == "wb-fetch": wb_fetch()
+    elif st == "wb-decide": wb_decide(sys.argv[2])
+    elif st == "wb-older": wb_older()
+    elif st == "lag-write": lag_write(sys.argv[2], sys.argv[3] if len(sys.argv) > 3 else "shp_lag_fix.json")
     elif st == "table3-write": table3_write(sys.argv[2])
     elif st == "anndates-fetch": anndates_fetch()
     elif st == "anndates-decide": anndates_decide(sys.argv[2])
