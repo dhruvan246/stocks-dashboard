@@ -319,6 +319,38 @@ def read_stage(limit=None):
     print("read: %d company-years, %d proved" % (len(reads), sum(1 for r in reads.values() if r["proved"])))
 
 
+def read_orig():
+    """§210c: for every company-year read, also read the ORIGINAL September filing of its H1 (Oct 1 fy-1 → Jan 31 fy) —
+    its current H1 column is the as-published figure. Statements are appended (text reader); no closure needed here."""
+    import read_sme_result_pdf as R
+    reads = json.load(open(os.path.join(C, "reads.json")))
+    T = {t["sym"]: t for t in json.load(open(TARGETS))}
+    n = done = 0
+    for key, rec in sorted(reads.items()):
+        t = T.get(rec["sym"])
+        if not t or rec.get("orig_read"):
+            continue
+        seen = {x[0] for x in rec["tried"]}
+        for c in sorted(candidates(dict(t, qe=(rec["fy"] - 1) * 10000 + 930)), key=prio)[:4]:
+            fn = os.path.join(PDF, c["url"].rsplit("/", 1)[-1])
+            if c["url"] in seen or not os.path.exists(fn):
+                continue
+            files = sorted(__import__("glob").glob(fn + "__*")) if open(fn, "rb").read(2) == b"PK" else [fn]
+            for f in files:
+                try:
+                    sts = R.read(f)
+                except Exception:
+                    continue
+                for st in sts:
+                    st.update({"url": c["url"], "dt": c["dt"], "desc": c["desc"], "file": os.path.basename(f), "orig": True})
+                    rec["stmts"].append(st); n += 1
+            rec["tried"].append([c["url"], "original-H1 read"])
+        rec["orig_read"] = True
+        done += 1
+    json.dump(reads, open(os.path.join(C, "reads.json"), "w"))
+    print("original H1 filings: %d years, %d statements appended" % (done, n))
+
+
 def merge_vision():
     """image reads (vision/out/b*.json, user-approved 2026-09-28) → reads.json statements tagged vision, held to the OCR
     rule (revenue AND profit must close); the unit comes from the printed unit text via the reader's own patterns"""
@@ -367,6 +399,8 @@ if __name__ == "__main__":
     a = sys.argv[1:]
     if "--merge" in a:
         merge_reads()
+    if "--read-orig" in a:
+        read_orig()
     if "--merge-vision" in a:
         merge_vision()
     if "--targets" in a:
