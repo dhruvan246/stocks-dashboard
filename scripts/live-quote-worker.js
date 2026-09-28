@@ -33,6 +33,10 @@
  *        {asOf,timestamp,data:{SYM:[ltp,prevClose,pchange]}}; live 1D on Top Movers).
  *        Response = NSE's own JSON + {asOf}; array responses ride under .data
  *        (volume-gainers data capped at 60 rows).
+ *   GET ?bse=1                     -> EVERY BSE scrip that traded today (SME groups M/MT
+ *        included) from BSE's market watch: {asOf,timestamp:"YYYY-MM-DDTHH:MM:SS",
+ *        data:{scripCode:[ltp,prevClose,pchange,scripId]}}. Cached 60 s. Live 1D for
+ *        BSE-only names on Top Movers.
  *   GET ?ipo=CMLL                  -> live subscription for ONE open IPO (NSE
  *        ipo-active-category): {asOf,symbol,updateTime,total,rows} where total =
  *        overall subscription multiple. Used by the IPOs page. Cached 60 s.
@@ -110,6 +114,7 @@ export default {
     if (quotes) return yahooQuotes(quotes);
     const nse = url.searchParams.get('nse');
     if (nse) return nseLive(nse);
+    if (url.searchParams.get('bse')) return bseLive();
     const ipo = url.searchParams.get('ipo');
     if (ipo) return ipoSubscription(ipo);
     if (url.searchParams.get('gift')) return giftNifty();
@@ -211,6 +216,46 @@ async function nseCookie() {
     redirect: 'follow',
   });
   return cookieHeader(home);
+}
+
+/* ---------------- BSE whole-market live prices (?bse=1) ----------------
+ * BSE's market-watch list (GetMktData) carries EVERY scrip that traded today — ~4,700
+ * incl. SME groups M/MT — with last price and previous close. Its CORS only admits
+ * bseindia.com, so the page can't read it directly. Honest headers per
+ * scripts/bse_headers.py (own UA + Accept-Language + Referer; no browser impersonation).
+ * Compacted to {asOf, timestamp, data:{scripCode:[ltp, prevClose, pchange, scripId]}}. */
+let BSE_CACHE = { ts: 0, text: null };
+async function bseLive() {
+  const now = Date.now();
+  if (BSE_CACHE.text && now - BSE_CACHE.ts < 60_000)
+    return new Response(BSE_CACHE.text, { headers: { ...CORS, 'content-type': 'application/json' } });
+  try {
+    const r = await fetch('https://api.bseindia.com/BseIndiaAPI/api/GetMktData/w?ordcol=TT&strType=gainer&strfilter=All', {
+      headers: {
+        'User-Agent': 'stocks-dashboard-research/1.0',
+        'Accept': 'application/json, text/plain, */*',
+        'Accept-Language': 'en-US,en;q=0.9',
+        'Referer': 'https://www.bseindia.com/',
+      },
+    });
+    if (!r.ok) return json({ error: 'BSE HTTP ' + r.status }, 502);
+    const j = await r.json();
+    const rows = (j && Array.isArray(j.Table)) ? j.Table : [];
+    const data = {};
+    let ts = '';
+    for (const x of rows) {
+      const ltp = parseFloat(x.ltradert), prev = parseFloat(x.prevdayclose);
+      if (!x.scrip_cd || !(ltp > 0) || !(prev > 0)) continue;
+      data[x.scrip_cd] = [ltp, prev, parseFloat(x.change_percent), x.scripname || ''];
+      if (x.dt_tm && x.dt_tm > ts) ts = x.dt_tm;
+    }
+    if (!Object.keys(data).length) return json({ error: 'BSE returned no rows' }, 502);
+    const text = JSON.stringify({ asOf: now, source: 'bse', timestamp: ts.slice(0, 19), data });
+    BSE_CACHE = { ts: now, text };
+    return new Response(text, { headers: { ...CORS, 'content-type': 'application/json' } });
+  } catch (e) {
+    return json({ error: String((e && e.message) || e) }, 502);
+  }
 }
 
 /* ---------------- whitelisted NSE live-analysis passthrough ---------------- */

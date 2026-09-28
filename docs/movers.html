@@ -206,6 +206,7 @@ let META = {}, SERIES = {}, START_TS = 0, END_TS = 0, END_OFF = 0;
 let LAST_BAR = '';   // ISO date most NSE series end on (NOT the file's build time; a midday refresh can add a partial bar)
 let STALE_1D = 0;    // EOD 1D rows whose own last bar is older than LAST_BAR (e.g. SME names — bhavcopy-only, no midday bar)
 let LIVE = null;     // {date:'YYYY-MM-DD', time:'HH:MM', data:{SYM:[ltp, prevClose, pchange]}} — NSE whole-market live feed
+let BLIVE = null;    // {date, time, data:{scripCode:[ltp, prevClose, pchange, scripId]}, idToCode} — BSE whole-market live feed
 let LIVE_SKIP = { bse: 0, untraded: 0 };
 let FNO = new Set(), N500 = new Set();
 let FULL_LOADED = false, FULL_LOADING = null;
@@ -287,6 +288,7 @@ function capBand(mcap){ if (mcap >= 20000) return 'large'; if (mcap >= 5000) ret
 // shows the last session, and the table falls back to stored closes.
 function todayIST(){ return new Date(Date.now() + 330*60000).toISOString().slice(0,10); }
 function liveMode(){ return W === '1D' && LIVE && LIVE.date === todayIST(); }
+function bseLiveOn(){ return BLIVE && BLIVE.date === todayIST(); }
 
 // Build ROWS for the current window / universe / cap / sector / floor.
 function compute(){
@@ -314,8 +316,13 @@ function compute(){
     let toPrice, fromPrice;
     if (live){
       // today's session: NSE last price vs NSE previous close (NSE adjusts prev close on an ex-date)
-      if (!tkr.endsWith('.NS')){ LIVE_SKIP.bse++; continue; }   // BSE-only listing — no live feed
-      const q = LIVE.data[base];
+      let q;
+      if (tkr.endsWith('.BO')){
+        // BSE-only listing: keyed by scrip code (544563.BO) or scrip id (ZELIO.BO)
+        if (!bseLiveOn()){ LIVE_SKIP.bse++; continue; }
+        const b = tkr.slice(0, -3);
+        q = BLIVE.data[/^\d+$/.test(b) ? b : BLIVE.idToCode[b]];
+      } else q = LIVE.data[base];
       if (!q){ LIVE_SKIP.untraded++; continue; }                // no trade on NSE yet today
       toPrice = q[0]; fromPrice = q[1];
     } else {
@@ -476,10 +483,10 @@ function renderModeNote(){
   let h;
   if (liveMode()){
     const sk = [];
-    if (LIVE_SKIP.bse) sk.push(LIVE_SKIP.bse.toLocaleString('en-IN') + ' BSE-only listings (no live feed)');
+    if (LIVE_SKIP.bse) sk.push(LIVE_SKIP.bse.toLocaleString('en-IN') + ' BSE-only listings (BSE live prices did not load)');
     if (LIVE_SKIP.untraded) sk.push(LIVE_SKIP.untraded.toLocaleString('en-IN') + ' not yet traded today');
-    h = '<b style="color:#16a34a">● LIVE</b> — 1D is today\'s move (NSE last price vs previous close), updated ' + esc(LIVE.time) +
-        ' IST, refreshes every minute.' + (sk.length ? ' Hidden: ' + sk.join(', ') + '.' : '') +
+    h = '<b style="color:#16a34a">● LIVE</b> — 1D is today\'s move (last price vs previous close), NSE updated ' + esc(LIVE.time) +
+        (bseLiveOn() ? ' · BSE ' + esc(BLIVE.time) : '') + ' IST, refreshes every minute.' + (sk.length ? ' Hidden: ' + sk.join(', ') + '.' : '') +
         ' Other windows use stored prices up to ' + fmtDay(LAST_BAR) + '.';
   } else if (W === '1D'){
     h = '1D is the move on <b>' + fmtDay(LAST_BAR) + '</b> (latest prices in our data)' +
@@ -501,6 +508,15 @@ async function loadLive(){
     if (!m || !MON[m[2]] || !j.data || !Object.keys(j.data).length) return;
     LIVE = { date: m[3] + '-' + MON[m[2]] + '-' + m[1].padStart(2, '0'), time: m[4] + ':' + m[5], data: j.data };
   } catch (e){ /* worker route missing / NSE hiccup — table stays on last close, the note says so */ }
+  try {
+    const b = await fetch(WORKER + '/?bse=1', {cache:'no-store'}).then(r => r.json());
+    const m = /^(\d{4}-\d{2}-\d{2})T(\d{2}):(\d{2})/.exec((b && b.timestamp) || '');
+    if (m && b.data && Object.keys(b.data).length){
+      const idToCode = {};
+      for (const c in b.data){ const id = b.data[c][3]; if (id) idToCode[id] = c; }
+      BLIVE = { date: m[1], time: m[2] + ':' + m[3], data: b.data, idToCode };
+    }
+  } catch (e){ /* BSE route missing / BSE hiccup — BSE-only names stay hidden in live 1D, the note says so */ }
   if (W === '1D') refresh(); else renderModeNote();
 }
 
