@@ -24540,6 +24540,11 @@ date-ordered; kept so). A broken ledger warns and the feed still updates. Tests:
 corrected), nothing removed, order kept. Only writer = refresh-fii-dii.yml (ci_land keeps origin's copy of a file changed mid-run).
 Pages read locally, console clean: index-chart.html (NIFTY 50 Monthly 2015 row: Feb +1.1 %, Mar −4.6 %), ?ix=banknifty, fii-dii.html,
 stock-backtest.html (loads the benchmark only on run). The SW never caches .json — no shell bump. Readings `~/stocks-cache/xcheck-f6/`.
+**F6 verified LIVE 2026-09-28 ~20:50 IST** (pushed 7a6e021f2 — the first push conflicted with the 20:16 FII/DII refresh on the
+three minified files; resolved in the private worktree by taking origin's copies and re-running apply_index_fix, then proved the
+only dates differing from origin are the 86 ledger dates): live nifty/nifty500/nifty_bank.json 86/86 at the official close, date
+order kept; live index-chart.html NIFTY 50 Monthly 2015 row reads Feb +1.1 %, console clean; the idx_levels check re-run: 7 → 0 open.
+Next refresh-fii-dii run (14:45 UTC weekdays) is the first to re-apply the ledger itself — re-verify 2018-11-07 = 25,737.50 after it.
 
 ## §215 — THE ARCHIVE PAGE'S "Amount(Rs. in lakhs)" IS NSE'S TEMPLATE, NOT THE FILER'S UNIT: 5 detail cells read 10×/100× small through the PAT anchor's 2-cr floor, TTKPRESTIG's stored PAT and revenue with them; the anchor gets a relative cap (2026-09-28, user: "yes" to heal the 3 cells + the TTKPRESTIG stored PAT/revenue and its 2 cells)
 **NO ASSUMPTIONS, NO GUESSWORK — every number below was measured this session (population on origin dcb1b47a0, landed on d5cbb8c11).**
