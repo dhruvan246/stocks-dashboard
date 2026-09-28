@@ -23768,6 +23768,66 @@ every archive field for "equals another field of the same page" before trusting 
 page is a candidate, never proof: only a second reader (a vendor's transcription, the company's own year total, its PDF)
 proves a figure.
 
+## §211a — THE 229 BLANK fc==tax CELLS, ROUND 2: 39 proven from filing text and LIVE; 99 go to local OCR then vision; 91 sit on RESTATED comparative pages filed a year late and stay blank (2026-09-28, user: "Yes, land all 39" · "Local OCR first, then vision" · the 91: "Leave them blank")
+**NO ASSUMPTIONS, NO GUESSWORK — every number below was measured this session (reads on origin dcb1b47a0, landed f336f98a7).** Kit: `~/stocks-cache/fc_tax/r2_*` (STATUS.md).
+**Fetch — the round-1 "failed downloads" and "no filing" were transport and filters, not absence.**
+- BSE's `AnnPdfOpen` resolver answered **200** (→ `CorpAttachment/2018/2/ee7246a2….pdf`, 1,761,241 B) at 08:40 and **404** (8,285 B) for the
+  SAME name at 08:41. A resolver 404 is not an answer: retry, then the dated base it names, `CorpAttachment/<YYYY>/<M>/<name>` (month of
+  the filing's NEWS_DT). 364 of 364 attachments on disk, 0 failures (one BSE request at a time, `bse_headers`).
+- `fetch_insurers.is_result_filing` VETOES any subject containing "press release" unless the subcategory is literally "Financial Results":
+  ACC's own Sep-2017 results (17-Oct-2017, category Result, subcategory "Limited Review Report", subject "Standalone & Consolidated Financial
+  Results, Limited Review Report, Results Press Release …") was dropped, and pdf_rung's manifest kept only the filtered rows, so its window
+  read "0 filings". Round 2 re-read every window (quarter end + 1 … + 100 days, `strCat=-1`, every page, every row kept) and selects:
+  category Result, subcategory "Outcome of Board Meeting", the old filter, or a press release / general update whose subject names results
+  and is not a meeting notice (a bare "financial results" match pulled in 200 "Board Meeting" notices).
+- `strCat=Result` over a 3-year per-scrip span returned 0 rows (64-byte answers) for all 104 codes — use per-season `strCat=-1` windows.
+- HEXT's 2016-17 filings sit under the DELISTED scrip 532129 (ISIN INE093A01033 = the HEXAWARE era); `bse_scrips.by_isin` maps only the
+  2025 relisting (544362), which has no 2016-17 filings. BSE Ltd has no BSE listing: its results came from NSE's corporate-announcements
+  API (`build_fundamentals._get` answered), `BSE_02022018133133.zip`.
+- NSE's copies of the same results (1,013 requests, one at a time) are sometimes TEXT where BSE's copy is a scan (DALMIABHA Dec-17, the
+  Hexaware Sep-2018 filing …) — try them before any image read.
+**Read.** `r2_read.read_page`: the stored-PAT anchor → a VALUE anchor (our PAT and our PBT printed in ONE column at the printed precision,
+PAT 1-8 lines below PBT, no note / reconciliation / comprehensive-income line on or between them) → a PBT+tax anchor; the finance-cost
+line with OCR-tolerant labels (`[il1t]nterest`, "Interest - others", "Finance expenses"; never "…before finance costs and exceptional
+items"); OCR-layer detection (invisible text over a full-page image); the column's arithmetic (expense rows vs the printed total) and the
+IGAAP identity (profit before finance costs − finance costs = profit after); letter tokens normalized to a P&L vocabulary (`Prcfit`,
+`exp€nses`, `firance`), digits never touched.
+**Gate (`r2_decide`).** An as-filed column: PAT AND PBT equal ours at the PRINTED precision (half the page's printing unit — Wipro's IFRS page
+prints 2,941.1 in whole Rs million, which is not our Ind-AS 2,941.2); an OCR figure only with the page's arithmetic / identity closing;
+every as-filed read agrees; a second reader within 0.011 cr (page residual, Moneycontrol, or the company's year total: Mar-2018 XBRL FourD
+− OneD − the two other quarters); a joint FY18 check flags a company whose quarters no longer sum to the XBRL year.
+**Traps caught before landing.** (a) "No finance-cost line + the rows sum to the total ⇒ 0" was WRONG on Hexaware: the OCR label
+"tnterest- others" was a finance row the regex missed → absence counts only when no row even fuzzily reads interest / finance / borrow and
+every row is labelled. (b) The value anchor matched our IGAAP PAT inside SECURKLOUD's reconciliation note and SMLMAH's Total Comprehensive
+Income line → constrained as above. (c) Rounding the filing's PAT before comparing (983.05 mn → 98.30 vs our 98.31) → compare unrounded.
+(d) A later filing can print a comparative whose PBT is unchanged but whose expense lines were reclassified (MGL Dec-17: the Mar-2018
+filing prints "-", the Dec-2018 filing 0.01 with total expenses 464.05 vs 464.13 as filed) — equal PBT is necessary, not sufficient.
+**Landed (f336f98a7, 2026-09-28 10:42 IST) — 39 cells, fc only** (25 through the gate, 14 hand-adjudicated in `r2_manual.json`, each `why`
+spelling out the column, the arithmetic and the second reader): GLAXO Mar-17 s **0.25** (the round-1 "garbled 19 25 19 25 19 25" is the row
+with a blank Dec-17 cell; FY17 year 25 lakh − three 0.00 quarters), TNPL Jun-16 s **64.60** (= Moneycontrol; 142.29 − 64.60 = 77.69 = PBT),
+RAJESHEXPO Mar-17 s **101.18** (= residual; Moneycontrol's 120.24 is the CONSOLIDATED figure), LTM Jun-17 s **3.50** (FY18 XBRL 13.80 − 3.70 −
+3.60 − 3.00), TECHNO Mar-17 s **3.50**, SUPPETRO Dec-17 s **0.40**, HEXAWARE + HEXT 0.00-0.04 (10), and 26 genuine zeros (INFY ×6, TATAELXSI ×4,
+RIIL ×2, ASTRAZEN ×2, BSE, CRISIL Jun-17 c, ECLERX, MOIL, ORISSAMINE, PGHL, RCOM Dec-17 s, SANOFI, VSTIND …). `xtra_fc_fix.py --apply` on origin
+180dcf262: `verify_diff.py --incremental` = exactly the 39 cells, `fc` only; second run 0. **LIVE:** 39 of 39 in the served `fin/` slices
+(slices 0c07fc854); stock page P&L standalone: LTM FY2018 Interest **14** (13.8; was incomplete), RAJESHEXPO FY2017 **351** (53.53 + 92.08 +
+104.29 + 101.18); 0 console errors. Origin re-checked after §215 landed on top: 2,233 figures + 190 blanks intact.
+**Open (190).** (1) **99** statements exist only as images (65 own filing scanned, 26 statement pages scanned, 8 unusable OCR) → local OCR
+(`r2_ocr2.py`: detection-only first — orientation + a statement screen; ACC's /Rotate-270 pages render SIDEWAYS — then full OCR on the
+statement-like pages) and then vision. Held with ONE reader: DHANUKA Jun-17 c 0.22 / Dec-17 c 0.20 (residual 0.31 / 0.27), LTM Jun-17 c 3.50
+(FY18 derivation 3.40 — whole-million printing), SKFINDIA Mar-17 s 0.00 (residual 51.06), MGL Sep-17 / Dec-17 s 0.00 (= residual, but FY18
+0.09 − Q4 0.06 leaves 0.03 for nine months against our landed Jun-17 0.20 — the own Dec-2017 filing's nine-month column, a scan, decides),
+WIPRO Mar-17 s (Ind-AS comparative 36.2 · Moneycontrol 24.4 · residual 0 · FY17 year 468.0 − three quarters = 100.3). (2) **91 LEFT BLANK by
+decision:** 2016 cells whose archive page is the RESTATED comparative filed with the NEXT year's results (page id in the next year's filing
+range — 115 of the 229; for 91 stored PAT ≠ stored PBT − tax). LAOPALA Dec-16 s: stored PAT 13.44 (IGAAP results, Feb-2017) vs page 1036120
+(filed Feb-2018) PBT 20.95 / tax 5.78 / PAT 15.17; the as-filed finance cost 20.84 lakh (0.21 = Moneycontrol) vs the restated page's residual
+0.35. No document satisfies "PAT = ours AND PBT = ours" for them. The WHOLE detail row of those quarters (pbt / tax / oi / dep / emp) is the
+restated vintage beside an as-filed PAT — a separate question, not touched.
+**Side findings (not touched).** INFY Mar-17 con archive page prints the STANDALONE lines (our con cell pbt / tax = std); INFY Jun-17 con PBT
+is the line before the associate write-down (4,925 vs 4,854). BHARTIARTL files finance costs GROSS with finance income on its own line
+(Jun-17 15,507 / (2,053) mn); the landed Sep-17 1,146.4 is NET (= residual = Moneycontrol), so Jun-17 / Dec-17 wait on a definition decision.
+**Lesson.** A result filter is a private regex — log what it drops. A resolver 404 is not an answer. And "PBT = our stored as-filed PBT"
+proves as-filed only when the stored row IS as-filed: read the page's filing date (its id range) before trusting a stored PBT.
+
 ## §210a — NIFTY SME EMERGE MEMBERS' SME-ERA RESULTS FROM THE FILINGS' PDFs, 2020→ (2026-09-28, user: "Text PDFs, then ask")
 **NO ASSUMPTIONS, NO GUESSWORK — every number below was measured this session.**
 **Why PDFs.** NSE lists no SME results XBRL before the FY24 year-end (§148/§181d: the listing's `xbrl` is ".../xbrl/-"), and
