@@ -12188,6 +12188,27 @@ coverage numbers or different backtest results. Can we solve all this at once?"
   didn't question** ([[feedback-verify-the-claim-you-assert]]).
 - Classification is ~1 s for the shared checkout; 36 worktrees ~10 s.
 
+**Trap found 2026-09-28 — GITIGNORED files were invisible to the sync, and `reset --keep` destroys them
+silently.** `.gitignore:11` has `scripts/_*`, so an in-progress `scripts/_shp_164r_quantmac_v4.py` in the
+shared checkout never appeared in `git status` and was never classified; once another tree committed that
+path (`git add -f`, origin `d0a748dfd`), the session-start sync's `git reset --keep origin/main`
+(reflog `e0208178f HEAD@{2026-09-28 08:54:52}`) replaced it with origin's copy — no blocker, no backup, three
+uncommitted stages lost. Git treats ignored paths as expendable: in a scratch repo the old tool also
+DELETED an ignored directory where origin added a file, and replaced an ignored file with origin's
+directory. **Fix (`ignored_in_the_way()`):** before acting, `git diff --name-only -z --no-renames
+--diff-filter=A HEAD origin/main` (tree-level: 0.02 s for 1,160 paths across 3,000 commits, exit 0 under
+`GIT_NO_LAZY_FETCH=1`) lists the paths origin ADDS; each one present here but absent from the index and
+from status (i.e. ignored) goes through `classify_file`: bytes equal to origin's blob (or an older origin
+blob) → backed up to `~/stocks-backups/sync-<stamp>/` and refreshed like any untracked stale copy;
+different bytes, or a directory/file in the way → `untracked-collides` blocker, nothing changed. Only
+ADDED paths can be untracked-and-invisible: a path HEAD tracks is in the index, or shows in status as a
+staged deletion (`git rm --cached` → `D `) and was already a `wip-collides` blocker (verified). Tested in
+scratch repos (differs → blocker, file untouched, HEAD unmoved; identical → backup + clean sync; older
+build → backup + refresh; dir/file shape conflicts → blocker) and in a real worktree of this partial clone
+parked just before `d0a748dfd`. **Still open:** `gc`'s `git worktree remove` (no `--force`) also deletes a
+worktree's ignored files without a word (measured: rc 0, `scripts/_wip.py` gone), so a worktree whose only
+unique content is an ignored script is not safe from `gc` yet.
+
 **Standing rule (CLAUDE.md):** every number reported — coverage, backtest, cell count — is measured
 from the synced checkout (state its HEAD sha) or from LIVE, and the report says which. A checkout
 whose `status` shows it behind origin is not a source.

@@ -28,6 +28,9 @@ Every decision is MEASURED (git blob ids / commit content), never guessed:
           tree's HEAD when it is further behind — §107a).  Otherwise it is
           WIP: kept as-is; if origin ALSO changed that file since our HEAD, sync refuses
           (git reset --keep would refuse too — nothing is ever overwritten).
+          GITIGNORED files never appear in git status and reset --keep overwrites them
+          silently, so every path origin ADDED since HEAD that exists here untracked (e.g. an
+          in-progress scripts/_x.py) is classified the same way — ignored_in_the_way().
 
 Moving HEAD uses `git reset --keep` — the variant that keeps local edits and aborts on
 any collision — never --hard.  Refreshed stale files are copied to
@@ -163,6 +166,53 @@ def status_entries(cwd):
     return res
 
 
+def ignored_in_the_way(cwd, listed):
+    """[(xy='!!', path, False, cls, detail)] for untracked paths `git status` never lists
+    (GITIGNORED — `.gitignore` has `scripts/_*`) that `git reset --keep TARGET` would destroy.
+    reset --keep treats ignored files as expendable: it silently overwrites one where TARGET
+    tracks that path, deletes an ignored directory where TARGET has a file, and replaces an
+    ignored file with TARGET's directory — no error, no backup.  2026-09-28 08:54 it replaced an
+    in-progress scripts/_shp_164r_quantmac_v4.py in the shared checkout with origin's copy
+    (runbook §107).  Each such path gets classify_file's verdict: same/old-build are backed up
+    and refreshed like any untracked stale copy; different bytes -> untracked-collides blocker.
+    Only paths TARGET ADDS can be untracked here — a path HEAD tracks is in the index (status
+    sees its edits) or shows as a staged deletion.  A tree-to-tree `diff --no-renames
+    --name-only` reads no blobs (partial clone)."""
+    if rev(cwd, "HEAD") == rev(cwd, TARGET):
+        return []
+    raw = out(["diff", "--name-only", "-z", "--no-renames", "--diff-filter=A", "HEAD", TARGET],
+              cwd, timeout=120)
+    added = [p for p in raw.split("\0") if p]
+    parents = {}                         # dir TARGET creates -> one file origin puts under it
+    for p in added:
+        d = os.path.dirname(p)
+        while d and d not in parents:
+            parents[d] = p
+            d = os.path.dirname(d)
+    full = lambda p: os.path.join(cwd, p)
+    cand = [p for p in added if p not in listed and os.path.lexists(full(p))]
+    cand += [d for d in parents if d not in listed and os.path.lexists(full(d))
+             and (os.path.islink(full(d)) or not os.path.isdir(full(d)))]
+    in_index = set()
+    for i in range(0, len(cand), 500):
+        in_index.update(p for p in out(["--literal-pathspecs", "ls-files", "-z", "--"]
+                                       + cand[i:i + 500], cwd).split("\0") if p)
+    res = []
+    for p in cand:
+        if p in in_index:
+            continue
+        xy = "??" if any(l.startswith(p + "/") for l in listed) else "!!"
+        if p in parents:
+            res.append((xy, p, False, "untracked-collides",
+                        "is a file where origin now tracks a directory (%s)" % parents[p]))
+        elif os.path.islink(full(p)) or not os.path.isfile(full(p)):
+            kind = "symlink" if os.path.islink(full(p)) else "directory" if os.path.isdir(full(p)) else "special file"
+            res.append((xy, p, False, "untracked-collides", "is a %s where origin now tracks a file" % kind))
+        else:
+            res.append((xy, p, False) + classify_file(cwd, p, False))
+    return res
+
+
 def classify_tree(cwd, trusted=()):
     head = rev(cwd, "HEAD")
     tgt = rev(cwd, TARGET)
@@ -177,7 +227,9 @@ def classify_tree(cwd, trusted=()):
     dup = sum(1 for l in cherry if l.startswith("-"))
     behind = out(["rev-list", "--count", "HEAD..%s" % TARGET], cwd).strip()
     commits = [(sha,) + classify_commit(cwd, sha, trusted) for sha in ahead]
-    files = [(xy, p, tracked) + classify_file(cwd, p, tracked) for xy, p, tracked in status_entries(cwd)]
+    entries = status_entries(cwd)
+    files = [(xy, p, tracked) + classify_file(cwd, p, tracked) for xy, p, tracked in entries]
+    files += ignored_in_the_way(cwd, {p for _, p, _ in entries})
     return {"head": head, "target": tgt, "behind": int(behind or 0), "dup": dup,
             "commits": commits, "files": files}
 
@@ -193,9 +245,13 @@ def blockers(info):
         if cls == "wip-collides":
             b.append("work-in-progress file %s was edited here AND changed on origin -> "
                      "commit+push it, or move it to a worktree (cp it out, sync, cp back)" % p)
+        elif cls == "untracked-collides" and xy == "!!":
+            b.append("gitignored %s (git status never shows it) %s -> `git reset --keep` would "
+                     "replace it WITHOUT a backup: commit+push your version (git add -f) or move it "
+                     "out, then rerun" % (p, detail or "differs from the file origin now tracks there"))
         elif cls == "untracked-collides":
-            b.append("untracked file %s exists on origin with DIFFERENT content -> rename it "
-                     "or delete it if it is a leftover" % p)
+            b.append("untracked %s %s -> rename it or delete it if it is a leftover"
+                     % (p, detail or "exists on origin with DIFFERENT content"))
         elif cls == "deleted-collides":
             b.append("%s is deleted here but origin changed it -> restore it "
                      "(git checkout origin/main -- %s) or push the deletion" % (p, p))
@@ -221,7 +277,7 @@ def summarize(info, tree):
     names = {"same": "stale copy, identical to origin", "old-build": "stale copy (an older committed build)",
              "wip": "work-in-progress, kept", "wip-collides": "WIP that COLLIDES with origin",
              "leftover": "untracked leftover (not on origin), left alone",
-             "untracked-collides": "untracked but origin has a different file", "deleted": "deleted here (origin unchanged), kept",
+             "untracked-collides": "untracked/ignored but origin has a different file", "deleted": "deleted here (origin unchanged), kept",
              "deleted-collides": "deleted here but origin changed it"}
     for cls in ["same", "old-build", "wip", "wip-collides", "leftover", "untracked-collides", "deleted", "deleted-collides"]:
         if cls in buckets:
