@@ -1,12 +1,6 @@
 {
  "_doc": "Nifty 500 members whose dashboard price series KEEPS Yahoo although fill_prices_from_sf.py replaces every other member's with the NSE-bhavcopy store (§214a F1). Each is a member where the STORE carries a verified >= 10 % error that Yahoo does not (px_nse_yahoo triage 2026-09-28, ~/stocks-cache/xcheck/triage_0928/px_verdicts.json): replacing would put a known-wrong old price on the dashboard. Remove an entry once its store error is healed (runbook §214a L1).",
  "keep": {
-  "EIHOTEL": {
-   "why": "Our NSE store is wrong 2002-01-11→2006-09-08 (store/Yahoo = 7.4995): Split Rs10->Rs2 + Bonus 1:2 ex 12-Sep-2006 (combined 2/15 = 0.1333) is not in our ledgers: A is the raw price x1 before the ex-date (7.5x too high).",
-   "evidence": "NSE CA: EIHOTEL \"Spl-Rs10 To Rs2/Bonus-1:2\" ex 12-Sep-2006; BSE CA \"Bonus issue 1:2\" 12-Sep-2006 (+ blank-purpose row same day); Yahoo split event 2006-09-12 5:1 (one leg) but Yahoo prices carry both legs; NSE bhavcopy 12-Sep-2006: open 124.70 close 120.85 vs prev 812.10 (open/prev 0.1536); screener",
-   "until": "the store is healed through the corporate-action ledgers (runbook §214a L1, pre-2016 CA campaign) — then delete this entry",
-   "ts": "2026-09-28"
-  },
   "SHANTIGEAR": {
    "why": "Our NSE store is wrong 2002-07-12→2004-07-23 (store/Yahoo = 19.9971): Bonus 1:1 + FV split (BSE rows ex 27-Jul-2004; FV today Re 1) = 1/20; A's own close drops x0.0601 on 27-Jul-2004 (unadjusted) while Yahoo is continuous (x1.20) -> A 20x too high before it.",
    "evidence": "BSE CA 522034 \"Bonus issue 1:1\" + blank-purpose row ex 27-Jul-2004; no NSE bhavcopy row read for the date (UNKNOWN symbol spelling then); A/B median 19.9971 over 107 point(s) 2002-07-12..2004-07-23; per-point reading vs Yahoo live refetch 2026-09-28: {'Yahoo daily disagrees': 107}; stored B equals Y",
@@ -16,18 +10,6 @@
   "UNICHEMLAB": {
    "why": "Our NSE store is wrong 2002-07-05→2004-03-12 (store/Yahoo = 4.0): Bonus 1:1 + FV split (BSE rows ex 16-Mar-2004; tape re-bases x0.226 on 17-Mar-2004) = 1/4; A has no factor, so it is 4x too high before it; Yahoo applies 1/4 (its event lists only 2:1).",
    "evidence": "BSE CA 506690 \"Bonus issue 1:1\" + blank-purpose row ex 16-Mar-2004; Yahoo split 2004-03-16 2:1; NSE bhavcopy 17-Mar-2004 open/prev 0.2263; FV today Rs 2; A/B median 4.0000 over 89 point(s) 2002-07-05..2004-03-12; per-point reading vs Yahoo live refetch 2026-09-28: {'Yahoo daily disagrees': 89}; stor",
-   "until": "the store is healed through the corporate-action ledgers (runbook §214a L1, pre-2016 CA campaign) — then delete this entry",
-   "ts": "2026-09-28"
-  },
-  "WOCKPHARMA": {
-   "why": "Our NSE store is wrong 2002-07-05→2004-04-23 (store/Yahoo = 3.0): A ~1/3 re-basing on 29-Apr-2004 is not in our ledgers: A is 3x too high before it; Yahoo adjusts it (B continuous).",
-   "evidence": "NSE bhavcopy 29-Apr-2004: open 300.00 close 320.40 vs prev 889.35 (open/prev 0.3373, close/prev 0.3603); No NSE CA (pre-2006 floor), no BSE CA row, no Yahoo split event found for it — the event identity (likely bonus 2:1) is UNKNOWN; evidence is the tape step + Yahoo prices; screener.in chart starts",
-   "until": "the store is healed through the corporate-action ledgers (runbook §214a L1, pre-2016 CA campaign) — then delete this entry",
-   "ts": "2026-09-28"
-  },
-  "SUNDRMFAST": {
-   "why": "Our NSE store is wrong 2002-07-05→2004-01-16 (store/Yahoo = 10.0): A 1:10 step on 23-Jan-2004 (FV split, Yahoo event 27-Jan-2004 10:1) is not in our ledgers: A is 10x too high before 23-Jan-2004.",
-   "evidence": "NSE bhavcopy 23-Jan-2004: open 108.00 close 114.05 vs prev 1052.55 (open/prev 0.1026) — a clean 1/10 re-basing, not a crash; Yahoo split event 2004-01-27 10:1; BSE CA 500403 ex 27-Jan-2004 (purpose blank); NSE CA has no 2004 split rows (pre-2006 feed floor); screener.in chart starts 2005 — no 3rd re",
    "until": "the store is healed through the corporate-action ledgers (runbook §214a L1, pre-2016 CA campaign) — then delete this entry",
    "ts": "2026-09-28"
   },
@@ -67,5 +49,16 @@
    "until": "the store is healed through the corporate-action ledgers (runbook §214a L1, pre-2016 CA campaign) — then delete this entry",
    "ts": "2026-09-28"
   }
- }
+ },
+ "_released": [
+  {
+   "syms": [
+    "EIHOTEL",
+    "SUNDRMFAST",
+    "WOCKPHARMA"
+   ],
+   "ts": "2026-09-28 22:00 IST",
+   "why": "The store errors that kept them on Yahoo were healed via ledgers (§214a, commit 255b0d37a) and verified in the published store (refresh-backtest-data 36449145709: every bar = old x the official factor, 0 off)."
+  }
+ ]
 }
