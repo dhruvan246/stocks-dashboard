@@ -6,7 +6,8 @@
 "Directional: an entry lands only while the cell is still the archive read (src nse-html) holding `was` (or no fc); an XBRL cell outranks it.",
 "Measured on origin 229a25581 (2026-09-28): 2,423 template cells = 2,194 fixed (2,122 residual=Moneycontrol, 52 residual+FY18 XBRL closure, 17 BSE PDF, 3 XBRL year=Moneycontrol) + 229 blank; 66 older-layout cells with fc == tax are genuine and not listed.",
 "Open list for the blank cells = the vision step (scanned 2016-17 originals); a proven figure replaces the null here, never an edit of the ledger.",
-"Round 2 (2026-09-28, runbook §211a): 39 blank cells proven from filing text (BSE / NSE results PDFs, text or OCR layer: the figure read at the column whose PAT and PBT equal ours at the printed precision, the page's own arithmetic closing, and a second reader agreeing -- page residual, Moneycontrol, or the company's own year total). 190 stay blank: 99 await a scan read (local OCR, then vision), 91 sit on restated comparative pages the archive filed a year late (stored PAT as-filed != stored PBT - tax; left blank by decision 2026-09-28)."
+"Round 2 (2026-09-28, runbook §211a): 39 blank cells proven from filing text (BSE / NSE results PDFs, text or OCR layer: the figure read at the column whose PAT and PBT equal ours at the printed precision, the page's own arithmetic closing, and a second reader agreeing -- page residual, Moneycontrol, or the company's own year total). 190 stay blank: 99 await a scan read (local OCR, then vision), 91 sit on restated comparative pages the archive filed a year late (stored PAT as-filed != stored PBT - tax; left blank by decision 2026-09-28).",
+"Round 2b (2026-09-28, runbook §211a): the scanned filings, read by local OCR then vision -- 69 more blank cells proven as filed (the quarter's own statement: the column whose PAT and PBT equal ours, its rows adding up to the printed total, a second reader agreeing; 13 of them note why the FY18 XBRL year cannot close -- a later restatement or an interest-only XBRL tag). 121 stay blank: 91 restated comparative pages and 14 rows that ARE a later filing's restated column (both left blank by decision 2026-09-28), 16 held (no single column matches both stored PAT and PBT, or a definition question). `supersedes` corrects a figure this ledger landed earlier: LTM Jun-2017 std 3.50 -> 0.00 and GLAXO Mar-2017 std 0.25 -> 0.00 (the quarter's own statement prints no finance costs; the landed figures were later re-presentations)."
 ],
 "fixes": [
 {
@@ -385,8 +386,8 @@
 "basis": "c",
 "field": "fc",
 "was": 84.89,
-"fixed": null,
-"why": "NSE archive page financial_res_ACC_1031727.html prints its Tax expense (8,489 lakh) in the '(f) Finance costs' row as well (template defect). Page residual 20.31 cr = Total expenses 287,700 − the other itemised expense rows 285,669 lakh. Moneycontrol Interest blank. No two readers agree (open(mc none)). BSE PDF rung (own, next-quarter and year-later filings): filings 2, scans 0, fetch-failed 2, text-read 0. Blank until a filing read proves the figure.",
+"fixed": 20.31,
+"why": "NSE archive page financial_res_ACC_1031727.html prints its Tax expense (8,489 lakh) in the '(f) Finance costs' row as well (template defect). Page residual 20.31 cr = Total expenses 287,700 − the other itemised expense rows 285,669 lakh. Moneycontrol Interest blank. No two readers agree (open(mc none)). BSE PDF rung (own, next-quarter and year-later filings): filings 2, scans 0, fetch-failed 2, text-read 0. ROUND 2 (2026-09-28, runbook §211a): PROVEN 20.31. BSE attachment af40bc65-5cfa-4e18-81b9-0996a8d948f5 (the Sep-2018 filing, 17-Oct-2018; text layer), consolidated results (Rs crore), column 30-09-2017: 'h) Finance costs 20.31'; '5 Profit before share of profit of associates and joint ventures and tax' 263.76 = our stored PBT (the line our consolidated cell carries; '7 Profit before tax' after associates is 266.42), tax 74.38 + 10.51 = 84.89 = ours, profit for the period 181.53 (owners 181.51 = stored); expense rows 476.67 + 0.27 + 18.73 + 201.34 + 673.76 + 799.48 + 20.31 + 156.01 + 530.43 = 2,877.00 = Total income 3,140.76 - 263.76. The quarter's own filing (17-Oct-2017, scanned; NSE copy ACC_17102017143139, local OCR page 2) prints the same 20.31 in the column holding 263.76 / 266.42 / 84.89 / 181.53, owners 181.51 on its page 3. Second reader: page residual 20.31. (Round 1 rejected the Sep-2018 column by comparing 266.42, the after-associates line, with our 263.76.)",
 "found": "fc==tax archive-template audit 2026-09-28 (runbook §211)"
 },
 {
@@ -2385,8 +2386,8 @@
 "basis": "s",
 "field": "fc",
 "was": 15.68,
-"fixed": null,
-"why": "NSE archive page financial_res_BAJAJCON_1023449.html prints its Tax expense (1,567.98 lakh) in the '(f) Finance costs' row as well (template defect). Page residual 0.00 cr = Total expenses 12,693.82 − the other itemised expense rows 12,693.82 lakh. Moneycontrol Interest 0.24. No two readers agree (open(mc far)). BSE PDF rung (own, next-quarter and year-later filings): filings 3, scans 2, fetch-failed 1, text-read 0. Blank until a filing read proves the figure.",
+"fixed": 0.24,
+"why": "NSE archive page financial_res_BAJAJCON_1023449.html prints its Tax expense (1,567.98 lakh) in the '(f) Finance costs' row as well (template defect). Page residual 0.00 cr = Total expenses 12,693.82 − the other itemised expense rows 12,693.82 lakh. Moneycontrol Interest 0.24. No two readers agree (open(mc far)). BSE PDF rung (own, next-quarter and year-later filings): filings 3, scans 2, fetch-failed 1, text-read 0. ROUND 2 (2026-09-28, runbook §211a): PROVEN 0.24. VISION READ (2026-09-28) of BSE attachment 6FB9248A_515A_4E3C_9218_5979504783BB_141029 page 3 (the quarter's own filing, Jan-2017, scanned; NSE copy identical), Statement of Standalone Unaudited Financial Results (Rs lacs, older layout), column '3 months ended 31/12/2016': item 6 'Finance Costs 24.22' (= 0.24 cr); item 5 7,371.80 - 24.22 = item 7 7,347.58 = PBT (item 9) = our 73.48; tax 1,567.98; PAT 5,779.60 = stored 57.80; expenses 4,630.02 + 1,216.54 + 591.05 + 1,570.64 + 126.03 + 1,291.73 + 3,267.81 = 12,693.82 = the printed Total Expenses. Second reader: Moneycontrol 0.24 (the page residual 0.00 disagrees).",
 "found": "fc==tax archive-template audit 2026-09-28 (runbook §211)"
 },
 {
@@ -3025,8 +3026,8 @@
 "basis": "s",
 "field": "fc",
 "was": -0.01,
-"fixed": null,
-"why": "NSE archive page financial_res_BFUTILITIE_1034486.html prints its Tax expense (-0.51 lakh) in the '(f) Finance costs' row as well (template defect). Page residual 0.98 cr = Total expenses 527.47 − the other itemised expense rows 429.92 lakh. Moneycontrol Interest 0.18. No two readers agree (open(mc far)). BSE PDF rung (own, next-quarter and year-later filings): filings 3, scans 3, fetch-failed 0, text-read 0. Blank until a filing read proves the figure.",
+"fixed": 0.18,
+"why": "NSE archive page financial_res_BFUTILITIE_1034486.html prints its Tax expense (-0.51 lakh) in the '(f) Finance costs' row as well (template defect). Page residual 0.98 cr = Total expenses 527.47 − the other itemised expense rows 429.92 lakh. Moneycontrol Interest 0.18. No two readers agree (open(mc far)). BSE PDF rung (own, next-quarter and year-later filings): filings 3, scans 3, fetch-failed 0, text-read 0. ROUND 2 (2026-09-28, runbook §211a): PROVEN 0.18. VISION READ (2026-09-28) of BSE attachment AB4ADA34_B42B_4874_BD3B_3F51E665F543_131104 page 2 (the quarter's own filing, Nov-2016, scanned), STATEMENT OF STANDALONE UNAUDITED RESULTS (Rs lakh, older layout), column '3 Months ended 30 Sept., 2016': item 6 'Finance cost 18.10' (= 0.18 cr); item 5 'Profit before finance cost & exceptional items' 536.93 - 18.10 = item 7 518.83 = PBT (item 9) = our 5.19; tax (0.50) = -0.01; PAT 519.33 = stored 5.19. The Dec-2016 filing's 30-Sept-2016 column prints the same 18.10. Second reader: Moneycontrol 0.18 (the page residual 0.98 disagrees).",
 "found": "fc==tax archive-template audit 2026-09-28 (runbook §211)"
 },
 {
@@ -3035,8 +3036,8 @@
 "basis": "s",
 "field": "fc",
 "was": -0.02,
-"fixed": null,
-"why": "NSE archive page financial_res_BFUTILITIE_1037286.html prints its Tax expense (-2.4 lakh) in the '(f) Finance costs' row as well (template defect). Page residual 1.35 cr = Total expenses 427.42 − the other itemised expense rows 292.55 lakh. Moneycontrol Interest 0.53. No two readers agree (open(mc far)). BSE PDF rung (own, next-quarter and year-later filings): filings 3, scans 2, fetch-failed 1, text-read 0. Blank until a filing read proves the figure.",
+"fixed": 0.53,
+"why": "NSE archive page financial_res_BFUTILITIE_1037286.html prints its Tax expense (-2.4 lakh) in the '(f) Finance costs' row as well (template defect). Page residual 1.35 cr = Total expenses 427.42 − the other itemised expense rows 292.55 lakh. Moneycontrol Interest 0.53. No two readers agree (open(mc far)). BSE PDF rung (own, next-quarter and year-later filings): filings 3, scans 2, fetch-failed 1, text-read 0. ROUND 2 (2026-09-28, runbook §211a): PROVEN 0.53. VISION READ (2026-09-28) of BSE attachment EBEEBC36_7C20_4FB9_9904_94C30A4B5F36_131018 page 2 (the quarter's own filing, Feb-2017, scanned), STATEMENT OF STANDALONE UNAUDITED RESULTS (Rs lakh, older layout), column '3 Months ended 31 December, 2016': item 6 'Finance cost 53.33' (= 0.53 cr); item 5 21.43 - 53.33 = item 7 (31.90) = PBT (item 9) = our -0.32; tax (3.12); PAT (28.78) = stored -0.29 (PBT - tax = PAT on the page). Second reader: Moneycontrol 0.53 (the page residual 1.35 disagrees).",
 "found": "fc==tax archive-template audit 2026-09-28 (runbook §211)"
 },
 {
@@ -4125,8 +4126,8 @@
 "basis": "s",
 "field": "fc",
 "was": 9.42,
-"fixed": null,
-"why": "NSE archive page financial_res_CARERATING_1030085.html prints its Tax expense (941.57 lakh) in the '(f) Finance costs' row as well (template defect). Page residual 0.00 cr = Total expenses 2,297.59 − the other itemised expense rows 2,297.59 lakh. Moneycontrol Interest blank. No two readers agree (open(mc none)). BSE PDF rung (own, next-quarter and year-later filings): filings 5, scans 4, fetch-failed 0, text-read 0. Blank until a filing read proves the figure.",
+"fixed": 0.0,
+"why": "NSE archive page financial_res_CARERATING_1030085.html prints its Tax expense (941.57 lakh) in the '(f) Finance costs' row as well (template defect). Page residual 0.00 cr = Total expenses 2,297.59 − the other itemised expense rows 2,297.59 lakh. Moneycontrol Interest blank. No two readers agree (open(mc none)). BSE PDF rung (own, next-quarter and year-later filings): filings 5, scans 4, fetch-failed 0, text-read 0. ROUND 2 (2026-09-28, runbook §211a): PROVEN 0.00. VISION READ (2026-09-28) of BSE attachment 28d7f3d4-ca4d-4395-baec-25b2d35b1e64 page 3 (the quarter's own filing, 22-Aug-2017, scanned), Statement of Unaudited Financial Results, Standalone (Rs lakh), column '3 Months ended June 30, 2017': employee 1,640.31 + depreciation 79.80 + other 577.48 = 2,297.59 = the printed TOTAL EXPENSES; total income 6,788.10 - 2,297.59 = 4,490.51 = PBT = our 44.91; tax 941.57 = 9.42; PAT 3,548.94 = stored 35.49. The statement has NO finance-cost row (employee benefits, depreciation & amortisation, other expenses only). Second reader: page residual 0.00.",
 "found": "fc==tax archive-template audit 2026-09-28 (runbook §211)"
 },
 {
@@ -4135,8 +4136,8 @@
 "basis": "s",
 "field": "fc",
 "was": 23.42,
-"fixed": null,
-"why": "NSE archive page financial_res_CARERATING_1033808.html prints its Tax expense (2,341.83 lakh) in the '(f) Finance costs' row as well (template defect). Page residual 0.00 cr = Total expenses 2,546.45 − the other itemised expense rows 2,546.45 lakh. Moneycontrol Interest blank. No two readers agree (open(mc none)). BSE PDF rung (own, next-quarter and year-later filings): filings 5, scans 4, fetch-failed 1, text-read 0. Blank until a filing read proves the figure.",
+"fixed": 0.0,
+"why": "NSE archive page financial_res_CARERATING_1033808.html prints its Tax expense (2,341.83 lakh) in the '(f) Finance costs' row as well (template defect). Page residual 0.00 cr = Total expenses 2,546.45 − the other itemised expense rows 2,546.45 lakh. Moneycontrol Interest blank. No two readers agree (open(mc none)). BSE PDF rung (own, next-quarter and year-later filings): filings 5, scans 4, fetch-failed 1, text-read 0. ROUND 2 (2026-09-28, runbook §211a): PROVEN 0.00. VISION READ (2026-09-28) of BSE attachment 5b8e5a21-5f93-46a9-879b-acf24e37d65e page 3 (the quarter's own filing, 15-Nov-2017, scanned), Standalone (Rs lakh), column '3 Months ended September 30, 2017': employee 1,914.57 + depreciation 79.72 + other 552.16 = 2,546.45 = the printed TOTAL EXPENSES; total income 9,721.93 - 2,546.45 = 7,175.48 = PBT = our 71.75; tax 2,341.83 = 23.42; PAT 4,833.65 = stored 48.34 (the Dec-2017 filing's September column prints the same figures). The statement has NO finance-cost row (employee benefits, depreciation & amortisation, other expenses only). Second reader: page residual 0.00.",
 "found": "fc==tax archive-template audit 2026-09-28 (runbook §211)"
 },
 {
@@ -4145,8 +4146,8 @@
 "basis": "s",
 "field": "fc",
 "was": 12.94,
-"fixed": null,
-"why": "NSE archive page financial_res_CARERATING_1035735.html prints its Tax expense (1,293.73 lakh) in the '(f) Finance costs' row as well (template defect). Page residual 0.00 cr = Total expenses 2,924.87 − the other itemised expense rows 2,924.87 lakh. Moneycontrol Interest blank. No two readers agree (open(mc none)). BSE PDF rung (own, next-quarter and year-later filings): filings 5, scans 4, fetch-failed 0, text-read 0. Blank until a filing read proves the figure.",
+"fixed": 0.0,
+"why": "NSE archive page financial_res_CARERATING_1035735.html prints its Tax expense (1,293.73 lakh) in the '(f) Finance costs' row as well (template defect). Page residual 0.00 cr = Total expenses 2,924.87 − the other itemised expense rows 2,924.87 lakh. Moneycontrol Interest blank. No two readers agree (open(mc none)). BSE PDF rung (own, next-quarter and year-later filings): filings 5, scans 4, fetch-failed 0, text-read 0. ROUND 2 (2026-09-28, runbook §211a): PROVEN 0.00. VISION READ (2026-09-28) of BSE attachment d37e28a0-d00f-4848-8c12-6829389b05e0 page 2 (the quarter's own filing, 30-Jan-2018, scanned), Standalone (Rs lakh), column '3 Months ended December 31, 2017': employee 2,211.88 + depreciation 79.37 + other 633.62 = 2,924.87 = the printed TOTAL EXPENSES; total income 7,946.78 - 2,924.87 = 5,021.91 = PBT = our 50.22; tax 1,293.73 = 12.94; PAT 3,728.18 = stored 37.28. The statement has NO finance-cost row (employee benefits, depreciation & amortisation, other expenses only). Second reader: page residual 0.00.",
 "found": "fc==tax archive-template audit 2026-09-28 (runbook §211)"
 },
 {
@@ -5155,8 +5156,8 @@
 "basis": "s",
 "field": "fc",
 "was": 75.61,
-"fixed": null,
-"why": "NSE archive page financial_res_COLPAL_1022177.html prints its Tax expense (7,561 lakh) in the '(f) Finance costs' row as well (template defect). Page residual 0.00 cr = Total expenses 96,653 − the other itemised expense rows 96,653 lakh. Moneycontrol Interest blank. No two readers agree (open(mc none)). BSE PDF rung (own, next-quarter and year-later filings): filings 4, scans 2, fetch-failed 2, text-read 0. Blank until a filing read proves the figure.",
+"fixed": 0.0,
+"why": "NSE archive page financial_res_COLPAL_1022177.html prints its Tax expense (7,561 lakh) in the '(f) Finance costs' row as well (template defect). Page residual 0.00 cr = Total expenses 96,653 − the other itemised expense rows 96,653 lakh. Moneycontrol Interest blank. No two readers agree (open(mc none)). BSE PDF rung (own, next-quarter and year-later filings): filings 4, scans 2, fetch-failed 2, text-read 0. ROUND 2 (2026-09-28, runbook §211a): PROVEN 0.00. VISION READ (2026-09-28) of BSE attachment 84f3ddd0-9844-468b-989d-8363b7bff38e page 4 (the quarter's own filing, May-2017, scanned; rendered rotated 90), STATEMENT OF RESULTS FOR THE QUARTER AND YEAR ENDED MARCH 31, 2017 (Rs lakh, older layout), column 'Quarter Ended March 31, 2017': item 6 'Finance Costs' prints '-'; item 5 'Profit before Finance Costs and Exceptional Items' 21,819 = item 7 'Profit after Finance Costs but before Exceptional Items' 21,819; PBT 21,819 = our 218.19, tax 7,561 = 75.61, PAT 14,258 = stored 142.58. Second reader: page residual 0.00.",
 "found": "fc==tax archive-template audit 2026-09-28 (runbook §211)"
 },
 {
@@ -5315,8 +5316,8 @@
 "basis": "c",
 "field": "fc",
 "was": 32.87,
-"fixed": null,
-"why": "NSE archive page financial_res_CRISIL_1026633.html prints its Tax expense (3,287 lakh) in the '(f) Finance costs' row as well (template defect). Page residual 0.00 cr = Total expenses 30,444 − the other itemised expense rows 30,444 lakh. Moneycontrol Interest blank. No two readers agree (open(mc none)). BSE PDF rung (own, next-quarter and year-later filings): filings 4, scans 2, fetch-failed 2, text-read 0. Blank until a filing read proves the figure.",
+"fixed": 0.0,
+"why": "NSE archive page financial_res_CRISIL_1026633.html prints its Tax expense (3,287 lakh) in the '(f) Finance costs' row as well (template defect). Page residual 0.00 cr = Total expenses 30,444 − the other itemised expense rows 30,444 lakh. Moneycontrol Interest blank. No two readers agree (open(mc none)). BSE PDF rung (own, next-quarter and year-later filings): filings 4, scans 2, fetch-failed 2, text-read 0. ROUND 2 (2026-09-28, runbook §211a): PROVEN 0.00. VISION READ (2026-09-28) of BSE attachment fd4b9504-e15b-4f5f-9e05-f3c158791673 page 5 (the quarter's own filing, Apr-2017, scanned), Statement of Financial Results for the quarter ended March 31, 2017 (Rs crore), Consolidated column '3 Months ended 31-Mar-17': item 6 'Finance Costs' prints '-'; item 5 'Profit before finance costs and exceptional items' 106.21 = item 7 106.21 = PBT (item 9) = our 106.21; tax 32.87; net profit 73.34 = stored 73.34. Second reader: page residual 0.00.",
 "found": "fc==tax archive-template audit 2026-09-28 (runbook §211)"
 },
 {
@@ -5325,8 +5326,8 @@
 "basis": "s",
 "field": "fc",
 "was": 29.43,
-"fixed": null,
-"why": "NSE archive page financial_res_CRISIL_1026630.html prints its Tax expense (2,943 lakh) in the '(f) Finance costs' row as well (template defect). Page residual 0.00 cr = Total expenses 21,931 − the other itemised expense rows 21,931 lakh. Moneycontrol Interest blank. No two readers agree (open(mc none)). BSE PDF rung (own, next-quarter and year-later filings): filings 4, scans 2, fetch-failed 1, text-read 0. Blank until a filing read proves the figure.",
+"fixed": 0.0,
+"why": "NSE archive page financial_res_CRISIL_1026630.html prints its Tax expense (2,943 lakh) in the '(f) Finance costs' row as well (template defect). Page residual 0.00 cr = Total expenses 21,931 − the other itemised expense rows 21,931 lakh. Moneycontrol Interest blank. No two readers agree (open(mc none)). BSE PDF rung (own, next-quarter and year-later filings): filings 4, scans 2, fetch-failed 1, text-read 0. ROUND 2 (2026-09-28, runbook §211a): PROVEN 0.00. VISION READ (2026-09-28) of BSE attachment fd4b9504-e15b-4f5f-9e05-f3c158791673 page 5 (the quarter's own filing, Apr-2017, scanned), Statement of Financial Results for the quarter ended March 31, 2017 (Rs crore), Standalone column '3 Months ended 31-Mar-17': item 6 'Finance Costs' prints '-'; item 5 92.81 = item 7 92.81 = PBT (item 9) = our 92.81; tax 29.43; net profit 63.38 = stored 63.38. Second reader: page residual 0.00.",
 "found": "fc==tax archive-template audit 2026-09-28 (runbook §211)"
 },
 {
@@ -5345,8 +5346,8 @@
 "basis": "s",
 "field": "fc",
 "was": 26.44,
-"fixed": null,
-"why": "NSE archive page financial_res_CRISIL_1027796.html prints its Tax expense (2,644 lakh) in the '(f) Finance costs' row as well (template defect). Page residual 0.00 cr = Total expenses 22,328 − the other itemised expense rows 22,328 lakh. Moneycontrol Interest blank. No two readers agree (open(mc none)). BSE PDF rung (own, next-quarter and year-later filings): filings 4, scans 2, fetch-failed 1, text-read 0. Blank until a filing read proves the figure.",
+"fixed": 0.0,
+"why": "NSE archive page financial_res_CRISIL_1027796.html prints its Tax expense (2,644 lakh) in the '(f) Finance costs' row as well (template defect). Page residual 0.00 cr = Total expenses 22,328 − the other itemised expense rows 22,328 lakh. Moneycontrol Interest blank. No two readers agree (open(mc none)). BSE PDF rung (own, next-quarter and year-later filings): filings 4, scans 2, fetch-failed 1, text-read 0. ROUND 2 (2026-09-28, runbook §211a): PROVEN 0.00. VISION READ (2026-09-28) of BSE attachment 5be9fac4-1c90-46b2-8676-6d6f84dc6544 page 4 (the quarter's own filing, Jul-2017, scanned; rendered rotated 90), Statement of Financial Results for the quarter and half year ended June 30, 2017 (Rs crore), Standalone column '3 Months ended 30-Jun-17': expenses A-H 124.92 + 11.11 + 9.94 + 41.02 + 7.90 + 11.06 + 10.27 + 7.06 = 223.28 = the printed total; total income 305.14 - 223.28 = 81.86 = item 5 'Profit before finance costs and exceptional items'; item 6 'Finance Costs' prints '-'; item 7 81.86 = PBT (item 9) = our 81.86; tax 29.91 - 3.47 = 26.44; net profit 55.42 = stored 55.42. Second reader: page residual 0.00.",
 "found": "fc==tax archive-template audit 2026-09-28 (runbook §211)"
 },
 {
@@ -5645,8 +5646,8 @@
 "basis": "c",
 "field": "fc",
 "was": 39.88,
-"fixed": null,
-"why": "NSE archive page financial_res_DALMIABHA_1036535.html prints its Tax expense (3,988 lakh) in the '(f) Finance costs' row as well (template defect). Page residual 151.56 cr = Total expenses 195,541 − the other itemised expense rows 180,385 lakh. Moneycontrol Interest 164.68 (its table's PAT differs from ours). No two readers agree (open(mc far)). BSE PDF rung (own, next-quarter and year-later filings): filings 2, scans 0, fetch-failed 2, text-read 0. Blank until a filing read proves the figure.",
+"fixed": 164.68,
+"why": "NSE archive page financial_res_DALMIABHA_1036535.html prints its Tax expense (3,988 lakh) in the '(f) Finance costs' row as well (template defect). Page residual 151.56 cr = Total expenses 195,541 − the other itemised expense rows 180,385 lakh. Moneycontrol Interest 164.68 (its table's PAT differs from ours). No two readers agree (open(mc far)). BSE PDF rung (own, next-quarter and year-later filings): filings 2, scans 0, fetch-failed 2, text-read 0. ROUND 2 (2026-09-28, runbook §211a): PROVEN 164.68. VISION READ (2026-09-28) of BSE attachment 175c0103-2ed0-4a89-be35-f816a9c4e634 page 6 (the quarter's own filing, Feb-2018; scanned under an unreadable text layer), Unaudited Consolidated Financial Results for the quarter and nine months ended 31-12-2017 (Rs crore), column '31-12-17': (e) Finance Costs = interest cost 151.56 + other finance cost (incl. exchange differences) 13.12 = 164.68 (the separate line (f) foreign currency fluctuation (22.79) is not part of it); 338.60 + 39.54 + 28.21 + 157.45 + 151.56 + 13.12 - 22.79 + 177.60 + 341.35 + 357.56 + 16.61 + 356.60 = 1,955.41 printed Total Expenses; 2,141.25 - 1,955.41 = 185.84 = PBT (ours); tax 39.88 (ours); profit for the period 145.96 = stored. Second reader: Moneycontrol 164.68. Same convention as our landed Sep-17 191.10 = 152.75 + 38.35. (The page residual 151.56 is interest cost only: NSE page 1036535 carried the 13.12 inside Other expenses 106,245 lakh = -22.79 + 341.35 + 357.56 + 16.61 + 356.60 + 13.12 cr.) FY18 cross-check (joint closure off by 101.03) is a definition gap: the Mar-2018 XBRL year 596.58 and its quarter 130.14 are the statement's 'Interest cost' sub-line only (Mar-2018 filing BSE 46656e80 p8: year interest cost 596.58 + other finance cost 93.36; Q4 130.14 + 10.81); our quarters carry the Finance Costs total (and the landed Jun-17 211.69, as filed, also includes the foreign-currency line).",
 "found": "fc==tax archive-template audit 2026-09-28 (runbook §211)"
 },
 {
@@ -6225,8 +6226,8 @@
 "basis": "c",
 "field": "fc",
 "was": 6.72,
-"fixed": null,
-"why": "NSE archive page financial_res_DHANUKA_1029027.html prints its Tax expense (671.73 lakh) in the '(f) Finance costs' row as well (template defect). Page residual 0.31 cr = Total expenses 19,756.65 − the other itemised expense rows 19,725.52 lakh. Moneycontrol Interest blank. No two readers agree (open(mc none)). BSE PDF rung (own, next-quarter and year-later filings): filings 4, scans 2, fetch-failed 1, text-read 0. Blank until a filing read proves the figure.",
+"fixed": 0.31,
+"why": "NSE archive page financial_res_DHANUKA_1029027.html prints its Tax expense (671.73 lakh) in the '(f) Finance costs' row as well (template defect). Page residual 0.31 cr = Total expenses 19,756.65 − the other itemised expense rows 19,725.52 lakh. Moneycontrol Interest blank. No two readers agree (open(mc none)). BSE PDF rung (own, next-quarter and year-later filings): filings 4, scans 2, fetch-failed 1, text-read 0. ROUND 2 (2026-09-28, runbook §211a): PROVEN 0.31. VISION READ (2026-09-28) of BSE attachment d935ba71-2393-4b42-8486-dbe33053aef5 page 2 (the quarter's own filing, 10-Aug-2017, scanned), STATEMENT OF STANDALONE AND CONSOLIDATED UNAUDITED FINANCIAL RESULTS (Rs lacs), column 'Quarter Ended 30.06.2017': 'f) Finance costs 31.13' (= 0.31 cr); expenses 11,516.89 + 1,412.89 + 53.82 + 1,037.49 + 2,338.73 + 31.13 + 340.85 + 3,024.85 = 19,756.65 = the printed Total Expenses; PBT 2,285.55 = our 22.86; tax 675.56 - 3.83; net profit 1,613.82 = stored 16.14. Second reader: page residual 0.31. (The Jun-2018 filing's comparative column prints 0.22 with the same PBT -- a reclassified comparative; the as-filed statement decides.) FY18 cross-check (joint closure off by 0.20): the Mar-2018 year is on the re-presented basis (later comparatives print Jun-17 0.22, Dec-17 0.20).",
 "found": "fc==tax archive-template audit 2026-09-28 (runbook §211)"
 },
 {
@@ -6245,8 +6246,8 @@
 "basis": "c",
 "field": "fc",
 "was": 20.8,
-"fixed": null,
-"why": "NSE archive page financial_res_DHANUKA_1033302.html prints its Tax expense (2,079.71 lakh) in the '(f) Finance costs' row as well (template defect). Page residual 0.26 cr = Total expenses 27,614.45 − the other itemised expense rows 27,588.51 lakh. Moneycontrol Interest blank. No two readers agree (open(mc none)). BSE PDF rung (own, next-quarter and year-later filings): filings 4, scans 2, fetch-failed 1, text-read 0. Blank until a filing read proves the figure.",
+"fixed": 0.26,
+"why": "NSE archive page financial_res_DHANUKA_1033302.html prints its Tax expense (2,079.71 lakh) in the '(f) Finance costs' row as well (template defect). Page residual 0.26 cr = Total expenses 27,614.45 − the other itemised expense rows 27,588.51 lakh. Moneycontrol Interest blank. No two readers agree (open(mc none)). BSE PDF rung (own, next-quarter and year-later filings): filings 4, scans 2, fetch-failed 1, text-read 0. ROUND 2 (2026-09-28, runbook §211a): PROVEN 0.26. VISION READ (2026-09-28) of BSE attachment adf3c51b-b0b0-46e6-af76-fbe29e39f705 page 2 (the quarter's own filing, 13-Nov-2017, scanned), STATEMENT OF STANDALONE AND CONSOLIDATED UNAUDITED FINANCIAL RESULTS (Rs lacs), column 'Quarter Ended 30.09.2017': 'f) Finance costs 25.94' (= 0.26 cr); expenses 9,557.83 + 4,608.38 + 6,353.31 - 75.68 + 2,774.87 + 25.94 + 357.37 + 4,012.43 = 27,614.45 = the printed Total Expenses; PBT 7,361.03 = our 73.61; tax 2,136.94 - 57.23; net profit 5,281.32 = stored 52.81 (its 30.06.2017 column repeats finance costs 31.13). Second reader: page residual 0.26. FY18 cross-check (joint closure off by 0.20): the Mar-2018 year is on the re-presented basis (later comparatives print Jun-17 0.22, Dec-17 0.20).",
 "found": "fc==tax archive-template audit 2026-09-28 (runbook §211)"
 },
 {
@@ -6265,8 +6266,8 @@
 "basis": "c",
 "field": "fc",
 "was": 7.46,
-"fixed": null,
-"why": "NSE archive page financial_res_DHANUKA_1038139.html prints its Tax expense (746.41 lakh) in the '(f) Finance costs' row as well (template defect). Page residual 0.27 cr = Total expenses 19,008.62 − the other itemised expense rows 18,981.99 lakh. Moneycontrol Interest blank. No two readers agree (open(mc none)). BSE PDF rung (own, next-quarter and year-later filings): filings 6, scans 1, fetch-failed 1, text-read 0. Blank until a filing read proves the figure.",
+"fixed": 0.27,
+"why": "NSE archive page financial_res_DHANUKA_1038139.html prints its Tax expense (746.41 lakh) in the '(f) Finance costs' row as well (template defect). Page residual 0.27 cr = Total expenses 19,008.62 − the other itemised expense rows 18,981.99 lakh. Moneycontrol Interest blank. No two readers agree (open(mc none)). BSE PDF rung (own, next-quarter and year-later filings): filings 6, scans 1, fetch-failed 1, text-read 0. ROUND 2 (2026-09-28, runbook §211a): PROVEN 0.27. VISION READ (2026-09-28) of BSE attachment 090d2d04-f82b-4f60-8548-c83cdf247cf0 page 2 (the quarter's own filing, 14-Feb-2018, scanned), STATEMENT OF STANDALONE AND CONSOLIDATED UNAUDITED FINANCIAL RESULTS (Rs lacs), column 'Quarter Ended 31.12.2017': 'f) Finance costs 26.63' (= 0.27 cr); expenses 8,520.20 + 3,521.03 + 519.37 + 0.00 + 2,739.22 + 26.63 + 362.61 + 3,319.56 = 19,008.62 = the printed Total Expenses; PBT 3,605.01 = our 36.05; tax 686.99 + 59.42; net profit 2,858.60 = stored 28.59. Second reader: page residual 0.27. (The Mar-2018 filing's comparative prints 0.20 -- reclassified; the as-filed statement decides.) FY18 cross-check (joint closure off by 0.20): the Mar-2018 year is on the re-presented basis (later comparatives print Jun-17 0.22, Dec-17 0.20).",
 "found": "fc==tax archive-template audit 2026-09-28 (runbook §211)"
 },
 {
@@ -6285,8 +6286,8 @@
 "basis": "s",
 "field": "fc",
 "was": 101.5,
-"fixed": null,
-"why": "NSE archive page financial_res_DHFL_1027893.html prints its Tax expense (10,150 lakh) in the '(f) Finance costs' row as well (template defect). Page residual 0.00 cr = Total expenses 165,266 − the other itemised expense rows 165,266 lakh. Moneycontrol Interest 1475.37. No two readers agree (open(mc far)). BSE PDF rung (own, next-quarter and year-later filings): filings 4, scans 4, fetch-failed 0, text-read 0. Blank until a filing read proves the figure.",
+"fixed": 1475.37,
+"why": "NSE archive page financial_res_DHFL_1027893.html prints its Tax expense (10,150 lakh) in the '(f) Finance costs' row as well (template defect). Page residual 0.00 cr = Total expenses 165,266 − the other itemised expense rows 165,266 lakh. Moneycontrol Interest 1475.37. No two readers agree (open(mc far)). BSE PDF rung (own, next-quarter and year-later filings): filings 4, scans 4, fetch-failed 0, text-read 0. ROUND 2 (2026-09-28, runbook §211a): PROVEN 1475.37. VISION READ (2026-09-28) of BSE attachment E8DD834D-0CD8-438E-BCF1-DB58EC26399A page 2 (the quarter's own filing, Jul-2016, scanned; NSE copy res00653020072016 is the same), Statement of unaudited financial results for the quarter ended June 30, 2016 (Rs lacs), column '30.06.2016': (a) Interest & Finance Cost 147,537; EXPENDITURE 165,642 = 147,537 + employee 6,276 + other 11,193 + depreciation 636; 195,828 - 165,642 = 30,186, + other income 104 = PBT 30,290 (our 302.90); tax 10,150 = our 101.50; net profit 20,140 = stored 201.40. Second reader: Moneycontrol 1,475.37. The Jun-2017 filing's comparative (BSE 7199556f p3) prints the same Finance Cost 1,47,537 (it re-cuts revenue and employee cost, not the finance line). The page residual 0.00 is NSE's form, which carried no separate finance-cost figure for this lender.",
 "found": "fc==tax archive-template audit 2026-09-28 (runbook §211)"
 },
 {
@@ -6295,8 +6296,8 @@
 "basis": "s",
 "field": "fc",
 "was": 120.47,
-"fixed": null,
-"why": "NSE archive page financial_res_DHFL_1027891.html prints its Tax expense (12,047 lakh) in the '(f) Finance costs' row as well (template defect). Page residual 0.00 cr = Total expenses 202,683 − the other itemised expense rows 202,683 lakh. Moneycontrol Interest 1786.87. No two readers agree (open(mc far)). BSE PDF rung (own, next-quarter and year-later filings): filings 5, scans 3, fetch-failed 0, text-read 0. Blank until a filing read proves the figure.",
+"fixed": 1786.87,
+"why": "NSE archive page financial_res_DHFL_1027891.html prints its Tax expense (12,047 lakh) in the '(f) Finance costs' row as well (template defect). Page residual 0.00 cr = Total expenses 202,683 − the other itemised expense rows 202,683 lakh. Moneycontrol Interest 1786.87. No two readers agree (open(mc far)). BSE PDF rung (own, next-quarter and year-later filings): filings 5, scans 3, fetch-failed 0, text-read 0. ROUND 2 (2026-09-28, runbook §211a): PROVEN 1786.87. VISION READ (2026-09-28) of BSE attachment 7199556f-6151-45c9-b92b-6ed8270a4cc0 page 3 (the quarter's own filing, Jul-2017, scanned; rendered rotated 90), UNAUDITED STANDALONE FINANCIAL RESULTS (Rs lakh), column 30.06.2017: '(a) Finance Cost 1,78,687' (= 1,786.87 cr); EXPENDITURE 2,02,683 = 1,78,687 + employee 7,883 + other 15,473 + depreciation 640; total income 2,40,778 - 2,02,683 = 38,095 = PBT = our 380.95; tax 12,047 = 120.47; PAT 26,048 = stored 260.48. Second reader: Moneycontrol 1,786.87 (the page residual 0.00 is NSE's form, which carried no separate finance-cost figure for this lender).",
 "found": "fc==tax archive-template audit 2026-09-28 (runbook §211)"
 },
 {
@@ -6905,8 +6906,8 @@
 "basis": "c",
 "field": "fc",
 "was": 35.07,
-"fixed": null,
-"why": "NSE archive page financial_res_ENDURANCE_1021861.html prints its Tax expense (3,506.8 lakh) in the '(f) Finance costs' row as well (template defect). Page residual 4.92 cr = Total expenses 137,389.4 − the other itemised expense rows 136,897.7 lakh. Moneycontrol Interest blank. No two readers agree (open(mc none)). BSE PDF rung (own, next-quarter and year-later filings): filings 5, scans 3, fetch-failed 2, text-read 0. Blank until a filing read proves the figure.",
+"fixed": 4.92,
+"why": "NSE archive page financial_res_ENDURANCE_1021861.html prints its Tax expense (3,506.8 lakh) in the '(f) Finance costs' row as well (template defect). Page residual 4.92 cr = Total expenses 137,389.4 − the other itemised expense rows 136,897.7 lakh. Moneycontrol Interest blank. No two readers agree (open(mc none)). BSE PDF rung (own, next-quarter and year-later filings): filings 5, scans 3, fetch-failed 2, text-read 0. ROUND 2 (2026-09-28, runbook §211a): PROVEN 4.92. VISION READ (2026-09-28) of BSE attachment 3e5fbe11-4131-4ecb-85d3-24d618bc03ca page 6 (the quarter's own filing, May-2017, scanned), Statement of Consolidated audited financial results (Rs million), column 'Quarter ended 31st March, 2017': '(f) Finance costs 49.17' (= 4.92 cr); expenses 7,677.00 + 31.51 + 220.73 + 998.38 + 1,371.19 + 49.17 + 781.46 + 2,609.50 = 13,738.94 = the printed Total expenses; PBT 1,186.09 = our 118.61, tax 350.68 = 35.07, PAT (shareholders of the Company) 835.41 = stored 83.54. Second reader: page residual 4.92.",
 "found": "fc==tax archive-template audit 2026-09-28 (runbook §211)"
 },
 {
@@ -7245,8 +7246,8 @@
 "basis": "s",
 "field": "fc",
 "was": 64.08,
-"fixed": null,
-"why": "NSE archive page financial_res_EXIDEIND_1021315.html prints its Tax expense (6,408 lakh) in the '(f) Finance costs' row as well (template defect). Page residual 0.00 cr = Total expenses 201,809 − the other itemised expense rows 201,809 lakh. Moneycontrol Interest blank. No two readers agree (open(mc none)). BSE PDF rung (own, next-quarter and year-later filings): filings 5, scans 3, fetch-failed 1, text-read 0. Blank until a filing read proves the figure.",
+"fixed": 0.0,
+"why": "NSE archive page financial_res_EXIDEIND_1021315.html prints its Tax expense (6,408 lakh) in the '(f) Finance costs' row as well (template defect). Page residual 0.00 cr = Total expenses 201,809 − the other itemised expense rows 201,809 lakh. Moneycontrol Interest blank. No two readers agree (open(mc none)). BSE PDF rung (own, next-quarter and year-later filings): filings 5, scans 3, fetch-failed 1, text-read 0. ROUND 2 (2026-09-28, runbook §211a): PROVEN 0.00. VISION READ (2026-09-28) of BSE attachment 0a670140-145c-4c98-9e2b-f6760a3da1b8 page 5 (the quarter's own filing, 04-May-2017, scanned), AUDITED FINANCIAL RESULTS (Rs crore), column '3 Months ended 31 Mar.2017': item 6 'Finance Costs' prints '-'; item 5 'Profit before Finance Costs & Tax' 228.86 = item 7 'Profit before Tax' 228.86 = our 228.86; tax 50.85 + 13.23 = 64.08 = ours; net profit 164.78 = stored 164.78; expenses 1,293.16 + 6.89 - 63.25 + 130.32 + 249.74 + 54.44 + 346.79 = 2,018.09 = the printed Total expenses. Second reader: page residual 0.00. (The Mar-2018 filing's comparative column is restated -- PBT 228.34.)",
 "found": "fc==tax archive-template audit 2026-09-28 (runbook §211)"
 },
 {
@@ -7755,8 +7756,8 @@
 "basis": "s",
 "field": "fc",
 "was": 1.8,
-"fixed": null,
-"why": "NSE archive page financial_res_GDL_1022494.html prints its Tax expense (179.74 lakh) in the '(f) Finance costs' row as well (template defect). Page residual 0.58 cr = Total expenses 6,834.07 − the other itemised expense rows 6,775.69 lakh. Moneycontrol Interest blank. No two readers agree (open(mc none)). BSE PDF rung (own, next-quarter and year-later filings): filings 5, scans 3, fetch-failed 2, text-read 0. Blank until a filing read proves the figure.",
+"fixed": 0.58,
+"why": "NSE archive page financial_res_GDL_1022494.html prints its Tax expense (179.74 lakh) in the '(f) Finance costs' row as well (template defect). Page residual 0.58 cr = Total expenses 6,834.07 − the other itemised expense rows 6,775.69 lakh. Moneycontrol Interest blank. No two readers agree (open(mc none)). BSE PDF rung (own, next-quarter and year-later filings): filings 5, scans 3, fetch-failed 2, text-read 0. ROUND 2 (2026-09-28, runbook §211a): PROVEN 0.58. VISION READ (2026-09-28) of BSE attachment 0c0b5369-aa04-43e0-8eb7-90e2c2f89e5d page 22 (the quarter's own filing, scanned; page is past the OCR screen's first 15), Statement of standalone audited financial results for the year ended March 31, 2017 (Rs lacs), column '3 months ended 31/03/2017': (e) Finance Costs 58.38; expenses 571.37 + 532.85 + 4,690.37 + 981.10 + 58.38 = 6,834.07 printed; 8,570.79 - 6,834.07 = 1,736.72 = PBT (our 17.37); profit 1,556.98 = stored 15.57. Second reader: page residual 0.58.",
 "found": "fc==tax archive-template audit 2026-09-28 (runbook §211)"
 },
 {
@@ -8015,9 +8016,12 @@
 "basis": "s",
 "field": "fc",
 "was": 56.99,
-"fixed": 0.25,
-"why": "NSE archive page financial_res_GLAXO_1022850.html prints its Tax expense (5,699 lakh) in the '(f) Finance costs' row as well (template defect). Page residual 0.00 cr = Total expenses 65,473 − the other itemised expense rows 65,473 lakh. Moneycontrol Interest blank. BSE PDF (Mar-2018 filing) line reads '19 25 19 25 19 25' — garbled, 0.25 matches neither reader BSE PDF rung (own, next-quarter and year-later filings): filings 5, scans 3, fetch-failed 1, text-read 1. ROUND 2 (2026-09-28, runbook §211a): PROVEN 0.25. BSE results PDF 413437fe-96d7-43b3-a3dd-3b6a1dba9d50 (the Mar-2018 filing, 24-May-2018, born-digital; its re-upload 75289e82 is identical), Statement of Standalone and Consolidated Financial Results (Rs lakh), column 'Corresponding 3 months ended 31.03.17': (f) Finance Costs 25; PBT 16,970 = our 169.70, tax 4,432 + 1,267 = 5,699 = our 56.99, PAT 11,271 = stored 112.71; expense rows 12,587 + 25,650 - 2,144 + 2,401 + 11,764 + 25 + 779 + 14,436 = 65,498 = the printed total. Second reader: the company's own FY17 total (same statement, 'Year ended 31.03.2017': Finance Costs 25; its PBT 51,108 = our four as-filed FY17 quarters 110.82 + 152.40 + 78.16 + 169.70) - our Jun/Sep/Dec-2016 cells (0.00 each, their own archive pages' Finance costs row) = 0.25. The first rung's 'garbled 19 25 19 25 19 25' was this row: 19 (Q4 FY18), blank (Q3 FY18), 25 (Q4 FY17), 19 (FY18), 25 (FY17), 19 / 25 (consolidated years). The page residual 0.00 disagrees (NSE's form carried no separate finance-cost figure).",
-"found": "fc==tax archive-template audit 2026-09-28 (runbook §211)"
+"fixed": 0.0,
+"why": "NSE archive page financial_res_GLAXO_1022850.html prints its Tax expense (5,699 lakh) in the '(f) Finance costs' row as well (template defect). Page residual 0.00 cr = Total expenses 65,473 − the other itemised expense rows 65,473 lakh. Moneycontrol Interest blank. BSE PDF (Mar-2018 filing) line reads '19 25 19 25 19 25' — garbled, 0.25 matches neither reader BSE PDF rung (own, next-quarter and year-later filings): filings 5, scans 3, fetch-failed 1, text-read 1. ROUND 2 (2026-09-28, runbook §211a): PROVEN 0.25. BSE results PDF 413437fe-96d7-43b3-a3dd-3b6a1dba9d50 (the Mar-2018 filing, 24-May-2018, born-digital; its re-upload 75289e82 is identical), Statement of Standalone and Consolidated Financial Results (Rs lakh), column 'Corresponding 3 months ended 31.03.17': (f) Finance Costs 25; PBT 16,970 = our 169.70, tax 4,432 + 1,267 = 5,699 = our 56.99, PAT 11,271 = stored 112.71; expense rows 12,587 + 25,650 - 2,144 + 2,401 + 11,764 + 25 + 779 + 14,436 = 65,498 = the printed total. Second reader: the company's own FY17 total (same statement, 'Year ended 31.03.2017': Finance Costs 25; its PBT 51,108 = our four as-filed FY17 quarters 110.82 + 152.40 + 78.16 + 169.70) - our Jun/Sep/Dec-2016 cells (0.00 each, their own archive pages' Finance costs row) = 0.25. The first rung's 'garbled 19 25 19 25 19 25' was this row: 19 (Q4 FY18), blank (Q3 FY18), 25 (Q4 FY17), 19 (FY18), 25 (FY17), 19 / 25 (consolidated years). The page residual 0.00 disagrees (NSE's form carried no separate finance-cost figure). CORRECTED (2026-09-28, runbook §211a): 0.25 -> 0.00 AS FILED; supersedes 0.25. VISION READ (2026-09-28) of BSE attachment 1bde6ba0-e595-431e-b2ce-618dd4ea5fb9 page 3 (the quarter's own filing, 19-May-2017, scanned), STATEMENT OF STANDALONE AUDITED RESULTS FOR THE YEAR ENDED 31st MARCH, 2017 (Rs lakh), column '3 months ended 31.03.17': the statement has NO finance-cost row -- materials 12,587 + 25,650 - 2,144 = 36,093; employee 11,764 + depreciation 779 + other 16,837 = 29,380 total operating expenses; 36,093 + 29,380 = 65,473 = the printed Total expenses; other income 1,489; PBT 16,970 = our 169.70; tax 5,699 = 56.99; net profit 11,271 = stored 112.71. Second reader: page residual 0.00. The landed 0.25 came from the Mar-2018 filing's comparative, which RE-PRESENTED the quarter (other income 1,514 = 1,489 + 25 and finance costs 25 shown gross; total expenses 65,498), and from that filing's FY17 column, which carries the same re-presentation.",
+"found": "fc==tax archive-template audit 2026-09-28 (runbook §211)",
+"supersedes": [
+0.25
+]
 },
 {
 "sym": "GLAXO",
@@ -8135,8 +8139,8 @@
 "basis": "s",
 "field": "fc",
 "was": 17.37,
-"fixed": null,
-"why": "NSE archive page financial_res_GMDCLTD_1017529.html prints its Tax expense (1,736.99 lakh) in the '(f) Finance costs' row as well (template defect). Page residual 0.00 cr = Total expenses 20,938.52 − the other itemised expense rows 20,938.52 lakh. Moneycontrol Interest 0.30. No two readers agree (open(mc far)). BSE PDF rung (own, next-quarter and year-later filings): filings 4, scans 0, fetch-failed 0, text-read 0. Blank until a filing read proves the figure.",
+"fixed": 0.3,
+"why": "NSE archive page financial_res_GMDCLTD_1017529.html prints its Tax expense (1,736.99 lakh) in the '(f) Finance costs' row as well (template defect). Page residual 0.00 cr = Total expenses 20,938.52 − the other itemised expense rows 20,938.52 lakh. Moneycontrol Interest 0.30. No two readers agree (open(mc far)). BSE PDF rung (own, next-quarter and year-later filings): filings 4, scans 0, fetch-failed 0, text-read 0. ROUND 2 (2026-09-28, runbook §211a): PROVEN 0.30. VISION READ (2026-09-28) of BSE attachment 83138BFE-3E18-4047-8574-55DAA6E5DAED page 3 (the quarter's own filing, 13-Dec-2016; scanned under an unreadable text layer; NSE copy GMDC_13122016170258 is the same), Statement of Standalone Unaudited Results for the Quarter and Half Year Ended on 30/09/2016 (INR lakh), column '30/09/2016': 6. Finance Costs 30.44; 9,053.06 - 30.44 = 9,022.62 = PBT (our 90.23); tax 1,736.99 (our 17.37); net profit 7,285.63 = stored 72.86; expenses -323.41 + 618.62 + 2,667.79 + 3,353.61 + 5,270.13 + 1,305.45 + 968.88 + 193.80 + 4,313.44 + 1,146.61 + 1,778.77 + 263.45 = 21,557.14 printed. Second reader: Moneycontrol 0.30. (The page residual 0.00 is NSE's form, whose total excludes finance costs.)",
 "found": "fc==tax archive-template audit 2026-09-28 (runbook §211)"
 },
 {
@@ -9655,8 +9659,8 @@
 "basis": "s",
 "field": "fc",
 "was": 24.7,
-"fixed": null,
-"why": "NSE archive page financial_res_HEXAWARE_1027433.html prints its Tax expense (2,470.3 lakh) in the '(f) Finance costs' row as well (template defect). Page residual 0.00 cr = Total expenses 24,559 − the other itemised expense rows 24,559 lakh. Moneycontrol Interest blank. No two readers agree (open(mc none)). BSE PDF rung (own, next-quarter and year-later filings): filings 7, scans 4, fetch-failed 0, text-read 0. Blank until a filing read proves the figure.",
+"fixed": 0.0,
+"why": "NSE archive page financial_res_HEXAWARE_1027433.html prints its Tax expense (2,470.3 lakh) in the '(f) Finance costs' row as well (template defect). Page residual 0.00 cr = Total expenses 24,559 − the other itemised expense rows 24,559 lakh. Moneycontrol Interest blank. No two readers agree (open(mc none)). BSE PDF rung (own, next-quarter and year-later filings): filings 7, scans 4, fetch-failed 0, text-read 0. ROUND 2 (2026-09-28, runbook §211a): PROVEN 0.00. VISION READ (2026-09-28) of NSE announcement resultswithreport_24042017124006 page 8 (the quarter's own filing, 24-Apr-2017, scanned), HEXAWARE TECHNOLOGIES LIMITED - INDIA - STANDALONE BASIS (Rs million), column 'QUARTER ENDED 31st MAR'2017': 'Interest - others 0.02' (= 0.002 cr, 0.00 at two decimals); 'Profit before interest and tax' 1,240.92 - 0.02 = 'Profit before tax' 1,240.90 = our 124.09; tax 247.03; profit for the period 993.87 = stored 99.39; expenses 112.09 + 1,755.76 + 489.76 + 53.83 + 100.89 = 2,512.33 = the printed Total expenses. Second reader: page residual 0.00.",
 "found": "fc==tax archive-template audit 2026-09-28 (runbook §211)"
 },
 {
@@ -9665,8 +9669,8 @@
 "basis": "c",
 "field": "fc",
 "was": 36.32,
-"fixed": null,
-"why": "NSE archive page financial_res_HEXAWARE_1028336.html prints its Tax expense (3,631.8 lakh) in the '(f) Finance costs' row as well (template defect). Page residual 0.05 cr = Total expenses 82,571.2 − the other itemised expense rows 82,566.1 lakh. Moneycontrol Interest blank. No two readers agree (open(mc none)). BSE PDF rung (own, next-quarter and year-later filings): filings 6, scans 4, fetch-failed 2, text-read 0. Blank until a filing read proves the figure.",
+"fixed": 0.05,
+"why": "NSE archive page financial_res_HEXAWARE_1028336.html prints its Tax expense (3,631.8 lakh) in the '(f) Finance costs' row as well (template defect). Page residual 0.05 cr = Total expenses 82,571.2 − the other itemised expense rows 82,566.1 lakh. Moneycontrol Interest blank. No two readers agree (open(mc none)). BSE PDF rung (own, next-quarter and year-later filings): filings 6, scans 4, fetch-failed 2, text-read 0. ROUND 2 (2026-09-28, runbook §211a): PROVEN 0.05. VISION READ (2026-09-28) of BSE attachment e4b9f282-274b-4b5c-97c3-9b85396cd323 page 7 (the quarter's own filing, Jul-2017, scanned), CONSOLIDATED AUDITED FINANCIAL RESULTS (Rs million), column 'QUARTER ENDED 30th JUN'2017': 'Interest - others 0.51' (= 0.05 cr); 'Profit before interest and tax' 1,588.20 - 0.51 = 'Profit before tax and share in loss of associate' 1,587.69 = our stored PBT 158.77; tax 363.18 = 36.32; profit for the period 1,224.23 = stored 122.42; expenses 1,872.25 + 5,328.37 + 916.13 + 121.06 + 156.57 = 8,394.38 = the printed Total expenses. Second reader: page residual 0.05.",
 "found": "fc==tax archive-template audit 2026-09-28 (runbook §211)"
 },
 {
@@ -9675,8 +9679,8 @@
 "basis": "s",
 "field": "fc",
 "was": 25.0,
-"fixed": null,
-"why": "NSE archive page financial_res_HEXAWARE_1028334.html prints its Tax expense (2,499.5 lakh) in the '(f) Finance costs' row as well (template defect). Page residual 0.05 cr = Total expenses 25,458.3 − the other itemised expense rows 25,453.5 lakh. Moneycontrol Interest blank. No two readers agree (open(mc none)). BSE PDF rung (own, next-quarter and year-later filings): filings 6, scans 4, fetch-failed 1, text-read 0. Blank until a filing read proves the figure.",
+"fixed": 0.05,
+"why": "NSE archive page financial_res_HEXAWARE_1028334.html prints its Tax expense (2,499.5 lakh) in the '(f) Finance costs' row as well (template defect). Page residual 0.05 cr = Total expenses 25,458.3 − the other itemised expense rows 25,453.5 lakh. Moneycontrol Interest blank. No two readers agree (open(mc none)). BSE PDF rung (own, next-quarter and year-later filings): filings 6, scans 4, fetch-failed 1, text-read 0. ROUND 2 (2026-09-28, runbook §211a): PROVEN 0.05. VISION READ (2026-09-28) of BSE attachment e4b9f282-274b-4b5c-97c3-9b85396cd323 page 8 (the quarter's own filing, Jul-2017, scanned), HEXAWARE TECHNOLOGIES LIMITED - INDIA - STANDALONE BASIS (Rs million), column 'QUARTER ENDED 30th JUN'2017': 'Interest - others 0.48' (= 0.05 cr); 'Profit before interest and tax' 1,305.96 - 0.48 = 'Profit before tax' 1,305.48 = our 130.55; tax 249.95; profit for the period 1,055.53 = stored 105.55; expenses 141.40 + 1,833.34 + 517.94 + 121.06 + 100.11 = 2,713.85 = the printed Total expenses (its Mar-2017 column repeats interest 0.02). Second reader: page residual 0.05.",
 "found": "fc==tax archive-template audit 2026-09-28 (runbook §211)"
 },
 {
@@ -9765,8 +9769,8 @@
 "basis": "s",
 "field": "fc",
 "was": 24.7,
-"fixed": null,
-"why": "NSE archive page financial_res_HEXAWARE_1027433.html prints its Tax expense (2,470.3 lakh) in the '(f) Finance costs' row as well (template defect). Page residual 0.00 cr = Total expenses 24,559 − the other itemised expense rows 24,559 lakh. Moneycontrol Interest blank. No two readers agree (open(mc none)). BSE PDF rung (own, next-quarter and year-later filings): filings 0, scans 0, fetch-failed 0, text-read 0. Blank until a filing read proves the figure.",
+"fixed": 0.0,
+"why": "NSE archive page financial_res_HEXAWARE_1027433.html prints its Tax expense (2,470.3 lakh) in the '(f) Finance costs' row as well (template defect). Page residual 0.00 cr = Total expenses 24,559 − the other itemised expense rows 24,559 lakh. Moneycontrol Interest blank. No two readers agree (open(mc none)). BSE PDF rung (own, next-quarter and year-later filings): filings 0, scans 0, fetch-failed 0, text-read 0. ROUND 2 (2026-09-28, runbook §211a): PROVEN 0.00. VISION READ (2026-09-28) of NSE announcement resultswithreport_24042017124006 page 8 (the quarter's own filing, 24-Apr-2017, scanned), HEXAWARE TECHNOLOGIES LIMITED - INDIA - STANDALONE BASIS (Rs million), column 'QUARTER ENDED 31st MAR'2017': 'Interest - others 0.02' (= 0.002 cr, 0.00 at two decimals); 'Profit before interest and tax' 1,240.92 - 0.02 = 'Profit before tax' 1,240.90 = our 124.09; tax 247.03; profit for the period 993.87 = stored 99.39; expenses 112.09 + 1,755.76 + 489.76 + 53.83 + 100.89 = 2,512.33 = the printed Total expenses. Second reader: page residual 0.00.",
 "found": "fc==tax archive-template audit 2026-09-28 (runbook §211)"
 },
 {
@@ -9775,8 +9779,8 @@
 "basis": "c",
 "field": "fc",
 "was": 36.32,
-"fixed": null,
-"why": "NSE archive page financial_res_HEXAWARE_1028336.html prints its Tax expense (3,631.8 lakh) in the '(f) Finance costs' row as well (template defect). Page residual 0.05 cr = Total expenses 82,571.2 − the other itemised expense rows 82,566.1 lakh. Moneycontrol Interest blank. No two readers agree (open(mc none)). BSE PDF rung (own, next-quarter and year-later filings): filings 0, scans 0, fetch-failed 0, text-read 0. Blank until a filing read proves the figure.",
+"fixed": 0.05,
+"why": "NSE archive page financial_res_HEXAWARE_1028336.html prints its Tax expense (3,631.8 lakh) in the '(f) Finance costs' row as well (template defect). Page residual 0.05 cr = Total expenses 82,571.2 − the other itemised expense rows 82,566.1 lakh. Moneycontrol Interest blank. No two readers agree (open(mc none)). BSE PDF rung (own, next-quarter and year-later filings): filings 0, scans 0, fetch-failed 0, text-read 0. ROUND 2 (2026-09-28, runbook §211a): PROVEN 0.05. VISION READ (2026-09-28) of BSE attachment e4b9f282-274b-4b5c-97c3-9b85396cd323 page 7 (the quarter's own filing, Jul-2017, scanned), CONSOLIDATED AUDITED FINANCIAL RESULTS (Rs million), column 'QUARTER ENDED 30th JUN'2017': 'Interest - others 0.51' (= 0.05 cr); 'Profit before interest and tax' 1,588.20 - 0.51 = 'Profit before tax and share in loss of associate' 1,587.69 = our stored PBT 158.77; tax 363.18 = 36.32; profit for the period 1,224.23 = stored 122.42; expenses 1,872.25 + 5,328.37 + 916.13 + 121.06 + 156.57 = 8,394.38 = the printed Total expenses. Second reader: page residual 0.05.",
 "found": "fc==tax archive-template audit 2026-09-28 (runbook §211)"
 },
 {
@@ -9785,8 +9789,8 @@
 "basis": "s",
 "field": "fc",
 "was": 25.0,
-"fixed": null,
-"why": "NSE archive page financial_res_HEXAWARE_1028334.html prints its Tax expense (2,499.5 lakh) in the '(f) Finance costs' row as well (template defect). Page residual 0.05 cr = Total expenses 25,458.3 − the other itemised expense rows 25,453.5 lakh. Moneycontrol Interest blank. No two readers agree (open(mc none)). BSE PDF rung (own, next-quarter and year-later filings): filings 0, scans 0, fetch-failed 0, text-read 0. Blank until a filing read proves the figure.",
+"fixed": 0.05,
+"why": "NSE archive page financial_res_HEXAWARE_1028334.html prints its Tax expense (2,499.5 lakh) in the '(f) Finance costs' row as well (template defect). Page residual 0.05 cr = Total expenses 25,458.3 − the other itemised expense rows 25,453.5 lakh. Moneycontrol Interest blank. No two readers agree (open(mc none)). BSE PDF rung (own, next-quarter and year-later filings): filings 0, scans 0, fetch-failed 0, text-read 0. ROUND 2 (2026-09-28, runbook §211a): PROVEN 0.05. VISION READ (2026-09-28) of BSE attachment e4b9f282-274b-4b5c-97c3-9b85396cd323 page 8 (the quarter's own filing, Jul-2017, scanned), HEXAWARE TECHNOLOGIES LIMITED - INDIA - STANDALONE BASIS (Rs million), column 'QUARTER ENDED 30th JUN'2017': 'Interest - others 0.48' (= 0.05 cr); 'Profit before interest and tax' 1,305.96 - 0.48 = 'Profit before tax' 1,305.48 = our 130.55; tax 249.95; profit for the period 1,055.53 = stored 105.55; expenses 141.40 + 1,833.34 + 517.94 + 121.06 + 100.11 = 2,713.85 = the printed Total expenses (its Mar-2017 column repeats interest 0.02). Second reader: page residual 0.05.",
 "found": "fc==tax archive-template audit 2026-09-28 (runbook §211)"
 },
 {
@@ -10115,8 +10119,8 @@
 "basis": "s",
 "field": "fc",
 "was": 625.92,
-"fixed": null,
-"why": "NSE archive page financial_res_HINDZINC_1020812.html prints its Tax expense (62,592 lakh) in the '(f) Finance costs' row as well (template defect). Page residual 0.00 cr = Total expenses 354,022 − the other itemised expense rows 354,022 lakh. Moneycontrol Interest 14.18. No two readers agree (open(mc far)). BSE PDF rung (own, next-quarter and year-later filings): filings 3, scans 2, fetch-failed 1, text-read 0. Blank until a filing read proves the figure.",
+"fixed": 14.18,
+"why": "NSE archive page financial_res_HINDZINC_1020812.html prints its Tax expense (62,592 lakh) in the '(f) Finance costs' row as well (template defect). Page residual 0.00 cr = Total expenses 354,022 − the other itemised expense rows 354,022 lakh. Moneycontrol Interest 14.18. No two readers agree (open(mc far)). BSE PDF rung (own, next-quarter and year-later filings): filings 3, scans 2, fetch-failed 1, text-read 0. ROUND 2 (2026-09-28, runbook §211a): PROVEN 14.18. VISION READ (2026-09-28) of BSE attachment d65ac6bc-0c0c-4491-a106-4d17fdcdfa3d page 2 (the quarter's own filing, Apr-2017, scanned), STATEMENT OF AUDITED FINANCIAL RESULTS FOR THE YEAR ENDED 31st MARCH, 2017 (Rs crore), column 'Quarter ended 31.03.2017': 'h. Finance Costs 14.18'; expenses -200.36 + 189.51 + 532.11 + 393.45 + 846.31 + 14.18 + 1,779.20 = 3,554.40 = the printed Total expenses; PBT 3,682.88 = our 3,682.88; tax 820.65 - 194.73; net profit 3,056.96 = stored 3,056.96. Second reader: Moneycontrol 14.18 (the page residual 0.00 disagrees).",
 "found": "fc==tax archive-template audit 2026-09-28 (runbook §211)"
 },
 {
@@ -10765,8 +10769,8 @@
 "basis": "c",
 "field": "fc",
 "was": 1371.0,
-"fixed": null,
-"why": "NSE archive page financial_res_INFY_1027749.html prints its Tax expense (137,100 lakh) in the '(f) Finance costs' row as well (template defect). Page residual 0.00 cr = Total expenses 1,296,700 − the other itemised expense rows 1,296,700 lakh. Moneycontrol Interest blank. No two readers agree (open(mc none)). BSE PDF rung (own, next-quarter and year-later filings): filings 7, scans 0, fetch-failed 0, text-read 0. Blank until a filing read proves the figure.",
+"fixed": 0.0,
+"why": "NSE archive page financial_res_INFY_1027749.html prints its Tax expense (137,100 lakh) in the '(f) Finance costs' row as well (template defect). Page residual 0.00 cr = Total expenses 1,296,700 − the other itemised expense rows 1,296,700 lakh. Moneycontrol Interest blank. No two readers agree (open(mc none)). BSE PDF rung (own, next-quarter and year-later filings): filings 7, scans 0, fetch-failed 0, text-read 0. ROUND 2 (2026-09-28, runbook §211a): PROVEN 0.00. BSE attachment 380b76d1-a26b-44a9-8725-5384083a6a95.pdf (the 20170630 filing, 20170714; born-digital text layer), page 143, the 20170630 column: finance costs no line = 0.00 cr (no finance-cost line; every expense row is labelled and they sum to the printed total); that column's PBT 4854.0 = our as-filed 4925.0, PAT 3483.0 = stored 3483.0; its expense rows sum to the printed total 12,967 crore; the same figure in BSE attachment CF5B2336_329F_4D1C_B517_4A4310938E1D_090357.p p143, BSE attachment F6FEA2D9_F9ED_4E01_918F_5DF9E87B4673_090612.p p143, BSE attachment 720032d2-dfa0-49ff-ae95-d0a2bf08d1c5.pdf p125; second reader: page residual 0.00.",
 "found": "fc==tax archive-template audit 2026-09-28 (runbook §211)"
 },
 {
@@ -12225,8 +12229,8 @@
 "basis": "s",
 "field": "fc",
 "was": 1.39,
-"fixed": null,
-"why": "NSE archive page financial_res_JUBLFOOD_1027233.html prints its Tax expense (139.18 lakh) in the '(f) Finance costs' row as well (template defect). Page residual 0.00 cr = Total expenses 59,607.21 − the other itemised expense rows 59,607.21 lakh. Moneycontrol Interest blank. No two readers agree (open(mc none)). BSE PDF rung (own, next-quarter and year-later filings): filings 4, scans 2, fetch-failed 0, text-read 0. Blank until a filing read proves the figure.",
+"fixed": 0.0,
+"why": "NSE archive page financial_res_JUBLFOOD_1027233.html prints its Tax expense (139.18 lakh) in the '(f) Finance costs' row as well (template defect). Page residual 0.00 cr = Total expenses 59,607.21 − the other itemised expense rows 59,607.21 lakh. Moneycontrol Interest blank. No two readers agree (open(mc none)). BSE PDF rung (own, next-quarter and year-later filings): filings 4, scans 2, fetch-failed 0, text-read 0. ROUND 2 (2026-09-28, runbook §211a): PROVEN 0.00. VISION READ (2026-09-28) of BSE attachment 14aac5e4-4c3f-4ebc-a1e2-f9496f1ffbcf page 5 (the quarter's own filing, 29-May-2017, scanned; NSE copy identical), STATEMENT OF STANDALONE & CONSOLIDATED AUDITED FINANCIAL RESULTS (INR lakh), standalone column '3 months ended 31st March 2017': the statement has NO finance-cost row; raw materials 12,169.52 + traded goods 1,944.65 + inventory change 68.04 + employee 14,231.82 + depreciation 4,381.24 + other 26,811.94 = 59,607.21 = the printed Total expenses; total income 61,635.29 - 59,607.21 = 2,028.08; exceptional 1,217.00; PBT 811.08 = our 8.11; tax 139.18; profit 671.90 = stored 6.72. Second reader: page residual 0.00.",
 "found": "fc==tax archive-template audit 2026-09-28 (runbook §211)"
 },
 {
@@ -12345,8 +12349,8 @@
 "basis": "s",
 "field": "fc",
 "was": 9.16,
-"fixed": null,
-"why": "NSE archive page financial_res_JUSTDIAL_1022878.html prints its Tax expense (916 lakh) in the '(f) Finance costs' row as well (template defect). Page residual 0.00 cr = Total expenses 15,983 − the other itemised expense rows 15,983 lakh. Moneycontrol Interest blank. No two readers agree (open(mc none)). BSE PDF rung (own, next-quarter and year-later filings): filings 6, scans 4, fetch-failed 0, text-read 0. Blank until a filing read proves the figure.",
+"fixed": 0.0,
+"why": "NSE archive page financial_res_JUSTDIAL_1022878.html prints its Tax expense (916 lakh) in the '(f) Finance costs' row as well (template defect). Page residual 0.00 cr = Total expenses 15,983 − the other itemised expense rows 15,983 lakh. Moneycontrol Interest blank. No two readers agree (open(mc none)). BSE PDF rung (own, next-quarter and year-later filings): filings 6, scans 4, fetch-failed 0, text-read 0. ROUND 2 (2026-09-28, runbook §211a): PROVEN 0.00. VISION READ (2026-09-28) of BSE attachment 5ca46fa9-701f-46ed-bd0a-914a48c34476 page 2 (the quarter's own filing, scanned; the NSE copy AFR_20052017000225 is the same statement), Statement of audited standalone financial results for the quarter and year ended March 31, 2017 (Rs lacs), column 'Quarter ended 31-Mar-17': the expense block has NO finance-cost row -- employee 10,883 + depreciation 1,028 + other 4,072 = 15,983 printed Total expenses; 19,434 - 15,983 = 3,451 = PBT (our 34.51); net profit 2,535 = stored 25.35. Second reader: page residual 0.00.",
 "found": "fc==tax archive-template audit 2026-09-28 (runbook §211)"
 },
 {
@@ -12525,8 +12529,8 @@
 "basis": "s",
 "field": "fc",
 "was": 53.55,
-"fixed": null,
-"why": "NSE archive page financial_res_KANSAINER_1021202.html prints its Tax expense (5,355 lakh) in the '(f) Finance costs' row as well (template defect). Page residual 0.00 cr = Total expenses 91,626 − the other itemised expense rows 91,626 lakh. Moneycontrol Interest blank. No two readers agree (open(mc none)). BSE PDF rung (own, next-quarter and year-later filings): filings 3, scans 1, fetch-failed 2, text-read 0. Blank until a filing read proves the figure.",
+"fixed": 0.0,
+"why": "NSE archive page financial_res_KANSAINER_1021202.html prints its Tax expense (5,355 lakh) in the '(f) Finance costs' row as well (template defect). Page residual 0.00 cr = Total expenses 91,626 − the other itemised expense rows 91,626 lakh. Moneycontrol Interest blank. No two readers agree (open(mc none)). BSE PDF rung (own, next-quarter and year-later filings): filings 3, scans 1, fetch-failed 2, text-read 0. ROUND 2 (2026-09-28, runbook §211a): PROVEN 0.00. VISION READ (2026-09-28) of BSE attachment c7f79ecc-4610-40f6-a5b6-7a22f6f66e84 page 6 (the quarter's own filing, May-2017, scanned), STATEMENT OF FINANCIAL RESULTS FOR THE QUARTER AND YEAR ENDED 31 MARCH 2017 (Rs crore), Standalone column 'For the quarter ended 31.03.2017': the expense block has rows a-g and NO finance-cost row; 546.31 + 48.61 - 42.56 + 121.40 + 50.02 + 17.51 + 174.97 = 916.26 = the printed Total Expenses; PBT 169.72 = our 169.72; tax 49.40 + 4.15 = 53.55; profit 116.17 = stored 116.17. Second reader: page residual 0.00.",
 "found": "fc==tax archive-template audit 2026-09-28 (runbook §211)"
 },
 {
@@ -13435,8 +13439,8 @@
 "basis": "c",
 "field": "fc",
 "was": 81.7,
-"fixed": null,
-"why": "NSE archive page financial_res_LTM_1027971.html prints its Tax expense (8,170 lakh) in the '(f) Finance costs' row as well (template defect). Page residual 0.00 cr = Total expenses 143,020 − the other itemised expense rows 143,020 lakh. Moneycontrol Interest blank. No two readers agree (open(mc none)). BSE PDF rung (own, next-quarter and year-later filings): filings 3, scans 0, fetch-failed 1, text-read 0. Blank until a filing read proves the figure.",
+"fixed": 0.0,
+"why": "NSE archive page financial_res_LTM_1027971.html prints its Tax expense (8,170 lakh) in the '(f) Finance costs' row as well (template defect). Page residual 0.00 cr = Total expenses 143,020 − the other itemised expense rows 143,020 lakh. Moneycontrol Interest blank. No two readers agree (open(mc none)). BSE PDF rung (own, next-quarter and year-later filings): filings 3, scans 0, fetch-failed 1, text-read 0. ROUND 2 (2026-09-28, runbook §211a): PROVEN 0.00. VISION READ (2026-09-28) of BSE attachment b064fa76-5c37-4af5-a545-5389960ed439 page 4 (the quarter's own filing, 24-Jul-2017, scanned), Statement of Consolidated Unaudited Results for the quarter ended June 30, 2017 (Rs million), column 'June 30 2017': 'c) Finance costs' prints '-'; expenses 9,844 + 3,840 + 393 + 225 = 14,302 = the printed Total expenses; PBT 3,489 = our 348.9; tax 817 = 81.7; profit 2,672 = stored 267.2 (the consolidated segment note, page 5, prints finance costs 0). Second reader: page residual 0.00. (The Jun-2018 filing's comparative prints 35 with the same PBT/PAT -- reclassified later; the as-filed statement decides.) FY18 cross-check (joint closure off by -3.40): the Mar-2018 year includes the later re-presentation of this quarter (35 mn).",
 "found": "fc==tax archive-template audit 2026-09-28 (runbook §211)"
 },
 {
@@ -13445,9 +13449,12 @@
 "basis": "s",
 "field": "fc",
 "was": 77.5,
-"fixed": 3.5,
-"why": "NSE archive page financial_res_LTM_1027970.html prints its Tax expense (7,750 lakh) in the '(f) Finance costs' row as well (template defect). Page residual 0.00 cr = Total expenses 136,640 − the other itemised expense rows 136,640 lakh. Moneycontrol Interest blank. No two readers agree (open(mc none)). BSE PDF rung (own, next-quarter and year-later filings): filings 3, scans 0, fetch-failed 1, text-read 0. ROUND 2 (2026-09-28, runbook §211a): PROVEN 3.50. BSE attachment 0ddaeaf5-2fe5-4705-9e8a-0297dc17715e.pdf (the 20180630 filing, 20180723; OCR text layer), page 10, the 20170630 column: finance costs '35' = 3.50 cr (line '35'); that column's PBT 362.2 = our as-filed 362.2, PAT 284.7 = stored 284.7; its expense rows sum to the printed total 13,699 million; the same figure in NSE announcement Outcome_23072018180344__Outcome.pdf p10; second reader: FY18 year closure 3.50; FY18 closure: the Mar-2018 XBRL year 13.80 - its own quarter 3.70 - our Sep-2017 3.60 - Dec-2017 3.00 (both landed 2026-09-28) = 3.50.",
-"found": "fc==tax archive-template audit 2026-09-28 (runbook §211)"
+"fixed": 0.0,
+"why": "NSE archive page financial_res_LTM_1027970.html prints its Tax expense (7,750 lakh) in the '(f) Finance costs' row as well (template defect). Page residual 0.00 cr = Total expenses 136,640 − the other itemised expense rows 136,640 lakh. Moneycontrol Interest blank. No two readers agree (open(mc none)). BSE PDF rung (own, next-quarter and year-later filings): filings 3, scans 0, fetch-failed 1, text-read 0. ROUND 2 (2026-09-28, runbook §211a): PROVEN 3.50. BSE attachment 0ddaeaf5-2fe5-4705-9e8a-0297dc17715e.pdf (the 20180630 filing, 20180723; OCR text layer), page 10, the 20170630 column: finance costs '35' = 3.50 cr (line '35'); that column's PBT 362.2 = our as-filed 362.2, PAT 284.7 = stored 284.7; its expense rows sum to the printed total 13,699 million; the same figure in NSE announcement Outcome_23072018180344__Outcome.pdf p10; second reader: FY18 year closure 3.50; FY18 closure: the Mar-2018 XBRL year 13.80 - its own quarter 3.70 - our Sep-2017 3.60 - Dec-2017 3.00 (both landed 2026-09-28) = 3.50. CORRECTED (2026-09-28, runbook §211a): 3.50 -> 0.00 AS FILED; supersedes 3.50. VISION READ (2026-09-28) of BSE attachment b064fa76-5c37-4af5-a545-5389960ed439 page 8 (the quarter's own filing, 24-Jul-2017, scanned), Statement of Standalone Unaudited Results for the quarter ended June 30, 2017 (Rs million), column 'June 30 2017': 'c) Finance costs' prints '-'; expenses 9,520 + 3,702 + 233 + 209 = 13,664 = the printed Total expenses; PBT 3,622 = our 362.2; tax 775 = 77.5; profit 2,847 = stored 284.7. Second reader: page residual 0.00. The landed 3.50 came from the Jun-2018 filing's comparative column (35, same PBT/PAT -- a later reclassification) and the Mar-2018 XBRL year, which carries the same year-end reclassification.",
+"found": "fc==tax archive-template audit 2026-09-28 (runbook §211)",
+"supersedes": [
+3.5
+]
 },
 {
 "sym": "LTM",
@@ -14005,8 +14012,8 @@
 "basis": "s",
 "field": "fc",
 "was": 63.51,
-"fixed": null,
-"why": "NSE archive page financial_res_MGL_1032581.html prints its Tax expense (6,351 lakh) in the '(f) Finance costs' row as well (template defect). Page residual 0.00 cr = Total expenses 41,360 − the other itemised expense rows 41,360 lakh. Moneycontrol Interest blank. No two readers agree (open(mc none)). BSE PDF rung (own, next-quarter and year-later filings): filings 5, scans 2, fetch-failed 2, text-read 1. Blank until a filing read proves the figure.",
+"fixed": 0.0,
+"why": "NSE archive page financial_res_MGL_1032581.html prints its Tax expense (6,351 lakh) in the '(f) Finance costs' row as well (template defect). Page residual 0.00 cr = Total expenses 41,360 − the other itemised expense rows 41,360 lakh. Moneycontrol Interest blank. No two readers agree (open(mc none)). BSE PDF rung (own, next-quarter and year-later filings): filings 5, scans 2, fetch-failed 2, text-read 1. ROUND 2 (2026-09-28, runbook §211a): PROVEN 0.00. VISION READ (2026-09-28) of BSE attachment 2babd32b-8f04-476b-82b7-90af712d8669 page 4 (the quarter's own filing, 08-Nov-2017, scanned), Statement of Unaudited Financial Results for the quarter and six months ended September 30, 2017 (Rs crore), column '30.09.2017': 'Finance Costs' prints '-'; expenses 236.85 - 0.02 + 54.28 + 16.68 + 25.85 + 79.96 = 413.60 = the printed Total Expenses; PBT 188.30 = our 188.30; tax 63.51; profit 124.79 = stored 124.79. Second reader: page residual 0.00. (The same statement re-states Jun-2017 finance costs as 0.01 against the 0.20 the Jun-2017 results printed -- landed 2026-09-28 from the page residual and Moneycontrol -- which is why the FY18 XBRL year 0.09 does not sum.) FY18 cross-check (joint closure off by 0.17) = the Jun-17 re-cut noted above.",
 "found": "fc==tax archive-template audit 2026-09-28 (runbook §211)"
 },
 {
@@ -14015,8 +14022,8 @@
 "basis": "s",
 "field": "fc",
 "was": 64.28,
-"fixed": null,
-"why": "NSE archive page financial_res_MGL_1036818.html prints its Tax expense (6,428 lakh) in the '(f) Finance costs' row as well (template defect). Page residual 0.00 cr = Total expenses 46,413 − the other itemised expense rows 46,413 lakh. Moneycontrol Interest blank. BSE PDF (Dec-2018 filing, Dec-2017 column, PBT 188.26 = stored) prints 16.78 — ONE reader; the page residual (0.00) disagrees and Moneycontrol is blank BSE PDF rung (own, next-quarter and year-later filings): filings 6, scans 0, fetch-failed 3, text-read 2. Blank until a filing read proves the figure.",
+"fixed": 0.0,
+"why": "NSE archive page financial_res_MGL_1036818.html prints its Tax expense (6,428 lakh) in the '(f) Finance costs' row as well (template defect). Page residual 0.00 cr = Total expenses 46,413 − the other itemised expense rows 46,413 lakh. Moneycontrol Interest blank. BSE PDF (Dec-2018 filing, Dec-2017 column, PBT 188.26 = stored) prints 16.78 — ONE reader; the page residual (0.00) disagrees and Moneycontrol is blank BSE PDF rung (own, next-quarter and year-later filings): filings 6, scans 0, fetch-failed 3, text-read 2. ROUND 2 (2026-09-28, runbook §211a): PROVEN 0.00. VISION READ (2026-09-28) of BSE attachment 77e85091-8d84-4bc8-b4af-686d556db3df page 4 (the quarter's own filing, 09-Feb-2018, scanned), Statement of Unaudited Financial Results for the quarter and nine months ended December 31, 2017 (Rs crore), column '31.12.2017': 'Finance Costs' prints '-'; expenses 269.72 - 0.03 + 56.84 + 16.78 + 26.77 + 94.05 = 464.13 = the printed Total Expenses; PBT 188.26 = our 188.26; tax 64.28; profit 123.98 = stored 123.98 (the nine-month column prints 0.03). Second reader: page residual 0.00. (The Dec-2018 filing's comparative prints 0.01 with total expenses 464.05 -- re-cut; the as-filed statement decides.) FY18 cross-check (joint closure off by 0.17) = the Jun-17 re-cut (0.20 as filed, 0.01 re-stated).",
 "found": "fc==tax archive-template audit 2026-09-28 (runbook §211)"
 },
 {
@@ -14135,8 +14142,8 @@
 "basis": "s",
 "field": "fc",
 "was": 38.3,
-"fixed": null,
-"why": "NSE archive page financial_res_MINDTREE_1027800.html prints its Tax expense (3,830 lakh) in the '(f) Finance costs' row as well (template defect). Page residual 3.90 cr = Total expenses 108,100 − the other itemised expense rows 107,710 lakh. Moneycontrol Interest blank. No two readers agree (open(mc none)). BSE PDF rung (own, next-quarter and year-later filings): filings 4, scans 1, fetch-failed 2, text-read 0. Blank until a filing read proves the figure.",
+"fixed": 3.9,
+"why": "NSE archive page financial_res_MINDTREE_1027800.html prints its Tax expense (3,830 lakh) in the '(f) Finance costs' row as well (template defect). Page residual 3.90 cr = Total expenses 108,100 − the other itemised expense rows 107,710 lakh. Moneycontrol Interest blank. No two readers agree (open(mc none)). BSE PDF rung (own, next-quarter and year-later filings): filings 4, scans 1, fetch-failed 2, text-read 0. ROUND 2 (2026-09-28, runbook §211a): PROVEN 3.90. VISION READ (2026-09-28) of BSE attachment bbccdf4d-8a76-4af8-9a54-ed8e9bf9e80b page 3 (the quarter's own filing, 19-Jul-2017, scanned), AUDITED STANDALONE FINANCIAL RESULTS FOR THE QUARTER ENDED JUNE 30, 2017 (Rs million), column 'June 30, 2017': 'Finance costs 39' (= 3.90 cr; the segment note on the page repeats 39); expenses 7,666 + 39 + 349 + 2,756 = 10,810 = the printed Total expenses; PBT 1,882 = our 188.2; tax 385 - 2; net profit 1,499 = stored 149.9. Second reader: page residual 3.90.",
 "found": "fc==tax archive-template audit 2026-09-28 (runbook §211)"
 },
 {
@@ -14895,8 +14902,8 @@
 "basis": "s",
 "field": "fc",
 "was": 30.02,
-"fixed": null,
-"why": "NSE archive page financial_res_NBCC_1037581.html prints its Tax expense (3,001.99 lakh) in the '(f) Finance costs' row as well (template defect). Page residual 0.16 cr = Total expenses 134,570.6 − the other itemised expense rows 134,555.02 lakh. Moneycontrol Interest 17.79. No two readers agree (open(mc far)). BSE PDF rung (own, next-quarter and year-later filings): filings 4, scans 3, fetch-failed 1, text-read 0. Blank until a filing read proves the figure.",
+"fixed": 17.79,
+"why": "NSE archive page financial_res_NBCC_1037581.html prints its Tax expense (3,001.99 lakh) in the '(f) Finance costs' row as well (template defect). Page residual 0.16 cr = Total expenses 134,570.6 − the other itemised expense rows 134,555.02 lakh. Moneycontrol Interest 17.79. No two readers agree (open(mc far)). BSE PDF rung (own, next-quarter and year-later filings): filings 4, scans 3, fetch-failed 1, text-read 0. ROUND 2 (2026-09-28, runbook §211a): PROVEN 17.79. VISION READ (2026-09-28) of BSE attachment A61B9810-26B9-4A81-9E97-12D0CB926F9A page 3 (the quarter's own filing, Feb-2017, scanned; NSE copy results31122016 is the same), Statement of Unaudited Standalone Financial Results for the Quarter and Nine Months Ended 31st December 2016 (Rs lacs), column '31.12.2016': 6. Finance Costs 1,778.61; 11,151.81 - 1,778.61 = 9,373.20 = PBT (our 93.73); tax 3,001.99 = our 30.02; net profit 6,371.21 = stored 63.71; expenses 187.38 - 5,271.86 + 1,30,842.46 + 5,564.74 + 66.40 + 3,165.90 = 1,34,555.02 printed. Second reader: Moneycontrol 17.79. The page residual 0.16 is the Dec-2017 filing's RE-PRESENTED comparative (BSE ef8aadb7 p5 = NSE page 1037581, filed Feb-2018): finance costs 15.58 with 1,763.03 netted into other income (3,656.03 -> 1,893.00), PBT 9,373.20 and PAT 6,371.21 unchanged; the as-filed own filing decides (runbook §211a: comparatives reclassify with PBT unchanged).",
 "found": "fc==tax archive-template audit 2026-09-28 (runbook §211)"
 },
 {
@@ -15445,8 +15452,8 @@
 "basis": "c",
 "field": "fc",
 "was": 164.97,
-"fixed": null,
-"why": "NSE archive page financial_res_OFSS_1036309.html prints its Tax expense (16,496.5 lakh) in the '(f) Finance costs' row as well (template defect). Page residual 0.00 cr = Total expenses 64,955.7 − the other itemised expense rows 64,955.7 lakh. Moneycontrol Interest blank. No two readers agree (open(mc none)). BSE PDF rung (own, next-quarter and year-later filings): filings 3, scans 2, fetch-failed 1, text-read 0. Blank until a filing read proves the figure.",
+"fixed": 0.0,
+"why": "NSE archive page financial_res_OFSS_1036309.html prints its Tax expense (16,496.5 lakh) in the '(f) Finance costs' row as well (template defect). Page residual 0.00 cr = Total expenses 64,955.7 − the other itemised expense rows 64,955.7 lakh. Moneycontrol Interest blank. No two readers agree (open(mc none)). BSE PDF rung (own, next-quarter and year-later filings): filings 3, scans 2, fetch-failed 1, text-read 0. ROUND 2 (2026-09-28, runbook §211a): PROVEN 0.00. VISION READ (2026-09-28) of BSE attachment 75FFA473-EED4-4E6E-ABF3-CAE2B2BE12E8 page 6 (the quarter's own filing, Feb-2017, scanned, sideways), Unaudited Consolidated Financial Results for the Three and Nine Month Period Ended December 31, 2016 (Rs lacs), column 'December 31, 2016': the expense block (a-e) has NO finance-cost row -- 50,900 + 5,296 + 3,460 + 3,654 + 1,646 = 64,956 printed Total Expenses; 113,231 - 64,956 = 48,275; + other income 6,435 = 54,710; exceptional (6,283) -> PBT 48,427 (our 484.27); net profit 31,931 = stored 319.31; no finance cost appears anywhere between operating profit and PBT. Second reader: page residual 0.00.",
 "found": "fc==tax archive-template audit 2026-09-28 (runbook §211)"
 },
 {
@@ -15455,8 +15462,8 @@
 "basis": "s",
 "field": "fc",
 "was": 115.16,
-"fixed": null,
-"why": "NSE archive page financial_res_OFSS_1036307.html prints its Tax expense (11,516.3 lakh) in the '(f) Finance costs' row as well (template defect). Page residual -0.00 cr = Total expenses 57,858.2 − the other itemised expense rows 57,858.2 lakh. Moneycontrol Interest blank. No two readers agree (open(mc none)). BSE PDF rung (own, next-quarter and year-later filings): filings 3, scans 2, fetch-failed 1, text-read 0. Blank until a filing read proves the figure.",
+"fixed": 0.0,
+"why": "NSE archive page financial_res_OFSS_1036307.html prints its Tax expense (11,516.3 lakh) in the '(f) Finance costs' row as well (template defect). Page residual -0.00 cr = Total expenses 57,858.2 − the other itemised expense rows 57,858.2 lakh. Moneycontrol Interest blank. No two readers agree (open(mc none)). BSE PDF rung (own, next-quarter and year-later filings): filings 3, scans 2, fetch-failed 1, text-read 0. ROUND 2 (2026-09-28, runbook §211a): PROVEN 0.00. VISION READ (2026-09-28) of BSE attachment 75FFA473_EED4_4E6E_ABF3_CAE2B2BE12E8_205427 page 2 (the quarter's own filing, 08-Feb-2017, scanned; rendered rotated 90; local OCR anchored the same column), Unaudited standalone financial results (Rs lacs), column 'Three month period ended December 31, 2016': the expense block has NO finance-cost row -- employee 44,997 + travel 4,575 + professional fees 4,058 + other 2,663 + depreciation 1,566 = 57,859 = the printed Total Expenses; PBT 35,070 = our 350.70; tax 11,517; net profit 23,553 = stored 235.53. Second reader: page residual 0.00.",
 "found": "fc==tax archive-template audit 2026-09-28 (runbook §211)"
 },
 {
@@ -15465,8 +15472,8 @@
 "basis": "c",
 "field": "fc",
 "was": 141.97,
-"fixed": null,
-"why": "NSE archive page financial_res_OFSS_1022295.html prints its Tax expense (14,197 lakh) in the '(f) Finance costs' row as well (template defect). Page residual 0.00 cr = Total expenses 69,187 − the other itemised expense rows 69,187 lakh. Moneycontrol Interest blank. No two readers agree (open(mc none)). BSE PDF rung (own, next-quarter and year-later filings): filings 5, scans 2, fetch-failed 0, text-read 0. Blank until a filing read proves the figure.",
+"fixed": 0.0,
+"why": "NSE archive page financial_res_OFSS_1022295.html prints its Tax expense (14,197 lakh) in the '(f) Finance costs' row as well (template defect). Page residual 0.00 cr = Total expenses 69,187 − the other itemised expense rows 69,187 lakh. Moneycontrol Interest blank. No two readers agree (open(mc none)). BSE PDF rung (own, next-quarter and year-later filings): filings 5, scans 2, fetch-failed 0, text-read 0. ROUND 2 (2026-09-28, runbook §211a): PROVEN 0.00. VISION READ (2026-09-28) of BSE attachment 244e26d6-8d3c-4853-8425-bdc61e959ca4 page 8 (the quarter's own filing, May-2017, scanned; rendered rotated 90; local OCR anchored the same column), Audited Consolidated Financial Results for the Year ended March 31, 2017 (Rs lacs), column 'Three month period ended March 31, 2017': the expense block has NO finance-cost row -- 49,477 + 5,656 + 4,213 + 8,202 + 1,639 = 69,187 = the printed Total Expenses; PBT 36,997 = our 369.97; tax 14,197; net profit 22,800 = stored 228.00. Second reader: page residual 0.00.",
 "found": "fc==tax archive-template audit 2026-09-28 (runbook §211)"
 },
 {
@@ -15475,8 +15482,8 @@
 "basis": "s",
 "field": "fc",
 "was": 76.09,
-"fixed": null,
-"why": "NSE archive page financial_res_OFSS_1022292.html prints its Tax expense (7,609 lakh) in the '(f) Finance costs' row as well (template defect). Page residual 0.00 cr = Total expenses 60,333 − the other itemised expense rows 60,333 lakh. Moneycontrol Interest blank. No two readers agree (open(mc none)). BSE PDF rung (own, next-quarter and year-later filings): filings 5, scans 2, fetch-failed 0, text-read 0. Blank until a filing read proves the figure.",
+"fixed": 0.0,
+"why": "NSE archive page financial_res_OFSS_1022292.html prints its Tax expense (7,609 lakh) in the '(f) Finance costs' row as well (template defect). Page residual 0.00 cr = Total expenses 60,333 − the other itemised expense rows 60,333 lakh. Moneycontrol Interest blank. No two readers agree (open(mc none)). BSE PDF rung (own, next-quarter and year-later filings): filings 5, scans 2, fetch-failed 0, text-read 0. ROUND 2 (2026-09-28, runbook §211a): PROVEN 0.00. VISION READ (2026-09-28) of BSE attachment 244e26d6-8d3c-4853-8425-bdc61e959ca4 page 2 (the quarter's own filing, 16-May-2017, scanned; rendered rotated 90), Audited Standalone Financial Results for the Year Ended March 31, 2017 (Rs lacs), column 'Three month period ended March 31, 2017': the expense block has NO finance-cost row -- 43,017 + 5,026 + 4,725 + 6,010 + 1,555 = 60,333 = the printed Total expenses; PBT 36,766 = our 367.66; tax 7,609; net profit 29,157 = stored 291.57. Second reader: page residual 0.00.",
 "found": "fc==tax archive-template audit 2026-09-28 (runbook §211)"
 },
 {
@@ -15755,8 +15762,8 @@
 "basis": "s",
 "field": "fc",
 "was": 0.22,
-"fixed": null,
-"why": "NSE archive page financial_res_ORISSAMINE_1024177.html prints its Tax expense (21.88 lakh) in the '(f) Finance costs' row as well (template defect). Page residual 0.00 cr = Total expenses 1,499.16 − the other itemised expense rows 1,499.16 lakh. Moneycontrol Interest blank. No two readers agree (open(mc none)). BSE PDF rung (own, next-quarter and year-later filings): filings 3, scans 3, fetch-failed 0, text-read 0. Blank until a filing read proves the figure.",
+"fixed": 0.0,
+"why": "NSE archive page financial_res_ORISSAMINE_1024177.html prints its Tax expense (21.88 lakh) in the '(f) Finance costs' row as well (template defect). Page residual 0.00 cr = Total expenses 1,499.16 − the other itemised expense rows 1,499.16 lakh. Moneycontrol Interest blank. No two readers agree (open(mc none)). BSE PDF rung (own, next-quarter and year-later filings): filings 3, scans 3, fetch-failed 0, text-read 0. ROUND 2 (2026-09-28, runbook §211a): PROVEN 0.00. VISION READ (2026-09-28) of BSE attachment c47678d6-10cb-456c-b270-6738ee728d05 page 4 (the quarter's own filing, 26-May-2017, scanned), SEGMENT REVENUE, RESULTS AND CAPITAL EMPLOYED FOR THE QUARTER AND YEAR ENDING 31ST MARCH, 2017 (Rs lacs), column 'Quarter ended 31.03.2017': 'Total Segment Results before Finance Costs, Exceptional Items and Tax' 39.43; 'Less: Finance Costs' prints '-'; 'Profit before exceptional items and tax' 39.43 = PBT = our 0.39; tax 21.88; net profit 17.55 = stored 0.18. Second reader: page residual 0.00.",
 "found": "fc==tax archive-template audit 2026-09-28 (runbook §211)"
 },
 {
@@ -16205,8 +16212,8 @@
 "basis": "s",
 "field": "fc",
 "was": 6.51,
-"fixed": null,
-"why": "NSE archive page financial_res_PGHL_1028643.html prints its Tax expense (650.69 lakh) in the '(f) Finance costs' row as well (template defect). Page residual 0.00 cr = Total expenses 24,444.15 − the other itemised expense rows 24,444.15 lakh. Moneycontrol Interest blank. No two readers agree (open(mc none)). BSE PDF rung (own, next-quarter and year-later filings): filings 4, scans 3, fetch-failed 1, text-read 0. Blank until a filing read proves the figure.",
+"fixed": 0.0,
+"why": "NSE archive page financial_res_PGHL_1028643.html prints its Tax expense (650.69 lakh) in the '(f) Finance costs' row as well (template defect). Page residual 0.00 cr = Total expenses 24,444.15 − the other itemised expense rows 24,444.15 lakh. Moneycontrol Interest blank. No two readers agree (open(mc none)). BSE PDF rung (own, next-quarter and year-later filings): filings 4, scans 3, fetch-failed 1, text-read 0. ROUND 2 (2026-09-28, runbook §211a): PROVEN 0.00. VISION READ (2026-09-28) of BSE attachment 3f1378ed-5c98-4e31-a897-e1d8cf3596f5 page 2 (the quarter's own filing, 07-Aug-2017, scanned; Merck Limited), STATEMENT OF UNAUDITED RESULTS FOR THE QUARTER AND HALF YEAR ENDED 30TH JUNE, 2017 (Rs lakh), column '3 months ended 30/06/2017': 'f) Finance Costs' prints '-'; Total expenses 24,444.15 = Total income 27,107.45 - PBT 2,663.30 (the other rows as read sum within 0.10 lakh of it); PBT 2,663.30 = our 26.63; tax 1,038.00 - 397.31; profit 2,012.61 = stored 20.13. Second reader: page residual 0.00.",
 "found": "fc==tax archive-template audit 2026-09-28 (runbook §211)"
 },
 {
@@ -16215,8 +16222,8 @@
 "basis": "s",
 "field": "fc",
 "was": 24.76,
-"fixed": null,
-"why": "NSE archive page financial_res_PGHL_1033506.html prints its Tax expense (2,475.79 lakh) in the '(f) Finance costs' row as well (template defect). Page residual -0.00 cr = Total expenses 26,273.69 − the other itemised expense rows 26,273.69 lakh. Moneycontrol Interest blank. No two readers agree (open(mc none)). BSE PDF rung (own, next-quarter and year-later filings): filings 4, scans 2, fetch-failed 0, text-read 0. Blank until a filing read proves the figure.",
+"fixed": 0.0,
+"why": "NSE archive page financial_res_PGHL_1033506.html prints its Tax expense (2,475.79 lakh) in the '(f) Finance costs' row as well (template defect). Page residual -0.00 cr = Total expenses 26,273.69 − the other itemised expense rows 26,273.69 lakh. Moneycontrol Interest blank. No two readers agree (open(mc none)). BSE PDF rung (own, next-quarter and year-later filings): filings 4, scans 2, fetch-failed 0, text-read 0. ROUND 2 (2026-09-28, runbook §211a): PROVEN 0.00. VISION READ (2026-09-28) of BSE attachment 2f78bb69-75fe-41d9-bbb4-fa912bbf0c28 page 2 (the quarter's own filing, 14-Nov-2017, scanned; Merck Limited; rendered rotated 270), STATEMENT OF UNAUDITED RESULTS (Rs lakh), column '3 months ended 30/09/2017': 'f) Finance Costs' prints '-'; expenses 6,892.33 + 4,566.12 + 1,521.55 + 4,223.90 + 665.59 + 8,404.20 = 26,273.69 = the printed Total expenses; total income 31,918.14 - 26,273.69 = 5,644.45 = PBT = our 56.44; tax 1,820.00 + 655.79; profit 3,168.66 = stored 31.69. Second reader: page residual 0.00.",
 "found": "fc==tax archive-template audit 2026-09-28 (runbook §211)"
 },
 {
@@ -16445,8 +16452,8 @@
 "basis": "c",
 "field": "fc",
 "was": 12.45,
-"fixed": null,
-"why": "NSE archive page financial_res_POLARIS_1022155.html prints its Tax expense (1,244.66 lakh) in the '(f) Finance costs' row as well (template defect). Page residual 0.00 cr = Total expenses 52,212.68 − the other itemised expense rows 52,212.68 lakh. Moneycontrol Interest blank. No two readers agree (open(mc none)). BSE PDF rung (own, next-quarter and year-later filings): filings 6, scans 3, fetch-failed 3, text-read 0. Blank until a filing read proves the figure.",
+"fixed": 0.0,
+"why": "NSE archive page financial_res_POLARIS_1022155.html prints its Tax expense (1,244.66 lakh) in the '(f) Finance costs' row as well (template defect). Page residual 0.00 cr = Total expenses 52,212.68 − the other itemised expense rows 52,212.68 lakh. Moneycontrol Interest blank. No two readers agree (open(mc none)). BSE PDF rung (own, next-quarter and year-later filings): filings 6, scans 3, fetch-failed 3, text-read 0. ROUND 2 (2026-09-28, runbook §211a): PROVEN 0.00. VISION READ (2026-09-28) of BSE attachment 5fb76389-1e72-4400-bbf6-632fd52787cf page 2 (the quarter's own filing, May-2017, scanned), Statement of Audited consolidated financial results for the quarter and year ended March 31, 2017 (Rs lakh), column 'Three months ended March 31, 2017': the expense block (a-e) has NO finance-cost row; 37,331.36 + 6,623.46 + 493.22 + 1,697.91 + 6,066.73 = 52,212.68 = the printed Total Expenses; PBT (after share of joint venture) 4,537.19 = our 45.37; net profit attributable to owners 3,292.53 = stored 32.93. Second reader: page residual 0.00.",
 "found": "fc==tax archive-template audit 2026-09-28 (runbook §211)"
 },
 {
@@ -16455,8 +16462,8 @@
 "basis": "s",
 "field": "fc",
 "was": 11.07,
-"fixed": null,
-"why": "NSE archive page financial_res_POLARIS_1022151.html prints its Tax expense (1,106.58 lakh) in the '(f) Finance costs' row as well (template defect). Page residual 0.00 cr = Total expenses 38,186.95 − the other itemised expense rows 38,186.95 lakh. Moneycontrol Interest blank. No two readers agree (open(mc none)). BSE PDF rung (own, next-quarter and year-later filings): filings 6, scans 3, fetch-failed 3, text-read 0. Blank until a filing read proves the figure.",
+"fixed": 0.0,
+"why": "NSE archive page financial_res_POLARIS_1022151.html prints its Tax expense (1,106.58 lakh) in the '(f) Finance costs' row as well (template defect). Page residual 0.00 cr = Total expenses 38,186.95 − the other itemised expense rows 38,186.95 lakh. Moneycontrol Interest blank. No two readers agree (open(mc none)). BSE PDF rung (own, next-quarter and year-later filings): filings 6, scans 3, fetch-failed 3, text-read 0. ROUND 2 (2026-09-28, runbook §211a): PROVEN 0.00. VISION READ (2026-09-28) of BSE attachment 5fb76389-1e72-4400-bbf6-632fd52787cf page 3 (the quarter's own filing, May-2017, scanned), Statement of Audited standalone financial results for the quarter and year ended March 31, 2017 (Rs lakh), column 'Three months ended March 31, 2017': the expense block (a-e) has NO finance-cost row; 29,912.96 + 1,534.81 + 479.57 + 1,307.70 + 4,951.91 = 38,186.95 = the printed Total Expenses; PBT 2,484.76 = our 24.85; net profit 1,378.18 = stored 13.78. Second reader: page residual 0.00.",
 "found": "fc==tax archive-template audit 2026-09-28 (runbook §211)"
 },
 {
@@ -16785,8 +16792,8 @@
 "basis": "c",
 "field": "fc",
 "was": 14.87,
-"fixed": null,
-"why": "NSE archive page financial_res_PVRINOX_1031902.html prints its Tax expense (1,487 lakh) in the '(f) Finance costs' row as well (template defect). Page residual 19.37 cr = Total expenses 51,730 − the other itemised expense rows 49,793 lakh. Moneycontrol Interest 19.34. No two readers agree (open(mc near)). BSE PDF rung (own, next-quarter and year-later filings): filings 3, scans 3, fetch-failed 0, text-read 0. Blank until a filing read proves the figure.",
+"fixed": 19.34,
+"why": "NSE archive page financial_res_PVRINOX_1031902.html prints its Tax expense (1,487 lakh) in the '(f) Finance costs' row as well (template defect). Page residual 19.37 cr = Total expenses 51,730 − the other itemised expense rows 49,793 lakh. Moneycontrol Interest 19.34. No two readers agree (open(mc near)). BSE PDF rung (own, next-quarter and year-later filings): filings 3, scans 3, fetch-failed 0, text-read 0. ROUND 2 (2026-09-28, runbook §211a): PROVEN 19.34. VISION READ (2026-09-28) of BSE attachment 8D76111E_B6D4_4F1B_B44E_8818DEDF7C87_141648 page 5 (the quarter's own filing, Nov-2016, scanned; local OCR read the same 1,934), PVR LIMITED UNAUDITED FINANCIAL RESULTS, CONSOLIDATED (Rs lakhs, older layout), column '3 Months ended 30.09.2016': item 6 'Finance cost 1,934' (= 19.34 cr); item 5 6,334 - 1,934 = item 7 4,400 = PBT (item 9) = our 44.00; tax 1,487 = 14.87; net profit after minority 2,913 = stored 29.13. Second reader: Moneycontrol 19.34 (the page residual 19.37 comes from the archive page filed with the Sep-2017 results).",
 "found": "fc==tax archive-template audit 2026-09-28 (runbook §211)"
 },
 {
@@ -16795,8 +16802,8 @@
 "basis": "s",
 "field": "fc",
 "was": 13.95,
-"fixed": null,
-"why": "NSE archive page financial_res_PVRINOX_1031900.html prints its Tax expense (1,395 lakh) in the '(f) Finance costs' row as well (template defect). Page residual 19.21 cr = Total expenses 47,959 − the other itemised expense rows 46,038 lakh. Moneycontrol Interest 19.19. No two readers agree (open(mc near)). BSE PDF rung (own, next-quarter and year-later filings): filings 3, scans 3, fetch-failed 0, text-read 0. Blank until a filing read proves the figure.",
+"fixed": 19.19,
+"why": "NSE archive page financial_res_PVRINOX_1031900.html prints its Tax expense (1,395 lakh) in the '(f) Finance costs' row as well (template defect). Page residual 19.21 cr = Total expenses 47,959 − the other itemised expense rows 46,038 lakh. Moneycontrol Interest 19.19. No two readers agree (open(mc near)). BSE PDF rung (own, next-quarter and year-later filings): filings 3, scans 3, fetch-failed 0, text-read 0. ROUND 2 (2026-09-28, runbook §211a): PROVEN 19.19. VISION READ (2026-09-28) of BSE attachment 8D76111E-B6D4-4F1B-B44E-8818DEDF7C87 page 2 (the quarter's own filing, Oct-2016, scanned; NSE copy PVRFINANCAILRESULTSQ230092016 is the same), Unaudited financial results for the quarter and period ended September 30, 2016 (Rs lakhs), standalone column '30.09.2016': 6 Finance cost 1,919; 5,916 - 1,919 = 3,997 = PBT (our 39.97); net profit 2,602 = stored 26.02; expenses 12,609 + 3,343 + 5,042 + 2,995 + 9,208 + 2,271 + 6,488 + 3,862 = 45,818 printed. Second reader: Moneycontrol 19.19. (The page residual 19.21 is from the stored NSE page 1031900, filed a year later -- not the as-filed statement.)",
 "found": "fc==tax archive-template audit 2026-09-28 (runbook §211)"
 },
 {
@@ -16815,8 +16822,8 @@
 "basis": "s",
 "field": "fc",
 "was": 12.26,
-"fixed": null,
-"why": "NSE archive page financial_res_PVRINOX_1035780.html prints its Tax expense (1,226 lakh) in the '(f) Finance costs' row as well (template defect). Page residual 20.25 cr = Total expenses 47,779 − the other itemised expense rows 45,754 lakh. Moneycontrol Interest 20.23. No two readers agree (open(mc near)). BSE PDF rung (own, next-quarter and year-later filings): filings 3, scans 3, fetch-failed 0, text-read 0. Blank until a filing read proves the figure.",
+"fixed": 20.23,
+"why": "NSE archive page financial_res_PVRINOX_1035780.html prints its Tax expense (1,226 lakh) in the '(f) Finance costs' row as well (template defect). Page residual 20.25 cr = Total expenses 47,779 − the other itemised expense rows 45,754 lakh. Moneycontrol Interest 20.23. No two readers agree (open(mc near)). BSE PDF rung (own, next-quarter and year-later filings): filings 3, scans 3, fetch-failed 0, text-read 0. ROUND 2 (2026-09-28, runbook §211a): PROVEN 20.23. VISION READ (2026-09-28) of BSE attachment 529071AA-DA1A-41C3-AD47-0F2144522F25 page 2 (the quarter's own filing, scanned), Unaudited financial results for the quarter and period ended December 31, 2016 (Rs lakhs), standalone column '31.12.2016': 6 Finance cost 2,023; 5,593 - 2,023 = 3,570; less exceptional 132 = PBT 3,438 (our 34.38); net profit 2,212 = stored 22.12; expenses 12,217 + 3,232 + 5,367 + 3,126 + 9,402 + 2,116 + 5,791 + 4,253 = 45,504 printed. Second reader: Moneycontrol 20.23. (The page residual 20.25 is from the stored NSE page 1035780, filed a year later -- not the as-filed statement. This filing's Sep-16 comparative repeats the as-filed 1,919.)",
 "found": "fc==tax archive-template audit 2026-09-28 (runbook §211)"
 },
 {
@@ -16905,8 +16912,8 @@
 "basis": "c",
 "field": "fc",
 "was": 11.64,
-"fixed": null,
-"why": "NSE archive page financial_res_QUESS_1022391.html prints its Tax expense (1,164.02 lakh) in the '(f) Finance costs' row as well (template defect). Page residual 15.34 cr = Total expenses 108,532.85 − the other itemised expense rows 106,998.87 lakh. Moneycontrol Interest blank. No two readers agree (open(mc none)). BSE PDF rung (own, next-quarter and year-later filings): filings 6, scans 4, fetch-failed 0, text-read 0. Blank until a filing read proves the figure.",
+"fixed": 15.34,
+"why": "NSE archive page financial_res_QUESS_1022391.html prints its Tax expense (1,164.02 lakh) in the '(f) Finance costs' row as well (template defect). Page residual 15.34 cr = Total expenses 108,532.85 − the other itemised expense rows 106,998.87 lakh. Moneycontrol Interest blank. No two readers agree (open(mc none)). BSE PDF rung (own, next-quarter and year-later filings): filings 6, scans 4, fetch-failed 0, text-read 0. ROUND 2 (2026-09-28, runbook §211a): PROVEN 15.34. VISION READ (2026-09-28) of BSE attachment 6bad0494-aa53-4efa-9755-bd1d02ba15e4 page 4 (the quarter's own filing, scanned), Statement of audited consolidated financial results for the quarter and twelve months ended 31 March 2017 (Rs lakhs), column 'Quarter ended 31 March 2017': 6 Finance expenses 1,533.98; 5,496.08 - 1,533.98 = 3,962.10 = PBT (our 39.62); net profit after NCI and share of equity-accounted investees 2,768.22 = stored 27.68; expenses 977.36 + 95,669.24 + 654.10 + 9,698.17 = 106,998.87 printed. Second reader: page residual 15.34.",
 "found": "fc==tax archive-template audit 2026-09-28 (runbook §211)"
 },
 {
@@ -16925,8 +16932,8 @@
 "basis": "c",
 "field": "fc",
 "was": 11.55,
-"fixed": null,
-"why": "NSE archive page financial_res_QUESS_1027904.html prints its Tax expense (1,154.96 lakh) in the '(f) Finance costs' row as well (template defect). Page residual 16.06 cr = Total expenses 114,738.07 − the other itemised expense rows 113,131.74 lakh. Moneycontrol Interest blank. No two readers agree (open(mc none)). BSE PDF rung (own, next-quarter and year-later filings): filings 5, scans 3, fetch-failed 0, text-read 0. Blank until a filing read proves the figure.",
+"fixed": 16.06,
+"why": "NSE archive page financial_res_QUESS_1027904.html prints its Tax expense (1,154.96 lakh) in the '(f) Finance costs' row as well (template defect). Page residual 16.06 cr = Total expenses 114,738.07 − the other itemised expense rows 113,131.74 lakh. Moneycontrol Interest blank. No two readers agree (open(mc none)). BSE PDF rung (own, next-quarter and year-later filings): filings 5, scans 3, fetch-failed 0, text-read 0. ROUND 2 (2026-09-28, runbook §211a): PROVEN 16.06. VISION READ (2026-09-28) of BSE attachment 3bc6ab27-ab81-4401-ac8f-60497dffe579 page 4 (the quarter's own filing, scanned), Statement of unaudited consolidated financial results for the quarter ended 30 June 2017 (Rs lakhs), column '30 June 2017': c) Finance costs 1,606.33; expenses 1,114.72 + 102,214.79 + 1,606.33 + 669.37 + 9,132.86 = 114,738.07 printed; 119,151.02 - 114,738.07 = 4,412.95 = profit before share of equity-accounted investees, exceptional items and tax (our PBT 44.13); profit attributable to owners 3,313.61 = stored 33.14. Second reader: page residual 16.06. FY18 cross-check (joint closure off by -2.04): the Dec-2017 filing restated Jun/Sep-17 (its nine months 4,897.26 lakh vs 4,826.22 as filed, +0.71 cr) and the Mar-2018 XBRL year implies a further 1.33 cr for Apr-Dec (not traced); the as-filed statements decide.",
 "found": "fc==tax archive-template audit 2026-09-28 (runbook §211)"
 },
 {
@@ -16945,8 +16952,8 @@
 "basis": "c",
 "field": "fc",
 "was": -80.19,
-"fixed": null,
-"why": "NSE archive page financial_res_QUESS_1031859.html prints its Tax expense (-8,019.03 lakh) in the '(f) Finance costs' row as well (template defect). Page residual 15.15 cr = Total expenses 123,003.55 − the other itemised expense rows 121,488.82 lakh. Moneycontrol Interest blank. No two readers agree (open(mc none)). BSE PDF rung (own, next-quarter and year-later filings): filings 6, scans 4, fetch-failed 0, text-read 0. Blank until a filing read proves the figure.",
+"fixed": 15.15,
+"why": "NSE archive page financial_res_QUESS_1031859.html prints its Tax expense (-8,019.03 lakh) in the '(f) Finance costs' row as well (template defect). Page residual 15.15 cr = Total expenses 123,003.55 − the other itemised expense rows 121,488.82 lakh. Moneycontrol Interest blank. No two readers agree (open(mc none)). BSE PDF rung (own, next-quarter and year-later filings): filings 6, scans 4, fetch-failed 0, text-read 0. ROUND 2 (2026-09-28, runbook §211a): PROVEN 15.15. VISION READ (2026-09-28) of BSE attachment 338532d3-1930-47b7-b87a-776094722bc7 page 4 (the quarter's own filing, scanned), Statement of unaudited consolidated financial results for the quarter and six months ended 30 September 2017 (Rs lakhs), column '30 September 2017': c) Finance costs 1,514.73; expenses 1,278.41 + 109,394.43 + 1,514.73 + 739.88 + 10,076.10 = 123,003.55 printed; 129,066.32 - 123,003.55 = 6,062.77 = profit before share of equity-accounted investees (our PBT 60.63); profit attributable to owners 14,076.48 = stored 140.76. Second reader: page residual 15.15. (The Dec-2017 filing restates this quarter -- finance costs 1,549.74, owners' profit 14,823.75 -- so only the own filing matches.) FY18 cross-check (joint closure off by -2.04): the Dec-2017 filing restated Jun/Sep-17 (its nine months 4,897.26 lakh vs 4,826.22 as filed, +0.71 cr) and the Mar-2018 XBRL year implies a further 1.33 cr for Apr-Dec (not traced); the as-filed statements decide.",
 "found": "fc==tax archive-template audit 2026-09-28 (runbook §211)"
 },
 {
@@ -16965,8 +16972,8 @@
 "basis": "c",
 "field": "fc",
 "was": 5.25,
-"fixed": null,
-"why": "NSE archive page financial_res_QUESS_1035506.html prints its Tax expense (525.34 lakh) in the '(f) Finance costs' row as well (template defect). Page residual 17.05 cr = Total expenses 152,231.19 − the other itemised expense rows 150,526.03 lakh. Moneycontrol Interest blank. No two readers agree (open(mc none)). BSE PDF rung (own, next-quarter and year-later filings): filings 6, scans 2, fetch-failed 0, text-read 0. Blank until a filing read proves the figure.",
+"fixed": 17.05,
+"why": "NSE archive page financial_res_QUESS_1035506.html prints its Tax expense (525.34 lakh) in the '(f) Finance costs' row as well (template defect). Page residual 17.05 cr = Total expenses 152,231.19 − the other itemised expense rows 150,526.03 lakh. Moneycontrol Interest blank. No two readers agree (open(mc none)). BSE PDF rung (own, next-quarter and year-later filings): filings 6, scans 2, fetch-failed 0, text-read 0. ROUND 2 (2026-09-28, runbook §211a): PROVEN 17.05. VISION READ (2026-09-28) of BSE attachment 55cd1604-aaac-4abb-a35a-555ff6ed17cc page 4 (the quarter's own filing, scanned), Statement of unaudited consolidated financial results for the quarter and nine months ended 31 December 2017 (Rs lakhs), column '31 December 2017': c) Finance costs 1,705.16; expenses 3,960.83 + 130,838.23 + 1,705.16 + 1,223.66 + 14,503.31 = 152,231.19 printed; 159,654.30 - 152,231.19 = 7,423.11 = profit before share of equity-accounted investees (our PBT 74.23); profit attributable to owners 7,013.24 = stored 70.13. Second reader: page residual 17.05. FY18 cross-check (joint closure off by -2.04): the Dec-2017 filing restated Jun/Sep-17 (its nine months 4,897.26 lakh vs 4,826.22 as filed, +0.71 cr) and the Mar-2018 XBRL year implies a further 1.33 cr for Apr-Dec (not traced); the as-filed statements decide.",
 "found": "fc==tax archive-template audit 2026-09-28 (runbook §211)"
 },
 {
@@ -17465,8 +17472,8 @@
 "basis": "s",
 "field": "fc",
 "was": -6.76,
-"fixed": null,
-"why": "NSE archive page financial_res_RAYMOND_1013669.html prints its Tax expense (-676 lakh) in the '(f) Finance costs' row as well (template defect). Page residual 0.00 cr = Total expenses 55,291 − the other itemised expense rows 55,291 lakh. Moneycontrol Interest 37.25. No two readers agree (open(mc far)). BSE PDF rung (own, next-quarter and year-later filings): filings 7, scans 5, fetch-failed 0, text-read 0. Blank until a filing read proves the figure.",
+"fixed": 37.25,
+"why": "NSE archive page financial_res_RAYMOND_1013669.html prints its Tax expense (-676 lakh) in the '(f) Finance costs' row as well (template defect). Page residual 0.00 cr = Total expenses 55,291 − the other itemised expense rows 55,291 lakh. Moneycontrol Interest 37.25. No two readers agree (open(mc far)). BSE PDF rung (own, next-quarter and year-later filings): filings 7, scans 5, fetch-failed 0, text-read 0. ROUND 2 (2026-09-28, runbook §211a): PROVEN 37.25. VISION READ (2026-09-28) of BSE attachment 428501A5-F1B3-459A-B870-EDCF809ABBCB page 3 (the quarter's own filing, Jul-2016, scanned; NSE copy Result_21072016170248 is the same), Statement of unaudited standalone financial results for the quarter ended June 30, 2016 (Rs lacs), column '30.06.2016': 6 Finance costs 3725; profit before finance costs 1919 - 3725 = (1806) = PBT (our -18.06); tax credit 676; net loss (1130) = stored -11.30; expenses 12759 + 13540 + 9417 - 3734 + 8967 + 2028 + 12314 = 55291 printed. Second reader: Moneycontrol 37.25. (The page residual 0.00 is because the NSE form's Total expenses 55291 is the operating total, which excludes finance costs.)",
 "found": "fc==tax archive-template audit 2026-09-28 (runbook §211)"
 },
 {
@@ -17605,8 +17612,8 @@
 "basis": "c",
 "field": "fc",
 "was": -111.0,
-"fixed": null,
-"why": "NSE archive page financial_res_RCOM_1033100.html prints its Tax expense (-11,100 lakh) in the '(f) Finance costs' row as well (template defect). Page residual 1149.00 cr = Total expenses 548,800 − the other itemised expense rows 433,900 lakh. Moneycontrol Interest 51.00. BSE PDF (Sep-2018 filing) and Moneycontrol give 51 — the comparative RESTATED for discontinued operations (column tax -11 vs as-filed -111); the as-filed figure is not proven BSE PDF rung (own, next-quarter and year-later filings): filings 4, scans 1, fetch-failed 0, text-read 2. Blank until a filing read proves the figure.",
+"fixed": 1149.0,
+"why": "NSE archive page financial_res_RCOM_1033100.html prints its Tax expense (-11,100 lakh) in the '(f) Finance costs' row as well (template defect). Page residual 1149.00 cr = Total expenses 548,800 − the other itemised expense rows 433,900 lakh. Moneycontrol Interest 51.00. BSE PDF (Sep-2018 filing) and Moneycontrol give 51 — the comparative RESTATED for discontinued operations (column tax -11 vs as-filed -111); the as-filed figure is not proven BSE PDF rung (own, next-quarter and year-later filings): filings 4, scans 1, fetch-failed 0, text-read 2. ROUND 2 (2026-09-28, runbook §211a): PROVEN 1149.00. VISION READ (2026-09-28) of BSE attachment 0fd24636-3452-4095-8516-ff89ed33394d page 2 (the quarter's own filing, scanned), Unaudited Financial Results (Consolidated) for the quarter and half year ended September 30, 2017 (Rs crore), column '30-Sep-17': (c) Finance Costs 1,149; expenses 2,366 + 226 + 1,149 + 1,198 + 549 = 5,488 printed; 2,667 - 5,488 = (2,821) = loss before share of associates, exceptional items and tax (our PBT -2,821); loss attributable to equity holders (2,712) = stored -2,712. Second reader: page residual 1,149. FY18 cross-check fails (joint closure off by 2,045): the Mar-2018 XBRL year (186; its quarter 32) is below this one quarter's 1,149 -- the FY18 accounts were restated for discontinued operations (as for the standalone Sep-17 cell); the as-filed quarter decides.",
 "found": "fc==tax archive-template audit 2026-09-28 (runbook §211)"
 },
 {
@@ -17615,8 +17622,8 @@
 "basis": "s",
 "field": "fc",
 "was": 0.0,
-"fixed": null,
-"why": "NSE archive page financial_res_RCOM_1033099.html prints its Tax expense (0 lakh) in the '(f) Finance costs' row as well (template defect). Page residual 790.00 cr = Total expenses 327,600 − the other itemised expense rows 248,600 lakh. Moneycontrol Interest blank. No two readers agree (open(mc none)). BSE PDF rung (own, next-quarter and year-later filings): filings 4, scans 1, fetch-failed 0, text-read 0. Blank until a filing read proves the figure.",
+"fixed": 790.0,
+"why": "NSE archive page financial_res_RCOM_1033099.html prints its Tax expense (0 lakh) in the '(f) Finance costs' row as well (template defect). Page residual 790.00 cr = Total expenses 327,600 − the other itemised expense rows 248,600 lakh. Moneycontrol Interest blank. No two readers agree (open(mc none)). BSE PDF rung (own, next-quarter and year-later filings): filings 4, scans 1, fetch-failed 0, text-read 0. ROUND 2 (2026-09-28, runbook §211a): PROVEN 790.00. VISION READ (2026-09-28) of BSE attachment 0fd24636-3452-4095-8516-ff89ed33394d page 15 (the quarter's own filing, Nov-2017; local OCR read the same 790), Unaudited Financial Results (Standalone) for the Quarter and Half year ended September 30, 2017 (Rs crore), column 'Quarter ended 30-Sep-17': '(c) Finance Costs 790'; expenses 1,582 + 33 + 790 + 581 + 290 = 3,276 = the printed Total Expenses; PBT (1,877) = our -1,877; no tax; loss after tax (1,877) = stored -1,877. Second reader: page residual 790.00. (The joint FY18 closure does not hold because the Mar-2018 XBRL year was restated for discontinued operations; the as-filed quarter decides.)",
 "found": "fc==tax archive-template audit 2026-09-28 (runbook §211)"
 },
 {
@@ -19035,8 +19042,8 @@
 "basis": "s",
 "field": "fc",
 "was": 29.7,
-"fixed": null,
-"why": "NSE archive page financial_res_SKFINDIA_1024092.html prints its Tax expense (2,970 lakh) in the '(f) Finance costs' row as well (template defect). Page residual 51.06 cr = Total expenses 63,682 − the other itemised expense rows 58,576 lakh. Moneycontrol Interest blank. No two readers agree (open(mc none)). BSE PDF rung (own, next-quarter and year-later filings): filings 5, scans 2, fetch-failed 3, text-read 0. Blank until a filing read proves the figure.",
+"fixed": 0.0,
+"why": "NSE archive page financial_res_SKFINDIA_1024092.html prints its Tax expense (2,970 lakh) in the '(f) Finance costs' row as well (template defect). Page residual 51.06 cr = Total expenses 63,682 − the other itemised expense rows 58,576 lakh. Moneycontrol Interest blank. No two readers agree (open(mc none)). BSE PDF rung (own, next-quarter and year-later filings): filings 5, scans 2, fetch-failed 3, text-read 0. ROUND 2 (2026-09-28, runbook §211a): PROVEN 0.00. VISION READ (2026-09-28) of BSE attachment 8d0ef7dd-1c2e-4579-a26b-0b5f42b36090 page 2 (the quarter's own filing), Unaudited financial results for quarter and annual audited results for year ended March 31, 2017 (Rs millions), column 'Quarter ended March 31, 2017': the expense block (a-g) has NO finance-cost row -- 1,520.3 + 2,539.1 - 48.7 + 510.6 + 551.3 + 115.4 + 1,180.2 = 6,368.2 printed Total Expenses; 7,244.2 - 6,368.2 = 876.0 = PBT (our 87.60); profit 579.0 = stored 57.90. Second reader: the company's own audited year total -- the '12 Months Ended March 31, 2017' column also has no finance-cost row (6,032.8 + 10,892.7 - 673.1 + 2,041.3 + 2,221.8 + 478.8 + 4,478.4 = 25,472.7 printed), and our Sep-16 and Dec-16 quarters hold 0.00. The page residual 51.06 is NOT a finance cost: NSE page 1024092 lists no excise row, and 63,682 - 58,576 lakh = 5,106 = the filing's '(d) Excise duty on sales' 510.6 mn.",
 "found": "fc==tax archive-template audit 2026-09-28 (runbook §211)"
 },
 {
@@ -19525,8 +19532,8 @@
 "basis": "s",
 "field": "fc",
 "was": 26.63,
-"fixed": null,
-"why": "NSE archive page financial_res_SUPPETRO_1020987.html prints its Tax expense (2,663.21 lakh) in the '(f) Finance costs' row as well (template defect). Page residual 1.89 cr = Total expenses 82,943.41 − the other itemised expense rows 82,754.32 lakh. Moneycontrol Interest blank. No two readers agree (open(mc none)). BSE PDF rung (own, next-quarter and year-later filings): filings 3, scans 3, fetch-failed 0, text-read 0. Blank until a filing read proves the figure.",
+"fixed": 1.89,
+"why": "NSE archive page financial_res_SUPPETRO_1020987.html prints its Tax expense (2,663.21 lakh) in the '(f) Finance costs' row as well (template defect). Page residual 1.89 cr = Total expenses 82,943.41 − the other itemised expense rows 82,754.32 lakh. Moneycontrol Interest blank. No two readers agree (open(mc none)). BSE PDF rung (own, next-quarter and year-later filings): filings 3, scans 3, fetch-failed 0, text-read 0. ROUND 2 (2026-09-28, runbook §211a): PROVEN 1.89. VISION READ (2026-09-28) of BSE attachment 1EDCFEC8-ADB7-4353-8503-AE10FFFD8698 page 1 (the quarter's own filing, Apr-2016, scanned; NSE copy SUPPETRO_20042016130715 is the same), Supreme Petrochem Statement of Standalone Audited Results for the Financial Year (Nine Months) Ended March 31, 2016 (Rs lacs), column '3rd Quarter Ended on 31/03/2016': 6 Finance costs (incl. forex loss on foreign currency borrowings) 189.09; 8,288.01 - 189.09 = 8,098.92; exceptional (2.06) -> PBT 8,096.86 (our 80.97); net profit 5,433.65 = stored 54.34; expenses 48,397.09 + 18,580.49 + 195.74 + 994.01 + 564.20 + 4,321.71 = 73,053.24 printed. Second reader: page residual 1.89.",
 "found": "fc==tax archive-template audit 2026-09-28 (runbook §211)"
 },
 {
@@ -20015,8 +20022,8 @@
 "basis": "s",
 "field": "fc",
 "was": 26.63,
-"fixed": null,
-"why": "NSE archive page financial_res_SUPPETRO_1020987.html prints its Tax expense (2,663.21 lakh) in the '(f) Finance costs' row as well (template defect). Page residual 1.89 cr = Total expenses 82,943.41 − the other itemised expense rows 82,754.32 lakh. Moneycontrol Interest blank. No two readers agree (open(mc none)). BSE PDF rung (own, next-quarter and year-later filings): filings 0, scans 0, fetch-failed 0, text-read 0. Blank until a filing read proves the figure.",
+"fixed": 1.89,
+"why": "NSE archive page financial_res_SUPPETRO_1020987.html prints its Tax expense (2,663.21 lakh) in the '(f) Finance costs' row as well (template defect). Page residual 1.89 cr = Total expenses 82,943.41 − the other itemised expense rows 82,754.32 lakh. Moneycontrol Interest blank. No two readers agree (open(mc none)). BSE PDF rung (own, next-quarter and year-later filings): filings 0, scans 0, fetch-failed 0, text-read 0. ROUND 2 (2026-09-28, runbook §211a): PROVEN 1.89. VISION READ (2026-09-28) of BSE attachment 1EDCFEC8-ADB7-4353-8503-AE10FFFD8698 page 1 (the quarter's own filing, Apr-2016, scanned; NSE copy SUPPETRO_20042016130715 is the same), Supreme Petrochem Statement of Standalone Audited Results for the Financial Year (Nine Months) Ended March 31, 2016 (Rs lacs), column '3rd Quarter Ended on 31/03/2016': 6 Finance costs (incl. forex loss on foreign currency borrowings) 189.09; 8,288.01 - 189.09 = 8,098.92; exceptional (2.06) -> PBT 8,096.86 (our 80.97); net profit 5,433.65 = stored 54.34; expenses 48,397.09 + 18,580.49 + 195.74 + 994.01 + 564.20 + 4,321.71 = 73,053.24 printed. Second reader: page residual 1.89.",
 "found": "fc==tax archive-template audit 2026-09-28 (runbook §211)"
 },
 {
@@ -20025,8 +20032,8 @@
 "basis": "s",
 "field": "fc",
 "was": 19.5,
-"fixed": null,
-"why": "NSE archive page financial_res_SUPPETRO_1031918.html prints its Tax expense (1,949.5 lakh) in the '(f) Finance costs' row as well (template defect). Page residual 1.40 cr = Total expenses 65,261.41 − the other itemised expense rows 65,121.48 lakh. Moneycontrol Interest blank. No two readers agree (open(mc none)). BSE PDF rung (own, next-quarter and year-later filings): filings 5, scans 1, fetch-failed 4, text-read 0. Blank until a filing read proves the figure.",
+"fixed": 1.4,
+"why": "NSE archive page financial_res_SUPPETRO_1031918.html prints its Tax expense (1,949.5 lakh) in the '(f) Finance costs' row as well (template defect). Page residual 1.40 cr = Total expenses 65,261.41 − the other itemised expense rows 65,121.48 lakh. Moneycontrol Interest blank. No two readers agree (open(mc none)). BSE PDF rung (own, next-quarter and year-later filings): filings 5, scans 1, fetch-failed 4, text-read 0. ROUND 2 (2026-09-28, runbook §211a): PROVEN 1.40. VISION READ (2026-09-28) of BSE attachment 66ab662a-d2d3-41b7-810a-26d91ad10c4d page 2 (the quarter's own filing, scanned), Supreme Petrochem Statement of Standalone Unaudited Results for the Quarter/Half Year Ended September 30, 2017 (Rs lakhs), column '2nd Quarter Ended on 30/09/2017': (f) Finance Cost 139.93; 44,694.97 + 18,188.73 - 3,203.99 + 842.77 + 139.93 + 523.62 + 4,075.38 = 65,261.41 printed TOTAL EXPENSES; 70,878.75 - 65,261.41 = 5,617.34 = PBT (our 56.17); profit after tax 3,667.84 = stored 36.68. Second reader: page residual 1.40.",
 "found": "fc==tax archive-template audit 2026-09-28 (runbook §211)"
 },
 {
@@ -20745,8 +20752,8 @@
 "basis": "s",
 "field": "fc",
 "was": 20.76,
-"fixed": null,
-"why": "NSE archive page financial_res_TATAELXSI_1020977.html prints its Tax expense (2,075.8 lakh) in the '(f) Finance costs' row as well (template defect). Page residual -0.00 cr = Total expenses 23,271.52 − the other itemised expense rows 23,271.52 lakh. Moneycontrol Interest blank. No two readers agree (open(mc none)). BSE PDF rung (own, next-quarter and year-later filings): filings 3, scans 0, fetch-failed 0, text-read 0. Blank until a filing read proves the figure.",
+"fixed": 0.0,
+"why": "NSE archive page financial_res_TATAELXSI_1020977.html prints its Tax expense (2,075.8 lakh) in the '(f) Finance costs' row as well (template defect). Page residual -0.00 cr = Total expenses 23,271.52 − the other itemised expense rows 23,271.52 lakh. Moneycontrol Interest blank. No two readers agree (open(mc none)). BSE PDF rung (own, next-quarter and year-later filings): filings 3, scans 0, fetch-failed 0, text-read 0. ROUND 2 (2026-09-28, runbook §211a): PROVEN 0.00. VISION READ (2026-09-28) of BSE attachment 6BDE0578-292C-4C21-9533-226CC342E62E page 2 (the quarter's own filing, Apr-2016; scanned under an unreadable OCR text layer; NSE copy Auditedresults_28042016143205 is the same), Statement of audited financial results for the quarter and year ended 31 March 2016 (Rs lakhs), column '01 Jan 2016 to 31 Mar 2016': 6 Finance costs printed '-'; profit before finance costs 6,184.59 = profit after finance costs 6,184.59 = PBT (our 61.85); tax 2,075.80 (our 20.76); net profit 4,108.79 = stored 41.09; expenses 2,134.79 + 15,642.00 + 592.56 + 4,903.24 = 23,272.59 printed. Second reader: page residual 0.00.",
 "found": "fc==tax archive-template audit 2026-09-28 (runbook §211)"
 },
 {
@@ -20835,8 +20842,8 @@
 "basis": "s",
 "field": "fc",
 "was": 81.34,
-"fixed": null,
-"why": "NSE archive page financial_res_TATAPOWER_1032272.html prints its Tax expense (8,134 lakh) in the '(f) Finance costs' row as well (template defect). Page residual 396.64 cr = Total expenses 175,679 − the other itemised expense rows 136,015 lakh. Moneycontrol Interest 394.39. No two readers agree (open(mc far)). BSE PDF rung (own, next-quarter and year-later filings): filings 3, scans 2, fetch-failed 1, text-read 0. Blank until a filing read proves the figure.",
+"fixed": 396.64,
+"why": "NSE archive page financial_res_TATAPOWER_1032272.html prints its Tax expense (8,134 lakh) in the '(f) Finance costs' row as well (template defect). Page residual 396.64 cr = Total expenses 175,679 − the other itemised expense rows 136,015 lakh. Moneycontrol Interest 394.39. No two readers agree (open(mc far)). BSE PDF rung (own, next-quarter and year-later filings): filings 3, scans 2, fetch-failed 1, text-read 0. ROUND 2 (2026-09-28, runbook §211a): PROVEN 396.64. VISION READ (2026-09-28) of BSE attachment e36f393d-0c8f-4194-8149-addc4b9dc9b5 page 2 (the quarter's own filing, scanned), Statement of standalone financial results for the quarter/half-year ended 30th September 2017 (Rs crore), column '30-Sep-17': vi) Finance Costs 396.64; expenses 85.47 + 667.43 + 70.02 + 37.22 + 160.49 + 396.64 + 168.35 + 171.17 = 1,756.79 printed; 2,117.12 - 1,756.79 = 360.33; less regulatory (115.50) = 244.83; less exceptional 113.17 = PBT 131.66 = ours; profit for the period 50.32 = stored. Second reader: page residual 396.64. FY18 cross-check (joint closure off by -7.46): the Dec-2017 filing (BSE 24e6dea1 p2) restates Sep-17 for the SED business moved to discontinued operations (finance costs 394.39 vs 396.64 as filed; its nine months 1,098.72 = the Mar-2018 XBRL year 1,431.38 - its Q4 332.66); the as-filed statement decides.",
 "found": "fc==tax archive-template audit 2026-09-28 (runbook §211)"
 },
 {
@@ -22425,8 +22432,8 @@
 "basis": "s",
 "field": "fc",
 "was": 181.6,
-"fixed": null,
-"why": "NSE archive page financial_res_ULTRACEMCO_1035245.html prints its Tax expense (18,160 lakh) in the '(f) Finance costs' row as well (template defect). Page residual 347.20 cr = Total expenses 714,236 − the other itemised expense rows 679,516 lakh. Moneycontrol Interest 474.43. No two readers agree (open(mc far)). BSE PDF rung (own, next-quarter and year-later filings): filings 3, scans 2, fetch-failed 0, text-read 0. Blank until a filing read proves the figure.",
+"fixed": 347.2,
+"why": "NSE archive page financial_res_ULTRACEMCO_1035245.html prints its Tax expense (18,160 lakh) in the '(f) Finance costs' row as well (template defect). Page residual 347.20 cr = Total expenses 714,236 − the other itemised expense rows 679,516 lakh. Moneycontrol Interest 474.43. No two readers agree (open(mc far)). BSE PDF rung (own, next-quarter and year-later filings): filings 3, scans 2, fetch-failed 0, text-read 0. ROUND 2 (2026-09-28, runbook §211a): PROVEN 347.20. VISION READ (2026-09-28) of BSE attachment 4a61dc63-5a54-47e8-93a5-cbce8e169ff8 page 6 (the quarter's own filing, scanned), Statement of Standalone Unaudited Results for the Quarter and Nine Months Ended 31/12/2017 (Rs crore), column '31/12/2017': (e) Finance Costs 347.20; expenses 1003.31 + 223.21 + 104.52 + 462.84 + 347.20 + 474.43 + 1509.34 + 1863.37 + 1154.14 = 7142.36 printed; 7745.43 - 7142.36 = 603.07 = PBT (ours); net profit 421.47 = stored (the consolidated page's note 3(b) repeats standalone PBT 603.07 / PAT 421.47). Second reader: page residual 347.20.",
 "found": "fc==tax archive-template audit 2026-09-28 (runbook §211)"
 },
 {
@@ -22945,8 +22952,8 @@
 "basis": "s",
 "field": "fc",
 "was": 12.44,
-"fixed": null,
-"why": "NSE archive page financial_res_VEEDOL_1025605.html prints its Tax expense (1,244 lakh) in the '(f) Finance costs' row as well (template defect). Page residual 0.00 cr = Total expenses 26,163 − the other itemised expense rows 26,163 lakh. Moneycontrol Interest blank. No two readers agree (open(mc none)). BSE PDF rung (own, next-quarter and year-later filings): filings 5, scans 3, fetch-failed 1, text-read 0. Blank until a filing read proves the figure.",
+"fixed": 0.0,
+"why": "NSE archive page financial_res_VEEDOL_1025605.html prints its Tax expense (1,244 lakh) in the '(f) Finance costs' row as well (template defect). Page residual 0.00 cr = Total expenses 26,163 − the other itemised expense rows 26,163 lakh. Moneycontrol Interest blank. No two readers agree (open(mc none)). BSE PDF rung (own, next-quarter and year-later filings): filings 5, scans 3, fetch-failed 1, text-read 0. ROUND 2 (2026-09-28, runbook §211a): PROVEN 0.00. VISION READ (2026-09-28) of BSE attachment 8933d7c9-56bb-4064-97ec-83a678828011 page 2 (the quarter's own filing, scanned), Tide Water Oil Audited Standalone & Consolidated Financial Results for the quarter and year ended 31st March 2017 (Rs lakhs), standalone column 'Quarter ended 31.03.2017': (e) Finance Costs printed '-'; 14508 - 278 + 1281 + 186 + 4483 + 5983 = 26163 = the printed Total Expenses; 30844 - 26163 = 4681 = PBT (our 46.81); profit 3437 = stored 34.37. Second reader: page residual 0.00.",
 "found": "fc==tax archive-template audit 2026-09-28 (runbook §211)"
 },
 {
@@ -22975,8 +22982,8 @@
 "basis": "s",
 "field": "fc",
 "was": 11.8,
-"fixed": null,
-"why": "NSE archive page financial_res_VESUVIUS_1032743.html prints its Tax expense (1,180 lakh) in the '(f) Finance costs' row as well (template defect). Page residual 0.00 cr = Total expenses 18,334 − the other itemised expense rows 18,334 lakh. Moneycontrol Interest blank. No two readers agree (open(mc none)). BSE PDF rung (own, next-quarter and year-later filings): filings 6, scans 2, fetch-failed 4, text-read 0. Blank until a filing read proves the figure.",
+"fixed": 0.0,
+"why": "NSE archive page financial_res_VESUVIUS_1032743.html prints its Tax expense (1,180 lakh) in the '(f) Finance costs' row as well (template defect). Page residual 0.00 cr = Total expenses 18,334 − the other itemised expense rows 18,334 lakh. Moneycontrol Interest blank. No two readers agree (open(mc none)). BSE PDF rung (own, next-quarter and year-later filings): filings 6, scans 2, fetch-failed 4, text-read 0. ROUND 2 (2026-09-28, runbook §211a): PROVEN 0.00. VISION READ (2026-09-28) of BSE attachment 33466840-f7ab-4083-adff-c15ee7038758 page 2 (the Dec-2017 filing, Feb-2018, scanned), Standalone (Rs lakh), column 'Quarter ended 30.09.2017 (Unaudited)': the expense block (a-g) has NO finance-cost row; 6,842 + 4,690 + 30 + 1,321 + 751 + 4,700 = 18,334 = the printed Total Expenses; total income 21,765 - 18,334 = 3,431 = PBT = our 34.31; tax 1,316 - 136 = 11.80; net profit 2,251 = stored 22.51. Second reader: page residual 0.00.",
 "found": "fc==tax archive-template audit 2026-09-28 (runbook §211)"
 },
 {
@@ -22985,8 +22992,8 @@
 "basis": "s",
 "field": "fc",
 "was": 10.91,
-"fixed": null,
-"why": "NSE archive page financial_res_VESUVIUS_1038449.html prints its Tax expense (1,091 lakh) in the '(f) Finance costs' row as well (template defect). Page residual 0.00 cr = Total expenses 19,638 − the other itemised expense rows 19,638 lakh. Moneycontrol Interest blank. No two readers agree (open(mc none)). BSE PDF rung (own, next-quarter and year-later filings): filings 6, scans 0, fetch-failed 3, text-read 0. Blank until a filing read proves the figure.",
+"fixed": 0.0,
+"why": "NSE archive page financial_res_VESUVIUS_1038449.html prints its Tax expense (1,091 lakh) in the '(f) Finance costs' row as well (template defect). Page residual 0.00 cr = Total expenses 19,638 − the other itemised expense rows 19,638 lakh. Moneycontrol Interest blank. No two readers agree (open(mc none)). BSE PDF rung (own, next-quarter and year-later filings): filings 6, scans 0, fetch-failed 3, text-read 0. ROUND 2 (2026-09-28, runbook §211a): PROVEN 0.00. VISION READ (2026-09-28) of BSE attachment 33466840-f7ab-4083-adff-c15ee7038758 page 2 (the quarter's own filing, Feb-2018, scanned), Statement of Standalone Audited Financial Results for the Quarter and Year ended December 31, 2017 (Rs lakh), column 'Quarter ended 31.12.2017': the expense block (a-g) has NO finance-cost row; 8,187 + 4,463 + 46 + 1,463 + 877 + 4,602 = 19,638 = the printed Total Expenses; total income 23,306 - 19,638 = 3,668; exceptional 444; PBT 3,224 = our 32.24; tax 1,357 - 266 = 10.91; net profit 2,133 = stored 21.33. Second reader: page residual 0.00.",
 "found": "fc==tax archive-template audit 2026-09-28 (runbook §211)"
 },
 {
@@ -23545,8 +23552,8 @@
 "basis": "c",
 "field": "fc",
 "was": 65.33,
-"fixed": null,
-"why": "NSE archive page financial_res_WELSPUNLIV_1020893.html prints its Tax expense (6,533 lakh) in the '(f) Finance costs' row as well (template defect). Page residual 0.00 cr = Total expenses 151,077 − the other itemised expense rows 151,077 lakh. Moneycontrol Interest 42.98. No two readers agree (open(mc far)). BSE PDF rung (own, next-quarter and year-later filings): filings 6, scans 1, fetch-failed 1, text-read 0. Blank until a filing read proves the figure.",
+"fixed": 42.98,
+"why": "NSE archive page financial_res_WELSPUNLIV_1020893.html prints its Tax expense (6,533 lakh) in the '(f) Finance costs' row as well (template defect). Page residual 0.00 cr = Total expenses 151,077 − the other itemised expense rows 151,077 lakh. Moneycontrol Interest 42.98. No two readers agree (open(mc far)). BSE PDF rung (own, next-quarter and year-later filings): filings 6, scans 1, fetch-failed 1, text-read 0. ROUND 2 (2026-09-28, runbook §211a): PROVEN 42.98. VISION READ (2026-09-28) of BSE attachment d9758cbf-d9be-4fc4-8111-7bf81a152372 page 4 (the quarter's own filing, scanned), Statement of audited consolidated financial results for year ended 31st March 2017 (Rs lacs), column 'Quarter Ended 31.03.2017': Finance Costs 4,298; expenses 70,691 + 12,219 + 3,864 + 16,772 + 13,650 + 33,881 + 4,298 = 155,375 printed; 177,271 - 155,375 = 21,896; + exceptional 85 = PBT 21,981 (our 219.81); net profit attributable to owners 15,385 = stored 153.85. Second reader: Moneycontrol Interest 42.98. (The NSE page residual reads 0.00 because that page's Total expenses 151,077 omits the finance-cost line: 155,375 - 4,298 = 151,077.)",
 "found": "fc==tax archive-template audit 2026-09-28 (runbook §211)"
 },
 {
@@ -23655,8 +23662,8 @@
 "basis": "c",
 "field": "fc",
 "was": 674.2,
-"fixed": null,
-"why": "NSE archive page financial_res_WIPRO_1020885.html prints its Tax expense (67,420 lakh) in the '(f) Finance costs' row as well (template defect). Page residual 0.00 cr = Total expenses 1,198,730 − the other itemised expense rows 1,198,730 lakh. Moneycontrol Interest 105.30. No two readers agree (open(mc far)). BSE PDF rung (own, next-quarter and year-later filings): filings 4, scans 2, fetch-failed 0, text-read 0. Blank until a filing read proves the figure.",
+"fixed": 105.3,
+"why": "NSE archive page financial_res_WIPRO_1020885.html prints its Tax expense (67,420 lakh) in the '(f) Finance costs' row as well (template defect). Page residual 0.00 cr = Total expenses 1,198,730 − the other itemised expense rows 1,198,730 lakh. Moneycontrol Interest 105.30. No two readers agree (open(mc far)). BSE PDF rung (own, next-quarter and year-later filings): filings 4, scans 2, fetch-failed 0, text-read 0. ROUND 2 (2026-09-28, runbook §211a): PROVEN 105.30. VISION READ (2026-09-28) of BSE attachment 9587aae3-adb3-4ab3-a2b6-154eb0271846 page 14 (the quarter's own filing; the Ind AS consolidated statement is a scan), Audited consolidated financial results for the three months and year ended March 31, 2017 under Ind AS (Rs millions), column 'Three months ended March 31, 2017': e) Finance costs 1,053; expenses 5,383 + 1,644 + 68,747 + 1,053 + 8,179 + 35,920 = 120,926 printed; 150,338 - 120,926 = 29,412 = PBT (our 2,941.2 cr); profit attributable to equity holders 22,612 = stored 2,261.2 cr. Second readers: Moneycontrol Interest 105.3; the company's own year total 5,183 mn = 518.3 cr - Jun-16 133.6 - Sep-16 142.8 - Dec-16 136.6 = 105.3. (The text-layer page 33 is the IFRS statement, PBT 2,941.1 -- rejected.)",
 "found": "fc==tax archive-template audit 2026-09-28 (runbook §211)"
 },
 {
@@ -23665,8 +23672,8 @@
 "basis": "s",
 "field": "fc",
 "was": 701.6,
-"fixed": null,
-"why": "NSE archive page financial_res_WIPRO_1020882.html prints its Tax expense (70,160 lakh) in the '(f) Finance costs' row as well (template defect). Page residual 0.00 cr = Total expenses 923,750 − the other itemised expense rows 923,750 lakh. Moneycontrol Interest 24.40. No two readers agree (open(mc far)). BSE PDF rung (own, next-quarter and year-later filings): filings 4, scans 2, fetch-failed 0, text-read 0. Blank until a filing read proves the figure.",
+"fixed": 24.4,
+"why": "NSE archive page financial_res_WIPRO_1020882.html prints its Tax expense (70,160 lakh) in the '(f) Finance costs' row as well (template defect). Page residual 0.00 cr = Total expenses 923,750 − the other itemised expense rows 923,750 lakh. Moneycontrol Interest 24.40. No two readers agree (open(mc far)). BSE PDF rung (own, next-quarter and year-later filings): filings 4, scans 2, fetch-failed 0, text-read 0. ROUND 2 (2026-09-28, runbook §211a): PROVEN 24.40. VISION READ (2026-09-28) of BSE attachment 9587aae3-adb3-4ab3-a2b6-154eb0271846 page 6 (the quarter's own filing, 25-Apr-2017; the Ind AS standalone statement is scanned, local OCR read the same 244), Statement of Audited Standalone Financial Results ... under IND AS (Rs million), column 'Three months ended March 31, 2017': 'e) Finance costs 244' (= 24.40 cr); expenses 3,764 + 1,770 + 54,271 + 244 + 2,652 + 29,918 = 92,619 = the printed Total Expenses; PBT 30,051 = our 3,005.1; tax 7,016; profit 23,035 = stored 2,303.5. Second reader: Moneycontrol 24.40; third: the same statement's year column, finance costs 3,921 = our Jun-16 129.7 + Sep-16 95.3 + Dec-16 142.7 (1,297 + 953 + 1,427 mn) + 244. (The Mar-2018 filing's comparative prints 362 -- regrouped; the page residual 0.00 disagrees.)",
 "found": "fc==tax archive-template audit 2026-09-28 (runbook §211)"
 },
 {

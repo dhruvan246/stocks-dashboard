@@ -28,6 +28,11 @@ it and is left alone. A healed cell carries `src_fc: "xtra_fc_fix"` (per-field p
 with `fixed: null` BLANKS the cell — the stored number was the tax and no reader proved a figure yet — so the page
 shows no finance costs for that quarter rather than the tax.
 
+CORRECTIONS. An entry may list `supersedes`: figures THIS ledger landed earlier that a later read disproved (LTM
+Jun-2017 std: 3.50 came from the Jun-2018 filing's reclassified comparative; the quarter's own statement prints no
+finance costs -> 0.00). A cell still carrying our marker (`src_fc` "xtra_fc_fix") and holding a superseded figure is
+treated like `was`; a cell holding anything else is still another writer's and is left alone.
+
 Run:  python3 scripts/xtra_fc_fix.py            dry run: what a re-assert would change on the committed ledger
       python3 scripts/xtra_fc_fix.py --apply    write scripts/xbrl_extra.json + .gz
 """
@@ -46,6 +51,11 @@ def entries():
         return []
 
 
+def superseded(e, cell, cur):
+    """True when the cell holds a figure this ledger landed earlier and the entry now corrects (`supersedes`)."""
+    return cur is not None and cell.get("src_fc") == MARK and cur in (e.get("supersedes") or [])
+
+
 def reassert(data, report=None):
     """Apply every entry to the ledger dict in place; -> number of cells changed (fc and/or its marker)."""
     n = 0
@@ -58,7 +68,7 @@ def reassert(data, report=None):
         cur = cell.get("fc")
         if e["fixed"] is None:
             # no reader proved a figure: the stored number was the tax, so the cell carries no finance costs
-            if cur is not None and cur == e["was"]:
+            if cur is not None and (cur == e["was"] or superseded(e, cell, cur)):
                 del cell["fc"]
                 cell["src_fc"] = MARK
                 n += 1
@@ -75,7 +85,7 @@ def reassert(data, report=None):
                 cell["src_fc"] = MARK
                 n += 1
             continue
-        if cur is not None and cur != e["was"]:
+        if cur is not None and cur != e["was"] and not superseded(e, cell, cur):
             if report is not None:
                 report.append(("skip-cell-moved", e["sym"], e["qe"], e["basis"], cur))
             continue
