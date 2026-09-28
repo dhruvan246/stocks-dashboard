@@ -334,13 +334,33 @@ async function zInit(){
    the real qty sits in the mtf object (user-caught 2026-08-27). Sells must name the bucket:
    product MTF closes the MTF position, CNC sells demat shares. Pledged (collateral) is NOT
    sellable without unpledging, so it stays out of both buckets on purpose. */
+/* ---------- the name Zerodha trades a stock under TODAY (user 2026-09-28: NSE moved HFCL to its BE series) ----------
+   When NSE moves a stock to trade-for-trade, Kite drops "HFCL" and lists "HFCL-BE"; an order under the old name is
+   refused. The Oracle box reads Zerodha's instrument list once a day (GET /ticks/symbols). ordSym() swaps in today's
+   name ONLY where an order, a margin check or a Kite basket leaves this page — every book, sent-mark, proceeds and
+   fills lookup stays keyed by our own symbol (baseSym folds HFCL-BE back to HFCL). */
+const KSYM = { map: {}, day: '' };
+const baseSym = s => String(s || '').replace(/-(BE|BZ|BL)$/, '');
+async function kiteSyms(list){
+  const today = new Date(Date.now() + 330 * 60000).toISOString().slice(0, 10);
+  if (KSYM.day && KSYM.day !== today){ KSYM.map = {}; KSYM.day = ''; }
+  const want = [...new Set((list || []).map(baseSym))].filter(s => s && !(s in KSYM.map));
+  if (!want.length || !Z.connected || !zWorker()) return;
+  for (let i = 0; i < want.length; i += 150){
+    try { const r = await zFetch('/ticks/symbols?i=' + encodeURIComponent(want.slice(i, i + 150).join(',')));
+      if (r.st === 200 && r.j && r.j.ok){ Object.assign(KSYM.map, r.j.map || {}); KSYM.day = today; } } catch(e){}
+  }
+}
+const ordSym = s => KSYM.map[baseSym(s)] || s;   // unknown to the box → send our own name and let Zerodha's error speak
 async function zHoldRefresh(){
   const h = await zFetch('/holdings');
   if (h.st === 200 && h.j && h.j.data){
     Z.hold = {};
-    h.j.data.forEach(r => { Z.hold[r.tradingsymbol] = { mtf: ((r.mtf || {}).quantity || 0), cnc: (r.quantity || 0) + (r.t1_quantity || 0), coll: (r.collateral_quantity || 0) }; });
+    h.j.data.forEach(r => { const k = baseSym(r.tradingsymbol), p = Z.hold[k] || { mtf: 0, cnc: 0, coll: 0 };   // HFCL-BE / BSE HFCL are our HFCL
+      Z.hold[k] = { mtf: p.mtf + ((r.mtf || {}).quantity || 0), cnc: p.cnc + (r.quantity || 0) + (r.t1_quantity || 0), coll: p.coll + (r.collateral_quantity || 0) }; });
     Z.held = new Set(h.j.data.filter(r => ((r.quantity||0)+(r.t1_quantity||0)+(r.collateral_quantity||0)+((r.mtf||{}).quantity||0)) > 0)
-                             .map(r => r.tradingsymbol));
+                             .map(r => baseSym(r.tradingsymbol)));
+    kiteSyms(Object.keys(Z.hold));   // today's Zerodha names for everything held
   }
 }
 $('btnZLogin').onclick = () => {
@@ -728,7 +748,8 @@ async function zbLevSweep(rows){
   const flist = rows.filter(r => r.px > 0);
   if (!flist.length){ ktoast('Nothing to check \u2014 load picks first'); return; }
   if (el) el.innerHTML = '<div class="khelp">checking ' + flist.length + ' entrants\u2026</div>';
-  const body = flist.map(r => ({ exchange: 'NSE', tradingsymbol: r.sym, product: 'MTF',
+  await kiteSyms(flist.map(r => r.sym));
+  const body = flist.map(r => ({ exchange: 'NSE', tradingsymbol: ordSym(r.sym), product: 'MTF',
                                  quantity: Math.max(1, r.qty || (r.amt > 0 ? Math.floor(r.amt / r.px) : 0) || 1) }));
   const { st, j } = await zFetch('/margincalc', { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify(body) });
   if (st !== 200 || !j || !j.data){ if (el) el.innerHTML = '<div class="khelp down">margin check failed: ' + esc((j && j.message) || ('HTTP ' + st)) + '</div>'; return; }
@@ -945,9 +966,10 @@ async function zbFetchMargins(realloc){
   if (!Z.connected || !$('zbWrap') || !$('zbWrap').classList.contains('open')) return;
   const orders = zbOrders();
   if (!orders.length){ ZB.rows.forEach(r => r.margin = null); zbFoot(); return; }
+  await kiteSyms(orders.map(o => o.tradingsymbol));
   const seq = ZB.mseq = (ZB.mseq || 0) + 1;
   const { st, j } = await zFetch('/margincalc', { method:'POST', headers:{ 'Content-Type':'application/json' },
-    body: JSON.stringify(orders.map(o => ({ exchange:o.exchange, tradingsymbol:o.tradingsymbol, product:o.product, quantity:o.quantity }))) });
+    body: JSON.stringify(orders.map(o => ({ exchange:o.exchange, tradingsymbol:ordSym(o.tradingsymbol), product:o.product, quantity:o.quantity }))) });
   if (seq !== ZB.mseq || !$('zbWrap').classList.contains('open')) return;
   if (st === 0 && !ZB.mretry){ ZB.mretry = 1; setTimeout(() => zbFetchMargins(realloc), 1500); return; }
   ZB.mretry = 0;
@@ -1154,7 +1176,7 @@ async function feedPull(force){
       const b = String(h.sym || '').replace(/\.(NS|BO)$/, ''); tot[b] = (tot[b] || 0) + Math.floor(+h.qty || 0); });
     FEED.symTot = tot;
     FEED.ts = Date.now(); FEED.byKey = map;
-    cloudTags();
+    cloudTags(); kiteSyms(Object.keys(tot));
     if (SIDE === 'sell') renderCards();
   } catch (e){}
   return FEED.byKey;
@@ -1204,7 +1226,7 @@ async function captureProceeds(id, quiet){
   const tag = sellTag(id); let amt = 0, n = 0, src = 'order book'; const filled = {}, val = {};
   if (Z.connected){ const ob = await zFetch('/orders');
     if (ob.st === 200 && ob.j && ob.j.data) ob.j.data.forEach(o => { if (o.transaction_type !== 'SELL' || o.tag !== tag) return; const fq = +o.filled_quantity || 0; if (fq <= 0) return;
-      const v = fq * (+o.average_price || 0); amt += v; n++; filled[o.tradingsymbol] = (filled[o.tradingsymbol] || 0) + fq; val[o.tradingsymbol] = (val[o.tradingsymbol] || 0) + v; }); }
+      const v = fq * (+o.average_price || 0); amt += v; n++; const k = baseSym(o.tradingsymbol); filled[k] = (filled[k] || 0) + fq; val[k] = (val[k] || 0) + v; }); }
   if (!n){ const c = await proceedsFromCloud(id);   // v4: yesterday's cloud basket still knows its fills (Kite's order book is today-only)
     if (!c){ if (!quiet) ktoast('No SELL fills found for this strategy yet \u2014 nothing captured', 5000); return; }
     amt = c.amt; n = c.n; Object.assign(filled, c.filled); Object.assign(val, c.val); src = 'cloud basket fills'; }
@@ -1221,7 +1243,7 @@ async function proceedsFromCloud(id){
   if (!jobs.length) return null;
   let amt = 0, n = 0; const filled = {}, val = {};
   for (const j of jobs){ const r = await zFetch('/jobs/' + encodeURIComponent(j.id)); const sent = (r.j && r.j.job && r.j.job.sent) || [];
-    sent.forEach(o => { const fq = +o.filled || 0; if (fq <= 0) return; const v = fq * (+o.avg || 0); amt += v; n++; filled[o.sym] = (filled[o.sym] || 0) + fq; val[o.sym] = (val[o.sym] || 0) + v; }); }
+    sent.forEach(o => { const fq = +o.filled || 0; if (fq <= 0) return; const v = fq * (+o.avg || 0); amt += v; n++; const k = baseSym(o.sym); filled[k] = (filled[k] || 0) + fq; val[k] = (val[k] || 0) + v; }); }
   return n ? { amt: amt, n: n, filled: filled, val: val } : null;
 }
 function sellRuntime(exitRows){
@@ -1482,13 +1504,14 @@ function jobSid(jobId){ const pre = String(jobId).split('~')[0];
   const it = strategies().find(x => jobSlug(x.id) === pre); return it ? it.id : pre; }
 async function cloudSubmit(id){
   const B = BUYSLICER[id]; if (!B || !B.slices || !B.slices.length) return;
+  await kiteSyms(B.slices.map(s => s.tradingsymbol));   // today's Zerodha names before the basket leaves
   const it = strategies().find(x => x.id === id);
   const label = it ? ((typeof strategyEnglish === 'function' && strategyEnglish(it.cfg)) || it.name || id) : ({ __exitall__: 'Exit all', __reenter__: 'Re-enter', __residual__: 'Buy remaining', __all__: 'Buy all' }[id] || id);
   const jobId = jobSlug(id) + '~' + Date.now().toString(36);
   const body = { id: jobId, label: String(label).slice(0, 80), device: ((navigator.platform || '') + ' ' + new Date().toTimeString().slice(0, 5)).slice(0, 40),
     pfId: ((typeof heldFor === 'function' && it && heldFor(it.cfg)) || {}).pfId || '', sid: String(id),   // v4: the box books this basket's fills to that portfolio
     gapS: sliceGap(), rngPct: sliceRng(), peg: 'touch', partPct: partPct(),
-    slices: B.slices.map(s => ({ tradingsymbol: s.tradingsymbol, transaction_type: s.transaction_type, quantity: s.quantity, product: s.product,
+    slices: B.slices.map(s => ({ tradingsymbol: ordSym(s.tradingsymbol), transaction_type: s.transaction_type, quantity: s.quantity, product: s.product,
       tag: s.tag, px: +s._px || 0, tick: TICKMEM[s.tradingsymbol] || 0.05, round: s._round })) };
   let r = null;
   for (let k = 0; k < 2 && !(r && r.st === 200); k++)
@@ -1655,11 +1678,13 @@ function buyFire(id){
   const B = BUYSLICER[id]; if (!B) return;
   if (B.remote) return;                                                                         // cloud job: the VM fires it, cloudLoop keeps the counter
   if (cloudOn() && B.i === 0 && !B.cloudTried && B.slices && B.slices.length){ B.cloudTried = 1; cloudSubmit(id); return; }
+  if (B.i === 0 && !B.symsOk && B.slices && B.slices.length){ B.symsOk = 1; kiteSyms(B.slices.map(s => s.tradingsymbol)).then(() => buyFire(id)); return; }
   if (B.i >= B.slices.length){ buyDone(id); return; }
   const o0 = B.slices[B.i];
   freshLtp(o0.tradingsymbol).then(ltp => {
     const px = (ltp || o0._px || 0), o = Object.assign({}, o0); delete o._px;
     if (px > 0 && sliceRng() > 0){ o.order_type = 'LIMIT'; o.price = (o.transaction_type === 'SELL' ? sellLimitPx : buyLimitPx)(o.tradingsymbol, px); }
+    o.tradingsymbol = ordSym(o.tradingsymbol);   // today's Zerodha name (HFCL → HFCL-BE); the price above used our symbol's tick
     zFetch('/order', { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify(o) }).then(res => {
       const st = res.st, j = res.j, msg = (j && j.message) || ('HTTP ' + st);
       if (st === 200 && j && j.data && j.data.order_id){
@@ -1733,7 +1758,7 @@ function kiteSend(orders){
   const f = document.createElement('form');
   f.method = 'post'; f.action = 'https://kite.zerodha.com/connect/basket'; f.target = 'kite_basket'; f.style.display = 'none';
   const a = document.createElement('input'); a.type = 'hidden'; a.name = 'api_key'; a.value = key;
-  const b = document.createElement('input'); b.type = 'hidden'; b.name = 'data'; b.value = JSON.stringify(orders);
+  const b = document.createElement('input'); b.type = 'hidden'; b.name = 'data'; b.value = JSON.stringify(orders.map(o => Object.assign({}, o, { tradingsymbol: ordSym(o.tradingsymbol) })));
   f.append(a, b); document.body.appendChild(f); f.submit(); f.remove();
   ktoast(orders.length + ' orders sent — review and confirm in the Zerodha tab', 4000);
   return true;

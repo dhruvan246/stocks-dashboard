@@ -662,13 +662,25 @@ body.blur-secret .secret{filter:blur(7px);-webkit-user-select:none;user-select:n
     var f=document.createElement('form');
     f.method='post'; f.action='https://kite.zerodha.com/connect/basket'; f.target='kite_basket'; f.style.display='none';
     var a=document.createElement('input'); a.type='hidden'; a.name='api_key'; a.value=key;
-    var b=document.createElement('input'); b.type='hidden'; b.name='data'; b.value=JSON.stringify(orders);
+    var b=document.createElement('input'); b.type='hidden'; b.name='data'; b.value=JSON.stringify(orders.map(function(o){ var m=(o.exchange==='NSE'&&TNAME.map[tnBase(o.tradingsymbol)])||null; var c=Object.assign({},o,m?{tradingsymbol:m}:{}); delete c._named; return c; }));
     f.appendChild(a); f.appendChild(b); document.body.appendChild(f); f.submit(); f.remove();
     ktoast(orders.length===1?'Order sent — review & confirm it in the Zerodha tab':orders.length+' orders sent — confirm them in the Zerodha tab',4200);
     return true;
   }
+  /* the name Zerodha trades a stock under TODAY (user 2026-09-28): NSE moved HFCL to its trade-for-trade BE series, so
+     "HFCL" on NSE is refused and "HFCL-BE" is live. The Oracle box maps names from Zerodha's daily instrument list. */
+  var TNAME={day:'',map:{}};
+  function tnBase(s){ return String(s||'').replace(/-(BE|BZ|BL)$/,''); }
+  function tradeName(o){
+    if(o.exchange!=='NSE') return Promise.resolve(o);
+    var day=new Date(Date.now()+330*60000).toISOString().slice(0,10); if(TNAME.day!==day) TNAME={day:day,map:{}};
+    var b=tnBase(o.tradingsymbol);
+    if(b in TNAME.map){ if(TNAME.map[b]) o.tradingsymbol=TNAME.map[b]; return Promise.resolve(o); }
+    return acctFetch('/ticks/symbols?i='+encodeURIComponent(b)).then(function(r){ var m=(r&&r.st===200&&r.j&&r.j.ok&&r.j.map)?r.j.map[b]:null; TNAME.map[b]=m||null; if(m) o.tradingsymbol=m; return o; }).catch(function(){ return o; });
+  }
   function ipBlocked(msg){ return /no ips|static ip|whitelist|allowed ip/i.test(msg||''); }
   function zPlace(o){
+    if(!o._named){ o._named=1; tradeName(o).then(function(){ zPlace(o); }); return; }   // today's Zerodha name first
     if(ACCT.directBlocked){ kiteSend([o]); return; }
     ktoast('Placing '+o.transaction_type+' '+o.quantity+' '+o.tradingsymbol+'…',6000);
     var body=Object.assign({variety:'regular',validity:'DAY',tag:'terminal'},o);
@@ -1126,7 +1138,7 @@ body.blur-secret .secret{filter:blur(7px);-webkit-user-select:none;user-select:n
   function ensureStrategies(){
     if(window.mountStrategies) return Promise.resolve();
     if(SP_LOADING) return SP_LOADING;
-    var deps=['https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2','./bt-names.js','./bt-identity.js','./backtest-engine.js','./bt-sync.js','./strategies-panel.js?v=zba31'];   // versioned: GitHub Pages serves JS with max-age=600, so a plain name kept serving the pre-sync copy for 10 min after a deploy
+    var deps=['https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2','./bt-names.js','./bt-identity.js','./backtest-engine.js','./bt-sync.js','./strategies-panel.js?v=zba32'];   // versioned: GitHub Pages serves JS with max-age=600, so a plain name kept serving the pre-sync copy for 10 min after a deploy
     SP_LOADING=deps.reduce(function(p,src){ return p.then(function(){ return loadScript(src); }); }, Promise.resolve());
     return SP_LOADING;
   }
