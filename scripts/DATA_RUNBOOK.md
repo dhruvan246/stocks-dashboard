@@ -24570,6 +24570,14 @@ expected product (0 wrong of 6,460 / 6,459 / 6,456 / 6,245), t/v/other fields un
 +8.3 %, WOCKPHARMA +8.1 %, TRENT −1.3 % / +1.9 %; pass 2 changes nothing. Sequence: push ledgers → refresh-backtest-data publishes the
 store → verify → THEN drop EIHOTEL / SUNDRMFAST / WOCKPHARMA from dash_px_keep_yahoo.json (never before: the dashboard fill would copy
 the unhealed store). Files `~/stocks-cache/xcheck-px2/`.
+**Verified LIVE 2026-09-28 ~22:25 IST.** refresh-backtest-data 36449145709 (dispatched on 255b0d37a) logged RIGHTS-RECONCILE TRENT
+×2, CA-OPEN-ARB SUNDRMFAST, SELF-HEAL EIHOTEL / WOCKPHARMA; the published release asset read back bar by bar against the pre-heal copy:
+25,620 bars of the 4 symbols = old × the expected factor, 0 off. Then EIHOTEL / SUNDRMFAST / WOCKPHARMA left dash_px_keep_yahoo.json
+(54251fc08, entry kept under `_released`); refresh.yml 36450875294: "1004 of 1004 ever-member Yahoo series replaced … 8 kept"; the
+live docs/stock_data.bin: every bar of the 4 symbols (2,921 / 2,921 / 2,921 / 2,705) equals the healed store (weekly bars = the
+store close of the week's last session; the 30-Dec-2019 week ends 31-Dec at the weekly/daily seam). px check re-run on the new store:
+store-side findings 20, all accepted as Yahoo's error, 0 open. OPEN follow-up (not done): the §173 rights sweep's text pattern misses
+'Rght…' and CCPS-worded rows — a read-only re-scan would list any other missed rights issue (HINDOILEXP 18-Aug-2006 is one candidate).
 
 ## §215 — THE ARCHIVE PAGE'S "Amount(Rs. in lakhs)" IS NSE'S TEMPLATE, NOT THE FILER'S UNIT: 5 detail cells read 10×/100× small through the PAT anchor's 2-cr floor, TTKPRESTIG's stored PAT and revenue with them; the anchor gets a relative cap (2026-09-28, user: "yes" to heal the 3 cells + the TTKPRESTIG stored PAT/revenue and its 2 cells)
 **NO ASSUMPTIONS, NO GUESSWORK — every number below was measured this session (population on origin dcb1b47a0, landed on d5cbb8c11).**
