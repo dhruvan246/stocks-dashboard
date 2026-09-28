@@ -404,7 +404,10 @@ def lag_write(path, ledger="shp_lag_fix.json"):
             ent["replaced"] = led[k]; n_rep += 1
         else: n_new += 1
         led[k] = ent
-    json.dump(led, open(lp, "w", encoding="utf-8"), indent=0, ensure_ascii=("\\u00" in raw))
+    compact = raw.lstrip().startswith('{"')            # shp_sub_dates.json is one line; shp_lag_fix.json is indent=0
+    txt = json.dumps(led, ensure_ascii=("\\u00" in raw) or not any(ord(ch) > 127 for ch in raw),
+                     **({"separators": (",", ":")} if compact else {"indent": 0}))
+    open(lp, "w", encoding="utf-8").write(txt + ("\n" if raw.endswith("\n") else ""))
     print("%s: %d new, %d replaced (kept under 'replaced')" % (ledger, n_new, n_rep))
 
 def wb_older():
@@ -435,6 +438,46 @@ def wb_older():
         else: f["tried"] = tried
         json.dump(fails, open(fp, "w"), indent=0)
     print("WB OLDER DONE %d recovered of %d" % (ok, sum(1 for f in fails.values() if f["why"].startswith(("no filing", "newest")))), flush=True)
+
+def wb_early(path):
+    """For every quarter whose latest capture shows a date > qe+45, fetch the scrip's EARLIEST capture taken >= 25 days
+    after that quarter-end (and before the latest one): if the quarter was filed on time, that capture lists the
+    original date. Same pacing / back-off as wb-fetch."""
+    import time, urllib.request, urllib.error
+    from datetime import date, timedelta
+    P = json.load(open(path)); rows = json.load(open(os.path.join(WB, "cdx_searchresult.json"))); caps = {}
+    for ts, orig, st, ln in rows:
+        m = re.search(r"scripcd=(\d{6})", orig)
+        if m and st == "200": caps.setdefault(m.group(1), []).append((ts, orig.replace("&amp", "")))
+    have = {}
+    for f in glob.glob(os.path.join(WB, "*.html")):
+        c, t = os.path.basename(f)[:-5].split("_"); have.setdefault(c, set()).add(t)
+    sc = _scope(); fa = _fa(); code_of = {}
+    want = set()
+    for k, v in P.items():
+        sym, q = k.split("|"); qd = date(int(q[:4]), int(q[4:6]), int(q[6:]))
+        if (date(v["sub"] // 10000, v["sub"] // 100 % 100, v["sub"] % 100) - qd).days <= 45: continue
+        code = code_of.get(sym) or _code(_list(sym) or _list(fa.get(sym) or "") or [])
+        code_of[sym] = code
+        if not code: continue
+        lo = (qd + timedelta(days=25)).strftime("%Y%m%d"); latest = max(t for t, _ in caps.get(code, [("0", "")]))
+        cand = sorted((t, o) for t, o in caps.get(code, []) if lo <= t[:8] and t < latest)
+        if cand and cand[0][0] not in have.get(code, set()): want.add((code, cand[0][0], cand[0][1]))
+    print("wb-early: %d captures to fetch" % len(want), flush=True)
+    UA = {"User-Agent": "stocks-dashboard-research/1.0 (personal research)"}; ok = bad = 0
+    for i, (code, ts, orig) in enumerate(sorted(want)):
+        p = os.path.join(WB, "%s_%s.html" % (code, ts)); b = b""
+        for a in range(5):
+            try: b = urllib.request.urlopen(urllib.request.Request("https://web.archive.org/web/%sid_/%s" % (ts, orig), headers=UA), timeout=90).read(); break
+            except urllib.error.HTTPError as e:
+                if e.code in (404, 403): break
+                time.sleep(min(600, 180 * (a + 1)))
+            except Exception: time.sleep(min(600, 180 * (a + 1)))
+        time.sleep(4.0)
+        if b"For Quarter Ending" in b or b"Quarter Ended" in b: open(p, "wb").write(b); ok += 1
+        else: bad += 1
+        if i % 25 == 0: print("  %d/%d ok %d bad %d" % (i, len(want), ok, bad), flush=True)
+    print("WB EARLY DONE ok %d bad %d" % (ok, bad), flush=True)
 
 def wb_decide(out):
     from datetime import datetime, date, timedelta
@@ -474,9 +517,19 @@ def wb_decide(out):
                 if key in sub_led: bump("sub_dates entry exists — left"); continue
                 day = int(dt.strftime("%Y%m%d"))
                 if day < int(qe.replace("-", "")): bump("time before quarter-end (held)"); continue
+                if key in P and P[key]["sub"] <= day: bump("later capture, same or later date"); continue
                 P[key] = {"gated_1530": False, "prov": "wayback: BSE shareholding/searchresult.asp capture %s ('%s | %s'); CALENDAR day (midnight rule §149); §164r 2026-09-28" % (ts, r[0], r[1].replace("\xa0", " ")),
                           "src": "wayback-bse", "sub": day, "ts": dt.strftime("%Y-%m-%dT%H:%M:%S"), "was": subi, "rule": "midnight-2026-09-23"}
                 bump("dated")
+    # BSE's page shows a quarter's LATEST upload time (AMBALALSA Jun-2006 -> 9-Nov-2006 among on-time neighbours; BIOCON
+    # Sep-2007 -> 4-Jan-2010). A page date is never earlier than the first publication, so an on-time date is safe;
+    # one > qe+45 days (Clause 35 allowed 21) may be a re-upload and would hide the quarter for years -> held
+    # (served undated as before) unless an earlier capture (wb-early) showed it on time.
+    held = [k for k, v in P.items() if (date(v["sub"] // 10000, v["sub"] // 100 % 100, v["sub"] % 100)
+                                         - date(int(k[-8:-4]), int(k[-4:-2]), int(k[-2:]))).days > 45]
+    for k in held: del P[k]
+    st["held: latest-upload date > qe+45 (possible re-upload)"] = len(held)
+    json.dump(sorted(held), open(os.path.join(WB, "_held_late.json"), "w"))
     json.dump(P, open(out, "w"), indent=1, ensure_ascii=False); print("wb-decide:", st, "-> %d entries" % len(P))
 
 def vstind(out):
@@ -509,6 +562,7 @@ if __name__ == "__main__":
     elif st == "wb-fetch": wb_fetch()
     elif st == "wb-decide": wb_decide(sys.argv[2])
     elif st == "wb-older": wb_older()
+    elif st == "wb-early": wb_early(sys.argv[2])
     elif st == "lag-write": lag_write(sys.argv[2], sys.argv[3] if len(sys.argv) > 3 else "shp_lag_fix.json")
     elif st == "table3-write": table3_write(sys.argv[2])
     elif st == "anndates-fetch": anndates_fetch()

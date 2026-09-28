@@ -20426,6 +20426,20 @@ the window. Rebuilt feed: exactly the 341 served dates moved, each to its ledger
 overflow guard because the filing also names Matthews India Fund 7.68 on that axis while the block totals 0.12 (the fund sits in the
 FPI row). fii 9.6387 -> 9.7587, dii 16.5334 -> 16.4134.
 Batch 3 (pre-2014 BSE filing times from Wayback captures of `shareholding/searchresult.asp`) follows.
+**Batch 3 (2026-09-28): pre-2014 filing times from BSE's retired filing list (`wb-fetch` / `wb-older` / `wb-decide` ->
+shp_sub_dates.json, 9,457 new entries, 2001-2012, 467 symbols).** BSE's retired page `shareholding/searchresult.asp?scripcd=<code>`
+listed every SHP filing as "For Quarter Ending | Date & Time" (2007 layout: "Quarter Ended <Month YYYY> | <date time>"); Wayback
+holds 7,577 captures 2002-2012. Fetched the latest capture of every in-scope scrip (706; raw `id_`, honest UA; the archive refused
+connections at a 1.5 s pace -> 4 s pace + 3-10 min back-off on refusal/5xx, failures logged in `wb/_fail.json` with the reason);
+22 newest captures were BSE's own "Error Code:404" page archived with HTTP 200 -> `wb-older` took each one's earlier captures (13
+recovered). Identity: the page's company name vs ours (105 name mismatches held). **A page date is the quarter's LATEST upload
+(AMBALALSA Jun-2006 shows 9-Nov-2006 among on-time neighbours; BIOCON Sep-2007 shows 4-Jan-2010)** — never earlier than the first
+publication, so an on-time date is safe to serve; 966 quarters whose date is > quarter-end + 45 days (Clause 35 allowed 21) may be
+re-uploads and would hide the quarter for years, so they are HELD (still served un-dated) — `wb-early` fetches each one's earliest
+capture after quarter-end + 25 days for a follow-up. Across several captures of one scrip the earliest date wins. Rebuilt feed:
+exactly the 9,457 rows moved, each from un-dated (engine fallback quarter-end + 28) to its ledger date; 0 other rows; un-dated
+pre-Jun-2016 rows 27,359 -> 17,902. Against the + 28 fallback: 9,054 visible earlier (the filing was earlier), 370 later
+(fallback look-ahead removed), 33 the same. Guards green.
 
 ### 164j. Quantmac reply v3 (26-Sep): foreign-labelled rows were read as domestic; named foreign holders now need a document
 **Bug (reported by Quantmac for CUMMINSIND / IPCALAB, measured on origin).** `_shp_dii_rowfix.eval_filing` R1 set a category label
