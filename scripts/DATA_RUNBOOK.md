@@ -24578,6 +24578,24 @@ live docs/stock_data.bin: every bar of the 4 symbols (2,921 / 2,921 / 2,921 / 2,
 store close of the week's last session; the 30-Dec-2019 week ends 31-Dec at the weekly/daily seam). px check re-run on the new store:
 store-side findings 20, all accepted as Yahoo's error, 0 open. OPEN follow-up (not done): the §173 rights sweep's text pattern misses
 'Rght…' and CCPS-worded rows — a read-only re-scan would list any other missed rights issue (HINDOILEXP 18-Aug-2006 is one candidate).
+**Rights re-check (user: "rights issue recheck", then "A now").** NSE CA 2006-2026 re-scanned with a broad pattern (rght / rgts /
+right / rts / ccps / preference / partly paid / pcd / fcd / warrant): 395 rows, 104 for N500 members at the ex-date, 101 already in
+rights_adj.json (±30 d). Missed: HINDOILEXP 18-Aug-2006 'Div10%/Rght1:3@Prem Rs.66' and FMGOETZE 17-Sep-2007 'Rgts-Eq 29:100@Prem
+Rs135' (ZEEL 03-Mar-2014 'Bonus Preference Shares 21:1' is a bonus preference payout — raw by §174). FV 10 then and now (EQUITY_L,
+no FV rows on the feed). HINDOILEXP: cum 130.05, TERP (3×130.05+76)/4 = 116.5375 → 0.896098; BSE's CA API holds NO HINDOILEXP rows
+2005-08 (not even the Nov-2007 rights NSE lists), so reader 2 = screener's weekly series, which steps ×0.8980 across the date. FMGOETZE:
+cum 158.40, TERP 155.3876 → 0.980982; BSE CA 505744 'Right Issue of Equity Shares' ex 17-Sep-2007 (record 24-Sep); screener steps
+×0.9785. Both → rights_adj.json rows + provenance. Dry run (the published store, update_sf_data passes): pass 1 rights ×2, every pre-bar
+point × the target (0 wrong of 6,461 / 6,449), ex-day now +4.2 % / +0.4 %, pass 2 nothing.
+**Pre-2006 (not healed — reported, awaiting the user).** NSE's CA feed is dividend/AGM-only before 2006, so BSE's CA API
+(DefaultData, per scrip) was read for the 617 N500 members of 2002-10..2005-12: 405 resolved to a BSE code (bse_scrips by_id), 212 did
+not (old / renamed / delisted tickers). 16 rights rows 2002-2005: 15 equity + TRENT 29-Apr-2005 PCD with warrants (exotic, raw).
+Store vs the NSE bhavcopy raw ratio at the ex bar: unadjusted (baked 1.00) KOPRAN 13-Mar-2002, KARURVYSYA 21-Oct-2002, DHAMPURSUG
+14-Oct-2003, RAMCOSYS 21-Oct-2003 & 25-Nov-2005, ALEMBICLTD 10-Dec-2003, GUJALKALI 07-Jan-2004, SOUTHBANK 15-Jul-2004, CESC
+10-Sep-2004, BATAINDIA 15-Apr-2005; SAREGAMA 04-Mar-2005 carries an inferred 0.7495 step (ca_factor snapped the −25 % drop to 3/4);
+not measurable yet (the day's bhavcopy lists an older ticker): CHOLAFIN 11-Mar-2003 & 17-Mar-2004, HINDALCO 21-Nov-2005, FEL
+15-Dec-2005. BSE rows carry no terms — each needs its ratio/price read before a TERP. Scan output
+`~/stocks-cache/xcheck-px2/bse_rights_pre2006.json`, candidates `rights_missed_candidates.json`.
 
 ## §215 — THE ARCHIVE PAGE'S "Amount(Rs. in lakhs)" IS NSE'S TEMPLATE, NOT THE FILER'S UNIT: 5 detail cells read 10×/100× small through the PAT anchor's 2-cr floor, TTKPRESTIG's stored PAT and revenue with them; the anchor gets a relative cap (2026-09-28, user: "yes" to heal the 3 cells + the TTKPRESTIG stored PAT/revenue and its 2 cells)
 **NO ASSUMPTIONS, NO GUESSWORK — every number below was measured this session (population on origin dcb1b47a0, landed on d5cbb8c11).**
