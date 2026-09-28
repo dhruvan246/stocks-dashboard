@@ -192,19 +192,16 @@ jobs:
         run: |
           git config user.name  "github-actions[bot]"
           git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
-          cp docs/sf_meta.json /tmp/sf_meta.json     # preserve the updater's fresh marker across reset
-          [ -f docs/search_index.json ] && cp docs/search_index.json /tmp/search_index.json
-          [ -f scripts/_rename_suspects.json ] && cp scripts/_rename_suspects.json /tmp/_rename_suspects.json
-          [ -f scripts/demerger_adj.json ] && cp scripts/demerger_adj.json /tmp/demerger_adj.json
-          [ -f docs/liquid_universe.json ] && cp docs/liquid_universe.json /tmp/liquid_universe.json
-          [ -f scripts/gate_calendar.json ] && cp scripts/gate_calendar.json /tmp/gate_calendar.json
-          # §161: big moves kept RAW for lack of an official record (the review queue), and the
-          # official ledger this run fetched — so a later run whose NSE fetch fails falls back to a
-          # current copy instead of one weeks stale (it lagged 165 events on 2026-09-24).
-          [ -f scripts/unconfirmed_ca.json ] && cp scripts/unconfirmed_ca.json /tmp/unconfirmed_ca.json
-          # ...but only when this run's fetch is at least as complete as the committed copy (a failed
-          # year prints "fetch failed" and simply writes fewer events — never commit a shrunken ledger).
-          if [ -f scripts/corp_actions.json ] && python3 - <<'PY'
+          # Every file this job lands (the version marker, the §161 review queue and official CA ledger - so a run
+          # whose NSE fetch fails falls back to a current copy, it lagged 165 events on 2026-09-24 - the demerger
+          # ledger, the rename suspects, the liquid universe, the gate calendar, the search index) lands ONLY if it
+          # changed this run AND origin still holds the copy this run started from. A copy put back over a newer
+          # one reverted two session commits here in September: f6169f292 undid the §161g routine's review-queue
+          # entries (4d4be240c) ten minutes after they landed, c0971890e undid fb9ea4cde four minutes after (§212).
+          # corp_actions.json only when this run's fetch is at least as complete as the committed copy (a failed
+          # year prints "fetch failed" and simply writes fewer events — never commit a shrunken ledger): a shrunken
+          # fetch goes back to the checkout's copy, so the snapshot below does not count it as changed.
+          if [ -f scripts/corp_actions.json ] && ! python3 - <<'PY'
           import json, subprocess, sys
           n = lambda d: sum(len(v) for v in d.get("factors", {}).values()) + sum(len(v) for v in d.get("noadjust", {}).values())
           new = n(json.load(open("scripts/corp_actions.json")))
@@ -213,20 +210,18 @@ jobs:
           print("corp_actions.json events: fetched %d vs committed %d" % (new, old))
           sys.exit(0 if new >= old else 1)
           PY
-          then cp scripts/corp_actions.json /tmp/corp_actions.json; fi
+          then git checkout HEAD -- scripts/corp_actions.json; echo "corp_actions.json: shrunken fetch not landed"; fi
+          LAND="docs/sf_meta.json docs/search_index.json scripts/_rename_suspects.json scripts/demerger_adj.json \
+                docs/liquid_universe.json scripts/gate_calendar.json scripts/unconfirmed_ca.json scripts/corp_actions.json"
+          BASE=$(git rev-parse HEAD)   # nothing has committed yet: the tree the builders above read
+          python3 -X utf8 scripts/ci_land.py snapshot "$BASE" /tmp/land $LAND
+          cp scripts/ci_land.py /tmp/ci_land.py   # the reset below must not swap it mid-loop
           for attempt in 1 2 3 4 5; do
             git fetch origin main && git reset --hard origin/main
-            cp /tmp/sf_meta.json docs/sf_meta.json
-            git add docs/sf_meta.json
-            [ -f /tmp/search_index.json ] && cp /tmp/search_index.json docs/search_index.json && git add docs/search_index.json
-            [ -f /tmp/_rename_suspects.json ] && cp /tmp/_rename_suspects.json scripts/_rename_suspects.json && git add -f scripts/_rename_suspects.json
-            [ -f /tmp/demerger_adj.json ] && cp /tmp/demerger_adj.json scripts/demerger_adj.json && git add scripts/demerger_adj.json
-            [ -f /tmp/liquid_universe.json ] && cp /tmp/liquid_universe.json docs/liquid_universe.json && git add docs/liquid_universe.json
-            [ -f /tmp/gate_calendar.json ] && cp /tmp/gate_calendar.json scripts/gate_calendar.json && git add scripts/gate_calendar.json
-            [ -f /tmp/unconfirmed_ca.json ] && cp /tmp/unconfirmed_ca.json scripts/unconfirmed_ca.json && git add scripts/unconfirmed_ca.json
-            [ -f /tmp/corp_actions.json ] && cp /tmp/corp_actions.json scripts/corp_actions.json && git add scripts/corp_actions.json
+            python3 -X utf8 /tmp/ci_land.py apply "$BASE" /tmp/land --each
+            for f in $LAND; do if [ -f "$f" ]; then git add -f -- "$f"; fi; done
             if git diff --cached --quiet; then echo "marker unchanged"; exit 0; fi
-            git commit -m "Backtest data version marker $(TZ=Asia/Kolkata date +'%Y-%m-%d %H:%M IST')"
+            git commit -m "Backtest data version marker $(TZ=Asia/Kolkata date +'%Y-%m-%d %H:%M IST')" -m "$(cat /tmp/land/landing.txt)"
             if git push origin HEAD:main; then echo "pushed marker (attempt #$attempt)"; exit 0; fi
             sleep $(( attempt * 3 ))
           done

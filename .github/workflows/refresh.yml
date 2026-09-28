@@ -201,8 +201,8 @@ jobs:
 
           # Save the newly built files outside the working tree first.
           # We use a "reset-and-replay" strategy on push conflicts: pull latest
-          # main, drop our new files on top (overwrite, no merge), commit,
-          # push. Avoids content-merge conflicts on the binary-ish HTML.
+          # main, drop our new files on top (no content merge — the HTML and
+          # bins are binary-ish), commit, push.
           # NOTE (runbook section 18): EVERY file the build step writes must be
           # carried through /tmp here, or reset-and-replay silently discards it.
           # docs/stock_data.bin (17 MB) is committed on a capped cadence, not
@@ -210,14 +210,20 @@ jobs:
           # check below (runbook §103: a schedule-based cap silently drifted
           # into a ~10-week price freeze once refresh-membership.yml's weekly
           # commits stopped actually touching the price series).
-          cp docs/nse-bse-dashboard.html /tmp/new_dashboard.html
+          # §212: but never on top of a copy another writer committed DURING the run (sessions edit the dashboard
+          # page and re-bake the bins): the page lands through ci_land.py (only if this run changed it and origin
+          # still holds the copy the run started from); each bin, after its own content check below, only if
+          # `ci_land.py unchanged` confirms origin still holds the checkout's copy. Otherwise origin's stays.
           cp docs/dash_slim.bin          /tmp/new_dash_slim.bin
           cp docs/stock_data.bin         /tmp/new_stock_data.bin
+          BASE=$(git rev-parse HEAD)   # nothing has committed yet: the tree the builders above read
+          python3 -X utf8 scripts/ci_land.py snapshot "$BASE" /tmp/land docs/nse-bse-dashboard.html
+          cp scripts/ci_land.py /tmp/ci_land.py   # the reset below must not swap it mid-loop
 
           for attempt in 1 2 3 4 5; do
             git fetch origin main
             git reset --hard origin/main
-            cp /tmp/new_dashboard.html docs/nse-bse-dashboard.html
+            python3 -X utf8 /tmp/ci_land.py apply "$BASE" /tmp/land
             git add docs/nse-bse-dashboard.html
 
             # dash_slim.bin (~2 MB) backs sectors.html + the dashboard's first
@@ -225,7 +231,8 @@ jobs:
             # build_quarterly_results) read the COMMITTED copy. Commit it only
             # when its data really changed (new trading day / corrected close);
             # identical same-day re-runs skip it to limit git-history growth.
-            if ! python3 scripts/dash_slim_same.py /tmp/new_dash_slim.bin docs/dash_slim.bin; then
+            if ! python3 scripts/dash_slim_same.py /tmp/new_dash_slim.bin docs/dash_slim.bin \
+               && python3 -X utf8 /tmp/ci_land.py unchanged "$BASE" docs/dash_slim.bin; then
               cp /tmp/new_dash_slim.bin docs/dash_slim.bin
               git add docs/dash_slim.bin
             fi
@@ -239,7 +246,8 @@ jobs:
             # refresh for ~10 weeks (runbook §103). Self-healing: any missed or
             # failed run just means the NEXT run still sees it as stale and
             # commits, so this can't silently drift again.
-            if ! python3 scripts/stock_bin_stale.py docs/stock_data.bin 5 /tmp/new_stock_data.bin; then   # stale prices OR a changed symbol set (§145) OR changed names (§204)
+            if ! python3 scripts/stock_bin_stale.py docs/stock_data.bin 5 /tmp/new_stock_data.bin \
+               && python3 -X utf8 /tmp/ci_land.py unchanged "$BASE" docs/stock_data.bin; then   # stale prices OR a changed symbol set (§145) OR changed names (§204)
               cp /tmp/new_stock_data.bin docs/stock_data.bin
               git add docs/stock_data.bin
             fi
@@ -249,7 +257,7 @@ jobs:
               exit 0
             fi
 
-            git commit -m "Daily refresh $(TZ=Asia/Kolkata date +'%Y-%m-%d %H:%M IST')"
+            git commit -m "Daily refresh $(TZ=Asia/Kolkata date +'%Y-%m-%d %H:%M IST')" -m "$(cat /tmp/land/landing.txt)"
             if git push origin HEAD:main; then
               echo "Pushed on attempt #$attempt"
               exit 0

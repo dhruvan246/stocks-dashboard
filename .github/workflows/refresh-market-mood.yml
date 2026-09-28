@@ -88,24 +88,23 @@ jobs:
         run: |
           git config user.name  "github-actions[bot]"
           git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
-          cp docs/nifty500_turnover.json /tmp/nifty500_turnover.json
-          cp docs/market_breadth.json    /tmp/market_breadth.json
-          cp docs/market_breadth_pit.json /tmp/market_breadth_pit.json
-          mkdir -p /tmp/survivorship && cp docs/survivorship/*.json /tmp/survivorship/
+          # Each series and each survivorship table lands on its own, only if this run changed it and origin still
+          # holds the copy the run started from. The old `cp docs/survivorship/*.json` also put back tables this job
+          # never builds (bsesmeipo.json is refresh-bse-sme-ipo's) and reverted roster heals landed mid-run (§212).
+          BASE=$(git rev-parse HEAD)   # nothing has committed yet: the tree the builders above read
+          python3 -X utf8 scripts/ci_land.py snapshot "$BASE" /tmp/land docs/nifty500_turnover.json docs/market_breadth.json docs/market_breadth_pit.json docs/survivorship/
+          cp scripts/ci_land.py /tmp/ci_land.py   # the reset below must not swap it mid-loop
           for attempt in 1 2 3 4 5; do
             git fetch origin main
             git reset --hard origin/main
-            cp /tmp/nifty500_turnover.json docs/nifty500_turnover.json
-            cp /tmp/market_breadth.json    docs/market_breadth.json
-            cp /tmp/market_breadth_pit.json docs/market_breadth_pit.json
-            mkdir -p docs/survivorship && cp /tmp/survivorship/*.json docs/survivorship/
+            python3 -X utf8 /tmp/ci_land.py apply "$BASE" /tmp/land --each
             git add docs/nifty500_turnover.json docs/market_breadth.json docs/market_breadth_pit.json docs/survivorship/*.json
             if git diff --cached --quiet; then
               echo "Turnover + breadth series unchanged — nothing to commit"
               echo "changed=false" >> "$GITHUB_OUTPUT"
               exit 0
             fi
-            git commit -m "Market Mood: refresh turnover + breadth $(TZ=Asia/Kolkata date +'%Y-%m-%d %H:%M IST')"
+            git commit -m "Market Mood: refresh turnover + breadth $(TZ=Asia/Kolkata date +'%Y-%m-%d %H:%M IST')" -m "$(cat /tmp/land/landing.txt)"
             if git push origin HEAD:main; then
               echo "Pushed on attempt #$attempt"
               echo "changed=true" >> "$GITHUB_OUTPUT"

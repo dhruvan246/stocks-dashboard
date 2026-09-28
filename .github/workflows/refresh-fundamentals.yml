@@ -353,10 +353,15 @@ jobs:
           FUND=0; [ -f docs/.fund_updated ] && FUND=1
           cp docs/sf_fundamentals.json /tmp/sf_fundamentals.json
           cp docs/sf_revop.json        /tmp/sf_revop.json
-          # IPO-base fill ledger + skip tracker (small; the big scripts/ mirrors are NOT committed from CI)
-          [ -f scripts/ipo_base_fills.json ] && cp scripts/ipo_base_fills.json /tmp/ipo_base_fills.json
-          [ -f scripts/_ipo_base_skips.json ] && cp scripts/_ipo_base_skips.json /tmp/_ipo_base_skips.json
-          [ -f scripts/excise_duty.json ] && cp scripts/excise_duty.json /tmp/excise_duty.json
+          # IPO-base fill ledger + skip tracker, excise-duty ledger (small; the big scripts/ mirrors are NOT committed
+          # from CI): only the ones this run changed, and only where origin still holds the copy the run started
+          # from - a copy put back over a session's ledger edit reverts it (runbook §212). The fills and their skip
+          # tracker are one read and land together; the fills/excise only on a fundamentals run, as before.
+          LAND=scripts/_ipo_base_skips.json
+          [ "$FUND" = "1" ] && LAND="$LAND scripts/ipo_base_fills.json scripts/excise_duty.json"
+          BASE=$(git rev-parse HEAD)   # nothing has committed yet: the tree every step above read
+          python3 -X utf8 scripts/ci_land.py snapshot "$BASE" /tmp/land $LAND
+          cp scripts/ci_land.py /tmp/ci_land.py   # the reset below must not swap it mid-loop
           [ -f scripts/filing_times_cache.json.gz ] && cp scripts/filing_times_cache.json.gz /tmp/filing_times_cache.json.gz
           [ -f scripts/result_times_cache.json.gz ] && cp scripts/result_times_cache.json.gz /tmp/result_times_cache.json.gz
           # ann-date truth ledger + reconcile skip tracker (runbook 104) — written by the reconcile
@@ -367,6 +372,8 @@ jobs:
           for f in bse_result_fills.json _missing_quarter_pending.json _missing_quarter_skips.json manual_result_reads.json; do [ -f scripts/$f ] && cp scripts/$f /tmp/$f; done
           for attempt in 1 2 3 4 5; do
             git fetch origin main && git reset --hard origin/main
+            python3 -X utf8 /tmp/ci_land.py apply "$BASE" /tmp/land --each \
+              --group 'scripts/ipo_base_fills.json scripts/_ipo_base_skips.json'
             if [ "$FUND" = "1" ]; then
               # THREE-WAY MERGE, never a blind copy. The reset above just pulled in whatever other
               # writers (backfill sessions, the vision routine) landed while this job ran; copying
@@ -378,8 +385,8 @@ jobs:
                       /tmp/sf_fundamentals.json docs/sf_fundamentals.json docs/sf_fundamentals.json
               python3 scripts/ci_preserve_merge.py /tmp/base/sf_revop.json \
                       /tmp/sf_revop.json        docs/sf_revop.json        docs/sf_revop.json
-              [ -f /tmp/ipo_base_fills.json ] && cp /tmp/ipo_base_fills.json scripts/ipo_base_fills.json && git add scripts/ipo_base_fills.json
-              [ -f /tmp/excise_duty.json ] && cp /tmp/excise_duty.json scripts/excise_duty.json && git add scripts/excise_duty.json
+              [ -f scripts/ipo_base_fills.json ] && git add scripts/ipo_base_fills.json
+              [ -f scripts/excise_duty.json ] && git add scripts/excise_duty.json
               git add docs/sf_fundamentals.json docs/sf_revop.json
             fi
             # ★ Persist the stale-hold settle, and do it HERE — inside the loop, AFTER the reset+merge.
@@ -393,7 +400,7 @@ jobs:
             python3 -X utf8 scripts/settle_stale_holds.py --apply \
               || echo "::warning::settle_stale_holds: something needs adjudication (see the blocking step above)"
             git add scripts/mc_pat_fills.json scripts/mc_history_fills.json
-            [ -f /tmp/_ipo_base_skips.json ] && cp /tmp/_ipo_base_skips.json scripts/_ipo_base_skips.json && git add scripts/_ipo_base_skips.json
+            [ -f scripts/_ipo_base_skips.json ] && git add scripts/_ipo_base_skips.json
             # broadcast-time caches: UNION by day (origin's days kept, this run's fetched days added/refreshed) —
             # a plain cp restored the job's snapshot over days another run had fetched (09-17, 09-23)
             for TC in filing_times_cache.json.gz result_times_cache.json.gz; do
@@ -455,7 +462,7 @@ jobs:
               && git add docs/fill_coverage.json \
               || echo "(fill-coverage build failed — non-fatal)"
             if git diff --cached --quiet; then echo "no diff"; exit 0; fi
-            git commit -m "Daily fundamentals + results refresh $(TZ=Asia/Kolkata date +'%Y-%m-%d %H:%M IST')"
+            git commit -m "Daily fundamentals + results refresh $(TZ=Asia/Kolkata date +'%Y-%m-%d %H:%M IST')" -m "$(cat /tmp/land/landing.txt)"
             if git push origin HEAD:main; then echo "pushed (attempt #$attempt)"; gh workflow run pages.yml || echo "(pages deploy dispatch failed)"; exit 0; fi
             sleep $(( attempt * 3 ))
           done

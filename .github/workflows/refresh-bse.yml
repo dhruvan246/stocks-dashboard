@@ -95,12 +95,18 @@ jobs:
             cp "$f" "/tmp/$(basename $f)" 2>/dev/null || true
           done
           BASE_SHA=$(git rev-parse HEAD)          # the commit this job's ledgers started from
+          # The universe, its sector cache, the seen-scrips list and the price store read each other (the bhavcopy
+          # append reads the universe and writes the seen list; the universe build reads the seen list), so they
+          # land together or not at all - and only the ones this run changed, only where origin still holds the copy
+          # this run started from. Sessions extend these (134 scrips added 26-Sep; prices back to 2020 on 24-Sep); a
+          # copy put back over one of those reverts it. A refused store is re-appended by the next run (§212).
+          python3 -X utf8 scripts/ci_land.py snapshot "$BASE_SHA" /tmp/land \
+                 docs/bse_universe.json docs/bse_prices.bin scripts/_bse_sectors.json scripts/bse_seen_scrips.json
+          cp scripts/ci_land.py /tmp/ci_land.py   # the reset below must not swap it mid-loop
           for attempt in 1 2 3 4 5; do
             git fetch origin main
             git reset --hard origin/main
-            for f in docs/bse_universe.json docs/bse_prices.bin scripts/_bse_sectors.json scripts/bse_seen_scrips.json; do
-              cp "/tmp/$(basename $f)" "$f" 2>/dev/null || true
-            done
+            python3 -X utf8 /tmp/ci_land.py apply "$BASE_SHA" /tmp/land
             # bse_fundamentals.json has OTHER writers (bse-results-xbrl.yml, history/vision merges): UNION this run's
             # cells into origin's copy instead of overwriting it (runbook §181b)
             python3 -X utf8 scripts/union_bse_fundamentals.py /tmp/bse_fundamentals.json docs/bse_fundamentals.json --base "$BASE_SHA"
@@ -112,7 +118,7 @@ jobs:
             python3 -X utf8 scripts/build_bse_results.py
             git add docs/bse_universe.json docs/bse_fundamentals.json docs/bse_prices.bin docs/bse_results.json scripts/_bse_fund_done.json scripts/_bse_fund_fail.json scripts/_bse_fund_seen.json scripts/_bse_sectors.json scripts/bse_seen_scrips.json
             if git diff --cached --quiet; then echo "No BSE changes"; exit 0; fi
-            git commit -m "BSE-only coverage refresh $(TZ=Asia/Kolkata date +'%Y-%m-%d %H:%M IST')"
+            git commit -m "BSE-only coverage refresh $(TZ=Asia/Kolkata date +'%Y-%m-%d %H:%M IST')" -m "$(cat /tmp/land/landing.txt)"
             if git push origin HEAD:main; then exit 0; fi
             echo "push #$attempt rejected; retry"; sleep $((attempt*3))
           done

@@ -87,30 +87,21 @@ jobs:
           git config user.name  "github-actions[bot]"
           git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
 
-          # ⚠️ reset-and-replay: EVERY file the fetch step writes must ride the
-          # cp-to-/tmp + cp-back + git-add lists (DATA_RUNBOOK §18 gotcha).
-          mkdir -p /tmp/shp/docs /tmp/shp/scripts
-          cp docs/shareholding.json docs/shp_meta.json docs/shp_engine.json /tmp/shp/docs/
-          cp scripts/shp_history.json scripts/shares_outstanding.json /tmp/shp/scripts/
-          # guarded: absent until the first --events run lands it, and a failed --events step
-          # must not take the whole quarterly refresh down with it
-          [ -f scripts/shp_events.json ] && cp scripts/shp_events.json /tmp/shp/scripts/ || echo "(no shp_events.json yet)"
-          # §142k re-filings sidecar (option C): written by both fetch steps, must ride the same reset-and-replay lists
-          [ -f scripts/shp_revisions.json ] && cp scripts/shp_revisions.json /tmp/shp/scripts/ || echo "(no shp_revisions.json yet)"
-          # Government sidecar (docs/shp_gov.json) — written by the quarterly fetch, absent on an --events-only run
-          [ -f docs/shp_gov.json ] && cp docs/shp_gov.json /tmp/shp/docs/ || echo "(no shp_gov.json this run)"
+          # ⚠️ reset-and-replay: EVERY file the fetch steps write must be listed here (DATA_RUNBOOK §18 gotcha).
+          # They are one read - the history store, the payloads built from it, the share counts, the re-filings
+          # sidecar (§142k), the event filings, the Government sidecar - so they land together or not at all, and
+          # only if origin still holds the copies this run started from. Sessions commit these files (heals, fill
+          # rounds); a copy put back over one of those reverts it. A refused run is re-fetched by the next (§212).
+          # shp_events.json is absent until the first --events run lands it; shp_gov.json on an --events-only run.
+          BASE=$(git rev-parse HEAD)   # nothing has committed yet: the tree the builders above read
+          python3 -X utf8 scripts/ci_land.py snapshot "$BASE" /tmp/land docs/shareholding.json docs/shp_meta.json docs/shp_engine.json docs/shp_gov.json \
+                 scripts/shp_history.json scripts/shares_outstanding.json scripts/shp_events.json scripts/shp_revisions.json
+          cp scripts/ci_land.py /tmp/ci_land.py   # the reset below must not swap it mid-loop
 
           for attempt in 1 2 3 4 5; do
             git fetch origin main
             git reset --hard origin/main
-            cp /tmp/shp/docs/shareholding.json docs/shareholding.json
-            cp /tmp/shp/docs/shp_meta.json     docs/shp_meta.json
-            cp /tmp/shp/docs/shp_engine.json   docs/shp_engine.json
-            cp /tmp/shp/scripts/shp_history.json        scripts/shp_history.json
-            cp /tmp/shp/scripts/shares_outstanding.json scripts/shares_outstanding.json
-            [ -f /tmp/shp/scripts/shp_events.json ] && cp /tmp/shp/scripts/shp_events.json scripts/shp_events.json || true
-            [ -f /tmp/shp/scripts/shp_revisions.json ] && cp /tmp/shp/scripts/shp_revisions.json scripts/shp_revisions.json || true
-            [ -f /tmp/shp/docs/shp_gov.json ] && cp /tmp/shp/docs/shp_gov.json docs/shp_gov.json || true
+            python3 -X utf8 /tmp/ci_land.py apply "$BASE" /tmp/land
             git add docs/shareholding.json docs/shp_meta.json docs/shp_engine.json \
                     scripts/shp_history.json scripts/shares_outstanding.json
             [ -f scripts/shp_events.json ] && git add scripts/shp_events.json || true
@@ -122,7 +113,7 @@ jobs:
               exit 0
             fi
 
-            git commit -m "Shareholding refresh $(TZ=Asia/Kolkata date +'%Y-%m-%d %H:%M IST')"
+            git commit -m "Shareholding refresh $(TZ=Asia/Kolkata date +'%Y-%m-%d %H:%M IST')" -m "$(cat /tmp/land/landing.txt)"
             if git push origin HEAD:main; then
               echo "Pushed on attempt #$attempt"
               gh workflow run pages.yml || echo "(pages deploy dispatch failed — will publish on next push)"

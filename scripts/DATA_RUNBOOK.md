@@ -51,6 +51,7 @@ loads every session. (README.md is just a short pointer here — this file is th
 - **§36** LIVE (INTRADAY) DATA LAYER
 - **§37** INDIAN INDICES TABLE
 - **§38** CONCURRENCY — ONE WRITER PER TREE
+- **§212** ★★★ A CI COMMIT STEP IS A THREE-WAY MERGE — 19 workflows copied whole files back over origin after `reset --hard` (2 session commits reverted in September); they now land only what the run changed, through `scripts/ci_land.py` (**read before writing or editing any workflow's commit step**)
 - **§39** ★ SHIP-IT QUALITY GATE — nothing goes out unverified (**read before ANY UI / design / feature work**)
 - **§40** STOCK PAGE = PER-STOCK SLICES · **§40b** ★ REPORTING BASIS — one basis per comparison
 - **§41** ★ PUBLISHING A DATA HEAL — "live on the server" ≠ "the site uses it" (**read before ANY heal / backfill**)
@@ -23740,3 +23741,133 @@ never null, which the callers read as "no index filter = every stock". Tested in
 name → null as before). Dropdowns: stock-backtest (static, membership loads at Run), strategy-backtest; UNI_ORDER on
 saved-strategies / all-picks. Verified locally: "Top RSI · Nifty SME Emerge · quarterly" from 2022-03-31 ran (125 snapshots,
 149 members on 2023-06-30), every pick an index member. No ENGINE_VER bump — existing results cannot change.
+
+## §212 — CI COMMIT STEPS COPIED WHOLE FILES OVER OTHER WRITERS' COMMITS: 19 workflows now land only what they changed (`scripts/ci_land.py`) (2026-09-28, user: "apply the §144g pattern … don't change workflows whose copied paths are bot-only")
+
+**What was measured (origin/main, 2026-09-28, tree level only — `git log --no-merges --full-history --since=2026-08-28 -- <path>` by
+author, blob ids from `git log --raw`; no blob content read).** 42 workflows run `git reset --hard origin/main` in their
+commit loop. After the reset, each restores its outputs one of three ways:
+
+- **Whole-file copy** — the §144g defect: anything another writer committed to that path during the run is reverted.
+- **Merge** — annual-bscf `abscf_ci_merge`, refresh-bse `union_bse_fundamentals` + `merge_bse_ledgers`, refresh-fundamentals
+  `ci_preserve_merge` + the ledger/cache unions, refresh-kpi-insights `--reapply-answers`.
+- **Rebuild on the fresh tree** — bse-results-xbrl `--apply`, refresh-search-index, refresh-results-hourly's coverage,
+  refresh-headcount's payload, shp-allstocks' `--apply-ledgers`.
+
+19 workflows (besides ideas-feeds, already fixed in §144g) whole-file-copied at least one path that someone OTHER than
+github-actions[bot] also committed in those 30 days. The non-bot counts are for those 30 days:
+
+| workflow | copied paths non-bot writers also commit | landing now |
+|---|---|---|
+| refresh-shareholding | shp_engine 37, shp_history 30, shareholding 15, shp_revisions 10, shp_gov 2, shares_outstanding 1 | one group |
+| xbrl-extra-nightly | xbrl_extra.json.gz 40, xtra_seen_window 19 | one group + cache gate (below) |
+| refresh-headcount-vision | scripts/headcount/ 21 — it copied ALL 733 ledgers back | `--each` |
+| refresh-headcount | scripts/headcount/ 21 (mtime-scoped) | `--each` |
+| refresh-stock-fin | docs/fin/ 15, fund_months 1 | REBUILT on origin each attempt (4 s) |
+| shp-allstocks-update | shp_fill_allstocks 11, holds 10, shares_history 10 | one group; derived re-applied as before |
+| refresh-market-mood | survivorship/ 8 (and it copied bsesmeipo.json, which it never builds), breadth_pit 1 | `--each` |
+| refresh-backtest-data | demerger_adj 6, unconfirmed_ca 1, corp_actions 1 | `--each`; shrink guard kept |
+| refresh-fii-dii | fii_fo 3, fii_fo_lots 1, fii_dii_monthly 1, _fo_stk_state 1, _fo_stk_lots/ 1 | `--each`, the F&O four one group |
+| refresh (dashboard) | nse-bse-dashboard.html 3, dash_slim.bin 2, stock_data.bin 2 | page via apply; bins via `unchanged` gate |
+| refresh-nse-sme-emerge | events 2, nse_sme_emerge/ 3, level 1, renames 1 | one group, `--single snapshots/` |
+| refresh-bse-sme-ipo | bse_sme_ipo.json 2, bse_sme_ipo/ 2, survivorship/bsesmeipo 2, px 1 | one group, `--single snapshots/` |
+| refresh-ipo-prehistory | ipo_prehistory.json 3 | single file |
+| refresh-bse | bse_prices.bin 2, bse_universe 1, bse_seen_scrips 1 | one group; unions unchanged |
+| monthly-returns | monthly_returns.json 2 | single file |
+| refresh-capex | capex.json 1, capex_budget_ledger 1 | one group |
+| refresh-fo | fo_spot_nse.json 1 | one group (docs/fo/ + spot) |
+| refresh-mf | mutual-funds.html 1 | one group (the page is built from the data) |
+| refresh-fundamentals | ipo_base_fills 1 | `--each`, fills + skips one group |
+
+**Reverts that actually happened, byte for byte (a bot commit whose new blob = the blob a non-bot commit had just replaced):
+2, both refresh-backtest-data.**
+
+- **f6169f292 (09-25 15:20 IST)** put `scripts/unconfirmed_ca.json` back to `{}` ten minutes after **4d4be240c** (the §161g
+  routine) parked three WRONG_FACTOR events there (SEZALGLASS 2010-10-21, VITARACHEM 1998-09-02, WFL 2021-10-06). It is still
+  `{}` on origin today — see the **open item** below.
+- **c0971890e (09-26 14:34 IST)** undid **fb9ea4cde** (the UNIONBANK 2009 row) four minutes after it landed. That row was then
+  removed on purpose in 6031e907a (§174), so this one no longer matters.
+
+An exact-byte scan only sees a copy of a file the run left alone. A revert folded into the run's own update leaves no such
+fingerprint, so 2 is a floor.
+
+**Not changed, per the task:** every other workflow's copied paths are bot-only in the window. They are backup-backtest-history,
+feed-monitor, refresh-actions, bse-results-xbrl (`_bse_xbrl_state.json`), refresh-bank-credit, refresh-announcements,
+log-picks, refresh-coverage, refresh-deals, refresh-insider, refresh-delivery, refresh-macro, refresh-index-monthly,
+refresh-results-hourly, refresh-ipos, refresh-global, refresh-indices, tl-reconcile and verify-ca-review. annual-bscf,
+refresh-kpi-insights and refresh-search-index already merge or rebuild. Bot-vs-bot overlap still exists among them:
+`docs/results_feed.json` / `results_calendar.json` are whole-file copied by THREE workflows (refresh-announcements,
+refresh-results-hourly, tl-reconcile). That is the next candidate for ci_land.py.
+
+**Fix: `scripts/ci_land.py` (land_feeds.py generalised).**
+
+- `snapshot BASE OUT PATH…` runs on the builders' tree before any reset. It copies ONLY the files the run changed against
+  BASE (hash-object vs ls-tree). A file the run left alone can never revert anything.
+- `apply BASE OUT [--each] [--group 'A B dir/'] [--single 'dir/']` runs on each fresh `reset --hard origin/main`.
+  - Origin still holds BASE's blob → the run's copy lands.
+  - Origin holds the same bytes → nothing to do.
+  - Origin changed it too → **origin's copy stays** and a `::warning::` names the file and origin's commits. The rest of
+    its group is held back too.
+  - Groups: the default is everything-one-group. `--each` makes every file its own group. `--single` is for one-time
+    captures: BSE/NSE serve only the CURRENT member list, so a dated `snapshots/<date>.json` can never be fetched again and
+    must not wait on an unrelated conflict.
+  - Decisions go to the commit body (`landing.txt`), `landing.json` and the step summary.
+- `unchanged BASE PATH…` is the gate for a copy the step makes under its own condition (refresh.yml's two bins).
+
+A refused file does not land that run, and the job's next run re-derives it from origin's newer copy. Checked per job:
+
+- **Full rebuilds:** monthly-returns, market-mood, the MF page.
+- **Top-ups of the committed file over a lookback longer than the run interval:**
+  - F&O: 10 bhavcopy days merged into the slices.
+  - capex: the newest 3 CGA months re-fetched.
+  - FII/DII: NiftyTrader's ~30 days, merged by date.
+  - shareholding: "last 3 QEs, new/revised only", merged into shp_history.
+  - BSE prices: appended from the last stored day.
+- **Backlogs picked from the ledger:** headcount, pre-IPO.
+
+The exceptions are handled explicitly. NSE's buy/sell breakdown in fii_dii.json is served for the latest day only, so that file
+is its own group (0 non-bot commits in 30 days). The SME member lists are `--single`. Two jobs needed more than landing:
+
+- **xbrl-extra-nightly.** Its seen-set lives in the Actions cache and would advance anyway, so a refused ledger would mark
+  its filings as extracted for good. The step now outputs `refused`, and the cache save runs only when `refused == 0`. The
+  next night restores the previous cache, re-downloads those filings (the 14-day window still lists them) and extracts them
+  onto origin's ledger.
+- **refresh-stock-fin.** It is wholly derived from committed stores, so it no longer copies a build back at all. It re-runs
+  `build_stock_fin.py` on each fresh origin/main. The build clears the directory, so deletions still stage. Measured: 4 s
+  locally, and 0 of 6,600 slices differ from the committed ones when inputs are unchanged.
+
+**Tested — `scripts/test_ci_land.py --old 62d4bd9d2`: 471/471 assertions.** Setup per workflow:
+
+- Each commit step's `run:` block is extracted from the YAML; the only change is `/tmp/` pointed at a sandbox.
+- It runs under `bash -e` in a depth-1 clone of a bare origin (like actions/checkout).
+- A second clone lands the other writer's commits. `gh` and `sleep` are shimmed, and helper scripts are stubbed except
+  ci_land.py.
+
+| scenario | what it checks |
+|---|---|
+| S0 no race | every changed file lands; files the run left alone stay untouched |
+| S1 session commit mid-build on a file the run also changed | origin's copy kept, `::warning::` names it, group-mates held back, other groups land |
+| S2 session commit on a file the run did not change | kept, no warning |
+| S3 git shim lands a commit right before the first push | push #1 rejected, attempt #2 keeps origin's copy |
+
+Each S1/S2 was replayed against the pre-§212 blocks: **29 REVERTED the other writer's commit**. The one KEPT is
+refresh-headcount S2, whose old mtime filter never copied a file the run did not write. Extras:
+
+- stock-fin: a heal + retraction + new symbol mid-run gives slices equal to origin's inputs.
+- headcount: the payload is rebuilt from origin's ledgers.
+- backtest-data: a shrunken corp_actions fetch is not landed.
+- xbrl-extra-nightly: `refused=2` on conflict, `refused=0` otherwise.
+
+On the real tree, `snapshot` over scripts/headcount/ (733), docs/fo/, docs/survivorship/, the SME dirs and the 22 MB
+xbrl_extra gz takes 0.2 s and finds exactly the edited and new files. `unchanged` correctly refused xbrl_extra.json.gz,
+which the bse-results-xbrl bot (e0208178f) had moved.
+
+**Open item — the §161g review-queue entries f6169f292 erased.** `scripts/unconfirmed_ca.json` has held `{}` since 09-25 15:20
+IST. 4d4be240c's version (blob 220894383) parked SEZALGLASS / VITARACHEM / WFL so self_heal would move each baked guess to
+the official factor. Unmeasured: whether the live bin carries the official factors anyway (via corp_actions_hist.json).
+Measure the adjusted day-ratio on the live bin before re-landing anything.
+
+**The rule.** A CI job that builds from BASE and pushes later is doing a three-way merge. Land only what the run changed, and
+only where origin still holds BASE's copy. Rebuild what is derived. Never `cp` a whole file or directory back after
+`reset --hard`. A new workflow's commit step uses ci_land.py and gets a CFG entry in test_ci_land.py. Any state the job
+keeps OUTSIDE git must not advance when its landing is refused.

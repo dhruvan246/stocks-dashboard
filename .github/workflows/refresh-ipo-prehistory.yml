@@ -62,23 +62,27 @@ jobs:
           print("guard OK: %d names, %d filled" % (len(data), len(filled)))
           PY
 
+      # Lands only what this run changed, and only where origin still holds the copy this run started from;
+      # a file another writer committed during the run stays theirs with a ::warning:: (runbook §212).
       - name: Commit updated pre-IPO history (only if changed)
         id: commit
         run: |
           git config user.name  "github-actions[bot]"
           git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
-          cp docs/ipo_prehistory.json /tmp/ipo_prehistory.json
+          BASE=$(git rev-parse HEAD)   # nothing has committed yet: the tree the builders above read
+          python3 -X utf8 scripts/ci_land.py snapshot "$BASE" /tmp/land docs/ipo_prehistory.json
+          cp scripts/ci_land.py /tmp/ci_land.py   # the reset below must not swap it mid-loop
           for attempt in 1 2 3 4 5; do
             git fetch origin main
             git reset --hard origin/main
-            cp /tmp/ipo_prehistory.json docs/ipo_prehistory.json
+            python3 -X utf8 /tmp/ci_land.py apply "$BASE" /tmp/land
             git add docs/ipo_prehistory.json
             if git diff --cached --quiet; then
               echo "pre-IPO history unchanged — nothing to commit"
               echo "changed=false" >> "$GITHUB_OUTPUT"
               exit 0
             fi
-            git commit -m "Pre-IPO history refresh $(TZ=Asia/Kolkata date +'%Y-%m-%d %H:%M IST')"
+            git commit -m "Pre-IPO history refresh $(TZ=Asia/Kolkata date +'%Y-%m-%d %H:%M IST')" -m "$(cat /tmp/land/landing.txt)"
             if git push origin HEAD:main; then
               echo "Pushed on attempt #$attempt"
               echo "changed=true" >> "$GITHUB_OUTPUT"

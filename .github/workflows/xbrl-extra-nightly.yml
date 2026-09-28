@@ -103,23 +103,35 @@ jobs:
       # No --push above: xtra_nightly.py refuses it from a tree named stocks-dashboard (CLAUDE.md
       # rule 2) and the runner's checkout is exactly that. Committing here also matches the rest of
       # the repo's workflows. reset --hard is legal in this ephemeral checkout, hence the copy-back.
+      # The ledger and its seen-window are one read: they land together or not at all, and only if origin still
+      # holds the copies this run started from. Sessions heal xbrl_extra.json.gz often (40 commits in the 30 days
+      # to 28-Sep); the old whole-file copy put this run's build over any heal landed during it (runbook §212).
+      # A REFUSED ledger must not mark its filings as done: the seen-set in the Actions cache would advance anyway
+      # and the next night would skip them for good. So `refused` gates the cache save below - the next night
+      # restores the previous cache, re-downloads those filings (the 14-day window still lists them) and extracts
+      # them onto origin's ledger.
       - name: Commit the ledger
+        id: commit
         env:
           GH_TOKEN: ${{ github.token }}
         run: |
           git config user.name  "github-actions[bot]"
           git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
-          cp scripts/xbrl_extra.json.gz /tmp/xbrl_extra.json.gz
-          cp scripts/xtra_seen_window.json.gz /tmp/xtra_seen_window.json.gz
+          BASE=$(git rev-parse HEAD)   # nothing has committed yet: the tree the builders above read
+          python3 -X utf8 scripts/ci_land.py snapshot "$BASE" /tmp/land scripts/xbrl_extra.json.gz scripts/xtra_seen_window.json.gz
+          cp scripts/ci_land.py /tmp/ci_land.py   # the reset below must not swap it mid-loop
+          refused() { python3 -c "import json; print(len(json.load(open('/tmp/land/landing.json'))['refused']))"; }
           for attempt in 1 2 3 4 5; do
             git fetch origin main && git reset --hard origin/main
-            cp /tmp/xbrl_extra.json.gz scripts/xbrl_extra.json.gz
-            cp /tmp/xtra_seen_window.json.gz scripts/xtra_seen_window.json.gz
+            python3 -X utf8 /tmp/ci_land.py apply "$BASE" /tmp/land
             git add scripts/xbrl_extra.json.gz scripts/xtra_seen_window.json.gz
-            if git diff --cached --quiet; then echo "gz unchanged — nothing to push"; exit 0; fi
-            git commit -q -m "Deep-fundamentals ledger top-up $(TZ=Asia/Kolkata date +'%Y-%m-%d %H:%M IST')"
+            if git diff --cached --quiet; then
+              echo "gz unchanged — nothing to push"; echo "refused=$(refused)" >> "$GITHUB_OUTPUT"; exit 0
+            fi
+            git commit -q -m "Deep-fundamentals ledger top-up $(TZ=Asia/Kolkata date +'%Y-%m-%d %H:%M IST')" -m "$(cat /tmp/land/landing.txt)"
             if git push origin HEAD:main; then
               echo "pushed (attempt #$attempt)"
+              echo "refused=$(refused)" >> "$GITHUB_OUTPUT"
               # A GITHUB_TOKEN push never fires `push:` workflows — kick the slice rebuild ourselves
               # (refresh-stock-fin.yml then dispatches pages.yml once docs/fin changes).
               gh workflow run refresh-stock-fin.yml || echo "(fin-slice rebuild dispatch failed — the next results commit will rebuild)"
@@ -130,7 +142,7 @@ jobs:
           echo "ledger push failed after 5 attempts"; exit 1
 
       - name: Save rolling XBRL window + seen-set
-        if: success()
+        if: success() && steps.commit.outputs.refused == '0'
         uses: actions/cache/save@v4
         with:
           path: |

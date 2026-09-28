@@ -68,13 +68,18 @@ jobs:
         run: |
           git config user.name  "github-actions[bot]"
           git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
-          # this job's own outputs; everything derived is re-applied on top of the newest main below
+          # This job's own outputs (the fill ledger, its holds, the share history: one read) land together or not
+          # at all, and only if origin still holds the copies this run started from - sessions run fill rounds on
+          # these three and a copy put back over one reverts it; a refused run is re-fetched by the next. Everything
+          # derived is then re-applied on top of the newest main below, from whichever ledgers origin now has (§212).
           mkdir -p /tmp/upd
-          cp scripts/shp_fill_allstocks.json.gz scripts/_shp_allstocks_holds.json scripts/shares_history.json /tmp/upd/
+          BASE=$(git rev-parse HEAD)   # nothing has committed yet: the tree the builders above read
+          python3 -X utf8 scripts/ci_land.py snapshot "$BASE" /tmp/land scripts/shp_fill_allstocks.json.gz scripts/_shp_allstocks_holds.json scripts/shares_history.json
+          cp scripts/ci_land.py /tmp/ci_land.py   # the reset below must not swap it mid-loop
           for attempt in 1 2 3 4 5; do
             git fetch origin main
             git reset --hard origin/main
-            cp /tmp/upd/shp_fill_allstocks.json.gz /tmp/upd/_shp_allstocks_holds.json /tmp/upd/shares_history.json scripts/
+            python3 -X utf8 /tmp/ci_land.py apply "$BASE" /tmp/land
             python3 -X utf8 scripts/fetch_shareholding.py --apply-ledgers > /tmp/upd/apply.log 2>&1 || { tail -20 /tmp/upd/apply.log; exit 1; }
             grep -E "history:|re-filings" /tmp/upd/apply.log || true
             git add scripts/shp_fill_allstocks.json.gz scripts/shares_history.json scripts/shp_history.json \
@@ -82,7 +87,7 @@ jobs:
             git add -f scripts/_shp_allstocks_holds.json
             [ -f docs/shp_meta.json ] && git add docs/shp_meta.json || true
             if git diff --cached --quiet; then echo "No new quarters landed — nothing to commit"; exit 0; fi
-            git commit -m "Shareholding all-stocks update $(TZ=Asia/Kolkata date +'%Y-%m-%d %H:%M IST') (runbook §180e)"
+            git commit -m "Shareholding all-stocks update $(TZ=Asia/Kolkata date +'%Y-%m-%d %H:%M IST') (runbook §180e)" -m "$(cat /tmp/land/landing.txt)"
             if git push origin HEAD:main; then
               echo "Pushed on attempt #$attempt"
               gh workflow run pages.yml || echo "(pages dispatch failed — publishes on the next push)"

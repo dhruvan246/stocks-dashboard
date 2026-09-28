@@ -63,21 +63,24 @@ jobs:
       - name: Build per-stock financial slices
         run: python3 scripts/build_stock_fin.py
 
-      # NOTE: the retry loop resets --hard, so the freshly built directory is stashed in /tmp and
-      # copied back INSIDE the loop — anything left only in the workspace would be discarded.
-      # `git add --all -- docs/fin` is scoped to that one directory (and this is an ephemeral CI
-      # checkout, not the shared working tree CLAUDE.md rule 1 protects); --all is what stages the
-      # DELETIONS for companies that dropped out of the feeds.
+      # The slices are DERIVED from committed stores only (sf_fundamentals, sf_revop, shareholding, xbrl_extra.gz,
+      # row_periods, ...), so each push attempt REBUILDS them on the fresh origin/main (~4 s) instead of copying
+      # the checkout's build back. The old `rm -rf docs/fin && cp -r /tmp/fin` put a build of the checkout's
+      # inputs over origin, reverting any slices a session re-baked after a heal during the run (runbook §212).
+      # The step above stays as the early failure check. `git add --all -- docs/fin` is scoped to that one
+      # directory (an ephemeral CI checkout, not the shared tree CLAUDE.md rule 1 protects); --all stages the
+      # DELETIONS for companies that dropped out of the feeds (build_stock_fin.py clears the directory first).
       - name: Commit refreshed slices
         env:
           GH_TOKEN: ${{ github.token }}
         run: |
           git config user.name  "github-actions[bot]"
           git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
-          rm -rf /tmp/fin && cp -r docs/fin /tmp/fin && cp docs/fund_months.json /tmp/fund_months.json
           for attempt in 1 2 3 4 5; do
             git fetch origin main && git reset --hard origin/main
-            rm -rf docs/fin && cp -r /tmp/fin docs/fin && cp /tmp/fund_months.json docs/fund_months.json
+            python3 scripts/build_stock_fin.py > /tmp/fin_build.log 2>&1 \
+              || { tail -20 /tmp/fin_build.log; echo "::error::slice rebuild on origin/main failed"; exit 1; }
+            tail -3 /tmp/fin_build.log
             git add --all -- docs/fin docs/fund_months.json
             if git diff --cached --quiet; then echo "financial slices unchanged"; exit 0; fi
             git commit -q -m "Per-stock financial slices $(TZ=Asia/Kolkata date +'%Y-%m-%d %H:%M IST')"

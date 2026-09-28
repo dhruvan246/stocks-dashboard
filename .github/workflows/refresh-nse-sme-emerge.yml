@@ -57,18 +57,21 @@ jobs:
         run: |
           git config user.name  "github-actions[bot]"
           git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
-          rm -rf /tmp/smeem && mkdir -p /tmp/smeem
-          cp docs/nifty_sme_emerge.json scripts/nse_sme_emerge_events.json scripts/nse_sme_emerge_renames.json /tmp/smeem/
-          cp -r docs/nse_sme_emerge /tmp/smeem/dir
+          # The level, the member list and its change log, the press-release ledgers and the point-in-time tables
+          # built from them are one read: they land together or not at all, and only if origin still holds the
+          # copies this run started from. Each snapshots/<date>.json lands on its own - NSE serves only the CURRENT
+          # list, undated, so a captured one can never be fetched again and must not wait on an unrelated conflict
+          # (runbook §212).
+          BASE=$(git rev-parse HEAD)   # nothing has committed yet: the tree the builders above read
+          python3 -X utf8 scripts/ci_land.py snapshot "$BASE" /tmp/land docs/nifty_sme_emerge.json docs/nse_sme_emerge/ scripts/nse_sme_emerge_events.json scripts/nse_sme_emerge_renames.json
+          cp scripts/ci_land.py /tmp/ci_land.py   # the reset below must not swap it mid-loop
           for attempt in 1 2 3 4 5; do
             git fetch origin main
             git reset --hard origin/main
-            cp /tmp/smeem/nifty_sme_emerge.json docs/
-            cp /tmp/smeem/nse_sme_emerge_events.json /tmp/smeem/nse_sme_emerge_renames.json scripts/
-            mkdir -p docs/nse_sme_emerge && cp -r /tmp/smeem/dir/. docs/nse_sme_emerge/
+            python3 -X utf8 /tmp/ci_land.py apply "$BASE" /tmp/land --single docs/nse_sme_emerge/snapshots/
             git add docs/nifty_sme_emerge.json docs/nse_sme_emerge scripts/nse_sme_emerge_events.json scripts/nse_sme_emerge_renames.json
             if git diff --cached --quiet; then echo "unchanged"; echo "changed=false" >> "$GITHUB_OUTPUT"; exit 0; fi
-            git commit -m "Nifty SME Emerge index refresh $(TZ=Asia/Kolkata date +'%Y-%m-%d %H:%M IST')"
+            git commit -m "Nifty SME Emerge index refresh $(TZ=Asia/Kolkata date +'%Y-%m-%d %H:%M IST')" -m "$(cat /tmp/land/landing.txt)"
             if git push origin HEAD:main; then echo "changed=true" >> "$GITHUB_OUTPUT"; exit 0; fi
             echo "push #$attempt rejected; retry"; sleep $((attempt*3))
           done
