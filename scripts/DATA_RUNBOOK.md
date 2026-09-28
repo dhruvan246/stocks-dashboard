@@ -24457,6 +24457,28 @@ neither the total 436.33 nor owners). The 6 WITH an NCI line are x-line faults f
 covers continuing operations only), ASIANPAINT Jun-22, GLENMARK Jun-23 (the NCI slot holds the owners figure 149.93), GLENMARK
 Sep-23, PFC Dec-23 (NCI line 1,225.88 does not reconcile). List: `~/stocks-cache/xcheck/triage_0928/f2_pbt44.json`. So F7's check
 fix must learn the NCI share (or skip con cells whose x lines lack an NCI line) before these 44 can close.
+**Owners-rule reach HEALED — 52 more consolidated cells (user: "yes" to read the 82, then "yes" to write the stock-wise list,
+LICHSGFIN as printed).** Re-screened on origin badbf179b: 75 of the 82 still open (7 were F2 cells). Each READ (one agent, sequential)
+— reader 1 = the quarter's own BSE result PDF on all 75 (scanned pages rendered; old attachments via
+`bseindia.com/xml-data/corpfiling/CorpAttachment/<yyyy>/<m>/<name>` where AnnPdfOpen failed), reader 2 = a later filing's
+comparative column (45) or Moneycontrol (30, only where its figure is not one of the questioned XBRL tags); the two agree to the
+printed unit on every cell. Verdicts: **WRONG 51 + TMPV Mar-19** (same Tata Motors filing as TATAMTRDVR, found outside the list:
+1,108.66 total → 1,117.48 owners), **RIGHT 19** (the screen's minority tag was the filer's XBRL mis-tag — owners = NCI = total:
+FINCABLES Mar-25, NUVOCO ×2, NAVNETEDUL ×2, PERSISTENT Jun-19; comprehensive income in the tags: AJANTPHARM Jun-19, ELGIEQUIP
+Mar-22, INFY Jun-23; paid-up capital in the tags: BOSCHLTD Mar-23; stored = the printed after-minority line: NMDC ×5, RELINFRA
+Sep-18, RCOM Jun-19, SHILPAMED Mar-18/Dec-18), **NOT_FOUND 5** (the filing prints no owners split: BEML Sep-25, GLENMARK Jun-20,
+KAYNES Jun-24/Sep-25, SIS Mar-22 — stored value kept). Three stored values matched NO printed line (the filer's broken XBRL profit
+tag): AARTIIND Mar-21 692.34 → 136.10, OLECTRA Mar-24 18.51 → 13.71, PHOENIXLTD Sep-20 −36.15 → −35.91. Largest by rupees:
+SUNPHARMA Jun-18 1,111.06 → 982.51, IOC Jun-18 7,176 → 7,092.42, COFORGE Mar-26 666.2 → 612.3 / Jun-25 356.4 → 317.4,
+GMMPFAUDLR Sep-22 96.89 → 64.98, ADANIGREEN Jun-20 21.75 → 45.30 (minority loss). LICHSGFIN Sep-23 1,193.57 → 1,191.77 = the
+printed "Shareholders of the Company" line, which LIC Housing prints as a split of profit BEFORE its 1.71 cr associates share
+(1,193.48 = Moneycontrol's arithmetic, printed nowhere); the stored Jun-23 / Dec-23 neighbours already use the printed line.
+Spot-checked by the lead session from the filing text/renders: AARTIIND (13,610 / 324 lakhs), BERGEPAINT (182.35 / (0.50)),
+FINCABLES (191.71 / "-"), GMMPFAUDLR Sep-22 (64.98 / 31.91; Sep-21 34.60 / 4.20). Routing: 52 cells pinned in
+`owners_basis_heals.json`, 51 pat_con mirrors in `revop_cell_fix.json` (TMPV has no sf_revop row). Applied in the nightly order
+(apply_owners_full → apply_fund_cell_fix → apply_revop_cell_fix): exactly 52 con slots of sf_fundamentals and 51 slot-5 cells of
+sf_revop moved, each to its read value, nothing else. Readings + writer: `~/stocks-cache/xcheck-f2b/` (f2b_readings.json,
+f2b_summary.md, write_ledgers_f2b.py, cells.json).
 
 ## §215 — THE ARCHIVE PAGE'S "Amount(Rs. in lakhs)" IS NSE'S TEMPLATE, NOT THE FILER'S UNIT: 5 detail cells read 10×/100× small through the PAT anchor's 2-cr floor, TTKPRESTIG's stored PAT and revenue with them; the anchor gets a relative cap (2026-09-28, user: "yes" to heal the 3 cells + the TTKPRESTIG stored PAT/revenue and its 2 cells)
 **NO ASSUMPTIONS, NO GUESSWORK — every number below was measured this session (population on origin dcb1b47a0, landed on d5cbb8c11).**
