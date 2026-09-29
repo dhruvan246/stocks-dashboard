@@ -149,7 +149,8 @@ function startTickLoop(){ if (TK.timer) return; TK.timer = setInterval(fetchTick
 const baCell = sym => { const q = liveQ(sym); return (q && q.bid > 0 && q.ask > 0) ? ' <span class="sym" title="best bid / best ask (live depth)">' + (+q.bid).toFixed(2) + '/' + (+q.ask).toFixed(2) + '</span>' : ''; };
 function startLiveLoop(){
   if (LIVE_TIMER) return;
-  LIVE_TIMER = setInterval(() => { if (!document.hidden && marketOpen()){ zbaPull(); if (Object.keys(PICKS).length){ fetchLive(); if (PICKMODE === 'live') liveRerankAll(); } } }, 60000);
+  LIVE_TIMER = setInterval(() => { if (!document.hidden && marketOpen()){ zbaPull(); if (Object.keys(PICKS).length){ fetchLive(); if (PICKMODE === 'live') liveRerankAll();
+    if (PICKMODE === 'live' && rebalWindow().sellIn && Z.connected && !cpSellsStarted() && Date.now() - CPL.at > 300000) cashPlanRun(true); } } }, 60000);
   startTickLoop(); fetchTicks();
 }
 
@@ -370,6 +371,10 @@ async function zHoldRefresh(){
     Z.hold = {};
     h.j.data.forEach(r => { const k = baseSym(r.tradingsymbol), p = Z.hold[k] || { mtf: 0, cnc: 0, coll: 0 };   // HFCL-BE / BSE HFCL are our HFCL
       Z.hold[k] = { mtf: p.mtf + ((r.mtf || {}).quantity || 0), cnc: p.cnc + (r.quantity || 0) + (r.t1_quantity || 0), coll: p.coll + (r.collateral_quantity || 0) }; });
+    Z.hraw = {};   // the cash plan's inputs: MTF qty / entry value / own margin / avg, demat qty, prices
+    h.j.data.forEach(r => { const k = baseSym(r.tradingsymbol), m = r.mtf || {}, a = Z.hraw[k] || { mq: 0, cq: 0, mval: 0, mim: 0, mavgV: 0, ltp: 0, close: 0 };
+      a.mq += m.quantity || 0; a.cq += (r.quantity || 0) + (r.t1_quantity || 0) + (r.collateral_quantity || 0); a.mval += m.value || 0; a.mim += m.initial_margin || 0;
+      a.mavgV += (m.average_price || 0) * (m.quantity || 0); a.ltp = r.last_price || a.ltp; a.close = r.close_price || a.close; a.mavg = a.mq ? a.mavgV / a.mq : 0; Z.hraw[k] = a; });
     Z.held = new Set(h.j.data.filter(r => ((r.quantity||0)+(r.t1_quantity||0)+(r.collateral_quantity||0)+((r.mtf||{}).quantity||0)) > 0)
                              .map(r => baseSym(r.tradingsymbol)));
     kiteSyms(Object.keys(Z.hold));   // today's Zerodha names for everything held
@@ -450,6 +455,9 @@ function wizardSteps(){
       if (rt){ slices += rt.tot; if (rt.startBy && (!startBy || rt.startBy < startBy)) startBy = rt.startBy; } });
     S('exits', nEx ? 'info' : (loaded.length ? 'ok' : 'off'), nEx + ' exit' + (nEx === 1 ? '' : 's') + ' across ' + withEx + ' strateg' + (withEx === 1 ? 'y' : 'ies') + (val ? ' \u2248 ' + zinr(val) : ''), nBd ? nBd + ' borderline \u2014 sell those last (~3:25)' : (loaded.length ? 'no borderline names' : 'load picks first'), nEx ? 'sellside' : '');
     const late = !!(startBy && hhmm(now) > startBy);
+    { const P = cpDoc(), fz = cpSellsStarted();
+      S('cplan', P ? (P.acct.short ? 'warn' : 'ok') : 'warn', P ? 'Cash plan ' + hhmm(new Date(P.at + 330 * 60000)) + (P.acct.short ? ' \u2014 short ' + zinr(P.acct.short) : ' \u2014 spare ' + zinr(P.acct.spare)) : 'Cash plan not worked out yet',
+        P ? (fz ? 'frozen \u2014 the sells have started' : 'refreshes itself every 5 min until the first sell basket') : 'sizes the buys by each strategy\u2019s own cash \u2014 Zerodha\u2019s MTF per pick', (P && fz) ? '' : 'cplan'); }
     S('timing', !loaded.length ? 'off' : (!todo ? 'ok' : (late ? 'warn' : 'info')), todo ? (slices + ' slice' + (slices === 1 ? '' : 's') + ' still to send' + (startBy ? ' \u2014 start by ' + startBy + ' for a 3:28 finish' : '')) : (withEx ? 'All exit shares sent' : 'Nothing to sell'), late ? 'past the start-by time \u2014 start now' : ('now ' + hhmm(now) + ' IST'), todo ? 'sellside' : '');
     S('sent', withEx ? (sent === withEx ? 'ok' : (sent ? 'warn' : 'bad')) : 'off', 'Sell baskets sent ' + sent + '/' + withEx, '', sent < withEx ? 'sellside' : '');
     const cap = books.filter(it => proceedsOf(it.id)).length;
@@ -471,6 +479,7 @@ function wizardSteps(){
     const cap = books.filter(it => proceedsOf(it.id)).length;
     S('proceeds', books.length ? (cap === books.length ? 'ok' : 'warn') : 'off', 'Actual sell proceeds for ' + cap + '/' + books.length + ' strategies', cap < books.length ? 'the rest size from today\u2019s prices (an estimate)' : 'buys sized from real fills', '');
     S('lev', LEV ? (LEV.blocked.length ? 'warn' : 'ok') : 'bad', LEV ? ('Leverage checked ' + hhmm(new Date(LEV.at + 330 * 60000)) + (LEV.blocked.length ? ' \u2014 MTF blocked: ' + LEV.blocked.join(', ') : ' \u2014 no MTF-blocked entrants')) : 'Leverage not checked yet', (LEV && LEV.blocked.length) ? 'those need the FULL amount in cash (auto-CNC)' : '', LEV ? '' : 'lev');
+    { const P = cpDoc(); S('cplan', P ? 'ok' : 'warn', P ? 'Buys sized by the cash plan (' + hhmm(new Date(P.at + 330 * 60000)) + ')' : 'No cash plan \u2014 buys use the normal sizing', P ? 'a strategy whose screen changed since falls back to the normal sizing' : '', ''); }
     S('bought', withEnt ? (bought === withEnt ? 'ok' : (bought ? 'warn' : 'bad')) : (loaded.length ? 'ok' : 'off'), withEnt ? 'Buy baskets sent ' + bought + '/' + withEnt + ' (' + entries + ' entr' + (entries === 1 ? 'y' : 'ies') + ')' : 'Nothing to buy', '', bought < withEnt ? 'buyside' : '');
     const ledgerDone = !!books.length && books.every(it => { const p = PICKS[it.id]; if (!p || !p.rows.length) return false; const held = heldFor(it.cfg), hs = new Set(held.rows.map(h => h.sym)); return !p.rows.some(r => !hs.has(r.sym)) && !held.rows.some(h => !p.rows.some(r => r.sym === h.sym)); });
     wizSnap(S, now);
@@ -479,7 +488,7 @@ function wizardSteps(){
   return { leg: leg, RW: RW, steps: steps };
 }
 const WZ_ICON = { ok: '\u2713', warn: '\u26a0', bad: '\u2717', info: '\u2022', off: '\u2013' };
-const WZ_ACT = { login: 'Login', cloud: 'Cloud on', load: 'Load picks', loadall: 'Refresh picks', live: 'Live picks', reb: 'Rebalance picks', sellside: 'Sell side', buyside: 'Buy side', lev: 'Check leverage', capture: 'Capture now', reconcile: 'Reconcile books' };
+const WZ_ACT = { cplan: 'Plan cash', login: 'Login', cloud: 'Cloud on', load: 'Load picks', loadall: 'Refresh picks', live: 'Live picks', reb: 'Rebalance picks', sellside: 'Sell side', buyside: 'Buy side', lev: 'Check leverage', capture: 'Capture now', reconcile: 'Reconcile books' };
 function renderWizard(){
   let box = $('spWizard');
   if (!box){ const ch = $('spChips'); if (!ch) return; box = document.createElement('div'); box.id = 'spWizard'; ch.insertAdjacentElement('beforebegin', box); }
@@ -498,6 +507,7 @@ function wizardAct(a){
   else if (a === 'live' || a === 'reb'){ if ((a === 'live') !== (PICKMODE === 'live')) $('spMode').click(); }
   else if (a === 'sellside' || a === 'buyside'){ if ((a === 'sellside') !== (SIDE === 'sell')) $('spSide').click(); }
   else if (a === 'capture'){ ledgerCapture(); }
+  else if (a === 'cplan'){ cashPlanRun(false); }
   else if (a === 'reconcile'){ ledgerOpen(); }
   else if (a === 'lev'){ if (SIDE !== 'buy') $('spSide').click(); setTimeout(() => { const g = $('levGo'); if (g) g.click(); else ktoast('Load the picks first \u2014 the leverage check needs the entrants'); }, 300); }
 }
@@ -594,9 +604,12 @@ function rebuyRows(it, p){
 }
 function buyAllAgg(list){
   const agg = {}, missing = [], NUM = blockNums(list);   // numbered like the blocks' badges, not by list position
-  let nAct = 0, nEst = 0;
+  let nAct = 0, nEst = 0, nPlan = 0;
   list.forEach((it, i) => {
     const p = PICKS[it.id]; if (!p || !p.rows.length) return;
+    const cp = planFor(it);   // the cash plan sized this strategy: its buys, nothing else
+    if (cp){ nPlan++; cp.picks.forEach(sym => { const q = cp.buyQ[sym] || 0; if (!q) return; const L = liveQ(sym), px = (L && L.ltp != null) ? L.ltp : cp.px[sym];
+        const a = agg[sym] = agg[sym] || { sym: sym, px: px, amt: 0, from: [], capped: false, back: false }; a.px = px; a.amt += q * cp.px[sym]; a.from.push(NUM.get(it.id)); }); return; }
     /* engine sizing (2026-09-01, FIXED): a HOLD strategy funds each NEW entry from its EXIT proceeds ÷ open
        slots — never a fresh full amount. RESET sells its whole book, split topN ways. Proceeds = the ACTUAL
        sell fills captured on T (Option A, user 2026-09-23) when present, else the exits' value at today's
@@ -631,7 +644,216 @@ function buyAllAgg(list){
   });
   const rows = Object.values(agg).map(a => Object.assign(a, { qty: (a.amt > 0 && a.px > 0) ? Math.floor(a.amt / a.px) : 0 }))
     .sort((x, y) => (y.amt - x.amt) || (x.sym < y.sym ? -1 : 1));
-  return { rows: rows, missing: missing, nAct: nAct, nEst: nEst };
+  return { rows: rows, missing: missing, nAct: nAct, nEst: nEst, nPlan: nPlan };
+}
+/* ================= CASH PLAN (user 2026-09-29: "apply this every month before rebalancing") =================
+   Sizes every strategy's new picks by the cash ITS OWN sells free, so a pick Zerodha won't fund on MTF (CPPLUS in
+   Sep-26, leverage 1.0) no longer starves the account. Per strategy:
+     own cash = Σ exits: value − its share of the MTF loan + its blocked MTM loss back (a cash/CNC holding frees its full
+                value). A RESET strategy's re-picked stock is KEPT, not sold and bought back: no charges, and the old MTF
+                loan stays (Zerodha keeps an existing MTF position funded even after new MTF buys stop). It counts at
+                its equity.
+     R1  it sold a cash (non-MTF) holding and its own cash buys MORE than its normal slots → every new pick grows,
+         equal in value (HFCL's money, now levered)
+     R2  short, with a pick Zerodha won't fund → its MTF picks get their normal amount, that pick gets what is left
+         (R3 — HFCL out + CPPLUS in, same strategy — is the same maths)
+   Everyone else buys normally; their leftovers + free cash cover a strategy short for any other reason (#8 in Sep-26:
+   HDFCLIFE 4.4x → POLICYBZR 2.0x). If the account is still short, R1 growth trims first, then the R2 picks; ₹10 L
+   stays spare. Worked out on the sell day from the live picks (it refreshes itself every 5 min then) and FROZEN once
+   the first sell basket leaves — the sells change its inputs. The sell baskets (reset keeps), the ⚡ buy dialogs and
+   the This-rebalance table read it back on T+1. Pure maths in planCompute() — ~/stocks-portfolio/tests/test_cash_plan.js */
+const CP_BUF = 10e5, CPL = { busy: false, at: 0 };
+function solveUp(f, y, hi){   // the largest x in [0, hi] with f(x) <= y, for f increasing
+  if (f(hi) <= y) return hi; if (f(0) > y) return 0;
+  let lo = 0; for (let i = 0; i < 70; i++){ const m = (lo + hi) / 2; if (f(m) > y) hi = m; else lo = m; } return lo; }
+function planCompute(inp){
+  const H = inp.hraw || {}, PX = inp.px || {}, LV = inp.lev || {}, warn = [];
+  const price = s => +(PX[s] || (H[s] && H[s].ltp) || 0);
+  const mtfOk = s => LV[s] != null && LV[s] > 1.05;
+  const pos = s => { const h = H[s]; if (!h) return null; const tot = (h.mq || 0) + (h.cq || 0);
+    return { mfrac: tot ? (h.mq || 0) / tot : 0, loan: h.mq ? ((h.mval || 0) - (h.mim || 0)) / h.mq : 0, block: h.mq ? Math.max(0, (h.mavg || 0) - (h.close || 0)) : 0 }; };
+  const eqPs = s => { const p = price(s), z = pos(s); return z ? z.mfrac * (p - z.loan + z.block) + (1 - z.mfrac) * p : p; };
+  const freed = (s, q) => { if (!pos(s)){ warn.push(s + ' is not in the Zerodha holdings — counted as ₹0 freed'); return 0; }
+    return q * eqPs(s) - 0.0011 * q * price(s); };
+  const S = {}, W = {};
+  for (const st of inp.strats){
+    const topN = st.topN || 3, reset = st.method === 'reset', pk = st.picks.slice(0, topN), pset = new Set(pk);
+    const rows = st.rows.filter(r => r.qty > 0), held = new Set(rows.map(r => r.sym));
+    const keep = {}; if (reset) rows.forEach(r => { if (pset.has(r.sym)) keep[r.sym] = r.qty; });
+    const stays = reset ? [] : rows.filter(r => pset.has(r.sym)).map(r => r.sym);
+    const exits = rows.filter(r => reset ? !(r.sym in keep) : !pset.has(r.sym));
+    const picks = reset ? pk : pk.filter(s => !held.has(s));
+    const o = S[st.id] = { num: st.num, rule: 'none', pct: 1, keep: keep, stays: stays, picks: picks, normal: {}, tgt: {}, px: {}, buyQ: {}, holdQ: {}, freed: 0, keptEq: 0, left: 0, fx: {}, xv: {} };
+    const sFx = st.soldFx || {}, sXv = st.soldXv || {};   // T+1 re-plan: what the T sells already freed / were worth (frozen in the plan)
+    exits.forEach(r => { o.fx[r.sym] = freed(r.sym, r.qty); o.xv[r.sym] = r.qty * price(r.sym); });
+    Object.keys(sFx).forEach(s => { o.fx[s] = (o.fx[s] || 0) + sFx[s]; o.xv[s] = (o.xv[s] || 0) + (sXv[s] || 0); });
+    picks.forEach(s => { o.px[s] = +price(s).toFixed(2); });
+    if (!picks.length) continue;
+    const sumV = m => Object.keys(m).reduce((a, k) => a + m[k], 0);
+    const exitVal = sumV(o.xv), bookVal = rows.reduce((a, r) => a + r.qty * price(r.sym), 0) + sumV(sXv);
+    const nv = reset ? bookVal / topN : exitVal / Math.max(1, topN - stays.length);
+    picks.forEach(s => { o.normal[s] = nv; });
+    o.freed = sumV(o.fx);
+    o.keptEq = Object.keys(keep).reduce((a, s) => a + keep[s] * eqPs(s), 0);
+    const budget = o.freed + o.keptEq;
+    const cost = (s, v) => { const kq = keep[s] || 0, rest = Math.max(0, v - kq * price(s));   // kept shares are never sold: their equity is always spent
+      return kq * eqPs(s) + (mtfOk(s) ? rest / LV[s] + 0.0012 * rest : rest * 1.0012); };
+    const costAll = vals => Object.keys(vals).reduce((a, s) => a + cost(s, vals[s]), 0);
+    const eqVals = V => { const v = {}; picks.forEach(s => { v[s] = V; }); return v; };
+    const noMtf = picks.filter(s => !mtfOk(s));
+    const cashExit = exits.some(r => { const h = H[r.sym]; return h && !(h.mq > 0); }) || !!st.soldCash;
+    o.cashExit = cashExit;
+    let vals;
+    if (!noMtf.length && !cashExit){ vals = Object.assign({}, o.normal); o.rule = 'normal'; }
+    else {
+      const eqV = solveUp(V => costAll(eqVals(V)), budget, Math.max(5e8, nv * 4));
+      if (cashExit && eqV >= nv){ vals = eqVals(eqV); o.rule = 'R1'; o.pct = nv ? eqV / nv : 1; }
+      else if (noMtf.length){
+        vals = {}; picks.forEach(s => { if (mtfOk(s)) vals[s] = nv; });
+        const rem = (budget - costAll(vals)) / noMtf.length;
+        noMtf.forEach(s => { vals[s] = solveUp(v => cost(s, v), rem, nv); });
+        o.rule = 'R2'; o.pct = nv ? Math.min.apply(null, noMtf.map(s => vals[s] / nv)) : 1;
+      } else { vals = eqVals(eqV); o.rule = 'short'; o.pct = nv ? eqV / nv : 1; }
+    }
+    o.tgt = vals; o.left = budget - costAll(vals);
+    W[st.id] = { cost: cost, costAll: costAll, eqVals: eqVals, nv: nv, noMtf: noMtf };
+  }
+  /* the account: free cash + every strategy's leftover; still short → R1 growth trims first, then the R2 picks */
+  const spareOf = () => (inp.free || 0) + Object.keys(S).reduce((a, id) => a + S[id].left, 0);
+  let need = (inp.buf != null ? inp.buf : CP_BUF) - spareOf(); const trims = [];
+  Object.keys(S).filter(id => S[id].rule === 'R1').sort((a, b) => S[b].pct - S[a].pct).forEach(id => {
+    if (need <= 0) return; const o = S[id], w = W[id];
+    const c0 = w.costAll(o.tgt), floorV = w.nv, cFloor = w.costAll(w.eqVals(floorV));
+    const V = cFloor >= c0 - need ? floorV : solveUp(V => w.costAll(w.eqVals(V)), c0 - need, o.tgt[o.picks[0]]);
+    o.tgt = w.eqVals(V); const saved = c0 - w.costAll(o.tgt); need -= saved; o.left += saved; o.pct = w.nv ? V / w.nv : 1;
+    trims.push('#' + o.num + ' growth trimmed to ' + Math.round(o.pct * 100) + '%'); });
+  Object.keys(S).filter(id => S[id].rule === 'R2').forEach(id => {
+    if (need <= 0) return; const o = S[id], w = W[id];
+    w.noMtf.forEach(s => { if (need <= 0) return; const c0 = w.cost(s, o.tgt[s]), cut = Math.min(need, c0 - w.cost(s, 0)); if (cut <= 0) return;
+      o.tgt[s] = solveUp(v => w.cost(s, v), c0 - cut, o.tgt[s]); need -= cut; o.left += cut; });
+    o.pct = w.nv ? Math.min.apply(null, w.noMtf.map(s => o.tgt[s] / w.nv)) : 1; trims.push('#' + o.num + ' ' + w.noMtf.join('/') + ' cut further'); });
+  let freedT = 0, keptT = 0;
+  Object.keys(S).forEach(id => { const o = S[id]; freedT += o.freed; keptT += o.keptEq;
+    o.picks.forEach(s => { const p = o.px[s], kq = o.keep[s] || 0, q = p > 0 ? Math.floor(o.tgt[s] / p) : 0;
+      o.holdQ[s] = Math.max(kq, q); o.buyQ[s] = Math.max(0, q - kq); o.tgt[s] = Math.round(o.tgt[s]); o.normal[s] = Math.round(o.normal[s]); });
+    o.freed = Math.round(o.freed); o.keptEq = Math.round(o.keptEq); o.left = Math.round(o.left); o.pct = +o.pct.toFixed(4);
+    Object.keys(o.fx).forEach(k => { o.fx[k] = Math.round(o.fx[k]); o.xv[k] = Math.round(o.xv[k] || 0); }); });
+  const spare = spareOf();
+  return { S: S, acct: { free: Math.round(inp.free || 0), freed: Math.round(freedT), need: Math.round(freedT + (inp.free || 0) - spare), spare: Math.round(spare), short: spare < 0 ? Math.round(-spare) : 0, trims: trims }, warn: warn };
+}
+/* the plan for THIS rebalance (synced basket doc), and its reading for one strategy */
+function cpDoc(){ const P = zbaDoc().plan; return (P && P.k === zbRebKey() && P.S) ? P : null; }
+const cpSame = (a, b) => a.slice().sort().join() === b.slice().sort().join();
+function planFor(it){   // null unless the plan exists AND this strategy's current picks are the ones it was worked out on
+  const P = cpDoc(); if (!P) return null; const o = P.S[it.id]; if (!o) return null;
+  const p = PICKS[it.id]; if (!p || !p.rows.length) return null;
+  return cpSame(p.rows.slice(0, it.cfg.topN || 3).map(r => r.sym), P.picks[it.id] || []) ? o : null;
+}
+function planKeeps(it){   // a reset strategy's kept re-picks — still in today's screen (a dropped one sells as usual)
+  const P = cpDoc(), o = P && P.S[it.id]; if (!o || !o.keep) return new Set();
+  const p = PICKS[it.id], now = (p && p.rows.length) ? new Set(p.rows.map(r => r.sym)) : null;
+  return new Set(Object.keys(o.keep).filter(s => !now || now.has(s)));
+}
+const cpSellsStarted = () => zbSoldSet().size > 0;
+/* After the sells the plan is frozen — but the final list lands only at ~8:45 pm, after money has moved. A strategy
+   whose final screen differs is re-planned on the SAME rules (user 2026-09-29: "the list shouldn't matter"): its
+   rows net of what it sold at T, the cash those sells froze in the plan (soldFx), stragglers from today's demat,
+   and the pool = the plan's spare + that strategy's old leftover. Others keep their plan untouched. */
+function replanInputs(P0, it){
+  const h = heldFor(it.cfg), p = PICKS[it.id], o0 = P0.S[it.id]; if (!h || !p || !p.rows.length || !o0) return null;
+  const PR = proceedsOf(it.id), sent = zbSentSyms('soldReb', it.id), soldFx = {}, soldXv = {};
+  const rows = h.rows.map(r => { const sq = Math.min(r.qty, (PR && PR.filled && PR.filled[r.sym] != null) ? +PR.filled[r.sym] : (+sent[r.sym] || 0));
+    if (sq > 0 && o0.fx && o0.fx[r.sym] != null){ const f = sq / r.qty; soldFx[r.sym] = o0.fx[r.sym] * f; soldXv[r.sym] = (o0.xv[r.sym] || 0) * f; }
+    return { sym: r.sym, qty: r.qty - sq, avg: r.avg }; }).filter(r => r.qty > 0);
+  return { id: it.id, num: o0.num, method: h.method, topN: it.cfg.topN || h.topN || 3, rows: rows, picks: p.rows.slice(0, it.cfg.topN || 3).map(r => r.sym),
+           soldFx: soldFx, soldXv: soldXv, soldCash: !!o0.cashExit };
+}
+function replanMerge(P0, R, ins){   // fold a re-plan of the strategies in `ins` into the frozen plan
+  const P = JSON.parse(JSON.stringify(P0)), ids = ins.map(x => x.id);
+  ins.forEach(x => { P.S[x.id] = R.S[x.id]; P.picks[x.id] = x.picks.slice(); });
+  const freed = Object.keys(P.S).reduce((a, id) => a + (P.S[id].freed || 0), 0);
+  P.acct = Object.assign({}, P.acct, { freed: freed, spare: R.acct.spare, short: R.acct.short, need: Math.round(freed + (P.acct.free || 0) - R.acct.spare),
+                                        trims: (P.acct.trims || []).concat(R.acct.trims) });
+  P.re = { at: Date.now(), ids: ids }; return P;
+}
+async function cashPlanRun(auto){
+  if (CPL.busy) return;
+  const say = m => { if (!auto) ktoast(m, 6000); };
+  if (!Z.connected){ say('Connect Zerodha first — the plan reads your holdings, funds and Zerodha’s margin per stock'); return; }
+  const books = uniqStrategies().filter(it => { const h = heldFor(it.cfg); return h && h.rows.length; });
+  if (!books.length){ say('No strategy books loaded yet'); return; }
+  const noPicks = books.filter(it => !(PICKS[it.id] && PICKS[it.id].rows.length));
+  if (noPicks.length){ say('Load all picks first — ' + noPicks.length + ' strateg' + (noPicks.length === 1 ? 'y has' : 'ies have') + ' none'); return; }
+  const P0 = cpDoc(), frozen = !!(P0 && cpSellsStarted());
+  const changed = frozen ? books.filter(it => P0.S[it.id] && !planFor(it)) : [];
+  if (frozen && !changed.length){ say('Frozen — the sells have started and every strategy still matches its plan'); return; }
+  CPL.busy = true; CPL.at = Date.now(); say(frozen ? 'Re-planning ' + changed.map(it => '#' + (favNumOf(it.cfg) || '?')).join(' ') + ' on the final list…' : 'Working out the cash plan…');
+  try {
+    await zHoldRefresh();
+    const px = {}, pxOf = (s, fb) => { const q = liveQ(s); return (q && q.ltp != null) ? +q.ltp : fb; };
+    const strats = frozen ? changed.map(it => replanInputs(P0, it)).filter(Boolean) : books.map(it => { const h = heldFor(it.cfg), topN = it.cfg.topN || h.topN || 3;
+      return { id: it.id, num: favNumOf(it.cfg) || 0, method: h.method, topN: topN, rows: h.rows.map(r => ({ sym: r.sym, qty: r.qty, avg: r.avg })), picks: PICKS[it.id].rows.slice(0, topN).map(r => r.sym) }; });
+    books.forEach(it => { PICKS[it.id].rows.forEach(r => { px[r.sym] = pxOf(r.sym, +r.px); });
+      heldFor(it.cfg).rows.forEach(r => { if (px[r.sym] == null){ const z = (Z.hraw || {})[r.sym]; px[r.sym] = pxOf(r.sym, z ? z.ltp : r.avg); } }); });
+    const lev = Object.assign({}, frozen ? P0.lev : {}), need = new Set();
+    strats.forEach(st => st.picks.forEach(s => { if (!(s in lev)) need.add(s); }));
+    const list = [...need];
+    if (list.length){
+      await kiteSyms(list);
+      const body = list.map(s => ({ exchange: 'NSE', tradingsymbol: ordSym(s), product: 'MTF', quantity: Math.max(1, Math.floor(1e7 / (px[s] || 1))) }));   // a ₹1 Cr probe per pick
+      const mc = await zFetch('/margincalc', { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify(body) });
+      if (!(mc.st === 200 && mc.j && Array.isArray(mc.j.data))){ say('Zerodha’s margin check failed — plan not updated'); return; }
+      list.forEach((s, i) => { const d = mc.j.data[i], tot = d && d.total != null ? +d.total : null;
+        lev[s] = (tot && tot > 0) ? +((body[i].quantity * (px[s] || 0)) / tot).toFixed(3) : null; });
+    }
+    let P;
+    if (frozen){
+      const pool = (P0.acct.spare || 0) - strats.reduce((a, st) => a + ((P0.S[st.id] || {}).left || 0), 0);
+      const R = planCompute({ strats: strats, hraw: Z.hraw || {}, px: px, lev: lev, free: pool, buf: CP_BUF });
+      P = replanMerge(P0, R, strats); P.lev = lev; P.warn = (P0.warn || []).concat(R.warn).slice(-6);
+    } else {
+      const f = await zFetch('/margins'), eq = f && f.st === 200 && f.j && f.j.data && f.j.data.equity;
+      if (!eq){ say('Couldn’t read your Zerodha funds — plan not updated'); return; }
+      const free = (+eq.available.opening_balance || 0) + (+((eq.utilised || {}).holding_sales) || 0);
+      const R = planCompute({ strats: strats, hraw: Z.hraw || {}, px: px, lev: lev, free: free, buf: CP_BUF });
+      P = { k: zbRebKey(), at: Date.now(), live: books.some(it => PICKS[it.id].live), picks: Object.fromEntries(strats.map(st => [st.id, st.picks])), lev: lev, S: R.S, acct: R.acct, warn: R.warn.slice(0, 6) };
+    }
+    const doc = zbaDoc(); doc.plan = P; doc.ts = Date.now(); try { localStorage.setItem(ZBA_LS, JSON.stringify(doc)); } catch (e){}
+    zbaPush(); CPL.at = Date.now();
+    say(P.acct.short ? '⚠ Cash plan: short ' + zinr(P.acct.short) + ' even after the trims' : (frozen ? 'Re-planned on the final list' : 'Cash plan ready') + ' — spare ' + zinr(P.acct.spare));
+    renderCards();
+  } catch (e){ say('Cash plan failed: ' + (e && e.message || e)); }
+  finally { CPL.busy = false; }
+}
+function cashPlanHTML(list){
+  const P = cpDoc(), frozen = !!(P && cpSellsStarted());
+  const when = P ? hhmm(new Date(P.at + 330 * 60000)) : '';
+  const changed = P ? list.filter(it => P.S[it.id] && PICKS[it.id] && PICKS[it.id].rows.length && !planFor(it)) : [];
+  if (frozen && changed.length && Z.connected && !CPL.busy && Date.now() - CPL.at > 60000) setTimeout(() => cashPlanRun(true), 50);   // the final list changed after the sells → same rules, on its own
+  let h = '<div class="bal"><div class="bal-h"><b>Cash plan</b><span class="sub">' +
+    (P ? 'worked out ' + when + ' on ' + (P.live ? 'live' : 'rebalance') + ' picks' + (P.re ? ' · re-planned ' + hhmm(new Date(P.re.at + 330 * 60000)) + ' on the final list' : '') + (frozen ? ' · <b>frozen</b> — sell baskets have gone out' + (changed.length ? '; the final list changed for ' + changed.map(it => '#' + (favNumOf(it.cfg) || '?')).join(' ') + ' — re-planning on the same rules' : '') : ' · refreshes itself on sell day until the first sell basket')
+       : 'each strategy spends the cash its own sells free — Zerodha’s MTF on each new pick decides the rest') + '</span>' +
+    '<span class="go"><button class="btn" id="cpGo"' + (frozen && !changed.length ? ' disabled title="Frozen: the sells have started and every strategy still matches its plan"' : '') + '>' + (P ? (frozen ? 'Re-plan changed' : 'Re-plan') : 'Plan cash') + '</button></span></div>';
+  if (!P) return h + '<div class="khelp">Needs Zerodha connected and every strategy’s picks loaded. Rules: a strategy that sells a cash holding (HFCL) grows all its new picks with the freed money; a pick with no MTF (CPPLUS) gets what’s left after the MTF picks get their normal amount; a reset strategy keeps a stock it picks again; everyone else buys normally and their leftovers cover the rest.</div></div>';
+  const A = P.acct;
+  h += '<div class="khelp" style="margin-top:0">Sells free <b>' + zinr(A.freed) + '</b> + free cash ' + zinr(A.free) + ' → new buys need <b>' + zinr(A.need) + '</b> of margin → ' +
+    (A.short > 0 ? '<b class="down">short ' + zinr(A.short) + '</b>' : 'spare <b class="up">' + zinr(A.spare) + '</b>') + (A.trims && A.trims.length ? ' · ' + esc(A.trims.join('; ')) : '') + '</div>';
+  const SM = subMixes();
+  const rowsH = list.map(it => { const o = P.S[it.id]; if (!o) return ''; const cur = planFor(it), n = o.num || favNumOf(it.cfg);
+    const rule = o.rule === 'R1' ? '<span class="tag keep">grows ' + Math.round(o.pct * 100) + '%</span>'
+      : o.rule === 'R2' ? '<span class="tag warn">no-MTF pick ' + Math.round(o.pct * 100) + '%</span>'
+      : o.rule === 'short' ? '<span class="tag exit">short ' + Math.round(o.pct * 100) + '%</span>'
+      : o.rule === 'normal' ? '<span class="tag off">normal</span>' : '<span class="tag off">no change</span>';
+    const cells = o.picks.map(s => { const kq = (o.keep || {})[s] || 0, L = (P.lev || {})[s];
+      return '<b>' + esc(s) + '</b> ' + zinr(o.holdQ[s] * o.px[s]) + ' <span class="sym">' + (o.holdQ[s] || 0).toLocaleString('en-IN') + ' sh' +
+        (kq ? ' · ' + kq.toLocaleString('en-IN') + ' kept' : '') + (L != null && L > 1.05 ? '' : ' · no MTF') + '</span>'; });
+    (o.stays || []).forEach(s => cells.push('<span class="sym">keeps ' + esc(s) + '</span>'));
+    return '<tr><td><span class="snum' + (mixMarks(it.cfg, SM).length ? ' mixc' : '') + '">#' + n + '</span></td><td style="white-space:normal;text-align:left">' + rule +
+      (cur || !o.picks.length ? '' : ' <span class="tag exit" title="The screen changed since the plan was worked out — this strategy falls back to the normal sizing">picks changed</span>') +
+      '<div style="margin-top:3px;line-height:1.7">' + cells.join(' &nbsp;·&nbsp; ') + '</div></td><td>' + zinr(o.freed + o.keptEq) + '</td></tr>'; }).join('');
+  h += '<div class="twrap"><table><thead><tr><th>#</th><th>After the rebalance</th><th>Own cash</th></tr></thead><tbody>' + rowsH + '</tbody></table></div>';
+  if (P.warn && P.warn.length) h += '<div class="khelp">⚠ ' + esc(P.warn.join(' · ')) + '</div>';
+  return h + '<div class="khelp">Own cash = what the strategy’s own sells free after Zerodha’s loan (plus the equity in shares it keeps). The ⚡ buy baskets on ' + esc(rebalWindow().t1lab) + ' and the table below use these quantities; a strategy whose screen changed since falls back to the normal sizing.</div></div>';
 }
 /* ================= FILLS & SLIPPAGE (user 2026-09-24, world-class #3) =================
    Cloud baskets (kite-relay v2.1) follow every sent order to its fill and remember the arrival price
@@ -700,7 +922,7 @@ function renderBuyAll(list){
   const totAmt = rows.reduce((s, r) => s + r.amt, 0), totQty = rows.reduce((s, r) => s + (r.qty || 0), 0);
   const anyQty = rows.some(r => r.qty > 0);
   const B = BUYSLICER['__all__'];
-  box.innerHTML = renderReenter() + residHTML + '<div class="bal"><div class="bal-h"><b>This rebalance · ' + rows.length + ' stocks to buy</b>' +
+  box.innerHTML = renderReenter() + residHTML + cashPlanHTML(list) + '<div class="bal"><div class="bal-h"><b>This rebalance · ' + rows.length + ' stocks to buy</b>' +
     '<span class="sub">from ' + withPicks.length + ' ' + (withPicks.length === 1 ? 'strategy' : 'strategies') +
       (totAmt ? ' · ' + zinr(totAmt) : '') +
       (agg.missing.length ? ' · no amount set for ' + agg.missing.map(n => '#' + n).join(', ') : '') +
@@ -714,9 +936,10 @@ function renderBuyAll(list){
       '<td>' + (r.amt ? zinr(r.amt) : '—') + (r.capped ? ' <span class="sym" title="capped per basket">cap</span>' : '') + '</td></tr>').join('') +
     '</tbody><tfoot><tr><td>' + esc(spTotLbl(list)) + '</td><td class="sym">' + rows.length + ' stock' + (rows.length === 1 ? '' : 's') + '</td><td></td>' +
     '<td>' + (totQty ? totQty.toLocaleString('en-IN') : '—') + '</td><td>' + (totAmt ? zinr(totAmt) : '—') + '</td></tr></tfoot></table></div>' +
-    '<div class="khelp">Numbered by the strategy blocks below. Amounts are the engine’s rebalance sizing — each new entry funded by its strategy’s EXIT proceeds: ' + (agg.nAct ? '<b>actual sell fills captured on ' + esc(rebalWindow().tlab) + '</b> for ' + agg.nAct + (agg.nEst ? ', ' : ' ') : '') + (agg.nEst ? '<b>estimated at today’s prices</b> for ' + agg.nEst + ' (no proceeds captured — the exits were sold at the month-end close) ' : '') + (agg.nAct || agg.nEst ? 'strateg' + ((agg.nAct + agg.nEst) === 1 ? 'y' : 'ies') + '; ' : '') + 'a first-ever buy with no holdings falls back to the ₹ amount in its ⚡ dialog. A stock several strategies want is bought once, for the combined amount; <b>buy back</b> = sold on the month-end close but still in the official screen.</div></div>' + fillsHTML();
+    '<div class="khelp">Numbered by the strategy blocks below. ' + (agg.nPlan ? '<b>' + agg.nPlan + ' strateg' + (agg.nPlan === 1 ? 'y is' : 'ies are') + ' sized by the cash plan above</b>; for any other, amounts' : 'Amounts') + ' are the engine’s rebalance sizing — each new entry funded by its strategy’s EXIT proceeds: ' + (agg.nAct ? '<b>actual sell fills captured on ' + esc(rebalWindow().tlab) + '</b> for ' + agg.nAct + (agg.nEst ? ', ' : ' ') : '') + (agg.nEst ? '<b>estimated at today’s prices</b> for ' + agg.nEst + ' (no proceeds captured — the exits were sold at the month-end close) ' : '') + (agg.nAct || agg.nEst ? 'strateg' + ((agg.nAct + agg.nEst) === 1 ? 'y' : 'ies') + '; ' : '') + 'a first-ever buy with no holdings falls back to the ₹ amount in its ⚡ dialog. A stock several strategies want is bought once, for the combined amount; <b>buy back</b> = sold on the month-end close but still in the official screen.</div></div>' + fillsHTML();
   fillsKick();
   const lg = $('levGo'); if (lg) lg.onclick = () => zbLevSweep(rows);
+  const cg = $('cpGo'); if (cg) cg.onclick = () => cashPlanRun(false);
   const go = $('balGo');
   if (go) go.onclick = () => {
     if (BUYSLICER['__all__']){ const S = BUYSLICER['__all__'];
@@ -945,7 +1168,7 @@ function ensureZbDlg(){
   $('zbType').addEventListener('change', () => { const lim = $('zbType').value === 'LIMIT';
     ZB.rows.forEach(r => { if (lim && !(r.limit > 0)) r.limit = r.px; }); zbRender(); zbArmReset(); });
   $('zbTbl').addEventListener('input', e => {
-    const q = e.target.closest('input.zbq'); if (q){ const i = +q.dataset.i, r = ZB.rows[i]; r.qty = Math.max(0, Math.floor(+q.value || 0)); r.margin = null;
+    const q = e.target.closest('input.zbq'); if (q){ const i = +q.dataset.i, r = ZB.rows[i]; r.qty = Math.max(0, Math.floor(+q.value || 0)); r.margin = null; if (r.planQ != null) r.planQ = r.qty;
       zbRowPaint(i); zbFoot(); zbArmReset(); zbMarginSoon(false); return; }
     const l = e.target.closest('input.zbl'); if (l){ ZB.rows[+l.dataset.i].limit = Math.max(0, +l.value || 0); zbArmReset(); } });
   $('zbTbl').addEventListener('change', e => { const c = e.target.closest('input[type=checkbox]'); if (!c) return;
@@ -966,6 +1189,7 @@ function zbAlloc(){
   const on = ZB.rows.filter(r => r.on && r.px > 0 && !r.fixed), per = on.length ? amt / on.length : 0;
   ZB.rows.forEach(r => { r.st = ''; r.msg = '';
     if (r.fixed){ r.margin = null; r.qty = r.on ? (r.backQty || r.qty) : 0; return; }   // buy-back: fixed quantity, funded by its own sale
+    if (r.planQ != null){ r.margin = null; r.qty = r.on ? r.planQ : 0; return; }        // the cash plan's quantity (edits update it)
     if (!(r.on && r.px > 0)){ r.qty = 0; r.margin = null; return; }
     const perShare = (mode === 'margin' && r.mps > 0) ? r.mps : r.px;
     const cap = zbCap(r.sym), val = (cap > 0 && mode !== 'margin') ? Math.min(per, cap) : per;   // HFCL ₹1 Cr cap
@@ -1058,6 +1282,16 @@ function zBasketOpen(id){
      prefill the whole book's value (sell all, fresh equal split). Editable as ever. */
   (function(){
     const held = heldFor(it.cfg); if (!held || !held.rows.length) return;
+    const cp = planFor(it);
+    if (cp){   // the cash plan sized this strategy: its quantities; kept / staying rows unticked
+      ZB.rows.forEach(r => {
+        if ((cp.keep || {})[r.sym] || (cp.stays || []).indexOf(r.sym) >= 0){ r.on = false; r.kept = true; return; }
+        const q = cp.buyQ[r.sym]; if (q == null) return;
+        r.planQ = (r.px > 0 && cp.px[r.sym] > 0) ? Math.floor(q * cp.px[r.sym] / r.px) : q; r.on = r.planQ > 0; });
+      $('zbAmt').value = Math.round(ZB.rows.reduce((a, r) => a + (r.on && r.planQ ? r.planQ * r.px : 0), 0));
+      $('zbSub').textContent += ' \u00b7 sized by the cash plan (' + (cp.rule === 'R1' ? 'grows ' + Math.round(cp.pct * 100) + '%' : cp.rule === 'R2' ? 'no-MTF pick at ' + Math.round(cp.pct * 100) + '%' : cp.rule) + ') \u2014 edit any quantity if needed.';
+      return;
+    }
     const RW = rebalWindow(), PR = proceedsOf(id);
     const px = h => { const q = liveQ(h.sym); return (q && q.ltp != null) ? +q.ltp : (h.avg || 0); };
     if (held.method === 'reset'){
@@ -1161,7 +1395,8 @@ function zbaMerge(a, b){ const newer = (b.ts || 0) >= (a.ts || 0) ? b : a, older
            soldDay:   (newer.soldDay   && (!older.soldDay   || String(newer.soldDay.d)   >= String(older.soldDay.d)))   ? newer.soldDay   : older.soldDay,
            exitSnap:  (newer.exitSnap !== undefined ? newer.exitSnap : older.exitSnap),
            soldReb:   zbMergeReb(newer.soldReb, older.soldReb), boughtReb: zbMergeReb(newer.boughtReb, older.boughtReb),
-           proceeds:  zbMergeReb(newer.proceeds, older.proceeds) }; }
+           proceeds:  zbMergeReb(newer.proceeds, older.proceeds),
+           plan:      zbMergeReb(newer.plan, older.plan) }; }
 function zbMergeReb(n, o){ return (n && (!o || String(n.k) >= String(o.k))) ? n : o; }
 
 /* ================= SELL BASKETS (user 2026-09-01) =================
@@ -1377,7 +1612,7 @@ function sellExits(it){
   const isReset = !!(held && held.method === 'reset');
   const pickSet = (p && p.rows.length) ? new Set(p.rows.map(r => r.sym)) : null;
   const cols = pickCols(it.cfg), fmap = (held && held.rows.length) ? factorMap(it) : {};
-  const sent = zbSentSyms('soldReb', it.id);
+  const sent = zbSentSyms('soldReb', it.id), cpKeep = isReset ? planKeeps(it) : null;   // cash plan: a reset strategy keeps a re-picked stock
   /* the screen each leg trusts: T = today's live picks (the T-close screen bakes only this evening);
      T+1.. = the OFFICIAL T-close screen (rebalance mode, dated exactly T) — stragglers are judged on it */
   let legOk = true, legMsg = '';
@@ -1391,7 +1626,7 @@ function sellExits(it){
       const zt = zh ? (zh.mtf + zh.cnc + (zh.coll || 0)) : null;
       const lt = (FEED.symTot || {})[h.sym];
       const mism = (zt != null && lt != null && zt !== lt) ? (zt - lt) : null;   // demat vs strategy-ledger, both ways
-      const stays = !isReset && !!(pickSet && pickSet.has(h.sym));
+      const stays = isReset ? !!(cpKeep && cpKeep.has(h.sym)) : !!(pickSet && pickSet.has(h.sym));
       const fv = pickFV(fmap[h.sym], cols);
       const keep = Z.connected ? keeperQty(h.sym, it) : null;
       const remain = (Z.connected && !stays) ? Math.min(h.qty, Math.max(0, dematQty(h.sym) - keep)) : null;   // shares still to sell
