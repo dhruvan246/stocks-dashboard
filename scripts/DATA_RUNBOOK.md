@@ -21845,6 +21845,24 @@ warrants were deep in the money (exercise Rs425 vs 1,321) and are not priced in;
 **OPEN (research):** TATASTEEL 2007 CCPS final conversion price (filing: "Rs 500 to Rs 600 ... as may be decided"); GTLINFRA 2007 (old
 ~0.585 step on NSE's 20-Jul ex-date, BSE record date 27-Jul); TATACOFFEE 2006 PCD; LAKSHVILAS 2006 bonus + rights (no price found);
 UNIWESTBNK 2006 (no series).
+**LIVE VERIFIED 2026-09-29 ~18:35 IST.** Push 157ed39b6 -> refresh-backtest-data 36570699337 logged the same 38 RIGHTS-RECONCILE lines
+as the dry run ("Rights (§173): 38 bar(s) reconciled"); release rev f2d73f24e2: all 35 symbols equal the dry run on every bar through
+2026-09-28; baked factors at the ex-dates read the targets to rounding (OMAXE 0.94895, JMFINANCIL 0.04000, HINDALCO 0.906897,
+SHRIRAMFIN 0.97434). Ledgers intact on main after the marker commit (6b8dfb5bf). Quantmac re-run on f2d73f24e2: 164 cells we had
+blamed on them now AGREE (13 of them the "missed bonus" OMAXE/GAMMNINFRA cells); 83 cells that used to agree now differ as their
+rights convention (TATASTEEL 2018 28, INDHOTEL 2014 CCD 21, ABFRL 2020 11, TATAINVEST 7, ALOKTEXT 6, VIDEOIND 5, SINTEX 4, TINPLATE 1 —
+before, neither side adjusted them); overall 98.26% -> 98.24% (99.61% counting rounding). Remaining "your value is not on NSE's tape": 48.
+**Tool fixes (qm-recon-tools, not the repo):** qm_classify2 — CONV test discriminating + two-paise tolerance (sequentially rounded
+prices at ~Rs3), every close-priced demerger ex-day tested (was only the first), stated-convention preference when several steps
+explain a cell (lows: rights first; highs/200-DMA: demerger first — KARURVYSYA 2011 / CUB 2009 are their rights-on-lows, not "missed
+bonus" / "missing bar"), OURS_PRELIST category; qm_tv_evidence — correct wording when THEIR level is the more extreme one;
+raw_merged.py (HEG -> HEGAM stale key); reply builder build_ind_reply_r2b.py (Note + how-to-match + per-cell "To match ours").
+**ALOKINDS seam (found in the re-run, NOT changed — user decision):** our series is split ALOKTEXT (to 2020-01-30) / ALOKINDS (from
+2020-02-19 relisting, ISIN INE270A01011 -> 01029, NSE PREVCLOSE 3.30 -> open 17.70). The §107-era seam work DEFERRED it with the IBC
+relistings ("stale base -> fake return"), but BSE's shareholding filings show 1,377,317,895 shares on 31-Dec-2019 AND at the 19-Feb-2020
+relisting (only the face value was cut 10 -> 1; RIL/JMARC allotment came 28-Feb) — so an old share IS a new share and the 3.30 -> 17.70
+move was a real return for holders. Joining (SEAM_MERGES seam 1.0) would make quantmac's 2020 lows (Rs 1.40, Oct-2019) agree and change
+2020 momentum signals for ALOKINDS; left for the user. Only stranded-history case among quantmac's cells (scan of every window).
 ## §181 — EVERY BSE JOB WAS DARK 20→26 SEP: the requests lacked standard headers, not access (2026-09-26, user: "find a way")
 **Measured (every run log since 20-Sep, times UTC):** refresh-bse 12/13 runs refused (first 20-Sep 11:47), refresh 52/55
 (21-Sep), refresh-announcements 13/26 (21-Sep), refresh-results-hourly 9/20 (23-Sep), refresh-fundamentals 7/60 (24-Sep),
