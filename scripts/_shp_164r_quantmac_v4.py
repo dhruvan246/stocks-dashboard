@@ -302,6 +302,119 @@ def table3(out):
     json.dump(P, open(out, "w"), indent=1, ensure_ascii=False); print("table3: %d cells" % len(P))
 
 
+def t3_compute(sym, qe, t, page, ctx, D, A):
+    import _shp_d1_rowfix as D1
+    """One Dec-2015 / Mar-2016 quarter from BSE's Table III JSON + the same quarter's BSE page (total (A)+(B)+(C) and the promoter
+    row), read with the XBRL-era rules exactly as `table3` does. -> (cell5, ev, T) or (None, reason, None)."""
+    R = _rows(page)
+    tot = [r for r in R if r[0].startswith("Total (A)+(B)+(C)") and len(r) > 2]; prom = [r for r in R if r[0].startswith("Total shareholding of Promoter") and len(r) > 2]
+    if not tot or not prom: return None, "page total/promoter missing", None
+    T = _num(tot[-1][2]); PR = _num(prom[0][2])
+    stb = [r for r in t if r["Fld_Code"] == "STB1B2B3"]
+    if stb and stb[0]["Fld_TotalPercentageOf_A_B_C2"]:
+        chk = stb[0]["Fld_TotalNoOfShares"] / T * 100
+        if abs(chk - stb[0]["Fld_TotalPercentageOf_A_B_C2"]) > 0.02: return None, "page total does not reproduce the table's %% (%.3f vs %.2f)" % (chk, stb[0]["Fld_TotalPercentageOf_A_B_C2"]), None
+    pct = lambda sh: (sh or 0) / T * 100
+    cat = [r for r in t if not r["Fld_ShareHolderName"] and r["Fld_Code"] and not r["Fld_Code"].startswith("ST")]
+    subs = [r for r in t if r["Fld_ShareHolderName"]]
+    def total(code): return sum(r["Fld_TotalNoOfShares"] or 0 for r in cat if r["Fld_Code"] == code)
+    fii_sh = total("B1d") + total("B1e"); dii_sh = sum(total(c) for c in ("B1a", "B1b", "B1c", "B1f", "B1g", "B1h")); ev = []
+    mf_sh = total("B1a"); ins_sh = total("B1g")
+    # Institutional Any-Other (B1i). A sub-row is a LABEL only when its text is a category the classifier knows (incl. the
+    # misspelt 'Fil (foriegn Institutional Investor)'); any other text is a HOLDER, whatever its holder count (SHREECEM Dec-2015
+    # 'FLT LIMITED' carries a count of 1; BERGEPAINT's 'Naianda India Fund Ltd' is a misspelt fund, not a category). Holders take
+    # the shared classifier (documents / the filer's own 2022-form placement); the unnamed rest follows D1 with the
+    # neighbouring-filing gate (§164r batch 5).
+    FTOL = re.compile(r"f(?:or|ro)(?:ei|ie|e)gn\s+ins\w*t\w*\s+inv", re.I)
+    COMP = re.compile(r"^\W*(?:non[\s-]*)?domestic\s+compan", re.I)            # company-type category, like 'Foreign Companies'
+    Ti = total("B1i"); rows_i = [r for r in subs if r["Fld_Code"] == "B1i"]
+    def klass(r):
+        nm = r["Fld_ShareHolderName"]; k = A.label_class(nm) or ("fii" if FTOL.search(nm) else None) or ("pub" if COMP.search(nm) else None)
+        if (r["Fld_NoOfShareHolders"] or 0) > 0: return k                    # a category row: its text decides; unknown text = a holder
+        return k if k == "fii" else None       # a name cell holding an FII label ('OTHER FII'); any other name is a holder
+                                               # ('THE NOMURA TRUST AND BANKING' is not the Trusts category)
+    labs = [(r, klass(r)) for r in rows_i if klass(r)]
+    hold = [r for r in rows_i if not klass(r)]
+    if Ti:
+        full = labs and abs(sum(r["Fld_TotalNoOfShares"] or 0 for r, _ in labs) - Ti) <= max(1, 0.0005 * Ti)
+        covered = 0; cls = []
+        for r, k in labs:
+            sh = r["Fld_TotalNoOfShares"] or 0; covered += sh
+            if k == "fii": fii_sh += sh
+            elif k == "pub": pass
+            else: dii_sh += sh
+            ev.append(("B1i-label", r["Fld_ShareHolderName"], round(pct(sh), 4), k))
+        if not full:
+            for r in hold:
+                c, dest, src = ctx.hclass(r["Fld_ShareHolderName"], pct(r["Fld_TotalNoOfShares"])); sh = r["Fld_TotalNoOfShares"] or 0; covered += sh
+                cls.append(c)
+                if c == "foreign" and dest == "fii": fii_sh += sh
+                elif c == "foreign" and dest == "public": pass
+                else: dii_sh += sh
+                ev.append(("B1i-named", r["Fld_ShareHolderName"], round(pct(sh), 4), "%s/%s %s" % (c, dest, src)))
+            rest = Ti - covered
+            if rest > 0:
+                to = "dii" if (cls and all(c == "domestic" for c in cls)) else "fii"
+                if to == "fii" and pct(rest) >= D1.D1_GATE_MIN:
+                    ok, why_g = D1.d1_corroborated(sym, qe, pct(fii_sh + rest), pct(rest))
+                    if not ok: to = "dii"; ev.append(("B1i-rest-gate", "D1 held", round(pct(rest), 4), why_g))
+                if to == "fii": fii_sh += rest
+                else: dii_sh += rest
+                ev.append(("B1i-unnamed-rest", "D1", round(pct(rest), 4), to))
+    dii_sh += total("B3b")
+    if total("B3b"): ev.append(("B3b-NBFC", "R3", round(pct(total("B3b")), 4), "dii"))
+    for r in [r for r in subs if r["Fld_Code"] == "B3e"]:
+        sh = r["Fld_TotalNoOfShares"] or 0; nm = r["Fld_ShareHolderName"]
+        if (r["Fld_NoOfShareHolders"] or 0) > 0:
+            k = A.label_class(nm)
+            if k == "fii": fii_sh += sh; ev.append(("B3e-label", nm, round(pct(sh), 4), "fii"))
+            elif k == "dii": dii_sh += sh; ev.append(("B3e-label", nm, round(pct(sh), 4), "dii (R2)"))
+        else:
+            c, dest, src = ctx.hclass(nm, pct(sh))
+            if c == "foreign" and dest == "fii" and src.startswith("new-format"): fii_sh += sh; ev.append(("B3e-named", nm, round(pct(sh), 4), "fii (R2-FII, %s)" % src))
+            elif c == "domestic" and re.search(r"insurance|assurance|solvency|mutual fund|provident|pension|\bLIC\b|alternat", nm, re.I): dii_sh += sh; ev.append(("B3e-named", nm, round(pct(sh), 4), "dii (R2, %s)" % src))
+    unp = [e for e in ev if e[0] == "B1i-named" and str(e[3]).startswith("None/")]
+    if unp: return None, "named holder(s) of unproven class %s" % [(e[1], e[2]) for e in unp], None
+    return [round(PR / T * 100, 4), round(pct(fii_sh), 4), round(pct(dii_sh), 4), round(pct(mf_sh), 4), round(pct(ins_sh), 4)], ev, T
+
+
+def t3fix(keys, out):
+    """Batch 6: Dec-2015 / Mar-2016 cells we hold from third-party or page-seam fills, re-read from BSE's own Table III
+    (api Corp_shpSec_SHPPubShold_ng/w?SCRIPCODE=<code>&QtrCode=<qtrid>.00 - Quantmac's v5 gave the parameter names) + the page."""
+    import time, bse_headers as BH
+    os.environ["DII_ROWFIX_WORK"] = os.path.join(C, "seamholes"); os.environ.setdefault("DII_ROWFIX_LISTS", LISTS)
+    import _shp_dii_rowfix as D, _shp_aspx_rowfix as A
+    verdicts = D.load_verdicts(); hist = json.load(open(os.path.join(HERE, "shp_history.json")))
+    cache = os.path.join(W, "t3"); os.makedirs(cache, exist_ok=True); P = {}
+    def get(u, p):
+        if os.path.exists(p): return open(p, "rb").read()
+        for a in range(3):
+            r = BH.get(u, timeout=60); time.sleep(1.0)
+            if r.status_code == 200 and len(r.content) > 500: open(p, "wb").write(r.content); return r.content
+            time.sleep(10 * (a + 1))
+        return None
+    for key in keys:
+        sym, qe = key.split("|"); qi = qtrid(qe); cur = (hist.get(sym) or {}).get(qe)
+        code = _code(_list(sym) or _list(_fa().get(sym) or "") or [])
+        if not code or not cur: print("  %s: no code / no store row" % key); continue
+        tj = get("https://api.bseindia.com/BseIndiaAPI/api/Corp_shpSec_SHPPubShold_ng/w?SCRIPCODE=%s&QtrCode=%d.00" % (code, qi), os.path.join(cache, "%s_%d_t3.json" % (code, qi)))
+        pg = get("https://www.bseindia.com/corporates/ShareholdingPattern.aspx?scripcd=%s&flag_qtr=1&qtrid=%d.00&Flag=New" % (code, qi), os.path.join(cache, "%s_%d_page.html" % (code, qi)))
+        if not tj or not pg: print("  %s: fetch failed" % key); continue
+        t = (json.loads(tj).get("Table1") or [])
+        if not t: print("  %s: empty Table III" % key); continue
+        ctx = D.SymCtx(sym, _list(sym) or [], verdicts)
+        cell, ev, T = t3_compute(sym, qe, t, pg.decode("utf-8", "ignore"), ctx, D, A)
+        if cell is None: print("  %-12s HELD: %s" % (key, ev)); continue
+        new = list(cur); new[:5] = cell
+        P[key] = {"was": cur, "cell": new, "src": "bsetable3:%s:%d + bseaspx:%s:%d" % (code, qi, code, qi), "ev": ev, "denominator": T,
+                  "why": ("§164r batch 6 (Quantmac v5): read from BSE's own Table III of this filing (Corp_shpSec_SHPPubShold_ng, "
+                          "QtrCode %d) and the quarter's BSE page total, with the XBRL-era rules; the stored cell came from %s. "
+                          "fii %.2f -> %.2f, dii %.2f -> %.2f. Rows: %s") % (qi, "a third-party / page-seam fill", cur[1] or 0, cell[1], cur[2] or 0, cell[2],
+                          "; ".join("%s %s %.2f %s" % (e[0], str(e[1])[:40], e[2], e[3]) for e in ev)[:500])}
+        print("  %-12s fii %.2f -> %.2f dii %.2f -> %.2f | %s" % (key, cur[1] or 0, cell[1], cur[2] or 0, cell[2], "; ".join("%s %s %.2f %s" % (e[0], str(e[1])[:24], e[2], e[3]) for e in ev)[:300]))
+    json.dump(P, open(out, "w"), indent=1, ensure_ascii=False); print("t3fix: %d proposals" % len(P))
+
+
 def nsefill():
     import fetch_shareholding as F
     from datetime import date
@@ -659,6 +772,7 @@ if __name__ == "__main__":
     elif st == "wb-older": wb_older()
     elif st == "drrebase": drrebase(sys.argv[2])
     elif st == "d1gate": d1gate(sys.argv[2])
+    elif st == "t3fix": t3fix(sys.argv[2].split(","), sys.argv[3])
     elif st == "wb-early": wb_early(sys.argv[2])
     elif st == "lag-write": lag_write(sys.argv[2], sys.argv[3] if len(sys.argv) > 3 else "shp_lag_fix.json")
     elif st == "table3-write": table3_write(sys.argv[2])
