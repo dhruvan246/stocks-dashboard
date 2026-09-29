@@ -21785,6 +21785,14 @@ Nifty 50 2013-09-27; Cadila, RSWM, Jindal Saw, Zuari, Orient Paper, Jindal Poly,
   the stock repriced from 29-Mar). Open: GTLINFRA 2007 (before the quantmac window).
 - Verified: dry run on the release (end 2026-09-25): exactly WHEELS + ALOKTEXT differ (history only; latest bars untouched); second
   pass 0.
+### 179b. Two more BE-only bars, surfaced by quantmac's round-2 file (2026-09-29)
+Quantmac's corrected workbook (received 2026-09-29) now carries NSE's BE-only sessions; their 200-DMA then needed a session we lacked
+on 5 SAREGAMA cells (2022-03-07). The §179 scan tested Nifty-500 membership ON the missing day only — SAREGAMA joined later that month.
+Re-scanned with "member on any date within 400 days AFTER the missing day" (the day then sits inside a member's 52-week / 200-session
+window): 2 real gaps, both BE-only on the days NSE's sec_bhavdata_full carried no BE rows — **SAREGAMA 2022-03-07** and **POWERINDIA
+2020-04-13**; the other 512 hits are the ANSALINFRA dead fragment. Rows in `bar_inserts.json` (anchor raw close == PREVCLOSE,
+two-sided f, next-session PREVCLOSE confirms, dv 100 = BE convention). Dry run: exactly those 2 symbols gain one bar; second pass 0.
+**Rule for any missing-bar scan:** judge membership over the following 400 days, not on the day itself.
 ## §181 — EVERY BSE JOB WAS DARK 20→26 SEP: the requests lacked standard headers, not access (2026-09-26, user: "find a way")
 **Measured (every run log since 20-Sep, times UTC):** refresh-bse 12/13 runs refused (first 20-Sep 11:47), refresh 52/55
 (21-Sep), refresh-announcements 13/26 (21-Sep), refresh-results-hourly 9/20 (23-Sep), refresh-fundamentals 7/60 (24-Sep),
